@@ -1,0 +1,140 @@
+﻿@import url('../med/default/default.css');
+
+.radioButton
+{
+	float: left;
+	width: 300px;
+}
+
+.labelRadio
+{
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
+
+.labelTotal
+{
+	width: 400px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	text-align: right;
+	padding-right: 10px;
+	float: left;
+}
+
+.txtTotal
+{
+	width: 50px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	text-align: right;	
+}
+
+.divGridHeader
+{
+	width: 50%;
+	float: left;
+	text-align: center;
+	font-family: Verdana;
+	font-size: 13px;
+	font-weight: bold;
+	color: #032D23;
+}
+
+.iiGridFooter
+{
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	border: 1px dotted transparent;
+	border-top: none;
+}
+
+.iiGridFooterColumn
+{
+	float: left;
+	background-color: #669966;
+	border: 1px solid #AAAAAA;
+	border-top: none;
+	border-right: none;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: white;
+	text-transform: uppercase;
+	padding-top: 3px;
+	padding-left: 4px;
+	padding-right: 4px;
+	text-align: right;
+	height: 17px;
+}
+
+.iiGridFooterColumnEndCap
+{
+	float: left;
+	background-color: #669966;
+	border: 1px solid #AAAAAA;
+	border-top: none;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: white;
+	text-transform: uppercase;
+	width: 18px;
+	height: 20px;
+	text-align: right;
+}
+
+#LabelShiftType
+{
+	width: 100px;
+	float: left;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	margin-left: 5px;
+}
+
+#ShiftType
+{
+	width: 100px;
+}
+
+#divStaffingHour
+{
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+
+#divGrid
+{
+	width: 1400px;
+}
+
+#AnchorAddUnit
+{
+	float: left;
+	padding-left: 5px;
+	margin-right: 5px;
+	padding-top: 5px;
+}
+
+#currentSundayBodyColumn, #currentMondayBodyColumn, #currentTuesdayBodyColumn, #currentWednesdayBodyColumn
+, #currentThursdayBodyColumn, #currentFridayBodyColumn, #currentSaturdayBodyColumn, #currentHolidaysBodyColumn
+, #proposedSundayBodyColumn, #proposedMondayBodyColumn, #proposedTuesdayBodyColumn, #proposedWednesdayBodyColumn
+, #proposedThursdayBodyColumn, #proposedFridayBodyColumn, #proposedSaturdayBodyColumn, #proposedHolidaysBodyColumn
+{
+	text-align: right;	
+}
+
+#currentWeeklyTotalBodyColumn, #proposedWeeklyTotalBodyColumn
+{
+	text-align: right;
+	font-weight: bold;
+}

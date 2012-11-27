@@ -1,0 +1,72 @@
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 9pt;
+	line-height: 1.7em;
+}
+
+h1 {
+	color: #571e73;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	letter-spacing: .1em;
+	margin-top: 0px;
+	margin-bottom: 5px;
+	border-bottom: 1px #571e73 solid;
+}
+
+h2 {
+	color: #571e73;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 15px;
+	margin: 20px 10px 10px 10px;
+}
+
+.header {
+	background-color: #c2e4c1;
+	border: 1px solid #c0c0c0;
+	padding: 10px 10px 10px 10px;
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
+
+.description {
+
+}
+
+.uiHeader {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	padding: 5px 0px 0px 10px;
+}
+
+table.layoutTable {
+	margin: 8px 20px 10px 20px;
+	border: 1px solid #c0c0c0;
+	width: 96%;
+}
+
+table.elementTable {
+	margin: 8px 20px 0px 20px;
+	border: 1px solid #c0c0c0;
+	width: 96%;
+}
+
+.elementTable th {
+	background-color: #c2e4c1;
+	padding: 5px;
+	line-height: 1.7em;
+}
+
+.elementTable td {
+	background-color: #f0f0f0;
+	padding: 5px 7px 5px 7px;
+	line-height: 1.5em;
+	vertical-align: top;
+}
+
+.reference {
+	margin-left: 20px;
+	margin-right: 20px;
+}

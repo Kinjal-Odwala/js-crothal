@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Chart of Account</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/app/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+		
+        <div id="iiInputValidationMaster"></div>
+        <div class="pageHeader">
+	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
+        </div>	
+	 	
+		<div class="pageBody">
+			<div class="contentAreasContainerLeft">
+				<div  class="contentArea">
+					<div class="header">Chart of Accounts</div>
+					<div class="body">
+						<div id="FiscalAccount"></div>
+						<div style="clear:both;"></div>
+					</div>
+				</div>
+			</div>
+			<div class="contentAreasContainerRight">
+				<div class="contentArea">
+					<div id="accountDetailHeader" class="header">Account</div>
+					<div id="accountDetailContentArea" class="body">
+						<div class="TableEditArea">
+							<div class="LabelTextAreaLeftAccount">
+								<span class="requiredFieldIndicator">&#149;</span>Account Code:
+							</div>
+							<div class="InputTextAreaRight">
+								<div id="code"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div class="TableEditArea">
+							<div class="LabelTextAreaLeftAccount">
+								<span class="requiredFieldIndicator">&#149;</span>Account Category:
+							</div>
+							<div class="InputTextAreaRight">
+								<div id="category"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div class="TableEditArea">
+							<div class="LabelTextAreaLeftAccount">
+								<span class="requiredFieldIndicator">&#149;</span>Description:
+							</div>
+							<div class="InputTextAreaRight">
+								<div id="desciption"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div class="TableEditArea">
+							<div class="LabelTextAreaLeftAccount">
+								<span id="nonRequiredFieldIndicator">Posting Edit Code:</span>
+							</div>
+							<div class="InputTextAreaRight">
+								<div id="editCode"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div class="TableEditArea">
+							<div class="LabelTextAreaLeftAccount">
+								<span id="nonRequiredFieldIndicator">GL Header:</span>
+							</div>
+							<div class="InputTextAreaRight">
+								<div id="header"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div style="clear:both;"></div>
+						<div class="group">
+							<div class="TableEditArea">
+								<div class="accountRadioTextLeft">
+									<div id="Negative"></div>
+								</div>
+								<div class="accountRadioButtonLeft">
+									<span id="nonRequiredFieldIndicator">Negative</span>
+								</div>
+								<div class="accountRadioTextright">
+									<div id="BockImport"></div>
+								</div>
+								<div class="accountRadioButtonRight">
+									<span id="nonRequiredFieldIndicator">Block Import/Export</span>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+						<div class="group">
+							<div class="TableEditArea">
+								<div class="accountRadioTextLeft">
+									<div id="Budget"></div>
+								</div>
+								<div class="accountRadioButtonLeft">
+									<span id="nonRequiredFieldIndicator">Budget</span>
+								</div>
+								<div class="accountRadioTextright">
+									<div id="AccountPayables"></div>
+								</div>
+								<div class="accountRadioButtonRight">
+									<span id="nonRequiredFieldIndicator">Account Payables</span>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+						<div class="group">
+							<div class="TableEditArea">
+								<div class="accountRadioTextLeft">
+									<div id="SalariesWages"></div>
+								</div>
+								<div class="accountRadioButtonLeft">
+									<span id="nonRequiredFieldIndicator">Salaries/Wages</span>
+								</div>
+								<div class="accountRadioTextright">
+									<div id="RecurringExpenses"></div>
+								</div>
+								<div class="accountRadioButtonRight">
+									<span id="nonRequiredFieldIndicator">Recurring Expenses</span>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+						<div class="group">
+							<div class="TableEditArea">
+								<div class="accountRadioTextLeft">
+									<div id="FieldTransfers"></div>
+								</div>
+								<div class="accountRadioButtonLeft">
+									<span id="nonRequiredFieldIndicator">Field Transfers</span>
+								</div>
+								<div class="accountRadioTextright">
+									<div id="Inventory"></div>
+								</div>
+								<div class="accountRadioButtonRight">
+									<span id="nonRequiredFieldIndicator">Inventory</span>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+						<div class="group">
+							<div class="TableEditArea">
+								<div class="accountRadioTextLeft">
+									<div id="PayrollWorksheet"></div>
+								</div>
+								<div class="accountRadioButtonLeft">
+									<span id="nonRequiredFieldIndicator">Payroll Worksheet</span>
+								</div>
+								<div class="accountRadioTextright">
+									<div id="ManagementFee"></div>
+								</div>
+								<div class="accountRadioButtonRight">
+									<span id="nonRequiredFieldIndicator">Management Fee</span>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+						<div class="group">
+							<div class="TableEditArea">
+								<div class="accountRadioTextLeft">
+									<div id="DirectCost"></div>
+								</div>
+								<div class="accountRadioButtonLeft">
+									<span id="nonRequiredFieldIndicator">Direct Cost</span>
+								</div>
+								<div class="accountRadioTextright">
+									<div id="Supplies"></div>
+								</div>
+								<div class="accountRadioButtonRight">
+									<span id="nonRequiredFieldIndicator">Supplies</span>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+						<div class="group">
+							<div class="TableEditArea">
+								<div class="accountRadioTextLeft">
+									<div id="AccountReceivable"></div>
+								</div>
+								<div class="accountRadioButtonLeft">
+									<span id="nonRequiredFieldIndicator">Account Receivable</span>
+								</div>
+								<div class="accountRadioTextright">
+									<div id="WOR"></div>
+								</div>
+								<div class="accountRadioButtonRight">
+									<span id="nonRequiredFieldIndicator">WOR</span>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+						<div class="group">
+							<div class="TableEditArea">
+								<div class="accountRadioTextLeft">
+									<div id="OtherRevenue"></div>
+								</div>
+								<div class="accountRadioButtonLeft">
+									<span id="nonRequiredFieldIndicator">Other Revenue</span>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="footer">
+                        <div id="AnchorSave"></div>
+                        <div id="AnchorNew"></div>
+                        <div id="AnchorUndo"></div>
+                        <div style="clear:both;"></div>
+                    </div>
+				</div>
+			</div>
+		</div>
+	  
+	</body>
+</html>

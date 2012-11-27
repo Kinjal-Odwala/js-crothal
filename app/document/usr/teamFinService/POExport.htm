@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Purchase Order Export</h1>
+			<div class="description">The purpose of Purchase Order Export to export purchase orders to JD. Edward.</div>
+		</div>	
+		
+		<h2>Class</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:550px;">Class Name</th>
+			</tr>
+			<tr>
+				<td colspan='5'>TeamFinService</td>				
+			</tr>
+		</table>
+			
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th>Validation</th>				
+			</tr>
+			<tr>
+				<td colspan='5'>There is no UI element</td>				
+			</tr>
+		</table>
+		
+		<h2>Export Process</h2>
+		<div class="reference">1.	Check if it is time to export</div>
+        <div class="reference">2.	Retrieve purchase order records by executing PurPurchaseOrdersExportSelect</div>
+        <div class="reference">3.	Write a purchase order record to export file</div>
+        <div class="reference">4.	Update export date of the written purchase order record by executing PurPurchaseOrderExportUpdate</div>
+        <div class="reference">5.	After all purchase order records are written to export file, close the file</div>
+
+		
+		<h2>Configuration Settings</h2>
+		<table class="elementTable">
+			<tr>
+				<th  style="width:50px;">Configuration Key</th>
+				<th  style="width:450px;">Description</th>
+			</tr>
+			<tr>
+				<td>ConnectionString</td>				
+				<td>Connection string used to connect to TeamFin database.</td>
+			</tr>
+			<tr>
+				<td>ExportFilePath</td>				
+				<td>Complete path of file folder for Purchase Order export. This folder is shared with other export processes. </td>
+			</tr>
+			<tr>
+				<td>ExportBackFilePath</td>				
+				<td>Complete path of back up file folder for Purchase Order export. This folder is shared with other export processes. </td>
+			</tr>
+			<tr>
+				<td>ExportAt</td>				
+				<td>Time when Purchase Order Export is executed </td>
+			</tr>
+		</table>
+		
+		<h2>Data Mapping</h2>
+		<table class="elementTable">
+        <tr>
+            <th style="width: 30px;">Export Field</th>
+            <th style="width: 30px;">Database Field</th>
+        </tr>
+		<tr>
+		    <td>PurchaseOrderNumber</td><td>PurPurchaseOrders.PurPuroOrderNumber</td>
+		</tr>
+        <tr>
+		    <td>LineType</td><td>“H” or “D”</td></tr>
+        <tr>
+		    <td>LineNumber</td><td>0 or ROW_NUMBER()</td></tr>
+        <tr>
+		    <td>OrderDate</td><td>PurPurchaseOrders.PurPuroOrderDate</td></tr>
+        <tr>
+		    <td>VendorNumber</td><td>PurVendors.PurVenNumber</td></tr>
+        <tr>
+		    <td>HouseCode</td><td>AppUnits.AppUniBrief</td></tr>
+        <tr>
+		    <td>GLAccount</td><td>(blank) or FscAccounts.FscAccCode</td></tr>
+        <tr>
+		    <td>ItemNumber</td><td>(blank) or PurItems.PurIteNumber</td></tr>
+        <tr>
+		    <td>Quantity</td><td>(blank) or PurPurchaseOrderDetails.PurPurodQuantity</td></tr>
+        <tr>
+		    <td>Price</td><td>(blank) or PurPurchaseOrderDetails.PurPurodPrice</td></tr>
+        <tr>
+		    <td>Description1</td><td>(blank) or PurItems.PurIteDescription (25 letters)</td></tr>
+        <tr>
+		    <td>Description2</td><td>(blank) o r PurItems.PurIteDescription (25 letters starting from 26th character)</td></tr>
+        <tr>
+		    <td>SubLedger</td><td>(blank) or HcmJobs.HcmJobBrief</td></tr>
+		    </table>
+
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th  style="width:40px;">Error/Event</th>
+				<th  style="width:260px;">Message</th>
+			</tr>
+			<tr>
+			    <td>Exceptions</td>
+			    <td>Check table AppIEExceptions for exception details (AppIECategory = 8)</td>
+			</tr>
+			<tr>
+			    <td>Imported Number of Records</td>
+			    <td>Check table AppIETransactions for total exported records and execution starting/ending time (AppIECategory = 8).</td>
+			</tr>
+		</table>
+		
+		<h2>Dependencies</h2>
+		<div class="reference">1. Windows Services must be restarted for new configuration settings to take effect.</div>
+		<div class="reference">2. Exception and Event logging depends on LogWriter class.</div>
+		<h2>Database Objects</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:50px">Object Types</th>
+				<th style="width:350px">Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>
+				    PurPurchaseOrders<br />
+				    PurPurchaseOrderDetails<br />
+				    PurVendors<br />
+				    PurCatalogItems<br />
+				    PurItems<br />
+				    HcmHouseCodes<br />
+				    HcmJobs<br />
+				    HcmHouseCodeJobs
+				</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>
+				    PurPurchaseOrdersExportSelect<br />
+				    PurPurchaseOrderExportUpdate
+				</td>
+			</tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="HRExport.htm">HR Export</a></div>
+		<div class="reference"><a href="PayrollExport.htm">Payroll Export</a></div>
+		<div class="reference"><a href="InvoiceExport.htm">Invoice Export</a></div>
+		<div class="reference"><a href="JEExport.htm">Journal Entry Export</a></div>
+		<div class="reference"><a href="ForecastExport.htm">Budget Forecast Export</a></div>
+	</body>
+</html>

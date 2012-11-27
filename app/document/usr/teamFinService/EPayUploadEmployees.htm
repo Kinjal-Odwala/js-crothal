@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Upload Employees</title>
+    <link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+</head>
+<body>
+    <div class="header">
+        <h1>
+            Upload Employees</h1>
+            <div class="description"></div>
+    </div>
+    <h2>Class</h2>
+    <table class="elementTable">
+      <tr><th>Class Name</th></tr>
+      <tr><td colspan="5">EpayTask</td></tr>
+    </table>
+    <h2>UI Elements</h2>
+    <table class="elementTable">
+      <tr>
+        <th style="width:150px;">UI Element</th>
+		<th style="width:120px;">Field Type</th>
+		<th style="width:50px;">Mandatory</th>
+		<th style="width:100px;">Source</th>				
+		<th>Validation</th>
+      </tr>
+      <tr>
+         <td colspan="5">There is no UI element.</td>
+      </tr>
+    </table>
+	<h2>Import Process</h2>
+        <div class="reference">1. Check Epay schedule per 1 min to get next run time. </div>
+		<div class="reference">2. If current time is not scheduled upload time, back to no.1</div>
+		<div class="reference">3. Call stored procedure EpayEmployeesSelect to get employees from database, then generated xml data by employee use epay specified format.</div>
+		<div class="reference">4. for each employee's xml data, call Epay API AddUpdateObjectData method to upload generated xml. then Log it to EpayTaskCallItems table</div>
+		<div class="reference">5. Log task executed in EpayTaskCalls table.</div>
+    <h2>Configuration Settings</h2>
+    <table class="elementTable">
+      <tr>
+        <th>Configuration Key</th>
+        <th>Description</th>
+      </tr>
+     <tr>
+        <td>ConnectionString</td>
+        <td>Connection String used to connect to TeamFin database.</td>
+      </tr>
+      <tr>
+        <td>EpayCorpId</td>
+        <td>CropId for Epay API call</td>
+      </tr>
+	  <tr>
+        <td>EpayLoginId</td>
+        <td>LoginId for Epay API call</td>
+      </tr>
+	  <tr>
+        <td>EpayPassword</td>
+        <td>Password for Epay API call</td>
+      </tr>
+	  <tr>
+        <td>EpayUTCDifference</td>
+        <td>UTC Difference with Epay</td>
+      </tr>
+    </table>
+    <h2>Data Mapping</h2>
+    <table class="elementTable">
+       <tr>
+          <th>Field Name</th>
+          <th>XML Element Name</th>
+          <th>Data Type</th>
+          <th>Invalid Action</th>
+       </tr>
+       <tr>
+          <td>PayrollId</td>
+          <td>PAYROLLID</td>
+          <td>int</td>
+          <td>Log Exception</td>
+       </tr>
+       <tr>
+          <td>EmployeeNumber</td>
+          <td>EMPLOYEENO</td>
+          <td>int</td>
+          <td></td>
+       </tr>
+       <tr>
+          <td>FirstName</td>
+          <td>FNAME</td>
+          <td>string</td>
+          <td>Log Exception</td>
+       </tr>
+       <tr>
+          <td>MiddleName</td>
+          <td>MNAME</td>
+          <td>string</td>
+          <td></td>
+       </tr>
+       <tr>
+          <td>LastName</td>
+          <td>LNAME</td>
+          <td>string</td>
+          <td>Log Exception</td>
+       </tr>
+       <tr>
+          <td>HomeSiteId</td>
+          <td>SITECODE</td>
+          <td>string</td>
+          <td></td>
+       </tr>
+       <tr>
+          <td>Custom1</td>
+          <td>CUSTOM1</td>
+          <td>string</td>
+          <td></td>
+       </tr>
+       <tr>
+          <td>Custom2</td>
+          <td>CUSTOM2</td>
+          <td>string</td>
+          <td></td>
+       </tr>  
+       <tr>
+          <td>IsActive</td>
+          <td>ISACTIVE</td>
+          <td>string</td>
+          <td>Log Exception</td>
+       </tr>  
+       <tr>
+          <td>StatusEffectiveDate</td>
+          <td>STATUSDATE</td>
+          <td>datetime</td>
+          <td>Log Exception</td>
+       </tr>  
+       <tr>
+          <td>DefaultRegPayRate</td>
+          <td>PAYRATE</td>
+          <td>decimal</td>
+          <td></td>
+       </tr>  
+       <tr>
+          <td>DefaultRegBillingRate</td>
+          <td>BILLRATE</td>
+          <td>decimal</td>
+          <td></td>
+       </tr>                                              
+       <tr>
+          <td>RateEffectiveDate</td>
+          <td>RATEEFDATE</td>
+          <td>datetime</td>
+          <td></td>
+       </tr>  
+       <tr>
+          <td>PayGroupId</td>
+          <td>PAYGROUP</td>
+          <td>string</td>
+          <td></td>
+       </tr>  
+       <tr>
+          <td>DefaultTaskType</td>
+          <td>TASKTYPE</td>
+          <td>string</td>
+          <td></td>
+       </tr>  
+       <tr>
+          <td>AssignedSiteId</td>
+          <td>DFSITECODE</td>
+          <td>string</td>
+          <td>Log Exception</td>
+       </tr>  
+       <tr>
+          <td>DefaultTaskCodeAtAssignedSite</td>
+          <td>TASKCODE</td>
+          <td>string</td>
+          <td></td>
+       </tr>  
+       <tr>
+          <td>IsIncludedInExport</td>
+          <td>ISEXPORT</td>
+          <td>string</td>
+          <td></td>
+       </tr>  
+       <tr>
+          <td>IsSupervisor</td>
+          <td>ROLEID</td>
+          <td>string</td>
+          <td></td>
+       </tr> 
+       <tr>
+          <td>PayTaskRate</td>
+          <td>ISTASKPAY</td>
+          <td>string</td>
+          <td></td>
+       </tr> 
+       <tr>
+          <td>BillTaskRate</td>
+          <td>ISTASKBILL</td>
+          <td>string</td>
+          <td></td>
+       </tr>                                                              
+    </table>
+    <h2>Error Messages and Notifications</h2>
+    <table class="elementTable">
+       <tr><th>Error/Event</th><th>Message</th></tr>
+       <tr>
+         <td>Generate Upload Data Error</td>   
+        <td>Check table AppIEExceptions for exception details (AppIECategory = 11).</td>             
+       </tr>
+       <tr>
+        <td>Upload Data Error</td>
+        <td>Check table AppIEExceptions for exception details (AppIECategory = 11).</td>
+       </tr>
+    </table>
+    <h2>Dependencies</h2>
+	  <div class="reference">1. Windows Services must be restarted for new configuration settings to take effect.</div>
+	  <div class="reference">2. Exception and Event logging depends on LogWriter class.</div>
+    <h2>Database Objects</h2>		
+    <table class="elementTable">
+      <tr><th>Object Types</th><th>Object Names</th></tr>
+      <tr>
+        <td>Tables</td><td>EpayEmployees<br/>EpayTaskQueues<br/>EpayTaskCalls<br/>EpayTaskCallItems<br/>AppSystemVariables</br></td>
+      </tr>
+      <tr><td>Stored Procedures</td><td>EPayEmployeesSelect</td></tr>
+    </table>
+</body>
+</html>

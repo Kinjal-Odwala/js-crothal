@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Annualized Budget</title>
+		<!-- Following "blank" stylesheet link with an id of skin is required for IE7 to work properly on refreshes -->
+		<link id="skin" type="text/css" rel="stylesheet"/>
+		<script type="text/javascript" src="/fin/ii/framework/core/krn/sys/loader.js"></script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody" onload="ii.forceBodyReady = true;">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="../../../cmn/med/common/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+
+       <div class="pageHeader">
+	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
+			<div id="LabelTextAreaLeftHeader">House Code:</div>
+			<div id="DropDownRightHouseCode">
+				<div id="houseCodeContainer" class="HouseCodeContainer"></div>
+			</div>
+			<div id="LabelTextAreaLeftHeader">Year:</div>
+			<div id="dropDownMenu">
+				<div id="FiscalYear"></div>
+			</div>
+			<div class="contentArea">
+				<div id="LoadButtonContainer">
+					<div style="padding-top:3px;" id="AnchorLoad"></div>
+				</div>
+			</div>
+		 <div style="clear:both;"></div>	
+	   <div class="pageBody">
+	   		<div class="contentArea" id="container-0">
+	   			<iframe id="startBudget" class="tabContainer" src="" frameborder="no"></iframe>
+	   		</div>
+	   		<div id="container-1">
+			    <div id="fragment-1">
+					<iframe id="iFrameStartBudget" class="tabContainer" src="" frameborder="no"></iframe>
+            	</div>
+				<div id="fragment-2">
+					<iframe id="iFrameContractBilling" class="tabContainer" src="" frameborder="no"></iframe>
+            	</div>
+				<div id="fragment-3">
+					<iframe id="iFrameStaffing" class="tabContainer" src="" frameborder="no"></iframe>
+        		</div>
+        		<div id="fragment-4">
+        			<iframe id="iFrameEmployee" class="tabContainer" src="" frameborder="no"></iframe>
+        		</div>
+				<div id="fragment-5">
+        			<iframe id="iFrameManagementHistory" class="tabContainer" src="" frameborder="no"></iframe>
+        		</div>
+				<div id="fragment-6">
+        			<iframe id="iFramebudgetSummaryAnnualizad" class="tabContainer" src="" frameborder="no"></iframe>
+        		</div>
+				<div id="fragment-7">
+        			<iframe id="iFrameLaborCalculation" class="tabContainer" src="" frameborder="no"></iframe>
+        		</div>
+				<div id="fragment-8">
+        			<iframe id="iFrameFinalComputationLabor" class="tabContainer" src="" frameborder="no"></iframe>
+        		</div>
+				<div id="fragment-9">
+        			<iframe id="iFrameSupplyExpenditures" class="tabContainer" src="" frameborder="no"></iframe>
+        		</div>
+				<div id="fragment-10">
+        			<iframe id="iFrameCapitalExpenditures" class="tabContainer" src="" frameborder="no"></iframe>
+        		</div>
+				<ul id="divScrollWidth">
+					<ul id="TabCollection">
+						<li><a id="TabStartBudget" href="#fragment-1"><span>Start Budget</span></a></li>
+						<li><a id="TabContractBilling" href="#fragment-2"><span>Contract Billing</span></a></li>
+		                <li><a id="TabStaffing" href="#fragment-3"><span>Staffing</span></a></li>
+		                <li><a id="TabEmployee" href="#fragment-4"><span>Employee</span></a></li>
+		                <li><a id="TabManagementHistory" href="#fragment-5"><span>Mgt Hist</span></a></li>
+						<li><a id="TabBudgetSummaryAnnualizad" href="#fragment-6"><span>Bgt Summary</span></a></li> 
+						<li><a id="TabLaborCalculation" href="#fragment-7"><span>Labor Calc</span></a></li> 
+						<li><a id="TabFinalComputationLabor" href="#fragment-8"><span>Fnl Labor Calc</span></a></li> 
+						<li><a id="TabSupplyExpenditures" href="#fragment-9"><span>Supply Exp</span></a></li> 
+						<li><a id="TabCapitalExpenditures" href="#fragment-10"><span>Capital Exp</span></a></li> 
+					</ul>
+				</ul>
+			</div>
+		
+		    <div style="clear:both;"></div>
+		</div>
+	   
+	</body>
+</html>

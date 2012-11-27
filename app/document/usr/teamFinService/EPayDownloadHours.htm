@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Download Hours</title>
+    <link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+</head>
+<body>
+    <div class="header">
+        <h1>Download Hours</h1>
+        <div class="description"></div>
+    </div>
+    <h2>Class</h2>
+    <table class="elementTable">
+        <tr><th colspan="5">Class Name</th></tr>
+        <tr><td colspan="5">EpayTask</td></tr>
+    </table>
+    <h2>UI Elements</h2>
+    <table class="elementTable">
+      <tr>
+        <th style="width:150px;">UI Element</th>
+		<th style="width:120px;">Field Type</th>
+		<th style="width:50px;">Mandatory</th>
+		<th style="width:100px;">Source</th>				
+		<th>Validation</th>
+      </tr>
+      <tr>
+         <td colspan="5">There is no UI element.</td>
+      </tr>
+    </table>
+	<h2>Import Process</h2>
+		<div class="reference">1. Check Epay schedule per 1 min to get next run time. </div>
+		<div class="reference">2. If current time is not scheduled upload time, back to no.1</div>
+		<div class="reference">3. Call the Epay GetReadyQueueTSBatches method returns a TimeSheetBatchList </div>
+		<div class="reference">4. Iterates thru the TimeSheetBatchList dataset, calling GetTSBatchData for each TransmitBatchId. Insert the data to the EpayHoursImports by SqlBulkCopy. </div>
+		<div class="reference">5. If the batch is received successfully - then calls NotifyBatchDownload for each ExportBatchId to let EPay know to mark the batch as sent.  EPay updates the downloaded Timesheets to EXPORTED status.  </div>
+		<div class="reference">6. Call stored procedure EPayHoursTimeSheetImport  to apply import data.</div>
+		<div class="reference">7. Log task executed in EpayTaskCalls table.</div>
+    <h2>Configuration Settings</h2>
+    <table class="elementTable">
+      <tr>
+        <th>Configuration Key</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td>ConnectionString</td>
+        <td>Connection String used to connect to TeamFin database.</td>
+      </tr>
+      <tr>
+        <td>EpayCorpId</td>
+        <td>CropId for Epay API call</td>
+      </tr>
+	  <tr>
+        <td>EpayLoginId</td>
+        <td>LoginId for Epay API call</td>
+      </tr>
+	  <tr>
+        <td>EpayPassword</td>
+        <td>Password for Epay API call</td>
+      </tr>
+	  <tr>
+        <td>EpayUTCDifference</td>
+        <td>UTC Difference with Epay</td>
+      </tr>
+    </table>
+    <h2>Data Mapping</h2>
+    <table class="elementTable">
+        <tr>
+            <th>Field Name</th>
+            <th>XML Element Name</th>
+            <th>Data Type</th>
+            <th>Invalid Action</th>
+        </tr>
+        <tr>
+            <td>EpayBatchID</td>
+            <td>BatchID</td>
+            <td>string</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>TeamFinEmployeeNo</td>
+            <td>Payroll No</td>
+            <td>string</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>RateTypeID</td>
+            <td>Rate Type</td>
+            <td>string</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>PayEmpwpHours</td>
+            <td>Hour</td>
+            <td>string</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>PayEmpwpFixedAmount</td>
+            <td>Amount</td>
+            <td>string</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>PayEmpwpAlternatePayRate</td>
+            <td>Rate</td>
+            <td>string</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Date</td>
+            <td>Date</td>
+            <td>datetime</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>payrollHcmHouseCode</td>
+            <td>Custom1</td>
+            <td>string</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Imported</td>
+            <td>Imported</td>
+            <td>bool</td>
+            <td>Log Exception</td>
+        </tr>
+        <tr>
+            <td>Error</td>
+            <td>Error</td>
+            <td>bool</td>
+            <td>Log Exception</td>
+        </tr>
+    </table>
+    <h2>Error Messages and Notifications
+</h2>
+    <table class="elementTable">
+       <tr>
+         <th>Error/Event</th>
+         <th>Message</th>
+       </tr>
+       <tr>
+         <td>Download Hours Data Error</td>
+         <td>Check table AppIEExceptions for exception details (AppIECategory = 11).</td>
+       </tr>
+       <tr>
+          <td>Batch Insert Download Hours Data Error.</td>
+          <td>Check table AppIEExceptions for exception details (AppIECategory = 11).</td>
+       </tr>
+    </table>
+    <h2>Dependencies</h2>
+	  <div class="reference">1. Windows Services must be restarted for new configuration settings to take effect.</div>
+	  <div class="reference">2. Exception and Event logging depends on LogWriter class.</div>
+    <h2>Database Objects</h2>		
+    <table class="elementTable">
+      <tr><th>Object Types</th><th>Object Names</th></tr>
+      <tr>
+        <td>Tables</td><td>EpayHoursImports<br/>EpayTaskQueues<br/>EpayTaskCalls<br/>EpayTaskCallItems<br/>AppSystemVariables</br></td>
+      </tr>
+      <tr><td>Stored Procedures</td><td>EPayHoursTimeSheetImport</td></tr>
+    </table>
+</body>
+</html>

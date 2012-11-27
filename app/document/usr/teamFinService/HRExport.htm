@@ -1,0 +1,615 @@
+<!DOCTYPE html PUBLIC "-//W3C//Dtd XHTML 1.0 STRict//EN" "http://www.w3.org/TR/xhtml1/Dtd/xhtml1-sTRict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>HR Export</h1>
+			<div class="description">The purpose of HR Export to export employee information to JD. Edward.</div>
+		</div>		
+		
+		<h2>Class</h2>
+		<table class="elementTable">
+			<TR>
+				<th style="width:550px;">Class Name</th>
+			</TR>
+			<TR>
+				<td colspan='5'>HRExporter</td>				
+			</TR>
+		</table>
+		
+		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<TR>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th>Validation</th>				
+			</TR>
+			<TR>
+				<td colspan='5'>There is no UI element</td>				
+			</TR>
+		</table>
+		
+		<h2>Export Process</h2>
+		<div class="reference">(HR Export records are retrieved by stored procedure PayPayrollProcessingHRExport 
+		and are stored in table EmpEmployeeGeneralsHRExport weekly right after pay period ends)</div>
+		<div class="reference">1. Determine if it is time to export HR records.</div>
+		<div class="reference">2. Call stored procedure EmpEmployeeGeneralsHRExport to retrieve employee records to be exported based on Pay Priod End date</div>
+        <div class="reference">3. Write data to output file</div>
+
+		<h2>Configuration Settings</h2>
+		<table class="elementTable">
+			<TR>
+				<th  style="width:50px;">Configuration Key</th>
+				<th  style="width:450px;">Description</th>
+			</TR>
+			<TR>
+				<td>ConnectionSTRing</td>				
+				<td>Connection sTRing used to connect to TeamFin database.</td>
+			</TR>
+			<TR>
+				<td>HRProcessExportPath</td>				
+				<td>Complete path of file folder for HR export.  </td>
+			</TR>
+			<TR>
+				<td>HRProcessBackupExportPath</td>				
+				<td>Complete path of back up file folder for HR export.</td>
+			</TR>
+			<TR>
+			    <td>EmployeeProcessExport</td>
+			    <td>Boolean value to specify if HR Export should be executed</td>
+			</TR>
+			<TR>
+			    <td>EmployeeProcessExportday</td>
+			    <td>Day of week when HR Export should be executed.</td>
+			</TR>
+			<TR>
+				<td>EmployeeProcessExportAt</td>				
+				<td>Time when HR Export should be executed </td>
+			</TR>
+		</table>
+		
+		<h2>Status Change Codes</h2>
+		<div class="reference">
+		    <b>New Hire (N)</b><br />
+		    When adding a new employee to the system, this will automatically TRigger ONE specific set of records. 
+		    Interfaces E1 through E10, excluding E2, should TRigger. 
+		    We will need a ‘Change Status’ code of ‘N’ in field 7 and an ‘A’ in field 25. 
+		    Nothing needs to be passed in field 26.
+            <br />NOTE: There are very rare occurrences where a new hire may be inactivated in the same pay period in which they are hired. In such instances, a status code of ‘NI’ can be passed in field 7. 
+            <br /><br />Example: <br />03C2A2,SSN,06/22/2010,CN8,0000,885885,N,"Terreforte2, Ray",SSN,03/03/1969,M,, 06/21/2010,2,1,12.00,4,,,,,B,00000062TESTCODE11, ,A,,#,02/21/2005,AC,
+        </div>
+        <br />
+        <div class="reference">
+        <b>Rehire (R)</b><br />
+		    Rehires occur when an employee is taken from a terminated status and made active. For this scenario, a status code of ‘R’ is passed in field 7 and codes of ‘A’ and ‘T’ and in fields 25 and 26 respectively.
+        <br /><br />Example: <br />03C2A2,SSN,06/22/2010,CN8,0000,885885,R,"Terreforte2, Ray",SSN,03/03/1969,M,, 06/21/2010,2,1,12.00,4,,,,,B,00000062TESTCODE11, ,A,T,#,02/21/2005,AC,
+        </div>
+         <br />
+        <div class="reference">
+        <b>Inactive</b><br />
+		    This occurs when an employee is taken from an active status and places in either Inactive, FMLA_LOA, or Leave of Absence statuses. A status code or ‘I’ will pass in fields 7 and 25 and a value of ‘A’ on field 26.
+        <br /><br />Example: <br />03C2A2,SSN,06/22/2010,CN8,0000,885885,I,"Terreforte2, Ray",SSN,03/03/1969,M,, 06/21/2010,2,1,12.00,4,,,,,B,00000062TESTCODE11, ,I,A,#,02/21/2005,AC,
+        </div>
+        <br />
+        <div class="reference">
+        <b>Reactivation</b><br />
+		    This will occur when an employee is brought out of an inactive status back to an active status. A status code of ‘A’ will be passed in fields 7 and 25 and a status code of ‘I’ will be in field 26.
+        <br /><br />Example: <br />03C2A2,SSN,06/22/2010,CN8,0000,885885,A,"Terreforte2, Ray",SSN,03/03/1969,M,, 06/21/2010,2,1,12.00,4,,,,,B,00000062TESTCODE11, ,A,I,#,02/21/2005,AC,
+        </div>
+        <br />
+        <div class="reference">
+        <b>Termination (T)</b><br />
+		    This will occur when an employee is taken from an active or inactive status and changed to a terminated status. A status code of ‘T’ will be passed on field 7 and a ‘T’ and an ‘A’ will be in fields 25 and 26 respectively.
+        <br /><br />Example: <br />03C2A2,SSN,06/22/2010,CN8,0000,885885,T,"Terreforte2, Ray",SSN,03/03/1969,M, 06/23/2010,06/21/2010,2,1,12.00,4,,,,,B,00000062TESTCODE11,Resignation,T,A,#,02/21/2005,AC,1400
+        </div>
+        <br />
+        <div class="reference">
+        <b>House Code TRansfer</b><br />
+		    This will happen when an employee is moved from one house code to another. Nothing is passed on field 7 and status codes of ‘A’ are passed on fields 25 and 26. The most important field here is field 23 which houses the house code in the 18-character sTRing.
+        <br /><br />Example: <br />03C2A2,SSN,06/22/2010,CN8,0000,885885, ,"Terreforte2, Ray",SSN,03/03/1969,M, 06/23/2010,06/21/2010,2,1,12.00,4,,,,,B,00010101TESTCODE11,,A,A,#,02/21/2005,AC,1400
+        </div>
+        <br />
+        <div class="reference">
+        <b>Ceridian Company TRansfer</b><br />
+		    This is the most complex of all moves, since it requires TWO TRansactions to be sent over for a single employee. One must be a termination in the old company and the other record must be sent as a rehire in the new company.
+
+		</div>
+		
+		
+		<h2>Data Mapping</h2>
+		<div class="reference">E1BASENEW</div>
+		<table class="elementTable">
+        <TR>
+            <th style="width: 30px;">FIELD NAME</th>
+            <th style="width: 30px;">BEGINNING COLUMN</th>
+            <th style="width: 30px;">WIDTH</th>	
+            <th style="width: 30px;">DATA</th>	
+            <th style="width: 30px;">SOURCE</th>
+            <th style="width: 30px;">REQUIRED</th>
+            <th style="width: 30px;">NULL ACTION</th>
+        </TR>	
+
+<TR><td>Import Record Type</td>	<td>1</td>	<td>6</td>	<td>0103A1</td>	</td>	<td></td>	<td></td></TR>
+<TR><td>Date of Current Hire</td>	<td>2</td>	<td>10</td>	<td>Date</td>	<td>EbDateBeg</td>	<td></td>	<td>ERROR</td></TR>
+<TR><td>Record Type</td>	<td>3</td>	<td>4</td>	<td> EBAS </td>	<td>EbRecType</td>	<td></td>	<td>ERROR</td></TR>
+<TR><td>SSN</td>	<td>4</td>	<td>9</td>	<td>String</td>	<td>EbSocNumber</td>	<td></td>	<td>ERROR</td></TR>
+<TR><td>10-digit Employee Number</td>	<td>5</td>	<td>10</td>	<td>String</td>	<td>EbEmpNumber</td>	<td></td>	<td></td></TR>
+<TR><td>First Name</td>	<td>6</td>	<td></td>	<td>String</td>	<td>EbFirstName</td>	<td></td>	<td></td></TR>
+<TR><td>Middle Initial</td>	<td>7</td>	<td></td>	<td>String</td>	<td>EbMiddleName</td>	<td></td>	<td></td></TR>
+<TR><td>Last Name</td>	<td>8</td>	<td></td>	<td>String</td>	<td>EbLastName</td>	<td></td>	<td></td></TR>
+<TR><td>Dependent Indicator</td>	<td>9</td>	<td>1</td>	<td>N</td>	<td>EbFlagDep</td>	<td></td>	<td></td></TR>
+<TR><td>Employee Indicator</td>	<td>10</td>	<td>1</td>	<td>Y</td>	<td>EbFlagEmp</td>	<td></td>	<td></td></TR>
+<TR><td>Emergency Contact Indicator</td>	<td>11</td>	<td>1</td>	<td>N</td>	<td>EbEmergencyContact</td>	<td></td>	<td></td></TR>
+<TR><td>Enrollment Status</td>	<td>12</td>	<td>4</td>	<td>ENRL</td>	<td>EbStatusEnroll</td>	<td></td>	<td></td></TR>
+<TR><td>Error Status</td>	<td>13</td>	<td>4</td>	<td>UNKN</td>	<td>EbStatusError</td>	<td></td>	<td></td></TR>
+<TR><td>Security Group</td>	<td>14</td>	<td>1</td>	<td>2</td>	<td>EbSecurityGroup</td>	<td></td>	<td></td></TR>
+<TR><td>Ceridian Company</td>	<td>15</td>	<td>3</td>	<td>String</td>	<td>EbPSID</td>	<td></td>	<td></td></TR>
+<TR><td>Employee Number</td>	<td>16</td>	<td>6</td>	<td>String</td>	<td>EbClock</td>	<td></td>	<td></td></TR>
+        </table>
+
+        <br /><div class="reference">E2BASEMOD</div>
+		<table class="elementTable">
+        <TR>
+            <th style="width: 30px;">FIELD NAME</th>
+            <th style="width: 30px;">BEGINNING COLUMN</th>
+            <th style="width: 30px;">WIDTH</th>	
+            <th style="width: 30px;">DATA</th>	
+            <th style="width: 30px;">SOURCE</th>
+            <th style="width: 30px;">REQUIRED</th>
+            <th style="width: 30px;">NULL ACTION</th>
+        </TR>	
+<TR><td>Import Record Type</td>	<td>1</td>	<td></td>	<td>0403A1</td>	<td></td>	<td></td>	<td></td></TR>
+<TR><td>SSN</td>	<td>2</td>	<td></td>	<td>Numeric</td>	<td>EbFlxidEb</td>	<td>Yes</td>	<td>ERROR</td></TR>
+<TR><td>Date of Current Hire</td><td>3</td>	<td>10</td>	<td>Date</td>	<td>EbDateBeg</td>	<td>Yes</td>	<td>ERROR</td></TR>
+<TR><td>Termination Date</td>	<td>4</td>	<td>10</td>	<td>Date</td>	<td>EbDateEnd</td>	<td></td>	<td></td></TR>
+<TR><td>Record Type</td>	<td>5</td>	<td>4</td>	<td>EBAS</td>	<td>EbRecType</td>	<td>Yes</td>	<td>ERROR</td></TR>
+<TR><td>SSN</td>	<td>6</td>	<td>9</td>	<td>String</td>	<td>EbSocNumber</td>	<td></td>	<td></td></TR>
+<TR><td>10-digit Employee Number</td>	<td>7</td>	<td>10</td>	<td>String</td>	<td>EbEmpNumber</td>	<td></td>	<td></td></TR>
+<TR><td>First Name</td>	<td>8</td>	<td></td>	<td>String</td>	<td>EbFirstName</td>	<td></td>	<td></td></TR>
+<TR><td>Middle Initial</td>	<td>9</td>	<td></td>	<td>String</td>	<td>EbMiddleName</td>	<td></td>	<td></td></TR>
+<TR><td>Last Name</td>	<td>10</td>	<td></td>	<td>String</td>	<td>EbLastName</td>	<td></td>	<td></td></TR>
+<TR><td>Dependent Indicator</td>	<td>11</td>	<td>1</td>	<td>N</td>	<td>EbFlagDep</td>	<td></td>	<td></td></TR>
+<TR><td>Employee Indicator</td>	<td>12</td>	<td>1</td>	<td>Y</td>	<td>EbFlagEmp</td>	<td></td>	<td></td></TR>
+<TR><td>Emergency Contact Indicator</td>	<td>13</td>	<td>1</td>	<td>N</td>	<td>EbEmergencyContact</td>	<td></td>	<td></td></TR>
+<TR><td>Enrollment Status</td>	<td>14</td>	<td>4</td>	<td>ENRL</td>	<td>EbStatusEnroll</td>	<td></td>	<td></td></TR>
+<TR><td>Error Status</td>	<td>14</td>	<td>4</td>	<td>UNKN</td>	<td>EbStatusError</td>	<td></td>	<td></td></TR>
+<TR><td>Security Group</td>	<td>16</td>	<td>1</td>	<td>2</td>	<td>EbSecurityGroup</td>	<td></td>	<td></td></TR>
+<TR><td>Ceridian Company</td>	<td>17</td>	<td>3</td>	<td>String</td>	<td>EbPSID</td>	<td></td>	<td></td></TR>
+<TR><td>Employee Number	</td><td>18</td>	<td>6	<td>String</td>	<td>EbClock</td>	<td></td>	<td></td></TR>
+</table>
+
+        <br /><div class="reference">E3CARD</div>
+		<table class="elementTable">
+        <TR>
+            <th style="width: 30px;">FIELD NAME</th>
+            <th style="width: 30px;">BEGINNING COLUMN</th>
+            <th style="width: 30px;">WIDTH</th>	
+            <th style="width: 30px;">DATA</th>	
+            <th style="width: 30px;">SOURCE</th>
+            <th style="width: 30px;">REQUIRED</th>
+            <th style="width: 30px;">NULL ACTION</th>
+        </TR>	
+<TR><td>Import Record Type</td>	<td>1</td>	<td>6</td>	<td>0335A1</td>	<td></td>	<td></td>	<td></td></TR>
+<TR><td>Last Modified At</td>	<td>2</td>	<td></td>	<td>Date</td>	<td>CfDateBeg</td>	<td>Yes</td>	<td>ERROR</td></TR>
+<TR><td>RecordType</td>	<td>3</td>	<td></td>	<td>CARD</td>	<td>CfRecType</td>	<td>Yes</td>	<td>ERROR</td></TR>
+<TR><td>CardType</td>	<td>4</td>	<td></td>	<td>LEGAL/MAILING</td>	<td>CfCardType</td>	<td>Yes</td>	<td>ERROR</td></TR>
+<TR><td>Zip</td>	<td>5</td>	<td></td>	<td>String</td>	<td>CfZip</td>	<td></td>	<td></td></TR>
+<TR><td>Contact</td>	<td>6</td>	<td></td>	<td>String</td>	<td>CfContact</td>	<td></td>	<td></td></TR>
+<TR><td>SSN</td>	<td>7</td>	<td></td>	<td>String</td>	<td>CfFlxIDEb</td>	<td></td>	<td></td></TR>
+<TR><td>First Name</td>	<td>8</td>	<td></td>	<td>String</td>	<td>CfFirst</td>	<td>Yes</td>	<td>ERROR</td></TR>
+<TR><td>Last Name</td>	<td>9</td>	<td></td>	<td>String</td>	<td>CfLast</td>	<td></td>	<td></td></TR>
+<TR><td>Middle Initial</td>	<td>10</td>	<td></td>	<td>String</td>	<td>CfMiddle</td>	<td></td>	<td></td></TR>
+<TR><td>Pay Period TRigger</td>	<td>11</td>	<td></td>	<td>#/#</td>	<td>CfPayPeriod</td>	<td></td>	<td></td></TR>
+<TR><td>Suffix</td>	<td>12</td>	<td></td>	<td>String</td>	<td>CfSuffix</td>	<td></td>	<td></td></TR>
+<TR><td>Address1</td>	<td>13</td>	<td></td>	<td>String</td>	<td>CfSTReet1</td>	<td></td>	<td></td></TR>
+<TR><td>Address2</td>	<td>14</td>	<td></td>	<td>String</td>	<td>CfSTReet2</td>	<td></td>	<td></td></TR>
+<TR><td>City</td>	<td>15</td>	<td></td>	<td>String</td>	<td>CfCity</td>	<td></td>	<td></td></TR>
+<TR><td>State</td>	<td>16</td>	<td></td>	<td>String</td>	<td>CfState</td>	<td></td>	<td></td></TR>
+<TR><td>CounTRy</td>	<td>17</td>	<td></td>	<td>USA/USA</td>	<td>CfCounTRy</td>	<td></td>	<td></td></TR>
+</table>
+
+
+        <br /><div class="reference">E4PER</div>
+		<table class="elementTable">
+        <TR>
+            <th style="width: 30px;">FIELD NAME</th>
+            <th style="width: 30px;">BEGINNING COLUMN</th>
+            <th style="width: 30px;">WIDTH</th>	
+            <th style="width: 30px;">DATA</th>	
+            <th style="width: 30px;">SOURCE</th>
+            <th style="width: 30px;">REQUIRED</th>
+            <th style="width: 30px;">NULL ACTION</th>
+        </TR>
+<TR><td>Import Record Type</td>	<td>1</td>	<td>6</td>	<td>0304A1</td>	<td></td>	<td></td>	<td></td></TR>
+<TR><td>SSN</td>	<td>2</td>	<td></td><td></td> <td>EpFlxIDEb</td>	<td>Yes</td> <td>ERROR</td></TR>
+<TR><td>Current Date of Hire/Modification Date</td>	<td>3</td>	<td></td>	<td>Date</td>	<td>EpDateBeg</td>	<td>Yes</td>	<td>ERROR</td></TR>
+<TR><td>Record Type</td>	<td>4</td>	<td></td>	<td>EPER</td>	<td>EpRecType</td>	<td>Yes</td>	<td>ERROR</td></TR>
+<TR><td>Birth Date</td>	<td>5</td>	<td></td>	<td>Date</td>	<td>EpDateBorn</td>	<td></td>	<td></td></TR>
+<TR><td>Zip</td>	<td>6</td>	<td></td>	<td>String</td>	<td>EpZip</td>	<td></td>	<td></td></TR>
+<TR><td>First Name</td>	<td>7</td>	<td></td>	<td>String</td>	<td>EpFirstName</td>	<td></td>	<td></td></TR>
+<TR><td>Middle Initial</td>	<td>8</td>	<td></td>	<td>String</td>	<td>EpMiddleName</td>	<td></td>	<td></td></TR>
+<TR><td>Last Name</td>	<td>9</td>	<td></td>	<td>String</td>	<td>EpLastName</td>	<td></td>	<td></td></TR>
+<TR><td>Home Phone</td>	<td>10</td>	<td>10</td>	<td>String</td>	<td>EpHomePhone</td>	<td></td>	<td></td></TR>
+<TR><td>Cell Phone</td>	<td>11</td>	<td>10</td>	<td>String</td>	<td>EpCellPhone</td>	<td></td>	<td></td></TR>
+<TR><td>Pager</td>	<td>12</td>	<td>10</td>	<td>String</td>	<td>EpPagerPhone</td>	<td></td>	<td></td></TR>
+<TR><td>Fax</td>	<td>13</td>	<td>10</td>	<td>String</td>	<td>EpFaxPhone</td>	<td></td>	<td></td></TR>
+<TR><td>Gender</td>	<td>14</td>	<td></td>	<td>String</td>	<td>EpSex</td>	<td></td>	<td></td></TR>
+<TR><td>Ethnicity</td>	<td>15</td>	<td></td>	<td>String</td>	<td>EpEthnic</td>	<td></td>	<td></td></TR>
+<TR><td>Marital Status</td>	<td>16</td>	<td></td>	<td>String</td>	<td>EpMarital</td>	<td></td>	<td></td></TR>
+<TR><td>Suffix</td>	<td>17</td>	<td></td>	<td>String</td>	<td>EpSuffix</td>	<td></td>	<td></td></TR>
+<TR><td>Address1</td>	<td>18</td>	<td></td>	<td>String</td>	<td>EpSTReet1</td>	<td></td>	<td></td></TR>
+<TR><td>Address2</td>	<td>19</td>	<td></td>	<td>String</td>	<td>EpSTReet2</td>	<td></td>	<td></td></TR>
+<TR><td>City</td>	<td>20</td>	<td></td>	<td>String</td>	<td>EpCity</td>	<td></td>	<td></td></TR>
+<TR><td>State</td>	<td>21</td>	<td></td>	<td>String</td>	<td>EpState</td>	<td></td>	<td></td></TR>
+<TR><td>CounTRy</td>	<td>22</td>	<td></td>	<td>USA</td>	<td>EpCounTRy</td>	<td></td>	<td></td></TR>
+<TR><td>VETS-100A</td>	<td>23</td>	<td></td>	<td>String</td>	<td>EpVetStatus1</td>	<td></td>	<td></td></TR>
+
+ </table>
+ 
+ 
+ 
+        <br /><div class="reference">E5JOB</div>
+		<table class="elementTable">
+        <TR>
+            <th style="width: 30px;">FIELD NAME</th>
+            <th style="width: 30px;">BEGINNING COLUMN</th>
+            <th style="width: 30px;">WIDTH</th>	
+            <th style="width: 30px;">DATA</th>	
+            <th style="width: 30px;">SOURCE</th>
+            <th style="width: 30px;">REQUIRED</th>
+            <th style="width: 30px;">NULL ACTION</th>
+        </TR>
+<TR><td>Import Record Type</td>	    <td>1</td>	<td>6</td>	<td>0311A1</td>	<td></td>	    <td></td>	<td></td></TR>
+<TR><td>SSN</td>	                <td>2</td>	<td></td>	<td>Numeric</td>	<td>EjFlxIDEb</td>	<td>Yes</td>	<td>ERROR</td></TR>
+<TR><td>Current Date of Hire/Effective Date</td><td>3</td>	<td></td>	<td>Date</td>	    <td>EjDateBeg</td>	<td>Yes</td>	<td>ERROR</td></TR>
+<TR><td>Service Line</td>	        <td>4</td>	<td></td>	<td>String</td>	<td>EjCompany</td>	<td></td>	<td></td></TR>
+<TR><td>SeniorVicePresidents.GeographicArea</td><td>5</td>	<td></td>	<td>String</td>	    <td>EjRegion</td>	<td></td>	<td></td></TR>
+<TR><td>House Code</td>	            <td>6</td>	<td></td>	<td>String</td>	<td>EjDepartment</td>	<td></td>	<td></td></TR>
+<TR><td>State of House Code</td>	<td>7</td>	<td></td>	<td>String</td>	<td>EjMailStop</td>	<td></td>	<td></td></TR>
+<TR><td>Job Code – Description</td>	<td>8</td>	<td></td>	<td>String</td>	<td>EjTitle</td>	<td></td>	<td></td></TR>
+<TR><td>Percentage Time</td>	    <td>9</td>	<td></td>	<td>100</td>	<td>EjPctTime</td>	<td></td>	<td></td></TR>
+<TR><td>Job Change Reason</td>	    <td>10</td>	<td></td>	<td>String</td>	<td>EjWhyStart</td>	<td></td>	<td></td></TR>
+<TR><td>Job Code – Value</td>	    <td>11</td>	<td></td>	<td>String</td>	<td>EjJobCode</td>	<td></td>	<td></td></TR>
+<TR><td>Full Time Employee </td>	<td>12</td>	<td></td>	<td>1</td>	    <td>EjFTE</td>	<td></td>	<td></td></TR>
+<TR><td>HierarchySVPRVP.SVP</td>	<td>13</td>	<td></td>	<td>String</td>	<td>EjSVP</td>	<td></td>	<td></td></TR>
+<TR><td>HierarchySVPRVP.RVP</td>	<td>14</td>	<td></td>	<td>String</td>	<td>EjRVP</td>	<td></td>	<td></td></TR>
+<TR><td>HierarchyRVPRM.RM</td>	    <td>15</td>	<td></td>	<td>String</td>	<td>EjRM</td>	<td></td>	<td></td></TR>
+</table>
+<div class="reference">* Field 6  should be zero-filled up to eight characters</div>
+ 
+
+        <br /><div class="reference">E6EMPLOY</div>
+		<table class="elementTable">
+        <TR>
+            <th style="width: 30px;">FIELD NAME</th>
+            <th style="width: 30px;">BEGINNING COLUMN</th>
+            <th style="width: 30px;">WIDTH</th>	
+            <th style="width: 30px;">DATA</th>	
+            <th style="width: 30px;">SOURCE</th>
+            <th style="width: 30px;">REQUIRED</th>
+            <th style="width: 30px;">NULL ACTION</th>
+         </TR>
+
+<TR><td>Import Record Type</td>	                <td>1</td>	<td>6</td>	<td>0314A1</td>	<td></td>	            <td></td>	    <td></td></TR>
+<TR><td>SSN	  </td>                             <td>2</td>	<td></td>	<td>Numeric</td><td>EeFlxIDEb</td>	    <td>Yes</td>	<td>ERROR</td></TR>
+<TR><td>Current Date of Hire/Effective Date</td><td>3</td>	<td></td>	<td>Date</td>	<td>EeDateBeg</td>	    <td>Yes</td>	<td>ERROR</td></TR>
+<TR><td>Date of Original Hire</td>	            <td>4</td>	<td></td>	<td>Date</td>	<td>EeDateOriginal</td> <td>Hire</td>	<td></td></TR>
+<TR><td>Date of Current Hire</td>	            <td>5</td>	<td></td>	<td>Date</td>	<td>EeDateLastHire</td>	<td></td>	<td></td></TR>
+<TR><td>Seniority Date	</td>                   <td>6</td>	<td></td>	<td>Date</td>	<td>EeDateSeniorityCalc</td><td></td><td></td></TR>
+<TR><td>Termination Date	</td>               <td>7</td>	<td></td>	<td>Date</td>	<td>EeTermDate</td>	    <td></td>	<td></td></TR>
+<TR><td>Termination Reason</td>	                <td>8</td>	<td></td>	<td>String</td>	<td>EeTermWhy</td>	    <td></td>	<td></td></TR>
+<TR><td>I-9 Status	</td>                       <td>9</td>	<td></td>	<td>Numeric</td><td>EeI9Status</td>	    <td></td>	<td></td></TR>
+<TR><td>SSN	      </td>                         <td>10</td>	<td></td>	<td>String</td>	<td>EeSocNumber</td>	<td></td>	<td></td></TR>
+<TR><td>10-digit Employee Number</td>           <td>11</td> <td></td>	<td>String</td>	<td>EeEmpNumber</td>	<td></td>	<td></td></TR>
+<TR><td>Highly Compensated?</td>	            <td>12</td>	<td></td>	<td>N</td>	    <td>EeHighComp</td>	    <td></td>	<td></td></TR>
+<TR><td>Corporate Officer?</td>	                <td>13</td>	<td></td>	<td>N</td>	    <td>EeOfficer</td>	    <td></td>	<td></td></TR>
+<TR><td>Status Category	 </td>                  <td>14</td>	<td></td>	<td>String</td>	<td>EeCategory</td>	    <td></td>	<td></td></TR>
+<TR><td>Effective Date	</td>                   <td>15</td>	<td></td>	<td>Date</td>	<td>EeDateStatus</td>	<td></td>	<td></td></TR>
+<TR><td>Status	  </td>                         <td>16</td> <td></td>	<td>String</td>	<td>EeStatus</td>	    <td></td>	<td></td></TR>
+</table>
+<div class="reference"> * For terminations, field 3 should equal Termination Date + 1 day </div>
+
+        <br /><div class="reference">E7COMP</div>
+		<table class="elementTable">
+        <TR>
+            <th style="width: 30px;">FIELD NAME</th>
+            <th style="width: 30px;">BEGINNING COLUMN</th>
+            <th style="width: 30px;">WIDTH</th>	
+            <th style="width: 30px;">DATA</th>	
+            <th style="width: 30px;">SOURCE</th>
+            <th style="width: 30px;">REQUIRED</th>
+            <th style="width: 30px;">NULL ACTION</th>
+           </TR>
+
+<TR><td>Import Record Type</td>	<td>1</td>	<td>6</td>	<td>0340A1</td>	<td></td>	<td></td>	<td></td></TR>
+<TR><td>SSN</td>	        <td>2</td>	<td></td>	<td>Character</td>	    <td>EmFlxIDEb</td>	<td>Yes</td>	<td>ERROR</td></TR>
+<TR><td>Current Date of Hire/Effective Date</td>	<td>3</td>	<td></td>	<td>Date</td>	<td>EmDateBeg</td>	<td></td>	<td>ERROR</td></TR>
+<TR><td>Record Type</td>	<td>4</td>	<td></td>	<td>BASE</td>	    <td>EmKind</td>	<td>Yes</td>	<td>ERROR</td></TR>
+<TR><td>Pay Rate</td>	    <td>5</td>	<td></td>	<td>Numeric</td>	<td>EmHourlyRate</td>	<td></td>	<td></td></TR>
+<TR><td>Amount Per Pay</td>	<td>6</td>	<td></td>	<td>Numeric</td>	<td>EmPerPay</td>	<td></td>	<td></td></TR>
+<TR><td>Annual Salary</td>	<td>7</td>	<td></td>	<td>Numeric</td>	<td>EmAnnual</td>	<td></td>	<td></td></TR>
+<TR><td>Annual Salary</td>	<td>8</td>	<td></td>	<td>Numeric</td>	<td>EmAnnualProrated</td>	<td></td>	<td></td></TR>
+<TR><td>Pay Grade</td>	    <td>9</td>	<td></td>	<td>String</td>	    <td>EmPayGrade</td>	<td></td>	<td></td></TR>
+<TR><td>Pay Frequency</td>	<td>10</td>	<td></td>	<td>String</td>	    <td>EmPayCycle</td>	<td>Yes</td>	<td>ERROR</td></TR>
+<TR><td>Hourly/Salary</td>	<td>11</td>	<td></td>	<td>String</td>	    <td>EmPayType</td>	<td></td>	<td></td></TR>
+<TR><td>Scheduled Hours</td><td>12</td>	<td></td>	<td>Numeric</td>	<td>EmHoursPerPay</td>	<td></td>	<td></td></TR>
+<TR><td>Annual Hours</td>	<td>13</td>	<td></td>	<td>Numeric</td>	<td>EmHoursAnnual</td>	<td></td>	<td></td></TR>
+<TR><td>Amount Per Pay</td>	<td>14</td>	<td></td>	<td>Numeric</td>	<td>EmAdjPerPay</td>	<td></td>	<td></td></TR>
+<TR><td>Annual Salary</td>	<td>15</td>	<td></td>	<td>Numeric</td>	<td>EmAdjAnnualProrated</td>	<td></td>	<td></td></TR>
+<TR><td>Rate Change Reason</td>	<td>16</td>	<td></td>	<td>String</td>	<td>EmReason</td>	<td></td>	<td></td></TR>
+<TR><td>Annual Salary</td>	<td>17</td>	<td></td>	<td>Numeric</td>	<td>EmLocalAmount</td>	<td></td>	<td></td></TR>
+</table>
+
+        <br /><div class="reference">E8PAYROLL</div>
+		<table class="elementTable">
+        <TR>
+            <th style="width: 30px;">FIELD NAME</th>
+            <th style="width: 30px;">BEGINNING COLUMN</th>
+            <th style="width: 30px;">WIDTH</th>	
+            <th style="width: 30px;">DATA</th>	
+            <th style="width: 30px;">SOURCE</th>
+            <th style="width: 30px;">REQUIRED</th>
+            <th style="width: 30px;">NULL ACTION</th>
+         </TR>
+         
+<TR><td>Import Record Type</td>	<td>1</td>	<td>6</td>	<td>03C2A2</td>	<td></td>	<td></td>	<td></td></TR>
+<TR><td>SSN</td>	            <td>2</td>	<td></td>   <td>String</td> <td>PrbFlxIDEb</td>	<td>Yes</td>	<td>ERROR</td></TR>
+<TR><td>Last Modified At</td>	<td>3</td>	<td></td>	<td>Date</td>	<td>PrbDateBeg</td>	<td></td>	<td>ERROR</td></TR>
+<TR><td>Ceridian Company</td>	<td>4</td>	<td></td>	<td>String</td>	<td>PrbPSID</td>	<td></td>	<td></td></TR>
+<TR><td>Zeroes</td>	            <td>5</td>	<td></td>	<td>0000</td>	<td>PrbPayDept</td>	<td></td>	<td></td></TR>
+<TR><td>Employee Number</td>	<td>6</td>	<td></td>	<td>String</td>	<td>PrbClock</td>	<td></td>	<td></td></TR>
+<TR><td>Active</td>	            <td>7</td>	<td></td>	<td>String</td><td>	PrbChangeStat</td>	<td></td>	<td></td></TR>
+<TR><td>Employee Name</td>	    <td>8</td>	<td></td>	<td>String</td>	<td>PrbEmpName</td>	<td></td>	<td></td></TR>
+<TR><td>SSN</td>	            <td>9</td>	<td></td>	<td>String</td>	<td>PrbEmpSSN</td>	<td></td>	<td></td></TR>
+<TR><td>Birth Date</td>	        <td>10</td>	<td></td>	<td>Date</td>	<td>PrbBirthDate</td>	<td></td>	<td></td></TR>
+<TR><td>Gender</td>	            <td>11</td>	<td></td>	<td>String</td>	<td>PrbSex</td>	<td></td>	<td></td></TR>
+<TR><td>Termination Date</td>	<td>12</td>	<td></td>	<td>Date</td>	<td>PrbDateLastPay</td>	<td></td>	<td></td></TR>
+<TR><td>Date of Current Hire</td><td>13</td><td></td>	<td>Date</td>	<td>PrbDateLastHire</td>	<td></td>	<td></td></TR>
+<TR><td>Holiday Pay Code</td>	<td>14</td>	<td></td>	<td>2</td>	    <td>PrbHolPayCode</td>	<td></td>	<td></td></TR>
+<TR><td>Regular Pay Code</td>	<td>15</td>	<td></td>	<td>1</td>	    <td>PrbRegPayCode</td>	<td></td>	<td></td></TR>
+<TR><td>Hourly Pay Rate</td>	<td>16</td>	<td></td>	<td>Numeric</td><td>PrbPayRate</td>	<td></td>	<td></td></TR>
+<TR><td>Rate Code</td>	        <td>17</td>	<td></td>	<td>Numeric</td><td>PrbRateCode</td>	<td></td>	<td></td></TR>
+<TR><td>Rate Code</td>	        <td>17</td>	<td></td>	<td>Numeric</td><td>PrbRateCode</td>	<td></td>	<td></td></TR>
+<TR><td>Alt Rate of Pay A</td>	<td>18</td>	<td></td>	<td>Numeric</td><td>PrbAlTRateA</td>	<td></td>	<td></td></TR>
+<TR><td>Alt Rate of Pay B</td>	<td>19</td>	<td></td>	<td>Numeric</td><td></td>	<td></td>	<td></td></TR>
+<TR><td>Alt Rate of Pay C</td>	<td>20</td>	<td></td>	<td>Numeric</td><td>PrbAlTRateC</td>	<td></td>	<td></td></TR>
+<TR><td>Alt Rate of Pay D</td>	<td>21</td>	<td></td>	<td>Numeric</td><td>PrbAlTRateD</td>	<td></td>	<td></td></TR>
+<TR><td>Pay Frequency</td>	    <td>22</td>	<td></td>	<td>String</td>	<td>PrbPayFreq</td>	<td></td>	<td></td></TR>
+<TR><td>DisTRibution Data Field</td><td>23</td> <td>18</td>	<td>String</td><td>PrbDistdata</td>	<td></td>	<td></td></TR>
+<TR><td>Termination Reason Code</td><td>24</td><td>20</td>	<td>String</td><td>PrbMiscData</td>	<td></td>	<td></td></TR>
+<TR><td>CurrPayrollStatus</td>	<td>25</td>	<td></td>	<td>String</td>	<td></td>	<td></td>	<td></td></TR>
+<TR><td>PrevPayrollStatus</td>	<td>26</td>	<td></td>	<td>String</td>	<td></td>	<td></td>	<td></td></TR>
+<TR><td>Pay Period TRigger</td>	<td>27</td>	<td></td>	<td>#</td>	    <td></td>	<td></td>	<td></td></TR>
+<TR><td>Date of Original Hire</td><td>28</td><td></td>	<td>Date</td>	<td>PrbDateOriginalHire</td>	<td></td>	<td></td></TR>
+<TR><td>TALX Employee Status Code</td><td>29</td><td></td>	<td>AC</td>	<td>PrbTALXEmpStatus</td>	<td></td>	<td></td></TR>
+<TR><td>Separation Code</td>	<td>30</td><td></td>	<td>String</td>	<td>PrbTALXTermCode</td>	<td></td>	<td></td></TR>
+</table>
+<div class="reference">*	For fields 25 & 26, refer to maTRix in E8Payroll document.</div>
+ 
+        <br /><div class="reference">E9TAX</div>
+		<table class="elementTable">
+        <TR>
+            <th style="width: 30px;">FIELD NAME</th>
+            <th style="width: 30px;">BEGINNING COLUMN</th>
+            <th style="width: 30px;">WIDTH</th>	
+            <th style="width: 30px;">DATA</th>	
+            <th style="width: 30px;">SOURCE</th>
+            <th style="width: 30px;">REQUIRED</th>
+            <th style="width: 30px;">NULL ACTION</th>
+        </TR>
+        
+<TR><td>Import Record Type</td>	<td>1</td>	<td>6</td>	<td>0395A1</td>	<td></td>	            <td></td>	<td></td></TR>
+<TR><td>SSN</td>	            <td>2</td>	<td></td>	<td>String</td>	<td>PrxFlxIDEb</td>	    <td>Yes</td><td>ERROR</td></TR>
+<TR><td>Last Modified At</td>	<td>3</td>	<td></td>	<td>Date</td>	<td>PrxDateBeg</td>	    <td>Yes</td><td>ERROR</td></TR>
+<TR><td>Fed Exemptions</td>	    <td>4</td>	<td></td>	<td>Numeric</td><td>PrxFedExempt</td>	<td></td>	<td></td></TR>
+<TR><td>FedFICAFUTA</td>	    <td>5</td>	<td></td>	<td>#</td>	    <td>PrxFedFICAFUTA</td>	<td></td>	<td></td></TR>
+<TR><td>Fed Tax Status</td>	    <td>6</td>	<td></td>	<td>String</td>	<td>PrxFedStatus</td>	<td></td>	<td></td></TR>
+<TR><td>Fed Adj Amt</td>	    <td>7</td>	<td></td>	<td>Numeric</td><td>PrxFedAdjValue</td>	<td></td>	<td></td></TR>
+<TR><td>Primary Tax State</td>	<td>8</td>	<td></td>	<td>String</td>	<td>PrxStTax1</td>	    <td>Yes</td><td>ERROR</td></TR>
+<TR><td>Sec Tax State</td>	    <td>9</td>	<td></td>	<td>String</td>	<td>PrxStTax2</td>	    <td></td>	<td></td></TR>
+<TR><td>Primary State Status</td><td>10</td><td></td>	<td>String</td>	<td>PrxStStatus1</td>	<td></td>	<td></td></TR>
+<TR><td>Secondary State Status</td><td>11</td><td></td>	<td>String</td>	<td>PrxStStatus2</td>	<td></td>	<td></td></TR>
+<TR><td>State Exemptions</td>	<td>12</td>	<td></td>	<td>Numeric</td><td>PrxStExempt</td>	<td></td>	<td></td></TR>
+<TR><td>State SDI Code</td>	    <td>13</td>	<td></td>	<td>String</td>	<td>PrxStSDIAdj</td>	<td></td>	<td></td></TR>
+<TR><td>Local Tax Adj Value</td><td>14</td>	<td></td>	<td>Numeric</td><td>PrxLcAdjValue</td>	<td></td>	<td></td></TR>
+<TR><td>Pri Local Auth</td>	    <td>15</td>	<td></td>	<td>String</td>	<td>PrxLcTax1</td>	    <td></td>	<td></td></TR>
+<TR><td>Sec Local Auth</td>	    <td>16</td>	<td></td>	<td>String</td>	<td>PrxLcTax2</td>	    <td></td>	<td></td></TR>
+<TR><td>Local Tax 3 (OPT) </td>	<td>17</td>	<td></td>	<td>String</td>	<td>PrxLcTax3</td>	    <td></td>	<td></td></TR>
+<TR><td>Pay Period TRigger</td>	<td>18</td>	<td></td>	<td>#</td>	    <td>PrxPayPeriod</td>	<td></td>	<td></td></TR>
+<TR><td>State Ins Dist Rate</td><td>19</td>	<td></td>	<td>String</td>	<td>PrxStSdiAdjValue</td><td></td>	<td></td></TR>
+<TR><td>State Adj Amt</td>	    <td>20</td>	<td></td>	<td>String</td>	<td>PrxStAdjValue</td>	<td></td>	<td></td></TR>
+<TR><td>Fed Adjustment</td>	    <td>21</td>	<td></td>	<td>String</td>	<td>PrxFedAdjType</td>	<td></td>	<td></td></TR>
+<TR><td>State Adjustment</td>	<td>22</td>	<td></td>	<td>String</td>	<td>PrxStAdjType</td>	<td></td>	<td></td></TR>
+<TR><td>Local Tax Adj Code</td>	<td>23</td>	<td></td>	<td>String</td>	<td>PrxLcAdjType</td>	<td></td>	<td></td></TR>
+</table>
+
+        <br /><div class="reference">E10UNION</div>
+		<table class="elementTable">
+        <TR>
+            <th style="width: 30px;">FIELD NAME</th>
+            <th style="width: 30px;">BEGINNING COLUMN</th>
+            <th style="width: 30px;">WIDTH</th>	
+            <th style="width: 30px;">DATA</th>	
+            <th style="width: 30px;">SOURCE</th>
+            <th style="width: 30px;">REQUIRED</th>
+            <th style="width: 30px;">NULL ACTION</th>
+        </TR>
+<TR><td>Import Record Type</td>	<td>1</td>	<td>6</td>	<td>0418A0</td>	    <td></td>	        <td></td>	<td></td></TR>
+<TR><td>SSN</td>	            <td>2</td>	<td></td>	<td>Numeric</td>    <td>EuFlxIDEb</td>	<td>Yes</td>	<td>ERROR</td></TR>
+<TR><td>Date of Current Hire</td><td>3</td>	<td>10</td>	<td>Date</td>	    <td>EuDateBeg</td>	<td></td>	<td></td></TR>
+<TR><td>Termination Date</td>	<td>4</td>	<td></td>	<td>Date</td>	    <td>EuDateEnd</td>	<td></td>	<td></td></TR>
+<TR><td>Description</td>	    <td>5</td>	<td></td>	<td>Employee Union ID</td>	<td>EuDescrip</td>	<td></td>	<td></td></TR>
+<TR><td>Union</td>	            <td>6</td>	<td></td>	<td>String</td>	<td>EuSTRing1</td>	<td></td>	<td></td></TR>
+</table>
+ 
+        <br /><div class="reference">E12PERTER</div>
+		<table class="elementTable">
+        <TR>
+            <th style="width: 30px;">FIELD NAME</th>
+            <th style="width: 30px;">BEGINNING COLUMN</th>
+            <th style="width: 30px;">WIDTH</th>	
+            <th style="width: 30px;">DATA</th>	
+            <th style="width: 30px;">SOURCE</th>
+            <th style="width: 30px;">REQUIRED</th>
+            <th style="width: 30px;">NULL ACTION</th>
+         </TR>
+         
+<TR><td>Import Record Type</td>	<td>1</td>	<td>6</td>	<td>0204A4</td>	<td></td>	<td></td>	<td>ERROR</td></TR>
+<TR><td>SSN</td>	            <td>2</td>	<td></td>	<td>Numeric</td><td>Yes</td><td>Yes</td><td>ERROR</td></TR>
+<TR><td>TermDate</td>	        <td>3</td>	<td>10</td>	<td>Date</td>	<td></td>	<td></td>	<td></td></TR>
+</table>
+
+        <br /><div class="reference">E13COMPTER</div>
+		<table class="elementTable">
+        <TR>
+            <th style="width: 30px;">FIELD NAME</th>
+            <th style="width: 30px;">BEGINNING COLUMN</th>
+            <th style="width: 30px;">WIDTH</th>	
+            <th style="width: 30px;">DATA</th>	
+            <th style="width: 30px;">SOURCE</th>
+            <th style="width: 30px;">REQUIRED</th>
+            <th style="width: 30px;">NULL ACTION</th>
+         </TR>
+<TR><td>Import Record Type</td>	<td>1</td>	<td>6</td>	<td>0240A1</td>	<td></td>	<td></td>	<td>ERROR</td></TR>
+<TR><td>SSN</td>	            <td>2</td>	<td></td>	<td>Numeric</td><td>Yes</td><td>Yes</td><td>ERROR</td></TR>
+<TR><td>TermDate</td>	        <td>3</td>	<td>10</td>	<td>Date</td>	<td></td>	<td></td>	<td></td></TR>
+</table>
+
+        <br /><div class="reference">E14JOBTER</div>
+		<table class="elementTable">
+        <TR>
+            <th style="width: 30px;">FIELD NAME</th>
+            <th style="width: 30px;">BEGINNING COLUMN</th>
+            <th style="width: 30px;">WIDTH</th>	
+            <th style="width: 30px;">DATA</th>	
+            <th style="width: 30px;">SOURCE</th>
+            <th style="width: 30px;">REQUIRED</th>
+            <th style="width: 30px;">NULL ACTION</th>
+        </TR>
+<TR><td>Import Record Type</td>	<td>1</td>	<td>6</td>	<td>0211A1</td>	<td></td>	<td></td>	<td>ERROR</td></TR>
+<TR><td>SSN</td>	            <td>2</td>	<td></td>	<td>Numeric</td><td>Yes</td><td>Yes</td><td>ERROR</td></TR>
+<TR><td>TermDate</td>	        <td>3</td>	<td>10</td>	<td>Date</td>	<td></td>	<td></td>	<td></td></TR>
+<TR><td>Job Term Reason</td>	<td>4</td>	<td></td>	<td>Termination</td>    <td></td>   <td></td>   <td></td></TR>
+</table>
+
+        <br /><div class="reference">E15TAXTER</div>
+		<table class="elementTable">
+        <TR>
+            <th style="width: 30px;">FIELD NAME</th>
+            <th style="width: 30px;">BEGINNING COLUMN</th>
+            <th style="width: 30px;">WIDTH</th>	
+            <th style="width: 30px;">DATA</th>	
+            <th style="width: 30px;">SOURCE</th>
+            <th style="width: 30px;">REQUIRED</th>
+            <th style="width: 30px;">NULL ACTION</th>
+            </TR>
+<TR><td>Import Record Type</td>	<td>1</td>	<td>6</td>	<td>0295A0</td>	<td></td>	<td></td>	<td>ERROR</td></TR>
+<TR><td>SSN</td>	            <td>2</td>	<td></td>	<td>Numeric</td>	<td>Yes</td>	<td>Yes</td>	<td>ERROR</td></TR>
+<TR><td>TermDate</td>	        <td>3</td>	<td>10</td>	<td>Date</td>	<td></td>	<td></td>	<td></td></TR>
+</table>
+ 
+
+        <br /><div class="reference">EPRV2HEADER</div>
+		<table class="elementTable">
+        <TR>
+            <th style="width: 30px;">FIELD NAME</th>
+            <th style="width: 30px;">BEGINNING COLUMN</th>
+            <th style="width: 30px;">WIDTH</th>	
+            <th style="width: 30px;">DATA</th>	
+            <th style="width: 30px;">SOURCE</th>
+            <th style="width: 30px;">REQUIRED</th>
+            <th style="width: 30px;">NULL ACTION</th>
+            </TR>
+<TR><td>Import Record Type</td>	<td>1</td>	<td>6</td>	<td>01D1A1</td>	<td></td>	<td></td>	<td>ERROR</td></TR>
+<TR><td>Record Type</td>	    <td>2</td>	<td>4</td>	<td>CYCB</td>	<td>CycRecType</td>	<td></td>	<td></td></TR>
+<TR><td>Description</td>	    <td>3</td>	<td>10</td>	<td>String</td>	<td>CycDescrip</td>	<td></td>	<td></td></TR>
+<TR><td>CeridianCompany</td>	<td>4</td>	<td>3</td>	<td>String</td>	<td>CycPSID</td>	<td>Yes</td>	<td>ERROR</td></TR>
+<TR><td>Pay Period</td>	        <td>5</td>	<td>7</td>	<td>String</td>	<td>CycPayPeriod</td>	<td></td>	<td></td></TR>
+<TR><td>Form Name</td>	        <td>6</td>	<td>21</td>	<td>frmCycleDataHoursEarn</td>	<td>CycFormName</td>	<td></td>	<td></td></TR>
+<TR><td>CycFlagAutoBal</td>	    <td>7</td>	<td>1</td>	<td>Y</td>	<td>CycFlagAutoBal</td>	<td></td>	<td></td></TR>
+<TR><td>CycFlagBatchComplete</td><td>8</td>	<td>1</td>	<td>N</td>	<td>CycFlagBatchComplete</td>	<td></td>	<td></td></TR>
+<TR><td>CycFlagRetain</td>	    <td>9</td>	<td>1</td>	<td>N</td>	<td>CycFlagRetain</td>	<td></td>	<td></td></TR>
+<TR><td>CycFlagRetainNoData</td><td>10</td>	<td>1</td>	<td>N</td>	<td>CycFlagRetainNoData</td>	<td></td>	<td></td></TR>
+<TR><td>CycFlagSkipForecast</td><td></td>	<td>1</td>	<td>N</td>	<td>CycFlagSkipForecast</td>	<td></td>	<td></td></TR>
+</table>
+
+        <br /><div class="reference">EPRV2HOURS</div>
+		<table class="elementTable">
+        <TR>
+            <th style="width: 30px;">FIELD NAME</th>
+            <th style="width: 30px;">BEGINNING COLUMN</th>
+            <th style="width: 30px;">WIDTH</th>	
+            <th style="width: 30px;">DATA</th>	
+            <th style="width: 30px;">SOURCE</th>
+            <th style="width: 30px;">REQUIRED</th>
+            <th style="width: 30px;">NULL ACTION</th>
+        </TR>
+<TR><td>Import Record Type</td>	<td>1</td>	<td>6</td>	<td>01C9A1</td>	<td></td>	<td>Yes</td>	<td>ERROR</td></TR>
+<TR><td>Batch Description</td>	<td>2</td>	<td>14</td>	<td>String</td>	<td>CytFlxidCyc</td>	<td>Yes</td>	<td>ERROR</td></TR>
+<TR><td>EmployeeNum</td>	    <td>3</td>	<td>6</td>	<td>String</td>	<td>CytFlxidEb</td>	<td>Yes</td>	<td>ERROR</td></TR>
+<TR><td>Pay Code</td>	        <td>4</td>	<td>1</td>	<td>String</td>	<td>CytPayType</td>	<td></td>	<td></td></TR>
+<TR><td>Hours</td>	            <td>5</td>	<td>1</td>	<td>String</td>	<td>CytHours</td>	<td></td>	<td></td></TR>
+<TR><td>RateModifier</td>	    <td>6</td>	<td>1</td>	<td>String</td>	<td>CyTRateModifier</td>	<td></td>	<td></td></TR>
+<TR><td>AltPayRate</td>	        <td>7</td>	<td>1</td>	<td>String</td>	<td>CyTRateEarnings</td>	<td></td>	<td></td></TR>
+<TR><td>DisTRibutionData</td>	<td>8</td>	<td>16</td>	<td>String</td>	<td>CytdisTRib</td>	<td></td>	<td></td></TR>
+		</table>
+
+		
+	
+	
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<TR>
+				<th  style="width:40px;">Error/Event</th>
+				<th  style="width:260px;">Message</th>
+			</TR>
+			<TR>
+			    <td>Exceptions</td>
+			    <td>Check table AppIEExceptions for exception details (AppIECategory = 10)</td>
+			</TR>
+			<TR>
+			    <td>Imported Number of Records</td>
+			    <td>Check table AppIETRansactions for total exported records and execution starting/ending time (AppIECategory = 10).</td>
+			</TR>
+		</table>
+		
+		<h2>Dependencies</h2>
+		<div class="reference">1. Windows Services must be restarted for new configuration settings to take effect.</div>
+		<div class="reference">2. Exception and Event logging depends on LogWriter class.</div>
+		<div class="reference">3. Export records are automatically retrieved by scheduled SQL Job which calls procedure 
+		    PayPayrollProcessingExportSelectHRExport. This job is started weekly right after each pay period ends.</div>
+		
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<TR>
+				<th style="width:50px">Object Types</th>
+				<th style="width:250px">Object Names</th>
+			</TR>
+			<TR>
+				<td>Tables</td>
+				<td>EmpEmployeeGeneralsHRExport</td>
+			</TR>
+			<TR>
+				<td>Stored Procedures</td>
+				<td>
+				    PayPayrollProcessingHRExport<br />
+				    PayPayrollProcessingExportSelect
+				</td>
+			</TR>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="PayrollExport.htm">Payroll Export</a></div>
+		<div class="reference"><a href="POExport.htm">Purchase Order Export</a></div>
+		<div class="reference"><a href="InvoiceExport.htm">Invoice Export</a></div>
+		<div class="reference"><a href="JEExport.htm">Journal EnTRy Export</a></div>
+		<div class="reference"><a href="ForecastExport.htm">Budget Forecast Export</a></div>
+	</body>
+</html>

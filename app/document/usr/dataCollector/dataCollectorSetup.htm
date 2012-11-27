@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Data Collector</h1>
+			<div class="description">The purpose of Data Collector is to provide a means to setup and maintain a list of data collectors.</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th>Validation</th>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Data Collector List</td>
+			</tr>
+			<tr>
+				<td>Data Collector ID</td>
+				<td>Display field</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Display field</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Frequency</td>
+				<td>Display field</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Module</td>	
+				<td>Display field</td>
+				<td></td>
+				<td></td>
+				<td></td>			
+			</tr>
+			<tr>
+				<td>Description</td>	
+				<td>Display field</td>
+				<td></td>
+				<td></td>
+				<td></td>			
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Data Collector Add/Edit</td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td>text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td>Frequency</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Frequency should be selected from dropdown list</td>				
+			</tr>
+			<tr>
+				<td>Active</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>House Code should be selected from dropdown list</td>				
+			</tr>
+			<tr>
+				<td>Module</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Module should be selected from dropdown list</td>				
+			</tr>
+			<tr>
+				<td>Columns</td>
+				<td>Checkbox list selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Columns should be selected from checkbox list</td>				
+			</tr>
+			<tr>
+				<td>Number of Columns</td>
+				<td>text field</td>
+				<td>No</td>
+				<td>NA</td>				
+				<td>Number of Columns is automatically populated based on Columns selection</td>				
+			</tr>
+			<tr>
+				<td>Users</td>
+				<td>Checkbox list selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Users should be selected from checkbox list</td>			
+			</tr>
+			<tr>
+				<td>Lockout</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td>Email Address</td>
+				<td>text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td>Message</td>
+				<td>text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>If not entered by users, default message will be used.</td>				
+			</tr>
+			<tr>
+				<td>Lockout Message</td>
+				<td>text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>If not entered by users, default message will be used.</td>				
+			</tr>
+			<tr>
+                <td>Save</td>
+                <td>Button</td>
+                <td>NA</td>
+                <td>End user input</td>
+                <td>Validate the entered details and save the DataCollector</td></tr>
+            <tr>
+                <td>New</td>
+                <td>Button</td>
+                <td>NA</td>
+                <td>End user input</td>
+                <td>Add new DataCollector</td></tr>
+            <tr>
+                <td>Undo</td>
+                <td>Button</td>
+                <td>NA</td>
+                <td>End user input</td>
+                <td>Undo changes</td></tr>		
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+		    <tr>
+				<td><img src="images/datacollectorsetup.png"></td>
+			</tr>
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>If the manadatory details are not provided, the fields will be highlighted in red.</td>
+			</tr>
+		</table>
+		
+		
+		<h2>Dependencies</h2>
+		<div class="reference">1. When Message checkbox is checked off, Message textbox is enabled. Messagen can then be customized.</div>
+		<div class="reference">2. When Lockout checkbox is checked off, Lockout Message checkbox is checked and Lockout Message textbox is enabled. Lockout Messagen can then be customized.</div>
+		<div class="reference">3. Data collector tasks are populated by schedule SQL Server agent 
+		on Monday morning (weekly data collector) or first Monday morning of the month (monthly data collector).</div>
+		<div class="reference">4. Available modules for data collector setup are stored in AppModules </div>
+		<div class="reference">5. Available module columns for data collector setup are store din AppModuleColumns. Set AppModcActive to 0 
+		to make the column hidden</div>
+		
+		
+		<div class="header">
+		<h1>Database Objects</h1>
+		<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+             <td>Tables</td>
+             <td>
+                 AppDataCollectors<br/>
+                 AppDataCollectorUsers<br />
+                 AppDataCollectorModules<br />
+                 AppModules<br />
+                 AppModuleColumns<br />
+             </td>
+        </tr>
+        <tr>
+            <td>Stored Procedures            </td>
+            <td>
+                AppDataCollectorsSelect<br/>
+                AppDataCollectorSelectUsersByHcmHouseCode</td>
+            </tr>
+		</table>
+				
+		<h2>See Also</h2>
+		<div class="reference"><a href="notification.htm">Notification</a></div>
+	</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Approve Budget</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/bud/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+		<div id="hirNodeLoading" style="display:none;position: absolute; top: 60px; left: 10px; z-index: 4000; width: 45%; height: 84%;">
+			<div style="position: absolute; width: 66; height: 70;top: 50%; left: 49.5%; margin-top: -50px; margin-left: -33px">
+	            <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+	            <div style="font-family: Verdana, Arial, sans-serif; margin-top:5px;">Loading</div>    
+	        </div>
+		</div>
+
+	    <div class="pageBody">	    	
+	   		<div class="contentArea">
+				<div class="header">Approve Budget</div>
+	        </div>
+			<div class="body">
+				<div id="TableEditArea" class="containerUnit">
+					<div class="labelTextUnit">House Code:</div>
+					<div id="AppUnitLoader">
+						<div id="AppUnit"></div>
+					</div>					
+					<div class="contentArea">
+						<div id="LoadButtonContainer">
+							<div id="AnchorLoad"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div style="clear:both;"></div>
+			<div id="contentAreaLeft">				
+				<div class="contentArea">
+					<div class="body" id="hirContainer">
+						<ul class="treeview" id="ulEdit0"></ul>
+					</div>
+				</div>				
+				<div style="clear:both;"></div>
+			</div>
+			<div id="contentAreaRight">
+				<div class="contentArea">					
+					<div id="detailContainer">
+						<div class="body">
+							<div class="labelTextUnit">When Approving the Fiscal Year Budget, all sections of the budget process will be locked down. You will still be able to view the data that was entered, but not able to change the data. Please ensure that the data is entered correctly before approving the budget.</div>
+							<div style="clear:both;height:10px;"></div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft">
+									<span class="requiredFieldIndicator">&#149;</span>Year:
+								</div>
+								<div id="InputTextAreaRight">
+									<div id="FiscalYear"></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="divJob" style="display:none">
+								<div id="TableEditArea">
+									<div id="LabelTextAreaLeft">
+										<span class="requiredFieldIndicator">&#149;</span>Job:
+									</div>
+									<div id="InputTextAreaRight">
+										<div id="Job"></div>
+									</div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft">
+									<span class="requiredFieldIndicator">&#149;</span>Comments:
+								</div>
+								<div id="InputTextApprove">
+									<textarea id="Comments"></textarea>
+								</div>
+							</div>
+							<div style="clear:both;height:10px;"></div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft"></div>
+								<div id="InputTextAreaRight">
+									<div id="AnchorApprove"></div>
+								</div>							
+							</div>	
+						</div>										
+					</div>
+				</div>
+				<div style="clear:both;"></div>
+			</div>
+		</div>
+	   <div id="iiInputValidationMaster"></div>
+	</body>
+</html>

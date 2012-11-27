@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>House Code - Payroll</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/hcm/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+
+		<div class="pageBody">
+			<div class="contentArea">
+                <div class="header">House Code Payroll</div>
+            </div>
+			<div style="clear:both; height:10px;"></div>
+			<div class="body">
+				<div class="TableEditAreaPayroll">
+					<div class="LableTextAreaLeftPayroll">Payroll Processing Location:</div>
+					<div class="InputTextAreaRight">
+						<div id="PayrollPro"></div>
+					</div>
+				</div>
+				<div style="clear:both; height:8px;"></div>
+				<div class="TableEditAreaPayroll">						
+					<div class="LableTextAreaLeftPayroll">Time And Attendance:</div>
+					<div id="TimeAttendanceRadio">
+						<div class="payrollRadioButtonLeft">
+							<input id="TimeAttendanceYes" name="TimeAttendance" type="radio" onclick="javascript: fin.hcmPayrollCodeUi.assignValue();" value="true" checked="checked"/>
+						</div>
+						<div class="payrollRadioTextLeft">Yes</div>
+						<div class="payrollRadioButtonLeft">
+							<input id="TimeAttendanceNo" name="TimeAttendance" type="radio" onclick="javascript: fin.hcmPayrollCodeUi.assignValue();" value="false"/>
+						</div>
+						<div class="payrollRadioTextLeft">No</div>
+					</div>
+				</div>
+				<div style="clear:both; height:8px;"></div>
+				<div class="TableEditAreaPayroll">
+					<div class="LableTextAreaLeftPayroll">Default Lunch Break:</div>
+					<div id="DefaultLunchBreakRadio">
+						<div class="payrollRadioButtonLeft">
+							<input id="DefaultLunchBreak025" name="DefaultLunchBreak" onclick="javascript: fin.hcmPayrollCodeUi.assignValue();" type="radio" value="0.25" />
+						</div>
+						<div class="payrollRadioTextLeft">0.25</div>
+						<div class="payrollRadioButtonLeft">
+							<input id="DefaultLunchBreak050" name="DefaultLunchBreak" onclick="javascript: fin.hcmPayrollCodeUi.assignValue();" type="radio" value="0.50" />
+						</div>
+						<div class="payrollRadioTextLeft">0.50</div>
+						<div class="payrollRadioButtonLeft">
+							<input id="DefaultLunchBreak075" name="DefaultLunchBreak" onclick="javascript: fin.hcmPayrollCodeUi.assignValue();" type="radio" value="0.75"/>			
+						</div>
+						<div class="payrollRadioTextLeft">0.75</div>
+						<div class="payrollRadioButtonLeft">
+							<input id="DefaultLunchBreak100" name="DefaultLunchBreak" onclick="javascript: fin.hcmPayrollCodeUi.assignValue();" type="radio" value="1.0"/>								
+						</div>
+						<div class="payrollRadioTextLeft">1.0</div>
+						<div class="payrollRadioButtonLeft">
+							<input id="DefaultLunchBreakother" name="DefaultLunchBreak" onclick="javascript: fin.hcmPayrollCodeUi.assignValue();" type="radio" value="0" />									
+						</div>
+						<div class="payrollInputTextBox">
+							<div id="BreakOthers"></div>
+						</div>
+						<div class="payrollRadioTextLeft">Others</div>
+					</div>
+				</div>
+				<div style="clear:both; height:8px;"></div>
+				<div class="TableEditAreaPayroll">
+					<div class="LableTextAreaLeftPayroll">Lunch Break Trigger:</div>
+					<div id="LunchBreakTriggerRadio">
+						<div class="payrollRadioButtonLeft">
+							<input id="LunchBreakTrigger4" name="LunchBreakTrigger" onclick="javascript: fin.hcmPayrollCodeUi.assignValue();" type="radio" value="4"/>
+						</div>
+						<div class="payrollRadioTextLeft">4</div>
+						<div class="payrollRadioButtonLeft">
+							<input id="LunchBreakTrigger6" name="LunchBreakTrigger" onclick="javascript: fin.hcmPayrollCodeUi.assignValue();" type="radio" value="6"/>
+						</div>
+						<div class="payrollRadioTextLeft">6</div>
+						<div class="payrollRadioButtonLeft">
+							<input id="LunchBreakTrigger8" name="LunchBreakTrigger" onclick="javascript: fin.hcmPayrollCodeUi.assignValue();" type="radio" value="8"/>			
+						</div>
+						<div class="payrollRadioTextLeft">8</div>
+						<div class="payrollRadioButtonLeft">
+							<input id="LunchBreakTriggerOthers" name="LunchBreakTrigger" onclick="javascript: fin.hcmPayrollCodeUi.assignValue();" type="radio" value="0" />									
+						</div>
+						<div class="payrollInputTextBox">
+							<div id="BreakTrigger" class="textBox"></div>
+						</div>
+						<div class="payrollRadioTextLeft">Others</div>
+					</div>
+				</div>
+				<div style="clear:both; height:8px;"></div>
+				<div class="TableEditAreaPayroll">
+					<div class="LableTextAreaLeftPayroll">House Code Type:</div>
+					<div id="HouseCodeTypeRadio">
+						<div class="payrollRadioButtonRight">
+							<input id="HouseCodeTypeNU" name="HouseCodeType" onclick="javascript: fin.hcmPayrollCodeUi.assignValue();" type="radio" value="1"/>								
+						</div>
+						<div class="payrollUnionTextRight">Non Union</div>
+						<div class="payrollRadioButtonRight">
+							<input id="HouseCodeTypeUCB" name="HouseCodeType" onclick="javascript: fin.hcmPayrollCodeUi.assignValue();" type="radio" value="2"/>								
+						</div>
+						<div class="payrollRadioTextRightUCB">Union w/ Crothall Benefits</div>
+						<div class="payrollRadioButtonRight">
+							<input id="HouseCodeTypeUACB" name="HouseCodeType" onclick="javascript: fin.hcmPayrollCodeUi.assignValue();" type="radio" value="3"/>								
+						</div>
+						<div class="payrollRadioTextRightAcc">Union w/o Crothall Benefits</div>
+					</div>
+				</div>
+				<div style="clear:both; height:8px;"></div>
+				<div class="TableEditAreaPayroll">
+					<div class="LableTextAreaLeftPayroll">Rounding Time Period:</div>
+					<div id="RoundingTimePeriodRadio">
+						<div class="payrollRadioButtonRight">
+							<input id="RoundingTimePeriod15" name="RoundingTimePeriod" onclick="javascript: fin.hcmPayrollCodeUi.assignValue();" type="radio" value="15"/>								
+						</div>
+						<div class="payrollUnionTextRight">15 Minutes</div>
+						<div class="payrollRadioButtonRight">
+							<input id="RoundingTimePeriod6" name="RoundingTimePeriod" onclick="javascript: fin.hcmPayrollCodeUi.assignValue();" type="radio" value="6"/>								
+						</div>
+						<div class="payrollRadioTextRight">6 Minutes</div>
+					</div>
+				</div>
+				<div style="clear:both; height:8px;"></div>
+				<div class="TableEditAreaPayroll">						
+					<div class="LableTextAreaLeftPayroll">EPay Site:</div>
+					<div id="EPaySiteCheckText">
+						<div class="payrollRadioButtonRight">
+							<div id="EPaySite"></div>
+						</div>
+						<div class="payrollUnionTextRightEpay">EPay Pay Group:</div>
+						<div class="InputTextAreaRight">
+							<div id="EPayPay"></div>
+						</div>
+					</div>						
+				</div>
+				<div style="clear:both; height:8px;"></div>
+				<div class="TableEditAreaPayroll">
+					<div class="LableTextAreaLeftPayroll">EPay Task:</div>
+					<div class="InputTextAreaRight">
+						<div id="EPayTask"></div>
+					</div>
+				</div>
+				<div style="clear:both; height:8px;"></div>
+				<div class="TableEditAreaPayroll">
+					<div class="LableTextAreaLeftPayroll">Ceridian Company Hourly:</div>
+					<div class="InputTextAreaRight">
+						<div id="CeridianCompanyHourly"></div>
+					</div>
+				</div>
+				<div style="clear:both; height:8px;"></div>
+				<div class="TableEditAreaPayroll">
+					<div class="LableTextAreaLeftPayroll">Ceridian Company Salaried:</div>
+					<div class="InputTextAreaRight">
+						<div id="CeridianCompanySalaried"></div>
+					</div>
+				</div>
+			</div>			
+		</div>
+		<div id="iiInputValidationMaster"></div>
+	</body>
+</html>

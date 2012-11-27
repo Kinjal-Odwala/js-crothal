@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Employee Search</h1>
+			<div class="description">The Unit Manger will log into TeamFin and begin an employee search to either modify and existing employee record or look up the details on an employee.</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:100px;">UI Element</th>
+				<th style="width:100px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th style="width:100px;">Validation</th>	
+				<th style="width:200px;">Description</th>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">Employee Search</td>
+			</tr>
+			<tr>
+				<td>Last, First, SSN, or Emp#</td>
+				<td>Text field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>	
+				<td>The Unit Manager will enter in either the Last Name or First Name of the Employee or the Employee SSN or the Employee #</td>			
+			</tr>
+			<tr>
+				<td>Status</td>
+				<td>Dropdown selection</td>
+				<td>NA</td>
+				<td>End user input</td>	
+				<td></td>			
+				<td>The Unit Manger can also filter the search by selecting the Emp Status.</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Dropdown selection</td>
+				<td>NA</td>
+				<td>End user input</td>	
+				<td></td>			
+				<td>House Code should be selected from dropdown Hierarchy or search HouseCode with HouseCode Brief</td>	
+							
+			</tr>
+			<tr>
+				<td>Search</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>	
+				<td></td>				
+				<td>List the Employees based on the search criteria</td>	
+			</tr>
+			<tr>
+				<td>New</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>	
+				<td></td>		
+				<td>Create new user</td>		
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">Search Result </td>
+			</tr>
+			<tr>
+				<td>First Name</td>
+				<td>ReadOnly</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>NA</td>		
+				<td></td>		
+			</tr>
+			<tr>
+				<td>Last Name</td>
+				<td>ReadOnly</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>NA</td>		
+				<td></td>		
+			</tr>
+			<tr>
+				<td>Employee Number</td>
+				<td>ReadOnly</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>NA</td>		
+				<td></td>		
+			</tr>
+			<tr>
+				<td>SSN</td>
+				<td>ReadOnly</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>NA</td>	
+				<td></td>			
+			</tr>
+
+			
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Item Search</td>
+			</tr>
+			<tr>
+				<td><img src="images/empSearch.jpg"></td>
+			</tr>			
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Search</td>
+				<td>The Employee not exists - There is no Employee matching to the given Criteria.</td>
+			</tr>
+			<tr>
+				<td>House Code Search</td>
+				<td>If User have no permission to access - There is no corresponding HouseCode available or you do not have enough permission to access it.</td>
+			</tr>
+		</table>
+		<h2>Action</h2>
+		<div class="reference">1. To open an employee record the Unit Manager will click on the Employee detail row.
+			This will open up another UI with the employee record that can be viewed or edited based on the security level of the Unit Manager.
+		</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>PplPersons<br>EmpEmployeeGenerals</td>
+			</tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="newHire.htm">New Hire</a></div>
+		<div class="reference"><a href="catalog.htm">Catalogs</a></div>
+		<div class="reference"><a href="purchaseOrder.htm">Purchase Orders</a></div>
+	</body>
+</html>

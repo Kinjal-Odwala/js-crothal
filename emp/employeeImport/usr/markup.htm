@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Employee Bulk Import</title>
+		<!-- Following "blank" stylesheet link with an id of skin is required for IE7 to work properly on refreshes -->
+		<link id="skin" type="text/css" rel="stylesheet"/>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/emp/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody" onload="iiForceBodyReady = true;">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: #ffffff;">
+			<table width="100%" height="100%">
+				<tr>
+					<td align="center">
+						<img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+						<div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;">Loading</div>
+		        	</td>
+				</tr>
+			</table>
+		</div>
+		
+		<div class="actionHeader">
+	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>			
+        </div>
+		
+		<div class="pageBody">
+			<div class="contentArea">
+				<div class="header" id="pageHeader">Bulk Employee Import</div>
+				<div id="divFrame" class="body">
+					<div style="height: 10px;"></div>
+					<iframe id="iFrameUpload" src="/net/crothall/chimes/fin/app/act/FileUpload.aspx" frameborder="0" width="100%" height="30"></iframe>
+					<div style="clear:both;"></div>
+				</div>
+				<div id="divUpload" class="body">
+					<div id="AnchorUpload"></div>
+					<div id="AnchorCancel"></div>
+					<div style="clear:both;"></div>
+				</div>				
+				<table id="tblEmployees" class="gridBorder" style="display: none" cellpadding="0" cellspacing="0" width="100%;" height="100%;">
+			    	<tr>
+			        	<td>				
+							<div style="height: 46px; width: 100%; position: relative; z-index: 3; overflow: hidden">
+			                	<table id="tblEmployeeGridHeader" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 2; width: 9740px">
+			                    	<thead id="EmployeeGridHead">
+										<tr>
+											<th class="gridHeaderColumn" width="30px">#</th>
+											<th class="gridHeaderColumn" width="100px">House Code</th>
+											<th class="gridHeaderColumn" width="100px">Brief</th>
+											<th class="gridHeaderColumn" width="100px">First Name</th>
+											<th class="gridHeaderColumn" width="100px">Last Name</th>
+											<th class="gridHeaderColumn" width="100px">Middle Name</th>
+											<th class="gridHeaderColumn" width="100px">Address 1</th>
+											<th class="gridHeaderColumn" width="100px">Address 2</th>
+											<th class="gridHeaderColumn" width="100px">City</th>
+											<th class="gridHeaderColumn" width="100px">State</th>
+											<th class="gridHeaderColumn" width="100px">Postal Code</th>
+											<th class="gridHeaderColumn" width="100px">Home Phone</th>
+											<th class="gridHeaderColumn" width="100px">Fax</th>
+											<th class="gridHeaderColumn" width="100px">Cell Phone</th>
+											<th class="gridHeaderColumn" width="100px">Email</th>
+											<th class="gridHeaderColumn" width="100px">Pager</th>
+											<th class="gridHeaderColumn" width="50px">Active</th>
+											<th class="gridHeaderColumn" width="100px">Employee HouseCode Updated</th>									
+											<th class="gridHeaderColumn" width="100px">SSN</th>
+											<th class="gridHeaderColumn" width="100px">Status Type</th>
+											<th class="gridHeaderColumn" width="100px">Payroll Company</th>
+											<th class="gridHeaderColumn" width="100px">Device Group Type</th>
+											<th class="gridHeaderColumn" width="50px">Exempt</th>
+											<th class="gridHeaderColumn" width="100px">Job Code Type</th>
+											<th class="gridHeaderColumn" width="50px">Hourly</th>									
+											<th class="gridHeaderColumn" width="100px">Hire Date</th>
+											<th class="gridHeaderColumn" width="100px">Change Reason Type</th>
+											<th class="gridHeaderColumn" width="100px">Rate Change Date</th>
+											<th class="gridHeaderColumn" width="100px">Seniority Date</th>
+											<th class="gridHeaderColumn" width="100px">Termination Date</th>
+											<th class="gridHeaderColumn" width="100px">Termination Reason Type</th>
+											<th class="gridHeaderColumn" width="100px">Work Shift</th>
+											<th class="gridHeaderColumn" width="100px">Benefits Percentage</th>
+											<th class="gridHeaderColumn" width="100px">Scheduled Hours</th>
+											<th class="gridHeaderColumn" width="50px">Union</th>
+											<th class="gridHeaderColumn" width="100px">Crothall Employee</th>
+											<th class="gridHeaderColumn" width="100px">Employee Number</th>
+											<th class="gridHeaderColumn" width="100px">Alternate Pay Rate A</th>
+											<th class="gridHeaderColumn" width="100px">Alternate Pay Rate B</th>
+											<th class="gridHeaderColumn" width="100px">Alternate Pay Rate C</th>
+											<th class="gridHeaderColumn" width="100px">Alternate Pay Rate D</th>
+											<th class="gridHeaderColumn" width="100px">PTO Start Date</th>
+											<th class="gridHeaderColumn" width="100px">PTO Hour Entry Automatic</th>
+											<th class="gridHeaderColumn" width="100px">Original Hire Date</th>
+											<th class="gridHeaderColumn" width="100px">Effective Date</th>
+											<th class="gridHeaderColumn" width="100px">Union Type</th>
+											<th class="gridHeaderColumn" width="100px">Status Category Type</th>
+											<th class="gridHeaderColumn" width="100px">Pay Rate</th>
+											<th class="gridHeaderColumn" width="100px">Pay Rate Entered By</th>
+											<th class="gridHeaderColumn" width="100px">Pay Rate Entered At</th>
+											<th class="gridHeaderColumn" width="100px">Prev Pay Rate</th>
+											<th class="gridHeaderColumn" width="100px">Prev Pay Rate Entered By</th>
+											<th class="gridHeaderColumn" width="100px">Prev Pay Rate Entered At</th>
+											<th class="gridHeaderColumn" width="100px">Prev Prev Pay Rate</th>
+											<th class="gridHeaderColumn" width="100px">Prev Prev Pay Rate Entered By</th>
+											<th class="gridHeaderColumn" width="100px">Prev Prev Pay Rate Entered At</th>
+											<th class="gridHeaderColumn" width="100px">Gender Type</th>
+											<th class="gridHeaderColumn" width="100px">Ethnicity Type</th>
+											<th class="gridHeaderColumn" width="100px">Birth Date</th>
+											<th class="gridHeaderColumn" width="100px">Review Date</th>
+											<th class="gridHeaderColumn" width="100px">Work Phone</th>
+											<th class="gridHeaderColumn" width="100px">Work Phone Ext</th>
+											<th class="gridHeaderColumn" width="100px">BackGround Check Date</th>
+											<th class="gridHeaderColumn" width="100px">Federal Exemptions</th>
+											<th class="gridHeaderColumn" width="100px">Federal Adjustment Type</th>
+											<th class="gridHeaderColumn" width="100px">Marital Status Federal Tax Type</th>
+											<th class="gridHeaderColumn" width="100px">Federal Adjustment Amount</th>
+											<th class="gridHeaderColumn" width="100px">Primary State</th>
+											<th class="gridHeaderColumn" width="100px">Secondary State</th>
+											<th class="gridHeaderColumn" width="100px">Marital Status State Tax Type Primary</th>
+											<th class="gridHeaderColumn" width="100px">Marital Status StateTax Type Secondary</th>
+											<th class="gridHeaderColumn" width="100px">State Exemptions</th>
+											<th class="gridHeaderColumn" width="100px">State Adjustment Type</th>
+											<th class="gridHeaderColumn" width="100px">State Adjustment Amount</th>
+											<th class="gridHeaderColumn" width="100px">SDI Adjustment Type</th>
+											<th class="gridHeaderColumn" width="100px">SDI Rate</th>
+											<th class="gridHeaderColumn" width="100px">Local Tax Adjustment Type</th>
+											<th class="gridHeaderColumn" width="100px">Local Tax Adjustment Amount</th>
+											<th class="gridHeaderColumn" width="100px">Local Tax Code 1</th>
+											<th class="gridHeaderColumn" width="100px">Local Tax Code 2</th>
+											<th class="gridHeaderColumn" width="100px">Local Tax Code 3</th>
+											<th class="gridHeaderColumn" width="100px">Payroll Status</th>
+											<th class="gridHeaderColumn" width="100px">Previous Payroll Status</th>
+											<th class="gridHeaderColumn" width="100px">Frequency Type</th>
+											<th class="gridHeaderColumn" width="100px">House Code Job</th>
+											<th class="gridHeaderColumn" width="100px">I9 Type</th>
+											<th class="gridHeaderColumn" width="100px">Vet Type</th>
+											<th class="gridHeaderColumn" width="100px">Separation Code</th>
+											<th class="gridHeaderColumn" width="100px">Job Start Reason Type</th>
+											<th class="gridHeaderColumn" width="100px">Effective Date Job</th>
+											<th class="gridHeaderColumn" width="100px">Effective Date Compensation</th>
+											<th class="gridHeaderColumnRight" width="100px">Marital Status Type</th>									
+										</tr>
+									</thead>
+								</table>
+							</div>
+						</td>
+					</tr>
+					<tr>
+		                <td>
+		                    <div id="divEmployeeGrid" style="position: relative; overflow: auto;">                              
+		                        <table id="EmployeeGrid" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 1; width: 9740px">
+		                            <tbody id="EmployeeGridBody"></tbody>
+		                        </table>
+		                    </div>
+		                </td>
+		            </tr>
+					<tr>
+						<td>				            
+                            <table class="paging" cellpadding="0" cellspacing="0" style="width: 100%">
+                                <tr>			             		                                        
+                                    <td align="center">&nbsp;Page:&nbsp;<select id="selPageNumber"></select>
+                                        <span id="spnPageInfo"></span>
+                                    </td>
+                                    <td style="width: 36px; background-color: white">               
+                                        <img id="imgPrev" src="/fin/cmn/usr/media/Common/previous.png" style="cursor: pointer" alt="Previous Page" title="Previous Page" />
+                                        <img id="imgNext" src="/fin/cmn/usr/media/Common/next.png" style="cursor: pointer" alt="Next Page" title="Next Page" />
+                                    </td>
+									<td style="width: 18px;">&nbsp;</td>
+                                </tr>
+                            </table>		                           
+						</td>
+					</tr>
+        		</table>							
+				<div style="clear:both;"></div>		
+				<div id="AnchorValidate" style="display: none"></div>
+				<div id="AnchorSave" style="display: none"></div>
+			</div>			
+		</div>
+		<!-- This area holds the templates for the employee -->
+		<div style="display: none">		    
+		    <table>
+		        <tbody id="tblEmployeeTemplate">
+		            <tr id="trEmployeeRowCount">
+		            	<td class="gridColumn" style="width: 30px" align="center">#</td>
+						<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="8" id="txtHouseCodeRowCount" style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="16" id="txtBriefRowCount"  style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="50" id="txtFirstNameRowCount" style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="50" id="txtLastNameRowCount" style="width: 96px;" /></td>
+                    	<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="50" id="txtMiddleNameRowCount" style="width: 96px;" /></td>
+                     	<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="255" id="txtAddress1RowCount" style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="255" id="txtAddress2RowCount" style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="255" id="txtCityRowCount" style="width: 96px;" /></td>
+                    	<td class="gridColumn" style="width: 100px" align="center"><select id="selStateRowCount" style="width: 96px;"></select></td>
+						<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="20" id="txtPostalCodeRowCount" style="width: 96px;" /></td>
+						<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="50" id="txtHomePhoneRowCount" style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="50" id="txtFaxRowCount" style="width: 96px;" /></td>
+                    	<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="50" id="txtCellPhoneRowCount" style="width: 96px;" /></td>
+                     	<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="150" id="txtEmailRowCount" style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="50" id="txtPagerRowCount" style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 50px" align="center"><input type="checkbox" id="chkActiveRowCount" style="width: 46px;" /></select></td>
+					    <td class="gridColumn" style="width: 100px" align="center"><input type="checkbox" id="chkEmployeeHouseCodeUpdatedRowCount" style="width: 96px;" /></select></td>
+					    <td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="16" id="txtSSNRowCount" style="width: 96px;" /></td>
+						<td class="gridColumn" style="width: 100px" align="center"><select id="selStatusTypeRowCount" style="width: 96px;"></select></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><select id="selPayrollCompanyRowCount" style="width: 96px;" size="0"></select></td>
+			            <td class="gridColumn" style="width: 100px" align="center"><select id="selDeviceGroupTypeRowCount" style="width: 96px;"></select></td>
+			            <td class="gridColumn" style="width: 50px" align="center"><input type="checkbox" id="chkExemptRowCount" style="width: 46px;" /></select></td>
+					    <td class="gridColumn" style="width: 100px" align="center"><select id="selJobCodeTypeRowCount" style="width: 96px;"></select></td>
+						<td class="gridColumn" style="width: 50px" align="center"><input type="checkbox" id="chkHourlyRowCount" disabled="true" style="width: 46px;" /></select></td>
+                       	<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="10" id="txtHireDateRowCount" style="width: 96px;" /></td>
+                    	<td class="gridColumn" style="width: 100px" align="center"><select id="selChangeReasonTypeRowCount" style="width: 96px;"></select></td>
+						<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="10" id="txtRateChangeDateRowCount" style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="10" id="txtSeniorityDateRowCount" style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="10" id="txtTerminationDateRowCount" style="width: 96px;" /></td>
+						<td class="gridColumn" style="width: 100px" align="center"><select id="selTerminationReasonTypeRowCount" style="width: 96px;"></select></td>
+						<td class="gridColumn" style="width: 100px" align="center"><select id="selWorkShiftRowCount" style="width: 96px;"></select></td>
+						<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="15" id="txtBenefitsPercentageRowCount" style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="3" id="txtScheduledHoursRowCount" style="width: 96px;" /></td>
+                   		<td class="gridColumn" style="width: 50px" align="center"><input type="checkbox" id="chkUnionRowCount" style="width: 46px;" /></select></td>
+						<td class="gridColumn" style="width: 100px" align="center"><input type="checkbox" id="chkCrothallEmployeeRowCount" style="width: 46px;" /></select></td>
+						<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="10" id="txtEmployeeNumberRowCount" style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="15" id="txtAlternatePayRateARowCount" style="width: 96px; text-align: right;" /></td>
+                    	<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="15" id="txtAlternatePayRateBRowCount" style="width: 96px; text-align: right;" /></td>
+                     	<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="15" id="txtAlternatePayRateCRowCount" style="width: 96px; text-align: right;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="15" id="txtAlternatePayRateDRowCount" style="width: 96px; text-align: right;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="10" id="txtPTOStartDateRowCount" style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><input type="checkbox" id="chkPTOAccruedHourEntryAutomaticRowCount" style="width: 46px;" /></select></td>
+						<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="10" id="txtOriginalHireDateRowCount" style="width: 96px;" /></td>
+						<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="10" id="txtEffectiveDateRowCount" style="width: 96px;" /></td>
+						<td class="gridColumn" style="width: 100px" align="center"><select id="selUnionTypeRowCount" style="width: 96px;"></select></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><select id="selStatusCategoryTypeRowCount" style="width: 96px;"></select></td>
+						<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="15" id="txtPayRateRowCount" style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="50" id="txtPayRateEnteredByRowCount" style="width: 96px;" /></td>
+                    	<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="10" id="txtPayRateEnteredAtRowCount" style="width: 96px;" /></td>
+						<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="15" id="txtPrevPayRateRowCount" style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="50" id="txtPrevPayRateEnteredByRowCount" style="width: 96px;" /></td>
+                    	<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="10" id="txtPrevPayRateEnteredAtRowCount" style="width: 96px;" /></td>
+                     	<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="15" id="txtPrevPrevPayRateRowCount" style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="50" id="txtPrevPrevPayRateEnteredByRowCount" style="width: 96px;" /></td>
+                    	<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="10" id="txtPrevPrevPayRateEnteredAtRowCount" style="width: 96px;" /></td>
+                     	<td class="gridColumn" style="width: 100px" align="center"><select id="selGenderTypeRowCount" style="width: 96px;"></select></td>
+						<td class="gridColumn" style="width: 100px" align="center"><select id="selEthnicityTypeRowCount" style="width: 96px;"></select></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="10" id="txtBirthDateRowCount" style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="10" id="txtReviewDateRowCount" style="width: 96px;" /></td>
+						<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="50" id="txtWorkPhoneRowCount" style="width: 96px;" /></td>
+						<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="50" id="txtWorkPhoneExtRowCount" style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="10" id="txtBackGroundCheckDateRowCount" style="width: 96px;" /></td>
+                   	    <td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="15" id="txtFederalExemptionsRowCount" style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><select id="selFederalAdjustmentTypeRowCount" style="width: 96px;"></select></td>
+						<td class="gridColumn" style="width: 100px" align="center"><select id="selMaritalStatusFederalTaxTypeRowCount" style="width: 96px;"></select></td>
+                    	<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="15" id="txtFederalAdjustmentAmountRowCount" style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><select id="selPrimaryStateRowCount" style="width: 96px;"></select></td>
+						<td class="gridColumn" style="width: 100px" align="center"><select id="selSecondaryStateRowCount" style="width: 96px;"></select></td>
+						<td class="gridColumn" style="width: 100px" align="center"><select id="selMaritalStatusStateTaxTypePrimaryRowCount" style="width: 96px;"></select></td>
+						<td class="gridColumn" style="width: 100px" align="center"><select id="selMaritalStatusStateTaxTypeSecondaryRowCount" style="width: 96px;"></select></td>
+						<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="15" id="txtStateExemptionsRowCount" style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><select id="selStateAdjustmentTypeRowCount" style="width: 96px;"></select></td>
+                   		<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="15" id="txtStateAdjustmentAmountRowCount" style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><select id="selSDIAdjustmentTypeRowCount" style="width: 96px;"></select></td>
+                    	<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="15" id="txtSDIRateRowCount" style="width: 96px;" /></td>
+                     	<td class="gridColumn" style="width: 100px" align="center"><select id="selLocalTaxAdjustmentTypeRowCount" style="width: 96px;"></select></td>
+						<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="15" id="txtLocalTaxAdjustmentAmountRowCount" style="width: 96px;" /></td>
+                       	<td class="gridColumn" style="width: 100px" align="center"><select id="selLocalTaxCode1RowCount" style="width: 96px;"></select></td>
+						<td class="gridColumn" style="width: 100px" align="center"><select id="selLocalTaxCode2RowCount" style="width: 96px;"></select></td>
+						<td class="gridColumn" style="width: 100px" align="center"><select id="selLocalTaxCode3RowCount" style="width: 96px;"></select></td>
+						<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="2" id="txtPayrollStatusRowCount" style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="2" id="txtPreviousPayrollStatusRowCount" style="width: 96px;" /></td>
+						<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="50" id="txtFrequencyTypeRowCount" readonly="true" style="width: 96px;" /></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><select id="selHouseCodeJobRowCount" style="width: 96px;"></select></td>
+                        <td class="gridColumn" style="width: 100px" align="center"><select id="selI9TypeRowCount" style="width: 96px;"></select></td>	
+						<td class="gridColumn" style="width: 100px" align="center"><select id="selVetTypeRowCount" style="width: 96px;"></select></td>	
+						<td class="gridColumn" style="width: 100px" align="center"><select id="selSeparationCodeRowCount" style="width: 96px;"></select></td>
+						<td class="gridColumn" style="width: 100px" align="center"><select id="selJobStartReasonTypeRowCount" style="width: 96px;"></select></td>
+						<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="10" id="txtEffectiveDateJobRowCount" style="width: 96px;" /></td>
+						<td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="10" id="txtEffectiveDateCompensationRowCount" style="width: 96px;" /></td>
+						<td class="gridColumnRight" style="width: 100px" align="center"><select id="selMaritalStatusTypeRowCount" style="width: 96px;"></select></td>
+					</tr>
+                </tbody>
+            </table>
+		</div>					
+	</body>
+</html>

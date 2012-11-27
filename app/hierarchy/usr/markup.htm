@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Hierarchy Management</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/app/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+		
+		<div id="popupLoading" style="position: absolute; z-index: 6000; width: 800px; height: 400px; background-color: white; display:none">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="popupMessageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+
+		<div class="pageHeader">
+			<div id="actionHeader">
+		        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
+				<div class="header">Hierarchy Management</div>
+	        </div>
+		</div>
+	    <div class="pageBody">
+			<div class="body">
+				<div class="labelText">Brief:</div>
+				<div id="AppUnitLoader">
+					<div id="AppUnit"></div>
+				</div>
+				<div class="labelText">Level:</div>
+				<div id="HirLevel">
+					<div id="Level"></div>
+				</div>
+				<div class="contentArea">
+					<div id="AnchorSearch"></div>
+				</div>
+			</div>
+			<div style="clear:both; height:10px;"></div>
+			<div class="contentArea">
+				<div class="body" id="hirContainer">
+					<div id="hierarchyAreaLeft">
+						<ul class="treeview" id="ulEdit0"></ul>
+					</div>
+					<div id="hierarchyAreaRight">
+						<div class="unitContainerHeader">Movable Units</div>
+						<div id="unitContainer">
+							<ul class="treeview" id="ulEditM"></ul>
+						</div>
+						<div style="clear:both;"></div>
+						<div id="divSelectAll">
+							<div id="SelectAll"><input type="checkbox" id="chkSelectAll" /></div>
+							<div class="labelSelectAll">Select all Units</div>
+							<div id="AnchorRemove"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div style="clear:both;"></div>
+			<div class="contentArea">
+				<div id="AnchorSave"></div>
+				<div id="AnchorPreview"></div>
+				<div id="AnchorCommit"></div>
+				<div id="AnchorUndo"></div>
+			</div>
+		</div>
+
+		<div id="HierarchyContext" style="display:none; z-index:999; position:absolute">
+			<table id="HierarchyContextMenu" class="tableBorder" cellpadding="0" cellspacing="0">
+				<tr id="menuAdd"><td class="tdImage"><img src="/fin/cmn/usr/media/common/add.png" alt="Add Node" title="Add Node" /></td><td class="tdBorder">Add</td></tr>
+				<tr id="menuEdit"><td class="tdImage"><img src="/fin/cmn/usr/media/common/modify.png" alt="Edit Node" title="Edit Node" /></td><td class="tdBorder">Edit</td></tr>
+				<!--<tr id="menuDelete"><td class="tdImage"><img src="/fin/cmn/usr/media/common/delete.png" alt="Delete Node" title="Delete Node" /></td><td class="tdBorder">Delete</td></tr>
+				<tr id="menuCut"><td class="tdImage"><img src="/fin/cmn/usr/media/common/cut1.png" alt="Cut Node" title="Cut Node" /></td><td class="tdBorder">Cut</td></tr>
+				<tr id="menuPaste"><td class="tdImage"><img src="/fin/cmn/usr/media/common/paste.png" alt="Paste Node" title="Paste Node" /></td><td class="tdBorder">Paste</td></tr>-->
+			</table>
+		</div>
+
+		<div id="hierarchyPopup">
+			<div class="contentArea">
+				<div id="popupHeader" class="header">Node Details</div>
+			    <div class="body" id="nodeDetailsContainer">
+			    	<div style="clear:both; height:5px;"></div>
+					<div id="TableEditArea">
+					    <div class="labelTextArea"><span class="requiredFieldIndicator">&#149;&nbsp;</span>Brief:</div>	
+					    <div class="inputTextArea"><div id="Brief"></div></div>
+				    </div>
+					<div style="clear:both;"></div>
+					<div id="TableEditArea">
+					    <div class="labelTextArea"><span class="requiredFieldIndicator">&#149;&nbsp;</span>Title:</div>	
+					    <div class="inputTextArea"><div id="Title"></div></div>
+				    </div>
+					<div style="clear:both;"></div>
+					<div id="TableEditArea">
+					    <div class="labelTextArea"><span class="requiredFieldIndicator">&#149;&nbsp;</span>Active:</div>	
+					    <div class="inputTextArea"><div id="Active"></div></div>
+					</div>
+					<div style="clear:both;"></div>
+					<div id="TableEditArea">
+					    <div class="labelTextArea"><span id="nonRequiredFieldIndicator">&nbsp;Level:</span></div>	
+					    <div id="LevelTitle" class="labelLevel"></div>
+					</div>
+					<div style="clear:both;"></div>
+					<div id="TableEditArea">
+					    <div class="labelTextArea"><span id="nonRequiredFieldIndicator">&nbsp;Parent:</span></div>	
+					    <div id="ParentLevelTitle" class="labelLevel"></div>
+					</div>
+					<div style="clear:both;"></div>
+			    </div>
+			</div>
+			<div class="contentArea">
+				<div id="AnchorSaveNode"></div>
+				<div id="AnchorCancel"></div>
+                <div style="clear:both;"></div>
+            </div>
+		</div>
+		<div style="clear:both;"></div>
+		<div id="hierarchyPreviewPopup">
+			<div class="contentArea">
+				<div id="popupHeader" class="header">Preview Snapshot</div>
+			    <div class="body">
+			    	<div id="previewContainer">
+			    		<ul class="treeview" id="ulEditP"></ul>
+			    	</div>					
+			    </div>
+			</div>
+			<div style="clear:both;"></div>
+			<div class="contentArea">
+				<div id="AnchorPrint"></div>
+				<div id="AnchorClose"></div>
+            </div>
+		</div>
+		<div style="clear:both;"></div>
+		<div id="hierarchyNodesListPopup">
+			<div class="contentArea">
+				<div id="popupHeader" class="header">Nodes List</div>
+			    <div class="body">
+			    	<div id="nodesListContainer">
+			    		<div id="NodeGrid"></div>
+					</div>					
+			    </div>
+			</div>
+			<div style="clear:both;"></div>
+			<div class="contentArea">
+				<div id="AnchorOK"></div>
+				<div id="AnchorClosePopup"></div>
+            </div>
+		</div>
+
+		<div id="backgroundPopup"></div>
+		<div id="iiInputValidationMaster"></div>
+	</body>
+</html>

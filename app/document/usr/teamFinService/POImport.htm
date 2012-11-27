@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Purchase Order Import</h1>
+			<div class="description">The purpose of Purchase Order Import is to update Purchase Orders from JD. Edward. Set Purchase Order's AppTransactionStatusType from 2 to 3.</div>
+		</div>		
+		
+		
+		<h2>Class</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:550px;">Class Name</th>
+			</tr>
+			<tr>
+				<td colspan='5'>POImporter</td>				
+			</tr>
+		</table>
+		
+		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th>Validation</th>				
+			</tr>
+			<tr>
+				<td colspan='5'>There is no UI element</td>				
+			</tr>
+		</table>
+		<h2>Configuration Settings</h2>
+		<table class="elementTable">
+			<tr>
+				<th  style="width:30px;">Configuration Key</th>
+				<th  style="width:500px;">Description</th>
+			</tr>
+			<tr>
+				<td>ConnectionString</td>
+				<td>Connection String used to connect to TeamFin database.</td>
+			</tr>		
+			<tr>
+			    <td>ImportFilePath</td>
+			    <td>Complete folder path for Purchase Order import file. This folder is shared with other import processes.</td>
+			</tr>
+			<tr>
+			    <td>ImportBackupFilePath</td>
+			    <td>Complete folder path of back ups for Purchase Order Import files. This folder is shared with other import processes.</td>
+			</tr>
+			<tr>
+			    <td>ImportFileNamePO</td>
+			    <td>Purchase Order Import file name.</td>
+			</tr>	
+			<tr>
+			    <td>ImportAt</td>
+			    <td>Time when Purchase Order import is executed</td>
+			</tr>
+		</table>
+		
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th  style="width:40px;">Error/Event</th>
+				<th  style="width:260px;">Message</th>
+			</tr>
+			<tr>
+			    <td>Import file was not found</td>
+			    <td>Purchase Order import file was not found in the specified folder.</td>
+			</tr>
+			<tr>
+				<td>No Matching Purchase Order was found.</td>
+				<td>Display message "No Matching Purchase Order with right status was found" when matching purchase order was not found in TeamFin 
+				    based on PurPurchaseOrders.PurPuroOrderNumber and PurPurchaseOrder.AppTransactionStatusType.</td>
+			</tr>
+			<tr>
+			    <td>Exceptions</td>
+			    <td>Check table AppIEExceptions for exception details (AppIECategory = 3)</td>
+			</tr>
+			<tr>
+			    <td>Imported Number of Records</td>
+			    <td>Check table AppIETransactions for total imported records and execution starting/ending time (AppIECategory = 3).</td>
+			</tr>
+		</table>
+		
+		<h2>Dependencies</h2>
+		<div class="reference">1. Windows Services must be restarted for new configuration settings to take effect.</div>
+		<div class="reference">2. Exception and Event logging depends on LogWriter class.</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th style="width:50px">Object Types</th>
+				<th style="width:250px">Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>PurPurchaseOrders</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>PurPurchaseOrderImportUpdate</td>
+			</tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="POExport.htm">Purchase Order Export</a></div>
+	</body>
+</html>

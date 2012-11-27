@@ -1,0 +1,175 @@
+﻿
+.LabelGeneralAreaLeft
+{
+	width: 170px;
+	float: left;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
+	
+.LabelGeneralAreaRight
+{
+	width: 170px;
+	float: left;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
+	
+#GeneralYesRadioTextLeft
+{
+	float:left;
+	width:20px;
+	height:27px;
+	font-family:Verdana;
+	font-size:12px;
+	color:#032D23;
+	padding-top:3px;
+}
+	
+#PTORadioTextLeft
+{
+	float:left;
+	width:40px;
+	height:27px;
+	font-family:Verdana;
+	font-size:12px;
+	color:#032D23;
+	padding-top:3px;
+}
+	
+#GeneralYesRadioButtonLeft
+{
+	float:left;
+	width:25px;
+	padding-bottom:2px;
+}
+
+#GeneralNoRadioTextRight
+{
+	float:left;
+	width:20px;
+	height:27px;
+	font-family:Verdana;
+	font-size:12px;
+	color:#032D23;
+	padding-top:3px;
+}
+	
+#GeneralNoRadioButtonRight
+{
+	float:left;
+	width:25px;
+	margin-left:25px;
+	padding-bottom:2px;
+}
+
+#LabelGeneralRadioTextBig
+{
+	float:left;
+	height:27px;
+	font-family:Verdana;
+	font-size:12px;
+	width:50px;
+	color:#032D23;
+	padding-top:2px;
+}
+	
+#radioButtonGeneral
+{
+	float:left;
+	height:27px;
+	font-family:Verdana;
+	font-size:12px;
+	color:#032D23;
+	width:20px;
+	padding-right:5px;
+}
+
+#generalAreasContainerLeft
+{
+	float:left;
+	margin-right:20px;
+}
+	
+#generalAreasContainerRight
+{
+	float:left;
+}
+
+#LabelGeneral
+{
+	float:left;
+	height:27px;
+	font-family:Verdana;
+	font-size:13px;
+	color:#032D23;
+	padding-top:2px;
+}
+
+#PTOStartDateLabel
+{
+	font-family:Verdana;
+	font-size:13px;
+	color:#032D23;
+	padding-left:5px;
+}
+
+#PTOSetupLabel
+{
+	font-family:Verdana;
+	font-size:13px;
+	font-weight: bold;
+	color:#032D23;
+	padding-left:5px;
+}
+
+#DollarPerPayPeriodLabel, #PayFrequencyType
+{
+	font-family:Verdana;
+	font-size:13px;
+	color:#032D23;
+}
+
+#SSNLookUp
+{
+	font-family:Verdana;
+	font-size:9px;
+	color:blue;
+	cursor:pointer;
+}
+
+.HouseCodeContainer
+{
+	width:186px;
+	float:left;
+	height:16px;
+	border:solid #AAAAAA thin;
+	background-color:white;
+	border-width:1px;
+	padding: 1px 1px 1px 1px;
+}
+	
+.HouseCodeText
+{
+	width:166px;
+	float:left;
+	height:13px;
+	font-family:Verdana;
+	font-size:12px;
+	color:#032D23;
+	border:0;
+}
+.iiInputText
+	{
+		width:182px;
+		white-space:nowrap;
+	}
+.iiInputTable
+	{
+		width:188px;
+		white-space:nowrap;
+	}

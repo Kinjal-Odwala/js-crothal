@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Setup - Tax Rates</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/rev/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+			<table width="100%" height="100%">
+				<tr>
+					<td align="center">
+						<img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+						<div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;">Loading</div>    
+		        	</td>
+				</tr>
+			</table>
+		</div>
+		
+		<div id="actionHeader">
+	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>			
+        </div>
+		
+		<div class="pageBody">
+			<div class="contentArea">
+				<div class="header" id="pageHeader">Tax Rates</div>
+				<div id="divFrame" class="body">
+					<div style="height: 10px;"></div>
+					<iframe id="iFrameUpload" src="/net/crothall/chimes/fin/app/act/FileUpload.aspx" frameborder="0" width="100%" height="30"></iframe>
+					<div style="clear:both;"></div>
+				</div>
+				<div id="divUpload" class="body">
+					<div id="AnchorUpload"></div>
+					<div id="AnchorCancel"></div>
+					<div style="clear:both;"></div>
+				</div>
+				<div id="divTaxes" class="body">
+					<div style="height:10px;"></div>
+					<div id="TableEditArea">
+						<div class="taxLabel">Zip Code:</div>
+						<div class="inputTextArea">
+							<div id="ZipCode"></div>
+						</div>
+						<div class="taxLabel">State:</div>
+						<div class="inputTextArea">
+							<div id="State"></div>
+						</div>
+						<div id="AnchorSearch"></div>
+						<div style="clear:both;"></div>
+						<div class="taxLabel">State Tax:</div>
+						<div class="inputTextArea">
+							<div id="StateTax"></div>
+						</div>
+					</div>					
+					<div style="clear:both; height:10px;"></div>
+					<div id="GridContianer">
+						<div id="TaxGrid"></div>
+					</div>
+					<div style="clear:both;"></div>
+					<div id="Paging">							
+			            <table cellpadding="0" cellspacing="0" style="width: 100%">
+	                        <tr class="footer">
+	                            <td class="borderVertical"></td>					                            
+	                            <td>
+	                                <table cellpadding="0" cellspacing="0" style="width: 100%">
+	                                    <tr>	                                    	
+	                                        <td align="center">&nbsp;Page:&nbsp;<select id="selPageNumber"></select>
+	                                            <span id="spnPageInfo"></span>
+	                                        </td>
+	                                        <td style="width: 36px; background-color: white">               
+	                                            <img id="imgPrev" src="/fin/cmn/usr/media/Common/previous.png" style="cursor: pointer" alt="Previous Page" title="Previous Page" />
+	                                            <img id="imgNext" src="/fin/cmn/usr/media/Common/next.png" style="cursor: pointer" alt="Next Page" title="Next Page" />
+	                                        </td>
+											<td style="width: 20px;">&nbsp;</td>
+	                                    </tr>
+	                                </table>
+	                            </td>
+	                            <td class="borderVertical"></td>
+	                        </tr>
+	                        <tr><td class="borderHorizontal" colspan="3"></td></tr>
+	                    </table>							        
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="iiInputValidationMaster"></div>
+	</body>
+</html>

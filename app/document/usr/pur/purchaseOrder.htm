@@ -1,0 +1,885 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Purchase Orders</h1>
+			<div class="description">Purchase Orders is the area in the system where a user can create new purchase orders, 
+				view open/placed/posted orders and also allows the user to preview the purchase orders. 
+			</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Purchase Order Search</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Hierarchy Tree View</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>To search a specific House Code, type-in House Code # (1455, 900000) and press Enter key.</td>				
+			</tr>
+			<tr>
+				<td>Order #</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Enter valid Purchase Order #.</td>
+			</tr>
+			<tr>
+				<td>Search</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>List the Purchase Orders based on the search criteria.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Purchase Orders</td>
+			</tr>
+			<tr>
+				<td>Purchase Orders</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List the Purchase Orders based on the search criteria. Purchase Order details will be listed based on the selected Purchase Order.</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>House Code of the Purchase Order.</td>				
+			</tr>
+			<tr>
+				<td>Order #</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Purchase Order Number. The Order # will be visible only if order is placed. Otherwise the Order # will be masked by # [Example: #######].</td>				
+			</tr>
+			<tr>
+				<td>Date</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Purchase Order Date.</td>				
+			</tr>
+			<tr>
+				<td>Vendor</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Name of the Vendor.</td>				
+			</tr>
+			<tr>
+				<td>Amount</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Total amount of the Purchase Order.</td>				
+			</tr>
+			<tr>
+				<td>Placed By</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Name of the person who created the Purchase Order.</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+			<tr>
+				<td>Print</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To view/print the selected purchase order details in pdf format. Only the placed and posted orders can be printed.</td>
+			</tr>
+			<tr>
+				<td>PO From Template</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To create the purchase order from available template.</td>
+			</tr>
+			<tr>
+				<td>New Order</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Opens the popup screen which will allow the user to create new purchase order.</td>
+			</tr>
+			<tr>
+				<td>Place Order</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To place the selected purchase order. Once an order has been placed, it cannot be edited or cancelled. 
+					Only an open order can be edited or cancelled by the user. Send an email notification after placing the order.</td>
+			</tr>
+			<tr>
+				<td>Cancel Order</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To cancel the selected purchase order.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">New Purchase Order</td>
+			</tr>
+			<tr>
+				<td>Vendor</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Vendor should be selected from dropdown list.</td>				
+			</tr>	
+			<tr>
+				<td>Category</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Category should be selected from dropdown list.</td>				
+			</tr>
+			<tr>
+				<td>Catalog</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Catalog should be selected from dropdown list.</td>				
+			</tr>
+			<tr>
+				<td>Item #, Description</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Enter minimun 3 characters to search the Items.</td>				
+			</tr>
+			<tr>
+				<td>Search</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>List the Items based on the search criteria.</td>				
+			</tr>
+			<tr>
+				<td>Load</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>List the Items based on the selected Category / Catalog.</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Purchase Order Items</td>
+			</tr>
+			<tr>
+				<td>Purchase Order Items</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List the purchase order items.</td>
+			</tr>
+			<tr>
+				<td>Select</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>(Y / N) Select the items by selecting the check box.</td>				
+			</tr>
+			<tr>
+				<td>Catalog</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Name of the Catalog.</td>				
+			</tr>
+			<tr>
+				<td>Item Number</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Item # of the Item.</td>				
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Description of the Item.</td>				
+			</tr>
+			<tr>
+				<td>Unit</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Unit of the Item.</td>				
+			</tr>
+			<tr>
+				<td>Price</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Price of the Item.</td>				
+			</tr>
+			<tr>
+				<td>Quantity</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Quantity of the item.</td>				
+			</tr>
+			<tr>
+				<td>Continue</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To display the Shipping Information popup screen.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Closes the popup screen</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Shipping Information</td>
+			</tr>
+			<tr>
+				<td>Requested By</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Requested By (Name of the person).</td>				
+			</tr>
+			<tr>
+				<td>Job</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Job should be selected from dropdown list.</td>				
+			</tr>
+			<tr>
+				<td>Company</td>
+				<td>Text field</td>
+				<td>NA</td>
+				<td>Readonly field</td>
+				<td>Title of the House Code.</td>
+			</tr>
+			<tr>
+				<td>Address 1</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Address 1 of the House Code.</td>				
+			</tr>
+			<tr>
+				<td>Address 2</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Address 2 of the House Code.</td>				
+			</tr>
+			<tr>
+				<td>City</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>City of the House Code.</td>				
+			</tr>
+			<tr>
+				<td>State</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>State of the House Code. State should be selected from dropdown list.</td>				
+			</tr>
+			<tr>
+				<td>Zip</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Zip Code should be valid. Example: 99999 or 99999-9999</td>				
+			</tr>
+			<tr>
+				<td>Phone</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Phone should be valid. Example: (999) 999-9999</td>				
+			</tr>			
+			<tr>
+				<td>Fax</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Fax should be valid. Example: (999) 999-9999</td>				
+			</tr>
+			<tr>
+				<td>Save as Template</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N (If checked, purchase order will be saved as template)</td>
+			</tr>
+			<tr>
+				<td>Template Title</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Show this field only if "Save as Template" field is marked as checked and it should not be blank.</td>				
+			</tr>
+			<tr>
+				<td>Note to Supplier</td>
+				<td>Textarea field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Note to Supplier.</td>				
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Creates the new Purchase Order.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Closes the popup screen.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Purchase Order Templates</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Hierarchy Tree View</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>To search a specific House Code, type-in House Code # (1455, 900000) and press Enter key.</td>				
+			</tr>
+			<tr>
+				<td>PO Templates</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List the purchase order templates.</td>
+			</tr>			
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Creates the new purchase order based on the selected template.</td>
+			</tr>
+			<tr>
+				<td>Delete</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Delete the selected purchase order template.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Closes the popup screen.</td>
+			</tr>						
+			<tr>
+				<td class="uiHeader" colspan="5">Open Orders - Purchase Order Details</td>
+			</tr>
+			<tr>
+				<td>Purchase Order Items</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List the purchase order items based on the selected purchase order.</td>
+			</tr>
+			<tr>
+				<td>Category</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Category of the purchase order item.</td>
+			</tr>
+			<tr>
+				<td>Job</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Job should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Item #</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Item # of the purchase order item.</td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Description of the purchase order item.</td>
+			</tr>
+			<tr>
+				<td>Unit</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Unit of the purchase order item.</td>
+			</tr>
+			<tr>
+				<td>Rec Qunatity</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Recommended qunatity of the purchase order item. Recommended quantity is the average quantity of the last three orders placed on that item.</td>
+			</tr>
+			<tr>
+				<td>Qty Override</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Qunatity of the purchase order item.</td>
+			</tr>
+			<tr>
+				<td>Unit Price</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Price of the purchase order item. If the price of the item is changed in Catalog then the price will be displayed in RED color.</td>
+			</tr>
+			<tr>
+				<td>Extended Cost</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Cost of the purchase order item.</td>
+			</tr>
+			<tr>
+				<td>Period Budget</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Period budget amount of the purchase order item.</td>
+			</tr>
+			<tr>
+				<td>PD Budget Remaining</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Remaining Period Budget amount of the purchase order item.</td>
+			</tr>
+			<tr>
+				<td>Add</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Allow the user to search and add the items from the Catalog.</td>
+			</tr>
+			<tr>
+				<td>Edit</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Allow the user to edit the Job and Quantity.</td>
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Undo the current changes in the purchase order items.</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To save the purchase order items information.</td>
+			</tr>
+			<tr>
+				<td>View</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To view the selected purchase order details in pdf format.</td>
+			</tr>
+			<tr>
+				<td>Edit Shipping</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To edit the shipping information.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Context Menu</td>
+			</tr>
+			<tr>
+				<td>Add Items</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>User can right click on the item and select Add Items to search and add the items from the Catalog.</td>
+			</tr>
+			<tr>
+				<td>Edit Items</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>User can right click on the item and select Edit Items to edit the Job and Quantity.</td>
+			</tr>
+			<tr>
+				<td>Delete Item</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>User can right click on the item and select Delete Item to delete the item from the Purchase Order.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Placed Orders - Purchase Order Details</td>
+			</tr>
+			<tr>
+				<td>Purchase Order Items</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List the purchase order items based on the selected purchase order.</td>
+			</tr>
+			<tr>
+				<td>Category</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Category of the purchase order item.</td>
+			</tr>
+			<tr>
+				<td>Job</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Job of the purchase order item.</td>
+			</tr>
+			<tr>
+				<td>Item #</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Item # of the purchase order item.</td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Description of the purchase order item.</td>
+			</tr>
+			<tr>
+				<td>Unit</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Unit of the purchase order item.</td>
+			</tr>
+			<tr>
+				<td>Qty Ordered</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Ordered qunatity of the purchase order item.</td>
+			</tr>			
+			<tr>
+				<td>Unit Price</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Price of the purchase order item. If the price of the item is changed in Catalog then the price will be displayed in RED color.</td>
+			</tr>
+			<tr>
+				<td>Extended Cost</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Total cost of the purchase order item.</td>
+			</tr>			
+			<tr>
+				<td class="uiHeader" colspan="5">Posted Orders - Purchase Order Details</td>
+			</tr>
+			<tr>
+				<td>Purchase Order Items</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List the purchase order items based on the selected purchase order.</td>
+			</tr>
+			<tr>
+				<td>Category</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Category of the purchase order item.</td>
+			</tr>
+			<tr>
+				<td>Job</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Job of the purchase order item.</td>
+			</tr>
+			<tr>
+				<td>Item #</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Item # of the purchase order item.</td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Description of the purchase order item.</td>
+			</tr>
+			<tr>
+				<td>Unit</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Unit of the purchase order item.</td>
+			</tr>
+			<tr>
+				<td>Qty Ordered</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Ordered qunatity of the purchase order item.</td>
+			</tr>
+			<tr>
+				<td>Qty Received</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Received qunatity of the purchase order item.</td>
+			</tr>
+			<tr>
+				<td>Unit Price</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Price of the purchase order item. If the price of the item is changed in Catalog then the price will be displayed in RED color.</td>
+			</tr>
+			<tr>
+				<td>Extended Cost</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Total cost of the purchase order item.</td>
+			</tr>
+			<tr>
+				<td>Edit</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Allow the user to edit Quantity Received field.</td>
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Undo the current changes in the purchase order items.</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To save the purchase order items information.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Actions Menu</td>
+			</tr>
+			<tr>
+				<td>Save Purchase Order</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To save the purchase order items information.</td>
+			</tr>
+			<tr>
+				<td>Undo current changes to Purchase Order</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Undo the current changes in the purchase order items.</td>
+			</tr>
+			<tr>
+				<td>View / Edit Purchase Order Info</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To view / edit the shipping information</td>
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Open Purchase Orders</td>
+			</tr>
+			<tr>
+				<td><img src="images/openOrder.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Placed Purchase Orders</td>
+			</tr>
+			<tr>
+				<td><img src="images/placedOrder.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Posted Purchase Orders</td>
+			</tr>
+			<tr>
+				<td><img src="images/postedOrder.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">New Purchase Order</td>
+			</tr>
+			<tr>
+				<td><img src="images/newPurchaseOrder.png"></td>
+			</tr>
+			<tr>
+				<td><img src="images/editPurchaseOrder.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Purchase Order Templates</td>
+			</tr>
+			<tr>
+				<td><img src="images/poTemplate.png"></td>
+			</tr>			
+			<tr>
+				<td class="uiHeader">Print Purchase Order</td>
+			</tr>
+			<tr>
+				<td><img src="images/printOrder.png"></td>
+			</tr>
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Search</td>
+				<td>Please enter valid Purchase Order #.<br>
+				There are no purchase orders matching the given criteria or you do not have enough permission to access it.</td>
+			</tr>
+			<tr>
+				<td>New Order</td>
+				<td>Please select the House Code before adding the new Purchase Order.<br>Please select the Vendor.</td>
+			</tr>
+			<tr>
+				<td>Place Order</td>
+				<td>You cannot place a Purchase Order without entering a quantity.<br>
+				Please click 'OK' to place this order. You will then be directed to print this Purchase Order in which you will fax to xxx-xxx-xxxx.<br>
+				Please click 'OK' to place this order. The order will then be automatically e-mailed to [Vendor Name] at [Vendor Email Id].
+				</td>
+			</tr>
+			<tr>
+				<td>Cancel Order</td>
+				<td>Please click 'OK' to cancel this order.</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>If the manadatory details are not provided, appropriate error message should be displayed.</td>
+			</tr>
+			<tr>
+				<td>Error</td>
+				<td>Error while updating Purchase Order Record.</td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. States must be defined in a system look up table (AppStateTypes)</div>
+		<div class="reference">2. Transaction Status Types must be defined in a system look up table (AppTransactionStatusTypes)</div>
+		<div class="reference">3. Chart of accounts must be defined in a system look up table (FscAccounts)</div>
+		<div class="reference">4. Fiscal Years must be defined in a system look up table (FscYears)</div>
+		<div class="reference">5. Fiscal Periods must be defined in a system look up table (FscPeriods)</div>
+		<div class="reference">6. Send Method Types must be defined in a system look up table (PurPOSendMethodTypes)</div>
+		<div class="reference">7. Vendors must be defined in a system look up table (PurVendors)</div>
+		<div class="reference">8. Items must be defined in a system look up table (PurItems)</div>
+		<div class="reference">9. Catalogs must be defined in a system look up table (PurCatalogs)</div>
+		<div class="reference">10. House Codes must be defined in a system look up table (HcmHouseCodes)</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>AppTransactionStatusTypes<br>
+					AppStateTypes<br>
+					HirNodes<br>
+					HcmHouseCodes<br>
+					HcmHouseCodeJobs<br>
+					FscYears<br>
+					FscPeriods<br>
+					FscAccounts<br>					
+					PurPOSendMethodTypes<br>
+					PurVendors<br>
+					PurItems<br>
+					PurCatalogs<br>
+					PurCatalogHouseCodes<br>
+					PurCatalogItems<br>
+					PurPurchaseOrders<br>
+					PurPurchaseOrderDetails<br>
+				</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>PurCatalogItemsSelect</br>
+					PurCatalogsSelect</br>
+					PurFscAccountsSelect</br>
+					PurPurchaseOrderDetailDelete</br>
+					PurPurchaseOrderDetailsSelect</br>
+					PurPurchaseOrderDetailUpdate</br>
+					PurPurchaseOrderFromTemplate</br>
+					PurPurchaseOrderItemsSelect</br>
+					PurPurchaseOrdersSelect</br>
+					PurPurchaseOrderStatusUpdate</br>
+					PurPurchaseOrderTemplatesSelect</br>
+					PurPurchaseOrderUpdate</br>
+					PurVendorsSelect
+				</td>
+			</tr>
+			<tr>
+				<td>Functions</td>
+				<td>PurPeriodBudget</br>
+					PurRecommendedQuantity
+				</td>
+			</tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="vendor.htm">Vendors</a></div>
+		<div class="reference"><a href="item.htm">Items</a></div>
+		<div class="reference"><a href="catalog.htm">Catalogs</a></div>		
+	</body>
+</html>

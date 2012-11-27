@@ -1,0 +1,898 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Work Orders</h1>
+			<div class="description">The purpose of <b>Work Orders</b> is to create and maintain the list of work orders for each House Code.
+				Work orders are billable or non-billable instructions for performing specific tasks as requested by the client. 
+				These tasks could be a one time request or they could be recurring.</br></br>
+				When a work order has been created it will have a status of Pending Approval. 
+				Before a work order can be made available for payroll hours to be entered against it or for invoicing, 
+				the work order must be approved by the Area Manager and the Regional Manger. 
+				This will be an email notification to both the Area Manager and the Regional Manager. 
+				The email will contain a copy of the work order and a link to approve. 
+				A Regional Manager approval will override the need for an Area Manager's approval.</br></br>
+				Once a work order has been approved by the Area Manager and Regional manager, payroll hours can be entered 
+				against the work order and the work order will be available to invoice. 
+				When an invoice has been created against the work order, the work order will then have a status of Closed.</br></br>
+				Once a work order has been completed you can only view the work order and no edits can be made. 
+			</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Work Order Search</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Hierarchy Tree View</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>To search a specific House Code, type-in House Code # (1455, 900000) and press Enter key.</td>				
+			</tr>
+			<tr>
+				<td>Job</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Job should be selected from dropdown list.</td>				
+			</tr>
+			<tr>
+				<td>Load</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>List the Work Orders based on the search criteria.</td>
+			</tr>
+			<tr>
+				<td>Search Image</td>
+				<td>Image icon field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Opens the popup screen to view the advance search options.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Advance Search<font style="font-size: 12px; font-weight: normal;"> (Click on the image icon to view the advance search options).</font></td>
+			</tr>	
+			<tr>
+				<td>Status</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Status [Pending Approval / Approved / Completed / Closed] should be selected from dropdown list.</td>				
+			</tr>
+			<tr>
+				<td>Start Date</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Start Date either can be blank or should be valid date.</td>				
+			</tr>
+			<tr>
+				<td>End Date</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>End Date either can be blank or should be valid date.</td>				
+			</tr>			
+			<tr>
+				<td>Search</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>List the Work Orders based on the advance search criteria.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Closes the popup screen.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Work Orders</td>
+			</tr>
+			<tr>
+				<td>Work Orders</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Holds the list of Work Orders based on the search criteria. Work Order details will be shown based on the selected Work Order.</td>
+			</tr>
+			<tr>
+				<td>Service Location</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td></td>
+				<td>Service Location of the Work Order.</td>
+			</tr>
+			<tr>
+				<td>Work Order #</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td></td>
+				<td>Work Order number.</td>
+			</tr>
+			<tr>
+				<td>Start Date</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td></td>
+				<td>Start Date of the Work Order.</td>
+			</tr>
+			<tr>
+				<td>Completed Date</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td></td>
+				<td>Completed Date of the Work Order. This field will be visible only for completed Work Orders.</td>
+			</tr>
+			<tr>
+				<td>Closed Date</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td></td>
+				<td>Closed Date of the Work Order. This field will be visible only for closed Work Orders.</td>
+			</tr>
+			<tr>
+				<td>Status</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td></td>
+				<td>Status of the Work Order.</td>
+			</tr>							
+			<tr>
+				<td class="uiHeader" colspan="5">Work Order Details<font style="font-size: 12px; font-weight: normal;"> (Same fields will be shown in the new work order setup wizard).</font></td>
+			</tr>			
+			<tr>
+				<td>Service Location</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Service Location of the work order. This could be the House Code or the Job (List of Jobs which is having Job Type as Service Location).</td>				
+			</tr>
+			</tr>
+			<tr>
+				<td>Customer</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Customer of the work order. This could be the House Code or the Job (List of Jobs which is having Job Type as Customer).</td>
+			</tr>
+			<tr>
+				<td>Requested By</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Requested By.</td>
+			</tr>
+			<tr>
+				<td>Tennant</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>This would appear as a description line on the invoice.</td>
+			</tr>
+			<tr>
+				<td>Phone Number</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Requestor's Phone Number. Phone number should be valid. Example: (999) 999-9999</td>
+			</tr>
+			<tr>
+				<td>PO Number</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>This would appear on the invoice header.</td>
+			</tr>
+			<tr>
+				<td>Start Date</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Start Date of the work order. Start Date should be valid date and it should not be less than the system configured date. 
+					System configured date will be calcualted based on the value of the "WorkOrderBackDays" system variable.
+				</td>
+			</tr>
+			<tr>
+				<td>Overtime Authorized</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Overtime Authorized (Yes/No).</td>
+			</tr>
+			<tr>
+				<td>Service Contract</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Service Contract of the work order.</td>
+			</tr>
+			<tr>
+				<td>General Location Code</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>General Location Code of the work order.</td>
+			</tr>
+			<tr>
+				<td>Customer WO Number</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Customer WO Number of the work order.</td>
+			</tr>
+			<tr>
+				<td>Square Feet</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Square Feet of the job being performed. Square Feet should be valid. Example: 9.99</td>
+			</tr>
+			<tr>
+				<td>Area Manager Email</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Email Id of the Area Manager. Email should be valid email address.</td>
+			</tr>
+			<tr>
+				<td>Regional Manager Email</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Email Id of the Regional Manager. Email should be valid email address.</td>
+			</tr>
+			<tr>
+				<td>Subcontracted</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Subcontracted (Yes/No).</td>
+			</tr>			
+			<tr>
+				<td>Commissionable</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Overtime Authorized (Yes/No).</td>
+			</tr>
+			<tr>
+				<td>Notes</td>
+				<td>Textarea field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Detailed description of the work order.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>			
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To save the Work Order details.</td>
+			</tr>
+			<tr>
+				<td>New</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To create the new Work Order.</td>
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Undo the current changes in the Work Order details.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To Cancel the Work Order.</td>
+			</tr>
+			<tr>
+				<td>Approve</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To Approve the Work Order. The user should have security permission to approve the Work Order.</td>
+			</tr>
+			<tr>
+				<td>View Items</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To View / Edit the Work Order items.</td>
+			</tr>
+			<tr>
+				<td>Print WO</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To view/print the selected Work Order details in pdf format. </td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Work Order Setup wizard</td>
+			</tr>
+			<tr>
+				<td>One Time</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>To create the work order only one time.</td>
+			</tr>
+			<tr>
+				<td>Recurring</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Recurring work orders require an additional setup for selecting the frequency. 
+				The setup of the actual work order would be the same as a One Time work order.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Work Order Items wizard(<font style="font-size: 12px; font-weight: normal;"> (Same screen will be shown for "View Items" functionality).</font></td>
+			</tr>
+			<tr>
+				<td>Work Order Items</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Holds the list of Work Orders items. New items can be added or existing items can be modified.</td>
+			</tr>
+			<tr>
+				<td>Task</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Task should be selected from dropdown list. Each one of task would be mapped to a specific GL Account. 
+					This will be the GL Account used for Flash as well as when an Invoice is created from the Work Order.</td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Description of the task.</td>
+			</tr>
+			<tr>
+				<td>Quantity</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Quantity of the task.</td>
+			</tr>
+			<tr>
+				<td>Unit Price</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Unit Price of the task.</td>
+			</tr>
+			<tr>
+				<td>Markup (%)</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Markup value (in %) of the task. By default the value associated with Task will be shown. User can change the value if required.</td>
+			</tr>
+			<tr>
+				<td>Total</td>
+				<td>Display field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>Total cost of the task. Formula: (Quantity * Unit Price * Markup / 100) + (Quantity * Unit Price)</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Work Order Setup - Recurring Frequency selection wizard</td>
+			</tr>
+			<tr>
+				<td>Daily</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>When selecting Daily the following options are available.</br>
+					1. Select any day of the week with a checkbox</br>
+					2. Every weekday</br>
+					3. Repeat every X number of days</br>
+					4. Specify the Start Time
+				</td>
+			</tr>
+			<tr>
+				<td>Weekly</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>When selecting Weekly the following options are available.</br>
+					1. Repeat every X number of weeks</br>
+					2. Specify the day(s) of the the week with a checkbox</br>
+					3. Specify the Start Time
+				</td>
+			</tr>
+			<tr>
+				<td>Monthly</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>When selecting Monthly the following options are available.</br>
+					1. Select the month(s) with a checkbox</br>
+					2. Select the week of the month to start. The options in the drop list are 1st, 2nd, 3rd, 4th, Last</br>
+					3. Specify what day of the week to begin using a checkbox</br>
+					4. Or Specify the calendar day(s)</br>
+					5. Specify the Start Time
+				</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Work Order Setup - Daily Schedule wizard(<font style="font-size: 12px; font-weight: normal;"> (Same check boxes will be shown in the Weekly and Monthly schedule wizard).</font></td>
+			</tr>
+			<tr>
+				<td>On the following days</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>If this option is selected, then atleast one week day should be selected.</td>
+			</tr>
+			<tr>
+				<td>Sun</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Mon</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Tue</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Wed</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Thu</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Fri</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Sat</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Every weekday</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>If this option is selected, Mon, Tue, Wed, Thu, Fri will be selected by default.</td>
+			</tr>
+			<tr>
+				<td>Repeat after this number of days</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>If this option is selected, Number of Days should be entered.</td>
+			</tr>
+			<tr>
+				<td>Number of Days</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Number of Days should be valid. Ex. 2</td>				
+			</tr>			
+			<tr>
+				<td class="uiHeader" colspan="5">Work Order Setup - Weekly Schedule wizard</td>
+			</tr>
+			<tr>
+				<td>Repeat after this number of weeks</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Number of weeks should be valid. Ex. 2</td>				
+			</tr>
+			<tr>
+				<td>On day(s)</td>
+				<td>Checkbox field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Show the Sun, Mon, Tue, Wed, Thu, Fri, Sat check boxes and at least one should be selected.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Work Order Setup - Monthly Schedule wizard</td>
+			</tr>
+			<tr>
+				<td>Months</td>
+				<td>Label field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>Show all months check boxes and at least one month should be selected.</td>
+			</tr>
+			<tr>
+				<td>Jan</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Feb</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Mar</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Apr</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>May</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Jun</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Jul</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Aug</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Sep</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Oct</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Nov</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Dec</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>On week of month</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>If this option is selected, Week of Month should be selected and at least one week day should be selected..</td>
+			</tr>
+			<tr>
+				<td>Week of Month</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Week of Month should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>On day of week</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Show the Sun, Mon, Tue, Wed, Thu, Fri, Sat check boxes.</td>
+			</tr>
+			<tr>
+				<td>On calendar day(s)</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>If this option is selected, Calendar Day(s) should be entered.</td>
+			</tr>
+			<tr>
+				<td>Calendar Day(s)</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Calendar Day(s) should be valid. Ex. 1,3-5</td>
+			</tr>
+			<tr>
+				<td>Start Time (Hours)</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Start Time (Hours) should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Start Time (Minutes)</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Start Time (Minutes) should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>A.M.</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>P.M.</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>End Date</td>
+				<td>Date Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>End Date should be valid date and it should not be less than Start Date.</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Closes the popup screen.</td>
+			</tr>
+			<tr>
+				<td>Next</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To show the next setup wizard.</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To save the work order details.
+					<ul>
+						<li>Once the work order has been saved the following below will happen.</br>
+							1. <b>Work Order Number</b> is generated.</br>
+							2. Work Order is placed into a "<b>Pending Approval</b>" status.</br>
+							3. <b>Approval Emails</b> will be sent to the <b>Area Manager</b> and <b>Regional Manager</b>.
+							The emails will contain a link to allow either <b>Area Manager</b> or <b>Regional Manager</b> to approve the work order request. 
+							A Regional Manager's approval will automatically approve the work order and change the work order status to "<b>Approved</b>". 
+						</li>
+						<li>Once a work order has been "<b>Approved</b>" the work order will be available in the work order drop list on the payroll screen that will allow payroll hours to be entered against it.</li>
+						<li>When the work is complete and is ready to be invoiced, the <b>work order can be converted to an invoice</b>.</li>
+						<li>The work order's <b>line items will carry over to the invoice line items</b>.</li>
+						<li>Once an invoice has been created against a work order, the work order's status will be changed to "<b>Closed</b>."</li>
+					</ul></td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Actions Menu</td>
+			</tr>
+			<tr>
+				<td>Save Work Order</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To save the Work Order details.</td>
+			</tr>
+			<tr>
+				<td>New Work Order</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To create the new Work Order.</td>
+			</tr>
+			<tr>
+				<td>Undo current changes to Work Order</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Undo the current changes in the Work Order details.</td>
+			</tr>			
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Listing Work Orders concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/workOrder.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Advnace Search concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/workOrderSearch.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Work Order Setup wizard concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/workOrderType.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Work Order Details wizard concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/workOrderDetail.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Work Order Items wizard concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/workOrderLineItem.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Work Order Setup - Recurring Frequency selection wizard concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/workOrderRecurringType.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Work Order Setup - Daily Schedule wizard concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/workOrderDaily.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Work Order Setup - Weekly Schedule wizard concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/workOrderWeekly.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Work Order Setup - Monthly Schedule wizard concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/workOrderMonthly.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Printing Work Order concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/woReport.png"></td>
+			</tr>
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Next</td>
+				<td>In order to continue, the errors on the page must be corrected.</br>
+					Warning: You have selected a House Code as the customer. This will become the bill to address for the invoice. Click OK to Continue.
+				</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Please select day/s of the Week.</br>
+					Please select the Month/s.</br>
+					Please enter work order line item.</br>
+					In order to save, the errors on the page must be corrected.
+				</td>
+			</tr>
+			<tr>
+				<td>Error</td>
+				<td>Work Order is not created due to invalid selection criteria.</br>
+					Error while updating Work Order Record [SAVE FAILURE].
+				</td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. Transaction Status Types must be defined in a system look up table (AppTransactionStatusTypes)</div>
+		<div class="reference">2. System Variables must be defined in a system look up table (AppSystemVariables)</div>
+		<div class="reference">3. Units must be defined in a system look up table (AppUnits)</div>
+		<div class="reference">4. House Codes must be defined in a system look up table (HcmHouseCodes)</div>
+		<div class="reference">5. Jobs must be defined in a system look up table (HcmJobs)</div>
+		<div class="reference">6. Jobs must be associated to the House Codes (HcmHouseCodeJobs)</div>
+		<div class="reference">7. Chart of accounts must be defined in a system look up table (FscAccounts)</div>
+		<div class="reference">8. Tasks must be defined in a system look up table (WomWorkOrderTasks)</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>AppTransactionStatusTypes</br>
+					AppSystemVariables<br>
+					AppUnits</br>
+					HcmHouseCodes</br>
+					HcmJobs</br>
+					HcmHouseCodeJobs</br>
+					FscAccounts</br>
+					WomWorkOrderTasks</br>
+					WomWorkOrders</br>
+					WomWorkOrderItems</br>
+				</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>WomWorkOrdersSelect</br>
+					WomWorkOrderUpdate</br>
+					WomWorkOrderItemUpdate</br>
+					WomWorkOrderStatusUpdate</br>
+				</td>
+			</tr>
+		</table>
+		<h2>See Also</h2>
+		<div class="reference"><a href="completeWorkOrder.htm">Complete Work Order</a></div>
+	</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Team Finance - Close browser</title>
+		<script type="text/javascript" src="/fin/app/document/usr/jquery.js"></script>
+		<link href="/fin/cmn/usr/button.css" rel="stylesheet" type="text/css" />
+		<style type="text/css">
+			#AnchorLogin, #AnchorClose {		   		
+			    margin-right: 5px;
+			    padding-left: 5px;
+			    padding-top: 5px;
+			    width: 72px;
+			}
+		</style>
+
+		<script language="javascript">
+			$(document).ready( function() {
+				$("#AnchorLogin").click(function () {
+	            	var url = location.href;
+					url = url.substring(0, url.lastIndexOf("/")) + "/markup.htm";
+					location.href = url;
+				});
+				
+				$("#AnchorClose").click(function () {
+	            	window.close();
+				});
+			});
+
+	        function Logout() {
+	            try {
+	               document.execCommand("ClearAuthenticationCache", "false");
+				   $("#message1").html("You have been successfully logged out.");
+				   $("#message2").html("Click on <b>\"Login\"</b> to login again as same user or as different user. Click on <b>\"Close\"</b> to close the application.");
+	        	}
+	            catch(e) { 
+					$("#AnchorLogin").hide();
+					$("#AnchorClose").hide();
+					$("#message1").html("Please close the browser to use different login.");
+				    $("#message2").html("You may need to clear browser cache if the current login information is already saved.");
+				}
+			}
+    	</script>
+	</head>
+
+	<body onload="Logout();">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <table width="100%" height="100%">
+				<tr height="50%" valign="bottom">
+					<td colspan="2">
+			       		<div id="message1" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top: 5px; text-align: center;">Please close the browser to use different login.</div>
+		        		<div id="message2" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 12px; margin-top: 5px; text-align: center;">You may need to clear browser cache if the current login information is already saved.</div>
+					</td>
+				</tr>
+				<tr valign="top" height="50%">
+					<td align="right">
+						<div id="AnchorLogin" class="iiButton Enabled">
+							<div class="iiButtonPart Begin Enabled"></div>
+							<div class="iiButtonPart Middle Enabled"><span>&nbsp;&nbsp;Login&nbsp;&nbsp;</span></div>
+							<div class="iiButtonPart End Enabled"></div>
+						</div>
+					</td>
+					<td>
+						<div id="AnchorClose" class="iiButton Enabled">
+							<div class="iiButtonPart Begin Enabled"></div>
+							<div class="iiButtonPart Middle Enabled"><span>&nbsp;&nbsp;Close&nbsp;&nbsp;</span></div>
+							<div class="iiButtonPart End Enabled"></div>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</body>
+</html>

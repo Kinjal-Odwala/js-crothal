@@ -1,0 +1,106 @@
+﻿.iiButton {
+   height: 22px;   
+}
+
+.iiButtonPart {
+   height: 22px;
+   cursor: pointer;
+   float: left;
+}
+
+.iiButtonPart.Enabled.Begin {
+   background-image: url(media/Button/ButtonEnabledBegin.gif);
+   width: 9px;
+}
+
+.iiButtonPart.Enabled.Middle {
+   background-image: url(media/Button/ButtonEnabledMiddle.gif);
+   color: white;   
+}
+
+.iiButtonPart.Enabled.End {
+   background-image: url(media/Button/ButtonEnabledEnd.gif);
+   width: 9px;
+}
+
+.iiButtonPart.Disabled.Begin {
+   background-image: url(media/Button/ButtonDisabledBegin.gif);
+   width: 9px;
+}
+
+.iiButtonPart.Disabled.Middle {
+   background-image: url(media/Button/ButtonDisabledMiddle.gif);   
+}
+
+.iiButtonPart.Disabled.End {
+   background-image: url(media/Button/ButtonDisabledEnd.gif);
+   width: 9px;
+}
+.iiButtonPart.Hot.Begin {
+   background-image: url(media/Button/ButtonHotBegin.gif);
+   width: 9px;
+}
+
+.iiButtonPart.Hot.Middle {
+   background-image: url(media/Button/ButtonHotMiddle.gif);
+   color: white;
+}
+
+.iiButtonPart.Hot.End {
+   background-image: url(media/Button/ButtonHotEnd.gif);
+   width: 9px;
+}
+
+.iiButtonPart.Enabled.Middle span {
+   color: white;
+   display: inline-block;
+   font-family: verdana;
+   font-size: 12px;
+   font-weight: bold;
+   padding-top: 3px;
+}
+
+.iiButtonPart.Disabled.Middle span {
+   color: black;
+   display: inline-block;
+   font-family: verdana;
+   font-size: 12px;
+   font-weight: bold;
+   padding-top: 3px;
+}
+
+.iiButtonPart.Hot.Middle span {
+   color: black;
+   display: inline-block;
+   font-family: verdana;
+   font-size: 12px;
+   font-weight: bold;
+   padding-top: 3px;
+}
+
+#simpleButton {
+   background-image: url(../common/Common/Ok.gif);
+   width: 16px;
+   height: 16px;
+   cursor: pointer;
+   margin-bottom: 10px;
+}
+
+#simpleButtonInContainer {
+   background-image: url(../common/Common/Warning.gif);
+   width: 16px;
+   height: 16px;
+   cursor: pointer;
+   margin-bottom: 10px;
+}
+
+#simpleButtonInContainerWithHotState {
+   background-image: url(../common/Common/info.gif);
+   width: 16px;
+   height: 16px;
+   cursor: pointer;
+}
+
+#simpleButtonInContainerWithHotState.Hot {
+   background-image: url(../common/Common/indicator.gif);
+}

@@ -1,0 +1,293 @@
+﻿.contentAreasContainerLeft {
+	float: left;
+	width: 48%;
+	vertical-align: top;
+	margin-right: 20px;
+	z-index: 3550;
+	position: relative;
+}
+
+.contentAreasContainerRight {
+	float: left;
+	width: 49.3%;
+	vertical-align: top;
+	z-index: 3551;
+	position: relative;
+}
+
+.ui-datepicker.ui-widget.ui-widget-content.ui-helper-clearfix.ui-corner-all.ui-helper-hidden-accessible {
+	z-index: 11111;
+}
+
+.iiInputText.Loading {
+	background-image: url(/fin/cmn/usr/media/common/indicator.gif);
+	background-repeat: no-repeat;
+	background-position: right;
+	width: 16px;
+	height: 16px;
+	margin: 1px 1px 1px 1px;
+}
+
+.labelTextArea {	
+	float: left;
+	width: 100px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 4px 0px 0px 10px;
+}
+
+.inputTextArea {
+	float: left;
+	width: 200px;
+	padding: 4px 3px 3px 3px;
+}
+
+.labelTextAreaSite {	
+	float: left;
+	width: 50px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 20px 0px 0px 20px;
+}
+
+.inputTextAreaSite {
+	float: left;
+	width: 300px;
+	padding: 17px 0px 0px 15px;
+}
+
+.filterLabel {
+	float: left;
+	width: 180px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 4px 0px 0px 10px;
+}
+
+.inputTextSize {
+	float: left;
+	position: relative;
+    background-color: white;
+    border: 1px solid #AAAAAA;
+    border-spacing: 0;
+	margin: 5px 5px 5px 3px;
+    height: 20px;
+    width: 180px;
+}
+
+.gridBorder {
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+}
+
+.gridRow { 
+	background-color: #F0EFDD;
+}
+
+.alternateGridRow { 
+	background-color: #FFFFFF;
+}
+
+.gridHeaderColumn {
+	background-color: #669966;
+	border-right: solid #AAAAAA thin;
+	border-width: 1px;
+	border-bottom: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	font-weight: bold;
+	color: white;	
+	text-align: center;
+	padding: 3px 2px 3px 2px;
+	height: 30px;
+	width: 200px;
+	cursor: pointer;
+}
+
+.gridHeaderColumnRight {
+	background-color: #669966;
+	border-bottom: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	font-weight: bold;
+	color: white;	
+	text-align: center;
+	padding: 3px 2px 3px 2px;
+	height: 30px;
+	width: 200px;
+	cursor: pointer;
+}
+
+.gridHeaderColumnSub {
+	background-color: #669966;
+	border-right: solid #AAAAAA thin;
+	border-width: 1px;	
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 10px;
+	font-weight: bold;
+	color: white;	
+	text-align: center;
+	padding: 3px 2px 3px 2px;
+	height: 30px;
+	width: 200px;
+	vertical-align: text-top;
+}
+
+.gridHeaderColumnSubRight {
+	background-color: #669966;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 10px;
+	font-weight: bold;
+	color: white;	
+	text-align: center;
+	padding: 3px 2px 3px 2px;
+	height: 30px;
+	width: 200px;
+	vertical-align: text-top;
+}
+
+.gridColumnHidden {
+	display: none;
+}
+
+.gridColumn {	
+	border-right: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	color: #032D23;	
+	vertical-align: middle;
+	padding: 3px 2px 3px 2px;
+	height: 17px;
+	width: 200px;
+	cursor: pointer;
+}
+
+.gridColumnRight {	
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	color: #032D23;	
+	vertical-align: middle;
+	padding: 3px 2px 3px 2px;
+	height: 17px;
+	width: 200px;
+	cursor: pointer;
+}
+
+.trover {
+	background-color: #C2E4C1;
+}
+
+.borderVertical {
+    width: 1px;
+    background-color: #adaaad;
+}
+
+.gridPagging {
+    height: 20px;
+    font-family: Verdana;
+    font-size: 8pt;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #669b67;
+    text-align: left;
+}
+
+#HirOrgContainer {
+	width: 100%;
+	overflow: scroll;
+	position: relative;	
+	border: solid #aaaaaa thin;
+	border-width: 1px;
+}
+
+#AnchorSearch {
+	float: left;
+	width: 82px;
+	padding: 3px 0px 0px 10px;	
+	position: relative;
+}
+
+#AnchorLoad {
+	float: left;
+	width: 76px;
+	padding: 0px 0px 0px 10px;	
+	position: relative;
+}
+
+#AnchorSave {
+	float: left;
+	width: 68px;	
+	margin: 0px 10px 0px 0px;
+}
+
+#AnchorUndo {
+	float: left;
+	width: 70px;	
+	margin: 0px 10px 0px 0px;
+}
+	
+#AnchorExportToExcel {
+	float: left;
+	width: 140px;
+	margin: 5px 10px 0px 0px;
+}
+
+#AnchorBack {
+	float: left;	
+	width: 68px;
+	margin: 5px 0px 0px 0px;
+}
+
+#AnchorOK {
+	float: left;
+	width: 56px;
+	padding: 120px 0px 0px 20px;	
+}
+
+#AnchorCancel {
+	float: left;
+	width: 80px;
+	padding: 120px 0px 0px 10px;	
+}
+
+#backgroundPopup {
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	z-index: 5000; 
+	width: 100%; 
+	height: 100%;
+	border: 1px solid #cecece; 
+	background-color: black;
+	display: none;
+}
+
+#popupSite {
+	width: 600px;
+	height: 200px;
+	position: absolute;
+	z-index: 5025;
+	background-color: white;
+	display: none;
+}

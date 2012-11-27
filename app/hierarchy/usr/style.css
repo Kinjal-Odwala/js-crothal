@@ -1,0 +1,358 @@
+#hierarchyAreaLeft {	
+	float: left;
+	width: 48%;
+}
+
+#hierarchyAreaRight {
+	float: left;
+	width: 48%;
+}
+
+#AppUnitLoader {
+	float: left;
+	position: relative;
+	width: 500px;
+}
+
+#HirLevel {
+	float: left;
+	position: relative;
+	padding-left: 5px;
+	width: 150px;
+}
+	
+#AnchorSearch {
+	float: left;
+	width: 82px;
+	padding-left: 10px;
+}
+	
+#hirContainer {
+	border: solid #AAAAAA thin; 
+	border-width: 1px;
+	padding: 10px;
+	overflow: auto;
+}
+
+#AnchorSave {
+	float: left;
+	width: 136px;
+	padding: 5px 0px 0px 5px;
+}
+
+#AnchorPreview {
+	float: left;
+	width: 156px;
+	padding: 5px 0px 0px 5px;
+	margin-right: 5px;
+}
+
+#AnchorCommit {
+	float: left;
+	width: 140px;
+	padding: 5px 0px 0px 5px;
+	margin-right: 5px;
+}
+
+#AnchorSaveNode {
+	float: left;
+	width: 68px;
+	margin: 5px 0px 5px 10px;
+}
+
+#AnchorCancel {
+	float: left;
+	width: 80px;
+	margin: 5px 0px 5px 10px;
+}
+
+#AnchorRemove {
+	float: right;
+	width: 90px;
+	margin: 5px 0px 5px 0px;
+}
+
+#AnchorPrint {
+	float: left;
+	width: 68px;
+	margin: 5px 0px 5px 20px;
+}
+
+#AnchorClose, #AnchorClosePopup {
+	float: left;
+	width: 72px;
+	margin: 5px 0px 5px 10px;
+}
+
+#AnchorOK {
+	float: left;
+	width: 54px;
+	margin: 5px 0px 5px 10px;
+}
+
+#SelectAll {
+	float: left;
+	width: 14px;
+	padding: 3px 0px 0px 24px;
+}
+
+#unitContainer {
+	float: right;
+	width: 400px;	
+    border: solid #AAAAAA thin;
+	border-width: 1px;
+	padding: 10px;
+	overflow: auto;
+}
+
+#previewContainer {
+	float: left;
+    border: solid #AAAAAA thin;
+	border-width: 1px;
+	margin-left: 10px;
+	padding: 10px;
+	overflow: auto;
+}
+
+#divSelectAll {
+	float: right;
+	width: 420px;
+}
+
+#backgroundPopup {
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	z-index: 5000; 
+	width: 100%; 
+	height: 100%;
+	border: 1px solid #cecece; 
+	background-color: black;
+	display: none;
+}
+
+#hierarchyPopup {
+	width: 550px; 
+	height: 240px;
+	background-color: white;
+	position: absolute;
+	z-index: 5025;	
+	display: none;
+}
+
+#hierarchyPreviewPopup {
+	background-color: white;
+	position: absolute;
+	z-index: 5050;
+	display: none;
+}
+
+#hierarchyNodesListPopup {
+	width: 700px; 
+	height: 500px;
+	background-color: white;
+	position: absolute;
+	z-index: 5075;	
+	display: none;
+}
+
+#nodesListContainer {
+	float: left;
+	width: 675px;
+	margin: 5px 10px 5px 10px;
+}
+
+#nodeDetailsContainer {
+	float: left;
+	width: 525px;
+    border: solid #AAAAAA thin;
+	border-width: 1px;
+	margin: 5px 10px 5px 10px;
+}
+
+.header {
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 18px;	
+	color: #2C2F50;
+	text-align: center;
+	margin-bottom: 5px;
+}
+
+.labelText {
+	float: left;	
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 2px 10px 2px 10px;
+}
+
+.labelTextArea {	
+	float: left;
+	width: 80px;
+	height: 27px;	
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 5px 0px 0px 10px;
+}
+
+.labelLevel {	
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;	
+	padding: 5px 0px 0px 5px;
+}
+
+.inputTextArea {
+	float: left; 
+	width: 350px; 
+	padding: 3px 2px 2px 2px;	
+}
+
+.labelSelectAll {
+	float: left;	
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 6px 0px 0px 10px;
+}
+
+.unitContainerHeader {
+	float: right;
+	width: 420px;
+	height: 20px;
+	background-color: #9BCD9A;
+	border: solid #AAAAAA thin;
+	border-bottom: none;
+	border-width: 1px;
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 14px;	
+	color: #2C2F50;
+	text-align: center;
+	padding-top: 3px;
+}
+
+.iiInputText.Loading {
+	background-image: url(/fin/cmn/usr/media/common/indicator.gif);
+	background-repeat: no-repeat;
+	background-position: right;
+	width: 16px;
+	height: 16px;
+	margin-top: 1px;
+	margin-right: 1px;
+	margin-left: 1px;
+	margin-bottom: 1px;	
+}
+
+.gridRow { 
+	background-color: #F0EFDD;
+}
+
+.alternateGridRow { 
+	background-color: #FFFFFF;
+}
+
+.trover {
+	background-color: #C2E4C1;
+}
+
+.tableBorder {
+	border: solid #AAAAAA thin;
+	border-bottom: none;
+	border-width: 1px;
+	cursor: pointer;
+	background-color: #F0EFDD;		
+}
+
+.tdImage {
+	border-bottom: solid #AAAAAA thin;	
+	border-width: 1px;	
+	padding: 3px 0px 0px 5px;
+	width: 20px;
+}
+
+.tdBorder {
+	border-bottom: solid #AAAAAA thin;
+	border-width: 1px;
+	font-family: Verdana;
+	font-size: 8pt;
+	color: #032D23;
+	padding: 0px 0px 0px 5px;
+	width: 80px;
+}
+
+.treeview ul {
+	width: 400px;
+}
+
+.treeview li { 
+	padding: 3px 0 2px 18px;
+}
+
+.treeview span.ent, .treeview span.svp, .treeview span.dvp, .treeview span.rvp,
+	.treeview span.srm, .treeview span.rm, .treeview span.am, .treeview span.unit, .treeview span.loading  {
+	font-family: Verdana; 
+	font-size: 9pt;
+	color: #032D23;
+	padding: 1px 0 1px 20px;
+}
+
+.treeview span.ent:hover, .treeview span.svp:hover, .treeview span.dvp:hover, .treeview span.rvp:hover, 
+	.treeview span.srm:hover, .treeview span.rm:hover, .treeview span.am:hover, .treeview span.unit:hover {	
+	color: red;
+}
+
+.treeview span.ent {
+	background: url(/fin/cmn/usr/media/common/ent.png) 0 0 no-repeat;
+}
+
+.treeview span.svp {
+	background: url(/fin/cmn/usr/media/common/svp.png) 0 0 no-repeat;
+}
+.treeview span.dvp {
+	background: url(/fin/cmn/usr/media/common/dvp.png) 0 0 no-repeat;
+}
+
+.treeview span.rvp {
+	background: url(/fin/cmn/usr/media/common/rvp.png) 0 0 no-repeat;
+}
+
+.treeview span.srm {
+	background: url(/fin/cmn/usr/media/common/srm.png) 0 0 no-repeat;
+}
+
+.treeview span.rm {
+	background: url(/fin/cmn/usr/media/common/rm.png) 0 0 no-repeat;
+}
+
+.treeview span.am {
+	background: url(/fin/cmn/usr/media/common/am.png) 0 0 no-repeat;
+}
+
+.treeview span.unit {
+	background: url(/fin/cmn/usr/media/common/file.gif) 0 0 no-repeat;
+}
+
+.treeview span.loading { 
+	background: url(/fin/cmn/usr/media/common/indicator.gif) 0 0 no-repeat; 
+}
+
+.treeview span.mUnit {
+	font-family: Verdana; 
+	font-size: 9pt;
+	color: #032D23;
+	padding: 0px 0 0px 0px;
+}
+
+.treeview span.mUnit:hover {	
+	color: red;
+}
+
+.drophover {
+	border: solid red thin;
+	border-width: 2px;
+	font-weight: bold;
+}

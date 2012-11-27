@@ -1,0 +1,312 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Jobs</h1>
+			<div class="description">The purpose of <b>Jobs</b> is to setup and maintain the list of Jobs which are associated to the selected House Code.</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Jobs Search</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Hierarchy Tree View</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>To search a specific House Code, type-in House Code # (1455, 900000) and press Enter key.</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">House Code Jobs</td>
+			</tr>
+			<tr>
+				<td>House Code Jobs</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List of Jobs associated to the selected House Code.</td>
+			</tr>		
+			<tr>
+				<td>Number</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Unique number of the Job.</td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Description of the Job.</td>
+			</tr>
+			<tr>
+				<td>Active</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Indicates whether the Job is active or not.</td>
+			</tr>			
+			<tr>
+				<td class="uiHeader" colspan="5">Job Details</td>
+			</tr>
+			<tr>
+				<td>Job Number</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Unique Number of the Job.</td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+                <td>Description of the Job.</td>
+			</tr>
+			<tr>
+				<td>Contact</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Contact of the Job.</td>
+			</tr>
+			<tr>
+				<td>Address 1</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+                <td>Address 1 of the Job.</td>
+			</tr>
+			<tr>
+				<td>Address 2</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+                <td>Address 2 of the Job.</td>
+			</tr>
+			<tr>
+				<td>Postal Code</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+                <td>Postal Code of the Job. Postal Code should be valid. Example: 99999 or 99999-9999</td>
+			</tr>
+			<tr>
+				<td>GEO Code</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+                <td>GEO Code of the Job. GEO codes will be listed based on the Postal Code.</td>
+			</tr>
+			<tr>
+				<td>City</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+                <td>City of the Job. City names will be listed based on the Postal Code. If City dropdown list is empty then it will allow the user to enter the city name.</td>
+			</tr>
+			<tr>
+				<td>State</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+                <td>State of the Job. State should be selected from dropdown list.</td>
+			</tr>			
+			<tr>
+				<td>Job Type</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+                <td>Job Type of the Job. Job Type should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Tax Id</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+                <td>Tax Id of the Job. This field will be visible only for the "Customer" Job Type jobs. If entered, it will allow only 9 digit number.</td>
+			</tr>
+			<tr>
+				<td>Override Site Tax</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+                <td>Override Site Tax of the Job (Y / N). This field will be visible only for the "Service Line" and "Service Location" Job Type jobs.</td>
+			</tr>
+			<tr>
+				<td>Service Contract</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+                <td>Service Contract of the Job.</td>
+			</tr>
+			<tr>
+				<td>General Location Code</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+                <td>General Location Code of the Job.</td>
+			</tr>
+			<tr>
+				<td>Active</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+                <td>Indicates whether the Job is active or not (Y / N).</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To save the Job details and associate the Job to the selected House Code.</td>
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>Undo the changes to Job being edited.</td>
+			</tr>
+			<tr>
+				<td>New Job</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>To create the new Job.</td>
+			</tr>
+			<tr>
+				<td>Clone Job</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>To create the new Job from existing Job templates.</td>
+			</tr>
+			<tr>
+				<td>Remove</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>To remove the House Code association.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Actions Menu</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To save the Job details and associate the Job to the selected House Code.</td>
+			</tr>
+			<tr>
+				<td>New</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To create the new Job.</td>
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Undo the changes to Job being edited.</td>
+			</tr>			
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Job - House Code Association concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/Jobs.png" /></td>
+			</tr>
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Please select HouseCode.</br>
+					Please select Job Template to Clone.</br>
+					In order to save, the errors on the page must be corrected.</br>
+					The Job [Job Number] already exists. Please verify.
+				</td>
+			</tr>
+			<tr>
+				<td>Remove</td>
+				<td>Please select Job to remove association with House Code.<br/>
+                    Do you want remove House Code association with selected Job?
+				</td>
+			</tr>
+			<tr>
+				<td>Error</td>
+				<td>[SAVE FAILURE] Error while updating Job.</td>
+			</tr>
+		</table>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+        <table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>AppStateTypes<br/>
+					AppUnits<br/>
+					HcmHouseCodes<br/>
+					HcmJobTypes<br/>
+					HcmJobTemplates<br/>
+                    HcmJobs<br/>
+					HcmHouseCodeJobs<br/>
+				</td>
+			</tr>
+			<tr>
+                <td>Stored Procedures</td>
+                <td>AppUserHouseCodesSelect</br>
+					HirNodeAuthorizationSelect</br>
+					HirNodeParentsSiblingsChildrenSelect</br>
+					HirHierarchyNodeSelect</br>
+					HcmJobByHouseCode<br/>
+					HcmHouseCodeJobUpdate<br/>
+					HcmHouseCodeJobDelete<br/>
+				</td>
+            </tr>
+			<tr>
+                <td>Functions</td>
+                <td>AppUserHirNodesSelect<br/>
+					AppUserHouseCodesSelectFunction<br/>
+				</td>
+            </tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="remitTo.htm">Remit To</a></div>
+		<div class="reference"><a href="site.htm">Sites</a></div>
+		<div class="reference"><a href="houseCode.htm">House Codes</a></div>
+		<div class="reference"><a href="houseCodeImport.htm">Import House Codes</a></div>
+		<div class="reference"><a href="houseCodeWizard.htm">House Code Wizard</a></div>
+		<div class="reference"><a href="ePaySite.htm">Epay Sites</a></div>
+	</body>
+</html>

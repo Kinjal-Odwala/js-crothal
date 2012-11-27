@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Purchasing Items</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/pur/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+		
+	  	<div class="pageHeader">
+	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
+        </div>
+		<div class="pageBody">
+			<div id="vendorContentArea" class="contentArea">
+                <div class="header">Item Search</div>
+			</div>
+			<div id="contentAreasContainerLeft">
+				<div class="body">
+					<div id="LabelTextAreaLeftItem">Master Id, Number, Description:</div>
+					<div id="InputTextAreaItem">
+						<div id="SearchInput"></div>
+					</div>
+					<div style="clear:both;"></div>
+				</div>
+			</div>
+			<div id="contentAreasContainerRight">
+				<div class="body">	
+					<div id="LabelTextAreaItemActive">Active:</div>		
+					<div id="InputDropActive">
+						<div id="ItemStatus"></div>
+					</div>
+					<div id="searchButtonItem">
+						<div id="SearchButton"></div>
+					</div>
+					<div style="clear:both;"></div>
+				</div>
+			</div>			
+			<div id="contentAreasContainerLeft">
+				<div class="contentArea">
+					<div class="header">Items</div>
+					<div class="body">
+						<div id="ItemGrid"></div>
+					</div>
+					<div style="clear:both;"></div>
+				</div>
+			</div>
+			<div id="contentAreasContainerRight">
+				<div id="itemContentArea" class="contentArea">
+					<div class="header">Item Details</div>
+					<div id="itemContentAreaContainer">
+						<div class="body">
+							<div id="TableEditArea">
+								<div id="LabelTextAreaItemDetails">
+									<span class="requiredFieldIndicator">&#149;&nbsp;</span>Master Id:
+								</div>
+								<div id="InputTextAreaRight">
+									<div id="ItemMasterId"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaItemDetails">
+									<span class="requiredFieldIndicator">&#149;&nbsp;</span>Number:
+								</div>
+								<div id="InputTextAreaRight">
+									<div id="ItemNumber"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaItemDetails">
+									<span class="requiredFieldIndicator">&#149;&nbsp;</span>Number 2:
+								</div>
+								<div id="InputTextAreaRight">
+									<div id="ItemNumber2"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaItemDetails">
+									<span class="requiredFieldIndicator">&#149;&nbsp;</span>Description:
+								</div>
+								<div id="InputTextAreaRight">
+									<div id="ItemDescription"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaItemDetails">
+									<span class="requiredFieldIndicator">&#149;&nbsp;</span>Com Class:
+								</div>
+								<div id="InputTextAreaRight">
+									<div id="ItemComClass"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaItemDetails">
+									<span class="requiredFieldIndicator">&#149;&nbsp;</span>Com Sub Class:
+								</div>
+								<div id="InputTextAreaRight">
+									<div id="ItemComSubClass"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaItemDetails">
+									<span class="requiredFieldIndicator">&#149;&nbsp;</span>Supplier Class:
+								</div>
+								<div id="InputTextAreaRight">
+									<div id="ItemSupplierClass"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaItemDetails">
+									<span class="requiredFieldIndicator">&#149;&nbsp;</span>Uom:
+								</div>
+								<div id="InputTextAreaRight">
+									<div id="ItemUom"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaItemDetails">
+									<span class="requiredFieldIndicator">&#149;&nbsp;</span>Account:
+								</div>
+								<div id="InputTextAreaRight">
+									<div id="ItemAccount"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaItemDetails">
+									<span class="requiredFieldIndicator">&#149;&nbsp;</span>Price:
+								</div>
+								<div id="InputTextAreaRight">
+									<div id="ItemPrice"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaItemDetails">
+									<span id="nonRequiredFieldIndicator">&nbsp;Active:</span>
+								</div>
+								<div id="InputTextAreaRight">
+									<div id="ItemActive"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+					</div>
+					</div>
+					<div style="clear:both;"></div>
+					<div class="footer">
+                        <div id="AnchorSave"></div>
+                        <div id="AnchorNew"></div>
+                        <div id="AnchorUndo"></div>
+                        <div style="clear:both;"></div>
+                    </div>
+				
+			</div>
+		</div>
+	    <div id="iiInputValidationMaster"></div>
+	</body>
+</html>

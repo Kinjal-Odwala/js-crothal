@@ -1,0 +1,128 @@
+﻿
+.header {
+	height: 25px;
+}
+
+.inputTextAreaHeader {
+	float: left; 
+	width: 60px; 
+	padding: 3px 2px 2px 2px;	
+}
+
+.labelTextArea {	
+	float: left;
+	width: 150px;
+	height: 27px;	
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;	
+	padding-top: 3px;
+	padding-left: 10px;
+}
+
+.labelText {	
+	float: left;	
+	height: 20px;	
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;	
+	padding-top: 3px;
+}
+	
+.inputTextArea {
+	float: left;
+	width: 200px;
+	height: 20px;
+}
+
+.footer {
+    height: 20px;
+    font-family: Verdana;
+    font-size: 8pt;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #669b67;
+    text-align: left;
+}
+
+.footer select {
+    font-family: Verdana;
+    font-size: 8pt;
+}
+
+.borderHorizontal {
+    height: 1px;
+    background-color: #adaaad;
+}
+
+.borderVertical {
+    width: 1px;
+    background-color: #adaaad;
+}
+
+#actionHeader {
+	background-color: #9BCD9A;
+	padding-left: 6px;
+	height: 28px;
+}
+	
+#AnchorLoad	{
+	float: left; 
+	width: 68px;
+	padding: 3px 0px 3px 5px;
+}
+
+#AnchorExport {
+	float: left;
+	width: 140px;
+	margin: 5px 0px 5px 5px;
+}
+
+#AnchorSavePopup {
+	float: left;
+	width: 70px;
+	margin: 5px 0px 5px 15px;
+}
+
+#AnchorSaveNew {
+	float: left;
+	width: 130px;	
+	margin: 5px 0px 5px 10px;
+}
+
+#AnchorCancel {
+	float: left;
+	width: 80px;
+	margin: 5px 0px 5px 10px;
+}
+
+#priceBodyColumn, #quantityBodyColumn, #totalCostBodyColumn {
+	text-align: right;	
+}
+
+#InventoryContainer {
+    border: solid #AAAAAA thin;
+	border-width: 1px;
+	margin: 5px 5px 5px 5px;	
+}
+
+#backgroundPopup {
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	z-index: 5000; 
+	width: 100%; 
+	height: 100%;
+	border: 1px solid #cecece; 
+	background-color: black;
+	display: none;
+}
+
+#popupInventory {
+	width: 600px; 
+	height: 350px;
+	position: absolute;
+	z-index: 5025;
+	background-color: white;
+	display: none;
+}

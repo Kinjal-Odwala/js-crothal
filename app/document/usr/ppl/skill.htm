@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Skill</h1>
+			<div class="description">
+			    This user interface is used to create Skill Types.<br />
+                Here, you can see listing of available Skill Types on left panel. Details of selected Skill are displayed on right panel. 
+
+            </div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:100px;">UI Element</th>
+				<th style="width:110px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th style="width:100px;">Validation</th>	
+				<th style="width:200px;">Description</th>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">Skill Types</td>
+			</tr>
+            <tr>
+                <td>Skill Types</td>
+                <td style="width: 110px">Grid</td>
+                <td>NA</td>
+                <td>End user input</td>
+                <td></td>
+                <td>Displays list of Skill Types.</td>
+            </tr>
+			<tr>
+				<td>Brief</td>
+				<td style="width: 110px">Display Field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td></td>	
+				<td>Skill Brief.</td>			
+			</tr>
+			<tr>
+				<td>Title</td>
+				<td style="width: 110px">Display Field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td></td>	
+				<td>Skill Title.</td>			
+			</tr>
+			<tr>
+				<td>Active</td>
+                <td style="width: 110px">Display Field</td>
+                <td>NA</td>
+                <td>NA</td>	
+				<td></td>		
+				<td>Skill status.</td>		
+			</tr>
+            <tr>
+				<td class="uiHeader" colspan="6">Skills</td>
+			</tr>
+			<tr>
+				<td>Active</td>
+                <td style="width: 110px">Checkbox</td>
+                <td>No</td>
+                <td>End user input</td>	
+				<td></td>		
+				<td>To set Skill as Active.</td>		
+			</tr>
+			<tr>
+				<td>Brief</td>
+				<td style="width: 110px">Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Maximum length allowed - 16 characters.</br>
+					Skill Category - Brief is required field.</td>	
+				<td>Skill Brief.</td>			
+			</tr>
+			<tr>
+				<td>Title</td>
+				<td style="width: 110px">Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Maximum length allowed - 30 characters.</br>
+					This field is required. Please make an entry.</td>	
+				<td>Skill Title.</td>			
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">Skills Grid</td>
+			</tr>
+			<tr>
+				<td>Skills</td>
+                <td style="width: 110px">Grid</td>
+                <td>NA</td>
+                <td>End user input</td>	
+				<td></td>		
+				<td>This Grid Lists all Skills of selected Skill Type.</td>		
+			</tr>
+			<tr>
+				<td>Brief</td>
+				<td style="width: 110px">Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Maximum length allowed - 16 characters.</br>
+					This field is required. Please make an entry.</td>	
+				<td>Skill Brief.</td>			
+			</tr>
+			<tr>
+				<td>Title</td>
+				<td style="width: 110px">Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Maximum length allowed - 30 characters.</br>
+					This field is required. Please make an entry.</td>	
+				<td>Skill Title.</td>			
+			</tr>
+			<tr>
+				<td>Active</td>
+                <td style="width: 110px">Checkbox</td>
+                <td>No</td>
+                <td>End user input</td>	
+				<td></td>		
+				<td>To set Skill as Active.</td>		
+			</tr>
+			<tr>
+				<td>Add</td>
+                <td style="width: 110px">Button</td>
+                <td>NA</td>
+                <td>End user input</td>	
+				<td></td>		
+				<td>Click Add button to Add New Row.</td>		
+			</tr>
+			
+		</table>
+
+		<h2>UI Layout</h2>
+
+		<table class="layoutTable">
+			<tr>	
+				<td>
+				    <img src="images/configSkill.png" alt="Skill"/>
+				</td>
+			</tr>	
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Save Person</td>
+				<td>Error while updating Skill Record<br />
+                    In order to save the errors on the page must be corrected.<br />
+					Please select Skill Category to save.</td>
+			</tr>
+			<tr>
+				<td>Error</td>
+				<td>Failed to save skill category.<br />
+					Failed to delete skill.<br />
+					Failed to save skill.</td>
+			</tr>
+		</table>
+		<h2>Action</h2>
+		<div class="reference">
+		    1. This user interface can be accessed at <span class="iiMenuVerticalMainPart Selected undefined">
+                Configuration </span> > Skills.<br />
+            2. Edit Skill Type- Select a Skill Type on left grid, it allows User to edit it on the right panel.
+            <br />
+            3. Save Skill Type - &nbsp;Click on Save Skill Type to save the change.            
+            <br />
+			4. New Skill Type - &nbsp;Click on New Skill Type to create a new Skill Type.            
+            <br />
+            5. Undo current changes to Skill Type - Click Undo changes to cancel any changes made to selected Skill Type.
+        </div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+            <tr>
+                <td>Tables</td>
+				<td>
+                    PplSkills, PplSkillTypes.
+                </td>
+            </tr>
+            
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="person.htm">People</a></div>
+	</body>
+</html>

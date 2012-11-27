@@ -1,0 +1,97 @@
+﻿#RevenueRadioButtonLeft
+{
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-right: 10px;
+	padding-top: 3px;
+}
+
+#InvoiceRadioButtonLeft
+{
+	float: left;
+	padding-right: 5px;
+	padding-top: 2px;
+}
+
+#LabelHeader
+{
+	width: 200px;
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-left: 5px;
+	font-weight: bold;
+}
+
+#anchorAlign
+{
+	padding-left: 10px;
+	padding-bottom: 15px;
+	clear: both;
+}
+
+#InputTextAreaSmall
+{
+	width: 190px; 
+	float: left; 
+	height: 27px;
+}
+
+#InputTextAreaLarge
+{
+	width: 250px; 
+	float: left; 
+	height: 27px;
+}
+
+#divAreasContainerLeft
+{
+	float: left;
+	margin-right: 20px;
+	width:48%;
+}
+
+#divAreasContainerRight
+{
+	float: left;
+	width:48%;
+}
+
+#LableTextAreaRev
+{
+	width: 200px;
+	float: left;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-left: 5px;
+}
+
+#LableTextAreaRightRev
+{
+	width: 130px;
+	float: left;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-left: 5px;
+}
+
+.contentArea
+{
+	padding-top: 10px;
+}
+
+#Notes 
+{	
+	float: left;
+	width: 450px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: black;
+}

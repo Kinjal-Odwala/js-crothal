@@ -1,0 +1,121 @@
+﻿
+#searchAreaVendor
+{
+	float:left;
+	margin-bottom:5px;
+}
+#inputVendorSearchTest
+{
+	float:left;
+	padding-right:5px;
+}
+#inputVendorSearch
+{
+	width:175px;
+	float:left;
+}
+
+.searchAreaStatus
+{
+	float:left;
+	width:100%;
+	padding-bottom:5px;
+}
+
+#inputStatusTypes
+{
+	width:190px;
+	float:left;	
+}
+
+#searchAreaButtons
+{
+	float:left;
+	padding-left:5px;
+	padding-right:5px;
+}
+
+#searchButtonVendor
+{
+	margin-right:10px;
+	/*width:85px;
+	padding-left:5px;
+	margin-right:5px;
+	padding-top:5px;*/
+}
+
+#vendorDetailHeader{margin-bottom:6px;}
+#vendorDetailContentArea
+	{
+		border:none;
+		border:solid #AAAAAA thin;
+		border-width:1px;
+		padding:5px;
+		margin:1px;
+		overflow-y:auto;
+		overflow-x:hidden;
+	}
+
+#LabelTextAreaLeftVendor
+	{
+		width:150px;
+		float:left;
+		height:27px;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+	}
+#LabelTextAreaVendorActive
+	{
+		width:70px;
+		float:left;
+		height:27px;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+	}
+#LabelTextAreaVendorDetails
+	{
+		width:130px;
+		float:left;
+		height:27px;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+	}
+#LabelTextRadioButton
+	{
+		width:85px;
+		float:left;
+		height:27px;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+	}
+#LabelTextRadioButtonActive
+	{
+		width:55px;
+		float:left;
+		height:27px;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+	}
+#radioButton
+	{
+		width:15px;
+		float:left;
+		padding-left:5px;
+		padding-right:25px;
+		padding-bottom:5px;
+	}
+.iiInputText
+	{
+		width:182px;
+		white-space:nowrap;
+	}
+.iiInputTable
+	{
+		width:188px;
+		white-space:nowrap;
+	}

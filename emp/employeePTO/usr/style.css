@@ -1,0 +1,109 @@
+﻿#LabelPTOAreaLeft
+	{
+	float:left;
+	margin-right:5px;
+	}
+#AnchorNew
+	{
+		width:67px;
+	}
+#saveAreaLeft
+{
+	float:left;
+	margin-right:5px;
+	width:85px;
+}
+#reportAreaLeft
+{
+	float:left;
+	margin-right:5px;
+	width:16px;
+
+}		
+.LabelPTOAreaRight
+	{
+		width:20px;
+		float:left;
+		height:27px;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+	}
+#pToArea
+{
+	margin-left:2px;
+}
+#searchAreaPTO
+{
+	float:left;
+	margin-right:20px;
+}
+#inputPTOFiscal
+{
+	width:175px;
+}
+#inputPTOPay
+{
+	width:175px;
+	
+}
+#searchAreaPay
+{
+	float:left;
+	margin-right:18px;
+}
+
+#balanceReportHost
+{
+	background-image:url('/fin/cmn/usr/media/Common/Info.gif');
+	background-repeat:no-repeat;
+	float: right;
+	width:16px;
+	height:16px;
+}
+
+#balanceReport
+	{
+		border:solid #AAAAAA thin; 
+		border-width:1px;
+		width:200px; 
+		height:200px; 
+		overflow:auto;
+		background-color:lightgrey;
+		display:none;
+		position:absolute;
+	}
+
+#balanceReportBody
+	{
+		width:175px;
+		height:195px;
+		font-family:Verdana;
+		font-size:9px;
+		color:#032D23;
+		padding-left:10px;
+	}
+	
+#loadAreaButtons
+{
+	float:left;
+	margin-top:13px;
+	margin-bottom:10px;
+}
+#iconAreaButton
+{
+	float:left;
+	margin-top:20px;
+	margin-bottom:10px;
+}
+.iiInputText
+	{
+		width:182px;
+		white-space:nowrap;
+	}
+.iiInputTable
+	{
+		width:188px;
+		white-space:nowrap;
+	}
+	

@@ -1,0 +1,358 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Inventory Items</h1>
+			<div class="description">The purpose of <b>Inventory Items</b> is to maintain the list of inventory items.
+			  New items can be added and quntity can be updated. Count Complete flag can be updated for each Inventory.
+			</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Inventory Search</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Hierarchy Tree View</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>To search a specific House Code, type-in House Code # (1455, 900000) and press Enter key.</td>				
+			</tr>
+			<tr>
+				<td>Year</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Fiscal Year should be selected from dropdown list.</td>				
+			</tr>
+			<tr>
+				<td>Period</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Fiscal Period should be selected from dropdown list. Periods will be listed based on the Fiscal Year.</td>				
+			</tr>
+			<tr>
+				<td>Load</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>List the Inventories based on the search criteria.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Inventories</td>
+			</tr>
+			<tr>
+				<td>Inventories</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Holds the list of Inventories based on the search criteria. Inventory items will be listed based on the selected Inventory.</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>House Code of the Inventory.</td>
+			</tr>
+			<tr>
+				<td>Year</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Fiscal Year.</td>
+			</tr>
+			<tr>
+				<td>Period</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Fiscal Period.</td>
+			</tr>
+			<tr>
+				<td>Count Complete</td>
+				<td>Checkbox field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Count Complete (Y / N).</td>
+			</tr>
+			<tr>
+				<td>Total Cost</td>
+				<td>Readonly Text field</td>
+				<td>NA</td>
+				<td></td>
+				<td>Total Cost of the Inventory items.</td>
+			</tr>			
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Inventory Items</td>
+			</tr>
+			<tr>
+				<td>Inventory Items</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Holds the list of items of the selected Inventory.</td>
+			</tr>
+			<tr>
+				<td>Item Number</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Item Number of the inventory item.</td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Description of the inventory item.</td>
+			</tr>
+			<tr>
+				<td>Uom</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Uom of the inventory item.</td>
+			</tr>
+			<tr>
+				<td>Account Code</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Account Code of the inventory item.</td>
+			</tr>
+			<tr>
+				<td>Price</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Price of the inventory item.</td>
+			</tr>
+			<tr>
+				<td>Quantity</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Quantity of the inventory item. The quantity should be valid. Example: 99.00</td>
+			</tr>
+			<tr>
+				<td>Item Cost</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Total cost of the inventory item.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+			<tr>
+				<td>Export To Excel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Export the item details of the selected Inventory into an excel file.</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To update the Count Complete flag and quantity of inventory items. If Count Complete is checked then you will no longer be able to access the counts for this House Code.</td>
+			</tr>
+			<tr>
+				<td>New</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To add the new inventory items.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Add New Inventory Items</td>
+			</tr>
+			<tr>
+				<td>Fiscal Year</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td></td>
+				<td>Display the Fiscal Year of the selected inventory.</td>
+			</tr>
+			<tr>
+				<td>Period</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td></td>
+				<td>Display the Fiscal Period of the selected inventory.</td>
+			</tr>
+			<tr>
+				<td>Item Number</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Item Number of the inventory item.</td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Description of the inventory item.</td>
+			</tr>
+			<tr>
+				<td>Uom</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Uom should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Account Code:</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Account Code should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Price</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Price of the inventory item. The price should be valid. Example: 99.50</td>
+			</tr>
+			<tr>
+				<td>Quantity</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Quantity of the inventory item. The quantity should be valid. Example: 99.00</td>
+			</tr>
+			<tr>
+				<td>Total Item Cost</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td></td>
+				<td>Total cost of the inventory item.</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To save the new inventory item details and closes the popup screen.</td>
+			</tr>
+			<tr>
+				<td>Save and New</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To save the new inventory item details and clear the fields to add new inventory item.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Closes the popup screen.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Actions Menu</td>
+			</tr>
+			<tr>
+				<td>Save Inventory</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To save the selected inventory details.</td>
+			</tr>
+			<tr>
+				<td>Undo current changes to Inventory</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Undo the current changes in the inventory items.</td>
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Listing Inventory Items concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/inventoryItem.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Add New Inventory Items concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/addNewItem.png"></td>
+			</tr>			
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>New</td>
+				<td>Please select the Inventory.</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>In order to save, the errors on the page must be corrected.</br>
+				You are about to save your inventory counts. If you checked the Count Complete box you will no longer be able to access the counts for this House Code. Do you wish to continue?</td>
+			</tr>
+			<tr>
+				<td>Error</td>
+				<td>Error while updating Inventory record.</td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. House Codes must be defined in a system look up table (HcmHouseCodes)</div>
+		<div class="reference">2. Fiscal Years must be defined in a system look up table (FscYears)</div>
+		<div class="reference">3. Fiscal Periods must be defined in a system look up table (FscPeriods)</div>
+		<div class="reference">4. Chart of accounts must be defined in a system look up table (FscAccounts)</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>InvInventories<br>
+					InvInventoryItems
+				</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>InvInventoriesSelect</br>
+					InvRecordsCount</br>
+					InvInventoryItemsSelect</br>
+					InvInventoryUpdate</br>
+					InvInventoryUomsSelect</br>
+					InvInventoryItemUpdate</br>
+				</td>
+			</tr>
+		</table>
+		<h2>See Also</h2>
+		<div class="reference"><a href="administration.htm">Administration</a></div>
+	</body>
+</html>

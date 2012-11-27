@@ -1,0 +1,68 @@
+﻿.pageHeader {
+	height: 28px;
+}
+
+.tabContainer {
+  border: none;
+  width: 100%;
+}
+
+.labelText {
+	float: left;
+	width: 200px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	margin: 20px 0px 0px 20px;
+}
+
+.inputText {
+	float: left;
+	width: 200px;
+	padding: 3px 2px 2px 2px;
+}
+
+#LoadButton	{
+	float: left; 
+	width: 68px;
+	padding: 3px 0px 3px 5px;
+}
+
+#SearchIcon {
+	float: left;
+	position: relative;
+	margin-right: 10px;
+	padding-top: 3px;
+}
+
+#SearchOption {
+	position: absolute;
+	left: 410px;
+	top: 25px;
+	width: 360px;
+	height: 130px;
+	background-color: #ececec;
+	border: 1px solid #a5a5a5;
+	z-index: 1000;
+	display: none;	
+}
+
+#DropDownYear {
+	float: left;
+	position: relative;
+	width: 120px;
+	padding: 20px 0px 0px 0px;
+}
+
+#AnchorOK {
+	float: left;
+	width: 54px;
+	margin: 10px 0px 0px 100px;
+}
+
+#AnchorCancel {
+	float:left;
+	width: 80px;
+	margin: 10px 0px 0px 15px;	
+}

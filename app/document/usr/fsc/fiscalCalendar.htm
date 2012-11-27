@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Fiscal Calendar</h1>
+			<div class="description">This user interface is used to Add & Edit different Fiscal Calendar.</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:100px;">UI Element</th>
+				<th style="width:110px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th style="width:200px;">Validation</th>	
+				<th style="width:100px;">Description</th>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">Fiscal Calendars</td>
+			</tr>
+			
+			
+			<tr>
+				<td>Fiscal Calendars</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td></td>				
+				<td>Holds the list of all Fiscal Calendars.</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">Fiscal Periods</td>
+			</tr>
+			<tr>
+				<td>Fiscal Pattern</td>
+				<td>List</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Please select Fiscal Pattern</td>				
+				<td>Displays list of Fiscal Patterns.</td>				
+			</tr>
+			<tr>
+				<td>Fiscal Year</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Maximum length allowed - 4.<br />
+					Please enter valid year.</td>	
+                <td>Fiscal Year.</td>				
+			</tr>
+			<tr>
+				<td>Fiscal Period</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td></td>				
+				<td>Holds the list of all Fiscal Periods.</td>				
+			</tr>
+			<tr>
+				<td>Start Date</td>
+				<td>Date Control</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry.<br />
+					Please enter valid date.</td>				
+				<td>Start Date of Fiscal Period.</td>				
+			</tr>
+			<tr>
+				<td>End Date</td>
+				<td>Date Control</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry.<br />
+					Please enter valid date.</td>				
+				<td>End Date of Fiscal Period.</td>				
+			</tr>
+			<tr>
+				<td>Week 1</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Maximum length allowed - 1.<br />
+					Please enter valid value for Week 1.</td>	
+                <td>Week 1 of Fiscal Period.</td>
+			</tr>
+			<tr>
+				<td>Week 2</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Maximum length allowed - 1.<br />
+					Please enter valid value for Week 2.</td>	
+                <td>Week 2 of Fiscal Period.</td>
+			</tr>
+			<tr>
+				<td>Week 3</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Maximum length allowed - 1.<br />
+					Please enter valid value for Week 3.</td>	
+                <td>Week 3 of Fiscal Period.</td>
+			</tr>
+			<tr>
+				<td>Week 4</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Maximum length allowed - 1.<br />
+					Please enter valid value for Week 4.</td>	
+                <td>Week 4 of Fiscal Period.</td>			
+			</tr>
+			<tr>
+				<td>Week 5</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Maximum length allowed - 1.<br />
+					Please enter valid value for Week 5.</td>	
+                <td>Week 5 of Fiscal Period.</td>				
+			</tr>
+			<tr>
+				<td>Week 6</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Maximum length allowed - 1.<br />
+					Please enter valid value for Week 6.</td>	
+                <td>Week 6 of Fiscal Period.</td>			
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>	
+                <td>Click Save button to save the change.</td>			
+			</tr>
+			<tr>
+				<td>New</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>	
+                <td>Click New button to create New Fiscal Calender.</td>			
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>	
+                <td>Click Undo butoon to cancel any changes made.</td>			
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Add / Edit Fiscal Calender</td>
+			</tr>
+			<tr>
+				<td><img src="images/fscCalender.png" alt="Fiscal Calender"/></td>
+			</tr>			
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Save Fiscal Calender</td>
+				<td>Error while updating Fiscal Calendar Record.</td>
+			</tr>
+			<tr>
+				<td>Error</td>
+				<td>Failed to save Year.<br/>
+					Failed to save Period.</td>
+			</tr>
+		</table>
+		<h2>Action</h2>
+		<div class="reference">
+		    1. This user interface can be accessed at <span class="iiMenuVerticalMainPart Selected undefined">
+                Fiscal</span> > Calendar.<br />
+			2. Edit Fiscal Calendar - Select a Fiscal Calendar on left grid, it allows User to edit it on the right panel.
+        </div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>FscYears, FscPeriods, FscPatterns, FscJDECompanies, HcmHouseCodes.</td>
+			</tr>
+			<tr>
+				<td>Stored procedures</td>
+				<td>GlmFscYearSelect, FscPeriodDefinition, FscPeriodSelect.</td>
+			</tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="fiscalPattern.htm">Patterns</a></div>
+		<div class="reference"><a href="jdeCompany.htm">JDE Companies</a></div>
+		<div class="reference"><a href="account.htm">Chart Of Account</a></div>
+	</body>
+</html>

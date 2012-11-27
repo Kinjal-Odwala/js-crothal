@@ -1,0 +1,155 @@
+﻿
+#divPurchaseOrderDetails
+{	
+	/*right: 0;
+	position: absolute;
+	bottom: 30px; */
+	padding: 0px 0px 0px 0px;
+}
+
+#ButtonOpenOrder
+{	
+	/*right: 0;
+	position: absolute;
+	bottom: 0;*/
+	padding: 0px 0px 0px 0px;
+}
+
+#anchorAlign
+{
+	padding-bottom: 5px;
+	clear: both;
+}
+
+#AnchorAdd
+{
+	float: left;
+	width: 65px;
+	padding-left: 5px;
+	padding-top: 5px;
+}
+
+#AnchorEdit
+{
+	float: left;
+	width: 68px;
+	padding-left: 5px;
+	padding-top: 5px;
+}
+
+#AnchorView
+{
+	float: left;
+	width: 68px;
+	padding-left: 5px;
+	padding-top: 5px;
+}
+
+#AnchorViewEditPO
+{
+	float: left;
+	width: 130px;
+	padding-left: 10px;
+	padding-top: 5px;
+}
+
+.tbodyBorder
+{
+	overflow: auto;
+}
+#divPurchaseOrderGrid
+	{
+		
+	
+	}
+.gridBorder
+{
+	border-bottom: solid #AAAAAA thin;
+	border-bottom-width: 1px;
+	border-right: solid #AAAAAA thin;
+	border-right-width: 1px;
+	width:1150px;
+}
+
+.gridHeaderColumn
+{
+	background-color: #669966;
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	border-right: none;
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 8pt;
+	font-weight: bold;
+	color: white;
+     text-transform: uppercase; 
+	padding: 3px 4px 3px 4px;
+	text-align: center;
+	
+	height: 20px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+}
+	
+.gridColumn
+{
+	vertical-align: top; 
+	border-left: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	color: #032D23;
+	height: 20px;
+	padding: 2px 4px 4px 4px;
+}
+
+.gridColumnHidden
+{
+	display: none;
+}
+
+.gridRow
+{ 
+	background-color: #F0EFDD;
+}
+
+.alternateGridRow
+{ 
+	background-color: #FFFFFF;
+}
+
+.trover
+{
+	background-color: #C2E4C1;
+}
+
+.tableBorder
+{
+	border: 1px black solid;
+	border-bottom: none;
+	border-width: 1px;
+	cursor: pointer;
+	background-color: #F0EFDD;		
+}
+
+.tdBorder
+{
+	border-bottom: solid black thin;
+	border-width: 1px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-left: 5px;
+	width: 110px;
+}
+.iiInputText
+	{
+		width:182px;
+		white-space:nowrap;
+	}
+.iiInputTable
+	{
+		width:188px;
+		white-space:nowrap;
+	}

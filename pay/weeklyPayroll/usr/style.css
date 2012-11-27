@@ -1,0 +1,108 @@
+﻿
+.Regular {
+    height: 20px;
+    font-family: Verdana;
+    font-size: 8pt;
+    color: #000000;
+    background-color: #ffffff;
+    text-align: left;
+}
+
+.Regular INPUT {
+    font-family: Verdana;
+    font-size: 8pt;
+    width: 95%;
+    padding: 0px
+}
+
+.Regular SELECT {
+    font-family: Verdana;
+    font-size: 8pt;
+    width: 100%;
+}
+
+.RegularLabel {
+    width: 100px;
+    font-weight: bold;
+}
+
+.Alternate {
+    height: 20px;
+    font-family: Verdana;
+    font-size: 8pt;
+    color: #000000;
+    background-color: #f7efde;
+    text-align: left;
+}
+
+.Alternate INPUT {
+    font-family: Verdana;
+    font-size: 8pt;
+    width: 95%;
+    padding: 0px
+}
+
+.Alternate SELECT {
+    font-family: Verdana;
+    font-size: 8pt;
+    width: 100%;
+}
+
+.Header {
+    height: 20px;
+    font-family: Verdana;
+    font-size: 8pt;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #669b67;
+    text-align: left;
+}
+
+.Header SELECT {
+    font-family: Verdana;
+    font-size: 8pt;
+}
+
+.BorderHorizontal {
+    height: 1px;
+    background-color: #adaaad;
+}
+
+.BorderVertical {
+    width: 1px;
+    background-color: #adaaad;
+}
+
+.BorderCorner {
+    width: 1px;
+    height: 1px;   
+}
+
+.HeaderBorderVertical {
+	width: 1px;
+	background-color: #adaaad;
+}
+
+#btnOkay {
+	position: absolute;
+	left: 180px;
+	width: 60px;
+	padding: 6px 0px 5px 0px;
+}
+
+#btnCancel {
+	position: absolute;
+	left: 240px;
+	width: 80px;
+	padding: 6px 0px 5px 5px;
+}
+.iiInputText
+	{
+		width:182px;
+		white-space:nowrap;
+	}
+.iiInputTable
+	{
+		width:188px;
+		white-space:nowrap;
+	}

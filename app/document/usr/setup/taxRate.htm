@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Tax Rates</h1>
+			<div class="description">The purpose of the <b>Tax Rates</b> is to setup and maintain a list of Local and State tax rates which will be used in Invoice sales tax calculation.</div>
+		</div>
+		<h2>UI Elements</h2>
+		<table class="elementTable">			
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Tax Rates - Search</td>
+			</tr>
+			<tr>
+				<td>Zip Code</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Enter valid 5 digit zip code to search the Tax Rates.</td>				
+			</tr>
+			<tr>
+				<td>State Tax</td>
+				<td>Text field</td>
+				<td>NA</td>
+				<td>Readonly field</td>
+				<td>Sales tax rate of the State.</td>
+			</tr>
+			<tr>
+				<td>State</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>State should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Search</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>List the tax rates based on the search criteria.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Tax Rates</td>
+			</tr>
+			<tr>
+				<td>Tax Rates</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List the tax rates based on the selected Zip Code or State.</td>
+			</tr>
+			<tr>
+				<td>Zip Code</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>ZIP Code</td>
+			</tr>
+			<tr>
+				<td>GEO Code</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>GEO Code</td>
+			</tr>
+			<tr>
+				<td>City Name</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Name of the City.</td>
+			</tr>
+			<tr>
+				<td>City Sales Tax</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Sales tax rate of the City.</td>
+			</tr>
+			<tr>
+				<td>City Transit Sales Tax</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Transit sales tax rate of the City.</td>
+			</tr>
+			<tr>
+				<td>County Name</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Name of the County.</td>
+			</tr>
+			<tr>
+				<td>County Sales Tax</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Sales tax rate of the County.</td>
+			</tr>
+			<tr>
+				<td>County Transit Sales Tax</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Transit sales tax rate of the County.</td>
+			</tr>
+			<tr>
+				<td>Total Sales Tax</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Total sales tax rate.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Import Tax Rates</td>
+			</tr>
+			<tr>
+				<td>Browse</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Allows the user the select the text file.</td>
+			</tr>
+			<tr>
+				<td>Upload</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Upload the selected text file and import the state and local tax rates.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Closes the popup screen.</td>
+			</tr>			
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Tax Rates Search concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/taxRate.png"></td>
+			</tr>			
+			<tr>
+				<td class="uiHeader">Importing Tax Rates concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/importTaxRate.png"></td>
+			</tr>
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Appropriate message should be displayed after the completion of import process.</td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. Fiscal Years must be defined in a system look up table (FscYears)</div>
+		<div class="reference">2. States must be defined in a system look up table (AppStateTypes)</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>RevLocalTaxes<br>RevStateTaxes</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>RevLocalTaxesCount<br>RevLocalTaxesSelect<br>RevTaxDeActivate<br>RevTaxUpdate</td>
+			</tr>
+		</table>		
+	</body>
+</html>

@@ -1,0 +1,240 @@
+﻿
+#divLeftGrid {
+	float: left;
+	width: 41%;	
+	padding-left: 2px;
+	padding-right: 20px;
+}
+	
+#divRightGrid {
+	float: left;
+	width: 56%;
+}	
+	
+#LabelDay {
+	float: left;
+	width: 40px;	
+	height: 25px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-top: 3px;
+}
+
+#LabelDailyPayroll {
+	float: left;
+	width: 120px;	
+	height: 20px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-top: 3px;	
+}
+
+#PunchWorkShift {
+	float: left;
+	height: 25px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-top: 3px;	
+}
+	
+#GrossHours, #NetHours {
+	float: left;
+	height: 25px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-right: 10px;
+	padding-top: 3px;
+}
+	
+#DailyLunch {
+	float: left;
+	width: 25px;
+	padding-left: 5px;	
+}
+	
+#LabelLunch {
+	float: left;
+	width: 60px;	
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-top: 3px;
+}
+
+#LabelGrossHours {
+	float: left;
+	width: 90px;	
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-top: 3px;
+}
+
+#LabelNetHours {
+	float: left;
+	width: 75px;	
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-top: 3px;
+}
+
+#TextDailyPayroll {
+	float: left;
+	width: 300px;
+	height: 20px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-top: 3px;
+}
+
+#TotalHours, #TotalHoursRemaining {
+	float: left;
+	height: 25px;
+	width: 100px;
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 12px;
+	color: #032D23;
+	text-align: right;
+}
+
+#PaycodeWeeklyTotal {
+	float: left;
+	height: 25px;
+	width: 120px;	
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 12px;
+	color: #032D23;
+	text-align: right;
+}
+	
+#LabelTotal { 
+	float: left;
+	height: 25px;	
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 12px;
+	color: #032D23;
+	text-align: right;
+}
+	
+#SaveButton, #UndoButton {
+	float: left;
+	width: 73px;	
+	padding-left: 5px;
+}
+	
+#ApproveButton {
+	float: left;
+	width: 93px;	
+	padding-left: 5px;
+}
+
+#UnApproveButton {
+	float: left;
+	width: 110px;		
+	padding-left: 5px;
+}
+
+#hoursBodyColumn, #remainingHoursBodyColumn, #weeklyTotalHoursBodyColumn {
+	text-align: right;
+}
+
+#btnOkay {
+	position: absolute;
+	left: 180px;
+	width: 60px;
+	padding: 6px 0px 5px 0px;
+}
+
+#btnCancel {
+	position: absolute;
+	left: 240px;
+	width: 80px;
+	padding: 6px 0px 5px 5px;
+}
+
+.GridTableEmployee {
+	float: left;
+	width: 100%;	
+}
+
+.GridTable {
+	float: left;
+	width: 100%;
+	height: 150px;		
+}
+
+.GridTablePaycode {
+	float: left;
+	width: 100%;
+}
+
+.Regular {
+    height: 20px;
+    font-family: Verdana;
+    font-size: 8pt;
+    color: #000000;
+    background-color: #ffffff;
+    text-align: left;
+}
+
+.Regular SELECT {
+    font-family: Verdana;
+    font-size: 8pt;
+    width: 100%;
+}
+
+.RegularLabel {
+    width: 100px;
+    font-weight: bold;
+}
+
+.Alternate {
+    height: 20px;
+    font-family: Verdana;
+    font-size: 8pt;
+    color: #000000;
+    background-color: #f7efde;
+    text-align: left;
+}
+
+.HeaderBorderVertical {
+	width: 1px;
+	background-color: #adaaad;
+}
+
+.Header {
+    height: 20px;
+    font-family: Verdana;
+    font-size: 8pt;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #669b67;
+    text-align: left;
+}
+
+.Header SELECT {
+    font-family: Verdana;
+    font-size: 8pt;
+}
+
+.BorderHorizontal {
+    height: 1px;
+    background-color: #adaaad;
+}
+
+.BorderVertical {
+    width: 1px;
+    background-color: #adaaad;
+}

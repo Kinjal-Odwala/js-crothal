@@ -1,0 +1,302 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>SSRS Reports</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/rpt/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<body id="appBody">
+		 <div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; font-size:100%; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+		
+		<div id="popupLoading" style="position: absolute; z-index: 6000; width: 800px; height: 400px; background-color: white; display:none">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="popupMessageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+		
+		<div class="pageHeader">
+			<div id="actionHeader">
+		        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
+				<div class="header" id="pageHeader">SSRS Reports</div>
+	        </div>
+		</div>
+
+		<div class="pageBody">
+			<div class="contentArea">
+				<div id="ReportContainer">
+					<div id="TreeviewContainer">
+						<ul class="treeview" id="ulEdit0"></ul>
+					</div>
+				</div>
+				<div id="SubscriptionContainer" style="display: none;">
+					<div class="contentAreasContainerLeft">
+						<div id="SubscriptionGridContainer">
+							<div class="labelTextArea">Report:</div>
+							<div class="inputTextMedium">
+								<div id="Report"></div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="SubscriptionGrid"></div>
+						</div>
+					</div>
+					<div class="contentAreasContainerRight">
+						<div class="contentArea">							
+							<div id="Subscription">
+								<div class="header" id="RightContainerHeader">Subscription Details</div>
+								<div id="LabelDateHeader" class="labelSchedule">Report Delivery Options</div>
+								<div style="clear:both;"></div>
+								<div class="labelSubscription"><span class="requiredFieldIndicator">&#149;</span>&nbsp;Description:</div><div id="Description" class="inputTextLarge"></div>
+								<div style="clear:both;"></div>	
+								<div class="labelSubscription"><span class="requiredFieldIndicator">&#149;</span>&nbsp;Delivered By:</div><div id="DeliveredBy" class="inputTextSmall"></div>
+								<div style="clear:both;"></div>
+								<div class="labelSubscription"><span class="requiredFieldIndicator">&#149;</span>&nbsp;To:</div><div id="To" class="inputTextLarge"></div>
+								<div style="clear:both;"></div>
+								<div class="labelSubscription"><span id="nonRequiredFieldIndicator">&nbsp;Cc:</span></div><div id="Cc" class="inputTextLarge"></div>
+								<div style="clear:both;"></div>
+								<div class="labelSubscription"><span class="requiredFieldIndicator">&#149;</span>&nbsp;Subject:</div><div id="Subject" class="inputTextLarge"></div>
+								<div style="clear:both;"></div>
+								<div class="labelSubscription"><span id="nonRequiredFieldIndicator">&nbsp;Include Report:</span></div><div id="IncludeReport"></div>
+								<div style="clear:both;"></div>
+								<div class="labelSubscription"><span id="nonRequiredFieldIndicator">&nbsp;Include Link:</span></div><div id="IncludeLink"></div>
+								<div style="clear:both;"></div>
+								<div class="labelSubscription"><span class="requiredFieldIndicator">&#149;</span>&nbsp;Report Format:</div><div id="ReportFormat" class="inputTextSmall"></div>
+								<div style="clear:both;"></div>
+								<div class="labelSubscription"><span class="requiredFieldIndicator">&#149;</span>&nbsp;Priority:</div><div id="Priority" class="inputTextSmall"></div>
+								<div style="clear:both;"></div>
+								<div class="labelSubscription"><span id="nonRequiredFieldIndicator">&nbsp;Comment:</span></div><textarea id="Comment" class="inputTextLarge"></textarea>
+								<div style="clear:both;"></div>
+								<div id="LabelDateHeader" class="labelSchedule">Report Parameter Values</div>
+								<div style="clear:both;"></div>
+								<div id="LabelDate" class="labelSchedule">Specify the report parameter values to use with this subscription.</div>
+								<div style="clear:both;"></div>
+								<div id="ParemeterContainer"></div>
+								<div style="clear:both;"></div>
+								<div id="LabelDateHeader" class="labelSchedule">Subscription Processing Options</div>
+								<div style="clear:both;"></div>
+								<div id="LabelDate" class="labelSchedule">Run the subscription:</div>
+								<div id="AnchorSchedule"></div>
+								<div style="clear:both;"></div>
+								<div id="ScheduleInfo" class="labelSchedule"></div>								
+							</div>
+							<div class="body">
+								<div style="clear:both; height:5px;"></div>
+								<div id="AnchorSave"></div>
+								<div id="AnchorNew"></div>
+								<div id="AnchorDelete"></div>
+								<div id="AnchorUndo"></div>
+								<div style="clear:both; height:10px;"></div>
+							</div>							
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="schedulePopup">
+				<div class="contentArea">
+					<div id="popupHeader" class="header">Schedule Details</div>
+					<div id="LabelScheduleHeader" class="labelSchedule">Choose whether to run the report on an hourly, daily, weekly, monthly, or one time basis.</div>
+					<div style="clear:both;"></div>
+					<div id="ScheduleHeader">Hourly Schedule</div>
+					<div id="Schedule">
+						<div class="radioButton">
+							<input type="radio" id="Hourly" name="rbSchedule" checked="true" value="0" /><span class="labelRadio">Hourly</span>
+						</div>
+						<div style="clear:both; height:15px;"></div>
+						<div class="radioButton">
+							<input type="radio" id="Daily" name="rbSchedule" value="1" /><span class="labelRadio">Daily</span>
+						</div>
+						<div style="clear:both; height:15px;"></div>
+						<div class="radioButton">
+							<input type="radio" id="Weekly" name="rbSchedule" value="2" /><span class="labelRadio">Weekly</span>
+						</div>
+						<div style="clear:both; height:15px;"></div>
+						<div class="radioButton">
+							<input type="radio" id="Monthly" name="rbSchedule" value="3" /><span class="labelRadio">Monthly</span>
+						</div>
+						<div style="clear:both; height:15px;"></div>
+						<div class="radioButton">
+							<input type="radio" id="OneTime" name="rbSchedule" value="4" /><span class="labelRadio">Once</span>
+						</div>
+					</div>
+					<div id="ScheduleDetails">
+						<div id="HourlySchedule">
+							<div class="labelSchedule"><span class="requiredFieldIndicator">&#149;</span>&nbsp;Run the schedule every:</div>
+							<div style="clear:both;"></div>
+							<div id="Hours"></div><div id="LabelHours">hours</div>						
+							<div id="Minutes"></div><div id="LabelMinutes">minutes</div>
+						</div>
+						<div style="clear:both;"></div>
+						<div id="OnDays">
+							<input type="radio" id="Days" name="rbDaily" checked="true" value="0" /><span class="labelRadio">On the following days:</span>
+						</div>
+						<div style="clear:both;"></div>
+						<div id="WeeklySchedule">
+							<span class="labelSchedule"><span class="requiredFieldIndicator">&#149;</span>&nbsp;Repeat after this number of weeks:</span><div id="NumberOfWeeks"></div>
+						</div>
+						<div id="MonthlySchedule">
+							<div id="MonthlyLabel" class="labelRadio"><span class="requiredFieldIndicator">&#149;</span>&nbsp;Months:</div>
+							<div class="monthlyContainer">
+								<div class="checkBox"><div id="Jan"></div></div>
+								<div class="labelRadio">Jan</div>
+								<div style="clear:both;"></div>
+								<div class="checkBox"><div id="Feb"></div></div>
+								<div class="labelRadio">Feb</div>
+								<div style="clear:both;"></div>
+								<div class="checkBox"><div id="Mar"></div></div>
+								<div class="labelRadio">Mar</div>
+							</div>
+							<div class="monthlyContainer">
+								<div class="checkBox"><div id="Apr"></div></div>
+								<div class="labelRadio">Apr</div>
+								<div style="clear:both;"></div>
+								<div class="checkBox"><div id="May"></div></div>
+								<div class="labelRadio">May</div>
+								<div style="clear:both;"></div>
+								<div class="checkBox"><div id="Jun"></div></div>
+								<div class="labelRadio">Jun</div>
+							</div>
+							<div class="monthlyContainer">
+								<div class="checkBox"><div id="Jul"></div></div>
+								<div class="labelRadio">Jul</div>
+								<div style="clear:both;"></div>
+								<div class="checkBox"><div id="Aug"></div></div>
+								<div class="labelRadio">Aug</div>
+								<div style="clear:both;"></div>
+								<div class="checkBox"><div id="Sep"></div></div>
+								<div class="labelRadio">Sep</div>
+							</div>
+							<div class="monthlyContainer">
+								<div class="checkBox"><div id="Oct"></div></div>
+								<div class="labelRadio">Oct</div>
+								<div style="clear:both;"></div>
+								<div class="checkBox"><div id="Nov"></div></div>
+								<div class="labelRadio">Nov</div>
+								<div style="clear:both;"></div>
+								<div class="checkBox"><div id="Dec"></div></div>
+								<div class="labelRadio">Dec</div>
+							</div>
+							<div class="monthlyContainer">
+								<img id="MonthErrorMessage" src="/fin/cmn/usr/media/Common/exclamation.gif" title="To create a schedule that runs at least one month out of the year, you must select which month to run the report."/>
+							</div>
+							<div style="clear:both; height:5px;"></div>
+							<div class="divLabel"><input type="radio" id="rbWeekOfMonth" name="rbMonthly" checked="true" value="0" /><span class="labelRadio">On week of month:</span></div><div id="WeekOfMonth"></div>
+						</div>
+						<div id="WeekDays">
+							<div style="clear:both; height:10px;"></div>
+							<div id="LabelDay"></div>
+							<div class="checkBoxDay">
+								<div class="checkBox">
+									<div id="Sunday"></div>
+								</div>
+								<span class="labelRadio">Sun</span>
+							</div>
+							<div class="checkBoxDay">
+								<div class="checkBox">
+									<div id="Monday"></div>
+								</div>
+								<span class="labelRadio">Mon</span>
+							</div>
+							<div class="checkBoxDay">
+								<div class="checkBox">
+									<div id="Tuesday"></div>
+								</div>
+								<span class="labelRadio">Tue</span>
+							</div>
+							<div class="checkBoxDay">
+								<div class="checkBox">
+									<div id="Wednesday"></div>
+								</div>
+								<span class="labelRadio">Wed</span>
+							</div>
+							<div class="checkBoxDay">
+								<div class="checkBox">
+									<div id="Thursday"></div>
+								</div>
+								<span class="labelRadio">Thu</span>
+							</div>
+							<div class="checkBoxDay">
+								<div class="checkBox">
+									<div id="Friday"></div>
+								</div>
+								<span class="labelRadio">Fri</span>
+							</div>
+							<div class="checkBoxDay">
+								<div class="checkBox">
+									<div id="Saturday"></div>
+								</div>
+								<span class="labelRadio">Sat</span>
+							</div>
+							<div>
+								<img id="DayErrorMessage" src="/fin/cmn/usr/media/Common/exclamation.gif" title="To create a schedule that runs at least one day a week, you must select which day to run the report."/>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="DailySchedule">
+							<input type="radio" id="WeekDay" name="rbDaily" value="1" /><span class="labelRadio">Every weekday</span>
+							<div style="clear:both; height:10px;"></div>
+							<div class="divLabel"><input type="radio" id="RepeatDay" name="rbDaily" value="2" /><span class="labelRadio">Repeat after this number of days:</span></div><div id="NumberOfDays"></div>
+							<div style="clear:both;"></div>
+						</div>						
+						<div style="clear:both;"></div>		
+						<div id="DivCalendarDays"><div class="divLabel"><input type="radio" id="rbCalendarDays" name="rbMonthly" value="1" /><span class="labelRadio">On calendar day(s):</span></div><div id="CalendarDays"></div></div>
+						<div style="clear:both;"></div>
+						<div id="OneTimeSchedule">
+							<span class="labelSchedule">Report runs only once:</span>
+						</div>
+						<div style="clear:both; height:10px;"></div>
+						<div id="StartTime">
+							<span class="labelSchedule"><span class="requiredFieldIndicator">&#149;</span>&nbsp;Start Time:</span>
+							<div id="StartHours"></div><span class="labelSchedule">&nbsp;:</span><div id="StartMinutes"></div>
+							<input type="radio" id="AM" name="rbStartTime" checked="true" value="AM" /><span class="labelRadio">A.M.</span>
+							<input type="radio" id="PM" name="rbStartTime" value="PM" /><span class="labelRadio">P.M.</span>
+						</div>
+					</div>
+					<div style="clear:both;"></div>
+					<div id="LabelDateHeader" class="labelSchedule">Start and End Dates</div>
+					<div style="clear:both;"></div>
+					<div id="LabelDate" class="labelSchedule">Specify the date to start and optionally end this schedule.</div>
+					<div style="clear:both;"></div>
+					<div id="LabelStartDate" class="labelSchedule">Begin running this schedule on:</div><div id="StartDate"></div>
+					<div style="clear:both;"></div>
+					<div id="LabelEndDate" class="labelSchedule"><div class="checkBox"><div id="StopSchedule"></div></div>Stop this schedule on:</div><div id="EndDate"></div>
+					<div style="clear:both;"></div>
+					<div id="AnchorOK"></div>
+					<div id="AnchorCancel"></div>
+				</div>
+			</div>
+			<div style="clear:both;"></div>
+			<div id="hirOrgPopup">
+				<div class="body">
+					<div style="clear:both; height:10px;"></div>
+					<div class="labelTextArea">House Code:</div>
+					<div class="inputTextMedium">
+						<div id="AppUnit"></div>
+					</div>
+					<div id="AnchorSearch"></div>
+					<div style="clear:both;"></div>
+					<div id="hirOrgContainer">
+						<div id="hirOrg"></div>
+					</div>
+					<div style="clear:both;"></div>
+					<div id="AnchorSelect"></div>
+					<div id="AnchorClose"></div>
+				</div>
+			</div>
+		</div>
+		<div id="backgroundPopup"></div>
+		<div id="iiInputValidationMaster"></div>
+	</body>
+</html>

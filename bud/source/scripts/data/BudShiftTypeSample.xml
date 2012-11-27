@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<transmission>
+	<target id="iiCache" requestId="5">
+		<store id="shiftTypes" activeId="169" criteria="storeId:houseCodeJobs,houseCodeId:286,userId:RAYMOND-DEV-XP\Raymond Liu,">
+			<item id="1" title="Day" />
+			<item id="2" title="Evening" />
+			<item id="3" title="Night" />
+		</store>
+	</target>
+</transmission>

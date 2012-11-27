@@ -1,0 +1,312 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Hierarchy Management</h1>
+			<div class="description">The purpose of the <b>Hierarchy Management</b> is to setup and maintain a list of Hierarchy nodes at different levels.
+				The features of the hierarchy management tool are as follows.
+				<Ul>
+					<li>The Hierarchy nodes can be modified by the users who is having the Write permission.</li>
+					<li>Searching for multiple units at a time. The units will be listed in separate container.</li>
+					<li>Searching for node at any level based on the title.</li>
+					<li>Add and Edit functionality.</li>
+					<li>Drag and drop functionality. Nodes can be moved only at appropriate level.</li>
+					<li>Saving the modified nodes in snapshot table and committing the changes in original Hierarchy table.</li>
+					<li>Get the original version of hierarchy.</li>
+				</Ul>
+			</div>
+		</div>
+		<h2>UI Elements</h2>
+		<table class="elementTable">			
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Hierarchy - Search</td>
+			</tr>
+			<tr>
+				<td>Brief</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>To search a specific unit(s) in the Hierarchy, type-in unit# (1455,900000).
+					If multiple units are searched then units will be listed in the Movable Units treeview.
+					If single unit is searched then the unit will be shown on the Hierarchy treeview.
+					To search a specific node at any level, type-in title of the node. 
+					Select the appropriate level and press Enter key/click Search button.
+				</td>				
+			</tr>
+			<tr>
+				<td>Level</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Level should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Search</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Load the Units/Node based on the search criteria.</td>
+			</tr>			
+			<tr>
+				<td class="uiHeader" colspan="5">Hierarchy - Treeview</td>
+			</tr>
+			<tr>
+				<td>Hierarchy Nodes</td>
+				<td>Treeview</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Lists the hierarchy nodes in a treeview control.</td>
+			</tr>
+			<tr>
+				<td>Save Snapshot</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To save the modified nodes in snapshot table.</td>
+			</tr>
+			<tr>
+				<td>Preview Snapshot</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To preview the snapshot of the hierarchy.</td>
+			</tr>
+			<tr>
+				<td>Save & Commit</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To save the modified nodes in snapshot table and committing the changes in original Hierarchy table.</td>
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Undo the current changes in the hierarchy snapshot.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Movable Units List</td>
+			</tr>
+			<tr>
+				<td>Movable Units</td>
+				<td>Treeview</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Lists the searched units in a treeview control. Select the units to move to appropriate Area Manager level.</td>
+			</tr>
+			<tr>
+				<td>Select All</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>If checked all units will be selected in the Movable Units list. Only the selected units can be draggable and droppable at selected Area Manager level.</td>
+			</tr>
+			<tr>
+				<td>Remove</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Removes the selected units from the Movable Units list.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Hierarchy - Drag & Drop</td>
+			</tr>
+			<tr>
+				<td>Tree Node</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Mouse event</td>
+				<td>The selected movable units can be draggable and droppable at selected Area Manager level. 
+					The selected unit in a tree can be draggable and droppable at another Area Manager level.
+					The selected unit in a tree can be draggable and droppable to movable units list.
+					The selected Area Manager level can be draggable and droppable to another Regional Manager level. 
+					Nodes can be moved to its parent level node in the hierarchy tree. It should not allow to move to any level other than its parent level.
+					For Example, Area Manager level node can be moved to any Regional Manager level node. But you cannot move to any other level node.
+				</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Hierarchy - Add / Edit</td>
+			</tr>
+			<tr>
+				<td>Brief</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Brief of the node. Maximum 8 digits are allowed in Unit-Brief.</td>
+			</tr>
+			<tr>
+				<td>Title</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Title of the node.</td>
+			</tr>
+			<tr>
+				<td>Active</td>
+				<td>Checkbox field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Y / N (Hierarchy node is Active or not)</td>
+			</tr>
+			<tr>
+				<td>Level</td>
+				<td>Label</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Level of the new/selected node.</td>
+			</tr>
+			<tr>
+				<td>Parent</td>
+				<td>Label</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Parent level of the new/selected node.</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Saves the node details.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Closes the popup screen.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Preview Snapshot</td>
+			</tr>
+			<tr>
+				<td>Hierarchy Nodes</td>
+				<td>Treeview</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Lists the modified nodes in a treeview control. RED color indicates that the nodes are deleted, GREEN color indicates that the nodes are added and BLUE color indicates that the nodes are edited/moved.</td>
+			</tr>
+			<tr>
+				<td>Print</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To print the snapshot of the hierarchy.</td>
+			</tr>
+			<tr>
+				<td>Close</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Closes the popup screen.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Hierarchy - Context Menu</td>
+			</tr>
+			<tr>
+				<td>Add</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Opens the popup screen for adding the new hierarchy node.</td>
+			</tr>
+			<tr>
+				<td>Edit</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Opens the popup screen for editing the selected hierarchy node.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Hierarchy - Actions Menu</td>
+			</tr>
+			<tr>
+				<td>Get Original Version</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To get the original version of Hierarchy.</td>
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Hierarchy Search concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/hierarchyManagement.png"></td>
+			</tr>			
+			<tr>
+				<td class="uiHeader">Hierarchy Add/Edit concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/addEditNode.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Hierarchy Preview Snapshot concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/previewSnapshot.png"></td>
+			</tr>
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>			
+			<tr>
+				<td>Add / Edit Save</td>
+				<td>In order to save, the errors on the page must be corrected.</td>
+			</tr>
+			<tr>
+				<td>Save Snapshot</td>
+				<td>In order to save, the listed units need to be moved appropriately.</td>
+			</tr>
+			<tr>
+				<td>Save & Commit</td>
+				<td>Are you sure you want to make the changes on Hierarchy permanently?.</td>
+			</tr>
+			<tr>
+				<td>Get Original Version</td>
+				<td>The changes you made will be lost if you get original version. Are you sure you want to get the original version of Hierarchy?.</td>
+			</tr>
+			<tr>
+				<td>Save Error</td>
+				<td>Error while updating the hirnode snapshot information.</td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. Levels must be defined in a system look up table (HirLevels).</div>
+		<div class="reference">2. Hierarchy Nodes must be defined in a system look up table (HirNodes).</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>HirLevels<br>HirNodes<br>HirNodeSnapshots</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>HirAppUserFullPathSelect<br>HirNodeSnapshotReset<br>HirNodeSnapshotSelect<br>HirNodeSnapshotUpdate<br>HirNodeSnapshotUpdateCommit<br>HirNodeSnapshotPreviewSelect</td>
+			</tr>
+		</table>		
+	</body>
+</html>

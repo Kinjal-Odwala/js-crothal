@@ -1,0 +1,76 @@
+﻿.labelTextUnit
+{
+	float: left;
+	position: relative;
+	margin-right: 10px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	text-align:justify;
+}
+
+#AppUnitLoader
+{
+	float: left;
+	position: relative;
+	width: 230px;
+}
+	
+#LoadButtonContainer
+{
+	float: left;
+	width: 70px;
+	padding-left: 10px;
+}
+
+#contentAreaLeft
+{
+	float: left;
+	width: 47%;
+	vertical-align: top;
+	margin-top: 10px;
+	margin-right: 20px;
+}
+
+#contentAreaRight
+{
+	float: left;
+	width: 50%;
+	vertical-align: top;
+	margin-top: 10px;	
+}
+	
+#hirContainer, #detailContainer
+{
+	border: solid #AAAAAA thin; 
+	border-width: 1px;
+	padding: 10px;
+	overflow: auto;
+}
+
+#FiscalYear
+{
+	width: 100px;	
+}
+
+#Comments
+{
+	width: 250px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: black;
+}
+
+#AnchorApprove
+{
+	float: left;
+	width: 95px;
+}
+
+#InputTextApprove 
+{
+	float: left;
+	position: relative;
+}

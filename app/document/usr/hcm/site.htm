@@ -1,0 +1,307 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>
+                Sites</h1>
+			<div class="description">The purpose of Sites is add/edit Site Details.</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:100px;">UI Element</th>
+				<th style="width:110px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th style="width:200px;">Validation</th>	
+				<th style="width:100px;">Description</th>				
+			</tr>
+					
+			<tr>
+				<td>Sites</td>
+				<td>List</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>				
+				<td>Displays List of Sites containing 
+                    <br />
+                    User entered value by clicking<br />
+                    on Enter Button.</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">Site Billing Address</td>
+			</tr>
+			<tr>
+				<td>
+                    Site Name</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry.<br />
+                    Maximum length allowed - 64.</td>				
+				<td>
+                    Site Name.</td>				
+			</tr>
+			<tr>
+				<td>Address1</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry.<br />
+                    Maximum length allowed - 100.</td>	
+                <td>
+                    Address 1 of Site.</td>				
+			</tr>
+			<tr>
+				<td style="height: 28px"><span id="nonRequiredFieldIndicator">Address2</span></td>
+				<td style="height: 28px">Text field</td>
+				<td style="height: 28px">No</td>
+				<td style="height: 28px">End user input</td>				
+				<td style="height: 28px">
+                    Maximum length allowed - 100.</td>
+				<td style="height: 28px"><span id="Span3">Address 2&nbsp;<span style="background-color: #f0f0f0"> of Site.</span></span></td>				
+			</tr>
+			<tr>
+				<td>
+                    Postal Code</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry.<br />
+                    Maximum length allowed - 10.<br />
+                    Please enter valid Postal Code. Example: 99999 or 99999-9999</td>	
+                <td>
+                    Postal Code of Site.</td>			
+			</tr>
+			<tr>
+				<td>
+                    GEO Code</td>
+				<td>List</td>
+				<td>
+                    No</td>
+				<td>End user input</td>				
+				<td>
+                    Please select the correct GEO Code.
+                    </td>	
+                <td> GEO Code of Site.</td>			
+			</tr>
+			<tr>
+				<td>
+                    <span class="requiredFieldIndicator"></span>City</td>
+				<td>
+                    List</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>
+                    This field is required. Please make an entry.
+                    <br />
+                    Please select the correct City.</td>	
+                <td><span class="requiredFieldIndicator"></span>City of Site.</td>			
+			</tr>
+			
+			<tr>
+				<td>
+                    County</td>
+				<td>
+                    List</td>
+				<td>
+                    No</td>
+				<td>End user input</td>				
+				<td>
+                    Maximum length allowed - 50.</td>	
+                <td>
+                    County of Site.</td>			
+			</tr>
+			<tr>
+				<td>
+                    State</td>
+				<td>
+                    List</td>
+				<td>
+                    Yes</td>
+				<td>End user input</td>				
+				<td>
+                    This field is required. Please make an entry.<br />
+                    Please select the correct State.</td>	
+                <td>
+                    State of Site.</td>			
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">Site Demographics</td>
+			</tr>
+			<tr>
+				<td>Industry Type</td><td>
+                    List</td>
+                <td>
+                    Yes</td>
+                <td>
+                    End user input</td>
+                <td>
+                    This field is required. Please make an entry.</td>
+                <td>
+                    Industry Type of Site.</td>
+			</tr>
+			<tr>
+				<td>
+                    Primary Business</td><td>
+                    List</td>
+                <td>
+                    Yes</td>
+                <td>
+                    End user input</td>
+                <td>
+                    This field is required. Please make an entry.<br />
+                    Please select the correct Primary Business.</td>
+                <td>
+                    Primary Business of Site.</td>
+			</tr>
+			<tr>
+				<td>
+                    Location Type</td><td>
+                    List</td>
+                <td>
+                    No</td>
+                <td>
+                    End user input</td>
+                <td>
+                </td>
+                <td>
+                    Location Type of Site.</td>
+			</tr>
+			<tr>
+				<td>
+                    Trauma Level</td><td>
+                    List</td>
+                <td>
+                    No</td>
+                <td>
+                    End user input</td>
+                <td>
+                </td>
+                <td>
+                    Trauma Level of Site.</td>
+			</tr>
+			<tr>
+				<td>
+                    Profit Designation</td><td>
+                    List</td>
+                <td>
+                    No</td>
+                <td>
+                    End user input</td>
+                <td>
+                </td>
+                <td>
+                    Profit Designation of Site.</td>
+			</tr>
+			<tr>
+				<td>
+                    GPO</td><td>
+                    List</td>
+                <td>
+                    No</td>
+                <td>
+                    End user input</td>
+                <td>
+                </td>
+                <td>
+                    GPO of Site.</td>
+			</tr>
+			<tr>
+				<td>
+                    <span id="Span1"></span>Ownership</td><td>
+                    List</td>
+                <td>
+                    No</td>
+                <td>
+                    End user input</td>
+                <td>
+                </td>
+                <td><span id="Span5"></span>Ownership of Site.</td>
+			</tr>
+			<tr>
+				<td>
+                    <span id="Span2"></span>Specify GPO</td><td>
+        Text field</td>
+                <td>
+                    No</td>
+                <td>
+                    End user input</td>
+                <td>
+                    Maximum length allowed - 16.</td>
+                <td><span id="Span4"></span>Specifid GPO of Site.</td>
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Add / Edit Site</td>
+			</tr>
+			<tr>
+				<td><img src="images/Site.png" alt="Site"/></td>
+			</tr>			
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Save Site</td>
+				<td>In order to save, the errors on the page must be corrected.<br />
+                    Error while updating Site Record.</td>
+			</tr>
+			<tr>
+				<td>Error</td>
+				<td>Failed to save Site.</td>
+			</tr>
+		</table>
+		<h2>Action</h2>
+		<div class="reference">
+		    1. This user interface can be accessed at <span class="iiMenuVerticalMainPart Selected undefined">
+                HouseCode</span> > Sites.<br />
+            2. Edit Location - Enter Site in Sites list and click Enter button to see Billing
+            Address and Demographics of the Site. It allows User to edit Site.
+            <br />
+            3. Save Site - &nbsp;Click on Save to save the change. 
+            <br />
+            3. New Site - Click New. Enter all required field details, Site Name, Address1,
+            Postal Code, City, State, Industry Type, and Primary Business.
+            <br />
+            5. Undo current changes to site- Click Undo to cancel any changes made to selected Site.</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>
+                    AppSites, AppStateTypes, HcmHouseCodes, AppSites, AppSiteUnits, AppIndustryTypes,
+                    <br />
+                    AppPrimaryBusinessTypes, AppLocationTypes, 
+                    <br />
+                    AppTraumaLevelTypes, AppProfitDesignationTypes,
+                    <br />
+                    AppGPOTypes, AppOwnershipTypes, AppZipCodeTypes.</td>
+			</tr>
+			<tr>
+				<td>Stored procedures</td>
+				<td>
+                    AppSiteByUnitSelect.</td>
+			</tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="remitTo.htm">Remit To</a></div>
+		<div class="reference"><a href="job.htm">Jobs</a></div>
+		<div class="reference"><a href="houseCodeImport.htm">Import House Codes</a></div>
+	</body>
+</html>

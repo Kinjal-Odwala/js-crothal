@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Remit To</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/hcm/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+		
+	  	 <div class="pageHeader">
+	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
+        </div>
+		<div class="pageBody">
+			<div id="contentAreasContainerLeft">
+				<div  class="contentArea">
+					<div class="header">Remit To Locations</div>
+					<div class="body">
+						<div id="RemitTo"></div>
+						<div style="clear:both;"></div>
+					</div>
+				</div>
+			</div>
+			<div id="contentAreasContainerRight">
+				<div class="contentArea">
+					<div id="remitToHeader" class="header">Location Detail</div>
+					<div id="remitToContentArea" class="body">
+						<div id="TableEditArea">
+							<div id="LabelTextAreaLeftRemit">
+								<span class="requiredFieldIndicator">&#149;</span>Title:
+							</div>
+							<div id="InputTextAreaRight">
+								<div id="RemitToTitle"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div id="LabelTextAreaLeftRemit">
+								<span class="requiredFieldIndicator">&#149;</span>Address1:
+							</div>
+							<div id="InputTextAreaRight">
+								<div id="RemitToAddress1"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div id="LabelTextAreaLeftRemit">
+								<span id="nonRequiredFieldIndicator">Address2:</span>
+							</div>
+							<div id="InputTextAreaRight">
+								<div id="RemitToAddress2"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div id="LabelTextAreaLeftRemit">
+								<span class="requiredFieldIndicator">&#149;</span>City:
+							</div>
+							<div id="InputTextAreaRight">
+								<div id="RemitToCity"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div id="LabelTextAreaLeftRemit">
+								<span class="requiredFieldIndicator">&#149;</span>State:
+							</div>
+							<div id="InputTextAreaRight">
+								<div id="RemitToStateType"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div id="LabelTextAreaLeftRemit">
+								<span class="requiredFieldIndicator">&#149;</span>Zip:
+							</div>
+							<div id="InputTextAreaRight">
+								<div id="RemitToZip"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+					</div>
+					<div class="footer">
+                        <div id="AnchorSave"></div>
+                        <div id="AnchorNew"></div>
+                        <div id="AnchorUndo"></div>
+                        <div style="clear:both;"></div>
+                    </div>
+				</div>
+			</div>
+		</div>
+	    <div id="iiInputValidationMaster"></div>
+	</body>
+</html>
+ <!---<table width="100%" cellpadding="0" cellspacing="0" border="0">
+   			<tr>
+				<td colspan="4" class="pageHeader">
+					<div id="appAreaHeader">
+	       			 	<div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+	   			<td colspan="4" height="5px">
+				</td>
+	   		</tr>
+			<tr >
+	   			<td width="400px" align="left">
+	   				<table>
+	   					<tr>
+							<td height="37px" align="center">
+								<div class="gridHeaderFont">Remit To Locations</div>
+							</td>
+						</tr>
+	   					<tr>
+	   						<td class="labelText">
+				   				<div class="GridTable">
+									<div id="RemitTo"></div>
+								</div>
+	   						</td>
+	   					</tr>
+					</table>
+	   			</td>
+				<td width="5px">
+					&nbsp;
+				</td>
+				<td width="375px" align="left"  valign="top">
+					<table>
+						<tr>
+							<td height="37px" >
+								<table> 
+									<tr>
+										<td width="30px">
+											<div id="NewAccount" style="display:none" class="newIcon"></div>
+										</td>
+										<td align="center" width="350px">
+											<div class="gridHeaderFont">Location Detail</div>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+	   					<tr>
+	   						<td>
+	   							<table class="tdBorderTop">
+	   								<tr>
+				   						<td class="labelText" width="100px">
+				   							  <span class="requiredFieldIndicator">&#149;</span> Title:
+				   						</td>
+										<td width="200px">
+				   							<div id="RemitToTitle">	</div>
+				   						</td>
+				   					</tr>
+									<tr>
+				   						<td class="labelText" width="100px">
+				   							  <span class="requiredFieldIndicator">&#149;</span> Address1:
+				   						</td>
+										<td width="200px">
+				   							<div id="RemitToAddress1"></div>
+				   						</td>
+				   					</tr>
+									<tr>
+				   						<td class="labelText" width="100px">
+				   							   &nbsp;&nbsp;&nbsp;Address2:
+				   						</td>
+										<td width="200px">
+				   							<div id="RemitToAddress2">	</div>
+				   						</td>
+				   					</tr>
+									<tr>
+				   						<td class="labelText" width="100px"> 
+											<span class="requiredFieldIndicator">&#149;</span>City:
+				   						</td>
+										<td width="200px">
+				   							<div id="RemitToCity"></div>
+				   						</td>
+				   					</tr>
+									<tr>
+				   						<td class="labelText" width="100px"> 
+											<span class="requiredFieldIndicator">&#149;</span> State: 
+				   						</td>
+										<td width="200px">
+				   							<div id="RemitToStateType">	</div>
+				   						</td>
+				   					</tr>
+									
+									<tr>
+				   						<td class="labelText" width="100px">
+				   							<span class="requiredFieldIndicator">&#149;</span> Zip:
+				   						</td>
+										<td width="200px">
+				   							<div id="RemitToZip">	</div>
+				   						</td>
+				   					</tr>
+									<tr>
+										<td colspan="2" height="148px">
+											
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2" height=15px align="left" valign="bottom">
+											<table>
+												<tr>
+													<td width="70px">
+														<div id="AnchorSave"></div>
+													</td>
+													<td width="70px">
+														<div id="AnchorNew"></div>
+													</td>
+													<td width="70px">
+														<div id="AnchorUndo"></div>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+				   				</table>
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td>
+					
+				</td>
+	   		</tr>
+			
+	   </table>-->

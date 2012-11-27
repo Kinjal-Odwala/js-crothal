@@ -1,0 +1,281 @@
+﻿<h1>
+    Labor Calculations</h1>
+<div id="labor-calculations-tab-panel">
+    <ul>
+        <li><a href="#labor-calculations-tab-1"><span>Sick Pay</span></a></li>
+        <li><a href="#labor-calculations-tab-2"><span>Legal Holidays</span></a></li>
+        <li><a href="#labor-calculations-tab-3"><span>Vacation</span></a></li>
+        <li><a href="#labor-calculations-tab-4"><span>Prod Employees Health/Dental/Life<br />
+            and Union Contributions &amp; BI-Weekly Cost</span></a></li>
+        <li><a href="#labor-calculations-tab-5"><span>.Net Prod Days Per Emp &amp; FTEs</span></a></li>
+        <li><a href="#labor-calculations-tab-6"><span>Labor Standards</span></a></li>
+        <li><a href="#labor-calculations-tab-7"><span>Labor Standard In Dollars</span></a></li>
+    </ul>
+    <div id="labor-calculations-tab-1">
+        <h2>
+            I.Sick Pay</h2>
+        <div>
+            <table style="width: 100%" class="ux-table">
+                <tbody>
+                    <tr class="odd">
+                        <td>
+                            Sick day entitlements earned per year (days per employee)
+                        </td>
+                        <td>
+                            <input type="text" value="0" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Average sick days taken over last 52 weeks (days per employee)
+                        </td>
+                        <td>
+                            <input type="text" value="0" />
+                        </td>
+                    </tr>
+                    <tr class="odd">
+                        <td>
+                            Proj. number of sick days to be used in budget year (days per employee)
+                        </td>
+                        <td>
+                            <input type="text" value="0" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="labor-calculations-tab-2">
+        <h2>
+            II.Legal Holidays</h2>
+        <div>
+        <table style="width:100%" class="ux-table"><tbody>
+                <tr class="odd">
+                    <td>Number of Employee Personal Days Granted Per Year</td>
+                    <td><input type="text" value="0" /></td>
+                </tr>
+                <tr>
+                    <td>Other Paid Leave</td>
+                    <td><input type="text" value="0" /></td>
+                </tr>
+                <tr class="odd">
+                    <td>&nbsp;</td><td></td>
+                </tr>
+                </tbody></table>
+        </div>
+        <div>
+            <table style="width: 100%" class="ux-table">
+                <thead>
+                    <tr class="green">
+                        <th>Holiday</th><th>Period</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="odd">
+                        <td>Christmas</td><td></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td><td></td>
+                    </tr>
+                    <tr class="odd">
+                        <td>&nbsp;</td><td></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td><td></td>
+                    </tr>
+                    <tr class="odd">
+                        <td>&nbsp;</td><td></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td><td></td>
+                    </tr>
+                    <tr class="odd">
+                        <td>&nbsp;</td><td></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td><td></td>
+                    </tr>
+                    <tr class="odd">
+                        <td>&nbsp;</td><td></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td><td></td>
+                    </tr>
+                    <tr class="odd">
+                        <td>&nbsp;</td><td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="labor-calculations-tab-3">
+        <h2>
+            III.Vacation</h2>
+        <div id="vacation-grid">
+        </div>
+        <div>
+            <table width="100%">
+                <tbody>
+                    <tr>
+                        <td>Average Vacation Entitlement</td>
+                        <td align="right">3 days</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="text-align:right" id="vacation-print-button"></div>
+    </div>
+    <div id="labor-calculations-tab-4">
+        <h2>
+            IV.Prod Employees Health/Dental/Life and Union Contributions & BI-Weekly Cost</h2>
+            <div>
+                <p class="table-title">Table1 - # of Employees</p>
+                <table class="ux-table">
+                    <thead>
+                        <tr>
+                            <th></th><th>Medical 1</th><th>Medical 2</th>
+                            <th>Liberty Plan</th><th>Dental Only</th>
+                            <th>Total</th><th>Life</th>
+                            <th>Union</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="odd">
+                            <td>Single Coverage</td>
+                            <td><input type="text" value="0"></td>
+                            <td><input type="text" value="0"></td>
+                            <td><input type="text" value="0"></td>
+                            <td><input type="text" value="0"></td>
+                            <td>0</td>
+                            <td><input type="text" value="0"></td>
+                            <td><input type="text" value="0"></td>
+                        </tr>
+                        <tr>
+                            <td>Family Coverage</td>
+                            <td><input type="text" value="0"></td>
+                            <td><input type="text" value="0"></td>
+                            <td><input type="text" value="0"></td>
+                            <td><input type="text" value="0"></td>
+                            <td>0</td>
+                            <td><input type="text" value="0"></td>
+                            <td><input type="text" value="0"></td>
+                        </tr>
+                        <tr class="odd">
+                            <td>Total</td><td>0</td><td>0</td>
+                            <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <p class="table-title">Table2 - BI weekly Cost of Health/Dental/Life Insurance Contributions</p>
+                <table class="ux-table">
+                    <thead>
+                        <tr>
+                            <th></th><th>Medical 1</th><th>Medical 2</th>
+                            <th>Liberty Plan</th>
+                            <th>Dental Only</th><th>Total</th><th>Life</th>
+                            <th>Union</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="odd">
+                        <td>Single Coverage</td>
+                        <td><input type="text" value="0"></td>
+                        <td><input type="text" value="0"></td>
+                        <td><input type="text" value="0"></td>
+                        <td><input type="text" value="0"></td>
+                        <td>0</td>
+                        <td><input type="text" value="0"></td>
+                        <td><input type="text" value="0"></td>
+                    </tr>
+                    <tr>
+                        <td>Family Coverage</td>
+                        <td><input type="text" value="0"></td>
+                        <td><input type="text" value="0"></td>
+                        <td><input type="text" value="0"></td>
+                        <td><input type="text" value="0"></td>
+                        <td>0</td>
+                        <td><input type="text" value="0"></td>
+                        <td><input type="text" value="0"></td>
+                    </tr>
+                    <tr class="odd">
+                        <td>Total</td><td>0</td><td>0</td>
+                        <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <p class="table-title">Productive Employees Health/Dental/Life Insurance BI-Weekly Cost</p>\
+                <table style="width:100%" class="ux-table">
+                    <thead>
+                        <tr>
+                            <th>Period</th><th>&nbsp;1&nbsp;</th><th>&nbsp;2&nbsp;</th><th>&nbsp;3&nbsp;</th>\
+                            <th>&nbsp;4&nbsp;</th><th>&nbsp;5&nbsp;</th><th>&nbsp;6&nbsp;</th><th>&nbsp;7&nbsp;</th><th>&nbsp;8&nbsp;</th>\
+                            <th>&nbsp;9&nbsp;</th><th>&nbsp;10&nbsp;</th><th>&nbsp;11&nbsp;</th><th>&nbsp;12&nbsp;</th><th>&nbsp;13&nbsp;</th>\
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="odd">
+                            <td>Single Coverage</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                            <td>0</td><td>0</td><td>0</td>
+                            <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+                        <tr>
+                            <td>Family Coverage</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                            <td>0</td><td>0</td><td>0</td>
+                            <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+                        <tr class="odd">
+                            <td>Tot Med/Dental/Life</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                            <td>0</td><td>0</td><td>0</td>
+                            <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+                        <tr>
+                            <td>% Adjustment</td><td>0%</td><td>0%</td><td>0%</td><td>10%</td><td>10%</td>
+                            <td>10%</td><td>10%</td><td>10%</td>
+                            <td>10%</td><td>10%</td><td>10%</td><td>10%</td><td>10%</td><td></td></tr>
+                        <tr class="odd">
+                            <td>Adjust Total</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td>
+                            <td>0.00</td><td>0.00</td><td>0.00</td>
+                            <td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td></tr>
+                        <tr>
+                            <td colspan="15"></td>
+                        </tr>
+                        <tr class="odd"><td>Union Contributions</td><td>0</td><td>0</td><td>0</td>
+                        <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                        <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <table width="100%">
+                    <tbody>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td style="100px">
+                                <div id="labor-calculations-tab-4-save-button"></div>
+                            </td>
+                            <td style="100px">
+                                <div id="labor-calculations-tab-4-print-button"></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+    </div>
+    <div id="labor-calculations-tab-5">
+        <h2>
+            V.Computation Of Net Productive Days Per Employee</h2>
+            <p>Work Days per 52 wks: 260</p>
+            <div id="computation-of-net-productive-days-grid">
+            </div>
+    </div>
+    <div id="labor-calculations-tab-6">
+        <h2>
+            VII.Labor Standards</h2>
+    </div>
+    <div id="labor-calculations-tab-7">
+        <h2>
+            VIII.Computation Of Labor Standard In Dollars</h2>
+    </div>
+</div>

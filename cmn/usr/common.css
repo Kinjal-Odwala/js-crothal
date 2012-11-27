@@ -1,0 +1,477 @@
+#appBody
+	{
+		margin:0px 0px 0px 0px;
+	}
+.body
+	{
+		margin:0px;
+	}
+#contentAreasContainerLeft
+	{
+		float:left;
+		width:48%;
+		vertical-align:top;
+		margin-right:20px;
+		z-index:3550;
+		position:relative;
+	}
+#contentAreasContainerRight
+	{
+		float:left;
+		width:49.3%;
+		vertical-align:top;
+		z-index:3551;
+		position:relative;
+	}
+#TableEditArea 
+	{
+		width:100%;
+	}
+#LabelTextAreaLeft
+	{
+		/*width:130px;*/
+		float:left;
+		height:27px;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+		width:100px;
+	}
+#InputTextAreaRight
+	{
+		width:190px; 
+		float:left; 
+		height:20px;
+	}
+#LableTextAreaSite
+	{
+		width:80px;
+		float:left;
+		/*height:27px;*/
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+		text-align:right;
+		padding:5px 5px 5px 5px;
+	}
+#DropDownTextAreaRight
+	{
+		padding:3px 10px 3px 0;
+		width:300px; 
+		float:left; 
+		height:27px;
+	}
+.labelTextRightSmall
+	{		
+		font-family:Verdana;
+		font-size:10px;
+		color:#032D23;
+		margin-left:5px;
+		float:left;
+		padding-top:4px;
+		padding-bottom:2px;
+	}
+	
+.pageHeader /* should be named rowHeader & a new one for pageHeader*/
+	{
+		background-color: #9BCD9A;
+		font-family:Verdana;
+		font-size:14px;
+		font-weight:bold;
+		padding-left:6px;
+		height:25px;
+	}
+	.sectionHeader /* should be named rowHeader & a new one for pageHeader*/
+	{
+		font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;nt-weight:bold;
+		font-weight:bold;
+		font-size:18px;	
+		color:#2C2F50;
+		text-align:center;
+		margin-bottom:5px;
+		background:#C2E4C1;
+	}
+.pageHeaderText /* should be named rowHeader & a new one for pageHeader*/
+	{
+		font-family:Verdana;
+		font-size:14px;
+		font-weight:bold;
+		padding-left:10px;
+		height:25px;
+		letter-spacing:.1em;
+	}
+.pageBody
+	{
+		margin: 10px;
+		/*margin-bottom:10px;
+		margin-left:10px;
+		margin-top:10px;
+		margin-right:0px;
+		width:100%;*/
+	}
+
+#divForm
+	{
+		margin-left: 10px;
+		width: 130px;
+	    margin-top:10px;
+		height:40px;
+	   	float: left;
+	}
+
+#font
+	{
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+		padding-left:10px;
+		width:400px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+#AnchorSave
+	{
+		width:67px;
+		float:left;
+		padding-left:5px;
+		margin-right:5px;
+		padding-top:5px;
+	}
+
+#AnchorUndo
+	{
+		width:73px;
+		float:left;
+		padding-left:5px;
+		margin-right:5px;
+		padding-top:5px;
+	}
+#AnchorNew 
+	{
+		width:65px;
+		float:left;
+		padding-left:5px;
+		margin-right:5px;
+		padding-top:5px;
+	}
+#AnchorDelete 
+	{
+		width:82px;
+		float:left;
+		padding-left:5px;
+		margin-right:5px;
+		padding-top:5px;
+	}
+#AnchorDCancel 
+	{
+		width:80px;
+		float:left;
+		padding-left:5px;
+		margin-right:5px;
+		padding-top:5px;
+	}
+#nonRequiredFieldIndicator
+	{
+		padding-left:7px;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+	}
+
+.labelText
+	{
+		font-family:Verdana;
+		font-size:12px;
+		/*font-weight:bold;*/
+		color:#032D23;
+		/*padding-left:10px;*/
+		padding-top:4px;
+		padding-bottom:2px;
+	}
+	
+	.labelTextLeft
+	{		
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+		margin-right:10px;
+		float:left;
+		padding-top:4px;
+		padding-bottom:2px;
+	}
+	
+	.inputRight
+	{
+		float:left;
+		margin-bottom:10px;
+		width:190px; 
+	}
+
+.labelTextCheckBox
+	{
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+	}
+
+.labelTextData
+	{
+		font-family:Verdana;
+		font-size:11px;
+		color:#032D23;
+		padding-left:15px;
+	}
+
+.newIcon
+	{
+		background-image: url(media/Common/new.png);
+		background-repeat:no-repeat;
+		vertical-align:middle;
+		width: 18px;
+		height: 23px;
+		float:right;	
+	}
+
+.contentArea
+	{	
+		vertical-align:top;
+	}
+
+.contentArea .header
+	{
+		font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;nt-weight:bold;
+		font-weight:bold;
+		font-size:18px;	
+		color:#2C2F50;
+		text-align:center;
+		margin-bottom:5px;
+		background:#C2E4C1;
+	}
+#actionMenu
+	{
+		width:75px;
+		float:left;
+	}
+.contentArea .footer
+	{
+		margin-bottom:5px;
+	}
+.contentArea .group
+	{
+		margin-bottom:0px;
+		width:370px;
+	}
+
+dl.editArea
+	{
+		font-family:Verdana;
+		font-size:12px;
+	}
+
+dl.editArea dt
+	{
+		clear:both;
+		float:left;
+		padding: 4px 2px 2px 0;
+	}
+
+dl.editArea dd
+	{
+		float:left;
+		margin: 0 0 5px 0;
+	}
+
+.gridLabelText
+	{
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+	}
+
+.gridBGColor
+	{
+		background-color:#B9CBB9;
+		width:340px;
+	}
+
+.gridBGColorSmall
+	{
+		background-color:#BDC5BF;
+		width:390px;
+	}
+
+.gridHeaderFont
+	{
+		font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;nt-weight:bold;
+		font-weight:800;
+		font-size:18px;
+		color:#2C2F50;
+		
+	}
+
+.text /* .font, .labelText & .text seems to be fine make it common for all*/
+	{
+		font-family:Verdana;
+		font-size:small;
+		font-weight:bold;
+		color:#032D23;
+		width:170px;
+		height:25px;
+		vertical-align:bottom;
+		margin-bottom:5px;
+		margin-top:5px;
+	}
+
+.loading
+	{
+		background-image: url(media/Common/indicator.gif);
+		background-repeat:no-repeat;
+		vertical-align:middle;
+		width: 36px;
+		height: 16px;
+		padding-left:10px;
+		padding-right:10px;
+	}
+#LabelTextAreaLeftHeader
+	{
+		float: left;
+		font-family: Verdana;
+		font-size: 12px;
+		font-weight:bold;
+		color: #032D23;
+		padding-right: 5px;
+		padding-top: 5px;
+	}
+#dropDownMenu
+	{
+		padding: 3px 5px 3px 5px;
+		width: 60px; 
+		float: left; 
+	}
+#DropDownRightHouseCode
+	{
+		padding: 3px 10px 3px 5px;
+		width: 230px; 
+		float: left; 
+	}
+
+#HouseCodeInputTextAreaYear
+	{
+		padding: 3px 5px 3px 0;
+		float: left;
+	}
+.HouseCodeDropDown
+{
+	background-image:url(media/DropDown/dropDownEnabled.gif);
+	background-repeat:no-repeat;
+	float: right;
+	width:16px;
+	height:16px;
+}
+.HouseCodeDropDown.HouseCodeDropDownLoader
+{
+	background-image:url(media/Common/indicator.gif);
+	background-repeat:no-repeat;
+	float: right;
+	width:16px;
+	height:16px;
+}
+.HouseCodeContainer
+	{
+		width:225px;
+		float:left;
+		height:16px;
+		border:solid #AAAAAA thin;
+		background-color:white;
+		border-width:1px;
+		padding: 1px 1px 1px 1px;
+	}
+	
+.HouseCodeText
+	{
+		width:205px;
+		float:left;
+		height:13px;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+		border:0;
+	}
+	
+.HouseCodeTree
+	{
+		width:260px;
+		height:150px;
+		position:absolute;
+		z-index:9000;
+		display:none;
+		background-color:white;
+	}
+	
+.HouseCodeTreeClose
+{
+	cursor:pointer;
+	color:red;
+	font-family:Verdana;
+	font-size:9px;
+	float:right;
+	padding-right:5px;
+}
+#Border
+{
+	border: solid #AAAAAA thin; 
+	border-width: 1px;
+	width: 100%; 
+	height: 200px;
+	overflow: auto;
+	background-color:#ffffff;
+}
+
+.TreeNodeText
+{
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	vertical-align: text-top;
+	padding: 0 0 0 5px;
+}
+
+.TreeNodeText:hover
+{
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: red;
+	vertical-align: text-top;
+	padding: 0 0 0 5px;
+	cursor: pointer;
+}
+
+.TreeNodeTextSelected
+{
+	height: 27px;
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 12px;
+	color: red;
+	vertical-align: text-top;
+	padding: 0 0 0 5px;
+}
+
+.DropDownLoader
+{
+	background-image : url(media/Common/indicator.gif);
+	background-repeat: no-repeat;
+	float: right;
+	width: 16px;
+	height: 16px;
+}
+
+#spacing
+	{
+		float:left;
+		position:relative;
+		width:25px;		
+	}

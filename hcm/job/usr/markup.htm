@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>House Code - Jobs</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/hcm/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+		
+		<div class="pageHeader">
+	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
+			<div id="LabelTextAreaLeftHeader">House Code:</div>
+			<div id="DropDownRightHouseCode">
+				<div id="houseCodeContainer" class="HouseCodeContainer"></div>
+			</div>
+        </div>
+		<div class="pageBody">
+			<div style="clear:both;"></div>
+			<div id="ContainerLeftJob">
+				<div class="contentArea">
+					<div class="header">House Code Jobs</div>
+					<div class="body">
+						<div id="Job"></div>
+						<div style="clear:both;"></div>
+					</div>
+				</div>				
+			</div>
+			<div id="ContainerRightJob">
+				<div  class="contentArea">
+					<div class="header">Job Details</div>
+				</div>
+				<div id="popupJob" >
+				 	<div class="body">
+				 		<div id="JobTemplateDiv">
+							<div id="TableEditArea">
+								<div id="LabelTextAreaJob">
+									<span id="nonRequiredFieldIndicator">Job Template:</span>
+								</div>
+								<div id="InputTextAreaRight">
+									<div id="jobBorder">
+										<div id="JobTemplate"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div style="clear:both;"></div>
+						<div id="TableEditArea">
+							<div id="LabelTextAreaJob">
+								<span class="requiredFieldIndicator">&#149;</span>Job Number:
+							</div>
+							<div id="InputTextAreaRight">
+								<div id="JobNumber"></div>
+							</div>
+						</div>
+						<div style="clear:both;"></div>
+						<div id="TableEditArea">
+							<div id="LabelTextAreaJob">
+								<span class="requiredFieldIndicator">&#149;</span>Description:
+							</div>
+							<div id="InputTextAreaRight">
+								<div id="JobDescription"></div>
+							</div>
+						</div>
+						<div style="clear:both;"></div>
+						<div id="TableEditArea">
+							<div id="LabelTextAreaJob">
+								<span id="nonRequiredFieldIndicator">Contact:</span>
+							</div>
+							<div id="InputTextAreaRight">
+								<div id="JobContact"></div>
+							</div>
+						</div>
+						<div style="clear:both;"></div>
+						<div id="TableEditArea">
+							<div id="LabelTextAreaJob">
+								<span id="nonRequiredFieldIndicator">Address 1:</span>
+							</div>
+							<div id="InputTextAreaRight">
+								<div id="JobAddress1"></div>
+							</div>
+						</div>
+						<div style="clear:both;"></div>
+						<div id="TableEditArea">
+							<div id="LabelTextAreaJob">
+								<span id="nonRequiredFieldIndicator">Address 2:</span>
+							</div>
+							<div id="InputTextAreaRight">
+								<div id="JobAddress2"></div>
+							</div>
+						</div>
+						<div style="clear:both;"></div>
+						<div id="TableEditArea">
+							<div id="LabelTextAreaJob">
+								<span class="requiredFieldIndicator">&#149;</span>Postal Code:
+							</div>
+							<div id="InputTextAreaRight">
+								<div id="JobPostalCode"></div>
+							</div>
+						</div>
+						<div style="clear:both;"></div>
+						<div id="TableEditArea">
+							<div id="LabelTextAreaJob">
+								<span id="nonRequiredFieldIndicator">GEO Code:</span>
+							</div>
+							<div id="InputTextAreaRight">
+								<div id="JobGEOCode"></div>
+							</div>
+						</div>
+						<div style="clear:both;"></div>
+						<div id="TableEditArea">
+							<div id="LabelTextAreaJob">
+								<span class="requiredFieldIndicator">&#149;</span>City:
+							</div>
+							<div id="InputTextAreaRight">
+								<div id="JobCity"></div>
+							</div>
+						</div>
+						<div style="clear:both;"></div>
+						<div id="TableEditArea">
+							<div id="LabelTextAreaJob">
+								<span class="requiredFieldIndicator">&#149;</span>State:
+							</div>
+							<div id="InputTextAreaRight">
+								<div id="JobState"></div>
+							</div>
+						</div>						
+						<div style="clear:both;"></div>
+						<div id="TableEditArea">
+							<div id="LabelTextAreaJob">
+								<span id="nonRequiredFieldIndicator">Job Type:</span>
+							</div>
+							<div id="InputTextAreaRight">
+								<div id="JobType"></div>
+							</div>
+						</div>
+						<div style="clear:both;"></div>
+						<div id="TaxIdDiv">							
+							<div id="TableEditArea">
+								<div id="LabelTextAreaJob">
+									<span id="nonRequiredFieldIndicator">Invoice Template:</span>
+								</div>
+								<div id="InputTextAreaRight">
+									<div id="InvoiceTemplate"></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaJob">
+									<span id="nonRequiredFieldIndicator">Tax Id:</span>
+								</div>
+								<div id="InputTextAreaRight">
+									<div id="JobTaxId"></div>
+								</div>
+							</div>							
+						</div>
+						<div id="OverrideSiteTaxDiv">
+							<div id="TableEditArea">
+								<div id="LabelTextAreaJob">
+									<span id="nonRequiredFieldIndicator">Override Site Tax:</span>
+								</div>
+								<div id="InputTextAreaRight">
+									<div id="OverrideSiteTax"></div>
+								</div>
+							</div>
+						</div>
+						<div style="clear:both;"></div>
+						<div id="TableEditArea">
+							<div id="LabelTextAreaJob">
+								<span id="nonRequiredFieldIndicator">Service Contract:</span>
+							</div>
+							<div id="InputTextAreaRight">
+								<div id="ServiceContract"></div>
+							</div>
+						</div>
+						<div style="clear:both;"></div>
+						<div id="TableEditArea">
+							<div id="LabelTextAreaJob">
+								<span id="nonRequiredFieldIndicator">General Location Code:</span>
+							</div>
+							<div id="InputTextAreaRight">
+								<div id="GeneralLocationCode"></div>
+							</div>
+						</div>
+						<div style="clear:both;"></div>						
+						<div id="TableEditArea">
+							<div id="LabelTextAreaJob">
+								<span id="nonRequiredFieldIndicator">Active:</span>
+							</div>
+							<div id="InputTextAreaRight">
+								<div id="JobActive"></div>
+							</div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+				</div>
+				<div class="footer">
+	                <div id="AnchorSave"></div>
+	                <div id="AnchorUndo"></div>
+	                <div id="AnchorNew"></div>
+	                <div id="AnchorClone"></div>
+	                <div id="AnchorRemove"></div>
+	                <div style="clear:both;"></div>
+	            </div>
+			</div>
+		</div>
+	    <div id="iiInputValidationMaster"></div>
+	</body>
+</html>

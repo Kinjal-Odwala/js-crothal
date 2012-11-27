@@ -1,0 +1,186 @@
+﻿.tabContainer
+	{
+	  border:none; 
+	  width:100%;
+  	}
+
+
+.journalEntryTable
+	{
+		height:145px;
+		width:100%;
+	}
+#divGrid
+	{
+		overflow:hidden;
+	}
+#container-1
+	{
+		 border:none;
+		 overflow:hidden;
+	}
+#DropDownJoyrnalEntry
+	{
+		padding:3px 5px 3px 0;
+		width: 235px; 
+		float: left; 
+	}
+#LoadButtonContainer
+	{
+		float: left;
+		width:70px;
+	}
+
+#divTabsContainer
+	{
+		float:left;
+		border:none;
+		width:100%;
+		padding:5px 5px 5px 5px;
+	}
+
+#AnchorNew
+	{
+		width:95px;
+		padding-right:15px;
+		float:right;
+	}
+#AnchorDSave
+	{
+		width:68px;
+		float:right;
+		padding-top:5px;
+	}
+#AnchorDCancel
+	{
+		width:70px;
+		float:right;
+	}
+#AnchorDDelete
+	{
+		width:78px;
+		float:right;
+		padding-top:5px;
+	}
+#button
+	{
+		float:right;
+	}
+
+#TabCollection
+	{
+		width:100%;
+	}
+
+#popupContact	
+{
+	display: none;
+	margin:10px;
+}
+#lableGeneral
+	{
+		float:left;
+		font-family:Verdana;
+		font-size:9px;
+		color:#032D23;
+		padding-top:2px;
+		padding-bottom:5px;
+	}
+#InputTextArea
+	{
+		width:190px; 
+		float:left; 
+		height:27px;
+	}
+#divAreasContainerLeft
+	{
+		float:left;
+		margin-right:20px;
+	}
+#divAreasContainerRight
+	{
+		float:left;
+	}
+#anchorAlign
+{
+	padding-bottom: 5px;
+	clear: both;
+}
+#AnchorCancel
+{
+	float: left;
+	width: 80px;
+	padding-left: 5px;
+	margin-right: 5px;
+	padding-top: 5px;
+}
+
+#AnchorSave
+{
+	float: left;
+	width: 67px;
+	padding-left: 10px;
+	margin-right: 5px;
+}
+#AnchorContinue
+{
+	float: left;
+	width: 95px;
+	padding-left: 10px;
+	margin-right: 5px;
+}
+
+#borderContentArea
+	{
+		border:solid #AAAAAA thin;
+		border-width:1px;
+		padding-top:10px;
+	}
+#DropDownJoyrnalJob
+	{
+		float:left;
+		position:relative;
+		width:190px;
+		height:27px;
+	}
+#amountBodyColumn
+{
+	text-align: right;	
+}
+.HouseCodeText
+	{
+		width:150px;
+	}
+.HouseCodeContainer
+	{
+	
+	width:186px;
+}
+.iiInputJournal
+{
+	background-image: url('/fin/cmn/usr/media/Input/exclamation.gif');
+	margin-top: 1px;
+	margin-right: 1px;
+	margin-left: 1px;
+	margin-bottom: 1px;
+	width: 16px;
+	height: 15px;
+	float:left;
+	display:none;
+}
+
+.iiInputJournal.InvalidJournal
+{
+	display: block;
+	width: 16px;
+}
+.iiInputText
+	{
+		width:182px;
+		white-space:nowrap;
+	}
+.iiInputTable
+	{
+		width:188px;
+		white-space:nowrap;
+	}

@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Recurring Expenses</h1>
+			<div class="description">The purpose of <b>Recurring Expenses</b> is to list the Recurring Expenses based on the given criteria.</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:100px;">UI Element</th>
+				<th style="width:110px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th style="width:200px;">Validation</th>	
+				<th style="width:100px;">Description</th>				
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>List</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>	
+				<td>To search a specific House Code, type-in House Code # (1455, 900000) and press Enter key.</td>			
+			</tr>
+			<tr>
+				<td>Period</td>
+				<td>List</td>
+				<td>No</td>
+				<td>End user input</td>	
+				<td></td>			
+				<td>Lists the Recurring Expenses based on given Period.</td>
+			</tr>
+			<tr>
+				<td>Year</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>	
+				<td></td>			
+				<td>Lists the Recurring Expenses based on given Year.</td>
+			</tr>
+			<tr>
+				<td>Load</td>
+				<td>Button</td>
+				<td>No</td>
+				<td>End user input</td>		
+				<td></td>		
+				<td>Lists the Recurring Expenses based on the given criteria.</td>								
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">Recurring Expenses</td>
+			</tr>
+			<tr>
+				<td>Recurring Expenses</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>
+				<td>The grid holds the list of Recurring Expenses based on the given criteria.</td>
+			</tr>
+			<tr>
+				<td>Apply To</td>
+				<td>List</td>
+				<td>No</td>
+				<td>End user input</td>	
+				<td></td>			
+				<td>Apply To.</td>
+			</tr>
+			<tr>
+				<td>Job</td>
+				<td>List</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td></td>
+				<td>Job.</td>
+			</tr>		
+			<tr>
+				<td>Amount</td>
+				<td>Text Field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Please enter either Amount or Percent</td>
+				<td>Amount.</td>
+			</tr>
+			<tr>
+				<td>Percent</td>
+				<td>Text Field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Please enter either Amount or Percent</td>
+				<td>Percent.</td>
+			</tr>
+			<tr>
+				<td>Percentage Of</td>
+				<td>List</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Percentage Of cannot be the same as the Apply To column</td>
+				<td>Percentage Of.</td>
+			</tr>
+			<tr>
+				<td>Job</td>
+				<td>List</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td></td>
+				<td>Job</td>
+			</tr>
+			<tr>
+				<td>Interval</td>
+				<td>List</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td></td>
+				<td>Interval</td>
+			</tr>
+			<tr>
+				<td>Read Only</td>
+				<td>Display field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td></td>
+				<td>Read Only field</td>
+			</tr>			
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Recurring Expenses</td>
+			</tr>
+			<tr>
+				<td><img src="images/glmRecurringExpenses.png"></td>
+			</tr>			
+		</table>
+		<h2>Action</h2>
+		<div class="reference">
+		    1. This user interface can be accessed at <span class="iiMenuVerticalMainPart Selected undefined">
+                Ledger</span> > Recurring Exps.<br />
+			2. Add New - Click on Add New to create new row.<br />
+            3. Edit Recurring Exps - Enter House Code in House Code list and click Load button to see Recurring Expenses Info. 
+				It allows User to edit.
+            <br />
+            4. Save Recurring Exps - &nbsp;Click on Save to save the change. 
+            <br />
+            5. Undo - Click Undo to cancel any changes made.</div>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Save Recurring Exps</td>
+				<td>Error while updating Recurring Expenses Record.</td>
+			</tr>
+			<tr>
+				<td>Error</td>
+				<td>Failed to save Recurring Expense.<br/>
+					Failed to delete the Recurring Expense.
+					</td>
+			</tr>
+		</table>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>HcmHouseCodeJobs, FscYears, FscPatterns, FscJDECompanies, HcmHouseCodes, FscYears, FscPeriods, FscAccounts, PurItems, PurCatalogItems, PurCatalogs, PurVendors, PurCatalogHouseCodes, RevInvoiceItems, GlmRecurringFixedCostIntervalTypes, GlmRecurringExpenses, hirNodes, HirLevels, AppUsers, HcmHouseCodes, AppUnits, AppRoleNodes, GlmRecurringFixedCosts, GlmRecurringFixedCostTypes, RevAccountPayables, GlmSalaryWages</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>GlmFscYearSelect, PurFscAccountsSelect, RevFscAccountsSelect, GlmRecurringExpensesSelect, HirNodeParentsSiblingsChildrenSelect, HirHierarchyNodeSelect, AppUserHirNodesSelect, HirNodeSelect, AppUserHouseCodesSelect, GlmRecurringExpensesUpdate, GlmRecurringFixedCostsUpdate, GlmRecurringExpenseDelete</td>
+			</tr>
+		</table>
+		<h2>See Also</h2>		
+		<div class="reference"><a href="journalEntry.htm">Journal Entry</a></div>
+	</body>
+</html>

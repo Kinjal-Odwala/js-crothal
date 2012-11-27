@@ -1,0 +1,277 @@
+﻿
+.fragment {
+	border: 0;
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+
+}
+
+.tabContainer {
+	border: none;
+	width: 100%;
+	overflow: auto;
+}
+
+.houseCodeAreasContainerLeft {
+	float: left;
+	margin-right: 20px;
+}
+	
+.houseCodeAreasContainerRight {
+	float: left;
+}
+
+.LabelhouseCodeAreaLeft {
+	min-width: 225px;
+	float: left;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-right: 5px;
+}
+
+.CheckBoxContainer {
+	width: 186px;
+	float: left;
+	height: 67px;
+	overflow-x: auto;
+	border: solid #AAAAAA thin;
+	background-color: white;
+	border-width: 1px;
+	padding: 1px 1px 1px 1px;
+	color: #032D23;
+	font-family: Verdana;
+	font-size: 12px;
+}
+
+.CheckBoxDropDown {
+	background-image: url(/fin/cmn/usr/media/Common/edit.png);
+	background-repeat: no-repeat;
+	float: right;
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+}
+
+.TableEditArea {
+	width: 100%;
+}
+	
+.InputTextAreaRight {
+	width: 190px;
+	height: 20px;
+	float: left;
+}
+
+.InputTextAreaSite {
+	width: 300px;
+	height: 20px;
+	float: left;
+}
+
+.nonRequiredFieldIndicator {
+	color: #032d23;
+	padding-left: 7px;
+	font-family: Verdana;
+	font-size: 12px;
+}
+
+.LableTextAreaLeftPayroll {
+	width: 200px;
+	float: left;
+	height: 20px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
+
+.TableEditAreaPayroll {
+	width: 770px;
+}
+
+.payrollRadioTextLeft {
+	float: left;
+	width: 40px;
+	text-align: left;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	height: 20px;
+	padding-left: 10px;
+	padding-top: 3px;
+	vertical-align: text-bottom;
+}
+
+.payrollInputTextBox {
+	float: left;
+	width: 100px;
+	text-align: left;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	height: 20px;
+	padding-left: 10px;
+	padding-top: 3px;
+	vertical-align: text-bottom;
+}
+
+.payrollRadioButtonLeft	{
+	float: left;
+	width: 15px;
+	padding-left: 0px;
+	vertical-align: top;
+}
+
+.payrollUnionTextRight {
+	float: left;
+	width: 105px;
+	text-align: left;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	height: 20px;
+	padding: 3px 0px 0px 5px;
+}
+
+.payrollUnionTextRightEpay {
+	float: left;
+	width: 105px;
+	text-align: left;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	height: 20px;
+	padding: 3px 5px 0px 10px;
+}
+	
+.payrollRadioTextRight {
+	float: left;
+	width: 160px;
+	text-align: left;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	height: 20px;
+	padding: 3px 0px 0px 5px;
+}
+
+.payrollRadioTextRightUCB {
+	float: left;
+	width: 170px;
+	text-align: left;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	height: 20px;
+	padding: 3px 0px 0px 5px;
+}
+	
+.payrollRadioTextRightAcc {
+	float: left;
+	width: 175px;
+	text-align: left;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	height: 20px;
+	padding: 3px 0px 0px 3px;
+}
+
+.payrollRadioButtonRight {
+	float: left;
+	width: 20px;
+	padding-left: 0px;
+	vertical-align: middle;
+	height: 20px;
+}
+
+#anchorAlign {
+	clear: both;
+	float: left;
+	position: relative;
+	margin-top: 10px;
+}
+
+#AnchorNext {
+	float: left;
+	margin: 3px;
+	padding-left: 5px;
+	padding-top: 0px;
+	width: 94px;
+}
+
+#AnchorPrev {
+	float: left;
+	margin: 3px;
+	width: 94px;
+}
+
+#AnchorNext .iiButtonPart.Enabled.Middle {
+	width: 76px;
+	text-align: center;
+}
+	
+#AnchorNext .iiButtonPart.Hot.Middle {
+	width: 76px;
+	text-align: center;
+}
+	
+#AnchorNext .iiButtonPart.Disabled.Middle {
+	width: 76px;
+	text-align: center;
+}
+
+#houseCodeYesRadioTextLeft {
+	float: left;
+	width: 20px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-top: 3px;
+}
+
+#houseCodeYesRadioButtonLeft {
+	float: left;
+	width: 25px;
+	padding-bottom: 2px;
+}
+
+#houseCodeNoRadioTextRight {
+	float: left;
+	width: 20px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-top: 3px;
+}
+
+#houseCodeNoRadioButtonRight {
+	float: left;
+	width: 25px;
+	margin-left: 25px; 
+	padding-bottom: 2px;
+}
+
+#AddServicevContainer {
+	padding: 3px 0px 3px 0px;
+	width: 212px; 
+	float: left; 
+}
+
+#ServiceGroup {
+	position: absolute;
+	left: 681px;
+	margin-top: 25px;
+	width: 225px;
+	height: 250px;
+	border-top: solid #AAAAAA thin;
+	border-bottom: solid #AAAAAA thin;
+	border-width: 1px;
+	z-index: 6800;
+	display: none;
+	overflow-y: auto;
+	overflow-x: hidden;
+}

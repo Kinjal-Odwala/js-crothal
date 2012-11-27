@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Budget Summary</title>
+    <!-- style -->
+    <link href="res/css/ext-all.css" rel="stylesheet" type="text/css" />
+    <link href="res/css/xtheme-gray.css" rel="stylesheet" type="text/css" />
+    <link href="res/css/all.css" rel="stylesheet" type="text/css" />
+    <!-- js -->
+    <script src="res/references/jquery-1.4.1.js" type="text/javascript"></script>
+    <script src="res/references/ext-jquery-adapter.js" type="text/javascript"></script>
+    <script src="res/references/ext-all.js" type="text/javascript"></script>
+    <script src="res/references/weblight4extjs.js" type="text/javascript"></script>
+    <!-- customize js -->
+    <script src="res/scripts/all.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        Ext.onReady(function () {
+            var primaryNav = new Bud.PrimaryNavbar({ renderTo: 'primaryNavBar', ctCls: 'primary-nav' });
+
+            WebLight.Router.init({ renderTo: 'wrapper' }); //, defaultUrl: '/budget/startbudget' });
+
+            var refreshPageContext = function (page) {
+                if (page && page.setContext)
+                    page.setContext(houseCodeComboBox.getValue(), jobCodeComboBox.getValue(), fiscalYearComboBox.getValue());
+            };
+
+
+            WebLight.PageMgr.on('load', function (url, page) {
+                refreshPageContext(page);
+            });
+
+            WebLight.PageMgr.on('resume', function (url, page) {
+                refreshPageContext(page);
+            });
+
+            var houseCodeStore = new Bud.data.HouseCodeStore();
+            var houseCodeComboBox = new Ext.form.ComboBox({
+                store: houseCodeStore,
+                displayField: 'name',
+                valueField: 'id',
+                mode: 'local',
+                forceSelection: true,
+                triggerAction: 'all',
+                selectOnFocus: true,
+                editable: false,
+                layzeInit: false,
+                typeAhead: true,
+                allowBlank: false,
+                applyTo: 'house-code-holder'
+            });
+            houseCodeStore.load();
+
+            houseCodeStore.on('load', function (store, records, options) {
+                houseCodeComboBox.setValue(records[0].get('id'));
+                jobCodeStore.load(records[0].get('id'));
+            });
+
+            var jobCodeStore = new Bud.data.JobCodeStore();
+
+            jobCodeStore.on('load', function (store, records, options) {
+                if (records.length > 0) {
+                    jobCodeComboBox.setValue(records[0].get('id'));
+                    refreshPageContext(WebLight.PageMgr.getCurrentPage());
+                } else {
+                    jobCodeComboBox.setValue('');
+                }
+            });
+            var jobCodeComboBox = new Ext.form.ComboBox({
+                store: jobCodeStore,
+                displayField: 'jobTitle',
+                valueField: 'id',
+                mode: 'local',
+                forceSelection: true,
+                triggerAction: 'all',
+                selectOnFocus: true,
+                editable: false,
+                layzeInit: false,
+                typeAhead: true,
+                allowBlank: false,
+                applyTo: 'job-code-holder'
+            });
+
+            houseCodeComboBox.on('select', function (combo, record, index) {
+                jobCodeStore.load(record.get('id'));
+            });
+
+            jobCodeComboBox.on('select', function (combo, record, index) {
+                refreshPageContext(WebLight.PageMgr.getCurrentPage());
+            });
+
+            var fiscalYearStore = new Ext.data.ArrayStore({
+                idIndex: 0,
+                fields: [{ name: 'year', type: 'float'}]
+            });
+            fiscalYearStore.loadData([[2005], [2006], [2007], [2008], [2009], [2010]]);
+
+            var fiscalYearComboBox = new Ext.form.ComboBox({
+                store: fiscalYearStore,
+                displayField: 'year',
+                valueField: 'year',
+                mode: 'local',
+                forceSelection: true,
+                triggerAction: 'all',
+                selectOnFocus: true,
+                editable: false,
+                layzeInit: false,
+                typeAhead: true,
+                allowBlank: false,
+                applyTo: 'fiscal-year-holder'
+            });
+            fiscalYearComboBox.setValue(2010);
+
+            fiscalYearComboBox.on('select', function (combo, record, index) {
+                refreshPageContext(WebLight.PageMgr.getCurrentPage());
+            });
+
+        });
+    </script>
+</head>
+<body>
+    <div id="navbar">
+        <div id="primaryNavBar">
+        </div>
+        <div id="subNavBar">
+            <table>
+                <tr>
+                    <td class="label">
+                        Site:
+                    </td>
+                    <td>
+                        <input type="text" id="house-code-holder" size="50" />
+                    </td>
+                    <td class="label">
+                        Job:
+                    </td>
+                    <td>
+                        <input type="text" id="job-code-holder" size="25" />
+                    </td>
+                    <td class="label">
+                        Fiscal Year:
+                    </td>
+                    <td>
+                        <input type="text" id="fiscal-year-holder" size="10" />
+                    </td>
+                </tr>
+            </table>
+            <div class="clear"></div>
+        </div>
+    </div>
+    <div id="wrapper">
+    </div>
+</body>
+</html>

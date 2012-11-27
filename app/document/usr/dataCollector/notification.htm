@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Notification</h1>
+			<div class="description">The purpose of Notification is to provide a means for user to view and complete data collector tasks.</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th>Validation</th>				
+			</tr>
+			<tr><td class="uiHeader" colspan="5">Notifications</td></tr>
+			<tr>
+				<td>Task ID</td>
+				<td>Display field</td>
+				<td></td>
+				<td></td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td>Module</td>
+				<td>Display field</td>
+				<td></td>
+				<td></td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td>Housecode</td>
+				<td>Display field</td>
+				<td></td>
+				<td></td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td>Frequency</td>
+				<td>Display field</td>
+				<td></td>
+				<td></td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td>Deadline</td>
+				<td>Display field</td>
+				<td></td>
+				<td></td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td>Display field</td>
+				<td></td>
+				<td></td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td>Message</td>
+				<td>Display field</td>
+				<td></td>
+				<td></td>				
+				<td></td>				
+			</tr>
+			<tr><td class="uiHeader" colspan="5">Data Collector Task</td></tr>
+			<tr>
+			    <td colspan="5">Fields vary based on data collector setup.</td>
+			</tr>
+			<tr>
+                <td>Save</td>
+                <td>Button</td>
+                <td>NA</td>
+                <td>End user input</td>
+                <td>Validate the entered details and save entry</td></tr>
+            <tr>
+                <td>Cancel</td>
+                <td>Button</td>
+                <td>NA</td>
+                <td>End user input</td>
+                <td>Cancel what user is currently doing and return to notification list.</td></tr>		
+		</table>
+			
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+		    <tr>
+				<td class="uiHeader">Notification</td>
+			</tr>
+			<tr>
+				<td><img src="images/notification.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Task</td>
+			</tr>
+			<tr>
+				<td><img src="images/task.png"></td>
+			</tr>			
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>If the manadatory details are not provided, the fields will be highlighted in red.</td>
+			</tr>
+			<tr>
+				<td>Selection</td>
+				<td>User will receive error "You must finished the oldest task of this data collector first." message if he/she selects a task of later date.</td>
+			</tr>
+		</table>
+		
+		<h2>Dependencies</h2>
+		<div class="reference">1. Data collector is set up from Setup/Data Collector</div>
+		<div class="reference">2. Data collector tasks are populated by schedule SQL Server agent 
+		on Monday morning (weekly data collector) or first Monday morning of the month (monthly data collector).</div>
+		<div class="reference">3. Data entry histories are stored in AppDataCollectorHistories</div>
+		
+		<div class="header">
+			<h1>Database Objects</h1>
+		</div>
+		<table class="elementTable">
+        <tr>
+			<th>Object Types</th>
+			<th>Object Names</th>
+	    </tr>
+        <tr>
+             <td>Tables</td>
+             <td>
+                 AppApplicationModules<br/>
+                 AppDataCollectors<br/>
+                 AppDataCollectorTasks<br />
+                 AppDataCollectorUsers<br/>
+                 AppDataCollectorHistories
+             </td>
+        </tr>
+        <tr>
+            <td>Stored Procedures            </td>
+            <td>
+                AppDataCollectorTasksSelect<br/>
+                AppDataCollectorTaskUpdateData<br/>
+                AppDataCollectorTasksComplete<br />
+                AppDataCollectorTasksUpdate
+          </td>
+        </tr>
+     </table>	
+		<h2>See Also</h2>
+		<div class="reference"><a href="datacollectorsetup.htm">Data Collector</a></div>
+	</body>
+</html>

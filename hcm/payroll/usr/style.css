@@ -1,0 +1,118 @@
+﻿
+.LableTextAreaLeftPayroll
+	{
+		width:200px;
+		float:left;
+		height:20px;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+	}
+.TableEditAreaPayroll 
+	{
+		width:770px;
+	}
+.payrollRadioTextLeft
+	{
+		float:left;
+		width:40px;
+		text-align:left;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+		height:20px;
+		padding-left:10px;
+		padding-top:3px;
+		vertical-align:text-bottom;
+	}
+.payrollInputTextBox
+	{
+		float:left;
+		width:80px;
+		text-align:left;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+		height:20px;
+		padding-left:10px;
+		padding-top:3px;
+		vertical-align:text-bottom;
+	}
+.payrollRadioButtonLeft
+	{
+		float:left;
+		width:15px;
+		padding-left:0px;
+		vertical-align:top;
+	}
+.payrollUnionTextRight
+	{
+		float:left;
+		width:105px;
+		text-align:left;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+		height:20px;
+		padding: 3px 0px 0px 5px;
+	}
+
+.payrollUnionTextRightEpay
+	{
+		float:left;
+		width:105px;
+		text-align:left;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+		height:20px;
+		padding: 3px 5px 0px 10px;
+	}
+	
+.payrollRadioTextRight
+	{
+		float:left;
+		width:160px;
+		text-align:left;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+		height:20px;
+		padding:3px 0px 0px 5px;
+	}
+.payrollRadioTextRightUCB
+	{
+		float:left;
+		width:170px;
+		text-align:left;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+		height:20px;
+		padding:3px 0px 0px 5px;
+	}
+.payrollRadioTextRightAcc
+	{
+		float:left;
+		width:175px;
+		text-align:left;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+		height:20px;
+		padding:3px 0px 0px 3px;
+	}
+.payrollRadioButtonRight
+	{
+		float:left;
+		width:20px;
+		padding-left:0px;
+		vertical-align:middle;
+		height:20px;
+	}
+.InputTextAreaRight
+	{
+		float:left;
+		height:20px;
+		width:190px;
+	}

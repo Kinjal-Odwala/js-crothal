@@ -1,0 +1,36 @@
+﻿@import url('../med/default/default.css');
+
+.GridTable
+	{
+		height:50px;
+		width:1450px;
+		padding-left:10px;
+	}
+.GridTableDaily
+	{
+		height:250px;
+		width:1450px;
+		padding-left:10px;
+	}
+A:link 
+	{
+		text-decoration: none;
+		color:blue;
+	}
+A:visited 
+	{
+		text-decoration: none;
+		color:black;
+	}
+A:active 
+	{
+		text-decoration: none
+	}
+A:hover 
+	{
+		text-decoration: underline; color: red;
+	}
+.Flowstyle
+	{
+		overflow:auto;
+	}

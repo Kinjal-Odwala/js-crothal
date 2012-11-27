@@ -1,0 +1,620 @@
+﻿html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+
+/* remember to define focus styles! */
+:focus {
+	outline: 0;
+}
+
+/* remember to highlight inserts somehow! */
+ins {
+	text-decoration: none;
+}
+del {
+	text-decoration: line-through;
+}
+
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+a 
+{
+	text-decoration:none;
+}
+a:hover 
+{
+	text-decoration:underline;
+}
+
+html, body
+{
+	margin: 0;
+	padding: 0;
+} 
+body 
+{
+	font: normal 12px arial,helvetica,sans-serif;
+}
+.clear 
+{
+    clear:both;
+    height:0;
+}
+#wrapper 
+{
+	padding:10px;
+}
+#navbar
+{
+	border-top:5px solid #9CCF9C;
+    bottom: 0px ;
+    width:100%;
+}
+#navbar #primaryNavBar
+{
+	background-color:#9CCF9C;
+}
+#navbar #subNavBar
+{
+	background-color:#659A66;
+	clear:both;
+	color:#FFF;
+	padding:10px;
+	text-align:right;
+}
+#navbar #subNavBar table.menu-drop td.label
+{
+    padding:0 3px 0 10px;
+}
+#navbar #primaryNavBar, #navbar #subNavBar
+{
+    /* cannnot use position : relative, dropdown display issue in IE7 */
+    /*position:relative;*/
+}
+
+.page-title
+{
+	color:#515151;
+    font:bold 24px/30px Arial,sans-serif;
+}
+.startbudget-content
+{
+    border-bottom:2px solid  #336600;
+    border-top:2px solid  #336600;
+    line-height:1.3em;
+    padding:10px 0;
+}
+.page-sub-title
+{
+	font-size: 17px;
+	margin-bottom:5px;
+}
+.ui-tabs .ui-tabs-hide {
+     display: none;
+}
+.main-tab
+{
+    border-bottom:1px solid #CCC;
+    clear:both;
+    display:block;
+    height:30px;
+    margin:5px 0 10px;
+    padding-left:5px;
+}
+.main-tab .tab-item
+{
+    display:block;
+    float:left;
+}
+.main-tab .ui-state-active
+{
+    background:#FFF url(../images/tab-item.gif) left top repeat-x;
+	border-color:#CCC;
+	border-style:solid;
+	border-width:1px 1px 0;
+}
+.main-tab .tab-item a,
+.main-tab .tab-item span
+{
+    color:#333333;
+    display:block;
+}
+.main-tab .tab-item a:hover
+{
+    text-decoration:none;
+}
+.main-tab .tab-item span
+{
+    padding:7px 10px 8px;
+}
+.main-tab .ui-state-active span
+{
+    color:#CC0000;
+    font-weight:bold;
+}
+.padding-top-bottom-10
+{
+    padding:10px 0;
+}
+
+.primary-nav .x-toolbar
+{
+	background:none;
+	border:none;
+	border-width:0;
+	padding:0;
+}
+.primary-nav .x-btn
+{
+	background-color:#9CCF9C;
+	margin-left:1px;
+}
+.primary-nav .x-btn td.x-btn-mc .x-btn-text
+{
+    margin-left:6px;   
+    margin-right:0;   
+}
+.primary-nav .x-btn td.x-btn-tr
+{
+    width:9px;
+}
+.primary-nav .x-btn-text
+{
+	color:#02321A;
+	font-size:12px;
+	font-weight:bold;
+	margin:3px 5px;
+}
+.primary-nav .x-btn-active td,
+.primary-nav .x-btn-over td
+{
+	background:none;
+}
+.primary-nav .x-btn-over td.x-btn-tl, .primary-nav .x-btn-active td.x-btn-tl
+{
+	background:url(../images/tab-bg.gif) left top no-repeat;
+}
+.primary-nav .x-btn-over td.x-btn-ml, .primary-nav .x-btn-active td.x-btn-ml
+{
+	background:url(../images/tab-bg.gif) left -3px no-repeat;
+}
+.primary-nav .x-btn-over td.x-btn-bl, .primary-nav .x-btn-active td.x-btn-bl
+{
+	background:url(../images/tab-bg.gif) left -10px no-repeat;
+}
+.primary-nav .x-btn-over td.x-btn-tc, .primary-nav .x-btn-active td.x-btn-tc
+{
+	background:url(../images/tab-bg.gif) -3px top no-repeat;
+}
+.primary-nav .x-btn-over td.x-btn-mc, .primary-nav .x-btn-active td.x-btn-mc,
+.primary-nav .x-btn-over td.x-btn-bc, .primary-nav .x-btn-active td.x-btn-bc
+{
+	background:url(../images/tab-bg.gif) -10px -10px no-repeat;
+}
+.primary-nav .x-btn-over td.x-btn-tr, .primary-nav .x-btn-active td.x-btn-tr
+{
+	background:url(../images/tab-bg.gif) right top no-repeat;
+}
+.primary-nav .x-btn-over td.x-btn-mr, .primary-nav .x-btn-active td.x-btn-mr
+{
+	background:url(../images/tab-bg.gif) right -3px no-repeat;
+}
+.primary-nav .x-btn-over td.x-btn-br, .primary-nav .x-btn-active td.x-btn-br
+{
+	background:url(../images/tab-bg.gif) right -10px no-repeat;
+}
+
+.primary-nav .x-btn-active td
+{
+	background-color:#659A66;
+}
+.primary-nav .x-btn-over .x-btn-text
+{
+    color:#FFF;
+}
+.primary-nav .x-btn-active .x-btn-text
+{
+	color:#FFF;
+}
+
+.ux-grid-1 .x-grid3
+{
+	margin-top:10px;
+}
+.ux-grid-1 .x-panel-body
+{
+	border:none;
+}
+.ux-grid-1 .x-grid3 .x-grid3-header
+{
+	border-top:1px solid #C6C6C6;
+}
+.ux-grid-1 .x-grid3-row
+{
+	border-width:1px 0;
+	padding:3px 0;
+}
+.ux-grid-1 .x-grid3-row-over
+{
+	background:none;
+	background-color:#FEFFE0;
+	border-top:1px solid #FFF;
+}
+.ux-grid-1 .x-grid3-row-selected
+{
+	background:none;
+	background-color:#FEFFE0 !important;
+}
+
+.ux-button-1 .x-btn .x-btn-tl, .ux-button-1 .x-btn .x-btn-tc, .ux-button-1 .x-btn .x-btn-tr,
+.ux-button-1 .x-btn .x-btn-ml, .ux-button-1 .x-btn .x-btn-mc, .ux-button-1 .x-btn .x-btn-mr,
+.ux-button-1 .x-btn .x-btn-bl, .ux-button-1 .x-btn .x-btn-bc, .ux-button-1 .x-btn .x-btn-br
+{
+	background:none;
+}
+.ux-button-1 .x-btn .x-btn-ml
+{
+	background:url(../images/btn-bg-all.png) left -120px no-repeat;
+	height:28px;
+}
+.ux-button-1 .x-btn .x-btn-mr
+{
+	background:url(../images/btn-bg-all.png) right -298px no-repeat;
+}
+.ux-button-1 .x-btn .x-btn-mc
+{
+	background:url(../images/btn-bg-all.png) -10px -120px no-repeat;
+}
+.ux-button-1 .x-btn .x-btn-text
+{
+	color:#477D61;
+	font-weight:bold;
+}
+.ux-button-1 .x-btn-over .x-btn-text
+{
+	color:#659A66;
+}
+
+.ux-tab-1 .x-tab-panel-header,
+.ux-tab-1 .x-tab-panel-header .x-tab-strip-wrap .x-tab-strip
+{
+	background:none;
+	border-bottom-color:#CCC;
+}
+.ux-tab-1 .x-tab-panel-header
+{
+	border:none;
+}
+.ux-tab-1 .x-tab-panel-header .x-tab-strip-wrap .x-tab-strip .x-tab-right,
+.ux-tab-1 .x-tab-panel-header .x-tab-strip-wrap .x-tab-strip .x-tab-left,
+.ux-tab-1 .x-tab-panel-header .x-tab-strip-wrap .x-tab-strip .x-tab-strip-inner
+{
+	background:none;
+}
+.ux-tab-1 .x-tab-panel-header .x-tab-strip-wrap .x-tab-strip .x-tab-strip-text
+{
+	margin:3px auto;
+}
+.ux-tab-1 .x-tab-strip-wrap  .x-tab-strip-active
+{
+	background:#FFF url(../images/tab-item.gif) left top repeat-x !important;
+	border-color:#CCC;
+	border-style:solid;
+	border-width:1px 1px 0;
+	position:relative;
+	top:1px;
+}
+.ux-tab-1 .x-tab-strip-wrap  .x-tab-strip-active .x-tab-strip-text
+{
+	color:#CC0000;
+}
+
+.ux-tab-2 .x-tab-panel-header,
+.ux-tab-2 .x-tab-panel-header .x-tab-strip-wrap .x-tab-strip
+{
+	background:none;
+	border-bottom-color:#CCC;
+}
+.ux-tab-2 .x-tab-panel-header
+{
+	border:none;
+}
+.ux-tab-2 .x-tab-panel-header .x-tab-strip-wrap .x-tab-strip .x-tab-right,
+.ux-tab-2 .x-tab-panel-header .x-tab-strip-wrap .x-tab-strip .x-tab-left,
+.ux-tab-2 .x-tab-panel-header .x-tab-strip-wrap .x-tab-strip .x-tab-strip-inner
+{
+	background:none;
+}
+.ux-tab-2 .x-tab-panel-header .x-tab-strip-wrap .x-tab-strip .x-tab-strip-text
+{
+	margin:3px auto;
+}
+
+.ux-tab-2 .x-tab-panel-header .x-tab-strip-wrap .x-tab-strip-top li
+{   
+	height:40px; 
+}
+.ux-tab-2 .x-tab-strip-wrap  .x-tab-strip-active
+{
+	background:#FFF url(../images/tab-item.gif) left top repeat-x !important;
+	border-color:#CCC;
+	border-style:solid;
+	border-width:1px 1px 0;
+	position:relative;
+	top:1px;
+}
+.ux-tab-2 .x-tab-strip-wrap  .x-tab-strip-active .x-tab-strip-text
+{
+	color:#CC0000;
+}
+
+/*!
+ * Ext JS Library 3.2.1
+ * Copyright(c) 2006-2010 Ext JS, Inc.
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+td.ux-grid-hd-group-cell {
+    background: url(../images/gray/grid/grid3-hrow.gif) repeat-x bottom;
+}
+
+.x-item-disabled,
+.x-item-disabled input[type=text]
+{
+    color:#000;
+}
+
+.table-title 
+{
+	color:#000;
+	padding:10px 0;
+}
+.ux-table
+{
+	border-left:1px solid #EDEDED; /*#CAD5BA;*/
+	border-top:1px solid #EDEDED;
+}
+.ux-table tr th 
+{
+	font-weight:700;
+	text-align:center;
+}
+.ux-table tr.green th 
+{
+	background:#FFF url(../images/gray/grid/grid3-hrow2.gif) left top repeat-x !important;
+	color:#000;
+	font-size:11px;
+    font-weight:400;
+    font-style:	normal;
+    border:1px solid #C6C6C6;
+}
+.ux-table tr td 
+{
+	text-align:right;
+}
+.ux-table tr th, .ux-table tr td
+{
+	border-right:1px solid #EDEDED;
+	border-bottom:1px solid #EDEDED;
+	color:#000;
+	padding:3px 10px;
+}
+.ux-table tbody tr.odd td
+{
+	background-color: #FCFCFC;/*#E1E7D9;*/
+}
+.ux-table tbody tr td:first-child
+{
+	text-align:left;
+}
+.ux-table tr td input[type=text]
+{
+	width:50px;
+	text-align:right;
+}
+
+.ux-table-2 
+{
+	margin-top:10px;
+}
+.ux-table-2 tbody tr td
+{
+	padding:3px 10px;
+	text-align:right;
+}
+.ux-table-2 tbody tr td:first-child
+{
+	text-align:left;
+}
+/***********************/
+.ux-table-1
+{
+  border: 1px solid #E8E5E2;
+  width:100%
+}
+.ux-table-1 tr
+{
+   border: 1px solid #CDD3BF;
+   height:20px;
+}
+.ux-table-1 .oddrow
+{
+    background-color:#E1E7D9;
+}
+.ux-table-1 .evenrow
+{
+    background-color:#ffffff;
+}
+.ux-table-1 td
+{
+    border: 1px solid #CDD3BF;   
+    padding:0!important;
+    text-align:left!important;
+    color:#477D61;
+}
+.ux-table-1 .right
+{
+    text-align:right!important;
+    color:#5679FF!important;    
+}
+/*****************/
+.ux-table-2
+{
+  width:100%
+}
+
+.ux-table-2 thead tr td
+{
+    font-weight:bold;
+    color:#000000;
+}
+
+.ux-table-2 tbody tr td
+{
+    margin-right:10px;
+}
+.ux-table-2 tbody tr td tr
+{
+     border: 1px solid #CDD3BF;
+}
+
+.editable-field
+{
+    color:#0C510C;
+    font-weight:bold;
+}
+
+.ux-scroll-grid .x-grid3 .x-grid3-viewport
+{
+    overflow:scroll;
+}
+
+.hightlight-dirtydata .x-grid3-dirty-cell div 
+{
+    color: Purple !important;
+}
+
+/*fix ie7 scrollbar issue
+reference url : http://stackoverflow.com/questions/67665/ie7-css-scrolling-div-bug
+ */
+.x-grid3-viewport 
+{
+    position: relative;
+}
+
+ .x-grid3-dirty-cell 
+{
+ background-image:none !important;   
+}
+
+.no-red-triangle .x-grid3-dirty-cell 
+{
+ background-image:none;   
+}
+
+
+.contract-billing 
+{
+    
+}
+
+.contract-billing .ux-table-2  td
+{
+    padding:4px !important;
+}
+
+.contract-billing .ux-table-2  td.date-effective
+{
+    padding:1px !important;
+}
+
+/*!
+ * Ext JS Library 3.1.1
+ * Copyright(c) 2006-2010 Ext JS, LLC
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+.x-form-spinner-proxy{
+	/*background-color:#ff00cc;*/
+}
+.x-form-field-wrap .x-form-spinner-trigger {
+    background:transparent url('../images/spinner.gif') no-repeat 0 0;
+}
+
+.x-form-field-wrap .x-form-spinner-overup{
+    background-position:-17px 0;
+}
+.x-form-field-wrap .x-form-spinner-clickup{
+    background-position:-34px 0;
+}
+.x-form-field-wrap .x-form-spinner-overdown{
+    background-position:-51px 0;
+}
+.x-form-field-wrap .x-form-spinner-clickdown{
+    background-position:-68px 0;
+}
+
+
+.x-trigger-wrap-focus .x-form-spinner-trigger{
+    background-position:-85px 0;
+}
+.x-trigger-wrap-focus .x-form-spinner-overup{
+    background-position:-102px 0;
+}
+.x-trigger-wrap-focus .x-form-spinner-clickup{
+    background-position:-119px 0;
+}
+.x-trigger-wrap-focus .x-form-spinner-overdown{
+    background-position:-136px 0;
+}
+.x-trigger-wrap-focus .x-form-spinner-clickdown{
+    background-position:-153px 0;
+}
+.x-trigger-wrap-focus .x-form-trigger{
+    border-bottom: 1px solid #7eadd9;
+}
+
+.x-form-field-wrap .x-form-spinner-splitter {
+	line-height:1px;
+	font-size:1px;
+    background:transparent url('../images/spinner-split.gif') no-repeat 0 0;
+	position:absolute;
+	cursor: n-resize;
+}
+.x-trigger-wrap-focus .x-form-spinner-splitter{
+    background-position:-14px 0;
+}
+
+

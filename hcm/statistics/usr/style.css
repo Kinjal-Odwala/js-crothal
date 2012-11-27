@@ -1,0 +1,43 @@
+﻿#LabelTextAreaLeft
+	{
+		width:225px;
+	}
+
+.InputTextAreaRight
+	{
+		width:130px;
+		height:20px;
+		float:left;
+	}
+#statisticsAreasContainerLeft
+	{
+		float:left;
+		margin-right:20px;
+	}
+#statisticsAreasContainerRight
+	{
+		float:left;
+	}
+.LabelstatisticsAreaLeft
+	{
+		width:205px;
+		float:left;
+		height:27px;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+	}
+
+.TableEditArea
+	{
+		width:100%;
+	}
+
+.iiInputTable
+	{
+		width:130px;
+	}
+.iiInputText
+	{
+		width:124px;
+	}

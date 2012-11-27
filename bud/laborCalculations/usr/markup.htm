@@ -1,0 +1,564 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Staffing</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/bud/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+
+		<div class="pageBody">
+            <div class="contentArea">
+                <div class="header">Labor Calculations</div>
+                <div class="body">
+                	<div id="TableEditArea">
+                		<div id="radioButton">
+                			<input type="radio" id="SickPayLabor" name="LaborOption" checked="true"  />
+                		</div>
+						<div id="radioButtonTextLeft">
+							I. Sick Pay
+						</div>
+						<div id="radioButton">
+                			<input type="radio" id="ProdDaysLabor" name="LaborOption" />
+                		</div>
+						<div id="radioButtonTextRight">
+							V & VI. Net Prod Days Per Emp & FTEs
+						</div>
+                	</div>
+					<div style="clear:both;"></div>
+					<div id="TableEditArea">
+                		<div id="radioButton">
+                			<input type="radio" id="LegalHolidaysLabor" name="LaborOption"   />
+                		</div>
+						<div id="radioButtonTextLeft">
+							II. Legal Holidays
+						</div>
+						<div id="radioButton">
+                			<input type="radio" id="LaborStandardsLabor" name="LaborOption" />
+                		</div>
+						<div id="radioButtonTextRight">
+							VII. Labor Standards
+						</div>
+                	</div>
+					<div style="clear:both;"></div>
+					<div id="TableEditArea">
+                		<div id="radioButton">
+                			<input type="radio" id="VacationLabor" name="LaborOption" />
+                		</div>
+						<div id="radioButtonTextLeft">
+							III. Vacation
+						</div>
+						<div id="radioButton">
+                			<input type="radio" id="LaborStandardsInDollarsLabor" name="LaborOption" />
+                		</div>
+						<div id="radioButtonTextRight">
+							VIII. Labor Standards In Dollars
+						</div>
+                	</div>
+					<div style="clear:both;"></div>
+					<div id="TableEditArea">
+						<div id="radioButton">
+                			<input type="radio" id="EmployeesHealthDentalLabor" name="LaborOption"/>
+                		</div>
+						<div id="radioButtonTextRight">
+							IV. Prod Employees Health/Dental/Life and Union Contributions & BI-Weekly Cost
+						</div>
+                	</div>
+					<div style="clear:both;"></div>
+					<hr class="hrColor" />
+                </div>
+            </div>
+			<div style="clear:both;"></div>
+			<div class="contentArea">
+				<div class="body">
+					<div id="SickPay">
+						 <div class="subHeader">I. Sick Pay</div>
+						 <div style="clear:both;"></div>
+						 <div>
+							 <table  class="borderTr" border="0" cellpadding="0" cellspacing="0">
+								<tbody id="SickPayGrid">
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div id="LegalHolidays">
+						 <div class="subHeader">II. Legal Holidays</div>
+						 <div style="clear:both;"></div>
+						 <div>
+							 <table  class="borderTr" border="0" cellpadding="0" cellspacing="0">
+								<tbody id="LegalHolidaysGrid">
+								</tbody>
+							</table>
+						</div>
+						<div style="clear:both;"></div>
+						<div>
+							<div id="HolidayPeriodGrid"></div>
+						</div>
+					</div>
+					<div id="Vacation">
+						 <div class="subHeader">III. Vacation</div>
+						 <div style="clear:both;"></div>
+						<div>
+							<div id="VacationGrid"></div>
+						</div>
+					</div>
+					<div id="ProdEmployees">
+						 <div class="subHeader">IV. Prod Employees Health/Dental/Life and Union Contributions & BI-Weekly Cost</div>
+						 <div style="clear:both;"></div>
+						 <div class="subHeaderText">Table 1 - # of Employees</div>
+						 <div style="clear:both;"></div>
+						<div>
+							<div id="EmployeesGrid"></div>
+						</div>
+						<div style="clear:both;"></div>
+						 <div class="subHeaderText">Table 2 - Bi-weekly Cost of Health/Dental/Life Insurance Contributions</div>
+						 <div style="clear:both;"></div>
+						<div>
+							<div id="BiweeklyGrid"></div>
+						</div>
+						<div style="clear:both;"></div>
+						 <div class="subHeaderText">Productive Employees Health/dental/Life Insurance BI-Weekly Cost</div>
+						 <div style="clear:both;"></div>
+						<div>
+							<div id="ProductiveEmployees"></div>
+						</div>
+					</div>
+					<div id="ProductivePerEmployee">
+						 <div class="subHeader">V. Computation Of Net Productive Days Per Employee</div>
+						 <div style="clear:both;"></div>
+						 <div class="subHeaderText">Work Days per 52 wks: 260</div>
+						 <div style="clear:both;"></div>
+						<div>
+							<div id="ProductivePerEmployeeGrid"></div>
+						</div>
+						<div style="clear:both;"></div>
+						 <div class="subHeader">VI. Estimate of FTEs needed for productive and nonproductive labor</div>
+						 <div style="clear:both;"></div>
+						<div>
+							<table  class="borderTr" border="0" cellpadding="0" cellspacing="0">
+								<tbody id="EstimateGrid">
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div id="ComputationLaborStandards">
+						 <div class="subHeader">VII. Computation Of Labor Standards</div>
+						 <div style="clear:both;"></div>
+						 <div>
+						 	<table  class="grid_border" border="0" cellpadding="0" cellspacing="0">
+								<thead>
+									<tr>
+										<th class="grid_header" width="500px" >A. Labor standard before short staffing :</th>
+										<th class="grid_header" width="150px" >247,520</th>
+									</tr>
+								</thead>
+								<tbody id="LaborStandard">
+								</tbody>
+								<tfoot>
+									<tr>
+										<th class="grid_footer" width="500px" >Sub-Total Productive Labor Standard</th>
+										<th class="grid_footer" width="150px" >248,533</th>
+									</tr>
+								</tfoot>
+							</table>
+						</div>
+						<div style="height:15px;"></div>
+						<div style="clear:both;"></div>
+						 <div>
+						 	<table  class="grid_border" border="0" cellpadding="0" cellspacing="0">
+								<thead>
+									<tr>
+										<th class="grid_header" width="500px" >B. Adjusted labor standard due to short-staffing </th>
+										<th class="grid_header" width="150px" >% Factor</th>
+										<th class="grid_header" width="150px" >&nbsp;</th>
+									</tr>
+								</thead>
+								<tbody id="AdjustedLaborStandard">
+								</tbody>
+								<tfoot>
+									<tr>
+										<th class="grid_footer" width="500px" >Sub-Total Productive Labor Standards</th>
+										<th class="grid_footer" width="150px" >&nbsp;</th>
+										<th class="grid_footer" width="150px" >248,533</th>
+									</tr>
+								</tfoot>
+							</table>
+						</div>
+						<div style="height:15px;"></div>
+						<div style="clear:both;"></div>
+						 <div>
+						 	<table  class="grid_border" border="0" cellpadding="0" cellspacing="0">
+								<thead>
+									<tr>
+										<th class="grid_header" width="500px" >C. Computation of short-staffing on legal holidays</th>
+										<th class="grid_header" width="150px" >1,308</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+						<div style="height:15px;"></div>
+						<div style="clear:both;"></div>
+						 <div>
+						 	<table  class="grid_border" border="0" cellpadding="0" cellspacing="0">
+								<thead>
+									<tr>
+										<th class="grid_header" width="500px" >D. Net Productive Standard </th>
+										<th class="grid_header" width="150px" >228,769</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+						<div style="height:15px;"></div>
+						<div style="clear:both;"></div>
+						 <div>
+						 	<table  class="grid_border" border="0" cellpadding="0" cellspacing="0">
+								<thead>
+									<tr>
+										<th class="grid_header" width="500px" >E. Computation of Paid Leave Standard</th>
+										<th class="grid_header" width="150px" >&nbsp;</th>
+									</tr>
+								</thead>
+								<tbody id="ComputationStandard">
+								</tbody>
+								<tfoot>
+									<tr>
+										<th class="grid_footer" width="500px" >Total 52 Week Paid Hours Standard</th>
+										<th class="grid_footer" width="150px" >248,870</th>
+									</tr>
+								</tfoot>
+							</table>
+						</div>
+					</div>
+					<div id="ComputationLaborStandardsDollars">
+						<div class="subHeader">VIII. Computation of Labor Standards in Dollars</div>
+						<div style="height:15px;"></div>
+						<div style="clear:both;"></div>
+						 <div>
+						 	<table  class="grid_border" border="0" cellpadding="0" cellspacing="0">
+								<thead>
+									<tr>
+										<th class="grid_header" width="500px" >A. Current Avg Wage Rate (from employee data file): </th>
+										<th class="grid_header" width="150px" >$8.91</th>
+									</tr>
+								</thead>
+								<tfoot>
+									<tr>
+										<th class="textAlign" width="500px" >Avg wage rate excluding differential</th>
+										<th class="textAlign" width="150px" >$8.44</th>
+									</tr>
+								</tfoot>
+							</table>
+						</div>
+						<div style="height:15px;"></div>
+						<div style="clear:both;"></div>
+						 <div>
+						 	<table  class="grid_border" border="0" cellpadding="0" cellspacing="0">
+								<thead>
+									<tr>
+										<th class="grid_header" width="500px" >B. Project Effect of Merit Increase</th>
+										<th class="grid_header" width="150px" >&nbsp;</th>
+									</tr>
+									<tbody id="MeritIncrease">
+									</tbody>
+									<tfoot>
+										<tr>
+											<th class="grid_footer" width="500px" >Net effect of Avg wage rate of merit increase</th>
+											<th class="grid_footer" width="150px" >-$0.32</th>
+										</tr>
+									</tfoot>
+								</thead>
+							</table>
+						</div>
+						<div style="height:15px;"></div>
+						<div style="clear:both;"></div>
+						 <div>
+						 	<table  class="grid_border" border="0" cellpadding="0" cellspacing="0">
+								<thead>
+									<tr>
+										<th class="grid_header" width="650px" >C. Projected Avg Wage Rate before cost of living increase including differential </th>
+										<th class="grid_header" width="50px" >$8.59</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+						<div style="height:15px;"></div>
+						<div style="clear:both;"></div>
+						 <div>
+						 	<table  class="grid_border" border="0" cellpadding="0" cellspacing="0">
+								<thead>
+									<tr>
+										<th class="grid_header" width="500px" >D. Cost of Living Increase</th>
+										<th class="grid_header" width="150px" >&nbsp;</th>
+									</tr>
+									<tbody id="LivingIncrease">
+									</tbody>
+									<tfoot>
+										<tr>
+											<th class="grid_footer" width="500px" >Net effect of Avg wage rate of merit increase</th>
+											<th class="grid_footer" width="150px" >-$0.32</th>
+										</tr>
+									</tfoot>
+								</thead>
+							</table>
+						</div>
+						<div style="height:15px;"></div>
+						<div style="clear:both;"></div>
+						 <div>
+						 	<table  class="grid_border" border="0" cellpadding="0" cellspacing="0">
+								<thead>
+									<tr>
+										<th class="grid_header" width="500px" >E. Estimated Avg Wage Rate including COL increase</th>
+										<th class="grid_header" width="150px" >$8.59</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+						<div style="height:15px;"></div>
+						<div style="clear:both;"></div>
+						 <div>
+						 	<table  class="grid_border" border="0" cellpadding="0" cellspacing="0">
+								<thead>
+									<tr>
+										<th class="grid_header" width="650px" >F. Paid Leave does not get Evening Shift Differential</th>
+										<th class="grid_header" width="50px" >$8.12</th>
+									</tr>
+									<tfoot>
+										<tr>
+											<th class="grid_footer" width="650px" >Average Wage Rate for paid leave after COL increase excluding night differential</th>
+											<th class="grid_footer" width="50px" >$8.12</th>
+										</tr>
+									</tfoot>
+								</thead>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+        </div>
+		
+		<div id="iiInputValidationMaster"></div>
+	</body>
+</html>
+<!--
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+			<tr>
+				<td height="5px" colspan="2">
+					
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<table border="0" cellpadding="0" cellspacing="0">
+						<tr>
+							<td class="pageHeaderText" width="150px">
+								Labor Calculations
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<table width="750px" border="0" cellpadding="0" cellspacing="0">
+						<tr>
+							<td class="labelText">
+								<input type="radio" id="SickPayLabor" name="LaborOption" checked="true"  />I. Sick Pay
+							</td>
+							<td class="labelText">
+								<input type="radio" id="ProdDaysLabor" name="LaborOption" />V & VI. Net Prod Days Per Emp & FTEs
+							</td>
+						</tr>
+						<tr>
+							<td class="labelText">
+								<input type="radio" id="LegalHolidaysLabor" name="LaborOption" checked="true"  />II. Legal Holidays
+							</td>
+							<td class="labelText">
+								<input type="radio" id="LaborStandardsLabor" name="LaborOption" />VII. Labor Standards
+							</td>
+						</tr>
+						<tr>
+							<td class="labelText">
+								<input type="radio" id="VacationLabor" name="LaborOption" checked="true"  />II. Vacation
+							</td>
+							<td class="labelText">
+								<input type="radio" id="LaborStandardsInDollarsLabor" name="LaborOption" />VIII. Labor Standards In Dollars
+							</td>
+						</tr>
+						<tr>
+							<td class="labelText">
+								<input type="radio" id="EmployeesHealthDentalLabor" name="LaborOption" checked="true"  />IV. Prod Employees Health/Dental/Life and Union Contributions & BI-Weekly Cost
+							</td>
+							<td class="labelText">
+								
+							</td>
+						</tr>
+					</table>
+					
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<hr class="hrColor">
+				</td>
+			</tr>
+			<tr>
+				<td height="5px" colspan="2">
+					
+				</td>
+			</tr>
+			<tr>
+				<td width="750px" colspan="2">
+					<div class="Flowstyle" id="WorksheetCurrentStaffing">
+						<table >
+							<tr>
+								<td class="pageHeaderText" width="150px">
+									I. Sick Pay
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="GridTableDaily">
+										<div id="DetailWorksheetCurrentStaffing"></div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td width="750px" colspan="2">
+					<div class="Flowstyle" id="WorksheetCurrentStaffing">
+						<table >
+							<tr>
+								<td class="pageHeaderText" width="150px">
+									II. Legal Holidays
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="GridTableDaily">
+										<div id="DetailWorksheetCurrentStaffing"></div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td width="750px" colspan="2">
+					<div class="Flowstyle" id="WorksheetCurrentStaffing">
+						<table >
+							<tr>
+								<td class="pageHeaderText" width="150px">
+									III. Vacation
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="GridTableDaily">
+										<div id="DetailWorksheetCurrentStaffing"></div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td width="750px" colspan="2">
+					<div class="Flowstyle" id="WorksheetCurrentStaffing">
+						<table >
+							<tr>
+								<td class="pageHeaderText" width="150px">
+									IV. Prod Employees Health/Dental/Life and Union Contributions & BI-Weekly Cost
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="GridTableDaily">
+										<div id="DetailWorksheetCurrentStaffing"></div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td width="750px" colspan="2">
+					<div class="Flowstyle" id="WorksheetCurrentStaffing">
+						<table >
+							<tr>
+								<td class="pageHeaderText" width="150px">
+									V. & VI. Net Prod Days Per Emp & FTEs
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="GridTableDaily">
+										<div id="DetailWorksheetCurrentStaffing"></div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td width="750px" colspan="2">
+					<div class="Flowstyle" id="WorksheetCurrentStaffing">
+						<table >
+							<tr>
+								<td class="pageHeaderText" width="150px">
+									VII. Labor Standards
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="GridTableDaily">
+										<div id="DetailWorksheetCurrentStaffing"></div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td width="750px" colspan="2">
+					<div class="Flowstyle" id="WorksheetCurrentStaffing">
+						<table >
+							<tr>
+								<td class="pageHeaderText" width="150px">
+									VIII. Labor Standards In Dollars
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="GridTableDaily">
+										<div id="DetailWorksheetCurrentStaffing"></div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</td>
+			</tr>
+		</table>-->

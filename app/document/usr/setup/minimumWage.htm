@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>State Minimum Wage</h1>
+			<div class="description">The purpose of the <b>State Minimum Wage</b> is to update the minimum wage of the state.</div>
+		</div>
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">States</td>
+			</tr>
+			<tr>
+				<td>States</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List the State details such as state code, name and minimum wage.</td>
+			</tr>
+			<tr>
+				<td>Brief</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Code of the State.</td>
+			</tr>
+			<tr>
+				<td>Title</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Name of the State.</td>
+			</tr>
+			<tr>
+				<td>Minimum Wage</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Minimum Wage of the State.</td>
+			</tr>						
+			<tr>
+				<td class="uiHeader" colspan="5">State Details</td>
+			</tr>
+			<tr>
+				<td>Title</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Name of the State.</td>
+			</tr>
+			<tr>
+				<td>Minimum Wage</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Minimum Wage of the State.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To save the minimum wage of the state.</td>
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Undo the changes to State being edited.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Actions Menu</td>
+			</tr>
+			<tr>
+				<td>Save State</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To save the minimum wage of the state.</td>
+			</tr>
+			<tr>
+				<td>Undo current changes to State</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Undo the changes to State being edited.</td>
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">State Minimum Wage concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/minimumWage.png"></td>
+			</tr>			
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>In order to save, the errors on the page must be corrected.</td>
+			</tr>
+			<tr>
+				<td>Error</td>
+				<td>[SAVE FAILURE] Error while updating the State Minimum Wage.</td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. States must be defined in a system look up table (AppStateTypes)</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>AppStateTypes</td>
+			</tr>
+		</table>		
+	</body>
+</html>

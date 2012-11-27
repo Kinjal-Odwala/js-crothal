@@ -1,0 +1,64 @@
+﻿
+.contentAreasContainerLeft 
+	{
+	    float: left;
+	    margin-right: 20px;
+	    position: relative;
+	    vertical-align: top;
+	    width: 48%;
+	    z-index: 3550;
+	}
+.contentAreasContainerRight 
+	{
+	    float: left;
+	    position: relative;
+	    vertical-align: top;
+	    width: 49.3%;
+	    z-index: 3551;
+	}
+#accountDetailHeader{margin-bottom:6px;}
+#accountDetailContentArea
+	{
+		border:solid #AAAAAA thin;
+		border-width:1px;
+		padding:5px;
+		margin:1px;
+	}
+.TableEditArea
+	{
+		width:100%;
+	}
+.LabelTextAreaLeftAccount
+	{
+		width:130px;
+		float:left;
+		height:27px;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+	}
+.InputTextAreaRight
+	{
+	    float: left;
+	    height: 20px;
+	    width: 190px;
+	}
+.accountRadioTextLeft{float:left;width:25px;padding-left:3px}
+.accountRadioButtonLeft{float:left;width:140px;}
+.accountRadioTextright{float:left;width:25px;margin-left:25px;}
+.accountRadioButtonRight{float:left;width:140px;}
+
+#code{width:75px;}
+#category{width:225px;}
+#desciption{width:225px;}
+#editCode{width:75px;}
+.iiInputText
+	{
+		width:182px;
+		white-space:nowrap;
+	}
+.iiInputTable
+	{
+		width:188px;
+		white-space:nowrap;
+	}

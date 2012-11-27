@@ -1,0 +1,409 @@
+/*****  help *****/
+.sideTabsContentHelp.toolBar  
+{
+	border-style: 5 0 0 0;
+	font-size: 7pt;
+	height: 34px;
+	margin-left:auto;
+	margin-right:auto;
+	text-align: center;
+	vertical-align: middle;
+	white-space: nowrap;
+	width: 100%;
+}
+
+.breadcrumb  
+{
+	font-size: 7pt;
+	white-space: nowrap;
+}
+.allContent {	
+	background-color: #BDD1E7;
+	border: 3px solid #012C40;
+	width: 95%; 
+	text-align: left;	
+}
+.allContentMagic {	
+	background-color: #BDD1E7;
+	border: 3px solid #012C40;
+	position: absolute;
+	z-index: 10000;
+	width: 50%; 
+}
+
+#leftRightContainer {	
+	background-color: #BDD1E7;
+	padding: 0px;
+	margin: 0px;
+	width: 100%;
+}
+#panelLeft {	
+	background-color: #BDD1E7;
+	width: 100%;	
+}
+#panelRight {	
+	background-color: #BDD1E7;
+	color: black;
+	height: 490px;
+	width: 100%;
+	vertical-align: top;
+	margin-left: 3px;
+}
+.panelLeftCell {
+	width: 100%;
+	vertical-align: top;
+}
+.panelRightCell {
+	vertical-align: top;
+}
+.panelLeftCellMagic {
+	width: 30%;
+	vertical-align: top;
+	border-right: 3px solid #012C40; 
+}
+.panelRightCellMagic {
+	width: 70%;
+	vertical-align: top;
+}
+#panelEast {
+	line-height: 100px;	
+	border: 1px;
+}
+#panelWest {
+	line-height: 100px;	
+	border: 1px;
+}
+
+
+#resizeNE, #resizeNW, #resizeSE, #resizeSW
+{
+  white-space: nowrap;
+  text-indent: 0;
+ }
+
+.resizeIndicators {
+	padding: 0px;
+	margin: 0px;	
+}
+#resizeNE  {cursor: ne-resize; text-align: right; display: none; margin: -10px -10px 0 0}    /* top right */
+#resizeNW  {cursor: nw-resize; text-align: left; display: none; margin: -10px 0 0 -10px}  /* top left */
+#resizeSE  {cursor: se-resize; text-align: right; display: none; margin: 0 -10px -10px 0}      /* bottom right */
+#resizeSW  {cursor: sw-resize; text-align: left; display: none; margin: 0px 0 -10px -10px}    /* bottom left */
+#resizeN  {cursor: n-resize; color: black; text-align: center; display: none; margin: -5px 0px 0px 0px}    /* top middle */
+#resizeW  {cursor: w-resize; color: red; text-align: left; display: none; margin: 0px 0px 0px -5px}    /* middle left */
+#resizeE  {cursor: e-resize; color: orange; text-align: right; margin: 0px -5px 0px 0px}    /* middle right */
+#resizeS  {cursor: s-resize; color: blue; text-align: center; margin: 0px 0 -5px 0px}    /* bottom middle */
+
+
+
+#helpContent {
+	background-color: #BDD1E7;
+	background-position:0 0;
+	overflow: auto;
+	max-height: 370px;
+	float: left;
+	width: 100%;
+}
+.helpHeader {	
+	background-color: #6D94BA; /*#012C40;*/
+	border-style: 5 0 0 0;
+	text-align: center;
+	vertical-align: middle;
+	padding: 4px;
+	font-weight: bold;
+	white-space: nowrap;
+}
+.helpBorder {	
+	background-color: #012C40;
+	border-bottom: 2px solid #012C40;
+	height: 20px;
+	text-align: center;
+	vertical-align: middle;
+	/*padding: 2px;*/
+	font-weight: bold;
+	white-space: nowrap;
+}
+#helpMainHeader {
+	font-size: 10pt;	
+}
+.helpBody {
+	background-color: #BDD1E7;
+	color: black;
+	padding: 5px;
+	margin: 2px;
+}
+
+#helpFieldContext {
+	background-color: #BDD1E7;
+	height: 95px;
+	float: left;
+	width: 100%;
+}
+.helpOverviewLink
+{
+	text-decoration: underline;
+	cursor: pointer;
+}
+.tutorialItem {
+	margin: 2px;
+}
+.tutorialLink {		
+	text-decoration: underline;
+	cursor: pointer;
+}
+.tutorialLinkDisabled {	
+	padding: 2px;	
+
+}
+
+#iiHelpToolbar
+{
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	vertical-align: middle;
+	width: 100%;
+	padding: 2px;
+}
+.toolbarIcon {	
+	float: left;
+	width: 24px;
+	height: 24px;
+	cursor: pointer;
+	text-align: center;
+	vertical-align: middle;
+	margin: 2px;
+}
+.overviewIcon
+{
+	background-image: url(images/overview.gif);
+}
+.processIcon
+{
+	background-image: url(images/process.gif);
+}
+.indexIcon
+{
+	background-image: url(images/index.gif);
+}
+.pageContextIcon
+{
+	/*
+	background-image: url(images/context.gif);
+	*/
+}
+
+.searchIcon
+{
+	background-image: url(images/search.gif);
+}
+.tutorialIcon
+{
+	background-image: url(images/tutorial.gif);
+}
+.magicCarpetIcon
+{
+	background-image: url(images/magicCarpet.jpeg);
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+	text-align: right;
+	vertical-align: middle;
+	margin: 1px;
+}
+.closeIcon {	
+	background-image: url(images/close.gif);
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+	text-align: right;
+	vertical-align: middle;
+	display: none;
+	margin: 1px;
+}
+
+.overviewTopicLink:hover
+{
+	text-decoration: underline;
+	cursor: pointer;
+}
+.overviewTopicLink.active{ 
+	color:HighlightText; 
+	background:Highlight;
+	width:100%;
+}
+#helpPageContextBody ol { list-style: decimal }
+
+#helpPageContextBody ol ol { list-style: lower-alpha }
+
+#helpPageContextBody ol ol ol { list-style: lower-roman }
+#itemFormTable
+{
+	border-spacing: 0px 0px;
+	margin: 0px;
+	padding: 0px;
+	/* width: 100%; */
+}
+
+.itemFormLabel
+{
+	float: left;
+	width: 65px;
+	padding-right: 5px;
+	text-align: right;
+}
+
+#itemFormTable th
+{
+	padding-top: 4px;
+	padding-right: 5px;
+	padding-bottom: 4px;
+	font-weight: normal;
+	width: 70px;
+	text-align: right;
+	vertical-align: top;
+}
+#iftLabelColumn
+{
+	width: 90px;
+}
+
+#iftFirstColumn
+{
+	width: 90px;
+}
+
+
+#helpIndexBody li
+{
+	list-style-type: circle;
+	font-weight: bold;	
+}
+#indexInput
+{
+	width: 110px;
+	text-align: left;
+}
+
+#indexInputText
+{
+	text-align: left;
+	padding-right: 1px;
+}
+.indexTopicLink:hover
+{
+	text-decoration: underline;
+	cursor: pointer;
+}
+.indexHighlight
+{
+	background-color: yellow;
+}
+#contentsResults {
+	display: none;
+}
+#editInput
+{
+	width: 100%;
+	float: left;
+}
+
+#editInputText
+{
+	width: 10px;
+	height: 34px;	
+	overflow: hidden;
+}
+A {
+	text-decoration:none; 
+	padding-right:2px;
+	color:WindowText;
+	/* this works in ie5.5, but not in ie5.0  */
+	white-space: nowrap;
+}
+
+A:hover{
+	text-decoration:underline; 
+}
+
+A.active{ 
+	color:HighlightText; 
+	background:Highlight;
+	width:100%;
+}
+
+A.active:hover{
+	text-decoration:underline; 
+}
+
+
+
+A.nolink {
+	color:GrayText;
+}
+
+
+
+A.nolink {
+	text-decoration:none; 
+	font-weight:bold;
+}
+
+A.nolink:hover {
+	text-decoration:none; 
+}
+
+#searchInput {
+	width: 134px;
+	margin-right: 20px;
+}
+#helpSearchGoButton {
+	/* float: right; */
+}
+
+/***  styles for the tree view  ***/
+		ul.tv, .tv ul { 
+			background-position: 0 0;
+			padding: 0;
+			margin: 0;
+			list-style: none;
+			position:relative;
+		}	
+
+		.tv li { 
+			position: relative;
+			margin: 0;
+			padding: 4px 0 3px 20px;
+			z-index: 10;
+		}
+		
+		div.tvca { /* Clickable Area */
+			_background: #fff;
+			_filter: alpha(opacity=0);
+			/* 
+				border: 1px solid #fdd; 
+			*/ /* Useful for showing the hit area */
+			height: 15px;
+			width: 15px;
+			position: absolute;
+			top: 1px;
+			left: -1px;
+			 /* IE... damnit! _left: -21px;*/
+			cursor: pointer;
+			z-index: 50;
+		}
+
+  	.tv li, .tv .tvi /* Tree View Item */ { background: url(images/treeView/dotted/tvi.gif) 0 0 no-repeat; }
+  		
+  	.tv .tvic /* Tree View Item, Collapsable */ { background-image: url(images/treeView/dotted/tvic.gif); }
+  	.tv .tvie /* Tree View Item, Expandable */ { background-image: url(images/treeView/dotted/tvie.gif); }
+
+  	.tv .tvil /* Tree View Last Item */ { background-image: url(images/treeView/dotted/tvil.gif); }
+  	.tv .tvilc /* Tree View Last Item, Collapsable */ { background-image: url(images/treeView/dotted/tvilc.gif); }
+  	.tv .tvile /* Tree View Last Item, Expandable */ { background-image: url(images/treeView/dotted/tvile.gif); }
+
+  	.tvload /* Loading Icon */ { background-image: url(images/treeView/dotted/tviload.gif); }
+
+
+/*****  end help *****/
+

@@ -1,0 +1,170 @@
+﻿.iiGrid
+{
+	/*width: 100%;*/
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	border: 1px dotted transparent;
+}
+
+.iiGrid.Active
+{
+	border: 1px dotted darkgreen;
+}
+
+.iiGridFocusInput
+{
+	border: none;
+	background-color: transparent;
+	width: 10px;
+	height: 0px;
+	font-size: 0px;
+	outline: none;
+}
+
+.iiGridHeader
+{
+	/*margin-top: 2px;*/
+	height: 22px;
+	cursor: pointer;
+}
+
+.iiGridHeaderSortIndicator
+{
+	float: right;
+	margin-right: 0;
+	margin-top: -3px;
+}
+
+.iiGridHeaderColumn
+{
+	float: left;
+	background-color: #669966;
+	/*background-image: url(media/Grid/ButtonEnabledMiddle.gif);*/
+	border: 1px solid #AAAAAA;
+	border-right: none;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: white;
+	text-transform: uppercase;
+	padding-top: 3px;
+	/*padding-bottom: 3px;*/
+	padding-left: 0px;
+	padding-right: 0px;
+	text-align: center;
+	height: 17px;
+}
+
+
+.iiGridHeaderColumnEndCap
+{
+	float: left;
+	background-color: #669966;
+	/*background-image: url(media/Grid/ButtonEnabledMiddle.gif);*/
+	border: 1px solid #AAAAAA;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: white;
+	text-transform: uppercase;
+	width: 18px;
+	height: 20px;
+	text-align: center;
+}
+
+.iiGridBodyColumn
+{
+	float: left;
+	border-left: 1px solid #AAAAAA;
+	
+	/*
+	padding-top: 3px;
+	padding-bottom: 3px;
+	*/
+	height: 100%;
+	background-image: url(media/Grid/iiGridBack.png);
+	font-family: Verdana;
+	font-size: 12px;
+	/*overflow: hidden;*/
+}
+
+.iiGridBodyColumnScroll
+{
+	background-image: url(media/Grid/iiGridBack.png);
+}
+
+
+.iiGridBodyColumnEndCap
+{
+	float: left;
+	border-left: 1px solid #AAAAAA;
+	/*border-right: 1px solid black;*/
+	width: 0px;
+	height: 100%;
+}
+
+.iiGridBodyColumnEndCapScroll
+{
+	width: 1px;
+	height: 1px;
+}
+
+.iiGridBody
+{
+	float: left;
+	background-color:#F0EFDD;
+}
+
+.iiGridBody td div
+{
+	white-space: nowrap;
+	overflow: hidden;
+	width: 50px;
+}
+
+.iiGridBodyScroll
+{
+	overflow: auto;
+	border-bottom: 1px solid #AAAAAA;
+	border-right: 1px solid #AAAAAA;
+}
+
+.iiGridCell
+{
+	padding-top: 2px;
+	padding-bottom: 4px;
+	padding-left: 4px;
+	padding-right: 4px;
+	height: 18px;
+	white-space: nowrap;
+	overflow: hidden;
+	cursor: pointer;
+	
+}
+
+.iiGridCell.Selected
+{
+	background-color: #9BCD9A; /* fdca41 */
+	cursor: default;
+}
+
+.iiGridCell.Hot
+{
+	background-color: #C2E4C1;
+	cursor: pointer;
+}
+
+.iiGridCell.Hot.Selected
+{
+	background-color: #9BCD9A; /* fdca41 */
+	cursor: default;
+}
+
+#rowNumberBodyColumn
+{
+	text-align: right;
+	
+}
+
+
+	

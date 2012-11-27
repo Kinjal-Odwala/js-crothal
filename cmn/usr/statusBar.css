@@ -1,0 +1,116 @@
+#statusBar
+{
+	background-image: url(media/StatusBar/statusBar.gif);
+	background-color: #707070;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 7.5pt;
+	height: 20px;
+	width: 100%;
+	overflow: hidden;
+	position: absolute;
+}
+
+.statusBarPanel
+{
+	padding: 4px;
+	height: 20px;
+	float: right;
+}
+
+#ajaxIndicator{
+	margin: 2px;
+	height: 16px;
+	width: 16px;
+	float: right;
+}
+
+#ajaxIndicator.On{
+	background-image: url(../common/Common/indicator.gif);
+	width: 16px;
+	height: 16px;
+	margin-right: 0px;
+}
+
+#ajaxIndicator.Off{
+	background-image: none;
+}
+
+#ajaxCount{
+	padding-left: 2px;
+}
+
+#tracePanelMessage{
+	overflow: hidden;
+	width: 70%;
+	white-space: nowrap;
+	text-align: right;
+}
+
+#tracePanelMessage.Error{
+	color: red;
+}
+
+#tracePanelIcon{
+	margin: 2px;
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+	float: right;
+}
+
+#tracePanelIcon.Ok.Enabled{
+	background-image: url(../common/Common/ok.gif);
+}
+
+#tracePanelIcon.Error.Enabled{
+	background-image: url(../common/Common/warning.gif);
+}
+
+#tracePanelIcon.Warning.Enabled{
+	background-image: url(../common/Common/info.gif);
+}
+
+#traceDiv{
+	display: none;
+	width: 512px;
+	height: 384px;
+	overflow: scroll;
+	position: absolute;
+	border: 1px solid black;
+	background-color: #e0e0e0;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	top: 0px;
+	left: 0px;
+	z-index: 10000;
+}
+
+#traceDiv td{
+	white-space: nowrap;
+	height: 1.5em;
+}
+
+#traceDiv th{
+	text-align: left;
+}
+
+
+.SessionWarn.dialogButtonPart.Middle{
+	width: 70px;
+}
+
+.SessionWarn.Stay.dialogButton{
+	left: 100px;
+}
+
+.SessionWarn.Logout.dialogButton{
+	left: 215px;
+}
+
+.SessionLoggedOff.dialogButtonPart.Middle{
+	width: 70px;
+}
+
+.SessionLoggedOff.Okay.dialogButton{
+	left: 156px;
+}

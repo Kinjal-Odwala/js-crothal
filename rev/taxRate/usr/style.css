@@ -1,0 +1,93 @@
+﻿
+#actionHeader {
+	background-color: #9BCD9A;
+	padding-left: 6px;
+	height: 25px;
+}
+
+#AnchorUpload {
+	float: left;
+	width: 82px;
+	margin-right: 5px;
+	padding-left: 5px;
+	padding-top: 0px;
+}
+
+#AnchorCancel {
+	float: left;
+	width: 80px;
+	margin-right: 5px;
+	padding-left: 5px;
+	padding-top: 0px;
+}
+
+#AnchorSearch {
+	float: left;
+	width: 83px;	
+	margin-left: 20px;
+}
+
+#citySalesTaxRateBodyColumn, #cityTransitSalesTaxRateBodyColumn,
+#countySalesTaxRateBodyColumn, #countyTransitSalesTaxRateBodyColumn,
+#combinedSalesTaxRateBodyColumn {
+	text-align: right;	
+}
+
+#GridContianer {
+	float: left;
+	width: 100%;
+	position: relative;	
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+
+#TaxGrid {
+	float: left;
+	width: 1500px;
+	position: relative;
+}
+
+.iiGridHeaderColumn, .iiGridBodyColumn {
+	font-size: 8pt;
+}
+
+.taxLabel {
+	float: left;
+	width: 70px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-left: 15px;
+}
+
+.inputTextArea {
+	float: left;
+	width: 200px;
+	height: 27px;
+}
+
+.footer {
+    height: 20px;
+    font-family: Verdana;
+    font-size: 8pt;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #669b67;
+    text-align: left;
+}
+
+.footer select {
+    font-family: Verdana;
+    font-size: 8pt;
+}
+
+.borderHorizontal {
+    height: 1px;
+    background-color: #adaaad;
+}
+
+.borderVertical {
+    width: 1px;
+    background-color: #adaaad;
+}

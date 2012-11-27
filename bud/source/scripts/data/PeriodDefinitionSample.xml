@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<transmission>
+	<target id="iiCache" requestId="5">
+		<store id="houseCodeJobs" activeId="1036" criteria="storeId:houseCodeJobs,houseCodeId:286,userId:RAYMOND-DEV-XP\Raymond Liu,">
+			<item id="126" fiscalYear="2010" period="1" startDate="2009-09-27 00:00:00" endDate="2009-10-24 00:00:00"/>
+			<item id="127" fiscalYear="2010" period="2" startDate="2009-10-25 00:00:00" endDate="2009-11-21 00:00:00"/>
+			<item id="128" fiscalYear="2010" period="3" startDate="2009-11-22 00:00:00" endDate="2009-12-19 00:00:00"/>
+			<item id="129" fiscalYear="2010" period="4" startDate="2009-12-20 00:00:00" endDate="2010-01-16 00:00:00"/>
+			<item id="130" fiscalYear="2010" period="5" startDate="2010-01-17 00:00:00" endDate="2010-02-13 00:00:00"/>
+			<item id="131" fiscalYear="2010" period="6" startDate="2010-02-14 00:00:00" endDate="2010-03-13 00:00:00"/>
+			<item id="132" fiscalYear="2010" period="7" startDate="2010-03-14 00:00:00" endDate="2010-04-10 00:00:00"/>
+			<item id="133" fiscalYear="2010" period="8" startDate="2010-04-11 00:00:00" endDate="2010-05-08 00:00:00"/>
+			<item id="134" fiscalYear="2010" period="9" startDate="2010-05-09 00:00:00" endDate="2010-06-05 00:00:00"/>
+			<item id="135" fiscalYear="2010" period="10" startDate="2010-06-06 00:00:00" endDate="2010-07-03 00:00:00"/>
+			<item id="136" fiscalYear="2010" period="11" startDate="2010-07-04 00:00:00" endDate="2010-07-31 00:00:00"/>
+			<item id="137" fiscalYear="2010" period="12" startDate="2010-08-01 00:00:00" endDate="2010-08-28 00:00:00"/>
+			<item id="138" fiscalYear="2010" period="13" startDate="2010-08-29 00:00:00" endDate="2010-09-25 23:59:00"/>
+		</store>
+	</target>
+</transmission>

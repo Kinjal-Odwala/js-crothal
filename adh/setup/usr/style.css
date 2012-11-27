@@ -1,0 +1,103 @@
+﻿.contentAreasContainerLeft {
+	float: left;
+	width: 30%;
+	vertical-align: top;
+	margin-right: 20px;
+	position: relative;
+}
+
+.contentAreasContainerRight {
+	float: left;
+	width: 67.3%;
+	vertical-align: top;
+	position: relative;
+}
+
+.iiGridHeaderColumn {
+	font-size: 8pt;
+}
+
+.iiGridBodyColumn {
+	font-size: 8pt;
+}
+
+.columnHidden {
+	display: none;
+}
+
+.headerLabel {
+	float: left;
+	width: 160px;
+	color: #032D23;	
+	font-family: Verdana;
+	font-size:  10pt;
+	padding-top: 6px;
+}
+
+.inputTextArea {
+	float: left;
+	width: 190px;
+	padding: 4px 3px 3px 3px;
+}
+
+#AssociateModuleImage {
+	float: right;
+	width: 20px;
+	height: 20px;
+	background-image: url(/fin/cmn/usr/media/Common/edit.png);
+	background-repeat: no-repeat;	
+	cursor: pointer;
+}
+
+#SubModulesContainer {
+	float: left;
+	width: 187px;	
+	height: 67px;
+	color: #032D23;
+	font-family: Verdana;
+	font-size: 12px;
+	border: solid #AAAAAA thin;
+	background-color: white;
+	border-width: 1px;
+	padding: 1px 1px 1px 1px;	
+	overflow-x: auto;
+}
+
+#ModuleContainer {
+	float: left;
+	width: 220px;
+	padding: 3px 0px 3px 0px;
+}
+
+#ModuleAssociateGroup {
+	left: 165px;
+	width: 187px;
+	height: auto;	
+	border-top: solid #AAAAAA thin;
+	border-bottom: solid #AAAAAA thin;
+	border-width: 1px;
+	margin-top: 25px;
+	position: absolute;
+	overflow-y: auto;
+	overflow-x: hidden;
+	z-index: 6800;
+	display: none;
+}
+
+#AnchorClear {
+	float: left;
+	width: 82px;
+	padding-top: 5px;
+}
+
+#ImageUp {
+	float: left;
+	cursor: pointer;
+	padding: 3px 5px 0px 0px;
+}
+
+#ImageDown {
+	float: left;
+	cursor: pointer;
+	padding-top: 3px;
+}

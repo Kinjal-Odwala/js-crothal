@@ -1,0 +1,635 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Work Orders</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/wom/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+		<div id="popupLoading" style="position: absolute; z-index: 6000; width: 800px; height: 410px; background-color: white; display:none">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="popupMessageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+		
+		<div class="pageHeader">
+			<div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
+			<div class="headerLabel">House Code:</div>
+			<div id="DropDownRightHouseCode">
+				<div id="houseCodeContainer" class="HouseCodeContainer"></div>
+			</div>
+			<div class="headerLabelRight">Job:</div>
+			<div id="DropDownJobCode">
+				<div id="Job"></div>
+			</div>
+			<div class="contentArea">
+				<div id="AnchorLoad"></div>
+			</div>	
+			<div id="searchIcon">
+				<img src="/fin/cmn/usr/media/Common/searchPlus.png" />
+			</div>
+		</div>			
+		<div style="clear:both;"></div>
+		<div id="searchOption">
+			<div class="searchBody">
+				<div class="headerLabel">Status:</div>
+				<div id="DropDownJobCode">
+					<div id="Status"></div>
+				</div>
+				<div style="clear:both;"></div>
+				<div class="headerLabel">Start Date:</div>
+				<div id="DropDownJobCode">
+					<div id="StartDateHeader"></div>
+				</div>
+				<div style="clear:both;"></div>
+				<div class="headerLabel">End Date:</div>
+				<div id="DropDownJobCode">
+					<div id="EndDateHeader"></div>
+				</div>
+				<div style="clear:both;"></div>
+				<div class="contentArea">
+					<div id="AnchorSearch"></div>
+					<div id="AnchorCancel"></div>
+					<div style="clear:both;"></div>
+				</div>
+			</div>
+		</div>
+		<div class="pageBody">			
+			<div class="contentArea">
+				<div class="header">Work Orders</div>
+				<div class="body">
+					<div id="TableEditArea">
+						<div id="WorkOrderGrid"></div>
+						<div style="clear:both;"></div>
+					</div>
+				</div>
+			</div>
+			<div style="clear:both; height:5px;"></div>
+			<div class="contentArea">
+				<div class="header">Work Order Details</div>
+				<div id="workOrderContentArea" class="body">
+					<div id="popupDivLeft">
+						<div id="TableEditArea">
+							<div class="LabelTextAreaWorkOrder">
+								<span class="requiredFieldIndicator">&#149;</span>Service Location:
+							</div>
+							<div class="InputTextArea">
+								<div id="ServiceLocation"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div class="LabelTextAreaWorkOrder">
+								<span class="requiredFieldIndicator">&#149;</span>Requested By:
+							</div>
+							<div class="InputTextArea">
+								<div id="RequestedBy"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div class="LabelTextAreaWorkOrder">
+								<span class="requiredFieldIndicator">&#149;</span>Phone Number:
+							</div>
+							<div class="InputTextArea">
+								<div id="PhoneNumber"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div class="LabelTextAreaWorkOrder">
+								<span class="requiredFieldIndicator">&#149;</span>Start Date:
+							</div>
+							<div class="InputTextArea">
+								<div id="StartDate"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div class="LabelTextAreaWorkOrder">
+								<span id="nonRequiredFieldIndicator">Service Contract:</span>
+							</div>
+							<div class="InputTextArea">
+								<div id="ServiceContract"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div class="LabelTextAreaWorkOrder">
+								<span id="nonRequiredFieldIndicator">Customer WO Number:</span>								
+							</div>
+							<div class="InputTextArea">
+								<div id="CustomerWorkOrderNumber"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div class="LabelTextAreaWorkOrder">
+								<span id="nonRequiredFieldIndicator">Area Manager Email:</span>
+							</div>
+							<div class="InputTextArea">
+								<div id="AreaManagerEmail"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div class="LabelTextAreaWorkOrder">
+								<span id="nonRequiredFieldIndicator">Subcontracted:</span>
+							</div>
+							<div class="InputTextArea">
+								<div id="SubcontractedRadio">
+									<div class="radioButtonAuth">
+										<input type="radio" id="SubcontractedYes" name="Subcontracted" checked="true" value="true" /><span class="labelRadio">Yes</span>
+									</div>
+									<div class="radioButtonAuth">
+										<input type="radio" id="SubcontractedNo" name="Subcontracted" value="false" /><span class="labelRadio">No</span>
+									</div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>						
+					</div>					
+					<div id="popupDivLeft">						
+						<div id="TableEditArea">
+							<div class="LabelTextAreaWorkOrder">
+								<span class="requiredFieldIndicator">&#149;</span>Customer:
+							</div>
+							<div class="InputTextArea">
+								<div id="Customer"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>						
+						<div id="TableEditArea">
+							<div class="LabelTextAreaWorkOrder">
+								<span id="nonRequiredFieldIndicator">Tennant:</span>
+							</div>
+							<div class="InputTextArea">
+								<div id="Tennant"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>						
+						<div id="TableEditArea">
+							<div class="LabelTextAreaWorkOrder">
+								<span id="nonRequiredFieldIndicator">PO Number:</span>
+							</div>
+							<div class="InputTextArea">
+								<div id="PONumber"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>	
+						<div id="TableEditArea">
+							<div class="LabelTextAreaWorkOrder">
+								<span id="nonRequiredFieldIndicator">Overtime Authorized:</span>
+							</div>
+							<div class="InputTextArea">
+								<div id="OvertimeAuthorizedRadio">
+									<div class="radioButtonAuth">
+										<input type="radio" id="OvertimeAuthorizedYes" name="OvertimeAuthorized" checked="true" value="true" /><span class="labelRadio">Yes</span>
+									</div>
+									<div class="radioButtonAuth">
+										<input type="radio" id="OvertimeAuthorizedNo" name="OvertimeAuthorized" value="false" /><span class="labelRadio">No</span>
+									</div>
+								</div>
+								
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div class="LabelTextAreaWorkOrder">
+								<span id="nonRequiredFieldIndicator">General Location Code:</span>								
+							</div>
+							<div class="InputTextArea">
+								<div id="GeneralLocationCode"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div class="LabelTextAreaWorkOrder">
+								<span id="nonRequiredFieldIndicator">Square Feet:</span>
+							</div>
+							<div class="InputTextArea">
+								<div id="SquareFeet"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div class="LabelTextAreaWorkOrder">
+								<span id="nonRequiredFieldIndicator">Regional Manager Email:</span>
+							</div>
+							<div class="InputTextArea">
+								<div id="RegionalManagerEmail"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div class="LabelTextAreaWorkOrder">
+								<span id="nonRequiredFieldIndicator">Commissionable:</span>
+							</div>
+							<div class="InputTextArea">
+								<div id="CommissionableRadio">
+									<div class="radioButtonAuth">
+										<input type="radio" id="CommissionableYes" name="Commissionable" checked="true" value="true" /><span class="labelRadio">Yes</span>
+									</div>
+									<div class="radioButtonAuth">
+										<input type="radio" id="CommissionableNo" name="Commissionable" value="false" /><span class="labelRadio">No</span>
+									</div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+					</div>
+					<div style="clear:both;"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaWorkOrder">
+							<span id="nonRequiredFieldIndicator">Notes:</span>
+						</div>
+						<div class="InputTextArea">
+							<textarea id="Notes"></textarea>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+				</div>
+				<div style="clear:both;"></div>
+				<div class="footer">
+                    <div id="AnchorSave"></div>
+                    <div id="AnchorNew"></div>
+                    <div id="AnchorUndo"></div>
+					<div id="AnchorCancelWorkOrder"></div>
+					<div id="AnchorApprove"></div>
+					<div id="AnchorView"></div>
+					<div id="AnchorPrint"></div>
+                    <div style="clear:both;"></div>
+                </div>
+			</div>
+			<div id="popupWorkOrder">
+				<div class="contentArea">
+					<div id="popupHeader" class="header">Work Order Setup</div>
+				</div>
+				<div class="contentArea" id="contentContainer">
+					<div class="body" id="workOrderType">
+						<div id="TableEditArea">
+							<div class="radioButton">
+								<input type="radio" id="WOMTime" name="WOM" checked="true"/><span class="labelRadio">One Time</span>
+							</div>
+							<div class="radioButton">
+								<input type="radio" id="WOMRecurring" name="WOM"/><span class="labelRadio">Recurring</span>
+							</div>
+							<div style="height:5px;clear:both;"></div>
+						</div>
+					</div>
+					<div class="body" id="workOrderContentAreaPopup">						
+						<div id="popupDivLeft">						
+							<div id="TableEditArea">
+								<div class="LabelTextAreaWorkOrder">
+									<span class="requiredFieldIndicator">&#149;</span>Service Location:
+								</div>
+								<div class="InputTextArea">
+									<div id="ServiceLocationPopup"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>						
+							<div id="TableEditArea">
+								<div class="LabelTextAreaWorkOrder">
+									<span class="requiredFieldIndicator">&#149;</span>Requested By:
+								</div>
+								<div class="InputTextArea">
+									<div id="RequestedByPopup"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>						
+							<div id="TableEditArea">
+								<div class="LabelTextAreaWorkOrder">
+									<span class="requiredFieldIndicator">&#149;</span>Phone Number:
+								</div>
+								<div class="InputTextArea">
+									<div id="PhoneNumberPopup"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>						
+							<div id="TableEditArea">
+								<div class="LabelTextAreaWorkOrder">
+									<span class="requiredFieldIndicator">&#149;</span>Start Date:
+								</div>
+								<div class="InputTextArea">
+									<div id="StartDatePopup"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="LabelTextAreaWorkOrder">
+									<span id="nonRequiredFieldIndicator">Service Contract:</span>
+								</div>
+								<div class="InputTextArea">
+									<div id="ServiceContractPopup"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="LabelTextAreaWorkOrder">
+									<span id="nonRequiredFieldIndicator">Customer WO Number:</span>								
+								</div>
+								<div class="InputTextArea">
+									<div id="CustomerWorkOrderNumberPopup"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>												
+							<div id="TableEditArea">
+								<div class="LabelTextAreaWorkOrder">
+									<span id="nonRequiredFieldIndicator">Area Manager Email:</span>
+								</div>
+								<div class="InputTextArea">
+									<div id="AreaManagerEmailPopup"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>						
+							<div id="TableEditArea">
+								<div class="LabelTextAreaWorkOrder">
+									<span id="nonRequiredFieldIndicator"></span>Subcontracted:
+								</div>
+								<div class="InputTextArea">
+									<div class="radioButtonAuth">
+										<input type="radio" id="SubcontractedPopupYes" name="SubcontractedPopup" checked="true" value="true" /><span class="labelRadio">Yes</span>
+									</div>
+									<div class="radioButtonAuth">
+										<input type="radio" id="SubcontractedPopupNo" name="SubcontractedPopup" value="false" /><span class="labelRadio">No</span>
+									</div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>					
+						<div id="popupDivRight">						
+							<div id="TableEditArea">
+								<div class="LabelTextAreaWorkOrder">
+									<span class="requiredFieldIndicator">&#149;</span>Customer:
+								</div>
+								<div class="InputTextArea">
+									<div id="CustomerPopup"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="LabelTextAreaWorkOrder">
+									<span id="nonRequiredFieldIndicator">Tennant:</span>
+								</div>
+								<div class="InputTextArea">
+									<div id="TennantPopup"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="LabelTextAreaWorkOrder">
+									<span id="nonRequiredFieldIndicator">PO Number:</span>
+								</div>
+								<div class="InputTextArea">
+									<div id="PONumberPopup"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="LabelTextAreaWorkOrder">
+									<span id="nonRequiredFieldIndicator"></span>Overtime Authorized:
+								</div>
+								<div class="InputTextArea">
+									<div class="radioButtonAuth">
+										<input type="radio" id="OvertimeAuthorizedPopupYes" name="OvertimeAuthorizedPopup" checked="true" value="true" /><span class="labelRadio">Yes</span>
+									</div>
+									<div class="radioButtonAuth">
+										<input type="radio" id="OvertimeAuthorizedPopupNo" name="OvertimeAuthorizedPopup" value="false" /><span class="labelRadio">No</span>
+									</div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="LabelTextAreaWorkOrder">
+									<span id="nonRequiredFieldIndicator">General Location Code:</span>								
+								</div>
+								<div class="InputTextArea">
+									<div id="GeneralLocationCodePopup"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="LabelTextAreaWorkOrder">
+									<span id="nonRequiredFieldIndicator">Square Feet:</span>
+								</div>
+								<div class="InputTextArea">
+									<div id="SquareFeetPopup"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="LabelTextAreaWorkOrder">
+									<span id="nonRequiredFieldIndicator">Regional Manager Email:</span>
+								</div>
+								<div class="InputTextArea">
+									<div id="RegionalManagerEmailPopup"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="LabelTextAreaWorkOrder">
+									<span id="nonRequiredFieldIndicator"></span>Commissionable:
+								</div>
+								<div class="InputTextArea">
+									<div class="radioButtonAuth">
+										<input type="radio" id="CommissionablePopupYes" name="CommissionablePopup" checked="true" value="true" /><span class="labelRadio">Yes</span>
+									</div>
+									<div class="radioButtonAuth">
+										<input type="radio" id="CommissionablePopupNo" name="CommissionablePopup" value="false" /><span class="labelRadio">No</span>
+									</div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>					
+						<div id="TableEditArea">
+							<div class="LabelTextAreaWorkOrder">
+								<span id="nonRequiredFieldIndicator">Notes:</span>
+							</div>
+							<div class="InputTextArea">
+								<textarea id="NotesPopup"></textarea>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+					</div>
+					<div id="WorkOrderPopup">
+						<div id="WorkOrderItemGrid"></div>
+					</div>
+					<div id="WorkOrderPopupReadOnly">
+						<div id="WorkOrderItemReadOnlyGrid"></div>
+					</div>
+					<div id="RecurringPopup">
+						<div id="radioButtonRecurring">
+							<div id="TableEditArea">
+								<div class="radioButton">
+									<input type="radio" id="Daily" name="Recurring" checked="true"/><span class="labelRadio">Daily</span>
+								</div>
+								<div style="clear:both; height:15px;"></div>
+								<div class="radioButton">
+									<input type="radio" id="Weekly" name="Recurring" /><span class="labelRadio">Weekly</span>
+								</div>
+								<div style="clear:both; height:15px;"></div>
+								<div class="radioButton">
+									<input type="radio" id="Monthly" name="Recurring" /><span class="labelRadio">Monthly</span>
+								</div>
+								<div style="clear:both; height:15px;"></div>
+							</div>
+						</div>
+						<div id="DailyPopup">
+							<div class="radioButtonRec">
+								<input type="radio" id="Days" name="rbDaily" checked="true" value="0" /><span class="labelRadio">On the following days:</span>
+							</div>
+							<div style="clear:both; height:15px;"></div>
+						</div>
+						<div id="WeeklyPopup">
+							<span class="labelRadioTimeDiv"><span class="requiredFieldIndicator">&#149;</span>Repeat after this number of weeks:</span><div id="NumberOfWeeks"></div>
+							<div style="clear:both; height:15px;"></div>
+						</div>
+						<div id="MonthlyPopup">
+							<div class="monthlyContainer">
+								<div id="monthlyLeftCorner" class="labelRadio"><span class="requiredFieldIndicator">&#149;</span>Months:</div>
+								<div id="monthlyLeft">
+									<div class="checkBox"><div id="Jan"></div></div>
+									<div class="labelRadio">Jan</div>
+									<div style="clear:both;"></div>
+									<div class="checkBox"><div id="Feb"></div></div>
+									<div class="labelRadio">Feb</div>
+									<div style="clear:both;"></div>
+									<div class="checkBox"><div id="Mar"></div></div>
+									<div class="labelRadio">Mar</div>
+								</div>
+								<div id="monthlyCenter">
+									<div class="checkBox"><div id="Apr"></div></div>
+									<div class="labelRadio">Apr</div>
+									<div style="clear:both;"></div>
+									<div class="checkBox"><div id="May"></div></div>
+									<div class="labelRadio">May</div>
+									<div style="clear:both;"></div>
+									<div class="checkBox"><div id="Jun"></div></div>
+									<div class="labelRadio">Jun</div>
+								</div>
+								<div id="monthlyRight">
+									<div class="checkBox"><div id="Jul"></div></div>
+									<div class="labelRadio">Jul</div>
+									<div style="clear:both;"></div>
+									<div class="checkBox"><div id="Aug"></div></div>
+									<div class="labelRadio">Aug</div>
+									<div style="clear:both;"></div>
+									<div class="checkBox"><div id="Sep"></div></div>
+									<div class="labelRadio">Sep</div>
+								</div>
+								<div id="monthlyRightCorner">
+									<div class="checkBox"><div id="Oct"></div></div>
+									<div class="labelRadio">Oct</div>
+									<div style="clear:both;"></div>
+									<div class="checkBox"><div id="Nov"></div></div>
+									<div class="labelRadio">Nov</div>
+									<div style="clear:both;"></div>
+									<div class="checkBox"><div id="Dec"></div></div>
+									<div class="labelRadio">Dec</div>
+								</div>
+							</div>
+							<div style="clear:both; height:5px;"></div>
+							<input type="radio" id="RepeatDays" checked="true" name="rbMonthly" value="0" class="radioButtonChekMonth"/><span class="labelRadioMonth">On week of month:</span><div id="WeekOfMonth"></div>
+							<div style="clear:both; height:15px;"></div>
+						</div>
+						<div id="WeekDays" class="dailyDayContainer">
+							<div id="WeeklySchedule"><span class="requiredFieldIndicator">&#149;</span>On day(s):</div>
+							<div id="MonthlySchedule">&nbsp;On day of week:</div>
+							<div class="checkBoxDay">
+								<div class="checkBox">
+									<div id="Sunday"></div>
+								</div>
+								<span class="labelRadio">Sun</span>
+							</div>
+							<div class="checkBoxDay">
+								<div class="checkBox">
+									<div id="Monday"></div>
+								</div>
+								<span class="labelRadio">Mon</span>
+							</div>
+							<div class="checkBoxDay">
+								<div class="checkBox">
+									<div id="Tuesday"></div>
+								</div>
+								<span class="labelRadio">Tue</span>
+							</div>
+							<div class="checkBoxDay">
+								<div class="checkBox">
+									<div id="Wednesday"></div>
+								</div>
+								<span class="labelRadio">Wed</span>
+							</div>
+							<div class="checkBoxDay">
+								<div class="checkBox">
+									<div id="Thursday"></div>
+								</div>
+								<span class="labelRadio">Thu</span>
+							</div>
+							<div class="checkBoxDay">
+								<div class="checkBox">
+									<div id="Friday"></div>
+								</div>
+								<span class="labelRadio">Fri</span>
+							</div>
+							<div class="checkBoxDay">
+								<div class="checkBox">
+									<div id="Saturday"></div>
+								</div>
+								<span class="labelRadio">Sat</span>
+							</div>
+							<div style="clear:both; height:10px;"></div>
+						</div>
+						<div style="clear:both;"></div>
+						<div id="EveryWeekDay" class="radioButtonRec">
+							<input type="radio" id="weekday" name="rbDaily" value="1" /><span class="labelRadio">Every weekday</span>
+							<div style="clear:both; height:15px;"></div>
+							<div class="rptDay"><input type="radio" id="repeatday" name="rbDaily" value="2" /><span class="labelRadio">Repeat after this number of days:</span></div><div class="rptDay"><div id="NumberOfDays"></div></div>
+							<div style="clear:both; height:15px;"></div>
+						</div>
+						<div style="clear:both;"></div>
+						<div id="EveryMonth" class="radioButtonRec">
+							<div class="rptDay"><input type="radio" id="monthSch" name="rbMonthly" value="1" /><span class="labelRadio">On calendar day(s):</span></div><div class="rptDay"><div id="CalendarDays"></div></div>
+							<div style="clear:both; height:15px;"></div>
+						</div>
+						<div style="clear:both;"></div>
+						<div id="StartTime" class="radioButtonRec">
+							<span class="labelRadioTime"><span class="requiredFieldIndicator">&#149;</span>Start Time:</span>
+							<div id="Hour"></div><span class="labelRadioTimeDiv">&nbsp;:&nbsp;</span><div id="Minute"></div>
+							<input type="radio" id="AM" name="rbStartTime" checked="true" value="AM" /><span class="labelRadio">A.M.</span>
+							<input type="radio" id="PM" name="rbStartTime" value="PM" /><span class="labelRadio">P.M.</span>
+							<div style="clear:both; height:10px;"></div>
+							<span class="labelRadioTime"><span class="requiredFieldIndicator">&#149;</span>End Date:</span>
+							<div id="endDateDiv">
+								<div id="EndDatePopup"></div>
+							</div>
+						</div>
+					</div>
+		        </div>
+				<div class="contentArea">
+					 <div id="AnchorCancelPopup"></div>
+					 <div id="AnchorNextPopup"></div>
+					 <div id="AnchorSavePopup"></div>
+					 <div style="clear:both;"></div>
+				</div>
+			</div>
+		</div>
+		<div id="backgroundPopup"></div>
+		<div id="iiInputValidationMaster"></div>		
+	</body>
+</html>

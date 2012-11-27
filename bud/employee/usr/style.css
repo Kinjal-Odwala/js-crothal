@@ -1,0 +1,82 @@
+﻿@import url('../med/default/default.css');
+
+#EmployeeData
+	{
+		width:1050px;
+		padding-left:10px;
+	}
+.flowstyle
+	{
+		width:100%;
+		overflow:auto;
+	}
+#inputTextLabel
+	{
+		float:left;
+		height:27px;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;	
+		float:left;
+		padding-top:3px;
+	}
+#inputText
+	{
+		width:40px;
+		padding-left:10px;
+		padding-right:10px;
+		float:left;
+	}
+
+
+/*
+.GridTable
+	{
+		height:250px;
+		width:750px;
+		
+	}
+.GridTableDaily
+	{
+		height:250px;
+		width:1050px;
+		padding-left:10px;
+	}
+A:link 
+	{
+		text-decoration: none;
+		color:blue;
+	}
+A:visited 
+	{
+		text-decoration: none;
+		color:black;
+	}
+A:active 
+	{
+		text-decoration: none
+	}
+A:hover 
+	{
+		text-decoration: underline; color: red;
+	}
+.Flowstyle
+	{
+		width:780px;
+		overflow:auto;
+	}
+.FlowstyleHide
+	{
+		width:780px;
+		overflow:auto;
+		display:none;
+	}
+
+.hrColor
+	{
+		color:#032D23;
+		height:2px;
+		width:800px;
+		text-align:center;
+	}
+*/

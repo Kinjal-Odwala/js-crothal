@@ -1,0 +1,525 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Date Modification</h1>
+			<div class="description">The <b>Date Modification</b> wizard will allow the user to modify the Date of Current Hire, 
+				Date of Original Hire, Seniority Date, Effective Date, Job Effective Date and Compensation Effective Date 
+				with out any validation and changes will not set any of the export flags.</div>
+			</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Date Modification - General</td>
+			</tr>
+			<tr>
+				<td>SSN</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Enter the valid Social Security Number. Example: 999-99-9999</td>
+			</tr>			
+			<tr>
+				<td>Next</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>If SSN is valid and employee exists then it will show the Employee General screen.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Closes the Date Modification popup screen.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Date Modification - General</td>
+			</tr>
+			<tr>
+				<td>Employee Number</td>
+				<td>Readonly Text field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>Unique six digit number of the employee.</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Readonly Text field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>House Code of the employee.</td>
+			</tr>
+			<tr>
+				<td>Ceridian Company</td>
+				<td>Readonly Text field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>Ceridian Company of the employee.</td>
+			</tr>
+			<tr>
+				<td>Crothall Employee</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>Indicates that whether the employee is crothall employee or not (Yes/No).</td>
+			</tr>
+			<tr>
+				<td>Status</td>
+				<td>Readonly Text field</td>
+				<td>No</td>
+				<td>NA</td>	
+				<td>Status of the employee.</td>
+			</tr>
+			<tr>
+				<td>Status Category</td>
+				<td>Readonly Text field</td>
+				<td>No</td>
+				<td>NA</td>	
+				<td>Status Category of the employee.</td>		
+			</tr>
+			<tr>
+				<td>Date of Current Hire</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Current hire date of the employee.</td>
+			</tr>
+			<tr>
+				<td>Date of Original Hire</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Original hire date of the employee.</td>
+			</tr>
+			<tr>
+				<td>Seniority Date</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Seniority date of the employee.</td>		
+			</tr>
+			<tr>
+				<td>Effective Date</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Effective date of the employee.</td>
+			</tr>
+			<tr>
+				<td>Back</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To show the Employe General screen.</td>
+			</tr>
+			<tr>
+				<td>Next</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To show the Job Information screen.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Closes the Date Modification popup screen.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Date Modification - Job Information</td>
+			</tr>
+			<tr>
+				<td>Effective Date</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Job effective date of the employee.</td>
+			</tr>
+			<tr>
+				<td>Job Change Reason</td>
+				<td>Readonly Text field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>Job change reason of the employee.</td>
+			</tr>
+			<tr>
+				<td>Job Code</td>
+				<td>Readonly Text field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>Job code of the employee.</td>
+			</tr>
+			<tr>
+				<td>Default House Code Job</td>
+				<td>Readonly Text field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>Default job of the employee.</td>
+			</tr>
+			<tr>
+				<td>Union Employee</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>Indicates that whether the employee is union employee or not (Yes/No).</td>
+			</tr>
+			<tr>
+				<td>Exempt</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>Indicates that whether the exempt flag is set or not (Yes/No).</td>
+			</tr>
+			<tr>
+				<td>Background Check Date</td>
+				<td>Readonly Text field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>Background check date of the employee.</td>
+			</tr>
+			<tr>
+				<td>Union</td>
+				<td>Readonly Text field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>Union of the employee.</td>
+			</tr>
+			<tr>
+				<td>Union Status</td>
+				<td>Readonly Text field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>Union status of the employee.</td>
+			</tr>
+			<tr>
+				<td>Back</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To show the Employe General screen.</td>
+			</tr>
+			<tr>
+				<td>Next</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To show the Compensation screen.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Closes the Date Modification popup screen.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Date Modification - Compensation</td>
+			</tr>
+			<tr>
+				<td>Effective Date</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Compensation effective date of the employee.</td>		
+			</tr>
+			<tr>
+				<td>Rate Change Reason</td>
+				<td>Readonly Text field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>Rate change reason of the employee.</td>		
+			</tr>
+			<tr>
+				<td>Hourly Pay Rate</td>
+				<td>Readonly Text field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>Hourly pay rate of the employee.</td>		
+			</tr>
+			<tr>
+				<td>Scheduled Hours</td>
+				<td>Readonly Text field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>Scheduled hours of the employee.</td>		
+			</tr>
+			<tr>
+				<td>Review Date</td>
+				<td>Readonly Text field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>Review date of the employee.</td>		
+			</tr>
+			<tr>
+				<td>Work Shift</td>
+				<td>Readonly Text field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>Work shift of the employee.</td>		
+			</tr>
+			<tr>
+				<td>Alt Rate of Pay A</td>
+				<td>Readonly Text field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>Alternate rate of pay A of the employee.</td>
+			</tr>
+			<tr>
+				<td>Alt Rate of Pay B</td>
+				<td>Readonly Text field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>Alternate rate of pay B of the employee.</td>
+			</tr>
+			<tr>
+				<td>Alt Rate of Pay C</td>
+				<td>Readonly Text field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>Alternate rate of pay C of the employee.</td>
+			</tr>
+			<tr>
+				<td>Alt Rate of Pay D</td>
+				<td>Readonly Text field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>Alternate rate of pay D of the employee.</td>
+			</tr>			
+			<tr>
+				<td>Device Group</td>
+				<td>Readonly Text field</td>
+				<td>No</td>
+				<td>NA</td>
+				<td>Device group of the employee.</td>		
+			</tr>
+			<tr>
+				<td>Back</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To show the Employe General screen.</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To save the employee details.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Closes the Date Modification popup screen.</td>
+			</tr>			
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Employee Search concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/dateModificationSSN.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Date Modification - General concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/dateModificationGeneral.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Date Modification - Job Information concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/dateModificationJob.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Date Modification - Compensation concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/dateModificationComp.png"></td>
+			</tr>				
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>						
+			<tr>
+				<td>Look-up</td>
+				<td>Please enter SSN for Look-Up.</br>
+					Employee with Social Security Number: xxx-xx-xxxx already exists in House Code xxxxxx; contact payroll if assistance is needed.</br>
+					SSN xxx-xx-xxxx does not exist in any other house code.
+				</td>
+			</tr>
+			<tr>
+				<td>Next</td>
+				<td>Please enter search criteria: SSN.</br>
+					There is no Employee matching to the given Criteria.</br>
+				</td>
+			</tr>
+			<tr>	
+				<td>Save</td>
+				<td>Notice: Changes will be transmitted to Ceridian on Monday at 1:00 PM EST.</td>
+			</tr>
+			<tr>	
+				<td>Save Error</td>
+				<td>[SAVE FAILURE] Error while updating Employee Record.</td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. States must be defined in a system look up table (AppStateTypes)</div>
+		<div class="reference">2. Nodes must be defined in a system look up table (HirNodes)</div>
+		<div class="reference">3. Persons should be available in a look up table (PplPeople)</div>
+		<div class="reference">4. Users must be defined in a system look up table (AppUsers)</div>
+		<div class="reference">5. Units must be defined in a system look up table (AppUnits)</div>		
+		<div class="reference">6. Sites must be defined in a system look up table (AppSites)</div>
+		<div class="reference">7. Sites must be associated to the Units (AppSiteUnits)</div>
+		<div class="reference">8. Roles must be defined in a system look up table (AppRoles)</div>		
+		<div class="reference">9. Nodes must be associated to the Roles (AppRoleNodes)</div>		
+		<div class="reference">10. Transaction Status Types must be defined in a system look up table (AppTransactionStatusTypes)</div>
+		<div class="reference">11. State Additional Information Types must be defined in a system look up table (AppStateAdditionalInformationTypes)</div>
+		<div class="reference">12. State Additional Information Types must be associated to the States (AppStateAdditionalInformations)</div>
+		<div class="reference">13. House Codes must be defined in a system look up table (HcmHouseCodes)</div>
+		<div class="reference">14. Jobs must be defined in a system look up table (HcmJobs)</div>
+		<div class="reference">15. Jobs must be associated to the House Codes (HcmHouseCodeJobs)</div>
+		<div class="reference">16. Payroll Companies must be defined in a system look up table (PayPayrollCompanies)</div>
+		<div class="reference">17. Pay Frequency Types must be defined in a system look up table (PayPayFrequencyTypes)</div>
+		<div class="reference">18. Payroll Companies must be associated to the House Codes (HcmHouseCodePayrollCompanies)</div>
+		<div class="reference">19. Employees should be available in a look up table (EmpEmployeeGenerals)</div>
+		<div class="reference">20. Device Group Types must be defined in a system look up table (EmpDeviceGroupTypes)</div>
+		<div class="reference">21. Ethnicity Types must be defined in a system look up table (EmpEthnicityTypes)</div>
+		<div class="reference">22. Federal Adjustment Types must be defined in a system look up table (EmpFederalAdjustmentTypes)</div>		
+		<div class="reference">23. Gender Types must be defined in a system look up table (EmpGenderTypes)</div>
+		<div class="reference">24. I9 Types must be defined in a system look up table (EmpI9Types)</div>
+		<div class="reference">25. Job Code Types must be defined in a system look up table (EmpJobCodeTypes)</div>
+		<div class="reference">26. Job End Reason Types must be defined in a system look up table (EmpJobEndReasonTypes)</div>
+		<div class="reference">27. Job Start Reason Types must be defined in a system look up table (EmpJobStartReasonTypes)</div>
+		<div class="reference">28. Local Tax Adjustment Types must be defined in a system look up table (EmpLocalTaxAdjustmentTypes)</div>
+		<div class="reference">29. Local Tax Adjustment Types must be associated to the States (EmpLocalTaxAdjustmentStates)</div>
+		<div class="reference">30. Payroll Companies must be associated to the States (EmpLocalTaxCodePayrollCompanyStates)</div>
+		<div class="reference">31. Marital Status Federal Tax Types must be defined in a system look up table (EmpMaritalStatusFederalTaxTypes)</div>
+		<div class="reference">32. Marital Status State Tax Types must be defined in a system look up table (EmpMaritalStatusStateTaxTypes)</div>
+		<div class="reference">33. Marital Status State Tax Types must be associated to the States (EmpMaritalStatusStateTaxStates)</div>
+		<div class="reference">34. Marital Status Types must be defined in a system look up table (EmpMaritalStatusTypes)</div>
+		<div class="reference">35. Rate Change Reason Types must be defined in a system look up table (EmpRateChangeReasonTypes)</div>
+		<div class="reference">36. SDI Adjustment Types must be defined in a system look up table (EmpSDIAdjustmentTypes)</div>
+		<div class="reference">37. SDI Adjustment Types must be associated to the States (EmpSDIAdjustmentStates)</div>
+		<div class="reference">38. Separation Codes must be defined in a system look up table (EmpSeparationCodes)</div>
+		<div class="reference">39. State Adjustment Types must be defined in a system look up table (EmpStateAdjustmentTypes)</div>
+		<div class="reference">40. State Adjustment Types must be associated to the States (EmpStateAdjustmentStates)</div>
+		<div class="reference">41. Status Types must be defined in a system look up table (EmpStatusTypes)</div>
+		<div class="reference">42. Status Category Types must be defined in a system look up table (EmpStatusCategoryTypes)</div>
+		<div class="reference">43. Termination Reason Types must be defined in a system look up table (EmpTerminationReasonTypes)</div>
+		<div class="reference">44. Union Status Types must be defined in a system look up table (EmpUnionStatusTypes)</div>
+		<div class="reference">45. Union Types must be defined in a system look up table (EmpUnionTypes)</div>
+		<div class="reference">46. Vet Types must be defined in a system look up table (EmpVetTypes)</div>			
+		<div class="reference">47. Work Shifts must be defined in a system look up table (EmpWorkShifts)</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>AppStateTypes</br>
+					HirNodes</br>
+					PplPeople</br>
+					AppUsers</br>
+					AppUnits</br>
+					AppSites</br>
+					AppSiteUnits</br>
+					AppRoles</br>
+					AppRoleNodes</br>					
+					AppTransactionStatusTypes</br>
+					AppApplicationHistories</br>
+					AppStateAdditionalInformations</br>
+					AppStateAdditionalInformationTypes</br>					
+					HcmHouseCodes</br>
+					HcmJobs</br>
+					HcmHouseCodeJobs</br>
+					HcmHouseCodePayrollCompanies</br>
+					PayPayrollCompanies</br>
+					PayPayFrequencyTypes</br>
+					EmpEmployeeGenerals</br>
+					EmpDeviceGroupTypes</br>
+					EmpEthnicityTypes</br>
+					EmpFederalAdjustmentTypes</br>
+					EmpGenderTypes</br>
+					EmpI9Types</br>
+					EmpJobCodeTypes</br>
+					EmpJobEndReasonTypes</br>
+					EmpJobStartReasonTypes</br>
+					EmpLocalTaxAdjustmentStates</br>
+					EmpLocalTaxAdjustmentTypes</br>
+					EmpLocalTaxCodePayrollCompanyStates</br>
+					EmpMaritalStatusFederalTaxTypes</br>
+					EmpMaritalStatusStateTaxStates</br>
+					EmpMaritalStatusStateTaxTypes</br>
+					EmpMaritalStatusTypes</br>					
+					EmpRateChangeReasonTypes</br>
+					EmpSDIAdjustmentStates</br>
+					EmpSDIAdjustmentTypes</br>
+					EmpSeparationCodes</br>
+					EmpStateAdjustmentStates</br>
+					EmpStateAdjustmentTypes</br>
+					EmpStatusCategoryTypes</br>
+					EmpStatusTypes</br>
+					EmpTerminationReasonTypes</br>
+					EmpUnionStatusTypes</br>
+					EmpUnionTypes</br>
+					EmpVetTypes</br>
+					EmpWorkShifts</br>
+				</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>AppUserHouseCodesSelect</br>
+					PplPeopleSelect</br>
+					HcmStateMinimumWageSelect</br>
+					HcmJobByHouseCode</br>
+					HcmHouseCodePayrollCompanySelect</br>
+					EmpEmployeeHistorySelect</br>
+					EmpEmployeeSearchSelect</br>
+					EmpEmployeeValidate</br>
+					EmpLocalTaxAdjustmentTypeByStateSelect</br>
+					EmpMaritalStatusByStateSelect</br>
+					EmpSDIAdjustmentByStateSelect</br>
+					EmpStateAdditionalInfoSelect</br>
+					EmpStateAdjustmentByStateSelect</br>
+				</td>
+			</tr>
+			<tr>
+				<td>Functions</td>
+				<td>AppUserHirNodesSelect</br>
+					AppUserHouseCodesSelectFunction
+				</td>
+			</tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="search.htm">Employee Search</a></div>
+		<div class="reference"><a href="newHire.htm">New Hire</a></div>
+		<div class="reference"><a href="reHire.htm">Rehire</a></div>
+		<div class="reference"><a href="houseCodeTransfer.htm">House Code Transfer</a></div>
+		<div class="reference"><a href="termination.htm">Termination</a></div>
+		<div class="reference"><a href="edit.htm">Edit</a></div>
+	</body>
+</html>

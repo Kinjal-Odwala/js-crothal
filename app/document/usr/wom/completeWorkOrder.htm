@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Complete Work Orders</h1>
+			<div class="description">The purpose of <b>Complete Work Orders</b> is to update the status of the approved Work Orders as "Completed".
+			</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Work Order Search</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Hierarchy Tree View</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>To search a specific House Code, type-in House Code # (1455, 900000) and press Enter key.</td>				
+			</tr>
+			<tr>
+				<td>Job</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Job should be selected from dropdown list.</td>				
+			</tr>
+			<tr>
+				<td>Start Date</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Start Date either can be blank or should be valid date.</td>				
+			</tr>
+			<tr>
+				<td>End Date</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>End Date either can be blank or should be valid date.</td>				
+			</tr>
+			<tr>
+				<td>Load</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>List the approved Work Orders based on the search criteria.</td>
+			</tr>			
+			<tr>
+				<td class="uiHeader" colspan="5">Complete Work Orders</td>
+			</tr>
+			<tr>
+				<td>Work Orders</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Holds the list of approved Work Orders based on the search criteria.</td>
+			</tr>
+			<tr>
+				<td>Select</td>
+				<td>Checkbox field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>To select the Work Order to mark as completed.</td>
+			</tr>
+			<tr>
+				<td>Work Order #</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td></td>
+				<td>Work Order number.</td>
+			</tr>
+			<tr>
+				<td>Notes</td>
+				<td>Image icon field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Opens the popup screen to view/edit the description of Work Order.</td>
+			</tr>
+			<tr>
+				<td>Start Date</td>
+				<td>Readonly Text field</td>
+				<td>NA</td>
+				<td></td>
+				<td>Start Date of the Work Order.</td>
+			</tr>
+			<tr>
+				<td>Completed Date</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Completed Date of the Work Order.</td>
+			</tr>
+			<tr>
+				<td>Service Location</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td></td>
+				<td>Service Location of the Work Order.</td>
+			</tr>
+			<tr>
+				<td>Customer</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td></td>
+				<td>Customer of the Work Order.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+			<tr>
+				<td>Select all Work Orders to mark as completed</td>
+				<td>Checkbox field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>To select all Work Orders to mark as completed.</td>
+			</tr>
+			<tr>
+				<td>Complete Work Orders</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To update the status of the selected Work Orders as "Completed".</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Work Order Notes</td>
+			</tr>						
+			<tr>
+				<td>Notes</td>
+				<td>Textarea field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Description of the work order.</td>
+			</tr>
+			<tr>
+				<td>OK</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To set the description to the selected Work Order.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Closes the popup screen.</td>
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Complete Work Orders concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/completeWorkOrder.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Adding Work Order notes concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/completeWorkOrderNote.png"></td>
+			</tr>			
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Load</td>
+				<td>In order to search, the errors on the page must be corrected.</td>
+			</tr>
+			<tr>
+				<td>Complete Work Orders</td>
+				<td>In order to save, the errors on the page must be corrected.</br>
+					Please enter the completed date for selected work orders.
+				</td>
+			</tr>
+			<tr>
+				<td>Error</td>
+				<td>Error while updating Work Order Status [SAVE FAILURE].</td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. Transaction Status Types must be defined in a system look up table (AppTransactionStatusTypes)</div>
+		<div class="reference">2. House Codes must be defined in a system look up table (HcmHouseCodes)</div>
+		<div class="reference">3. Jobs must be defined in a system look up table (HcmJobs)</div>
+		<div class="reference">4. Jobs must be associated to the House Codes (HcmHouseCodeJobs)</div>
+		<div class="reference">5. Work Orders should be available in a look up table (WomWorkOrders)</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>WomWorkOrders</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>WomWorkOrdersSelect</br>WomWorkOrderStatusUpdate</td>
+			</tr>
+		</table>
+		<h2>See Also</h2>
+		<div class="reference"><a href="workOrder.htm">Work Orders</a></div>
+	</body>
+</html>

@@ -1,0 +1,65 @@
+﻿#ContainerLeftJob {
+	float: left;
+	width: 45%;
+	margin-right: 20px;
+	vertical-align: top;
+	z-index: 3550;
+	position: relative;
+}
+
+#ContainerRightJob {
+	float: left;
+	width: 49.3%;
+	vertical-align: top;
+	z-index: 3551;
+	position: relative;
+}
+
+#LabelTextAreaJob {
+	float: left;
+	width: 160px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
+
+#InputTextAreaRight {
+	float: left;
+	width: 220px;
+}
+
+#popupJob {
+	border: solid #aaaaaa thin;
+	border-width: 1px;
+	padding: 5px;
+}
+
+#jobBorder {
+	float: left;
+	width: 220px;
+	border: 1px solid red;	
+	position: relative;	
+}
+
+#AnchorNew {
+	float: left;
+	width: 92px;
+	padding-top: 5px;
+	margin-right: 5px;	
+}
+
+#AnchorClone {
+	float: left;
+	width: 100px;
+	padding-left: 5px;
+	padding-top: 5px;
+	margin-right: 5px;
+}
+
+#AnchorRemove {
+	float: left;
+	width: 90px;
+	padding-left: 5px;
+	padding-top: 5px;
+}

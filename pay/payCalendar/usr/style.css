@@ -1,0 +1,16 @@
+﻿
+
+#FiscalYear
+{ 
+	width: 75px;
+}
+
+#LabelPayPeriod
+{
+	width: 110px;
+	height: 27px;
+	float: left;	
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}

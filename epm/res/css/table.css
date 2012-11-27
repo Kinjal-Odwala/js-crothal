@@ -1,0 +1,129 @@
+﻿.table-title 
+{
+	color:#000;
+	padding:10px 0;
+}
+.ux-table
+{
+	border-left:1px solid #EDEDED; /*#CAD5BA;*/
+	border-top:1px solid #EDEDED;
+}
+.ux-table tr th 
+{
+	font-weight:700;
+	text-align:center;
+}
+.ux-table tr.green th 
+{
+	background:#FFF url(../images/gray/grid/grid3-hrow2.gif) left top repeat-x !important;
+	color:#000;
+	font-size:11px;
+    font-weight:400;
+    font-style:	normal;
+    border:1px solid #C6C6C6;
+}
+.ux-table tr td 
+{
+	text-align:right;
+}
+.ux-table tr th, .ux-table tr td
+{
+	border-right:1px solid #EDEDED;
+	border-bottom:1px solid #EDEDED;
+	color:#000;
+	padding:3px 10px;
+}
+.ux-table tbody tr.odd td
+{
+	background-color: #FCFCFC;/*#E1E7D9;*/
+}
+.ux-table tbody tr td:first-child
+{
+	text-align:left;
+}
+.ux-table tr td input[type=text]
+{
+	width:50px;
+	text-align:right;
+}
+
+.ux-table-2 
+{
+	margin-top:10px;
+}
+.ux-table-2 tbody tr td
+{
+	padding:3px 10px;
+	text-align:right;
+}
+.ux-table-2 tbody tr td:first-child
+{
+	text-align:left;
+}
+/***********************/
+.ux-table-1
+{
+  border: 1px solid #E8E5E2;
+  width:100%
+}
+.ux-table-1 tr
+{
+   border: 1px solid #CDD3BF;
+   height:20px;
+}
+.ux-table-1 .oddrow
+{
+    background-color:#E1E7D9;
+}
+.ux-table-1 .evenrow
+{
+    background-color:#ffffff;
+}
+.ux-table-1 td
+{
+    border: 1px solid #CDD3BF;   
+    padding:0!important;
+    text-align:left!important;
+    color:#477D61;
+}
+.ux-table-1 .right
+{
+    text-align:right!important;
+    color:#5679FF!important;    
+}
+/*****************/
+.ux-table-2
+{
+  width:100%
+}
+
+.ux-table-2 thead tr td
+{
+    font-weight:bold;
+    color:#000000;
+}
+
+.ux-table-2 tbody tr td
+{
+    margin-right:10px;
+}
+.ux-table-2 tbody tr td tr
+{
+     border: 1px solid #CDD3BF;
+}
+
+.editable-field
+{
+    color:#0C510C;
+    font-weight:bold;
+}
+
+.ux-scroll-grid .x-grid3 .x-grid3-viewport
+{
+    overflow:auto;
+}
+
+.hightlight-dirtydata .x-grid3-dirty-cell div 
+{
+    color: Purple !important;
+}

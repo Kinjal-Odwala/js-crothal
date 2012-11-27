@@ -1,0 +1,124 @@
+#appAreaHeader
+{
+	background-color: #9BCD9A;
+	height: 25px;
+}
+
+#appAreaHeaderTable
+{
+	height: 100%;
+	vertical-align: middle;
+}
+
+#AppAreaHeaderLabel
+{
+	color: #012c40;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	padding-left: 15px;
+	padding-right: 3px;
+	font-size: 12px;
+	/*text-transform: uppercase;*/
+}
+
+/****************************************************************/
+
+#unitSelect
+{
+	/*width: 300px;*/
+	width: 175px;
+}
+
+#weekSelect
+{
+	width: 200px;
+}
+
+#weekSelectText
+{
+	width: 230px;
+}
+
+/****************************************************************/
+
+.iiActionMenu
+{
+	font-family: Verdana;
+	font-size:12px;
+	font-weight:bold;
+	margin-left: 5px;
+	padding-left: 5px;
+	padding-top: 5px;
+	padding-bottom: 0px;
+	cursor: pointer;
+	border: 1px dotted transparent;
+	width:75px;
+	height:17px;
+}
+
+.iiActionMenu input
+{
+	border: none;
+	background-color: transparent;
+	width: 10px;
+	height: 0px;
+	font-size: 0px;
+	outline: none;
+}
+
+.iiActionMenu span
+{
+	background-image: url(media/Toolbar/triangleDownBlack.png);
+	background-position: right;
+	background-repeat: no-repeat;
+	padding-left: 7px;
+	padding-right: 7px;
+}
+
+.iiActionMenu.Hot
+{
+	background-color: #C2E4C1;
+	color: white;
+	height:17px;
+}
+
+.iiActionMenu.Hot span
+{
+	background-image: url(media/Toolbar/triangleDownWhite.png);
+}
+
+.iiActionMenu.Selected
+{
+	background-color: #9BCD9A;
+	border: 1px solid #AAAAAA;
+	color: white;
+	height:17px;
+}
+
+.iiActionMenu.Selected span
+{
+	background-image: url(media/Toolbar/triangleDownWhite.png);
+}
+
+#iiActionPopup
+{
+	font-family: Verdana;
+	font-size:12px;
+	position: absolute;
+	background-color: white;
+	border: 1px solid #AAAAAA;
+	background-color: #C2E4C1;
+	z-index: 10000;
+}
+
+.iiActionItem
+{
+	cursor: pointer;
+	padding: 5px 5px;
+}
+
+.iiActionItem.Hot
+{
+	background-color: #9BCD9A;
+	color: white;
+}
+

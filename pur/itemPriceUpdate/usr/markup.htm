@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>PO Catalog Items Price Update</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/pur/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+		<div id="catalogItemsLoading" style="position: absolute; top: 115px; left: 48%; z-index: 5000; width: 51%; height: 75%; background-color: white; display:none;">
+	        <div style="position: absolute; width: 66; height: 70;top: 50%; left: 49.5%; margin-top: -50px; margin-left: -33px">
+	            <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+	            <div style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px;">Loading</div>    
+	        </div>
+	    </div>
+		
+	  	<div class="pageHeader">
+	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
+        </div>
+		<div class="pageBody">
+			<div class="contentArea">
+                <div class="header">PO Catalog Item Price Update</div>
+			</div>			
+			<div class="body">
+				<div class="labelText">Item #, Description:</div>
+				<div id="InputTextAreaRight">
+					<div id="SearchInput"></div>
+				</div>
+				<div id="AnchorSearch"></div>
+				<div style="clear:both;"></div>
+			</div>			
+			<div id="contentAreasContainerLeft">
+				<div class="contentArea">
+					<div class="header">Items</div>
+					<div class="body">
+						<div id="ItemGrid"></div>
+					</div>
+					<div style="clear:both;"></div>
+				</div>
+			</div>
+			<div id="contentAreasContainerRight">
+				<div class="contentArea">
+					<div class="header">Catalogs</div>
+					<div class="body">
+						<div id="CatalogItemGrid"></div>
+					</div>
+					<div style="clear:both; height:5px;"></div>
+					<div id="ScheduleContainer">
+						<div class="body">
+							<div id="SelectAll"></div>
+							<div class="labelText">Select all Catalogs</div>
+						</div>
+						<div style="clear:both;"></div>
+						<div id="TableEditArea">						
+							<div class="labelText"><span class="requiredFieldIndicator">&#149;&nbsp;</span>Schedule On:</div>
+							<div class="radioButton">
+								<input id="UpdateNow" name="ScheduleOn" type="radio" checked="checked" value="1" />Update Now
+							</div>
+							<div class="radioButton">
+								<input id="EffectiveOn" name="ScheduleOn" type="radio" value="0" />Effective On
+							</div>
+							<div id="divEffectiveDate">
+								<div style="clear:both;"></div>
+								<div class="labelText">
+									<span class="requiredFieldIndicator">&#149;&nbsp;</span>Effective Date:
+								</div>
+								<div id="InputTextAreaRight">
+									<div id="EffectiveDate"></div>
+								</div>
+							</div>						
+							<div style="clear:both;"></div>
+							<div class="labelText"><span class="requiredFieldIndicator">&#149;&nbsp;</span>Update Price:</div>
+							<div class="radioButton">
+								<input id="UpdatePriceByAmount" name="UpdatePriceBy" type="radio" checked="checked" value="1" />By Amount
+							</div>
+							<div class="radioButton">
+								<input id="UpdatePriceByPercentage" name="UpdatePriceBy" type="radio" value="0" />By %
+							</div>
+							<div style="clear:both;"></div>
+							<div class="labelText" >
+								<div id="NewPrice"><span class="requiredFieldIndicator">&#149;&nbsp;</span>New Price:</div>
+								<div id="UpdateByPercentage"><span class="requiredFieldIndicator">&#149;&nbsp;</span>Update Price By %:</div>
+							</div>							
+							<div id="InputTextAreaRight">
+								<div id="Price"></div>
+							</div>						
+							<div style="clear:both;"></div>
+							<div class="labelText">
+								<div id="SelectItemPrice"></div>Update Item Price:
+							</div>
+							<div id="InputTextAreaRight">
+								<div id="ItemPrice"></div>								
+							</div>
+							<div class="labelTextRightSmall">(New Price)</div>
+							<div style="clear:both;"></div>
+						</div>
+					</div>
+					<div class="footer">
+						<div id="AnchorEffectivePrice"></div>
+                        <div id="AnchorSave"></div>
+                        <div id="AnchorUndo"></div>
+                        <div style="clear:both;"></div>
+                    </div>
+				</div>
+			</div>
+		</div>
+	    <div id="iiInputValidationMaster"></div>
+	</body>
+</html>

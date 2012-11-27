@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Payroll Process</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/emp/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+		<div id="hirNodeLoading" style="display:none;position: absolute; top: 60px; left: 10px; z-index: 5001; width: 45%; height: 84%;">
+			<div style="position: absolute; width: 66; height: 70;top: 50%; left: 49.5%; margin-top: -50px; margin-left: -33px">
+	            <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+	            <div style="font-family: Verdana, Arial, sans-serif; margin-top:5px;">Loading</div>    
+	        </div>
+		</div>
+		
+	    <div class="pageBody">
+	    	<div class="contentArea">
+	    		<div class="header">Payroll Processing</div>
+			</div>
+			<div style="clear:both;"></div>
+	    	
+	    		<div id="contentAreasContainerLeft" class="contentArea">
+	    			<div class="header">Hierarchy</div>
+		    		<div class="body" id="hirContainer">
+	    				<ul class="treeview" id="ulEdit0"></ul>
+					</div>
+					<div style="clear:both;"></div>
+	    		</div>
+	   
+			<div id="contentAreasContainerRight">
+				<div class="contentArea">
+					<div class="header">Ceridian</div>
+					<div id="processingBorderArea">
+						<div class="body">
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft">
+									Ceridian Company:
+								</div>
+								<div id="InputTextAreaRight">
+									<div id="CeridianCompany"></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft">
+									<input type="radio" id="WeeklyRadio"  name="PayPeriodRadio" value="weekly"  checked="true" />Weekly
+								</div>
+								<div id="InputTextAreaRight">
+									<input type="radio" id="BiWeeklyRadio" name="PayPeriodRadio" value="biweekly" />Biweekly
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft">
+									Pay Period End Date:
+								</div>
+								<div id="InputTextAreaRight">
+									<div id="PayPeriodEndDate"></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="TableEditAreaButton">
+								<div id="LabelTextAreaLeftButton">
+									<div id="GenerateHRExport"></div>
+								</div>
+								<div id="spaceingTable">&nbsp;</div>
+								<div id="InputTextAreaRightButton">
+									<div id="ClosePayroll"></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="TableEditAreaButton">
+								<div id="LabelTextAreaLeftButton">
+									<div id="GeneratePayrollExport"></div>
+								</div>
+								<div id="spaceingTable">&nbsp;</div>
+								<div id="InputTextAreaRightButton">
+									<div id="OpenPayroll"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div style="clear:both;"></div>
+			</div>
+			<div style="clear:both;"></div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,474 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+</head>
+<body>
+    <div class="header">
+        <h1>
+            JDE Transaction Import</h1>
+        <div class="description">
+            The purpose of JDE Transaction Import is to import JDE transaction history records
+            into TeamFin.</div>
+    </div>
+    <h2>
+        Class</h2>
+    <table class="elementTable">
+        <tr>
+            <th style="width: 550px;">
+                Class Name</th>
+        </tr>
+        <tr>
+            <td colspan='5'>
+                JDEImporter</td>
+        </tr>
+    </table>
+    <h2>
+        UI Elements</h2>
+    <table class="elementTable">
+        <tr>
+            <th style="width: 150px;">
+                UI Element</th>
+            <th style="width: 120px;">
+                Field Type</th>
+            <th style="width: 50px;">
+                Mandatory</th>
+            <th style="width: 100px;">
+                Source</th>
+            <th>
+                Validation</th>
+        </tr>
+        <tr>
+            <td colspan='5'>
+                There is no UI element</td>
+        </tr>
+    </table>
+    <h2>
+        Import Process</h2>
+    <div class="reference">
+        1. Check if JDE source file exists and if it is time to process JDE import.</div>
+    <div class="reference">
+        2. Read JDE source file line by line</div>
+    <div class="reference">
+        3. Extract transaction data by parsing each line, and save it in memory</div>
+    <div class="reference">
+        4. Connect to database and perform bulk insert into AppJDEGLTransactionPendings
+        table per 1000 records (this can be changed in app.config to obtain the best performance).
+        Bad records that did not pass data validation are written to bad record file for
+        later examination.</div>
+    <div class="reference">
+        5. After all records are inserted into AppJDEGLTransactionPendings table, call AppJDEGLTransactionsImportFromPendings
+        stored procedure to insert data into AppJDEGLTransaction table. Duplicate records
+        are removed.</div>
+    <div class="reference">
+        6. Log import information to Transactions table. This include total number of valid
+        records, bad records and duplicate records.</div>
+    <div class="reference">
+        7. Rename source file by appending date and time to original file name and move
+        the file to backup folder.
+    </div>
+    <h2>
+        Configuration Settings</h2>
+    <table class="elementTable">
+        <tr>
+            <th style="width: 30px;">
+                Configuration Key</th>
+            <th style="width: 500px;">
+                Description</th>
+        </tr>
+        <tr>
+            <td>
+                ConnectionString</td>
+            <td>
+                Connection String used to connect to TeamFin database.</td>
+        </tr>
+        <tr>
+            <td>
+                ImportFilePath</td>
+            <td>
+                Complete folder path for JDE Transaction import files. This folder is shared with
+                other import processes.</td>
+        </tr>
+        <tr>
+            <td>
+                ImportBackupFilePath</td>
+            <td>
+                Complete folder path of back up files for JDE Transaction Import files. This folder
+                is shared with other import processes.</td>
+        </tr>
+        <tr>
+            <td>
+                ImportFileNameGLTRANS</td>
+            <td>
+                JDE Transaction Import file name.</td>
+        </tr>
+        <tr>
+            <td>
+                JDEImportMaxLine</td>
+            <td>
+                Maximum number of imported records to be processed together by bulk insert</td>
+        </tr>
+        <tr>
+            <td>
+                JDENotificationEmail</td>
+            <td>
+                Email to receive notifications when JDE Transaction import encounters problems.</td>
+        </tr>
+        <tr>
+            <td>
+                JDENotifySuccess</td>
+            <td>
+                Email to receive notifications when JDE Transation import is completed successfuly</td>
+        </tr>
+        <tr>
+            <td>
+                ImportAt</td>
+            <td>
+                Time when Purchase Order Export is executed</td>
+        </tr>
+    </table>
+    <h2>
+        Data Mapping</h2>
+    <div class="reference">
+        Parsing is based on the field’s start location and field length as specified in
+        the following table.</div>
+    <table class="elementTable">
+        <tr>
+            <th style="width: 30px;">
+                Field Name</th>
+            <th style="width: 30px;">
+                Start Index</th>
+            <th style="width: 30px;">
+                Length</th>
+            <th style="width: 30px;">
+                Data Type</th>
+            <th style="width: 30px;">
+                Invalid Action</th>
+        </tr>
+        <tr>
+            <td>
+                AppJDEtDocumentType</td>
+            <td>
+                1</td>
+            <td>
+                2</td>
+            <td>
+                String</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                AppJDEtDocumentNo</td>
+            <td>
+                6</td>
+            <td>
+                8</td>
+            <td>
+                Int</td>
+            <td>
+                Log Exception</td>
+        </tr>
+        <tr>
+            <td>
+                AppJDEtLineNumber</td>
+            <td>
+                14</td>
+            <td>
+                7</td>
+            <td>
+                float</td>
+            <td>
+                Log Exception</td>
+        </tr>
+        <tr>
+            <td>
+                AppJDEtTeamFinId</td>
+            <td>
+                21</td>
+            <td>
+                8</td>
+            <td>
+                int</td>
+            <td>
+                Log Exception</td>
+        </tr>
+        <tr>
+            <td>
+                AppJDEtTableType</td>
+            <td>
+                29</td>
+            <td>
+                8</td>
+            <td>
+                string</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                AppUniBrief</td>
+            <td>
+                37</td>
+            <td>
+                12</td>
+            <td>
+                int</td>
+            <td>
+                Log Exception</td>
+        </tr>
+        <tr>
+            <td>
+                FscAccCode</td>
+            <td>
+                49</td>
+            <td>
+                6</td>
+            <td>
+                int</td>
+            <td>
+                Log Exception</td>
+        </tr>
+        <tr>
+            <td>
+                AppJDEtGLDate</td>
+            <td>
+                55</td>
+            <td>
+                8</td>
+            <td>
+                DateTime</td>
+            <td>
+                Log Exception, Mark as bad record</td>
+        </tr>
+        <tr>
+            <td>
+                AppJDEtPOST</td>
+            <td>
+                63</td>
+            <td>
+                1</td>
+            <td>
+                string</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                AppJDEtAmount</td>
+            <td>
+                64</td>
+            <td>
+                17</td>
+            <td>
+                float</td>
+            <td>
+                Log Exception</td>
+        </tr>
+        <tr>
+            <td>
+                AppJDEtVendor</td>
+            <td>
+                81</td>
+            <td>
+                30</td>
+            <td>
+                string</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                AppJDEtDescription</td>
+            <td>
+                111</td>
+            <td>
+                30</td>
+            <td>
+                String</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                AppJDEtInvoiceNo</td>
+            <td>
+                141</td>
+            <td>
+                25</td>
+            <td>
+                String</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                AppJDEtInvoiceDate</td>
+            <td>
+                166</td>
+            <td>
+                8</td>
+            <td>
+                DatetTme</td>
+            <td>
+                Log Exception</td>
+        </tr>
+        <tr>
+            <td>
+                AppJDEtPurchaseOrderNumber</td>
+            <td>
+                175</td>
+            <td>
+                8</td>
+            <td>
+                int</td>
+            <td>
+                Log Exception</td>
+        </tr>
+        <tr>
+            <td>
+                AppJDEtVendorNumber</td>
+            <td>
+                183</td>
+            <td>
+                8</td>
+            <td>
+                float</td>
+            <td>
+                Log Exception</td>
+        </tr>
+        <tr>
+            <td>
+                FscPerTitle</td>
+            <td>
+                192</td>
+            <td>
+                2</td>
+            <td>
+                int</td>
+            <td>
+                Log Exception</td>
+        </tr>
+        <tr>
+            <td>
+                FscYear</td>
+            <td>
+                195</td>
+            <td>
+                2</td>
+            <td>
+                int</td>
+            <td>
+                Log Exception</td>
+        </tr>
+        <tr>
+            <td>
+                AppJDEtCentury</td>
+            <td>
+                198</td>
+            <td>
+                2</td>
+            <td>
+                String</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                AppJDEtDocumentCompany</td>
+            <td>
+                200</td>
+            <td>
+                5</td>
+            <td>
+                String</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                HcmJobBrief</td>
+            <td>
+                205</td>
+            <td>
+            </td>
+            <td>
+                String</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                AppJDEtCrtdBy</td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+                String</td>
+            <td>
+            </td>
+        </tr>
+    </table>
+    <h2>
+        Error Messages and Notifications</h2>
+    <table class="elementTable">
+        <tr>
+            <th>
+                Error/Event</th>
+            <th>
+                Message</th>
+        </tr>
+        <tr>
+            <td>
+                Exceptions</td>
+            <td>
+                Check table AppIEExceptions for exception details (AppIECategory = 1)</td>
+        </tr>
+        <tr>
+            <td>
+                Imported Number of Records</td>
+            <td>
+                Check table AppIETransactions for total exported records and execution starting/ending
+                time (AppIECategory =1).</td>
+        </tr>
+    </table>
+    <h2>
+        Dependencies</h2>
+    <div class="reference">
+        1. Windows Services must be restarted for new configuration settings to take effect.</div>
+    <div class="reference">
+        2. Exception and Event logging depends on LogWriter class.</div>
+    
+    
+    <h2>Database Objects</h2>
+    <table class="elementTable">
+        <tr>
+            <th style="width: 50px">
+                Object Types</th>
+            <th style="width: 350px">
+                Object Names</th>
+        </tr>
+        <tr>
+            <td>
+                Tables</td>
+            <td>
+                AppJDEGLTransactionPendings<br />
+                AppJDEGLTransactions
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Stored Procedures</td>
+            <td>
+                AppJDEGLTransactionsImportFromPendings</td>
+        </tr>
+    </table>
+    <h2>
+        See Also</h2>
+    <div class="reference">
+        <a href="POImport.htm">Purchase Order Import</a></div>
+    <div class="reference">
+        <a href="ARPaid.htm">Account Receivable Paid Import</a></div>
+</body>
+</html>

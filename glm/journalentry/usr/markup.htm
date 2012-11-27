@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Journal Entry - Debit/Credit</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/glm/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+
+	<div class="pageBodyJournal">
+		<div id="contentAreasJournalLeft">
+			<div class="body">
+			<div class="contentArea">
+				<div class="header">Credit</div>
+					<div style="clear:both;"></div>
+					<div id="JournalEntryCredit"></div>
+					<div style="clear:both;"></div>
+					<div id="JournalEntryCreditTotal">Total:</div>
+					<div id="CreditTotal"></div>
+				</div>
+			</div>
+		</div>
+		<div id="contentAreasJournalRight">
+			<div class="body">
+			<div class="contentArea">
+				<div class="header">Debit</div>
+					<div style="clear:both;"></div>
+					<div id="JournalEntryDebit"></div>
+					<div style="clear:both;"></div>
+					<div id="JournalEntryDebitTotal">Total:</div>
+					<div id="DebitTotal"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="iiInputValidationMaster"></div>
+		
+	</body>
+</html>

@@ -1,0 +1,14 @@
+﻿
+.fragment
+	{
+		border:0;
+		border:solid #AAAAAA thin;
+		border-width:1px;
+	}
+
+.tabContainer
+{
+  border:none; 
+  width:100%;
+}
+

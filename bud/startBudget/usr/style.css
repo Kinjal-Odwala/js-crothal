@@ -1,0 +1,63 @@
+﻿@import url('../med/default/default.css');
+
+.borderTable
+	{
+		border:solid thin green;
+		border-width:1px;
+	}
+
+#LabelBudgetAreaLeft
+	{
+		width:250px;
+		float:left;
+		height:27px;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+	}
+#TableEditAreaBudget
+	{
+		margin-left:20%;
+	}
+
+.labelBudgetText
+	{
+		float:right;
+		padding-right:15px;
+		text-align:right;
+	}
+.labelBudgetInfo
+	{
+		float:left;
+		height:27px;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+	}
+ a
+	{
+		text-decoration:none;
+		height:27px;
+		font-family:Verdana;
+		font-size:12px;
+		color:blue;
+		cursor:pointer;
+		padding-bottom:5px;
+	}
+ a:hover
+	{
+		text-decoration:underline;
+		height:27px;
+		font-family:Verdana;
+		font-size:12px;
+		color:red;
+		cursor:pointer;
+	}
+#TableEditAreaBudgetNote
+	{
+		padding:10px 10px 10px 10px;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+		
+	}

@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Staffing Hours</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/bud/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody" onload="ii.forceBodyReady = true;">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+		
+		<div class="pageBody">
+			<div class="contentArea">
+				<div class="header">Staffing Hours</div>
+				<div class="body">
+					<div id="TableEditArea">
+						<div class="radioButton">
+							<input type="radio" id="StaffingDetail" name="StaffingOption" checked="true"/><span class="labelRadio">I. Staffing Hours Detail Worksheet</span>
+						</div>
+						<div class="radioButton">
+							<input type="radio" id="StaffingSummary" name="StaffingOption"/><span class="labelRadio">II. Staffing Hours Summary Worksheet</span>
+						</div>
+						<div style="height:5px;clear:both;"></div>
+					</div>
+				</div>				
+				<div class="header" id="StaffingHeader">Staffing Hours Detail</div>
+				<div style="height:5px;clear:both;"></div>
+				<div class="body" id="divShiftType">
+					<div id="LabelShiftType">Shift Selected</div>
+					<div id="InputTextAreaRight">
+						<div id="ShiftType"></div>
+					</div>			
+					<div style="height:5px;clear:both;"></div>
+				</div>				
+				<div class="body" id="divStaffingHour">
+					<div id="divGrid">
+						<div class="divGridHeader" id="headerCurrentStaffing">
+							Current Staffing: Productive Hours per Shift
+						</div>
+						<div class="divGridHeader" id="headerProposedStaffing">
+							Proposed Staffing: Productive Hours per Shift 
+						</div>
+						<div style="clear:both;"></div>
+						<div id="StaffingHourGrid"></div>
+						<div id="StaffingHourTotalGrid" class="iiGridFooter"></div>
+					</div>
+				</div>
+				<div id="StaffingHourReduction">
+					<div style="height:2px;clear:both;"></div>
+					<div class="labelTotal">
+						Planned (Reduction) or Increase per Week:
+					</div>
+					<div id="PlannedReduction" class="txtTotal"></div>
+					<div style="clear:both;"></div>
+					<div class="labelTotal">
+						Short Staffing Reduction or (Increase) on Legal Holidays:
+					</div>
+					<div id="StaffingReduction" class="txtTotal"></div>
+				</div>
+				<div class="footer" id="Button">
+					<div id="AnchorAddUnit"></div>
+	                <div id="AnchorSave" ></div>
+	                <div id="AnchorUndo" ></div>
+	                <div style="clear:both;"></div>
+	            </div>
+			</div>
+		</div>
+		<div id="iiInputValidationMaster"></div>
+	</body>
+</html>

@@ -1,0 +1,167 @@
+﻿
+.pageHeader {
+	height: 30px;
+}
+
+.headerLabelHouseCode {
+	color: #032D23;
+	float: left;
+	font-family: Verdana;
+	font-size:  8pt;
+	font-weight: bold;
+	padding-top: 6px;
+	width: 80px;
+	text-align: right;
+}
+
+.headerLabelJobCode {
+	color: #032D23;
+	float: left;
+	font-family: Verdana;
+	font-size:  8pt;
+	font-weight: bold;
+	padding-top: 6px;
+	width: 25px;
+	text-align: right;
+}
+
+.headerLabelStartDate {
+	color: #032D23;
+	float: left;
+	font-family: Verdana;
+	font-size:  8pt;
+	font-weight: bold;
+	padding-top: 6px;
+	width: 70px;
+	text-align: right;
+}
+
+.headerLabelEndDate {
+	color: #032D23;
+	float: left;
+	font-family: Verdana;
+	font-size: 8pt;
+	font-weight: bold;
+	padding-top: 6px;
+	width: 65px;
+	text-align: right;
+}
+
+.dateRange {
+	float: left;
+	position: relative;
+	width: 90px;
+	padding: 4px 3px 3px 3px;
+}
+
+.checkBoxLabel {	
+	height: 25px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 10px 0px 5px 5px;
+}
+
+#DropDownHouseCode {
+	float: left;
+	width: 155px;	
+	padding: 4px 5px 3px 3px;
+}
+
+.HouseCodeContainer {
+	float: left;
+	width: 155px;	
+}
+
+.HouseCodeText {
+	font-size: 8pt;
+	width: 130px;
+}
+	
+.iiInputText {
+	font-size: 8pt;
+}
+
+#DropDownJobCode {
+	float: left;
+	width: 120px;
+	padding: 4px 3px 3px 3px;
+}
+
+#SelectAll {
+	float: left;
+	width: 25px;
+	padding: 7px 0px 5px 5px;
+}
+
+#AnchorLoad {
+	float: left;
+	width: 70px;
+	padding: 4px 3px 3px 0px;
+}
+	
+#AnchorComplete {
+	float: left;
+	width: 188px;	
+	padding: 0px 0px 10px 10px;
+}
+
+#backgroundPopup {
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	z-index: 5000; 
+	width: 100%; 
+	height: 100%;
+	border: 1px solid #cecece; 
+	background-color: black;
+	display: none;
+}
+
+#popupNotes {
+	width: 530px; 
+	height: 180px;
+	position: absolute;
+	z-index: 5025;
+	background-color: white;
+	display: none;
+}
+	
+.notesLabel {
+	color: #032D23;
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	height: 27px;
+	width: 60px;
+	padding-top: 3px;
+}
+
+#Notes {
+	float: left;
+	width: 450px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: black;
+}
+
+#AnchorOk {
+	float: left;
+	width: 54px;
+	padding: 10px 5px 0px 60px;	
+}
+
+#AnchorCancel {
+	float: left;	
+	width: 82px;
+	padding: 10px 5px 0px 5px;
+}
+
+.iiGridHeaderColumn
+	{
+		font-size:8pt;
+	}
+.iiGridBodyColumn
+	{
+		font-size:8pt;
+	}

@@ -1,0 +1,54 @@
+﻿
+.pageHeader {
+	height: 30px;
+}
+
+.headerLabel {
+	color: #032D23;
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: bold;
+	padding-top: 5px;
+	width: 86px;
+	text-align: right;
+}
+
+.dateRange {
+	float: left;
+	position: relative;
+	width: 150px;
+	padding: 3px 5px 3px 5px;
+}
+
+.checkBoxLabel {
+	height: 25px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 10px 0px 5px 5px;
+}
+
+#DropDownHouseCode {
+	float: left;
+	width: 225px;
+	padding: 3px 5px 3px 5px;
+}
+
+#AnchorLoad {
+	float: left;
+	width: 70px;
+	padding: 3px 0px 0px 5px;
+}
+	
+#AnchorCreate {
+	float: left;
+	width: 158px;	
+	padding: 10px 0px 0px 10px;
+}
+
+#AnchorClose {
+	float: left;
+	width: 224px;	
+	padding: 10px 0px 0px 5px;
+}

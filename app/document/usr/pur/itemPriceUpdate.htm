@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Item Price Update</h1>
+			<div class="description">The purpose of Item Price Update is to update the Catalog Items price in Purchasing module.</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th>Validation</th>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Items Search</td>
+			</tr>
+			<tr>
+				<td>Item #, Description</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Enter minimun 3 characters to search the Items</td>				
+			</tr>
+			<tr>
+				<td>Search</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>List the Items based on the search criteria</td>				
+			</tr>
+			<tr>
+				<td>Items</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>List the Catalog details based on the selected Item</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Items</td>
+			</tr>
+			<tr>
+				<td>Number</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td></td>				
+			</tr>		
+			<tr>
+				<td>Price</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Catalogs</td>
+			</tr>
+			<tr>
+				<td>Select</td>
+				<td>Checkbox field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>(Y / N) Select atleast one Catalog</td>				
+			</tr>
+			<tr>
+				<td>Catalog Title</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td>Price</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td></td>				
+			</tr>		
+			<tr>
+				<td>Effective Price</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Setup</td>
+			</tr>
+			<tr>
+				<td>Select all Catalogs</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>(Y / N) If selected, select all catalogs in the grid</td>				
+			</tr>
+			<tr>
+				<td>Schedule On (Update Now / Effective On)</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>If Effective On option is selected, show the Effective Date field</td>				
+			</tr>
+			<tr>
+				<td>Effective Date</td>
+				<td>Date Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Effective Date is mandatory only if Effective On option is selected and Date should be greater than the current date</td>				
+			</tr>
+			<tr>
+				<td>Update Price (By Amount / By %)</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td>New Price / Update Price By %</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Price should be valid. Example: 9.99</td>				
+			</tr>
+			<tr>
+				<td>Update Item Price</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Update Item Price</td>
+				<td>Text field</td>
+				<td>NA</td>
+				<td>Readonly field</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Effective Price</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Calculate the items price by Amount or by % and show the Effective Price in the grid</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Validate the entered details and update the Catalog Item price</td>
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Undo changes to the selected Item</td>
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Item Search, Price Update concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/itemPriceUpdate.png"></td>
+			</tr>
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>If the manadatory details are not provided, appropriate error message should be displayed.</td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. Items must be defined in a system look up table (PurItems)</div>
+		<div class="reference">2. Catalogs must be defined in a system look up table (PurCatalogs)</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>PurItems</br>PurCatalogs</br>PurCatalogItems</br>PurCatalogItemPriceUpdateSchedules</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>PurCatalogItemsSelect</br>PurCatalogItemPriceUpdateScheduleUpdate</td>
+			</tr>
+		</table>
+		<h2>See Also</h2>
+		<div class="reference"><a href="../scheduledJobs/itemPriceUpdate.htm">Item Price Update (Scheduled Job)</a></div>
+	</body>
+</html>

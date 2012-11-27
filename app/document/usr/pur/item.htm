@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Items</h1>
+			<div class="description">The purpose of Items is to provide a means to setup and maintain a list of Items available to the Purchasing module.</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th>Validation</th>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Item Search</td>
+			</tr>
+			<tr>
+				<td>Master Id, Number, Description</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Enter minimun 3 characters to search the Items</td>				
+			</tr>
+			<tr>
+				<td>Status</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Status should be selected from dropdown list</td>				
+			</tr>
+			<tr>
+				<td>Search</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>List the Items based on the search criteria</td>				
+			</tr>
+			<tr>
+				<td>Items</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>List the Item details based on the selected Item</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Add / Edit Item </td>
+			</tr>
+			<tr>
+				<td>Master Id</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Master Id should not be blank</td>				
+			</tr>
+			<tr>
+				<td>Number</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Number should not be blank</td>				
+			</tr>
+			<tr>
+				<td>Number 2</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Number 2 should not be blank</td>				
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Description should not be blank</td>				
+			</tr>
+			<tr>
+				<td>Com Class</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Com Class should not be blank</td>				
+			</tr>
+			<tr>
+				<td>Com Sub Class</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Com Sub Class should not be blank</td>				
+			</tr>
+			<tr>
+				<td>Supplier Class</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Supplier Class should not be blank</td>				
+			</tr>
+			<tr>
+				<td>Uom</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Uom should not be blank</td>				
+			</tr>
+			<tr>
+				<td>Account</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Account should be selected from dropdown list</td>				
+			</tr>			
+			<tr>
+				<td>Price</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Price should be valid. Example: 9.99</td>				
+			</tr>			
+			<tr>
+				<td>Active</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Y / N</td>				
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Validate the entered details and save the Item</td>				
+			</tr>
+			<tr>
+				<td>New</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Add new Item</td>				
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Undo changes to the selected Item</td>				
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Item Search, Add / Edit concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/item.png"></td>
+			</tr>			
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>If the manadatory details are not provided, appropriate error message should be displayed.</td>
+			</tr>
+			<tr>
+				<td>Duplicate Item Number</td>
+				<td>The Item Number already exists. Please enter a valid Item Number and save again.</td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. Chart of accounts must be defined in a system look up table (FscAccounts)</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>PurItems<br>FscAccounts</td>
+			</tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="vendor.htm">Vendors</a></div>
+		<div class="reference"><a href="catalog.htm">Catalogs</a></div>
+		<div class="reference"><a href="purchaseOrder.htm">Purchase Orders</a></div>
+	</body>
+</html>

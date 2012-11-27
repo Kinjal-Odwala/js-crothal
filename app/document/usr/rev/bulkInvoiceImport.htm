@@ -1,0 +1,453 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Bulk Invoice Import</h1>
+			<div class="description">The purpose of the <b>Bulk Invoice Import</b> is to import the Invoice details from an excel file.
+				Invoice details which exists in excel file will be listed in the grid. User can validate invoice line items and it will 
+				allow the user to create the unique batch for generating the invoice numbers only if there is no validation error.</br></br>
+				Invoice numbers will be generated and commits all the changes made to data that have been made during the current batch processing. 
+				If there is any error it rolls back all changes to the current batch.</br></br>
+				Sales tax will be calculated either at House Code or Job level. Sales tax line item will be added for Job 
+				if it is configured as Override Site Tax in House Codes --> Jobs setup (find the tax rate based on the Job address details) 
+				else sales tax line item will be added for House Code (find the tax rate based on the Site address details).</br></br>
+				User can also view the status of the each batch and invoices associated with batch can be exported to excel file.
+				It will also allow the user to cancel all invoices associated with batch if invoices have not been exported.
+			</div>
+		</div>
+		<h2>UI Elements</h2>
+		<table class="elementTable">			
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>			
+			<tr>
+				<td class="uiHeader" colspan="5">Bulk Invoice Import</td>
+			</tr>
+			<tr>
+				<td>Browse</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Allows the user to select the excel file.</td>
+			</tr>
+			<tr>
+				<td>Upload</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Upload the selected excel file and list the Invoice details in a grid.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Clears the import file selection field.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Invoices</td>
+			</tr>
+			<tr>
+				<td>Invoices</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>The grid will holds the list of Invoices from uploaded excel file.
+			</tr>
+			<tr>
+				<td>Sequence</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Sequence should be valid number. The line items which belongs to the same Invoice should have the same Sequence number.</td>
+			</tr>
+			<tr>
+				<td>Customer Number</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Customer Number should be valid and it should exists in lookup table.</td>
+			</tr>
+			<tr>
+				<td>Tax Exempt</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>(Y / N). Tax Exempt Id is required if Tax Exempt checkbocx is checked.</td>
+			</tr>
+			<tr>
+				<td>Tax Exempt Id</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Tax Exempt Id is required and should be valid if Tax Exempt checkbocx is checked. 
+					It should be blank if Tax Exempt checkbocx is unchecked.
+				</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>House Code should be valid and it should exists in lookup table.</td>
+			</tr>
+			<tr>
+				<td>Account Code</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Account Code should be valid and it should exists in lookup table.</td>
+			</tr>
+			<tr>
+				<td>Invoice Date</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Invoice Date should be valid date.</td>
+			</tr>
+			<tr>
+				<td>Due Date</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Due Date should be valid date.</td>
+			</tr>
+			<tr>
+				<td>Start Date</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Start Date of the period and it should be valid date.</td>
+			</tr>
+			<tr>
+				<td>End Date</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>End Date of the period and it should be valid date.</td>
+			</tr>
+			<tr>
+				<td>PO Number</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>PO Number of the Invoice.</td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Description of the Invoice line item.</td>
+			</tr>
+			<tr>
+				<td>Taxable</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>(Y / N). If Taxable checkbox is checked then State and Local tax will be calcualted for the line item.</td>
+			</tr>
+			<tr>
+				<td>Show</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>(Y / N). If Show checkbox is checked then the line item will be shown in the report.</td>
+			</tr>
+			<tr>
+				<td>Quantity</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Quantity of the Invoice line item.</td>
+			</tr>
+			<tr>
+				<td>Price</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Price of the Invoice line item.</td>
+			</tr>
+			<tr>
+				<td>Status</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Status of the Invoice (Open / Printed).</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+			<tr>
+				<td>Validate</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To validate all fields of each invoice line item. If there is any validation error, 
+					the background of the field will be shown in red color and appropriate tooltip message will be shown.</br>
+					"Process Batch" button will be shown if there is no validation error and all the fields in the grid become readonly.
+				</td>
+			</tr>
+			<tr>
+				<td>Process Batch</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Opens the popup window where user can create the batch. The title of the batch should not be exists in lookup table.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To cancel the batch processing.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Create Batch</td>
+			</tr>
+			<tr>
+				<td>Title</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Title of the batch. The title should be unique and it hould not contain any of the following characters: \/:*?"<>|.</td>
+			</tr>
+			<tr>
+				<td>OK</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Validates the title, creates the unique batch for processing and generates the invoices.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Closes the popup screen and "Cancel" button will be shown.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Batch Process Status </td>
+			</tr>
+			<tr>
+				<td>Batches</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>The grid will holds the list of Batches with details like title, status, total rows, started and completed date.
+			</tr>
+			<tr>
+				<td>Title</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Title of the Batch.</td>
+			</tr>
+			<tr>
+				<td>Status</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>		
+				<td>Status of the Batch (Failed / Processing / Completed).</td>
+			</tr>
+			<tr>
+				<td>Total Rows</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>	
+				<td>Total number of rows that exists in uploaded excel file.</td>
+			</tr>
+			<tr>
+				<td>Started On</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Started Date and time of the batch process.</td>
+			</tr>
+			<tr>
+				<td>Completed On</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Completed date and time of the batch process.</td>
+			</tr>
+			<tr>
+				<td>Export To Excel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Export all invoices belongs to the selected Batch to excel file.</td>
+			</tr>
+			<tr>
+				<td>Cancel Batch</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Cancel all invoices belongs to the selected Batch if invoices have not been exported.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Actions Menu</td>
+			</tr>
+			<tr>
+				<td>Bulk Invoice Import</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To upload the Excel file for importing the invoices.</td>
+			</tr>
+			<tr>
+				<td>Batch Process Status</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To view the status of the bulk invoice import batch.</td>
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Importing Invoices concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/bulkImport.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Listing Invoices concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/bulkImportGrid.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Creating Batch concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/createBatch.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Listing Batch Process Status concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/bulkImportStatus.png"></td>
+			</tr>
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Browse</td>
+				<td>Invalid file format. Please select the correct XLSX file.</td>
+			</tr>
+			<tr>
+				<td>Upload Error</td>
+				<td>Unable to upload the file. Please try again.</td>
+			</tr>
+			<tr>
+				<td>Validate</td>
+				<td>In order to process the batch, the errors on the page must be corrected.</td>
+			</tr>
+			<tr>
+				<td>Process Batch</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>OK</td>
+				<td>In order to save, the errors on the page must be corrected.</br>
+					The Batch [Title] already exists. Please verify.
+				</td>
+			</tr>
+			<tr>
+				<td>Save Error</td>
+				<td>Appropriate error message will be shown if there is any exception.</td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. Transaction Status Types must be defined in a system look up table (AppTransactionStatusTypes)</div>
+		<div class="reference">2. System Variables must be defined in a system look up table (AppSystemVariables)</div>
+		<div class="reference">3. States must be defined in a system look up table (AppStateTypes)</div>
+		<div class="reference">4. Units must be defined in a system look up table (AppUnits)</div>
+		<div class="reference">5. Sites must be defined in a system look up table (AppSites)</div>
+		<div class="reference">6. Sites must be associated to the Units (AppSiteUnits)</div>		
+		<div class="reference">7. House Codes must be defined in a system look up table (HcmHouseCodes)</div>
+		<div class="reference">8. Jobs must be defined in a system look up table (HcmJobs)</div>
+		<div class="reference">9. Jobs must be associated to the House Codes (HcmHouseCodeJobs)</div>
+		<div class="reference">10. Fiscal Years must be defined in a system look up table (FscYears)</div>
+		<div class="reference">11. Fiscal Periods must be defined in a system look up table (FscPeriods)</div>		
+		<div class="reference">12. Chart of accounts must be defined in a system look up table (FscAccounts)</div>
+		<div class="reference">13. Table Types must be defined in a system look up table (RevTableTypes)</div>
+		<div class="reference">14. State Taxes must be defined in a system look up table (RevStateTaxes)</div>
+		<div class="reference">15. Local Taxes must be defined in a system look up table (RevLocalTaxes)</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>AppTransactionStatusTypes</br>
+					AppSystemVariables</br>
+					AppStateTypes</br>
+					AppUnits</br>
+					AppSites</br>
+					AppSiteUnits</br>
+					AppGenericImports</br>
+					HcmHouseCodes</br>
+					HcmJobs</br>
+					HcmHouseCodeJobs</br>					
+					FscYears</br>
+					FscPeriods</br>
+					FscAccounts</br>					
+					RevInvoiceBatches</br>					
+					RevTableTypes</br>
+					RevStateTaxes</br>
+					RevLocalTaxes</br>
+					RevInvoices</br>
+					RevInvoiceItems</br>
+					RevAccountReceivables</br>
+					GlmRecurringExpenses</br>
+					GlmRecurringFixedCosts</br>					
+				</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>AppDelimitedValueSelect</br>
+					AppGenericImportBatchNumberSelect</br>
+					AppGenericImportInsert</br>					
+					RevInvoiceBatchesSelect</br>
+					RevInvoiceBatchUpdate</br>
+					RevInvoiceBatchProcessUpdate</br>					
+					RevInvoiceBulkImportValidate</br>
+					RevInvoiceNumberSelect</br>					
+					RevInvoiceUpdateFromBulkImport</br>
+					RevInvoiceItemUpdateFromBulkImport</br>
+					RevInvoiceItemSalesTaxUpdate</br>
+					RevTaxRatesSelect</br>
+				</td>
+			</tr>
+			<tr>
+				<td>Functions</td>
+				<td>getNumberListFromDelimitedString</br>
+					FscWeekPeriodYear</br>
+					RevTaxRate</br>
+				</td>
+			</tr>
+		</table>
+		<h2>See Also</h2>
+		<div class="reference"><a href="invoiceSearch.htm">Invoice Search</a></div>
+		<div class="reference"><a href="invoice.htm">Invoicing / AR</a></div>
+		<div class="reference"><a href="workOrderToInvoice.htm">WO to Invoice</a></div>
+	</body>
+</html>

@@ -1,0 +1,895 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Bulk House Code Import</h1>
+			<div class="description">The purpose of the <b>House Code Import</b> is to import the list of house codes from an excel file.</div>
+		</div>
+		<h2>UI Elements</h2>
+		<table class="elementTable">			
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Import House Codes</td>
+			</tr>
+			<tr>
+				<td>Browse</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Allows the user the select the excel file.</td>
+			</tr>
+			<tr>
+				<td>Upload</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Upload the selected excel file and import the house code details.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Closes the popup screen</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Invalid House Codes List</td>
+			</tr>
+			<tr>
+				<td>House Codes List</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List all invalid house codes which are not saved during the import process.</td>
+			</tr>
+			<tr>
+				<td colspan="5"><b>HirNode Information</b></td>
+			</tr>
+			<tr>
+				<td>Brief</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Brief should be valid and should not exists in system look up table. Example: 900000</td>
+			</tr>
+			<tr>
+				<td>Title</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Title should not be blank.</td>	
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Description should not be blank.</td>
+			</tr>
+			<tr>
+				<td>Level 1</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Level 1 should not be blank and should be part of the fullpath.</td>				
+			</tr>
+			<tr>
+				<td>Level 2</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Level 2 should not be blank and should be part of the fullpath.</td>				
+			</tr>
+			<tr>
+				<td>Level 3</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Level 3 should not be blank and should be part of the fullpath.</td>				
+			</tr>
+			<tr>
+				<td>Level 4</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Level 4 should not be blank and should be part of the fullpath.</td>				
+			</tr>
+			<tr>
+				<td>Level 5</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Level 5 should not be blank and should be part of the fullpath.</td>				
+			</tr>
+			<tr>
+				<td>Level 6</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Level 6 should not be blank and should be part of the fullpath.</td>				
+			</tr>
+			<tr>
+				<td>Level 7</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Level 7 should not be blank and should be part of the fullpath.</td>				
+			</tr>
+			<tr>
+				<td>Level 8</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td>Level 9</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>				
+			</tr>			
+			<tr>
+				<td>Level 10</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td>Level 11</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td>Level 12</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td>Level 13</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td>Level 14</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td>Level 15</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td>Level 16</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td colspan="5"><b>Site Information</b></td>
+			</tr>
+			<tr>
+				<td>Title</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>Title should not be blank.</td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td>Address 1</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Address 1 should not be blank.</td>
+			</tr>
+			<tr>
+				<td>Address 2</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Address 2 of the site.</td>
+			</tr>
+			<tr>
+				<td>City</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>City should not be blank.</td>
+			</tr>
+			<tr>
+				<td>State</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>State should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Postal Code</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Postal Code should be valid. Example: 99999 or 99999-9999</td>
+			</tr>
+			<tr>
+				<td>County</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>County of the site.</td>
+			</tr>
+			<tr>
+				<td>Industry</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Industry should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Primary Business</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Primary Business should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Location</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Location should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Trauma Level</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Trauma Level should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Profit Designation</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Profit Designation should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>GPO</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>GPO should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Specify GPO</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Specify GPO of the site.</td>
+			</tr>
+			<tr>
+				<td>Ownership</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Ownership should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td colspan="5"><b>Services Provided</b></td>
+			</tr>
+			<tr>
+				<td>JDE Company</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>JDE Company should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Start Date</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Start Date should be valid date.</td>
+			</tr>
+			<tr>
+				<td>Service Type</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Service Type should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Enforce Labor Control</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Service Line</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Service Line should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td colspan="5"><b>Manager Information</b></td>
+			</tr>
+			<tr>
+				<td>Manager Name</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Name of the manager.</td>
+			</tr>
+			<tr>
+				<td>Manager Email</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Manager Email should be valid email address.</td>
+			</tr>			
+			<tr>
+				<td>Phone</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Phone should be valid. Example: (999) 999-9999</td>
+			</tr>
+			<tr>
+				<td>Cell Phone</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Cell Phone should be valid. Example: (999) 999-9999</td>
+			</tr>
+			<tr>
+				<td>Fax</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Fax should be valid. Example: (999) 999-9999</td>
+			</tr>
+			<tr>
+				<td>Pager</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Pager should be valid. Example: (999) 999-9999</td>
+			</tr>
+			<tr>
+				<td>Assistant Name</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Name of the manager assistant.</td>
+			</tr>
+			<tr>
+				<td>Assistant Phone</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Assistant Phone should be valid. Example: (999) 999-9999</td>
+			</tr>
+			<tr>
+				<td colspan="5"><b>Client Information</b></td>
+			</tr>
+			<tr>
+				<td>First Name</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>First Name of the client.</td>
+			</tr>
+			<tr>
+				<td>Last Name</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Last Name of the client.</td>
+			</tr>
+			<tr>
+				<td>Title</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Title of the client.</td>
+			</tr>
+			<tr>
+				<td>Phone</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Phone should be valid. Example: (999) 999-9999</td>
+			</tr>
+			<tr>
+				<td>Fax</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Fax should be valid. Example: (999) 999-9999</td>
+			</tr>
+			<tr>
+				<td>Assistant Name</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Name of the client assistant.</td>
+			</tr>
+			<tr>
+				<td>Assistant Phone</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Assistant Phone should be valid. Example: (999) 999-9999</td>
+			</tr>
+			<tr>
+				<td colspan="5"><b>Statistics Information</b></td>
+			</tr>
+			<tr>
+				<td># of Managed Employees</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td># of Managed Employees should be valid. Example: 99</td>
+			</tr>
+			<tr>
+				<td># of Beds Licensed</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td># of Beds Licensed should be valid. Example: 99</td>
+			</tr>
+			<tr>
+				<td># of Patient Days</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td># of Patient Days should be valid. Example: 99</td>
+			</tr>
+			<tr>
+				<td>Avg Daily Census</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Avg Daily Census should be valid. Example: 99</td>
+			</tr>
+			<tr>
+				<td># of Annual Discharges</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td># of Annual Discharges should be valid. Example: 99</td>
+			</tr>
+			<tr>
+				<td>Avg Bed Turnaround Time</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Avg Bed Turnaround Time should be valid. Example: 99</td>
+			</tr>
+			<tr>
+				<td>Net Cleanable Square Feet</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Net Cleanable Square Feet should be valid. Example: 99</td>
+			</tr>
+			<tr>
+				<td>Avg Lundry Lbs</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Avg Lundry Lbs should be valid. Example: 99</td>
+			</tr>
+			<tr>
+				<td># of Crothall Employees</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td># of Crothall Employees should be valid. Example: 99</td>
+			</tr>
+			<tr>
+				<td># of Beds Active</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td># of Beds Active should be valid. Example: 99</td>
+			</tr>
+			<tr>
+				<td># of Adjusted Patient Days</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td># of Adjusted Patient Days should be valid. Example: 99</td>
+			</tr>
+			<tr>
+				<td># of Annual Transfers</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td># of Annual Transfers should be valid. Example: 99</td>
+			</tr>
+			<tr>
+				<td># of Annual Transports</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td># of Annual Transports should be valid. Example: 99</td>
+			</tr>
+			<tr>
+				<td colspan="5"><b>Shipping Information</b></td>
+			</tr>
+			<tr>
+				<td>Address 1</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Address 1 of the shipping.</td>
+			</tr>
+			<tr>
+				<td>Address 2</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Address 2 of the shipping.</td>
+			</tr>
+			<tr>
+				<td>City</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>City of the shipping.</td>
+			</tr>
+			<tr>
+				<td>State</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>State should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Postal Code</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Postal Code should be valid. Example: 99999 or 99999-9999</td>
+			</tr>
+			<tr>
+				<td colspan="5"><b>Financial Information</b></td>
+			</tr>
+			<tr>
+				<td>Remit To</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Remit To should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Contract Type</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Contract Type should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Terms Of Contract</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Terms Of Contract should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Billing Cycle Frequency</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Billing Cycle Frequency should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Financial Entity</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Financial Entity should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Bank Code Number</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Bank code number.</td>
+			</tr>
+			<tr>
+				<td>Bank Account Number</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Bank account number.</td>
+			</tr>
+			<tr>
+				<td>Bank Name</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Name of the bank.</td>
+			</tr>
+			<tr>
+				<td>Contact</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Name of the contact person.</td>
+			</tr>			
+			<tr>
+				<td>Address 1</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Address 1 of the bank.</td>
+			</tr>
+			<tr>
+				<td>Address 2</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Address 2 of the bank.</td>
+			</tr>
+			<tr>
+				<td>City</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>City of the bank.</td>
+			</tr>
+			<tr>
+				<td>State</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>State should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Postal Code</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Postal Code should be valid. Example: 99999 or 99999-9999</td>
+			</tr>
+			<tr>
+				<td>Phone</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Phone should be valid. Example: (999) 999-9999</td>
+			</tr>
+			<tr>
+				<td>Fax</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Fax should be valid. Example: (999) 999-9999</td>
+			</tr>			
+			<tr>
+				<td>Email</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Email should be valid email address.</td>
+			</tr>
+			<tr>
+				<td>Invoice Logo</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Invoice Logo should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>State Tax Percent</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>State Tax Percent should be valid. Example: 9.99</td>
+			</tr>
+			<tr>
+				<td>Local Tax Percent</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Local Tax Percent should be valid. Example: 9.99</td>
+			</tr>
+			<tr>
+				<td colspan="5"><b>Payroll Information</b></td>
+			</tr>
+			<tr>
+				<td>Payroll Processing Location</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Payroll Processing Location should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Default Lunch Break</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Default Lunch Break should be valid. Example: 1.00</td>
+			</tr>
+			<tr>
+				<td>Lunch Break Trigger</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Lunch Break Trigger should be valid. Example: 4.00</td>
+			</tr>			
+			<tr>
+				<td>House Code Type</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>House Code Type should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Rounding Time Period</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Rounding Time Period should eitehr 6 or 15.</td>
+			</tr>
+			<tr>
+				<td>Time And Attendance</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>EPay Site</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>EPay Pay Group</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>EPay Pay Group should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Validate</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Validates the house code details.</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Save the house code details.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">House Codes Import - Action Menu</td>
+			</tr>
+			<tr>
+				<td>Bulk House Code Import</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To import the list of house codes from an excel file.</td>
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Importing House Codes concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/houseCodeImport.png" /></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Listing invalid house code details concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/houseCode.png" /></td>
+			</tr>
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Browse</td>
+				<td>Invalid file format. Please select the correct XLSX file.</td>
+			</tr>
+			<tr>
+				<td>Upload</td>
+				<td>Unable to upload the file. Please try again.<br>Invalid records not found during the import process.</td>
+			</tr>
+			<tr>
+				<td>Validate</td>
+				<td>In order to save, the errors on the page must be corrected. Invalid columns should be highlighted with red color with appropriate tooltip message.</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>In order to save, the errors on the page must be corrected.<br>House codes will be saved, Click OK to Continue, or Cancel.</td>
+			</tr>
+			<tr>
+				<td>Import/Save Error</td>
+				<td>Error while importing House Code Record.<br>Error while updating House Code Record.</td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. States must be defined in a system look up table (AppStateTypes).</div>
+		<div class="reference">2. Industry Types must be defined in a system look up table (AppIndustryTypes).</div>
+		<div class="reference">3. Primary Business Types must be defined in a system look up table (AppPrimaryBusinessTypes).</div>
+		<div class="reference">4. Location Types must be defined in a system look up table (AppLocationTypes).</div>
+		<div class="reference">5. Trauma Level Types must be defined in a system look up table (AppTraumaLevelTypes).</div>
+		<div class="reference">6. Profit Designation Types must be defined in a system look up table (AppProfitDesignationTypes).</div>
+		<div class="reference">7. GPO Types must be defined in a system look up table (AppGPOTypes).</div>
+		<div class="reference">8. Ownership Types must be defined in a system look up table (AppOwnershipTypes).</div>
+		<div class="reference">9. JDE Companies must be defined in a system look up table (FscJDECompanies).</div>
+		<div class="reference">10. Service Types must be defined in a system look up table (HcmServiceTypes).</div>
+		<div class="reference">11. Service Lines must be defined in a system look up table (HcmServiceLines).</div>
+		<div class="reference">12. Remit To Locations must be defined in a system look up table (HcmRemitToLocations).</div>
+		<div class="reference">13. Contract Types must be defined in a system look up table (HcmContractTypes).</div>
+		<div class="reference">14. Terms Of Contract Types must be defined in a system look up table (HcmTermsOfContractTypes).</div>
+		<div class="reference">15. Billing Cycle Frequency Types must be defined in a system look up table (HcmBillingCycleFrequencyTypes).</div>
+		<div class="reference">16. Invoice Logo Types must be defined in a system look up table (HcmInvoiceLogoTypes).</div>
+		<div class="reference">17. Payroll Processing Location Types must be defined in a system look up table (HcmPayrollProcessingLocationTypes).</div>
+		<div class="reference">18. House Code Types must be defined in a system look up table (HcmHouseCodeTypes).</div>
+		<div class="reference">19. EPay Pay Group Types must be defined in a system look up table (HcmEPayGroupTypes).</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>AppGenericImports<br>AppUnits<br>AppSites<br>AppSiteUnits<br>HirNodes<br>AppStateTypes<br>AppPrimaryBusinessTypes
+					<br>AppIndustryTypes<br>AppLocationTypes<br>AppTraumaLevelTypes<br>AppProfitDesignationTypes
+					<br>AppGPOTypes<br>AppOwnershipTypes
+					<br>FscJDECompanies<br>HcmServiceTypes<br>HcmServiceLines<br>HcmTermsOfContractTypes<br>HcmBillingCycleFrequencyTypes
+					<br>HcmInvoiceLogoTypes<br>HcmPayrollProcessingLocationTypes<br>HcmEPayGroupTypes
+					<br>HcmRemitToLocations<br>HcmContractTypes<br>HcmHouseCodeTypes<br>HcmHouseCodes<br>HcmJobs<br>HcmHouseCodeJobs
+				</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>AppRecordsCount<br>AppGenericImportsSelect<br>AppGenericImportInsert<br>AppDelimitedValueSelect
+					<br>HcmHouseCodeImportValidate<br>HcmHouseCodeImportInsert<br>HcmHouseCodeImportUpdate<br>HirNodeUpdate
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

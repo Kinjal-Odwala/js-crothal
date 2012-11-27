@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Ad Hoc Report Setup</h1>
+			<div class="description">
+			    This user interface is used to create different Ad Hoc Report with available application Modules.<br />
+                Here, you can see listing of available Ad Hoc Reports on left panel. Details of selected Ad Hoc Report are displayed on right panel. 
+
+            </div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:100px;">UI Element</th>
+				<th style="width:110px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th style="width:100px;">Validation</th>	
+				<th style="width:200px;">Description</th>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">Ad Hoc Reports List</td>
+			</tr>
+            <tr>
+                <td>REPORT TITLE</td>
+                <td style="width: 110px">Grid</td>
+                <td>No</td>
+                <td>NA</td>
+                <td></td>
+                <td>Displays Ad Hoc Reports List.</td>
+            </tr>
+            <tr>
+				<td class="uiHeader" colspan="6">Ad Hoc Report Details</td>
+			</tr>
+			<tr>
+				<td>Title</td>
+				<td style="width: 110px">Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Please enter valid title.</td>	
+				<td>Ad Hoc Report Title.</td>			
+			</tr>
+			
+			<tr>
+				<td>Module</td>
+				<td style="width: 110px">List</td>
+				<td>Yes</td>
+				<td>End user input</td>	
+				<td>Please select the correct Module.</td>				
+				<td>Ad Hoc Report Module.</td>	
+			</tr>
+            <tr>
+                <td>Sub Module</td>
+                <td style="width: 110px">Checkbox list selection</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>   
+                <td>Ad Hoc Report associated module.</td>
+            </tr>
+			<tr>
+				<td>Active</td>
+                <td style="width: 110px">Checkbox</td>
+                <td>No</td>
+                <td>End user input</td>	
+				<td>
+                </td>		
+				<td>Ad Hoc Report is Active or Not.</td>		
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">Ad Hoc Report Columns</td>
+			</tr>
+			<tr>
+				<td>Column Order</td>
+                <td style="width: 110px">Buttons</td>
+                <td>No</td>
+                <td>End user input</td>	
+				<td>
+                </td>		
+				<td>These Buttons allows user to sort selected column. 
+                    <br />
+                    Ad-Hoc report is shown according to this Sorted List.</td>		
+			</tr>
+			<tr>
+				<td>Ad Hoc Report Columns</td>
+                <td style="width: 110px">Grid</td>
+                <td>No</td>
+                <td>NA</td>	
+				<td>
+                </td>		
+				<td>This Grid Lists all columns of Ad Hoc Report and allows 
+                    <br />
+                    Columns to be assigned to the selected Ad Hoc Report.</td>		
+			</tr>
+			<tr>
+				<td>EDITABLE</td>
+                <td style="width: 110px">Checkbox</td>
+                <td>No</td>
+                <td>End user input</td>	
+				<td>
+                </td>		
+				<td>This Checkbox allows Ad Hoc Report column to edit.</td>		
+			</tr>
+			
+			<tr>
+				<td>HIDDEN</td>
+                <td style="width: 110px">Checkbox</td>
+                <td>No</td>
+                <td>End user input</td>	
+				<td>
+                </td>		
+				<td>This Checkbox sets Ad Hoc Report column as Hidden.</td>		
+			</tr>
+			<tr>
+				<td>READ ONLY</td>
+                <td style="width: 110px">Checkbox</td>
+                <td>No</td>
+                <td>End user input</td>	
+				<td>
+                </td>		
+				<td>This Checkbox sets Ad Hoc Report column as Read Only.</td>		
+			</tr>
+			<tr>
+				<td>FILTER</td>
+                <td style="width: 110px">Checkbox</td>
+                <td>No</td>
+                <td>End user input</td>	
+				<td>
+                </td>		
+				<td>This Checkbox filters Ad Hoc Report according to given criteria.</td>		
+			</tr>
+			<tr>
+				<td>OPERATOR</td>
+                <td style="width: 110px">Checkbox</td>
+                <td>No</td>
+                <td>End user input</td>	
+				<td>
+                </td>		
+				<td>This Checkbox filters Ad Hoc Report according to given column Data.</td>		
+			</tr>
+			<tr>
+				<td>
+                    New</td>
+                <td style="width: 110px">
+                    Button</td>
+                <td>
+                    NA</td>
+                <td>End user input</td>	
+				<td>
+                </td>		
+				<td> Click New button to create New Ad Hoc Report.</td>		
+			</tr>
+			<tr>
+				<td>
+                    Save</td><td style="width: 110px">
+                    Button</td>
+                <td>
+                    NA</td>
+                <td>End user input</td>	
+				<td>
+                </td>		
+				<td> Click Save button to save the change.</td>		
+			</tr>
+			<tr>
+				<td>
+                    Undo</td><td style="width: 110px">
+                    Button</td>
+                <td>
+                    NA</td>
+                <td>End user input</td>	
+				<td>
+                </td>		
+				<td>
+                    Click Undo button to cancel any changes made.</td>		
+			</tr>
+			<tr>
+				<td>
+                    Clear</td><td style="width: 110px">
+                    Button</td>
+                <td>
+                    NA</td>
+                <td>End user input</td>	
+				<td>
+                </td>		
+				<td> Click Clear button to clear all columns of Ad Hoc Report Columns Grid.</td>		
+			</tr>
+		</table>
+
+		<h2>UI Layout</h2>
+
+		<table class="layoutTable">
+			<tr>	
+				<td>
+				    <img src="images/AdHocReportSetup.png" alt="adHoc"/>
+				</td>
+			</tr>	
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+            <tr>	
+				<td>
+                    Error</td>
+                <td>
+                    Failed to save report.<br />
+                    Failed to save report column.
+                </td>
+			</tr>
+		</table>
+		<h2>Action</h2>
+		<div class="reference">
+		    1. This user interface can be accessed at Setup > Ad-Hoc Report.<br />
+            2. Edit Setup - Select an Ad Hoc Report on left grid, it allows User to edit it on the right panel. 
+                Module columns are listed in right grid with multiple selection (checkbox) option. <br />
+                User can select only one checkbox among EDITABLE, HIDDEN, READ ONLY checkboxes for a column.
+                Any OPERATOR checkbox selection makes its FILTER checkbox selected.
+        </div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+            <tr>
+                <td>Tables</td>
+				<td>
+                    HirNodes,  AdhReports, AdhReportColumns, AppModuleColumns, AppModules, AdhReportColumnTypes, AppModuleAssociations.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Stored procedures
+                </td>
+                <td>
+                    AdhReportHirNodeUpdate, AdhReportColumnDeleteByReport, AdhReportColumnSelect, AppModuleAssociateSelect. &nbsp;
+                </td>
+            </tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="security.htm">Security</a></div>
+		<div class="reference"><a href="systemVariables.htm">Sys Variable</a></div>
+		<div class="reference"><a href="employeeImport.htm">Import Employees</a></div>
+		<div class="reference"><a href="taxRate.htm">Tax Rates</a></div>
+		<div class="reference"><a href="hierarchyManagement.htm">Hierarchy Mgmt</a></div>
+	</body>
+</html>

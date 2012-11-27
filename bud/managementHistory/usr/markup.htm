@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Management History</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/bud/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+		
+		<div class="pageBody">
+            <div id="budgetSummaryContentArea" class="contentArea">
+                <div class="header">Management History</div>
+                <div class="body">
+                	<div id="TableEditArea">
+	                    <div id="radioButton">
+	                    	<input type="radio" id="PersonalSalary" name="Management" checked="true"  />
+	                    </div>
+						<div id="radioButtonLabel">
+							I. Personnel Salary Review Worksheet
+						</div>
+						 <div id="radioButton">
+	                    	<input type="radio" id="ManagementWorksheet" name="Management" />
+	                    </div>
+						<div id="radioButtonLabel">
+							II. Management Administration Worksheet
+						</div>
+					</div>
+					<div style="clear:both"></div>
+					<hr class="hrColor" />
+                </div>
+				<div style="clear:both"></div>
+				<div id="PersonalSalaryReview">
+					<div class="header">Personal Salary Review</div>
+					<div class="body">
+						<div class="flowstyle">
+		                    <div id="ReviewWorksheet"></div>
+						</div>
+					</div>
+				</div>
+				<div style="clear:both"></div>
+				<div class="FlowstyleHide" id="ManagementAdmin">
+					<div class="header">Management Administration</div>
+					<div class="body">
+						<div class="flowstyle">
+		                    <div id="ManagementAdministration"></div>
+						</div>
+					</div>
+				</div>
+            </div>
+        </div>
+		<div id="iiInputValidationMaster"></div>
+	</body>
+</html>
+<!--
+
+	<table width="100%" border="0" cellpadding="0" cellspacing="0">
+			<tr>
+				<td height="5px" colspan="2">
+					
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<table border="0" cellpadding="0" cellspacing="0">
+						<tr>
+							<td class="pageHeaderText" width="350px">
+								Management History
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<table width="750px" border="0" cellpadding="0" cellspacing="0">
+						<tr>
+							<td class="labelText">
+								<input type="radio" id="PersonalSalary" name="Management" checked="true"  />I. Personnel Salary Review Worksheet
+							</td>
+							<td class="labelText">
+								<input type="radio" id="ManagementWorksheet" name="Management" />II. Management Administration Worksheet
+							</td>
+						</tr>
+					</table>
+					
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<hr class="hrColor" />
+				</td>
+			</tr>
+			<tr>
+				<td height="5px" colspan="2">
+					
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<div class="Flowstyle" id="PersonalSalaryReview">
+						<table border="0" cellpadding="0" cellspacing="0">
+							<tr>
+								<td class="pageHeaderText">
+									Personal Salary Review
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="GridTable">
+										<div id="ReviewWorksheet"></div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" width="750px">
+					<div class="FlowstyleHide" id="ManagementAdmin">
+						<table border="0" cellpadding="0" cellspacing="0">
+							<tr>
+								<td class="pageHeaderText">
+									Management Administration
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="GridTableDaily">
+										<div id="ManagementAdministration"></div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" height="10px">
+					
+				</td>
+			</tr>
+		</table>
+
+-->

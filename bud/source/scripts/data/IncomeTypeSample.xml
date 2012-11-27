@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<transmission>
+	<target id="iiCache" requestId="5">
+		<store id="houseCodeJobs" activeId="169" criteria="storeId:houseCodeJobs,houseCodeId:286,userId:RAYMOND-DEV-XP\Raymond Liu,">
+			<item fscAccount="169" fscAccCode="4005" description="Full Service Billings" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />
+			<item fscAccount="170" fscAccCode="4010" description="Management Fee Billings" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />
+			<item fscAccount="171" fscAccCode="4015" description="Client Paid Labor" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />
+			<item fscAccount="172" fscAccCode="4020" description="Miscellaneous Income" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />
+			<item fscAccount="173" fscAccCode="4030" description="Reimbursement Start-Up Costs" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />
+			<item fscAccount="174" fscAccCode="4040" description="Reimbursement Direct Costs" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />
+			<item fscAccount="175" fscAccCode="4050" description="Reimbursement Equipment" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />
+			<item fscAccount="176" fscAccCode="4060" description="Quality Incentive Income" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />
+			<item fscAccount="177" fscAccCode="4070" description="Prepayment Discount" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />
+			<item fscAccount="178" fscAccCode="4080" description="Financial Incentive Reimb" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />
+			<item fscAccount="179" fscAccCode="4085" description="Standard Hours Income" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />
+			<item fscAccount="180" fscAccCode="4090" description="Control Account Income" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />
+			<item fscAccount="181" fscAccCode="4095" description="Financial Incentive Income" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />	
+		</store>
+	</target>
+</transmission>

@@ -1,0 +1,203 @@
+﻿
+.header {
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 18px;	
+	color: #2C2F50;
+	text-align: center;
+	margin-bottom: 5px;
+}
+
+#AnchorUpload {
+	float: left;
+	margin-right: 5px;
+	padding-left: 5px;
+	padding-top: 0px;
+	width: 82px;
+}
+
+#AnchorCancel {
+	float: left;
+	margin-right: 5px;
+	padding-left: 5px;
+	padding-top: 0px;
+	width: 80px;
+}
+
+#AnchorValidate {
+	float: left;
+	margin-top: 10px;
+	margin-right: 5px;
+	padding-left: 15px;
+	width: 90px;
+}
+
+#AnchorProcessBatch {
+	float: left;
+	margin-top: 10px;
+	margin-right: 5px;
+	padding-left: 5px;
+	width: 130px;
+}
+
+#AnchorSaveCancel {
+	float: left;
+	margin-top: 10px;
+	margin-right: 5px;
+	padding-left: 5px;
+	width: 80px;
+}
+
+#AnchorExportToExcel {
+	float: left;
+	margin-top: 10px;
+	margin-right: 5px;
+	padding-left: 5px;
+	width: 140px;
+}
+
+#AnchorCancelBatch {
+	float: left;
+	margin-top: 10px;
+	margin-right: 5px;
+	padding-left: 5px;
+	width: 122px;
+}
+
+#AnchorOK {
+	float: left;
+	width: 54px;
+	padding: 5px 0px 0px 20px;
+}
+
+#AnchorBatchCancel {
+	float: left;
+	width: 80px;
+	padding: 5px 0px 0px 10px;
+}
+
+#backgroundPopup {
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	z-index: 5000; 
+	width: 100%; 
+	height: 100%;
+	border: 1px solid #cecece; 
+	background-color: black;
+	display: none;
+}
+
+#batchPopup {
+	width: 400px; 
+	height: 150px;
+	background-color: white;
+	position: absolute;
+	z-index: 5025;	
+	display: none;
+}
+
+.labelMessage {	
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;	
+	padding: 5px 0px 0px 10px;
+}
+
+.labelTextArea {	
+	float: left;
+	width: 70px;
+	height: 27px;	
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 5px 0px 0px 10px;
+}
+
+.inputTextArea {
+	float: left; 
+	width: 250px; 
+	padding: 3px 2px 2px 2px;	
+}
+
+.gridBorder {
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+}
+
+.gridHeaderColumn {
+	background-color: #669966;
+	border-right: solid #AAAAAA thin;
+	border-width: 1px;
+	border-bottom: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	font-weight: bold;
+	color: white;	
+	text-align: center;
+	padding: 3px 2px 3px 2px;
+}
+
+.gridHeaderColumnRight {
+	background-color: #669966;
+	border-bottom: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	font-weight: bold;
+	color: white;	
+	text-align: center;
+	padding: 3px 2px 3px 2px;
+}
+
+.gridColumn {	
+	border-right: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	color: #032D23;
+	height: 18px;
+	vertical-align: middle;
+	padding: 3px 2px 3px 2px;
+}
+
+.gridColumnRight {	
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	color: #032D23;
+	height: 18px;
+	vertical-align: middle;
+	padding: 3px 2px 3px 2px;
+}
+
+.gridRow { 
+	background-color: #F0EFDD;
+}
+
+.gridRow input {
+    font-family: Verdana;
+    font-size: 8pt;
+	color: #032D23;
+	padding: 0px;
+}
+
+.alternateGridRow { 
+	background-color: #FFFFFF;
+}
+
+.alternateGridRow input {
+    font-family: Verdana;
+    font-size: 8pt;
+	color: #032D23;
+	padding: 0px;
+}

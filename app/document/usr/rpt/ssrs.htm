@@ -1,0 +1,637 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>SSRS Reports</h1>
+			<div class="description">The purpose of the SSRS Reports is to load the reports and setup and maintain a list of SSRS report subscriptions.</div>
+		</div>
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">SSRS Reports</td>
+			</tr>
+			<tr>
+				<td>Report Nodes</td>
+				<td>Treeview</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Lists the report nodes in a treeview control. Click on appropriate node to view the SSRS report in a separate window.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">SSRS Report Subscriptions</td>
+			</tr>
+			<tr>
+				<td>Report</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Report should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Subscriptions</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List the subscriptions based on the selected report. Subscription details will be listed based on the selected subscription.</td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Description of the subscription.</td>
+			</tr>			
+			<tr>
+				<td class="uiHeader" colspan="5">Subscription Details</td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Description of the subscription.</td>				
+			</tr>
+			<tr>
+				<td>Delivered By</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Delivered By should be selected from dropdown list.</td>				
+			</tr>			
+			<tr>
+				<td>To</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>To should be valid Email Id. Use (;) to separate multiple e-mail addresses.</td>				
+			</tr>
+			<tr>
+				<td>Cc</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Cc should be valid Email Id. Use (;) to separate multiple e-mail addresses.</td>				
+			</tr>
+			<tr>
+				<td>Subject</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Subject of the subscription.</td>				
+			</tr>
+			<tr>
+				<td>Include Report</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Include Link</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Report Format</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Report Format should be selected from dropdown list.</td>				
+			</tr>
+			<tr>
+				<td>Priority</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Priority should be selected from dropdown list.</td>				
+			</tr>
+			<tr>
+				<td>Comment</td>
+				<td>Textarea field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Content of the subscription email.</td>				
+			</tr>
+			<tr>
+				<td>Schedule</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Opens the popup screen which has different options to set the scheduling.</td>				
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To save the subscription details.</td>
+			</tr>
+			<tr>
+				<td>New</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To create the new subscription.</td>
+			</tr>
+			<tr>
+				<td>Delete</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To delete the selected subscription.</td>
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Undo the current changes in the subscription details.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Schedule Details</td>
+			</tr>
+			<tr>
+				<td>Hourly</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Hourly schedule setup.</td>
+			</tr>
+			<tr>
+				<td>Daily</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Daily schedule setup.</td>
+			</tr>
+			<tr>
+				<td>Weekly</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Weekly schedule setup.</td>
+			</tr>
+			<tr>
+				<td>Monthly</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Monthly schedule setup.</td>
+			</tr>
+			<tr>
+				<td>Once</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>One-time schedule setup.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Hourly Schedule</td>
+			</tr>
+			<tr>
+				<td>Run the schedule every (Hours)</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Hours should be selected from dropdown list.</td>				
+			</tr>
+			<tr>
+				<td>Run the schedule every (Minutes)</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Minutes should be selected from dropdown list.</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Daily Schedule</td>
+			</tr>
+			<tr>
+				<td>On the following days</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>If this option is selected, then atleast one week day should be selected.</td>
+			</tr>
+			<tr>
+				<td>Sun</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Mon</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Tue</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Wed</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Thu</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Fri</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Sat</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Every weekday</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>If this option is selected, Mon, Tue, Wed, Thu, Fri will be selected by default.</td>
+			</tr>
+			<tr>
+				<td>Repeat after this number of days</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>If this option is selected, Number of Days should be entered.</td>
+			</tr>
+			<tr>
+				<td>Number of Days</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Number of Days should be valid. Ex. 2</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Weekly Schedule</td>
+			</tr>
+			<tr>
+				<td>Repeat after this number of weeks</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Number of weeks should be valid. Ex. 2</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Monthly Schedule</td>
+			</tr>
+			<tr>
+				<td>Jan</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Feb</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Mar</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Apr</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>May</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Jun</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Jul</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Aug</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Sep</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Oct</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Nov</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Dec</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>On week of month</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>If this option is selected, Week of Month should be selected.</td>
+			</tr>
+			<tr>
+				<td>Week of Month</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Week of Month should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>On calendar day(s)</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>If this option is selected, Calendar Day(s) should be entered.</td>
+			</tr>
+			<tr>
+				<td>Calendar Day(s)</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Calendar Day(s) should be valid. Ex. 1,3-5</td>
+			</tr>			
+			<tr>
+				<td>Start Time (Hours)</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Start Time (Hours) should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Start Time (Minutes)</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Start Time (Minutes) should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>A.M.</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>P.M.</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Start Date</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Start Date should be valid date.</td>
+			</tr>
+			<tr>
+				<td>Stop this schedule on</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N (If checked, End Date should be entered).</td>
+			</tr>
+			<tr>
+				<td>End Date</td>
+				<td>Date Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>End Date should be valid date.</td>				
+			</tr>
+			<tr>
+				<td>OK</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Validates the scheduling information and closes the popup screen.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Closes the popup screen.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Report Parameter Setup - HirNode Selection</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>To search a specific House Code, type-in House Code# (1455, 900000) and press Enter key/click Search button.</td>				
+			</tr>
+			<tr>
+				<td>Hierarchy Nodes</td>
+				<td>Treeview</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Lists the hierarchy nodes in a treeview control.</td>
+			</tr>
+			<tr>
+				<td>Search</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To search a specific House Code in a hierarchy tree.</td>
+			</tr>			
+			<tr>
+				<td>OK</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Set top selected node as a report parameter.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Closes the popup screen.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">SSRS Reports - Actions Menu</td>
+			</tr>
+			<tr>
+				<td>SSRS Reports</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To show the SSRS Reports screen.</td>
+			</tr>
+			<tr>
+				<td>SSRS Report Subscriptions</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To show the SSRS Report Subscriptions screen.</td>
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">SSRS Reports concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/ssrsReports.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">SSRS Report Subscriptions concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/ssrsReportSubscriptions.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Report Parameter Setup - HirNode Selection concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/nodeSearch.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Hourly Schedule concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/hourlySchedule.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Daily Schedule concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/dailySchedule.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Weekly Schedule concept</td>
+			</tr>			
+			<tr>
+				<td><img src="images/weeklySchedule.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Monthly Schedule concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/monthlySchedule.png"></td>
+			</tr>			
+			<tr>
+				<td class="uiHeader">One-time Schedule concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/oneTimeSchedule.png"></td>
+			</tr>
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Search</td>
+				<td>There is no corresponding Unit available or you do not have enough permission to access it.</td>
+			</tr>
+			<tr>
+				<td>OK</td>
+				<td>In order to continue, the errors on the page must be corrected.</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>In order to save, the errors on the page must be corrected.</td>
+			</tr>
+			<tr>
+				<td>Delete</td>
+				<td>Are you sure you want to delete the subscription - [description] permanently?.</td>
+			</tr>
+			<tr>
+				<td>Error</td>
+				<td>[SAVE FAILURE] Error while updating the SSRS Subscription.</td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. Reports must be defined in a system look up table (RptReports)</div>
+		<div class="reference">2. Report Parameters must be defined in a system look up table (RptReportParameters)</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>RptReports</br>RptReportParameters</td>
+			</tr>
+		</table>
+	</body>
+</html>

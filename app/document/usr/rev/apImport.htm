@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>AP Import</h1>
+			<div class="description">The purpose of the <b>AP Import</b> is to import the AP Invoice details from a text file.</div>
+		</div>
+		<h2>UI Elements</h2>
+		<table class="elementTable">			
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>			
+			<tr>
+				<td class="uiHeader" colspan="5">AP Import</td>
+			</tr>
+			<tr>
+				<td>Browse</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Allows the user the select the text file.</td>
+			</tr>
+			<tr>
+				<td>Upload</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Upload the selected text file and import the AP Invoice details.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td></td>
+			</tr>			
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Importing AP Invoices concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/apImport.png"></td>
+			</tr>
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Browse</td>
+				<td>Invalid file format. Please select the correct text file.</td>
+			</tr>
+			<tr>
+				<td>Upload Error</td>
+				<td>Unable to upload the file. Please try again.</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>AP file imported successfully.</td>
+			</tr>
+			<tr>
+				<td>Save Error</td>
+				<td>[SAVE FAILURE] Error while importing AP File.</td>
+			</tr>
+		</table>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>RevAccountPayableInvoices</br>RevAccountPayableChecks</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>RevAccountPayableInvoiceUpdate<br>RevAccountPayableCheckUpdate</td>
+			</tr>
+		</table>
+		<h2>See Also</h2>
+		<div class="reference"><a href="apSearch.htm">AP Search</a></div>
+		<div class="reference"><a href="../scheduledJobs/apImport.htm">AP Import (Scheduled Job)</a></div>
+	</body>
+</html>

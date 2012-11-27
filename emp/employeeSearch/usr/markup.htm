@@ -1,0 +1,847 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Employee Search</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/emp/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <center><img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/></center>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>		
+		<div id="employeeGridLoading" style="position: absolute; top: 80px; left: 0px; z-index: 5050; width: 100%; height: 100%; background-color: black; opacity: 0.5; display: none;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loadingwhite.gif" alt="Loading"/>
+		        <div id="messageToUser1" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center; color:white;">Loading</div>    
+		    </div>
+		</div>
+		<div id="popupLoading" style="position: absolute; top: 0px; left: 0px; z-index: 6001; width: 830px; height: 410px; background-color: white; display: none;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <center><img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/></center>
+		        <div id="messageToUser2" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+		
+		<div class="pageHeader">
+	      <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>  
+        </div>	
+		
+	  	<div class="pageBody">
+	  		<div class="contentArea">
+                <div id="pageHeader" class="header">Employee Search</div>
+                <div class="body">
+                    <div id="searchArea">
+                        <div id="searchAreaEmp">
+                            <div class="labelText">Search String:</div>
+                            <div id="inputEmpSearch">
+                                <div id="SearchInput"></div>
+                            </div>
+                        </div>
+                        <div id="searchAreaStatus">
+                            <div class="labelText">Filter:</div>
+                            <div id="inputFilterTypes">
+						        <div id="FilterTypes"></div>
+					        </div>
+                        </div>
+                        <div id="searchAreaStatus">
+                            <div class="labelText">Status:</div>
+                            <div id="inputStatusTypes">
+						        <div id="StatusTypes"></div>
+					        </div>
+                        </div>
+                        <div id="searchAreaUnits">
+                             <div class="labelText">House Code:</div>
+                            <div id="inputUnits">
+						        <div id="houseCodeContainer" class="HouseCodeContainer"></div>
+					        </div>
+                        </div>
+					    <div id="searchAreaButtons">
+					        <div id="searchButtonEmp">
+						        <div id="SearchButton"></div>
+					        </div>
+					        <div id="newEmployee">
+						        <div id="EmployeeButton"></div>
+					        </div>
+					    </div>
+                        <div style="clear:both;"/>
+                    </div>
+                    <div id="EmployeeSearch"></div>
+				    <div style="clear:both;"></div>
+                </div>                
+			</div>
+		</div>	
+
+		<div id="popupEmployee">
+			<div class="contentArea popupHeader">
+				<span id="popupHeader"></span>
+				<span id="popupSubHeader"></span>
+				<span id="popupSubHeaderEmployeeName" class="employeeName"></span>
+				<span><a id="ViewHistory" class="employeeViewHistory" title="View the history of changes">View History</a></span>
+			</div>
+			<div style="clear:both;"></div>
+			<div id="SSNContianer" class="ssnDiv">
+				<div id="TableEditArea">
+					<div id="SSNDiv">
+						<div class="LabelTextAreaEmployee">
+							<span class="requiredFieldIndicator">&#149;</span>SSN:<a id="SSNLookUp">Look-up</a>									
+						</div>						
+						<div class="InputTextArea">
+							<div id="EmployeeSSN"></div>
+						</div>
+					</div>
+					<div id="EditEmployee">
+						<div class="LabelTextAreaEmployee">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>Edit Employee:				
+						</div>
+						<div class="InputTextArea">
+							<div id="EditWizardAction"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="PersonalDetails" class="personalDetailsDiv">
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="requiredFieldIndicator">&#149;</span>First Name:				
+					</div>
+					<div class="InputTextArea">
+						<div id="FirstName"></div>
+					</div>
+				</div>
+				<div style="clear:both"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="nonRequiredFieldIndicator">&nbsp;</span>Middle Initial:				
+					</div>
+					<div class="InputTextArea">
+						<div id="MiddleInitial"></div>
+					</div>
+				</div>
+				<div style="clear:both"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="requiredFieldIndicator">&#149;</span>Last Name:				
+					</div>
+					<div class="InputTextArea">
+						<div id="LastName"></div>
+					</div>
+				</div>
+			</div>
+			<div id="AddressDetails" class="addressDetailsDiv">
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="requiredFieldIndicator">&#149;</span>Address1:				
+					</div>
+					<div class="InputTextArea">
+						<div id="Address1"></div>
+					</div>
+				</div>
+				<div style="clear:both"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="nonRequiredFieldIndicator">&nbsp;</span>Address2:				
+					</div>
+					<div class="InputTextArea">
+						<div id="Address2"></div>
+					</div>
+				</div>
+				<div style="clear:both"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="requiredFieldIndicator">&#149;</span>City:				
+					</div>
+					<div class="InputTextArea">
+						<div id="City"></div>
+					</div>
+				</div>
+				<div style="clear:both"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="requiredFieldIndicator">&#149;</span>State:				
+					</div>
+					<div class="InputTextArea">
+						<div id="State"></div>
+					</div>
+				</div>
+				<div style="clear:both"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="requiredFieldIndicator">&#149;</span>Postal Code:				
+					</div>
+					<div class="InputTextArea">
+						<div id="PostalCode"></div>
+					</div>
+				</div>
+			</div>
+			<div id="ContactDetails" class="contactDetailsDiv">
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="nonRequiredFieldIndicator">&nbsp;</span>Email:			
+					</div>
+					<div class="InputTextArea">
+						<div id="Email"></div>
+					</div>
+				</div>
+				<div style="clear:both"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="nonRequiredFieldIndicator">&nbsp;</span>Home Phone:			
+					</div>
+					<div class="InputTextArea">
+						<div id="HomePhone"></div>
+					</div>
+				</div>
+				<div style="clear:both"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="nonRequiredFieldIndicator">&nbsp;</span>Fax:			
+					</div>
+					<div class="InputTextArea">
+						<div id="Fax"></div>
+					</div>
+				</div>
+				<div style="clear:both"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="nonRequiredFieldIndicator">&nbsp;</span>Pager:			
+					</div>
+					<div class="InputTextArea">
+						<div id="Pager"></div>
+					</div>
+				</div>
+				<div style="clear:both"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="nonRequiredFieldIndicator">&nbsp;</span>Cell Phone:				
+					</div>
+					<div class="InputTextArea">
+						<div id="CellPhone"></div>
+					</div>
+				</div>
+			</div>		
+			<div id="EmployeeInformation" class="employeeInformationDiv">
+				<div id="contianerLeft">
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="requiredFieldIndicator">&#149;</span>Employee Number:			
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeeNumber"></div>
+						</div>
+					</div>
+					<div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="requiredFieldIndicator">&#149;</span>Ceridian Company:				
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeePayrollCompany"></div>
+						</div>
+					</div>
+					<div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="requiredFieldIndicator">&#149;</span>Status:				
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeeGeneralStatusType"></div>
+						</div>
+					</div>
+					<div style="clear:both"></div>
+					<div id="GeneralCurrentHireDate">
+						<div id="TableEditArea">
+							<div class="LabelTextAreaEmployee">
+								<span class="requiredFieldIndicator">&#149;</span>Date of Current Hire:				
+							</div>
+							<div class="InputTextArea">
+								<div id="EmployeeHireDate"></div>
+							</div>
+						</div>            
+						<div style="clear:both"></div>
+						<div id="TableEditArea">
+							<div class="LabelTextAreaEmployee">
+								<span class="nonRequiredFieldIndicator">&nbsp;</span>Seniority Date:				
+							</div>
+							<div class="InputTextArea">
+								<div id="EmployeeSeniorityDate"></div>
+							</div>
+						</div>
+					</div>
+					<div style="clear:both"></div>	
+					<div id="TermDateCode">
+						<div id="TableEditArea">
+							<div class="LabelTextAreaEmployee">
+								<span class="nonRequiredFieldIndicator">&nbsp;</span>Termination Date:	
+							</div>
+							<div class="InputTextArea">
+								<div id="EmployeeTerminationDate"></div>
+							</div>
+						</div> 
+						<div style="clear:both"></div>
+						<div id="TableEditArea">
+							<div class="LabelTextAreaEmployee">
+								<span class="nonRequiredFieldIndicator">&nbsp;</span>Separation Code:									
+							</div>
+							<div class="InputTextArea">
+								<div id="SeparationCode"></div>
+							</div>
+						</div>			   
+			            <div style="clear:both"></div>
+					</div>
+				</div>
+				<div id="contianerRight">
+            		<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee"></div>
+						<div class="InputTextArea"></div>
+					</div>
+            		<div style="clear:both"></div>
+		            <div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="requiredFieldIndicator">&#149;</span>Crothall Employee:				
+						</div>
+						<div class="InputTextArea">
+							<div class="radioButtonAuth">
+								<input type="radio" id="CrothallEmployeeYes" name="CrothallEmployee" tabindex="203" checked="true" value="true" /><span class="labelRadio">Yes</span>					
+							</div>
+							<div class="radioButtonAuth">
+								<input type="radio" id="CrothallEmployeeNo" name="CrothallEmployee" tabindex="204" value="false" /><span class="labelRadio">No</span>					
+							</div>
+						</div>
+					</div>
+					<div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="requiredFieldIndicator">&#149;</span>Status Category:				
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeeStatusCategoryType"></div>
+						</div>
+					</div>            
+            		<div style="clear:both"></div>	
+					<div id="GeneralOriginalHireDate">
+						<div id="TableEditArea">
+							<div class="LabelTextAreaEmployee">
+								<span class="nonRequiredFieldIndicator">&nbsp;</span>Date of Original Hire:				
+							</div>
+							<div class="InputTextArea">
+								<div id="EmployeeOriginalHireDate"></div>
+							</div>
+						</div>
+						<div style="clear:both"></div>
+						<div id="TableEditArea">
+							<div class="LabelTextAreaEmployee">
+								<span class="requiredFieldIndicator">&#149;</span>Effective Date:				
+							</div>
+							<div class="InputTextArea">
+								<div id="EmployeeEffectiveDate"></div>
+							</div>
+						</div>
+					</div>
+					<div style="clear:both"></div>
+					<div id="TermReasonDate">
+						<div id="TableEditArea">
+							<div class="LabelTextAreaEmployee">
+								<span class="nonRequiredFieldIndicator">&nbsp;</span>Termination Reason:					
+							</div>
+							<div class="InputTextArea">
+								<div id="EmployeeTerminationReason"></div>
+							</div>
+						</div>
+						<div style="clear:both"></div>
+						<div id="TableEditArea">
+							<div class="LabelTextAreaEmployee">
+								<span class="nonRequiredFieldIndicator">&nbsp;</span>Effective Date:			
+							</div>
+							<div class="InputTextArea">
+								<div id="TermEmployeeEffectiveDate"></div>
+							</div>
+						</div>  
+					</div> 
+				</div>
+			</div>
+			<div id="EmployeeGeneralInformation" class="employeeGeneralInformationDiv">
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="requiredFieldIndicator">&#149;</span>Birth Date:				
+					</div>
+					<div class="InputTextArea">
+						<div id="EmployeeBirthDate"></div>
+					</div>
+				</div>
+				<div style="clear:both"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="requiredFieldIndicator">&#149;</span>Ethnicity:				
+					</div>
+					<div class="InputTextArea">
+						<div id="EmployeeEthnicity"></div>
+					</div>
+				</div>
+				<div style="clear:both"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="nonRequiredFieldIndicator">&nbsp;</span>Gender:			
+					</div>
+					<div class="InputTextArea">
+						<div class="radioButtonAuth">
+							<input type="radio" id="GenderYes" name="Gender" tabindex="232" checked="true" value="Male" /><span class="labelRadio">Male</span>					
+						</div>
+						<div class="radioButtonFemale">
+							<input type="radio" id="GenderNo" name="Gender" tabindex="233" value="Female" /><span class="labelRadio">Female</span>					
+						</div>				
+					</div>
+				</div>
+				<div style="clear:both"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="requiredFieldIndicator">&#149;</span>Marital Status:				
+					</div>
+					<div class="InputTextArea">
+						<div id="EmployeeMaritalStatus"></div>
+					</div>
+				</div>
+				<div style="clear:both"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="nonRequiredFieldIndicator">&nbsp;</span>I-9 Status:			
+					</div>
+					<div class="InputTextArea">
+						<div id="EmployeeI9Status"></div>
+					</div>
+				</div>
+				<div style="clear:both"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="nonRequiredFieldIndicator">&nbsp;</span>VETS-100A Status:				
+					</div>
+					<div class="InputTextArea">
+						<div id="EmployeeVETSStatus"></div>
+					</div>
+				</div>
+			</div>
+			<div id="JobInformation" class="jobInformationDiv">
+		        <div id="contianerLeft">
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="requiredFieldIndicator">&#149;</span>Effective Date:				
+						</div>
+						<div class="InputTextArea">
+							<div id="JobEffectiveDate"></div>
+						</div>
+					</div>
+					<div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="requiredFieldIndicator">&#149;</span>Job Code:				
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeeJobCode"></div>				
+						</div>
+					</div>
+					<div style="clear:both"></div>
+		            <div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>Union Employee:
+						</div>
+						<div class="InputTextArea">
+							<div class="radioButtonAuth">
+								<input type="radio" id="UnionYes" name="Union" tabindex="304" value="true" /><span class="labelRadio">Yes</span>					
+							</div>
+							<div class="radioButtonAuth">
+								<input type="radio" id="UnionNo" name="Union" tabindex="305" value="false" /><span class="labelRadio">No</span>					
+							</div>	
+						</div>
+					</div>
+		            <div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>Background Check Date:			
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeeBackgroundCheckDate"></div>
+						</div>
+					</div>
+		            <div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee" id="LabelUnionStatus">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>Union Status:			
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeeUnionStatus"></div>
+						</div>
+					</div>
+		            <div style="clear:both"></div>
+		        </div>
+		        <div id="contianerRight">
+					<div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>Job Change Reason:			
+						</div>
+						<div class="InputTextArea">
+							<div id="JobChangeReason"></div>
+						</div>
+					</div>
+		            <div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>Default House Code Job:			
+						</div>
+						<div class="InputTextArea">
+							<div id="DefaultHouseCodeJob"></div>
+						</div>
+					</div>
+		            <div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>Exempt:			
+						</div>
+						<div class="InputTextArea">
+							<div class="radioButtonAuth">
+								<input type="radio" id="ExemptYes" name="Exempt" tabindex="306" checked="true" value="true" /><span class="labelRadio">Yes</span>					
+							</div>
+							<div class="radioButtonAuth">
+								<input type="radio" id="ExemptNo" name="Exempt" tabindex="307" value="false" /><span class="labelRadio">No</span>					
+							</div>	
+						</div>
+					</div>
+					<div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee" id="LabelUnion">
+		                	<span id="nonRequiredFieldIndicator">Union:</span> 
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeeUnion"></div>
+						</div>
+					</div>
+				</div>
+        	</div>
+			<div id="Compensation" class="compensationDiv">
+		        <div id="contianerLeft">
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="requiredFieldIndicator">&#149;</span>Effective Date:				
+						</div>
+						<div class="InputTextArea">
+							<div id="CompensationEffectiveDate"></div>
+						</div>
+					</div>
+					<div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="requiredFieldIndicator">&#149;</span>Hourly Pay Rate:				
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeePayRate"></div>				
+						</div>
+					</div>
+					<div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>Review Date:
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeeReviewDate"></div>	
+						</div>
+					</div>
+					<div style="clear:both"></div>
+		            <div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>Alt Rate of Pay A:			
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeeAlternatePayRateA"></div>
+						</div>
+					</div>
+		            <div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>Alt Rate of Pay C:			
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeeAlternatePayRateC"></div>
+						</div>
+					</div>
+		            <div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>Device Group:			
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeeDeviceGroup"></div>
+						</div>
+					</div>
+					<div style="clear:both"></div>
+		        </div>
+		        <div id="contianerRight">
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>Rate Change Reason:				
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeeRateChangeReason"></div>
+						</div>
+					</div>
+		            <div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="requiredFieldIndicator">&#149;</span>Scheduled Hours:				
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeeScheduledHours"></div>
+						</div>
+					</div>
+					<div style="clear:both"></div>
+		            <div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>Work Shift:				
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeeWorkShift"></div>	
+						</div>
+					</div>
+		            <div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>Alt Rate of Pay B:				
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeeAlternatePayRateB"></div>
+						</div>
+					</div>
+					<div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>Alt Rate of Pay D:				
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeeAlternatePayRateD"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="Federal" class="federalDiv">
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="nonRequiredFieldIndicator">&nbsp;</span>Fed Exemptions:			
+					</div>
+					<div class="InputTextArea">
+						<div id="EmployeeFedExemptions"></div>
+					</div>
+				</div>
+				<div style="clear:both"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="requiredFieldIndicator">&#149;</span>Tax Status:				
+					</div>
+					<div class="InputTextArea">
+						<div id="MaritalStatusFederalTaxType"></div>
+					</div>
+				</div>
+				<div style="clear:both"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="nonRequiredFieldIndicator">&nbsp;</span>Adjustment Type:				
+					</div>
+					<div class="InputTextArea">
+						<div id="EmployeeFederalAdjustment"></div>				
+					</div>
+				</div>
+				<div style="clear:both"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="nonRequiredFieldIndicator">&nbsp;</span>Adjustment Value:
+					</div>
+					<div class="InputTextArea">
+						<div id="EmployeeFedAdjustmentAmount"></div>
+					</div>
+				</div>
+			</div>
+			<div id="StateTax" class="stateTaxDiv">
+		        <div id="contianerLeft">
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="requiredFieldIndicator">&#149;</span>Primary State:
+						</div>
+						<div class="InputTextArea">
+							<div id="PrimaryTaxState"></div>
+						</div>
+					</div>
+					<div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee" id="LabelSecondaryTaxState">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>Secondary State:
+						</div>
+						<div class="InputTextArea">
+							<div id="SecondaryTaxState"></div>				
+						</div>
+					</div>
+					<div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>State Exemptions:
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeeStateExemptions"></div>	
+						</div>
+					</div>
+		            <div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>State Adjust Value:			
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeeStateAdjustmentAmount"></div>
+						</div>
+					</div>
+		            <div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>State SDI Adjust:				
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeeStateSDIAdjust"></div>
+						</div>
+					</div>
+		            <div style="clear:both"></div>
+					<div id="PrimaryStateAdditionalInfoContainer"></div>					
+				</div>
+				<div id="contianerRight">
+		            <div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="requiredFieldIndicator">&#149;</span>Status:				
+						</div>
+						<div class="InputTextArea">
+							<div id="MaritalStatusStateTaxTypePrimary"></div>
+						</div>
+					</div>
+		            <div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>Status:				
+						</div>
+						<div class="InputTextArea">
+							<div id="MaritalStatusStateTaxTypeSecondary"></div>
+						</div>
+					</div>
+             		<div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee"></div>
+						<div class="InputTextArea"></div>
+					</div>
+             		<div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>State Adjust Type:				
+						</div>
+						<div class="InputTextArea">
+							<div id="StateAdjustmentType"></div>	
+						</div>
+					</div>
+					<div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>State SDI Value:				
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeeStateSDIAdjustRate"></div>
+						</div>
+					</div>
+					<div style="clear:both"></div>
+					<div id="SecondaryStateAdditionalInfoContainer"></div>
+        		</div>
+			</div>
+			<div id="LocalTax" class="localTaxDiv">
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="nonRequiredFieldIndicator">&nbsp;</span>Local Tax Adj Type:	
+					</div>
+					<div class="InputTextArea">
+						<div id="EmployeeLocalTaxAdjustmentType"></div>
+					</div>
+				</div>
+				<div style="clear:both"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="nonRequiredFieldIndicator">&nbsp;</span>Local Tax Adj Value:			
+					</div>
+					<div class="InputTextArea">
+						<div id="EmployeeLocalTaxAdjustmentAmount"></div>
+					</div>
+				</div>
+				<div style="clear:both"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="nonRequiredFieldIndicator">&nbsp;</span>Local Tax Code 1:		
+					</div>
+					<div class="InputTextArea">
+						<div id="LocalTaxCode1"></div>				
+					</div>
+				</div>
+				<div style="clear:both"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="nonRequiredFieldIndicator">&nbsp;</span>Local Tax Code 2:			
+					</div>
+					<div class="InputTextArea">
+						<div id="LocalTaxCode2"></div>
+					</div>
+				</div>
+				<div style="clear:both"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="nonRequiredFieldIndicator">&nbsp;</span>Local Tax Code 3:		
+					</div>
+					<div class="InputTextArea">
+						<div id="LocalTaxCode3"></div>
+					</div>
+				</div>
+			</div>
+			<div id="LifeIndicator" class="localTaxDiv">
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="nonRequiredFieldIndicator">&nbsp;</span>Basic Life Indicator:		
+					</div>
+					<div class="InputTextArea">
+						<div id="BasicLifeIndicatorType"></div>
+					</div>
+				</div>
+			</div>
+			<div id="houseCodeTerm" style="display:none;">
+			    <div class="LabelTextAreaEmployee">
+				    <span class="requiredFieldIndicator">&#149;</span>House Code:				
+			    </div>
+			    <div class="InputTextArea">
+					<div id="houseCodeTemplateContainer" class="HouseCodeContainer"></div>
+			    </div>
+		    </div>		
+			<div style="clear:both;"></div>
+			<div id="AnchorCancel"></div>
+			<div id="AnchorNext"></div>
+			<div id="AnchorSave"></div>
+			<div id="AnchorBack"></div>
+		</div>
+		<div id="popupHistory">
+			<div class="contentArea popupHeader">Employee History</div>
+			<div style="clear:both;"></div>
+			<div id="HistoryGrid"></div>
+			<div style="clear:both;"></div>
+			<div id="AnchorClose"></div>
+		</div>
+		<div id="backgroundPopup"></div>
+		<div id="EmployeeSearchContext" style="display:none;Z-INDEX: 999; POSITION: absolute" ></div>
+		<div id="iiInputValidationMaster"></div>
+	</body>
+</html>

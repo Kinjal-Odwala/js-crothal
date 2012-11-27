@@ -1,0 +1,64 @@
+﻿body {	
+	background-color: #2c2f50;
+}
+
+#divContent {
+	float: left;
+	width: 200px;
+	overflow: auto;
+	border: solid #AAAAAA thin; 
+	border-width: 1px;
+	padding: 10px;	
+	background-color: #ffffff;
+}
+
+#divFrame {
+	float: left;
+	border: solid #AAAAAA thin; 
+	border-width: 1px;
+	padding: 0px 00px 10px 10px;
+	margin-left: 10px;
+	background-color: #ffffff;
+}
+
+.treeview li { 
+	padding: 3px 0 2px 18px;
+}
+
+.treeview span.module, .treeview span.file {
+	font-family: Arial, Helvetica, sans-serif; 
+	font-size: 9pt;
+	color: #032D23;
+	padding: 1px 0 1px 20px;
+}
+
+.treeview span.module:hover, .treeview span.file:hover {	
+	color: red;
+}
+
+.treeview span.module { 
+	background: url(/fin/cmn/usr/media/common/moduleSelected.gif) 0 0 no-repeat; 
+}
+
+.treeview li.expandable span.module { 
+	background: url(/fin/cmn/usr/media/common/module.gif) 0 0 no-repeat;
+}
+
+.treeview span.file {
+	background: url(/fin/cmn/usr/media/common/file.gif) 0 0 no-repeat;
+}
+
+a:link {
+	color: #000000;
+	text-decoration: none;
+}
+
+a:visited {
+	color: #000000;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #FF0000;
+	text-decoration: underline;
+}

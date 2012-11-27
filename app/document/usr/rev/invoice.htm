@@ -1,0 +1,1106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Invoicing / AR</h1>
+			<div class="description">The <b>Invoicing / AR</b> module allows end user to create, print, collect and credit invoices.
+				An invoice is considered complete when the total collected equals the total of the invoice.</br></br>
+				Sales tax will be calculated either at House Code or Job level. Sales tax line item will be added for Job 
+				if it is configured as Override Site Tax in House Codes --> Jobs setup (find the tax rate based on the Job address details) 
+				else sales tax line item will be added for House Code (find the tax rate based on the Site address details).</br></br>
+				It also allows the user to create a description invoice line item (Account Code "0000") that would print on the invoice. 
+				Description line item will not be included in the calculation such as the sales tax, subtotal and total.
+			</div>
+		</div>
+		<h2>UI Elements</h2>
+		<table class="elementTable">			
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Invoice Search</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Hierarchy Tree View</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>To search a specific House Code, type-in House Code # (1455, 900000) and press Enter key.</td>				
+			</tr>
+			<tr>
+				<td>All Open Invoices</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>To list all open invoices.</td>
+			</tr>
+			<tr>
+				<td>Completed Invoices for Fiscal Year</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>To list all completed invoices.</td>
+			</tr>
+			<tr>
+				<td>Fiscal Year</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Select the Fiscal Year if "Completed Invoices for Fiscal Year" option is selected.</td>
+			</tr>
+			<tr>
+				<td>Load</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To list all completed invoices. The "Load" Button is visible only if "Completed Invoices for Fiscal Year" option is selected.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Invoices</td>
+			</tr>
+			<tr>
+				<td>Invoices</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>The grid will holds the list of Invoices based on the search criteria.
+			</tr>
+			<tr>
+				<td>Invoice #</td>
+				<td>Dispaly field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Invoice number.</td>
+			</tr>
+			<tr>
+				<td>Amount</td>
+				<td>Dispaly field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Total amount of the invoice.</td>
+			</tr>
+			<tr>
+				<td>Date Received</td>
+				<td>Dispaly field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>The date the invoice was generated.</td>
+			</tr>
+			<tr>
+				<td>Collected</td>
+				<td>Dispaly field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>The amount that has been collected on the invoice from the Bill To field via JDE.</td>
+			</tr>
+			<tr>
+				<td>Credited</td>
+				<td>Dispaly field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>The amount that was credited back to the Bill To field via JDE.</td>
+			</tr>
+			<tr>
+				<td>Last Printed</td>
+				<td>Dispaly field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>The most recent date that the invoice was printed.</td>
+			</tr>
+			<tr>
+				<td>Bill To</td>
+				<td>Dispaly field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Name of the Customer or House Code.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+			<tr>
+				<td>New Invoice</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Opens the popup screen which will allow the user to create new invoice.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To cancel the selected invoice. Only "Open" invoices can be cancelled.</td>
+			</tr>
+			<tr>
+				<td>Preview</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To view the selected invoice in pdf format. Invoices printed using preview functionality will result in the copy being marked VOID as this is not a usable/real invoice.</td>
+			</tr>
+			<tr>
+				<td>Print</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To print the selected invoice in pdf format. Confirmation message will be shown before printing and the invoice will become READONLY after printing.</td>
+			</tr>
+			<tr>
+				<td>Print Memo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To print the selected invoice credit memo in pdf format.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">New Invoice</td>
+			</tr>
+			<tr>
+				<td>Create Invoice by</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Create Invoice by (Customer/House Code).</td>
+			</tr>
+			<tr>
+				<td>Clone existing Invoice</td>
+				<td>Radio button field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Clone existing Invoice (Yes/No).</td>
+			</tr>
+			<tr>
+				<td>Next</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Invoice Search screen will be shown if "Clone existing Invoice - Yes" option is selected.</br>
+					Invoice Setup screen will be shown if "Clone existing Invoice - No" option is selected.</br>
+					If "Clone existing Invoice - Yes" option is selected then new invoice will be created with all line items from selected invoice.</br>
+					If "Create Invoice by - Customer" option is selected then it will allow the user to add the line items for different house codes. 
+					The selected Customer should be associated with the House Codes.
+				</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To cancel the creating invoice process.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Invoice Setup</td>
+			</tr>
+			<tr>
+				<td>Tax Exempt</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>(Y / N). Tax Exempt Id is required if Tax Exempt is selected as "Yes".</td>
+			</tr>
+			<tr>
+				<td>Tax Exempt Id</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Tax Exempt Id is required and should be valid if Tax Exempt is selected as "Yes". 
+					It should be blank if Tax Exempt is selected as "No".
+				</td>
+			</tr>
+			<tr>
+				<td>Start Date</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Start Date of the period and it should be valid date.</td>
+			</tr>
+			<tr>
+				<td>End Date</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>End Date of the period and it should be valid date. The End Date should not be less than Start Date.</td>
+			</tr>
+			<tr>
+				<td>Invoice Date</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Invoice Date should be valid date.</td>
+			</tr>
+			<tr>
+				<td>Due Date</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Due Date should be valid date. The Due Date should not be less than Invoice Date.</td>
+			</tr>
+			<tr>
+				<td>Bill To</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>List of House Code title and all customers associated to the House Code. Bill To should be selected from dropdown list. 
+				Warning message will be shown if House Code is selected.
+				</td>
+			</tr>
+			<tr>
+				<td>Title / Company</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Name of the customer or site.</td>
+			</tr>
+			<tr>
+				<td>Address 1</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Address 1 of the customer or site.</td>
+			</tr>
+			<tr>
+				<td>Address 2</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Address 2 of the customer or site.</td>
+			</tr>
+			<tr>
+				<td>City</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>City of the customer or site.</td>
+			</tr>
+			<tr>
+				<td>State</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>State of the customer or site. State should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Postal Code</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Postal code of the customer or site.</td>
+			</tr>
+			<tr>
+				<td>State Tax</td>
+				<td>Readonly Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>State tax of the site which is associated to the house code.</td>
+			</tr>
+			<tr>
+				<td>Local Tax</td>
+				<td>Readonly Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Local tax of the site which is associated to the house code.</td>
+			</tr>
+			<tr>
+				<td>PO Number</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Purchase Order Number of the invoice.</td>
+			</tr>
+			<tr>
+				<td>Notes</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Description of the invoice.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To save the invoice details.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To cancel the creating invoice process.</td>
+			</tr>
+			<tr>
+				<td>OK</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To close the warning popup window.</td>
+			</tr>
+			<tr>
+				<td>Edit</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To allow the user to modify the invoice header information.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Invoice Search</td>
+			</tr>
+			<tr>
+				<td>Invoice #</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Enter Invoice number.</td>				
+			</tr>
+			<tr>
+				<td>Start Date</td>
+				<td>Date Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Start Date should be valid if entered.</td>				
+			</tr>
+			<tr>
+				<td>Customer</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Enter name of the Customer.</td>				
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Hierarchy Tree View</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>To search a specific House Code, type-in House Code # (1455, 900000) and press Enter key.</td>				
+			</tr>
+			<tr>
+				<td>Search</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>List the Invoices based on the search criteria. At least one search criteria should be entered to list the Invoices.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Invoices</td>
+			</tr>
+			<tr>
+				<td>Invoices</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>The grid will holds the list of Invoices based on the search criteria.</td>
+			</tr>
+			<tr>
+				<td>Invoice Number</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Number of the Invoice.</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>House Code of the Invoice.</td>
+			</tr>
+			<tr>
+				<td>Customer</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Name of the Customer.</td>
+			</tr>			
+			<tr>
+				<td>Invoice Date</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Date of the Invoice.</td>
+			</tr>
+			<tr>
+				<td>Amount</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Total amount of the Invoice.</td>
+			</tr>
+			<tr>
+				<td>Collected</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Collected amount of the Invoice.</td>
+			</tr>
+			<tr>
+				<td>Credited</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Credited amount of the Invoice.</td>
+			</tr>
+			<tr>
+				<td>Last Printed</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Last Printed date of the Invoice.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+			<tr>
+				<td>Next</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To show the Invoice Setup screen after selecting the invoice from the list.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To cancel the creating invoice process.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Create / Modify Invoices - Invoice Details<font style="font-size: 12px; font-weight: normal;"> (Note: If selected invoice is printed then all editable fields will become display fields and it will not allow the user to add/modify/delete the line items).</font></td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Text / Disaply field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>House Code will be shown only if the invoice is created by House Code. It should exists in lookup table and it should be associated to the Customer.</td>
+			</tr>
+			<tr>
+				<td>Job</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Job should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Account Code</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Account Code should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Quantity</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Quantity of the invoice line item and it should be valid.</td>
+			</tr>
+			<tr>
+				<td>Price</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Price of the invoice line item and it should be valid.</td>
+			</tr>
+			<tr>
+				<td>Total</td>
+				<td>Readonly Text field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Total amount of the Invoice line item.</td>
+			</tr>
+			<tr>
+				<td>Status</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Status of the invoice line item(Open/InProcess/Posted).</td>
+			</tr>
+			<tr>
+				<td>Taxable</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>(Y / N). If Taxable checkbox is checked then State and Local tax will be calcualted for the line item.</td>
+			</tr>
+			<tr>
+				<td>Show</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>(Y / N). If Show checkbox is checked then the line item will be shown in the report.</td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Description of the invoice line item.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+			<tr>
+				<td>New</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To add new invoice line item details.</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To save the invoice line item details.</td>
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Undo the changes to invoice line items being edited.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Context Menu</td>
+			</tr>
+			<tr>
+				<td>Add Item</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>User can right click on the invoice line item and select Add Item to add the new item details.</td>
+			</tr>
+			<tr>
+				<td>Edit Item</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>User can right click on the invoice line item and select Edit Item to edit the item details.</td>
+			</tr>
+			<tr>
+				<td>Delete Item</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>User can right click on the invoice line item and select Delete Item to delete the item details.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Invoice Header Info<font style="font-size: 12px; font-weight: normal;"> (Note: If selected invoice is printed then all editable fields will become readonly fields and it will not allow the user to modify the invoice header details).</font></td>
+			</tr>
+			<tr>
+				<td>Tax Exempt</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>(Y / N). Tax Exempt Id is required if Tax Exempt is selected as "Yes".</td>
+			</tr>
+			<tr>
+				<td>Tax Exempt Id</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Tax Exempt Id is required and should be valid if Tax Exempt is selected as "Yes". 
+					It should be blank if Tax Exempt is selected as "No".
+				</td>
+			</tr>
+			<tr>
+				<td>Start Date</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Start Date of the period and it should be valid date.</td>
+			</tr>
+			<tr>
+				<td>End Date</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>End Date of the period and it should be valid date. The End Date should not be less than Start Date.</td>
+			</tr>
+			<tr>
+				<td>Invoice Date</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Invoice Date should be valid date.</td>
+			</tr>
+			<tr>
+				<td>Due Date</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Due Date should be valid date. The Due Date should not be less than Invoice Date.</td>
+			</tr>
+			<tr>
+				<td>Bill To</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>List of House Code title and all customers associated to the House Code. Bill To should be selected from dropdown list. 
+				Warning message will be shown if House Code is selected.
+				</td>
+			</tr>
+			<tr>
+				<td>Title / Company</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Name of the customer or site.</td>
+			</tr>
+			<tr>
+				<td>Address 1</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Address 1 of the customer or site.</td>
+			</tr>
+			<tr>
+				<td>Address 2</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Address 2 of the customer or site.</td>
+			</tr>
+			<tr>
+				<td>City</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>City of the customer or site.</td>
+			</tr>
+			<tr>
+				<td>State</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>State of the customer or site. State should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Postal Code</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Postal code of the customer or site.</td>
+			</tr>
+			<tr>
+				<td>State Tax</td>
+				<td>Readonly Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>State tax of the site which is associated to the house code.</td>
+			</tr>
+			<tr>
+				<td>Local Tax</td>
+				<td>Readonly Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Local tax of the site which is associated to the house code.</td>
+			</tr>
+			<tr>
+				<td>PO Number</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Purchase Order Number of the invoice.</td>
+			</tr>
+			<tr>
+				<td>Notes</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Description of the invoice.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To save the invoice header details.</td>
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Undo the changes to invoice header being edited.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Modify Accounts Receivable<font style="font-size: 12px; font-weight: normal;"> (Note: If selected invoice is completed then all editable fields will become display fields and it will not allow the user to add/modify/delete the credit memo line items).</font></td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Text / Disaply field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>House Code will be shown only if the invoice is created by House Code. It should exists in lookup table and it should be associated to the Customer.</td>
+			</tr>
+			<tr>
+				<td>Deposit Date</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Date the check was deposited as recorded within JDE for Collections and date Credit Memo generated for Credits.</td>
+			</tr>
+			<tr>
+				<td>Check Date</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Date of check as recorded within JDE for Collections and date Credit Memo generated for Credits.</td>
+			</tr>
+			<tr>
+				<td>Check Number</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Check number as recorded within JDE for Collections and "CM" for Credits.</td>
+			</tr>
+			<tr>
+				<td>Amount</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Amount as recorded within JDE for Collections and credit amount for Credits.</td>
+			</tr>
+			<tr>
+				<td>Account Code</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Account Code being credited and it should be selected from dropdown list.</td>
+			</tr>			
+			<tr>
+				<td>Payer</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Person/company crediting or making payment.</td>
+			</tr>
+			<tr>
+				<td>Status</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Status of the account receivable line item(Open/InProcess/Posted).</td>
+			</tr>			
+			<tr>
+				<td>Notes</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Description of the invoice line item.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+			<tr>
+				<td>Credit Invoice</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To add new account receivable line item details.</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To save the account receivable line item details.</td>
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Undo the changes to account receivable line items being edited.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Context Menu</td>
+			</tr>
+			<tr>
+				<td>Add Item</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>User can right click on the account receivable item and select Add Item to add the new credit memo details.</td>
+			</tr>
+			<tr>
+				<td>Edit Item</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>User can right click on the account receivable line item and select Edit Item to edit the credit memo details.</td>
+			</tr>
+			<tr>
+				<td>Delete Item</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>User can right click on the account receivable line item and select Delete Item to delete the credit memo details.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Actions Menu</td>
+			</tr>
+			<tr>
+				<td>Save Invoice / AR</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To save the current Invoice / AR details.</td>
+			</tr>
+			<tr>
+				<td>Undo current changes to Invoice / AR</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Undo the changes to Invoice / AR being edited.</td>
+			</tr>			
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Create / Modify Invoices concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/invoice.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Creating New Invoice concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/newInvoice.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Searching Invoice concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/invoiceSearchNew.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Invoice Setup concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/invoiceSetup.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Modify Invoice Header Info concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/headerInfo.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Modify Accounts Receivable concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/receivable.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Preview Invoice concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/previewInvoice.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Print Invoice concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/printInvoice.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Warning Message concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/warning.png"></td>
+			</tr>
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>New Invoice</td>
+				<td>Either Site information not found or Site is not associated to the House Code [xxxxxxx]. Please verify and try again!.</br>
+					Warning: You have selected a House Code as the customer.</br>
+					Error - There is a mismatch with the follow Site setup information "Zip=xxxxx, City=Unknown, State=xxxxxxxxx.
+					Please correct the address of the site by accessing HouseCode -> Sites prior to continuing.</br>
+				</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Are you sure you want to cancel the Invoice # xxxxxxx?.</td>
+			</tr>
+			<tr>
+				<td>Print</td>
+				<td>The selected invoice will become READONLY. Once selecting OK you will be able to print the selected invoice 
+					and no future modifications or deletions will be accepted. If more modifications are necessary please select the 
+					Cancel button and finish making your changes - Thank you!.
+				</td>
+			</tr>
+			<tr>
+				<td>Load</td>
+				<td>In order to search, the errors on the page must be corrected.</td>
+			</tr>
+			<tr>
+				<td>Search</td>
+				<td>Please enter search criteria: Invoice #, Invoice Date, Customer or House Code.</td>
+			</tr>
+			<tr>
+				<td>Next</td>
+				<td>Please select the Invoice from the list.</br>
+					The selected invoice Customer is not associated to the House Code [xxxxxx]. Please select the Customer which is associated to the House Code [xxxxxx].
+				</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>In order to save, the errors on the page must be corrected.</br>
+					Warning: Service Period Start Date, End Date, Invoice Date, Due Date is prior to the current period Start Date.
+				</td>
+			</tr>
+			<tr>
+				<td>New</td>
+				<td>Please enter the valid House Code.</br>
+					The House Code [xxxxxx] is not valid.</br>
+					Customer is not associated with the House Code [xxxxxx].</br>
+					Please enter the valid Quantity.</br>
+					Please enter the valid Price.</br>
+					Please enter the Description.</br>
+				</td>
+			</tr>
+			<tr>
+				<td>Credit Invoice</td>
+				<td>Please enter the valid House Code.</br>
+					The House Code [xxxxxx] is not valid.</br>
+					Customer is not associated with the House Code [xxxxxx].</br>
+					Please enter the valid Amount.</br>
+					Please enter the Payer.</br>					
+				</td>
+			</tr>
+			<tr>
+				<td>Warning / Popup Messages</td>
+				<td>Your modifications have not been saved.</br>
+					The data that was being modified is out of date. Please reload this page by selecting it from the menu to the left and try again. Thank you!.</br>
+					Error - There is a mismatch with the Site setup information for the House Code [xxxxxx]. Please correct the address of the site by accessing HouseCode -> Sites prior to continuing.</br>
+					Error - There is a mismatch with the Job setup information for the Job [xxxxxx]. Please correct the address of the Job by accessing HouseCode -> Jobs prior to continuing.</br>
+					Invoice which is already printed cannot be modified. Please select or reselect the correct Invoice and try again.</br>
+					Error Number 1023 - Data integrity check failure; your modiifcations have been aborted. There are credits associated with this invoice that exceed the charges OR the total invoice amount is less than zero. Please resolve the problem and try again. Thank you!.</br>
+					Error Number 1024 - Data integrity check failure; your modiifcations have been aborted. There are credits associated with Sales Tax that exceed the charges OR the total invoice amount is less than zero. Please resolve the problem and try again. Thank you!.</br>
+					Error Number 1025 - Data integrity check failure; your modiifcations have been aborted. The total Accounts Receivables exceed the charged amount. Please reduce or remove the Account Receivable items prior to modifying this invoice. Thank you!.</br>
+					Error Number 1011 - Sorry, you cannot add account receivable items on an invoice whose amount due equals zero. Add charged items to the invoice prior to entering account receivables. Your request has been aborted.</br>
+					Error Number 1019 - You cannot enter receivables in excess of the outstanding invoiced amount for the specified account code OR in excess of the total outstanding invoiced amount. Please resolve the issue and try again. Thank you!</br>
+					Error Number 1021 - You have attempted to credit an amount greater than the charged amount against the specified account code. Transaction aborted. Please enter an amount less than or equal to the charged amount and try again. Thank you!</br>
+					Services for mm/dd/yyyy through mm/dd/yyyy have already been invoiced on invoice xxxxxxx.</br>
+					Services for mm/dd/yyyy through mm/dd/yyyy overlap those invoiced on invoice xxxxxxx.</br>
+				</td>
+			</tr>
+			<tr>
+				<td>Delete</td>
+				<td>Are you sure you would like to delete row number x and all its transactions?.</br>
+					Are you sure you would like to delete row number x?.
+				</td>
+			</tr>
+			<tr>
+				<td>Save Error</td>
+				<td>[SAVE FAILURE] Error while updating Invoice Record.</br>
+					[SAVE FAILURE] Error while updating Account Receivable Record.
+				</td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. Transaction Status Types must be defined in a system look up table (AppTransactionStatusTypes)</div>
+		<div class="reference">2. System Variables must be defined in a system look up table (AppSystemVariables)</div>
+		<div class="reference">3. States must be defined in a system look up table (AppStateTypes)</div>
+		<div class="reference">4. Units must be defined in a system look up table (AppUnits)</div>
+		<div class="reference">5. Sites must be defined in a system look up table (AppSites)</div>
+		<div class="reference">6. Sites must be associated to the Units (AppSiteUnits)</div>		
+		<div class="reference">7. House Codes must be defined in a system look up table (HcmHouseCodes)</div>
+		<div class="reference">8. Jobs must be defined in a system look up table (HcmJobs)</div>
+		<div class="reference">9. Jobs must be associated to the House Codes (HcmHouseCodeJobs)</div>
+		<div class="reference">10. Fiscal Years must be defined in a system look up table (FscYears)</div>
+		<div class="reference">11. Fiscal Periods must be defined in a system look up table (FscPeriods)</div>		
+		<div class="reference">12. Chart of accounts must be defined in a system look up table (FscAccounts)</div>
+		<div class="reference">13. Table Types must be defined in a system look up table (RevTableTypes)</div>
+		<div class="reference">14. State Taxes must be defined in a system look up table (RevStateTaxes)</div>
+		<div class="reference">15. Local Taxes must be defined in a system look up table (RevLocalTaxes)</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>AppTransactionStatusTypes</br>
+					AppSystemVariables</br>
+					AppStateTypes</br>
+					AppUnits</br>
+					AppSites</br>
+					AppSiteUnits</br>
+					HcmHouseCodes</br>
+					HcmJobs</br>
+					HcmHouseCodeJobs</br>					
+					FscYears</br>
+					FscPeriods</br>
+					FscAccounts</br>					
+					RevTableTypes</br>
+					RevStateTaxes</br>
+					RevLocalTaxes</br>
+					RevInvoices</br>
+					RevInvoiceItems</br>
+					RevAccountReceivables</br>
+					GlmRecurringExpenses</br>
+					GlmRecurringFixedCosts</br>					
+				</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>AppDelimitedValueSelect</br>					
+					RevInvoicesSelect</br>
+					RevInvoiceBillToSelect</br>
+					RevInvoiceValidate</br>
+					RevInvoiceNumberSelect</br>
+					RevTaxRatesSelect</br>
+					RevInvoiceUpdate</br>				
+					RevInvoiceStatusUpdate</br>				
+					RevInvoicePrinted</br>
+					RevInvoiceCreditMemoPrinted</br>
+					RevInvoiceItemsSelect</br>
+					RevInvoiceItemUpdate</br>
+					RevInvoiceItemUpdateFromClone</br>				
+					RevInvoiceItemDelete</br>
+					RevFscAccountsSelect</br>
+					RevAccountReceivablesSelect</br>
+					RevAccountReceivableUpdate</br>
+					RevAccountReceivableDelete</br>
+				</td>
+			</tr>			
+			<tr>
+				<td>Functions</td>
+				<td>FscWeekPeriodYear</br>
+					RevTaxRate</br>
+				</td>
+			</tr>
+		</table>
+		<h2>See Also</h2>
+		<div class="reference"><a href="invoiceSearch.htm">Invoice Search</a></div>		
+		<div class="reference"><a href="workOrderToInvoice.htm">WO to Invoice</a></div>
+		<div class="reference"><a href="bulkInvoiceImport.htm">Bulk Import</a></div>
+	</body>
+</html>

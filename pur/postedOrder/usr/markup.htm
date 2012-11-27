@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Posted Order</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/pur/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+
+		<div class="pageBody">
+			<div class="contentArea">
+             	<div id="divPurchaseOrderDetails">
+					<div class="header">Purchase Order Details</div>
+					<div class="body">
+						<div id="divPurchaseOrderGrid" class="tbodyBorder">
+							<table width="100%" id="PurchaseOrderGrid" class="gridBorder" border="0" cellpadding="0" cellspacing="0">
+								<thead id="PurchaseOrderGridHead">
+									<tr>
+										<th class="gridHeaderColumn" width="4%">#</th>
+										<th class="gridColumnHidden" width="0%"></th>
+										<th class="gridHeaderColumn" width="15%">Category</th>
+										<th class="gridHeaderColumn" width="10%">Job</th>
+										<th class="gridHeaderColumn" width="10%">Item #</th>
+										<th class="gridHeaderColumn" width="27%">Description</th>
+										<th class="gridHeaderColumn" width="6%">Unit</th>
+										<th class="gridHeaderColumn" width="7%">Qty Ordered</th>
+										<th class="gridHeaderColumn" width="7%">Qty Received</th>
+										<th class="gridHeaderColumn" width="7%">Unit Price</th>
+										<th class="gridHeaderColumn" width="7%">Extended Cost</th>
+									</tr>
+								</thead>
+								<tbody id="PurchaseOrderGridBody"></tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>						
+			<div style="clear:both;"></div>
+			<div class="contentArea" id="anchorAlign">
+				<div id="ButtonPlacedOrder">
+					<div id="AnchorEdit"></div>
+					<div id="AnchorUndo"></div>
+					<div id="AnchorSave"></div>
+				</div>		         	
+			</div>
+	    </div>
+	</body>
+</html>

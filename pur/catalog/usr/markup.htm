@@ -1,0 +1,248 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Purchasing Catalogs</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/pur/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+			<table width="100%" height="100%">
+				<tr>
+					<td align="center">
+						<img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+						<div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;">Loading</div>    
+		        	</td>
+				</tr>
+			</table>
+		</div>
+		<div id="catalogItemsLoading" style="position: absolute; top: 115px; left: 48%; z-index: 5000; width: 51%; height: 75%; background-color: white; display:none;">
+	        <div style="position: absolute; width: 66; height: 70;top: 50%; left: 49.5%; margin-top: -50px; margin-left: -33px">
+	            <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+	            <div style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px;">Loading</div>    
+	        </div>
+	    </div>
+		<div id="popupLoading" style="position: absolute; z-index: 6000; width: 700px; height: 350px; background-color: white; display:none">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+		
+	  	<div class="pageHeader">
+	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
+        </div>
+		<div style="clear:both;"></div>
+		<div class="pageBody">
+			<div class="contentArea">
+                <div class="header">Catalog Search</div>
+				<div id="contentAreasContainerLeft">
+					<div class="body">
+						<div id="LabelTextAreaLeftCatalog">
+							Catalog Name:
+						</div>
+						<div id="InputTextAreaCatalog">
+							<div id="SearchInput"></div>
+						</div>
+						<div id="searchButtonCatalog">
+							<div id="SearchButton"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+				</div>
+				<div id="contentAreasContainerRight"></div>
+				<div style="clear:both;"></div>
+				<div id="contentAreasContainerLeft">
+					<div  class="contentArea">
+						<div class="header">Catalogs</div>
+						<div class="body">
+							<div id="CatalogGrid"></div>
+							<div style="clear:both;"></div>
+						</div>
+					</div>
+					<div style="clear:both;"></div>
+				</div>
+				<div id="contentAreasContainerRight">
+					<div class="contentArea">
+						<div class="header">Catalog Details</div>
+						<div id="container-1">
+			    			<div id="fragment-1" class="fragment">
+								<div id="catalogAssociationsContent">
+									<div class="body">
+										<div id="TableEditArea">
+											<div id="LabelTextAreaCatalogDetails">
+												<span class="requiredFieldIndicator">&#149;&nbsp;</span>Catalog Name:
+											</div>
+											<div id="InputTextAreaRight">
+												<div id="CatalogTitle"></div>
+											</div>
+											<div style="clear:both;"></div>
+										</div>
+										<div id="TableEditArea">
+											<div id="LabelTextAreaCatalogDetails">
+												<span class="requiredFieldIndicator">&#149;&nbsp;</span>Vendor:
+											</div>
+											<div id="InputTextAreaRight">
+												<div id="CatalogVendor"></div>
+											</div>
+											<div style="clear:both;"></div>
+										</div>
+										<div id="TableEditArea">
+											<div id="LabelTextAreaCatalogDetails">
+												<span id="nonRequiredFieldIndicator">&nbsp;Active:</span>
+											</div>
+											<div id="InputTextAreaRight">
+												<div id="CatalogActive"></div>
+											</div>
+											<div style="clear:both;"></div>
+										</div>
+										<div id="CatalogUnitGrid"></div>
+										<div id="HouseCodesPaging">							
+								            <table cellpadding="0" cellspacing="0" style="width: 100%">
+						                        <tr class="Header">
+						                            <td class="BorderVertical"></td>					                            
+						                            <td>
+						                                <table cellpadding="0" cellspacing="0" style="width: 100%">
+						                                    <tr class="Header">
+						                                    	<td style="width: 75px">
+						                                            &nbsp;<img id="imgAddHouseCodes" src="/fin/cmn/usr/media/Common/add.png" style="cursor: pointer" alt="Add House Codes" title="Add House Codes" />
+																	<img id="imgDownloadHouseCodes" src="/fin/cmn/usr/media/Common/download.png" style="cursor: pointer" alt="Download Catalog House Codes" title="Download Catalog House Codes" />
+																	<img id="imgImportHouseCodes" src="/fin/cmn/usr/media/Common/import.png" style="cursor: pointer" alt="Import Catalog House Codes" title="Import Catalog House Codes" />
+						                                        </td>
+						                                        <td align="center">&nbsp;Page:&nbsp;<select id="selHouseCodesPageNumber"></select>
+						                                            <span id="spnHouseCodesPageInfo"></span>
+						                                        </td>
+						                                        <td style="width: 36px; background-color: white">               
+						                                            <img id="imgPrevHouseCodes" src="/fin/cmn/usr/media/Common/previous.png" style="cursor: pointer" alt="Previous Page" title="Previous Page" />
+						                                            <img id="imgNextHouseCodes" src="/fin/cmn/usr/media/Common/next.png" style="cursor: pointer" alt="Next Page" title="Next Page" />
+						                                        </td>
+																<td style="width: 20px;">&nbsp;</td>
+						                                    </tr>
+						                                </table>
+						                            </td>
+						                            <td class="BorderVertical"></td>
+						                        </tr>
+						                        <tr><td class="BorderHorizontal" colspan="5"></td></tr>
+						                    </table>							        
+										</div>
+										<div style="clear:both;"></div>
+									</div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="fragment-2" class="fragment">
+								<div id="catalogItemContent">
+									<div class="body">
+										<div id="CatalogItemGrid"></div>
+										<div id="ItemsPaging">							
+								            <table cellpadding="0" cellspacing="0" style="width: 100%">
+						                        <tr class="Header">
+						                            <td class="BorderVertical"></td>					                            
+						                            <td>
+						                                <table cellpadding="0" cellspacing="0" style="width: 100%">
+						                                    <tr class="Header">
+						                                    	<td style="width: 75px">
+						                                            &nbsp;<img id="imgAddItems" src="/fin/cmn/usr/media/Common/add.png" style="cursor: pointer" alt="Add Items" title="Add Items" />
+																	<img id="imgDownloadItems" src="/fin/cmn/usr/media/Common/download.png" style="cursor: pointer" alt="Download Catalog Items" title="Download Catalog Items" />
+																	<img id="imgImportItems" src="/fin/cmn/usr/media/Common/import.png" style="cursor: pointer" alt="Import Catalog Items" title="Import Catalog Items" />
+						                                        </td>		                                        
+						                                        <td align="center">&nbsp;Page:&nbsp;<select id="selItemsPageNumber"></select>
+						                                            <span id="spnItemsPageInfo"></span>
+						                                        </td>
+						                                        <td style="width: 36px; background-color: white">               
+						                                            <img id="imgPrevItems" src="/fin/cmn/usr/media/Common/previous.png" style="cursor: pointer" alt="Previous Page" title="Previous Page" />
+						                                            <img id="imgNextItems" src="/fin/cmn/usr/media/Common/next.png" style="cursor: pointer" alt="Next Page" title="Next Page" />
+						                                        </td>
+																<td style="width: 20px;">&nbsp;</td>
+						                                    </tr>
+						                                </table>
+						                            </td>
+						                            <td class="BorderVertical"></td>
+						                        </tr>
+						                        <tr><td class="BorderHorizontal" colspan="5"></td></tr>
+						                    </table>							        
+										</div>
+									</div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<ul id="TabCollection">
+				                <li><a id="TabHouseCodes" href="#fragment-1"><span>Catalog Associations</span></a></li>
+								<li><a id="TabItems" href="#fragment-2"><span>Catalog Items</span></a></li>
+				            </ul>
+						</div>
+						<div style="clear:both;"></div>
+						<div class="footer">
+	                        <div id="AnchorSave"></div>
+	                        <div id="AnchorNew"></div>
+	                        <div id="AnchorUndo"></div>	                        
+	                    </div>
+					</div>
+				</div>
+			</div>			
+			<div id="popupContact">
+				<div class="contentArea">
+					<div id="itemsList">
+						<div class="body">
+							<div class="header">Item Search</div>
+							<div style="clear:both;"></div>
+							<div id="LabelAreaCatalogSearch">
+								<span id="nonRequiredFieldIndicator">Item Number, Description:</span>
+							</div>
+							<div id="InputTextAreaItemSearch">
+								<div id="PurItemSearchInput"></div>
+							</div>
+							<div id="searchButtonCatalog">
+								<div id="PurItemSearchButton"></div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="GridTable">
+								<div id="PurItemGrid"></div>								
+							</div>
+						</div>
+					</div>
+					<div id="houseCodesList">
+						<div class="body">
+							<div class="header">House Codes</div>
+							<div style="clear:both;"></div>
+							<div id="LabelHouseCode">
+								<span id="nonRequiredFieldIndicator">House Code:</span>
+							</div>
+							<div id="DropDownRightHouseCode">
+								<div id="houseCodeTemplateContainer" class="HouseCodeContainer"></div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="HouseCodeGrid"></div>
+						</div>
+					</div>
+					<div style="clear:both; height:5px;"></div>
+					<div>
+                    	<div id="AnchorOk"></div>
+						<div id="AnchorCancel"></div>
+					</div>
+				</div>
+				<div style="clear:both;"></div>
+			</div>			
+			<div id="divFrame" class="contentArea" style="display: none;">				
+				<div id="importHeader" class="header" style="display: none;">Import</div>
+				<div style="clear:both; height:10px;"></div>
+				<iframe id="iFrameUpload" src="/net/crothall/chimes/fin/pur/act/FileUpload.aspx" frameborder="0" width="580" height="30"></iframe>
+				<div id="divUpload" class="body" style="display: none;">
+					<div id="AnchorUpload"></div>
+					<div id="AnchorUploadCancel"></div>
+				</div>	
+			</div>			
+		</div>
+		<div id="iiInputValidationMaster"></div>
+		<div id="backgroundPopup"></div>
+	</body>
+</html>

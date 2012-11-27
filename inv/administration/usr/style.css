@@ -1,0 +1,127 @@
+﻿
+.header {
+	height: 25px;
+}
+
+.inputTextAreaHeader {
+	float: left; 
+	width: 60px; 
+	padding: 3px 2px 2px 2px;	
+}
+
+.labelTextArea {	
+	float: left;
+	width: 150px;
+	height: 27px;	
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;	
+	padding-top: 5px;
+	padding-left: 10px;
+}
+	
+.inputTextArea {
+	float: left;
+	width: 200px;
+	height: 20px;
+}
+
+.radioButton {
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 2px 0px 0px 0px;
+	width: 140px;
+}
+
+.footer {
+    height: 20px;
+    font-family: Verdana;
+    font-size: 8pt;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #669b67;
+    text-align: left;
+}
+
+.footer select {
+    font-family: Verdana;
+    font-size: 8pt;
+}
+
+.borderHorizontal {
+    height: 1px;
+    background-color: #adaaad;
+}
+
+.borderVertical {
+    width: 1px;
+    background-color: #adaaad;
+}
+
+#actionHeader {
+	background-color: #9BCD9A;
+	padding-left: 6px;
+	height: 28px;
+}
+	
+#AnchorLoad	{
+	float: left; 
+	width: 68px;
+	padding: 3px 0px 3px 5px;
+}
+
+#AnchorExport {
+	float: left;
+	width: 140px;
+	margin: 5px 0px 5px 5px;
+}
+
+#AnchorGenerate {
+	float: left;
+	width: 98px;
+	margin: 5px 0px 5px 10px;
+}
+
+#AnchorCancel {
+	float: left;
+	width: 80px;
+	margin: 5px 0px 5px 10px;
+}
+
+#priceBodyColumn, #quantityBodyColumn, #totalCostBodyColumn {
+	text-align: right;	
+}
+
+#InventoryContainer {
+	height: 245px;
+    border: solid #AAAAAA thin;
+	border-width: 1px;
+	margin: 5px 5px 5px 5px;
+}
+
+#backgroundPopup {
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	z-index: 5000; 
+	width: 100%; 
+	height: 100%;
+	border: 1px solid #cecece; 
+	background-color: black;
+	display: none;
+}
+
+#popupInventory {
+	width: 680px; 
+	height: 320px;
+	position: absolute;
+	z-index: 5025;
+	background-color: white;
+	display: none;
+}
+
+#MaidCartItemGrid {
+	margin: 8px 10px 8px 10px;
+}

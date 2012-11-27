@@ -1,0 +1,909 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>
+                House Code Wizard</h1>
+			<div class="description">The purpose of House Code Wizard is to edit House Code Details.</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:100px;">UI Element</th>
+				<th style="width:110px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th style="width:200px;">Validation</th>	
+				<th style="width:100px;">Description</th>				
+			</tr>
+					
+			<tr>
+				<td>House Code</td>
+				<td>List</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>				
+				<td>Displays List of House Codes to select.</td>				
+			</tr>
+			<tr>
+				<td>JDE Company</td>
+				<td>List</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Please select JDE Company.</td>				
+				<td>JDE Company.</td>				
+			</tr>
+			<tr>
+				<td>Site</td>
+				<td>List</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Please select Site.</td>				
+				<td>Site.</td>				
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>Read Only</td>				
+				<td>Maximum length allowed - 16.<br /></td>				
+				<td>House Code Number.</td>				
+			</tr>
+			<tr>
+				<td>Start Date</td>
+				<td>List</td>
+				<td>Yes</td>
+				<td>Read Only</td>	
+				<td>This field is required. Please make an entry.<br />
+                    Please enter valid date.</td>	
+				<td>Start Date.</td>			
+			</tr>
+			
+			<tr>
+				<td class="uiHeader" colspan="6">Services Provided</td>
+			</tr>
+			<tr>
+				<td>Primary Service Provided</td>
+				<td>List</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Please select the correct Primary Service.</td>				
+				<td>Primary Service.</td>				
+			</tr>
+			<tr>
+				<td>Additional Services</td>
+				<td>Checkbox list selection</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>	
+                <td>Displays List of Additional Services</td>				
+			</tr>
+			
+			<tr>
+				<td>Service Line</td>
+				<td>List</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>	
+                <td>Service Line.</td>			
+			</tr>
+			
+			<tr>
+				<td class="uiHeader" colspan="6">Manager Information</td>
+			</tr>
+			<tr>
+				<td>Manager Name</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 16.<br /></td>
+                <td>Manager Name.</td>
+			</tr>
+			<tr>
+				<td>Email</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.<br />
+					Please enter valid Email Address.</td>
+                <td>Manager Email.</td>
+			</tr>
+			<tr>
+				<td>Phone</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 14.<br />
+					Please enter valid phone number. Example: (999) 999-9999</td>
+                <td>Manager Phone.</td>
+			</tr>
+			<tr>
+				<td>Fax</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 14.<br />
+					Please enter valid fax number. Example: (999) 999-9999</td>
+                <td>Manager Fax.</td>
+			</tr>
+			<tr>
+				<td>Cell Phone Number</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 14.</br>
+					Please enter valid cell number. Example: (999) 999-9999</td>
+                <td>Manager Cell Phone Number</td>
+			</tr>
+			<tr>
+				<td>Pager Number</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 16.</br>
+					Please enter valid pager number. Example: (999) 999-9999</td>
+                <td>Manager Pager Number</td>
+			</tr>
+			<tr>
+				<td>Assistant Name</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+                <td>Manager Assistant Name.</td>
+			</tr>
+			<tr>
+				<td>Assistant Phone</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 14.</br>
+					Please enter valid phone number. Example: (999) 999-9999</td>
+                <td>Manager Assistant Phone.</td>
+			</tr>
+			
+			<tr>
+				<td class="uiHeader" colspan="6">Client Information</td>
+			</tr>
+			
+			<tr>
+				<td>First Name</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+                <td>Client First Name.</td>
+			</tr>
+			
+			<tr>
+				<td>Last Name</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+                <td>Client Last Name.</td>
+			</tr>
+			
+			<tr>
+				<td>Last Name</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+                <td>Client Last Name.</td>
+			</tr>
+			
+			<tr>
+				<td>Title</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+                <td>Client Title.</td>
+			</tr>
+			
+			<tr>
+				<td>Phone</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 14.</br>
+					Please enter valid phone number. Example: (999) 999-9999</td>
+                <td>Client Phone.</td>
+			</tr>
+			
+			<tr>
+				<td>Fax</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 14.</br>
+					Please enter valid phone number. Example: (999) 999-9999</td>
+                <td>Client Fax.</td>
+			</tr>
+			
+			<tr>
+				<td>Assistant Name</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 16.</td>
+                <td>Client Assistant Name.</td>
+			</tr>
+			
+			<tr>
+				<td>Assistant Phone</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 14.</br>
+					Please enter valid phone number. Example: (999) 999-9999</td>
+                <td>Client Assistant Phone.</td>
+			</tr>
+			
+			
+			<tr>
+				<td class="uiHeader" colspan="6">House Code Statistic</td>
+			</tr>
+			
+			<tr>
+				<td># of Managed Employees</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 16.</br>
+					Please enter valid number.</td>
+                <td>Number of Managed Employees.</td>
+			</tr>
+			
+			<tr>
+				<td># of Crothall Employees</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 30.</br>
+					Please enter valid number.</td>
+                <td>Number of Crothall Employees.</td>
+			</tr>
+			
+			<tr>
+				<td># of Beds Licensed</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 30.</br>
+					Please enter valid number.</td>
+                <td>Number of Beds Licensed.</td>
+			</tr>
+			
+			<tr>
+				<td># of Beds Active</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 16.</br>
+					Please enter valid number.</td>
+                <td>Number of Beds Active.</td>
+			</tr>
+			
+			<tr>
+				<td># of Patient Days</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 16.</br>
+					Please enter valid number.</td>
+                <td>Number of Patient Days.</td>
+			</tr>
+			
+			<tr>
+				<td># of Adjusted Patient Days</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 16.</br>
+					Please enter valid number.</td>
+                <td>Number of Adjusted Patient Days.</td>
+			</tr>
+			
+			<tr>
+				<td>Avg Daily Census </td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 16.</br>
+					Please enter valid number.</td>
+                <td>Avg Daily Census.</td>
+			</tr>
+			
+			<tr>
+				<td># of Annual Discharges</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 16.</br>
+					Please enter valid number.</td>
+				<td>Number of Annual Discharges.</td>
+			</tr>
+			<tr>
+				<td># of Annual Transfers</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 16.</br>
+					Please enter valid number.</td>
+				<td>Number of Annual Transfers.</td>
+			</tr>
+			<tr>
+				<td>Avg Bed Turnaround Time (Min)</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 16.</br>
+					Please enter valid number.</td>
+				<td>Average Bed Turnaround Time (Minimum)</td>
+			</tr>
+			<tr>
+				<td>Net Cleanable Square Feet</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 16.</br>
+					Please enter valid number.</td>
+				<td>Net Cleanable Square Feet.</td>
+			</tr>
+			<tr>
+				<td># of Annual Transports</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 16.</br>
+					Please enter valid number.</td>
+				<td>Number of Annual Discharges.</td>
+			</tr>
+			<tr>
+				<td>Avg Laundry Lbs</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 16.</br>
+					Please enter valid number.</td>
+				<td>Average Laundry Lbs.</td>
+			</tr>
+			<tr>
+				<td>Terminated Hourly Employees</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 11.</br>
+					Please enter valid number.</td>
+				<td>Terminated Hourly Employees.</td>
+			</tr>
+			<tr>
+				<td>Active Hourly Employees</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 11.</br>
+					Please enter valid number.</td>
+				<td>Active Hourly Employees.</td>
+			</tr>
+			<tr>
+				<td>Productive Labor Hours Worked</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 11.</br>
+					Please enter valid number.</td>
+				<td>Productive Labor Hours Worked.</td>
+			</tr>
+			<tr>
+				<td>Non-Productive Labor Hours</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 11.</br>
+					Please enter valid number.</td>
+				<td>Non-Productive Labor Hours.</td>
+			</tr>
+			<tr>
+				<td>Productive Labor Dollars Paid</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 11</td>
+				<td>Number of Annual Discharges.</td>
+			</tr>
+			<tr>
+				<td>Non-Productive Labor Dollars Paid</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 11.</td>
+				<td>Number of Annual Discharges.</td>
+			</tr>
+			<tr>
+				<td>Hospital Paid Janitorial Paper Plastic Supply Cost</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 11.</td>
+				<td>Hospital Paid Janitorial Paper Plastic Supply Cost.</td>
+			</tr>
+			
+			<tr>
+				<td class="uiHeader" colspan="6">Secondary Address - Shipping</td>
+			</tr>
+			
+			<tr>
+				<td>Company</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 256.</td>
+                <td>Company</td>
+			</tr>
+			
+			<tr>
+				<td>Address 1</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+                <td>Shipping Address 1.</td>
+			</tr>
+			
+			<tr>
+				<td>Address 2</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+                <td>Shipping Address 2.</td>
+			</tr>
+			
+			<tr>
+				<td>City</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+                <td>Shipping City.</td>
+			</tr>
+			
+			<tr>
+				<td>State</td>
+				<td>List</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+                <td>Displays list of Shipping States.</td>
+			</tr>
+			
+			<tr>
+				<td>Zip/Postal Code</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 10.</br>
+					Please enter valid postal code. Example 99999 or 99999-9999.</td>
+                <td>Shipping Zip/Postal Code.</td>
+			</tr>
+			
+			<tr>
+				<td class="uiHeader" colspan="6">Billing/Remit to Address - Invoices</td>
+			</tr>
+			
+			<tr>
+				<td>Remit To</td>
+				<td>List</td>
+                <td>Yes</td>
+                <td>End user input</td>
+                <td>Please select the correct Remit To.</td>
+                <td>Remit To.</td>
+			</tr>
+			
+			<tr>
+				<td>Title</td>
+				<td>List</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+                <td>Remit To Title.</td>
+			</tr>
+			
+			<tr>
+				<td>Address 1</td>
+				<td>List</td>
+                <td>No</td>
+                <td>End user input</td>
+                 <td>Maximum length allowed - 255.</td>
+                <td>Remit To Address 1.</td>
+			</tr>
+			
+			<tr>
+				<td>Address 2</td>
+				<td>List</td>
+                <td>No</td>
+                <td>End user input</td>
+                 <td>Maximum length allowed - 255.</td>
+                <td>Remit To Address 2.</td>
+			</tr>
+			
+			<tr>
+				<td>City</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 100.</td>
+				<td>Remit To City.</td>
+			</tr>
+			<tr>
+				<td>State</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 64.</td>
+				<td>Remit To State.</td>
+			</tr>
+			<tr>
+				<td>Zip/Postal Code</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 10.</td>
+				<td>Remit To Zip/Postal Code.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">Financial Information</td>
+			</tr>
+			
+			<tr>
+				<td>Contract Type</td>
+				<td>List</td>
+                <td>Yes</td>
+                <td>End user input</td>
+                <td>Please select the correct Contract Type.</td>
+				<td>Displays Contract Types.</td>
+			</tr>
+			<tr>
+				<td>Terms Of Contract</td>
+				<td>List</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+				<td>Displays Terms Of Contract Types.</td>
+			</tr>
+			<tr>
+				<td>Billing Cycle Frequency</td>
+				<td>List</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+				<td>Displays Billing Cycle Frequency Types.</td>
+			</tr>
+			<tr>
+				<td>Financial Entity</td>
+				<td>List</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+				<td>Displays Financial Entity Types.</td>
+			</tr>
+			
+			<tr>
+				<td>Bank Code Number</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 20.</td>
+				<td>Bank Code Number.</td>
+			</tr>
+			<tr>
+				<td>Bank Account Number</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 20.</td>
+				<td>Bank Account Number.</td>
+			</tr>
+			<tr>
+				<td>Bank Name</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+				<td>Bank Name.</td>
+			</tr>
+			<tr>
+				<td>Contact</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+				<td>Bank Contact.</td>
+			</tr>
+			<tr>
+				<td>Address 1</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+				<td>Bank Address 1.</td>
+			</tr>
+			<tr>
+				<td>Address 2</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+				<td>Bank Address 2.</td>
+			</tr>
+			<tr>
+				<td>City</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+				<td>Bank City.</td>
+			</tr>
+			<tr>
+				<td>State</td>
+				<td>List</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+				<td>Bank State.</td>
+			</tr>
+			<tr>
+				<td>Zip/Postal Code</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 10.</br>
+					Please enter valid postal code. Example 99999 or 99999-9999</td>
+				<td>Bank Zip/Postal Code.</td>
+			</tr>
+			<tr>
+				<td>Phone</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 14.</br>
+					Please enter valid phone number. Example: (999) 999-9999</td>
+				<td>Bank Phone.</td>
+			</tr>
+			<tr>
+				<td>Fax</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 14.</br>
+					Please enter valid fax number. Example: (999) 999-9999</td>
+				<td>Bank Fax.</td>
+			</tr>
+			<tr>
+				<td>Email</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</br>
+					Please enter valid Email Address.</td>
+				<td>Bank Email.</td>
+			</tr>
+			<tr>
+				<td>Invoice Logo</td>
+				<td>List</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+				<td>Bank Invoice Logo.</td>
+			</tr>
+			
+			<tr>
+				<td class="uiHeader" colspan="6">House Code Payroll</td>
+			</tr>
+			
+			<tr>
+				<td>Payroll Processing Location</td>
+				<td>List</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+				<td>Displays Payroll Processing Location Types.</td>
+			</tr>
+			<tr>
+				<td>Time And Attendance</td>
+				<td>Radio Selection</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+				<td>Allows user to select Yes or No for Time And Attendance.</td>
+			</tr>
+			<tr>
+				<td>Default Lunch Break</td>
+				<td>Radio Selection</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 5.</br>
+					Please enter valid Default Lunch Break.</td>
+				<td>Allows user to select one Default Lunch Break or others.</td>
+			</tr>
+			<tr>
+				<td>Lunch Break Trigger</td>
+				<td>Radio Selection</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 5.</br>
+					Please enter valid Lunch Break Trigger.</td>
+				<td>Allows user to select one Lunch Break Trigger or others.</td>
+			</tr>
+			<tr>
+				<td>House Code Type</td>
+				<td>Radio Selection</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+				<td>Allows user to select one House Code Type.</td>
+			</tr>
+			<tr>
+				<td>Rounding Time Period</td>
+				<td>Radio Selection</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+				<td>Allows user to select one Rounding Time Period.</td>
+			</tr>
+			<tr>
+				<td>EPay Site</td>
+				<td>Checkbox</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+				<td>Allows user to select or deselect EPay Site.</td>
+			</tr>
+			<tr>
+				<td>EPay Pay Group</td>
+				<td>List</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+				<td>Displays EPay Pay Group types.</td>
+			</tr>
+			<tr>
+				<td>EPay Task</td>
+				<td>Checkbox</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+				<td>Indicates whether the House Code has EPay Task or not.</td>
+			</tr>
+			<tr>
+				<td>Ceridian Company Hourly</td>
+				<td>List</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+				<td>Displays Ceridian Company Hourly types.</td>
+			</tr>
+			<tr>
+				<td>Ceridian Company Salaried</td>
+				<td>List</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+				<td>Displays Ceridian Company Salaried types.</td>
+			</tr>
+			
+			<tr>
+				<td class="uiHeader" colspan="6">Previous/Next</td>
+			</tr>
+			<tr>
+				<td>Previous</td>
+				<td>Button</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+				<td>Allows user to go to Previous Page.</td>
+			</tr>
+			<tr>
+				<td>Next</td>
+				<td>Button</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+				<td>Allows user to go to Next Page.</td>
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">House Code Info</td>
+			</tr>
+			<tr>
+				<td><img src="images/HouseCodeInfoOfHousecodeWizard.png" alt="House Code Info"/></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Statistics</td>
+			</tr>
+			<tr>
+				<td><img src="images/StatisticsOfHousecodeWizard.png" alt="Statistics"/></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Financial/Contract</td>
+			</tr>
+			<tr>
+				<td><img src="images/FinancialOrContractOfHousecodeWizard.png" alt="Financial/Contract"/></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Payroll</td>
+			</tr>
+			<tr>
+				<td><img src="images/PayrollOfHousecodeWizard.png" alt="Payroll"/></td>
+			</tr>			
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Save House Code</td>
+				<td>[SAVE FAILURE] Error while updating House Code Record.</td>
+			</tr>
+			<tr>
+				<td>Error</td>
+				<td>Failed to save HouseCode.<br/>
+					Failed to save HouseCode Service.<br/>
+					Failed to save House Code Payroll Company.</td>
+			</tr>
+		</table>
+		<h2>Action</h2>
+		<div class="reference">
+		    1. This user interface can be accessed at <span class="iiMenuVerticalMainPart Selected undefined">
+                HouseCode</span> > Housecode Wizard.<br />
+            2. Edit House Code - Enter House Code in House Code list and click Enter button to see House Code Info,
+            Statistics, Financial/Contract and Payroll of the House Code. It allows User to edit Site.
+            <br />
+            3. Save House Code - &nbsp;Click on Save to save the change. 
+            <br />
+            4. Undo current changes to House Code- Click Undo to cancel any changes made to selected House Code.</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>
+                    HcmHouseCodes, AppSites, AppSiteUnits, HcmHouseCodeServices, HcmServiceTypes, HcmJDEServices, HcmServiceTypes,
+                    <br />
+                    FscJDECompanies, HcmServiceLines, HcmRemitToLocations, HcmContractTypes, HcmTermsOfContractTypes, HcmBillingCycleFrequencyTypes, 
+                    <br />
+                    AppStateTypes, HcmInvoiceLogoTypes, PayPayrollCompanies, hcmHouseCodePayrollCompanies, PayPayFrequencyTypes, HcmPayrollProcessingLocationTypes,
+                    <br />
+                    HcmEPayGroupTypes, HcmHouseCodeTypes, HirNodes, HirLevels, HcmHouseCodes, AppUnits, AppUsers, AppRoleNodes, HirNodes.</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>
+                    AppSiteByUnitSelect, HcmJDEServicesSelect, HcmHouseCodePayrollCompanySelect, HirHierarchyNodeSelect, AppUserHouseCodesSelect, HcmHouseCodeAppSiteUnitUpdate.</td>
+			</tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="remitTo.htm">Remit To</a></div>
+		<div class="reference"><a href="site.htm">Sites</a></div>
+		<div class="reference"><a href="houseCode.htm">House Codes</a></div>
+		<div class="reference"><a href="job.htm">Jobs</a></div>
+		<div class="reference"><a href="houseCodeImport.htm">Import House Codes</a></div>
+		<div class="reference"><a href="ePaySite.htm">Epay Sites</a></div>
+	</body>
+</html>

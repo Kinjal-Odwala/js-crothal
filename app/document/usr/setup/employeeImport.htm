@@ -1,0 +1,792 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Bulk Employee Import</h1>
+			<div class="description">The purpose of the <b>Bulk Employee Import</b> is to import the list of employees from an excel file.</div>
+		</div>
+		<h2>UI Elements</h2>
+		<table class="elementTable">			
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Import Employees</td>
+			</tr>
+			<tr>
+				<td>Browse</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Allows the user the select the excel file.</td>
+			</tr>
+			<tr>
+				<td>Upload</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Upload the selected excel file and import the employee details.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Closes the popup screen</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Invalid Empolyees List</td>
+			</tr>
+			<tr>
+				<td>Empolyees List</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List all invalid employees which are not saved during the import process.</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>House Code should not be blank and should exists in system look up table.</td>
+			</tr>
+			<tr>
+				<td>Brief</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Brief should not be blank and should not exists in system look up table.</td>
+			</tr>
+			<tr>
+				<td>First Name</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>First Name should not be blank.</td>	
+			</tr>
+			<tr>
+				<td>Last Name</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Last Name should not be blank.</td>
+			</tr>
+			<tr>
+				<td>Middele Name</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Middele Name of the employee.</td>				
+			</tr>
+			<tr>
+				<td>Address 1</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Address 1 should not be blank.</td>
+			</tr>
+			<tr>
+				<td>Address 2</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Address 2 of the employee.</td>
+			</tr>
+			<tr>
+				<td>City</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>City should not be blank.</td>
+			</tr>
+			<tr>
+				<td>State</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>State should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Postal Code</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Postal Code should be valid. Example: 99999 or 99999-9999</td>
+			</tr>
+			<tr>
+				<td>Home Phone</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Home Phone should be valid. Example: (999) 999-9999</td>
+			</tr>
+			<tr>
+				<td>Fax</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Fax should be valid. Example: (999) 999-9999</td>
+			</tr>
+			<tr>
+				<td>Cell Phone</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Cell Phone should be valid. Example: (999) 999-9999</td>
+			</tr>
+			<tr>
+				<td>Email</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Email should be valid email address.</td>
+			</tr>
+			<tr>
+				<td>Pager</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Pager should be valid. Example: (999) 999-9999</td>
+			</tr>
+			<tr>
+				<td>Active</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Employee HouseCode Updated</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>SSN</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Social Security Number(SSN) should be valid and should not exists in system lookup table. Example: 899-99-9999</td>
+			</tr>
+			<tr>
+				<td>Status Type</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Status Type should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Payroll Company</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Payroll Company should be selected from dropdown list. Payroll companies will be listed based on the House Code.</td>
+			</tr>
+			<tr>
+				<td>Device Group Type</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Device Group Type should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Exempt</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Job Code Type</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Job Code Type should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Hourly</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>Readonly field.</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Hire Date</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Hire Date should be valid date.</td>
+			</tr>
+			<tr>
+				<td>Change Reason Type</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Change Reason Type should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Rate Change Date</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Rate Change Date should be valid date.</td>
+			</tr>
+			<tr>
+				<td>Seniority Date</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Seniority Date should be valid date.</td>
+			</tr>
+			<tr>
+				<td>Termination Date</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Termination Date should be valid date.</td>
+			</tr>
+			<tr>
+				<td>Termination Reason Type</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Termination Reason Type should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Work Shift</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Work Shift should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Benefits Percentage</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Benefits Percentage should be valid. Example: 10</td>
+			</tr>
+			<tr>
+				<td>Scheduled Hours</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Scheduled Hours should be valid. Example: 40</td>
+			</tr>
+			<tr>
+				<td>Union</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Crothall Employee</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Employee Number</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>If entered, Employee Number should not exists in system lookup table.</td>
+			</tr>
+			<tr>
+				<td>Alternate Pay Rate A</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Alternate Pay Rate A should be valid. Example: 999999.99</td>
+			</tr>
+			<tr>
+				<td>Alternate Pay Rate B</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Alternate Pay Rate B should be valid. Example: 999999.99</td>
+			</tr>
+			<tr>
+				<td>Alternate Pay Rate C</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Alternate Pay Rate C should be valid. Example: 999999.99</td>
+			</tr>
+			<tr>
+				<td>Alternate Pay Rate D</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Alternate Pay Rate D should be valid. Example: 999999.99</td>
+			</tr>
+			<tr>
+				<td>PTO Start Date</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>PTO Start Date should be valid date.</td>
+			</tr>
+			<tr>
+				<td>PTO Hour Entry Automatic</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Y / N</td>
+			</tr>
+			<tr>
+				<td>Original Hire Date</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Original Hire Date should be valid date.</td>
+			</tr>
+			<tr>
+				<td>Effective Date</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Effective Date should be valid date.</td>
+			</tr>
+			<tr>
+				<td>Union Type</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Union Type should be selected from dropdown list only if Unioin is marked as checked.</td>
+			</tr>
+			<tr>
+				<td>Status Category Type</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Status Category Type should be selected from dropdown list. Status Category Types will be listed based on the Status Type.</td>
+			</tr>
+			<tr>
+				<td>Pay Rate</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Pay Rate should be valid. Example: 99.99</td>
+			</tr>
+			<tr>
+				<td>Pay Rate Entered By</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Pay Rate Entered At</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Pay Rate Entered At should be valid date.</td>
+			</tr>
+			<tr>
+				<td>Prev Pay Rate</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Prev Pay Rate should be valid. Example: 99.99</td>
+			</tr>
+			<tr>
+				<td>Prev Pay Rate Entered By</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Prev Pay Rate Entered At</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Prev Pay Rate Entered At should be valid date.</td>
+			</tr>
+			<tr>
+				<td>Prev Prev Pay Rate</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Prev Prev Pay Rate should be valid. Example: 99.99</td>
+			</tr>
+			<tr>
+				<td>Prev Prev Pay Rate Entered By</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Prev Prev Pay Rate Entered At</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Prev Prev Pay Rate Entered At should be valid date.</td>
+			</tr>
+			<tr>
+				<td>Gender Type</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Gender Type should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Ethnicity Type</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Ethnicity Type should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Birth Date</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Birth Date should be valid date.</td>
+			</tr>
+			<tr>
+				<td>Review Date</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Review Date should be valid date.</td>
+			</tr>
+			<tr>
+				<td>Work Phone</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Work Phone should be valid. Example: (999) 999-9999</td>
+			</tr>
+			<tr>
+				<td>Work Phone Ext</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Work Phone Ext should be valid. Example: 999</td>
+			</tr>
+			<tr>
+				<td>BackGround Check Date</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>BackGround Check Date should be valid date.</td>
+			</tr>
+			<tr>
+				<td>Federal Exemptions</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Federal Exemptions should be valid. Example: 99</td>
+			</tr>
+			<tr>
+				<td>Federal Adjustment Typee</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Federal Adjustment Type should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Marital Status Federal Tax Type</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Marital Status Federal Tax Type should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Federal Adjustment Amount</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Federal Adjustment Amount should be valid. Example: 99.99</td>
+			</tr>
+			<tr>
+				<td>Primary State</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Primary State should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Secondary State</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Secondary State should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Marital Status State Tax Type Primary</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Marital Status State Tax Type Primary should be selected from dropdown list. Marital Status State Tax Type Primary will be listed based on the Primary State.</td>
+			</tr>
+			<tr>
+				<td>Marital Status State Tax Type Secondary</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Marital Status StateTax Type Secondary should be selected from dropdown list. Marital Status State Tax Type Secondary will be listed based on the Secondary State.</td>
+			</tr>
+			<tr>
+				<td>State Exemptions</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>State Exemptions should be valid. Example: 99</td>
+			</tr>
+			<tr>
+				<td>State Adjustment Type</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>State Adjustment Type should be selected from dropdown list. State Adjustment Types will be listed based on the Primary State.</td>
+			</tr>
+			<tr>
+				<td>State Adjustment Amount</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>State Adjustment Amount should be valid. Example: 99.99</td>
+			</tr>
+			<tr>
+				<td>SDI Adjustment Type</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>SDI Adjustment Type should be selected from dropdown list. SDI Adjustment Types will be listed based on the Primary State.</td>
+			</tr>
+			<tr>
+				<td>SDI Rate</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>SDI Rate should be valid. Example: 99.99</td>
+			</tr>
+			<tr>
+				<td>Local Tax Adjustment Type</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Local Tax Adjustment Type should be selected from dropdown list. Local Tax Adjustment Types will be listed based on the Primary State.</td>
+			</tr>
+			<tr>
+				<td>Local Tax Adjustment Amount</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Local Tax Adjustment Amount should be valid. Example: 99.99</td>
+			</tr>
+			<tr>
+				<td>Local Tax Code 1</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Local Tax Code 1 should be selected from dropdown list. Local Tax Code 1 will be listed based on the Payroll Company and Primary State.</td>
+			</tr>
+			<tr>
+				<td>Local Tax Code 2</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Local Tax Code 2 should be selected from dropdown list. Local Tax Code 2 will be listed based on the Payroll Company and Primary State.</td>
+			</tr>
+			<tr>
+				<td>Local Tax Code 3</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Local Tax Code 3 should be selected from dropdown list. Local Tax Code 3 will be listed based on the Payroll Company and Primary State.</td>
+			</tr>
+			<tr>
+				<td>Payroll Status</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Payroll Status of the Employee.</td>
+			</tr>
+			<tr>
+				<td>Previous Payroll Status</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Previous Payroll Status of the Employee.</td>
+			</tr>
+			<tr>
+				<td>Frequency Type</td>
+				<td>Text field</td>
+				<td>NA</td>
+				<td>Readonly field</td>
+				<td>Pay Frequency Type of the Employee.</td>
+			</tr>
+			<tr>
+				<td>House Code Job</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>House Code Job should be selected from dropdown list. Jobs will be listed based on the House Code.</td>
+			</tr>
+			<tr>
+				<td>I9 Type</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>I9 Type should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Vet Type</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Vet Type should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Separation Code</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Separation Code should be selected from dropdown list. Separation Codes will be listed based on the Termination Reason Type.</td>
+			</tr>
+			<tr>
+				<td>Job Start Reason Type</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Job Start Reason Type should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Effective Date Job</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Effective Date Job should be valid date.</td>
+			</tr>
+			<tr>
+				<td>Effective Date Compensation</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Effective Date Compensation should be valid date.</td>
+			</tr>
+			<tr>
+				<td>Marital Status Type</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Marital Status Type should be selected from dropdown list.</td>
+			</tr>
+			<tr>
+				<td>Validate</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Validates the employee details.</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Save the employee details.</td>
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Importing Employees concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/employeeImport.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Listing invalid employee details concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/employee.png"></td>
+			</tr>			
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Validate</td>
+				<td>Invalid columns should be highlighted with red color with appropriate tooltip message.</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Appropriate message should be displayed after the completion of import process.</td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. Units must be defined in a system look up table (AppUnits).</div>
+		<div class="reference">2. States must be defined in a system look up table (AppStateTypes).</div>
+		<div class="reference">3. Status Types must be defined in a system look up table (EmpStatusTypes).</div>
+		<div class="reference">4. Payroll Companies must be defined in a system look up table (PayPayrollCompanies).</div>
+		<div class="reference">5. Device Group Types must be defined in a system look up table (EmpDeviceGroupTypes).</div>
+		<div class="reference">6. Job Code Types must be defined in a system look up table (EmpJobCodeTypes).</div>
+		<div class="reference">7. Change Reason Types must be defined in a system look up table (EmpRateChangeReasonTypes).</div>
+		<div class="reference">8. Termination Reason Types must be defined in a system look up table (EmpTerminationReasonTypes).</div>
+		<div class="reference">9. Work Shifts must be defined in a system look up table (EmpWorkShifts).</div>
+		<div class="reference">10. Union Types must be defined in a system look up table (EmpUnionTypes).</div>
+		<div class="reference">11. Status Category Types must be defined in a system look up table (EmpStatusCategoryTypes).</div>
+		<div class="reference">12. Gender Types must be defined in a system look up table (EmpGenderTypes).</div>
+		<div class="reference">13. Ethnicity Types must be defined in a system look up table (EmpEthnicityTypes).</div>
+		<div class="reference">14. Federal Adjustment Types must be defined in a system look up table (EmpFederalAdjustmentTypes).</div>
+		<div class="reference">15. Marital Status Federal Tax Types must be defined in a system look up table (EmpMaritalStatusFederalTaxTypes).</div>
+		<div class="reference">16. Marital Status State Tax Types must be defined in a system look up table (EmpMaritalStatusStateTaxTypes).</div>
+		<div class="reference">17. State Adjustment Types must be defined in a system look up table (EmpStateAdjustmentTypes).</div>
+		<div class="reference">18. SDI Adjustment Types must be defined in a system look up table (EmpSDIAdjustmentTypes).</div>
+		<div class="reference">19. Local Tax Adjustment Types must be defined in a system look up table (EmpLocalTaxAdjustmentTypes).</div>
+		<div class="reference">20. Local Tax Codes must be defined in a system look up table (EmpLocalTaxCodePayrollCompanyStates).</div>
+		<div class="reference">21. Jobs must be defined in a system look up table (HcmJobs).</div>
+		<div class="reference">22. I9 Types must be defined in a system look up table (EmpI9Types).</div>
+		<div class="reference">23. Vet Types must be defined in a system look up table (EmpVetTypes).</div>
+		<div class="reference">24. Separation Codes must be defined in a system look up table (EmpSeparationCodes).</div>
+		<div class="reference">25. Job Start Reason Types must be defined in a system look up table (EmpJobStartReasonTypes).</div>
+		<div class="reference">26. Marital Status Types must be defined in a system look up table (EmpMaritalStatusTypes).</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>PplPeople<br>AppUnits<br>AppStateTypes<br>AppGenericImports<br>HcmHouseCodes<br>HcmJobs<br>HcmHouseCodeJobs
+					<br>EmpEmployeeGenerals<br>EmpStatusTypes<br>PayPayrollCompanies<br>HcmHouseCodePayrollCompanies
+					<br>EmpJobCodeTypes<br>EmpUnionTypes<br>EmpStatusCategoryTypes<br>EmpGenderTypes<br>EmpEthnicityTypes
+					<br>EmpMaritalStatusFederalTaxTypes<br>EmpMaritalStatusStateTaxTypes<br>EmpMaritalStatusStateTaxStates
+					<br>EmpMaritalStatusTypes<br>EmpDeviceGroupTypes<br>EmpRateChangeReasonTypes<br>EmpTerminationReasonTypes
+					<br>EmpWorkShifts<br>EmpI9Types<br>EmpVetTypes<br>EmpJobStartReasonTypes<br>EmpSeparationCodes
+					<br>EmpFederalAdjustmentTypes<br>EmpMaritalStatusStateTaxTypes<br>EmpMaritalStatusStateTaxStates
+					<br>EmpStateAdjustmentTypes<br>EmpStateAdjustmentStates<br>EmpSDIAdjustmentTypes<br>EmpSDIAdjustmentStates
+					<br>EmpLocalTaxAdjustmentTypes<br>EmpLocalTaxAdjustmentStates<br>EmpLocalTaxCodePayrollCompanyStates
+					<br>			
+				</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>AppRecordsCount<br>AppGenericImportsSelect<br>EmpEmployeeImportValidate<br>AppDelimitedValueSelect<br>AppGenericImportInsert<br>EmpEmployeeImportInsert<br>EmpEmployeeImportUpdate<br>EmpEmployeeNumberRangeSelect</td>
+			</tr>
+		</table>
+	</body>
+</html>

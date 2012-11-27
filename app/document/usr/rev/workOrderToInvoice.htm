@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Work Order to Invoice</h1>
+			<div class="description">The purpose of <b>Work Order to Invoice</b> is to create the Invoice from completed Work Orders.
+				When creating an invoice from a work order, the work order line items will carry over to the invoice.
+			</br>
+			</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Work Order Search</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Hierarchy Tree View</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>To search a specific House Code, type-in House Code # (1455, 900000) and press Enter key.</td>				
+			</tr>
+			<tr>
+				<td>Start Date</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Start Date should be valid date.</td>				
+			</tr>
+			<tr>
+				<td>End Date</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>End Date should be valid date.</td>				
+			</tr>
+			<tr>
+				<td>Load</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>List the completed Work Orders based on the search criteria. If House Code is not specified then 
+					it will list all completed Work Orders which belongs to different House Codes based on the user security access.
+				</td>
+			</tr>			
+			<tr>
+				<td class="uiHeader" colspan="5">Completed Work Orders</td>
+			</tr>
+			<tr>
+				<td>Work Orders</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Holds the list of completed Work Orders based on the search criteria.</td>
+			</tr>
+			<tr>
+				<td>Select</td>
+				<td>Checkbox field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>To select the Work Order to either mark as "Closed" or generate Invoice.</td>
+			</tr>
+			<tr>
+				<td>Close Reason</td>
+				<td>Dropdown selection</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Close Reason should be selected from dropdown list only when closing the Work Orders without Invoicing.</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Readonly Text field</td>
+				<td>NA</td>
+				<td></td>
+				<td>House Code of the Work Order.</td>
+			</tr>
+			<tr>
+				<td>Work Order #</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Work Order number.</td>
+			</tr>
+			<tr>
+				<td>Customer</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Customer of the Work Order.</td>
+			</tr>
+			<tr>
+				<td>Start Date</td>
+				<td>Readonly Text field</td>
+				<td>NA</td>
+				<td></td>
+				<td>Start Date of the Work Order.</td>
+			</tr>
+			<tr>
+				<td>Completed Date</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Completed Date of the Work Order.</td>
+			</tr>			
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+			<tr>
+				<td>Generate Invoices</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To generate the invoices from selected work orders.</td>
+			</tr>
+			<tr>
+				<td>Close WO Without Invoicing</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Tp update the status of the selected Work Orders as "Closed" without invoicing.</td>
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Work Order to Invoice concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/woToInvoice.png"></td>
+			</tr>
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Load</td>
+				<td>In order to search, the errors on the page must be corrected.</td>
+			</tr>
+			<tr>
+				<td>Generate Invoices</td>
+				<td>In order to generate invoices, no need to select the Close Reason.</br>
+					Please select at least one work order to generate invoice.</br>
+					Error - There is a mismatch with the Site setup information for the House Code [xxxx]. 
+					Please correct the address of the site by accessing HouseCode -> Sites prior to continuing.</br>
+					In order to generate invoices, the errors on the page must be corrected.
+				</td>
+			</tr>
+			<tr>
+				<td>Close WO Without Invoicing</td>
+				<td>In order to save, the errors on the page must be corrected.</br>
+					Please select correct Close Reason for selected work orders.</br>
+					Please select at least one work order to close without invoicing.
+				</td>
+			</tr>
+			<tr>
+				<td>Error</td>
+				<td>Error while updating the record [SAVE FAILURE].</td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. Transaction Status Types must be defined in a system look up table (AppTransactionStatusTypes)</div>
+		<div class="reference">2. System Variables must be defined in a system look up table (AppSystemVariables)</div>
+		<div class="reference">3. States must be defined in a system look up table (AppStateTypes)</div>
+		<div class="reference">4. Units must be defined in a system look up table (AppUnits)</div>
+		<div class="reference">5. Sites must be defined in a system look up table (AppSites)</div>
+		<div class="reference">6. Sites must be associated to the Units (AppSiteUnits)</div>		
+		<div class="reference">7. House Codes must be defined in a system look up table (HcmHouseCodes)</div>
+		<div class="reference">8. Jobs must be defined in a system look up table (HcmJobs)</div>
+		<div class="reference">9. Jobs must be associated to the House Codes (HcmHouseCodeJobs)</div>
+		<div class="reference">10. Fiscal Years must be defined in a system look up table (FscYears)</div>
+		<div class="reference">11. Fiscal Periods must be defined in a system look up table (FscPeriods)</div>		
+		<div class="reference">12. Chart of accounts must be defined in a system look up table (FscAccounts)</div>
+		<div class="reference">13. Table Types must be defined in a system look up table (RevTableTypes)</div>
+		<div class="reference">14. State Taxes must be defined in a system look up table (RevStateTaxes)</div>
+		<div class="reference">15. Local Taxes must be defined in a system look up table (RevLocalTaxes)</div>
+		<div class="reference">16. Tasks must be defined in a system look up table (WomWorkOrderTasks)</div>
+		<div class="reference">17. Close Reason Types must be defined in a system look up table (WomCloseReasonTypes)</div>
+		<div class="reference">18. Work Orders should be available in a look up table (WomWorkOrders)</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>AppTransactionStatusTypes</br>
+					AppSystemVariables</br>
+					AppStateTypes</br>
+					AppUnits</br>
+					AppSites</br>
+					AppSiteUnits</br>
+					HcmHouseCodes</br>
+					HcmJobs</br>
+					HcmHouseCodeJobs</br>					
+					FscYears</br>
+					FscPeriods</br>
+					FscAccounts</br>
+					RevTableTypes</br>
+					RevStateTaxes</br>
+					RevLocalTaxes</br>
+					RevInvoices</br>
+					RevInvoiceItems</br>
+					RevAccountReceivables</br>
+					GlmRecurringExpenses</br>
+					GlmRecurringFixedCosts</br>
+					WomCloseReasonTypes</br>
+					WomWorkOrderTasks</br>
+					WomWorkOrders
+				</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>WomWorkOrdersSelect</br>
+					RevInvoiceBulkImportValidate</br>
+					AppDelimitedValueSelect</br>
+					FscWeekPeriodYear</br>
+					RevTaxRatesSelect</br>
+					RevInvoiceNumberSelect</br>
+					RevInvoiceUpdateFromWorkOrder</br>
+					RevInvoiceItemUpdateFromWorkOrder</br>
+					WomWorkOrderStatusUpdate
+				</td>
+			</tr>
+		</table>
+		<h2>See Also</h2>
+		<div class="reference"><a href="invoiceSearch.htm">Invoice Search</a></div>
+		<div class="reference"><a href="invoice.htm">Invoicing / AR</a></div>
+		<div class="reference"><a href="bulkInvoiceImport.htm">Bulk Import</a></div>
+	</body>
+</html>

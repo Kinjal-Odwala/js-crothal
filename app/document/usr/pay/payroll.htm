@@ -1,0 +1,1003 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Salary & Wages</h1>
+			<div class="description">The <b>Salary & Wages</b> module allows the end users to review and modifiy the payroll entries 
+				if necessary via the Daily Payroll Approval functionality. End users can also manage the pay codes available for use 
+				when recording weekly payroll details per employee.</br></br>
+				The main features of the Salary & Wages module are as follows.
+				<ul>
+					<li>If the end user selects to review an entry within a closed/future pay period, the records cannot be modified.</li>
+					<li>If the end user selects to review an entry within the current pay period that has already been Approved and Posted,
+				 		the record cannot be modified unless an end user with appropriate permissions unlocks the record.</li>
+					<li>End user overrides an incorrect time or adds a missed punch and provides the correct date and time. 
+						The system recalculates the gross hours based on the new date and time. If the end user does not want 
+						the system to automatically subtract an unpaid lunch period from the employee's gross hours, 
+						as identified on the House Code setup screen, the employee clears the Lunch option.</li>
+					<li>For House Codes using Time and Attendance, the end user needs the ability to specify which pay code is the 
+						default pay code, as Regular does not always apply. If a default pay code is already defined, the current choice 
+						would override the previous selection.</li>
+					<li>When a House Code does use Time and Attendance, entries are typically imported from the Kronos application and are 
+						then reviewed and modified if necessary via the Daily Payroll Approval functionality.</li>
+					<li>For House Codes using Time and Attendance, punches from the timeclock(s) are transferred to TeamFin based on an established schedule.</li>
+					<li>When a House Code does not use Time and Attendance, entries are made using the Weekly Payroll functionality.</li>					
+					<li>Hours cannot be entered if Payroll is being processed, the Salary and Wages module will be appropriately locked down.</li>
+					<li>End users can also manage the pay codes available for use when recording weekly payroll details per employee.  
+						Pay codes can be associated with an individual, a specific shift or all employees.</li>
+					<li>The Daily Payroll Approval functionality does allow for the entry of productive pay codes. 
+						Once an individual's time for the day has been approved, it is then visible through the
+						Weekly Payroll mechanism. Those who use Time and Attendance can add/modify non-productive hours and 
+						dollar differentials via the Weekly Payroll mechanism but they cannot modify productive hours via the Weekly Payroll screen.
+					</li>
+				</ul>
+			</div>
+		</div>
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Payroll Search</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Hierarchy Tree View</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>To search a specific House Code, type-in House Code # (1455, 900000) and press Enter key.</td>				
+			</tr>
+			<tr>
+				<td>Week</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Week should be selected from dropdown list. By default 10 weeks(week strat date - week end date) will be listed in descending order.
+					By default current week of the fiscal year will be selected.
+				</td>
+			</tr>
+			<tr>
+				<td>Load</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To list the daily/weekly payroll details for the selected week.</td>
+			</tr>
+			<tr>
+				<td>Search Image</td>
+				<td>Image icon field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Opens the popup screen to view the advance search option.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Advance Search<font style="font-size: 12px; font-weight: normal;"> (Click on the image icon to view the advance search option).</font></td>
+			</tr>	
+			<tr>
+				<td>List the weeks of Fiscal Year</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Year should be selected from dropdown list. Holds the list of fiscal years.</td>
+			</tr>						
+			<tr>
+				<td>OK</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To list all the weeks(week strat date - week end date) of the selected year in descending order.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Closes the popup screen.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Daily Payroll</td>
+			</tr>
+			<tr>
+				<td>Day</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Days of the selected week will be listed in descending order.</td>
+			</tr>
+			<tr>
+				<td>Employees</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>The grid will holds the list of active employees based on the search / filter criteria.</td>
+			</tr>
+			<tr>
+				<td>Status</td>
+				<td>Image icon field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Status of the employee punches. Green color indicates that correct number of punches. Red color indicates that mismatched / odd number of punches. Yellow color indicates that there are no punches.</td>
+			</tr>
+			<tr>
+				<td>Employee Name</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Name of the employee.</td>
+			</tr>
+			<tr>
+				<td>Employee #</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Unique six digit number of the employee.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Grid Footer</td>
+			</tr>
+			<tr>
+				<td>Add Image</td>
+				<td>Image icon field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Opens the popup screen which will allow the user to add the pay codes.</td>
+			</tr>
+			<tr>
+				<td>Shift</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>To filter the employees based on the employee shift type.</td>
+			</tr>
+			<tr>
+				<td>Page</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>List the number of pages. User can navigate to any page. Maximum 50 employee records will be listed in the grid.</td>
+			</tr>
+			<tr>
+				<td>Prev Image</td>
+				<td>Image icon field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>To navigate to the previous page.</td>
+			</tr>
+			<tr>
+				<td>Next Image</td>
+				<td>Image icon field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>To navigate to the next page.</td>
+			</tr>					
+			<tr>
+				<td class="uiHeader" colspan="5">Employee Details</td>
+			</tr>
+			<tr>
+				<td>Employee Name</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Name of the employee.</td>
+			</tr>
+			<tr>
+				<td>Employee #</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Unique six digit number of the employee.</td>
+			</tr>
+			<tr>
+				<td>Shift</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Holds the list of shift types. By default the employee shift will be selected.</td>
+			</tr>
+			<tr>
+				<td>Punches For</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Shows the start and end time of the selected shift.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Punches</td>
+			</tr>			
+			<tr>
+				<td>Punches</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>The grid will holds the list of punches of the selected employee.</td>
+			</tr>
+			<tr>
+				<td>Delete Image</td>
+				<td>Image icon field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>To delete the employee punch. Only the punches which are manually added and not approved can be deleted.</td>
+			</tr>
+			<tr>
+				<td>Punch Time</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Employee's Punch In/Out for shift if punches appear in the range provided in the Punches For.</td>
+			</tr>
+			<tr>
+				<td>Override Time</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>For values of missed or incorrect punches. If entered, Override Time should be valid date and time and should be between shift start and end time.</td>
+			</tr>
+			<tr>
+				<td>Use Time</td>
+				<td>Readonly text field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Display of the Punch Time or Override Time if an override has been used.</td>
+			</tr>
+			<tr>
+				<td>Gross Hours</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Total gross hours and it will be calculated based on the Use Time and the Rounding Time Period selected within House Code setup.</td>
+			</tr>
+			<tr>
+				<td>Lunch</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>By default the checkbox will be selected. The end user can de-select on an individual basis. If changes, it should recalculate the Net Hours.</td>
+			</tr>
+			<tr>
+				<td>Net Hours</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Net Hours will be calculated based on Gross Hours and Default Lunch Break which is set in House Code setup. 
+					If Gross Hours is less than Lunch Break Trigger which is set in House Code setup, the Net Hours are the same as Gross Hours.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Pay Code Allocations</td>
+			</tr>			
+			<tr>
+				<td>Pay Codes</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>The grid will holds the list of allocated pay codes of the selected day and employee.</td>
+			</tr>
+			<tr>
+				<td>Delete Image</td>
+				<td>Image icon field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>To delete the allocated pay code. Only the pay codes which are not approved can be deleted.</td>
+			</tr>
+			<tr>
+				<td>Pay Code</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>Hours</td>				
+				<td>Pay Code should be selected from dropdown list. Holds the list of pay codes where Productive flag is set as TRUE and AddToTotal flag is set as FALSE.</td>
+			</tr>
+			<tr>
+				<td>Hours</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Hours for the pay code that have been allocated for the day.</td>
+			</tr>
+			<tr>
+				<td>Remaining</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Remaining hours for the pay code that yet to been allocated for the day.</td>
+			</tr>
+			<tr>
+				<td>Weekly Total</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Total hours for the specific pay code for all days of the selected week.</td>
+			</tr>
+			<tr>
+				<td>Total</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Total hours, remaining hours and weekly total will be displayed just below the respective grid columns.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To save the punch details, gross hours, net hours and allocated pay code details.</td>
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Undo the changes to selected Payroll information.</td>
+			</tr>
+			<tr>
+				<td>Approve</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To approve the allocated pay codes and hours. Once approved the data cannot be modifed,
+					"Approve" button will be hidden and "UnApprove" button will be shown.
+				 	The approved pay codes will appear in Weekly Payroll screen which are not editable.
+				 </td>
+			</tr>
+			<tr>
+				<td>UnApprove</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To unapprove the allocated pay codes and hours. Once unapproved the data can be modifed,
+					"Approve" button will be shown and "UnApprove" button will be hidden.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Add Pay Code</td>
+			</tr>
+			<tr>
+				<td>Employee</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>Hours</td>				
+				<td>Employee should be selected from dropdown list. Holds the list of active employees, two additional options "All Employees on Page" and ""All Employees in House Code".</td>
+			</tr>
+			<tr>
+				<td>Shift</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>Hours</td>				
+				<td>Shift should be selected from dropdown list. Holds the list of all shift types and a additional option "(All)").</td>
+			</tr>
+			<tr>
+				<td>Add</td>
+				<td>Radio button field</td>
+				<td>Yes</td>
+				<td>Hours</td>				
+				<td>Select either Default Pay Code or Additional Pay Code.</td>
+			</tr>
+			<tr>
+				<td>Pay Code Information</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>The grid will holds the list of pay codes where Productive flag is set as TRUE and AddToTotal flag is set as FALSE.</td>
+			</tr>
+			<tr>
+				<td>Select</td>
+				<td>Checkbox field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Select the pay codes. At least one pay code should be selected.</td>
+			</tr>
+			<tr>
+				<td>Code</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Brief of the pay code.</td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Description of the pay code.</td>
+			</tr>
+			<tr>
+				<td>Ok</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Pay codes can be added to the selected employee or all employees listed on the page or all employees in the house code.</br>
+					If "Default Pay Code" option is selected then only one pay code can be selected as the default pay code for 
+					each employee.  If a default pay code is already defined, the current choice would override the previous selection.</br>
+					If "Additional Pay Code" option is selected then at least one pay code should be selected.
+				</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Closes the popup screen.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Weekly Payroll</td>
+			</tr>
+			<tr>
+				<td>Add Image</td>
+				<td>Image icon field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Opens the popup screen which will allow the user to add the pay codes.</td>
+			</tr>
+			<tr>
+				<td>Delete Image</td>
+				<td>Image icon field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To delete the weekly payroll row. Only the rows where hours/$ amounts are not associated(total hours/$ amounts are zero) to the pay code can be deleted.</td>
+			</tr>
+			<tr>
+				<td>Type</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>H is hourly, S is salaried. Whether the employee is Hourly or Salaried can be determined based on the employee's Ceridian Company.</td>
+			</tr>
+			<tr>
+				<td>Shift</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Shift type of the employee.</td>
+			</tr>
+			<tr>
+				<td>Employee</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Name of the employee.</td>
+			</tr>
+			<tr>
+				<td>Number</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Unique six digit number of the employee.</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Employee hours/$ amounts will be associated to the selected Payroll House Code.
+					To search a specific House Code, type-in House Code # (1455, 900000) and press Enter key.</td>
+			</tr>
+			<tr>
+				<td>Job</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Job should be selected from dropdown list. Holds the list of jobs which are associated to the selected payroll  house code.</td>
+			</tr>
+			<tr>
+				<td>Work Order</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Work Order should be selected from dropdown list. 
+					Holds the list of the approved work orders which are associated to the selected payroll house code.</td>
+			</tr>
+			<tr>
+				<td>Pay Code</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Pay Code should be selected from dropdown list. Holds the list of all pay codes when Time and Attendance flag is set to TRUE in House Code setup.</br>
+					Holds the list of pay codes where Productive flag is set as FALSE and the pay codes 7, 7L, 7R, 7M, 7S, 8, 8C, 8E, 8H, 8N, 8P, 9A, 2H 
+					when Time and Attendance flag is set to FALSE in House Code setup.
+				</td>
+			</tr>
+			<tr>
+				<td>First Day Date (mm/dd)</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Hours/$ amounts for first day of the week. Column heading is updated with the appropriate date based on the selected week.</td>
+			</tr>
+			<tr>
+				<td>Second Day Date (mm/dd)</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Hours/$ amounts for second day of the week. Column heading is updated with the appropriate date based on the selected week.</td>
+			</tr>
+			<tr>
+				<td>Third Day Date (mm/dd)</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Hours/$ amounts for third day of the week. Column heading is updated with the appropriate date based on the selected week.</td>
+			</tr>
+			<tr>
+				<td>Fourth Day Date (mm/dd)</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Hours/$ amounts for fourth day of the week. Column heading is updated with the appropriate date based on the selected week.</td>
+			</tr>
+			<tr>
+				<td>Fifth Day Date (mm/dd)</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Hours/$ amounts for fifth day of the week. Column heading is updated with the appropriate date based on the selected week.</td>
+			</tr>
+			<tr>
+				<td>Sixth Day Date (mm/dd)</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Hours/$ amounts for sixth day of the week. Column heading is updated with the appropriate date based on the selected week.</td>
+			</tr>
+			<tr>
+				<td>Seventh Day Date (mm/dd)</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Hours/$ amounts for seventh day of the week. Column heading is updated with the appropriate date based on the selected week.</td>
+			</tr>
+			<tr>
+				<td>Pay Status</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Status of the weekly payroll (In Process/Dly Pend/Dly Appr/Posted).</td>
+			</tr>
+			<tr>
+				<td>Total</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Total hours/$ amounts of the each row.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Grid Footer</td>
+			</tr>
+			<tr>
+				<td>Add Image</td>
+				<td>Image icon field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Opens the popup screen which will allow the user to add the pay codes.</td>
+			</tr>
+			<tr>
+				<td>Delete Image</td>
+				<td>Image icon field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Opens the popup screen which will allow the user to delete the pay codes.</td>
+			</tr>
+			<tr>
+				<td>Type</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>To filter the employees based on the type (H is Hourly, S is Salaried).</td>
+			</tr>
+			<tr>
+				<td>Shift</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>To filter the employees based on the employee shift type.</td>
+			</tr>
+			<tr>
+				<td>Page</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>List the number of pages. User can navigate to any page.</td>
+			</tr>
+			<tr>
+				<td>Save Image</td>
+				<td>Image icon field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>To save the weekly payroll information.</td>
+			</tr>
+			<tr>
+				<td>Prev Image</td>
+				<td>Image icon field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>To navigate to the previous page.</td>
+			</tr>
+			<tr>
+				<td>Next Image</td>
+				<td>Image icon field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>To navigate to the next page.</td>
+			</tr>
+			<tr>
+				<td>Print</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To print the selected weekly payroll report in pdf format.</td>
+			</tr>
+			<tr>
+				<td>Total Hours</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>The total hours for each day of the week for the employees listed in the grid will be displayed just below the respective grid columns.</td>
+			</tr>
+			<tr>
+				<td>Grand Total</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Grand total hours for each day of the week for all employees will be displayed just below the respective grid columns.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Add / Delete Pay Code</td>
+			</tr>
+			<tr>
+				<td>Employee</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>Hours</td>				
+				<td>Employee should be selected from dropdown list. Holds the list of active employees, two additional options "All Employees on Page" and ""All Employees in House Code".</td>
+			</tr>
+			<tr>
+				<td>Type</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>Hours</td>				
+				<td>Type should be selected from dropdown list. Holds the options of (All), Hourly and Salary.</td>
+			</tr>
+			<tr>
+				<td>Shift</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>Hours</td>				
+				<td>Shift should be selected from dropdown list. Holds the list of all shift types and a additional option "(All)".</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Employee hours/$ amounts will be associated to the selected Payroll House Code.
+					To search a specific House Code, type-in House Code # (1455, 900000) and press Enter key.</td>
+			</tr>
+			<tr>
+				<td>Job</td>
+				<td>Date Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Job should be selected from dropdown list. Holds the list of jobs which are associated to the selected payroll house code.</td>
+			</tr>
+			<tr>
+				<td>Work Order</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Work Order should be selected from dropdown list. Holds the list of the approved work orders which are associated to the selected payroll house code.</td>
+			</tr>
+			<tr>
+				<td>Pay Code Information</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>The grid will holds the list of all pay codes when Time and Attendance flag is set to TRUE in House Code setup.</br>
+ 					Holds the list of pay codes where Productive flag is set as FALSE and the pay codes 
+					7, 7L, 7R, 7M, 7S, 8, 8C, 8E, 8H, 8N, 8P, 9A, 2H when Time and Attendance flag is set to FALSE in House Code setup.
+				</td>
+			</tr>
+			<tr>
+				<td>Select</td>
+				<td>Checkbox field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Select the pay codes. At least one pay code should be selected.</td>
+			</tr>
+			<tr>
+				<td>Code</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Brief of the pay code.</td>
+			</tr>
+			<tr>
+				<td>Rate/Amount</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Rate or Amount of the pay code.</td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Description of the pay code.</td>
+			</tr>
+			<tr>
+				<td>Ok</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Pay codes can be added/deleted to the selected employee or all employees listed on the page or all employees in the house code.</br>
+					When deleting the pay code only the rows where hours/$ amounts are not associated(total hours/$ amounts are zero) to the pay code are deleted.
+				</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Closes the popup screen.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Actions Menu</td>
+			</tr>
+			<tr>
+				<td>Save Payroll Info</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To save the payroll information.</td>
+			</tr>
+			<tr>
+				<td>Undo changes to Payroll Info </td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Undo the changes to payroll information being edited.</td>
+			</tr>			
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Advance Search concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/search.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Daily Payroll concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/dailyPayroll.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Adding Pay Code in Daily Payroll concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/addPayCode.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Weekly Payroll concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/weeklyPayroll.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Adding Pay Code in Weekly Payroll concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/addPayCodeWeekly.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Deleting Pay Code in Weekly Payroll concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/deletePayCode.png"></td>
+			</tr>
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Load</td>
+				<td>Please select the House Code.</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>In order to save, the errors on the page must be corrected.</br>
+					Closed and future pay periods cannot be edited.</br>
+					Please select the correct Shift.</br>
+					Override Time should be between [Shift Start Time] and [Shift End Time].)</br>
+					Productive hours cannot be greater than the net hours.</br>
+					Net hours must be associated to a productive pay code.</br>
+					Warning: Productive hours cannot be greater than the net hours. Please make adjustments and save the data.</br>
+					Warning: You have entered more than 40 hours for Productive Time. Please review OT policy and make adjustments if necessary. Would you like to continue without making any adjustments?</br>
+				</td>
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>In order to undo, the errors on the page must be corrected.</td>
+			</tr>
+			<tr>
+				<td>Approve</td>
+				<td>Previous day has not yet been approved.</br>
+					Future day punches cannot be approved.</br>
+					Employee already approved.</br>
+				</td>
+			</tr>
+			<tr>
+				<td>UnApprove</td>
+				<td>Employee is not approved.</br></td>
+			</tr>
+			<tr>
+				<td>Ok</td>
+				<td>You must select at least one Pay Code.</br>
+					Only one default Pay Code is allowed.</br>
+				</td>
+			</tr>
+			<tr>
+				<td>Print</td>
+				<td>Please select House Code, Week.</td>
+			</tr>
+			<tr>
+				<td>Warning / Popup Messages</td>
+				<td>There are unsaved changes. Would you like to save before continuing?</br>
+					The House Code of [House Code] is not valid.</br>
+					Warning: The value entered for days cannot be greater than 24.</br>
+					Warning: You have entered more than 40 hours for Productive Time. Please review OT policy and make adjustments if necessary.</br>
+				</td>
+			</tr>
+			<tr>
+				<td>Delete Punch / Pay Code</td>
+				<td>Are you sure you want to delete the override punch time [Over Ride Time]?.</br>
+					Are you sure you want to delete the pay code [Pay Code Title]?.</br>
+					Are you sure you want to delete the pay code [Pay Code Title] for the employee [Employee Name]?</br>
+					Are you sure you want to delete the selected Pay Codes?</br>
+					You cannot delete the selected pay code. $ Amounts are associated to the pay code [Pay Code Title].</br>
+					You cannot delete the selected pay code. Hours are associated to the pay code [Pay Code Title].</br>
+				</td>
+			</tr>
+			<tr>
+				<td>Save Error</td>
+				<td>[SAVE FAILURE] Error while updating Employee Daily Payroll Record.</br>
+					[SAVE FAILURE] Error while inserting Pay Code(s).</br>
+					[SAVE FAILURE] Error while deleting Weekly Payroll record.</br>
+					[SAVE FAILURE] Error while updating Weekly Payroll record.</br>
+				</td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>		
+		<div class="reference">1. Nodes must be defined in a system look up table (HirNodes)</div>
+		<div class="reference">2. Groups must be defined in a system look up table (HirGroups)</div>
+		<div class="reference">3. Units must be defined in a system look up table (AppUnits)</div>
+		<div class="reference">4. Users must be defined in a system look up table (AppUsers)</div>		
+		<div class="reference">5. Roles must be defined in a system look up table (AppRoles)</div>		
+		<div class="reference">6. Nodes must be associated to the Roles (AppRoleNodes)</div>
+		<div class="reference">7. Groups must be associated to the Roles (AppRoleGroups)</div>
+		<div class="reference">8. Nodes must be associated to the Groups (HirGroupNodes)</div>
+		<div class="reference">9. Persons should be available in a look up table (PplPeople)</div>
+		<div class="reference">10. Transaction Status Types must be defined in a system look up table (AppTransactionStatusTypes)</div>
+		<div class="reference">11. System Variables must be defined in a system look up table (AppSystemVariables)</div>
+		<div class="reference">12. Employees should be available in a look up table (EmpEmployeeGenerals)</div>
+		<div class="reference">13. Work Shifts must be defined in a system look up table (EmpWorkShifts)</div>
+		<div class="reference">14. Fiscal Years must be defined in a system look up table (FscYears)</div>
+		<div class="reference">15. Fiscal Periods must be defined in a system look up table (FscPeriods)</div>
+		<div class="reference">16. House Codes must be defined in a system look up table (HcmHouseCodes)</div>
+		<div class="reference">17. Jobs must be defined in a system look up table (HcmJobs)</div>
+		<div class="reference">18. Jobs must be associated to the House Codes (HcmHouseCodeJobs)</div>
+		<div class="reference">19. Payroll Companies must be defined in a system look up table (PayPayrollCompanies)</div>
+		<div class="reference">20. Pay Frequency Types must be defined in a system look up table (PayPayFrequencyTypes)</div>
+		<div class="reference">21. Pay Codes must be defined in a system look up table (PayPayCodes)</div>
+		<div class="reference">22. Employee Punch Types must be defined in a system look up table (PayEmployeePunchTypes)</div>		
+		<div class="reference">23. Invoices should be available in a look up table (RevInvoices)</div>
+		<div class="reference">24. Work Orders should be available in a look up table (WomWorkOrders)</div>		
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>HirNodes</br>
+					HirGroups</br>
+					HirGroupNodes</br>
+					AppUnits</br>
+					AppUsers</br>
+					AppRoles</br>
+					AppRoleNodes</br>
+					AppRoleGroups</br>
+					PplPeople</br>
+					AppTransactionStatusTypes</br>
+					AppSystemVariables</br>
+					EmpEmployeeGenerals</br>
+					EmpWorkShifts</br>
+					FscYears</br>
+					FscPeriods</br>
+					HcmHouseCodes</br>
+					HcmJobs</br>
+					HcmHouseCodeJobs</br>
+					PayPayrollCompanies</br>
+					PayPayFrequencyTypes</br>
+					PayPayCodes</br>
+					PayEmployeePunchTypes</br>
+					PayEmployeeDefaultPayCodes</br>
+					PayEmployeeDailyPayrolls</br>
+					PayEmployeePunches</br>
+					PayEmployeePunchPaycodeAllocations</br>
+					PayEmployeeWeeklyPayrolls</br>
+					RevInvoices</br>
+					WomWorkOrders</br>
+				</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>AppUserHouseCodesSelect</br>
+					HirNodeParentsSiblingsChildrenSelect</br>
+					HirHierarchyNodeSelect</br>
+					HirNodeAuthorizationSelect</br>
+					AppDelimitedValueSelect</br>
+					FscWeekPeriodYearSelect</br>
+					HcmJobByHouseCode</br>
+					PayWeeksSelect</br>
+					PayEmployeeDailyPayrollCount</br>
+					PayEmployeeDetailsSelect</br>
+					EmpEmployeePayPeriodSelect</br>
+					PayEmployeeDailyPayrollSelect</br>
+					PayEmployeeDailyPaycodeAllocationSelect</br>
+					PayEmployeePunchSelect</br>
+					PayEmployeeDailyPayrollUpdate</br>
+					PayEmployeePunchPayCodeAllocationDelete</br>
+					PayEmployeeDailyPayrollApproveUpdate</br>
+					PayEmployeeDailyPayrollUnApproveUpdate</br>
+					PayEmployeeDailyPayrollPaycodeUpdate</br>
+					PayEmployeeDailyGrossUpdate</br>
+					PayEmployeeDailyWeeklyPayrollUpdate</br>
+					PayEmployeePunchUpdate</br>
+					PayEmployeeWeeklyPayrollPayCodesSelect</br>
+					PayEmployeeWeeklyPayrollCount</br>
+					PayEmployeeWeeklyPayrollSelect</br>
+					PayEmployeeWeeklyPayrollUpdate</br>
+					PayEmployeeWeeklyPayrollsPaycodeUpdate</br>
+					PayEmployeeWeeklyPayrollDelete</br>					
+					WomWorkOrdersSelect</br>
+				</td>
+			</tr>
+			<tr>
+				<td>Functions</td>
+				<td>AppUserHouseCodesSelectFunction</br>
+					AppUserHirNodesSelect</br>
+					FscPeriodDetails</br>
+					PayWeekPeriodYear</br>
+					PayEmployeePunchesCount</br>
+					PayEmployeeRoundingTimePeriod</br>
+				</td>
+			</tr>
+			<tr>
+				<td>Views</td>
+				<td>PayEmployeePunchesView</td>
+			</tr>
+		</table>
+		<h2>See Also</h2>
+		<div class="reference"><a href="payCalendar.htm">Payroll Calendar</a></div>		
+		<div class="reference"><a href="ceridianCompany.htm">Ceridian Companies</a></div>
+	</body>
+</html>

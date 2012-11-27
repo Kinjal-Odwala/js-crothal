@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Contract Billing</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/bud/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+		
+		<table width="100%" border="0" cellpadding="0" cellspacing="0">
+			<tr>
+				<td height="5px" colspan="2">
+					
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<table width="800px" border="0" cellpadding="0" cellspacing="0">
+						<tr>
+							<td class="labelText">
+								Billing Period
+							</td>
+							<td class="labelText">
+								Current Billing Rate
+							</td>
+							<td>
+								
+							</td>
+							<td>
+								
+							</td>
+							<td>
+								
+							</td>
+							<td>
+								
+							</td>
+							<td>
+								
+							</td>
+							<td class="labelText">
+								New Billing Rate
+							</td>
+						</tr>
+						<tr>
+							<td class="pageHeader" width="150px">
+								
+							</td>
+							<td class="labelText">
+								Rate
+							</td>
+							<td width="10px">
+								
+							</td>
+							<td class="labelText">
+								Percent Increase
+							</td>
+							<td class="labelText">
+								Increase in $
+							</td>
+							<td class="labelText">
+								Date Effective
+							</td>
+							<td width="10px">
+								
+							</td>
+							<td class="labelText">
+								Rate
+							</td>
+						</tr>
+						<tr>
+							<td class="labelText">
+								<div id="BillingCycleFrequencyType"></div>
+							</td>
+							<td class="labelText">
+								<div id="Rate"></div>
+							</td>
+							<td width="10px">
+								
+							</td>
+							<td class="labelText">
+								<div id="Percent"></div>
+							</td>
+							<td class="labelText">
+								<div id="IncreaseDollars"></div>
+							</td>
+							<td class="labelText">
+								<div id="DateEffective"></div>
+							</td>							
+							<td width="10px">
+								
+							</td>
+							<td class="labelText">
+								<div id="NewRate"></div>
+							</td>
+							<td >
+								
+							</td>
+						</tr>
+					</table>					
+				</td>
+			</tr>	
+			<tr>
+				<td colspan="2">
+					
+				</td>
+			</tr>
+			<tr>
+				<td width="150px" class="pageHeader">
+						Billing Per Period
+				</td>
+				<td class="labelText">
+					
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<div class="GridTable">
+						<div id="Periodrate"></div>
+					</div>
+				</td>
+			</tr>			
+			<tr>
+				<td colspan="2">
+					<div class="GridTableDaily">
+						<div id="TypeIncomCost"></div>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<div id="iiInputValidationMaster"></div>
+	</body>
+</html>

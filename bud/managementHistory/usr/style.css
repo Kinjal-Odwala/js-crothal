@@ -1,0 +1,41 @@
+﻿@import url('../med/default/default.css');
+#radioButtonLabel
+	{
+		width:275px;
+		float:left;
+		height:27px;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;	
+		float:left;
+	}
+#radioButton
+	{
+		width:25px;
+		padding-left:10px;
+		padding-right:10px;
+		float:left;
+	}
+.hrColor
+	{
+		color:#032D23;
+		height:2px;
+		width:90%;
+		text-align:center;
+	}
+#ReviewWorksheet
+	{
+		width:950px;
+		padding-left:10px;
+	}
+#ManagementAdministration
+	{
+		width:1285px;
+		padding-left:10px;
+	}
+.flowstyle
+	{
+		width:100%;
+		overflow:auto;
+	}
+	

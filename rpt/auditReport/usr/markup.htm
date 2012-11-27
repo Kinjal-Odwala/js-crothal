@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Audit Report</title>
+		<!-- Following "blank" stylesheet link with an id of skin is required for IE7 to work properly on refreshes -->
+		<link id="skin" type="text/css" rel="stylesheet"/>
+		<script>
+			function onLoad(){
+				var redirectURL = location.search.substring(1); 
+				redirectURL = redirectURL.substring(redirectURL.indexOf('=')+1);
+				window.open(redirectURL);
+			}
+		</script>
+	</head>
+
+	<body id="appBody" onload="onLoad();">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 30%; margin-top: -50px; margin-left: -33px">
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Audit Report is opened in separate browser.</div>    
+		    </div>
+		</div>
+	</body>
+</html>

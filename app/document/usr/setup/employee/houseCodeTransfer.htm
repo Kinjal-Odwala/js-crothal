@@ -1,0 +1,435 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>New Hire</h1>
+			<div class="description">The SSN screen is displayed after clicking on the House Code Transfer Action Menu. This Menu is used to Trasfer the Employee from one House Code to another House Code.</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:100px;">UI Element</th>
+				<th style="width:100px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th style="width:100px;">Validation</th>	
+				<th style="width:200px;">Description</th>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">House Code Transfer-General</td>
+			</tr>
+			<tr>
+				<td>SSN</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry.</td>	
+				<td>The Unit Manager will enter valid SSN number.</td>			
+			</tr>
+			
+			<tr>
+				<td>Next</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Go to Next Screan.</td>	
+			</tr>
+			
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>		
+				<td>Cancel for HouseCode Transfer.</td>			
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">House Code Transfer-General</td>
+			</tr>
+			<tr>
+				<td>Employee Number</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>ReadOnly</td>				
+				<td>This field is required.</td>		
+				<td>Employee Number of Employee. Generating automatic from DB</td>		
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required.</td>		
+				<td>House Code of Employee</td>		
+			</tr>
+			<tr>
+				<td>Cerdian Company</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please select Cerdian Company.</td>		
+				<td>Cerdian Company of Employee</td>		
+			</tr>
+			<tr>
+				<td>Crothall Employee</td>
+				<td>Radio selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required.</td>		
+				<td></td>		
+			</tr>
+			<tr>
+				<td>Status</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>ReadOnly</td>				
+				<td>This field is required.</td>		
+				<td>Status of Employee</td>		
+			</tr>
+			<tr>
+				<td>Status Category</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>ReadOnly</td>				
+				<td></td>		
+				<td>Status Category of Employee</td>		
+			</tr>
+			<tr>
+				<td>Date of Current Hire</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>ReadOnly</td>				
+				<td></td>		
+				<td>Date of Current Hire of Employee</td>		
+			</tr>
+			<tr>
+				<td>Date of Original Hire</td>
+				<td>Text Field</td>
+				<td>NA</td>
+				<td>ReadOnly</td>				
+				<td></td>		
+				<td>Date of Original Hire of Employee</td>		
+			</tr>
+			<tr>
+				<td>Seniority Date</td>
+				<td>Text Field</td>
+				<td>NA</td>
+				<td>ReadOnly</td>				
+				<td></td>		
+				<td>Seniority Date of Employee</td>		
+			</tr>
+			<tr>
+				<td>Effective Date</td>
+				<td>Date Control</td>
+				<td>Yes</td>
+				<td>End user click</td>				
+				<td>This field is required.</td>		
+				<td>Effective Date of Employee. On change of Cerdian Company, this is enabled.</td>		
+			</tr>
+			<tr>
+				<td>Back</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Go to Back Screan.</td>	
+			</tr>
+			<tr>
+				<td>Next</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Go to Next Screan.</td>	
+			</tr>
+			
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>		
+				<td>Cancel for HouseCode Transfer.</td>		
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">House Code Transfer-Job Information</td>
+			</tr>			
+			<tr>
+				<td>Effective Date</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>ReadOnly</td>				
+				<td>Current Date</td>		
+				<td>Effective Date of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Job Change Reason</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>ReadOnly</td>				
+				<td>Transfer</td>		
+				<td>Job Change Reason of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Job Code</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Job Code of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Default House Code Job</td>
+				<td>Dropdown selection</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>House Code Job of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Union Employee</td>
+				<td>Radio selection</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Union Employee of Employee</td>		
+			</tr>
+			<tr>
+				<td>Exempt</td>
+				<td>Radio selection</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Exempt of Employee</td>		
+			</tr>
+			<tr>
+				<td>Background Check Date</td>
+				<td>Date Control</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Background Check Date of Employee</td>		
+			</tr>
+			<tr>
+				<td>Union</td>
+				<td>Dropdown selection</td>
+				<td>Yes if Union Employee Selectioned "Yes"</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Union of Employee</td>		
+			</tr>
+			<tr>
+				<td>Back</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Go to Back Screan.</td>	
+			</tr>
+			<tr>
+				<td>Next</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Go to Next Screan.</td>	
+			</tr>
+			
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>		
+				<td>Cancel for HouseCode Transfer.</td>		
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">House Code Transfer-Compensation</td>
+			</tr>
+			<tr>
+				<td>Effective Date</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>ReadOnly</td>				
+				<td>Current Date</td>		
+				<td>Effective Date of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Rate Change Reason</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>Transfer - ReadOnly</td>				
+				<td></td>		
+				<td>Rate Change Reason of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Hourly Pay Rate</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Please enter numeric data</td>		
+				<td>Hourly Pay Rate of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Scheduled Hours</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Warning: Individual will work less than 30 hours a week and therefore not eligible for full-time benefits. Minimum eligible hours:60</td>		
+				<td>Scheduled Hours of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Review Date</td>
+				<td>Date datecontrol</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Review Date of Employee</td>		
+			</tr>
+			<tr>
+				<td>Work Shift</td>
+				<td>Dropdown selection</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Work Shift of Employee</td>		
+			</tr>
+			<tr>
+				<td>Alt Rate of Pay A</td>
+				<td>Text Field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td> Alt Rate of Pay A of Employee</td>		
+			</tr>
+			<tr>
+				<td>Alt Rate of Pay B</td>
+				<td>Text Field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td> Alt Rate of Pay B of Employee</td>		
+			</tr>
+			<tr>
+				<td>Alt Rate of Pay C</td>
+				<td>Text Field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td> Alt Rate of Pay C of Employee</td>		
+			</tr>
+			<tr>
+				<td>Alt Rate of Pay D</td>
+				<td>Text Field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td> Alt Rate of Pay D of Employee</td>		
+			</tr>
+			
+			<tr>
+				<td>Device Group</td>
+				<td>Dropdown selection</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Device Group of Employee</td>		
+			</tr>
+			<tr>
+				<td>Back</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Go to Back Screan.</td>	
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Save</td>	
+			</tr>
+			
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>		
+				<td>Cancel for HouseCode Transfer.</td>		
+			</tr>
+			
+
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Item Search</td>
+			</tr>			
+			<tr>	
+				<td><img width="650" height="500" src="images/HouseCodeTransferSSN.jpg"></td>
+			</tr>	
+			<tr>
+				<td><img width="650" height="500" src="images/HouseCodeTransferEmployeeNumber.jpg"></td>
+			</tr>
+			<tr>	
+				<td><img width="650" height="500" src="images/HouseCodeTransferEffectiveDate.jpg"></td>
+			</tr>
+			<tr>	
+				<td><img width="650" height="500" src="images/HouseCodeTransferCompEffectiveDate.jpg"></td>
+			</tr>			
+				
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Required Field</td>
+				<td>This field is required. Please make an entry.</td>
+			</tr>
+			<tr>
+				<td>Invalid SSN</td>
+				<td>Please enter valid Social Security Number. Example: 001-01-0001,899-99-9999.</td>
+			</tr>
+			<tr>
+				<td>Look-up</td>
+				<td>Employee with Social Security Number: 887-45-6355 already exists in House Code 001; contact payroll if assistance is needed.</td>
+			</tr>
+			<tr>	
+				<td></td>
+				<td>SSN 345-34-5435 does not exist in any other house code.</td>
+			</tr>
+		</table>
+		<h2>Action</h2>
+		<div class="reference">1. To open an employee record the Unit Manager will click on the Employee detail row.
+			This will open up another UI with the employee record that can be viewed or edited based on the security level of the Unit Manager.
+		</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>PplPersons<br>EmpEmployeeGenerals</td>
+			</tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="newHire.htm">New Hire</a></div>
+		<div class="reference"><a href="catalog.htm">Catalogs</a></div>
+		<div class="reference"><a href="purchaseOrder.htm">Purchase Orders</a></div>
+	</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Remit To</h1>
+			<div class="description">The purpose of Remit To is to setup and maintain a list of Locations available to Invoice.</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:100px;">UI Element</th>
+				<th style="width:110px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th style="width:200px;">Validation</th>	
+				<th style="width:100px;">Description</th>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">Remit To Locations</td>
+			</tr>
+			
+			
+			<tr>
+				<td>Remit To Locations</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td></td>				
+				<td>Lists Remit To Locations.</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">Add / Edit Location</td>
+			</tr>
+			<tr>
+				<td>Title</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry.<br />
+                    Maximum length allowed - 16</td>				
+				<td>Location Title</td>				
+			</tr>
+			<tr>
+				<td>Address1</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry.</td>	
+                <td>Location Address1</td>				
+			</tr>
+			<tr>
+				<td><span id="nonRequiredFieldIndicator">Address2</span></td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>
+				<td>Location Address2</td>				
+			</tr>
+			<tr>
+				<td>City</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry.</td>	
+                <td>City of the Location</td>			
+			</tr>
+			<tr>
+				<td>State</td>
+				<td>List</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry.<br />Please select the correct State.</td>	
+                <td> State of the Location</td>			
+			</tr>
+			<tr>
+				<td>Zip</td>
+				<td>
+                    Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry.<br />
+                    Maximum length allowed - 10<br />
+                    Please enter valid zip code. Example: 99999 or 99999-9999</td>	
+                <td>Zip of the Location</td>			
+			</tr>
+			
+			<tr>
+				<td>
+                    Save</td>
+				<td>
+                    Button</td>
+				<td>
+                    NA</td>
+				<td>End user input</td>				
+				<td>
+                    In order to save, the errors on the page must be corrected.</td>	
+                <td>
+                    Click Save button to save the change.</td>			
+			</tr>
+			<tr>
+				<td>
+                    New</td>
+				<td>
+                    Button</td>
+				<td>
+                    NA</td>
+				<td>End user input</td>				
+				<td></td>	
+                <td>
+                    Click New button to Create New Location.</td>			
+			</tr>
+			<tr>
+				<td>
+                    Undo</td>
+				<td>
+                    Button</td>
+				<td>
+                    NA</td>
+				<td>End user input</td>				
+				<td></td>	
+                <td>
+                    Click Undo butoon to cancel any changes made.</td>			
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Add / Edit Remit To Location</td>
+			</tr>
+			<tr>
+				<td><img src="images/RemitToLocation.png" alt="Remit To Location"/></td>
+			</tr>			
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td> Error</td>
+				<td>Failed to save Remit To Location.</td>
+			</tr>
+		</table>
+		<h2>Action</h2>
+		<div class="reference">
+		    1. This user interface can be accessed at <span class="iiMenuVerticalMainPart Selected undefined">
+                HouseCode</span> > Remit To.<br />
+            2. Edit Location - Select a Remit To Location on left grid, it allows User to edit it on the right panel.
+        </div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>
+                    HcmRemitToLocations, AppStateTypes.</td>
+			</tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="site.htm">Sites</a></div>
+		<div class="reference"><a href="job.htm">Jobs</a></div>
+		<div class="reference"><a href="houseCodeImport.htm">Import House Codes</a></div>
+	</body>
+</html>

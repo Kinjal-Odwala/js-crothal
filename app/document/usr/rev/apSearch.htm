@@ -1,0 +1,312 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>AP Search</h1>
+			<div class="description">The purpose of <b>AP Search</b> is to list the AP Invoice and Check details based on the search criteria.</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th>Validation</th>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">AP Search</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>House Code should be selected from dropdown list.</td>				
+			</tr>
+			<tr>
+				<td>Vendor</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Enter Vendor Number or Name.</td>				
+			</tr>
+			<tr>
+				<td>Invoice #</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Enter Invoice Number.</td>				
+			</tr>
+			<tr>
+				<td>GL Start Date</td>
+				<td>Date Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>GL Start Date should be valid and should not be blank if GL End Date is entered.</td>				
+			</tr>
+			<tr>
+				<td>GL End Date</td>
+				<td>Date Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>GL End Date should be valid and should not be blank if GL Start Date is entered.</td>				
+			</tr>
+			<tr>
+				<td>Search</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>List the AP Invoice details based on the search criteria. At least one search criteria should be entered to list the AP Invoices.</td>
+			</tr>
+			<tr>
+				<td>Export To Excel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Export the AP Invoice details into an excel file based on the search criteria. At least one search criteria should be entered to generate the excel file.</td>
+			</tr>			
+			<tr>
+				<td class="uiHeader" colspan="5">AP Invoices</td>
+			</tr>
+			<tr>
+				<td>AP Invoices</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>The grid will holds the list of AP Invoice details based on the search criteria. 
+				The list will be grouped by Vendor Invoice #. 
+				Double click on the line item to view the AP Check details. 
+				Maximum 50 records will be listed in a page and pagination will allow the user to navigate to different pages.</td>
+			</tr>
+			<tr>
+				<td>Vendor Number</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Vendor Number of the AP Invoice.</td>				
+			</tr>
+			<tr>
+				<td>Vendor Name</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Vendor Name of the AP Invoice.</td>				
+			</tr>		
+			<tr>
+				<td>Doc Type</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Document Type of the AP Invoice.</td>				
+			</tr>
+			<tr>
+				<td>Doc Number</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Document Number of the AP Invoice.</td>				
+			</tr>
+			<tr>
+				<td>Pay Item</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Pay Item of the AP Invoice.</td>				
+			</tr>
+			<tr>
+				<td>Void Doc Type</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Void Document Type of the AP Invoice.</td>				
+			</tr>
+			<tr>
+				<td>Vendor Invoice #</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Vendor Invoice Number of the AP Invoice.</td>				
+			</tr>
+			<tr>
+				<td>Invoice Date</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Invoice Date of the AP Invoice.</td>				
+			</tr>
+			<tr>
+				<td>GL Date</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>GL Date of the AP Invoice.</td>				
+			</tr>
+			<tr>
+				<td>Pay Status</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Pay Status of the AP Invoice.</td>				
+			</tr>
+			<tr>
+				<td>Gross Amount</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Gross Amount of the AP Invoice.</td>				
+			</tr>
+			<tr>
+				<td>Open Amount</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Open Amount of the AP Invoice.</td>				
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>House Code of the AP Invoice.</td>				
+			</tr>
+			<tr>
+				<td>Sub Ledger</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Sub Ledger (Job Code) of the AP Invoice.</td>				
+			</tr>
+			<tr>
+				<td>PO Number</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>PO Number of the AP Invoice. Click on PO Number to view the Purchase Order details. The link will be enabled only if PO Number exists in Purchasing module.</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Check Details</td>
+			</tr>
+			<tr>
+				<td>AP Invoices</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>The grid will holds the list of AP Check details based on the selected line item (Note: Double click on the line item to view the AP Check details).</td>
+			</tr>
+			<tr>
+				<td>Check Date</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Check Date of the Invoice line item.</td>				
+			</tr>
+			<tr>
+				<td>Check Type</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Check Type of the Invoice line item.</td>				
+			</tr>
+			<tr>
+				<td>Check Number</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Check Number of the Invoice line item.</td>
+			</tr>
+			<tr>
+				<td>Void Check Date</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Void Check Date of the Invoice line item.</td>
+			</tr>
+			<tr>
+				<td>Doc Type</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Document Type of the Invoice line item.</td>				
+			</tr>
+			<tr>
+				<td>Doc Number</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Document Number of the Invoice line item.</td>				
+			</tr>
+			<tr>
+				<td>Pay Item</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Pay Item of the Invoice line item.</td>				
+			</tr>
+			<tr>
+				<td>Vendor Number</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td>Vendor Number of the Invoice line item.</td>				
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">AP Invoice Search concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/apSearch.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">AP Check details concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/apCheck.png"></td>
+			</tr>
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Search / Export To Excel</td>
+				<td>Please enter search criteria: House Code, Vendor, Invoice # or GL Start Date & GL End Date.</br>
+					Please enter valid Date.</br>
+					Please enter GL Start Date and GL End Date.
+				</td>
+			</tr>
+		</table>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>RevAccountPayableInvoices</br>RevAccountPayableChecks</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>RevAccountPayableHouseCodesSelect</br>RevAccountPayableInvoicesSelect</td>
+			</tr>
+			<tr>
+				<td>Functions</td>
+				<td>AppUserHouseCodesSelectFunction</td>
+			</tr>
+		</table>
+		<h2>See Also</h2>
+		<div class="reference"><a href="apImport.htm">AP Import</a></div>
+		<div class="reference"><a href="../scheduledJobs/apImport.htm">AP Import (Scheduled Job)</a></div>
+	</body>
+</html>

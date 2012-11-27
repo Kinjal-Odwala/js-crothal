@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Account Receivable Import</h1>
+			<div class="description">The purpose of Account Receivable Import (AR Paid) is to import Account Receivable records from JDE.</div>
+		</div>		
+		
+		<h2>Class</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:550px;">Class Name</th>
+			</tr>
+			<tr>
+				<td colspan='5'>ARPaidImporter</td>				
+			</tr>
+		</table>
+		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th>Validation</th>				
+			</tr>
+			<tr>
+				<td colspan='5'>There is no UI element</td>						
+			</tr>
+		</table>
+		
+		<h2>Import Process</h2>
+		<div class="reference">1.	Check and verify that AR Paid source file exists</div>
+        <div class="reference">2.	Read AR Paid file line by line</div>
+        <div class="reference">3.	Extract AR Paid data by parsing each line</div>
+        <div class="reference">4.	Call stored procedure RevAccountReceivablePaidFromJDE to insert record into database</div>
+        <div class="reference">5.	When all lines are processed, log import information to AppIETransactions table.</div>
+        <div class="reference">6.	Rename source file by appending date and time to file name and move source file to backup folder</div>
+
+		<h2>Configuration Settings</h2>
+		<table class="elementTable">
+			<tr>
+				<th  style="width:30px;">Configuration Key</th>
+				<th  style="width:500px;">Description</th>
+			</tr>
+			<tr>
+				<td>ConnectionString</td>
+				<td>Connection String used to connect to TeamFin database.</td>
+			</tr>		
+			<tr>
+			    <td>ImportFilePath</td>
+			    <td>Complete folder path for AR Paid import files. This folder is shared with other import processes.</td>
+			</tr>
+			<tr>
+			    <td>ImportBackupFilePath</td>
+			    <td>Complete folder path of back up for AR Paid Import files. This folder is shared with other import processes.</td>
+			</tr>
+			<tr>
+			    <td>ImportFileNameARPaid</td>
+			    <td>AR Paid Import file name.</td>
+			</tr>	
+			<tr>
+			    <td>ImportAt</td>
+			    <td>Time when AR Paid Import is executed</td>
+			</tr>
+		</table>
+		
+		<h2>Data Mapping</h2>
+		<div class="reference">
+        Parsing is based on the field’s start location and field length as specified in
+        the following table.</div>
+        <table class="elementTable">
+        <tr>
+            <th style="width: 30px;">Field Name</th>
+            <th style="width: 30px;">Start Index</th>
+            <th style="width: 30px;">Length</th>
+            <th style="width: 30px">Data Type</th>
+            <th style="width: 30px;">Invalid Action</th>
+        </tr>
+        <tr>
+            <td>docType</td>
+            <td>1</td>
+            <td>2</td>
+            <td>String</td>
+            <td>Log Exception</td>
+        </tr>
+        <tr>
+            <td>docNumber</td>
+            <td>4</td>
+            <td>8</td>
+            <td>Int</td>
+            <td>Log Exception</td>
+        </tr>
+        <tr>
+            <td>payType</td>
+            <td>12</td>
+            <td>2</td>
+            <td>String</td>
+            <td>Log Exception</td>
+        </tr>	
+        <tr>
+            <td>payNumber</td>
+            <td>14</td>
+            <td>8</td>
+            <td>Int</td>
+            <td>Log Exception</td>
+        </tr>
+        <tr>
+            <td>checkDate</td>
+            <td>23</td>
+            <td>8</td>
+            <td>String</td>
+            <td>Log Exception</td>
+        </tr>
+        <tr>
+            <td>applicationDate</td>
+            <td>31</td>
+            <td>8</td>
+            <td>String</td>
+            <td>Log Exception</td>
+        </tr>
+        <tr>
+            <td>Amount</td>
+            <td>39</td>
+            <td>15</td>
+            <td>Decimal(15,2)</td>
+            <td>Log Exception</td>
+        </tr>
+        <tr>
+            <td>houseCode</td>
+            <td>61</td>
+            <td>4</td>
+            <td>String</td>
+            <td>Log Exception</td>
+        </tr>
+	    </table>
+	    
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th  style="width:40px;">Error/Event</th>
+				<th  style="width:260px;">Message</th>
+			</tr>
+			<tr>
+			    <td>Import file was not found</td>
+			    <td>AR Paid import file was not found in import folder</td>
+			</tr>
+			<tr>
+			    <td>No invoice was found for the cash import</td>
+			    <td>The corresponding invoide for the account receivable record was not found in TeamFin. The record will not be processed. </td>
+			</tr>
+			<tr>
+			    <td>Cash import amount was not in correct format</td>
+			    <td>Cash amount of the account receivable record is above zero (0). The record will be ignored.</td>
+			</tr>
+			<tr>
+			    <td>Cash import amount exceeds invoice balance</td>
+			    <td>Cash amount of the account receivable record succeeds the remaining invoice balance. The record will not be processed.</td>
+			</tr>
+			<tr>
+			    <td>Exceptions</td>
+			    <td>Check table AppIEExceptions for exception details (AppIECategory = 2)</td>
+			</tr>
+			<tr>
+			    <td>Imported Number of Records</td>
+			    <td>Check table AppIETransactions for total exported records and execution starting/ending time (AppIECategory = 2).</td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. Windows Services must be restarted for new configuration settings to take effect.</div>
+		<div class="reference">2. Exception and Event logging depends on LogWriter class.</div>
+		
+		<h2>Database Objects</h2>
+		
+		<table class="elementTable">
+			<tr>
+				<th style="width:50px">Object Types</th>
+				<th style="width:250px">Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>
+				    RevAccountReceivablePaidImports<br />
+				    RevAccountReceivables<br />
+				    RevInvoiceItems
+				</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>
+				        RevAccountReceivablePaidFromJDE
+				<br />RevAccountReceivableUpdateFromJDE
+				</td>
+			</tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="POImport.htm">Purchase Order Import</a></div>
+		<div class="reference"><a href="JDETrx.htm">JDE Transaction Import</a></div>
+	</body>
+</html>

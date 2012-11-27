@@ -1,0 +1,221 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>House Code - Epay Sites</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/hcm/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+
+		<div id="houseCodesLoading" style="position: absolute; top: 89px; left: 46%; z-index: 5000; width: 50%; height: 80%; background-color: white; display:none;">
+	        <div style="position: absolute; width: 66; height: 70;top: 50%; left: 49.5%; margin-top: -50px; margin-left: -33px">
+	            <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+	            <div style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px;">Loading</div>    
+	        </div>
+	    </div>
+		
+		<div class="pageHeader">
+	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
+			
+        </div>
+		<div class="pageBody">
+			<div id="LabelTextAreaSearch">Epay Site Number or Description:</div>
+			<div id="InputTextArea">
+				<div id="SearchInput"></div>
+			</div>
+			<div id="searchButtonEpaySite">
+				<div id="AnchorSearch"></div>
+			</div>
+			<div style="clear:both;"></div>
+			<div id="ContainerLeftArea">
+				<div class="contentArea">
+					<div class="header">Epay Sites</div>
+					<div class="body">
+						<div id="Job"></div>
+						<div style="clear:both;"></div>
+					</div>
+				</div>				
+			</div>
+			<div id="ContainerRightArea">
+				<div class="contentArea">
+					<div class="header">Epay Site Details</div>
+					<div id="container-1">
+						<div id="fragment-1" class="fragment">
+							<div id="popupEpaySite">
+							 	<div class="body">
+									<div style="clear:both;"></div>
+									<div id="TableEditArea">
+										<div id="LabelTextArea">
+											<span class="requiredFieldIndicator">&#149;</span>Epay Site Number:
+										</div>
+										<div id="InputTextArea">
+											<div id="JobNumber"></div>
+										</div>
+									</div>
+									<div style="clear:both;"></div>
+									<div id="TableEditArea">
+										<div id="LabelTextArea">
+											<span class="requiredFieldIndicator">&#149;</span>Description:
+										</div>
+										<div id="InputTextArea">
+											<div id="JobDescription"></div>
+										</div>
+									</div>
+									<div style="clear:both;"></div>
+									<div id="TableEditArea">
+										<div id="LabelTextArea">
+											<span id="nonRequiredFieldIndicator">Contact:</span>
+										</div>
+										<div id="InputTextArea">
+											<div id="JobContact"></div>
+										</div>
+									</div>
+									<div style="clear:both;"></div>
+									<div id="TableEditArea">
+										<div id="LabelTextArea">
+											<span id="nonRequiredFieldIndicator">Address 1:</span>
+										</div>
+										<div id="InputTextArea">
+											<div id="JobAddress1"></div>
+										</div>
+									</div>
+									<div style="clear:both;"></div>
+									<div id="TableEditArea">
+										<div id="LabelTextArea">
+											<span id="nonRequiredFieldIndicator">Address 2:</span>
+										</div>
+										<div id="InputTextArea">
+											<div id="JobAddress2"></div>
+										</div>
+									</div>
+									<div style="clear:both;"></div>
+									<div id="TableEditArea">
+										<div id="LabelTextArea">
+											<span class="requiredFieldIndicator">&#149;</span>Postal Code:
+										</div>
+										<div id="InputTextArea">
+											<div id="JobPostalCode"></div>
+										</div>
+									</div>
+									<div style="clear:both;"></div>
+									<div id="TableEditArea">
+										<div id="LabelTextArea">
+											<span id="nonRequiredFieldIndicator">GEO Code:</span>
+										</div>
+										<div id="InputTextArea">
+											<div id="JobGEOCode"></div>
+										</div>
+									</div>
+									<div style="clear:both;"></div>
+									<div id="TableEditArea">
+										<div id="LabelTextArea">
+											<span class="requiredFieldIndicator">&#149;</span>City:
+										</div>
+										<div id="InputTextArea">
+											<div id="JobCity"></div>
+										</div>
+									</div>
+									<div style="clear:both;"></div>
+									<div id="TableEditArea">
+										<div id="LabelTextArea">
+											<span class="requiredFieldIndicator">&#149;</span>State:
+										</div>
+										<div id="InputTextArea">
+											<div id="JobState"></div>
+										</div>
+									</div>						
+									<div style="clear:both;"></div>
+									<div id="TableEditArea">
+										<div id="LabelTextArea">
+											<span id="nonRequiredFieldIndicator">EPay Pay Group:</span>
+										</div>
+										<div id="InputTextArea">
+											<div id="EPayGroupType"></div>
+										</div>
+									</div>
+									<div style="clear:both;"></div>
+									<div id="TableEditArea">
+										<div id="LabelTextArea">
+											<span id="nonRequiredFieldIndicator">Active:</span>
+										</div>
+										<div id="InputTextArea">
+											<div id="JobActive"></div>
+										</div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>								
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="fragment-2" class="fragment">
+							<div id="EpayHouseCodeContainer">
+								<div class="body">
+									<div id="HouseCodeGrid"></div>
+									<div style="clear:both;"></div>
+						            <table id="AddHouseCodes" cellpadding="0" cellspacing="0">
+				                        <tr class="Header">					                            
+				                            <td>&nbsp;<img id="imgAddHouseCodes" src="/fin/cmn/usr/media/Common/add.png" style="cursor: pointer" alt="Add House Codes" title="Add House Codes" /></td>
+				                        </tr>
+				                    </table>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<ul id="TabCollection">
+							<li><a id="EpaySiteDetails" href="#fragment-1"><span>Epay Site Details</span></a></li>
+			                <li><a id="EpaySiteAssociations" href="#fragment-2"><span>Epay Site Associations</span></a></li>
+			            </ul>
+					</div>
+					<div style="clear:both;"></div>
+					<div class="footer">
+						<div id="AnchorNew"></div>
+		                <div id="AnchorSave"></div>
+		                <div id="AnchorUndo"></div>
+		                <div style="clear:both;"></div>
+		            </div>
+				</div>
+			</div>
+			<div id="popupContact">
+				<div class="contentArea">
+					<div id="houseCodesList">
+						<div class="body">
+							<div class="header">House Codes</div>
+							<div style="clear:both;"></div>
+							<div id="LabelHouseCode">
+								<span id="nonRequiredFieldIndicator">House Code:</span>
+							</div>
+							<div id="DropDownRightHouseCode">
+								<div id="houseCodeTemplateContainer" class="HouseCodeContainer"></div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="HouseCodePopupGrid"></div>
+						</div>
+					</div>
+					<div style="clear:both; height:5px;"></div>
+					<div>
+                    	<div id="AnchorOk"></div>
+						<div id="AnchorCancel"></div>
+					</div>
+				</div>
+				<div style="clear:both;"></div>
+			</div>
+		</div>
+	    <div id="iiInputValidationMaster"></div>
+		<div id="backgroundPopup"></div>
+	</body>
+</html>

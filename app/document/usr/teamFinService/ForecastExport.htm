@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Budget Forecast Export</h1>
+			<div class="description">The purpose of Budget Forecast Export to export budget forecast to JD. Edward.</div>
+		</div>
+		
+		<h2>Class</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:550px;">Class Name</th>
+			</tr>
+			<tr>
+				<td colspan='5'>ForecastExporter</td>				
+			</tr>
+		</table>
+				
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th>Validation</th>				
+			</tr>
+			<tr>
+				<td colspan='5'>There is no UI element</td>					
+			</tr>
+		</table>
+		
+		<h2>Export Process</h2>
+		<div class="reference">1. Determine if it is time to export HR records.</div>
+		<div class="reference">2. Call stored procedure BudBudgetWORForecastExport to retrieve budget forecast records</div>
+        <div class="reference">3. Filter records on various criteria </div>
+        <div class="reference">4. Write data to output file</div>
+        
+		<h2>Configuration Settings</h2>
+		<table class="elementTable">
+			<tr>
+				<th  style="width:50px;">Configuration Key</th>
+				<th  style="width:450px;">Description</th>
+			</tr>
+			<tr>
+				<td>ConnectionString</td>				
+				<td>Connection string used to connect to TeamFin database.</td>
+			</tr>
+			<tr>
+				<td>ExportFilePath</td>				
+				<td>Complete path of file folder for Budget Forecast export. This folder is shared with other export processes. </td>
+			</tr>
+			<tr>
+				<td>ExportBackFilePath</td>				
+				<td>Complete path of back up file folder for Budget Forecast export. This folder is shared with other export processes. </td>
+			</tr>
+			<tr>
+			    <td>ExportFileNameForecast</td>
+			    <td>File name for Budget Forecast</td>
+			</tr>
+			<tr>
+				<td>ExportAt</td>				
+				<td>Time when Budget Forecast Export is executed </td>
+			</tr>
+		</table>
+		
+		<h2>Data Mapping</h2>
+		<table class="elementTable">
+        <tr>
+            <th style="width: 30px;">Export Field</th>
+            <th style="width: 30px;">Database Field</th>
+        </tr>
+		<tr>
+            <td>HouseCode</td><td>AppUnits.AppUniBrief</td>
+        </tr>
+        <tr>
+            <td>GLAccount</td><td>FscAccounts.FscAccCode</td>
+        </tr>
+        <tr>
+            <td>MonthlyBudgetTotal</td>
+            <td>
+              WHEN FscAccounts.FscAccNegativeValue = 1 <br />
+                     ISNULL(-BudBudgetWORForecasts.BudBudworfWeek1,0) + ISNULL(-BudBudgetWORForecasts.BudBudworfWeek2,0) + ISNULL(-BudBudgetWORForecasts.BudBudworfWeek3,0) + ISNULL(-BudBudgetWORForecasts.BudBudworfWeek4,0)
+              <br />ELSE <br />
+                    ISNULL(BudBudgetWORForecasts.BudBudworfWeek1,0) + ISNULL(BudBudgetWORForecasts.BudBudworfWeek2,0) + ISNULL(BudBudgetWORForecasts.BudBudworfWeek3,0) + ISNULL(BudBudgetWORForecasts.BudBudworfWeek4,0)
+              </td>
+        </tr>
+        <tr>
+            <td>FiscalYear</td><td>FscYears.FscYeaTitle</td>
+        </tr>
+        <tr>
+            <td>SubLedger</td><td>HcmJobs.HcmJobBrief</td>
+        </tr>
+        </table>
+        
+        
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th  style="width:40px;">Error/Event</th>
+				<th  style="width:260px;">Message</th>
+			</tr>
+			<tr>
+			    <td>Exceptions</td>
+			    <td>Check table AppIEExceptions for exception details (AppIECategory = 5)</td>
+			</tr>
+			<tr>
+			    <td>Exported Number of Records</td>
+			    <td>Check table AppIETransactions for total exported records and execution starting/ending time (AppIECategory = 5).</td>
+			</tr>
+		</table>
+		
+		
+		
+        
+		<h2>Dependencies</h2>
+		<div class="reference">1. Windows Services must be restarted for new configuration settings to take effect.</div>
+		<div class="reference">2. Exception and Event logging depends on LogWriter class.</div>
+		<div class="reference">3. This export depends on prepopulation of BudBudgetWORForecasts table by budget module of TeamFin.</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>
+				    BudBudgetWORForecasts<br />
+				    HcmHouseCodes<br />
+				    AppUnits<br />
+				    FscAccounts<br />
+				    FscPeriods<br />
+				    FscYears<br />
+				    HcmJobs 
+				</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>BudBudgetWORForecastExport</td>
+			</tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="POExport.htm">Purchase Order Export</a></div>
+		<div class="reference"><a href="JEExport.htm">Journal Entry Export</a></div>
+		<div class="reference"><a href="HRExport.htm">HR Export</a></div>
+		<div class="reference"><a href="PayrollExport.htm">Payroll Export</a></div>
+		<div class="reference"><a href="InvoiceExport.htm">Invoice Export</a></div>
+	</body>
+</html>

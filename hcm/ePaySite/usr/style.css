@@ -1,0 +1,133 @@
+﻿.fragment {
+	border: 0;
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	padding: 5px 5px 5px 5px;
+}
+
+.Header {
+    height: 20px;
+    font-family: Verdana;
+    font-size: 8pt;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #669b67;
+    text-align: left;
+	background-repeat: repeat-x;
+}
+
+#ContainerLeftArea {
+	float: left;
+	width: 45%;
+	margin-right: 20px;
+	vertical-align: top;
+	z-index: 3550;
+	position: relative;
+}
+
+#ContainerRightArea {
+	float: left;
+	width: 49.3%;
+	vertical-align: top;
+	z-index: 3551;
+	position: relative;
+}
+
+#LabelTextArea {
+	float: left;
+	width: 150px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
+
+#InputTextArea {
+	float: left;
+	width: 220px;
+}
+
+#popupEpaySite {
+	padding: 5px;
+}
+
+#LabelTextAreaSearch {
+	float: left;
+	width: 215px;	
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 0px 0px 0px 10px;
+}
+
+#LabelHouseCode {
+	float: left;
+	width: 90px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 5px 0px 0px 10px;
+}
+
+#AnchorSearch {
+	float: left;
+	width: 82px;
+	padding-left: 10px;
+}
+
+#EpayHouseCodeContainer {
+	float: left;
+	width: 100%;
+	position: relative;	
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+
+#HouseCodePopupGrid {	
+	height: 250px;
+	padding: 0px 10px 0px 10px;
+}
+
+#AnchorOk {
+	float: left;
+	width: 68px;
+	padding-left: 20px;
+	margin-right: 5px;
+	padding-top: 5px;
+}
+
+#AnchorCancel {
+	float: left;
+	width: 80px;
+	margin-right: 5px;
+	padding-top: 5px;
+}
+
+#TabCollection {
+	width: 100%;
+}
+
+#backgroundPopup {
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	z-index: 5000; 
+	width: 100%; 
+	height: 100%;
+	border: 1px solid #cecece; 
+	background-color: black;
+	display: none;
+}
+
+#popupContact {
+	width: 700px; 
+	height: 350px;
+	position: absolute;
+	z-index: 5025;
+	top: 10%; 
+	left: 10%;
+	background-color: white;
+	display: none;
+}

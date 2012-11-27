@@ -1,0 +1,14 @@
+﻿@import url('../med/default/default.css');
+
+#BudgetSummaryGrid
+	{
+		width:1050px;
+		padding-left:10px;
+	}
+.flowstyle
+	{
+		width:100%;
+		overflow:auto;
+	}
+	
+#budgetSummaryContentArea{}

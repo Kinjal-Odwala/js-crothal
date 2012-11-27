@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Kronos Punch Import</h1>
+			<div class="description">The purpose of this scheduled job is to import the punches from old TeamFin database.
+				The scheduled Job will execute the sql query every 10 minutes.</div>
+		</div>
+		<h2>Scheduled Job Setup</h2>
+		<table class="layoutTable">
+			<tr>
+				<td><img src="images/punchImportGeneral.png"></br></br></td>
+			</tr>
+			<tr>
+				<td><img src="images/punchImportStep.png"></br></br></td>
+			</tr>
+			<tr>
+				<td><img src="images/punchImportSchedule.png"></td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. Employees should be available in a look up table (Employees - Refer old TeamFin database)</div>
+		<div class="reference">2. Punches should be available in a look up table (EmpPunches - Refer old TeamFin database)</div>
+		<div class="reference">3. Employee Punch Types must be defined in a system look up table (PayEmployeePunchTypes)</div>
+		<div class="reference">4. Device Group Types must be defined in a system look up table (EmpDeviceGroupTypes)</div>
+		<div class="reference">5. Employees should be available in a look up table (EmpEmployeeGenerals)</div>
+		<div class="reference">6. Scheduled Job must be enabled for importing the punches fron old TeamFin database.</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>Employees (Refer old TeamFin database)</br>
+					EmpPunches (Refer old TeamFin database)</br>
+					EmpDeviceGroupTypes</br>
+					EmpEmployeeGenerals</br>
+					PayEmployeePunchTypes</br>
+					PayEmployeePunches</br>
+				</td>
+			</tr>
+		</table>		
+	</body>
+</html>

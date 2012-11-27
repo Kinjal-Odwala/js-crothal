@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<transmission>
+<target id="iiCache" requestId="1">
+<store id="budgetSummarys" activeId="1" criteria="storeId:budgetSummarys,hcmHouseCode:116,fscYear:9,userId:[user]">
+<item>
+  <id>1</id> 
+  <fscPeriod>67</fscPeriod> 
+  <accountCode>4000</accountCode> 
+  <actualAmount>-302006.68</actualAmount> 
+  <budgetAmount>-301714.00</budgetAmount> 
+  <description>Revenue</description> 
+  <period>1</period> 
+  </item>
+<item>
+  <id>2</id> 
+  <fscPeriod>68</fscPeriod> 
+  <accountCode>4000</accountCode> 
+  <actualAmount>-307878.44</actualAmount> 
+  <budgetAmount>-301714.00</budgetAmount> 
+  <description>Revenue</description> 
+  <period>2</period> 
+  </item>
+<item>
+  <id>3</id> 
+  <fscPeriod>69</fscPeriod> 
+  <accountCode>4000</accountCode> 
+  <actualAmount>-314370.00</actualAmount> 
+  <budgetAmount>-309546.00</budgetAmount> 
+  <description>Revenue</description> 
+  <period>3</period> 
+  </item>
+<item>
+  <id>4</id> 
+  <fscPeriod>70</fscPeriod> 
+  <accountCode>4000</accountCode> 
+  <actualAmount>-305654.00</actualAmount> 
+  <budgetAmount>-310485.00</budgetAmount> 
+  <description>Revenue</description> 
+  <period>4</period> 
+  </item>
+<item>
+  <id>5</id> 
+  <fscPeriod>70</fscPeriod> 
+  <accountCode>4000</accountCode> 
+  <actualAmount>-313829.75</actualAmount> 
+  <budgetAmount>-310485.00</budgetAmount> 
+  <description>Revenue</description> 
+  <period>4</period> 
+  </item>
+<item>
+  <id>6</id> 
+  <fscPeriod>71</fscPeriod> 
+  <accountCode>4000</accountCode> 
+  <actualAmount>-316579.55</actualAmount> 
+  <budgetAmount>-310485.00</budgetAmount> 
+  <description>Revenue</description> 
+  <period>5</period> 
+  </item>
+<item>
+  <id>7</id> 
+  <fscPeriod>72</fscPeriod> 
+  <accountCode>4000</accountCode> 
+  <actualAmount>-314802.06</actualAmount> 
+  <budgetAmount>-310485.00</budgetAmount> 
+  <description>Revenue</description> 
+  <period>6</period> 
+  </item>
+<item>
+  <id>8</id> 
+  <fscPeriod>73</fscPeriod> 
+  <accountCode>4000</accountCode> 
+  <actualAmount>-310680.88</actualAmount> 
+  <budgetAmount>-310485.00</budgetAmount> 
+  <description>Revenue</description> 
+  <period>7</period> 
+  </item>
+<item>
+  <id>9</id> 
+  <fscPeriod>74</fscPeriod> 
+  <accountCode>4000</accountCode> 
+  <actualAmount>-316154.35</actualAmount> 
+  <budgetAmount>-310485.00</budgetAmount> 
+  <description>Revenue</description> 
+  <period>8</period> 
+  </item>
+<item>
+  <id>10</id> 
+  <fscPeriod>75</fscPeriod> 
+  <accountCode>4000</accountCode> 
+  <actualAmount>-315768.31</actualAmount> 
+  <budgetAmount>-310485.00</budgetAmount> 
+  <description>Revenue</description> 
+  <period>9</period> 
+  </item>
+<item>
+  <id>11</id> 
+  <fscPeriod>76</fscPeriod> 
+  <accountCode>4000</accountCode> 
+  <actualAmount>-316101.22</actualAmount> 
+  <budgetAmount>-310485.00</budgetAmount> 
+  <description>Revenue</description> 
+  <period>10</period> 
+  </item>
+<item>
+  <id>12</id> 
+  <fscPeriod>77</fscPeriod> 
+  <accountCode>4000</accountCode> 
+  <actualAmount>-315132.73</actualAmount> 
+  <budgetAmount>-310485.00</budgetAmount> 
+  <description>Revenue</description> 
+  <period>11</period> 
+  </item>
+<item>
+  <id>13</id> 
+  <fscPeriod>78</fscPeriod> 
+  <accountCode>4000</accountCode> 
+  <actualAmount>-315596.70</actualAmount> 
+  <budgetAmount>-310485.00</budgetAmount> 
+  <description>Revenue</description> 
+  <period>12</period> 
+  </item>
+<item>
+  <id>14</id> 
+  <fscPeriod>79</fscPeriod> 
+  <accountCode>4000</accountCode> 
+  <actualAmount>-635780.56</actualAmount> 
+  <budgetAmount>-310485.00</budgetAmount> 
+  <description>Revenue</description> 
+  <period>13</period> 
+  </item>
+<item>
+  <id>15</id> 
+  <fscPeriod>67</fscPeriod> 
+  <accountCode>5000</accountCode> 
+  <actualAmount>254717.24</actualAmount> 
+  <budgetAmount>239572.00</budgetAmount> 
+  <description>Expenses</description> 
+  <period>1</period> 
+  </item>
+<item>
+  <id>16</id> 
+  <fscPeriod>68</fscPeriod> 
+  <accountCode>5000</accountCode> 
+  <actualAmount>246889.19</actualAmount> 
+  <budgetAmount>246561.00</budgetAmount> 
+  <description>Expenses</description> 
+  <period>2</period> 
+  </item>
+<item>
+  <id>17</id> 
+  <fscPeriod>69</fscPeriod> 
+  <accountCode>5000</accountCode> 
+  <actualAmount>249298.10</actualAmount> 
+  <budgetAmount>270754.00</budgetAmount> 
+  <description>Expenses</description> 
+  <period>3</period> 
+  </item>
+<item>
+  <id>18</id> 
+  <fscPeriod>70</fscPeriod> 
+  <accountCode>5000</accountCode> 
+  <actualAmount>244755.42</actualAmount> 
+  <budgetAmount>239974.00</budgetAmount> 
+  <description>Expenses</description> 
+  <period>4</period> 
+  </item>
+<item>
+  <id>19</id> 
+  <fscPeriod>71</fscPeriod> 
+  <accountCode>5000</accountCode> 
+  <actualAmount>246393.50</actualAmount> 
+  <budgetAmount>246863.00</budgetAmount> 
+  <description>Expenses</description> 
+  <period>5</period> 
+  </item>
+<item>
+  <id>20</id> 
+  <fscPeriod>72</fscPeriod> 
+  <accountCode>5000</accountCode> 
+  <actualAmount>230270.05</actualAmount> 
+  <budgetAmount>252456.00</budgetAmount> 
+  <description>Expenses</description> 
+  <period>6</period> 
+  </item>
+<item>
+  <id>21</id> 
+  <fscPeriod>73</fscPeriod> 
+  <accountCode>5000</accountCode> 
+  <actualAmount>22256.33</actualAmount> 
+  <budgetAmount>241544.00</budgetAmount> 
+  <description>Expenses</description> 
+  <period>7</period> 
+  </item>
+<item>
+  <id>22</id> 
+  <fscPeriod>67</fscPeriod> 
+  <accountCode>6000</accountCode> 
+  <actualAmount>45840.72</actualAmount> 
+  <budgetAmount>33772.00</budgetAmount> 
+  <description>Unit Operating Costs</description> 
+  <period>1</period> 
+  </item>
+<item>
+  <id>23</id> 
+  <fscPeriod>68</fscPeriod> 
+  <accountCode>6000</accountCode> 
+  <actualAmount>47531.07</actualAmount> 
+  <budgetAmount>33772.00</budgetAmount> 
+  <description>Unit Operating Costs</description> 
+  <period>2</period> 
+  </item>
+<item>
+  <id>24</id> 
+  <fscPeriod>69</fscPeriod> 
+  <accountCode>6000</accountCode> 
+  <actualAmount>34590.96</actualAmount> 
+  <budgetAmount>36672.00</budgetAmount> 
+  <description>Unit Operating Costs</description> 
+  <period>3</period> 
+  </item>
+<item>
+  <id>25</id> 
+  <fscPeriod>70</fscPeriod> 
+  <accountCode>6000</accountCode> 
+  <actualAmount>34250.15</actualAmount> 
+  <budgetAmount>33772.00</budgetAmount> 
+  <description>Unit Operating Costs</description> 
+  <period>4</period> 
+  </item>
+<item>
+  <id>26</id> 
+  <fscPeriod>71</fscPeriod> 
+  <accountCode>6000</accountCode> 
+  <actualAmount>43291.53</actualAmount> 
+  <budgetAmount>37808.00</budgetAmount> 
+  <description>Unit Operating Costs</description> 
+  <period>5</period> 
+  </item>
+<item>
+  <id>27</id> 
+  <fscPeriod>72</fscPeriod> 
+  <accountCode>6000</accountCode> 
+  <actualAmount>44785.93</actualAmount> 
+  <budgetAmount>37172.00</budgetAmount> 
+  <description>Unit Operating Costs</description> 
+  <period>6</period> 
+  </item>
+<item>
+  <id>28</id> 
+  <fscPeriod>73</fscPeriod> 
+  <accountCode>6000</accountCode> 
+  <actualAmount>36462.74</actualAmount> 
+  <budgetAmount>33772.00</budgetAmount> 
+  <description>Unit Operating Costs</description> 
+  <period>7</period> 
+  </item>
+<item>
+  <id>29</id> 
+  <fscPeriod>74</fscPeriod> 
+  <accountCode>6000</accountCode> 
+  <actualAmount>17774.79</actualAmount> 
+  <budgetAmount>33772.00</budgetAmount> 
+  <description>Unit Operating Costs</description> 
+  <period>8</period> 
+  </item>
+<item>
+  <id>30</id> 
+  <fscPeriod>75</fscPeriod> 
+  <accountCode>6000</accountCode> 
+  <actualAmount>32011.11</actualAmount> 
+  <budgetAmount>34272.00</budgetAmount> 
+  <description>Unit Operating Costs</description> 
+  <period>9</period> 
+  </item>
+<item>
+  <id>31</id> 
+  <fscPeriod>76</fscPeriod> 
+  <accountCode>6000</accountCode> 
+  <actualAmount>33169.75</actualAmount> 
+  <budgetAmount>33772.00</budgetAmount> 
+  <description>Unit Operating Costs</description> 
+  <period>10</period> 
+  </item>
+<item>
+  <id>32</id> 
+  <fscPeriod>77</fscPeriod> 
+  <accountCode>6000</accountCode> 
+  <actualAmount>34440.98</actualAmount> 
+  <budgetAmount>33772.00</budgetAmount> 
+  <description>Unit Operating Costs</description> 
+  <period>11</period> 
+  </item>
+<item>
+  <id>33</id> 
+  <fscPeriod>78</fscPeriod> 
+  <accountCode>6000</accountCode> 
+  <actualAmount>33359.99</actualAmount> 
+  <budgetAmount>34272.00</budgetAmount> 
+  <description>Unit Operating Costs</description> 
+  <period>12</period> 
+  </item>
+<item>
+  <id>34</id> 
+  <fscPeriod>79</fscPeriod> 
+  <accountCode>6000</accountCode> 
+  <actualAmount>70028.29</actualAmount> 
+  <budgetAmount>48193.00</budgetAmount> 
+  <description>Unit Operating Costs</description> 
+  <period>13</period> 
+  </item>
+<item>
+  <id>35</id> 
+  <fscPeriod>67</fscPeriod> 
+  <accountCode>8000</accountCode> 
+  <actualAmount>2042.45</actualAmount> 
+  <budgetAmount>3277.00</budgetAmount> 
+  <description>Charge Outs</description> 
+  <period>1</period> 
+  </item>
+<item>
+  <id>36</id> 
+  <fscPeriod>68</fscPeriod> 
+  <accountCode>8000</accountCode> 
+  <actualAmount>2184.39</actualAmount> 
+  <budgetAmount>3277.00</budgetAmount> 
+  <description>Charge Outs</description> 
+  <period>2</period> 
+  </item>
+<item>
+  <id>37</id> 
+  <fscPeriod>69</fscPeriod> 
+  <accountCode>8000</accountCode> 
+  <actualAmount>2784.40</actualAmount> 
+  <budgetAmount>3277.00</budgetAmount> 
+  <description>Charge Outs</description> 
+  <period>3</period> 
+  </item>
+<item>
+  <id>38</id> 
+  <fscPeriod>70</fscPeriod> 
+  <accountCode>8000</accountCode> 
+  <actualAmount>4349.78</actualAmount> 
+  <budgetAmount>3277.00</budgetAmount> 
+  <description>Charge Outs</description> 
+  <period>4</period> 
+  </item>
+<item>
+  <id>39</id> 
+  <fscPeriod>71</fscPeriod> 
+  <accountCode>8000</accountCode> 
+  <actualAmount>3352.42</actualAmount> 
+  <budgetAmount>3277.00</budgetAmount> 
+  <description>Charge Outs</description> 
+  <period>5</period> 
+  </item>
+<item>
+  <id>40</id> 
+  <fscPeriod>72</fscPeriod> 
+  <accountCode>8000</accountCode> 
+  <actualAmount>3360.46</actualAmount> 
+  <budgetAmount>3277.00</budgetAmount> 
+  <description>Charge Outs</description> 
+  <period>6</period> 
+  </item>
+<item>
+  <id>41</id> 
+  <fscPeriod>73</fscPeriod> 
+  <accountCode>8000</accountCode> 
+  <actualAmount>3360.46</actualAmount> 
+  <budgetAmount>3277.00</budgetAmount> 
+  <description>Charge Outs</description> 
+  <period>7</period> 
+  </item>
+<item>
+  <id>42</id> 
+  <fscPeriod>74</fscPeriod> 
+  <accountCode>8000</accountCode> 
+  <actualAmount>3360.46</actualAmount> 
+  <budgetAmount>3277.00</budgetAmount> 
+  <description>Charge Outs</description> 
+  <period>8</period> 
+  </item>
+<item>
+  <id>43</id> 
+  <fscPeriod>75</fscPeriod> 
+  <accountCode>8000</accountCode> 
+  <actualAmount>3360.46</actualAmount> 
+  <budgetAmount>3277.00</budgetAmount> 
+  <description>Charge Outs</description> 
+  <period>9</period> 
+  </item>
+<item>
+  <id>44</id> 
+  <fscPeriod>76</fscPeriod> 
+  <accountCode>8000</accountCode> 
+  <actualAmount>3371.47</actualAmount> 
+  <budgetAmount>3277.00</budgetAmount> 
+  <description>Charge Outs</description> 
+  <period>10</period> 
+  </item>
+<item>
+  <id>45</id> 
+  <fscPeriod>77</fscPeriod> 
+  <accountCode>8000</accountCode> 
+  <actualAmount>3409.33</actualAmount> 
+  <budgetAmount>3277.00</budgetAmount> 
+  <description>Charge Outs</description> 
+  <period>11</period> 
+  </item>
+<item>
+  <id>46</id> 
+  <fscPeriod>78</fscPeriod> 
+  <accountCode>8000</accountCode> 
+  <actualAmount>3641.18</actualAmount> 
+  <budgetAmount>3277.00</budgetAmount> 
+  <description>Charge Outs</description> 
+  <period>12</period> 
+  </item>
+<item>
+  <id>47</id> 
+  <fscPeriod>79</fscPeriod> 
+  <accountCode>8000</accountCode> 
+  <actualAmount>6194.76</actualAmount> 
+  <budgetAmount>3277.00</budgetAmount> 
+  <description>Charge Outs</description> 
+  <period>13</period> 
+  </item>
+  </store>
+  </target>
+  </transmission>

@@ -1,0 +1,297 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Annualized Budget</title>
+    <!-- style -->
+    <link href="../../res/css/ext-all.css" rel="stylesheet" type="text/css" />
+    <link href="../../res/css/xtheme-gray.css" rel="stylesheet" type="text/css" />
+    <link href="../../res/css/all-2012.css" rel="stylesheet" type="text/css" />
+    <!-- js -->
+    <script src="../../res/references/jquery-1.4.1.js" type="text/javascript"></script>
+    <script src="../../res/references/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script>
+    <script src="../../res/references/ext-jquery-adapter.js" type="text/javascript"></script>
+    <script src="../../res/references/ext-all.js" type="text/javascript"></script>
+    <script src="../../res/references/weblight4extjs.js" type="text/javascript"></script>
+    <!-- customize js -->
+    <script src="../../res/scripts/all-2012.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        Ext.Ajax.timeout = 300000; //5 minutes 
+    </script>
+    <script type="text/javascript">
+        Ext.onReady(function () {
+
+            //var parent = { fin: { appUI: { houseCodeId: 429}} };
+
+            var primaryNav = new Bud.PrimaryNavbar({ renderTo: 'primaryNavBar', ctCls: 'primary-nav' });
+            Bud.Context.primaryNav = primaryNav;
+            WebLight.Router.init({ renderTo: 'wrapper', defaultUrl: '/budget/startbudget' });
+
+            window.authStore = new Bud.data.AuthorizationStore();
+            if (Bud.Context.isTest)
+                window.authStore.loadSampleData();
+            else
+                window.authStore.load();
+
+            var currentHcmHouseCode = null;
+            var storeLoadingCount = 0;
+            var storeBeforeLoad = function () {
+                if (storeLoadingCount++ == 0) {
+                    primaryNav.getEl().mask('Loading...');
+                }
+            };
+
+            var storeLoaded = function () {
+                if (--storeLoadingCount == 0)
+                    setTimeout(function () {
+                        primaryNav.getEl().unmask();
+                    }, 100);
+            };
+
+            var refreshPageContext = function (page) {
+
+                var prevYear = 0;
+                var prevYearTitle = '';
+
+                var mix = fiscalYearStore.queryBy(function (rec, id) {
+                    return parseInt(rec.get('title')) == parseInt(fiscalYearComboBox.getRawValue()) - 1;
+                });
+
+                if (mix && mix.getCount() == 1) {
+                    prevYear = mix.get(0).get('id');
+                    prevYearTitle = mix.get(0).get('title');
+                }
+                //                if (page && page.authStore)
+                //                    page.authStore(authStore);
+
+                if (page && page.setContext)
+                    page.setContext(houseCodeComboBox.getValue(), jobCodeComboBox.getValue(),
+                    fiscalYearComboBox.getValue(),
+                    houseCodeComboBox.getRawValue(), jobCodeComboBox.getRawValue(),
+                    fiscalYearComboBox.getRawValue(), prevYear, prevYearTitle);
+            };
+
+            var onContextDataChanged = function () {
+                var host = document.location.host;
+                if (host != 'localhost' && host.substr(0, 10) != 'persistech') {
+                    WebLight.Router.route('/budget/startbudget');
+
+                }
+                primaryNav.currentBudgetStarted = false;
+                page = WebLight.PageMgr.getCurrentPage();
+                refreshPageContext(page);
+            };
+
+            WebLight.PageMgr.on('load', function (url, page) {
+                refreshPageContext(page);
+            });
+
+            WebLight.PageMgr.on('resume', function (url, page) {
+                refreshPageContext(page);
+            });
+
+            var houseCodeDetailStore = new Bud.data.HcmHouseDetailStore();
+            houseCodeDetailStore.on('load', function () {
+                if (houseCodeDetailStore.getCount() > 0) {
+                    primaryNav.currentContractType = houseCodeDetailStore.getAt(0).get('contractTypeId');
+                    primaryNav.resetMenuItems();
+                }
+            });
+
+
+            var houseCodeStore = new Bud.data.HouseCodeStore(); 
+            var houseCodeComboBox = new Ext.form.ComboBox({
+                store: houseCodeStore,
+                displayField: 'name',
+                valueField: 'id',
+                mode: 'local',
+                forceSelection: true,
+                triggerAction: 'all',
+                selectOnFocus: true,
+                //editable: false,
+                layzeInit: false,
+                typeAhead: true,
+                allowBlank: false, minChars: 1,
+                applyTo: 'house-code-holder'
+            });
+
+            //            if (houseCodeStore.getCount() > 0) {
+            //                var records = houseCodeStore.getRange();
+            //                console.log(records);
+            //                houseCodeStore.on('load', storeLoaded);
+            //                houseCodeStore.on('beforeload', storeBeforeLoad);
+
+            //                if (Bud.Context.getStickyHcmHouseCode() != 0)
+            //                    houseCodeComboBox.setValue(Bud.Context.getStickyHcmHouseCode());
+            //                else
+            //                    houseCodeComboBox.setValue(records[0].get('id'));
+            //                jobCodeStore.load(records[0].get('id'));
+            //                houseCodeDetailStore.load(records[0].get('id'));
+            //            }
+
+            // else {
+            houseCodeStore.on('load', storeLoaded);
+            houseCodeStore.on('beforeload', storeBeforeLoad);
+
+            houseCodeStore.on('load', function (store, records, options) {
+                if (houseCodeStore.getCount() > 0) {
+                    var hcmHouseCode;
+                    if (Bud.Context.getStickyHcmHouseCode() != 0) {
+                        houseCodeComboBox.setValue(Bud.Context.getStickyHcmHouseCode());
+                        hcmHouseCode = Bud.Context.getStickyHcmHouseCode();
+                    }
+                    else {
+                        houseCodeComboBox.setValue(records[0].get('id'));
+                        hcmHouseCode = records[0].get('id');
+                    }
+                    jobCodeStore.load(hcmHouseCode);
+                    houseCodeDetailStore.load(hcmHouseCode);
+                }
+            });
+            //  }
+
+            var jobCodeStore = new Bud.data.JobCodeStore();
+            jobCodeStore.on('load', storeLoaded);
+            jobCodeStore.on('beforeload', storeBeforeLoad);
+            jobCodeStore.on('load', function (store, records, options) {
+                if (records.length > 0) {
+                    jobCodeComboBox.setValue(records[0].get('jobId'));
+                    onContextDataChanged();
+                } else {
+                    jobCodeComboBox.setValue('');
+                }
+            });
+            var jobCodeComboBox = new Ext.form.ComboBox({
+                store: jobCodeStore,
+                displayField: 'jobTitle',
+                valueField: 'jobId',
+                mode: 'local',
+                forceSelection: true,
+                triggerAction: 'all',
+                selectOnFocus: true,
+                editable: false,
+                layzeInit: false,
+                typeAhead: true,
+                allowBlank: false,
+                width: 150,
+                applyTo: 'job-code-holder'
+            });
+
+            houseCodeComboBox.on('select', function (combo, record, index) {
+                currentHcmHouseCode = record.get('id');
+                //alert(record.get('id') + ', ' + record.get('name') + ', ' + record.get('appUnit') + ', ' + record.get('brief'));
+                Bud.Context.setStickyHouseCode(record.get('appUnit'), record.get('id'), record.get('name'), record.get('brief'), record.get('hirNode'));
+                jobCodeStore.load(record.get('id'));
+                houseCodeDetailStore.load(record.get('id'));
+            });
+
+            houseCodeComboBox.on('blur', function (combo) {
+                if (currentHcmHouseCode != combo.getValue()) {
+                    currentHcmHouseCode = combo.getValue();
+                    var record = houseCodeStore.getById(currentHcmHouseCode);
+                    Bud.Context.setStickyHouseCode(record.get('appUnit'), record.get('id'), record.get('name'), record.get('brief'), record.get('hirNode'));
+                    jobCodeStore.load(currentHcmHouseCode);
+                    houseCodeDetailStore.load(currentHcmHouseCode);
+                }
+            });
+
+            jobCodeComboBox.on('select', function (combo, record, index) {
+                onContextDataChanged();
+            });
+
+            var fiscalYearStore = new Bud.data.FiscalYearStore();
+            fiscalYearStore.on('load', function (store, records, options) {
+                if (Bud.Context.getStickyFscYear() != 0) {
+                    fiscalYearComboBox.setValue(Bud.Context.getStickyFscYear());
+                }
+                else {
+                    fiscalYearComboBox.setValue(records[0].get('id'));
+                }
+                onContextDataChanged();
+            });
+
+            var fiscalYearComboBox = new Ext.form.ComboBox({
+                store: fiscalYearStore,
+                displayField: 'title',
+                valueField: 'id',
+                mode: 'local',
+                forceSelection: true,
+                triggerAction: 'all',
+                selectOnFocus: true,
+                editable: false,
+                layzeInit: false,
+                typeAhead: true,
+                allowBlank: false,
+                applyTo: 'fiscal-year-holder'
+            });
+
+            fiscalYearComboBox.on('select', function (combo, record, index) {
+                Bud.Context.setStickyFiscalYear(record.get('id'), record.get('title'));
+                onContextDataChanged();
+            });
+
+            var autoPickCurrentFiscalYear = function () {
+//                if (annualInformationStore.getCount() > 0 && fiscalYearStore.getCount() > 0) {
+//                    annualInformationStore.sort('fscYear', 'DESC');
+//                    annualInformationStore.each(function (item, index) {
+//                        var today = new Date();
+//                        if (item.get('startDate') <= today && item.get('cutOffDate') >= today) {
+//                            var fscYear = item.get('fscYear');
+//                            fiscalYearComboBox.setValue(item.get('fscYear'));
+//                            return false;
+//                        }
+//                    });
+//                }
+            };
+
+            var annualInformationStore = new Bud.data.BudAnnualInformationStore();
+            annualInformationStore.on('load', autoPickCurrentFiscalYear);
+            fiscalYearStore.on('load', autoPickCurrentFiscalYear);
+
+            fiscalYearStore.on('load', storeLoaded);
+            fiscalYearStore.on('beforeload', storeBeforeLoad);
+
+            houseCodeStore.load();
+            fiscalYearStore.load();
+            annualInformationStore.load(0);
+
+        });
+    </script>
+</head>
+<body>
+    <div id="navbar">
+        <div id="primaryNavBar">
+        </div>
+        <div id="subNavBar">
+            <table style="width: 100%;" class="menu-drop">
+                <tr>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td style="width: 50px;" class="label">
+                        Site:
+                    </td>
+                    <td style="width: 300px">
+                        <input type="text" id="house-code-holder" size="50" />
+                    </td>
+                    <td style="width: 50px;" class="label">
+                        Job:
+                    </td>
+                    <td style="width: 175px">
+                        <input type="text" id="job-code-holder" size="25" />
+                    </td>
+                    <td style="width: 100px" class="label">
+                        Fiscal Year:
+                    </td>
+                    <td style="width: 100px">
+                        <input type="text" id="fiscal-year-holder" size="10" />
+                    </td>
+                </tr>
+            </table>
+            <div class="clear">
+            </div>
+        </div>
+    </div>
+    <div id="wrapper">
+    </div>
+</body>
+</html>

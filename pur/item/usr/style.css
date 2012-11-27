@@ -1,0 +1,116 @@
+﻿#itemContentArea{ width:100%;}
+#itemContentAreaContainer
+	{
+		border:solid #AAAAAA thin;
+		border-width:1px;
+		padding:10px;
+	}
+#InputDropActive
+	{
+		width:190px;
+		float:left;
+	}
+#InputTextAreaItem
+	{
+		width:150px; 
+		float:left; 
+		height:27px;
+	}
+#LabelTextAreaLeftItem
+	{
+		width:210px;
+		float:left;
+		height:27px;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+	}
+#LabelTextAreaItemActive
+	{
+		width:70px;
+		float:left;
+		height:27px;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+	}
+#LabelTextAreaItemDetails
+	{
+		width:130px;
+		float:left;
+		height:27px;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+	}
+#searchButtonItem
+	{
+		width:85px;
+		float:left;
+		padding-left:5px;
+		margin-right:5px;
+		padding-bottom:5px;
+	}
+#LabelTextRadioButton
+	{
+		width:85px;
+		float:left;
+		height:27px;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+	}
+#LabelTextRadioButtonActive
+	{
+		width:55px;
+		float:left;
+		height:27px;
+		font-family:Verdana;
+		font-size:12px;
+		color:#032D23;
+	}
+#radioButton
+	{
+		width:15px;
+		float:left;
+		padding-left:5px;
+		padding-right:25px;
+		padding-bottom:5px;
+	}
+
+
+/*.GridTable
+{
+	height:375px;
+	width:350px;
+	padding-left:10px;
+}
+
+.gridHeaderFont
+	{
+		width:340px;
+	}
+
+.tdBorderTop
+	{
+		border-left:solid #000000 thin;
+		border-right:solid #000000 thin;
+		border-top:solid #000000 thin;
+		border-bottom:solid #000000 thin;
+		height:365px;
+		width:350px;
+		padding-right:10px;
+		padding-top:18px;
+		vertical-align:top;
+	}
+*/
+.iiInputText
+	{
+		width:182px;
+		white-space:nowrap;
+	}
+.iiInputTable
+	{
+		width:188px;
+		white-space:nowrap;
+	}

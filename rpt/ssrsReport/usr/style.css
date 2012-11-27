@@ -1,0 +1,354 @@
+﻿.contentAreasContainerLeft {
+	float: left;
+	width: 48%;
+	vertical-align: top;
+	margin-right: 20px;
+	z-index: 3550;
+	position: relative;
+}
+
+.contentAreasContainerRight {
+	float: left;
+	width: 49.3%;
+	vertical-align: top;
+	z-index: 3551;
+	position: relative;
+}
+
+.header {
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 18px;
+	color: #2C2F50;
+	text-align: center;
+	margin-bottom: 5px;
+}
+
+.iiInputText.Loading {
+	background-image: url(/fin/cmn/usr/media/common/indicator.gif);
+	background-repeat: no-repeat;
+	background-position: right;
+	width: 16px;
+	height: 16px;
+	margin: 1px 1px 1px 1px;
+}
+
+.labelTextArea {	
+	float: left;
+	width: 100px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 4px 0px 0px 15px;
+}
+
+.inputTextSmaller {
+	float: left;
+    width: 100px;
+	padding: 3px 0px 3px 0px;
+}
+
+.inputTextSmall {
+	float: left;
+	width: 150px;
+	padding: 3px 0px 3px 0px;
+}
+
+.inputTextMedium {
+	float: left;
+	width: 200px;
+	padding: 3px 0px 3px 0px;
+}
+
+.inputTextLarge {
+	float: left;
+	width: 250px;
+	padding: 3px 0px 3px 0px;
+}
+
+.radioButton {
+	float: left;
+	width: 150px;
+}
+
+.labelRadio {
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
+
+.labelSubscription {
+	float: left;
+	height: 27px;
+	width: 120px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;	
+	padding: 3px 0px 0px 40px;
+}
+
+.labelSchedule {
+	float: left;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-right: 3px;
+}
+
+.checkBoxDay {
+	position: relative;
+	float: left;
+	width: 57px;
+}
+
+.checkBox {
+	float: left;
+	width: 23px;
+	padding: 0px 0px 0px 2px;
+}
+
+.monthlyContainer {
+	float: left;
+	width: 60px;
+	padding: 5px 3px 5px 2px;
+}
+
+.divLabel {
+	float: left;
+	position: relative;
+}
+
+.nodeSearch {
+	background-image: url(/fin/cmn/usr/media/common/searchPlus.png);
+	background-repeat: no-repeat;
+	float: left;
+	width: 24px;
+	height: 24px;
+	margin-left: 10px;
+}
+
+.treeview ul {
+	width: 400px;
+}
+
+.treeview li { 
+	padding: 3px 0 2px 18px;
+}
+
+.treeview span.unit, .treeview span.loading  {
+	font-family: Verdana; 
+	font-size: 9pt;
+	color: #032D23;
+	padding: 1px 0 1px 20px;
+}
+
+.treeview span.unit:hover {	
+	color: red;
+	cursor: pointer;
+}
+
+.treeview span.unitSelected {
+	font-family: Verdana; 
+	font-size: 9pt;
+	font-weight: bold;
+	color: red;
+	padding: 1px 0 1px 20px;
+}
+
+.treeview span.unit, span.unitSelected {
+	background: url(/fin/cmn/usr/media/common/file.gif) 0 0 no-repeat;
+}
+
+.treeview span.loading { 
+	background: url(/fin/cmn/usr/media/common/indicator.gif) 0 0 no-repeat; 
+}
+
+#AnchorSearch {
+	float: left;
+	width: 82px;
+	padding: 3px 0px 0px 10px;	
+	position: relative;
+}
+
+#AnchorSchedule {
+	float: left;
+	width: 96px;
+	padding: 2px 0px 0px 5px;
+}
+
+#AnchorSave {
+	float: left;
+	width: 68px;
+	padding: 5px 0px 0px 10px;
+}
+
+#AnchorOK, #AnchorSelect {
+	float: left;
+	width: 54px;
+	padding: 5px 0px 0px 20px;
+}
+
+#AnchorCancel, #AnchorClose {
+	float: left;
+	width: 80px;
+	padding: 5px 0px 0px 10px;
+}
+
+#TreeviewContainer {
+	width: 100%;
+	border: solid #aaaaaa thin;
+	border-width: 1px;
+	overflow: auto;
+	position: relative;
+}
+
+#ulEdit0 {
+	padding: 10px;
+}
+
+#Comment {
+	height: 50px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: black;
+}
+
+#Subscription {
+	border: 1px solid #cecece;
+	padding: 0px;
+	overflow: auto;
+}
+
+#backgroundPopup {
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: black;
+	border: 1px solid #cecece;
+	position: fixed;
+	z-index: 5000;
+	display: none;
+}
+
+#schedulePopup {
+	width: 720px;
+	height: 590px;
+	background-color: white;
+	position: absolute;
+	z-index: 5025;
+	display: none;
+}
+
+#Schedule {
+	float: left;
+	width: 80px;
+	height: 200px;
+	padding: 10px 0px 10px 10px;
+	margin: 10px 0px 0px 10px;	
+}
+
+#ScheduleDetails {
+	float: right;
+	width: 550px;
+	height: 200px;
+	border: solid #aaaaaa thin;
+	border-width: 1px;
+	padding: 10px 0px 10px 10px;
+	margin: 10px 20px 0px 0px;	
+}
+
+#ScheduleHeader {
+	margin-left: 150px;
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: bold;
+	color: #032D23;
+}
+
+#LabelHours, #LabelMinutes {
+	float: left;
+	width: 50px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-left: 10px;
+}
+
+#Hours, #Minutes {
+	float: left;
+	width: 50px;
+	padding-left: 10px;
+}
+
+#StartHours, #StartMinutes {
+	float: left;
+	width: 50px;
+}
+
+#LabelDay {
+	float: left;	
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	width: 120px;
+}
+	
+#NumberOfDays, #NumberOfWeeks {
+	float: left;
+	width: 50px;
+	padding-left: 3px;
+}
+
+#MonthlyLabel {
+	float: left;
+	width: 60px;
+	padding: 5px 3px 5px 2px;
+}
+
+#WeekOfMonth, #CalendarDays {
+	float: left;
+	width: 120px;
+	padding: 2px 0px 0px 5px;
+}
+
+#StartDate, #EndDate {
+	float: left;
+	width: 190px;
+	padding: 3px 0px 0px 3px;
+}
+
+#LabelDateHeader {
+	font-weight: bold;
+	padding: 10px 10px 0px 20px;
+}
+
+#LabelDate, #LabelScheduleHeader, #ScheduleInfo {
+	padding: 5px 10px 0px 20px;
+}
+
+#LabelStartDate, #LabelEndDate {
+	padding: 5px 10px 0px 40px;
+	width: 200px;
+}
+
+#hirOrgPopup {
+	width: 800px;
+	height: 540px;	
+	background-color: white;
+	position: absolute;
+	z-index: 5050;
+	display: none;
+}
+
+#hirOrgContainer {
+	overflow: auto;
+	position: relative;
+	height: 440px;
+	border: solid #aaaaaa thin;
+	border-width: 1px;
+	margin: 10px;
+}

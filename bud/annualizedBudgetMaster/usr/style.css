@@ -1,0 +1,49 @@
+﻿@import url('../med/default/default.css');
+
+.text
+	{
+	font-family:Verdana;
+	font-size:small;
+	font-weight:bold;
+	color:#032D23;
+	width:170px;
+	vertical-align:bottom;
+	margin-bottom:5px;
+	margin-top:5px;
+
+}
+#LoadButtonContainer
+	{
+		float: left;
+		width:70px;
+	}
+.tabContainer
+	{
+  border:none; 
+  height:350px; 
+  width:100%;
+  
+  	}
+.ulScroll
+	{
+		overflow:scroll;
+	}
+#divScrollWidth
+	{
+			width:100%;
+			overflow-x:auto;
+			visibility:visible;
+			list-style: none;
+			height:45px;
+			z-index:8;
+			position:relative;
+	}
+
+#TabCollection
+	{
+		width:1500px;
+		list-style: none;
+		float:left;
+		margin-left:0px;
+	}
+

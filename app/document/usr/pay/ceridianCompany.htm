@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Ceridian Companies</h1>
+			<div class="description">The purpose of the <b>Ceridian Companies</b> is to maintain the list of Ceridian Companies.</div>
+		</div>
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Ceridian Companies</td>
+			</tr>
+			<tr>
+				<td>Ceridian Companies</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Holds the list of all Ceridian Companies.</td>
+			</tr>
+			<tr>
+				<td>Company Number</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Number of the Ceridian Company.</td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Description of the Ceridian Company.</td>
+			</tr>
+			<tr>
+				<td>Pay Frequency</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Pay Frequency of the Ceridian Company.</td>
+			</tr>						
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To save the Ceridian Company details.</td>
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Undo the changes to Ceridian Company being edited.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Actions Menu</td>
+			</tr>
+			<tr>
+				<td>Save Ceridian Company</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To save the Ceridian Company details.</td>
+			</tr>
+			<tr>
+				<td>Undo current changes to Ceridian Company</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Undo the changes to Ceridian Company being edited.</td>
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Ceridian Companies concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/ceridianCompany.png"></td>
+			</tr>			
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>In order to save, the errors on the page must be corrected.</br>
+					You are about to alter the details of a Ceridian Company that may be associated to multiple House Codes as well as its Employees and is referenced for payroll processing.</br>
+					The Ceridian Company Code [Company Number] already exists. Please verify.
+				</td>
+			</tr>
+			<tr>
+				<td>Error</td>
+				<td>Error while updating Ceridian Company Record.</td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. Frequency Types must be defined in a system look up table (PayPayFrequencyTypes)</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>PayPayFrequencyTypes</br>PayPayrollCompanies</td>
+			</tr>
+		</table>		
+	</body>
+</html>

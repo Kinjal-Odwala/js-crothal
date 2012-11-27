@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Security</h1>
+			<div class="description">This user interface is used to setup different Arbitrary Groups with available application functionalities.<br />
+                Here, you can see listing of available Arbitrary Groups on left panel. Details of
+                selected group are displayed on right panel.
+                <br />
+                <br />
+                Targetted User - Administrator<br />
+            </div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:100px;">UI Element</th>
+				<th style="width:100px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th style="width:100px;">Validation</th>	
+				<th style="width:200px;">Description</th>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">
+                    Arbitrary Group</td>
+			</tr>
+            <tr>
+                <td>
+                    Arbitrary Group</td>
+                <td>
+                    Grid</td>
+                <td>
+                    Yes</td>
+                <td>
+                    End user input</td>
+                <td>
+                </td>
+                <td>
+                    Arbitrary Group List</td>
+            </tr>
+			<tr>
+				<td>
+                    Title</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Maximum length allowed - 64 characters.</td>	
+				<td>
+                    Arbitrary Group Title</td>			
+			</tr>
+			
+			<tr>
+				<td>
+                    Group Type</td>
+				<td>
+                    List</td>
+				<td>
+                    Yes</td>
+				<td>End user input</td>	
+				<td>
+                    This field is required. Please make an entry.</td>				
+				<td>
+                    Arbitrary Group Type</td>	
+			</tr>
+            <tr>
+                <td>
+                    Active</td>
+                <td>
+                    Checkbox</td>
+                <td>
+                    Yes</td>
+                <td>
+                    End user input</td>
+                <td>
+                    This field is required. Please make an entry.</td>
+                <td>
+                    Arbitrary Group is Active or Not.</td>
+            </tr>
+			
+			<tr>
+				<td>
+                    Security Hierarchy</td>
+                <td>
+                    Treeview</td>
+                <td>
+                    Yes</td>
+                <td>
+                    End user input</td>	
+				<td>
+                    This field is required.</td>		
+				<td>
+                    Treeview allows multi selection of nodes to be assigned to the selected Arbitrary
+                    Group.</td>		
+			</tr>
+		</table>
+
+		<h2>UI Layouts</h2>
+
+		<table class="layoutTable">
+			<tr>	
+				<td><img src="images/security.png"/></td>
+			</tr>	
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Required Field</td>
+				<td>This field is required. Please make an entry.</td>
+			</tr>
+			<tr>
+				<td>
+                    Delete Group</td>
+				<td>
+                    User can not delete System generated group 'Administrator'.
+                </td>
+			</tr>
+			<tr>
+				<td>
+                    Delete Group</td>
+				<td>
+                    Are you sure you want to delete 'xxx' group?</td>
+			</tr>
+            <tr>
+                <td>
+                    Save Group</td>
+                <td>
+                    In order to save the errors on the page must be corrected.</td>
+            </tr>
+            <tr>
+                <td>
+                    Save Group</td>
+                <td>
+                    Please select corresponding nodes for the 'xxx' group.</td>
+            </tr>
+            <tr>
+                <td>
+                    Save Group</td>
+                <td>
+                    Update to 'xxx' group may affect multiple User accounts. Please confirm to continue.</td>
+            </tr>
+			<tr>	
+				<td>
+                    Save Group: Error</td>
+                <td>
+                    Error while updating Group record.</td>
+			</tr>
+		</table>
+		<h2>Action</h2>
+		<div class="reference">1. This user interface can be accessed at Setup &gt; Security.<br />
+            2.
+                Edit Group - Select a group on left grid, it allows User to edit it on the right panel. Security nodes are listed in
+                hierarchy with multiple selection (checkbox) option. Any checkbox selection makes
+                its children disabled.<br />
+            3.
+                New Group - Click New button. Enter all required field details, Title, Group Type,
+                Active, and security nodes from Treeview.<br />
+            4.
+                Click Save button to save the change. Undo to cancel any changes made.<br />
+            5. Delete Group - Click Delete button to delete selected group.<br />
+            <br />
+            6. In Treeview, icons with red border against each node represent that the node
+            has children selected underneath.&nbsp;</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+            <tr>
+                <td>Tables</td>
+				<td>
+                    HirNodes, HirlLevels, HirHierarchies,&nbsp; HirGroups, HirGroupTypes, HirGroupNodes,
+                    AppUsers, AppRoles, AppRoleNodes, AppRoleGroups</td>
+            </tr>
+            <tr>
+                <td>
+                    Stored procedures</td>
+                <td>
+                    HirNodeAuthorizationSelect, HirNodeRootsByHirHierarchySelect, HirNodeChildrensSelect,
+                    HirGroupNodesSelect, HirGroupNodeDelete, HirGroupNodeUpdate, AppUsersSelectByUsername,
+                    AppUserOrganizationalPathSelect&nbsp;</td>
+            </tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="hierarchy.htm">Hierarchy</a></div>
+	</body>
+</html>

@@ -1,0 +1,106 @@
+﻿
+.JournalEntryTable
+	{
+		height:150px;
+		width:650px;
+		padding-left:10px;
+	}
+.rightLineTd
+	{
+		border-bottom:solid thin green;
+		border-right:solid  thin green;
+		width:150px;
+		padding:2px;
+		font-family:verdana;
+		color:#032D23;
+		font-size:12px;
+		vertical-align:top;
+	}
+.JournalEntryCreditClass
+	{
+		padding-left:10px;
+	}
+.pageBodyJournal
+	{
+		margin-top:10px;
+		margin-right: 5px;
+	}
+#contentAreasJournalLeft
+	{
+		float:left;
+		width:48%;
+		vertical-align:top;
+		margin-right:20px;
+		z-index:3550;
+		position:relative;
+		padding-left:5px;
+	}
+#contentAreasJournalRight
+	{
+		float:left;
+		width:48.3%;
+		vertical-align:top;
+		z-index:3551;
+		position:relative;
+	}
+#anchorAlign
+	{
+		z-index:3552;
+		position:absolute;
+		bottom:5px;
+		left:5px;
+		padding-top:3px;
+		clear: both;
+	}
+	
+#JournalEntryCreditTotal
+	{
+		float:left;
+		height:25px;
+		font-family:Verdana;
+		font-size:12px;
+		text-align:right;
+		color:#032D23;
+		padding-left:15px;
+		font-weight:bold;
+		width:160px;
+	}
+#CreditTotal
+	{
+		float:left;
+		height:25px;
+		font-family:Verdana;
+		font-size:12px;
+		text-align:right;
+		color:#032D23;
+		font-weight:bold;
+		width:100px;
+	}
+#JournalEntryDebitTotal
+	{
+		float:left;
+		height:25px;
+		font-family:Verdana;
+		font-size:12px;
+		text-align:right;
+		color:#032D23;
+		padding-left:15px;
+		font-weight:bold;
+		width:160px;
+	}
+#DebitTotal
+	{
+		float:left;
+		height:25px;
+		font-family:Verdana;
+		font-size:12px;
+		text-align:right;
+		color:#032D23;
+		font-weight:bold;
+		width:100px;
+	}
+	
+#amountBodyColumn
+{
+	text-align: right;	
+}

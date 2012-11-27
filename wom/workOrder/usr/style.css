@@ -1,0 +1,425 @@
+﻿
+.pageHeader {
+	height: 30px;
+}
+
+.pageBody {
+	margin: 5px;
+}
+
+#DropDownRightHouseCode {
+	width: 225px;
+}
+
+#DropDownJobCode {
+	float: left;
+	position: relative;
+	width: 190px;
+	padding: 3px 5px 3px 5px;
+}
+
+.headerLabel {
+	color: #032D23;
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: bold;
+	padding-top: 5px;
+	width: 86px;
+	text-align: right;
+}
+
+.headerLabelRight {
+	color: #032D23;
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: bold;
+	padding-top: 5px;
+	width: 67px;
+	text-align:right;
+}
+
+.radioButton {
+	float: left;
+	width: 150px;
+}
+	
+.labelRadio {
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
+	
+.labelRadioMonth {
+	float: left;
+	position: relative;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-top: 3px;
+}
+	
+.LabelTextAreaWorkOrder {
+	color: #032D23;
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	height: 27px;
+	width: 170px;
+	padding-top: 3px;
+}
+	
+.InputTextArea {
+	float: left;
+	height: 20px;
+	width: 200px;
+}
+
+#NotesPopup {
+	float: left;
+	width: 580px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: black;
+}
+
+#Notes {
+	float: left;
+	width: 580px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: black;
+}
+
+#workOrderContentArea {
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	padding: 5px;
+	margin: 5px 1px 1px 1px;
+	height: 285px;
+}
+
+.radioButtonAuth {
+	float: left;
+	width: 50px;
+}
+	
+#backgroundPopup {
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	z-index: 5000; 
+	width: 100%; 
+	height: 100%;
+	border: 1px solid #cecece; 
+	background-color: black;
+	display: none;
+}
+
+#popupWorkOrder {
+	width: 800px; 
+	height: 410px;
+	position: absolute;
+	z-index: 5025;
+	background-color: white;
+	display: none;
+}
+	
+#RecurringPopup {
+	float: left;
+	position: relative;
+}
+
+#AnchorCancelPopup {
+	float: left;
+	margin-right: 5px;
+	padding-left: 20px;
+	padding-top: 5px;
+	width: 85px;
+}
+
+#AnchorCancelWorkOrder {
+	width: 80px;
+	float: left;
+	padding-left: 5px;
+	margin-right: 5px;
+	padding-top: 5px;
+}
+
+#AnchorApprove {
+	width: 92px;
+	float: left;
+	padding-left: 5px;
+	margin-right: 5px;
+	padding-top: 5px;
+}
+
+#AnchorView {
+	width: 112px;
+	float: left;
+	padding-left: 5px;
+	margin-right: 5px;
+	padding-top: 5px;
+}
+
+#AnchorPrint {
+	width: 96px;
+	float: left;
+	padding-left: 5px;
+	margin-right: 5px;
+	padding-top: 5px;
+}
+
+#AnchorNextPopup {
+	float: left;
+	margin-right: 5px;
+	padding-left: 0px;
+	padding-top: 5px;
+	width: 68px;
+}
+	
+#AnchorSavePopup {
+	float:left;
+	margin-right: 5px;
+	padding-left: 0px;
+	padding-top: 5px;
+	width: 68px;
+}
+
+#AnchorLoad {
+	float: left;
+	margin-right: 5px;
+	padding-left: 5px;
+	padding-top: 3px;
+	width: 68px;
+}
+	
+.radioButtonRec {
+	float: left;
+	width: 290px;
+}
+
+.checkBoxDay {
+	position: relative;
+	float: left;
+	width: 57px;
+}
+
+.checkBox {
+	float: left;
+	width: 23px;
+	padding-left: 2px;
+}
+	
+.radioButtonChekMonth {
+	float: left;
+}
+
+.dailyDayContainer {
+	position: relative;
+	float: left;
+	width: 99%;
+	padding-right: 7px;
+}
+	
+#WeeklySchedule  {
+	position: relative;
+	float: left;	
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	width: 75px;
+}
+	
+#MonthlySchedule {
+	position: relative;
+	float: left;	
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	width: 110px;
+}
+	
+.rptDay {
+	float: left;
+	position: relative;
+}
+	
+#NumberOfWeeks {
+	float: left;
+	position: relative;
+	width: 40px;
+	padding-left: 3px;
+}
+	
+#NumberOfDays {
+	width: 40px;
+	padding-left: 3px;
+}
+	
+#WeekOfMonth {
+	float: left;
+	position: relative;
+	width: 124px;
+	padding-left: 3px;
+}
+	
+.labelRadioTime {
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	float: left;
+	position: relative;
+	padding-right: 3px;
+}
+	
+.labelRadioTimeDiv {
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	float: left;
+	padding-top: 3px;
+	position: relative;
+}
+	
+#Hour {
+	float: left;
+	position: relative;
+	width: 48px;
+}
+
+#Minute {
+	float: left;
+	position: relative;
+	width: 48px;
+}
+
+#contentContainer {
+	height: 335px;
+	padding: 10px 10px 3px 12px;
+}
+	
+.monthlyContainer {
+	float: left;
+	width: 330px;
+}
+
+#monthlyLeftCorner {
+	float: left;
+	position: relative;
+	width: 60px;
+	padding: 5px 3px 5px 2px;
+}
+
+#monthlyLeft {
+	float: left;
+	position: relative;
+	width: 60px;
+	padding: 5px 3px 5px 2px;
+}
+
+#monthlyCenter {
+	float: left;
+	position: relative;
+	width: 60px;
+	padding: 5px 3px 5px 2px;
+}
+
+#monthlyRight { 
+	float: left;
+	position: relative;
+	width: 60px;
+	padding: 5px 3px 5px 2px;
+}
+
+#monthlyRightCorner {
+	float: left;
+	position: relative;
+	width: 60px;
+	padding: 5px 3px 5px 2px;
+}
+	
+#endDateDiv {
+	float: left;
+	position: relative;
+	padding-left: 5px;
+	width: 197px;
+}
+	
+#CalendarDays {
+	float: left;
+	position: relative;
+	width: 120px;
+	padding-left: 3px;
+}
+	
+#workOrderContentAreaPopup {
+	float: left;
+	position: relative;
+}
+
+#ItemQuantityText, #ItemPriceText, #ItemMarkupText, #quantityBodyColumn, #priceBodyColumn, #markupBodyColumn, #totalBodyColumn {
+	text-align: right;
+}
+
+#searchIcon {
+	float: left;
+	position: relative;
+	margin-right: 10px;
+	padding-top: 3px;
+}
+
+#searchOption {
+	position: absolute;
+	left: 460px;
+	top: 22px;
+	width: 340px;
+	height: 135px;
+	z-index: 6800;
+	display: none;
+}
+
+.searchBody {
+	position: relative;
+	float: left;
+	width: 300px;
+	height: 120px;
+	background-color: #ececec;
+	border: 1px solid #A5A5A5;
+	margin: 0px;
+	padding: 3px;
+}
+
+#AnchorSearch {
+	float: left;
+	margin-right: 5px;
+	padding-left: 10px;
+	padding-top: 5px;
+	width: 85px;
+}
+
+#AnchorCancel {
+	float:left;
+	margin-right: 5px;
+	padding-left: 5px;
+	padding-top: 5px;
+	width: 85px;
+}
+
+#popupDivLeft {
+	float: left;
+	position: relative;
+	width: 370px;
+	margin-right: 10px;
+}
+
+#popupDivRight {
+	float: left;
+	position: relative;
+	width: 370px;
+}

@@ -1,0 +1,969 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Edit-Action</h1>
+			<div class="description">Employee can be edit here with section vies.</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:100px;">UI Element</th>
+				<th style="width:100px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th style="width:100px;">Validation</th>	
+				<th style="width:200px;">Description</th>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">Employee Edit Action</td>
+			</tr>
+			<tr>
+				<td>SSN</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry.</td>	
+				<td>The Unit Manager will enter valid SSN number.</td>			
+			</tr>
+			
+			<tr>
+				<td>Edit Employee</td>
+				<td>Dropdown Selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Please select edit option.</td>	
+				<td>Edit Employee option.</td>			
+			</tr>
+			
+			<tr>
+				<td>Next</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Go to Next Screan.</td>	
+			</tr>
+			
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>		
+				<td>Cancel for Edit.</td>		
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">Edit-Compensation</td>
+			</tr>
+			<tr>
+				<td>Effective Date</td>
+				<td>Date Control</td>
+				<td>Yes</td>
+				<td>NA</td>				
+				<td>Current Date of Current Hire Date</td>		
+				<td>Effective Date of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Rate Change Reason</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Please select Pay Rate Change Reason.</td>		
+				<td>Rate Change Reason of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Hourly Pay Rate</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Please enter numeric data</td>		
+				<td>Hourly Pay Rate of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Scheduled Hours</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Warning: Individual will work less than 30 hours a week and therefore not eligible for full-time benefits. Minimum eligible hours:60</td>		
+				<td>Scheduled Hours of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Review Date</td>
+				<td>Date datecontrol</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Review Date of Employee</td>		
+			</tr>
+			<tr>
+				<td>Work Shift</td>
+				<td>Dropdown selection</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Work Shift of Employee</td>		
+			</tr>
+			<tr>
+				<td>Alt Rate of Pay A</td>
+				<td>Text Field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td> Alt Rate of Pay A of Employee</td>		
+			</tr>
+			<tr>
+				<td>Alt Rate of Pay B</td>
+				<td>Text Field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td> Alt Rate of Pay B of Employee</td>		
+			</tr>
+			<tr>
+				<td>Alt Rate of Pay C</td>
+				<td>Text Field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td> Alt Rate of Pay C of Employee</td>		
+			</tr>
+			<tr>
+				<td>Alt Rate of Pay D</td>
+				<td>Text Field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td> Alt Rate of Pay D of Employee</td>		
+			</tr>
+			
+			<tr>
+				<td>Device Group</td>
+				<td>Dropdown selection</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Device Group of Employee</td>		
+			</tr>
+			<tr>
+				<td>Back</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Go to Back Screan.</td>	
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Save</td>	
+			</tr>
+			
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>		
+				<td>Cancel for Edit.</td>		
+			</tr>
+
+			<tr>
+				<td class="uiHeader" colspan="6">Edit - Employee</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">Employee - General</td>
+			</tr>
+			<tr>
+				<td>Employee Number</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>ReadOnly</td>				
+				<td>This field is required.</td>		
+				<td>Employee Number of Employee. Generating automatic from DB</td>		
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required.</td>		
+				<td>House Code of Employee</td>		
+			</tr>
+			<tr>
+				<td>Cerdian Company</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please select Cerdian Company.</td>		
+				<td>Cerdian Company of Employee</td>		
+			</tr>
+			<tr>
+				<td>Crothall Employee</td>
+				<td>Radio selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required.</td>		
+				<td></td>		
+			</tr>
+			<tr>
+				<td>Status</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>ReadOnly</td>				
+				<td>This field is required.</td>		
+				<td>Status of Employee</td>		
+			</tr>
+			<tr>
+				<td>Status Category</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please select Status Category.</td>		
+				<td>Status Category of Employee</td>		
+			</tr>
+			<tr>
+				<td>Date of Current Hire</td>
+				<td>Date Control</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry. <br> Please enter valid date which is in range of current Pay Period and not a future date.</td>		
+				<td>Date of Current Hire of Employee</td>		
+			</tr>
+			<tr>
+				<td>Date of Original Hire</td>
+				<td>Date Control</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Date of Original Hire of Employee</td>		
+			</tr>
+			<tr>
+				<td>Seniority Date</td>
+				<td>Date Control</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Seniority Date of Employee</td>		
+			</tr>
+			<tr>
+				<td>Effective Date</td>
+				<td>Date Control</td>
+				<td>Yes</td>
+				<td>ReadOnly</td>				
+				<td>This field is required.</td>		
+				<td>Effective Date of Employee. On change of Status Category, this is enabled.</td>		
+			</tr>
+			<tr>
+				<td>Back</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Go to Back Screan.</td>	
+			</tr>
+			<tr>
+				<td>Next</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Go to Next Screan.</td>	
+			</tr>
+			
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>		
+				<td>Cancel for Edit.</td>		
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">Employee - General - Next UI</td>
+			</tr>			
+			<tr>
+				<td>Birth Date</td>
+				<td>Date Control</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry.<br>
+				The Birth Date cannot be after currnet Date.<br>
+				Employee age should be 18 yrs.</td>		
+				<td>Birth Date of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Ethnicity</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Please select ethnicity type.</td>		
+				<td>Ethnicity of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Gender</td>
+				<td>Radio selection</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Gender of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Marital Status</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Please select marital status.</td>		
+				<td>Marital Status of Employee.</td>		
+			</tr>
+			<tr>
+				<td>I-9 Status</td>
+				<td>Dropdown selection</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>I-9 Status of Employee</td>		
+			</tr>
+			<tr>
+				<td>VETS-100A Status</td>
+				<td>Dropdown selection</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>VETS-100A Status of Employee</td>		
+			</tr>
+			<tr>
+				<td>Back</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Go to Back Screan.</td>	
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Save</td>	
+			</tr>
+			
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>		
+				<td>Cancel for Edit.</td>		
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6"> Edit- Federal Tax </td>
+			</tr>
+			<tr>
+				<td>Fed Exemption</td>
+				<td>Text Field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Fed Exemption of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Tax Status</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Tax Status of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Adjustment Type</td>
+				<td>Dropdown selection</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Adjustment Type of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Adjustment Value</td>
+				<td>Text Field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Adjustment Value of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Back</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Go to Back Screan.</td>	
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Save</td>	
+			</tr>
+			
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>		
+				<td>Cancel for Edit.</td>		
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6"> Edit - Job Information </td>
+			</tr>			
+			<tr>
+				<td>Effective Date</td>
+				<td>Date Control</td>
+				<td>Yes</td>
+				<td>NA</td>				
+				<td>Current Date of Current Hire Date</td>		
+				<td>Effective Date of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Job Change Reason</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>NA</td>				
+				<td></td>		
+				<td>Job Change Reason of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Job Code</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Job Code of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Default House Code Job</td>
+				<td>Dropdown selection</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>House Code Job of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Union Employee</td>
+				<td>Radio selection</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Union Employee of Employee</td>		
+			</tr>
+			<tr>
+				<td>Exempt</td>
+				<td>Radio selection</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Exempt of Employee</td>		
+			</tr>
+			<tr>
+				<td>Background Check Date</td>
+				<td>Date Control</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Background Check Date of Employee</td>		
+			</tr>
+			<tr>
+				<td>Union</td>
+				<td>Dropdown selection</td>
+				<td>Yes if Union Employee Selectioned "Yes"</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Union of Employee</td>		
+			</tr>
+			<tr>
+				<td>Back</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Go to Back Screan.</td>	
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Save</td>	
+			</tr>			
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>		
+				<td>Cancel for Edit.</td>		
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6"> Edit - Local Tax </td>
+			</tr>	
+			<tr>
+				<td>Local Tax Adj Type</td>
+				<td>Dropdown selection</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Local Tax Adj Type of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Local Tax Adj Value</td>
+				<td>Text Field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Local Tax Adj Value of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Local Tax Code 1</td>
+				<td>Dropdown selection</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Local Tax Code 1 of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Local Tax Code 2</td>
+				<td>Dropdown selection</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Local Tax Code 2 of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Local Tax Code 3</td>
+				<td>Dropdown selection</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Local Tax Code 3 of Employee.</td>		
+			</tr>
+			
+			<tr>
+				<td>Back</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Go to Back Screan.</td>	
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Save</td>	
+			</tr>
+			
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>		
+				<td>Cancel for Edit.</td>		
+			</tr>
+			
+			<tr>
+				<td class="uiHeader" colspan="6"> Edit - Person </td>
+			</tr>	
+			<tr>
+				<td>First Name</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>First Name of Employee</td>		
+			</tr>
+			<tr>
+				<td>Middle Name</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Middle Name of Employee</td>		
+			</tr>
+			<tr>
+				<td>Last Name</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Last Name of Employee</td>		
+			</tr>
+			
+			<tr>
+				<td>Back</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Go to Back Screan.</td>	
+			</tr>
+			<tr>
+				<td>Next</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Go to next screen.</td>	
+			</tr>
+			
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>		
+				<td>Cancel for edit.</td>		
+			</tr>
+			
+			<tr>
+				<td class="uiHeader" colspan="6"> Edit - Person - Next UI </td>
+			</tr>
+			<tr>
+				<td>Address 1</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry.</td>		
+				<td>Address 1 of Employee</td>		
+			</tr>
+			<tr>
+				<td>Address 2</td>
+				<td>Text Field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>NA</td>		
+				<td>Address 2 of Employee</td>		
+			</tr>
+			<tr>
+				<td>City</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry.</td>		
+				<td>City of Employee</td>		
+			</tr>
+			<tr>
+				<td>State</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry.</td>		
+				<td>State of Employee</td>		
+			</tr>
+			<tr>
+				<td>Postal Code</td>
+				<td>Text Field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry.</td>		
+				<td>Postal Code of Employee</td>		
+			</tr>
+			<tr>
+				<td>Back</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Go to Back Screan.</td>	
+			</tr>
+			<tr>
+				<td>Next</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Go to Next Screan.</td>	
+			</tr>
+			
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>		
+				<td>Cancel for Edit.</td>		
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">Edit - Person - Next UI</td>
+			</tr>
+			<tr>
+				<td>Email</td>
+				<td>Text Field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Please enter valid Email Address.</td>		
+				<td>email of Employee</td>		
+			</tr>
+			<tr>
+				<td>Home Phone</td>
+				<td>Text Field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Please enter valid Phone Number.</td>		
+				<td>Home Phone of Employee</td>		
+			</tr>
+			<tr>
+				<td>Fax</td>
+				<td>Text Field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Please enter valid Fax Number.</td>		
+				<td>Fax of Employee</td>		
+			</tr>
+			<tr>
+				<td>Pager</td>
+				<td>Text Field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Please enter valid Pager Number.</td>		
+				<td>Pager of Employee</td>		
+			</tr>
+			<tr>
+				<td>Cell Phone</td>
+				<td>Text Field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Please enter valid Cell Number.</td>		
+				<td>Cell Number of Employee</td>		
+			</tr>
+			<tr>
+				<td>Back</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Go to Back Screan.</td>	
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Save</td>	
+			</tr>
+			
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>		
+				<td>Cancel for Edit.</td>		
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">Edit - State Tax </td>
+			</tr>
+			<tr>
+				<td>Primary State</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Primary State of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Pri Status</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Status of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Secondry State</td>
+				<td>Dropdown selection</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Secondry State of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Sec. Status</td>
+				<td>Dropdown selection</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>Status of Employee.</td>		
+			</tr>
+			<tr>
+				<td>State Exemptions</td>
+				<td>Text Field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>State Exemptions of Employee.</td>		
+			</tr>
+			<tr>
+				<td>State Adjust Value</td>
+				<td>Text Field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>State Adjust Value of Employee.</td>		
+			</tr>
+			<tr>
+				<td>State Adjust Type</td>
+				<td>Dropdown selection</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>State Adjust Type of Employee.</td>		
+			</tr>
+			<tr>
+				<td>State SDI Adjust</td>
+				<td>Dropdown selection</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>State SDI Adjust of Employee.</td>		
+			</tr>
+			<tr>
+				<td>State SDI Value</td>
+				<td>Text Field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>		
+				<td>State SDI Value of Employee.</td>		
+			</tr>
+			<tr>
+				<td>Back</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Go to Back Screan.</td>	
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>				
+				<td>Save</td>	
+			</tr>
+			
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user click</td>	
+				<td></td>		
+				<td>Cancel for Edit State Tax.</td>		
+			</tr>
+			
+			
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Item Search</td>
+			</tr>			
+			<tr>	
+				<td><img width="650" height="500" src="images/EditSSN.jpg"></td>
+			</tr>	
+			<tr>
+				<td><img width="650" height="500" src="images/EditCompansationEffective.jpg"></td>
+			</tr>
+			<tr>	
+				<td><img width="650" height="500" src="images/EditEmployeeEmployeeNumber.jpg"></td>
+			</tr>
+			<tr>	
+				<td><img width="650" height="500" src="images/EditEmployeeBirthDate.jpg"></td>
+			</tr>
+			<tr>	
+				<td><img width="650" height="500" src="images/EditFedExemptions.jpg"></td>
+			</tr>
+			<tr>	
+				<td><img width="650" height="500" src="images/NewHireBirthDate.jpg"></td>
+			</tr>	
+			<tr>	
+				<td><img width="650" height="500" src="images/EditJobEffectiveDate.jpg"></td>
+			</tr>
+			<tr>	
+				<td><img width="650" height="500" src="images/EditStateTax.jpg"></td>
+			</tr>
+			<tr>	
+				<td><img width="650" height="500" src="images/EditLocalTax.jpg"></td>
+			</tr>
+			<tr>	
+				<td><img width="650" height="500" src="images/EditPersonFirstName.jpg"></td>
+			</tr>
+			<tr>	
+				<td><img width="650" height="500" src="images/EditPersonAddress.jpg"></td>
+			</tr>
+			<tr>	
+				<td><img width="650" height="500" src="images/EditPersonEmail.jpg"></td>
+			</tr>
+				
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Required Field</td>
+				<td>This field is required. Please make an entry.</td>
+			</tr>
+			<tr>
+				<td>Invalid SSN</td>
+				<td>Please enter valid Social Security Number. Example: 001-01-0001,899-99-9999.</td>
+			</tr>
+			<tr>
+				<td>Look-up</td>
+				<td>Employee with Social Security Number: 887-45-6355 already exists in House Code 001; contact payroll if assistance is needed.</td>
+			</tr>
+			<tr>	
+				<td></td>
+				<td>SSN 345-34-5435 does not exist in any other house code.</td>
+			</tr>
+		</table>
+		<h2>Action</h2>
+		<div class="reference">1. To open an employee record the Unit Manager will click on the Employee detail row.
+			This will open up another UI with the employee record that can be viewed or edited based on the security level of the Unit Manager.
+		</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>PplPersons<br>EmpEmployeeGenerals</td>
+			</tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="newHire.htm">New Hire</a></div>
+		<div class="reference"><a href="catalog.htm">Catalogs</a></div>
+		<div class="reference"><a href="purchaseOrder.htm">Purchase Orders</a></div>
+	</body>
+</html>

@@ -1,0 +1,479 @@
+﻿/* v1.0 | 20080212 */
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+
+/* remember to define focus styles! */
+:focus {
+	outline: 0;
+}
+
+/* remember to highlight inserts somehow! */
+ins {
+	text-decoration: none;
+}
+del {
+	text-decoration: line-through;
+}
+
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+body 
+{
+    font-size: 12px;
+    font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+}
+
+
+a.bine-icons, span.bine-icons, div.bine-icons {
+    background: url("images/icons-6124a2.png") no-repeat scroll 0 0 transparent;
+}
+.bine-loadmask-msg div {
+    background: #fbfbfb url(images/loading.gif) no-repeat 5px 5px;
+}
+.bud-grid-1
+{
+    border: 1px solid #659A66;
+    border-collapse: collapse;
+    font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    text-align: left;
+}
+.bud-grid-1 th
+{
+    border-bottom: 1px solid #659A66;
+    color: #659A66;
+    font-size: 14px;
+    font-weight: normal;
+    padding: 6px 5px;
+    text-align: center;
+}
+.bud-grid-1 td
+{
+    color: #9CCF9C;
+    padding: 2px 10px;
+    border-bottom: 1px solid #659A66;
+}
+/*
+.bud-grid-1 tbody tr:hover td {
+    background: none repeat scroll 0 0 #D0DAFD;
+    color: #333399;
+}*/
+
+.bud-grid-1 tbody td input
+{
+    width: 100%;
+    border-color: transparent;
+    padding: 0 !important;
+    margin: 3 !important;
+    color: #43A643;
+}
+
+.bud-grid-1 tbody td:focus
+{
+    border-color: #9CCF9C;
+}
+
+.bud-table-2
+{
+    background: none repeat scroll 0 0 #FFFFFF;
+    border-collapse: collapse;
+    font-size: 11px;
+    text-align: left;
+    -moz-box-sizing: border-box;
+}
+
+.bud-table-2 th, .bud-table-2 thead td
+{
+    /*border-bottom: 1px solid #659A66;*/ /* border-top: 1px solid #CCCCCC;*/
+    white-space: nowrap;
+    color: #000;
+    background-color: #fff;
+    font-size: 11px;
+    font-weight: normal;
+    padding: 0 0;
+    -moz-box-sizing: border-box;
+}
+.bud-table-2 th
+{
+    border-left: 1px solid #eeeeee;
+    border-right: 1px solid #D0D0D0;
+}
+.bud-table-2 th.mop-period-title, .bud-table-2 th.mop-week-title, .bud-table-2 th.mop-accountcode-title
+{
+    border-bottom: 1px solid #D0D0D0;
+}
+
+.bud-table-2 tbody td input
+{
+    font-size: 11px;
+}
+
+.bud-table-2 tbody td, .bud-table-2 tfoot td
+{
+    border-bottom: 1px solid #CCCCCC;
+    border-top: 1px solid #CCCCCC;
+    color: #000;
+    padding: 0 0px;
+    background-color: #fff;
+    -moz-box-sizing: border-box;
+}
+
+.bud-table-2 tbody td
+{
+    border-bottom-width: 0px;
+    border-top-width: 0px;
+}
+
+.bud-table-2 tbody tr.inline td
+{
+    border-bottom-width: 0;
+}
+
+.bud-table-2 .amount-col
+{
+    text-align: right;
+}
+
+.bud-table-2 tbody tr td.bine-action-cell
+{
+    padding-left: 2px;
+    width: 15px;
+}
+
+.bud-table-2 a
+{
+    text-decoration: underline;
+    color: Blue;
+}
+
+.bud-table-2 input.bine-dv-text-field
+{
+    background-image: none;
+    width: 100%;
+    padding: 0;
+    border-width: 0;
+    border-bottom-width: 1px;
+}
+
+.bud-table-2 td
+{
+    color: #000;
+    padding: 2px 5px;
+}
+
+.bud-table-2 tbody td:focus
+{
+    border-color: #9CCF9C;
+}
+
+.list-body td
+{
+    border-left: 1px solid #fff !important;
+    border-left: 1px solid #fff !important;
+    border-bottom: 1px solid #EDEDED !important;
+}
+
+.bud-table-2 a.bine-invalid
+{
+    color: #fff;
+    background-color: Red;
+}
+
+.table-head tr th
+{
+    background-color: #F9F9F9;
+    display: table-cell;
+    vertical-align: middle;
+}
+.summary td, .summary input, .summary a.display-as-text
+{
+    font-weight: bold;
+    color: #000 !important;
+}
+
+.list-header, .table-head th
+{
+    background: transparent url(images/grid3-hrow2.png) repeat-x left top;
+}
+
+.mop-comment input[type="text"], .mop-projection input[type="text"], .mop-week-amount input[type="text"]
+{
+    background-color: #D1ED98 !important;
+    border: 1px solid #fff !important;
+}
+
+.mop-comment input[type="text"].mop-disabled, .mop-projection input[type="text"].mop-disabled, .mop-week-amount input[type="text"].mop-disabled 
+{
+    background-color: #fff !important;
+        border: 1px solid #fff !important;
+}
+
+td.focus input[type="text"]
+{
+    border: 1px solid #B5B8C8 !important;
+    background-color: #fff !important;
+}
+
+.summary .mop-projection input[type="text"], .summary .mop-comment input[type="text"], .summary  .mop-week-amount input[type="text"]
+{
+    background-color: #fff !important;
+    border: 0px !important;
+}
+
+.mop-comment input.readonly[type="text"], .mop-projection input.readonly[type="text"], .mop-week-amount input.readonly[type="text"]
+{
+    background-color: #fff !important;
+}
+
+.bine-dv-text-field
+{
+    height: 16px;
+    background-image: none;
+}
+
+.row-btn .bine-btn
+{
+    background: transparent url(images/btn-bg-all.png) no-repeat -10px -120px;
+    color: #477D61 !important;
+    font-weight: bold !important;
+    font-size: 11px !important;
+    height: 27px !important;
+    border: 0px !important;
+}
+
+.row1-btn .bine-btn
+{
+    background: transparent url(images/button-bg.png) repeat-x left top;
+    color: #477D61 !important;
+    font-weight: bold !important;
+    font-size: 11px !important;
+    height: 50px !important;
+    border: 0px !important;
+    width: 90px !important;
+    padding: 4px;
+}
+
+.row1-btn .bine-btn:hover
+{
+    background-color: transparent !important;
+}
+
+a.account-link
+{
+    text-decoration: none;
+    color: #000;
+}
+
+a.account-link:hover
+{
+    text-decoration: underline;
+}
+
+table.mop-filter td 
+{
+    padding-right:8px;
+}
+
+.mop-projection, .mop- budget, .mop-variance, . mop-forecast
+{
+    width: 100px;
+}
+
+.account-category-data-view 
+{
+    font-weight: bold;
+}
+
+.account-category-data-view .mop-account-column {
+	text-align: right;
+}
+
+.account-category-data-view input 
+{
+    border-width: 0 !important;
+    color: 	#000 !important;
+    font-weight: bold;
+}
+
+.mop .bud-table-2 tbody tr td
+{
+    font-size:11px;
+}
+
+a.display-as-text 
+{
+    text-decoration: none;
+    color: #000 !important;
+    cursor: default;
+}
+
+input.mop-disabled 
+{
+    color: #802A2A;
+}
+
+.account-category-data-view td
+{
+   color: #000 !important;
+   font-weight: bold !important;
+}
+
+.wor-amount-col 
+{
+    text-align: right;
+}
+
+body table tbody input.readonly 
+{
+    background-color: #fff !important;
+}
+
+.mop-grid .editable-col input[type="text"]
+{
+    background-color: #D1ED98 !important;
+    border: 1px solid #fff !important;
+    padding: 0 3px;
+}
+
+.list-body.mop-grid td 
+{
+    vertical-align: middle;
+}
+
+
+/* Login Button */
+.popup-button { 
+    display:inline-block;
+  background: url("images/btn-bg-all.png") no-repeat scroll -10px -120px transparent; 
+     border:1px solid #899caa; 
+    border-radius:3px;
+    -moz-border-radius:3px;
+    position:relative;
+    z-index:30;
+    cursor:pointer;
+}
+
+/* Login Button Text */
+.popup-button span {
+    color:#477d61; 
+    font-size:12px; 
+    font-weight:bold; 
+    text-shadow:1px 1px #fff; 
+    padding: 7px 29px 9px 8px;
+    background:url(images/loginArrow.png) no-repeat 72px 5px;
+    display:block;
+    font-family: arial;
+}
+
+.popup-button:hover {
+     background: url("images/btn-bg-all.png") no-repeat scroll -10px -120px transparent;
+}
+
+
+/* Login Box */
+.popup-box {
+    position:absolute;
+    top:29px;
+    right:0;
+    display:none;
+    z-index:29;
+}
+
+/* If the Login Button has been clicked */    
+.popup-button.active {
+    border-radius:3px 3px 0 0;
+}
+
+.popup-button.active span {
+    background-position: 72px -78px;
+}
+
+/* A Line added to overlap the border */
+.popup-button.active em {
+    position:absolute;
+    width:100%;
+    height:1px;
+    background:#d2e0ea;
+    bottom:-1px;
+}
+
+.popup-box-inner-wrapper {
+    background: none repeat scroll 0 0 #e6e6e6;
+    border: 1px solid #659a66;
+    border-radius: 3px 0 3px 3px;
+    margin-top: -1px;
+    padding: 6px;
+    width: 248px;
+}
+
+.popup-box-form 
+{
+    background: none repeat scroll 0 0 #FFFFFF;
+    border-radius: 3px 3px 3px 3px;
+    margin: 0;
+    padding: 10px 13px;
+}
+
+.popup-box-form input {
+    border: 1px solid #899CAA;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 1px 3px #BBBBBB inset;
+    color: #3A454D;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 8px;
+    width: 92%;
+}
+
+.popup-box-form textarea {
+    border: 1px solid #899CAA;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 1px 3px #BBBBBB inset;
+    color: #3A454D;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 8px;
+    width: 92%;
+}
+
+.popup-box-form  label {
+    color: #3A454D;
+    display: block;
+    float: left;
+    margin: 5px 0 6px 0;
+}
+

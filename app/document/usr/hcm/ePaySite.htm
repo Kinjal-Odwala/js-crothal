@@ -1,0 +1,334 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Epay Sites</h1>
+			<div class="description">The purpose of Epay Sites is to provide a means to setup and maintain a list of Epay Sites available. Each Epay Site can be associated to multiple House Codes.
+</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<td class="uiHeader" colspan="5">Epay Site Search</td>
+			</tr>
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th>Validation / Description</th>				
+			</tr>
+			<tr>
+				<td>Epay Site Number or Description</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Please enter search criteria (minimum 3 characters).
+					To search a specific Epay Site, type-in Epay Site # or Description and press Enter key</td>				
+			</tr>
+			<tr>
+				<td>Search</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>List the Epay Sites based on the search criteria</td>				
+			</tr>
+			<tr>
+				<td>Epay Sites</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>List the Epay Site details based on the selected Epay Site</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Add / Edit Epay Site </td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Epay Site Details</td>
+			</tr>
+			<tr>
+				<td>Epay Site Number</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry.<br />
+					 Maximum length allowed - 8.</td>				
+			</tr>
+				<td>Description</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry.<br />
+                    Maximum length allowed - 40</td>				
+			</tr>		
+			<tr>
+				<td><span id="nonRequiredFieldIndicator"><span id="Span1">Contact</span></span></td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Maximum length allowed - 50</td>			
+			</tr>
+			<tr>
+				<td><span id="Span2">Address 1</span></td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Maximum length allowed - 50</td>	
+			</tr>
+			<tr>
+				<td><span id="Span3">Address 2</span></td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Maximum length allowed - 50</td>
+			</tr>
+			<tr>
+				<td><span id="Span6"><span id="Span9">Postal Code</span></span></td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Maximum length allowed - 10<br />
+					This field is required. Please make an entry.<br />
+					Please enter valid Postal Code. Example: 99999 or 99999-9999</td>
+			</tr>
+			<tr>
+				<td><span id="Span5"><span id="Span8">GEO Code</span></span></td>
+				<td>List</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Please select the correct GEO Code.</td>			
+			</tr>
+			<tr>
+				<td><span id="Span5"><span id="Span8">City</span></span></td>
+				<td>List</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry.<br />
+					Please select the correct City.</td>			
+			</tr>
+			<tr>
+				<td><span id="Span5"><span id="Span8">State</span></span></td>
+				<td>List</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry.<br />
+					Please select the correct State.</td>			
+			</tr>
+			<tr>
+				<td><span id="Span5"><span id="Span8">EPay Pay Group</span></span></td>
+				<td>List</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>			
+			</tr>
+			<tr>
+				<td><span id="Span11"><span id="Span12"><span id="Span13">Active</span></span></span></td>
+				<td>Checkbox</td>
+				<td>No</td>
+				<td>End user input</td>
+                <td>Keeps Epay Site as Active / InActive.</td>			
+			</tr>
+			<tr>
+				<td>New</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Add new Epay Site</td>				
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>To Save Epay Site</td>				
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Undo changes to the selected Epay Site</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Epay Site Associations</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Text field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>
+			</tr>
+			<tr>
+				<td>Language 1</td>
+				<td>Text field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>
+			</tr>
+			<tr>
+				<td>Language 2</td>
+				<td>Text field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>
+			</tr>
+			<tr>
+				<td>Language 3</td>
+				<td>Text field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>
+			</tr>
+			<tr>
+				<td>Default House Code</td>
+				<td>Radio Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Allows user to set only one Selected House Code as Default House Code.</td>
+			</tr>
+			<tr>
+				<td>Active</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Y / N</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Adding House Codes to Epay Site</td>
+			</tr>
+			<tr>
+				<td>Add House Codes</td>
+				<td>Image Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Opens the popup screen</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Hierarchy Tree View</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>To search a specific House Code, type-in House Code # (1455, 900000) and press Enter key</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">House Codes Grid</td>
+			</tr>
+			<tr>
+				<td>Assigned</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Assigns House Code to Epay Site.</td>				
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Text field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>
+			</tr>
+			<tr>
+				<td>Language 1</td>
+				<td>Text field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>
+			</tr>
+			<tr>
+				<td>Language 2</td>
+				<td>Text field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>
+			</tr>
+			<tr>
+				<td>Language 3</td>
+				<td>Text field</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Adds the selected House Codes to the Epay Site</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Closes the popup screen</td>
+			</tr>			
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Epay Site Search, Add / Edit Epay Site</td>
+			</tr>
+			<tr>
+				<td><img src="images/EpaySiteDetails.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Associate House Codes to Epay Site</td>
+			</tr>
+			<tr>
+				<td><img src="images/EpaySiteAssociations.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Adding House Codes to Epay Site</td>
+			</tr>
+			<tr>
+				<td><img src="images/AddHouseCodesToEpaySite.png"></td>
+			</tr>
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>[SAVE FAILURE] Error while updating Epay Site.</td>
+			</tr>
+			<tr>
+				<td>Duplicate Epay Site</td>
+				<td>The title [Epay Site Name] already exists. Please verify.</td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. Epay Sites must be defined in a system look up table (HcmJobs)</div>
+		<div class="reference">2. Epay Site Associations must be defined in a system look up table (HcmHouseCodeJobs)</div>
+		<div class="reference">3. House Codes must be defined in a system look up table (HcmHouseCodes)</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>jobTypes, HcmEPayGroupTypes, HcmJobs, HcmHouseCodeJobs, HirNodes, HirLevels, HcmHouseCodes, AppUnits, AppZipCodeTypes</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>HcmJobByHouseCode, HcmHouseCodeJobsSelect, HcmHouseCodeJobUpdate, HirHierarchyNodeSelect, HirNodeSelect, AppUserHouseCodesSelect</td>
+			</tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="remitTo.htm">Remit To</a></div>
+		<div class="reference"><a href="site.htm">Sites</a></div>
+		<div class="reference"><a href="job.htm">Jobs</a></div>
+		<div class="reference"><a href="houseCodeImport.htm">Import House Codes</a></div>
+	</body>
+</html>

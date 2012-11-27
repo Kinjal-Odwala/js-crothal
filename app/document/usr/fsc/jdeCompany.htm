@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>JDE Company</h1>
+			<div class="description">This user interface is used to Add & Edit different JDE Companies.</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:100px;">UI Element</th>
+				<th style="width:110px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th style="width:200px;">Validation</th>	
+				<th style="width:100px;">Description</th>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="6">JDE Company</td>
+			</tr>			
+			<tr>
+				<td>JDE Company</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td></td>				
+				<td>Holds the list of all JDE Companies.</td>				
+			</tr>
+			<tr>
+				<td>JDE Company</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry.<br />
+					Maximum length allowed - 50.</td>				
+				<td>JDE Company Title.</td>				
+			</tr>
+			<tr>
+				<td>Fiscal Pattern</td>
+				<td>List</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>This field is required. Please make an entry.<br />
+					Please select the Pattern from list.</td>				
+				<td>Displays list of Fiscal Patterns.</td>				
+			</tr>
+			<tr>
+				<td>Active</td>
+				<td>Checkbox</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>	
+                <td>To set JDE Company as Active or Inactive.</td>				
+			</tr>
+			<tr>
+				<td>Add</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>	
+                <td>Click Add button to Add New JDE Company.</td>			
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>	
+                <td>Click Save button to save the change.</td>			
+			</tr>
+			
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td></td>	
+                <td>Click Undo button to cancel any changes made.</td>			
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Add / Edit JDE Company</td>
+			</tr>
+			<tr>
+				<td><img src="images/fscJdeCompany.png" alt="JDE Company"/></td>
+			</tr>			
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Save JDE Company</td>
+				<td>Error while updating JDE Company Record.</td>
+			</tr>
+			<tr>
+				<td>Error</td>
+				<td>Failed to save JDE Company.</td>
+			</tr>
+		</table>
+		<h2>Action</h2>
+		<div class="reference">
+		    1. This user interface can be accessed at <span class="iiMenuVerticalMainPart Selected undefined">
+                Fiscal</span> > JDE Companies.<br />
+        </div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>
+                    FscPatterns, FscJDECompanies, FscYears.</td>
+			</tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="fiscalPattern.htm">Patterns</a></div>
+		<div class="reference"><a href="fiscalCalendar.htm">Calendar</a></div>
+		<div class="reference"><a href="account.htm">Chart Of Account</a></div>
+	</body>
+</html>

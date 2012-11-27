@@ -1,0 +1,351 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Catalogs</h1>
+			<div class="description">The purpose of Catalogs is to provide a means to setup and maintain a list of Catalogs available to the Purchasing module. Each Vendor can have multiple Catalogs and each House Code can be associated to multiple Catalogs.
+Each Catalog can have multiple Items and Items in the Catalog can be active or inactive.</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<td class="uiHeader" colspan="5">Catalog Search</td>
+			</tr>
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th>Validation</th>				
+			</tr>
+			<tr>
+				<td>Catalog Name</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Enter minimun 3 characters to search the Catalogs</td>				
+			</tr>
+			<tr>
+				<td>Search</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>List the Catalogs based on the search criteria</td>				
+			</tr>
+			<tr>
+				<td>Catalogs</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>List the Catalog details based on the selected Catalog</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Add / Edit Catalog </td>
+			</tr>
+			<tr>
+				<td>Catalog Name</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Catalog Name should not be blank</td>				
+			</tr>
+			<tr>
+				<td>Vendor</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Vendor should be selected from dropdown list. To search a specific Vendor, type-in Vendor Number or Title and press Enter key.</td>				
+			</tr>		
+			<tr>
+				<td>Active</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Y / N</td>				
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Validate the entered details and save the Catalog</td>				
+			</tr>
+			<tr>
+				<td>New</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Add new Catalog</td>				
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Undo changes to the selected Catalog</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Catalog Associations</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td></td>
+			</tr>
+			<tr>
+				<td>Active</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Y / N</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Adding House Codes to Catalog</td>
+			</tr>
+			<tr>
+				<td>Add House Codes</td>
+				<td>Image Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Opens the popup screen</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Hierarchy Tree View</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>To search a specific House Code, type-in House Code # (1455, 900000) and press Enter key</td>				
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Adds the selected House Codes to the Catalog</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Closes the popup screen</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Download Catalog House Codes</td>
+			</tr>
+			<tr>
+				<td>Download Catalog House Codes</td>
+				<td>Image Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Exports the House Codes which are associated the Catalog into Excel file</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Import House Codes</td>
+			</tr>
+			<tr>
+				<td>Browse</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Allows the user the select the Excel file</td>
+			</tr>
+			<tr>
+				<td>Upload</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Upload the selected Excel file and add the House Codes to the Catalog</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Closes the popup screen</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Catalog Items</td>
+			</tr>
+			<tr>
+				<td>Number</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td></td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>				
+				<td></td>
+			</tr>
+			<tr>
+				<td>Price</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Price should be valid. Example: 9.99. The default price will come from the Item master. The User can also change this price. When the User changes the price it will not change the price on the Item master. The price will remain the same but this price will apply to any house Code that is associated to this Catalog.</td>				
+			</tr>			
+			<tr>
+				<td>Active</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Y / N</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Adding Items to Catalog</td>
+			</tr>			
+			<tr>
+				<td>Add Items</td>
+				<td>Image Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Opens the popup screen</td>
+			</tr>
+			<tr>
+				<td>Item Number, Description</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>To search a specific Items, type-in Item # or Description and press Enter key/click Search button.</td>				
+			</tr>
+			<tr>
+				<td>Search</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>List the Items based on the search criteria</td>				
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Adds the selected Items to the Catalog</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Closes the popup screen</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Download Catalog Items</td>
+			</tr>
+			<tr>
+				<td>Download Catalog Items</td>
+				<td>Image Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Exports the Items which are associated the Catalog into Excel file</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Import Items</td>
+			</tr>
+			<tr>
+				<td>Browse</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Allows the user the select the Excel file</td>
+			</tr>
+			<tr>
+				<td>Upload</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Upload the selected Excel file and add the Items to the Catalog</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Closes the popup screen</td>
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Catalog Search, Add / Edit concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/catalog.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Adding House Codes to Catalog concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/addHouseCode.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Adding Items to Catalog concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/addItem.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Importing House Codes concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/importHouseCode.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Importing Items concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/importItem.png"></td>
+			</tr>
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>If the manadatory details are not provided, appropriate error message should be displayed.</td>
+			</tr>
+			<tr>
+				<td>Duplicate Catalog Name</td>
+				<td>The Catalog [Catalog Name] already exists. Please verify.</td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. Vendors must be defined in a system look up table (PurVendors)</div>
+		<div class="reference">2. Items must be defined in a system look up table (PurItems)</div>
+		<div class="reference">3. House Codes must be defined in a system look up table (HcmHouseCodes)</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>HcmHouseCodes<br>PurVendors<br>PurItems<br>PurCatalogs<br>PurCatalogHouseCodes<br>PurCatalogItems</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>PurRecordsCount<br>PurCatalogHouseCodesSelect<br>PurCatalogItemsSelect<br>PurCatalogHouseCodeImportUpdate<br>PurCatalogItemImportUpdate<br>PurCatalogHouseCodeValidate<br>PurCatalogHouseCodeUpdate</td>
+			</tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="vendor.htm">Vendors</a></div>
+		<div class="reference"><a href="item.htm">Items</a></div>		
+		<div class="reference"><a href="purchaseOrder.htm">Purchase Orders</a></div>
+	</body>
+</html>

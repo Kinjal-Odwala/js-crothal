@@ -1,0 +1,133 @@
+﻿@import url('../med/default/default.css');
+#LoadButtonContainer
+	{
+		float: left;
+		width:70px;
+	}
+#Item-1
+	{
+		float:left;
+		position:relative;
+		font-family:Verdana;
+		font-size:12px;
+		padding-right:15px;
+	}
+#Item-2
+	{
+		float:left;
+		position:relative;
+		font-family:Verdana;
+		font-size:12px;
+		padding-right:15px;
+	}
+#Item-3
+	{
+		float:left;
+		position:relative;
+		font-family:Verdana;
+		font-size:12px;
+		padding-right:15px;
+	}
+#Item-4
+	{
+		float:left;
+		position:relative;
+		font-family:Verdana;
+		font-size:12px;
+		padding-right:15px;
+	}
+#BudgetSummaryContainer
+	{
+		width:100%;
+		float:right;
+	}
+/*
+#BudgetSummaryGridItem1
+	{
+		width:950px;
+	}
+*/
+#PeriodHeaderRight
+	{
+		float:right;
+		position:relative;
+		width:750px;
+	}
+#divPeriodFloatRight
+	{
+		float:right;
+		position:relative;
+		width:185px;
+		text-align:center;
+		font-family:Verdana;
+		font-size:12px;
+		font-weight:bold;
+		color:#032D23;
+		padding-bottom:5px;
+		padding-top:5px;
+	}
+#PeriodTotalRight
+	{
+		float:right;
+		position:relative;
+		width:900px;
+		padding-right:20px;
+	}
+#divPeriodTotalActuals
+	{
+		float:right;
+		position:relative;
+		width:95px;
+		text-align:center;
+		font-family:Verdana;
+		font-size:11px;
+		font-weight:bold;
+		color:green;
+		padding-bottom:5px;
+		padding-top:5px;
+	}
+#divPeriodTotalBudget
+	{
+		float:right;
+		position:relative;
+		width:85px;
+		text-align:center;
+		font-family:Verdana;
+		font-size:11px;
+		font-weight:bold;
+		color:red;
+		padding-bottom:5px;
+		padding-top:5px;
+	}
+#divPeriodTotalBlank
+	{
+		float:right;
+		position:relative;
+		width:40px;
+		text-align:center;
+		font-family:Verdana;
+		font-size:11px;
+		font-weight:bold;
+		color:#032D23;
+		padding-bottom:5px;
+		padding-top:5px;
+	}
+#divPeriodTotal
+	{
+		float:right;
+		position:relative;
+		width:140px;
+		text-align:center;
+		font-family:Verdana;
+		font-size:11px;
+		font-weight:bold;
+		color:#032D23;
+		padding-bottom:5px;
+		padding-top:5px;
+	}
+#PeriodInformationItem1
+	{
+		float:right;
+		position:relative;
+	}
+#budgetSummaryContentArea{}

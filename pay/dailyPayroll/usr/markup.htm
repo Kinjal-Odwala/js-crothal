@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Daily Payroll</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/pay/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+	        <table width="100%" height="100%">
+				<tr>
+					<td align="center">
+						<img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+						<div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;">Loading</div>    
+		        	</td>
+				</tr>
+			</table>
+		</div>	
+		
+		<div class="pageBody">
+			<div id="divLeftGrid">
+				<div class="body">
+                    <div id="LabelDay">Day:</div>
+                    <div id="InputTextAreaRight">
+                        <div id="WorkDay"></div>
+                    </div>
+				</div>
+				<div style="clear:both;"></div>
+				<div class="content">					
+					<div class="GridTableEmployee">
+						<div id="EmployeeDetail"></div>
+						<div id="Paging">							
+				            <table cellpadding="0" cellspacing="0" style="width: 100%">
+		                        <tr class="Header">
+		                            <td class="BorderVertical"></td>					                            
+		                            <td>
+		                                <table cellpadding="0" cellspacing="0" style="width: 100%">
+		                                    <tr class="Header">
+		                                    	<td style="width: 25px">
+		                                            &nbsp;<img id="imgPayCodeAdd" src="/fin/cmn/usr/media/Common/add.png" style="cursor: pointer" alt="Add Pay Code" title="Add Pay Code" />
+		                                        </td>
+												<td style="width: 70px"><select id="selFilterWorkShift"></select></td>
+		                                        <td align="center">&nbsp;Page:&nbsp;<select id="selPageNumber"></select>
+		                                            <span id="spnPageInfo"></span>
+		                                        </td>
+		                                        <td style="width: 36px; background-color: white">               
+		                                            <img id="imgPrev" src="/fin/cmn/usr/media/Common/previous.png" style="cursor: pointer" alt="Previous Page" title="Previous Page" />
+		                                            <img id="imgNext" src="/fin/cmn/usr/media/Common/next.png" style="cursor: pointer" alt="Next Page" title="Next Page" />
+		                                        </td>
+												<td style="width: 20px;">&nbsp;</td>
+		                                    </tr>
+		                                </table>
+		                            </td>
+		                            <td class="BorderVertical"></td>
+		                        </tr>
+		                        <tr><td class="BorderHorizontal" colspan="5"></td></tr>
+		                    </table>							        
+						</div>
+					</div>
+				</div>
+				<div style="clear:both;"></div> 
+			</div>
+			<div id="divRightGrid">
+				<div class="body">
+					<div id="LabelDailyPayroll">Employee Name:</div>
+					 <div id="TextDailyPayroll">
+                        <div id="EmployeeName"></div>
+                    </div>
+					<div style="clear:both;"></div>
+					<div id="LabelDailyPayroll">Employee #:</div>
+					<div id="TextDailyPayroll" >
+                        <div id="EmployeeNumber"></div>
+                    </div>
+					<div style="clear:both;"></div>
+					<div id="LabelDailyPayroll">Shift:</div>
+					<div id="InputTextAreaRight" >
+                    	<div id="WorkShift"></div>
+                    </div>
+					<div style="clear:both; height:3px;"></div>
+					<div id="LabelDailyPayroll">Punches For:</div>					
+                    <div id="PunchWorkShift"></div>                   
+					<div style="clear:both;"></div>
+					<div class="GridTable">
+						<div id="DailyEmployeePunchGrid"></div>
+					</div>
+					<div style="clear:both; height:3px;"></div>					
+					<div>
+						<div id="LabelGrossHours">Gross Hours:</div>
+                        <div id="GrossHours"></div>
+						<div id="DailyLunch"></div>
+						<div id="LabelLunch">Lunch</div>
+						<div id="LabelNetHours">Net Hours:</div>
+						<div id="NetHours"></div>
+                    </div>
+					<div style="clear:both;"></div>
+					<div class="GridTablePaycode">
+						<div id="PayCodeAllocatedGrid"></div>
+					</div>
+					<div style="clear:both; height:3px;"></div>					
+					<div id="LabelTotal">Total:</div>
+					<div id="TotalHours"></div>
+					<div id="TotalHoursRemaining"></div>
+					<div id="PaycodeWeeklyTotal"></div>
+				</div>
+				<div style="clear:both;"></div>
+				<div class="contentArea">
+					<div id="footerCommand">
+						<div id="SaveButton"></div>
+						<div id="UndoButton" ></div>
+						<div id="ApproveButton"></div>
+						<div id="UnApproveButton"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- dialog that comes up when adding a paycode -->
+		<div id="divPayCodeDialog" style="position: absolute; z-index: 200; top: 50%; left: 50%; margin-top: -200px; margin-left: -250px; display: none">
+		    <table cellpadding="0" cellspacing="0" style="width: 500px; height: 400px; background-color: White;">
+		        <tr><td class="BorderHorizontal" colspan="5"></td></tr>
+                <tr><td class="BorderHorizontal" colspan="5"></td></tr>
+                <tr class="Header">
+                    <td class="BorderVertical"></td>
+                    <td class="BorderVertical"></td>
+                    <td id="PayCodeHeader">&nbsp;Add Pay Code</td>
+                    <td class="BorderVertical"></td>
+                    <td class="BorderVertical"></td>
+                </tr>
+                <tr><td class="BorderHorizontal" colspan="5"></td></tr>
+                <tr><td class="BorderHorizontal" colspan="5"></td></tr>
+		        <tr>
+                    <td class="BorderVertical"></td>
+                    <td class="BorderVertical"></td>
+		            <td style="vertical-align: top; padding: 10px">
+		                <table cellpadding="0" cellspacing="0" style="width: 100%">			                
+		                    <tr class="Regular" style="font-weight: bold"><td colspan="2">Filters</td></tr>
+		                    <tr><td class="BorderHorizontal" colspan="2"></td></tr>
+		                    <tr><td class="BorderHorizontal" colspan="2"></td></tr>
+							<tr style="height: 5px;"><td colspan="2"></td></tr>
+		                    <tr class="Regular">
+		                        <td class="RegularLabel">Employee</td>
+		                        <td><select id="selEmployee"></select></td>
+		                    </tr>
+		                    <tr class="Regular">
+		                        <td class="RegularLabel">Shift</td>
+		                        <td><select id="selWorkShift"></select></td>
+		                    </tr>
+							<tr class="Regular">
+		                        <td class="RegularLabel">Add</td>
+								<td><input style="width:20px;" id="DefaultPayCode" name="PayCodeTypes" type="radio" checked="checked" value="1" />Default Pay Code
+									<input style="width:20px;" id="AdditionalPayCode" name="PayCodeTypes" type="radio" value="0" />Additional Pay Code									
+								</td>
+		                    </tr>
+							<tr style="height: 5px;"><td colspan="2"></td></tr>
+		                    <tr><td class="BorderHorizontal" colspan="2"></td></tr>
+		                    <tr><td class="BorderHorizontal" colspan="2"></td></tr>			                    
+		                    <tr style="height: 5px;"><td colspan="2"></td></tr>
+		                    <tr class="Regular" style="font-weight: bold"><td colspan="2">Pay Code Information</td></tr>
+			                    <tr>
+		                        <td colspan="2">
+		                            <table cellpadding="0" cellspacing="0" style="width: 100%;">
+		                                <tr><td class="BorderHorizontal" colspan="5"></td></tr>
+                                        <tr class="Header">
+                                            <td class="BorderVertical"></td>
+                                            <td>
+                                                <table cellpadding="0" cellspacing="0">
+                                                    <tr class="Header">
+                                                        <td style="width: 25px">&nbsp;</td>
+                                                        <td class="HeaderBorderVertical"></td>
+                                                        <td style="width: 50px">&nbsp;Code</td>
+                                                        <td class="HeaderBorderVertical"></td>
+                                                        <td style="width: 375px">&nbsp;Description</td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                            <td class="BorderVertical"></td>
+                                        </tr>
+                                        <tr><td class="BorderHorizontal" colspan="5"></td></tr>
+		                                <tr>
+		                                    <td class="BorderVertical"></td>
+		                                    <td>
+		                                        <div style="width: 100%; height: 185px; overflow: auto">
+		                                            <table id="tblPayCode" cellpadding="0" cellspacing="0"></table>
+		                                        </div>
+		                                    </td>
+		                                    <td class="BorderVertical"></td>
+		                                </tr>
+		                                <tr><td class="BorderHorizontal" colspan="5"></td></tr>
+		                            </table>
+		                        </td>
+		                    </tr>
+		                    <tr>
+		                        <td colspan="2">
+		                        	<div class="contentArea">
+		                            	<div id="btnOkay"></div>
+					                	<div id="btnCancel"></div>
+									</div>
+		                        </td>
+		                    </tr>
+		                </table>
+		            </td>
+		            <td class="BorderVertical"></td>
+                    <td class="BorderVertical"></td>
+		        </tr>
+		        <tr><td class="BorderHorizontal" colspan="5"></td></tr>
+                <tr><td class="BorderHorizontal" colspan="5"></td></tr>
+		    </table>
+		</div>
+		<!-- this area holds the templates for the pay codes -->
+		<div style="display: none">
+		    <table id="tblPayCodeTemplate">
+                <tr class="RowStyle">
+                    <td style="width: 25px" align="center"><input type="checkbox" id="chkPCRowCount" value="PayCodeId" /></td>
+                    <td class="BorderVertical"></td>
+                    <td style="width: 50px">&nbsp;PayCode</td>	                    
+                    <td class="BorderVertical"></td>
+                    <td style="width: 380px">&nbsp;Description</td>
+                </tr>
+            </table>			             
+		</div>
+		<div id="divPageShield" style="position: absolute; top: 0px; left: 0px; z-index: 100; width: 100%; height: 100%; background-color: #012C40; filter: alpha(opacity = 50); opacity: .5; display: none"></div>		
+		<div id="iiInputValidationMaster"></div>
+	</body>
+</html>

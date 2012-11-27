@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Item Price Update</h1>
+			<div class="description">The purpose of this scheduled job is to update the Catalog Item price. 
+				The scheduled Job will executes the stored procedure every day at 12:00:00 AM.</div>
+		</div>
+		<h2>Scheduled Job Setup</h2>
+		<table class="layoutTable">
+			<tr>
+				<td><img src="images/itemPriceUpdateGeneral.png"></br></br></td>
+			</tr>
+			<tr>
+				<td><img src="images/itemPriceUpdateStep.png"></br></br></td>
+			</tr>
+			<tr>
+				<td><img src="images/itemPriceUpdateSchedule.png"></td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. The Catalog Item Id, Price and Effective Date must be defined in a look up table (PurCatalogItemPriceUpdateSchedules)</div>
+		<div class="reference">2. Scheduled Job must be enabled for updating the catalog item price.</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>PurItems</br>PurCatalogItems</br>PurCatalogItemPriceUpdateSchedules</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>PurCatalogItemPriceUpdate</td>
+			</tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="../pur/itemPriceUpdate.htm">Item Price Update (UI)</a></div>
+	</body>
+</html>

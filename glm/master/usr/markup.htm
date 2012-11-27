@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Journal Entry</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/glm/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+		<div id="journalEntryLoading" style="display:none;position: absolute; top: 60px; left: 10px; z-index: 5001; width: 100%; height: 84%;">
+			<div style="position: absolute; width: 66; height: 70;top: 50%; left: 49.5%; margin-top: -50px; margin-left: -33px">
+	            <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+	            <div style="font-family: Verdana, Arial, sans-serif; margin-top:5px;">Loading</div>    
+	        </div>
+		</div>
+		<div class="pageHeader">
+	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
+			<div id="LabelTextAreaLeftHeader">House Code:</div>
+			<div id="DropDownRightHouseCode">
+				<div id="houseCodeContainer" class="HouseCodeContainer"></div>
+			</div>
+			<div id="LabelTextAreaLeftHeader">Year:</div>
+			<div id="InputTextArea">
+				<div id="FiscalYear"></div>
+			</div>
+			<div class="contentArea">
+				<div id="LoadButtonContainer">
+					<div style="padding-top:3px;" id="LoadButton"></div>
+				</div>
+			</div>			
+        </div>
+		<div style="clear:both;"></div>
+		<div id="divGrid">
+   			<div class="pageBody">
+				<div class="contentArea">
+		            <div class="header">Journal Entry</div>
+			            <div class="body">
+			            	<div class="journalEntryTable">
+		                		<div id="JournalEntry"></div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+					<div style="clear:both;"></div>
+				</div>
+				<div style="clear:both;"></div>
+				<div class="contentArea">
+					<div id="container-1">
+		        		<div id="fragment-1" >
+							<iframe id="iFrameJournalEntry" class="tabContainer" src="" frameborder="no"></iframe>
+		            	</div>
+						<div id="fragment-2" >
+							<iframe id="iFrameHouseCodeInfo" class="tabContainer"  src="" frameborder="no"></iframe>
+		            	</div>
+						<ul id="TabCollection">
+			                <li><a id="TabJournalEntry" href="#fragment-1" ><span>Credit / Debit Journal Entries</span></a></li>
+							<li><a id="TabHouseCodeInfo" href="#fragment-2" ><span>House Code Info</span></a></li>
+							<li id="button">
+								<div id="footerButton">
+									<div id="AnchorNew"></div><div id="AnchorDDelete"></div><div id="AnchorDCancel"></div><div id="AnchorDSave"></div>
+								</div>	
+							</li>
+			            </ul>
+					</div>
+					<div style="clear:both;"></div>
+				</div>
+			</div>
+		</div>
+    	<div style="clear:both;"></div>
+		<div id="popupContact">
+			<div class="contentArea">
+				<div class="header">Journal Entry Setup</div>
+				<div style="clear:both;"></div>
+				<div class="body">
+					<div id="TableEditArea">
+						<div id="LabelTextAreaLeft">
+							<span class="requiredFieldIndicator">&#149;</span>Journal Date:
+						</div>
+						<div id="InputTextArea">
+							<div id="JournalDate"></div>
+						</div>
+					</div>
+				</div>
+				<div style="clear:both;"></div>
+				<div id="contentAreasContainerLeft">
+					<div class="contentArea">
+						<div class="header">Credit</div>
+						<div class="body" id="borderContentArea">
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft">
+									<span class="requiredFieldIndicator">&#149;</span>House Code:
+								</div>
+								<div id="DropDownJoyrnalEntry">
+									<div id="houseCodeCreditContainer" class="HouseCodeContainer"></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft">
+									<span id="nonRequiredFieldIndicator">Job:</span>
+								</div>
+								<div id="DropDownJoyrnalJob">
+									<div id="CreditJob"></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft">
+									<span id="nonRequiredFieldIndicator">Address 1:</span>
+								</div>
+								<div id="InputTextArea">
+									<div id="CreditAddress1"></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft">
+									<span id="nonRequiredFieldIndicator">Address 2:</span>
+								</div>
+								<div id="InputTextArea">
+									<div id="CreditAddress2"></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft">
+									<span id="nonRequiredFieldIndicator">City:</span>
+								</div>
+								<div id="InputTextArea">
+									<div id="CreditCity"></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft">
+									<span id="nonRequiredFieldIndicator">State:</span>
+								</div>
+								<div id="InputTextArea">
+									<div id="CreditState"></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft">
+									<span id="nonRequiredFieldIndicator">Postal Code:</span>
+								</div>
+								<div id="InputTextArea">
+									<div id="CreditZip"></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft">
+									<span class="requiredFieldIndicator">&#149;</span>Email:
+								</div>
+								<div id="InputTextArea">
+									<div id="CreditEmail"></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft">
+									<span id="nonRequiredFieldIndicator">Phone:</span>
+								</div>
+								<div id="InputTextArea">
+									<div id="CreditPhone"></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+					</div>
+				</div>
+				<div id="contentAreasContainerRight">
+					<div class="contentArea">
+						<div class="header">Debit</div>
+						<div class="body" id="borderContentArea">
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft">
+									<span class="requiredFieldIndicator">&#149;</span>House Code:
+								</div>
+								<div id="DropDownJoyrnalEntry">
+									<div id="houseCodeDebitContainer" class="HouseCodeContainer"></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft">
+									<span id="nonRequiredFieldIndicator">Job:</span>
+								</div>
+								<div id="DropDownJoyrnalJob">
+									<div id="DebitJob"></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft">
+									<span id="nonRequiredFieldIndicator">Address 1:</span>
+								</div>
+								<div id="InputTextArea">
+									<div id="DebitAddress1"></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft">
+									<span id="nonRequiredFieldIndicator">Address 2:</span>
+								</div>
+								<div id="InputTextArea">
+									<div id="DebitAddress2"></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft">
+									<span id="nonRequiredFieldIndicator">City:</span>
+								</div>
+								<div id="InputTextArea">
+									<div id="DebitCity"></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft">
+									<span id="nonRequiredFieldIndicator">State:</span>
+								</div>
+								<div id="InputTextArea">
+									<div id="DebitState"></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft">
+									<span id="nonRequiredFieldIndicator">Postal Code:</span>
+								</div>
+								<div id="InputTextArea">
+									<div id="DebitZip"></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft">
+									<span class="requiredFieldIndicator">&#149;</span>Email:
+								</div>
+								<div id="InputTextArea">
+									<div id="DebitEmail"></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="TableEditArea">
+								<div id="LabelTextAreaLeft">
+									<span id="nonRequiredFieldIndicator">Phone:</span>
+								</div>
+								<div id="InputTextArea">
+									<div id="DebitPhone"></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+					</div>
+				</div>
+				<div style="clear:both;"></div>
+				<div id="anchorAlign">
+					<div id="AnchorSave" style="display:none"></div>
+					<div id="AnchorCancel" style="display:none"></div>
+				</div>
+				<div style="clear:both;"></div>
+			</div>
+		</div>	
+		<div id="iiInputValidationMaster"></div>    
+	</body>
+</html>

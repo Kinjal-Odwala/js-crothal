@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Recurring Expenses</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/glm/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+
+		<div class="pageHeader">
+		    <div id="spacing" style="display:none;">&nbsp;</div>
+	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
+			
+			<div id="LabelTextAreaLeftHeader">House Code:</div>
+			<div id="DropDownRightHouseCode">
+	        	<div id="houseCodeContainer" class="HouseCodeContainer"></div>
+			</div>
+			<div id="LabelTextAreaLeftHeader">Period:</div>
+			<div id="dropDownMenu">
+				<div id="RecPeriod"></div>
+			</div>
+			
+			<div id="LabelTextAreaLeftHeader">Year:</div>
+			<div id="dropDownMenu">
+				<div id="RecFiscal"></div>
+			</div>
+			<div class="contentArea">
+				<div id="LoadButtonContainer">
+					<div style="padding-top:3px;" id="LoadButton"></div>
+				</div>
+			</div>
+        </div>
+		<div style="clear:both;"></div>
+		<div class="pageBody">
+			<div class="tbodyBorder">
+				<div id="recurringExpsGridScroll">
+				<table id="RecurringExpsGrid" class="gridBorder" border="0" cellpadding="0" cellspacing="0">
+					<thead id="RecurringExpsGridHead">
+						<tr>
+							<th class="gridHeaderColumn" width="3%">#</th>
+							<th class="gridHeaderColumn" width="20%">Apply To</th>
+							<th class="gridHeaderColumn" width="13%">Job</th>
+							<th class="gridHeaderColumn" width="9%">Amount</th>
+							<th class="gridHeaderColumn" width="4%">Percent</th>
+							<th class="gridHeaderColumn" width="20%">Percentage Of</th>
+							<th class="gridHeaderColumn" width="13%">Job</th>
+							<th class="gridHeaderColumn" width="8%">Interval</th>
+							<th class="gridHeaderColumn" width="10%">Read Only</th>
+						</tr>
+					</thead>
+					<tbody id="RecurringExpsGridBody"></tbody>
+				</table>
+				</div>
+			</div>
+			<div id="RecurringExpsContext" style="display:none;Z-INDEX: 999; POSITION: absolute">
+				<table id="RecurringExpsContextMenu" class="tableBorder" cellpadding="0" cellspacing="0">
+					<tr id="menuAdd" height="20px"><td class="tdBorder">1.&nbsp;&nbsp;Add Row</td></tr>
+					<tr id="menuEdit" height="20px"><td class="tdBorder">2.&nbsp;&nbsp;Edit Row</td></tr>
+					<tr id="menuDelete" height="20px"><td class="tdBorder">3.&nbsp;&nbsp;Delete Row</td></tr>
+				</table>
+			</div>
+			<div id="iiInputValidationMaster"></div>
+		</div>
+	</body>
+</html>

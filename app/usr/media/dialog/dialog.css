@@ -1,0 +1,118 @@
+
+
+.dialogTitle{
+	color: #FDC941;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 9pt;
+	height: 24px;
+	left: 0px;
+	letter-spacing: 4px;
+	padding-top: 4px;
+	position: absolute;
+	text-align: center;
+	text-transform: uppercase;
+	top: 85px;
+	width: 100%;
+}
+
+.dialogLoading{
+	background-image: url(loading.gif);
+	height: 100px;
+	left: 155px;
+	position: absolute;
+	top: 115px;
+	width: 100px;
+}
+
+.dialog{
+	background-image: url(dialog.gif);
+	border: 1px solid #012C40;
+	height: 288px;
+	position: absolute;
+	width: 411px;
+	z-index: 101;
+}
+
+.dialogText{
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10pt;
+	height: auto;
+	left: 31px;
+	line-height: 150%;
+	position: absolute;
+	text-align: center;
+	top: 115px;
+	width: 350px;
+}
+
+.dialogButton{
+	cursor: pointer;	
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 9pt;
+	font-weight: bold;
+	height: 28px;
+	position: absolute;
+	text-align: center;
+	text-transform: uppercase;
+	top: 225px;
+}
+
+.dialogButtonPart.Begin
+{
+	float: left;
+	width: 11px;
+	height: 100%;
+	margin-right:-2px;
+	background-image: url(buttonEnabledBegin.gif);
+}
+
+.dialogButtonPart.Middle
+{
+	float: left;
+	height: 100%;
+	background-image: url(buttonEnabledMiddle.gif);
+}
+
+.dialogButtonPart.Middle span
+{
+	vertical-align: -7px;
+}
+
+.dialogButtonPart.End
+{
+	float: left;
+	width: 11px;
+	height: 100%;
+	background-image: url(buttonEnabledEnd.gif);
+}
+
+.dialogButtonPart.Disabled
+{
+	cursor: default;
+}
+
+.dialogButtonPart.Begin.Disabled
+{
+	background-image: url(buttonDisabledBegin.gif);
+}
+
+.dialogButtonPart.Middle.Disabled
+{
+	color: #AAAAAA;
+	background-image: url(buttonDisabledMiddle.gif);
+}
+
+.dialogButtonPart.End.Disabled
+{
+	background-image: url(buttonDisabledEnd.gif);
+}
+
+.dialogButtonPart.Middle.Enabled
+{
+	color: #012c40;
+}
+
+.dialogButtonPart.Middle.Hot
+{
+	color: #FFFFFF;
+}

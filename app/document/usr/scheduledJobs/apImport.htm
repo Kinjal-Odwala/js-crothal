@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>AP Import</h1>
+			<div class="description">The purpose of this scheduled job is to import the AP Invoice details from a text file located at folder.</div>
+		</div>
+		<h2>Scheduled Job Setup</h2>
+		<table class="layoutTable">
+			<tr>
+				<td><img src="images/apImportGeneral.png"></br></br></td>
+			</tr>
+			<tr>
+				<td><img src="images/apImportStep.png"></br></br></td>
+			</tr>
+			<tr>
+				<td><img src="images/apImportSchedule.png"></td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. Scheduled Job must be enabled for importing the AP Invoice details.</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>RevAccountPayableInvoices</br>RevAccountPayableChecks</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>RevAccountPayableImport</td>
+			</tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="../rev/apImport.htm">AP Import (UI)</a></div>
+		<div class="reference"><a href="../rev/apSearch.htm">AP Search</a></div>
+	</body>
+</html>

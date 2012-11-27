@@ -1,0 +1,326 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Administration</h1>
+			<div class="description">The purpose of <b>Inventory Administration</b> is to maintain the physical inventory for each House Code.
+			The inventory list will be shown based on the search criteria.
+			Inventory list can be generated from Purchase Orders or Maid Cart.
+			Count Complete flag can be updated for each Inventory.
+			</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Inventory Search</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Hierarchy Tree View</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>To search a specific House Code, type-in House Code # (1455, 900000) and press Enter key.
+					This field will not be visible when we selecting "Show Inventory Status (Completed / Not Completed)" from Actions menu.
+				</td>				
+			</tr>
+			<tr>
+				<td>Year</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Fiscal Year should be selected from dropdown list.</td>				
+			</tr>
+			<tr>
+				<td>Period</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Fiscal Period should be selected from dropdown list. Periods will be listed based on the Fiscal Year.</td>				
+			</tr>
+			<tr>
+				<td>Count Complete</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Count Complete should be selected from dropdown list. This field will be visible only when we selecting "Show Inventory Status (Completed / Not Completed)" from Actions menu.</td>				
+			</tr>
+			<tr>
+				<td>Load</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>List the Inventories based on the search criteria.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Inventories</td>
+			</tr>
+			<tr>
+				<td>Inventories</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Holds the list of Inventories based on the search criteria. Inventory items will be listed based on the selected Inventory.</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>House Code of the Inventory.</td>
+			</tr>
+			<tr>
+				<td>Year</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Fiscal Year.</td>
+			</tr>
+			<tr>
+				<td>Period</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Fiscal Period.</td>
+			</tr>
+			<tr>
+				<td>Count Complete</td>
+				<td>Checkbox field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Count Complete (Y / N).</td>
+			</tr>
+			<tr>
+				<td>Total Cost</td>
+				<td>Readonly Text field</td>
+				<td>NA</td>
+				<td></td>
+				<td>Total Cost of the Inventory items.</td>
+			</tr>			
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>					
+			<tr>
+				<td class="uiHeader" colspan="5">Inventory Items</td>
+			</tr>
+			<tr>
+				<td>Inventory Items</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Holds the list of items of the selected Inventory.</td>
+			</tr>
+			<tr>
+				<td>Item Number</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Item Number of the inventory item.</td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Description of the inventory item.</td>
+			</tr>
+			<tr>
+				<td>Uom</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Uom of the inventory item.</td>
+			</tr>
+			<tr>
+				<td>Account Code</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Account Code of the inventory item.</td>
+			</tr>
+			<tr>
+				<td>Price</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Price of the inventory item.</td>
+			</tr>
+			<tr>
+				<td>Quantity</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Quantity of the inventory item.</td>
+			</tr>
+			<tr>
+				<td>Item Cost</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Total cost of the inventory item.</td>
+			</tr>
+			<tr>
+				<td>Modified By</td>
+				<td></td>
+				<td>NA</td>
+				<td></td>
+				<td>Name of the person who last updated the inventory item.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+			<tr>
+				<td>Export To Excel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Export the item details of the selected Inventory into an excel file if "Search & Edit Inventory Counts" is selected from Actions menu.</br>
+					Based on the search criteria, export the inventory status details into an excel file if "Show Inventory Status (Completed / Not Completed)" is selected from Actions menu.</br>
+					Based on the search criteria, export the audit log details into an excel file if "Audit Log Lookup Web Report" is selected from Actions menu.
+				</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To update the Count Complete flag.</td>
+			</tr>	
+			<tr>
+				<td class="uiHeader" colspan="5">Actions Menu</td>
+			</tr>
+			<tr>
+				<td>Search & Edit Inventory Counts</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To search and edit the inventory counts based on the search criteria.</td>
+			</tr>
+			<tr>
+				<td>Show Inventory Status (Completed / Not Completed)</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To list the inventory status (Completed / Not Completed) based on the search criteria.</td>
+			</tr>
+			<tr>
+				<td>Audit Log Lookup Web Report</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To view the audit log lookup report based on the search criteria.</td>
+			</tr>
+			<tr>
+				<td>Inventory Mid Year and Year End</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To view the inventory mid year and year end SSRS report in a separate window.</td>
+			</tr>
+			<tr>
+				<td>Generate Inventory List</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To generate the inventory list from Purchase Orders or Maid Cart.</td>
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Search & Edit Inventory Count concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/inventory.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Inventory Status (Completed / Not Completed) concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/inventoryStatus.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Audit Log Lookup Web Report concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/auditLog.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Generate Inventory List from Purchase Orders concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/generateInventoryList.png"></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Generate Inventory List from Maid Cart concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/generateInventoryListMaidCart.png"></td>
+			</tr>
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Generate</td>
+				<td>In order to generate inventory list, the errors on the page must be corrected.</br>
+					Please enter the item price. The price should be greater than 0 (Only when we generating the list from Maid Cart).</br>
+					Inventory list generated successfully.
+				</td>
+			</tr>
+			<tr>
+				<td>Save / Export To Excel</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Error</td>
+				<td>Error while updating Inventory record.</BR>Error while generating Inventory list.</td>
+			</tr>
+		</table>
+		<h2>Dependencies</h2>
+		<div class="reference">1. House Codes must be defined in a system look up table (HcmHouseCodes)</div>
+		<div class="reference">2. Fiscal Years must be defined in a system look up table (FscYears)</div>
+		<div class="reference">3. Fiscal Periods must be defined in a system look up table (FscPeriods)</div>
+		<div class="reference">4. Chart of accounts must be defined in a system look up table (FscAccounts)</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>InvInventories<br>
+					InvInventoryItems
+				</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>InvInventoriesSelect</br>
+					InvRecordsCount</br>
+					InvInventoryItemsSelect</br>
+					InvInventoryAuditLogsSelect</br>
+					InvInventoryInsert</br>
+					InvInventoryUpdate</br>
+				</td>
+			</tr>
+		</table>
+		<h2>See Also</h2>
+		<div class="reference"><a href="inventoryItem.htm">Inventory Items</a></div>
+	</body>
+</html>

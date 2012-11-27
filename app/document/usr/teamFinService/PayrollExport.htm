@@ -1,0 +1,325 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Payroll Export</h1>
+			<div class="description">The purpose of Payroll Export to export payroll information to JD. Edward.</div>
+		</div>
+		
+		<h2>Class</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:550px;">Class Name</th>
+			</tr>
+			<tr>
+				<td colspan='5'>PayrollExporter</td>				
+			</tr>
+		</table>
+		
+				
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th>Validation</th>				
+			</tr>
+			<tr>
+				<td colspan='5'>There is no UI element</td>						
+			</tr>
+		</table>
+		
+		<h2>Export Process</h2>
+		<div class="reference">1. Determine if it is time to export Payroll records.</div>
+		<div class="reference">2. Call stored procedure PayPayrollProcessingHoursExport to retrieve Payroll records</div>
+		<div class="reference">3. Call stored procedure PayPayrollProcessingHeaderExport to retrieve Payroll records</div>
+        <div class="reference">4. Write data to output file</div>
+        
+        
+		<h2>Configuration Settings</h2>
+		<table class="elementTable">
+			<tr>
+				<th  style="width:50px;">Configuration Key</th>
+				<th  style="width:450px;">Description</th>
+			</tr>
+			<tr>
+				<td>ConnectionString</td>				
+				<td>Connection string used to connect to TeamFin database.</td>
+			</tr>
+			<tr>
+				<td>ExportPayrollProcessFilePath</td>				
+				<td>Complete path of file folder for Payroll export. </td>
+			</tr>
+			<tr>
+				<td>ExportPayrollProcessBackupFilePath</td>				
+				<td>Complete path of back up file folder for Payroll export.  </td>
+			</tr>
+			<tr>
+				<td>PayrollProcessExport</td>				
+				<td>Boolean value to specify if Payroll export should be executed </td>
+			</tr>
+			<tr>
+			    <td>PayrollProcessExportDay</td>
+			    <td>Day of week when Payroll Export is executed.</td>
+			</tr>
+			<tr>
+				<td>PayrollProcessExportAt</td>				
+				<td>Time when Payroll Export is executed </td>
+			</tr>
+		</table>
+		
+		
+        
+        
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th  style="width:40px;">Error/Event</th>
+				<th  style="width:260px;">Message</th>
+			</tr>
+			<tr>
+			    <td>Exceptions</td>
+			    <td>Check table AppIEExceptions for exception details (AppIECategory = 9)</td>
+			</tr>
+			<tr>
+			    <td>Imported Number of Records</td>
+			    <td>Check table AppIETransactions for total exported records and execution starting/ending time (AppIECategory = 9).</td>
+			</tr>
+		</table>
+		
+		<h2>Dependencies</h2>
+		<div class="reference">1. Windows Services must be restarted for new configuration settings to take effect.</div>
+		<div class="reference">2. Exception and Event logging depends on LogWriter class.</div>
+		
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th style="width:50px">Object Types</th>
+				<th style="width:250px">Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>PayEmployeeWeeklyPayrolls <br /> 
+	                EmpEmployeeGenerals <br />
+	                HcmHouseCodes hc  <br />
+	                AppUnits  <br />
+	                PayPayrollCompanies </td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>PayPayrollProcessingHoursExport<br />PayPayrollProcessingHeaderExport</td>
+			</tr>
+		</table>	
+		
+		<h2>Data Mapping</h2>
+		<div class="reference">Header Export</div>
+        <table class="elementTable">
+        <tr>
+            <th style="width: 30px;">Export Field</th>
+            <th style="width: 30px;">Database Field</th>
+        </tr>
+        <tr>
+            <td>EmployeeNumber</td><td>EmpEmployeeGenerals.EmpEmpgEmployeeNumber</td>
+        </tr>
+		<tr>
+		    <td>BatchDescription</td>
+		    <td>WHEN PayPayrollCompanies.PayPayFrequencyType = 1 THEN PayPayrollCompanies.PayPaycBrief + ' ' + PayPayrollCompanies.PayPaycBrief+@Year+@BiWeekly+'0' <br />
+		        WHEN PayPayrollCompanies.PayPayFrequencyType = 2 THEN PayPayrollCompanies.PayPaycBrief + ' ' + PayPayrollCompanies.PayPaycBrief+@Year+@Weekly+'0' </td>
+        </tr>
+        <tr>
+            <td>PayCode</td><td>WHEN RIGHT(PayPayCodes.PayPaycBrief,1) = 'A' AND PayPayCodes.PayPaycAlternatePayRate = 1 
+		THEN '1' <br />
+		WHEN RIGHT(PayPayCodes.PayPaycBrief,1) = 'B' AND PayPayCodes.PayPaycAlternatePayRate = 1 
+		THEN '1' <br />
+		WHEN RIGHT(PayPayCodes.PayPaycBrief,1) = 'C' AND PayPayCodes.PayPaycAlternatePayRate = 1 
+		THEN '1' <br />
+		WHEN RIGHT(PayPayCodes.PayPaycBrief,1) = 'D' AND PayPayCodes.PayPaycAlternatePayRate = 1 
+		THEN '1' <br />
+		ELSE PayPayCodes.PayPaycBrief</td>
+        </tr>
+        <tr>
+            <td>Hours</td><td>SUM(PayEmployeeWeeklyPayrolls.PayEmpwpHours)</td>
+        </tr>
+		<tr>
+		    <td>RateModifier</td>
+		    <td>WHEN (PayPayCodes.PayPaycAmount > 0.00 and PayPayCodes.PayPaycAddToPayRate = 1) OR (PayEmployeeWeeklyPayrolls.PayEmpwpAlternatePayRate > 0 AND MAX(PayEmployeeWeeklyPayrolls.PayEmpwpModBy) = 'EPay') 
+		THEN 'R' <br />
+		WHEN PayPayCodes.PayPaycProductive = 0 
+		THEN '' <br />
+		WHEN PayPayCodes.PayPaycOneTimeCharge = 1 and PayPayCodes.PayPaycAddToTotal = 1 
+		THEN 'E' <br />
+		WHEN  PayPayCodes.PayPaycAmount >0.00 and PayPayCodes.PayPaycAddToPayRate = 1 and PayPayCodes.PayPaycProductive = 1 
+		THEN 'R' <br />
+		WHEN RIGHT(PayPayCodes.PayPaycBrief,1) = 'A' 
+		THEN 'A' <br />
+		WHEN RIGHT(PayPayCodes.PayPaycBrief,1) = 'B' 
+		THEN 'B' <br />
+		WHEN RIGHT(PayPayCodes.PayPaycBrief,1) = 'C' 
+		THEN 'C' <br />
+		WHEN RIGHT(PayPayCodes.PayPaycBrief,1) = 'D' 
+		THEN 'D' <br />
+		WHEN PayPayCodes.PayPaycTimeAndHalf = 1 AND PayPayCodes.PayPaycOverTimePay = 1 AND LEFT(PayPayCodes.PayPaycBrief,1) <> '5'
+		THEN '7' <br />
+        WHEN PayPayCodes.PayPaycBrief = '5Z'
+		THEN '5' <br />
+		ELSE '' </td>
+        </tr>
+		<tr>
+		    <td>AlternatePayRate</td>
+		    <td>WHEN PayPayCodes.PayPaycAmount > 0.00 and PayPayCodes.PayPaycAddToPayRate = 1 
+		        THEN PayEmployeeWeeklyPayrolls.PayEmpwpCurrentPayRate + PayPayCodes.PayPaycAmount <br />
+		        WHEN PayEmployeeWeeklyPayrolls.PayEmpwpFixedAmount > 0.00 
+		        THEN SUM(PayEmployeeWeeklyPayrolls.PayEmpwpFixedAmount) <br />
+		        WHEN PayEmployeeWeeklyPayrolls.PayEmpwpAlternatePayRate > 0 AND MAX(PayEmployeeWeeklyPayrolls.PayEmpwpModBy) = 'EPay' 
+		        THEN PayEmployeeWeeklyPayrolls.PayEmpwpAlternatePayRate <br />
+		        ELSE ''</td>
+        </tr>
+		<tr>
+		    <td>HouseCode</td>
+		    <td>RIGHT('00000000' + AppUnits.AppUniBrief,8)+ RIGHT('00000000' + ISNULL(HcmJobs.HcmJobBrief,'0'),8)+'00'</td>
+        </tr>
+        </table>
+        
+        <br />
+		<div class="reference">Hours Export</div>
+		<table class="elementTable">
+        <tr>
+            <th style="width: 30px;">Export Field</th>
+            <th style="width: 30px;">Database Field</th>
+        </tr>
+        <tr>
+            <td colspan="2"><b>Weekly Payroll</b> (PayEmployeeWeeklyPayrolls.PayEmpwpHourly = 1 AND PayPayrollCompanies.PayPayFrequencyType = 2)</td>
+        </tr>
+        <tr>
+            <td>ImportRecordType</td><td>'01D1A1'</td>
+        </tr>
+        <tr>
+            <td>RecordType</td><td>'CYCB'</td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td>WHEN PayPayrollCompanies.PayPayFrequencyType = 1 THEN PayPayrollCompanies.PayPaycBrief+@Year+@BiWeekly+'0' <br />
+		        WHEN PayPayrollCompanies.PayPayFrequencyType = 2 THEN PayPayrollCompanies.PayPaycBrief+@Year+@Weekly+'0' </td>
+        </tr>
+        <tr>
+            <td>CeridianCompany</td><td>PayPayrollCompanies.PayPaycBrief</td>
+        </tr>
+	    <tr>
+	        <td>FormName</td><td>'frmCycleDataHoursEarn'</td>
+        </tr>
+        <tr>
+            <td>CycFlagAutoBal</td><td>'Y'</td>
+        </tr>
+        <tr>
+            <td>CycFlagBatchComplete</td><td>'N'</td>
+        </tr>
+        <tr>
+            <td>CycFlagRetain</td><td>'N'</td>
+        </tr>
+        <tr>
+            <td>CycFlagRetainNoData</td><td>'N'</td>
+        </tr>
+        <tr>
+            <td>CycFlagSkipForecast</td><td>'N'</td>
+        </tr>
+        <tr>
+            <td colspan="2"><b>Weekly and Biweekly</b> (PayEmployeeWeeklyPayrolls.PayEmpwpHourly = 1 AND PayPayrollCompanies.PayPayFrequencyType = 2)</td>
+        </tr>
+        <tr>
+            <td>ImportRecordType</td><td>'01D1A1'</td>
+	    </tr>
+	    <tr>
+	        <td>RecordType</td><td>'CYCB'</td>
+	    </tr>
+	    <tr>
+	        <td>Description</td>
+	        <td>WHEN PayPayrollCompanies.PayPayFrequencyType = 1 THEN PayPayrollCompanies.PayPaycBrief+@Year+@BiWeekly+'0' <br />
+		        WHEN PayPayrollCompanies.PayPayFrequencyType = 2 THEN PayPayrollCompanies.PayPaycBrief+@Year+@Weekly+'0'</td>
+	    </tr>
+	    <tr>
+	        <td>CeridianCompany</td><td>PayPayrollCompanies.PayPaycBrief</td>
+	    </tr>
+	    <tr>
+	        <td>PayPeriod</td>
+	        <td>WHEN PayPayrollCompanies.PayPayFrequencyType = 1 THEN @Year+@BiWeekly+'0' <br />
+		        WHEN PayPayrollCompanies.PayPayFrequencyType = 2 THEN @Year+@Weekly+'0' </td>
+	    </tr> 
+		<tr>
+		    <td>FormName</td><td>'frmCycleDataHoursEarn'</td>
+		</tr>
+		<tr>
+		    <td>CycFlagAutoBal</td><td>'Y' </td>
+		</tr>
+		<tr>
+		    <td>CycFlagBatchComplete</td><td>'N'</td>
+		</tr>
+		<tr>
+		    <td>CycFlagRetain</td><td>'N'</td>
+		</tr>
+		<tr>
+		    <td>CycFlagRetainNoData</td><td>'N'</td>
+		</tr>
+		<tr>
+		    <td>CycFlagSkipForecast</td><td>'N'</td>
+		</tr>
+		<tr>
+            <td colspan="2"><b>Weekly and Biweekly Payroll</b> (PayEmployeeWeeklyPayrolls.PayEmpwpHourly = 1 AND PayPayrollCompanies.PayPayFrequencyType = 1)</td>
+        </tr>
+        <tr>
+            <td>ImportRecordType</td><td>'01D1A1'</td>
+	    </tr>
+	    <tr>
+	        <td>RecordType</td><td>'CYCB'</td>
+	    </tr>
+	    <tr>
+	        <td>Description</td>
+	        <td>WHEN PayPayrollCompanies.PayPayFrequencyType = 1 THEN PayPayrollCompanies.PayPaycBrief+@Year+@BiWeekly+'0' <br />
+		        WHEN PayPayrollCompanies.PayPayFrequencyType = 2 THEN PayPayrollCompanies.PayPaycBrief+@Year+@Weekly+'0' </td>
+	    </tr>
+	    <tr>
+	        <td>CeridianCompany</td><td>PayPayrollCompanies.PayPaycBrief</td>
+	    </tr>
+	    <tr>
+	        <td>PayPeriod</td>
+	        <td>WHEN PayPayrollCompanies.PayPayFrequencyType = 1 THEN @Year+@BiWeekly+'0' <br />
+		        WHEN PayPayrollCompanies.PayPayFrequencyType = 2 THEN @Year+@Weekly+'0' </td>
+	    </tr> 
+		<tr>
+		    <td>FormName</td><td>'frmCycleDataHoursEarn'</td>
+		</tr>
+		<tr>
+		    <td>CycFlagAutoBal</td><td>'Y' </td>
+		</tr>
+		<tr>
+		    <td>CycFlagBatchComplete</td><td>'N'</td>
+		</tr>
+		<tr>
+		    <td>CycFlagRetain</td><td>'N'</td>
+		</tr>
+		<tr>
+		    <td>CycFlagRetainNoData</td><td>'N'</td>
+		</tr>
+		<tr>
+		    <td>CycFlagSkipForecast</td><td>'N'</td>
+		</tr>
+        </table>
+        	
+        
+        
+        
+		<h2>See Also</h2>
+		<div class="reference"><a href="HRExport.htm">HR Export</a></div>
+		<div class="reference"><a href="POExport.htm">Purchase Order Export</a></div>
+		<div class="reference"><a href="InvoiceExport.htm">Invoice Export</a></div>
+		<div class="reference"><a href="JEExport.htm">Journal Entry Export</a></div>
+		<div class="reference"><a href="ForecastExport.htm">Budget Forecast Export</a></div>
+	</body>
+</html>

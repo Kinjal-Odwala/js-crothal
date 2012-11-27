@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<transmission>
+  <target id="iiCache" requestId="5">
+    <store id="houseCodeJobs" activeId="169" criteria="storeId:houseCodeJobs,houseCodeId:286,userId:RAYMOND-DEV-XP\Raymond Liu,">
+      <item id="101" fullname="Jackson, Bo" yearOfService="1" vacationDays="0" dueIncrease="0" baseWageRute="7.75" differentialPayRate="0" otherPayRate="0" totalCurrentWageRatePerHour="7.75" hoursWorkedPerPayPeriod="60" costPerPayPeriod="465.00" costBeforeDifferential="465.00" fscPeriodOfIncrease="0" typeMeritPromotion="0" fiscalIncrease="0" mritIncrease="0" lastIncreaseDate="2010-02-14 00:00:00" annual="12090.00" />
+      <item id="102" fullname="Simpson, Bo" yearOfService="2" vacationDays="1" dueIncrease="0" baseWageRute="10.00" differentialPayRate="0" otherPayRate="0" totalCurrentWageRatePerHour="10.00" hoursWorkedPerPayPeriod="80" costPerPayPeriod="800.00" costBeforeDifferential="800.00" fscPeriodOfIncrease="0" typeMeritPromotion="0" fiscalIncrease="0" mritIncrease="0" lastIncreaseDate="2010-02-14 00:00:00" annual="20800.00" />
+      <item id="103" fullname="Simpson, Homer" yearOfService="3" vacationDays="2" dueIncrease="0" baseWageRute="2.00" differentialPayRate="0" otherPayRate="0" totalCurrentWageRatePerHour="2.00" hoursWorkedPerPayPeriod="80" costPerPayPeriod="160.00" costBeforeDifferential="160.00" fscPeriodOfIncrease="0" typeMeritPromotion="0" fiscalIncrease="0" mritIncrease="0" lastIncreaseDate="2010-02-14 00:00:00" annual="4160.00" />
+      <item id="1043" fullname="Simpson, Homer" yearOfService="3" vacationDays="2" dueIncrease="0" baseWageRute="2.00" differentialPayRate="0" otherPayRate="0" totalCurrentWageRatePerHour="2.00" hoursWorkedPerPayPeriod="80" costPerPayPeriod="160.00" costBeforeDifferential="160.00" fscPeriodOfIncrease="0" typeMeritPromotion="0" fiscalIncrease="0" mritIncrease="0" lastIncreaseDate="2010-02-14 00:00:00" annual="4160.00" />
+    </store>
+  </target>
+</transmission>

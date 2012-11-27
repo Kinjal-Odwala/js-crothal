@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Journal Entry Export</h1>
+			<div class="description">The purpose of Journal Entry Export to export journal information to JD. Edward.</div>
+		</div>	
+		
+		<h2>Class</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:550px;">Class Name</th>
+			</tr>
+			<tr>
+				<td colspan='5'>TeamFinService</td>				
+			</tr>
+		</table>
+		
+			
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th>Validation</th>				
+			</tr>
+			<tr>
+				<td colspan='5'>There is no UI element</td>				
+			</tr>
+		</table>
+		
+		<h2>Export Process</h2>
+		<div class="reference">1.	Check if it is time to export</div>
+        <div class="reference">2.	Retrieve Journal Entry records and update their AppTransactionStatusType by executing stored procedure 
+        GlmJournalEntryExportToJDE</div>
+        <div class="reference">3.	Write Journal Entry records line by line by export file until all records are written</div>
+		
+		
+		<h2>Configuration Settings</h2>
+		<table class="elementTable">
+			<tr>
+				<th  style="width:50px;">Configuration Key</th>
+				<th  style="width:450px;">Description</th>
+			</tr>
+			<tr>
+				<td>ConnectionString</td>				
+				<td>Connection string used to connect to TeamFin database.</td>
+			</tr>
+			<tr>
+				<td>ExportFilePath</td>				
+				<td>Complete path of file folder for Journal Entry export. This folder is shared with other export processes. </td>
+			</tr>
+			<tr>
+				<td>ExportBackFilePath</td>				
+				<td>Complete path of back up file folder for Journal Entry export. This folder is shared with other export processes. </td>
+			</tr>
+			<tr>
+				<td>ExportAt</td>				
+				<td>Time when Journal Entry Export is executed </td>
+			</tr>
+		</table>
+		
+		<h2>Data Mapping</h2>
+		<table class="elementTable">
+        <tr>
+            <th style="width: 30px;">Export Field</th>
+            <th style="width: 30px;">Database Field</th>
+        </tr>
+		<tr>
+		    <td>GlmJournalEntryItem</td>
+		</tr>
+		<tr>
+            <td>FscAccCode</td>
+        </tr>
+		<tr>
+            <td>GlmJoueiAmount</td>
+        </tr>
+		<tr>
+            <td>GlmJoueiExpenseDate</td>
+        </tr>
+		<tr>
+            <td>AppUnBrief</td>
+		</tr>
+		</table>
+		
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th  style="width:40px;">Error/Event</th>
+				<th  style="width:260px;">Message</th>
+			</tr>
+			<tr>
+			    <td>Exceptions</td>
+			    <td>Check table AppIEExceptions for exception details (AppIECategory = 7)</td>
+			</tr>
+			<tr>
+			    <td>Imported Number of Records</td>
+			    <td>Check table AppIETransactions for total exported records and execution starting/ending time (AppIECategory = 7).</td>
+			</tr>
+		</table>
+		
+		<h2>Dependencies</h2>
+		<div class="reference">1. Windows Services must be restarted for new configuration settings to take effect.</div>
+		<div class="reference">2. Exception and Event logging depends on LogWriter class.</div>
+		
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th style="width:50px">Object Types</th>
+				<th style="width:250px">Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>
+				    GlmJournalEntryItems<br />
+				    GlmJournalEntries<br />
+				    FscAccounts<br />
+				    HcmHouseCodes<br />
+				    AppUnits<br />
+				</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>GlmJournalEntryExportToJDE</td>
+			</tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="POExport.htm">Purchase Order Export</a></div>
+		<div class="reference"><a href="ForecastExport.htm">Budget Forecast Export</a></div>
+		<div class="reference"><a href="HRExport.htm">HR Export</a></div>
+		<div class="reference"><a href="PayrollExport.htm">Payroll Export</a></div>
+		<div class="reference"><a href="InvoiceExport.htm">Invoice Export</a></div>
+	</body>
+</html>
