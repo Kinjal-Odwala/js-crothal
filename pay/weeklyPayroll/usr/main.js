@@ -326,11 +326,12 @@ ii.Class({
 			for (var index = 0; index < 7; index++) {
 				var date = new Date(me.weekStartDate);
 				date.setDate(date.getDate() + index);
+				var year = date.getFullYear();
 				var month = date.getMonth() + 1;
-				var day = date.getDate();
+				var day = date.getDate();				
 				month = (month < 10) ? "0" + month : month;
 				day = (day < 10) ? "0" + day : day;				
-				me.weekDays[0]["day" + (index + 1)] = month + "/" + day;
+				me.weekDays[0]["day" + (index + 1)] = month + "/" + day + "/" + year;
 			}
 
 	        me.day1 = me.weekDays[0].day1;
@@ -1281,7 +1282,7 @@ ii.Class({
 		        }
 
 		        //make sure we don't have a regular code and more than 40 hours in the week
-    		    for (var index = 1; index < 8; index++) { 
+    		    for (var index = 1; index < 8; index++) {
 					weekTotal += Number(me.weeklyPayrolls[rowCount]["day" + index]);
 				}
 
@@ -1298,9 +1299,9 @@ ii.Class({
 		            $(objInput).css("background-color", me.changedColor);
 		            
 					if (PayCode.addToTotal)
-						$("#spnWT" + rowCount).html("$" + weekTotal);
+						$("#spnWT" + rowCount).html("$" + weekTotal.toFixed(2));
 					else
-						$("#spnWT" + rowCount).html(weekTotal);
+						$("#spnWT" + rowCount).html(weekTotal.toFixed(2));
 		            
 		            if (!PayCode.addToTotal && weekTotal > 40)
 		                alert("Warning: You have entered more than 40 hours for Productive Time.\nPlease review OT policy and make adjustments if necessary.");
