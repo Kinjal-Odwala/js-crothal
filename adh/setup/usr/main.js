@@ -235,8 +235,8 @@ ii.Class({
 
 				if (me.appModuleColumnGrid.activeRowIndex != -1)
 					index = me.renderRowIndex;
-				if (data.columnValidation.toLowerCase() != "datetime")
-					css = "columnHidden";
+//				if (data.columnValidation.toLowerCase() != "datetime")
+//					css = "columnHidden";
 
                 return "<center><input type=\"checkbox\" id=\"operatorInputCheck" + index + "\" class=\"" + css + "\"" + (data.columnTypeOperator == 1 ? checked='checked' : '') + " onclick=\"fin.adhUi.actionClickItem(this," + index + ");\" /></center>";
             });	
