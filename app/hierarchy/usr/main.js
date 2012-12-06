@@ -1394,14 +1394,19 @@ ii.Class({
 			var nodeIndex = me.getNodeIndex(me.selectedNodeId);
 			var brief = me.hirNodesList[nodeIndex].levelBrief.toUpperCase();
 			var parentBrief = me.levels[me.hirNodesList[nodeIndex].levelBrief.toUpperCase()];
-			
+			var parentIndex = me.getNodeIndex(me.hirNodesList[nodeIndex].nodeParentId);
+
 			me.loadPopup("hierarchyPopup");
 			me.brief.setValue(me.hirNodesList[nodeIndex].brief);
 			me.title.setValue(me.hirNodesList[nodeIndex].title);
 			me.active.check.checked = me.hirNodesList[nodeIndex].active;
 			me.nodeAction = "edit";
 			$("#LevelTitle").html(me.getLevelTitle(brief));
-			$("#ParentLevelTitle").html(me.hirNodesList[nodeIndex].title + " [" + me.getLevelTitle(parentBrief) + "]");
+			
+			if (parentIndex == -1)
+				$("#ParentLevelTitle").html("");
+			else
+				$("#ParentLevelTitle").html(me.hirNodesList[parentIndex].title + " [" + me.getLevelTitle(parentBrief) + "]");
 		},
 
 		deleteNode: function() {
