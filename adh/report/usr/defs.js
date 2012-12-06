@@ -180,6 +180,7 @@ ii.init.register( function() {
 		, validation: {type: String, required: false, defaultValue: ""}
 		, columnTypeFilter: {type: Boolean, required: false}
 		, columnTypeOperator: {type: Boolean, required: false}
+		, columnDataType: {type: String, required: false, defaultValue: ""}
 	};
 
 	fin.adh.siteMasterArgs = {
@@ -368,7 +369,14 @@ ii.init.register( function() {
 		id: {type: Number},
 		name: {type: String}
 	};
-		
+	fin.adh.basicLifeIndicatorTypeArgs = {
+		id: {type: Number}
+		, name: {type: String}
+	};	
+	fin.adh.employeeGeneralArgs = {
+		id: {type: Number}
+	};
+	
 }, 2);
 
 ii.Class({
@@ -967,6 +975,26 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.adh.payrollCompanyArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.adh.BasicLifeIndicatorType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.basicLifeIndicatorTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.adh.EmployeeGeneral",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.employeeGeneralArgs);
 			$.extend(this, args);
 		}
 	}

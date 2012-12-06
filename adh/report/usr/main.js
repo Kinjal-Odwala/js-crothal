@@ -54,6 +54,18 @@ ii.Class({
 			me.pageCount = 0;
 			me.pageCurrent = 1;
 			
+			// Employee Module Edit
+			me.statusTypesCache = [];
+			me.statusTypesLoading = 0;
+			me.terminationReasonTypesCache = [];
+			me.terminationReasonTypesLoading = 0;
+			me.localTaxCodesCache = [];
+			me.localTaxCodesLoading = 0;
+			me.statesCache = [];
+			me.statesLoading = 0;
+			me.houseCodeCache = [];
+			me.employeeLoading = false;
+			
 			me.gateway = ii.ajax.addGateway("adh", ii.config.xmlProvider);			
 			me.cache = new ii.ajax.Cache(me.gateway);
 			me.hierarchy = new ii.ajax.Hierarchy( me.gateway );
@@ -82,6 +94,17 @@ ii.Class({
 			me.serviceTypeStore.fetch("userId:[user],", me.houseCodeServiceLoaded, me);
 			me.localTaxCodeStore.fetch("payrollCompany:0,appState:0,userId:[user]", me.siteMastersLoaded, me);
 			me.maritalStatusStateTaxTypeSecondaryStore.fetch("appState:0,userId:[user]", me.siteMastersLoaded, me);
+			
+			me.statusTypeStore.fetch("userId:[user],personId:0", me.siteMastersLoaded, me);
+			me.payFrequencyTypeStore.fetch("userId:[user]", me.siteMastersLoaded, me);
+			me.federalAdjustmentStore.fetch("userId:[user]", me.siteMastersLoaded, me);
+			me.sdiAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
+			me.stateAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
+			me.maritalStatusFederalTaxTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
+			me.companyStore.fetch("userId:[user]", me.maritalStatusTypesLoaded, me);
+			me.localTaxAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
+			me.separationCodeStore.fetch("userId:[user],terminationType:0,", me.maritalStatusTypesLoaded, me);
+			//me.stateStore.fetch("userId:[user]", me.siteMastersLoaded, me);
 			
 			me.anchorLoad.display(ui.cmn.behaviorStates.disabled);
 			
@@ -555,7 +578,7 @@ ii.Class({
 			
 			me.statusTypes = [];
 			me.statusTypeStore = me.cache.register({
-				storeId: "statusTypes",
+				storeId: "employeeGeneralMasters",
 				itemConstructor: fin.adh.StatusType,
 				itemConstructorArgs: fin.adh.statusTypeArgs,
 				injectionArray: me.statusTypes	
@@ -744,6 +767,22 @@ ii.Class({
 				itemConstructorArgs: fin.adh.payrollCompanyArgs,
 				injectionArray: me.companies
 			});	
+			
+			me.basicLifeIndicatorTypes = [];
+			me.basicLifeIndicatorTypeStore = me.cache.register({
+				storeId: "basicLifeIndicatorTypes",
+				itemConstructor: fin.adh.BasicLifeIndicatorType,
+				itemConstructorArgs: fin.adh.basicLifeIndicatorTypeArgs,
+				injectionArray: me.basicLifeIndicatorTypes
+			});
+			
+			me.employeeGenerals = [];
+			me.employeeGeneralStore = me.cache.register({
+				storeId: "employeeGenerals",
+				itemConstructor: fin.adh.EmployeeGeneral,
+				itemConstructorArgs: fin.adh.employeeGeneralArgs,
+				injectionArray: me.employeeGenerals	
+			});
 		},
 		
 		resizeControls: function() {
@@ -990,13 +1029,13 @@ ii.Class({
 		},
 		
 		reportFiltersLoaded: function(me, activeId) {
-			
 			var tableName = "";
 			var columnName = "";
 			me.typeTableFound = false;
 			me.typesLoadedCount = 0;
 			
 			for (var index = 0; index < me.reportFilters.length; index++) {
+
 				tableName = me.reportFilters[index].referenceTableName
 				columnName = me.reportFilters[index].title
 				
@@ -1189,6 +1228,33 @@ ii.Class({
 							RowData += "<td align='left'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
 							RowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
 						}
+						else if (contorlValidation.toLowerCase() == "int" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator == 1) {
+							RowData += "<td align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title) + "</td>";
+							RowData += "<td align='left'><input  class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
+							RowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
+						}
+						else if (contorlValidation.toLowerCase() == "int" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator != 1) {
+							RowData += "<td align='left'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
+							RowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
+						}
+						else if (contorlValidation.toLowerCase() == "decimal" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator == 1) {
+							RowData += "<td align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title) + "</td>";
+							RowData += "<td align='left'><input  class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
+							RowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
+						}
+						else if (contorlValidation.toLowerCase() == "decimal" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator != 1) {
+							RowData += "<td align='left'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
+							RowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
+						}
+						else if (me.reportFilters[index].columnDataType.toLowerCase() == "varchar" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator == 1) {
+							RowData += "<td align='left'>" + me.populateOperatorDropDownForStrings(me.reportFilters[index].title) + "</td>";
+							RowData += "<td align='left'><input  class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
+							RowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
+						}
+						else if (me.reportFilters[index].columnDataType.toLowerCase() == "varchar" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator != 1) {
+							RowData += "<td align='left'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
+							RowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
+						}
 						else {
 							RowData += "<td align='left' colspan='2'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input></td>";
 						}
@@ -1300,21 +1366,49 @@ ii.Class({
 							me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = " + $("#" + me.reportFilters[index].title).val() + ")";
 						}
 						else if (me.reportFilters[index].validation.toLowerCase() == "datetime") {
-							if ($("#" + me.reportFilters[index].title).val() != "" && ($("#sel" + me.reportFilters[index].title).val() == 1 || $("#sel" + me.reportFilters[index].title).val() == undefined)) {
+							if ($("#sel" + me.reportFilters[index].title).val() == 1 || $("#sel" + me.reportFilters[index].title).val() == undefined) {
 								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "')";
 							}
-							else if ($("#" + me.reportFilters[index].title).val() != "" && $("#sel" + me.reportFilters[index].title).val() == 2) {
+							else if ($("#sel" + me.reportFilters[index].title).val() == 2) {
 								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <= '" + $("#" + me.reportFilters[index].title).val() + "')";
 							}
-							else if ($("#" + me.reportFilters[index].title).val() != "" && $("#sel" + me.reportFilters[index].title).val() == 3) {
+							else if ($("#sel" + me.reportFilters[index].title).val() == 3) {
 								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " >= '" + $("#" + me.reportFilters[index].title).val() + "')";
 							}
-							else if ($("#" + me.reportFilters[index].title).val() != "" && $("#" + me.reportFilters[index].title + "_1").val() != "" && $("#sel" + me.reportFilters[index].title).val() == 4) {
+							else if ($("#" + me.reportFilters[index].title + "_1").val() != "" && $("#sel" + me.reportFilters[index].title).val() == 4) {
 								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Between '" + $("#" + me.reportFilters[index].title).val() + "' And '" + $("#" + me.reportFilters[index].title + "_1").val() + "')";
+							}
+							else if ($("#sel" + me.reportFilters[index].title).val() == 5) {
+								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <> '" + $("#" + me.reportFilters[index].title).val() + "')";
+							}
+						}
+						else if (me.reportFilters[index].validation.toLowerCase() == "int"  || me.reportFilters[index].validation.toLowerCase() == "decimal") {
+							if ($("#sel" + me.reportFilters[index].title).val() == 1 || $("#sel" + me.reportFilters[index].title).val() == undefined) {
+								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "')";
+							}
+							else if ($("#sel" + me.reportFilters[index].title).val() == 2) {
+								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <= '" + $("#" + me.reportFilters[index].title).val() + "')";
+							}
+							else if ($("#sel" + me.reportFilters[index].title).val() == 3) {
+								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " >= '" + $("#" + me.reportFilters[index].title).val() + "')";
+							}
+							else if ($("#" + me.reportFilters[index].title + "_1").val() != "" && $("#sel" + me.reportFilters[index].title).val() == 4) {
+								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Between '" + $("#" + me.reportFilters[index].title).val() + "' And '" + $("#" + me.reportFilters[index].title + "_1").val() + "')";
+							}
+							else if ($("#sel" + me.reportFilters[index].title).val() == 5) {
+								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <> '" + $("#" + me.reportFilters[index].title).val() + "')";
+							}
+						}
+						else if (me.reportFilters[index].columnDataType.toLowerCase() == "varchar") {
+							if ($("#sel" + me.reportFilters[index].title).val() == 1 || $("#sel" + me.reportFilters[index].title).val() == undefined) {
+								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "')";
+							}
+							else if ($("#sel" + me.reportFilters[index].title).val() == 2) {
+								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Like '%" + $("#" + me.reportFilters[index].title).val() + "%')";
 							}
 						}
 						else 
-							me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Like '" + $("#" + me.reportFilters[index].title).val() + "%')";
+							me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Like '%" + $("#" + me.reportFilters[index].title).val() + "%')";
 					}
 				}
 			}
@@ -1456,10 +1550,23 @@ ii.Class({
 			var rowHtml = "";
 			
 			rowHtml = "<select id=sel" + id + " style=margin-left:5px; onchange=fin.reportUi.operatorChange('" + id + "');>"
-			rowHtml += "<option title='=' value='1' selected>=</option>";
+			rowHtml += "<option title='Equal to' value='1' selected>=</option>";
 			rowHtml += "<option title='Less than or equal to' value='2'>&lt;=</option>";
 			rowHtml += "<option title='Greater than or equal to' value='3'>&gt;=</option>";
 			rowHtml += "<option title='Between two values' value='4'>between</option>";
+			rowHtml += "<option title='Not equal to' value='5'>!=</option>";
+			rowHtml += "</select>"
+			
+			return rowHtml;
+		},
+		
+		populateOperatorDropDownForStrings: function(id) {
+			var me = this;
+			var rowHtml = "";
+			
+			rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:120px; onchange=fin.reportUi.operatorChange('" + id + "');>"
+			rowHtml += "<option title='Exact match (=)' value='1' selected>Exact match (=)</option>";
+			rowHtml += "<option title='Any part that matches (Like)' value='2'>Any part that matches (Like)</option>";
 			rowHtml += "</select>"
 			
 			return rowHtml;
@@ -1491,9 +1598,20 @@ ii.Class({
 			var typeTableDetails = me.getTypeTableData(args.typeTable, args.columnName);
 			if(!typeTableDetails)
 				typeTableDetails = "";
-
+				
+			
 			if (args.columnValue == "filter")
 				rowHtml = "<select id='" + args.columnName + "' class='inputTextSize'>";
+			else if(args.columnName == "EmpStatusType")
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkColumn + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkColumn + "\'); onChange=fin.reportUi.statusTypeChange(this);>";
+			else if(args.columnName == "EmpTerminationReasonType")
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkColumn + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkColumn + "\'); onChange=fin.reportUi.terminationReasonTypeChange(this);>";
+			else if(args.columnName == "PayPayrollCompany")
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkColumn + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkColumn + "\'); onChange=fin.reportUi.payrollCompanyChange(this);>";
+			else if(args.columnName == "EmpEmpgPrimaryState")
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkColumn + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkColumn + "\'); onChange=fin.reportUi.primaryStateChange(this);>";
+			else if(args.columnName == "EmpEmpgSecondaryState")
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkColumn + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkColumn + "\'); onChange=fin.reportUi.secondaryStateChange(this);>";
 			else
 				rowHtml = "<select id='" + args.columnName + '_' + args.pkColumn + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkColumn + "\');>";
 
@@ -1508,6 +1626,418 @@ ii.Class({
 			rowHtml += "</select>"
 			
 			return rowHtml;
+		},
+		
+		statusTypeChange: function(objSelect) {
+			var me = this;
+		    var rowNumber = Number(objSelect.id.substr(14));			
+
+	        me.statusTypeCheck(rowNumber, objSelect.value);		    
+		},
+		
+		statusTypeCheck: function(rowNumber, statusType) {
+			var me = this;
+			
+            if (me.statusTypesCache[statusType] != undefined) {
+	            if (me.statusTypesCache[statusType].loaded)
+	            	me.statusTypeValidate(statusType, [rowNumber]);
+	            else
+	                me.statusTypesCache[statusType].buildQueue.push(rowNumber);
+	        }
+	        else
+	            me.statusCategoryTypesLoad(rowNumber, statusType);
+		},
+		
+		statusCategoryTypesLoad: function(rowNumber, statusType) {
+		    var me = this;
+
+			$("#messageToUser").text("Loading");
+		    $("#pageLoading").show();
+		    me.statusTypesLoading++;
+
+		    me.statusTypesCache[statusType] = {};
+		    me.statusTypesCache[statusType].valid = false;
+		    me.statusTypesCache[statusType].loaded = false;
+		    me.statusTypesCache[statusType].buildQueue = [];
+			me.statusTypesCache[statusType].statusCategoryTypes = [];
+		    me.statusTypesCache[statusType].buildQueue.push(rowNumber);
+
+		    $.ajax({
+                type: "POST",
+                dataType: "xml",
+                url: "/net/crothall/chimes/fin/emp/act/provider.aspx",
+                data: "moduleId=emp&requestId=1&targetId=iiCache"
+                    + "&requestXml=<criteria>storeId:statusCategoryTypes,userId:[user],"
+					+ "statusTypeId:" + statusType + ",<criteria>",
+ 
+                success: function(xml) {
+					
+	                $(xml).find('item').each(function() {
+	                    var statusCategoryType = {};
+	                	statusCategoryType.id = $(this).attr("id");
+	                	statusCategoryType.name = $(this).attr("name");
+	                	me.statusTypesCache[statusType].statusCategoryTypes.push(statusCategoryType);
+	                });
+					
+					me.statusTypesLoading--;
+					me.statusTypesCache[statusType].valid = true;
+					me.statusTypesCache[statusType].loaded = true;
+					me.statusTypeValidate(statusType, me.statusTypesCache[statusType].buildQueue);
+					if (me.statusTypesLoading <= 0 && !me.employeeLoading) $("#pageLoading").hide();
+				}
+			});			
+		},
+		
+		statusTypeValidate: function(statusType, rowArray) {
+		    var me = this;
+		    var rowNumber = 0;
+
+		    if (me.statusTypesCache[statusType].valid) {
+		        for (var index = 0; index < rowArray.length; index++) {
+		        	rowNumber = Number(rowArray[index]);
+					me.buildSingleDropDown(rowNumber, "StatusCategoryType", me.statusTypesCache[statusType].statusCategoryTypes);
+		        }
+		    }
+		},
+		
+		terminationReasonTypeChange: function(objSelect) {
+			var me = this;
+		    var rowNumber = Number(objSelect.id.substr(25));
+	
+	        me.terminationReasonTypeCheck(rowNumber, objSelect.value);
+		},
+		
+		terminationReasonTypeCheck: function(rowNumber, terminationReasonType) {
+			var me = this;
+			 
+		    if (me.terminationReasonTypesCache[terminationReasonType] != undefined) {
+	            if (me.terminationReasonTypesCache[terminationReasonType].loaded)
+	            	me.terminationReasonTypeValidate(terminationReasonType, [rowNumber]);
+	            else
+	                me.terminationReasonTypesCache[terminationReasonType].buildQueue.push(rowNumber);
+	        }
+	        else
+	            me.terminationReasonTypesLoad(rowNumber, terminationReasonType);
+		},
+		
+		terminationReasonTypeValidate: function(terminationReasonType, rowArray) {
+		    var me = this;
+		    var rowNumber = 0;
+
+		    if (me.terminationReasonTypesCache[terminationReasonType].valid) {
+		        for (var index = 0; index < rowArray.length; index++) {
+		        	rowNumber = Number(rowArray[index]);
+					me.buildSingleDropDown(rowNumber, "SeparationCode", me.terminationReasonTypesCache[terminationReasonType].separationCodes);
+		        }
+		    }
+		},
+		
+		terminationReasonTypesLoad: function(rowNumber, terminationReasonType) {
+		    var me = this;
+
+			$("#messageToUser").text("Loading");
+		    $("#pageLoading").show();
+		    me.terminationReasonTypesLoading++;
+
+		    me.terminationReasonTypesCache[terminationReasonType] = {};
+		    me.terminationReasonTypesCache[terminationReasonType].valid = false;
+		    me.terminationReasonTypesCache[terminationReasonType].loaded = false;
+		    me.terminationReasonTypesCache[terminationReasonType].buildQueue = [];
+			me.terminationReasonTypesCache[terminationReasonType].separationCodes = [];
+		    me.terminationReasonTypesCache[terminationReasonType].buildQueue.push(rowNumber);
+
+		    $.ajax({
+                type: "POST",
+                dataType: "xml",
+                url: "/net/crothall/chimes/fin/emp/act/provider.aspx",
+                data: "moduleId=emp&requestId=1&targetId=iiCache"
+                    + "&requestXml=<criteria>storeId:separationCodes,userId:[user],"
+					+ "terminationType:" + terminationReasonType + ",<criteria>",
+ 
+                success: function(xml) {
+						
+	                $(xml).find('item').each(function() {
+	                    var separationCode = {};
+	                	separationCode.id = $(this).attr("id");
+	                	separationCode.name = $(this).attr("name");
+	                	me.terminationReasonTypesCache[terminationReasonType].separationCodes.push(separationCode);
+	                });
+					
+					me.terminationReasonTypesLoading--;
+					me.terminationReasonTypesCache[terminationReasonType].valid = true;
+					me.terminationReasonTypesCache[terminationReasonType].loaded = true;
+					me.terminationReasonTypeValidate(terminationReasonType, me.terminationReasonTypesCache[terminationReasonType].buildQueue);
+					if (me.terminationReasonTypesLoading <= 0 && !me.employeeLoading) $("#pageLoading").hide();
+				}
+			});			
+		},
+		
+		payrollCompanyChange: function(objSelect) {
+			var me = this;
+		    var rowNumber = Number(objSelect.id.substr(18));
+			var index = Number(objSelect.selectedIndex);
+
+			var row = $("#adhReportDataRow" + rowNumber);
+			var houseCode = row[0].cells[0].innerHTML;
+			//var houseCode = me.employees[rowNumber].column1;
+			
+			var payrollCompany = $("#PayPayrollCompany_" + rowNumber).val();
+			var state = $("#EmpEmpgPrimaryState_" + rowNumber).val();
+
+	    	//$("#PayPayFrequencyType_" + rowNumber).val(me.houseCodeCache[houseCode].payrollCompanies[index].payFrequencyType);
+			//$("#chkHourly" + rowNumber)[0].checked = me.houseCodeCache[houseCode].payrollCompanies[index].hourly;
+			me.localTaxCodeCheck(rowNumber, state, payrollCompany);
+		},
+		
+		localTaxCodeCheck: function(rowNumber, state, payrollCompany) {
+			var me = this;
+
+			if (me.localTaxCodesCache[state + "," + payrollCompany] != undefined) {
+			 	if (me.localTaxCodesCache[state + "," + payrollCompany].loaded)
+	            	me.localTaxCodeValidate(state, payrollCompany, [rowNumber]);
+	            else
+	                me.localTaxCodesCache[state + "," + payrollCompany].buildQueue.push(rowNumber);
+	        }
+	        else
+				me.localTaxCodesLoad(rowNumber, state, payrollCompany);
+		},
+		
+		localTaxCodeValidate: function(state, payrollCompany, rowArray) {
+		    var me = this;
+		    var rowNumber = 0;
+
+		    if (me.localTaxCodesCache[state + "," + payrollCompany].valid) {
+		        for (var index = 0; index < rowArray.length; index++) {
+		        	rowNumber = Number(rowArray[index]);
+					me.buildSingleDropDown(rowNumber, "EmpEmpgLocalTaxCode1", me.localTaxCodesCache[state + "," + payrollCompany].localTaxCodes);
+					me.buildSingleDropDown(rowNumber, "EmpEmpgLocalTaxCode2", me.localTaxCodesCache[state + "," + payrollCompany].localTaxCodes);
+					me.buildSingleDropDown(rowNumber, "EmpEmpgLocalTaxCode3", me.localTaxCodesCache[state + "," + payrollCompany].localTaxCodes);
+		        }
+		    }
+		},
+
+		localTaxCodesLoad: function(rowNumber, state, payrollCompany) {
+		    var me = this;
+
+			$("#messageToUser").text("Loading");
+		    $("#pageLoading").show();
+		    me.localTaxCodesLoading++;
+
+		    me.localTaxCodesCache[state + "," + payrollCompany] = {};
+		    me.localTaxCodesCache[state + "," + payrollCompany].valid = false;
+		    me.localTaxCodesCache[state + "," + payrollCompany].loaded = false;
+		    me.localTaxCodesCache[state + "," + payrollCompany].buildQueue = [];		   
+			me.localTaxCodesCache[state + "," + payrollCompany].localTaxCodes = [];
+		    me.localTaxCodesCache[state + "," + payrollCompany].buildQueue.push(rowNumber);
+
+		    $.ajax({
+                type: "POST",
+                dataType: "xml",
+                url: "/net/crothall/chimes/fin/emp/act/provider.aspx",
+                data: "moduleId=emp&requestId=1&targetId=iiCache"
+                    + "&requestXml=<criteria>storeId:localTaxCodePayrollCompanyStates,userId:[user]"
+					+ ",payrollCompany:" + payrollCompany
+                    + ",appState:" + state + ",<criteria>",
+ 
+                 success: function(xml) {
+  
+	                $(xml).find('item').each(function() {
+	                    var localTaxCode = {};
+	                	localTaxCode.id = $(this).attr("id");
+	                	localTaxCode.name = $(this).attr("name");
+	                	me.localTaxCodesCache[state + "," + payrollCompany].localTaxCodes.push(localTaxCode);
+	                });
+
+					me.localTaxCodesLoading--;
+					me.localTaxCodesCache[state + "," + payrollCompany].valid = true;
+					me.localTaxCodesCache[state + "," + payrollCompany].loaded = true;
+					me.localTaxCodeValidate(state, payrollCompany, me.localTaxCodesCache[state + "," + payrollCompany].buildQueue);
+					if (me.localTaxCodesLoading <= 0 && !me.employeeLoading) $("#pageLoading").hide();
+				}
+			});
+		},
+		
+		primaryStateChange: function(objSelect) {
+			var me = this;
+		    var rowNumber = Number(objSelect.id.substr(20));				
+
+			payrollCompany = $("#PayPayrollCompany_" + rowNumber).val();
+	        me.stateCheck(rowNumber, objSelect.value, true);
+			me.localTaxCodeCheck(rowNumber, objSelect.value, payrollCompany);
+		},
+		
+		secondaryStateChange: function(objSelect) {
+			var me = this;
+		    var rowNumber = Number(objSelect.id.substr(22));			
+
+	        me.stateCheck(rowNumber, objSelect.value, false);
+		},
+		
+		stateCheck: function(rowNumber, state, primary) {
+			var me = this;
+			 
+		    if (me.statesCache[state] != undefined) {
+	            if (me.statesCache[state].loaded)
+	            	me.stateValidate(state, [rowNumber], primary);
+	            else
+	                me.statesCache[state].buildQueue.push(rowNumber);
+	        }
+	        else
+	            me.maritalStatusPrimaryTypesLoad(rowNumber, state, primary);
+		},
+		
+		stateValidate: function(state, rowArray, primary) {
+		    var me = this;
+		    var rowNumber = 0;
+
+		    if (me.statesCache[state].valid) {
+		        for (var index = 0; index < rowArray.length; index++) {
+		        	rowNumber = Number(rowArray[index]);
+					if (primary) {
+						me.buildSingleDropDown(rowNumber, "MaritalStatusStateTaxTypePrimary", me.statesCache[state].maritalStatusStateTaxTypes);
+						me.buildSingleDropDown(rowNumber, "StateAdjustmentType", me.statesCache[state].stateAdjustmentTypes);
+						me.buildSingleDropDown(rowNumber, "SDIAdjustmentType", me.statesCache[state].sdiAdjustmentTypes);
+						me.buildSingleDropDown(rowNumber, "LocalTaxAdjustmentType", me.statesCache[state].localTaxAdjustmentTypes);
+					}
+					else {
+						me.buildSingleDropDown(rowNumber, "MaritalStatusStateTaxTypeSecondary", me.statesCache[state].maritalStatusStateTaxTypes);
+					}				  
+		        }
+		    }
+		},
+		
+		maritalStatusPrimaryTypesLoad: function(rowNumber, state, primary) {
+		    var me = this;
+
+			$("#messageToUser").text("Loading");
+		    $("#pageLoading").show();
+		    me.statesLoading++;
+
+		    me.statesCache[state] = {};
+		    me.statesCache[state].valid = false;
+		    me.statesCache[state].loaded = false;
+		    me.statesCache[state].buildQueue = [];
+		    me.statesCache[state].maritalStatusStateTaxTypes = [];
+		    me.statesCache[state].stateAdjustmentTypes = [];
+			me.statesCache[state].sdiAdjustmentTypes = [];
+			me.statesCache[state].localTaxAdjustmentTypes = [];
+			me.statesCache[state].localTaxCodes = [];
+		    me.statesCache[state].buildQueue.push(rowNumber);
+
+		    $.ajax({
+                type: "POST",
+                dataType: "xml",
+                url: "/net/crothall/chimes/fin/emp/act/provider.aspx",
+                data: "moduleId=emp&requestId=1&targetId=iiCache"
+                    + "&requestXml=<criteria>storeId:maritalStatusPrimaryTypes,userId:[user],"
+                    + "appState:" + state + ",<criteria>",
+ 
+                success: function(xml) {
+
+	                $(xml).find('item').each(function() {
+	                    var maritalStatusStateTaxType = {};
+	                	maritalStatusStateTaxType.id = $(this).attr("id");
+	                	maritalStatusStateTaxType.name = $(this).attr("name");
+	                	me.statesCache[state].maritalStatusStateTaxTypes.push(maritalStatusStateTaxType);
+	                });
+					
+					me.stateAdjustmentTypesLoad(rowNumber, state, primary);
+				}
+			});			
+		},
+		
+		stateAdjustmentTypesLoad: function(rowNumber, state, primary) {
+		    var me = this;
+
+		    $.ajax({
+                type: "POST",
+                dataType: "xml",
+                url: "/net/crothall/chimes/fin/emp/act/provider.aspx",
+                data: "moduleId=emp&requestId=1&targetId=iiCache"
+                    + "&requestXml=<criteria>storeId:stateAdjustmentTypes,userId:[user],"
+                    + "appState:" + state + ",<criteria>",
+ 
+                success: function(xml) {
+  
+	                $(xml).find('item').each(function() {
+	                    var stateAdjustmentType = {};
+	                	stateAdjustmentType.id = $(this).attr("id");
+	                	stateAdjustmentType.name = $(this).attr("name");
+	                	me.statesCache[state].stateAdjustmentTypes.push(stateAdjustmentType);
+	                });
+					
+					me.sdiAdjustmentTypesLoad(rowNumber, state, primary);
+				}
+			});			
+		},
+		
+		sdiAdjustmentTypesLoad: function(rowNumber, state, primary) {
+		    var me = this;
+
+		    $.ajax({
+                type: "POST",
+                dataType: "xml",
+                url: "/net/crothall/chimes/fin/emp/act/provider.aspx",
+                data: "moduleId=emp&requestId=1&targetId=iiCache"
+                    + "&requestXml=<criteria>storeId:sdiAdjustmentTypes,userId:[user],"
+                    + "appState:" + state + ",<criteria>",
+ 
+                success: function(xml) {
+  
+	                $(xml).find('item').each(function() {
+	                    var sdiAdjustmentType = {};
+	                	sdiAdjustmentType.id = $(this).attr("id");
+	                	sdiAdjustmentType.name = $(this).attr("name");
+	                	me.statesCache[state].sdiAdjustmentTypes.push(sdiAdjustmentType);
+	                });
+					
+					me.localTaxAdjustmentTypesLoad(rowNumber, state, primary);
+				}
+			});			
+		},
+		
+		localTaxAdjustmentTypesLoad: function(rowNumber, state, primary) {
+		    var me = this;
+
+		    $.ajax({
+                type: "POST",
+                dataType: "xml",
+                url: "/net/crothall/chimes/fin/emp/act/provider.aspx",
+                data: "moduleId=emp&requestId=1&targetId=iiCache"
+                    + "&requestXml=<criteria>storeId:localTaxAdjustmentTypes,userId:[user],"
+                    + "appState:" + state + ",<criteria>",
+ 
+                success: function(xml) {
+  
+	                $(xml).find('item').each(function() {
+	                    var localTaxAdjustmentType = {};
+	                	localTaxAdjustmentType.id = $(this).attr("id");
+	                	localTaxAdjustmentType.name = $(this).attr("name");
+	                	me.statesCache[state].localTaxAdjustmentTypes.push(localTaxAdjustmentType);
+	                });
+					
+					me.statesLoading--;
+					me.statesCache[state].valid = true;
+					me.statesCache[state].loaded = true;
+					me.stateValidate(state, me.statesCache[state].buildQueue, primary);
+					if (me.statesLoading <= 0 && !me.employeeLoading) $("#pageLoading").hide();
+				}
+			});
+		},
+		
+		buildSingleDropDown: function(rowNumber, controlName, types) {
+		    var me = this;
+		    var type = {};
+
+		    var selType = $("#Emp" + controlName + "_" + rowNumber);
+
+			selType.empty();
+			selType.append("<option value='0'></option>");
+
+		    for(var index = 0; index < types.length; index++) {
+		        type = types[index];
+		        selType.append("<option  title='" + type.name + "' value='" + type.id + "'>" + type.name + "</option>");
+		    }
 		},
 		
 		getTypeTableData: function() {
