@@ -229,18 +229,6 @@ ii.Class({
                 return "<center><input type=\"checkbox\" id=\"filterInputCheck" + index + "\" class=\"iiInputCheck\"" + (data.columnTypeFilter == 1 ? checked='checked' : '') + " onclick=\"fin.adhUi.actionClickItem(this," + index + ");\" /></center>";
             });	
 
-			me.appModuleColumnGrid.addColumn("columnType5", "", "Operator", "Operator", 75, function(data) {
-				var index = me.appModuleColumnGrid.rows.length - 1;
-				var css = "iiInputCheck";
-
-				if (me.appModuleColumnGrid.activeRowIndex != -1)
-					index = me.renderRowIndex;
-//				if (data.columnValidation.toLowerCase() != "datetime")
-//					css = "columnHidden";
-
-                return "<center><input type=\"checkbox\" id=\"operatorInputCheck" + index + "\" class=\"" + css + "\"" + (data.columnTypeOperator == 1 ? checked='checked' : '') + " onclick=\"fin.adhUi.actionClickItem(this," + index + ");\" /></center>";
-            });	
-
 			me.appModuleColumnGrid.addColumn("columnType6", "", "Sort By Asc", "Sort By Asc", 95, function(data) {
 				var index = me.appModuleColumnGrid.rows.length - 1;
 				if (me.appModuleColumnGrid.activeRowIndex != -1)
@@ -471,7 +459,6 @@ ii.Class({
 			$("#hiddenInputRadio" + index)[0].checked = false;
 			$("#readOnlyInputRadio" + index)[0].checked = false;
 			$("#filterInputCheck" + index)[0].checked = false;
-			$("#operatorInputCheck" + index)[0].checked = false;
 			$("#sortOrderAscInputRadio" + index)[0].checked = false;
 			$("#sortOrderDescInputRadio" + index)[0].checked = false;
 		},
@@ -498,7 +485,6 @@ ii.Class({
 					$("#hiddenInputRadio" + index).attr("checked", false);
 					$("#readOnlyInputRadio" + index).attr("checked", false);
 					$("#filterInputCheck" + index).attr("checked", false);
-					$("#operatorInputCheck" + index).attr("checked", false);
 					$("#sortOrderAscInputRadio" + index)[0].checked = false;
 					$("#sortOrderDescInputRadio" + index)[0].checked = false;
 				}
@@ -545,15 +531,12 @@ ii.Class({
 				if (object.id == "filterInputCheck" + index) {
 					me.moduleColumns[index].columnTypeFilter = (object.checked ? 1 : 0);
 					if (me.moduleColumns[index].columnTypeFilter == 0) {
-						me.moduleColumns[index].columnTypeOperator = 0;
-						$("#operatorInputCheck" + index)[0].checked = false;
+						me.moduleColumns[index].columnTypeFilter = 0;
+						$("#filterInputCheck" + index)[0].checked = false;
 					}
-				}
-				else if (object.id == "operatorInputCheck" + index) {
-					me.moduleColumns[index].columnTypeOperator = (object.checked ? 1 : 0);
-					if (me.moduleColumns[index].columnTypeOperator == 1) {
+					else if (me.moduleColumns[index].columnTypeFilter == 1) {
 						me.moduleColumns[index].columnTypeFilter = 1;
-						$("#filterInputCheck" + index)[0].checked = true;
+						$("#filterInputCheck" + index)[0].checked = true;;
 					}
 				}
 			}
@@ -655,13 +638,12 @@ ii.Class({
 				else if	(($("#readOnlyInputRadio" + index)[0].checked))
 					columnType = 3;
 
-				if ($("#filterInputCheck" + index)[0].checked)
+				if ($("#filterInputCheck" + index)[0].checked) {
 					columnTypeFilter = 1;
-
-				if ($("#operatorInputCheck" + index)[0].checked)
 					columnTypeOperator = 1;
+				}
 
-				if ($("#sortOrderAscInputRadio" + index)[0].checked)
+				if ($("#sortOrderAscInputRadio" + index)[0].checked) 
 					sortOrder = "Asc";
 
 				if ($("#sortOrderDescInputRadio" + index)[0].checked)
