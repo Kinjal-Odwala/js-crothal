@@ -35,6 +35,7 @@ ii.init.register( function() {
 		, description: {type: String, required: false, defaultValue: ""}
 		, recurringFixedCost: {type: Boolean, required: false, defaultValue: false}
 		, version: {type: Number, required: false, defaultValue: 0}
+		, displayOrder: {type: Number, required: false, defaultValue: 0}
 	};
 	
 	fin.rev.invoice.houseCodeJobArgs = {

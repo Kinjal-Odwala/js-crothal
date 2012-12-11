@@ -1,60 +1,73 @@
-﻿
-#divInvoiceItems
-{	
+﻿#divInvoiceItems {	
 	float: left;
 	padding: 5px 1% 5px 1%;
 	width: 98%;
 }
 
-#AnchorInvoiceLabelLeft
-{	
+#AnchorInvoiceLabelLeft {
 	left: 0;
 	bottom: 0;
 	position: absolute;
 	padding: 10px 10px 10px 10px;
 }
 
-#anchorAlign
-{
+#anchorAlign {
 	padding-bottom: 5px;
 	clear: both;
 }
 
-#buttonAlign
-{
+#buttonAlign {
 	margin-left: 190px;
 	bottom: 10px;
 	position: absolute;
 }
 
-#AnchorOk
-{
+#AnchorReorder {
+	float: left;
+	width: 90px;
+	padding-top: 5px;
+}
+
+#AnchorOk {
 	width: 60px;
 	padding-left: 5px;
 	margin-right: 5px;
 	padding-top: 5px;
 }
 
-.gridBorder
-{
+#popupMessage {
+	width: 450px; 
+	height: 150px;
+	border: 1px black solid;
+	border-width: 1px;
+	position: absolute;
+	z-index: 5000;
+	background-color: #F0EFDD;
+	display: none;
+}
+
+#divMessage	{
+	font-family: Verdana;
+	font-size: 12px;
+	padding: 10px 10px 10px 10px;
+}
+
+.gridBorder {
 	border-bottom: solid #AAAAAA thin;
 	border-bottom-width: 1px;
 	border-right: solid #AAAAAA thin;
 	border-right-width: 1px;
 }
 
-.gridRow
-{ 
+.gridRow { 
 	background-color: #F0EFDD;
 }
 
-.alternateGridRow
-{ 
+.alternateGridRow { 
 	background-color: #FFFFFF;
 }
 
-.gridHeaderColumn
-{
+.gridHeaderColumn {
 	background-color: #669966;
 	border: solid #AAAAAA thin;
 	border-width: 1px;
@@ -63,7 +76,6 @@
 	font-size: 12px;
 	font-weight: bold;
 	color: white;
-/*	text-transform: uppercase; */
 	padding: 3px 4px 3px 4px;
 	text-align: center;
 	height: 20px;
@@ -71,13 +83,11 @@
 	border-collapse: collapse;
 }
 
-.gridColumnHidden
-{
+.gridColumnHidden {
 	display: none;
 }
 	
-.gridColumn
-{
+.gridColumn {
 	vertical-align: top; 
 	border-left: solid #AAAAAA thin;
 	border-width: 1px;
@@ -91,18 +101,15 @@
 	cursor: pointer;
 }
 
-.trover
-{
+.trover {
 	background-color: #C2E4C1;
 }
 
-.tbodyBorder
-{
+.tbodyBorder {
 	overflow: auto;
 }
 
-.tableBorder
-{
+.tableBorder {
 	border: 1px black solid;
 	border-bottom: none;
 	border-width: 1px;
@@ -110,8 +117,7 @@
 	background-color: #F0EFDD;		
 }
 
-.tdBorder
-{
+.tdBorder {
 	border-bottom: solid black thin;
 	border-width: 1px;
 	font-family: Verdana;
@@ -119,23 +125,4 @@
 	color: #032D23;
 	padding-left: 5px;
 	width: 110px;
-}
-
-#popupMessage	
-{
-	width: 450px; 
-	height: 150px;
-	border: 1px black solid;
-	border-width: 1px;
-	position: absolute;
-	z-index: 5000;
-	background-color: #F0EFDD;
-	display: none;
-}
-
-#divMessage	
-{
-	font-family: Verdana;
-	font-size: 12px;
-	padding: 10px 10px 10px 10px;
 }

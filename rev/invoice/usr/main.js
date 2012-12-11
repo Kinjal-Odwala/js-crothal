@@ -5,14 +5,14 @@ ii.Import( "ui.ctl.usr.grid" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "fin.rev.invoice.usr.defs" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.input" , 4);
-ii.Style( "fin.cmn.usr.grid" , 5);
-ii.Style( "fin.cmn.usr.button" , 6);
-ii.Style( "fin.cmn.usr.dropDown" , 7);
-ii.Style( "fin.cmn.usr.dateDropDown" , 8);
+ii.Style( "style", 1);
+ii.Style( "fin.cmn.usr.common", 2);
+ii.Style( "fin.cmn.usr.statusBar", 3);
+ii.Style( "fin.cmn.usr.input", 4);
+ii.Style( "fin.cmn.usr.grid", 5);
+ii.Style( "fin.cmn.usr.button", 6);
+ii.Style( "fin.cmn.usr.dropDown", 7);
+ii.Style( "fin.cmn.usr.dateDropDown", 8);
 
 ii.Class({
     Name: "fin.rev.invoice.UserInterface",
@@ -27,7 +27,7 @@ ii.Class({
 			me.invoiceId = parseInt(searchString.substring(pos + 1));
 			me.rowBeingEdited = false;
 			me.currentRowSelected = null;
-			me.status = ""
+			me.status = "";
 			me.bindRow = false;
 			me.houseCodeCache = [];
 			me.invoiceByCustomer = false;
@@ -43,7 +43,7 @@ ii.Class({
 				if (parent.fin.revMasterUi.invoiceType == parent.invoiceTypes.houseCodeCloneYes 
 					|| parent.fin.revMasterUi.invoiceType == parent.invoiceTypes.customerCloneYes)
 					me.bindRow = true;
-					
+
 				parent.fin.revMasterUi.invoiceType = parent.invoiceTypes.edit;
 			}
 
@@ -73,17 +73,17 @@ ii.Class({
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$(document).bind("mousedown", me, me.mouseDownProcessor);
-			
+
 			if (!me.invoice.printed) {
 				$(document).bind("contextmenu", me, me.contextMenuProcessor);
 				$("#anchorAlign").show();
 			}
-			
+
 			if (parent.fin.revMasterUi.invoicingReadOnly) {				
 				$("#AnchorInvoiceLabelLeft").hide();
 				me.rowBeingEdited = true;				
 			}
-			
+
 			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + me.invoice.houseCode, me.houseCodeJobsLoaded, me);
 		},
 		
@@ -194,6 +194,14 @@ ii.Class({
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Undo&nbsp;&nbsp;</span>",
 				clickFunction: function() { me.actionUndoItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorReorder = new ui.ctl.buttons.Sizeable({
+				id: "AnchorReorder",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Reorder&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionReorderItem(); },
 				hasHotState: true
 			});
 			
@@ -357,40 +365,61 @@ ii.Class({
 			var houseCode = 0;
 			var houseCodeJob = 0;
 			var itemIndex = 0;
+			var displayOrderSet = false;
 
-			for (index = 0; index < me.invoiceItems.length; index++) {
-				if (houseCode != me.invoiceItems[index].houseCode || houseCodeJob != me.invoiceItems[index].houseCodeJob) {
-					if (houseCode != me.invoiceItems[index].houseCode && houseCode != 0)
-						houseCodeJobChanged = true;
-					else if (houseCodeJob != 0 && (overrideSiteTax != me.invoiceItems[index].overrideSiteTax || me.invoiceItems[index].overrideSiteTax))
-						houseCodeJobChanged = true;
-					houseCode = me.invoiceItems[index].houseCode;
-					houseCodeJob = me.invoiceItems[index].houseCodeJob;
-					overrideSiteTax = me.invoiceItems[index].overrideSiteTax;						
-				}
-
-				if (houseCodeJobChanged) {
-					houseCodeJobChanged = false;
-					rowNumber++;
-					rowHtml += me.getItemGridRow(rowNumber, itemIndex);
-				}
-
-				if (me.invoiceItems[index].account == 120) {
-					itemIndex = index;
-					salesTax = parseFloat(me.invoiceItems[index].amount);
-					salesTaxTotal += salesTax;						
-				}
-				else {
+			if (me.invoiceItems.length > 0) {
+				if (me.invoiceItems[0].displayOrder > 0)
+					displayOrderSet = true;
+			}
+			
+			if (displayOrderSet) {
+				for (index = 0; index < me.invoiceItems.length; index++) {
+					if (me.invoiceItems[index].account == 120) {
+						salesTax = parseFloat(me.invoiceItems[index].amount);
+						salesTaxTotal += salesTax;
+					}
 					rowNumber++;
 					rowHtml += me.getItemGridRow(rowNumber, index);
-					if (me.invoiceItems[index].account != me.descriptionAccount)
+					if (me.invoiceItems[index].account != me.descriptionAccount && me.invoiceItems[index].account != 120)
 						subTotal += parseFloat(me.invoiceItems[index].amount);
 				}
 			}
-
-			if (me.invoiceItems.length > 0) {
-				rowNumber++;
-				rowHtml += me.getItemGridRow(rowNumber, itemIndex);
+			else {
+				for (index = 0; index < me.invoiceItems.length; index++) {
+					if (houseCode != me.invoiceItems[index].houseCode || houseCodeJob != me.invoiceItems[index].houseCodeJob) {
+						if (houseCode != me.invoiceItems[index].houseCode && houseCode != 0)
+							houseCodeJobChanged = true;
+						else if (houseCodeJob != 0 && (overrideSiteTax != me.invoiceItems[index].overrideSiteTax || me.invoiceItems[index].overrideSiteTax))
+							houseCodeJobChanged = true;
+						
+						houseCode = me.invoiceItems[index].houseCode;
+						houseCodeJob = me.invoiceItems[index].houseCodeJob;
+						overrideSiteTax = me.invoiceItems[index].overrideSiteTax;
+					}
+	
+					if (houseCodeJobChanged) {
+						houseCodeJobChanged = false;
+						rowNumber++;
+						rowHtml += me.getItemGridRow(rowNumber, itemIndex);
+					}
+	
+					if (me.invoiceItems[index].account == 120) {
+						itemIndex = index;
+						salesTax = parseFloat(me.invoiceItems[index].amount);
+						salesTaxTotal += salesTax;
+					}
+					else {
+						rowNumber++;
+						rowHtml += me.getItemGridRow(rowNumber, index);
+						if (me.invoiceItems[index].account != me.descriptionAccount)
+							subTotal += parseFloat(me.invoiceItems[index].amount);
+					}
+				}
+	
+				if (me.invoiceItems.length > 0) {
+					rowNumber++;
+					rowHtml += me.getItemGridRow(rowNumber, itemIndex);
+				}
 			}
 
 			total = subTotal + salesTaxTotal;
@@ -510,11 +539,11 @@ ii.Class({
 						
 			$("#InvoiceItemContextMenu tr").click(function() {
 
-				if(this.id == "menuAdd")
+				if (this.id == "menuAdd")
 					me.invoiceItemGridRowAdd();
-				else if(this.id == "menuEdit")
+				else if (this.id == "menuEdit")
 					me.invoiceItemGridRowEdit();
-				else if(this.id == "menuDelete")
+				else if (this.id == "menuDelete")
 					me.invoiceItemGridRowDelete();
 					
 				$("#InvoiceItemContext").hide();
@@ -522,7 +551,7 @@ ii.Class({
 	
 			$("#InvoiceItemGridBody td").mousedown(function() {
 
-				if(me.rowBeingEdited) return;
+				if (me.rowBeingEdited) return;
 				
 				if (this.cellIndex >= 0 && this.cellIndex <= 11)
 					me.currentRowSelected = this.parentNode;
@@ -592,7 +621,7 @@ ii.Class({
 				rowHtml += me.getEditableRowColumn(!me.editSalesTax, columnBold, 6, "amount", args.amount, 8, "right");
 				rowHtml += me.getEditableRowColumn(false, false, 7, "status", args.status, 7, "center");
 				rowHtml += me.getEditableRowColumn(!me.editSalesTax, false, 8, "taxable", args.taxable, 6, "center", "check");
-				rowHtml += me.getEditableRowColumn(true, false, 9, "lineShow", args.lineShow, 6, "center", "check");			
+				rowHtml += me.getEditableRowColumn(true, false, 9, "lineShow", args.lineShow, 6, "center", "check");
 				rowHtml += me.getEditableRowColumn(true, false, 10, "description", args.description, 21, "left");
 			}
 			else {
@@ -606,10 +635,10 @@ ii.Class({
 				rowHtml += me.getEditableRowColumn(false, columnBold, 6, "amount", args.amount, 8, "right");
 				rowHtml += me.getEditableRowColumn(false, false, 7, "status", args.status, 7, "center");
 				rowHtml += me.getEditableRowColumn(false, false, 8, "taxable", args.taxable, 6, "center");
-				rowHtml += me.getEditableRowColumn(false, false, 9, "lineShow", args.lineShow, 6, "center");				
+				rowHtml += me.getEditableRowColumn(false, false, 9, "lineShow", args.lineShow, 6, "center");
 				rowHtml += me.getEditableRowColumn(false, false, 10, "description", args.description, 21, "left");
 			}
-	
+
 			return rowHtml;
 		},
 																		
@@ -627,7 +656,7 @@ ii.Class({
 			var me = this;
 			var styleName = "text-align:" + args.columnAlign + ";"
 			
-			if(args.bold)
+			if (args.bold)
 				styleName += " font-weight:bold;"
 			
 			if (args.editable) {
@@ -653,11 +682,11 @@ ii.Class({
 			var rowHtml = "";
 			var title = "";
 			
-			rowHtml = "<select id='" + args.columnName + "' style='width:100%;'>"
-			
+			rowHtml = "<select id='" + args.columnName + "' style='width:100%;'>";
+		
 			if (args.columnName == "job" && !me.invoiceByCustomer) {
 				for (var index = 0; index < me.houseCodeJobs.length; index++) {
-					title = me.houseCodeJobs[index].jobNumber // + " - " + me.houseCodeJobs[index].jobTitle;
+					title = me.houseCodeJobs[index].jobNumber; // + " - " + me.houseCodeJobs[index].jobTitle;
 					if (args.columnValue == title)
 						rowHtml += "	<option title='" + title + "' value='" + me.houseCodeJobs[index].id + "' selected>" + title + "</option>";
 					else
@@ -678,7 +707,7 @@ ii.Class({
 			
 			return rowHtml;
 		},
-		
+
 		isEditableRow: function() {
 			var me = this;
 			
@@ -748,11 +777,11 @@ ii.Class({
 		invoiceItemGridRowEdit: function() {
 			var me = this;
 			var rowHtml = "";
-			var description = "";			
+			var description = "";
 					
-			if(me.rowBeingEdited) 
+			if (me.rowBeingEdited)
 				return;
-				
+
 			description = me.currentRowSelected.cells[11].innerHTML;
 			
 		    rowHtml = me.getInvoiceItemGridRow(
@@ -769,7 +798,7 @@ ii.Class({
 			    , me.currentRowSelected.cells[9].innerHTML
 				, me.currentRowSelected.cells[10].innerHTML
 				, ""
-		        )
+		        );
 			    
 		    $(me.currentRowSelected).html(rowHtml);
 			$("#description").val(description);
@@ -799,14 +828,14 @@ ii.Class({
 			var rowHtml = "<tr>";
 			var insertAt = 0;
 			
-			if(me.rowBeingEdited) 
+			if (me.rowBeingEdited) 
 				return;
 			
 			me.status = "Add";
 			me.invalidHouseCode = "";
 					
 		    rowHtml += me.getInvoiceItemGridRow(
-		        me.invoiceItems.length
+		        me.invoiceItems.length + 1
 				, true // Editing Row
 		        , 0
 				, ""
@@ -819,7 +848,7 @@ ii.Class({
 			    , me.invoice.taxExempt ? "No" : "Yes"
 				, "Yes"
 			    , ""
-		        )
+		        );
 
 		    rowHtml += "</tr>";
 
@@ -846,7 +875,7 @@ ii.Class({
 		invoiceItemGridRowDelete: function() {
 			var me = this;
 						
-			if(me.rowBeingEdited || me.currentRowSelected == null || me.currentRowSelected.cells[4].innerHTML == "Sales Tax:") 
+			if (me.rowBeingEdited || me.currentRowSelected == null || me.currentRowSelected.cells[4].innerHTML == "Sales Tax:") 
 				return;
 
 			if (parseInt(me.currentRowSelected.cells[1].innerHTML) > 0) {
@@ -865,6 +894,35 @@ ii.Class({
 				me.currentRowSelected = null;
 				return;
 			}
+		},
+		
+		actionReorderItem: function() {
+			var me = this;
+			var rowNumber = -1;
+
+			//var row = $(me.currentRowSelected);
+			//row.insertAfter(row.next());
+			//row.insertBefore(row.prev());
+			
+			if (me.rowBeingEdited) 
+				return;
+
+			$("#InvoiceItemGridBody").find("tr").each(function() {
+				rowNumber++;
+
+				if (parseInt(this.cells[1].innerHTML) > 0) {
+					var html = "<input type=text style='width:90%; text-align:right;' id='displayOrder" + rowNumber + "' value='" + this.cells[0].innerHTML + "'></input>";
+					this.cells[0].innerHTML = html;
+
+					$("#displayOrder" + rowNumber).keypress(function (e) {
+						if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57))
+							return false;
+					});
+				}
+			});
+
+			me.status = "Reorder";
+			me.rowBeingEdited = true;
 		},
 		
 		searchHouseCode: function() {
@@ -1061,16 +1119,16 @@ ii.Class({
 
 			if (me.status == "Edit") {
 				var id = parseInt(me.currentRowSelected.cells[1].innerHTML);
-					
+
 				for (var index = 0; index < me.invoiceItems.length; index++) {
 					if (me.invoiceItems[index].id == id) {
 						selJob.val(me.invoiceItems[index].houseCodeJob);
 						break;
 					}
-				}				
+				}
 			}
 		},
-		
+
 		actionOkItem: function() {
 			var me = this;
 			
@@ -1081,12 +1139,21 @@ ii.Class({
 		actionUndoItem: function() {
 			var me = this;
 			var rowHtml = "";
-			var rowNumber = -1;
+			var rowNumber = 0;
 			
 			if (me.status == "")
 				return;
 			
-			if (me.status == "Add") {
+			if (me.status == "Reorder") {
+				$("#InvoiceItemGridBody").find("tr").each(function() {
+					rowNumber++;
+
+					if (parseInt(this.cells[1].innerHTML) > 0) {
+						this.cells[0].innerHTML = rowNumber;
+					}
+				});
+			}			
+			else if (me.status == "Add") {
 				var insertAt = $("#InvoiceItemGridBody").find('tr').length - 3;
 				$($("#InvoiceItemGridBody tr")[insertAt - 1]).remove();
 			}
@@ -1157,58 +1224,89 @@ ii.Class({
 			var taxable = false;
 			var recurringFixedCost = false;
 			var version = 1;
+			var valid = true;
 
 			if (parent.fin.revMasterUi.invoicingReadOnly) return;
-			
+
 			if (me.status == "")
 				return true;
 
-			if (!me.editSalesTax) {
-				if (me.invoiceByCustomer && (me.status == "Add" || me.status == "Edit")) {
-					houseCode = $("#houseCode").val();
-					
-					if (me.houseCodeCache[houseCode] == undefined) {
-						alert("Please enter the valid House Code.");
-						$("#houseCode").focus();
-						return;
-					}
-					
-					if (!me.houseCodeCache[houseCode].valid || !me.houseCodeCache[houseCode].validCustomer) 
-						return;
-					else {
-						houseCodeId = parseInt(me.houseCodeCache[houseCode].id);
-						hirNodeId = parseInt(me.houseCodeCache[houseCode].hirNode);
-					}						
-				}
-				else
-					houseCode = parent.parent.fin.appUI.houseCodeBrief;
+			if (me.status == "Reorder") {
+				var rowNumber = 0;
+				var orderNumbers = [];
 				
-				if (me.status == "Add" || me.status == "Edit") {
-					if (isNaN(parseFloat($("#quantity").val())) || parseFloat($("#quantity").val()) == 0) {
-						alert("Please enter the valid Quantity.");
-						$("#quantity").focus();
-						return false;
+				$("#InvoiceItemGridBody").find("tr").each(function() {
+
+					if (parseInt(this.cells[1].innerHTML) > 0) {
+					    orderNumbers.push(parseInt($("#displayOrder" + rowNumber).val()));
+						if (this.cells[4].innerHTML == "Sales Tax:") {
+							for (var index = 0; index < orderNumbers.length - 1; index++) {
+								if (orderNumbers[index] >= orderNumbers[orderNumbers.length - 1]) {
+									 valid = false;
+									 return false;
+								}
+							}
+
+							orderNumbers = [];
+						}
 					}
-					
-					if (isNaN(parseFloat($("#price").val())) || parseFloat($("#price").val()) == 0) {
-						alert("Please enter the valid Price.");
-						$("#price").focus();
-						return false;
-					}
+
+					rowNumber++;
+				});
+
+				if (!valid) {
+					 alert("Invoice line items order numbers are incorrect. Please enter correct order number and try again.");
+					return true;
 				}
 			}
-			
-			if ($("#description").val() == "") {
-				alert("Please enter the Description.");
-				$("#description").focus();
-				return false;
+			else {
+				if (!me.editSalesTax) {
+					if (me.invoiceByCustomer && (me.status == "Add" || me.status == "Edit")) {
+						houseCode = $("#houseCode").val();
+						
+						if (me.houseCodeCache[houseCode] == undefined) {
+							alert("Please enter the valid House Code.");
+							$("#houseCode").focus();
+							return;
+						}
+						
+						if (!me.houseCodeCache[houseCode].valid || !me.houseCodeCache[houseCode].validCustomer) 
+							return;
+						else {
+							houseCodeId = parseInt(me.houseCodeCache[houseCode].id);
+							hirNodeId = parseInt(me.houseCodeCache[houseCode].hirNode);
+						}
+					}
+					else 
+						houseCode = parent.parent.fin.appUI.houseCodeBrief;
+					
+					if (me.status == "Add" || me.status == "Edit") {
+						if (isNaN(parseFloat($("#quantity").val())) || parseFloat($("#quantity").val()) == 0) {
+							alert("Please enter the valid Quantity.");
+							$("#quantity").focus();
+							return false;
+						}
+						
+						if (isNaN(parseFloat($("#price").val())) || parseFloat($("#price").val()) == 0) {
+							alert("Please enter the valid Price.");
+							$("#price").focus();
+							return false;
+						}
+					}
+				}
+
+				if ($("#description").val() == "") {
+					alert("Please enter the Description.");
+					$("#description").focus();
+					return false;
+				}
+				
+				id = parseInt(me.currentRowSelected.cells[1].innerHTML);
 			}
-										
+
 			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();			
-			
-			id = parseInt(me.currentRowSelected.cells[1].innerHTML);
-			
+			$("#pageLoading").show();
+
 			if (me.status == "Add" || me.status == "Edit") {
 				if (id > 0) {
 					for (var index = 0; index < me.invoiceItems.length; index++) {
@@ -1220,7 +1318,7 @@ ii.Class({
 						}
 					}	
 				}
-	
+
 				if (me.editSalesTax) {
 					houseCodeId = me.invoiceItems[itemIndex].houseCodeId;
 					hirNodeId = me.invoiceItems[itemIndex].hirNodeId;
@@ -1260,11 +1358,15 @@ ii.Class({
 					, $("#description").val()
 					, recurringFixedCost
 					, version
-				);
+					, 0
+				    );
 			}
 			else if (me.status == "Delete") {
 				item = new fin.rev.invoice.InvoiceItem({ id: id });
-			}			
+			}
+			else if (me.status == "Reorder") {
+				item = new fin.rev.invoice.InvoiceItem({ id: 0 });
+			}
 
 			var xml = me.saveXmlBuildInvoiceItem(item);
 	
@@ -1310,6 +1412,21 @@ ii.Class({
 				xml += ' id="' + args.item.id + '"';
 				xml += '/>';
 			}
+			else if (me.status == "Reorder") {
+				var rowNumber = 0;
+				
+				$("#InvoiceItemGridBody").find("tr").each(function() {
+						
+					if (parseInt(this.cells[1].innerHTML) > 0) {
+						xml += '<revInvoiceItemDisplayOrder';
+						xml += ' id="' + parseInt(this.cells[1].innerHTML) + '"';
+						xml += ' displayOrder="' + parseInt($("#displayOrder" + rowNumber).val()) + '"';
+						xml += '/>';	
+					}
+
+					rowNumber++;
+				});
+			}
 
 			return xml;
 		},
@@ -1326,7 +1443,6 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var errorMessage = "";
 			var status = $(args.xmlNode).attr("status");
-			var traceType = ii.traceTypes.errorDataCorruption;
 						
 			if (status == "success") {
 				me.status = "";
@@ -1336,7 +1452,7 @@ ii.Class({
 				me.invoiceItemStore.reset();	
 				me.invoiceItemStore.fetch("userId:[user],invoiceId:" + me.invoiceId, me.invoiceItemsLoaded, me);
 			}
-			else if(status == "invalid") {
+			else if (status == "invalid") {
 					
 				switch ($(args.xmlNode).attr("message")) {
 					
@@ -1387,10 +1503,7 @@ ii.Class({
 				centerPopup();
 			}
 			else {
-				errorMessage = $(args.xmlNode).attr("error");
-				errorMessage += "Error while updating Invoice Item Record: " + $(args.xmlNode).attr("message")
-				errorMessage += " [SAVE FAILURE]";
-				alert(errorMessage);
+				alert("[SAVE FAILURE] Error while updating Invoice Item Record: " + $(args.xmlNode).attr("message"));
 				$("#pageLoading").hide();
 			}
 		}
