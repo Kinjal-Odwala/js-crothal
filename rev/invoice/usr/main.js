@@ -1233,11 +1233,13 @@ ii.Class({
 
 			if (me.status == "Reorder") {
 				var rowNumber = 0;
-				var orderNumbers = [];
+				var allOrderNumbers = [];
+				var orderNumbers = [];				
 				
 				$("#InvoiceItemGridBody").find("tr").each(function() {
 
 					if (parseInt(this.cells[1].innerHTML) > 0) {
+						allOrderNumbers.push(parseInt($("#displayOrder" + rowNumber).val()));
 					    orderNumbers.push(parseInt($("#displayOrder" + rowNumber).val()));
 						if (this.cells[4].innerHTML == "Sales Tax:") {
 							for (var index = 0; index < orderNumbers.length - 1; index++) {
@@ -1253,9 +1255,22 @@ ii.Class({
 
 					rowNumber++;
 				});
+				
+				// Check for the duplicate order numbers when reordering the invoice line items
+				if (valid) {
+					outerLoop:
+					for (var index = 0; index < allOrderNumbers.length; index++) {
+						for (var iIndex = index + 1; iIndex < allOrderNumbers.length; iIndex++) {
+							if (allOrderNumbers[index] == allOrderNumbers[iIndex]) {
+								 valid = false;
+								 break outerLoop;
+							}
+						}
+					}
+				}				
 
 				if (!valid) {
-					 alert("Invoice line items order numbers are incorrect. Please enter correct order number and try again.");
+					alert("Invoice line items order numbers are incorrect. Please enter correct order number and try again.");
 					return true;
 				}
 			}
