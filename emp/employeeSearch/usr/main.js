@@ -6119,19 +6119,19 @@ ii.Class({
 				, me.personBrief
 				, me.personDescription //RMS-ESM
 				, false 	//($("input[name='PersonActive']:checked").val() == "true" ? true : false)
-				, ui.cmn.text.xml.encode(me.personFirstName.getValue())
-				, ui.cmn.text.xml.encode(me.personLastName.getValue())
-				, ui.cmn.text.xml.encode(me.personMiddleName.getValue())
-				, ui.cmn.text.xml.encode(me.personAddressLine1.getValue())
-				, ui.cmn.text.xml.encode(me.personAddressLine2.getValue())
-				, ui.cmn.text.xml.encode(me.personCity.getValue()) 
+				, me.personFirstName.getValue()
+				, me.personLastName.getValue()
+				, me.personMiddleName.getValue()
+				, me.personAddressLine1.getValue()
+				, me.personAddressLine2.getValue()
+				, me.personCity.getValue() 
 				, me.stateTypes[me.personState.indexSelected].id
 				, me.personPostalCode.getValue()
-				, me.phoneMask(me.personHomePhone.getValue(), true)
-				, me.phoneMask(me.personFax.getValue(), true)
-				, me.phoneMask(me.personCellPhone.getValue(), true)
+				, me.personHomePhone.getValue()
+				, me.personFax.getValue()
+				, me.personCellPhone.getValue()
 				, me.personEmail.getValue()
-				, me.phoneMask(me.personPager.getValue(), true)
+				, me.personPager.getValue()
 				, parseInt(me.hirNode)
 				);				
 				
@@ -6259,11 +6259,11 @@ ii.Class({
 				xml += ' city="' + ui.cmn.text.xml.encode(itemPerson.city) + '"';
 				xml += ' stateType="' + itemPerson.state + '"';
 				xml += ' postalCode="' + itemPerson.postalCode + '"';
-				xml += ' homePhone="' + itemPerson.homePhone + '"';
-				xml += ' fax="' + itemPerson.fax + '"';
-				xml += ' cellPhone="' + itemPerson.cellPhone + '"';
+				xml += ' homePhone="' + me.phoneMask(itemPerson.homePhone, true) + '"';
+				xml += ' fax="' + me.phoneMask(itemPerson.fax, true) + '"';
+				xml += ' cellPhone="' + me.phoneMask(itemPerson.cellPhone, true) + '"';
 				xml += ' email="' + itemPerson.email + '"';
-				xml += ' pager="' + itemPerson.pager + '"';
+				xml += ' pager="' + me.phoneMask(itemPerson.pager, true) + '"';
 				xml += ' active="' + (itemGeneral.statusType != 6 ? true : false) + '"';
 				xml += ' hirNode="' + itemPerson.hirNode + '"';
 				if (me.actionType == "Rehire" || me.actionType == "NewHire" ||
