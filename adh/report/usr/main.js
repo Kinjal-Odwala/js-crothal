@@ -55,6 +55,7 @@ ii.Class({
 			me.pageCurrent = 1;
 			
 			// Employee Module Edit
+			var SelectedValue = "";
 			me.statusTypesCache = [];
 			me.statusTypesLoading = 0;
 			me.terminationReasonTypesCache = [];
@@ -65,6 +66,12 @@ ii.Class({
 			me.statesLoading = 0;
 			me.houseCodeCache = [];
 			me.employeeLoading = false;
+			me.employeeCache = [];
+			me.employeeLoading = 0;
+			
+			// User Module
+			me.currentRolesCache = [];
+			me.currentRolesLoading = 0;
 			
 			me.gateway = ii.ajax.addGateway("adh", ii.config.xmlProvider);			
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -90,6 +97,9 @@ ii.Class({
 			me.configureCommunications();
 			
 			me.report.fetchingData();
+			
+			//me.userRoleStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
+			
 			me.siteMasterStore.fetch("userId:[user],siteId:1", me.siteMastersLoaded, me);
 			me.serviceTypeStore.fetch("userId:[user],", me.houseCodeServiceLoaded, me);
 			me.localTaxCodeStore.fetch("payrollCompany:0,appState:0,userId:[user]", me.siteMastersLoaded, me);
@@ -783,6 +793,14 @@ ii.Class({
 				itemConstructorArgs: fin.adh.employeeGeneralArgs,
 				injectionArray: me.employeeGenerals	
 			});
+			
+			me.userRoles = [];
+			me.userRoleStore = me.cache.register({
+				storeId: "appUserRoles",
+				itemConstructor: fin.adh.UserRole,
+				itemConstructorArgs: fin.adh.userRoleArgs,
+				injectionArray: me.userRoles
+			});
 		},
 		
 		resizeControls: function() {
@@ -1110,13 +1128,13 @@ ii.Class({
 							me.payFrequencyTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
 						}
 					}
-					else if(tableName == "EmpSeparationCodes") {
-						if (me.separationCodeStore.fetchedCriteria["storeId:separationCodes,userId:[user],terminationType:0,"] != ii.ajax.fetchStatusTypes.fetched) {
-							me.typeTableFound = true;
-							me.typesLoadedCount++;
-							me.separationCodeStore.fetch("userId:[user],terminationType:0,", me.maritalStatusTypesLoaded, me);
-						}
-					}
+//					else if(tableName == "EmpSeparationCodes") {
+//						if (me.separationCodeStore.fetchedCriteria["storeId:separationCodes,userId:[user],terminationType:0,"] != ii.ajax.fetchStatusTypes.fetched) {
+//							me.typeTableFound = true;
+//							me.typesLoadedCount++;
+//							me.separationCodeStore.fetch("userId:[user],terminationType:0,", me.maritalStatusTypesLoaded, me);
+//						}
+//					}
 					else if(tableName == "EmpJobStartReasonTypes") {
 						if (me.jobStartReasonTypeStore.fetchedCriteria["storeId:jobStartReasonTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
 							me.typeTableFound = true;
@@ -1138,27 +1156,27 @@ ii.Class({
 							me.vetTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
 						}
 					}
-					else if(tableName == "EmpStatusCategoryTypes") {
-						if (me.statusCategoryTypeStore.fetchedCriteria["storeId:statusCategoryTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-							me.typeTableFound = true;
-							me.typesLoadedCount++;
-							me.statusCategoryTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-						}
-					}
-					else if(tableName == "EmpStateAdjustmentTypes") {
-						if (me.stateAdjustmentTypeStore.fetchedCriteria["storeId:stateAdjustmentTypes,appState:0,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-							me.typeTableFound = true;
-							me.typesLoadedCount++;
-							me.stateAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
-						}
-					}
-					else if(tableName == "EmpSDIAdjustmentTypes") {
-						if (me.sdiAdjustmentTypeStore.fetchedCriteria["storeId:sdiAdjustmentTypes,appState:0,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-							me.typeTableFound = true;
-							me.typesLoadedCount++;
-							me.sdiAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
-						}
-					}
+//					else if(tableName == "EmpStatusCategoryTypes") {
+//						if (me.statusCategoryTypeStore.fetchedCriteria["storeId:statusCategoryTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
+//							me.typeTableFound = true;
+//							me.typesLoadedCount++;
+//							me.statusCategoryTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
+//						}
+//					}
+//					else if(tableName == "EmpStateAdjustmentTypes") {
+//						if (me.stateAdjustmentTypeStore.fetchedCriteria["storeId:stateAdjustmentTypes,appState:0,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
+//							me.typeTableFound = true;
+//							me.typesLoadedCount++;
+//							me.stateAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
+//						}
+//					}
+//					else if(tableName == "EmpSDIAdjustmentTypes") {
+//						if (me.sdiAdjustmentTypeStore.fetchedCriteria["storeId:sdiAdjustmentTypes,appState:0,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
+//							me.typeTableFound = true;
+//							me.typesLoadedCount++;
+//							me.sdiAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
+//						}
+//					}
 					else if(tableName == "EmpMaritalStatusFederalTaxTypes") {
 						if (me.maritalStatusFederalTaxTypeStore.fetchedCriteria["storeId:maritalStatusFederalTaxTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
 							me.typeTableFound = true;
@@ -1166,13 +1184,13 @@ ii.Class({
 							me.maritalStatusFederalTaxTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
 						}
 					}
-					else if(tableName == "EmpLocalTaxAdjustmentTypes") {
-						if (me.localTaxAdjustmentTypeStore.fetchedCriteria["storeId:localTaxAdjustmentTypes,appState:0,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-							me.typeTableFound = true;
-							me.typesLoadedCount++;
-							me.localTaxAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
-						}
-					}
+//					else if(tableName == "EmpLocalTaxAdjustmentTypes") {
+//						if (me.localTaxAdjustmentTypeStore.fetchedCriteria["storeId:localTaxAdjustmentTypes,appState:0,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
+//							me.typeTableFound = true;
+//							me.typesLoadedCount++;
+//							me.localTaxAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
+//						}
+//					}
 					else if(tableName == "EmpFederalAdjustmentTypes") {
 						if (me.federalAdjustmentStore.fetchedCriteria["storeId:employeePayrollMasters,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
 							me.typeTableFound = true;
@@ -1260,7 +1278,7 @@ ii.Class({
 						}
 					}
 					else 
-						RowData += "<td align='left' colspan='2'>" + me.populateDropDown(me.reportFilters[index].referenceTableName, me.reportFilters[index].title, 'filter', 0) + "</td>";
+						RowData += "<td align='left' colspan='2'>" + me.populateDropDown(me.reportFilters[index].referenceTableName, me.reportFilters[index].title, 'filter', 0, 0, 0, 0, 0, 0) + "</td>";
 					RowData += "</tr>"
 				}
 			}
@@ -1450,8 +1468,13 @@ ii.Class({
 					var appSite = me.moduleColumnDatas[index].appSite;
 					var appSitTitle = me.moduleColumnDatas[index].appSitTitle;
 					var pkIndex = me.moduleColumnDatas[index].primeColumn;
-					 
-					rowData += "<tr id='adhReportDataRow" + fin.reportUi.moduleColumnDatas[index].primeColumn + "' onclick=(fin.reportUi.getAdhReprotGridRowEdit(" + pkIndex + "," + index + "));>";	
+					var empStatusType = fin.reportUi.moduleColumnDatas[index].empStatusType;
+				 	var empTerminationReasonType = fin.reportUi.moduleColumnDatas[index].empTerminationReasonType;
+					var payPayrollCompany = fin.reportUi.moduleColumnDatas[index].payPayrollCompany;
+					var empEmpgPrimaryState = fin.reportUi.moduleColumnDatas[index].empEmpgPrimaryState;
+					var empEmpgSecondaryState = fin.reportUi.moduleColumnDatas[index].empEmpgSecondaryState;
+
+					rowData += "<tr id='adhReportDataRow" + fin.reportUi.moduleColumnDatas[index].primeColumn + "' onclick=(fin.reportUi.getAdhReprotGridRowEdit(" + pkIndex + "," + index + "," + empStatusType + "," + empTerminationReasonType + "," + payPayrollCompany + "," + empEmpgPrimaryState + "," + empEmpgSecondaryState + "));>";	
 					rowData += me.getAdhReprotDetailGridRow(pairs, houseCode, appSite, appSitTitle);
 					rowData += "</tr>"		
 				}				
@@ -1467,6 +1490,155 @@ ii.Class({
 					$(this).removeClass("trover");});
 
 			$("#pageLoading").hide();	
+		},
+		
+		getAdhReprotGridRowEdit: function() {
+			var args = ii.args(arguments, {
+				pkIndex: {type: Number}
+				, rowIndex: {type: Number}
+				, empStatusType: {type: Number}
+				, empTerminationReasonType: {type: Number}
+				, payPayrollCompany: {type: Number}
+				, empEmpgPrimaryState: {type: Number}
+				, empEmpgSecondaryState: {type: Number}
+			});
+			var me = this;			
+			var rowData = "";
+			var argTypeTable = "";
+			var argName = "";
+			var posTTable = 0;
+			var argscolumn = "";
+			var rowsData = "";
+			var dateControls = [];
+			var dataValue = "";
+			var appUnitId = "";
+			var appUnitValue = "";
+			var appSiteId = "";
+			
+			me.rowId = args.rowIndex;	
+			me.pkId = args.pkIndex;
+			me.empStatusType = args.empStatusType;
+			me.empTerminationReasonType = args.empTerminationReasonType;
+			me.payPayrollCompany = args.payPayrollCompany;
+			me.empEmpgPrimaryState = args.empEmpgPrimaryState;
+			me.empEmpgSecondaryState = args.empEmpgSecondaryState;
+			
+			if (me.rowEdit == false || me.moduleColumnDatas[me.rowId] == undefined || me.moduleColumnDatas[me.rowId].modified) 
+				return;
+	
+			me.moduleColumnDatas[me.rowId].modified = true;
+			me.rowModifed = true;
+			
+			var row = $("#adhReportDataRow" + me.pkId);
+debugger;			
+			for (var index = 0; index < row[0].cells.length; index++) {
+				//index 0 for HouseCode. This addition
+				me.columnType = 0;
+				rowData = "";
+				argscolumn = row[0].cells[index].id;
+				posTTable = argscolumn.indexOf("_");
+
+				if (index > 0) {
+					if (argscolumn != "" && argscolumn != "AppSite"){
+						me.columnValidation = me.moduleColumnHeaders[index - 1].columnValidation;
+						me.columnType = me.moduleColumnHeaders[index - 1].columnType;
+					}
+				}
+				if (argscolumn == "AppUnit") {
+					appUnitValue = row[0].cells[index].innerHTML;
+					me.columnValidation = "";
+					appUnitId = "AppUnit" + "_" + me.pkId;
+				}
+				if (argscolumn == "AppSite") {
+					appSiteId = argscolumn + "_" + me.pkId;
+				}
+					
+				if (posTTable > 0) {
+					argName = argscolumn.substring(0, posTTable);
+					argTypeTable = argscolumn.substring(posTTable + 1, argscolumn.length);
+
+					switch (me.columnType) {
+						case 1: //Editable
+							rowData += "<td class='gridColumn' align='left'>" + me.populateDropDown(argTypeTable, argName, row[0].cells[index].innerHTML, me.pkId, me.empStatusType, me.empTerminationReasonType, me.payPayrollCompany, me.empEmpgPrimaryState, me.empEmpgSecondaryState) + "</td>";
+							break;
+
+						case 3: //ReadOnly
+							rowData += "<td class='gridColumn' align='left'>" + row[0].cells[index].innerHTML + "</td>";
+							break;
+					}
+				}
+				else {
+					argName = argscolumn.substring(0, argscolumn.length) + "_" + me.pkId;
+					argTypeTable = "";
+					
+					if (me.isDate(row[0].cells[index].innerHTML) || me.columnValidation.toLowerCase() == "datetime")
+						dateControls.push(argName);
+					
+					if (me.columnValidation.toLowerCase() == "phone")
+						dataValue = fin.cmn.text.mask.phone(row[0].cells[index].innerHTML);
+					else 
+						dataValue = row[0].cells[index].innerHTML;
+					
+					switch (me.columnType) {
+						case 1: //Editable
+							if (me.columnValidation.toLowerCase() == "bit")
+								rowData = "<td class='gridColumn' align='left'><input type='checkbox' style='width:90%;' name='" + argName + "' id='" + argName + "' value='" + dataValue + "'" + (dataValue == "1" ? checked='checked' : '') + "></input></td>";
+							else
+								rowData = "<td class='gridColumn' align='left'><input type='text' onblur=fin.reportUi.dataValidation(\'" + fin.reportUi.columnValidation + "\',\'" + argName + "\'); style='width:90%;' id='" + argName + "' value='" + dataValue + "'></input></td>";
+							break;
+							
+						case 3: //ReadOnly
+							rowData += "<td class='gridColumn' align='left'>" + dataValue + "</td>";
+							break;
+							
+						default: 
+							if (argscolumn == "AppSite")
+								rowData += "<td class='gridColumnHidden' align='left'><input type='text' id='" + argName + "' value='" + dataValue + "'></input></td>";	
+							else
+								rowData += "<td class='gridColumn' align='left'>" + dataValue + "</td>";
+							break;	
+					}
+				}	
+				rowsData += rowData;
+			}
+
+			row.html(rowsData);			
+			
+			for (var index = 0; index < dateControls.length; index++) {
+				$("#" + dateControls[index]).datepicker({
+					changeMonth: true,
+					changeYear: true
+				});
+			}
+			
+			if (appUnitId != "") {
+				$("#" + appUnitId).attr("readonly", true);
+				$("#" + appUnitId).click(function() {
+					me.selectedAppUnitId = appUnitId;
+					me.selectedAppSiteId = appSiteId;
+					loadPopup();
+					me.site.resizeText();
+					
+					var tempSiteId = parseInt($("#" + me.selectedAppSiteId).val(), 10);
+					var found = false;
+					for (var index = 0; index < me.siteTypes.length; index++) {
+						if (tempSiteId == me.siteTypes[index].id) {
+							found = true;
+							break;
+						}
+					}
+					
+					if (!found) {
+						var item = new fin.adh.SiteType(tempSiteId, tempSiteId, appUnitValue);
+						me.siteTypes.push(item);
+						me.site.setData(me.siteTypes);
+					}
+					
+					var itemIndex = ii.ajax.util.findIndexById(tempSiteId.toString(), me.siteTypes);
+					if (itemIndex >= 0 && itemIndex != undefined)
+						me.site.select(itemIndex, me.site.focused);
+				});
+			}
 		},
 		
 		sortColumn: function(index) {
@@ -1532,6 +1704,8 @@ ii.Class({
 				
 				if (me.columnValidation.toLowerCase() == "phone")
 					dataValue = fin.cmn.text.mask.phone(queryStringArgs[argName]);
+				else if (me.columnValidation.toLowerCase() == "datetime" && value == "01/01/1900")
+					dataValue = "";
 				else
 					dataValue = queryStringArgs[argName];
 
@@ -1590,20 +1764,39 @@ ii.Class({
 				, columnName: {type: String}
 				, columnValue: {type: String}
 				, pkColumn: {type: Number}
+				, empStatusType: {type: Number}			
+				, empTerminationReasonType: {type: Number}
+				, payPayrollCompany: {type: Number}
+				, empEmpgPrimaryState: {type: Number}
+				, empEmpgSecondaryState: {type: Number}
 			});
 			var me = this;
 			var rowHtml = "";
 			var title = "";
 			var typeTableDetails = "";
+			SelectedType = args.columnValue; 
+			
+			if(args.columnName == "AppRoleCurrent")
+				me.currentRolesLoad(args.pkColumn, args.columnValue);
+			if(args.columnName == "EmpStatusCategoryType") 
+ 				me.statusCategoryTypesLoad(args.pkColumn, args.empStatusType);
+			if(args.columnName == "EmpSeparationCode") 
+ 				me.terminationReasonTypesLoad(args.pkColumn, args.empTerminationReasonType);
+			if(args.columnName == "EmpEmpgLocalTaxCode1" || args.columnName == "EmpEmpgLocalTaxCode2" || args.columnName == "EmpEmpgLocalTaxCode3") 
+ 				me.localTaxCodesLoad(args.pkColumn, args.empEmpgPrimaryState, args.payPayrollCompany);
+			if (args.columnName == "EmpMaritalStatusStateTaxTypePrimary" || args.columnName == "EmpStateAdjustmentType" || args.columnName == "EmpSDIAdjustmentType" || args.columnName == "EmpLocalTaxAdjustmentType")
+				me.maritalStatusPrimaryTypesLoad(args.pkColumn, args.empEmpgPrimaryState, true);
+			if(args.columnName == "EmpMaritalStatusStateTaxTypeSecondary") 
+ 				me.maritalStatusPrimaryTypesLoad(args.pkColumn, args.empEmpgSecondaryState, false);
+				
 			var typeTableDetails = me.getTypeTableData(args.typeTable, args.columnName);
 			if(!typeTableDetails)
 				typeTableDetails = "";
-				
 			
 			if (args.columnValue == "filter")
 				rowHtml = "<select id='" + args.columnName + "' class='inputTextSize'>";
-			else if(args.columnName == "EmpStatusType")
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkColumn + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkColumn + "\'); onChange=fin.reportUi.statusTypeChange(this);>";
+			else if(args.columnName == "EmpStatusType") 
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkColumn + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkColumn + "\'); onChange=fin.reportUi.statusTypeChange(this);>";	
 			else if(args.columnName == "EmpTerminationReasonType")
 				rowHtml = "<select id='" + args.columnName + '_' + args.pkColumn + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkColumn + "\'); onChange=fin.reportUi.terminationReasonTypeChange(this);>";
 			else if(args.columnName == "PayPayrollCompany")
@@ -1616,7 +1809,11 @@ ii.Class({
 				rowHtml = "<select id='" + args.columnName + '_' + args.pkColumn + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkColumn + "\');>";
 
 			for (var index = 0; index < typeTableDetails.length; index++) {
-				title = typeTableDetails[index].name;
+				if(typeTableDetails[index].name != "")
+					title = typeTableDetails[index].name;
+				else
+				    title = typeTableDetails[index].title;
+					
 				if (args.columnValue == title)
 					rowHtml += "	<option title='" + title + "' value='" + typeTableDetails[index].id + "' selected>" + title + "</option>";
 				else
@@ -1626,6 +1823,79 @@ ii.Class({
 			rowHtml += "</select>"
 			
 			return rowHtml;
+		},
+		
+		currentRolesLoad: function(id,selectedValue) {
+			var me = this;
+			//var userId = Number(objSelect.id.substr(15));
+			var userId = Number(id);
+			var selectedValue = selectedValue;
+			
+			me.currentRolesLoading++;
+
+		    me.currentRolesCache[userId] = {};
+		    me.currentRolesCache[userId].valid = false;
+		    me.currentRolesCache[userId].loaded = false;
+		    me.currentRolesCache[userId].buildQueue = [];
+			me.currentRolesCache[userId].userRoles = [];
+		    me.currentRolesCache[userId].buildQueue.push(userId);
+			
+	        $.ajax({
+                type: "POST",
+                dataType: "xml",
+                url: "/net/crothall/chimes/fin/adh/act/provider.aspx",
+                data: "moduleId=adh&requestId=1&targetId=iiCache"
+					+ "&requestXml=<criteria>storeId:appUserRoles,userId:[user],"
+					+ "appUserId:" + userId + ",<criteria>",
+                  
+                 success: function(xml) {
+  
+	                $(xml).find('item').each(function() {
+
+	                    var userRole = {};
+	                	userRole.id = $(this).attr("id");
+	                	userRole.name = $(this).attr("title");
+	                	me.currentRolesCache[userId].userRoles.push(userRole);
+	                });
+					
+					me.currentRolesLoading--;
+					me.currentRolesCache[userId].valid = true;
+					me.currentRolesCache[userId].loaded = true;
+					me.currentRoleValidate(userId, me.currentRolesCache[userId].buildQueue, selectedValue);
+				}
+			});
+		},
+		
+		currentRoleValidate: function(userId, rowArray, selectedValue) {
+		    var me = this;
+		    var rowNumber = 0;
+			var selectedValue = selectedValue;
+
+		    if (me.currentRolesCache[userId].valid) {
+		        for (var index = 0; index < rowArray.length; index++) {
+		        	rowNumber = Number(rowArray[index]);
+					me.buildSingleDropDownforCurrentRole(rowNumber, "RoleCurrent", me.currentRolesCache[userId].userRoles, selectedValue);
+		        }
+		    }
+		},
+		
+		buildSingleDropDownforCurrentRole: function(rowNumber, controlName, types, selectedValue) {
+		    var me = this;
+		    var type = {};
+			var selType = "";
+			var selectedValue = selectedValue;
+						
+		   	selType = $("#App" + controlName + "_" + rowNumber);
+			selType.empty();
+			selType.append("<option value='0'></option>");
+			
+		    for(var index = 0; index < types.length; index++) {
+		        type = types[index];
+				if(selectedValue == type.name) 
+					selType.append("<option  title='" + type.name + "' value='" + type.id + "' selected>" + type.name + "</option>");
+				else
+		        	selType.append("<option  title='" + type.name + "' value='" + type.id + "'>" + type.name + "</option>");
+		    }
 		},
 		
 		statusTypeChange: function(objSelect) {
@@ -2024,19 +2294,22 @@ ii.Class({
 				}
 			});
 		},
-		
+				
 		buildSingleDropDown: function(rowNumber, controlName, types) {
 		    var me = this;
 		    var type = {};
-
-		    var selType = $("#Emp" + controlName + "_" + rowNumber);
-
+			var selType = "";
+			
+			selType = $("#Emp" + controlName + "_" + rowNumber);
 			selType.empty();
 			selType.append("<option value='0'></option>");
 
 		    for(var index = 0; index < types.length; index++) {
 		        type = types[index];
-		        selType.append("<option  title='" + type.name + "' value='" + type.id + "'>" + type.name + "</option>");
+				if (type.name == SelectedType)
+					selType.append("<option  title='" + type.name + "' value='" + type.id + "' selected>" + type.name + "</option>");
+				else
+		        	selType.append("<option  title='" + type.name + "' value='" + type.id + "'>" + type.name + "</option>");
 		    }
 		},
 		
@@ -2234,148 +2507,13 @@ ii.Class({
 				me.typeNoneAdd(me.companies);
 				me.typeTable = me.companies;
 			}
+//			else if (args.typeTable == "AppRoles") {
+//				me.typeNoneAdd(me.userRoles);
+//				me.typeTable = me.userRoles;
+//			}
 			return me.typeTable;
 		},
-		
-		getAdhReprotGridRowEdit: function() {
-			var args = ii.args(arguments, {
-				pkIndex: {type: Number}
-				, rowIndex: {type: Number}
-			});
-			var me = this;			
-			var rowData = "";
-			var argTypeTable = "";
-			var argName = "";
-			var posTTable = 0;
-			var argscolumn = "";
-			var rowsData = "";
-			var dateControls = [];
-			var dataValue = "";
-			var appUnitId = "";
-			var appUnitValue = "";
-			var appSiteId = "";
-			
-			me.rowId = args.rowIndex;	
-			me.pkId = args.pkIndex;
-			
-			if (me.rowEdit == false || me.moduleColumnDatas[me.rowId] == undefined || me.moduleColumnDatas[me.rowId].modified) 
-				return;
-	
-			me.moduleColumnDatas[me.rowId].modified = true;
-			me.rowModifed = true;
-			
-			var row = $("#adhReportDataRow" + me.pkId);
-			
-			for (var index = 0; index < row[0].cells.length; index++) {
-				//index 0 for HouseCode. This addition
-				me.columnType = 0;
-				rowData = "";
-				argscolumn = row[0].cells[index].id;
-				posTTable = argscolumn.indexOf("_");
-
-				if (index > 0) {
-					if (argscolumn != "" && argscolumn != "AppSite"){
-						me.columnValidation = me.moduleColumnHeaders[index - 1].columnValidation;
-						me.columnType = me.moduleColumnHeaders[index - 1].columnType;
-					}
-				}
-				if (argscolumn == "AppUnit") {
-					appUnitValue = row[0].cells[index].innerHTML;
-					me.columnValidation = "";
-					appUnitId = "AppUnit" + "_" + me.pkId;
-				}
-				if (argscolumn == "AppSite") {
-					appSiteId = argscolumn + "_" + me.pkId;
-				}
-					
-				if (posTTable > 0) {
-					argName = argscolumn.substring(0, posTTable);
-					argTypeTable = argscolumn.substring(posTTable + 1, argscolumn.length);
-
-					switch (me.columnType) {
-						case 1: //Editable
-							rowData += "<td class='gridColumn' align='left'>" + me.populateDropDown(argTypeTable, argName, row[0].cells[index].innerHTML, me.pkId) + "</td>";
-							break;
-
-						case 3: //ReadOnly
-							rowData += "<td class='gridColumn' align='left'>" + row[0].cells[index].innerHTML + "</td>";
-							break;
-					}
-				}
-				else {
-					argName = argscolumn.substring(0, argscolumn.length) + "_" + me.pkId;
-					argTypeTable = "";
-					
-					if (me.isDate(row[0].cells[index].innerHTML))
-						dateControls.push(argName);
-					
-					if (me.columnValidation.toLowerCase() == "phone")
-						dataValue = fin.cmn.text.mask.phone(row[0].cells[index].innerHTML);
-					else 
-						dataValue = row[0].cells[index].innerHTML;
-					
-					switch (me.columnType) {
-						case 1: //Editable
-							if (me.columnValidation.toLowerCase() == "bit")
-								rowData = "<td class='gridColumn' align='left'><input type='checkbox' style='width:90%;' name='" + argName + "' id='" + argName + "' value='" + dataValue + "'" + (dataValue == "1" ? checked='checked' : '') + "></input></td>";
-							else
-								rowData = "<td class='gridColumn' align='left'><input type='text' onblur=fin.reportUi.dataValidation(\'" + fin.reportUi.columnValidation + "\',\'" + argName + "\'); style='width:90%;' id='" + argName + "' value='" + dataValue + "'></input></td>";
-							break;
-							
-						case 3: //ReadOnly
-							rowData += "<td class='gridColumn' align='left'>" + dataValue + "</td>";
-							break;
-							
-						default: 
-							if (argscolumn == "AppSite")
-								rowData += "<td class='gridColumnHidden' align='left'><input type='text' id='" + argName + "' value='" + dataValue + "'></input></td>";	
-							else
-								rowData += "<td class='gridColumn' align='left'>" + dataValue + "</td>";
-							break;	
-					}
-				}	
-				rowsData += rowData;
-			}
-
-			row.html(rowsData);			
-			
-			for (var index = 0; index < dateControls.length; index++) {
-				$("#" + dateControls[index]).datepicker({
-					changeMonth: true,
-					changeYear: true
-				});
-			}
-			
-			if (appUnitId != "") {
-				$("#" + appUnitId).attr("readonly", true);
-				$("#" + appUnitId).click(function() {
-					me.selectedAppUnitId = appUnitId;
-					me.selectedAppSiteId = appSiteId;
-					loadPopup();
-					me.site.resizeText();
-					
-					var tempSiteId = parseInt($("#" + me.selectedAppSiteId).val(), 10);
-					var found = false;
-					for (var index = 0; index < me.siteTypes.length; index++) {
-						if (tempSiteId == me.siteTypes[index].id) {
-							found = true;
-							break;
-						}
-					}
-					
-					if (!found) {
-						var item = new fin.adh.SiteType(tempSiteId, tempSiteId, appUnitValue);
-						me.siteTypes.push(item);
-						me.site.setData(me.siteTypes);
-					}
-					
-					var itemIndex = ii.ajax.util.findIndexById(tempSiteId.toString(), me.siteTypes);
-					if (itemIndex >= 0 && itemIndex != undefined)
-						me.site.select(itemIndex, me.site.focused);
-				});
-			}
-		},
-		
+				
 		resetValidation: function(controlName) {
 			var me = this;
 

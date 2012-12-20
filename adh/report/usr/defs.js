@@ -26,8 +26,13 @@ ii.init.register( function() {
 		, houseCode:{type: String, defaultValue: "0"}
 		, primeColumn:{type: String, defaultValue: "0"}
 		, columnData: {type: String, defaultValue: "" }
+		, empStatusType: {type: Number, required:false, defaultValue: 0}
+		, empTerminationReasonType: {type: Number, required:false, defaultValue: 0}
+		, payPayrollCompany: {type: Number, required:false, defaultValue: 0}
+		, empEmpgPrimaryState: {type: Number, required:false, defaultValue: 0}
+		, empEmpgSecondaryState: {type: Number, required:false, defaultValue: 0}
 		, appSite: {type: Number, required:false, defaultValue: 0}
-		, appSitTitle: {type: String, required: false, defaultValue: "" }
+		, appSitTitle: {type: String, required: false, defaultValue: "" }		
 		, modified: {type: Boolean, required: false, defaultValue: false }
 	};
 		
@@ -376,6 +381,13 @@ ii.init.register( function() {
 	fin.adh.employeeGeneralArgs = {
 		id: {type: Number}
 	};
+	
+	fin.adh.userRoleArgs = {
+		id: {type: Number},
+		name: {type: String, required: false, defaultValue: ""},
+		title: {type: String, required: false, defaultValue: ""},
+		roleCurrent: {type: Boolean, required: false, defaultValue: false}
+	}
 	
 }, 2);
 
@@ -995,6 +1007,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.adh.employeeGeneralArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.adh.UserRole",
+	Definition: {
+		init: function (){
+			var args = ii.args(arguments, fin.adh.userRoleArgs);
 			$.extend(this, args);
 		}
 	}
