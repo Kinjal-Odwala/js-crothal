@@ -298,6 +298,26 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 			
+			me.users = [];
+			me.userStore = me.cache.register({
+				storeId: "loggedInUsers",
+				itemConstructor: fin.adh.User,
+				itemConstructorArgs: fin.adh.userArgs,
+				injectionArray: me.users
+			});
+
+			me.roles = [];
+			me.roleStore = me.cache.register({
+				storeId: "loggedInUserRoles",
+				itemConstructor: fin.adh.Role,
+				itemConstructorArgs: fin.adh.roleArgs,
+				injectionArray: me.roles,
+				addToParentItem: true,
+				parent: me.userStore,
+				parentPropertyName: "appRoles",
+				multipleFetchesAllowed: true
+			});
+			
 			me.moduleColumnHeaders = [];
 			me.moduleColumnHeaderStore = me.cache.register({
 				storeId: "AdhReportColumnHeaders",
@@ -892,7 +912,23 @@ ii.Class({
 			me.report.setData(me.reports);
 			me.report.select(0, me.report.focused);
 			me.resizeControls();
-			me.hirNodeCurrentId = 1;
+			me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
+		},
+		
+		loggedInUsersLoaded: function(me, activeId) {
+
+			if (me.users.length == 0) {
+				ii.trace("Failed to load logged-in user information.", ii.traceTypes.Information, "Info");
+				return false;
+			}
+			
+			for (var index = 0; index < me.roles.length; index++) {
+				if (me.roles[index].id == me.users[0].roleCurrent) {
+					me.hirNodeCurrentId = me.roles[index].hirNodeCurrent;
+					break;
+				}
+			}
+
 			me.hirOrgStore.fetch("userId:[user],hirOrgId:" + me.hirNodeCurrentId + ",ancestors:true", me.hirOrgsLoaded, me);
 		},
 		
@@ -929,7 +965,7 @@ ii.Class({
 				me.orgHierarchy.setData(orgNodes);
 			}
 			
-			ii.trace("Org/Management Nodes Loaded.", ii.traceTypes.Information, "Information");
+			ii.trace("Org/Management Nodes Loaded.", ii.traceTypes.Information, "Info");
 		},
 
 		actionSearchItem: function() {
@@ -976,7 +1012,7 @@ ii.Class({
 			$("#AppUnitText").removeClass("Loading");
 
 			if (me.units.length <= 0) {
-				ii.trace("Could not load the said Unit.", ii.traceTypes.Information, "Information");
+				ii.trace("Could not load the said Unit.", ii.traceTypes.Information, "Info");
 				alert("There is no corresponding Unit available or you do not have enough permission to access it.");
 				return;
 			}
@@ -986,7 +1022,7 @@ ii.Class({
 
 			$("#messageToUser").html("Loading");
 			$("#pageLoading").show();
-			ii.trace("Organization Nodes Loading", ii.traceTypes.Information, "Information");
+			ii.trace("Organization Nodes Loading", ii.traceTypes.Information, "Info");
 			me.searchNode = true;
 			me.hirOrgLoad("search");
 		},
@@ -1001,11 +1037,11 @@ ii.Class({
 			me.hirOrgStore.reset();
 			
 			if (args.flag)
-				me.hirOrgStore.fetch("userId:[user],hirOrgId:" + me.hirNodeCurrentId + ",hirNodeSearchId:" + me.hirNodeCurrentId + ",ancestors:true,sFilter:false", me.hirOrgsLoaded, me);
+				me.hirOrgStore.fetch("userId:[user],hirOrgId:" + me.hirNodeCurrentId + ",hirNodeSearchId:" + me.hirNodeCurrentId + ",ancestors:true", me.hirOrgsLoaded, me);
 			else
-				me.hirOrgStore.fetch("userId:[user],hirOrgId:" + me.hirNodeCurrentId + ",ancestors:true,sFilter:false", me.hirOrgsLoaded, me);
+				me.hirOrgStore.fetch("userId:[user],hirOrgId:" + me.hirNodeCurrentId + ",ancestors:true", me.hirOrgsLoaded, me);
 
-			ii.trace("Organization Nodes Loading", ii.traceTypes.Information, "Information");
+			ii.trace("Organization Nodes Loading", ii.traceTypes.Information, "Info");
 		},
 		
 		actionSearchSite: function() {

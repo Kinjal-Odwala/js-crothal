@@ -8,6 +8,16 @@ ii.init.register( function() {
 
 ii.init.register( function() {
 	
+	fin.adh.userArgs = {
+		id: {type: Number}
+		, roleCurrent: {type: Number, required: false, defaultValue: 0}
+	};
+
+	fin.adh.roleArgs = {
+		id: {type: Number}
+		, hirNodeCurrent: {type: Number, required: false, defaultValue: 0}
+	};
+	
 	fin.adh.moduleColumnHeaderArgs = {
 		id: {type: Number}
 		, columnType: {type: Number}
@@ -390,6 +400,30 @@ ii.init.register( function() {
 	}
 	
 }, 2);
+
+ii.Class({
+	Name: "fin.adh.User",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.userArgs);
+			$.extend(this, args);
+			
+			if (!this.appRoles) {
+				this.appRoles = [];
+			}
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.adh.Role",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.roleArgs);
+			$.extend(this, args);
+		}
+	}
+});
 
 ii.Class({
 	Name: "fin.adh.ModuleColumnHeader",
