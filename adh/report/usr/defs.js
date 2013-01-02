@@ -33,6 +33,7 @@ ii.init.register( function() {
 		
 	fin.adh.moduleColumnDataArgs = {
 		id: {type: Number}
+		, houseCodeId: {type: Number, required:false, defaultValue: 0}
 		, houseCode:{type: String, defaultValue: "0"}
 		, primeColumn:{type: String, defaultValue: "0"}
 		, columnData: {type: String, defaultValue: "" }
@@ -398,6 +399,11 @@ ii.init.register( function() {
 		title: {type: String, required: false, defaultValue: ""},
 		roleCurrent: {type: Boolean, required: false, defaultValue: false}
 	}
+	
+	fin.adh.houseCodePayrollCompanyArgs = {
+		id: {type: Number},
+		name: {type: String}
+	};
 	
 }, 2);
 
@@ -1051,6 +1057,16 @@ ii.Class({
 	Definition: {
 		init: function (){
 			var args = ii.args(arguments, fin.adh.userRoleArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.adh.HouseCodePayrollCompany",
+	Definition: {
+		init: function (){
+			var args = ii.args(arguments, fin.adh.houseCodePayrollCompanyArgs);
 			$.extend(this, args);
 		}
 	}
