@@ -833,8 +833,18 @@ ii.Class({
 				briefs += $("#txtBrief" + index).val() + "|";
 				
 				for (var indexI = 1; indexI <= 16; indexI++) {
-					if ($("#txtLevel" + indexI + "_" + index).val() != "")
-						fullPath += "\\" + $("#txtLevel" + indexI + "_" + index).val();
+					var level = $("#txtLevel" + indexI + "_" + index).val();
+					if (level != "") {
+						if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(level))) {
+							rowValid = false;
+							me.setCellColor($("#txtLevel" + indexI + "_" + index), me.cellColorInvalid, "The Level " + indexI + " can't contain any of the following characters: \\/:*?\"<>|.,");
+						}
+						else {
+							me.setCellColor($("#txtLevel" + indexI + "_" + index), me.cellColorValid, "");
+						}
+							
+						fullPath += "\\" + level;
+					}
 				}
 				
 				if (fullPath != prevFullPath) {
@@ -854,6 +864,10 @@ ii.Class({
 					rowValid = false;
 					me.setCellColor($("#txtTitle" + index), me.cellColorInvalid, "Please enter valid Title.");
 				}
+				else if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test($("#txtTitle" + index).val()))) {
+					rowValid = false;
+					me.setCellColor($("#txtTitle" + index), me.cellColorInvalid, "The Title can't contain any of the following characters: \\/:*?\"<>|.,");
+				}
 				else {
 					me.setCellColor($("#txtTitle" + index), me.cellColorValid, "");
 				}
@@ -861,6 +875,10 @@ ii.Class({
 				if ($("#txtDescription" + index).val() == "") {
 					rowValid = false;
 					me.setCellColor($("#txtDescription" + index), me.cellColorInvalid, "Please enter valid Description.");
+				}
+				else if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test($("#txtDescription" + index).val()))) {
+					rowValid = false;
+					me.setCellColor($("#txtDescription" + index), me.cellColorInvalid, "The Description can't contain any of the following characters: \\/:*?\"<>|.,");
 				}
 				else {
 					me.setCellColor($("#txtDescription" + index), me.cellColorValid, "");
@@ -1364,7 +1382,7 @@ ii.Class({
 								
 				xml += '<houseCodeImport';
 				xml += ' id="0"';
-				xml += ' fullPath="' + fullPath + '"';
+				xml += ' fullPath="' + ui.cmn.text.xml.encode(fullPath) + '"';
 				xml += ' brief="' + $("#txtBrief" + index).val() + '"';
 				xml += ' title="' + ui.cmn.text.xml.encode($("#txtTitle" + index).val()) + '"';
 				xml += ' description="' + ui.cmn.text.xml.encode($("#txtDescription" + index).val()) + '"';
@@ -1467,7 +1485,6 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-			var errorMessage = "";
 									
 			if (status == "success") {
 				me.pages[me.pageCurrent - 1].saved = true;
@@ -1476,12 +1493,9 @@ ii.Class({
 				$("#AnchorSave").hide();
 			}
 			else {
-				errorMessage = "Error while updating House Code Record: " + $(args.xmlNode).attr("message");
-				errorMessage += $(args.xmlNode).attr("error");
-				errorMessage += " [SAVE FAILURE]";
-				alert(errorMessage);				
+				alert("[SAVE FAILURE] Error while updating House Code record: " + $(args.xmlNode).attr("message"));
 			}
-			
+
 			$("#pageLoading").hide();
 		},
 		
