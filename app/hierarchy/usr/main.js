@@ -106,7 +106,7 @@ ii.Class({
 				$("input[id^='chkNodeM']").attr("checked", this.checked);
 			});
 
-			ii.trace("Hierarchy Nodes Loading", ii.traceTypes.Information, "Information");
+			ii.trace("Hierarchy Nodes Loading", ii.traceTypes.Information, "Info");
 			me.level.fetchingData();
 			me.hirLevelStore.fetch("userId:[user],hierarchy:2", me.hirLevelsLoaded, me);
 			me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
@@ -293,7 +293,11 @@ ii.Class({
 
 			me.title.makeEnterTab()
 				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required);
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					me.actionValidateItem();
+				});
 
 			me.active = new ui.ctl.Input.Check({
 		        id: "Active" 
@@ -644,7 +648,7 @@ ii.Class({
 		loggedInUsersLoaded: function fin_app_UserInterface_loggedInUsersLoaded(me, activeId) {
 
 			if (me.users.length == 0) {
-				ii.trace("Failed to load logged-in user information.", ii.traceTypes.Information, "Information");
+				ii.trace("Failed to load logged-in user information.", ii.traceTypes.Information, "Info");
 				return false;
 			}
 
@@ -658,7 +662,7 @@ ii.Class({
 			$("#messageToUser").text("Loading");
 			$("#pageLoading").show();
 
-			ii.trace("Logged in user info loaded", ii.traceTypes.Information, "Information");
+			ii.trace("Logged in user info loaded", ii.traceTypes.Information, "Info");
 			me.hirNodeStore.reset();
 			me.hirNodeStore.fetch("userId:[user],hirNodeSnapshotId:" + me.hirNodeCurrentId + ",ancestors:true", me.hirNodesLoaded, me);
 		},
@@ -726,7 +730,7 @@ ii.Class({
 			if (!found) {
 				$("#messageToUser").text("Loading");
 				$("#pageLoading").show();
-				ii.trace("Hirnodes Loading", ii.traceTypes.Information, "Information");
+				ii.trace("Hirnodes Loading", ii.traceTypes.Information, "Info");
 				me.hirNodeStore.fetch("userId:[user],hirNodeSnapshotId:" + me.hirNodeCurrentId + ",hirNodeSearchId:" + me.hirNodeCurrentId + ",ancestors:true", me.hirNodesLoaded, me);
 			}
 			else
@@ -860,7 +864,7 @@ ii.Class({
 				me.expand = false;
 				me.hirNodesTemp = [];
 				$("#pageLoading").hide();
-				ii.trace("Hirnodes Loaded", ii.traceTypes.Information, "Information");
+				ii.trace("Hirnodes Loaded", ii.traceTypes.Information, "Info");
 			}
 		},
 
@@ -1462,6 +1466,9 @@ ii.Class({
 
 			if (brief == "UNIT" && (!(ui.cmn.text.validate.generic(me.brief.getValue(), "^\\d+$"))))
 				me.brief.setInvalid("Unit-Brief expects a numeric value.");
+
+			if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.title.getValue())))
+				me.title.setInvalid("Please enter the correct Title. The title can't contain any of the following characters: \\/:*?\"<>|.,");
 		},
 
 		actionPreviewSnapshot: function() {
@@ -1829,7 +1836,6 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-			var errorMessage = "";
 
 			$("#pageLoading").hide();
 
@@ -1842,11 +1848,11 @@ ii.Class({
 							break;
 					}
 				});
-				ii.trace("Save Success", ii.traceTypes.Information, "Information");
+				ii.trace("Save Success", ii.traceTypes.Information, "Info");
 				me.updateNode(item);
 			}
 			else {
-				alert("Error while updating the hirnode snapshot information: " + $(args.xmlNode).attr("message")) + " [SAVE FAILURE]";
+				alert("[SAVE FAILURE] Error while updating the hirnode snapshot information: " + $(args.xmlNode).attr("message"));
 			}
 		}
 	}
