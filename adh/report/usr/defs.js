@@ -279,108 +279,115 @@ ii.init.register( function() {
 	};
 	
 	fin.adh.deviceGroupTypeArgs = {
-		id: {type: Number},
-		name: {type: String}
+		id: {type: Number}
+		, name: {type: String}
 	};
 	
 	fin.adh.jobCodeTypeArgs = {
-		id: {type: Number},
-		name: {type: String}
+		id: {type: Number}
+		, name: {type: String}
 	};
 	
 	fin.adh.rateChangeReasonTypeArgs = {
-		id: {type: Number},
-		name: {type: String}
+		id: {type: Number}
+		, name: {type: String}
 	};
 	
 	fin.adh.terminationReasonTypeArgs = {
-		id: {type: Number},
-		name: {type: String}
+		id: {type: Number}
+		, name: {type: String}
 	};
 	
 	fin.adh.workShiftArgs = {
-		id: {type: Number},
-		name: {type: String}
+		id: {type: Number}
+		, name: {type: String}
 	};
 	
 	fin.adh.ethnicityTypeArgs = {
-		id: {type: Number},
-		name: {type: String}
+		id: {type: Number}
+		, name: {type: String}
 	};
 
 	fin.adh.unionTypeArgs = {
-		id: {type: Number},
-		name: {type: String}
+		id: {type: Number}
+		, name: {type: String}
 	};
 	
 	fin.adh.payFrequencyTypeArgs = {
-		id: {type: Number},
-		name: {type: String}
+		id: {type: Number}
+		, name: {type: String}
 	};
 	
 	fin.adh.i9TypeArgs = {
-		id: {type: Number},
-		name: {type: String}
+		id: {type: Number}
+		, name: {type: String}
 	};
 	
 	fin.adh.vetTypeArgs = {
-		id: {type: Number},
-		name: {type: String}
+		id: {type: Number}
+		, name: {type: String}
 	};
 	
 	fin.adh.separationCodeArgs = {
-		id: {type: Number},
-		name: {type: String}
+		id: {type: Number}
+		, name: {type: String}
 	};
 	
 	fin.adh.jobStartReasonTypeArgs = {
-		id: {type: Number},
-		name: {type: String}
+		id: {type: Number}
+		, name: {type: String}
 	};
 
 	fin.adh.houseCodeJobArgs = {
-		id: {type: Number},
-		jobTitle: {type: String}
+		id: {type: Number}
+		, jobTitle: {type: String}
 	};
 	
 	fin.adh.localTaxCodeArgs = {
-		id: {type: Number},
-		name: {type: String}
+		id: {type: Number}
+		, name: {type: String}
 	};	
 	
 	fin.adh.statusCategoryTypeArgs = {
-		id: {type: Number},
-		name: {type: String}
+		id: {type: Number}
+		, name: {type: String}
 	};
 	
 	fin.adh.stateAdjustmentTypeArgs = {
-		id: {type: Number},
-		name: {type: String}
-	};	
-	fin.adh.sdiAdjustmentTypeArgs = {
-		id: {type: Number},
-		name: {type: String}
+		id: {type: Number}
+		, name: {type: String}
 	};
+	
+	fin.adh.sdiAdjustmentTypeArgs = {
+		id: {type: Number}
+		, name: {type: String}
+	};
+	
 	fin.adh.maritalStatusFederalTaxTypeArgs = {
-		id: {type: Number},
-		name: {type: String}
-	};	
+		id: {type: Number}
+		, name: {type: String}
+	};
+	
 	fin.adh.genderTypeArgs = {
 		id: {type: Number}
 		, name: {type: String}
 	};
+	
 	fin.adh.localTaxAdjustmentTypeArgs = {
-		id: {type: Number},
-		name: {type: String}
+		id: {type: Number}
+		, name: {type: String}
 	};
+	
 	fin.adh.secMaritalStatusTypeArgs = {
-		id: {type: Number},
-		name: {type: String}
+		id: {type: Number}
+		, name: {type: String}
 	};
+	
 	fin.adh.federalAdjustmentArgs = {
-		id: {type: Number},
-		name: {type: String}
+		id: {type: Number}
+		, name: {type: String}
 	};
+	
 	fin.adh.payrollCompanyArgs = {
 		id: {type: Number},
 		name: {type: String}
@@ -388,23 +395,24 @@ ii.init.register( function() {
 	fin.adh.basicLifeIndicatorTypeArgs = {
 		id: {type: Number}
 		, name: {type: String}
-	};	
+	};
+	
 	fin.adh.employeeGeneralArgs = {
 		id: {type: Number}
 	};
 	
-	fin.adh.userRoleArgs = {
-		id: {type: Number},
-		name: {type: String, required: false, defaultValue: ""},
-		title: {type: String, required: false, defaultValue: ""},
-		roleCurrent: {type: Boolean, required: false, defaultValue: false}
-	}
-	
 	fin.adh.houseCodePayrollCompanyArgs = {
-		id: {type: Number},
-		name: {type: String}
+		id: {type: Number}
+		, name: {type: String}
 	};
 	
+	fin.adh.userRoleArgs = {
+		id: {type: Number}
+		, name: {type: String, required: false, defaultValue: ""}
+		, title: {type: String, required: false, defaultValue: ""}
+		, roleCurrent: {type: Boolean, required: false, defaultValue: false}
+	}
+
 }, 2);
 
 ii.Class({
@@ -805,7 +813,7 @@ ii.Class({
 ii.Class({
 	Name: "fin.adh.DeviceGroupType",
 	Definition: {
-		init: function (){
+		init: function() {
 			var args = ii.args(arguments, fin.adh.deviceGroupTypeArgs);
 			$.extend(this, args);
 		}
@@ -815,7 +823,7 @@ ii.Class({
 ii.Class({
 	Name: "fin.adh.JobCodeType",
 	Definition: {
-		init: function (){
+		init: function() {
 			var args = ii.args(arguments, fin.adh.jobCodeTypeArgs);
 			$.extend(this, args);
 		}
@@ -825,7 +833,7 @@ ii.Class({
 ii.Class({
 	Name: "fin.adh.RateChangeReasonType",
 	Definition: {
-		init: function (){
+		init: function() {
 			var args = ii.args(arguments, fin.adh.rateChangeReasonTypeArgs);
 			$.extend(this, args);
 		}
@@ -835,7 +843,7 @@ ii.Class({
 ii.Class({
 	Name: "fin.adh.TerminationReasonType",
 	Definition: {
-		init: function (){
+		init: function() {
 			var args = ii.args(arguments, fin.adh.terminationReasonTypeArgs);
 			$.extend(this, args);
 		}
@@ -845,7 +853,7 @@ ii.Class({
 ii.Class({
 	Name: "fin.adh.WorkShift",
 	Definition: {
-		init: function (){
+		init: function() {
 			var args = ii.args(arguments, fin.adh.workShiftArgs);
 			$.extend(this, args);
 		}
@@ -855,7 +863,7 @@ ii.Class({
 ii.Class({
 	Name: "fin.adh.EthnicityType",
 	Definition: {
-		init: function (){
+		init: function() {
 			var args = ii.args(arguments, fin.adh.ethnicityTypeArgs);
 			$.extend(this, args);
 		}
@@ -865,7 +873,7 @@ ii.Class({
 ii.Class({
 	Name: "fin.adh.UnionType",
 	Definition: {
-		init: function (){
+		init: function() {
 			var args = ii.args(arguments, fin.adh.unionTypeArgs);
 			$.extend(this, args);
 		}
@@ -875,7 +883,7 @@ ii.Class({
 ii.Class({
 	Name: "fin.adh.PayFrequencyType",
 	Definition: {
-		init: function (){
+		init: function() {
 			var args = ii.args(arguments, fin.adh.payFrequencyTypeArgs);
 			$.extend(this, args);
 		}
@@ -885,7 +893,7 @@ ii.Class({
 ii.Class({
 	Name: "fin.adh.I9Type",
 	Definition: {
-		init: function (){
+		init: function() {
 			var args = ii.args(arguments, fin.adh.i9TypeArgs);
 			$.extend(this, args);
 		}
@@ -895,7 +903,7 @@ ii.Class({
 ii.Class({
 	Name: "fin.adh.VetType",
 	Definition: {
-		init: function (){
+		init: function() {
 			var args = ii.args(arguments, fin.adh.vetTypeArgs);
 			$.extend(this, args);
 		}
@@ -905,7 +913,7 @@ ii.Class({
 ii.Class({
 	Name: "fin.adh.SeparationCode",
 	Definition: {
-		init: function (){
+		init: function() {
 			var args = ii.args(arguments, fin.adh.separationCodeArgs);
 			$.extend(this, args);
 		}
@@ -915,7 +923,7 @@ ii.Class({
 ii.Class({
 	Name: "fin.adh.JobStartReasonType",
 	Definition: {
-		init: function (){
+		init: function() {
 			var args = ii.args(arguments, fin.adh.jobStartReasonTypeArgs);
 			$.extend(this, args);
 		}
@@ -925,7 +933,7 @@ ii.Class({
 ii.Class({
 	Name: "fin.adh.HouseCodeJob",
 	Definition: {
-		init: function () {
+		init: function() {
 			var args = ii.args(arguments, fin.adh.houseCodeJobArgs);
 			$.extend(this, args);
 		}
@@ -945,7 +953,7 @@ ii.Class({
 ii.Class({
 	Name: "fin.adh.StatusCategoryType",
 	Definition: {
-		init: function (){
+		init: function() {
 			var args = ii.args(arguments, fin.adh.statusCategoryTypeArgs);
 			$.extend(this, args);
 		}
@@ -1055,7 +1063,7 @@ ii.Class({
 ii.Class({
 	Name: "fin.adh.UserRole",
 	Definition: {
-		init: function (){
+		init: function() {
 			var args = ii.args(arguments, fin.adh.userRoleArgs);
 			$.extend(this, args);
 		}
@@ -1065,7 +1073,7 @@ ii.Class({
 ii.Class({
 	Name: "fin.adh.HouseCodePayrollCompany",
 	Definition: {
-		init: function (){
+		init: function() {
 			var args = ii.args(arguments, fin.adh.houseCodePayrollCompanyArgs);
 			$.extend(this, args);
 		}
