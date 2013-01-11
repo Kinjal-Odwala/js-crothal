@@ -85,7 +85,7 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 
-			ii.timer.timing("Page Displayed");
+			ii.timer.timing("Page displayed");
 			me.session.registerFetchNotify(me.sessionLoaded, me);
 		},
 
@@ -94,7 +94,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("Session Loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 
 		resize: function() {
@@ -226,7 +226,11 @@ ii.Class({
 				var index = me.appModuleColumnGrid.rows.length - 1;
 				if (me.appModuleColumnGrid.activeRowIndex != -1)
 					index = me.renderRowIndex;
-                return "<center><input type=\"checkbox\" id=\"filterInputCheck" + index + "\" class=\"iiInputCheck\"" + (data.columnTypeFilter == 1 ? checked='checked' : '') + " onclick=\"fin.adhUi.actionClickItem(this," + index + ");\" /></center>";
+
+				if (me.appModuleColumnGrid.data[index].filter)
+                	return "<center><input type=\"checkbox\" id=\"filterInputCheck" + index + "\" class=\"iiInputCheck\"" + (data.columnTypeFilter == 1 ? checked='checked' : '') + " onclick=\"fin.adhUi.actionClickItem(this," + index + ");\" /></center>";
+				else
+					return "";
             });	
 
 			me.appModuleColumnGrid.addColumn("columnType6", "", "Sort By Asc", "Sort By Asc", 95, function(data) {
@@ -269,7 +273,7 @@ ii.Class({
 
 			me.moduleColumns = [];
 			me.moduleColumnStore = me.cache.register({
-				storeId: "AdhReportColumns",
+				storeId: "adhReportColumns",
 				itemConstructor: fin.adh.ModuleColumn,
 				itemConstructorArgs: fin.adh.moduleColumnArgs,
 				injectionArray: me.moduleColumns
@@ -277,7 +281,7 @@ ii.Class({
 
 			me.reports = [];
 			me.reportStore = me.cache.register({
-				storeId: "AdhReports",
+				storeId: "adhReports",
 				itemConstructor: fin.adh.Report,
 				itemConstructorArgs: fin.adh.reportArgs,
 				injectionArray: me.reports
@@ -285,7 +289,7 @@ ii.Class({
 
 			me.moduleAssociates = [];
 			me.moduleAssociateStore = me.cache.register({
-				storeId: "AppModuleAssociates",
+				storeId: "appModuleAssociates",
 				itemConstructor: fin.adh.ModuleAssociate,
 				itemConstructorArgs: fin.adh.moduleAssociateArgs,
 				injectionArray: me.moduleAssociates
@@ -309,7 +313,7 @@ ii.Class({
 				}
 			}
 
-			me.modules.unshift(new fin.adh.Module({ id: 0, number: 0, name: "None", description: "", associateModule: "" }));
+			me.modules.unshift(new fin.adh.Module({ id: 0, name: "None", description: "", associateModule: "" }));
 			me.module.setData(me.modules);
 			me.module.select(0, me.module.focused);
 			me.reportStore.fetch("userId:[user]", me.reportLoaded, me);
@@ -631,14 +635,14 @@ ii.Class({
 				columnTypeOperator = 0;
 				sortOrder = "";
 
-				if (($("#editableInputRadio" + index)[0].checked))
+				if ($("#editableInputRadio" + index)[0].checked)
 					columnType = 1;
-				else if	(($("#hiddenInputRadio" + index)[0].checked))
+				else if	($("#hiddenInputRadio" + index)[0].checked)
 					columnType = 2;
-				else if	(($("#readOnlyInputRadio" + index)[0].checked))
+				else if	($("#readOnlyInputRadio" + index)[0].checked)
 					columnType = 3;
 
-				if ($("#filterInputCheck" + index)[0].checked) {
+				if (me.appModuleColumnGrid.data[index].filter && $("#filterInputCheck" + index)[0].checked) {
 					columnTypeFilter = 1;
 					columnTypeOperator = 1;
 				}
@@ -651,6 +655,29 @@ ii.Class({
 
 				if (sortOrder == "Asc" || sortOrder == "Desc")
 					sortColumnsCount++;
+
+				if ($("#editableInputRadio" + index)[0].checked && me.appModuleColumnGrid.data[index].dependantColumns != "") {
+					var dependantColumns = me.appModuleColumnGrid.data[index].dependantColumns.split(",");
+					var message = "";
+					var found = true;
+					
+					for (var iIndex = 0; iIndex < dependantColumns.length; iIndex++) {
+						
+						for (var colIndex = 0; colIndex < me.appModuleColumnGrid.data.length; colIndex++) {
+							if (me.appModuleColumnGrid.data[colIndex].title == dependantColumns[iIndex]) {
+								if (!(($("#editableInputRadio" + colIndex)[0].checked) || ($("#hiddenInputRadio" + colIndex)[0].checked) || ($("#readOnlyInputRadio" + colIndex)[0].checked))) {
+									found = false;
+									message += (message == "" ? me.appModuleColumnGrid.data[colIndex].description : ", " + me.appModuleColumnGrid.data[colIndex].description);
+								}
+							}
+						}
+					}
+
+					if (!found) {
+						alert(me.appModuleColumnGrid.data[index].description + " is dependant on " + message + ". Please select the " + message + " column(s).");
+						return;
+					}
+				}
 
 				xml += '<adhReportColumn';
 				xml += ' id="' + 0 + '"';

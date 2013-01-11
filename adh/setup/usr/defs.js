@@ -10,7 +10,6 @@ ii.init.register( function() {
 	
 	fin.adh.moduleArgs = {
 		id: {type: Number}
-		, number: {type: Number}
 		, name: {type: String}
 		, description: {type: String}
 		, associateModule: {type: Boolean, required: false, defaultValue:false}
@@ -18,16 +17,18 @@ ii.init.register( function() {
 	
 	fin.adh.moduleColumnArgs = {
 		id: {type: Number}
-		, columnType: {type: Number}
 		, reportColumn: {type: Number}
+		, title: {type: String, required: false, defaultValue: ""}
+		, description: {type: String, required: false, defaultValue: ""}
+		, columnType: {type: Number}
 		, columnTypeFilter: {type: Boolean}
 		, columnTypeOperator: {type: Boolean}
 		, sortOrder: {type: String, required: false, defaultValue: ""}
-		, columnValidation: {type: String, required: false, defaultValue: ""}
-		, description: {type: String}	
+		, filter: {type: Boolean, required: false, defaultValue: true}
+		, dependantColumns: {type: String, required: false, defaultValue: ""}
 	};
 	
-		fin.adh.reportArgs = {
+	fin.adh.reportArgs = {
 		id: {type: Number}
 		, title: {type: String}
 		, module: {type: String}	
@@ -38,10 +39,8 @@ ii.init.register( function() {
 	
 	fin.adh.moduleAssociateArgs = {
 		id: {type: Number}
-		, number: {type: Number}
 		, name: {type: String}
-		, description: {type: String}
-		
+		, description: {type: String}		
 	};
 	
 }, 2);
