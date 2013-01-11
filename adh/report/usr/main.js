@@ -33,8 +33,6 @@ ii.Class({
 			
 			me.reportId = 0;
 			me.delimitedOrgSelectedNodes = "";
-			me.rowId = 0;
-			me.pkId = 0;
 			me.rowModifed = false;
 			me.rowEdit = true;
 			me.columnType = 0;
@@ -46,6 +44,7 @@ ii.Class({
 			me.houseCodeSortOrder = "Asc";
 			me.typesLoadedCount = 0;
 			me.loadDependentTypes = [];
+			me.gridData = [];
 			
 			// Pagination setup
 			me.startPoint = 1;
@@ -88,34 +87,28 @@ ii.Class({
 
 			me.defineFormControls();			
 			me.configureCommunications();
-
+			me.anchorLoad.display(ui.cmn.behaviorStates.disabled);
 			me.report.fetchingData();
 
-			//me.userRoleStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-			
 			me.siteMasterStore.fetch("userId:[user],siteId:1", me.siteMastersLoaded, me);
 			me.serviceTypeStore.fetch("userId:[user],", me.houseCodeServiceLoaded, me);
 			me.localTaxCodeStore.fetch("payrollCompany:0,appState:0,userId:[user]", me.siteMastersLoaded, me);
 			me.maritalStatusStateTaxTypeSecondaryStore.fetch("appState:0,userId:[user]", me.siteMastersLoaded, me);
-			
 			me.statusTypeStore.fetch("userId:[user],personId:0", me.siteMastersLoaded, me);
 			me.payFrequencyTypeStore.fetch("userId:[user]", me.siteMastersLoaded, me);
 			me.federalAdjustmentStore.fetch("userId:[user]", me.siteMastersLoaded, me);
 			me.sdiAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
 			me.stateAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
 			me.maritalStatusFederalTaxTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-			me.companyStore.fetch("userId:[user]", me.maritalStatusTypesLoaded, me);
+			me.payrollCompanyStore.fetch("userId:[user]", me.maritalStatusTypesLoaded, me);
 			me.localTaxAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
 			me.separationCodeStore.fetch("userId:[user],terminationType:0,", me.maritalStatusTypesLoaded, me);
-			//me.stateStore.fetch("userId:[user]", me.siteMastersLoaded, me);
-			
-			me.anchorLoad.display(ui.cmn.behaviorStates.disabled);
-			
+
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$("#divAdhReportGrid").bind("scroll", me.adhRportGridScroll);
 		},
-		
+
 		authorizationProcess: function fin_adh_report_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments, {});
 			var me = this;
@@ -313,7 +306,7 @@ ii.Class({
 			
 			me.moduleColumnHeaders = [];
 			me.moduleColumnHeaderStore = me.cache.register({
-				storeId: "AdhReportColumnHeaders",
+				storeId: "adhReportColumnHeaders",
 				itemConstructor: fin.adh.ModuleColumnHeader,
 				itemConstructorArgs: fin.adh.moduleColumnHeaderArgs,
 				injectionArray: me.moduleColumnHeaders
@@ -321,7 +314,7 @@ ii.Class({
 			
 			me.moduleColumnDatas = [];
 			me.moduleColumnDataStore = me.cache.register({
-				storeId: "AdhReportColumnDatas",
+				storeId: "adhReportColumnDatas",
 				itemConstructor: fin.adh.ModuleColumnData,
 				itemConstructorArgs: fin.adh.moduleColumnDataArgs,
 				injectionArray: me.moduleColumnDatas
@@ -329,7 +322,7 @@ ii.Class({
 			
 			me.reports = [];
 			me.reportStore = me.cache.register({
-				storeId: "AdhReports",
+				storeId: "adhReports",
 				itemConstructor: fin.adh.Report,
 				itemConstructorArgs: fin.adh.reportArgs,
 				injectionArray: me.reports
@@ -337,7 +330,7 @@ ii.Class({
 						
 			me.reportFilters = [];
 			me.reportFilterStore = me.cache.register({
-				storeId: "ReportFilters",
+				storeId: "adhReportFilters",
 				itemConstructor: fin.adh.ReportFilter,
 				itemConstructorArgs: fin.adh.reportFilterArgs,
 				injectionArray: me.reportFilters
@@ -345,11 +338,19 @@ ii.Class({
 			
 			me.adhFileNames = [];
 			me.adhFileNameStore = me.cache.register({
-				storeId: "AdhFileNames",
+				storeId: "adhFileNames",
 				itemConstructor: fin.adh.AdhFileName,
 				itemConstructorArgs: fin.adh.adhFileNameArgs,
 				injectionArray: me.adhFileNames
-			});		
+			});
+			
+			me.reportTotalRows = [];
+			me.reportTotalRowStore = me.cache.register({
+				storeId: "adhReportTotalRows",
+				itemConstructor: fin.adh.ReportTotalRow,
+				itemConstructorArgs: fin.adh.reportTotalRowArgs,
+				injectionArray: me.reportTotalRows
+			});
 			
 			me.units = [];
 			me.unitStore = me.cache.register({
@@ -357,14 +358,6 @@ ii.Class({
 				itemConstructor: fin.adh.AppUnit,
 				itemConstructorArgs: fin.adh.appUnitArgs,
 				injectionArray: me.units
-			});
-			
-			me.reportTotalRows = [];
-			me.reportTotalRowStore = me.cache.register({
-				storeId: "AdhReportTotalRows",
-				itemConstructor: fin.adh.ReportTotalRow,
-				itemConstructorArgs: fin.adh.reportTotalRowArgs,
-				injectionArray: me.reportTotalRows
 			});
 			
 			me.hirOrgs = [];
@@ -791,12 +784,12 @@ ii.Class({
 				injectionArray: me.federalAdjustments	
 			});
 			
-			me.companies = [];
-			me.companyStore = me.cache.register({
+			me.payrollCompanies = [];
+			me.payrollCompanyStore = me.cache.register({
 				storeId: "payrollCompanys",
 				itemConstructor: fin.adh.PayrollCompany,
 				itemConstructorArgs: fin.adh.payrollCompanyArgs,
-				injectionArray: me.companies
+				injectionArray: me.payrollCompanies
 			});	
 			
 			me.basicLifeIndicatorTypes = [];
@@ -835,13 +828,14 @@ ii.Class({
 		typeNoneAdd: function () {
 			var args = ii.args(arguments, {
 				data: {type: [Object]}
+				, title: {type: String, required: false, defaultValue: ""}
 			});			
 			var me = this;
 			
 			//index > 0, condition is included as some droplist already has None as type in it.
-			var index = me.findIndexByTitle("None", args.data);
+			var index = me.findIndexByTitle(args.title, args.data);
 			if (index == null || index > 0) 
-				args.data.unshift({ id: 0, name: "None" });
+				args.data.unshift({ id: 0, name: args.title });
 		},
 		
 		findIndexByTitle: function ii_ajax_util_findIndexByTitle() {
@@ -909,8 +903,8 @@ ii.Class({
 					}
 				}
 			}
-			
-			me.typeNoneAdd(me.reports);	
+
+			me.typeNoneAdd(me.reports, "None");	
 			me.report.setData(me.reports);
 			me.report.select(0, me.report.focused);
 			me.resizeControls();
@@ -1091,163 +1085,163 @@ ii.Class({
 			var columnName = "";
 
 			me.typeTableFound = false;
-			me.typesLoadedCount = 0;
-
-			for (var index = 0; index < me.reportFilters.length; index++) {
-
-				tableName = me.reportFilters[index].referenceTableName;
-				columnName = me.reportFilters[index].title;
-
-				if (tableName != "") {
-					if (tableName == "EmpMaritalStatusTypes") {
-						if (me.maritalStatusTypeStore.fetchedCriteria["storeId:maritalStatusTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-							me.typeTableFound = true;
-							me.typesLoadedCount++;
-							me.maritalStatusTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-						}
-					}
-					else if (tableName == "EmpStatusTypes") {
-						if (me.statusTypeStore.fetchedCriteria["storeId:statusTypes,userId:[user],personId:0,"] != ii.ajax.fetchStatusTypes.fetched) {
-							me.typeTableFound = true;
-							me.typesLoadedCount++;
-							me.statusTypeStore.fetch("userId:[user],personId:0,", me.maritalStatusTypesLoaded, me);
-						}
-					}
-					else if (tableName == "EmpDeviceGroupTypes") {
-						if (me.deviceGroupStore.fetchedCriteria["storeId:deviceGroupTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-							me.typeTableFound = true;
-							me.typesLoadedCount++;
-							me.deviceGroupStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-						}
-					}
-					else if (tableName == "EmpJobCodeTypes") {
-						if (me.jobCodeStore.fetchedCriteria["storeId:jobCodes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-							me.typeTableFound = true;
-							me.typesLoadedCount++;
-							me.jobCodeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-						}
-					}
-					else if (tableName == "EmpRateChangeReasonTypes") {
-						if (me.rateChangeReasonStore.fetchedCriteria["storeId:rateChangeReasons,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-							me.typeTableFound = true;
-							me.typesLoadedCount++;
-							me.rateChangeReasonStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-						}
-					}
-					else if (tableName == "EmpTerminationReasonTypes") {
-						if (me.terminationReasonStore.fetchedCriteria["storeId:terminationReasons,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-							me.typeTableFound = true;
-							me.typesLoadedCount++;
-							me.terminationReasonStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-						}
-					}
-					else if (tableName == "EmpWorkShifts") {
-						if (me.workShiftStore.fetchedCriteria["storeId:workShifts,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-							me.typeTableFound = true;
-							me.typesLoadedCount++;
-							me.workShiftStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-						}
-					}
-					else if (tableName == "EmpEthnicityTypes") {
-						if (me.ethnicityTypeStore.fetchedCriteria["storeId:ethnicityTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-							me.typeTableFound = true;
-							me.typesLoadedCount++;
-							me.ethnicityTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-						}
-					}
-					else if (tableName == "EmpUnionTypes") {
-						if (me.unionTypeStore.fetchedCriteria["storeId:unionTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-							me.typeTableFound = true;
-							me.typesLoadedCount++;
-							me.unionTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-						}
-					}
-					else if (tableName == "PayPayFrequencyTypes") {
-						if (me.payFrequencyTypeStore.fetchedCriteria["storeId:frequencyTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-							me.typeTableFound = true;
-							me.typesLoadedCount++;
-							me.payFrequencyTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-						}
-					}
-//					else if (tableName == "EmpSeparationCodes") {
-//						if (me.separationCodeStore.fetchedCriteria["storeId:separationCodes,userId:[user],terminationType:0,"] != ii.ajax.fetchStatusTypes.fetched) {
+//			me.typesLoadedCount = 0;
+//
+//			for (var index = 0; index < me.reportFilters.length; index++) {
+//
+//				tableName = me.reportFilters[index].referenceTableName;
+//				columnName = me.reportFilters[index].title;
+//
+//				if (tableName != "") {
+//					if (tableName == "EmpMaritalStatusTypes") {
+//						if (me.maritalStatusTypeStore.fetchedCriteria["storeId:maritalStatusTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
 //							me.typeTableFound = true;
 //							me.typesLoadedCount++;
-//							me.separationCodeStore.fetch("userId:[user],terminationType:0,", me.maritalStatusTypesLoaded, me);
+//							me.maritalStatusTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
 //						}
 //					}
-					else if (tableName == "EmpJobStartReasonTypes") {
-						if (me.jobStartReasonTypeStore.fetchedCriteria["storeId:jobStartReasonTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-							me.typeTableFound = true;
-							me.typesLoadedCount++;
-							me.jobStartReasonTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-						}
-					}
-					else if (tableName == "EmpI9Types") {
-						if (me.i9TypeStore.fetchedCriteria["storeId:i9Types,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-							me.typeTableFound = true;
-							me.typesLoadedCount++;
-							me.i9TypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-						}
-					}
-					else if (tableName == "EmpVetTypes") {
-						if (me.vetTypeStore.fetchedCriteria["storeId:vetTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-							me.typeTableFound = true;
-							me.typesLoadedCount++;
-							me.vetTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-						}
-					}
-//					else if (tableName == "EmpStatusCategoryTypes") {
-//						if (me.statusCategoryTypeStore.fetchedCriteria["storeId:statusCategoryTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
+//					else if (tableName == "EmpStatusTypes") {
+//						if (me.statusTypeStore.fetchedCriteria["storeId:statusTypes,userId:[user],personId:0,"] != ii.ajax.fetchStatusTypes.fetched) {
 //							me.typeTableFound = true;
 //							me.typesLoadedCount++;
-//							me.statusCategoryTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
+//							me.statusTypeStore.fetch("userId:[user],personId:0,", me.maritalStatusTypesLoaded, me);
 //						}
 //					}
-//					else if (tableName == "EmpStateAdjustmentTypes") {
-//						if (me.stateAdjustmentTypeStore.fetchedCriteria["storeId:stateAdjustmentTypes,appState:0,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
+//					else if (tableName == "EmpDeviceGroupTypes") {
+//						if (me.deviceGroupStore.fetchedCriteria["storeId:deviceGroupTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
 //							me.typeTableFound = true;
 //							me.typesLoadedCount++;
-//							me.stateAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
+//							me.deviceGroupStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
 //						}
 //					}
-//					else if (tableName == "EmpSDIAdjustmentTypes") {
-//						if (me.sdiAdjustmentTypeStore.fetchedCriteria["storeId:sdiAdjustmentTypes,appState:0,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
+//					else if (tableName == "EmpJobCodeTypes") {
+//						if (me.jobCodeStore.fetchedCriteria["storeId:jobCodes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
 //							me.typeTableFound = true;
 //							me.typesLoadedCount++;
-//							me.sdiAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
+//							me.jobCodeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
 //						}
 //					}
-					else if (tableName == "EmpMaritalStatusFederalTaxTypes") {
-						if (me.maritalStatusFederalTaxTypeStore.fetchedCriteria["storeId:maritalStatusFederalTaxTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-							me.typeTableFound = true;
-							me.typesLoadedCount++;
-							me.maritalStatusFederalTaxTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-						}
-					}
-//					else if (tableName == "EmpLocalTaxAdjustmentTypes") {
-//						if (me.localTaxAdjustmentTypeStore.fetchedCriteria["storeId:localTaxAdjustmentTypes,appState:0,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
+//					else if (tableName == "EmpRateChangeReasonTypes") {
+//						if (me.rateChangeReasonStore.fetchedCriteria["storeId:rateChangeReasons,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
 //							me.typeTableFound = true;
 //							me.typesLoadedCount++;
-//							me.localTaxAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
+//							me.rateChangeReasonStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
 //						}
 //					}
-					else if (tableName == "EmpFederalAdjustmentTypes") {
-						if (me.federalAdjustmentStore.fetchedCriteria["storeId:employeePayrollMasters,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-							me.typeTableFound = true;
-							me.typesLoadedCount++;
-							me.federalAdjustmentStore.fetch("userId:[user]", me.maritalStatusTypesLoaded, me);
-						}
-					}
-					else if (tableName == "PayPayrollCompanies") {
-						if (me.companyStore.fetchedCriteria["storeId:payrollCompanys,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-							me.typeTableFound = true;
-							me.typesLoadedCount++;
-							me.companyStore.fetch("userId:[user]", me.maritalStatusTypesLoaded, me);
-						}
-					}
-				}
-			}
+//					else if (tableName == "EmpTerminationReasonTypes") {
+//						if (me.terminationReasonStore.fetchedCriteria["storeId:terminationReasons,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
+//							me.typeTableFound = true;
+//							me.typesLoadedCount++;
+//							me.terminationReasonStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
+//						}
+//					}
+//					else if (tableName == "EmpWorkShifts") {
+//						if (me.workShiftStore.fetchedCriteria["storeId:workShifts,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
+//							me.typeTableFound = true;
+//							me.typesLoadedCount++;
+//							me.workShiftStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
+//						}
+//					}
+//					else if (tableName == "EmpEthnicityTypes") {
+//						if (me.ethnicityTypeStore.fetchedCriteria["storeId:ethnicityTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
+//							me.typeTableFound = true;
+//							me.typesLoadedCount++;
+//							me.ethnicityTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
+//						}
+//					}
+//					else if (tableName == "EmpUnionTypes") {
+//						if (me.unionTypeStore.fetchedCriteria["storeId:unionTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
+//							me.typeTableFound = true;
+//							me.typesLoadedCount++;
+//							me.unionTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
+//						}
+//					}
+//					else if (tableName == "PayPayFrequencyTypes") {
+//						if (me.payFrequencyTypeStore.fetchedCriteria["storeId:frequencyTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
+//							me.typeTableFound = true;
+//							me.typesLoadedCount++;
+//							me.payFrequencyTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
+//						}
+//					}
+////					else if (tableName == "EmpSeparationCodes") {
+////						if (me.separationCodeStore.fetchedCriteria["storeId:separationCodes,userId:[user],terminationType:0,"] != ii.ajax.fetchStatusTypes.fetched) {
+////							me.typeTableFound = true;
+////							me.typesLoadedCount++;
+////							me.separationCodeStore.fetch("userId:[user],terminationType:0,", me.maritalStatusTypesLoaded, me);
+////						}
+////					}
+//					else if (tableName == "EmpJobStartReasonTypes") {
+//						if (me.jobStartReasonTypeStore.fetchedCriteria["storeId:jobStartReasonTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
+//							me.typeTableFound = true;
+//							me.typesLoadedCount++;
+//							me.jobStartReasonTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
+//						}
+//					}
+//					else if (tableName == "EmpI9Types") {
+//						if (me.i9TypeStore.fetchedCriteria["storeId:i9Types,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
+//							me.typeTableFound = true;
+//							me.typesLoadedCount++;
+//							me.i9TypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
+//						}
+//					}
+//					else if (tableName == "EmpVetTypes") {
+//						if (me.vetTypeStore.fetchedCriteria["storeId:vetTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
+//							me.typeTableFound = true;
+//							me.typesLoadedCount++;
+//							me.vetTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
+//						}
+//					}
+////					else if (tableName == "EmpStatusCategoryTypes") {
+////						if (me.statusCategoryTypeStore.fetchedCriteria["storeId:statusCategoryTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
+////							me.typeTableFound = true;
+////							me.typesLoadedCount++;
+////							me.statusCategoryTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
+////						}
+////					}
+////					else if (tableName == "EmpStateAdjustmentTypes") {
+////						if (me.stateAdjustmentTypeStore.fetchedCriteria["storeId:stateAdjustmentTypes,appState:0,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
+////							me.typeTableFound = true;
+////							me.typesLoadedCount++;
+////							me.stateAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
+////						}
+////					}
+////					else if (tableName == "EmpSDIAdjustmentTypes") {
+////						if (me.sdiAdjustmentTypeStore.fetchedCriteria["storeId:sdiAdjustmentTypes,appState:0,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
+////							me.typeTableFound = true;
+////							me.typesLoadedCount++;
+////							me.sdiAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
+////						}
+////					}
+//					else if (tableName == "EmpMaritalStatusFederalTaxTypes") {
+//						if (me.maritalStatusFederalTaxTypeStore.fetchedCriteria["storeId:maritalStatusFederalTaxTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
+//							me.typeTableFound = true;
+//							me.typesLoadedCount++;
+//							me.maritalStatusFederalTaxTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
+//						}
+//					}
+////					else if (tableName == "EmpLocalTaxAdjustmentTypes") {
+////						if (me.localTaxAdjustmentTypeStore.fetchedCriteria["storeId:localTaxAdjustmentTypes,appState:0,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
+////							me.typeTableFound = true;
+////							me.typesLoadedCount++;
+////							me.localTaxAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
+////						}
+////					}
+//					else if (tableName == "EmpFederalAdjustmentTypes") {
+//						if (me.federalAdjustmentStore.fetchedCriteria["storeId:employeePayrollMasters,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
+//							me.typeTableFound = true;
+//							me.typesLoadedCount++;
+//							me.federalAdjustmentStore.fetch("userId:[user]", me.maritalStatusTypesLoaded, me);
+//						}
+//					}
+//					else if (tableName == "PayPayrollCompanies") {
+//						if (me.payrollCompanyStore.fetchedCriteria["storeId:payrollCompanys,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
+//							me.typeTableFound = true;
+//							me.typesLoadedCount++;
+//							me.payrollCompanyStore.fetch("userId:[user]", me.maritalStatusTypesLoaded, me);
+//						}
+//					}
+//				}
+//			}
 			
 			if (!me.typeTableFound)
 				me.setReportFilters();
@@ -1279,7 +1273,7 @@ ii.Class({
 							rowData += "<td align='left'><input type='checkbox' name='" + me.reportFilters[index].title + "' id='" + me.reportFilters[index].title + "'></input></td>";
 						}
 						else if (contorlValidation.toLowerCase() == "datetime" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator == 1) {
-							rowData += "<td align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, '') + "</td>";
+							rowData += "<td align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'datetime') + "</td>";
 							rowData += "<td align='left'><input  class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
 							rowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
 						}
@@ -1288,7 +1282,7 @@ ii.Class({
 							rowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
 						}
 						else if (contorlValidation.toLowerCase() == "int" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator == 1) {
-							rowData += "<td align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, '') + "</td>";
+							rowData += "<td align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'int') + "</td>";
 							rowData += "<td align='left'><input  class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
 							rowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
 						}
@@ -1297,7 +1291,7 @@ ii.Class({
 							rowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
 						}
 						else if (contorlValidation.toLowerCase() == "decimal" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator == 1) {
-							rowData += "<td align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, '') + "</td>";
+							rowData += "<td align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'decimal') + "</td>";
 							rowData += "<td align='left'><input  class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
 							rowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
 						}
@@ -1319,7 +1313,7 @@ ii.Class({
 						}
 					}
 					else 
-						rowData += "<td align='left' colspan='2'>" + me.populateDropDown(me.reportFilters[index].referenceTableName, me.reportFilters[index].title, 'filter', 0, 0, 0, 0, 0, 0) + "</td>";
+						rowData += "<td align='left' colspan='2'>" + me.populateFilterDropDown(me.reportFilters[index].referenceTableName, me.reportFilters[index].title) + "</td>";
 					rowData += "</tr>"
 				}
 			}
@@ -1505,22 +1499,19 @@ ii.Class({
 		moduleColumnDataLoaded: function(me, activeId) {
 			var rowData = "" ;     		
 			
+			me.gridData = [];
+			
 			if (me.moduleColumnDatas.length > 0) {
 				for(var index = 0; index < me.moduleColumnDatas.length; index++) {
-					var pairs = me.moduleColumnDatas[index].columnData.split("|");
+					var rowDetails = me.moduleColumnDatas[index].columnData.split("|");
+					var pkId = me.moduleColumnDatas[index].primeColumn;
 					var houseCode = me.moduleColumnDatas[index].houseCode;
+					var houseCodeId = fin.reportUi.moduleColumnDatas[index].houseCodeId;
 					var appSite = me.moduleColumnDatas[index].appSite;
 					var appSitTitle = me.moduleColumnDatas[index].appSitTitle;
-					var pkIndex = me.moduleColumnDatas[index].primeColumn;
-					var empStatusType = fin.reportUi.moduleColumnDatas[index].empStatusType;
-				 	var empTerminationReasonType = fin.reportUi.moduleColumnDatas[index].empTerminationReasonType;
-					var payPayrollCompany = fin.reportUi.moduleColumnDatas[index].payPayrollCompany;
-					var empEmpgPrimaryState = fin.reportUi.moduleColumnDatas[index].empEmpgPrimaryState;
-					var empEmpgSecondaryState = fin.reportUi.moduleColumnDatas[index].empEmpgSecondaryState;
-					var houseCodeId = fin.reportUi.moduleColumnDatas[index].houseCodeId;
 
-					rowData += "<tr id='adhReportDataRow" + fin.reportUi.moduleColumnDatas[index].primeColumn + "' onclick=(fin.reportUi.getAdhReprotGridRowEdit(" + pkIndex + "," + index + "," + empStatusType + "," + empTerminationReasonType + "," + payPayrollCompany + "," + empEmpgPrimaryState + "," + empEmpgSecondaryState + "," + houseCodeId + "));>";	
-					rowData += me.getAdhReprotDetailGridRow(pairs, houseCode, appSite, appSitTitle);
+					rowData += "<tr id='adhReportDataRow" + pkId + "' onclick=(fin.reportUi.getAdhReprotGridRowEdit(" + pkId + "," + index + "," + houseCodeId + "));>";	
+					rowData += me.getAdhReprotDetailGridRow(rowDetails, pkId, houseCode, appSite, appSitTitle);
 					rowData += "</tr>"		
 				}				
 			}
@@ -1537,18 +1528,88 @@ ii.Class({
 			$("#pageLoading").hide();	
 		},
 		
+		getAdhReprotDetailGridRow: function() {			
+			var args = ii.args(arguments, {
+				rowDetails: {type: [String]}
+				, pkId: {type: Number}
+				, houseCode: {type: String}
+			    , appSite: {type: Number}
+				, appSitTitle: {type: String}
+			});
+			var me = this;
+			var pairs = args.rowDetails;
+			var keyValue = {}; 
+			var rowData = "";
+			var dataValue = "";
+			var className = "gridColumn";
+
+			me.gridData[args.pkId] = {};
+			me.gridData[args.pkId].buildQueue = [];
+
+			rowData += "<td id='HouseCode" + args.houseCode + "' class='gridColumn'>" + args.houseCode + "</td>";
+
+			for (var index = 0; index < pairs.length; index++) { 
+				var pos = pairs[index].indexOf("=");
+				var posTypeTable = pairs[index].indexOf("_");
+				var typeTable = "";
+				var columnName = "";
+
+				if (pos == -1) continue;
+
+				var argName = pairs[index].substring(0, pos); 
+				var value = "";
+				
+				if (argName == "AppUnit")
+					value = unescape(args.appSitTitle);
+				else
+					value = unescape(pairs[index].substring(pos + 1));
+
+				if (posTypeTable > 0) {
+					columnName = pairs[index].substring(0, posTypeTable);
+					typeTable = pairs[index].substring(posTypeTable + 1, pos);
+					var typeTableData = me.getTypeTableData(typeTable, columnName);
+					var itemIndex = me.findIndexByTitle(value, typeTableData);
+					if (itemIndex != null)
+						keyValue[columnName] = typeTableData[itemIndex].id;
+					else
+						keyValue[columnName] = -1;
+				}				
+				else {
+					columnName = argName;
+					keyValue[columnName] = value;
+				}
+				
+				if (me.gridData[args.pkId].buildQueue.length == 0)
+					me.gridData[args.pkId].buildQueue.push(keyValue);
+				else
+					me.gridData[args.pkId].buildQueue[0][columnName] = keyValue[columnName];
+					
+				me.columnValidation = me.moduleColumnHeaders[index].columnValidation;
+
+				if (me.columnValidation.toLowerCase() == "phone")
+					dataValue = fin.cmn.text.mask.phone(value);
+				else if (me.columnValidation.toLowerCase() == "datetime" && value == "01/01/1900")
+					dataValue = "";
+				else
+					dataValue = value;
+
+				if (index == pairs.length - 1)
+					className = "gridColumnRight";
+
+				rowData += "<td id=" + argName + " class='" + className + "'>" + dataValue + "</td>";
+			}
+
+			rowData += "<td id='AppSite' class='gridColumnHidden'>" + args.appSite + "</td>";
+			return rowData;	
+		},
+		
 		getAdhReprotGridRowEdit: function() {
 			var args = ii.args(arguments, {
-				pkIndex: {type: Number}
+				pkId: {type: Number}
 				, rowIndex: {type: Number}
-				, empStatusType: {type: Number}
-				, empTerminationReasonType: {type: Number}
-				, payPayrollCompany: {type: Number}
-				, empEmpgPrimaryState: {type: Number}
-				, empEmpgSecondaryState: {type: Number}
 				, houseCodeId: {type: Number}
 			});
-			var me = this;			
+			var me = this;
 			var rowData = "";
 			var argTypeTable = "";
 			var argName = "";
@@ -1560,25 +1621,20 @@ ii.Class({
 			var appUnitId = "";
 			var appUnitValue = "";
 			var appSiteId = "";
-			
-			me.rowId = args.rowIndex;	
-			me.pkId = args.pkIndex;
-			me.empStatusType = args.empStatusType;
-			me.empTerminationReasonType = args.empTerminationReasonType;
-			me.payPayrollCompany = args.payPayrollCompany;
-			me.empEmpgPrimaryState = args.empEmpgPrimaryState;
-			me.empEmpgSecondaryState = args.empEmpgSecondaryState;
-			me.houseCodeId = args.houseCodeId;
+			var pkId = args.pkId;
+			var rowIndex = args.rowIndex;
+			var houseCodeId = args.houseCodeId;
+
 			me.loadDependentTypes = [];
 			me.typesLoadedCount = 0;
-			
-			if (me.rowEdit == false || me.moduleColumnDatas[me.rowId] == undefined || me.moduleColumnDatas[me.rowId].modified) 
+
+			if (me.rowEdit == false || me.moduleColumnDatas[rowIndex] == undefined || me.moduleColumnDatas[rowIndex].modified) 
 				return;
 	
-			me.moduleColumnDatas[me.rowId].modified = true;
+			me.moduleColumnDatas[rowIndex].modified = true;
 			me.rowModifed = true;
-			
-			var row = $("#adhReportDataRow" + me.pkId);
+
+			var row = $("#adhReportDataRow" + pkId);
 			
 			for (var index = 0; index < row[0].cells.length; index++) {
 				//index 0 for HouseCode. This addition
@@ -1596,10 +1652,10 @@ ii.Class({
 				if (argscolumn == "AppUnit") {
 					appUnitValue = row[0].cells[index].innerHTML;
 					me.columnValidation = "";
-					appUnitId = "AppUnit" + "_" + me.pkId;
+					appUnitId = "AppUnit" + "_" + pkId;
 				}
 				if (argscolumn == "AppSite") {
-					appSiteId = argscolumn + "_" + me.pkId;
+					appSiteId = argscolumn + "_" + pkId;
 				}
 					
 				if (posTTable > 0) {
@@ -1608,7 +1664,7 @@ ii.Class({
 
 					switch (me.columnType) {
 						case 1: //Editable
-							rowData += "<td class='gridColumn' align='left'>" + me.populateDropDown(argTypeTable, argName, row[0].cells[index].innerHTML, me.pkId, me.empStatusType, me.empTerminationReasonType, me.payPayrollCompany, me.empEmpgPrimaryState, me.empEmpgSecondaryState, me.houseCodeId) + "</td>";
+							rowData += "<td class='gridColumn' align='left'>" + me.populateDropDown(argTypeTable, argName, row[0].cells[index].innerHTML, pkId, houseCodeId) + "</td>";
 							break;
 
 						case 3: //ReadOnly
@@ -1617,7 +1673,7 @@ ii.Class({
 					}
 				}
 				else {
-					argName = argscolumn.substring(0, argscolumn.length) + "_" + me.pkId;
+					argName = argscolumn.substring(0, argscolumn.length) + "_" + pkId;
 					argTypeTable = "";
 					
 					if (me.isDate(row[0].cells[index].innerHTML) || me.columnValidation.toLowerCase() == "datetime")
@@ -1659,7 +1715,7 @@ ii.Class({
 					changeYear: true
 				});
 			}
-			
+
 			if (appUnitId != "") {
 				$("#" + appUnitId).attr("readonly", true);
 				$("#" + appUnitId).click(function() {
@@ -1667,7 +1723,7 @@ ii.Class({
 					me.selectedAppSiteId = appSiteId;
 					loadPopup();
 					me.site.resizeText();
-					
+
 					var tempSiteId = parseInt($("#" + me.selectedAppSiteId).val(), 10);
 					var found = false;
 					for (var index = 0; index < me.siteTypes.length; index++) {
@@ -1676,13 +1732,13 @@ ii.Class({
 							break;
 						}
 					}
-					
+
 					if (!found) {
 						var item = new fin.adh.SiteType(tempSiteId, tempSiteId, appUnitValue);
 						me.siteTypes.push(item);
 						me.site.setData(me.siteTypes);
 					}
-					
+
 					var itemIndex = ii.ajax.util.findIndexById(tempSiteId.toString(), me.siteTypes);
 					if (itemIndex >= 0 && itemIndex != undefined)
 						me.site.select(itemIndex, me.site.focused);
@@ -1754,60 +1810,7 @@ ii.Class({
 			
 			me.loadModuleColumnData();
 		},
-		
-		getAdhReprotDetailGridRow: function() {			
-			var args = ii.args(arguments, {
-				rowDetails: {type: [String]}
-				, houseCode: {type: String}
-			    , appSite: {type: Number}
-				, appSitTitle: {type: String}
-			});
-			var me = this;
-			var pairs = args.rowDetails;
-			var queryStringArgs = {}; 
-			var rowData = "";
-			var dataValue = "";
-			var className = "gridColumn";
 
-			rowData += "<td id='HouseCode" + args.houseCode + "' class='gridColumn'>" + args.houseCode + "</td>";
-
-			for (var index = 0; index < pairs.length; index++) { 
-				var pos = pairs[index].indexOf("="); 
-				var argTypeTable = "";
-				var posTTable = pairs[index].indexOf("_");
-				if (pos == -1) continue; 					
-				if (posTTable > 0) {
-					argTypeTable = pairs[index].substring(posTTable + 1, pos); 
-				}
-				var argName = pairs[index].substring(0, pos); 
-				var value = "";
-
-				if (argName == "AppUnit")
-					value = args.appSitTitle; 
-				else
-					value = pairs[index].substring(pos + 1);
-				
-				queryStringArgs[argName] = unescape(value);
-				me.columnValidation = me.moduleColumnHeaders[index].columnValidation;
-				me.columnType = me.moduleColumnHeaders[index].columnType;		
-				
-				if (me.columnValidation.toLowerCase() == "phone")
-					dataValue = fin.cmn.text.mask.phone(queryStringArgs[argName]);
-				else if (me.columnValidation.toLowerCase() == "datetime" && value == "01/01/1900")
-					dataValue = "";
-				else
-					dataValue = queryStringArgs[argName];
-
-				if (index == pairs.length - 1)
-					className = "gridColumnRight";
-						
-				rowData += "<td id=" + argName + " class='" + className + "'>" + dataValue + "</td>";
-			}
-			
-			rowData += "<td id='AppSite' class='gridColumnHidden'>" + args.appSite + "</td>";
-			return rowData;	
-		},
-		
 		populateOperatorDropDown: function(id, type) {
 			var me = this;
 			var rowHtml = "";
@@ -1843,23 +1846,38 @@ ii.Class({
 				$("#" + id + "_1").hide();
 		},
 		
+		populateFilterDropDown: function() {
+			var args = ii.args(arguments, {
+				typeTable: {type: String}
+				, columnName: {type: String}
+			});
+			var me = this;
+			var rowHtml = "";
+			var typeTableData = me.getTypeTableData(args.typeTable, args.columnName);
+
+			rowHtml = "<select id='" + args.columnName + "' class='inputTextSize'>";
+
+			for (var index = 0; index < typeTableData.length; index++) {
+				rowHtml += "	<option title='" + typeTableData[index].name + "' value='" + typeTableData[index].id + "'>" + typeTableData[index].name + "</option>";
+			}				
+
+			rowHtml += "</select>";
+
+			return rowHtml;
+		},
+		
 		populateDropDown: function() {
 			var args = ii.args(arguments, {
 				typeTable: {type: String}
 				, columnName: {type: String}
 				, columnValue: {type: String}
-				, pkColumn: {type: Number}
-				, empStatusType: {type: Number}			
-				, empTerminationReasonType: {type: Number}
-				, payPayrollCompany: {type: Number}
-				, empEmpgPrimaryState: {type: Number}
-				, empEmpgSecondaryState: {type: Number}
+				, pkId: {type: Number}				
 				, houseCodeId: {type: Number} 
 			});
 			var me = this;
 			var rowHtml = "";
 			var title = "";
-			var typeTableDetails = "";
+			var typeTableData = [];
 			var typeTable = {};
 			var dependentTypeFound = false;
 
@@ -1869,81 +1887,61 @@ ii.Class({
 				|| args.columnName == "EmpMaritalStatusStateTaxTypePrimary" || args.columnName == "EmpMaritalStatusStateTaxTypeSecondary"
 				|| args.columnName == "EmpStateAdjustmentType" || args.columnName == "EmpSDIAdjustmentType" || args.columnName == "EmpLocalTaxAdjustmentType"
 			) {				
-				typeTable.rowId = args.pkColumn;
+				typeTable.rowId = args.pkId;
 			    typeTable.columnName = args.columnName;
 				typeTable.columnValue = args.columnValue;
 
 				if (args.columnName == "AppRoleCurrent")
-					typeTable.searchValue = args.pkColumn;
+					typeTable.searchValue = args.pkId;
 				else if (args.columnName == "PayPayrollCompany" || args.columnName == "HcmHouseCodeJob")
 					typeTable.searchValue = args.houseCodeId;
 				else if (args.columnName == "EmpStatusCategoryType")
-					typeTable.searchValue = args.empStatusType;
+					typeTable.searchValue = me.gridData[args.pkId].buildQueue[0]["EmpStatusType"];
 				else if (args.columnName == "EmpSeparationCode")
-	 				typeTable.searchValue = args.empTerminationReasonType;
+	 				typeTable.searchValue = me.gridData[args.pkId].buildQueue[0]["EmpTerminationReasonType"];
 				else if (args.columnName == "EmpEmpgLocalTaxCode1" || args.columnName == "EmpEmpgLocalTaxCode2" || args.columnName == "EmpEmpgLocalTaxCode3") {
-					typeTable.searchValue = args.empEmpgPrimaryState;
-					typeTable.payPayrollCompany = args.payPayrollCompany;
+					typeTable.searchValue = me.gridData[args.pkId].buildQueue[0]["EmpEmpgPrimaryState"];
+					typeTable.payPayrollCompany = me.gridData[args.pkId].buildQueue[0]["PayPayrollCompany"];
 				}	 				
 				else if (args.columnName == "EmpMaritalStatusStateTaxTypePrimary" || args.columnName == "EmpStateAdjustmentType" || args.columnName == "EmpSDIAdjustmentType" || args.columnName == "EmpLocalTaxAdjustmentType")
-					typeTable.searchValue = args.empEmpgPrimaryState;
+					typeTable.searchValue = me.gridData[args.pkId].buildQueue[0]["EmpEmpgPrimaryState"];
 				else if (args.columnName == "EmpMaritalStatusStateTaxTypeSecondary")
-	 				typeTable.searchValue = args.empEmpgSecondaryState;
+	 				typeTable.searchValue = me.gridData[args.pkId].buildQueue[0]["EmpEmpgSecondaryState"];
 
 			    me.loadDependentTypes.push(typeTable);
 				dependentTypeFound = true;
 			}
 
-//			if (args.columnName == "AppRoleCurrent")
-//				me.currentRolesLoad(args.pkColumn, args.columnValue);
-//			if (args.columnName == "PayPayrollCompany")
-//				me.houseCodeCheck(args.pkColumn, args.houseCodeId);
-//			if (args.columnName == "EmpStatusCategoryType")
-//				me.statusTypeCheck(args.pkColumn, args.empStatusType);
-//			if (args.columnName == "EmpSeparationCode") 
-// 				me.terminationReasonTypesLoad(args.pkColumn, args.empTerminationReasonType);
-//			if (args.columnName == "EmpEmpgLocalTaxCode1" || args.columnName == "EmpEmpgLocalTaxCode2" || args.columnName == "EmpEmpgLocalTaxCode3") 
-// 				me.localTaxCodesLoad(args.pkColumn, args.empEmpgPrimaryState, args.payPayrollCompany);
-//			if (args.columnName == "EmpMaritalStatusStateTaxTypePrimary" || args.columnName == "EmpStateAdjustmentType" || args.columnName == "EmpSDIAdjustmentType" || args.columnName == "EmpLocalTaxAdjustmentType")
-//				me.maritalStatusPrimaryTypesLoad(args.pkColumn, args.empEmpgPrimaryState, true);
-//			if (args.columnName == "EmpMaritalStatusStateTaxTypeSecondary") 
-// 				me.maritalStatusPrimaryTypesLoad(args.pkColumn, args.empEmpgSecondaryState, false);
-//			 
-			var typeTableDetails = me.getTypeTableData(args.typeTable, args.columnName);
+			typeTableData = me.getTypeTableData(args.typeTable, args.columnName);
 
-			if (!typeTableDetails)
-				typeTableDetails = "";
-
-			if (args.columnValue == "filter")
-				rowHtml = "<select id='" + args.columnName + "' class='inputTextSize'>";
-			else if (args.columnName == "EmpStatusType") 
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkColumn + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkColumn + "\'); onChange=fin.reportUi.statusTypeChange(this);>";	
+			if (args.columnName == "EmpStatusType") 
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.statusTypeChange(this);>";	
 			else if (args.columnName == "EmpTerminationReasonType")
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkColumn + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkColumn + "\'); onChange=fin.reportUi.terminationReasonTypeChange(this);>";
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.terminationReasonTypeChange(this);>";
 			else if (args.columnName == "PayPayrollCompany")
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkColumn + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkColumn + "\'); onChange=fin.reportUi.payrollCompanyChange(this);>";
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.payrollCompanyChange(this);>";
 			else if (args.columnName == "EmpEmpgPrimaryState")
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkColumn + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkColumn + "\'); onChange=fin.reportUi.primaryStateChange(this);>";
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.primaryStateChange(this);>";
 			else if (args.columnName == "EmpEmpgSecondaryState")
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkColumn + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkColumn + "\'); onChange=fin.reportUi.secondaryStateChange(this);>";
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.secondaryStateChange(this);>";
 			else
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkColumn + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkColumn + "\');>";
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\');>";
 
 			if (!dependentTypeFound) {
-				for (var index = 0; index < typeTableDetails.length; index++) {
-					if (typeTableDetails[index].name != "")
-						title = typeTableDetails[index].name;
+				for (var index = 0; index < typeTableData.length; index++) {
+					if (typeTableData[index].name != "")
+						title = typeTableData[index].name;
 					else
-					    title = typeTableDetails[index].title;
+					    title = typeTableData[index].title;
 
 					if (args.columnValue == title)
-						rowHtml += "	<option title='" + title + "' value='" + typeTableDetails[index].id + "' selected>" + title + "</option>";
+						rowHtml += "	<option title='" + title + "' value='" + typeTableData[index].id + "' selected>" + title + "</option>";
 					else
-						rowHtml += "	<option title='" + title + "' value='" + typeTableDetails[index].id + "'>" + title + "</option>";
+						rowHtml += "	<option title='" + title + "' value='" + typeTableData[index].id + "'>" + title + "</option>";
 				}
 			}
 			
-			rowHtml += "</select>"
+			rowHtml += "</select>";
 		
 			return rowHtml;
 		},
@@ -1961,23 +1959,15 @@ ii.Class({
 	        else
 	            me.payrollCompanyLoad(rowNumber, houseCode, columnValue);
 		},
-		
+
 		payrollCompanyValidate: function(houseCode, rowArray, columnValue) {
 		    var me = this;
 		    var rowNumber = 0;
-//		    var objInput = null;
-//			var payrollCompany = 0;
-//			var idIndex = 0;
 
 		    if (me.payrollCompaniesCache[houseCode].valid) {
 		        for (var index = 0; index < rowArray.length; index++) {
 		            rowNumber = Number(rowArray[index]);
 					me.buildSingleDropDown(rowNumber, "PayPayrollCompany", me.payrollCompaniesCache[houseCode].payrollCompanies, columnValue);
-//					me.setPayrollCompanyValue(me.houseCodeCache[houseCode].payrollCompanies, me.employees[rowNumber].column20, rowNumber);
-//					payrollCompany = $("#selPayrollCompany" + rowNumber).val();
-//					idIndex = me.findIndexByTitle(me.employees[rowNumber].column67, me.states);
-//					if (idIndex != undefined)
-//						me.localTaxCodeCheck(rowNumber, me.states[idIndex].id.toString(), payrollCompany);
 		        }
 		    }
 		},
@@ -2615,10 +2605,11 @@ ii.Class({
 				, columnName: {type: String}
 			});
 			var me = this;
+			var typeTable = [];
 
 			if (args.typeTable == "HcmServiceTypes") {
 				me.typeNoneAdd(me.serviceTypes);	
-				me.typeTable = me.serviceTypes;
+				typeTable = me.serviceTypes;
 			}
 			else if (args.typeTable == "HcmServiceLines") {
 				if (args.columnName == "HcmServiceLineFinancialEntity") {
@@ -2631,180 +2622,181 @@ ii.Class({
 						}
 					}
 					me.typeNoneAdd(me.financialEntities);
-					me.typeTable = me.financialEntities;
+					typeTable = me.financialEntities;
 				}
 				else {
 					me.typeNoneAdd(me.serviceLines);
-					me.typeTable = me.serviceLines;
+					typeTable = me.serviceLines;
 				}
 			}
 			else if (args.typeTable == "FscJDECompanies") {
 				me.typeNoneAdd(me.jdeCompanys);	
-				me.typeTable = me.jdeCompanys;
+				typeTable = me.jdeCompanys;
 			}
 			else if (args.typeTable == "HcmRemitToLocations") {
 				me.typeNoneAdd(me.remitTos);
-				me.typeTable = me.remitTos;
+				typeTable = me.remitTos;
 			}
 			else if (args.typeTable == "HcmContractTypes") {
 				me.typeNoneAdd(me.contractTypes);
-				me.typeTable = me.contractTypes;
+				typeTable = me.contractTypes;
 			}
 			else if (args.typeTable == "HcmTermsOfContractTypes") {
 				me.typeNoneAdd(me.termsOfContractTypes);
-				me.typeTable = me.termsOfContractTypes;
+				typeTable = me.termsOfContractTypes;
 			}
 			else if (args.typeTable == "HcmBillingCycleFrequencyTypes") {
 				me.typeNoneAdd(me.billingCycleFrequencys);
-				me.typeTable = me.billingCycleFrequencys;
+				typeTable = me.billingCycleFrequencys;
 			}
 			else if (args.typeTable == "HcmPayrollProcessingLocationTypes") {
 				me.typeNoneAdd(me.payrollProcessings);
-				me.typeTable = me.payrollProcessings;
+				typeTable = me.payrollProcessings;
 			}
 			else if (args.typeTable == "HcmHouseCodeTypes") {
 				me.typeNoneAdd(me.houseCodeTypes);
-				me.typeTable = me.houseCodeTypes;
+				typeTable = me.houseCodeTypes;
 			}
 			else if (args.typeTable == "HcmInvoiceLogoTypes") {
 				me.typeNoneAdd(me.invoiceLogoTypes);
-				me.typeTable = me.invoiceLogoTypes;
+				typeTable = me.invoiceLogoTypes;
 			}
 			else if (args.typeTable == "HcmEPayGroupTypes") {
 				me.typeNoneAdd(me.ePayGroupTypes);
-				me.typeTable = me.ePayGroupTypes;
+				typeTable = me.ePayGroupTypes;
 			}
 			else if (args.typeTable == "AppStateTypes") {
 				me.typeNoneAdd(me.stateTypes);
-				me.typeTable = me.stateTypes;
+				typeTable = me.stateTypes;
 			}
 			else if (args.typeTable == "AppIndustryTypes") {
 				me.typeNoneAdd(me.industryTypes);
-				me.typeTable = me.industryTypes;
+				typeTable = me.industryTypes;
 			}
 			else if (args.typeTable == "AppPrimaryBusinessTypes") {
 				me.typeNoneAdd(me.primaryBusinessTypes);
-				me.typeTable = me.primaryBusinessTypes;
+				typeTable = me.primaryBusinessTypes;
 			}
 			else if (args.typeTable == "AppLocationTypes") {
 				me.typeNoneAdd(me.locationTypes);
-				me.typeTable = me.locationTypes;
+				typeTable = me.locationTypes;
 			}
 			else if (args.typeTable == "AppTraumaLevelTypes") {
 				me.typeNoneAdd(me.traumaLevelTypes);
-				me.typeTable = me.traumaLevelTypes;
+				typeTable = me.traumaLevelTypes;
 			}
 			else if (args.typeTable == "AppProfitDesignationTypes") {
 				me.typeNoneAdd(me.profitDesignationTypes);
-				me.typeTable = me.profitDesignationTypes;
+				typeTable = me.profitDesignationTypes;
 			}
 			else if (args.typeTable == "AppGPOTypes") {
 				me.typeNoneAdd(me.gpoTypes);
-				me.typeTable = me.gpoTypes;
+				typeTable = me.gpoTypes;
 			}
 			else if (args.typeTable == "AppOwnershipTypes") {
 				me.typeNoneAdd(me.ownershipTypes);
-				me.typeTable = me.ownershipTypes;
+				typeTable = me.ownershipTypes;
 			}
 			else if (args.typeTable == "EmpMaritalStatusTypes") {
 				me.typeNoneAdd(me.maritalStatusTypes);
-				me.typeTable = me.maritalStatusTypes;
+				typeTable = me.maritalStatusTypes;
 			}
 			else if (args.typeTable == "EmpI9Types") {
 				me.typeNoneAdd(me.i9Types);
-				me.typeTable = me.i9Types;
+				typeTable = me.i9Types;
 			}
 			else if (args.typeTable == "EmpVetTypes") {
-				me.typeTable = me.vetTypes;
+				me.typeNoneAdd(me.vetTypes);
+				typeTable = me.vetTypes;
 			}
 			else if (args.typeTable == "EmpStatusTypes") {
 				me.typeNoneAdd(me.statusTypes);
-				me.typeTable = me.statusTypes;
+				typeTable = me.statusTypes;
 			}
 			else if (args.typeTable == "EmpDeviceGroupTypes") {
 				me.typeNoneAdd(me.deviceGroupTypes);
-				me.typeTable = me.deviceGroupTypes;
+				typeTable = me.deviceGroupTypes;
 			}
 			else if (args.typeTable == "EmpJobCodeTypes") {
 				me.typeNoneAdd(me.jobCodeTypes);
-				me.typeTable = me.jobCodeTypes;
+				typeTable = me.jobCodeTypes;
 			}
 			else if (args.typeTable == "EmpRateChangeReasonTypes") {
 				me.typeNoneAdd(me.rateChangeReasons);
-				me.typeTable = me.rateChangeReasons;
+				typeTable = me.rateChangeReasons;
 			}
 			else if (args.typeTable == "EmpTerminationReasonTypes") {
 				me.typeNoneAdd(me.terminationReasons);
-				me.typeTable = me.terminationReasons;
+				typeTable = me.terminationReasons;
 			}
 			else if (args.typeTable == "EmpWorkShifts") {
 				me.typeNoneAdd(me.workShifts);
-				me.typeTable = me.workShifts;
+				typeTable = me.workShifts;
 			}
 			else if (args.typeTable == "EmpEthnicityTypes") {
 				me.typeNoneAdd(me.ethnicityTypes);
-				me.typeTable = me.ethnicityTypes;
+				typeTable = me.ethnicityTypes;
 			}
 			else if (args.typeTable == "EmpUnionTypes") {
 				me.typeNoneAdd(me.unionTypes);
-				me.typeTable = me.unionTypes;
+				typeTable = me.unionTypes;
 			}
 			else if (args.typeTable == "PayPayFrequencyTypes") {
 				me.typeNoneAdd(me.payFrequencyTypes);
-				me.typeTable = me.payFrequencyTypes;
+				typeTable = me.payFrequencyTypes;
 			}
 			else if (args.typeTable == "EmpSeparationCodes") {
 				me.typeNoneAdd(me.separationCodes);
-				me.typeTable = me.separationCodes;
+				typeTable = me.separationCodes;
 			}
 			else if (args.typeTable == "EmpJobStartReasonTypes") {
 				me.typeNoneAdd(me.jobStartReasonTypes);
-				me.typeTable = me.jobStartReasonTypes;
+				typeTable = me.jobStartReasonTypes;
 			}
 			else if (args.typeTable == "EmpLocalTaxCodePayrollCompanyStates") {
 				me.typeNoneAdd(me.localTaxCodes);
-				me.typeTable = me.localTaxCodes;
+				typeTable = me.localTaxCodes;
 			}
 			else if (args.typeTable == "EmpStatusCategoryTypes") {
 				me.typeNoneAdd(me.statusCategoryTypes);
-				me.typeTable = me.statusCategoryTypes;
+				typeTable = me.statusCategoryTypes;
 			}
 			else if (args.typeTable == "EmpStateAdjustmentTypes") {
 				me.typeNoneAdd(me.stateAdjustmentTypes);
-				me.typeTable = me.stateAdjustmentTypes;
+				typeTable = me.stateAdjustmentTypes;
 			}
 			else if (args.typeTable == "EmpSDIAdjustmentTypes") {
 				me.typeNoneAdd(me.sdiAdjustmentTypes);
-				me.typeTable = me.sdiAdjustmentTypes;
+				typeTable = me.sdiAdjustmentTypes;
 			}
 			else if (args.typeTable == "EmpMaritalStatusFederalTaxTypes") {
 				me.typeNoneAdd(me.maritalStatusFederalTaxTypes);
-				me.typeTable = me.maritalStatusFederalTaxTypes;
+				typeTable = me.maritalStatusFederalTaxTypes;
 			}
 			else if (args.typeTable == "EmpGenderTypes") {
 				me.genderTypes.unshift(new fin.adh.GenderType({ id: 2, name: "Female" }));
 				me.genderTypes.unshift(new fin.adh.GenderType({ id: 1, name: "Male" }));
 				me.typeNoneAdd(me.genderTypes);
-				me.typeTable = me.genderTypes;
+				typeTable = me.genderTypes;
 			}
 			else if (args.typeTable == "EmpLocalTaxAdjustmentTypes") {
 				me.typeNoneAdd(me.localTaxAdjustmentTypes);
-				me.typeTable = me.localTaxAdjustmentTypes;
+				typeTable = me.localTaxAdjustmentTypes;
 			}
 			else if (args.typeTable == "EmpMaritalStatusStateTaxTypes") {
 				me.typeNoneAdd(me.maritalStatusStateTaxTypeSecondarys);
-				me.typeTable = me.maritalStatusStateTaxTypeSecondarys;
+				typeTable = me.maritalStatusStateTaxTypeSecondarys;
 			}
 			else if (args.typeTable == "EmpFederalAdjustmentTypes") {
 				me.typeNoneAdd(me.federalAdjustments);
-				me.typeTable = me.federalAdjustments;
+				typeTable = me.federalAdjustments;
 			}
 			else if (args.typeTable == "PayPayrollCompanies") {
-				me.typeNoneAdd(me.companies);
-				me.typeTable = me.companies;
+				me.typeNoneAdd(me.payrollCompanies);
+				typeTable = me.payrollCompanies;
 			}
 
-			return me.typeTable;
+			return typeTable;
 		},
 				
 		resetValidation: function(controlName) {
