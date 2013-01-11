@@ -37,16 +37,11 @@ ii.init.register( function() {
 		, houseCode:{type: String, defaultValue: "0"}
 		, primeColumn:{type: String, defaultValue: "0"}
 		, columnData: {type: String, defaultValue: "" }
-		, empStatusType: {type: Number, required:false, defaultValue: 0}
-		, empTerminationReasonType: {type: Number, required:false, defaultValue: 0}
-		, payPayrollCompany: {type: Number, required:false, defaultValue: 0}
-		, empEmpgPrimaryState: {type: Number, required:false, defaultValue: 0}
-		, empEmpgSecondaryState: {type: Number, required:false, defaultValue: 0}
 		, appSite: {type: Number, required:false, defaultValue: 0}
-		, appSitTitle: {type: String, required: false, defaultValue: "" }		
+		, appSitTitle: {type: String, required: false, defaultValue: "" }
 		, modified: {type: Boolean, required: false, defaultValue: false }
 	};
-		
+
 	fin.adh.adhFileNameArgs = {
 		id: {type: Number}
 		, fileName: {type: String}
