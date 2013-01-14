@@ -1929,7 +1929,7 @@ ii.Class({
 
 			if (!dependentTypeFound) {
 				for (var index = 0; index < typeTableData.length; index++) {
-					if (typeTableData[index].name != "")
+					if (typeTableData[index].name != undefined)
 						title = typeTableData[index].name;
 					else
 					    title = typeTableData[index].title;
