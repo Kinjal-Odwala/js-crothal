@@ -39,6 +39,7 @@ ii.init.register( function() {
 	
 	fin.adh.moduleAssociateArgs = {
 		id: {type: Number}
+		, number: {type: Number}
 		, name: {type: String}
 		, description: {type: String}		
 	};
