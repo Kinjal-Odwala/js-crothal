@@ -135,7 +135,7 @@ ii.Class({
 			}			
 			$("#pageLoading").hide();
 
-			ii.timer.timing("Page Displayed");
+			ii.timer.timing("Page displayed");
 			me.session.registerFetchNotify(me.sessionLoaded,me);
 		},	
 
@@ -382,7 +382,7 @@ ii.Class({
 
 			me.jobDescription = new ui.ctl.Input.Text({
 				id: "JobDescription",
-				maxLength: 40
+				maxLength: 256
 			});
 
 			me.jobDescription.makeEnterTab()
