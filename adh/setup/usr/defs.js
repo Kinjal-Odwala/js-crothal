@@ -18,6 +18,7 @@ ii.init.register( function() {
 	fin.adh.moduleColumnArgs = {
 		id: {type: Number}
 		, reportColumn: {type: Number}
+		, moduleId: {type: Number}
 		, title: {type: String, required: false, defaultValue: ""}
 		, description: {type: String, required: false, defaultValue: ""}
 		, columnType: {type: Number}
@@ -26,6 +27,7 @@ ii.init.register( function() {
 		, sortOrder: {type: String, required: false, defaultValue: ""}
 		, filter: {type: Boolean, required: false, defaultValue: true}
 		, dependantColumns: {type: String, required: false, defaultValue: ""}
+		, editable: {type: Boolean, required: false, defaultValue: true}
 	};
 	
 	fin.adh.reportArgs = {

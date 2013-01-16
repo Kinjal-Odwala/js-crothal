@@ -29,9 +29,7 @@ ii.Class({
 			me.moduleAssociateId = 0;
 			me.reportId = 0;
 			me.moduleAssociateIds = "";
-			me.moduleAssociateSelect = false;
 			me.moduleChanged = false;
-			me.report = 1;
 			me.lastSelectedIndex = -1;
 			me.renderRowIndex = -1;
 
@@ -66,7 +64,6 @@ ii.Class({
 					$("#AssociateModuleImage").html("<img src='/fin/cmn/usr/media/Common/editSelected.png' title='Select associate modules.'/>");
 					$("#ModuleAssociateGroup").show("slow");
 				}
-				me.moduleAssociateSelect = true;
 			});
 
 			$("#ImageUp").click(function() {
@@ -205,7 +202,11 @@ ii.Class({
 				var index = me.appModuleColumnGrid.rows.length - 1;
 				if (me.appModuleColumnGrid.activeRowIndex != -1)
 					index = me.renderRowIndex;
-                return "<center><input type=\"radio\" name=\"columnType" + index + "\" id=\"editableInputRadio" + index + "\" value=\"1\" class=\"iiInputCheck\"" + (data.columnType == 1 ? 'checked' : '') + " onclick=\"fin.adhUi.actionClickItem(this," + index + ");\" /></center>";
+
+				if (me.appModuleColumnGrid.data[index].moduleId == me.moduleId && me.appModuleColumnGrid.data[index].editable)
+                	return "<center><input type=\"radio\" name=\"columnType" + index + "\" id=\"editableInputRadio" + index + "\" value=\"1\" class=\"iiInputCheck\"" + (data.columnType == 1 ? 'checked' : '') + " onclick=\"fin.adhUi.actionClickItem(this," + index + ");\" /></center>";
+				else
+					return "<center><input type=\"radio\" name=\"columnType" + index + "\" id=\"editableInputRadio" + index + "\" value=\"1\" class=\"iiInputCheck\" disabled=\"true\" /></center>";
             });	
 
 			me.appModuleColumnGrid.addColumn("columnType2", "", "Hidden", "Hidden", 60, function(data) {
@@ -415,7 +416,7 @@ ii.Class({
 
 			var associates = me.moduleAssociateId.split("#");
 
-			for (var index in associates){
+			for (var index in associates) {
 				item = ii.ajax.util.findItemById(associates[index], me.moduleAssociates);
 				if (item != null) {
 					items.push(item);
@@ -502,7 +503,6 @@ ii.Class({
 			me.action = "New";			
 			me.reportTitle.setValue("");
 			me.module.select(0, me.module.focused);
-			me.report = 0;
 			me.moduleId = 0;
 			me.moduleAssociateId = 0;
 			me.moduleAssociateIds = 0;
@@ -521,10 +521,10 @@ ii.Class({
 			me.moduleAssociateGroup.reset();
 			me.appModuleColumnGrid.setData([]);
 		},
-		
+
 		actionClickItem: function(object, index) {
 			var me = this;
-			
+
 			if (object.type == "radio") {
 				if (object.id == "editableInputRadio" + index || object.id == "hiddenInputRadio" + index || object.id == "readOnlyInputRadio" + index)
 					me.moduleColumns[index].columnType = parseInt(object.value);
@@ -606,8 +606,8 @@ ii.Class({
 				return false;
 			}
 
-			if (me.module.indexSelected <=0) {
-				alert("Please enter valid module.");
+			if (me.module.indexSelected <= 0) {
+				alert("Please select valid module.");
 				return false;
 			}
 
