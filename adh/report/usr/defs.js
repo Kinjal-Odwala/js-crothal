@@ -407,7 +407,22 @@ ii.init.register( function() {
 		, title: {type: String, required: false, defaultValue: ""}
 		, roleCurrent: {type: Boolean, required: false, defaultValue: false}
 	}
-
+	
+	fin.adh.invoiceBillToArgs = {
+		id: {type: Number}
+		, billTo: {type: String, required: false, defaultValue: ""}
+	};
+	
+	fin.adh.transactionStatusTypeArgs = {
+		id: {type: Number}
+		, title: {type: String}
+	};
+	
+	fin.adh.transactionTypeArgs = {
+		id: {type: Number}
+		, name: {type: String}
+	};
+	
 }, 2);
 
 ii.Class({
@@ -1070,6 +1085,36 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.adh.houseCodePayrollCompanyArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.adh.InvoiceBillTo",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.invoiceBillToArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.adh.TransactionStatusType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.transactionStatusTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.adh.TransactionType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.transactionTypeArgs);
 			$.extend(this, args);
 		}
 	}

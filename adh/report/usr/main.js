@@ -64,6 +64,9 @@ ii.Class({
 
 			// User module
 			me.userRolesCache = [];
+			
+			// Invoice module
+			me.invBillToCache = [];
 
 			me.gateway = ii.ajax.addGateway("adh", ii.config.xmlProvider);			
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -103,7 +106,8 @@ ii.Class({
 			me.payrollCompanyStore.fetch("userId:[user]", me.maritalStatusTypesLoaded, me);
 			me.localTaxAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
 			me.separationCodeStore.fetch("userId:[user],terminationType:0,", me.maritalStatusTypesLoaded, me);
-
+			me.transactionStatusTypeStore.fetch("userId:[user]", me.siteMastersLoaded, me);
+			
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$("#divAdhReportGrid").bind("scroll", me.adhRportGridScroll);
@@ -816,6 +820,23 @@ ii.Class({
 				itemConstructorArgs: fin.adh.userRoleArgs,
 				injectionArray: me.userRoles
 			});
+			
+			// Invoice
+			me.invoiceBillTos = [];
+            me.invoiceBillToStore = me.cache.register({
+                storeId: "revInvoiceBillTos",
+                itemConstructor: fin.adh.InvoiceBillTo,
+                itemConstructorArgs: fin.adh.invoiceBillToArgs,
+                injectionArray: me.invoiceBillTos
+            });
+			
+			me.transactionStatusTypes = [];
+			me.transactionStatusTypeStore = me.cache.register({
+				storeId: "appTransactionStatusTypes",
+				itemConstructor: fin.adh.TransactionStatusType,
+				itemConstructorArgs: fin.adh.transactionStatusTypeArgs,
+				injectionArray: me.transactionStatusTypes	
+			});
 		},
 		
 		resizeControls: function() {
@@ -1359,6 +1380,44 @@ ii.Class({
 			}
 		},		
 		
+		actionLoadItem: function() {
+			var me = this;
+
+			me.delimitedOrgSelectedNodes = "";
+
+			if (me.report.indexSelected <= 0) {
+				alert("Please select valid Report.");
+				return;
+			}
+			
+			for (var index in me.orgHierarchy.selectedNodes) {
+				orgHierarchy = me.orgHierarchy.selectedNodes[index];
+				if (orgHierarchy)
+					me.delimitedOrgSelectedNodes += orgHierarchy.id.toString() + "#";
+			}
+			
+			if (me.delimitedOrgSelectedNodes == "") {
+				alert("Please select correct House Code.");
+				return;
+			}
+			
+			$("#AdhReportGrid").show();
+			$("#ReportHierarchy").hide();
+			$("#messageToUser").html("Loading");
+			$("#pageLoading").show();
+			
+			me.rowEdit = true;
+			me.reportId = me.reports[me.report.indexSelected].id;
+			me.reportName = me.reports[me.report.indexSelected].name;	
+			me.moduleAssociate = me.reports[me.report.indexSelected].moduleAssociate;	
+			
+			if (me.moduleAssociate.length > 0 && me.moduleAssociate != "0")	
+				me.rowEdit = false;
+			
+			me.moduleColumnHeaderStore.fetch("userId:[user],report:"+ me.reportId + ",", me.moduleColumnHeaderLoaded, me);	
+			me.actionSaveItem("audit");	
+		},
+		
 		moduleColumnHeaderLoaded: function(me, activeId) {
 			
 			var rowData = "";
@@ -1567,6 +1626,7 @@ ii.Class({
 				if (posTypeTable > 0) {
 					columnName = pairs[index].substring(0, posTypeTable);
 					typeTable = pairs[index].substring(posTypeTable + 1, pos);
+					
 					var typeTableData = me.getTypeTableData(typeTable, columnName);
 					var itemIndex = me.findIndexByTitle(value, typeTableData);
 					if (itemIndex != null)
@@ -1640,6 +1700,10 @@ ii.Class({
 				//index 0 for HouseCode. This addition
 				me.columnType = 0;
 				rowData = "";
+				
+				if (row[0].cells[index].id == "RevInvBillTo") 
+					row[0].cells[index].id = "RevInvBillTo_RevInvBillTos";
+					
 				argscolumn = row[0].cells[index].id;
 				posTTable = argscolumn.indexOf("_");
 
@@ -1654,10 +1718,9 @@ ii.Class({
 					me.columnValidation = "";
 					appUnitId = "AppUnit" + "_" + pkId;
 				}
-				if (argscolumn == "AppSite") {
+				if (argscolumn == "AppSite")
 					appSiteId = argscolumn + "_" + pkId;
-				}
-					
+				
 				if (posTTable > 0) {
 					argName = argscolumn.substring(0, posTTable);
 					argTypeTable = argscolumn.substring(posTTable + 1, argscolumn.length);
@@ -1776,7 +1839,11 @@ ii.Class({
 					case "EmpMaritalStatusStateTaxTypeSecondary":
 						me.stateCheck(rowId, searchValue, false, columnName, columnValue);
 						break;
-
+						
+					case "RevInvBillTo":
+						me.invBillToCheck(rowId, searchValue, columnValue);
+						break;
+						
 					default:
 						if (columnName == "EmpEmpgLocalTaxCode1" || columnName == "EmpEmpgLocalTaxCode2" || columnName == "EmpEmpgLocalTaxCode3") 
 			 				me.localTaxCodeCheck(rowId, searchValue, me.loadDependentTypes[index].payPayrollCompany, columnName, columnValue);
@@ -1784,6 +1851,89 @@ ii.Class({
 							me.stateCheck(rowId, searchValue, true, columnName, columnValue);
 				}
 			}
+		},
+		
+		populateDropDown: function() {
+			var args = ii.args(arguments, {
+				typeTable: {type: String}
+				, columnName: {type: String}
+				, columnValue: {type: String}
+				, pkId: {type: Number}				
+				, houseCodeId: {type: Number} 
+			});
+			var me = this;
+			var rowHtml = "";
+			var title = "";
+			var typeTableData = [];
+			var typeTable = {};
+			var dependentTypeFound = false;
+
+			if (args.columnName == "AppRoleCurrent" || args.columnName == "PayPayrollCompany" || args.columnName == "HcmHouseCodeJob" 
+				|| args.columnName == "EmpStatusCategoryType" || args.columnName == "EmpSeparationCode"
+				|| args.columnName == "EmpEmpgLocalTaxCode1" || args.columnName == "EmpEmpgLocalTaxCode2" || args.columnName == "EmpEmpgLocalTaxCode3"
+				|| args.columnName == "EmpMaritalStatusStateTaxTypePrimary" || args.columnName == "EmpMaritalStatusStateTaxTypeSecondary"
+				|| args.columnName == "EmpStateAdjustmentType" || args.columnName == "EmpSDIAdjustmentType" || args.columnName == "EmpLocalTaxAdjustmentType"
+				|| args.columnName == "RevInvBillTo"
+			) {				
+				typeTable.rowId = args.pkId;
+			    typeTable.columnName = args.columnName;
+				typeTable.columnValue = args.columnValue;
+
+				if (args.columnName == "AppRoleCurrent")
+					typeTable.searchValue = args.pkId;
+				else if (args.columnName == "PayPayrollCompany" || args.columnName == "HcmHouseCodeJob")
+					typeTable.searchValue = args.houseCodeId;
+				else if (args.columnName == "EmpStatusCategoryType")
+					typeTable.searchValue = me.gridData[args.pkId].buildQueue[0]["EmpStatusType"];
+				else if (args.columnName == "EmpSeparationCode")
+	 				typeTable.searchValue = me.gridData[args.pkId].buildQueue[0]["EmpTerminationReasonType"];
+				else if (args.columnName == "EmpEmpgLocalTaxCode1" || args.columnName == "EmpEmpgLocalTaxCode2" || args.columnName == "EmpEmpgLocalTaxCode3") {
+					typeTable.searchValue = me.gridData[args.pkId].buildQueue[0]["EmpEmpgPrimaryState"];
+					typeTable.payPayrollCompany = me.gridData[args.pkId].buildQueue[0]["PayPayrollCompany"];
+				}	 				
+				else if (args.columnName == "EmpMaritalStatusStateTaxTypePrimary" || args.columnName == "EmpStateAdjustmentType" || args.columnName == "EmpSDIAdjustmentType" || args.columnName == "EmpLocalTaxAdjustmentType")
+					typeTable.searchValue = me.gridData[args.pkId].buildQueue[0]["EmpEmpgPrimaryState"];
+				else if (args.columnName == "EmpMaritalStatusStateTaxTypeSecondary")
+	 				typeTable.searchValue = me.gridData[args.pkId].buildQueue[0]["EmpEmpgSecondaryState"];
+				else if (args.columnName == "RevInvBillTo")
+	 				typeTable.searchValue = args.houseCodeId;
+
+			    me.loadDependentTypes.push(typeTable);
+				dependentTypeFound = true;
+			}
+
+			typeTableData = me.getTypeTableData(args.typeTable, args.columnName);
+
+			if (args.columnName == "EmpStatusType") 
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.statusTypeChange(this);>";	
+			else if (args.columnName == "EmpTerminationReasonType")
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.terminationReasonTypeChange(this);>";
+			else if (args.columnName == "PayPayrollCompany")
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.payrollCompanyChange(this);>";
+			else if (args.columnName == "EmpEmpgPrimaryState")
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.primaryStateChange(this);>";
+			else if (args.columnName == "EmpEmpgSecondaryState")
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.secondaryStateChange(this);>";
+			else
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\');>";
+
+			if (!dependentTypeFound) {
+				for (var index = 0; index < typeTableData.length; index++) {
+					if (typeTableData[index].name != undefined)
+						title = typeTableData[index].name;
+					else
+					    title = typeTableData[index].title;
+
+					if (args.columnValue == title)
+						rowHtml += "	<option title='" + title + "' value='" + typeTableData[index].id + "' selected>" + title + "</option>";
+					else
+						rowHtml += "	<option title='" + title + "' value='" + typeTableData[index].id + "'>" + title + "</option>";
+				}
+			}
+			
+			rowHtml += "</select>";
+		
+			return rowHtml;
 		},
 		
 		sortColumn: function(index) {
@@ -1858,91 +2008,16 @@ ii.Class({
 			rowHtml = "<select id='" + args.columnName + "' class='inputTextSize'>";
 
 			for (var index = 0; index < typeTableData.length; index++) {
-				rowHtml += "	<option title='" + typeTableData[index].name + "' value='" + typeTableData[index].id + "'>" + typeTableData[index].name + "</option>";
+				if (typeTableData[index].name != undefined)
+						title = typeTableData[index].name;
+					else
+					    title = typeTableData[index].title;
+						
+				rowHtml += "	<option title='" + title + "' value='" + typeTableData[index].id + "'>" + title + "</option>";
 			}				
 
 			rowHtml += "</select>";
 
-			return rowHtml;
-		},
-		
-		populateDropDown: function() {
-			var args = ii.args(arguments, {
-				typeTable: {type: String}
-				, columnName: {type: String}
-				, columnValue: {type: String}
-				, pkId: {type: Number}				
-				, houseCodeId: {type: Number} 
-			});
-			var me = this;
-			var rowHtml = "";
-			var title = "";
-			var typeTableData = [];
-			var typeTable = {};
-			var dependentTypeFound = false;
-
-			if (args.columnName == "AppRoleCurrent" || args.columnName == "PayPayrollCompany" || args.columnName == "HcmHouseCodeJob" 
-				|| args.columnName == "EmpStatusCategoryType" || args.columnName == "EmpSeparationCode"
-				|| args.columnName == "EmpEmpgLocalTaxCode1" || args.columnName == "EmpEmpgLocalTaxCode2" || args.columnName == "EmpEmpgLocalTaxCode3"
-				|| args.columnName == "EmpMaritalStatusStateTaxTypePrimary" || args.columnName == "EmpMaritalStatusStateTaxTypeSecondary"
-				|| args.columnName == "EmpStateAdjustmentType" || args.columnName == "EmpSDIAdjustmentType" || args.columnName == "EmpLocalTaxAdjustmentType"
-			) {				
-				typeTable.rowId = args.pkId;
-			    typeTable.columnName = args.columnName;
-				typeTable.columnValue = args.columnValue;
-
-				if (args.columnName == "AppRoleCurrent")
-					typeTable.searchValue = args.pkId;
-				else if (args.columnName == "PayPayrollCompany" || args.columnName == "HcmHouseCodeJob")
-					typeTable.searchValue = args.houseCodeId;
-				else if (args.columnName == "EmpStatusCategoryType")
-					typeTable.searchValue = me.gridData[args.pkId].buildQueue[0]["EmpStatusType"];
-				else if (args.columnName == "EmpSeparationCode")
-	 				typeTable.searchValue = me.gridData[args.pkId].buildQueue[0]["EmpTerminationReasonType"];
-				else if (args.columnName == "EmpEmpgLocalTaxCode1" || args.columnName == "EmpEmpgLocalTaxCode2" || args.columnName == "EmpEmpgLocalTaxCode3") {
-					typeTable.searchValue = me.gridData[args.pkId].buildQueue[0]["EmpEmpgPrimaryState"];
-					typeTable.payPayrollCompany = me.gridData[args.pkId].buildQueue[0]["PayPayrollCompany"];
-				}	 				
-				else if (args.columnName == "EmpMaritalStatusStateTaxTypePrimary" || args.columnName == "EmpStateAdjustmentType" || args.columnName == "EmpSDIAdjustmentType" || args.columnName == "EmpLocalTaxAdjustmentType")
-					typeTable.searchValue = me.gridData[args.pkId].buildQueue[0]["EmpEmpgPrimaryState"];
-				else if (args.columnName == "EmpMaritalStatusStateTaxTypeSecondary")
-	 				typeTable.searchValue = me.gridData[args.pkId].buildQueue[0]["EmpEmpgSecondaryState"];
-
-			    me.loadDependentTypes.push(typeTable);
-				dependentTypeFound = true;
-			}
-
-			typeTableData = me.getTypeTableData(args.typeTable, args.columnName);
-
-			if (args.columnName == "EmpStatusType") 
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.statusTypeChange(this);>";	
-			else if (args.columnName == "EmpTerminationReasonType")
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.terminationReasonTypeChange(this);>";
-			else if (args.columnName == "PayPayrollCompany")
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.payrollCompanyChange(this);>";
-			else if (args.columnName == "EmpEmpgPrimaryState")
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.primaryStateChange(this);>";
-			else if (args.columnName == "EmpEmpgSecondaryState")
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.secondaryStateChange(this);>";
-			else
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\');>";
-
-			if (!dependentTypeFound) {
-				for (var index = 0; index < typeTableData.length; index++) {
-					if (typeTableData[index].name != undefined)
-						title = typeTableData[index].name;
-					else
-					    title = typeTableData[index].title;
-
-					if (args.columnValue == title)
-						rowHtml += "	<option title='" + title + "' value='" + typeTableData[index].id + "' selected>" + title + "</option>";
-					else
-						rowHtml += "	<option title='" + title + "' value='" + typeTableData[index].id + "'>" + title + "</option>";
-				}
-			}
-			
-			rowHtml += "</select>";
-		
 			return rowHtml;
 		},
 		
@@ -2514,6 +2589,73 @@ ii.Class({
 			});
 		},
 		
+		invBillToCheck: function(rowNumber, userId, columnValue) {
+			var me = this;
+
+		    if (me.invBillToCache[userId] != undefined) {
+
+	            if (me.invBillToCache[userId].loaded)
+					me.invBillToValidate(userId, [rowNumber], columnValue);              
+	            else
+	                me.invBillToCache[userId].buildQueue.push(rowNumber);
+	        }
+	        else
+	            me.invBillTosLoad(rowNumber, userId, columnValue);
+		},
+
+		invBillToValidate: function(userId, rowArray, columnValue) {
+		    var me = this;
+		    var rowNumber = 0;
+			
+		    if (me.invBillToCache[userId].valid) {
+		        for (var index = 0; index < rowArray.length; index++) {
+		        	rowNumber = Number(rowArray[index]);
+					me.buildSingleDropDown(rowNumber, "RevInvBillTo", me.invBillToCache[userId].invoiceBillTos, columnValue);
+		        }
+		    }
+		},
+
+		invBillTosLoad: function(rowNumber, userId, columnValue) {
+			var me = this;
+
+			$("#messageToUser").text("Loading");
+		    $("#pageLoading").show();
+			me.typesLoadedCount++;
+			
+		    me.invBillToCache[userId] = {};
+		    me.invBillToCache[userId].valid = false;
+		    me.invBillToCache[userId].loaded = false;
+		    me.invBillToCache[userId].buildQueue = [];
+			me.invBillToCache[userId].invoiceBillTos = [];
+		    me.invBillToCache[userId].buildQueue.push(rowNumber);
+			me.invBillToCache[userId].id = userId;
+			
+	        $.ajax({
+                type: "POST",
+                dataType: "xml",
+                url: "/net/crothall/chimes/fin/adh/act/provider.aspx",
+                data: "moduleId=adh&requestId=1&targetId=iiCache"
+					+ "&requestXml=<criteria>storeId:revInvoiceBillTos,userId:[user],"
+					+ "houseCode:" + userId + ",<criteria>",
+                  
+                 success: function(xml) {
+  	                $(xml).find("item").each(function() {
+	                    var invBillTo = {};
+	                	invBillTo.id = $(this).attr("billTo");
+	                	invBillTo.name = $(this).attr("billTo");
+	                	me.invBillToCache[userId].invoiceBillTos.push(invBillTo);
+	                });
+					
+					me.invBillToCache[userId].valid = true;
+					me.invBillToCache[userId].loaded = true;
+					//validate the list of rows
+		            me.invBillToValidate(userId, me.invBillToCache[userId].buildQueue, columnValue);
+		            me.typesLoadedCount--;
+					if (me.typesLoadedCount <= 0) $("#pageLoading").hide();					
+				}
+			});
+		},
+		
 		userRoleCheck: function(rowNumber, userId, columnValue) {
 			var me = this;
 
@@ -2795,7 +2937,16 @@ ii.Class({
 				me.typeNoneAdd(me.payrollCompanies);
 				typeTable = me.payrollCompanies;
 			}
-
+			else if (args.typeTable == "AppTransactionStatusTypes") {
+				me.transactionTypes = [];
+				for (var index = 0; index < me.transactionStatusTypes.length; index++) {
+					var item = new fin.adh.TransactionType({ id: me.transactionStatusTypes[index].id, name:me.transactionStatusTypes[index].title });
+					me.transactionTypes.push(item);
+				}
+				me.typeNoneAdd(me.transactionTypes);
+				typeTable = me.transactionTypes;
+			}
+			
 			return typeTable;
 		},
 				
@@ -2936,44 +3087,6 @@ ii.Class({
 			else
 				return false;
 		},
-		
-		actionLoadItem: function() {
-			var me = this;
-
-			me.delimitedOrgSelectedNodes = "";
-
-			if (me.report.indexSelected <= 0) {
-				alert("Please select valid Report.");
-				return;
-			}
-			
-			for (var index in me.orgHierarchy.selectedNodes) {
-				orgHierarchy = me.orgHierarchy.selectedNodes[index];
-				if (orgHierarchy)
-					me.delimitedOrgSelectedNodes += orgHierarchy.id.toString() + "#";
-			}
-			
-			if (me.delimitedOrgSelectedNodes == "") {
-				alert("Please select correct House Code.");
-				return;
-			}
-			
-			$("#AdhReportGrid").show();
-			$("#ReportHierarchy").hide();
-			$("#messageToUser").html("Loading");
-			$("#pageLoading").show();
-			
-			me.rowEdit = true;
-			me.reportId = me.reports[me.report.indexSelected].id;
-			me.reportName = me.reports[me.report.indexSelected].name;	
-			me.moduleAssociate = me.reports[me.report.indexSelected].moduleAssociate;	
-			
-			if (me.moduleAssociate.length > 0 && me.moduleAssociate != "0")	
-				me.rowEdit = false;
-			
-			me.moduleColumnHeaderStore.fetch("userId:[user],report:"+ me.reportId + ",", me.moduleColumnHeaderLoaded, me);	
-			me.actionSaveItem("audit");	
-		},		
 		
 		recordCountsLoaded: function(me, activeId) {		    
 		    var selPageNumber = $("#selPageNumber");
