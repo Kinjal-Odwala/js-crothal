@@ -421,8 +421,7 @@ ii.init.register( function() {
 	fin.adh.transactionTypeArgs = {
 		id: {type: Number}
 		, name: {type: String}
-	};
-	
+	};	
 }, 2);
 
 ii.Class({

@@ -106,7 +106,7 @@ ii.Class({
 			me.payrollCompanyStore.fetch("userId:[user]", me.maritalStatusTypesLoaded, me);
 			me.localTaxAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
 			me.separationCodeStore.fetch("userId:[user],terminationType:0,", me.maritalStatusTypesLoaded, me);
-			me.transactionStatusTypeStore.fetch("userId:[user]", me.siteMastersLoaded, me);
+			me.transactionStatusTypeStore.fetch("userId:[user]", me.typesLoaded, me);
 			
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
@@ -874,6 +874,10 @@ ii.Class({
 			}
 
 			return null;
+		},
+		
+		typesLoaded: function(me, activeId) {
+
 		},
 		
 		siteMastersLoaded: function(me, activeId) {
