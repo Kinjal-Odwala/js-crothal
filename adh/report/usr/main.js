@@ -1308,7 +1308,8 @@ ii.Class({
 					if (me.reportFilters[index].referenceTableName == "") {
 						contorlValidation = me.reportFilters[index].validation;
 						if (contorlValidation == "bit") {
-							rowData += "<td align='left'><input type='checkbox' name='" + me.reportFilters[index].title + "' id='" + me.reportFilters[index].title + "'></input></td>";
+							//rowData += "<td align='left'><input type='checkbox' name='" + me.reportFilters[index].title + "' id='" + me.reportFilters[index].title + "'></input></td>";
+							rowData += "<td align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'bit') + "</td>";
 						}
 						else if (contorlValidation.toLowerCase() == "datetime" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator == 1) {
 							rowData += "<td align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'datetime') + "</td>";
@@ -1484,13 +1485,12 @@ ii.Class({
 			me.filter = "";
 			
 			for (var index = 0; index < me.reportFilters.length; index++) {
-				if ($("#" + me.reportFilters[index].title).val() != "") {
+				if (me.reportFilters[index].validation.toLowerCase() == "bit" && $("#sel" + me.reportFilters[index].title).val() != "") {
+					me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#sel" + me.reportFilters[index].title).val() + "')";
+				}
+				else if ($("#" + me.reportFilters[index].title).val() != "") {
 					if ($("#" + me.reportFilters[index].title).val() != "0") {
-						
-						if (me.reportFilters[index].validation.toLowerCase() == "bit") {
-							me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title)[0].checked + "')";
-						}
-						else if (me.reportFilters[index].referenceTableName != "") { //dropdown selection
+						if (me.reportFilters[index].referenceTableName != "") { //dropdown selection
 							me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = " + $("#" + me.reportFilters[index].title).val() + ")";
 						}
 						else if (me.reportFilters[index].validation.toLowerCase() == "datetime") {
@@ -1535,8 +1535,6 @@ ii.Class({
 								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Like '%" + $("#" + me.reportFilters[index].title).val() + "%')";
 							}
 						}
-						else 
-							me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Like '%" + $("#" + me.reportFilters[index].title).val() + "%')";
 					}
 				}
 			}
@@ -1984,8 +1982,15 @@ ii.Class({
 				rowHtml += "<option title='Any part that matches (Like)' value='2'>Any part that matches (Like)</option>";
 				rowHtml += "</select>";
 			}
+			else  if (type == "bit") {
+				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:120px;>";
+				rowHtml += "<option title='' value='' selected></option>";
+				rowHtml += "<option title='Yes' value='1'>Yes</option>";
+				rowHtml += "<option title='No' value='0'>No</option>";
+				rowHtml += "</select>";
+			}
 			else {
-				rowHtml = "<select id=sel" + id + " style=margin-left:5px; onchange=fin.reportUi.operatorChange('" + id + "');>";
+				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:120px; onchange=fin.reportUi.operatorChange('" + id + "');>";
 				rowHtml += "<option title='Equal to' value='1' selected>=</option>";
 				rowHtml += "<option title='Less than or equal to' value='2'>&lt;=</option>";
 				rowHtml += "<option title='Greater than or equal to' value='3'>&gt;=</option>";
