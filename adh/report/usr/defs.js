@@ -155,8 +155,11 @@ ii.init.register( function() {
 	fin.adh.invoiceLogoTypeArgs = {
 		id: {type: Number}
 		, name: {type: String}
-		, title: {type: String, required:false, defaultValue: ""}
-		, tableName: {type: String, required:false, defaultValue: ""}
+	};
+
+	fin.adh.budgetTemplateArgs = {
+		id: {type: Number}
+		, name: {type: String}
 	};
 
 	fin.adh.payPayrollCompanyArgs = {
@@ -417,11 +420,7 @@ ii.init.register( function() {
 		id: {type: Number}
 		, title: {type: String}
 	};
-	
-	fin.adh.transactionTypeArgs = {
-		id: {type: Number}
-		, name: {type: String}
-	};	
+
 }, 2);
 
 ii.Class({
@@ -643,6 +642,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.adh.invoiceLogoTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.adh.BudgetTemplate",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.budgetTemplateArgs);
 			$.extend(this, args);
 		}
 	}
@@ -1104,16 +1113,6 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.adh.transactionStatusTypeArgs);
-			$.extend(this, args);
-		}
-	}
-});
-
-ii.Class({
-	Name: "fin.adh.TransactionType",
-	Definition: {
-		init: function() {
-			var args = ii.args(arguments, fin.adh.transactionTypeArgs);
 			$.extend(this, args);
 		}
 	}

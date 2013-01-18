@@ -34,7 +34,6 @@ ii.Class({
 			me.reportId = 0;
 			me.delimitedOrgSelectedNodes = "";
 			me.rowModifed = false;
-			me.rowEdit = true;
 			me.columnType = 0;
 			me.status = "";
 			me.searchNode = false;
@@ -472,7 +471,15 @@ ii.Class({
 				itemConstructor: fin.adh.InvoiceLogoType,
 				itemConstructorArgs: fin.adh.invoiceLogoTypeArgs,
 				injectionArray: me.invoiceLogoTypes	
-			});	
+			});
+			
+			me.budgetTemplates = [];
+			me.budgetTemplateStore = me.cache.register({
+				storeId: "budgetTemplates",
+				itemConstructor: fin.adh.BudgetTemplate,
+				itemConstructorArgs: fin.adh.budgetTemplateArgs,
+				injectionArray: me.budgetTemplates
+			});
 			
 			me.payrollProcessings = [];
 			me.payrollProcessingStore = me.cache.register({
@@ -821,7 +828,7 @@ ii.Class({
 				injectionArray: me.userRoles
 			});
 			
-			// Invoice
+			// Invoice Types
 			me.invoiceBillTos = [];
             me.invoiceBillToStore = me.cache.register({
                 storeId: "revInvoiceBillTos",
@@ -866,9 +873,15 @@ ii.Class({
 			});		
 			var title = args.title;
 			var data = args.data;
+			var name = "";
 			
 			for (var index = 0; index < data.length; index++ ) {
-				if (data[index].name.toLowerCase() == title.toLowerCase()) {
+				if (data[index].name != undefined)
+						name = data[index].name;
+					else
+					    name = data[index].title;
+	
+				if (name.toLowerCase() == title.toLowerCase()) {
 					return index; 
 				}
 			}
@@ -1410,14 +1423,10 @@ ii.Class({
 			$("#messageToUser").html("Loading");
 			$("#pageLoading").show();
 			
-			me.rowEdit = true;
 			me.reportId = me.reports[me.report.indexSelected].id;
 			me.reportName = me.reports[me.report.indexSelected].name;	
 			me.moduleAssociate = me.reports[me.report.indexSelected].moduleAssociate;	
-			
-			if (me.moduleAssociate.length > 0 && me.moduleAssociate != "0")	
-				me.rowEdit = false;
-			
+
 			me.moduleColumnHeaderStore.fetch("userId:[user],report:"+ me.reportId + ",", me.moduleColumnHeaderLoaded, me);	
 			me.actionSaveItem("audit");	
 		},
@@ -1692,7 +1701,7 @@ ii.Class({
 			me.loadDependentTypes = [];
 			me.typesLoadedCount = 0;
 
-			if (me.rowEdit == false || me.moduleColumnDatas[rowIndex] == undefined || me.moduleColumnDatas[rowIndex].modified) 
+			if (me.moduleColumnDatas[rowIndex] == undefined || me.moduleColumnDatas[rowIndex].modified) 
 				return;
 	
 			me.moduleColumnDatas[rowIndex].modified = true;
@@ -2592,74 +2601,7 @@ ii.Class({
 				}
 			});
 		},
-		
-		invBillToCheck: function(rowNumber, userId, columnValue) {
-			var me = this;
 
-		    if (me.invBillToCache[userId] != undefined) {
-
-	            if (me.invBillToCache[userId].loaded)
-					me.invBillToValidate(userId, [rowNumber], columnValue);              
-	            else
-	                me.invBillToCache[userId].buildQueue.push(rowNumber);
-	        }
-	        else
-	            me.invBillTosLoad(rowNumber, userId, columnValue);
-		},
-
-		invBillToValidate: function(userId, rowArray, columnValue) {
-		    var me = this;
-		    var rowNumber = 0;
-			
-		    if (me.invBillToCache[userId].valid) {
-		        for (var index = 0; index < rowArray.length; index++) {
-		        	rowNumber = Number(rowArray[index]);
-					me.buildSingleDropDown(rowNumber, "RevInvBillTo", me.invBillToCache[userId].invoiceBillTos, columnValue);
-		        }
-		    }
-		},
-
-		invBillTosLoad: function(rowNumber, userId, columnValue) {
-			var me = this;
-
-			$("#messageToUser").text("Loading");
-		    $("#pageLoading").show();
-			me.typesLoadedCount++;
-			
-		    me.invBillToCache[userId] = {};
-		    me.invBillToCache[userId].valid = false;
-		    me.invBillToCache[userId].loaded = false;
-		    me.invBillToCache[userId].buildQueue = [];
-			me.invBillToCache[userId].invoiceBillTos = [];
-		    me.invBillToCache[userId].buildQueue.push(rowNumber);
-			me.invBillToCache[userId].id = userId;
-			
-	        $.ajax({
-                type: "POST",
-                dataType: "xml",
-                url: "/net/crothall/chimes/fin/adh/act/provider.aspx",
-                data: "moduleId=adh&requestId=1&targetId=iiCache"
-					+ "&requestXml=<criteria>storeId:revInvoiceBillTos,userId:[user],"
-					+ "houseCode:" + userId + ",<criteria>",
-                  
-                 success: function(xml) {
-  	                $(xml).find("item").each(function() {
-	                    var invBillTo = {};
-	                	invBillTo.id = $(this).attr("billTo");
-	                	invBillTo.name = $(this).attr("billTo");
-	                	me.invBillToCache[userId].invoiceBillTos.push(invBillTo);
-	                });
-					
-					me.invBillToCache[userId].valid = true;
-					me.invBillToCache[userId].loaded = true;
-					//validate the list of rows
-		            me.invBillToValidate(userId, me.invBillToCache[userId].buildQueue, columnValue);
-		            me.typesLoadedCount--;
-					if (me.typesLoadedCount <= 0) $("#pageLoading").hide();					
-				}
-			});
-		},
-		
 		userRoleCheck: function(rowNumber, userId, columnValue) {
 			var me = this;
 
@@ -2726,7 +2668,74 @@ ii.Class({
 				}
 			});
 		},
-				
+
+		invBillToCheck: function(rowNumber, houseCode, columnValue) {
+			var me = this;
+
+		    if (me.invBillToCache[houseCode] != undefined) {
+
+	            if (me.invBillToCache[houseCode].loaded)
+					me.invBillToValidate(houseCode, [rowNumber], columnValue);              
+	            else
+	                me.invBillToCache[houseCode].buildQueue.push(rowNumber);
+	        }
+	        else
+	            me.invBillTosLoad(rowNumber, houseCode, columnValue);
+		},
+
+		invBillToValidate: function(houseCode, rowArray, columnValue) {
+		    var me = this;
+		    var rowNumber = 0;
+			
+		    if (me.invBillToCache[houseCode].valid) {
+		        for (var index = 0; index < rowArray.length; index++) {
+		        	rowNumber = Number(rowArray[index]);
+					me.buildSingleDropDown(rowNumber, "RevInvBillTo", me.invBillToCache[houseCode].invoiceBillTos, columnValue);
+		        }
+		    }
+		},
+
+		invBillTosLoad: function(rowNumber, houseCode, columnValue) {
+			var me = this;
+
+			$("#messageToUser").text("Loading");
+		    $("#pageLoading").show();
+			me.typesLoadedCount++;
+			
+		    me.invBillToCache[houseCode] = {};
+		    me.invBillToCache[houseCode].valid = false;
+		    me.invBillToCache[houseCode].loaded = false;
+		    me.invBillToCache[houseCode].buildQueue = [];
+			me.invBillToCache[houseCode].invoiceBillTos = [];
+		    me.invBillToCache[houseCode].buildQueue.push(rowNumber);
+			me.invBillToCache[houseCode].id = houseCode;
+			
+	        $.ajax({
+                type: "POST",
+                dataType: "xml",
+                url: "/net/crothall/chimes/fin/adh/act/provider.aspx",
+                data: "moduleId=adh&requestId=1&targetId=iiCache"
+					+ "&requestXml=<criteria>storeId:revInvoiceBillTos,userId:[user],"
+					+ "houseCode:" + houseCode + ",<criteria>",
+                  
+                 success: function(xml) {
+  	                $(xml).find("item").each(function() {
+	                    var invBillTo = {};
+	                	invBillTo.id = $(this).attr("billTo");
+	                	invBillTo.name = $(this).attr("billTo");
+	                	me.invBillToCache[houseCode].invoiceBillTos.push(invBillTo);
+	                });
+					
+					me.invBillToCache[houseCode].valid = true;
+					me.invBillToCache[houseCode].loaded = true;
+					//validate the list of rows
+		            me.invBillToValidate(houseCode, me.invBillToCache[houseCode].buildQueue, columnValue);
+		            me.typesLoadedCount--;
+					if (me.typesLoadedCount <= 0) $("#pageLoading").hide();					
+				}
+			});
+		},
+
 		buildSingleDropDown: function(rowNumber, controlName, types, selectedValue) {
 		    var me = this;
 		    var type = {};
@@ -2807,6 +2816,10 @@ ii.Class({
 				me.typeNoneAdd(me.invoiceLogoTypes);
 				typeTable = me.invoiceLogoTypes;
 			}
+			else if (args.typeTable == "HcmBudgetTemplate") {
+				me.typeNoneAdd(me.budgetTemplates);
+				typeTable = me.budgetTemplates;
+			}			
 			else if (args.typeTable == "HcmEPayGroupTypes") {
 				me.typeNoneAdd(me.ePayGroupTypes);
 				typeTable = me.ePayGroupTypes;
@@ -2942,15 +2955,10 @@ ii.Class({
 				typeTable = me.payrollCompanies;
 			}
 			else if (args.typeTable == "AppTransactionStatusTypes") {
-				me.transactionTypes = [];
-				for (var index = 0; index < me.transactionStatusTypes.length; index++) {
-					var item = new fin.adh.TransactionType({ id: me.transactionStatusTypes[index].id, name:me.transactionStatusTypes[index].title });
-					me.transactionTypes.push(item);
-				}
-				me.typeNoneAdd(me.transactionTypes);
-				typeTable = me.transactionTypes;
+				me.typeNoneAdd(me.transactionStatusTypes);
+				typeTable = me.transactionStatusTypes;
 			}
-			
+
 			return typeTable;
 		},
 				
