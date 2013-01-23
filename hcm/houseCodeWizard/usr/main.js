@@ -321,6 +321,7 @@ ii.Class({
 			me.sfFaxShow = me.isCtrlVisibleTabFinancial(me.authorizePath + "\\TabFinancial\\SectionFinancial\\Fax", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
 			me.sfEmailShow = me.isCtrlVisibleTabFinancial(me.authorizePath + "\\TabFinancial\\SectionFinancial\\Email", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
 			me.sfInvoiceLogoShow = me.isCtrlVisibleTabFinancial(me.authorizePath + "\\TabFinancial\\SectionFinancial\\InvoiceLogo", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
+			me.sfBudgetTemplateShow = me.isCtrlVisibleTabFinancial(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetTemplate", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
 			
 			me.sfContractTypeReadOnly = me.isCtrlReadOnlyTabFinancial(me.authorizePath + "\\TabFinancial\\SectionFinancial\\ContractType\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 			me.sfTermsOfContractReadOnly = me.isCtrlReadOnlyTabFinancial(me.authorizePath + "\\TabFinancial\\SectionFinancial\\TermsOfContract\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
@@ -339,6 +340,7 @@ ii.Class({
 			me.sfFaxReadOnly = me.isCtrlReadOnlyTabFinancial(me.authorizePath + "\\TabFinancial\\SectionFinancial\\Fax\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 			me.sfEmailReadOnly = me.isCtrlReadOnlyTabFinancial(me.authorizePath + "\\TabFinancial\\SectionFinancial\\Email\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 			me.sfInvoiceLogoReadOnly = me.isCtrlReadOnlyTabFinancial(me.authorizePath + "\\TabFinancial\\SectionFinancial\\InvoiceLogo\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
+			me.sfBudgetTemplateReadOnly = me.isCtrlReadOnlyTabFinancial(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetTemplate\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 
 			//Payroll
 			me.payrollWrite = me.authorizer.isAuthorized(me.authorizePath + '\\Write');
@@ -391,7 +393,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("Session Loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 		
 		isCtrlVisible: function fin_hcm_houseCode_UserInterface_isCtrlVisible() { 
@@ -686,6 +688,7 @@ ii.Class({
 			me.setControlState("BankFax", me.sfFaxReadOnly, me.sfFaxShow);
 			me.setControlState("BankEmail", me.sfEmailReadOnly, me.sfEmailShow);
 			me.setControlState("InvoiceLogo", me.sfInvoiceLogoReadOnly, me.sfInvoiceLogoShow);
+			me.setControlState("BudgetTemplate", me.sfBudgetTemplateReadOnly, me.sfBudgetTemplateShow);
 
 			//Payroll
 			me.setControlState("PayrollPro", me.tpPayrollProcessingLocationReadOnly, me.tpPayrollProcessingLocationShow);			
@@ -1145,7 +1148,7 @@ ii.Class({
 				
 			//Statistics
 			me.managedEmployees = new ui.ctl.Input.Text({
-		        id: "ManagedEmployees" ,
+		        id: "ManagedEmployees",
 		        maxLength: 10
 		    });
 			
@@ -1162,7 +1165,7 @@ ii.Class({
 				});
 				
 			me.crothallEmployees = new ui.ctl.Input.Text({
-		        id: "CrothallEmployees" ,
+		        id: "CrothallEmployees",
 		        maxLength: 10
 		    });
 			
@@ -1179,7 +1182,7 @@ ii.Class({
 				});
 				
 			me.bedsLicensed = new ui.ctl.Input.Text({
-		        id: "BedsLicensed" ,
+		        id: "BedsLicensed",
 		        maxLength: 10
 		    });
 			
@@ -1196,7 +1199,7 @@ ii.Class({
 				});
 				
 			me.bedsActive = new ui.ctl.Input.Text({
-		        id: "BedsActive" ,
+		        id: "BedsActive",
 		        maxLength: 10
 		    });
 			
@@ -1213,7 +1216,7 @@ ii.Class({
 				});
 				
 			me.patientDays = new ui.ctl.Input.Text({
-		        id: "PatientDays" ,
+		        id: "PatientDays",
 		        maxLength: 10
 		    });
 			
@@ -1230,7 +1233,7 @@ ii.Class({
 				});
 				
 			me.adjustedPatientDays = new ui.ctl.Input.Text({
-		        id: "AdjustedPatientDays" ,
+		        id: "AdjustedPatientDays",
 		        maxLength: 10
 		    });
 			
@@ -1264,7 +1267,7 @@ ii.Class({
 				});
 				
 			me.annualDischarges = new ui.ctl.Input.Text({
-		        id: "AnnualDischarges" ,
+		        id: "AnnualDischarges",
 		        maxLength: 10
 		    });
 			
@@ -1281,7 +1284,7 @@ ii.Class({
 				});
 				
 			me.annualTransfers = new ui.ctl.Input.Text({
-		        id: "AnnualTransfers" ,
+		        id: "AnnualTransfers",
 		        maxLength: 10
 		    });
 			
@@ -1298,7 +1301,7 @@ ii.Class({
 				});
 				
 			me.avgBedTurnAroundTime = new ui.ctl.Input.Text({
-		        id: "AvgBedTurnaroundTime" ,
+		        id: "AvgBedTurnaroundTime",
 		        maxLength: 10
 		    });
 			
@@ -1315,7 +1318,7 @@ ii.Class({
 				});
 				
 			me.netCleanableSquareFeet = new ui.ctl.Input.Text({
-		        id: "NetCleanableSquareFeet" ,
+		        id: "NetCleanableSquareFeet",
 		        maxLength: 10
 		    });
 			
@@ -1332,7 +1335,7 @@ ii.Class({
 				});
 				
 			me.annualTransports = new ui.ctl.Input.Text({
-		        id: "AnnualTransports" ,
+		        id: "AnnualTransports",
 		        maxLength: 10
 		    });
 		    
@@ -1349,7 +1352,7 @@ ii.Class({
 				});
 				
 			me.avgLaundryLbs = new ui.ctl.Input.Text({
-		        id: "AvgLaundryLBS" ,
+		        id: "AvgLaundryLBS",
 		        maxLength: 10
 		    });
 			
@@ -1366,7 +1369,7 @@ ii.Class({
 				});
 
 			me.mgmtFeeTerminatedHourlyEmployees = new ui.ctl.Input.Text({
-		        id: "MgmtFeeTerminatedHourlyEmployees" ,
+		        id: "MgmtFeeTerminatedHourlyEmployees",
 		        maxLength: 11
 		    });
 			
@@ -1383,7 +1386,7 @@ ii.Class({
 				});
 
 			me.mgmtFeeActiveHourlyEmployees = new ui.ctl.Input.Text({
-		        id: "MgmtFeeActiveHourlyEmployees" ,
+		        id: "MgmtFeeActiveHourlyEmployees",
 		        maxLength: 11
 		    });
 			
@@ -1400,7 +1403,7 @@ ii.Class({
 				});
 
 			me.mgmtFeeTotalProductiveLaborHoursWorked = new ui.ctl.Input.Text({
-		        id: "MgmtFeeTotalProductiveLaborHoursWorked" ,
+		        id: "MgmtFeeTotalProductiveLaborHoursWorked",
 		        maxLength: 11
 		    });
 			
@@ -1417,7 +1420,7 @@ ii.Class({
 				});
 
 			me.mgmtFeeTotalNonProductiveLaborHours = new ui.ctl.Input.Text({
-		        id: "MgmtFeeTotalNonProductiveLaborHours" ,
+		        id: "MgmtFeeTotalNonProductiveLaborHours",
 		        maxLength: 11
 		    });
 			
@@ -1434,7 +1437,7 @@ ii.Class({
 				});
 
 			me.mgmtFeeTotalProductiveLaborDollarsPaid = new ui.ctl.Input.Text({
-		        id: "MgmtFeeTotalProductiveLaborDollarsPaid" ,
+		        id: "MgmtFeeTotalProductiveLaborDollarsPaid",
 		        maxLength: 11
 		    });
 			
@@ -1447,7 +1450,7 @@ ii.Class({
 					});
 
 			me.mgmtFeeTotalNonProductiveLaborDollarsPaid = new ui.ctl.Input.Text({
-		        id: "MgmtFeeTotalNonProductiveLaborDollarsPaid" ,
+		        id: "MgmtFeeTotalNonProductiveLaborDollarsPaid",
 		        maxLength: 11
 		    });
 			
@@ -1460,7 +1463,7 @@ ii.Class({
 					});
 
 			me.hospitalPaidJanitorialPaperPlasticSupplyCost = new ui.ctl.Input.Text({
-		        id: "HospitalPaidJanitorialPaperPlasticSupplyCost" ,
+		        id: "HospitalPaidJanitorialPaperPlasticSupplyCost",
 		        maxLength: 11
 		    });
 			
@@ -1683,7 +1686,7 @@ ii.Class({
 		
 					var enteredText = me.bankPhone.text.value;
 					
-					if (enteredText == '') return;
+					if (enteredText == "") return;
 
 					me.bankPhone.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.bankPhone.text.value;
@@ -1703,7 +1706,7 @@ ii.Class({
 
 					var enteredText = me.bankFax.text.value;
 					
-					if (enteredText == '') return;
+					if (enteredText == "") return;
 
 					me.bankFax.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.bankFax.text.value;
@@ -1723,7 +1726,7 @@ ii.Class({
 
 					var enteredText = me.bankEmail.getValue();
 					
-					if (enteredText == '') return;
+					if (enteredText == "") return;
 					
 					if (ui.cmn.text.validate.emailAddress(enteredText) == false)
 						this.setInvalid("Please enter valid Email Address.");
@@ -1731,6 +1734,12 @@ ii.Class({
 			
 			me.invoiceLogo = new ui.ctl.Input.DropDown.Filtered({
 		        id: "InvoiceLogo",
+				formatFunction: function( type ) { return type.name; },
+		        required: false
+		    });
+			
+			me.budgetTemplate = new ui.ctl.Input.DropDown.Filtered({
+		        id: "BudgetTemplate",
 				formatFunction: function( type ) { return type.name; },
 		        required: false
 		    });
@@ -1773,16 +1782,17 @@ ii.Class({
 			me.bankFax.text.tabIndex = 28;
 			me.bankEmail.text.tabIndex = 29;
 			me.invoiceLogo.text.tabIndex = 30;
+			me.budgetTemplate.text.tabIndex = 31;
 
 			//Payroll
 			me.payrollProcessing = new ui.ctl.Input.DropDown.Filtered({
-		        id: "PayrollPro" ,
+		        id: "PayrollPro",
 				formatFunction: function( type ) { return type.name; },
-		        required : false
+		        required: false
 		    });	
 			
 			me.breakOthers = new ui.ctl.Input.Text({
-		        id: "BreakOthers" ,
+		        id: "BreakOthers",
 		        maxLength: 5
 		    });
 			
@@ -1800,7 +1810,7 @@ ii.Class({
 			});
 			
 			me.breakTrigger = new ui.ctl.Input.Text({
-		        id: "BreakTrigger" ,
+		        id: "BreakTrigger",
 		        maxLength: 5
 		    });
 			
@@ -1818,13 +1828,13 @@ ii.Class({
 			});
 			
 			me.ceridianCompanySalaried = new ui.ctl.Input.DropDown.Filtered({
-		        id: "CeridianCompanySalaried" ,
+		        id: "CeridianCompanySalaried",
 				formatFunction: function( type ) { return type.title; },
 		        required: false
 		    });	
 			
 			me.ceridianCompanyHourly = new ui.ctl.Input.DropDown.Filtered({
-		        id: "CeridianCompanyHourly" ,
+		        id: "CeridianCompanyHourly",
 				formatFunction: function( type ) { return type.title; },
 		        required: false
 		    });
@@ -1978,7 +1988,15 @@ ii.Class({
 				itemConstructor: fin.hcm.houseCodeWizard.InvoiceLogoType,
 				itemConstructorArgs: fin.hcm.houseCodeWizard.invoiceLogoTypeArgs,
 				injectionArray: me.invoiceLogoTypes	
-			});	
+			});
+			
+			me.budgetTemplates = [];
+			me.budgetTemplateStore = me.cache.register({
+				storeId: "budgetTemplates",
+				itemConstructor: fin.hcm.houseCodeWizard.BudgetTemplate,
+				itemConstructorArgs: fin.hcm.houseCodeWizard.budgetTemplateArgs,
+				injectionArray: me.budgetTemplates
+			});
 
 			//Payroll
 			me.payPayrollCompanys = [];
@@ -2097,6 +2115,8 @@ ii.Class({
 			me.bankPhone.resizeText();
 			me.bankFax.resizeText();
 			me.bankEmail.resizeText();
+			me.invoiceLogo.resizeText();
+			me.budgetTemplate.resizeText();
 			
 			//Payroll
 			me.payrollProcessing.resizeText();
@@ -2431,11 +2451,14 @@ ii.Class({
 			me.shippingState.setData(me.stateTypes);
 
 			me.bankState.reset();
-			me.bankState.setData(me.stateTypes);			
-			me.contractType.fetchingData();
+			me.bankState.setData(me.stateTypes);
 			me.remitTo.fetchingData();
+			me.contractType.fetchingData();			
 			me.termsOfContract.fetchingData();
 			me.billingCycleFrequency.fetchingData();
+			me.invoiceLogo.fetchingData();
+			me.budgetTemplate.fetchingData();
+
 			me.contractTypeStore.fetch("userId:[user]", me.contractTypesLoaded, me);	
 		},
 		
@@ -2463,6 +2486,11 @@ ii.Class({
 
 			me.invoiceLogo.reset();
 			me.invoiceLogo.setData(me.invoiceLogoTypes);
+
+			if (!ii.ajax.util.findItemByField("name", "None", me.budgetTemplates))
+				me.budgetTemplates.unshift(new fin.hcm.houseCodeWizard.BudgetTemplate({ id: 0, name: "None" }));
+			me.budgetTemplate.reset();
+			me.budgetTemplate.setData(me.budgetTemplates);
 
 			me.financialEntity.reset();			
 			me.financialEntity.setData(me.financialEntities);
@@ -2529,7 +2557,11 @@ ii.Class({
 			index = ii.ajax.util.findIndexById(houseCode.invoiceLogoTypeId.toString(), me.invoiceLogoTypes);
 			if (index >= 0 && index != undefined)
 				me.invoiceLogo.select(index, me.invoiceLogo.focused);
-			
+
+			index = ii.ajax.util.findIndexById(houseCode.budgetTemplateId.toString(), me.budgetTemplates);
+			if (index >= 0 && index != undefined)
+				me.budgetTemplate.select(index, me.budgetTemplate.focused);
+
 			$("#pageLoading").hide();
 			me.resizeControls();
 		},
@@ -2974,6 +3006,7 @@ ii.Class({
 			me.houseCodeDetails[0].bankFax = me.bankFax.getValue();
 			me.houseCodeDetails[0].bankEmail = me.bankEmail.getValue();
 			me.houseCodeDetails[0].invoiceLogoTypeId = (me.invoiceLogo.indexSelected < 0 ? 0 : me.invoiceLogoTypes[me.invoiceLogo.indexSelected].id);
+			me.houseCodeDetails[0].budgetTemplateId = (me.budgetTemplate.indexSelected < 0 ? 0 : me.budgetTemplates[me.budgetTemplate.indexSelected].id);
 			
 			//Payroll				
 			me.houseCodeDetails[0].payrollProcessingLocationTypeId = (me.payrollProcessing.indexSelected <= 0 ? 0 : me.payrollProcessings[me.payrollProcessing.indexSelected].id);
@@ -3108,6 +3141,7 @@ ii.Class({
 				, fin.cmn.text.mask.phone(me.houseCodeDetails[0].bankFax, true)
 				, me.houseCodeDetails[0].bankEmail
 				, me.houseCodeDetails[0].invoiceLogoTypeId
+				, me.houseCodeDetails[0].budgetTemplateId
 				, me.houseCodeDetails[0].stateTaxPercent
 				, me.houseCodeDetails[0].localTaxPercent
 				, me.houseCodeDetails[0].financialEntityId
@@ -3220,6 +3254,7 @@ ii.Class({
 			xml += ' bankFax="' + item.bankFax + '"';
 			xml += ' bankEmail="' + item.bankEmail + '"';
 			xml += ' invoiceLogoTypeId="' + item.invoiceLogoTypeId + '"';
+			xml += ' budgetTemplateId="' + item.budgetTemplateId + '"';			
 			xml += ' stateTaxPercent="' + item.stateTaxPercent + '"';
 			xml += ' localTaxPercent="' + item.localTaxPercent + '"';
 			xml += ' financialEntityId="' + item.financialEntityId + '"';

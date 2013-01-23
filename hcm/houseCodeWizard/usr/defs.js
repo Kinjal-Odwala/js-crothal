@@ -94,6 +94,7 @@ ii.init.register( function() {
 		, bankFax: {type: String, required: false, defaultValue: ""}
 		, bankEmail: {type: String, required: false, defaultValue: ""}
 		, invoiceLogoTypeId: {type: Number, required: false, defaultValue: 0}
+		, budgetTemplateId: {type: Number, required: false, defaultValue: 0}
 		, stateTaxPercent: {type: String, required: false, defaultValue: ""}
 		, localTaxPercent: {type: String, required: false, defaultValue: ""}
 		, financialEntityId: {type: Number, required: false, defaultValue: 0}
@@ -179,6 +180,11 @@ ii.init.register( function() {
 	};
 
 	fin.hcm.houseCodeWizard.invoiceLogoTypeArgs = {
+		id: {type: Number}
+		, name: {type: String}
+	};
+	
+	fin.hcm.houseCodeWizard.budgetTemplateArgs = {
 		id: {type: Number}
 		, name: {type: String}
 	};
@@ -371,6 +377,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.houseCodeWizard.invoiceLogoTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.houseCodeWizard.BudgetTemplate",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.houseCodeWizard.budgetTemplateArgs);
 			$.extend(this, args);
 		}
 	}
