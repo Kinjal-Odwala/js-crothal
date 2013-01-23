@@ -28,7 +28,7 @@ ii.Class({
 			me.defineFormControls();
 			me.configureCommunications();
 			
-			me.authorizer = new ii.ajax.Authorizer( me.gateway );	//@iiDoc {Property:ii.ajax.Authorizer} Boolean
+			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\HouseCodeSetup\\HouseCodes";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
@@ -51,7 +51,7 @@ ii.Class({
 			var me = this;
 
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
-			if(me.isAuthorized)
+			if (me.isAuthorized)
 				$("#pageLoading").hide();
 			else{
 				$("#messageToUser").html("Unauthorized");
@@ -128,6 +128,7 @@ ii.Class({
 			me.sfFaxShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionFinancial\\Fax", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
 			me.sfEmailShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionFinancial\\Email", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
 			me.sfInvoiceLogoShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionFinancial\\InvoiceLogo", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
+			me.sfBudgetTemplateShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetTemplate", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
 			
 			me.sfContractTypeReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\ContractType\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 			me.sfTermsOfContractReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\TermsOfContract\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
@@ -146,6 +147,7 @@ ii.Class({
 			me.sfFaxReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\Fax\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 			me.sfEmailReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\Email\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 			me.sfInvoiceLogoReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\InvoiceLogo\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
+			me.sfBudgetTemplateReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetTemplate\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 			
 			me.resetUIElements();
 			
@@ -175,16 +177,16 @@ ii.Class({
 			var ctrlWrite = parent.fin.cmn.util.authorization.isAuthorized(me, args.path + "\\Write");
 			var ctrlReadOnly = parent.fin.cmn.util.authorization.isAuthorized(me, args.path + "\\Read");
 			
-			if(me.financialWrite || me.financialReadOnly)
+			if (me.financialWrite || me.financialReadOnly)
 				return true;
 			
-			if(me.tabFinancialWrite || me.tabFinancialReadOnly)
+			if (me.tabFinancialWrite || me.tabFinancialReadOnly)
 				return true;
 
-			if(args.sectionReadWrite)
+			if (args.sectionReadWrite)
 				return true;
 
-			if(args.sectionShow && (ctrlWrite || ctrlReadOnly))
+			if (args.sectionShow && (ctrlWrite || ctrlReadOnly))
 				return true;
 
 			return ctrlShow;
@@ -199,18 +201,18 @@ ii.Class({
 			
 			var me = this;
 
-			if(args.sectionWrite && !me.tabFinancialReadOnly && !me.financialReadOnly)
+			if (args.sectionWrite && !me.tabFinancialReadOnly && !me.financialReadOnly)
 				return false;
 
-			if(me.tabFinancialWrite && !me.financialReadOnly)
+			if (me.tabFinancialWrite && !me.financialReadOnly)
 				return false;
 
-			if(me.houseCodeWrite)
+			if (me.houseCodeWrite)
 				return false;
 			
-			if(me.financialReadOnly) return true;
-			if(me.tabFinancialReadOnly) return true;
-			if(args.sectionReadOnly) return true;
+			if (me.financialReadOnly) return true;
+			if (me.tabFinancialReadOnly) return true;
+			if (args.sectionReadOnly) return true;
 			
 			return me.authorizer.isAuthorized(args.path);
 		},
@@ -253,7 +255,7 @@ ii.Class({
 			me.setControlState("BankFax", me.sfFaxReadOnly, me.sfFaxShow);
 			me.setControlState("BankEmail", me.sfEmailReadOnly, me.sfEmailShow);
 			me.setControlState("InvoiceLogo", me.sfInvoiceLogoReadOnly, me.sfInvoiceLogoShow);
-			
+			me.setControlState("BudgetTemplate", me.sfBudgetTemplateReadOnly, me.sfBudgetTemplateShow);
 		},
 		
 		setControlState: function(){
@@ -266,20 +268,20 @@ ii.Class({
 			});
 			var me = this;
 			
-			if(args.ctrlReadOnly && args.ctrlType != "Radio"){
+			if (args.ctrlReadOnly && args.ctrlType != "Radio"){
 				$("#" + args.ctrlName + "Text").attr('disabled', true);
 				$("#" + args.ctrlName + "Action").removeClass("iiInputAction");
 			}
-			if(!args.ctrlShow && args.ctrlType != "Radio"){
+			if (!args.ctrlShow && args.ctrlType != "Radio"){
 				$("#" + args.ctrlName).hide();
 				$("#" + args.ctrlName + "Text").hide(); //not required for DropList
 				
 			}
-			if(args.ctrlReadOnly && args.ctrlType == "Radio"){
+			if (args.ctrlReadOnly && args.ctrlType == "Radio"){
 				$("#" + args.ctrlName + "Yes").attr('disabled', true);
 				$("#" + args.ctrlName + "No").attr('disabled', true);
 			} 
-			if(!args.ctrlShow && args.ctrlType == "Radio"){
+			if (!args.ctrlShow && args.ctrlType == "Radio"){
 				$("#" + args.ctrlDiv).hide();
 			} 
 		},
@@ -296,51 +298,51 @@ ii.Class({
 			
 			me.company = new ui.ctl.Input.Text({
 		        id: "Company",
-		        maxLength : 256
+		        maxLength: 256
 		    });
 			
 			me.shippingAddress1 = new ui.ctl.Input.Text({
 		        id: "ShippingAddress1",
-		        maxLength : 255
+		        maxLength: 255
 		    });
 			
 			me.shippingAddress2 = new ui.ctl.Input.Text({
 		        id: "ShippingAddress2",
-		        maxLength : 255
+		        maxLength: 255
 		    });
 			
 			me.shippingCity = new ui.ctl.Input.Text({
 		        id: "ShippingCity",
-		        maxLength : 100
+		        maxLength: 100
 		    });
 			
 			me.shippingZip = new ui.ctl.Input.Text({
 		        id: "ShippingZip",
-		        maxLength : 10
+		        maxLength: 10
 		    });
 			
 			me.shippingZip.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(function( isFinal, dataMap) {
 					
-				if(me.shippingZip.getValue() == "") 
+				if (me.shippingZip.getValue() == "") 
 					return;
 
-				if(ui.cmn.text.validate.postalCode(me.shippingZip.getValue()) == false)
+				if (ui.cmn.text.validate.postalCode(me.shippingZip.getValue()) == false)
 					this.setInvalid("Please enter valid postal code. Example 99999 or 99999-9999");
 			});
 			
 			me.shippingState = new ui.ctl.Input.DropDown.Filtered({
 		        id: "ShippingState",
-				formatFunction: function( type ){ return type.name; },
-		        required : false
+				formatFunction: function( type ) { return type.name; },
+		        required: false
 		    });
 			
 			me.remitTo = new ui.ctl.Input.DropDown.Filtered({
 		        id: "RemitTo",
-				formatFunction: function( type ){ return type.name; },
-				changeFunction: function(){ me.remitToChanged(); },
-		        required : false
+				formatFunction: function( type ) { return type.name; },
+				changeFunction: function() { me.remitToChanged(); },
+		        required: false
 		    });
 			
 			me.remitTo.makeEnterTab()
@@ -354,38 +356,38 @@ ii.Class({
 				
 			me.remitToTitle = new ui.ctl.Input.Text({
 		        id: "RemitToTitle",
-		        maxLength : 50
+		        maxLength: 50
 		    });
 			
 			me.remitToAddress1 = new ui.ctl.Input.Text({
 		        id: "RemitToAddress1",
-		        maxLength : 255
+		        maxLength: 255
 		    });
 			
 			me.remitToAddress2 = new ui.ctl.Input.Text({
 		        id: "RemitToAddress2",
-		        maxLength : 255
+		        maxLength: 255
 		    });
 			
 			me.remitToCity = new ui.ctl.Input.Text({
 		        id: "RemitToCity",
-		        maxLength : 100
+		        maxLength: 100
 		    });
 			
 			me.remitToState = new ui.ctl.Input.Text({
 		        id: "RemitToState",
-		        maxLength : 64
+		        maxLength: 64
 		    });
 			
 			me.remitToZip = new ui.ctl.Input.Text({
 		        id: "RemitToZip",
-		        maxLength : 10
+		        maxLength: 10
 		    });
 				
 			me.contractType = new ui.ctl.Input.DropDown.Filtered({
 		        id: "ContractType",
-				formatFunction: function( type ){ return type.name; },
-		        required : false
+				formatFunction: function( type ) { return type.name; },
+		        required: false
 		    });
 			
 			me.contractType.makeEnterTab()
@@ -399,61 +401,61 @@ ii.Class({
 				
 			me.termsOfContract = new ui.ctl.Input.DropDown.Filtered({
 		        id: "TermsOfContract",
-				formatFunction: function( type ){ return type.name; },
-		        required : false
+				formatFunction: function( type ) { return type.name; },
+		        required: false
 		    });
 			
 			me.billingCycleFrequency = new ui.ctl.Input.DropDown.Filtered({
 		        id: "BillingCycleFrequency",
-				formatFunction: function( type ){ return type.name; },
-		        required : false
+				formatFunction: function( type ) { return type.name; },
+		        required: false
 		    });
 			
 			me.financialEntity = new ui.ctl.Input.DropDown.Filtered({
 		        id: "FinancialEntity",
-				formatFunction: function( type ){ return type.name; },
-		        required : false
+				formatFunction: function( type ) { return type.name; },
+		        required: false
 		    });
 			
 			me.bankCodeNumber = new ui.ctl.Input.Text({
 		        id: "BankCodeNumber",
-		        maxLength : 50
+		        maxLength: 50
 		    });
 			
 			me.bankAccountNumber = new ui.ctl.Input.Text({
 		        id: "BankAccountNumber",
-		        maxLength : 100
+		        maxLength: 100
 		    });
 			
 			me.bankName = new ui.ctl.Input.Text({
 		        id: "BankName",
-		        maxLength : 100
+		        maxLength: 100
 		    });
 			
 			me.bankContact = new ui.ctl.Input.Text({
 		        id: "BankContact",
-		        maxLength : 100
+		        maxLength: 100
 		    });
 			
 			me.bankAddress1 = new ui.ctl.Input.Text({
 		        id: "BankAddress1",
-		        maxLength : 255
+		        maxLength: 255
 		    });
 			
 			me.bankAddress2 = new ui.ctl.Input.Text({
 		        id: "BankAddress2",
-		        maxLength : 255
+		        maxLength: 255
 		    });
 			
 			me.bankCity = new ui.ctl.Input.Text({
 		        id: "BankCity",
-		        maxLength : 100
+		        maxLength: 100
 		    });
 			
 			me.bankState = new ui.ctl.Input.DropDown.Filtered({
 		        id: "BankState",
-				 formatFunction: function( type ){ return type.name; },
-		        required : false
+				formatFunction: function( type ) { return type.name; },
+		        required: false
 		    });
 			
 			me.bankZip = new ui.ctl.Input.Text({
@@ -465,10 +467,10 @@ ii.Class({
 				.setValidationMaster(me.validator)
 				.addValidation(function( isFinal, dataMap) {
 					
-				if(me.bankZip.getValue() == "") 
+				if (me.bankZip.getValue() == "") 
 					return;
 
-				if(ui.cmn.text.validate.postalCode(me.bankZip.getValue()) == false)
+				if (ui.cmn.text.validate.postalCode(me.bankZip.getValue()) == false)
 					this.setInvalid("Please enter valid postal code. Example 99999 or 99999-9999");
 			});
 			
@@ -483,18 +485,18 @@ ii.Class({
 		
 					var enteredText = me.bankPhone.text.value;
 					
-					if(enteredText == '') return;
+					if (enteredText == "") return;
 
 					me.bankPhone.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.bankPhone.text.value;
 					
-					if(ui.cmn.text.validate.phone(enteredText) == false)
+					if (ui.cmn.text.validate.phone(enteredText) == false)
 						this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
 				});
 			
 			me.bankFax = new ui.ctl.Input.Text({
 		        id: "BankFax",
-		        maxLength : 14
+		        maxLength: 14
 		    });
 			
 			me.bankFax.makeEnterTab()
@@ -503,18 +505,18 @@ ii.Class({
 
 					var enteredText = me.bankFax.text.value;
 					
-					if(enteredText == '') return;
+					if (enteredText == "") return;
 
 					me.bankFax.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.bankFax.text.value;
 					
-					if(ui.cmn.text.validate.phone(enteredText) == false)
+					if (ui.cmn.text.validate.phone(enteredText) == false)
 						this.setInvalid("Please enter valid fax number. Example: (999) 999-9999");
 				});
 			
 			me.bankEmail = new ui.ctl.Input.Text({
 		        id: "BankEmail",
-		        maxLength : 100
+		        maxLength: 100
 		    });
 			
 			me.bankEmail.makeEnterTab()
@@ -523,16 +525,22 @@ ii.Class({
 
 					var enteredText = me.bankEmail.getValue();
 					
-					if(enteredText == '') return;
+					if (enteredText == "") return;
 					
-					if(ui.cmn.text.validate.emailAddress(enteredText) == false)
+					if (ui.cmn.text.validate.emailAddress(enteredText) == false)
 						this.setInvalid("Please enter valid Email Address.");
 			});
 			
 			me.invoiceLogo = new ui.ctl.Input.DropDown.Filtered({
 		        id: "InvoiceLogo",
-				 formatFunction: function( type ){ return type.name; },
-		        required : false
+				formatFunction: function( type ) { return type.name; },
+		        required: false
+		    });
+			
+			me.budgetTemplate = new ui.ctl.Input.DropDown.Filtered({
+		        id: "BudgetTemplate",
+				formatFunction: function( type ) { return type.name; },
+		        required: false
 		    });
 			
 			me.company.text.readOnly = true;
@@ -573,6 +581,7 @@ ii.Class({
 			me.bankFax.text.tabIndex = 28;
 			me.bankEmail.text.tabIndex = 29;
 			me.invoiceLogo.text.tabIndex = 30;
+			me.budgetTemplate.text.tabIndex = 31;
 		},		
 		
 		resizeControls: function() {
@@ -614,13 +623,23 @@ ii.Class({
 			me.bankPhone.resizeText();
 			me.bankFax.resizeText();
 			me.bankEmail.resizeText();
+			me.invoiceLogo.resizeText();
+			me.budgetTemplate.resizeText();
 			me.resize();
 		},
 	
 		configureCommunications: function fin_hcm_UserInterface_configureCommunications() {
 			var args = ii.args(arguments, {});			
 			var me = this;
-			
+
+			me.stateTypes = [];
+			me.stateTypeStore = me.cache.register({
+				storeId: "stateTypes",
+				itemConstructor: fin.hcm.financial.StateType,
+				itemConstructorArgs: fin.hcm.financial.stateTypeArgs,
+				injectionArray: me.stateTypes	
+			});	
+
 			me.remitTos = [];
 			me.remitToStore = me.cache.register({
 				storeId: "remitToLocations",
@@ -628,7 +647,7 @@ ii.Class({
 				itemConstructorArgs: fin.hcm.financial.remitToArgs,
 				injectionArray: me.remitTos	
 			});
-			
+
 			me.contractTypes = [];
 			me.contractTypeStore = me.cache.register({
 				storeId: "financialContractMasters",
@@ -636,7 +655,7 @@ ii.Class({
 				itemConstructorArgs: fin.hcm.financial.contractTypeArgs,
 				injectionArray: me.contractTypes	
 			});
-						
+
 			me.termsOfContractTypes = [];
 			me.termsOfContractTypeStore = me.cache.register({
 				storeId: "termsOfContractTypes",
@@ -652,14 +671,14 @@ ii.Class({
 				itemConstructorArgs: fin.hcm.financial.billingCycleFrequencyArgs,
 				injectionArray: me.billingCycleFrequencys	
 			});			
-			
-			me.stateTypes = [];
-			me.stateTypeStore = me.cache.register({
-				storeId: "stateTypes",
-				itemConstructor: fin.hcm.financial.StateType,
-				itemConstructorArgs: fin.hcm.financial.stateTypeArgs,
-				injectionArray: me.stateTypes	
-			});	
+
+			me.serviceLines = [];
+			me.financialEntityStore = me.cache.register({
+				storeId: "serviceLines",
+				itemConstructor: fin.hcm.financial.FinancialEntity,
+				itemConstructorArgs: fin.hcm.financial.financialEntityArgs,
+				injectionArray: me.serviceLines
+			});
 
 			me.invoiceLogoTypes = [];
 			me.invoiceLogoTypeStore = me.cache.register({
@@ -669,12 +688,12 @@ ii.Class({
 				injectionArray: me.invoiceLogoTypes
 			});
 
-			me.serviceLines = [];
-			me.financialEntityStore = me.cache.register({
-				storeId: "serviceLines",
-				itemConstructor: fin.hcm.financial.FinancialEntity,
-				itemConstructorArgs: fin.hcm.financial.financialEntityArgs,
-				injectionArray: me.serviceLines
+			me.budgetTemplates = [];
+			me.budgetTemplateStore = me.cache.register({
+				storeId: "budgetTemplates",
+				itemConstructor: fin.hcm.financial.BudgetTemplate,
+				itemConstructorArgs: fin.hcm.financial.budgetTemplateArgs,
+				injectionArray: me.budgetTemplates
 			});
 		},
 
@@ -716,22 +735,25 @@ ii.Class({
 			me.bankState.reset();
 			me.bankState.setData(me.stateTypes);
 			
-			me.contractType.fetchingData();
 			me.remitTo.fetchingData();
+			me.contractType.fetchingData();			
 			me.termsOfContract.fetchingData();
 			me.billingCycleFrequency.fetchingData();
+			me.invoiceLogo.fetchingData();
+			me.budgetTemplate.fetchingData();
+
 			me.contractTypeStore.fetch("userId:[user]", me.contractTypesLoaded, me);	
 		},
 		
 		contractTypesLoaded: function(me, activeId) {
 
-			me.contractTypes.unshift(new fin.hcm.financial.ContractType({ id: 0, name: "None" }));
-			me.contractType.reset();
-			me.contractType.setData(me.contractTypes);
-
 			me.remitTos.unshift(new fin.hcm.financial.RemitTo({ id: 0, name: "None" }));
 			me.remitTo.reset();
 			me.remitTo.setData(me.remitTos);
+
+			me.contractTypes.unshift(new fin.hcm.financial.ContractType({ id: 0, name: "None" }));
+			me.contractType.reset();
+			me.contractType.setData(me.contractTypes);
 
 			me.termsOfContractTypes.unshift(new fin.hcm.financial.TermsOfContractType({ id: 0, name: "None" }));
 			me.termsOfContract.reset();
@@ -743,6 +765,10 @@ ii.Class({
 
 			me.invoiceLogo.reset();
 			me.invoiceLogo.setData(me.invoiceLogoTypes);
+			
+			me.budgetTemplates.unshift(new fin.hcm.financial.BudgetTemplate({ id: 0, name: "None" }));
+			me.budgetTemplate.reset();
+			me.budgetTemplate.setData(me.budgetTemplates);
 
 			me.financialEntities = [];
 
@@ -764,7 +790,7 @@ ii.Class({
 			var index = 0;
 			var me = this;
 			
-			if(parent.fin.hcmMasterUi == undefined || parent.fin.hcmMasterUi.houseCodeDetails[0] == undefined) return;
+			if (parent.fin.hcmMasterUi == undefined || parent.fin.hcmMasterUi.houseCodeDetails[0] == undefined) return;
 
 			var houseCode = parent.fin.hcmMasterUi.houseCodeDetails[0];
 
@@ -774,13 +800,13 @@ ii.Class({
 			me.shippingCity.setValue(houseCode.shippingCity.toString());
 			
 			index = ii.ajax.util.findIndexById(houseCode.shippingState.toString(), me.stateTypes);
-			if(index >= 0 && index != undefined)
+			if (index >= 0 && index != undefined)
 				me.shippingState.select(index, me.shippingState.focused);
 								
 			me.shippingZip.setValue(houseCode.shippingZip);
 			
 			index = ii.ajax.util.findIndexById(houseCode.remitToLocationId.toString(), me.remitTos);
-			if(index >= 0 && index != undefined) {
+			if (index >= 0 && index != undefined) {
 				me.remitTo.select(index, me.remitTo.focused);
 				me.remitToChanged();
 			}				
@@ -790,15 +816,15 @@ ii.Class({
 				me.contractType.select(index, me.contractType.focused);
 				
 			index = ii.ajax.util.findIndexById(houseCode.termsOfContractTypeId.toString(), me.termsOfContractTypes);
-			if(index >= 0 && index != undefined)
+			if (index >= 0 && index != undefined)
 				me.termsOfContract.select(index, me.termsOfContract.focused);
 				
 			index = ii.ajax.util.findIndexById(houseCode.billingCycleFrequencyTypeId.toString(), me.billingCycleFrequencys);
-			if(index >= 0)
+			if (index >= 0)
 				me.billingCycleFrequency.select(index, me.billingCycleFrequency.focused);
 
 			index = ii.ajax.util.findIndexById(houseCode.financialEntityId.toString(), me.financialEntities);
-			if(index >= 0 && index != undefined)
+			if (index >= 0 && index != undefined)
 				me.financialEntity.select(index, me.financialEntity.focused);
 
 			me.bankCodeNumber.setValue(houseCode.bankCodeNumber);
@@ -810,7 +836,7 @@ ii.Class({
 			me.bankCity.setValue(houseCode.bankCity);
 			
 			index = ii.ajax.util.findIndexById(houseCode.bankState.toString(), me.stateTypes);
-			if(index >= 0 && index != undefined)
+			if (index >= 0 && index != undefined)
 				me.bankState.select(index, me.bankState.focused);
 				
 			me.bankZip.setValue(houseCode.bankZip);
@@ -819,8 +845,12 @@ ii.Class({
 			me.bankEmail.setValue(houseCode.bankEmail);
 			
 			index = ii.ajax.util.findIndexById(houseCode.invoiceLogoTypeId.toString(), me.invoiceLogoTypes);
-			if(index >= 0 && index != undefined)
+			if (index >= 0 && index != undefined)
 				me.invoiceLogo.select(index, me.invoiceLogo.focused);
+				
+			index = ii.ajax.util.findIndexById(houseCode.budgetTemplateId.toString(), me.budgetTemplates);
+			if (index >= 0 && index != undefined)
+				me.budgetTemplate.select(index, me.budgetTemplate.focused);
 			
 			$("#pageLoading").hide();
 			me.resizeControls();
@@ -830,7 +860,7 @@ ii.Class({
 			var me = this;
 			var index = me.remitTo.indexSelected;
 			
-			if(index >= 1 && index != undefined) {
+			if (index >= 1 && index != undefined) {
 				me.remitToTitle.setValue(me.remitTos[index].name);
 				me.remitToAddress1.setValue(me.remitTos[index].address1);
 				me.remitToAddress2.setValue(me.remitTos[index].address2);
@@ -838,7 +868,7 @@ ii.Class({
 				me.remitToZip.setValue(me.remitTos[index].zip);
 				
 				var itemIndex = ii.ajax.util.findIndexById(me.remitTos[index].stateType.toString(), me.stateTypes);
-				if(itemIndex >= 0 && itemIndex != undefined)
+				if (itemIndex >= 0 && itemIndex != undefined)
 					me.remitToState.setValue(me.stateTypes[itemIndex].name);
 			}
 			else {

@@ -39,15 +39,20 @@ ii.init.register( function() {
 		, name: {type: String}
 	};
 
+	fin.hcm.financial.financialEntityArgs = {
+		id: {type: Number}
+		, name: {type: String}
+		, financialEntity: {type: Boolean, required: false, defaultValue: false}
+	};
+
 	fin.hcm.financial.invoiceLogoTypeArgs = {
 		id: {type: Number}
 		, name: {type: String}
 	};
 
-	fin.hcm.financial.financialEntityArgs = {
+	fin.hcm.financial.budgetTemplateArgs = {
 		id: {type: Number}
 		, name: {type: String}
-		, financialEntity: {type: Boolean, required: false, defaultValue: false}
 	};
 
 }, 2);
@@ -83,6 +88,16 @@ ii.Class({
 });
 
 ii.Class({
+	Name: "fin.hcm.financial.TermsOfContractType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.financial.termsOfContractTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
 	Name: "fin.hcm.financial.BillingCycleFrequency",
 	Definition: {
 		init: function() {
@@ -93,10 +108,10 @@ ii.Class({
 });
 
 ii.Class({
-	Name: "fin.hcm.financial.TermsOfContractType",
+	Name: "fin.hcm.financial.FinancialEntity",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.financial.termsOfContractTypeArgs);
+			var args = ii.args(arguments, fin.hcm.financial.financialEntityArgs);
 			$.extend(this, args);
 		}
 	}
@@ -113,10 +128,10 @@ ii.Class({
 });
 
 ii.Class({
-	Name: "fin.hcm.financial.FinancialEntity",
+	Name: "fin.hcm.financial.BudgetTemplate",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.financial.financialEntityArgs);
+			var args = ii.args(arguments, fin.hcm.financial.budgetTemplateArgs);
 			$.extend(this, args);
 		}
 	}
