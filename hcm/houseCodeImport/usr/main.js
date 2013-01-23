@@ -284,6 +284,14 @@ ii.Class({
 				itemConstructorArgs: fin.hcm.houseCodeImport.serviceLineArgs,
 				injectionArray: me.serviceLines
 			});
+
+			me.stateTypes = [];
+			me.stateTypeStore = me.cache.register({
+				storeId: "stateTypes",
+				itemConstructor: fin.hcm.houseCodeImport.StateType,
+				itemConstructorArgs: fin.hcm.houseCodeImport.stateTypeArgs,
+				injectionArray: me.stateTypes	
+			});	
 			
 			me.remitTos = [];
 			me.remitToStore = me.cache.register({
@@ -300,7 +308,7 @@ ii.Class({
 				itemConstructorArgs: fin.hcm.houseCodeImport.contractTypeArgs,
 				injectionArray: me.contractTypes	
 			});
-						
+
 			me.termsOfContractTypes = [];
 			me.termsOfContractTypeStore = me.cache.register({
 				storeId: "termsOfContractTypes",
@@ -316,15 +324,7 @@ ii.Class({
 				itemConstructorArgs: fin.hcm.houseCodeImport.billingCycleFrequencyArgs,
 				injectionArray: me.billingCycleFrequencys	
 			});			
-			
-			me.stateTypes = [];
-			me.stateTypeStore = me.cache.register({
-				storeId: "stateTypes",
-				itemConstructor: fin.hcm.houseCodeImport.StateType,
-				itemConstructorArgs: fin.hcm.houseCodeImport.stateTypeArgs,
-				injectionArray: me.stateTypes	
-			});	
-			
+
 			me.invoiceLogoTypes = [];
 			me.invoiceLogoTypeStore = me.cache.register({
 				storeId: "invoiceLogoTypes",
@@ -332,7 +332,15 @@ ii.Class({
 				itemConstructorArgs: fin.hcm.houseCodeImport.invoiceLogoTypeArgs,
 				injectionArray: me.invoiceLogoTypes	
 			});
-			
+
+			me.budgetTemplates = [];
+			me.budgetTemplateStore = me.cache.register({
+				storeId: "budgetTemplates",
+				itemConstructor: fin.hcm.houseCodeImport.BudgetTemplate,
+				itemConstructorArgs: fin.hcm.houseCodeImport.budgetTemplateArgs,
+				injectionArray: me.budgetTemplates
+			});
+
 			me.payPayrollCompanys = [];
 			me.payPayrollCompanyStore = me.cache.register({
 				storeId: "payrollMasters",
