@@ -94,6 +94,7 @@ ii.init.register( function() {
 		, bankFax: {type: String, required: false, defaultValue: ""}
 		, bankEmail: {type: String, required: false, defaultValue: ""}
 		, invoiceLogoTypeId: {type: Number, required: false, defaultValue: 0}
+		, budgetTemplateId: {type: Number, required: false, defaultValue: 0}
 		, stateTaxPercent: {type: String, required: false, defaultValue: ""}
 		, localTaxPercent: {type: String, required: false, defaultValue: ""}
 		, financialEntityId: {type: Number, required: false, defaultValue: 0}

@@ -464,6 +464,7 @@ ii.Class({
 				me.houseCodeDetails[0].bankFax = financialUIControls.bankFax.getValue();
 				me.houseCodeDetails[0].bankEmail = financialUIControls.bankEmail.getValue();
 				me.houseCodeDetails[0].invoiceLogoTypeId = (financialUIControls.invoiceLogo.indexSelected < 0 ? 0 : financialUIControls.invoiceLogoTypes[financialUIControls.invoiceLogo.indexSelected].id);
+				me.houseCodeDetails[0].budgetTemplateId = (financialUIControls.budgetTemplate.indexSelected < 0 ? 0 : financialUIControls.budgetTemplates[financialUIControls.budgetTemplate.indexSelected].id);
 			}
 			
 			//Payroll			
@@ -604,6 +605,7 @@ ii.Class({
 				, fin.cmn.text.mask.phone(me.houseCodeDetails[0].bankFax, true)
 				, me.houseCodeDetails[0].bankEmail
 				, me.houseCodeDetails[0].invoiceLogoTypeId
+				, me.houseCodeDetails[0].budgetTemplateId
 				, me.houseCodeDetails[0].stateTaxPercent
 				, me.houseCodeDetails[0].localTaxPercent
 				, me.houseCodeDetails[0].financialEntityId
@@ -716,6 +718,7 @@ ii.Class({
 			xml += ' bankFax="' + item.bankFax + '"';
 			xml += ' bankEmail="' + item.bankEmail + '"';
 			xml += ' invoiceLogoTypeId="' + item.invoiceLogoTypeId + '"';
+			xml += ' budgetTemplateId="' + item.budgetTemplateId + '"';
 			xml += ' stateTaxPercent="' + item.stateTaxPercent + '"';
 			xml += ' localTaxPercent="' + item.localTaxPercent + '"';
 			xml += ' financialEntityId="' + item.financialEntityId + '"';
