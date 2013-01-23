@@ -509,6 +509,15 @@ ii.Class({
 				title: "Select Job Type"
 			});
 			
+			me.jobType.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+					
+					if ((this.focused || this.touched) && me.jobType.indexSelected == -1)
+						this.setInvalid("Please select the correct Job Type.");
+				});
+			
 			me.invoiceTemplate = new ui.ctl.Input.DropDown.Filtered({
 				id: "InvoiceTemplate",
 				formatFunction: function(type) { return type.title; },
