@@ -1436,7 +1436,11 @@ ii.Class({
 			
 			var rowData = "";
 			var className = "gridHeaderColumn";
-			var width = (me.moduleColumnHeaders.length * 20) + (me.moduleColumnHeaders.length * 200);
+			var width = (me.moduleColumnHeaders.length * 20);
+			
+			for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
+				width += me.moduleColumnHeaders[index].columnWidth;
+			}
 			
 			if (width < $(window).width()) {
 				$("#tblAdhReportGridHeader").width($(window).width() - 40);
@@ -1454,12 +1458,12 @@ ii.Class({
 
 			if (me.moduleColumnHeaders.length > 0) {
 				rowData += "<tr id='trAdhReportItemGridHead' height='30px'>";	
-				rowData += "<th onclick=(fin.reportUi.sortColumn(-1)); class='gridHeaderColumn'>House Code</th>";
+				rowData += "<th onclick=(fin.reportUi.sortColumn(-1)); class='gridHeaderColumn' style='width:100px;'>House Code</th>";
 
 				for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
 					if (index == me.moduleColumnHeaders.length - 1)
 						className = "gridHeaderColumnRight";
-					rowData += "<th onclick=(fin.reportUi.sortColumn(" + index + ")); class='" + className + "'>" + me.moduleColumnHeaders[index].description + "</th>";
+					rowData += "<th onclick=(fin.reportUi.sortColumn(" + index + ")); class='" + className + "' style='width:" + me.moduleColumnHeaders[index].columnWidth + "px;'>" + me.moduleColumnHeaders[index].description + "</th>";
 					if (me.moduleColumnHeaders[index].sortOrder != "")
 						me.sortColumns = me.sortColumns + me.moduleColumnHeaders[index].title + "#" + me.moduleColumnHeaders[index].sortOrder + "|";
 				}
@@ -1616,7 +1620,7 @@ ii.Class({
 			me.gridData[args.pkId] = {};
 			me.gridData[args.pkId].buildQueue = [];
 
-			rowData += "<td id='HouseCode" + args.houseCode + "' class='gridColumn'>" + args.houseCode + "</td>";
+			rowData += "<td id='HouseCode" + args.houseCode + "' class='gridColumn' style='width:100px;'>" + args.houseCode + "</td>";
 
 			for (var index = 0; index < pairs.length; index++) { 
 				var pos = pairs[index].indexOf("=");
@@ -1656,6 +1660,7 @@ ii.Class({
 					me.gridData[args.pkId].buildQueue[0][columnName] = keyValue[columnName];
 					
 				me.columnValidation = me.moduleColumnHeaders[index].columnValidation;
+				me.columnType = me.moduleColumnHeaders[index].columnType;
 
 				if (me.columnValidation.toLowerCase() == "phone")
 					dataValue = fin.cmn.text.mask.phone(value);
@@ -1667,7 +1672,10 @@ ii.Class({
 				if (index == pairs.length - 1)
 					className = "gridColumnRight";
 
-				rowData += "<td id=" + argName + " class='" + className + "'>" + dataValue + "</td>";
+				if (me.columnType == 2) //Hidden
+					rowData += "<td id=" + argName + " class='" + className + "' style='width:" + me.moduleColumnHeaders[index].columnWidth + "px;'>&nbsp;</td>";
+				else
+					rowData += "<td id=" + argName + " class='" + className + "' style='width:" + me.moduleColumnHeaders[index].columnWidth + "px;'>" + dataValue + "</td>";
 			}
 
 			rowData += "<td id='AppSite' class='gridColumnHidden'>" + args.appSite + "</td>";
@@ -1684,6 +1692,7 @@ ii.Class({
 			var rowData = "";
 			var argTypeTable = "";
 			var argName = "";
+			var argValue = "";
 			var posTTable = 0;
 			var argscolumn = "";
 			var rowsData = "";
@@ -1692,6 +1701,8 @@ ii.Class({
 			var appUnitId = "";
 			var appUnitValue = "";
 			var appSiteId = "";
+			var columnWidth = 0;
+			var className = "gridColumn";
 			var pkId = args.pkId;
 			var rowIndex = args.rowIndex;
 			var houseCodeId = args.houseCodeId;
@@ -1706,11 +1717,16 @@ ii.Class({
 			me.rowModifed = true;
 
 			var row = $("#adhReportDataRow" + pkId);
-			
+
 			for (var index = 0; index < row[0].cells.length; index++) {
 				//index 0 for HouseCode. This addition
+				var style = "";
+				if (row[0].cells[index].attributes["style"] != undefined)
+					style = row[0].cells[index].attributes["style"].value;
 				me.columnType = 0;
 				rowData = "";
+				argValue = ui.cmn.text.xml.decode(row[0].cells[index].innerHTML);
+				className = row[0].cells[index].className;
 				
 				if (row[0].cells[index].id == "RevInvBillTo") 
 					row[0].cells[index].id = "RevInvBillTo_RevInvBillTos";
@@ -1722,6 +1738,7 @@ ii.Class({
 					if (argscolumn != "" && argscolumn != "AppSite"){
 						me.columnValidation = me.moduleColumnHeaders[index - 1].columnValidation;
 						me.columnType = me.moduleColumnHeaders[index - 1].columnType;
+						columnWidth = me.moduleColumnHeaders[index - 1].columnWidth - 8;
 					}
 				}
 				if (argscolumn == "AppUnit") {
@@ -1738,11 +1755,15 @@ ii.Class({
 
 					switch (me.columnType) {
 						case 1: //Editable
-							rowData += "<td class='gridColumn' align='left'>" + me.populateDropDown(argTypeTable, argName, row[0].cells[index].innerHTML, pkId, houseCodeId) + "</td>";
+							rowData += "<td class='" + className + "' style='" + style + "'>" + me.populateDropDown(argTypeTable, argName, argValue, pkId, houseCodeId, columnWidth) + "</td>";
+							break;
+							
+						case 2: //Hidden
+							rowData = "<td class='" + className + "' align='left' style='" + style + "'>&nbsp;</td>";
 							break;
 
 						case 3: //ReadOnly
-							rowData += "<td class='gridColumn' align='left'>" + row[0].cells[index].innerHTML + "</td>";
+							rowData += "<td class='" + className + "' align='left' style='" + style + "'>" + argValue + "</td>";
 							break;
 					}
 				}
@@ -1750,31 +1771,35 @@ ii.Class({
 					argName = argscolumn.substring(0, argscolumn.length) + "_" + pkId;
 					argTypeTable = "";
 					
-					if (me.isDate(row[0].cells[index].innerHTML) || me.columnValidation.toLowerCase() == "datetime")
+					if (me.isDate(argValue) || me.columnValidation.toLowerCase() == "datetime")
 						dateControls.push(argName);
 					
 					if (me.columnValidation.toLowerCase() == "phone")
-						dataValue = fin.cmn.text.mask.phone(row[0].cells[index].innerHTML);
+						dataValue = fin.cmn.text.mask.phone(argValue);
 					else 
-						dataValue = row[0].cells[index].innerHTML;
+						dataValue = argValue;
 					
 					switch (me.columnType) {
 						case 1: //Editable
 							if (me.columnValidation.toLowerCase() == "bit")
-								rowData = "<td class='gridColumn' align='left'><input type='checkbox' style='width:90%;' name='" + argName + "' id='" + argName + "' value='" + dataValue + "'" + (dataValue == "1" ? checked='checked' : '') + "></input></td>";
+								rowData = "<td class='" + className + "' align='center' style='" + style + "'><input type='checkbox' name='" + argName + "' id='" + argName + "' value='" + dataValue + "'" + (dataValue == "1" ? checked='checked' : '') + "></input></td>";
 							else
-								rowData = "<td class='gridColumn' align='left'><input type='text' onblur=fin.reportUi.dataValidation(\'" + fin.reportUi.columnValidation + "\',\'" + argName + "\'); style='width:90%;' id='" + argName + "' value='" + dataValue + "'></input></td>";
+								rowData = "<td class='" + className + "' style='" + style + "'><input type='text' style='width:" + columnWidth + "px;' onblur=fin.reportUi.dataValidation(\'" + fin.reportUi.columnValidation + "\',\'" + argName + "\'); id='" + argName + "' value='" + dataValue + "'></input></td>";
+							break;
+							
+						case 2: //Hidden
+							rowData += "<td class='" + className + "' align='left' style='" + style + "'>&nbsp;</td>";
 							break;
 							
 						case 3: //ReadOnly
-							rowData += "<td class='gridColumn' align='left'>" + dataValue + "</td>";
+							rowData += "<td class='" + className + "' align='left' style='" + style + "'>" + dataValue + "</td>";
 							break;
 							
 						default: 
 							if (argscolumn == "AppSite")
 								rowData += "<td class='gridColumnHidden' align='left'><input type='text' id='" + argName + "' value='" + dataValue + "'></input></td>";	
 							else
-								rowData += "<td class='gridColumn' align='left'>" + dataValue + "</td>";
+								rowData += "<td class='" + className + "' align='left' style='" + style + "'>" + dataValue + "</td>";
 							break;	
 					}
 				}	
@@ -1869,8 +1894,9 @@ ii.Class({
 				typeTable: {type: String}
 				, columnName: {type: String}
 				, columnValue: {type: String}
-				, pkId: {type: Number}				
-				, houseCodeId: {type: Number} 
+				, pkId: {type: Number}
+				, houseCodeId: {type: Number}
+				, columnWidth: {type: Number}
 			});
 			var me = this;
 			var rowHtml = "";
@@ -1878,6 +1904,7 @@ ii.Class({
 			var typeTableData = [];
 			var typeTable = {};
 			var dependentTypeFound = false;
+			var columnWidth = args.columnWidth;
 
 			if (args.columnName == "AppRoleCurrent" || args.columnName == "PayPayrollCompany" || args.columnName == "HcmHouseCodeJob" 
 				|| args.columnName == "EmpStatusCategoryType" || args.columnName == "EmpSeparationCode"
@@ -1916,17 +1943,17 @@ ii.Class({
 			typeTableData = me.getTypeTableData(args.typeTable, args.columnName);
 
 			if (args.columnName == "EmpStatusType") 
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.statusTypeChange(this);>";	
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.statusTypeChange(this);>";	
 			else if (args.columnName == "EmpTerminationReasonType")
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.terminationReasonTypeChange(this);>";
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.terminationReasonTypeChange(this);>";
 			else if (args.columnName == "PayPayrollCompany")
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.payrollCompanyChange(this);>";
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.payrollCompanyChange(this);>";
 			else if (args.columnName == "EmpEmpgPrimaryState")
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.primaryStateChange(this);>";
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.primaryStateChange(this);>";
 			else if (args.columnName == "EmpEmpgSecondaryState")
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.secondaryStateChange(this);>";
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.secondaryStateChange(this);>";
 			else
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' class='inputTextSize' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\');>";
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\');>";
 
 			if (!dependentTypeFound) {
 				for (var index = 0; index < typeTableData.length; index++) {

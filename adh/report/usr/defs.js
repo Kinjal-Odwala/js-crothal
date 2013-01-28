@@ -29,6 +29,7 @@ ii.init.register( function() {
 		, columnDataType: {type: String}
 		, columnNullable: {type: Boolean, required: false, defaultValue: false}
 		, columnValidation: {type: String, required: false, defaultValue: ""}
+		, columnWidth: {type: Number, required: false, defaultValue: 0}
 	};
 		
 	fin.adh.moduleColumnDataArgs = {
