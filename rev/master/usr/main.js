@@ -109,6 +109,7 @@ ii.Class({
             }
 			
 			me.weekPeriodYearStore.fetch("userId:[user],", me.weekPeriodYearsLoaded, me);
+			me.invoiceLogoTypeStore.fetch("userId:[user]", me.invoiceLogoTypesLoaded, me);
 
             $("#TabCollection a").click(function() {
 
@@ -432,6 +433,12 @@ ii.Class({
                 id: "PONumber",
                 maxLength: 50
             });
+			
+			me.invoiceLogo = new ui.ctl.Input.DropDown.Filtered({
+		        id: "InvoiceLogo",
+				formatFunction: function( type ) { return type.name; },
+		        required: false
+		    });
 
 			me.notes = $("#Notes")[0];
 
@@ -656,7 +663,8 @@ ii.Class({
             me.stateTax.text.tabIndex = 14;
             me.localTax.text.tabIndex = 15;
             me.poNumber.text.tabIndex = 16;
-			me.notes.tabIndex = 17;
+			me.invoiceLogo.text.tabIndex = 17;
+			me.notes.tabIndex = 18;
         },
 
         configureCommunications: function fin_rev_UserInterface_configureCommunications() {
@@ -678,6 +686,14 @@ ii.Class({
                 itemConstructorArgs: fin.rev.master.houseCodeArgs,
                 injectionArray: me.houseCodes
             });
+
+			me.houseCodeDetails = [];
+			me.houseCodeDetailStore = me.cache.register({
+				storeId: "houseCodes",
+				itemConstructor: fin.rev.master.HouseCodeDetail,
+				itemConstructorArgs: fin.rev.master.houseCodeDetailArgs,
+				injectionArray: me.houseCodeDetails
+			});
 
             me.years = [];
             me.yearStore = me.cache.register({
@@ -750,6 +766,14 @@ ii.Class({
 				itemConstructorArgs: fin.rev.master.houseCodeJobArgs,
 				injectionArray: me.houseCodeJobs
 			});
+
+			me.invoiceLogoTypes = [];
+			me.invoiceLogoTypeStore = me.cache.register({
+				storeId: "invoiceLogoTypes",
+				itemConstructor: fin.rev.master.InvoiceLogoType,
+				itemConstructorArgs: fin.rev.master.invoiceLogoTypeArgs,
+				injectionArray: me.invoiceLogoTypes
+			});
         },
 
         controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
@@ -791,7 +815,9 @@ ii.Class({
             }
             me.houseCodeGlobalParametersUpdate(false);
 
+			me.houseCodeDetailStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.houseCodeDetailsLoaded, me);
             me.yearStore.fetch("userId:[user]", me.yearsLoaded, me);
+
             if (me.statusType == "true") {
 				me.actionCompletedInvoicesLoad();				
 			}
@@ -825,7 +851,12 @@ ii.Class({
 
             me.invoiceStore.reset();
             me.invoiceStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",status:1,year:-1,invoiceByHouseCode:-1", me.invoiceLoaded, me);
+			me.houseCodeDetailStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.houseCodeDetailsLoaded, me);
         },
+
+		houseCodeDetailsLoaded: function(me, activeId) {
+
+		},
 
         yearsLoaded: function(me, activeId) { //Fiscal Years
 
@@ -1061,11 +1092,17 @@ ii.Class({
 			$("#StateTaxText").addClass("Loading");
             $("#LocalTaxText").addClass("Loading");
 
+			var index = ii.ajax.util.findIndexById(me.houseCodeDetails[0].invoiceLogoTypeId.toString(), me.invoiceLogoTypes);
+			if (index != undefined && index >= 0)
+				me.invoiceLogo.select(index, me.invoiceLogo.focused);
+			else
+				me.invoiceLogo.reset();
+
             me.invoiceId = 0;
             me.status = "Add";
             me.taxExemptsLoaded();
 			me.state.fetchingData();
-            me.billTo.fetchingData();			
+            me.billTo.fetchingData();
 			me.anchorSave.display(ui.cmn.behaviorStates.disabled);
             me.siteStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",type:invoice", me.sitesLoaded, me);
 		    me.stateTypeStore.fetch("userId:[user],", me.statesLoaded, me);
@@ -1249,6 +1286,11 @@ ii.Class({
 
         weekPeriodYearsLoaded: function(me, activeId) {
  
+        },
+		
+		invoiceLogoTypesLoaded: function(me, activeId) {
+ 
+ 			me.invoiceLogo.setData(me.invoiceLogoTypes);
         },
 				
 		actionSearchItem: function() {
@@ -1519,6 +1561,7 @@ ii.Class({
 					, stateTax: me.stateTax.getValue().toString()
 					, localTax: me.localTax.getValue().toString()
 					, poNumber: me.poNumber.getValue()
+					, invoiceLogoType: (me.invoiceLogo.indexSelected >= 0 ? me.invoiceLogoTypes[me.invoiceLogo.indexSelected].id : 0)
 					, notes: me.notes.value
 					, version: 1
 					, active: true
@@ -1556,6 +1599,7 @@ ii.Class({
 					, stateTax: invoiceInfoUIControls.stateTax.getValue().toString()
 					, localTax: invoiceInfoUIControls.localTax.getValue().toString()
 					, poNumber: invoiceInfoUIControls.poNumber.getValue()
+					, invoiceLogoType: (invoiceInfoUIControls.invoiceLogo.indexSelected >= 0 ? invoiceInfoUIControls.invoiceLogoTypes[invoiceInfoUIControls.invoiceLogo.indexSelected].id : 0)
 					, notes: invoiceInfoUIControls.notes.value
 					, version: me.invoices[me.lastSelectedRowIndex].version
 					, active: true
@@ -1676,6 +1720,7 @@ ii.Class({
             xml += ' stateTax="' + args.item.stateTax + '"';
             xml += ' localTax="' + args.item.localTax + '"';
             xml += ' poNumber="' + ui.cmn.text.xml.encode(args.item.poNumber) + '"';
+			xml += ' invoiceLogoType="' + args.item.invoiceLogoType + '"';
 			xml += ' notes="' + ui.cmn.text.xml.encode(args.item.notes) + '"';
             xml += ' version="' + args.item.version + '"';
             xml += ' validate="' + me.validate + '"';
@@ -1758,10 +1803,7 @@ ii.Class({
                     showPopup("popupMessage");
                 }
                 else {
-                    errorMessage = "Error while updating Invoice Record: " + $(args.xmlNode).attr("message");
-                    errorMessage += $(args.xmlNode).attr("error");
-                    errorMessage += " [SAVE FAILURE]";
-                    alert(errorMessage);
+                    alert("[SAVE FAILURE] Error while updating Invoice Record: " + $(args.xmlNode).attr("message"));
                     $("#pageLoading").hide();
                 }
             }

@@ -26,7 +26,12 @@ ii.init.register( function() {
 		, brief: {type: String, required: false, defaultValue: ""}
 		, hirNode: {type: Number}
 	};
-	
+
+	fin.rev.master.houseCodeDetailArgs = {
+		id: {type: Number}	
+		, invoiceLogoTypeId: {type: Number, required: false, defaultValue: 0}
+	};
+
 	fin.rev.master.yearArgs = {
 		id: {type: Number}
 		, number: {type: Number}
@@ -63,6 +68,7 @@ ii.init.register( function() {
 		, stateTax: {type: String, required: false, defaultValue: ""}
 		, localTax: {type: String, required: false, defaultValue: ""}
 		, poNumber: {type: String, required: false, defaultValue: ""}
+		, invoiceLogoType: {type: Number, required: false, defaultValue: 0}
 		, notes: {type: String, required: false, defaultValue: ""}
 		, version: { type: Number, required: false, defaultValue: 0 }
 		, creditMemoPrintable: { type: Boolean, required: false, defaultValue: false }
@@ -124,6 +130,11 @@ ii.init.register( function() {
 		, jobTitle: {type: String}
 	};
 	
+	fin.rev.master.invoiceLogoTypeArgs = {
+		id: {type: Number}
+		, name: {type: String}
+	};
+	
 }, 2);
 
 ii.Class({
@@ -141,6 +152,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.rev.master.houseCodeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rev.master.HouseCodeDetail",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rev.master.houseCodeDetailArgs);
 			$.extend(this, args);
 		}
 	}
@@ -242,6 +263,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.rev.master.houseCodeJobArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rev.master.InvoiceLogoType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rev.master.invoiceLogoTypeArgs);
 			$.extend(this, args);
 		}
 	}

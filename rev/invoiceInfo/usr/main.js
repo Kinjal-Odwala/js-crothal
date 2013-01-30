@@ -23,6 +23,7 @@ ii.Class({
 			var searchString = location.search.substring(1);
 			var pos = searchString.indexOf("=");
 			
+			me.invoiceLogoTypes = [];
 			me.invoiceId = searchString.substring(pos + 1);
 			me.houseCode = 0;
 				
@@ -62,6 +63,8 @@ ii.Class({
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			
 			me.taxExemptsLoaded();
+			me.invoiceLogoTypesLoaded();
+			
 			me.invoiceBillToStore.fetch("userId:[user],houseCode:" + me.houseCode, me.invoiceBillTosLoaded, me);
 			me.stateTypeStore.fetch("userId:[user],", me.statesLoaded, me);
 		},
@@ -83,7 +86,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("session loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded.", ii.traceTypes.Information, "Session");
 		},
 
 		resize: function() {
@@ -297,6 +300,12 @@ ii.Class({
 				maxLength: 50
 			});
 
+			me.invoiceLogo = new ui.ctl.Input.DropDown.Filtered({
+		        id: "InvoiceLogo",
+				formatFunction: function( type ) { return type.name; },
+		        required: false
+		    });
+
 			me.notes = $("#Notes")[0];
 
 			$("#Notes").height(50);
@@ -343,7 +352,8 @@ ii.Class({
 			me.stateTax.text.tabIndex = 14;
 			me.localTax.text.tabIndex = 15;
 			me.poNumber.text.tabIndex = 16;
-			me.notes.tabIndex = 17;
+			me.invoiceLogo.text.tabIndex = 17;
+			me.notes.tabIndex = 18;
 		},
 		
 		resizeControls: function() {
@@ -367,6 +377,7 @@ ii.Class({
 			me.stateTax.resizeText();
 			me.localTax.resizeText();
 			me.poNumber.resizeText();
+			me.invoiceLogo.resizeText();
 			me.resize();
 		},
 		
@@ -443,8 +454,19 @@ ii.Class({
 				me.taxId.text.readOnly = true;
 				me.taxId.setValue("");
 			}
-		},		
-	
+		},
+
+		invoiceLogoTypesLoaded: function() {
+			var me = this;
+
+			for (var index = 0; index < parent.fin.revMasterUi.invoiceLogoTypes.length; index++) {
+				var invoiceLogoType = parent.fin.revMasterUi.invoiceLogoTypes[index];
+				me.invoiceLogoTypes.push(new fin.rev.invoiceInfo.InvoiceLogoType(invoiceLogoType.id, invoiceLogoType.name));
+			}
+
+			me.invoiceLogo.setData(me.invoiceLogoTypes);
+		},
+
 		statesLoaded: function(me, activeId) {
 			
 			me.state.setData(me.stateTypes);
@@ -460,10 +482,10 @@ ii.Class({
 			
 			stateId = me.stateTypes[me.state.indexSelected].id;	
 		},
-		
+
 		invoiceBillTosLoaded: function(me, activeId) {
-			
-			if(parent.fin.revMasterUi.invoicingReadOnly) {				
+
+			if (parent.fin.revMasterUi.invoicingReadOnly) {
 				$("#TaxExemptText").attr('disabled', true);
 				$("#TaxExemptAction").removeClass("iiInputAction");
 				$("#TaxIdText").attr('disabled', true);
@@ -487,8 +509,10 @@ ii.Class({
 				$("#StateTaxText").attr('disabled', true);
 				$("#LocalTaxText").attr('disabled', true);
 				$("#PONumberText").attr('disabled', true);
+				$("#InvoiceLogoText").attr('disabled', true);
+				$("#InvoiceLogoAction").removeClass("iiInputAction");
 				$("#NotesText").attr('disabled', true);
-				
+
 				$("#AnchorSave").hide();
 				$("#AnchorUndo").hide();								
 			}
@@ -522,7 +546,7 @@ ii.Class({
 				me.zip.setValue(me.invoiceBillTos[index].postalCode);
 				
 				itemIndex = ii.ajax.util.findIndexById(me.invoiceBillTos[index].stateType.toString(), me.stateTypes);
-				if(itemIndex >= 0 && index != undefined)
+				if (itemIndex >= 0 && index != undefined)
 					me.state.select(itemIndex, me.state.focused);
 			}
 			else {
@@ -538,7 +562,7 @@ ii.Class({
 			var me = this;
 			var index = 0;
 
-			if(me.invoice == undefined) {
+			if (me.invoice == undefined) {
 				
 				$("#pageLoading").hide();
 				me.resizeControls();
@@ -565,38 +589,47 @@ ii.Class({
 			me.zip.setValue(me.invoice.postalCode);
 			
 			index = ii.ajax.util.findIndexById(me.invoice.stateType.toString(), me.stateTypes);
-			if(index >= 0 && index != undefined)
+			if (index >= 0 && index != undefined)
 				me.state.select(index, me.state.focused);
 
 			me.stateTax.setValue(me.invoice.stateTax);
 			me.localTax.setValue(me.invoice.localTax);
 			me.poNumber.setValue(me.invoice.poNumber);
+
+			index = ii.ajax.util.findIndexById(me.invoice.invoiceLogoType.toString(), me.invoiceLogoTypes);
+			if (index >= 0 && index != undefined)
+				me.invoiceLogo.select(index, me.invoiceLogo.focused);
+			else
+				me.invoiceLogo.reset();
+
 			me.notes.value = me.invoice.notes;
 			me.stateTax.text.readOnly = true;
 			me.localTax.text.readOnly = true;
 									
 			if (me.invoice.printed) {
-				me.taxExempt.text.readOnly = true;				
-				$("#TaxExemptAction").removeClass("iiInputAction");				
+				me.taxExempt.text.readOnly = true;			
+				$("#TaxExemptAction").removeClass("iiInputAction");		
 				me.taxId.text.readOnly = true;
-				me.startDate.text.readOnly = true;				
-				$("#StartDateAction").removeClass("iiInputAction");				
+				me.startDate.text.readOnly = true;
+				$("#StartDateAction").removeClass("iiInputAction");
 				me.endDate.text.readOnly = true;
-				$("#EndDateAction").removeClass("iiInputAction");				
+				$("#EndDateAction").removeClass("iiInputAction");
 				me.invoiceDate.text.readOnly = true;
-				$("#InvoiceDateAction").removeClass("iiInputAction");				
+				$("#InvoiceDateAction").removeClass("iiInputAction");
 				me.dueDate.text.readOnly = true;
-				$("#DueDateAction").removeClass("iiInputAction");				
+				$("#DueDateAction").removeClass("iiInputAction");
 				me.billTo.text.readOnly = true;
 				$("#BillToAction").removeClass("iiInputAction");				
 				me.company.text.readOnly = true;
 				me.address1.text.readOnly = true;
 				me.address2.text.readOnly = true;
 				me.city.text.readOnly = true;
-				me.state.text.readOnly = true;				
-				$("#StateAction").removeClass("iiInputAction");				
+				me.state.text.readOnly = true;
+				$("#StateAction").removeClass("iiInputAction");
 				me.zip.text.readOnly = true;
 				me.poNumber.text.readOnly = true;
+				me.invoiceLogo.text.readOnly = true;
+				$("#InvoiceLogoAction").removeClass("iiInputAction");
 				me.notes.readOnly = true;
 				$("#anchorAlign").hide();				
 			}
@@ -604,7 +637,7 @@ ii.Class({
 		
 		resetControls: function() {
 			var me = this;
-			
+
 			me.validator.reset();
 			me.taxExempt.reset();
 			me.taxId.setValue("");
@@ -622,6 +655,7 @@ ii.Class({
 			me.stateTax.setValue("");
 			me.localTax.setValue("");
 			me.poNumber.setValue("");
+			me.invoiceLogo.reset();
 			me.notes.value = "";
 		},
 		
@@ -634,22 +668,21 @@ ii.Class({
 		
 		actionSaveItem: function() {
 			var me = this;
-			
+
 			if (me.invoice.printed)
 				return false;
-				
-			me.validator.forceBlur();		
-			
+
+			me.validator.forceBlur();
+
 			// Check to see if the data entered is valid
-			if(!me.validator.queryValidity(true)) {
+			if (!me.validator.queryValidity(true)) {
 				alert("In order to save, the errors on the page must be corrected.");
 				return false;
 			}
-	
+
 			parent.fin.revMasterUi.status = "Edit";
 			parent.fin.revMasterUi.saveInvoice();
 		}
-		
 	}
 });
 
