@@ -93,6 +93,8 @@
             houseCodeDetailStore.on('load', function () {
                 if (houseCodeDetailStore.getCount() > 0) {
                     primaryNav.currentContractType = houseCodeDetailStore.getAt(0).get('contractTypeId');
+                    primaryNav.currentBudgetTemplateId = houseCodeDetailStore.getAt(0).get('budgetTemplateId');
+
                     primaryNav.resetMenuItems();
                 }
             });
