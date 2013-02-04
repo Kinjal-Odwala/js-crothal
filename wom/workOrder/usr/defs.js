@@ -3,11 +3,11 @@ ii.Import("fin.cmn.usr.defs");
 ii.init.register( function() {
 
     fin.wom = { workOrder: {} };
-	
+
 }, 1);
 
 ii.init.register( function() {
-	
+
 	fin.wom.workOrder.hirNodeArgs = {
 		id: {type: Number}
 		, nodeParentId: {type: Number}
@@ -56,7 +56,9 @@ ii.init.register( function() {
 		, houseCodeJob: {type: Number, required: false, defaultValue: 0}
 		, statusType: {type: Number, required: false, defaultValue: 1}
 		, workOrderNumber: {type: Number, required: false, defaultValue: 0}
+		, serviceLocationBrief: {type: String, required: false, defaultValue: ""}
 		, serviceLocation: {type: String, required: false, defaultValue: ""}
+		, customerBrief: {type: String, required: false, defaultValue: ""}
 		, customer: {type: String, required: false, defaultValue: ""}
 		, requestedBy: {type: String, required: false, defaultValue: ""}
 		, tennant: {type: String, required: false, defaultValue: ""}

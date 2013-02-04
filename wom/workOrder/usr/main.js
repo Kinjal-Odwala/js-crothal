@@ -378,7 +378,12 @@ ii.Class({
 			
 			me.serviceLocation = new ui.ctl.Input.DropDown.Filtered({
 				id: "ServiceLocation",
-				formatFunction: function(type) { return type.jobTitle; }
+				formatFunction: function(type) {
+					if (type.jobNumber == "")
+						return type.jobTitle; 
+					else
+						return type.jobNumber + " " + type.jobTitle;
+				}
 			});
 			
 			me.serviceLocation.makeEnterTab()
@@ -392,14 +397,19 @@ ii.Class({
 			
 			me.customer = new ui.ctl.Input.DropDown.Filtered({
 				id: "Customer",
-				formatFunction: function(type) { return type.jobTitle; }
+				formatFunction: function(type) {
+					if (type.jobNumber == "")
+						return type.jobTitle; 
+					else
+						return type.jobNumber + " " + type.jobTitle;
+				}
 			});
 			
 			me.customer.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)	
 				.addValidation( function( isFinal, dataMap ) {
-					
+
 					if ((this.focused || this.touched) && me.customer.indexSelected == -1)
 						this.setInvalid("Please select the correct Customer.");
 				});
@@ -408,7 +418,7 @@ ii.Class({
 		        id: "RequestedBy",
 				maxLength: 50
 		    });
-			
+
 			me.requestedBy.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
@@ -553,7 +563,12 @@ ii.Class({
 
 			me.serviceLocationPopup = new ui.ctl.Input.DropDown.Filtered({
 				id: "ServiceLocationPopup",
-				formatFunction: function(type) { return type.jobTitle; }
+				formatFunction: function(type) {
+					if (type.jobNumber == "")
+						return type.jobTitle;
+					else
+						return type.jobNumber + " " + type.jobTitle;
+				}
 			});
 			
 			me.serviceLocationPopup.makeEnterTab()
@@ -567,7 +582,12 @@ ii.Class({
 			
 			me.customerPopup = new ui.ctl.Input.DropDown.Filtered({
 				id: "CustomerPopup",
-				formatFunction: function(type) { return type.jobTitle; }
+				formatFunction: function(type) {
+					if (type.jobNumber == "")
+						return type.jobTitle;
+					else
+						return type.jobNumber + " " + type.jobTitle;
+				}
 			});
 			
 			me.customerPopup.makeEnterTab()
@@ -920,7 +940,7 @@ ii.Class({
 					
 					var enteredText = me.numberOfWeeks.getValue();
 					
-					if(enteredText == "") 
+					if (enteredText == "") 
 						return;
 					
 					if (/^\d+$/.test(enteredText) == false)
@@ -939,7 +959,7 @@ ii.Class({
 					
 					var enteredText = me.calendarDays.getValue();
 					
-					if(enteredText == "") 
+					if (enteredText == "") 
 						return;
 
 					var days = enteredText.split(",");
@@ -1537,9 +1557,40 @@ ii.Class({
 			me.anchorView.display(ui.cmn.behaviorStates.enabled);
 			me.anchorPrint.display(ui.cmn.behaviorStates.enabled);
 			
+			me.serviceLocation.reset();
+			me.customer.reset();
+
+			for (var index = 0; index < me.serviceLocations.length; index++) {
+				if (item.serviceLocationBrief == "") {
+					if (me.serviceLocations[index].jobTitle == item.serviceLocation) {
+						me.serviceLocation.select(index, me.serviceLocation.focused);
+						break;
+					}
+				}
+				else {
+					if (me.serviceLocations[index].jobNumber == item.serviceLocationBrief) {
+						me.serviceLocation.select(index, me.serviceLocation.focused);
+						break;
+					}
+				}
+			}
+
+			for (var index = 0; index < me.customers.length; index++) {
+				if (item.customerBrief == "") {
+					if (me.customers[index].jobTitle == item.customer) {
+						me.customer.select(index, me.customer.focused);
+						break;
+					}	
+				}
+				else {
+					if (me.customers[index].jobNumber == item.customerBrief) {
+						me.customer.select(index, me.customer.focused);
+						break;
+					}	
+				}								
+			}
+
 			me.workOrderId = item.id;		
-			me.serviceLocation.setValue(item.serviceLocation);
-			me.customer.setValue(item.customer);
 			me.requestedBy.setValue(item.requestedBy);
 			me.tennant.setValue(item.tennant);
 			me.phoneNumber.setValue(item.phone);
@@ -2259,15 +2310,17 @@ ii.Class({
 			
 			if (me.action == "New") {
 				me.workOrderId = 0;
-				
+
 				item = new fin.wom.workOrder.WorkOrder(
 					me.workOrderId
 					, parent.fin.appUI.houseCodeId
 					, me.houseCodeJobId
 					, 7
 					, 0
-					, me.serviceLocationPopup.lastBlurValue
-					, me.customerPopup.lastBlurValue
+					, me.serviceLocations[me.serviceLocationPopup.indexSelected].jobNumber
+					, me.serviceLocations[me.serviceLocationPopup.indexSelected].jobTitle
+					, me.customers[me.customerPopup.indexSelected].jobNumber
+					, me.customers[me.customerPopup.indexSelected].jobTitle
 					, me.requestedByPopup.getValue()
 					, me.tennantPopup.getValue()
 					, fin.cmn.text.mask.phone(me.phoneNumberPopup.getValue(), true)
@@ -2286,17 +2339,18 @@ ii.Class({
 				);
 			}
 			else if (me.action == "Edit" || me.action == "EditItems") {
-				
 				me.workOrderType = 0;
-								
+
 				item = new fin.wom.workOrder.WorkOrder(
 					me.workOrderId
 					, parent.fin.appUI.houseCodeId
 					, me.houseCodeJobId
 					, me.workOrders[me.lastSelectedRowIndex].statusType
 					, me.workOrders[me.lastSelectedRowIndex].workOrderNumber
-					, me.serviceLocation.lastBlurValue
-					, me.customer.lastBlurValue
+					, me.serviceLocations[me.serviceLocation.indexSelected].jobNumber
+					, me.serviceLocations[me.serviceLocation.indexSelected].jobTitle
+					, me.customers[me.customer.indexSelected].jobNumber
+					, me.customers[me.customer.indexSelected].jobTitle
 					, me.requestedBy.getValue()
 					, me.tennant.getValue()
 					, fin.cmn.text.mask.phone(me.phoneNumber.getValue(), true)
@@ -2339,7 +2393,9 @@ ii.Class({
 			xml += ' id="' + args.item.id + '"';
 			xml += ' houseCodeId="' + args.item.houseCode + '"';
 			xml += ' houseCodeJobId="' + args.item.houseCodeJob + '"';
+			xml += ' serviceLocationBrief="' + ui.cmn.text.xml.encode(args.item.serviceLocationBrief) + '"';
 			xml += ' serviceLocation="' + ui.cmn.text.xml.encode(args.item.serviceLocation) + '"';
+			xml += ' customerBrief="' + ui.cmn.text.xml.encode(args.item.customerBrief) + '"';
 			xml += ' customer="' + ui.cmn.text.xml.encode(args.item.customer) + '"';
 			xml += ' requestedBy="' + ui.cmn.text.xml.encode(args.item.requestedBy) + '"';
 			xml += ' tennant="' + ui.cmn.text.xml.encode(args.item.tennant) + '"';
@@ -2479,7 +2535,9 @@ ii.Class({
 										, item.houseCodeJob
 										, item.statusType
 										, parseInt($(this).attr("workOrderNumber"), 10)
+										, item.serviceLocationBrief
 										, item.serviceLocation
+										, item.customerBrief
 										, item.customer
 										, item.requestedBy
 										, item.tennant
