@@ -1439,7 +1439,8 @@ ii.Class({
 			var width = (me.moduleColumnHeaders.length * 20);
 			
 			for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
-				width += me.moduleColumnHeaders[index].columnWidth;
+				if (me.moduleColumnHeaders[index].columnType != 2)
+					width += me.moduleColumnHeaders[index].columnWidth;
 			}
 			
 			if (width < $(window).width()) {
@@ -1451,16 +1452,20 @@ ii.Class({
 				$("#tblAdhReportGrid").width(width);
 			}
 
-			$("#DivAdhReportGridHeader").height(30);
+			$("#DivAdhReportGridHeader").height(40);
 			$("#divAdhReportGrid").height($(window).height() - 145);
 			
 			me.sortColumns = "";
 
 			if (me.moduleColumnHeaders.length > 0) {
-				rowData += "<tr id='trAdhReportItemGridHead' height='30px'>";	
+				rowData += "<tr id='trAdhReportItemGridHead' height='40px'>";	
 				rowData += "<th onclick=(fin.reportUi.sortColumn(-1)); class='gridHeaderColumn' style='width:100px;'>House Code</th>";
 
 				for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
+					if (me.moduleColumnHeaders[index].columnType == 2)
+						className = "gridColumnHidden";
+					else
+						className = "gridHeaderColumn";
 					if (index == me.moduleColumnHeaders.length - 1)
 						className = "gridHeaderColumnRight";
 					rowData += "<th onclick=(fin.reportUi.sortColumn(" + index + ")); class='" + className + "' style='width:" + me.moduleColumnHeaders[index].columnWidth + "px;'>" + me.moduleColumnHeaders[index].description + "</th>";
@@ -1673,7 +1678,7 @@ ii.Class({
 					className = "gridColumnRight";
 
 				if (me.columnType == 2) //Hidden
-					rowData += "<td id=" + argName + " class='" + className + "' style='width:" + me.moduleColumnHeaders[index].columnWidth + "px;'>&nbsp;</td>";
+					rowData += "<td id=" + argName + " class='gridColumnHidden' style='width:" + me.moduleColumnHeaders[index].columnWidth + "px;'>&nbsp;</td>";
 				else
 					rowData += "<td id=" + argName + " class='" + className + "' style='width:" + me.moduleColumnHeaders[index].columnWidth + "px;'>" + dataValue + "</td>";
 			}
@@ -1702,6 +1707,7 @@ ii.Class({
 			var appUnitValue = "";
 			var appSiteId = "";
 			var columnWidth = 0;
+			var columnLength = 0;
 			var className = "gridColumn";
 			var pkId = args.pkId;
 			var rowIndex = args.rowIndex;
@@ -1739,6 +1745,7 @@ ii.Class({
 						me.columnValidation = me.moduleColumnHeaders[index - 1].columnValidation;
 						me.columnType = me.moduleColumnHeaders[index - 1].columnType;
 						columnWidth = me.moduleColumnHeaders[index - 1].columnWidth - 8;
+						columnLength = me.moduleColumnHeaders[index - 1].columnLength;
 					}
 				}
 				if (argscolumn == "AppUnit") {
@@ -1759,7 +1766,7 @@ ii.Class({
 							break;
 							
 						case 2: //Hidden
-							rowData = "<td class='" + className + "' align='left' style='" + style + "'>&nbsp;</td>";
+							rowData = "<td class='gridColumnHidden' align='left' style='" + style + "'>&nbsp;</td>";
 							break;
 
 						case 3: //ReadOnly
@@ -1784,11 +1791,11 @@ ii.Class({
 							if (me.columnValidation.toLowerCase() == "bit")
 								rowData = "<td class='" + className + "' align='center' style='" + style + "'><input type='checkbox' name='" + argName + "' id='" + argName + "' value='" + dataValue + "'" + (dataValue == "1" ? checked='checked' : '') + "></input></td>";
 							else
-								rowData = "<td class='" + className + "' style='" + style + "'><input type='text' style='width:" + columnWidth + "px;' onblur=fin.reportUi.dataValidation(\'" + fin.reportUi.columnValidation + "\',\'" + argName + "\'); id='" + argName + "' value='" + dataValue + "'></input></td>";
+								rowData = "<td class='" + className + "' style='" + style + "'><input type='text' style='width:" + columnWidth + "px;' onblur=fin.reportUi.dataValidation(\'" + fin.reportUi.columnValidation + "\',\'" + argName + "\'); id='" + argName + "' value='" + dataValue + "' maxlength='" + columnLength + "'></input></td>";
 							break;
 							
 						case 2: //Hidden
-							rowData += "<td class='" + className + "' align='left' style='" + style + "'>&nbsp;</td>";
+							rowData += "<td class='gridColumnHidden' align='left' style='" + style + "'>&nbsp;</td>";
 							break;
 							
 						case 3: //ReadOnly
@@ -2156,7 +2163,7 @@ ii.Class({
 		    var me = this;
 		    var rowNumber = 0;
 
-		    if (me.payrollCompaniesCache[houseCode].valid) {
+		    if (me.houseCodeJobsCache[houseCode].valid) {
 		        for (var index = 0; index < rowArray.length; index++) {
 		            rowNumber = Number(rowArray[index]);
 					me.buildSingleDropDown(rowNumber, "HcmHouseCodeJob", me.houseCodeJobsCache[houseCode].jobs, columnValue);
