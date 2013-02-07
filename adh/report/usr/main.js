@@ -94,11 +94,11 @@ ii.Class({
 
 			me.siteMasterStore.fetch("userId:[user],siteId:1", me.siteMastersLoaded, me);
 			me.serviceTypeStore.fetch("userId:[user],", me.houseCodeServiceLoaded, me);
-			me.localTaxCodeStore.fetch("payrollCompany:0,appState:0,userId:[user]", me.siteMastersLoaded, me);
-			me.maritalStatusStateTaxTypeSecondaryStore.fetch("appState:0,userId:[user]", me.siteMastersLoaded, me);
-			me.statusTypeStore.fetch("userId:[user],personId:0", me.siteMastersLoaded, me);
-			me.payFrequencyTypeStore.fetch("userId:[user]", me.siteMastersLoaded, me);
-			me.federalAdjustmentStore.fetch("userId:[user]", me.siteMastersLoaded, me);
+			me.localTaxCodeStore.fetch("payrollCompany:0,appState:0,userId:[user]", me.typesLoaded, me);
+			me.maritalStatusStateTaxTypeSecondaryStore.fetch("appState:0,userId:[user]", me.typesLoaded, me);
+			me.statusTypeStore.fetch("userId:[user],personId:0", me.typesLoaded, me);
+			me.payFrequencyTypeStore.fetch("userId:[user]", me.typesLoaded, me);
+			me.federalAdjustmentStore.fetch("userId:[user]", me.typesLoaded, me);
 			me.sdiAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
 			me.stateAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
 			me.maritalStatusFederalTaxTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
@@ -3396,7 +3396,7 @@ ii.Class({
 					if (me.moduleColumnDatas[index].modified) {
 						idIndex = 0;
 						var row = $("#adhReportDataRow" + me.moduleColumnDatas[index].primeColumn);
-						
+		
 						for (var colIndex = 0; colIndex < row[0].cells.length; colIndex++) {
 							if (row[0].cells[colIndex].firstChild != null && row[0].cells[colIndex].firstChild.type != undefined) {
 
@@ -3404,31 +3404,37 @@ ii.Class({
 								column = row[0].cells[colIndex].firstChild.id.substring(0, idIndex);
 									
 								if (column != "AppSite") {
-									columnValidation = me.moduleColumnHeaders[colIndex - 1].columnValidation;
+									columnValidation = me.moduleColumnHeaders[colIndex - 1].columnValidation.toLowerCase();
 								}
-									
+
 								if (row[0].cells[colIndex].firstChild.type == "text") {
 									data = row[0].cells[colIndex].firstChild.value;
 									
 									if (column != "AppUnit") {
-										if (data == "")
-											rowData += '|' + column + '=null';
+										if (data == "") {
+											if (columnValidation == "int" || columnValidation == "decimal")
+												rowData += '|' + column + '="0"';
+											else if (columnValidation == "datetime")
+												rowData += '|' + column + '=Null';
+											else
+												rowData += '|' + column + '=""';
+										}
 										else {
-											if (columnValidation.toLowerCase() == "phone")
+											if (columnValidation == "phone")
 												rowData += '|' + column + '=' + '"' + fin.cmn.text.mask.phone(data, true) + '"';
 											else
 												rowData += '|' + column + '=' + '"' + ui.cmn.text.xml.encode(data) + '"';
-										}											
+										}
 									}
 								}
 								else if (row[0].cells[colIndex].firstChild.type == "checkbox") {
-									data = row[0].cells[colIndex].firstChild.checked;									
+									data = row[0].cells[colIndex].firstChild.checked;
 									rowData += '|' + column + '=' + '"' + data + '"';
 								}
 								else if (row[0].cells[colIndex].firstChild.type == "select-one") {
 									data = row[0].cells[colIndex].firstChild.value;
 									if (data == "" || data == "0")
-										rowData += '|' + column + '=null';
+										rowData += '|' + column + '=Null';
 									else
 										rowData += '|' + column + '=' + '"' + ui.cmn.text.xml.encode(data) + '"';
 								}
