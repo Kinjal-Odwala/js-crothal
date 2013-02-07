@@ -12,7 +12,7 @@ ii.init.register( function() {
 		id: {type: Number}
 		, name: {type: String}
 		, description: {type: String}
-		, associateModule: {type: Boolean, required: false, defaultValue:false}
+		, editable: {type: Boolean, required: false, defaultValue:false}
 	};
 	
 	fin.adh.moduleColumnArgs = {

@@ -306,7 +306,7 @@ ii.Class({
 			while (found) {
 				found = false;
 				for (var index = 0; index < me.modules.length; index++) {
-					if (me.modules[index].associateModule) {
+					if (!me.modules[index].editable) {
 						me.modules.splice(index, 1);
 						found = true;
 						break;
@@ -314,7 +314,7 @@ ii.Class({
 				}
 			}
 
-			me.modules.unshift(new fin.adh.Module({ id: 0, name: "None", description: "", associateModule: "" }));
+			me.modules.unshift(new fin.adh.Module({ id: 0, name: "None", description: "", editable: 0 }));
 			me.module.setData(me.modules);
 			me.module.select(0, me.module.focused);
 			me.reportStore.fetch("userId:[user]", me.reportLoaded, me);
