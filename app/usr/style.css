@@ -1142,3 +1142,15 @@ body
 	{
 		display:none;
 	}
+	
+#environmentLabel {
+	float: left;
+	color: #6F6F6F;
+	padding-right: 0px;
+}
+	
+#environmentName {
+	float: left;
+	color: #032D23;
+	padding-right: 0px;
+}

@@ -20,7 +20,7 @@ ii.Class({
 			var args = ii.args(arguments,{});
 
 			var me = this;
-			
+
 			ui.cmn.behavior.disableBackspaceNavigation();
 
 			me.gateway = ii.ajax.addGateway( "app", ii.config.xmlProvider );		//@iiDoc {Property:ii.ajax.Gateway} The AP Ajax gateway.
@@ -45,10 +45,12 @@ ii.Class({
 			tabs.tabs.Menu.button.display("Selected");
 			tabs.tabs.Menu.click();					
 
-			if(me.gateway.targets["iiCache"])
+			if (me.gateway.targets["iiCache"])
 				me.cache = me.gateway.targets.iiCache.referenceData;
 			else
 				me.cache = new ii.ajax.Cache(me.gateway);
+				
+			me.session = new ii.Session(me.cache);
 			
 			me.userRoles = [];
 			me.userRoleStore = me.cache.register({
@@ -124,8 +126,9 @@ ii.Class({
 					});
 				}
 			});
-			
+		
 			me.lastLogOnUpdate(appUserRoleId);
+			$("#about").after("<div id='environmentLabel' class='statusBarPanel'>Environment: </div><div id='environmentName' class='statusBarPanel'>" + me.session.propertyGet("environmentName") + "</div>");
 		},
 		
 		roleUpdate: function fin_app_UserInterface_roleUpdate(){
