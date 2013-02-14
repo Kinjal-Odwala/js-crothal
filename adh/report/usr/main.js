@@ -70,7 +70,7 @@ ii.Class({
 			// Job module
 			me.jobTypeCache = [];
 			me.geoCodeCache = [];
-
+			
 			me.gateway = ii.ajax.addGateway("adh", ii.config.xmlProvider);			
 			me.cache = new ii.ajax.Cache(me.gateway);
 			me.hierarchy = new ii.ajax.Hierarchy( me.gateway );
@@ -95,8 +95,7 @@ ii.Class({
 			me.configureCommunications();
 			me.anchorLoad.display(ui.cmn.behaviorStates.disabled);
 			me.report.fetchingData();
-
-			me.invoiceTemplateStore.fetch("userId:[user]", me.commonDataLoaded, me);
+			
 			me.moduleStore.fetch("userId:[user]", me.commonDataLoaded, me);
 			me.siteMasterStore.fetch("userId:[user],siteId:1", me.commonDataLoaded, me);
 			me.serviceTypeStore.fetch("userId:[user],", me.houseCodeServiceLoaded, me);
@@ -112,6 +111,9 @@ ii.Class({
 			me.localTaxAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
 			me.separationCodeStore.fetch("userId:[user],terminationType:0,", me.maritalStatusTypesLoaded, me);
 			me.transactionStatusTypeStore.fetch("userId:[user]", me.typesLoaded, me);
+			me.invoiceTemplateStore.fetch("userId:[user]", me.typesLoaded, me);
+			me.budgetTemplateStore.fetch("userId:[user]", me.typesLoaded, me);
+			me.unionStatusTypeStore.fetch("userId:[user],", me.typesLoaded, me);
 			
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
@@ -300,7 +302,7 @@ ii.Class({
 				itemConstructorArgs: fin.adh.moduleArgs,
 				injectionArray: me.modules
 			});
-		
+			
 			me.users = [];
 			me.userStore = me.cache.register({
 				storeId: "loggedInUsers",
@@ -831,6 +833,14 @@ ii.Class({
 				itemConstructor: fin.adh.EmployeeGeneral,
 				itemConstructorArgs: fin.adh.employeeGeneralArgs,
 				injectionArray: me.employeeGenerals	
+			});
+			
+			me.unionStatusTypes = [];
+			me.unionStatusTypeStore = me.cache.register({
+				storeId: "unionStatusTypes",
+				itemConstructor: fin.adh.UnionStatusType,
+				itemConstructorArgs: fin.adh.unionStatusTypeArgs,
+				injectionArray: me.unionStatusTypes	
 			});
 			
 			// User Types
@@ -1431,7 +1441,7 @@ ii.Class({
 		
 		actionLoadItem: function() {
 			var me = this;
-			var houseCodeAssociated = me.modules[me.reports[me.report.indexSelected].module - 1].houseCodeAssociated; 
+			var houseCodeAssociated = me.modules[me.reports[me.report.indexSelected].module - 1].houseCodeAssociated;
 			
 			me.delimitedOrgSelectedNodes = "";
 
@@ -1446,7 +1456,7 @@ ii.Class({
 					me.delimitedOrgSelectedNodes += orgHierarchy.id.toString() + "#";
 			}
 			
-			if (me.delimitedOrgSelectedNodes == "" && houseCodeAssociated) { 
+			if (me.delimitedOrgSelectedNodes == "" && houseCodeAssociated) {
 				alert("Please select correct House Code.");
 				return;
 			}
@@ -1591,12 +1601,12 @@ ii.Class({
 		loadModuleColumnData: function() {
 			var me = this;
 
-			if (me.sortColumns == "") { 
+			if (me.sortColumns == "") {
 				if (me.delimitedOrgSelectedNodes != "")
-					me.sortColumns = "HcmHouseCodes.HcmHouseCode#Asc|"; 
+					me.sortColumns = "HcmHouseCodes.HcmHouseCode#Asc|";
 				else
 					me.sortColumns = "HcmJobs.HcmJob#Asc|";
-			}
+			}	
 			
 			$("#messageToUser").html("Loading");
 			$("#pageLoading").show();
@@ -1886,7 +1896,7 @@ ii.Class({
 						me.site.select(itemIndex, me.site.focused);
 				});
 			}
-
+debugger;
 			for (var index = 0; index < me.loadDependentTypes.length; index++) {
 				var rowId = me.loadDependentTypes[index].rowId;
 				var columnName = me.loadDependentTypes[index].columnName;
@@ -1922,7 +1932,7 @@ ii.Class({
 					case "RevInvBillTo":
 						me.invBillToCheck(rowId, searchValue, columnValue);
 						break;
-						
+					
 					case "HcmJobType":
 						me.jobTypeCheck(rowId, searchValue, columnValue);
 						break;
@@ -1930,7 +1940,7 @@ ii.Class({
 					case "HcmJobGEOCode":
 						me.geoCodeCheck(rowId, searchValue, columnValue);
 						break;
-		
+					
 					default:
 						if (columnName == "EmpEmpgLocalTaxCode1" || columnName == "EmpEmpgLocalTaxCode2" || columnName == "EmpEmpgLocalTaxCode3") 
 			 				me.localTaxCodeCheck(rowId, searchValue, me.loadDependentTypes[index].payPayrollCompany, columnName, columnValue);
@@ -1962,7 +1972,7 @@ ii.Class({
 				|| args.columnName == "EmpEmpgLocalTaxCode1" || args.columnName == "EmpEmpgLocalTaxCode2" || args.columnName == "EmpEmpgLocalTaxCode3"
 				|| args.columnName == "EmpMaritalStatusStateTaxTypePrimary" || args.columnName == "EmpMaritalStatusStateTaxTypeSecondary"
 				|| args.columnName == "EmpStateAdjustmentType" || args.columnName == "EmpSDIAdjustmentType" || args.columnName == "EmpLocalTaxAdjustmentType"
-				|| args.columnName == "RevInvBillTo" || args.columnName == "HcmJobType" || args.columnName == "HcmJobGEOCode" 
+				|| args.columnName == "RevInvBillTo" || args.columnName == "HcmJobType" || args.columnName == "HcmJobGEOCode"
 			) {				
 				typeTable.rowId = args.pkId;
 			    typeTable.columnName = args.columnName;
@@ -1986,11 +1996,11 @@ ii.Class({
 	 				typeTable.searchValue = me.gridData[args.pkId].buildQueue[0]["EmpEmpgSecondaryState"];
 				else if (args.columnName == "RevInvBillTo")
 	 				typeTable.searchValue = args.houseCodeId;
-				else if (args.columnName == "HcmJobType") 
+				else if (args.columnName == "HcmJobType")
 	 				typeTable.searchValue = args.houseCodeId;
 				else if (args.columnName == "HcmJobGEOCode")
 	 				typeTable.searchValue = me.gridData[args.pkId].buildQueue[0]["HcmJobPostalCode"];
-			    me.loadDependentTypes.push(typeTable);
+				me.loadDependentTypes.push(typeTable);
 				dependentTypeFound = true;
 			}
 
@@ -2036,7 +2046,7 @@ ii.Class({
 					me.houseCodeSortOrder = "Desc";
 				else
 					me.houseCodeSortOrder = "Asc";
-
+					
 				if (me.delimitedOrgSelectedNodes != "")
 					me.sortColumns = "HcmHouseCodes.HcmHouseCode#" + me.houseCodeSortOrder + "|";
 				else
@@ -2757,7 +2767,7 @@ ii.Class({
 				}
 			});
 		},
-
+	
 		invBillToCheck: function(rowNumber, houseCode, columnValue) {
 			var me = this;
 
@@ -2826,114 +2836,114 @@ ii.Class({
 		},
 		
 		jobTypeCheck: function(rowNumber, houseCode, columnValue) {
-				var me = this;
-	
-			    if (me.jobTypeCache[houseCode] != undefined) {
-	
-		            if (me.jobTypeCache[houseCode].loaded)
-						me.jobTypeValidate(houseCode, [rowNumber], columnValue);              
-		            else
-		                me.jobTypeCache[houseCode].buildQueue.push(rowNumber);
+			var me = this;
+
+		    if (me.jobTypeCache[houseCode] != undefined) {
+
+	            if (me.jobTypeCache[houseCode].loaded)
+					me.jobTypeValidate(houseCode, [rowNumber], columnValue);              
+	            else
+	                me.jobTypeCache[houseCode].buildQueue.push(rowNumber);
+	        }
+	        else
+	            me.jobTypeLoad(rowNumber, houseCode, columnValue);
+		},
+
+		jobTypeValidate: function(houseCode, rowArray, columnValue) {
+		    var me = this;
+		    var rowNumber = 0;
+			
+		    if (me.jobTypeCache[houseCode].valid) {
+		        for (var index = 0; index < rowArray.length; index++) {
+		        	rowNumber = Number(rowArray[index]);
+					me.buildSingleDropDown(rowNumber, "HcmJobType", me.jobTypeCache[houseCode].jobTypes, columnValue);
 		        }
-		        else
-		            me.jobTypeLoad(rowNumber, houseCode, columnValue);
-			},
-	
-			jobTypeValidate: function(houseCode, rowArray, columnValue) {
-			    var me = this;
-			    var rowNumber = 0;
-				
-			    if (me.jobTypeCache[houseCode].valid) {
-			        for (var index = 0; index < rowArray.length; index++) {
-			        	rowNumber = Number(rowArray[index]);
-						me.buildSingleDropDown(rowNumber, "HcmJobType", me.jobTypeCache[houseCode].jobTypes, columnValue);
-			        }
- 			    }
-			},
-	
-			jobTypeLoad: function(rowNumber, houseCode, columnValue) {
-				var me = this;
-	
-				$("#messageToUser").text("Loading");
-			    $("#pageLoading").show();
-				me.typesLoadedCount++;
-				
-			    me.jobTypeCache[houseCode] = {};
-			    me.jobTypeCache[houseCode].valid = false;
-			    me.jobTypeCache[houseCode].loaded = false;
-			    me.jobTypeCache[houseCode].buildQueue = [];
-				me.jobTypeCache[houseCode].jobTypes = [];
-			    me.jobTypeCache[houseCode].buildQueue.push(rowNumber);
-				me.jobTypeCache[houseCode].id = houseCode;
-				
-		        $.ajax({
-	                type: "POST",
-	                dataType: "xml",
-	                url: "/net/crothall/chimes/fin/adh/act/provider.aspx",
-	                data: "moduleId=adh&requestId=1&targetId=iiCache"
-						+ "&requestXml=<criteria>storeId:jobTypes,userId:[user],"
-						+ "houseCode:" + houseCode + ",<criteria>",
-	                  
-	                 success: function(xml) {
-	  	                $(xml).find("item").each(function() {
-		                    var jobType = {};
-		                	jobType.id = $(this).attr("id");
-		                	jobType.name = $(this).attr("name");
-		                	me.jobTypeCache[houseCode].jobTypes.push(jobType);
-		                });
-						
-						me.jobTypeCache[houseCode].valid = true;
-						me.jobTypeCache[houseCode].loaded = true;
-						//validate the list of rows
-			            me.jobTypeValidate(houseCode, me.jobTypeCache[houseCode].buildQueue, columnValue);
-			            me.typesLoadedCount--;
-						if (me.typesLoadedCount <= 0) $("#pageLoading").hide();					
-					}
-				});
-			},
-	
-			geoCodeCheck: function(rowNumber, postalCode, columnValue) {
-				var me = this;
-	
-			    if (me.geoCodeCache[postalCode] != undefined) {
-	
-		            if (me.geoCodeCache[postalCode].loaded)
-						me.geoCodeValidate(postalCode, [rowNumber], columnValue);              
-		            else
-		                me.geoCodeCache[postalCode].buildQueue.push(rowNumber);
+		    }
+		},
+
+		jobTypeLoad: function(rowNumber, houseCode, columnValue) {
+			var me = this;
+
+			$("#messageToUser").text("Loading");
+		    $("#pageLoading").show();
+			me.typesLoadedCount++;
+			
+		    me.jobTypeCache[houseCode] = {};
+		    me.jobTypeCache[houseCode].valid = false;
+		    me.jobTypeCache[houseCode].loaded = false;
+		    me.jobTypeCache[houseCode].buildQueue = [];
+			me.jobTypeCache[houseCode].jobTypes = [];
+		    me.jobTypeCache[houseCode].buildQueue.push(rowNumber);
+			me.jobTypeCache[houseCode].id = houseCode;
+			
+	        $.ajax({
+                type: "POST",
+                dataType: "xml",
+                url: "/net/crothall/chimes/fin/adh/act/provider.aspx",
+                data: "moduleId=adh&requestId=1&targetId=iiCache"
+					+ "&requestXml=<criteria>storeId:jobTypes,userId:[user],"
+					+ "houseCode:" + houseCode + ",<criteria>",
+                  
+                 success: function(xml) {
+  	                $(xml).find("item").each(function() {
+	                    var jobType = {};
+	                	jobType.id = $(this).attr("id");
+	                	jobType.name = $(this).attr("name");
+	                	me.jobTypeCache[houseCode].jobTypes.push(jobType);
+	                });
+					
+					me.jobTypeCache[houseCode].valid = true;
+					me.jobTypeCache[houseCode].loaded = true;
+					//validate the list of rows
+		            me.jobTypeValidate(houseCode, me.jobTypeCache[houseCode].buildQueue, columnValue);
+		            me.typesLoadedCount--;
+					if (me.typesLoadedCount <= 0) $("#pageLoading").hide();					
+				}
+			});
+		},
+
+		geoCodeCheck: function(rowNumber, postalCode, columnValue) {
+			var me = this;
+
+		    if (me.geoCodeCache[postalCode] != undefined) {
+
+	            if (me.geoCodeCache[postalCode].loaded)
+					me.geoCodeValidate(postalCode, [rowNumber], columnValue);              
+	            else
+	                me.geoCodeCache[postalCode].buildQueue.push(rowNumber);
+	        }
+	        else
+	            me.geoCodeLoad(rowNumber, postalCode, columnValue);
+		},
+
+		geoCodeValidate: function(postalCode, rowArray, columnValue) {
+		    var me = this;
+		    var rowNumber = 0;
+			
+		    if (me.geoCodeCache[postalCode].valid) {
+		        for (var index = 0; index < rowArray.length; index++) {
+		        	rowNumber = Number(rowArray[index]);
+					me.buildSingleDropDown(rowNumber, "HcmJobGEOCode", me.geoCodeCache[postalCode].zipCodeTypes, columnValue);
 		        }
-		        else
-		            me.geoCodeLoad(rowNumber, postalCode, columnValue);
-			},
-	
-			geoCodeValidate: function(postalCode, rowArray, columnValue) {
-			    var me = this;
-			    var rowNumber = 0;
-				
-			    if (me.geoCodeCache[postalCode].valid) {
-			        for (var index = 0; index < rowArray.length; index++) {
-			        	rowNumber = Number(rowArray[index]);
-						me.buildSingleDropDown(rowNumber, "HcmJobGEOCode", me.geoCodeCache[postalCode].zipCodeTypes, columnValue);
-			        }
-			    }
- 					},
- 			
-			geoCodeLoad: function(rowNumber, postalCode, columnValue) {
-				var me = this;
-	
-				$("#messageToUser").text("Loading");
-			    $("#pageLoading").show();
-				me.typesLoadedCount++;
-				
-			    me.geoCodeCache[postalCode] = {};
-			    me.geoCodeCache[postalCode].valid = false;
-			    me.geoCodeCache[postalCode].loaded = false;
-			    me.geoCodeCache[postalCode].buildQueue = [];
-				me.geoCodeCache[postalCode].zipCodeTypes = [];
-			    me.geoCodeCache[postalCode].buildQueue.push(rowNumber);
-				me.geoCodeCache[postalCode].id = postalCode;
-				
-		        $.ajax({
+		    }
+		},
+
+		geoCodeLoad: function(rowNumber, postalCode, columnValue) {
+			var me = this;
+
+			$("#messageToUser").text("Loading");
+		    $("#pageLoading").show();
+			me.typesLoadedCount++;
+			
+		    me.geoCodeCache[postalCode] = {};
+		    me.geoCodeCache[postalCode].valid = false;
+		    me.geoCodeCache[postalCode].loaded = false;
+		    me.geoCodeCache[postalCode].buildQueue = [];
+			me.geoCodeCache[postalCode].zipCodeTypes = [];
+		    me.geoCodeCache[postalCode].buildQueue.push(rowNumber);
+			me.geoCodeCache[postalCode].id = postalCode;
+			
+	        $.ajax({
                 type: "POST",
                 dataType: "xml",
                 url: "/net/crothall/chimes/fin/adh/act/provider.aspx",
@@ -2958,7 +2968,7 @@ ii.Class({
 				}
 			});
 		},
-		
+
 		buildSingleDropDown: function(rowNumber, controlName, types, selectedValue) {
 		    var me = this;
 		    var type = {};
@@ -3039,7 +3049,7 @@ ii.Class({
 				me.typeNoneAdd(me.invoiceLogoTypes);
 				typeTable = me.invoiceLogoTypes;
 			}
-			else if (args.typeTable == "HcmBudgetTemplate") {
+			else if (args.typeTable == "HcmBudgetTemplates") {
 				me.typeNoneAdd(me.budgetTemplates);
 				typeTable = me.budgetTemplates;
 			}			
@@ -3172,6 +3182,14 @@ ii.Class({
 			else if (args.typeTable == "EmpFederalAdjustmentTypes") {
 				me.typeNoneAdd(me.federalAdjustments);
 				typeTable = me.federalAdjustments;
+			}
+			else if (args.typeTable == "EmpBasicLifeIndicatorTypes") {
+				me.typeNoneAdd(me.basicLifeIndicatorTypes);
+				typeTable = me.basicLifeIndicatorTypes;
+			}
+			else if (args.typeTable == "EmpUnionStatusTypes") {
+				me.typeNoneAdd(me.unionStatusTypes);
+				typeTable = me.unionStatusTypes;
 			}
 			else if (args.typeTable == "PayPayrollCompanies") {
 				me.typeNoneAdd(me.payrollCompanies);

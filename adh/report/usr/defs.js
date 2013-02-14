@@ -409,6 +409,11 @@ ii.init.register( function() {
 		id: {type: Number}
 	};
 	
+	fin.adh.unionStatusTypeArgs = {
+		id: {type: Number},
+		name: {type: String}
+	};
+	
 	fin.adh.houseCodePayrollCompanyArgs = {
 		id: {type: Number}
 		, name: {type: String}
@@ -1103,6 +1108,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.adh.employeeGeneralArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.adh.UnionStatusType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.unionStatusTypeArgs);
 			$.extend(this, args);
 		}
 	}
