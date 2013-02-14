@@ -112,7 +112,7 @@ ii.Class({
 			me.separationCodeStore.fetch("userId:[user],terminationType:0,", me.maritalStatusTypesLoaded, me);
 			me.transactionStatusTypeStore.fetch("userId:[user]", me.typesLoaded, me);
 			me.invoiceTemplateStore.fetch("userId:[user]", me.typesLoaded, me);
-			me.budgetTemplateStore.fetch("userId:[user]", me.typesLoaded, me);
+			//me.budgetTemplateStore.fetch("userId:[user]", me.typesLoaded, me);
 			me.unionStatusTypeStore.fetch("userId:[user],", me.typesLoaded, me);
 			
 			$(window).bind("resize", me, me.resize);
@@ -1456,11 +1456,19 @@ ii.Class({
 					me.delimitedOrgSelectedNodes += orgHierarchy.id.toString() + "#";
 			}
 			
-			if (me.delimitedOrgSelectedNodes == "" && houseCodeAssociated) {
-				alert("Please select correct House Code.");
-				return;
+			if (houseCodeAssociated) {
+				if (me.delimitedOrgSelectedNodes == ""){
+					alert("Please select correct House Code.");
+					return;
+				}
 			}
-			
+			else {
+				if (me.delimitedOrgSelectedNodes == "" && me.reports[me.report.indexSelected].moduleAssociate != 0) {
+					alert("Please select correct House Code.");
+					return;
+				}
+			}
+						
 			$("#AdhReportGrid").show();
 			$("#ReportHierarchy").hide();
 			$("#messageToUser").html("Loading");
@@ -1501,8 +1509,9 @@ ii.Class({
 
 			if (me.moduleColumnHeaders.length > 0) {
 				rowData += "<tr id='trAdhReportItemGridHead' height='40px'>";	
-				rowData += "<th onclick=(fin.reportUi.sortColumn(-1)); class='gridHeaderColumn' style='width:100px;'>House Code</th>";
-
+				if (me.delimitedOrgSelectedNodes != "") 
+					rowData += "<th onclick=(fin.reportUi.sortColumn(-1)); class='gridHeaderColumn' style='width:100px;'>House Code</th>";
+									
 				for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
 					if (me.moduleColumnHeaders[index].columnType == 2)
 						className = "gridColumnHidden";
@@ -1670,9 +1679,10 @@ ii.Class({
 
 			me.gridData[args.pkId] = {};
 			me.gridData[args.pkId].buildQueue = [];
-
-			rowData += "<td id='HouseCode" + args.houseCode + "' class='gridColumn' style='width:100px;'>" + args.houseCode + "</td>";
-
+			
+			if (me.delimitedOrgSelectedNodes != "") 
+				rowData += "<td id='HouseCode" + args.houseCode + "' class='gridColumn' style='width:100px;'>" + args.houseCode + "</td>";
+			
 			for (var index = 0; index < pairs.length; index++) { 
 				var pos = pairs[index].indexOf("=");
 				var posTypeTable = pairs[index].indexOf("_");
@@ -1896,7 +1906,7 @@ ii.Class({
 						me.site.select(itemIndex, me.site.focused);
 				});
 			}
-debugger;
+
 			for (var index = 0; index < me.loadDependentTypes.length; index++) {
 				var rowId = me.loadDependentTypes[index].rowId;
 				var columnName = me.loadDependentTypes[index].columnName;
