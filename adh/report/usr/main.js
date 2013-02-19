@@ -30,6 +30,7 @@ ii.Class({
 		init: function() {
 			var args = ii.args(arguments, {});
 			var me = this;
+			me.postalCodeOnChange = 0;
 			
 			me.reportId = 0;
 			me.delimitedOrgSelectedNodes = "";
@@ -69,7 +70,7 @@ ii.Class({
 			
 			// Job module
 			me.jobTypeCache = [];
-			me.geoCodeCache = [];
+			me.zipCodeCache = [];
 			
 			me.gateway = ii.ajax.addGateway("adh", ii.config.xmlProvider);			
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -112,8 +113,8 @@ ii.Class({
 			me.separationCodeStore.fetch("userId:[user],terminationType:0,", me.maritalStatusTypesLoaded, me);
 			me.transactionStatusTypeStore.fetch("userId:[user]", me.typesLoaded, me);
 			me.invoiceTemplateStore.fetch("userId:[user]", me.typesLoaded, me);
-			//me.budgetTemplateStore.fetch("userId:[user]", me.typesLoaded, me);
 			me.unionStatusTypeStore.fetch("userId:[user],", me.typesLoaded, me);
+			me.jobTypeStore.fetch("userId:[user],", me.typesLoaded, me);
 			
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
@@ -877,7 +878,7 @@ ii.Class({
 				itemConstructorArgs: fin.adh.jobTypeArgs,
 				injectionArray: me.jobTypes	
 			});
-			
+						
 			me.invoiceTemplates = [];
 			me.invoiceTemplateStore = me.cache.register({
 				storeId: "revInvoiceTemplates",
@@ -1846,10 +1847,11 @@ ii.Class({
 						case 1: //Editable
 							if (me.columnValidation.toLowerCase() == "bit")
 								rowData = "<td class='" + className + "' align='center' style='" + style + "'><input type='checkbox' name='" + argName + "' id='" + argName + "' value='" + dataValue + "'" + (dataValue == "1" ? checked='checked' : '') + "></input></td>";
+							else if(argscolumn == "HcmJobPostalCode")
+								rowData = "<td class='" + className + "' style='" + style + "'><input type='text' style='width:" + columnWidth + "px;' onblur=fin.reportUi.postalCodeChange(this);fin.reportUi.dataValidation(\'" + fin.reportUi.columnValidation + "\',\'" + argName + "\'); id='" + argName + "' value='" + dataValue + "' maxlength='" + columnLength + "'></input></td>";								
 							else
 								rowData = "<td class='" + className + "' style='" + style + "'><input type='text' style='width:" + columnWidth + "px;' onblur=fin.reportUi.dataValidation(\'" + fin.reportUi.columnValidation + "\',\'" + argName + "\'); id='" + argName + "' value='" + dataValue + "' maxlength='" + columnLength + "'></input></td>";
 							break;
-							
 						case 2: //Hidden
 							rowData += "<td class='gridColumnHidden' align='left' style='" + style + "'>&nbsp;</td>";
 							break;
@@ -1943,12 +1945,8 @@ ii.Class({
 						me.invBillToCheck(rowId, searchValue, columnValue);
 						break;
 					
-					case "HcmJobType":
-						me.jobTypeCheck(rowId, searchValue, columnValue);
-						break;
-					
 					case "HcmJobGEOCode":
-						me.geoCodeCheck(rowId, searchValue, columnValue);
+						me.zipCodeCheck(rowId, searchValue, columnValue);
 						break;
 					
 					default:
@@ -1982,7 +1980,7 @@ ii.Class({
 				|| args.columnName == "EmpEmpgLocalTaxCode1" || args.columnName == "EmpEmpgLocalTaxCode2" || args.columnName == "EmpEmpgLocalTaxCode3"
 				|| args.columnName == "EmpMaritalStatusStateTaxTypePrimary" || args.columnName == "EmpMaritalStatusStateTaxTypeSecondary"
 				|| args.columnName == "EmpStateAdjustmentType" || args.columnName == "EmpSDIAdjustmentType" || args.columnName == "EmpLocalTaxAdjustmentType"
-				|| args.columnName == "RevInvBillTo" || args.columnName == "HcmJobType" || args.columnName == "HcmJobGEOCode"
+				|| args.columnName == "RevInvBillTo" || args.columnName == "HcmJobGEOCode"
 			) {				
 				typeTable.rowId = args.pkId;
 			    typeTable.columnName = args.columnName;
@@ -2006,8 +2004,6 @@ ii.Class({
 	 				typeTable.searchValue = me.gridData[args.pkId].buildQueue[0]["EmpEmpgSecondaryState"];
 				else if (args.columnName == "RevInvBillTo")
 	 				typeTable.searchValue = args.houseCodeId;
-				else if (args.columnName == "HcmJobType")
-	 				typeTable.searchValue = args.houseCodeId;
 				else if (args.columnName == "HcmJobGEOCode")
 	 				typeTable.searchValue = me.gridData[args.pkId].buildQueue[0]["HcmJobPostalCode"];
 				me.loadDependentTypes.push(typeTable);
@@ -2026,6 +2022,8 @@ ii.Class({
 				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.primaryStateChange(this);>";
 			else if (args.columnName == "EmpEmpgSecondaryState")
 				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.secondaryStateChange(this);>";
+//			else if (args.columnName == "HcmJobGEOCode")
+//				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.geoCodeChange(this);>";
 			else
 				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\');>";
 
@@ -2845,113 +2843,54 @@ ii.Class({
 			});
 		},
 		
-		jobTypeCheck: function(rowNumber, houseCode, columnValue) {
+		postalCodeChange: function(objSelect) {
+			var me = this;
+			me.postalCodeOnChange = 1;
+		    var rowNumber = Number(objSelect.id.substr(17));			
+
+	        me.zipCodeCheck(rowNumber, objSelect.value, "");
+		},
+		
+		zipCodeCheck: function(rowNumber, postalCode, columnValue) {
 			var me = this;
 
-		    if (me.jobTypeCache[houseCode] != undefined) {
+		    if (me.zipCodeCache[postalCode] != undefined) {
 
-	            if (me.jobTypeCache[houseCode].loaded)
-					me.jobTypeValidate(houseCode, [rowNumber], columnValue);              
+	            if (me.zipCodeCache[postalCode].loaded)
+					me.zipCodeValidate(postalCode, [rowNumber], columnValue);              
 	            else
-	                me.jobTypeCache[houseCode].buildQueue.push(rowNumber);
+	                me.zipCodeCache[postalCode].buildQueue.push(rowNumber);
 	        }
 	        else
-	            me.jobTypeLoad(rowNumber, houseCode, columnValue);
+	            me.zipCodeLoad(rowNumber, postalCode, columnValue);
 		},
 
-		jobTypeValidate: function(houseCode, rowArray, columnValue) {
+		zipCodeValidate: function(postalCode, rowArray, columnValue) {
 		    var me = this;
 		    var rowNumber = 0;
 			
-		    if (me.jobTypeCache[houseCode].valid) {
+		    if (me.zipCodeCache[postalCode].valid) {
 		        for (var index = 0; index < rowArray.length; index++) {
 		        	rowNumber = Number(rowArray[index]);
-					me.buildSingleDropDown(rowNumber, "HcmJobType", me.jobTypeCache[houseCode].jobTypes, columnValue);
+					me.buildDropDownforZipCodes(rowNumber, "HcmJobGEOCode", me.zipCodeCache[postalCode].zipCodeTypes, columnValue);
 		        }
 		    }
 		},
 
-		jobTypeLoad: function(rowNumber, houseCode, columnValue) {
+		zipCodeLoad: function(rowNumber, postalCode, columnValue) {
 			var me = this;
 
 			$("#messageToUser").text("Loading");
 		    $("#pageLoading").show();
 			me.typesLoadedCount++;
 			
-		    me.jobTypeCache[houseCode] = {};
-		    me.jobTypeCache[houseCode].valid = false;
-		    me.jobTypeCache[houseCode].loaded = false;
-		    me.jobTypeCache[houseCode].buildQueue = [];
-			me.jobTypeCache[houseCode].jobTypes = [];
-		    me.jobTypeCache[houseCode].buildQueue.push(rowNumber);
-			me.jobTypeCache[houseCode].id = houseCode;
-			
-	        $.ajax({
-                type: "POST",
-                dataType: "xml",
-                url: "/net/crothall/chimes/fin/adh/act/provider.aspx",
-                data: "moduleId=adh&requestId=1&targetId=iiCache"
-					+ "&requestXml=<criteria>storeId:jobTypes,userId:[user],"
-					+ "houseCode:" + houseCode + ",<criteria>",
-                  
-                 success: function(xml) {
-  	                $(xml).find("item").each(function() {
-	                    var jobType = {};
-	                	jobType.id = $(this).attr("id");
-	                	jobType.name = $(this).attr("name");
-	                	me.jobTypeCache[houseCode].jobTypes.push(jobType);
-	                });
-					
-					me.jobTypeCache[houseCode].valid = true;
-					me.jobTypeCache[houseCode].loaded = true;
-					//validate the list of rows
-		            me.jobTypeValidate(houseCode, me.jobTypeCache[houseCode].buildQueue, columnValue);
-		            me.typesLoadedCount--;
-					if (me.typesLoadedCount <= 0) $("#pageLoading").hide();					
-				}
-			});
-		},
-
-		geoCodeCheck: function(rowNumber, postalCode, columnValue) {
-			var me = this;
-
-		    if (me.geoCodeCache[postalCode] != undefined) {
-
-	            if (me.geoCodeCache[postalCode].loaded)
-					me.geoCodeValidate(postalCode, [rowNumber], columnValue);              
-	            else
-	                me.geoCodeCache[postalCode].buildQueue.push(rowNumber);
-	        }
-	        else
-	            me.geoCodeLoad(rowNumber, postalCode, columnValue);
-		},
-
-		geoCodeValidate: function(postalCode, rowArray, columnValue) {
-		    var me = this;
-		    var rowNumber = 0;
-			
-		    if (me.geoCodeCache[postalCode].valid) {
-		        for (var index = 0; index < rowArray.length; index++) {
-		        	rowNumber = Number(rowArray[index]);
-					me.buildSingleDropDown(rowNumber, "HcmJobGEOCode", me.geoCodeCache[postalCode].zipCodeTypes, columnValue);
-		        }
-		    }
-		},
-
-		geoCodeLoad: function(rowNumber, postalCode, columnValue) {
-			var me = this;
-
-			$("#messageToUser").text("Loading");
-		    $("#pageLoading").show();
-			me.typesLoadedCount++;
-			
-		    me.geoCodeCache[postalCode] = {};
-		    me.geoCodeCache[postalCode].valid = false;
-		    me.geoCodeCache[postalCode].loaded = false;
-		    me.geoCodeCache[postalCode].buildQueue = [];
-			me.geoCodeCache[postalCode].zipCodeTypes = [];
-		    me.geoCodeCache[postalCode].buildQueue.push(rowNumber);
-			me.geoCodeCache[postalCode].id = postalCode;
+		    me.zipCodeCache[postalCode] = {};
+		    me.zipCodeCache[postalCode].valid = false;
+		    me.zipCodeCache[postalCode].loaded = false;
+		    me.zipCodeCache[postalCode].buildQueue = [];
+			me.zipCodeCache[postalCode].zipCodeTypes = [];
+		    me.zipCodeCache[postalCode].buildQueue.push(rowNumber);
+			me.zipCodeCache[postalCode].id = postalCode;
 			
 	        $.ajax({
                 type: "POST",
@@ -2963,22 +2902,56 @@ ii.Class({
                   
                  success: function(xml) {
   	                $(xml).find("item").each(function() {
-	                    var geoCode = {};
-	                	geoCode.id = $(this).attr("geoCode");
-	                	geoCode.name = $(this).attr("geoCode");
-	                	me.geoCodeCache[postalCode].zipCodeTypes.push(geoCode);
+	                    var zipCode = {};
+	                	zipCode.id = $(this).attr("geoCode");
+	                	zipCode.name = $(this).attr("geoCode");
+						zipCode.zipCode = $(this).attr("zipCode");
+						zipCode.city = $(this).attr("city");
+						zipCode.stateType = $(this).attr("stateType");
+	                	me.zipCodeCache[postalCode].zipCodeTypes.push(zipCode);
 	                });
 					
-					me.geoCodeCache[postalCode].valid = true;
-					me.geoCodeCache[postalCode].loaded = true;
+					me.zipCodeCache[postalCode].valid = true;
+					me.zipCodeCache[postalCode].loaded = true;
 					//validate the list of rows
-		            me.geoCodeValidate(postalCode, me.geoCodeCache[postalCode].buildQueue, columnValue);
+		            me.zipCodeValidate(postalCode, me.zipCodeCache[postalCode].buildQueue, columnValue);
 		            me.typesLoadedCount--;
 					if (me.typesLoadedCount <= 0) $("#pageLoading").hide();					
 				}
 			});
 		},
+		
+		buildDropDownforZipCodes: function(rowNumber, controlName, types, selectedValue) {
+		    var me = this;
+		    var type = {};
+			var selType = "";
 
+			selType = $("#" + controlName + "_" + rowNumber);
+			selType.empty();
+			selType.append("<option value='0'></option>");
+
+		    for(var index = 0; index < types.length; index++) {
+		        type = types[index];
+				if (type.name == selectedValue)
+					selType.append("<option  title='" + type.name + "' value='" + type.id + "' selected>" + type.name + "</option>");
+				else
+		        	selType.append("<option  title='" + type.name + "' value='" + type.id + "'>" + type.name + "</option>");
+		    }
+			
+			if(me.postalCodeOnChange == 1){
+				if (types.length < 1) {
+					$("#HcmJobCity_" + rowNumber).attr("readonly", true);
+					$("#AppStateType_" + rowNumber).attr('disabled', true);
+				}
+				else {
+					$("#HcmJobCity_" + rowNumber).attr("readonly", false);
+					$("#AppStateType_" + rowNumber).attr('disabled', false);
+				}
+				me.postalCodeOnChange = 0
+			}
+				
+		},
+		
 		buildSingleDropDown: function(rowNumber, controlName, types, selectedValue) {
 		    var me = this;
 		    var type = {};
@@ -3209,11 +3182,22 @@ ii.Class({
 				me.typeNoneAdd(me.transactionStatusTypes);
 				typeTable = me.transactionStatusTypes;
 			}
+			else if (args.typeTable == "HcmJobTypes") {
+				me.hcmJobTypes = [];
+
+				for (var index = 0; index < me.jobTypes.length; index++) {
+					if (me.jobTypes[index].id != 4) {
+						var item = new fin.adh.HcmJobType({ id: me.jobTypes[index].id, name:me.jobTypes[index].name });
+						me.hcmJobTypes.push(item);
+					}
+				}
+				me.typeNoneAdd(me.hcmJobTypes);
+				typeTable = me.hcmJobTypes;
+			}
 			else if (args.typeTable == "RevInvoiceTemplates") {
 				me.typeNoneAdd(me.invoiceTemplates);
 				typeTable = me.invoiceTemplates;
 			}
-			
 			return typeTable;
 		},
 				

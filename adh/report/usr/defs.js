@@ -446,6 +446,11 @@ ii.init.register( function() {
 		, title: {type: String}
 	};
 	
+	fin.adh.hcmJobTypeArgs = {
+		id: {type: Number}
+		, name: {type: String}
+	};
+	
 }, 2);
 
 ii.Class({
@@ -1178,6 +1183,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.adh.invoiceTemplateArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.adh.HcmJobType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.hcmJobTypeArgs);
 			$.extend(this, args);
 		}
 	}
