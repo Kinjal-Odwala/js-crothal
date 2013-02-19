@@ -1494,6 +1494,9 @@ ii.Class({
 					width += me.moduleColumnHeaders[index].columnWidth;
 			}
 			
+			if (me.delimitedOrgSelectedNodes == "")
+				width -= 100;
+			
 			if (width < $(window).width()) {
 				$("#tblAdhReportGridHeader").width($(window).width() - 40);
 				$("#tblAdhReportGrid").width($(window).width() - 40);
@@ -1510,9 +1513,14 @@ ii.Class({
 
 			if (me.moduleColumnHeaders.length > 0) {
 				rowData += "<tr id='trAdhReportItemGridHead' height='40px'>";	
-				if (me.delimitedOrgSelectedNodes != "") 
-					rowData += "<th onclick=(fin.reportUi.sortColumn(-1)); class='gridHeaderColumn' style='width:100px;'>House Code</th>";
-									
+
+				if (me.delimitedOrgSelectedNodes == "")
+					className = "gridColumnHidden";
+				else
+					className = "gridHeaderColumn";
+					
+				rowData += "<th onclick=(fin.reportUi.sortColumn(-1)); class='" + className + "' style='width:100px;'>House Code</th>";
+	
 				for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
 					if (me.moduleColumnHeaders[index].columnType == 2)
 						className = "gridColumnHidden";
@@ -1680,10 +1688,13 @@ ii.Class({
 
 			me.gridData[args.pkId] = {};
 			me.gridData[args.pkId].buildQueue = [];
-			
-			if (me.delimitedOrgSelectedNodes != "") 
-				rowData += "<td id='HouseCode" + args.houseCode + "' class='gridColumn' style='width:100px;'>" + args.houseCode + "</td>";
-			
+		
+			if (me.delimitedOrgSelectedNodes == "")
+				className = "gridColumnHidden";
+
+			rowData += "<td id='HouseCode" + args.houseCode + "' class='" + className + "' style='width:100px;'>" + args.houseCode + "</td>";
+			className = "gridColumn";
+
 			for (var index = 0; index < pairs.length; index++) { 
 				var pos = pairs[index].indexOf("=");
 				var posTypeTable = pairs[index].indexOf("_");
