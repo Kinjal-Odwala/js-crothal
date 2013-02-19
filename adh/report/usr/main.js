@@ -66,7 +66,11 @@ ii.Class({
 			
 			// Invoice module
 			me.invBillToCache = [];
-
+			
+			// Job module
+			me.jobTypeCache = [];
+			me.geoCodeCache = [];
+			
 			me.gateway = ii.ajax.addGateway("adh", ii.config.xmlProvider);			
 			me.cache = new ii.ajax.Cache(me.gateway);
 			me.hierarchy = new ii.ajax.Hierarchy( me.gateway );
@@ -91,14 +95,15 @@ ii.Class({
 			me.configureCommunications();
 			me.anchorLoad.display(ui.cmn.behaviorStates.disabled);
 			me.report.fetchingData();
-
-			me.siteMasterStore.fetch("userId:[user],siteId:1", me.siteMastersLoaded, me);
+			
+			me.moduleStore.fetch("userId:[user]", me.commonDataLoaded, me);
+			me.siteMasterStore.fetch("userId:[user],siteId:1", me.commonDataLoaded, me);
 			me.serviceTypeStore.fetch("userId:[user],", me.houseCodeServiceLoaded, me);
-			me.localTaxCodeStore.fetch("payrollCompany:0,appState:0,userId:[user]", me.siteMastersLoaded, me);
-			me.maritalStatusStateTaxTypeSecondaryStore.fetch("appState:0,userId:[user]", me.siteMastersLoaded, me);
-			me.statusTypeStore.fetch("userId:[user],personId:0", me.siteMastersLoaded, me);
-			me.payFrequencyTypeStore.fetch("userId:[user]", me.siteMastersLoaded, me);
-			me.federalAdjustmentStore.fetch("userId:[user]", me.siteMastersLoaded, me);
+			me.localTaxCodeStore.fetch("payrollCompany:0,appState:0,userId:[user]", me.typesLoaded, me);
+			me.maritalStatusStateTaxTypeSecondaryStore.fetch("appState:0,userId:[user]", me.typesLoaded, me);
+			me.statusTypeStore.fetch("userId:[user],personId:0", me.typesLoaded, me);
+			me.payFrequencyTypeStore.fetch("userId:[user]", me.typesLoaded, me);
+			me.federalAdjustmentStore.fetch("userId:[user]", me.typesLoaded, me);
 			me.sdiAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
 			me.stateAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
 			me.maritalStatusFederalTaxTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
@@ -106,6 +111,9 @@ ii.Class({
 			me.localTaxAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
 			me.separationCodeStore.fetch("userId:[user],terminationType:0,", me.maritalStatusTypesLoaded, me);
 			me.transactionStatusTypeStore.fetch("userId:[user]", me.typesLoaded, me);
+			me.invoiceTemplateStore.fetch("userId:[user]", me.typesLoaded, me);
+			//me.budgetTemplateStore.fetch("userId:[user]", me.typesLoaded, me);
+			me.unionStatusTypeStore.fetch("userId:[user],", me.typesLoaded, me);
 			
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
@@ -286,6 +294,14 @@ ii.Class({
 		configureCommunications: function() {
 			var args = ii.args(arguments, {});
 			var me = this;
+			
+			me.modules = [];
+			me.moduleStore = me.cache.register({
+				storeId: "appModules",
+				itemConstructor: fin.adh.Module,
+				itemConstructorArgs: fin.adh.moduleArgs,
+				injectionArray: me.modules
+			});
 			
 			me.users = [];
 			me.userStore = me.cache.register({
@@ -819,6 +835,14 @@ ii.Class({
 				injectionArray: me.employeeGenerals	
 			});
 			
+			me.unionStatusTypes = [];
+			me.unionStatusTypeStore = me.cache.register({
+				storeId: "unionStatusTypes",
+				itemConstructor: fin.adh.UnionStatusType,
+				itemConstructorArgs: fin.adh.unionStatusTypeArgs,
+				injectionArray: me.unionStatusTypes	
+			});
+			
 			// User Types
 			me.userRoles = [];
 			me.userRoleStore = me.cache.register({
@@ -843,6 +867,23 @@ ii.Class({
 				itemConstructor: fin.adh.TransactionStatusType,
 				itemConstructorArgs: fin.adh.transactionStatusTypeArgs,
 				injectionArray: me.transactionStatusTypes	
+			});
+			
+			//Job
+			me.jobTypes = [];
+			me.jobTypeStore = me.cache.register({
+				storeId: "jobTypes", //jobTypes
+				itemConstructor: fin.adh.JobType,
+				itemConstructorArgs: fin.adh.jobTypeArgs,
+				injectionArray: me.jobTypes	
+			});
+			
+			me.invoiceTemplates = [];
+			me.invoiceTemplateStore = me.cache.register({
+				storeId: "revInvoiceTemplates",
+				itemConstructor: fin.adh.InvoiceTemplate,
+				itemConstructorArgs: fin.adh.invoiceTemplateArgs,
+				injectionArray: me.invoiceTemplates
 			});
 		},
 		
@@ -893,7 +934,7 @@ ii.Class({
 
 		},
 		
-		siteMastersLoaded: function(me, activeId) {
+		commonDataLoaded: function(me, activeId) {
 
 		},
 		
@@ -1400,7 +1441,8 @@ ii.Class({
 		
 		actionLoadItem: function() {
 			var me = this;
-
+			var houseCodeAssociated = me.modules[me.reports[me.report.indexSelected].module - 1].houseCodeAssociated;
+			
 			me.delimitedOrgSelectedNodes = "";
 
 			if (me.report.indexSelected <= 0) {
@@ -1414,11 +1456,19 @@ ii.Class({
 					me.delimitedOrgSelectedNodes += orgHierarchy.id.toString() + "#";
 			}
 			
-			if (me.delimitedOrgSelectedNodes == "") {
-				alert("Please select correct House Code.");
-				return;
+			if (houseCodeAssociated) {
+				if (me.delimitedOrgSelectedNodes == ""){
+					alert("Please select correct House Code.");
+					return;
+				}
 			}
-			
+			else {
+				if (me.delimitedOrgSelectedNodes == "" && me.reports[me.report.indexSelected].moduleAssociate != 0) {
+					alert("Please select correct House Code.");
+					return;
+				}
+			}
+						
 			$("#AdhReportGrid").show();
 			$("#ReportHierarchy").hide();
 			$("#messageToUser").html("Loading");
@@ -1439,7 +1489,8 @@ ii.Class({
 			var width = (me.moduleColumnHeaders.length * 20);
 			
 			for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
-				width += me.moduleColumnHeaders[index].columnWidth;
+				if (me.moduleColumnHeaders[index].columnType != 2)
+					width += me.moduleColumnHeaders[index].columnWidth;
 			}
 			
 			if (width < $(window).width()) {
@@ -1451,16 +1502,21 @@ ii.Class({
 				$("#tblAdhReportGrid").width(width);
 			}
 
-			$("#DivAdhReportGridHeader").height(30);
+			$("#DivAdhReportGridHeader").height(40);
 			$("#divAdhReportGrid").height($(window).height() - 145);
 			
 			me.sortColumns = "";
 
 			if (me.moduleColumnHeaders.length > 0) {
-				rowData += "<tr id='trAdhReportItemGridHead' height='30px'>";	
-				rowData += "<th onclick=(fin.reportUi.sortColumn(-1)); class='gridHeaderColumn' style='width:100px;'>House Code</th>";
-
+				rowData += "<tr id='trAdhReportItemGridHead' height='40px'>";	
+				if (me.delimitedOrgSelectedNodes != "") 
+					rowData += "<th onclick=(fin.reportUi.sortColumn(-1)); class='gridHeaderColumn' style='width:100px;'>House Code</th>";
+									
 				for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
+					if (me.moduleColumnHeaders[index].columnType == 2)
+						className = "gridColumnHidden";
+					else
+						className = "gridHeaderColumn";
 					if (index == me.moduleColumnHeaders.length - 1)
 						className = "gridHeaderColumnRight";
 					rowData += "<th onclick=(fin.reportUi.sortColumn(" + index + ")); class='" + className + "' style='width:" + me.moduleColumnHeaders[index].columnWidth + "px;'>" + me.moduleColumnHeaders[index].description + "</th>";
@@ -1554,9 +1610,13 @@ ii.Class({
 		loadModuleColumnData: function() {
 			var me = this;
 
-			if (me.sortColumns == "")
-				me.sortColumns = "HcmHouseCodes.HcmHouseCode#Asc|";
-
+			if (me.sortColumns == "") {
+				if (me.delimitedOrgSelectedNodes != "")
+					me.sortColumns = "HcmHouseCodes.HcmHouseCode#Asc|";
+				else
+					me.sortColumns = "HcmJobs.HcmJob#Asc|";
+			}	
+			
 			$("#messageToUser").html("Loading");
 			$("#pageLoading").show();
 			
@@ -1619,9 +1679,10 @@ ii.Class({
 
 			me.gridData[args.pkId] = {};
 			me.gridData[args.pkId].buildQueue = [];
-
-			rowData += "<td id='HouseCode" + args.houseCode + "' class='gridColumn' style='width:100px;'>" + args.houseCode + "</td>";
-
+			
+			if (me.delimitedOrgSelectedNodes != "") 
+				rowData += "<td id='HouseCode" + args.houseCode + "' class='gridColumn' style='width:100px;'>" + args.houseCode + "</td>";
+			
 			for (var index = 0; index < pairs.length; index++) { 
 				var pos = pairs[index].indexOf("=");
 				var posTypeTable = pairs[index].indexOf("_");
@@ -1673,7 +1734,7 @@ ii.Class({
 					className = "gridColumnRight";
 
 				if (me.columnType == 2) //Hidden
-					rowData += "<td id=" + argName + " class='" + className + "' style='width:" + me.moduleColumnHeaders[index].columnWidth + "px;'>&nbsp;</td>";
+					rowData += "<td id=" + argName + " class='gridColumnHidden' style='width:" + me.moduleColumnHeaders[index].columnWidth + "px;'>&nbsp;</td>";
 				else
 					rowData += "<td id=" + argName + " class='" + className + "' style='width:" + me.moduleColumnHeaders[index].columnWidth + "px;'>" + dataValue + "</td>";
 			}
@@ -1702,6 +1763,7 @@ ii.Class({
 			var appUnitValue = "";
 			var appSiteId = "";
 			var columnWidth = 0;
+			var columnLength = 0;
 			var className = "gridColumn";
 			var pkId = args.pkId;
 			var rowIndex = args.rowIndex;
@@ -1739,6 +1801,7 @@ ii.Class({
 						me.columnValidation = me.moduleColumnHeaders[index - 1].columnValidation;
 						me.columnType = me.moduleColumnHeaders[index - 1].columnType;
 						columnWidth = me.moduleColumnHeaders[index - 1].columnWidth - 8;
+						columnLength = me.moduleColumnHeaders[index - 1].columnLength;
 					}
 				}
 				if (argscolumn == "AppUnit") {
@@ -1759,7 +1822,7 @@ ii.Class({
 							break;
 							
 						case 2: //Hidden
-							rowData = "<td class='" + className + "' align='left' style='" + style + "'>&nbsp;</td>";
+							rowData = "<td class='gridColumnHidden' align='left' style='" + style + "'>&nbsp;</td>";
 							break;
 
 						case 3: //ReadOnly
@@ -1784,11 +1847,11 @@ ii.Class({
 							if (me.columnValidation.toLowerCase() == "bit")
 								rowData = "<td class='" + className + "' align='center' style='" + style + "'><input type='checkbox' name='" + argName + "' id='" + argName + "' value='" + dataValue + "'" + (dataValue == "1" ? checked='checked' : '') + "></input></td>";
 							else
-								rowData = "<td class='" + className + "' style='" + style + "'><input type='text' style='width:" + columnWidth + "px;' onblur=fin.reportUi.dataValidation(\'" + fin.reportUi.columnValidation + "\',\'" + argName + "\'); id='" + argName + "' value='" + dataValue + "'></input></td>";
+								rowData = "<td class='" + className + "' style='" + style + "'><input type='text' style='width:" + columnWidth + "px;' onblur=fin.reportUi.dataValidation(\'" + fin.reportUi.columnValidation + "\',\'" + argName + "\'); id='" + argName + "' value='" + dataValue + "' maxlength='" + columnLength + "'></input></td>";
 							break;
 							
 						case 2: //Hidden
-							rowData += "<td class='" + className + "' align='left' style='" + style + "'>&nbsp;</td>";
+							rowData += "<td class='gridColumnHidden' align='left' style='" + style + "'>&nbsp;</td>";
 							break;
 							
 						case 3: //ReadOnly
@@ -1879,7 +1942,15 @@ ii.Class({
 					case "RevInvBillTo":
 						me.invBillToCheck(rowId, searchValue, columnValue);
 						break;
-						
+					
+					case "HcmJobType":
+						me.jobTypeCheck(rowId, searchValue, columnValue);
+						break;
+					
+					case "HcmJobGEOCode":
+						me.geoCodeCheck(rowId, searchValue, columnValue);
+						break;
+					
 					default:
 						if (columnName == "EmpEmpgLocalTaxCode1" || columnName == "EmpEmpgLocalTaxCode2" || columnName == "EmpEmpgLocalTaxCode3") 
 			 				me.localTaxCodeCheck(rowId, searchValue, me.loadDependentTypes[index].payPayrollCompany, columnName, columnValue);
@@ -1911,7 +1982,7 @@ ii.Class({
 				|| args.columnName == "EmpEmpgLocalTaxCode1" || args.columnName == "EmpEmpgLocalTaxCode2" || args.columnName == "EmpEmpgLocalTaxCode3"
 				|| args.columnName == "EmpMaritalStatusStateTaxTypePrimary" || args.columnName == "EmpMaritalStatusStateTaxTypeSecondary"
 				|| args.columnName == "EmpStateAdjustmentType" || args.columnName == "EmpSDIAdjustmentType" || args.columnName == "EmpLocalTaxAdjustmentType"
-				|| args.columnName == "RevInvBillTo"
+				|| args.columnName == "RevInvBillTo" || args.columnName == "HcmJobType" || args.columnName == "HcmJobGEOCode"
 			) {				
 				typeTable.rowId = args.pkId;
 			    typeTable.columnName = args.columnName;
@@ -1935,8 +2006,11 @@ ii.Class({
 	 				typeTable.searchValue = me.gridData[args.pkId].buildQueue[0]["EmpEmpgSecondaryState"];
 				else if (args.columnName == "RevInvBillTo")
 	 				typeTable.searchValue = args.houseCodeId;
-
-			    me.loadDependentTypes.push(typeTable);
+				else if (args.columnName == "HcmJobType")
+	 				typeTable.searchValue = args.houseCodeId;
+				else if (args.columnName == "HcmJobGEOCode")
+	 				typeTable.searchValue = me.gridData[args.pkId].buildQueue[0]["HcmJobPostalCode"];
+				me.loadDependentTypes.push(typeTable);
 				dependentTypeFound = true;
 			}
 
@@ -1982,8 +2056,11 @@ ii.Class({
 					me.houseCodeSortOrder = "Desc";
 				else
 					me.houseCodeSortOrder = "Asc";
-
-				me.sortColumns = "HcmHouseCodes.HcmHouseCode#" + me.houseCodeSortOrder + "|";
+					
+				if (me.delimitedOrgSelectedNodes != "")
+					me.sortColumns = "HcmHouseCodes.HcmHouseCode#" + me.houseCodeSortOrder + "|";
+				else
+					me.sortColumns = "HcmJobs.HcmJOb#" + me.houseCodeSortOrder + "|";
 			}
 			else  {
 				if (me.moduleColumnHeaders[index].sortOrder == "")
@@ -2156,10 +2233,10 @@ ii.Class({
 		    var me = this;
 		    var rowNumber = 0;
 
-		    if (me.payrollCompaniesCache[houseCode].valid) {
+		    if (me.houseCodeJobsCache[houseCode].valid) {
 		        for (var index = 0; index < rowArray.length; index++) {
 		            rowNumber = Number(rowArray[index]);
-					me.buildSingleDropDown(rowNumber, "HcmHouseCodeJob", me.houseCodeJobsCache[houseCode].jobs, columnValue);
+					me.buildSingleDropDown(rowNumber, "HcmJobType", me.houseCodeJobsCache[houseCode].jobs, columnValue);
 		        }
 		    }
 		},
@@ -2700,7 +2777,7 @@ ii.Class({
 				}
 			});
 		},
-
+	
 		invBillToCheck: function(rowNumber, houseCode, columnValue) {
 			var me = this;
 
@@ -2762,6 +2839,140 @@ ii.Class({
 					me.invBillToCache[houseCode].loaded = true;
 					//validate the list of rows
 		            me.invBillToValidate(houseCode, me.invBillToCache[houseCode].buildQueue, columnValue);
+		            me.typesLoadedCount--;
+					if (me.typesLoadedCount <= 0) $("#pageLoading").hide();					
+				}
+			});
+		},
+		
+		jobTypeCheck: function(rowNumber, houseCode, columnValue) {
+			var me = this;
+
+		    if (me.jobTypeCache[houseCode] != undefined) {
+
+	            if (me.jobTypeCache[houseCode].loaded)
+					me.jobTypeValidate(houseCode, [rowNumber], columnValue);              
+	            else
+	                me.jobTypeCache[houseCode].buildQueue.push(rowNumber);
+	        }
+	        else
+	            me.jobTypeLoad(rowNumber, houseCode, columnValue);
+		},
+
+		jobTypeValidate: function(houseCode, rowArray, columnValue) {
+		    var me = this;
+		    var rowNumber = 0;
+			
+		    if (me.jobTypeCache[houseCode].valid) {
+		        for (var index = 0; index < rowArray.length; index++) {
+		        	rowNumber = Number(rowArray[index]);
+					me.buildSingleDropDown(rowNumber, "HcmJobType", me.jobTypeCache[houseCode].jobTypes, columnValue);
+		        }
+		    }
+		},
+
+		jobTypeLoad: function(rowNumber, houseCode, columnValue) {
+			var me = this;
+
+			$("#messageToUser").text("Loading");
+		    $("#pageLoading").show();
+			me.typesLoadedCount++;
+			
+		    me.jobTypeCache[houseCode] = {};
+		    me.jobTypeCache[houseCode].valid = false;
+		    me.jobTypeCache[houseCode].loaded = false;
+		    me.jobTypeCache[houseCode].buildQueue = [];
+			me.jobTypeCache[houseCode].jobTypes = [];
+		    me.jobTypeCache[houseCode].buildQueue.push(rowNumber);
+			me.jobTypeCache[houseCode].id = houseCode;
+			
+	        $.ajax({
+                type: "POST",
+                dataType: "xml",
+                url: "/net/crothall/chimes/fin/adh/act/provider.aspx",
+                data: "moduleId=adh&requestId=1&targetId=iiCache"
+					+ "&requestXml=<criteria>storeId:jobTypes,userId:[user],"
+					+ "houseCode:" + houseCode + ",<criteria>",
+                  
+                 success: function(xml) {
+  	                $(xml).find("item").each(function() {
+	                    var jobType = {};
+	                	jobType.id = $(this).attr("id");
+	                	jobType.name = $(this).attr("name");
+	                	me.jobTypeCache[houseCode].jobTypes.push(jobType);
+	                });
+					
+					me.jobTypeCache[houseCode].valid = true;
+					me.jobTypeCache[houseCode].loaded = true;
+					//validate the list of rows
+		            me.jobTypeValidate(houseCode, me.jobTypeCache[houseCode].buildQueue, columnValue);
+		            me.typesLoadedCount--;
+					if (me.typesLoadedCount <= 0) $("#pageLoading").hide();					
+				}
+			});
+		},
+
+		geoCodeCheck: function(rowNumber, postalCode, columnValue) {
+			var me = this;
+
+		    if (me.geoCodeCache[postalCode] != undefined) {
+
+	            if (me.geoCodeCache[postalCode].loaded)
+					me.geoCodeValidate(postalCode, [rowNumber], columnValue);              
+	            else
+	                me.geoCodeCache[postalCode].buildQueue.push(rowNumber);
+	        }
+	        else
+	            me.geoCodeLoad(rowNumber, postalCode, columnValue);
+		},
+
+		geoCodeValidate: function(postalCode, rowArray, columnValue) {
+		    var me = this;
+		    var rowNumber = 0;
+			
+		    if (me.geoCodeCache[postalCode].valid) {
+		        for (var index = 0; index < rowArray.length; index++) {
+		        	rowNumber = Number(rowArray[index]);
+					me.buildSingleDropDown(rowNumber, "HcmJobGEOCode", me.geoCodeCache[postalCode].zipCodeTypes, columnValue);
+		        }
+		    }
+		},
+
+		geoCodeLoad: function(rowNumber, postalCode, columnValue) {
+			var me = this;
+
+			$("#messageToUser").text("Loading");
+		    $("#pageLoading").show();
+			me.typesLoadedCount++;
+			
+		    me.geoCodeCache[postalCode] = {};
+		    me.geoCodeCache[postalCode].valid = false;
+		    me.geoCodeCache[postalCode].loaded = false;
+		    me.geoCodeCache[postalCode].buildQueue = [];
+			me.geoCodeCache[postalCode].zipCodeTypes = [];
+		    me.geoCodeCache[postalCode].buildQueue.push(rowNumber);
+			me.geoCodeCache[postalCode].id = postalCode;
+			
+	        $.ajax({
+                type: "POST",
+                dataType: "xml",
+                url: "/net/crothall/chimes/fin/adh/act/provider.aspx",
+                data: "moduleId=adh&requestId=1&targetId=iiCache"
+					+ "&requestXml=<criteria>storeId:zipCodeTypes,userId:[user],"
+					+ "zipCode:" + postalCode + ",<criteria>",
+                  
+                 success: function(xml) {
+  	                $(xml).find("item").each(function() {
+	                    var geoCode = {};
+	                	geoCode.id = $(this).attr("geoCode");
+	                	geoCode.name = $(this).attr("geoCode");
+	                	me.geoCodeCache[postalCode].zipCodeTypes.push(geoCode);
+	                });
+					
+					me.geoCodeCache[postalCode].valid = true;
+					me.geoCodeCache[postalCode].loaded = true;
+					//validate the list of rows
+		            me.geoCodeValidate(postalCode, me.geoCodeCache[postalCode].buildQueue, columnValue);
 		            me.typesLoadedCount--;
 					if (me.typesLoadedCount <= 0) $("#pageLoading").hide();					
 				}
@@ -2848,7 +3059,7 @@ ii.Class({
 				me.typeNoneAdd(me.invoiceLogoTypes);
 				typeTable = me.invoiceLogoTypes;
 			}
-			else if (args.typeTable == "HcmBudgetTemplate") {
+			else if (args.typeTable == "HcmBudgetTemplates") {
 				me.typeNoneAdd(me.budgetTemplates);
 				typeTable = me.budgetTemplates;
 			}			
@@ -2982,6 +3193,14 @@ ii.Class({
 				me.typeNoneAdd(me.federalAdjustments);
 				typeTable = me.federalAdjustments;
 			}
+			else if (args.typeTable == "EmpBasicLifeIndicatorTypes") {
+				me.typeNoneAdd(me.basicLifeIndicatorTypes);
+				typeTable = me.basicLifeIndicatorTypes;
+			}
+			else if (args.typeTable == "EmpUnionStatusTypes") {
+				me.typeNoneAdd(me.unionStatusTypes);
+				typeTable = me.unionStatusTypes;
+			}
 			else if (args.typeTable == "PayPayrollCompanies") {
 				me.typeNoneAdd(me.payrollCompanies);
 				typeTable = me.payrollCompanies;
@@ -2990,7 +3209,11 @@ ii.Class({
 				me.typeNoneAdd(me.transactionStatusTypes);
 				typeTable = me.transactionStatusTypes;
 			}
-
+			else if (args.typeTable == "RevInvoiceTemplates") {
+				me.typeNoneAdd(me.invoiceTemplates);
+				typeTable = me.invoiceTemplates;
+			}
+			
 			return typeTable;
 		},
 				
@@ -3389,7 +3612,7 @@ ii.Class({
 					if (me.moduleColumnDatas[index].modified) {
 						idIndex = 0;
 						var row = $("#adhReportDataRow" + me.moduleColumnDatas[index].primeColumn);
-						
+		
 						for (var colIndex = 0; colIndex < row[0].cells.length; colIndex++) {
 							if (row[0].cells[colIndex].firstChild != null && row[0].cells[colIndex].firstChild.type != undefined) {
 
@@ -3397,31 +3620,37 @@ ii.Class({
 								column = row[0].cells[colIndex].firstChild.id.substring(0, idIndex);
 									
 								if (column != "AppSite") {
-									columnValidation = me.moduleColumnHeaders[colIndex - 1].columnValidation;
+									columnValidation = me.moduleColumnHeaders[colIndex - 1].columnValidation.toLowerCase();
 								}
-									
+
 								if (row[0].cells[colIndex].firstChild.type == "text") {
 									data = row[0].cells[colIndex].firstChild.value;
 									
 									if (column != "AppUnit") {
-										if (data == "")
-											rowData += '|' + column + '=null';
+										if (data == "") {
+											if (columnValidation == "int" || columnValidation == "decimal")
+												rowData += '|' + column + '="0"';
+											else if (columnValidation == "datetime")
+												rowData += '|' + column + '=Null';
+											else
+												rowData += '|' + column + '=""';
+										}
 										else {
-											if (columnValidation.toLowerCase() == "phone")
+											if (columnValidation == "phone")
 												rowData += '|' + column + '=' + '"' + fin.cmn.text.mask.phone(data, true) + '"';
 											else
 												rowData += '|' + column + '=' + '"' + ui.cmn.text.xml.encode(data) + '"';
-										}											
+										}
 									}
 								}
 								else if (row[0].cells[colIndex].firstChild.type == "checkbox") {
-									data = row[0].cells[colIndex].firstChild.checked;									
+									data = row[0].cells[colIndex].firstChild.checked;
 									rowData += '|' + column + '=' + '"' + data + '"';
 								}
 								else if (row[0].cells[colIndex].firstChild.type == "select-one") {
 									data = row[0].cells[colIndex].firstChild.value;
 									if (data == "" || data == "0")
-										rowData += '|' + column + '=null';
+										rowData += '|' + column + '=Null';
 									else
 										rowData += '|' + column + '=' + '"' + ui.cmn.text.xml.encode(data) + '"';
 								}

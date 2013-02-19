@@ -8,6 +8,14 @@ ii.init.register( function() {
 
 ii.init.register( function() {
 	
+	fin.adh.moduleArgs = {
+		id: {type: Number}
+		, name: {type: String}
+		, description: {type: String}
+		, editable: {type: Boolean, required: false, defaultValue:false}
+		, houseCodeAssociated: {type: Boolean, required: false, defaultValue:false}
+	};
+	
 	fin.adh.userArgs = {
 		id: {type: Number}
 		, roleCurrent: {type: Number, required: false, defaultValue: 0}
@@ -30,6 +38,7 @@ ii.init.register( function() {
 		, columnNullable: {type: Boolean, required: false, defaultValue: false}
 		, columnValidation: {type: String, required: false, defaultValue: ""}
 		, columnWidth: {type: Number, required: false, defaultValue: 0}
+		, columnLength: {type: Number, required: false, defaultValue: 0}
 	};
 		
 	fin.adh.moduleColumnDataArgs = {
@@ -400,6 +409,11 @@ ii.init.register( function() {
 		id: {type: Number}
 	};
 	
+	fin.adh.unionStatusTypeArgs = {
+		id: {type: Number},
+		name: {type: String}
+	};
+	
 	fin.adh.houseCodePayrollCompanyArgs = {
 		id: {type: Number}
 		, name: {type: String}
@@ -421,8 +435,28 @@ ii.init.register( function() {
 		id: {type: Number}
 		, title: {type: String}
 	};
-
+	
+	fin.adh.jobTypeArgs = {
+		id: {type: Number}
+		, name: {type: String}
+	};
+	
+	fin.adh.invoiceTemplateArgs = {
+		id: {type: Number}
+		, title: {type: String}
+	};
+	
 }, 2);
+
+ii.Class({
+	Name: "fin.adh.Module",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.moduleArgs);
+			$.extend(this, args);
+		}
+	}
+});
 
 ii.Class({
 	Name: "fin.adh.User",
@@ -1080,6 +1114,16 @@ ii.Class({
 });
 
 ii.Class({
+	Name: "fin.adh.UnionStatusType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.unionStatusTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
 	Name: "fin.adh.UserRole",
 	Definition: {
 		init: function() {
@@ -1114,6 +1158,26 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.adh.transactionStatusTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.adh.JobType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.jobTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.adh.InvoiceTemplate",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.invoiceTemplateArgs);
 			$.extend(this, args);
 		}
 	}
