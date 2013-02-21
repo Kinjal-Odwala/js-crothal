@@ -30,8 +30,7 @@ ii.Class({
 		init: function() {
 			var args = ii.args(arguments, {});
 			var me = this;
-			me.postalCodeOnChange = 0;
-			
+						
 			me.reportId = 0;
 			me.delimitedOrgSelectedNodes = "";
 			me.rowModifed = false;
@@ -70,7 +69,7 @@ ii.Class({
 			
 			// Job module
 			me.jobTypeCache = [];
-			me.zipCodeCache = [];
+			me.geoCodeCache = [];
 			
 			me.gateway = ii.ajax.addGateway("adh", ii.config.xmlProvider);			
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -1957,7 +1956,7 @@ ii.Class({
 						break;
 					
 					case "HcmJobGEOCode":
-						me.zipCodeCheck(rowId, searchValue, columnValue);
+						me.geoCodeCheck(rowId, searchValue, columnValue);
 						break;
 					
 					default:
@@ -2033,8 +2032,8 @@ ii.Class({
 				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.primaryStateChange(this);>";
 			else if (args.columnName == "EmpEmpgSecondaryState")
 				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.secondaryStateChange(this);>";
-//			else if (args.columnName == "HcmJobGEOCode")
-//				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.geoCodeChange(this);>";
+			else if (args.columnName == "HcmJobGEOCode")
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.geoCodeChange(this);>";
 			else
 				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\');>";
 
@@ -2854,54 +2853,61 @@ ii.Class({
 			});
 		},
 		
-		postalCodeChange: function(objSelect) {
+		geoCodeChange: function(objSelect) {
 			var me = this;
-			me.postalCodeOnChange = 1;
-		    var rowNumber = Number(objSelect.id.substr(17));			
-
-	        me.zipCodeCheck(rowNumber, objSelect.value, "");
+			var rowNumber = Number(objSelect.id.substr(14));
+			
+	        me.geoCodeCheck(rowNumber, $("#HcmJobPostalCode_" + rowNumber).val(), $("#HcmJobGEOCode_" + rowNumber).val());
 		},
 		
-		zipCodeCheck: function(rowNumber, postalCode, columnValue) {
+		postalCodeChange: function(objSelect) {
+			var me = this;
+		    var rowNumber = Number(objSelect.id.substr(17));			
+
+	        me.geoCodeCheck(rowNumber, objSelect.value, $("#HcmJobGEOCode_" + rowNumber).val());
+		},
+		
+		geoCodeCheck: function(rowNumber, postalCode, columnValue) {
 			var me = this;
 
-		    if (me.zipCodeCache[postalCode] != undefined) {
+		    if (me.geoCodeCache[postalCode] != undefined) {
 
-	            if (me.zipCodeCache[postalCode].loaded)
-					me.zipCodeValidate(postalCode, [rowNumber], columnValue);              
+	            if (me.geoCodeCache[postalCode].loaded)
+					me.geoCodeValidate(postalCode, [rowNumber], columnValue);              
 	            else
-	                me.zipCodeCache[postalCode].buildQueue.push(rowNumber);
+	                me.geoCodeCache[postalCode].buildQueue.push(rowNumber);
 	        }
 	        else
-	            me.zipCodeLoad(rowNumber, postalCode, columnValue);
+	            me.geoCodeLoad(rowNumber, postalCode, columnValue);
 		},
 
-		zipCodeValidate: function(postalCode, rowArray, columnValue) {
+		geoCodeValidate: function(postalCode, rowArray, columnValue) {
 		    var me = this;
 		    var rowNumber = 0;
 			
-		    if (me.zipCodeCache[postalCode].valid) {
+		    if (me.geoCodeCache[postalCode].valid) {
 		        for (var index = 0; index < rowArray.length; index++) {
 		        	rowNumber = Number(rowArray[index]);
-					me.buildDropDownforZipCodes(rowNumber, "HcmJobGEOCode", me.zipCodeCache[postalCode].zipCodeTypes, columnValue);
+					me.buildSingleDropDown(rowNumber, "HcmJobGEOCode", me.geoCodeCache[postalCode].zipCodeTypes, columnValue);
 		        }
 		    }
+			me.setCityState(rowNumber,me.geoCodeCache[postalCode].zipCodeTypes,columnValue);
 		},
 
-		zipCodeLoad: function(rowNumber, postalCode, columnValue) {
+		geoCodeLoad: function(rowNumber, postalCode, columnValue) {
 			var me = this;
 
 			$("#messageToUser").text("Loading");
 		    $("#pageLoading").show();
 			me.typesLoadedCount++;
 			
-		    me.zipCodeCache[postalCode] = {};
-		    me.zipCodeCache[postalCode].valid = false;
-		    me.zipCodeCache[postalCode].loaded = false;
-		    me.zipCodeCache[postalCode].buildQueue = [];
-			me.zipCodeCache[postalCode].zipCodeTypes = [];
-		    me.zipCodeCache[postalCode].buildQueue.push(rowNumber);
-			me.zipCodeCache[postalCode].id = postalCode;
+		    me.geoCodeCache[postalCode] = {};
+		    me.geoCodeCache[postalCode].valid = false;
+		    me.geoCodeCache[postalCode].loaded = false;
+		    me.geoCodeCache[postalCode].buildQueue = [];
+			me.geoCodeCache[postalCode].zipCodeTypes = [];
+		    me.geoCodeCache[postalCode].buildQueue.push(rowNumber);
+			me.geoCodeCache[postalCode].id = postalCode;
 			
 	        $.ajax({
                 type: "POST",
@@ -2913,54 +2919,45 @@ ii.Class({
                   
                  success: function(xml) {
   	                $(xml).find("item").each(function() {
-	                    var zipCode = {};
-	                	zipCode.id = $(this).attr("geoCode");
-	                	zipCode.name = $(this).attr("geoCode");
-						zipCode.zipCode = $(this).attr("zipCode");
-						zipCode.city = $(this).attr("city");
-						zipCode.stateType = $(this).attr("stateType");
-	                	me.zipCodeCache[postalCode].zipCodeTypes.push(zipCode);
+	                    var geoCode = {};
+	                	geoCode.id = $(this).attr("geoCode");
+	                	geoCode.name = $(this).attr("geoCode");
+						geoCode.zipCode = $(this).attr("zipCode");
+						geoCode.city = $(this).attr("city");
+						geoCode.stateType = $(this).attr("stateType");
+	                	me.geoCodeCache[postalCode].zipCodeTypes.push(geoCode);
 	                });
 					
-					me.zipCodeCache[postalCode].valid = true;
-					me.zipCodeCache[postalCode].loaded = true;
+					me.geoCodeCache[postalCode].valid = true;
+					me.geoCodeCache[postalCode].loaded = true;
 					//validate the list of rows
-		            me.zipCodeValidate(postalCode, me.zipCodeCache[postalCode].buildQueue, columnValue);
+		            me.geoCodeValidate(postalCode, me.geoCodeCache[postalCode].buildQueue, columnValue);
 		            me.typesLoadedCount--;
 					if (me.typesLoadedCount <= 0) $("#pageLoading").hide();					
 				}
 			});
 		},
 		
-		buildDropDownforZipCodes: function(rowNumber, controlName, types, selectedValue) {
+		setCityState: function(rowNumber, types, selectedValue) {
 		    var me = this;
 		    var type = {};
-			var selType = "";
-
-			selType = $("#" + controlName + "_" + rowNumber);
-			selType.empty();
-			selType.append("<option value='0'></option>");
-
-		    for(var index = 0; index < types.length; index++) {
-		        type = types[index];
-				if (type.name == selectedValue)
-					selType.append("<option  title='" + type.name + "' value='" + type.id + "' selected>" + type.name + "</option>");
-				else
-		        	selType.append("<option  title='" + type.name + "' value='" + type.id + "'>" + type.name + "</option>");
-		    }
-			
-			if(me.postalCodeOnChange == 1){
-				if (types.length < 1) {
-					$("#HcmJobCity_" + rowNumber).attr("readonly", true);
-					$("#AppStateType_" + rowNumber).attr('disabled', true);
-				}
-				else {
-					$("#HcmJobCity_" + rowNumber).attr("readonly", false);
-					$("#AppStateType_" + rowNumber).attr('disabled', false);
-				}
-				me.postalCodeOnChange = 0
-			}
 				
+			if (selectedValue == "0" || types.length < 1) {
+				$("#HcmJobCity_" + rowNumber).attr("readonly", false);
+				$("#AppStateType_" + rowNumber).attr('disabled', false);
+			}
+			else {
+				for(var index = 0; index < types.length; index++) {
+			        type = types[index];
+					if (type.name == selectedValue)
+					{
+						$("#HcmJobCity_" + rowNumber).val(type.city);
+						$("#AppStateType_" + rowNumber).val(type.stateType.toString());
+						$("#HcmJobCity_" + rowNumber).attr("readonly", true);
+						$("#AppStateType_" + rowNumber).attr('disabled', true);
+					}
+			    }
+			}
 		},
 		
 		buildSingleDropDown: function(rowNumber, controlName, types, selectedValue) {
@@ -3232,8 +3229,12 @@ ii.Class({
 			
 			if (dataValue == "") 
 				return;
-			
-			if (args.controlValidation.toLowerCase() == "datetime") {			
+				
+			if (!me.isSpecialCharacter(dataValue)) {
+				valid = false;
+				message = "Please do not enter Special Character like |#";
+			}
+			else if (args.controlValidation.toLowerCase() == "datetime") {			
 				if (!me.isDate(dataValue)) {
 					valid = false;
 					message = "Please enter valid date.";
@@ -3282,6 +3283,25 @@ ii.Class({
 			}
 
 			return valid;
+		},
+		
+		isSpecialCharacter: function() {
+			var args = ii.args(arguments, {
+				argValue: {type: String}
+			});
+				
+			var splCharExists = 0;
+			var splChars = "|#";
+			for (var i = 0; i < args.argValue.length; i++) {
+				if (splChars.indexOf(args.argValue.charAt(i)) != -1) {
+					splCharExists = 1;
+				}
+			}
+
+			if (splCharExists == 0)
+				return true;
+			else
+				return false;
 		},
 		
 		isZip: function() {
