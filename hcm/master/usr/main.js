@@ -465,6 +465,7 @@ ii.Class({
 				me.houseCodeDetails[0].bankEmail = financialUIControls.bankEmail.getValue();
 				me.houseCodeDetails[0].invoiceLogoTypeId = (financialUIControls.invoiceLogo.indexSelected < 0 ? 0 : financialUIControls.invoiceLogoTypes[financialUIControls.invoiceLogo.indexSelected].id);
 				me.houseCodeDetails[0].budgetTemplateId = (financialUIControls.budgetTemplate.indexSelected < 0 ? 0 : financialUIControls.budgetTemplates[financialUIControls.budgetTemplate.indexSelected].id);
+				me.houseCodeDetails[0].budgetComputerRelatedCharge = (financialUIControls.budgetComputerRelatedCharge.check.checked ? 1 : 0);
 			}
 			
 			//Payroll			
@@ -559,8 +560,7 @@ ii.Class({
 				, me.houseCodeDetails[0].clientAssistantName
 				, me.houseCodeDetails[0].clientAssistantPhone
 				
-				//Statistics
-				
+				//Statistics				
 				, me.houseCodeDetails[0].managedEmployees == "" ? 0 : parseInt(me.houseCodeDetails[0].managedEmployees)
 				, me.houseCodeDetails[0].bedsLicensed == "" ? 0 : parseInt(me.houseCodeDetails[0].bedsLicensed)
 				, me.houseCodeDetails[0].patientDays == "" ? 0 : parseInt(me.houseCodeDetails[0].patientDays)
@@ -606,9 +606,10 @@ ii.Class({
 				, me.houseCodeDetails[0].bankEmail
 				, me.houseCodeDetails[0].invoiceLogoTypeId
 				, me.houseCodeDetails[0].budgetTemplateId
+				, me.houseCodeDetails[0].budgetComputerRelatedCharge
 				, me.houseCodeDetails[0].stateTaxPercent
 				, me.houseCodeDetails[0].localTaxPercent
-				, me.houseCodeDetails[0].financialEntityId
+				, me.houseCodeDetails[0].financialEntityId				
 				
 				//Payroll
 				, parseInt(me.houseCodeDetails[0].payrollProcessingLocationTypeId)
@@ -719,6 +720,7 @@ ii.Class({
 			xml += ' bankEmail="' + item.bankEmail + '"';
 			xml += ' invoiceLogoTypeId="' + item.invoiceLogoTypeId + '"';
 			xml += ' budgetTemplateId="' + item.budgetTemplateId + '"';
+			xml += ' budgetComputerRelatedCharge="' + item.budgetComputerRelatedCharge + '"';			
 			xml += ' stateTaxPercent="' + item.stateTaxPercent + '"';
 			xml += ' localTaxPercent="' + item.localTaxPercent + '"';
 			xml += ' financialEntityId="' + item.financialEntityId + '"';
