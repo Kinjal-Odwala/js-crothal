@@ -1,6 +1,23 @@
-﻿#LabelTextAreaLeft {
+﻿#contentAreasContainerLeft {
 	float: left;
-	width: 180px;
+	width: 52%;
+	vertical-align: top;	
+	z-index: 3550;
+	position: relative;
+	margin-right: 20px;
+}
+
+#contentAreasContainerRight {
+	float: left;
+	width: 45%;
+	vertical-align: top;
+	z-index: 3551;
+	position: relative;
+}
+
+#LabelTextAreaLeft {
+	float: left;
+	width: 250px;
 	height: 27px;
 	font-family: Verdana;
 	font-size: 12px;
