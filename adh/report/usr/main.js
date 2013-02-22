@@ -30,6 +30,7 @@ ii.Class({
 		init: function() {
 			var args = ii.args(arguments, {});
 			var me = this;
+			var invBillToOnChange = 0;
 						
 			me.reportId = 0;
 			me.delimitedOrgSelectedNodes = "";
@@ -117,7 +118,7 @@ ii.Class({
 			
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
-			$("#divAdhReportGrid").bind("scroll", me.adhRportGridScroll);
+			$("#divAdhReportGrid").bind("scroll", me.adhReportGridScroll);
 		},
 
 		authorizationProcess: function fin_adh_report_UserInterface_authorizationProcess() {
@@ -145,7 +146,7 @@ ii.Class({
 			$("#divAdhReportGrid").css({"width" : divAdhReportGridWidth + "px", "height" : divAdhReportGridHeight + "px"});
 		},
 		
-		adhRportGridScroll: function() {
+		adhReportGridScroll: function() {
 		    var scrollLeft = $("#divAdhReportGrid").scrollLeft();
 		    
 			$("#tblAdhReportGridHeader").css("left", -scrollLeft + "px");
@@ -2034,6 +2035,8 @@ ii.Class({
 				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.secondaryStateChange(this);>";
 			else if (args.columnName == "HcmJobGEOCode")
 				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.geoCodeChange(this);>";
+			else if (args.columnName == "RevInvBillTo")
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.invBillToChange('" + args.pkId + "','" + args.houseCodeId + "');>";
 			else
 				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\');>";
 
@@ -2785,7 +2788,14 @@ ii.Class({
 				}
 			});
 		},
-	
+		
+		invBillToChange: function(rowNumber,houseCodeId) {
+			var me = this;
+			
+			me.invBillToOnChange = 1;
+	        me.invBillToCheck(rowNumber, houseCodeId, $("#RevInvBillTo_" + rowNumber).val());
+		},
+		
 		invBillToCheck: function(rowNumber, houseCode, columnValue) {
 			var me = this;
 
@@ -2810,8 +2820,10 @@ ii.Class({
 					me.buildSingleDropDown(rowNumber, "RevInvBillTo", me.invBillToCache[houseCode].invoiceBillTos, columnValue);
 		        }
 		    }
+			if(me.invBillToOnChange == 1 && $("#RevInvTaxExempt_" + rowNumber).val() != 0 && $("#RevInvTaxNumber_" + rowNumber).val() > 0)
+				me.invBillToDependents(rowNumber,me.invBillToCache[houseCode].invoiceBillTos,columnValue);
 		},
-
+				
 		invBillTosLoad: function(rowNumber, houseCode, columnValue) {
 			var me = this;
 
@@ -2839,7 +2851,14 @@ ii.Class({
   	                $(xml).find("item").each(function() {
 	                    var invBillTo = {};
 	                	invBillTo.id = $(this).attr("billTo");
-	                	invBillTo.name = $(this).attr("billTo");
+						invBillTo.name = $(this).attr("billTo");
+	                	invBillTo.company = $(this).attr("company");
+						invBillTo.address1 = $(this).attr("address1");
+						invBillTo.address2 = $(this).attr("address2");
+						invBillTo.city = $(this).attr("city");
+						invBillTo.stateType = $(this).attr("stateType");
+						invBillTo.postalCode = $(this).attr("postalCode");
+						invBillTo.taxId = $(this).attr("taxId");
 	                	me.invBillToCache[houseCode].invoiceBillTos.push(invBillTo);
 	                });
 					
@@ -2851,6 +2870,26 @@ ii.Class({
 					if (me.typesLoadedCount <= 0) $("#pageLoading").hide();					
 				}
 			});
+		},
+		
+		invBillToDependents: function(rowNumber, types, selectedValue) {
+		    var me = this;
+		    var type = {};
+			
+			for(var index = 0; index < types.length; index++) {
+		        type = types[index];
+				if (type.name == selectedValue)
+				{
+					$("#RevInvCompany_" + rowNumber).val(type.company);
+					$("#RevInvAddress1_" + rowNumber).val(type.address1);
+					$("#RevInvAddress2_" + rowNumber).val(type.address2);
+					$("#RevInvCity_" + rowNumber).val(type.city);
+					$("#AppStateType_" + rowNumber).val(type.stateType.toString());
+					$("#RevInvPostalCode_" + rowNumber).val(type.postalCode);
+					$("#RevInvTaxNumber_" + rowNumber).val(type.taxId);
+				}
+		    }
+			me.invBillToOnChange = 0;
 		},
 		
 		geoCodeChange: function(objSelect) {
@@ -2891,7 +2930,7 @@ ii.Class({
 					me.buildSingleDropDown(rowNumber, "HcmJobGEOCode", me.geoCodeCache[postalCode].zipCodeTypes, columnValue);
 		        }
 		    }
-			me.setCityState(rowNumber,me.geoCodeCache[postalCode].zipCodeTypes,columnValue);
+			me.geoCodeDependents(rowNumber,me.geoCodeCache[postalCode].zipCodeTypes,columnValue);
 		},
 
 		geoCodeLoad: function(rowNumber, postalCode, columnValue) {
@@ -2938,7 +2977,7 @@ ii.Class({
 			});
 		},
 		
-		setCityState: function(rowNumber, types, selectedValue) {
+		geoCodeDependents: function(rowNumber, types, selectedValue) {
 		    var me = this;
 		    var type = {};
 				

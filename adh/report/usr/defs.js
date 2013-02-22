@@ -429,6 +429,13 @@ ii.init.register( function() {
 	fin.adh.invoiceBillToArgs = {
 		id: {type: Number}
 		, billTo: {type: String, required: false, defaultValue: ""}
+		, company: {type: String, required: false, defaultValue: ""}
+		, address1: {type: String, required: false, defaultValue: ""}
+		, address2: {type: String, required: false, defaultValue: ""}
+		, city: {type: String, required: false, defaultValue: ""}
+		, stateType: {type: Number, required: false, defaultValue: 0}
+		, postalCode: {type: String, required: false, defaultValue: ""}
+		, taxId: {type: String, required: false, defaultValue: "0"}
 	};
 	
 	fin.adh.transactionStatusTypeArgs = {
