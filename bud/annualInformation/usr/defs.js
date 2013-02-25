@@ -37,6 +37,9 @@ ii.init.register( function(){
 		, benefitAdjStartPeriod: {type: Number, required: false, defaultValue: 0}	
 		, benefitAdjEndPeriod: {type: Number, required: false, defaultValue: 0}
 		, benefitAdjPercent: {type: String, required: false, defaultValue: ""}
+		, supplySurchargeRate: {type: String, required: false, defaultValue: ""}
+		, computerRelatedChargeUnit: {type: String, required: false, defaultValue: ""}
+		, computerRelatedChargeOverhead: {type: String, required: false, defaultValue: ""}
 		, announcement: {type: String, required: false, defaultValue: ""}
 	};
 	

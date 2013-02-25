@@ -6,23 +6,23 @@ ii.Import( "ui.ctl.usr.grid" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.bud.annualInformation.usr.defs" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.input" , 4);
-ii.Style( "fin.cmn.usr.grid" , 5);
-ii.Style( "fin.cmn.usr.button" , 6);
-ii.Style( "fin.cmn.usr.dropDown" , 7);
-ii.Style( "fin.cmn.usr.dateDropDown" , 8);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.input", 4 );
+ii.Style( "fin.cmn.usr.grid", 5 );
+ii.Style( "fin.cmn.usr.button", 6 );
+ii.Style( "fin.cmn.usr.dropDown", 7 );
+ii.Style( "fin.cmn.usr.dateDropDown", 8 );
 
 ii.Class({
     Name: "fin.bud.annualInformation.UserInterface",
     Definition: {
-	
+
 		init: function() {
 			var args = ii.args(arguments, {});
 			var me = this;
-			
+
 			me.annualInformationId = 0;
 			me.fiscalYearId = 0;
 			me.startPeriods = [];
@@ -30,16 +30,16 @@ ii.Class({
 			me.liabilityAccountCodes = [];
 			me.windowWidth = 0;
 			me.windowHeight = 0;
-			
+
 			me.gateway = ii.ajax.addGateway("bud", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
 			me.transactionMonitor = new ii.ajax.TransactionMonitor( 
 				me.gateway, 
 				function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
 			);
-			
+
 			me.validator = new ui.ctl.Input.Validation.Master();
-			
+
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\bud\\annualInformation";
 			me.authorizer.authorize([me.authorizePath],
@@ -79,33 +79,32 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("session loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 			
 		resize: function fin_bud_annualInformation_UserInterface_resize() {
 			var args = ii.args(arguments,{});
 			var me = fin.annualInformationUI;
-			var offset = 175;
+			var offset = 180;
 			
 			if (ii.browser.ie) {
-				offset = 180;
+				offset = 175;
 			}
 
 			if ((me.windowWidth != $(window).width()) || (me.windowHeight != $(window).height())) {
-					
 				$("#contentAreasContainerLeft").height($(window).height() - offset);
 				$("#contentAreasContainerRight").height($(window).height() - offset);
 				
 				if (ii.browser.ie) {
-					$("#AccountCodesText").height($(window).height() - 388);
-					me.accountGrid.setHeight($(window).height() - 225);
+					$("#AccountCodesText").height($(window).height() - 455);
+					me.accountGrid.setHeight($(window).height() - 212);
 				}					
 				else {
-					$("#AccountCodesText").height($(window).height() - 385);
-					me.accountGrid.setHeight($(window).height() - 223);
+					$("#AccountCodesText").height($(window).height() - 460);
+					me.accountGrid.setHeight($(window).height() - 217);
 				}					
 
-				$("#Announcement").width($(window).width() - 210);
+				$("#Announcement").width($(window).width() - 290);
 				me.windowWidth = $(window).width();
 				me.windowHeight = $(window).height();
 			}
@@ -211,6 +210,33 @@ ii.Class({
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
 				
+			me.supplySurchargeRate = new ui.ctl.Input.Money({
+		        id: "SupplySurchargeRate"
+				, statusLeft: false
+		    });
+			
+			me.supplySurchargeRate.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				
+			me.computerRelatedChargeUnit = new ui.ctl.Input.Money({
+		        id: "ComputerRelatedChargeUnit"
+				, statusLeft: false
+		    });
+			
+			me.computerRelatedChargeUnit.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				
+			me.computerRelatedChargeOverhead = new ui.ctl.Input.Money({
+		        id: "ComputerRelatedChargeOverhead"
+				, statusLeft: false
+		    });
+			
+			me.computerRelatedChargeOverhead.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				
 			me.accountCodes = new ui.ctl.Input.Text({
 		        id: "AccountCodes",
 				maxLength: 255,
@@ -270,6 +296,9 @@ ii.Class({
 			me.startPeriod.resizeText();
 			me.endPeriod.resizeText();
 			me.benefitAdjPercent.resizeText();
+			me.supplySurchargeRate.resizeText();
+			me.computerRelatedChargeUnit.resizeText();
+			me.computerRelatedChargeOverhead.resizeText();
 			me.accountCodes.resizeText();
 			me.resize();
 		},
@@ -411,6 +440,9 @@ ii.Class({
 					me.endPeriod.select(index, me.endPeriod.focused);
 
 				me.benefitAdjPercent.setValue(me.annualInformations[0].benefitAdjPercent);
+				me.supplySurchargeRate.setValue(me.annualInformations[0].supplySurchargeRate);
+				me.computerRelatedChargeUnit.setValue(me.annualInformations[0].computerRelatedChargeUnit);
+				me.computerRelatedChargeOverhead.setValue(me.annualInformations[0].computerRelatedChargeOverhead);
 				me.accountCodes.setValue(me.annualInformations[0].genLiabilityAccCodes);
 				me.announcement.value = me.annualInformations[0].announcement;
 
@@ -428,6 +460,9 @@ ii.Class({
 				me.startPeriod.reset();
 				me.endPeriod.reset();
 				me.benefitAdjPercent.setValue("");
+				me.supplySurchargeRate.setValue("");
+				me.computerRelatedChargeUnit.setValue("");
+				me.computerRelatedChargeOverhead.setValue("");
 				me.accountCodes.setValue("");
 				me.announcement.value = "";				
 
@@ -492,6 +527,9 @@ ii.Class({
 				, me.startPeriod.data[me.startPeriod.indexSelected].id
 				, me.endPeriod.data[me.endPeriod.indexSelected].id
 				, me.benefitAdjPercent.getValue().toString()
+				, me.supplySurchargeRate.getValue().toString()
+				, me.computerRelatedChargeUnit.getValue().toString()
+				, me.computerRelatedChargeOverhead.getValue().toString()
 				, me.announcement.value
 				);
 				
@@ -526,11 +564,12 @@ ii.Class({
 			xml += ' startPeriod="' + item.benefitAdjStartPeriod + '"';			
 			xml += ' endPeriod="' + item.benefitAdjEndPeriod + '"';
 			xml += ' percent="' + item.benefitAdjPercent + '"';
+			xml += ' supplySurchargeRate="' + item.supplySurchargeRate + '"';
+			xml += ' computerRelatedChargeUnit="' + item.computerRelatedChargeUnit + '"';
+			xml += ' computerRelatedChargeOverhead="' + item.computerRelatedChargeOverhead + '"';
 			xml += ' announcement="' + ui.cmn.text.xml.encode(item.announcement) + '"';
 			xml += '/>';
 
-			ii.trace("Xml Build", ii.traceTypes.Information, "Information");
-	
 			return xml;
 		},
 		
@@ -543,19 +582,17 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-			var traceType = ii.traceTypes.errorDataCorruption;
-			var errorMessage = "";			
 			
 			$("#pageLoading").hide();
 
 			if (status == "success") {
-				ii.trace("Annual Information Saved", ii.traceTypes.Information, "Information");
-				
+				ii.trace("Annual information saved.", ii.traceTypes.Information, "Info");
+
 				$(args.xmlNode).find("*").each(function() {
 					switch (this.tagName) {
 
 						case "budAnnualInformation":
-						
+
 							if (me.annualInformationId == 0) {
 								me.annualInformationId = parseInt($(this).attr("id"), 10);
 								item.id = me.annualInformationId;
@@ -563,24 +600,16 @@ ii.Class({
 							}
 							else
 								me.annualInformations[0] = item;
+
 							break;
 					}
 				});
 			}
 			else {
-				alert('Error while updating the annual information: ' + $(args.xmlNode).attr("message"));
-				errorMessage = $(args.xmlNode).attr("error");
-				
-				if (status == "invalid") {
-					traceType = ii.traceTypes.warning;
-				}
-				else {
-					errorMessage += " [SAVE FAILURE]";
-				}
+				alert("[SAVE FAILURE] Error while updating the annual information: " + $(args.xmlNode).attr("message"));
 			}
 		}
 	}
-	
 });
 
 function actionClickItem() {

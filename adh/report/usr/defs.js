@@ -429,6 +429,13 @@ ii.init.register( function() {
 	fin.adh.invoiceBillToArgs = {
 		id: {type: Number}
 		, billTo: {type: String, required: false, defaultValue: ""}
+		, company: {type: String, required: false, defaultValue: ""}
+		, address1: {type: String, required: false, defaultValue: ""}
+		, address2: {type: String, required: false, defaultValue: ""}
+		, city: {type: String, required: false, defaultValue: ""}
+		, stateType: {type: Number, required: false, defaultValue: 0}
+		, postalCode: {type: String, required: false, defaultValue: ""}
+		, taxId: {type: String, required: false, defaultValue: "0"}
 	};
 	
 	fin.adh.transactionStatusTypeArgs = {
@@ -444,6 +451,11 @@ ii.init.register( function() {
 	fin.adh.invoiceTemplateArgs = {
 		id: {type: Number}
 		, title: {type: String}
+	};
+	
+	fin.adh.hcmJobTypeArgs = {
+		id: {type: Number}
+		, name: {type: String}
 	};
 	
 }, 2);
@@ -1178,6 +1190,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.adh.invoiceTemplateArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.adh.HcmJobType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.hcmJobTypeArgs);
 			$.extend(this, args);
 		}
 	}

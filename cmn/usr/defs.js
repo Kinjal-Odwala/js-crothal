@@ -86,6 +86,7 @@ ii.init.register( function fin_cmn_startup_init1() {
 	
 	// extend the session object for our use!!!
 	
-    ii.Session.dataArgs.environmentName = {type: String, required: false, defaultValue: ""};	
-	
+	ii.Session.dataArgs.personId = {type: Number, required: false, defaultValue: 0};
+    ii.Session.dataArgs.environmentName = {type: String, required: false, defaultValue: ""};
+
 });

@@ -1294,15 +1294,15 @@ ii.Class({
 					}
 					else 
 						houseCode = parent.parent.fin.appUI.houseCodeBrief;
-					
+ 			
 					if (me.status == "Add" || me.status == "Edit") {
-						if (isNaN(parseFloat($("#quantity").val())) || parseFloat($("#quantity").val()) == 0) {
+						if ((parseInt($("#account").val(), 10) != me.descriptionAccount) && (isNaN(parseFloat($("#quantity").val())) || parseFloat($("#quantity").val()) == 0)) {
 							alert("Please enter the valid Quantity.");
 							$("#quantity").focus();
 							return false;
 						}
 						
-						if (isNaN(parseFloat($("#price").val())) || parseFloat($("#price").val()) == 0) {
+						if ((parseInt($("#account").val(), 10) != me.descriptionAccount) && (isNaN(parseFloat($("#price").val())) || parseFloat($("#price").val()) == 0)) {
 							alert("Please enter the valid Price.");
 							$("#price").focus();
 							return false;
@@ -1348,9 +1348,9 @@ ii.Class({
 				else {
 					job = parseInt($("#job").val());
 					account = parseInt($("#account").val());
-					quantity = $("#quantity").val();
-					price = $("#price").val();
-					amount = $("#amount").val();
+					quantity = $("#quantity").val() == "" ? "0" : $("#quantity").val();
+					price = $("#price").val() == "" ? "0" : $("#price").val();
+					amount = $("#amount").val() == "" ? "0" : $("#amount").val();
 					taxable = $("#taxable")[0].checked;
 				}
 

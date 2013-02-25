@@ -5,13 +5,13 @@ ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.hcm.financial.usr.defs" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.input" , 4);
-ii.Style( "fin.cmn.usr.grid" , 5);
-ii.Style( "fin.cmn.usr.dropDown" , 7);
-ii.Style( "fin.cmn.usr.dateDropDown" , 8);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.input", 4 );
+ii.Style( "fin.cmn.usr.grid", 5 );
+ii.Style( "fin.cmn.usr.dropDown", 7 );
+ii.Style( "fin.cmn.usr.dateDropDown", 8 );
 
 ii.Class({
     Name: "fin.hcm.financial.UserInterface",
@@ -53,7 +53,7 @@ ii.Class({
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 			if (me.isAuthorized)
 				$("#pageLoading").hide();
-			else{
+			else {
 				$("#messageToUser").html("Unauthorized");
 				alert("You are not authorized to view this content. Please contact your Administrator.");
 				return false;
@@ -129,6 +129,7 @@ ii.Class({
 			me.sfEmailShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionFinancial\\Email", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
 			me.sfInvoiceLogoShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionFinancial\\InvoiceLogo", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
 			me.sfBudgetTemplateShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetTemplate", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
+			me.sfBudgetComputerRelatedChargeShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetComputerRelatedCharge", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
 			
 			me.sfContractTypeReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\ContractType\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 			me.sfTermsOfContractReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\TermsOfContract\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
@@ -148,6 +149,7 @@ ii.Class({
 			me.sfEmailReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\Email\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 			me.sfInvoiceLogoReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\InvoiceLogo\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 			me.sfBudgetTemplateReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetTemplate\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
+			me.sfBudgetComputerRelatedChargeReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetComputerRelatedCharge\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 			
 			me.resetUIElements();
 			
@@ -256,6 +258,7 @@ ii.Class({
 			me.setControlState("BankEmail", me.sfEmailReadOnly, me.sfEmailShow);
 			me.setControlState("InvoiceLogo", me.sfInvoiceLogoReadOnly, me.sfInvoiceLogoShow);
 			me.setControlState("BudgetTemplate", me.sfBudgetTemplateReadOnly, me.sfBudgetTemplateShow);
+			me.setControlState("BudgetComputerRelatedCharge", me.sfBudgetComputerRelatedChargeReadOnly, me.sfBudgetComputerRelatedChargeShow, "Check", "BudgetComputerRelatedChargeCheck");
 		},
 		
 		setControlState: function(){
@@ -268,22 +271,28 @@ ii.Class({
 			});
 			var me = this;
 			
-			if (args.ctrlReadOnly && args.ctrlType != "Radio"){
+			if (args.ctrlReadOnly && args.ctrlType != "Radio" && args.ctrlType != "Check") {
 				$("#" + args.ctrlName + "Text").attr('disabled', true);
 				$("#" + args.ctrlName + "Action").removeClass("iiInputAction");
 			}
-			if (!args.ctrlShow && args.ctrlType != "Radio"){
+			
+			if (!args.ctrlShow && args.ctrlType != "Radio" && args.ctrlType != "Check") {
 				$("#" + args.ctrlName).hide();
-				$("#" + args.ctrlName + "Text").hide(); //not required for DropList
-				
+				$("#" + args.ctrlName + "Text").hide(); //not required for DropList				
 			}
-			if (args.ctrlReadOnly && args.ctrlType == "Radio"){
+			
+			if (args.ctrlReadOnly && args.ctrlType == "Radio" && args.ctrlType != "Check") {
 				$("#" + args.ctrlName + "Yes").attr('disabled', true);
 				$("#" + args.ctrlName + "No").attr('disabled', true);
 			} 
-			if (!args.ctrlShow && args.ctrlType == "Radio"){
+			
+			if (args.ctrlReadOnly && args.ctrlType == "Check") {
+				$("#" + args.ctrlName + "Check").attr('disabled', true);
+			}
+			
+			if (!args.ctrlShow && (args.ctrlType == "Radio" || args.ctrlType == "Check")) {
 				$("#" + args.ctrlDiv).hide();
-			} 
+			}
 		},
 		
 		resize: function() {
@@ -543,6 +552,11 @@ ii.Class({
 		        required: false
 		    });
 			
+			me.budgetComputerRelatedCharge = new ui.ctl.Input.Check({
+		        id: "BudgetComputerRelatedCharge",
+				required: false 
+		    });
+			
 			me.company.text.readOnly = true;
 			me.remitToTitle.text.readOnly = true;
 			me.remitToAddress1.text.readOnly = true;
@@ -582,6 +596,7 @@ ii.Class({
 			me.bankEmail.text.tabIndex = 29;
 			me.invoiceLogo.text.tabIndex = 30;
 			me.budgetTemplate.text.tabIndex = 31;
+			me.budgetComputerRelatedCharge.check.tabIndex = 32;
 		},		
 		
 		resizeControls: function() {
@@ -852,6 +867,7 @@ ii.Class({
 			if (index >= 0 && index != undefined)
 				me.budgetTemplate.select(index, me.budgetTemplate.focused);
 			
+			me.budgetComputerRelatedCharge.check.checked = houseCode.budgetComputerRelatedCharge;
 			$("#pageLoading").hide();
 			me.resizeControls();
 		},
