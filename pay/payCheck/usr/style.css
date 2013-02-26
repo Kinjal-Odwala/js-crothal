@@ -1,0 +1,114 @@
+﻿.subHeader 	{
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 13px;	
+	color: #2C2F50;
+	background: #C2E4C1;
+	margin: 5px;
+	padding: 3px;
+}
+
+.labelHeaderSmall {
+	float: left;
+	font-family: Verdana;
+	font-size: 11px;
+	font-weight: bold;
+	color: #000000;
+	margin: 10px 0px 10px 10px;
+}
+
+.labelTextSmall {
+	font-family: Verdana;
+	font-size: 11px;
+	font-style: italic;
+	color: #032D23;
+}
+	
+.labelText {
+	float: left;
+	width: 210px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-top: 3px;
+}
+
+.labelProcessingFee {
+	float: left;
+	width: 550px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;	
+	padding-top: 3px;
+}
+
+.contentAreaLeft {
+	float: left;
+	position: relative;
+	width: 420px;
+	margin-right: 10px;
+}
+
+.inputTextArea {
+	float: left;
+	height: 20px;
+	width: 200px;
+}
+
+.inputTextAreaHouseCode {
+	float: left;
+	height: 20px;
+	width: 210px;
+}
+
+.inputTextAreaLarge {
+	float: left;
+	height: 20px;
+	width: 620px;
+}
+
+.radioButton {
+	float: left;
+	width: 50px;
+}
+
+.labelRadio {
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
+
+.iiInputText.Loading {
+	background-image: url(/fin/cmn/usr/media/common/indicator.gif);
+	background-repeat: no-repeat;
+	background-position: right;
+	width: 16px;
+	height: 16px;
+	margin: 1px;
+}
+
+#container {
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	padding: 5px;
+	margin: 5px 1px 1px 1px;
+}
+
+#PayCodeGrid {
+	margin: 10px;
+}
+
+#AnchorSendRequest {
+	float: left;
+	width: 128px;
+	margin: 10px 0px 10px 10px;
+}
+
+#AnchorUndo {
+	float: left;
+	width: 70px;
+	margin: 5px 0px 10px 10px;
+}
