@@ -30,9 +30,9 @@ ii.Class({
 		init: function() {
 			var args = ii.args(arguments, {});
 			var me = this;
-			var invBillToOnChange = 0;
-						
+			
 			me.reportId = 0;
+			me.reportModule = 0;
 			me.delimitedOrgSelectedNodes = "";
 			me.rowModifed = false;
 			me.columnType = 0;
@@ -1149,8 +1149,10 @@ ii.Class({
 			if (me.report.indexSelected >= 0) {
 				$("#messageToUser").html("Loading");
 				$("#pageLoading").show();
+				//me.reportModule = me.reports[me.report.indexSelected].module;
 				me.reportId = me.reports[me.report.indexSelected].id;
 				me.reportName = me.reports[me.report.indexSelected].name;
+				//me.typesLoad(me.reportModule);
 				me.reportFilterStore.fetch("userId:[user],report:" + me.reportId + ",", me.reportFiltersLoaded, me);
 			}
 			
@@ -1856,10 +1858,12 @@ ii.Class({
 					
 					switch (me.columnType) {
 						case 1: //Editable
-							if (me.columnValidation.toLowerCase() == "bit")
-								rowData = "<td class='" + className + "' align='center' style='" + style + "'><input type='checkbox' name='" + argName + "' id='" + argName + "' value='" + dataValue + "'" + (dataValue == "1" ? checked='checked' : '') + "></input></td>";
+							if(argscolumn == "RevInvTaxExempt")
+								rowData = "<td class='" + className + "' align='center' style='" + style + "'><input type='checkbox' onChange=fin.reportUi.taxExemptChange(\'" + pkId + "\',\'" + houseCodeId + "\'); name='" + argName + "' id='" + argName + "' value='" + dataValue + "'" + (dataValue == "1" ? checked='checked' : '') + "></input></td>";
 							else if(argscolumn == "HcmJobPostalCode")
-								rowData = "<td class='" + className + "' style='" + style + "'><input type='text' style='width:" + columnWidth + "px;' onblur=fin.reportUi.postalCodeChange(this);fin.reportUi.dataValidation(\'" + fin.reportUi.columnValidation + "\',\'" + argName + "\'); id='" + argName + "' value='" + dataValue + "' maxlength='" + columnLength + "'></input></td>";								
+								rowData = "<td class='" + className + "' style='" + style + "'><input type='text' style='width:" + columnWidth + "px;' onblur=fin.reportUi.postalCodeChange(this);fin.reportUi.dataValidation(\'" + fin.reportUi.columnValidation + "\',\'" + argName + "\'); id='" + argName + "' value='" + dataValue + "' maxlength='" + columnLength + "'></input></td>";
+							else if (me.columnValidation.toLowerCase() == "bit")
+								rowData = "<td class='" + className + "' align='center' style='" + style + "'><input type='checkbox' name='" + argName + "' id='" + argName + "' value='" + dataValue + "'" + (dataValue == "1" ? checked='checked' : '') + "></input></td>";
 							else
 								rowData = "<td class='" + className + "' style='" + style + "'><input type='text' style='width:" + columnWidth + "px;' onblur=fin.reportUi.dataValidation(\'" + fin.reportUi.columnValidation + "\',\'" + argName + "\'); id='" + argName + "' value='" + dataValue + "' maxlength='" + columnLength + "'></input></td>";
 							break;
@@ -2789,10 +2793,15 @@ ii.Class({
 			});
 		},
 		
+		taxExemptChange: function(rowNumber,houseCodeId) {
+			var me = this;
+
+	        me.invBillToCheck(rowNumber, houseCodeId, $("#RevInvBillTo_" + rowNumber).val());
+		},
+		
 		invBillToChange: function(rowNumber,houseCodeId) {
 			var me = this;
-			
-			me.invBillToOnChange = 1;
+
 	        me.invBillToCheck(rowNumber, houseCodeId, $("#RevInvBillTo_" + rowNumber).val());
 		},
 		
@@ -2820,8 +2829,7 @@ ii.Class({
 					me.buildSingleDropDown(rowNumber, "RevInvBillTo", me.invBillToCache[houseCode].invoiceBillTos, columnValue);
 		        }
 		    }
-			if(me.invBillToOnChange == 1 && $("#RevInvTaxExempt_" + rowNumber).val() != 0 && $("#RevInvTaxNumber_" + rowNumber).val() > 0)
-				me.invBillToDependents(rowNumber,me.invBillToCache[houseCode].invoiceBillTos,columnValue);
+			me.invBillToDependents(rowNumber,me.invBillToCache[houseCode].invoiceBillTos,columnValue);
 		},
 				
 		invBillTosLoad: function(rowNumber, houseCode, columnValue) {
@@ -2886,7 +2894,12 @@ ii.Class({
 					$("#RevInvCity_" + rowNumber).val(type.city);
 					$("#AppStateType_" + rowNumber).val(type.stateType.toString());
 					$("#RevInvPostalCode_" + rowNumber).val(type.postalCode);
-					$("#RevInvTaxNumber_" + rowNumber).val(type.taxId);
+					if ($("#RevInvTaxExempt_" + rowNumber)[0].checked && type.taxId > 0) {
+						$("#RevInvTaxNumber_" + rowNumber).val(type.taxId);
+					}
+					else {
+						$("#RevInvTaxNumber_" + rowNumber).val("");
+					}
 				}
 		    }
 			me.invBillToOnChange = 0;
