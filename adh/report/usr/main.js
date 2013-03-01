@@ -32,7 +32,6 @@ ii.Class({
 			var me = this;
 			
 			me.reportId = 0;
-			me.reportModule = 0;
 			me.delimitedOrgSelectedNodes = "";
 			me.rowModifed = false;
 			me.columnType = 0;
@@ -45,6 +44,7 @@ ii.Class({
 			me.typesLoadedCount = 0;
 			me.loadDependentTypes = [];
 			me.gridData = [];
+			me.typesCache = [];
 			
 			// Pagination setup
 			me.startPoint = 1;
@@ -92,30 +92,15 @@ ii.Class({
 				},
 				me);
 
-			me.defineFormControls();			
+			me.defineFormControls();
 			me.configureCommunications();
 			me.anchorLoad.display(ui.cmn.behaviorStates.disabled);
 			me.report.fetchingData();
-			
-			me.moduleStore.fetch("userId:[user]", me.commonDataLoaded, me);
-			me.siteMasterStore.fetch("userId:[user],siteId:1", me.commonDataLoaded, me);
-			me.serviceTypeStore.fetch("userId:[user],", me.houseCodeServiceLoaded, me);
-			me.localTaxCodeStore.fetch("payrollCompany:0,appState:0,userId:[user]", me.typesLoaded, me);
-			me.maritalStatusStateTaxTypeSecondaryStore.fetch("appState:0,userId:[user]", me.typesLoaded, me);
-			me.statusTypeStore.fetch("userId:[user],personId:0", me.typesLoaded, me);
-			me.payFrequencyTypeStore.fetch("userId:[user]", me.typesLoaded, me);
-			me.federalAdjustmentStore.fetch("userId:[user]", me.typesLoaded, me);
-			me.sdiAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
-			me.stateAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
-			me.maritalStatusFederalTaxTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-			me.payrollCompanyStore.fetch("userId:[user]", me.maritalStatusTypesLoaded, me);
-			me.localTaxAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
-			me.separationCodeStore.fetch("userId:[user],terminationType:0,", me.maritalStatusTypesLoaded, me);
-			me.transactionStatusTypeStore.fetch("userId:[user]", me.typesLoaded, me);
-			me.invoiceTemplateStore.fetch("userId:[user]", me.typesLoaded, me);
-			me.unionStatusTypeStore.fetch("userId:[user],", me.typesLoaded, me);
-			me.jobTypeStore.fetch("userId:[user],", me.typesLoaded, me);
-			
+			me.moduleStore.fetch("userId:[user]", me.modulesLoaded, me);
+			me.reportStore.fetch("userId:[user],active:1", me.reportLoaded, me);
+			me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
+			me.stateTypeStore.fetch("userId:[user]", me.typesLoaded, me);
+
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$("#divAdhReportGrid").bind("scroll", me.adhReportGridScroll);
@@ -496,6 +481,14 @@ ii.Class({
 				itemConstructor: fin.adh.BudgetTemplate,
 				itemConstructorArgs: fin.adh.budgetTemplateArgs,
 				injectionArray: me.budgetTemplates
+			});
+			
+			me.budgetLaborCalcMethods = [];
+			me.budgetLaborCalcMethodStore = me.cache.register({
+				storeId: "budgetLaborCalcMethods",
+				itemConstructor: fin.adh.BudgetLaborCalcMethod,
+				itemConstructorArgs: fin.adh.budgetLaborCalcMethodArgs,
+				injectionArray: me.budgetLaborCalcMethods
 			});
 			
 			me.payrollProcessings = [];
@@ -929,47 +922,16 @@ ii.Class({
 			}
 
 			return null;
-		},
-		
-		typesLoaded: function(me, activeId) {
+		},		
 
-		},
-		
-		commonDataLoaded: function(me, activeId) {
+		modulesLoaded: function(me, activeId) {
 
+			for (var index = 0; index < me.modules.length; index++) {
+				me.typesCache[me.modules[index].name] = {};
+				me.typesCache[me.modules[index].name].typesLoaded = false;
+			}
 		},
-		
-		houseCodeServiceLoaded: function(me, activeId) {
-			
-			me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
-		},
-		
-		stateTypesLoaded: function(me, activeId) {
-			
-			me.contractTypeStore.fetch("userId:[user]", me.contractTypesLoaded, me);				
-		},
-		
-		contractTypesLoaded: function(me, activeId) {
-			
-			me.payPayrollCompanyStore.fetch("userId:[user]", me.payPayrollCompanysLoaded, me);	
-		},
-		
-		payPayrollCompanysLoaded: function(me, activeId) {
-			
-			me.jdeCompanysStore.fetch("userId:[user]", me.jdeCompanysLoaded, me);
-		},
-		
-		jdeCompanysLoaded: function(me, activeId) {
-			
-			me.reportStore.fetch("userId:[user],active:1", me.reportLoaded, me);
-		},
-		
-		maritalStatusTypesLoaded: function(me, activeId) {
 
-			me.typesLoadedCount--;
-			me.checkTypesLoaded();
-		},
-		
 		reportLoaded: function(me, activeId) {	
 			var found = true;
 			
@@ -988,7 +950,6 @@ ii.Class({
 			me.report.setData(me.reports);
 			me.report.select(0, me.report.focused);
 			me.resizeControls();
-			me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
 		},
 		
 		loggedInUsersLoaded: function(me, activeId) {
@@ -1149,10 +1110,10 @@ ii.Class({
 			if (me.report.indexSelected >= 0) {
 				$("#messageToUser").html("Loading");
 				$("#pageLoading").show();
-				//me.reportModule = me.reports[me.report.indexSelected].module;
+				me.typesLoadedCount = 0;
 				me.reportId = me.reports[me.report.indexSelected].id;
 				me.reportName = me.reports[me.report.indexSelected].name;
-				//me.typesLoad(me.reportModule);
+				me.loadTypes();
 				me.reportFilterStore.fetch("userId:[user],report:" + me.reportId + ",", me.reportFiltersLoaded, me);
 			}
 			
@@ -1162,176 +1123,101 @@ ii.Class({
 				me.anchorLoad.display(ui.cmn.behaviorStates.disabled);
 		},
 		
-		reportFiltersLoaded: function(me, activeId) {
-			var tableName = "";
-			var columnName = "";
+		loadTypes: function() {
+			var me = this;
+			var itemIndex = 0;
+			var moduleAssociate = "";
+			var associatedModules = [];
+			var modulesList = [];
 
-			me.typeTableFound = false;
-//			me.typesLoadedCount = 0;
-//
-//			for (var index = 0; index < me.reportFilters.length; index++) {
-//
-//				tableName = me.reportFilters[index].referenceTableName;
-//				columnName = me.reportFilters[index].title;
-//
-//				if (tableName != "") {
-//					if (tableName == "EmpMaritalStatusTypes") {
-//						if (me.maritalStatusTypeStore.fetchedCriteria["storeId:maritalStatusTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-//							me.typeTableFound = true;
-//							me.typesLoadedCount++;
-//							me.maritalStatusTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-//						}
-//					}
-//					else if (tableName == "EmpStatusTypes") {
-//						if (me.statusTypeStore.fetchedCriteria["storeId:statusTypes,userId:[user],personId:0,"] != ii.ajax.fetchStatusTypes.fetched) {
-//							me.typeTableFound = true;
-//							me.typesLoadedCount++;
-//							me.statusTypeStore.fetch("userId:[user],personId:0,", me.maritalStatusTypesLoaded, me);
-//						}
-//					}
-//					else if (tableName == "EmpDeviceGroupTypes") {
-//						if (me.deviceGroupStore.fetchedCriteria["storeId:deviceGroupTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-//							me.typeTableFound = true;
-//							me.typesLoadedCount++;
-//							me.deviceGroupStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-//						}
-//					}
-//					else if (tableName == "EmpJobCodeTypes") {
-//						if (me.jobCodeStore.fetchedCriteria["storeId:jobCodes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-//							me.typeTableFound = true;
-//							me.typesLoadedCount++;
-//							me.jobCodeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-//						}
-//					}
-//					else if (tableName == "EmpRateChangeReasonTypes") {
-//						if (me.rateChangeReasonStore.fetchedCriteria["storeId:rateChangeReasons,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-//							me.typeTableFound = true;
-//							me.typesLoadedCount++;
-//							me.rateChangeReasonStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-//						}
-//					}
-//					else if (tableName == "EmpTerminationReasonTypes") {
-//						if (me.terminationReasonStore.fetchedCriteria["storeId:terminationReasons,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-//							me.typeTableFound = true;
-//							me.typesLoadedCount++;
-//							me.terminationReasonStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-//						}
-//					}
-//					else if (tableName == "EmpWorkShifts") {
-//						if (me.workShiftStore.fetchedCriteria["storeId:workShifts,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-//							me.typeTableFound = true;
-//							me.typesLoadedCount++;
-//							me.workShiftStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-//						}
-//					}
-//					else if (tableName == "EmpEthnicityTypes") {
-//						if (me.ethnicityTypeStore.fetchedCriteria["storeId:ethnicityTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-//							me.typeTableFound = true;
-//							me.typesLoadedCount++;
-//							me.ethnicityTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-//						}
-//					}
-//					else if (tableName == "EmpUnionTypes") {
-//						if (me.unionTypeStore.fetchedCriteria["storeId:unionTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-//							me.typeTableFound = true;
-//							me.typesLoadedCount++;
-//							me.unionTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-//						}
-//					}
-//					else if (tableName == "PayPayFrequencyTypes") {
-//						if (me.payFrequencyTypeStore.fetchedCriteria["storeId:frequencyTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-//							me.typeTableFound = true;
-//							me.typesLoadedCount++;
-//							me.payFrequencyTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-//						}
-//					}
-////					else if (tableName == "EmpSeparationCodes") {
-////						if (me.separationCodeStore.fetchedCriteria["storeId:separationCodes,userId:[user],terminationType:0,"] != ii.ajax.fetchStatusTypes.fetched) {
-////							me.typeTableFound = true;
-////							me.typesLoadedCount++;
-////							me.separationCodeStore.fetch("userId:[user],terminationType:0,", me.maritalStatusTypesLoaded, me);
-////						}
-////					}
-//					else if (tableName == "EmpJobStartReasonTypes") {
-//						if (me.jobStartReasonTypeStore.fetchedCriteria["storeId:jobStartReasonTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-//							me.typeTableFound = true;
-//							me.typesLoadedCount++;
-//							me.jobStartReasonTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-//						}
-//					}
-//					else if (tableName == "EmpI9Types") {
-//						if (me.i9TypeStore.fetchedCriteria["storeId:i9Types,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-//							me.typeTableFound = true;
-//							me.typesLoadedCount++;
-//							me.i9TypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-//						}
-//					}
-//					else if (tableName == "EmpVetTypes") {
-//						if (me.vetTypeStore.fetchedCriteria["storeId:vetTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-//							me.typeTableFound = true;
-//							me.typesLoadedCount++;
-//							me.vetTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-//						}
-//					}
-////					else if (tableName == "EmpStatusCategoryTypes") {
-////						if (me.statusCategoryTypeStore.fetchedCriteria["storeId:statusCategoryTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-////							me.typeTableFound = true;
-////							me.typesLoadedCount++;
-////							me.statusCategoryTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-////						}
-////					}
-////					else if (tableName == "EmpStateAdjustmentTypes") {
-////						if (me.stateAdjustmentTypeStore.fetchedCriteria["storeId:stateAdjustmentTypes,appState:0,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-////							me.typeTableFound = true;
-////							me.typesLoadedCount++;
-////							me.stateAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
-////						}
-////					}
-////					else if (tableName == "EmpSDIAdjustmentTypes") {
-////						if (me.sdiAdjustmentTypeStore.fetchedCriteria["storeId:sdiAdjustmentTypes,appState:0,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-////							me.typeTableFound = true;
-////							me.typesLoadedCount++;
-////							me.sdiAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
-////						}
-////					}
-//					else if (tableName == "EmpMaritalStatusFederalTaxTypes") {
-//						if (me.maritalStatusFederalTaxTypeStore.fetchedCriteria["storeId:maritalStatusFederalTaxTypes,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-//							me.typeTableFound = true;
-//							me.typesLoadedCount++;
-//							me.maritalStatusFederalTaxTypeStore.fetch("userId:[user],", me.maritalStatusTypesLoaded, me);
-//						}
-//					}
-////					else if (tableName == "EmpLocalTaxAdjustmentTypes") {
-////						if (me.localTaxAdjustmentTypeStore.fetchedCriteria["storeId:localTaxAdjustmentTypes,appState:0,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-////							me.typeTableFound = true;
-////							me.typesLoadedCount++;
-////							me.localTaxAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.maritalStatusTypesLoaded, me);
-////						}
-////					}
-//					else if (tableName == "EmpFederalAdjustmentTypes") {
-//						if (me.federalAdjustmentStore.fetchedCriteria["storeId:employeePayrollMasters,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-//							me.typeTableFound = true;
-//							me.typesLoadedCount++;
-//							me.federalAdjustmentStore.fetch("userId:[user]", me.maritalStatusTypesLoaded, me);
-//						}
-//					}
-//					else if (tableName == "PayPayrollCompanies") {
-//						if (me.payrollCompanyStore.fetchedCriteria["storeId:payrollCompanys,userId:[user],"] != ii.ajax.fetchStatusTypes.fetched) {
-//							me.typeTableFound = true;
-//							me.typesLoadedCount++;
-//							me.payrollCompanyStore.fetch("userId:[user]", me.maritalStatusTypesLoaded, me);
-//						}
-//					}
-//				}
-//			}
-			
-			if (!me.typeTableFound)
-				me.setReportFilters();
+			if (me.report.indexSelected > 0) {
+				itemIndex = ii.ajax.util.findIndexById(me.reports[me.report.indexSelected].module.toString(), me.modules);
+				modulesList.push(me.modules[itemIndex].name);
+				moduleAssociate = me.reports[me.report.indexSelected].moduleAssociate;
+
+				if (moduleAssociate != "0") {
+					associatedModules = moduleAssociate.split("#");
+					for (var index = 0; index < associatedModules.length; index++) {
+						itemIndex = ii.ajax.util.findIndexById(associatedModules[index].toString(), me.modules);
+						modulesList.push(me.modules[itemIndex].name);
+					}
+				}
+			}
+
+			for (var index = 0; index < modulesList.length; index++) {
+				if (!me.typesCache[modulesList[index]].typesLoaded) {
+				
+					switch (modulesList[index]) {
+						case "HirNode":
+							break;
+							
+						case "Site":
+							me.typesLoadedCount = 1;
+							me.stateTypeStore.reset();
+							me.siteMasterStore.fetch("userId:[user],siteId:1", me.typesLoaded, me);
+							break;
+							
+						case "Unit":
+							break;
+							
+						case "House Code":
+							me.typesLoadedCount = 4;
+							me.serviceTypeStore.fetch("userId:[user],", me.typesLoaded, me);
+							me.contractTypeStore.fetch("userId:[user]", me.typesLoaded, me);
+							me.payPayrollCompanyStore.fetch("userId:[user]", me.typesLoaded, me);
+							me.jdeCompanysStore.fetch("userId:[user]", me.typesLoaded, me);
+							break;
+							
+						case "Person":
+							break;
+							
+						case "User":
+							break;
+							
+						case "Employee":
+							me.typesLoadedCount = 12;
+							me.localTaxCodeStore.fetch("payrollCompany:0,appState:0,userId:[user]", me.typesLoaded, me);
+							me.maritalStatusStateTaxTypeSecondaryStore.fetch("appState:0,userId:[user]", me.typesLoaded, me);
+							me.statusTypeStore.fetch("userId:[user],personId:0", me.typesLoaded, me);
+							me.payFrequencyTypeStore.fetch("userId:[user]", me.typesLoaded, me);
+							me.federalAdjustmentStore.fetch("userId:[user]", me.typesLoaded, me);
+							me.unionStatusTypeStore.fetch("userId:[user],", me.typesLoaded, me);
+							me.sdiAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.typesLoaded, me);
+							me.stateAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.typesLoaded, me);
+							me.maritalStatusFederalTaxTypeStore.fetch("userId:[user],", me.typesLoaded, me);
+							me.payrollCompanyStore.fetch("userId:[user]", me.typesLoaded, me);
+							me.localTaxAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.typesLoaded, me);
+							me.separationCodeStore.fetch("userId:[user],terminationType:0,", me.typesLoaded, me);
+							
+							break;
+							
+						case "Invoice":
+							me.typesLoadedCount = 2;
+							me.transactionStatusTypeStore.fetch("userId:[user]", me.typesLoaded, me);
+							me.invoiceTemplateStore.fetch("userId:[user]", me.typesLoaded, me);
+							break;
+							
+						case "Job":
+							me.typesLoadedCount = 1;
+							me.jobTypeStore.fetch("userId:[user],", me.typesLoaded, me);
+							break;
+					}
+					
+					me.typesCache[modulesList[index]].typesLoaded = true;
+				}
+			}
 		},
 		
-		checkTypesLoaded: function() {
-			var me = this;
-			
+		typesLoaded: function(me, activeId) {
+
+			me.typesLoadedCount--;
+			if (me.typesLoadedCount <= 0)
+				me.setReportFilters();
+		},
+
+		reportFiltersLoaded: function(me, activeId) {
+
+			me.typesLoadedCount--;
 			if (me.typesLoadedCount <= 0)
 				me.setReportFilters();
 		},
@@ -1352,7 +1238,6 @@ ii.Class({
 					if (me.reportFilters[index].referenceTableName == "") {
 						contorlValidation = me.reportFilters[index].validation;
 						if (contorlValidation == "bit") {
-							//rowData += "<td align='left'><input type='checkbox' name='" + me.reportFilters[index].title + "' id='" + me.reportFilters[index].title + "'></input></td>";
 							rowData += "<td align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'bit') + "</td>";
 						}
 						else if (contorlValidation.toLowerCase() == "datetime" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator == 1) {
@@ -1426,25 +1311,11 @@ ii.Class({
 
 			$("#pageLoading").hide();
 		},
-		
-		showColumnNames: function() {
-			var me = this;
 
-			$("#actualColumnName").toggle();
-
-			if ($("#actualColumnName").is(':visible')) {
-				$("#DivAdhReportGridHeader").height(60);
-				$("#divAdhReportGrid").height($(window).height() - 158);
-			}				
-			else {
-				$("#DivAdhReportGridHeader").height(30);
-				$("#divAdhReportGrid").height($(window).height() - 145);
-			}
-		},		
-		
 		actionLoadItem: function() {
 			var me = this;
-			var houseCodeAssociated = me.modules[me.reports[me.report.indexSelected].module - 1].houseCodeAssociated;
+			var index = ii.ajax.util.findIndexById(me.reports[me.report.indexSelected].module.toString(), me.modules);
+			var houseCodeAssociated = me.modules[index].houseCodeAssociated;
 			
 			me.delimitedOrgSelectedNodes = "";
 
@@ -1458,20 +1329,12 @@ ii.Class({
 				if (orgHierarchy)
 					me.delimitedOrgSelectedNodes += orgHierarchy.id.toString() + "#";
 			}
-			
-			if (houseCodeAssociated) {
-				if (me.delimitedOrgSelectedNodes == ""){
-					alert("Please select correct House Code.");
-					return;
-				}
+
+			if (me.delimitedOrgSelectedNodes == "" && (houseCodeAssociated || me.reports[me.report.indexSelected].moduleAssociate != 0)) {
+				alert("Please select correct House Code.");
+				return;
 			}
-			else {
-				if (me.delimitedOrgSelectedNodes == "" && me.reports[me.report.indexSelected].moduleAssociate != 0) {
-					alert("Please select correct House Code.");
-					return;
-				}
-			}
-						
+
 			$("#AdhReportGrid").show();
 			$("#ReportHierarchy").hide();
 			$("#messageToUser").html("Loading");
@@ -1536,19 +1399,6 @@ ii.Class({
 				}
 
 				rowData += "<th class='gridColumnHidden'></th></tr>";
-
-//				rowData += "<tr id='actualColumnName' style='display:none' height='30px'>";
-//				rowData += "<th class='gridHeaderColumnSub'>AppUniBrief</th>";
-//				className = "gridHeaderColumnSub";
-//
-//				for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
-//					if (me.moduleColumnHeaders[index].title == "AppUnit")
-//						me.moduleColumnHeaders[index].title = "AppSitTitle";
-//					if (index == me.moduleColumnHeaders.length - 1)
-//						className = "gridHeaderColumnSubRight";
-//					rowData += "<th class='" + className + "'>" + me.moduleColumnHeaders[index].title + "</th>";                                
-//				}
-//				rowData += "<th class='gridColumnHidden'>AppSite</th></tr>";
 			}
 
 			$("#AdhReportItemGridHead").html(rowData);
@@ -1858,9 +1708,9 @@ ii.Class({
 					
 					switch (me.columnType) {
 						case 1: //Editable
-							if(argscolumn == "RevInvTaxExempt")
+							if (argscolumn == "RevInvTaxExempt")
 								rowData = "<td class='" + className + "' align='center' style='" + style + "'><input type='checkbox' onChange=fin.reportUi.taxExemptChange(\'" + pkId + "\',\'" + houseCodeId + "\'); name='" + argName + "' id='" + argName + "' value='" + dataValue + "'" + (dataValue == "1" ? checked='checked' : '') + "></input></td>";
-							else if(argscolumn == "HcmJobPostalCode")
+							else if (argscolumn == "HcmJobPostalCode")
 								rowData = "<td class='" + className + "' style='" + style + "'><input type='text' style='width:" + columnWidth + "px;' onblur=fin.reportUi.postalCodeChange(this);fin.reportUi.dataValidation(\'" + fin.reportUi.columnValidation + "\',\'" + argName + "\'); id='" + argName + "' value='" + dataValue + "' maxlength='" + columnLength + "'></input></td>";
 							else if (me.columnValidation.toLowerCase() == "bit")
 								rowData = "<td class='" + className + "' align='center' style='" + style + "'><input type='checkbox' name='" + argName + "' id='" + argName + "' value='" + dataValue + "'" + (dataValue == "1" ? checked='checked' : '') + "></input></td>";
@@ -3095,7 +2945,11 @@ ii.Class({
 			else if (args.typeTable == "HcmBudgetTemplates") {
 				me.typeNoneAdd(me.budgetTemplates);
 				typeTable = me.budgetTemplates;
-			}			
+			}
+			else if (args.typeTable == "HcmBudgetLaborCalcMethods") {
+				me.typeNoneAdd(me.budgetLaborCalcMethods);
+				typeTable = me.budgetLaborCalcMethods;
+			}	
 			else if (args.typeTable == "HcmEPayGroupTypes") {
 				me.typeNoneAdd(me.ePayGroupTypes);
 				typeTable = me.ePayGroupTypes;
@@ -3209,6 +3063,7 @@ ii.Class({
 				typeTable = me.maritalStatusFederalTaxTypes;
 			}
 			else if (args.typeTable == "EmpGenderTypes") {
+				me.genderTypes = [];
 				me.genderTypes.unshift(new fin.adh.GenderType({ id: 2, name: "Female" }));
 				me.genderTypes.unshift(new fin.adh.GenderType({ id: 1, name: "Male" }));
 				me.typeNoneAdd(me.genderTypes);
@@ -3341,16 +3196,8 @@ ii.Class({
 			var args = ii.args(arguments, {
 				argValue: {type: String}
 			});
-				
-			var splCharExists = 0;
-			var splChars = "|#";
-			for (var i = 0; i < args.argValue.length; i++) {
-				if (splChars.indexOf(args.argValue.charAt(i)) != -1) {
-					splCharExists = 1;
-				}
-			}
 
-			if (splCharExists == 0)
+			if (/^[^\|\#]+$/.test(args.argValue))
 				return true;
 			else
 				return false;
