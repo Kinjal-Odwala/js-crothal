@@ -341,6 +341,14 @@ ii.Class({
 				injectionArray: me.budgetTemplates
 			});
 
+			me.budgetLaborCalcMethods = [];
+			me.budgetLaborCalcMethodStore = me.cache.register({
+				storeId: "budgetLaborCalcMethods",
+				itemConstructor: fin.hcm.houseCodeImport.BudgetLaborCalcMethod,
+				itemConstructorArgs: fin.hcm.houseCodeImport.budgetLaborCalcMethodArgs,
+				injectionArray: me.budgetLaborCalcMethods
+			});
+
 			me.payPayrollCompanys = [];
 			me.payPayrollCompanyStore = me.cache.register({
 				storeId: "payrollMasters",

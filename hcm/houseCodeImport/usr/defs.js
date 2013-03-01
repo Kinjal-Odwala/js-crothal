@@ -227,6 +227,11 @@ ii.init.register( function() {
 		, name: {type: String}
 	};
 	
+	fin.hcm.houseCodeImport.budgetLaborCalcMethodArgs = {
+		id: {type: Number}
+		, name: {type: String}
+	};
+	
 	fin.hcm.houseCodeImport.payPayrollCompanyArgs = {
 		id: {type: Number}
 	};
@@ -473,6 +478,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.houseCodeImport.budgetTemplateArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.houseCodeImport.BudgetLaborCalcMethod",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.houseCodeImport.budgetLaborCalcMethodArgs);
 			$.extend(this, args);
 		}
 	}
