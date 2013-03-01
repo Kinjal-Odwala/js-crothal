@@ -95,6 +95,7 @@ ii.init.register( function() {
 		, bankEmail: {type: String, required: false, defaultValue: ""}
 		, invoiceLogoTypeId: {type: Number, required: false, defaultValue: 0}
 		, budgetTemplateId: {type: Number, required: false, defaultValue: 0}
+		, budgetLaborCalcMethod: {type: Number, required: false, defaultValue: 0}
 		, budgetComputerRelatedCharge: {type: Boolean, required: false, defaultValue: false}
 		, stateTaxPercent: {type: String, required: false, defaultValue: ""}
 		, localTaxPercent: {type: String, required: false, defaultValue: ""}
@@ -186,6 +187,11 @@ ii.init.register( function() {
 	};
 	
 	fin.hcm.houseCodeWizard.budgetTemplateArgs = {
+		id: {type: Number}
+		, name: {type: String}
+	};
+	
+	fin.hcm.houseCodeWizard.budgetLaborCalcMethodArgs = {
 		id: {type: Number}
 		, name: {type: String}
 	};
@@ -388,6 +394,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.houseCodeWizard.budgetTemplateArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.houseCodeWizard.BudgetLaborCalcMethod",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.houseCodeWizard.budgetLaborCalcMethodArgs);
 			$.extend(this, args);
 		}
 	}

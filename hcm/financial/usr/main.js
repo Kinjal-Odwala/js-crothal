@@ -129,6 +129,7 @@ ii.Class({
 			me.sfEmailShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionFinancial\\Email", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
 			me.sfInvoiceLogoShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionFinancial\\InvoiceLogo", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
 			me.sfBudgetTemplateShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetTemplate", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
+			me.sfBudgetLaborCalcMethodShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetLaborCalcMethod", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
 			me.sfBudgetComputerRelatedChargeShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetComputerRelatedCharge", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
 			
 			me.sfContractTypeReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\ContractType\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
@@ -149,6 +150,7 @@ ii.Class({
 			me.sfEmailReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\Email\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 			me.sfInvoiceLogoReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\InvoiceLogo\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 			me.sfBudgetTemplateReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetTemplate\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
+			me.sfBudgetLaborCalcMethodReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetLaborCalcMethod\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 			me.sfBudgetComputerRelatedChargeReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetComputerRelatedCharge\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 			
 			me.resetUIElements();
@@ -258,6 +260,7 @@ ii.Class({
 			me.setControlState("BankEmail", me.sfEmailReadOnly, me.sfEmailShow);
 			me.setControlState("InvoiceLogo", me.sfInvoiceLogoReadOnly, me.sfInvoiceLogoShow);
 			me.setControlState("BudgetTemplate", me.sfBudgetTemplateReadOnly, me.sfBudgetTemplateShow);
+			me.setControlState("BudgetLaborCalcMethod", me.sfBudgetLaborCalcMethodReadOnly, me.sfBudgetLaborCalcMethodShow);
 			me.setControlState("BudgetComputerRelatedCharge", me.sfBudgetComputerRelatedChargeReadOnly, me.sfBudgetComputerRelatedChargeShow, "Check", "BudgetComputerRelatedChargeCheck");
 		},
 		
@@ -552,6 +555,12 @@ ii.Class({
 		        required: false
 		    });
 			
+			me.budgetLaborCalcMethod = new ui.ctl.Input.DropDown.Filtered({
+		        id: "BudgetLaborCalcMethod",
+				formatFunction: function( type ) { return type.name; },
+		        required: false
+		    });
+			
 			me.budgetComputerRelatedCharge = new ui.ctl.Input.Check({
 		        id: "BudgetComputerRelatedCharge",
 				required: false 
@@ -596,7 +605,8 @@ ii.Class({
 			me.bankEmail.text.tabIndex = 29;
 			me.invoiceLogo.text.tabIndex = 30;
 			me.budgetTemplate.text.tabIndex = 31;
-			me.budgetComputerRelatedCharge.check.tabIndex = 32;
+			me.budgetLaborCalcMethod.text.tabIndex = 32;
+			me.budgetComputerRelatedCharge.check.tabIndex = 33;
 		},		
 		
 		resizeControls: function() {
@@ -640,6 +650,7 @@ ii.Class({
 			me.bankEmail.resizeText();
 			me.invoiceLogo.resizeText();
 			me.budgetTemplate.resizeText();
+			me.budgetLaborCalcMethod.resizeText();
 			me.resize();
 		},
 	
@@ -710,6 +721,14 @@ ii.Class({
 				itemConstructorArgs: fin.hcm.financial.budgetTemplateArgs,
 				injectionArray: me.budgetTemplates
 			});
+			
+			me.budgetLaborCalcMethods = [];
+			me.budgetLaborCalcMethodStore = me.cache.register({
+				storeId: "budgetLaborCalcMethods",
+				itemConstructor: fin.hcm.financial.BudgetLaborCalcMethod,
+				itemConstructorArgs: fin.hcm.financial.budgetLaborCalcMethodArgs,
+				injectionArray: me.budgetLaborCalcMethods
+			});
 		},
 
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
@@ -756,6 +775,7 @@ ii.Class({
 			me.billingCycleFrequency.fetchingData();
 			me.invoiceLogo.fetchingData();
 			me.budgetTemplate.fetchingData();
+			me.budgetLaborCalcMethod.fetchingData();
 
 			me.contractTypeStore.fetch("userId:[user]", me.contractTypesLoaded, me);	
 		},
@@ -784,6 +804,10 @@ ii.Class({
 			me.budgetTemplates.unshift(new fin.hcm.financial.BudgetTemplate({ id: 0, name: "None" }));
 			me.budgetTemplate.reset();
 			me.budgetTemplate.setData(me.budgetTemplates);
+			
+			me.budgetLaborCalcMethods.unshift(new fin.hcm.financial.BudgetLaborCalcMethod({ id: 0, name: "None" }));
+			me.budgetLaborCalcMethod.reset();
+			me.budgetLaborCalcMethod.setData(me.budgetLaborCalcMethods);
 
 			me.financialEntities = [];
 
@@ -866,6 +890,10 @@ ii.Class({
 			index = ii.ajax.util.findIndexById(houseCode.budgetTemplateId.toString(), me.budgetTemplates);
 			if (index >= 0 && index != undefined)
 				me.budgetTemplate.select(index, me.budgetTemplate.focused);
+			
+			index = ii.ajax.util.findIndexById(houseCode.budgetLaborCalcMethod.toString(), me.budgetLaborCalcMethods);
+			if (index >= 0 && index != undefined)
+				me.budgetLaborCalcMethod.select(index, me.budgetLaborCalcMethod.focused);
 			
 			me.budgetComputerRelatedCharge.check.checked = houseCode.budgetComputerRelatedCharge;
 			$("#pageLoading").hide();

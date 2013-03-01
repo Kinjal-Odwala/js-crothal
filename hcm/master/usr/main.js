@@ -465,6 +465,7 @@ ii.Class({
 				me.houseCodeDetails[0].bankEmail = financialUIControls.bankEmail.getValue();
 				me.houseCodeDetails[0].invoiceLogoTypeId = (financialUIControls.invoiceLogo.indexSelected < 0 ? 0 : financialUIControls.invoiceLogoTypes[financialUIControls.invoiceLogo.indexSelected].id);
 				me.houseCodeDetails[0].budgetTemplateId = (financialUIControls.budgetTemplate.indexSelected < 0 ? 0 : financialUIControls.budgetTemplates[financialUIControls.budgetTemplate.indexSelected].id);
+				me.houseCodeDetails[0].budgetLaborCalcMethod = (financialUIControls.budgetLaborCalcMethod.indexSelected < 0 ? 0 : financialUIControls.budgetLaborCalcMethods[financialUIControls.budgetLaborCalcMethod.indexSelected].id);
 				me.houseCodeDetails[0].budgetComputerRelatedCharge = (financialUIControls.budgetComputerRelatedCharge.check.checked ? 1 : 0);
 			}
 			
@@ -606,6 +607,7 @@ ii.Class({
 				, me.houseCodeDetails[0].bankEmail
 				, me.houseCodeDetails[0].invoiceLogoTypeId
 				, me.houseCodeDetails[0].budgetTemplateId
+				, me.houseCodeDetails[0].budgetLaborCalcMethod
 				, me.houseCodeDetails[0].budgetComputerRelatedCharge
 				, me.houseCodeDetails[0].stateTaxPercent
 				, me.houseCodeDetails[0].localTaxPercent
@@ -720,7 +722,8 @@ ii.Class({
 			xml += ' bankEmail="' + item.bankEmail + '"';
 			xml += ' invoiceLogoTypeId="' + item.invoiceLogoTypeId + '"';
 			xml += ' budgetTemplateId="' + item.budgetTemplateId + '"';
-			xml += ' budgetComputerRelatedCharge="' + item.budgetComputerRelatedCharge + '"';			
+			xml += ' budgetLaborCalcMethod="' + item.budgetLaborCalcMethod + '"';
+			xml += ' budgetComputerRelatedCharge="' + item.budgetComputerRelatedCharge + '"';
 			xml += ' stateTaxPercent="' + item.stateTaxPercent + '"';
 			xml += ' localTaxPercent="' + item.localTaxPercent + '"';
 			xml += ' financialEntityId="' + item.financialEntityId + '"';

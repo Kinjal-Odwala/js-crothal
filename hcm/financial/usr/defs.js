@@ -54,6 +54,11 @@ ii.init.register( function() {
 		id: {type: Number}
 		, name: {type: String}
 	};
+	
+	fin.hcm.financial.budgetLaborCalcMethodArgs = {
+		id: {type: Number}
+		, name: {type: String}
+	};
 
 }, 2);
 
@@ -132,6 +137,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.financial.budgetTemplateArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.financial.BudgetLaborCalcMethod",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.financial.budgetLaborCalcMethodArgs);
 			$.extend(this, args);
 		}
 	}

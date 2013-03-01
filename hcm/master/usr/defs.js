@@ -95,6 +95,7 @@ ii.init.register( function() {
 		, bankEmail: {type: String, required: false, defaultValue: ""}
 		, invoiceLogoTypeId: {type: Number, required: false, defaultValue: 0}
 		, budgetTemplateId: {type: Number, required: false, defaultValue: 0}
+		, budgetLaborCalcMethod: {type: Number, required: false, defaultValue: 0}
 		, budgetComputerRelatedCharge: {type: Boolean, required: false, defaultValue: false}
 		, stateTaxPercent: {type: String, required: false, defaultValue: ""}
 		, localTaxPercent: {type: String, required: false, defaultValue: ""}

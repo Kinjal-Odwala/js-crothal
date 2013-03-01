@@ -322,6 +322,7 @@ ii.Class({
 			me.sfEmailShow = me.isCtrlVisibleTabFinancial(me.authorizePath + "\\TabFinancial\\SectionFinancial\\Email", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
 			me.sfInvoiceLogoShow = me.isCtrlVisibleTabFinancial(me.authorizePath + "\\TabFinancial\\SectionFinancial\\InvoiceLogo", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
 			me.sfBudgetTemplateShow = me.isCtrlVisibleTabFinancial(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetTemplate", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
+			me.sfBudgetLaborCalcMethodShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetLaborCalcMethod", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
 			me.sfBudgetComputerRelatedChargeShow = me.isCtrlVisibleTabFinancial(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetComputerRelatedCharge", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
 			
 			me.sfContractTypeReadOnly = me.isCtrlReadOnlyTabFinancial(me.authorizePath + "\\TabFinancial\\SectionFinancial\\ContractType\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
@@ -342,6 +343,7 @@ ii.Class({
 			me.sfEmailReadOnly = me.isCtrlReadOnlyTabFinancial(me.authorizePath + "\\TabFinancial\\SectionFinancial\\Email\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 			me.sfInvoiceLogoReadOnly = me.isCtrlReadOnlyTabFinancial(me.authorizePath + "\\TabFinancial\\SectionFinancial\\InvoiceLogo\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 			me.sfBudgetTemplateReadOnly = me.isCtrlReadOnlyTabFinancial(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetTemplate\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
+			me.sfBudgetLaborCalcMethodReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetLaborCalcMethod\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 			me.sfBudgetComputerRelatedChargeReadOnly = me.isCtrlReadOnlyTabFinancial(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetComputerRelatedCharge\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 
 			//Payroll
@@ -691,6 +693,7 @@ ii.Class({
 			me.setControlState("BankEmail", me.sfEmailReadOnly, me.sfEmailShow);
 			me.setControlState("InvoiceLogo", me.sfInvoiceLogoReadOnly, me.sfInvoiceLogoShow);
 			me.setControlState("BudgetTemplate", me.sfBudgetTemplateReadOnly, me.sfBudgetTemplateShow);
+			me.setControlState("BudgetLaborCalcMethod", me.sfBudgetLaborCalcMethodReadOnly, me.sfBudgetLaborCalcMethodShow);
 			me.setControlState("BudgetComputerRelatedCharge", me.sfBudgetComputerRelatedChargeReadOnly, me.sfBudgetComputerRelatedChargeShow, "Check", "BudgetComputerRelatedChargeCheck");
 			
 			//Payroll
@@ -1747,6 +1750,12 @@ ii.Class({
 		        required: false
 		    });
 			
+			me.budgetLaborCalcMethod = new ui.ctl.Input.DropDown.Filtered({
+		        id: "BudgetLaborCalcMethod",
+				formatFunction: function( type ) { return type.name; },
+		        required: false
+		    });
+			
 			me.budgetComputerRelatedCharge = new ui.ctl.Input.Check({
 		        id: "BudgetComputerRelatedCharge",
 				required: false 
@@ -1791,7 +1800,8 @@ ii.Class({
 			me.bankEmail.text.tabIndex = 29;
 			me.invoiceLogo.text.tabIndex = 30;
 			me.budgetTemplate.text.tabIndex = 31;
-			me.budgetComputerRelatedCharge.check.tabIndex = 32;
+			me.budgetLaborCalcMethod.text.tabIndex = 32;
+			me.budgetComputerRelatedCharge.check.tabIndex = 33;
 
 			//Payroll
 			me.payrollProcessing = new ui.ctl.Input.DropDown.Filtered({
@@ -2006,6 +2016,14 @@ ii.Class({
 				itemConstructorArgs: fin.hcm.houseCodeWizard.budgetTemplateArgs,
 				injectionArray: me.budgetTemplates
 			});
+			
+			me.budgetLaborCalcMethods = [];
+			me.budgetLaborCalcMethodStore = me.cache.register({
+				storeId: "budgetLaborCalcMethods",
+				itemConstructor: fin.hcm.houseCodeWizard.BudgetLaborCalcMethod,
+				itemConstructorArgs: fin.hcm.houseCodeWizard.budgetLaborCalcMethodArgs,
+				injectionArray: me.budgetLaborCalcMethods
+			});
 
 			//Payroll
 			me.payPayrollCompanys = [];
@@ -2126,6 +2144,7 @@ ii.Class({
 			me.bankEmail.resizeText();
 			me.invoiceLogo.resizeText();
 			me.budgetTemplate.resizeText();
+			me.budgetLaborCalcMethod.resizeText();
 			
 			//Payroll
 			me.payrollProcessing.resizeText();
@@ -2467,6 +2486,7 @@ ii.Class({
 			me.billingCycleFrequency.fetchingData();
 			me.invoiceLogo.fetchingData();
 			me.budgetTemplate.fetchingData();
+			me.budgetLaborCalcMethod.fetchingData();
 
 			me.contractTypeStore.fetch("userId:[user]", me.contractTypesLoaded, me);	
 		},
@@ -2500,6 +2520,11 @@ ii.Class({
 				me.budgetTemplates.unshift(new fin.hcm.houseCodeWizard.BudgetTemplate({ id: 0, name: "None" }));
 			me.budgetTemplate.reset();
 			me.budgetTemplate.setData(me.budgetTemplates);
+			
+			if (!ii.ajax.util.findItemByField("name", "None", me.budgetLaborCalcMethods))
+				me.budgetLaborCalcMethods.unshift(new fin.hcm.houseCodeWizard.BudgetLaborCalcMethod({ id: 0, name: "None" }));
+			me.budgetLaborCalcMethod.reset();
+			me.budgetLaborCalcMethod.setData(me.budgetLaborCalcMethods);
 
 			me.financialEntity.reset();			
 			me.financialEntity.setData(me.financialEntities);
@@ -2570,6 +2595,10 @@ ii.Class({
 			index = ii.ajax.util.findIndexById(houseCode.budgetTemplateId.toString(), me.budgetTemplates);
 			if (index >= 0 && index != undefined)
 				me.budgetTemplate.select(index, me.budgetTemplate.focused);
+				
+			index = ii.ajax.util.findIndexById(houseCode.budgetLaborCalcMethod.toString(), me.budgetLaborCalcMethods);
+			if (index >= 0 && index != undefined)
+				me.budgetLaborCalcMethod.select(index, me.budgetLaborCalcMethod.focused);
 
 			me.budgetComputerRelatedCharge.check.checked = houseCode.budgetComputerRelatedCharge;
 			$("#pageLoading").hide();
@@ -3017,6 +3046,7 @@ ii.Class({
 			me.houseCodeDetails[0].bankEmail = me.bankEmail.getValue();
 			me.houseCodeDetails[0].invoiceLogoTypeId = (me.invoiceLogo.indexSelected < 0 ? 0 : me.invoiceLogoTypes[me.invoiceLogo.indexSelected].id);
 			me.houseCodeDetails[0].budgetTemplateId = (me.budgetTemplate.indexSelected < 0 ? 0 : me.budgetTemplates[me.budgetTemplate.indexSelected].id);
+			me.houseCodeDetails[0].budgetLaborCalcMethod = (me.budgetLaborCalcMethod.indexSelected < 0 ? 0 : me.budgetLaborCalcMethods[me.budgetLaborCalcMethod.indexSelected].id);
 			me.houseCodeDetails[0].budgetComputerRelatedCharge = (me.budgetComputerRelatedCharge.check.checked ? 1 : 0);
 			
 			//Payroll				
@@ -3153,6 +3183,7 @@ ii.Class({
 				, me.houseCodeDetails[0].bankEmail
 				, me.houseCodeDetails[0].invoiceLogoTypeId
 				, me.houseCodeDetails[0].budgetTemplateId
+				, me.houseCodeDetails[0].budgetLaborCalcMethod
 				, me.houseCodeDetails[0].budgetComputerRelatedCharge
 				, me.houseCodeDetails[0].stateTaxPercent
 				, me.houseCodeDetails[0].localTaxPercent
@@ -3267,6 +3298,7 @@ ii.Class({
 			xml += ' bankEmail="' + item.bankEmail + '"';
 			xml += ' invoiceLogoTypeId="' + item.invoiceLogoTypeId + '"';
 			xml += ' budgetTemplateId="' + item.budgetTemplateId + '"';
+			xml += ' budgetLaborCalcMethod="' + item.budgetLaborCalcMethod + '"';
 			xml += ' budgetComputerRelatedCharge="' + item.budgetComputerRelatedCharge + '"';
 			xml += ' stateTaxPercent="' + item.stateTaxPercent + '"';
 			xml += ' localTaxPercent="' + item.localTaxPercent + '"';
