@@ -171,6 +171,11 @@ ii.init.register( function() {
 		id: {type: Number}
 		, name: {type: String}
 	};
+	
+	fin.adh.budgetLaborCalcMethodArgs = {
+		id: {type: Number}
+		, name: {type: String}
+	};
 
 	fin.adh.payPayrollCompanyArgs = {
 		id: {type: Number}
@@ -699,6 +704,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.adh.budgetTemplateArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.adh.BudgetLaborCalcMethod",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.budgetLaborCalcMethodArgs);
 			$.extend(this, args);
 		}
 	}
