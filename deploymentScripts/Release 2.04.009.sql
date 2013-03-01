@@ -5,15 +5,18 @@ Last production release version 2.04.008 on 14th November 2012 11PM EST
 Select * From Esmv2.dbo.M_ENV_ENVIRONMENTS
 Update Esmv2.dbo.M_ENV_ENVIRONMENTS 
 Set M_ENV_ENV_Application_Version = '2.04.009', M_ENV_ENV_Database_Version = '2.04.009' 
-Where M_ENV_ENVIRONMENT = 3
+Where M_ENV_ENVIRONMENT = 4
 
 /*
 ALTER TABLE [TeamFinV2].[dbo].[HcmHouseCodes] ADD HcmBudgetTemplate Int NULL
+ALTER TABLE [TeamFinV2].[dbo].[HcmHouseCodes] ADD HcmBudgetComputerRelatedCharge Bit NULL
+ALTER TABLE [TeamFinV2].[dbo].[HcmHouseCodes] ADD HcmBudgetLaborCalcMethod Int NULL
 ALTER TABLE [TeamFinV2].[dbo].[HcmJobs] ADD RevInvoiceTemplate Int NULL
-ALTER TABLE [HcmJobs] ALTER COLUMN [HcmJobTitle] VARCHAR(256)
+ALTER TABLE [TeamFinV2].[dbo].[HcmJobs] ALTER COLUMN [HcmJobTitle] VARCHAR(256)
 ALTER TABLE [TeamFinV2].[dbo].[RevInvoiceItems] ADD RevInviDisplayOrder Int NULL
 ALTER TABLE [TeamFinV2].[dbo].[RevInvoiceItems] ADD WomWorkOrderItem Int NULL
 ALTER TABLE [TeamFinV2].[dbo].[RevInvoices] ADD HcmInvoiceLogoType Int NULL
+ALTER TABLE [TeamFinV2].[dbo].[RevInvoices] ADD RevInvoiceAddressType Int NULL
 ALTER TABLE [TeamFinV2].[dbo].[AppModuleColumns] ADD AppModcFilter Bit NULL
 ALTER TABLE [TeamFinV2].[dbo].[AppModuleColumns] ADD AppModcDependantColumns VarChar(256) NULL
 ALTER TABLE [TeamFinV2].[dbo].[AppModuleColumns] ADD AppModcWidth Int NULL
@@ -41,6 +44,9 @@ ALTER TABLE [TeamFinV2].[dbo].[WomWorkOrders] ADD WomwoCustomerCity Varchar(100)
 ALTER TABLE [TeamFinV2].[dbo].[WomWorkOrders] ADD WomwoCustomerState Int NULL
 ALTER TABLE [TeamFinV2].[dbo].[WomWorkOrders] ADD WomwoCustomerPostalCode Varchar(12) NULL
 
+ALTER TABLE [TeamFinV2].[dbo].[BudAnnualInformations] ADD BudAnniSupplySurchargeRate Float NULL
+ALTER TABLE [TeamFinV2].[dbo].[BudAnnualInformations] ADD BudAnniComputerRelatedChargeUnit Float NULL
+ALTER TABLE [TeamFinV2].[dbo].[BudAnnualInformations] ADD BudAnniComputerRelatedChargeOverhead Float NULL
 */
 
 -- HouseCode --> Jobs field level security nodes Insert [Begin]
@@ -66,8 +72,14 @@ Values ('Over Head Accoun', 'Over Head Account', 'Over Head Account', 3, 1, 'Com
 Insert Into dbo.HcmBudgetTemplates(HcmBudtBrief, HcmBudtTitle, HcmBudtDescription, HcmBudtDisplayOrder, HcmBudtActive, HcmBudtModBy, HcmBudtModAt)
 Values ('Retail', 'Retail', 'Retail', 4, 1, 'Compass-USA\Data Conversion', GetDate())
 
+/*
 Insert Into dbo.RevInvoiceTemplates (RevInvtBrief, RevInvtTitle, RevInvtDescription, RevInvtActive, RevInvtDisplayOrder, RevInvtModBy, RevInvtModAt)
 Values ('Standard', 'Standard', 'Standard', 1, 1, 'Compass-USA\Data Conversion', GetDate())
+*/
+Insert Into dbo.HcmBudgetLaborCalcMethods(HcmBudlcmBrief, HcmBudlcmTitle, HcmBudlcmDescription, HcmBudlcmDisplayOrder, HcmBudlcmActive, HcmBudlcmModBy, HcmBudlcmModAt)
+Values ('Standard', 'Standard', 'Standard', 1, 1, 'Compass-USA\Data Conversion', GetDate())
+Insert Into dbo.HcmBudgetLaborCalcMethods(HcmBudlcmBrief, HcmBudlcmTitle, HcmBudlcmDescription, HcmBudlcmDisplayOrder, HcmBudlcmActive, HcmBudlcmModBy, HcmBudlcmModAt)
+Values ('WorkDays', 'WorkDays', 'WorkDays', 2, 1, 'Compass-USA\Data Conversion', GetDate())
 
 /* 
 --Not required to execute the following script, this is a test script for R & D
@@ -89,8 +101,12 @@ Add the following key in hcm-->act web.config file
 Add the following key in adh-->act web.config file
 <add key="FinRevPath" value="/net/crothall/chimes/fin/rev/act/provider.aspx?moduleId=rev" />
 
--- To update Employee module in adhreport
-Update AppModules Set AppModAssociateModule = 0 Where AppModule = 2 And AppModTitle = 'Employee'
+Add the following key in pay-->act web.config file
+<add key="FinSMTPServer" value="relay.compass-usa.com" />
+<add key="FinSenderEmail" value="teamfinpostoffice@crothall.com" />
+<add key="PayrollEmail" value="chandru.balekkala@iicorporate.com" />
+<add key="PayCheckRequestApprovalPath" value="https://finct.crothall.com/net/crothall/chimes/fin/pay/act/ApprovePayCheckRequest.aspx" />
+<add key="ConnectionString" value="Data Source=Data Source=CHIUSCHP397;Initial Catalog=TeamFinv2;User ID=Esm;Password=Esm" />
 
 -- To set validations for Employee module in adhreport
 Update AppModuleColumns Set AppModcIsNullable = 0 Where AppModule = 2 And AppModcTitle = 'EmpEmpgSSN'
@@ -130,9 +146,6 @@ Update AppModuleColumns Set AppModcDependantColumns = 'EmpEmpgPrimaryState' Wher
 Update AppModuleColumns Set AppModcDependantColumns = 'EmpEmpgPrimaryState' Where AppModule = 2 And AppModcTitle = 'EmpLocalTaxAdjustmentType'
 Update AppModuleColumns Set AppModcDependantColumns = 'EmpEmpgSecondaryState' Where AppModule = 2 And AppModcTitle = 'EmpMaritalStatusStateTaxTypeSecondary'
 
--- To update Person module in adhreport
-Update AppModules Set AppModAssociateModule = 0 Where AppModule = 5 And AppModTitle = 'Person'
-
 -- To set validations for Person module in adhreport
 Update AppModuleColumns Set AppModcIsNullable = 0 Where AppModule = 5 And AppModcTitle = 'PplPeoFirstName'
 Update AppModuleColumns Set AppModcIsNullable = 0 Where AppModule = 5 And AppModcTitle = 'PplPeoLastName'
@@ -148,26 +161,16 @@ Update AppModuleColumns Set AppModcIsNullable = 1 Where AppModule = 5 And AppMod
 Update AppModuleColumns Set AppModcIsNullable = 1 Where AppModule = 5 And AppModcTitle = 'PplPeoEmail'
 Update AppModuleColumns Set AppModcIsNullable = 1 Where AppModule = 5 And AppModcTitle = 'PplPeoPager'
 
--- To update User module in adhreport
-Update AppModules Set AppModAssociateModule = 0 Where AppModule = 6 And AppModTitle = 'User'
-
 -- To set validations for User module in adhreport
-Update AppModuleColumns Set 
- = 0 Where AppModule = 6 And AppModcTitle = 'HirNodeTop'
+Update AppModuleColumns Set AppModcAdHocActive = 0 Where AppModule = 6 And AppModcTitle = 'HirNodeTop'
 Update AppModuleColumns Set AppModcAdHocActive = 0 Where AppModule = 6 And AppModcTitle = 'HirNodeCurrent'
 Update AppModuleColumns Set AppModcAdHocActive = 1 Where AppModule = 6 And AppModcTitle = 'AppUseActive'
 Update AppModuleColumns Set AppModcAdHocActive = 0 Where AppModule = 6 And AppModcTitle = 'AppUsePassword'
 Update AppModuleColumns Set AppModcFilter = 0 Where AppModule = 6 And AppModcTitle = 'AppUsePassword'
 Update AppModuleColumns Set AppModcFilter = 0 Where AppModule = 6 And AppModcTitle = 'AppRoleCurrent'
 
--- To update Unit module in adhreport
-Update AppModules Set AppModAssociateModule = 0 Where AppModule = 8 And AppModTitle = 'Unit'
-
 -- To set validations for Unit module in adhreport
 Update AppModuleColumns Set AppModcIsNullable = 0 Where AppModule = 8
-
--- To update Invoice module in adhreport
-Update AppModules Set AppModAssociateModule = 0 Where AppModule = 3 And AppModTitle = 'Invoice'
 
 Update Appmodulecolumns Set AppModcAdHocActive = 0 Where AppModule = 3 And AppModcTitle = 'HcmHouseCode'
 Update Appmodulecolumns Set AppModcAdHocActive = 0 Where AppModule = 3 And AppModcTitle = 'RevInvWeek'
@@ -216,25 +219,6 @@ Insert Into dbo.AppModuleAssociations (AppModule, AppModuleAssociate, AppModaAct
 Values (9, 1, 1, 'compass-usa\data conversion', GetDate())
 -- Update module associations [End]
 
--- Receivables --> Batch Process Menu Insert [Begin] 
-Declare @DisplayOrderMenu Int
-	, @HirNodeParent Int
-Set @DisplayOrderMenu = 505
-Select @HirNodeParent = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\AccountsReceivable'
-
-Exec EsmV2.dbo.AppMenuItemUpdate 
-	'Batch Process' --@MenuTitle Varchar(64)
-	, 2 --@MenuAction Int 1-mainmenu, 2-submenu
-	, 4 --@MenuState Int 3-selected, 4-enabled
-	, @DisplayOrderMenu 
-	,'/fin/rev/batchProcess/usr/markup.htm'
-	, @HirNodeParent
-
-Select * From EsmV2.dbo.AppMenuItems
-Select * From EsmV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\AccountsReceivable%'
-
--- Receivables --> Batch Process Menu Insert [End] 
-
 -- Payroll --> Pay Check Menu Insert [Begin] 
 Declare @DisplayOrderMenu Int
 	, @HirNodeParent Int
@@ -242,7 +226,7 @@ Set @DisplayOrderMenu = 304
 Select @HirNodeParent = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Payroll'
 
 Exec EsmV2.dbo.AppMenuItemUpdate 
-	'Pay Check' --@MenuTitle Varchar(64)
+	'Check Request' --@MenuTitle Varchar(64)
 	, 2 --@MenuAction Int 1-mainmenu, 2-submenu
 	, 4 --@MenuState Int 3-selected, 4-enabled
 	, @DisplayOrderMenu 
@@ -288,6 +272,41 @@ Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrie
 Values(1, 9, @HirNode, 'Write', 'Write', 'Write', @DisplayOrder + 3, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabFinancial\SectionFinancial\BudgetTemplate\Write', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodeWizard', 'TabFinancial', 'SectionFinancial', 'BudgetTemplate', 'Write', 'Compass-USA\Data Conversion', GetDate())
 
 -- Add Read/Write security nodes for BudgetTemplate in House Code [End]
+
+-- Add Read/Write security nodes for BudgetComputerRelatedCharge in House Code [Begin]
+
+Declare @HirNode As Int
+Declare @DisplayOrder Int
+
+Select @DisplayOrder = Max(HirNode) From ESMV2.dbo.HirNodes
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabFinancial\SectionFinancial'
+
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'BudCRCharge', 'BudgetComputerRelatedCharge', 'BudgetComputerRelatedCharge', @DisplayOrder + 1, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabFinancial\SectionFinancial\BudgetComputerRelatedCharge', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodes', 'TabFinancial', 'SectionFinancial', 'BudgetComputerRelatedCharge', 'Compass-USA\Data Conversion', GetDate())
+
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabFinancial\SectionFinancial\BudgetComputerRelatedCharge'
+
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodLevel9, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Read', 'Read', 'Read', @DisplayOrder + 2, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabFinancial\SectionFinancial\BudgetComputerRelatedCharge\Read', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodes', 'TabFinancial', 'SectionFinancial', 'BudgetComputerRelatedCharge', 'Read', 'Compass-USA\Data Conversion', GetDate())
+
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodLevel9, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Write', 'Write', 'Write', @DisplayOrder + 3, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabFinancial\SectionFinancial\BudgetComputerRelatedCharge\Write', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodes', 'TabFinancial', 'SectionFinancial', 'BudgetComputerRelatedCharge', 'Write', 'Compass-USA\Data Conversion', GetDate())
+
+Select @DisplayOrder = Max(HirNode) From ESMV2.dbo.HirNodes
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabFinancial\SectionFinancial'
+
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'BudCRCharge', 'BudgetComputerRelatedCharge', 'BudgetComputerRelatedCharge', @DisplayOrder + 1, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabFinancial\SectionFinancial\BudgetComputerRelatedCharge', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodeWizard', 'TabFinancial', 'SectionFinancial', 'BudgetComputerRelatedCharge', 'Compass-USA\Data Conversion', GetDate())
+
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabFinancial\SectionFinancial\BudgetComputerRelatedCharge'
+
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodLevel9, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Read', 'Read', 'Read', @DisplayOrder + 2, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabFinancial\SectionFinancial\BudgetComputerRelatedCharge\Read', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodeWizard', 'TabFinancial', 'SectionFinancial', 'BudgetComputerRelatedCharge', 'Read', 'Compass-USA\Data Conversion', GetDate())
+
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodLevel9, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Write', 'Write', 'Write', @DisplayOrder + 3, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabFinancial\SectionFinancial\BudgetComputerRelatedCharge\Write', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodeWizard', 'TabFinancial', 'SectionFinancial', 'BudgetComputerRelatedCharge', 'Write', 'Compass-USA\Data Conversion', GetDate())
+
+-- Add Read/Write security nodes for BudgetComputerRelatedCharge in House Code [End]
 
 -- Update the width of the each column [Begin]
 Update dbo.AppModuleColumns Set AppModcWidth = 200
@@ -541,8 +560,8 @@ Update dbo.AppModuleColumns Set AppModcWidth = 200 Where AppModule = 8 And AppMo
 -- Update the width of the each column [End]
 
 -- Job module [Begin]
-Insert Into dbo.AppModules (AppModTitle, AppModDescription, AppModDisplayOrder, AppModActive, AppModModBy, AppModModAt, AppModAssociateModule)
-Values ('Job', 'HcmJobs', 1, 1, 'compass-usa\data conversion', GetDate(), 0)
+Insert Into dbo.AppModules (AppModTitle, AppModDescription, AppModDisplayOrder, AppModActive, AppModModBy, AppModModAt, AppModEditable, AppModAssociateModule)
+Values ('Job', 'HcmJobs', 1, 1, 'compass-usa\data conversion', GetDate(), 1, 0)
 Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
 Values (9, 'HcmJob', 'HcmJob', 0, 1, 'compass-usa\data conversion', GetDate(), 'Int', 0, 'Int', 0, Null, Null, Null, 150, Null, Null)
 Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
@@ -562,9 +581,9 @@ Values (9, 'HcmJobAddress2', 'Address 2', 7, 1, 'compass-usa\data conversion', G
 Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
 Values (9, 'HcmJobPostalCode', 'Postal Code', 8, 1, 'compass-usa\data conversion', GetDate(), 'Varchar', 0, 'Zip', 1, Null, Null, Null, 100, Null, 10)
 Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
-Values (9, 'HcmJobGEOCode', 'GEO Code', 9, 1, 'compass-usa\data conversion', GetDate(), 'Varchar', 0, Null, 1, 'AppZipCodeTypes', Null, Null, 100, Null, 2)
+Values (9, 'HcmJobGEOCode', 'GEO Code', 9, 1, 'compass-usa\data conversion', GetDate(), 'Varchar', 1, Null, 1, 'AppZipCodeTypes', Null, Null, 100, Null, 2)
 Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
-Values (9, 'HcmJobCity', 'City', 10, 1, 'compass-usa\data conversion', GetDate(), 'Varchar', 0, Null, 1, Null, Null, Null, 150, Null, 50)
+Values (9, 'HcmJobCity', 'City', 10, 1, 'compass-usa\data conversion', GetDate(), 'Varchar', 0, Null, 1, Null, 0, Null, 150, Null, 50)
 Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
 Values (9, 'AppStateType', 'State', 11, 1, 'compass-usa\data conversion', GetDate(), 'Int', 0, 'Int', 1, 'AppStateTypes', Null, Null, 150, Null, Null)
 Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
@@ -753,7 +772,7 @@ Update dbo.AppModuleColumns Set AppModcLength = 256 Where AppModule = 8 And AppM
 
 -- Update the length of the column [End]
 
-Update dbo.AppModules Set AppModHouseCodeAssociated = 1 Where AppModule = 8
+Update dbo.AppModules Set AppModHouseCodeAssociated = 1
 Update dbo.AppModules Set AppModHouseCodeAssociated = 0 Where AppModule = 9
 Update dbo.AppModules Set AppModEditable = 1
 Update dbo.AppModules Set AppModEditable = 0 Where AppModule = 7
@@ -787,4 +806,67 @@ Values (8, 'AppUniModBy', 'Mod By', 80, 1, 'compass-usa\data conversion', GetDat
 Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
 Values (8, 'AppUniModAt', 'Mod At', 80, 1, 'compass-usa\data conversion', GetDate(), 'DateTime', 0, 'DateTime', 0, Null, Null, Null, 150, Null, Null)
 
+/*
+CT updated on 27th February 2013 11PM EST
+*/
 
+-- Receivables --> Batch Process Menu Insert [Begin] 
+Declare @DisplayOrderMenu Int
+	, @HirNodeParent Int
+Set @DisplayOrderMenu = 505
+Select @HirNodeParent = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\AccountsReceivable'
+
+Exec EsmV2.dbo.AppMenuItemUpdate 
+	'Batch Process' --@MenuTitle Varchar(64)
+	, 2 --@MenuAction Int 1-mainmenu, 2-submenu
+	, 4 --@MenuState Int 3-selected, 4-enabled
+	, @DisplayOrderMenu 
+	,'/fin/rev/batchProcess/usr/markup.htm'
+	, @HirNodeParent
+
+Select * From EsmV2.dbo.AppMenuItems
+Select * From EsmV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\AccountsReceivable%'
+
+-- Receivables --> Batch Process Menu Insert [End] 
+
+-- Add Read/Write security nodes for BudgetTemplate in House Code [Begin]
+
+Declare @HirNode As Int
+Declare @DisplayOrder Int
+
+Select @DisplayOrder = Max(HirNode) From ESMV2.dbo.HirNodes
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabFinancial\SectionFinancial'
+
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'BudgetLCMethod', 'BudgetLaborCalcMethod', 'BudgetLaborCalcMethod', @DisplayOrder + 1, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabFinancial\SectionFinancial\BudgetLaborCalcMethod', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodes', 'TabFinancial', 'SectionFinancial', 'BudgetLaborCalcMethod', 'Compass-USA\Data Conversion', GetDate())
+
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabFinancial\SectionFinancial\BudgetLaborCalcMethod'
+
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodLevel9, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Read', 'Read', 'Read', @DisplayOrder + 2, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabFinancial\SectionFinancial\BudgetLaborCalcMethod\Read', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodes', 'TabFinancial', 'SectionFinancial', 'BudgetLaborCalcMethod', 'Read', 'Compass-USA\Data Conversion', GetDate())
+
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodLevel9, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Write', 'Write', 'Write', @DisplayOrder + 3, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabFinancial\SectionFinancial\BudgetLaborCalcMethod\Write', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodes', 'TabFinancial', 'SectionFinancial', 'BudgetLaborCalcMethod', 'Write', 'Compass-USA\Data Conversion', GetDate())
+
+Select @DisplayOrder = Max(HirNode) From ESMV2.dbo.HirNodes
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabFinancial\SectionFinancial'
+
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'BudgetLCMethod', 'BudgetLaborCalcMethod', 'BudgetLaborCalcMethod', @DisplayOrder + 1, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabFinancial\SectionFinancial\BudgetLaborCalcMethod', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodeWizard', 'TabFinancial', 'SectionFinancial', 'BudgetLaborCalcMethod', 'Compass-USA\Data Conversion', GetDate())
+
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabFinancial\SectionFinancial\BudgetLaborCalcMethod'
+
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodLevel9, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Read', 'Read', 'Read', @DisplayOrder + 2, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabFinancial\SectionFinancial\BudgetLaborCalcMethod\Read', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodeWizard', 'TabFinancial', 'SectionFinancial', 'BudgetLaborCalcMethod', 'Read', 'Compass-USA\Data Conversion', GetDate())
+
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodLevel9, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Write', 'Write', 'Write', @DisplayOrder + 3, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabFinancial\SectionFinancial\BudgetLaborCalcMethod\Write', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodeWizard', 'TabFinancial', 'SectionFinancial', 'BudgetLaborCalcMethod', 'Write', 'Compass-USA\Data Conversion', GetDate())
+
+-- Add Read/Write security nodes for BudgetTemplate in House Code [End]
+
+Insert Into dbo.RevInvoiceAddressTypes(RevInvatBrief, RevInvatTitle, RevInvatDescription, RevInvatDisplayOrder, RevInvatActive, RevInvatModBy, RevInvatModAt)
+Values ('No Remit To', 'No Remit To', 'No Remit To', 1, 1, 'Compass-USA\Data Conversion', GetDate())
+Insert Into dbo.RevInvoiceAddressTypes(RevInvatBrief, RevInvatTitle, RevInvatDescription, RevInvatDisplayOrder, RevInvatActive, RevInvatModBy, RevInvatModAt)
+Values ('No Inquires', 'No Inquires', 'No Inquires', 2, 1, 'Compass-USA\Data Conversion', GetDate())
+Insert Into dbo.RevInvoiceAddressTypes(RevInvatBrief, RevInvatTitle, RevInvatDescription, RevInvatDisplayOrder, RevInvatActive, RevInvatModBy, RevInvatModAt)
+Values ('NoRemitToAndInqu', 'No Remit To and Inquires', 'No Remit To and Inquires', 3, 1, 'Compass-USA\Data Conversion', GetDate())
