@@ -24,6 +24,7 @@ ii.Class({
 			var pos = searchString.indexOf("=");
 			
 			me.invoiceLogoTypes = [];
+			me.invoiceAddressTypes = [];
 			me.invoiceId = searchString.substring(pos + 1);
 			me.houseCode = 0;
 				
@@ -63,7 +64,7 @@ ii.Class({
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			
 			me.taxExemptsLoaded();
-			me.invoiceLogoTypesLoaded();
+			me.loadInvoiceTypes();
 			
 			me.invoiceBillToStore.fetch("userId:[user],houseCode:" + me.houseCode, me.invoiceBillTosLoaded, me);
 			me.stateTypeStore.fetch("userId:[user],", me.statesLoaded, me);
@@ -305,6 +306,12 @@ ii.Class({
 				formatFunction: function( type ) { return type.name; },
 		        required: false
 		    });
+			
+			me.invoiceAddress = new ui.ctl.Input.DropDown.Filtered({
+		        id: "InvoiceAddress",
+				formatFunction: function( type ) { return type.title; },
+		        required: false
+		    });
 
 			me.notes = $("#Notes")[0];
 
@@ -353,7 +360,8 @@ ii.Class({
 			me.localTax.text.tabIndex = 15;
 			me.poNumber.text.tabIndex = 16;
 			me.invoiceLogo.text.tabIndex = 17;
-			me.notes.tabIndex = 18;
+			me.invoiceAddress.text.tabIndex = 18;
+			me.notes.tabIndex = 19;
 		},
 		
 		resizeControls: function() {
@@ -378,6 +386,7 @@ ii.Class({
 			me.localTax.resizeText();
 			me.poNumber.resizeText();
 			me.invoiceLogo.resizeText();
+			me.invoiceAddress.resizeText();
 			me.resize();
 		},
 		
@@ -456,15 +465,21 @@ ii.Class({
 			}
 		},
 
-		invoiceLogoTypesLoaded: function() {
+		loadInvoiceTypes: function() {
 			var me = this;
 
 			for (var index = 0; index < parent.fin.revMasterUi.invoiceLogoTypes.length; index++) {
 				var invoiceLogoType = parent.fin.revMasterUi.invoiceLogoTypes[index];
 				me.invoiceLogoTypes.push(new fin.rev.invoiceInfo.InvoiceLogoType(invoiceLogoType.id, invoiceLogoType.name));
 			}
+			
+			for (var index = 0; index < parent.fin.revMasterUi.invoiceAddressTypes.length; index++) {
+				var invoiceAddressType = parent.fin.revMasterUi.invoiceAddressTypes[index];
+				me.invoiceAddressTypes.push(new fin.rev.invoiceInfo.InvoiceAddressType(invoiceAddressType.id, invoiceAddressType.title));
+			}
 
 			me.invoiceLogo.setData(me.invoiceLogoTypes);
+			me.invoiceAddress.setData(me.invoiceAddressTypes);
 		},
 
 		statesLoaded: function(me, activeId) {
@@ -519,7 +534,7 @@ ii.Class({
 						
 			me.billTo.setData(me.invoiceBillTos);						
 		},
-		
+
 		billToChanged: function() {
 			var me = this;
 			var index = 0;
@@ -544,9 +559,9 @@ ii.Class({
 				me.address2.setValue(me.invoiceBillTos[index].address2);
 				me.city.setValue(me.invoiceBillTos[index].city);
 				me.zip.setValue(me.invoiceBillTos[index].postalCode);
-				
+
 				itemIndex = ii.ajax.util.findIndexById(me.invoiceBillTos[index].stateType.toString(), me.stateTypes);
-				if (itemIndex >= 0 && index != undefined)
+				if (itemIndex != undefined && itemIndex >= 0)
 					me.state.select(itemIndex, me.state.focused);
 			}
 			else {
@@ -601,6 +616,12 @@ ii.Class({
 				me.invoiceLogo.select(index, me.invoiceLogo.focused);
 			else
 				me.invoiceLogo.reset();
+				
+			index = ii.ajax.util.findIndexById(me.invoice.invoiceAddressType.toString(), me.invoiceAddressTypes);
+			if (index >= 0 && index != undefined)
+				me.invoiceAddress.select(index, me.invoiceAddress.focused);
+			else
+				me.invoiceAddress.reset();
 
 			me.notes.value = me.invoice.notes;
 			me.stateTax.text.readOnly = true;
@@ -630,6 +651,8 @@ ii.Class({
 				me.poNumber.text.readOnly = true;
 				me.invoiceLogo.text.readOnly = true;
 				$("#InvoiceLogoAction").removeClass("iiInputAction");
+				me.invoiceAddress.text.readOnly = true;
+				$("#InvoiceAddressAction").removeClass("iiInputAction");
 				me.notes.readOnly = true;
 				$("#anchorAlign").hide();				
 			}
@@ -656,6 +679,7 @@ ii.Class({
 			me.localTax.setValue("");
 			me.poNumber.setValue("");
 			me.invoiceLogo.reset();
+			me.invoiceAddress.reset();
 			me.notes.value = "";
 		},
 		

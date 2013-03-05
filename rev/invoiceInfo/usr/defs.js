@@ -19,6 +19,11 @@ ii.init.register( function() {
 		, name: {type: String}
 	};
 	
+	fin.rev.invoiceInfo.invoiceAddressTypeArgs = {
+		id: {type: Number}
+		, title: {type: String}
+	};
+	
 	fin.rev.invoiceInfo.invoiceBillToArgs = {
 		id: {type: Number}
 		, billTo: {type: String, required: false, defaultValue: ""}
@@ -58,6 +63,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.rev.invoiceInfo.invoiceLogoTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rev.invoiceInfo.InvoiceAddressType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rev.invoiceInfo.invoiceAddressTypeArgs);
 			$.extend(this, args);
 		}
 	}

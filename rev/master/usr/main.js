@@ -110,6 +110,7 @@ ii.Class({
 			
 			me.weekPeriodYearStore.fetch("userId:[user],", me.weekPeriodYearsLoaded, me);
 			me.invoiceLogoTypeStore.fetch("userId:[user]", me.invoiceLogoTypesLoaded, me);
+			me.invoiceAddressTypeStore.fetch("userId:[user]", me.invoiceAddressTypesLoaded, me);
 
             $("#TabCollection a").click(function() {
 
@@ -439,6 +440,12 @@ ii.Class({
 				formatFunction: function( type ) { return type.name; },
 		        required: false
 		    });
+			
+			me.invoiceAddress = new ui.ctl.Input.DropDown.Filtered({
+		        id: "InvoiceAddress",
+				formatFunction: function( type ) { return type.title; },
+		        required: false
+		    });
 
 			me.notes = $("#Notes")[0];
 
@@ -664,7 +671,8 @@ ii.Class({
             me.localTax.text.tabIndex = 15;
             me.poNumber.text.tabIndex = 16;
 			me.invoiceLogo.text.tabIndex = 17;
-			me.notes.tabIndex = 18;
+			me.invoiceAddress.text.tabIndex = 18;
+			me.notes.tabIndex = 19;
         },
 
         configureCommunications: function fin_rev_UserInterface_configureCommunications() {
@@ -773,6 +781,14 @@ ii.Class({
 				itemConstructor: fin.rev.master.InvoiceLogoType,
 				itemConstructorArgs: fin.rev.master.invoiceLogoTypeArgs,
 				injectionArray: me.invoiceLogoTypes
+			});
+			
+			me.invoiceAddressTypes = [];
+			me.invoiceAddressTypeStore = me.cache.register({
+				storeId: "revInvoiceAddressTypes",
+				itemConstructor: fin.rev.master.InvoiceAddressType,
+				itemConstructorArgs: fin.rev.master.invoiceAddressTypeArgs,
+				injectionArray: me.invoiceAddressTypes
 			});
         },
 
@@ -1292,6 +1308,12 @@ ii.Class({
  
  			me.invoiceLogo.setData(me.invoiceLogoTypes);
         },
+		
+		invoiceAddressTypesLoaded: function(me, activeId) {
+ 
+ 			me.invoiceAddressTypes.unshift(new fin.rev.master.InvoiceAddressType({ id: 0, title: "ALL" }));
+ 			me.invoiceAddress.setData(me.invoiceAddressTypes);
+        },
 				
 		actionSearchItem: function() {
 			var args = ii.args(arguments, {
@@ -1562,6 +1584,7 @@ ii.Class({
 					, localTax: me.localTax.getValue().toString()
 					, poNumber: me.poNumber.getValue()
 					, invoiceLogoType: (me.invoiceLogo.indexSelected >= 0 ? me.invoiceLogoTypes[me.invoiceLogo.indexSelected].id : 0)
+					, invoiceAddressType: (me.invoiceAddress.indexSelected >= 0 ? me.invoiceAddressTypes[me.invoiceAddress.indexSelected].id : 0)
 					, notes: me.notes.value
 					, version: 1
 					, active: true
@@ -1600,6 +1623,7 @@ ii.Class({
 					, localTax: invoiceInfoUIControls.localTax.getValue().toString()
 					, poNumber: invoiceInfoUIControls.poNumber.getValue()
 					, invoiceLogoType: (invoiceInfoUIControls.invoiceLogo.indexSelected >= 0 ? invoiceInfoUIControls.invoiceLogoTypes[invoiceInfoUIControls.invoiceLogo.indexSelected].id : 0)
+					, invoiceAddressType: (invoiceInfoUIControls.invoiceAddress.indexSelected >= 0 ? invoiceInfoUIControls.invoiceAddressTypes[invoiceInfoUIControls.invoiceAddress.indexSelected].id : 0)
 					, notes: invoiceInfoUIControls.notes.value
 					, version: me.invoices[me.lastSelectedRowIndex].version
 					, active: true
@@ -1721,6 +1745,7 @@ ii.Class({
             xml += ' localTax="' + args.item.localTax + '"';
             xml += ' poNumber="' + ui.cmn.text.xml.encode(args.item.poNumber) + '"';
 			xml += ' invoiceLogoType="' + args.item.invoiceLogoType + '"';
+			xml += ' invoiceAddressType="' + args.item.invoiceAddressType + '"';
 			xml += ' notes="' + ui.cmn.text.xml.encode(args.item.notes) + '"';
             xml += ' version="' + args.item.version + '"';
             xml += ' validate="' + me.validate + '"';

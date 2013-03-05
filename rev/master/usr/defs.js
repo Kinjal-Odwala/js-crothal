@@ -69,6 +69,7 @@ ii.init.register( function() {
 		, localTax: {type: String, required: false, defaultValue: ""}
 		, poNumber: {type: String, required: false, defaultValue: ""}
 		, invoiceLogoType: {type: Number, required: false, defaultValue: 0}
+		, invoiceAddressType: {type: Number, required: false, defaultValue: 0}
 		, notes: {type: String, required: false, defaultValue: ""}
 		, version: { type: Number, required: false, defaultValue: 0 }
 		, creditMemoPrintable: { type: Boolean, required: false, defaultValue: false }
@@ -133,6 +134,11 @@ ii.init.register( function() {
 	fin.rev.master.invoiceLogoTypeArgs = {
 		id: {type: Number}
 		, name: {type: String}
+	};
+	
+	fin.rev.master.invoiceAddressTypeArgs = {
+		id: {type: Number}
+		, title: {type: String}
 	};
 	
 }, 2);
@@ -273,6 +279,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.rev.master.invoiceLogoTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rev.master.InvoiceAddressType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rev.master.invoiceAddressTypeArgs);
 			$.extend(this, args);
 		}
 	}
