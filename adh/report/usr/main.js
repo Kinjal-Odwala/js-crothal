@@ -845,16 +845,8 @@ ii.Class({
 				itemConstructorArgs: fin.adh.userRoleArgs,
 				injectionArray: me.userRoles
 			});
-			
-			// Invoice Types
-			me.invoiceBillTos = [];
-            me.invoiceBillToStore = me.cache.register({
-                storeId: "revInvoiceBillTos",
-                itemConstructor: fin.adh.InvoiceBillTo,
-                itemConstructorArgs: fin.adh.invoiceBillToArgs,
-                injectionArray: me.invoiceBillTos
-            });
-			
+
+			// Invoice Types			
 			me.transactionStatusTypes = [];
 			me.transactionStatusTypeStore = me.cache.register({
 				storeId: "appTransactionStatusTypes",
@@ -862,7 +854,23 @@ ii.Class({
 				itemConstructorArgs: fin.adh.transactionStatusTypeArgs,
 				injectionArray: me.transactionStatusTypes	
 			});
-			
+
+			me.invoiceAddressTypes = [];
+			me.invoiceAddressTypeStore = me.cache.register({
+				storeId: "revInvoiceAddressTypes",
+				itemConstructor: fin.adh.InvoiceAddressType,
+				itemConstructorArgs: fin.adh.invoiceAddressTypeArgs,
+				injectionArray: me.invoiceAddressTypes
+			});
+
+			me.invoiceBillTos = [];
+            me.invoiceBillToStore = me.cache.register({
+                storeId: "revInvoiceBillTos",
+                itemConstructor: fin.adh.InvoiceBillTo,
+                itemConstructorArgs: fin.adh.invoiceBillToArgs,
+                injectionArray: me.invoiceBillTos
+            });
+
 			//Job
 			me.jobTypes = [];
 			me.jobTypeStore = me.cache.register({
@@ -1162,6 +1170,7 @@ ii.Class({
 							
 						case "House Code":
 							me.typesLoadedCount = 4;
+							me.invoiceLogoTypeStore.reset();
 							me.serviceTypeStore.fetch("userId:[user],", me.typesLoaded, me);
 							me.contractTypeStore.fetch("userId:[user]", me.typesLoaded, me);
 							me.payPayrollCompanyStore.fetch("userId:[user]", me.typesLoaded, me);
@@ -1175,7 +1184,7 @@ ii.Class({
 							break;
 							
 						case "Employee":
-							me.typesLoadedCount = 12;
+							me.typesLoadedCount = 12;							
 							me.localTaxCodeStore.fetch("payrollCompany:0,appState:0,userId:[user]", me.typesLoaded, me);
 							me.maritalStatusStateTaxTypeSecondaryStore.fetch("appState:0,userId:[user]", me.typesLoaded, me);
 							me.statusTypeStore.fetch("userId:[user],personId:0", me.typesLoaded, me);
@@ -1192,13 +1201,16 @@ ii.Class({
 							break;
 							
 						case "Invoice":
-							me.typesLoadedCount = 2;
+							me.typesLoadedCount = 3;
+							me.invoiceLogoTypeStore.reset();
 							me.transactionStatusTypeStore.fetch("userId:[user]", me.typesLoaded, me);
-							me.invoiceTemplateStore.fetch("userId:[user]", me.typesLoaded, me);
+							me.invoiceLogoTypeStore.fetch("userId:[user]", me.typesLoaded, me);
+							me.invoiceAddressTypeStore.fetch("userId:[user]", me.typesLoaded, me);
 							break;
 							
 						case "Job":
-							me.typesLoadedCount = 1;
+							me.typesLoadedCount = 2;
+							me.invoiceTemplateStore.fetch("userId:[user]", me.typesLoaded, me);
 							me.jobTypeStore.fetch("userId:[user],", me.typesLoaded, me);
 							break;
 					}
@@ -3097,17 +3109,26 @@ ii.Class({
 				me.typeNoneAdd(me.transactionStatusTypes);
 				typeTable = me.transactionStatusTypes;
 			}
-			else if (args.typeTable == "HcmJobTypes") {
-				me.hcmJobTypes = [];
-
-				for (var index = 0; index < me.jobTypes.length; index++) {
-					if (me.jobTypes[index].id != 4) {
-						var item = new fin.adh.HcmJobType({ id: me.jobTypes[index].id, name:me.jobTypes[index].name });
-						me.hcmJobTypes.push(item);
-					}
+			else if (args.typeTable == "RevInvoiceAddressTypes") {
+				var found = false;
+				for (var index = 0; index < me.invoiceAddressTypes.length; index++) {
+					if (me.invoiceAddressTypes[index].title == "ALL") {
+						found = true;
+						break;
+					}						
 				}
-				me.typeNoneAdd(me.hcmJobTypes);
-				typeTable = me.hcmJobTypes;
+				if (!found)
+					me.invoiceAddressTypes.unshift(new fin.adh.InvoiceAddressType({ id: 0, title: "ALL" }));
+				me.typeNoneAdd(me.invoiceAddressTypes);
+				typeTable = me.invoiceAddressTypes;
+			}
+			else if (args.typeTable == "HcmJobTypes") {
+				for (var index = 0; index < me.jobTypes.length; index++) {
+					if (me.jobTypes[index].name == "Epay Site")
+						me.jobTypes.splice(index, 1);
+				}
+				me.typeNoneAdd(me.jobTypes);
+				typeTable = me.jobTypes;
 			}
 			else if (args.typeTable == "RevInvoiceTemplates") {
 				me.typeNoneAdd(me.invoiceTemplates);

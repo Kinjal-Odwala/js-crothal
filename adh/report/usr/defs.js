@@ -431,6 +431,16 @@ ii.init.register( function() {
 		, roleCurrent: {type: Boolean, required: false, defaultValue: false}
 	}
 	
+	fin.adh.transactionStatusTypeArgs = {
+		id: {type: Number}
+		, title: {type: String}
+	};
+
+	fin.adh.invoiceAddressTypeArgs = {
+		id: {type: Number}
+		, title: {type: String}
+	};
+	
 	fin.adh.invoiceBillToArgs = {
 		id: {type: Number}
 		, billTo: {type: String, required: false, defaultValue: ""}
@@ -442,12 +452,7 @@ ii.init.register( function() {
 		, postalCode: {type: String, required: false, defaultValue: ""}
 		, taxId: {type: String, required: false, defaultValue: "0"}
 	};
-	
-	fin.adh.transactionStatusTypeArgs = {
-		id: {type: Number}
-		, title: {type: String}
-	};
-	
+
 	fin.adh.jobTypeArgs = {
 		id: {type: Number}
 		, name: {type: String}
@@ -1171,20 +1176,30 @@ ii.Class({
 });
 
 ii.Class({
-	Name: "fin.adh.InvoiceBillTo",
+	Name: "fin.adh.TransactionStatusType",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.adh.invoiceBillToArgs);
+			var args = ii.args(arguments, fin.adh.transactionStatusTypeArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.adh.TransactionStatusType",
+	Name: "fin.adh.InvoiceAddressType",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.adh.transactionStatusTypeArgs);
+			var args = ii.args(arguments, fin.adh.invoiceAddressTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.adh.InvoiceBillTo",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.invoiceBillToArgs);
 			$.extend(this, args);
 		}
 	}
