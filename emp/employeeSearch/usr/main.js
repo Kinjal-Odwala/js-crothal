@@ -997,9 +997,9 @@ ii.Class({
 						message = 'Please enter valid date.';
 					}
 					
-					var hireDate = new Date(me.employeeHireDateValue);
 					var terminationDate;
-					var currentDate = new Date();
+					var hireDate = new Date(me.employeeHireDateValue);
+					var currentDate = new Date(parent.fin.appUI.glbCurrentDate);
 					
 					if (me.employeeTerminationDate.text.value != '') {
 						
@@ -1086,28 +1086,28 @@ ii.Class({
 				.addValidation( function( isFinal, dataMap ) {					
 
 					var enteredText = me.employeeBirthDate.text.value;
-					
-					if (enteredText == '') return;
-											
-					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
+
+					if (enteredText == "") return;
+
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$"))) {
 						this.setInvalid("Please enter valid date.");
 						return;
 					}
 
-					var today = new Date();
-					var birthDate = new Date(me.employeeBirthDate.text.value);					
-					var aDayInMiliSecond = 1000 * 60 * 60 * 24;
+					var today = new Date(parent.fin.appUI.glbCurrentDate);
+					var birthDate = new Date(enteredText);
+					var millisecondsPerYear = 1000 * 60 * 60 * 24 * 365.26;
 
-					if ((today - birthDate)/(aDayInMiliSecond * 365) < 18) 
+					if (((today - birthDate) / millisecondsPerYear) < 18)
 						this.setInvalid("Please enter valid date. Employee is not eligible to hire.");
 				});
-			
+
 			me.employeeEthnicity = new ui.ctl.Input.DropDown.Filtered({
 				id: "EmployeeEthnicity", 
 				formatFunction: function( type ) { return type.name; },
 				required: false
 		    });
-			
+
 			me.employeeEthnicity.makeEnterTab()
 				.setValidationMaster( me.validator )
 				.addValidation( ui.ctl.Input.Validation.required )
@@ -1301,13 +1301,13 @@ ii.Class({
 							this.setInvalid("The Compensation Effective Date cannot be before the most recent hire date.");
 					}
 				});			
-			
+
 			me.employeeRateChangeReason = new ui.ctl.Input.DropDown.Filtered({
 				id : "EmployeeRateChangeReason", 
 				formatFunction: function( type ) { return type.name; },
 				required : false
 		    });	
-				
+
 			me.employeePayRate = new ui.ctl.Input.Text({
 		        id: "EmployeePayRate",
 				changeFunction: function() { me.payRateChanged(); },
@@ -2742,7 +2742,7 @@ ii.Class({
 		},
 		
 		currentDate: function() {
-			var currentTime = new Date();
+			var currentTime = new Date(parent.fin.appUI.glbCurrentDate);
 			var month = currentTime.getMonth() + 1;
 			var day = currentTime.getDate();
 			var year = currentTime.getFullYear();
@@ -4346,8 +4346,7 @@ ii.Class({
 		isEmployeeNewhired: function() {
 			var me = this;
 			
-			return (me.jobChangeReason.text.value.toLowerCase() == 'new hire'
-				&& me.employeeGeneralId == 0)
+			return (me.jobChangeReason.text.value.toLowerCase() == 'new hire' && me.employeeGeneralId == 0)
 		},
 
 		isEmployeeRehired: function() {
