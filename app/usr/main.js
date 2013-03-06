@@ -72,19 +72,19 @@ ii.Class({
 			me.weekPeriodYearStore.fetch("userId:[user],", me.weekPeriodYearLoaded, me);
 		},
 		
-		weekPeriodYearLoaded: function fin_app_UserInterface_weekPeriodYearLoaded(me, activeId){
+		weekPeriodYearLoaded: function fin_app_UserInterface_weekPeriodYearLoaded(me, activeId) {
 			
-			if(me.weekPeriodYears.length > 0){
-				
+			if (me.weekPeriodYears.length > 0) {
 				me.glbWeek = me.weekPeriodYears[0].week;
 				me.glbFscPeriod = me.weekPeriodYears[0].periodId;
 				me.glbPeriod = me.weekPeriodYears[0].period;
 				me.glbFscYear = me.weekPeriodYears[0].yearId;
 				me.glbfiscalYear = me.weekPeriodYears[0].fiscalYear;
+				me.glbCurrentDate = me.weekPeriodYears[0].currentDate;
 			}
 		},
 		
-		userRolesLoaded: function fin_app_UserInterface_userRolesLoaded(me, activeId){
+		userRolesLoaded: function fin_app_UserInterface_userRolesLoaded(me, activeId) {
 						
 			var userRole, appUserRoleId, appUserRoleTitle;
 			var userRoleMenuXml = "<div id='iiMenuVertical'>";
