@@ -364,7 +364,7 @@ ii.Class({
 			var houseCodeJobChanged = false;
 			var houseCode = 0;
 			var houseCodeJob = 0;
-			var itemIndex = 0;
+			var itemIndex = -1;
 			var displayOrderSet = false;
 
 			if (me.invoiceItems.length > 0) {
@@ -399,8 +399,11 @@ ii.Class({
 	
 					if (houseCodeJobChanged) {
 						houseCodeJobChanged = false;
-						rowNumber++;
-						rowHtml += me.getItemGridRow(rowNumber, itemIndex);
+						if (itemIndex != -1) {
+							rowNumber++;
+							rowHtml += me.getItemGridRow(rowNumber, itemIndex);
+							itemIndex = -1;
+						}
 					}
 	
 					if (me.invoiceItems[index].account == 120) {
@@ -417,8 +420,10 @@ ii.Class({
 				}
 	
 				if (me.invoiceItems.length > 0) {
-					rowNumber++;
-					rowHtml += me.getItemGridRow(rowNumber, itemIndex);
+					if (itemIndex != -1) {
+						rowNumber++;
+						rowHtml += me.getItemGridRow(rowNumber, itemIndex);
+					}
 				}
 			}
 
