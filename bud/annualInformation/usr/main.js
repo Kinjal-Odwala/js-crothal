@@ -96,11 +96,11 @@ ii.Class({
 				$("#contentAreasContainerRight").height($(window).height() - offset);
 				
 				if (ii.browser.ie) {
-					$("#AccountCodesText").height($(window).height() - 455);
+					$("#AccountCodesText").height($(window).height() - 480);
 					me.accountGrid.setHeight($(window).height() - 212);
 				}					
 				else {
-					$("#AccountCodesText").height($(window).height() - 460);
+					$("#AccountCodesText").height($(window).height() - 485);
 					me.accountGrid.setHeight($(window).height() - 217);
 				}					
 
@@ -232,11 +232,20 @@ ii.Class({
 		        id: "ComputerRelatedChargeOverhead"
 				, statusLeft: false
 		    });
-			
+
 			me.computerRelatedChargeOverhead.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
-				
+
+			me.retailVacationAccuralPercent = new ui.ctl.Input.Money({
+		        id: "RetailVacationAccuralPercent"
+				, statusLeft: false
+		    });
+
+			me.retailVacationAccuralPercent.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+
 			me.accountCodes = new ui.ctl.Input.Text({
 		        id: "AccountCodes",
 				maxLength: 255,
@@ -299,6 +308,7 @@ ii.Class({
 			me.supplySurchargeRate.resizeText();
 			me.computerRelatedChargeUnit.resizeText();
 			me.computerRelatedChargeOverhead.resizeText();
+			me.retailVacationAccuralPercent.resizeText();
 			me.accountCodes.resizeText();
 			me.resize();
 		},
@@ -443,6 +453,7 @@ ii.Class({
 				me.supplySurchargeRate.setValue(me.annualInformations[0].supplySurchargeRate);
 				me.computerRelatedChargeUnit.setValue(me.annualInformations[0].computerRelatedChargeUnit);
 				me.computerRelatedChargeOverhead.setValue(me.annualInformations[0].computerRelatedChargeOverhead);
+				me.retailVacationAccuralPercent.setValue(me.annualInformations[0].retailVacationAccuralPercent);
 				me.accountCodes.setValue(me.annualInformations[0].genLiabilityAccCodes);
 				me.announcement.value = me.annualInformations[0].announcement;
 
@@ -463,6 +474,7 @@ ii.Class({
 				me.supplySurchargeRate.setValue("");
 				me.computerRelatedChargeUnit.setValue("");
 				me.computerRelatedChargeOverhead.setValue("");
+				me.retailVacationAccuralPercent.setValue("");
 				me.accountCodes.setValue("");
 				me.announcement.value = "";				
 
@@ -530,6 +542,7 @@ ii.Class({
 				, me.supplySurchargeRate.getValue().toString()
 				, me.computerRelatedChargeUnit.getValue().toString()
 				, me.computerRelatedChargeOverhead.getValue().toString()
+				, me.retailVacationAccuralPercent.getValue().toString()
 				, me.announcement.value
 				);
 				
@@ -567,6 +580,7 @@ ii.Class({
 			xml += ' supplySurchargeRate="' + item.supplySurchargeRate + '"';
 			xml += ' computerRelatedChargeUnit="' + item.computerRelatedChargeUnit + '"';
 			xml += ' computerRelatedChargeOverhead="' + item.computerRelatedChargeOverhead + '"';
+			xml += ' retailVacationAccuralPercent="' + item.retailVacationAccuralPercent + '"';
 			xml += ' announcement="' + ui.cmn.text.xml.encode(item.announcement) + '"';
 			xml += '/>';
 
