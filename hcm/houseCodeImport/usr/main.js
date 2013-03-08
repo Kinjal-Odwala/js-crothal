@@ -690,7 +690,7 @@ ii.Class({
 				$("#txtSpecifyGPO" + index).val(me.houseCodes[index].column33);
 				me.setDropDownValue(me.ownershipTypes, me.houseCodes[index].column34, "OwnershipType", index);
 				me.setDropDownValue(me.jdeCompanys, me.houseCodes[index].column35, "JDECompany", index);
-				$("#txtStartDate" + index).val(me.houseCodes[index].column36);
+				$("#txtStartDate" + index).val(me.stripTimeStamp(me.houseCodes[index].column36));
 				me.setDropDownValue(me.serviceTypes, me.houseCodes[index].column37, "ServiceType", index);
 				if (me.houseCodes[index].column38 == "1")
 					$("#chkEnforceLaborControl" + index)[0].checked = true;
@@ -762,7 +762,20 @@ ii.Class({
 			
 			$("#pageLoading").hide();
 		},
-		
+
+		stripTimeStamp: function(date) {
+			var me = this;
+			var index = 0;
+
+			date = jQuery.trim(date);
+			index = date.indexOf(" ");
+
+            if (index > 0)
+                date = date.substring(0, index);
+
+            return date;
+		},
+
 		findIndexByTitle: function() {
 			var args = ii.args(arguments, {
 				title: {type: String},	// The title to use to find the object.
