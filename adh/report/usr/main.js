@@ -1723,20 +1723,21 @@ ii.Class({
 							if (argscolumn == "RevInvTaxExempt")
 								rowData = "<td class='" + className + "' align='center' style='" + style + "'><input type='checkbox' onChange=fin.reportUi.taxExemptChange(\'" + pkId + "\',\'" + houseCodeId + "\'); name='" + argName + "' id='" + argName + "' value='" + dataValue + "'" + (dataValue == "1" ? checked='checked' : '') + "></input></td>";
 							else if (argscolumn == "HcmJobPostalCode")
-								rowData = "<td class='" + className + "' style='" + style + "'><input type='text' style='width:" + columnWidth + "px;' onblur=fin.reportUi.postalCodeChange(this);fin.reportUi.dataValidation(\'" + fin.reportUi.columnValidation + "\',\'" + argName + "\'); id='" + argName + "' value='" + dataValue + "' maxlength='" + columnLength + "'></input></td>";
+								rowData = "<td class='" + className + "' style='" + style + "'><input type='text' style='width:" + columnWidth + "px;' onblur=fin.reportUi.postalCodeChange(this); fin.reportUi.dataValidation(\'" + fin.reportUi.columnValidation + "\', \'" + argName + "\'); id='" + argName + "' value='" + dataValue + "' maxlength='" + columnLength + "'></input></td>";
 							else if (me.columnValidation.toLowerCase() == "bit")
 								rowData = "<td class='" + className + "' align='center' style='" + style + "'><input type='checkbox' name='" + argName + "' id='" + argName + "' value='" + dataValue + "'" + (dataValue == "1" ? checked='checked' : '') + "></input></td>";
 							else
-								rowData = "<td class='" + className + "' style='" + style + "'><input type='text' style='width:" + columnWidth + "px;' onblur=fin.reportUi.dataValidation(\'" + fin.reportUi.columnValidation + "\',\'" + argName + "\'); id='" + argName + "' value='" + dataValue + "' maxlength='" + columnLength + "'></input></td>";
+								rowData = "<td class='" + className + "' style='" + style + "'><input type='text' style='width:" + columnWidth + "px;' onblur='fin.reportUi.dataValidation(\"" + fin.reportUi.columnValidation + "\", \"" + argName + "\");' id='" + argName + "' value=\"" + dataValue + "\" maxlength='" + columnLength + "'></input></td>";
 							break;
+
 						case 2: //Hidden
 							rowData += "<td class='gridColumnHidden' align='left' style='" + style + "'>&nbsp;</td>";
 							break;
-							
+
 						case 3: //ReadOnly
 							rowData += "<td class='" + className + "' align='left' style='" + style + "'>" + dataValue + "</td>";
 							break;
-							
+
 						default: 
 							if (argscolumn == "AppSite")
 								rowData += "<td class='gridColumnHidden' align='left'><input type='text' id='" + argName + "' value='" + dataValue + "'></input></td>";	
@@ -3160,7 +3161,7 @@ ii.Class({
 				
 			if (!me.isSpecialCharacter(dataValue)) {
 				valid = false;
-				message = "Please do not enter Special Character like |#";
+				message = "The special characters \" | # are not allowed.";
 			}
 			else if (args.controlValidation.toLowerCase() == "datetime") {			
 				if (!me.isDate(dataValue)) {
@@ -3218,7 +3219,7 @@ ii.Class({
 				argValue: {type: String}
 			});
 
-			if (/^[^\|\#]+$/.test(args.argValue))
+			if (/^[^\|\#\"]+$/.test(args.argValue))
 				return true;
 			else
 				return false;
@@ -3574,20 +3575,23 @@ ii.Class({
 											if (columnValidation == "phone")
 												rowData += '|' + column + '=' + '"' + fin.cmn.text.mask.phone(data, true) + '"';
 											else
-												rowData += '|' + column + '=' + '"' + ui.cmn.text.xml.encode(data) + '"';
+												rowData += '|' + column + '=' + '"' + data + '"';
 										}
 									}
 								}
 								else if (row[0].cells[colIndex].firstChild.type == "checkbox") {
 									data = row[0].cells[colIndex].firstChild.checked;
-									rowData += '|' + column + '=' + '"' + data + '"';
+									if (column == "HcmHoucEPayTask")
+										rowData += '|' + column + '=' + '"' + (row[0].cells[colIndex].firstChild.checked ? 1 : 0) + '"';
+									else
+										rowData += '|' + column + '=' + '"' + data + '"';
 								}
 								else if (row[0].cells[colIndex].firstChild.type == "select-one") {
 									data = row[0].cells[colIndex].firstChild.value;
 									if (data == "" || data == "0")
 										rowData += '|' + column + '=Null';
 									else
-										rowData += '|' + column + '=' + '"' + ui.cmn.text.xml.encode(data) + '"';
+										rowData += '|' + column + '=' + '"' + data + '"';
 								}
 							}
 						}
