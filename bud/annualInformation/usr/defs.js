@@ -40,7 +40,7 @@ ii.init.register( function(){
 		, supplySurchargeRate: {type: String, required: false, defaultValue: ""}
 		, computerRelatedChargeUnit: {type: String, required: false, defaultValue: ""}
 		, computerRelatedChargeOverhead: {type: String, required: false, defaultValue: ""}
-		, retailVacationAccuralPercent: {type: String, required: false, defaultValue: ""}
+		, retailVacationAccrualPercent: {type: String, required: false, defaultValue: ""}
 		, announcement: {type: String, required: false, defaultValue: ""}
 	};
 	

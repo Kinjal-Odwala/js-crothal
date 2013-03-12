@@ -64,11 +64,12 @@ ii.init.register( function(){
 		, stopPaymentProcessingFee: {type: Boolean, required: false, defaultValue: true}
 		, deductionCodes: {type: String, required: false, defaultValue: ""}
 		, amount: {type: String, required: false, defaultValue: ""}
-		, requestedBy: {type: String, required: false, defaultValue: ""}
-		, emailAddressOfRequestor: {type: String, required: false, defaultValue: ""}
-		, approvedBy: {type: String, required: false, defaultValue: ""}
+		, requestorName: {type: String, required: false, defaultValue: ""}
+		, requestorEmail: {type: String, required: false, defaultValue: ""}
+		, managerName: {type: String, required: false, defaultValue: ""}
+		, managerEmail: {type: String, required: false, defaultValue: ""}
 		, approvedDate: {type: String, required: false, defaultValue: ""}
-		, completedOn: {type: String, required: false, defaultValue: ""}
+		, completedDate: {type: String, required: false, defaultValue: ""}
 	};
 	
 	fin.pay.payCheck.payCodeDetailArgs = {
