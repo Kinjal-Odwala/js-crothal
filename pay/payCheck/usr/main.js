@@ -37,7 +37,7 @@ ii.Class({
 			);
 
 			me.authorizer = new ii.ajax.Authorizer(me.gateway);
-			me.authorizePath = "\\crothall\\chimes\\fin\\Payroll\\PayCheck";
+			me.authorizePath = "\\crothall\\chimes\\fin\\Payroll\\CheckRequest";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
 					me.authorizationProcess.apply(me);
@@ -271,55 +271,55 @@ ii.Class({
 					return false;
 			});
 			
-			me.requestedBy = new ui.ctl.Input.Text({
-				id: "RequestedBy",
+			me.requestorName = new ui.ctl.Input.Text({
+				id: "RequestorName",
 				maxLength: 150
 			});
 
-			me.requestorEmailAddress = new ui.ctl.Input.Text({
-				id: "RequestorEmailAddress",
+			me.requestorEmail = new ui.ctl.Input.Text({
+				id: "RequestorEmail",
 				maxLength: 100
 			});
 			
-			me.requestorEmailAddress.makeEnterTab()
+			me.requestorEmail.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
 					
-					var enteredText = me.requestorEmailAddress.getValue();
+					var enteredText = me.requestorEmail.getValue();
 					
 					if (enteredText == "") return;
 					
 					if (!(ui.cmn.text.validate.emailAddress(enteredText)))
-						this.setInvalid("Please enter valid Email Address of Requestor.");
+						this.setInvalid("Please enter valid Requestor Email.");
 			});
 			
-			me.approvedBy = new ui.ctl.Input.Text({
-				id: "ApprovedBy",
+			me.managerName = new ui.ctl.Input.Text({
+				id: "ManagerName",
 				maxLength: 100
 			});
 			
-			me.approvedBy.makeEnterTab()
+			me.managerName.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
 			
-			me.approvedDate = new ui.ctl.Input.Date({
-		        id: "ApprovedDate",
-				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
-		    });
+			me.managerEmail = new ui.ctl.Input.Text({
+				id: "ManagerEmail",
+				maxLength: 100
+			});
 			
-			me.approvedDate.makeEnterTab()
+			me.managerEmail.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation( function( isFinal, dataMap ) {					
-					var enteredText = me.approvedDate.text.value;
-					
-					if (enteredText == "") 
-						return;
-											
-					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
-						this.setInvalid("Please enter valid date.");
-				});
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.managerEmail.getValue();
+
+					if (enteredText == "") return;
+
+					if (!(ui.cmn.text.validate.emailAddress(enteredText)))
+						this.setInvalid("Please enter valid Manager Email.");
+			});
 				
 			me.payCodeDetailGrid = new ui.ctl.Grid({
 				id: "PayCodeDetailGrid",
@@ -413,13 +413,12 @@ ii.Class({
 				maxLength: 11,
 				appendToId: "PayCodeDetailGridControlHolder"
 		    });
-			
+
 			me.alternateBaseRate.makeEnterTab()
 				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ){
 
-					var enteredText = me.earning.getValue();
+					var enteredText = me.alternateBaseRate.getValue();
 
 					if (enteredText == "")
 						return;
@@ -576,10 +575,10 @@ ii.Class({
 			$("#ProcessingFeeNo")[0].tabIndex = 27;		
 			me.deductionCode.text.tabIndex = 28;
 			me.amount.text.tabIndex = 29;
-			me.requestedBy.text.tabIndex = 30;
-			me.requestorEmailAddress.text.tabIndex = 31;
-			me.approvedBy.text.tabIndex = 32;
-			me.approvedDate.text.tabIndex = 33;
+			me.requestorName.text.tabIndex = 30;
+			me.requestorEmail.text.tabIndex = 31;
+			me.managerName.text.tabIndex = 32;
+			me.managerEmail.text.tabIndex = 33;
 		},
 		
 		resizeControls: function() {
@@ -596,10 +595,10 @@ ii.Class({
 			me.state.resizeText();
 			me.deductionCode.resizeText();
 			me.amount.resizeText();
-			me.requestedBy.resizeText();
-			me.requestorEmailAddress.resizeText();
-			me.approvedBy.resizeText();
-			me.approvedDate.resizeText();			
+			me.requestorName.resizeText();
+			me.requestorEmail.resizeText();
+			me.managerName.resizeText();
+			me.managerEmail.resizeText();			
 		},
 		
 		resetControls: function() {
@@ -616,10 +615,10 @@ ii.Class({
 			me.state.reset();
 			me.deductionCode.setValue("");
 			me.amount.setValue("");
-			me.requestedBy.setValue("");
-			me.requestorEmailAddress.setValue("");
-			me.approvedBy.setValue("");
-			me.approvedDate.setValue("");
+			me.requestorName.setValue("");
+			me.requestorEmail.setValue("");
+			me.managerName.setValue("");
+			me.managerEmail.setValue("");
 			me.payCodeDetailGrid.setData([]);
 			$("#TermRequestYes")[0].checked = true;
 			$("#CurrentPayCardUserYes")[0].checked = true;
@@ -671,11 +670,11 @@ ii.Class({
 				var address = me.sites[0].addressLine1 + ", ";
 				address += (me.sites[0].addressLine2 == "" ? "" : me.sites[0].addressLine2 + ", ");
 				address += me.sites[0].city + ", ";
-				address += (me.sites[0].county == "" ? "" : me.sites[0].county + ", ");
-				address += me.sites[0].postalCode + ", ";
+				address += (me.sites[0].county == "" ? "" : me.sites[0].county + ", ");				
 				var index = ii.ajax.util.findIndexById(me.sites[0].state.toString(), me.stateTypes);
 				if (index != undefined && index >= 0)
-					address += me.stateTypes[index].name;
+					address += me.stateTypes[index].name + ", ";
+				address += me.sites[0].postalCode;
 				me.unitAddress.setValue(address);
 			}
 		},
@@ -730,18 +729,18 @@ ii.Class({
 			if (me.persons.length > 0) {
 				if (me.pageLoading) {
 					me.pageLoading = false;
-					me.requestedBy.setValue(me.persons[0].firstName + " " + me.persons[0].lastName + " [" + me.session.propertyGet("userName") + "]");
-					me.requestorEmailAddress.setValue(me.persons[0].email);
-					me.requestedBy.text.readOnly = true;
+					me.requestorName.setValue(me.persons[0].firstName + " " + me.persons[0].lastName + " [" + me.session.propertyGet("userName") + "]");
+					me.requestorEmail.setValue(me.persons[0].email);
+					me.requestorName.text.readOnly = true;
 				}
 				else {
 					var address = me.persons[0].addressLine1 + ", ";
 					address += (me.persons[0].addressLine2 == "" ? "" : me.persons[0].addressLine2 + ", ");
-					address += me.persons[0].city + ", ";
-					address += me.persons[0].postalCode + ", ";
+					address += me.persons[0].city + ", ";					
 					var index = ii.ajax.util.findIndexById(me.persons[0].state.toString(), me.stateTypes);
 					if (index != undefined && index >= 0)
-						address += me.stateTypes[index].name;
+						address += me.stateTypes[index].name + ", ";
+					address += me.persons[0].postalCode;
 					me.homeAddress.setValue(address);
 				}
 			}
@@ -803,10 +802,10 @@ ii.Class({
 				, $("input[name='ProcessingFee']:checked").val() == "true" ? true : false
 				, me.deductionCode.getValue()
 				, me.amount.getValue()
-				, me.requestedBy.getValue()
-				, me.requestorEmailAddress.getValue()
-				, me.approvedBy.getValue()				
-				, me.approvedDate.lastBlurValue
+				, me.requestorName.getValue()
+				, me.requestorEmail.getValue()
+				, me.managerName.getValue()				
+				, me.managerEmail.getValue()
 				);	
 			
 			var xml = me.saveXmlBuildItem(item);
@@ -855,10 +854,10 @@ ii.Class({
 			xml += ' stopPaymentProcessingFee="' + item.stopPaymentProcessingFee + '"';
 			xml += ' deductionCodes="' + item.deductionCodes + '"';
 			xml += ' amount="' + item.amount + '"';
-			xml += ' requestedBy="' + ui.cmn.text.xml.encode(item.requestedBy) + '"';
-			xml += ' emailAddressOfRequestor="' + ui.cmn.text.xml.encode(item.emailAddressOfRequestor) + '"';
-			xml += ' approvedBy="' + ui.cmn.text.xml.encode(item.approvedBy) + '"';
-			xml += ' approvedDate="' + item.approvedDate + '"';
+			xml += ' requestorName="' + ui.cmn.text.xml.encode(item.requestorName) + '"';
+			xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
+			xml += ' managerName="' + ui.cmn.text.xml.encode(item.managerName) + '"';
+			xml += ' managerEmail="' + ui.cmn.text.xml.encode(item.managerEmail) + '"';
 			xml += '/>';
 
 			for (var index = 0; index < me.payCodeDetailGrid.data.length; index++) {
