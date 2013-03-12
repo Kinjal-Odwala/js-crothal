@@ -237,12 +237,12 @@ ii.Class({
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
 
-			me.retailVacationAccuralPercent = new ui.ctl.Input.Money({
-		        id: "RetailVacationAccuralPercent"
+			me.retailVacationAccrualPercent = new ui.ctl.Input.Money({
+		        id: "RetailVacationAccrualPercent"
 				, statusLeft: false
 		    });
 
-			me.retailVacationAccuralPercent.makeEnterTab()
+			me.retailVacationAccrualPercent.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
 
@@ -308,7 +308,7 @@ ii.Class({
 			me.supplySurchargeRate.resizeText();
 			me.computerRelatedChargeUnit.resizeText();
 			me.computerRelatedChargeOverhead.resizeText();
-			me.retailVacationAccuralPercent.resizeText();
+			me.retailVacationAccrualPercent.resizeText();
 			me.accountCodes.resizeText();
 			me.resize();
 		},
@@ -453,7 +453,7 @@ ii.Class({
 				me.supplySurchargeRate.setValue(me.annualInformations[0].supplySurchargeRate);
 				me.computerRelatedChargeUnit.setValue(me.annualInformations[0].computerRelatedChargeUnit);
 				me.computerRelatedChargeOverhead.setValue(me.annualInformations[0].computerRelatedChargeOverhead);
-				me.retailVacationAccuralPercent.setValue(me.annualInformations[0].retailVacationAccuralPercent);
+				me.retailVacationAccrualPercent.setValue(me.annualInformations[0].retailVacationAccrualPercent);
 				me.accountCodes.setValue(me.annualInformations[0].genLiabilityAccCodes);
 				me.announcement.value = me.annualInformations[0].announcement;
 
@@ -474,7 +474,7 @@ ii.Class({
 				me.supplySurchargeRate.setValue("");
 				me.computerRelatedChargeUnit.setValue("");
 				me.computerRelatedChargeOverhead.setValue("");
-				me.retailVacationAccuralPercent.setValue("");
+				me.retailVacationAccrualPercent.setValue("");
 				me.accountCodes.setValue("");
 				me.announcement.value = "";				
 
@@ -542,7 +542,7 @@ ii.Class({
 				, me.supplySurchargeRate.getValue().toString()
 				, me.computerRelatedChargeUnit.getValue().toString()
 				, me.computerRelatedChargeOverhead.getValue().toString()
-				, me.retailVacationAccuralPercent.getValue().toString()
+				, me.retailVacationAccrualPercent.getValue().toString()
 				, me.announcement.value
 				);
 				
@@ -580,7 +580,7 @@ ii.Class({
 			xml += ' supplySurchargeRate="' + item.supplySurchargeRate + '"';
 			xml += ' computerRelatedChargeUnit="' + item.computerRelatedChargeUnit + '"';
 			xml += ' computerRelatedChargeOverhead="' + item.computerRelatedChargeOverhead + '"';
-			xml += ' retailVacationAccuralPercent="' + item.retailVacationAccuralPercent + '"';
+			xml += ' retailVacationAccrualPercent="' + item.retailVacationAccrualPercent + '"';
 			xml += ' announcement="' + ui.cmn.text.xml.encode(item.announcement) + '"';
 			xml += '/>';
 
