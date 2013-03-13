@@ -2664,7 +2664,8 @@ ii.Class({
 		
 		invBillToChange: function(rowNumber,houseCodeId) {
 			var me = this;
-
+			me.invBillToOnChange = 1;
+			
 	        me.invBillToCheck(rowNumber, houseCodeId, $("#RevInvBillTo_" + rowNumber).val());
 		},
 		
@@ -2746,25 +2747,27 @@ ii.Class({
 		invBillToDependents: function(rowNumber, types, selectedValue) {
 		    var me = this;
 		    var type = {};
+			if (me.invBillToOnChange == 1) {
+				for(var index = 0; index < types.length; index++) {
+			        type = types[index];
+					if (type.name == selectedValue)
+					{
+						$("#RevInvCompany_" + rowNumber).val(type.company);
+						$("#RevInvAddress1_" + rowNumber).val(type.address1);
+						$("#RevInvAddress2_" + rowNumber).val(type.address2);
+						$("#RevInvCity_" + rowNumber).val(type.city);
+						$("#AppStateType_" + rowNumber).val(type.stateType.toString());
+						$("#RevInvPostalCode_" + rowNumber).val(type.postalCode);
+						if ($("#RevInvTaxExempt_" + rowNumber)[0].checked && type.taxId > 0) {
+							$("#RevInvTaxNumber_" + rowNumber).val(type.taxId);
+						}
+						else {
+							$("#RevInvTaxNumber_" + rowNumber).val("");
+						}
+					}
+			    }
+			}
 			
-			for(var index = 0; index < types.length; index++) {
-		        type = types[index];
-				if (type.name == selectedValue)
-				{
-					$("#RevInvCompany_" + rowNumber).val(type.company);
-					$("#RevInvAddress1_" + rowNumber).val(type.address1);
-					$("#RevInvAddress2_" + rowNumber).val(type.address2);
-					$("#RevInvCity_" + rowNumber).val(type.city);
-					$("#AppStateType_" + rowNumber).val(type.stateType.toString());
-					$("#RevInvPostalCode_" + rowNumber).val(type.postalCode);
-					if ($("#RevInvTaxExempt_" + rowNumber)[0].checked && type.taxId > 0) {
-						$("#RevInvTaxNumber_" + rowNumber).val(type.taxId);
-					}
-					else {
-						$("#RevInvTaxNumber_" + rowNumber).val("");
-					}
-				}
-		    }
 			me.invBillToOnChange = 0;
 		},
 		
