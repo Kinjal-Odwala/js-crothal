@@ -1878,7 +1878,7 @@ var submitMopItems = function (changes, callback) {
         xml.push(String.format(' fscAccount="{0}"', item.FscAccount));
 
         for (var i = 1; i <= 14; i++) {
-            xml.push(String.format(' period{1}="{0}"', (item['Comment' + i] || '').replace('&', '&amp;'), i));
+            xml.push(String.format(' period{1}="{0}"', (item['Comment' + i] || '').replace(/&/gi, '&amp;').replace(/"/gi, '&quot;').replace(/</gi, '&lt;').replace(/>/gi, '&gt;'), i));
         }
         xml.push(' />\r\n');
 
@@ -1914,7 +1914,7 @@ var saveWorSummaryComment = function (hcmHouseCode, hcmJob, fscYear, fscPeriod, 
     xml.push(String.format(' hcmJob="{0}"', hcmJob));
     xml.push(String.format(' fscYear="{0}"', fscYear));
     xml.push(String.format(' fscPeriod="{0}"', fscPeriod));
-    xml.push(String.format(' comment="{0}"', comment.replace('&', '&amp;')));
+    xml.push(String.format(' comment="{0}"', comment.replace(/&/gi, '&amp;').replace(/"/gi, '&quot;').replace(/</gi, '&lt;').replace(/>/gi, '&gt;')));
     xml.push(' />\r\n');
 
     xml.push('</transaction>');
