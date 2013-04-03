@@ -17,6 +17,7 @@ ALTER TABLE [TeamFinV2].[dbo].[RevInvoiceItems] ADD RevInviDisplayOrder Int NULL
 ALTER TABLE [TeamFinV2].[dbo].[RevInvoiceItems] ADD WomWorkOrderItem Int NULL
 ALTER TABLE [TeamFinV2].[dbo].[RevInvoices] ADD HcmInvoiceLogoType Int NULL
 ALTER TABLE [TeamFinV2].[dbo].[RevInvoices] ADD RevInvoiceAddressType Int NULL
+ALTER TABLE [TeamFinV2].[dbo].[RevInvoices] ALTER COLUMN [RevInvBillTo] VARCHAR(256)
 ALTER TABLE [TeamFinV2].[dbo].[AppModuleColumns] ADD AppModcFilter Bit NULL
 ALTER TABLE [TeamFinV2].[dbo].[AppModuleColumns] ADD AppModcDependantColumns VarChar(256) NULL
 ALTER TABLE [TeamFinV2].[dbo].[AppModuleColumns] ADD AppModcWidth Int NULL
@@ -25,6 +26,7 @@ ALTER TABLE [TeamFinV2].[dbo].[AppModuleColumns] ADD AppModcLength Int NULL
 ALTER TABLE [TeamFinV2].[dbo].[AppModules] ADD AppModHouseCodeAssociated Bit NULL
 ALTER TABLE [dbo].[AppModuleColumns] DROP COLUMN AppModuleAssociate
 EXEC sp_rename 'AppModules.AppModAssociateModule', 'AppModEditable', 'COLUMN'
+EXEC sp_rename 'BudAnnualInformations.BudAnniRetailVacationAccuralPercent', 'BudAnniRetailVacationAccrualPercent', 'COLUMN'
 
 ALTER TABLE [TeamFinV2].[dbo].[WomWorkOrders] ALTER COLUMN WomwoServiceLocation Varchar(256) NULL
 ALTER TABLE [TeamFinV2].[dbo].[WomWorkOrders] ADD WomwoServiceLocationBrief Varchar(8) NULL
@@ -47,6 +49,21 @@ ALTER TABLE [TeamFinV2].[dbo].[WomWorkOrders] ADD WomwoCustomerPostalCode Varcha
 ALTER TABLE [TeamFinV2].[dbo].[BudAnnualInformations] ADD BudAnniSupplySurchargeRate Float NULL
 ALTER TABLE [TeamFinV2].[dbo].[BudAnnualInformations] ADD BudAnniComputerRelatedChargeUnit Float NULL
 ALTER TABLE [TeamFinV2].[dbo].[BudAnnualInformations] ADD BudAnniComputerRelatedChargeOverhead Float NULL
+ALTER TABLE [TeamFinV2].[dbo].[BudAnnualInformations] ADD BudAnniRetailVacationAccuralPercent Float NULL
+
+ALTER TABLE [TeamFinV2].[dbo].[BudFinalLabors] ALTER COLUMN [BudFinlPeriod1] float
+ALTER TABLE [TeamFinV2].[dbo].[BudFinalLabors] ALTER COLUMN [BudFinlPeriod2] float
+ALTER TABLE [TeamFinV2].[dbo].[BudFinalLabors] ALTER COLUMN [BudFinlPeriod3] float
+ALTER TABLE [TeamFinV2].[dbo].[BudFinalLabors] ALTER COLUMN [BudFinlPeriod4] float
+ALTER TABLE [TeamFinV2].[dbo].[BudFinalLabors] ALTER COLUMN [BudFinlPeriod5] float
+ALTER TABLE [TeamFinV2].[dbo].[BudFinalLabors] ALTER COLUMN [BudFinlPeriod6] float
+ALTER TABLE [TeamFinV2].[dbo].[BudFinalLabors] ALTER COLUMN [BudFinlPeriod7] float
+ALTER TABLE [TeamFinV2].[dbo].[BudFinalLabors] ALTER COLUMN [BudFinlPeriod8] float
+ALTER TABLE [TeamFinV2].[dbo].[BudFinalLabors] ALTER COLUMN [BudFinlPeriod9] float
+ALTER TABLE [TeamFinV2].[dbo].[BudFinalLabors] ALTER COLUMN [BudFinlPeriod10] float
+ALTER TABLE [TeamFinV2].[dbo].[BudFinalLabors] ALTER COLUMN [BudFinlPeriod11] float
+ALTER TABLE [TeamFinV2].[dbo].[BudFinalLabors] ALTER COLUMN [BudFinlPeriod12] float
+ALTER TABLE [TeamFinV2].[dbo].[BudFinalLabors] ALTER COLUMN [BudFinlPeriod13] float
 */
 
 -- HouseCode --> Jobs field level security nodes Insert [Begin]
@@ -81,20 +98,6 @@ Values ('Standard', 'Standard', 'Standard', 1, 1, 'Compass-USA\Data Conversion',
 Insert Into dbo.HcmBudgetLaborCalcMethods(HcmBudlcmBrief, HcmBudlcmTitle, HcmBudlcmDescription, HcmBudlcmDisplayOrder, HcmBudlcmActive, HcmBudlcmModBy, HcmBudlcmModAt)
 Values ('WorkDays', 'WorkDays', 'WorkDays', 2, 1, 'Compass-USA\Data Conversion', GetDate())
 
-/* 
---Not required to execute the following script, this is a test script for R & D
-Insert Into dbo.AppModules (AppModTitle, AppModDescription, AppModDisplayOrder, AppModActive, AppModModBy, AppModModAt, AppModAssociateModule)
-Values ('State', 'AppStateTypes', 1, 1, 'compass-usa\data conversion', GetDate(), 1)
-
-Insert Into dbo.AppModuleAssociations (AppModule, AppModuleAssociate, AppModaActive, AppModaModBy, AppModaModAt)
-Values (1, 9, 1, 'compass-usa\data conversion', GetDate())
-
-Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive
-, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModuleAssociate, AppModcReferenceTableName)
-Values (9, 'AppStatMinimumWage', 'Minimum Wage', 1, 1, 'compass-usa\data conversion', GetDate()
-, 'Varchar', 1, Null, 1, 1, Null)
-*/
-
 Add the following key in hcm-->act web.config file
 <add key="FinRevPath" value="/net/crothall/chimes/fin/rev/act/provider.aspx?moduleId=rev" />
 
@@ -104,7 +107,7 @@ Add the following key in adh-->act web.config file
 Add the following key in pay-->act web.config file
 <add key="FinSMTPServer" value="relay.compass-usa.com" />
 <add key="FinSenderEmail" value="teamfinpostoffice@crothall.com" />
-<add key="PayrollEmail" value="chandru.balekkala@iicorporate.com" />
+<add key="PayrollEmail" value="" />
 <add key="PayCheckRequestApprovalPath" value="https://finct.crothall.com/net/crothall/chimes/fin/pay/act/ApprovePayCheckRequest.aspx" />
 <add key="ConnectionString" value="Data Source=Data Source=CHIUSCHP397;Initial Catalog=TeamFinv2;User ID=Esm;Password=Esm" />
 
@@ -218,25 +221,6 @@ Values (8, 4, 1, 'compass-usa\data conversion', GetDate())
 Insert Into dbo.AppModuleAssociations (AppModule, AppModuleAssociate, AppModaActive, AppModaModBy, AppModaModAt)
 Values (9, 1, 1, 'compass-usa\data conversion', GetDate())
 -- Update module associations [End]
-
--- Payroll --> Pay Check Menu Insert [Begin] 
-Declare @DisplayOrderMenu Int
-	, @HirNodeParent Int
-Set @DisplayOrderMenu = 304
-Select @HirNodeParent = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Payroll'
-
-Exec EsmV2.dbo.AppMenuItemUpdate 
-	'Check Request' --@MenuTitle Varchar(64)
-	, 2 --@MenuAction Int 1-mainmenu, 2-submenu
-	, 4 --@MenuState Int 3-selected, 4-enabled
-	, @DisplayOrderMenu 
-	,'/fin/pay/payCheck/usr/markup.htm'
-	, @HirNodeParent
-
-Select * From EsmV2.dbo.AppMenuItems
-Select * From EsmV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\Payroll%'
-
--- Payroll --> Pay Check Menu Insert [End] 
 
 -- Add Read/Write security nodes for BudgetTemplate in House Code [Begin]
 
@@ -560,7 +544,7 @@ Update dbo.AppModuleColumns Set AppModcWidth = 200 Where AppModule = 8 And AppMo
 -- Update the width of the each column [End]
 
 -- Job module [Begin]
-Insert Into dbo.AppModules (AppModTitle, AppModDescription, AppModDisplayOrder, AppModActive, AppModModBy, AppModModAt, AppModEditable, AppModAssociateModule)
+Insert Into dbo.AppModules (AppModTitle, AppModDescription, AppModDisplayOrder, AppModActive, AppModModBy, AppModModAt, AppModEditable, AppModHouseCodeAssociated)
 Values ('Job', 'HcmJobs', 1, 1, 'compass-usa\data conversion', GetDate(), 1, 0)
 Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
 Values (9, 'HcmJob', 'HcmJob', 0, 1, 'compass-usa\data conversion', GetDate(), 'Int', 0, 'Int', 0, Null, Null, Null, 150, Null, Null)
@@ -790,7 +774,7 @@ Values (2, 'EmpEmpgSecondaryStateAdditionalInformation', '', 80, 1, 'compass-usa
 Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
 Values (2, 'EmpBasicLifeIndicatorType', 'Basic Life Indicator', 80, 1, 'compass-usa\data conversion', GetDate(), 'Int', 1, 'Int', 1, 'EmpBasicLifeIndicatorTypes', Null, Null, 150, Null, Null)
 Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
-Values (3, 'RevInvoiceBatch', 'Batch', 80, 1, 'compass-usa\data conversion', GetDate(), 'Int', 1, 'Int', 1, 'RevInvoiceBatches', Null, Null, 150, 0, Null)
+Values (3, 'RevInvoiceBatch', 'Batch', 80, 1, 'compass-usa\data conversion', GetDate(), 'Int', 1, 'Int', 1, 'RevInvoiceBatches', 0, Null, 150, 0, Null)
 Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
 Values (3, 'HcmInvoiceLogoType', 'Invoice Logo', 80, 1, 'compass-usa\data conversion', GetDate(), 'Int', 1, 'Int', 1, 'HcmInvoiceLogoTypes', Null, Null, 150, Null, Null)
 Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
@@ -810,26 +794,7 @@ Values (8, 'AppUniModAt', 'Mod At', 80, 1, 'compass-usa\data conversion', GetDat
 CT updated on 27th February 2013 11PM EST
 */
 
--- Receivables --> Batch Process Menu Insert [Begin] 
-Declare @DisplayOrderMenu Int
-	, @HirNodeParent Int
-Set @DisplayOrderMenu = 505
-Select @HirNodeParent = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\AccountsReceivable'
-
-Exec EsmV2.dbo.AppMenuItemUpdate 
-	'Batch Process' --@MenuTitle Varchar(64)
-	, 2 --@MenuAction Int 1-mainmenu, 2-submenu
-	, 4 --@MenuState Int 3-selected, 4-enabled
-	, @DisplayOrderMenu 
-	,'/fin/rev/batchProcess/usr/markup.htm'
-	, @HirNodeParent
-
-Select * From EsmV2.dbo.AppMenuItems
-Select * From EsmV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\AccountsReceivable%'
-
--- Receivables --> Batch Process Menu Insert [End] 
-
--- Add Read/Write security nodes for BudgetTemplate in House Code [Begin]
+-- Add Read/Write security nodes for BudgetLaborCalcMethod in House Code [Begin]
 
 Declare @HirNode As Int
 Declare @DisplayOrder Int
@@ -862,7 +827,7 @@ Values(1, 9, @HirNode, 'Read', 'Read', 'Read', @DisplayOrder + 2, 1, '\crothall\
 Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodLevel9, HirNodModBy, HirNodModAt)
 Values(1, 9, @HirNode, 'Write', 'Write', 'Write', @DisplayOrder + 3, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabFinancial\SectionFinancial\BudgetLaborCalcMethod\Write', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodeWizard', 'TabFinancial', 'SectionFinancial', 'BudgetLaborCalcMethod', 'Write', 'Compass-USA\Data Conversion', GetDate())
 
--- Add Read/Write security nodes for BudgetTemplate in House Code [End]
+-- Add Read/Write security nodes for BudgetLaborCalcMethod in House Code [End]
 
 Insert Into dbo.RevInvoiceAddressTypes(RevInvatBrief, RevInvatTitle, RevInvatDescription, RevInvatDisplayOrder, RevInvatActive, RevInvatModBy, RevInvatModAt)
 Values ('No Remit To', 'No Remit To', 'No Remit To', 1, 1, 'Compass-USA\Data Conversion', GetDate())
@@ -870,3 +835,288 @@ Insert Into dbo.RevInvoiceAddressTypes(RevInvatBrief, RevInvatTitle, RevInvatDes
 Values ('No Inquires', 'No Inquires', 'No Inquires', 2, 1, 'Compass-USA\Data Conversion', GetDate())
 Insert Into dbo.RevInvoiceAddressTypes(RevInvatBrief, RevInvatTitle, RevInvatDescription, RevInvatDisplayOrder, RevInvatActive, RevInvatModBy, RevInvatModAt)
 Values ('NoRemitToAndInqu', 'No Remit To and Inquires', 'No Remit To and Inquires', 3, 1, 'Compass-USA\Data Conversion', GetDate())
+
+-- Add new columns to Ad-Hoc reports
+Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
+Values (1, 'HcmBudgetLaborCalcMethod', 'Budget Labor Calc Method', 112, 1, 'compass-usa\data conversion', GetDate(), 'Int', 1, 'Int', 1, 'HcmBudgetLaborCalcMethods', Null, Null, 150, Null, Null)
+Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
+Values (1, 'HcmBudgetComputerRelatedCharge', 'Budget Computer Related Charge', 113, 1, 'compass-usa\data conversion', GetDate(), 'Bit', 0, 'Bit', 1, Null, Null, Null, 150, Null, Null)
+Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
+Values (3, 'RevInvoiceAddressType', 'Invoice Address', 80, 1, 'compass-usa\data conversion', GetDate(), 'Int', 1, 'Int', 1, 'RevInvoiceAddressTypes', Null, Null, 150, Null, Null)
+
+
+USE [TeamFinv2]
+GO
+/****** Object:  UserDefinedFunction [dbo].[GetServiceLocationTemp]    Script Date: 03/05/2013 10:20:03 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE FUNCTION [dbo].[GetServiceLocationTemp]
+(
+    @ServiceLocation varchar(64),
+    @HcmHouseCode int
+)
+RETURNS TABLE
+AS
+RETURN
+Select top 1 
+ sl.WOBrief AS WOBrief,
+ sl.WOServiceLocation AS WOServiceLocation,
+ sl.WOSLAddress1 AS WOSLAddress1,
+ sl.WOSLAddress2 AS WOSLAddress2,
+ sl.WOSLCity AS WOSLCity,
+ sl.WOSLState AS WOSLState,
+ sl.WOSLStateType AS WOSLStateType,
+ sl.WOSLZip AS WOSLZip,
+ sl.HcmHouseCode AS HcmHouseCode
+from 
+(SELECT 
+            hj.HcmJobBrief as WOBrief,
+			hj.HcmJobTitle AS WOServiceLocation,
+			ISNULL(hj.HcmJobAddress1,'') AS WOSLAddress1,
+			ISNULL(hj.HcmJobAddress2,'') AS WOSLAddress2,
+			ISNULL(hj.HcmJobCity,'') AS WOSLCity,
+			CASE
+				WHEN hj.AppStateType = 0
+				THEN ''
+				ELSE st.AppStatBrief
+			END AS WOSLState,
+            hj.AppStateType AS WOSLStateType,
+			hj.HcmJobPostalCode AS WOSLZip,
+			hcj.HcmHouseCode AS HcmHouseCode
+		FROM TeamFinv2.dbo.HcmJobs hj WITH (NOLOCK) 
+        LEFT OUTER JOIN Esmv2.dbo.AppStateTypes st WITH (NOLOCK) ON
+			hj.AppStateType = st.AppStateType 
+        INNER JOIN TeamFinv2..HcmHouseCodeJobs hcj WITH  (NOLOCK) ON
+			hj.HcmJob = hcj.HcmJob
+		WHERE
+			hj.HcmJobType = 2 AND
+            hj.HcmJobTitle = @ServiceLocation AND
+            hcj.HcmHouseCode = @HcmHouseCode
+		UNION ALL
+
+		SELECT
+            '' as WOBrief,
+			au.AppUniTitle AS WOServiceLocation,
+			s.AppSitAddressLine1 AS WOSLAddress1,
+			s.AppSitAddressLine2 AS WOSLAddress2,
+			s.AppSitCity AS WOSLCity,
+			st.AppStatBrief AS WOSLState,
+            s.AppStateType AS WOSLStateType,
+			s.AppSitPostalCode AS WOSLZip,
+			hc.HcmHouseCode as HcmHouseCode
+		FROM Esmv2.dbo.AppUnits au WITH (NOLOCK) 
+        INNER JOIN TeamFinv2.dbo.HcmHouseCodes hc WITH (NOLOCK) ON
+			au.AppUnit = hc.AppUnit 
+        INNER JOIN Esmv2.dbo.AppSiteUnits asu WITH (NOLOCK) ON
+			au.AppUnit = asu.AppUnit 
+        INNER JOIN Esmv2.dbo.AppSites s WITH (NOLOCK) ON 
+			asu.AppSite = s.AppSite 
+        INNER JOIN Esmv2.dbo.AppStateTypes st WITH (NOLOCK) ON
+			s.AppStateType = st.AppStateType 		
+       Where
+            au.AppUniTitle  = @ServiceLocation AND
+            hc.HcmHouseCode = @HcmHouseCode
+) sl
+
+
+USE [TeamFinv2]
+GO
+/****** Object:  UserDefinedFunction [dbo].[GetWorkOrderItemTemp]    Script Date: 03/05/2013 10:20:03 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE FUNCTION [dbo].[GetWorkOrderItemTemp]
+(
+    @WorkOrder int,
+    @WomwoiDescription varchar(1024)
+)
+RETURNS TABLE
+AS
+RETURN
+Select top 1 
+ WomWorkOrderItem AS WomWorkOrderItem
+from dbo.WomWorkOrderItems 
+where WomWorkOrder = @WorkOrder
+and WomwoiDescription = @WomwoiDescription
+
+----RevInvoices Logo
+Update rii
+Set rii.HcmInvoiceLogoType = hc.HcmInvoiceLogoType
+From RevInvoices rii 
+	inner join dbo.HcmHouseCodes hc On rii.HcmHouseCode = hc.HcmHouseCode
+where rii.HcmInvoiceLogoType is NULL
+
+-----WomWorkOrders service location and customer address
+Update wwo
+SET wwo.WomwoServiceLocationBrief = WOSLBrief,
+	wwo.WomwoServiceLocationAddress1 = WOSLAddress1,
+	wwo.WomwoServiceLocationAddress2 = WOSLAddress2,
+	wwo.WomwoServiceLocationCity = WOSLCity,
+	wwo.WomwoServiceLocationState = WOSLStateType,	
+	wwo.WomwoServiceLocationPostalCode = WOSLZip,
+    wwo.WomwoCustomerBrief = WOCBrief,
+	wwo.WomwoCustomerAddress1 = WOCAddress1,
+	wwo.WomwoCustomerAddress2 = WOCAddress2,
+	wwo.WomwoCustomerCity = WOCCity,
+	wwo.WomwoCustomerState = WOCStateType,
+	wwo.WomwoCustomerPostalCode = WOCZip
+from WomWorkOrders wwo
+INNER JOIN
+(SELECT
+    wo.WomWorkOrder AS WONumberID,
+	wo.WomwoWorkOrderNumber AS WONumber,
+	au.AppUniBrief AS HouseCode,
+	wo.WomwoServiceLocation AS WOServiceLocation,
+    wosl.WOBrief AS WOSLBrief,
+	wosl.WOSLAddress1,
+	wosl.WOSLAddress2,
+	wosl.WOSLCity,
+	wosl.WOSLState,
+    wosl.WOSLStateType,
+	wosl.WOSLZip,
+    woc.WOBrief AS WOCBrief,
+	wo.WomwoCustomer AS WOCustomer,
+	woc.WOSLAddress1 AS WOCAddress1,
+	woc.WOSLAddress2 AS WOCAddress2,
+	woc.WOSLCity AS WOCCity,
+	woc.WOSLState AS WOCState,
+    woc.WOSLStateType AS WOCStateType,
+	woc.WOSLZip AS WOCZip
+FROM
+	TeamFinv2.dbo.WomWorkOrders wo WITH (NOLOCK) 
+INNER JOIN TeamFinv2.dbo.WomWorkOrderItems woi WITH (NOLOCK) ON
+	wo.WomWorkOrder = woi.WomWorkOrder 
+INNER JOIN TeamFinv2.dbo.WomWorkOrderTasks wot WITH (NOLOCK) ON
+	woi.WomWorkOrderTask = wot.WomWorkOrderTask 
+INNER JOIN TeamFinv2.dbo.AppTransactionStatusTypes ast WITH (NOLOCK) ON
+	wo.AppTransactionStatusType = ast.AppTransactionStatusType 
+INNER JOIN TeamFinv2.dbo.HcmHouseCodes hc WITH (NOLOCK) ON
+	wo.HcmHouseCode = hc.HcmHouseCode 
+INNER JOIN Esmv2.dbo.AppUnits au WITH (NOLOCK) ON
+	hc.AppUnit = au.AppUnit 
+INNER JOIN TeamFinv2.dbo.HcmHouseCodeJobs hhcj WITH (NOLOCK) ON
+	wo.HcmHouseCodeJob = hhcj.HcmHouseCodeJob INNER JOIN TeamFinv2.dbo.HcmJobs hj WITH (NOLOCK) ON
+	hhcj.HcmJob = hj.HcmJob 
+INNER JOIN TeamFinv2.dbo.FscJDECompanies jde WITH (NOLOCK) ON
+	hc.FscJDECompany = jde.FscJDECompany 
+OUTER APPLY [GetServiceLocationTemp](wo.WomwoServiceLocation,wo.HcmHouseCode) wosl
+LEFT OUTER JOIN 
+	(
+		SELECT 
+            hj.HcmJobBrief AS WOBrief,
+			hj.HcmJobTitle AS WOServiceLocation,
+			ISNULL(hj.HcmJobAddress1,'') AS WOSLAddress1,
+			ISNULL(hj.HcmJobAddress2,'') AS WOSLAddress2,
+			ISNULL(hj.HcmJobCity,'') AS WOSLCity,
+			CASE
+				WHEN hj.AppStateType = 0
+				THEN ''
+				ELSE st.AppStatBrief
+			END AS WOSLState,
+            hj.AppStateType AS WOSLStateType,
+			hj.HcmJobPostalCode AS WOSLZip,
+			hcj.HcmHouseCode AS WOServiceID
+		FROM
+			TeamFinv2.dbo.HcmJobs hj WITH (NOLOCK) LEFT OUTER JOIN Esmv2.dbo.AppStateTypes st WITH (NOLOCK) ON
+			hj.AppStateType = st.AppStateType INNER JOIN TeamFinv2.dbo.HcmHouseCodeJobs hcj WITH (NOLOCK) ON
+			hj.HcmJob = hcj.HcmJob
+		WHERE
+			hj.HcmJobType = 3
+
+		UNION ALL
+
+		SELECT
+            NULL AS WOBrief,
+			au.AppUniTitle AS WOServiceLocation,
+			s.AppSitAddressLine1 AS WOSLAddress1,
+			s.AppSitAddressLine2 AS WOSLAddress2,
+			s.AppSitCity AS WOSLCity,
+			st.AppStatBrief AS WOSLState,
+            s.AppStateType  AS WOSLStateType,
+			s.AppSitPostalCode AS WOSLZip,
+			hc.HcmHouseCode AS WOServiceID
+		FROM
+			Esmv2.dbo.AppUnits au WITH (NOLOCK) INNER JOIN TeamFinv2.dbo.HcmHouseCodes hc WITH (NOLOCK) ON
+			au.AppUnit = hc.AppUnit INNER JOIN Esmv2.dbo.AppSiteUnits asu WITH (NOLOCK) ON
+			au.AppUnit = asu.AppUnit INNER JOIN Esmv2.dbo.AppSites s WITH (NOLOCK) ON 
+			asu.AppSite = s.AppSite INNER JOIN Esmv2.dbo.AppStateTypes st WITH (NOLOCK) ON
+			s.AppStateType = st.AppStateType 
+			
+	) woc ON
+	wo.WomwoCustomer = woc.WOServiceLocation AND
+	wo.HcmHouseCode = woc.WOServiceID) wom ON
+wom.WONumberID = wwo.WomWorkOrder
+
+---- RevInvoiceItems work order item
+Update ri
+SET ri.WomWorkOrderItem = wwoi.WomWorkOrderItem
+from dbo.RevInvoiceItems ri
+INNER JOIN
+(select
+    a11.RevInvoice as RevInvoice,
+	a12.RevInvInvoiceNumber,
+    wo.WomwoWorkOrderNumber,
+    wo.WomWorkOrder,
+    woi.WomWorkOrderItem,
+    a11.RevInviDescription as RevInviDescription
+from	RevInvoiceItems	a11
+	inner join	RevInvoices	a12 WITH (NOLOCK) ON
+	            a11.RevInvoice = a12.RevInvoice
+INNER JOIN TeamFinv2.dbo.WomWorkOrders wo WITH (NOLOCK) ON
+    a12.WomWorkOrder = wo.WomWorkOrder
+OUTER APPLY GetWorkOrderItemTemp(wo.WomWorkOrder,a11.RevInviDescription) woi
+where isnull(a12.WomWorkOrder, 0) <> 0 
+Group by 
+    a11.RevInvoice,
+	a12.RevInvInvoiceNumber,
+    wo.WomwoWorkOrderNumber,
+    woi.WomWorkOrderItem,
+    wo.WomwoWorkOrderNumber,
+    wo.WomWorkOrder,
+    a11.RevInviDescription) wwoi ON
+wwoi.RevInvoice = ri.RevInvoice and
+wwoi.RevInviDescription = ri.RevInviDescription
+
+-- Drop the temporary functions GetServiceLocationTemp and GetWorkOrderItemTemp
+
+/*
+CT updated on 13th March 2013 11PM EST
+*/
+
+USE [TeamFinv2]
+GO
+/****** Object:  Index [Idx_Unique_RptLaborBudgets]    Script Date: 03/14/2013 08:42:56 ******/
+CREATE NONCLUSTERED INDEX [Idx_Unique_RptLaborBudgets] ON [dbo].[RptLaborBudgets] 
+(
+      [RptLabbHouseCode] ASC,
+      [RptLabbBudgetHours] ASC,
+      [RptLabbBudgetDollars] ASC,
+      [RptLabbAvgBudgetWageRate] ASC,
+      [FscYear] ASC,
+      [HcmHouseCode] ASC,
+      [HirNode] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+
+
+Update the following js files manually
+
+1.	fin\bud\res\scripts\all-2.04.009.min.js
+2.	fin\bud\mop\usr\fin.bud.mop-2.04.009.min.js
+
+Update the following DLL files manually
+
+1.	crothall.chimes.fin.bud.act.dll
+2.	crothall.chimes.fin.bud.dom.dll
+3.  crothall.chimes.fin.bud.srv.dll
+
+Update the following stored procedures manually (Not Required)
+
+1. BudUpdateDetailsHourlypayroll2
+2. BudDetailsUpdateHourlyPayroll2 
+
+/*
+Last production release version 2.04.009 on 27th March 2013 11PM EST
+*/
