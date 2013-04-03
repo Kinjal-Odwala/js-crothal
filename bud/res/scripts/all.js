@@ -10096,7 +10096,7 @@ Bud.page.StartBudgetPage = WebLight.extend(Bud.page.BudgetPage, {
         this._annualInformationStore.on('load', function (store, records) {
             if (store.getCount() > 0) {
                 var record = store.getAt(0);
-                if (record && record.get)
+                if (record && record.get && record.get('id')==me.getFscYear())
                     me.$child('start-budget-comment').html(record.get('announcement'));
             }
         });

@@ -239,6 +239,7 @@
                         if (item.get('startDate') <= today && item.get('cutOffDate') >= today) {
                             var fscYear = item.get('fscYear');
                             fiscalYearComboBox.setValue(item.get('fscYear'));
+                            onContextDataChanged();
                             return false;
                         }
                     });
