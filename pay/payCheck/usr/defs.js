@@ -28,6 +28,11 @@ ii.init.register( function(){
 		, brief: {type: String, required: false, defaultValue: ""}
 	};
 
+	fin.pay.payCheck.statusArgs = {
+		id: {type: Number}
+		, title: {type: String}
+	};
+	
 	fin.pay.payCheck.stateTypeArgs = {
 		id: {type: Number}
 		, name: {type: String}
@@ -41,6 +46,7 @@ ii.init.register( function(){
 	
 	fin.pay.payCheck.payCheckRequestArgs = {
 		id: {type: Number}
+		, statusType: {type: Number, required: false, defaultValue: 0}
 		, houseCodeId: {type: Number, required: false, defaultValue: 0}
 		, houseCodeTitle: {type: String, required: false, defaultValue: ""}
 		, requestedDate: {type: String, required: false, defaultValue: ""}
@@ -135,10 +141,10 @@ ii.Class({
 });
 
 ii.Class({
-	Name: "fin.pay.payCheck.HouseCodeDetail",
+	Name: "fin.pay.payCheck.Status",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.pay.payCheck.houseCodeDetailArgs);
+			var args = ii.args(arguments, fin.pay.payCheck.statusArgs);
 			$.extend(this, args);
 		}
 	}
@@ -180,6 +186,10 @@ ii.Class({
 		init: function() {
 			var args = ii.args(arguments, fin.pay.payCheck.payCodeDetailArgs);
 			$.extend(this, args);
+			
+			if (!this.payCode) {
+				this.payCode = [];
+			}
 		}
 	}
 });

@@ -3,6 +3,7 @@ ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.pay.payCheck.usr.defs" );
 ii.Import( "fin.cmn.usr.houseCodeSearch" );
@@ -15,6 +16,7 @@ ii.Style( "fin.cmn.usr.input", 4 );
 ii.Style( "fin.cmn.usr.dropDown", 5 );
 ii.Style( "fin.cmn.usr.button", 6 );
 ii.Style( "fin.cmn.usr.grid", 7 );
+ii.Style( "fin.cmn.usr.toolbar", 8);
 
 ii.Class({
     Name: "fin.pay.payCheck.UserInterface",
@@ -25,8 +27,10 @@ ii.Class({
 			var me = this;
 			
 			me.pageLoading = true;
+			me.status = "new";
 			me.personId = 0;
-			
+			me.users = [];
+
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 
 			me.gateway = ii.ajax.addGateway("pay", ii.config.xmlProvider);
@@ -54,7 +58,8 @@ ii.Class({
 			me.configureCommunications();
 			me.setTabIndexes();
 			me.resizeControls();
-		
+			me.statusesLoaded();
+
 			me.state.fetchingData();
 			me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
 			me.payCodeTypeStore.fetch("userId:[user],payCodeType:", me.payCodeTypesLoaded, me);
@@ -73,23 +78,25 @@ ii.Class({
 					case "UPSDeliveryToUnitYes":
 						$("#LabelUnit").html("<span class='requiredFieldIndicator'>&#149;</span>Unit (House Code):");
 						$("#LabelUnitAddress").html("<span class='requiredFieldIndicator'>&#149;</span>Unit (House Code) Address:");
+						me.setUnitAddress();
 						break;
 						
 					case "UPSDeliveryToUnitNo":
 						$("#LabelUnit").html("<span id='nonRequiredFieldIndicator'>Unit (House Code):</span>");
 						$("#LabelUnitAddress").html("<span id='nonRequiredFieldIndicator'>Unit (House Code) Address:</span>");
-						me.unitAddress.resetValidation(false);
-						me.unitAddress.updateStatus();
+						me.unitAddress.resetValidation(true);
+						me.unitAddress.setValue("");
 						break;
 						
 					case "UPSDeliveryToHomeYes":
 						$("#LabelHome").html("<span class='requiredFieldIndicator'>&#149;</span>Home Address:");
+						me.setEmployeeAddress();
 						break;
 						
 					case "UPSDeliveryToHomeNo":
 						$("#LabelHome").html("<span id='nonRequiredFieldIndicator'>Home Address:</span>");
-						me.homeAddress.resetValidation(false);
-						me.homeAddress.updateStatus();
+						me.homeAddress.resetValidation(true);
+						me.homeAddress.setValue("");
 						break;
 				}
 			});
@@ -119,13 +126,72 @@ ii.Class({
 
 			$("#pageLoading").height(document.body.scrollHeight);
 			//$("#container").height($(window).height() - 95);
-			$("#container").height(1050);
+			$("#container").height(1010);
+			me.payCheckRequestGrid.setHeight(200);
 			me.payCodeDetailGrid.setHeight(150);
+			me.payCodeDetailReadOnlyGrid.setHeight(150);
 		},
 		
 		defineFormControls: function() {
 			var me = this;
 			
+			me.actionMenu = new ui.ctl.Toolbar.ActionMenu({
+				id: "actionMenu"
+			});  
+			
+			me.actionMenu
+				.addAction({
+					id: "importAction",
+					brief: "Payroll Check Request", 
+					title: "To view the payroll check request form.",
+					actionFunction: function() { me.actionPayCheckRequest(); }
+				})				
+				.addAction({
+					id: "batchStatusAction", 
+					brief: "Payroll Check Request Status", 
+					title: "To view the status of the payroll check request.",
+					actionFunction: function() { me.actionPayCheckRequestStatus(); }
+				});
+				
+			me.searchInput = new ui.ctl.Input.Text({
+				id: "SearchInput",
+				maxLength: 50
+			});
+			
+			me.statusType = new ui.ctl.Input.DropDown.Filtered({
+				id: "StatusType",
+				formatFunction: function( type ) { return type.title; }
+			});
+
+			me.statusType.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)	
+				.addValidation( function( isFinal, dataMap ) {
+					
+					if ((this.focused || this.touched) && me.statusType.indexSelected == -1)
+						this.setInvalid("Please select the correct Status.");
+				});
+			
+			me.payCheckRequestGrid = new ui.ctl.Grid({
+				id: "PayCheckRequestGrid",
+				appendToId: "divForm",
+				allowAdds: false,
+				selectFunction: function(index) { me.itemSelect(index); }
+			});
+			
+			me.payCheckRequestGrid.addColumn("houseCodeTitle", "houseCodeTitle", "House Code", "House Code", null);
+			me.payCheckRequestGrid.addColumn("employeeNumber", "employeeNumber", "Employee #", "Employee Number", 120);
+			me.payCheckRequestGrid.addColumn("requestorName", "requestorName", "Requestor Name", "Requestor Name", 300);
+			me.payCheckRequestGrid.addColumn("statusType", "statusType", "Status", "Status", 100, function(statusType) {
+				if (statusType == 2)
+					return "In Process";
+				else if (statusType == 8)
+                	return "Approved";
+				else if (statusType == 9)
+                	return "Completed";
+           	});
+			me.payCheckRequestGrid.capColumns();
+
 			me.requestedDate = new ui.ctl.Input.Date({
 		        id: "RequestedDate",
 				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
@@ -447,7 +513,35 @@ ii.Class({
 			me.earning.active = false;
 			me.alternateBaseRate.active = false;
 			me.workOrderTicketNumber.active = false;
+			
+			me.payCodeDetailReadOnlyGrid = new ui.ctl.Grid({
+				id: "PayCodeDetailReadOnlyGrid"
+			});
 
+			me.payCodeDetailReadOnlyGrid.addColumn("payCode", "payCode", "Pay Code", "Pay Code", null, function(payCode) { return payCode.brief + " - " + payCode.name;	});
+			me.payCodeDetailReadOnlyGrid.addColumn("hours", "hours", "Hours", "Hours", 100);
+			me.payCodeDetailReadOnlyGrid.addColumn("date", "date", "Date", "Date", 120);
+			me.payCodeDetailReadOnlyGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 100, function(earning) { return ui.cmn.text.money.format(earning); });
+			me.payCodeDetailReadOnlyGrid.addColumn("alternateBaseRate", "alternateBaseRate", "Alternate Base Rate", "Alternate Base Rate", 180, function(alternateBaseRate) { return ui.cmn.text.money.format(alternateBaseRate); });
+			me.payCodeDetailReadOnlyGrid.addColumn("workOrderTicketNumber", "workOrderTicketNumber", "Work Order Ticket #", "Work Order Ticket Number", 170);
+			me.payCodeDetailReadOnlyGrid.capColumns();
+
+			me.anchorSearch = new ui.ctl.buttons.Sizeable({
+				id: "AnchorSearch",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Search&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionSearchItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorNew = new ui.ctl.buttons.Sizeable({
+				id: "AnchorNew",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;New&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionNewItem(); },
+				hasHotState: true
+			});
+			
 			me.anchorSendRequest = new ui.ctl.buttons.Sizeable({
 				id: "AnchorSendRequest",
 				className: "iiButton",
@@ -601,18 +695,35 @@ ii.Class({
 			me.managerEmail.resizeText();			
 		},
 		
-		resetControls: function() {
+		resetControls: function(status) {
 			var me = this;
 
+			me.status = status;
+			if (me.payCodeDetailGrid.activeRowIndex >= 0)
+				me.payCodeDetailGrid.body.deselect(me.payCodeDetailGrid.activeRowIndex, true);
+
+			me.requestedDate.resetValidation(true);
+			me.deliveryDate.resetValidation(true);
+			me.employeeNumber.resetValidation(true);
+			me.employeeName.resetValidation(true);
+			me.reasonForRequest.resetValidation(true);
+			me.state.resetValidation(true);
+			me.unitAddress.resetValidation(true);
+			me.homeAddress.resetValidation(true);
+			me.requestorEmail.resetValidation(true);
+			me.managerName.resetValidation(true);
+			me.managerEmail.resetValidation(true);
+			me.state.updateStatus();
+			
 			me.requestedDate.setValue("");
 			me.deliveryDate.setValue("");
 			me.employeeNumber.setValue("");
 			me.employeeName.setValue("");
 			me.reasonForRequest.setValue("");
+			me.state.reset();
 			me.unitAddress.setValue("");
 			me.upsPackageAttentionTo.setValue("");
 			me.homeAddress.setValue("");
-			me.state.reset();
 			me.deductionCode.setValue("");
 			me.amount.setValue("");
 			me.requestorName.setValue("");
@@ -620,14 +731,89 @@ ii.Class({
 			me.managerName.setValue("");
 			me.managerEmail.setValue("");
 			me.payCodeDetailGrid.setData([]);
+			me.payCodeDetailReadOnlyGrid.setData([]);
+			
+			$("#houseCodeText").val("");
+			$("#houseCodeTemplateText").val("");
 			$("#TermRequestYes")[0].checked = true;
 			$("#CurrentPayCardUserYes")[0].checked = true;
 			$("#InstantIssueRequestYes")[0].checked = true;
 			$("#UPSDeliveryToUnitYes")[0].checked = true;
-			$("#SaturdayDeliveryUnitYes")[0].checked = true;					
-			$("#UPSDeliveryToHomeYes")[0].checked = true;			
-			$("#SaturdayDeliveryHomeYes")[0].checked = true;			
-			$("#ProcessingFeeYes")[0].checked = true;			
+			$("#SaturdayDeliveryUnitYes")[0].checked = true;
+			$("#UPSDeliveryToHomeYes")[0].checked = true;
+			$("#SaturdayDeliveryHomeYes")[0].checked = true;
+			$("#ProcessingFeeYes")[0].checked = true;
+
+			if (me.status == "new") {
+				me.setUserInfo();
+				me.resizeControls();
+			}				
+		},
+		
+		setReadOnly: function(readOnly) {
+			var me = this;
+
+			$("#houseCodeText")[0].readOnly = readOnly;
+			$("#houseCodeTemplateText")[0].readOnly = readOnly;
+			me.requestedDate.text.readOnly = readOnly;
+			me.deliveryDate.text.readOnly = readOnly;
+			me.employeeNumber.text.readOnly = readOnly;
+			me.employeeName.text.readOnly = readOnly;
+			me.reasonForRequest.text.readOnly = readOnly;
+			me.state.text.readOnly = readOnly;
+			me.unitAddress.text.readOnly = readOnly;
+			me.upsPackageAttentionTo.text.readOnly = readOnly;
+			me.homeAddress.text.readOnly = readOnly;
+			me.deductionCode.text.readOnly = readOnly;
+			me.amount.text.readOnly = readOnly;
+			me.managerName.text.readOnly = readOnly;
+			me.managerEmail.text.readOnly = readOnly;
+			me.requestorEmail.text.readOnly = readOnly;
+			
+			$("#TermRequestYes")[0].disabled = readOnly;
+			$("#TermRequestNo")[0].disabled = readOnly;
+			$("#CurrentPayCardUserYes")[0].disabled = readOnly;
+			$("#CurrentPayCardUserNo")[0].disabled = readOnly;
+			$("#InstantIssueRequestYes")[0].disabled = readOnly;
+			$("#InstantIssueRequestNo")[0].disabled = readOnly;
+			$("#UPSDeliveryToUnitYes")[0].disabled = readOnly;
+			$("#UPSDeliveryToUnitNo")[0].disabled = readOnly;
+			$("#SaturdayDeliveryUnitYes")[0].disabled = readOnly;
+			$("#SaturdayDeliveryUnitNo")[0].disabled = readOnly;
+			$("#UPSDeliveryToHomeYes")[0].disabled = readOnly;
+			$("#UPSDeliveryToHomeNo")[0].disabled = readOnly;
+			$("#SaturdayDeliveryHomeYes")[0].disabled = readOnly;
+			$("#SaturdayDeliveryHomeNo")[0].disabled = readOnly;
+			$("#ProcessingFeeYes")[0].disabled = readOnly;
+			$("#ProcessingFeeNo")[0].disabled = readOnly;
+
+			if (readOnly) {
+				$("#RequestedDateAction").removeClass("iiInputAction");
+				$("#DeliveryDateAction").removeClass("iiInputAction");
+				$("#StateAction").removeClass("iiInputAction");
+				$("#houseCodeTextDropImage").removeClass("HouseCodeDropDown");
+				$("#houseCodeTemplateTextDropImage").removeClass("HouseCodeDropDown");
+			}
+			else  {
+				$("#RequestedDateAction").addClass("iiInputAction");
+				$("#DeliveryDateAction").addClass("iiInputAction");
+				$("#StateAction").addClass("iiInputAction");
+				$("#houseCodeTextDropImage").addClass("HouseCodeDropDown");
+				$("#houseCodeTemplateTextDropImage").addClass("HouseCodeDropDown");
+			}
+		},
+
+		statusesLoaded: function() {
+			var me = this;
+
+			me.statuses = [];
+			me.statuses.push(new fin.pay.payCheck.Status(0, "[All]"));
+			me.statuses.push(new fin.pay.payCheck.Status(2, "In Process"));
+			me.statuses.push(new fin.pay.payCheck.Status(8, "Approved"));
+			me.statuses.push(new fin.pay.payCheck.Status(9, "Completed"));
+
+			me.statusType.setData(me.statuses);
+			me.statusType.select(0, me.statusType.focused);
 		},
 		
 		stateTypesLoaded: function(me, activeId) {
@@ -666,11 +852,18 @@ ii.Class({
 			
 			if (me.sites.length == 0)
 				alert("Either Site information not found or Site is not associated to the House Code [" + me.houseCodeSearchTemplate.houseCodeTitleTemplate + "]. Please verify and try again!")
-			else {
+			else
+				me.setUnitAddress();
+		},
+		
+		setUnitAddress: function() {
+			var me = this;
+
+			if (me.sites.length > 0) {
 				var address = me.sites[0].addressLine1 + ", ";
 				address += (me.sites[0].addressLine2 == "" ? "" : me.sites[0].addressLine2 + ", ");
 				address += me.sites[0].city + ", ";
-				address += (me.sites[0].county == "" ? "" : me.sites[0].county + ", ");				
+				address += (me.sites[0].county == "" ? "" : me.sites[0].county + ", ");
 				var index = ii.ajax.util.findIndexById(me.sites[0].state.toString(), me.stateTypes);
 				if (index != undefined && index >= 0)
 					address += me.stateTypes[index].name + ", ";
@@ -697,29 +890,33 @@ ii.Class({
 		searchEmployee: function() {
 			var me = this;
 
-			$("#EmployeeNumberText").addClass("Loading");
-			me.employeeStore.fetch("userId:[user],searchValue:" + me.employeeNumber.getValue()
-				+ ",employeeType:SearchFull"
-				+ ",filterType:Employee Number"
-				, me.employeesLoaded, me);
+			if (me.status == "new") {
+				$("#EmployeeNumberText").addClass("Loading");
+				me.employeeStore.fetch("userId:[user],searchValue:" + me.employeeNumber.getValue()
+					+ ",employeeType:SearchFull"
+					+ ",filterType:Employee Number"
+					, me.employeesLoaded, me);
+			}
 		},
 		
 		employeesLoaded: function(me, activeId) {
 
 			$("#EmployeeNumberText").removeClass("Loading");
 
-			if (me.employees.length == 0) {
-				alert("There is no Employee with Employe # [" + me.employeeNumber.getValue() + "].");
-				me.employeeNumber.setValue("");
-				me.employeeName.setValue("");
-				return;
-			}
-			else {
+			if (me.employees.length == 1) {
 				me.employeeName.setValue(me.employees[0].firstName + " " + me.employees[0].lastName);
 				if (me.personId != me.employees[0].id) {
 					me.personId = me.employees[0].id;
 					me.personStore.fetch("userId:[user],id:" + me.employees[0].id, me.personsLoaded, me);
 				}
+				else
+					me.personsLoaded(me, 0);
+			}
+			else {
+				alert("There is no Employee with Employe # [" + me.employeeNumber.getValue() + "].");
+				me.employeeNumber.setValue("");
+				me.employeeName.setValue("");
+				return;
 			}
 		},
 		
@@ -729,30 +926,161 @@ ii.Class({
 			if (me.persons.length > 0) {
 				if (me.pageLoading) {
 					me.pageLoading = false;
-					me.requestorName.setValue(me.persons[0].firstName + " " + me.persons[0].lastName + " [" + me.session.propertyGet("userName") + "]");
-					me.requestorEmail.setValue(me.persons[0].email);
+					me.users = me.persons.slice();
+					me.setUserInfo();
 					me.requestorName.text.readOnly = true;
 				}
-				else {
-					var address = me.persons[0].addressLine1 + ", ";
-					address += (me.persons[0].addressLine2 == "" ? "" : me.persons[0].addressLine2 + ", ");
-					address += me.persons[0].city + ", ";					
-					var index = ii.ajax.util.findIndexById(me.persons[0].state.toString(), me.stateTypes);
-					if (index != undefined && index >= 0)
-						address += me.stateTypes[index].name + ", ";
-					address += me.persons[0].postalCode;
-					me.homeAddress.setValue(address);
-				}
+				else
+					me.setEmployeeAddress();
 			}
 		},
+		
+		setEmployeeAddress: function() {
+			var me = this;
 
+			if (me.employeeNumber.getValue() != "" && me.employeeNumber.valid) {
+				var address = me.persons[0].addressLine1 + ", ";
+				address += (me.persons[0].addressLine2 == "" ? "" : me.persons[0].addressLine2 + ", ");
+				address += me.persons[0].city + ", ";
+				var index = ii.ajax.util.findIndexById(me.persons[0].state.toString(), me.stateTypes);
+				if (index != undefined && index >= 0)
+					address += me.stateTypes[index].name + ", ";
+				address += me.persons[0].postalCode;
+				me.homeAddress.setValue(address);
+			}
+		},
+		
+		setUserInfo: function() {
+			var me = this;
+			
+			me.houseCodeSearchTemplate.houseCodeIdTemplate = 0;
+			me.houseCodeSearchTemplate.houseCodeTitleTemplate = "";
+			me.requestorName.setValue(me.users[0].firstName + " " + me.users[0].lastName + " [" + me.session.propertyGet("userName") + "]");
+			me.requestorEmail.setValue(me.users[0].email);			
+			$("#houseCodeText").val(parent.fin.appUI.houseCodeTitle);
+			$("#houseCodeTemplateText").val("");
+		},
+		
+		actionPayCheckRequest: function() {
+			var me = this;
+			
+			$("#PayCodeDetailGrid").show();
+			$("#searchContainer").hide();
+			$("#PayCodeDetailReadOnlyGrid").hide();
+
+			me.setReadOnly(false);
+			me.resetControls("new");
+			me.anchorNew.display(ui.cmn.behaviorStates.enabled);
+			me.anchorSendRequest.display(ui.cmn.behaviorStates.enabled);
+			me.anchorUndo.display(ui.cmn.behaviorStates.enabled);
+		},
+		
+		actionPayCheckRequestStatus: function() {
+			var me = this;
+
+			$("#PayCodeDetailGrid").hide();
+			$("#searchContainer").show();
+			$("#PayCodeDetailReadOnlyGrid").show();
+			
+			me.setReadOnly(true);
+			me.resetControls("");
+			me.searchInput.setValue("");
+			me.statusType.select(0, me.statusType.focused);
+			me.searchInput.resizeText();
+			me.statusType.resizeText();
+			me.anchorNew.display(ui.cmn.behaviorStates.disabled);
+			me.anchorSendRequest.display(ui.cmn.behaviorStates.disabled);
+			me.anchorUndo.display(ui.cmn.behaviorStates.disabled);
+			me.payCheckRequestGrid.setData([]);
+			me.payCheckRequestGrid.setHeight(200);
+			me.payCodeDetailReadOnlyGrid.setHeight(150);
+		},
+		
+		actionSearchItem: function() {
+			var me = this;
+
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").show();
+
+			me.resetControls("");
+			me.payCheckRequestStore.reset();
+			me.payCheckRequestStore.fetch("userId:[user],searchValue:" + me.searchInput.getValue() 
+				+ ",statusType:" + (me.statusType.indexSelected == -1 ? 0 : me.statuses[me.statusType.indexSelected].id)
+				, me.payCheckRequestsLoaded, me);
+		},
+		
+		payCheckRequestsLoaded: function(me, activeId) {
+			var index = 0;
+
+			$("#pageLoading").hide();
+			me.payCheckRequestGrid.setData(me.payCheckRequests);
+		},
+		
+		itemSelect: function() {
+			var args = ii.args(arguments,{
+				index: {type: Number}
+			});
+			var me = this;
+			var index = args.index;
+			var item = me.payCheckRequestGrid.data[index];
+
+			$("#houseCodeText").val(item.houseCodeTitle);
+			$("#houseCodeTemplateText").val(item.deliveryHouseCodeTitle);
+			me.requestedDate.setValue(item.requestedDate);
+			me.deliveryDate.setValue(item.deliveryDate);
+			me.employeeNumber.setValue(item.employeeNumber);
+			me.employeeName.setValue(item.employeeName);
+			me.reasonForRequest.setValue(item.reasonForRequest);
+
+			var itemIndex = ii.ajax.util.findIndexById(item.stateType.toString(), me.stateTypes);
+			if (itemIndex != undefined && itemIndex >= 0)
+				me.state.select(itemIndex, me.state.focused);
+			else
+				me.state.reset();
+			
+			$("input[name='TermRequest'][value='" + item.termRequest + "']").attr("checked", "checked");  
+			$("input[name='CurrentPayCardUser'][value='" + item.currentPayCardUser + "']").attr("checked", "checked");  
+			$("input[name='InstantIssueRequest'][value='" + item.instantIssueRequest + "']").attr("checked", "checked");  
+			$("input[name='UPSDeliveryToUnit'][value='" + item.upsDeliveryToUnit + "']").attr("checked", "checked");  
+			$("input[name='SaturdayDeliveryUnit'][value='" + item.saturdayDeliveryUnit + "']").attr("checked", "checked");  
+			$("input[name='UPSDeliveryToHome'][value='" + item.upsDeliveryToHome + "']").attr("checked", "checked");  
+			$("input[name='SaturdayDeliveryHome'][value='" + item.saturdayDeliveryHome + "']").attr("checked", "checked");  
+			$("input[name='ProcessingFee'][value='" + item.stopPaymentProcessingFee + "']").attr("checked", "checked");  
+		
+			me.unitAddress.setValue(item.houseCodeAddress);
+			me.upsPackageAttentionTo.setValue(item.upsPackageAttentionTo);
+			me.homeAddress.setValue(item.homeAddress);
+			me.deductionCode.setValue(item.deductionCodes);
+			me.amount.setValue(item.amount);
+			me.requestorName.setValue(item.requestorName);
+			me.requestorEmail.setValue(item.requestorEmail);
+			me.managerName.setValue(item.managerName);
+			me.managerEmail.setValue(item.managerEmail);
+
+			$("#pageLoading").show();
+			me.payCodeDetailStore.fetch("userId:[user],payCheckRequest:" + item.id, me.payCodeDetailsLoaded, me);
+		},
+		
+		payCodeDetailsLoaded: function(me, activeId) {
+			var index = 0;
+
+			$("#pageLoading").hide();
+			me.payCodeDetailReadOnlyGrid.setData(me.payCodeDetails);
+			me.payCodeDetailReadOnlyGrid.setHeight(150);
+		},
+
+		actionNewItem: function() {
+			var args = ii.args(arguments,{});
+			var me = this;
+
+			me.resetControls("new");
+		},
+		
 		actionUndoItem: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
 
-			if (me.payCodeDetailGrid.activeRowIndex >= 0) 
-				me.payCodeDetailGrid.body.deselect(me.payCodeDetailGrid.activeRowIndex, true);
-			me.resetControls();
+			me.resetControls("new");
 		},
 		
 		actionSendRequestItem: function() {
@@ -763,7 +1091,6 @@ ii.Class({
 				alert("Please select the Unit (House Code).");
 				return false;
 			}
-			
 
 			me.payCodeDetailGrid.body.deselectAll();
 			me.validator.forceBlur();
@@ -779,6 +1106,7 @@ ii.Class({
 			
 			var item = new fin.pay.payCheck.PayCheckRequest(
 				0
+				, 2
 				, parent.fin.appUI.houseCodeId
 				, parent.fin.appUI.houseCodeTitle
 				, me.requestedDate.lastBlurValue
@@ -807,7 +1135,7 @@ ii.Class({
 				, me.managerName.getValue()				
 				, me.managerEmail.getValue()
 				);	
-			
+
 			var xml = me.saveXmlBuildItem(item);
 
 			// Send the object back to the server as a transaction
@@ -893,12 +1221,14 @@ ii.Class({
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
 
-			if (status == "success")
-				ii.trace("Payroll check request sent successfully.", ii.traceTypes.Information, "Info");
+			$("#pageLoading").hide();
+
+			if (status == "success") {
+				alert("Payroll check request sent successfully.");
+				me.resetControls("new");
+			}
 			else
 				alert("[SAVE FAILURE] Error while sending the payroll check request: " + $(args.xmlNode).attr("message"));
-
-			$("#pageLoading").hide();
 		}
     }
 });

@@ -26,10 +26,32 @@
 			</table>
 		</div>
 		
+		<div class="pageHeader">
+			<div id="actionHeader">
+		        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
+				<div id="pageHeader" class="header">Payroll Check Request Form</div>
+	        </div>
+		</div>
+		
 		<div class="pageBody">
 			<div class="contentArea">
-				<div class="header">Payroll Check Request Form</div>
-				<div class="body" id="container">
+				<div id="searchContainer" style="display:none;">
+					<div class="labelTextSearch">House Code, Requestor Name, Employee #:</div>
+					<div class="inputTextArea">
+						<div id="SearchInput"></div>
+					</div>
+					<div class="labelStatus">Status:</div>		
+					<div class="inputTextArea">
+						<div id="StatusType"></div>
+					</div>
+					<div id="AnchorSearch"></div>
+					<div style="clear:both;"></div>
+					<div id="PayCheckGrid">
+						<div id="PayCheckRequestGrid"></div>
+					</div>
+					<div style="clear:both;"></div>
+				</div>
+				<div class="body" id="container">					
 					<div class="labelHeaderSmall">Fax # (610) 576-5221&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Email: SuS-Payroll@compass-usa.com</div>
 					<div style="clear:both;"></div>
 					<div class="labelHeaderSmall">Received by 4:00 pm EST, will be processed same business day (There may be exceptions based on priority and volume).</div>
@@ -294,6 +316,7 @@
 					<div style="clear:both;"></div>
 					<div id="PayCodeGrid">
 						<div id="PayCodeDetailGrid"></div>
+						<div id="PayCodeDetailReadOnlyGrid" style="display:none;"></div>
 					</div>
 					<div style="clear:both;"></div>
 					<div id="TableEditArea">
@@ -384,6 +407,7 @@
 			</div>
 			<div style="clear:both;"></div>
 			<div class="contentArea">
+				<div id="AnchorNew"></div>
 				<div id="AnchorSendRequest"></div>
 				<div id="AnchorUndo"></div>
 			</div>
