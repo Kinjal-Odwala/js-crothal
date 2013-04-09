@@ -7,6 +7,22 @@ ii.init.register( function fin_cmn_startup_init(){
 	 */
 	fin.cmn = {};
 	
+	fin.cmn.status = {
+
+		itemValid: function fin_cmn_status_itemValid() {
+			if (parent.fin.appUI.modified) {
+				if (confirm("The current item was modified and you will lose unsaved data if you navigate from current item. Press OK to continue, or Cancel to remain on the current item.")) {
+					parent.fin.appUI.modified = false;
+					return true;
+				}
+				else
+					return false;
+			}
+			else
+				return true;
+		}
+	};
+
 	fin.cmn.text = {
 				
 		mask:{
@@ -88,5 +104,18 @@ ii.init.register( function fin_cmn_startup_init1() {
 	
 	ii.Session.dataArgs.personId = {type: Number, required: false, defaultValue: 0};
     ii.Session.dataArgs.environmentName = {type: String, required: false, defaultValue: ""};
-
+	
+	/* @iiDoc {Function}
+	 * Provide a confirmation if unsaved work is present when
+	 * the user trys to navigate away.
+	 */
+	window.onbeforeunload = function(event) {
+		if (parent.fin.appUI.modified) {
+			var message = "You will lose unsaved data if you navigate from page now.";
+			if (event) {
+				event.returnValue = message;
+			}
+			return message;
+		}
+	};
 });
