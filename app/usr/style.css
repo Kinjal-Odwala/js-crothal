@@ -725,7 +725,6 @@ body
 	width: 24px;
 }
 
-
 #ToolMenuLogout 
 {
 	color:#032D23;
@@ -737,12 +736,29 @@ body
 	margin-top:6px;
 	text-align:center;
 }
+
 #ToolMenuLogout.Hot 
 {
 	color:#012C40;
 	text-decoration:underline;
 }
 
+#ToolMenuFeedback {
+	color: #032D23;
+	cursor: pointer;
+	float: right;
+	font-family: Verdana, Geneva, Arial, Helvetica,sans-serif;
+	font-size: 8pt;
+	height: 24px;
+	margin-top: 6px;
+	margin-right: 10px;
+	text-align: center;
+}
+
+#ToolMenuFeedback.Hot {
+	color: #012C40;
+	text-decoration: underline;
+}
 
 #ToolMenuZoomIn 
 {
@@ -1153,4 +1169,23 @@ body
 	float: left;
 	color: #032D23;
 	padding-right: 0px;
+}
+
+#popupFeedback {
+	position: absolute;
+	z-index: 5025;
+	width: 600px;
+	height: 400px;
+	background-color: #FFFFFF;
+	border: 1px #A5A5A5 solid;
+	border-width: 1px;
+	display: none;
+}
+
+#backgroundPopup {
+	position: fixed;
+	z-index: 5000;
+	border: none;
+	background-color: black;
+	display: none;
 }

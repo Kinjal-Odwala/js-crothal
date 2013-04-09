@@ -49,7 +49,7 @@ ii.Class({
 				me.cache = me.gateway.targets.iiCache.referenceData;
 			else
 				me.cache = new ii.ajax.Cache(me.gateway);
-				
+
 			me.session = new ii.Session(me.cache);
 			
 			me.userRoles = [];
@@ -68,8 +68,17 @@ ii.Class({
 				injectionArray: me.weekPeriodYears
 			});
 			
+			me.systemVariables = [];
+			me.systemVariableStore = me.cache.register({
+				storeId: "systemVariables",
+				itemConstructor: fin.app.SystemVariable,
+				itemConstructorArgs: fin.app.systemVariableArgs,
+				injectionArray: me.systemVariables
+			});
+			
 			me.userRoleStore.fetch("userId:[user],", me.userRolesLoaded, me);
 			me.weekPeriodYearStore.fetch("userId:[user],", me.weekPeriodYearLoaded, me);
+			me.systemVariableStore.fetch("userId:[user],name:ShowFeedbackLink", me.systemVariablesLoaded, me);
 		},
 		
 		weekPeriodYearLoaded: function fin_app_UserInterface_weekPeriodYearLoaded(me, activeId) {
@@ -81,6 +90,23 @@ ii.Class({
 				me.glbFscYear = me.weekPeriodYears[0].yearId;
 				me.glbfiscalYear = me.weekPeriodYears[0].fiscalYear;
 				me.glbCurrentDate = me.weekPeriodYears[0].currentDate;
+			}
+		},
+		
+		systemVariablesLoaded: function fin_app_UserInterface_systemVariablesLoaded(me, activeId) {
+
+			if (me.systemVariables.length > 0 && me.systemVariables[0].variableValue == "Yes") {
+				$("#ToolMenuLogout").after("<div id='ToolMenuFeedback'></div>");
+
+				me.toolMenuFeedback = new ui.ctl.buttons.Simple({ 
+					id: "ToolMenuFeedback", 
+					clickFunction: function() {	me.showFeedbackForm(); },  
+					appendToId: "iiMenuHorizontalHeaderMiddle",
+					className: "ToolMenuLogout",
+					hasHotState: true,
+					text: "Feedback",
+					title: "Provide feedback/comments."
+				});
 			}
 		},
 		
@@ -218,6 +244,40 @@ ii.Class({
 					errorMessage += " [SAVE FAILURE]";
 				}
 			}
+		},
+		
+		showFeedbackForm: function fin_app_UserInterface_showFeedbackForm() {
+			var me = this;
+
+			$("iFrame")[1].src = "/fin/app/feedback/usr/markup.htm";
+
+			var windowWidth = $("#appContent").width();
+			var windowHeight = $("#appContent").height();
+			var popupWidth = $("#popupFeedback").width();
+			var popupHeight = $("#popupFeedback").height();
+
+			$("#backgroundPopup").css({
+				"opacity": "0.5",
+				"width": windowWidth,
+				"height": windowHeight,
+				"top": $("#appContent").position().top,
+				"left": $("#appContent").position().left + 10
+			});
+
+			$("#popupFeedback").css({
+				"top": (windowHeight/2 - popupHeight/2) + $("#panelTop").height(),
+				"left": (windowWidth/2 - popupWidth/2) + $("#sideTabs").width()
+			});
+
+			$("#backgroundPopup").fadeIn("slow");
+			$("#popupFeedback").fadeIn("slow");
+		},
+
+		hideFeedbackForm: function fin_app_UserInterface_actionCancelItem() {
+			var me = this;
+
+			$("#popupFeedback").fadeOut("slow");
+			$("#backgroundPopup").fadeOut("slow");
 		}
 	}
 });
