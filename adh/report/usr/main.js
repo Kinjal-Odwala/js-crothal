@@ -8,6 +8,9 @@ ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.adh.report.usr.defs" );
 ii.Import( "fin.cmn.usr.datepicker" );
 ii.Import( "fin.cmn.usr.util" );
+ii.Import( "fin.cmn.usr.ui.core" );
+ii.Import( "fin.cmn.usr.ui.widget" );
+ii.Import( "fin.cmn.usr.multiselect" );
 
 ii.Style( "style", 1 );
 ii.Style( "fin.cmn.usr.common", 2 );
@@ -22,6 +25,7 @@ ii.Style( "fin.cmn.usr.demos", 10 );
 ii.Style( "fin.cmn.usr.core", 11 );
 ii.Style( "fin.cmn.usr.dropDown", 12 );
 ii.Style( "fin.cmn.usr.dateDropDown", 13 );
+ii.Style( "fin.cmn.usr.multiselect", 14 );
 
 ii.Class({
     Name: "fin.adh.UserInterface",
@@ -1312,6 +1316,27 @@ ii.Class({
 						changeYear: true
 					});
 				}
+				else if (me.reportFilters[index].referenceTableName != "") {
+					$("#" + me.reportFilters[index].title).multiselect({
+						minWidth: 200
+						, header: false
+						, noneSelectedText: ""
+						, selectedList: 5
+//						, selectedText: function(numChecked, numTotal, checkedItems) {
+//							return numChecked + ' of ' + numTotal + ' checked';   
+//						}
+//						, selectedText: function(selected, total, list) {
+//							var selectedTitle = "";
+//							for (var index =0; index < list.length; index++) {
+//								if (selectedTitle == "")
+//									selectedTitle = list[index].title;
+//								else
+//									selectedTitle += ", " + list[index].title;
+//							}
+//							return selectedTitle; 
+//						}
+					});
+				}
 			}
 			
 			for (var index = 0; index < dateControls.length; index++) {				
@@ -1424,7 +1449,13 @@ ii.Class({
 				else if ($("#" + me.reportFilters[index].title).val() != "") {
 					if ($("#" + me.reportFilters[index].title).val() != "0") {
 						if (me.reportFilters[index].referenceTableName != "") { //dropdown selection
-							me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = " + $("#" + me.reportFilters[index].title).val() + ")";
+							var inQuery = "In (";
+							var selectedValues = $("#" + me.reportFilters[index].title).multiselect("getChecked").map(function() { return this.value; }).get();
+							for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
+								inQuery += ((selectedIndex == 0) ? selectedValues[selectedIndex] : ", " + selectedValues[selectedIndex]) ;
+							}
+							inQuery += ")";
+							me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " " + inQuery + ")";
 						}
 						else if (me.reportFilters[index].validation.toLowerCase() == "datetime") {
 							if ($("#sel" + me.reportFilters[index].title).val() == 1 || $("#sel" + me.reportFilters[index].title).val() == undefined) {
@@ -2005,15 +2036,16 @@ ii.Class({
 			var rowHtml = "";
 			var typeTableData = me.getTypeTableData(args.typeTable, args.columnName);
 
-			rowHtml = "<select id='" + args.columnName + "' class='inputTextSize'>";
+			rowHtml = "<select id='" + args.columnName + "'>";
 
 			for (var index = 0; index < typeTableData.length; index++) {
 				if (typeTableData[index].name != undefined)
-						title = typeTableData[index].name;
-					else
-					    title = typeTableData[index].title;
-						
-				rowHtml += "	<option title='" + title + "' value='" + typeTableData[index].id + "'>" + title + "</option>";
+					title = typeTableData[index].name;
+				else
+				    title = typeTableData[index].title;
+				
+				if (title != "")
+					rowHtml += "	<option title='" + title + "' value='" + typeTableData[index].id + "'>" + title + "</option>";
 			}				
 
 			rowHtml += "</select>";
