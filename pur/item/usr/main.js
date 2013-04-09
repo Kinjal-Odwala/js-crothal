@@ -55,7 +55,8 @@ ii.Class({
 			
 			me.itemAccount.fetchingData();
 			me.accountStore.fetch("userId:[user]", me.accountsLoaded, me);				
-			me.itemStatusesLoaded();					
+			me.itemStatusesLoaded();
+			me.modified(false);
 		},	
 		
 		authorizationProcess: function fin_pur_item_UserInterface_authorizationProcess() {
@@ -180,7 +181,8 @@ ii.Class({
 
 			me.itemMasterId = new ui.ctl.Input.Text({
 		        id: "ItemMasterId",
-				maxLength: 255
+				maxLength: 255,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.itemMasterId.makeEnterTab()
@@ -189,7 +191,8 @@ ii.Class({
 			
 			me.itemNumber = new ui.ctl.Input.Text({
 		        id: "ItemNumber",
-				maxLength: 255 
+				maxLength: 255,
+				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.itemNumber.makeEnterTab()
@@ -198,7 +201,8 @@ ii.Class({
 			
 			me.itemNumber2 = new ui.ctl.Input.Text({
 		        id: "ItemNumber2",
-				maxLength: 255
+				maxLength: 255,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.itemNumber2.makeEnterTab()
@@ -207,7 +211,8 @@ ii.Class({
 				
 			me.itemDescription = new ui.ctl.Input.Text({
 		        id: "ItemDescription",
-				maxLength: 256
+				maxLength: 256,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.itemDescription.makeEnterTab()
@@ -216,7 +221,8 @@ ii.Class({
 			
 			me.itemComClass = new ui.ctl.Input.Text({
 		        id: "ItemComClass",
-				maxLength: 255
+				maxLength: 255,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.itemComClass.makeEnterTab()
@@ -225,7 +231,8 @@ ii.Class({
 				
 			me.itemComSubClass = new ui.ctl.Input.Text({
 		        id: "ItemComSubClass",
-				maxLength: 255
+				maxLength: 255,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.itemComSubClass.makeEnterTab()
@@ -234,7 +241,8 @@ ii.Class({
 				
 			me.itemSupplierClass = new ui.ctl.Input.Text({
 		        id: "ItemSupplierClass",
-				maxLength: 255
+				maxLength: 255,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.itemSupplierClass.makeEnterTab()
@@ -243,7 +251,8 @@ ii.Class({
 				
 			me.itemUom = new ui.ctl.Input.Text({
 		        id: "ItemUom",
-				maxLength: 255
+				maxLength: 255,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.itemUom.makeEnterTab()
@@ -252,7 +261,8 @@ ii.Class({
 			
 			me.itemAccount = new ui.ctl.Input.DropDown.Filtered({
 				id : "ItemAccount",
-				formatFunction: function( type ){ return type.code + " - " + type.description; }
+				formatFunction: function( type ){ return type.code + " - " + type.description; },
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.itemAccount.makeEnterTab()
@@ -269,7 +279,8 @@ ii.Class({
 				});
 				
 			me.itemPrice = new ui.ctl.Input.Text({
-		        id: "ItemPrice"
+		        id: "ItemPrice",
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.itemPrice.makeEnterTab()
@@ -288,16 +299,18 @@ ii.Class({
 			});
 						
 			me.itemActive = new ui.ctl.Input.Check({
-		        id: "ItemActive" 
+		        id: "ItemActive",
+				changeFunction: function() { me.modified(); }
 		    });
 			
-			me.itemActive.check.checked = true;
+			me.itemActive.setValue("true");
 			
 			me.itemGrid = new ui.ctl.Grid({
 				id: "ItemGrid",
 				appendToId: "divForm",
 				allowAdds: false,
-				selectFunction: function(index) { me.itemSelect(index); }
+				selectFunction: function(index) { me.itemSelect(index); },
+				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});
 			
 			me.itemGrid.addColumn("masterId", "masterId", "Master Id", "Master Id", 150);
@@ -346,6 +359,14 @@ ii.Class({
 				injectionArray: me.accounts	
 			});	
 		},
+	
+		modified: function fin_cmn_status_modified() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
+		},
 		
 		itemStatusesLoaded: function() {
 			me = this;
@@ -373,7 +394,10 @@ ii.Class({
 		
 		loadSearchResults: function() {
 			var me = this;	
-
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if(me.searchInput.getValue().length < 3) {
 				me.searchInput.setInvalid("Please enter search criteria (minimum 3 characters).");
 				return false;
@@ -435,7 +459,7 @@ ii.Class({
 
 			$("#pageLoading").hide();
 		},
-
+		
 		itemSelect: function() {
 			var args = ii.args(arguments,{
 				index: {type: Number}  // The index of the data subItem to select
@@ -444,12 +468,12 @@ ii.Class({
 			var index = args.index;
 			var itemIndex = 0;
 			var item = me.itemGrid.data[index];
-			
+				
 			me.lastSelectedRowIndex = index;
-			
+
 			if (item == undefined) 
 				return;
-			
+				
 			if (me.itemGrid.data[index] != undefined) {
 
 				me.itemId = me.itemGrid.data[index].id;		
@@ -463,11 +487,11 @@ ii.Class({
 				me.itemUom.setValue(me.itemGrid.data[index].uom);
 				
 				itemIndex = ii.ajax.util.findIndexById(me.itemGrid.data[index].account.toString(), me.accounts);
-				if(itemIndex >= 0 && itemIndex != undefined)
+				if (itemIndex >= 0 && itemIndex != undefined)
 					me.itemAccount.select(itemIndex, me.itemAccount.focused);
-					
+
 				me.itemPrice.setValue(me.itemGrid.data[index].price);
-				me.itemActive.check.checked = me.itemGrid.data[index].active;
+				me.itemActive.setValue(me.itemGrid.data[index].active.toString());
 			}
 			else
 				me.itemId = 0;	
@@ -524,7 +548,7 @@ ii.Class({
 			me.itemUom.setValue("");
 			me.itemAccount.reset();
 			me.itemPrice.setValue("");
-			me.itemActive.check.checked = true;
+			me.itemActive.setValue("true");
 			me.validateControl = true;
 		},
 
@@ -532,8 +556,10 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			me.status = "";
-			
 			if (me.lastSelectedRowIndex >= 0) {
 				me.itemGrid.body.select(me.lastSelectedRowIndex);
 				me.itemSelect(me.lastSelectedRowIndex);
@@ -546,6 +572,9 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			me.status = "new";
 			me.resetControls();
 			me.itemGrid.body.deselectAll();				
@@ -681,6 +710,7 @@ ii.Class({
 				}
 			}
 			
+			me.modified(false);
 			$("#pageLoading").hide();
 		}
 	}
