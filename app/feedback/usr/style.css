@@ -1,0 +1,45 @@
+﻿.labelText {	
+	float: left;
+	width: 170px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 0px 0px 0px 10px;
+}
+
+.inputTextArea {
+	float: left;
+	width: 350px;
+}
+
+#ContentArea {
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	padding: 5px;
+	height: 300px;
+}
+
+#Comments {
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	color: black;
+	font-family: Verdana;
+	font-size: 12px;
+	height: 250px;
+	width: 350px;
+}
+
+#AnchorSend {
+	float: left;
+	width: 68px;
+	margin: 10px 0px 0px 0px;
+	padding: 5px 5px 0px 0px;
+}
+
+#AnchorCancel {
+	float: left;
+	width: 80px;
+	margin: 10px 0px 0px 0px;
+	padding: 5px 0px 0px 0px;
+}
