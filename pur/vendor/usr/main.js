@@ -58,6 +58,10 @@ ii.Class({
 			me.stateType.fetchingData();					
 			me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);			
 			me.itemStatusesLoaded();	
+			me.modified(false);
+			
+			$("#AutoEmail").click(function() {parent.fin.appUI.modified = true;});
+			$("#VendorActive").click(function() {parent.fin.appUI.modified = true;});
 		},	
 		
 		authorizationProcess: function fin_pur_vendor_UserInterface_authorizationProcess() {
@@ -196,7 +200,8 @@ ii.Class({
 
 			me.vendorNumber = new ui.ctl.Input.Text({
 		        id: "VendorNumber",
-				maxLength: 16
+				maxLength: 16,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.vendorNumber.makeEnterTab()
@@ -205,7 +210,8 @@ ii.Class({
 			
 			me.title = new ui.ctl.Input.Text({
 		        id: "Title",
-				maxLength: 256
+				maxLength: 256,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.title.makeEnterTab()
@@ -214,7 +220,8 @@ ii.Class({
 			
 			me.addressLine1 = new ui.ctl.Input.Text({
 		        id: "AddressLine1",
-				maxLength: 256
+				maxLength: 256,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.addressLine1.makeEnterTab()
@@ -223,12 +230,14 @@ ii.Class({
 				
 			me.addressLine2 = new ui.ctl.Input.Text({
 		        id: "AddressLine2",
-				maxLength: 256
+				maxLength: 256,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.city = new ui.ctl.Input.Text({
 		        id: "City",
-				maxLength: 100
+				maxLength: 100,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.city.makeEnterTab()
@@ -237,7 +246,8 @@ ii.Class({
 				
 			me.stateType = new ui.ctl.Input.DropDown.Filtered({
 		        id: "State",
-				formatFunction: function( type ) { return type.name; }
+				formatFunction: function( type ) { return type.name; },
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.stateType.makeEnterTab()
@@ -251,7 +261,8 @@ ii.Class({
 				
 			me.zip = new ui.ctl.Input.Text({
 		        id: "Zip",
-				maxLength: 10
+				maxLength: 10,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.zip.makeEnterTab()
@@ -269,7 +280,8 @@ ii.Class({
 			
 			me.sendMethodId = new ui.ctl.Input.DropDown.Filtered({
 		        id: "SendMethod",
-				formatFunction: function( type ) { return type.name; }
+				formatFunction: function( type ) { return type.name; },
+				changeFunction: function() { me.modified(); }
 		    });
 				
 			me.sendMethodId.makeEnterTab()
@@ -283,12 +295,14 @@ ii.Class({
 			
 			me.contactName = new ui.ctl.Input.Text({
 		        id: "ContactName",
-				maxLength: 100
+				maxLength: 100,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.email = new ui.ctl.Input.Text({
 		        id: "Email",
-				maxLength: 200
+				maxLength: 200,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.email.makeEnterTab()
@@ -312,7 +326,8 @@ ii.Class({
 			
 			me.phoneNumber = new ui.ctl.Input.Text({
 		        id: "PhoneNumber",
-				maxLength: 14
+				maxLength: 14,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.phoneNumber.makeEnterTab()
@@ -332,7 +347,8 @@ ii.Class({
 										
 			me.faxNumber = new ui.ctl.Input.Text({
 		        id: "FaxNumber",
-				maxLength: 14
+				maxLength: 14,
+				changeFunction: function() { me.modified(); }
 		    });			
 			
 			me.faxNumber.makeEnterTab()
@@ -351,20 +367,23 @@ ii.Class({
 				});
 			
 			me.autoEmail = new ui.ctl.Input.Check({
-		        id: "AutoEmail" 
+		        id: "AutoEmail",
+				changeFunction: function() { me.modified(); }
 		    });
 				
 			me.active = new ui.ctl.Input.Check({
-		        id: "VendorActive" 
+		        id: "VendorActive",
+				changeFunction: function() { me.modified(); } 
 		    });
 			
-			me.active.check.checked = true;
+			me.active.setValue("true");
 			
 			me.vendorGrid = new ui.ctl.Grid({
 				id: "VendorsGrid",
 				appendToId: "divForm",
 				allowAdds: false,
-				selectFunction: function(index) { me.itemSelect(index); }
+				selectFunction: function(index) { me.itemSelect(index); },
+				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});
 			
 			me.vendorGrid.addColumn("vendorNumber", "vendorNumber", "Vendor#", "Vendor Number", 90);
@@ -374,7 +393,6 @@ ii.Class({
 			$("#SearchInputText").bind("keydown", me, me.actionSearchItem);
 			$("#VendorStatusText").bind("keydown", me, me.actionSearchItem);			  	        
 		},
-		
 				
 		configureCommunications: function fin_pur_UserInterface_configureCommunications() {
 			var args = ii.args(arguments, {});
@@ -405,6 +423,14 @@ ii.Class({
 			});	
 		},
 		
+		modified: function() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+			var me = this;
+			parent.fin.appUI.modified = args.modified;
+		},
+		
 		itemStatusesLoaded: function() {
 			me = this;
 			
@@ -432,6 +458,9 @@ ii.Class({
 		loadSearchResults: function() {
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if(me.searchInput.getValue().length < 3) {
 				me.searchInput.setInvalid("Please enter search criteria (minimum 3 characters).");
 				return false;
@@ -532,8 +561,8 @@ ii.Class({
 				me.email.setValue(me.vendorGrid.data[index].email != undefined ? me.vendorGrid.data[index].email : '');
 				me.faxNumber.setValue(me.vendorGrid.data[index].faxNumber != undefined ? me.vendorGrid.data[index].faxNumber : '');
 				me.phoneNumber.setValue(me.vendorGrid.data[index].phoneNumber != undefined ? me.vendorGrid.data[index].phoneNumber : '');
-				me.autoEmail.check.checked = me.vendorGrid.data[index].autoEmail;
-				me.active.check.checked = me.vendorGrid.data[index].active;
+				me.autoEmail.setValue(me.vendorGrid.data[index].autoEmail);
+				me.active.setValue(me.vendorGrid.data[index].active);
 			}
 			else
 				me.vendorId = 0;
@@ -591,8 +620,8 @@ ii.Class({
 			me.email.setValue("");
 			me.faxNumber.setValue("");
 			me.phoneNumber.setValue("");
-			me.autoEmail.check.checked = false;	
-			me.active.check.checked = true;
+			me.autoEmail.setValue("false");
+			me.active.setValue("true");
 			me.validateControl = true;
 		},
 
@@ -600,8 +629,10 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			me.status = "";
-			
 			if (me.lastSelectedRowIndex >= 0) {
 				me.vendorGrid.body.select(me.lastSelectedRowIndex);
 				me.itemSelect(me.lastSelectedRowIndex);
@@ -614,6 +645,9 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			me.status = "new";
 			me.resetControls();	
 			me.vendorGrid.body.deselectAll();					
@@ -755,6 +789,7 @@ ii.Class({
 				}
 			}
 			
+			me.modified(false);
 			$("#pageLoading").hide();
 		}
 	}

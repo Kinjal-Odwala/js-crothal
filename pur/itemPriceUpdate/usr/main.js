@@ -48,6 +48,7 @@ ii.Class({
 
 			me.defineFormControls();
 			me.configureCommunications();
+			me.modified(false);
 
 			$(window).bind("resize", me, me.resize );
 			$(document).bind("keydown", me, me.controlKeyProcessor);
@@ -71,8 +72,11 @@ ii.Class({
 					$("#UpdateByPercentage").show();
 				}
 			});
-
+			
 			setTimeout(function() { me.resizeControls(); }, 500);
+			$("#SelectItemPrice").click(function() { me.modified(true); });
+			$("input[name='ScheduleOn']").change(function() { me.modified(true); });
+			$("input[name='UpdatePriceBy']").change(function() { me.modified(true); });
 		},	
 
 		authorizationProcess: function fin_pur_itemPriceUpdate_UserInterface_authorizationProcess() {
@@ -206,7 +210,8 @@ ii.Class({
 
 			me.effectiveDate = new ui.ctl.Input.Date({
 		        id: "EffectiveDate",
-				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
+				changeFuncAtDateClick: function() { me.modified(); }
 		    });
 
 			me.effectiveDate.makeEnterTab()
@@ -226,7 +231,8 @@ ii.Class({
 				});
 
 			me.price = new ui.ctl.Input.Money({
-		        id: "Price"
+		        id: "Price",
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.price.makeEnterTab()
@@ -251,7 +257,8 @@ ii.Class({
 		    });
 			
 			me.itemPrice = new ui.ctl.Input.Text({
-		        id: "ItemPrice"
+		        id: "ItemPrice",
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.itemPrice.text.readOnly = true;
@@ -260,7 +267,8 @@ ii.Class({
 				id: "ItemGrid",
 				appendToId: "divForm",
 				allowAdds: false,
-				selectFunction: function(index) { me.itemSelect(index); }
+				selectFunction: function(index) { me.itemSelect(index); },
+				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});
 
 			me.itemGrid.addColumn("number", "number", "Number", "Number", 120);
@@ -276,7 +284,7 @@ ii.Class({
 
 			me.catalogItemGrid.addColumn("itemSelect", "itemSelect", "", "", 30, function() {
 				var index = me.catalogItemGrid.rows.length - 1;
-               	return "<input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onclick=\"fin.itemPriceUpdateUi.actionClickItem(this);\" />";
+               	return "<input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onclick=\"fin.itemPriceUpdateUi.actionClickItem(this);\" onchange=\"parent.fin.appUI.modified = true;\"/>";
             });
 			me.catalogItemGrid.addColumn("catalogTitle", "catalogTitle", "Catalog Title", "Catalog Title", null);
 			me.catalogItemGrid.addColumn("price", "price", "Price", "Price", 90);
@@ -305,6 +313,14 @@ ii.Class({
 				itemConstructorArgs: fin.pur.itemPriceUpdate.catalogItemArgs,
 				injectionArray: me.catalogItems				
 			});
+		},
+		
+		modified: function() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+
+			parent.fin.appUI.modified = args.modified;
 		},
 		
 		resizeControls: function() {
@@ -349,7 +365,10 @@ ii.Class({
 		
 		loadSearchResults: function() {
 			var me = this;	
-
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if (me.searchInput.getValue().length < 3) {
 				me.searchInput.setInvalid("Please enter search criteria (minimum 3 characters).");
 				return false;
@@ -407,7 +426,10 @@ ii.Class({
 
 			if (me.selectAll.check.checked) {
 				$("#SelectAllCheck").trigger("click");
-				$("#SelectAllCheck").triggerHandler("click");				
+				$("#SelectAllCheck").triggerHandler("click");		
+				for (var index = 0; index < me.catalogItems.length; index++) {
+					$("#selectInputCheck" + index)[0].checked = me.selectAll.check.checked;
+				}		
 			}
 
 			$("#catalogItemsLoading").hide();
@@ -518,6 +540,9 @@ ii.Class({
 		actionUndoItem: function() {
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if (me.lastSelectedRowIndex >= 0) {				
 				for (var index = 0; index < me.catalogItems.length; index++) {
 					if ($("#selectInputCheck" + index)[0].checked)
@@ -640,7 +665,7 @@ ii.Class({
 			var status = $(args.xmlNode).attr("status");
 			var traceType = ii.traceTypes.errorDataCorruption;
 			var errorMessage = "";
-
+			
 			if (status == "success") {
 				if ($("input[name='ScheduleOn']:checked").val() == "1")
 					me.updatePrice();
@@ -650,7 +675,7 @@ ii.Class({
 				errorMessage += ". " + $(args.xmlNode).attr("error") + " [SAVE FAILURE]";
 				alert(errorMessage);
 			}
-
+			me.modified(false);
 			$("#pageLoading").hide();
 		}
 	}

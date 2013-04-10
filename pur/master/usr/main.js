@@ -162,6 +162,7 @@ ii.Class({
 	    	});			
 			
 			me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
+			me.modified(false);
         },
 		
 		authorizationProcess: function fin_pur_item_master_authorizationProcess() {
@@ -310,7 +311,7 @@ ii.Class({
 			me.vendor = new ui.ctl.Input.DropDown.Filtered({
 				id: "Vendor",
 				formatFunction: function(type) { return type.name; },
-				changeFunction: function() { me.vendorChanged(); },
+				changeFunction: function() { me.vendorChanged(); me.modified(); },
 				required: false
 			});
 			
@@ -336,7 +337,7 @@ ii.Class({
 			me.catalog = new ui.ctl.Input.DropDown.Filtered({
 				id: "Catalog",
 				formatFunction: function(type) { return type.title; },
-				changeFunction: function() { me.catalogChanged(); },
+				changeFunction: function() { me.catalogChanged(); me.modified();},
 				required: false
 			});
 			
@@ -358,7 +359,8 @@ ii.Class({
 			
 			me.contact = new ui.ctl.Input.Text({
 		        id: "Contact",
-				maxLength: 50
+				maxLength: 50,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.contact.makeEnterTab()
@@ -375,12 +377,14 @@ ii.Class({
 			me.job = new ui.ctl.Input.DropDown.Filtered({
 				id: "Job",
 				formatFunction: function(type) { return type.jobNumber + " - " + type.jobTitle; },
+				changeFunction: function() { me.modified(); },
 				required: false
 			});
 				
 			me.address1 = new ui.ctl.Input.Text({
 		        id: "Address1",
-				maxLength: 50
+				maxLength: 50,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.address1.makeEnterTab()
@@ -389,12 +393,14 @@ ii.Class({
 				
 			me.address2 = new ui.ctl.Input.Text({
 		        id: "Address2",
-				maxLength: 50
+				maxLength: 50,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.city = new ui.ctl.Input.Text({
 		        id: "City",
-				maxLength: 50
+				maxLength: 50,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.city.makeEnterTab()
@@ -404,6 +410,7 @@ ii.Class({
 			me.state = new ui.ctl.Input.DropDown.Filtered({
 		        id: "State",
 				formatFunction: function(type) { return type.name; },
+				changeFunction: function() { me.modified(); },
 		        required : false
 		    });
 			
@@ -418,7 +425,8 @@ ii.Class({
 				
 			me.zip = new ui.ctl.Input.Text({
 		        id: "Zip",
-				maxLength: 10
+				maxLength: 10,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.zip.makeEnterTab()
@@ -435,7 +443,8 @@ ii.Class({
 			
 			me.phone = new ui.ctl.Input.Text({
 		        id: "Phone",
-				maxLength: 14
+				maxLength: 14,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.phone.makeEnterTab()
@@ -455,7 +464,8 @@ ii.Class({
 			
 			me.fax = new ui.ctl.Input.Text({
 		        id: "Fax",
-				maxLength: 14
+				maxLength: 14,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.fax.makeEnterTab()
@@ -475,12 +485,13 @@ ii.Class({
 			
 			me.template = new ui.ctl.Input.Check({
 		        id: "Template",
-				changeFunction: function() { me.checkTemplate(); }
+				changeFunction: function() { me.checkTemplate(); me.modified();}
 		    });
 			
 			me.templateTitle = new ui.ctl.Input.Text({
 		        id: "TemplateTitle",
-				maxLength: 50
+				maxLength: 50,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.templateTitle.makeEnterTab()
@@ -731,6 +742,14 @@ ii.Class({
 				itemConstructorArgs: fin.pur.master.stateTypeArgs,
 				injectionArray: me.stateTypes	
 			});
+		},
+		
+		modified: function() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+			var me = this;
+			parent.fin.appUI.modified = args.modified;
 		},
 		
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
@@ -1353,7 +1372,10 @@ ii.Class({
 		
 		actionItemCancel: function() {
 			var me = this;
-
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			disablePopup();
 			if (me.purchaseOrderGrid.activeRowIndex >= 0)
 				me.purchaseOrderId = me.purchaseOrderGrid.data[me.purchaseOrderGrid.activeRowIndex].id;
@@ -1525,6 +1547,9 @@ ii.Class({
 		actionUndoItem: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
+				
+			if (!parent.fin.cmn.status.itemValid())
+				return;
 					
 			if (me.activeFrameId == 0 && $("iframe")[0].contentWindow.fin != undefined)
 				$("iframe")[0].contentWindow.fin.openOrderUi.actionUndoItem();
@@ -1778,6 +1803,7 @@ ii.Class({
 				alert("Error while updating Purchase Order Record: " + $(args.xmlNode).attr("message") + " " + errorMessage);
 				$("#pageLoading").hide();
 			}
+			me.modified(false);
 		},
 
 		emailNotificationResponse: function() {

@@ -74,6 +74,7 @@ ii.Class({
 			
 			me.catalogUnitGrid.setData([]);
 			me.catalogItemGrid.setData([]);
+			me.modified(false);
 			
 			$("#TabCollection a").click(function() {
 				
@@ -233,7 +234,8 @@ ii.Class({
 
 			me.catalogTitle = new ui.ctl.Input.Text({
 		        id: "CatalogTitle",
-				maxLength: 64
+				maxLength: 64,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.catalogTitle.makeEnterTab()
@@ -243,7 +245,8 @@ ii.Class({
 			me.catalogVendor = new ui.ctl.Input.DropDown.Filtered({
 				id: "CatalogVendor",
 				title: "To search a specific Vendor, type-in Vendor Number or Title and press Enter key.",
-				formatFunction: function(type) { return type.name; }				
+				formatFunction: function(type) { return type.name; },
+				changeFunction: function() { me.modified(); }				
 		    });			
 				
 			me.catalogVendor.makeEnterTab()
@@ -256,16 +259,18 @@ ii.Class({
 				});
 						
 			me.catalogActive = new ui.ctl.Input.Check({
-		        id: "CatalogActive" 
+		        id: "CatalogActive",
+				changeFunction: function() { me.modified(); }  
 		    });
 			
-			me.catalogActive.check.checked = true;
+			me.catalogActive.setValue("true");
 			
 			me.catalogGrid = new ui.ctl.Grid({
 				id: "CatalogGrid",
 				appendToId: "divForm",
 				allowAdds: false,
-				selectFunction: function(index) { me.itemSelect(index); }
+				selectFunction: function(index) { me.itemSelect(index); },
+				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});
 			
 			me.catalogGrid.addColumn("title", "title", "Catalog Name", "Catalog Name", null);
@@ -280,13 +285,15 @@ ii.Class({
 			
 			me.catalogUnitTitle = new ui.ctl.Input.Text({
 		        id: "CatalogUnitTitle" ,
-				appendToId : "CatalogUnitGridControlHolder"
+				appendToId : "CatalogUnitGridControlHolder",
+				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.catalogUnitActive = new ui.ctl.Input.Check({
 		        id: "CatalogUnitActive" ,
 		        className: "iiInputCheck",
-				appendToId: "CatalogUnitGridControlHolder"
+				appendToId: "CatalogUnitGridControlHolder",
+				changeFunction: function() { me.modified(); } 
 		    });	
 			
 			me.catalogUnitGrid.addColumn("houseCodeTitle", "houseCodeTitle", "House Code", "House Code", null, null, me.catalogUnitTitle);
@@ -302,7 +309,8 @@ ii.Class({
 			
 			me.purCatalogItemPrice = new ui.ctl.Input.Money({
 		        id: "PurCatalogItemPrice" ,
-				appendToId: "CatalogItemGridControlHolder"
+				appendToId: "CatalogItemGridControlHolder",
+				changeFunction: function() { me.modified(); }		
 		    });
 			
 			me.purCatalogItemPrice.makeEnterTab()
@@ -312,7 +320,8 @@ ii.Class({
 			me.purCatalogItemActive = new ui.ctl.Input.Check({
 		        id: "PurCatalogItemActive" ,
 		        className: "iiInputCheck",
-				appendToId: "CatalogItemGridControlHolder"
+				appendToId: "CatalogItemGridControlHolder",
+				changeFunction: function() { me.modified(); } 
 		    });	
 			
 			me.catalogItemGrid.addColumn("itemNumber", "itemNumber", "Number", "Item Number", 120);
@@ -328,7 +337,7 @@ ii.Class({
 
 			me.houseCodeGrid.addColumn("assigned", "assigned", "", "Checked means associated to the Catalog", 30, function() { 
 				var rowNumber = me.houseCodeGrid.rows.length - 1;
-                return "<input type=\"checkbox\" id=\"assignInputCheck" + rowNumber + "\" class=\"iiInputCheck\"" + (me.units[rowNumber].assigned == true ? checked='checked' : '') + " />";				
+                return "<input type=\"checkbox\" id=\"assignInputCheck" + rowNumber + "\" class=\"iiInputCheck\"" + (me.units[rowNumber].assigned == true ? checked='checked' : '') + "  onclick=\"parent.fin.appUI.modified = true;\" />";				
             });
 			me.houseCodeGrid.addColumn("name", "name", "House Code", "House Code", null);
 			me.houseCodeGrid.capColumns();
@@ -380,7 +389,8 @@ ii.Class({
 			
 			me.purItemPrice = new ui.ctl.Input.Money({
 		        id: "PurItemPrice" ,
-				appendToId : "PurItemGridControlHolder"
+				appendToId : "PurItemGridControlHolder",
+				changeFunction: function() { me.modified(); }		
 		    });
 			
 			me.purItemPrice.makeEnterTab()
@@ -390,11 +400,12 @@ ii.Class({
 			me.purItemActive = new ui.ctl.Input.Check({
 		        id: "PurItemActive" ,
 		        className: "iiInputCheck",
-				appendToId: "PurItemGridControlHolder"
+				appendToId: "PurItemGridControlHolder",
+				changeFunction: function() { me.modified(); } 
 		    });	
 			
 			me.purItemGrid.addColumn("assigned", "assigned", "", "Checked means associated to the Catalog", 30, function() { var rowNumber = me.purItemGrid.rows.length - 1;
-                return "<input type=\"checkbox\" id=\"assignItemInputCheck" + rowNumber + "\" class=\"iiInputCheck\" />";				
+                return "<input type=\"checkbox\" id=\"assignItemInputCheck" + rowNumber + "\" class=\"iiInputCheck\" onclick=\"parent.fin.appUI.modified = true;\" />";				
             });
 			me.purItemGrid.addColumn("number", "number", "Number", "Item Number", 150);
 			me.purItemGrid.addColumn("description", "description", "Description", "Item Description", null);
@@ -512,6 +523,14 @@ ii.Class({
 			});
 		},
 		
+		modified: function() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+			var me = this;
+			parent.fin.appUI.modified = args.modified;
+		},
+		
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
 			var args = ii.args(arguments, {
 				event: {type: Object} // The (key) event object
@@ -560,6 +579,9 @@ ii.Class({
 		loadSearchResults: function() {
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if(me.searchInput.getValue().length < 3) {
 				me.searchInput.setInvalid("Please enter search criteria (minimum 3 characters).");
 				return false;
@@ -885,7 +907,7 @@ ii.Class({
 			me.catalogVendor.resetValidation(true);
 			me.catalogVendor.reset();
 			me.catalogVendor.updateStatus();			
-			me.catalogActive.check.checked = true;
+			me.catalogActive.setValue("true");
 		},
 		
 		resetGrids: function() {
@@ -1073,7 +1095,10 @@ ii.Class({
 		actionCancelItem: function() {
 			var me = this;
 			var index = -1;			
-				
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+					
 			if (me.activeFrameId == 0) {
 				index = me.catalogUnitGrid.activeRowIndex;
 				if (index >= 0)				
@@ -1490,6 +1515,7 @@ ii.Class({
 			me.status = "";
 			me.catalogHouseCodesCountOnLoad = me.catalogHouseCodes.length;
 			me.catalogItemsCountOnLoad = me.catalogItems.length;
+			me.modified(false);
 			$("#pageLoading").hide();		
 		}
 	}
