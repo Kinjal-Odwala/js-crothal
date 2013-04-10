@@ -1541,7 +1541,6 @@ ii.Class({
 			
 			if (me.moduleColumnDatas.length > 0) {
 				for(var index = 0; index < me.moduleColumnDatas.length; index++) {
-					var rowDetails = me.moduleColumnDatas[index].columnData.split("|");
 					var pkId = me.moduleColumnDatas[index].primeColumn;
 					var houseCode = me.moduleColumnDatas[index].houseCode;
 					var houseCodeId = fin.reportUi.moduleColumnDatas[index].houseCodeId;
@@ -1549,7 +1548,7 @@ ii.Class({
 					var appSitTitle = me.moduleColumnDatas[index].appSitTitle;
 
 					rowData += "<tr id='adhReportDataRow" + pkId + "' onclick=(fin.reportUi.getAdhReprotGridRowEdit(" + pkId + "," + index + "," + houseCodeId + "));>";	
-					rowData += me.getAdhReprotDetailGridRow(rowDetails, pkId, houseCode, appSite, appSitTitle);
+					rowData += me.getAdhReprotDetailGridRow(index, pkId, houseCode, appSite, appSitTitle);
 					rowData += "</tr>"		
 				}				
 			}
@@ -1568,14 +1567,13 @@ ii.Class({
 		
 		getAdhReprotDetailGridRow: function() {			
 			var args = ii.args(arguments, {
-				rowDetails: {type: [String]}
+				index: {type: Number}
 				, pkId: {type: Number}
 				, houseCode: {type: String}
 			    , appSite: {type: Number}
 				, appSitTitle: {type: String}
 			});
 			var me = this;
-			var pairs = args.rowDetails;
 			var keyValue = {}; 
 			var rowData = "";
 			var dataValue = "";
@@ -1590,25 +1588,25 @@ ii.Class({
 			rowData += "<td id='HouseCode" + args.houseCode + "' class='" + className + "' style='width:100px;'>" + args.houseCode + "</td>";
 			className = "gridColumn";
 
-			for (var index = 0; index < pairs.length; index++) { 
-				var pos = pairs[index].indexOf("=");
-				var posTypeTable = pairs[index].indexOf("_");
+			for (var index = 0; index < me.moduleColumnHeaders.length; index++) { 
+				//var pos = pairs[index].indexOf("=");
+				var posTypeTable = me.moduleColumnHeaders[index].referenceTableName;
 				var typeTable = "";
 				var columnName = "";
 
-				if (pos == -1) continue;
+				//if (pos == -1) continue;
 
-				var argName = pairs[index].substring(0, pos); 
+				var argName = me.moduleColumnHeaders[index].title;
 				var value = "";
 				
 				if (argName == "AppUnit")
 					value = unescape(args.appSitTitle);
 				else
-					value = unescape(pairs[index].substring(pos + 1));
+					value = unescape(me.moduleColumnDatas[args.index]["column" + (index + 1)]);
 
-				if (posTypeTable > 0) {
-					columnName = pairs[index].substring(0, posTypeTable);
-					typeTable = pairs[index].substring(posTypeTable + 1, pos);
+				if (posTypeTable != "") {
+					columnName = me.moduleColumnHeaders[index].title;
+					typeTable = me.moduleColumnHeaders[index].referenceTableName;
 					
 					var typeTableData = me.getTypeTableData(typeTable, columnName);
 					var itemIndex = me.findIndexByTitle(value, typeTableData);
@@ -1637,7 +1635,7 @@ ii.Class({
 				else
 					dataValue = value;
 
-				if (index == pairs.length - 1)
+				if (index == me.moduleColumnHeaders.length - 1)
 					className = "gridColumnRight";
 
 				if (me.columnType == 2) //Hidden
@@ -1661,7 +1659,6 @@ ii.Class({
 			var argTypeTable = "";
 			var argName = "";
 			var argValue = "";
-			var posTTable = 0;
 			var argscolumn = "";
 			var rowsData = "";
 			var dateControls = [];
@@ -1690,6 +1687,7 @@ ii.Class({
 			for (var index = 0; index < row[0].cells.length; index++) {
 				//index 0 for HouseCode. This addition
 				var style = "";
+				var posTTable = "";
 				if (row[0].cells[index].attributes["style"] != undefined)
 					style = row[0].cells[index].attributes["style"].value;
 				me.columnType = 0;
@@ -1701,10 +1699,11 @@ ii.Class({
 					row[0].cells[index].id = "RevInvBillTo_RevInvBillTos";
 					
 				argscolumn = row[0].cells[index].id;
-				posTTable = argscolumn.indexOf("_");
+				
 
 				if (index > 0) {
 					if (argscolumn != "" && argscolumn != "AppSite"){
+						posTTable = me.moduleColumnHeaders[index - 1].referenceTableName;
 						me.columnValidation = me.moduleColumnHeaders[index - 1].columnValidation;
 						me.columnType = me.moduleColumnHeaders[index - 1].columnType;
 						columnWidth = me.moduleColumnHeaders[index - 1].columnWidth - 8;
@@ -1719,9 +1718,9 @@ ii.Class({
 				if (argscolumn == "AppSite")
 					appSiteId = argscolumn + "_" + pkId;
 				
-				if (posTTable > 0) {
-					argName = argscolumn.substring(0, posTTable);
-					argTypeTable = argscolumn.substring(posTTable + 1, argscolumn.length);
+				if (posTTable != "") {
+					argName = me.moduleColumnHeaders[index - 1].title;
+					argTypeTable = me.moduleColumnHeaders[index - 1].referenceTableName;
 
 					switch (me.columnType) {
 						case 1: //Editable
