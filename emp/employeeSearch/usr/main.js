@@ -483,8 +483,12 @@ ii.Class({
 				allowAdds: false
 			});
 			
-			me.employeeSearch.addColumn("firstName", "firstName", "First Name", "First Name", 150);
-			me.employeeSearch.addColumn("lastName", "lastName", "Last Name", "Last Name", 150);
+			me.employeeSearch.addColumn("firstName", "firstName", "First Name", "First Name", 150).setSortFunction(function(me, displayProperty, a, b) {
+					return fin.empSearchUi.customSort(me, displayProperty, a, b);
+				});
+			me.employeeSearch.addColumn("lastName", "lastName", "Last Name", "Last Name", 150).setSortFunction(function(me, displayProperty, a, b) {
+					return fin.empSearchUi.customSort(me, displayProperty, a, b);
+				});
 			me.employeeSearch.addColumn("brief", "brief", "Brief", "Brief", 150);
 			me.employeeSearch.addColumn("houseCode", "houseCode", "House Code", "House Code", 100);
 			me.employeeSearch.addColumn("houseCodeRM", "houseCodeRM", "Regional Manager", "Regional Manager", null);
@@ -2329,6 +2333,19 @@ ii.Class({
 				itemConstructorArgs: fin.emp.basicLifeIndicatorTypeArgs,
 				injectionArray: me.basicLifeIndicatorTypes
 			});
+		},
+		
+		customSort: function(me, dataProperty, a, b) {
+			var aValue = a[dataProperty];
+			var bValue = b[dataProperty];
+
+			if (aValue.toLowerCase() < bValue.toLowerCase()) {
+				return -1;
+			}
+			else if(aValue.toLowerCase() > bValue.toLowerCase()) {
+				return 1;
+			}
+			return 0;
 		},
 		
 		employeeHistoriesLoaded: function(me, activeId) { 
