@@ -57,6 +57,7 @@ ii.Class({
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			
 			me.fiscalYearStore.fetch("userId:[user]", me.fiscalYearsLoaded, me);
+			me.modified(false);
 		},
 		
 		authorizationProcess: function fin_fsc_fiscalCalender_UserInterface_authorizationProcess() {
@@ -147,7 +148,8 @@ ii.Class({
 				id: "FiscalYear",
 				appendToId: "divForm",
 				allowAdds: false,
-				selectFunction: function( index ) { me.itemSelectYear (index); }
+				selectFunction: function( index ) { me.itemSelectYear (index); },
+				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});
 			
 			me.fiscalYearGrid.addColumn("patternTitle", "patternTitle", "Fiscal Pattern", "Fiscal Pattern", 150);
@@ -156,7 +158,8 @@ ii.Class({
 
 			me.fiscalCalenderPattern = new ui.ctl.Input.DropDown.Filtered({
 		        id: "FiscalCalenderPattern",
-		        formatFunction: function( type ) { return type.name; }
+		        formatFunction: function( type ) { return type.name; },
+				changeFunction: function() { me.modified(); }
 		    });			
 			
 			me.fiscalCalenderPattern.makeEnterTab()
@@ -165,7 +168,8 @@ ii.Class({
 				
 			me.fiscalCalenderYear = new ui.ctl.Input.Text({
 		        id: "FiscalCalenderYear",
-		        maxLength: 4
+		        maxLength: 4,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.fiscalCalenderYear.makeEnterTab()
@@ -364,6 +368,14 @@ ii.Class({
 			});			
 		},
 		
+		modified: function fin_cmn_status_modified() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
+		},
+		
 		controlVisible: function() {
 			var me = this;
 			
@@ -502,6 +514,9 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if(me.calendarReadOnly) return;
 	
 			me.status = "new";
@@ -515,6 +530,9 @@ ii.Class({
 		actionUndoItem: function() {
 			var args = ii.args(arguments, {});
 			var me = this;
+				
+			if (!parent.fin.cmn.status.itemValid())
+				return;
 				
 			if (me.status == "" && me.fiscalYearGrid.activeRowIndex < 0)
 				return;
@@ -758,7 +776,7 @@ ii.Class({
 					errorMessage += " [SAVE FAILURE]";
 				}
 			}
-			
+			me.modified(false);
 			$("#pageLoading").hide();
 		}
 	}

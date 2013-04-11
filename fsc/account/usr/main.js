@@ -55,6 +55,7 @@ ii.Class({
 			
 			me.accountCategory.fetchingData();
 			me.accountCategoryStore.fetch("userId:[user]", me.accountCategorysLoaded, me);
+			me.modified(false);
 		},
 		
 		authorizationProcess: function fin_fsc_account_UserInterface_authorizationProcess() {
@@ -137,7 +138,8 @@ ii.Class({
 			me.accountCategory = new ui.ctl.Input.DropDown.Filtered({
 		        id: "category",
 		        formatFunction: function( type ){ return type.name; },
-		        required : false
+		        required : false,
+				changeFunction: function() { me.modified(); }
 		    });			
 
 			me.accountCategory.makeEnterTab()
@@ -146,7 +148,8 @@ ii.Class({
 								
 			me.accountCode = new ui.ctl.Input.Text({
 		        id: "code",
-		        maxLength: 4
+		        maxLength: 4,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.accountCode.makeEnterTab()
@@ -164,7 +167,8 @@ ii.Class({
 
 			me.accountDescription = new ui.ctl.Input.Text({
 		        id: "desciption",
-		        maxLength: 64
+		        maxLength: 64,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.accountDescription.makeEnterTab()
@@ -173,79 +177,97 @@ ii.Class({
 				
 			me.accountEditCode = new ui.ctl.Input.Text({
 		        id: "editCode",
-		        maxLength: 16
+		        maxLength: 16,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.accountHeader = new ui.ctl.Input.Text({
 		        id: "header",
-		        maxLength: 16
+		        maxLength: 16,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.negativeValue = new ui.ctl.Input.Check({
-		        id: "Negative" 
+		        id: "Negative",
+				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.bockImportExport = new ui.ctl.Input.Check({
-		        id: "BockImport"
+		        id: "BockImport",
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.budget = new ui.ctl.Input.Check({
-		        id: "Budget" 
+		        id: "Budget",
+				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.accountPayables = new ui.ctl.Input.Check({
-		        id: "AccountPayables" 
+		        id: "AccountPayables",
+				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.salariesWages = new ui.ctl.Input.Check({
-		        id: "SalariesWages" 
+		        id: "SalariesWages",
+				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.recurringExpenses = new ui.ctl.Input.Check({
-		        id: "RecurringExpenses" 
+		        id: "RecurringExpenses",
+				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.fieldTransfers = new ui.ctl.Input.Check({
-		        id: "FieldTransfers" 
+		        id: "FieldTransfers",
+				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.inventory = new ui.ctl.Input.Check({
-		        id: "Inventory" 
+		        id: "Inventory",
+				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.payrollWorksheet = new ui.ctl.Input.Check({
-		        id: "PayrollWorksheet" 
+		        id: "PayrollWorksheet",
+				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.managementFee = new ui.ctl.Input.Check({
-		        id: "ManagementFee" 
+		        id: "ManagementFee",
+				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.directCost = new ui.ctl.Input.Check({
-		        id: "DirectCost" 
+		        id: "DirectCost",
+				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.supplies = new ui.ctl.Input.Check({
-		        id: "Supplies" 
+		        id: "Supplies",
+				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.accountReceivable = new ui.ctl.Input.Check({
-		        id: "AccountReceivable" 
+		        id: "AccountReceivable",
+				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.wor = new ui.ctl.Input.Check({
-		        id: "WOR" 
+		        id: "WOR",
+				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.otherRevenue = new ui.ctl.Input.Check({
-		        id: "OtherRevenue" 
+		        id: "OtherRevenue",
+				changeFunction: function() { me.modified(); }  
 		    });
 			
 			me.fiscalAccountGrid = new ui.ctl.Grid({
 				id: "FiscalAccount",
 				appendToId: "divForm",
 				allowAdds: false,
-				selectFunction: function(index) { me.itemSelect(index); }
+				selectFunction: function(index) { me.itemSelect(index); },
+				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});
 			
 			me.fiscalAccountGrid.addColumn("code", "code", "Code", "Code", 80);
@@ -282,6 +304,14 @@ ii.Class({
 				itemConstructorArgs: fin.fsc.account.accountArgs,
 				injectionArray: me.accounts
 			});			
+		},
+		
+		modified: function fin_cmn_status_modified() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
 		},
 		
 		controlVisible: function(){
@@ -349,21 +379,21 @@ ii.Class({
 			me.accountEditCode.setValue(item.postingEditCode);
 			me.accountHeader.setValue(item.glHeader + '');
 			
-	        me.negativeValue.check.checked = item.negativeValue;
-	        me.bockImportExport.check.checked = item.blockImportExport;
-	        me.budget.check.checked = item.budget;
-	        me.accountPayables.check.checked = item.accountsPayable;
-	        me.salariesWages.check.checked = item.salariesWages;
-	        me.recurringExpenses.check.checked = item.recurringExpenses;
-	        me.fieldTransfers.check.checked = item.fieldTransfers;
-	        me.inventory.check.checked = item.inventory;
-	        me.payrollWorksheet.check.checked = item.payrollWorkSheet;
-	        me.managementFee.check.checked = item.managementFee;
-	        me.directCost.check.checked = item.directCost;
-	        me.supplies.check.checked = item.supplies;
-	        me.accountReceivable.check.checked = item.accountReceivables;
-	        me.wor.check.checked = item.wor;
-	        me.otherRevenue.check.checked = item.otherRevenue;
+	        me.negativeValue.setValue(item.negativeValue.toString());
+	        me.bockImportExport.setValue(item.blockImportExport.toString());
+	        me.budget.setValue(item.budget.toString());
+	        me.accountPayables.setValue(item.accountsPayable.toString());
+	        me.salariesWages.setValue(item.salariesWages.toString());
+	        me.recurringExpenses.setValue(item.recurringExpenses.toString());
+	        me.fieldTransfers.setValue(item.fieldTransfers.toString());
+	        me.inventory.setValue(item.inventory.toString());
+	        me.payrollWorksheet.setValue(item.payrollWorkSheet.toString());
+	        me.managementFee.setValue(item.managementFee.toString());
+	        me.directCost.setValue(item.directCost.toString());
+	        me.supplies.setValue(item.supplies.toString());
+	        me.accountReceivable.setValue(item.accountReceivables.toString());
+	        me.wor.setValue(item.wor.toString());
+	        me.otherRevenue.setValue(item.otherRevenue.toString());
 		},
 
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
@@ -403,6 +433,9 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if(me.accountReadOnly) return;
 			
 			me.status = "new";
@@ -413,8 +446,11 @@ ii.Class({
 		actionUndoItem: function() {
 			var args = ii.args(arguments, {});
 			var me = this;
-
-			me.status = "";
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
+			me.status = "";	
 			$("#NewAccount").hide();
 			
 			if (me.lastSelectedIndex > 0) {
@@ -435,21 +471,21 @@ ii.Class({
 			me.accountEditCode.setValue("");
 			me.accountHeader.setValue("");
 			
-	        me.negativeValue.check.checked = false;
-	        me.bockImportExport.check.checked = false;
-	        me.budget.check.checked = false;
-	        me.accountPayables.check.checked = false;
-	        me.salariesWages.check.checked = false;
-	        me.recurringExpenses.check.checked = false;
-	        me.fieldTransfers.check.checked = false;
-	        me.inventory.check.checked = false;
-	        me.payrollWorksheet.check.checked = false;
-	        me.managementFee.check.checked = false;
-	        me.directCost.check.checked = false;
-	        me.supplies.check.checked = false;
-	        me.accountReceivable.check.checked = false;
-	        me.wor.check.checked = false;
-	        me.otherRevenue.check.checked = false;
+	        me.negativeValue.setValue("false");
+	        me.bockImportExport.setValue("false");
+	        me.budget.setValue("false");
+	        me.accountPayables.setValue("false");
+	        me.salariesWages.setValue("false");
+	        me.recurringExpenses.setValue("false");
+	        me.fieldTransfers.setValue("false");
+	        me.inventory.setValue("false");
+	        me.payrollWorksheet.setValue("false");
+	        me.managementFee.setValue("false");
+	        me.directCost.setValue("false");
+	        me.supplies.setValue("false");
+	        me.accountReceivable.setValue("false");
+	        me.wor.setValue("false");
+	        me.otherRevenue.setValue("false");
 
 			me.fiscalAccountGrid.body.deselectAll();			
 			me.accountCode.text.focus();			
@@ -569,7 +605,7 @@ ii.Class({
 			var traceType = ii.traceTypes.errorDataCorruption;
 			
 			$("#pageLoading").hide();
-			
+			me.modified(false);
 			if (status == "success") {
 				$(args.xmlNode).find("*").each(function () {
 
