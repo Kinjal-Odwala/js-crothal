@@ -77,6 +77,7 @@ ii.Class({
 			me.fiscalYear.fetchingData();
 			me.fiscalPeriod.fetchingData();
 			me.fiscalYearStore.fetch("userId:[user],", me.yearsLoaded, me);
+			me.modified(false);
 
 			$(window).bind("resize", me, me.resize);
 			$("#countCompleteHeader").hide();
@@ -366,12 +367,14 @@ ii.Class({
 					me.countComplete = new ui.ctl.Input.Check({
 				        id: "CountComplete",
 				        className: "iiInputCheck",
-						appendToId: "InventoryGridControlHolder"
+						appendToId: "InventoryGridControlHolder",
+						changeFunction: function() { me.modified(); }
 				    });
 					
 					me.totalCost = new ui.ctl.Input.Text({
 				        id: "TotalCost",
-				        appendToId: "InventoryGridControlHolder"
+				        appendToId: "InventoryGridControlHolder",
+						changeFunction: function() { me.modified(); }
 				    });
 					
 					me.inventoryGrid.addColumn("countComplete", "countComplete", "Count Complete", "Count Complete", 140, function(status) { return (status == "1" ? "Yes" : "No") }, me.countComplete);
@@ -458,6 +461,14 @@ ii.Class({
 				itemConstructorArgs: fin.inv.administration.fileNameArgs,
 				injectionArray: me.fileNames
 			});
+		},
+		
+		modified: function fin_cmn_status_modified() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
 		},
 		
 		resetControls: function() {
@@ -558,7 +569,10 @@ ii.Class({
 
 		loadSearchResults: function() {
 			var me = this;
-
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if (me.actionType == 0 || me.actionType == 2)
 				me.houseCodeId = parent.fin.appUI.houseCodeId;
 			else
@@ -971,7 +985,8 @@ ii.Class({
 				errorMessage += " [SAVE FAILURE]";
 				alert(errorMessage);				
 			}
-
+			
+			me.modified(false);
 			$("#pageLoading").hide();
 		},
 

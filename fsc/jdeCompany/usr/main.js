@@ -53,6 +53,7 @@ ii.Class({
 			
 			me.patternStore.fetch("userId:[user]", me.patternsLoaded, me); 
 			me.jdeCompanyStore.fetch("userId:[user]", me.jdeCompanyLoaded, me);
+			me.modified(false);
 		},
 		
 		authorizationProcess: function fin_fsc_jdeCompany_UserInterface_authorizationProcess() {
@@ -137,7 +138,8 @@ ii.Class({
 			me.jdeCompanyTitle = new ui.ctl.Input.Text({
 				id: "JDECompanyTitle",
 				maxLength: 50,
-				appendToId: "JDECompanyGridSelectControlHolder"
+				appendToId: "JDECompanyGridSelectControlHolder",
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.jdeCompanyTitle.makeEnterTab()
@@ -147,7 +149,8 @@ ii.Class({
 			me.jdeFiscalPattern = new ui.ctl.Input.DropDown.Filtered({
 		        id: "JDEFiscalPattern" ,
 		        formatFunction: function( type ){ return type.name; },
-		        appendToId: "JDECompanyGridSelectControlHolder"
+		        appendToId: "JDECompanyGridSelectControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });			
 			
 			me.jdeFiscalPattern.makeEnterTab()
@@ -163,7 +166,8 @@ ii.Class({
 						
 			me.jdeCompanyActive = new ui.ctl.Input.Check({
 				id: "JDECompanyActive",
-				appendToId: "JDECompanyGridSelectControlHolder"
+				appendToId: "JDECompanyGridSelectControlHolder",
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.jdeCompanyGrid.addColumn("title", "title", "JDE Company", "JDE Company", null, null, me.jdeCompanyTitle);
@@ -192,6 +196,14 @@ ii.Class({
 				injectionArray: me.jdeCompanys,
 				lookupSpec: {pattern: me.patterns}
 			});
+		},
+		
+		modified: function fin_cmn_status_modified() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
 		},
 		
 		patternsLoaded: function (me, activeId) {
@@ -258,13 +270,16 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			window.location = "/fin/fsc/jdeCompany/usr/markup.htm";			
 		},
 		
 		actionSaveItem: function() {
 			var args = ii.args(arguments, {});
 			var me = this;
-			
+			me.modified(false);
 			// Check to see if the data is not entered
 			if(me.jdeCompanyGrid.activeRowIndex < 0){
 				return false;

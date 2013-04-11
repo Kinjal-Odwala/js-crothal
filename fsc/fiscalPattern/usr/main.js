@@ -50,7 +50,8 @@ ii.Class({
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			
-			me.patternStore.fetch("userId:[user]", me.patternsLoaded, me);				
+			me.patternStore.fetch("userId:[user]", me.patternsLoaded, me);	
+			me.modified(false);			
 		},
 		
 		authorizationProcess: function fin_fsc_fiscalPattern_UserInterface_authorizationProcess() {
@@ -130,7 +131,8 @@ ii.Class({
 			me.fiscalPatternTitle = new ui.ctl.Input.Text({
 		        id: "FiscalPatternTitle" ,
 		        maxLength: 16, 
-				appendToId: "FiscalPatternControlHolder"
+				appendToId: "FiscalPatternControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.fiscalPatternTitle.makeEnterTab()
@@ -140,7 +142,8 @@ ii.Class({
 			me.fiscalPatternActive = new ui.ctl.Input.Check({
 		        id: "FiscalPatternActive" ,
 		        className: "iiInputCheck",
-				appendToId: "FiscalPatternControlHolder"
+				appendToId: "FiscalPatternControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.fiscalPattern.addColumn("title", "title", "Fiscal Pattern", "Fiscal Pattern", null, null, this.fiscalPatternTitle);
@@ -167,6 +170,14 @@ ii.Class({
 				itemConstructorArgs: fin.fsc.fiscalPattern.fiscalPatternArgs,
 				injectionArray: me.patterns
 			});			
+		},
+		
+		modified: function fin_cmn_status_modified() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
 		},
 		
 		controlVisible: function(){
@@ -241,7 +252,9 @@ ii.Class({
 		},
 
 		actionUndoItem: function() {
-
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			window.location = "/fin/fsc/fiscalPattern/usr/markup.htm";
 		},
 			
@@ -249,6 +262,7 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 			
+			me.modified(false);
 			// Check to see if the data is not entered
 			if(me.fiscalPattern.activeRowIndex < 0 || me.patternsReadOnly) return false;
 
