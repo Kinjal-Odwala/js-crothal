@@ -72,6 +72,7 @@ ii.Class({
 			me.fiscalYear.fetchingData();
 			me.fiscalPeriod.fetchingData();
 			me.fiscalYearStore.fetch("userId:[user],", me.yearsLoaded, me);
+			me.modified(false);
 
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$(window).bind("resize", me, me.resize);
@@ -222,18 +223,21 @@ ii.Class({
 				appendToId: "divForm",
 				selectFunction: function( index ) { me.itemSelect(index); },
 				deselectFunction: function( index ) { me.itemDeSelect(); },
-				allowAdds: false
+				allowAdds: false,
+				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});			
 			
 			me.countComplete = new ui.ctl.Input.Check({
 		        id: "CountComplete",
 		        className: "iiInputCheck",
-				appendToId: "InventoryGridControlHolder"
+				appendToId: "InventoryGridControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.totalCost = new ui.ctl.Input.Text({
 		        id: "TotalCost",
-		        appendToId: "InventoryGridControlHolder"
+		        appendToId: "InventoryGridControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.inventoryGrid.addColumn("houseCodeTitle", "houseCodeTitle", "House Code", "House Code", null);
@@ -254,7 +258,7 @@ ii.Class({
 			me.itemQuantity = new ui.ctl.Input.Text({
 		        id: "ItemQuantity",
 		        appendToId: "InventoryItemGridControlHolder",
-				changeFunction: function() { me.calculateCost(); }
+				changeFunction: function() { me.calculateCost(); me.modified(); }
 		    });
 
 			me.itemQuantity.makeEnterTab()
@@ -283,7 +287,8 @@ ii.Class({
 
 			me.itemNumber = new ui.ctl.Input.Text({
 		        id: "ItemNumber",
-				maxLength: 28
+				maxLength: 28,
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.itemNumber.makeEnterTab()
@@ -292,7 +297,8 @@ ii.Class({
 				
 			me.description = new ui.ctl.Input.Text({
 		        id: "Description",
-				maxLength: 255
+				maxLength: 255,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.description.makeEnterTab()
@@ -301,7 +307,8 @@ ii.Class({
 				
 			me.uom = new ui.ctl.Input.DropDown.Filtered({
 		        id: "Uom",
-				formatFunction: function( type ) { return type.uom; }
+				formatFunction: function( type ) { return type.uom; },
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.uom.makeEnterTab()
@@ -314,7 +321,8 @@ ii.Class({
 			
 			me.accountCode = new ui.ctl.Input.DropDown.Filtered({
 				id: "AccountCode",
-				formatFunction: function( type ) { return type.code + " - " + type.description; }
+				formatFunction: function( type ) { return type.code + " - " + type.description; },
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.accountCode.makeEnterTab()
@@ -328,7 +336,8 @@ ii.Class({
 				
 			me.price = new ui.ctl.Input.Text({
 		        id: "Price",
-				changeFunction: function() { me.calculateItemCost(); }
+				changeFunction: function() { me.calculateItemCost(); },
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.price.makeEnterTab()
@@ -346,7 +355,8 @@ ii.Class({
 			
 			me.quantity = new ui.ctl.Input.Text({
 		        id: "Quantity",
-				changeFunction: function() { me.calculateItemCost(); }
+				changeFunction: function() { me.calculateItemCost(); },
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.quantity.makeEnterTab()
@@ -476,7 +486,15 @@ ii.Class({
 				injectionArray: me.fileNames
 			});
 		},
-
+		
+		modified: function fin_cmn_status_modified() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
+		},
+		
 		resizeControls: function() {
 			var me = this;
 
@@ -568,7 +586,10 @@ ii.Class({
 
 		loadSearchResults: function() {
 			var me = this;
-
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			$("#messageToUser").text("Loading");
 			$("#pageLoading").show();
 
@@ -768,6 +789,9 @@ ii.Class({
 		actionNewItem: function() {
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if (me.inventoryGrid.activeRowIndex == -1) {
 				alert("Please select the Inventory.")
 				return;
@@ -840,7 +864,10 @@ ii.Class({
 
 		actionCancelItem: function() {
 			var me = this;
-
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			me.hidePopup();
 		},
 
@@ -1019,6 +1046,7 @@ ii.Class({
 			}
 
 			me.status = "";
+			me.modified(false);
 			$("#pageLoading").hide();
 		},
 
