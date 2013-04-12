@@ -633,7 +633,7 @@ ii.Class({
 
 				me.catalogId = me.catalogGrid.data[index].id;		
 				me.catalogTitle.setValue(me.catalogGrid.data[index].title);
-				me.catalogActive.check.checked = me.catalogGrid.data[index].active;
+				me.catalogActive.setValue(me.catalogGrid.data[index].active.toString());
 				me.catalogVendor.fetchingData();
 				me.vendorStore.reset();
 				me.vendorStore.fetch("userId:[user],vendorId:" + me.catalogGrid.data[index].vendorId, me.vendorsLoaded, me);
@@ -1438,6 +1438,7 @@ ii.Class({
 					
 			if (status == "success") {
 				
+				me.modified(false);
 				if (me.status == "addHouseCodes") {
 					me.houseCodesTabNeedUpdate = true;
 					me.loadCatalogHouseCodesCount();
@@ -1515,7 +1516,7 @@ ii.Class({
 			me.status = "";
 			me.catalogHouseCodesCountOnLoad = me.catalogHouseCodes.length;
 			me.catalogItemsCountOnLoad = me.catalogItems.length;
-			me.modified(false);
+			
 			$("#pageLoading").hide();		
 		}
 	}
