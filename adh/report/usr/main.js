@@ -1441,12 +1441,12 @@ ii.Class({
 			$("#AdhReportItemGridHead").html(rowData);
 			
 			me.filter = "";
-			
+
 			for (var index = 0; index < me.reportFilters.length; index++) {
 				if (me.reportFilters[index].validation.toLowerCase() == "bit" && $("#sel" + me.reportFilters[index].title).val() != "") {
 					me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#sel" + me.reportFilters[index].title).val() + "')";
 				}
-				else if ($("#" + me.reportFilters[index].title).val() != "") {
+				else if ($("#" + me.reportFilters[index].title).val() != null && $("#" + me.reportFilters[index].title).val() != "") {
 					if ($("#" + me.reportFilters[index].title).val() != "0") {
 						if (me.reportFilters[index].referenceTableName != "") { //dropdown selection
 							var inQuery = "In (";
@@ -1589,13 +1589,9 @@ ii.Class({
 			className = "gridColumn";
 
 			for (var index = 0; index < me.moduleColumnHeaders.length; index++) { 
-				//var pos = pairs[index].indexOf("=");
 				var posTypeTable = me.moduleColumnHeaders[index].referenceTableName;
 				var typeTable = "";
 				var columnName = "";
-
-				//if (pos == -1) continue;
-
 				var argName = me.moduleColumnHeaders[index].title;
 				var value = "";
 				
@@ -1697,9 +1693,8 @@ ii.Class({
 				
 				if (row[0].cells[index].id == "RevInvBillTo") 
 					row[0].cells[index].id = "RevInvBillTo_RevInvBillTos";
-					
+
 				argscolumn = row[0].cells[index].id;
-				
 
 				if (index > 0) {
 					if (argscolumn != "" && argscolumn != "AppSite"){
@@ -2033,9 +2028,10 @@ ii.Class({
 			});
 			var me = this;
 			var rowHtml = "";
+
 			var typeTableData = me.getTypeTableData(args.typeTable, args.columnName);
 
-			rowHtml = "<select id='" + args.columnName + "'>";
+			rowHtml = "<select id='" + args.columnName + "' multiple='multiple'>";
 
 			for (var index = 0; index < typeTableData.length; index++) {
 				if (typeTableData[index].name != undefined)
