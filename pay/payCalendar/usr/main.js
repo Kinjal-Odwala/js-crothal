@@ -48,6 +48,7 @@ ii.Class({
 			
 			me.defineFormControls();			
 			me.configureCommunications();
+			me.modified(false);
 			
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$(window).bind("resize", me, me.resize);
@@ -128,7 +129,8 @@ ii.Class({
 				id: "FiscalYearGrid",
 				appendToId: "divForm",
 				allowAdds: false,
-				selectFunction: function( index ){ me.actionItemSelect (index); }
+				selectFunction: function( index ){ me.actionItemSelect (index); },
+				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});
 			
 			me.fiscalYearGrid.addColumn("patternTitle", "patternTitle", "Fiscal Pattern", "Fiscal Pattern", 150);
@@ -137,7 +139,8 @@ ii.Class({
 			
 			me.fiscalYear = new ui.ctl.Input.Text({
 		        id: "FiscalYear",
-		        maxLength: 4
+		        maxLength: 4,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.fiscalYear.text.readOnly = true;
@@ -145,7 +148,7 @@ ii.Class({
 			me.payFrequency = new ui.ctl.Input.DropDown.Filtered({
 		        id: "PayFrequency",
 		        formatFunction: function( type ){ return type.title; },
-				changeFunction: function() { me.actionFrequencyTypeChanged(); }
+				changeFunction: function() { me.actionFrequencyTypeChanged(); me.modified();}
 		    });			
 			
 			me.payFrequency.makeEnterTab()
@@ -163,7 +166,8 @@ ii.Class({
 			me.payPeriodTitle = new ui.ctl.Input.Text({
 		        id: "PayPeriodTitle" ,
 		        maxLength: 16, 
-				appendToId: "PayPeriodGridControlHolder"
+				appendToId: "PayPeriodGridControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.payPeriodTitle.makeEnterTab()
@@ -173,7 +177,8 @@ ii.Class({
 			me.payStartDate = new ui.ctl.Input.Date({
 		        id: "PayStartDate",
 		        appendToId: "PayPeriodGridControlHolder",
-				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+				//formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
+				changeFunction: function() { me.modified(); }
 		    });
 					
 			me.payStartDate.makeEnterTab()
@@ -194,7 +199,8 @@ ii.Class({
 			me.payEndDate = new ui.ctl.Input.Date({
 		        id: "PayEndDate",
 				appendToId: "PayPeriodGridControlHolder",
-				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+				//formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.payEndDate.makeEnterTab()
@@ -213,8 +219,8 @@ ii.Class({
 			});			
 			
 			me.payPeriodGrid.addColumn("title", "title", "Title", "title", 100, null, this.payPeriodTitle);
-			me.payPeriodGrid.addColumn("startDate", "startDate", "Start Date", "Start Date", 125, function(startDate) { return ui.cmn.text.date.format(startDate, "mm/dd/yyyy"); }, this.payStartDate);
-			me.payPeriodGrid.addColumn("endDate", "endDate", "End Date", "End Date", null, function(endDate) { return ui.cmn.text.date.format(endDate, "mm/dd/yyyy"); }, this.payEndDate);
+			me.payPeriodGrid.addColumn("startDate", "startDate", "Start Date", "Start Date", 125, function(startDate) { return ui.cmn.text.date.format(startDate); }, this.payStartDate);
+			me.payPeriodGrid.addColumn("endDate", "endDate", "End Date", "End Date", null, function(endDate) { return ui.cmn.text.date.format(endDate); }, this.payEndDate);
 			me.payPeriodGrid.capColumns();			
 		},
 		
@@ -255,6 +261,14 @@ ii.Class({
 				itemConstructorArgs: fin.pay.payCalendar.frequencyTypeArgs,
 				injectionArray: me.frequencyTypes
 			});
+		},
+		
+		modified: function fin_cmn_status_modified() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
 		},
 		
 		controlKeyProcessor: function() {
@@ -369,6 +383,9 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 				
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if (me.fiscalYearGrid.activeRowIndex < 0)
 				return;
 			
@@ -385,7 +402,7 @@ ii.Class({
 			var me = this;
 			
 			if(me.calendarReadOnly) return;
-			
+			me.modified(false);
 			if (me.payPeriodGrid.activeRowIndex >= 0)
 				me.payPeriodGrid.body.deselect(me.payPeriodGrid.activeRowIndex);
 
@@ -515,7 +532,7 @@ ii.Class({
 			var errorMessage = "";
 			
 			if (status == "success") {
-								
+				me.modified(false);				
 				$(args.xmlNode).find("*").each(function() {
 
 					switch (this.tagName) {

@@ -50,7 +50,8 @@ ii.Class({
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$(window).bind("resize", me, me.resize);
 
-			me.frequencyTypeStore.fetch("userId:[user]", me.frequencyTypesLoaded, me);					
+			me.frequencyTypeStore.fetch("userId:[user]", me.frequencyTypesLoaded, me);	
+			me.modified(false);				
 		},
 		
 		authorizationProcess: function fin_pay_ceridianCompany_UserInterface_authorizationProcess() {
@@ -115,7 +116,8 @@ ii.Class({
 			me.ceridianCompanyTitle = new ui.ctl.Input.Text({
 		        id: "CeridianCompanyTitle" ,
 		        maxLength: 64, 
-				appendToId: "CeridianCompanyControlHolder"
+				appendToId: "CeridianCompanyControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.ceridianCompanyTitle.makeEnterTab()
@@ -133,7 +135,8 @@ ii.Class({
 		    me.ceridianCompanyDescription = new ui.ctl.Input.Text({
 		        id: "CeridianCompanyDescription",
 		        maxLength: 64, 
-				appendToId: "CeridianCompanyControlHolder"
+				appendToId: "CeridianCompanyControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 		   
 		    me.ceridianCompanyDescription.makeEnterTab()
@@ -151,7 +154,8 @@ ii.Class({
 			me.frequencyType = new ui.ctl.Input.DropDown.Filtered({
 		        id: "FrequencyType",
 				appendToId: "CeridianCompanyControlHolder",
-				formatFunction: function(type) { return type.title; }
+				formatFunction: function(type) { return type.title; },
+				changeFunction: function() { me.modified(); }
 		    });	
 		   
 		    me.frequencyType.makeEnterTab()
@@ -215,7 +219,15 @@ ii.Class({
 				lookupSpec: { frequencyType: me.frequencyTypes }
 			});	
 		},
-
+		
+		modified: function fin_cmn_status_modified() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
+		},
+		
 		checkForDuplicates: function() {
 			var me = this;
 
@@ -310,6 +322,9 @@ ii.Class({
 		actionUndoItem: function() {
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			$("#messageToUser").text("Loading");
 			$("#pageLoading").show();
 	
@@ -420,7 +435,8 @@ ii.Class({
 			var traceType = ii.traceTypes.errorDataCorruption;
 			var errorMessage = "";
 				
-			if(status == "success"){
+			if(status == "success") {
+				me.modified(false);
 				me.actionUndoItem(); //reset
 			}
 			else {
