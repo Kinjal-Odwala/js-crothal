@@ -59,9 +59,6 @@ ii.Class({
 			me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);			
 			me.itemStatusesLoaded();	
 			me.modified(false);
-			
-			$("#AutoEmail").click(function() {parent.fin.appUI.modified = true;});
-			$("#VendorActive").click(function() {parent.fin.appUI.modified = true;});
 		},	
 		
 		authorizationProcess: function fin_pur_vendor_UserInterface_authorizationProcess() {
@@ -561,8 +558,8 @@ ii.Class({
 				me.email.setValue(me.vendorGrid.data[index].email != undefined ? me.vendorGrid.data[index].email : '');
 				me.faxNumber.setValue(me.vendorGrid.data[index].faxNumber != undefined ? me.vendorGrid.data[index].faxNumber : '');
 				me.phoneNumber.setValue(me.vendorGrid.data[index].phoneNumber != undefined ? me.vendorGrid.data[index].phoneNumber : '');
-				me.autoEmail.setValue(me.vendorGrid.data[index].autoEmail);
-				me.active.setValue(me.vendorGrid.data[index].active);
+				me.autoEmail.setValue(me.vendorGrid.data[index].autoEmail.toString());
+				me.active.setValue(me.vendorGrid.data[index].active.toString());
 			}
 			else
 				me.vendorId = 0;
@@ -752,7 +749,7 @@ ii.Class({
 			var errorMessage = "";
 			
 			if (status == "success") {
-					
+				me.modified(false);		
 				$(args.xmlNode).find("*").each(function() {
 					switch (this.tagName) {
 
@@ -788,8 +785,6 @@ ii.Class({
 					errorMessage += " [SAVE FAILURE]";
 				}
 			}
-			
-			me.modified(false);
 			$("#pageLoading").hide();
 		}
 	}
