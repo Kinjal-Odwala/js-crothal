@@ -58,7 +58,7 @@ ii.Class({
 			me.stateType.fetchingData();					
 			me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);			
 			me.itemStatusesLoaded();	
-			me.modified(false);
+			me.modified(false); 
 		},	
 		
 		authorizationProcess: function fin_pur_vendor_UserInterface_authorizationProcess() {
