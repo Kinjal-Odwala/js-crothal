@@ -311,7 +311,7 @@ ii.Class({
 			me.vendor = new ui.ctl.Input.DropDown.Filtered({
 				id: "Vendor",
 				formatFunction: function(type) { return type.name; },
-				changeFunction: function() { me.vendorChanged(); me.modified(); },
+				changeFunction: function() { me.vendorChanged(); },
 				required: false
 			});
 			
@@ -337,7 +337,7 @@ ii.Class({
 			me.catalog = new ui.ctl.Input.DropDown.Filtered({
 				id: "Catalog",
 				formatFunction: function(type) { return type.title; },
-				changeFunction: function() { me.catalogChanged(); me.modified();},
+				changeFunction: function() { me.catalogChanged();},
 				required: false
 			});
 			
@@ -548,7 +548,8 @@ ii.Class({
 				id: "PurchaseOrders",
 				appendToId: "divForm",
 				allowAdds: false,
-				selectFunction: function(index) { me.itemSelect(index); }
+				selectFunction: function(index) { me.itemSelect(index); },
+				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});
 			
 			me.purchaseOrderGrid.addColumn("houseCodeName", "houseCodeName", "House Code", "House Code", 270);
@@ -589,7 +590,8 @@ ii.Class({
 			
 			me.quantity = new ui.ctl.Input.Text({
 		        id: "Quantity",
-		        appendToId: "OrderItemGridControlHolder"
+		        appendToId: "OrderItemGridControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.quantity.makeEnterTab()
@@ -612,7 +614,7 @@ ii.Class({
 			
 			me.orderItemGrid.addColumn("itemSelect", "itemSelect", "", "", 30, function() {
 				var index = me.orderItemGrid.rows.length - 1;
-                return "<input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" />";
+                return "<input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true;\" />";
            });
 			me.orderItemGrid.addColumn("catalogTitle", "catalogTitle", "Catalog", "Catalog", 250);			
 			me.orderItemGrid.addColumn("number", "number", "Item Number", "Item Number", 150);
@@ -1094,6 +1096,9 @@ ii.Class({
 		actionNewOrder: function() {
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if (parent.fin.appUI.houseCodeId == 0) {
 				alert('Please select the House Code before adding the new Purchase Order.')
 				return true;
@@ -1498,6 +1503,9 @@ ii.Class({
 		actionCancelOrder: function() {
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if (me.purchaseOrderGrid.activeRowIndex >= 0) {
 				if (confirm("Please click 'OK' to cancel this order.")) {
 					me.status = "CancelOrder";
@@ -1512,7 +1520,10 @@ ii.Class({
 			var message = "";
 			var sendMethod = "0";
 			var rowIndex = me.purchaseOrderGrid.activeRowIndex;
-		
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if (rowIndex >= 0) {
 				var purchaseOrderDetails = $("iframe")[0].contentWindow.fin.openOrderUi.purchaseOrderDetails;
 				
@@ -1742,6 +1753,7 @@ ii.Class({
 			var hidePageLoading = true;
 
 			if (status == "success") {
+				me.modified(false);
 				if (me.status == "PlaceOrder" || me.status == "CancelOrder") {
 					if (me.status == "PlaceOrder") {
 						hidePageLoading = false;
