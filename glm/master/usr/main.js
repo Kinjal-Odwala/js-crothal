@@ -83,6 +83,7 @@ ii.Class({
 
 			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
 			me.houseCodeSearchJournalEntry = new ui.lay.HouseCodeSearchJournalEntry();
+			me.modified(false);
 			
 			$('#container-1').tabs(1);
 			$("#fragment-1").show();
@@ -180,6 +181,8 @@ ii.Class({
 			});			
 					
 			me.journalDate = new ui.ctl.Input.Date({
+				changeFunction: function() { me.modified(); },
+				
 		        id: "JournalDate",
 				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
 		    });	
@@ -203,28 +206,34 @@ ii.Class({
 			});
 							
 		    me.creditAddress1 = new ui.ctl.Input.Text({
-				id: "CreditAddress1"
+				id: "CreditAddress1",
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.creditAddress2 = new ui.ctl.Input.Text({
-				id: "CreditAddress2"
+				id: "CreditAddress2",
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.creditCity = new ui.ctl.Input.Text({
-				id: "CreditCity"
+				id: "CreditCity",
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.creditState = new ui.ctl.Input.Text({
-				id: "CreditState"
+				id: "CreditState",
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.creditZip = new ui.ctl.Input.Text({
-				id: "CreditZip"
+				id: "CreditZip",
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.creditEmail = new ui.ctl.Input.Text({
 				id: "CreditEmail",
-				maxLength: 50
+				maxLength: 50,
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.creditEmail.makeEnterTab()
@@ -242,7 +251,8 @@ ii.Class({
 				
 			me.creditPhone = new ui.ctl.Input.Text({
 				id: "CreditPhone",
-				maxLength: 14
+				maxLength: 14,
+				changeFunction: function() { me.modified(); }
 			});			
 				
 			me.creditPhone.makeEnterTab()
@@ -262,32 +272,39 @@ ii.Class({
 			
 			me.debitJob = new ui.ctl.Input.DropDown.Filtered({
 				id: "DebitJob",
-				formatFunction: function( type ) { return type.jobNumber + " - " + type.jobTitle; }
+				formatFunction: function( type ) { return type.jobNumber + " - " + type.jobTitle; },
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.debitAddress1 = new ui.ctl.Input.Text({
-				id: "DebitAddress1"
+				id: "DebitAddress1",
+				changeFunction: function() { me.modified(); }
 			});			
 			
 			me.debitAddress2 = new ui.ctl.Input.Text({
-				id: "DebitAddress2"
+				id: "DebitAddress2",
+				changeFunction: function() { me.modified(); }
 			});		
 			
 			me.debitCity = new ui.ctl.Input.Text({
-				id: "DebitCity"
+				id: "DebitCity",
+				changeFunction: function() { me.modified(); }
 			});		
 				
 			me.debitState = new ui.ctl.Input.Text({
-				id: "DebitState"
+				id: "DebitState",
+				changeFunction: function() { me.modified(); }
 			});	
 					
 			me.debitZip = new ui.ctl.Input.Text({
-				id: "DebitZip"
+				id: "DebitZip",
+				changeFunction: function() { me.modified(); }
 			});	
 					
 			me.debitEmail = new ui.ctl.Input.Text({
 				id: "DebitEmail",
-				maxLength: 50
+				maxLength: 50,
+				changeFunction: function() { me.modified(); }
 			});	
 			
 			me.debitEmail.makeEnterTab()
@@ -305,7 +322,8 @@ ii.Class({
 					
 			me.debitPhone = new ui.ctl.Input.Text({
 				id: "DebitPhone",
-				maxLength: 14
+				maxLength: 14,
+				changeFunction: function() { me.modified(); }
 			});
 				
 			me.debitPhone.makeEnterTab()
@@ -373,7 +391,8 @@ ii.Class({
 			
 			me.journalEntry = new ui.ctl.Grid({
 				id: "JournalEntry",
-				selectFunction: function(index) { me.journalEntrySelect(index); }				
+				selectFunction: function(index) { me.journalEntrySelect(index); },
+				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }				
 			});
 			
 			me.journalEntry.addColumn("id", "id", "Entry #", "Entry #", 70);
@@ -476,6 +495,14 @@ ii.Class({
 			});
 		},
 		
+		modified: function fin_cmn_status_modified() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
+		},
+		
 		controlKeyProcessor: function() {
 			var args = ii.args(arguments, {
 				event: {type: Object}		// The (key) event object
@@ -576,7 +603,10 @@ ii.Class({
 		},
 		
 		journalEntrysLoad: function() {
-
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			ii.trace( "journalEntry Master - journalEntrysLoad", ii.traceTypes.information, "Startup");			
 
 			var me = this;
@@ -800,8 +830,11 @@ ii.Class({
 		
 		actionUndoItem: function() {
 			var args = ii.args(arguments,{});
-			var me = this;		
-		
+			var me = this;
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			me.status = "";
 			if(me.activeFrameId == 0 && me.journalEntry.activeRowIndex != -1) 
 				$("iframe")[0].contentWindow.fin.journalEntryUi.actionUndoItem();
@@ -810,6 +843,9 @@ ii.Class({
 		actionNewItem: function() {
 			var me = this;	
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			//UI level Security
 			if(me.journalEntryReadOnly) return;		
 			
@@ -841,6 +877,9 @@ ii.Class({
 		actionDeleteItem: function() {
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if(me.journalEntryReadOnly) return;
 			
 			if (me.journalEntry.activeRowIndex == -1)
@@ -863,6 +902,9 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;		
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if (me.status == "new"){
 				$("#divGrid").show();
 				
@@ -1040,7 +1082,7 @@ ii.Class({
 			if (status == "success") {				
 				
 				if (me.status == "new") {
-					
+					me.modified(false);
 					$(args.xmlNode).find("*").each(function(){
 
 						switch (this.tagName) {
@@ -1070,8 +1112,7 @@ ii.Class({
 					});
 				}
 				
-				if(me.status == "delete")
-				{				
+				if(me.status == "delete") {				
 					$("iframe")[0].contentWindow.fin.journalEntryUi.resetGrids();
 					if ($("iframe")[1].contentWindow.fin != undefined)
 						$("iframe")[1].contentWindow.fin.houseCodeInfoUi.resetControls();	

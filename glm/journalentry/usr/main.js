@@ -63,6 +63,7 @@ ii.Class({
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			
 			me.accountsLoaded();
+			
 		},
 		
 		authorizationProcess: function fin_glm_journalEntry_UserInterface_authorizationProcess(){
@@ -105,7 +106,8 @@ ii.Class({
 			me.creditAccount = new ui.ctl.Input.DropDown.Filtered({
 		        id: "CreditAccount" ,
 		        formatFunction: function( account ){ return account.code + ' ' + account.name; },
-		        appendToId: "JournalEntryCreditControlHolder"
+		        appendToId: "JournalEntryCreditControlHolder",
+				changeFunction: function() { parent.fin.glmMasterUi.modified(); }
 		    });		
 		
 		    me.creditAccount.makeEnterTab()
@@ -119,7 +121,8 @@ ii.Class({
 				
 			me.creditAmount = new ui.ctl.Input.Money({
 		        id: "CreditAmount" ,
-				appendToId : "JournalEntryCreditControlHolder"
+				appendToId : "JournalEntryCreditControlHolder",
+				changeFunction: function() { parent.fin.glmMasterUi.modified(); }
 		    });	
 				
 		    me.creditAmount.makeEnterTab()
@@ -135,7 +138,8 @@ ii.Class({
 			me.debitAccount = new ui.ctl.Input.DropDown.Filtered({
 		        id: "DebitAccount" ,
 		        formatFunction: function( account ){ return account.code + ' ' + account.name; },
-		        appendToId: "JournalEntryDebitControlHolder"
+		        appendToId: "JournalEntryDebitControlHolder",
+				changeFunction: function() { parent.fin.glmMasterUi.modified(); }
 		    });		
 		
 		    me.debitAccount.makeEnterTab()
@@ -149,14 +153,15 @@ ii.Class({
 				
 		    me.debitAmount = new ui.ctl.Input.Money({
 		        id: "DebitAmount" ,
-				appendToId : "JournalEntryDebitControlHolder"
+				appendToId : "JournalEntryDebitControlHolder",
+				changeFunction: function() { parent.fin.glmMasterUi.modified(); }
 		    });	
 			
 		    me.debitAmount.makeEnterTab()
 				.setValidationMaster( me.validator )
 				.addValidation( ui.ctl.Input.Validation.required )
 
-			if(parent.fin.glmMasterUi.journalEntrys.length <= 0){
+			if(parent.fin.glmMasterUi.journalEntrys.length <= 0) {
 
 				me.journalEntryCredit.allowAdds = false;
 				me.journalEntryDebit.allowAdds = false;
@@ -167,7 +172,7 @@ ii.Class({
 				me.journalEntryDebit.addColumn("accountId", "accountId", "Debit Account", "Debit Account", 150);
 				me.journalEntryDebit.addColumn("amount", "amount", "Amount", "Amount", 100);
 			}
-			else if(parent.fin.glmMasterUi.journalEntrys[parent.fin.glmMasterUi.journalEntry.activeRowIndex].status != "Open"){
+			else if(parent.fin.glmMasterUi.journalEntrys[parent.fin.glmMasterUi.journalEntry.activeRowIndex].status != "Open") {
 
 				me.journalEntryCredit.allowAdds = false;
 				me.journalEntryDebit.allowAdds = false;
@@ -178,7 +183,7 @@ ii.Class({
 				me.journalEntryDebit.addColumn("accountId", "accountId", "Debit Account", "Debit Account", 150, function( account ){ return account.code + ' ' + account.name; });
 				me.journalEntryDebit.addColumn("amount", "amount", "Amount", "Amount", 100, function( amount ){ return amount.toFixed(2); });
 			}
-			else{
+			else {
 				me.journalEntryCredit.addColumn("accountId", "accountId", "Credit Account", "Credit Account", 150, function( account ){ return account.code + ' ' + account.name; }, me.creditAccount);
 				me.journalEntryCredit.addColumn("amount", "amount", "Amount", "Amount", 100, function( amount ){ return amount.toFixed(2); }, me.creditAmount);
 	
@@ -223,7 +228,7 @@ ii.Class({
 				lookupSpec: {accountId: me.accounts}
 			});			
 		},
-		
+				
 		accountsLoaded: function() {
 			var me = this;
 			var account;
@@ -344,7 +349,7 @@ ii.Class({
 		
 		actionUndoItem: function(){
 			var me = this;			
-
+			
 			me.journalEntryCredit.body.deselectAll();
 			me.journalEntryDebit.body.deselectAll();
 			
@@ -510,7 +515,7 @@ ii.Class({
 			var debitRowCounter = 0;
 			
 			if(status == "success"){
-
+				parent.fin.glmMasterUi.modified(false);
 				$(args.xmlNode).find("*").each(function (){
 
 					switch (this.tagName) {

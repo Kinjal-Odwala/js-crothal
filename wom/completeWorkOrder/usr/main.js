@@ -47,6 +47,7 @@ ii.Class({
 				
 			me.defineFormControls();			
 			me.configureCommunications();
+			me.modified(false);
 
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 			
@@ -172,13 +173,15 @@ ii.Class({
 			
 			me.woStartDate = new ui.ctl.Input.Text({
 		        id: "WOStartDate",
-		        appendToId: "WorkOrderGridControlHolder"
+		        appendToId: "WorkOrderGridControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.completedDate = new ui.ctl.Input.Date({
 		        id: "CompletedDate",
 		        appendToId: "WorkOrderGridControlHolder",
-				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
+				changeFunction: function() { me.modified(); }
 		    });
 					
 			me.completedDate.makeEnterTab()
@@ -206,7 +209,7 @@ ii.Class({
 			
 			me.workOrderGrid.addColumn("assigned", "assigned", "", "Checked means convert Work Order to Invoice", 30, function() {
 				var index = me.workOrderGrid.rows.length - 1;
-                return "<input type=\"checkbox\" id=\"assignInputCheck" + index + "\" class=\"iiInputCheck\" onclick=\"actionClickItem(this);\" " + (me.workOrders[index].assigned == true ? checked='checked' : '') + " />";
+                return "<input type=\"checkbox\" id=\"assignInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true;\" onclick=\"actionClickItem(this);\" " + (me.workOrders[index].assigned == true ? checked='checked' : '') + " />";
             });			
 			me.workOrderGrid.addColumn("workOrderNumber", "workOrderNumber", "Work Order #", "Work Order Number", 100);
 			me.workOrderGrid.addColumn("", "", "Notes", "Notes", 60, function() {
@@ -228,7 +231,8 @@ ii.Class({
 					return false;
 				}
 			});			
-
+			$("#Notes").change(function() { me.modified(true); });
+			
 			me.anchorCancel = new ui.ctl.buttons.Sizeable({
 				id: "AnchorCancel",
 				className: "iiButton",
@@ -293,7 +297,15 @@ ii.Class({
 				injectionArray: me.workOrders
 			});
 		},		
-
+		
+		modified: function fin_cmn_status_modified() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
+		},
+		
 		houseCodesLoaded: function(me, activeId) {
 			
 			ii.trace("HouseCodesLoaded", ii.traceTypes.information, "Startup");
@@ -334,6 +346,9 @@ ii.Class({
 		actionLoadItem: function() {
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			me.validator.forceBlur();
 			
 			// Check to see if the data entered is valid
@@ -402,12 +417,15 @@ ii.Class({
 		actionCancelItem: function() {
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())	 	
+					return;	
+					
 			hidePopup();
 		},
 		
 		actionOkItem: function() {
 			var me = this;
-			
+
 			hidePopup();
 			me.workOrders[me.workOrderIndex].notes = me.notes.value;
 		},
@@ -478,6 +496,7 @@ ii.Class({
 			var errorMessage = "";
 									
 			if (status == "success") {
+				me.modified(false);
 				me.actionLoadItem();
 			}
 			else {				
@@ -487,6 +506,7 @@ ii.Class({
 				alert(errorMessage);
 				$("#pageLoading").hide();
 			}
+			
 		}
 	}
 });
