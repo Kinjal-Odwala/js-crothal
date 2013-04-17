@@ -205,6 +205,14 @@ ii.Class({
 				hasHotState: true
 			});
 			
+			me.anchorUpdateSalesTax = new ui.ctl.buttons.Sizeable({
+				id: "AnchorUpdateSalesTax",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Update Sales Tax&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionUpdateSalesTaxItem(); },
+				hasHotState: true
+			});
+			
 			me.anchorOk = new ui.ctl.buttons.Sizeable({
 				id: "AnchorOk",
 				className: "iiButton",
@@ -431,9 +439,9 @@ ii.Class({
 			rowHtml += me.getTotalGridRow(0, subTotal, "Sub Total:", "");
 			rowHtml += me.getTotalGridRow(0, salesTaxTotal, "Sales Tax Total:", "");
 			rowHtml += me.getTotalGridRow(0, total, "Total:", "");
-			
+
 			$("#InvoiceItemGrid tbody").html(rowHtml);
-						
+			
 			me.invoiceItemGridEventSetup(me);
 			
 			if (me.bindRow) {
@@ -763,12 +771,12 @@ ii.Class({
 			var me = this;
 			
 			$("#quantity").keypress(function(e) {
-				if(e.which != 8 && e.which != 0 && e.which != 45 && e.which != 46 && (e.which < 48 || e.which > 57))
+				if (e.which != 8 && e.which != 0 && e.which != 45 && e.which != 46 && (e.which < 48 || e.which > 57))
 					return false;
 			});
 
 			$("#price").keypress(function(e) {
-				if(e.which != 8 && e.which != 0 && e.which != 45 && e.which != 46 && (e.which < 48 || e.which > 57))
+				if (e.which != 8 && e.which != 0 && e.which != 45 && e.which != 46 && (e.which < 48 || e.which > 57))
 					return false;
 			});
 			
@@ -928,6 +936,19 @@ ii.Class({
 
 			me.status = "Reorder";
 			me.rowBeingEdited = true;
+		},
+		
+		actionUpdateSalesTaxItem: function() {
+			var me = this;
+
+			if (confirm("Are you sure you would like to update the sales tax for all taxable invoice line items?")) {
+				me.status = "UpdateSalesTax";
+				me.rowBeingEdited = true;
+				me.actionSaveItem();
+			} 
+			else {
+				return;
+			}
 		},
 		
 		searchHouseCode: function() {
@@ -1279,7 +1300,7 @@ ii.Class({
 					return true;
 				}
 			}
-			else {
+			else if (me.status != "UpdateSalesTax") {
 				if (!me.editSalesTax) {
 					if (me.invoiceByCustomer && (me.status == "Add" || me.status == "Edit")) {
 						houseCode = $("#houseCode").val();
@@ -1387,6 +1408,9 @@ ii.Class({
 			else if (me.status == "Reorder") {
 				item = new fin.rev.invoice.InvoiceItem({ id: 0 });
 			}
+			else if (me.status == "UpdateSalesTax") {
+				item = new fin.rev.invoice.InvoiceItem({ id: 0 });
+			}
 
 			var xml = me.saveXmlBuildInvoiceItem(item);
 	
@@ -1446,6 +1470,11 @@ ii.Class({
 
 					rowNumber++;
 				});
+			}
+			else if (me.status == "UpdateSalesTax") {
+				xml += '<revInvoiceItemSalesTaxUpdateAll';
+				xml += ' id="' + me.invoiceId + '"';
+				xml += '/>';
 			}
 
 			return xml;
