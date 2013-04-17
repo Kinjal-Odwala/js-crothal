@@ -673,7 +673,7 @@ ii.Class({
 			var errorMessage = "";
 			
 			if (status == "success") {
-						
+				me.modified(false);		
 				$(args.xmlNode).find("*").each(function() {
 					switch (this.tagName) {
 
@@ -710,7 +710,6 @@ ii.Class({
 				}
 			}
 			
-			me.modified(false);
 			$("#pageLoading").hide();
 		}
 	}

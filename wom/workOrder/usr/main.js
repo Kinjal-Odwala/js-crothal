@@ -73,9 +73,14 @@ ii.Class({
 			
 			me.systemVariableStore.fetch("userId:[user],name:WorkOrderBackDays", me.systemVariablesLoaded, me);
 			me.initialize();
+			me.modified(false);
 			
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
+			$("input[name='Subcontracted']").change(function() { me.modified(true); });
+			$("input[name='Commissionable']").change(function() { me.modified(true); });
+			$("input[name='OvertimeAuthorized']").change(function() { me.modified(true); });
+			$("input[name='WOM']").change(function() { me.modified(true); });
 		},		
 		
 		initialize: function() {
@@ -325,7 +330,7 @@ ii.Class({
 				id: "Job",
 				formatFunction: function(type) { return (type.jobNumber + " - " + type.jobTitle); },
 				changeFunction: function() {
-										
+						
 					if (me.job.indexSelected >= 0) {
 						me.houseCodeJobId = me.jobs[me.job.indexSelected].id;
 						$("#JobText").attr("title", me.jobs[me.job.indexSelected].jobNumber + " - " + me.jobs[me.job.indexSelected].jobTitle);
@@ -383,7 +388,8 @@ ii.Class({
 						return type.jobTitle; 
 					else
 						return type.jobNumber + " " + type.jobTitle;
-				}
+				},
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.serviceLocation.makeEnterTab()
@@ -402,7 +408,8 @@ ii.Class({
 						return type.jobTitle; 
 					else
 						return type.jobNumber + " " + type.jobTitle;
-				}
+				},
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.customer.makeEnterTab()
@@ -416,7 +423,8 @@ ii.Class({
 			
 			me.requestedBy = new ui.ctl.Input.Text({
 		        id: "RequestedBy",
-				maxLength: 50
+				maxLength: 50,
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.requestedBy.makeEnterTab()
@@ -425,12 +433,14 @@ ii.Class({
 			
 			me.tennant = new ui.ctl.Input.Text({
 		        id: "Tennant",
-		        maxLength: 50
+		        maxLength: 50,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.phoneNumber = new ui.ctl.Input.Text({
 		        id: "PhoneNumber",
-		        maxLength: 14
+		        maxLength: 14,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.phoneNumber.makeEnterTab()
@@ -451,12 +461,14 @@ ii.Class({
 			
 			me.poNumber = new ui.ctl.Input.Text({
 		        id: "PONumber",
-		        maxLength: 50
+		        maxLength: 50,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.startDate = new ui.ctl.Input.Date({
 		        id: "StartDate",
-				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.startDate.makeEnterTab()
@@ -488,21 +500,25 @@ ii.Class({
 				
 			me.serviceContract = new ui.ctl.Input.Text({
 		        id: "ServiceContract",
-		        maxLength: 100
+		        maxLength: 100,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.generalLocationCode = new ui.ctl.Input.Text({
 		        id: "GeneralLocationCode",
-		        maxLength: 50
+		        maxLength: 50,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.customerWorkOrderNumber = new ui.ctl.Input.Text({
 		        id: "CustomerWorkOrderNumber",
-		        maxLength: 50
+		        maxLength: 50,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.squareFeet = new ui.ctl.Input.Text({
-		        id: "SquareFeet"
+		        id: "SquareFeet",
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.squareFeet.makeEnterTab()
@@ -519,7 +535,8 @@ ii.Class({
 				
 			me.areaManagerEmail = new ui.ctl.Input.Text({
 		        id: "AreaManagerEmail",
-		        maxLength: 50
+		        maxLength: 50,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.areaManagerEmail.makeEnterTab()
@@ -536,7 +553,8 @@ ii.Class({
 			
 			me.regionalManagerEmail = new ui.ctl.Input.Text({
 		        id: "RegionalManagerEmail",
-		        maxLength: 50
+		        maxLength: 50,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.regionalManagerEmail.makeEnterTab()
@@ -559,7 +577,8 @@ ii.Class({
 					me.notes.value = me.notes.value.substring(0, 1024);
 					return false;
 				}
-			});			
+			});	
+			$("#Notes").change(function() { me.modified(true); });		
 
 			me.serviceLocationPopup = new ui.ctl.Input.DropDown.Filtered({
 				id: "ServiceLocationPopup",
@@ -792,6 +811,7 @@ ii.Class({
 						me.itemMarkup.setValue(0);
 
 					me.calculateTotal();
+					me.modified();
 				}
 		    });	
 
@@ -807,7 +827,8 @@ ii.Class({
 			me.itemDescription = new ui.ctl.Input.Text({
 		        id: "ItemDescription",
 		        maxLength: 1024, 
-				appendToId: "WorkOrderItemGridControlHolder"
+				appendToId: "WorkOrderItemGridControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.itemDescription.makeEnterTab()
@@ -818,7 +839,7 @@ ii.Class({
 		        id: "ItemQuantity",
 		        maxLength: 10, 
 				appendToId: "WorkOrderItemGridControlHolder",
-				changeFunction: function() { me.calculateTotal(); }
+				changeFunction: function() { me.calculateTotal(); me.modified(); }
 		    });
 			
 			me.itemQuantity.makeEnterTab()
@@ -833,7 +854,7 @@ ii.Class({
 			me.itemPrice = new ui.ctl.Input.Money({
 		        id: "ItemPrice",
 				appendToId: "WorkOrderItemGridControlHolder",
-				changeFunction: function() { me.calculateTotal(); }
+				changeFunction: function() { me.calculateTotal(); me.modified(); }
 		    });
 			
 			me.itemPrice.makeEnterTab()
@@ -843,7 +864,7 @@ ii.Class({
 			me.itemMarkup = new ui.ctl.Input.Money({
 		        id: "ItemMarkup",
 				appendToId: "WorkOrderItemGridControlHolder",
-				changeFunction: function() { me.calculateTotal(); }
+				changeFunction: function() { me.calculateTotal(); me.modified(); }
 		    });
 			
 			me.itemMarkup.makeEnterTab()
@@ -1075,7 +1096,8 @@ ii.Class({
 			me.workOrderGrid = new ui.ctl.Grid({
 				id: "WorkOrderGrid",
 				allowAdds: false,
-				selectFunction: function(index) { me.itemSelect(index); }
+				selectFunction: function(index) { me.itemSelect(index); },
+				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});
 			
 			me.workOrderGrid.addColumn("serviceLocation", "serviceLocation", "Service Location", "Service Location", null);
@@ -1170,6 +1192,14 @@ ii.Class({
 				itemConstructorArgs: fin.wom.workOrder.systemVariableArgs,
 				injectionArray: me.systemVariables
 			});
+		},
+		
+		modified: function fin_cmn_status_modified() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
 		},
 		
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
@@ -1420,7 +1450,10 @@ ii.Class({
 		
 		actionLoadItem: function() {
 			var me = this;
-				
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+					
 			$("#messageToUser").text("Loading");	
 			$("#pageLoading").show();
 			
@@ -1438,7 +1471,10 @@ ii.Class({
 		actionSearchItem: function() {
 			var me = this;
 			var statusType = 8;	
-				
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+					
 			me.actionCancelSearchItem();
 			
 			$("#messageToUser").text("Loading");	
@@ -1466,14 +1502,26 @@ ii.Class({
 				$("#ServiceLocationText").attr('disabled', true);
 				$("#ServiceLocationAction").removeClass("iiInputAction");
 				$("#CustomerText").attr('disabled', true);
-				$("#CustomerAction").removeClass("iiInputAction");				$("#RequestedByText").attr('disabled', true);				$("#TennantText").attr('disabled', true);				$("#PhoneNumberText").attr('disabled', true);				$("#PONumberText").attr('disabled', true);				$("#StartDateText").attr('disabled', true);
-				$("#StartDateAction").removeClass("iiInputAction");				$("#OvertimeAuthorizedYes").attr('disabled', true);
+				$("#CustomerAction").removeClass("iiInputAction");
+				$("#RequestedByText").attr('disabled', true);
+				$("#TennantText").attr('disabled', true);
+				$("#PhoneNumberText").attr('disabled', true);
+				$("#PONumberText").attr('disabled', true);
+				$("#StartDateText").attr('disabled', true);
+				$("#StartDateAction").removeClass("iiInputAction");
+				$("#OvertimeAuthorizedYes").attr('disabled', true);
 				$("#OvertimeAuthorizedNo").attr('disabled', true);
 				$("#ServiceContractText").attr('disabled', true);
 				$("#GeneralLocationCodeText").attr('disabled', true);
-				$("#CustomerWorkOrderNumberText").attr('disabled', true);				$("#SquareFeetText").attr('disabled', true);				$("#AreaManagerEmailText").attr('disabled', true);				$("#RegionalManagerEmailText").attr('disabled', true);				$("#SubcontractedYes").attr('disabled', true);
-				$("#SubcontractedNo").attr('disabled', true);				$("#CommissionableYes").attr('disabled', true);
-				$("#CommissionableNo").attr('disabled', true);				$("#NotesText").attr('disabled', true);
+				$("#CustomerWorkOrderNumberText").attr('disabled', true);
+				$("#SquareFeetText").attr('disabled', true);
+				$("#AreaManagerEmailText").attr('disabled', true);
+				$("#RegionalManagerEmailText").attr('disabled', true);
+				$("#SubcontractedYes").attr('disabled', true);
+				$("#SubcontractedNo").attr('disabled', true);
+				$("#CommissionableYes").attr('disabled', true);
+				$("#CommissionableNo").attr('disabled', true);
+				$("#NotesText").attr('disabled', true);
 			
 				$("#AnchorSave").hide();
 				$("#AnchorNew").hide();
@@ -1483,7 +1531,8 @@ ii.Class({
 				$("#searchIcon").hide();
 				$("#AnchorView").hide();
 				$("#AnchorPrint").hide();
-				$("#actionMenu").hide();			}
+				$("#actionMenu").hide();
+			}
 			
 			if (me.woWriteNoApprove) {
 				$("#AnchorApprove").hide();
@@ -1775,6 +1824,9 @@ ii.Class({
 		actionCancelItem: function() {
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			me.hideWorkOrderSetupPopup();
 			me.action = "";
 			me.nextCount = 0;
@@ -1790,7 +1842,10 @@ ii.Class({
 		actionUndoItem: function() {			
 			var args = ii.args(arguments,{});
 			var me = this;
-	
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if (me.action != "")
 				return;				
 			
@@ -1805,6 +1860,9 @@ ii.Class({
 			var item = [];
 			var xml = "";
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			me.action = "Cancel";
 			
 			$("#messageToUser").text("Canceling");
@@ -1916,6 +1974,9 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if(me.workOrdersReadOnly) return;
 			
 			if (me.action != "")
@@ -1946,6 +2007,7 @@ ii.Class({
 		actionNextItem: function() {
 			var me = this;
 			
+			me.modified(true);
 			if (!me.validateWorkOrder()) {
 				alert("In order to continue, the errors on the page must be corrected.");
 				return;
@@ -2523,6 +2585,7 @@ ii.Class({
 			var workOrderCreated = false;
 									
 			if (status == "success") {
+				me.modified(false);
 				$(args.xmlNode).find("*").each(function() {
 					switch (this.tagName) {
 
@@ -2592,7 +2655,7 @@ ii.Class({
 			}
 			else
 				alert("[SAVE FAILURE] Error while updating Work Order Record: " + $(args.xmlNode).attr("message"));
-
+				
 			$("#pageLoading").hide();
 		}
 	}

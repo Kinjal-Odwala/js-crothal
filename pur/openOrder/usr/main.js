@@ -54,7 +54,6 @@ ii.Class({
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$(document).bind("mousedown", me, me.mouseDownProcessor);
 			$(document).bind("contextmenu", me, me.contextMenuProcessor);
-			
 			me.houseCodeJobsLoaded();
 		},		
 		
@@ -596,7 +595,7 @@ ii.Class({
 			var rowHtml = "";
 			var title = "";
 			
-			rowHtml = "<select id='" + args.columnName + "' style='width:100%;'>"			
+			rowHtml = "<select onchange=parent.fin.purMasterUi.modified(true); id='" + args.columnName + "' style='width:100%;'>"			
 	
 			for (var index = 0; index < me.houseCodeJobs.length; index++) {
 				title = me.houseCodeJobs[index].jobNumber + " - " + me.houseCodeJobs[index].jobTitle;
@@ -645,6 +644,7 @@ ii.Class({
 					dataRow++;
 					$(this).html(rowHtml);
 					
+					$("#qtyOverride" + rowNumber).change(function() { parent.fin.purMasterUi.modified(true); });
 					$("#qtyOverride" + rowNumber).keypress(function (e) {
 						if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57))
 							return false;
@@ -705,7 +705,10 @@ ii.Class({
 			var rowHtml = "";
 			var rowNumber = 0;
 			var dataRow = 0;
-
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if (me.status == "EditQuantity") {
 				$("#PurchaseOrderGridBody").find('tr').each(function() {
 					rowNumber++;
@@ -820,7 +823,8 @@ ii.Class({
 			var status = $(args.xmlNode).attr("status");
 			var traceType = ii.traceTypes.errorDataCorruption;
 						
-			if (status == "success") {				
+			if (status == "success") {	
+				parent.fin.purMasterUi.modified(false);			
 				me.status = "";
 				me.rowBeingEdited = false;
 				me.currentRowSelected = null;

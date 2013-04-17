@@ -417,6 +417,7 @@ ii.Class({
 					dataRow++;
 					$(this).html(rowHtml);
 					
+					$("#quantityReceived" + rowNumber).change(function() { parent.fin.purMasterUi.modified(true); });
 					$("#quantityReceived" + rowNumber).keypress(function (e) {
 						if( e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57))
 							return false;
@@ -465,7 +466,10 @@ ii.Class({
 			var rowHtml = "";
 			var rowNumber = 0;
 			var dataRow = 0;
-
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if (me.status == "EditQuantity") {
 				$("#PurchaseOrderGridBody").find('tr').each(function() {
 					rowNumber++;
@@ -572,6 +576,7 @@ ii.Class({
 			var traceType = ii.traceTypes.errorDataCorruption;
 						
 			if (status == "success") {
+				parent.fin.purMasterUi.modified(false);
 				me.status = "";
 				me.rowBeingEdited = false;
 				me.purchaseOrderGridRowSet();	
