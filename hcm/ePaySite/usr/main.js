@@ -69,7 +69,8 @@ ii.Class({
 			me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
 			me.jobTypeStore.fetch("userId:[user]", me.jobTypesLoaded, me);
 			me.ePayGroupTypeStore.fetch("userId:[user]", me.ePayGroupTypesLoaded, me);
-
+			me.modified(false);
+			
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 
@@ -249,7 +250,8 @@ ii.Class({
 			
 			me.jobNumber = new ui.ctl.Input.Text({
 				id: "JobNumber",
-				maxLength: 8
+				maxLength: 8,
+				changeFunction: function() { me.modified(); }
 			});
 
 			me.jobNumber.makeEnterTab()
@@ -258,7 +260,8 @@ ii.Class({
 
 			me.jobDescription = new ui.ctl.Input.Text({
 				id: "JobDescription",
-				maxLength: 40
+				maxLength: 40,
+				changeFunction: function() { me.modified(); }
 			});
 
 			me.jobDescription.makeEnterTab()
@@ -267,25 +270,28 @@ ii.Class({
 
 			me.jobContact = new ui.ctl.Input.Text({
 				id: "JobContact",
-				maxLength: 50
+				maxLength: 50,
+				changeFunction: function() { me.modified(); }
 			});
 
 			me.jobAddress1 = new ui.ctl.Input.Text({
 				id: "JobAddress1",
-				maxLength: 50
+				maxLength: 50,
+				changeFunction: function() { me.modified(); }
 			});
 
 			me.jobAddress2 = new ui.ctl.Input.Text({
 				id: "JobAddress2",
-				maxLength: 50
+				maxLength: 50,
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.jobPostalCode = new ui.ctl.Input.Text({
 				id: "JobPostalCode",
 				maxLength: 10,
-				changeFunction: function() {
+				changeFunction: function() { 
 					if (ui.cmn.text.validate.postalCode(me.jobPostalCode.getValue()))
-						me.loadZipCodeTypes();
+						me.loadZipCodeTypes(); me.modified();
 				}
 			});
 			
@@ -306,7 +312,8 @@ ii.Class({
 		        id: "JobGEOCode",
 				formatFunction: function( type ) { return type.geoCode; },
 				changeFunction: function() { me.geoCodeChanged(); },
-		        required: false
+		        required: false,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.geoCode.makeEnterTab()
@@ -320,7 +327,8 @@ ii.Class({
 			me.jobCity = new ui.ctl.Input.DropDown.Filtered({
 		        id: "JobCity",
 				formatFunction: function( type ) { return type.city; },
-		        required: false
+		        required: false,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.jobCity.makeEnterTab()
@@ -347,7 +355,8 @@ ii.Class({
 
 			me.jobState = new ui.ctl.Input.DropDown.Filtered({
 				id: "JobState",
-				formatFunction: function(type) { return type.name; }
+				formatFunction: function(type) { return type.name; },
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.jobState.makeEnterTab()
@@ -381,17 +390,20 @@ ii.Class({
 			me.ePayGroupType = new ui.ctl.Input.DropDown.Filtered({
 		        id: "EPayGroupType" ,
 				formatFunction: function( type ){ return type.name; },
-		        required : false
+		        required : false,
+				changeFunction: function() { me.modified(); }
 		    });	
 			
 			me.jobActive = new ui.ctl.Input.Check({
-				id: "JobActive"
+				id: "JobActive",
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.jobGrid = new ui.ctl.Grid({
 				id: "Job",
 				appendToId: "divForm",
-				selectFunction: function(index) { me.itemSelect(index);	}
+				selectFunction: function(index) { me.itemSelect(index);	},
+				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});
 
 			me.jobGrid.addColumn("brief", "brief", "Number", "Epay Number", 70);
@@ -403,33 +415,38 @@ ii.Class({
 				id: "HouseCodeGrid",
 				appendToId: "divForm",
 				allowAdds: false,
-				selectFunction: function(index) { me.houseCodeGridSelect(index);	}
+				selectFunction: function(index) { me.houseCodeGridSelect(index); }
 			});
 			
 			me.houseCodeTitle = new ui.ctl.Input.Text({
 		        id: "HouseCodeTitle",
-				appendToId: "HouseCodeGridControlHolder"
+				appendToId: "HouseCodeGridControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.houseCodeLanguage1 = new ui.ctl.Input.Text({
 			    id: "HouseCodeLanguage1",
-				appendToId: "HouseCodeGridControlHolder"
+				appendToId: "HouseCodeGridControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.houseCodeLanguage2 = new ui.ctl.Input.Text({
 		        id: "HouseCodeLanguage2",
-				appendToId: "HouseCodeGridControlHolder"
+				appendToId: "HouseCodeGridControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.houseCodeLanguage3 = new ui.ctl.Input.Text({
 		        id: "HouseCodeLanguage3",
-				appendToId: "HouseCodeGridControlHolder"
+				appendToId: "HouseCodeGridControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.houseCodeActive = new ui.ctl.Input.Check({
 		        id: "HouseCodeActive" ,
 		        className: "iiInputCheck",
-				appendToId: "HouseCodeGridControlHolder"
+				appendToId: "HouseCodeGridControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.defaultHouseCode = new ui.ctl.Input.Check({
@@ -444,7 +461,7 @@ ii.Class({
 			me.houseCodeGrid.addColumn("language3", "language3", "Language 3", "Language 3", 170, null, me.houseCodeLanguage3);
 			me.houseCodeGrid.addColumn("defaultHouseCode", "", "Default House Code", "Default House Code", 160, function(data) {
 				var index = me.houseCodeGrid.rows.length - 1;				
-	            return "<center><input type=\"radio\" name=\"defaultHouseCode\" id=\"defaultHouseCode" + index + "\" class=\"iiInputCheck\"" + (data.defaultHouseCode == 1 ? 'checked' : '') + " onclick=\"fin.hcm.ePaySiteUi.actionClickItem(this," + index + ");\" /></center>";
+	            return "<center><input type=\"radio\" name=\"defaultHouseCode\" id=\"defaultHouseCode" + index + "\" class=\"iiInputCheck\"" + (data.defaultHouseCode == 1 ? 'checked' : '') + " onclick=\"fin.hcm.ePaySiteUi.actionClickItem(this," + index + ");\" onchange=\"parent.fin.appUI.modified = true;\" /></center>";
             });	
 			me.houseCodeGrid.addColumn("active", "active", "Active", "Active", 60, null, me.houseCodeActive);			
 			
@@ -459,27 +476,31 @@ ii.Class({
 			
 			me.popupTitle = new ui.ctl.Input.Text({
 		        id: "PopupTitle",
-				appendToId: "HouseCodePopupGridControlHolder"
+				appendToId: "HouseCodePopupGridControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.popupLanguage1 = new ui.ctl.Input.Text({
 		        id: "PopupLanguage1",
-				appendToId: "HouseCodePopupGridControlHolder"
+				appendToId: "HouseCodePopupGridControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.popupLanguage2 = new ui.ctl.Input.Text({
 		        id: "PopupLanguage2",
-				appendToId: "HouseCodePopupGridControlHolder"
+				appendToId: "HouseCodePopupGridControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.popupLanguage3 = new ui.ctl.Input.Text({
 		        id: "PopupLanguage3",
-				appendToId: "HouseCodePopupGridControlHolder"
+				appendToId: "HouseCodePopupGridControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.houseCodePopupGrid.addColumn("assigned", "assigned", "", "Checked means associated to the Epay Site", 30, function() { 
 				var rowNumber = me.houseCodePopupGrid.rows.length - 1;
-                return "<input type=\"checkbox\" id=\"assignInputCheck" + rowNumber + "\" class=\"iiInputCheck\"" + (me.units[rowNumber].assigned == true ? checked='checked' : '') + " />";				
+                return "<input type=\"checkbox\" id=\"assignInputCheck" + rowNumber + "\" class=\"iiInputCheck\"" + (me.units[rowNumber].assigned == true ? checked='checked' : '') + " onchange=\"parent.fin.appUI.modified = true;\"/>";				
             });
 			me.houseCodePopupGrid.addColumn("name", "name", "House Code", "House Code", null, null, me.popupTitle);
 			me.houseCodePopupGrid.addColumn("language1", "language1", "Language 1", "Language 1", 200, null, me.popupLanguage1);
@@ -580,6 +601,14 @@ ii.Class({
 			});
 		},
 		
+		modified: function fin_cmn_status_modified() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
+		},
+		
 		resizeControls: function() {
 			var me = this;
 
@@ -627,7 +656,10 @@ ii.Class({
 		
 		loadSearchResults: function() {
 			var me = this;
-	
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if (me.searchInput.getValue().length < 3) {
 				me.searchInput.setInvalid("Please enter search criteria (minimum 3 characters).");
 				return false;
@@ -696,7 +728,7 @@ ii.Class({
 			else
 				me.ePayGroupType.reset();
 
-			me.jobActive.check.checked = item.active;
+			me.jobActive.setValue(item.active.toString());
 
 			setTimeout(function() { 
 				me.resizeControls();
@@ -876,7 +908,7 @@ ii.Class({
 			me.jobPostalCode.setValue("");
 			me.geoCode.reset();
 			me.ePayGroupType.reset();
-			me.jobActive.check.checked = true;
+			me.jobActive.setValue("true");
 		},
 		
 		resetGrids: function() {
@@ -942,6 +974,9 @@ ii.Class({
 			var me = this;
 			var index = -1;	
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			index = me.houseCodeGrid.activeRowIndex;
 			if (index >= 0)				
 	   			me.houseCodeGrid.body.deselect(index);
@@ -951,7 +986,10 @@ ii.Class({
 
 		actionNewItem: function fin_hcm_ePaySite_UserInterface_actionNewItem() {
 			var me = this;
-
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			$("#container-1").triggerTab(1);
 
 			me.status = "new";
@@ -962,7 +1000,10 @@ ii.Class({
 
 		actionUndoItem: function fin_hcm_ePaySite_UserInterface_actionUndoItem() {
 			var me = this;
-
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			me.status = "";			
 			me.resetGrids();
 			
@@ -1146,6 +1187,7 @@ ii.Class({
 
 			if (status == "success") {
 				
+				me.modified(false);
 				if (me.status == "addHouseCodes") {
 					me.houseCodesTabNeedUpdate = true;
 					me.loadHouseCodes();

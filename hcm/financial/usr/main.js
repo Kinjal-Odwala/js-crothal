@@ -40,7 +40,7 @@ ii.Class({
 
 			$(window).bind("resize", me, me.resize );
 			$(document).bind("keydown", me, me.controlKeyProcessor);
-			
+						
 			me.shippingState.fetchingData();
 			me.bankState.fetchingData();
 			me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);		
@@ -310,27 +310,32 @@ ii.Class({
 			
 			me.company = new ui.ctl.Input.Text({
 		        id: "Company",
-		        maxLength: 256
+		        maxLength: 256,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.shippingAddress1 = new ui.ctl.Input.Text({
 		        id: "ShippingAddress1",
-		        maxLength: 255
+		        maxLength: 255,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.shippingAddress2 = new ui.ctl.Input.Text({
 		        id: "ShippingAddress2",
-		        maxLength: 255
+		        maxLength: 255,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.shippingCity = new ui.ctl.Input.Text({
 		        id: "ShippingCity",
-		        maxLength: 100
+		        maxLength: 100,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.shippingZip = new ui.ctl.Input.Text({
 		        id: "ShippingZip",
-		        maxLength: 10
+		        maxLength: 10,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.shippingZip.makeEnterTab()
@@ -347,14 +352,16 @@ ii.Class({
 			me.shippingState = new ui.ctl.Input.DropDown.Filtered({
 		        id: "ShippingState",
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.remitTo = new ui.ctl.Input.DropDown.Filtered({
 		        id: "RemitTo",
 				formatFunction: function( type ) { return type.name; },
 				changeFunction: function() { me.remitToChanged(); },
-		        required: false
+		        required: false,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.remitTo.makeEnterTab()
@@ -368,38 +375,45 @@ ii.Class({
 				
 			me.remitToTitle = new ui.ctl.Input.Text({
 		        id: "RemitToTitle",
-		        maxLength: 50
+		        maxLength: 50,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.remitToAddress1 = new ui.ctl.Input.Text({
 		        id: "RemitToAddress1",
-		        maxLength: 255
+		        maxLength: 255,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.remitToAddress2 = new ui.ctl.Input.Text({
 		        id: "RemitToAddress2",
-		        maxLength: 255
+		        maxLength: 255,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.remitToCity = new ui.ctl.Input.Text({
 		        id: "RemitToCity",
-		        maxLength: 100
+		        maxLength: 100,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.remitToState = new ui.ctl.Input.Text({
 		        id: "RemitToState",
-		        maxLength: 64
+		        maxLength: 64,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.remitToZip = new ui.ctl.Input.Text({
 		        id: "RemitToZip",
-		        maxLength: 10
+		        maxLength: 10,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 				
 			me.contractType = new ui.ctl.Input.DropDown.Filtered({
 		        id: "ContractType",
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.contractType.makeEnterTab()
@@ -414,65 +428,77 @@ ii.Class({
 			me.termsOfContract = new ui.ctl.Input.DropDown.Filtered({
 		        id: "TermsOfContract",
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.billingCycleFrequency = new ui.ctl.Input.DropDown.Filtered({
 		        id: "BillingCycleFrequency",
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.financialEntity = new ui.ctl.Input.DropDown.Filtered({
 		        id: "FinancialEntity",
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.bankCodeNumber = new ui.ctl.Input.Text({
 		        id: "BankCodeNumber",
-		        maxLength: 50
+		        maxLength: 50,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.bankAccountNumber = new ui.ctl.Input.Text({
 		        id: "BankAccountNumber",
-		        maxLength: 100
+		        maxLength: 100,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.bankName = new ui.ctl.Input.Text({
 		        id: "BankName",
-		        maxLength: 100
+		        maxLength: 100,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.bankContact = new ui.ctl.Input.Text({
 		        id: "BankContact",
-		        maxLength: 100
+		        maxLength: 100,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.bankAddress1 = new ui.ctl.Input.Text({
 		        id: "BankAddress1",
-		        maxLength: 255
+		        maxLength: 255,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.bankAddress2 = new ui.ctl.Input.Text({
 		        id: "BankAddress2",
-		        maxLength: 255
+		        maxLength: 255,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.bankCity = new ui.ctl.Input.Text({
 		        id: "BankCity",
-		        maxLength: 100
+		        maxLength: 100,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.bankState = new ui.ctl.Input.DropDown.Filtered({
 		        id: "BankState",
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.bankZip = new ui.ctl.Input.Text({
 		        id: "BankZip",
-		        maxLength : 10
+		        maxLength : 10,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.bankZip.makeEnterTab()
@@ -488,7 +514,8 @@ ii.Class({
 			
 			me.bankPhone = new ui.ctl.Input.Text({
 		        id: "BankPhone",
-		        maxLength : 14
+		        maxLength : 14,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.bankPhone.makeEnterTab()
@@ -508,7 +535,8 @@ ii.Class({
 			
 			me.bankFax = new ui.ctl.Input.Text({
 		        id: "BankFax",
-		        maxLength: 14
+		        maxLength: 14,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.bankFax.makeEnterTab()
@@ -528,7 +556,8 @@ ii.Class({
 			
 			me.bankEmail = new ui.ctl.Input.Text({
 		        id: "BankEmail",
-		        maxLength: 100
+		        maxLength: 100,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.bankEmail.makeEnterTab()
@@ -546,24 +575,28 @@ ii.Class({
 			me.invoiceLogo = new ui.ctl.Input.DropDown.Filtered({
 		        id: "InvoiceLogo",
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.budgetTemplate = new ui.ctl.Input.DropDown.Filtered({
 		        id: "BudgetTemplate",
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.budgetLaborCalcMethod = new ui.ctl.Input.DropDown.Filtered({
 		        id: "BudgetLaborCalcMethod",
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.budgetComputerRelatedCharge = new ui.ctl.Input.Check({
 		        id: "BudgetComputerRelatedCharge",
-				required: false 
+				required: false,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); } 
 		    });
 			
 			me.company.text.readOnly = true;

@@ -245,7 +245,8 @@ ii.Class({
 			
 			 me.managedEmployees = new ui.ctl.Input.Text({
 		        id: "ManagedEmployees" ,
-		        maxLength : 10
+		        maxLength : 10,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.managedEmployees.makeEnterTab()
@@ -270,7 +271,8 @@ ii.Class({
 				
 			me.crothallEmployees = new ui.ctl.Input.Text({
 		        id: "CrothallEmployees" ,
-		        maxLength : 10
+		        maxLength : 10,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.crothallEmployees.makeEnterTab()
@@ -295,7 +297,8 @@ ii.Class({
 				
 			me.bedsLicensed = new ui.ctl.Input.Text({
 		        id: "BedsLicensed" ,
-		        maxLength : 10
+		        maxLength : 10,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.bedsLicensed.makeEnterTab()
@@ -320,7 +323,8 @@ ii.Class({
 				
 			me.bedsActive = new ui.ctl.Input.Text({
 		        id: "BedsActive" ,
-		        maxLength : 10
+		        maxLength : 10,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.bedsActive.makeEnterTab()
@@ -345,7 +349,8 @@ ii.Class({
 				
 			me.patientDays = new ui.ctl.Input.Text({
 		        id: "PatientDays" ,
-		        maxLength : 10
+		        maxLength : 10,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.patientDays.makeEnterTab()
@@ -370,7 +375,8 @@ ii.Class({
 				
 			me.adjustedPatientDays = new ui.ctl.Input.Text({
 		        id: "AdjustedPatientDays" ,
-		        maxLength : 10
+		        maxLength : 10,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.adjustedPatientDays.makeEnterTab()
@@ -395,7 +401,8 @@ ii.Class({
 				
 			me.avgDailyCensus = new ui.ctl.Input.Text({
 		        id: "AvgDailyCensus",
-		        maxLength : 10
+		        maxLength : 10,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.avgDailyCensus.makeEnterTab()
@@ -420,7 +427,8 @@ ii.Class({
 				
 			me.annualDischarges = new ui.ctl.Input.Text({
 		        id: "AnnualDischarges" ,
-		        maxLength : 10
+		        maxLength : 10,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.annualDischarges.makeEnterTab()
@@ -445,7 +453,8 @@ ii.Class({
 				
 			me.annualTransfers = new ui.ctl.Input.Text({
 		        id: "AnnualTransfers" ,
-		        maxLength : 10
+		        maxLength : 10,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.annualTransfers.makeEnterTab()
@@ -470,7 +479,8 @@ ii.Class({
 				
 			me.avgBedTurnAroundTime = new ui.ctl.Input.Text({
 		        id: "AvgBedTurnaroundTime" ,
-		        maxLength : 10
+		        maxLength : 10,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.avgBedTurnAroundTime.makeEnterTab()
@@ -495,7 +505,8 @@ ii.Class({
 				
 			me.netCleanableSquareFeet = new ui.ctl.Input.Text({
 		        id: "NetCleanableSquareFeet" ,
-		        maxLength : 10
+		        maxLength : 10,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.netCleanableSquareFeet.makeEnterTab()
@@ -520,7 +531,8 @@ ii.Class({
 				
 			me.annualTransports = new ui.ctl.Input.Text({
 		        id: "AnnualTransports" ,
-		        maxLength : 10
+		        maxLength : 10,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 		    
 			me.annualTransports.makeEnterTab()
@@ -546,7 +558,8 @@ ii.Class({
 			me.avgLaundryLbs = new ui.ctl.Input.Text({
 		        id: "AvgLaundryLBS" ,
 				tabindex:13,
-		        maxLength : 10
+		        maxLength : 10,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.avgLaundryLbs.makeEnterTab()
@@ -572,7 +585,8 @@ ii.Class({
 			me.mgmtFeeTerminatedHourlyEmployees = new ui.ctl.Input.Text({
 		        id: "MgmtFeeTerminatedHourlyEmployees" ,
 				tabindex:14,
-		        maxLength : 11
+		        maxLength : 11,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			me.mgmtFeeTerminatedHourlyEmployees
 			.setValidationMaster( me.validator )
@@ -597,7 +611,8 @@ ii.Class({
 			me.mgmtFeeActiveHourlyEmployees = new ui.ctl.Input.Text({
 		        id: "MgmtFeeActiveHourlyEmployees" ,
 				tabindex:15,
-		        maxLength : 11
+		        maxLength : 11,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			me.mgmtFeeActiveHourlyEmployees
 			.setValidationMaster( me.validator )
@@ -622,7 +637,8 @@ ii.Class({
 			me.mgmtFeeTotalProductiveLaborHoursWorked = new ui.ctl.Input.Text({
 		        id: "MgmtFeeTotalProductiveLaborHoursWorked" ,
 				tabindex:16,
-		        maxLength : 11
+		        maxLength : 11,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			me.mgmtFeeTotalProductiveLaborHoursWorked
 			.setValidationMaster( me.validator )
@@ -647,7 +663,8 @@ ii.Class({
 			me.mgmtFeeTotalNonProductiveLaborHours = new ui.ctl.Input.Text({
 		        id: "MgmtFeeTotalNonProductiveLaborHours" ,
 				tabindex:17,
-		        maxLength : 11
+		        maxLength : 11,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			me.mgmtFeeTotalNonProductiveLaborHours
 			.setValidationMaster( me.validator )
@@ -672,7 +689,8 @@ ii.Class({
 			me.mgmtFeeTotalProductiveLaborDollarsPaid = new ui.ctl.Input.Text({
 		        id: "MgmtFeeTotalProductiveLaborDollarsPaid" ,
 				tabindex:18,
-		        maxLength : 11
+		        maxLength : 11,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			me.mgmtFeeTotalProductiveLaborDollarsPaid
 			.setValidationMaster( me.validator )
@@ -685,7 +703,8 @@ ii.Class({
 			me.mgmtFeeTotalNonProductiveLaborDollarsPaid = new ui.ctl.Input.Text({
 		        id: "MgmtFeeTotalNonProductiveLaborDollarsPaid" ,
 				tabindex:19,
-		        maxLength : 11
+		        maxLength : 11,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			me.mgmtFeeTotalNonProductiveLaborDollarsPaid
 			.setValidationMaster( me.validator )
@@ -698,7 +717,8 @@ ii.Class({
 			me.hospitalPaidJanitorialPaperPlasticSupplyCost = new ui.ctl.Input.Text({
 		        id: "HospitalPaidJanitorialPaperPlasticSupplyCost" ,
 				tabindex:20,
-		        maxLength : 11
+		        maxLength : 11,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			me.hospitalPaidJanitorialPaperPlasticSupplyCost
 			.setValidationMaster( me.validator )

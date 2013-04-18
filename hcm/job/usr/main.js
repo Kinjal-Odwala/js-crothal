@@ -68,6 +68,7 @@ ii.Class({
 			me.invoiceTemplate.fetchingData();
 			me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
 			me.invoiceTemplateStore.fetch("userId:[user]", me.invoiceTemplatesLoaded, me);
+			me.modified(false);
 
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
@@ -373,7 +374,7 @@ ii.Class({
 			me.jobNumber = new ui.ctl.Input.Text({
 				id: "JobNumber",
 				maxLength: 8,
-				changeFunction: function() { me.jobNumberCheck(); }
+				changeFunction: function() { me.jobNumberCheck(); me.modified(); }
 			});
 
 			me.jobNumber.makeEnterTab()
@@ -382,7 +383,8 @@ ii.Class({
 
 			me.jobDescription = new ui.ctl.Input.Text({
 				id: "JobDescription",
-				maxLength: 256
+				maxLength: 256,
+				changeFunction: function() { me.modified(); }
 			});
 
 			me.jobDescription.makeEnterTab()
@@ -391,17 +393,20 @@ ii.Class({
 
 			me.jobContact = new ui.ctl.Input.Text({
 				id: "JobContact",
-				maxLength: 50
+				maxLength: 50,
+				changeFunction: function() { me.modified(); }
 			});
 
 			me.jobAddress1 = new ui.ctl.Input.Text({
 				id: "JobAddress1",
-				maxLength: 50
+				maxLength: 50,
+				changeFunction: function() { me.modified(); }
 			});
 
 			me.jobAddress2 = new ui.ctl.Input.Text({
 				id: "JobAddress2",
-				maxLength: 50
+				maxLength: 50,
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.jobPostalCode = new ui.ctl.Input.Text({
@@ -409,7 +414,7 @@ ii.Class({
 				maxLength: 10,
 				changeFunction: function() {
 					if (ui.cmn.text.validate.postalCode(me.jobPostalCode.getValue()))
-						me.loadZipCodeTypes();
+						me.loadZipCodeTypes(); me.modified();
 				}
 			});
 			
@@ -430,7 +435,8 @@ ii.Class({
 		        id: "JobGEOCode",
 				formatFunction: function( type ) { return type.geoCode; },
 				changeFunction: function() { me.geoCodeChanged(); },
-		        required: false
+		        required: false,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.geoCode.makeEnterTab()
@@ -444,7 +450,8 @@ ii.Class({
 			me.jobCity = new ui.ctl.Input.DropDown.Filtered({
 		        id: "JobCity",
 				formatFunction: function( type ) { return type.city; },
-		        required: false
+		        required: false,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.jobCity.makeEnterTab()
@@ -471,7 +478,8 @@ ii.Class({
 
 			me.jobState = new ui.ctl.Input.DropDown.Filtered({
 				id: "JobState",
-				formatFunction: function(type) { return type.name; }
+				formatFunction: function(type) { return type.name; },
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.jobState.makeEnterTab()
@@ -506,7 +514,8 @@ ii.Class({
 				id: "JobType",
 				formatFunction: function(type) { return type.name; },
 				changeFunction: function() { me.jobTypeChange(); },
-				title: "Select Job Type"
+				title: "Select Job Type",
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.jobType.makeEnterTab()
@@ -521,12 +530,14 @@ ii.Class({
 			me.invoiceTemplate = new ui.ctl.Input.DropDown.Filtered({
 				id: "InvoiceTemplate",
 				formatFunction: function(type) { return type.title; },
-				title: "Select Invoice Template"
+				title: "Select Invoice Template",
+				changeFunction: function() { me.modified(); }
 			});
 
 			me.taxId = new ui.ctl.Input.Text({
 				id: "JobTaxId",
-				maxLength: 9
+				maxLength: 9,
+				changeFunction: function() { me.modified(); }
 			});
 
 			me.taxId.makeEnterTab()
@@ -544,27 +555,32 @@ ii.Class({
 			});
 			
 			me.overrideSiteTax = new ui.ctl.Input.Check({
-				id: "OverrideSiteTax"
+				id: "OverrideSiteTax",
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.serviceContract = new ui.ctl.Input.Text({
 				id: "ServiceContract",
-				maxLength: 100
+				maxLength: 100,
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.generalLocationCode = new ui.ctl.Input.Text({
 				id: "GeneralLocationCode",
-				maxLength: 50
+				maxLength: 50,
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.jobActive = new ui.ctl.Input.Check({
-				id: "JobActive"
+				id: "JobActive",
+				changeFunction: function() { me.modified(); }
 			});
 
 			me.jobGrid = new ui.ctl.Grid({
 				id: "Job",
 				appendToId: "divForm",
-				selectFunction: function(index) { me.itemSelect(index);	}
+				selectFunction: function(index) { me.itemSelect(index);	},
+				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});
 
 			me.jobGrid.addColumn("jobBrief", "job", "Number", "Job Number", 70, function(item) { return item.brief; }, null);
@@ -651,7 +667,15 @@ ii.Class({
 				lookupSpec: {job: me.jobs}
 			});
 		},
-
+		
+		modified: function fin_cmn_status_modified() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
+		},
+		
 		stateTypesLoaded: function fin_hcm_job_UserInterface_stateTypesLoaded(me, activeId) {
 
 			ii.trace("State Types Loaded", ii.traceTypes.information, "Info");
@@ -805,10 +829,10 @@ ii.Class({
 			else
 				me.jobType.reset();
 
-			me.overrideSiteTax.check.checked = args.job.overrideSiteTax;
+			me.overrideSiteTax.setValue(args.job.overrideSiteTax.toString());
 			me.serviceContract.setValue(args.job.serviceContract);
 			me.generalLocationCode.setValue(args.job.generalLocationCode);
-			me.jobActive.check.checked = args.job.active;
+			me.jobActive.setValue(args.job.active.toString());
 		},
 		
 		loadZipCodeTypes: function() {
@@ -951,10 +975,10 @@ ii.Class({
 			me.jobType.reset();
 			me.invoiceTemplate.reset();
 			me.taxId.setValue("");
-			me.overrideSiteTax.check.checked = false;
+			me.overrideSiteTax.setValue("false");
 			me.serviceContract.setValue("");
 			me.generalLocationCode.setValue("");
-			me.jobActive.check.checked = true;
+			me.jobActive.check.setValue("true");
 			me.jobGrid.body.deselectAll();
 			me.jobTemplate.reset();
 			me.jobTemplate.resizeText();
@@ -962,7 +986,10 @@ ii.Class({
 
 		actionNewItem: function fin_hcm_job_UserInterface_actionNewItem() {
 			var me = this;
-
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			me.status = "new";
 			me.actionClearItem();
 			$("#JobTemplateDiv").hide();
@@ -970,7 +997,10 @@ ii.Class({
 
 		actionCloneItem: function fin_hcm_job_UserInterface_actionCloneItem() {
 			var me = this;
-
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			me.status = "clone";
 			me.actionClearItem();
 			$("#JobTemplateDiv").show();
@@ -978,7 +1008,7 @@ ii.Class({
 
 		actionRemoveAssociation: function fin_hcm_job_UserInterface_actionRemoveAssociation() {
 			var me = this;
-
+							
 			if (me.jobGrid.activeRowIndex < 0) {
 				alert("Please select Job to remove association with House Code.");
 				return;
@@ -994,7 +1024,10 @@ ii.Class({
 
 		actionUndoItem: function fin_hcm_job_UserInterface_actionUndoItem() {
 			var me = this;
-
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			me.status = "";
 
 			$("#JobTemplateDiv").hide();
@@ -1157,7 +1190,8 @@ ii.Class({
 			$("#pageLoading").hide();
 
 			if (status == "success") {
-
+				
+				me.modified(false);
 				$(args.xmlNode).find("*").each(function () {
 
 					switch (this.tagName) {

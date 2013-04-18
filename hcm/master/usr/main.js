@@ -2,6 +2,7 @@ ii.Import( "ii.krn.sys.ajax" );
 ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.toolbar" );
+ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.cmn.usr.util" );
 ii.Import( "fin.cmn.usr.tabsPack" );
 ii.Import( "fin.hcm.master.usr.defs" );
@@ -58,6 +59,7 @@ ii.Class({
 			me.statisticsNeedUpdate = true;
 			me.financialNeedUpdate = true;
 			me.payrollNeedUpdate = true;
+			me.modified(false);
 			
 			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
 
@@ -239,6 +241,14 @@ ii.Class({
 			});			
 		},
 		
+		modified: function fin_cmn_status_modified() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
+		},
+		
 		houseCodesLoaded: function(me, activeId) {
 					
 			ii.trace("HouseCode Master - UnitsLoaded", ii.traceTypes.information, "Info");			
@@ -368,7 +378,10 @@ ii.Class({
 		actionUndoItem: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
-					
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+						
 			me.houseCodeDetailsLoaded(me, 0);
 		},
 
@@ -790,6 +803,7 @@ ii.Class({
 			var status = $(args.xmlNode).attr("status");
 			
 			if (status == "success") {
+				me.modified(false);	
 				if ($("iframe")[0].contentWindow.fin != undefined) {
 					$("iframe")[0].contentWindow.fin.hcmHouseCodeUi.reloadHouseCodeServices();
 				}
