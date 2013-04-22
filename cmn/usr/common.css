@@ -475,3 +475,71 @@ dl.editArea dd
 		position:relative;
 		width:25px;		
 	}
+
+#itemStatusDiv {
+	float: left;
+	width: 400px;
+	padding: 5px 0px 0px 10px;
+}
+
+#itemStatusText {
+	float: left;
+	text-align: left;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 1px 0px 0px 5px;
+}
+
+.itemStatusImage {
+	float: left;
+	width: 16px;
+	height: 16px;
+}
+
+.itemStatusImage.Normal {
+	background-image: url(media/Common/green.png);
+}
+
+.itemStatusImage.New {
+	background-image: url(media/Common/newFile.gif);
+}
+
+.itemStatusImage.Saving {
+	background-image: url(media/Common/indicator.gif);
+}
+
+.itemStatusImage.Loading {
+	background-image: url(media/Common/indicator.gif);
+}
+
+.itemStatusImage.Invalid {
+	background-image: url(media/Common/cancel.gif);
+}
+
+.itemStatusImage.Warning {
+	height: 15px;
+	background-image: url(media/Common/exclamation.gif);
+	margin-top: 1px;	
+}
+
+.itemStatusImage.Error {
+	background-image: url(media/Common/error.gif);
+}
+
+.itemModifiedImage {
+	background-image: url(media/Common/pencil.gif);
+	width: 16px;
+	height: 16px;
+	float: left;
+	display: none;
+}
+
+.itemModifiedImage.Modified {
+	display: block;
+}
+
+.itemModifiedImage.Locked {
+	background-image: url(media/Common/locked.gif);
+	display: block;
+}
