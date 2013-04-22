@@ -6,10 +6,10 @@ ii.Import( "ui.ctl.usr.grid" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "fin.cmn.usr.tabsPack" );
 ii.Import( "fin.cmn.usr.util" );
-ii.Import( "fin.hcm.ePaySite.usr.defs" );
-ii.Import( "fin.pur.catalog.usr.defs" );
+ii.Import( "fin.cmn.usr.defs" );
 ii.Import( "fin.cmn.usr.houseCodeSearch" );
 ii.Import( "fin.cmn.usr.houseCodeSearchTemplate" );
+ii.Import( "fin.hcm.ePaySite.usr.defs" );
 
 ii.Style( "style", 1 );
 ii.Style( "fin.cmn.usr.common", 2 );
@@ -39,7 +39,7 @@ ii.Class({
 			me.lastSelectedRowIndex = -1;
 			me.activeFrameId = 0;
 			me.houseCodesTabNeedUpdate = true;
-
+			
 			me.gateway = ii.ajax.addGateway("hcm", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
 			me.transactionMonitor = new ii.ajax.TransactionMonitor(
@@ -61,15 +61,23 @@ ii.Class({
 			me.defineFormControls();
 			me.configureCommunications();
 
-			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
-			me.houseCodeSearchTemplate = new ui.lay.HouseCodeSearchTemplate();
-
 			me.jobState.fetchingData();
 			me.ePayGroupType.fetchingData();
 			me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
 			me.jobTypeStore.fetch("userId:[user]", me.jobTypesLoaded, me);
 			me.ePayGroupTypeStore.fetch("userId:[user]", me.ePayGroupTypesLoaded, me);
 			me.modified(false);
+			
+			
+			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
+			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
+			me.houseCodeSearchTemplate = new ui.lay.HouseCodeSearchTemplate();
+
+			if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
+				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
+			else {
+				me.houseCodesLoaded(me, 0);
+			}
 			
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
@@ -642,6 +650,20 @@ ii.Class({
 			me.ePayGroupType.setData(me.ePayGroupTypes);
 		},
 		
+		houseCodesLoaded: function(me, activeId) { // House Codes
+			ii.trace("HouseCodesLoaded", ii.traceTypes.information, "Startup");
+			
+			if (parent.fin.appUI.houseCodeId == 0) {
+				if (me.houseCodes.length <= 0) {				
+					return me.houseCodeSearchError();
+				}
+				
+				me.houseCodeGlobalParametersUpdate(false, me.houseCodes[0]);
+			}
+
+			me.houseCodeGlobalParametersUpdate(false);
+		},
+		
 		actionSearchItem: function fin_hcm_ePaySite_UserInterface_actionSearchItem() {
 			var args = ii.args(arguments, {
 				event: {type: Object} // The (key) event object
@@ -659,23 +681,32 @@ ii.Class({
 			
 			if (!parent.fin.cmn.status.itemValid())
 				return;
+			
+			if (($("#SearchByEPaySite")[0].checked) || ($("#SearchByHouseCode")[0].checked)) {
 				
-			if (me.searchInput.getValue().length < 3) {
-				me.searchInput.setInvalid("Please enter search criteria (minimum 3 characters).");
-				return false;
+				if ($("#SearchByEPaySite")[0].checked && me.searchInput.getValue().length < 3) {
+					me.searchInput.setInvalid("Please enter search criteria (minimum 3 characters).");
+					return false;
+				}			
+				else {
+					me.searchInput.valid = true;
+					me.searchInput.updateStatus();
+				}
+				
+				$("#messageToUser").text("Loading");
+				$("#pageLoading").show();
+				
+				me.houseCodeGrid.body.deselectAll();
+				me.houseCodeGrid.setData([]);
+				
+				me.jobGrid.body.deselectAll();
+				me.jobGrid.setData([]);
+				
+				if($("#SearchByEPaySite")[0].checked)
+					me.jobStore.fetch("userId:[user],jobType:4,title:" + me.searchInput.getValue(), me.jobsLoaded, me);
+				else if($("#SearchByHouseCode")[0].checked)
+					me.jobStore.fetch("userId:[user],jobType:4,houseCodeId:" + parent.fin.appUI.houseCodeId , me.jobsLoaded, me);
 			}			
-			else {
-				me.searchInput.valid = true;
-				me.searchInput.updateStatus();
-			}
-			
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").show();
-			
-			me.houseCodeGrid.body.deselectAll();
-			me.houseCodeGrid.setData([]);
-
-			me.jobStore.fetch("userId:[user],jobType:4,title:" + me.searchInput.getValue(), me.jobsLoaded, me);			
 		},	
 		
 		jobsLoaded: function fin_hcm_ePaySite_UserInterface_jobsLoaded(me, activeId) {

@@ -16,6 +16,19 @@
 	background-repeat: repeat-x;
 }
 
+.SearchByRadioButtonLeft	{
+	float:left;
+	width:15px;
+	padding-left:10px;
+	vertical-align:top;
+}
+
+#DropDownRightHouseCode {
+	float:left;
+	padding: 1px 10px 3px 5px;
+	width: 230px;
+}
+
 #ContainerLeftArea {
 	float: left;
 	width: 45%;
@@ -58,8 +71,31 @@
 	font-family: Verdana;
 	font-size: 12px;
 	color: #032D23;
-	padding: 0px 0px 0px 10px;
+	padding: 2px 0px 0px 10px;
+	vertical-align:top;
 }
+
+#LabelTextAreaSearchByHouseCode {
+	float: left;
+	width: 85px;	
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 2px 0px 0px 10px;
+	vertical-align:top;
+}
+
+#LabelTextAreaSearchBy {
+	float: left;
+	width: 70px;	
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 2px 0px 0px 10px;
+}
+
 
 #LabelHouseCode {
 	float: left;
