@@ -20,6 +20,51 @@ ii.init.register( function fin_cmn_startup_init(){
 			}
 			else
 				return true;
+		},
+		
+		setStatus: function fin_cmn_status_setStatus(status) {
+			var args = ii.args(arguments,{
+				status: {type: String}
+				, message: {type: String, required: false, defaultValue: ""}
+			});				
+			var me = this;
+			var status = args.status;
+			var message = args.message;
+
+			me.$itemStatusImage = $("#itemStatusImage");
+			me.$itemModifiedImage = $("#itemModifiedImage");
+			me.$itemStatusText = $("#itemStatusText");
+
+			if (message == "") {
+				if (status == "New")
+					message = "New";
+				else if (status == "Loading" || status == "Saving" || status == "Exporting" || status == "Uploading" || status == "Importing")
+					message = status + ", please wait...";
+				else if (status == "Saved")
+					message = "Data saved successfully.";
+				else if (status == "Locked")
+					message = "The current page is Readonly.";
+				else if (status == "Error")
+					message = "Error while updating the data.";
+				else
+					message = "Normal";
+			}			
+
+			if (status == "Locked")
+				me.$itemModifiedImage.addClass("Locked");
+			else
+				me.$itemModifiedImage.removeClass("Locked");
+
+			if (status == "Edit")
+				me.$itemModifiedImage.addClass("Modified");
+			else
+				me.$itemModifiedImage.removeClass("Modified");
+
+			if (status == "Edit" || status == "Loaded" || status == "Saved")
+				status = "Normal";
+
+			me.$itemStatusImage.attr("class", "itemStatusImage " + status);
+			me.$itemStatusText.text(message);
 		}
 	};
 

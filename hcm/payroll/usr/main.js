@@ -44,10 +44,12 @@ ii.Class({
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 		
-			$("#EPaySiteCheck").click(function() {				
-				me.ePaySiteSelect = me.ePaySite.check.checked; 				
-			});		
-
+			$("#EPaySiteCheck").click(function() { me.ePaySiteSelect = me.ePaySite.check.checked; });		
+			$("input[name='TimeAttendance']").change(function() {parent.fin.hcmMasterUi.modified(true);});
+			$("input[name='DefaultLunchBreak']").change(function() {parent.fin.hcmMasterUi.modified(true);});
+			$("input[name='LunchBreakTrigger']").change(function() {parent.fin.hcmMasterUi.modified(true);});
+			$("input[name='HouseCodeType']").change(function() {parent.fin.hcmMasterUi.modified(true);});
+			$("input[name='RoundingTimePeriod']").change(function() {parent.fin.hcmMasterUi.modified(true);});
 			me.payrollProcessing.fetchingData();
 			me.payPayrollCompanyStore.fetch("userId:[user],houseCodeId:" + parent.fin.hcmMasterUi.getHouseCodeId(), me.payPayrollCompanysLoaded, me);	
 		},
@@ -258,12 +260,14 @@ ii.Class({
 			me.payrollProcessing = new ui.ctl.Input.DropDown.Filtered({
 		        id: "PayrollPro" ,
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });	
 			
 			me.breakOthers = new ui.ctl.Input.Text({
 		        id: "BreakOthers" ,
-		        maxLength: 5
+		        maxLength: 5,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.breakOthers.makeEnterTab()
@@ -281,7 +285,8 @@ ii.Class({
 			
 			me.breakTrigger = new ui.ctl.Input.Text({
 		        id: "BreakTrigger" ,
-		        maxLength: 5
+		        maxLength: 5,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.breakTrigger.makeEnterTab()
@@ -300,29 +305,34 @@ ii.Class({
 			me.ceridianCompanySalaried = new ui.ctl.Input.DropDown.Filtered({
 		        id: "CeridianCompanySalaried" ,
 				formatFunction: function( type ) { return type.title; },
-		        required: false
+		        required: false,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });	
 			
 			me.ceridianCompanyHourly = new ui.ctl.Input.DropDown.Filtered({
 		        id: "CeridianCompanyHourly" ,
 				formatFunction: function( type ) { return type.title; },
-		        required: false
+		        required: false,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.ePaySite = new ui.ctl.Input.Check({
 		        id: "EPaySite",
-				required: false 
+				required: false,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); } 
 		    });
 			
 			me.ePayPayGroup = new ui.ctl.Input.DropDown.Filtered({
 		        id: "EPayPay" ,
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.ePayTask = new ui.ctl.Input.Check({
 		        id: "EPayTask",
-				required: false 
+				required: false,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); } 
 		    });
 		},
 		

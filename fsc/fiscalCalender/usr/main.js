@@ -190,7 +190,8 @@ ii.Class({
 			me.fiscalStartDate = new ui.ctl.Input.Date({
 		        id: "FiscalStartDate",
 		        appendToId: "FiscalPeriodControlHolder",
-				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
+				changeFunction: function() { me.modified(); }
 		    });
 					
 			me.fiscalStartDate.makeEnterTab()
@@ -211,7 +212,8 @@ ii.Class({
 			me.fiscalEndDate = new ui.ctl.Input.Date({
 		        id: "FiscalEndDate",
 				appendToId: "FiscalPeriodControlHolder",
-				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.fiscalEndDate.makeEnterTab()
@@ -232,7 +234,8 @@ ii.Class({
 			me.week1 = new ui.ctl.Input.Text({
 		        id: "FiscalCalenderWeek1",
 				appendToId: "FiscalPeriodControlHolder",
-		        maxLength: 1
+		        maxLength: 1,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.week1.makeEnterTab()
@@ -247,7 +250,8 @@ ii.Class({
 			me.week2 = new ui.ctl.Input.Text({
 		        id: "FiscalCalenderWeek2",
 				appendToId: "FiscalPeriodControlHolder",
-		        maxLength: 1
+		        maxLength: 1,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.week2.makeEnterTab()
@@ -262,7 +266,8 @@ ii.Class({
 			me.week3 = new ui.ctl.Input.Text({
 		        id: "FiscalCalenderWeek3",
 				appendToId: "FiscalPeriodControlHolder",
-		        maxLength: 1
+		        maxLength: 1,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.week3.makeEnterTab()
@@ -277,7 +282,8 @@ ii.Class({
 			me.week4 = new ui.ctl.Input.Text({
 		        id: "FiscalCalenderWeek4",
 				appendToId: "FiscalPeriodControlHolder",
-		        maxLength: 1
+		        maxLength: 1,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.week4.makeEnterTab()
@@ -292,7 +298,8 @@ ii.Class({
 			me.week5 = new ui.ctl.Input.Text({
 		        id: "FiscalCalenderWeek5",
 				appendToId: "FiscalPeriodControlHolder",
-		        maxLength: 1
+		        maxLength: 1,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.week5.makeEnterTab()
@@ -307,7 +314,8 @@ ii.Class({
 			me.week6 = new ui.ctl.Input.Text({
 		        id: "FiscalCalenderWeek6",
 				appendToId: "FiscalPeriodControlHolder",
-		        maxLength: 1
+		        maxLength: 1,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.week6.makeEnterTab()

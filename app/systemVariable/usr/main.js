@@ -45,6 +45,7 @@ ii.Class({
 						
 			me.defineFormControls();
 			me.configureCommunications();
+			me.modified(false);
 			
 			//$("#SystemValueText").hide();
 			
@@ -139,7 +140,8 @@ ii.Class({
 			me.systemName = new ui.ctl.Input.Text({
 		        id: "SystemName",
 		       // maxLength: 16,
-				required : false
+				required : false,
+				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.systemName.makeEnterTab()
@@ -149,7 +151,8 @@ ii.Class({
 			me.systemValue = new ui.ctl.Input.Text({
 		        id: "SystemValue",
 		       // maxLength: 16,
-				required : false
+				required : false,
+				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.systemValue.makeEnterTab()
@@ -160,7 +163,8 @@ ii.Class({
 				id: "SystemVariableGrid",
 				appendToId: "divForm",
 				allowAdds: false,
-				selectFunction: function(index) { me.itemSelect(index); }
+				selectFunction: function(index) { me.itemSelect(index); },
+				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});
 			
 			me.systemVariableGrid.addColumn("variableName", "variableName", "Name", "Name", 250);
@@ -223,6 +227,14 @@ ii.Class({
 			
 		},
 		
+		modified: function fin_cmn_status_modified() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
+		},
+		
 		controlVisible: function(){
 			var me = this;
 			
@@ -272,10 +284,12 @@ ii.Class({
 				me.systemVariableId = 0;
 		},
 		
-		
 		actionNewItem: function() {
 			var me = this;			
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if(me.systemVariableReadOnly) return;
 			
 			me.status = "new";		
@@ -291,6 +305,9 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			me.status = "";
 			
 			if (me.lastSelectedRowIndex >= 0) {
@@ -379,6 +396,7 @@ ii.Class({
 			
 			if (status == "success") {
 					
+				me.modified(false);	
 				$(args.xmlNode).find("*").each(function() {
 					switch (this.tagName) {
 

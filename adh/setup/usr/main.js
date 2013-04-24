@@ -53,6 +53,7 @@ ii.Class({
 
 			me.defineFormControls();			
 			me.configureCommunications();
+			me.modified(false);
 
 			$("#AssociateModuleImage").click(function() {				
 				if ($("#ModuleAssociateGroup").is(":visible")) {					
@@ -108,7 +109,8 @@ ii.Class({
 
 			me.reportTitle = new ui.ctl.Input.Text({
 				id: "ReportTitle",
-				maxLength: 64
+				maxLength: 64,
+				changeFunction: function() { me.modified(); }
 			});
 
 			me.reportTitle.makeEnterTab()
@@ -123,7 +125,7 @@ ii.Class({
 			me.module = new ui.ctl.Input.DropDown.Filtered({
 				id: "Module",
 				formatFunction: function( type ) { return type.name; },
-				changeFunction: function() { me.moduleChange(); }
+				changeFunction: function() { me.moduleChange(); me.modified(); }
 			});
 
 			me.module.makeEnterTab()
@@ -136,12 +138,14 @@ ii.Class({
 			});
 
 			me.moduleAssociateGroup = new ui.ctl.Input.CheckList({
-				id: "ModuleAssociateGroup"
+				id: "ModuleAssociateGroup",
+				changeFunction: function() { me.modified(); }
 			});
 
 			me.active = new ui.ctl.Input.Check({
 		        id: "Active",
-				required: false
+				required: false,
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.anchorNew = new ui.ctl.buttons.Sizeable({
@@ -180,7 +184,11 @@ ii.Class({
 			me.appReportGrid = new ui.ctl.Grid({
 		        id: "AppReportGrid",
 		        allowAdds: false,
-				selectFunction: function(index) { me.itemSelect(index); }
+				selectFunction: function(index) { me.itemSelect(index); },
+				validationFunction: function() { 
+					if (me.action != "new")
+				 		return parent.fin.cmn.status.itemValid(); 
+				 }
 		    });
 
 			me.appReportGrid.addColumn("title", "title", "Report Title", "Report Title", null);
@@ -204,7 +212,7 @@ ii.Class({
 					index = me.renderRowIndex;
 
 				if (me.appModuleColumnGrid.data[index].moduleId == me.moduleId && me.appModuleColumnGrid.data[index].editable)
-                	return "<center><input type=\"radio\" name=\"columnType" + index + "\" id=\"editableInputRadio" + index + "\" value=\"1\" class=\"iiInputCheck\"" + (data.columnType == 1 ? 'checked' : '') + " onclick=\"fin.adhUi.actionClickItem(this," + index + ");\" /></center>";
+                	return "<center><input type=\"radio\" name=\"columnType" + index + "\" id=\"editableInputRadio" + index + "\" value=\"1\" class=\"iiInputCheck\"" + (data.columnType == 1 ? 'checked' : '') + " onclick=\"fin.adhUi.actionClickItem(this," + index + ");\" onchange=\"fin.adhUi.modified(true);\" /></center>";
 				else
 					return "<center><input type=\"radio\" name=\"columnType" + index + "\" id=\"editableInputRadio" + index + "\" value=\"1\" class=\"iiInputCheck\" disabled=\"true\" /></center>";
             });	
@@ -213,14 +221,14 @@ ii.Class({
 				var index = me.appModuleColumnGrid.rows.length - 1;
 				if (me.appModuleColumnGrid.activeRowIndex != -1)
 					index = me.renderRowIndex;
-                return "<center><input type=\"radio\" name=\"columnType" + index + "\" id=\"hiddenInputRadio" + index + "\" value=\"2\" class=\"iiInputCheck\"" + (data.columnType == 2 ? 'checked' : '') + " onclick=\"fin.adhUi.actionClickItem(this," + index + ");\" /></center>";
+                return "<center><input type=\"radio\" name=\"columnType" + index + "\" id=\"hiddenInputRadio" + index + "\" value=\"2\" class=\"iiInputCheck\"" + (data.columnType == 2 ? 'checked' : '') + " onclick=\"fin.adhUi.actionClickItem(this," + index + ");\" onchange=\"fin.adhUi.modified(true);\" /></center>";
             });	
 
 			me.appModuleColumnGrid.addColumn("columnType3", "", "ReadOnly", "ReadOnly", 80, function(data) {
 				var index = me.appModuleColumnGrid.rows.length - 1;
 				if (me.appModuleColumnGrid.activeRowIndex != -1)
 					index = me.renderRowIndex;
-                return "<center><input type=\"radio\" name=\"columnType" + index + "\" id=\"readOnlyInputRadio" + index + "\" value=\"3\" class=\"iiInputCheck\"" + (data.columnType == 3 ? 'checked' : '') + " onclick=\"fin.adhUi.actionClickItem(this," + index + ");\" /></center>";
+                return "<center><input type=\"radio\" name=\"columnType" + index + "\" id=\"readOnlyInputRadio" + index + "\" value=\"3\" class=\"iiInputCheck\"" + (data.columnType == 3 ? 'checked' : '') + " onclick=\"fin.adhUi.actionClickItem(this," + index + ");\" onchange=\"fin.adhUi.modified(true);\" /></center>";
             });	
 
 			me.appModuleColumnGrid.addColumn("columnType4", "", "Filter", "Filter", 55, function(data) {
@@ -229,7 +237,7 @@ ii.Class({
 					index = me.renderRowIndex;
 
 				if (me.appModuleColumnGrid.data[index].filter)
-                	return "<center><input type=\"checkbox\" id=\"filterInputCheck" + index + "\" class=\"iiInputCheck\"" + (data.columnTypeFilter == 1 ? checked='checked' : '') + " onclick=\"fin.adhUi.actionClickItem(this," + index + ");\" /></center>";
+                	return "<center><input type=\"checkbox\" id=\"filterInputCheck" + index + "\" class=\"iiInputCheck\"" + (data.columnTypeFilter == 1 ? checked='checked' : '') + " onclick=\"fin.adhUi.actionClickItem(this," + index + ");\" onchange=\"fin.adhUi.modified(true);\" /></center>";
 				else
 					return "";
             });	
@@ -238,14 +246,14 @@ ii.Class({
 				var index = me.appModuleColumnGrid.rows.length - 1;
 				if (me.appModuleColumnGrid.activeRowIndex != -1)
 					index = me.renderRowIndex;
-                return "<center><input type=\"radio\" name=\"SortOrder" + index + "\" id=\"sortOrderAscInputRadio" + index + "\" value=\"asc\" class=\"iiInputCheck\"" + (data.sortOrder == 'asc' ? 'checked' : '') + " onclick=\"fin.adhUi.actionClickItem(this," + index + ");\" /></center>";
+                return "<center><input type=\"radio\" name=\"SortOrder" + index + "\" id=\"sortOrderAscInputRadio" + index + "\" value=\"asc\" class=\"iiInputCheck\"" + (data.sortOrder == 'asc' ? 'checked' : '') + " onclick=\"fin.adhUi.actionClickItem(this," + index + ");\" onchange=\"fin.adhUi.modified(true);\" /></center>";
             });
 
 			me.appModuleColumnGrid.addColumn("columnType7", "", "Sort By Desc", "Sort By Desc", 100, function(data) {
 				var index = me.appModuleColumnGrid.rows.length - 1;
 				if (me.appModuleColumnGrid.activeRowIndex != -1)
 					index = me.renderRowIndex;
-                return "<center><input type=\"radio\" name=\"SortOrder" + index + "\" id=\"sortOrderDescInputRadio" + index + "\" value=\"desc\" class=\"iiInputCheck\"" + (data.sortOrder == 'desc' ? 'checked' : '') + " onclick=\"fin.adhUi.actionClickItem(this," + index + ");\" /></center>";
+                return "<center><input type=\"radio\" name=\"SortOrder" + index + "\" id=\"sortOrderDescInputRadio" + index + "\" value=\"desc\" class=\"iiInputCheck\"" + (data.sortOrder == 'desc' ? 'checked' : '') + " onclick=\"fin.adhUi.actionClickItem(this," + index + ");\" onchange=\"fin.adhUi.modified(true);\" /></center>";
             });
 
 			me.appModuleColumnGrid.capColumns();
@@ -296,7 +304,15 @@ ii.Class({
 				injectionArray: me.moduleAssociates
 			});
 		},	
-
+		
+		modified: function fin_cmn_status_modified() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
+		},
+		
 		moduleLoaded: function(me, activeId) {
 
 			var found = true;
@@ -379,11 +395,16 @@ ii.Class({
 			var index = args.index;
 			var item = me.appReportGrid.data[index];
 			var itemIndex = 0;
-
+			
+			if (!parent.fin.cmn.status.itemValid()) {
+				me.appReportGrid.body.deselect(index, true);
+				return;
+			}
+			
 			me.action = "";
 			me.lastSelectedIndex = args.index;
 			me.reportTitle.setValue(me.appReportGrid.data[index].title);
-			me.active.check.checked = me.appReportGrid.data[index].active;
+			me.active.setValue(me.appReportGrid.data[index].active.toString());
 			me.reportId = me.appReportGrid.data[index].id;
 			me.moduleId = me.appReportGrid.data[index].module;
 			me.moduleAssociateId = me.appReportGrid.data[index].moduleAssociate;
@@ -459,7 +480,12 @@ ii.Class({
 			var index = me.appModuleColumnGrid.activeRowIndex;
 
 			if (index < 0) return;
-
+			
+			if ($("#editableInputRadio" + index)[0].checked || $("#hiddenInputRadio" + index)[0].checked || 
+				$("#readOnlyInputRadio" + index)[0].checked || $("#filterInputCheck" + index)[0].checked || 
+				$("#sortOrderAscInputRadio" + index)[0].checked || $("#sortOrderDescInputRadio" + index)[0].checked) 
+				me.modified(true);
+				
 			$("#editableInputRadio" + index)[0].checked = false;
 			$("#hiddenInputRadio" + index)[0].checked = false;
 			$("#readOnlyInputRadio" + index)[0].checked = false;
@@ -471,7 +497,10 @@ ii.Class({
 		actionUndoItem: function() {
 			var args = ii.args(arguments, {});
 			var me = this;
-
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			me.action = "";
 
 			if (me.lastSelectedIndex >= 0) {
@@ -483,7 +512,10 @@ ii.Class({
 		actionClearItem: function() {			
 			var args = ii.args(arguments, {});
 			var me = this;
-
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if (me.appModuleColumnGrid.rows.length > 0)	{
 				for (var index = 0; index <= me.appModuleColumnGrid.rows.length - 1; index++) {
 					$("#editableInputRadio" + index).attr("checked", false);
@@ -499,15 +531,18 @@ ii.Class({
 		actionNewItem: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
-
-			me.action = "New";			
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
+			;			
 			me.reportTitle.setValue("");
 			me.module.select(0, me.module.focused);
 			me.moduleId = 0;
 			me.moduleAssociateId = 0;
 			me.moduleAssociateIds = 0;
 			me.reportId	= 0;
-			me.active.check.checked = true;
+			me.active.setValue("true");
 			me.appReportGrid.body.deselectAll();
 			$("#SubModulesContainer").html("");
 
@@ -520,6 +555,7 @@ ii.Class({
 
 			me.moduleAssociateGroup.reset();
 			me.appModuleColumnGrid.setData([]);
+			me.action = "New"
 		},
 
 		actionClickItem: function(object, index) {
@@ -727,7 +763,8 @@ ii.Class({
 			$("#pageLoading").hide();
 
 			if (status == "success") {
-
+				
+				me.modified(false);
 				$(args.xmlNode).find("*").each(function () {
 
 					switch (this.tagName) {

@@ -16,6 +16,43 @@
 	background-repeat: repeat-x;
 }
 
+.SearchByRadioButtonLeft	{
+	float:left;
+	width:15px;
+	padding-left:10px;
+	vertical-align:top;
+}
+
+.HouseCodeText {
+    border: 0 none;
+    color: #032D23;
+    float: left;
+    font-family: Verdana;
+    font-size: 12px;
+    height: 13px;
+    width: 150px;
+}
+
+.HouseCodeContainer {
+    background-color: white;
+    border: 1px solid #AAAAAA;
+    float: left;
+    height: 16px;
+    padding: 1px;
+    width: 170px;
+}
+
+#DropDownRightHouseCode {
+    float: left;
+    padding: 1px 10px 3px 5px;
+    width: 170px;
+}
+
+#EpaySiteTextArea {
+	float: left;
+	width: 150px;
+}
+
 #ContainerLeftArea {
 	float: left;
 	width: 45%;
@@ -53,13 +90,36 @@
 
 #LabelTextAreaSearch {
 	float: left;
-	width: 215px;	
+	width: 175px;	
 	height: 27px;
 	font-family: Verdana;
 	font-size: 12px;
 	color: #032D23;
-	padding: 0px 0px 0px 10px;
+	padding: 2px 0px 0px 10px;
+	vertical-align:top;
 }
+
+#LabelTextAreaSearchByHouseCode {
+	float: left;
+	width: 85px;	
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 2px 0px 0px 10px;
+	vertical-align:top;
+}
+
+#LabelTextAreaSearchBy {
+	float: left;
+	width: 70px;	
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 2px 0px 0px 10px;
+}
+
 
 #LabelHouseCode {
 	float: left;

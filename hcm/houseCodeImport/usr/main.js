@@ -65,6 +65,7 @@ ii.Class({
 			me.houseCodeServiceStore.fetch("userId:[user],houseCodeId:0", me.houseCodeServicesLoaded, me);			
 			me.contractTypeStore.fetch("userId:[user]", me.contractTypesLoaded, me);
 			me.payPayrollCompanyStore.fetch("userId:[user],houseCodeId:0", me.payPayrollCompanysLoaded, me);
+			me.modified(false);
 
 			$(window).bind("resize", me, me.resize);
 			$("#divHouseCodeGrid").bind("scroll", me.houseCodeGridScroll);
@@ -382,6 +383,14 @@ ii.Class({
 			});
 		},
 		
+		modified: function fin_cmn_status_modified() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
+		},
+		
 		siteMastersLoaded: function (me, activeId) {
 
 			me.stateTypes.unshift(new fin.hcm.houseCodeImport.StateType({ id: 0,  name: "" }));
@@ -548,7 +557,10 @@ ii.Class({
 		
 		actionCancelItem: function() {
 			var me = this;
-
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			$("iframe")[0].contentWindow.document.getElementById("FormReset").click();
 			me.anchorUpload.display(ui.cmn.behaviorStates.disabled);			
 		},
@@ -1566,6 +1578,7 @@ ii.Class({
 			var errorMessage = "";
 
 			if (status == "success") {
+				me.modified(false);
 				$(args.xmlNode).find("*").each(function() {
 					switch (this.tagName) {
 
@@ -1592,7 +1605,7 @@ function onFileChange() {
 	
 	var fileName = $("iframe")[0].contentWindow.document.getElementById("UploadFile").value;	
 	var fileExtension = fileName.substring(fileName.lastIndexOf("."));
-	
+	parent.fin.appUI.modified = "true";
 	if (fileExtension == ".xlsx")
 		fin.hcm.houseCodeImportUI.anchorUpload.display(ui.cmn.behaviorStates.enabled);
 	else

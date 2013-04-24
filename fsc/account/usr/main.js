@@ -6,14 +6,14 @@ ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "fin.fsc.account.usr.defs" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.toolbar" , 4);
-ii.Style( "fin.cmn.usr.input" , 5);
-ii.Style( "fin.cmn.usr.grid" , 6);
-ii.Style( "fin.cmn.usr.dropDown" , 7);
-ii.Style( "fin.cmn.usr.button" , 8);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.toolbar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.grid", 6 );
+ii.Style( "fin.cmn.usr.dropDown", 7 );
+ii.Style( "fin.cmn.usr.button", 8 );
 
 ii.Class({
     Name: "fin.fsc.account.UserInterface",
@@ -33,11 +33,11 @@ ii.Class({
 			me.transactionMonitor = new ii.ajax.TransactionMonitor(
 				me.gateway
 				, function(status, errorMessage){ me.nonPendingError(status, errorMessage); }
-			); //@iiDoc {Property:ii.ajax.TransactionMonitor} The Person Ajax transaction monitor.
+			);
 						
 			me.validator = new ui.ctl.Input.Validation.Master();
 			
-			me.authorizer = new ii.ajax.Authorizer( me.gateway );	//@iiDoc {Property:ii.ajax.Authorizer} Boolean
+			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\Fiscal\\ChartOfAccounts";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
@@ -64,7 +64,7 @@ ii.Class({
 			
 			me.accountReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
 			me.controlVisible();
-				
+
 			ii.timer.timing("Page displayed");
 			me.session.registerFetchNotify(me.sessionLoaded,me);
 		},	
@@ -74,12 +74,12 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("session loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 			
 		resize: function() {
 			var args = ii.args(arguments, {});
-			
+
 			fin.fsc.fscAccountUi.fiscalAccountGrid.setHeight($(window).height() - 85);
 			$("#accountDetailContentArea").height($(window).height() - 127);					
 		},
@@ -97,19 +97,19 @@ ii.Class({
 					id: "saveAction",
 					brief: "Save (Ctrl+S)", 
 					title: "Save the current Account.",
-					actionFunction: function(){ me.actionSaveItem(); }
+					actionFunction: function() { me.actionSaveItem(); }
 				})
 				.addAction({
 					id: "newAction", 
 					brief: "New Account(Ctrl+N)", 
 					title: "Save the current Account, and create a new blank Account.",
-					actionFunction: function(){ me.actionNewItem(); }
+					actionFunction: function() { me.actionNewItem(); }
 				})
 				.addAction({
 					id: "cancelAction", 
 					brief: "Undo current changes to Account (Ctrl+U)", 
 					title: "Undo the changes to Account being edited.",
-					actionFunction: function(){ me.actionUndoItem(); }
+					actionFunction: function() { me.actionUndoItem(); }
 				});
 			
 			me.anchorSave = new ui.ctl.buttons.Sizeable({
@@ -127,7 +127,8 @@ ii.Class({
 				clickFunction: function() { me.actionNewItem(); },
 				hasHotState: true
 			});
-				me.anchorUndo = new ui.ctl.buttons.Sizeable({
+			
+			me.anchorUndo = new ui.ctl.buttons.Sizeable({
 				id: "AnchorUndo",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Undo&nbsp;&nbsp;</span>",
@@ -137,7 +138,7 @@ ii.Class({
 			
 			me.accountCategory = new ui.ctl.Input.DropDown.Filtered({
 		        id: "category",
-		        formatFunction: function( type ){ return type.name; },
+		        formatFunction: function( type ) { return type.name; },
 		        required : false,
 				changeFunction: function() { me.modified(); }
 		    });			
@@ -159,9 +160,9 @@ ii.Class({
 
 					var enteredText = me.accountCode.getValue();
 					
-					if(enteredText == '') return;
+					if (enteredText == "") return;
 					
-					if(/^\d+$/.test(enteredText) == false)
+					if (/^\d+$/.test(enteredText) == false)
 						this.setInvalid("Please enter valid Account Code.");
 				});
 
@@ -267,7 +268,10 @@ ii.Class({
 				appendToId: "divForm",
 				allowAdds: false,
 				selectFunction: function(index) { me.itemSelect(index); },
-				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
+				validationFunction: function() {
+					if (me.status != "new")
+						return parent.fin.cmn.status.itemValid();
+				}
 			});
 			
 			me.fiscalAccountGrid.addColumn("code", "code", "Code", "Code", 80);
@@ -316,9 +320,9 @@ ii.Class({
 		
 		controlVisible: function(){
 			var me = this;
-			
-			if(me.accountReadOnly){
-								
+
+			if (me.accountReadOnly) {
+
 				$("#codeText").attr('disabled', true);
 				$("#categoryText").attr('disabled', true);
 				$("#categoryAction").removeClass("iiInputAction");
@@ -339,21 +343,18 @@ ii.Class({
 				$("#InventoryCheck").attr('disabled', true);
 				$("#ManagementFeeCheck").attr('disabled', true);
 				$("#SuppliesCheck").attr('disabled', true);
-				$("#WORCheck").attr('disabled', true);	
+				$("#WORCheck").attr('disabled', true);
 				
 				$("#actionMenu").hide();
 				$(".footer").hide();
 			}
-			
 		},
 		
 		accountCategorysLoaded: function(me, activeId) {
 			
 			me.controlVisible();
-			
 			me.accountCategory.reset();
 			me.accountCategory.setData(me.accountCategories);
-
 			me.fiscalAccountGrid.setData([]);
 			me.fiscalAccountGrid.setData(me.accounts);
 			
@@ -363,10 +364,16 @@ ii.Class({
 
 		itemSelect: function() {
 			var args = ii.args(arguments, {index: { type: Number }});
-			var me = this;			
-			var index = 0;
+			var me = this;
 			var item = me.accounts[args.index];
+			var index = 0;
 
+			if (!parent.fin.cmn.status.itemValid()) {
+				me.fiscalAccountGrid.body.deselect(args.index, true);
+				return;
+			}
+
+			me.status = "";
 			me.accountId = item.id;
 			me.lastSelectedIndex = args.index;			
 			me.accountCode.setValue(item.code);
@@ -436,11 +443,10 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 				
-			if(me.accountReadOnly) return;
-			
-			me.status = "new";
-			$("#NewAccount").show();
+			if (me.accountReadOnly) return;
+
 			me.actionResetItem();
+			me.status = "new";
 		},
 
 		actionUndoItem: function() {
@@ -451,7 +457,6 @@ ii.Class({
 				return;
 				
 			me.status = "";	
-			$("#NewAccount").hide();
 			
 			if (me.lastSelectedIndex > 0) {
 				me.fiscalAccountGrid.body.select(me.lastSelectedIndex);
@@ -487,8 +492,8 @@ ii.Class({
 	        me.wor.setValue("false");
 	        me.otherRevenue.setValue("false");
 
-			me.fiscalAccountGrid.body.deselectAll();			
-			me.accountCode.text.focus();			
+			me.fiscalAccountGrid.body.deselectAll();
+			me.accountCode.text.focus();
 			me.validator.reset();
 		},
 
@@ -496,9 +501,9 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 			
-			if(me.accountReadOnly) return;
+			if (me.accountReadOnly) return;
 				
-			if((me.accountId <= 0 && me.status != "new") 
+			if ((me.accountId <= 0 && me.status != "new") 
 				|| (me.fiscalAccountGrid.indexSelected == -1 && me.status != "new")) {
 				alert('Please select Account to save.');
 				return false;
@@ -507,7 +512,7 @@ ii.Class({
 			me.validator.forceBlur();
 
 			// Check to see if the data entered is valid
-			if(!me.validator.queryValidity(true)) {
+			if (!me.validator.queryValidity(true)) {
 				alert( "In order to save, the errors on the page must be corrected.");
 				return false;
 			}
@@ -599,13 +604,11 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var id = parseInt($(this).attr("id"), 10);
-			var errorMessage = "";
-			var index;
 			var status = $(args.xmlNode).attr("status");
-			var traceType = ii.traceTypes.errorDataCorruption;
-			
+			var index = 0;			
+
 			$("#pageLoading").hide();
-			me.modified(false);
+
 			if (status == "success") {
 				$(args.xmlNode).find("*").each(function () {
 
@@ -645,7 +648,7 @@ ii.Class({
 								item.id = id;
 								me.accounts.push(item);
 							}
-							else if(me.fiscalAccountGrid.activeRowIndex >= 0){
+							else if (me.fiscalAccountGrid.activeRowIndex >= 0) {
 								index = me.fiscalAccountGrid.activeRowIndex;
 								me.accounts[me.fiscalAccountGrid.activeRowIndex] = item;
 							}
@@ -657,17 +660,11 @@ ii.Class({
 							break;
 					}
 				});
+				
+				me.modified(false);
 			}
 			else {
-				alert('Error while updating Chart of Account Record: ' + $(args.xmlNode).attr("message"));
-				errorMessage = $(args.xmlNode).attr("error");
-				
-				if (status == "invalid") {
-					traceType = ii.traceTypes.warning;
-				}
-				else {
-					errorMessage += " [SAVE FAILURE]";
-				}
+				alert("[SAVE FAILURE] Error while updating Chart of Account record: " + $(args.xmlNode).attr("message"));
 			}
 		}
 	}

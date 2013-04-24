@@ -58,11 +58,17 @@ ii.Class({
 			me.configureCommunications();
 			
 			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
+			me.modified(false);
 			if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
 				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
 			else {
 				me.houseCodesLoaded(me, 0);
 			}
+			$("input[name='TimeAttendance']").change(function() { me.modified(true); });
+			$("input[name='DefaultLunchBreak']").change(function() { me.modified(true); });
+			$("input[name='LunchBreakTrigger']").change(function() { me.modified(true); });
+			$("input[name='HouseCodeType']").change(function() { me.modified(true); });
+			$("input[name='RoundingTimePeriod']").change(function() { me.modified(true); });
         },
 
 		resize: function() {
@@ -846,7 +852,8 @@ ii.Class({
 			me.site = new ui.ctl.Input.DropDown.Filtered({
 		        id: "Sites",
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { me.modified(); }
 		    });	
 			
 			me.site.makeEnterTab()
@@ -860,13 +867,14 @@ ii.Class({
 				
 			me.houseCodeNumber = new ui.ctl.Input.Text({
 		        id: "HouseCodeNumber",
-		        maxLength: 16
+		        maxLength: 16,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.jdeCompany = new ui.ctl.Input.DropDown.Filtered({
 		        id: "JDECompanys",
 				formatFunction: function( type ) { return type.name; },
-				changeFunction: function() { me.jdeCompanyChanged(); },
+				changeFunction: function() { me.jdeCompanyChanged(); me.modified(); },
 		        required: false
 		    });
 				
@@ -887,6 +895,7 @@ ii.Class({
 			me.startDate.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function() { me.modified(); } )
 				.addValidation( function( isFinal, dataMap ) {					
 					var enteredText = me.startDate.text.value;
 					
@@ -900,7 +909,8 @@ ii.Class({
 			me.primaryService = new ui.ctl.Input.DropDown.Filtered({
 		        id: "PrimaryServiceProvided",
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { me.modified(); }
 		    });
 				
 			me.primaryService.makeEnterTab()
@@ -914,21 +924,25 @@ ii.Class({
 					
 			me.serviceLine = new ui.ctl.Input.DropDown.Filtered({
 		        id: "ServiceLine",
-				formatFunction: function(type) { return type.name; }
+				formatFunction: function(type) { return type.name; },
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.serviceGroup = new ui.ctl.Input.CheckList({
-				id: "ServiceGroup"
+				id: "ServiceGroup",
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.managerName = new ui.ctl.Input.Text({
 		        id: "ManagerName",
-		        maxLength: 100
+		        maxLength: 100,
+				changeFunction: function() { me.modified(); }
 		    });
 				
 			me.managerEmail = new ui.ctl.Input.Text({
 		        id: "ManagerEmail",
-		        maxLength: 50
+		        maxLength: 50,
+				changeFunction: function() { me.modified(); }
 		    });
 			    
 			me.managerEmail.makeEnterTab()
@@ -945,7 +959,8 @@ ii.Class({
 				
 			me.managerPhone = new ui.ctl.Input.Text({
 		        id: "ManagerPhone",
-		        maxLength: 14
+		        maxLength: 14,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.managerPhone.makeEnterTab()
@@ -965,7 +980,8 @@ ii.Class({
 				
 			me.managerFax = new ui.ctl.Input.Text({
 		        id: "ManagerFax",
-		        maxLength: 14
+		        maxLength: 14,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.managerFax.makeEnterTab()
@@ -1025,12 +1041,14 @@ ii.Class({
 				
 			me.managerAssistantName = new ui.ctl.Input.Text({
 		        id: "ManagerAssistantName",
-		        maxLength: 100
+		        maxLength: 100,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.managerAssistantPhone = new ui.ctl.Input.Text({
 		        id: "ManagerAssistantPhone",
-		        maxLength: 14
+		        maxLength: 14,
+				changeFunction: function() { me.modified(); }
 		    });
 				
 			me.managerAssistantPhone.makeEnterTab()
@@ -1050,22 +1068,26 @@ ii.Class({
 				
 			me.clientFirstName = new ui.ctl.Input.Text({
 		        id: "ClientFirstName",
-		        maxLength: 50
+		        maxLength: 50,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.clientLastName = new ui.ctl.Input.Text({
 		        id: "ClientLastName",
-		        maxLength: 50
+		        maxLength: 50,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.clientTitle = new ui.ctl.Input.Text({
 		        id: "ClientTitle",
-		        maxLength: 50
+		        maxLength: 50,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.clientPhone = new ui.ctl.Input.Text({
 		        id: "ClientPhone",
-		        maxLength: 14
+		        maxLength: 14,
+				changeFunction: function() { me.modified(); }
 		    });
 				
 			me.clientPhone.makeEnterTab()
@@ -1085,7 +1107,8 @@ ii.Class({
 				
 			me.clientFax = new ui.ctl.Input.Text({
 		        id: "ClientFax",
-		        maxLength: 14
+		        maxLength: 14,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.clientFax.makeEnterTab()
@@ -1105,12 +1128,14 @@ ii.Class({
 				
 			me.clientAssistantName = new ui.ctl.Input.Text({
 		        id: "ClientAssistantName",
-		        maxLength: 100
+		        maxLength: 100,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.clientAssistantPhone = new ui.ctl.Input.Text({
 		        id: "ClientAssistantPhone",
-		        maxLength: 14
+		        maxLength: 14,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.clientAssistantPhone.makeEnterTab()
@@ -1155,7 +1180,8 @@ ii.Class({
 			//Statistics
 			me.managedEmployees = new ui.ctl.Input.Text({
 		        id: "ManagedEmployees",
-		        maxLength: 10
+		        maxLength: 10,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.managedEmployees.makeEnterTab()
@@ -1172,7 +1198,8 @@ ii.Class({
 				
 			me.crothallEmployees = new ui.ctl.Input.Text({
 		        id: "CrothallEmployees",
-		        maxLength: 10
+		        maxLength: 10,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.crothallEmployees.makeEnterTab()
@@ -1189,7 +1216,8 @@ ii.Class({
 				
 			me.bedsLicensed = new ui.ctl.Input.Text({
 		        id: "BedsLicensed",
-		        maxLength: 10
+		        maxLength: 10,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.bedsLicensed.makeEnterTab()
@@ -1206,7 +1234,8 @@ ii.Class({
 				
 			me.bedsActive = new ui.ctl.Input.Text({
 		        id: "BedsActive",
-		        maxLength: 10
+		        maxLength: 10,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.bedsActive.makeEnterTab()
@@ -1223,7 +1252,8 @@ ii.Class({
 				
 			me.patientDays = new ui.ctl.Input.Text({
 		        id: "PatientDays",
-		        maxLength: 10
+		        maxLength: 10,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.patientDays.makeEnterTab()
@@ -1240,7 +1270,8 @@ ii.Class({
 				
 			me.adjustedPatientDays = new ui.ctl.Input.Text({
 		        id: "AdjustedPatientDays",
-		        maxLength: 10
+		        maxLength: 10,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.adjustedPatientDays.makeEnterTab()
@@ -1257,7 +1288,8 @@ ii.Class({
 				
 			me.avgDailyCensus = new ui.ctl.Input.Text({
 		        id: "AvgDailyCensus",
-		        maxLength: 10
+		        maxLength: 10,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.avgDailyCensus.makeEnterTab()
@@ -1274,7 +1306,8 @@ ii.Class({
 				
 			me.annualDischarges = new ui.ctl.Input.Text({
 		        id: "AnnualDischarges",
-		        maxLength: 10
+		        maxLength: 10,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.annualDischarges.makeEnterTab()
@@ -1291,7 +1324,8 @@ ii.Class({
 				
 			me.annualTransfers = new ui.ctl.Input.Text({
 		        id: "AnnualTransfers",
-		        maxLength: 10
+		        maxLength: 10,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.annualTransfers.makeEnterTab()
@@ -1308,7 +1342,8 @@ ii.Class({
 				
 			me.avgBedTurnAroundTime = new ui.ctl.Input.Text({
 		        id: "AvgBedTurnaroundTime",
-		        maxLength: 10
+		        maxLength: 10,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.avgBedTurnAroundTime.makeEnterTab()
@@ -1325,7 +1360,8 @@ ii.Class({
 				
 			me.netCleanableSquareFeet = new ui.ctl.Input.Text({
 		        id: "NetCleanableSquareFeet",
-		        maxLength: 10
+		        maxLength: 10,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.netCleanableSquareFeet.makeEnterTab()
@@ -1342,7 +1378,8 @@ ii.Class({
 				
 			me.annualTransports = new ui.ctl.Input.Text({
 		        id: "AnnualTransports",
-		        maxLength: 10
+		        maxLength: 10,
+				changeFunction: function() { me.modified(); }
 		    });
 		    
 			me.annualTransports.makeEnterTab()
@@ -1359,7 +1396,8 @@ ii.Class({
 				
 			me.avgLaundryLbs = new ui.ctl.Input.Text({
 		        id: "AvgLaundryLBS",
-		        maxLength: 10
+		        maxLength: 10,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.avgLaundryLbs.makeEnterTab()
@@ -1376,7 +1414,8 @@ ii.Class({
 
 			me.mgmtFeeTerminatedHourlyEmployees = new ui.ctl.Input.Text({
 		        id: "MgmtFeeTerminatedHourlyEmployees",
-		        maxLength: 11
+		        maxLength: 11,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.mgmtFeeTerminatedHourlyEmployees
@@ -1393,7 +1432,8 @@ ii.Class({
 
 			me.mgmtFeeActiveHourlyEmployees = new ui.ctl.Input.Text({
 		        id: "MgmtFeeActiveHourlyEmployees",
-		        maxLength: 11
+		        maxLength: 11,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.mgmtFeeActiveHourlyEmployees
@@ -1410,7 +1450,8 @@ ii.Class({
 
 			me.mgmtFeeTotalProductiveLaborHoursWorked = new ui.ctl.Input.Text({
 		        id: "MgmtFeeTotalProductiveLaborHoursWorked",
-		        maxLength: 11
+		        maxLength: 11,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.mgmtFeeTotalProductiveLaborHoursWorked
@@ -1427,7 +1468,8 @@ ii.Class({
 
 			me.mgmtFeeTotalNonProductiveLaborHours = new ui.ctl.Input.Text({
 		        id: "MgmtFeeTotalNonProductiveLaborHours",
-		        maxLength: 11
+		        maxLength: 11,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.mgmtFeeTotalNonProductiveLaborHours
@@ -1444,7 +1486,8 @@ ii.Class({
 
 			me.mgmtFeeTotalProductiveLaborDollarsPaid = new ui.ctl.Input.Text({
 		        id: "MgmtFeeTotalProductiveLaborDollarsPaid",
-		        maxLength: 11
+		        maxLength: 11,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.mgmtFeeTotalProductiveLaborDollarsPaid
@@ -1457,7 +1500,8 @@ ii.Class({
 
 			me.mgmtFeeTotalNonProductiveLaborDollarsPaid = new ui.ctl.Input.Text({
 		        id: "MgmtFeeTotalNonProductiveLaborDollarsPaid",
-		        maxLength: 11
+		        maxLength: 11,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.mgmtFeeTotalNonProductiveLaborDollarsPaid
@@ -1470,7 +1514,8 @@ ii.Class({
 
 			me.hospitalPaidJanitorialPaperPlasticSupplyCost = new ui.ctl.Input.Text({
 		        id: "HospitalPaidJanitorialPaperPlasticSupplyCost",
-		        maxLength: 11
+		        maxLength: 11,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.hospitalPaidJanitorialPaperPlasticSupplyCost
@@ -1505,27 +1550,32 @@ ii.Class({
 			//Financial
 			me.company = new ui.ctl.Input.Text({
 		        id: "Company",
-		        maxLength: 256
+		        maxLength: 256,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.shippingAddress1 = new ui.ctl.Input.Text({
 		        id: "ShippingAddress1",
-		        maxLength: 255
+		        maxLength: 255,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.shippingAddress2 = new ui.ctl.Input.Text({
 		        id: "ShippingAddress2",
-		        maxLength: 255
+		        maxLength: 255,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.shippingCity = new ui.ctl.Input.Text({
 		        id: "ShippingCity",
-		        maxLength: 100
+		        maxLength: 100,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.shippingZip = new ui.ctl.Input.Text({
 		        id: "ShippingZip",
-		        maxLength: 10
+		        maxLength: 10,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.shippingZip.makeEnterTab()
@@ -1542,14 +1592,16 @@ ii.Class({
 			me.shippingState = new ui.ctl.Input.DropDown.Filtered({
 		        id: "ShippingState",
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.remitTo = new ui.ctl.Input.DropDown.Filtered({
 		        id: "RemitTo",
 				formatFunction: function( type ) { return type.name; },
 				changeFunction: function() { me.remitToChanged(); },
-		        required: false
+		        required: false,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.remitTo.makeEnterTab()
@@ -1563,38 +1615,45 @@ ii.Class({
 				
 			me.remitToTitle = new ui.ctl.Input.Text({
 		        id: "RemitToTitle",
-		        maxLength: 50
+		        maxLength: 50,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.remitToAddress1 = new ui.ctl.Input.Text({
 		        id: "RemitToAddress1",
-		        maxLength: 255
+		        maxLength: 255,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.remitToAddress2 = new ui.ctl.Input.Text({
 		        id: "RemitToAddress2",
-		        maxLength: 255
+		        maxLength: 255,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.remitToCity = new ui.ctl.Input.Text({
 		        id: "RemitToCity",
-		        maxLength: 100
+		        maxLength: 100,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.remitToState = new ui.ctl.Input.Text({
 		        id: "RemitToState",
-		        maxLength: 64
+		        maxLength: 64,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.remitToZip = new ui.ctl.Input.Text({
 		        id: "RemitToZip",
-		        maxLength: 10
+		        maxLength: 10,
+				changeFunction: function() { me.modified(); }
 		    });
 				
 			me.contractType = new ui.ctl.Input.DropDown.Filtered({
 		        id: "ContractType",
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.contractType.makeEnterTab()
@@ -1609,65 +1668,77 @@ ii.Class({
 			me.termsOfContract = new ui.ctl.Input.DropDown.Filtered({
 		        id: "TermsOfContract",
 				formatFunction: function( type ) { return type.name; },
-		        required : false
+		        required : false,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.billingCycleFrequency = new ui.ctl.Input.DropDown.Filtered({
 		        id: "BillingCycleFrequency",
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.financialEntity = new ui.ctl.Input.DropDown.Filtered({
 		        id: "FinancialEntity",
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.bankCodeNumber = new ui.ctl.Input.Text({
 		        id: "BankCodeNumber",
-		        maxLength: 50
+		        maxLength: 50,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.bankAccountNumber = new ui.ctl.Input.Text({
 		        id: "BankAccountNumber",
-		        maxLength: 100
+		        maxLength: 100,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.bankName = new ui.ctl.Input.Text({
 		        id: "BankName",
-		        maxLength: 100
+		        maxLength: 100,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.bankContact = new ui.ctl.Input.Text({
 		        id: "BankContact",
-		        maxLength: 100
+		        maxLength: 100,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.bankAddress1 = new ui.ctl.Input.Text({
 		        id: "BankAddress1",
-		        maxLength: 255
+		        maxLength: 255,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.bankAddress2 = new ui.ctl.Input.Text({
 		        id: "BankAddress2",
-		        maxLength: 255
+		        maxLength: 255,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.bankCity = new ui.ctl.Input.Text({
 		        id: "BankCity",
-		        maxLength: 100
+		        maxLength: 100,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.bankState = new ui.ctl.Input.DropDown.Filtered({
 		        id: "BankState",
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.bankZip = new ui.ctl.Input.Text({
 		        id: "BankZip",
-		        maxLength: 10
+		        maxLength: 10,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.bankZip.makeEnterTab()
@@ -1683,7 +1754,8 @@ ii.Class({
 			
 			me.bankPhone = new ui.ctl.Input.Text({
 		        id: "BankPhone",
-		        maxLength: 14
+		        maxLength: 14,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.bankPhone.makeEnterTab()
@@ -1703,7 +1775,8 @@ ii.Class({
 			
 			me.bankFax = new ui.ctl.Input.Text({
 		        id: "BankFax",
-		        maxLength: 14
+		        maxLength: 14,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.bankFax.makeEnterTab()
@@ -1723,7 +1796,8 @@ ii.Class({
 			
 			me.bankEmail = new ui.ctl.Input.Text({
 		        id: "BankEmail",
-		        maxLength: 100
+		        maxLength: 100,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.bankEmail.makeEnterTab()
@@ -1741,24 +1815,28 @@ ii.Class({
 			me.invoiceLogo = new ui.ctl.Input.DropDown.Filtered({
 		        id: "InvoiceLogo",
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.budgetTemplate = new ui.ctl.Input.DropDown.Filtered({
 		        id: "BudgetTemplate",
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.budgetLaborCalcMethod = new ui.ctl.Input.DropDown.Filtered({
 		        id: "BudgetLaborCalcMethod",
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.budgetComputerRelatedCharge = new ui.ctl.Input.Check({
 		        id: "BudgetComputerRelatedCharge",
-				required: false 
+				required: false,
+				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.company.text.readOnly = true;
@@ -1807,12 +1885,14 @@ ii.Class({
 			me.payrollProcessing = new ui.ctl.Input.DropDown.Filtered({
 		        id: "PayrollPro",
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { me.modified(); }
 		    });	
 			
 			me.breakOthers = new ui.ctl.Input.Text({
 		        id: "BreakOthers",
-		        maxLength: 5
+		        maxLength: 5,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.breakOthers.makeEnterTab()
@@ -1830,7 +1910,8 @@ ii.Class({
 			
 			me.breakTrigger = new ui.ctl.Input.Text({
 		        id: "BreakTrigger",
-		        maxLength: 5
+		        maxLength: 5,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.breakTrigger.makeEnterTab()
@@ -1849,29 +1930,34 @@ ii.Class({
 			me.ceridianCompanySalaried = new ui.ctl.Input.DropDown.Filtered({
 		        id: "CeridianCompanySalaried",
 				formatFunction: function( type ) { return type.title; },
-		        required: false
+		        required: false,
+				changeFunction: function() { me.modified(); }
 		    });	
 			
 			me.ceridianCompanyHourly = new ui.ctl.Input.DropDown.Filtered({
 		        id: "CeridianCompanyHourly",
 				formatFunction: function( type ) { return type.title; },
-		        required: false
+		        required: false,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.ePaySite = new ui.ctl.Input.Check({
 		        id: "EPaySite",
-				required: false 
+				required: false,
+				changeFunction: function() { me.modified(); } 
 		    });
 
 			me.ePayPayGroup = new ui.ctl.Input.DropDown.Filtered({
 		        id: "EPayPay" ,
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.ePayTask = new ui.ctl.Input.Check({
 		        id: "EPayTask",
-				required: false 
+				required: false,
+				changeFunction: function() { me.modified(); } 
 		    });
 		},
 		
@@ -2057,6 +2143,14 @@ ii.Class({
 				itemConstructorArgs: fin.hcm.houseCodeWizard.houseCodeTypeArgs,
 				injectionArray: me.houseCodeTypes	
 			});			
+		},
+		
+		modified: function fin_cmn_status_modified() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
 		},
 		
 		resizeControls: function() {
@@ -2961,7 +3055,10 @@ ii.Class({
 		actionUndoItem: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
-					
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+						
 			me.houseCodeWizard();
 		},
 
@@ -3353,9 +3450,11 @@ ii.Class({
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
 
-			if (status == "success")
+			if (status == "success") {
+				me.modified(false);
 				ii.trace("House Code Record Updated", ii.traceTypes.Information, "Info");
-			else
+			}
+			else 
 				alert("[SAVE FAILURE] Error while updating House Code Record: " + $(args.xmlNode).attr("message"));
 
 			$("#pageLoading").hide();

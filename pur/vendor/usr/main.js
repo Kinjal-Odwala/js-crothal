@@ -380,7 +380,10 @@ ii.Class({
 				appendToId: "divForm",
 				allowAdds: false,
 				selectFunction: function(index) { me.itemSelect(index); },
-				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
+				validationFunction: function() { 
+					if (me.status != "new") 
+						return parent.fin.cmn.status.itemValid(); 
+				}
 			});
 			
 			me.vendorGrid.addColumn("vendorNumber", "vendorNumber", "Vendor#", "Vendor Number", 90);
@@ -531,7 +534,13 @@ ii.Class({
 			var itemIndex = 0;			
 			var item = me.vendorGrid.data[index];
 			
+			if (!parent.fin.cmn.status.itemValid()) {
+				me.vendorGrid.body.deselect(index, true);
+				return;
+			}
+			
 			me.lastSelectedRowIndex = index;
+			me.status = "";
 			
 			if (item == undefined) 
 				return;
@@ -644,10 +653,10 @@ ii.Class({
 			
 			if (!parent.fin.cmn.status.itemValid())
 				return;
-				
-			me.status = "new";
+			
 			me.resetControls();	
-			me.vendorGrid.body.deselectAll();					
+			me.vendorGrid.body.deselectAll();
+			me.status = "new";					
 		},
 		
 		actionSaveItem: function() {

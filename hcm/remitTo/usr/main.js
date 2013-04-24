@@ -53,6 +53,7 @@ ii.Class({
 			
 			me.remitToStateType.fetchingData();			
 			me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);	
+			me.modified(false);	
 		},	
 		
 		authorizationProcess: function fin_hcm_remitTo_UserInterface_authorizationProcess() {
@@ -139,7 +140,8 @@ ii.Class({
 			
 			me.remitToTitle = new ui.ctl.Input.Text({
 		        id: "RemitToTitle",
-				maxLength: 16 
+				maxLength: 16,
+				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.remitToTitle.makeEnterTab()
@@ -147,7 +149,8 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
 			
 			me.remitToAddress1 = new ui.ctl.Input.Text({
-		        id: "RemitToAddress1" 
+		        id: "RemitToAddress1",
+				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.remitToAddress1.makeEnterTab()
@@ -155,11 +158,13 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
 				
 			me.remitToAddress2 = new ui.ctl.Input.Text({
-		        id: "RemitToAddress2" 
+		        id: "RemitToAddress2",
+				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.remitToCity = new ui.ctl.Input.Text({
-		        id: "RemitToCity" 
+		        id: "RemitToCity",
+				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.remitToCity.makeEnterTab()
@@ -168,7 +173,8 @@ ii.Class({
 				
 			me.remitToStateType = new ui.ctl.Input.DropDown.Filtered({
 				id : "RemitToStateType",
-				formatFunction: function( type ){ return type.name; } 
+				formatFunction: function( type ){ return type.name; },
+				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.remitToStateType.makeEnterTab()
@@ -182,7 +188,8 @@ ii.Class({
 				
 			me.remitToZip = new ui.ctl.Input.Text({
 		        id: "RemitToZip",
-				maxLength: 10
+				maxLength: 10,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.remitToZip.makeEnterTab()
@@ -202,7 +209,11 @@ ii.Class({
 				appendToId: "divForm",
 				allowAdds: false,
 				selectFunction: function(index){me.itemSelect(index);},
-				createNewFunction: fin.hcm.remitTo.RemitTo
+				createNewFunction: fin.hcm.remitTo.RemitTo,
+				validationFunction: function() { 
+					if (me.status != "new") 
+						return parent.fin.cmn.status.itemValid(); 
+				}
 			});
 			
 			me.remitToGrid.addColumn("title", "title", "Title", "Title", 150);
@@ -241,6 +252,14 @@ ii.Class({
 				itemConstructorArgs: fin.hcm.remitTo.stateTypeArgs,
 				injectionArray: me.stateTypes	
 			});	
+		},
+		
+		modified: function fin_cmn_status_modified() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
 		},
 		
 		stateTypesLoaded: function(me, activeId){
@@ -292,7 +311,13 @@ ii.Class({
 			var itemIndex = 0;
 			var item = me.remitToGrid.data[index];
 			
+			if (!parent.fin.cmn.status.itemValid()) {
+				me.remitToGrid.body.deselect(index, true);
+				return;
+			}
+			
 			me.lastSelectedRowIndex = index;
+			me.status = "";	
 			
 			if (item == undefined) 
 				return;
@@ -367,7 +392,10 @@ ii.Class({
 			
 			var args = ii.args(arguments,{});
 			var me = this;
-
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if (me.lastSelectedRowIndex >= 0) {
 				me.remitToGrid.body.select(me.lastSelectedRowIndex);
 				me.itemSelect(me.lastSelectedRowIndex);
@@ -378,11 +406,14 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if(me.remitToReadOnly) return;
 			
-			me.status = "new";
 			me.resetControls();
-			me.remitToGrid.body.deselectAll();			
+			me.remitToGrid.body.deselectAll();
+			me.status = "new";			
 		},
 		
 		actionSaveItem: function(){
@@ -514,7 +545,7 @@ ii.Class({
 				}
 				$("#pageLoading").hide();
 			}	
-
+			me.modified(false);
 		}
 	}
 });

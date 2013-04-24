@@ -112,6 +112,7 @@ ii.Class({
 			me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
 			me.hierarchyTreeMouseDownEventSetup();
 			me.movableNodeEventSetup();
+			me.modified(false);
 		},
 
 		contextMenuProcessor: function() {
@@ -275,7 +276,8 @@ ii.Class({
 
 			me.brief = new ui.ctl.Input.Text({
 		        id: "Brief",
-				maxLength: 16 
+				maxLength: 16,
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.brief.makeEnterTab()
@@ -288,7 +290,8 @@ ii.Class({
 
 			me.title = new ui.ctl.Input.Text({
 		        id: "Title",
-				maxLength: 64 
+				maxLength: 64,
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.title.makeEnterTab()
@@ -300,7 +303,8 @@ ii.Class({
 				});
 
 			me.active = new ui.ctl.Input.Check({
-		        id: "Active" 
+		        id: "Active",
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.anchorSearch = new ui.ctl.buttons.Sizeable({
@@ -470,6 +474,15 @@ ii.Class({
 				itemConstructorArgs: fin.app.hierarchy.hirNodeArgs,
 				injectionArray: me.hirNodes	
 			});
+		},
+		
+		modified: function() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+			var me = this;
+
+			parent.fin.appUI.modified = args.modified;
 		},
 		
 		hierarchyTreeMouseDownEventSetup: function() {
@@ -1062,6 +1075,7 @@ ii.Class({
 						if (nodeIndex == -1) {
 							me.unitsList[unitListIndex].nodeParentId = parentId;
 							me.unitsList[unitListIndex].modified = true;
+							me.modified();
 							if (me.unitsList[unitListIndex].status == 0)
 								me.unitsList[unitListIndex].status = 2;
 							me.hirNodesList.push(me.unitsList[unitListIndex]);
@@ -1069,6 +1083,7 @@ ii.Class({
 						else {
 							me.hirNodesList[nodeIndex].nodeParentId = parentId;
 							me.hirNodesList[nodeIndex].modified = true;
+							me.modified();
 							if (me.hirNodesList[nodeIndex].status == 0)
 								me.hirNodesList[nodeIndex].status = 2;
 						}
@@ -1119,6 +1134,7 @@ ii.Class({
 
 				me.hirNodesList[nodeIndex].nodeParentId = parentId;
 				me.hirNodesList[nodeIndex].modified = true;
+				me.modified();
 				if (me.hirNodesList[nodeIndex].status == 0)
 					me.hirNodesList[nodeIndex].status = 2;
 
@@ -1387,7 +1403,7 @@ ii.Class({
 			me.validator.reset();
 			me.brief.setValue("");
 			me.title.setValue("");
-			me.active.check.checked = true;
+			me.active.setValue("true");
 			me.nodeAction = "add";
 			$("#LevelTitle").html(me.getLevelTitle(childBrief));
 			$("#ParentLevelTitle").html(me.hirNodesList[nodeIndex].title + " [" + me.getLevelTitle(brief) + "]");
@@ -1403,7 +1419,7 @@ ii.Class({
 			me.loadPopup("hierarchyPopup");
 			me.brief.setValue(me.hirNodesList[nodeIndex].brief);
 			me.title.setValue(me.hirNodesList[nodeIndex].title);
-			me.active.check.checked = me.hirNodesList[nodeIndex].active;
+			me.active.setValue(me.hirNodesList[nodeIndex].active.toString());
 			me.nodeAction = "edit";
 			$("#LevelTitle").html(me.getLevelTitle(brief));
 			
@@ -1445,6 +1461,9 @@ ii.Class({
 		actionGetVersionItem: function() {
 			var me = this;
 			var item = [];
+
+			if (!fin.cmn.status.itemValid())
+				return;
 
 			if (!confirm("The changes you made will be lost if you get original version. Are you sure you want to get the original version of Hierarchy?")) 	
 				return false;
@@ -1642,12 +1661,18 @@ ii.Class({
 			if (me.isReadOnly)
 				return;
 
+			if (!fin.cmn.status.itemValid())
+				return;
+
 			me.actionResetItem();
 			me.loggedInUsersLoaded(me, 0);
 		},
 
 		actionCancelItem: function() {
 			var me = this;
+
+			if (!fin.cmn.status.itemValid())
+				return;
 
 			me.hidePopup("hierarchyPopup");
 			me.nodeAction = "";
@@ -1850,6 +1875,7 @@ ii.Class({
 				});
 				ii.trace("Save Success", ii.traceTypes.Information, "Info");
 				me.updateNode(item);
+				me.modified(false);
 			}
 			else {
 				alert("[SAVE FAILURE] Error while updating the hirnode snapshot information: " + $(args.xmlNode).attr("message"));

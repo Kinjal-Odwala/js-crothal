@@ -140,7 +140,8 @@ ii.Class({
 			me.minimumWage = new ui.ctl.Input.Text({
 		        id: "MinimumWage",
 		        maxLength: 6,
-				required : false
+				required : false,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.minimumWage
@@ -160,7 +161,8 @@ ii.Class({
 				id: "StateGrid",
 				appendToId: "divForm",
 				allowAdds: false,
-				selectFunction: function(index) { me.itemSelect(index); }
+				selectFunction: function(index) { me.itemSelect(index); },
+				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});
 
 			me.stateGrid.addColumn("brief", "brief", "Brief", "Brief", 120);
@@ -181,6 +183,14 @@ ii.Class({
 			});			
 		},
 
+		modified: function fin_cmn_status_modified() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
+		},
+		
 		stateTypesLoaded:function(me, activeId) {
 
 			me.stateGrid.setData(me.stateTypes);
@@ -206,7 +216,10 @@ ii.Class({
 		actionUndoItem: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
-
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			me.itemSelect(me.stateGrid.activeRowIndex);
 		},
 
@@ -273,7 +286,8 @@ ii.Class({
 			$("#pageLoading").hide();
 
 			if (status == "success") {
-
+				
+				me.modified(false);
 				$(args.xmlNode).find("*").each(function() {
 					switch (this.tagName) {
 

@@ -104,6 +104,7 @@ ii.Class({
 			me.reportStore.fetch("userId:[user],active:1", me.reportLoaded, me);
 			me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
 			me.stateTypeStore.fetch("userId:[user]", me.typesLoaded, me);
+			me.modified(false);
 
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
@@ -891,6 +892,14 @@ ii.Class({
 				itemConstructorArgs: fin.adh.invoiceTemplateArgs,
 				injectionArray: me.invoiceTemplates
 			});
+		},
+		
+		modified: function fin_cmn_status_modified() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
 		},
 		
 		resizeControls: function() {
@@ -1746,13 +1755,13 @@ ii.Class({
 					switch (me.columnType) {
 						case 1: //Editable
 							if (argscolumn == "RevInvTaxExempt")
-								rowData = "<td class='" + className + "' align='center' style='" + style + "'><input type='checkbox' onChange=fin.reportUi.taxExemptChange(\'" + pkId + "\',\'" + houseCodeId + "\'); name='" + argName + "' id='" + argName + "' value='" + dataValue + "'" + (dataValue == "1" ? checked='checked' : '') + "></input></td>";
+								rowData = "<td class='" + className + "' align='center' style='" + style + "'><input type='checkbox' onChange='fin.reportUi.taxExemptChange(\'" + pkId + "\',\'" + houseCodeId + "\');fin.reportUi.modified(true);' name='" + argName + "' id='" + argName + "' value='" + dataValue + "'" + (dataValue == "1" ? checked='checked' : '') + "></input></td>";
 							else if (argscolumn == "HcmJobPostalCode")
-								rowData = "<td class='" + className + "' style='" + style + "'><input type='text' style='width:" + columnWidth + "px;' onblur=fin.reportUi.postalCodeChange(this); fin.reportUi.dataValidation(\'" + fin.reportUi.columnValidation + "\', \'" + argName + "\'); id='" + argName + "' value='" + dataValue + "' maxlength='" + columnLength + "'></input></td>";
+								rowData = "<td class='" + className + "' style='" + style + "'><input type='text' style='width:" + columnWidth + "px;' onblur=fin.reportUi.postalCodeChange(this); onchange=fin.reportUi.modified(true); fin.reportUi.dataValidation(\'" + fin.reportUi.columnValidation + "\', \'" + argName + "\'); id='" + argName + "' value='" + dataValue + "' maxlength='" + columnLength + "'></input></td>";
 							else if (me.columnValidation.toLowerCase() == "bit")
-								rowData = "<td class='" + className + "' align='center' style='" + style + "'><input type='checkbox' name='" + argName + "' id='" + argName + "' value='" + dataValue + "'" + (dataValue == "1" ? checked='checked' : '') + "></input></td>";
+								rowData = "<td class='" + className + "' align='center' style='" + style + "'><input type='checkbox' onchange=fin.reportUi.modified(true); name='" + argName + "' id='" + argName + "' value='" + dataValue + "'" + (dataValue == "1" ? checked='checked' : '') + "></input></td>";
 							else
-								rowData = "<td class='" + className + "' style='" + style + "'><input type='text' style='width:" + columnWidth + "px;' onblur='fin.reportUi.dataValidation(\"" + fin.reportUi.columnValidation + "\", \"" + argName + "\");' id='" + argName + "' value=\"" + dataValue + "\" maxlength='" + columnLength + "'></input></td>";
+								rowData = "<td class='" + className + "' style='" + style + "'><input type='text' style='width:" + columnWidth + "px;' onblur='fin.reportUi.dataValidation(\"" + fin.reportUi.columnValidation + "\", \"" + argName + "\");' id='" + argName + "' value=\"" + dataValue + "\" onchange=\"fin.reportUi.modified(true);\" maxlength='" + columnLength + "'></input></td>";
 							break;
 
 						case 2: //Hidden
@@ -1916,21 +1925,21 @@ ii.Class({
 			typeTableData = me.getTypeTableData(args.typeTable, args.columnName);
 
 			if (args.columnName == "EmpStatusType") 
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.statusTypeChange(this);>";	
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange='fin.reportUi.statusTypeChange(this);fin.reportUi.modified(true);'>";	
 			else if (args.columnName == "EmpTerminationReasonType")
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.terminationReasonTypeChange(this);>";
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange='fin.reportUi.terminationReasonTypeChange(this);fin.reportUi.modified(true);'>";
 			else if (args.columnName == "PayPayrollCompany")
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.payrollCompanyChange(this);>";
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange='fin.reportUi.payrollCompanyChange(this);fin.reportUi.modified(true);'>";
 			else if (args.columnName == "EmpEmpgPrimaryState")
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.primaryStateChange(this);>";
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange='fin.reportUi.primaryStateChange(this);fin.reportUi.modified(true);'>";
 			else if (args.columnName == "EmpEmpgSecondaryState")
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.secondaryStateChange(this);>";
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange='fin.reportUi.secondaryStateChange(this);fin.reportUi.modified(true);'>";
 			else if (args.columnName == "HcmJobGEOCode")
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.geoCodeChange(this);>";
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange='fin.reportUi.geoCodeChange(this);fin.reportUi.modified(true);'>";
 			else if (args.columnName == "RevInvBillTo")
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.invBillToChange('" + args.pkId + "','" + args.houseCodeId + "');>";
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange='fin.reportUi.invBillToChange('" + args.pkId + "','" + args.houseCodeId + "');fin.reportUi.modified(true);'>";
 			else
-				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\');>";
+				rowHtml = "<select id='" + args.columnName + '_' + args.pkId + "' style='width:" + columnWidth + "px;' onblur=fin.reportUi.resetValidation(\'" + args.columnName + "_" + args.pkId + "\'); onChange=fin.reportUi.modified(true);>";
 
 			if (!dependentTypeFound) {
 				for (var index = 0; index < typeTableData.length; index++) {
@@ -3435,6 +3444,9 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if (me.rowModifed == false) return;
 
 			$("#AdhReportItemGridBody").html("");
@@ -3444,7 +3456,10 @@ ii.Class({
 		actionBackItem: function() {
 			var args = ii.args(arguments, {});
 			var me = this;
-
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			me.status = "";
 
 			$("#AdhReportGrid").hide();
@@ -3664,6 +3679,7 @@ ii.Class({
 			var status = $(args.xmlNode).attr("status");
 
 			if (status == "success") {
+				me.modified(false);	
 				if (me.status == "save") {					
 					$("#selPageNumber").val(me.pageCurrent);
 					$("#AdhReportItemGridBody").html("");

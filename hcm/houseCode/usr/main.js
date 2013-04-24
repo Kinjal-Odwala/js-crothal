@@ -80,10 +80,8 @@ ii.Class({
 					me.additionalServiceDetails();
 				}
 				else {
-		
 					$("#CheckBoxTextDropImage").html("<img src='/fin/cmn/usr/media/Common/editSelected.png' title='detail selection'/>");
 					$("#ServiceGroup").show("slow");
-					
 				}		
 			});
 		},
@@ -336,7 +334,8 @@ ii.Class({
 			me.site = new ui.ctl.Input.DropDown.Filtered({
 		        id: "Sites",
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });	
 			
 			me.site.makeEnterTab()
@@ -350,13 +349,14 @@ ii.Class({
 			
 			me.houseCodeNumber = new ui.ctl.Input.Text({
 		        id: "HouseCodeNumber",
-		        maxLength: 16
+		        maxLength: 16,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 		
 			me.jdeCompany = new ui.ctl.Input.DropDown.Filtered({
 		        id: "JDECompanys",
 				formatFunction: function( type ) { return type.name; },
-				changeFunction: function() { me.jdeCompanyChanged(); },
+				changeFunction: function() { me.jdeCompanyChanged(); parent.fin.hcmMasterUi.modified(); },
 		        required: false
 		    });	
 			
@@ -371,7 +371,8 @@ ii.Class({
 			
 			me.startDate = new ui.ctl.Input.Date({
 		        id: "StartDate",
-				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.startDate.makeEnterTab()
@@ -390,7 +391,8 @@ ii.Class({
 			me.primaryService = new ui.ctl.Input.DropDown.Filtered({
 		        id: "PrimaryServiceProvided",
 				formatFunction: function( type ) { return type.name; },
-		        required: false
+		        required: false,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.primaryService.makeEnterTab()
@@ -404,22 +406,26 @@ ii.Class({
 				
 			me.serviceLine = new ui.ctl.Input.DropDown.Filtered({
 		        id: "ServiceLine",
-				formatFunction: function(type) { return type.name; }
+				formatFunction: function(type) { return type.name; },
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 
 			me.serviceGroup = new ui.ctl.Input.CheckList({
-				id: "ServiceGroup"
+				id: "ServiceGroup",
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 			});
 			
 			me.managerName = new ui.ctl.Input.Text({
 		        id: "ManagerName",
-		        maxLength: 100
+		        maxLength: 100,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.managerEmail = new ui.ctl.Input.Text({
 		        id: "ManagerEmail",
-		        maxLength: 50
+		        maxLength: 50,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 		    
 			me.managerEmail.makeEnterTab()
@@ -444,7 +450,8 @@ ii.Class({
 			
 			me.managerPhone = new ui.ctl.Input.Text({
 		        id: "ManagerPhone",
-		        maxLength: 14
+		        maxLength: 14,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.managerPhone.makeEnterTab()
@@ -464,7 +471,8 @@ ii.Class({
 			
 			me.managerFax = new ui.ctl.Input.Text({
 		        id: "ManagerFax",
-		        maxLength: 14
+		        maxLength: 14,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.managerFax.makeEnterTab()
@@ -484,7 +492,8 @@ ii.Class({
 			
 			me.managerCellPhone = new ui.ctl.Input.Text({
 		        id: "ManagerCellPhone",
-		        maxLength: 14
+		        maxLength: 14,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.managerCellPhone.makeEnterTab()
@@ -504,7 +513,8 @@ ii.Class({
 			
 			me.managerPager = new ui.ctl.Input.Text({
 		        id: "ManagerPager",
-		        maxLength: 14
+		        maxLength: 14,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.managerPager.makeEnterTab()
@@ -524,12 +534,14 @@ ii.Class({
 			
 			me.managerAssistantName = new ui.ctl.Input.Text({
 		        id: "ManagerAssistantName",
-		        maxLength: 100
+		        maxLength: 100,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.managerAssistantPhone = new ui.ctl.Input.Text({
 		        id: "ManagerAssistantPhone",
-		        maxLength: 14
+		        maxLength: 14,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.managerAssistantPhone.makeEnterTab()
@@ -549,22 +561,26 @@ ii.Class({
 			
 			me.clientFirstName = new ui.ctl.Input.Text({
 		        id: "ClientFirstName",
-		        maxLength: 50
+		        maxLength: 50,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.clientLastName = new ui.ctl.Input.Text({
 		        id: "ClientLastName",
-		        maxLength: 50
+		        maxLength: 50,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.clientTitle = new ui.ctl.Input.Text({
 		        id: "ClientTitle",
-		        maxLength: 50
+		        maxLength: 50,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.clientPhone = new ui.ctl.Input.Text({
 		        id: "ClientPhone",
-		        maxLength: 14
+		        maxLength: 14,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.clientPhone.makeEnterTab()
@@ -584,7 +600,8 @@ ii.Class({
 			
 			me.clientFax = new ui.ctl.Input.Text({
 		        id: "ClientFax",
-		        maxLength: 14
+		        maxLength: 14,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.clientFax.makeEnterTab()
@@ -604,12 +621,14 @@ ii.Class({
 			
 			me.clientAssistantName = new ui.ctl.Input.Text({
 		        id: "ClientAssistantName",
-		        maxLength: 100
+		        maxLength: 100,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.clientAssistantPhone = new ui.ctl.Input.Text({
 		        id: "ClientAssistantPhone",
-		        maxLength: 14
+		        maxLength: 14,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
 			me.clientAssistantPhone.makeEnterTab()

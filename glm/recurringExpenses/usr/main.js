@@ -69,6 +69,7 @@ ii.Class({
 			me.yearStore.fetch("userId:[user],", me.yearsLoaded, me);			
 			//me.weekPeriodYearStore.fetch("userId:[user],", me.weekPeriodYearsLoaded, me);
 			me.weekPeriodYearsLoaded(me, 0);
+			me.modified(false);
 		},
 		
 		authorizationProcess: function fin_glm_recurringExpenses_UserInterface_authorizationProcess() {
@@ -230,7 +231,7 @@ ii.Class({
 			});
 		},
 		
-			resizeControls: function() {
+		resizeControls: function() {
 			var me = this;
 			
 			me.recPeriod.resizeText();
@@ -305,6 +306,14 @@ ii.Class({
 				itemConstructorArgs: fin.glm.recurringExpenses.recurringExpenseArgs,
 				injectionArray: me.expenses
 			});
+		},
+		
+		modified: function fin_cmn_status_modified() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
 		},
 		
 		houseCodeJobsLoaded: function(me, activeId) {
@@ -421,6 +430,9 @@ ii.Class({
 		loadExpenses: function() {
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			me.rowBeingEdited = false;
 			me.currentRowSelected = null;
 			
@@ -610,7 +622,7 @@ ii.Class({
 				if (args.columnType == "dropdown")
 					return "<td class='gridColumn' width='" + args.columnWidth + "%'>" + me.populateDropDown(args.columnData, args.columnName, args.columnValue) + "</td>";				
 				else if (args.columnName == "amount" || args.columnName == "percent")
-					return "<td class='gridColumn' align='center' width='" + args.columnWidth + "%'><input type=text style='width:95%; text-align:right;' maxlength='18' id='" + args.columnName + "' value='" + args.columnValue + "'></input></td>";
+					return "<td class='gridColumn' align='center' width='" + args.columnWidth + "%'><input type=text style='width:95%; text-align:right;' maxlength='18' id='" + args.columnName + "' value='" + args.columnValue + "' onChange=me.modified(true);></input></td>";
 			}
 			else {
 				if (args.columnName == "rowNumber" || args.columnName == "amount" || args.columnName == "percent")
@@ -630,7 +642,7 @@ ii.Class({
 			var rowHtml = "";
 			var title = "";
 			
-			rowHtml = "<select id='" + args.columnName + "' style='width:100%;'>"
+			rowHtml = "<select id='" + args.columnName + "' onChange=me.modified(true); style='width:100%;'>"
 			
 			for (var index = 0; index < args.data.length; index++) {
 				if (args.columnName == "jobTo" || args.columnName == "jobFrom")
@@ -793,6 +805,9 @@ ii.Class({
 			var rowHtml = "";
 			var rowNumber = -1;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if (me.status == "")
 				return;
 			
@@ -960,6 +975,7 @@ ii.Class({
 			var rowHtml = "";
 			
 			if(status == "success") {
+				me.modified(false);
 				$(args.xmlNode).find("*").each(function () {
 
 					switch (this.tagName) {
