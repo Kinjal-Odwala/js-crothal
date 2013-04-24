@@ -270,7 +270,10 @@ ii.Class({
 				appendToId: "divForm",
 				allowAdds: false,
 				selectFunction: function(index) { me.itemSelect(index); },
-				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
+				validationFunction: function() {
+					if (me.status != "new") 
+						return parent.fin.cmn.status.itemValid(); 
+				}
 			});
 			
 			me.catalogGrid.addColumn("title", "title", "Catalog Name", "Catalog Name", null);
@@ -618,7 +621,12 @@ ii.Class({
 			var index = args.index;
 			var itemIndex = 0;
 			var item = me.catalogGrid.data[index];				
-		
+			
+			if (!parent.fin.cmn.status.itemValid()) {
+				me.catalogGrid.body.deselect(index, true);
+				return;
+			}
+			
 			me.lastSelectedRowIndex = index;
 			me.status = "";	
 			
@@ -1130,9 +1138,12 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;	
 			
-			me.status = "new";
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+			
 			me.resetControls();
 			me.resetGrids();
+			me.status = "new";
 		},
 		
 		actionDownloadItem: function(type) {

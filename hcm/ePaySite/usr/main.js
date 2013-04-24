@@ -411,7 +411,10 @@ ii.Class({
 				id: "Job",
 				appendToId: "divForm",
 				selectFunction: function(index) { me.itemSelect(index);	},
-				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
+				validationFunction: function() { 
+					if (me.status != "new") 
+					return parent.fin.cmn.status.itemValid(); 
+				}
 			});
 
 			me.jobGrid.addColumn("brief", "brief", "Number", "Epay Number", 70);
@@ -722,7 +725,12 @@ ii.Class({
 			var args = ii.args(arguments, {index: { type: Number }});
 			var me = this;	
 			var index = args.index;
-
+			
+			if (!parent.fin.cmn.status.itemValid()) {
+				me.jobGrid.body.deselect(index, true);
+				return;
+			}
+			
 			me.status = "";
 			me.jobId = me.jobs[index].id;
 			me.lastSelectedRowIndex = index;			
@@ -1022,11 +1030,11 @@ ii.Class({
 				return;
 				
 			$("#container-1").triggerTab(1);
-
-			me.status = "new";
+			
 			me.jobId = 0;
 			me.resetControls();
 			me.resetGrids();
+			me.status = "new";
 		},
 
 		actionUndoItem: function fin_hcm_ePaySite_UserInterface_actionUndoItem() {

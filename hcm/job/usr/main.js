@@ -580,7 +580,10 @@ ii.Class({
 				id: "Job",
 				appendToId: "divForm",
 				selectFunction: function(index) { me.itemSelect(index);	},
-				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
+				validationFunction: function() { 
+					if (me.status != "new")
+						return parent.fin.cmn.status.itemValid(); 
+					}
 			});
 
 			me.jobGrid.addColumn("jobBrief", "job", "Number", "Job Number", 70, function(item) { return item.brief; }, null);
@@ -763,6 +766,11 @@ ii.Class({
 			var args = ii.args(arguments, {index: { type: Number }});
 			var me = this;			
 
+			if (!parent.fin.cmn.status.itemValid()) {
+				me.jobGrid.body.deselect(index, true);
+				return;
+			}
+			
 			me.lastSelectedRowIndex = args.index;
 			if (me.houseCodeJobs[args.index].job != undefined) {			
 				me.jobDetailsLoad(me.houseCodeJobs[args.index].job);
@@ -978,7 +986,7 @@ ii.Class({
 			me.overrideSiteTax.setValue("false");
 			me.serviceContract.setValue("");
 			me.generalLocationCode.setValue("");
-			me.jobActive.check.setValue("true");
+			me.jobActive.setValue("true");
 			me.jobGrid.body.deselectAll();
 			me.jobTemplate.reset();
 			me.jobTemplate.resizeText();
@@ -989,10 +997,10 @@ ii.Class({
 			
 			if (!parent.fin.cmn.status.itemValid())
 				return;
-				
-			me.status = "new";
+			
 			me.actionClearItem();
 			$("#JobTemplateDiv").hide();
+			me.status = "new";
 		},
 
 		actionCloneItem: function fin_hcm_job_UserInterface_actionCloneItem() {

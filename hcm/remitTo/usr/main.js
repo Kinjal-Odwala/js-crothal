@@ -210,7 +210,10 @@ ii.Class({
 				allowAdds: false,
 				selectFunction: function(index){me.itemSelect(index);},
 				createNewFunction: fin.hcm.remitTo.RemitTo,
-				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
+				validationFunction: function() { 
+					if (me.status != "new") 
+						return parent.fin.cmn.status.itemValid(); 
+				}
 			});
 			
 			me.remitToGrid.addColumn("title", "title", "Title", "Title", 150);
@@ -308,7 +311,13 @@ ii.Class({
 			var itemIndex = 0;
 			var item = me.remitToGrid.data[index];
 			
+			if (!parent.fin.cmn.status.itemValid()) {
+				me.remitToGrid.body.deselect(index, true);
+				return;
+			}
+			
 			me.lastSelectedRowIndex = index;
+			me.status = "";	
 			
 			if (item == undefined) 
 				return;
@@ -402,9 +411,9 @@ ii.Class({
 				
 			if(me.remitToReadOnly) return;
 			
-			me.status = "new";
 			me.resetControls();
-			me.remitToGrid.body.deselectAll();			
+			me.remitToGrid.body.deselectAll();
+			me.status = "new";			
 		},
 		
 		actionSaveItem: function(){

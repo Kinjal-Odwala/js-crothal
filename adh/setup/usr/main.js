@@ -185,7 +185,10 @@ ii.Class({
 		        id: "AppReportGrid",
 		        allowAdds: false,
 				selectFunction: function(index) { me.itemSelect(index); },
-				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
+				validationFunction: function() { 
+					if (me.action != "new")
+				 		return parent.fin.cmn.status.itemValid(); 
+				 }
 		    });
 
 			me.appReportGrid.addColumn("title", "title", "Report Title", "Report Title", null);
@@ -392,7 +395,12 @@ ii.Class({
 			var index = args.index;
 			var item = me.appReportGrid.data[index];
 			var itemIndex = 0;
-
+			
+			if (!parent.fin.cmn.status.itemValid()) {
+				me.appReportGrid.body.deselect(index, true);
+				return;
+			}
+			
 			me.action = "";
 			me.lastSelectedIndex = args.index;
 			me.reportTitle.setValue(me.appReportGrid.data[index].title);
@@ -527,7 +535,7 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 				
-			me.action = "New";			
+			;			
 			me.reportTitle.setValue("");
 			me.module.select(0, me.module.focused);
 			me.moduleId = 0;
@@ -547,6 +555,7 @@ ii.Class({
 
 			me.moduleAssociateGroup.reset();
 			me.appModuleColumnGrid.setData([]);
+			me.action = "New"
 		},
 
 		actionClickItem: function(object, index) {

@@ -310,7 +310,10 @@ ii.Class({
 				appendToId: "divForm",
 				allowAdds: false,
 				selectFunction: function(index) { me.itemSelect(index); },
-				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
+				validationFunction: function() {
+					if (me.status != "new")
+						return parent.fin.cmn.status.itemValid();
+				}
 			});
 			
 			me.itemGrid.addColumn("masterId", "masterId", "Master Id", "Master Id", 150);
@@ -469,7 +472,13 @@ ii.Class({
 			var itemIndex = 0;
 			var item = me.itemGrid.data[index];
 				
+			if (!parent.fin.cmn.status.itemValid()) {
+				me.itemGrid.body.deselect(index, true);
+				return;
+			}
+			
 			me.lastSelectedRowIndex = index;
+			me.status = "";
 
 			if (item == undefined) 
 				return;
@@ -574,10 +583,10 @@ ii.Class({
 			
 			if (!parent.fin.cmn.status.itemValid())
 				return;
-				
-			me.status = "new";
+
 			me.resetControls();
-			me.itemGrid.body.deselectAll();				
+			me.itemGrid.body.deselectAll();
+			me.status = "new";
 		},
 		
 		actionSaveItem: function() {
