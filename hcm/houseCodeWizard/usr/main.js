@@ -29,7 +29,7 @@ ii.Class({
 			me.currentWizard = "";
 			me.nextWizard = "";
 			me.prevWizard = "";
-
+				
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 			if (!parent.fin.appUI.hirNode) parent.fin.appUI.hirNode = 0;
 			
@@ -59,6 +59,7 @@ ii.Class({
 			
 			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
 			me.modified(false);
+			
 			if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
 				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
 			else {
@@ -889,13 +890,13 @@ ii.Class({
 				
 			me.startDate = new ui.ctl.Input.Date({
 		        id: "StartDate",
-				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
+				changeFunction: function() { me.modified(); }
 		    });
 				
 			me.startDate.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation( function() { me.modified(); } )
 				.addValidation( function( isFinal, dataMap ) {					
 					var enteredText = me.startDate.text.value;
 					
@@ -1001,7 +1002,8 @@ ii.Class({
 				
 				me.managerCellPhone = new ui.ctl.Input.Text({
 			        id: "ManagerCellPhone",
-			        maxLength: 14
+			        maxLength: 14,
+					changeFunction: function() { me.modified(); }
 			    });
 				
 			me.managerCellPhone.makeEnterTab()
@@ -1021,7 +1023,8 @@ ii.Class({
 				
 				me.managerPager = new ui.ctl.Input.Text({
 			        id: "ManagerPager",
-			        maxLength: 14
+			        maxLength: 14,
+					changeFunction: function() { me.modified(); }
 			    });
 				
 			me.managerPager.makeEnterTab()
@@ -1599,9 +1602,8 @@ ii.Class({
 			me.remitTo = new ui.ctl.Input.DropDown.Filtered({
 		        id: "RemitTo",
 				formatFunction: function( type ) { return type.name; },
-				changeFunction: function() { me.remitToChanged(); },
-		        required: false,
-				changeFunction: function() { me.modified(); }
+				changeFunction: function() { me.remitToChanged(); me.modified();},
+		        required: false
 		    });
 			
 			me.remitTo.makeEnterTab()
@@ -1836,7 +1838,7 @@ ii.Class({
 			me.budgetComputerRelatedCharge = new ui.ctl.Input.Check({
 		        id: "BudgetComputerRelatedCharge",
 				required: false,
-				changeFunction: function() { me.modified(); } 
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.company.text.readOnly = true;
@@ -1944,7 +1946,7 @@ ii.Class({
 			me.ePaySite = new ui.ctl.Input.Check({
 		        id: "EPaySite",
 				required: false,
-				changeFunction: function() { me.modified(); } 
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.ePayPayGroup = new ui.ctl.Input.DropDown.Filtered({
@@ -1957,7 +1959,7 @@ ii.Class({
 			me.ePayTask = new ui.ctl.Input.Check({
 		        id: "EPayTask",
 				required: false,
-				changeFunction: function() { me.modified(); } 
+				changeFunction: function() { me.modified(); }
 		    });
 		},
 		
