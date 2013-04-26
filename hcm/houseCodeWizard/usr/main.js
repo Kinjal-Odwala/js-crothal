@@ -58,7 +58,7 @@ ii.Class({
 			me.configureCommunications();
 			
 			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
-			me.modified(false);
+			me.modified(false); 
 			
 			if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
 				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
