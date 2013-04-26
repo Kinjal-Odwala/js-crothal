@@ -34,6 +34,8 @@ ii.Class({
 			me.editSalesTax = false;
 			me.invalidHouseCode = "";
 			me.descriptionAccount = 0;
+			me.houseCodeCache = parent.fin.revMasterUi.houseCodeCache;
+			me.houseCodeBrief = parent.fin.revMasterUi.houseCodeBrief;
 
 			var index = parent.fin.revMasterUi.lastSelectedRowIndex;
 			if (index >= 0) {
@@ -84,7 +86,9 @@ ii.Class({
 				me.rowBeingEdited = true;				
 			}
 
-			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + me.invoice.houseCode, me.houseCodeJobsLoaded, me);
+			me.accountsLoaded();
+			me.taxableServicesLoaded();
+			me.invoiceItemStore.fetch("userId:[user],invoiceId:" + me.invoiceId, me.invoiceItemsLoaded, me);
 		},
 		
 		authorizationProcess: function fin_rev_invoice_UserInterface_authorizationProcess() {
@@ -92,9 +96,9 @@ ii.Class({
 			var me = this;
 
 			$("#pageLoading").hide();
-		
+
 			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
-				
+
 			ii.timer.timing("Page displayed");
 			me.session.registerFetchNotify(me.sessionLoaded,me);
 		},	
@@ -109,7 +113,7 @@ ii.Class({
 		
 		resize: function() {
 			var args = ii.args(arguments, {});
-			var me = this;			
+			var me = this;
 			var width = 0;
 			var gridDiv = $("#divInvoiceItemGrid");
 			
@@ -242,21 +246,21 @@ ii.Class({
 				itemConstructorArgs: fin.rev.invoice.invoiceItemArgs,
 				injectionArray: me.invoiceItems
 			});
-			
-			me.houseCodeJobs = [];
-			me.houseCodeJobStore = me.cache.register({
-				storeId: "houseCodeJobs",
-				itemConstructor: fin.rev.invoice.HouseCodeJob,
-				itemConstructorArgs: fin.rev.invoice.houseCodeJobArgs,
-				injectionArray: me.houseCodeJobs
-			});
-						
+
 			me.accounts = [];
 			me.accountStore = me.cache.register({
 				storeId: "accounts",
 				itemConstructor: fin.rev.invoice.Account,
 				itemConstructorArgs: fin.rev.invoice.accountArgs,
 				injectionArray: me.accounts	
+			});
+
+			me.taxableServices = [];
+			me.taxableServiceStore = me.cache.register({
+				storeId: "revTaxableServices",
+				itemConstructor: fin.rev.invoice.TaxableService,
+				itemConstructorArgs: fin.rev.invoice.taxableServiceArgs,
+				injectionArray: me.taxableServices
 			});
 		},
 		
@@ -290,46 +294,38 @@ ii.Class({
 			$("#InvoiceItemGrid tbody").html("");	
 		},
 		
-		houseCodeJobsLoaded: function(me, activeId) {
-
-			if (me.houseCodeJobs.length <= 0) {
-				me.houseCodeJobs.unshift(new fin.rev.invoice.HouseCodeJob({
-					id: 0,
-					jobNumber: "0",
-					jobTitle: "None"
-				}));
-			}
-
-			me.accountStore.fetch("userId:[user],moduleId:invoice", me.accountsLoaded, me);		
-		},
-		
-		accountsLoaded: function(me, activeId) {
-
-			for (var index = 0; index < me.accounts.length; index++) {
-				if (me.accounts[index].code == "0000") {
-					me.descriptionAccount = me.accounts[index].id;
-					me.accounts.push(me.accounts[index]);
-					me.accounts.splice(index, 1);
-					break;
-				}
-			}
-
-			me.invoiceItemStore.fetch("userId:[user],invoiceId:" + me.invoiceId, me.invoiceItemsLoaded, me);
-		},
-		
-		getJobTitle: function(id) {
+		accountsLoaded: function() {
 			var me = this;
-			var jobTitle = "0 - None";
-			var index = 0;
-	
-			index = ii.ajax.util.findIndexById(id.toString(), me.houseCodeJobs);
-	
-			if (index >= 0 && index != undefined)
-				jobTitle = me.houseCodeJobs[index].jobNumber + " - " + me.houseCodeJobs[index].jobTitle;
 
-			return jobTitle == "0 - None" ? "&nbsp;" : jobTitle;
+			for (var index = 0; index < parent.fin.revMasterUi.accounts.length; index++) {
+				var account = parent.fin.revMasterUi.accounts[index];
+
+				if (account.code == "0000") {
+					me.descriptionAccount = account.id;
+				}
+				me.accounts.push(new fin.rev.invoice.Account(account.id, account.code, account.description));
+			}
 		},
 		
+		taxableServicesLoaded: function() {
+			var me = this;
+
+			for (var index = 0; index < parent.fin.revMasterUi.taxableServices.length; index++) {
+				var taxableService = parent.fin.revMasterUi.taxableServices[index];
+				me.taxableServices.push(new fin.rev.invoice.TaxableService(taxableService.id, taxableService.title));
+			}
+		},
+
+		getTaxableServiceTitle: function(id) {
+			var me = this;
+
+			var index = ii.ajax.util.findIndexById(id.toString(), me.taxableServices);
+			if (index != undefined && index >= 0)
+				return me.taxableServices[index].title;
+			else
+				return "";
+		},
+
 		getAccountNumberName: function(id) {
 			var me = this;
 			var accountNumberName = "";
@@ -483,7 +479,8 @@ ii.Class({
 				, false
 				, me.invoiceItems[index].id
 				, me.invoiceItems[index].houseCode
-				, me.invoiceItems[index].jobBrief				
+				, me.invoiceItems[index].jobBrief
+				, me.getTaxableServiceTitle(me.invoiceItems[index].taxableService)
 		        , accountName
 				, quantity
 				, price
@@ -514,6 +511,7 @@ ii.Class({
 				args.rowNumber
 				, false
 				, 0
+				, "&nbsp;"
 				, "&nbsp;"
 				, "&nbsp;"
 		        , args.title
@@ -566,7 +564,7 @@ ii.Class({
 
 				if (me.rowBeingEdited) return;
 				
-				if (this.cellIndex >= 0 && this.cellIndex <= 11)
+				if (this.cellIndex >= 0 && this.cellIndex <= 12)
 					me.currentRowSelected = this.parentNode;
 				else
 					me.currentRowSelected = null;
@@ -588,6 +586,7 @@ ii.Class({
 				, id: {type: Number}
 				, houseCode: {type: String}
 				, job: {type: String}
+				, taxableService: {type: String}
 				, account: {type: String}
 				, quantity: {type: String}
 				, price: {type: String}
@@ -628,6 +627,7 @@ ii.Class({
 				rowHtml += me.getEditableRowColumn(false, false, 1, "id", args.id.toString(), 0, "left");
 				rowHtml += me.getEditableRowColumn(editHouseCode, false, 11, "houseCode", args.houseCode, 15, "left");
 				rowHtml += me.getEditableRowColumn(!me.editSalesTax, false, 2, "job", args.job, 15, "left", "dropdown");
+				rowHtml += me.getEditableRowColumn(!me.editSalesTax, false, 12, "taxableService", args.taxableService, 15, "left", "dropdown");
 				rowHtml += me.getEditableRowColumn(!me.editSalesTax, columnBold, 3, "account", args.account, 23, align, "dropdown");
 				rowHtml += me.getEditableRowColumn(!me.editSalesTax, false, 4, "quantity", args.quantity, 8, "right");
 				rowHtml += me.getEditableRowColumn(!me.editSalesTax, false, 5, "price", args.price, 8, "right");
@@ -642,6 +642,7 @@ ii.Class({
 				rowHtml += me.getEditableRowColumn(false, false, 1, "id", args.id.toString(), 0, "left");
 				rowHtml += me.getEditableRowColumn(false, false, 11, "houseCode", args.houseCode, 15, "left");
 				rowHtml += me.getEditableRowColumn(false, false, 2, "job", args.job, 15, align);
+				rowHtml += me.getEditableRowColumn(false, false, 12, "taxableService", args.taxableService, 15, align);
 				rowHtml += me.getEditableRowColumn(false, columnBold, 3, "account", args.account, 23, align);
 				rowHtml += me.getEditableRowColumn(false, false, 4, "quantity", args.quantity, 8, "right");
 				rowHtml += me.getEditableRowColumn(false, false, 5, "price", args.price, 8, "right");
@@ -696,14 +697,14 @@ ii.Class({
 			var title = "";
 			
 			rowHtml = "<select id='" + args.columnName + "' style='width:100%;'>";
-		
+
 			if (args.columnName == "job" && !me.invoiceByCustomer) {
-				for (var index = 0; index < me.houseCodeJobs.length; index++) {
-					title = me.houseCodeJobs[index].jobNumber; // + " - " + me.houseCodeJobs[index].jobTitle;
-					if (args.columnValue == title)
-						rowHtml += "	<option title='" + title + "' value='" + me.houseCodeJobs[index].id + "' selected>" + title + "</option>";
+				for (var index = 0; index < me.houseCodeCache[me.houseCodeBrief].jobs.length; index++) {
+					job = me.houseCodeCache[me.houseCodeBrief].jobs[index];
+					if (args.columnValue == job.jobNumber)
+						rowHtml += "	<option title='" + job.jobTitle + "' value='" + job.id + "' selected>" + job.jobNumber + "</option>";
 					else
-						rowHtml += "	<option title='" + title + "' value='" + me.houseCodeJobs[index].id + "'>" + title + "</option>";
+						rowHtml += "	<option title='" + job.jobTitle + "' value='" + job.id + "'>" + job.jobNumber + "</option>";
 				}
 			}
 			else if (args.columnName == "account") {
@@ -714,7 +715,16 @@ ii.Class({
 					else
 						rowHtml += "	<option title='" + title + "' value='" + me.accounts[index].id + "'>" + title + "</option>";
 				}
-			}			
+			}
+			else if (args.columnName == "taxableService") {
+				for (var index = 0; index < me.taxableServices.length; index++) {
+					title = me.taxableServices[index].title;
+					if (args.columnValue == title)
+						rowHtml += "	<option title='" + title + "' value='" + me.taxableServices[index].id + "' selected >" + title + "</option>";
+					else
+						rowHtml += "	<option title='" + title + "' value='" + me.taxableServices[index].id + "'>" + title + "</option>";
+				}
+			}
 			
 			rowHtml += "</select>"
 			
@@ -735,25 +745,47 @@ ii.Class({
 			return true;			
 		},
 		
-		actionAccountCodeChanged: function() {
+		setTaxable: function() {
 			var me = this;
-			var readOnly = false;
 
-			if (parseInt($("#account").val(), 10) == me.descriptionAccount) {				
-				readOnly = true;
+			if (me.editSalesTax)
+				return;
+
+			if ((parseInt($("#account").val(), 10) == me.descriptionAccount) || me.invoice.taxExempt || $("#job")[0].selectedIndex == -1) {
 				$("#taxable")[0].checked = false;
 			}
 			else {
-				if (!me.editSalesTax && me.status == "Add")
-					$("#taxable")[0].checked = !me.invoice.taxExempt;
+				var jobId = parseInt($("#job").val(), 10);
+				var taxableServiceId = parseInt($("#taxableService").val(), 10);
+				var stateType = 0;
+				var houseCode = me.houseCodeBrief;
+				
+				if (me.invoiceByCustomer)
+					houseCode = $("#houseCode").val();
+
+				for (var index = 0; index < me.houseCodeCache[houseCode].jobs.length; index++) {
+					var job = me.houseCodeCache[houseCode].jobs[index];
+
+					if (job.id == jobId) {
+						if (job.overrideSiteTax)
+							stateType = job.stateType;
+						else
+							stateType = me.houseCodeCache[houseCode].stateType;
+						break;
+					}
+				}
+
+				for (var index = 0; index < me.houseCodeCache[houseCode].taxableServiceStates.length; index++) {
+					var taxableServiceState = me.houseCodeCache[houseCode].taxableServiceStates[index];
+
+					if (taxableServiceState.taxableService == taxableServiceId && taxableServiceState.stateType == stateType) {
+						$("#taxable")[0].checked = taxableServiceState.taxable;
+						break;
+					}
+				}
 			}
-
-			$("#amount").attr("readonly", true);
-
-			if (!me.editSalesTax)
-				$("#taxable")[0].disabled = readOnly;
 		},
-		
+
 		calculateTotal: function() {
 			var me = this;
 			var quantity = $("#quantity").val();
@@ -781,27 +813,29 @@ ii.Class({
 			});
 			
 			$("#quantity").bind("blur", function() { me.calculateTotal(); });
-			$("#price").bind("blur", function() { me.calculateTotal(); });			
-			$("#account").bind("change", function() { me.actionAccountCodeChanged(); });
+			$("#price").bind("blur", function() { me.calculateTotal(); });
+			$("#job").bind("change", function() { me.setTaxable(); });
+			$("#taxableService").bind("change", function() { me.setTaxable(); });
+			$("#account").bind("change", function() { me.setTaxable(); });
 
-			me.actionAccountCodeChanged();
+			me.setTaxable();
 		},
 		
 		invoiceItemGridRowEdit: function() {
 			var me = this;
 			var rowHtml = "";
 			var description = "";
-					
+				
 			if (me.rowBeingEdited)
 				return;
-
-			description = me.currentRowSelected.cells[11].innerHTML;
+			
+			description = me.currentRowSelected.cells[12].innerHTML;
 			
 		    rowHtml = me.getInvoiceItemGridRow(
 		        parseInt(me.currentRowSelected.cells[0].innerHTML)
 				, true // Editing Row
 		        , parseInt(me.currentRowSelected.cells[1].innerHTML)
-				, me.currentRowSelected.cells[2].innerHTML
+				, me.currentRowSelected.cells[2].innerHTML				
 				, me.currentRowSelected.cells[3].innerHTML
 				, me.currentRowSelected.cells[4].innerHTML
 				, me.currentRowSelected.cells[5].innerHTML
@@ -810,16 +844,22 @@ ii.Class({
 			    , me.currentRowSelected.cells[8].innerHTML
 			    , me.currentRowSelected.cells[9].innerHTML
 				, me.currentRowSelected.cells[10].innerHTML
+				, me.currentRowSelected.cells[11].innerHTML
 				, ""
 		        );
 			    
 		    $(me.currentRowSelected).html(rowHtml);
 			$("#description").val(description);
-			me.setupEvents();			
+			me.setupEvents();
 			me.rowBeingEdited = true;
 			me.status = "Edit";
 			me.invalidHouseCode = "";
-			
+
+			if (!me.editSalesTax) {
+				$("#taxable")[0].disabled = true;
+				$("#amount").attr("readonly", true);
+			}
+
 			if (me.invoiceByCustomer) {
 				if ($("#houseCode").val() != "" && !me.editSalesTax) {
 					me.houseCodeCheck($("#houseCode").val());
@@ -854,6 +894,7 @@ ii.Class({
 				, ""
 			    , ""
 				, ""
+				, ""
 			    , ""
 				, ""
 				, ""
@@ -879,6 +920,8 @@ ii.Class({
 			else
 				$("#job").focus();
 
+			$("#taxable")[0].disabled = true;
+			$("#amount").attr("readonly", true);
 			me.setupEvents();		
 			me.invoiceItemGridEventSetup(me);		 
 			me.rowBeingEdited = true;
@@ -913,10 +956,6 @@ ii.Class({
 			var me = this;
 			var rowNumber = -1;
 
-			//var row = $(me.currentRowSelected);
-			//row.insertAfter(row.next());
-			//row.insertBefore(row.prev());
-			
 			if (me.rowBeingEdited) 
 				return;
 
@@ -965,7 +1004,7 @@ ii.Class({
 
 		houseCodeBlur: function(objInput) {
 			var me = this;
-	    
+   
 		    //remove any unwanted characters
 		    objInput.value = objInput.value.replace(/[^0-9]/g, "");
 		    if (objInput.value == "") objInput.value = parent.parent.fin.appUI.houseCodeBrief;
@@ -998,9 +1037,12 @@ ii.Class({
 		    me.houseCodeCache[houseCode].loaded = false;
 			me.houseCodeCache[houseCode].customersLoaded = false;
 			me.houseCodeCache[houseCode].jobsLoaded = false;
+			me.houseCodeCache[houseCode].taxableServiceStatesLoaded = false;
+			me.houseCodeCache[houseCode].stateType = 0;
 			me.houseCodeCache[houseCode].validCustomer = false;
 			me.houseCodeCache[houseCode].customers = [];
 		    me.houseCodeCache[houseCode].jobs = [];
+			me.houseCodeCache[houseCode].taxableServiceStates = [];
 		    
 		    $.ajax({
                 type: "POST",
@@ -1029,35 +1071,6 @@ ii.Class({
 				}
 			});
 		},
-		
-		houseCodeJobCustomersLoad: function(houseCode) {
-		    var me = this;
-		    
-		    $.ajax({
-                type: "POST",
-                dataType: "xml",
-                url: "/net/crothall/chimes/fin/rev/act/provider.aspx",
-                data: "moduleId=rev&requestId=1&targetId=iiCache"
-                    + "&requestXml=<criteria>storeId:houseCodeJobs,userId:[user]"
-                    + ",houseCodeId:" + me.houseCodeCache[houseCode].id		
-                    + ",jobType:3,<criteria>",
-                
-                success: function(xml) {
-                    
-		            $(xml).find('item').each(function() {
-		                var job = {};
-		                job.id = $(this).attr("id");
-		                job.jobNumber = $(this).attr("jobNumber");
-		                job.jobTitle = $(this).attr("jobTitle");
-		                me.houseCodeCache[houseCode].customers.push(job);
-		            });
-	
-					me.houseCodeCache[houseCode].customersLoaded = true;
-					//validate the list of rows
-		            me.houseCodeValidate(houseCode);
-				}
-			});
-		},		
 
 		houseCodeValidate: function(houseCode) {
 		    var me = this;
@@ -1083,7 +1096,7 @@ ii.Class({
 						me.jobRebuild(houseCode);
 					else
 						me.houseCodeJobsLoad(houseCode);
-				}					
+				}
 				else {
 					me.houseCodeCache[houseCode].validCustomer = false;
 					$("#job").empty();
@@ -1101,6 +1114,35 @@ ii.Class({
 		        alert("The House Code [" + houseCode + "] is not valid.");
 		    }
 		},
+		
+		houseCodeJobCustomersLoad: function(houseCode) {
+		    var me = this;
+		    
+		    $.ajax({
+                type: "POST",
+                dataType: "xml",
+                url: "/net/crothall/chimes/fin/rev/act/provider.aspx",
+                data: "moduleId=rev&requestId=1&targetId=iiCache"
+                    + "&requestXml=<criteria>storeId:houseCodeJobs,userId:[user]"
+                    + ",houseCodeId:" + me.houseCodeCache[houseCode].id		
+                    + ",jobType:3,<criteria>",
+                
+                success: function(xml) {
+                    
+		            $(xml).find("item").each(function() {
+		                var job = {};
+		                job.id = $(this).attr("id");
+		                job.jobNumber = $(this).attr("jobNumber");
+		                job.jobTitle = $(this).attr("jobTitle");
+		                me.houseCodeCache[houseCode].customers.push(job);
+		            });
+	
+					me.houseCodeCache[houseCode].customersLoaded = true;
+					//validate the list of rows
+		            me.houseCodeValidate(houseCode);
+				}
+			});
+		},
 
 		houseCodeJobsLoad: function(houseCode) {
 		    var me = this;
@@ -1115,16 +1157,67 @@ ii.Class({
 
                 success: function(xml) {
                     
-		            $(xml).find('item').each(function() {
+		            $(xml).find("item").each(function() {
 		                var job = {};
 		                job.id = $(this).attr("id");
 		                job.jobNumber = $(this).attr("jobNumber");
 		                job.jobTitle = $(this).attr("jobTitle");
+						job.overrideSiteTax = $(this).attr("overrideSiteTax");
+						job.stateType = $(this).attr("stateType");
 		                me.houseCodeCache[houseCode].jobs.push(job);
-		            });					
+		            });
 
 					me.houseCodeCache[houseCode].jobsLoaded = true;
-		            me.jobRebuild(houseCode);
+					me.taxableServiceStatesLoad(houseCode);
+					me.siteStateTypeLoad(houseCode);
+					me.jobRebuild(houseCode);
+				}
+			});
+		},
+		
+		taxableServiceStatesLoad: function(houseCode) {
+		    var me = this;
+		    
+		    $.ajax({
+                type: "POST",
+                dataType: "xml",
+                url: "/net/crothall/chimes/fin/rev/act/provider.aspx",
+                data: "moduleId=rev&requestId=1&targetId=iiCache"
+                    + "&requestXml=<criteria>storeId:revTaxableServiceStates,userId:[user]"
+                    + ",houseCodeId:" + me.houseCodeCache[houseCode].id + ",<criteria>",
+
+                success: function(xml) {
+                    
+		            $(xml).find("item").each(function() {
+		                var tsState = {};
+		                tsState.id = $(this).attr("id");
+		                tsState.taxableService = $(this).attr("taxableService");
+		                tsState.stateType = $(this).attr("stateType");
+						tsState.taxable = $(this).attr("taxable");
+		                me.houseCodeCache[houseCode].taxableServiceStates.push(tsState);
+		            });					
+
+					me.houseCodeCache[houseCode].taxableServiceStatesLoaded = true;
+				}
+			});
+		},
+		
+		siteStateTypeLoad: function(houseCode) {
+		    var me = this;
+		    
+		    $.ajax({
+                type: "POST",
+                dataType: "xml",
+                url: "/net/crothall/chimes/fin/rev/act/provider.aspx",
+                data: "moduleId=rev&requestId=1&targetId=iiCache"
+                    + "&requestXml=<criteria>storeId:sites,userId:[user]"
+                    + ",houseCodeId:" + me.houseCodeCache[houseCode].id + ",type:invoice,<criteria>",
+
+                success: function(xml) {
+                    
+		            $(xml).find("item").each(function() {
+						me.houseCodeCache[houseCode].stateType = $(this).attr("state");
+		            });
 				}
 			});
 		},
@@ -1137,7 +1230,7 @@ ii.Class({
 		    
 		    for (var index = 0; index < me.houseCodeCache[houseCode].jobs.length; index++) {
 		        job = me.houseCodeCache[houseCode].jobs[index];
-				options += "<option  title='" + job.jobTitle + "' value='" + job.id + "'>" + job.jobTitle + "</option>\n";
+				options += "<option  title='" + job.jobTitle + "' value='" + job.id + "'>" + job.jobNumber + "</option>\n";
 		    }
 
 			selJob.empty();
@@ -1169,7 +1262,7 @@ ii.Class({
 			
 			if (me.status == "")
 				return;
-			
+
 			if (me.status == "Reorder") {
 				$("#InvoiceItemGridBody").find("tr").each(function() {
 					rowNumber++;
@@ -1214,11 +1307,12 @@ ii.Class({
 					, parseInt(me.currentRowSelected.cells[1].innerHTML)
 					, me.invoiceItems[rowNumber].houseCode
 					, me.invoiceItems[rowNumber].jobBrief
+					, me.getTaxableServiceTitle(me.invoiceItems[rowNumber].taxableService)
 			        , accountName
 					, quantity
 					, price
 					, me.invoiceItems[rowNumber].amount == "0" ? "&nbsp;" : parseFloat(me.invoiceItems[rowNumber].amount).toFixed(5).toString()
-					, me.currentRowSelected.cells[8].innerHTML
+					, me.currentRowSelected.cells[9].innerHTML
 					, me.invoiceItems[rowNumber].taxable ? "Yes" : "No"
 					, me.invoiceItems[rowNumber].lineShow ? "Yes" : "No"					
 					, me.invoiceItems[rowNumber].description
@@ -1243,6 +1337,7 @@ ii.Class({
 			var hirNodeId = 0;
 			var houseCode = "";
 			var job = 0;
+			var taxableService = 0;
 			var account = 0;
 			var quantity = 0;
 			var price = 0;
@@ -1322,16 +1417,24 @@ ii.Class({
 						houseCode = parent.parent.fin.appUI.houseCodeBrief;
  			
 					if (me.status == "Add" || me.status == "Edit") {
-						if ((parseInt($("#account").val(), 10) != me.descriptionAccount) && (isNaN(parseFloat($("#quantity").val())) || parseFloat($("#quantity").val()) == 0)) {
-							alert("Please enter the valid Quantity.");
-							$("#quantity").focus();
-							return false;
-						}
-						
-						if ((parseInt($("#account").val(), 10) != me.descriptionAccount) && (isNaN(parseFloat($("#price").val())) || parseFloat($("#price").val()) == 0)) {
-							alert("Please enter the valid Price.");
-							$("#price").focus();
-							return false;
+						if (parseInt($("#account").val(), 10) != me.descriptionAccount) {
+							if (parseInt($("#taxableService").val()) == 0) {
+								alert("Please select the Taxable Service.");
+								$("#taxableService").focus();
+								return false;
+							}
+							
+							if (isNaN(parseFloat($("#quantity").val())) || parseFloat($("#quantity").val()) == 0) {
+								alert("Please enter the valid Quantity.");
+								$("#quantity").focus();
+								return false;
+							}
+							
+							if (isNaN(parseFloat($("#price").val())) || parseFloat($("#price").val()) == 0) {
+								alert("Please enter the valid Price.");
+								$("#price").focus();
+								return false;
+							}						
 						}
 					}
 				}
@@ -1365,6 +1468,7 @@ ii.Class({
 					hirNodeId = me.invoiceItems[itemIndex].hirNodeId;
 					houseCode = me.invoiceItems[itemIndex].houseCode;
 					job = me.invoiceItems[itemIndex].houseCodeJob;
+					taxableService = me.invoiceItems[itemIndex].taxableService;
 					account = me.invoiceItems[itemIndex].account;
 					quantity = me.invoiceItems[itemIndex].quantity;
 					price = me.invoiceItems[itemIndex].price;
@@ -1373,6 +1477,7 @@ ii.Class({
 				}
 				else {
 					job = parseInt($("#job").val());
+					taxableService = parseInt($("#taxableService").val());
 					account = parseInt($("#account").val());
 					quantity = $("#quantity").val() == "" ? "0" : $("#quantity").val();
 					price = $("#price").val() == "" ? "0" : $("#price").val();
@@ -1387,6 +1492,7 @@ ii.Class({
 					, hirNodeId
 					, houseCode
 					, job
+					, taxableService
 					, ""
 					, false
 					, account
@@ -1440,6 +1546,7 @@ ii.Class({
 				xml += ' hirNodeId="' + args.item.hirNodeId + '"';
 				xml += ' houseCode="' + args.item.houseCode + '"';
 				xml += ' houseCodeJobId="' + args.item.houseCodeJob + '"';
+				xml += ' taxableService="' + args.item.taxableService + '"';
 				xml += ' account="' + args.item.account + '"';
 				xml += ' quantity="' + args.item.quantity + '"';
 				xml += ' price="' + args.item.price + '"';
