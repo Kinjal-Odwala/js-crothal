@@ -155,7 +155,7 @@ ii.init.register( function fin_cmn_startup_init1() {
 	 * the user trys to navigate away.
 	 */
 	window.onbeforeunload = function(event) {
-		if (parent.fin.appUI.modified) {
+		if (parent.fin.appUI != undefined && parent.fin.appUI.modified) {
 			var message = "You will lose unsaved data if you navigate from page now.";
 			if (event) {
 				event.returnValue = message;

@@ -37,6 +37,7 @@ ii.Class({
             var args = ii.args(arguments, {});
             var me = this;
 
+			me.houseCodeCache = [];
 			me.invoices = [];
             me.invoiceId = 0;
             me.activeFrameId = 0;
@@ -47,6 +48,7 @@ ii.Class({
             me.invoiceNumber = 0;
             me.invoiceSearch = "";
 			me.invoiceType = invoiceTypes.edit;
+			me.houseCodeBrief = "";
 
             if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
             
@@ -86,7 +88,7 @@ ii.Class({
             me.validator = new ui.ctl.Input.Validation.Master();
 			me.session = new ii.Session(me.cache);
 
-            me.authorizer = new ii.ajax.Authorizer(me.gateway); //@iiDoc {Property:ii.ajax.Authorizer} Boolean
+            me.authorizer = new ii.ajax.Authorizer(me.gateway);
             me.authorizePath = "\\crothall\\chimes\\fin\\AccountsReceivable";
             me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
@@ -108,10 +110,13 @@ ii.Class({
                 me.houseCodesLoaded(me, 0);
             }
 			
+			me.yearStore.fetch("userId:[user]", me.yearsLoaded, me);
 			me.weekPeriodYearStore.fetch("userId:[user],", me.weekPeriodYearsLoaded, me);
+			me.accountStore.fetch("userId:[user],moduleId:invoice", me.accountsLoaded, me);
 			me.invoiceLogoTypeStore.fetch("userId:[user]", me.invoiceLogoTypesLoaded, me);
 			me.invoiceAddressTypeStore.fetch("userId:[user]", me.invoiceAddressTypesLoaded, me);
-
+			me.taxableServiceStore.fetch("userId:[user]", me.taxableServicesLoaded, me);
+			
             $("#TabCollection a").click(function() {
 
                 switch (this.id) {
@@ -175,7 +180,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("Session Loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 
         resize: function() {
@@ -599,9 +604,9 @@ ii.Class({
 
 					var enteredText = me.searchInvoiceDate.text.value;
 					
-					if(enteredText == '') return;
+					if (enteredText == "") return;
 											
-					if(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
+					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
 						this.setInvalid("Please enter valid date.");					
 			});
 				
@@ -703,6 +708,14 @@ ii.Class({
 				injectionArray: me.houseCodeDetails
 			});
 
+			me.sites = [];
+			me.siteStore = me.cache.register({
+				storeId: "sites",
+				itemConstructor: fin.rev.master.Site,
+				itemConstructorArgs: fin.rev.master.siteArgs,
+				injectionArray: me.sites
+			});	
+			
             me.years = [];
             me.yearStore = me.cache.register({
                 storeId: "fiscalYears",
@@ -711,6 +724,14 @@ ii.Class({
                 injectionArray: me.years
             });
 
+			me.weekPeriodYears = [];
+            me.weekPeriodYearStore = me.cache.register({
+                storeId: "weekPeriodYears",
+                itemConstructor: fin.rev.master.WeekPeriodYear,
+                itemConstructorArgs: fin.rev.master.weekPeriodYearArgs,
+                injectionArray: me.weekPeriodYears
+            });
+			
             me.invoicesList = [];
             me.invoiceStore = me.cache.register({
                 storeId: "revInvoices",
@@ -725,14 +746,6 @@ ii.Class({
                 itemConstructor: fin.rev.master.StateType,
                 itemConstructorArgs: fin.rev.master.stateTypeArgs,
                 injectionArray: me.stateTypes
-            });
-
-            me.weekPeriodYears = [];
-            me.weekPeriodYearStore = me.cache.register({
-                storeId: "weekPeriodYears",
-                itemConstructor: fin.rev.master.WeekPeriodYear,
-                itemConstructorArgs: fin.rev.master.weekPeriodYearArgs,
-                injectionArray: me.weekPeriodYears
             });
 
             me.invoiceBillTos = [];
@@ -751,14 +764,6 @@ ii.Class({
                 injectionArray: me.exports
             });
 			
-			me.sites = [];
-			me.siteStore = me.cache.register({
-				storeId: "sites",
-				itemConstructor: fin.rev.master.Site,
-				itemConstructorArgs: fin.rev.master.siteArgs,
-				injectionArray: me.sites
-			});	
-			
 			me.taxRates = [];
             me.taxRateStore = me.cache.register({
                 storeId: "revTaxRates",
@@ -767,12 +772,12 @@ ii.Class({
                 injectionArray: me.taxRates
             });
 			
-			me.houseCodeJobs = [];
-			me.houseCodeJobStore = me.cache.register({
-				storeId: "houseCodeJobs",
-				itemConstructor: fin.rev.master.HouseCodeJob,
-				itemConstructorArgs: fin.rev.master.houseCodeJobArgs,
-				injectionArray: me.houseCodeJobs
+			me.accounts = [];
+			me.accountStore = me.cache.register({
+				storeId: "accounts",
+				itemConstructor: fin.rev.master.Account,
+				itemConstructorArgs: fin.rev.master.accountArgs,
+				injectionArray: me.accounts	
 			});
 
 			me.invoiceLogoTypes = [];
@@ -789,6 +794,30 @@ ii.Class({
 				itemConstructor: fin.rev.master.InvoiceAddressType,
 				itemConstructorArgs: fin.rev.master.invoiceAddressTypeArgs,
 				injectionArray: me.invoiceAddressTypes
+			});
+			
+			me.taxableServices = [];
+			me.taxableServiceStore = me.cache.register({
+				storeId: "revTaxableServices",
+				itemConstructor: fin.rev.master.TaxableService,
+				itemConstructorArgs: fin.rev.master.taxableServiceArgs,
+				injectionArray: me.taxableServices
+			});
+			
+			me.houseCodeJobs = [];
+			me.houseCodeJobStore = me.cache.register({
+				storeId: "houseCodeJobs",
+				itemConstructor: fin.rev.master.HouseCodeJob,
+				itemConstructorArgs: fin.rev.master.houseCodeJobArgs,
+				injectionArray: me.houseCodeJobs
+			});
+			
+			me.taxableServiceStates = [];
+			me.taxableServiceStateStore = me.cache.register({
+				storeId: "revTaxableServiceStates",
+				itemConstructor: fin.rev.master.TaxableServiceState,
+				itemConstructorArgs: fin.rev.master.taxableServiceStateArgs,
+				injectionArray: me.taxableServiceStates
 			});
         },
 
@@ -823,16 +852,13 @@ ii.Class({
 
             if (parent.fin.appUI.houseCodeId == 0) {
                 if (me.houseCodes.length <= 0) {
-
                     return me.houseCodeSearchError();
                 }
-
                 me.houseCodeGlobalParametersUpdate(false, me.houseCodes[0]);
             }
+			
             me.houseCodeGlobalParametersUpdate(false);
-
-			me.houseCodeDetailStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.houseCodeDetailsLoaded, me);
-            me.yearStore.fetch("userId:[user]", me.yearsLoaded, me);
+			me.loadTypesData();
 
             if (me.statusType == "true") {
 				me.actionCompletedInvoicesLoad();				
@@ -867,16 +893,94 @@ ii.Class({
 
             me.invoiceStore.reset();
             me.invoiceStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",status:1,year:-1,invoiceByHouseCode:-1", me.invoiceLoaded, me);
-			me.houseCodeDetailStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.houseCodeDetailsLoaded, me);
+			me.loadTypesData();
         },
+		
+		loadTypesData: function() {
+			var me = this;
 
-		houseCodeDetailsLoaded: function(me, activeId) {
-
+			me.houseCodeBrief = parent.fin.appUI.houseCodeBrief;
+			me.houseCodeCheck(me.houseCodeBrief, parent.fin.appUI.houseCodeId, parent.fin.appUI.hirNode);
+			me.houseCodeDetailStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.houseCodeDetailsLoaded, me);
 		},
 
-        yearsLoaded: function(me, activeId) { //Fiscal Years
+		houseCodeDetailsLoaded: function(me, activeId) {
+			
+		},
 
-        },
+		houseCodeCheck: function(houseCode, id, hirNode) {
+			var me = this;
+
+		    if (me.houseCodeCache[houseCode] == undefined) {
+	            me.houseCodeCache[houseCode] = {};
+			    me.houseCodeCache[houseCode].valid = true;
+			    me.houseCodeCache[houseCode].loaded = true;
+				me.houseCodeCache[houseCode].id = id;
+				me.houseCodeCache[houseCode].hirNode = hirNode;
+				me.houseCodeCache[houseCode].customersLoaded = false;
+				me.houseCodeCache[houseCode].jobsLoaded = false;
+				me.houseCodeCache[houseCode].taxableServiceStatesLoaded = false;
+				me.houseCodeCache[houseCode].stateType = 0;
+				me.houseCodeCache[houseCode].validCustomer = false;
+				me.houseCodeCache[houseCode].customers = [];
+			    me.houseCodeCache[houseCode].jobs = [];
+				me.houseCodeCache[houseCode].taxableServiceStates = [];
+				
+				me.siteStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",type:invoice", me.siteStateTypeLoaded, me);
+				me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.houseCodeJobsLoaded, me);
+				me.taxableServiceStateStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.taxableServiceStatesLoaded, me);
+	        }
+		},
+		
+		siteStateTypeLoaded: function(me, activeId) {
+
+			if (me.sites.length > 0)
+				me.houseCodeCache[me.houseCodeBrief].stateType = me.sites[0].state;
+		},
+		
+		houseCodeJobsLoaded: function(me, activeId) {
+			
+			for (var index = 0; index < me.houseCodeJobs.length; index++) {
+				var job = {};
+                job.id = me.houseCodeJobs[index].id;
+                job.jobNumber = me.houseCodeJobs[index].jobNumber;
+				job.jobTitle = me.houseCodeJobs[index].jobTitle;
+				job.overrideSiteTax = me.houseCodeJobs[index].overrideSiteTax;
+				job.stateType = me.houseCodeJobs[index].stateType;
+                me.houseCodeCache[me.houseCodeBrief].jobs.push(job);
+			}
+
+			me.houseCodeCache[me.houseCodeBrief].jobsLoaded = true;
+			
+			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",jobType:3", me.houseCodeJobCustomersLoaded, me);
+		},
+		
+		houseCodeJobCustomersLoaded: function(me, activeId) {
+			
+			for (var index = 0; index < me.houseCodeJobs.length; index++) {
+				var job = {};
+                job.id = me.houseCodeJobs[index].id;
+                job.jobNumber = me.houseCodeJobs[index].jobNumber;
+				job.jobTitle = me.houseCodeJobs[index].jobTitle;
+                me.houseCodeCache[me.houseCodeBrief].customers.push(job);
+			}
+
+			me.houseCodeCache[me.houseCodeBrief].customersLoaded = true;
+		},
+
+		taxableServiceStatesLoaded: function(me, activeId) {
+
+			for (var index = 0; index < me.taxableServiceStates.length; index++) {
+				var tsState = {};
+                tsState.id = me.taxableServiceStates[index].id;
+                tsState.taxableService = me.taxableServiceStates[index].taxableService;
+                tsState.stateType = me.taxableServiceStates[index].stateType;
+				tsState.taxable = me.taxableServiceStates[index].taxable;
+                me.houseCodeCache[me.houseCodeBrief].taxableServiceStates.push(tsState);
+			}
+
+			me.houseCodeCache[me.houseCodeBrief].taxableServiceStatesLoaded = true;
+		},
 
         taxExemptsLoaded: function() {
             var me = this;
@@ -893,7 +997,7 @@ ii.Class({
 
             if (index >= 0 && me.taxExempts[index].id == 1) {
 				index = me.billTo.indexSelected;
-				
+
 				if (index >= 0) {
 					if (me.billTo.data[index].taxId > 0) 
 						me.taxId.setValue(me.billTo.data[index].taxId);						
@@ -1299,6 +1403,10 @@ ii.Class({
 			
 			return "";
 		},
+		
+		yearsLoaded: function(me, activeId) {
+
+        },
 
         weekPeriodYearsLoaded: function(me, activeId) {
  
@@ -1314,6 +1422,22 @@ ii.Class({
  			me.invoiceAddressTypes.unshift(new fin.rev.master.InvoiceAddressType({ id: 0, title: "ALL" }));
  			me.invoiceAddress.setData(me.invoiceAddressTypes);
         },
+		
+		taxableServicesLoaded: function(me, activeId) {
+ 
+ 			me.taxableServices.unshift(new fin.rev.master.TaxableService({ id: 0, title: "" }));
+        },
+		
+		accountsLoaded: function(me, activeId) {
+
+			for (var index = 0; index < me.accounts.length; index++) {
+				if (me.accounts[index].code == "0000") {
+					me.accounts.push(me.accounts[index]);
+					me.accounts.splice(index, 1);
+					break;
+				}
+			}
+		},
 				
 		actionSearchItem: function() {
 			var args = ii.args(arguments, {
@@ -1432,7 +1556,7 @@ ii.Class({
 			}			
 			else if ($("input[name='Clone']:checked").val() == 0) {
 
-				if($("input[name='InvoiceBy']:checked").val() == 1)
+				if ($("input[name='InvoiceBy']:checked").val() == 1)
 					me.invoiceType = invoiceTypes.customerCloneNo;
 				else
 					me.invoiceType = invoiceTypes.houseCodeCloneNo;

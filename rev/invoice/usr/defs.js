@@ -23,6 +23,7 @@ ii.init.register( function() {
 		, hirNodeId: {type: Number, required: false, defaultValue: 0}
 		, houseCode: {type: String, required: false, defaultValue: ""}
 		, houseCodeJob: {type: Number, required: false, defaultValue: 0}
+		, taxableService: {type: Number, required: false, defaultValue: 0}
 		, jobBrief: {type: String, required: false, defaultValue: ""}
 		, overrideSiteTax: {type: Boolean, required: false, defaultValue: false}
 		, account: {type: Number, required: false, defaultValue: 0}
@@ -37,19 +38,18 @@ ii.init.register( function() {
 		, version: {type: Number, required: false, defaultValue: 0}
 		, displayOrder: {type: Number, required: false, defaultValue: 0}
 	};
-	
-	fin.rev.invoice.houseCodeJobArgs = {
-		id: {type: Number}
-		, jobNumber: {type: String}
-		, jobTitle: {type: String}
-	};
-		
+
 	fin.rev.invoice.accountArgs = {
 		id: {type: Number}
 		, code: {type: String}
 		, description: {type: String}
 	};
 	
+	fin.rev.invoice.taxableServiceArgs = {
+		id: {type: Number}
+		, title: {type: String}
+	};
+
 }, 2);
 
 ii.Class({
@@ -73,20 +73,20 @@ ii.Class({
 });
 
 ii.Class({
-	Name: "fin.rev.invoice.HouseCodeJob",
+	Name: "fin.rev.invoice.Account",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.rev.invoice.houseCodeJobArgs);
+			var args = ii.args(arguments, fin.rev.invoice.accountArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.rev.invoice.Account",
+	Name: "fin.rev.invoice.TaxableService",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.rev.invoice.accountArgs);
+			var args = ii.args(arguments, fin.rev.invoice.taxableServiceArgs);
 			$.extend(this, args);
 		}
 	}
