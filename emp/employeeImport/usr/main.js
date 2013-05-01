@@ -6,13 +6,13 @@ ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.emp.employeeImport.usr.defs" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.toolbar" , 4);
-ii.Style( "fin.cmn.usr.input" , 5);
-ii.Style( "fin.cmn.usr.button" , 6);
-ii.Style( "fin.cmn.usr.dateDropDown" , 7);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.toolbar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.button", 6 );
+ii.Style( "fin.cmn.usr.dateDropDown", 7 );
 
 ii.Class({
     Name: "fin.emp.employeeImport.UserInterface",
@@ -72,6 +72,7 @@ ii.Class({
 			me.payFrequencyTypeStore.fetch("userId:[user]", me.payFrequencyTypesLoaded, me);
 			me.federalAdjustmentStore.fetch("userId:[user]", me.federalAdjustmentsLoaded, me);
 			me.stateStore.fetch("userId:[user]", me.statesLoaded, me);
+			me.modified(false);
 			
 			$(window).bind("resize", me, me.resize);
 			$("#divEmployeeGrid").bind("scroll", me.employeeGridScroll);
@@ -80,12 +81,12 @@ ii.Class({
 			$("#imgNext").bind("click", function() { me.nextEmployeeList(); });
 			
 			// Disable the context menu but not on localhost because its used for debugging
-			if(location.hostname != "localhost") {
+			if (location.hostname != "localhost") {
 				$(document).bind("contextmenu", function(event) {
 					return false;
 				});
 			}			
-		},		
+		},
 
 		authorizationProcess: function fin_emp_employeeImport_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments, {});
@@ -431,6 +432,15 @@ ii.Class({
 			});
 		},
 		
+		modified: function() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+			var me = this;
+
+			parent.fin.appUI.modified = args.modified;
+		},
+		
 		statusTypesLoaded: function(me, activeId) {
 						
 			me.genderTypes.unshift(new fin.emp.employeeImport.GenderType({ id: 2, name: "Female" }));
@@ -468,7 +478,10 @@ ii.Class({
 		
 		prevEmployeeList: function() {
 		    var me = this;
-			
+
+			if (!me.pages[me.pageCurrent - 1].saved && !fin.cmn.status.itemValid())
+				return;
+
 			me.pageCurrent--;
 			
 			if (me.pageCurrent < 1)
@@ -479,8 +492,12 @@ ii.Class({
 
 		nextEmployeeList: function() {
 		    var me = this;
+
+			if (!me.pages[me.pageCurrent - 1].saved && !fin.cmn.status.itemValid())
+				return;
+
 			me.pageCurrent++;
-			
+
 			if (me.pageCurrent > me.pageCount)
 			    me.pageCurrent = me.pageCount;
 			else
@@ -489,9 +506,13 @@ ii.Class({
 		
 		pageNumberChange: function() {
 		    var me = this;
-		    var selPageNumber = $("#selPageNumber");
-		    
-		    me.pageCurrent = Number(selPageNumber.val());
+
+			if (!me.pages[me.pageCurrent - 1].saved && !fin.cmn.status.itemValid()) {
+				$("#selPageNumber").val(me.pageCurrent);
+				return;
+			}
+
+		    me.pageCurrent = Number($("#selPageNumber").val());
 		    me.changeEmployeeList();
 		},
 
@@ -500,7 +521,7 @@ ii.Class({
 		    		        
 		    $("#messageToUser").text("Loading");
 			$("#pageLoading").show();				
-			$("#selPageNumber").val(me.pageCurrent);			
+			$("#selPageNumber").val(me.pageCurrent);
 
 			me.startPoint = ((me.pageCurrent - 1) * me.maximumRows) + 1;		
 			me.employeeStore.fetch("userId:[user],batch:" + me.batchId + ",object:Employee,startPoint:" + me.startPoint + ",maximumRows:" + me.maximumRows, me.employeesLoaded, me);
@@ -524,7 +545,7 @@ ii.Class({
 		    me.recordCount = me.recordCounts[0].recordCount;
 		    me.pageCount = Math.ceil(me.recordCount / me.maximumRows);
 		    me.pageCurrent = Math.ceil(me.startPoint / me.maximumRows);
-		    		    
+	    
 		    //if we don't have records...
 		    if (me.pageCount == 0) me.pageCount = 1;
 		    
@@ -546,7 +567,10 @@ ii.Class({
 		
 		actionImportItem: function() {
 			var me = this;
-			
+
+			if (!fin.cmn.status.itemValid())
+				return;
+
 			$("#pageHeader").text("Bulk Employee Import");
 			$("#AnchorValidate").hide();
 			$("#AnchorSave").hide();
@@ -604,13 +628,15 @@ ii.Class({
 			$("#EmployeeGridBody").html("");			
 			$("#divFrame").hide();
 			$("#divUpload").hide();			
-			$("#AnchorSave").hide();			
+			$("#AnchorSave").hide();
 			$("#tblEmployees").show();
 			
 			if (me.pages[me.pageCurrent - 1].saved || me.employees.length == 0)
 				$("#AnchorValidate").hide();
-			else
+			else {
 				$("#AnchorValidate").show();
+				me.modified(true);
+			}
 				
 			if (me.employees.length == 0)
 				alert("Invalid records not found during the import process.");
@@ -1709,7 +1735,7 @@ ii.Class({
 					me.setCellColor($("#selJobCodeType" + index), me.cellColorValid, "");
 				}
 				
-				if(ui.cmn.text.validate.generic($("#txtHireDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
+				if (ui.cmn.text.validate.generic($("#txtHireDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtHireDate" + index), me.cellColorInvalid, "Please enter valid Hire Date.");
 				}
@@ -1717,7 +1743,7 @@ ii.Class({
 					me.setCellColor($("#txtHireDate" + index), me.cellColorValid, "");
 				}
 				
-				if($("#txtRateChangeDate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtRateChangeDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
+				if ($("#txtRateChangeDate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtRateChangeDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtRateChangeDate" + index), me.cellColorInvalid, "Please enter valid Rate Change Date.");
 				}
@@ -1725,7 +1751,7 @@ ii.Class({
 					me.setCellColor($("#txtRateChangeDate" + index), me.cellColorValid, "");
 				}
 				
-				if($("#txtSeniorityDate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtSeniorityDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
+				if ($("#txtSeniorityDate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtSeniorityDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtSeniorityDate" + index), me.cellColorInvalid, "Please enter valid Seniority Date.");
 				}
@@ -1733,7 +1759,7 @@ ii.Class({
 					me.setCellColor($("#txtSeniorityDate" + index), me.cellColorValid, "");
 				}
 				
-				if($("#txtTerminationDate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtTerminationDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
+				if ($("#txtTerminationDate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtTerminationDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtTerminationDate" + index), me.cellColorInvalid, "Please enter valid Termination Date.");
 				}
@@ -1797,7 +1823,7 @@ ii.Class({
 					me.setCellColor($("#txtAlternatePayRateD" + index), me.cellColorValid, "");
 				}
 				
-				if(ui.cmn.text.validate.generic($("#txtPTOStartDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
+				if (ui.cmn.text.validate.generic($("#txtPTOStartDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtPTOStartDate" + index), me.cellColorInvalid, "Please enter valid PTO Start Date.");
 				}
@@ -1805,7 +1831,7 @@ ii.Class({
 					me.setCellColor($("#txtPTOStartDate" + index), me.cellColorValid, "");
 				}
 				
-				if($("#txtOriginalHireDate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtOriginalHireDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
+				if ($("#txtOriginalHireDate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtOriginalHireDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtOriginalHireDate" + index), me.cellColorInvalid, "Please enter valid Original Hire Date.");
 				}
@@ -1813,7 +1839,7 @@ ii.Class({
 					me.setCellColor($("#txtOriginalHireDate" + index), me.cellColorValid, "");
 				}
 				
-				if(ui.cmn.text.validate.generic($("#txtEffectiveDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
+				if (ui.cmn.text.validate.generic($("#txtEffectiveDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtEffectiveDate" + index), me.cellColorInvalid, "Please enter valid Effective Date.");
 				}
@@ -1848,7 +1874,7 @@ ii.Class({
 					me.setCellColor($("#selStatusCategoryType" + index), me.cellColorValid, "");
 				}
 								
-				if(ui.cmn.text.validate.generic($("#txtPayRate" + index).val(), "^\\d+(\\.\\d{1,2})?$") == false) {
+				if (ui.cmn.text.validate.generic($("#txtPayRate" + index).val(), "^\\d+(\\.\\d{1,2})?$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtPayRate" + index), me.cellColorInvalid, "Please enter valid Pay Rate.");
 				}
@@ -1856,7 +1882,7 @@ ii.Class({
 					me.setCellColor($("#txtPayRate" + index), me.cellColorValid, "");
 				}
 				
-				if($("#txtPayRateEnteredAt" + index).val() != "" && ui.cmn.text.validate.generic($("#txtPayRateEnteredAt" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
+				if ($("#txtPayRateEnteredAt" + index).val() != "" && ui.cmn.text.validate.generic($("#txtPayRateEnteredAt" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtPayRateEnteredAt" + index), me.cellColorInvalid, "Please enter valid Pay Rate Entered At.");
 				}
@@ -1864,7 +1890,7 @@ ii.Class({
 					me.setCellColor($("#txtPayRateEnteredAt" + index), me.cellColorValid, "");
 				}
 				
-				if($("#txtPrevPayRate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtPrevPayRate" + index).val(), "^\\d+(\\.\\d{1,2})?$") == false) {
+				if ($("#txtPrevPayRate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtPrevPayRate" + index).val(), "^\\d+(\\.\\d{1,2})?$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtPrevPayRate" + index), me.cellColorInvalid, "Please enter valid Prev Pay Rate.");
 				}
@@ -1872,7 +1898,7 @@ ii.Class({
 					me.setCellColor($("#txtPrevPayRate" + index), me.cellColorValid, "");
 				}
 				
-				if($("#txtPrevPayRateEnteredAt" + index).val() != "" && ui.cmn.text.validate.generic($("#txtPrevPayRateEnteredAt" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
+				if ($("#txtPrevPayRateEnteredAt" + index).val() != "" && ui.cmn.text.validate.generic($("#txtPrevPayRateEnteredAt" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtPrevPayRateEnteredAt" + index), me.cellColorInvalid, "Please enter valid Prev Pay Rate Entered At.");
 				}
@@ -1880,7 +1906,7 @@ ii.Class({
 					me.setCellColor($("#txtPrevPayRateEnteredAt" + index), me.cellColorValid, "");
 				}
 				
-				if($("#txtPrevPrevPayRate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtPrevPrevPayRate" + index).val(), "^\\d+(\\.\\d{1,2})?$") == false) {
+				if ($("#txtPrevPrevPayRate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtPrevPrevPayRate" + index).val(), "^\\d+(\\.\\d{1,2})?$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtPrevPrevPayRate" + index), me.cellColorInvalid, "Please enter valid Prev Prev Pay Rate.");
 				}
@@ -1888,7 +1914,7 @@ ii.Class({
 					me.setCellColor($("#txtPrevPrevPayRate" + index), me.cellColorValid, "");
 				}
 				
-				if($("#txtPrevPrevPayRateEnteredAt" + index).val() != "" && ui.cmn.text.validate.generic($("#txtPrevPrevPayRateEnteredAt" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
+				if ($("#txtPrevPrevPayRateEnteredAt" + index).val() != "" && ui.cmn.text.validate.generic($("#txtPrevPrevPayRateEnteredAt" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtPrevPrevPayRateEnteredAt" + index), me.cellColorInvalid, "Please enter valid Prev Prev Pay Rate Entered At.");
 				}
@@ -1912,7 +1938,7 @@ ii.Class({
 					me.setCellColor($("#selEthnicityType" + index), me.cellColorValid, "");
 				}
 				
-				if(ui.cmn.text.validate.generic($("#txtBirthDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
+				if (ui.cmn.text.validate.generic($("#txtBirthDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtBirthDate" + index), me.cellColorInvalid, "Please enter valid Birth Date.");
 				}
@@ -1920,7 +1946,7 @@ ii.Class({
 					me.setCellColor($("#txtBirthDate" + index), me.cellColorValid, "");
 				}
 				
-				if($("#txtReviewDate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtReviewDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
+				if ($("#txtReviewDate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtReviewDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtReviewDate" + index), me.cellColorInvalid, "Please enter valid Review Date.");
 				}
@@ -1944,7 +1970,7 @@ ii.Class({
 					me.setCellColor($("#txtWorkPhoneExt" + index), me.cellColorValid, "");
 				}
 				
-				if($("#txtBackGroundCheckDate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtBackGroundCheckDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
+				if ($("#txtBackGroundCheckDate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtBackGroundCheckDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtBackGroundCheckDate" + index), me.cellColorInvalid, "Please enter valid Background Check Date.");
 				}
@@ -1968,7 +1994,7 @@ ii.Class({
 					me.setCellColor($("#selMaritalStatusFederalTaxType" + index), me.cellColorValid, "");
 				}
 				
-				if($("#txtFederalAdjustmentAmount" + index).val() != "" && ui.cmn.text.validate.generic($("#txtFederalAdjustmentAmount" + index).val(), "^\\d+(\\.\\d{1,2})?$") == false) {
+				if ($("#txtFederalAdjustmentAmount" + index).val() != "" && ui.cmn.text.validate.generic($("#txtFederalAdjustmentAmount" + index).val(), "^\\d+(\\.\\d{1,2})?$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtFederalAdjustmentAmount" + index), me.cellColorInvalid, "Please enter valid Federal Adjustment Amount.");
 				}
@@ -2000,7 +2026,7 @@ ii.Class({
 					me.setCellColor($("#txtStateExemptions" + index), me.cellColorValid, "");
 				}
 				
-				if($("#txtStateAdjustmentAmount" + index).val() != "" && ui.cmn.text.validate.generic($("#txtStateAdjustmentAmount" + index).val(), "^\\d+(\\.\\d{1,2})?$") == false) {
+				if ($("#txtStateAdjustmentAmount" + index).val() != "" && ui.cmn.text.validate.generic($("#txtStateAdjustmentAmount" + index).val(), "^\\d+(\\.\\d{1,2})?$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtStateAdjustmentAmount" + index), me.cellColorInvalid, "Please enter valid State Adjustment Amount.");
 				}
@@ -2008,7 +2034,7 @@ ii.Class({
 					me.setCellColor($("#txtStateAdjustmentAmount" + index), me.cellColorValid, "");
 				}
 				
-				if($("#txtSDIRate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtSDIRate" + index).val(), "^\\d+(\\.\\d{1,2})?$") == false) {
+				if ($("#txtSDIRate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtSDIRate" + index).val(), "^\\d+(\\.\\d{1,2})?$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtSDIRate" + index), me.cellColorInvalid, "Please enter valid SDI Rate.");
 				}
@@ -2016,7 +2042,7 @@ ii.Class({
 					me.setCellColor($("#txtSDIRate" + index), me.cellColorValid, "");
 				}
 				
-				if($("#txtLocalTaxAdjustmentAmount" + index).val() != "" && ui.cmn.text.validate.generic($("#txtLocalTaxAdjustmentAmount" + index).val(), "^\\d+(\\.\\d{1,2})?$") == false) {
+				if ($("#txtLocalTaxAdjustmentAmount" + index).val() != "" && ui.cmn.text.validate.generic($("#txtLocalTaxAdjustmentAmount" + index).val(), "^\\d+(\\.\\d{1,2})?$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtLocalTaxAdjustmentAmount" + index), me.cellColorInvalid, "Please enter valid Local Tax Adjustment Amount.");
 				}
@@ -2024,7 +2050,7 @@ ii.Class({
 					me.setCellColor($("#txtLocalTaxAdjustmentAmount" + index), me.cellColorValid, "");
 				}
 				
-				if(ui.cmn.text.validate.generic($("#txtEffectiveDateJob" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
+				if (ui.cmn.text.validate.generic($("#txtEffectiveDateJob" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtEffectiveDateJob" + index), me.cellColorInvalid, "Please enter valid Effective Date Job.");
 				}
@@ -2032,7 +2058,7 @@ ii.Class({
 					me.setCellColor($("#txtEffectiveDateJob" + index), me.cellColorValid, "");
 				}
 				
-				if(ui.cmn.text.validate.generic($("#txtEffectiveDateCompensation" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
+				if (ui.cmn.text.validate.generic($("#txtEffectiveDateCompensation" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtEffectiveDateCompensation" + index), me.cellColorInvalid, "Please enter valid Effective Date Compensation.");
 				}
@@ -2189,7 +2215,7 @@ ii.Class({
 			var me = this;
 			var xml = "";
 			
-			for (var index = 0; index < me.employees.length; index++) {				
+			for (var index = 0; index < me.employees.length; index++) {
 								
 				xml += '<employeeGeneralImport';
 				xml += ' id="0"';
@@ -2301,19 +2327,16 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-			var errorMessage = "";
 									
 			if (status == "success") {
 				me.pages[me.pageCurrent - 1].saved = true;
+				me.modified(false);
 
 				$("#AnchorValidate").hide();
 				$("#AnchorSave").hide();
 			}
 			else {
-				errorMessage = "Error while updating Employee Record: " + $(args.xmlNode).attr("message");
-				errorMessage += $(args.xmlNode).attr("error");
-				errorMessage += " [SAVE FAILURE]";
-				alert(errorMessage);				
+				alert("[SAVE FAILURE] Error while updating Employee Record: " + $(args.xmlNode).attr("message"));
 			}
 
 			$("#pageLoading").hide();
@@ -2362,7 +2385,6 @@ ii.Class({
 						case "appGenericImport":							
 							me.batchId = parseInt($(this).attr("batch"), 10);
 							me.employeeCountLoad();
-
 							break;
 					}
 				});

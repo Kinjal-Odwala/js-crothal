@@ -247,6 +247,9 @@ ii.Class({
 		
 		houseCodeSearchLoaded: function(me, activeId){
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return; 
+				
 			$("#houseCodeTextDropImage").removeClass("HouseCodeDropDownLoader");
 
 			if (me.houseCodes.length <= 0){
