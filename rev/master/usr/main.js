@@ -9,16 +9,16 @@ ii.Import( "fin.rev.master.usr.defs" );
 ii.Import( "fin.cmn.usr.houseCodeSearch" );
 ii.Import( "fin.cmn.usr.houseCodeSearchTemplate" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.toolbar" , 4);
-ii.Style( "fin.cmn.usr.input" , 5);
-ii.Style( "fin.cmn.usr.grid" , 6);
-ii.Style( "fin.cmn.usr.dropDown" , 7);
-ii.Style( "fin.cmn.usr.dateDropDown" , 8);
-ii.Style( "fin.cmn.usr.tabs" , 9);
-ii.Style( "fin.cmn.usr.button" , 11);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.toolbar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.grid", 6 );
+ii.Style( "fin.cmn.usr.dropDown", 7 );
+ii.Style( "fin.cmn.usr.dateDropDown", 8 );
+ii.Style( "fin.cmn.usr.tabs", 9 );
+ii.Style( "fin.cmn.usr.button", 10 );
 
 invoiceTypes = {	
 	customerCloneYes: "CustomerCloneYes",
@@ -427,14 +427,6 @@ ii.Class({
 				        this.setInvalid("Please enter valid postal code. Example: 99999 or 99999-9999");
 				});
 
-            me.stateTax = new ui.ctl.Input.Money({
-                id: "StateTax"
-            });
-
-            me.localTax = new ui.ctl.Input.Money({
-                id: "LocalTax"
-            });
-
             me.poNumber = new ui.ctl.Input.Text({
                 id: "PONumber",
                 maxLength: 50
@@ -672,12 +664,10 @@ ii.Class({
             me.city.text.tabIndex = 11;
             me.state.text.tabIndex = 12;
             me.zip.text.tabIndex = 13;
-            me.stateTax.text.tabIndex = 14;
-            me.localTax.text.tabIndex = 15;
-            me.poNumber.text.tabIndex = 16;
-			me.invoiceLogo.text.tabIndex = 17;
-			me.invoiceAddress.text.tabIndex = 18;
-			me.notes.tabIndex = 19;
+            me.poNumber.text.tabIndex = 14;
+			me.invoiceLogo.text.tabIndex = 15;
+			me.invoiceAddress.text.tabIndex = 16;
+			me.notes.tabIndex = 17;
         },
 
         configureCommunications: function fin_rev_UserInterface_configureCommunications() {
@@ -1209,8 +1199,6 @@ ii.Class({
             $("#popupSetup").show();
             $("#messageToUser").text("Loading");
             $("#pageLoading").show();
-			$("#StateTaxText").addClass("Loading");
-            $("#LocalTaxText").addClass("Loading");
 
 			var index = ii.ajax.util.findIndexById(me.houseCodeDetails[0].invoiceLogoTypeId.toString(), me.invoiceLogoTypes);
 			if (index != undefined && index >= 0)
@@ -1333,22 +1321,14 @@ ii.Class({
 			me.dueDate.setValue(dueDate);
 			
 			if (me.taxRates.length == 1) {
-				me.stateTax.setValue(me.taxRates[0].stateTaxRate);
-				me.localTax.setValue(me.taxRates[0].localTaxRate);
 				me.anchorSave.display(ui.cmn.behaviorStates.enabled);
 			}
 			else {
-				me.stateTax.setValue("");
-				me.localTax.setValue("");
-				
 				var message = "Error - There is a mismatch with the follow Site setup information "
 					+ "Zip=" + me.sites[0].postalCode + ", City=Unknown, State=" + me.getStateTitle(me.sites[0].state) 
 					+ ". Please correct the address of the site by accessing HouseCode -> Sites prior to continuing.";
 				alert(message);
 			}
-
-			me.stateTax.text.readOnly = true;
-			me.localTax.text.readOnly = true;
 
 			if ($("input[name='Clone']:checked").val() == 1) {
 				var searchInvoice = me.invoiceSearchGrid.data[me.invoiceSearchGrid.activeRowIndex];
@@ -1388,8 +1368,6 @@ ii.Class({
 				me.notes.value = "";
 			}			
 
-			$("#StateTaxText").removeClass("Loading");
-			$("#LocalTaxText").removeClass("Loading");
 			$("#pageLoading").hide();
         },
 		
@@ -1704,8 +1682,6 @@ ii.Class({
 					, lastPrinted: ""
 					, taxExempt: me.taxExempts[me.taxExempt.indexSelected].id == 1 ? true : false
 					, taxNumber: me.taxId.getValue()
-					, stateTax: me.stateTax.getValue().toString()
-					, localTax: me.localTax.getValue().toString()
 					, poNumber: me.poNumber.getValue()
 					, invoiceLogoType: (me.invoiceLogo.indexSelected >= 0 ? me.invoiceLogoTypes[me.invoiceLogo.indexSelected].id : 0)
 					, invoiceAddressType: (me.invoiceAddress.indexSelected >= 0 ? me.invoiceAddressTypes[me.invoiceAddress.indexSelected].id : 0)
@@ -1743,8 +1719,6 @@ ii.Class({
 					, lastPrinted: me.invoices[me.lastSelectedRowIndex].lastPrinted
 					, taxExempt: invoiceInfoUIControls.taxExempts[invoiceInfoUIControls.taxExempt.indexSelected].id == 1 ? true : false
 					, taxNumber: invoiceInfoUIControls.taxId.getValue()
-					, stateTax: invoiceInfoUIControls.stateTax.getValue().toString()
-					, localTax: invoiceInfoUIControls.localTax.getValue().toString()
 					, poNumber: invoiceInfoUIControls.poNumber.getValue()
 					, invoiceLogoType: (invoiceInfoUIControls.invoiceLogo.indexSelected >= 0 ? invoiceInfoUIControls.invoiceLogoTypes[invoiceInfoUIControls.invoiceLogo.indexSelected].id : 0)
 					, invoiceAddressType: (invoiceInfoUIControls.invoiceAddress.indexSelected >= 0 ? invoiceInfoUIControls.invoiceAddressTypes[invoiceInfoUIControls.invoiceAddress.indexSelected].id : 0)
@@ -1865,8 +1839,6 @@ ii.Class({
             xml += ' printed="' + args.item.printed + '"';
             xml += ' taxExempt="' + args.item.taxExempt + '"';
             xml += ' taxNumber="' + args.item.taxNumber + '"';
-            xml += ' stateTax="' + args.item.stateTax + '"';
-            xml += ' localTax="' + args.item.localTax + '"';
             xml += ' poNumber="' + ui.cmn.text.xml.encode(args.item.poNumber) + '"';
 			xml += ' invoiceLogoType="' + args.item.invoiceLogoType + '"';
 			xml += ' invoiceAddressType="' + args.item.invoiceAddressType + '"';
