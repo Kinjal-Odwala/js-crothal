@@ -5,14 +5,14 @@ ii.Import( "ui.ctl.usr.grid" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "fin.rev.invoice.usr.defs" );
 
-ii.Style( "style", 1);
-ii.Style( "fin.cmn.usr.common", 2);
-ii.Style( "fin.cmn.usr.statusBar", 3);
-ii.Style( "fin.cmn.usr.input", 4);
-ii.Style( "fin.cmn.usr.grid", 5);
-ii.Style( "fin.cmn.usr.button", 6);
-ii.Style( "fin.cmn.usr.dropDown", 7);
-ii.Style( "fin.cmn.usr.dateDropDown", 8);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.input", 4 );
+ii.Style( "fin.cmn.usr.grid", 5 );
+ii.Style( "fin.cmn.usr.button", 6 );
+ii.Style( "fin.cmn.usr.dropDown", 7 );
+ii.Style( "fin.cmn.usr.dateDropDown", 8 );
 
 ii.Class({
     Name: "fin.rev.invoice.UserInterface",
@@ -55,11 +55,12 @@ ii.Class({
 
 			me.gateway = ii.ajax.addGateway("rev", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
-			me.transactionMonitor = new ii.ajax.TransactionMonitor(me.gateway, function(status, errorMessage){
-				me.nonPendingError(status, errorMessage);
-			});
+			me.transactionMonitor = new ii.ajax.TransactionMonitor(
+				me.gateway
+				, function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
+			);
 
-			me.authorizer = new ii.ajax.Authorizer( me.gateway );	//@iiDoc {Property:ii.ajax.Authorizer} Boolean
+			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "rev\\invoice";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
@@ -315,6 +316,16 @@ ii.Class({
 				me.taxableServices.push(new fin.rev.invoice.TaxableService(taxableService.id, taxableService.title));
 			}
 		},
+		
+		getJobTitle: function(brief, title) {
+			var me = this;
+			var jobTitle = "";
+
+			if (brief != "")
+				jobTitle = brief + " - " + title;
+
+			return jobTitle == "" ? "&nbsp;" : jobTitle;
+		},
 
 		getTaxableServiceTitle: function(id) {
 			var me = this;
@@ -479,7 +490,7 @@ ii.Class({
 				, false
 				, me.invoiceItems[index].id
 				, me.invoiceItems[index].houseCode
-				, me.invoiceItems[index].jobBrief
+				, me.getJobTitle(me.invoiceItems[index].jobBrief, me.invoiceItems[index].jobTitle)
 				, me.getTaxableServiceTitle(me.invoiceItems[index].taxableService)
 		        , accountName
 				, quantity
@@ -700,11 +711,12 @@ ii.Class({
 
 			if (args.columnName == "job" && !me.invoiceByCustomer) {
 				for (var index = 0; index < me.houseCodeCache[me.houseCodeBrief].jobs.length; index++) {
-					job = me.houseCodeCache[me.houseCodeBrief].jobs[index];
-					if (args.columnValue == job.jobNumber)
-						rowHtml += "	<option title='" + job.jobTitle + "' value='" + job.id + "' selected>" + job.jobNumber + "</option>";
+					var job = me.houseCodeCache[me.houseCodeBrief].jobs[index];
+					title = job.jobNumber + " - " + job.jobTitle;
+					if (args.columnValue == title)
+						rowHtml += "	<option title='" + title + "' value='" + job.id + "' selected>" + title + "</option>";
 					else
-						rowHtml += "	<option title='" + job.jobTitle + "' value='" + job.id + "'>" + job.jobNumber + "</option>";
+						rowHtml += "	<option title='" + title + "' value='" + job.id + "'>" + title + "</option>";
 				}
 			}
 			else if (args.columnName == "account") {
@@ -1227,10 +1239,12 @@ ii.Class({
 		    var job = {};
 		    var selJob = $("#job");
 			var options = "";
+			var title = "";
 		    
 		    for (var index = 0; index < me.houseCodeCache[houseCode].jobs.length; index++) {
 		        job = me.houseCodeCache[houseCode].jobs[index];
-				options += "<option  title='" + job.jobTitle + "' value='" + job.id + "'>" + job.jobNumber + "</option>\n";
+				title = job.jobNumber + " - " + job.jobTitle;
+				options += "<option  title='" + title + "' value='" + job.id + "'>" + title + "</option>\n";
 		    }
 
 			selJob.empty();
@@ -1306,7 +1320,7 @@ ii.Class({
 					, false
 					, parseInt(me.currentRowSelected.cells[1].innerHTML)
 					, me.invoiceItems[rowNumber].houseCode
-					, me.invoiceItems[rowNumber].jobBrief
+					, me.getJobTitle(me.invoiceItems[index].jobBrief, me.invoiceItems[index].jobTitle)
 					, me.getTaxableServiceTitle(me.invoiceItems[rowNumber].taxableService)
 			        , accountName
 					, quantity
@@ -1399,13 +1413,13 @@ ii.Class({
 				if (!me.editSalesTax) {
 					if (me.invoiceByCustomer && (me.status == "Add" || me.status == "Edit")) {
 						houseCode = $("#houseCode").val();
-						
+
 						if (me.houseCodeCache[houseCode] == undefined) {
 							alert("Please enter the valid House Code.");
 							$("#houseCode").focus();
 							return;
 						}
-						
+
 						if (!me.houseCodeCache[houseCode].valid || !me.houseCodeCache[houseCode].validCustomer) 
 							return;
 						else {
@@ -1415,7 +1429,7 @@ ii.Class({
 					}
 					else 
 						houseCode = parent.parent.fin.appUI.houseCodeBrief;
- 			
+ 
 					if (me.status == "Add" || me.status == "Edit") {
 						if (parseInt($("#account").val(), 10) != me.descriptionAccount) {
 							if (parseInt($("#taxableService").val()) == 0) {
@@ -1493,6 +1507,7 @@ ii.Class({
 					, houseCode
 					, job
 					, taxableService
+					, ""
 					, ""
 					, false
 					, account
