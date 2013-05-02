@@ -4,13 +4,13 @@ ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "fin.rev.accountReceivable.usr.defs" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.input" , 4);
-ii.Style( "fin.cmn.usr.button" , 5);
-ii.Style( "fin.cmn.usr.dropDown" , 6);
-ii.Style( "fin.cmn.usr.dateDropDown" , 7);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.input", 4 );
+ii.Style( "fin.cmn.usr.button", 5 );
+ii.Style( "fin.cmn.usr.dropDown", 6 );
+ii.Style( "fin.cmn.usr.dateDropDown", 7 );
 
 ii.Class({
     Name: "fin.rev.accountReceivable.UserInterface",
@@ -25,7 +25,7 @@ ii.Class({
 			me.invoiceId = parseInt(searchString.substring(pos + 1));
 			me.rowBeingEdited = false;
 			me.currentRowSelected = null;
-			me.status = ""
+			me.status = "";
 			me.bindRow = false;
 			me.houseCodeCache = [];
 			me.invoiceByCustomer = false;
@@ -40,27 +40,27 @@ ii.Class({
 			me.replaceContext = false;        // replace the system context menu?
 			me.mouseOverContext = false;      // is the mouse over the context menu?
 			me.noContext = true;              // disable the context menu?
-		
+
 			me.gateway = ii.ajax.addGateway("rev", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
-			me.transactionMonitor = new ii.ajax.TransactionMonitor(me.gateway, function(status, errorMessage){
+			me.transactionMonitor = new ii.ajax.TransactionMonitor(me.gateway, function(status, errorMessage) {
 				me.nonPendingError(status, errorMessage);
 			});
-			
-			me.authorizer = new ii.ajax.Authorizer( me.gateway );	//@iiDoc {Property:ii.ajax.Authorizer} Boolean
+
+			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "rev\\accountReceivable";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
 					me.authorizationProcess.apply(me);
 				},
 				me);
-			
+
 			me.session = new ii.Session(me.cache);
 			me.session.displaySetStandard();
 
 			me.defineFormControls();
 			me.configureCommunications();
-			
+
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$(document).bind("mousedown", me, me.mouseDownProcessor);
@@ -83,11 +83,11 @@ ii.Class({
 			var me = this;
 
 			$("#pageLoading").hide();
-			
-			me.isAuthorized = me.authorizer.isAuthorized( me.authorizePath);
-				
+
+			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
+
 			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+			me.session.registerFetchNotify(me.sessionLoaded, me);
 		},	
 		
 		sessionLoaded: function fin_rev_accountReceivable_UserInterface_sessionLoaded() {
@@ -95,7 +95,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("session loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 		
 		resize: function() {
@@ -163,7 +163,7 @@ ii.Class({
 				id: "AnchorCreditInvoice",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Credit Invoice&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.accountReceivableGridRowAdd(); },
+				clickFunction: function() { me.actionCreditInvoiceItem(); },
 				hasHotState: true
 			});
 				
@@ -205,14 +205,6 @@ ii.Class({
 				multipleFetchesAllowed: false
 			});
 			
-			me.accountReceivables = [];
-			me.accountReceivableStore = me.cache.register({
-				storeId: "revAccountReceivables",
-				itemConstructor: fin.rev.accountReceivable.AccountReceivable,
-				itemConstructorArgs: fin.rev.accountReceivable.accountReceivableArgs,
-				injectionArray: me.accountReceivables
-			});
-						
 			me.accounts = [];
 			me.accountStore = me.cache.register({
 				storeId: "accounts",
@@ -220,6 +212,22 @@ ii.Class({
 				itemConstructorArgs: fin.rev.accountReceivable.accountArgs,
 				injectionArray: me.accounts	
 			});
+			
+			me.accountReceivables = [];
+			me.accountReceivableStore = me.cache.register({
+				storeId: "revAccountReceivables",
+				itemConstructor: fin.rev.accountReceivable.AccountReceivable,
+				itemConstructorArgs: fin.rev.accountReceivable.accountReceivableArgs,
+				injectionArray: me.accountReceivables
+			});
+			
+			me.invoiceItems = [];
+			me.invoiceItemStore = me.cache.register({
+				storeId: "revInvoiceItems",
+				itemConstructor: fin.rev.accountReceivable.InvoiceItem,
+				itemConstructorArgs: fin.rev.accountReceivable.invoiceItemArgs,
+				injectionArray: me.invoiceItems
+			});			
 		},
 		
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
@@ -252,12 +260,7 @@ ii.Class({
 			
 			$("#AccountReceivableGrid tbody").html("");	
 		},
-		
-		accountsLoaded: function(me, activeId) {
-							
-			me.accountReceivableStore.fetch("userId:[user],invoiceId:" + me.invoiceId, me.accountReceivablesLoaded, me);
-		},
-		
+
 		getAccountNumberName: function(Id) {
 			var me = this;
 			var accountNumberName = "";
@@ -286,31 +289,80 @@ ii.Class({
 				return "Closed";
 		},
 		
+		accountsLoaded: function(me, activeId) {
+
+			me.accountReceivableStore.fetch("userId:[user],invoiceId:" + me.invoiceId, me.accountReceivablesLoaded, me);
+		},
+
+		invoiceItemsLoaded: function(me, activeId) {
+			
+			var rowHtml = "";
+			var currentDate = "";
+			var rowNumber = 0;
+			var insertAt = 0;
+			var date = new Date();
+
+			me.status = "AddFullCredit";
+			currentDate = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
+						
+			for (var index = 0; index < me.invoiceItems.length; index++) {
+				if (me.invoiceItems[index].amount > 0) {
+					rowNumber++;
+					rowHtml = "<tr>";
+					rowHtml += me.getAccountReceivableGridRow(
+				        rowNumber
+						, true // Editing Row
+				        , 0
+						, me.invoiceItems[index].houseCode
+					    , currentDate
+						, currentDate
+						, "CM"			    
+						, me.invoiceItems[index].amount
+					    ,  me.getAccountNumberName(me.invoiceItems[index].account)
+						, ""
+						, "Open"
+					    , ""
+				        )
+					
+				    rowHtml += "</tr>";
+					
+					insertAt = $("#AccountReceivableGridBody").find("tr").length - 1;
+					
+					$($("#AccountReceivableGridBody tr")[insertAt]).before(rowHtml);
+				}
+			}
+
+			$("#AccountReceivableGridBody input[id^=houseCode]").attr("readonly", true);
+			$("#AccountReceivableGridBody input[id^=amount]").attr("readonly", true);
+			$("#AccountReceivableGridBody option:not(:selected)").attr("disabled", true);
+
+			me.receivablesLoaded(me);
+			me.rowBeingEdited = true;
+			me.currentRowSelected = $($("#AccountReceivableGridBody tr")[insertAt])[0];
+		},
+		
 		accountReceivablesLoaded: function(me, activeId) {
 			var index = 0;
 			var rowHtml = "";
 			var total = 0;
-			var rowNumber = 0;
 			var creditAmount = 0;
 			
 			for (index = 0; index < me.accountReceivables.length; index++) {
-				
-				rowNumber++;
 				rowHtml += "<tr>";
 				rowHtml += me.getAccountReceivableGridRow(
-				rowNumber
-				, false
-				, me.accountReceivables[index].id
-				, me.accountReceivables[index].houseCode
-				, me.accountReceivables[index].depositDate
-				, me.accountReceivables[index].checkDate
-				, me.accountReceivables[index].checkNumber
-				, me.accountReceivables[index].amount
-		        , me.getAccountNumberName(me.accountReceivables[index].account)
-				, me.accountReceivables[index].payer
-				, me.getStatusTitle(me.accountReceivables[index].statusType)
-				, me.accountReceivables[index].notes == "" ? "&nbsp;" : me.accountReceivables[index].notes
-				);
+					index + 1
+					, false
+					, me.accountReceivables[index].id
+					, me.accountReceivables[index].houseCode
+					, me.accountReceivables[index].depositDate
+					, me.accountReceivables[index].checkDate
+					, me.accountReceivables[index].checkNumber
+					, me.accountReceivables[index].amount
+			        , me.getAccountNumberName(me.accountReceivables[index].account)
+					, me.accountReceivables[index].payer
+					, me.getStatusTitle(me.accountReceivables[index].statusType)
+					, me.accountReceivables[index].notes == "" ? "&nbsp;" : me.accountReceivables[index].notes
+					);
 							
 				rowHtml += "</tr>";
 				total += parseFloat(me.accountReceivables[index].amount);
@@ -454,19 +506,19 @@ ii.Class({
 			else
 				rowNumberText = "&nbsp;"
 					
-			if(args.rowEditable) {
+			if (args.rowEditable) {
 				// Row Editable
 				rowHtml += me.getEditableRowColumn(false, false, 0, "rowNumber", rowNumberText, 4, "right");
 				rowHtml += me.getEditableRowColumn(false, false, 1, "id", args.id.toString(), 0, "left");
-				rowHtml += me.getEditableRowColumn(editHouseCode, false, 2, "houseCode", args.houseCode, 10, "left");
+				rowHtml += me.getEditableRowColumn(editHouseCode, false, 2, "houseCode" + args.rowNumber, args.houseCode, 10, "left");
 				rowHtml += me.getEditableRowColumn(false, false, 3, "depositDate", args.depositDate, 8, "left");
 				rowHtml += me.getEditableRowColumn(false, false, 4, "checkDate", args.checkDate, 8, "left");
 				rowHtml += me.getEditableRowColumn(false, false, 5, "checkNumber", args.checkNumber, 8, "left");
-				rowHtml += me.getEditableRowColumn(true, false, 6, "amount", args.amount, 8, "right");
-				rowHtml += me.getEditableRowColumn(true, false, 7, "account", args.account, 21, "left", "dropdown");
-			    rowHtml += me.getEditableRowColumn(true, false, 8, "payer", args.payer, 10, "left");
+				rowHtml += me.getEditableRowColumn(true, false, 6, "amount" + args.rowNumber, args.amount, 8, "right");
+				rowHtml += me.getEditableRowColumn(true, false, 7, "account" + args.rowNumber, args.account, 21, "left", "dropdown");
+			    rowHtml += me.getEditableRowColumn(true, false, 8, "payer" + args.rowNumber, args.payer, 10, "left");
 				rowHtml += me.getEditableRowColumn(false, false, 9, "status", args.status, 8, "center");
-				rowHtml += me.getEditableRowColumn(true, false, 10, "notes", args.notes, 15, "left");
+				rowHtml += me.getEditableRowColumn(true, false, 10, "notes" + args.rowNumber, args.notes, 15, "left");
 			}
 			else {
 				rowHtml += me.getEditableRowColumn(false, false, 0, "rowNumber", rowNumberText, 4, "right");
@@ -522,16 +574,16 @@ ii.Class({
 			var me = this;
 			var rowHtml = "";
 			
-			rowHtml = "<select id='" + args.columnName + "' style='width:100%;'>"
+			rowHtml = "<select id='" + args.columnName + "' style='width:100%;'>";
 			
 			for (var index = 0; index < me.accounts.length; index++) {
 				if (args.columnValue == me.accounts[index].code + " - " + me.accounts[index].description)
-					rowHtml += "	<option value='" + me.accounts[index].id + "' selected>" + me.accounts[index].code + " - " + me.accounts[index].description + "</option>"
+					rowHtml += "	<option value='" + me.accounts[index].id + "' selected>" + me.accounts[index].code + " - " + me.accounts[index].description + "</option>";
 				else
-					rowHtml += "	<option value='" + me.accounts[index].id + "'>" + me.accounts[index].code + " - " + me.accounts[index].description + "</option>"
+					rowHtml += "	<option value='" + me.accounts[index].id + "'>" + me.accounts[index].code + " - " + me.accounts[index].description + "</option>";
 			}
 			
-			rowHtml += "</select>"
+			rowHtml += "</select>";
 			
 			return rowHtml;
 		},
@@ -540,10 +592,10 @@ ii.Class({
 			var me = this;
 			var rowNumber = 0;
 			var editable = true;;
-			
-			if (me.rowBeingEdited || me.currentRowSelected == null) 
+
+			if (me.rowBeingEdited || me.currentRowSelected == null)
 				return;
-	
+
 			if (parseInt(me.currentRowSelected.cells[1].innerHTML) == 0 || me.currentRowSelected.cells[5].innerHTML != "CM")
 				editable = false;
 			else {
@@ -551,7 +603,7 @@ ii.Class({
 				if (me.accountReceivables[rowNumber].creditMemoPrintedDate != "")
 					editable = false;
 			}
-			
+
 			if (editable)
 				return true;
 			else {
@@ -559,21 +611,19 @@ ii.Class({
 				return false;
 			}
 		},
-		
+
 		accountReceivableGridRowEdit: function() {
 			var me = this;
-			var rowHtml = "";
-			var payer = "";
-			var notes = "";
 				
 			if (me.rowBeingEdited) 
 				return;				
+
+			var rowNumber = parseInt(me.currentRowSelected.cells[0].innerHTML);
+			var payer = me.currentRowSelected.cells[8].innerHTML;
+			var notes = me.currentRowSelected.cells[10].innerHTML == "&nbsp;" ? "" : me.currentRowSelected.cells[10].innerHTML;
 			
-			payer = me.currentRowSelected.cells[8].innerHTML;
-			notes = me.currentRowSelected.cells[10].innerHTML == "&nbsp;" ? "" : me.currentRowSelected.cells[10].innerHTML;
-			
-		    rowHtml = me.getAccountReceivableGridRow(
-		        parseInt(me.currentRowSelected.cells[0].innerHTML)
+		    var rowHtml = me.getAccountReceivableGridRow(
+		        rowNumber
 				, true // Editing Row
 		        , parseInt(me.currentRowSelected.cells[1].innerHTML)
 				, me.currentRowSelected.cells[2].innerHTML
@@ -586,13 +636,13 @@ ii.Class({
 			    , me.currentRowSelected.cells[9].innerHTML
 				, ""
 		        )
-			    
+
 		    $(me.currentRowSelected).html(rowHtml);
-			$("#payer").val(payer);
-			$("#notes").val(notes);
+			$("#payer" + rowNumber).val(payer);
+			$("#notes" + rowNumber).val(notes);
 							
-			$("#amount").keypress(function (e) {
-				if(e.which != 8 && e.which != 0 && e.which != 45 && e.which != 46 && (e.which < 48 || e.which > 57))
+			$("#amount" + rowNumber).keypress(function (e) {
+				if (e.which != 8 && e.which != 0 && e.which != 45 && e.which != 46 && (e.which < 48 || e.which > 57))
 					return false;
 			});
 			
@@ -601,12 +651,12 @@ ii.Class({
 			me.invalidHouseCode = "";
 			
 			if (me.invoiceByCustomer) {
-				if ($("#houseCode").val() != "") {
-					me.houseCodeCheck($("#houseCode").val());
+				if ($("#houseCode" + rowNumber).val() != "") {
+					me.houseCodeCheck($("#houseCode" + rowNumber).val());
 				}
 					
-				$("#houseCode").bind("keydown", me, me.searchHouseCode);
-				$("#houseCode").bind("blur", function() { me.houseCodeBlur(this); });
+				$("#houseCode" + rowNumber).bind("keydown", me, me.searchHouseCode);
+				$("#houseCode" + rowNumber).bind("blur", function() { me.houseCodeBlur(this); });
 			}
 		},
 		
@@ -615,16 +665,15 @@ ii.Class({
 			var rowHtml = "<tr>";
 			var currentDate = "";
 			var insertAt = 0;
+			var rowNumber = 0;
 			var date = new Date();
-			
-			if (me.rowBeingEdited) 
-				return;
-			
+
 			me.status = "Add";
 			currentDate = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
-					
+			rowNumber = me.accountReceivables.length + 1;
+			
 		    rowHtml += me.getAccountReceivableGridRow(
-		        me.accountReceivables.length + 1
+		        rowNumber
 				, true // Editing Row
 		        , 0
 				, ""
@@ -640,17 +689,17 @@ ii.Class({
 				
 		    rowHtml += "</tr>";
 			
-			insertAt = $("#AccountReceivableGridBody").find('tr').length - 1;
+			insertAt = $("#AccountReceivableGridBody").find("tr").length - 1;
 			
 			$($("#AccountReceivableGridBody tr")[insertAt]).before(rowHtml);
-			$("#amount").keypress(function (e) {
-				if( e.which != 8 && e.which != 0 && e.which != 46 && (e.which < 48 || e.which > 57))
+			$("#amount" + rowNumber).keypress(function (e) {
+				if (e.which != 8 && e.which != 0 && e.which != 46 && (e.which < 48 || e.which > 57))
 					return false;
 			});
 			
 			if (me.invoiceByCustomer) {
-				$("#houseCode").bind("keydown", me, me.searchHouseCode);
-				$("#houseCode").bind("blur", function() { me.houseCodeBlur(this); });
+				$("#houseCode" + rowNumber).bind("keydown", me, me.searchHouseCode);
+				$("#houseCode" + rowNumber).bind("blur", function() { me.houseCodeBlur(this); });
 			}
 			
 			me.receivablesLoaded(me);		 
@@ -742,9 +791,9 @@ ii.Class({
                 success: function(xml) {
                     me.houseCodeCache[houseCode].loaded = true;
 
-		            if ($(xml).find('item').length) {
+		            if ($(xml).find("item").length) {
 		                //the house code is valid
-		                $(xml).find('item').each(function() {
+		                $(xml).find("item").each(function() {
 		                    me.houseCodeCache[houseCode].valid = true;
 		                    me.houseCodeCache[houseCode].id = $(this).attr("id");
 		                    me.houseCodeJobCustomersLoad(houseCode);
@@ -760,7 +809,7 @@ ii.Class({
 		
 		houseCodeJobCustomersLoad: function(houseCode) {
 		    var me = this;
-		    
+
 		    $.ajax({
                 type: "POST",
                 dataType: "xml",
@@ -769,17 +818,17 @@ ii.Class({
                     + "&requestXml=<criteria>storeId:houseCodeJobs,userId:[user]"
                     + ",houseCodeId:" + me.houseCodeCache[houseCode].id		
                     + ",jobType:3,<criteria>",
-                
+  
                 success: function(xml) {
-                    
-		            $(xml).find('item').each(function() {
+ 
+		            $(xml).find("item").each(function() {
 		                var job = {};
 		                job.id = $(this).attr("id");
 		                job.jobNumber = $(this).attr("jobNumber");
 		                job.jobTitle = $(this).attr("jobTitle");
 		                me.houseCodeCache[houseCode].customers.push(job);
 		            });
-	
+
 					me.houseCodeCache[houseCode].customersLoaded = true;
 					//validate the list of rows
 		            me.houseCodeValidate(houseCode);
@@ -792,6 +841,8 @@ ii.Class({
 
 			$("#pageLoading").hide();
 
+			var rowNumber = me.currentRowSelected.cells[0].innerHTML;
+			
 		    if (me.houseCodeCache[houseCode].valid) {
 				var found = false;
 
@@ -799,29 +850,45 @@ ii.Class({
 					if (me.invoice.jobBrief == me.houseCodeCache[houseCode].customers[index].jobNumber) {
 						found = true;
 						break;
-					}						
+					}
 			    }
 
 				if (found) {
 					me.invalidHouseCode = "";
 					me.houseCodeCache[houseCode].validCustomer = true;
-					$("#houseCode").css("background-color", "white");
-					$("#houseCode").attr("title", "");					
-				}					
+					$("#houseCode" + rowNumber).css("background-color", "white");
+					$("#houseCode" + rowNumber).attr("title", "");
+				}
 				else {
 					me.houseCodeCache[houseCode].validCustomer = false;
-					$("#houseCode").css("background-color", "red");
-					$("#houseCode").attr("title", "Customer it is not associated with the House Code [" + houseCode + "].");
-			        $("#houseCode").select();
+					$("#houseCode" + rowNumber).css("background-color", "red");
+					$("#houseCode" + rowNumber).attr("title", "Customer it is not associated with the House Code [" + houseCode + "].");
+			        $("#houseCode" + rowNumber).select();
 					alert("Customer it is not associated with the House Code [" + houseCode + "].");
 				}
 		    }
 		    else {
-				$("#houseCode").css("background-color", "red");
-				$("#houseCode").attr("title", "The House Code [" + houseCode + "] is not valid.");
-		        $("#houseCode").select();
+				$("#houseCode" + rowNumber).css("background-color", "red");
+				$("#houseCode" + rowNumber).attr("title", "The House Code [" + houseCode + "] is not valid.");
+		        $("#houseCode" + rowNumber).select();
 		        alert("The House Code [" + houseCode + "] is not valid.");
 		    }
+		},
+		
+		actionCreditInvoiceItem: function() {
+			var me = this;
+			
+			if (me.rowBeingEdited) 
+				return;
+				
+			if (me.accountReceivables.length == 0) {
+				if (confirm("Would you like to do a Full Credit on the selected Invoice?")) {
+					me.invoiceItemStore.fetch("userId:[user],invoiceId:" + me.invoiceId, me.invoiceItemsLoaded, me);
+					return;
+				}
+			}
+
+			me.accountReceivableGridRowAdd();
 		},
 		
 		actionOkItem: function() {
@@ -838,13 +905,19 @@ ii.Class({
 			
 			if (me.status == "")
 				return;
-			
+
 			if (me.status == "Add") {
-				var insertAt = $("#AccountReceivableGridBody").find('tr').length - 1;
+				var insertAt = $("#AccountReceivableGridBody").find("tr").length - 1;
 				$($("#AccountReceivableGridBody tr")[insertAt - 1]).remove();
 			}
+			else if (me.status == "AddFullCredit") {
+				var totalRows = $("#AccountReceivableGridBody").find("tr").length - 1;
+				for (var index = 0; index < totalRows; index++) {
+					$($("#AccountReceivableGridBody tr")[0]).remove();
+				}
+			}
 			else {
-				rowNumber = parseInt(me.currentRowSelected.cells[0].innerHTML) - 1;					
+				rowNumber = parseInt(me.currentRowSelected.cells[0].innerHTML) - 1;
 		
 				rowHtml += me.getAccountReceivableGridRow(
 					parseInt(me.currentRowSelected.cells[0].innerHTML)
@@ -873,55 +946,101 @@ ii.Class({
 		actionSaveItem: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
-			var rowNumber = 0;
-			var id = 0;
-			var version = 1;
 			var item = [];
+			var id = 0;
+			var index = 0;
+			var rowNumber = 0;
+			var version = 1;
 			var houseCodeId = 0;
+			var valid = true;
 			
 			if (parent.fin.revMasterUi.invoicingReadOnly) return;
 			
 			if (me.status == "")
 				return true;
 	
-			if (me.status == "Add" || me.status == "Edit") {
+			if (me.status == "AddFullCredit") {
+				$("#AccountReceivableGridBody").find("tr").each(function() {
+					rowNumber = parseInt(this.cells[0].innerHTML);
+
+					if (!isNaN(rowNumber)) {
+						if ($("#payer" + rowNumber).val() == "") {
+							alert("Please enter the Payer.");
+							$("#payer" + rowNumber).focus();
+							valid = false;
+							return false;
+						}
+						
+						if (me.invoiceByCustomer) {
+							for (var index = 0; index < me.invoiceItems.length; index++) {
+								if (me.invoiceItems[index].houseCode == $("#houseCode" + rowNumber).val()) {
+									houseCodeId = me.invoiceItems[index].houseCodeId;
+									break;
+								}
+							}
+						}
+						
+						item.push(new fin.rev.accountReceivable.AccountReceivable(
+							0
+							, me.invoiceId
+							, houseCodeId
+							, ""
+							, this.cells[3].innerHTML
+							, this.cells[4].innerHTML
+							, this.cells[5].innerHTML
+							, $("#amount" + rowNumber).val()
+							, parseInt($("#account" + rowNumber).val())
+							, $("#payer" + rowNumber).val()
+							, 1
+							, $("#notes" + rowNumber).val()
+							, 1
+						));
+					}
+				});
+			}
+			else if (me.status == "Add" || me.status == "Edit") {
+				rowNumber = me.currentRowSelected.cells[0].innerHTML;
+				
 				if (me.invoiceByCustomer) {
-					var houseCode = $("#houseCode").val();
-					
+					var houseCode = $("#houseCode" + rowNumber).val();
+
 					if (me.houseCodeCache[houseCode] == undefined) {
 						alert("Please enter the valid House Code.");
-						$("#houseCode").focus();
+						$("#houseCode" + rowNumber).focus();
 						return;
 					}
-					
+
 					if (!me.houseCodeCache[houseCode].valid || !me.houseCodeCache[houseCode].validCustomer) 
 						return;
 					else 
 						houseCodeId = parseInt(me.houseCodeCache[houseCode].id);
 				}
-				
-				if (isNaN(parseFloat($("#amount").val())) || parseFloat($("#amount").val()) <= 0) {
-					alert("Please enter the valid Amount");
+
+				if (isNaN(parseFloat($("#amount" + rowNumber).val())) || parseFloat($("#amount" + rowNumber).val()) <= 0) {
+					alert("Please enter the valid Amount.");
 					return false;
 				}
-				
-				if ($("#payer").val() == "") {
-					alert("Please enter the Payer");
+
+				if ($("#payer" + rowNumber).val() == "") {
+					alert("Please enter the Payer.");
 					return false;
 				}
 			}
-							
+
+			if (!valid)
+				return false;
+
 			$("#messageToUser").text("Saving");
 			$("#pageLoading").show();			
 			
 			id = parseInt(me.currentRowSelected.cells[1].innerHTML);
 			if (id > 0) {
-				rowNumber = parseInt(me.currentRowSelected.cells[0].innerHTML) - 1;
-				version = me.accountReceivables[rowNumber].version;
+				index = parseInt(me.currentRowSelected.cells[0].innerHTML) - 1;
+				version = me.accountReceivables[index].version;
 			}
 			
 			if (me.status == "Add" || me.status == "Edit") {
-				item = new fin.rev.accountReceivable.AccountReceivable(
+				item.push(new fin.rev.accountReceivable.AccountReceivable(
 					id
 					, me.invoiceId
 					, houseCodeId
@@ -929,16 +1048,16 @@ ii.Class({
 					, me.currentRowSelected.cells[3].innerHTML
 					, me.currentRowSelected.cells[4].innerHTML
 					, me.currentRowSelected.cells[5].innerHTML
-					, $("#amount").val()
-					, parseInt($("#account").val())
-					, $("#payer").val()
+					, $("#amount" + rowNumber).val()
+					, parseInt($("#account" + rowNumber).val())
+					, $("#payer" + rowNumber).val()
 					, 1
-					, $("#notes").val()
+					, $("#notes" + rowNumber).val()
 					, version
-				);
+				));
 			}
 			else if (me.status == "Delete") {
-				item = new fin.rev.accountReceivable.AccountReceivable({ id: id });
+				item.push(new fin.rev.accountReceivable.AccountReceivable({ id: id }));
 			}			
 
 			var xml = me.saveXmlBuildAccountReceivable(item);
@@ -956,31 +1075,32 @@ ii.Class({
 		
 		saveXmlBuildAccountReceivable: function () {
 			var args = ii.args(arguments, {
-				item: { type: fin.rev.accountReceivable.AccountReceivable }
+				items: { type: [fin.rev.accountReceivable.AccountReceivable] }
 			});
 			var me = this;
-			var rowNumber = 1;
-			var quantity = 0;
-			var xml = "";		
-			
-			if (me.status == "Add" || me.status == "Edit") {
-				xml += '<revAccountReceivable';
-				xml += ' id="' + args.item.id + '"';
-				xml += ' invoiceId="' + args.item.invoiceId + '"';
-				xml += ' houseCodeId="' + args.item.houseCodeId + '"';
-				xml += ' depositDate="' + args.item.depositDate + '"';
-				xml += ' checkDate="' + args.item.checkDate + '"';
-				xml += ' checkNumber="' + ui.cmn.text.xml.encode(args.item.checkNumber) + '"';
-				xml += ' amount="' + args.item.amount + '"';
-				xml += ' account="' + args.item.account + '"';
-				xml += ' payer="' + ui.cmn.text.xml.encode(args.item.payer) + '"';
-				xml += ' notes="' + ui.cmn.text.xml.encode(args.item.notes) + '"';
-				xml += ' version="' + args.item.version + '"';
-				xml += '/>';
+			var items = args.items;
+			var xml = "";
+
+			if (me.status == "Add" || me.status == "Edit" || me.status == "AddFullCredit") {
+				for (var index = 0; index < items.length; index++) {
+					xml += '<revAccountReceivable';
+					xml += ' id="' + items[index].id + '"';
+					xml += ' invoiceId="' + items[index].invoiceId + '"';
+					xml += ' houseCodeId="' + items[index].houseCodeId + '"';
+					xml += ' depositDate="' + items[index].depositDate + '"';
+					xml += ' checkDate="' + items[index].checkDate + '"';
+					xml += ' checkNumber="' + ui.cmn.text.xml.encode(items[index].checkNumber) + '"';
+					xml += ' amount="' + items[index].amount + '"';
+					xml += ' account="' + items[index].account + '"';
+					xml += ' payer="' + ui.cmn.text.xml.encode(items[index].payer) + '"';
+					xml += ' notes="' + ui.cmn.text.xml.encode(items[index].notes) + '"';
+					xml += ' version="' + items[index].version + '"';
+					xml += '/>';
+				}
 			}
 			else if (me.status == "Delete") {
 				xml += '<revAccountReceivableDelete';
-				xml += ' id="' + args.item.id + '"';
+				xml += ' id="' + items[0].id + '"';
 				xml += '/>';
 			}
 
@@ -996,10 +1116,10 @@ ii.Class({
 				xmlNode: {type: "XmlNode:transaction"}							
 			});
 			var transaction = args.transaction;
-			var me = transaction.referenceData.me;
-			var errorMessage = "";
+			var me = transaction.referenceData.me;			
 			var status = $(args.xmlNode).attr("status");
-						
+			var errorMessage = "";
+
 			if (status == "success") {
 				me.status = "";
 				me.rowBeingEdited = false;
@@ -1010,7 +1130,7 @@ ii.Class({
 			}
 			else {
 				if (status == "invalid") {
-					
+
 					switch ($(args.xmlNode).attr("message")) {
 						
 						case "1":
@@ -1042,25 +1162,19 @@ ii.Class({
 					centerPopup();
 				}
 				else {
-					errorMessage = $(args.xmlNode).attr("error");
-					errorMessage += "Error while updating Account Receivable Record: " + $(args.xmlNode).attr("message")
-					errorMessage += " [SAVE FAILURE]";
-					alert(errorMessage);
+					alert("[SAVE FAILURE] Error while updating Account Receivable record: " + $(args.xmlNode).attr("message"));
 					$("#pageLoading").hide();
 				}				
 			}
-		}
-		
+		}		
 	}
 });
 
 function loadPopup() {
-
 	$("#popupMessage").fadeIn("slow");
 }
 
-function disablePopup() {
-	
+function disablePopup() {	
 	$("#popupMessage").fadeOut("slow");
 }
 
