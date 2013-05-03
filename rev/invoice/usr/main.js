@@ -33,9 +33,9 @@ ii.Class({
 			me.invoiceByCustomer = false;
 			me.editSalesTax = false;
 			me.invalidHouseCode = "";
-			me.descriptionAccount = 0;
+			me.descriptionAccount = parent.fin.revMasterUi.descriptionAccount;
 			me.houseCodeCache = parent.fin.revMasterUi.houseCodeCache;
-			me.houseCodeBrief = parent.fin.revMasterUi.houseCodeBrief;
+			me.houseCodeBrief = parent.fin.revMasterUi.houseCodeBrief;			
 
 			var index = parent.fin.revMasterUi.lastSelectedRowIndex;
 			if (index >= 0) {
@@ -300,10 +300,6 @@ ii.Class({
 
 			for (var index = 0; index < parent.fin.revMasterUi.accounts.length; index++) {
 				var account = parent.fin.revMasterUi.accounts[index];
-
-				if (account.code == "0000") {
-					me.descriptionAccount = account.id;
-				}
 				me.accounts.push(new fin.rev.invoice.Account(account.id, account.code, account.description));
 			}
 		},

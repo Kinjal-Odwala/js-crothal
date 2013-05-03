@@ -49,6 +49,7 @@ ii.Class({
             me.invoiceSearch = "";
 			me.invoiceType = invoiceTypes.edit;
 			me.houseCodeBrief = "";
+			me.descriptionAccount = 0;
 
             if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
             
@@ -1410,6 +1411,7 @@ ii.Class({
 
 			for (var index = 0; index < me.accounts.length; index++) {
 				if (me.accounts[index].code == "0000") {
+					me.descriptionAccount = me.accounts[index].id;
 					me.accounts.push(me.accounts[index]);
 					me.accounts.splice(index, 1);
 					break;
