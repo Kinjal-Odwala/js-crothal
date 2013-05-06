@@ -51,8 +51,9 @@ ii.Class({
 			me.session = new ii.Session(me.cache);
 
 			me.configureCommunications();
-			me.defineFormControls();			
-			
+			me.defineFormControls();
+			me.modified(false);
+
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			
@@ -130,8 +131,9 @@ ii.Class({
 			
 			me.startDate = new ui.ctl.Input.Date({
 		        id: "StartDate",
-				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
-		    });
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
+		    	changeFunction: function() { me.modified(); }
+			});
 			
 			me.startDate.makeEnterTab()
 				.setValidationMaster(me.validator)
@@ -148,7 +150,8 @@ ii.Class({
 			
 			me.cutOffDate = new ui.ctl.Input.Date({
 		        id: "CutOffDate",
-				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.cutOffDate.makeEnterTab()
@@ -165,8 +168,9 @@ ii.Class({
 				});
 			
 			me.generalLiabilityRate = new ui.ctl.Input.Money({
-		        id: "GenLiabilityRate"
-				, statusLeft: false
+		        id: "GenLiabilityRate",
+				statusLeft: false,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.generalLiabilityRate.makeEnterTab()
@@ -175,7 +179,8 @@ ii.Class({
 			
 			me.startPeriod = new ui.ctl.Input.DropDown.Filtered({
 		        id: "StartPeriod",
-				formatFunction: function( type ) { return type.name; }
+				formatFunction: function( type ) { return type.name; },
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.startPeriod.makeEnterTab()
@@ -189,7 +194,8 @@ ii.Class({
 			
 			me.endPeriod = new ui.ctl.Input.DropDown.Filtered({
 		        id: "EndPeriod",
-				formatFunction: function( type ) { return type.name; }
+				formatFunction: function( type ) { return type.name; },
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.endPeriod.makeEnterTab()
@@ -202,8 +208,9 @@ ii.Class({
 				});
 			
 			me.benefitAdjPercent = new ui.ctl.Input.Money({
-		        id: "Percent"
-				, statusLeft: false
+		        id: "Percent",
+				statusLeft: false,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.benefitAdjPercent.makeEnterTab()
@@ -211,8 +218,9 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
 				
 			me.supplySurchargeRate = new ui.ctl.Input.Money({
-		        id: "SupplySurchargeRate"
-				, statusLeft: false
+		        id: "SupplySurchargeRate",
+				statusLeft: false,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.supplySurchargeRate.makeEnterTab()
@@ -220,8 +228,9 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
 				
 			me.computerRelatedChargeUnit = new ui.ctl.Input.Money({
-		        id: "ComputerRelatedChargeUnit"
-				, statusLeft: false
+		        id: "ComputerRelatedChargeUnit",
+				statusLeft: false,
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.computerRelatedChargeUnit.makeEnterTab()
@@ -229,8 +238,9 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
 				
 			me.computerRelatedChargeOverhead = new ui.ctl.Input.Money({
-		        id: "ComputerRelatedChargeOverhead"
-				, statusLeft: false
+		        id: "ComputerRelatedChargeOverhead",
+				statusLeft: false,
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.computerRelatedChargeOverhead.makeEnterTab()
@@ -238,8 +248,9 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
 
 			me.retailVacationAccrualPercent = new ui.ctl.Input.Money({
-		        id: "RetailVacationAccrualPercent"
-				, statusLeft: false
+		        id: "RetailVacationAccrualPercent",
+				statusLeft: false,
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.retailVacationAccrualPercent.makeEnterTab()
@@ -264,6 +275,7 @@ ii.Class({
 					return false;
 				}
 			});
+			$("#Announcement").change(function() { me.modified(); });
 
 			me.accountGrid = new ui.ctl.Grid({
 				id: "AccountGrid",
@@ -293,24 +305,6 @@ ii.Class({
 				clickFunction: function() { me.actionUndoItem(); },
 				hasHotState: true
 			});
-		},			
-		
-		resizeControls: function() {
-			var me = this;
-			
-			me.fiscalYear.resizeText();
-			me.startDate.resizeText();
-			me.cutOffDate.resizeText();
-			me.generalLiabilityRate.resizeText();
-			me.startPeriod.resizeText();
-			me.endPeriod.resizeText();
-			me.benefitAdjPercent.resizeText();
-			me.supplySurchargeRate.resizeText();
-			me.computerRelatedChargeUnit.resizeText();
-			me.computerRelatedChargeOverhead.resizeText();
-			me.retailVacationAccrualPercent.resizeText();
-			me.accountCodes.resizeText();
-			me.resize();
 		},
 		
 		configureCommunications: function fin_bud_annualInformation_UserInterface_configureCommunications() {
@@ -377,6 +371,33 @@ ii.Class({
 				return false;
 		},
 		
+		modified: function() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+			var me = this;
+
+			parent.parent.fin.appUI.modified = args.modified;
+		},
+		
+		resizeControls: function() {
+			var me = this;
+			
+			me.fiscalYear.resizeText();
+			me.startDate.resizeText();
+			me.cutOffDate.resizeText();
+			me.generalLiabilityRate.resizeText();
+			me.startPeriod.resizeText();
+			me.endPeriod.resizeText();
+			me.benefitAdjPercent.resizeText();
+			me.supplySurchargeRate.resizeText();
+			me.computerRelatedChargeUnit.resizeText();
+			me.computerRelatedChargeOverhead.resizeText();
+			me.retailVacationAccrualPercent.resizeText();
+			me.accountCodes.resizeText();
+			me.resize();
+		},
+		
 		showAccountsLoading: function() {
 			var me = this;
 	
@@ -403,6 +424,7 @@ ii.Class({
 			
 			me.fiscalYearId = me.fiscalYear.data[me.fiscalYear.indexSelected].id;				
 			me.loadPeriods();
+			me.modified();
 		},
 		
 		loadPeriods: function() {
@@ -504,6 +526,9 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
 			me.showAccountsLoading();
 			me.annualInformationsLoaded(me);			
 		},
@@ -600,6 +625,7 @@ ii.Class({
 			$("#pageLoading").hide();
 
 			if (status == "success") {
+				me.modified(false);
 				ii.trace("Annual information saved.", ii.traceTypes.Information, "Info");
 
 				$(args.xmlNode).find("*").each(function() {
@@ -641,6 +667,7 @@ function actionClickItem() {
 	}
 	
 	me.accountCodes.setValue(accountCodes);
+	me.modified();
 }
 
 function main() {

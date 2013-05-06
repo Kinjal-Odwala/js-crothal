@@ -6,14 +6,14 @@ ii.Import( "ui.cmn.usr.text" );
 ii.Import( "ui.ctl.usr.hierarchy" );
 ii.Import( "fin.bud.exportBudget.usr.defs" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.toolbar" , 4);
-ii.Style( "fin.cmn.usr.input" , 5);
-ii.Style( "fin.cmn.usr.hierarchy" , 6);
-ii.Style( "fin.cmn.usr.button" , 7);
-ii.Style( "fin.cmn.usr.dropDown" , 8);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.toolbar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.hierarchy", 6 );
+ii.Style( "fin.cmn.usr.button", 7 );
+ii.Style( "fin.cmn.usr.dropDown", 8 );
 
 ii.Class({
     Name: "fin.bud.exportBudget.UserInterface",
@@ -50,6 +50,7 @@ ii.Class({
 
             me.defineFormControls();
             me.configureCommunications();
+			me.modified(false);
 
             $(window).bind("resize", me, me.resize);
             $(document).bind("keydown", me, me.controlKeyProcessor);
@@ -58,9 +59,8 @@ ii.Class({
             me.yearStore.fetch("userId:[user],", me.yearsLoaded, me);
             $("#hirNodeLoading").show();
 
-            ii.trace("Hierarchy Nodes Loading", ii.traceTypes.Information, "Information");
+            ii.trace("Hierarchy Nodes Loading", ii.traceTypes.Information, "Info");
             me.hirOrgStore.fetch("userId:[user],hirOrgId:1,ancestors:true", me.hirOrgsLoaded, me);
-
         },
 
         authorizationProcess: function fin_bud_exportBudget_UserInterface_authorizationProcess() {
@@ -80,7 +80,7 @@ ii.Class({
                 me: { type: Object }
             });
 
-            ii.trace("session loaded.", ii.traceTypes.Information, "Session");
+            ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
         },
 
         resize: function fin_bud_exportBudget_UserInterface_resize() {
@@ -142,7 +142,7 @@ ii.Class({
                 required: false
             });
 
-            ii.trace("Controls Loaded", ii.traceTypes.Information, "Information");
+            ii.trace("Controls Loaded", ii.traceTypes.Information, "Info");
         },
 
         configureCommunications: function fin_bud_exportBudget_UserInterface_configureCommunications() {
@@ -210,7 +210,7 @@ ii.Class({
                 injectionArray: me.exports
             });
 
-            ii.trace("Communication Configured", ii.traceTypes.Information, "Information");
+            ii.trace("Communication Configured", ii.traceTypes.Information, "Info");
         },
 
         controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
@@ -241,6 +241,15 @@ ii.Class({
             }
         },
 
+		modified: function() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+			var me = this;
+
+			parent.parent.fin.appUI.modified = args.modified;
+		},
+		
         resizeControls: function () {
             var me = this;
 
@@ -265,6 +274,8 @@ ii.Class({
                 me.fiscalYearId = me.fiscalYear.data[me.fiscalYear.indexSelected].id;
             else
                 me.fiscalYearId = 0;
+				
+			me.modified(true);
         },
 
         houseCodeLoaded: function (me, activeId) {
@@ -295,6 +306,8 @@ ii.Class({
             else {
                 me.jobId = 0;
             }
+			
+			me.modified(true);
         },
 
         annualBudgetsLoaded: function (me, activeId) {
@@ -329,7 +342,7 @@ ii.Class({
 
             if (me.units.length <= 0) {
 
-                ii.trace("could not load the said Unit.", ii.traceTypes.Information, "Information");
+                ii.trace("could not load the said Unit.", ii.traceTypes.Information, "Info");
                 alert("There is no corresponding Unit available or you do not have enough permission to access it.");
 
                 return;
@@ -339,7 +352,7 @@ ii.Class({
             me.hirNodeCurrentId = me.units[0].hirNode;
 
             $("#pageLoading").show();
-            ii.trace("organization node loading", ii.traceTypes.Information, "Information");
+            ii.trace("organization node loading", ii.traceTypes.Information, "Info");
 
             me.hirOrgLoad("search");
         },
@@ -358,7 +371,7 @@ ii.Class({
             else
                 me.hirOrgStore.fetch("userId:[user],hirOrgId:" + me.hirNodeCurrentId + ",ancestors:true,sFilter:false", me.hirOrgsLoaded, me);
 
-            ii.trace("organization nodes loading", ii.traceTypes.Information, "Information");
+            ii.trace("organization nodes loading", ii.traceTypes.Information, "Info");
         },
 
         hirOrgsLoaded: function (me, activeId) {
@@ -366,8 +379,8 @@ ii.Class({
             //me.actionAddNodes();
             $("#hirOrg").html("");
 
-			if(me.orgHierarchy)
-				if(me.orgHierarchy.selectedNodes.length > 0)
+			if (me.orgHierarchy)
+				if (me.orgHierarchy.selectedNodes.length > 0)
 					me.prevSelectedNodes = me.orgHierarchy.selectedNodes;
 
             me.orgHierarchy = new ui.ctl.Hierarchy({
@@ -387,7 +400,7 @@ ii.Class({
                 actionNodeChecked: function (node) { me.hirNodeOrgSelect(node); }
             });
 
-			if(me.prevSelectedNodes)
+			if (me.prevSelectedNodes)
 				me.orgHierarchy.setData(me.prevSelectedNodes);
 				
             $("#pageLoading").hide();
@@ -410,14 +423,16 @@ ii.Class({
                 node: { type: ui.ctl.Hierarchy.Node }
             });
             var me = this;
-            me.lastSelectedNode = args.node;
+            
+			me.lastSelectedNode = args.node;
+			me.modified(true);
 
             if (me.isLevel7NodeSelected()) {
                 me.houseCodeStore.fetch("userId:[user],hirNodeId:" + args.node.id, me.houseCodeLoaded, me);
                 $("#divJob").show();
             }
             else
-                $('#divJob').hide();
+                $("#divJob").hide();
         },
 
         actionExportItem: function () {
@@ -436,6 +451,7 @@ ii.Class({
 
             var selectedNodes = [];
             var selectedNames = [];
+
             $.each(me.orgHierarchy.selectedNodes, function (index, item) {
                 selectedNodes.push(item.id);
                 selectedNames.push(item.fullPath.substr(item.fullPath.lastIndexOf('\\') + 1));
@@ -460,8 +476,6 @@ ii.Class({
 
             me.exportStore.reset();
             me.exportStore.fetch("userId:[user],hirNode:" + selectedNodes.join('~') + ",yearId:" + me.fiscalYearId + ",jobId:" + jobId, me.exportItemsLoaded, me);
-
-
         },
 
         exportItemsLoaded: function (me, activeId) {
@@ -484,8 +498,8 @@ ii.Class({
             }
             
             if (me.exports.length == pItems.length) {
-             $("#pageLoading").hide();
-            return ;
+				$("#pageLoading").hide();
+            	return;
             }
 
             var item = new fin.bud.exportBudget.AnnualBudget(0, "", "", false, false);
@@ -520,8 +534,7 @@ ii.Class({
                 xml += '/>';
             });
 
-
-            ii.trace("Xml Build", ii.traceTypes.Information, "Information");
+            ii.trace("Xml Build", ii.traceTypes.Information, "Info");
 
             return xml;
         },
@@ -535,32 +548,22 @@ ii.Class({
             var me = transaction.referenceData.me;
             var item = transaction.referenceData.item;
             var status = $(args.xmlNode).attr("status");
-            var traceType = ii.traceTypes.errorDataCorruption;
-            var errorMessage = "";
 
             $("#pageLoading").hide();
 
             if (status == "success") {
-                ii.trace("Budget Exported", ii.traceTypes.Information, "Information");
-                alert("Budgeting data exported successfully.")
+				me.modified(false);
+                ii.trace("Budget Exported", ii.traceTypes.Information, "Info");
+                alert("Budgeting data exported successfully.");
             }
             else {
-                alert('Error while exporting the budget information: ' + $(args.xmlNode).attr("message"));
-                errorMessage = $(args.xmlNode).attr("error");
-
-                if (status == "invalid") {
-                    traceType = ii.traceTypes.warning;
-                }
-                else {
-                    errorMessage += " [SAVE FAILURE]";
-                }
+                alert("[SAVE FAILURE] Error while exporting the budget information: " + $(args.xmlNode).attr("message"));
             }
         }
     }
 });
 
 function main() {
-
 	fin.exportBudgetUi = new fin.bud.exportBudget.UserInterface();
 	fin.exportBudgetUi.resize();
 }
