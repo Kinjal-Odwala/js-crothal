@@ -1,5 +1,5 @@
 ii.Import( "fin.cmn.usr.treeView" );
-ii.Style( "fin.cmn.usr.treeView" , 99);
+ii.Style( "fin.cmn.usr.treeView", 99 );
 
 if( !ui.lay ){
 	ui.lay = {};
@@ -47,11 +47,15 @@ ii.Class({
 			
 			fin.HouseCodeMasterUI = me;
 			
-            $("#houseCodeTextDropImage").click( function(){ //show HouseCode List
+            $("#houseCodeTextDropImage").click( function() { //show HouseCode List
 				if ($("#houseCodeTree").is(':visible')) {
 					$("#houseCodeTree").hide();
 					
 					return;
+				}
+				else {
+					if (!parent.fin.cmn.status.itemValid())
+						return;
 				}
 				
 				fin.HouseCodeMasterUI.houseCodeTreeShow(me.houseHirNodeSelected);
@@ -62,10 +66,15 @@ ii.Class({
 			});
 			
 			$("#houseCodeText").keyup(function(event){
-									
-				$("#houseCodeTree").hide();				
-				if (event.keyCode == 13 && this.value != '') {
-					fin.HouseCodeMasterUI.houseCodeFetch(this.value); 
+
+				$("#houseCodeTree").hide();
+				if (event.keyCode == 13 && this.value != "") {
+					if (!parent.fin.cmn.status.itemValid()) {
+						$("#houseCodeText").val(parent.fin.appUI.houseCodeTitle);
+						return;
+					}
+					
+					fin.HouseCodeMasterUI.houseCodeFetch(this.value);
 				}
 			});
 			
@@ -246,9 +255,6 @@ ii.Class({
 		},		
 		
 		houseCodeSearchLoaded: function(me, activeId){
-			
-			if (!parent.fin.cmn.status.itemValid())
-				return; 
 				
 			$("#houseCodeTextDropImage").removeClass("HouseCodeDropDownLoader");
 
@@ -266,7 +272,7 @@ ii.Class({
 			me.houseCodeGlobalParametersUpdate(false);
 
 			//handles change event in parent main.js.			
-			if(fin.houseCodeSearchUi.houseCodeChanged) fin.houseCodeSearchUi.houseCodeChanged();
+			if (fin.houseCodeSearchUi.houseCodeChanged) fin.houseCodeSearchUi.houseCodeChanged();
 			
 			$("#pageLoading").hide();
 		},
