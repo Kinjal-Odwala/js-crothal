@@ -273,6 +273,8 @@ ii.Class({
 		
 		houseCodeSearchJournalEntryLoaded: function(me, activeId){
 			
+			parent.fin.appUI.modified = true;
+				
 			$("#houseCode" + me.houseCodeType + "TextDropImage").removeClass("HouseCodeDropDownLoader");
 
 			if (fin.houseCodeSearchUi.houseCodes.length <= 0){
