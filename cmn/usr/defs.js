@@ -10,7 +10,7 @@ ii.init.register( function fin_cmn_startup_init(){
 	fin.cmn.status = {
 
 		itemValid: function fin_cmn_status_itemValid() {
-			if (parent.fin.appUI.modified) {
+			if (parent.fin.appUI != undefined && parent.fin.appUI.modified) {
 				if (confirm("The current item was modified and you will lose unsaved data if you navigate from current item. Press OK to continue, or Cancel to remain on the current item.")) {
 					parent.fin.appUI.modified = false;
 					return true;
