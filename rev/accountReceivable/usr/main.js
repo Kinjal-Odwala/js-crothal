@@ -1,3 +1,4 @@
+
 ii.Import( "ii.krn.sys.ajax" );
 ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
@@ -30,9 +31,10 @@ ii.Class({
 			me.houseCodeCache = [];
 			me.invoiceByCustomer = false;
 			me.invalidHouseCode = "";
+			me.descriptionAccount = parent.fin.revMasterUi.descriptionAccount;
 
 			var index = parent.fin.revMasterUi.lastSelectedRowIndex;
-			if (index >= 0) {
+			if (index >= 0) {				
 				me.invoice = parent.fin.revMasterUi.invoices[index];
 				me.invoiceByCustomer = !me.invoice.invoiceByHouseCode;	
 			}
@@ -43,9 +45,10 @@ ii.Class({
 
 			me.gateway = ii.ajax.addGateway("rev", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
-			me.transactionMonitor = new ii.ajax.TransactionMonitor(me.gateway, function(status, errorMessage) {
-				me.nonPendingError(status, errorMessage);
-			});
+			me.transactionMonitor = new ii.ajax.TransactionMonitor(
+				me.gateway
+				, function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
+			);
 
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "rev\\accountReceivable";
@@ -64,15 +67,13 @@ ii.Class({
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$(document).bind("mousedown", me, me.mouseDownProcessor);
-			
-			if (me.invoice.statusType != 5) {
-				$(document).bind("contextmenu", me, me.contextMenuProcessor);
-				$("#anchorAlign").show();
-			}
-			
-			if (parent.fin.revMasterUi.invoicingReadOnly) {
-				$("#AnchorAccountReceivableLabelLeft").hide();
+
+			if (parent.fin.revMasterUi.invoicingReadOnly || me.invoice.creditMemoPrinted) {
+				$("#anchorAlign").hide();
 				me.rowBeingEdited = true;
+			}
+			else {
+				$(document).bind("contextmenu", me, me.contextMenuProcessor);
 			}
 			
 			me.accountStore.fetch("userId:[user],invoiceId:" + me.invoiceId, me.accountsLoaded, me);		    
@@ -306,7 +307,7 @@ ii.Class({
 			currentDate = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
 						
 			for (var index = 0; index < me.invoiceItems.length; index++) {
-				if (me.invoiceItems[index].amount > 0) {
+				if (me.invoiceItems[index].amount > 0 && me.invoiceItems[index].account != me.descriptionAccount) {
 					rowNumber++;
 					rowHtml = "<tr>";
 					rowHtml += me.getAccountReceivableGridRow(
@@ -381,8 +382,8 @@ ii.Class({
 				me.bindRow = false;
 				var index = parent.fin.revMasterUi.lastSelectedRowIndex;
 				parent.fin.revMasterUi.invoices[index].credited = creditAmount.toFixed(5);
-				if (parent.fin.revMasterUi.invoices[index].credited>0)
-				    parent.fin.revMasterUi.invoices[index].creditMemoPrintable=true;
+				if (parent.fin.revMasterUi.invoices[index].credited > 0)
+				    parent.fin.revMasterUi.invoices[index].creditMemoPrintable = true;
 				parent.fin.revMasterUi.invoiceGrid.body.renderRow(index, index);
 				parent.fin.revMasterUi.refreshPrintMemoButtonStatus();
 			}
