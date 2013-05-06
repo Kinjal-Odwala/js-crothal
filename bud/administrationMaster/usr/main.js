@@ -4,16 +4,16 @@ ii.Import( "ui.ctl.usr.input" );
 ii.Import( "fin.cmn.usr.tabsPack" );
 ii.Import( "fin.bud.administrationMaster.usr.defs" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.input" , 4);
-ii.Style( "fin.cmn.usr.tabsBud" , 5);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.input", 4 );
+ii.Style( "fin.cmn.usr.tabsBud", 5 );
 
 ii.Class({
     Name: "fin.bud.administrationMaster.UserInterface",
     Definition: {
-		
+
         init: function() {
   			var args = ii.args(arguments, {});
 			var me = this;
@@ -23,14 +23,14 @@ ii.Class({
 			me.approveBudgetNeedUpdate = true;
 			me.deleteBudgetNeedUpdate = true;
 			me.exportBudgetNeedUpdate = true;
-						
+
 			me.gateway = ii.ajax.addGateway("bud", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
 			me.transactionMonitor = new ii.ajax.TransactionMonitor( 
 				me.gateway, 
 				function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
 			);			
-			
+
 			me.authorizer = new ii.ajax.Authorizer(me.gateway);
 			me.authorizePath = "\\crothall\\chimes\\fin\\bud\\administrationMaster";
 			me.authorizer.authorize([me.authorizePath],
@@ -38,14 +38,35 @@ ii.Class({
 					me.authorizationProcess.apply(me);
 				},
 				me);
-			
+
 			me.session = new ii.Session(me.cache);
 
 			me.defineFormControls();
 			me.configureCommunications();
 			
+			$("#TabCollection a").mousedown(function() {
+
+				if (!parent.fin.cmn.status.itemValid()) 
+					return false;
+				else {
+					var tabIndex = 0;
+					if (this.id == "TabAnnualInfo")
+						tabIndex = 1;
+					else if (this.id == "TabApproveBudget")
+						tabIndex = 2;
+					else if (this.id == "TabDeleteBudget")
+						tabIndex = 3;
+					else if (this.id == "TabExportBudget")
+						tabIndex = 4;
+						
+					$("#container-1").tabs(tabIndex);
+					$("#container-1").triggerTab(tabIndex);
+				}
+					
+			});
+			
 			$("#TabCollection a").click(function() {
-				
+
 				switch(this.id) {
 					
 					case "TabAnnualInfo":
@@ -111,7 +132,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("session loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 		
 		resize: function() {
@@ -182,4 +203,3 @@ function main() {
 	fin.budAdminMasterUi = new fin.bud.administrationMaster.UserInterface();
 	fin.budAdminMasterUi.resize();
 }
-

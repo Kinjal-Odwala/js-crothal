@@ -7,16 +7,16 @@ ii.Import( "ui.ctl.usr.hierarchy" );
 ii.Import( "fin.cmn.usr.treeView" );
 ii.Import( "fin.bud.deleteBudget.usr.defs" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.toolbar" , 4);
-ii.Style( "fin.cmn.usr.input" , 5);
-ii.Style( "fin.cmn.usr.hierarchy" , 6);
-ii.Style( "fin.cmn.usr.button" , 7);
-ii.Style( "fin.cmn.usr.dropDown" , 8);
-ii.Style( "fin.cmn.usr.dateDropDown" , 9);
-ii.Style( "fin.cmn.usr.treeview" , 10);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.toolbar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.hierarchy", 6 );
+ii.Style( "fin.cmn.usr.button", 7 );
+ii.Style( "fin.cmn.usr.dropDown", 8 );
+ii.Style( "fin.cmn.usr.dateDropDown", 9 );
+ii.Style( "fin.cmn.usr.treeview", 10 );
 
 ii.Class({
     Name: "fin.bud.deleteBudget.UserInterface",
@@ -52,7 +52,8 @@ ii.Class({
 			me.session = new ii.Session(me.cache);
 						
 			me.defineFormControls();
-			me.configureCommunications();	
+			me.configureCommunications();
+			me.modified(false);
 			
 			$(window).bind("resize", me, me.resize );
 			$(document).bind("keydown", me, me.controlKeyProcessor);
@@ -61,7 +62,7 @@ ii.Class({
 			me.yearStore.fetch("userId:[user],", me.yearsLoaded, me);
 			me.weekPeriodYearStore.fetch("userId:[user],", me.weekPeriodYearsLoaded, me);
 			$("#hirNodeLoading").show();
-			ii.trace("Hierarchy Nodes Loading", ii.traceTypes.Information, "Information");
+			ii.trace("Hierarchy Nodes Loading", ii.traceTypes.Information, "Info");
 			me.hirNodeStore.fetch("userId:[user],hierarchy:2,", me.hirNodesLoaded, me);
 		},
 		
@@ -81,7 +82,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("session loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 		
 		resize: function fin_bud_deleteBudget_UserInterface_resize() {
@@ -167,8 +168,9 @@ ii.Class({
 					return false;
 				}
 			});
+			$("#Reason").change(function() { me.modified(); });
 
-			ii.trace("Controls Loaded", ii.traceTypes.Information, "Information");
+			ii.trace("Controls Loaded", ii.traceTypes.Information, "Info");
 		},
 		
 		configureCommunications: function fin_bud_deleteBudget_UserInterface_configureCommunications() {
@@ -252,7 +254,7 @@ ii.Class({
 				injectionArray: me.annualInformations
 			});
 
-			ii.trace("Communication Configured", ii.traceTypes.Information, "Information");
+			ii.trace("Communication Configured", ii.traceTypes.Information, "Info");
 		},
 		
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
@@ -283,6 +285,15 @@ ii.Class({
 			}
 		},
 		
+		modified: function() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+			var me = this;
+
+			parent.parent.fin.appUI.modified = args.modified;
+		},
+		
 		resizeControls: function() {
 			var me = this;
 			
@@ -311,6 +322,7 @@ ii.Class({
 				
 			me.annualInformationStore.fetch("userId:[user],fscYear:" + me.fiscalYearId, me.annualInformationsLoaded, me);	
 			me.hirNodeSingleLoaded(me.hirNodeSelected);
+			me.modified(true);
 		},
 		
 		weekPeriodYearsLoaded: function(me, activeId) {
@@ -354,11 +366,13 @@ ii.Class({
 				me.jobId = 0;
 				//me.anchorDelete.display(ui.cmn.behaviorStates.enabled);
 			}
+			
+			me.modified(true);
 		},
 		
 		annualBudgetsLoaded: function(me, activeId) {
 
-			if(me.validateBudget())
+			if (me.validateBudget())
 				me.anchorDelete.display(ui.cmn.behaviorStates.enabled);
 			else
 				me.anchorDelete.display(ui.cmn.behaviorStates.disabled);
@@ -387,7 +401,7 @@ ii.Class({
 		actionUnitLoad: function fin_bud_deleteBudget_UserInterface_actionUnitLoad() {			
 			var me = this;			
 			
-			if(me.appUnit.getValue() == "") return;			
+			if (me.appUnit.getValue() == "") return;			
 	
 			$("#AppUnitText").addClass("Loading");
 			
@@ -400,7 +414,7 @@ ii.Class({
 
 			if (me.units.length <= 0) {
 				
-				ii.trace("Could not load the said House Code.", ii.traceTypes.Information, "Information");
+				ii.trace("Could not load the said House Code.", ii.traceTypes.Information, "Info");
 				alert("There is no corresponding House Code available or you do not have enough permission to access it.");
 
 				return;
@@ -419,7 +433,7 @@ ii.Class({
 			}
 			
 			if (!found) {
-				ii.trace("Hirnodes Loading", ii.traceTypes.Information, "Information");
+				ii.trace("Hirnodes Loading", ii.traceTypes.Information, "Info");
 				$("#hirNodeLoading").show();
 				me.hirOrgStore.reset();
 				me.hirOrgStore.fetch("userId:[user],hirOrgId:" + me.hirNodeCurrentId + ",hirNodeSearchId:" + me.hirNodeCurrentId + ",ancestors:true", me.hirOrgsLoaded, me);
@@ -470,7 +484,7 @@ ii.Class({
 			me.actionAddNodes();
 			me.selectNode();
 			
-			ii.trace("Hirnodes Loaded", ii.traceTypes.Information, "Information");
+			ii.trace("Hirnodes Loaded", ii.traceTypes.Information, "Info");
 		},
 		
 		selectNode: function() {
@@ -561,7 +575,7 @@ ii.Class({
 
             nodeHtml += "</li>";
 
-			if($("#liNode" + args.hirNodeParent)[0] == undefined)
+			if ($("#liNode" + args.hirNodeParent)[0] == undefined)
 				args.hirNodeParent = 0;
 
             var treeNode = $(nodeHtml).appendTo("#ulEdit" + args.hirNodeParent);
@@ -619,7 +633,7 @@ ii.Class({
 		hitAreaSelect: function(nodeId) {        
    			var me = this;
 			
-			if($("#ulEdit" + nodeId)[0].innerHTML == "") {
+			if ($("#ulEdit" + nodeId)[0].innerHTML == "") {
 				$("#hirNodeLoading").show();
 			    me.hirNodeStore.fetch("userId:[user],hirNodeParent:" + nodeId + ",", me.hirNodesLoaded, me);
 			}
@@ -672,7 +686,7 @@ ii.Class({
 				
 			var jobTitle = me.houseCodeJobs[me.job.indexSelected].jobNumber + " - " + me.houseCodeJobs[me.job.indexSelected].jobTitle;
 						
-			if(me.annualBudgets.length > 0) {
+			if (me.annualBudgets.length > 0) {
 				if (me.annualBudgets[0].approved) {
 					alert("The selected budget is already approved. So you cannot delete this budget.");
 					return;
@@ -748,7 +762,7 @@ ii.Class({
 			xml += ' reason="' + ui.cmn.text.xml.encode(me.reason.value) + '"';
 			xml += '/>';
 
-			ii.trace("Xml Build", ii.traceTypes.Information, "Information");
+			ii.trace("Xml Build", ii.traceTypes.Information, "Info");
 	
 			return xml;
 		},
@@ -762,32 +776,22 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-			var traceType = ii.traceTypes.errorDataCorruption;
-			var errorMessage = "";			
 			
 			$("#pageLoading").hide();
 
-			if(status == "success") {
+			if (status == "success") {
 				me.actionClearItem();
-				ii.trace("Budget Deleted", ii.traceTypes.Information, "Information");
+				me.modified(false);
+				ii.trace("Budget Deleted", ii.traceTypes.Information, "Info");
 			}
 			else {
-				alert('Error while deleting the budget information: ' + $(args.xmlNode).attr("message"));
-				errorMessage = $(args.xmlNode).attr("error");
-				
-				if(status == "invalid") {
-					traceType = ii.traceTypes.warning;
-				}
-				else {
-					errorMessage += " [SAVE FAILURE]";
-				}
+				alert("[SAVE FAILURE] Error while deleting the budget information: " + $(args.xmlNode).attr("message"));
 			}
 		}
 	}
 });
 
 function main() {
-
 	fin.deleteBudgetUi = new fin.bud.deleteBudget.UserInterface();
 	fin.deleteBudgetUi.resize();
 }
