@@ -1125,6 +1125,9 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;			
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			me.status = "";
 			me.resetGrids();
 			
