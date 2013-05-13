@@ -1,0 +1,301 @@
+#hierarchyAreaLeft {
+	float: left;
+	width: 48%;
+}
+
+#hierarchyAreaRight {
+	float: left;
+	width: 48%;
+}
+
+#AppUnitLoader {
+	float: left;
+	position: relative;
+	width: 300px;
+}
+
+#JobTitle {
+	float: left;
+	position: relative;
+	padding-left: 5px;
+	width: 250px;
+}
+	
+#AnchorSearch {
+	float: left;
+	width: 82px;
+	padding-left: 10px;
+}
+	
+#empContainer {
+	border: solid #AAAAAA thin; 
+	border-width: 1px;
+	padding: 10px;
+	overflow: auto;
+}
+
+#AnchorSave {
+	float: left;
+	width: 68px;
+	padding: 5px 0px 0px 5px;
+}
+
+#AnchorPreview {
+	float: left;
+	width: 90px;
+	padding: 5px 0px 0px 5px;
+	margin-right: 5px;
+}
+
+#AnchorRemove {
+	float: right;
+	width: 90px;
+	margin: 5px 0px 5px 0px;
+}
+
+#AnchorPrint {
+	float: left;
+	width: 68px;
+	margin: 5px 0px 5px 20px;
+}
+
+#AnchorClose {
+	float: left;
+	width: 72px;
+	margin: 5px 0px 5px 10px;
+}
+
+#SelectAll {
+	float: left;
+	width: 14px;
+	padding: 3px 0px 0px 24px;
+}
+
+#movableContainer {
+	float: right;
+	width: 400px;	
+    border: solid #AAAAAA thin;
+	border-width: 1px;
+	padding: 10px;
+	overflow: auto;
+}
+
+#previewContainer {
+	float: left;
+    border: solid #AAAAAA thin;
+	border-width: 1px;
+	margin-left: 10px;
+	padding: 10px;
+	overflow: auto;
+}
+
+#divSelectAll {
+	float: right;
+	width: 420px;
+}
+
+#backgroundPopup {
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	z-index: 5000; 
+	width: 100%; 
+	height: 100%;
+	border: 1px solid #cecece; 
+	background-color: black;
+	display: none;
+}
+
+#hierarchyPreviewPopup {
+	background-color: white;
+	position: absolute;
+	z-index: 5050;
+	display: none;
+}
+
+.header {
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 18px;	
+	color: #2C2F50;
+	text-align: center;
+	margin-bottom: 5px;
+}
+
+.labelText {
+	float: left;	
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 2px 10px 2px 10px;
+}
+
+.labelTextArea {	
+	float: left;
+	width: 80px;
+	height: 27px;	
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 5px 0px 0px 10px;
+}
+
+.labelLevel {	
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;	
+	padding: 5px 0px 0px 5px;
+}
+
+.inputTextArea {
+	float: left; 
+	width: 350px; 
+	padding: 3px 2px 2px 2px;	
+}
+
+.labelSelectAll {
+	float: left;	
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 6px 0px 0px 10px;
+}
+
+.movableContainerHeader {
+	float: right;
+	width: 420px;
+	height: 20px;
+	background-color: #9BCD9A;
+	border: solid #AAAAAA thin;
+	border-bottom: none;
+	border-width: 1px;
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 14px;	
+	color: #2C2F50;
+	text-align: center;
+	padding-top: 3px;
+}
+
+.iiInputText.Loading {
+	background-image: url(/fin/cmn/usr/media/common/indicator.gif);
+	background-repeat: no-repeat;
+	background-position: right;
+	width: 16px;
+	height: 16px;
+	margin-top: 1px;
+	margin-right: 1px;
+	margin-left: 1px;
+	margin-bottom: 1px;	
+}
+
+.gridRow { 
+	background-color: #F0EFDD;
+}
+
+.alternateGridRow { 
+	background-color: #FFFFFF;
+}
+
+.trover {
+	background-color: #C2E4C1;
+}
+
+.tableBorder {
+	border: solid #AAAAAA thin;
+	border-bottom: none;
+	border-width: 1px;
+	cursor: pointer;
+	background-color: #F0EFDD;		
+}
+
+.tdImage {
+	border-bottom: solid #AAAAAA thin;	
+	border-width: 1px;	
+	padding: 3px 0px 0px 5px;
+	width: 20px;
+}
+
+.tdBorder {
+	border-bottom: solid #AAAAAA thin;
+	border-width: 1px;
+	font-family: Verdana;
+	font-size: 8pt;
+	color: #032D23;
+	padding: 0px 0px 0px 5px;
+	width: 80px;
+}
+
+.treeview ul {
+	width: 400px;
+}
+
+.treeview li { 
+	padding: 3px 0 2px 18px;
+}
+
+.treeview span.level0, .treeview span.level1, .treeview span.level2, .treeview span.level3,
+	.treeview span.level4, .treeview span.level5, .treeview span.level6, .treeview span.level7, .treeview span.loading  {
+	font-family: Verdana; 
+	font-size: 9pt;
+	color: #032D23;
+	padding: 1px 0 1px 20px;
+}
+
+.treeview span.level0:hover, .treeview span.level1:hover, .treeview span.level2:hover, .treeview span.level3:hover, 
+	.treeview span.level4:hover, .treeview span.level5:hover, .treeview span.level6:hover, .treeview span.level7:hover {	
+	color: red;
+}
+
+.treeview span.level0 {
+	background: url(/fin/cmn/usr/media/common/ent.png) 0 0 no-repeat;
+}
+
+.treeview span.level1 {
+	background: url(/fin/cmn/usr/media/common/svp.png) 0 0 no-repeat;
+}
+.treeview span.level2 {
+	background: url(/fin/cmn/usr/media/common/dvp.png) 0 0 no-repeat;
+}
+
+.treeview span.level3 {
+	background: url(/fin/cmn/usr/media/common/rvp.png) 0 0 no-repeat;
+}
+
+.treeview span.level4 {
+	background: url(/fin/cmn/usr/media/common/srm.png) 0 0 no-repeat;
+}
+
+.treeview span.level5 {
+	background: url(/fin/cmn/usr/media/common/rm.png) 0 0 no-repeat;
+}
+
+.treeview span.level6 {
+	background: url(/fin/cmn/usr/media/common/am.png) 0 0 no-repeat;
+}
+
+.treeview span.level7 {
+	background: url(/fin/cmn/usr/media/common/file.gif) 0 0 no-repeat;
+}
+
+.treeview span.loading { 
+	background: url(/fin/cmn/usr/media/common/indicator.gif) 0 0 no-repeat; 
+}
+
+.treeview span.mUnit {
+	font-family: Verdana; 
+	font-size: 9pt;
+	color: #032D23;
+	padding: 0px 0 0px 0px;
+}
+
+.treeview span.mUnit:hover {	
+	color: red;
+}
+
+.drophover {
+	border: solid red thin;
+	border-width: 2px;
+	font-weight: bold;
+}
