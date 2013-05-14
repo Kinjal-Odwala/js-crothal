@@ -16,6 +16,12 @@ ii.init.register( function() {
 		, hirNode: {type: Number}
 	};
 	
+	fin.rev.accountReceivable.accountArgs = {
+		id: {type: Number}
+		, code: {type: String}
+		, description: {type: String}
+	};
+	
 	fin.rev.accountReceivable.accountReceivableArgs = {
 		id: {type: Number}
 		, invoiceId: {type: Number, required: false, defaultValue: 0}
@@ -32,11 +38,15 @@ ii.init.register( function() {
 		, version: {type: Number, required: false, defaultValue: 0}
 		, creditMemoPrintedDate: {type: String, required: false, defaultValue: ""}
 	};
-		
-	fin.rev.accountReceivable.accountArgs = {
+
+	fin.rev.accountReceivable.invoiceItemArgs = {
 		id: {type: Number}
-		, code: {type: String}
-		, description: {type: String}
+		, invoiceId: {type: Number, required: false, defaultValue: 0}
+		, houseCodeId: {type: Number, required: false, defaultValue: 0}
+		, hirNodeId: {type: Number, required: false, defaultValue: 0}
+		, houseCode: {type: String, required: false, defaultValue: ""}
+		, account: {type: Number, required: false, defaultValue: 0}
+		, amount: {type: String, required: false, defaultValue: ""}
 	};
 	
 }, 2);
@@ -46,6 +56,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.rev.accountReceivable.houseCodeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rev.accountReceivable.Account",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rev.accountReceivable.accountArgs);
 			$.extend(this, args);
 		}
 	}
@@ -62,10 +82,10 @@ ii.Class({
 });
 
 ii.Class({
-	Name: "fin.rev.accountReceivable.Account",
+	Name: "fin.rev.accountReceivable.InvoiceItem",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.rev.accountReceivable.accountArgs);
+			var args = ii.args(arguments, fin.rev.accountReceivable.invoiceItemArgs);
 			$.extend(this, args);
 		}
 	}

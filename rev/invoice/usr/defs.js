@@ -25,6 +25,7 @@ ii.init.register( function() {
 		, houseCodeJob: {type: Number, required: false, defaultValue: 0}
 		, taxableService: {type: Number, required: false, defaultValue: 0}
 		, jobBrief: {type: String, required: false, defaultValue: ""}
+		, jobTitle: {type: String, required: false, defaultValue: ""}
 		, overrideSiteTax: {type: Boolean, required: false, defaultValue: false}
 		, account: {type: Number, required: false, defaultValue: 0}
 		, statusType: {type: Number, required: false, defaultValue: 1}

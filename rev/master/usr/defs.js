@@ -80,8 +80,6 @@ ii.init.register( function() {
 		, lastPrinted: {type: String, required: false, defaultValue: ""}
 		, taxExempt: {type: Boolean, required: false, defaultValue: false}
 		, taxNumber: {type: String, required: false, defaultValue: ""}
-		, stateTax: {type: String, required: false, defaultValue: ""}
-		, localTax: {type: String, required: false, defaultValue: ""}
 		, poNumber: {type: String, required: false, defaultValue: ""}
 		, invoiceLogoType: {type: Number, required: false, defaultValue: 0}
 		, invoiceAddressType: {type: Number, required: false, defaultValue: 0}

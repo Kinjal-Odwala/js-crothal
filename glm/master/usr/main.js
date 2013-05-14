@@ -202,7 +202,8 @@ ii.Class({
 			
 			me.creditJob = new ui.ctl.Input.DropDown.Filtered({
 				id: "CreditJob",
-				formatFunction: function( type ) { return type.jobNumber + " - " + type.jobTitle; }
+				formatFunction: function( type ) { return type.jobNumber + " - " + type.jobTitle; },
+				changeFunction: function() { me.modified(); } 
 			});
 							
 		    me.creditAddress1 = new ui.ctl.Input.Text({

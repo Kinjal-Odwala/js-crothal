@@ -5,13 +5,13 @@ ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.rev.invoiceInfo.usr.defs" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.input" , 4);
-ii.Style( "fin.cmn.usr.button" , 5);
-ii.Style( "fin.cmn.usr.dropDown" , 6);
-ii.Style( "fin.cmn.usr.dateDropDown" , 7);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.input", 4 );
+ii.Style( "fin.cmn.usr.button", 5 );
+ii.Style( "fin.cmn.usr.dropDown", 6 );
+ii.Style( "fin.cmn.usr.dateDropDown", 7 );
 
 ii.Class({
     Name: "fin.rev.invoiceInfo.UserInterface",
@@ -87,7 +87,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("Session Loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 
 		resize: function() {
@@ -287,15 +287,7 @@ ii.Class({
 				if(ui.cmn.text.validate.postalCode(me.zip.getValue()) == false)
 					this.setInvalid("Please enter valid postal code. 99999 or 99999-9999.");
 			});
-			
-			me.stateTax = new ui.ctl.Input.Money({
-				id: "StateTax"
-			});			
-	
-			me.localTax = new ui.ctl.Input.Money({
-		        id: "LocalTax"
-		    });
-			
+
 			me.poNumber = new ui.ctl.Input.Text({
 				id: "PONumber",
 				maxLength: 50
@@ -356,12 +348,10 @@ ii.Class({
 			me.city.text.tabIndex = 11;
 			me.state.text.tabIndex = 12;
 			me.zip.text.tabIndex = 13;
-			me.stateTax.text.tabIndex = 14;
-			me.localTax.text.tabIndex = 15;
-			me.poNumber.text.tabIndex = 16;
-			me.invoiceLogo.text.tabIndex = 17;
-			me.invoiceAddress.text.tabIndex = 18;
-			me.notes.tabIndex = 19;
+			me.poNumber.text.tabIndex = 14;
+			me.invoiceLogo.text.tabIndex = 15;
+			me.invoiceAddress.text.tabIndex = 16;
+			me.notes.tabIndex = 17;
 		},
 		
 		resizeControls: function() {
@@ -382,8 +372,6 @@ ii.Class({
 			me.state.resizeText();
 			me.startPeriod.resizeText();
 			me.zip.resizeText();
-			me.stateTax.resizeText();
-			me.localTax.resizeText();
 			me.poNumber.resizeText();
 			me.invoiceLogo.resizeText();
 			me.invoiceAddress.resizeText();
@@ -521,8 +509,6 @@ ii.Class({
 				$("#StateText").attr('disabled', true);
 				$("#StateAction").removeClass("iiInputAction");
 				$("#ZipText").attr('disabled', true);
-				$("#StateTaxText").attr('disabled', true);
-				$("#LocalTaxText").attr('disabled', true);
 				$("#PONumberText").attr('disabled', true);
 				$("#InvoiceLogoText").attr('disabled', true);
 				$("#InvoiceLogoAction").removeClass("iiInputAction");
@@ -607,8 +593,6 @@ ii.Class({
 			if (index >= 0 && index != undefined)
 				me.state.select(index, me.state.focused);
 
-			me.stateTax.setValue(me.invoice.stateTax);
-			me.localTax.setValue(me.invoice.localTax);
 			me.poNumber.setValue(me.invoice.poNumber);
 
 			index = ii.ajax.util.findIndexById(me.invoice.invoiceLogoType.toString(), me.invoiceLogoTypes);
@@ -624,8 +608,6 @@ ii.Class({
 				me.invoiceAddress.reset();
 
 			me.notes.value = me.invoice.notes;
-			me.stateTax.text.readOnly = true;
-			me.localTax.text.readOnly = true;
 									
 			if (me.invoice.printed) {
 				me.taxExempt.text.readOnly = true;			
@@ -675,8 +657,6 @@ ii.Class({
 			me.city.setValue("");
 			me.state.reset();
 			me.zip.setValue("");
-			me.stateTax.setValue("");
-			me.localTax.setValue("");
 			me.poNumber.setValue("");
 			me.invoiceLogo.reset();
 			me.invoiceAddress.reset();
