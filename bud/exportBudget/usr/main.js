@@ -457,10 +457,31 @@ ii.Class({
             $("#pageLoading").show();
 
             var jobId = me.isLevel7NodeSelected() ? me.jobId : 0;
+            
+            var budRequest = function (requestXml, callback) {
+                var data = 'moduleId=bud&requestId=1&requestXml=' + encodeURIComponent(requestXml) + '&&targetId=iiCache';
 
-            me.exportStore.reset();
-            me.exportStore.fetch("userId:[user],hirNode:" + selectedNodes.join('~') + ",yearId:" + me.fiscalYearId + ",jobId:" + jobId, me.exportItemsLoaded, me);
+                jQuery.post('/net/crothall/chimes/fin/bud/act/Provider.aspx', data, function (data, status) {
+                    callback(data);
+                });
+            };
+            
+             var criteriaXml = '<criteria>storeId:budAnnualBudgetExports,exportedCheck:1,userId:[user],hirNode:'+ selectedNodes.join('~') + ',yearId:'+ me.fiscalYearId + ',jobId:' + jobId + '</criteria>';
+            
+            budRequest(criteriaXml, function(responseXml){
+                partialBudgetExported = $('item',$(responseXml)).length>0;
+                if (partialBudgetExported && !confirm('1 or more budget already exported, do you want to continue to export all the selected budgets?')){
+                    $("#pageLoading").hide();
+                    return;
+                 }
+                else{
+                    me.exportStore.reset();
+                    me.exportStore.fetch("userId:[user],hirNode:" + selectedNodes.join('~') + ",yearId:" + me.fiscalYearId + ",jobId:" + jobId, me.exportItemsLoaded, me);
 
+                }
+            });
+
+           
 
         },
 
