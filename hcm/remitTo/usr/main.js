@@ -6,14 +6,14 @@ ii.Import( "ui.ctl.usr.grid" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "fin.hcm.remitTo.usr.defs" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.toolbar" , 4);
-ii.Style( "fin.cmn.usr.input" , 5);
-ii.Style( "fin.cmn.usr.grid" , 6);
-ii.Style( "fin.cmn.usr.button" , 7);
-ii.Style( "fin.cmn.usr.dropDown" , 8);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.toolbar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.grid", 6 );
+ii.Style( "fin.cmn.usr.button", 7 );
+ii.Style( "fin.cmn.usr.dropDown", 8 );
 
 ii.Class({
     Name: "fin.hcm.remitTo.UserInterface",
@@ -35,7 +35,7 @@ ii.Class({
 			
 			me.validator = new ui.ctl.Input.Validation.Master();
 			
-			me.authorizer = new ii.ajax.Authorizer( me.gateway );	//@iiDoc {Property:ii.ajax.Authorizer} Boolean
+			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\HouseCodeSetup\\RemitToLocations";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
@@ -53,7 +53,11 @@ ii.Class({
 			
 			me.remitToStateType.fetchingData();			
 			me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);	
-			me.modified(false);	
+			me.modified(false);
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
 		},	
 		
 		authorizationProcess: function fin_hcm_remitTo_UserInterface_authorizationProcess() {
@@ -68,22 +72,22 @@ ii.Class({
 			me.session.registerFetchNotify(me.sessionLoaded,me);
 		},	
 		
-		sessionLoaded: function fin_hcm_remitTo_UserInterface_sessionLoaded(){
+		sessionLoaded: function fin_hcm_remitTo_UserInterface_sessionLoaded() {
 			var args = ii.args(arguments, {
 				me: {type: Object}
 			});
 
-			ii.trace("session loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 		
-		resize: function(){
+		resize: function() {
 			var args = ii.args(arguments, {});
 			
 			fin.hcm.hcmRemitToUi.remitToGrid.setHeight($(window).height() - 85);
 			$("#remitToContentArea").height($(window).height() - 125);
 		},
 		
-		defineFormControls: function(){
+		defineFormControls: function() {
 			var args = ii.args(arguments, {});
 			var me = this;
 
@@ -96,27 +100,26 @@ ii.Class({
 					id: "saveAction",
 					brief: "Save (Ctrl+S)", 
 					title: "Save the current RemitTo.",
-					actionFunction: function(){ me.actionSaveItem(); }
+					actionFunction: function() { me.actionSaveItem(); }
 				})
 				.addAction({
 					id: "newAction", 
 					brief: "New RemitTo(Ctrl+N)", 
 					title: "Save the current RemitTo, and create a new blank RemitTo.",
-					actionFunction: function(){ me.actionNewItem(); }
+					actionFunction: function() { me.actionNewItem(); }
 				})
 				.addAction({
 					id: "cancelAction", 
 					brief: "Undo current changes to RemitTo (Ctrl+U)", 
 					title: "Undo the changes to RemitTo being edited.",
-					actionFunction: function(){ me.actionUndoItem(); }
+					actionFunction: function() { me.actionUndoItem(); }
 				});
 				
 			me.anchorSave = new ui.ctl.buttons.Sizeable({
 				id: "AnchorSave",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Save&nbsp;&nbsp;</span>",
-				clickFunction: function(){
-					me.actionSaveItem();},
+				clickFunction: function() { me.actionSaveItem(); },
 				hasHotState: true
 			});
 			
@@ -124,8 +127,7 @@ ii.Class({
 				id: "AnchorNew",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;New&nbsp;&nbsp;</span>",
-				clickFunction: function(){
-					me.actionNewItem();},
+				clickFunction: function() { me.actionNewItem(); },
 				hasHotState: true
 			});
 			
@@ -133,8 +135,7 @@ ii.Class({
 				id: "AnchorUndo",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Undo&nbsp;&nbsp;</span>",
-				clickFunction: function(){
-					me.actionUndoItem();},
+				clickFunction: function() { me.actionUndoItem(); },
 				hasHotState: true
 			});
 			
@@ -197,10 +198,10 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation(function( isFinal, dataMap) {
 					
-				if(me.remitToZip.getValue() == "") 
+				if (me.remitToZip.getValue() == "") 
 					return;
 
-				if(ui.cmn.text.validate.postalCode(me.remitToZip.getValue()) == false)
+				if (ui.cmn.text.validate.postalCode(me.remitToZip.getValue()) == false)
 					this.setInvalid("Please enter valid zip code. Example: 99999 or 99999-9999");
 			});
 				
@@ -233,7 +234,7 @@ ii.Class({
 			me.resize();
 		},
 			
-		configureCommunications: function (){
+		configureCommunications: function() {
 			var args = ii.args(arguments, {});
 			var me = this;
 
@@ -254,7 +255,12 @@ ii.Class({
 			});	
 		},
 		
-		modified: function fin_cmn_status_modified() {
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
+		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
@@ -262,7 +268,7 @@ ii.Class({
 			parent.fin.appUI.modified = args.modified;
 		},
 		
-		stateTypesLoaded: function(me, activeId){
+		stateTypesLoaded: function(me, activeId) {
 			
 			me.remitToStateType.reset();
 			me.remitToStateType.setData(me.stateTypes);
@@ -270,10 +276,10 @@ ii.Class({
 			me.remitToStore.fetch("userId:[user]", me.remitToLoaded, me);			
 		},
 		
-		controlVisible: function(){
+		controlVisible: function() {
 			var me = this;
 			
-			if(me.remitToReadOnly){
+			if (me.remitToReadOnly) {
 				$("#RemitToTitleText").attr('disabled', true);
 				$("#RemitToAddress1Text").attr('disabled', true);
 				$("#RemitToAddress1Text").attr('disabled', true);
@@ -288,24 +294,21 @@ ii.Class({
 		},
 		
 		remitToLoaded: function(me, activeId) {
-			me.controlVisible();
-			
+
+			me.controlVisible();			
 			me.remitToGrid.setData(me.remitTos);
 			me.remitToStateType.valid = true;
 			me.remitToStateType.updateStatus();
-			
 			me.remitToGrid.body.select(0);
 
 			$("#pageLoading").hide();
 			me.resizeControls();
 		},
 
-		itemSelect: function(){
-			
+		itemSelect: function() {			
 			var args = ii.args(arguments,{
 				index: {type: Number}  // The index of the data subItem to select
-			});
-			
+			});			
 			var me = this;
 			var index = args.index;
 			var itemIndex = 0;
@@ -342,7 +345,7 @@ ii.Class({
 			}					
 		},
 
-		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor(){
+		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
 			var args = ii.args(arguments, {
 				event: {type: Object} // The (key) event object
 			});
@@ -376,7 +379,7 @@ ii.Class({
 			}
 		},
 		
-		resetControls: function(){
+		resetControls: function() {
 			var me = this;
 			
 			me.remitToId = 0;
@@ -388,8 +391,7 @@ ii.Class({
 			me.remitToZip.setValue("");
 		},
 
-		actionUndoItem: function(){
-			
+		actionUndoItem: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
 			
@@ -402,7 +404,7 @@ ii.Class({
 			}
 		},
 		
-		actionNewItem: function(){
+		actionNewItem: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
 			
@@ -416,11 +418,11 @@ ii.Class({
 			me.status = "new";			
 		},
 		
-		actionSaveItem: function(){
+		actionSaveItem: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
 			
-			if(me.remitToReadOnly) return;
+			if (me.remitToReadOnly) return;
 			
 			if (me.status == "") {
 				if (me.lastSelectedRowIndex == -1 || me.lastSelectedRowIndex == undefined)
@@ -465,11 +467,10 @@ ii.Class({
 			return true;
 		},
 		
-		saveXmlBuildRemitTo: function(){
+		saveXmlBuildRemitTo: function() {
 			var args = ii.args(arguments,{
 				item: {type: fin.hcm.remitTo.RemitTo}
-			});
-			
+			});			
 			var me = this;
 			var item = args.item;
 			var xml = "";
@@ -492,20 +493,18 @@ ii.Class({
 			return xml;			
 		},	
 
-		saveResponseRemitTo: function(){
+		saveResponseRemitTo: function() {
 			var args = ii.args(arguments, {
 				transaction: {type: ii.ajax.TransactionMonitor.Transaction}, // The transaction that was responded to.
 				xmlNode: {type: "XmlNode:transaction"} // The XML transaction node associated with the response.
-			});
-			
+			});			
 			var transaction = args.transaction;
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
-			var errorMessage = "";
 			var status = $(args.xmlNode).attr("status");
-			var traceType = ii.traceTypes.errorDataCorruption;
 			
 			if (status == "success") {
+				me.modified(false);
 				me.remitToId = parseInt(args.xmlNode.firstChild.attributes[0].nodeValue);
 					
 				$(args.xmlNode).find("*").each(function(){
@@ -530,22 +529,12 @@ ii.Class({
 							break;
 					}
 				});
-				
-				$("#pageLoading").hide();
 			}
 			else {
-				alert('Error while updating Remit To Location Record: ' + $(args.xmlNode).attr("message"));
-				errorMessage = $(args.xmlNode).attr("error");
-				
-				if (status == "invalid") {
-					traceType = ii.traceTypes.warning;
-				}
-				else {
-					errorMessage += " [SAVE FAILURE]";
-				}
-				$("#pageLoading").hide();
+				alert("[SAVE FAILURE] Error while updating Remit To Location details: " + $(args.xmlNode).attr("message"));
 			}	
-			me.modified(false);
+			
+			$("#pageLoading").hide();
 		}
 	}
 });

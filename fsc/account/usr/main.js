@@ -56,6 +56,10 @@ ii.Class({
 			me.accountCategory.fetchingData();
 			me.accountCategoryStore.fetch("userId:[user]", me.accountCategorysLoaded, me);
 			me.modified(false);
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
 		},
 		
 		authorizationProcess: function fin_fsc_account_UserInterface_authorizationProcess() {
@@ -310,7 +314,12 @@ ii.Class({
 			});			
 		},
 		
-		modified: function fin_cmn_status_modified() {
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
+		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
@@ -322,7 +331,6 @@ ii.Class({
 			var me = this;
 
 			if (me.accountReadOnly) {
-
 				$("#codeText").attr('disabled', true);
 				$("#categoryText").attr('disabled', true);
 				$("#categoryAction").removeClass("iiInputAction");
@@ -503,9 +511,8 @@ ii.Class({
 			
 			if (me.accountReadOnly) return;
 				
-			if ((me.accountId <= 0 && me.status != "new") 
-				|| (me.fiscalAccountGrid.indexSelected == -1 && me.status != "new")) {
-				alert('Please select Account to save.');
+			if ((me.accountId <= 0 && me.status != "new") || (me.fiscalAccountGrid.indexSelected == -1 && me.status != "new")) {
+				alert("Please select Account to save.");
 				return false;
 			}
 
@@ -603,13 +610,15 @@ ii.Class({
 			var transaction = args.transaction;
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
-			var id = parseInt($(this).attr("id"), 10);
 			var status = $(args.xmlNode).attr("status");
+			var id = parseInt($(this).attr("id"), 10);
 			var index = 0;			
 
 			$("#pageLoading").hide();
 
 			if (status == "success") {
+				me.modified(false);
+				
 				$(args.xmlNode).find("*").each(function () {
 
 					switch (this.tagName) {
@@ -660,11 +669,9 @@ ii.Class({
 							break;
 					}
 				});
-				
-				me.modified(false);
 			}
 			else {
-				alert("[SAVE FAILURE] Error while updating Chart of Account record: " + $(args.xmlNode).attr("message"));
+				alert("[SAVE FAILURE] Error while updating Chart of Account details: " + $(args.xmlNode).attr("message"));
 			}
 		}
 	}

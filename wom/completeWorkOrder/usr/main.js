@@ -6,14 +6,14 @@ ii.Import( "ui.ctl.usr.grid" );
 ii.Import( "fin.wom.completeWorkOrder.usr.defs" );
 ii.Import( "fin.cmn.usr.houseCodeSearch" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.input" , 4);
-ii.Style( "fin.cmn.usr.grid" , 5);
-ii.Style( "fin.cmn.usr.button" , 6);
-ii.Style( "fin.cmn.usr.dropDown" , 7);
-ii.Style( "fin.cmn.usr.dateDropDown" , 8);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.input", 4 );
+ii.Style( "fin.cmn.usr.grid", 5 );
+ii.Style( "fin.cmn.usr.button", 6 );
+ii.Style( "fin.cmn.usr.dropDown", 7 );
+ii.Style( "fin.cmn.usr.dateDropDown", 8 );
 
 ii.Class({
     Name: "fin.wom.completeWorkOrder.UserInterface",
@@ -63,6 +63,10 @@ ii.Class({
 			me.endDate.setValue("");
 			
 			$(window).bind("resize", me, me.resize);
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
 		},
 		
 		authorizationProcess: function fin_wom_completeWorkOrder_UserInterface_authorizationProcess() {
@@ -82,7 +86,8 @@ ii.Class({
 				me: {type: Object}
 			});
 			var me = args.me;
-			ii.trace("session loaded.", ii.traceTypes.Information, "Session");
+			
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 		
 		resize: function() {
@@ -100,8 +105,7 @@ ii.Class({
 				id: "Job",
 				formatFunction: function(type) { return (type.jobNumber + " - " + type.jobTitle); },
 				changeFunction: function() {
-										
-					if(me.job.indexSelected >= 0) {
+					if (me.job.indexSelected >= 0) {
 						me.houseCodeJobId = me.houseCodeJobs[me.job.indexSelected].id;
 						$("#JobText").attr("title", me.houseCodeJobs[me.job.indexSelected].jobNumber + " - " + me.houseCodeJobs[me.job.indexSelected].jobTitle);
 					}
@@ -120,10 +124,10 @@ ii.Class({
 				.addValidation( function( isFinal, dataMap ) {					
 					var enteredText = me.startDate.text.value;
 					
-					if(enteredText == "") 
+					if (enteredText == "") 
 						return;
 											
-					if(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
+					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
 						this.setInvalid("Please enter valid date.");
 				});
 			
@@ -137,10 +141,10 @@ ii.Class({
 				.addValidation( function( isFinal, dataMap ) {					
 					var enteredText = me.endDate.text.value;
 					
-					if(enteredText == "") 
+					if (enteredText == "") 
 						return;
 											
-					if(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
+					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
 						this.setInvalid("Please enter valid date.");
 				});
 				
@@ -180,20 +184,21 @@ ii.Class({
 			me.completedDate = new ui.ctl.Input.Date({
 		        id: "CompletedDate",
 		        appendToId: "WorkOrderGridControlHolder",
-				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
-				changeFunction: function() { me.modified(); }
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
 		    });
-					
+
 			me.completedDate.makeEnterTab()
 				.setValidationMaster( me.validator )		
 				.addValidation( function( isFinal, dataMap ) {
 
 				var enteredText = me.completedDate.lastBlurValue;
 				
-				if(enteredText == "") 
+				if (enteredText == "") 
 					return;
-										
-				if(/^(0[1-9]|1[012]|[1]?[0])[\/-](0[1-9]|[12][0-9]|3[01])[\/-](\d{4}|\d{2})$/.test(enteredText) == false)
+
+				me.modified(true);
+
+				if (/^(0[1-9]|1[012]|[1]?[0])[\/-](0[1-9]|[12][0-9]|3[01])[\/-](\d{4}|\d{2})$/.test(enteredText) == false)
 					this.setInvalid("Please enter valid Completed Date.");
 				else if (new Date(enteredText) > new Date())
 					this.setInvalid("Completed Date should not be greater than Current Date.");
@@ -298,7 +303,12 @@ ii.Class({
 			});
 		},		
 		
-		modified: function fin_cmn_status_modified() {
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
+		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
@@ -307,8 +317,6 @@ ii.Class({
 		},
 		
 		houseCodesLoaded: function(me, activeId) {
-			
-			ii.trace("HouseCodesLoaded", ii.traceTypes.information, "Startup");
 
 			if (parent.fin.appUI.houseCodeId == 0) {
 				if (me.houseCodes.length <= 0) {
@@ -374,9 +382,9 @@ ii.Class({
 		},
 		
 		workOrdersLoaded: function(me, activeId) {
-	
+
 			me.workOrderGrid.setData(me.workOrders);
-			me.selectAll.check.checked = false;
+			me.selectAll.setValue("false");
 			$("#pageLoading").hide();
 			me.resizeControls();
 			
@@ -408,6 +416,8 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 			
+			me.modified(true);
+			
 			for (var index = 0; index < me.workOrders.length; index++) {
 				$("#assignInputCheck" + index)[0].checked = me.selectAll.check.checked;
 				me.workOrders[index].assigned = me.selectAll.check.checked;
@@ -436,7 +446,7 @@ ii.Class({
 			var item = [];
 			var xml = "";
 			
-			if(me.cwoReadOnly) return;
+			if (me.cwoReadOnly) return;
 			
 			me.workOrderGrid.body.deselectAll();
 			
@@ -493,20 +503,15 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-			var errorMessage = "";
-									
+
 			if (status == "success") {
 				me.modified(false);
 				me.actionLoadItem();
 			}
 			else {				
-				errorMessage = "Error while updating Work Order Status: " + $(args.xmlNode).attr("message");
-				errorMessage += $(args.xmlNode).attr("error");
-				errorMessage += " [SAVE FAILURE]";
-				alert(errorMessage);
+				alert("[SAVE FAILURE] Error while updating Work Order Status: " + $(args.xmlNode).attr("message"));
 				$("#pageLoading").hide();
 			}
-			
 		}
 	}
 });
@@ -530,7 +535,7 @@ function actionClickItem(objCheckBox) {
 	
 	index = objCheckBox.id.substring(objCheckBox.id.length - 1);
 	me.workOrders[index].assigned = objCheckBox.checked;
-	me.selectAll.check.checked = allSelected;	
+	me.selectAll.setValue(allSelected.toString());
 }
 
 function actionNotesItem(index) {
@@ -540,7 +545,6 @@ function actionNotesItem(index) {
 	me.notes.value = me.workOrders[index].notes;
 	me.workOrderIndex = index;
 }
-
 
 function loadPopup() {
 	centerPopup();

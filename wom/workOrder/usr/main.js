@@ -81,6 +81,10 @@ ii.Class({
 			$("input[name='Commissionable']").change(function() { me.modified(true); });
 			$("input[name='OvertimeAuthorized']").change(function() { me.modified(true); });
 			$("input[name='WOM']").change(function() { me.modified(true); });
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
 		},		
 		
 		initialize: function() {
@@ -101,7 +105,7 @@ ii.Class({
 
 			$("#searchIcon").click(function() {
 						
-				if($("#searchOption").is(":visible")) {
+				if ($("#searchOption").is(":visible")) {
 					
 					$("#searchIcon").html("<img src='/fin/cmn/usr/media/Common/searchPlus.png'/>");
 					$("#searchOption").hide("slow");
@@ -180,11 +184,12 @@ ii.Class({
 			me.session.registerFetchNotify(me.sessionLoaded,me);
 		},
 		
-		sessionLoaded: function fin_wom_workOrder_UserInterface_sessionLoaded(){
+		sessionLoaded: function fin_wom_workOrder_UserInterface_sessionLoaded() {
 			var args = ii.args(arguments, {
 				me: {type: Object}
 			});
 			var me = args.me;
+
 			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 		
@@ -1194,7 +1199,12 @@ ii.Class({
 			});
 		},
 		
-		modified: function fin_cmn_status_modified() {
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
+		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
@@ -1891,6 +1901,9 @@ ii.Class({
 			var xml = "";
 			
 			if (me.woWriteNoApprove) return;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
 			
 			me.action = "Approve";
 			
@@ -1918,6 +1931,9 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			$("#popupHeader").text("Work Order Items");
 			$("#workOrderType").hide();
 			$("#workOrderContentAreaPopup").hide();
@@ -1977,7 +1993,7 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 				
-			if(me.workOrdersReadOnly) return;
+			if (me.workOrdersReadOnly) return;
 			
 			if (me.action != "")
 				return;
@@ -2586,6 +2602,7 @@ ii.Class({
 									
 			if (status == "success") {
 				me.modified(false);
+
 				$(args.xmlNode).find("*").each(function() {
 					switch (this.tagName) {
 

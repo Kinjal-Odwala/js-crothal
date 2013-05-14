@@ -109,6 +109,10 @@ ii.Class({
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$("#divAdhReportGrid").bind("scroll", me.adhReportGridScroll);
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
 		},
 
 		authorizationProcess: function fin_adh_report_UserInterface_authorizationProcess() {
@@ -894,7 +898,12 @@ ii.Class({
 			});
 		},
 		
-		modified: function fin_cmn_status_modified() {
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
+		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
@@ -3680,6 +3689,7 @@ ii.Class({
 
 			if (status == "success") {
 				me.modified(false);	
+
 				if (me.status == "save") {					
 					$("#selPageNumber").val(me.pageCurrent);
 					$("#AdhReportItemGridBody").html("");
@@ -3692,7 +3702,7 @@ ii.Class({
 				}				
 			}
 			else {				
-				alert("[SAVE FAILURE] Error while updating the Ad-Hoc Report: " + $(args.xmlNode).attr("message"));
+				alert("[SAVE FAILURE] Error while updating the Ad-Hoc Report details: " + $(args.xmlNode).attr("message"));
 				$("#pageLoading").hide();
 			}
 

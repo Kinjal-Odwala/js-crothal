@@ -79,6 +79,10 @@ ii.Class({
 					return false;
 				});
 			}
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
 		},		
 		
 		authorizationProcess: function fin_hcm_houseCodeImport_UserInterface_authorizationProcess() {
@@ -87,7 +91,7 @@ ii.Class({
 			
 			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
 				
-			ii.timer.timing("Page Displayed");
+			ii.timer.timing("Page displayed");
 			me.session.registerFetchNotify(me.sessionLoaded,me);
 		},	
 		
@@ -383,7 +387,12 @@ ii.Class({
 			});
 		},
 		
-		modified: function fin_cmn_status_modified() {
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
+		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
@@ -465,6 +474,9 @@ ii.Class({
 		prevHouseCodeList: function() {
 		    var me = this;
 			
+			if (!me.pages[me.pageCurrent - 1].saved && !fin.cmn.status.itemValid())
+				return;
+
 			me.pageCurrent--;
 			
 			if (me.pageCurrent < 1)
@@ -475,6 +487,10 @@ ii.Class({
 
 		nextHouseCodeList: function() {
 		    var me = this;
+			
+			if (!me.pages[me.pageCurrent - 1].saved && !fin.cmn.status.itemValid())
+				return;
+
 			me.pageCurrent++;
 			
 			if (me.pageCurrent > me.pageCount)
@@ -485,9 +501,13 @@ ii.Class({
 		
 		pageNumberChange: function() {
 		    var me = this;
-		    var selPageNumber = $("#selPageNumber");
-		    
-		    me.pageCurrent = Number(selPageNumber.val());
+
+			if (!me.pages[me.pageCurrent - 1].saved && !fin.cmn.status.itemValid()) {
+				$("#selPageNumber").val(me.pageCurrent);
+				return;
+			}
+
+		    me.pageCurrent = Number($("#selPageNumber").val());
 		    me.changeHouseCodeList();
 		},
 
@@ -542,7 +562,10 @@ ii.Class({
 		
 		actionImportItem: function() {
 			var me = this;
-			
+
+			if (!fin.cmn.status.itemValid())
+				return;
+
 			$("#pageHeader").text("Bulk House Code Import");
 			$("#AnchorValidate").hide();
 			$("#AnchorSave").hide();
@@ -598,19 +621,21 @@ ii.Class({
 			var houseCodeRow = "";
 			var houseCodeRowTemplate = $("#tblHouseCodeTemplate").html();
 			var idIndex = 0;
-			
+
 			$("#messageToUser").text("Loading");
 			$("#HouseCodeGridBody").html("");			
 			$("#divFrame").hide();
 			$("#divUpload").hide();			
 			$("#AnchorSave").hide();
 			$("#tblHouseCodes").show();
-			
+
 			if (me.pages[me.pageCurrent - 1].saved || me.houseCodes.length == 0)
 				$("#AnchorValidate").hide();
-			else
+			else {
 				$("#AnchorValidate").show();
-				
+				me.modified(true);
+			}
+
 			if (me.houseCodes.length == 0)
 				alert("House Codes imported successfully. Invalid records are not found during the import process.");
 
@@ -1529,12 +1554,13 @@ ii.Class({
 									
 			if (status == "success") {
 				me.pages[me.pageCurrent - 1].saved = true;
-				
+				me.modified(false);
+
 				$("#AnchorValidate").hide();
 				$("#AnchorSave").hide();
 			}
 			else {
-				alert("[SAVE FAILURE] Error while updating House Code record: " + $(args.xmlNode).attr("message"));
+				alert("[SAVE FAILURE] Error while updating House Code details: " + $(args.xmlNode).attr("message"));
 			}
 
 			$("#pageLoading").hide();
@@ -1575,7 +1601,6 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-			var errorMessage = "";
 
 			if (status == "success") {
 				me.modified(false);
@@ -1591,10 +1616,7 @@ ii.Class({
 				});
 			}
 			else {
-				errorMessage = "Error while importing House Code Record: " + $(args.xmlNode).attr("message");
-				errorMessage += $(args.xmlNode).attr("error");
-				errorMessage += " [SAVE FAILURE]";
-				alert(errorMessage);				
+				alert("[SAVE FAILURE] Error while importing House Code details: " + $(args.xmlNode).attr("message"));
 				$("#pageLoading").hide();
 			}
 		}		
@@ -1602,12 +1624,12 @@ ii.Class({
 });
 
 function onFileChange() {
-	
+	var me = fin.hcm.houseCodeImportUI;	
 	var fileName = $("iframe")[0].contentWindow.document.getElementById("UploadFile").value;	
 	var fileExtension = fileName.substring(fileName.lastIndexOf("."));
-	parent.fin.appUI.modified = "true";
+
 	if (fileExtension == ".xlsx")
-		fin.hcm.houseCodeImportUI.anchorUpload.display(ui.cmn.behaviorStates.enabled);
+		me.anchorUpload.display(ui.cmn.behaviorStates.enabled);
 	else
 		alert("Invalid file format. Please select the correct XLSX file.");
 }

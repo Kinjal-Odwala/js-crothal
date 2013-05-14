@@ -7,14 +7,14 @@ ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.pur.item.usr.defs" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.toolbar" , 4);
-ii.Style( "fin.cmn.usr.input" , 5);
-ii.Style( "fin.cmn.usr.grid" , 6);
-ii.Style( "fin.cmn.usr.button" , 7);
-ii.Style( "fin.cmn.usr.dropDown" , 8);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.toolbar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.grid", 6 );
+ii.Style( "fin.cmn.usr.button", 7 );
+ii.Style( "fin.cmn.usr.dropDown", 8 );
 
 ii.Class({
     Name: "fin.pur.item.UserInterface",
@@ -36,7 +36,7 @@ ii.Class({
 				function(status, errorMessage){ me.nonPendingError(status, errorMessage); }
 			);	
 			
-			me.authorizer = new ii.ajax.Authorizer( me.gateway );	//@iiDoc {Property:ii.ajax.Authorizer} Boolean
+			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\Purchasing\\Items";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
@@ -57,6 +57,10 @@ ii.Class({
 			me.accountStore.fetch("userId:[user]", me.accountsLoaded, me);				
 			me.itemStatusesLoaded();
 			me.modified(false);
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
 		},	
 		
 		authorizationProcess: function fin_pur_item_UserInterface_authorizationProcess() {
@@ -76,7 +80,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("session loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 		
 		resize: function() {
@@ -362,8 +366,13 @@ ii.Class({
 				injectionArray: me.accounts	
 			});	
 		},
+		
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
 	
-		modified: function fin_cmn_status_modified() {
+		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
@@ -418,9 +427,9 @@ ii.Class({
 				+ ",userId:[user]", me.itemsLoaded, me);				
 		},
 		
-		controlVisible: function(){
-			if(me.itemsReadOnly){
-				
+		controlVisible: function() {
+			
+			if (me.itemsReadOnly) {
 				$("#ItemMasterIdText").attr('disabled', true);
 				$("#ItemNumberText").attr('disabled', true);
 				$("#ItemNumber2Text").attr('disabled', true);
@@ -436,13 +445,12 @@ ii.Class({
 				
 				$("#actionMenu").hide();
 				$(".footer").hide();
-				
 			}
 		},
 		
 		itemsLoaded: function(me, activeId) {
 
-			if(me.items[0] == null)
+			if (me.items[0] == null)
 				alert('No matching record found!!');
 			
 			me.lastSelectedRowIndex = -1;
@@ -678,11 +686,10 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;			
 			var status = $(args.xmlNode).attr("status");
-			var traceType = ii.traceTypes.errorDataCorruption;
-			var errorMessage = "";
-			
+
 			if (status == "success") {
-				me.modified(false);		
+				me.modified(false);
+
 				$(args.xmlNode).find("*").each(function() {
 					switch (this.tagName) {
 
@@ -708,15 +715,7 @@ ii.Class({
 				});
 			}
 			else {
-				alert('Error while updating Item Record: ' + $(args.xmlNode).attr("message"));
-				errorMessage = $(args.xmlNode).attr("error");
-				
-				if (status == "invalid") {
-					traceType = ii.traceTypes.warning;
-				}
-				else {
-					errorMessage += " [SAVE FAILURE]";
-				}
+				alert("[SAVE FAILURE] Error while updating Item details: " + $(args.xmlNode).attr("message"));
 			}
 			
 			$("#pageLoading").hide();

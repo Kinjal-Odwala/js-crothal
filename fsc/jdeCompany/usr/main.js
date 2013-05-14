@@ -35,7 +35,7 @@ ii.Class({
 			
 			me.validator = new ui.ctl.Input.Validation.Master();
 			
-			me.authorizer = new ii.ajax.Authorizer( me.gateway );	//@iiDoc {Property:ii.ajax.Authorizer} Boolean
+			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\Fiscal\\JDECompanies";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
@@ -54,6 +54,10 @@ ii.Class({
 			me.patternStore.fetch("userId:[user]", me.patternsLoaded, me); 
 			me.jdeCompanyStore.fetch("userId:[user]", me.jdeCompanyLoaded, me);
 			me.modified(false);
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
 		},
 		
 		authorizationProcess: function fin_fsc_jdeCompany_UserInterface_authorizationProcess() {
@@ -73,7 +77,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("session loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 		
 		resizeControls: function() {
@@ -198,7 +202,12 @@ ii.Class({
 			});
 		},
 		
-		modified: function fin_cmn_status_modified() {
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
+		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
@@ -215,7 +224,7 @@ ii.Class({
 		controlVisible: function(){
 			var me = this;
 			
-			if(me.isReadOnly){
+			if (me.isReadOnly) {
 				me.jdeCompanyGrid.columns["title"].inputControl = null;
 				me.jdeCompanyGrid.columns["pattern"].inputControl = null;
 				me.jdeCompanyGrid.columns["active"].inputControl = null;
@@ -279,18 +288,18 @@ ii.Class({
 		actionSaveItem: function() {
 			var args = ii.args(arguments, {});
 			var me = this;
-			me.modified(false);
+
 			// Check to see if the data is not entered
-			if(me.jdeCompanyGrid.activeRowIndex < 0){
+			if (me.jdeCompanyGrid.activeRowIndex < 0) {
 				return false;
 			}
 			
-			if(me.jdeCompanyGrid.indexSelected < 0 || me.isReadOnly) return;
+			if (me.jdeCompanyGrid.indexSelected < 0 || me.isReadOnly) return;
 
 			me.validator.forceBlur();
 
 			// Check to see if the data entered is valid
-			if( !me.validator.queryValidity(true) ){
+			if (!me.validator.queryValidity(true)) {
 				alert( "In order to save, the errors on the page must be corrected.");
 				return false;
 			}
@@ -302,7 +311,7 @@ ii.Class({
 
 			for (var index = 0; index < me.jdeCompanys.length; index++) {
 				
-				if(me.jdeCompanys[index].modified == false && index <= me.jdeCompanyCountOnLoad) continue;
+				if (me.jdeCompanys[index].modified == false && index <= me.jdeCompanyCountOnLoad) continue;
 				
 				company = new fin.fsc.jdeCompany.JDECompany(
 					(me.jdeCompanys[index] != undefined ? me.jdeCompanys[index].id : 0)
@@ -341,8 +350,7 @@ ii.Class({
 			var item = args.item;
 			var index = 0;
 			
-			for (index in item) {
-			
+			for (index in item) {			
 				xml += '<jdeCompany'
 				xml += ' id="' + item[index].id + '"';
 				xml += ' title="' + ui.cmn.text.xml.encode(item[index].title) + '"';
@@ -363,25 +371,14 @@ ii.Class({
 			var transaction = args.transaction;
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
-			var errorMessage = "";	
 			var status = $(args.xmlNode).attr("status");
-			var traceType = ii.traceTypes.errorDataCorruption;
 			
 			if (status == "success") {
+				me.modified(false);
 				me.actionUndoItem();
 			}
-			else {				
-
-				alert('Error while updating JDE Company Record: ' + $(args.xmlNode).attr("message"));
-				errorMessage = $(args.xmlNode).attr("error");
-				
-				if (status == "invalid") {
-					traceType = ii.traceTypes.warning;
-				}
-				else {
-					errorMessage += " [SAVE FAILURE]";
-				}
-				me.actionUndoItem();
+			else {
+				alert("[SAVE FAILURE] Error while updating JDE Company details: " + $(args.xmlNode).attr("message"));
 				$("#pageLoading").hide();
 			}
 		}

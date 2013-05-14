@@ -47,6 +47,10 @@ ii.Class({
 
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
+
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
 		},
 
 		authorizationProcess: function fin_app_state_UserInterface_authorizationProcess() {
@@ -213,11 +217,16 @@ ii.Class({
 				injectionArray: me.taxableServiceStates
 			});
 		},
-		
+				
 		setStatus: function(status) {
 			var me = this;
 
 			fin.cmn.status.setStatus(status);
+		},
+		
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
 		},
 		
 		modified: function() {

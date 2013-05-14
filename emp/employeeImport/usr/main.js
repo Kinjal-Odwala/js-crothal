@@ -85,7 +85,11 @@ ii.Class({
 				$(document).bind("contextmenu", function(event) {
 					return false;
 				});
-			}			
+			}
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
 		},
 
 		authorizationProcess: function fin_emp_employeeImport_UserInterface_authorizationProcess() {
@@ -432,11 +436,15 @@ ii.Class({
 			});
 		},
 		
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
 		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-			var me = this;
 
 			parent.fin.appUI.modified = args.modified;
 		},
@@ -2336,7 +2344,7 @@ ii.Class({
 				$("#AnchorSave").hide();
 			}
 			else {
-				alert("[SAVE FAILURE] Error while updating Employee Record: " + $(args.xmlNode).attr("message"));
+				alert("[SAVE FAILURE] Error while updating Employee details: " + $(args.xmlNode).attr("message"));
 			}
 
 			$("#pageLoading").hide();
@@ -2390,7 +2398,7 @@ ii.Class({
 				});
 			}
 			else {
-				alert("[SAVE FAILURE] Error while importing Employee Record: " + $(args.xmlNode).attr("message"));
+				alert("[SAVE FAILURE] Error while importing Employee details: " + $(args.xmlNode).attr("message"));
 				$("#pageLoading").hide();
 			}
 		}
@@ -2398,12 +2406,12 @@ ii.Class({
 });
 
 function onFileChange() {
-	
+	var me = fin.emp.employeeImportUI;
 	var fileName = $("iframe")[0].contentWindow.document.getElementById("UploadFile").value;	
 	var fileExtension = fileName.substring(fileName.lastIndexOf("."));
 	
 	if (fileExtension == ".xlsx")
-		fin.emp.employeeImportUI.anchorUpload.display(ui.cmn.behaviorStates.enabled);
+		me.anchorUpload.display(ui.cmn.behaviorStates.enabled);
 	else
 		alert("Invalid file format. Please select the correct XLSX file.");
 }

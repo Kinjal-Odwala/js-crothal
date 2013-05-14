@@ -7,15 +7,15 @@ ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.fsc.fiscalCalender.usr.defs" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.toolbar" , 4);
-ii.Style( "fin.cmn.usr.input" , 5);
-ii.Style( "fin.cmn.usr.grid" , 6);
-ii.Style( "fin.cmn.usr.dropDown" , 7);
-ii.Style( "fin.cmn.usr.dateDropDown" , 8);
-ii.Style( "fin.cmn.usr.button" , 9);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.toolbar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.grid", 6 );
+ii.Style( "fin.cmn.usr.dropDown", 7 );
+ii.Style( "fin.cmn.usr.dateDropDown", 8 );
+ii.Style( "fin.cmn.usr.button", 9 );
 
 ii.Class({
     Name: "fin.fsc.fiscalCalender.UserInterface",
@@ -38,9 +38,9 @@ ii.Class({
 				, function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
 			);			
 				
-			me.validator = new ui.ctl.Input.Validation.Master();	//@iiDoc {Property:ui.ctl.Input.Validation.Master}
+			me.validator = new ui.ctl.Input.Validation.Master();
 			
-			me.authorizer = new ii.ajax.Authorizer( me.gateway );	//@iiDoc {Property:ii.ajax.Authorizer} Boolean
+			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\Fiscal\\Calendar";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
@@ -58,6 +58,10 @@ ii.Class({
 			
 			me.fiscalYearStore.fetch("userId:[user]", me.fiscalYearsLoaded, me);
 			me.modified(false);
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
 		},
 		
 		authorizationProcess: function fin_fsc_fiscalCalender_UserInterface_authorizationProcess() {
@@ -76,7 +80,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("session loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 	
 		resize: function() {
@@ -148,7 +152,7 @@ ii.Class({
 				id: "FiscalYear",
 				appendToId: "divForm",
 				allowAdds: false,
-				selectFunction: function( index ) { me.itemSelectYear (index); },
+				selectFunction: function( index ) { me.itemSelectYear(index); },
 				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});
 			
@@ -190,8 +194,7 @@ ii.Class({
 			me.fiscalStartDate = new ui.ctl.Input.Date({
 		        id: "FiscalStartDate",
 		        appendToId: "FiscalPeriodControlHolder",
-				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
-				changeFunction: function() { me.modified(); }
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
 		    });
 					
 			me.fiscalStartDate.makeEnterTab()
@@ -203,6 +206,8 @@ ii.Class({
 				
 				if (enteredText == "") 
 					return;
+					
+				me.modified();
 										
 				if (/^(0[1-9]|1[012]|[1]?[0])[\/-](0[1-9]|[12][0-9]|3[01])[\/-](\d{4}|\d{2})$/.test(enteredText) == false) {							
 					this.setInvalid("Please enter valid date.");
@@ -212,20 +217,21 @@ ii.Class({
 			me.fiscalEndDate = new ui.ctl.Input.Date({
 		        id: "FiscalEndDate",
 				appendToId: "FiscalPeriodControlHolder",
-				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
-				changeFunction: function() { me.modified(); }
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
 		    });
 			
 			me.fiscalEndDate.makeEnterTab()
 				.setValidationMaster( me.validator )
 				.addValidation( ui.ctl.Input.Validation.required )					
 				.addValidation( function( isFinal, dataMap ) {
-					
+
 				var enteredText = me.fiscalEndDate.lastBlurValue;
-				
+
 				if (enteredText == "") 
 					return;
-										
+
+				me.modified();
+				
 				if (/^(0[1-9]|1[012]|[1]?[0])[\/-](0[1-9]|[12][0-9]|3[01])[\/-](\d{4}|\d{2})$/.test(enteredText) == false) {							
 					this.setInvalid("Please enter valid date.");
 				}
@@ -376,7 +382,12 @@ ii.Class({
 			});			
 		},
 		
-		modified: function fin_cmn_status_modified() {
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
+		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
@@ -455,7 +466,7 @@ ii.Class({
 				me.fiscalYearRowId = me.fiscalYearGrid.activeRowIndex;
 				
 				selectId = ii.ajax.util.findIndexById(me.fiscalYearGrid.data[index].patternId.toString(), me.patterns);
-				if(selectId != undefined)
+				if (selectId != undefined)
 					me.fiscalCalenderPattern.select(selectId, me.fiscalCalenderPattern.focused);
 					
 				me.fiscalCalenderYear.setValue(me.fiscalYearGrid.data[index].title);
@@ -525,7 +536,7 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 				
-			if(me.calendarReadOnly) return;
+			if (me.calendarReadOnly) return;
 	
 			me.status = "new";
 			me.fiscalYearId = 0;
@@ -732,10 +743,10 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-			var traceType = ii.traceTypes.errorDataCorruption;
-			var errorMessage = "";
 			
 			if (status == "success") {
+				me.modified(false);
+				me.status = "";
 				
 				for (var index = 0; index < me.fiscalPeriods.length; index++) {
 					me.fiscalPeriods[index].modified = false;
@@ -770,21 +781,11 @@ ii.Class({
 						
 					}
 				});
-				
-				me.status = "";
 			}
 			else {
-				alert('Error while updating Fiscal Calendar Record: ' + $(args.xmlNode).attr("message"));
-				errorMessage = $(args.xmlNode).attr("error");
-				
-				if (status == "invalid") {
-					traceType = ii.traceTypes.warning;
-				}
-				else {
-					errorMessage += " [SAVE FAILURE]";
-				}
+				alert("[SAVE FAILURE] Error while updating Fiscal Calendar details: " + $(args.xmlNode).attr("message"));
 			}
-			me.modified(false);
+
 			$("#pageLoading").hide();
 		}
 	}

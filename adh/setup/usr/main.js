@@ -77,6 +77,10 @@ ii.Class({
 
 			me.moduleStore.fetch("userId:[user]", me.moduleLoaded, me);
 			$(window).bind("resize", me, me.resize);
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
 		},
 
 		authorizationProcess: function fin_adh_setup_UserInterface_authorizationProcess() {
@@ -99,7 +103,7 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 
-			fin.adhUi.appReportGrid.setHeight($(window).height() - 85);
+			fin.adhUi.appReportGrid.setHeight($(window).height() - 55);
 			fin.adhUi.appModuleColumnGrid.setHeight($(window).height() - 280);
 		},
 
@@ -305,7 +309,12 @@ ii.Class({
 			});
 		},	
 		
-		modified: function fin_cmn_status_modified() {
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
+		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
@@ -534,8 +543,7 @@ ii.Class({
 			
 			if (!parent.fin.cmn.status.itemValid())
 				return;
-				
-			;			
+			
 			me.reportTitle.setValue("");
 			me.module.select(0, me.module.focused);
 			me.moduleId = 0;
@@ -555,7 +563,7 @@ ii.Class({
 
 			me.moduleAssociateGroup.reset();
 			me.appModuleColumnGrid.setData([]);
-			me.action = "New"
+			me.action = "new";
 		},
 
 		actionClickItem: function(object, index) {
@@ -647,7 +655,7 @@ ii.Class({
 				return false;
 			}
 
-			if (me.action == "New") {
+			if (me.action == "new") {
 				reportId = 0;
 				hirNode = 0;
 			}
@@ -763,8 +771,8 @@ ii.Class({
 			$("#pageLoading").hide();
 
 			if (status == "success") {
-				
 				me.modified(false);
+				
 				$(args.xmlNode).find("*").each(function () {
 
 					switch (this.tagName) {
@@ -782,7 +790,7 @@ ii.Class({
 								, hirNode
 							);
 
-							if (me.appReportGrid.activeRowIndex < 0 && me.action == "New") {
+							if (me.appReportGrid.activeRowIndex < 0 && me.action == "new") {
 								me.reports.push(item);
 								me.appReportGrid.setData(me.reports);
 								me.appReportGrid.body.select(me.reports.length - 1);
@@ -799,7 +807,7 @@ ii.Class({
 				me.action = "";
 			}
 			else {
-				alert("[SAVE FAILURE] Error while updating Ad-Hoc Report: " + $(args.xmlNode).attr("message"));
+				alert("[SAVE FAILURE] Error while updating Ad-Hoc Report Setup details: " + $(args.xmlNode).attr("message"));
 			}
 		}
 	}
