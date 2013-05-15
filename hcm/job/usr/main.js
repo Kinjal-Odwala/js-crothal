@@ -840,6 +840,13 @@ ii.Class({
 			me.jobType.setData(me.jobTypes);
 			me.jobTemplate.setData(me.jobTemplates);
 			me.resizeControls();
+			
+			me.houseCodeGrid.body.deselectAll();
+			me.houseCodeGrid.setData([]);
+			
+			me.jobGrid.body.deselectAll();
+			me.jobGrid.setData([]);
+			
 			if ($("#SearchByHouseCode")[0].checked)
 				me.jobStore.fetch("houseCodeId:" + parent.fin.appUI.houseCodeId + ",jobType:1,userId:[user],", me.houseCodeJobsLoaded, me);
 			else if ($("#SearchByJob")[0].checked && me.searchInput.getValue().length >= 3)
