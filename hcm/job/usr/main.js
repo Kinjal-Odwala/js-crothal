@@ -85,6 +85,21 @@ ii.Class({
 			$("#OverrideSiteTaxDiv").hide();
 			$("#SearchInput").bind("keydown", me, me.actionSearchItem);
 			
+			$("#TabCollection a").mousedown(function() {
+				if (!parent.fin.cmn.status.itemValid()) 
+					return false;
+				else {
+					var tabIndex = 0;
+					if (this.id == "JobDetails")
+						tabIndex = 1;
+					else if (this.id == "JobAssociations")
+						tabIndex = 2;
+						
+					$("#container-1").tabs(tabIndex);
+					$("#container-1").triggerTab(tabIndex);
+				}					
+			});
+			
 			$("#TabCollection a").click(function() {
 				
 				switch(this.id) {
@@ -274,9 +289,17 @@ ii.Class({
 
 		resize: function fin_hcm_job_UserInterface_resize() {
 			var args = ii.args(arguments, {});
-
-			$("#HouseCodeGrid").width($("#JobHouseCodeContainer").width() - 10);
-			$("#AddHouseCodes").width($("#JobHouseCodeContainer").width() - 8);
+			
+			if ($("#JobHouseCodeContainer").width() < 509) {
+				$("#HouseCodeGrid").width(508);
+				$("#AddHouseCodes").width(509);
+			}
+				
+			else {
+				$("#HouseCodeGrid").width($("#JobHouseCodeContainer").width() - 4);
+				$("#AddHouseCodes").width($("#JobHouseCodeContainer").width() - 3);
+			}
+			
 			$("#popupJob").height($(window).height() - 187);
 			$("#JobHouseCodeContainer").height($(window).height() - 177);
 			fin.hcm.hcmjobUi.jobGrid.setHeight($(window).height() - 115);
@@ -812,7 +835,7 @@ ii.Class({
 			me.resizeControls();
 			if($("#SearchByHouseCode")[0].checked)
 				me.jobStore.fetch("houseCodeId:" + parent.fin.appUI.houseCodeId + ",jobType:1,userId:[user],", me.houseCodeJobsLoaded, me);
-			else if($("#SearchByJob")[0].checked)
+			else if($("#SearchByJob")[0].checked && me.searchInput.getValue().length >= 3)
 				me.jobStore.fetch("title:" + me.searchInput.getValue() + ",jobType:1,userId:[user],", me.houseCodeJobsLoaded, me);
 		},
 
@@ -936,10 +959,10 @@ ii.Class({
 					else
 						me.invoiceTemplate.reset();
 				
-					if (args.job.taxId == 0)
+					if (item.taxId == 0)
 						me.taxId.setValue("");
 					else
-						me.taxId.setValue(args.job.taxId);
+						me.taxId.setValue(item.taxId);
 				}
 				else {
 					me.invoiceTemplate.reset();
@@ -1317,7 +1340,7 @@ ii.Class({
 			//me.jobId = 0;
 			me.houseCodeJobId = 0;
 
-			if (me.status == "" || me.status == "removeAssociation") {
+			if (me.status == "removeAssociation") {
 				if (me.jobs[me.jobGrid.activeRowIndex] != undefined) {
 					me.jobId = me.jobs[me.jobGrid.activeRowIndex].id;
 					me.houseCodeJobId = me.houseCodeGrid.data[me.houseCodeGrid.activeRowIndex].id;
@@ -1523,7 +1546,7 @@ function disablePopup() {
 function centerPopup() {
 	var windowWidth = document.documentElement.clientWidth;
 	var windowHeight = document.documentElement.clientHeight;
-	var popupWidth = windowWidth - 100;
+	var popupWidth = windowWidth - 400;
 	var popupHeight = windowHeight - 100;
 	
 	$("#popupHouseCode").css({
