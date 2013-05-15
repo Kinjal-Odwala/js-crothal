@@ -8,15 +8,15 @@ ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.cmn.usr.houseCodeSearch" );
 ii.Import( "fin.inv.inventoryItem.usr.defs" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.toolbar" , 4);
-ii.Style( "fin.cmn.usr.input" , 5);
-ii.Style( "fin.cmn.usr.grid" , 6);
-ii.Style( "fin.cmn.usr.button" , 7);
-ii.Style( "fin.cmn.usr.dropDown" , 8);
-ii.Style( "fin.cmn.usr.dateDropDown" , 9);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.toolbar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.grid", 6 );
+ii.Style( "fin.cmn.usr.button", 7 );
+ii.Style( "fin.cmn.usr.dropDown", 8 );
+ii.Style( "fin.cmn.usr.dateDropDown", 9 );
 
 ii.Class({
     Name: "fin.inv.inventoryItem.UserInterface",
@@ -83,6 +83,10 @@ ii.Class({
 					return false;
 				});
 			}
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
 		},
 
 		authorizationProcess: function fin_inv_inventoryItem_UserInterface_authorizationProcess() {
@@ -111,7 +115,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("Session Loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 		
 		resize: function() {
@@ -223,8 +227,8 @@ ii.Class({
 				appendToId: "divForm",
 				selectFunction: function( index ) { me.itemSelect(index); },
 				deselectFunction: function( index ) { me.itemDeSelect(); },
-				allowAdds: false,
-				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
+				validationFunction: function() { return parent.fin.cmn.status.itemValid(); },
+				allowAdds: false
 			});			
 			
 			me.countComplete = new ui.ctl.Input.Check({
@@ -258,7 +262,7 @@ ii.Class({
 			me.itemQuantity = new ui.ctl.Input.Text({
 		        id: "ItemQuantity",
 		        appendToId: "InventoryItemGridControlHolder",
-				changeFunction: function() { me.calculateCost(); me.modified(); }
+				changeFunction: function() { me.modified(); me.calculateCost(); }
 		    });
 
 			me.itemQuantity.makeEnterTab()
@@ -336,8 +340,7 @@ ii.Class({
 				
 			me.price = new ui.ctl.Input.Text({
 		        id: "Price",
-				changeFunction: function() { me.calculateItemCost(); },
-				changeFunction: function() { me.modified(); }
+				changeFunction: function() { me.modified(); me.calculateItemCost(); }
 		    });
 			
 			me.price.makeEnterTab()
@@ -355,8 +358,7 @@ ii.Class({
 			
 			me.quantity = new ui.ctl.Input.Text({
 		        id: "Quantity",
-				changeFunction: function() { me.calculateItemCost(); },
-				changeFunction: function() { me.modified(); }
+				changeFunction: function() { me.modified(); me.calculateItemCost(); }
 		    });
 			
 			me.quantity.makeEnterTab()
@@ -487,7 +489,12 @@ ii.Class({
 			});
 		},
 		
-		modified: function fin_cmn_status_modified() {
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
+		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
@@ -874,6 +881,9 @@ ii.Class({
 		actionUndoItem: function() {
 			var me = this;
 
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
 			if (me.inventoryGrid.activeRowIndex >= 0) {						
 				var index = me.inventoryItemGrid.activeRowIndex;
 				if (index >= 0)
@@ -996,9 +1006,10 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-			var errorMessage = "";
 
 			if (status == "success") {
+				me.modified(false);
+				
 				$(args.xmlNode).find("*").each(function() {
 					switch (this.tagName) {
 
@@ -1039,14 +1050,10 @@ ii.Class({
 				});
 			}
 			else {
-				errorMessage = "Error while updating Inventory record: " + $(args.xmlNode).attr("message");
-				errorMessage += $(args.xmlNode).attr("error");
-				errorMessage += " [SAVE FAILURE]";
-				alert(errorMessage);				
+				alert("[SAVE FAILURE] Error while updating Inventory details: " + $(args.xmlNode).attr("message"));
 			}
 
 			me.status = "";
-			me.modified(false);
 			$("#pageLoading").hide();
 		},
 
@@ -1068,7 +1075,7 @@ ii.Class({
 
 			$("#pageLoading").hide();
 
-			if(me.fileNames.length == 1) {
+			if (me.fileNames.length == 1) {
 				$("iframe")[0].contentWindow.document.getElementById("FileName").value = me.fileNames[0].fileName;
 				$("iframe")[0].contentWindow.document.getElementById("DownloadButton").click();
 			}

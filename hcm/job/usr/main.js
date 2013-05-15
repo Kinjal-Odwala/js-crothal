@@ -124,6 +124,10 @@ ii.Class({
 			$("#container-1").tabs(1);
 			$("#container-1").triggerTab(1);
 			$("#imgAddHouseCodes").bind("click", function() { me.addHouseCodes(); });
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
 		},	
 
 		authorizationProcess: function fin_hcm_job_UserInterface_authorizationProcess() {
@@ -508,9 +512,8 @@ ii.Class({
 			me.geoCode = new ui.ctl.Input.DropDown.Filtered({
 		        id: "JobGEOCode",
 				formatFunction: function( type ) { return type.geoCode; },
-				changeFunction: function() { me.geoCodeChanged(); },
-		        required: false,
-				changeFunction: function() { me.modified(); }
+				changeFunction: function() {  me.modified(); me.geoCodeChanged(); },
+		        required: false
 		    });
 			
 			me.geoCode.makeEnterTab()
@@ -524,8 +527,8 @@ ii.Class({
 			me.jobCity = new ui.ctl.Input.DropDown.Filtered({
 		        id: "JobCity",
 				formatFunction: function( type ) { return type.city; },
-		        required: false,
-				changeFunction: function() { me.modified(); }
+				changeFunction: function() { me.modified(); },
+		        required: false				
 		    });
 			
 			me.jobCity.makeEnterTab()
@@ -587,9 +590,8 @@ ii.Class({
 			me.jobType = new ui.ctl.Input.DropDown.Filtered({
 				id: "JobType",
 				formatFunction: function(type) { return type.name; },
-				changeFunction: function() { me.jobTypeChange(); },
-				title: "Select Job Type",
-				changeFunction: function() { me.modified(); }
+				changeFunction: function() { me.modified(); me.jobTypeChange(); },
+				title: "Select Job Type"
 			});
 			
 			me.jobType.makeEnterTab()
@@ -604,8 +606,8 @@ ii.Class({
 			me.invoiceTemplate = new ui.ctl.Input.DropDown.Filtered({
 				id: "InvoiceTemplate",
 				formatFunction: function(type) { return type.title; },
-				title: "Select Invoice Template",
-				changeFunction: function() { me.modified(); }
+				changeFunction: function() { me.modified(); },
+				title: "Select Invoice Template"				
 			});
 
 			me.taxId = new ui.ctl.Input.Text({
@@ -783,7 +785,12 @@ ii.Class({
 			});
 		},
 		
-		modified: function fin_cmn_status_modified() {
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
+		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
@@ -833,9 +840,9 @@ ii.Class({
 			me.jobType.setData(me.jobTypes);
 			me.jobTemplate.setData(me.jobTemplates);
 			me.resizeControls();
-			if($("#SearchByHouseCode")[0].checked)
+			if ($("#SearchByHouseCode")[0].checked)
 				me.jobStore.fetch("houseCodeId:" + parent.fin.appUI.houseCodeId + ",jobType:1,userId:[user],", me.houseCodeJobsLoaded, me);
-			else if($("#SearchByJob")[0].checked && me.searchInput.getValue().length >= 3)
+			else if ($("#SearchByJob")[0].checked && me.searchInput.getValue().length >= 3)
 				me.jobStore.fetch("title:" + me.searchInput.getValue() + ",jobType:1,userId:[user],", me.houseCodeJobsLoaded, me);
 		},
 
@@ -1459,8 +1466,8 @@ ii.Class({
 			var status = $(args.xmlNode).attr("status");
 
 			if (status == "success") {
-				
 				me.modified(false);
+				
 				if (me.status == "addHouseCodes") {
 					me.houseCodesTabNeedUpdate = true;
 					me.loadHouseCodes();
