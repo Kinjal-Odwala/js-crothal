@@ -290,7 +290,15 @@ ii.Class({
 			if (processed)
 				return false;
 		},
-		
+
+		modified: function() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+
+			parent.parent.fin.appUI.modified = args.modified;
+		},
+
 		resetGrid: function() {
 			$("#InvoiceItemGrid tbody").html("");	
 		},
@@ -791,7 +799,7 @@ ii.Class({
 						break;
 					}
 				}
-			}
+			}			
 		},
 
 		calculateTotal: function() {
@@ -810,21 +818,14 @@ ii.Class({
 		setupEvents: function() {
 			var me = this;
 			
-			$("#quantity").keypress(function(e) {
-				if (e.which != 8 && e.which != 0 && e.which != 45 && e.which != 46 && (e.which < 48 || e.which > 57))
-					return false;
-			});
-
-			$("#price").keypress(function(e) {
+			$("#quantity, #price").keypress(function(e) {
 				if (e.which != 8 && e.which != 0 && e.which != 45 && e.which != 46 && (e.which < 48 || e.which > 57))
 					return false;
 			});
 			
-			$("#quantity").bind("blur", function() { me.calculateTotal(); });
-			$("#price").bind("blur", function() { me.calculateTotal(); });
-			$("#job").bind("change", function() { me.setTaxable(); });
-			$("#taxableService").bind("change", function() { me.setTaxable(); });
-			$("#account").bind("change", function() { me.setTaxable(); });
+			$("#quantity, #price, #lineShow, #description").change(function() { me.modified(); });
+			$("#quantity, #price").bind("blur", function() { me.calculateTotal(); });
+			$("#job, #taxableService, #account").bind("change", function() { me.modified(); me.setTaxable(); });
 
 			me.setTaxable();
 		},
@@ -877,6 +878,7 @@ ii.Class({
 					$("#description").focus();
 				$("#houseCode").bind("keydown", me, me.searchHouseCode);
 				$("#houseCode").bind("blur", function() { me.houseCodeBlur(this); });
+				$("#houseCode").change(function() { me.modified(); });
 			}
 			else if (!me.editSalesTax)
 				$("#job").focus();
@@ -914,7 +916,7 @@ ii.Class({
 
 		    rowHtml += "</tr>";
 
-			insertAt = $("#InvoiceItemGridBody").find('tr').length - 3;
+			insertAt = $("#InvoiceItemGridBody").find("tr").length - 3;
 
 			if (insertAt < 0) return;
 
@@ -923,6 +925,7 @@ ii.Class({
 			if (me.invoiceByCustomer) {
 				$("#houseCode").bind("keydown", me, me.searchHouseCode);
 				$("#houseCode").bind("blur", function() { me.houseCodeBlur(this); });
+				$("#houseCode").change(function() { me.modified(); });
 				$("#houseCode").focus();
 			}
 			else
@@ -987,6 +990,9 @@ ii.Class({
 		
 		actionUpdateSalesTaxItem: function() {
 			var me = this;
+
+			if (me.rowBeingEdited) 
+				return;
 
 			if (confirm("Are you sure you would like to update the sales tax for all taxable invoice line items?")) {
 				me.status = "UpdateSalesTax";
@@ -1272,6 +1278,9 @@ ii.Class({
 			
 			if (me.status == "")
 				return;
+				
+			if (!parent.fin.cmn.status.itemValid())
+				return;
 
 			if (me.status == "Reorder") {
 				$("#InvoiceItemGridBody").find("tr").each(function() {
@@ -1283,7 +1292,7 @@ ii.Class({
 				});
 			}			
 			else if (me.status == "Add") {
-				var insertAt = $("#InvoiceItemGridBody").find('tr').length - 3;
+				var insertAt = $("#InvoiceItemGridBody").find("tr").length - 3;
 				$($("#InvoiceItemGridBody tr")[insertAt - 1]).remove();
 			}
 			else {
@@ -1612,6 +1621,7 @@ ii.Class({
 			var status = $(args.xmlNode).attr("status");
 						
 			if (status == "success") {
+				me.modified(false);
 				me.status = "";
 				me.rowBeingEdited = false;
 				me.currentRowSelected = null;

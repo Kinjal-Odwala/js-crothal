@@ -257,6 +257,14 @@ ii.Class({
 				return false;
 		},
 		
+		modified: function() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+
+			parent.parent.fin.appUI.modified = args.modified;
+		},
+		
 		resetGrid: function() {
 			
 			$("#AccountReceivableGrid tbody").html("");	
@@ -340,6 +348,7 @@ ii.Class({
 			me.receivablesLoaded(me);
 			me.rowBeingEdited = true;
 			me.currentRowSelected = $($("#AccountReceivableGridBody tr")[insertAt])[0];
+			me.modified();
 		},
 		
 		accountReceivablesLoaded: function(me, activeId) {
@@ -612,6 +621,26 @@ ii.Class({
 				return false;
 			}
 		},
+		
+		setupEvents: function(rowNumber) {
+			var me = this;
+
+			$("#amount" + rowNumber).keypress(function (e) {
+				if (e.which != 8 && e.which != 0 && e.which != 45 && e.which != 46 && (e.which < 48 || e.which > 57))
+					return false;
+			});
+			
+			$("#amount" + rowNumber).change(function() { me.modified(); });
+			$("#account" + rowNumber).change(function() { me.modified(); });
+			$("#payer" + rowNumber).change(function() { me.modified(); });
+			$("#notes" + rowNumber).change(function() { me.modified(); });
+			
+			if (me.invoiceByCustomer) {
+				$("#houseCode" + rowNumber).bind("keydown", me, me.searchHouseCode);
+				$("#houseCode" + rowNumber).bind("blur", function() { me.houseCodeBlur(this); });
+				$("#houseCode" + rowNumber).change(function() { me.modified(); });
+			}
+		},
 
 		accountReceivableGridRowEdit: function() {
 			var me = this;
@@ -622,7 +651,7 @@ ii.Class({
 			var rowNumber = parseInt(me.currentRowSelected.cells[0].innerHTML);
 			var payer = me.currentRowSelected.cells[8].innerHTML;
 			var notes = me.currentRowSelected.cells[10].innerHTML == "&nbsp;" ? "" : me.currentRowSelected.cells[10].innerHTML;
-			
+
 		    var rowHtml = me.getAccountReceivableGridRow(
 		        rowNumber
 				, true // Editing Row
@@ -641,12 +670,8 @@ ii.Class({
 		    $(me.currentRowSelected).html(rowHtml);
 			$("#payer" + rowNumber).val(payer);
 			$("#notes" + rowNumber).val(notes);
-							
-			$("#amount" + rowNumber).keypress(function (e) {
-				if (e.which != 8 && e.which != 0 && e.which != 45 && e.which != 46 && (e.which < 48 || e.which > 57))
-					return false;
-			});
-			
+
+			me.setupEvents(rowNumber);
 			me.rowBeingEdited = true;
 			me.status = "Edit";			
 			me.invalidHouseCode = "";
@@ -655,9 +680,6 @@ ii.Class({
 				if ($("#houseCode" + rowNumber).val() != "") {
 					me.houseCodeCheck($("#houseCode" + rowNumber).val());
 				}
-					
-				$("#houseCode" + rowNumber).bind("keydown", me, me.searchHouseCode);
-				$("#houseCode" + rowNumber).bind("blur", function() { me.houseCodeBlur(this); });
 			}
 		},
 		
@@ -691,18 +713,9 @@ ii.Class({
 		    rowHtml += "</tr>";
 			
 			insertAt = $("#AccountReceivableGridBody").find("tr").length - 1;
-			
 			$($("#AccountReceivableGridBody tr")[insertAt]).before(rowHtml);
-			$("#amount" + rowNumber).keypress(function (e) {
-				if (e.which != 8 && e.which != 0 && e.which != 46 && (e.which < 48 || e.which > 57))
-					return false;
-			});
-			
-			if (me.invoiceByCustomer) {
-				$("#houseCode" + rowNumber).bind("keydown", me, me.searchHouseCode);
-				$("#houseCode" + rowNumber).bind("blur", function() { me.houseCodeBlur(this); });
-			}
-			
+
+			me.setupEvents(rowNumber);
 			me.receivablesLoaded(me);		 
 			me.rowBeingEdited = true;
 			me.currentRowSelected = $($("#AccountReceivableGridBody tr")[insertAt])[0];
@@ -905,6 +918,9 @@ ii.Class({
 			var rowNumber = -1;
 			
 			if (me.status == "")
+				return;
+
+			if (!parent.fin.cmn.status.itemValid())
 				return;
 
 			if (me.status == "Add") {
@@ -1122,6 +1138,7 @@ ii.Class({
 			var errorMessage = "";
 
 			if (status == "success") {
+				me.modified(false);
 				me.status = "";
 				me.rowBeingEdited = false;
 				me.currentRowSelected = null;
