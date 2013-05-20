@@ -266,7 +266,7 @@ ii.Class({
             me.taxExempt = new ui.ctl.Input.DropDown.Filtered({
                 id: "TaxExempt",
                 formatFunction: function (type) { return type.name; },
-                changeFunction: function () { me.taxExemptChanged(); },
+                changeFunction: function () { me.modified(); me.taxExemptChanged(); },
                 required: false
             });
 
@@ -276,7 +276,8 @@ ii.Class({
 
             me.taxId = new ui.ctl.Input.Text({
                 id: "TaxId",
-                maxLength: 9
+                maxLength: 9,
+				changeFunction: function() { me.modified(); }
             });
 
             me.taxId.makeEnterTab()
@@ -307,7 +308,10 @@ ii.Class({
 					
 					if (enteredText == "") 
 						return;
-											
+
+					if (this.focused || this.touched)
+						me.modified();
+	
 					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
 						this.setInvalid("Please enter valid date.");
 				});
@@ -325,7 +329,10 @@ ii.Class({
 					
 					if (enteredText == "") 
 						return;
-											
+
+					if (this.focused || this.touched)
+						me.modified();
+
 					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
 						this.setInvalid("Please enter valid date.");
 
@@ -346,7 +353,10 @@ ii.Class({
 					
 					if (enteredText == "") 
 						return;
-											
+
+					if (this.focused || this.touched)
+						me.modified();
+
 					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
 						this.setInvalid("Please enter valid date.");
 				});
@@ -364,7 +374,10 @@ ii.Class({
 					
 					if (enteredText == "") 
 						return;
-											
+
+					if (this.focused || this.touched)
+						me.modified();
+
 					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
 						this.setInvalid("Please enter valid date.");
 						
@@ -375,7 +388,7 @@ ii.Class({
 			me.billTo = new ui.ctl.Input.DropDown.Filtered({
 		        id: "BillTo",
 				formatFunction: function(type) { return type.billTo; },
-				changeFunction: function() { me.billToChanged(); },
+				changeFunction: function() { me.modified(); me.billToChanged(); },
 				required : false
 		    });
 
@@ -390,7 +403,8 @@ ii.Class({
 				
             me.company = new ui.ctl.Input.Text({
                 id: "Company",
-                maxLength: 64
+                maxLength: 64,
+				changeFunction: function() { me.modified(); }
             });
 
             me.company.makeEnterTab()
@@ -399,7 +413,8 @@ ii.Class({
 
             me.address1 = new ui.ctl.Input.Text({
                 id: "Address1",
-                maxLength: 100
+                maxLength: 100,
+				changeFunction: function() { me.modified(); }
             });
 
             me.address1.makeEnterTab()
@@ -408,12 +423,14 @@ ii.Class({
 
             me.address2 = new ui.ctl.Input.Text({
                 id: "Address2",
-                maxLength: 100
+                maxLength: 100,
+				changeFunction: function() { me.modified(); }
             });
 
             me.city = new ui.ctl.Input.Text({
                 id: "City",
-                maxLength: 50
+                maxLength: 50,
+				changeFunction: function() { me.modified(); }
             });
 
             me.city.makeEnterTab()
@@ -423,6 +440,7 @@ ii.Class({
             me.state = new ui.ctl.Input.DropDown.Filtered({
                 id: "State",
                 formatFunction: function (type) { return type.name; },
+				changeFunction: function() { me.modified(); },
                 required: false
             });
 
@@ -437,7 +455,8 @@ ii.Class({
 
             me.zip = new ui.ctl.Input.Text({
                 id: "Zip",
-                maxLength: 10
+                maxLength: 10,
+				changeFunction: function() { me.modified(); }
             });
 
             me.zip.makeEnterTab()
@@ -454,18 +473,21 @@ ii.Class({
 
             me.poNumber = new ui.ctl.Input.Text({
                 id: "PONumber",
-                maxLength: 50
+                maxLength: 50,
+				changeFunction: function() { me.modified(); }
             });
 			
 			me.invoiceLogo = new ui.ctl.Input.DropDown.Filtered({
 		        id: "InvoiceLogo",
 				formatFunction: function( type ) { return type.name; },
+				changeFunction: function() { me.modified(); },
 		        required: false
 		    });
 			
 			me.invoiceAddress = new ui.ctl.Input.DropDown.Filtered({
 		        id: "InvoiceAddress",
 				formatFunction: function( type ) { return type.title; },
+				changeFunction: function() { me.modified(); },
 		        required: false
 		    });
 
@@ -478,6 +500,7 @@ ii.Class({
 					return false;
 				}
 			});
+			$("#Notes").change(function() { me.modified(); });
 
             me.anchorNew = new ui.ctl.buttons.Sizeable({
                 id: "AnchorNew",
@@ -1523,8 +1546,8 @@ ii.Class({
 			$("#messageToUser").text("Loading");			
 			$("#pageLoading").show();
 
-			if(invoiceDate == undefined || invoiceDate == '')
-				invoiceDate = '1/1/1900';
+			if (invoiceDate == undefined || invoiceDate == "")
+				invoiceDate = "1/1/1900";
 				
 			me.invoiceStore.reset();
 			me.invoiceStore.fetch("userId:[user],houseCode:" 				
@@ -1543,6 +1566,9 @@ ii.Class({
 		
 		 actionCancelItem: function() {
             var me = this;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
 
             if (me.invoiceGrid.activeRowIndex >= 0)
                 me.invoiceId = me.invoiceGrid.data[me.invoiceGrid.activeRowIndex].id;
@@ -1567,6 +1593,9 @@ ii.Class({
 
 		actionNewCancelItem: function() {
             var me = this;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
 
             if (me.invoiceGrid.activeRowIndex >= 0)
                 me.invoiceId = me.invoiceGrid.data[me.invoiceGrid.activeRowIndex].id;
