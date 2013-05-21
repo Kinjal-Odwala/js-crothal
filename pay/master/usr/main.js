@@ -7,15 +7,15 @@ ii.Import( "fin.cmn.usr.tabsPack" );
 ii.Import( "fin.pay.master.usr.defs" );
 ii.Import( "fin.cmn.usr.houseCodeSearch" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.toolbar" , 4);
-ii.Style( "fin.cmn.usr.input" , 5);
-ii.Style( "fin.cmn.usr.grid" , 6);
-ii.Style( "fin.cmn.usr.button" , 7);
-ii.Style( "fin.cmn.usr.dropDown" , 8);
-ii.Style( "fin.cmn.usr.tabs" , 9);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.toolbar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.grid", 6 );
+ii.Style( "fin.cmn.usr.button", 7 );
+ii.Style( "fin.cmn.usr.dropDown", 8 );
+ii.Style( "fin.cmn.usr.tabs", 9 );
 
 ii.Class({
     Name: "fin.pay.master.UserInterface",
@@ -46,6 +46,7 @@ ii.Class({
 			
 			me.defineFormControls();			
 			me.configureCommunications();
+			me.modified(false);
 			me.initialize();			
 			me.week.fetchingData();
 			me.weekPeriodYearStore.fetch("userId:[user],", me.weekPeriodYearsLoaded, me);
@@ -58,6 +59,10 @@ ii.Class({
 				
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
         },
 		
 		authorizationProcess: function fin_pay_master_UserInterface_authorizationProcess() {
@@ -271,6 +276,21 @@ ii.Class({
 		initialize: function() {
 			var me = this;
 
+			$("#TabCollection a").mousedown(function() {
+				if (!parent.fin.cmn.status.itemValid()) 
+					return false;
+				else {
+					var tabIndex = 0;
+					if (this.id == "DailyPayroll")
+						tabIndex = 1;
+					else if (this.id == "WeeklyPayroll")
+						tabIndex = 2;
+
+					$("#container-1").tabs(tabIndex);
+					$("#container-1").triggerTab(tabIndex);
+				}					
+			});
+			
 			$("#TabCollection a").click(function(me) {
 
 				if (this.id == "DailyPayroll") {
@@ -298,6 +318,19 @@ ii.Class({
 					me.year.select(0, me.year.focused);
 				}		
 			});			
+		},
+		
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
+		modified: function() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
 		},
 		
 		weekPeriodYearsLoaded: function(me, activeId) {
@@ -346,6 +379,9 @@ ii.Class({
 		houseCodeSinglesLoaded: function() {
 			var args = ii.args(arguments,{});
 			var me = this;			
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
 
 			if (parent.fin.appUI.houseCodeId <= 0) {
 				alert("Please select the House Code.");
@@ -419,6 +455,9 @@ ii.Class({
 			me.year.validate(true);
 			if (!me.year.valid)
 				return true;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
 
 			$("#SearchIcon").html("<img src='/fin/cmn/usr/media/Common/searchPlus.png'/>");
 			$("#SearchOption").hide("slow");
