@@ -34,7 +34,7 @@ ii.init.register( function() {
 		id: {type: Number, defaultValue: 0}
 		, houseCodeId: {type: Number, required: false, defaultValue: 0}
 		, hirNode: {type: Number, required: false, defaultValue: 0}
-		, job: {type: fin.hcm.job.Job, required: false}
+		, houseCodeTitle: {type: String, required: false, defaultValue: ""}
         , active: {type: Boolean, required: false, defaultValue: false}
         , jobBrief: {type: String, required: false, defaultValue: ""}
         , jobTitle: {type: String, required: false, defaultValue: ""}
@@ -88,7 +88,14 @@ ii.init.register( function() {
 		id: {type: Number}
 		, city: {type: String, required: false, defaultValue: ""}
 	};
-
+	
+	fin.hcm.job.unitArgs = {
+		id: {type: Number}
+		, name: {type: String}
+		, hirNode: {type: Number, defaultValue: 0}
+		, assigned: {type: Boolean, required: false, defaultValue: true}
+	};
+	
 }, 2);
 
 ii.Class({
@@ -184,6 +191,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.job.cityNameArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.job.Unit",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.job.unitArgs);
 			$.extend(this, args);
 		}
 	}

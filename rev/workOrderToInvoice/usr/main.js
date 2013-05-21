@@ -46,6 +46,7 @@ ii.Class({
 
 			me.defineFormControls();
 			me.configureCommunications();
+			me.modified(false);
 
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 
@@ -55,6 +56,10 @@ ii.Class({
 			me.endDate.setValue(me.getDate("today"));
 
 			$(window).bind("resize", me, me.resize);
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
         },
 		
 		authorizationProcess: function fin_rev_workOrderToInvoice_UserInterface_authorizationProcess() {
@@ -156,7 +161,8 @@ ii.Class({
 			me.closeReasonType = new ui.ctl.Input.DropDown.Filtered({
 		        id: "CloseReasonType",
 				appendToId: "WorkOrderGridControlHolder",
-				formatFunction: function(type) { return type.title; }
+				formatFunction: function(type) { return type.title; },
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.closeReasonType.makeEnterTab()
@@ -229,6 +235,19 @@ ii.Class({
 				injectionArray: me.taxValidations
 			});
 		},
+		
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
+		modified: function() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
+		},
 
 		resizeControls: function() {
 			var me = this;
@@ -276,6 +295,12 @@ ii.Class({
 			var me = this;
 			var houseCodeId = 0;
 
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
+			if (me.workOrderGrid.activeRowIndex >= 0)
+				me.workOrderGrid.body.deselect(me.workOrderGrid.activeRowIndex, true);
+				
 			me.validator.forceBlur();
 
 			// Check to see if the data entered is valid
@@ -464,10 +489,11 @@ ii.Class({
 			var status = $(args.xmlNode).attr("status");
 									
 			if (status == "success") {
+				me.modified(false);
 				me.actionLoadItem();
 			}
 			else {				
-				alert("[SAVE FAILURE] Error while updating the record: " + $(args.xmlNode).attr("message"));
+				alert("[SAVE FAILURE] Error while converting the Work Order to Invoice: " + $(args.xmlNode).attr("message"));
 				$("#pageLoading").hide();
 			}
 		}		
@@ -478,6 +504,7 @@ function actionClickItem(objCheckBox) {
 	var me = fin.workOrderToInvoiceUi;
 	var index = 0;
 	
+	me.modified();
 	index = objCheckBox.id.substring(objCheckBox.id.length - 1);
 	me.workOrders[index].assigned = objCheckBox.checked;
 	$("#spanInputCheck" + index).removeAttr("style")

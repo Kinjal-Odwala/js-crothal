@@ -68,7 +68,7 @@ ii.Class({
 			else {
 				me.houseCodesLoaded(me, 0);
 			}
-
+			
 			$("#TabCollection a").click(function() {
 				
 				switch(this.id) {
@@ -112,10 +112,12 @@ ii.Class({
 
 			$("#container-1").tabs(1);
 			$("iframe")[0].src = "/fin/hcm/houseCode/usr/markup.htm?unitId=" + parent.fin.appUI.unitId;
-
 			$(window).bind("resize", me, me.resize);
-
-			ii.trace("HouseCode Master Init", ii.traceTypes.information, "Info");			
+			ii.trace("HouseCode Master Init", ii.traceTypes.information, "Info");
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
         },
 		
 		authorizationProcess: function fin_hcm_master_UserInterface_authorizationProcess() {
@@ -241,7 +243,12 @@ ii.Class({
 			});			
 		},
 		
-		modified: function fin_cmn_status_modified() {
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
+		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
@@ -523,7 +530,7 @@ ii.Class({
 				return;
 			}
 			
-			if(me.houseCodeDetails[0].serviceTypeId < 0) {
+			if (me.houseCodeDetails[0].serviceTypeId < 0) {
 				alert("[Primary Service] Provided is required for accurate reporting. Please select it on HouseCode Tab.");
 				return;
 			}			

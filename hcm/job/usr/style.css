@@ -1,4 +1,59 @@
-﻿#ContainerLeftJob {
+﻿.fragment {
+	border: 0;
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	padding: 5px 5px 5px 5px;
+}
+
+.Header {
+    height: 20px;
+    font-family: Verdana;
+    font-size: 8pt;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #669b67;
+    text-align: left;
+	background-repeat: repeat-x;
+}
+
+.SearchByRadioButtonLeft	{
+	float:left;
+	width:15px;
+	padding-left:10px;
+	vertical-align:top;
+}
+
+.HouseCodeText {
+    border: 0 none;
+    color: #032D23;
+    float: left;
+    font-family: Verdana;
+    font-size: 12px;
+    height: 13px;
+    width: 150px;
+}
+
+.HouseCodeContainer {
+    background-color: white;
+    border: 1px solid #AAAAAA;
+    float: left;
+    height: 16px;
+    padding: 1px;
+    width: 170px;
+}
+
+#DropDownRightHouseCode {
+    float: left;
+    padding: 1px 10px 3px 5px;
+    width: 170px;
+}
+
+#JobTextArea {
+	float: left;
+	width: 150px;
+}
+
+#ContainerLeftJob {
 	float: left;
 	width: 45%;
 	margin-right: 20px;
@@ -29,10 +84,65 @@
 	width: 220px;
 }
 
+#LabelTextArea {
+	float: left;
+	width: 150px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
+
+#InputTextArea {
+	float: left;
+	width: 220px;
+}
+
 #popupJob {
-	border: solid #aaaaaa thin;
-	border-width: 1px;
 	padding: 5px;
+	overflow:auto;
+}
+
+#LabelTextAreaSearch {
+	float: left;
+	width: 145px;	
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 2px 0px 0px 10px;
+	vertical-align:top;
+}
+
+#LabelTextAreaSearchByHouseCode {
+	float: left;
+	width: 85px;	
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 2px 0px 0px 10px;
+	vertical-align:top;
+}
+
+#LabelTextAreaSearchBy {
+	float: left;
+	width: 75px;	
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 2px 0px 0px 10px;
+}
+
+#LabelHouseCode {
+	float: left;
+	width: 90px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 5px 0px 0px 10px;
 }
 
 #jobBorder {
@@ -62,4 +172,65 @@
 	width: 90px;
 	padding-left: 5px;
 	padding-top: 5px;
+}
+
+#AnchorSearch {
+	float: left;
+	width: 82px;
+	padding-left: 10px;
+}
+
+#JobHouseCodeContainer {
+	float: left;
+	width: 100%;
+	position: relative;	
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+
+#HouseCodePopupGrid {	
+	height: 250px;
+	padding: 0px 10px 0px 10px;
+}
+
+#AnchorOk {
+	float: left;
+	width: 68px;
+	padding-left: 20px;
+	margin-right: 5px;
+	padding-top: 5px;
+}
+
+#AnchorCancel {
+	float: left;
+	width: 80px;
+	margin-right: 5px;
+	padding-top: 5px;
+}
+
+#TabCollection {
+	width: 100%;
+}
+
+#backgroundPopup {
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	z-index: 5000; 
+	width: 100%; 
+	height: 100%;
+	border: 1px solid #cecece; 
+	background-color: black;
+	display: none;
+}
+
+#popupHouseCode {
+	width: 700px; 
+	height: 350px;
+	position: absolute;
+	z-index: 5025;
+	top: 10%; 
+	left: 10%;
+	background-color: white;
+	display: none;
 }

@@ -6,13 +6,13 @@ ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "fin.glm.recurringExpenses.usr.defs" );
 ii.Import( "fin.cmn.usr.houseCodeSearch" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.toolbar" , 4);
-ii.Style( "fin.cmn.usr.input" , 5);
-ii.Style( "fin.cmn.usr.button" , 6);
-ii.Style( "fin.cmn.usr.dropDown" , 7);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.toolbar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.button", 6 );
+ii.Style( "fin.cmn.usr.dropDown", 7 );
 
 ii.Class({
     Name: "fin.glm.recurringExpenses.UserInterface",
@@ -42,7 +42,7 @@ ii.Class({
 				function(status, errorMessage){ me.nonPendingError(status, errorMessage); }
 			);	
 			
-			me.authorizer = new ii.ajax.Authorizer( me.gateway );	//@iiDoc {Property:ii.ajax.Authorizer} Boolean
+			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\GeneralLedger\\RecurringExpenses";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
@@ -50,7 +50,7 @@ ii.Class({
 				},
 				me);
 			
-			me.validator = new ui.ctl.Input.Validation.Master(); //@iiDoc {Property:ui.ctl.Input.Validation.Master} The recurring expense validation master.
+			me.validator = new ui.ctl.Input.Validation.Master();
 			me.session = new ii.Session(me.cache);
 						
 			me.defineFormControls();
@@ -67,9 +67,12 @@ ii.Class({
 			me.recFiscal.fetchingData();
 			me.recPeriod.fetchingData();
 			me.yearStore.fetch("userId:[user],", me.yearsLoaded, me);			
-			//me.weekPeriodYearStore.fetch("userId:[user],", me.weekPeriodYearsLoaded, me);
 			me.weekPeriodYearsLoaded(me, 0);
 			me.modified(false);
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
 		},
 		
 		authorizationProcess: function fin_glm_recurringExpenses_UserInterface_authorizationProcess() {
@@ -88,7 +91,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("session loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 		
 		resize: function() {
@@ -115,8 +118,7 @@ ii.Class({
 		    // we assume we have a standards compliant browser, but check if we have IE
 		    var target = event.target != null ? event.target : event.srcElement;
 		
-		    if (me.replaceContext)
-		    {
+		    if (me.replaceContext) {
 		        // document.body.scrollTop does not work in IE
 		        var scrollTop = document.body.scrollTop ? document.body.scrollTop :
 		            document.documentElement.scrollTop;
@@ -144,7 +146,7 @@ ii.Class({
 			var event = args.event;
 			var me = event.data;
 			
-			if(event.button == 2)
+			if (event.button == 2)
 				me.replaceContext = true;
 			else if (!me.mouseOverContext)
 				$("#RecurringExpsContext").hide();
@@ -308,7 +310,12 @@ ii.Class({
 			});
 		},
 		
-		modified: function fin_cmn_status_modified() {
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
+		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
@@ -321,33 +328,29 @@ ii.Class({
 		},	
 	
 		typesLoaded: function (me, activeId) {
-			//do nothing.
+			
 		},
 		
 		weekPeriodYearsLoaded: function(me, activeId) {
-				var me = this;
-			ii.trace("Recurring Expenses - weekPeriodYearsLoaded", ii.traceTypes.information, "Startup");			
-			
-			if(parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad
+
+			if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad
 				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
 			else
 				me.houseCodesLoaded(me, 0);		
 		},
 		
-		yearsLoaded: function(me, activeId) { //Fiscal Years
-		
-			
+		yearsLoaded: function(me, activeId) {
+	
 			me.years.unshift(new fin.glm.recurringExpenses.Year({ id: -1, number: -1, name: "[ALL]" }));
   			me.recFiscal.setData(me.years);
 			
-			if(parent.fin.appUI.glbFscYear != undefined){
-				index = ii.ajax.util.findIndexById(parent.fin.appUI.glbFscYear.toString(), me.years);
+			if (parent.fin.appUI.glbFscYear != undefined) {
+				var index = ii.ajax.util.findIndexById(parent.fin.appUI.glbFscYear.toString(), me.years);
 				if (index != undefined) 
 					me.recFiscal.select(index, me.recFiscal.focused);
 			}	
-			//me.recFiscal.select(0, me.recFiscal.focused);				
-			me.fiscalYear = me.recFiscal.data[me.recFiscal.indexSelected].id;	
 			
+			me.fiscalYear = me.recFiscal.data[me.recFiscal.indexSelected].id;	
 			me.periodsLoaded(me, 0);
 		},
 				
@@ -362,7 +365,7 @@ ii.Class({
 			me.periodStore.fetch("userId:[user],fiscalYearId:" + me.fiscalYear, me.periodsLoaded, me);			
 		},
 		
-		periodsLoaded: function(me, activeId) { //Fiscal Periods
+		periodsLoaded: function(me, activeId) {
 				
 			if (me.periods.length == 0 || me.periods[0].id != -1)		
 				me.periods.unshift(new fin.glm.recurringExpenses.Period({ id: -1, number: -1, name: "[ALL]" }));
@@ -395,7 +398,7 @@ ii.Class({
 
 			me.houseCodeGlobalParametersUpdate(false);
 				
-			if(parent.fin.appUI.glbFscYear != undefined){
+			if (parent.fin.appUI.glbFscYear != undefined) {
 				var index = ii.ajax.util.findIndexById(parent.fin.appUI.glbFscYear.toString(), me.years);
 				if (index != undefined) 
 					me.recFiscal.select(index, me.recFiscal.focused);
@@ -416,7 +419,7 @@ ii.Class({
 
 			$("#pageLoading").show();
 			
-			if(parent.fin.appUI.glbFscYear != undefined){
+			if (parent.fin.appUI.glbFscYear != undefined) {
 				var index = ii.ajax.util.findIndexById(parent.fin.appUI.glbFscYear.toString(), me.years);
 				if (index != undefined) 
 					me.recFiscal.select(index, me.recFiscal.focused);
@@ -544,7 +547,7 @@ ii.Class({
 	
 			$("#RecurringExpsGridBody td").mousedown(function() {
 
-				if(me.rowBeingEdited) return;
+				if (me.rowBeingEdited) return;
 				
 				if (this.cellIndex >= 0 && this.cellIndex <= 8) {
 					me.currentRowSelected = this.parentNode;
@@ -618,7 +621,7 @@ ii.Class({
 				});
 			var me = this;
 			
-			if(args.editable) {
+			if (args.editable) {
 				if (args.columnType == "dropdown")
 					return "<td class='gridColumn' width='" + args.columnWidth + "%'>" + me.populateDropDown(args.columnData, args.columnName, args.columnValue) + "</td>";				
 				else if (args.columnName == "amount" || args.columnName == "percent")
@@ -667,9 +670,9 @@ ii.Class({
 			var me = this;
 			var rowHtml = "<tr>";
 			
-			if(me.recurringExpensesReadOnly) return;
+			if (me.recurringExpensesReadOnly) return;
 			
-			if(me.rowBeingEdited) 
+			if (me.rowBeingEdited) 
 				return;
 						
 		    rowHtml += me.getRecurringExpsGridRow(
@@ -701,7 +704,7 @@ ii.Class({
 			var amountValue = "";
 			var percentValue = "";
 			
-			if(me.rowBeingEdited) 
+			if (me.rowBeingEdited) 
 				return;
 				
 			if (me.currentRowSelected.cells[3].innerHTML != "&nbsp;")
@@ -727,7 +730,7 @@ ii.Class({
 			    
 		    $(me.currentRowSelected).html(rowHtml);
 		    		   
-		    if  ($("#amount").val() != "")
+		    if ($("#amount").val() != "")
 		    	me.recurringExpsGridRowValidate(1);
 		    else
 				me.recurringExpsGridRowValidate(2);
@@ -740,7 +743,7 @@ ii.Class({
 		recurringExpsGridRowDelete: function() {
 			var me = this;
 						
-			if(me.rowBeingEdited || me.currentRowSelected == null) 
+			if (me.rowBeingEdited || me.currentRowSelected == null) 
 				return;
 			
 			var rowNumber = me.currentRowSelected.cells[0].innerHTML;
@@ -844,7 +847,7 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 			
-			if(me.recurringExpensesReadOnly) return;
+			if (me.recurringExpensesReadOnly) return;
 				
 			if (!me.rowBeingEdited || me.status == "")
 				return;
@@ -881,7 +884,7 @@ ii.Class({
 			}
 			
 			if (me.status == "Add" || me.status == "Edit") {
-					if ($("#percent").val() != "") {
+				if ($("#percent").val() != "") {
 					percent = $("#percent").val();
 					accountFrom = parseInt($("#percentageOf").val());
 				}
@@ -968,14 +971,13 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-			var traceType = ii.traceTypes.errorDataCorruption;
-			var errorMessage = "";
 			var id = 0;
 			var rowNumber = 0;		
 			var rowHtml = "";
 			
-			if(status == "success") {
+			if (status == "success") {
 				me.modified(false);
+				
 				$(args.xmlNode).find("*").each(function () {
 
 					switch (this.tagName) {
@@ -1032,16 +1034,8 @@ ii.Class({
 					}
 				});
 			}
-			else{
-				alert('Error while updating Recurring Expenses Record: ' + $(args.xmlNode).attr("message"));
-				errorMessage = $(args.xmlNode).attr("error");
-				
-				if( status == "invalid" ){
-					traceType = ii.traceTypes.warning;
-				}
-				else{
-					errorMessage += " [SAVE FAILURE]";
-				}
+			else {
+				alert("[SAVE FAILURE] Error while updating Recurring Expenses details: " + $(args.xmlNode).attr("message"));
 			}
 			
 			$("#pageLoading").hide();				

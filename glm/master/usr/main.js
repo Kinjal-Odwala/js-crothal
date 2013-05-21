@@ -10,16 +10,16 @@ ii.Import( "fin.glm.master.usr.defs" );
 ii.Import( "fin.cmn.usr.houseCodeSearch" );
 ii.Import( "fin.cmn.usr.houseCodeSearchJournalEntry" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.toolbar" , 4);
-ii.Style( "fin.cmn.usr.input" , 5);
-ii.Style( "fin.cmn.usr.grid" , 6);
-ii.Style( "fin.cmn.usr.button" , 7);
-ii.Style( "fin.cmn.usr.dropDown" , 8);
-ii.Style( "fin.cmn.usr.dateDropDown" , 9);
-ii.Style( "fin.cmn.usr.tabs" , 7);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.toolbar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.grid", 6 );
+ii.Style( "fin.cmn.usr.button", 7 );
+ii.Style( "fin.cmn.usr.dropDown", 8 );
+ii.Style( "fin.cmn.usr.dateDropDown", 9 );
+ii.Style( "fin.cmn.usr.tabs", 10 );
 
 ii.Class({
     Name: "fin.glm.master.UserInterface",
@@ -36,16 +36,16 @@ ii.Class({
 			me.houseCodeJobCredits = [];
 			me.houseCodeJobDebits = [];
 			
-			if(!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
+			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 			
 			me.gateway = ii.ajax.addGateway("glm", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
 			me.transactionMonitor = new ii.ajax.TransactionMonitor( 
 				me.gateway, 
-				function(status, errorMessage){ me.nonPendingError(status, errorMessage); }
+				function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
 			);
 			
-			me.authorizer = new ii.ajax.Authorizer( me.gateway );	//@iiDoc {Property:ii.ajax.Authorizer} Boolean
+			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\GeneralLedger\\JournalEntry";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
@@ -58,6 +58,21 @@ ii.Class({
 
 			me.session = new ii.Session(me.cache);
 			
+			$("#TabCollection a").mousedown(function() {
+				if (!parent.fin.cmn.status.itemValid()) 
+					return false;
+				else {
+					var tabIndex = 0;
+					if (this.id == "TabJournalEntry")
+						tabIndex = 1;
+					else if (this.id == "TabHouseCodeInfo")
+						tabIndex = 2;
+							
+					$("#container-1").tabs(tabIndex);
+					$("#container-1").triggerTab(tabIndex);
+				}					
+			});
+			
 			$("#TabCollection a").click(function() {
 				
 				switch(this.id){
@@ -68,11 +83,6 @@ ii.Class({
 					case "TabHouseCodeInfo":
 						me.activeFrameId = 1;
 						break;
-					/*
-					case "TabSummaryOfExpenses":
-						me.activeFrameId = 2;
-						break;
-					*/	
 				}
 
 				me.journalEntryItemsLoad();
@@ -85,21 +95,22 @@ ii.Class({
 			me.houseCodeSearchJournalEntry = new ui.lay.HouseCodeSearchJournalEntry();
 			me.modified(false);
 			
-			$('#container-1').tabs(1);
+			$("#container-1").tabs(1);
 			$("#fragment-1").show();
 			$("#fragment-2").hide();  
 			$("#TabJournalEntry").parent().addClass("tabs-selected");
-	
-					
+						
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			
-			if(parent.fin.appUI.houseCodeId == 0)
+			if (parent.fin.appUI.houseCodeId == 0)
 				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
 			else
 				me.houseCodesLoaded(me, 0);
 			
-			ii.trace( "journalEntry Master - Init", ii.traceTypes.information, "Startup");			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
         },
 		
 		authorizationProcess: function fin_glm_master_UserInterface_authorizationProcess() {
@@ -118,7 +129,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("session loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 		
 		resize: function() {
@@ -244,9 +255,9 @@ ii.Class({
 
 					var enteredText = me.creditEmail.getValue();
 					
-					if(enteredText == '') return;
+					if (enteredText == "") return;
 					
-					if(/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(enteredText) == false)
+					if (/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(enteredText) == false)
 						this.setInvalid("Please enter valid Email Address.");
 			});
 				
@@ -262,12 +273,12 @@ ii.Class({
 					
 					var enteredText = me.creditPhone.getValue();
 					
-					if(enteredText == '') return;
+					if (enteredText == "") return;
 					
 					me.creditPhone.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.creditPhone.text.value;
 					
-					if(ui.cmn.text.validate.phone(enteredText) == false)
+					if (ui.cmn.text.validate.phone(enteredText) == false)
 						this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
 			});
 			
@@ -315,9 +326,9 @@ ii.Class({
 
 					var enteredText = me.debitEmail.getValue();
 					
-					if(enteredText == '') return;
+					if (enteredText == "") return;
 					
-					if(/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(enteredText) == false)
+					if (/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(enteredText) == false)
 						this.setInvalid("Please enter valid Email Address.");
 			});
 					
@@ -333,12 +344,12 @@ ii.Class({
 					
 					var enteredText = me.debitPhone.getValue();
 					
-					if(enteredText == '') return;
+					if (enteredText == "") return;
 					
 					me.debitPhone.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.debitPhone.text.value;
 										
-					if(ui.cmn.text.validate.phone(enteredText) == false)
+					if (ui.cmn.text.validate.phone(enteredText) == false)
 						this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
 			});
 			
@@ -496,11 +507,16 @@ ii.Class({
 			});
 		},
 		
-		modified: function fin_cmn_status_modified() {
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
+		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
+
 			parent.fin.appUI.modified = args.modified;
 		},
 		
@@ -544,8 +560,6 @@ ii.Class({
 		},
 
 		houseCodesLoaded: function(me, activeId) { // House Codes
-
-			ii.trace( "journalEntry Master - houseCodesLoaded", ii.traceTypes.information, "Startup");			
 			
 			if (parent.fin.appUI.houseCodeId == 0) {
 				if (me.houseCodes.length <= 0) {
@@ -582,14 +596,12 @@ ii.Class({
 		},
 		
 		fiscalYearsLoaded: function(me, activeId) {
-			
-			ii.trace( "journalEntry Master - fiscalYearsLoaded", ii.traceTypes.information, "Startup");			
-			
+
 			var index = 0;
 			
 			me.fiscalYear.setData(me.fiscalYears);
 			
-			if(parent.fin.appUI.glbFscYear != undefined){
+			if (parent.fin.appUI.glbFscYear != undefined) {
 				index = ii.ajax.util.findIndexById(parent.fin.appUI.glbFscYear.toString(), me.fiscalYears);
 				if (index != undefined) 
 					me.fiscalYear.select(index, me.fiscalYear.focused);
@@ -604,16 +616,12 @@ ii.Class({
 		},
 		
 		journalEntrysLoad: function() {
+			var me = this;
 			
 			if (!parent.fin.cmn.status.itemValid())
 				return;
-				
-			ii.trace( "journalEntry Master - journalEntrysLoad", ii.traceTypes.information, "Startup");			
-
-			var me = this;
 		  
 			if (parent.fin.appUI.houseCodeId <= 0) {
-
 				return me.houseCodeSearchReset(true);
 			}
 			
@@ -625,8 +633,6 @@ ii.Class({
 		},
 
 		journalEntrysLoaded: function(me, activeId) {
-			
-			ii.trace( "journalEntry Master - journalEntrysLoaded'", ii.traceTypes.information, "Startup");			
 
 			me.journalEntry.setData(me.journalEntrys);
 			me.journalEntrySelected = 0;
@@ -655,9 +661,8 @@ ii.Class({
 		journalEntryItemsLoad: function() {
 			var me = this;					
 			var queryString = "";
-			
-			//UI level security
-			if(me.journalEntryReadOnly){
+
+			if (me.journalEntryReadOnly) {
 				$("#actionMenu").hide()
 				$("#footerButton").hide()
 			}
@@ -689,11 +694,9 @@ ii.Class({
 			var args = ii.args(arguments, {
 				houseCodeType: {type: String}
 			});
-
 			var me = this;	
 			
 			if (args.houseCodeType == "Credit" && me.houseCodeSearchJournalEntry.houseCodeIdCredit > 0) {
-				
 				$("#journalEntryLoading").show();				
 				me.journalEntrySiteStore.reset();
 				me.journalEntrySiteStore.fetch("userId:[user],houseCodeId:" + me.houseCodeSearchJournalEntry.houseCodeIdCredit + ",type:journalEntry,", me.journalEntryHouseCodesLoaded, me);
@@ -703,7 +706,6 @@ ii.Class({
 			}
 
 			if (args.houseCodeType == "Debit" && me.houseCodeSearchJournalEntry.houseCodeIdDebit > 0) {
-				
 				$("#journalEntryLoading").show();
 				me.journalEntrySiteStore.reset();
 				me.journalEntrySiteStore.fetch("userId:[user],houseCodeId:" + me.houseCodeSearchJournalEntry.houseCodeIdDebit + ",type:journalEntry,", me.journalEntryHouseCodesLoaded, me);
@@ -724,7 +726,6 @@ ii.Class({
 		journalEntryHouseCodesLoaded: function(me, activeId){
 			
 			if (me.houseCodeSearchJournalEntry.houseCodeType == "Credit" && me.journalEntrySites[0]) {
-				
 				me.creditAddress1.setValue(me.journalEntrySites[0].addressLine1);
 				me.creditAddress2.setValue(me.journalEntrySites[0].addressLine2);
 				me.creditCity.setValue(me.journalEntrySites[0].city);
@@ -735,7 +736,6 @@ ii.Class({
 				me.stateStore.reset();
 				me.stateStore.fetch("userId:[user],appStateTypeId:" + me.journalEntrySites[0].state + ",", me.stateItemsLoaded, me);
 			}
-			
 			else if (me.houseCodeSearchJournalEntry.houseCodeType == "Debit" && me.journalEntrySites[0]) {
 				
 				me.debitAddress1.setValue(me.journalEntrySites[0].addressLine1);
@@ -757,7 +757,7 @@ ii.Class({
 		
 		stateItemsLoaded: function(me, activeId) {			
 			
-			if(me.states.length <= 0){
+			if (me.states.length <= 0) {
 				$("#journalEntryLoading").hide();
 				return;
 			}
@@ -837,7 +837,7 @@ ii.Class({
 				return;
 				
 			me.status = "";
-			if(me.activeFrameId == 0 && me.journalEntry.activeRowIndex != -1) 
+			if (me.activeFrameId == 0 && me.journalEntry.activeRowIndex != -1) 
 				$("iframe")[0].contentWindow.fin.journalEntryUi.actionUndoItem();
 		},
 		
@@ -846,9 +846,8 @@ ii.Class({
 			
 			if (!parent.fin.cmn.status.itemValid())
 				return;
-				
-			//UI level Security
-			if(me.journalEntryReadOnly) return;		
+
+			if (me.journalEntryReadOnly) return;		
 			
 			me.status = "new";
 			
@@ -881,18 +880,17 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 				
-			if(me.journalEntryReadOnly) return;
+			if (me.journalEntryReadOnly) return;
 			
 			if (me.journalEntry.activeRowIndex == -1)
 				return;
 				
-			if( me.journalEntrys[me.journalEntry.activeRowIndex].status != "Open") 
-			{
+			if (me.journalEntrys[me.journalEntry.activeRowIndex].status != "Open") {
 				alert("The Journal Entry [" + me.journalEntrys[me.journalEntry.activeRowIndex].id + "] has already been delivered to Accounting for processing and can no longer be modified. Modifications can be made via a new journal entry or within an Open Journal Entry.");
 				return;
 			}
 			
-			if(confirm("Do you want to delete Journal Entry # [" + me.journalEntrys[me.journalEntry.activeRowIndex].id + "]?", "Yes", "No") == 0) 
+			if (confirm("Do you want to delete Journal Entry # [" + me.journalEntrys[me.journalEntry.activeRowIndex].id + "]?", "Yes", "No") == 0) 
 				return;
 			
 			me.status = "delete";			
@@ -913,8 +911,7 @@ ii.Class({
 				$("#AnchorCancel").hide();
 				$("#entrySetup").hide();
 	
-				me.status = "";
-				
+				me.status = "";				
 				disablePopup();
 			}
 			else if(me.activeFrameId == 0) 
@@ -925,7 +922,7 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;		
 			
-			if(me.journalEntryReadOnly) return;
+			if (me.journalEntryReadOnly) return;
 			
 			if (me.status == "new")
 				me.actionSaveJournalEntry();
@@ -939,13 +936,7 @@ ii.Class({
 			var item = [];
 			var xml = "";	
 			var message = "";
-			/*
-			$("#houseCodeCreditContainer").html(
-				'<input type="text" id="houseCodeCreditText" class="HouseCodeText" tabindex=0/>'
-				+ '<div id="houseCodeCreditTextDropImage" class="HouseCodeDropDown"></div>'
-				+ '<div class="iiInputStatus Invalid" title="Please Select Site."></div>');
-			*/
-			//<div class="iiInputStatus Invalid" title="Please Select Site."></div>
+
 			if (me.houseCodeSearchJournalEntry.houseCodeIdCredit <= 0) {
 				$("#houseCodeCreditStatus").show();
 			}
@@ -954,19 +945,18 @@ ii.Class({
 				$("#houseCodeDebitStatus").show();
 			}
 			
-			if(me.status == "new")
-			{
+			if (me.status == "new") {
 				// Check to see if the data entered is valid
 			    if(!me.validator.queryValidity(true)) {
 					message += "In order to save, the errors on the page must be corrected.\n";
 				}			
 			
 				if ((parent.fin.appUI.houseCodeId != me.houseCodeSearchJournalEntry.houseCodeIdCredit) 
-					&& (parent.fin.appUI.houseCodeId != me.houseCodeSearchJournalEntry.houseCodeIdDebit)){
+					&& (parent.fin.appUI.houseCodeId != me.houseCodeSearchJournalEntry.houseCodeIdDebit)) {
 					message += "House Code # [" + parent.fin.appUI.houseCodeTitle + "] must be selected as either the Credit Site House Code or the Debit Site House Code.\n";
 				}
 			
-				if (me.houseCodeSearchJournalEntry.houseCodeIdCredit == 0 || me.houseCodeSearchJournalEntry.houseCodeIdDebit == 0){
+				if (me.houseCodeSearchJournalEntry.houseCodeIdCredit == 0 || me.houseCodeSearchJournalEntry.houseCodeIdDebit == 0) {
 					message += "Please select Credit/Debit House code.\n";
 				}
 
@@ -998,11 +988,8 @@ ii.Class({
 					, me.debitEmail.getValue() 
 					, fin.cmn.text.mask.phone(me.debitPhone.getValue(), true)
 					, me.journalDate.text.value				
-					//, me.weekPeriodYears[0].periodId
 					, parent.fin.appUI.glbFscPeriod
-					//, me.weekPeriodYears[0].yearId
 					, parent.fin.appUI.glbFscYear
-					//, me.weekPeriodYears[0].week
 					, parent.fin.appUI.glbWeek
 					, "0.00"
 					, "Open"
@@ -1011,8 +998,7 @@ ii.Class({
 				xml = me.saveXmlBuildJournalEntry(item);
 			}
 		   
-			if(me.status == "delete")
-			{
+			if (me.status == "delete") {
 				xml = me.saveXmlBuildJournalEntry();
 			}
 		   
@@ -1038,8 +1024,7 @@ ii.Class({
 			var item = args.item;
 			var xml = "";			
 			
-			if (me.status == "new") {
-				
+			if (me.status == "new") {				
 				xml += '<journalEntry';
 				xml += ' hcmHouseCode="' + item.hcmHouseCodeId + '"';
 				xml += ' hcmHouseCodeCredit="' + item.houseCodeCredit + '"';
@@ -1057,8 +1042,7 @@ ii.Class({
 				xml += '/>';
 			}
 			
-			if(me.status == "delete")
-			{
+			if(me.status == "delete") {
 				xml += '<journalEntryDelete';
 				xml += ' journalEntryId="' + me.journalEntrys[me.journalEntry.activeRowIndex].id + '"';
 				xml += '/>';
@@ -1072,18 +1056,15 @@ ii.Class({
 				transaction: {type: ii.ajax.TransactionMonitor.Transaction}, // The transaction that was responded to.
 				xmlNode: {type: "XmlNode:transaction"} // The XML transaction node associated with the response.
 			});
-			
 			var transaction = args.transaction;
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
-			var errorMessage = "";
 			var status = $(args.xmlNode).attr("status");
-			var traceType = ii.traceTypes.errorDataCorruption;				
-
-			if (status == "success") {				
+			
+			if (status == "success") {
+				me.modified(false);
 				
-				if (me.status == "new") {
-					me.modified(false);
+				if (me.status == "new") {					
 					$(args.xmlNode).find("*").each(function(){
 
 						switch (this.tagName) {
@@ -1112,8 +1093,7 @@ ii.Class({
 						}
 					});
 				}
-				
-				if(me.status == "delete") {				
+				else if (me.status == "delete") {
 					$("iframe")[0].contentWindow.fin.journalEntryUi.resetGrids();
 					if ($("iframe")[1].contentWindow.fin != undefined)
 						$("iframe")[1].contentWindow.fin.houseCodeInfoUi.resetControls();	
@@ -1128,15 +1108,7 @@ ii.Class({
 				me.status = "";
 			}
 			else {
-				alert('Error while updating Journal Entry Record: ' + $(args.xmlNode).attr("message"));
-				errorMessage = $(args.xmlNode).attr("error");
-				
-				if (status == "invalid") {
-					traceType = ii.traceTypes.warning;
-				}
-				else {
-					errorMessage += " [SAVE FAILURE]";
-				}
+				alert("[SAVE FAILURE] Error while updating Journal Entry Record: " + $(args.xmlNode).attr("message"));
 			}
 			
 			$("#pageLoading").hide();
@@ -1145,7 +1117,7 @@ ii.Class({
 });
 
 function loadPopup() {
-	
+
 	$("#backgroundPopup").css({
 		"opacity": "0.5"
 	});
@@ -1154,7 +1126,7 @@ function loadPopup() {
 }
 
 function disablePopup() {
-	
+
 	$("#backgroundPopup").fadeOut("slow");
 	$("#popupContact").fadeOut("slow");
 }

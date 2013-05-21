@@ -7,15 +7,15 @@ ii.Import( "ui.ctl.usr.grid" );
 ii.Import( "fin.app.hierarchy.usr.defs" );
 ii.Import( "fin.cmn.usr.treeView" );
 
-ii.Style( "style", 1);
-ii.Style( "fin.cmn.usr.common", 2);
-ii.Style( "fin.cmn.usr.statusBar", 3);
-ii.Style( "fin.cmn.usr.toolbar", 4);
-ii.Style( "fin.cmn.usr.input", 5);
-ii.Style( "fin.cmn.usr.button", 6);
-ii.Style( "fin.cmn.usr.dropDown", 7);
-ii.Style( "fin.cmn.usr.treeview", 8);
-ii.Style( "fin.cmn.usr.grid", 9);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.toolbar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.button", 6 );
+ii.Style( "fin.cmn.usr.dropDown", 7 );
+ii.Style( "fin.cmn.usr.treeview", 8 );
+ii.Style( "fin.cmn.usr.grid", 9 );
 
 var importCompleted = false;
 var iiScript = new ii.Script( "fin.cmn.usr.ui.core", function() { coreLoaded(); });
@@ -113,6 +113,10 @@ ii.Class({
 			me.hierarchyTreeMouseDownEventSetup();
 			me.movableNodeEventSetup();
 			me.modified(false);
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
 		},
 
 		contextMenuProcessor: function() {
@@ -232,7 +236,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("Session Loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 
 		resize: function fin_app_hierarchy_UserInterface_resize() {
@@ -476,11 +480,15 @@ ii.Class({
 			});
 		},
 		
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
 		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-			var me = this;
 
 			parent.fin.appUI.modified = args.modified;
 		},

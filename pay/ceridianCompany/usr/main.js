@@ -5,13 +5,13 @@ ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.ctl.usr.grid" );
 ii.Import( "fin.pay.ceridianCompany.usr.defs" );
 
-ii.Style( "fin.cmn.usr.common" , 1);
-ii.Style( "fin.cmn.usr.statusBar" , 2);
-ii.Style( "fin.cmn.usr.toolbar" , 3);
-ii.Style( "fin.cmn.usr.input" , 4);
-ii.Style( "fin.cmn.usr.grid" , 5);
-ii.Style( "fin.cmn.usr.dropDown" , 6);
-ii.Style( "fin.cmn.usr.button" , 7);
+ii.Style( "fin.cmn.usr.common", 1 );
+ii.Style( "fin.cmn.usr.statusBar", 2 );
+ii.Style( "fin.cmn.usr.toolbar", 3 );
+ii.Style( "fin.cmn.usr.input", 4 );
+ii.Style( "fin.cmn.usr.grid", 5 );
+ii.Style( "fin.cmn.usr.dropDown", 6 );
+ii.Style( "fin.cmn.usr.button", 7 );
 
 ii.Class({
     Name: "fin.pay.ceridianCompany.UserInterface",
@@ -33,7 +33,7 @@ ii.Class({
 				function(status, errorMessage){ me.nonPendingError(status, errorMessage); }
 			);	
 			
-			me.authorizer = new ii.ajax.Authorizer( me.gateway );	//@iiDoc {Property:ii.ajax.Authorizer} Boolean
+			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\Payroll\\CeridianCompanies";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
@@ -51,7 +51,11 @@ ii.Class({
 			$(window).bind("resize", me, me.resize);
 
 			me.frequencyTypeStore.fetch("userId:[user]", me.frequencyTypesLoaded, me);	
-			me.modified(false);				
+			me.modified(false);
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
 		},
 		
 		authorizationProcess: function fin_pay_ceridianCompany_UserInterface_authorizationProcess() {
@@ -72,7 +76,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("session loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 		
 		resize: function() {
@@ -108,13 +112,13 @@ ii.Class({
 				appendToId: "divForm",
 				allowAdds: true,
 				selectFunction: function( index ) { 
-					if(fin.payCeridianCompanyUi.companies[index]) fin.payCeridianCompanyUi.companies[index].modified = true;
+					if (fin.payCeridianCompanyUi.companies[index]) fin.payCeridianCompanyUi.companies[index].modified = true;
 				},
 				createNewFunction: fin.pay.ceridianCompany.CeridianCompany
 			});
 		
 			me.ceridianCompanyTitle = new ui.ctl.Input.Text({
-		        id: "CeridianCompanyTitle" ,
+		        id: "CeridianCompanyTitle",
 		        maxLength: 64, 
 				appendToId: "CeridianCompanyControlHolder",
 				changeFunction: function() { me.modified(); }
@@ -127,7 +131,7 @@ ii.Class({
 
 					me.checkForDuplicates();
 
-					if(me.duplicateCode != "") {
+					if (me.duplicateCode != "") {
 						this.setInvalid("Ceridian Company Code already exists.");
 					}
 				});
@@ -146,7 +150,7 @@ ii.Class({
 
 					me.checkForDuplicates();
 
-					if(me.duplicateDescription != "") {
+					if (me.duplicateDescription != "") {
 						this.setInvalid("Ceridian Company Description already exists.");
 					}
 				});
@@ -220,7 +224,12 @@ ii.Class({
 			});	
 		},
 		
-		modified: function fin_cmn_status_modified() {
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
+		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
@@ -261,7 +270,7 @@ ii.Class({
 		controlVisible: function(){
 			var me = this;
 			
-			if(me.ceridianCompaniesReadOnly){
+			if (me.ceridianCompaniesReadOnly) {
 				me.ceridianCompany.columns["brief"].inputControl = null;
 				me.ceridianCompany.columns["title"].inputControl = null;
 				me.ceridianCompany.columns["frequencyType"].inputControl = null;
@@ -338,7 +347,7 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 			
-			if(me.ceridianCompaniesReadOnly) return;
+			if (me.ceridianCompaniesReadOnly) return;
 			
 			var recordChanged = false;
 
@@ -347,7 +356,7 @@ ii.Class({
 			me.validator.forceBlur();
 			
 			// Check to see if the data entered is valid
-			if( !me.validator.queryValidity(true) && me.ceridianCompany.activeRowIndex >= 0) {
+			if (!me.validator.queryValidity(true) && me.ceridianCompany.activeRowIndex >= 0) {
 				alert( "In order to save, the errors on the page must be corrected.");
 				return false;
 			}
@@ -383,7 +392,7 @@ ii.Class({
 
 			var xml = me.saveXmlBuild(item);
 
-			if(item.length <= 0 ) return; //no records modified
+			if (item.length <= 0) return; //no records modified
 							
 			$("#messageToUser").text("Saving");
 			$("#pageLoading").show();
@@ -432,25 +441,14 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;			
 			var status = $(args.xmlNode).attr("status");
-			var traceType = ii.traceTypes.errorDataCorruption;
-			var errorMessage = "";
 				
-			if(status == "success") {
+			if (status == "success") {
 				me.modified(false);
-				me.actionUndoItem(); //reset
+				me.actionUndoItem();
 			}
 			else {
 				$("#pageLoading").hide();
-
-				alert('Error while updating Ceridian Company Record: ' + $(args.xmlNode).attr("message"));
-				errorMessage = $(args.xmlNode).attr("error");
-				
-				if(status == "invalid") {
-					traceType = ii.traceTypes.warning;
-				}
-				else {
-					errorMessage += " [SAVE FAILURE]";
-				}
+				alert("[SAVE FAILURE] Error while updating Ceridian Company details: " + $(args.xmlNode).attr("message"));
 			}
 		}
 	}

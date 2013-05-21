@@ -73,7 +73,7 @@ ii.Class({
 			me.hierarchy = new ii.ajax.Hierarchy( me.gateway );
 
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
-			me.authorizePath = "\\crothall\\chimes\\fin\\Setup\\EmployeeHierarchy";
+			me.authorizePath = "\\crothall\\chimes\\fin\\Setup\\EmpHierarchy";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
 					me.authorizationProcess.apply(me);
@@ -217,7 +217,7 @@ ii.Class({
 				me.session.registerFetchNotify(me.sessionLoaded,me);
 				me.job.fetchingData();
 				me.jobStore.fetch("userId:[user]", me.jobsLoaded, me);
-				me.employeeStore.fetch("userId:[user],jobTitle:,employeeId:0,managerId:0", me.employeesLoaded, me);
+				me.employeeStore.fetch("userId:[user],jobTitle:,employeeName:,employeeId:0,managerId:0,searchInHierarchy:true", me.employeesLoaded, me);
 			}				
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
@@ -259,25 +259,22 @@ ii.Class({
 				collapsed: false
 	        });
 
-//			me.appUnit = new ui.ctl.Input.Text({
-//		        id: "AppUnit",
-//				maxLength: 1024,
-//				title: "To search a specific Unit in the following Hierarchy, type-in Unit# (1455, 900000) and press Enter key/click Search button."
-//		    });
+			me.employeeName = new ui.ctl.Input.Text({
+		        id: "EmployeeName",
+				maxLength: 100,
+				title: "To search a specific Employee, type-in Employee name and press Enter key/click Search button."
+		    });
 
 			me.job = new ui.ctl.Input.DropDown.Filtered({
 		        id: "Job",
 				formatFunction: function( type ) { return type.title; }
 		    });
 
-			me.job.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				.addValidation( function( isFinal, dataMap ) {
+			me.searchInHierarchy = new ui.ctl.Input.Check({
+		        id: "SearchInHierarchy"
+		    });
 
-					if (me.job.indexSelected == -1)
-						this.setInvalid("Please select the correct Job.");
-				});
+			me.searchInHierarchy.setValue("true");
 
 			me.anchorSearch = new ui.ctl.buttons.Sizeable({
 				id: "AnchorSearch",
@@ -311,11 +308,19 @@ ii.Class({
 				hasHotState: true
 			});
 
-			me.anchorRemove = new ui.ctl.buttons.Sizeable({
-				id: "AnchorRemove",
+			me.anchorClear = new ui.ctl.buttons.Sizeable({
+				id: "AnchorClear",
 				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;Remove&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionRemoveItem(); },
+				text: "<span>&nbsp;&nbsp;Clear&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionClearItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorDelete = new ui.ctl.buttons.Sizeable({
+				id: "AnchorDelete",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Delete&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionDeleteItem(); },
 				hasHotState: true
 			});
 
@@ -335,7 +340,7 @@ ii.Class({
 				hasHotState: true
 			});
 
-			$("#AppUnitText").bind("keydown", me, me.actionSearchItem);
+			$("#EmployeeNameText").bind("keydown", me, me.actionSearchItem);
 			$("#JobText").bind("keydown", me, me.actionSearchItem);
 		},
 
@@ -364,7 +369,7 @@ ii.Class({
 			var me = this;
 			
 			me.job.resizeText();
-			//me.appUnit.resizeText();
+			me.employeeName.resizeText();
 			me.resize();
 		},
 		
@@ -522,10 +527,6 @@ ii.Class({
 				return;
 
 			me.dropped = true;
-
-			//var count  = me.selectedNode.childNodes.length;
-			//$(me.selectedNode.childNodes[count - 1]).remove();
-			
 			me.moveChildNodeCheck(me.selectedNode);
 		},
 		
@@ -593,40 +594,33 @@ ii.Class({
 		
 		actionSearchLoad: function fin_emp_hierarchy_UserInterface_actionSearchLoad() {
 			var me = this;
-			var levelId = 0;
 			var jobTitle = "";
 			var criteria = "";
-			//var searchText = me.appUnit.getValue();
+			var employeeName = me.employeeName.getValue();
 
-//			if (searchText == "" && me.job.indexSelected == -1)
-//				return;	
-			if (me.job.indexSelected == -1)
+			if (employeeName == "" && me.job.indexSelected == -1)
 				return;
-
-			//$("#AppUnitText").addClass("Loading");
-			jobTitle = me.job.data[me.job.indexSelected].title;
+				
+			if (me.job.indexSelected != -1)
+				jobTitle = me.job.data[me.job.indexSelected].title;
+			criteria = "jobTitle:" + jobTitle + ",employeeName:" + employeeName + ",employeeId:0,managerId:-1,";
 			
-//			if (levelTitle == "Unit") {
-//				if (searchText.indexOf(",") > 0) {
-//					me.loadAncestors = false;
-//					me.searchUnit = true;
-//				}
-//				else {
-//					me.loadAncestors = true;
-//					me.searchNode = true;
-//					me.searchSingleUnit = true;
-//				}
-//
-//				//criteria = "brief:" + searchText.replace(new RegExp(",", "g"), "|") + "|";
-//			}
-//			else {
+			if (me.searchInHierarchy.check.checked) {
 				me.loadAncestors = true;
 				me.searchNode = true;
-				//criteria = "hirLevel:" + levelId + ",title:" + searchText;
-//			}
+				me.searchUnit = false;
+				criteria += "searchInHierarchy:true,ancestors:true";
+			}
+			else {
+				me.loadAncestors = false;
+				me.searchNode = false;
+				me.searchUnit = true;
+				criteria += "searchInHierarchy:false,ancestors:false";
+			}
 			
+			me.setLoadCount();
 			me.employeeStore.reset();
-			me.employeeStore.fetch("userId:[user],jobTitle:" + jobTitle + ",employeeId:0,managerId:-1,ancestors:true", me.employeesLoaded, me);
+			me.employeeStore.fetch("userId:[user]," + criteria, me.employeesLoaded, me);
 		},
 
 		loadEmployees: function() {
@@ -681,11 +675,10 @@ ii.Class({
 
 		employeesLoaded: function(me, activeId) {
 
-			//$("#AppUnitText").removeClass("Loading");
-
-//			if (me.employees.length == 0 && !me.preview) {
-//				alert("There is no corresponding node available or you do not have enough permission to access it.");
-//			}
+			if (me.employees.length == 0 && !me.preview) {
+				alert("No matching records found.");
+				me.checkLoadCount();
+			}
 
 			if (me.preview) {
 				me.addPreviewNodes();
@@ -700,26 +693,26 @@ ii.Class({
 //						me.loadEmployees();
 //					}
 //				}
-//			}
-//			else if (me.searchUnit) {
-//				me.searchUnit = false;
-//
-//				for (var index = 0; index < me.employees.length; index++) {
-//					var found = false;
-//
-//					for (var rowIndex = 0; rowIndex < me.movableEmpList.length; rowIndex++) {
-//						if (me.movableEmpList[rowIndex].employeeId == me.employees[index].employeeId) {
-//							found = true;
-//							break;
-//						}
-//					}
-//
-//					if (!found) {
-//						me.movableEmpList.push(me.employees[index]);
-//						me.actionMovableNodeAppend(me.employees[index].employeeId, me.employees[index].title);
-//					}
-//				}
-//			}
+//			}else
+			if (me.searchUnit) {
+				me.searchUnit = false;
+
+				for (var index = 0; index < me.employees.length; index++) {
+					var found = false;
+
+					for (var rowIndex = 0; rowIndex < me.movableEmpList.length; rowIndex++) {
+						if (me.movableEmpList[rowIndex].employeeId == me.employees[index].employeeId) {
+							found = true;
+							break;
+						}
+					}
+
+					if (!found) {
+						me.movableEmpList.push(me.employees[index]);
+						me.actionMovableNodeAppend(me.employees[index].employeeId, me.employees[index].employeeName);
+					}
+				}
+			}
 			else {
 				var found = false;
 				me.employeesTemp = [];
@@ -748,7 +741,11 @@ ii.Class({
 
 							me.employeesTemp.push(item);
 							
-							if (me.employees[index].jobTitle == me.job.data[me.job.indexSelected].title)
+							if (me.job.indexSelected != -1) {
+								if (me.employees[index].jobTitle == me.job.data[me.job.indexSelected].title)
+									me.employeeCurrentId = me.employees[index].employeeId;
+							}
+							else
 								me.employeeCurrentId = me.employees[index].employeeId;
 						}
 					}
@@ -768,11 +765,11 @@ ii.Class({
 				}
 
 				me.expand = false;
-				me.employeesTemp = [];
-				//$("#pageLoading").hide();
-				ii.trace("Employees Loaded", ii.traceTypes.Information, "Info");
-				me.checkLoadCount();
+				me.employeesTemp = [];				
 			}
+			
+			me.checkLoadCount();
+			ii.trace("Employees Loaded", ii.traceTypes.Information, "Info");
 		},
 
 		actionAddNodes: function(storeNodes) {
@@ -995,15 +992,6 @@ ii.Class({
 
 				if (me.movableEmpList.length == 0)
 					$("#chkSelectAll").removeAttr("checked");
-//				else {
-//					var message = "Unit(s) [";
-//					for (var index = 0; index < me.movableEmpList.length; index++) {
-//						if ($("#chkNodeM" + me.movableEmpList[index].employeeId).is(":checked"))
-//							message += me.movableEmpList[index].brief + ", ";
-//					}
-//					message = message.substring(0, message.lastIndexOf(","));
-//					alert(message + "] already exists in the location [" + me.employeesList[parentIndex].employeeName + "]. Please verify.");
-//				}
 			}
 			else {
 				var id = parseInt(me.selectedNode.id.replace("liNode", ""));
@@ -1076,7 +1064,7 @@ ii.Class({
 				me.levelClass = "level" + me.employeesList[nodeIndex].orgLevel;
 				me.expand = true;
 				$("#span" + nodeId).replaceClass(me.levelClass, "loading");
-				me.employeeStore.fetch("userId:[user],jobTitle:,managerId:" + me.employeeId, me.employeesLoaded, me);
+				me.employeeStore.fetch("userId:[user],jobTitle:,managerId:" + me.employeeId + ",searchInHierarchy:true", me.employeesLoaded, me);
 			}
 		},
 
@@ -1376,7 +1364,7 @@ ii.Class({
 			
 			$("#ulEdit0").empty();
 			$("#ulEditM").empty();
-			//me.appUnit.setValue("");
+			me.employeeName.setValue("");
 			me.employeesList = [];
 			me.employeesTemp = [];
 			me.movableEmpList = [];
@@ -1400,7 +1388,7 @@ ii.Class({
 
 			me.actionResetItem();
 			me.setLoadCount();
-			me.employeeStore.fetch("userId:[user],jobTitle:,employeeId:0,managerId:0", me.employeesLoaded, me);
+			me.employeeStore.fetch("userId:[user],jobTitle:,employeeId:0,managerId:0,searchInHierarchy:true", me.employeesLoaded, me);
 		},
 
 		actionClickItem: function(objCheckBox) {
@@ -1412,7 +1400,33 @@ ii.Class({
 				$("#chkSelectAll").removeAttr("checked");
 		},
 
-		actionRemoveItem: function() {
+		actionClearItem: function() {
+			var me = this;
+			var checkedNodes = $("input[id^='chkNodeM']:checked");
+
+			if (me.movableEmpList.length == checkedNodes.length) {
+				$("#ulEditM").empty();
+				me.movableEmpList = [];
+			}
+			else {
+				for (var index = 0; index < checkedNodes.length; index++) {
+					var id = parseInt(checkedNodes[index].id.replace("chkNodeM", ""));
+					me.actionNodeRemove($("#liNodeM" + id)[0]);
+	
+					for (var rowIndex = 0; rowIndex < me.movableEmpList.length; rowIndex++) {
+						if (me.movableEmpList[rowIndex].employeeId == id) {
+							me.movableEmpList.splice(rowIndex, 1);
+							break;
+						}
+					}
+				}
+			}
+
+			if (me.movableEmpList.length == 0)
+				$("#chkSelectAll").removeAttr("checked");
+		},
+		
+		actionDeleteItem: function() {
 			var me = this;
 			var checkedNodes = $("input[id^='chkNodeM']:checked");
 
@@ -1510,8 +1524,6 @@ ii.Class({
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
 
-			$("#pageLoading").hide();
-
 			if (status == "success") {
 				$(args.xmlNode).find("*").each(function() {
 					switch (this.tagName) {
@@ -1529,6 +1541,8 @@ ii.Class({
 			else {
 				alert("[SAVE FAILURE] Error while updating the employee hierarchy information: " + $(args.xmlNode).attr("message"));
 			}
+			
+			$("#pageLoading").fadeOut("slow");
 		}
 	}
 });

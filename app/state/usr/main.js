@@ -46,13 +46,17 @@ ii.Class({
 			$(document).bind("keydown", me, me.controlKeyProcessor);	
 
 			me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
 		},
 
 		authorizationProcess: function fin_app_state_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
 
-			ii.timer.timing("Page Displayed");
+			ii.timer.timing("Page displayed");
 			me.session.registerFetchNotify(me.sessionLoaded,me);
 		},
 
@@ -61,7 +65,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("Session Loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 
 		resize: function() {
@@ -183,7 +187,12 @@ ii.Class({
 			});			
 		},
 
-		modified: function fin_cmn_status_modified() {
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
+		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
@@ -283,11 +292,9 @@ ii.Class({
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
 
-			$("#pageLoading").hide();
-
 			if (status == "success") {
-				
 				me.modified(false);
+
 				$(args.xmlNode).find("*").each(function() {
 					switch (this.tagName) {
 
@@ -298,8 +305,11 @@ ii.Class({
 					}
 				});
 			}
-			else
-				alert("[SAVE FAILURE] Error while updating State: " + $(args.xmlNode).attr("message"));
+			else {
+				alert("[SAVE FAILURE] Error while updating State Minimum Wage details: " + $(args.xmlNode).attr("message"));
+			}
+
+			$("#pageLoading").hide();
 		}
 	}
 });

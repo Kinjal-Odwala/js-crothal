@@ -7,15 +7,15 @@ ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.pur.itemPriceUpdate.usr.defs" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.toolbar" , 4);
-ii.Style( "fin.cmn.usr.input" , 5);
-ii.Style( "fin.cmn.usr.grid" , 6);
-ii.Style( "fin.cmn.usr.button" , 7);
-ii.Style( "fin.cmn.usr.dropDown" , 8);
-ii.Style( "fin.cmn.usr.dateDropDown" , 9);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.toolbar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.grid", 6 );
+ii.Style( "fin.cmn.usr.button", 7 );
+ii.Style( "fin.cmn.usr.dropDown", 8 );
+ii.Style( "fin.cmn.usr.dateDropDown", 9 );
 
 ii.Class({
     Name: "fin.pur.itemPriceUpdate.UserInterface",
@@ -77,6 +77,10 @@ ii.Class({
 			$("#SelectItemPrice").click(function() { me.modified(true); });
 			$("input[name='ScheduleOn']").change(function() { me.modified(true); });
 			$("input[name='UpdatePriceBy']").change(function() { me.modified(true); });
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
 		},	
 
 		authorizationProcess: function fin_pur_itemPriceUpdate_UserInterface_authorizationProcess() {
@@ -94,7 +98,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("Session Loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 
 		resize: function() {
@@ -313,6 +317,11 @@ ii.Class({
 				itemConstructorArgs: fin.pur.itemPriceUpdate.catalogItemArgs,
 				injectionArray: me.catalogItems				
 			});
+		},
+		
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
 		},
 		
 		modified: function() {
@@ -663,19 +672,17 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-			var traceType = ii.traceTypes.errorDataCorruption;
-			var errorMessage = "";
 			
 			if (status == "success") {
+				me.modified(false);
+
 				if ($("input[name='ScheduleOn']:checked").val() == "1")
 					me.updatePrice();
 			}
 			else {
-				errorMessage = "Error while updating Catalog Item price: " + $(args.xmlNode).attr("message");
-				errorMessage += ". " + $(args.xmlNode).attr("error") + " [SAVE FAILURE]";
-				alert(errorMessage);
+				alert("[SAVE FAILURE] Error while updating Catalog Item price: " + $(args.xmlNode).attr("message"));
 			}
-			me.modified(false);
+
 			$("#pageLoading").hide();
 		}
 	}

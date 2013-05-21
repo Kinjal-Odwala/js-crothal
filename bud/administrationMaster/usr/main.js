@@ -113,6 +113,10 @@ ii.Class({
 			$("#container-1").tabs(1);
 			$("#container-1").triggerTab(1);
 			$("iframe")[0].src = "/fin/bud/annualInformation/usr/markup.htm";
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
         },
 		
 		authorizationProcess: function fin_bud_administrationMaster_UserInterface_authorizationProcess() {
@@ -182,7 +186,12 @@ ii.Class({
 			
 			if (processed)
 				return false;
-		},		
+		},
+		
+		dirtyCheck: function(me) {
+
+			return !fin.cmn.status.itemValid();
+		},
 		
 		actionSaveItem: function() {
 			var args = ii.args(arguments,{});

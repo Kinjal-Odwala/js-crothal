@@ -10,16 +10,16 @@ ii.Import( "fin.pur.master.usr.defs" );
 ii.Import( "fin.cmn.usr.houseCodeSearch" );
 ii.Import( "fin.cmn.usr.houseCodeSearchTemplate" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.toolbar" , 4);
-ii.Style( "fin.cmn.usr.input" , 5);
-ii.Style( "fin.cmn.usr.grid" , 6);
-ii.Style( "fin.cmn.usr.button" , 7);
-ii.Style( "fin.cmn.usr.dropDown" , 8);
-ii.Style( "fin.cmn.usr.dateDropDown" , 9);
-ii.Style( "fin.cmn.usr.tabs" , 10);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.toolbar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.grid", 6 );
+ii.Style( "fin.cmn.usr.button", 7 );
+ii.Style( "fin.cmn.usr.dropDown", 8 );
+ii.Style( "fin.cmn.usr.dateDropDown", 9 );
+ii.Style( "fin.cmn.usr.tabs", 10 );
 
 ii.Class({
     Name: "fin.pur.master.UserInterface",
@@ -84,14 +84,31 @@ ii.Class({
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$("#Print").hide();
 
-			me.$reportFooter = $('#ReportFooterTextArea')[0];
-			$('#ReportFooterTextArea').keyup(function(){
+			me.$reportFooter = $("#ReportFooterTextArea")[0];
+			$("#ReportFooterTextArea").keyup(function(){
 				if (this.value.length > 1000) {
 					alert('Report footer length. max - 1000 characters.');
 					return false;
 				}
 			});	
 
+			$("#TabCollection a").mousedown(function() {
+				if (!parent.fin.cmn.status.itemValid()) 
+					return false;
+				else {
+					var tabIndex = 0;
+					if (this.id == "TabOpenOrders")
+						tabIndex = 1;
+					else if (this.id == "TabPlacedOrders")
+						tabIndex = 2;
+					else if (this.id == "TabPostedOrders")
+						tabIndex = 3;
+							
+					$("#container-1").tabs(tabIndex);
+					$("#container-1").triggerTab(tabIndex);
+				}					
+			});
+			
 			$("#TabCollection a").click(function() {
 			
 				switch(this.id){
@@ -163,6 +180,10 @@ ii.Class({
 			
 			me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
 			me.modified(false);
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
         },
 		
 		authorizationProcess: function fin_pur_item_master_authorizationProcess() {
@@ -186,7 +207,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("session loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 		
 		resize: function() {
@@ -746,11 +767,16 @@ ii.Class({
 			});
 		},
 		
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+		
 		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
 		},
 		
@@ -850,12 +876,15 @@ ii.Class({
 		
 		searchPurchaseOrder: function() {
 			var me = this;
-			
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
 			if ((me.searchInput.getValue() == "") || (!(/^[0-9]+$/.test(me.searchInput.getValue())))) {
 				alert("Please enter valid Purchase Order #.");
 				return;
 			}
-			
+
 			me.checkStatus = true;
 			$("#messageToUser").text("Loading");	
 			$("#pageLoading").show();
@@ -890,7 +919,7 @@ ii.Class({
 				
 			me.purchaseOrderGrid.setData(me.purchaseOrders);
 			
-			if(me.checkStatus) {
+			if (me.checkStatus) {
 				me.checkStatus = false;			
 			
 				if (me.purchaseOrders.length > 0) {
@@ -901,17 +930,17 @@ ii.Class({
 						
 					me.lastSelectedRowIndex = 0;
 						
-					if(me.purchaseOrders[0].statusType == 1) {
+					if (me.purchaseOrders[0].statusType == 1) {
 						me.activeFrameId = 0;
 						me.openOrderNeedUpdate = false;
 						$("#container-1").triggerTab(1);						
 					}
-					else if(me.purchaseOrders[0].statusType == 2) {					
+					else if (me.purchaseOrders[0].statusType == 2) {					
 						me.activeFrameId = 1;
 						me.placedOrderNeedUpdate = false;
 						$("#container-1").triggerTab(2);						
 					}
-					else if(me.purchaseOrders[0].statusType == 3) {
+					else if (me.purchaseOrders[0].statusType == 3) {
 						me.activeFrameId = 2;
 						me.postedOrderNeedUpdate = false;
 						$("#container-1").triggerTab(3);
@@ -1139,6 +1168,9 @@ ii.Class({
 		actionNewOrderFromTemplate: function() {
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+			
 			$("#Header").text("Purchase Order Templates");
 			$("#VendorInfo").hide();
 			$("#AnchorItemContinue").hide();
@@ -1164,7 +1196,10 @@ ii.Class({
 			var index = -1;
 			var readOnly = false;
 			var itemIndex = -1;
-	
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
 			index = me.purchaseOrderGrid.activeRowIndex;
 			
 			if (index == -1)
@@ -1747,9 +1782,7 @@ ii.Class({
 			});
 			var transaction = args.transaction;
 			var me = transaction.referenceData.me;
-			var errorMessage = "";
 			var status = $(args.xmlNode).attr("status");
-			var traceType = ii.traceTypes.errorDataCorruption;
 			var hidePageLoading = true;
 
 			if (status == "success") {
@@ -1805,14 +1838,7 @@ ii.Class({
 					$("#pageLoading").hide();
 			}
 			else {				
-				errorMessage = $(args.xmlNode).attr("error");
-				if(status == "invalid") {
-					traceType = ii.traceTypes.warning;
-				}
-				else {
-					errorMessage += " [SAVE FAILURE]";
-				}
-				alert("Error while updating Purchase Order Record: " + $(args.xmlNode).attr("message") + " " + errorMessage);
+				alert("[SAVE FAILURE] Error while updating Purchase Order details: " + $(args.xmlNode).attr("message"));
 				$("#pageLoading").hide();
 			}
 			me.modified(false);
@@ -1869,7 +1895,7 @@ function centerPopup() {
 	$("#backgroundPopup").css({
 		"height": windowHeight
 	});
-}	
+}
 
 function main() {
 

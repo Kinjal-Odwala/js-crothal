@@ -7,15 +7,15 @@ ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.rev.bulkInvoiceImport.usr.defs" );
 
-ii.Style( "style", 1);
-ii.Style( "fin.cmn.usr.common", 2);
-ii.Style( "fin.cmn.usr.statusBar", 3);
-ii.Style( "fin.cmn.usr.toolbar", 4);
-ii.Style( "fin.cmn.usr.input", 5);
-ii.Style( "fin.cmn.usr.grid", 6);
-ii.Style( "fin.cmn.usr.button", 7);
-ii.Style( "fin.cmn.usr.dropDown", 8);
-ii.Style( "fin.cmn.usr.dateDropDown", 9);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.toolbar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.grid", 6 );
+ii.Style( "fin.cmn.usr.button", 7 );
+ii.Style( "fin.cmn.usr.dropDown", 8 );
+ii.Style( "fin.cmn.usr.dateDropDown", 9 );
 
 ii.Class({
     Name: "fin.rev.bulkInvoiceImport.UserInterface",
@@ -55,7 +55,7 @@ ii.Class({
 
 			me.defineFormControls();			
 			me.configureCommunications();
-
+			me.modified(false);
 			me.anchorUpload.display(ui.cmn.behaviorStates.disabled);
 
 			$(window).bind("resize", me, me.resize);
@@ -76,6 +76,9 @@ ii.Class({
 			};
 
 			ui.cmn.behavior.disableBackspaceNavigation();
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
 		},
 
 		authorizationProcess: function fin_rev_bulkInvoiceImport_UserInterface_authorizationProcess() {
@@ -297,9 +300,25 @@ ii.Class({
 			});
 		},
 		
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
+		modified: function() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
+		},
+
 		actionImportItem: function() {
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
 			$("#pageHeader").text("Bulk Invoice Import");
 			$("#AnchorValidate").hide();			
 			$("#AnchorProcessBatch").hide();
@@ -316,6 +335,9 @@ ii.Class({
 
 		actionBatchProcessStatus: function() {
 			var me = this;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
 
 			$("#pageHeader").text("Batch Process Status");
 			$("#messageToUser").text("Loading");
@@ -542,7 +564,8 @@ ii.Class({
 			$("#tblInvoices").show();
 			
 			me.resize();
-			me.dataLoaded = true;			
+			me.dataLoaded = true;
+			me.modified();
 			
 			$("#pageLoading").hide();
   		},
@@ -872,7 +895,10 @@ ii.Class({
 		
 		actionSaveCancel: function() {
 			var me = this;
-			
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
 			$("#messageToUser").text("Clearing");
 			$("#pageLoading").show();
 			
@@ -1034,6 +1060,8 @@ ii.Class({
 			var status = $(args.xmlNode).attr("status");
 
 			if (status == "success") {
+				me.modified(false);
+
 				$(args.xmlNode).find("*").each(function() {
 
 					switch (this.tagName) {

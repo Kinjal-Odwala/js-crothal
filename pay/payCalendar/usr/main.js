@@ -6,15 +6,15 @@ ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.pay.payCalendar.usr.defs" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.toolbar" , 4);
-ii.Style( "fin.cmn.usr.input" , 5);
-ii.Style( "fin.cmn.usr.grid" , 6);
-ii.Style( "fin.cmn.usr.dropDown" , 7);
-ii.Style( "fin.cmn.usr.dateDropDown" , 8);
-ii.Style( "fin.cmn.usr.button" , 7);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.toolbar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.grid", 6 );
+ii.Style( "fin.cmn.usr.dropDown", 7 );
+ii.Style( "fin.cmn.usr.dateDropDown", 8 );
+ii.Style( "fin.cmn.usr.button", 9);
 
 ii.Class({
     Name: "fin.pay.payCalendar.UserInterface",
@@ -35,10 +35,10 @@ ii.Class({
 				, function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
 			);			
 				
-			me.validator = new ui.ctl.Input.Validation.Master();	//@iiDoc {Property:ui.ctl.Input.Validation.Master}
+			me.validator = new ui.ctl.Input.Validation.Master();
 			me.session = new ii.Session(me.cache);
 			
-			me.authorizer = new ii.ajax.Authorizer( me.gateway );	//@iiDoc {Property:ii.ajax.Authorizer} Boolean
+			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\Payroll\\Calendar";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
@@ -56,6 +56,10 @@ ii.Class({
 			me.payFrequency.fetchingData();
 			me.fiscalYearStore.fetch("userId:[user]", me.fiscalYearsLoaded, me);
 			me.frequencyTypeStore.fetch("userId:[user]", me.frequencyTypesLoaded, me);
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
 		},
 		
 		authorizationProcess: function fin_pay_payCalendar_UserInterface_authorizationProcess() {
@@ -76,7 +80,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("session loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 	
 		resize: function() {
@@ -160,11 +164,11 @@ ii.Class({
 				appendToId: "divForm",
 				allowAdds: true,
 				createNewFunction: fin.pay.payCalendar.PayPeriod,
-				selectFunction: function(index) {  if(me.payPeriods[index]) me.payPeriods[index].modified = true; }
+				selectFunction: function(index) { if (me.payPeriods[index]) me.payPeriods[index].modified = true; }
 			});
 			
 			me.payPeriodTitle = new ui.ctl.Input.Text({
-		        id: "PayPeriodTitle" ,
+		        id: "PayPeriodTitle",
 		        maxLength: 16, 
 				appendToId: "PayPeriodGridControlHolder",
 				changeFunction: function() { me.modified(); }
@@ -177,8 +181,7 @@ ii.Class({
 			me.payStartDate = new ui.ctl.Input.Date({
 		        id: "PayStartDate",
 		        appendToId: "PayPeriodGridControlHolder",
-				//formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
-				changeFunction: function() { me.modified(); }
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
 		    });
 					
 			me.payStartDate.makeEnterTab()
@@ -188,10 +191,14 @@ ii.Class({
 					
 				var enteredText = me.payStartDate.lastBlurValue;
 				
-				if(enteredText == "") 
+				if (enteredText == "") 
 					return;
-										
-				if(/^(0[1-9]|1[012]|[1]?[0])[\/-](0[1-9]|[12][0-9]|3[01])[\/-](\d{4}|\d{2})$/.test(enteredText) == false) {							
+				
+				if (me.payPeriodGrid.activeRowIndex >=0 && (enteredText != ui.cmn.text.date.format(me.payPeriodGrid.data[me.payPeriodGrid.activeRowIndex].startDate, "mm/dd/yyyy"))) {
+					me.modified();
+				}
+				
+				if (/^(0[1-9]|1[012]|[1]?[0])[\/-](0[1-9]|[12][0-9]|3[01])[\/-](\d{4}|\d{2})$/.test(enteredText) == false) {							
 					this.setInvalid("Please enter valid date.");
 				}
 			});
@@ -199,8 +206,7 @@ ii.Class({
 			me.payEndDate = new ui.ctl.Input.Date({
 		        id: "PayEndDate",
 				appendToId: "PayPeriodGridControlHolder",
-				//formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
-				changeFunction: function() { me.modified(); }
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
 		    });
 			
 			me.payEndDate.makeEnterTab()
@@ -209,19 +215,23 @@ ii.Class({
 				.addValidation( function( isFinal, dataMap ) {
 					
 				var enteredText = me.payEndDate.lastBlurValue;
-				
-				if(enteredText == "") 
+
+				if (enteredText == "") 
 					return;
-										
-				if(/^(0[1-9]|1[012]|[1]?[0])[\/-](0[1-9]|[12][0-9]|3[01])[\/-](\d{4}|\d{2})$/.test(enteredText) == false) {							
+				
+				if (me.payPeriodGrid.activeRowIndex >=0 && (enteredText != ui.cmn.text.date.format(me.payPeriodGrid.data[me.payPeriodGrid.activeRowIndex].endDate, "mm/dd/yyyy"))) {
+					me.modified();
+				}
+
+				if (/^(0[1-9]|1[012]|[1]?[0])[\/-](0[1-9]|[12][0-9]|3[01])[\/-](\d{4}|\d{2})$/.test(enteredText) == false) {							
 					this.setInvalid("Please enter valid date.");
-				}					
+				}			
 			});			
 			
 			me.payPeriodGrid.addColumn("title", "title", "Title", "title", 100, null, this.payPeriodTitle);
-			me.payPeriodGrid.addColumn("startDate", "startDate", "Start Date", "Start Date", 125, function(startDate) { return ui.cmn.text.date.format(startDate); }, this.payStartDate);
-			me.payPeriodGrid.addColumn("endDate", "endDate", "End Date", "End Date", null, function(endDate) { return ui.cmn.text.date.format(endDate); }, this.payEndDate);
-			me.payPeriodGrid.capColumns();			
+			me.payPeriodGrid.addColumn("startDate", "startDate", "Start Date", "Start Date", 125, function(startDate) { return ui.cmn.text.date.format(startDate, "mm/dd/yyyy"); }, this.payStartDate);
+			me.payPeriodGrid.addColumn("endDate", "endDate", "End Date", "End Date", null, function(endDate) { return ui.cmn.text.date.format(endDate, "mm/dd/yyyy"); }, this.payEndDate);
+			me.payPeriodGrid.capColumns();
 		},
 		
 		resizeControls: function() {
@@ -263,7 +273,12 @@ ii.Class({
 			});
 		},
 		
-		modified: function fin_cmn_status_modified() {
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
+		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
@@ -273,10 +288,8 @@ ii.Class({
 		
 		controlKeyProcessor: function() {
 			var args = ii.args(arguments, {
-				event: {
-					type: Object
-				} // The (key) event object
-			});			
+				event: { type: Object } // The (key) event object
+			});
 			var event = args.event;
 			var me = event.data;
 			var processed = false;
@@ -301,10 +314,10 @@ ii.Class({
 			}
 		},
 		
-		controlVisible: function(){
+		controlVisible: function() {
 			var me = this;
 			
-			if(me.calendarReadOnly){
+			if (me.calendarReadOnly) {
 				$("#FiscalYearText").attr('disabled', true);
 				$("#PayFrequencyText").attr('disabled', true);
 				$("#PayFrequencyAction").removeClass("iiInputAction");
@@ -315,14 +328,13 @@ ii.Class({
 				me.payPeriodGrid.allowAdds = false;
 
 				$("#actionMenu").hide();
-				$(".footer").hide();				
-								
+				$(".footer").hide();								
 			}
 		},
 
 		fiscalYearsLoaded: function fin_pay_UserInterface_fiscalYearsLoaded(me, activeId) {
 
-			if(me.fiscalYears[0] == null)
+			if (me.fiscalYears[0] == null)
 				alert("No matching record found!!");
 				
 			me.fiscalYearGrid.setData(me.fiscalYears);
@@ -349,19 +361,18 @@ ii.Class({
 			});
 			var me = this;
 			var index = args.index;
-									
+
 			if (me.fiscalYearGrid.data[index] != undefined) {
 
 				me.yearId = me.fiscalYearGrid.data[index].id;
 				me.fiscalYear.setValue(me.fiscalYearGrid.data[index].title);
-									
+
 				$("#payPeriodsLoading").show();								
 				me.payPeriodStore.fetch("fiscalYearId:" + me.yearId + ",frequencyType:" + me.frequencyTypeId + ",userId:[user]", me.payPeriodsLoaded, me);
-				
 			}
 			else
 				me.yearId = 0;
-				
+
 			me.controlVisible();	
 		},
 		
@@ -401,15 +412,15 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 			
-			if(me.calendarReadOnly) return;
-			me.modified(false);
+			if (me.calendarReadOnly) return;
+
 			if (me.payPeriodGrid.activeRowIndex >= 0)
 				me.payPeriodGrid.body.deselect(me.payPeriodGrid.activeRowIndex);
 
 			me.validator.forceBlur();
 						
 			// Check to see if the data entered is valid
-			if( !me.validator.queryValidity(true) && me.payPeriodGrid.activeRowIndex >= 0){
+			if (!me.validator.queryValidity(true) && me.payPeriodGrid.activeRowIndex >= 0) {
 				alert("In order to save, the errors on the page must be corrected.");
 				return false;
 			}			
@@ -448,7 +459,7 @@ ii.Class({
 					}				
 				}
 
-				if(me.payPeriods[index].modified == false && me.payPeriods[index].id > 0)
+				if (me.payPeriods[index].modified == false && me.payPeriods[index].id > 0)
 					continue;
 				
 				payPeriodData = new fin.pay.payCalendar.PayPeriod(
@@ -528,11 +539,10 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-			var traceType = ii.traceTypes.errorDataCorruption;
-			var errorMessage = "";
-			
+
 			if (status == "success") {
-				me.modified(false);				
+				me.modified(false);
+
 				$(args.xmlNode).find("*").each(function() {
 
 					switch (this.tagName) {
@@ -555,15 +565,7 @@ ii.Class({
 				});
 			}
 			else {
-				alert('Error while updating Pay Calendar Record: ' + $(args.xmlNode).attr("message"));
-				errorMessage = $(args.xmlNode).attr("error");
-				
-				if (status == "invalid") {
-					traceType = ii.traceTypes.warning;
-				}
-				else {
-					errorMessage += " [SAVE FAILURE]";
-				}
+				alert("[SAVE FAILURE] Error while updating Pay Calendar details: " + $(args.xmlNode).attr("message"));
 			}
 			
 			$("#pageLoading").hide();
@@ -576,6 +578,3 @@ function main() {
 	fin.payCalendarUi = new fin.pay.payCalendar.UserInterface();
 	fin.payCalendarUi.resize();
 }
-
-
-

@@ -9,14 +9,14 @@ ii.Import( "fin.cmn.usr.util" );
 ii.Import( "fin.cmn.usr.houseCodeSearch" );
 ii.Import( "fin.inv.administration.usr.defs" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.toolbar" , 4);
-ii.Style( "fin.cmn.usr.input" , 5);
-ii.Style( "fin.cmn.usr.grid" , 6);
-ii.Style( "fin.cmn.usr.button" , 7);
-ii.Style( "fin.cmn.usr.dropDown" , 8);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.toolbar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.grid", 6 );
+ii.Style( "fin.cmn.usr.button", 7 );
+ii.Style( "fin.cmn.usr.dropDown", 8 );
 
 ii.Class({
     Name: "fin.inv.administration.UserInterface",
@@ -90,12 +90,18 @@ ii.Class({
 					me.maidCartItemGrid.setHeight(120);
 				}
 			});
+			
+			$("input[name='InventoryList']").change(function() { me.modified(); });
 
 			// Disable the context menu but not on localhost because its used for debugging
 			if (location.hostname != "localhost") {
 				$(document).bind("contextmenu", function(event) {
 					return false;
 				});
+			}
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
 			}
 		},
 
@@ -133,9 +139,7 @@ ii.Class({
 					id: "auditLogReportAction",
 					brief: "Audit Log Lookup Web Report",
 					title: "Audit Log Lookup Web Report.",
-					actionFunction: function(){
-						me.actionAuditLogReport();
-					}
+					actionFunction: function() { me.actionAuditLogReport(); }
 				});
 			
 			me.reportInventoryMidYearToYearEnd = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\InventoryMidYear");
@@ -160,7 +164,7 @@ ii.Class({
 			$("#pageLoading").hide();
 
 			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+			me.session.registerFetchNotify(me.sessionLoaded, me);
 		},	
 
 		sessionLoaded: function fin_inv_administration_UserInterface_sessionLoaded() {
@@ -168,7 +172,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("Session Loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 
 		resize: function() {
@@ -258,7 +262,7 @@ ii.Class({
 			me.yearPopup = new ui.ctl.Input.DropDown.Filtered({
 				id: "Year",
 				formatFunction: function( type ) { return type.name; },
-				changeFunction: function() { me.popupYearChanged(); }
+				changeFunction: function() { me.modified(); me.popupYearChanged(); }
 			});
 			
 			me.yearPopup.makeEnterTab()
@@ -272,7 +276,8 @@ ii.Class({
 
 			me.periodPopup = new ui.ctl.Input.DropDown.Filtered({
 				id: "Period",
-				formatFunction: function( type ) { return type.name; }
+				formatFunction: function( type ) { return type.name; },
+				changeFunction: function() { me.modified(); }
 			});
 
 			me.periodPopup.makeEnterTab()
@@ -292,7 +297,8 @@ ii.Class({
 
 			me.itemPrice = new ui.ctl.Input.Money({
 		        id: "ItemPrice",
-				appendToId: "MaidCartItemGridControlHolder"
+				appendToId: "MaidCartItemGridControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.itemPrice.makeEnterTab()
@@ -302,7 +308,8 @@ ii.Class({
 			me.itemQuantity = new ui.ctl.Input.Text({
 		        id: "ItemQuantity",
 		        maxLength: 10, 
-				appendToId: "MaidCartItemGridControlHolder"
+				appendToId: "MaidCartItemGridControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.itemQuantity.makeEnterTab()
@@ -351,6 +358,7 @@ ii.Class({
 				appendToId: "divForm",
 				selectFunction: function( index ) { me.itemSelect(index); },
 				deselectFunction: function( index ) { me.itemDeSelect(); },
+				validationFunction: function() { return parent.fin.cmn.status.itemValid(); },
 				allowAdds: false
 			});			
 
@@ -463,7 +471,12 @@ ii.Class({
 			});
 		},
 		
-		modified: function fin_cmn_status_modified() {
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
+		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
@@ -781,6 +794,9 @@ ii.Class({
 			if (me.actionType == 0)
 				return;
 
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
 			if (!me.isReadOnly)
 				$("#AnchorSave").show();
 
@@ -798,6 +814,9 @@ ii.Class({
 			var me = this;
 
 			if (me.actionType == 1)
+				return;
+				
+			if (!parent.fin.cmn.status.itemValid())
 				return;
 
 			$("#countCompleteHeader").show();
@@ -817,6 +836,9 @@ ii.Class({
 			if (me.actionType == 2)
 				return;
 
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
 			$("#houseCodeHeader").show();
 			$("#countCompleteHeader").hide();
 			$("#InventoryItemGridContainer").hide();
@@ -829,14 +851,14 @@ ii.Class({
 		
 		actionInventoryReport: function() {
 			var me = this;
-			var title = '';
-			var reportURL = '';
+			var title = "";
+			var reportURL = "";
 
 			//get the report URL from menuItems			
-			$(parent.fin.appUI.layout.menu.items['invt'].xmlNode).find("item").each( 
+			$(parent.fin.appUI.layout.menu.items["invt"].xmlNode).find("item").each( 
 				function() {
 					title = $(this).attr("title");
-					if(title == 'Inventory Mid Year And Year En'){ //Inventory Mid Year And Year End
+					if (title == "Inventory Mid Year And Year En") { //Inventory Mid Year And Year End
 						reportURL = $(this).attr("actionData");						
 					}
 				}
@@ -847,6 +869,9 @@ ii.Class({
 
 		actionGenerateInventoryList: function() {
 			var me = this;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
 
 			me.years = [];
 			me.loadPopup();
@@ -893,6 +918,9 @@ ii.Class({
 		actionCancelItem: function() {
 			var me = this;
 
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			me.hidePopup();
 		},
 
@@ -974,19 +1002,15 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-			var errorMessage = "";
 
 			if (status == "success") {
+				me.modified(false);
 				ii.trace("Inventory record updated successfully.", ii.traceTypes.Information, "Info");
 			}
 			else {
-				errorMessage = "Error while updating Inventory record: " + $(args.xmlNode).attr("message");
-				errorMessage += $(args.xmlNode).attr("error");
-				errorMessage += " [SAVE FAILURE]";
-				alert(errorMessage);				
+				alert("[SAVE FAILURE] Error while updating Inventory details: " + $(args.xmlNode).attr("message"));
 			}
 			
-			me.modified(false);
 			$("#pageLoading").hide();
 		},
 
@@ -1127,18 +1151,15 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-			var errorMessage = "";
 
 			if (status == "success") {
 				$("#popupLoading").hide();
 				alert("Inventory list generated successfully.");
+				me.modified(false);
 				me.hidePopup();
 			}
 			else {
-				errorMessage = "Error while generating Inventory list: " + $(args.xmlNode).attr("message");
-				errorMessage += $(args.xmlNode).attr("error");
-				errorMessage += " [SAVE FAILURE]";
-				alert(errorMessage);				
+				alert("[SAVE FAILURE] Error while generating Inventory list: " + $(args.xmlNode).attr("message"));
 			}
 		}
 	}

@@ -10,15 +10,15 @@ ii.Import( "fin.pur.catalog.usr.defs" );
 ii.Import( "fin.cmn.usr.houseCodeSearch" );
 ii.Import( "fin.cmn.usr.houseCodeSearchTemplate" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.toolbar" , 4);
-ii.Style( "fin.cmn.usr.input" , 5);
-ii.Style( "fin.cmn.usr.button" , 6);
-ii.Style( "fin.cmn.usr.dropDown" , 7);
-ii.Style( "fin.cmn.usr.grid" , 8);
-ii.Style( "fin.cmn.usr.tabs" , 9);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.toolbar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.button", 6 );
+ii.Style( "fin.cmn.usr.dropDown", 7 );
+ii.Style( "fin.cmn.usr.grid", 8 );
+ii.Style( "fin.cmn.usr.tabs", 9 );
 
 ii.Class({
     Name: "fin.pur.catalog.UserInterface",
@@ -61,7 +61,7 @@ ii.Class({
 			me.defineFormControls();
 			me.configureCommunications();
 			
-			me.authorizer = new ii.ajax.Authorizer( me.gateway );	//@iiDoc {Property:ii.ajax.Authorizer} Boolean
+			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\Purchasing\\Catalogs";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
@@ -75,6 +75,21 @@ ii.Class({
 			me.catalogUnitGrid.setData([]);
 			me.catalogItemGrid.setData([]);
 			me.modified(false);
+			
+			$("#TabCollection a").mousedown(function() {
+				if (!parent.fin.cmn.status.itemValid()) 
+					return false;
+				else {
+					var tabIndex = 0;
+					if (this.id == "TabHouseCodes")
+						tabIndex = 1;
+					else if (this.id == "TabItems")
+						tabIndex = 2;
+						
+					$("#container-1").tabs(tabIndex);
+					$("#container-1").triggerTab(tabIndex);
+				}					
+			});
 			
 			$("#TabCollection a").click(function() {
 				
@@ -105,6 +120,10 @@ ii.Class({
 			$("#divFrame").show();
 			$("#container-1").tabs(1);
 			$("#container-1").triggerTab(1);
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
 		},	
 		
 		authorizationProcess: function fin_pur_catalog_UserInterface_authorizationProcess() {
@@ -126,7 +145,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("session loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 		
 		resize: function() {
@@ -526,11 +545,16 @@ ii.Class({
 			});
 		},
 		
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+		
 		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
 		},
 		
@@ -585,7 +609,7 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 				
-			if(me.searchInput.getValue().length < 3) {
+			if (me.searchInput.getValue().length < 3) {
 				me.searchInput.setInvalid("Please enter search criteria (minimum 3 characters).");
 				return false;
 			}			
@@ -731,10 +755,10 @@ ii.Class({
 			me.catalogHouseCodeStore.fetch("userId:[user],catalogId:" + me.catalogId + ",startPoint:" + me.houseCodesStartPoint + ",maximumRows:" + me.maximumRows, me.catalogHouseCodesLoaded, me);	
 		},	
 		
-		controlVisible: function(){
+		controlVisible: function() {
 			var me = this;
 			
-			if(me.catalogsReadOnly){
+			if (me.catalogsReadOnly) {
 				
 				$("#CatalogTitleText").attr('disabled', true);
 				$("#CatalogVendorText").attr('disabled', true);
@@ -1446,13 +1470,11 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-			var traceType = ii.traceTypes.errorDataCorruption;
-			var errorMessage = "";
 			var id = 0;
 					
 			if (status == "success") {
-				
 				me.modified(false);
+				
 				if (me.status == "addHouseCodes") {
 					me.houseCodesTabNeedUpdate = true;
 					me.loadCatalogHouseCodesCount();
@@ -1518,13 +1540,7 @@ ii.Class({
 				}
 			}
 			else {
-				alert('Error while updating Catalog Record: ' + $(args.xmlNode).attr("message"));
-				errorMessage = $(args.xmlNode).attr("error");
-				
-				if (status == "invalid")
-					traceType = ii.traceTypes.warning;
-				else
-					errorMessage += " [SAVE FAILURE]";
+				alert("[SAVE FAILURE] Error while updating Catalog details: " + $(args.xmlNode).attr("message"));
 			}
 			 
 			me.status = "";

@@ -99,6 +99,7 @@ ii.Class({
 
             me.defineFormControls();
             me.configureCommunications();
+			me.modified(false);
             me.setTabIndexes();
             $("#backLable").hide();
 
@@ -117,6 +118,23 @@ ii.Class({
 			me.invoiceLogoTypeStore.fetch("userId:[user]", me.invoiceLogoTypesLoaded, me);
 			me.invoiceAddressTypeStore.fetch("userId:[user]", me.invoiceAddressTypesLoaded, me);
 			me.taxableServiceStore.fetch("userId:[user]", me.taxableServicesLoaded, me);
+			
+			$("#TabCollection a").mousedown(function() {
+				if (!parent.fin.cmn.status.itemValid()) 
+					return false;
+				else {
+					var tabIndex = 0;
+					if (this.id == "TabCreateInvoices")
+						tabIndex = 1;
+					else if (this.id == "TabInvoiceHeaderInfo")
+						tabIndex = 2;
+					else if (this.id == "TabModifyAccountsReceivable")
+						tabIndex = 3;
+							
+					$("#container-1").tabs(tabIndex);
+					$("#container-1").triggerTab(tabIndex);
+				}					
+			});
 			
             $("#TabCollection a").click(function() {
 
@@ -154,9 +172,15 @@ ii.Class({
                         break;
                 }
             });
+			
+			$("input[name='InvoiceBy']").change(function() { me.modified(); });
+			$("input[name='Clone']").change(function() { me.modified(); });
 
             $(window).bind("resize", me, me.resize);
             $(document).bind("keydown", me, me.controlKeyProcessor);
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
         },
 
         authorizationProcess: function fin_rev_master_UserInterface_authorizationProcess() {
@@ -235,14 +259,14 @@ ii.Class({
                 id: "AnchorLoad",
                 className: "iiButton",
                 text: "<span>&nbsp;&nbsp;Load&nbsp;&nbsp;</span>",
-                clickFunction: function () { me.actionCompletedInvoicesLoad(); },
+                clickFunction: function () { me.actionInvoicesLoadItem(); },
                 hasHotState: true
             });
 
             me.taxExempt = new ui.ctl.Input.DropDown.Filtered({
                 id: "TaxExempt",
                 formatFunction: function (type) { return type.name; },
-                changeFunction: function () { me.taxExemptChanged(); },
+                changeFunction: function () { me.modified(); me.taxExemptChanged(); },
                 required: false
             });
 
@@ -252,7 +276,8 @@ ii.Class({
 
             me.taxId = new ui.ctl.Input.Text({
                 id: "TaxId",
-                maxLength: 9
+                maxLength: 9,
+				changeFunction: function() { me.modified(); }
             });
 
             me.taxId.makeEnterTab()
@@ -283,7 +308,10 @@ ii.Class({
 					
 					if (enteredText == "") 
 						return;
-											
+
+					if (this.focused || this.touched)
+						me.modified();
+	
 					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
 						this.setInvalid("Please enter valid date.");
 				});
@@ -301,7 +329,10 @@ ii.Class({
 					
 					if (enteredText == "") 
 						return;
-											
+
+					if (this.focused || this.touched)
+						me.modified();
+
 					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
 						this.setInvalid("Please enter valid date.");
 
@@ -322,7 +353,10 @@ ii.Class({
 					
 					if (enteredText == "") 
 						return;
-											
+
+					if (this.focused || this.touched)
+						me.modified();
+
 					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
 						this.setInvalid("Please enter valid date.");
 				});
@@ -340,7 +374,10 @@ ii.Class({
 					
 					if (enteredText == "") 
 						return;
-											
+
+					if (this.focused || this.touched)
+						me.modified();
+
 					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
 						this.setInvalid("Please enter valid date.");
 						
@@ -351,7 +388,7 @@ ii.Class({
 			me.billTo = new ui.ctl.Input.DropDown.Filtered({
 		        id: "BillTo",
 				formatFunction: function(type) { return type.billTo; },
-				changeFunction: function() { me.billToChanged(); },
+				changeFunction: function() { me.modified(); me.billToChanged(); },
 				required : false
 		    });
 
@@ -366,7 +403,8 @@ ii.Class({
 				
             me.company = new ui.ctl.Input.Text({
                 id: "Company",
-                maxLength: 64
+                maxLength: 64,
+				changeFunction: function() { me.modified(); }
             });
 
             me.company.makeEnterTab()
@@ -375,7 +413,8 @@ ii.Class({
 
             me.address1 = new ui.ctl.Input.Text({
                 id: "Address1",
-                maxLength: 100
+                maxLength: 100,
+				changeFunction: function() { me.modified(); }
             });
 
             me.address1.makeEnterTab()
@@ -384,12 +423,14 @@ ii.Class({
 
             me.address2 = new ui.ctl.Input.Text({
                 id: "Address2",
-                maxLength: 100
+                maxLength: 100,
+				changeFunction: function() { me.modified(); }
             });
 
             me.city = new ui.ctl.Input.Text({
                 id: "City",
-                maxLength: 50
+                maxLength: 50,
+				changeFunction: function() { me.modified(); }
             });
 
             me.city.makeEnterTab()
@@ -399,6 +440,7 @@ ii.Class({
             me.state = new ui.ctl.Input.DropDown.Filtered({
                 id: "State",
                 formatFunction: function (type) { return type.name; },
+				changeFunction: function() { me.modified(); },
                 required: false
             });
 
@@ -413,7 +455,8 @@ ii.Class({
 
             me.zip = new ui.ctl.Input.Text({
                 id: "Zip",
-                maxLength: 10
+                maxLength: 10,
+				changeFunction: function() { me.modified(); }
             });
 
             me.zip.makeEnterTab()
@@ -430,18 +473,21 @@ ii.Class({
 
             me.poNumber = new ui.ctl.Input.Text({
                 id: "PONumber",
-                maxLength: 50
+                maxLength: 50,
+				changeFunction: function() { me.modified(); }
             });
 			
 			me.invoiceLogo = new ui.ctl.Input.DropDown.Filtered({
 		        id: "InvoiceLogo",
 				formatFunction: function( type ) { return type.name; },
+				changeFunction: function() { me.modified(); },
 		        required: false
 		    });
 			
 			me.invoiceAddress = new ui.ctl.Input.DropDown.Filtered({
 		        id: "InvoiceAddress",
 				formatFunction: function( type ) { return type.title; },
+				changeFunction: function() { me.modified(); },
 		        required: false
 		    });
 
@@ -454,6 +500,7 @@ ii.Class({
 					return false;
 				}
 			});
+			$("#Notes").change(function() { me.modified(); });
 
             me.anchorNew = new ui.ctl.buttons.Sizeable({
                 id: "AnchorNew",
@@ -507,7 +554,8 @@ ii.Class({
                 id: "InvoiceGrid",
                 appendToId: "divForm",
                 allowAdds: false,
-                selectFunction: function (index) { me.itemSelect(index); }
+                selectFunction: function (index) { me.itemSelect(index); },
+				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
             });
 
             me.invoiceGrid.addColumn("invoiceNumber", "invoiceNumber", "Invoice #", "Invoice #", 90);
@@ -838,6 +886,19 @@ ii.Class({
             if (processed)
                 return false;
         },
+		
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
+		modified: function() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
+		},
 
         houseCodesLoaded: function(me, activeId) {
 
@@ -852,12 +913,12 @@ ii.Class({
 			me.loadTypesData();
 
             if (me.statusType == "true") {
-				me.actionCompletedInvoicesLoad();				
+				me.actionCompletedInvoicesLoad();
 			}
 			else {
 				me.invoiceStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",status:1,year:-1,invoiceByHouseCode:-1,invoiceNumber:" + me.invoiceNumber, me.invoiceLoaded, me);
 			}
-        },       
+        },
 
         houseCodeChanged: function() {
             var args = ii.args(arguments, {});
@@ -1011,6 +1072,23 @@ ii.Class({
             if ($("iframe")[2].contentWindow.fin != undefined)
                 $("iframe")[2].contentWindow.fin.accountReceivableUi.resetGrid();
         },
+		
+		actionInvoicesLoadItem: function() {
+            var me = this;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
+			if ($("input[name='Invoices']:checked").val() == "1") {
+				$("#pageLoading").show();
+				me.resetGrids();
+				me.invoiceStore.reset();
+				me.invoiceStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",status:1,year:-1,invoiceByHouseCode:-1", me.invoiceLoaded, me);
+			}
+			else {
+				me.actionCompletedInvoicesLoad();
+			}
+		},
 
         actionCompletedInvoicesLoad: function() {
             var me = this;
@@ -1044,14 +1122,14 @@ ii.Class({
 			me.invoices = me.invoicesList.slice();
 			me.invoiceGrid.setData(me.invoices);
 			
-			if (me.fscYear >= 0 && me.statusType == "true" ) {
+			if (me.fscYear >= 0 && me.statusType == "true") {
 				index = ii.ajax.util.findIndexById(me.fscYear.toString(), me.years);
 				if (index != undefined) 
 					me.fiscalYear.select(index, me.fiscalYear.focused);
 			}
 
             $("#pageLoading").hide();            
-            $('#container-1').tabs(1);
+            $("#container-1").tabs(1);
 			$("#fragment-1").show();
 			$("#fragment-2").hide();  
 			$("#fragment-3").hide();
@@ -1140,6 +1218,9 @@ ii.Class({
             if (me.invoiceGrid.activeRowIndex < 0 || me.invoices[me.invoiceGrid.activeRowIndex].printed)
                 return;
 
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
             if (confirm("Are you sure you want to cancel the Invoice # " + me.invoices[me.invoiceGrid.activeRowIndex].invoiceNumber + "?")) {
                 me.status = "Cancel";
                 me.actionSaveItem();
@@ -1158,11 +1239,15 @@ ii.Class({
             if (args.flag || me.invoices[me.lastSelectedRowIndex].printed == true) { // == "Preview"
                 me.printInvoice();
             }
-            else
-                if (confirm("The selected invoice will become READONLY.\n\nOnce selecting OK you will be able to print the selected invoice and no future modifications or deletions will be accepted. If more modifications are necessary please select the Cancel button and finish making your changes - Thank you!")) {
+            else {
+				if (!parent.fin.cmn.status.itemValid())
+					return;
+
+				if (confirm("The selected invoice will become READONLY.\n\nOnce selecting OK you will be able to print the selected invoice and no future modifications or deletions will be accepted. If more modifications are necessary please select the Cancel button and finish making your changes - Thank you!")) {
                     me.status = "Printed";
                     me.actionSaveItem();
                 }
+			}
         },
 
         actionPrintMemo: function fin_rev_master_UserInterface_actionPrintMemo() {
@@ -1176,6 +1261,9 @@ ii.Class({
 
             if (me.invoices[me.lastSelectedRowIndex].creditMemoPrintable !== true || me.invoices[me.lastSelectedRowIndex].printed == false)
                 return;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
 
             me.status = "CreditMemoPrinted";
             me.actionSaveItem();
@@ -1458,8 +1546,8 @@ ii.Class({
 			$("#messageToUser").text("Loading");			
 			$("#pageLoading").show();
 
-			if(invoiceDate == undefined || invoiceDate == '')
-				invoiceDate = '1/1/1900';
+			if (invoiceDate == undefined || invoiceDate == "")
+				invoiceDate = "1/1/1900";
 				
 			me.invoiceStore.reset();
 			me.invoiceStore.fetch("userId:[user],houseCode:" 				
@@ -1479,6 +1567,9 @@ ii.Class({
 		 actionCancelItem: function() {
             var me = this;
 
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
             if (me.invoiceGrid.activeRowIndex >= 0)
                 me.invoiceId = me.invoiceGrid.data[me.invoiceGrid.activeRowIndex].id;
 
@@ -1490,6 +1581,9 @@ ii.Class({
 		actionNewItem: function() {
             var me = this;
 
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
             me.status = "";
 			disableBackGround();
             showPopup("popupNewInvoice");
@@ -1499,6 +1593,9 @@ ii.Class({
 
 		actionNewCancelItem: function() {
             var me = this;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
 
             if (me.invoiceGrid.activeRowIndex >= 0)
                 me.invoiceId = me.invoiceGrid.data[me.invoiceGrid.activeRowIndex].id;
@@ -1864,9 +1961,10 @@ ii.Class({
             var me = transaction.referenceData.me;
             var item = transaction.referenceData.item;
             var status = $(args.xmlNode).attr("status");
-            var errorMessage = "";
 
             if (status == "success") {
+				me.modified(false);
+
                 $(args.xmlNode).find("*").each(function() {
                     switch (this.tagName) {
 
@@ -1968,25 +2066,18 @@ function enableBackGround() {
 
 function enableFiscalYear(readOnly) {
 	var me = fin.revMasterUi;
-	
+
 	me.fiscalYear.text.readOnly = readOnly;
-	me.statusType = "false"
+	me.statusType = "false";
 	me.invoiceNumber = 0;
-	
+
 	if (readOnly) {
 		me.fiscalYear.reset();
 		me.fiscalYear.setData([]);
-		$("#AnchorLoad").hide();
-		$("#pageLoading").show();
-		
-		me.resetGrids();
-		me.invoiceStore.reset();
-		me.invoiceStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",status:1,year:-1,invoiceByHouseCode:-1", me.invoiceLoaded, me);
 	}
 	else {
 		me.fiscalYear.setData(me.years);
 		me.fiscalYear.select(0, me.fiscalYear.focused);
-		$("#AnchorLoad").show();
 	}
 }
 
