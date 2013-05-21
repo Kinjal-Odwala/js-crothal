@@ -1,4 +1,4 @@
-﻿_builtInTemplate_7639f513 = ['<?xml version="1.0" encoding="utf-8" ?><transmission>  <target id="iiAuthorization" requestId="1">    <authorization id="1">      <authorize id="41" path="\\crothall\\chimes\\fin\\Budgeting"></authorize>      <authorize id="42" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget"></authorize>      <authorize id="16059" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Read"></authorize>      <authorize id="16060" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Write"></authorize>      <authorize id="44" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections"></authorize>      <authorize id="16063" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod"></authorize>      <authorize id="16064" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Read"></authorize>      <authorize id="16065" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Write"></authorize>      <authorize id="16066" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast"></authorize>      <authorize id="16067" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Read"></authorize>      <authorize id="16068" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Write"></authorize>      <authorize id="1213" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration"></authorize>      <authorize id="16069" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation"></authorize>      <authorize id="16070" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Read"></authorize>      <authorize id="16071" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Write"></authorize>      <authorize id="16072" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget"></authorize>      <authorize id="16073" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Approve"></authorize>      <authorize id="16074" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Read"></authorize>      <authorize id="16075" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Reject"></authorize>      <authorize id="16076" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Write"></authorize>      <authorize id="16077" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget"></authorize>      <authorize id="16078" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Read"></authorize>      <authorize id="16079" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Write"></authorize>      <authorize id="16080" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget"></authorize>      <authorize id="16081" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Read"></authorize>      <authorize id="16082" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Write"></authorize>      <authorize id="43" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary"></authorize>      <authorize id="16061" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Read"></authorize>      <authorize id="16062" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Write"></authorize>    </authorization>  </target></transmission>','<div style="color: #FFF; background-color: #659A66; padding: 10px; margin: 0 0 10px;">    <table width="100%" class="ann-proj-table">        <tbody>            <tr>                <td style="width: 35px;" class="label">Site:</td>                <td style="width: 300px"><div id="house-code-holder"></div></td>                <td style="width: 35px;" class="label">Job:</td>                <td style="width: 160px"><div id="job-code-holder"></div></td>                <td style="width: 80px;" class="label">Fiscal Year:</td>                <td style="width: 100px"><div id="fiscal-year-holder"></div></td>                <td style="width: 80px;" class="label">Period:</td>                <td style="width: 100px"><div id="period-holder"></div></td>                <td>&nbsp;</td>            </tr>        </tbody>    </table></div><div style="padding: 0 5px">    <p style="float:left">        The current page is READONLY.</p>        <div style="float:right"><span id="load-button-holder"></span></div></div><div style="clear:both;height:1px;"></div><div id="transaction-summary-grid" style="padding: 10px 5px;"></div><br /><br />'];/*!
+﻿_builtInTemplate_daef65ee = ['<?xml version="1.0" encoding="utf-8" ?><transmission>  <target id="iiAuthorization" requestId="1">    <authorization id="1">      <authorize id="41" path="\\crothall\\chimes\\fin\\Budgeting"></authorize>      <authorize id="42" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget"></authorize>      <authorize id="16059" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Read"></authorize>      <authorize id="16060" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Write"></authorize>      <authorize id="44" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections"></authorize>      <authorize id="16063" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod"></authorize>      <authorize id="16064" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Read"></authorize>      <authorize id="16065" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Write"></authorize>      <authorize id="16066" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast"></authorize>      <authorize id="16067" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Read"></authorize>      <authorize id="16068" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Write"></authorize>      <authorize id="1213" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration"></authorize>      <authorize id="16069" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation"></authorize>      <authorize id="16070" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Read"></authorize>      <authorize id="16071" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Write"></authorize>      <authorize id="16072" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget"></authorize>      <authorize id="16073" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Approve"></authorize>      <authorize id="16074" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Read"></authorize>      <authorize id="16075" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Reject"></authorize>      <authorize id="16076" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Write"></authorize>      <authorize id="16077" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget"></authorize>      <authorize id="16078" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Read"></authorize>      <authorize id="16079" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Write"></authorize>      <authorize id="16080" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget"></authorize>      <authorize id="16081" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Read"></authorize>      <authorize id="16082" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Write"></authorize>      <authorize id="43" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary"></authorize>      <authorize id="16061" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Read"></authorize>      <authorize id="16062" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Write"></authorize>    </authorization>  </target></transmission>','<div style="color: #FFF; background-color: #659A66; padding: 10px; margin: 0 0 10px;">    <table width="100%" class="ann-proj-table">        <tbody>            <tr>                <td style="width: 35px;" class="label">Site:</td>                <td style="width: 300px"><div id="house-code-holder"></div></td>                <td style="width: 35px;" class="label">Job:</td>                <td style="width: 160px"><div id="job-code-holder"></div></td>                <td style="width: 80px;" class="label">Fiscal Year:</td>                <td style="width: 100px"><div id="fiscal-year-holder"></div></td>                <td style="width: 80px;" class="label">Period:</td>                <td style="width: 100px"><div id="period-holder"></div></td>                <td>&nbsp;</td>            </tr>        </tbody>    </table></div><div style="padding: 0 5px">    <p style="float:left">        The current page is READONLY.</p>        <div style="float:right"><span id="load-button-holder"></span></div></div><div style="clear:both;height:1px;"></div><div id="transaction-summary-grid" style="padding: 10px 5px;"></div><br /><br />'];/*!
  * Ext JS Library 3.2.0
  * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
@@ -2165,7 +2165,7 @@ Bud.data.AuthorizationStore = WebLight.extend(Bud.data.XmlStore, {
     },
 
     loadSampleData: function () {
-        this.loadData(_builtInTemplate_7639f513[0]);
+        this.loadData(_builtInTemplate_daef65ee[0]);
     },
 
     allowBudgetRead: function () {
@@ -3172,7 +3172,7 @@ Bud.data.TransactionSummaryStore = WebLight.extend(Bud.data.XmlStore, {
                 record.set('week4', me.decimal2(w4));
 
                 record.set('currentActual', me.decimal2(w1) + me.decimal2(w2) + me.decimal2(w3) + me.decimal2(w4));
-                record.set('periodProjection1', me.decimal2(total));
+                record.set('periodProjection1', me.decimal2(w1) + me.decimal2(w2) + me.decimal2(w3) + me.decimal2(w4));
             }
         });
 
@@ -3615,7 +3615,7 @@ Bud.data.AppJDEGLTransactionDetailStore = WebLight.extend(Bud.data.XmlStore, {
 
 Bud.page.TransactionSummaryPage = WebLight.extend(WebLight.Page, {
 
-    html: _builtInTemplate_7639f513[1],
+    html: _builtInTemplate_daef65ee[1],
     title: 'Transaction Summary',
 
     _accountStore: null,
@@ -3871,21 +3871,26 @@ Bud.page.TransactionSummaryPage = WebLight.extend(WebLight.Page, {
     createDetailGrid: function () {
         var me = this;
 
+        var tipRenderer = function (value, metadata, record, rowIndex, columnIndex, store) {
+            metadata.attr = 'ext:qtip="' + value + '"';
+            return value + 'A';
+        }
+
         this._detailGrid = new Bud.grid.GridPanel({
             border: false,
             header: false, height: 400,
-            enableHdMenu: false, hideHeaders: true,
+            enableHdMenu: false, hideHeaders: false,
             stripeRows: true,
             height: 380,
             loadMask: true,
             cm: new Ext.grid.ColumnModel({
-                defaults: { sortable: false, width: 60, align: 'center' },
+                defaults: { sortable: false, width: 60, align: 'center', renderer:tipRenderer },
                 columns: [
-                        { header: 'GL Ticket<br />Date', dataIndex: 'glDate', renderer: Ext.util.Format.dateRenderer('m/d/y') },
-                        { header: 'Document<br />Number', dataIndex: 'documentNo' },
-                        { header: 'Invoice<br />Number', dataIndex: 'invoiceNo' },
-                        { header: 'Invoice<br />Date', dataIndex: 'invoiceDate', renderer: Ext.util.Format.dateRenderer('m/d/y') },
-                        { header: 'PO<br />Number', dataIndex: 'orderNumber' },
+                        { header: 'GL Ticket<br />Date', dataIndex: 'glDate', renderer: Ext.util.Format.dateRenderer('m/d/y'), width: 60 },
+                        { header: 'Document<br />Number', dataIndex: 'documentNo', width: 70 },
+                        { header: 'Invoice<br />Number', dataIndex: 'invoiceNo', width: 80 },
+                        { header: 'Invoice<br />Date', dataIndex: 'invoiceDate', renderer: Ext.util.Format.dateRenderer('m/d/y'), width: 60 },
+                        { header: 'PO Number', dataIndex: 'orderNumber', width:150 },
                         { header: '&nbsp;<br />Vendor', dataIndex: 'vendor', width: 100 },
                         { header: '&nbsp;<br />Description', dataIndex: 'description', width: 100 },
                         { header: '&nbsp;<br />Amount', dataIndex: 'amount' },
@@ -3922,7 +3927,7 @@ Bud.page.TransactionSummaryPage = WebLight.extend(WebLight.Page, {
 
             this._detailWin = new Ext.Window({
                 modal: true,
-                width: 750,
+                width: 850,
                 closeAction: 'hide',
                 items: [this._detailGrid]
             });
