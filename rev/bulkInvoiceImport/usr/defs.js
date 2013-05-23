@@ -8,6 +8,12 @@ ii.init.register( function() {
 
 ii.init.register( function() {
 	
+	fin.rev.bulkInvoiceImport.taxableServiceArgs = {
+		id: {type: Number}
+		, brief: {type: String}
+		, title: {type: String}
+	};
+	
 	fin.rev.bulkInvoiceImport.invoiceArgs = {
 		id: {type: Number}
 		, invoiceNumber: {type: Number, required: false, defaultValue: 0}
@@ -15,6 +21,7 @@ ii.init.register( function() {
 		, customerNumber: {type: String, required: false, defaultValue: ""}
 		, houseCode: {type: String, required: false, defaultValue: ""}
 		, jobCode: {type: String, required: false, defaultValue: ""}
+		, taxableService: {type: String, required: false, defaultValue: ""}
 		, accountCode: {type: String, required: false, defaultValue: ""}
 		, invoiceDate: {type: String, required: false, defaultValue: ""}
 		, dueDate: {type: String, required: false, defaultValue: ""}
@@ -61,6 +68,16 @@ ii.init.register( function() {
 	};
 	
 }, 2);
+
+ii.Class({
+	Name: "fin.rev.bulkInvoiceImport.TaxableService",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rev.bulkInvoiceImport.taxableServiceArgs);
+			$.extend(this, args);
+		}
+	}
+});
 
 ii.Class({
 	Name: "fin.rev.bulkInvoiceImport.Invoice",
