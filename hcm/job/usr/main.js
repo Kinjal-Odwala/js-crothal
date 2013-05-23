@@ -452,7 +452,7 @@ ii.Class({
 			me.jobNumber = new ui.ctl.Input.Text({
 				id: "JobNumber",
 				maxLength: 8,
-				changeFunction: function() { me.modified(); }
+				changeFunction: function() { me.jobNumberCheck(); me.modified(); }
 			});
 
 			me.jobNumber.makeEnterTab()
@@ -1160,6 +1160,7 @@ ii.Class({
 				));
 
 			me.houseCodePopupGrid.setData(me.units);
+			me.modified();
 		},
 		
 		jobTypeChange: function() {
