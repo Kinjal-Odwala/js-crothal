@@ -153,7 +153,10 @@ ii.Class({
 				appendToId: "divForm",
 				allowAdds: false,
 				selectFunction: function( index ) { me.itemSelectYear(index); },
-				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
+				validationFunction: function() {
+					if (me.status != "new") 
+						return parent.fin.cmn.status.itemValid(); 
+				}
 			});
 			
 			me.fiscalYearGrid.addColumn("patternTitle", "patternTitle", "Fiscal Pattern", "Fiscal Pattern", 150);
@@ -458,6 +461,11 @@ ii.Class({
 			var index = args.index;
 			var selectId = 0;
 			
+			if (!parent.fin.cmn.status.itemValid()){
+				me.fiscalYearGrid.body.deselect(args.index, true);
+				return;
+			}
+				
 			me.status = "";	
 						
 			if (me.fiscalYearGrid.data[index] != undefined) {
@@ -537,13 +545,14 @@ ii.Class({
 				return;
 				
 			if (me.calendarReadOnly) return;
-	
-			me.status = "new";
+			
 			me.fiscalYearId = 0;
 
 			$("#fiscalPeriodsLoading").show();
 			me.fiscalCalenderPattern.reset();
+			me.fiscalYearGrid.body.deselectAll();
 			me.fiscalPeriodStore.fetch("fiscalYearId:0,userId:[user]", me.fiscalPeriodsLoaded, me);
+			me.status = "new";
 		},
 
 		actionUndoItem: function() {
