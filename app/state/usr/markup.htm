@@ -20,45 +20,43 @@
 	<body id="appBody">
 		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
 		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
-		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <img id="imgLoading" src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
 		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
 		    </div>
 		</div>
 		
 		<div class="pageHeader">
 	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
-        </div>		
+       		<div class="header">State Minimum Wages</div>
+	    </div>
+		<div style="clear:both;"></div>
+		<div id="itemStatusDiv">
+			<div id="itemStatusImage" class="itemStatusImage"></div>
+			<div id="itemModifiedImage" class="itemModifiedImage"></div>
+			<div id="itemStatusText">Loading, please wait...</div>
+		</div>
+		<div style="clear:both;"></div>
 		<div class="pageBody">
-			<div id="contentAreasContainerLeft">
-				<div  class="contentArea">
-					<div class="header">States</div>
+			<div class="contentAreasContainerLeft">
+				<div class="contentArea">
 					<div class="body">
 						<div id="StateGrid"></div>
 						<div style="clear:both;"></div>
 					</div>
 				</div>
-			</div>			
-			<div id="contentAreasContainerRight">
+			</div>
+			<div class="contentAreasContainerRight">
 				<div  class="contentArea">
-					<div class="header">State Details</div>
 					<div id="StateContentArea">
 						<div class="body">
-							<div id="TableEditArea">
-								<div style="clear:both; height:10px;"></div>
-								<div class="labelTextArea">
-									<span id="nonRequiredFieldIndicator">&nbsp;Title:</span>
-								</div>								
-								<div class="labelTitle" id="Title"></div>
-							</div>
-							<div style="clear:both;"></div>
-							<div id="TableEditArea">
-								<div class="labelTextArea">
-									<span class="requiredFieldIndicator">&#149;&nbsp;</span>Minimun Wage:
-								</div>
-								<div class="inputTextArea">
-									<div id="MinimumWage"></div>
-								</div>
-							</div>
+							<div class="subHeader">State Min Wage Details</div>
+							<div id="StateWageGrid"></div>
+							<div style="clear:both;height:10px;"></div>
+							<div class="subHeader">County Min Wage Details</div>
+							<div id="CountyWageGrid"></div>
+							<div style="clear:both;height:10px;"></div>
+							<div class="subHeader">City Min Wage Details</div>
+							<div id="CityWageGrid"></div>
 						</div>
 					</div>
 					<div style="clear:both;"></div>
