@@ -4577,10 +4577,24 @@ Bud.data.BudAdjustmentStore = Ext.extend(Bud.data.XmlStore, {
         var me = this;
         this.suspendEvents(false);
 
+       
+        var periods = {};
+        for (var i = 0; i < 16; i++) {
+            var fieldName = String.format('period{0}', i + 1);
+            periods[fieldName] = 0;
+        }
+
         var findRecord = function (fscAccount) {
             var result = me.queryBy(function (r, id) {
                 return r.get('fscAccount') == fscAccount;
             });
+
+            if (!result || result.getCount()==0) {
+                me.add(me.newRecord(Ext.apply({
+                    fscAccount: fscAccount, id: new Date().getTime()
+                }, periods)));
+                return findRecord(fscAccount);
+            }
             return result;
         }
 
@@ -5814,6 +5828,7 @@ Bud.page.BudgetAdjustmentsPage = WebLight.extend(Bud.page.BudgetPage, {
                     // because the "remove" event is fired.
                     //me._adjustmentStore.removeAll();
                     me._adjustmentStore.importBudDetails(me._detailStore);
+                    me._adjustmentStore.loadRemoteData(me._adjustmentRemoteStore);
                     me._adjustmentStore.relateTo(me._fscAccountStore);
                     me._adjustmentStore.loadRemoteData(me._adjustmentRemoteStore);
                 },
