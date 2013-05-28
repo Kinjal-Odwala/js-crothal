@@ -72,6 +72,7 @@ ii.Class({
 			me.houseCodeChanged = false;
 			me.houseCodeJobChanged = false;
 			me.employeeValidationCalledFrom = "";
+			me.employeeNameChanged = false;
 
 			me.replaceContext = false;        // replace the system context menu?
 			me.mouseOverContext = false;      // is the mouse over the context menu?
@@ -183,6 +184,9 @@ ii.Class({
 				me.employeeHistoryStore.fetch("userId:[user],employeeNumber:" + me.employees[0].employeeNumber, me.employeeHistoriesLoaded, me);
 			});
 			
+			$("#CrothallEmployeeYes").attr('disabled', true);
+			$("#CrothallEmployeeNo").attr('disabled', true);
+
 			me.statusStore.fetch("userId:[user],", me.statusTypesLoaded, me);
 		},
 		
@@ -534,7 +538,8 @@ ii.Class({
 			
 			me.personFirstName = new ui.ctl.Input.Text({
 				id: "FirstName",
-				maxLength: 30
+				maxLength: 30,
+				changeFunction: function() { me.employeeNameChanged = true; }
 			});
 
 			me.personFirstName.makeEnterTab()
@@ -543,12 +548,14 @@ ii.Class({
 			
 			me.personMiddleName = new ui.ctl.Input.Text({
 				id: "MiddleInitial",
-				maxLength: 30
+				maxLength: 30,
+				changeFunction: function() { me.employeeNameChanged = true; }
 			});	
 			
 			me.personLastName = new ui.ctl.Input.Text({
 				id: "LastName",
-				maxLength: 30
+				maxLength: 30,
+				changeFunction: function() { me.employeeNameChanged = true; }
 			});
 
 			me.personLastName.makeEnterTab()
@@ -3373,8 +3380,6 @@ ii.Class({
 					$("#houseCodeTemplateTextDropImage").removeClass("HouseCodeDropDown");
 					$("#EmployeePayrollCompanyText").attr('disabled', true);
 					$("#EmployeePayrollCompanyAction").removeClass("iiInputAction");
-					$("#CrothallEmployeeYes").attr('disabled', true);
-					$("#CrothallEmployeeNo").attr('disabled', true);
 					$("#EmployeeGeneralStatusTypeText").attr('disabled', true);
 					$("#EmployeeGeneralStatusTypeAction").removeClass("iiInputAction");
 					$("#EmployeeStatusCategoryTypeText").attr('disabled', true);
@@ -3409,7 +3414,8 @@ ii.Class({
 		employeeGeneralDetailsLoaded: function(me, activeId) {
 			var index = 0;
 			
-			me.status = "loading";			
+			me.status = "loading";
+			me.employeeNameChanged = false;
 			me.houseCodeSearchTemplateLoaded(me, 0);
 			
 			$("#PrimaryStateAdditionalInfoContainer").html("");
@@ -3717,6 +3723,14 @@ ii.Class({
 				me.statusCategoryTypeStore.fetch("userId:[user],statusTypeId:" + me.statusTypes[me.employeeStatusType.indexSelected].id + ",", me.employeeStatusCategorysLoaded, me);
 			}
 			
+			if (me.actionType == "NewHire" || me.actionType == "Rehire" || me.actionType == "Termination") {
+				$("#EmailText").attr('disabled', false);
+				$("#HomePhoneText").attr('disabled', false);
+				$("#FaxText").attr('disabled', false);
+				$("#PagerText").attr('disabled', false);
+				$("#CellPhoneText").attr('disabled', false);
+			}
+			
 			if (me.actionType == "State Tax")
 				me.setSecondaryTaxStateLabel();
 
@@ -3730,6 +3744,24 @@ ii.Class({
 				if (title == "FMLA_LOA" || title == "Leave Of Absence") { //To disable save button if employee status is FMLA_LOA or LOA.
 					me.anchorSave.display(ui.cmn.behaviorStates.disabled);
 					$("#AnchorSave").attr("title", "You can not edit this Employee as its status is FMLA/LOA.");
+				}
+			}
+			else {
+				var title = me.findTitleById(me.employeeGenerals[0].statusType, me.statusTypes);
+	
+				if (title == "Terminated" && (!(me.actionType == "Person" || me.actionType == "Rehire" || me.actionType == "HouseCodeTransfer"))) {
+					me.anchorSave.display(ui.cmn.behaviorStates.disabled);
+				}
+				else if (title == "Terminated" && me.actionType == "Person") {
+					var terminationYear = new Date(me.employeeGenerals[0].terminationDate).getFullYear();
+					var currentYear = new Date(parent.fin.appUI.glbCurrentDate).getFullYear();
+					var disabled = (terminationYear == currentYear ? false : true)
+
+					$("#EmailText").attr('disabled', disabled);
+					$("#HomePhoneText").attr('disabled', disabled);
+					$("#FaxText").attr('disabled', disabled);
+					$("#PagerText").attr('disabled', disabled);
+					$("#CellPhoneText").attr('disabled', disabled);
 				}
 			}
 
@@ -4897,8 +4929,6 @@ ii.Class({
 			$("#houseCodeTemplateTextDropImage").addClass("HouseCodeDropDown");
 			$("#EmployeePayrollCompanyText").attr('disabled', false);
 			$("#EmployeePayrollCompanyAction").addClass("iiInputAction");
-			$("#CrothallEmployeeYes").attr('disabled', true);
-			$("#CrothallEmployeeNo").attr('disabled', true);
 			$("#EmployeeGeneralStatusTypeText").attr('disabled', false);
 			$("#EmployeeGeneralStatusTypeAction").addClass("iiInputAction");
 			$("#EmployeeStatusCategoryTypeText").attr('disabled', false);
@@ -5517,8 +5547,6 @@ ii.Class({
 						$("#houseCodeTemplateTextDropImage").removeClass("HouseCodeDropDown");						
 						$("#EmployeePayrollCompanyText").attr('disabled', true);
 						$("#EmployeePayrollCompanyAction").removeClass("iiInputAction");						
-						$("#CrothallEmployeeYes").attr('disabled', true);
-						$("#CrothallEmployeeNo").attr('disabled', true);						
 						$("#EmployeeGeneralStatusTypeText").attr('disabled', true);
 						$("#EmployeeGeneralStatusTypeAction").removeClass("iiInputAction");						
 						$("#EmployeeOriginalHireDateText").attr('disabled', true);
@@ -6235,6 +6263,16 @@ ii.Class({
 			var itemPerson = args.itemPerson;
 			var itemGeneral = args.itemGeneral;
 			var xml = "";
+			var updateFlag = false;
+			var title = me.findTitleById(me.employeeGenerals[0].statusType, me.statusTypes);
+	
+			if (title == "Terminated" && me.actionType == "Person") {
+				var terminationYear = new Date(me.employeeGenerals[0].terminationDate).getFullYear();
+				var currentYear = new Date(parent.fin.appUI.glbCurrentDate).getFullYear();
+				if (terminationYear == currentYear) {
+					updateFlag = true;
+				}
+			}
 			
 			if (me.actionType == "Rehire" || me.actionType == "NewHire" ||
 				me.actionType == "Person" || me.actionType == "Termination") {
@@ -6273,7 +6311,8 @@ ii.Class({
 				me.actionType == "Federal" ||
 				me.actionType == "State Tax" ||
 				me.actionType == "Local Tax" ||
-				me.actionType == "BasicLifeIndicator") {
+				me.actionType == "BasicLifeIndicator" ||
+				updateFlag == true) {
 				xml += '<employeeGeneralWizard';
 				xml += ' id="' + itemGeneral.id + '"';
 				xml += ' personId="' + itemGeneral.personId + '"';
@@ -6289,7 +6328,8 @@ ii.Class({
 				xml += ' hireDate="' + itemGeneral.hireDate + '"';	
 				xml += ' frequencyType="' + itemGeneral.frequencyType + '"';
 				xml += ' hourly="' + itemGeneral.hourly + '"';
-				xml += ' actionType ="' + me.actionType +'"';
+				//xml += ' actionType ="' + me.actionType +'"';
+				xml += ' actionType="' + (updateFlag ? 'Person' : me.actionType) + '"';
 				xml += ' houseCodeChanged="'+ me.houseCodeChanged +'"';				
 				xml += ' changeStatusCode="' + itemGeneral.changeStatusCode + '"';
 				xml += ' payrollStatus="' + itemGeneral.payrollStatus + '"';
@@ -6389,7 +6429,12 @@ ii.Class({
 				xml += ' localTaxCode2="' + itemGeneral.localTaxCode2 + '"';
 				xml += ' localTaxCode3="' + itemGeneral.localTaxCode3 + '"';
 			}
-				
+
+			if (updateFlag == true) {
+				xml += ' exportECard="true"';
+				xml += ' employeeNameChanged="' + (me.employeeNameChanged ? true : false) + '"';
+			}
+
 			if (me.actionType == "Rehire" || 
 				me.actionType == "NewHire" ||
 				me.actionType == "Employee" ||
@@ -6401,7 +6446,8 @@ ii.Class({
 				me.actionType == "Federal" ||
 				me.actionType == "State Tax" ||
 				me.actionType == "Local Tax" ||
-				me.actionType == "BasicLifeIndicator") {
+				me.actionType == "BasicLifeIndicator" ||
+				updateFlag == true) {
 				xml += '/>';
 			}
 								
