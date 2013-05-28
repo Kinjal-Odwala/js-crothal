@@ -56,7 +56,7 @@
 			    	<tr>
 			        	<td>				
 							<div style="height: 33px; width: 100%; position: relative; z-index: 3; overflow: hidden">
-								<table id="tblInvoiceGridHeader" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 2; width: 1850px">
+								<table id="tblInvoiceGridHeader" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 2; width: 1990px">
 									<thead id="InvoiceGridHead">
 										<tr>
 											<th class="gridHeaderColumn" width="30px">#</th>
@@ -67,14 +67,14 @@
 											<th class="gridHeaderColumn" width="80px">Tax Exempt Id</th>
 											<th class="gridHeaderColumn" width="80px">House Code</th>
 											<th class="gridHeaderColumn" width="80px">Job Code</th>
+											<th class="gridHeaderColumn" width="200px">Taxable Service</th>
 											<th class="gridHeaderColumn" width="80px">Account Code</th>
 											<th class="gridHeaderColumn" width="80px">Invoice Date</th>
 											<th class="gridHeaderColumn" width="80px">Due Date</th>
 											<th class="gridHeaderColumn" width="80px">Start Date</th>
 											<th class="gridHeaderColumn" width="80px">End Date</th>
 											<th class="gridHeaderColumn" width="80px">PO Number</th>
-											<th class="gridHeaderColumn" width="250px">Description</th>
-											<th class="gridHeaderColumn" width="60px">Taxable</th>
+											<th class="gridHeaderColumn" width="250px">Description</th>											
 											<th class="gridHeaderColumn" width="50px">Show</th>
 											<th class="gridHeaderColumn" width="70px">Quantity</th>
 											<th class="gridHeaderColumn" width="70px">Price</th>
@@ -89,7 +89,7 @@
 					<tr>
 		                <td>
 		                    <div id="divInvoiceGrid" style="position: relative; overflow: auto;">                              
-		                        <table id="InvoiceGrid" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 1; width: 1850px">
+		                        <table id="InvoiceGrid" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 1; width: 1990px">
 		                            <tbody id="InvoiceGridBody"></tbody>
 		                        </table>
 		                    </div>
@@ -122,14 +122,14 @@
                         <td class="gridColumn" style="width: 80px" align="center"><input type="text" maxlength="9" id="txtTaxExemptIdRowCount" style="width: 76px;" /></td>
                         <td class="gridColumn" style="width: 80px" align="center"><input type="text" maxlength="8" id="txtHouseCodeRowCount" style="width: 76px;" /></td>
 						<td class="gridColumn" style="width: 80px" align="center"><input type="text" maxlength="8" id="txtJobCodeRowCount" style="width: 76px;" /></td>
-                    	<td class="gridColumn" style="width: 80px" align="center"><input type="text" maxlength="8" id="txtAccountCodeRowCount" style="width: 76px;" /></td>
+					  	<td class="gridColumn" style="width: 200px" align="center"><select id="selTaxableServiceRowCount" style="width: 196px;"></select></td>
+						<td class="gridColumn" style="width: 80px" align="center"><input type="text" maxlength="8" id="txtAccountCodeRowCount" style="width: 76px;" /></td>
                      	<td class="gridColumn" style="width: 80px" align="center"><input type="text" maxlength="10" id="txtInvoiceDateRowCount" style="width: 76px;" /></td>
                         <td class="gridColumn" style="width: 80px" align="center"><input type="text" maxlength="10" id="txtDueDateRowCount" style="width: 76px;" /></td>
                         <td class="gridColumn" style="width: 80px" align="center"><input type="text" maxlength="10" id="txtStartDateRowCount" style="width: 76px;" /></td>
                         <td class="gridColumn" style="width: 80px" align="center"><input type="text" maxlength="10" id="txtEndDateRowCount" style="width: 76px;" /></td>
 						<td class="gridColumn" style="width: 80px" align="center"><input type="text" maxlength="50" id="txtPONumberRowCount" style="width: 76px;" /></td>
                         <td class="gridColumn" style="width: 250px" align="center"><input type="text" maxlength="1024" id="txtDescriptionRowCount" style="width: 246px;" /></td>
-						<td class="gridColumn" style="width: 60px" align="center"><input type="checkbox" id="chkTaxableRowCount" style="width: 56px;" /></td>
 						<td class="gridColumn" style="width: 50px" align="center"><input type="checkbox" id="chkShowRowCount" style="width: 46px;" /></td>
 						<td class="gridColumn" style="width: 70px" align="center"><input type="text" maxlength="10" id="txtQuantityRowCount" style="width: 66px; text-align: right;" /></td>
 					  	<td class="gridColumn" style="width: 70px" align="center"><input type="text" maxlength="20" id="txtPriceRowCount" style="width: 66px; text-align: right;" /></td>

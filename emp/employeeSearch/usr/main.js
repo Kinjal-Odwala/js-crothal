@@ -484,11 +484,11 @@ ii.Class({
 			});
 			
 			me.employeeSearch.addColumn("firstName", "firstName", "First Name", "First Name", 150).setSortFunction(function(me, displayProperty, a, b) {
-					return fin.empSearchUi.customSort(me, displayProperty, a, b);
-				});
+				return fin.empSearchUi.customSort(me, displayProperty, a, b);
+			});
 			me.employeeSearch.addColumn("lastName", "lastName", "Last Name", "Last Name", 150).setSortFunction(function(me, displayProperty, a, b) {
-					return fin.empSearchUi.customSort(me, displayProperty, a, b);
-				});
+				return fin.empSearchUi.customSort(me, displayProperty, a, b);
+			});
 			me.employeeSearch.addColumn("brief", "brief", "Brief", "Brief", 150);
 			me.employeeSearch.addColumn("houseCode", "houseCode", "House Code", "House Code", 100);
 			me.employeeSearch.addColumn("houseCodeRM", "houseCodeRM", "Regional Manager", "Regional Manager", null);
@@ -529,7 +529,7 @@ ii.Class({
 				id: "EditWizardAction", 
 				formatFunction: function( type ) { return type.name; },
 				changeFunction: function() { me.editWizardChanged() },				
-				required : false
+				required: false
 		    });
 			
 			me.personFirstName = new ui.ctl.Input.Text({
@@ -600,21 +600,13 @@ ii.Class({
 				.setValidationMaster( me.validator )
 				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
-				
-					var message = "";
-					var valid = true;
+
 					var enteredText = me.personPostalCode.getValue();
 					
-					if (enteredText == '') return;
+					if (enteredText == "") return;
 	
-					if (ui.cmn.text.validate.postalCode(enteredText) == false) {
-						valid = false;
-						message = 'Please enter valid postal code.';
-					}
-					
-					if (!valid) {
-						this.setInvalid( message );
-					}
+					if (ui.cmn.text.validate.postalCode(enteredText) == false)
+						this.setInvalid("Please enter valid postal code.");
 				});			
 			
 			me.personEmail = new ui.ctl.Input.Text({
@@ -625,21 +617,13 @@ ii.Class({
 			me.personEmail.makeEnterTab()
 				.setValidationMaster( me.validator )
 				.addValidation( function( isFinal, dataMap ) {
-					
-					var message = "";
-					var valid = true;
+	
 					var enteredText = me.personEmail.getValue();
 					
-					if (enteredText == '') return;
+					if (enteredText == "") return;
 					
-					if (/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(enteredText) == false){
-						valid = false;
-						message = 'Please enter valid Email Address.';
-					}
-					
-					if (!valid) {
-						this.setInvalid( message );
-					}
+					if (/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(enteredText) == false)
+						this.setInvalid("Please enter valid email address.");
 				});
 			
 			me.personHomePhone = new ui.ctl.Input.Text({
@@ -650,24 +634,15 @@ ii.Class({
 			me.personHomePhone.makeEnterTab()
 				.setValidationMaster( me.validator )
 				.addValidation( function( isFinal, dataMap ) {
-					
-					var message = "";
-					var valid = true;
-					var enteredText = me.personHomePhone.getValue();
-					
-					if (enteredText == '') return;
 
-					if (/^\(?[\d]{3}\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$/.test(enteredText) == false) {
-						valid = false;
-						message = 'Please enter valid phone number.';
-					}
-					
+					var enteredText = me.personHomePhone.getValue();
+
+					if (enteredText == "") return;
+
+					if (/^\(?[\d]{3}\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$/.test(enteredText) == false)
+						this.setInvalid("Please enter valid phone number.");
+
 					me.personHomePhone.text.value = me.phoneMask(enteredText);
-					enteredText = me.personHomePhone.text.value;
-					
-					if (!valid) {
-						this.setInvalid( message );
-					}
 				});
 			
 			me.personFax = new ui.ctl.Input.Text({
@@ -678,24 +653,15 @@ ii.Class({
 			me.personFax.makeEnterTab()
 				.setValidationMaster( me.validator )
 				.addValidation( function( isFinal, dataMap ) {
-					
-					var message = "";
-					var valid = true;
+
 					var enteredText = me.personFax.getValue();
-					
-					if (enteredText == '') return;
 
-					if (/^\(?[\d]{3}\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$/.test(enteredText) == false) {
-						valid = false;
-						message = 'Please enter valid fax number.';
-					}
+					if (enteredText == "") return;
 
-					me.personFax.text.value = me.phoneMask(enteredText);
-					enteredText = me.personFax.text.value;
-					
-					if (!valid) {
-						this.setInvalid( message );
-					}
+					if (/^\(?[\d]{3}\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$/.test(enteredText) == false)
+						this.setInvalid("Please enter valid fax number.");
+
+					me.personFax.text.value = me.phoneMask(enteredText);	
 				});
 			
 			me.personPager = new ui.ctl.Input.Text({
@@ -706,24 +672,15 @@ ii.Class({
 			me.personPager.makeEnterTab()
 				.setValidationMaster( me.validator )
 				.addValidation( function( isFinal, dataMap ) {
-					
-					var message = "";
-					var valid = true;
-					var enteredText = me.personPager.getValue();
-					
-					if (enteredText == '') return;
 
-					if (/^\(?[\d]{3}\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$/.test(enteredText) == false) {
-						valid = false;
-						message = 'Please enter valid pager number.';
-					}
+					var enteredText = me.personPager.getValue();
+
+					if (enteredText == "") return;
+
+					if (/^\(?[\d]{3}\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$/.test(enteredText) == false)
+						this.setInvalid("Please enter valid pager number.");
 
 					me.personPager.text.value = me.phoneMask(enteredText);
-					enteredText = me.personPager.text.value;
-					
-					if (!valid) {
-						this.setInvalid( message );
-					}
 				});
 			
 			me.personCellPhone = new ui.ctl.Input.Text({
@@ -734,24 +691,15 @@ ii.Class({
 			me.personCellPhone.makeEnterTab()
 				.setValidationMaster( me.validator )
 				.addValidation( function( isFinal, dataMap ) {
-					
-					var message = "";
-					var valid = true;
+
 					var enteredText = me.personCellPhone.getValue();
-					
-					if (enteredText == '') return;
+
+					if (enteredText == "") return;
 											
-					if (/^\(?[\d]{3}\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$/.test(enteredText) == false) {
-						valid = false;
-						message = 'Please enter valid cell number.';
-					}
+					if (/^\(?[\d]{3}\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$/.test(enteredText) == false)
+						this.setInvalid("Please enter valid cell number.");
 
 					me.personCellPhone.text.value = me.phoneMask(enteredText);
-					enteredText = me.personCellPhone.text.value;
-					
-					if (!valid) {
-						this.setInvalid( message );
-					}
 				});		
 			
 			me.employeeNumber = new ui.ctl.Input.Text({
@@ -804,7 +752,7 @@ ii.Class({
 					}
 					
 					if (me.employeeStatusType.text.value != "Terminated") {
-						fin.empSearchUi.employeeTerminationDate.text.value = '';
+						fin.empSearchUi.employeeTerminationDate.text.value = "";
 						fin.empSearchUi.employeeTerminationReason.select(0, fin.empSearchUi.employeeTerminationReason.focused);
 					}					
 				});
@@ -989,23 +937,23 @@ ii.Class({
 					var valid = true;
 					var enteredText = me.employeeTerminationDate.text.value;
 					
-					if (enteredText == '' && me.employeeStatusType.text.value == 'Terminated') {
+					if (enteredText == "" && me.employeeStatusType.text.value == "Terminated") {
 						valid = false;
-						message = 'Please enter valid date.';
+						message = "Please enter valid date.";
 					}
 	
-					if (enteredText == '') return;
+					if (enteredText == "") return;
 									
 					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
 						valid = false;
-						message = 'Please enter valid date.';
+						message = "Please enter valid date.";
 					}
 					
 					var terminationDate;
 					var hireDate = new Date(me.employeeHireDateValue);
 					var currentDate = new Date(parent.fin.appUI.glbCurrentDate);
 					
-					if (me.employeeTerminationDate.text.value != '') {
+					if (me.employeeTerminationDate.text.value != "") {
 						
 						terminationDate = new Date(me.employeeTerminationDate.text.value);
 						me.employeeEffectiveDate.text.value = me.employeeTerminationDate.text.value;
@@ -1016,8 +964,8 @@ ii.Class({
 						if (me.compareDate(me.employeeHireDate.text.value, me.payPeriodStartDate) >= 0 
 							&& me.compareDate(me.employeeHireDate.text.value, me.payPeriodEndDate) <= 0
 							&& me.employeeGeneralId > 0 && me.alertMassage == 0) {
-							alert('You cannot terminate an employee in the same pay period the employee was hired. \n' 
-								+ 'Contact the Corporate Payroll department for further instructions.'); 
+							alert("You cannot terminate an employee in the same pay period the employee was hired. \n" 
+								+ "Contact the Corporate Payroll department for further instructions."); 
 								
 							me.alertMessage = me.alertMessage + 1;								
 						}
@@ -1034,39 +982,27 @@ ii.Class({
 					}
 	
 					if (!valid) {
-						this.setInvalid( message );
-					}
-		
+						this.setInvalid(message);
+					}		
 				}); 
 			
 			me.employeeTerminationReason = new ui.ctl.Input.DropDown.Filtered({
 				id: "EmployeeTerminationReason",
 				formatFunction: function( type ) { return type.name; },
 				changeFunction: function() { me.actionEmployeeTerminationChanged(); },
-				required : false					
+				required: false					
 			});
 			
 			me.employeeTerminationReason.makeEnterTab()
 				.setValidationMaster( me.validator )
 				.addValidation( function( isFinal, dataMap ) {
-					
-					var message = "";
-					var valid = true;
 
-					if (me.employeeTerminationReason.indexSelected > 0 && me.employeeStatusType.text.value != 'Terminated') {
-						valid = false;
-						message = 'Please unselect Termination Reason.';
-					}
-					else if(me.employeeTerminationReason.indexSelected <= 0 && me.employeeStatusType.text.value == 'Terminated') {
-						valid = false;
-						message = 'Please select Termination Reason.';
-					}
+					if (me.employeeTerminationReason.indexSelected > 0 && me.employeeStatusType.text.value != "Terminated")
+						this.setInvalid("Please unselect Termination Reason.");
+					else if(me.employeeTerminationReason.indexSelected <= 0 && me.employeeStatusType.text.value == "Terminated")
+						this.setInvalid("Please select Termination Reason.");
 					else
 						return;
-
-					if (!valid) {
-						this.setInvalid( message );
-					}
 				});
 				
 			me.separationCode = new ui.ctl.Input.DropDown.Filtered({
@@ -1134,13 +1070,10 @@ ii.Class({
 					
 					var enteredText = me.employeeMaritalStatus.getValue();
 
-					if (enteredText == '') return;
+					if (enteredText == "") return;
 				
-					if (me.employeeMaritalStatus.indexSelected == -1){
-						valid = false;
+					if (me.employeeMaritalStatus.indexSelected == -1)
 						this.setInvalid("Please select Marital Status.");
-						return false;
-					}	
 				});
 			
 			me.employeeI9Status = new ui.ctl.Input.DropDown.Filtered({
@@ -1204,7 +1137,7 @@ ii.Class({
 				id: "EmployeeJobCode",
 				formatFunction: function( type ) { return type.name; }, 
 				changeFunction: function(){ me.actionEmployeeJobCodeChanged(); },
-				required : false 
+				required: false 
 		    });
 			
 			me.employeeJobCode.makeEnterTab()
@@ -1237,7 +1170,7 @@ ii.Class({
 
 					var enteredText = me.employeeBackgroundCheckDate.text.value;
 					
-					if (enteredText == '') return;
+					if (enteredText == "") return;
 											
 					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
 						this.setInvalid("Please enter valid date.");					
@@ -1309,7 +1242,7 @@ ii.Class({
 			me.employeeRateChangeReason = new ui.ctl.Input.DropDown.Filtered({
 				id : "EmployeeRateChangeReason", 
 				formatFunction: function( type ) { return type.name; },
-				required : false
+				required: false
 		    });	
 
 			me.employeePayRate = new ui.ctl.Input.Text({
@@ -1325,8 +1258,8 @@ ii.Class({
 					
 					var enteredText = me.employeePayRate.getValue();
 					
-					if (enteredText == '') return;
-					
+					if (enteredText == "") return;
+
 					if (ui.cmn.text.validate.generic(enteredText, "^\\d+(\\.\\d{1,2})?$") == false)
 						this.setInvalid("Please enter numeric data. Expected number format is 99.99");
 					else {
@@ -1439,7 +1372,7 @@ ii.Class({
 
 					var enteredText = me.employeeReviewDate.text.value;
 					
-					if (enteredText == '') return;
+					if (enteredText == "") return;
 											
 					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
 						this.setInvalid("Please enter valid date.");
@@ -1466,10 +1399,21 @@ ii.Class({
 
 					var enteredText = me.employeeAlternatePayRateA.getValue();
 					
-					if (enteredText == '') return;
-					
-					if (/^\d{1,6}(\.\d{1,2})?$/.test(enteredText) == false) {
-						this.setInvalid("Please enter valid amount.");
+					if (enteredText == "") return;
+
+					if (ui.cmn.text.validate.generic(enteredText, "^\\d+(\\.\\d{1,2})?$") == false)
+						this.setInvalid("Please enter numeric data. Expected number format is 99.99");
+					else {
+						if ((me.actionType == "NewHire" || me.actionType == "Rehire") 
+							&& me.houseCodePayrollCompanys[me.employeePayrollCompany.indexSelected] != undefined 
+							&& me.houseCodePayrollCompanys[me.employeePayrollCompany.indexSelected].hourly && enteredText > 99.99) {
+							this.setInvalid("Please enter valid Pay Rate. Max value for Hourly is 99.99.");
+						}
+			
+						if (me.actionType == "Compensation" && me.employeeGenerals[0] != undefined
+							&& me.employeeGenerals[0].hourly && enteredText > 99.99) {
+							this.setInvalid("Please enter valid Pay Rate. Max value for Hourly is 99.99.");
+						}
 					}
 				});	
 			
@@ -1485,10 +1429,21 @@ ii.Class({
 
 					var enteredText = me.employeeAlternatePayRateB.getValue();
 					
-					if (enteredText == '') return;
+					if (enteredText == "") return;
 
-					if (/^\d{1,6}(\.\d{1,2})?$/.test(enteredText) == false) {
-						this.setInvalid("Please enter valid amount.");
+					if (ui.cmn.text.validate.generic(enteredText, "^\\d+(\\.\\d{1,2})?$") == false)
+						this.setInvalid("Please enter numeric data. Expected number format is 99.99");
+					else {
+						if ((me.actionType == "NewHire" || me.actionType == "Rehire") 
+							&& me.houseCodePayrollCompanys[me.employeePayrollCompany.indexSelected] != undefined 
+							&& me.houseCodePayrollCompanys[me.employeePayrollCompany.indexSelected].hourly && enteredText > 99.99) {
+							this.setInvalid("Please enter valid Pay Rate. Max value for Hourly is 99.99.");
+						}
+			
+						if (me.actionType == "Compensation" && me.employeeGenerals[0] != undefined
+							&& me.employeeGenerals[0].hourly && enteredText > 99.99) {
+							this.setInvalid("Please enter valid Pay Rate. Max value for Hourly is 99.99.");
+						}
 					}
 				});	
 			
@@ -1504,10 +1459,21 @@ ii.Class({
 
 					var enteredText = me.employeeAlternatePayRateC.getValue();
 					
-					if (enteredText == '') return;
+					if (enteredText == "") return;
 
-					if (/^\d{1,6}(\.\d{1,2})?$/.test(enteredText) == false) {
-						this.setInvalid("Please enter valid amount.");
+					if (ui.cmn.text.validate.generic(enteredText, "^\\d+(\\.\\d{1,2})?$") == false)
+						this.setInvalid("Please enter numeric data. Expected number format is 99.99");
+					else {
+						if ((me.actionType == "NewHire" || me.actionType == "Rehire") 
+							&& me.houseCodePayrollCompanys[me.employeePayrollCompany.indexSelected] != undefined 
+							&& me.houseCodePayrollCompanys[me.employeePayrollCompany.indexSelected].hourly && enteredText > 99.99) {
+							this.setInvalid("Please enter valid Pay Rate. Max value for Hourly is 99.99.");
+						}
+			
+						if (me.actionType == "Compensation" && me.employeeGenerals[0] != undefined
+							&& me.employeeGenerals[0].hourly && enteredText > 99.99) {
+							this.setInvalid("Please enter valid Pay Rate. Max value for Hourly is 99.99.");
+						}
 					}
 				});
 			
@@ -1523,10 +1489,21 @@ ii.Class({
 
 					var enteredText = me.employeeAlternatePayRateD.getValue();
 					
-					if (enteredText == '') return;
+					if (enteredText == "") return;
 
-					if (/^\d{1,6}(\.\d{1,2})?$/.test(enteredText) == false) {
-						this.setInvalid("Please enter valid amount.");
+					if (ui.cmn.text.validate.generic(enteredText, "^\\d+(\\.\\d{1,2})?$") == false)
+						this.setInvalid("Please enter numeric data. Expected number format is 99.99");
+					else {
+						if ((me.actionType == "NewHire" || me.actionType == "Rehire") 
+							&& me.houseCodePayrollCompanys[me.employeePayrollCompany.indexSelected] != undefined 
+							&& me.houseCodePayrollCompanys[me.employeePayrollCompany.indexSelected].hourly && enteredText > 99.99) {
+							this.setInvalid("Please enter valid Pay Rate. Max value for Hourly is 99.99.");
+						}
+			
+						if (me.actionType == "Compensation" && me.employeeGenerals[0] != undefined
+							&& me.employeeGenerals[0].hourly && enteredText > 99.99) {
+							this.setInvalid("Please enter valid Pay Rate. Max value for Hourly is 99.99.");
+						}
 					}
 				});
 			
@@ -1540,7 +1517,7 @@ ii.Class({
 				.setValidationMaster( me.validator )
 				
 			me.federalExemptions = new ui.ctl.Input.Text({
-		        id: "EmployeeFedExemptions" ,
+		        id: "EmployeeFedExemptions",
 		        maxLength: 16
 		    });
 			
@@ -1549,12 +1526,11 @@ ii.Class({
 				.addValidation( function( isFinal, dataMap ) {
 
 					var enteredText = me.federalExemptions.getValue();
-					
-					if (enteredText == '') return;
 
-					if (/^\d+$/.test(enteredText) == false) {
+					if (enteredText == "") return;
+
+					if (/^\d+$/.test(enteredText) == false)
 						this.setInvalid("Please enter valid number.");
-					}
 			});
 		
 			me.maritalStatusFederalTaxType = new ui.ctl.Input.DropDown.Filtered({
@@ -1588,7 +1564,7 @@ ii.Class({
 
 					var enteredText = me.federalAdjustmentAmount.getValue();
 					
-					if (enteredText == '' || me.federalAdjustmentType.indexSelected <= 0) return;
+					if (enteredText == "" || me.federalAdjustmentType.indexSelected <= 0) return;
 
 					if (me.federalAdjustmentType.text.value == "Fixed Amt" || me.federalAdjustmentType.text.value == "Increased Amt") {
 						if (/^\d{1,4}$/.test(enteredText) == false)
@@ -1669,12 +1645,11 @@ ii.Class({
 				.addValidation( function( isFinal, dataMap ) {
 
 					var enteredText = me.stateExemptions.getValue();
-					
-					if (enteredText == '') return;
 
-					if (/^\d+$/.test(enteredText) == false){
+					if (enteredText == "") return;
+
+					if (/^\d+$/.test(enteredText) == false)
 						this.setInvalid("Please enter valid number.");
-					}
 				});
 			
 			me.employeeStateAdjustmentType = new ui.ctl.Input.DropDown.Filtered({
@@ -1697,8 +1672,8 @@ ii.Class({
 				.addValidation( function( isFinal, dataMap ) {
 
 					var enteredText = me.stateAdjustmentAmount.getValue();
-					
-					if (enteredText == '' || me.employeeStateAdjustmentType.indexSelected <= 0) return;
+
+					if (enteredText == "" || me.employeeStateAdjustmentType.indexSelected <= 0) return;
 
 					if (me.employeeStateAdjustmentType.text.value == "Fixed Amt" 
 						|| me.employeeStateAdjustmentType.text.value == "Increased Amt"
@@ -1732,12 +1707,11 @@ ii.Class({
 				.addValidation( function( isFinal, dataMap ) {
 
 					var enteredText = me.stateSDIAdjustRate.getValue();
-					
-					if (enteredText == '') return;
-	
-					else if((/^\d+(\.\d\d)?$/.test(enteredText) == false) && (/^\d+(\.\d)?$/.test(enteredText) == false)) {
+
+					if (enteredText == "") return;
+
+					else if((/^\d+(\.\d\d)?$/.test(enteredText) == false) && (/^\d+(\.\d)?$/.test(enteredText) == false))
 						this.setInvalid("Please enter valid number.");
-					}
 				});			
 			
 			me.localTaxAdjustmentType = new ui.ctl.Input.DropDown.Filtered({
@@ -1812,7 +1786,7 @@ ii.Class({
 		setScheduledHoursWarning: function(){
 			var args = ii.args(arguments, {
 				inValid: {type: Boolean},
-				message: {type: String, required: false, defaultValue: ''}
+				message: {type: String, required: false, defaultValue: ""}
 			});			
 			var me = this;
 
@@ -4923,8 +4897,8 @@ ii.Class({
 			$("#houseCodeTemplateTextDropImage").addClass("HouseCodeDropDown");
 			$("#EmployeePayrollCompanyText").attr('disabled', false);
 			$("#EmployeePayrollCompanyAction").addClass("iiInputAction");
-			$("#CrothallEmployeeYes").attr('disabled', false);
-			$("#CrothallEmployeeNo").attr('disabled', false);
+			$("#CrothallEmployeeYes").attr('disabled', true);
+			$("#CrothallEmployeeNo").attr('disabled', true);
 			$("#EmployeeGeneralStatusTypeText").attr('disabled', false);
 			$("#EmployeeGeneralStatusTypeAction").addClass("iiInputAction");
 			$("#EmployeeStatusCategoryTypeText").attr('disabled', false);
@@ -6069,7 +6043,7 @@ ii.Class({
 					payrollStatus = 'A';
 					previousPayrollStatus = 'T';
 				}
-			}		
+			}
 
 			// Terminated
 			if (me.employeeStatusType.indexSelected >= 0) {

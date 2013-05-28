@@ -107,6 +107,8 @@ ii.Class({
 			$("#txtHC-1").bind("blur", function() { me.houseCodeBlur(this); });
 			$("#selJO-1").bind("blur", function() { me.jobBlur(this); });
 			$("#selWO-1").bind("blur", function() { me.workOrderBlur(this); });
+
+			$("#selEmployee, #selType, #selWorkShift, #txtHC-1, #selJO-1, #selWO-1").bind("change", function() { me.modified(); });
         },
 		
 		authorizationProcess: function fin_pay_weeklyPayroll_UserInterface_authorizationProcess() {
@@ -270,6 +272,14 @@ ii.Class({
 			});
 		},
 		
+		modified: function() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.parent.fin.appUI.modified = args.modified;
+		},
+
 		payCodeTypesLoaded: function(me, activeId) {
 
 		},
@@ -386,7 +396,7 @@ ii.Class({
 		    }
 
 		    $("#selPCRowCount").html(PayCode);	
-
+			$("input[id^=chkPC]").bind("change", function() { me.modified(); });
 		    me.weeklyPayrollsLoad();
 		},
 		
@@ -729,13 +739,23 @@ ii.Class({
 		
 		filterTypeChange: function() {
 		    var me = this;
-			
+
+			if ((me.empHourly != Number($("#selFilterType").val())) && !parent.fin.cmn.status.itemValid()) {
+	            $("#selFilterType").val(me.empHourly);
+	            return false;
+	        }
+
 		    me.empHourly = Number($("#selFilterType").val());
 		    me.weeklyPayrollsLoad();
 		},
 		
 		filterWorkShiftChange: function() {
 		    var me = this;
+			
+			if ((me.shiftType != Number($("#selFilterWorkShift").val())) && !parent.fin.cmn.status.itemValid()) {
+	            $("#selFilterWorkShift").val(me.shiftType);
+	            return false;
+	        }
 			
 		    me.shiftType = Number($("#selFilterWorkShift").val());
 		    me.weeklyPayrollsLoad();
@@ -1066,10 +1086,11 @@ ii.Class({
 		            objInput = $("#txtHC" + rowNumber);
 		            
 	                if (rowNumber >= 0 && objInput.val() != me.weeklyPayrolls[rowNumber].payrollHouseCode) {
-	                    me.weeklyPayrolls[rowNumber].changed = true
+	                    me.weeklyPayrolls[rowNumber].changed = true;
 	                    me.weeklyPayrolls[rowNumber].payrollHouseCode = houseCode;
 	                    me.weeklyPayrolls[rowNumber].payrollHcmHouseCode = me.houseCodeCache[houseCode].id.toString();
 	                    objInput.css("background-color", me.changedColor);
+						me.modified();
 	                }
 		            
 		            me.jobRebuild(rowNumber, houseCode);
@@ -1119,6 +1140,7 @@ ii.Class({
 		            me.weeklyPayrolls[rowNumber].changed = true;
 		            me.weeklyPayrolls[rowNumber].job = Number(selJob.val());
 		            selJob.css("background-color", me.changedColor);
+					me.modified();
 		        }
 		    }
 		},
@@ -1150,6 +1172,7 @@ ii.Class({
 					me.weeklyPayrolls[rowNumber].changed = true;
 		       	 	me.weeklyPayrolls[rowNumber].job = Number(objSelect.value);
 		        	$(objSelect).css("background-color", me.changedColor);
+					me.modified();
 				}
 				else
 					$("#selJO" + rowNumber).val(me.weeklyPayrolls[rowNumber].job);
@@ -1178,6 +1201,7 @@ ii.Class({
 		            me.weeklyPayrolls[rowNumber].changed = true;
 		            me.weeklyPayrolls[rowNumber].workOrder = Number(selWorkOrder.val());
 		            selWorkOrder.css("background-color", me.changedColor);
+					me.modified();
 		        }		        
 		    }
 		},
@@ -1209,6 +1233,7 @@ ii.Class({
 					me.weeklyPayrolls[rowNumber].changed = true;
 		        	me.weeklyPayrolls[rowNumber].workOrder = Number(objSelect.value);
 		        	$(objSelect).css("background-color", me.changedColor);
+					me.modified();
 				}
 				else
 					$("#selWO" + rowNumber).val(me.weeklyPayrolls[rowNumber].workOrder);
@@ -1227,6 +1252,7 @@ ii.Class({
 		        me.weeklyPayrolls[rowNumber].changed = true;
 		        me.weeklyPayrolls[rowNumber].payCode = objSelect.value;
 		        $(objSelect).css("background-color", me.changedColor);
+				me.modified();
 		        
 		        //now, get the new pay code
 		        var newPayCode = me.getPayCodeByPayCode(me.weeklyPayrolls[rowNumber].payCode);
@@ -1297,6 +1323,7 @@ ii.Class({
 		            me.weeklyPayrolls[rowCount].changed = true;
 		            me.weeklyPayrolls[rowCount]["day" + DayNumber] = Number(objInput.value);
 		            $(objInput).css("background-color", me.changedColor);
+					me.modified();
 		            
 					if (PayCode.addToTotal)
 						$("#spnWT" + rowCount).html("$" + weekTotal.toFixed(2));
@@ -1386,7 +1413,10 @@ ii.Class({
 					alert("You cannot delete the selected pay code. Hours are associated to the pay code [" + payCode.description + "].");
 				return;
 			}
-				
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
 			if (!confirm("Are you sure you want to delete the pay code [" + payCode.description + "] for the employee [" + weeklyPayroll.name + "]?"))
 				return;
 			
@@ -1453,6 +1483,9 @@ ii.Class({
 		payCodeOpen: function(employeeIndex, add) {
 		    var me = this;
 		
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
 			if (add)
 				$("#PayCodeHeader").html("&nbsp;Add Aditional Pay Code");
 			else
@@ -1774,41 +1807,62 @@ ii.Class({
 		},
 		
 		btnCancelClick: function() {
-		    this.payCodeClose();
+			var me = this;
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
+		    me.payCodeClose();
 		},
 		
 		pageNumberChange: function() {
 		    var me = this;
-		    var selPageNumber = $("#selPageNumber");
-		    
-		    me.pageCurrent = Number(selPageNumber.val());
+			
+			if (!parent.fin.cmn.status.itemValid()) {
+				$("#selPageNumber").val(me.pageCurrent);
+				return;
+			}
+
+			me.pageCurrent = Number($("#selPageNumber").val());
 		    me.changeWeeklyPayroll();
 		},		
 		
 		prevWeeklyPayroll: function() {
 		    var me = this;
+			
 			me.pageCurrent--;
 			
 			if (me.pageCurrent < 1)
 			    me.pageCurrent = 1;
-			else
-			    me.changeWeeklyPayroll();
+			else {
+				if (!parent.fin.cmn.status.itemValid()) {
+					me.pageCurrent++;
+					return;
+				}
+				me.changeWeeklyPayroll();
+			}
 		},
 		
 		nextWeeklyPayroll: function() {
 		    var me = this;
+			
 			me.pageCurrent++;
 			
 			if (me.pageCurrent > me.pageCount)
 			    me.pageCurrent = me.pageCount;
-			else
-			    me.changeWeeklyPayroll();
+			else {
+				if (!parent.fin.cmn.status.itemValid()) {
+					me.pageCurrent--;
+					return;
+				}
+				 me.changeWeeklyPayroll();
+			}
 		},
 		
 		changeWeeklyPayroll: function() {
 		    var me = this;
 		    var changed = false;
-
+			/*
 		    for (var index = 0; index < me.weeklyPayrolls.length; index++) {
 				if (me.weeklyPayrolls[index].changed) {
 					changed = true;
@@ -1823,13 +1877,17 @@ ii.Class({
 		            me.saveWeeklyPayroll();
 		        else
 		            me.weeklyPayrollsLoad();
-		    }
+		    }*/
+			 me.weeklyPayrollsLoad();
 		},
 		
 		actionUndoWeeklyPayroll: function() {
 			var args = ii.args(arguments, {});
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
 			me.weeklyPayrollsLoad();
 		},	
 		
@@ -1989,6 +2047,7 @@ ii.Class({
 
 			if (status == "success") {
 				ii.trace("Weekly payroll data saved successfully", ii.traceTypes.information, "Info");
+				me.modified(false);
 				me.action = "";
 				me.weeklyPayrollsLoad();
 			}
@@ -1998,9 +2057,9 @@ ii.Class({
 				if (me.action == "insert")
 					alert("[SAVE FAILURE] Error while inserting Pay Code(s): " + $(args.xmlNode).attr("message"));
 				else if (me.action == "delete")
-					alert("[SAVE FAILURE] Error while deleting Weekly Payroll record: " + $(args.xmlNode).attr("message"));
+					alert("[SAVE FAILURE] Error while deleting Weekly Payroll details: " + $(args.xmlNode).attr("message"));
 				else
-					alert("[SAVE FAILURE] Error while updating Weekly Payroll record: " + $(args.xmlNode).attr("message"));
+					alert("[SAVE FAILURE] Error while updating Weekly Payroll details: " + $(args.xmlNode).attr("message"));
 			}
 		}
     }

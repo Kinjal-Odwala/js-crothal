@@ -997,6 +997,9 @@ ii.Class({
 		addItems: function() {
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if (me.catalogGrid.activeRowIndex == -1)
 				return;
 					
@@ -1176,6 +1179,9 @@ ii.Class({
 		actionDownloadItem: function(type) {
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if (me.catalogGrid.activeRowIndex == -1)
 				return;
 			
@@ -1201,6 +1207,9 @@ ii.Class({
 		actionImportItem: function(type) {
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
 			if (me.catalogGrid.activeRowIndex == -1)
 				return;
 			

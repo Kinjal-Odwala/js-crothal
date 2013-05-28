@@ -6,14 +6,14 @@ ii.Import( "ui.ctl.usr.grid" );
 ii.Import( "fin.cmn.usr.util" );
 ii.Import( "fin.pay.dailyPayroll.usr.defs" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.input" , 4);
-ii.Style( "fin.cmn.usr.grid" , 5);
-ii.Style( "fin.cmn.usr.button" , 6);
-ii.Style( "fin.cmn.usr.dropDown" , 7);
-ii.Style( "fin.cmn.usr.dateDropDown" , 8);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.input", 4 );
+ii.Style( "fin.cmn.usr.grid", 5 );
+ii.Style( "fin.cmn.usr.button", 6 );
+ii.Style( "fin.cmn.usr.dropDown", 7 );
+ii.Style( "fin.cmn.usr.dateDropDown", 8 );
 
 ii.Class({
     Name: "fin.pay.dailyPayroll.UserInterface",
@@ -52,6 +52,7 @@ ii.Class({
 			me.shiftType = 0;
 			me.workShiftId = 0;
 			me.allocatedPaycodes = [];
+			me.prevBlurValue = "";
 			
 			//pagination setup
 			me.startPoint = 1;
@@ -118,7 +119,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("Session Loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 				
 		resize: function() {
@@ -264,7 +265,8 @@ ii.Class({
 			
 			me.punchOverRideTime = new ui.ctl.Input.Text({
 				id:"PunchOverRideTime",
-				appendToId: "DailyEmployeePunchGridControlHolder"
+				appendToId: "DailyEmployeePunchGridControlHolder",
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.punchOverRideTime.makeEnterTab()
@@ -336,7 +338,7 @@ ii.Class({
 
 			me.dailyLunch = new ui.ctl.Input.Check({
 		        id: "DailyLunch",
-				changeFunction: function() { me.dailyLunchChanged(); }
+				changeFunction: function() { me.modified(); me.dailyLunchChanged(); }
 		    });
 
 			me.payCodeAllocatedGrid = new ui.ctl.Grid({
@@ -350,6 +352,7 @@ ii.Class({
 			me.payCodeType = new ui.ctl.Input.DropDown.Filtered({
 		        id: "PayCodeType" ,
 		        formatFunction: function( type ) { return type.name; },
+				changeFunction: function() { me.modified(); },
 		        appendToId: "PayCodeAllocatedGridControlHolder"
 		    });	
 
@@ -365,7 +368,7 @@ ii.Class({
 			me.payCodeAllocatedHours = new ui.ctl.Input.Text({
 				id: "PayCodeAllocatedHours",
 				appendToId: "PayCodeAllocatedGridControlHolder",
-				changeFunction: function() { me.calculateTotal(); }
+				changeFunction: function() { me.modified(); me.calculateTotal(); }
 			});
 			
 			me.payCodeAllocatedHours.makeEnterTab()
@@ -401,7 +404,8 @@ ii.Class({
 				id: "EmployeeDetail",
 				appendToId: "divForm",
 				allowAdds: false,
-				selectFunction: function( index ) { me.itemEmployeeSelect(index); }				
+				selectFunction: function( index ) { me.itemEmployeeSelect(index); },
+				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }			
 			});
 			
 			me.employeeDetailGrid.addColumn("punches", "punches", "", "Status of Punches", 30, function(punches) {
@@ -420,6 +424,7 @@ ii.Class({
 			me.payCodeType.active = false;
 			me.payCodeAllocatedHours.active = false;
 			
+			$("input[name='PayCodeTypes']").change(function() { me.modified(); });
 			$("#imgPayCodeAdd").bind("click", function() { me.payCodeOpen(); });
 			$("#selFilterWorkShift").bind("change", function() { me.filterWorkShiftChange(); });
 			$("#selPageNumber").bind("change", function() { me.pageNumberChange(); });
@@ -505,7 +510,32 @@ ii.Class({
 			});
 		},
 		
-		controlReadOnly: function(){
+		modified: function() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.parent.fin.appUI.modified = args.modified;
+		},
+		
+		findIndexByTitle: function() {
+			var args = ii.args(arguments, {
+				title: {type: String},	// The title to use to find the object.
+				data: {type: [Object]}	// The data array to be searched.
+			});		
+			var title = args.title;
+			var data = args.data;
+			
+			for (var index = 0; index < data.length; index++) {
+				if (data[index].name == title) {
+					return index;
+				}
+			}
+			
+			return null;
+		},
+		
+		controlReadOnly: function() {
 			var me = this;
 
 			if (me.dailyPayrollReadOnly || parent.fin.payMasterUi.salaryWagesReadOnly) {
@@ -621,6 +651,9 @@ ii.Class({
 		        selWorkShift.append("<option value=\"" + me.workShiftTypes[index].id + "\">" + me.workShiftTypes[index].name + "</option>");
 				selFilterWorkShift.append("<option value=\"" + me.workShiftTypes[index].id + "\">" + me.workShiftTypes[index].name + "</option>");
 		    }
+			
+			$("#selWorkShift").bind("change", function() { me.modified(); });
+			$("input[id^=chkPC]").bind("change", function() { me.modified(); });
 		},
 		
 		dailyPayrollCountLoad: function() {
@@ -675,10 +708,11 @@ ii.Class({
 			
 			//make sure we clean out the employee information
 			me.employees = [];
+			$("#selEmployee").bind("change", function() { me.modified(); });
 			$("#selEmployee").empty();
 			$("#selEmployee").append("<option value=\"\">(All Employees on Page)</option>");
 			$("#selEmployee").append("<option value=\"-1\">(All Employees in House Code)</option>");
-
+	
 			for (var rowCount = 0; rowCount < me.employeeDetails.length; rowCount++) {
 			    //add the employee to the list of employees
 			    var employee = {};
@@ -762,7 +796,8 @@ ii.Class({
 				me.productiveHours = parseFloat(me.employeeWorkShifts[0].productiveHours);
 				me.grossHours  = parseFloat(me.employeeWorkShifts[0].grossHours);
 				me.netHours = parseFloat(me.employeeWorkShifts[0].netHours);
-				me.dailyLunch.check.checked = me.employeeWorkShifts[0].useLunch;
+				me.dailyLunch.setValue(me.employeeWorkShifts[0].useLunch.toString());
+				
 				me.loadEmployeePunches();
 
 				if (me.workShiftTypes[me.workShift.indexSelected].id == 0)
@@ -899,30 +934,45 @@ ii.Class({
 
 		prevDailyPayroll: function() {
 		    var me = this;
-			
+
 			me.pageCurrent--;
 			
 			if (me.pageCurrent < 1)
 			    me.pageCurrent = 1;
-			else				
+			else {
+				if (!parent.fin.cmn.status.itemValid()) {
+					me.pageCurrent++;
+					return;
+				}
 				me.changeDailyPayroll();
+			}
 		},
 
 		nextDailyPayroll: function() {
 		    var me = this;
+
 			me.pageCurrent++;
-			
+
 			if (me.pageCurrent > me.pageCount)
 			    me.pageCurrent = me.pageCount;
-			else
+			else {
+				if (!parent.fin.cmn.status.itemValid()) {
+					me.pageCurrent--;
+					return;
+				}
 				me.changeDailyPayroll();
+			}				
 		},
 		
 		pageNumberChange: function() {
 		    var me = this;
-		    var selPageNumber = $("#selPageNumber");
-		    
-		    me.pageCurrent = Number(selPageNumber.val());
+
+			if (!parent.fin.cmn.status.itemValid()) {
+				$("#selPageNumber").val(me.pageCurrent);
+				return;
+			}
+
+		    me.pageCurrent = Number($("#selPageNumber").val());
 		    me.changeDailyPayroll();
 		},
 
@@ -942,17 +992,33 @@ ii.Class({
 		
 		filterWorkShiftChange: function() {
 		    var me = this;
-			
+
+	        if ((me.shiftType != Number($("#selFilterWorkShift").val())) && !parent.fin.cmn.status.itemValid()) {
+	            $("#selFilterWorkShift").val(me.shiftType);
+	            return false;
+	        }
+
 		    me.shiftType = Number($("#selFilterWorkShift").val());
 		    me.dailyPayrollCountLoad();
 		},
 		
-		workDayChanged: function() {			
+		workDayChanged: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
 
 			if (me.workDay.indexSelected == -1)
 				return;
+
+			if ((me.payrollDate != me.workDay.lastBlurValue) && !parent.fin.cmn.status.itemValid()) {
+				var index = me.findIndexByTitle(me.payrollDate, me.weekDayDetails);
+
+				if (index != undefined) {
+					me.workDay.select(index, me.workDay.focused);
+					me.workDay.lastBlurValue = me.payrollDate;
+				}
+
+				return;
+			}
 
 			$("#messageToUser").text("Loading");
 			$("#pageLoading").show();
@@ -968,6 +1034,16 @@ ii.Class({
 			if (me.workShift.indexSelected == -1)
 				return;
 
+			if ((me.workShiftId != me.workShiftTypes[me.workShift.indexSelected].id) && !parent.fin.cmn.status.itemValid()) {
+				var index = ii.ajax.util.findIndexById(me.workShiftId.toString(), me.workShiftTypes);
+
+				if (index != undefined) {
+					me.workShift.select(index, me.workShift.focused);
+				}
+
+				return;
+			}
+			
 			me.workShiftId = me.workShiftTypes[me.workShift.indexSelected].id;
 
 			if (me.workShiftId == 0)
@@ -1150,12 +1226,18 @@ ii.Class({
 		btnCancelClick: function() {
 			var me = this;
 
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
 		    me.payCodeClose();
 		},
 		
 		payCodeOpen: function() {
 		    var me = this;
 			var employeeIndex = me.employeeDetailGrid.activeRowIndex;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
 
 			$("#divPageShield").css({
 				"opacity": "0.5"
@@ -1267,6 +1349,9 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
 			me.dailyEmployeePunchGrid.body.deselectAll(true);
 			me.payCodeAllocatedGrid.body.deselectAll(true);
 				
@@ -1591,11 +1676,10 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-			var traceType = ii.traceTypes.errorDataCorruption;
-			var errorMessage = "";
 			var index = 0;
 
 			if (status == "success") {
+				me.modified(false);
 
 				if (me.actionCommand == "Save" || me.actionCommand == "Insert") {
 					if (me.actionCommand == "Save") {
@@ -1662,21 +1746,13 @@ ii.Class({
 					me.payCodeAllocatedGrid.body.deselectAll();
 				}
 
-				me.actionCommand = "";
-				$("#pageLoading").hide();
+				me.actionCommand = "";				
 			}
 			else {
-				alert("Error while updating Employee Daily Payroll Record: " + $(args.xmlNode).attr("message"));
-				errorMessage = $(args.xmlNode).attr("error");
+				alert("[SAVE FAILURE] Error while updating Employee Daily Payroll details: " + $(args.xmlNode).attr("message"));
+			}
 
-				if (status == "invalid") {
-					traceType = ii.traceTypes.warning;
-				}
-				else {
-					errorMessage += " [SAVE FAILURE]";
-				}
-				$("#pageLoading").hide();
-			}			
+			$("#pageLoading").hide();
 		}
 	}
 });

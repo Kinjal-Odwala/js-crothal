@@ -59,6 +59,7 @@ ii.Class({
 			me.setTabIndexes();
 			me.resizeControls();
 			me.statusesLoaded();
+			me.modified(false);
 
 			me.state.fetchingData();
 			me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
@@ -100,6 +101,13 @@ ii.Class({
 						break;
 				}
 			});
+			
+			$("input[type='radio']").change( function() { me.modified(); });
+			
+			ui.cmn.behavior.disableBackspaceNavigation();
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
         },
 		
 		authorizationProcess: function fin_pay_payCheck_UserInterface_authorizationProcess() {
@@ -205,7 +213,8 @@ ii.Class({
 					
 					if (enteredText == "") 
 						return;
-											
+						
+					me.modified();
 					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
 						this.setInvalid("Please enter valid date.");
 				});
@@ -223,14 +232,16 @@ ii.Class({
 					
 					if (enteredText == "") 
 						return;
-											
+
+					me.modified();
 					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
 						this.setInvalid("Please enter valid date.");
 				});
 				
 			me.employeeNumber = new ui.ctl.Input.Text({
 				id: "EmployeeNumber",
-				maxLength: 16
+				maxLength: 16,
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.employeeNumber.makeEnterTab()
@@ -249,7 +260,8 @@ ii.Class({
 
 			me.employeeName = new ui.ctl.Input.Text({
 				id: "EmployeeName",
-				maxLength: 100
+				maxLength: 100,
+				changeFunction: function() { me.modified(); }
 			});
 
 			me.employeeName.makeEnterTab()
@@ -258,7 +270,8 @@ ii.Class({
 				
 			me.reasonForRequest = new ui.ctl.Input.Text({
 				id: "ReasonForRequest",
-				maxLength: 1024
+				maxLength: 1024,
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.reasonForRequest.makeEnterTab()
@@ -267,7 +280,8 @@ ii.Class({
 				
 			me.state = new ui.ctl.Input.DropDown.Filtered({
 				id: "State",
-				formatFunction: function( type ) { return type.name; }
+				formatFunction: function( type ) { return type.name; },
+				changeFunction: function() { me.modified(); }
 			});
 
 			me.state.makeEnterTab()
@@ -281,7 +295,8 @@ ii.Class({
 				
 			me.unitAddress = new ui.ctl.Input.Text({
 				id: "UnitAddress",
-				maxLength: 1024
+				maxLength: 1024,
+				changeFunction: function() { me.modified(); }
 			});
 
 			me.unitAddress.makeEnterTab()
@@ -294,12 +309,14 @@ ii.Class({
 
 			me.upsPackageAttentionTo = new ui.ctl.Input.Text({
 				id: "UPSPackageAttentionTo",
-				maxLength: 512
+				maxLength: 512,
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.homeAddress = new ui.ctl.Input.Text({
 				id: "HomeAddress",
-				maxLength: 1024
+				maxLength: 1024,
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.homeAddress.makeEnterTab()
@@ -312,12 +329,14 @@ ii.Class({
 				
 			me.deductionCode = new ui.ctl.Input.Text({
 				id: "DeductionCode",
-				maxLength: 512
+				maxLength: 512,
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.amount = new ui.ctl.Input.Text({
 				id: "Amount",
-				maxLength: 11
+				maxLength: 11,
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.amount.makeEnterTab()
@@ -344,7 +363,8 @@ ii.Class({
 
 			me.requestorEmail = new ui.ctl.Input.Text({
 				id: "RequestorEmail",
-				maxLength: 100
+				maxLength: 100,
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.requestorEmail.makeEnterTab()
@@ -362,7 +382,8 @@ ii.Class({
 			
 			me.managerName = new ui.ctl.Input.Text({
 				id: "ManagerName",
-				maxLength: 100
+				maxLength: 100,
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.managerName.makeEnterTab()
@@ -371,7 +392,8 @@ ii.Class({
 			
 			me.managerEmail = new ui.ctl.Input.Text({
 				id: "ManagerEmail",
-				maxLength: 100
+				maxLength: 100,
+				changeFunction: function() { me.modified(); }
 			});
 			
 			me.managerEmail.makeEnterTab()
@@ -403,7 +425,8 @@ ii.Class({
 			me.payCodeType = new ui.ctl.Input.DropDown.Filtered({
 		        id: "PayCodeType",
 				appendToId: "PayCodeDetailGridControlHolder",
-				formatFunction: function(type) { return type.brief + " - " + type.name; }
+				formatFunction: function(type) { return type.brief + " - " + type.name; },
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.payCodeType.makeEnterTab()
@@ -418,7 +441,8 @@ ii.Class({
 			me.hours = new ui.ctl.Input.Text({
 		        id: "Hours",
 		        maxLength: 11,
-				appendToId: "PayCodeDetailGridControlHolder"
+				appendToId: "PayCodeDetailGridControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.hours.makeEnterTab()
@@ -449,7 +473,8 @@ ii.Class({
 					
 					if (enteredText == "") 
 						return;
-											
+
+					me.modified();
 					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
 						this.setInvalid("Please enter valid date.");
 				});
@@ -457,7 +482,8 @@ ii.Class({
 			me.earning = new ui.ctl.Input.Text({
 		        id: "Earning",
 				maxLength: 11,
-				appendToId: "PayCodeDetailGridControlHolder"
+				appendToId: "PayCodeDetailGridControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.earning.makeEnterTab()
@@ -477,7 +503,8 @@ ii.Class({
 			me.alternateBaseRate = new ui.ctl.Input.Text({
 		        id: "AlternateBaseRate",
 				maxLength: 11,
-				appendToId: "PayCodeDetailGridControlHolder"
+				appendToId: "PayCodeDetailGridControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.alternateBaseRate.makeEnterTab()
@@ -496,7 +523,8 @@ ii.Class({
 			me.workOrderTicketNumber = new ui.ctl.Input.Text({
 		        id: "WorkOrderTicketNumber",
 		        maxLength: 16, 
-				appendToId: "PayCodeDetailGridControlHolder"
+				appendToId: "PayCodeDetailGridControlHolder",
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.payCodeDetailGrid.addColumn("payCode", "payCode", "Pay Code", "Pay Code", null, null, me.payCodeType);
@@ -635,6 +663,19 @@ ii.Class({
 				itemConstructorArgs: fin.pay.payCheck.siteArgs,
 				injectionArray: me.sites
 			});	
+		},
+		
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+	
+		modified: function() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+		
+			parent.fin.appUI.modified = args.modified;
 		},
 		
 		setTabIndexes: function() {
@@ -845,7 +886,8 @@ ii.Class({
 			var args = ii.args(arguments,{});			
 			var me = this;	
 			
-			 me.siteStore.fetch("userId:[user],houseCodeId:" + me.houseCodeSearchTemplate.houseCodeIdTemplate + ",type:invoice", me.sitesLoaded, me);
+			me.modified();
+			me.siteStore.fetch("userId:[user],houseCodeId:" + me.houseCodeSearchTemplate.houseCodeIdTemplate + ",type:invoice", me.sitesLoaded, me);
 		},
 		
 		sitesLoaded: function(me, activeId) {
@@ -963,7 +1005,10 @@ ii.Class({
 		
 		actionPayCheckRequest: function() {
 			var me = this;
-			
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
 			$("#PayCodeDetailGrid").show();
 			$("#searchContainer").hide();
 			$("#PayCodeDetailReadOnlyGrid").hide();
@@ -977,6 +1022,9 @@ ii.Class({
 		
 		actionPayCheckRequestStatus: function() {
 			var me = this;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
 
 			$("#PayCodeDetailGrid").hide();
 			$("#searchContainer").show();
@@ -1073,12 +1121,18 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
 			me.resetControls("new");
 		},
 		
 		actionUndoItem: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
 
 			me.resetControls("new");
 		},
@@ -1225,6 +1279,7 @@ ii.Class({
 
 			if (status == "success") {
 				alert("Payroll check request sent successfully.");
+				me.modified(false);
 				me.resetControls("new");
 			}
 			else

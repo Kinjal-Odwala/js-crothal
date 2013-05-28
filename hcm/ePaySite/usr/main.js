@@ -257,21 +257,21 @@ ii.Class({
 				maxLength: 50
 			});		
 		
-			me.searchInput.setValidationMaster( me.validator )
-				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation(function( isFinal, dataMap) {
-					
-				if (me.status != "")
-					this.valid = true;
-				else if(me.searchInput.getValue().length < 3)
-					this.setInvalid("Please enter search criteria (minimum 3 characters).");
-			});
+//			me.searchInput.setValidationMaster( me.validator )
+//				.addValidation(ui.ctl.Input.Validation.required)
+//				.addValidation(function( isFinal, dataMap) {
+//					
+//				if (me.status != "")
+//					this.valid = true;
+//				else if(me.searchInput.getValue().length < 3)
+//					this.setInvalid("Please enter search criteria (minimum 3 characters).");
+//			});
 			
 			me.anchorSearch = new ui.ctl.buttons.Sizeable({
 				id: "AnchorSearch",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Search&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.loadSearchResults(); },
+				clickFunction: function() { me.houseCodeChanged(); },
 				hasHotState: true
 			});
 			
@@ -689,6 +689,7 @@ ii.Class({
 			}
 
 			me.houseCodeGlobalParametersUpdate(false);
+			me.loadSearchResults();
 		},
 		
 		actionSearchItem: function fin_hcm_ePaySite_UserInterface_actionSearchItem() {
@@ -699,8 +700,24 @@ ii.Class({
 			var me = event.data;
 
 			if (event.keyCode == 13) {
-				me.loadSearchResults();
+				me.houseCodeChanged();
 			}
+		},
+		
+		houseCodeChanged: function fin_hcm_job_UserInterface_houseCodeChanged() {
+			var args = ii.args(arguments,{});
+			var me = this;
+			
+			if ($("#SearchByEPaySite")[0].checked && me.searchInput.getValue().length < 3) {
+				me.searchInput.setInvalid("Please enter search criteria (minimum 3 characters).");
+				return false;
+			}			
+			else {
+				me.searchInput.valid = true;
+				me.searchInput.updateStatus();
+			}
+			
+			me.loadSearchResults();
 		},
 		
 		loadSearchResults: function() {
@@ -709,38 +726,28 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 			
-			if (($("#SearchByEPaySite")[0].checked) || ($("#SearchByHouseCode")[0].checked)) {
-				
-				if ($("#SearchByEPaySite")[0].checked && me.searchInput.getValue().length < 3) {
-					me.searchInput.setInvalid("Please enter search criteria (minimum 3 characters).");
-					return false;
-				}			
-				else {
-					me.searchInput.valid = true;
-					me.searchInput.updateStatus();
-				}
-				
-				$("#messageToUser").text("Loading");
-				$("#pageLoading").show();
-				
-				me.houseCodeGrid.body.deselectAll();
-				me.houseCodeGrid.setData([]);
-				
-				me.jobGrid.body.deselectAll();
-				me.jobGrid.setData([]);
-				
-				if($("#SearchByEPaySite")[0].checked)
-					me.jobStore.fetch("userId:[user],jobType:4,title:" + me.searchInput.getValue(), me.jobsLoaded, me);
-				else if($("#SearchByHouseCode")[0].checked)
-					me.jobStore.fetch("userId:[user],jobType:4,houseCodeId:" + parent.fin.appUI.houseCodeId , me.jobsLoaded, me);
-			}			
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").show();
+			
+			me.houseCodeGrid.body.deselectAll();
+			me.houseCodeGrid.setData([]);
+			
+			me.jobGrid.body.deselectAll();
+			me.jobGrid.setData([]);
+			
+			if($("#SearchByHouseCode")[0].checked)
+				me.jobStore.fetch("userId:[user],jobType:4,houseCodeId:" + parent.fin.appUI.houseCodeId , me.jobsLoaded, me);
+			else if($("#SearchByEPaySite")[0].checked && me.searchInput.getValue().length >= 3)
+				me.jobStore.fetch("userId:[user],jobType:4,title:" + me.searchInput.getValue(), me.jobsLoaded, me);
 		},	
 		
 		jobsLoaded: function fin_hcm_ePaySite_UserInterface_jobsLoaded(me, activeId) {
 			
-			me.lastSelectedRowIndex = -1;
+			//me.lastSelectedRowIndex = -1;
 			me.resetControls();		
 			me.jobGrid.setData(me.jobs);
+			if (me.jobs.length > 0) 
+				me.jobGrid.body.select(0);
 			
 			$("#pageLoading").hide();
 		},
@@ -944,6 +951,7 @@ ii.Class({
 				));
 
 			me.houseCodePopupGrid.setData(me.units);
+			me.modified();
 		},
 		
 		houseCodeGridSelect: function() {

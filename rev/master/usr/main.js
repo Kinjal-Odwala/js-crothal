@@ -1301,13 +1301,13 @@ ii.Class({
 			me.state.fetchingData();
             me.billTo.fetchingData();
 			me.anchorSave.display(ui.cmn.behaviorStates.disabled);
-            me.siteStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",type:invoice", me.sitesLoaded, me);
-		    me.stateTypeStore.fetch("userId:[user],", me.statesLoaded, me);
+			me.stateTypeStore.fetch("userId:[user],", me.statesLoaded, me);
 			me.invoiceBillToStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId, me.invoiceBillTosLoaded, me);
+            me.siteStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",type:invoice", me.sitesLoaded, me);
 		},
 
 		sitesLoaded: function(me, activeId) {
-			
+
 			if (me.sites.length == 0) {
 				alert("Either Site information not found or Site is not associated to the House Code [" + parent.fin.appUI.houseCodeBrief + "]. Please verify and try again!")
 				$("#pageLoading").hide();
@@ -1651,10 +1651,10 @@ ii.Class({
 			var found = false;
 
 			if (me.invoiceSearchGrid.activeRowIndex < 0) {
-				alert('Please select the Invoice from the list.');
+				alert("Please select the Invoice from the list.");
 				return;
 			}
-			
+
 			if (me.invoiceType == invoiceTypes.customerCloneYes) {
 				for (var index = 0; index < me.houseCodeJobs.length; index++) {
 					if (me.houseCodeJobs[index].jobNumber == me.invoiceSearchGrid.data[me.invoiceSearchGrid.activeRowIndex].jobBrief) {

@@ -79,6 +79,8 @@ ii.Class({
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
 			}
+			
+			me.taxableServiceStore.fetch("userId:[user]", me.taxableServicesLoaded, me);
 		},
 
 		authorizationProcess: function fin_rev_bulkInvoiceImport_UserInterface_authorizationProcess() {
@@ -267,6 +269,14 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 
+			me.taxableServices = [];
+			me.taxableServiceStore = me.cache.register({
+				storeId: "revTaxableServices",
+				itemConstructor: fin.rev.bulkInvoiceImport.TaxableService,
+				itemConstructorArgs: fin.rev.bulkInvoiceImport.taxableServiceArgs,
+				injectionArray: me.taxableServices
+			});
+
 			me.invoices = [];
 			me.invoiceStore = me.cache.register({
 				storeId: "revInvoiceImports",
@@ -312,6 +322,30 @@ ii.Class({
 		
 			parent.fin.appUI.modified = args.modified;
 		},
+		
+		taxableServicesLoaded: function(me, activeId) {
+ 
+			me.taxableServices.unshift(new fin.rev.bulkInvoiceImport.TaxableService(0, "", ""));
+        },
+
+		buildDropDown: function(controlName, types, title) {
+		    var me = this;
+			var type = {};
+		    var selType = null;
+			var options = "";
+
+		    for (var index = 0; index < types.length; index++) {
+				type = types[index];
+				
+				if (type.brief == title)
+		        	options += "<option title='" + type.title + "' value='" + type.id + "' selected>" + type.title + "</option>";
+				else
+					options += "<option title='" + type.title + "' value='" + type.id + "'>" + type.title + "</option>";
+		    }
+
+			selType = $("#" + controlName);
+			selType.append(options);
+		},	
 
 		actionImportItem: function() {
 			var me = this;
@@ -521,7 +555,7 @@ ii.Class({
 				invoiceRow = invoiceRowTemplate;
 				invoiceRow = invoiceRow.replace(/RowCount/g, index);
 				invoiceRow = invoiceRow.replace("#", index + 1);
-							
+				
 				$("#InvoiceGridBody").append(invoiceRow);
 				if (me.invoices[index].taxExempt.toUpperCase() == "Y")
 					$("#chkTaxExempt" + index)[0].checked = true;
@@ -530,6 +564,7 @@ ii.Class({
 				$("#txtTaxExemptId" + index).val(me.invoices[index].taxNumber);
 				$("#txtHouseCode" + index).val(me.invoices[index].houseCode);
 				$("#txtJobCode" + index).val(me.invoices[index].jobCode);
+				me.buildDropDown("selTaxableService" + index, me.taxableServices, me.invoices[index].taxableService);
 				$("#txtAccountCode" + index).val(me.invoices[index].accountCode);
 				$("#txtInvoiceDate" + index).val(me.invoices[index].invoiceDate);
 				$("#txtDueDate" + index).val(me.invoices[index].dueDate);
@@ -537,8 +572,6 @@ ii.Class({
 				$("#txtEndDate" + index).val(me.invoices[index].periodEndDate);
 				$("#txtPONumber" + index).val(me.invoices[index].poNumber);
 				$("#txtDescription" + index).val(me.invoices[index].itemDescription);
-				if (me.invoices[index].taxable.toUpperCase() == "Y")
-					$("#chkTaxable" + index)[0].checked = true;
 				if (me.invoices[index].show.toUpperCase() == "Y")
 					$("#chkShow" + index)[0].checked = true;
 				$("#txtQuantity" + index).val(me.invoices[index].quantity);
@@ -547,8 +580,8 @@ ii.Class({
 				if (me.invoices[index].invoiceByHouseCode == "" || me.invoices[index].invoiceByHouseCode.toUpperCase() == "Y")
 					$("#chkInvoiceByHouseCode" + index)[0].checked = true;
 				$("#tdInvoiceNumber" + index).hide();
+				//$("#chkTaxExempt" + index).change(function() { me.setTaxable(this); });
 			}
-
 			invoiceRow = '<tr height="100%"><td id="tdLastRow" colspan="20" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>';
 			$("#InvoiceGridBody").append(invoiceRow);
 			$("#InvoiceGrid tr:odd").addClass("gridRow");
@@ -569,6 +602,24 @@ ii.Class({
 			
 			$("#pageLoading").hide();
   		},
+
+//		setTaxable: function(objCheckBox) {
+//			var me = this;
+//			var id = Number(objCheckBox.id.replace("chkTaxExempt", ""));
+//			var sequence = $("#txtSequence" + id).val();
+//
+//			if (!(id != 0 && $("#txtSequence" + (id - 1)).val() == sequence)) {
+//				for (var index = id; index < me.invoices.length; index++) {
+//					if ($("#txtSequence" + index).val() == sequence) {
+//						$("#chkTaxable" + index)[0].checked = objCheckBox.checked;
+//						$("#chkTaxable" + index).attr("disabled", objCheckBox.checked);
+//					}
+//					else {
+//						break;
+//					}
+//				}
+//			}
+//		},
 
 		actionValidateItem: function() {
 			var me = this;			
@@ -742,6 +793,16 @@ ii.Class({
 				else {
 					$("#txtJobCode" + index).attr("title", "");
 					$("#txtJobCode" + index).css("background-color", me.cellColorValid);
+				}
+				
+				if ($("#selTaxableService" + index).val() == "0") {
+					rowValid = false;
+					$("#selTaxableService" + index).attr("title", "Please select valid Taxable Service.");
+					$("#selTaxableService" + index).css("background-color", me.cellColorInvalid);
+				}
+				else {
+					$("#selTaxableService" + index).attr("title", "");
+					$("#selTaxableService" + index).css("background-color", me.cellColorValid);
 				}
 
 				jobCodes += $("#txtJobCode" + index).val() + "|";
@@ -1009,7 +1070,6 @@ ii.Class({
 			var xml = "";
 
 			for (var index = 0; index < me.invoices.length; index++) {				
-
 				xml += '<revInvoiceBulkImport';
 				xml += ' id="0"';
 				xml += ' batchId="' + me.batchId + '"';
@@ -1017,6 +1077,7 @@ ii.Class({
 				xml += ' customerNumber="' + $("#txtCustomerNumber" + index).val() + '"';
 				xml += ' houseCode="' + $("#txtHouseCode" + index).val() + '"';
 				xml += ' jobCode="' + $("#txtJobCode" + index).val() + '"';
+				xml += ' taxableService="' + $("#selTaxableService" + index + " option:selected").text() + '"';
 				xml += ' invoiceDate="' + $("#txtInvoiceDate" + index).val() + '"';
 				xml += ' dueDate="' + $("#txtDueDate" + index).val() + '"';
 				xml += ' periodStartDate="' + $("#txtStartDate" + index).val() + '"';
@@ -1024,7 +1085,6 @@ ii.Class({
 				xml += ' poNumber="' + ui.cmn.text.xml.encode($("#txtPONumber" + index).val()) + '"';
 				xml += ' taxExempt="' + $("#chkTaxExempt" + index)[0].checked + '"';
 				xml += ' taxNumber="' + $("#txtTaxExemptId" + index).val() + '"';
-				xml += ' taxable="' + $("#chkTaxable" + index)[0].checked + '"';
 				xml += ' show="' + $("#chkShow" + index)[0].checked + '"';
 				xml += ' accountCode="' + $("#txtAccountCode" + index).val() + '"';				
 				xml += ' itemDescription="' + ui.cmn.text.xml.encode($("#txtDescription" + index).val()) + '"';
@@ -1123,7 +1183,6 @@ ii.Class({
 			var me = this;
 			var windowWidth = document.documentElement.clientWidth;
 			var windowHeight = document.documentElement.clientHeight;
-
 			var popupWidth = $("#batchPopup").width();
 			var popupHeight = $("#batchPopup").height();
 
@@ -1142,7 +1201,7 @@ ii.Class({
 
 function onFileChange() {
 
-	var fileName = $("iframe")[0].contentWindow.document.getElementById("UploadFile").value;	
+	var fileName = $("iframe")[0].contentWindow.document.getElementById("UploadFile").value;
 	var fileExtension = fileName.substring(fileName.lastIndexOf("."));
 
 	if (fileExtension == ".xlsx")
