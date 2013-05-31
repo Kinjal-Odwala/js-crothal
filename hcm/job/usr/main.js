@@ -35,10 +35,11 @@ ii.Class({
 			me.validZipCode = true;
 			me.cityNames = [];
 			me.units = [];
+			me.tempJobs = [];
 			me.lastSelectedRowIndex = -1;
 			me.activeFrameId = 0;
 			me.houseCodesTabNeedUpdate = true;
-
+			
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 			if (!parent.fin.appUI.hirNode) parent.fin.appUI.hirNode = 0;
 
@@ -106,8 +107,8 @@ ii.Class({
 					case "JobDetails":
 						
 						me.activeFrameId = 0;
-						if (me.status == "")
-							me.jobDetailsLoad()
+						if (me.status == "" && me.jobs[me.lastSelectedRowIndex] != undefined)
+							me.jobDetailsLoad(me.jobs[me.lastSelectedRowIndex]);
 							
 						break;
 
@@ -783,6 +784,7 @@ ii.Class({
 				itemConstructorArgs: fin.hcm.job.houseCodeJobArgs,
 				injectionArray: me.houseCodeJobs
 			});
+
 		},
 		
 		dirtyCheck: function(me) {
@@ -839,7 +841,6 @@ ii.Class({
 
 			me.jobType.setData(me.jobTypes);
 			me.jobTemplate.setData(me.jobTemplates);
-			me.resizeControls();
 			
 			me.houseCodeGrid.body.deselectAll();
 			me.houseCodeGrid.setData([]);
@@ -906,8 +907,36 @@ ii.Class({
 		jobNumberCheck: function fin_hcm_job_UserInterface_jobNumberCheck() {
 			var args = ii.args(arguments,{});
 			var me = this;
-
+			
+			me.tempJobs = [];
+			for (var index = me.jobs.length-1; index >= 0; index--) {
+				var item = new fin.hcm.Tempjob({ 
+					id: me.jobs[index].id,
+					number: me.jobs[index].number,
+					name: me.jobs[index].name,
+					brief: me.jobs[index].brief,
+					title: me.jobs[index].title,
+					description: me.jobs[index].description,
+					contact: me.jobs[index].contact,
+					address1: me.jobs[index].address1,
+					address2: me.jobs[index].address2,
+					city: me.jobs[index].city,
+					appStateTypeId: me.jobs[index].appStateTypeId,
+					postalCode: me.jobs[index].postalCode,
+					geoCode: me.jobs[index].geoCode,
+					jobType: me.jobs[index].jobType,
+					invoiceTemplate: me.jobs[index].invoiceTemplate,
+					taxId: me.jobs[index].taxId,
+					overrideSiteTax: me.jobs[index].overrideSiteTax, 
+					serviceContract:me.jobs[index].serviceContract,
+					generalLocationCode:me.jobs[index].generalLocationCode,
+					active:me.jobs[index].active 
+				});
+				me.tempJobs.push(item)
+			}
+					
 			if (me.jobNumber.getValue().length > 0) {
+				me.jobStore.reset();
 				me.jobStore.fetch("jobNumber:" + me.jobNumber.getValue() + ",userId:[user],", me.jobsLoaded, me);
 			}
 		},
@@ -926,39 +955,70 @@ ii.Class({
 			me.jobId = me.jobs[index].id;
 			me.lastSelectedRowIndex = index;
 			me.houseCodesTabNeedUpdate = true;
-			me.jobDetailsLoad();
+			
+			if (me.jobs[index] != undefined) 			
+				me.jobDetailsLoad(me.jobs[index]);
+				
 			if (me.activeFrameId == 1)				
 				me.loadHouseCodes();
 		},
-
+				
 		jobsLoaded: function fin_hcm_job_UserInterface_jobsLoaded(me, activeId) {
-
+			
 			if (me.jobs.length > 0)
-				me.jobDetailsLoad();
+				me.jobDetailsLoad(me.jobs[0]);
+
+			me.jobStore.reset();
+			for (var index = me.tempJobs.length-1; index >= 0; index--) {
+				var item = new fin.hcm.job.Job({ 
+					id: me.tempJobs[index].id,
+					number: me.tempJobs[index].number,
+					name: me.tempJobs[index].name,
+					brief: me.tempJobs[index].brief,
+					title: me.tempJobs[index].title,
+					description: me.tempJobs[index].description,
+					contact: me.tempJobs[index].contact,
+					address1: me.tempJobs[index].address1,
+					address2: me.tempJobs[index].address2,
+					city: me.tempJobs[index].city,
+					appStateTypeId: me.tempJobs[index].appStateTypeId,
+					postalCode: me.tempJobs[index].postalCode,
+					geoCode: me.tempJobs[index].geoCode,
+					jobType: me.tempJobs[index].jobType,
+					invoiceTemplate: me.tempJobs[index].invoiceTemplate,
+					taxId: me.tempJobs[index].taxId,
+					overrideSiteTax: me.tempJobs[index].overrideSiteTax, 
+					serviceContract:me.tempJobs[index].serviceContract,
+					generalLocationCode:me.tempJobs[index].generalLocationCode,
+					active:me.tempJobs[index].active 
+				});
+				me.jobs.push(item)
+			}
 		},
 
 		jobDetailsLoad: function fin_hcm_job_UserInterface_jobDetailsLoad() {
+			var args = ii.args(arguments, {
+				job: { type: fin.hcm.job.Job }
+			});
+			
 			var me = this;
-			var item = me.jobs[me.lastSelectedRowIndex];	
 
-			if (item == undefined) return;
-
-			me.jobNumber.setValue(item.brief);
-			me.jobDescription.setValue(item.description);
-			me.jobContact.setValue(item.contact);
-			me.jobAddress1.setValue(item.address1);
-			me.jobAddress2.setValue(item.address2);
-			me.jobPostalCode.setValue(item.postalCode);			
+			me.jobNumber.setValue(args.job.brief);
+			me.jobDescription.setValue(args.job.description);
+			me.jobContact.setValue(args.job.contact);
+			me.jobAddress1.setValue(args.job.address1);
+			me.jobAddress2.setValue(args.job.address2);
+			me.jobPostalCode.setValue(args.job.postalCode);			
 			me.loadZipCodeTypes();
 
-			var index = ii.ajax.util.findIndexById(item.appStateTypeId.toString(), me.stateTypes);
+			var index = ii.ajax.util.findIndexById(args.job.appStateTypeId.toString(), me.stateTypes);
 			if (index != undefined)
 				me.jobState.select(index, me.jobState.focused);
 			else
 				me.jobState.reset();
 
-			if (item.jobType.id) {
-				index = ii.ajax.util.findIndexById(item.jobType.id.toString(), me.jobTypes);
+			if (args.job.jobType.id) {
+				index = ii.ajax.util.findIndexById(args.job.jobType.id.toString(), me.jobTypes);
 				if (index != undefined)
 					me.jobType.select(index, me.jobType.focused);
 				else
@@ -967,16 +1027,16 @@ ii.Class({
 				if (index == 2) {
 					$("#TaxIdDiv").show();
 					$("#OverrideSiteTaxDiv").hide();
-					index = ii.ajax.util.findIndexById(item.invoiceTemplate.toString(), me.invoiceTemplates);
+					index = ii.ajax.util.findIndexById(args.job.invoiceTemplate.toString(), me.invoiceTemplates);
 					if (index != undefined)
 						me.invoiceTemplate.select(index, me.invoiceTemplate.focused);
 					else
 						me.invoiceTemplate.reset();
 				
-					if (item.taxId == 0)
+					if (args.job.taxId == 0)
 						me.taxId.setValue("");
 					else
-						me.taxId.setValue(item.taxId);
+						me.taxId.setValue(args.job.taxId);
 				}
 				else {
 					me.invoiceTemplate.reset();
@@ -988,10 +1048,13 @@ ii.Class({
 			else
 				me.jobType.reset();
 
-			me.overrideSiteTax.setValue(item.overrideSiteTax.toString());
-			me.serviceContract.setValue(item.serviceContract);
-			me.generalLocationCode.setValue(item.generalLocationCode);
-			me.jobActive.setValue(item.active.toString());
+			me.overrideSiteTax.setValue(args.job.overrideSiteTax.toString());
+			me.serviceContract.setValue(args.job.serviceContract);
+			me.generalLocationCode.setValue(args.job.generalLocationCode);
+			me.jobActive.setValue(args.job.active.toString());
+			setTimeout(function() { 
+				me.resizeControls();
+			}, 100);
 		},
 		
 		loadZipCodeTypes: function() {
@@ -1267,7 +1330,6 @@ ii.Class({
 			me.actionClearItem();
 			me.resetGrids();
 			me.status = "new";
-			
 		},
 
 		actionCloneItem: function fin_hcm_job_UserInterface_actionCloneItem() {
@@ -1334,10 +1396,6 @@ ii.Class({
 
 			me.validator.forceBlur();
 
-//			if (parent.fin.appUI.houseCodeId <= 0) {
-//				errorMessage += "Please select HouseCode.\n";
-//			}
-
 			if (me.status == "clone" && me.jobTemplate.indexSelected < 0) {
 				errorMessage += "Please select Job Template to Clone.\n";
 			}
@@ -1361,10 +1419,6 @@ ii.Class({
 					me.houseCodeJobId = me.houseCodeGrid.data[me.houseCodeGrid.activeRowIndex].id;
 				}
 			}
-
-//			if (me.status == "new" && me.jobs.length > 0) {
-//				me.jobId = me.jobs[0].id;				
-//			}
 
 			item = new fin.hcm.job.Job({
 				id: me.jobId,
@@ -1425,9 +1479,23 @@ ii.Class({
 				xml += ' serviceContract="' + ui.cmn.text.xml.encode(item.serviceContract) + '"';
 				xml += ' generalLocationCode="' + ui.cmn.text.xml.encode(item.generalLocationCode) + '"';
 				xml += ' active="' + item.active + '"';				
-				xml += ' clone="' + (me.status == "clone" ? true : false) + '"';		
+				xml += ' clone="' + (me.status == "clone" ? true : false) + '"';
+				if ($("#SearchByHouseCode")[0].checked) 
+					xml += ' houseCodeId="' + parent.fin.appUI.houseCodeId + '"';		
 				xml += ' clientId="1">';
-
+				
+				if ($("#SearchByHouseCode")[0].checked) {
+					xml += '<houseCodeJob';
+					xml += ' id="' + me.houseCodeJobId + '"';
+					xml += ' houseCodeId="' + parent.fin.appUI.houseCodeId + '"';
+					xml += ' hirNode="' + parent.fin.appUI.hirNode + '"';				
+					xml += ' jobId="' + me.jobId + '"';
+					xml += ' active="' + item.active + '"';
+					xml += ' clientId="2"';	
+					xml += '/>';
+				}
+				
+				
 				xml += '</job>';
 			}	
 

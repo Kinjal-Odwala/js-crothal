@@ -96,6 +96,29 @@ ii.init.register( function() {
 		, assigned: {type: Boolean, required: false, defaultValue: true}
 	};
 	
+	fin.hcm.tempJobArgs = {
+		id: {type: Number, defaultValue: 0}
+		, number: {type: Number, required: false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, brief: {type: String, required: false, defaultValue: ""}
+		, title: {type: String, required: false, defaultValue: ""}
+		, description: {type: String, required: false, defaultValue: ""}
+		, contact: {type: String, required: false, defaultValue: ""}
+		, address1: {type: String, required: false, defaultValue: ""}
+		, address2: {type: String, required: false, defaultValue: ""}
+		, city: {type: String, required: false, defaultValue: ""}
+		, appStateTypeId: {type: Number, required: false, defaultValue: 0}
+		, postalCode: {type: String, required: false, defaultValue: ""}
+		, geoCode: {type: String, required: false, defaultValue: ""}
+		, jobType: {type: fin.hcm.job.JobType, required: false}
+		, invoiceTemplate: {type: Number, required: false, defaultValue: 0}
+		, taxId: {type: String, required: false, defaultValue: "0"}
+		, overrideSiteTax: {type: Boolean, required: false, defaultValue: false}
+		, serviceContract: {type: String, required: false, defaultValue: ""}
+		, generalLocationCode: {type: String, required: false, defaultValue: ""}
+        , active: {type: Boolean, required: false, defaultValue: false}	
+	};
+	
 }, 2);
 
 ii.Class({
@@ -202,6 +225,20 @@ ii.Class({
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.job.unitArgs);
 			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.Tempjob",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.tempJobArgs);
+			$.extend(this, args);
+			
+			if (!this.jobType) {
+				this.jobType = [];
+			}		
 		}
 	}
 });
