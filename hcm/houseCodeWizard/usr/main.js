@@ -65,11 +65,16 @@ ii.Class({
 			else {
 				me.houseCodesLoaded(me, 0);
 			}
+
 			$("input[name='TimeAttendance']").change(function() { me.modified(true); });
 			$("input[name='DefaultLunchBreak']").change(function() { me.modified(true); });
 			$("input[name='LunchBreakTrigger']").change(function() { me.modified(true); });
 			$("input[name='HouseCodeType']").change(function() { me.modified(true); });
 			$("input[name='RoundingTimePeriod']").change(function() { me.modified(true); });
+			
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
         },
 
 		resize: function() {
@@ -235,7 +240,16 @@ ii.Class({
 			me.tsMgmtFeeTotalProductiveLaborDollarsPaidShow = me.isCtrlVisibleTabStatistics(me.authorizePath + "\\TabStatistics\\MgmtFeeTotalProductiveLaborDollarsPaid", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
 			me.tsMgmtFeeTotalNonProductiveLaborDollarsPaidShow = me.isCtrlVisibleTabStatistics(me.authorizePath + "\\TabStatistics\\MgmtFeeTotalNonProductiveLaborDollarsPaid", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
 			me.tsHospitalPaidJanitorialPaperPlasticSupplyCostShow = me.isCtrlVisibleTabStatistics(me.authorizePath + "\\TabStatistics\\HospitalPaidJanitorialPaperPlasticSupplyCost", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
-			
+			me.tsBuildingPopulationShow = me.isCtrlVisible(me.authorizePath + "\\TabStatistics\\BuildingPopulation", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
+			me.tsMaintainableAcresShow = me.isCtrlVisible(me.authorizePath + "\\TabStatistics\\MaintainableAcres", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
+			me.tsScientistsShow = me.isCtrlVisible(me.authorizePath + "\\TabStatistics\\Scientists", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
+			me.tsManagedRoomsShow = me.isCtrlVisible(me.authorizePath + "\\TabStatistics\\ManagedRooms", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
+			me.tsSiteTypeShow = me.isCtrlVisible(me.authorizePath + "\\TabStatistics\\SiteType", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
+			me.tsIntegratorShow = me.isCtrlVisible(me.authorizePath + "\\TabStatistics\\Integrator", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
+			me.tsIntegratorNameShow = me.isCtrlVisible(me.authorizePath + "\\TabStatistics\\IntegratorName", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
+			me.tsAuditScoreShow = me.isCtrlVisible(me.authorizePath + "\\TabStatistics\\AuditScore", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
+			me.tsStandardizationScoreShow = me.isCtrlVisible(me.authorizePath + "\\TabStatistics\\StandardizationScore", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
+		
 			me.tsManagedEmployeesReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\ManagedEmployees\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
 			me.tsCrothallEmployeesReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\CrothallEmployees\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
 			me.tsBedsLicensedReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\BedsLicensed\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
@@ -256,7 +270,16 @@ ii.Class({
 			me.tsMgmtFeeTotalProductiveLaborDollarsPaidReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\MgmtFeeTotalProductiveLaborDollarsPaid\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
 			me.tsMgmtFeeTotalNonProductiveLaborDollarsPaidReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\MgmtFeeTotalNonProductiveLaborDollarsPaid\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
 			me.tsHospitalPaidJanitorialPaperPlasticSupplyCostReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\HospitalPaidJanitorialPaperPlasticSupplyCost\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
-
+			me.tsBuildingPopulationReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabStatistics\\BuildingPopulation\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
+			me.tsMaintainableAcresReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabStatistics\\MaintainableAcres\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
+			me.tsScientistsReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabStatistics\\Scientists\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
+			me.tsManagedRoomsReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabStatistics\\ManagedRooms\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
+			me.tsSiteTypeReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabStatistics\\SiteType\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
+			me.tsIntegratorReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabStatistics\\Integrator\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
+			me.tsIntegratorNameReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabStatistics\\IntegratorName\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
+			me.tsAuditScoreReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabStatistics\\AuditScore\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
+			me.tsStandardizationScoreReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabStatistics\\StandardizationScore\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
+			
 			//HouseCode
 			me.financialWrite = me.authorizer.isAuthorized(me.authorizePath + '\\Write');
 			me.financialReadOnly = me.authorizer.isAuthorized(me.authorizePath + '\\Read');
@@ -662,7 +685,16 @@ ii.Class({
 			me.setControlState("MgmtFeeTotalProductiveLaborDollarsPaid", me.tsMgmtFeeTotalProductiveLaborDollarsPaidReadOnly, me.tsMgmtFeeTotalProductiveLaborDollarsPaidShow);						
 			me.setControlState("MgmtFeeTotalNonProductiveLaborDollarsPaid", me.tsMgmtFeeTotalNonProductiveLaborDollarsPaidReadOnly, me.tsMgmtFeeTotalNonProductiveLaborDollarsPaidShow);						
 			me.setControlState("HospitalPaidJanitorialPaperPlasticSupplyCost", me.tsHospitalPaidJanitorialPaperPlasticSupplyCostReadOnly, me.tsHospitalPaidJanitorialPaperPlasticSupplyCostShow);						
-
+			me.setControlState("BuildingPopulation", me.tsBuildingPopulationReadOnly, me.tsBuildingPopulationShow);
+			me.setControlState("MaintainableAcres", me.tsMaintainableAcresReadOnly, me.tsMaintainableAcresShow);
+			me.setControlState("Scientists", me.tsScientistsReadOnly, me.tsScientistsShow);
+			me.setControlState("ManagedRooms", me.tsManagedRoomsReadOnly, me.tsManagedRoomsShow);
+			me.setControlState("SiteType", me.tsSiteTypeReadOnly, me.tsSiteTypeShow);
+			me.setControlState("Integrator", me.tsIntegratorReadOnly, me.tsIntegratorShow, "Check");
+			me.setControlState("IntegratorName", me.tsIntegratorNameReadOnly, me.tsIntegratorNameShow);
+			me.setControlState("AuditScore", me.tsAuditScoreReadOnly, me.tsAuditScoreShow);
+			me.setControlState("StandardizationScore", me.tsStandardizationScoreReadOnly, me.tsStandardizationScoreShow);
+			
 			//Financial
 			//ss=SectionShipping
 			me.setControlState("Company", me.ssCompanyReadOnly, me.ssCompanyShow);			
@@ -898,6 +930,7 @@ ii.Class({
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {					
+					
 					var enteredText = me.startDate.text.value;
 					
 					if (enteredText == "") 
@@ -1425,7 +1458,7 @@ ii.Class({
 				.setValidationMaster( me.validator )
 				.addValidation( function( isFinal, dataMap ) {
 
-				var enteredText = me.mgmtFeeTerminatedHourlyEmployees.getValue();
+					var enteredText = me.mgmtFeeTerminatedHourlyEmployees.getValue();
 				
 					if (enteredText == "") return;
 	
@@ -1497,9 +1530,9 @@ ii.Class({
 				.setValidationMaster( me.validator )
 				.addValidation( ui.ctl.Input.Validation.isMoney )
 				.addValidation( ui.ctl.Input.Validation.moneyRange, {
-						min: -99999999.99,
-						max: 99999999.99
-					});
+					min: -99999999.99,
+					max: 99999999.99
+				});
 
 			me.mgmtFeeTotalNonProductiveLaborDollarsPaid = new ui.ctl.Input.Text({
 		        id: "MgmtFeeTotalNonProductiveLaborDollarsPaid",
@@ -1511,9 +1544,9 @@ ii.Class({
 				.setValidationMaster( me.validator )
 				.addValidation( ui.ctl.Input.Validation.isMoney )
 				.addValidation( ui.ctl.Input.Validation.moneyRange, {
-						min: -99999999.99,
-						max: 99999999.99
-					});
+					min: -99999999.99,
+					max: 99999999.99
+				});
 
 			me.hospitalPaidJanitorialPaperPlasticSupplyCost = new ui.ctl.Input.Text({
 		        id: "HospitalPaidJanitorialPaperPlasticSupplyCost",
@@ -1525,9 +1558,72 @@ ii.Class({
 				.setValidationMaster( me.validator )
 				.addValidation( ui.ctl.Input.Validation.isMoney )
 				.addValidation( ui.ctl.Input.Validation.moneyRange, {
-						min: -99999999.99,
-						max: 99999999.99
-					});
+					min: -99999999.99,
+					max: 99999999.99
+				});
+					
+			me.buildingPopulation = new ui.ctl.Input.Text({
+		        id: "BuildingPopulation",
+		        maxLength: 19,
+				changeFunction: function() { me.modified(); }
+		    });
+			
+			me.maintainableAcres = new ui.ctl.Input.Text({
+		        id: "MaintainableAcres",
+		        maxLength: 50,
+				changeFunction: function() { me.modified(); }
+		    });
+			
+			me.scientists = new ui.ctl.Input.Text({
+		        id: "Scientists",
+		        maxLength: 50,
+				changeFunction: function() { me.modified(); }
+		    });
+			
+			me.managedRooms = new ui.ctl.Input.Text({
+		        id: "ManagedRooms",
+		        maxLength: 50,
+				changeFunction: function() { me.modified(); }
+		    });
+			
+			me.siteType = new ui.ctl.Input.DropDown.Filtered({
+		        id: "SiteType",
+				formatFunction: function( type ) { return type.name; },		        
+				changeFunction: function() { me.modified(); }
+		    });
+			
+			me.integrator = new ui.ctl.Input.Check({
+		        id: "Integrator",
+				required: false,
+				changeFunction: function() { me.checkIntegrator(); me.modified(); }
+		    });
+			
+			me.integratorName = new ui.ctl.Input.Text({
+		        id: "IntegratorName",
+		        maxLength: 50,
+				changeFunction: function() { me.modified(); }
+		    });
+			
+			me.integratorName.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(function( isFinal, dataMap) {
+
+				if (!me.integrator.check.checked)
+					this.valid = true;
+			});
+			
+			me.auditScore = new ui.ctl.Input.Text({
+		        id: "AuditScore",
+		        maxLength: 50,
+				changeFunction: function() { me.modified(); }
+		    });
+			
+			me.standardizationScore = new ui.ctl.Input.Text({
+		        id: "StandardizationScore",
+		        maxLength: 50,
+				changeFunction: function() { me.modified(); }
+		    });
 
 			me.managedEmployees.text.tabIndex = 1;
 			me.crothallEmployees.text.tabIndex = 2;
@@ -1549,6 +1645,15 @@ ii.Class({
 			me.mgmtFeeTotalProductiveLaborDollarsPaid.text.tabIndex = 18;
 			me.mgmtFeeTotalNonProductiveLaborDollarsPaid.text.tabIndex = 19;
 			me.hospitalPaidJanitorialPaperPlasticSupplyCost.text.tabIndex = 20;
+			me.buildingPopulation.text.tabIndex = 21;
+			me.maintainableAcres.text.tabIndex = 22;
+			me.scientists.text.tabIndex = 23;
+			me.managedRooms.text.tabIndex = 24;
+			me.siteType.text.tabIndex = 25;
+			me.integrator.check.tabIndex = 26;
+			me.integratorName.text.tabIndex = 27;
+			me.auditScore.text.tabIndex = 28;
+			me.standardizationScore.text.tabIndex = 29;
 			
 			//Financial
 			me.company = new ui.ctl.Input.Text({
@@ -1992,12 +2097,12 @@ ii.Class({
 			});		
 			
 			//HouseCode/
-			me.siteTypes = [];
-			me.siteTypeStore = me.cache.register({
+			me.sites = [];
+			me.siteStore = me.cache.register({
 				storeId: "siteTypes",
-				itemConstructor: fin.hcm.houseCodeWizard.SiteType,
-				itemConstructorArgs: fin.hcm.houseCodeWizard.siteTypeArgs,
-				injectionArray: me.siteTypes
+				itemConstructor: fin.hcm.houseCodeWizard.Site,
+				itemConstructorArgs: fin.hcm.houseCodeWizard.siteArgs,
+				injectionArray: me.sites
 			});			
 			
 			me.houseCodeServices = [];
@@ -2046,7 +2151,16 @@ ii.Class({
 				itemConstructor: fin.hcm.houseCodeWizard.ServiceLine,
 				itemConstructorArgs: fin.hcm.houseCodeWizard.serviceLineArgs,
 				injectionArray: me.serviceLines
-			});						
+			});
+			
+			//Statistics
+			me.siteTypes = [];
+			me.siteTypeStore = me.cache.register({
+				storeId: "hcmSiteTypes",
+				itemConstructor: fin.hcm.houseCodeWizard.SiteType,
+				itemConstructorArgs: fin.hcm.houseCodeWizard.siteTypeArgs,
+				injectionArray: me.siteTypes
+			});
 			
 			//Financial/
 			me.remitTos = [];
@@ -2147,11 +2261,16 @@ ii.Class({
 			});			
 		},
 		
-		modified: function fin_cmn_status_modified() {
+		dirtyCheck: function(me) {
+
+			return !fin.cmn.status.itemValid();
+		},
+		
+		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
+
 			parent.fin.appUI.modified = args.modified;
 		},
 		
@@ -2200,6 +2319,14 @@ ii.Class({
 			me.mgmtFeeTotalProductiveLaborDollarsPaid.resizeText();
 			me.mgmtFeeTotalNonProductiveLaborDollarsPaid.resizeText();
 			me.hospitalPaidJanitorialPaperPlasticSupplyCost.resizeText();
+			me.buildingPopulation.resizeText();
+			me.maintainableAcres.resizeText();
+			me.scientists.resizeText();
+			me.managedRooms.resizeText();
+			me.siteType.resizeText();
+			me.integratorName.resizeText();
+			me.auditScore.resizeText();
+			me.standardizationScore.resizeText();
 			
 			//Financial
 			me.company.resizeText();
@@ -2262,17 +2389,17 @@ ii.Class({
 				
 			if (event.keyCode == 13) {
 				me.site.fetchingData();
-				me.siteTypeStore.reset();
-				me.siteTypeStore.fetch("userId:[user],title:" + me.site.text.value, me.siteTypesLoaded, me);
+				me.siteStore.reset();
+				me.siteStore.fetch("userId:[user],title:" + me.site.text.value, me.sitesLoaded, me);
 			}
 		},	
 		
-		siteTypesLoaded: function(me, activeId) {
+		sitesLoaded: function(me, activeId) {
 		
             me.site.reset();
-			me.site.setData(me.siteTypes);
+			me.site.setData(me.sites);
 			
-			if (me.siteTypes.length > 0)
+			if (me.sites.length > 0)
 				me.site.select(0, me.site.focused);
 		},
 		
@@ -2403,13 +2530,12 @@ ii.Class({
 		
 		additionalServiceDetails: function() {
 			var me = this;
-			var serviceNames = '', item;
+			var serviceNames = "";
 
 			for(var index in me.serviceGroup.selectedItems) {
-				item = ii.ajax.util.findItemById(me.serviceGroup.selectedItems[index].id.toString(), me.jdeServices);
-				if(item) {
-					serviceNames += item.name + ', ';
-				}
+				var item = ii.ajax.util.findItemById(me.serviceGroup.selectedItems[index].id.toString(), me.jdeServices);
+				if (item)
+					serviceNames += item.name + ", ";
 			}
 			$("#AdditionalServiceContainer").html(serviceNames.substring(0, serviceNames.length - 2));			
 		},
@@ -2420,7 +2546,7 @@ ii.Class({
 				
 				if (me.houseCodeSiteUnits[0].appSite > 0) {
 					me.site.fetchingData();
-					me.siteTypeStore.fetch("userId:[user],siteId:" + me.houseCodeSiteUnits[0].appSite, me.siteTypesLoaded, me);
+					me.siteStore.fetch("userId:[user],siteId:" + me.houseCodeSiteUnits[0].appSite, me.sitesLoaded, me);
 				}
 			}
 		},		
@@ -2468,7 +2594,6 @@ ii.Class({
 				me.serviceGroup.reset();
 				$("#AdditionalServiceContainer").html('');
 			}
-
 		},
 		
 		houseCodePanelLoaded: function() {
@@ -2526,10 +2651,25 @@ ii.Class({
 			me.clientAssistantName.setValue(houseCode.clientAssistantName);
 			me.clientAssistantPhone.setValue(houseCode.clientAssistantPhone);
 
-			me.houseCodeStatisticPanelLoad();
+			me.houseCodeStatisticsPanelLoad();
+			me.houseCodeFinancialPanelLoad();
+		},
+		
+		houseCodeStatisticsPanelLoad: function() {
+			var me = this;
+			
+			me.siteType.fetchingData();
+			me.siteTypeStore.fetch("userId:[user]", me.siteTypesLoaded, me);
+		},
+		
+		siteTypesLoaded: function(me, activeId) {
+
+			me.siteTypes.unshift(new fin.hcm.houseCodeWizard.SiteType({ id: 0, name: "None" }));
+			me.siteType.setData(me.siteTypes);
+			me.houseCodeStatisticsLoaded();
 		},
 
-		houseCodeStatisticPanelLoad: function() {
+		houseCodeStatisticsLoaded: function() {
 			var me = this;			
 			var houseCode = me.houseCodeDetails[0];
 
@@ -2553,8 +2693,29 @@ ii.Class({
 			me.mgmtFeeTotalProductiveLaborDollarsPaid.setValue(houseCode.mgmtFeeTotalProductiveLaborDollarsPaid.toString());
 			me.mgmtFeeTotalNonProductiveLaborDollarsPaid.setValue(houseCode.mgmtFeeTotalNonProductiveLaborDollarsPaid.toString());
 			me.hospitalPaidJanitorialPaperPlasticSupplyCost.setValue(houseCode.hospitalPaidJanitorialPaperPlasticSupplyCost.toString());
-			
-			me.houseCodeFinancialPanelLoad();
+			me.buildingPopulation.setValue(houseCode.buildingPopulation);
+			me.maintainableAcres.setValue(houseCode.maintainableAcres);
+			me.scientists.setValue(houseCode.scientists);
+			me.managedRooms.setValue(houseCode.managedRooms);
+
+			var itemIndex = ii.ajax.util.findIndexById(houseCode.siteType.toString(), me.siteTypes);
+			if (itemIndex != undefined && itemIndex >= 0)
+				me.siteType.select(itemIndex, me.siteType.focused);
+
+			me.integrator.setValue(houseCode.integrator.toString());
+			me.integratorName.setValue(houseCode.integratorName);
+			me.auditScore.setValue(houseCode.auditScore);
+			me.standardizationScore.setValue(houseCode.standardizationScore);
+			me.checkIntegrator();
+		},
+
+		checkIntegrator: function() {
+			var me = this;
+
+			if (me.integrator.check.checked)
+				$("#LabelIntegratorName").html("<span class='requiredFieldIndicator'>&#149;</span>Integrator Name:");
+			else
+				$("#LabelIntegratorName").html("Integrator Name:");
 		},
 		
 		houseCodeFinancialPanelLoad:function() {
@@ -3076,7 +3237,7 @@ ii.Class({
 				return false;
 			}
 
-			me.houseCodeDetails[0].appSiteId = (me.site.indexSelected < 0 ? 0 : me.siteTypes[me.site.indexSelected].id);		
+			me.houseCodeDetails[0].appSiteId = (me.site.indexSelected < 0 ? 0 : me.sites[me.site.indexSelected].id);		
 			me.houseCodeDetails[0].jdeCompanyId = (me.jdeCompany.indexSelected <= 0 ? "0" : me.jdeCompanys[me.jdeCompany.indexSelected].id.toString());		
 			me.houseCodeDetails[0].startDate = me.startDate.lastBlurValue;
 			me.houseCodeDetails[0].serviceTypeId = (me.primaryService.indexSelected < 0 ? 0 : me.jdeServices[me.primaryService.indexSelected].id);
@@ -3119,7 +3280,16 @@ ii.Class({
 			me.houseCodeDetails[0].mgmtFeeTotalProductiveLaborDollarsPaid = me.mgmtFeeTotalProductiveLaborDollarsPaid.getValue();
 			me.houseCodeDetails[0].mgmtFeeTotalNonProductiveLaborDollarsPaid = me.mgmtFeeTotalNonProductiveLaborDollarsPaid.getValue();
 			me.houseCodeDetails[0].hospitalPaidJanitorialPaperPlasticSupplyCost = me.hospitalPaidJanitorialPaperPlasticSupplyCost.getValue();
-
+			me.houseCodeDetails[0].buildingPopulation = me.buildingPopulation.getValue();
+			me.houseCodeDetails[0].maintainableAcres = me.maintainableAcres.getValue();
+			me.houseCodeDetails[0].scientists = me.scientists.getValue();
+			me.houseCodeDetails[0].managedRooms = me.managedRooms.getValue();
+			me.houseCodeDetails[0].siteType = (me.siteType.indexSelected <= 0 ? 0 : me.siteTypes[me.siteType.indexSelected].id);
+			me.houseCodeDetails[0].integrator = me.integrator.check.checked;
+			me.houseCodeDetails[0].integratorName = me.integratorName.getValue();
+			me.houseCodeDetails[0].auditScore = me.auditScore.getValue();
+			me.houseCodeDetails[0].standardizationScore = me.standardizationScore.getValue();
+				
 			//Financial				
 			me.houseCodeDetails[0].shippingAddress1 = me.shippingAddress1.getValue();
 			me.houseCodeDetails[0].shippingAddress2 = me.shippingAddress2.getValue();
@@ -3188,7 +3358,12 @@ ii.Class({
 			if (me.houseCodeDetails[0].serviceTypeId < 0) {
 				alert("[Primary Service] Provided is required for accurate reporting. Please select it on HouseCode Wizard.");
 				return;
-			}			
+			}
+			
+			if (me.houseCodeDetails[0].integrator && me.houseCodeDetails[0].integratorName == "") {
+				alert("[Integrator Name] is a required field. Please select it on Statistics Wizard.");
+				return false;
+			}
 			
 			if (me.houseCodeDetails[0].remitToLocationId <= 0) {
 				alert("[Remit To] is a required field. Please select it on Financial Wizard.");
@@ -3257,6 +3432,15 @@ ii.Class({
 				, me.houseCodeDetails[0].mgmtFeeTotalProductiveLaborDollarsPaid == "" ? 0 : parseFloat(me.houseCodeDetails[0].mgmtFeeTotalProductiveLaborDollarsPaid)
 				, me.houseCodeDetails[0].mgmtFeeTotalNonProductiveLaborDollarsPaid == "" ? 0 : parseFloat(me.houseCodeDetails[0].mgmtFeeTotalNonProductiveLaborDollarsPaid)
 				, me.houseCodeDetails[0].hospitalPaidJanitorialPaperPlasticSupplyCost == "" ? 0 : parseFloat(me.houseCodeDetails[0].hospitalPaidJanitorialPaperPlasticSupplyCost)
+				, me.houseCodeDetails[0].buildingPopulation == "" ? 0 : parseFloat(me.houseCodeDetails[0].buildingPopulation)
+				, me.houseCodeDetails[0].maintainableAcres
+				, me.houseCodeDetails[0].scientists
+				, me.houseCodeDetails[0].managedRooms
+				, me.houseCodeDetails[0].siteType
+				, me.houseCodeDetails[0].integrator
+				, me.houseCodeDetails[0].integratorName
+				, me.houseCodeDetails[0].auditScore
+				, me.houseCodeDetails[0].standardizationScore
 				
 				//Financial
 				, me.houseCodeDetails[0].shippingAddress1
@@ -3372,6 +3556,15 @@ ii.Class({
 			xml += ' mgmtFeeTotalProductiveLaborDollarsPaid="' + item.mgmtFeeTotalProductiveLaborDollarsPaid + '"';
 			xml += ' mgmtFeeTotalNonProductiveLaborDollarsPaid="' + item.mgmtFeeTotalNonProductiveLaborDollarsPaid + '"';
 			xml += ' hospitalPaidJanitorialPaperPlasticSupplyCost="' + item.hospitalPaidJanitorialPaperPlasticSupplyCost + '"';
+			xml += ' buildingPopulation="' + item.buildingPopulation + '"';
+			xml += ' maintainableAcres="' + ui.cmn.text.xml.encode(item.maintainableAcres) + '"';
+			xml += ' scientists="' + ui.cmn.text.xml.encode(item.scientists) + '"';
+			xml += ' managedRooms="' + ui.cmn.text.xml.encode(item.managedRooms) + '"';
+			xml += ' siteType="' + item.siteType + '"';
+			xml += ' integrator="' + item.integrator + '"';
+			xml += ' integratorName="' + ui.cmn.text.xml.encode(item.integratorName) + '"';
+			xml += ' auditScore="' + ui.cmn.text.xml.encode(item.auditScore) + '"';
+			xml += ' standardizationScore="' + ui.cmn.text.xml.encode(item.standardizationScore) + '"';
 
 			//Financial
 			xml += ' shippingAddress1="' + ui.cmn.text.xml.encode(item.shippingAddress1) + '"';
@@ -3416,7 +3609,7 @@ ii.Class({
 
 			xml += ' clientId="' + ++clientId + '">';
 
-			var serviceNames = '';
+			var serviceNames = "";
 			for (var index in me.serviceGroup.selectedItems) {
 				if (index >= 0) {
 					xml += '<houseCodeService id="0" houseCodeId="' + item.id + '" serviceTypeId="' + me.serviceGroup.selectedItems[index].id + '" clientId="' + ++clientId + '"/>';
@@ -3454,10 +3647,10 @@ ii.Class({
 
 			if (status == "success") {
 				me.modified(false);
-				ii.trace("House Code Record Updated", ii.traceTypes.Information, "Info");
+				ii.trace("House Code details saved successfully.", ii.traceTypes.Information, "Info");
 			}
 			else 
-				alert("[SAVE FAILURE] Error while updating House Code Record: " + $(args.xmlNode).attr("message"));
+				alert("[SAVE FAILURE] Error while updating House Code details: " + $(args.xmlNode).attr("message"));
 
 			$("#pageLoading").hide();
 		}		

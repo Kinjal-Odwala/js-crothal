@@ -72,6 +72,15 @@ ii.init.register( function() {
 		, mgmtFeeTotalProductiveLaborDollarsPaid: {type: Number, required: false, defaultValue: 0}
 		, mgmtFeeTotalNonProductiveLaborDollarsPaid: {type: Number, required: false, defaultValue: 0}
 		, hospitalPaidJanitorialPaperPlasticSupplyCost: {type: Number, required: false, defaultValue: 0}
+		, buildingPopulation: {type: Number, required: false, defaultValue: 0}
+		, maintainableAcres: {type: String, required: false, defaultValue: ""}
+		, scientists: {type: String, required: false, defaultValue: ""}
+		, managedRooms: {type: String, required: false, defaultValue: ""}
+		, siteType: {type: Number, required: false, defaultValue: 0}
+		, integrator: {type: Boolean, required: false, defaultValue: false}	
+		, integratorName: {type: String, required: false, defaultValue: ""}
+		, auditScore: {type: String, required: false, defaultValue: ""}
+		, standardizationScore: {type: String, required: false, defaultValue: ""}		
 		, shippingAddress1: {type: String, required: false, defaultValue: ""}
 		, shippingAddress2: {type: String, required: false, defaultValue: ""}
 		, shippingZip: {type: String, required: false, defaultValue: ""}
@@ -101,7 +110,7 @@ ii.init.register( function() {
 		, localTaxPercent: {type: String, required: false, defaultValue: ""}
 		, financialEntityId: {type: Number, required: false, defaultValue: 0}
 		, payrollProcessingLocationTypeId: {type: Number, required: false, defaultValue: 0}
-		, timeAndAttendance: {type: Boolean, required: false, defaultValue: 0}		
+		, timeAndAttendance: {type: Boolean, required: false, defaultValue: 0}
 		, defaultLunchBreak: {type: String, required: false, defaultValue: ""}
 		, lunchBreakTrigger: {type: String, required: false, defaultValue: ""}
 		, houseCodeTypeId: {type: String, required: false, defaultValue: ""}

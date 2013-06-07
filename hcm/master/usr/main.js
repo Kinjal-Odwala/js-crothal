@@ -399,7 +399,7 @@ ii.Class({
 			var statisticsUIControls;
 			var financialUIControls;
 			var payrollUIControls;
-			
+
 			if (me.houseCodeReadOnly || me.tabHouseCodeReadOnly) return;
 			
 			if (me.status == false || parent.fin.appUI.houseCodeId <= 0) {
@@ -455,6 +455,15 @@ ii.Class({
 				me.houseCodeDetails[0].mgmtFeeTotalProductiveLaborDollarsPaid = statisticsUIControls.mgmtFeeTotalProductiveLaborDollarsPaid.getValue();
 				me.houseCodeDetails[0].mgmtFeeTotalNonProductiveLaborDollarsPaid = statisticsUIControls.mgmtFeeTotalNonProductiveLaborDollarsPaid.getValue();
 				me.houseCodeDetails[0].hospitalPaidJanitorialPaperPlasticSupplyCost = statisticsUIControls.hospitalPaidJanitorialPaperPlasticSupplyCost.getValue();
+				me.houseCodeDetails[0].buildingPopulation = statisticsUIControls.buildingPopulation.getValue();
+				me.houseCodeDetails[0].maintainableAcres = statisticsUIControls.maintainableAcres.getValue();
+				me.houseCodeDetails[0].scientists = statisticsUIControls.scientists.getValue();
+				me.houseCodeDetails[0].managedRooms = statisticsUIControls.managedRooms.getValue();
+				me.houseCodeDetails[0].siteType = (statisticsUIControls.siteType.indexSelected <= 0 ? 0 : statisticsUIControls.siteTypes[statisticsUIControls.siteType.indexSelected].id);
+				me.houseCodeDetails[0].integrator = statisticsUIControls.integrator.check.checked;
+				me.houseCodeDetails[0].integratorName = statisticsUIControls.integratorName.getValue();
+				me.houseCodeDetails[0].auditScore = statisticsUIControls.auditScore.getValue();
+				me.houseCodeDetails[0].standardizationScore = statisticsUIControls.standardizationScore.getValue();
 			}
 
 			//Financial
@@ -535,6 +544,11 @@ ii.Class({
 				return;
 			}			
 			
+			if (me.houseCodeDetails[0].integrator && me.houseCodeDetails[0].integratorName == "") {
+				alert("[Integrator Name] is a required field. Please select it on Statistics Tab.");
+				return false;
+			}
+			
 			if (me.houseCodeDetails[0].remitToLocationId <= 0) {
 				alert("[Remit To] is a required field. Please select it on Financial Tab.");
 				return false;
@@ -602,6 +616,15 @@ ii.Class({
 				, me.houseCodeDetails[0].mgmtFeeTotalProductiveLaborDollarsPaid == "" ? 0 : parseFloat(me.houseCodeDetails[0].mgmtFeeTotalProductiveLaborDollarsPaid)
 				, me.houseCodeDetails[0].mgmtFeeTotalNonProductiveLaborDollarsPaid == "" ? 0 : parseFloat(me.houseCodeDetails[0].mgmtFeeTotalNonProductiveLaborDollarsPaid)
 				, me.houseCodeDetails[0].hospitalPaidJanitorialPaperPlasticSupplyCost == "" ? 0 : parseFloat(me.houseCodeDetails[0].hospitalPaidJanitorialPaperPlasticSupplyCost)
+				, me.houseCodeDetails[0].buildingPopulation == "" ? 0 : parseFloat(me.houseCodeDetails[0].buildingPopulation)
+				, me.houseCodeDetails[0].maintainableAcres
+				, me.houseCodeDetails[0].scientists
+				, me.houseCodeDetails[0].managedRooms
+				, me.houseCodeDetails[0].siteType
+				, me.houseCodeDetails[0].integrator
+				, me.houseCodeDetails[0].integratorName
+				, me.houseCodeDetails[0].auditScore
+				, me.houseCodeDetails[0].standardizationScore
 				
 				//Financial
 				, me.houseCodeDetails[0].shippingAddress1
@@ -717,7 +740,16 @@ ii.Class({
 			xml += ' mgmtFeeTotalProductiveLaborDollarsPaid="' + item.mgmtFeeTotalProductiveLaborDollarsPaid + '"';
 			xml += ' mgmtFeeTotalNonProductiveLaborDollarsPaid="' + item.mgmtFeeTotalNonProductiveLaborDollarsPaid + '"';
 			xml += ' hospitalPaidJanitorialPaperPlasticSupplyCost="' + item.hospitalPaidJanitorialPaperPlasticSupplyCost + '"';
-
+			xml += ' buildingPopulation="' + item.buildingPopulation + '"';
+			xml += ' maintainableAcres="' + ui.cmn.text.xml.encode(item.maintainableAcres) + '"';
+			xml += ' scientists="' + ui.cmn.text.xml.encode(item.scientists) + '"';
+			xml += ' managedRooms="' + ui.cmn.text.xml.encode(item.managedRooms) + '"';
+			xml += ' siteType="' + item.siteType + '"';
+			xml += ' integrator="' + item.integrator + '"';
+			xml += ' integratorName="' + ui.cmn.text.xml.encode(item.integratorName) + '"';
+			xml += ' auditScore="' + ui.cmn.text.xml.encode(item.auditScore) + '"';
+			xml += ' standardizationScore="' + ui.cmn.text.xml.encode(item.standardizationScore) + '"';
+			
 			//Financial
 			xml += ' shippingAddress1="' + ui.cmn.text.xml.encode(item.shippingAddress1) + '"';
 			xml += ' shippingAddress2="' + ui.cmn.text.xml.encode(item.shippingAddress2) + '"';
