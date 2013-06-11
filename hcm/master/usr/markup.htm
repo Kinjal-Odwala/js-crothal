@@ -15,7 +15,6 @@
 
 	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
 	<body id="appBody">
-		<!--<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: #F0EFDD; filter: alpha(opacity = 50); opacity:.8;"><img src="/fin/cmn/usr/media/Common/ajax-loader.gif" style="float: left; padding: 10px" /><span id="messageToUser" style="float: left; font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top: 51px;">Page loading. Please wait...</span></div>-->
 		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
 		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
 		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
@@ -25,36 +24,37 @@
         
 		<div class="pageHeader">
 	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
-
 			<div id="LabelTextAreaLeftHeader">House Code:</div>
 			<div id="DropDownRightHouseCode">
 				<div id="houseCodeContainer" class="HouseCodeContainer"></div>
 			</div>
-
         </div>	
-	<div class="pageBody">
-        <div id="container-1">
-    		<div id="fragment-1" class="fragment">
-				<iframe id="iFrameHouseCode" class="tabContainer"  src="" frameborder="0"></iframe>
-        	</div>
-			<div id="fragment-2" class="fragment">
-				<iframe id="iFrameStatistics" class="tabContainer"  src="" frameborder="0"></iframe>
-        	</div>
-			<div id="fragment-3" class="fragment">
-				<iframe id="iFrameFinancial" class="tabContainer" src="" frameborder="0"></iframe>
-    		</div>
-    		<div id="fragment-4" class="fragment">
-    			<iframe id="iFramePayroll"  class="tabContainer" src="" frameborder="0"></iframe>
-    		</div>
-			
-    		<ul id="TabCollection">
-				<li><a id="TabHouseCode" href="#fragment-1"><span>House Code Info</span></a></li>
-                <li><a id="TabStatistics" href="#fragment-2" ><span>Statistics</span></a></li>
-                <li><a id="TabFinancial" href="#fragment-3" ><span>Financial/Contract</span></a></li>
-                <li><a id="TabPayroll" href="#fragment-4" ><span>Payroll</span></a></li>
-            </ul>
-		</div>
-		<div style="clear:both;"></div>
-	</div>    
+		<div class="pageBody">
+	        <div id="container-1">
+	    		<div id="fragment-1" class="fragment">
+					<iframe id="iFrameHouseCode" class="tabContainer" src="" frameborder="0"></iframe>
+	        	</div>
+				<div id="fragment-2" class="fragment">
+					<iframe id="iFrameStatistics" class="tabContainer" src="" frameborder="0"></iframe>
+	        	</div>
+				<div id="fragment-3" class="fragment">
+					<iframe id="iFrameFinancial" class="tabContainer" src="" frameborder="0"></iframe>
+	    		</div>
+	    		<div id="fragment-4" class="fragment">
+	    			<iframe id="iFramePayroll"  class="tabContainer" src="" frameborder="0"></iframe>
+	    		</div>
+				<div id="fragment-5" class="fragment">
+	    			<iframe id="iFrameSafety"  class="tabContainer" src="" frameborder="0"></iframe>
+	    		</div>
+	    		<ul id="TabCollection">
+					<li><a id="TabHouseCode" href="#fragment-1"><span>House Code Info</span></a></li>
+	                <li><a id="TabStatistics" href="#fragment-2"><span>Statistics</span></a></li>
+	                <li><a id="TabFinancial" href="#fragment-3"><span>Financial/Contract</span></a></li>
+	                <li><a id="TabPayroll" href="#fragment-4"><span>Payroll</span></a></li>
+					<li><a id="TabSafety" href="#fragment-5"><span>Safety</span></a></li>
+	            </ul>
+			</div>
+			<div style="clear:both;"></div>
+		</div>    
 	</body>
 </html>
