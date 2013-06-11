@@ -85,6 +85,7 @@ ii.Class({
 		    $("#divStatistics").height($(window).height() - offset);
 		    $("#divFinancial").height($(window).height() - offset);
 		    $("#divPayroll").height($(window).height() - offset);
+			$("#divSafety").height($(window).height() - offset);
 		},
 		
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
@@ -240,15 +241,15 @@ ii.Class({
 			me.tsMgmtFeeTotalProductiveLaborDollarsPaidShow = me.isCtrlVisibleTabStatistics(me.authorizePath + "\\TabStatistics\\MgmtFeeTotalProductiveLaborDollarsPaid", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
 			me.tsMgmtFeeTotalNonProductiveLaborDollarsPaidShow = me.isCtrlVisibleTabStatistics(me.authorizePath + "\\TabStatistics\\MgmtFeeTotalNonProductiveLaborDollarsPaid", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
 			me.tsHospitalPaidJanitorialPaperPlasticSupplyCostShow = me.isCtrlVisibleTabStatistics(me.authorizePath + "\\TabStatistics\\HospitalPaidJanitorialPaperPlasticSupplyCost", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
-			me.tsBuildingPopulationShow = me.isCtrlVisible(me.authorizePath + "\\TabStatistics\\BuildingPopulation", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
-			me.tsMaintainableAcresShow = me.isCtrlVisible(me.authorizePath + "\\TabStatistics\\MaintainableAcres", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
-			me.tsScientistsShow = me.isCtrlVisible(me.authorizePath + "\\TabStatistics\\Scientists", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
-			me.tsManagedRoomsShow = me.isCtrlVisible(me.authorizePath + "\\TabStatistics\\ManagedRooms", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
-			me.tsSiteTypeShow = me.isCtrlVisible(me.authorizePath + "\\TabStatistics\\SiteType", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
-			me.tsIntegratorShow = me.isCtrlVisible(me.authorizePath + "\\TabStatistics\\Integrator", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
-			me.tsIntegratorNameShow = me.isCtrlVisible(me.authorizePath + "\\TabStatistics\\IntegratorName", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
-			me.tsAuditScoreShow = me.isCtrlVisible(me.authorizePath + "\\TabStatistics\\AuditScore", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
-			me.tsStandardizationScoreShow = me.isCtrlVisible(me.authorizePath + "\\TabStatistics\\StandardizationScore", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
+			me.tsBuildingPopulationShow = me.isCtrlVisibleTabStatistics(me.authorizePath + "\\TabStatistics\\BuildingPopulation", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
+			me.tsMaintainableAcresShow = me.isCtrlVisibleTabStatistics(me.authorizePath + "\\TabStatistics\\MaintainableAcres", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
+			me.tsScientistsShow = me.isCtrlVisibleTabStatistics(me.authorizePath + "\\TabStatistics\\Scientists", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
+			me.tsManagedRoomsShow = me.isCtrlVisibleTabStatistics(me.authorizePath + "\\TabStatistics\\ManagedRooms", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
+			me.tsSiteTypeShow = me.isCtrlVisibleTabStatistics(me.authorizePath + "\\TabStatistics\\SiteType", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
+			me.tsIntegratorShow = me.isCtrlVisibleTabStatistics(me.authorizePath + "\\TabStatistics\\Integrator", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
+			me.tsIntegratorNameShow = me.isCtrlVisibleTabStatistics(me.authorizePath + "\\TabStatistics\\IntegratorName", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
+			me.tsAuditScoreShow = me.isCtrlVisibleTabStatistics(me.authorizePath + "\\TabStatistics\\AuditScore", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
+			me.tsStandardizationScoreShow = me.isCtrlVisibleTabStatistics(me.authorizePath + "\\TabStatistics\\StandardizationScore", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
 		
 			me.tsManagedEmployeesReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\ManagedEmployees\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
 			me.tsCrothallEmployeesReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\CrothallEmployees\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
@@ -270,17 +271,17 @@ ii.Class({
 			me.tsMgmtFeeTotalProductiveLaborDollarsPaidReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\MgmtFeeTotalProductiveLaborDollarsPaid\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
 			me.tsMgmtFeeTotalNonProductiveLaborDollarsPaidReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\MgmtFeeTotalNonProductiveLaborDollarsPaid\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
 			me.tsHospitalPaidJanitorialPaperPlasticSupplyCostReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\HospitalPaidJanitorialPaperPlasticSupplyCost\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
-			me.tsBuildingPopulationReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabStatistics\\BuildingPopulation\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
-			me.tsMaintainableAcresReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabStatistics\\MaintainableAcres\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
-			me.tsScientistsReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabStatistics\\Scientists\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
-			me.tsManagedRoomsReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabStatistics\\ManagedRooms\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
-			me.tsSiteTypeReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabStatistics\\SiteType\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
-			me.tsIntegratorReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabStatistics\\Integrator\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
-			me.tsIntegratorNameReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabStatistics\\IntegratorName\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
-			me.tsAuditScoreReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabStatistics\\AuditScore\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
-			me.tsStandardizationScoreReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabStatistics\\StandardizationScore\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
+			me.tsBuildingPopulationReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\BuildingPopulation\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
+			me.tsMaintainableAcresReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\MaintainableAcres\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
+			me.tsScientistsReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\Scientists\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
+			me.tsManagedRoomsReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\ManagedRooms\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
+			me.tsSiteTypeReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\SiteType\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
+			me.tsIntegratorReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\Integrator\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
+			me.tsIntegratorNameReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\IntegratorName\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
+			me.tsAuditScoreReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\AuditScore\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
+			me.tsStandardizationScoreReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\StandardizationScore\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
 			
-			//HouseCode
+			//Financial
 			me.financialWrite = me.authorizer.isAuthorized(me.authorizePath + '\\Write');
 			me.financialReadOnly = me.authorizer.isAuthorized(me.authorizePath + '\\Read');
 			
@@ -384,7 +385,7 @@ ii.Class({
 			me.tabPayrollWrite = me.authorizer.isAuthorized(me.authorizePath + "\\TabPayroll\\Write");
 			me.tabPayrollReadOnly = me.authorizer.isAuthorized(me.authorizePath +"\\TabPayroll\\Read");
 						
-			//tp=TabPayroll
+			//tp=tabPayroll
 			me.tpPayrollProcessingLocationShow = me.isCtrlVisibleTabPayroll(me.authorizePath + "\\TabPayroll\\PayrollProcessingLocation", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));
 			me.tpTimeAndAttendanceShow = me.isCtrlVisibleTabPayroll(me.authorizePath + "\\TabPayroll\\TimeAndAttendance", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));
 			me.tpDefaultLunchBreakShow = me.isCtrlVisibleTabPayroll(me.authorizePath + "\\TabPayroll\\DefaultLunchBreak", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));
@@ -407,11 +408,35 @@ ii.Class({
 			me.tpCeridianCompanyHourlyReadOnly = me.isCtrlReadOnlyTabPayroll(me.authorizePath + "\\TabPayroll\\CeridianCompanyHourly\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
 			me.tpCeridianCompanySalariedReadOnly = me.isCtrlReadOnlyTabPayroll(me.authorizePath + "\\TabPayroll\\CeridianCompanySalaried\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
 
+			//Safety
+			me.safetyWrite = me.authorizer.isAuthorized(me.authorizePath + '\\Write');
+			me.safetyReadOnly = me.authorizer.isAuthorized(me.authorizePath + '\\Read');
+			
+			me.tabSafetyShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\TabSafety");
+			me.tabSafetyWrite = me.authorizer.isAuthorized(me.authorizePath + "\\TabSafety\\Write");
+			me.tabSafetyReadOnly = me.authorizer.isAuthorized(me.authorizePath +"\\TabSafety\\Read");
+
+			//ts=tabSafety
+			me.tsIncidentFrequencyRateShow = me.isCtrlVisibleTabSafety(me.authorizePath + "\\TabSafety\\IncidentFrequencyRate", me.tabSafetyShow, (me.tabSafetyWrite || me.tabSafetyReadOnly));
+			me.tsTRIRShow = me.isCtrlVisibleTabSafety(me.authorizePath + "\\TabSafety\\TRIR", me.tabSafetyShow, (me.tabSafetyWrite || me.tabSafetyReadOnly));
+			me.tsLostDaysShow = me.isCtrlVisibleTabSafety(me.authorizePath + "\\TabSafety\\LostDays", me.tabSafetyShow, (me.tabSafetyWrite || me.tabSafetyReadOnly));
+			me.tsReportedClaimsShow = me.isCtrlVisibleTabSafety(me.authorizePath + "\\TabSafety\\ReportedClaims", me.tabSafetyShow, (me.tabSafetyWrite || me.tabSafetyReadOnly));
+			me.tsNearMissesShow = me.isCtrlVisibleTabSafety(me.authorizePath + "\\TabSafety\\NearMisses", me.tabSafetyShow, (me.tabSafetyWrite || me.tabSafetyReadOnly));
+			me.tsOSHARecordableShow = me.isCtrlVisibleTabSafety(me.authorizePath + "\\TabSafety\\OSHARecordable", me.tabSafetyShow, (me.tabSafetyWrite || me.tabSafetyReadOnly));
+
+			me.tsIncidentFrequencyRateReadOnly = me.isCtrlReadOnlyTabSafety(me.authorizePath + "\\TabSafety\\IncidentFrequencyRate\\Read", me.tabSafetyWrite, me.tabSafetyReadOnly);
+			me.tsTRIRReadOnly = me.isCtrlReadOnlyTabSafety(me.authorizePath + "\\TabSafety\\TRIR\\Read", me.tabSafetyWrite, me.tabSafetyReadOnly);
+			me.tsLostDaysReadOnly = me.isCtrlReadOnlyTabSafety(me.authorizePath + "\\TabSafety\\LostDays\\Read", me.tabSafetyWrite, me.tabSafetyReadOnly);
+			me.tsReportedClaimsReadOnly = me.isCtrlReadOnlyTabSafety(me.authorizePath + "\\TabSafety\\ReportedClaims\\Read", me.tabSafetyWrite, me.tabSafetyReadOnly);
+			me.tsNearMissesReadOnly = me.isCtrlReadOnlyTabSafety(me.authorizePath + "\\TabSafety\\NearMisses\\Read", me.tabSafetyWrite, me.tabSafetyReadOnly);
+			me.tsOSHARecordableReadOnly = me.isCtrlReadOnlyTabSafety(me.authorizePath + "\\TabSafety\\OSHARecordable\\Read", me.tabSafetyWrite, me.tabSafetyReadOnly);
+
 			if (me.houseCodeWrite || me.houseCodeReadOnly) {
 				me.tabHouseCodeShow = true;
 				me.tabStatisticsShow = true;
 				me.tabFinancialShow = true;
 				me.tabPayrollShow = true;
+				me.tabSafetyShow = true;
 			}
 			
 			me.resetUIElements();
@@ -630,6 +655,56 @@ ii.Class({
 			return me.authorizer.isAuthorized(args.path);
 		},
 		
+		isCtrlVisibleTabSafety: function fin_hcm_houseCodeWizard_UserInterface_isCtrlVisibleTabSafety() { 
+			var args = ii.args(arguments, {
+				path: {type: String}, // The path to check to see if it is authorized
+				sectionShow: {type: Boolean},
+				sectionReadWrite: {type: Boolean}
+			});
+			var me = this;
+			var ctrlShow = parent.fin.cmn.util.authorization.isAuthorized(me, args.path);
+			var ctrlWrite = parent.fin.cmn.util.authorization.isAuthorized(me, args.path + "\\Write");
+			var ctrlReadOnly = parent.fin.cmn.util.authorization.isAuthorized(me, args.path + "\\Read");
+			
+			if (me.safetyWrite || me.safetyReadOnly)
+				return true;
+			
+			if (me.tabSafetyWrite || me.tabSafetyReadOnly)
+				return true;
+
+			if (args.sectionReadWrite)
+				return true;
+
+			if (args.sectionShow && (ctrlWrite || ctrlReadOnly))
+				return true;
+
+			return ctrlShow;
+		},
+
+		isCtrlReadOnlyTabSafety: function fin_hcm_houseCodeWizard_UserInterface_isCtrlReadOnlyTabSafety() { 
+			var args = ii.args(arguments, {
+				path: {type: String}, // The path to check to see if it is authorized
+				sectionWrite: {type: Boolean},
+				sectionReadOnly: {type: Boolean}
+			});			
+			var me = this;
+
+			if (args.sectionWrite && !me.tabSafetyReadOnly && !me.safetyReadOnly)
+				return false;
+
+			if (me.tabSafetyWrite && !me.safetyReadOnly)
+				return false;
+
+			if (me.safetyWrite)
+				return false;
+			
+			if (me.safetyReadOnly) return true;
+			if (me.tabSafetyReadOnly) return true;
+			if (args.sectionReadOnly) return true;
+			
+			return me.authorizer.isAuthorized(args.path);
+		},
+		
 		resetUIElements: function fin_hcm_houseCode_UserInterface_resetUIElements() {
 			var me = this;			
 			
@@ -746,7 +821,15 @@ ii.Class({
 			me.setControlState("EPaySite", me.tpEPaySiteReadOnly, me.tpEPaySiteShow, "Check", "EPaySiteCheckText");
 			me.setControlState("EPayTask", me.tpEPayTaskReadOnly, me.tpEPayTaskShow, "Check", "EPayTaskCheck");			
 			me.setControlState("CeridianCompanyHourly", me.tpCeridianCompanyHourlyReadOnly, me.tpCeridianCompanyHourlyShow);			
-			me.setControlState("CeridianCompanySalaried", me.tpCeridianCompanySalariedReadOnly, me.tpCeridianCompanySalariedShow);			
+			me.setControlState("CeridianCompanySalaried", me.tpCeridianCompanySalariedReadOnly, me.tpCeridianCompanySalariedShow);
+			
+			//Safety
+			me.setControlState("IncidentFrequencyRate", me.tsIncidentFrequencyRateReadOnly, me.tsIncidentFrequencyRateShow);
+			me.setControlState("TRIR", me.tsTRIRReadOnly, me.tsTRIRShow);
+			me.setControlState("LostDays", me.tsLostDaysReadOnly, me.tsLostDaysShow);
+			me.setControlState("ReportedClaims", me.tsReportedClaimsReadOnly, me.tsReportedClaimsShow);
+			me.setControlState("NearMisses", me.tsNearMissesReadOnly, me.tsNearMissesShow);
+			me.setControlState("OSHARecordable", me.tsOSHARecordableReadOnly, me.tsOSHARecordableShow);			
 		},
 		
 		setControlState: function() {
@@ -2066,6 +2149,51 @@ ii.Class({
 				required: false,
 				changeFunction: function() { me.modified(); }
 		    });
+			
+			
+			//Safety
+			me.incidentFrequencyRate = new ui.ctl.Input.Text({
+		        id: "IncidentFrequencyRate",
+		        maxLength: 50,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
+		    });
+
+			me.trir = new ui.ctl.Input.Text({
+		        id: "TRIR",
+		        maxLength: 50,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
+		    });
+
+			me.lostDays = new ui.ctl.Input.Text({
+		        id: "LostDays",
+		        maxLength: 50,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
+		    });
+
+			me.reportedClaims = new ui.ctl.Input.Text({
+		        id: "ReportedClaims",
+		        maxLength: 50,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
+		    });
+
+			me.nearMisses = new ui.ctl.Input.Text({
+		        id: "NearMisses",
+		        maxLength: 50,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
+		    });
+
+			me.oshaRecordable = new ui.ctl.Input.Text({
+		        id: "OSHARecordable",
+		        maxLength: 50,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
+		    });
+			
+			me.incidentFrequencyRate.text.tabIndex = 1;
+			me.trir.text.tabIndex = 2;
+			me.lostDays.text.tabIndex = 3;
+			me.reportedClaims.text.tabIndex = 4;
+			me.nearMisses.text.tabIndex = 5;
+			me.oshaRecordable.text.tabIndex = 6;
 		},
 		
 		configureCommunications: function() {
@@ -2277,6 +2405,7 @@ ii.Class({
 		resizeControls: function() {
 			var me = this;
 			
+			//HouseCode
 			me.jdeCompany.resizeText();
 			me.site.resizeText();
 			me.houseCodeNumber.resizeText();
@@ -2377,6 +2506,14 @@ ii.Class({
 			me.ceridianCompanyHourly.resizeText();
 			me.ePayPayGroup.resizeText();
 			
+			//Safety
+			me.incidentFrequencyRate.resizeText();
+			me.trir.resizeText();
+			me.lostDays.resizeText();
+			me.reportedClaims.resizeText();
+			me.nearMisses.resizeText();
+			me.oshaRecordable.resizeText();
+
 			me.resize();
 		},
 		
@@ -2404,7 +2541,7 @@ ii.Class({
 		},
 		
 		houseCodesLoaded: function(me, activeId) {
-					
+
 			if (parent.fin.appUI.houseCodeId == 0) {
 				if (me.houseCodes.length <= 0) {
 				
@@ -2413,11 +2550,8 @@ ii.Class({
 				
 				me.houseCodeGlobalParametersUpdate(false, me.houseCodes[0]);
 			}
-			
-			me.houseCodeGlobalParametersUpdate(false);			
-			
-			$("#pageLoading").hide();
-			
+
+			me.houseCodeGlobalParametersUpdate(false);
 			me.houseCodeDetailStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.houseCodeDetailsLoaded, me);
 		},
 		
@@ -2429,12 +2563,7 @@ ii.Class({
 
 			if (parent.fin.appUI.houseCodeId <= 0) return;
 
-			me.houseCodeNeedUpdate = true;
-			me.statisticsNeedUpdate = true;
-			me.financialNeedUpdate = true;
-			me.payrollNeedUpdate = true;
-			me.status = true;
-		
+			me.status = true;		
 			me.houseCodeDetailStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.houseCodeDetailsLoaded, me);
 		},
 		
@@ -2532,7 +2661,7 @@ ii.Class({
 			var me = this;
 			var serviceNames = "";
 
-			for(var index in me.serviceGroup.selectedItems) {
+			for (var index in me.serviceGroup.selectedItems) {
 				var item = ii.ajax.util.findItemById(me.serviceGroup.selectedItems[index].id.toString(), me.jdeServices);
 				if (item)
 					serviceNames += item.name + ", ";
@@ -2579,7 +2708,7 @@ ii.Class({
 						me.primaryService.select(index, me.primaryService.focused);
 				}
 				
-				for (var index in me.serviceGroup.selectedItems) {			
+				for (var index in me.serviceGroup.selectedItems) {
 					var item = ii.ajax.util.findItemById(me.serviceGroup.selectedItems[index].id.toString(), me.jdeServices);
 					if (item)
 						serviceNames += item.name + ', ';
@@ -2858,8 +2987,6 @@ ii.Class({
 				me.budgetLaborCalcMethod.select(index, me.budgetLaborCalcMethod.focused);
 
 			me.budgetComputerRelatedCharge.check.checked = houseCode.budgetComputerRelatedCharge;
-			$("#pageLoading").hide();
-			me.resizeControls();
 		},
 		
 		remitToChanged: function() {
@@ -2896,9 +3023,6 @@ ii.Class({
 
 			me.payrollProcessing.fetchingData();
 			me.payPayrollCompanyStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.payPayrollCompanysLoaded, me);	
-			
-			$("#pageLoading").hide();
-			me.resizeControls();
 		},
 		
 		payPayrollCompanysLoaded: function(me, activeId) {
@@ -2937,6 +3061,7 @@ ii.Class({
 			me.ePayPayGroup.setData(me.ePayGroupTypes);
 
 			me.houseCodePayrollsLoaded();
+			me.houseCodeSafetyLoaded();
 		},		
 		
 		houseCodePayrollsLoaded: function() {			
@@ -3008,9 +3133,18 @@ ii.Class({
 				$('#RoundingTimePeriod6').attr('checked', true);
 			
 			me.assignValue();
-			
-			$("#pageLoading").hide();
-			me.resizeControls();
+		},
+				
+		houseCodeSafetyLoaded: function() {
+			var me = this;
+			var houseCode = me.houseCodeDetails[0];
+
+			me.incidentFrequencyRate.setValue(houseCode.incidentFrequencyRate);
+			me.trir.setValue(houseCode.trir);
+			me.lostDays.setValue(houseCode.lostDays);
+			me.reportedClaims.setValue(houseCode.reportedClaims);
+			me.nearMisses.setValue(houseCode.nearMisses);
+			me.oshaRecordable.setValue(houseCode.oshaRecordable);
 		},
 		
 		assignValue: function() {			
@@ -3043,6 +3177,8 @@ ii.Class({
 						me.nextWizard = "Financial";
 					else if (me.tabPayrollShow)
 						me.nextWizard = "Payroll";
+					else if (me.tabSafetyShow)
+						me.nextWizard = "Safety";
 					
 					if (me.nextWizard == "")
 						me.anchorNext.display(ui.cmn.behaviorStates.disabled);
@@ -3061,6 +3197,8 @@ ii.Class({
 						me.nextWizard = "Financial";
 					else if (me.tabPayrollShow)
 						me.nextWizard = "Payroll";
+					else if (me.tabSafetyShow)
+						me.nextWizard = "Safety";
 
 					if (me.nextWizard == "")
 						me.anchorNext.display(ui.cmn.behaviorStates.disabled);
@@ -3077,6 +3215,8 @@ ii.Class({
 						me.nextWizard = "Financial";
 					else if (me.tabPayrollShow)
 						me.nextWizard = "Payroll";
+					else if (me.tabSafetyShow)
+						me.nextWizard = "Safety";
 					
 					if (me.tabHouseCodeShow)
 						me.prevWizard = "HouseCode";
@@ -3097,6 +3237,8 @@ ii.Class({
 
 					if (me.tabPayrollShow)
 						me.nextWizard = "Payroll";
+					else if (me.tabSafetyShow)
+						me.nextWizard = "Safety";
 					
 					if (me.tabStatisticsShow)
 						me.prevWizard = "Statistic";
@@ -3117,7 +3259,33 @@ ii.Class({
 					
 				case "Payroll":
 					
+					if (me.tabSafetyShow)
+						me.nextWizard = "Safety";
+						
 					if (me.tabFinancialShow)						
+						me.prevWizard = "Financial";
+					else if (me.tabStatisticsShow)
+						me.prevWizard = "Statistic";
+					else if (me.tabHouseCodeShow)
+						me.prevWizard = "HouseCode";
+					
+					if (me.nextWizard == "")
+						me.anchorNext.display(ui.cmn.behaviorStates.disabled);
+					else
+						me.anchorNext.display(ui.cmn.behaviorStates.enabled);
+
+					if (me.prevWizard == "")
+						me.anchorPrev.display(ui.cmn.behaviorStates.disabled);
+					else
+						me.anchorPrev.display(ui.cmn.behaviorStates.enabled);
+
+					break;
+					
+				case "Safety":
+					
+					if (me.tabPayrollShow)
+						me.prevWizard = "Payroll";
+					else if (me.tabFinancialShow)						
 						me.prevWizard = "Financial";
 					else if (me.tabStatisticsShow)
 						me.prevWizard = "Statistic";
@@ -3161,6 +3329,7 @@ ii.Class({
 					$("#divStatistics").hide();
 					$("#divFinancial").hide();
 					$("#divPayroll").hide();
+					$("#divSafety").hide();
 					
 					if (me.houseCodeWrite || me.tabHouseCodeWrite)
 						$("#actionMenu").show();
@@ -3175,6 +3344,7 @@ ii.Class({
 					$("#divStatistics").show();
 					$("#divFinancial").hide();
 					$("#divPayroll").hide();
+					$("#divSafety").hide();
 
 					if (me.statisticsWrite || me.tabStatisticsWrite)
 						$("#actionMenu").show();
@@ -3189,6 +3359,7 @@ ii.Class({
 					$("#divStatistics").hide();
 					$("#divFinancial").show();
 					$("#divPayroll").hide();
+					$("#divSafety").hide();
 
 					if (me.financialWrite || me.tabFinancialWrite)
 						$("#actionMenu").show();
@@ -3203,8 +3374,24 @@ ii.Class({
 					$("#divStatistics").hide();
 					$("#divFinancial").hide();
 					$("#divPayroll").show();
+					$("#divSafety").hide();
 
 					if (me.payrollWrite || me.tabPayrollWrite)
+						$("#actionMenu").show();
+					else
+						$("#actionMenu").hide();
+
+					break;
+					
+				case "Safety":
+				
+					$("#divHouseCode").hide();
+					$("#divStatistics").hide();
+					$("#divFinancial").hide();
+					$("#divPayroll").hide();
+					$("#divSafety").show();
+
+					if (me.safetyWrite || me.tabSafetyWrite)
 						$("#actionMenu").show();
 					else
 						$("#actionMenu").hide();
@@ -3338,6 +3525,14 @@ ii.Class({
 			me.houseCodeDetails[0].ePaySite = me.ePaySiteSelect;
 			me.houseCodeDetails[0].ePayGroupType = (me.ePayPayGroup.indexSelected <= 0 ? 0 : me.ePayGroupTypes[me.ePayPayGroup.indexSelected].id);
 			me.houseCodeDetails[0].ePayTask = (me.ePayTask.check.checked ? 1 : 0);
+			
+			//Safety
+			me.houseCodeDetails[0].incidentFrequencyRate = me.incidentFrequencyRate.getValue();
+			me.houseCodeDetails[0].trir = me.trir.getValue();
+			me.houseCodeDetails[0].lostDays = me.lostDays.getValue();
+			me.houseCodeDetails[0].reportedClaims = me.reportedClaims.getValue();
+			me.houseCodeDetails[0].nearMisses = me.nearMisses.getValue();
+			me.houseCodeDetails[0].oshaRecordable = me.oshaRecordable.getValue();
 			
 			if (me.houseCodeDetails[0].jdeCompanyId == 0) {
 				alert("[JDE Company] is a required field. Please select it on HouseCode Wizard.");
@@ -3482,6 +3677,14 @@ ii.Class({
 				, me.houseCodeDetails[0].ePaySite
 				, me.houseCodeDetails[0].ePayGroupType
 				, me.houseCodeDetails[0].ePayTask
+
+				//Safety
+				, me.houseCodeDetails[0].incidentFrequencyRate
+				, me.houseCodeDetails[0].trir
+				, me.houseCodeDetails[0].lostDays
+				, me.houseCodeDetails[0].reportedClaims
+				, me.houseCodeDetails[0].nearMisses
+				, me.houseCodeDetails[0].oshaRecordable
 			);
 				
 			var xml = me.saveXmlBuild(item);
@@ -3606,6 +3809,14 @@ ii.Class({
 			xml += ' ePaySite="' + item.ePaySite + '"';
 			xml += ' ePayGroupType="' + item.ePayGroupType + '"';
 			xml += ' ePayTask="' + item.ePayTask + '"';
+			
+			//Safety
+			xml += ' incidentFrequencyRate="' + ui.cmn.text.xml.encode(item.incidentFrequencyRate) + '"';
+			xml += ' trir="' + ui.cmn.text.xml.encode(item.trir) + '"';
+			xml += ' lostDays="' + ui.cmn.text.xml.encode(item.lostDays) + '"';
+			xml += ' reportedClaims="' + ui.cmn.text.xml.encode(item.reportedClaims) + '"';
+			xml += ' nearMisses="' + ui.cmn.text.xml.encode(item.nearMisses) + '"';
+			xml += ' oshaRecordable="' + ui.cmn.text.xml.encode(item.oshaRecordable) + '"';
 
 			xml += ' clientId="' + ++clientId + '">';
 
