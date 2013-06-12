@@ -1,4 +1,4 @@
-﻿window.__bt__c234002d = ['<div>    <div id="mop-filter">        <div style="color: #FFF; background-color: #659A66; font-size: 14px; padding: 5px;">            <table class="mop-filter">                <tr>                    <td>                        Site:                    </td>                    <td id="hcmHouseCode">                    </td>                    <td>                        Job:                    </td>                    <td id="hcmJob">                    </td>                    <td>                        Fiscal Year:                    </td>                    <td id="fscYear">                    </td>                    <td style="padding-left: 15px;" id="load-button" class="row-btn">                    </td>                </tr>            </table>        </div>    </div>    <div id="mop-column-switch">        <div style="color: #FFF;  background-color: #659A66; border-top: 1px solid #555; font-size: 14px;            padding: 5px;">            <div style="float:left">                           <table class="mop-filter">                <tr>                    <td>                        <input type="checkbox" name="Budget" id="Budget" />&nbsp;<label for="Budget">Budget</label>                    </td>                    <td>                        <input type="checkbox" name="Variance" id="Variance" />&nbsp;<label for="Variance">Variance</label>                    </td>                    <td>                        <input type="checkbox" name="RunRate" id="RunRate" />&nbsp;<label for="RunRate">Run                            Rate</label>                    </td>                    <td style="padding-left: 20px;">                        Period:                    </td>                    <td id="fscPeriodStart">                    </td>                    <td>                        -                    </td>                    <td id="fscPeriodEnd">                    </td>                       <td style="padding-left: 15px;" id="apply-button" class="row-btn">                    </td>                </tr>            </table>            </div>            <div style="position: relative; float:left; width:110px; margin-top:-1px;">                <a id="popupButton" class="popup-button"><span>Comment</span><em></em></a>                <div style="clear: both">                </div>                <div class="popup-box" id="popupBox">                    <div class="popup-box-inner-wrapper" style="width:500px">                        <div class="popup-box-form ">                            <label id="commentLabel">                                Summary Comments:</label>                            <textarea rows="5" class="textarea" id="summaryComment"></textarea>                            <div style="text-align:right; padding-right:20px; padding-top:5px;">                                <img id="saveButton"  src="images/button-ok.png" style="cursor:pointer"/>    <img id="cancelButton"  src="images/button-cancel.png"  style="cursor:pointer"/></div>                        </div>                    </div>                </div>            </div>        </div>    </div>    <div id="mop-footer">        <div style="color: #FFF; background-color: #659A66; padding: 10px; font-size: 14px;">            <table class="mop-filter" style="width: 100%;">                <tr class="row-btn">                    <td style="width: 40%">                        <table id="add-account-warpper">                            <tr>                                <td>                                    Account:                                </td>                                <td id="fscAccount">                                </td>                                <td id="addAccountButton">                                </td>                            </tr>                        </table>                    </td>                    <td style="text-align: right; width: 60%; padding-right: 20px;">                        <span id="saveButton" />&nbsp; <span id="payrollRegisterButton" />&nbsp; <span id="transactionDetailButton" />                        &nbsp; <span id="printMopButton" />&nbsp;                    </td>                </tr>            </table>        </div>    </div>    <div id="wor-filter">        <div style="color: #FFF; background-color: #659A66; font-size: 14px;">            <div style="float: left; background-color: #555; color: #fff; font-weight: bold;                width: 100px; height: 24px; padding: 5px; 0; text-align: center;">                WOR</div>            <div style="padding: 5px; float: left;">                <table class="mop-filter">                    <tr>                        <td style="font-weight: bold;">                            Site:                        </td>                        <td name="hcmHouseCode">                        </td>                        <td style="font-weight: bold;">                            Job:                        </td>                        <td name="hcmJob">                        </td>                        <td style="font-weight: bold;">                            Fiscal Year:                        </td>                        <td name="fscYear">                        </td>                        <td style="font-weight: bold;">                            Period:                        </td>                        <td id="fscPeriod">                        </td>                        <td id="backToMopButton" class="row-btn">                        </td>                    </tr>                </table>            </div>            <div style="position: relative; float: left; width: 110px; margin-top:4px;">                <a id="popupButton" class="popup-button"><span>Comment</span><em></em></a>                <div style="clear: both">                </div>                <div class="popup-box" id="popupBox">                    <div class="popup-box-inner-wrapper" style="width: 500px">                        <div class="popup-box-form ">                            <label id="commentLabel">                                Summary Comments:</label>                            <textarea rows="5" class="textarea" id="summaryComment"></textarea>                            <div style="text-align: right; padding-right: 20px; padding-top: 5px;">                                <img id="saveButton" src="images/button-ok.png" style="cursor: pointer" />                                <img id="cancelButton" src="images/button-cancel.png" style="cursor: pointer" />                            </div>                        </div>                    </div>                </div>            </div>            <div style="clear:both; " ></div>        </div>    </div>    <div id="wor-comment">        <div style="margin-top: 15px;">            <div style="font-size: 14px; padding-left: 5px;">                Comments:</div>            <textarea name="Comment" id="Comment" cols="100" rows="3" />        </div>    </div></div>','<div style="min-height: 400px" class="mop">    <div id="mop-top">        <div style="background-color: #555; color: #fff; float: left; text-align: center;            height: 60px; vertical-align: middle; font-size: 14px; font-weight: bold; width: 180px;            padding-top: 15px;">            Monthly Operating Projection        </div>        <div style="margin-left: 180px; background-color: #659A66; vertical-align:text-bottom">            <div id="filter-wrapper">            </div>            <div id="column-swith">            </div>            <div style="clear: both">            </div>        </div>    </div>    <div style="padding-top: 10px;" id="mop-wrapper">        <div class="list-header">            <div class="mop-controller" style="float:left;overflow:hidden"><div style="width:500px" id="controller-header"></div> </div>            <div class="mop-grid-main" style="overflow:hidden" id="mop-grid-header-wrapper"><div  id="grid-header" style="width:12000px"></div></div>            <div class="clear"></div>        </div>        <div>            <div class="mop-controller" style="float:left;overflow:hidden" id="mop-controller-wrapper"><div style="width:500px" id="mop-controller"></div> </div>            <div class="mop-grid-main" style="overflow:auto" id="mop-grid-wrapper"><div id="mop-grid"></div></div>            <div class="clear"></div>        </div>    </div>       <div style=" width: 100%;">        <div id="mop-footer">        </div>    </div></div>','<div>    <div id="controller-header">         <table class="bud-table-2">            <thead class="table-head">                <tr>                    <th class="boundary mop-updatefuture" style="width: 100px">                        <div class="row1-btn">                            <button class="bine-btn bine-btn-txt bine-ctrl" id="updatefuture-button" style="height: 50px;">                                Update Future<br />                                Periods w/MOP</button></div>                        <div style="padding: 5px;">                            <div style="width: 13px; height: 20px; padding-top: 3px; float: left;">                                <input type="checkbox" name="selectAllPeriods" id="SelectAllPeriods" /></div>                            <span style="line-height: 18px; height: 20px; padding-left: 5px;">Select All</span><div                                style="clear: both;">                            </div>                        </div>                    </th>                    <th class="boundary mop-updaterunrate" style="width: 90px">                        <div class="row1-btn">                            <button class="bine-btn bine-btn-txt bine-ctrl " id="updaterunrate-button" style="height: 50px;">                                Update With<br />                                Run Rate</button></div>                        <div style="padding: 5px;">                            <div style="width: 13px; height: 20px; padding-top: 3px; float: left;">                                <input type="checkbox" name="selectAll" id="SelectAllRunRate" /></div>                            <span style="float: left; line-height: 18px; height: 20px; padding-left: 5px;">Select                                All</span><div style="clear: both;">                                </div>                        </div>                    </th>                    <th class="boundary mop-accountcode-title" style="width: 245px; height: 85px;">                        Account Code                    </th>                </tr>            </thead>        </table>    </div>    <div id="controller-list">        <div>            <div id="holder"></div>        </div>    </div>    <table>        <tbody id="controller-view">            <tr>                <td class="boundary mop-updatefuture" style="width: 100px; height: 20px;">                    <div style="padding: 3px 7px;">                        <input type="checkbox" name="UpdateFuture" /></div>                </td>                <td class="boundary mop-updaterunrate" style="width: 90px; height: 20px;">                    <div style="padding: 3px 7px;">                        <input type="checkbox" name="UpdateRunRate" /></div>                </td>                <td class="boundary mop-account-column" style="white-space: nowrap; width: 245px; padding-top:0; padding-bottom:0; vertical-align:middle;                    height: 26px;">                    <a href="#" class="account-link" name="FscAccountDescription"></a>                </td>            </tr>        </tbody>    </table></div>','<div style="min-height: 400px" class="mop">    <div id="mop-top">        <div id="wor-filter">        </div>    </div>    <div id="mop-list-wrapper" style="padding-top: 10px; width: 99%;         margin: 0 auto; overflow: auto;">        <div id="wor-list">        </div>        <div id="wor-comment">        </div>    </div>    <div style="position: absolute; bottom: 0px; width: 100%;">        <div id="mop-footer">        </div>    </div></div>',''];
+﻿window.__bt__f0cc06f6 = ['<div>    <div id="mop-filter">        <div style="color: #FFF; background-color: #659A66; font-size: 14px; padding: 5px;">            <table class="mop-filter">                <tr>                    <td>                        Site:                    </td>                    <td id="hcmHouseCode">                    </td>                    <td>                        Job:                    </td>                    <td id="hcmJob">                    </td>                    <td>                        Fiscal Year:                    </td>                    <td id="fscYear">                    </td>                    <td style="padding-left: 15px;" id="load-button" class="row-btn">                    </td>                </tr>            </table>        </div>    </div>    <div id="mop-column-switch">        <div style="color: #FFF;  background-color: #659A66; border-top: 1px solid #555; font-size: 14px;            padding: 5px;">            <div style="float:left">                           <table class="mop-filter">                <tr>                    <td>                        <input type="checkbox" name="Budget" id="Budget" />&nbsp;<label for="Budget">Budget</label>                    </td>                    <td>                        <input type="checkbox" name="Variance" id="Variance" />&nbsp;<label for="Variance">Variance</label>                    </td>                    <td>                        <input type="checkbox" name="RunRate" id="RunRate" />&nbsp;<label for="RunRate">Run                            Rate</label>                    </td>                    <td style="padding-left: 20px;">                        Period:                    </td>                    <td id="fscPeriodStart">                    </td>                    <td>                        -                    </td>                    <td id="fscPeriodEnd">                    </td>                       <td style="padding-left: 15px;" id="apply-button" class="row-btn">                    </td>                </tr>            </table>            </div>            <div style="position: relative; float:left; width:110px; margin-top:-1px;">                <a id="popupButton" class="popup-button"><span>Comment</span><em></em></a>                <div style="clear: both">                </div>                <div class="popup-box" id="popupBox">                    <div class="popup-box-inner-wrapper" style="width:500px">                        <div class="popup-box-form ">                            <label id="commentLabel">                                Summary Comments:</label>                            <textarea rows="5" class="textarea" id="summaryComment"></textarea>                            <div style="text-align:right; padding-right:20px; padding-top:5px;">                                <img id="saveButton"  src="images/button-ok.png" style="cursor:pointer"/>    <img id="cancelButton"  src="images/button-cancel.png"  style="cursor:pointer"/></div>                        </div>                    </div>                </div>            </div>        </div>    </div>    <div id="mop-footer">        <div style="color: #FFF; background-color: #659A66; padding: 10px; font-size: 14px;">            <table class="mop-filter" style="width: 100%;">                <tr class="row-btn">                    <td style="width: 40%">                        <table id="add-account-warpper">                            <tr>                                <td>                                    Account:                                </td>                                <td id="fscAccount">                                </td>                                <td id="addAccountButton">                                </td>                            </tr>                        </table>                    </td>                    <td style="text-align: right; width: 60%; padding-right: 20px;">                        <span id="saveButton" />&nbsp;  <span id="cancelButton" />&nbsp; <span id="payrollRegisterButton" />&nbsp; <span id="transactionDetailButton" />                        &nbsp; <span id="printMopButton" />&nbsp;                    </td>                </tr>            </table>        </div>    </div>    <div id="wor-filter">        <div style="color: #FFF; background-color: #659A66; font-size: 14px;">            <div style="float: left; background-color: #555; color: #fff; font-weight: bold;                width: 100px; height: 24px; padding: 5px; 0; text-align: center;">                WOR</div>            <div style="padding: 5px; float: left;">                <table class="mop-filter">                    <tr>                        <td style="font-weight: bold;">                            Site:                        </td>                        <td name="hcmHouseCode">                        </td>                        <td style="font-weight: bold;">                            Job:                        </td>                        <td name="hcmJob">                        </td>                        <td style="font-weight: bold;">                            Fiscal Year:                        </td>                        <td name="fscYear">                        </td>                        <td style="font-weight: bold;">                            Period:                        </td>                        <td id="fscPeriod">                        </td>                        <td id="backToMopButton" class="row-btn">                        </td>                    </tr>                </table>            </div>            <div style="position: relative; float: left; width: 110px; margin-top:4px;">                <a id="popupButton" class="popup-button"><span>Comment</span><em></em></a>                <div style="clear: both">                </div>                <div class="popup-box" id="popupBox">                    <div class="popup-box-inner-wrapper" style="width: 500px">                        <div class="popup-box-form ">                            <label id="commentLabel">                                Summary Comments:</label>                            <textarea rows="5" class="textarea" id="summaryComment"></textarea>                            <div style="text-align: right; padding-right: 20px; padding-top: 5px;">                                <img id="saveButton" src="images/button-ok.png" style="cursor: pointer" />                                <img id="cancelButton" src="images/button-cancel.png" style="cursor: pointer" />                            </div>                        </div>                    </div>                </div>            </div>            <div style="clear:both; " ></div>        </div>    </div>    <div id="wor-comment">        <div style="margin-top: 15px;">            <div style="font-size: 14px; padding-left: 5px;">                Comments:</div>            <textarea name="Comment" id="Comment" cols="100" rows="3" />        </div>    </div></div>','<div style="min-height: 400px" class="mop">    <div id="mop-top">        <div style="background-color: #555; color: #fff; float: left; text-align: center;            height: 60px; vertical-align: middle; font-size: 14px; font-weight: bold; width: 180px;            padding-top: 15px;">            Monthly Operating Projection        </div>        <div style="margin-left: 180px; background-color: #659A66; vertical-align:text-bottom">            <div id="filter-wrapper">            </div>            <div id="column-swith">            </div>            <div style="clear: both">            </div>        </div>    </div>    <div style="padding-top: 10px;" id="mop-wrapper">        <div class="list-header">            <div class="mop-controller" style="float:left;overflow:hidden"><div style="width:500px" id="controller-header"></div> </div>            <div class="mop-grid-main" style="overflow:hidden" id="mop-grid-header-wrapper"><div  id="grid-header" style="width:12000px"></div></div>            <div class="clear"></div>        </div>        <div>            <div class="mop-controller" style="float:left;overflow:hidden" id="mop-controller-wrapper"><div style="width:500px" id="mop-controller"></div> </div>            <div class="mop-grid-main" style="overflow:auto" id="mop-grid-wrapper"><div id="mop-grid"></div></div>            <div class="clear"></div>        </div>    </div>       <div style=" width: 100%;">        <div id="mop-footer">        </div>    </div></div>','<div>    <div id="controller-header">         <table class="bud-table-2">            <thead class="table-head">                <tr>                    <th class="boundary mop-updatefuture" style="width: 100px">                        <div class="row1-btn">                            <button class="bine-btn bine-btn-txt bine-ctrl" id="updatefuture-button" style="height: 50px;">                                Update Future<br />                                Periods w/MOP</button></div>                        <div style="padding: 5px;">                            <div style="width: 13px; height: 20px; padding-top: 3px; float: left;">                                <input type="checkbox" name="selectAllPeriods" id="SelectAllPeriods" /></div>                            <span style="line-height: 18px; height: 20px; padding-left: 5px;">Select All</span><div                                style="clear: both;">                            </div>                        </div>                    </th>                    <th class="boundary mop-updaterunrate" style="width: 90px">                        <div class="row1-btn">                            <button class="bine-btn bine-btn-txt bine-ctrl " id="updaterunrate-button" style="height: 50px;">                                Update With<br />                                Run Rate</button></div>                        <div style="padding: 5px;">                            <div style="width: 13px; height: 20px; padding-top: 3px; float: left;">                                <input type="checkbox" name="selectAll" id="SelectAllRunRate" /></div>                            <span style="float: left; line-height: 18px; height: 20px; padding-left: 5px;">Select                                All</span><div style="clear: both;">                                </div>                        </div>                    </th>                    <th class="boundary mop-accountcode-title" style="width: 245px; height: 85px;">                        Account Code                    </th>                </tr>            </thead>        </table>    </div>    <div id="controller-list">        <div>            <div id="holder"></div>        </div>    </div>    <table>        <tbody id="controller-view">            <tr>                <td class="boundary mop-updatefuture" style="width: 100px; height: 20px;">                    <div style="padding: 3px 7px;">                        <input type="checkbox" name="UpdateFuture" /></div>                </td>                <td class="boundary mop-updaterunrate" style="width: 90px; height: 20px;">                    <div style="padding: 3px 7px;">                        <input type="checkbox" name="UpdateRunRate" /></div>                </td>                <td class="boundary mop-account-column" style="white-space: nowrap; width: 245px; padding-top:0; padding-bottom:0; vertical-align:middle;                    height: 26px;">                    <a href="#" class="account-link" name="FscAccountDescription"></a>                </td>            </tr>        </tbody>    </table></div>','<div style="min-height: 400px" class="mop">    <div id="mop-top">        <div id="wor-filter">        </div>    </div>    <div id="mop-list-wrapper" style="padding-top: 10px; width: 99%;         margin: 0 auto; overflow: auto;">        <div id="wor-list">        </div>        <div id="wor-comment">        </div>    </div>    <div style="position: absolute; bottom: 0px; width: 100%;">        <div id="mop-footer">        </div>    </div></div>',''];
 
 /*
 * jquery.fixheadertable
@@ -1203,7 +1203,44 @@ bine.applyIf(Array.prototype, {
                 return this.insertAt(toInsert, index + 1);
         }
     }
-});  
+});
+
+
+function dirtyCheck(me) {
+    return !window.top.fin.cmn.status.itemValid();
+}
+
+if (!top.ui)
+    top.ui = { ctl: {} };
+
+if (top.ui.ctl.menu) {
+    var me = this;
+    top.ui.ctl.menu.Dom.me.registerDirtyCheck(dirtyCheck, me);
+}
+
+if (document.location.host == 'localhost')
+    window.__fin_modified = false;
+
+fin.bud.modified = function () {
+    /*
+    if (document.location.host == 'localhost') {
+        if (arguments.length == 0) {
+            if (window.__fin_modified)
+                alert('data modified');
+            return window.__fin_modified;
+
+        }
+        else
+            window.__fin_modified = arguments[0];
+    }
+    else {
+    */
+        if (arguments.length == 0)
+            return !window.top.fin.cmn.status.itemValid();
+        else
+            window.top.fin.appUI.modified = arguments[0];
+//    }
+}
 
 !function (bud) {
     //
@@ -1744,11 +1781,11 @@ var loadMopPeriodItems = function (hcmHouseCode, hcmJob, fscYear, callback) {
 
         var currentPeriod = GetCurrentFscPeriodByToday();
         var currentDay = (new Date()).getDate();
-        console.log(currentPeriod );
+        console.log(currentDay);
 
         if (currentPeriod.FscYear == fscYear)
             currentPeriodIndex = GetCurrentFscPeriodByToday()['Number'];
-	console.log(currentPeriodIndex);
+
         /*
         $('item', $(data)).each(function (index, item) {
         var $item = $(item);
@@ -1955,7 +1992,7 @@ var saveWorSummaryComment = function (hcmHouseCode, hcmJob, fscYear, fscPeriod, 
 }
     //
 
- var $mop_templates = $(window.__bt__c234002d[2]);
+ var $mop_templates = $(window.__bt__f0cc06f6[2]);
 
 
  var MopDataControllerHeader = function () {
@@ -3073,7 +3110,7 @@ MopDataGrid = function () {
     return DataGrid;
 } ();
 
-    var $templates = $(window.__bt__c234002d[0]);
+    var $templates = $(window.__bt__f0cc06f6[0]);
 
     var TPL_MOP_FILTER = $('#mop-filter', $templates).html();
     var TPL_MOP_COLUMN_SWITH = $('#mop-column-switch', $templates).html();
@@ -3102,14 +3139,19 @@ MopDataGrid = function () {
         createFields: function () {
             var dv = this;
 
+            var onBeforeSelect = function () { return !fin.bud.modified(); }
+
             var houseCodeComboBox = new ComboBox({ store: HcmHouseCodeStore, name: 'hcmHouseCode', editable: true, width: 400, listWidth: 400 });
             dv.addField(houseCodeComboBox);
+            houseCodeComboBox.on('beforeselect', onBeforeSelect);
 
             var houseJobComboBox = new ComboBox({ store: HcmJobStore, name: 'hcmJob', width: 100 });
             dv.addField(houseJobComboBox);
+            houseJobComboBox.on('beforeselect', onBeforeSelect);
 
             var fscYearComboBox = new ComboBox({ store: FscYearStore, name: 'fscYear', width: 100 });
             dv.addField(fscYearComboBox);
+            fscYearComboBox.on('beforeselect', onBeforeSelect);
         },
 
         onDomReady: function () {
@@ -3119,6 +3161,9 @@ MopDataGrid = function () {
             dv.append(loadButton, 'load-button');
 
             loadButton.on('click', function () {
+                if (fin.bud.modified())
+                    return;
+
                 if (dv.isValid())
                     dv.fireEvent('load', dv.val());
             });
@@ -3207,6 +3252,7 @@ MopDataGrid = function () {
             });
 
             dv.$('#cancelButton').click(function (e) {
+
                 e.preventDefault();
                 dv.$('#popupBox').slideUp('fast');
                 dv.$('#popupButton').removeClass('active');
@@ -3235,6 +3281,12 @@ MopDataGrid = function () {
             me.append(saveButton, 'saveButton');
             saveButton.on('click', function () {
                 me.fireEvent('save');
+            });
+
+            var cancelButton = new bine.Button({ text: 'Cancel' });
+            me.append(cancelButton, 'cancelButton');
+            cancelButton.on('click', function () {
+                me.fireEvent('cancel');
             });
 
 
@@ -3284,6 +3336,9 @@ bud.page.WOR = function () {
             dv.append(backToMopButton, 'backToMopButton');
 
             backToMopButton.on('click', function () {
+                if (fin.bud.modified())
+                    return;
+
                 dv.fireEvent('backtomop');
             });
 
@@ -3502,6 +3557,7 @@ var WorDataViewList = function () {
                             }
                         }
 
+                        fin.bud.modified(true);
                         if (name.startsWith('Week') || name.startsWith('Mop')) {
                             var weekNumber = name.replace('Week', '');
 
@@ -3898,7 +3954,7 @@ var submitWorItems = function (changes, commentXml, callback) {
 
 
     var WOR = bine.extend(bine.Control, {
-        tpl: window.__bt__c234002d[3],
+        tpl: window.__bt__f0cc06f6[3],
 
         hcmHouseCode: null,
         hcmJob: null,
@@ -3949,6 +4005,7 @@ var submitWorItems = function (changes, commentXml, callback) {
             me.mask('Saving...');
             submitWorItems(changes, xml.join(''), function () {
                 me.unmask();
+                fin.bud.modified(false);
                 $.each(changes, function (index, item) {
                     me.fireEvent('mopreadonly', item.FscAccount, item.Projection);
                 });
@@ -3973,6 +4030,10 @@ var submitWorItems = function (changes, commentXml, callback) {
 
             me.footer.on('save', function () {
                 me.saveChanges();
+            });
+
+            me.footer.on('cancel', function () {
+                me.loadWorDetails();
             });
 
             me.worList = new WorDataViewList({ fscPeriod: me.fscPeriod });
@@ -4046,7 +4107,7 @@ var submitWorItems = function (changes, commentXml, callback) {
 
                 me.worList.val(worDetails);
                 me.refreshWorListLayout();
-
+                fin.bud.modified(false);
                 me.unmask();
             });
         }
@@ -4056,7 +4117,7 @@ var submitWorItems = function (changes, commentXml, callback) {
 } ();
 
     bud.page.MOP = bine.extend(bine.Control, {
-        tpl: window.__bt__c234002d[1],
+        tpl: window.__bt__f0cc06f6[1],
 
         onDomReady: function () {
             var me = this;
@@ -4111,6 +4172,11 @@ var submitWorItems = function (changes, commentXml, callback) {
 
             me.footer.on('save', function () {
                 me.saveChanges();
+            });
+
+            me.footer.on('cancel', function () {
+                fin.bud.modified(false);
+                me.loadMopDetails();
             });
         },
 
@@ -4170,6 +4236,9 @@ var submitWorItems = function (changes, commentXml, callback) {
             };
 
             me.controller.on('showaccountwor', function (fscAccount) {
+                if (fin.bud.modified())
+                    return;
+
                 if (me.currentPeriodAvailable)
                     showWor(GetCurrentFscPeriod()['Id'], fscAccount);
             });
@@ -4321,6 +4390,7 @@ var submitWorItems = function (changes, commentXml, callback) {
                 var fieldSegment = field.split('_');
                 var accountItem = bine.query(me.mopData).where(function (i) { return i.FscAccount == fieldSegment[1]; }).first();
                 accountItem[fieldSegment[0]] = value;
+                fin.bud.modified(true);
             });
 
         },
@@ -4380,9 +4450,10 @@ var submitWorItems = function (changes, commentXml, callback) {
                 if (fieldSegment[1] == 'Comment') {
                     accountItem['Comment' + i] = value;
                     accountItem._isModified = true;
-
+                    fin.bud.modified(true);
                 }
                 else if (fieldSegment[1] == 'Projection') {
+                    fin.bud.modified(true);
                     me.projectionUpdated(fieldSegment[0], i, value);
                     return;
                     var categoryItem = bine.query(me.mopData).where(function (i) { return i.FscAccount == accountItem['CategoryId']; }).first();
@@ -4444,6 +4515,8 @@ var submitWorItems = function (changes, commentXml, callback) {
             //console.log(changes);
             me.mask('Saving...');
             submitMopItems(changes, function () {
+                fin.bud.modified(false);
+
                 me.unmask();
                 //me.loadMopDetails();
             });
