@@ -1797,6 +1797,7 @@ ii.Class({
                 item = new fin.rev.master.Invoice({
                     id: me.invoiceId
 					, houseCode: parent.fin.appUI.houseCodeId
+					, invoiceByHouseCode: me.invoices[me.lastSelectedRowIndex].invoiceByHouseCode
 					, invoiceNumber: me.invoices[me.lastSelectedRowIndex].invoiceNumber
 					, invoiceDate: invoiceInfoUIControls.invoiceDate.lastBlurValue
 					, dueDate: invoiceInfoUIControls.dueDate.lastBlurValue
@@ -2008,6 +2009,7 @@ ii.Class({
                                 me.invoices[me.lastSelectedRowIndex] = item;
                                 me.invoiceGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
                                 $("iframe")[1].contentWindow.fin.invoiceInfoUi.invoice = me.invoices[me.lastSelectedRowIndex];
+								me.invoiceNeedUpdate = true;
                             }
 
                             me.validate = 1;
