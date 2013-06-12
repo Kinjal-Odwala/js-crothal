@@ -377,7 +377,7 @@ ii.Class({
 				styleName += " color:red;"
 								
 			if(args.editable)
-				return "<td class='gridColumn' align='center'><input type=text style='width:95%; text-align:" + args.columnAlign + ";' id='" + args.columnName + "' value='" + args.columnValue + "'></input></td>";
+				return "<td class='gridColumn' align='center'><input type=text onkeypress = parent.fin.purMasterUi.modified(true); style='width:95%; text-align:" + args.columnAlign + ";' id='" + args.columnName + "' value='" + args.columnValue + "'></input></td>";
 			else if(args.columnWidth == 0)
 				return "<td class='gridColumnHidden'>" + args.columnValue + "</td>";
 			else 
