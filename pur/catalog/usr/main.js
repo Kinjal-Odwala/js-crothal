@@ -992,6 +992,7 @@ ii.Class({
 				));
 
 			me.houseCodeGrid.setData(me.units);
+			me.modified();
 		},
 		
 		addItems: function() {

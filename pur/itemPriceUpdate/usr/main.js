@@ -209,7 +209,7 @@ ii.Class({
 
 			me.selectAll = new ui.ctl.Input.Check({
 		        id: "SelectAll",
-				changeFunction: function() { me.actionSelectAllItem(); }
+				changeFunction: function() { me.actionSelectAllItem(); me.modified();}
 		    });
 
 			me.effectiveDate = new ui.ctl.Input.Date({
@@ -435,7 +435,8 @@ ii.Class({
 
 			if (me.selectAll.check.checked) {
 				$("#SelectAllCheck").trigger("click");
-				$("#SelectAllCheck").triggerHandler("click");		
+				$("#SelectAllCheck").triggerHandler("click");
+				me.modified(false);		
 				for (var index = 0; index < me.catalogItems.length; index++) {
 					$("#selectInputCheck" + index)[0].checked = me.selectAll.check.checked;
 				}		
@@ -459,7 +460,7 @@ ii.Class({
 			else
 				allSelected = false;
 
-			me.selectAll.check.checked = allSelected;
+			me.selectAll.setValue(allSelected.toString());
 		},
 		
 		actionSelectAllItem: function() {
