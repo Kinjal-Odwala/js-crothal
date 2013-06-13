@@ -3746,7 +3746,7 @@ ii.Class({
 					$("#AnchorSave").attr("title", "You can not edit this Employee as its status is FMLA/LOA.");
 				}
 			}
-			else {
+			else if (me.employeeGenerals.length > 0) {
 				var title = me.findTitleById(me.employeeGenerals[0].statusType, me.statusTypes);
 	
 				if (title == "Terminated" && (!(me.actionType == "Person" || me.actionType == "Rehire" || me.actionType == "HouseCodeTransfer"))) {
@@ -3755,7 +3755,7 @@ ii.Class({
 				else if (title == "Terminated" && me.actionType == "Person") {
 					var terminationYear = new Date(me.employeeGenerals[0].terminationDate).getFullYear();
 					var currentYear = new Date(parent.fin.appUI.glbCurrentDate).getFullYear();
-					var disabled = (terminationYear == currentYear ? false : true)
+					var disabled = (terminationYear == currentYear ? false : true);
 
 					$("#EmailText").attr('disabled', disabled);
 					$("#HomePhoneText").attr('disabled', disabled);
@@ -6264,16 +6264,19 @@ ii.Class({
 			var itemGeneral = args.itemGeneral;
 			var xml = "";
 			var updateFlag = false;
-			var title = me.findTitleById(me.employeeGenerals[0].statusType, me.statusTypes);
-	
-			if (title == "Terminated" && me.actionType == "Person") {
-				var terminationYear = new Date(me.employeeGenerals[0].terminationDate).getFullYear();
-				var currentYear = new Date(parent.fin.appUI.glbCurrentDate).getFullYear();
-				if (terminationYear == currentYear) {
-					updateFlag = true;
+
+			if (me.employeeGenerals.length > 0) {
+				var title = me.findTitleById(me.employeeGenerals[0].statusType, me.statusTypes);
+
+				if (title == "Terminated" && me.actionType == "Person") {
+					var terminationYear = new Date(me.employeeGenerals[0].terminationDate).getFullYear();
+					var currentYear = new Date(parent.fin.appUI.glbCurrentDate).getFullYear();
+					if (terminationYear == currentYear) {
+						updateFlag = true;
+					}
 				}
-			}
-			
+			}			
+
 			if (me.actionType == "Rehire" || me.actionType == "NewHire" ||
 				me.actionType == "Person" || me.actionType == "Termination") {
 				xml += '<employeeGeneralPerson';
