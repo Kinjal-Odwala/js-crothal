@@ -581,6 +581,11 @@ ii.Class({
 				return;
 			}			
 			
+			if (!statisticsUIControls.buildingPopulation.validate(true)) {
+				alert("[Building Population] is invalid. Please enter numeric value on Statistics Tab.");
+				return false;
+			}
+			
 			if (me.houseCodeDetails[0].integrator && me.houseCodeDetails[0].integratorName == "") {
 				alert("[Integrator Name] is a required field. Please select it on Statistics Tab.");
 				return false;
@@ -653,7 +658,7 @@ ii.Class({
 				, me.houseCodeDetails[0].mgmtFeeTotalProductiveLaborDollarsPaid == "" ? 0 : parseFloat(me.houseCodeDetails[0].mgmtFeeTotalProductiveLaborDollarsPaid)
 				, me.houseCodeDetails[0].mgmtFeeTotalNonProductiveLaborDollarsPaid == "" ? 0 : parseFloat(me.houseCodeDetails[0].mgmtFeeTotalNonProductiveLaborDollarsPaid)
 				, me.houseCodeDetails[0].hospitalPaidJanitorialPaperPlasticSupplyCost == "" ? 0 : parseFloat(me.houseCodeDetails[0].hospitalPaidJanitorialPaperPlasticSupplyCost)
-				, me.houseCodeDetails[0].buildingPopulation == "" ? 0 : parseFloat(me.houseCodeDetails[0].buildingPopulation)
+				, me.houseCodeDetails[0].buildingPopulation == "" ? 0 : me.houseCodeDetails[0].buildingPopulation
 				, me.houseCodeDetails[0].maintainableAcres
 				, me.houseCodeDetails[0].scientists
 				, me.houseCodeDetails[0].managedRooms

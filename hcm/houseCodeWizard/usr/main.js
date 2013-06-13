@@ -1651,6 +1651,18 @@ ii.Class({
 				changeFunction: function() { me.modified(); }
 		    });
 			
+			me.buildingPopulation.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.buildingPopulation.getValue();
+
+					if (enteredText == "") return;
+
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,16}(\\.\\d{1,2})?$")))
+						this.setInvalid("Please enter numeric value. Expected number format is 99.99");
+				});
+			
 			me.maintainableAcres = new ui.ctl.Input.Text({
 		        id: "MaintainableAcres",
 		        maxLength: 50,
@@ -3476,7 +3488,7 @@ ii.Class({
 			me.houseCodeDetails[0].integratorName = me.integratorName.getValue();
 			me.houseCodeDetails[0].auditScore = me.auditScore.getValue();
 			me.houseCodeDetails[0].standardizationScore = me.standardizationScore.getValue();
-				
+
 			//Financial				
 			me.houseCodeDetails[0].shippingAddress1 = me.shippingAddress1.getValue();
 			me.houseCodeDetails[0].shippingAddress2 = me.shippingAddress2.getValue();
@@ -3555,6 +3567,11 @@ ii.Class({
 				return;
 			}
 			
+			if (!me.buildingPopulation.validate(true)) {
+				alert("[Building Population] is invalid. Please enter numeric value on Statistics Wizard.");
+				return false;
+			}
+
 			if (me.houseCodeDetails[0].integrator && me.houseCodeDetails[0].integratorName == "") {
 				alert("[Integrator Name] is a required field. Please select it on Statistics Wizard.");
 				return false;
@@ -3627,7 +3644,7 @@ ii.Class({
 				, me.houseCodeDetails[0].mgmtFeeTotalProductiveLaborDollarsPaid == "" ? 0 : parseFloat(me.houseCodeDetails[0].mgmtFeeTotalProductiveLaborDollarsPaid)
 				, me.houseCodeDetails[0].mgmtFeeTotalNonProductiveLaborDollarsPaid == "" ? 0 : parseFloat(me.houseCodeDetails[0].mgmtFeeTotalNonProductiveLaborDollarsPaid)
 				, me.houseCodeDetails[0].hospitalPaidJanitorialPaperPlasticSupplyCost == "" ? 0 : parseFloat(me.houseCodeDetails[0].hospitalPaidJanitorialPaperPlasticSupplyCost)
-				, me.houseCodeDetails[0].buildingPopulation == "" ? 0 : parseFloat(me.houseCodeDetails[0].buildingPopulation)
+				, me.houseCodeDetails[0].buildingPopulation == "" ? 0 : me.houseCodeDetails[0].buildingPopulation
 				, me.houseCodeDetails[0].maintainableAcres
 				, me.houseCodeDetails[0].scientists
 				, me.houseCodeDetails[0].managedRooms
