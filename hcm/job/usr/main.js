@@ -295,16 +295,6 @@ ii.Class({
 		resize: function fin_hcm_job_UserInterface_resize() {
 			var args = ii.args(arguments, {});
 			
-			if ($("#JobHouseCodeContainer").width() < 509) {
-				$("#HouseCodeGrid").width(508);
-				$("#AddHouseCodes").width(509);
-			}
-				
-			else {
-				$("#HouseCodeGrid").width($("#JobHouseCodeContainer").width() - 4);
-				$("#AddHouseCodes").width($("#JobHouseCodeContainer").width() - 3);
-			}
-			
 			$("#popupJob").height($(window).height() - 187);
 			$("#JobHouseCodeContainer").height($(window).height() - 177);
 			fin.hcm.hcmjobUi.jobGrid.setHeight($(window).height() - 115);
