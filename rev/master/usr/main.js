@@ -119,6 +119,16 @@ ii.Class({
 			me.invoiceAddressTypeStore.fetch("userId:[user]", me.invoiceAddressTypesLoaded, me);
 			me.taxableServiceStore.fetch("userId:[user]", me.taxableServicesLoaded, me);
 			
+			// blur event is not firing when clicking on the tab. Due to this dirty check function and prompt message was not working.
+			$("#TabCollection a").mouseover(function() {
+				if (!parent.parent.fin.appUI.modified) {
+					var focusedControl = $("iframe")[me.activeFrameId].contentWindow.document.activeElement;
+
+					if (focusedControl.type != undefined && (focusedControl.type == "text" || focusedControl.type == "textarea"))
+						$(focusedControl).blur();
+				}
+			});
+			
 			$("#TabCollection a").mousedown(function() {
 				if (!parent.fin.cmn.status.itemValid()) 
 					return false;
