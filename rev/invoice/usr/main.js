@@ -942,7 +942,7 @@ ii.Class({
 		invoiceItemGridRowDelete: function() {
 			var me = this;
 						
-			if (me.rowBeingEdited || me.currentRowSelected == null || me.currentRowSelected.cells[4].innerHTML == "Sales Tax:") 
+			if (me.rowBeingEdited || me.currentRowSelected == null || me.currentRowSelected.cells[5].innerHTML == "Sales Tax:") 
 				return;
 
 			if (parseInt(me.currentRowSelected.cells[1].innerHTML) > 0) {
@@ -1377,11 +1377,10 @@ ii.Class({
 				var orderNumbers = [];				
 				
 				$("#InvoiceItemGridBody").find("tr").each(function() {
-
 					if (parseInt(this.cells[1].innerHTML) > 0) {
 						allOrderNumbers.push(parseInt($("#displayOrder" + rowNumber).val()));
 					    orderNumbers.push(parseInt($("#displayOrder" + rowNumber).val()));
-						if (this.cells[4].innerHTML == "Sales Tax:") {
+						if (this.cells[5].innerHTML == "Sales Tax:") {
 							for (var index = 0; index < orderNumbers.length - 1; index++) {
 								if (orderNumbers[index] >= orderNumbers[orderNumbers.length - 1]) {
 									 valid = false;
