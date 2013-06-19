@@ -83,6 +83,8 @@ ii.init.register( function() {
 		, poNumber: {type: String, required: false, defaultValue: ""}
 		, invoiceLogoType: {type: Number, required: false, defaultValue: 0}
 		, invoiceAddressType: {type: Number, required: false, defaultValue: 0}
+		, serviceLocationBrief: {type: String, required: false, defaultValue: ""}
+		, serviceLocation: {type: String, required: false, defaultValue: ""}
 		, notes: {type: String, required: false, defaultValue: ""}
 		, version: { type: Number, required: false, defaultValue: 0 }
 		, creditMemoPrintable: { type: Boolean, required: false, defaultValue: false }

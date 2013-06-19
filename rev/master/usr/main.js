@@ -39,6 +39,7 @@ ii.Class({
 
 			me.houseCodeCache = [];
 			me.invoices = [];
+			me.serviceLocations = [];
             me.invoiceId = 0;
             me.activeFrameId = 0;
             me.lastSelectedRowIndex = -1;
@@ -101,7 +102,7 @@ ii.Class({
             me.configureCommunications();
 			me.modified(false);
             me.setTabIndexes();
-            $("#backLable").hide();
+            $("#backLabel").hide();
 
             me.houseCodeSearch = new ui.lay.HouseCodeSearch();
 			me.houseCodeSearchTemplate = new ui.lay.HouseCodeSearchTemplate();
@@ -501,6 +502,18 @@ ii.Class({
 		        required: false
 		    });
 
+			me.serviceLocation = new ui.ctl.Input.DropDown.Filtered({
+		        id: "ServiceLocation",
+				formatFunction: function(type) {
+					if (type.jobNumber == "")
+						return type.jobTitle; 
+					else
+						return type.jobNumber + " - " + type.jobTitle;
+				},
+				changeFunction: function() { me.modified(); },
+		        required: false
+		    });
+
 			me.notes = $("#Notes")[0];
 
 			$("#Notes").height(50);
@@ -726,7 +739,8 @@ ii.Class({
             me.poNumber.text.tabIndex = 14;
 			me.invoiceLogo.text.tabIndex = 15;
 			me.invoiceAddress.text.tabIndex = 16;
-			me.notes.tabIndex = 17;
+			me.serviceLocation.text.tabIndex = 17;
+			me.notes.tabIndex = 18;
         },
 
         configureCommunications: function fin_rev_UserInterface_configureCommunications() {
@@ -979,11 +993,13 @@ ii.Class({
 			    me.houseCodeCache[houseCode].loaded = true;
 				me.houseCodeCache[houseCode].id = id;
 				me.houseCodeCache[houseCode].hirNode = hirNode;
+				me.houseCodeCache[houseCode].serviceLocationLoaded = false;
 				me.houseCodeCache[houseCode].customersLoaded = false;
 				me.houseCodeCache[houseCode].jobsLoaded = false;
 				me.houseCodeCache[houseCode].taxableServiceStatesLoaded = false;
 				me.houseCodeCache[houseCode].stateType = 0;
 				me.houseCodeCache[houseCode].validCustomer = false;
+				me.houseCodeCache[houseCode].serviceLocations = [];
 				me.houseCodeCache[houseCode].customers = [];
 			    me.houseCodeCache[houseCode].jobs = [];
 				me.houseCodeCache[houseCode].taxableServiceStates = [];
@@ -992,6 +1008,17 @@ ii.Class({
 				me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.houseCodeJobsLoaded, me);
 				me.taxableServiceStateStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.taxableServiceStatesLoaded, me);
 	        }
+			else {
+				me.serviceLocations = [];
+				
+				for (var index = 0; index < me.houseCodeCache[houseCode].serviceLocations.length; index++) {
+			        var serviceLocation = me.houseCodeCache[houseCode].serviceLocations[index];
+					me.serviceLocations.push(new fin.rev.master.HouseCodeJob({ id: serviceLocation.id, jobNumber: serviceLocation.jobNumber, jobTitle: serviceLocation.jobTitle }));
+			    }
+
+				me.serviceLocations.unshift(new fin.rev.master.HouseCodeJob({ id: parent.fin.appUI.houseCodeId, jobNumber: "", jobTitle: parent.fin.appUI.houseCodeTitle }));
+				me.serviceLocation.setData(me.serviceLocations);
+			}
 		},
 		
 		siteStateTypeLoaded: function(me, activeId) {
@@ -1001,7 +1028,7 @@ ii.Class({
 		},
 		
 		houseCodeJobsLoaded: function(me, activeId) {
-			
+
 			for (var index = 0; index < me.houseCodeJobs.length; index++) {
 				var job = {};
                 job.id = me.houseCodeJobs[index].id;
@@ -1013,12 +1040,29 @@ ii.Class({
 			}
 
 			me.houseCodeCache[me.houseCodeBrief].jobsLoaded = true;
-			
+			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",jobType:2", me.serviceLocationsLoaded, me);
+		},
+		
+		serviceLocationsLoaded: function(me, activeId) {
+
+			for (var index = 0; index < me.houseCodeJobs.length; index++) {
+				var job = {};
+                job.id = me.houseCodeJobs[index].id;
+                job.jobNumber = me.houseCodeJobs[index].jobNumber;
+				job.jobTitle = me.houseCodeJobs[index].jobTitle;
+                me.houseCodeCache[me.houseCodeBrief].serviceLocations.push(job);
+			}
+
+			me.serviceLocations = me.houseCodeJobs.slice();			
+			me.serviceLocations.unshift(new fin.rev.master.HouseCodeJob({ id: parent.fin.appUI.houseCodeId, jobNumber: "", jobTitle: parent.fin.appUI.houseCodeTitle }));
+			me.serviceLocation.setData(me.serviceLocations);
+
+			me.houseCodeCache[me.houseCodeBrief].serviceLocationLoaded = true;
 			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",jobType:3", me.houseCodeJobCustomersLoaded, me);
 		},
 		
 		houseCodeJobCustomersLoaded: function(me, activeId) {
-			
+
 			for (var index = 0; index < me.houseCodeJobs.length; index++) {
 				var job = {};
                 job.id = me.houseCodeJobs[index].id;
@@ -1149,7 +1193,7 @@ ii.Class({
 
             if (me.invoiceSearch == "true" && parseInt(me.invoiceId) > 0 && me.invoices.length > 0) {
                 me.invoiceGrid.body.select(0);
-                $("#backLable").show();
+                $("#backLabel").show();
             }
         },
 
@@ -1406,19 +1450,35 @@ ii.Class({
 			date.setDate(date.getDate() + 25);
 			dueDate = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
 			
+			me.taxExempt.resizeText();
+			me.taxId.resizeText();
 			me.startDate.resizeText();
 			me.endDate.resizeText();
 			me.invoiceDate.resizeText();
 			me.dueDate.resizeText();
 			me.billTo.resizeText();
+			me.company.resizeText();
+			me.address1.resizeText();
+			me.address2.resizeText();
+			me.city.resizeText();
 			me.state.resizeText();
+			me.zip.resizeText();
+			me.poNumber.resizeText();
+			me.invoiceLogo.resizeText();
+			me.invoiceAddress.resizeText();
+			me.serviceLocation.resizeText();
 			me.validator.reset();
 			
 			me.startDate.setValue(me.weekPeriodYears[0].periodStartDate);
 			me.endDate.setValue(me.weekPeriodYears[0].periodEndDate);
 			me.invoiceDate.setValue(currentDate);
 			me.dueDate.setValue(dueDate);
-			
+
+			me.billTo.reset();
+			me.state.reset();
+			me.invoiceAddress.reset();
+			me.serviceLocation.reset();
+
 			if (me.taxRates.length == 1) {
 				me.anchorSave.display(ui.cmn.behaviorStates.enabled);
 			}
@@ -1438,14 +1498,13 @@ ii.Class({
 					me.taxExempt.select(1, me.taxExempt.focused);
 					me.taxId.text.readOnly = true;
 				}
-				me.taxId.setValue(searchInvoice.taxNumber);				
-				me.billTo.reset();
+				me.taxId.setValue(searchInvoice.taxNumber);
 				me.billTo.setValue(searchInvoice.billTo);
 				me.company.setValue(searchInvoice.company);
 				me.address1.setValue(searchInvoice.address1);
 				me.address2.setValue(searchInvoice.address2);
 				me.city.setValue(searchInvoice.city);
-				me.state.reset();
+
 				var itemIndex = ii.ajax.util.findIndexById(searchInvoice.stateType.toString(), me.stateTypes);
 				if (itemIndex >= 0 && itemIndex != undefined)
 					me.state.select(itemIndex, me.state.focused);
@@ -1455,13 +1514,11 @@ ii.Class({
 			}
 			else {				
 				me.taxExempt.reset();
-				me.taxId.setValue("");				
-				me.billTo.reset();
+				me.taxId.setValue("");
 				me.company.setValue("");
 				me.address1.setValue("");
 				me.address2.setValue("");
 				me.city.setValue("");
-				me.state.reset();
 				me.zip.setValue("");
 				me.poNumber.setValue("");
 				me.notes.value = "";
@@ -1794,6 +1851,8 @@ ii.Class({
 					, poNumber: me.poNumber.getValue()
 					, invoiceLogoType: (me.invoiceLogo.indexSelected >= 0 ? me.invoiceLogoTypes[me.invoiceLogo.indexSelected].id : 0)
 					, invoiceAddressType: (me.invoiceAddress.indexSelected >= 0 ? me.invoiceAddressTypes[me.invoiceAddress.indexSelected].id : 0)
+					, serviceLocationBrief: (me.serviceLocation.indexSelected >= 0 ? me.serviceLocations[me.serviceLocation.indexSelected].jobNumber : "")
+					, serviceLocation: (me.serviceLocation.indexSelected >= 0 ? me.serviceLocations[me.serviceLocation.indexSelected].jobTitle : "")
 					, notes: me.notes.value
 					, version: 1
 					, active: true
@@ -1832,6 +1891,8 @@ ii.Class({
 					, poNumber: invoiceInfoUIControls.poNumber.getValue()
 					, invoiceLogoType: (invoiceInfoUIControls.invoiceLogo.indexSelected >= 0 ? invoiceInfoUIControls.invoiceLogoTypes[invoiceInfoUIControls.invoiceLogo.indexSelected].id : 0)
 					, invoiceAddressType: (invoiceInfoUIControls.invoiceAddress.indexSelected >= 0 ? invoiceInfoUIControls.invoiceAddressTypes[invoiceInfoUIControls.invoiceAddress.indexSelected].id : 0)
+					, serviceLocationBrief: (invoiceInfoUIControls.serviceLocation.indexSelected >= 0 ? invoiceInfoUIControls.serviceLocations[invoiceInfoUIControls.serviceLocation.indexSelected].jobNumber : "")
+					, serviceLocation: (invoiceInfoUIControls.serviceLocation.indexSelected >= 0 ? invoiceInfoUIControls.serviceLocations[invoiceInfoUIControls.serviceLocation.indexSelected].jobTitle : "")
 					, notes: invoiceInfoUIControls.notes.value
 					, version: me.invoices[me.lastSelectedRowIndex].version
 					, active: true
@@ -1952,6 +2013,8 @@ ii.Class({
             xml += ' poNumber="' + ui.cmn.text.xml.encode(args.item.poNumber) + '"';
 			xml += ' invoiceLogoType="' + args.item.invoiceLogoType + '"';
 			xml += ' invoiceAddressType="' + args.item.invoiceAddressType + '"';
+			xml += ' serviceLocationBrief="' + args.item.serviceLocationBrief + '"';
+			xml += ' serviceLocation="' + args.item.serviceLocation + '"';
 			xml += ' notes="' + ui.cmn.text.xml.encode(args.item.notes) + '"';
             xml += ' version="' + args.item.version + '"';
             xml += ' validate="' + me.validate + '"';
@@ -2036,7 +2099,7 @@ ii.Class({
                     showPopup("popupMessage");
                 }
                 else {
-                    alert("[SAVE FAILURE] Error while updating Invoice Record: " + $(args.xmlNode).attr("message"));
+                    alert("[SAVE FAILURE] Error while updating Invoice details: " + $(args.xmlNode).attr("message"));
                     $("#pageLoading").hide();
                 }
             }
