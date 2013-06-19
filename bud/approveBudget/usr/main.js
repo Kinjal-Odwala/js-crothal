@@ -348,7 +348,10 @@ ii.Class({
 			var me = event.data;
 				
 			if (event.keyCode == 13) {
-				me.actionUnitLoad();
+				if (!parent.fin.cmn.status.itemValid())
+					me.appUnit.setValue("");
+				else
+					me.actionUnitLoad();
 			}
 		},
 		
@@ -561,13 +564,16 @@ ii.Class({
 				hirNode: {type: Number}
 			});           
 			var me = this;			
-			var index = me.getNodeIndex(args.hirNode);			
 
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
+			var index = me.getNodeIndex(args.hirNode);
 			me.jobId = 0;
 			me.comments.value = "";
 			me.anchorApprove.display(ui.cmn.behaviorStates.enabled);
 			me.hirNodeSelected = me.hirNodesList[index].id;
-			
+
 			if (me.hirNodesList[index].hirLevel == 7) {				
 				$("#divJob").show();
 				me.houseCodeStore.fetch("userId:[user],hirNodeId:" + me.hirNodeSelected, me.houseCodeLoaded, me);	

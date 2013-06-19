@@ -392,9 +392,12 @@ ii.Class({
 			});			
 			var event = args.event;
 			var me = event.data;
-				
+
 			if (event.keyCode == 13) {
-				me.actionUnitLoad();
+				if (!parent.fin.cmn.status.itemValid())
+					me.appUnit.setValue("");
+				else
+					me.actionUnitLoad();				
 			}
 		},
 		
@@ -607,8 +610,11 @@ ii.Class({
 				hirNode: {type: Number}
 			});           
 			var me = this;			
-			var index = me.getNodeIndex(args.hirNode);			
 
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
+			var index = me.getNodeIndex(args.hirNode);	
 			me.jobId = 0;
 			me.reason.value = "";
 			me.anchorDelete.display(ui.cmn.behaviorStates.disabled);
