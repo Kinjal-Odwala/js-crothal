@@ -1954,6 +1954,7 @@ ii.Class({
 			me.job.resizeText();
 			me.employeeBackgroundCheckDate.resizeText();
 			me.employeeUnion.resizeText();
+			me.employeeUnionStatus.resizeText();
 
 			me.compensationEffectiveDate.resizeText();
 			me.employeeRateChangeReason.resizeText();
@@ -3567,6 +3568,8 @@ ii.Class({
 				
 				if (me.employeeGenerals[0].unionEmployee) 
 					$('#UnionYes').click();
+				else
+					$('#UnionNo').click();
 				
 				//Job Information Section - End
 				
@@ -5699,7 +5702,8 @@ ii.Class({
 					if ((!me.jobEffectiveDate.validate(true)) ||
 						(!me.employeeJobCode.validate(true)) ||
 						(!me.employeeBackgroundCheckDate.validate(true)) ||
-						(!me.employeeUnion.validate(true))) {
+						(!me.employeeUnion.validate(true)) ||
+						(!me.employeeUnionStatus.validate(true))) {
 						me.wizardCount--;
 						return false;
 					}
