@@ -181,7 +181,7 @@ ii.Class({
 				$("#popupHistory").show();
 
 				me.employeeHistoryStore.reset();
-				me.employeeHistoryStore.fetch("userId:[user],employeeNumber:" + me.employees[0].employeeNumber, me.employeeHistoriesLoaded, me);
+				me.employeeHistoryStore.fetch("userId:[user],employeeNumber:" + me.employees[0].employeeNumber + ",fieldName:", me.employeeHistoriesLoaded, me);
 			});
 			
 			$("#CrothallEmployeeYes").attr('disabled', true);
@@ -213,7 +213,8 @@ ii.Class({
 			me.employeeWizardEditFMLALOA = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\Wizard\\FMLALOAStatusEditable");
 			me.employeeWizardDateModification = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\Wizard\\DateModification");
 			me.employeeWizardBasicLifeIndicator = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\Wizard\\BasicLifeIndicator");
-
+			me.employeeWizardReverseTermination = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\Wizard\\ReverseTermination");
+			
 			me.employeeSearchType = 'AccessDenied';
 			if (me.employeeSearchSalaried) me.employeeSearchType = 'SearchSalaried';
 			if (me.employeeSearchHourly) me.employeeSearchType = 'SearchHourly';
@@ -318,7 +319,18 @@ ii.Class({
 				contextMenuItems += '<tr id="menuBasicLifeIndicator" height="20px"><td class="tdBorder">&nbsp;&nbsp;Basic Life Indicator</td></tr>';
 			}
 			
-			if (contextMenuItems != '') {
+			if (me.employeeWizardReverseTermination) {
+				me.actionMenu.addAction({
+					id: "reverseTerminationAction",
+					brief: "Reverse Termination",
+					title: "Employee Reverse Termination.",
+					actionFunction: function() { me.actionWizardSelect("ReverseTermination"); }
+				});
+
+				contextMenuItems += '<tr id="menuReverseTermination" height="20px"><td class="tdBorder">&nbsp;&nbsp;Reverse Termination</td></tr>';
+			}
+			
+			if (contextMenuItems != "") {
 				contextMenuItems = '<table id="EmployeeSearchContextMenu" class="tableBorder" cellpadding="0" cellspacing="0">'
 					+ contextMenuItems
 					+ '</table>';
@@ -338,8 +350,8 @@ ii.Class({
 			}
 			
 			if ((!me.employeeWizardNewHire) && (!me.employeeWizardReHire) && (!me.employeeWizardHouseCodeTransfer) 
-				&& (!me.employeeWizardTermination) && (!me.employeeWizardEdit) 
-				&& (!me.employeeWizardDateModification) && (!me.employeeWizardBasicLifeIndicator)) {
+				&& (!me.employeeWizardTermination) && (!me.employeeWizardEdit) && (!me.employeeWizardDateModification)
+				&& (!me.employeeWizardBasicLifeIndicator) && (!me.employeeWizardReverseTermination)) {
 				$("#actionMenu").hide();
 			}
 
@@ -2542,28 +2554,36 @@ ii.Class({
 		employeesWizardLoaded: function fin_emp_UserInterface_employeesWizardLoaded(me, activeId) {
 
 			if (me.employees.length <= 0) {				
-				alert('There is no Employee matching to the given Criteria.');
+				alert("There is no Employee matching to the given Criteria.");
 				me.employeeSSN.setValue("");
 				me.wizardCount--;
 				$("#popupLoading").hide();
 				return;
 			}
-			
+
 			if (me.employees.length > 0) {
 				me.personId = me.employees[0].id;
-				
+
 				$("#ViewHistory").show();
 				$("#popupSubHeaderEmployeeName").html("( Name: " + me.employees[0].firstName + ' ' + me.employees[0].lastName + ' )');
-				
+
 				if (me.actionType == "Rehire") {
-					if (me.employees[0].payrollStatus != "T"){
-						alert('Please select Terminated Employee for Rehire.');
-						me.actionCancel();	
-						$("#popupLoading").hide();					
+					if (me.employees[0].payrollStatus != "T") {
+						alert("Please select Terminated Employee for Rehire.");
+						me.actionCancel();
+						$("#popupLoading").hide();
 						return;
-					}					
+					}
 				}
-				
+				else if (me.actionType == "ReverseTermination") {
+					if (me.employees[0].payrollStatus != "T") {
+						alert("Please select Terminated Employee for Reverse Termination.");
+						me.actionCancel();
+						$("#popupLoading").hide();
+						return;
+					}
+				}
+
 				//me.fetchData();
 				me.houseCodeStore.fetch("userId:[user],appUnitBrief:" + me.employees[0].houseCode + ",", me.houseCodeWizardSetup, me);
 			}
@@ -2571,13 +2591,13 @@ ii.Class({
 		
 		validationsLoaded: function(me, activeId) {			
 			if (me.personId <= 0) {
-				if (me.employeeValidations.length > 0) {				
+				if (me.employeeValidations.length > 0) {
 					if (me.employeeValidations[0].hrBlackOutPeriod > 0 && me.employeeValidations[0].hrBlackOutPeriod <= 37) {
 						window.location = "/fin/emp/employeeSearch/usr/markup.htm";
 						alert("Employee may not be added or modified during the Payroll Blackout. The Payroll Blackout start date is expected to be Sunday at 12 AM and the end date is expected to be 37 hours later. Please visit after [" + me.employeeValidations[0].hrBlackOutPeriod + "] hours.");
 					}
-				}				
-			}				
+				}
+			}
 		},
 		
 		phoneMask: function() {
@@ -2738,6 +2758,16 @@ ii.Class({
 				else 
 					return true;
 			}
+			
+			//Termination date (for ReverseTermination), should be in current pay period			
+			if (args.actionType == "ReverseTermination") {
+				if (date2Validate < datePeriodStart)
+					return false;
+				else if (date2Validate > datePeriodEnd)
+					return false;
+				else
+					return true;
+			}			
 		},
 		
 		currentDate: function() {
@@ -3238,7 +3268,7 @@ ii.Class({
 				me.personPager.setValue((me.employeePersonals[0].pager == undefined ? "" : me.employeePersonals[0].pager));
 				me.hirNode = me.employeePersonals[0].hirNode;					
 				
-				if ((me.actionType == "Rehire") || (me.actionType == "Termination")) {
+				if ((me.actionType == "Rehire") || (me.actionType == "Termination") || (me.actionType == "ReverseTermination")) {
 					$("#SSNContianer").hide();
 					$("#PersonalDetails").show();
 					$("#AddressDetails").hide();
@@ -3325,6 +3355,12 @@ ii.Class({
 				  	$("#popupSubHeader").text(" General");
 					me.firstTimeShow = true;
 				    me.wizardCount = 11;
+					me.showWizard(); 
+				}
+				else if (me.actionType == "ReverseTermination") {
+				  	$("#popupSubHeader").text(" General");
+					me.firstTimeShow = true;
+				    me.wizardCount = 4;
 					me.showWizard(); 
 				}
 					  
@@ -3673,11 +3709,11 @@ ii.Class({
 				me.validateEmployeeDetails();				
 				me.hireDateAccessSetup();	
 				me.effectiveDateAccessSetup();
-								
+
 				setTimeout(function() { 
 					me.resizeControls();
-				}, 100);				
-			}	
+				}, 100);
+			}
 									
 			if (me.employeeGeneralId <= 0) {
 				
@@ -3717,16 +3753,20 @@ ii.Class({
 				$("#JobChangeReasonAction").removeClass("iiInputAction");	
 			}
 			
-			if (me.actionType == "Termination") {
-				me.setDropListSelectedValueByTitle("employeeStatus", "Terminated");
+			if (me.actionType == "Termination" || me.actionType == "ReverseTermination") {
+				if (me.actionType == "Termination")
+					me.setDropListSelectedValueByTitle("employeeStatus", "Terminated");
+				else if (me.actionType == "ReverseTermination")
+					me.setDropListSelectedValueByTitle("employeeStatus", "Active");
+
 				$("#EmployeeGeneralStatusTypeText").attr('disabled', true);
 				$("#EmployeeGeneralStatusTypeAction").removeClass("iiInputAction");
 
 				me.employeeStatusCategoryType.fetchingData();
 				me.statusCategoryTypeStore.fetch("userId:[user],statusTypeId:" + me.statusTypes[me.employeeStatusType.indexSelected].id + ",", me.employeeStatusCategorysLoaded, me);
 			}
-			
-			if (me.actionType == "NewHire" || me.actionType == "Rehire" || me.actionType == "Termination") {
+
+			if (me.actionType == "NewHire" || me.actionType == "Rehire" || me.actionType == "Termination" || me.actionType == "ReverseTermination") {
 				$("#EmailText").attr('disabled', false);
 				$("#HomePhoneText").attr('disabled', false);
 				$("#FaxText").attr('disabled', false);
@@ -3751,8 +3791,9 @@ ii.Class({
 			}
 			else if (me.employeeGenerals.length > 0) {
 				var title = me.findTitleById(me.employeeGenerals[0].statusType, me.statusTypes);
-	
-				if (title == "Terminated" && (!(me.actionType == "Person" || me.actionType == "Rehire" || me.actionType == "HouseCodeTransfer"))) {
+
+				if (title == "Terminated" && (!(me.actionType == "Person" || me.actionType == "Rehire"
+					|| me.actionType == "HouseCodeTransfer" || me.actionType == "ReverseTermination"))) {
 					me.anchorSave.display(ui.cmn.behaviorStates.disabled);
 				}
 				else if (title == "Terminated" && me.actionType == "Person") {
@@ -3771,15 +3812,42 @@ ii.Class({
 			me.status = "";
 		},
 		
+		effectiveDateLoaded: function(me, activeId) {
+
+			me.employeeTerminationDate.setValue("");
+			me.employeeTerminationReason.select(0, me.employeeTerminationReason.focused);
+			me.separationCode.select(0, me.separationCode.focused);
+
+			if (me.employeeHistories.length > 0) {
+				var effectiveDate = me.employeeHistories[0].previousFieldValue;
+				effectiveDate = new Date($.trim(effectiveDate.replace("12:00AM", "")));
+				me.employeeEffectiveDate.setValue((effectiveDate.getMonth() + 1) + "/" + effectiveDate.getDate() + "/" + effectiveDate.getFullYear());
+			}
+
+			me.employeeHistoryStore.fetch("userId:[user],employeeNumber:" + me.employees[0].employeeNumber + ",fieldName:EmpStatusCategoryType", me.statusCategoryTypeLoaded, me);
+		},
+		
+		statusCategoryTypeLoaded: function(me, activeId) {
+			
+			if (me.employeeHistories.length > 0) {
+				var index = ii.ajax.util.findIndexById(me.employeeHistories[0].previousFieldValue, me.statusCategoryTypes);
+				if (index != undefined) {
+					me.employeeStatusCategoryType.select(index, me.employeeStatusCategoryType.focused);
+				}
+				$("#EmployeeStatusCategoryTypeText").attr('disabled', true);
+				$("#EmployeeStatusCategoryTypeAction").removeClass("iiInputAction");
+			}
+		},
+		
 		primaryTaxStateSelect: function() {	
 			var me = this;	
 			
 			primaryTaxState = (me.primaryTaxState.indexSelected >= 0 ? me.stateTypes[me.primaryTaxState.indexSelected].id : 0);
 			
 			if (primaryTaxState == 0) {
-				me.secMaritalStatusSelect();				
-			}			
-			me.employeeStateAdjustmentType.fetchingData();	
+				me.secMaritalStatusSelect();
+			}
+			me.employeeStateAdjustmentType.fetchingData();
 			me.stateAdjustmentTypeStore.fetch("appState:" + primaryTaxState + ",userId:[user]", me.stateAdjustmentLoaded, me);
 			me.setStateAdditionalInfo("Primary");
 		},
@@ -4289,7 +4357,7 @@ ii.Class({
 				var index = ii.ajax.util.findIndexById(me.employeeGenerals[0].statusCategoryType.toString(), me.statusCategoryTypes);
 				if (index != undefined) {
 					me.employeeStatusCategoryType.select(index, me.employeeStatusCategoryType.focused);
-				};
+				}
 
 				if (me.actionType == "Rehire") {
 					me.setDropListSelectedValueByTitle("employeeStatusCategory", "Full Time");
@@ -4308,6 +4376,9 @@ ii.Class({
 					$("#EmployeeStatusCategoryTypeText").attr('disabled', true);
 					$("#EmployeeStatusCategoryTypeAction").removeClass("iiInputAction");
 				}
+				else if (me.actionType == "ReverseTermination") {
+					me.employeeHistoryStore.fetch("userId:[user],employeeNumber:" + me.employees[0].employeeNumber + ",fieldName:EmpEmpgEffectiveDate", me.effectiveDateLoaded, me);
+				}		
 			}
 
 			ii.trace("Employee Status Category Loaded 2", ii.traceTypes.information, "Info");
@@ -4795,7 +4866,7 @@ ii.Class({
 		employeeEffectiveDateChanged: function fin_emp_UserInterface_employeeEffectiveDateChanged() {
 			var me = this;
 			me.employeeGeneralAreaChanged = false;
-			
+
 			if (me.employeeStatusCategoryType.indexSelected >= 0 || me.separationCode.indexSelected >= 0) {					
 				me.employeeEffectiveDate.setValue(me.currentDate());							
 				me.employeeGeneralAreaChanged = true;
@@ -5081,6 +5152,10 @@ ii.Class({
 				case "BasicLifeIndicator":
 					$("#popupHeader").text("Basic Life Indicator -");
 					break;
+					
+				case "ReverseTermination":
+					$("#popupHeader").text("Reverse Termination -");
+					break;
 			}
 
 			loadPopup();									
@@ -5292,6 +5367,9 @@ ii.Class({
 			else if (me.actionType == "BasicLifeIndicator") {
 				me.wizardCount = 1;
 			}
+			else if (me.actionType == "ReverseTermination") {
+				me.wizardCount = 1;
+			}
 
 			if ($("#AnchorBack").is(':visible') == false) {
 				me.initializeWizard();
@@ -5314,15 +5392,7 @@ ii.Class({
                     $("#AnchorBack").hide(); 						  
 					me.isPageLoaded = false;
 					
-					if (me.actionType == "Rehire") {
-						$("#EditEmployee").hide();
-						$("#popupSubHeader").text("Person");
-					}
-					else if (me.actionType == "NewHire") {
-						$("#EditEmployee").hide();
-						$("#popupSubHeader").text("Person");
-					}
-					else if (me.actionType == "Termination") {
+					if (me.actionType == "Rehire" || me.actionType == "NewHire" || me.actionType == "Termination") {
 						$("#EditEmployee").hide();
 						$("#popupSubHeader").text("Person");
 					}
@@ -5391,11 +5461,21 @@ ii.Class({
 						me.wizardCount = 3;
 					}
 					else if (me.actionType == "BasicLifeIndicator") {
+						$("#popupSubHeader").text("General");
 						$("#LifeIndicator").hide();
 						$("#AnchorNext").show();
 						$("#AnchorSave").hide();
 						if (me.firstTimeShow)
 							me.wizardCount = 10;
+					}
+					else if (me.actionType == "ReverseTermination") {
+						$("#popupSubHeader").text("Person");
+						$("#EmployeeInformation").hide();
+						$("#houseCodeTerm").hide();
+						$("#AnchorNext").show();
+						$("#AnchorSave").hide();
+						if (me.firstTimeShow)
+							me.wizardCount = 3;
 					}
 					  						                          
 					me.resizeControls();
@@ -5428,42 +5508,39 @@ ii.Class({
                     break;
                       
                 case 2:					
-					
+
                     if ((!me.personFirstName.validate(true)) || (!me.personLastName.validate(true))) {
 						me.wizardCount--;
 						return false;
 					}
-					 
+
 					$("#AddressDetails").show(); 
-	
+
 					if (me.actionType == "NewHire") {
-						me.setPersonBrief();         
+						me.setPersonBrief();
 					}
-					if (me.actionType == "Rehire") {
-						$("#popupSubHeader").text("Person");
-					}
-					if (me.actionType == "Termination") {
+					if (me.actionType == "Rehire" || me.actionType == "Termination") {
 						$("#popupSubHeader").text("Person");
 					}
 
 					if (me.actionType == "Person") {
-						$("#popupSubHeader").text("Person")
+						$("#popupSubHeader").text("Person");
 						$("#PersonalDetails").hide();
 						$("#ContactDetails").hide();
 						$("#AnchorNext").show();
 						$("#AnchorSave").hide();
 						me.wizardCount = 2;
 					}
-					
-                    $("#PersonalDetails").hide();                          
-                    $("#ContactDetails").hide(); 
-					
+
+                    $("#PersonalDetails").hide();
+                    $("#ContactDetails").hide();
+
 					me.personAddressLine1.text.focus();
-					                         
+
                     me.resizeControls();
-                                                                                  
+ 
                     break;
-                      
+
                 case 3:     
                 	
 					if ((!me.personAddressLine1.validate(true)) ||
@@ -5536,6 +5613,17 @@ ii.Class({
 						$("#TermReasonDate").show();
 						$("#GeneralCurrentHireDate").hide();
 						$("#GeneralOriginalHireDate").hide();						
+						$("#AnchorNext").hide();
+						$("#AnchorSave").show();
+					}
+					
+					if (me.actionType == "ReverseTermination") {
+						$("#popupSubHeader").text("General");
+						$("#SSNContianer").hide();
+						$("#PersonalDetails").hide();
+						$("#GeneralCurrentHireDate").hide();
+						$("#GeneralOriginalHireDate").hide();
+						$("#AnchorBack").show();
 						$("#AnchorNext").hide();
 						$("#AnchorSave").show();
 					}
@@ -6052,6 +6140,21 @@ ii.Class({
 				}
 			}
 			
+			if (me.actionType == "ReverseTermination") {			
+				if (me.isDateValid(me.employeeGenerals[0].terminationDate, 'ReverseTermination') == false) {
+					alert('You cannot reverse terminate an employee who was terminated in a prior pay period. \n' +
+						'Contact the Corporate Payroll department for further instructions.');
+					return false;
+				}
+
+				if ((!me.employeeNumber.validate(true)) ||
+					(!me.employeePayrollCompany.validate(true)) ||
+					(!me.employeeStatusType.validate(true)) ||
+					(!me.employeeStatusCategoryType.validate(true))) {
+					return false;
+				}
+			}
+			
 			$("#messageToUser2").html("Saving");
 			$("#popupLoading").show();
 			
@@ -6119,6 +6222,12 @@ ii.Class({
 						previousPayrollStatus = 'I';
 					}
 				}
+			}
+			
+			if (me.actionType == "ReverseTermination") {
+				changeStatusCode = '';
+				payrollStatus = 'A';
+				previousPayrollStatus = 'A';
 			}
 			
 			//Hourly - Salary
@@ -6319,6 +6428,7 @@ ii.Class({
 				me.actionType == "State Tax" ||
 				me.actionType == "Local Tax" ||
 				me.actionType == "BasicLifeIndicator" ||
+				me.actionType == "ReverseTermination" ||
 				updateFlag == true) {
 				xml += '<employeeGeneralWizard';
 				xml += ' id="' + itemGeneral.id + '"';
@@ -6353,15 +6463,15 @@ ii.Class({
 				xml += ' version="1"';
 			}
 				
-			if (me.actionType == "Termination") {
+			if (me.actionType == "Termination" || me.actionType == "ReverseTermination") {
 				xml += ' payrollCompany="' + itemGeneral.payrollCompany + '"';
 				xml += ' crothallEmployee="' + itemGeneral.crothallEmployee + '"';
-				xml += ' effectiveDate="' + itemGeneral.effectiveDate + '"';					
+				xml += ' effectiveDate="' + itemGeneral.effectiveDate + '"';
 				xml += ' separationCode="' + itemGeneral.separationCode + '"';
 				xml += ' terminationDate="' + itemGeneral.terminationDate + '"';
 				xml += ' terminationReason="' + itemGeneral.terminationReason + '"';
 				xml += '/>';
-			}
+			}			
 					
 			if (me.actionType == "Employee" || me.actionType == "Rehire" || me.actionType == "NewHire") { 				
 				xml += ' genderType="' + itemGeneral.genderType + '"';
@@ -6454,6 +6564,7 @@ ii.Class({
 				me.actionType == "State Tax" ||
 				me.actionType == "Local Tax" ||
 				me.actionType == "BasicLifeIndicator" ||
+				me.actionType == "ReverseTermination" ||
 				updateFlag == true) {
 				xml += '/>';
 			}
@@ -6639,6 +6750,8 @@ ii.Class({
 					me.actionWizardSelect("DateModification");
 				else if (this.id == "menuBasicLifeIndicator")
 					me.actionWizardSelect("BasicLifeIndicator");
+				else if (this.id == "menuReverseTermination")
+					me.actionWizardSelect("ReverseTermination");
 					
 				$("#EmployeeSearchContext").hide();
 			});
