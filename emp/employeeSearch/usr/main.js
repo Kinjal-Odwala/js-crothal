@@ -4284,7 +4284,8 @@ ii.Class({
 				
 				if (me.employeeGenerals[0].jobCode != me.jobCodeTypes[me.employeeJobCode.indexSelected].number) {
 					me.houseCodeJobChanged = true;
-					me.jobStartReasonChange();
+					if (me.actionType != "Rehire" && me.actionType != "HouseCodeTransfer")
+						me.jobStartReasonChange();
 					if (me.actionType == "Job Information") {
 						me.jobEffectiveDate.text.value = me.currentDate();
 					}
