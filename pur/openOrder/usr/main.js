@@ -577,8 +577,8 @@ ii.Class({
 			if (args.editable) {
 				if (args.columnName.substring(0,3) == "job") 
 					return "<td class='gridColumn'>" + me.populateDropDown(args.columnName, args.columnValue) + "</td>";
-				else 
-					return "<td class='gridColumn' align='center'><input type=text onkeypress = parent.fin.purMasterUi.modified(true); style='width:90%; text-align:" + args.columnAlign + ";' id='" + args.columnName + "' value='" + args.columnValue + "'></input></td>";
+				else
+					return "<td class='gridColumn' align='center'><input type=text style='width:90%; text-align:" + args.columnAlign + ";' id='" + args.columnName + "' value='" + args.columnValue + "'></input></td>";
 			}				
 			else if (args.columnWidth == 0)
 				return "<td class='gridColumnHidden'>" + args.columnValue + "</td>";

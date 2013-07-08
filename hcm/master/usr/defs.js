@@ -72,7 +72,7 @@ ii.init.register( function() {
 		, mgmtFeeTotalProductiveLaborDollarsPaid: {type: Number, required: false, defaultValue: 0}
 		, mgmtFeeTotalNonProductiveLaborDollarsPaid: {type: Number, required: false, defaultValue: 0}
 		, hospitalPaidJanitorialPaperPlasticSupplyCost: {type: Number, required: false, defaultValue: 0}
-		, buildingPopulation: {type: Number, required: false, defaultValue: 0}
+		, buildingPopulation: {type: String, required: false, defaultValue: ""}
 		, maintainableAcres: {type: String, required: false, defaultValue: ""}
 		, scientists: {type: String, required: false, defaultValue: ""}
 		, managedRooms: {type: String, required: false, defaultValue: ""}

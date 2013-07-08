@@ -243,7 +243,7 @@ ii.Class({
 			me.workShift = new ui.ctl.Input.DropDown.Filtered({
 		        id: "WorkShift" ,
 		        formatFunction: function( type ) { return type.name; },
-				changeFunction: function() { me.workShiftChanged(); }
+				changeFunction: function() { me.modified(); me.workShiftChanged(); }
 		    });
 
 			me.workShift.makeEnterTab()
@@ -1034,16 +1034,6 @@ ii.Class({
 			if (me.workShift.indexSelected == -1)
 				return;
 
-			if ((me.workShiftId != me.workShiftTypes[me.workShift.indexSelected].id) && !parent.fin.cmn.status.itemValid()) {
-				var index = ii.ajax.util.findIndexById(me.workShiftId.toString(), me.workShiftTypes);
-
-				if (index != undefined) {
-					me.workShift.select(index, me.workShift.focused);
-				}
-
-				return;
-			}
-			
 			me.workShiftId = me.workShiftTypes[me.workShift.indexSelected].id;
 
 			if (me.workShiftId == 0)
@@ -1059,7 +1049,7 @@ ii.Class({
 		},
 		
 		workShiftsLoaded: function(me, activeId) {
-			
+
 			if (me.workShifts.length > 0) {				
 				$("#PunchWorkShift").text(me.workShifts[0].shiftStartTime + " - " + me.workShifts[0].shiftEndTime);
 				me.shiftStartTime = me.workShifts[0].shiftStartTime;

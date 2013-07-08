@@ -57,7 +57,17 @@ ii.Class({
 			me.validator = new ui.ctl.Input.Validation.Master();									
 
 			me.session = new ii.Session(me.cache);
-			
+
+			// blur event is not firing when clicking on the tab. Due to this dirty check function and prompt message was not working.
+			$("#TabCollection a").mouseover(function() {
+				if (!parent.parent.fin.appUI.modified) {
+					var focusedControl = $("iframe")[me.activeFrameId].contentWindow.document.activeElement;
+
+					if (focusedControl.type != undefined && (focusedControl.type == "text" || focusedControl.type == "textarea"))
+						$(focusedControl).blur();
+				}
+			});
+
 			$("#TabCollection a").mousedown(function() {
 				if (!parent.fin.cmn.status.itemValid()) 
 					return false;

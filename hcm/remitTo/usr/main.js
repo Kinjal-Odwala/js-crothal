@@ -141,7 +141,7 @@ ii.Class({
 			
 			me.remitToTitle = new ui.ctl.Input.Text({
 		        id: "RemitToTitle",
-				maxLength: 16,
+				maxLength: 50,
 				changeFunction: function() { me.modified(); } 
 		    });
 			
@@ -151,6 +151,7 @@ ii.Class({
 			
 			me.remitToAddress1 = new ui.ctl.Input.Text({
 		        id: "RemitToAddress1",
+				maxLength: 255,
 				changeFunction: function() { me.modified(); } 
 		    });
 			
@@ -160,11 +161,13 @@ ii.Class({
 				
 			me.remitToAddress2 = new ui.ctl.Input.Text({
 		        id: "RemitToAddress2",
+				maxLength: 255,
 				changeFunction: function() { me.modified(); } 
 		    });
 			
 			me.remitToCity = new ui.ctl.Input.Text({
 		        id: "RemitToCity",
+				maxLength: 100,
 				changeFunction: function() { me.modified(); } 
 		    });
 			
@@ -411,7 +414,7 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 				
-			if(me.remitToReadOnly) return;
+			if (me.remitToReadOnly) return;
 			
 			me.resetControls();
 			me.remitToGrid.body.deselectAll();

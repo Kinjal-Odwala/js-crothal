@@ -615,6 +615,18 @@ ii.Class({
 				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 			
+			me.buildingPopulation.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.buildingPopulation.getValue();
+
+					if (enteredText == "") return;
+
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,16}(\\.\\d{1,2})?$")))
+						this.setInvalid("Please enter numeric value. Expected number format is 99.99");
+				});
+			
 			me.maintainableAcres = new ui.ctl.Input.Text({
 		        id: "MaintainableAcres",
 		        maxLength: 50,

@@ -1,23 +1,61 @@
-﻿.pageHeaderRevenue 
-{
+﻿.pageHeaderRevenue {
+	height: 25px;
 	background-color: #9BCD9A;
-	padding-left: 6px;
-	height: 25px;
+	padding-left: 6px;	
 }
 
-.pageHeaderRevenueRadio 
-{
+.pageHeaderRevenueRadio {
+	height: 25px;
 	padding-left: 15px;
-	height: 25px;
 }
 
-.TableEditArea
-{
+.TableEditArea {
 	width: 100%;
 }
 
-#LabelTextAreaLeftRevenue
-{
+.InvoiceGridTable {
+	width: 100%;
+	height: 140px;	
+}
+
+.fragment {
+	border: 0;
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	margin: 0px;
+}
+
+.tabContainer {
+	border: 0; 
+	width: 100%;
+}
+
+.linkTextBack {
+	font-family: Verdana;
+	font-size: 10px;
+	text-decoration: none;
+	color: #032D23;
+}
+
+.labelNewInvoice {
+	float: left;
+	width: 150px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 10px 10px 0px 10px;
+}
+
+.radioButton {
+	float: left;
+	width: 100px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 8px 0px 0px 0px;
+}
+
+#LabelTextArea {
 	float: left;
 	font-family: Verdana;
 	font-size: 12px;
@@ -27,89 +65,51 @@
 	font-weight: bold;
 }
 
-#InvoiceRadioButtonLeft
-{
+#InvoiceRadioButtonLeft {
 	float: left;
 	padding-right: 5px;
 	padding-top: 2px;
 }
 	
-#DropDownTextAreaRight
-{
+#DropDownTextAreaRight {
+	float: left;
+	width: 350px;
 	padding: 3px 10px 3px 0;
-	width: 350px; 
-	float: left; 
 }
 
-#FiscalYear
-{
+#FiscalYear {
 	width: 70px;
 }
 
-.InvoiceGridTable
-{
-	height: 140px;
+#container-1 {
+	float: left;	
 	width: 100%;
-}
-
-.fragment
-{
 	border: 0;
-	border: solid #AAAAAA thin;
-	border-width: 1px;
-	margin: 0px;
-}
-
-#container-1
-{
-	float: left;
-	border: 0;
-	width: 100%;
 	padding-top: 5px;
 }
 
-#TabCollection
-{
+#TabCollection {
 	width: 100%;
 }
 
-.tabContainer
-{
-	border: 0; 
-	width: 100%;
-}
-
-#button
-{
+#button {
 	float: right;
 	padding-right: 0px;
 }
 	
-#anchorAlign
-{
+#anchorAlign {
 	padding-top: 5px;
 	padding-bottom: 5px;
 	clear: both;
 }
 
-#buttonAlign
-{
+#buttonAlign {
 	margin-left: 130px;
 	bottom: 10px;
 	position: absolute;
 }
 	
-#AnchorLoad
-{
-	float: left;
-	width: 80px;
-	padding-left: 5px;
-	margin-right: 5px;
-	padding-top: 5px;
-}
-	
-#AnchorCancel
-{
+#AnchorLoad {
 	float: left;
 	width: 80px;
 	padding-left: 5px;
@@ -117,77 +117,95 @@
 	padding-top: 5px;
 }
 
-#AnchorSave
-{
+#AnchorSave {
 	float: left;
 	width: 67px;
 	padding-left: 10px;
 	margin-right: 5px;
 }
 
-#AnchorNew
-{
-	float: right;
-	width: 103px;
-	margin-right: 0px;
+#AnchorCancel {
+	float: left;
+	width: 80px;
+	padding-left: 5px;
+	margin-right: 5px;
+	padding-top: 5px;
 }
 
-#AnchorCancelInvoice
-{
+#PrintMemo {
+	float: left;
+	width: 108px;
+	padding-left: 2px;
+	padding-top: 5px;
+}
+
+#Print {
+	float: left;
+	width: 60px;
+	padding-left: 2px;
+	padding-top: 5px;
+}
+
+#Preview {
+	float: left;
+	width: 73px;
+	padding-left: 2px;
+	padding-top: 5px;
+}
+
+#AnchorCancelInvoice {
 	float: left;
 	width: 80px;
 	padding-left: 2px;
 	padding-top: 5px;
 }
 
-#AnchorOk
-{
+#AnchorNew {
+	float: right;
+	width: 103px;
+	margin-right: 0px;
+}
+
+#AnchorOk {
 	float: left;
 	width: 60px;
 	padding: 5px 5px 0px 5px;
 }
 
-#AnchorEdit
-{
+#AnchorEdit {
 	float: left;
 	width: 62px;
 	padding: 5px 5px 0px 5px;
 }
 
-#InputTextAreaSmall
-{
-	width: 150px; 
-	float: left; 
+#InputTextAreaSmall {
+	float: left;
+	width: 190px;	
 	height: 27px;
 }
 	
-#InputTextAreaLarge
-{
-	width: 250px; 
-	float: left; 
+#InputTextAreaLarge {
+	float: left;
+	width: 250px;
 	height: 27px;
 }
 	
-#divAreasContainerLeft
-{
+#divAreasContainerLeft {
 	float: left;
 	margin-right: 20px;
 }
 	
-#divAreasContainerRight
-{
+#divAreasContainerRight {
 	float: left;
 }
 
-#popupSetup, #popupSearch
-{
+#popupSetup, #popupSearch {
 	display: none;
 }		
 
-#LabelTextAreaRev
-{
-	width: 200px;
+#LabelTextAreaLeft {
 	float: left;
+	width: 150px;	
 	height: 27px;
 	font-family: Verdana;
 	font-size: 12px;
@@ -195,19 +213,17 @@
 	padding-left: 5px;
 }
 
-#LabelTextAreaRightRev
-{
-	width: 130px;
+#LabelTextAreaRight {
 	float: left;
+	width: 150px;	
 	height: 27px;
 	font-family: Verdana;
 	font-size: 12px;
 	color: #032D23;
-	padding-left: 5px;
+	padding-left: 50px;
 }
 
-#popupMessage	
-{
+#popupMessage {
 	width: 400px; 
 	height: 150px;
 	border: 1px black solid;
@@ -218,52 +234,17 @@
 	display: none;
 }
 
-#divMessage	
-{
+#divMessage	{
 	font-family: Verdana;
 	font-size: 12px;
 	padding: 10px 10px 10px 10px;
 }
 
-#amountBodyColumn, #collectedBodyColumn, #creditedBodyColumn
-{
+#amountBodyColumn, #collectedBodyColumn, #creditedBodyColumn {
 	text-align: right;	
 }
 
-#Print
-{
-	float: left;
-	width: 60px;
-	padding-left: 2px;
-	padding-top: 5px;
-}
-
-#PrintMemo
-{
-	float: left;
-	width: 108px;
-	padding-left: 2px;
-	padding-top: 5px;
-}
-
-#Preview
-{
-	float: left;
-	width: 73px;
-	padding-left: 2px;
-	padding-top: 5px;
-}
-
-.linkTextBack
-{
-	font-family: Verdana;
-	font-size: 10px;
-	text-decoration: none;
-	color: #032D23;
-}
-
-#backLable
-{
+#backLabel {
 	float: right;
 	padding-right: 25px;	
 	padding-right: 10px;
@@ -271,31 +252,12 @@
 	font-weight: bold;
 }
 
-#Notes 
-{	
+#Notes {	
 	float: left;
-	width: 450px;
+	width: 595px;
 	font-family: Verdana;
 	font-size: 12px;
 	color: black;
-}
-
-.labelNewInvoice {
-	float: left;
-	font-family: Verdana;
-	font-size: 12px;
-	color: #032D23;
-	padding: 10px 10px 0px 10px;
-	width: 150px;
-}
-
-.radioButton {
-	float: left;
-	font-family: Verdana;
-	font-size: 12px;
-	color: #032D23;
-	padding: 8px 0px 0px 0px;
-	width: 100px;
 }
 
 #AnchorNewNext, #AnchorSearchNext {
