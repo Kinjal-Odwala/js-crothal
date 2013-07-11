@@ -568,3 +568,7 @@ Insert into ESMV2.dbo.HirGroupNodes Values (@HirNodeParent, 1, 'Compass-USA\Data
 /*
 CT updated on 26th June 2013 11PM EST
 */
+
+/*
+Last production release version 2.04.010 on 10th July 2013 11PM EST
+*/
