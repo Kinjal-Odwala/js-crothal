@@ -580,8 +580,8 @@ ii.Class({
 				alert("[Primary Service] Provided is required for accurate reporting. Please select it on HouseCode Tab.");
 				return;
 			}			
-			
-			if (!statisticsUIControls.buildingPopulation.validate(true)) {
+
+			if (statisticsUIControls != undefined && !statisticsUIControls.buildingPopulation.validate(true)) {
 				alert("[Building Population] is invalid. Please enter numeric value on Statistics Tab.");
 				return false;
 			}
