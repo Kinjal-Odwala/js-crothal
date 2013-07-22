@@ -2013,8 +2013,8 @@ ii.Class({
             xml += ' poNumber="' + ui.cmn.text.xml.encode(args.item.poNumber) + '"';
 			xml += ' invoiceLogoType="' + args.item.invoiceLogoType + '"';
 			xml += ' invoiceAddressType="' + args.item.invoiceAddressType + '"';
-			xml += ' serviceLocationBrief="' + args.item.serviceLocationBrief + '"';
-			xml += ' serviceLocation="' + args.item.serviceLocation + '"';
+			xml += ' serviceLocationBrief="' + ui.cmn.text.xml.encode(args.item.serviceLocationBrief) + '"';
+			xml += ' serviceLocation="' + ui.cmn.text.xml.encode(args.item.serviceLocation) + '"';
 			xml += ' notes="' + ui.cmn.text.xml.encode(args.item.notes) + '"';
             xml += ' version="' + args.item.version + '"';
             xml += ' validate="' + me.validate + '"';
