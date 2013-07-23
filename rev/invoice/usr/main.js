@@ -168,8 +168,8 @@ ii.Class({
 			});			
 			var event = args.event;
 			var me = event.data;
-			
-			if(event.button == 2)
+
+			if (event.button == 2)
 				me.replaceContext = true;			
 			else if (!me.mouseOverContext)
 				$("#InvoiceItemContext").hide();
@@ -827,7 +827,8 @@ ii.Class({
 			$("#quantity, #price").bind("blur", function() { me.calculateTotal(); });
 			$("#job, #taxableService, #account").bind("change", function() { me.modified(); me.setTaxable(); });
 
-			me.setTaxable();
+			if (!me.invoiceByCustomer)
+				me.setTaxable();
 		},
 		
 		invoiceItemGridRowEdit: function() {
@@ -1007,7 +1008,7 @@ ii.Class({
 		searchHouseCode: function() {
 			var args = ii.args(arguments, {
 				event: {type: Object} // The (key) event object
-			});			
+			});
 			var event = args.event;
 			var me = event.data;
 
@@ -1073,8 +1074,8 @@ ii.Class({
 		                //the house code is valid
 		                $(xml).find('item').each(function() {
 		                    me.houseCodeCache[houseCode].valid = true;
-		                    me.houseCodeCache[houseCode].id = $(this).attr("id");
-							me.houseCodeCache[houseCode].hirNode = $(this).attr("hirNode");
+		                    me.houseCodeCache[houseCode].id = Number($(this).attr("id"));
+							me.houseCodeCache[houseCode].hirNode = Number($(this).attr("hirNode"));
 		                    me.houseCodeJobCustomersLoad(houseCode);
 		                });
 		            }
@@ -1089,8 +1090,6 @@ ii.Class({
 		houseCodeValidate: function(houseCode) {
 		    var me = this;
 
-			$("#pageLoading").hide();
-
 		    if (me.houseCodeCache[houseCode].valid) {
 				var found = false;
 
@@ -1098,7 +1097,7 @@ ii.Class({
 					if (me.invoice.jobBrief == me.houseCodeCache[houseCode].customers[index].jobNumber) {
 						found = true;
 						break;
-					}						
+					}
 			    }
 
 				if (found) {
@@ -1113,6 +1112,7 @@ ii.Class({
 				}
 				else {
 					me.houseCodeCache[houseCode].validCustomer = false;
+					$("#pageLoading").hide();
 					$("#job").empty();
 					$("#houseCode").css("background-color", "red");
 					$("#houseCode").attr("title", "Customer it is not associated with the House Code [" + houseCode + "].");
@@ -1121,6 +1121,7 @@ ii.Class({
 				}
 		    }
 		    else {
+				$("#pageLoading").hide();
 				$("#job").empty();
 				$("#houseCode").css("background-color", "red");
 				$("#houseCode").attr("title", "The House Code [" + houseCode + "] is not valid.");
@@ -1145,7 +1146,7 @@ ii.Class({
                     
 		            $(xml).find("item").each(function() {
 		                var job = {};
-		                job.id = $(this).attr("id");
+		                job.id = Number($(this).attr("id"));
 		                job.jobNumber = $(this).attr("jobNumber");
 		                job.jobTitle = $(this).attr("jobTitle");
 		                me.houseCodeCache[houseCode].customers.push(job);
@@ -1160,7 +1161,7 @@ ii.Class({
 
 		houseCodeJobsLoad: function(houseCode) {
 		    var me = this;
-		    
+
 		    $.ajax({
                 type: "POST",
                 dataType: "xml",
@@ -1170,21 +1171,19 @@ ii.Class({
                     + ",houseCodeId:" + me.houseCodeCache[houseCode].id + ",<criteria>",
 
                 success: function(xml) {
-                    
+
 		            $(xml).find("item").each(function() {
-		                var job = {};
-		                job.id = $(this).attr("id");
+		                var job = {};						
+		                job.id = Number($(this).attr("id"));
 		                job.jobNumber = $(this).attr("jobNumber");
 		                job.jobTitle = $(this).attr("jobTitle");
-						job.overrideSiteTax = $(this).attr("overrideSiteTax");
-						job.stateType = $(this).attr("stateType");
+						job.overrideSiteTax = ($(this).attr("overrideSiteTax") == "true" ? true: false);
+						job.stateType = Number($(this).attr("stateType"));
 		                me.houseCodeCache[houseCode].jobs.push(job);
 		            });
 
 					me.houseCodeCache[houseCode].jobsLoaded = true;
 					me.taxableServiceStatesLoad(houseCode);
-					me.siteStateTypeLoad(houseCode);
-					me.jobRebuild(houseCode);
 				}
 			});
 		},
@@ -1204,16 +1203,18 @@ ii.Class({
                     
 		            $(xml).find("item").each(function() {
 		                var tsState = {};
-		                tsState.id = $(this).attr("id");
-		                tsState.taxableService = $(this).attr("taxableService");
-		                tsState.stateType = $(this).attr("stateType");
-						tsState.taxable = $(this).attr("taxable");
+		                tsState.id = Number($(this).attr("id"));
+		                tsState.taxableService = Number($(this).attr("taxableService"));
+		                tsState.stateType = Number($(this).attr("stateType"));
+						tsState.taxable = ($(this).attr("taxable") == "true" ? true: false);
 		                me.houseCodeCache[houseCode].taxableServiceStates.push(tsState);
 		            });					
 
 					me.houseCodeCache[houseCode].taxableServiceStatesLoaded = true;
 				}
 			});
+			
+			me.siteStateTypeLoad(houseCode);
 		},
 		
 		siteStateTypeLoad: function(houseCode) {
@@ -1230,10 +1231,12 @@ ii.Class({
                 success: function(xml) {
                     
 		            $(xml).find("item").each(function() {
-						me.houseCodeCache[houseCode].stateType = $(this).attr("state");
+						me.houseCodeCache[houseCode].stateType = Number($(this).attr("state"));
 		            });
 				}
 			});
+
+			me.jobRebuild(houseCode);
 		},
 
 		jobRebuild: function(houseCode) {
@@ -1262,6 +1265,9 @@ ii.Class({
 					}
 				}
 			}
+
+			me.setTaxable();
+			$("#pageLoading").hide();
 		},
 
 		actionOkItem: function() {

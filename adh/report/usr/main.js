@@ -1259,69 +1259,92 @@ ii.Class({
 		setReportFilters: function() {
 			var me = this;
 			
-			var rowData = "<tr id='filterHeader'><td colspan='3' height='24px'></td></tr>";
+			var rowData = "<tr id='filterHeader'><td colspan='4' height='24px'></td></tr>";
 			var dateControls = [];
 			
 			if (me.reportFilters.length > 0) {
-				rowData = "<tr id='filterHeader'><td colspan='3' class='header'>Filter</td></tr>";  
+				rowData = "<tr id='filterHeader'><td class='gridHeaderColumn'>Filter</td><td class='gridHeaderColumn'>Operator</td><td class='gridHeaderColumn'>Value</td><td class='gridHeaderColumn'>And/Or</td></tr>";  
 
 				for (var index = 0; index < me.reportFilters.length; index++) {
 					rowData += "<tr>";
-					rowData += "<td class='filterLabel' align='left'>" + me.reportFilters[index].name + ':' + "</td>";
+					rowData += "<td  class='gridColumn' align='left'>" + me.reportFilters[index].name + ':' + "</td>";
 					
 					if (me.reportFilters[index].referenceTableName == "") {
 						contorlValidation = me.reportFilters[index].validation;
 						if (contorlValidation == "bit") {
-							rowData += "<td align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'bit') + "</td>";
+							rowData += "<td class='gridColumn' align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'bit') + "</td><td class='gridColumn'></td>";
 						}
 						else if (contorlValidation.toLowerCase() == "datetime" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator == 1) {
-							rowData += "<td align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'datetime') + "</td>";
-							rowData += "<td align='left'><input  class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
+							rowData += "<td class='gridColumn' align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'datetime') + "</td>";
+							rowData += "<td class='gridColumn' align='left'><input  class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
 							rowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
 						}
 						else if (contorlValidation.toLowerCase() == "datetime" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator != 1) {
-							rowData += "<td align='left'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
+							rowData += "<td class='gridColumn' align='left'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
 							rowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
 						}
 						else if (contorlValidation.toLowerCase() == "int" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator == 1) {
-							rowData += "<td align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'int') + "</td>";
-							rowData += "<td align='left'><input  class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
+							rowData += "<td class='gridColumn' align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'int') + "</td>";
+							rowData += "<td class='gridColumn' align='left'><input  class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
 							rowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
 						}
 						else if (contorlValidation.toLowerCase() == "int" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator != 1) {
-							rowData += "<td align='left'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
+							rowData += "<td class='gridColumn' align='left'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
 							rowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
 						}
 						else if (contorlValidation.toLowerCase() == "decimal" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator == 1) {
-							rowData += "<td align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'decimal') + "</td>";
-							rowData += "<td align='left'><input  class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
+							rowData += "<td class='gridColumn' align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'decimal') + "</td>";
+							rowData += "<td class='gridColumn' align='left'><input  class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
 							rowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
 						}
 						else if (contorlValidation.toLowerCase() == "decimal" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator != 1) {
-							rowData += "<td align='left'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
+							rowData += "<td class='gridColumn' align='left'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
 							rowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
 						}
 						else if (me.reportFilters[index].columnDataType.toLowerCase() == "varchar" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator == 1) {
-							rowData += "<td align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'text') + "</td>";
-							rowData += "<td align='left'><input  class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
+							rowData += "<td class='gridColumn' align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'text') + "</td>";
+							rowData += "<td class='gridColumn' align='left'><input  class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
 							rowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
 						}
 						else if (me.reportFilters[index].columnDataType.toLowerCase() == "varchar" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator != 1) {
-							rowData += "<td align='left'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
+							rowData += "<td class='gridColumn' align='left'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
 							rowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
 						}
 						else {
-							rowData += "<td align='left' colspan='2'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input></td>";
+							rowData += "<td class='gridColumn' align='left'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input></td>";
 						}
 					}
 					else 
-						rowData += "<td align='left' colspan='2'>" + me.populateFilterDropDown(me.reportFilters[index].referenceTableName, me.reportFilters[index].title) + "</td>";
+						rowData += "<td class='gridColumn'></td><td class='gridColumn' align='left'>" + me.populateFilterDropDown(me.reportFilters[index].referenceTableName, me.reportFilters[index].title) + "</td>";
+						
+					rowData += "<td align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title + "_andOr", 'andOrOperator') + "</td>";
 					rowData += "</tr>"
 				}
 			}
-
-			$("#AdhReportFilterGridBody").html(rowData);
 			
+			$("#AdhReportFilterGridBody").html(rowData);
+									
+			$("#AdhReportFilterGridBody tr:odd").addClass("gridRow");
+        	$("#AdhReportFilterGridBody tr:even").addClass("alternateGridRow");
+			
+			$("#AdhReportFilterGridBody tr").mouseover(function() {
+				$(this).addClass("trover");}).mouseout(function() {
+					$(this).removeClass("trover");});
+			
+			if (me.reportFilters.length > 0) {
+				$("#divFilterGrid").addClass("gridBorder");
+				if ($("#AdhReportFilterGridBody").height() > 800)
+					$("#divFilterGrid").addClass("tbodyBorder");
+				else
+					$("#divFilterGrid").removeClass("tbodyBorder");
+			}
+			else {
+				$("#divFilterGrid").removeClass("gridBorder");
+				$("#divFilterGrid").removeClass("tbodyBorder");
+				$("#AdhReportFilterGridBody tr").mouseover(function() {
+					$(this).removeClass("trover");});
+			}	
+				
 			for (var index = 0; index < me.reportFilters.length; index++) {
 				if (me.reportFilters[index].validation.toLowerCase() == "datetime") {
 					$("#" + me.reportFilters[index].title).datepicker({
@@ -1336,10 +1359,11 @@ ii.Class({
 				}
 				else if (me.reportFilters[index].referenceTableName != "") {
 					$("#" + me.reportFilters[index].title).multiselect({
-						minWidth: 200
+						minWidth: 185
 						, header: false
 						, noneSelectedText: ""
 						, selectedList: 5
+						, create: function(){ $(this).next().width(182); }
 //						, selectedText: function(numChecked, numTotal, checkedItems) {
 //							return numChecked + ' of ' + numTotal + ' checked';   
 //						}
@@ -1408,6 +1432,8 @@ ii.Class({
 			var rowData = "";
 			var className = "gridHeaderColumn";
 			var width = (me.moduleColumnHeaders.length * 20);
+			var operator = 'And';
+			var filterStatement;
 			
 			for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
 				if (me.moduleColumnHeaders[index].columnType != 2)
@@ -1459,10 +1485,15 @@ ii.Class({
 			$("#AdhReportItemGridHead").html(rowData);
 			
 			me.filter = "";
-
+			
 			for (var index = 0; index < me.reportFilters.length; index++) {
+				if ($("#sel" + me.reportFilters[index].title + "_andOr").val() == 2)
+					operator = "Or";
+				else
+					operator = "And";
+					
 				if (me.reportFilters[index].validation.toLowerCase() == "bit" && $("#sel" + me.reportFilters[index].title).val() != "") {
-					me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#sel" + me.reportFilters[index].title).val() + "')";
+					me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#sel" + me.reportFilters[index].title).val() + "')";
 				}
 				else if ($("#" + me.reportFilters[index].title).val() != null && $("#" + me.reportFilters[index].title).val() != "") {
 					if ($("#" + me.reportFilters[index].title).val() != "0") {
@@ -1473,52 +1504,61 @@ ii.Class({
 								inQuery += ((selectedIndex == 0) ? selectedValues[selectedIndex] : ", " + selectedValues[selectedIndex]) ;
 							}
 							inQuery += ")";
-							me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " " + inQuery + ")";
+							me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " " + inQuery + ")";
 						}
 						else if (me.reportFilters[index].validation.toLowerCase() == "datetime") {
 							if ($("#sel" + me.reportFilters[index].title).val() == 1 || $("#sel" + me.reportFilters[index].title).val() == undefined) {
-								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "')";
+								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "')";
 							}
 							else if ($("#sel" + me.reportFilters[index].title).val() == 2) {
-								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <= '" + $("#" + me.reportFilters[index].title).val() + "')";
+								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <= '" + $("#" + me.reportFilters[index].title).val() + "')";
 							}
 							else if ($("#sel" + me.reportFilters[index].title).val() == 3) {
-								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " >= '" + $("#" + me.reportFilters[index].title).val() + "')";
+								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " >= '" + $("#" + me.reportFilters[index].title).val() + "')";
 							}
 							else if ($("#" + me.reportFilters[index].title + "_1").val() != "" && $("#sel" + me.reportFilters[index].title).val() == 4) {
-								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Between '" + $("#" + me.reportFilters[index].title).val() + "' And '" + $("#" + me.reportFilters[index].title + "_1").val() + "')";
+								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Between '" + $("#" + me.reportFilters[index].title).val() + "' And '" + $("#" + me.reportFilters[index].title + "_1").val() + "')";
 							}
 							else if ($("#sel" + me.reportFilters[index].title).val() == 5) {
-								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <> '" + $("#" + me.reportFilters[index].title).val() + "')";
+								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <> '" + $("#" + me.reportFilters[index].title).val() + "')";
 							}
 						}
 						else if (me.reportFilters[index].validation.toLowerCase() == "int"  || me.reportFilters[index].validation.toLowerCase() == "decimal") {
 							if ($("#sel" + me.reportFilters[index].title).val() == 1 || $("#sel" + me.reportFilters[index].title).val() == undefined) {
-								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "')";
+								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "')";
 							}
 							else if ($("#sel" + me.reportFilters[index].title).val() == 2) {
-								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <= '" + $("#" + me.reportFilters[index].title).val() + "')";
+								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <= '" + $("#" + me.reportFilters[index].title).val() + "')";
 							}
 							else if ($("#sel" + me.reportFilters[index].title).val() == 3) {
-								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " >= '" + $("#" + me.reportFilters[index].title).val() + "')";
+								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " >= '" + $("#" + me.reportFilters[index].title).val() + "')";
 							}
 							else if ($("#" + me.reportFilters[index].title + "_1").val() != "" && $("#sel" + me.reportFilters[index].title).val() == 4) {
-								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Between '" + $("#" + me.reportFilters[index].title).val() + "' And '" + $("#" + me.reportFilters[index].title + "_1").val() + "')";
+								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Between '" + $("#" + me.reportFilters[index].title).val() + "' And '" + $("#" + me.reportFilters[index].title + "_1").val() + "')";
 							}
 							else if ($("#sel" + me.reportFilters[index].title).val() == 5) {
-								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <> '" + $("#" + me.reportFilters[index].title).val() + "')";
+								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <> '" + $("#" + me.reportFilters[index].title).val() + "')";
 							}
 						}
 						else if (me.reportFilters[index].columnDataType.toLowerCase() == "varchar") {
 							if ($("#sel" + me.reportFilters[index].title).val() == 1 || $("#sel" + me.reportFilters[index].title).val() == undefined) {
-								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "')";
+								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "')";
 							}
 							else if ($("#sel" + me.reportFilters[index].title).val() == 2) {
-								me.filter += " And (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Like '%" + $("#" + me.reportFilters[index].title).val() + "%')";
+								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Like '%" + $("#" + me.reportFilters[index].title).val() + "%')";
 							}
 						}
 					}
 				}
+			}
+			
+			filterStatement = me.filter;
+			if(me.filter != "") {
+				if(filterStatement.indexOf("And") == 1)
+					me.filter = me.filter.replace("And","And (");
+				if(filterStatement.indexOf("Or") == 1)
+					me.filter = me.filter.replace("Or","And (");
+				me.filter = me.filter + ")";
 			}
 			
 			me.reportTotalRowStore.fetch("userId:[user],report:" + me.reportId 
@@ -2012,6 +2052,13 @@ ii.Class({
 				rowHtml += "<option title='' value='' selected></option>";
 				rowHtml += "<option title='Yes' value='1'>Yes</option>";
 				rowHtml += "<option title='No' value='0'>No</option>";
+				rowHtml += "</select>";
+			}
+			else  if (type == "andOrOperator") {
+				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:50px;>";
+				rowHtml += "<option title='' value='' selected></option>";
+				rowHtml += "<option title='And' value='1'>And</option>";
+				rowHtml += "<option title='Or' value='2'>Or</option>";
 				rowHtml += "</select>";
 			}
 			else {
