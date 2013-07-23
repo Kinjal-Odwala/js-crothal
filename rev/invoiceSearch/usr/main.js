@@ -149,7 +149,7 @@ ii.Class({
 			me.invoiceSearch.addColumn("amount", "amount", "Amount", "Amount", 100);
 			me.invoiceSearch.addColumn("billTo", "billTo", "Customer", "Customer", null);
 			me.invoiceSearch.addColumn("houseCodeBrief", "houseCodeBrief", "House Code", "House Code", 110);
-			me.invoiceSearch.addColumn("invoiceDate", "invoiceDate", "Invoice Date", "Invoice Date", 100);
+			me.invoiceSearch.addColumn("invoiceDate", "invoiceDate", "Invoice Date", "Invoice Date", 110);
 			me.invoiceSearch.addColumn("collected", "collected", "Collected", "Collected", 100);
 			me.invoiceSearch.addColumn("credited", "credited", "Credited", "Credited", 80);
 			me.invoiceSearch.addColumn("lastPrinted", "lastPrinted", "Last Printed", "Last Printed", 120);
