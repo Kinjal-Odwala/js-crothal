@@ -103,7 +103,6 @@
     background-color: white;
     border: 1px solid #AAAAAA;
     border-spacing: 0;
-	margin: 5px 5px 5px 3px;
     height: 20px;
     width: 180px;
 }
@@ -234,6 +233,11 @@
     color: #ffffff;
     background-color: #669b67;
     text-align: left;
+}
+
+.tbodyBorder {
+	height: 400px;
+	overflow: auto;
 }
 
 #HirOrgContainer {
