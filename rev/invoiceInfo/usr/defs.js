@@ -24,6 +24,12 @@ ii.init.register( function() {
 		, title: {type: String}
 	};
 	
+	fin.rev.invoiceInfo.serviceLocationArgs = {
+		id: {type: Number}
+		, jobNumber: {type: String}
+		, jobTitle: {type: String}
+	};
+	
 	fin.rev.invoiceInfo.invoiceBillToArgs = {
 		id: {type: Number}
 		, billTo: {type: String, required: false, defaultValue: ""}
@@ -73,6 +79,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.rev.invoiceInfo.invoiceAddressTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rev.invoiceInfo.ServiceLocation",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rev.invoiceInfo.serviceLocationArgs);
 			$.extend(this, args);
 		}
 	}

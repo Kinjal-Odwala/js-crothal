@@ -76,6 +76,16 @@ ii.Class({
 			me.catalogItemGrid.setData([]);
 			me.modified(false);
 			
+			// blur event is not firing when clicking on the tab. Due to this dirty check function and prompt message was not working.
+			$("#TabCollection a").mouseover(function() {
+				if (!parent.parent.fin.appUI.modified) {
+					var focusedControl = document.activeElement;
+
+					if (focusedControl.type != undefined && (focusedControl.type == "text" || focusedControl.type == "textarea"))
+						$(focusedControl).blur();
+				}
+			});
+
 			$("#TabCollection a").mousedown(function() {
 				if (!parent.fin.cmn.status.itemValid()) 
 					return false;
@@ -992,6 +1002,7 @@ ii.Class({
 				));
 
 			me.houseCodeGrid.setData(me.units);
+			me.modified();
 		},
 		
 		addItems: function() {

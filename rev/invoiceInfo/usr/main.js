@@ -25,6 +25,7 @@ ii.Class({
 			
 			me.invoiceLogoTypes = [];
 			me.invoiceAddressTypes = [];
+			me.serviceLocations = [];
 			me.invoiceId = searchString.substring(pos + 1);
 			me.houseCode = 0;
 				
@@ -326,6 +327,18 @@ ii.Class({
 				changeFunction: function() { me.modified(); },
 		        required: false
 		    });
+			
+			me.serviceLocation = new ui.ctl.Input.DropDown.Filtered({
+		        id: "ServiceLocation",
+				formatFunction: function(type) {
+					if (type.jobNumber == "")
+						return type.jobTitle; 
+					else
+						return type.jobNumber + " - " + type.jobTitle;
+				},
+				changeFunction: function() { me.modified(); },
+		        required: false
+		    });
 
 			me.notes = $("#Notes")[0];
 
@@ -374,7 +387,8 @@ ii.Class({
 			me.poNumber.text.tabIndex = 14;
 			me.invoiceLogo.text.tabIndex = 15;
 			me.invoiceAddress.text.tabIndex = 16;
-			me.notes.tabIndex = 17;
+			me.serviceLocation.text.tabIndex = 17;
+			me.notes.tabIndex = 18;
 		},
 		
 		resizeControls: function() {
@@ -384,7 +398,6 @@ ii.Class({
 			me.taxId.resizeText();
 			me.startDate.resizeText();
 			me.endDate.resizeText();
-			me.startPeriod.resizeText();
 			me.invoiceDate.resizeText();
 			me.dueDate.resizeText();
 			me.billTo.resizeText();
@@ -393,11 +406,11 @@ ii.Class({
 			me.address2.resizeText();
 			me.city.resizeText();
 			me.state.resizeText();
-			me.startPeriod.resizeText();
 			me.zip.resizeText();
 			me.poNumber.resizeText();
 			me.invoiceLogo.resizeText();
 			me.invoiceAddress.resizeText();
+			me.serviceLocation.resizeText();
 			me.resize();
 		},
 		
@@ -496,9 +509,15 @@ ii.Class({
 				var invoiceAddressType = parent.fin.revMasterUi.invoiceAddressTypes[index];
 				me.invoiceAddressTypes.push(new fin.rev.invoiceInfo.InvoiceAddressType(invoiceAddressType.id, invoiceAddressType.title));
 			}
+			
+			for (var index = 0; index < parent.fin.revMasterUi.serviceLocations.length; index++) {
+				var serviceLocation = parent.fin.revMasterUi.serviceLocations[index];
+				me.serviceLocations.push(new fin.rev.invoiceInfo.ServiceLocation(serviceLocation.id, serviceLocation.jobNumber, serviceLocation.jobTitle));
+			}
 
 			me.invoiceLogo.setData(me.invoiceLogoTypes);
 			me.invoiceAddress.setData(me.invoiceAddressTypes);
+			me.serviceLocation.setData(me.serviceLocations);
 		},
 
 		statesLoaded: function(me, activeId) {
@@ -543,6 +562,10 @@ ii.Class({
 				$("#PONumberText").attr('disabled', true);
 				$("#InvoiceLogoText").attr('disabled', true);
 				$("#InvoiceLogoAction").removeClass("iiInputAction");
+				$("#InvoiceAddressText").attr('disabled', true);
+				$("#InvoiceAddressAction").removeClass("iiInputAction");
+				$("#ServiceLocationText").attr('disabled', true);
+				$("#ServiceLocationAction").removeClass("iiInputAction");
 				$("#NotesText").attr('disabled', true);
 
 				$("#AnchorSave").hide();
@@ -595,7 +618,6 @@ ii.Class({
 			var index = 0;
 
 			if (me.invoice == undefined) {
-				
 				$("#pageLoading").hide();
 				me.resizeControls();
 				return;
@@ -638,6 +660,21 @@ ii.Class({
 			else
 				me.invoiceAddress.reset();
 
+			for (var index = 0; index < me.serviceLocations.length; index++) {
+				if (me.invoice.serviceLocationBrief == "") {
+					if (me.serviceLocations[index].jobTitle == me.invoice.serviceLocation) {
+						me.serviceLocation.select(index, me.serviceLocation.focused);
+						break;
+					}
+				}
+				else {
+					if (me.serviceLocations[index].jobNumber == me.invoice.serviceLocationBrief) {
+						me.serviceLocation.select(index, me.serviceLocation.focused);
+						break;
+					}
+				}
+			}
+			
 			me.notes.value = me.invoice.notes;
 									
 			if (me.invoice.printed) {
@@ -666,6 +703,8 @@ ii.Class({
 				$("#InvoiceLogoAction").removeClass("iiInputAction");
 				me.invoiceAddress.text.readOnly = true;
 				$("#InvoiceAddressAction").removeClass("iiInputAction");
+				me.serviceLocation.text.readOnly = true;
+				$("#ServiceLocationAction").removeClass("iiInputAction");
 				me.notes.readOnly = true;
 				$("#anchorAlign").hide();				
 			}
@@ -691,6 +730,7 @@ ii.Class({
 			me.poNumber.setValue("");
 			me.invoiceLogo.reset();
 			me.invoiceAddress.reset();
+			me.serviceLocation.reset();
 			me.notes.value = "";
 		},
 		

@@ -23,9 +23,8 @@
 	float: left;
 	font-family: Verdana;
 	font-size: 12px;
-	font-weight: bold;
 	padding-top: 5px;
-	width: 86px;
+	width: 106px;
 	text-align: right;
 }
 
@@ -378,8 +377,8 @@
 	position: absolute;
 	left: 460px;
 	top: 22px;
-	width: 340px;
-	height: 135px;
+	width: 360px;
+	height: 155px;
 	z-index: 6800;
 	display: none;
 }
@@ -387,8 +386,8 @@
 .searchBody {
 	position: relative;
 	float: left;
-	width: 300px;
-	height: 120px;
+	width: 320px;
+	height: 140px;
 	background-color: #ececec;
 	border: 1px solid #A5A5A5;
 	margin: 0px;
@@ -398,7 +397,7 @@
 #AnchorSearch {
 	float: left;
 	margin-right: 5px;
-	padding-left: 10px;
+	margin-left: 70px;
 	padding-top: 5px;
 	width: 85px;
 }

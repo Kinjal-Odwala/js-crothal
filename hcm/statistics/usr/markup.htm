@@ -15,7 +15,6 @@
 
 	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
 	<body id="appBody" onload="iiForceBodyReady = true;">
-		<!---<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: #F0EFDD; filter: alpha(opacity = 50); opacity:.8;"><img src="/fin/cmn/usr/media/Common/ajax-loader.gif" style="float: left; padding: 10px" /><span id="messageToUser" style="float: left; font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top: 51px;">Page loading. Please wait...</span></div>--->
 		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
 		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
 		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
@@ -31,119 +30,126 @@
 			<div id="statisticsAreasContainerLeft">
 				<div class="body">
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							# of Managed Employees: 
-						</div>
+						<div class="LabelstatisticsAreaLeft"># of Managed Employees:</div>
 						<div class="InputTextAreaRight">
-							<div id="ManagedEmployees" ></div>
+							<div id="ManagedEmployees"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							# of Beds Licensed:
-						</div>
+						<div class="LabelstatisticsAreaLeft"># of Beds Licensed:</div>
 						<div class="InputTextAreaRight">
-							<div id="BedsLicensed" ></div>
+							<div id="BedsLicensed"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							# of Patient Days:
-						</div>
+						<div class="LabelstatisticsAreaLeft"># of Patient Days:</div>
 						<div class="InputTextAreaRight">
-							<div id="PatientDays" ></div>
+							<div id="PatientDays"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							Avg Daily Census  
-						</div>
+						<div class="LabelstatisticsAreaLeft">Avg Daily Census</div>
 						<div class="InputTextAreaRight">
-							<div id="AvgDailyCensus" ></div>
+							<div id="AvgDailyCensus"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							(# of Occupied beds): 
-						</div>
+						<div class="LabelstatisticsAreaLeft">(# of Occupied beds):</div>
+						<div class="InputTextAreaRight"></div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="TableEditArea">
+						<div class="LabelstatisticsAreaLeft"># of Annual Discharges:</div>
 						<div class="InputTextAreaRight">
-							
+							<div id="AnnualDischarges"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							# of Annual Discharges: 
-						</div>
+						<div class="LabelstatisticsAreaLeft">Avg Bed Turnaround Time (Min):</div>
 						<div class="InputTextAreaRight">
-							<div id="AnnualDischarges" ></div>
+							<div id="AvgBedTurnaroundTime"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							Avg Bed Turnaround Time (Min):
-						</div>
+						<div class="LabelstatisticsAreaLeft">Net Cleanable Square Feet:</div>
 						<div class="InputTextAreaRight">
-							<div id="AvgBedTurnaroundTime" ></div>
+							<div id="NetCleanableSquareFeet"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							Net Cleanable Square Feet: 
-						</div>
+						<div class="LabelstatisticsAreaLeft">Avg Laundry Lbs:</div>
 						<div class="InputTextAreaRight">
-							<div id="NetCleanableSquareFeet" ></div>
+							<div id="AvgLaundryLBS"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							Avg Laundry Lbs:
-						</div>
+						<div class="LabelstatisticsAreaLeft">Terminated Hourly Employees:</div>
 						<div class="InputTextAreaRight">
-							<div id="AvgLaundryLBS" ></div>
+							<div id="MgmtFeeTerminatedHourlyEmployees"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							Terminated Hourly Employees:
-						</div>
+						<div class="LabelstatisticsAreaLeft">Productive Labor Hours Worked:</div>
 						<div class="InputTextAreaRight">
-							<div id="MgmtFeeTerminatedHourlyEmployees" ></div>
+							<div id="MgmtFeeTotalProductiveLaborHoursWorked"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							Productive Labor Hours Worked:
-						</div>
+						<div class="LabelstatisticsAreaLeft">Productive Labor Dollars Paid:</div>
 						<div class="InputTextAreaRight">
-							<div id="MgmtFeeTotalProductiveLaborHoursWorked" ></div>
+							<div id="MgmtFeeTotalProductiveLaborDollarsPaid"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							Productive Labor Dollars Paid:
-						</div>
+						<div class="LabelstatisticsAreaLeft">Client-Paid Supplies:</div>
 						<div class="InputTextAreaRight">
-							<div id="MgmtFeeTotalProductiveLaborDollarsPaid" ></div>
+							<div id="HospitalPaidJanitorialPaperPlasticSupplyCost"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							Hospital Paid Janitorial Paper Plastic Supply Cost:
-						</div>
+						<div class="LabelstatisticsAreaLeft">Building Population:</div>
 						<div class="InputTextAreaRight">
-							<div id="HospitalPaidJanitorialPaperPlasticSupplyCost" ></div>
+							<div id="BuildingPopulation"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="TableEditArea">
+						<div class="LabelstatisticsAreaLeft"># of Scientists:</div>
+						<div class="InputTextAreaRight">
+							<div id="Scientists"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="TableEditArea">
+						<div class="LabelstatisticsAreaLeft">Site Type:</div>
+						<div class="InputTextAreaRight">
+							<div id="SiteType"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="TableEditArea">
+						<div class="LabelstatisticsAreaLeft">Integrator:</div>
+						<div class="InputTextAreaRight">
+							<div id="Integrator"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="TableEditArea">
+						<div class="LabelstatisticsAreaLeft">Audit Score:</div>
+						<div class="InputTextAreaRight">
+							<div id="AuditScore"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
@@ -153,111 +159,117 @@
 			<div id="statisticsAreasContainerRight">
 				<div class="body">
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							# of Crothall Employees: 
-						</div>
+						<div class="LabelstatisticsAreaLeft"># of Crothall Employees:</div>
 						<div class="InputTextAreaRight">
-							<div id="CrothallEmployees" ></div>
+							<div id="CrothallEmployees"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							# of Beds Active: 
-						</div>
+						<div class="LabelstatisticsAreaLeft"># of Beds Active:</div>
 						<div class="InputTextAreaRight">
-							<div id="BedsActive" ></div>
+							<div id="BedsActive"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							# of Adjusted Patient Days :
-						</div>
+						<div class="LabelstatisticsAreaLeft"># of Adjusted Patient Days:</div>
 						<div class="InputTextAreaRight">
-							<div id="AdjustedPatientDays" ></div>
+							<div id="AdjustedPatientDays"></div>
 						</div>
 						<div class="labelTextRightSmall">(Budgeted)</div>
 						<div style="clear:both;"></div>
 					</div>
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-						
-						</div>
+						<div class="LabelstatisticsAreaLeft"></div>
+						<div class="InputTextAreaRight"></div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="TableEditArea">
+						<div class="LabelstatisticsAreaLeft"></div>
+						<div class="InputTextAreaRight"></div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="TableEditArea">
+						<div class="LabelstatisticsAreaLeft"># of Annual Transfers:</div>
 						<div class="InputTextAreaRight">
-						
+							<div id="AnnualTransfers"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							
-						</div>
+						<div class="LabelstatisticsAreaLeft"></div>
+						<div class="InputTextAreaRight"></div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="TableEditArea">
+						<div class="LabelstatisticsAreaLeft"># of Annual Transports:</div>
 						<div class="InputTextAreaRight">
-							
+							<div id="AnnualTransports"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							# of Annual Transfers:
-						</div>
+						<div class="LabelstatisticsAreaLeft"></div>
+						<div class="InputTextAreaRight"></div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="TableEditArea">
+						<div class="LabelstatisticsAreaLeft">Active Hourly Employees:</div>
 						<div class="InputTextAreaRight">
-							<div id="AnnualTransfers" ></div>
+							<div id="MgmtFeeActiveHourlyEmployees"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							 
-						</div>
+						<div class="LabelstatisticsAreaLeft">Non-Productive Labor Hours:</div>
 						<div class="InputTextAreaRight">
-							
+							<div id="MgmtFeeTotalNonProductiveLaborHours"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							# of Annual Transports:  
-						</div>
+						<div class="LabelstatisticsAreaLeft">Non-Productive Labor Dollars Paid:</div>
 						<div class="InputTextAreaRight">
-							<div id="AnnualTransports" ></div>
+							<div id="MgmtFeeTotalNonProductiveLaborDollarsPaid"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							
-						</div>
+						<div class="LabelstatisticsAreaLeft"></div>
+						<div class="InputTextAreaRight"></div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="TableEditArea">
+						<div class="LabelstatisticsAreaLeft">Maintainable Acres:</div>
 						<div class="InputTextAreaRight">
-							
+							<div id="MaintainableAcres"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							Active Hourly Employees:  
-						</div>
+						<div class="LabelstatisticsAreaLeft"># of Managed Rooms:</div>
 						<div class="InputTextAreaRight">
-							<div id="MgmtFeeActiveHourlyEmployees" ></div>
+							<div id="ManagedRooms"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							Non-Productive Labor Hours:  
-						</div>
+						<div class="LabelstatisticsAreaLeft"></div>
+						<div class="InputTextAreaRight"></div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="TableEditArea">
+						<div id="LabelIntegratorName" class="LabelstatisticsAreaLeft">Integrator Name:</div>
 						<div class="InputTextAreaRight">
-							<div id="MgmtFeeTotalNonProductiveLaborHours" ></div>
+							<div id="IntegratorName"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 					<div class="TableEditArea">
-						<div class="LabelstatisticsAreaLeft">
-							Non-Productive Labor Dollars Paid:  
-						</div>
+						<div class="LabelstatisticsAreaLeft">Standardization Score:</div>
 						<div class="InputTextAreaRight">
-							<div id="MgmtFeeTotalNonProductiveLaborDollarsPaid" ></div>
+							<div id="StandardizationScore"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>

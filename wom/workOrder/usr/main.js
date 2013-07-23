@@ -39,6 +39,7 @@ ii.Class({
 			me.lastSelectedRowIndex = -1;
 			me.action = "";
 			me.workOrderBackDays = 0;
+			me.search = false;
 			
 			me.gateway = ii.ajax.addGateway("wom", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -114,6 +115,11 @@ ii.Class({
 		
 					$("#searchIcon").html("<img src='/fin/cmn/usr/media/Common/searchMinus.png'/>");
 					$("#searchOption").show("slow");
+					me.woNumber.setValue("");
+					me.status.reset();
+					me.startDateHeader.setValue("");
+					me.endDateHeader.setValue("");
+					me.woNumber.resizeText();
 					me.status.resizeText();
 					me.startDateHeader.resizeText();
 					me.endDateHeader.resizeText();
@@ -175,9 +181,9 @@ ii.Class({
 
 			me.workOrdersShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 			me.workOrdersReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
-			me.workOrdersWriteApprove = me.authorizer.isAuthorized(me.authorizePath + "\\WriteApprove");			
+			me.workOrdersWriteApprove = me.authorizer.isAuthorized(me.authorizePath + "\\WriteApprove");
 			me.woWriteNoApprove = me.authorizer.isAuthorized(me.authorizePath + "\\WriteNoApprove");
-			
+
 			$("#pageLoading").hide();
 
 			ii.timer.timing("Page displayed");
@@ -343,6 +349,28 @@ ii.Class({
 					else
 						me.houseCodeJobId = 0;
 				}
+			});
+			
+			me.woNumber = new ui.ctl.Input.Text({
+		        id: "WONumber",
+				maxLength: 10
+		    });
+			
+			me.woNumber.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation( function( isFinal, dataMap ) {					
+					var enteredText = me.woNumber.getValue();
+
+					if (enteredText == "") 
+						return;
+
+					if (!(/^[0-9]+$/.test(enteredText)))
+						this.setInvalid("Please enter valid Work Order #.");
+				});
+			
+			$("#WONumberText").keypress(function (e) {
+				if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57))
+					return false;
 			});
 			
 			me.status = new ui.ctl.Input.DropDown.Filtered({
@@ -1119,7 +1147,7 @@ ii.Class({
 				me.workOrderGrid.addColumn("completedDate", "completedDate", "Completed Date", "Completed Date", 130);
 			
 			me.workOrderGrid.addColumn("statusType", "statusType", "Status", "Status", 120, function(statusType) { 
-				if (statusType == 7) return 'Pending Approval';
+				if (statusType == 7) return "Pending Approval";
 				else if (statusType == 8) return "Approved";
 				else if (statusType == 9) return "Completed";
 				else if (statusType == 5) return "Closed";
@@ -1340,7 +1368,6 @@ ii.Class({
 			me.statuses.push(new fin.wom.workOrder.Status(5, "Closed"));
 			
 			me.status.setData(me.statuses);
-			me.status.select(1, me.status.focused);
 		},
 		
 		weeksLoaded: function() {
@@ -1364,7 +1391,7 @@ ii.Class({
 			
 			me.hours = [];
 			
-			for(index = 1; index <= 12; index++) {
+			for (var index = 1; index <= 12; index++) {
 				if (index < 10)
 					title = "0" + index.toString();
 				else
@@ -1382,7 +1409,7 @@ ii.Class({
 			
 			me.minutes = [];
 			
-			for(index = 0; index < 60; index++) {
+			for (var index = 0; index < 60; index++) {
 				if (index < 10)
 					title = "0" + index.toString();
 				else
@@ -1400,7 +1427,7 @@ ii.Class({
 		},
 
 		houseCodesLoaded: function(me, activeId) {
-			
+
 			ii.trace("HouseCodesLoaded", ii.traceTypes.information, "Startup");
 
 			if (parent.fin.appUI.houseCodeId == 0) {
@@ -1433,7 +1460,10 @@ ii.Class({
 			me.job.select(0, me.job.focused);
 			me.houseCodeJobId = me.jobs[me.job.indexSelected].id;
 
-			me.actionLoadItem();
+			if (me.search)
+				me.search = false;
+			else
+				me.actionLoadItem();
 			me.serviceLocation.fetchingData();
 			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",jobType:2", me.serviceLocationsLoaded, me);
 		},
@@ -1470,7 +1500,8 @@ ii.Class({
 			me.createGrid(7);
 				
 			me.workOrderStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId 
-				+ ",houseCodeJobId:" + me.houseCodeJobId 
+				+ ",houseCodeJobId:" + me.houseCodeJobId
+				+ ",workOrderNumber:0"
 				+ ",status:7"
 				+ ",startDate:"
 				+ ",endDate:"
@@ -1480,8 +1511,11 @@ ii.Class({
 		
 		actionSearchItem: function() {
 			var me = this;
-			var statusType = 8;	
-			
+			var houseCodeId = 0;
+			var houseCodeJobId = 0;
+			var workOrderNumber = 0;
+			var statusType = 8;		
+						
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 					
@@ -1493,10 +1527,22 @@ ii.Class({
 			if (me.status.indexSelected >= 0)
 				statusType = me.statuses[me.status.indexSelected].id;
 				
-			me.createGrid(statusType);
-				
-			me.workOrderStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId 
-				+ ",houseCodeJobId:" + me.houseCodeJobId 
+			if (me.woNumber.getValue() != "") {
+				workOrderNumber = me.woNumber.getValue();
+				statusType = 0;
+				houseCodeId = 0;
+				houseCodeJobId = 0;
+			}
+			else {
+				houseCodeId = parent.fin.appUI.houseCodeId;
+				houseCodeJobId = me.houseCodeJobId;
+			}
+
+			me.search = true;
+
+			me.workOrderStore.fetch("userId:[user],houseCodeId:" + houseCodeId
+				+ ",houseCodeJobId:" + houseCodeJobId
+				+ ",workOrderNumber:" + workOrderNumber
 				+ ",status:" + statusType
 				+ ",startDate:" + me.startDateHeader.lastBlurValue
 				+ ",endDate:" + me.endDateHeader.lastBlurValue
@@ -1550,7 +1596,23 @@ ii.Class({
 			}		
 		},
 		
-		workOrdersLoaded: function(me, activeId) {			
+		workOrdersLoaded: function(me, activeId) {
+
+			if (me.search) {
+				if (me.workOrders.length > 0) {
+					me.createGrid(me.workOrders[0].statusType);
+					
+					if (parent.fin.appUI.houseCodeId != me.workOrders[0].houseCode)
+						me.houseCodeStore.fetch("userId:[user],hcmHouseCodeId:" + me.workOrders[0].houseCode + ",defaultOnly:false,", me.workOrderHouseCodesLoaded, me);
+					else
+						me.search = false;
+				}
+				else {
+					me.search = false;
+					me.createGrid(7);
+				}							
+			}			
+
 			me.controlReadOnly();
 			me.workOrderGrid.setData(me.workOrders);
 
@@ -1581,6 +1643,12 @@ ii.Class({
 
 			$("#pageLoading").hide();
 			me.resizeControls();
+		},
+		
+		workOrderHouseCodesLoaded: function(me, activeId) {
+
+			me.houseCodeGlobalParametersUpdate(false, me.houseCodes[0]);
+			me.houseCodeChanged();
 		},
 		
 		itemSelect: function() {			
@@ -1703,13 +1771,13 @@ ii.Class({
 			$("#SubcontractedNo")[0].disabled = readOnly;
 			$("#CommissionableYes")[0].disabled = readOnly;
 			$("#CommissionableNo")[0].disabled = readOnly;
-			 
+
 			if (readOnly) {
 				$("#ServiceLocationAction").removeClass("iiInputAction");
 				$("#CustomerAction").removeClass("iiInputAction");
 				$("#StartDateAction").removeClass("iiInputAction");
 			}
-			else  {
+			else {
 				$("#ServiceLocationAction").addClass("iiInputAction");
 				$("#CustomerAction").addClass("iiInputAction");
 				$("#StartDateAction").addClass("iiInputAction");
@@ -1979,8 +2047,8 @@ ii.Class({
 		
 		actionPrintItem: function() {
 			var me = this;
-			
-			if(me.workOrderId <= 0) 
+
+			if (me.workOrderId <= 0)
 				return;
 
 			window.open(location.protocol + '//' + location.hostname + '/reports/workorder.aspx?workorder=' + me.workOrderId,'PrintWO','type=fullWindow,status=yes,toolbar=no,menubar=no,location=no,resizable=yes');
@@ -2421,8 +2489,8 @@ ii.Class({
 
 				item = new fin.wom.workOrder.WorkOrder(
 					me.workOrderId
-					, parent.fin.appUI.houseCodeId
-					, me.houseCodeJobId
+					, me.workOrders[me.lastSelectedRowIndex].houseCode
+					, me.workOrders[me.lastSelectedRowIndex].houseCodeJob
 					, me.workOrders[me.lastSelectedRowIndex].statusType
 					, me.workOrders[me.lastSelectedRowIndex].workOrderNumber
 					, me.serviceLocations[me.serviceLocation.indexSelected].jobNumber
@@ -2445,7 +2513,7 @@ ii.Class({
 					, ($("input[name='Commissionable']:checked").val() == "true" ? true : false)
 					, me.notes.value
 				);
-			}		
+			}
 
 			var xml = me.saveXmlBuildWorkOrder(item);
 
@@ -2671,7 +2739,7 @@ ii.Class({
 				me.action = "";
 			}
 			else
-				alert("[SAVE FAILURE] Error while updating Work Order Record: " + $(args.xmlNode).attr("message"));
+				alert("[SAVE FAILURE] Error while updating Work Order details: " + $(args.xmlNode).attr("message"));
 				
 			$("#pageLoading").hide();
 		}

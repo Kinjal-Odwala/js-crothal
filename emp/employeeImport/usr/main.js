@@ -750,8 +750,8 @@ ii.Class({
 				$("#txtCellPhone" + index).val(me.employees[index].column13);
 				$("#txtEmail" + index).val(me.employees[index].column14);
 				$("#txtPager" + index).val(me.employees[index].column15);
-				if (me.employees[index].column16 == "1")
-					$("#chkActive" + index)[0].checked = true;
+				//if (me.employees[index].column16 == "1")
+				$("#chkActive" + index)[0].checked = true;
 				if (me.employees[index].column17 == "1")
 					$("#chkEmployeeHouseCodeUpdated" + index)[0].checked = true;
 				$("#txtSSN" + index).val(me.employees[index].column18);								
@@ -773,8 +773,8 @@ ii.Class({
 				$("#txtScheduledHours" + index).val(me.employees[index].column33);
 				if (me.employees[index].column34 == "1")
 					$("#chkUnion" + index)[0].checked = true;
-				if (me.employees[index].column35 == "1")
-					$("#chkCrothallEmployee" + index)[0].checked = true;				
+				//if (me.employees[index].column35 == "1")
+				$("#chkCrothallEmployee" + index)[0].checked = true;				
 				$("#txtEmployeeNumber" + index).val(me.employees[index].column36);
 				$("#txtAlternatePayRateA" + index).val(me.employees[index].column37);
 				$("#txtAlternatePayRateB" + index).val(me.employees[index].column38);

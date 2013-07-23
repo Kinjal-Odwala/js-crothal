@@ -72,6 +72,15 @@ ii.init.register( function() {
 		, mgmtFeeTotalProductiveLaborDollarsPaid: {type: Number, required: false, defaultValue: 0}
 		, mgmtFeeTotalNonProductiveLaborDollarsPaid: {type: Number, required: false, defaultValue: 0}
 		, hospitalPaidJanitorialPaperPlasticSupplyCost: {type: Number, required: false, defaultValue: 0}
+		, buildingPopulation: {type: String, required: false, defaultValue: ""}
+		, maintainableAcres: {type: String, required: false, defaultValue: ""}
+		, scientists: {type: String, required: false, defaultValue: ""}
+		, managedRooms: {type: String, required: false, defaultValue: ""}
+		, siteType: {type: Number, required: false, defaultValue: 0}
+		, integrator: {type: Boolean, required: false, defaultValue: false}	
+		, integratorName: {type: String, required: false, defaultValue: ""}
+		, auditScore: {type: String, required: false, defaultValue: ""}
+		, standardizationScore: {type: String, required: false, defaultValue: ""}
 		, shippingAddress1: {type: String, required: false, defaultValue: ""}
 		, shippingAddress2: {type: String, required: false, defaultValue: ""}
 		, shippingZip: {type: String, required: false, defaultValue: ""}
@@ -109,10 +118,16 @@ ii.init.register( function() {
 		, ePaySite: {type: Boolean, required: false, defaultValue: false}
 		, ePayGroupType: {type: Number, required: false, defaultValue: 0}
 		, ePayTask: {type: Number, required: false, defaultValue: 0}
+		, incidentFrequencyRate: {type: String, required: false, defaultValue: ""}
+		, trir: {type: String, required: false, defaultValue: ""}
+		, lostDays: {type: String, required: false, defaultValue: ""}
+		, reportedClaims: {type: String, required: false, defaultValue: ""}
+		, nearMisses: {type: String, required: false, defaultValue: ""}
+		, oshaRecordable: {type: String, required: false, defaultValue: ""}
 	};
 
 	//HouseCode
-	fin.hcm.houseCodeWizard.siteTypeArgs = {
+	fin.hcm.houseCodeWizard.siteArgs = {
 		id: {type: Number}
 		, name: {type: String}
 	};
@@ -148,6 +163,12 @@ ii.init.register( function() {
 		id: {type: Number}
 		, name: {type: String}
 		, financialEntity: {type: Boolean, required: false, defaultValue: false}
+	};
+	
+	//Statistics
+	fin.hcm.houseCodeWizard.siteTypeArgs = {
+		id: {type: Number}
+		, name: {type: String}
 	};
 
 	//Financial
@@ -259,10 +280,10 @@ ii.Class({
 
 //HouseCcode
 ii.Class({
-	Name: "fin.hcm.houseCodeWizard.SiteType",
+	Name: "fin.hcm.houseCodeWizard.Site",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.houseCodeWizard.siteTypeArgs);
+			var args = ii.args(arguments, fin.hcm.houseCodeWizard.siteArgs);
 			$.extend(this, args);
 		}
 	}
@@ -323,6 +344,17 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.houseCodeWizard.serviceLineArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+//Statistics
+ii.Class({
+	Name: "fin.hcm.houseCodeWizard.SiteType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.houseCodeWizard.siteTypeArgs);
 			$.extend(this, args);
 		}
 	}
