@@ -46,9 +46,12 @@ ii.Class({
 			me.sortColumns = "";
 			me.houseCodeSortOrder = "Asc";
 			me.typesLoadedCount = 0;
+			me.descriptionAccount = 0;
 			me.loadDependentTypes = [];
 			me.gridData = [];
 			me.typesCache = [];
+			me.invoiceCache = [];
+ 			me.editSalesTax = false;
 			
 			// Pagination setup
 			me.startPoint = 1;
@@ -75,6 +78,10 @@ ii.Class({
 			// Job module
 			me.jobTypeCache = [];
 			me.geoCodeCache = [];
+			
+			me.pkeyId = -1;
+ 			me.invoiceItem = false;
+ 			me.invoiceNumbers = "";
 			
 			me.gateway = ii.ajax.addGateway("adh", ii.config.xmlProvider);			
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -104,6 +111,8 @@ ii.Class({
 			me.reportStore.fetch("userId:[user],active:1", me.reportLoaded, me);
 			me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
 			me.stateTypeStore.fetch("userId:[user]", me.typesLoaded, me);
+			me.accountStore.fetch("userId:[user],moduleId:invoice", me.accountsLoaded, me);
+ 			me.taxableServiceStore.fetch("userId:[user]", me.taxableServicesLoaded, me);
 			me.modified(false);
 
 			$(window).bind("resize", me, me.resize);
@@ -896,6 +905,30 @@ ii.Class({
 				itemConstructorArgs: fin.adh.invoiceTemplateArgs,
 				injectionArray: me.invoiceTemplates
 			});
+			
+			me.invoiceItems = [];
+			me.invoiceItemStore = me.cache.register({
+				storeId: "revInvoiceItems",
+				itemConstructor: fin.adh.InvoiceItem,
+				itemConstructorArgs: fin.adh.invoiceItemArgs,
+				injectionArray: me.invoiceItems
+			});
+			
+			me.accounts = [];
+			me.accountStore = me.cache.register({
+				storeId: "accounts",
+				itemConstructor: fin.adh.Account,
+				itemConstructorArgs: fin.adh.accountArgs,
+				injectionArray: me.accounts	
+			});
+			
+			me.taxableServices = [];
+			me.taxableServiceStore = me.cache.register({
+				storeId: "revTaxableServices",
+				itemConstructor: fin.adh.TaxableService,
+				itemConstructorArgs: fin.adh.taxableServiceArgs,
+				injectionArray: me.taxableServices
+			});
 		},
 		
 		dirtyCheck: function(me) {
@@ -1263,7 +1296,7 @@ ii.Class({
 			var dateControls = [];
 			
 			if (me.reportFilters.length > 0) {
-				rowData = "<tr id='filterHeader'><td class='gridHeaderColumn'>Filter</td><td class='gridHeaderColumn'>Operator</td><td class='gridHeaderColumn'>Value</td><td class='gridHeaderColumn'>And/Or</td></tr>";  
+				rowData = "<tr id='filterHeader'><td class='gridHeaderColumn'>Title</td><td class='gridHeaderColumn'>Filter</td><td class='gridHeaderColumn'>Value</td><td class='gridHeaderColumn'>Operator</td></tr>";  
 
 				for (var index = 0; index < me.reportFilters.length; index++) {
 					rowData += "<tr>";
@@ -1332,13 +1365,15 @@ ii.Class({
 					$(this).removeClass("trover");});
 			
 			if (me.reportFilters.length > 0) {
+				$("#divFilterHeader").show();
 				$("#divFilterGrid").addClass("gridBorder");
-				if ($("#AdhReportFilterGridBody").height() > 800)
+				if ($("#AdhReportFilterGridBody").height() + $(window).height() > 1000)
 					$("#divFilterGrid").addClass("tbodyBorder");
 				else
 					$("#divFilterGrid").removeClass("tbodyBorder");
 			}
 			else {
+				$("#divFilterHeader").hide();
 				$("#divFilterGrid").removeClass("gridBorder");
 				$("#divFilterGrid").removeClass("tbodyBorder");
 				$("#AdhReportFilterGridBody tr").mouseover(function() {
@@ -1458,113 +1493,149 @@ ii.Class({
 			me.sortColumns = "";
 
 			if (me.moduleColumnHeaders.length > 0) {
-				rowData += "<tr id='trAdhReportItemGridHead' height='40px'>";	
-
-				if (me.delimitedOrgSelectedNodes == "")
+				rowData += "<tr id='trAdhReportItemGridHead' height='40px'>";
+				
+				if (me.delimitedOrgSelectedNodes == "") 
 					className = "gridColumnHidden";
-				else
+				else 
 					className = "gridHeaderColumn";
-					
-				rowData += "<th onclick=(fin.reportUi.sortColumn(-1)); class='" + className + "' style='width:100px;'>House Code</th>";
-	
-				for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
-					if (me.moduleColumnHeaders[index].columnType == 2)
-						className = "gridColumnHidden";
-					else
-						className = "gridHeaderColumn";
-					if (index == me.moduleColumnHeaders.length - 1)
-						className = "gridHeaderColumnRight";
-					rowData += "<th onclick=(fin.reportUi.sortColumn(" + index + ")); class='" + className + "' style='width:" + me.moduleColumnHeaders[index].columnWidth + "px;'>" + me.moduleColumnHeaders[index].description + "</th>";
-					if (me.moduleColumnHeaders[index].sortOrder != "")
-						me.sortColumns = me.sortColumns + me.moduleColumnHeaders[index].title + "#" + me.moduleColumnHeaders[index].sortOrder + "|";
+				
+				if (me.reports[me.report.indexSelected].module == 11 && me.reports[me.report.indexSelected].moduleAssociate == 3) 
+					me.invoiceItem = true;
+				else 
+					me.invoiceItem = false;
+				
+				if (me.invoiceItem) {
+					rowData += "<th class='gridHeaderColumn' width='20px'>#</th>";
+					rowData += "<th class='gridColumnHidden'></th>";
+					rowData += "<th class='gridHeaderColumn' width='50px'>House Code</th>";
+					rowData += "<th class='gridHeaderColumn' width='100px'>Job</th>";
+					rowData += "<th class='gridHeaderColumn' width='80px'>Taxable Service</th>";
+					rowData += "<th class='gridHeaderColumn' width='200px'>Account Code</th>";
+					rowData += "<th class='gridHeaderColumn' width='75px'>Quantity</th>";
+					rowData += "<th class='gridHeaderColumn' width='75px'>Price</th>";
+					rowData += "<th class='gridHeaderColumn' width='100px'>Total</th>";
+					rowData += "<th class='gridHeaderColumn' width='50px'>Status</th>";
+					rowData += "<th class='gridHeaderColumn' width='50px'>Taxable</th>";
+					rowData += "<th class='gridHeaderColumn' width='50px'>Show</th>";
+					rowData += "<th class='gridHeaderColumn' width='150px'>Description</th>";
 				}
-
-				rowData += "<th class='gridColumnHidden'></th></tr>";
+				else {
+					rowData += "<th onclick=(fin.reportUi.sortColumn(-1)); class='" + className + "' style='width:100px;'>House Code</th>";
+					
+					for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
+						if (me.moduleColumnHeaders[index].columnType == 2) 
+							className = "gridColumnHidden";
+						else 
+							className = "gridHeaderColumn";
+						if (index == me.moduleColumnHeaders.length - 1) 
+							className = "gridHeaderColumnRight";
+						rowData += "<th onclick=(fin.reportUi.sortColumn(" + index + ")); class='" + className + "' style='width:" + me.moduleColumnHeaders[index].columnWidth + "px;'>" + me.moduleColumnHeaders[index].description + "</th>";
+						if (me.moduleColumnHeaders[index].sortOrder != "") 
+							me.sortColumns = me.sortColumns + me.moduleColumnHeaders[index].title + "#" + me.moduleColumnHeaders[index].sortOrder + "|";
+					}
+					
+					rowData += "<th class='gridColumnHidden'></th></tr>";
+				}
 			}
-
+				
 			$("#AdhReportItemGridHead").html(rowData);
 			
 			me.filter = "";
 			
 			for (var index = 0; index < me.reportFilters.length; index++) {
-				if ($("#sel" + me.reportFilters[index].title + "_andOr").val() == 2)
+				if ($("#sel" + me.reportFilters[index].title + "_andOr").val() == 2) 
 					operator = "Or";
-				else
+				else 
 					operator = "And";
-					
+				
 				if (me.reportFilters[index].validation.toLowerCase() == "bit" && $("#sel" + me.reportFilters[index].title).val() != "") {
-					me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#sel" + me.reportFilters[index].title).val() + "')";
+					me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#sel" + me.reportFilters[index].title).val() + "')";
 				}
 				else if ($("#" + me.reportFilters[index].title).val() != null && $("#" + me.reportFilters[index].title).val() != "") {
-					if ($("#" + me.reportFilters[index].title).val() != "0") {
-						if (me.reportFilters[index].referenceTableName != "") { //dropdown selection
-							var inQuery = "In (";
-							var selectedValues = $("#" + me.reportFilters[index].title).multiselect("getChecked").map(function() { return this.value; }).get();
-							for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
-								inQuery += ((selectedIndex == 0) ? selectedValues[selectedIndex] : ", " + selectedValues[selectedIndex]) ;
+						if ($("#" + me.reportFilters[index].title).val() != "0") {
+							if (me.reportFilters[index].referenceTableName != "") { //dropdown selection
+								var inQuery = "In (";
+								var selectedValues = $("#" + me.reportFilters[index].title).multiselect("getChecked").map(function(){
+									return this.value;
+								}).get();
+								for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
+									inQuery += ((selectedIndex == 0) ? selectedValues[selectedIndex] : ", " + selectedValues[selectedIndex]);
+								}
+								inQuery += ")";
+								me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " " + inQuery + ")";
 							}
-							inQuery += ")";
-							me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " " + inQuery + ")";
-						}
-						else if (me.reportFilters[index].validation.toLowerCase() == "datetime") {
-							if ($("#sel" + me.reportFilters[index].title).val() == 1 || $("#sel" + me.reportFilters[index].title).val() == undefined) {
-								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "')";
-							}
-							else if ($("#sel" + me.reportFilters[index].title).val() == 2) {
-								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <= '" + $("#" + me.reportFilters[index].title).val() + "')";
-							}
-							else if ($("#sel" + me.reportFilters[index].title).val() == 3) {
-								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " >= '" + $("#" + me.reportFilters[index].title).val() + "')";
-							}
-							else if ($("#" + me.reportFilters[index].title + "_1").val() != "" && $("#sel" + me.reportFilters[index].title).val() == 4) {
-								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Between '" + $("#" + me.reportFilters[index].title).val() + "' And '" + $("#" + me.reportFilters[index].title + "_1").val() + "')";
-							}
-							else if ($("#sel" + me.reportFilters[index].title).val() == 5) {
-								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <> '" + $("#" + me.reportFilters[index].title).val() + "')";
-							}
-						}
-						else if (me.reportFilters[index].validation.toLowerCase() == "int"  || me.reportFilters[index].validation.toLowerCase() == "decimal") {
-							if ($("#sel" + me.reportFilters[index].title).val() == 1 || $("#sel" + me.reportFilters[index].title).val() == undefined) {
-								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "')";
-							}
-							else if ($("#sel" + me.reportFilters[index].title).val() == 2) {
-								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <= '" + $("#" + me.reportFilters[index].title).val() + "')";
-							}
-							else if ($("#sel" + me.reportFilters[index].title).val() == 3) {
-								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " >= '" + $("#" + me.reportFilters[index].title).val() + "')";
-							}
-							else if ($("#" + me.reportFilters[index].title + "_1").val() != "" && $("#sel" + me.reportFilters[index].title).val() == 4) {
-								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Between '" + $("#" + me.reportFilters[index].title).val() + "' And '" + $("#" + me.reportFilters[index].title + "_1").val() + "')";
-							}
-							else if ($("#sel" + me.reportFilters[index].title).val() == 5) {
-								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <> '" + $("#" + me.reportFilters[index].title).val() + "')";
-							}
-						}
-						else if (me.reportFilters[index].columnDataType.toLowerCase() == "varchar") {
-							if ($("#sel" + me.reportFilters[index].title).val() == 1 || $("#sel" + me.reportFilters[index].title).val() == undefined) {
-								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "')";
-							}
-							else if ($("#sel" + me.reportFilters[index].title).val() == 2) {
-								me.filter += " " +operator+ " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Like '%" + $("#" + me.reportFilters[index].title).val() + "%')";
-							}
+							else 
+								if (me.reportFilters[index].validation.toLowerCase() == "datetime") {
+									if ($("#sel" + me.reportFilters[index].title).val() == 1 || $("#sel" + me.reportFilters[index].title).val() == undefined) {
+										me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "')";
+									}
+									else 
+										if ($("#sel" + me.reportFilters[index].title).val() == 2) {
+											me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <= '" + $("#" + me.reportFilters[index].title).val() + "')";
+										}
+										else 
+											if ($("#sel" + me.reportFilters[index].title).val() == 3) {
+												me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " >= '" + $("#" + me.reportFilters[index].title).val() + "')";
+											}
+											else 
+												if ($("#" + me.reportFilters[index].title + "_1").val() != "" && $("#sel" + me.reportFilters[index].title).val() == 4) {
+													me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Between '" + $("#" + me.reportFilters[index].title).val() + "' And '" + $("#" + me.reportFilters[index].title + "_1").val() + "')";
+												}
+												else 
+													if ($("#sel" + me.reportFilters[index].title).val() == 5) {
+														me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <> '" + $("#" + me.reportFilters[index].title).val() + "')";
+													}
+								}
+								else 
+									if (me.reportFilters[index].validation.toLowerCase() == "int" || me.reportFilters[index].validation.toLowerCase() == "decimal") {
+										if ($("#sel" + me.reportFilters[index].title).val() == 1 || $("#sel" + me.reportFilters[index].title).val() == undefined) {
+											me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "')";
+										}
+										else 
+											if ($("#sel" + me.reportFilters[index].title).val() == 2) {
+												me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <= '" + $("#" + me.reportFilters[index].title).val() + "')";
+											}
+											else 
+												if ($("#sel" + me.reportFilters[index].title).val() == 3) {
+													me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " >= '" + $("#" + me.reportFilters[index].title).val() + "')";
+												}
+												else 
+													if ($("#" + me.reportFilters[index].title + "_1").val() != "" && $("#sel" + me.reportFilters[index].title).val() == 4) {
+														me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Between '" + $("#" + me.reportFilters[index].title).val() + "' And '" + $("#" + me.reportFilters[index].title + "_1").val() + "')";
+													}
+													else 
+														if ($("#sel" + me.reportFilters[index].title).val() == 5) {
+															me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <> '" + $("#" + me.reportFilters[index].title).val() + "')";
+														}
+									}
+									else 
+										if (me.reportFilters[index].columnDataType.toLowerCase() == "varchar") {
+											if ($("#sel" + me.reportFilters[index].title).val() == 1 || $("#sel" + me.reportFilters[index].title).val() == undefined) {
+												me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "')";
+											}
+											else 
+												if ($("#sel" + me.reportFilters[index].title).val() == 2) {
+													me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Like '%" + $("#" + me.reportFilters[index].title).val() + "%')";
+												}
+										}
 						}
 					}
-				}
 			}
 			
 			filterStatement = me.filter;
-			if(me.filter != "") {
-				if(filterStatement.indexOf("And") == 1)
-					me.filter = me.filter.replace("And","And (");
-				if(filterStatement.indexOf("Or") == 1)
-					me.filter = me.filter.replace("Or","And (");
+			if (me.filter != "") {
+				if (filterStatement.indexOf("And") == 1) 
+					me.filter = me.filter.replace("And", "And (");
+				if (filterStatement.indexOf("Or") == 1) 
+					me.filter = me.filter.replace("Or", "And (");
 				me.filter = me.filter + ")";
 			}
 			
 			me.reportTotalRowStore.fetch("userId:[user],report:" + me.reportId 
-				+ ",hirNode:" + me.delimitedOrgSelectedNodes 
-				+ ",filter:" + me.filter
-				+ ",", me.recordCountsLoaded, me);	
+			+ ",hirNode:" + me.delimitedOrgSelectedNodes 
+			+ ",filter:" + me.filter
+			+ ",", me.recordCountsLoaded, me);	
 			
 			me.loadModuleColumnData();
 		},
@@ -1594,9 +1665,17 @@ ii.Class({
 		
 		moduleColumnDataLoaded: function(me, activeId) {
 			var rowData = "" ;     		
+			var invoiceColumnNo = -1;
 			
 			me.gridData = [];
 			
+			for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
+				if (me.moduleColumnHeaders[index].title == "RevInvoice") {
+					invoiceColumnNo = index;
+					break;
+				}
+			}
+		
 			if (me.moduleColumnDatas.length > 0) {
 				for(var index = 0; index < me.moduleColumnDatas.length; index++) {
 					var pkId = me.moduleColumnDatas[index].primeColumn;
@@ -1604,21 +1683,50 @@ ii.Class({
 					var houseCodeId = fin.reportUi.moduleColumnDatas[index].houseCodeId;
 					var appSite = me.moduleColumnDatas[index].appSite;
 					var appSitTitle = me.moduleColumnDatas[index].appSitTitle;
-
-					rowData += "<tr id='adhReportDataRow" + pkId + "' onclick=(fin.reportUi.getAdhReprotGridRowEdit(" + pkId + "," + index + "," + houseCodeId + "));>";	
-					rowData += me.getAdhReprotDetailGridRow(index, pkId, houseCode, appSite, appSitTitle);
-					rowData += "</tr>"		
+					
+					var invoiceId = -1;
+					me.invoiceNumbers = "";
+					if (invoiceColumnNo != -1) {
+						invoiceId = unescape(me.moduleColumnDatas[index]["column" + (invoiceColumnNo + 1)]);
+						me.invoiceNumbers = me.invoiceNumbers + "|" + invoiceId
+					}
+					
+					if (!me.invoiceItem) {
+			
+						rowData += "<tr id='adhReportDataRow" + pkId + "' onclick=(fin.reportUi.getAdhReprotGridRowEdit(" + pkId + "," + index + "," + houseCodeId + "));>";	
+						rowData += me.getAdhReprotDetailGridRow(index, pkId, houseCode, appSite, appSitTitle);
+						rowData += "</tr>"	
+					}
+					else {	
+						rowData += "<tr>"
+						rowData += "<td colspan='100'>"
+						rowData += "<div >"
+						rowData += "<table width='100%' class='invoiceTable'>"
+						rowData += "<tr>";
+						rowData += "<td class='gridColumn' style='font-weight:bold; border-bottom:solid 2px #99bbe8'><img id='expandCollapse" + pkId + "' onclick='fin.reportUi.invoiceItemsLoad(" + pkId + "," + invoiceId + ");' src='/fin/cmn/usr/media/Common/Plus.gif' style='cursor: pointer' alt='expand/collapse' title='expand/collapse' />  Invoice #: " + invoiceId + "</td>"
+						rowData += "</tr>";
+						rowData += "<tr id='InvoiceDetailsRow" + pkId + "'></tr>"
+						rowData += "</table>"
+						rowData += "</div>"
+						rowData += "</td>"
+						rowData += "</tr>"
+					}	
 				}				
 			}
 
 			rowData += '<tr height="100%"><td id="tdLastRow" colspan="' + (me.moduleColumnHeaders.length + 2) + '" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>';
 
 			$("#AdhReportItemGridBody").html(rowData);
-			$("#AdhReportItemGridBody tr:odd").addClass("gridRow");
-        	$("#AdhReportItemGridBody tr:even").addClass("alternateGridRow");
-			$("#AdhReportItemGridBody tr").mouseover(function() { 
-				$(this).addClass("trover");}).mouseout(function() { 
-					$(this).removeClass("trover");});
+			
+			if (!me.invoiceItem) {
+				$("#AdhReportItemGridBody tr:odd").addClass("gridRow");
+				$("#AdhReportItemGridBody tr:even").addClass("alternateGridRow");
+				$("#AdhReportItemGridBody tr").mouseover(function(){
+					$(this).addClass("trover");
+				}).mouseout(function(){
+					$(this).removeClass("trover");
+				});
+			}
 
 			$("#pageLoading").hide();	
 		},
@@ -2008,7 +2116,410 @@ ii.Class({
 		
 			return rowHtml;
 		},
+
+		invoiceItemsLoad: function() {
+			var args = ii.args(arguments, {
+				pkId: {type: Number}
+				, invoiceId: {type: Number}
+			});
+			
+			var me = this;
+			var invoiceId = args.invoiceId;
+			me.pkeyId = args.pkId;
+			//me.invoiceItemStore.fetch("userId:[user],invoiceId:" + invoiceId, me.invoiceItemsLoaded, me);
+			
+			if (me.invoiceCache[invoiceId] != undefined) {
+
+	            if (me.invoiceCache[invoiceId].loaded)
+					me.invoiceValidate(invoiceId, args.pkId);              
+	            else
+	                me.invoiceCache[invoiceId].buildQueue.push(args.pkId);
+	        }
+	        else
+	            me.invoiceLoad(invoiceId, args.pkId);
+		},
 		
+		invoiceValidate: function(invoiceId,pkId) {
+		    var me = this;
+			
+		    if (me.invoiceCache[invoiceId].valid) {
+				me.invoiceItemsLoaded(invoiceId, pkId);
+		    }
+		},
+		
+		invoiceLoad: function(invoiceId, pkId) {
+			var me = this;
+			
+		    me.invoiceCache[invoiceId] = {};
+		    me.invoiceCache[invoiceId].valid = false;
+		    me.invoiceCache[invoiceId].loaded = false;
+		    me.invoiceCache[invoiceId].buildQueue = [];
+			me.invoiceCache[invoiceId].invoiceItems = [];
+		    me.invoiceCache[invoiceId].buildQueue.push(pkId);
+			me.invoiceCache[invoiceId].id = invoiceId;
+			
+	        $.ajax({
+                type: "POST",
+                dataType: "xml",
+                url: "/net/crothall/chimes/fin/adh/act/provider.aspx",
+                data: "moduleId=adh&requestId=1&targetId=iiCache"
+					+ "&requestXml=<criteria>storeId:revInvoiceItems,userId:[user],"
+					+ "invoiceId:" + invoiceId + ",<criteria>",
+                  
+                 success: function(xml) {
+  	                $(xml).find("item").each(function() {
+	                    var invoice = {};
+	                	invoice.id = $(this).attr("id");
+	                	invoice.invoiceId = $(this).attr("invoiceId");
+						invoice.houseCodeId = $(this).attr("houseCodeId");
+						invoice.hirNodeId = $(this).attr("hirNodeId");
+						invoice.houseCode = $(this).attr("houseCode");
+						invoice.houseCodeJob = $(this).attr("houseCodeJob");
+	                	invoice.taxableService = $(this).attr("taxableService");
+						invoice.jobBrief = $(this).attr("jobBrief");
+						invoice.jobTitle = $(this).attr("jobTitle");
+						invoice.overrideSiteTax = $(this).attr("overrideSiteTax");
+						invoice.account = $(this).attr("account");
+	                	invoice.statusType = $(this).attr("statusType");
+						invoice.quantity = $(this).attr("quantity");
+						invoice.price = $(this).attr("price");
+						invoice.amount = $(this).attr("amount");
+						invoice.taxable = $(this).attr("taxable");
+	                	invoice.lineShow = $(this).attr("lineShow");
+						invoice.description = $(this).attr("description");
+						invoice.recurringFixedCost = $(this).attr("recurringFixedCost");
+						invoice.version = $(this).attr("version");
+						invoice.displayOrder = $(this).attr("displayOrder");
+	                	me.invoiceCache[invoiceId].invoiceItems.push(invoice);
+	                });
+					
+					me.invoiceCache[invoiceId].valid = true;
+					me.invoiceCache[invoiceId].loaded = true;
+					//validate the list of rows
+		            me.invoiceValidate(invoiceId, pkId);
+				}
+			});
+		},
+		
+		invoiceItemsLoaded: function(invoiceId, pkId) {
+			var me = this;
+			var index = 0;
+			var rowHtml = "";
+			var subTotal = 0;
+			var salesTax = 0;
+			var salesTaxTotal = 0;
+			var total = 0;
+			var rowNumber = 0;
+			var overrideSiteTax = false;
+			var houseCodeJobChanged = false;
+			var houseCode = 0;
+			var houseCodeJob = 0;
+			var itemIndex = -1;
+			var displayOrderSet = false;
+			var invoiceRowHtml = "";
+			var emptyRowHtml = "";
+
+			if (me.invoiceCache[invoiceId].invoiceItems.length > 0) {
+				if (me.invoiceCache[invoiceId].invoiceItems[0].displayOrder > 0)
+					displayOrderSet = true;
+			}
+			
+			if (displayOrderSet) {
+				for (index = 0; index < me.invoiceCache[invoiceId].invoiceItems.length; index++) {
+					if (me.invoiceCache[invoiceId].invoiceItems[index].account == 120) {
+						salesTax = parseFloat(me.invoiceCache[invoiceId].invoiceItems[index].amount);
+						salesTaxTotal += salesTax;
+					}
+					rowNumber++;
+					invoiceRowHtml += me.getItemGridRow(rowNumber, index, invoiceId);
+					if (me.invoiceCache[invoiceId].invoiceItems[index].account != me.descriptionAccount && me.invoiceCache[invoiceId].invoiceItems[index].account != 120)
+						subTotal += parseFloat(me.invoiceCache[invoiceId].invoiceItems[index].amount);
+				}
+			}
+			else {
+				for (index = 0; index < me.invoiceCache[invoiceId].invoiceItems.length; index++) {
+					if (houseCode != me.invoiceCache[invoiceId].invoiceItems[index].houseCode || houseCodeJob != me.invoiceCache[invoiceId].invoiceItems[index].houseCodeJob) {
+						if (houseCode != me.invoiceCache[invoiceId].invoiceItems[index].houseCode && houseCode != 0)
+							houseCodeJobChanged = true;
+						else if (houseCodeJob != 0 && (overrideSiteTax != me.invoiceCache[invoiceId].invoiceItems[index].overrideSiteTax || me.invoiceCache[invoiceId].invoiceItems[index].overrideSiteTax))
+							houseCodeJobChanged = true;
+						
+						houseCode = me.invoiceCache[invoiceId].invoiceItems[index].houseCode;
+						houseCodeJob = me.invoiceCache[invoiceId].invoiceItems[index].houseCodeJob;
+						overrideSiteTax = me.invoiceCache[invoiceId].invoiceItems[index].overrideSiteTax;
+					}
+	
+					if (houseCodeJobChanged) {
+						houseCodeJobChanged = false;
+						if (itemIndex != -1) {
+							rowNumber++;
+							invoiceRowHtml += me.getItemGridRow(rowNumber, itemIndex, invoiceId);
+							itemIndex = -1;
+						}
+					}
+	
+					if (me.invoiceCache[invoiceId].invoiceItems[index].account == 120) {
+						itemIndex = index;
+						salesTax = parseFloat(me.invoiceCache[invoiceId].invoiceItems[index].amount);
+						salesTaxTotal += salesTax;
+					}
+					else {
+						rowNumber++;
+						invoiceRowHtml += me.getItemGridRow(rowNumber, index, invoiceId);
+						if (me.invoiceCache[invoiceId].invoiceItems[index].account != me.descriptionAccount)
+							subTotal += parseFloat(me.invoiceCache[invoiceId].invoiceItems[index].amount);
+					}
+				}
+	
+				if (me.invoiceCache[invoiceId].invoiceItems.length > 0) {
+					if (itemIndex != -1) {
+						rowNumber++;
+						invoiceRowHtml += me.getItemGridRow(rowNumber, itemIndex, invoiceId);
+					}
+				}
+			}
+
+			total = subTotal + salesTaxTotal;
+			invoiceRowHtml += me.getTotalGridRow(0, subTotal, "Sub Total:", "");
+			invoiceRowHtml += me.getTotalGridRow(0, salesTaxTotal, "Sales Tax Total:", "");
+			invoiceRowHtml += me.getTotalGridRow(0, total, "Total:", "");
+			
+			var invoiceDetailsRow = $("#InvoiceDetailsRow" + pkId);
+			
+			if ($("#expandCollapse" + pkId).attr('src') == '/fin/cmn/usr/media/Common/Plus.gif') {
+				invoiceDetailsRow.html(invoiceRowHtml);
+        		$("#InvoiceDetailsRow" + pkId + " tr:odd").addClass("gridRow");
+				$("#InvoiceDetailsRow" + pkId + " tr:even").addClass("alternateGridRow");
+				$("#InvoiceDetailsRow" + pkId + " tr").mouseover(function() { 
+				$(this).addClass("trover");}).mouseout(function() { 
+					$(this).removeClass("trover");});
+				$("#expandCollapse" + pkId).attr('src','/fin/cmn/usr/media/Common/Minus.gif');
+			}	
+		    else {
+				invoiceDetailsRow.html(emptyRowHtml);
+				$("#expandCollapse" + pkId).attr('src','/fin/cmn/usr/media/Common/Plus.gif');
+			}
+		},
+		
+		getItemGridRow: function() {
+			var args = ii.args(arguments,{
+				rowNumber: {type: Number}
+				, index: {type: Number}
+				, invoiceId: {type: Number}
+			});	
+			var me = this;
+			var index = args.index;
+			var rowHtml = "<tr>";
+			var accountName = "";
+			var quantity = "";
+			var price = "";
+			var invoiceId = args.invoiceId;
+			
+			if (me.invoiceCache[invoiceId].invoiceItems[index].account == 120) {
+				accountName = "Sales Tax:";
+				quantity = "&nbsp";
+				price = "&nbsp";
+			}				
+			else {
+				accountName = me.getAccountNumberName(me.invoiceCache[invoiceId].invoiceItems[index].account);
+				quantity = me.invoiceCache[invoiceId].invoiceItems[index].quantity.toString()
+				price = me.invoiceCache[invoiceId].invoiceItems[index].price;
+			}
+			
+			rowHtml += me.getInvoiceItemGridRow(
+				args.rowNumber
+				, false
+				, me.invoiceCache[invoiceId].invoiceItems[index].id
+				, me.invoiceCache[invoiceId].invoiceItems[index].houseCode
+				, me.getJobTitle(me.invoiceCache[invoiceId].invoiceItems[index].jobBrief, me.invoiceCache[invoiceId].invoiceItems[index].jobTitle)
+				, me.getTaxableServiceTitle(me.invoiceCache[invoiceId].invoiceItems[index].taxableService)
+				, accountName
+				, quantity
+				, price
+				, me.invoiceCache[invoiceId].invoiceItems[index].amount
+				, me.getStatusTitle(me.invoiceCache[invoiceId].invoiceItems[index].statusType)
+				, me.invoiceCache[invoiceId].invoiceItems[index].taxable ? "Yes" : "No"
+				, me.invoiceCache[invoiceId].invoiceItems[index].lineShow ? "Yes" : "No"
+				, me.invoiceCache[invoiceId].invoiceItems[index].description
+			);						
+			rowHtml += "</tr>";
+			
+			return rowHtml;
+		},
+		
+		getInvoiceItemGridRow: function() {
+			var args = ii.args(arguments,{
+				rowNumber: {type: Number}
+				, rowEditable: {type: Boolean}
+				, id: {type: Number}
+				, houseCode: {type: String}
+				, job: {type: String}
+				, taxableService: {type: String}
+				, account: {type: String}
+				, quantity: {type: String}
+				, price: {type: String}
+				, amount: {type: String}
+				, status: {type: String}
+				, taxable: {type: String}
+				, lineShow: {type: String}
+				, description: {type: String}
+			});
+			var me = this;
+			var rowHtml = "";
+			var columnBold = false;
+			var align = "left";
+			var rowNumberText = "";
+			var editHouseCode = false;
+			
+			if (args.id == 0 || args.account == "Sales Tax:") {
+				columnBold = true;
+				align = "right";
+			}
+
+			if (args.rowNumber > 0)
+				rowNumberText = args.rowNumber.toString();
+			else
+				rowNumberText = "&nbsp;"
+
+			rowHtml += me.getEditableRowColumn(false, false, 0, "rowNumber", rowNumberText, 20, "right");
+			rowHtml += me.getEditableRowColumn(false, false, 1, "id", args.id.toString(), 0, "left");
+			rowHtml += me.getEditableRowColumn(false, false, 11, "houseCode", args.houseCode, 50, "left");
+			rowHtml += me.getEditableRowColumn(false, false, 2, "job", args.job, 100, align);
+			rowHtml += me.getEditableRowColumn(false, false, 12, "taxableService", args.taxableService, 80, align);
+			rowHtml += me.getEditableRowColumn(false, columnBold, 3, "account", args.account, 200, align);
+			rowHtml += me.getEditableRowColumn(false, false, 4, "quantity", args.quantity, 75, "right");
+			rowHtml += me.getEditableRowColumn(false, false, 5, "price", args.price, 75, "right");
+			rowHtml += me.getEditableRowColumn(false, columnBold, 6, "amount", args.amount, 100, "right");
+			rowHtml += me.getEditableRowColumn(false, false, 7, "status", args.status, 50, "center");
+			rowHtml += me.getEditableRowColumn(false, false, 8, "taxable", args.taxable, 50, "center");
+			rowHtml += me.getEditableRowColumn(false, false, 9, "lineShow", args.lineShow, 50, "center");
+			rowHtml += me.getEditableRowColumn	(false, false, 10, "description", args.description, 150, "left");
+
+			return rowHtml;
+		},
+																		
+		getEditableRowColumn: function() {
+			var args = ii.args(arguments, {
+				editable: {type: Boolean}
+				, bold: {type: Boolean}
+				, columnNumber: {type: Number}
+				, columnName: {type: String}
+				, columnValue: {type: String}
+				, columnWidth: {type: Number}
+				, columnAlign: {type: String}
+			});
+			var me = this;
+			var styleName = "text-align:" + args.columnAlign + ";"
+			
+			if (args.bold)
+				styleName += " font-weight:bold;"
+			
+			if (args.columnWidth == 0) 
+				return "<td class='gridColumnHidden'>" + args.columnValue + "</td>";
+			else 
+				return "<td class='gridColumn' style='" + styleName + "' width='" + args.columnWidth + "'>" + args.columnValue + "</td>";
+		},
+		
+		getTotalGridRow: function() {
+			var args = ii.args(arguments,{
+				rowNumber: {type: Number}
+				, totalAmount: {type: Number}
+				, title: {type: String}
+				, description: {type: String}
+			});			
+			var me = this;
+			var rowHtml = "";
+
+			rowHtml = "<tr>";
+
+			rowHtml += me.getInvoiceItemGridRow(
+				args.rowNumber
+				, false
+				, 0
+				, "&nbsp;"
+				, "&nbsp;"
+				, "&nbsp;"
+		        , args.title
+				, "&nbsp;"
+				, "&nbsp;"
+				, args.totalAmount.toFixed(5)
+				, "&nbsp;"
+				, "&nbsp;"
+				, "&nbsp;"
+				, args.description
+				);
+
+			rowHtml += "</tr>";
+
+			return rowHtml;
+		},
+		
+		getStatusTitle: function(status) {
+			if (status == 1)
+				return "Open";
+			else if (status == 2)
+				return "In Progress";
+			else if (status == 3)
+				return "Posted";
+			else if (status == 5)
+				return "Closed";
+		},
+		
+		getJobTitle: function(brief, title) {
+			var me = this;
+			var jobTitle = "";
+
+			if (brief != "")
+				jobTitle = brief + " - " + title;
+
+			return jobTitle == "" ? "&nbsp;" : jobTitle;
+		},
+		
+		getTaxableServiceTitle: function(id) {
+			var me = this;
+
+			var index = ii.ajax.util.findIndexById(id.toString(), me.taxableServices);
+			if (index != undefined && index >= 0)
+				return me.taxableServices[index].title;
+			else
+				return "";
+		},
+			
+		taxableServicesLoaded: function(me, activeId) {
+ 
+ 			me.taxableServices.unshift(new fin.adh.TaxableService({ id: 0, title: "" }));
+        },
+			
+		accountsLoaded: function(me, activeId) {
+
+			for (var index = 0; index < me.accounts.length; index++) {
+				if (me.accounts[index].code == "0000") {
+					me.descriptionAccount = me.accounts[index].id;
+					me.accounts.push(me.accounts[index]);
+					me.accounts.splice(index, 1);
+					break;
+				}
+			}
+		},
+		
+		
+		
+		getAccountNumberName: function(id) {
+			var me = this;
+			var accountNumberName = "";
+
+			for (var index = 0; index < me.accounts.length; index++) {
+				if (me.accounts[index].id == id) {
+					accountNumberName = me.accounts[index].code + " - " + me.accounts[index].description;
+					break;
+				}
+			}
+
+			if (accountNumberName == "")
+				return "&nbsp;"
+			else
+				return accountNumberName;
+		},
 		sortColumn: function(index) {
 			var me = this;
 
@@ -3482,6 +3993,8 @@ ii.Class({
 				+ ",startPoint:" + 0
 				+ ",endPoint:" +  0
 				+ ",sortColumns:" +  me.sortColumns
+				+ ",invoiceNumbers:" +  me.invoiceNumbers
+ 				+ ",descriptionAccount:" +  me.descriptionAccount
 				+ ",", me.fileNamesLoaded, me);						
 		},
 		

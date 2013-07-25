@@ -569,6 +569,41 @@ ii.init.register( function() {
 		, name: {type: String}
 	};
 	
+	fin.adh.invoiceItemArgs = {
+		id: {type: Number}
+		, invoiceId: {type: Number, required: false, defaultValue: 0}
+		, houseCodeId: {type: Number, required: false, defaultValue: 0}
+		, hirNodeId: {type: Number, required: false, defaultValue: 0}
+		, houseCode: {type: String, required: false, defaultValue: ""}
+		, houseCodeJob: {type: Number, required: false, defaultValue: 0}
+		, taxableService: {type: Number, required: false, defaultValue: 0}
+		, jobBrief: {type: String, required: false, defaultValue: ""}
+		, jobTitle: {type: String, required: false, defaultValue: ""}
+		, overrideSiteTax: {type: Boolean, required: false, defaultValue: false}
+		, account: {type: Number, required: false, defaultValue: 0}
+		, statusType: {type: Number, required: false, defaultValue: 1}
+		, quantity: {type: String, required: false, defaultValue: "0"}
+		, price: {type: String, required: false, defaultValue: ""}
+		, amount: {type: String, required: false, defaultValue: ""}
+		, taxable: {type: Boolean, required: false, defaultValue: false}
+		, lineShow: {type: Boolean, required: false, defaultValue: true}		
+		, description: {type: String, required: false, defaultValue: ""}
+		, recurringFixedCost: {type: Boolean, required: false, defaultValue: false}
+		, version: {type: Number, required: false, defaultValue: 0}
+		, displayOrder: {type: Number, required: false, defaultValue: 0}
+	};
+	
+	fin.adh.accountArgs = {
+		id: {type: Number}
+		, code: {type: String}
+		, description: {type: String}
+	};
+	
+	fin.adh.taxableServiceArgs = {
+		id: {type: Number}
+		, title: {type: String}
+	};
+	
 }, 2);
 
 ii.Class({
@@ -1335,3 +1370,33 @@ ii.Class({
 		}
 	}
 });
+
+ii.Class({
+	Name: "fin.adh.InvoiceItem",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.invoiceItemArgs);
+			$.extend(this, args);
+		}
+	}
+});
+	
+ii.Class({
+	Name: "fin.adh.Account",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.accountArgs);
+			$.extend(this, args);
+		}
+	}
+});
+	
+ii.Class({
+	Name: "fin.adh.TaxableService",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.taxableServiceArgs);
+			$.extend(this, args);
+			}				
+		}			
+});	
