@@ -1487,7 +1487,7 @@ ii.Class({
 				return;
 
 			if (add)
-				$("#PayCodeHeader").html("&nbsp;Add Aditional Pay Code");
+				$("#PayCodeHeader").html("&nbsp;Add Additional Pay Code");
 			else
 				$("#PayCodeHeader").html("&nbsp;Delete Pay Code");
 
