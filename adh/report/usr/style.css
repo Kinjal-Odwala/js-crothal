@@ -116,7 +116,6 @@
 .gridBorder {
 	border: solid #AAAAAA thin;
 	border-width: 1px;
-	overflow-y: auto;
 }
 
 .gridRow { 
@@ -211,6 +210,51 @@
 	cursor: pointer;
 }
 
+.gridColumnFilter {	
+	border-right: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	color: #032D23;	
+	vertical-align: middle;
+	padding: 3px 2px 3px 2px;
+	height: 20px;
+	cursor: pointer;
+	width:180px;
+}
+
+.gridColumnOperator {	
+	border-right: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	color: #032D23;	
+	vertical-align: middle;
+	padding: 3px 2px 3px 2px;
+	height: 20px;
+	cursor: pointer;
+	width:70px;
+}
+
+.gridColumnValue {	
+	border-right: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	color: #032D23;	
+	vertical-align: middle;
+	padding: 3px 2px 3px 2px;
+	height: 20px;
+	cursor: pointer;
+	width:190px;
+}
+
 .gridColumnRight {	
 	border-spacing: 0px 0px;
 	border-collapse: collapse;
@@ -243,7 +287,8 @@
 }
 
 .tbodyBorder {
-	height: 370px;
+	height: 390px;
+	width:537px;
 	overflow: auto;
 }
 

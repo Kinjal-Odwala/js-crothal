@@ -81,7 +81,6 @@ ii.Class({
 			
 			me.pkeyId = -1;
  			me.invoiceItem = false;
- 			me.invoiceNumbers = "";
 			
 			me.gateway = ii.ajax.addGateway("adh", ii.config.xmlProvider);			
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -122,6 +121,7 @@ ii.Class({
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
 			}
+			$("#divFilterHeader").hide();
 		},
 
 		authorizationProcess: function fin_adh_report_UserInterface_authorizationProcess() {
@@ -1291,91 +1291,90 @@ ii.Class({
 		
 		setReportFilters: function() {
 			var me = this;
-			
-			var rowData = "<tr id='filterHeader'><td colspan='4' height='24px'></td></tr>";
+			var rowData = "";
 			var dateControls = [];
 			
 			if (me.reportFilters.length > 0) {
-				rowData = "<tr id='filterHeader'><td class='gridHeaderColumn'>Title</td><td class='gridHeaderColumn'>Filter</td><td class='gridHeaderColumn'>Value</td><td class='gridHeaderColumn'>Operator</td></tr>";  
-
+				rowData = "<tr><td><div><table cellpadding='0' cellspacing='0'><thead><td id='filterHeader'><td class='gridHeaderColumn' width='180px'>Title</td><td class='gridHeaderColumn' width='70px'>Filter</td><td class='gridHeaderColumn' width='190px'>Value</td><td class='gridHeaderColumn'>Operator</td></tr></thead></table></div></td></tr>";  
+				rowData += "<tr><td><div id='divFilterRow'><table id='AdhReportFilterGridRow' cellpadding='0' cellspacing='0'>";
+				
 				for (var index = 0; index < me.reportFilters.length; index++) {
 					rowData += "<tr>";
-					rowData += "<td  class='gridColumn' align='left'>" + me.reportFilters[index].name + ':' + "</td>";
+					rowData += "<td class='gridColumn' width='180px' >" + me.reportFilters[index].name + ':' + "</td>";
 					
 					if (me.reportFilters[index].referenceTableName == "") {
 						contorlValidation = me.reportFilters[index].validation;
 						if (contorlValidation == "bit") {
-							rowData += "<td class='gridColumn' align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'bit') + "</td><td class='gridColumn'></td>";
+							rowData += "<td class='gridColumnOperator' align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'bit') + "</td><td class='gridColumnValue'></td>";
 						}
 						else if (contorlValidation.toLowerCase() == "datetime" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator == 1) {
-							rowData += "<td class='gridColumn' align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'datetime') + "</td>";
-							rowData += "<td class='gridColumn' align='left'><input  class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
+							rowData += "<td class='gridColumnOperator' align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'datetime') + "</td>";
+							rowData += "<td class='gridColumnValue' align='left'><input  class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
 							rowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
 						}
 						else if (contorlValidation.toLowerCase() == "datetime" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator != 1) {
-							rowData += "<td class='gridColumn' align='left'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
+							rowData += "<td class='gridColumnValue' align='left'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
 							rowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
 						}
 						else if (contorlValidation.toLowerCase() == "int" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator == 1) {
-							rowData += "<td class='gridColumn' align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'int') + "</td>";
-							rowData += "<td class='gridColumn' align='left'><input  class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
+							rowData += "<td class='gridColumnOperator' align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'int') + "</td>";
+							rowData += "<td class='gridColumnValue' align='left'><input  class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
 							rowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
 						}
 						else if (contorlValidation.toLowerCase() == "int" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator != 1) {
-							rowData += "<td class='gridColumn' align='left'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
+							rowData += "<td class='gridColumnValue' align='left'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
 							rowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
 						}
 						else if (contorlValidation.toLowerCase() == "decimal" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator == 1) {
-							rowData += "<td class='gridColumn' align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'decimal') + "</td>";
-							rowData += "<td class='gridColumn' align='left'><input  class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
+							rowData += "<td class='gridColumnOperator' align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'decimal') + "</td>";
+							rowData += "<td class='gridColumnValue' align='left'><input  class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
 							rowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
 						}
 						else if (contorlValidation.toLowerCase() == "decimal" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator != 1) {
-							rowData += "<td class='gridColumn' align='left'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
+							rowData += "<td class='gridColumnValue' align='left'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
 							rowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
 						}
 						else if (me.reportFilters[index].columnDataType.toLowerCase() == "varchar" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator == 1) {
-							rowData += "<td class='gridColumn' align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'text') + "</td>";
-							rowData += "<td class='gridColumn' align='left'><input  class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
+							rowData += "<td class='gridColumnOperator' align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title, 'text') + "</td>";
+							rowData += "<td class='gridColumnValue' align='left'><input  class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
 							rowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
 						}
 						else if (me.reportFilters[index].columnDataType.toLowerCase() == "varchar" && me.reportFilters[index].columnTypeFilter == 1 && me.reportFilters[index].columnTypeOperator != 1) {
-							rowData += "<td class='gridColumn' align='left'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
+							rowData += "<td class='gridColumnValue' align='left'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input>";
 							rowData += "<input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "_1' style='display:none'></input></td>";
 						}
 						else {
-							rowData += "<td class='gridColumn' align='left'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input></td>";
+							rowData += "<td class='gridColumnValue' align='left'><input class='inputTextSize' type='text' id='" + me.reportFilters[index].title + "'></input></td>";
 						}
 					}
 					else 
-						rowData += "<td class='gridColumn'></td><td class='gridColumn' align='left'>" + me.populateFilterDropDown(me.reportFilters[index].referenceTableName, me.reportFilters[index].title) + "</td>";
+						rowData += "<td class='gridColumnOperator'></td><td class='gridColumnValue' align='left'>" + me.populateFilterDropDown(me.reportFilters[index].referenceTableName, me.reportFilters[index].title) + "</td>";
 						
 					rowData += "<td align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title + "_andOr", 'andOrOperator') + "</td>";
 					rowData += "</tr>"
 				}
+				rowData += "</table></div></td></tr>";
 			}
 			
 			$("#AdhReportFilterGridBody").html(rowData);
 									
-			$("#AdhReportFilterGridBody tr:odd").addClass("gridRow");
-        	$("#AdhReportFilterGridBody tr:even").addClass("alternateGridRow");
+			$("#AdhReportFilterGridRow tr:odd").addClass("gridRow");
+        	$("#AdhReportFilterGridRow tr:even").addClass("alternateGridRow");
 			
-			$("#AdhReportFilterGridBody tr").mouseover(function() {
+			$("#AdhReportFilterGridRow tr").mouseover(function() {
 				$(this).addClass("trover");}).mouseout(function() {
 					$(this).removeClass("trover");});
 			
 			if (me.reportFilters.length > 0) {
 				$("#divFilterHeader").show();
-				$("#divFilterGrid").addClass("gridBorder");
 				if ($("#AdhReportFilterGridBody").height() + $(window).height() > 1000)
-					$("#divFilterGrid").addClass("tbodyBorder");
+					$("#divFilterRow").addClass("tbodyBorder");
 				else
-					$("#divFilterGrid").removeClass("tbodyBorder");
+					$("#divFilterRow").removeClass("tbodyBorder");
 			}
 			else {
 				$("#divFilterHeader").hide();
-				$("#divFilterGrid").removeClass("gridBorder");
-				$("#divFilterGrid").removeClass("tbodyBorder");
+				$("#divFilterRow").removeClass("tbodyBorder");
 				$("#AdhReportFilterGridBody tr").mouseover(function() {
 					$(this).removeClass("trover");});
 			}	
@@ -1519,6 +1518,7 @@ ii.Class({
 					rowData += "<th class='gridHeaderColumn' width='50px'>Taxable</th>";
 					rowData += "<th class='gridHeaderColumn' width='50px'>Show</th>";
 					rowData += "<th class='gridHeaderColumn' width='150px'>Description</th>";
+					$("#tblAdhReportGridHeader").width("1060px");
 				}
 				else {
 					rowData += "<th onclick=(fin.reportUi.sortColumn(-1)); class='" + className + "' style='width:100px;'>House Code</th>";
@@ -1552,7 +1552,8 @@ ii.Class({
 				if (me.reportFilters[index].validation.toLowerCase() == "bit" && $("#sel" + me.reportFilters[index].title).val() != "") {
 					me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#sel" + me.reportFilters[index].title).val() + "')";
 				}
-				else if ($("#" + me.reportFilters[index].title).val() != null && $("#" + me.reportFilters[index].title).val() != "") {
+				else 
+					if ($("#" + me.reportFilters[index].title).val() != null && $("#" + me.reportFilters[index].title).val() != "") {
 						if ($("#" + me.reportFilters[index].title).val() != "0") {
 							if (me.reportFilters[index].referenceTableName != "") { //dropdown selection
 								var inQuery = "In (";
@@ -1665,15 +1666,18 @@ ii.Class({
 		
 		moduleColumnDataLoaded: function(me, activeId) {
 			var rowData = "" ;     		
-			var invoiceColumnNo = -1;
+			var invoiceIdColumn = -1;
+			var invoiceId = -1;
+			var invoiceNoColumn = -1;
+			var invoiceNo = -1;
 			
 			me.gridData = [];
 			
 			for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
-				if (me.moduleColumnHeaders[index].title == "RevInvoice") {
-					invoiceColumnNo = index;
-					break;
-				}
+				if (me.moduleColumnHeaders[index].title == "RevInvoice") 
+					invoiceIdColumn = index;
+				if (me.moduleColumnHeaders[index].title == "RevInvInvoiceNumber") 
+					invoiceNoColumn = index;
 			}
 		
 			if (me.moduleColumnDatas.length > 0) {
@@ -1684,11 +1688,9 @@ ii.Class({
 					var appSite = me.moduleColumnDatas[index].appSite;
 					var appSitTitle = me.moduleColumnDatas[index].appSitTitle;
 					
-					var invoiceId = -1;
-					me.invoiceNumbers = "";
-					if (invoiceColumnNo != -1) {
-						invoiceId = unescape(me.moduleColumnDatas[index]["column" + (invoiceColumnNo + 1)]);
-						me.invoiceNumbers = me.invoiceNumbers + "|" + invoiceId
+					if (invoiceIdColumn != -1) {
+						invoiceId = unescape(me.moduleColumnDatas[index]["column" + (invoiceIdColumn + 1)]);
+						invoiceNo = unescape(me.moduleColumnDatas[index]["column" + (invoiceNoColumn + 1)]);
 					}
 					
 					if (!me.invoiceItem) {
@@ -1703,7 +1705,7 @@ ii.Class({
 						rowData += "<div >"
 						rowData += "<table width='100%' class='invoiceTable'>"
 						rowData += "<tr>";
-						rowData += "<td class='gridColumn' style='font-weight:bold; border-bottom:solid 2px #99bbe8'><img id='expandCollapse" + pkId + "' onclick='fin.reportUi.invoiceItemsLoad(" + pkId + "," + invoiceId + ");' src='/fin/cmn/usr/media/Common/Plus.gif' style='cursor: pointer' alt='expand/collapse' title='expand/collapse' />  Invoice #: " + invoiceId + "</td>"
+						rowData += "<td class='gridColumn' style='font-weight:bold; border-bottom:solid 2px #99bbe8'><img id='expandCollapse" + pkId + "' onclick='fin.reportUi.invoiceItemsLoad(" + pkId + "," + invoiceId + ");' src='/fin/cmn/usr/media/Common/Plus.gif' style='cursor: pointer' alt='expand/collapse' title='expand/collapse' />  Invoice #: " + invoiceNo + "</td>"
 						rowData += "</tr>";
 						rowData += "<tr id='InvoiceDetailsRow" + pkId + "'></tr>"
 						rowData += "</table>"
@@ -2272,7 +2274,7 @@ ii.Class({
 				}
 	
 				if (me.invoiceCache[invoiceId].invoiceItems.length > 0) {
-					if (itemIndex != -1) {
+					if (itemIndex != -1) {																						
 						rowNumber++;
 						invoiceRowHtml += me.getItemGridRow(rowNumber, itemIndex, invoiceId);
 					}
@@ -2338,8 +2340,8 @@ ii.Class({
 				, price
 				, me.invoiceCache[invoiceId].invoiceItems[index].amount
 				, me.getStatusTitle(me.invoiceCache[invoiceId].invoiceItems[index].statusType)
-				, me.invoiceCache[invoiceId].invoiceItems[index].taxable ? "Yes" : "No"
-				, me.invoiceCache[invoiceId].invoiceItems[index].lineShow ? "Yes" : "No"
+				, me.getDisplayValue(me.invoiceCache[invoiceId].invoiceItems[index].taxable)
+				, me.getDisplayValue(me.invoiceCache[invoiceId].invoiceItems[index].lineShow)
 				, me.invoiceCache[invoiceId].invoiceItems[index].description
 			);						
 			rowHtml += "</tr>";
@@ -2393,7 +2395,7 @@ ii.Class({
 			rowHtml += me.getEditableRowColumn(false, false, 7, "status", args.status, 50, "center");
 			rowHtml += me.getEditableRowColumn(false, false, 8, "taxable", args.taxable, 50, "center");
 			rowHtml += me.getEditableRowColumn(false, false, 9, "lineShow", args.lineShow, 50, "center");
-			rowHtml += me.getEditableRowColumn	(false, false, 10, "description", args.description, 150, "left");
+			rowHtml += me.getEditableRowColumn(false, false, 10, "description", args.description, 150, "left");
 
 			return rowHtml;
 		},
@@ -2463,6 +2465,15 @@ ii.Class({
 				return "Posted";
 			else if (status == 5)
 				return "Closed";
+		 	else
+                return "";
+		},
+		
+		getDisplayValue: function(item) {
+			if (item == "true")
+				return "Yes";
+			else if (item == "false")
+				return "No";
 		},
 		
 		getJobTitle: function(brief, title) {
@@ -2491,7 +2502,6 @@ ii.Class({
         },
 			
 		accountsLoaded: function(me, activeId) {
-
 			for (var index = 0; index < me.accounts.length; index++) {
 				if (me.accounts[index].code == "0000") {
 					me.descriptionAccount = me.accounts[index].id;
@@ -2501,8 +2511,6 @@ ii.Class({
 				}
 			}
 		},
-		
-		
 		
 		getAccountNumberName: function(id) {
 			var me = this;
@@ -2520,6 +2528,7 @@ ii.Class({
 			else
 				return accountNumberName;
 		},
+		
 		sortColumn: function(index) {
 			var me = this;
 
@@ -2553,27 +2562,27 @@ ii.Class({
 			var rowHtml = "";
 			
 			if (type == "text") {
-				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:120px; onchange=fin.reportUi.operatorChange('" + id + "');>";
+				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:60px; onchange=fin.reportUi.operatorChange('" + id + "');>";
 				rowHtml += "<option title='Exact match (=)' value='1' selected>Exact match (=)</option>";
 				rowHtml += "<option title='Any part that matches (Like)' value='2'>Any part that matches (Like)</option>";
 				rowHtml += "</select>";
 			}
 			else  if (type == "bit") {
-				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:120px;>";
+				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:60px;>";
 				rowHtml += "<option title='' value='' selected></option>";
 				rowHtml += "<option title='Yes' value='1'>Yes</option>";
 				rowHtml += "<option title='No' value='0'>No</option>";
 				rowHtml += "</select>";
 			}
 			else  if (type == "andOrOperator") {
-				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:50px;>";
+				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:60px;>";
 				rowHtml += "<option title='' value='' selected></option>";
 				rowHtml += "<option title='And' value='1'>And</option>";
 				rowHtml += "<option title='Or' value='2'>Or</option>";
 				rowHtml += "</select>";
 			}
 			else {
-				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:120px; onchange=fin.reportUi.operatorChange('" + id + "');>";
+				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:60px; onchange=fin.reportUi.operatorChange('" + id + "');>";
 				rowHtml += "<option title='Equal to' value='1' selected>=</option>";
 				rowHtml += "<option title='Less than or equal to' value='2'>&lt;=</option>";
 				rowHtml += "<option title='Greater than or equal to' value='3'>&gt;=</option>";
@@ -3993,8 +4002,6 @@ ii.Class({
 				+ ",startPoint:" + 0
 				+ ",endPoint:" +  0
 				+ ",sortColumns:" +  me.sortColumns
-				+ ",invoiceNumbers:" +  me.invoiceNumbers
- 				+ ",descriptionAccount:" +  me.descriptionAccount
 				+ ",", me.fileNamesLoaded, me);						
 		},
 		
