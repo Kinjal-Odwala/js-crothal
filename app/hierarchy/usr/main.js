@@ -1111,13 +1111,15 @@ ii.Class({
 				if (me.unitsList.length == 0)
 					$("#chkSelectAll").removeAttr("checked");
 				else {
-					var message = "Unit(s) [";
+					var message = "";
 					for (var index = 0; index < me.unitsList.length; index++) {
 						if ($("#chkNodeM" + me.unitsList[index].id).is(":checked"))
 							message += me.unitsList[index].brief + ", ";
 					}
-					message = message.substring(0, message.lastIndexOf(","));
-					alert(message + "] already exists in the location [" + me.hirNodesList[parentIndex].title + "]. Please verify.");
+					if (message != "") {
+						message = message.substring(0, message.lastIndexOf(","));
+						alert("Unit(s) [" + message + "] already exists in the location [" + me.hirNodesList[parentIndex].title + "]. Please verify.");
+					}
 				}
 			}
 			else {
