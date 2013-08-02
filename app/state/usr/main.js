@@ -707,6 +707,7 @@ ii.Class({
 			$("#selPageNumber").val(me.pageCurrent);
 
 			me.startPoint = ((me.pageCurrent - 1) * me.maximumRows) + 1;
+			me.employeePayRateStore.reset();
 			me.employeePayRateStore.fetch("userId:[user],object:PayRateUpdate"
 				+ ",batch:" + me.stateMinimumWageId
 				+ ",startPoint:" + me.startPoint
@@ -784,7 +785,6 @@ ii.Class({
 		},
 
 		fileNamesLoaded: function(me, activeId) {
-			var excelFileName = "";
 
 			$("#popupLoading").hide();
 
