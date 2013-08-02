@@ -1631,7 +1631,8 @@ ii.Class({
 				me.rowBeingEdited = false;
 				me.currentRowSelected = null;
 				me.bindRow = true;
-				me.invoiceItemStore.reset();	
+				parent.fin.revMasterUi.accountReceivableNeedUpdate = true;
+				me.invoiceItemStore.reset();
 				me.invoiceItemStore.fetch("userId:[user],invoiceId:" + me.invoiceId, me.invoiceItemsLoaded, me);
 			}
 			else if (status == "invalid") {
