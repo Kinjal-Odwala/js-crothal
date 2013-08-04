@@ -1544,13 +1544,14 @@ ii.Class({
 			me.filter = "";
 			
 			for (var index = 0; index < me.reportFilters.length; index++) {
+				
 				if ($("#sel" + me.reportFilters[index].title + "_andOr").val() == 2) 
 					operator = "Or";
 				else 
 					operator = "And";
 				
 				if (me.reportFilters[index].validation.toLowerCase() == "bit" && $("#sel" + me.reportFilters[index].title).val() != "") {
-					me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#sel" + me.reportFilters[index].title).val() + "')";
+					me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#sel" + me.reportFilters[index].title).val() + "') " + operator + "";
 				}
 				else 
 					if ($("#" + me.reportFilters[index].title).val() != null && $("#" + me.reportFilters[index].title).val() != "") {
@@ -1564,60 +1565,60 @@ ii.Class({
 									inQuery += ((selectedIndex == 0) ? selectedValues[selectedIndex] : ", " + selectedValues[selectedIndex]);
 								}
 								inQuery += ")";
-								me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " " + inQuery + ")";
+								me.filter += "(" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " " + inQuery + ") " + operator + " ";
 							}
 							else 
 								if (me.reportFilters[index].validation.toLowerCase() == "datetime") {
 									if ($("#sel" + me.reportFilters[index].title).val() == 1 || $("#sel" + me.reportFilters[index].title).val() == undefined) {
-										me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "')";
+										me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
 									}
 									else 
 										if ($("#sel" + me.reportFilters[index].title).val() == 2) {
-											me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <= '" + $("#" + me.reportFilters[index].title).val() + "')";
+											me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <= '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
 										}
 										else 
 											if ($("#sel" + me.reportFilters[index].title).val() == 3) {
-												me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " >= '" + $("#" + me.reportFilters[index].title).val() + "')";
+												me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " >= '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
 											}
 											else 
 												if ($("#" + me.reportFilters[index].title + "_1").val() != "" && $("#sel" + me.reportFilters[index].title).val() == 4) {
-													me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Between '" + $("#" + me.reportFilters[index].title).val() + "' And '" + $("#" + me.reportFilters[index].title + "_1").val() + "')";
+													me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Between '" + $("#" + me.reportFilters[index].title).val() + "' And '" + $("#" + me.reportFilters[index].title + "_1").val() + "') " + operator + "";
 												}
 												else 
 													if ($("#sel" + me.reportFilters[index].title).val() == 5) {
-														me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <> '" + $("#" + me.reportFilters[index].title).val() + "')";
+														me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <> '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
 													}
 								}
 								else 
 									if (me.reportFilters[index].validation.toLowerCase() == "int" || me.reportFilters[index].validation.toLowerCase() == "decimal") {
 										if ($("#sel" + me.reportFilters[index].title).val() == 1 || $("#sel" + me.reportFilters[index].title).val() == undefined) {
-											me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "')";
+											me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
 										}
 										else 
 											if ($("#sel" + me.reportFilters[index].title).val() == 2) {
-												me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <= '" + $("#" + me.reportFilters[index].title).val() + "')";
+												me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <= '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
 											}
 											else 
 												if ($("#sel" + me.reportFilters[index].title).val() == 3) {
-													me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " >= '" + $("#" + me.reportFilters[index].title).val() + "')";
+													me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " >= '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
 												}
 												else 
 													if ($("#" + me.reportFilters[index].title + "_1").val() != "" && $("#sel" + me.reportFilters[index].title).val() == 4) {
-														me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Between '" + $("#" + me.reportFilters[index].title).val() + "' And '" + $("#" + me.reportFilters[index].title + "_1").val() + "')";
+														me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Between '" + $("#" + me.reportFilters[index].title).val() + "' And '" + $("#" + me.reportFilters[index].title + "_1").val() + "') " + operator + "";
 													}
 													else 
 														if ($("#sel" + me.reportFilters[index].title).val() == 5) {
-															me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <> '" + $("#" + me.reportFilters[index].title).val() + "')";
+															me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <> '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
 														}
 									}
 									else 
 										if (me.reportFilters[index].columnDataType.toLowerCase() == "varchar") {
 											if ($("#sel" + me.reportFilters[index].title).val() == 1 || $("#sel" + me.reportFilters[index].title).val() == undefined) {
-												me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "')";
+												me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
 											}
 											else 
 												if ($("#sel" + me.reportFilters[index].title).val() == 2) {
-													me.filter += " " + operator + " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Like '%" + $("#" + me.reportFilters[index].title).val() + "%')";
+													me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Like '%" + $("#" + me.reportFilters[index].title).val() + "%') " + operator + "";
 												}
 										}
 						}
@@ -1626,11 +1627,8 @@ ii.Class({
 			
 			filterStatement = me.filter;
 			if (me.filter != "") {
-				if (filterStatement.indexOf("And") == 1) 
-					me.filter = me.filter.replace("And", "And (");
-				if (filterStatement.indexOf("Or") == 1) 
-					me.filter = me.filter.replace("Or", "And (");
-				me.filter = me.filter + ")";
+				me.filter = filterStatement.substr(0, filterStatement.length - 4);
+				me.filter = "And (" + me.filter + ")";
 			}
 			
 			me.reportTotalRowStore.fetch("userId:[user],report:" + me.reportId 
