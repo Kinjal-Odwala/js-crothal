@@ -178,6 +178,10 @@
                 applyTo: 'job-code-holder'
             });
 
+            onBeforeSelect = function () { return !fin.bud.modified(); }
+
+            houseCodeComboBox.on('beforeselect', onBeforeSelect);
+
             houseCodeComboBox.on('select', function (combo, record, index) {
                 currentHcmHouseCode = record.get('id');
                 //alert(record.get('id') + ', ' + record.get('name') + ', ' + record.get('appUnit') + ', ' + record.get('brief'));
@@ -187,7 +191,7 @@
             });
 
             houseCodeComboBox.on('blur', function (combo) {
-                if (currentHcmHouseCode != combo.getValue()) {
+                if (currentHcmHouseCode != combo.getValue() && !fin.bud.modified()) {
                     currentHcmHouseCode = combo.getValue();
                     var record = houseCodeStore.getById(currentHcmHouseCode);
                     Bud.Context.setStickyHouseCode(record.get('appUnit'), record.get('id'), record.get('name'), record.get('brief'), record.get('hirNode'));
@@ -196,6 +200,7 @@
                 }
             });
 
+            jobCodeComboBox.on('beforeselect', onBeforeSelect);
             jobCodeComboBox.on('select', function (combo, record, index) {
                 onContextDataChanged();
             });
@@ -225,6 +230,8 @@
                 allowBlank: false,
                 applyTo: 'fiscal-year-holder'
             });
+
+            fiscalYearComboBox.on('beforeselect', onBeforeSelect);
 
             fiscalYearComboBox.on('select', function (combo, record, index) {
                 Bud.Context.setStickyFiscalYear(record.get('id'), record.get('title'));
