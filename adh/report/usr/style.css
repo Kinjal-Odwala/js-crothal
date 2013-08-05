@@ -222,7 +222,7 @@
 	padding: 3px 2px 3px 2px;
 	height: 20px;
 	cursor: pointer;
-	width:180px;
+	width:200px;
 }
 
 .gridColumnOperator {	
@@ -237,7 +237,7 @@
 	padding: 3px 2px 3px 2px;
 	height: 20px;
 	cursor: pointer;
-	width:70px;
+	width:22%;
 }
 
 .gridColumnValue {	
@@ -252,7 +252,7 @@
 	padding: 3px 2px 3px 2px;
 	height: 20px;
 	cursor: pointer;
-	width:190px;
+	width:40%;
 }
 
 .gridColumnRight {	

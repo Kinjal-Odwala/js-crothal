@@ -122,6 +122,7 @@ ii.Class({
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
 			}
 			$("#divFilterHeader").hide();
+			$("#FilterGrid").hide();
 		},
 
 		authorizationProcess: function fin_adh_report_UserInterface_authorizationProcess() {
@@ -146,6 +147,7 @@ ii.Class({
 			var divAdhReportGridHeight = $(window).height() - 145;
 
 			$("#HirOrgContainer").height($(window).height() - 130);
+			$("#divFilterGrid").height($(window).height() - 145);
 			$("#divAdhReportGrid").css({"width" : divAdhReportGridWidth + "px", "height" : divAdhReportGridHeight + "px"});
 		},
 		
@@ -154,7 +156,7 @@ ii.Class({
 		    
 			$("#tblAdhReportGridHeader").css("left", -scrollLeft + "px");
 		},
-		
+				
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
 			var args = ii.args(arguments, {
 				event: {type: Object}	// The (key) event object
@@ -1292,15 +1294,16 @@ ii.Class({
 		setReportFilters: function() {
 			var me = this;
 			var rowData = "";
+			var rowHeadData = "";
 			var dateControls = [];
 			
 			if (me.reportFilters.length > 0) {
-				rowData = "<tr><td><div><table cellpadding='0' cellspacing='0'><thead><td id='filterHeader'><td class='gridHeaderColumn' width='180px'>Title</td><td class='gridHeaderColumn' width='70px'>Filter</td><td class='gridHeaderColumn' width='190px'>Value</td><td class='gridHeaderColumn'>Operator</td></tr></thead></table></div></td></tr>";  
-				rowData += "<tr><td><div id='divFilterRow'><table id='AdhReportFilterGridRow' cellpadding='0' cellspacing='0'>";
+				rowHeadData = "<th class='gridHeaderColumn' width='25%'>Title</th><th class='gridHeaderColumn' width='22%'>Filter</th><th class='gridHeaderColumn' width='40%'>Value</th><th class='gridHeaderColumn' width='13%'>Operator</th>";  
+				//rowData += "<tr><td><div id='divFilterGrid' style='overflow: scroll'><table id='tblFilterGrid' cellpadding='0' cellspacing='0' style='width: 500px'>";
 				
 				for (var index = 0; index < me.reportFilters.length; index++) {
 					rowData += "<tr>";
-					rowData += "<td class='gridColumn' width='180px' >" + me.reportFilters[index].name + ':' + "</td>";
+					rowData += "<td class='gridColumn' width='25%'>" + me.reportFilters[index].name + ':' + "</td>";
 					
 					if (me.reportFilters[index].referenceTableName == "") {
 						contorlValidation = me.reportFilters[index].validation;
@@ -1350,32 +1353,32 @@ ii.Class({
 					else 
 						rowData += "<td class='gridColumnOperator'></td><td class='gridColumnValue' align='left'>" + me.populateFilterDropDown(me.reportFilters[index].referenceTableName, me.reportFilters[index].title) + "</td>";
 						
-					rowData += "<td align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title + "_andOr", 'andOrOperator') + "</td>";
+					rowData += "<td align='left' width='13%'>" + me.populateOperatorDropDown(me.reportFilters[index].title + "_andOr", 'andOrOperator') + "</td>";
 					rowData += "</tr>"
 				}
-				rowData += "</table></div></td></tr>";
+				
+				rowData += "<tr height='100%'><td id='tdLastRow' colspan='4' class='gridColumnRight' style='height: 100%'>&nbsp;</td></tr>";
 			}
 			
-			$("#AdhReportFilterGridBody").html(rowData);
+			$("#FilterGridHead").html(rowHeadData);
+			$("#FilterGridBody").html(rowData);
 									
-			$("#AdhReportFilterGridRow tr:odd").addClass("gridRow");
-        	$("#AdhReportFilterGridRow tr:even").addClass("alternateGridRow");
+			$("#FilterGridBody tr:odd").addClass("gridRow");
+        	$("#FilterGridBody tr:even").addClass("alternateGridRow");
 			
-			$("#AdhReportFilterGridRow tr").mouseover(function() {
+			$("#FilterGridBody tr").mouseover(function() {
 				$(this).addClass("trover");}).mouseout(function() {
 					$(this).removeClass("trover");});
 			
 			if (me.reportFilters.length > 0) {
 				$("#divFilterHeader").show();
-				if ($("#AdhReportFilterGridBody").height() + $(window).height() > 1000)
-					$("#divFilterRow").addClass("tbodyBorder");
-				else
-					$("#divFilterRow").removeClass("tbodyBorder");
+				$("#FilterGrid").show();
+				$("#divFilterGrid").height($(window).height() - 145);
 			}
 			else {
 				$("#divFilterHeader").hide();
-				$("#divFilterRow").removeClass("tbodyBorder");
-				$("#AdhReportFilterGridBody tr").mouseover(function() {
+				$("#FilterGrid").hide();
+				$("#FilterGridBody tr").mouseover(function() {
 					$(this).removeClass("trover");});
 			}	
 				
@@ -2560,27 +2563,27 @@ ii.Class({
 			var rowHtml = "";
 			
 			if (type == "text") {
-				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:60px; onchange=fin.reportUi.operatorChange('" + id + "');>";
+				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:100px; onchange=fin.reportUi.operatorChange('" + id + "');>";
 				rowHtml += "<option title='Exact match (=)' value='1' selected>Exact match (=)</option>";
 				rowHtml += "<option title='Any part that matches (Like)' value='2'>Any part that matches (Like)</option>";
 				rowHtml += "</select>";
 			}
 			else  if (type == "bit") {
-				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:60px;>";
+				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:100px;>";
 				rowHtml += "<option title='' value='' selected></option>";
 				rowHtml += "<option title='Yes' value='1'>Yes</option>";
 				rowHtml += "<option title='No' value='0'>No</option>";
 				rowHtml += "</select>";
 			}
 			else  if (type == "andOrOperator") {
-				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:60px;>";
+				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:50px;>";
 				rowHtml += "<option title='' value='' selected></option>";
 				rowHtml += "<option title='And' value='1'>And</option>";
 				rowHtml += "<option title='Or' value='2'>Or</option>";
 				rowHtml += "</select>";
 			}
 			else {
-				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:60px; onchange=fin.reportUi.operatorChange('" + id + "');>";
+				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:100px; onchange=fin.reportUi.operatorChange('" + id + "');>";
 				rowHtml += "<option title='Equal to' value='1' selected>=</option>";
 				rowHtml += "<option title='Less than or equal to' value='2'>&lt;=</option>";
 				rowHtml += "<option title='Greater than or equal to' value='3'>&gt;=</option>";
