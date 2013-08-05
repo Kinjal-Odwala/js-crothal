@@ -513,6 +513,15 @@ ii.Class({
 				changeFunction: function() { me.modified(); },
 		        required: false
 		    });
+			
+			 me.serviceLocation.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(function (isFinal, dataMap) {
+
+				    if ((this.focused || this.touched) && me.serviceLocation.indexSelected == -1)
+				        this.setInvalid("Please select the correct Service Location.");
+				});
 
 			me.notes = $("#Notes")[0];
 

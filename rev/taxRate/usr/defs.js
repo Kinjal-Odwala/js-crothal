@@ -38,6 +38,11 @@ ii.init.register( function() {
 	    , recordCount: {type: Number}
 	};
 	
+	fin.rev.taxRate.fileNameArgs = {
+		id: {type: Number}
+		, fileName: {type: String, required: false, defaultValue: ""}
+	};
+	
 }, 2);
 
 ii.Class({
@@ -75,6 +80,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.rev.taxRate.recordCountArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rev.taxRate.FileName",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rev.taxRate.fileNameArgs);
 			$.extend(this, args);
 		}
 	}

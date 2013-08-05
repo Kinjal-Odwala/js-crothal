@@ -68,7 +68,8 @@ ii.Class({
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$(document).bind("mousedown", me, me.mouseDownProcessor);
 
-			if (parent.fin.revMasterUi.invoicingReadOnly || me.invoice.creditMemoPrinted) {
+			if (parent.fin.revMasterUi.invoicingReadOnly || (me.getStatusTitle(me.invoice.statusType) == "Closed")) {
+				//|| (((parseFloat(me.invoice.amount) - parseFloat(me.invoice.credited)) == 0) && me.invoice.creditMemoPrinted)) {
 				$("#anchorAlign").hide();
 				me.rowBeingEdited = true;
 			}
@@ -112,7 +113,7 @@ ii.Class({
 			});
 			var event = args.event;
 			var me = event.data;
-		
+
 			if (me.noContext || me.mouseOverContext || me.rowBeingEdited || !me.isEditableRow())
 		        return;
 		
@@ -356,8 +357,10 @@ ii.Class({
 			var rowHtml = "";
 			var total = 0;
 			var creditAmount = 0;
+			var status = "";
 			
 			for (index = 0; index < me.accountReceivables.length; index++) {
+				status = me.getStatusTitle(me.accountReceivables[index].statusType);
 				rowHtml += "<tr>";
 				rowHtml += me.getAccountReceivableGridRow(
 					index + 1
@@ -370,7 +373,7 @@ ii.Class({
 					, me.accountReceivables[index].amount
 			        , me.getAccountNumberName(me.accountReceivables[index].account)
 					, me.accountReceivables[index].payer
-					, me.getStatusTitle(me.accountReceivables[index].statusType)
+					, status
 					, me.accountReceivables[index].notes == "" ? "&nbsp;" : me.accountReceivables[index].notes
 					);
 							
@@ -384,7 +387,7 @@ ii.Class({
 			rowHtml += me.getTotalGridRow(0, total, "Total:");
 			
 			$("#AccountReceivableGrid tbody").html(rowHtml);
-						
+
 			me.receivablesLoaded(me);
 			
 			if (me.bindRow) {
@@ -396,7 +399,12 @@ ii.Class({
 				parent.fin.revMasterUi.invoiceGrid.body.renderRow(index, index);
 				parent.fin.revMasterUi.refreshPrintMemoButtonStatus();
 			}
-			
+
+			if (status == "Closed") {
+				$("#anchorAlign").hide();
+				me.rowBeingEdited = true;
+			}
+
 			$("#pageLoading").hide();
 		},
 		
@@ -601,7 +609,7 @@ ii.Class({
 		isEditableRow: function() {
 			var me = this;
 			var rowNumber = 0;
-			var editable = true;;
+			var editable = true;
 
 			if (me.rowBeingEdited || me.currentRowSelected == null)
 				return;

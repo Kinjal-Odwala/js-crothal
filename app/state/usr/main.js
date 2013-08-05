@@ -23,8 +23,17 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 			
+			//pagination setup
+			me.startPoint = 1;
+			me.maximumRows = 250;
+			me.recordCount = 0;
+			me.pageCount = 0;
+			me.pageCurrent = 1;
+			
 			me.loadCount = 0;
+			me.federalMinimumWage = 0;
 			me.stateId = 0;
+			me.stateMinimumWageId = 0;
 			me.stateWages = [];
 			me.countyWages = [];
 			me.cityWages = [];
@@ -79,6 +88,7 @@ ii.Class({
 				me.loadCount = 1;
 				ii.timer.timing("Page displayed");
 				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.systemVariableStore.fetch("userId:[user],name:FederalMinimumWage", me.systemVariablesLoaded, me);
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
 			}
 			else
@@ -180,13 +190,14 @@ ii.Class({
 
 			me.stateGrid.addColumn("brief", "brief", "Brief", "Brief", 100);
 			me.stateGrid.addColumn("name", "name", "Title", "Title", null);
-			me.stateGrid.addColumn("minimumWage", "minimumWage", "Min Wage", "Minimum Wage", 90);
+			me.stateGrid.addColumn("minimumWage", "minimumWage", "Min Wage", "Minimum Wage", 90, function(minimumWage) { return ui.cmn.text.money.format(minimumWage); });
 			me.stateGrid.capColumns();
 			
 			me.stateWageGrid = new ui.ctl.Grid({
 				id: "StateWageGrid",
 				appendToId: "divForm",
 				allowAdds: false,
+				rowNumberDisplayWidth: 35,
 				selectFunction: function(index) { me.stateWages[index].modified = true;	}
 			});
 			
@@ -227,30 +238,40 @@ ii.Class({
 				if (enteredText == "") 
 					return;
 
-				me.modified(true);
+				if (me.stateWageGrid.activeRowIndex != -1) {
+					var effectiveDate = new Date(me.stateWageGrid.data[me.stateWageGrid.activeRowIndex].effectiveDate);
+					if (ui.cmn.text.date.format(effectiveDate, "mm/dd/yyyy") != ui.cmn.text.date.format(new Date(enteredText), "mm/dd/yyyy"))
+						me.modified(true);
+				}
 				
 				if (/^(0[1-9]|1[012]|[1]?[0])[\/-](0[1-9]|[12][0-9]|3[01])[\/-](\d{4}|\d{2})$/.test(enteredText) == false)
 					this.setInvalid("Please enter valid Effective Date.");
 				else if (new Date(enteredText) <= new Date(parent.fin.appUI.glbCurrentDate))
 					this.setInvalid("Effective Date should be greater than Current Date.");
 			});
+			
+			me.stateActive = new ui.ctl.Input.Check({
+		        id: "StateActive",
+		        className: "iiInputCheck",
+				appendToId: "StateWageGridControlHolder",
+				changeFunction: function() { me.modified(); }
+		    });
 
 			me.stateWageGrid.addColumn("name", "name", "Title", "Title", null);
-			me.stateWageGrid.addColumn("minimumWage", "minimumWage", "Min Wage", "Minimum Wage", 90, null, me.stateMinimumWage);
-			me.stateWageGrid.addColumn("effectiveDate", "effectiveDate", "Effective Date", "EffectiveDate", 130, null, me.stateEffectiveDate);
-			//me.stateWageGrid.addColumn("affectedNumberOfEmployees", "affectedNumberOfEmployees", "# of Employees", "Affected Number of Employees", 130);
-			me.stateWageGrid.addColumn("affectedNumberOfEmployees", "affectedNumberOfEmployees", "# of Employees", "Affected Number of Employees", 130, function(affectedEmployees) {
-				return affectedEmployees > 0 ? "<div id='employeesLink' class='employeesLink'>" + affectedEmployees + "</div>" : "";
-			});
-			
+			me.stateWageGrid.addColumn("minimumWage", "minimumWage", "Min Wage", "Minimum Wage", 80, function(minimumWage) { return ui.cmn.text.money.format(minimumWage); }, me.stateMinimumWage);
+			me.stateWageGrid.addColumn("effectiveDate", "effectiveDate", "Effective Date", "EffectiveDate", 120, null, me.stateEffectiveDate);
+			me.stateWageGrid.addColumn("active", "active", "Active", "Active", 60, null, me.stateActive);
+			me.stateWageGrid.addColumn("affectedNumberOfEmployees", "affectedNumberOfEmployees", "# of Employees", "Affected Number of Employees", 120, function(affectedEmployees) {
+				var index = me.stateWageGrid.rows.length - 1;
+				return affectedEmployees > 0 ? "<div class='employeesLink' onclick='fin.app.stateUi.actionEmployeeListItem(1, " + index + ");' >" + affectedEmployees + "</div>" : "";
+			});			
 			me.stateWageGrid.capColumns();
-			
-			$("div.employeesLink").live("click", function(event) { me.actionEmployeeListItem(event); });
 			
 			me.countyWageGrid = new ui.ctl.Grid({
 				id: "CountyWageGrid",
 				appendToId: "divForm",
 				allowAdds: false,
+				rowNumberDisplayWidth: 35,
 				selectFunction: function(index) { me.countyWages[index].modified = true;	}
 			});
 			
@@ -277,7 +298,7 @@ ii.Class({
 			
 			me.countyEffectiveDate = new ui.ctl.Input.Date({
 		        id: "CountyEffectiveDate",
-		        appendToId: "StateWageGridControlHolder",
+		        appendToId: "CountyWageGridControlHolder",
 				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
 		    });
 
@@ -291,20 +312,32 @@ ii.Class({
 				if (enteredText == "") 
 					return;
 
-				me.modified(true);
+				if (me.countyWageGrid.activeRowIndex != -1) {
+					var effectiveDate = new Date(me.countyWageGrid.data[me.countyWageGrid.activeRowIndex].effectiveDate);
+					if (ui.cmn.text.date.format(effectiveDate, "mm/dd/yyyy") != ui.cmn.text.date.format(new Date(enteredText), "mm/dd/yyyy"))
+						me.modified(true);
+				}
 				
 				if (/^(0[1-9]|1[012]|[1]?[0])[\/-](0[1-9]|[12][0-9]|3[01])[\/-](\d{4}|\d{2})$/.test(enteredText) == false)
 					this.setInvalid("Please enter valid Effective Date.");
 				else if (new Date(enteredText) <= new Date(parent.fin.appUI.glbCurrentDate))
 					this.setInvalid("Effective Date should be greater than Current Date.");
 			});
+			
+			me.countyActive = new ui.ctl.Input.Check({
+		        id: "CountyActive",
+		        className: "iiInputCheck",
+				appendToId: "CountyWageGridControlHolder",
+				changeFunction: function() { me.modified(); }
+		    });
 
 			me.countyWageGrid.addColumn("name", "name", "Title", "Title", null);
-			me.countyWageGrid.addColumn("minimumWage", "minimumWage", "Min Wage", "Minimum Wage", 90, null, me.countyMinimumWage);
-			me.countyWageGrid.addColumn("effectiveDate", "effectiveDate", "Effective Date", "EffectiveDate", 130, null, me.countyEffectiveDate);
-			//me.countyWageGrid.addColumn("affectedNumberOfEmployees", "affectedNumberOfEmployees", "# of Employees", "Affected Number of Employees", 130);
-			me.countyWageGrid.addColumn("affectedNumberOfEmployees", "affectedNumberOfEmployees", "# of Employees", "Affected Number of Employees", 130, function(affectedEmployees) {
-				return affectedEmployees > 0 ? "<div id='uploadsLink' class='uploadsLinks'>" + affectedEmployees + "</div>" : "";
+			me.countyWageGrid.addColumn("minimumWage", "minimumWage", "Min Wage", "Minimum Wage", 80, function(minimumWage) { return ui.cmn.text.money.format(minimumWage); }, me.countyMinimumWage);
+			me.countyWageGrid.addColumn("effectiveDate", "effectiveDate", "Effective Date", "EffectiveDate", 120, null, me.countyEffectiveDate);
+			me.countyWageGrid.addColumn("active", "active", "Active", "Active", 60, null, me.countyActive);
+			me.countyWageGrid.addColumn("affectedNumberOfEmployees", "affectedNumberOfEmployees", "# of Employees", "Affected Number of Employees", 120, function(affectedEmployees) {
+				var index = me.countyWageGrid.rows.length - 1;
+				return affectedEmployees > 0 ? "<div class='employeesLink' onclick='fin.app.stateUi.actionEmployeeListItem(2, " + index + ");' >" + affectedEmployees + "</div>" : "";
 			});
 			me.countyWageGrid.capColumns();
 			
@@ -312,12 +345,13 @@ ii.Class({
 				id: "CityWageGrid",
 				appendToId: "divForm",
 				allowAdds: false,
+				rowNumberDisplayWidth: 35,
 				selectFunction: function(index) { me.cityWages[index].modified = true;	}
 			});
 			
 			me.cityMinimumWage = new ui.ctl.Input.Text({
 		        id: "CityMinimumWage",
-				appendToId: "CountyWageGridControlHolder",
+				appendToId: "CityWageGridControlHolder",
 		        maxLength: 6,
 				required: false,
 				changeFunction: function() { me.modified(); }
@@ -338,7 +372,7 @@ ii.Class({
 			
 			me.cityEffectiveDate = new ui.ctl.Input.Date({
 		        id: "CityEffectiveDate",
-		        appendToId: "StateWageGridControlHolder",
+		        appendToId: "CityWageGridControlHolder",
 				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
 		    });
 
@@ -352,22 +386,82 @@ ii.Class({
 				if (enteredText == "") 
 					return;
 
-				me.modified(true);
+				if (me.cityWageGrid.activeRowIndex != -1) {
+					var effectiveDate = new Date(me.cityWageGrid.data[me.cityWageGrid.activeRowIndex].effectiveDate);
+					if (ui.cmn.text.date.format(effectiveDate, "mm/dd/yyyy") != ui.cmn.text.date.format(new Date(enteredText), "mm/dd/yyyy"))
+						me.modified(true);
+				}
 				
 				if (/^(0[1-9]|1[012]|[1]?[0])[\/-](0[1-9]|[12][0-9]|3[01])[\/-](\d{4}|\d{2})$/.test(enteredText) == false)
 					this.setInvalid("Please enter valid Effective Date.");
 				else if (new Date(enteredText) <= new Date(parent.fin.appUI.glbCurrentDate))
 					this.setInvalid("Effective Date should be greater than Current Date.");
 			});
+			
+			me.cityActive = new ui.ctl.Input.Check({
+		        id: "CityActive",
+		        className: "iiInputCheck",
+				appendToId: "CityWageGridControlHolder",
+				changeFunction: function() { me.modified(); }
+		    });
 
 			me.cityWageGrid.addColumn("name", "name", "Title", "Title", null);
-			me.cityWageGrid.addColumn("minimumWage", "minimumWage", "Min Wage", "Minimum Wage", 90, null, me.cityMinimumWage);
-			me.cityWageGrid.addColumn("effectiveDate", "effectiveDate", "Effective Date", "EffectiveDate", 130, null, me.cityEffectiveDate);
-			//me.cityWageGrid.addColumn("affectedNumberOfEmployees", "affectedNumberOfEmployees", "# of Employees", "Affected Number of Employees", 130);
-			me.cityWageGrid.addColumn("affectedNumberOfEmployees", "affectedNumberOfEmployees", "# of Employees", "Affected Number of Employees", 130, function(affectedEmployees) {
-				return affectedEmployees == 0 ? "<div id='uploadsLink' class='uploadsLinks'>" + affectedEmployees + "</div>" : "";
+			me.cityWageGrid.addColumn("minimumWage", "minimumWage", "Min Wage", "Minimum Wage", 80, function(minimumWage) { return ui.cmn.text.money.format(minimumWage); }, me.cityMinimumWage);
+			me.cityWageGrid.addColumn("effectiveDate", "effectiveDate", "Effective Date", "EffectiveDate", 120, null, me.cityEffectiveDate);
+			me.cityWageGrid.addColumn("active", "active", "Active", "Active", 60, null, me.cityActive)
+			me.cityWageGrid.addColumn("affectedNumberOfEmployees", "affectedNumberOfEmployees", "# of Employees", "Affected Number of Employees", 120, function(affectedEmployees) {
+				var index = me.cityWageGrid.rows.length - 1;
+				return affectedEmployees > 0 ? "<div class='employeesLink' onclick='fin.app.stateUi.actionEmployeeListItem(3, " + index + ");' >" + affectedEmployees + "</div>" : "";
 			});
 			me.cityWageGrid.capColumns();
+
+			me.employeeGrid = new ui.ctl.Grid({
+				id: "EmployeeGrid",
+				appendToId: "divForm",
+				allowAdds: false
+			});
+
+			me.employeeGrid.addColumn("column13", "column13", "", "", 30, function() {
+				var index = me.employeeGrid.rows.length - 1;
+                return "<input type=\"checkbox\" id=\"assignInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true;\" onclick=\"actionClickItem(this);\" " + (me.employeePayRates[index].column13 == "1" ? checked='checked' : '') + " />";
+            });
+			me.employeeGrid.addColumn("column6", "column6", "House Code", "House Code", 90);
+			me.employeeGrid.addColumn("column8", "column8", "First Name", "First Name", null);
+			me.employeeGrid.addColumn("column9", "column9", "Last Name", "Last Name", 170);
+			me.employeeGrid.addColumn("column10", "column10", "Employee #", "Employee Number", 90);
+			me.employeeGrid.addColumn("column11", "column11", "Current Pay Rate", "Current Pay Rate", 130, function(payRate) { return ui.cmn.text.money.format(payRate); });
+			me.employeeGrid.addColumn("column12", "column12", "Updated Pay Rate", "Updated Pay Rate", 130, function(payRate) { return ui.cmn.text.money.format(payRate); });
+			me.employeeGrid.addColumn("column14", "column14", "Status", "Status", 70);
+			me.employeeGrid.capColumns();
+
+			me.selectAll = new ui.ctl.Input.Check({
+		        id: "SelectAll",
+				changeFunction: function() { me.actionSelectAllItem(); }
+		    });
+			
+			me.anchorExportToExcel = new ui.ctl.buttons.Sizeable({
+				id: "AnchorExportToExcel",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Export To Excel&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionExportToExcelItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorApprove = new ui.ctl.buttons.Sizeable({
+				id: "AnchorApprove",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Approve&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionApproveItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorClose = new ui.ctl.buttons.Sizeable({
+				id: "AnchorClose",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Close&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionCloseItem(); },
+				hasHotState: true
+			});
 			
 			me.stateMinimumWage.active = false;
 			me.stateEffectiveDate.active = false;
@@ -375,10 +469,22 @@ ii.Class({
 			me.countyEffectiveDate.active = false;
 			me.cityMinimumWage.active = false;
 			me.cityEffectiveDate.active = false;
+
+			$("#selPageNumber").bind("change", function() { me.pageNumberChange(); });
+			$("#imgPrev").bind("click", function() { me.prevEmployeePayRates(); });
+			$("#imgNext").bind("click", function() { me.nextEmployeePayRates(); });
 		},
 
 		configureCommunications: function() {
 			var me = this;
+
+			me.systemVariables = [];
+			me.systemVariableStore = me.cache.register({
+				storeId: "systemVariables",
+				itemConstructor: fin.app.state.SystemVariable,
+				itemConstructorArgs: fin.app.state.systemVariableArgs,
+				injectionArray: me.systemVariables
+			});
 
 			me.stateTypes = [];
 			me.stateTypeStore = me.cache.register({
@@ -395,6 +501,22 @@ ii.Class({
 				itemConstructor: fin.app.state.StateMinimumWage,
 				itemConstructorArgs: fin.app.state.stateMinimumWageArgs,
 				injectionArray: me.stateMinimumWages	
+			});
+			
+			me.employeePayRates = [];
+			me.employeePayRateStore = me.cache.register({
+				storeId: "appGenericImports", //employeePayRates //appGenericImports
+				itemConstructor: fin.app.state.EmployeePayRate,
+				itemConstructorArgs: fin.app.state.employeePayRateArgs,
+				injectionArray: me.employeePayRates
+			});
+
+			me.fileNames = [];
+			me.fileNameStore = me.cache.register({
+				storeId: "appFileNames",
+				itemConstructor: fin.app.state.FileName,
+				itemConstructorArgs: fin.app.state.fileNameArgs,
+				injectionArray: me.fileNames
 			});
 		},
 
@@ -437,6 +559,12 @@ ii.Class({
 				me.setStatus("Loaded");
 				$("#pageLoading").fadeOut("slow");
 			}
+		},
+		
+		systemVariablesLoaded:function(me, activeId) {
+
+			if (me.systemVariables.length > 0)
+				me.federalMinimumWage = me.systemVariables[0].variableValue;
 		},
 		
 		stateTypesLoaded: function(me, activeId) {
@@ -508,9 +636,162 @@ ii.Class({
 				$("#pageLoading").fadeOut("slow");
 		},
 		
-		actionEmployeeListItem: function(event) {
+		actionEmployeeListItem: function(groupType, index) {
+			var me = this;
+	
+			me.startPoint = 1;
+			me.recordCount = 0;
+			me.pageCount = 0;
+			me.pageCurrent = 1;
+
+			var stateMimimumWage = ui.cmn.text.money.format(me.stateGrid.data[me.stateGrid.activeRowIndex].minimumWage);
+			var selPageNumber = $("#selPageNumber");
+
+		    selPageNumber.empty();
+			selPageNumber.append("<option value='1'>1</option>");
+			selPageNumber.val(me.pageCurrent);			
+			$("#spnPageInfo").html(" of 1 (0 records)");
+						
+			if (groupType == 1) {
+				me.stateMinimumWageId = me.stateWageGrid.data[index].stateMinimumWage;
+				me.recordCount = me.stateWageGrid.data[index].affectedNumberOfEmployees;
+				$("#infoMessage").html("The highest rate of Federal Minimum Wage and State Minimum Wage will be considered as new pay rate.");
+				$("#infoRate").html("Federal Minimum Wage is " + me.federalMinimumWage + ", State Minimum Wage is " + stateMimimumWage);
+			}
+			else if (groupType == 2) {
+				me.stateMinimumWageId = me.countyWageGrid.data[index].stateMinimumWage;
+				me.recordCount = me.countyWageGrid.data[index].affectedNumberOfEmployees;
+				$("#infoMessage").html("The highest rate of Federal Minimum Wage, State Minimum Wage and County Minimum Wage will be considered as new pay rate.");
+				$("#infoRate").html("Federal Minimum Wage is " + me.federalMinimumWage + ", State Minimum Wage is " + stateMimimumWage + ", County Minimum Wage is " + ui.cmn.text.money.format(me.countyWageGrid.data[index].minimumWage));
+			}				
+			else if (groupType == 3) {
+				me.stateMinimumWageId = me.cityWageGrid.data[index].stateMinimumWage;
+				me.recordCount = me.cityWageGrid.data[index].affectedNumberOfEmployees;
+				$("#infoMessage").html("The highest rate of Federal Minimum Wage, State Minimum Wage and City Minimum Wage will be considered as new pay rate.");
+				$("#infoRate").html("Federal Minimum Wage is " + me.federalMinimumWage + ", State Minimum Wage is " + stateMimimumWage + ", City Minimum Wage is " + ui.cmn.text.money.format(me.cityWageGrid.data[index].minimumWage));
+			}				
+			
+			loadPopup();
+			$("#popupMessageToUser").text("Loading");
+			$("#popupLoading").show();
+			me.recordCountsLoaded();
+		},
+		
+		recordCountsLoaded: function() {
+			var me = this;
+		    var selPageNumber = $("#selPageNumber");
+
+			me.startPoint = 1;
+		    me.pageCount = Math.ceil(me.recordCount / me.maximumRows);
+		    me.pageCurrent = Math.ceil(me.startPoint / me.maximumRows);
+
+		    //if we don't have records...
+		    if (me.pageCount == 0) me.pageCount = 1;
+
+		    //fill the select box
+		    selPageNumber.empty();
+		    for (var index = 0; index < me.pageCount; index++) {
+				selPageNumber.append("<option value=\"" + (index + 1) + "\">" + (index + 1) + "</option>");
+			}
+
+			$("#spnPageInfo").html(" of " + me.pageCount + " (" + me.recordCount + " records)");
+		    selPageNumber.val(me.pageCurrent);
+			me.listEmployeePayRates();
+		},
+		
+		listEmployeePayRates: function() {
 			var me = this;
 
+			$("#popupMessageToUser").text("Loading");
+			$("#popupLoading").show();				
+			$("#selPageNumber").val(me.pageCurrent);
+
+			me.startPoint = ((me.pageCurrent - 1) * me.maximumRows) + 1;
+			me.employeePayRateStore.reset();
+			me.employeePayRateStore.fetch("userId:[user],object:PayRateUpdate"
+				+ ",batch:" + me.stateMinimumWageId
+				+ ",startPoint:" + me.startPoint
+				+ ",maximumRows:" + me.maximumRows
+				, me.employeePayRatesLoaded
+				, me
+				);
+		},
+		
+		employeePayRatesLoaded: function(me, activeId) { 
+
+			me.employeeGrid.setData(me.employeePayRates);
+			me.employeeGrid.setHeight(450);
+			$("#popupLoading").hide();
+		},
+	
+		prevEmployeePayRates: function() {
+		    var me = this;
+
+			me.pageCurrent--;
+
+			if (me.pageCurrent < 1)
+			    me.pageCurrent = 1;
+			else				
+				me.listEmployeePayRates();
+		},
+
+		nextEmployeePayRates: function() {
+		    var me = this;
+
+			me.pageCurrent++;
+
+			if (me.pageCurrent > me.pageCount)
+			    me.pageCurrent = me.pageCount;
+			else
+				me.listEmployeePayRates();
+		},
+		
+		pageNumberChange: function() {
+		    var me = this;
+		    var selPageNumber = $("#selPageNumber");
+		    
+		    me.pageCurrent = Number(selPageNumber.val());
+		    me.listEmployeePayRates();
+		},
+		
+		actionSelectAllItem: function() {
+			var args = ii.args(arguments,{});
+			var me = this;
+			
+			me.modified(true);
+			
+			for (var index = 0; index < me.employeePayRates.length; index++) {
+				$("#assignInputCheck" + index)[0].checked = me.selectAll.check.checked;
+				if (me.selectAll.check.checked)
+					me.employeePayRates[index].modified = (me.employeePayRates[index].column13 != "1");
+				else
+					me.employeePayRates[index].modified = (me.employeePayRates[index].column13 != "0");
+			}
+		},
+		
+		actionCloseItem: function() {
+			
+			hidePopup();
+		},
+		
+		actionExportToExcelItem: function() {
+			var me = this;
+
+			$("#popupMessageToUser").text("Exporting");
+			$("#popupLoading").show();
+
+			me.fileNameStore.reset();
+			me.fileNameStore.fetch("userId:[user],object:PayRateUpdate,batch:" + me.stateMinimumWageId, me.fileNamesLoaded, me);
+		},
+
+		fileNamesLoaded: function(me, activeId) {
+
+			$("#popupLoading").hide();
+
+			if (me.fileNames.length == 1) {
+				$("iframe")[0].contentWindow.document.getElementById("FileName").value = me.fileNames[0].fileName;
+				$("iframe")[0].contentWindow.document.getElementById("DownloadButton").click();
+			}
 		},
 
 		actionUndoItem: function() {
@@ -552,10 +833,10 @@ ii.Class({
 				me.setStatus("Saving");
 				$("#messageToUser").text("Saving");
 				$("#pageLoading").show();
-				
+
 				var item = me.stateGrid.data[me.stateGrid.activeRowIndex];
-				item.minimumWage = me.stateWageGrid.data[0].minimumWage;
-				
+				item.minimumWage = parseFloat(me.stateWageGrid.data[0].minimumWage);
+
 				var xml = me.saveXmlBuildItem(item);
 				
 				// Send the object back to the server as a transaction
@@ -563,17 +844,48 @@ ii.Class({
 					transactionType: "itemUpdate",
 					transactionXml: xml,
 					responseFunction: me.saveResponseItem,
-					referenceData: {
-						me: me,
-						item: item
-					}
+					referenceData: { me: me, item: item	}
 				});
 				
 				return true;
 			}
 			else {
-				me.saveMinimunWages();
+				me.saveMinimunWages("");
 			}
+		},
+		
+		actionApproveItem: function() {
+			var args = ii.args(arguments,{});
+			var me = this;
+			var item = [];
+			var xml = "";
+
+			for (var index = 0; index < me.employeePayRates.length; index++) {
+				if (me.employeePayRates[index].modified) {
+					xml += '<appGenericImportPayRateApprove';
+					xml += ' id="' + me.employeePayRates[index].id + '"';
+					xml += ' approved="' + ($("#assignInputCheck" + index)[0].checked ? "1" : "0") + '"';
+					xml += ' status="' + ($("#assignInputCheck" + index)[0].checked ? "Approved" : "") + '"';
+					xml += '/>';
+				}
+			}
+			
+			if (xml == "")
+				return;
+
+			me.setStatus("Saving");
+			$("#popupMessageToUser").text("Approving");
+			$("#popupLoading").fadeIn("slow");
+
+			// Send the object back to the server as a transaction
+			me.transactionMonitor.commit({
+				transactionType: "itemUpdate",
+				transactionXml: xml,
+				responseFunction: me.saveResponseItem,
+				referenceData: { me: me, item: item	}
+			});
+
+			return true;
 		},
 
 		saveXmlBuildItem: function() {
@@ -592,7 +904,7 @@ ii.Class({
 			return xml;
 		},
 		
-		saveMinimunWages: function() {
+		saveMinimunWages: function(status) {
 			var me = this;
 			var item = [];
 			var xml = "";
@@ -641,9 +953,16 @@ ii.Class({
 
 			if (xml == "") {
 				me.modified(false);
-				me.setStatus("Saved");
-				$("#pageLoading").fadeOut("slow");
+				if (status == "Saved") {
+					me.setStatus("Saved");
+					$("#pageLoading").fadeOut("slow");
+				}
 				return;
+			}
+			else if (status == "") {
+				me.setStatus("Saving");
+				$("#messageToUser").text("Saving");
+				$("#pageLoading").show();
 			}
 
 			// Send the object back to the server as a transaction
@@ -675,7 +994,7 @@ ii.Class({
 						case "appStateType":
 							me.stateTypes[me.stateGrid.activeRowIndex] = item;
 							me.stateGrid.body.renderRow(me.stateGrid.activeRowIndex, me.stateGrid.activeRowIndex);
-							me.saveMinimunWages();
+							me.saveMinimunWages("Saved");
 							break;
 							
 						case "appStateMinimumWage":
@@ -684,6 +1003,20 @@ ii.Class({
 							me.itemSelect(me.stateGrid.activeRowIndex, false);
 							found = true;
 							break;
+							
+						case "appGenericImport":
+							for (var index = 0; index < me.employeePayRates.length; index++) {
+								me.employeePayRates[index].column13 = ($("#assignInputCheck" + index)[0].checked ? "1" : "0");
+								me.employeePayRates[index].column14 = ($("#assignInputCheck" + index)[0].checked ? "Approved" : "");
+								me.employeePayRates[index].modified = false;
+							}
+							
+							me.employeeGrid.setData(me.employeePayRates);
+							me.modified(false);
+							me.setStatus("Saved");
+							found = true;							
+							$("#popupLoading").fadeOut("slow");
+							break
 					}
 					
 					if (found)
@@ -698,6 +1031,67 @@ ii.Class({
 		}
 	}
 });
+
+function actionClickItem(objCheckBox) {
+	var me = fin.app.stateUi;
+	var allSelected = true;
+	var index = 0;
+
+	if (objCheckBox.checked) {
+		for (index = 0; index < me.employeePayRates.length; index++) {
+			if ($("#assignInputCheck" + index)[0].checked == false) {
+				allSelected = false;
+				break;
+			}
+		}
+	}
+	else
+		allSelected = false;
+	
+	me.selectAll.setValue(allSelected.toString());
+	index = parseInt(objCheckBox.id.substring(objCheckBox.id.length - 1), 10);
+	if (objCheckBox.checked)
+		me.employeePayRates[index].modified = (me.employeePayRates[index].column13 != "1");
+	else
+		me.employeePayRates[index].modified = (me.employeePayRates[index].column13 != "0");
+}
+
+function loadPopup() {
+	centerPopup();
+	
+	$("#backgroundPopup").css({
+		"opacity": "0.5"
+	});
+	$("#backgroundPopup").fadeIn("slow");
+	$("#popupEmployee").fadeIn("slow");
+}
+
+function hidePopup() {
+
+	$("#backgroundPopup").fadeOut("slow");
+	$("#popupEmployee").fadeOut("slow");
+}
+
+function centerPopup() {
+	var windowWidth = document.documentElement.clientWidth;
+	var windowHeight = document.documentElement.clientHeight;
+	var popupWidth = $("#popupEmployee").width();
+	var popupHeight = $("#popupEmployee").height();
+
+	$("#popupEmployee").css({
+		"top": windowHeight/2 - popupHeight/2,
+		"left": windowWidth/2 - popupWidth/2
+	});
+
+	$("#popupLoading, #popupEmployee").css({
+		"top": windowHeight/2 - popupHeight/2,
+		"left": windowWidth/2 - popupWidth/2
+	});
+
+	$("#backgroundPopup").css({
+		"height": windowHeight
+	});
+}
 
 function main() {
 	fin.app.stateUi = new fin.app.state.UserInterface();

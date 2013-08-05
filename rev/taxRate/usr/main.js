@@ -7,14 +7,14 @@ ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.rev.taxRate.usr.defs" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.toolbar" , 4);
-ii.Style( "fin.cmn.usr.input" , 5);
-ii.Style( "fin.cmn.usr.grid" , 6);
-ii.Style( "fin.cmn.usr.button" , 7);
-ii.Style( "fin.cmn.usr.dropDown" , 8);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.toolbar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.grid", 6 );
+ii.Style( "fin.cmn.usr.button", 7 );
+ii.Style( "fin.cmn.usr.dropDown", 8 );
 
 ii.Class({
     Name: "fin.rev.taxRate.UserInterface",
@@ -92,14 +92,14 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("Session Loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 		
 		resize: function() {
 			var me = this;
 			
-			$("#GridContianer").height($(window).height() - 186);
-			fin.rev.taxRateUI.taxGrid.setHeight($(window).height() - 205);			
+			$("#GridContianer").height($(window).height() - 200);
+			fin.rev.taxRateUI.taxGrid.setHeight($(window).height() - 220);			
 		},
 		
 		defineFormControls: function() {
@@ -147,7 +147,15 @@ ii.Class({
 				clickFunction: function() { me.loadSearchResults(); },
 				hasHotState: true
 			});
-			
+
+			me.anchorExportToExcel = new ui.ctl.buttons.Sizeable({
+				id: "AnchorExportToExcel",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Export To Excel&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionExportToExcelItem(); },
+				hasHotState: true
+			});
+
 			me.zipCode = new ui.ctl.Input.Text({
                 id: "ZipCode",
                 maxLength: 5
@@ -246,6 +254,14 @@ ii.Class({
 				itemConstructor: fin.rev.taxRate.RecordCount,
 				itemConstructorArgs: fin.rev.taxRate.recordCountArgs,
 				injectionArray: me.recordCounts
+			});
+			
+			me.fileNames = [];
+			me.fileNameStore = me.cache.register({
+				storeId: "revInvoiceExcelFileNames",
+				itemConstructor: fin.rev.taxRate.FileName,
+				itemConstructorArgs: fin.rev.taxRate.fileNameArgs,
+				injectionArray: me.fileNames
 			});
 		},
 
@@ -452,6 +468,26 @@ ii.Class({
 			var me = this;
 
 			me.actionViewItem();
+		},
+		
+		actionExportToExcelItem: function() {
+			var me = this;
+
+			$("#messageToUser").text("Exporting");
+			$("#pageLoading").show();
+
+			me.fileNameStore.reset();
+			me.fileNameStore.fetch("userId:[user],exportType:taxRates,stateId:" + me.stateId + ",zipCode:" + me.zipCode.getValue(), me.fileNamesLoaded, me);
+		},
+
+		fileNamesLoaded: function(me, activeId) {
+
+			$("#pageLoading").hide();
+
+			if (me.fileNames.length == 1) {
+				$("iframe")[0].contentWindow.document.getElementById("FileName").value = me.fileNames[0].fileName;
+				$("iframe")[0].contentWindow.document.getElementById("DownloadButton").click();
+			}
 		},
 
 		actionUploadItem: function() {
