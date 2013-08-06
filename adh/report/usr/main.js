@@ -3524,19 +3524,25 @@ ii.Class({
 			else if (args.typeTable == "HcmServiceLines") {
 				if (args.columnName == "HcmServiceLineFinancialEntity") {
 					me.financialEntities = [];
-
 					for (var index = 0; index < me.serviceLines.length; index++) {
 						if (me.serviceLines[index].financialEntity) {
-							var item = new fin.adh.FinancialEntity({ id: me.serviceLines[index].id, name:me.serviceLines[index].name });
+							var item = new fin.adh.FinancialEntity({ id: me.serviceLines[index].id, name: me.serviceLines[index].name });
 							me.financialEntities.push(item);
-						}
+						}				
 					}
 					me.typeNoneAdd(me.financialEntities);
 					typeTable = me.financialEntities;
 				}
 				else {
-					me.typeNoneAdd(me.serviceLines);
-					typeTable = me.serviceLines;
+					me.serviceLineTypes = [];
+					for (var index = 0; index < me.serviceLines.length; index++) {
+						if (!me.serviceLines[index].financialEntity) {
+							var item = new fin.adh.ServiceLine({ id: me.serviceLines[index].id, name: me.serviceLines[index].name });
+							me.serviceLineTypes.push(item);
+						}				
+					}
+					me.typeNoneAdd(me.serviceLineTypes);
+					typeTable = me.serviceLineTypes;
 				}
 			}
 			else if (args.typeTable == "FscJDECompanies") {

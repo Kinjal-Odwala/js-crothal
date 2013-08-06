@@ -29,7 +29,6 @@ ii.Class({
 			me.cellColorInvalid = "red";
 			me.pages = [];
 			me.batchId = 0;
-			me.serviceLineTypes = [];
 			me.firstTimeLoading = true;
 			
 			//pagination setup
@@ -427,20 +426,24 @@ ii.Class({
 		},
 	
 		houseCodeServicesLoaded: function (me, activeId) {
-			
+
 			me.financialEntities = [];
+			me.serviceLineTypes = [];
 
 			for (var index = 0; index < me.serviceLines.length; index++) {
 				if (me.serviceLines[index].financialEntity) {
-					var item = new fin.hcm.houseCodeImport.FinancialEntity({ id: me.serviceLines[index].id, name:me.serviceLines[index].name });
+					var item = new fin.hcm.houseCodeImport.FinancialEntity({ id: me.serviceLines[index].id, name: me.serviceLines[index].name });
 					me.financialEntities.push(item);
+				}
+				else {
+					var item = new fin.hcm.houseCodeImport.ServiceLine({ id: me.serviceLines[index].id, name: me.serviceLines[index].name });
+					me.serviceLineTypes.push(item);
 				}
 			}
 		    
-			me.financialEntities.unshift(new fin.hcm.houseCodeImport.FinancialEntity({ id: 0, name: "" }));
-			me.serviceLineTypes = me.serviceLines.slice();
-			me.serviceTypes.unshift(new fin.hcm.houseCodeImport.ServiceType({ id: 0, name: "" }));
+			me.financialEntities.unshift(new fin.hcm.houseCodeImport.FinancialEntity({ id: 0, name: "" }));			
 			me.serviceLineTypes.unshift(new fin.hcm.houseCodeImport.ServiceLine({ id: 0, name: "" }));
+			me.serviceTypes.unshift(new fin.hcm.houseCodeImport.ServiceType({ id: 0, name: "" }));
 			me.typesLoading--;
 			
 			if (me.typesLoading <= 0)

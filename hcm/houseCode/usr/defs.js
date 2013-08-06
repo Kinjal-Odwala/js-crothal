@@ -45,7 +45,8 @@ ii.init.register( function() {
 	
 	fin.hcm.houseCode.serviceLineArgs = {
 		id: {type: Number}
-		, name: {type: String}			
+		, name: {type: String}
+		, financialEntity: {type: Boolean, required: false, defaultValue: false}
 	};
 
 }, 2);
