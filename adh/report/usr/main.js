@@ -1199,7 +1199,12 @@ ii.Class({
 				itemIndex = ii.ajax.util.findIndexById(me.reports[me.report.indexSelected].module.toString(), me.modules);
 				modulesList.push(me.modules[itemIndex].name);
 				moduleAssociate = me.reports[me.report.indexSelected].moduleAssociate;
-
+				
+				if (me.modules[itemIndex].name == "Invoice Items") 
+					me.invoiceItem = true;
+				else 
+					me.invoiceItem = false;
+					
 				if (moduleAssociate != "0") {
 					associatedModules = moduleAssociate.split("#");
 					for (var index = 0; index < associatedModules.length; index++) {
@@ -1502,26 +1507,22 @@ ii.Class({
 				else 
 					className = "gridHeaderColumn";
 				
-				if (me.reports[me.report.indexSelected].module == 11 && me.reports[me.report.indexSelected].moduleAssociate == 3) 
-					me.invoiceItem = true;
-				else 
-					me.invoiceItem = false;
-				
 				if (me.invoiceItem) {
-					rowData += "<th class='gridHeaderColumn' width='20px'>#</th>";
+					rowData += "<th class='gridHeaderColumn' width='50px'>#</th>";
 					rowData += "<th class='gridColumnHidden'></th>";
-					rowData += "<th class='gridHeaderColumn' width='50px'>House Code</th>";
+					rowData += "<th class='gridHeaderColumn' width='100px'>House Code</th>";
 					rowData += "<th class='gridHeaderColumn' width='100px'>Job</th>";
-					rowData += "<th class='gridHeaderColumn' width='80px'>Taxable Service</th>";
+					rowData += "<th class='gridHeaderColumn' width='100px'>Taxable Service</th>";
 					rowData += "<th class='gridHeaderColumn' width='200px'>Account Code</th>";
-					rowData += "<th class='gridHeaderColumn' width='75px'>Quantity</th>";
-					rowData += "<th class='gridHeaderColumn' width='75px'>Price</th>";
+					rowData += "<th class='gridHeaderColumn' width='100px'>Quantity</th>";
+					rowData += "<th class='gridHeaderColumn' width='100px'>Price</th>";
 					rowData += "<th class='gridHeaderColumn' width='100px'>Total</th>";
-					rowData += "<th class='gridHeaderColumn' width='50px'>Status</th>";
-					rowData += "<th class='gridHeaderColumn' width='50px'>Taxable</th>";
-					rowData += "<th class='gridHeaderColumn' width='50px'>Show</th>";
-					rowData += "<th class='gridHeaderColumn' width='150px'>Description</th>";
-					$("#tblAdhReportGridHeader").width("1060px");
+					rowData += "<th class='gridHeaderColumn' width='100px'>Status</th>";
+					rowData += "<th class='gridHeaderColumn' width='100px'>Taxable</th>";
+					rowData += "<th class='gridHeaderColumn' width='100px'>Show</th>";
+					rowData += "<th class='gridHeaderColumn' width='300px'>Description</th>";
+					$("#tblAdhReportGridHeader").width("1510");
+					$("#tblAdhReportGrid").width("1510");
 				}
 				else {
 					rowData += "<th onclick=(fin.reportUi.sortColumn(-1)); class='" + className + "' style='width:100px;'>House Code</th>";
@@ -1695,7 +1696,6 @@ ii.Class({
 					}
 					
 					if (!me.invoiceItem) {
-			
 						rowData += "<tr id='adhReportDataRow" + pkId + "' onclick=(fin.reportUi.getAdhReprotGridRowEdit(" + pkId + "," + index + "," + houseCodeId + "));>";	
 						rowData += me.getAdhReprotDetailGridRow(index, pkId, houseCode, appSite, appSitTitle);
 						rowData += "</tr>"	
@@ -2286,6 +2286,7 @@ ii.Class({
 			invoiceRowHtml += me.getTotalGridRow(0, subTotal, "Sub Total:", "");
 			invoiceRowHtml += me.getTotalGridRow(0, salesTaxTotal, "Sales Tax Total:", "");
 			invoiceRowHtml += me.getTotalGridRow(0, total, "Total:", "");
+			invoiceRowHtml += "<tr height='100%'><td id='tdLastInvoiceRow' colspan='12' class='gridColumn' style='height: 100%'>&nbsp;</td></tr>";
 			
 			var invoiceDetailsRow = $("#InvoiceDetailsRow" + pkId);
 			
@@ -2384,19 +2385,19 @@ ii.Class({
 			else
 				rowNumberText = "&nbsp;"
 
-			rowHtml += me.getEditableRowColumn(false, false, 0, "rowNumber", rowNumberText, 20, "right");
+			rowHtml += me.getEditableRowColumn(false, false, 0, "rowNumber", rowNumberText, 50, "right");
 			rowHtml += me.getEditableRowColumn(false, false, 1, "id", args.id.toString(), 0, "left");
-			rowHtml += me.getEditableRowColumn(false, false, 11, "houseCode", args.houseCode, 50, "left");
+			rowHtml += me.getEditableRowColumn(false, false, 11, "houseCode", args.houseCode, 100, "left");
 			rowHtml += me.getEditableRowColumn(false, false, 2, "job", args.job, 100, align);
-			rowHtml += me.getEditableRowColumn(false, false, 12, "taxableService", args.taxableService, 80, align);
+			rowHtml += me.getEditableRowColumn(false, false, 12, "taxableService", args.taxableService, 100, align);
 			rowHtml += me.getEditableRowColumn(false, columnBold, 3, "account", args.account, 200, align);
-			rowHtml += me.getEditableRowColumn(false, false, 4, "quantity", args.quantity, 75, "right");
-			rowHtml += me.getEditableRowColumn(false, false, 5, "price", args.price, 75, "right");
+			rowHtml += me.getEditableRowColumn(false, false, 4, "quantity", args.quantity, 100, "right");
+			rowHtml += me.getEditableRowColumn(false, false, 5, "price", args.price, 100, "right");
 			rowHtml += me.getEditableRowColumn(false, columnBold, 6, "amount", args.amount, 100, "right");
-			rowHtml += me.getEditableRowColumn(false, false, 7, "status", args.status, 50, "center");
-			rowHtml += me.getEditableRowColumn(false, false, 8, "taxable", args.taxable, 50, "center");
-			rowHtml += me.getEditableRowColumn(false, false, 9, "lineShow", args.lineShow, 50, "center");
-			rowHtml += me.getEditableRowColumn(false, false, 10, "description", args.description, 150, "left");
+			rowHtml += me.getEditableRowColumn(false, false, 7, "status", args.status, 100, "center");
+			rowHtml += me.getEditableRowColumn(false, false, 8, "taxable", args.taxable, 100, "center");
+			rowHtml += me.getEditableRowColumn(false, false, 9, "lineShow", args.lineShow, 100, "center");
+			rowHtml += me.getEditableRowColumn(false, false, 10, "description", args.description, 300, "left");
 
 			return rowHtml;
 		},
@@ -4009,6 +4010,7 @@ ii.Class({
 				+ ",startPoint:" + 0
 				+ ",endPoint:" +  0
 				+ ",sortColumns:" +  me.sortColumns
+				+ ",invoiceItem:" +  me.invoiceItem
 				+ ",", me.fileNamesLoaded, me);						
 		},
 		
