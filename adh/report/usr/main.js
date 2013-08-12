@@ -105,13 +105,6 @@ ii.Class({
 			me.defineFormControls();
 			me.configureCommunications();
 			me.anchorLoad.display(ui.cmn.behaviorStates.disabled);
-			me.report.fetchingData();
-			me.moduleStore.fetch("userId:[user]", me.modulesLoaded, me);
-			me.reportStore.fetch("userId:[user],active:1", me.reportLoaded, me);
-			me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
-			me.stateTypeStore.fetch("userId:[user]", me.typesLoaded, me);
-			me.accountStore.fetch("userId:[user],moduleId:invoice", me.accountsLoaded, me);
- 			me.taxableServiceStore.fetch("userId:[user]", me.taxableServicesLoaded, me);
 			me.modified(false);
 
 			$(window).bind("resize", me, me.resize);
@@ -131,6 +124,14 @@ ii.Class({
 			
 			ii.timer.timing("Page displayed");
 			me.session.registerFetchNotify(me.sessionLoaded, me);
+
+			me.report.fetchingData();
+			me.moduleStore.fetch("userId:[user]", me.modulesLoaded, me);
+			me.reportStore.fetch("userId:[user],active:1", me.reportLoaded, me);
+			me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
+			me.stateTypeStore.fetch("userId:[user]", me.typesLoaded, me);
+			me.accountStore.fetch("userId:[user],moduleId:invoice", me.accountsLoaded, me);
+ 			me.taxableServiceStore.fetch("userId:[user]", me.taxableServicesLoaded, me);
 		},
 		
 		sessionLoaded: function fin_adh_report_UserInterface_sessionLoaded() {
