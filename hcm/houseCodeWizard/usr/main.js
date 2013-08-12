@@ -2650,12 +2650,16 @@ ii.Class({
 		houseCodeServicesLoaded: function (me, activeId) {
  
 			me.financialEntities = [];
-			me.serviceLineTypes = me.serviceLines.slice();
+			me.serviceLineTypes = [];
 
 			for (var index = 0; index < me.serviceLines.length; index++) {
 				if (me.serviceLines[index].financialEntity) {
-					var item = new fin.hcm.houseCodeWizard.FinancialEntity({ id: me.serviceLines[index].id, name:me.serviceLines[index].name });
+					var item = new fin.hcm.houseCodeWizard.FinancialEntity({ id: me.serviceLines[index].id, name: me.serviceLines[index].name });
 					me.financialEntities.push(item);
+				}
+				else {
+					var item = new fin.hcm.houseCodeWizard.ServiceLine({ id: me.serviceLines[index].id, name: me.serviceLines[index].name });
+					me.serviceLineTypes.push(item);
 				}
 			}
 

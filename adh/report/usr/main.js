@@ -122,6 +122,7 @@ ii.Class({
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
 			}
 			$("#divFilterHeader").hide();
+			$("#FilterGrid").hide();
 		},
 
 		authorizationProcess: function fin_adh_report_UserInterface_authorizationProcess() {
@@ -146,6 +147,7 @@ ii.Class({
 			var divAdhReportGridHeight = $(window).height() - 145;
 
 			$("#HirOrgContainer").height($(window).height() - 130);
+			$("#divFilterGrid").height($(window).height() - 145);
 			$("#divAdhReportGrid").css({"width" : divAdhReportGridWidth + "px", "height" : divAdhReportGridHeight + "px"});
 		},
 		
@@ -154,7 +156,7 @@ ii.Class({
 		    
 			$("#tblAdhReportGridHeader").css("left", -scrollLeft + "px");
 		},
-		
+				
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
 			var args = ii.args(arguments, {
 				event: {type: Object}	// The (key) event object
@@ -1197,7 +1199,12 @@ ii.Class({
 				itemIndex = ii.ajax.util.findIndexById(me.reports[me.report.indexSelected].module.toString(), me.modules);
 				modulesList.push(me.modules[itemIndex].name);
 				moduleAssociate = me.reports[me.report.indexSelected].moduleAssociate;
-
+				
+				if (me.modules[itemIndex].name == "Invoice Items") 
+					me.invoiceItem = true;
+				else 
+					me.invoiceItem = false;
+					
 				if (moduleAssociate != "0") {
 					associatedModules = moduleAssociate.split("#");
 					for (var index = 0; index < associatedModules.length; index++) {
@@ -1292,15 +1299,16 @@ ii.Class({
 		setReportFilters: function() {
 			var me = this;
 			var rowData = "";
+			var rowHeadData = "";
 			var dateControls = [];
 			
 			if (me.reportFilters.length > 0) {
-				rowData = "<tr><td><div><table cellpadding='0' cellspacing='0'><thead><td id='filterHeader'><td class='gridHeaderColumn' width='180px'>Title</td><td class='gridHeaderColumn' width='70px'>Filter</td><td class='gridHeaderColumn' width='190px'>Value</td><td class='gridHeaderColumn'>Operator</td></tr></thead></table></div></td></tr>";  
-				rowData += "<tr><td><div id='divFilterRow'><table id='AdhReportFilterGridRow' cellpadding='0' cellspacing='0'>";
+				rowHeadData = "<th class='gridHeaderColumn' width='25%'>Title</th><th class='gridHeaderColumn' width='22%'>Filter</th><th class='gridHeaderColumn' width='40%'>Value</th><th class='gridHeaderColumn' width='13%'>Operator</th>";  
+				//rowData += "<tr><td><div id='divFilterGrid' style='overflow: scroll'><table id='tblFilterGrid' cellpadding='0' cellspacing='0' style='width: 500px'>";
 				
 				for (var index = 0; index < me.reportFilters.length; index++) {
 					rowData += "<tr>";
-					rowData += "<td class='gridColumn' width='180px' >" + me.reportFilters[index].name + ':' + "</td>";
+					rowData += "<td class='gridColumn' width='25%'>" + me.reportFilters[index].name + ':' + "</td>";
 					
 					if (me.reportFilters[index].referenceTableName == "") {
 						contorlValidation = me.reportFilters[index].validation;
@@ -1350,32 +1358,32 @@ ii.Class({
 					else 
 						rowData += "<td class='gridColumnOperator'></td><td class='gridColumnValue' align='left'>" + me.populateFilterDropDown(me.reportFilters[index].referenceTableName, me.reportFilters[index].title) + "</td>";
 						
-					rowData += "<td align='left'>" + me.populateOperatorDropDown(me.reportFilters[index].title + "_andOr", 'andOrOperator') + "</td>";
+					rowData += "<td align='left' width='13%'>" + me.populateOperatorDropDown(me.reportFilters[index].title + "_andOr", 'andOrOperator') + "</td>";
 					rowData += "</tr>"
 				}
-				rowData += "</table></div></td></tr>";
+				
+				rowData += "<tr height='100%'><td id='tdLastRow' colspan='4' class='gridColumnRight' style='height: 100%'>&nbsp;</td></tr>";
 			}
 			
-			$("#AdhReportFilterGridBody").html(rowData);
+			$("#FilterGridHead").html(rowHeadData);
+			$("#FilterGridBody").html(rowData);
 									
-			$("#AdhReportFilterGridRow tr:odd").addClass("gridRow");
-        	$("#AdhReportFilterGridRow tr:even").addClass("alternateGridRow");
+			$("#FilterGridBody tr:odd").addClass("gridRow");
+        	$("#FilterGridBody tr:even").addClass("alternateGridRow");
 			
-			$("#AdhReportFilterGridRow tr").mouseover(function() {
+			$("#FilterGridBody tr").mouseover(function() {
 				$(this).addClass("trover");}).mouseout(function() {
 					$(this).removeClass("trover");});
 			
 			if (me.reportFilters.length > 0) {
 				$("#divFilterHeader").show();
-				if ($("#AdhReportFilterGridBody").height() + $(window).height() > 1000)
-					$("#divFilterRow").addClass("tbodyBorder");
-				else
-					$("#divFilterRow").removeClass("tbodyBorder");
+				$("#FilterGrid").show();
+				$("#divFilterGrid").height($(window).height() - 145);
 			}
 			else {
 				$("#divFilterHeader").hide();
-				$("#divFilterRow").removeClass("tbodyBorder");
-				$("#AdhReportFilterGridBody tr").mouseover(function() {
+				$("#FilterGrid").hide();
+				$("#FilterGridBody tr").mouseover(function() {
 					$(this).removeClass("trover");});
 			}	
 				
@@ -1499,26 +1507,22 @@ ii.Class({
 				else 
 					className = "gridHeaderColumn";
 				
-				if (me.reports[me.report.indexSelected].module == 11 && me.reports[me.report.indexSelected].moduleAssociate == 3) 
-					me.invoiceItem = true;
-				else 
-					me.invoiceItem = false;
-				
 				if (me.invoiceItem) {
-					rowData += "<th class='gridHeaderColumn' width='20px'>#</th>";
+					rowData += "<th class='gridHeaderColumn' width='50px'>#</th>";
 					rowData += "<th class='gridColumnHidden'></th>";
-					rowData += "<th class='gridHeaderColumn' width='50px'>House Code</th>";
+					rowData += "<th class='gridHeaderColumn' width='100px'>House Code</th>";
 					rowData += "<th class='gridHeaderColumn' width='100px'>Job</th>";
-					rowData += "<th class='gridHeaderColumn' width='80px'>Taxable Service</th>";
+					rowData += "<th class='gridHeaderColumn' width='100px'>Taxable Service</th>";
 					rowData += "<th class='gridHeaderColumn' width='200px'>Account Code</th>";
-					rowData += "<th class='gridHeaderColumn' width='75px'>Quantity</th>";
-					rowData += "<th class='gridHeaderColumn' width='75px'>Price</th>";
+					rowData += "<th class='gridHeaderColumn' width='100px'>Quantity</th>";
+					rowData += "<th class='gridHeaderColumn' width='100px'>Price</th>";
 					rowData += "<th class='gridHeaderColumn' width='100px'>Total</th>";
-					rowData += "<th class='gridHeaderColumn' width='50px'>Status</th>";
-					rowData += "<th class='gridHeaderColumn' width='50px'>Taxable</th>";
-					rowData += "<th class='gridHeaderColumn' width='50px'>Show</th>";
-					rowData += "<th class='gridHeaderColumn' width='150px'>Description</th>";
-					$("#tblAdhReportGridHeader").width("1060px");
+					rowData += "<th class='gridHeaderColumn' width='100px'>Status</th>";
+					rowData += "<th class='gridHeaderColumn' width='100px'>Taxable</th>";
+					rowData += "<th class='gridHeaderColumn' width='100px'>Show</th>";
+					rowData += "<th class='gridHeaderColumn' width='300px'>Description</th>";
+					$("#tblAdhReportGridHeader").width("1510");
+					$("#tblAdhReportGrid").width("1510");
 				}
 				else {
 					rowData += "<th onclick=(fin.reportUi.sortColumn(-1)); class='" + className + "' style='width:100px;'>House Code</th>";
@@ -1692,7 +1696,6 @@ ii.Class({
 					}
 					
 					if (!me.invoiceItem) {
-			
 						rowData += "<tr id='adhReportDataRow" + pkId + "' onclick=(fin.reportUi.getAdhReprotGridRowEdit(" + pkId + "," + index + "," + houseCodeId + "));>";	
 						rowData += me.getAdhReprotDetailGridRow(index, pkId, houseCode, appSite, appSitTitle);
 						rowData += "</tr>"	
@@ -2283,6 +2286,7 @@ ii.Class({
 			invoiceRowHtml += me.getTotalGridRow(0, subTotal, "Sub Total:", "");
 			invoiceRowHtml += me.getTotalGridRow(0, salesTaxTotal, "Sales Tax Total:", "");
 			invoiceRowHtml += me.getTotalGridRow(0, total, "Total:", "");
+			invoiceRowHtml += "<tr height='100%'><td id='tdLastInvoiceRow' colspan='12' class='gridColumn' style='height: 100%'>&nbsp;</td></tr>";
 			
 			var invoiceDetailsRow = $("#InvoiceDetailsRow" + pkId);
 			
@@ -2381,19 +2385,19 @@ ii.Class({
 			else
 				rowNumberText = "&nbsp;"
 
-			rowHtml += me.getEditableRowColumn(false, false, 0, "rowNumber", rowNumberText, 20, "right");
+			rowHtml += me.getEditableRowColumn(false, false, 0, "rowNumber", rowNumberText, 50, "right");
 			rowHtml += me.getEditableRowColumn(false, false, 1, "id", args.id.toString(), 0, "left");
-			rowHtml += me.getEditableRowColumn(false, false, 11, "houseCode", args.houseCode, 50, "left");
+			rowHtml += me.getEditableRowColumn(false, false, 11, "houseCode", args.houseCode, 100, "left");
 			rowHtml += me.getEditableRowColumn(false, false, 2, "job", args.job, 100, align);
-			rowHtml += me.getEditableRowColumn(false, false, 12, "taxableService", args.taxableService, 80, align);
+			rowHtml += me.getEditableRowColumn(false, false, 12, "taxableService", args.taxableService, 100, align);
 			rowHtml += me.getEditableRowColumn(false, columnBold, 3, "account", args.account, 200, align);
-			rowHtml += me.getEditableRowColumn(false, false, 4, "quantity", args.quantity, 75, "right");
-			rowHtml += me.getEditableRowColumn(false, false, 5, "price", args.price, 75, "right");
+			rowHtml += me.getEditableRowColumn(false, false, 4, "quantity", args.quantity, 100, "right");
+			rowHtml += me.getEditableRowColumn(false, false, 5, "price", args.price, 100, "right");
 			rowHtml += me.getEditableRowColumn(false, columnBold, 6, "amount", args.amount, 100, "right");
-			rowHtml += me.getEditableRowColumn(false, false, 7, "status", args.status, 50, "center");
-			rowHtml += me.getEditableRowColumn(false, false, 8, "taxable", args.taxable, 50, "center");
-			rowHtml += me.getEditableRowColumn(false, false, 9, "lineShow", args.lineShow, 50, "center");
-			rowHtml += me.getEditableRowColumn(false, false, 10, "description", args.description, 150, "left");
+			rowHtml += me.getEditableRowColumn(false, false, 7, "status", args.status, 100, "center");
+			rowHtml += me.getEditableRowColumn(false, false, 8, "taxable", args.taxable, 100, "center");
+			rowHtml += me.getEditableRowColumn(false, false, 9, "lineShow", args.lineShow, 100, "center");
+			rowHtml += me.getEditableRowColumn(false, false, 10, "description", args.description, 300, "left");
 
 			return rowHtml;
 		},
@@ -2560,27 +2564,27 @@ ii.Class({
 			var rowHtml = "";
 			
 			if (type == "text") {
-				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:60px; onchange=fin.reportUi.operatorChange('" + id + "');>";
+				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:100px; onchange=fin.reportUi.operatorChange('" + id + "');>";
 				rowHtml += "<option title='Exact match (=)' value='1' selected>Exact match (=)</option>";
 				rowHtml += "<option title='Any part that matches (Like)' value='2'>Any part that matches (Like)</option>";
 				rowHtml += "</select>";
 			}
 			else  if (type == "bit") {
-				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:60px;>";
+				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:100px;>";
 				rowHtml += "<option title='' value='' selected></option>";
 				rowHtml += "<option title='Yes' value='1'>Yes</option>";
 				rowHtml += "<option title='No' value='0'>No</option>";
 				rowHtml += "</select>";
 			}
 			else  if (type == "andOrOperator") {
-				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:60px;>";
+				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:50px;>";
 				rowHtml += "<option title='' value='' selected></option>";
 				rowHtml += "<option title='And' value='1'>And</option>";
 				rowHtml += "<option title='Or' value='2'>Or</option>";
 				rowHtml += "</select>";
 			}
 			else {
-				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:60px; onchange=fin.reportUi.operatorChange('" + id + "');>";
+				rowHtml = "<select id=sel" + id + " style=margin-left:5px;width:100px; onchange=fin.reportUi.operatorChange('" + id + "');>";
 				rowHtml += "<option title='Equal to' value='1' selected>=</option>";
 				rowHtml += "<option title='Less than or equal to' value='2'>&lt;=</option>";
 				rowHtml += "<option title='Greater than or equal to' value='3'>&gt;=</option>";
@@ -3521,19 +3525,25 @@ ii.Class({
 			else if (args.typeTable == "HcmServiceLines") {
 				if (args.columnName == "HcmServiceLineFinancialEntity") {
 					me.financialEntities = [];
-
 					for (var index = 0; index < me.serviceLines.length; index++) {
 						if (me.serviceLines[index].financialEntity) {
-							var item = new fin.adh.FinancialEntity({ id: me.serviceLines[index].id, name:me.serviceLines[index].name });
+							var item = new fin.adh.FinancialEntity({ id: me.serviceLines[index].id, name: me.serviceLines[index].name });
 							me.financialEntities.push(item);
-						}
+						}				
 					}
 					me.typeNoneAdd(me.financialEntities);
 					typeTable = me.financialEntities;
 				}
 				else {
-					me.typeNoneAdd(me.serviceLines);
-					typeTable = me.serviceLines;
+					me.serviceLineTypes = [];
+					for (var index = 0; index < me.serviceLines.length; index++) {
+						if (!me.serviceLines[index].financialEntity) {
+							var item = new fin.adh.ServiceLine({ id: me.serviceLines[index].id, name: me.serviceLines[index].name });
+							me.serviceLineTypes.push(item);
+						}				
+					}
+					me.typeNoneAdd(me.serviceLineTypes);
+					typeTable = me.serviceLineTypes;
 				}
 			}
 			else if (args.typeTable == "FscJDECompanies") {
@@ -4000,6 +4010,7 @@ ii.Class({
 				+ ",startPoint:" + 0
 				+ ",endPoint:" +  0
 				+ ",sortColumns:" +  me.sortColumns
+				+ ",invoiceItem:" +  me.invoiceItem
 				+ ",", me.fileNamesLoaded, me);						
 		},
 		
