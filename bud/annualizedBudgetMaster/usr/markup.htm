@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Budget Summary</title>
+    <title>Annualized Budget</title>
     <!-- style -->
     <link href="../../res/css/ext-all.css" rel="stylesheet" type="text/css" />
     <link href="../../res/css/xtheme-gray.css" rel="stylesheet" type="text/css" />
@@ -178,9 +178,22 @@
                 applyTo: 'job-code-holder'
             });
 
+            var onhhcBeforeSelect = function () {
+                if (fin.bud.modified()) {
+                    houseCodeStore.clearFilter(false);
+                    houseCodeComboBox.suspendEvents(false);
+                    houseCodeComboBox.setValue(Bud.Context.getStickyHcmHouseCode());
+                    houseCodeComboBox.resumeEvents();
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+
             onBeforeSelect = function () { return !fin.bud.modified(); }
 
-            houseCodeComboBox.on('beforeselect', onBeforeSelect);
+            houseCodeComboBox.on('beforeselect', onhhcBeforeSelect);
 
             houseCodeComboBox.on('select', function (combo, record, index) {
                 currentHcmHouseCode = record.get('id');
@@ -191,12 +204,20 @@
             });
 
             houseCodeComboBox.on('blur', function (combo) {
-                if (currentHcmHouseCode != combo.getValue() && !fin.bud.modified()) {
-                    currentHcmHouseCode = combo.getValue();
-                    var record = houseCodeStore.getById(currentHcmHouseCode);
-                    Bud.Context.setStickyHouseCode(record.get('appUnit'), record.get('id'), record.get('name'), record.get('brief'), record.get('hirNode'));
-                    jobCodeStore.load(currentHcmHouseCode);
-                    houseCodeDetailStore.load(currentHcmHouseCode);
+                if (currentHcmHouseCode != combo.getValue()) {
+                    if (fin.bud.modified()) {
+                            houseCodeStore.clearFilter(false);
+                            houseCodeComboBox.suspendEvents(false);
+                            houseCodeComboBox.setValue(currentHcmHouseCode);
+                            houseCodeComboBox.resumeEvents();
+                    }
+                    else {
+                        currentHcmHouseCode = combo.getValue();
+                        var record = houseCodeStore.getById(currentHcmHouseCode);
+                        Bud.Context.setStickyHouseCode(record.get('appUnit'), record.get('id'), record.get('name'), record.get('brief'), record.get('hirNode'));
+                        jobCodeStore.load(currentHcmHouseCode);
+                        houseCodeDetailStore.load(currentHcmHouseCode);
+                    }
                 }
             });
 
