@@ -144,6 +144,9 @@
                     else {
                         houseCodeComboBox.setValue(records[0].get('id'));
                         hcmHouseCode = records[0].get('id');
+                        currentHcmHouseCode = records[0].get('id');
+                        //alert(record.get('id') + ', ' + record.get('name') + ', ' + record.get('appUnit') + ', ' + record.get('brief'));
+                        Bud.Context.setStickyHouseCode(records[0].get('appUnit'), records[0].get('id'), records[0].get('name'), records[0].get('brief'), records[0].get('hirNode'));
                     }
                     jobCodeStore.load(hcmHouseCode);
                     houseCodeDetailStore.load(hcmHouseCode);
