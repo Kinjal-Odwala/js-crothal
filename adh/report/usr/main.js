@@ -110,8 +110,6 @@ ii.Class({
 			me.reportStore.fetch("userId:[user],active:1", me.reportLoaded, me);
 			me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
 			me.stateTypeStore.fetch("userId:[user]", me.typesLoaded, me);
-			me.accountStore.fetch("userId:[user],moduleId:invoice", me.accountsLoaded, me);
- 			me.taxableServiceStore.fetch("userId:[user]", me.taxableServicesLoaded, me);
 			me.modified(false);
 
 			$(window).bind("resize", me, me.resize);
@@ -1246,7 +1244,7 @@ ii.Class({
 							break;
 							
 						case "Employee":
-							me.typesLoadedCount = 12;							
+							me.typesLoadedCount = 13;							
 							me.localTaxCodeStore.fetch("payrollCompany:0,appState:0,userId:[user]", me.typesLoaded, me);
 							me.maritalStatusStateTaxTypeSecondaryStore.fetch("appState:0,userId:[user]", me.typesLoaded, me);
 							me.statusTypeStore.fetch("userId:[user],personId:0", me.typesLoaded, me);
@@ -1259,6 +1257,7 @@ ii.Class({
 							me.payrollCompanyStore.fetch("userId:[user]", me.typesLoaded, me);
 							me.localTaxAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.typesLoaded, me);
 							me.separationCodeStore.fetch("userId:[user],terminationType:0,", me.typesLoaded, me);
+							me.ePayGroupTypeStore.fetch("userId:[user]", me.typesLoaded, me);
 							
 							break;
 							
@@ -1268,6 +1267,8 @@ ii.Class({
 							me.transactionStatusTypeStore.fetch("userId:[user]", me.typesLoaded, me);
 							me.invoiceLogoTypeStore.fetch("userId:[user]", me.typesLoaded, me);
 							me.invoiceAddressTypeStore.fetch("userId:[user]", me.typesLoaded, me);
+							me.accountStore.fetch("userId:[user],moduleId:invoice", me.accountsLoaded, me);
+ 							me.taxableServiceStore.fetch("userId:[user]", me.taxableServicesLoaded, me);
 							break;
 							
 						case "Job":
