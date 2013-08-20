@@ -1231,6 +1231,7 @@ ii.Class({
 						case "House Code":
 							me.typesLoadedCount = 4;
 							me.invoiceLogoTypeStore.reset();
+							me.ePayGroupTypeStore.reset();
 							me.serviceTypeStore.fetch("userId:[user],", me.typesLoaded, me);
 							me.contractTypeStore.fetch("userId:[user]", me.typesLoaded, me);
 							me.payPayrollCompanyStore.fetch("userId:[user]", me.typesLoaded, me);
@@ -1244,7 +1245,8 @@ ii.Class({
 							break;
 							
 						case "Employee":
-							me.typesLoadedCount = 13;							
+							me.typesLoadedCount = 13;	
+							me.ePayGroupTypeStore.reset();
 							me.localTaxCodeStore.fetch("payrollCompany:0,appState:0,userId:[user]", me.typesLoaded, me);
 							me.maritalStatusStateTaxTypeSecondaryStore.fetch("appState:0,userId:[user]", me.typesLoaded, me);
 							me.statusTypeStore.fetch("userId:[user],personId:0", me.typesLoaded, me);
@@ -1258,7 +1260,6 @@ ii.Class({
 							me.localTaxAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.typesLoaded, me);
 							me.separationCodeStore.fetch("userId:[user],terminationType:0,", me.typesLoaded, me);
 							me.ePayGroupTypeStore.fetch("userId:[user]", me.typesLoaded, me);
-							
 							break;
 							
 						case "Invoice":
