@@ -105,6 +105,11 @@ ii.Class({
 			me.defineFormControls();
 			me.configureCommunications();
 			me.anchorLoad.display(ui.cmn.behaviorStates.disabled);
+			me.report.fetchingData();
+			me.moduleStore.fetch("userId:[user]", me.modulesLoaded, me);
+			me.reportStore.fetch("userId:[user],active:1", me.reportLoaded, me);
+			me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
+			me.stateTypeStore.fetch("userId:[user]", me.typesLoaded, me);
 			me.modified(false);
 
 			$(window).bind("resize", me, me.resize);
@@ -124,14 +129,6 @@ ii.Class({
 			
 			ii.timer.timing("Page displayed");
 			me.session.registerFetchNotify(me.sessionLoaded, me);
-
-			me.report.fetchingData();
-			me.moduleStore.fetch("userId:[user]", me.modulesLoaded, me);
-			me.reportStore.fetch("userId:[user],active:1", me.reportLoaded, me);
-			me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
-			me.stateTypeStore.fetch("userId:[user]", me.typesLoaded, me);
-			me.accountStore.fetch("userId:[user],moduleId:invoice", me.accountsLoaded, me);
- 			me.taxableServiceStore.fetch("userId:[user]", me.taxableServicesLoaded, me);
 		},
 		
 		sessionLoaded: function fin_adh_report_UserInterface_sessionLoaded() {
@@ -1234,6 +1231,7 @@ ii.Class({
 						case "House Code":
 							me.typesLoadedCount = 4;
 							me.invoiceLogoTypeStore.reset();
+							me.ePayGroupTypeStore.reset();
 							me.serviceTypeStore.fetch("userId:[user],", me.typesLoaded, me);
 							me.contractTypeStore.fetch("userId:[user]", me.typesLoaded, me);
 							me.payPayrollCompanyStore.fetch("userId:[user]", me.typesLoaded, me);
@@ -1247,7 +1245,8 @@ ii.Class({
 							break;
 							
 						case "Employee":
-							me.typesLoadedCount = 12;							
+							me.typesLoadedCount = 13;	
+							me.ePayGroupTypeStore.reset();
 							me.localTaxCodeStore.fetch("payrollCompany:0,appState:0,userId:[user]", me.typesLoaded, me);
 							me.maritalStatusStateTaxTypeSecondaryStore.fetch("appState:0,userId:[user]", me.typesLoaded, me);
 							me.statusTypeStore.fetch("userId:[user],personId:0", me.typesLoaded, me);
@@ -1260,7 +1259,7 @@ ii.Class({
 							me.payrollCompanyStore.fetch("userId:[user]", me.typesLoaded, me);
 							me.localTaxAdjustmentTypeStore.fetch("appState:0,userId:[user]", me.typesLoaded, me);
 							me.separationCodeStore.fetch("userId:[user],terminationType:0,", me.typesLoaded, me);
-							
+							me.ePayGroupTypeStore.fetch("userId:[user]", me.typesLoaded, me);
 							break;
 							
 						case "Invoice":
@@ -1269,6 +1268,8 @@ ii.Class({
 							me.transactionStatusTypeStore.fetch("userId:[user]", me.typesLoaded, me);
 							me.invoiceLogoTypeStore.fetch("userId:[user]", me.typesLoaded, me);
 							me.invoiceAddressTypeStore.fetch("userId:[user]", me.typesLoaded, me);
+							me.accountStore.fetch("userId:[user],moduleId:invoice", me.accountsLoaded, me);
+ 							me.taxableServiceStore.fetch("userId:[user]", me.taxableServicesLoaded, me);
 							break;
 							
 						case "Job":
@@ -1702,14 +1703,16 @@ ii.Class({
 						rowData += "</tr>"	
 					}
 					else {	
+						if (invoiceId == "")
+							invoiceId = -1;
 						rowData += "<tr>"
 						rowData += "<td colspan='100'>"
 						rowData += "<div >"
 						rowData += "<table width='100%' class='invoiceTable'>"
-						rowData += "<tr>";
-						rowData += "<td class='gridColumn' style='font-weight:bold; border-bottom:solid 2px #99bbe8'><img id='expandCollapse" + pkId + "' onclick='fin.reportUi.invoiceItemsLoad(" + pkId + "," + invoiceId + ");' src='/fin/cmn/usr/media/Common/Plus.gif' style='cursor: pointer' alt='expand/collapse' title='expand/collapse' />  Invoice #: " + invoiceNo + "</td>"
+						rowData += "<tr onclick='fin.reportUi.invoiceItemsLoad(" + index + "," + invoiceId + ");'>";
+						rowData += "<td class='gridColumn' style='font-weight:bold; border-bottom:solid 2px #99bbe8'><img id='expandCollapse" + index + "' src='/fin/cmn/usr/media/Common/Plus.gif' style='cursor: pointer' alt='expand/collapse' title='expand/collapse' />  Invoice #: " + invoiceNo + "</td>"
 						rowData += "</tr>";
-						rowData += "<tr id='InvoiceDetailsRow" + pkId + "'></tr>"
+						rowData += "<tr id='InvoiceDetailsRow" + index + "'></tr>"
 						rowData += "</table>"
 						rowData += "</div>"
 						rowData += "</td>"
