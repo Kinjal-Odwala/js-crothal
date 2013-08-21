@@ -1,4 +1,4 @@
-﻿_builtInTemplate_d5e3e8d0 = ['<?xml version="1.0" encoding="utf-8" ?><transmission>  <target id="iiAuthorization" requestId="1">    <authorization id="1">      <authorize id="41" path="\\crothall\\chimes\\fin\\Budgeting"></authorize>      <authorize id="42" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget"></authorize>      <authorize id="16059" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Read"></authorize>      <authorize id="16060" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Write"></authorize>      <authorize id="44" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections"></authorize>      <authorize id="16063" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod"></authorize>      <authorize id="16064" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Read"></authorize>      <authorize id="16065" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Write"></authorize>      <authorize id="16066" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast"></authorize>      <authorize id="16067" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Read"></authorize>      <authorize id="16068" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Write"></authorize>      <authorize id="1213" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration"></authorize>      <authorize id="16069" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation"></authorize>      <authorize id="16070" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Read"></authorize>      <authorize id="16071" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Write"></authorize>      <authorize id="16072" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget"></authorize>      <authorize id="16073" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Approve"></authorize>      <authorize id="16074" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Read"></authorize>      <authorize id="16075" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Reject"></authorize>      <authorize id="16076" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Write"></authorize>      <authorize id="16077" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget"></authorize>      <authorize id="16078" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Read"></authorize>      <authorize id="16079" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Write"></authorize>      <authorize id="16080" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget"></authorize>      <authorize id="16081" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Read"></authorize>      <authorize id="16082" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Write"></authorize>      <authorize id="43" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary"></authorize>      <authorize id="16061" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Read"></authorize>      <authorize id="16062" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Write"></authorize>    </authorization>  </target></transmission>','<div style="color: #FFF; background-color: #659A66; padding: 10px; margin: 0 0 10px;">    <table width="100%" class="ann-proj-table">        <tbody>            <tr>                <td style="width: 35px;" class="label">Site:</td>                <td style="width: 300px"><div id="house-code-holder"></div></td>                <td style="width: 35px;" class="label">Job:</td>                <td style="width: 160px"><div id="job-code-holder"></div></td>                <td style="width: 80px;" class="label">Fiscal Year:</td>                <td style="width: 100px"><div id="fiscal-year-holder"></div></td>                <td style="width: 80px;" class="label">Period:</td>                <td style="width: 100px"><div id="period-holder"></div></td>                <td>&nbsp;</td>            </tr>        </tbody>    </table></div><div style="padding: 0 5px">    <p style="float:left">        The current page is READONLY.</p>        <div style="float:right"><span id="load-button-holder"></span></div></div><div style="clear:both;height:1px;"></div><div id="transaction-summary-grid" style="padding: 10px 5px;"></div><br /><br />'];/*!
+﻿_builtInTemplate_a039005e = ['<?xml version="1.0" encoding="utf-8" ?><transmission>  <target id="iiAuthorization" requestId="1">    <authorization id="1">      <authorize id="41" path="\\crothall\\chimes\\fin\\Budgeting"></authorize>      <authorize id="42" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget"></authorize>      <authorize id="16059" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Read"></authorize>      <authorize id="16060" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Write"></authorize>      <authorize id="44" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections"></authorize>      <authorize id="16063" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod"></authorize>      <authorize id="16064" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Read"></authorize>      <authorize id="16065" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Write"></authorize>      <authorize id="16066" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast"></authorize>      <authorize id="16067" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Read"></authorize>      <authorize id="16068" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Write"></authorize>      <authorize id="1213" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration"></authorize>      <authorize id="16069" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation"></authorize>      <authorize id="16070" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Read"></authorize>      <authorize id="16071" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Write"></authorize>      <authorize id="16072" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget"></authorize>      <authorize id="16073" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Approve"></authorize>      <authorize id="16074" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Read"></authorize>      <authorize id="16075" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Reject"></authorize>      <authorize id="16076" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Write"></authorize>      <authorize id="16077" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget"></authorize>      <authorize id="16078" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Read"></authorize>      <authorize id="16079" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Write"></authorize>      <authorize id="16080" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget"></authorize>      <authorize id="16081" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Read"></authorize>      <authorize id="16082" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Write"></authorize>      <authorize id="43" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary"></authorize>      <authorize id="16061" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Read"></authorize>      <authorize id="16062" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Write"></authorize>    </authorization>  </target></transmission>','<div style="color: #FFF; background-color: #659A66; padding: 10px; margin: 0 0 10px;">    <table width="100%" class="ann-proj-table">        <tbody>            <tr>                <td style="width: 35px;" class="label">Site:</td>                <td style="width: 300px"><div id="house-code-holder"></div></td>                <td style="width: 35px;" class="label">Job:</td>                <td style="width: 160px"><div id="job-code-holder"></div></td>                <td style="width: 80px;" class="label">Fiscal Year:</td>                <td style="width: 100px"><div id="fiscal-year-holder"></div></td>                <td style="width: 80px;" class="label">Period:</td>                <td style="width: 100px"><div id="period-holder"></div></td>                <td>&nbsp;</td>            </tr>        </tbody>    </table></div><div style="padding: 0 5px">    <p style="float:left">        The current page is READONLY.</p>         <div style="float:right"><span id="print-button-holder"></span></div>        <div style="float:right; margin-right:10px"><span id="load-button-holder"></span></div></div><div style="clear:both;height:1px;"></div><div id="transaction-summary-grid" style="padding: 10px 5px;"></div><br /><br />','<div>    <div id="header">        <div style="padding-bottom: 5px">            <table>                <tr>                    <td>                        Site:                    </td>                    <td>                        {0}                    </td>                    <td>                        Job:                    </td>                    <td>                        {1}                    </td>                    <td>                        Fiscal Year:                    </td>                    <td>                        {2}                    </td>                </tr>            </table>        </div>    </div>   <table>    <tbody id="row8">        <tr class="{0}">              <td class="title">{1}</td>              <td>{2}</td>              <td class="tar">{3}</td>              <td class="tar">{4}</td>              <td class="tar">{5}</td>              <td class="tar">{6}</td>              <td class="tar">{7}</td>              <td class="tar">{8}</td>        </tr>    </tbody>     <tbody id="row12">        <tr class="{0}">              <td>{1}</td>              <td>{2}</td>              <td class="tar">{9}</td>              <td class="tar">{10}</td>              <td class="tar">{11}</td>               <td class="tar">{12}</td>              <td class="tar">{3}</td>              <td class="tar">{4}</td>              <td class="tar">{5}</td>              <td class="tar">{6}</td>              <td class="tar">{7}</td>              <td class="tar">{8}</td>        </tr>    </tbody>    <tbody id="innerRow">        <tr class="inner-row">              <td colspan="2" style="text-align:right">{0}</td>              <td class="tar">{1}</td>              <td class="tar">{2}</td>              <td class="tar">{3}</td>              <td class="tar">{4}</td>              <td colspan="10"></td>        </tr>    </tbody>   </table></div>'];/*!
  * Ext JS Library 3.2.0
  * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
@@ -1273,7 +1273,7 @@ WebLight.namespace('Bud', 'Bud.form', 'Bud.page', 'Bud.grid');
 var host = document.location.host;
 if (!window.top.fin) {
     //window.top.fin = { appUI: { houseCodeId: 227, glbFscYear: 2, glbFscPeriod: 18} };
-    window.top.fin = { appUI: { houseCodeId: 415, glbFscYear: 4, glbFscPeriod: 46} };
+    window.top.fin = { appUI: { glbFscYear: 4, glbFscPeriod: 46} };
 }
 
 Bud.getGlobalHouseCodeStore = function () {
@@ -1759,6 +1759,512 @@ function calcBusinessDays(date1, date2) {
 }
 
 
+Ext.ns('fin.bud');
+
+
+function dirtyCheck(me) {
+    return !window.top.fin.cmn.status.itemValid();
+}
+
+if (!top.ui)
+    top.ui = { ctl: {} };
+
+if (top.ui.ctl.menu) {
+    var me = this;
+    top.ui.ctl.menu.Dom.me.registerDirtyCheck(dirtyCheck, me);
+}
+
+if (document.location.host == 'localhost')
+    window.__fin_modified = false;
+
+fin.bud.modified = function () {
+    
+//    if (document.location.host == 'localhost') {
+//    if (arguments.length == 0) {
+//    if (window.__fin_modified)
+//    alert('data modified');
+//    return window.__fin_modified;
+
+//    }
+//    else
+//    window.__fin_modified = arguments[0];
+//    }
+//    else {
+     
+    if (arguments.length == 0)
+        return !window.top.fin.cmn.status.itemValid();
+    else
+        window.top.fin.appUI.modified = arguments[0];
+//        }
+}
+
+fin.bud.dirtyCheck = function () { return !fin.bud.modified(); }
+
+
+
+WebLight.form.FormView = WebLight.extend(WebLight.Control, {
+
+    simulateTabKey: false,
+
+    _fields: null,
+
+    constructor: function (config) {
+
+        var me = this;
+
+        me.addEvents('bound', 'storechanged');
+
+        /// init fields
+        me._fields = new Ext.util.MixedCollection();
+
+        var setValues = function (values) {
+
+            if (Ext.isArray(values)) { // array of objects
+                for (var i = 0, len = values.length; i < len; i++) {
+                    var v = values[i];
+                    var f = me.getFieldByName(v.name);
+                    if (f) {
+                        f.setRawValue(v.value);
+                        f.suspendEvents(false);
+                        f.setValue(v.value);
+                        f.resumeEvents();
+                    }
+                }
+            } else { // object hash
+
+                me._fields.each(function (item, index, length) {
+                    var value = values[item.name];
+
+                    /// if not in data schema, ignore it
+                    if (value != undefined) {
+
+                        if (value == null)
+                            value = '';
+                        /// Combobox need use setRawValue, Checkbox need use setValue
+
+                        item.setRawValue(value);
+                        item.suspendEvents(false);
+                        item.setValue(value);
+                        item.resumeEvents();
+                    }
+                }, me);
+
+            }
+        };
+
+        var storeUpdateMonitor = function (store, record, operation) {
+            // 2010/12/23 fix, need include REJECT and COMMIT notify
+            if (record == me.boundRecord)  // && operation == Ext.data.Record.EDIT)
+                setValues(record ? record.data : {});
+        };
+
+        /// remove field containers
+        var resetHtmls = function () {
+            me._fields.each(function (item, index, length) {
+                var fieldContainer = me.$child(item.name);
+                var $innerField = fieldContainer.children();
+                $innerField.insertAfter(fieldContainer);
+                fieldContainer.remove();
+                //                if (me.enterKeyAsTabKey)
+                //                    $innerField.keyup(function (event) {
+                //                        if (event.keyCode == 13) {
+                //                            if (item.nextCtrl)
+                //                                item.nextCtrl.focus();
+                //                            event.preventDefault();
+                //                        }
+                //                    });
+            });
+        };
+
+        var refreshFields = function () {
+
+
+
+            if (me.boundRecord)
+                setValues(me.boundRecord.data);
+        };
+
+        /// update current bound
+        /// if record is null ,act as unbind feature
+        var updateBound = function (record) {
+
+            me.boundRecord = record;
+            setValues(record ? record.data : {});
+
+            if (record)
+                me.fireEvent('bound', record);
+        };
+
+        var setValue = function (name, value) {
+            if (me.boundRecord && name) {
+                // if (me.boundRecord.get(name) != value) {
+                if (Ext.isArray(value)) {
+                    /// checkboxgroup
+                    var newValue = [];
+                    Ext.each(value, function (item) {
+                        newValue.push(name);
+                    });
+                    value = newValue;
+                }
+                else if (Ext.isObject(value)) {
+                    // maybe radiogroup
+                    if (value.inputValue)
+                        value = value.inputValue;
+                }
+                me.boundRecord.set(name, value);
+                //  }
+            }
+        };
+
+        /// bind field value to record
+        var applyFieldValueToRecord = function (field) {
+            setValue(field.name, field.getValue());
+        };
+
+        var attachChangeEvent = function (f) {
+            f.on({
+                scope: me
+                    , change: function (field) {
+                        if (!me.boundRecord && me.store) {
+                            var value = field.getValue();
+
+                            var record = me.store.newRecord();
+                            me.store.add(record);
+                            updateBound(record);
+                            setValue(field.name, value);
+                        }
+                        else
+                            applyFieldValueToRecord(field);
+                        me.fireEvent('change', field.name, value);
+
+                    }
+            });
+        };
+
+        var initField = function (f) {
+            // register field if name defined. 
+            if (f.name) {
+                me._fields.add(f.name, f);
+                attachChangeEvent(f);
+            }
+
+            var label = me.$child(f.name + 'Label');
+            if (label.length)
+                label.html(f.fieldLabel);
+
+            if (f.xtype == 'compositefield' || f.xtype == 'checkboxgroup') {
+                /// must do it in render method
+                /// because compositefield not initialize, it still config, and after it rendered, the items will convert to MixedCollection, not array
+                /// cannot use Ext.each method.
+                f.on('render', function () {
+                    f.items.each(function (innerField) {
+                        if (innerField.name/* && innerField.xtype != 'radio'*/) {
+                            me._fields.add(innerField.name, innerField);
+                            attachChangeEvent(innerField);
+                        }
+                    });
+                });
+            }
+        };
+        me.initField = initField;
+
+        var initStore = function (store) {
+
+            if (store.bindControl)
+                store.bindControl(me);
+
+            store.on('update', storeUpdateMonitor);
+
+            store.on('beforesubmit', function () {
+
+                // sometimes bind store to 2 formpanels, like View mode and Edit mode
+                /// we need ingore view mode because it not changed.
+                /// if not ,it will be some issue, because current.bindRecord is null
+                if (!me.boundRecord)
+                    return;
+
+                /// because changed reject feature, if call form.reset method
+                /// record will be removed from store
+                /// if submit ,need ensure new record in store
+                if (me.store.indexOf(me.boundRecord) == -1)
+                    me.store.add(me.boundRecord);
+
+                // sometimes combobox or checkbox cannot save value to record correctly.
+                // below code ensure all fields applied to record.
+                me._fields.each(function (item, index, length) {
+                    if (item.xtype != 'displayfield')
+                        applyFieldValueToRecord(item);
+                }, me);
+            }, this);
+
+            if (store.getCount() > 0) {
+                if (store.selectedIndex)
+                    updateBound(store.getAt(store.selectedIndex()));
+                else
+                    updateBound(store.getAt(0));
+            }
+
+            store.on('selectedIndexChanged', function () {
+                if (store.selectedIndex) {
+                    if (store.selectedIndex() == -1)
+                        updateBound(null);
+                    else
+                        updateBound(store.getAt(store.selectedIndex()));
+                }
+                else
+                    updateBound(store.getAt(0));
+            });
+        };
+
+        WebLight.form.FormView.superclass.constructor.call(this, config);
+
+        if (me.items) {
+            WebLight.each(me.items, function (item, index) {
+                ctrl = item;
+                if (!ctrl.events)
+                    ctrl = me.createComponent(item);
+                me.addChildControl(ctrl, ctrl.name);
+            });
+            //            delete me.items;
+
+        }
+
+        if (config.store) {
+            initStore(config.store);
+        }
+
+        me.on('storechanged', function (newStore, oldStore) {
+            initStore(newStore);
+            if (oldStore && oldStore.unbindControl) {
+                oldStore.unbindControl(me);
+                oldStore.un('update', storeUpdateMonitor);
+            }
+        });
+
+        var simulateTabKey = function () {
+            if (me.simulateTabKey === true)
+            // exclude textarea and button fields ':input:not(textarea):not(:button):visible'
+                var inputs = $(':input:visible', me.$this).keypress(function (e) {
+                    var type = $(this).attr('type');
+                    if (this.tagName == 'TEXTAREA' || type == 'button' || type == 'image' || type == 'submit')
+                        return;
+
+                    if (e.which == 13) {
+                        e.preventDefault();
+                        var nextInput = inputs.get(inputs.index(this) + 1);
+                        if (nextInput) { nextInput.focus(); nextInput.select(); }
+                    }
+                });
+        };
+
+        me.on('render', function () { resetHtmls(); refreshFields(); simulateTabKey(); });
+    },
+
+    _setValues: function (values) {
+
+        if (Ext.isArray(values)) { // array of objects
+            for (var i = 0, len = values.length; i < len; i++) {
+                var v = values[i];
+                var f = me.getFieldByName(v.name);
+                if (f) {
+                    f.setRawValue(v.value);
+                    f.suspendEvents(false);
+                    f.setValue(v.value);
+                    f.resumeEvents();
+                }
+            }
+        } else { // object hash
+
+            me._fields.each(function (item, index, length) {
+                var value = values[item.name];
+
+                /// if not in data schema, ignore it
+                if (value != undefined) {
+
+                    if (value == null)
+                        value = '';
+                    /// Combobox need use setRawValue, Checkbox need use setValue
+
+                    item.setRawValue(value);
+                    item.suspendEvents(false);
+                    item.setValue(value);
+                    item.resumeEvents();
+                }
+            }, me);
+
+        }
+    },
+
+    _initField: function (f) {
+        // register field if name defined. 
+        if (f.name) {
+            me._fields.add(f.name, f);
+            attachChangeEvent(f);
+        }
+
+        var label = me.$child(f.name + 'Label');
+        if (label.length)
+            label.html(f.fieldLabel);
+
+        if (f.xtype == 'compositefield' || f.xtype == 'checkboxgroup') {
+            /// must do it in render method
+            /// because compositefield not initialize, it still config, and after it rendered, the items will convert to MixedCollection, not array
+            /// cannot use Ext.each method.
+            f.on('render', function () {
+                f.items.each(function (innerField) {
+                    if (innerField.name/* && innerField.xtype != 'radio'*/) {
+                        me._fields.add(innerField.name, innerField);
+                        attachChangeEvent(innerField);
+                    }
+                });
+            });
+        }
+    },
+
+    _attachChangeEvent: function (f) {
+        f.on({
+            scope: me
+                    , change: function (field) {
+                        if (!me.boundRecord && me.store) {
+                            var value = field.getValue();
+
+                            var record = me.store.newRecord();
+                            me.store.add(record);
+                            updateBound(record);
+                            setValue(field.name, value);
+                        }
+                        else
+                            applyFieldValueToRecord(field);
+                    }
+        });
+    },
+
+    loadTemplate: function (html, container) {
+        var me = this;
+        if (me.$this != container) {
+            WebLight.form.FormView.superclass.loadTemplate.call(me, html, container);
+            return;
+        }
+
+        var regex = new RegExp('\{.*?\}', 'gi');
+        var match;
+
+        var formattedHtml = html;
+        var cmps = [];
+        this.cmpIndex = 0;
+        while (match = regex.exec(formattedHtml)) {
+            var config = Ext.decode(match[0]);
+            if (!config.name)
+                config.name = String.format('{0}', this.cmpIndex++);
+
+            var replaceHtml = String.format('<span id="{0}"></span>', config.name);
+            formattedHtml = formattedHtml.replace(match[0], replaceHtml);
+            cmps.push(config);
+        }
+
+        WebLight.form.FormView.superclass.loadTemplate.call(this, formattedHtml, container);
+
+        Ext.each(cmps, function (item, index) {
+            me.addChildControl(Ext.create(item), item.name);
+
+            me.$child(item.name).replaceWith(me.$child(item.name).html());
+        });
+    },
+
+    // private
+    applyDefaults: function (c) {
+        var d = this.defaults;
+        if (d) {
+            if (Ext.isFunction(d)) {
+                d = d.call(this, c);
+            }
+            if (Ext.isString(c)) {
+                c = Ext.ComponentMgr.get(c);
+                Ext.apply(c, d);
+            } else if (!c.events) {
+                Ext.applyIf(c, d);
+            } else {
+                Ext.apply(c, d);
+            }
+        }
+        return c;
+    },
+
+    // private
+    createComponent: function (config, defaultType) {
+        if (config.render) {
+            return config;
+        }
+        var c = Ext.create(config, defaultType || this.defaultType);
+        return c;
+    },
+
+    _lastField: null,
+    addChildControl: function (control, containerId) {
+        var me = this;
+        WebLight.form.FormView.superclass.addChildControl.call(this, control, containerId);
+
+        if (me.isField(control)) {
+            me.initField(control);
+            //            if (me.enterKeyAsTabKey) {
+            //                if (me._lastField) {
+            //                    me._lastField.nextCtrl = control;
+            //                }
+
+            //                me._lastField = control;
+            //            }
+        }
+        return me;
+    },
+
+    getBoundRecord: function () {
+        return this.boundRecord;
+    },
+
+    addField: function (field) {
+        if (this.isField(field))
+            this.addChildControl(field, field.name);
+    },
+
+    isValid: function () {
+        var valid = true;
+        this._fields.each(function (f) {
+            if (!f.validate()) {
+                valid = false;
+            }
+        });
+        return valid;
+    },
+
+    findField: function (name) {
+        if (this._fields && this._fields.containsKey(name))
+            return this._fields.get(name);
+        return null;
+    },
+
+    bindStore: function (store) {
+        if (store != this.store) {
+            var oldStore = this.store;
+            this.store = store;
+            this.fireEvent('storechanged', store, oldStore);
+        }
+        return this;
+    },
+
+    ///obsolete, use findField
+    getFieldByName: function (name) {
+        return this.findField(name);
+    },
+
+    // Determine if a Component is usable as a form Field.
+    isField: function (c) {
+        return !!c.name && !!c.setValue && !!c.getValue && !!c.markInvalid && !!c.clearInvalid;
+    }
+
+});
+
+
+
 
 WebLight.Router.mapRoute('^budget/startbudget$', {
     xtype: 'startbudget'
@@ -1848,7 +2354,8 @@ Bud.NavbarItem = Ext.extend(Ext.Button, {
 
         if (!this.handler && this.url) {
             this.setHandler(function () {
-                WebLight.Router.route(this.url);
+                if (!fin.bud.modified())
+                    WebLight.Router.route(this.url);
             }, this);
         }
 
@@ -2165,7 +2672,7 @@ Bud.data.AuthorizationStore = WebLight.extend(Bud.data.XmlStore, {
     },
 
     loadSampleData: function () {
-        this.loadData(_builtInTemplate_d5e3e8d0[0]);
+        this.loadData(_builtInTemplate_a039005e[0]);
     },
 
     allowBudgetRead: function () {
@@ -2549,6 +3056,7 @@ Bud.data.BudDetailsStore = WebLight.extend(Bud.data.XmlStore, {
     _hcmHouseCode: 0,
     _fscYear: 0,
     _hcmJob: 0,
+    includeReadOnly: false,
 
     _accountStore: null,
     isInitialed: false,
@@ -2606,7 +3114,7 @@ Bud.data.BudDetailsStore = WebLight.extend(Bud.data.XmlStore, {
     },
 
     getCriteria: function () {
-        return { hcmHouseCode: this._hcmHouseCode, fscYear: this._fscYear, hcmJob: this._hcmJob };
+        return { hcmHouseCode: this._hcmHouseCode, fscYear: this._fscYear, hcmJob: this._hcmJob, includeReadOnly: this.includeReadOnly ? "1" : "0" };
     },
 
     addAttributes: function (data) {
@@ -2782,7 +3290,7 @@ Bud.data.BudDetailsStore = WebLight.extend(Bud.data.XmlStore, {
     relateTo: function (store) {
         var me = this;
         this._accountStore = store;
-        
+
         var periods = {};
         for (var i = 0; i < 16; i++) {
             var fieldName = String.format('period{0}', i + 1);
@@ -2823,7 +3331,7 @@ Bud.data.BudDetailsStore = WebLight.extend(Bud.data.XmlStore, {
 
     addNewRecord: function (record) {
         var me = this;
-me.calculating = true;
+        me.calculating = true;
 
         var accCode = record.get('code');
         var cateId = record.get('accountCategoryId');
@@ -3615,7 +4123,7 @@ Bud.data.AppJDEGLTransactionDetailStore = WebLight.extend(Bud.data.XmlStore, {
 
 Bud.page.TransactionSummaryPage = WebLight.extend(WebLight.Page, {
 
-    html: _builtInTemplate_d5e3e8d0[1],
+    html: _builtInTemplate_a039005e[1],
     title: 'Transaction Summary',
 
     _accountStore: null,
@@ -3697,10 +4205,18 @@ Bud.page.TransactionSummaryPage = WebLight.extend(WebLight.Page, {
 
         this._houseCodeComboBox.on('blur', function (combo) {
             if (me._currentHcmHouseCode != combo.getValue()) {
-                me._currentHcmHouseCode = combo.getValue();
-                var record = me._houseCodeStore.getById(me._currentHcmHouseCode);
-                Bud.Context.setStickyHouseCode(record.get('appUnit'), record.get('id'), record.get('name'), record.get('brief'), record.get('hirNode'));
-                me._jobCodeStore.load(me._currentHcmHouseCode);
+                if (fin.bud.modified()) {
+                    me._houseCodeStore.clearFilter(false);
+                    me._houseCodeComboBox.suspendEvents(false);
+                    me._houseCodeComboBox.setValue(me._currentHcmHouseCode);
+                    me._houseCodeComboBox.resumeEvents();
+                }
+                else {
+                    me._currentHcmHouseCode = combo.getValue();
+                    var record = me._houseCodeStore.getById(me._currentHcmHouseCode);
+                    Bud.Context.setStickyHouseCode(record.get('appUnit'), record.get('id'), record.get('name'), record.get('brief'), record.get('hirNode'));
+                    me._jobCodeStore.load(me._currentHcmHouseCode);
+                }
             }
         });
 
@@ -3726,6 +4242,173 @@ Bud.page.TransactionSummaryPage = WebLight.extend(WebLight.Page, {
         this.addChildControl(this._fscYearComboBox, 'fiscal-year-holder');
         this.addChildControl(this._fscPeriodComboBox, 'period-holder');
         this.addChildControl(this._loadButton, 'load-button-holder');
+
+
+        this.addChildControl(Ext.create({ xtype: 'button', ctCls: 'ux-button-1', text: 'Print', width: 80, handler: function () {
+            //me._transactionSummaryGrid.getColumnModel().config[0].hidden = true;
+
+            me.print();
+
+            //            Ext.ux.Printer.print('Transaction Summary', _builtInTemplate_a039005e[2],
+            //         { transactionSummary: me._transactionSummaryGrid,
+            //             'hcmHouseCodeTitle': houseCode,
+            //             'hcmJobTitle': jobCode,
+            //             'fscYearTitle': fscYear
+            //         },
+            //         '../../res/css/print-all.css');
+            // me._transactionSummaryGrid.getColumnModel().config[0].hidden = false;
+        }
+        }), 'print-button-holder');
+    },
+
+    print: function () {
+
+        var $tpl = $(_builtInTemplate_a039005e[2]);
+
+        var me = this;
+
+        var win = window.open('', '_new');
+
+        var houseCode = me._houseCodeComboBox.getRawValue();
+        var jobCode = me._hcmJobComboBox.getRawValue();
+        var fscYear = me._fscYearComboBox.getRawValue();
+
+        var snippets = ['<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
+      '<html>',
+        '<head>',
+          '<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />',
+        '<link href="../../res/css/print-all.css" rel="stylesheet" type="text/css" media="screen,print" />',
+          '<title>Transaction Summary</title>',
+          '<style> .inner-row td { background-color:#f5f5f5;} .tac { text-align:center; }  .tar {text-align:right} .tal {text-align:left}  .summary-row td.title {text-align:right;} .summary-row td {font-weight:bold;}</style>',
+        '</head>',
+        '<body>',
+        '<div style="margin: 10px">'];
+
+        snippets.push(String.format($('#header', $tpl).html(), houseCode, jobCode, fscYear));
+
+
+        var period = parseInt(this._fscPeriodComboBox.getRawValue());
+
+        var weeksHeader = this.getWeeksTitle();
+        var hideWeekColumns = false;
+
+        if (me._fscPeriodStore.totalLength == 12)
+            hideWeekColumns = true;
+
+        snippets.push('  <h2 class="page-sub-title">Transaction Summary</h2><div style="padding: 10px 0">');
+
+        snippets.push('<table><thead>');
+
+        snippets.push('<tr class="tac"><th colspan="2"></th>', (hideWeekColumns ? '' : String.format('<th colspan="4">{0}</th>', weeksHeader)),
+                                    '<th colspan="3"></th>', '<th>Previous Period</th>', '<th colspan="2">Period Projections</th></tr>');
+
+        snippets.push('<tr><th>Item(s)</th><th>Code</th>',
+                                  (hideWeekColumns ? '' : '<th>Week 1</th><th>Week 2</th><th>Week 3</th><th>Week 4</th>'),
+                                    '<th>Total</th><th>Budget</th><th>Variance</th><th>Actual</th>',
+                                String.format('<th>{0}</th>', period),
+                                String.format('<th>{0}</th>', (period == me._fscPeriodStore.getCount()) ? 1 : (period + 1)),
+                                '</tr>');
+
+        snippets.push('</thead><tbody>');
+
+        var row8 = $('#row8', $tpl).html();
+        var row12 = $('#row12', $tpl).html();
+        var innerRow = $('#innerRow', $tpl).html();
+
+        var decimalRenderer = function (value) {
+            return Ext.util.Format.number(value, '0,000.00');
+        }
+
+        var createSubStore = function (data) {
+            var groupedData = [];
+
+            var getGroupedItem = function (ii) {
+                var item = null;
+                Ext.each(groupedData, function (i) {
+                    if (i.vendor == ii.vendor) {
+                        item = i;
+                        return false;
+                    }
+                });
+
+                if (null == item) {
+                    item = Ext.applyIf({ week1: 0, week2: 0, week3: 0, week4: 0, total: 0 }, ii);
+                    groupedData.push(item);
+                }
+                return item;
+            };
+
+            var applyData = function (item1, item2) {
+                item1.id = item2.id;
+                item1.week1 += parseFloat(item2.week1) || 0;
+                item1.week2 += parseFloat(item2.week2) || 0;
+                item1.week3 += parseFloat(item2.week3) || 0;
+                item1.week4 += parseFloat(item2.week4) || 0;
+                item1.total = item1.week1 + item1.week2 + item1.week3 + item1.week4;
+            };
+
+            Ext.each(data, function (item, index) {
+                var groupItem = getGroupedItem(item);
+                applyData(groupItem, item);
+            });
+
+            var store = new Bud.data.AppJDEGLTransactionStore();
+            //      
+            Ext.each(groupedData, function (item, index) {
+                store.add(store.newRecord(item));
+            });
+
+            store.sort([
+            { field: 'vendor', direction: 'ASC' },
+            { field: 'week1', direction: 'ASC' },
+            { field: 'week2', direction: 'ASC' },
+            { field: 'week3', direction: 'ASC' },
+            { field: 'week4', direction: 'ASC' }
+        ]);
+
+            return store;
+
+        };
+
+
+        me._transactionSummaryStore.each(function (rec) {
+
+            snippets.push(String.format(hideWeekColumns ? row8 : row12,
+                           (!rec.get('accCode') ? 'summary-row' : ''),
+                           rec.get('title'), rec.get('accCode') || '',
+                          decimalRenderer(rec.get('total')),
+                           decimalRenderer(rec.get('budget')),
+                            decimalRenderer(rec.get('variance')),
+                             decimalRenderer(rec.get('actual')),
+                          decimalRenderer(rec.get('periodProjection1')),
+                          decimalRenderer(rec.get('periodProjection2')),
+                          decimalRenderer(rec.get('week1')), decimalRenderer(rec.get('week2')), decimalRenderer(rec.get('week3')), decimalRenderer(rec.get('week4'))
+                        ));
+
+            if (rec.get('subStore')) {
+                var subStore = createSubStore(rec.get('subStore'));
+                subStore.each(function (innerRec) {
+
+                    snippets.push(String.format(innerRow,
+                        innerRec.get('vendor'),
+                        decimalRenderer(innerRec.get('week1')), decimalRenderer(innerRec.get('week2')), decimalRenderer(innerRec.get('week3')), decimalRenderer(innerRec.get('week4'))
+                        ));
+                });
+            }
+
+        });
+
+
+        snippets.push('</tbody></table>');
+
+        snippets.push('</div></div>', '</body>', '</html>');
+
+        win.document.write(snippets.join(''));
+        win.document.close();
+
+        //win.print();
+        //win.close();
+
     },
 
     loadGridStore: function () {
@@ -3767,6 +4450,8 @@ Bud.page.TransactionSummaryPage = WebLight.extend(WebLight.Page, {
 
     customRenderer: function (value, meta, record, rowIndex, colIndex, store) {
         var css = [];
+
+
         switch (typeof value) {
             case 'string':
                 if (!record.get('accCode'))
@@ -3789,7 +4474,8 @@ Bud.page.TransactionSummaryPage = WebLight.extend(WebLight.Page, {
                 css.push('color:#FF0000;');
         }
 
-        meta.attr = 'style="' + css.join('') + '"';
+        if (meta)
+            meta.attr = 'style="' + css.join('') + '"';
 
         if (Ext.isNumber(value))
             return Ext.util.Format.number(value, '0,000.00');
