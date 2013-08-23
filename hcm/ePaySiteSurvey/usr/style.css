@@ -1,0 +1,214 @@
+﻿.fragment {
+	border: 0;
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	overflow: auto;
+}
+
+.tabContainer {
+	border: none;
+	width: 100%;
+}
+
+.leftContainer {
+	float: left;
+	margin-right: 20px;
+}
+	
+.rightContainer {
+	float: left;
+}
+
+.header {
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 18px;	
+	color: #2C2F50;
+	text-align: center;
+	margin-bottom: 5px;
+}
+
+.tableEditArea {
+	width: 100%;
+}
+
+.labelTextArea {
+	min-width: 225px;
+	float: left;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 0px 5px 0px 5px;
+}
+
+.labelTextAreaLarge {
+	min-width: 300px;
+	float: left;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 0px 5px 0px 5px;
+}
+	
+.inputTextArea {
+	width: 230px;
+	float: left;
+}
+
+.nonRequiredFieldIndicator {
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032d23;
+	padding-left: 7px;
+}
+
+.radioButton {
+	float: left;
+	width: 60px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
+
+.radioButtonSearch {
+	float: left;
+	width: 150px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
+
+.edit {
+	float: right;
+	font-family: Verdana;
+	font-size: 12px;
+	color: blue;
+	cursor: pointer;
+	margin: 5px 10px 3px 0px;
+}
+
+.edit:hover {	
+	color: red;
+	text-decoration: underline;
+}
+
+.popupHeader {
+	height: 25px;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	font-size: 18px;	
+	color: #2C2F50;
+	text-align: center;
+	background-color: #C2E4C1;
+	margin-bottom: 15px;
+}
+
+.iiGridHeaderColumn, .iiGridBodyColumn {
+	font-size: 8pt;
+}
+
+.iiInputCheckDT {
+	padding-left: 35px;
+}
+
+.iiInputCheckTV {
+	padding-left: 45px;
+}
+
+#lanBodyColumn, #wifiBodyColumn, #dialupBodyColumn, #cellularBodyColumn, #touchscreenBodyColumn
+, #swipeCardBodyColumn, #trainingVideosBodyColumn, #activeBodyColumn {
+	text-align: center;	
+}
+
+#PayCodeGrid {
+	padding: 0px 10px 10px 10px;
+}
+
+#DeviceTypeGrid {
+	padding: 0px 10px 10px 10px;
+}
+
+#GridContianer {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+
+#DeviceGrid	{
+	float: left;
+	position: relative;
+	width: 1300px;
+	padding: 0px 10px 0px 10px;
+}
+
+#ShiftDifferentialsComments, #Comments {	
+	float: left;
+	width: 595px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: black;
+}
+
+#AnchorPrev {
+	float: left;
+	width: 94px;
+	margin: 10px 3px 3px 3px;
+}
+
+#AnchorNext {
+	float: left;
+	width: 94px;
+	margin: 10px 3px 3px 3px;
+	padding-left: 5px;
+}
+
+#AnchorNext .iiButtonPart.Enabled.Middle {
+	width: 76px;
+	text-align: center;
+}
+	
+#AnchorNext .iiButtonPart.Hot.Middle {
+	width: 76px;
+	text-align: center;
+}
+	
+#AnchorNext .iiButtonPart.Disabled.Middle {
+	width: 76px;
+	text-align: center;
+}
+
+#AnchorSaveAndSend {
+	float: left;
+	width: 192px;
+	margin: 10px 3px 3px 3px;
+}
+
+#AnchorManageDeviceTypes {
+	float: left;
+	width: 180px;
+	margin: 10px 3px 3px 3px;
+}
+
+#AnchorSave {
+	float: left;
+	width: 68px;
+	margin: 10px 3px 3px 3px;
+	padding: 0px 0px 0px 5px;
+}
+
+#AnchorCancel {
+	float: left;
+	width: 80px;
+	margin: 10px 3px 3px 3px;
+	padding-left: 5px;
+}
+
+#AnchorSearch {
+	float: left;
+	width: 82px;
+	margin: 10px 3px 3px 3px;
+	padding-left: 5px;
+}
