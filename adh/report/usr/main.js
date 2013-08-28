@@ -1198,7 +1198,7 @@ ii.Class({
 				modulesList.push(me.modules[itemIndex].name);
 				moduleAssociate = me.reports[me.report.indexSelected].moduleAssociate;
 				
-				if (me.modules[itemIndex].name == "Invoice Items") 
+				if (me.modules[itemIndex].name == "Invoice Item") 
 					me.invoiceItem = true;
 				else 
 					me.invoiceItem = false;
@@ -1276,6 +1276,12 @@ ii.Class({
 							me.typesLoadedCount = 2;
 							me.invoiceTemplateStore.fetch("userId:[user]", me.typesLoaded, me);
 							me.jobTypeStore.fetch("userId:[user],", me.typesLoaded, me);
+							break;
+							
+						case "Epay Site":
+							me.typesLoadedCount = 1;
+							me.ePayGroupTypeStore.reset();
+							me.ePayGroupTypeStore.fetch("userId:[user]", me.typesLoaded, me);
 							break;
 					}
 					
