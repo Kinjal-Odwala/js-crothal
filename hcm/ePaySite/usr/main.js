@@ -1118,7 +1118,9 @@ ii.Class({
 				alert("In order to save, the errors on the page must be corrected.");
 				return false;
 			}
-
+			
+			me.houseCodeJobId = 0;
+			
 			item = new fin.hcm.ePaySite.Job({
 				id: me.jobId,
 				brief: me.jobNumber.getValue(),
@@ -1195,6 +1197,21 @@ ii.Class({
 			xml += ' overrideSiteTax="' + item.overrideSiteTax + '"';
 			xml += ' clone="false"';
 			xml += ' ePaySite="true"';
+			if ($("#SearchByHouseCode")[0].checked) 
+				xml += ' houseCodeId="' + parent.fin.appUI.houseCodeId + '"';		
+			xml += ' clientId="1">';
+			
+			if ($("#SearchByHouseCode")[0].checked) {
+				xml += '<houseCodeJob';
+				xml += ' id="' + me.houseCodeJobId + '"';
+				xml += ' houseCodeId="' + parent.fin.appUI.houseCodeId + '"';
+				xml += ' hirNode="' + parent.fin.appUI.hirNode + '"';				
+				xml += ' jobId="' + me.jobId + '"';
+				xml += ' active="' + item.active + '"';
+				xml += ' clientId="2"';	
+				xml += '/>';
+			}
+			
 			xml += ' />';
 
 			return xml;
