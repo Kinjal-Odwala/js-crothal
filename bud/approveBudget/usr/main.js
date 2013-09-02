@@ -5,7 +5,12 @@ ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "ui.ctl.usr.hierarchy" );
 ii.Import( "fin.cmn.usr.treeView" );
+ii.Import( "fin.cmn.usr.util" );
+ii.Import( "fin.cmn.usr.ui.core" );
+ii.Import( "fin.cmn.usr.ui.widget" );
+ii.Import( "fin.cmn.usr.multiselect" );
 ii.Import( "fin.bud.approveBudget.usr.defs" );
+
 
 ii.Style( "style", 1 );
 ii.Style( "fin.cmn.usr.common", 2 );
@@ -16,6 +21,9 @@ ii.Style( "fin.cmn.usr.hierarchy", 6 );
 ii.Style( "fin.cmn.usr.button", 7 );
 ii.Style( "fin.cmn.usr.dropDown", 8 );
 ii.Style( "fin.cmn.usr.treeview", 9 );
+ii.Style( "fin.cmn.usr.theme", 10 );
+ii.Style( "fin.cmn.usr.core", 11 );
+ii.Style( "fin.cmn.usr.multiselect", 12 );
 
 ii.Class({
     Name: "fin.bud.approveBudget.UserInterface",
@@ -59,6 +67,7 @@ ii.Class({
 			
 			me.fiscalYear.fetchingData();
 			me.yearStore.fetch("userId:[user],", me.yearsLoaded, me);
+			me.jdeCompanysStore.fetch("userId:[user],", me.jdeCompanysLoaded, me);
 			$("#hirNodeLoading").show();
 			ii.trace("Hierarchy Nodes Loading", ii.traceTypes.Information, "Info");
 			me.hirNodeStore.fetch("userId:[user],hierarchy:2,", me.hirNodesLoaded, me);			
@@ -159,6 +168,14 @@ ii.Class({
 				}
 			});
 			$("#Comments").change(function() { me.modified(); });
+			
+			$("#JDECompany").multiselect({
+				minWidth: 255
+				, header: false
+				, noneSelectedText: ""
+				, selectedList: 4
+				, click: function() { me.modified(true); }
+			});
 
 			ii.trace("Controls Loaded", ii.traceTypes.Information, "Info");
 		},
@@ -202,6 +219,14 @@ ii.Class({
 				itemConstructor: fin.bud.approveBudget.HouseCode,
 				itemConstructorArgs: fin.bud.approveBudget.houseCodeArgs,
 				injectionArray: me.houseCodes
+			});
+			
+			me.jdeCompanys = [];
+			me.jdeCompanysStore = me.cache.register({
+				storeId: "fiscalJDECompanys",
+				itemConstructor: fin.bud.approveBudget.JdeCompany,
+				itemConstructorArgs: fin.bud.approveBudget.jdeCompanyArgs,
+				injectionArray: me.jdeCompanys
 			});
 			
 			me.houseCodeJobs = [];
@@ -283,6 +308,15 @@ ii.Class({
 			me.fiscalYear.select(0, me.fiscalYear.focused);				
 			me.fiscalYearId = me.fiscalYear.data[me.fiscalYear.indexSelected].id;
 			me.resizeControls();
+		},
+		
+		jdeCompanysLoaded: function(me, activeId) {
+
+			for (var index = 0; index < me.jdeCompanys.length; index++) {
+				$("#JDECompany").append("<option title='" + me.jdeCompanys[index].name + "' value='" + me.jdeCompanys[index].id + "'>" + me.jdeCompanys[index].name + "</option>");
+			}
+
+			$("#JDECompany").multiselect("refresh");
 		},
 				
 		actionYearChanged: function() {
@@ -651,7 +685,7 @@ ii.Class({
 				alert (errorMessage);
 				return false;
 			}
-			
+
 			$("#messageToUser").text("Saving");
 			$("#pageLoading").show();
 				

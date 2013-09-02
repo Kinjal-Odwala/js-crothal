@@ -4,6 +4,10 @@ ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "ui.ctl.usr.hierarchy" );
+ii.Import( "fin.cmn.usr.util" );
+ii.Import( "fin.cmn.usr.ui.core" );
+ii.Import( "fin.cmn.usr.ui.widget" );
+ii.Import( "fin.cmn.usr.multiselect" );
 ii.Import( "fin.bud.exportBudget.usr.defs" );
 
 ii.Style( "style", 1 );
@@ -14,6 +18,9 @@ ii.Style( "fin.cmn.usr.input", 5 );
 ii.Style( "fin.cmn.usr.hierarchy", 6 );
 ii.Style( "fin.cmn.usr.button", 7 );
 ii.Style( "fin.cmn.usr.dropDown", 8 );
+ii.Style( "fin.cmn.usr.theme", 9 );
+ii.Style( "fin.cmn.usr.core", 10 );
+ii.Style( "fin.cmn.usr.multiselect", 11 );
 
 ii.Class({
     Name: "fin.bud.exportBudget.UserInterface",
@@ -57,6 +64,7 @@ ii.Class({
 
             me.fiscalYear.fetchingData();
             me.yearStore.fetch("userId:[user],", me.yearsLoaded, me);
+			me.jdeCompanysStore.fetch("userId:[user],", me.jdeCompanysLoaded, me);
             $("#hirNodeLoading").show();
 
             ii.trace("Hierarchy Nodes Loading", ii.traceTypes.Information, "Info");
@@ -141,6 +149,14 @@ ii.Class({
                 changeFunction: function () { me.actionJobChanged(); },
                 required: false
             });
+			
+			$("#JDECompany").multiselect({
+				minWidth: 255
+				, header: false
+				, noneSelectedText: ""
+				, selectedList: 4
+				, click: function() { me.modified(true); }
+			});
 
             ii.trace("Controls Loaded", ii.traceTypes.Information, "Info");
         },
@@ -178,6 +194,14 @@ ii.Class({
                 injectionArray: me.houseCodes
             });
 
+			me.jdeCompanys = [];
+			me.jdeCompanysStore = me.cache.register({
+				storeId: "fiscalJDECompanys",
+				itemConstructor: fin.bud.exportBudget.JdeCompany,
+				itemConstructorArgs: fin.bud.exportBudget.jdeCompanyArgs,
+				injectionArray: me.jdeCompanys
+			});
+			
             me.houseCodeJobs = [];
             me.houseCodeJobStore = me.cache.register({
                 storeId: "houseCodeJobs",
@@ -267,6 +291,15 @@ ii.Class({
             me.resizeControls();
         },
 
+		jdeCompanysLoaded: function(me, activeId) {
+
+			for (var index = 0; index < me.jdeCompanys.length; index++) {
+				$("#JDECompany").append("<option title='" + me.jdeCompanys[index].name + "' value='" + me.jdeCompanys[index].id + "'>" + me.jdeCompanys[index].name + "</option>");
+			}
+
+			$("#JDECompany").multiselect("refresh");
+		},
+		
         actionYearChanged: function () {
             var me = this;
 
