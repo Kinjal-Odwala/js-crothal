@@ -32,6 +32,8 @@ ii.Class({
 			me.nextWizard = "";
 			me.prevWizard = "";
 			me.status = "";
+			me.action = "";
+			me.houseCodeCache = [];
 				
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 			
@@ -65,9 +67,8 @@ ii.Class({
 
 			if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
 				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
-			else {
+			else
 				me.houseCodesLoaded(me, 0);
-			}
 
 			$("input[name='Union']").change(function() { me.modified(true); });
 			$("input[name='Kronos']").change(function() { me.modified(true); });
@@ -96,7 +97,9 @@ ii.Class({
 			else
 				$("#DeviceGrid").width($(window).width() - 45);
 
-			me.deviceTypeGrid.setHeight($(window).height() - 150);
+			me.payCodeGrid.setHeight($(window).height() - 240);
+			me.deviceGrid.setHeight($(window).height() - 320);
+			me.deviceTypeGrid.setHeight($(window).height() - 170);
 		},
 		
 		authorizationProcess: function fin_hcm_ePaySiteSurvey_UserInterface_authorizationProcess() {
@@ -120,9 +123,9 @@ ii.Class({
 				me.loadCount = 4;
 				me.state.fetchingData();
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
+				me.frequencyTypeStore.fetch("userId:[user]", me.frequencyTypesLoaded, me);	
 				me.payCodeTypeStore.fetch("userId:[user],payCodeType:productive", me.payCodeTypesLoaded, me);
 				me.ePaySiteSurveyMasterStore.fetch("userId:[user]", me.ePaySiteSurveyMastersLoaded, me);
-				me.clockAssetStore.fetch("userId:[user]", me.clockAssetsLoaded, me);
 			}
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
@@ -180,7 +183,7 @@ ii.Class({
 					id: "manageDeviceTypeAction", 
 					brief: "Manage Device Types", 
 					title: "Add or Edit the device types.",
-					actionFunction: function() { me.actionManageDeviceTypeItem(); }
+					actionFunction: function() { me.actionManageDeviceTypeItem("Manage Device Type"); }
 				})
 
 			me.anchorNext = new ui.ctl.buttons.Sizeable({
@@ -211,7 +214,7 @@ ii.Class({
 				id: "AnchorManageDeviceTypes",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Manage Device Types&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionManageDeviceTypeItem(); },
+				clickFunction: function() { me.actionManageDeviceTypeItem("Clock Management"); },
 				hasHotState: true
 			});
 			
@@ -598,12 +601,7 @@ ii.Class({
 				id: "PayCodeGrid",
 				appendToId: "divForm",
 				allowAdds: false,
-				selectFunction: function(index) { 
-					me.payCodeTitle.text.readOnly = true;
-					if (me.currentWizard == "Review")
-						me.payCodeDescription.text.readOnly = true;
-						//me.itemSelect(index);
-					 }
+				selectFunction: function(index) { me.itemPayCodeSelect(index); }
 			});
 			
 			me.payCodeTitle = new ui.ctl.Input.Text({
@@ -859,8 +857,7 @@ ii.Class({
 			
 			me.deviceTypeCMSearch = new ui.ctl.Input.DropDown.Filtered({
 		        id: "DeviceTypeCMSearch",
-				formatFunction: function(type) { return type.name; },
-				changeFunction: function() { me.modified(); }
+				formatFunction: function(type) { return type.name; }
 		    });
 			
 			me.deviceTypeCMSearch.makeEnterTab()
@@ -874,8 +871,7 @@ ii.Class({
 			
 			me.deviceStatusCMSearch = new ui.ctl.Input.DropDown.Filtered({
 		        id: "DeviceStatusCMSearch",
-				formatFunction: function(type) { return type.name; },
-				changeFunction: function() { me.modified(); }
+				formatFunction: function(type) { return type.name; }
 		    });
 			
 			me.deviceStatusCMSearch.makeEnterTab()
@@ -889,8 +885,7 @@ ii.Class({
 			
 			me.assetTransferStatusCMSearch = new ui.ctl.Input.DropDown.Filtered({
 		        id: "AssetTransferStatusCMSearch",
-				formatFunction: function(type) { return type.name; },
-				changeFunction: function() { me.modified(); }
+				formatFunction: function(type) { return type.name; }
 		    });
 			
 			me.assetTransferStatusCMSearch.makeEnterTab()
@@ -906,24 +901,36 @@ ii.Class({
 				id: "DeviceGrid",
 				appendToId: "divForm",
 				allowAdds: true,
-				selectFunction: function (index) {
-					if (fin.hcmEPaySiteSurveyUi.clockAssets[index])
-						fin.hcmEPaySiteSurveyUi.clockAssets[index].modified = true;
-				}
+				selectFunction: function (index) { me.itemDeviceSelect(index); },
+				createNewFunction: fin.hcm.ePaySiteSurvey.ClockAsset
 			});
 			
+			me.houseCodeCM = new ui.ctl.Input.Text({
+		        id: "HouseCodeCM",
+		        maxLength: 16, 
+				appendToId: "DeviceGridControlHolder",
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.houseCodeCM.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation( function( isFinal, dataMap ) {
+
+					me.houseCodeBlur();
+				});
+
 			me.deviceTypeCM = new ui.ctl.Input.DropDown.Filtered({
 		        id: "DeviceTypeCM",
 				appendToId: "DeviceGridControlHolder",
 				formatFunction: function(type) { return type.name; },
-				changeFunction: function() {me.modified(); }
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			 me.deviceTypeCM.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)	
 				.addValidation( function( isFinal, dataMap ) {
-					
+					//ii.trace("focused: " + this.focused + "  touched: " + this.touched, ii.traceTypes.information, "Info");
 					if ((this.focused || this.touched) && me.deviceTypeCM.indexSelected == -1)
 						this.setInvalid("Please select the correct Device Type.");
 				});
@@ -932,14 +939,14 @@ ii.Class({
 		        id: "DeviceStatusTypeCM",
 				appendToId: "DeviceGridControlHolder",
 				formatFunction: function(type) { return type.name; },
-				changeFunction: function() {me.modified(); }
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			 me.deviceStatusTypeCM.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)	
 				.addValidation( function( isFinal, dataMap ) {
-					
+
 					if ((this.focused || this.touched) && me.deviceStatusTypeCM.indexSelected == -1)
 						this.setInvalid("Please select the correct Device Status Type.");
 				});
@@ -948,7 +955,7 @@ ii.Class({
 		        id: "AssetTransferStatusTypeCM",
 				appendToId: "DeviceGridControlHolder",
 				formatFunction: function(type) { return type.name; },
-				changeFunction: function() {me.modified(); }
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			 me.assetTransferStatusTypeCM.makeEnterTab()
@@ -992,10 +999,10 @@ ii.Class({
 				changeFunction: function() { me.modified(); }
 		    });
 			
-			me.deviceGrid.addColumn("houseCode", "houseCode", "House Code", "House Code", 100);
-			me.deviceGrid.addColumn("deviceType", "deviceType", "Device Type", "Device Type", 150, null, me.deviceTypeCM);
-			me.deviceGrid.addColumn("deviceStatusType", "deviceStatusType", "Device Status", "Device Status", 150, null, me.deviceStatusTypeCM);
-			me.deviceGrid.addColumn("assetTransferStatusType", "assetTransferStatusType", "Asset Transfer Status", "Asset Transfer Status", 170, null, me.assetTransferStatusTypeCM);
+			me.deviceGrid.addColumn("houseCode", "houseCode", "House Code", "House Code", 100, null, me.houseCodeCM);
+			me.deviceGrid.addColumn("deviceType", "deviceType", "Device Type", "Device Type", 150, function( type ) { return type.name; }, me.deviceTypeCM);
+			me.deviceGrid.addColumn("deviceStatusType", "deviceStatusType", "Device Status", "Device Status", 150, function( type ) { return type.name; }, me.deviceStatusTypeCM);
+			me.deviceGrid.addColumn("assetTransferStatusType", "assetTransferStatusType", "Asset Transfer Status", "Asset Transfer Status", 170, function( type ) { return type.name; }, me.assetTransferStatusTypeCM);
 			me.deviceGrid.addColumn("serialNumber", "serialNumber", "Serial Number", "Serial Number", 150, null, me.serialNumberCM);
 			me.deviceGrid.addColumn("groupNumber", "groupNumber", "Group Number", "Group Number", 150, null, me.groupNumberCM);
 			me.deviceGrid.addColumn("groupName", "groupName", "Group Name", "Group Name", null, null, me.groupNameCM);
@@ -1007,7 +1014,9 @@ ii.Class({
 				appendToId: "divForm",
 				allowAdds: true,
 				selectFunction: function( index ) { me.itemSelect(index); },
-				deselectFunction: function() { me.itemDeSelect(); }
+				preDeactivateFunction: function( ) { if (me.deviceTypeTitle.getValue() == "") return false; else return true; },
+				deselectFunction: function() { me.itemDeSelect(); },
+				createNewFunction: fin.hcm.ePaySiteSurvey.DeviceType
 			});
 			
 			me.deviceTypeTitle = new ui.ctl.Input.Text({
@@ -1158,78 +1167,13 @@ ii.Class({
 			me.assetTransferStatusCMSearch.text.tabIndex = 86;
 
 			me.houseCodeName.text.readOnly = true;
+			me.hourlyEmployees.text.readOnly = true;
+			$("#UnionYes")[0].disabled = true;
+			$("#UnionNo")[0].disabled = true;
+			me.payrollFrequency.text.readOnly = true;
+			me.serialNumber.text.readOnly = true;
+			me.trackingNumber.text.readOnly = true;
 		},
-		
-		setReadOnly: function(readOnly) {
-			var me = this;
-
-			me.address1.text.readOnly = readOnly;
-			me.address2.text.readOnly = readOnly;
-			me.city.text.readOnly = readOnly;
-			me.zipCode.text.readOnly = readOnly;
-			me.state.text.readOnly = readOnly;
-			me.timeZone.text.readOnly = readOnly;
-			me.dayLightSavings.check.disabled = readOnly;
-			me.managerName.text.readOnly = readOnly;
-			me.managerPhone.text.readOnly = readOnly;
-			me.managerCellPhone.text.readOnly = readOnly;
-			me.managerEmail.text.readOnly = readOnly;
-			me.managerAlternateEmail.text.readOnly = readOnly;
-			me.alternateContactName.text.readOnly = readOnly;
-			me.alternateContactPhone.text.readOnly = readOnly;
-			me.alternateContactCellPhone.text.readOnly = readOnly;
-			me.alternateContactEmail.text.readOnly = readOnly;
-			me.alternateContactAlternateEmail.text.readOnly = readOnly;
-			me.regionalManagerName.text.readOnly = readOnly;
-			me.hourlyEmployees.text.readOnly = readOnly;
-			me.maximumEmployeesAtShiftChange.readOnly = readOnly;
-			$("#UnionYes")[0].disabled = readOnly;
-			$("#UnionNo")[0].disabled = readOnly;
-			me.payrollFrequency.text.readOnly = readOnly;
-			me.buildingsAtFacility.text.readOnly = readOnly;
-			me.currentRoundingScheme.text.readOnly = readOnly;
-			me.currentOvertimePolicy.text.readOnly = readOnly;
-			$("#KronosYes")[0].disabled = readOnly;
-			$("#KronosNo")[0].disabled = readOnly;
-			$("#GroupsOfEmployeesWithDifferentPayRulesYes")[0].disabled = readOnly;
-			$("#GroupsOfEmployeesWithDifferentPayRulesNo")[0].disabled = readOnly;
-			me.shiftDifferentialsComments.readOnly = readOnly;
-			$("#PhonesAvailableYes")[0].disabled = readOnly;
-			$("#PhonesAvailableNo")[0].disabled = readOnly;
-			$("#TollFreeYes")[0].disabled = readOnly;
-			$("#TollFreeNo")[0].disabled = readOnly;
-			me.comments.readOnly = readOnly;
-			/*
-			me.ePayGroupType.text.readOnly = readOnly;
-			me.reportingFrequency.text.readOnly = readOnly;
-			me.firstDayOfReportingPeriod.text.readOnly = readOnly;
-			me.firstDayOfWeek.text.readOnly = readOnly;
-			me.deviceType.text.readOnly = readOnly;
-			me.preferredConnectionMethod.text.readOnly = readOnly;
-			me.dailyRebootTime.text.readOnly = readOnly;
-			me.useWorkOrders.check.disabled = readOnly;
-			me.taskSelectionMethod.text.readOnly = readOnly;
-			me.accidentFreeQuestions.check.disabled = readOnly;
-			me.enableLunchLogic.check.disabled = readOnly;
-			me.fixPunchesOnClock.check.disabled = readOnly;
-			me.businessAnalyst.text.readOnly = readOnly;
-			me.reviewDate.text.readOnly = readOnly;
-			me.poNumber.text.readOnly = readOnly;
-			me.siteGroup.check.disabled = readOnly;
-			me.siteGroupID.text.readOnly = readOnly;
-			me.siteGroupName.text.readOnly = readOnly;
-			me.goLiveDate.text.readOnly = readOnly;
-			me.confirmSiteIsLive.check.tabIndex = 70;
-			me.serialNumber.text.readOnly = readOnly;
-			me.trackingNumber.text.readOnly = readOnly;
-			*/
-			if (readOnly) {
-				$("#StateAction").removeClass("iiInputAction");
-			}
-			else {
-				$("#StateAction").addClass("iiInputAction");
-			}
-		},	
 
 		configureCommunications: function() {
 			var args = ii.args(arguments,{});
@@ -1249,15 +1193,7 @@ ii.Class({
 				itemConstructor: fin.hcm.ePaySiteSurvey.HouseCode,
 				itemConstructorArgs: fin.hcm.ePaySiteSurvey.houseCodeArgs,
 				injectionArray: me.houseCodes
-			});			
-
-			me.siteDetails = [];
-			me.siteDetailStore = me.cache.register({
-				storeId: "houseCodes",
-				itemConstructor: fin.hcm.ePaySiteSurvey.SiteDetail,
-				itemConstructorArgs: fin.hcm.ePaySiteSurvey.siteDetailArgs,
-				injectionArray: me.siteDetails
-			});		
+			});
 						
 			me.stateTypes = [];
 			me.stateTypeStore = me.cache.register({
@@ -1266,7 +1202,15 @@ ii.Class({
 				itemConstructorArgs: fin.hcm.ePaySiteSurvey.stateTypeArgs,
 				injectionArray: me.stateTypes	
 			});
-			
+
+			me.frequencyTypes = [];
+			me.frequencyTypeStore = me.cache.register({
+				storeId: "frequencyTypes",
+				itemConstructor: fin.hcm.ePaySiteSurvey.FrequencyType,
+				itemConstructorArgs: fin.hcm.ePaySiteSurvey.frequencyTypeArgs,
+				injectionArray: me.frequencyTypes
+			});
+
 			me.payCodeTypes = [];
 			me.payCodeTypeStore = me.cache.register({
 				storeId: "payCodes",
@@ -1337,8 +1281,23 @@ ii.Class({
 				itemConstructor: fin.hcm.ePaySiteSurvey.ClockAsset,
 				itemConstructorArgs: fin.hcm.ePaySiteSurvey.clockAssetArgs,
 				injectionArray: me.clockAssets,
-				lookupSpec: { deviceType: me.deviceTypes },
-				lookupSpec: { deviceStatusType: me.deviceStatusTypes }
+				lookupSpec: { deviceType: me.deviceTypes, deviceStatusType: me.deviceStatusTypes, assetTransferStatusType: me.assetTransferStatusTypes }
+			});
+			
+			me.siteDetails = [];
+			me.siteDetailStore = me.cache.register({
+				storeId: "ePaySiteSurveys",
+				itemConstructor: fin.hcm.ePaySiteSurvey.SiteDetail,
+				itemConstructorArgs: fin.hcm.ePaySiteSurvey.siteDetailArgs,
+				injectionArray: me.siteDetails
+			});
+			
+			me.ePaySiteSurveyPayCodes = [];
+			me.ePaySiteSurveyPayCodeStore = me.cache.register({
+				storeId: "ePaySiteSurveyPayCodes",
+				itemConstructor: fin.hcm.ePaySiteSurvey.EPaySiteSurveyPayCode,
+				itemConstructorArgs: fin.hcm.ePaySiteSurvey.ePaySiteSurveyPayCodeArgs,
+				injectionArray: me.ePaySiteSurveyPayCodes
 			});
 		},
 		
@@ -1364,7 +1323,7 @@ ii.Class({
 				me.setStatus("Edit");
 		},
 		
-		setLoadCount: function(me, activeId) {
+		setLoadCount: function() {
 			var me = this;
 
 			me.loadCount++;
@@ -1381,6 +1340,22 @@ ii.Class({
 				me.setStatus("Loaded");
 				$("#pageLoading").fadeOut("slow");
 			}
+		},
+		
+		findIndexByTitle: function() {
+			var args = ii.args(arguments, {
+				title: {type: String},	// The title to use to find the object.
+				data: {type: [Object]}	// The data array to be searched.
+			});		
+			var title = args.title;
+			var data = args.data;
+
+			for (var index = 0; index < data.length; index++ ) {
+				if (data[index].name.toLowerCase() == title.toLowerCase()) {
+					return index; 
+				}
+			}
+			return null;
 		},
 		
 		resizeControls: function() {
@@ -1430,15 +1405,87 @@ ii.Class({
 			me.resize();
 		},
 		
+		setReadOnly: function(readOnly) {
+			var me = this;
+
+			me.address1.text.readOnly = readOnly;
+			me.address2.text.readOnly = readOnly;
+			me.city.text.readOnly = readOnly;
+			me.zipCode.text.readOnly = readOnly;
+			me.state.text.readOnly = readOnly;
+			me.timeZone.text.readOnly = readOnly;
+			me.dayLightSavings.check.disabled = readOnly;
+			me.managerName.text.readOnly = readOnly;
+			me.managerPhone.text.readOnly = readOnly;
+			me.managerCellPhone.text.readOnly = readOnly;
+			me.managerEmail.text.readOnly = readOnly;
+			me.managerAlternateEmail.text.readOnly = readOnly;
+			me.alternateContactName.text.readOnly = readOnly;
+			me.alternateContactPhone.text.readOnly = readOnly;
+			me.alternateContactCellPhone.text.readOnly = readOnly;
+			me.alternateContactEmail.text.readOnly = readOnly;
+			me.alternateContactAlternateEmail.text.readOnly = readOnly;
+			me.regionalManagerName.text.readOnly = readOnly;			
+			me.maximumEmployeesAtShiftChange.text.readOnly = readOnly;			
+			me.buildingsAtFacility.text.readOnly = readOnly;
+			me.currentRoundingScheme.text.readOnly = readOnly;
+			me.currentOvertimePolicy.text.readOnly = readOnly;
+			$("#KronosYes")[0].disabled = readOnly;
+			$("#KronosNo")[0].disabled = readOnly;
+			$("#GroupsOfEmployeesWithDifferentPayRulesYes")[0].disabled = readOnly;
+			$("#GroupsOfEmployeesWithDifferentPayRulesNo")[0].disabled = readOnly;
+			me.shiftDifferentialsComments.readOnly = readOnly;
+			$("#PhonesAvailableYes")[0].disabled = readOnly;
+			$("#PhonesAvailableNo")[0].disabled = readOnly;
+			$("#TollFreeYes")[0].disabled = readOnly;
+			$("#TollFreeNo")[0].disabled = readOnly;
+			//me.comments.readOnly = readOnly;
+			/*
+			me.ePayGroupType.text.readOnly = readOnly;
+			me.reportingFrequency.text.readOnly = readOnly;
+			me.firstDayOfReportingPeriod.text.readOnly = readOnly;
+			me.firstDayOfWeek.text.readOnly = readOnly;
+			me.deviceType.text.readOnly = readOnly;
+			me.preferredConnectionMethod.text.readOnly = readOnly;
+			me.dailyRebootTime.text.readOnly = readOnly;
+			me.useWorkOrders.check.disabled = readOnly;
+			me.taskSelectionMethod.text.readOnly = readOnly;
+			me.accidentFreeQuestions.check.disabled = readOnly;
+			me.enableLunchLogic.check.disabled = readOnly;
+			me.fixPunchesOnClock.check.disabled = readOnly;
+			me.businessAnalyst.text.readOnly = readOnly;
+			me.reviewDate.text.readOnly = readOnly;
+			me.poNumber.text.readOnly = readOnly;
+			me.siteGroup.check.disabled = readOnly;
+			me.siteGroupID.text.readOnly = readOnly;
+			me.siteGroupName.text.readOnly = readOnly;
+			me.goLiveDate.text.readOnly = readOnly;
+			me.confirmSiteIsLive.check.tabIndex = 70;
+			me.serialNumber.text.readOnly = readOnly;
+			me.trackingNumber.text.readOnly = readOnly;
+			*/
+			if (readOnly) {
+				$("#StateAction").removeClass("iiInputAction");
+			}
+			else {
+				$("#StateAction").addClass("iiInputAction");
+			}
+		},	
+		
 		stateTypesLoaded: function(me, activeId) {
 
 			me.state.setData(me.stateTypes);
 			me.checkLoadCount();
+			me.houseCodeChanged();
+		},
+		
+		frequencyTypesLoaded: function(me, activeId) {
+
+			me.checkLoadCount();
 		},
 		
 		payCodeTypesLoaded: function(me, activeId) {
-			
-			//me.payCodeTypes.setData(me.payCodeTypes);
+
 			me.checkLoadCount();
 		},
 		
@@ -1485,8 +1532,23 @@ ii.Class({
 			me.checkLoadCount();
 		},
 		
-		clockAssetsLoaded: function(me, activeId) {
+		loadDeviceTypes: function() {
+			var me = this;
+
+			if (me.deviceTypeTitle.getValue() == "") 
+				return false;
 			
+			if (me.deviceTypeGrid.activeRowIndex >= 0)
+				me.deviceTypeGrid.body.deselect(me.deviceTypeGrid.activeRowIndex, true);
+				
+			me.setLoadCount();
+			me.deviceTypeStore.reset();
+			me.deviceTypeStore.fetch("userId:[user]", me.deviceTypesLoaded, me);
+		},
+		
+		deviceTypesLoaded: function(me, activeId) {
+			
+			me.deviceTypeGrid.setData(me.deviceTypes);
 			me.checkLoadCount();
 		},
 
@@ -1501,7 +1563,6 @@ ii.Class({
 			}
 
 			me.houseCodeGlobalParametersUpdate(false);
-			me.siteDetailStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.siteDetailsLoaded, me);
 		},
 		
 		houseCodeChanged: function() {
@@ -1510,7 +1571,7 @@ ii.Class({
 
 			if (parent.fin.appUI.houseCodeId <= 0) return;
 
-			me.siteDetailStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.siteDetailsLoaded, me);
+			me.siteDetailStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.siteDetailsLoaded, me);
 		},
 		
 		siteDetailsLoaded: function(me, activeId) {
@@ -1520,29 +1581,185 @@ ii.Class({
 				return false;
 			}
 
+			me.ePaySiteSurveyPayCodeStore.fetch("userId:[user],id:" + me.siteDetails[0].id, me.ePaySiteSurveyPayCodesLoaded, me);
+			me.setSiteSurveyDetails();
+			me.ePaySiteSurvey();
+		},
+		
+		setSiteSurveyDetails: function() {
+			var me = this;
+			var index = 0;
+			
+			me.state.reset();
+			me.ePayGroupType.reset();
+			me.reportingFrequency.reset();
+			me.firstDayOfWeek.reset();
+			me.deviceType.reset();
+			me.preferredConnectionMethod.reset();
+			me.taskSelectionMethod.reset();
+			me.reportingFrequency.reset();
+			me.reportingFrequency.reset();
+			
 			me.houseCodeName.setValue(parent.fin.appUI.houseCodeTitle);
-			me.address1.setValue(me.siteDetails[0].shippingAddress1);
-			me.address2.setValue(me.siteDetails[0].shippingAddress2);
-			me.city.setValue(me.siteDetails[0].shippingCity);
-			me.zipCode.setValue(me.siteDetails[0].shippingZip);
+			me.address1.setValue(me.siteDetails[0].address1);
+			me.address2.setValue(me.siteDetails[0].address2);
+			me.city.setValue(me.siteDetails[0].city);
+			index = ii.ajax.util.findIndexById(me.siteDetails[0].state.toString(), me.stateTypes);
+			if (index != undefined) 
+				me.state.select(index, me.state.focused);
+			me.zipCode.setValue(me.siteDetails[0].zipCode);
+			me.timeZone.setValue(me.siteDetails[0].timeZone);
+			me.dayLightSavings.setValue(me.siteDetails[0].dayLightSavings.toString());
 			me.managerName.setValue(me.siteDetails[0].managerName);
 			me.managerPhone.setValue(me.siteDetails[0].managerPhone);
 			me.managerCellPhone.setValue(me.siteDetails[0].managerCellPhone);
 			me.managerEmail.setValue(me.siteDetails[0].managerEmail);
-			me.managerAlternateEmail.setValue(me.siteDetails[0].managerAlternateEmail);
-
-			var index = ii.ajax.util.findIndexById(me.siteDetails[0].shippingState.toString(), me.stateTypes);
+			me.managerAlternateEmail.setValue(me.siteDetails[0].managerAlternateEmail);			
+			me.alternateContactName.setValue(me.siteDetails[0].alternateContactName);
+			me.alternateContactPhone.setValue(me.siteDetails[0].alternateContactPhone);
+			me.alternateContactCellPhone.setValue(me.siteDetails[0].alternateContactCellPhone);
+			me.alternateContactEmail.setValue(me.siteDetails[0].alternateContactEmail);
+			me.alternateContactAlternateEmail.setValue(me.siteDetails[0].alternateContactAlternateEmail);
+			me.regionalManagerName.setValue(me.siteDetails[0].regionalManagerName);
+			me.hourlyEmployees.setValue(me.siteDetails[0].hourlyEmployees);
+			me.maximumEmployeesAtShiftChange.setValue(me.siteDetails[0].maximumEmployeesAtShiftChange);
+			$("input[name='Union'][value='" + me.siteDetails[0].union + "']").attr("checked", "checked");
+			index = ii.ajax.util.findIndexById(me.siteDetails[0].payFrequencyType.toString(), me.frequencyTypes);
 			if (index != undefined) 
-				me.state.select(index, me.state.focused);
+				me.payrollFrequency.setValue(me.frequencyTypes[index].title);			
+			me.buildingsAtFacility.setValue(me.siteDetails[0].buildingsAtFacility);
+			me.currentRoundingScheme.setValue(me.siteDetails[0].currentRoundingScheme);
+			me.currentOvertimePolicy.setValue(me.siteDetails[0].currentOvertimePolicy);
+			$("input[name='Kronos'][value='" + me.siteDetails[0].kronos + "']").attr("checked", "checked"); 
+			$("input[name='GroupsOfEmployeesWithDifferentPayRules'][value='" + me.siteDetails[0].groupsOfEmployeesWithDifferentPayRules + "']").attr("checked", "checked"); 
+			me.shiftDifferentialsComments.value = me.siteDetails[0].shiftDifferentialsComments;
+			$("input[name='PhonesAvailable'][value='" + me.siteDetails[0].phonesAvailable + "']").attr("checked", "checked"); 
+			$("input[name='TollFree'][value='" + me.siteDetails[0].tollFree + "']").attr("checked", "checked"); 
+			me.comments.value = me.siteDetails[0].comments;
+
+			if (me.siteDetails[0].id == 0 || me.siteDetails[0].ePayGroupType == 0) {
+				index = me.findIndexByTitle("STD OT 1/10 HR Rounding", me.ePayGroupTypes);
+				if (index != null) 
+					me.ePayGroupType.select(index, me.ePayGroupType.focused);
+					
+				index = me.findIndexByTitle("Bi-Weekly", me.reportingFrequencyTypes);
+				if (index != null) 
+					me.reportingFrequency.select(index, me.reportingFrequency.focused);
+					
+				index = me.findIndexByTitle("Sunday", me.weekDays);
+				if (index != null) 
+					me.firstDayOfWeek.select(index, me.firstDayOfWeek.focused);
+					
+				index = me.findIndexByTitle("T6", me.deviceTypes);
+				if (index != null) 
+					me.deviceType.select(index, me.deviceType.focused);
+					
+				index = me.findIndexByTitle("LAN", me.preferredConnectionMethods);
+				if (index != null) 
+					me.preferredConnectionMethod.select(index, me.preferredConnectionMethod.focused);
+					
+				index = me.findIndexByTitle("Normal", me.taskSelectionMethods);
+				if (index != null) 
+					me.taskSelectionMethod.select(index, me.taskSelectionMethod.focused);
+
+				me.reviewDate.setValue("");
+				me.goLiveDate.setValue("");
+				me.dailyRebootTime.setValue("03:00:00 AM");				
+			}				
+			else {
+				index = ii.ajax.util.findIndexById(me.siteDetails[0].ePayGroupType.toString(), me.ePayGroupTypes);
+				if (index != undefined) 
+					me.ePayGroupType.select(index, me.ePayGroupType.focused);
+					
+				index = ii.ajax.util.findIndexById(me.siteDetails[0].reportingFrequencyType.toString(), me.reportingFrequencyTypes);
+				if (index != undefined) 
+					me.reportingFrequency.select(index, me.reportingFrequency.focused);
+					
+				index = me.findIndexByTitle(me.siteDetails[0].firstDayOfWeek, me.weekDays);
+				if (index != undefined) 
+					me.firstDayOfWeek.select(index, me.firstDayOfWeek.focused);
+					
+				index = ii.ajax.util.findIndexById(me.siteDetails[0].deviceType.toString(), me.deviceTypes);
+				if (index != undefined) 
+					me.deviceType.select(index, me.deviceType.focused);
+				
+				index = ii.ajax.util.findIndexById(me.siteDetails[0].preferredConnectionMethod.toString(), me.preferredConnectionMethods);
+				if (index != undefined) 
+					me.preferredConnectionMethod.select(index, me.preferredConnectionMethod.focused);
+					
+				index = ii.ajax.util.findIndexById(me.siteDetails[0].taskSelectionMethod.toString(), me.taskSelectionMethods);
+				if (index != undefined) 
+					me.taskSelectionMethod.select(index, me.taskSelectionMethod.focused);
+					
+				me.reviewDate.setValue(me.siteDetails[0].reviewDate);
+				me.goLiveDate.setValue(me.siteDetails[0].goLiveDate);
+				me.dailyRebootTime.setValue(me.siteDetails[0].dailyRebootTime);
+			}
 			
-			me.ePaySiteSurvey();
+			me.firstDayOfReportingPeriod.setValue(me.siteDetails[0].firstDayOfReportingPeriod);
+			me.useWorkOrders.setValue(me.siteDetails[0].useWorkOrders.toString());
+			me.accidentFreeQuestions.setValue(me.siteDetails[0].accidentFreeQuestions.toString());
+			me.enableLunchLogic.setValue(me.siteDetails[0].enableLunchLogic.toString());
+			me.fixPunchesOnClock.setValue(me.siteDetails[0].fixPunchesOnClock.toString());
+			me.businessAnalyst.setValue(me.siteDetails[0].businessAnalyst);
+			me.poNumber.setValue(me.siteDetails[0].poNumber);
+			me.siteGroup.setValue(me.siteDetails[0].siteGroup.toString());
+			me.siteGroupID.setValue(me.siteDetails[0].siteGroupID);
+			me.siteGroupName.setValue(me.siteDetails[0].siteGroupName);
+			me.confirmSiteIsLive.setValue(me.siteDetails[0].confirmSiteIsLive.toString());
 		},
 		
-		houseCodeTemplateChanged: function() { 
-			var args = ii.args(arguments,{});			
-			var me = this;	
+		ePaySiteSurveyPayCodesLoaded: function(me, activeId) {
 
-			var id = me.houseCodeSearchTemplate.houseCodeIdTemplate;
+			for (var index = 0; index < me.payCodeTypes.length; index++) {
+				var found = false;
+
+				for (var iIndex = 0; iIndex < me.ePaySiteSurveyPayCodes.length; iIndex++) {
+					if (me.payCodeTypes[index].id == me.ePaySiteSurveyPayCodes[iIndex].payCode) {
+						found = true;
+						me.ePaySiteSurveyPayCodes[iIndex].brief = me.payCodeTypes[index].brief;
+						me.ePaySiteSurveyPayCodes[iIndex].name = me.payCodeTypes[index].name;
+						break;
+					}
+				}
+
+				if (!found) {
+					var item = new fin.hcm.ePaySiteSurvey.EPaySiteSurveyPayCode({
+						id: 0
+						, ePaySiteSurvey: me.siteDetails[0].id
+						, payCode: me.payCodeTypes[index].id
+						, brief: me.payCodeTypes[index].brief
+						, name: me.payCodeTypes[index].name
+					});
+					me.ePaySiteSurveyPayCodes.push(item);
+				}
+			}
+		},
+		
+		itemPayCodeSelect: function() {
+			var args = ii.args(arguments,{
+				index: {type: Number}  // The index of the data subItem to select
+			});
+			var me = this;
+			var index = args.index;
+
+			me.payCodeGrid.data[index].modified = true;
+			me.payCodeTitle.text.readOnly = true;
+			if (me.currentWizard == "Review") 
+				me.payCodeDescription.text.readOnly = true;
+			else 
+				me.payCodeDescription.text.readOnly = false;
+		},
+		
+		itemDeviceSelect: function() {
+			var args = ii.args(arguments,{
+				index: {type: Number}  // The index of the data subItem to select
+			});
+			var me = this;
+			var index = args.index;
+
+			if (me.deviceGrid.data[index] != undefined)
+				me.deviceGrid.data[index].modified = true;			
 		},
 		
 		itemSelect: function() {
@@ -1554,6 +1771,7 @@ ii.Class({
 
 			if (me.deviceTypeGrid.data[index] != undefined) {
 				me.lastSelectedRowIndex = index;
+				me.deviceTypeGrid.data[index].modified = true;
 				me.lan.check.checked = me.deviceTypeGrid.data[index].lan;
 				me.wifi.check.checked = me.deviceTypeGrid.data[index].wifi;
 				me.dialup.check.checked = me.deviceTypeGrid.data[index].dialup;
@@ -1583,15 +1801,14 @@ ii.Class({
 		ePaySiteSurvey: function() {
 			var me = this;
 
-			me.currentWizard = "";
+			me.action = "SiteSurvey";
+			me.currentWizard = "HouseCode";			
+			me.actionShowWizard();
 			me.checkWizardSecurity();
-			me.actionNextItem();
-			//me.actionShowWizard();
 		},
 	
 		checkWizardSecurity: function() {
 			var me = this;
-			ii.trace("checkWizardSecurity", ii.traceTypes.information, "Info");
 
 			me.prevWizard = "";
 			me.nextWizard = "";
@@ -1652,6 +1869,21 @@ ii.Class({
 		actionNextItem: function() {
 			var me = this;
 	
+			if (me.currentWizard == "HouseCode") {
+				if (!me.address1.validate(true) || !me.address2.validate(true) || !me.city.validate(true) 
+					|| !me.state.validate(true) || !me.zipCode.validate(true) || !me.timeZone.validate(true))
+					return false;
+			}
+			else if (me.currentWizard == "Manager") {
+				if (!me.managerName.validate(true) || !me.managerPhone.validate(true) || !me.managerCellPhone.validate(true) 
+					|| !me.managerEmail.validate(true) || !me.regionalManagerName.validate(true))
+					return false;
+			}
+			else if (me.currentWizard == "Employee") {
+				if (!me.buildingsAtFacility.validate(true) || !me.currentOvertimePolicy.validate(true))
+					return false;
+			}
+					
 			me.currentWizard = me.nextWizard;
 			me.actionShowWizard();
 			me.checkWizardSecurity();
@@ -1695,7 +1927,7 @@ ii.Class({
 
 				case "PayCode":
 					$("#divPayCode").show();
-					me.payCodeGrid.setData(me.payCodeTypes);
+					me.payCodeGrid.setData(me.ePaySiteSurveyPayCodes);
 					me.payCodeGrid.setHeight($(window).height() - 240);
 					break;
 
@@ -1742,7 +1974,7 @@ ii.Class({
 			$("#AnchorCancel").hide();
 
 			$("#header").html("Site Survey");
-			me.status = "Site Survey";
+			me.action = "SiteSurvey";
 			me.ePaySiteSurvey();
 		},
 		
@@ -1777,7 +2009,7 @@ ii.Class({
 			$("#AnchorCancel").show();
 			$("#header").html("Site Methodology");
 			
-			me.status = "Site Methodology";
+			me.action = "SiteMethodology";
 			me.resizeControls();
 		},
 		
@@ -1803,16 +2035,16 @@ ii.Class({
 			me.deviceGrid.setData(me.clockAssets);
 			me.deviceGrid.setHeight($(window).height() - 320);
 			
-			me.status = "Clock Management";
+			me.action = "ClockManagement";
 			me.resizeControls();
 		},
 		
-		actionManageDeviceTypeItem: function() {
+		actionManageDeviceTypeItem: function(status) {
 			var me = this;
 			
 			if (!parent.fin.cmn.status.itemValid())
 				return;
-						
+			
 			$("#SiteSurvey").hide();
 			$("#SiteMethodology").hide();
 			$("#ClockManagement").hide();
@@ -1828,24 +2060,145 @@ ii.Class({
 			$("#header").html("");
 			me.deviceTypeGrid.setData(me.deviceTypes);
 			me.deviceTypeGrid.setHeight($(window).height() - 170);
-			me.status = "Manage Device Type";
+			me.action = "ManageDeviceType";
+			me.status = status;
+		},
+		
+		actionSearchItem: function() {
+			var me = this;
+			var houseCodeId = 0;
+			var deviceType = 0;
+			var deviceStatusType = 0;
+			var assetTransferStatusType = 0;
+
+			if ($("input[name='CMSearch']:checked").val() == "true") {
+				houseCodeId = me.houseCodeSearchTemplate.houseCodeIdTemplate;
+			}
+			else {
+				if (me.deviceTypeCMSearch.indexSelected == -1 || me.deviceStatusCMSearch.indexSelected == -1 
+					|| me.assetTransferStatusCMSearch.indexSelected == -1)
+					return;
+				deviceType = me.deviceTypeCMSearch.data[me.deviceTypeCMSearch.indexSelected].id;
+				deviceStatusType = me.deviceStatusCMSearch.data[me.deviceStatusCMSearch.indexSelected].id;
+				assetTransferStatusType = me.assetTransferStatusCMSearch.data[me.assetTransferStatusCMSearch.indexSelected].id;
+			}
+
+			if (me.deviceGrid.activeRowIndex >= 0)
+				me.deviceGrid.body.deselect(me.deviceGrid.activeRowIndex, true);
+
+			me.setLoadCount();
+			me.clockAssetStore.reset();
+			me.clockAssetStore.fetch("userId:[user],houseCodeId:" + houseCodeId
+				+ ",deviceType:" + deviceType
+				+ ",deviceStatusType:" + deviceStatusType
+				+ ",assetTransferStatusType:" + assetTransferStatusType
+				, me.clockAssetsLoaded
+				, me);
+		},
+		
+		clockAssetsLoaded: function(me, activeId) {
+
+			for (var index = 0; index < me.clockAssets.length; index++) {
+				var houseCode = me.clockAssets[index].houseCode
+				if (me.houseCodeCache[houseCode] == undefined) {
+					me.houseCodeCache[houseCode] = {};
+		    		me.houseCodeCache[houseCode].valid = true;
+					me.houseCodeCache[houseCode].loaded = true;
+					me.houseCodeCache[houseCode].id = me.clockAssets[index].houseCodeId;
+				}
+			}
+
+			me.deviceGrid.setData(me.clockAssets);
+			me.checkLoadCount();
 		},
 		
 		houseCodeBlur: function() {
 			var me = this;
 
+			var houseCode = me.houseCodeCM.getValue().replace(/[^0-9]/g, "");
+			if (houseCode != "")
+				me.houseCodeCheck(houseCode);
+		},
+
+		houseCodeCheck: function(houseCode) {
+			var me = this;
+
+		    if (me.houseCodeCache[houseCode] != undefined) {
+	            if (me.houseCodeCache[houseCode].loaded)
+	                me.houseCodeValidate(houseCode);
+	        }
+	        else
+	            me.houseCodeLoad(houseCode);
+		},
+
+		houseCodeLoad: function(houseCode) {
+		    var me = this;
+
+		    me.houseCodeCache[houseCode] = {};
+		    me.houseCodeCache[houseCode].valid = false;
+		    me.houseCodeCache[houseCode].loaded = false;
+			
+			$("#HouseCodeCMText").addClass("Loading");
+
+		    $.ajax({
+                type: "POST",
+                dataType: "xml",
+                url: "/net/crothall/chimes/fin/hcm/act/provider.aspx",
+                data: "moduleId=hcm&requestId=1&targetId=iiCache"
+                    + "&requestXml=<criteria>storeId:hcmHouseCodes,userId:[user],appUnitBrief:" + houseCode + ",<criteria>",
+ 
+                success: function(xml) {
+                    me.houseCodeCache[houseCode].loaded = true;
+
+		            if ($(xml).find("item").length) {
+		                //the house code is valid
+		                $(xml).find("item").each(function() {
+		                    me.houseCodeCache[houseCode].valid = true;
+		                    me.houseCodeCache[houseCode].id = parseInt($(this).attr("id"), 10);
+							me.houseCodeValidate(houseCode);
+							$("#HouseCodeCMText").removeClass("Loading");
+		                });
+		            }
+		            else {
+		                //the house code is invalid
+		                me.houseCodeValidate(houseCode);
+		            }
+				}
+			});
 		},
 		
-		actionSearchItem: function() {
-			var me = this;
-			
+		houseCodeValidate: function(houseCode) {
+		    var me = this;
+
+		    if (!me.houseCodeCache[houseCode].valid) {
+				$("#HouseCodeCMText").removeClass("Loading");
+				me.houseCodeCM.setInvalid("The House Code [" + houseCode + "] is not valid.");
+				me.deviceGrid.data[me.deviceGrid.activeRowIndex].houseCodeId = 0;
+		    }
+			else {
+				if (me.deviceGrid.data[me.deviceGrid.activeRowIndex] != undefined)
+					me.deviceGrid.data[me.deviceGrid.activeRowIndex].houseCodeId = me.houseCodeCache[houseCode].id
+			}
 		},
 		
 		actionCancelItem: function() {
 			var me = this;
 
-			//$("#ManageDeviceType").hide();
-			//$("#ClockManagement").show();
+			if (me.status == "Clock Management") {
+				$("#ManageDeviceType").hide();
+				$("#AnchorManageDeviceTypes").show();
+				$("#ClockManagement").show();
+				me.status = "";
+			}
+			else if (me.status == "Manage Device Type") {
+				me.loadDeviceTypes();
+			}
+			else if (me.status == "" && me.action == "ClockManagement") {
+				me.actionSearchItem();
+			}
+			else if (me.status == "" && me.action == "SiteMethodology") {
+				me.setSiteSurveyDetails();
+			}
 		},
 		
 		actionSaveAndExportItem: function() {
@@ -1856,71 +2209,123 @@ ii.Class({
 		actionSaveItem: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
+			var item = [];
 
-			if (me.status == "" || parent.fin.appUI.houseCodeId <= 0) {
+			if (me.action == "" || parent.fin.appUI.houseCodeId <= 0) {
 				alert("House Code information not loaded properly. Please reload.");
 				return false;
 			}
-			return false;
-			var item = new fin.hcm.ePaySiteSurvey.SiteDetail(
-				parent.fin.appUI.houseCodeId
-				, me.address1.getValue()
-				, me.address2.getValue()
-				, me.city.getValue()
-				, me.zipCode.getValue()
-				, me.stateTypes[me.state.indexSelected].id
-				, me.timeZone.getValue()
-				, me.dayLightSavings.check.checked
-				, me.managerName.getValue()
-				, fin.cmn.text.mask.phone(me.managerPhone.getValue(), true)
-				, fin.cmn.text.mask.phone(me.managerCellPhone.getValue(), true)
-				, me.managerEmail.getValue()
-				, me.managerAlternateEmail.getValue()
-				, me.alternateContactName.getValue()
-				, fin.cmn.text.mask.phone(me.alternateContactPhone.getValue(), true)
-				, fin.cmn.text.mask.phone(me.alternateContactCellPhone.getValue(), true)
-				, me.alternateContactEmail.getValue()
-				, me.alternateContactAlternateEmail.getValue()
-				, me.regionalManagerName.getValue()				
-				, me.hourlyEmployees.getValue()
-				, me.maximumEmployeesAtShiftChange.getValue()
-				, $("input[name='Union']:checked").val() == "true" ? true : false
-				, me.payrollFrequency.getValue()
-				, me.buildingsAtFacility.getValue()
-				, me.currentRoundingScheme.getValue()
-				, me.currentOvertimePolicy.getValue()
-				, $("input[name='Kronos']:checked").val() == "true" ? true : false
-				, $("input[name='GroupsOfEmployeesWithDifferentPayRules']:checked").val() == "true" ? true : false
-				, me.shiftDifferentialsComments.value
-				, $("input[name='PhonesAvailable']:checked").val() == "true" ? true : false
-				, $("input[name='TollFree']:checked").val() == "true" ? true : false
-				, me.comments.value
-				, me.ePayGroupTypes[me.ePayGroupType.indexSelected].id
-				, me.reportingFrequencyTypes[me.reportingFrequency.indexSelected].id
-				, me.firstDayOfReportingPeriod.getValue()
-				, me.firstDayOfWeek.lastBlurValue
-				, me.deviceTypes[me.deviceType.indexSelected].id
-				, me.preferredConnectionMethods[me.preferredConnectionMethod.indexSelected].id
-				, me.dailyRebootTime.getValue()
-				, me.useWorkOrders.check.checked				
-				, me.taskSelectionMethods[me.taskSelectionMethod.indexSelected].id
-				, me.accidentFreeQuestions.check.checked
-				, me.enableLunchLogic.check.checked
-				, me.fixPunchesOnClock.check.checked
-				, me.businessAnalyst.getValue()
-				, me.reviewDate.lastBlurValue
-				, me.poNumber.getValue()
-				, me.siteGroup.check.checked
-				, me.siteGroupID.getValue()
-				, me.siteGroupName.getValue()
-				, me.goLiveDate.lastBlurValue
-				, me.confirmSiteIsLive.check.checked
-			);
+			
+			if (me.action == "SiteSurvey") {
+				me.payCodeGrid.body.deselectAll();
+			}
+			else if (me.action == "SiteMethodology") {
+				me.validator.forceBlur();
+				// Check to see if the data entered is valid
+				me.validator.queryValidity(true);
+
+				if (!me.address1.valid || !me.address2.valid || !me.city.valid || !me.state.valid || !me.zipCode.valid 
+					|| !me.timeZone.valid | !me.managerName.valid || !me.managerPhone.valid || !me.managerCellPhone.valid
+					|| !me.ePayGroupType.valid || !me.reportingFrequency.valid || !me.firstDayOfReportingPeriod.valid 
+					|| !me.firstDayOfWeek.valid || !me.deviceType.valid || !me.preferredConnectionMethod.valid 
+					|| !me.dailyRebootTime.valid || !me.taskSelectionMethod.valid || !me.businessAnalyst.valid 
+					|| !me.reviewDate.valid || !me.poNumber.valid || !me.siteGroupID.valid || !me.siteGroupName.valid 
+					|| !me.goLiveDate.valid) {
+					alert("In order to save, the errors on the page must be corrected.");
+					return false;
+				}				
+			}
+
+			if (me.action == "SiteSurvey" || me.action == "SiteMethodology") {
+				item = new fin.hcm.ePaySiteSurvey.SiteDetail(
+					me.siteDetails[0].id
+					, parent.fin.appUI.houseCodeId
+					, me.address1.getValue()
+					, me.address2.getValue()
+					, me.city.getValue()
+					, me.stateTypes[me.state.indexSelected].id
+					, me.zipCode.getValue()
+					, me.timeZone.getValue()
+					, me.dayLightSavings.check.checked
+					, me.managerName.getValue()
+					, fin.cmn.text.mask.phone(me.managerPhone.getValue(), true)
+					, fin.cmn.text.mask.phone(me.managerCellPhone.getValue(), true)
+					, me.managerEmail.getValue()
+					, me.managerAlternateEmail.getValue()
+					, me.alternateContactName.getValue()
+					, fin.cmn.text.mask.phone(me.alternateContactPhone.getValue(), true)
+					, fin.cmn.text.mask.phone(me.alternateContactCellPhone.getValue(), true)
+					, me.alternateContactEmail.getValue()
+					, me.alternateContactAlternateEmail.getValue()
+					, me.regionalManagerName.getValue()				
+					, me.hourlyEmployees.getValue()
+					, me.maximumEmployeesAtShiftChange.getValue()
+					, $("input[name='Union']:checked").val() == "true" ? true : false
+					, me.siteDetails[0].payFrequencyType
+					, me.buildingsAtFacility.getValue()
+					, me.currentRoundingScheme.getValue()
+					, me.currentOvertimePolicy.getValue()
+					, $("input[name='Kronos']:checked").val() == "true" ? true : false
+					, $("input[name='GroupsOfEmployeesWithDifferentPayRules']:checked").val() == "true" ? true : false
+					, me.shiftDifferentialsComments.value
+					, $("input[name='PhonesAvailable']:checked").val() == "true" ? true : false
+					, $("input[name='TollFree']:checked").val() == "true" ? true : false
+					, me.comments.value
+					, me.ePayGroupTypes[me.ePayGroupType.indexSelected].id
+					, me.reportingFrequencyTypes[me.reportingFrequency.indexSelected].id
+					, me.firstDayOfReportingPeriod.getValue()
+					, me.firstDayOfWeek.lastBlurValue
+					, me.deviceTypes[me.deviceType.indexSelected].id
+					, me.preferredConnectionMethods[me.preferredConnectionMethod.indexSelected].id
+					, me.dailyRebootTime.getValue()
+					, me.useWorkOrders.check.checked				
+					, me.taskSelectionMethods[me.taskSelectionMethod.indexSelected].id
+					, me.accidentFreeQuestions.check.checked
+					, me.enableLunchLogic.check.checked
+					, me.fixPunchesOnClock.check.checked
+					, me.businessAnalyst.getValue()
+					, me.reviewDate.lastBlurValue
+					, me.poNumber.getValue()
+					, me.siteGroup.check.checked
+					, me.siteGroupID.getValue()
+					, me.siteGroupName.getValue()
+					, me.goLiveDate.lastBlurValue
+					, me.confirmSiteIsLive.check.checked
+					, me.siteDetails[0].exported
+				);
+			}
+			else if (me.action == "ClockManagement") {
+				me.deviceGrid.body.deselectAll();
+				me.validator.forceBlur();
+
+				// Check to see if the data entered is valid
+				if (!me.validator.queryValidity(true) && me.deviceGrid.activeRowIndex >= 0) {
+					alert("In order to save, the errors on the page must be corrected.");
+					return false;
+				}
+				
+				var item = new fin.hcm.ePaySiteSurvey.SiteDetail({ id: 0, houseCodeId: 0});
+			}
+			else if (me.action == "ManageDeviceType") {
+				me.deviceTypeGrid.body.deselectAll();
+				me.validator.forceBlur();
+				
+				if (!me.validator.queryValidity(true) && me.deviceTypeGrid.activeRowIndex >= 0) {
+					alert("In order to save, the errors on the page must be corrected.");
+					return false;
+				}
+				
+				var item = new fin.hcm.ePaySiteSurvey.SiteDetail({ id: 0, houseCodeId: 0});
+			}
 				
 			var xml = me.saveXmlBuild(item);
-			
-			$("#messageToUser").text("Saving");			
-			$("#pageLoading").show();
+
+			if (xml == "")
+				return false;
+
+			me.setStatus("Saving");
+			$("#messageToUser").text("Saving");
+			$("#pageLoading").fadeIn("slow");
 			
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
@@ -1941,65 +2346,113 @@ ii.Class({
 			var item = args.item;
 			var xml = "";
 
-			xml += '<ePaySiteSurvey';
-			xml += ' id="' + item.id + '"';
-			xml += ' houseCode="' + item.houseCode + '"';
-			xml += ' address1="' + ui.cmn.text.xml.encode(item.address1) + '"';
-			xml += ' address2="' + ui.cmn.text.xml.encode(item.address2) + '"';
-			xml += ' city="' + ui.cmn.text.xml.encode(item.city) + '"';
-			xml += ' stateType="' + item.stateType + '"';
-			xml += ' zipCode="' + item.zipCode + '"';
-			xml += ' timeZone="' + ui.cmn.text.xml.encode(item.timeZone) + '"';
-			xml += ' dayLightSavings="' + item.dayLightSavings + '"';
-			xml += ' alternateContactName="' + ui.cmn.text.xml.encode(item.alternateContactName) + '"';
-			xml += ' alternateContactPhone="' + item.alternateContactPhone + '"';
-			xml += ' alternateContactCellPhone="' + item.alternateContactCellPhone + '"';
-			xml += ' alternateContactEmail="' + ui.cmn.text.xml.encode(item.alternateContactEmail) + '"';
-			xml += ' AlternateContactAlternateEmail="' + ui.cmn.text.xml.encode(item.alternateContactAlternateEmail) + '"';
-			xml += ' regionalManagerName="' + ui.cmn.text.xml.encode(item.regionalManagerName) + '"';
-			xml += ' hourlyEmployees="' + item.hourlyEmployees + '"';
-			xml += ' maximumEmployeesAtShiftChange="' + item.maximumEmployeesAtShiftChange + '"';
-			xml += ' union="' + item.union + '"';
-			xml += ' payFrequencyType="' + item.payFrequencyType + '"';
-			xml += ' buildingsAtFacility="' + item.buildingsAtFacility + '"';
-			xml += ' currentRoundingScheme="' + item.currentRoundingScheme + '"';
-			xml += ' currentOvertimePolicy="' + ui.cmn.text.xml.encode(item.currentOvertimePolicy) + '"';
-			xml += ' kronos="' + item.kronos + '"';
-			xml += ' groupsOfEmployeesWithDifferentPayRules="' +item.groupsOfEmployeesWithDifferentPayRules + '"';
-			xml += ' shiftDifferentialsComments="' + ui.cmn.text.xml.encode(item.shiftDifferentialsComments) + '"';
-			xml += ' phonesAvailable="' + item.phonesAvailable + '"';
-			xml += ' tollFree="' + item.tollFree + '"';
-			xml += ' comments="' + ui.cmn.text.xml.encode(item.comments) + '"';
-			xml += ' ePayGroupType="' + item.ePayGroupType + '"';
-			xml += ' reportingFrequencyType="' + item.reportingFrequencyType + '"';
-			xml += ' firstDayOfReportingPeriod="' + ui.cmn.text.xml.encode(item.firstDayOfReportingPeriod) + '"';
-			xml += ' firstDayOfWeek="' + item.firstDayOfWeek + '"';
-			xml += ' deviceType="' + item.deviceType + '"';
-			xml += ' preferredConnectionMethod="' + item.preferredConnectionMethod + '"';
-			xml += ' dailyRebootTime="' + ui.cmn.text.xml.encode(item.dailyRebootTime) + '"';
-			xml += ' useWorkOrders="' + item.useWorkOrders + '"';
-			xml += ' taskSelectionMethod="' + item.taskSelectionMethod + '"';		
-			xml += ' accidentFreeQuestions="' + item.accidentFreeQuestions + '"';
-			xml += ' enableLunchLogic="' + item.enableLunchLogic + '"';
-			xml += ' fixPunchesOnClock="' + item.fixPunchesOnClock + '"';
-			xml += ' businessAnalyst="' + ui.cmn.text.xml.encode(item.businessAnalyst) + '"';
-			xml += ' reviewDate="' + item.reviewDate + '"';
-			xml += ' poNumber="' + ui.cmn.text.xml.encode(item.poNumber) + '"';
-			xml += ' siteGroup="' + item.siteGroup + '"';
-			xml += ' siteGroupID="' + ui.cmn.text.xml.encode(item.siteGroupID) + '"';
-			xml += ' siteGroupName="' + ui.cmn.text.xml.encode(item.siteGroupName) + '"';
-			xml += ' goLiveDate="' + item.goLiveDate + '"';
-			xml += ' confirmSiteIsLive="' + item.confirmSiteIsLive + '"';
-			xml += '/>';
-
-			for (var index = 0; index < me.payCodeTypes.length; index++) {
-				xml += '<ePaySiteSurveyPayCode';
-				xml += ' id="' + me.payCodeTypes[index].id + '"';
-				xml += ' ePaySiteSurvey="' + me.payCodeTypes[index].id + '"';
-				xml += ' payCode="' + me.payCodeTypes[index].id + '"';
-				xml += ' description="' + me.payCodeTypes[index].description + '"';	
-				xml += ' active="1"';					
+			if (me.action == "SiteSurvey" || me.action == "SiteMethodology") {
+				xml += '<ePaySiteSurvey';
+				xml += ' id="' + item.id + '"';
+				xml += ' houseCodeId="' + item.houseCodeId + '"';
+				xml += ' address1="' + ui.cmn.text.xml.encode(item.address1) + '"';
+				xml += ' address2="' + ui.cmn.text.xml.encode(item.address2) + '"';
+				xml += ' city="' + ui.cmn.text.xml.encode(item.city) + '"';
+				xml += ' stateType="' + item.state + '"';
+				xml += ' zipCode="' + item.zipCode + '"';
+				xml += ' timeZone="' + ui.cmn.text.xml.encode(item.timeZone) + '"';
+				xml += ' dayLightSavings="' + item.dayLightSavings + '"';
+				xml += ' managerName="' + ui.cmn.text.xml.encode(item.managerName) + '"';
+				xml += ' managerPhone="' + item.managerPhone + '"';
+				xml += ' managerCellPhone="' + item.managerCellPhone + '"';
+				xml += ' managerEmail="' + ui.cmn.text.xml.encode(item.managerEmail) + '"';
+				xml += ' managerAlternateEmail="' + ui.cmn.text.xml.encode(item.managerAlternateEmail) + '"';
+				xml += ' alternateContactName="' + ui.cmn.text.xml.encode(item.alternateContactName) + '"';
+				xml += ' alternateContactPhone="' + item.alternateContactPhone + '"';
+				xml += ' alternateContactCellPhone="' + item.alternateContactCellPhone + '"';
+				xml += ' alternateContactEmail="' + ui.cmn.text.xml.encode(item.alternateContactEmail) + '"';
+				xml += ' alternateContactAlternateEmail="' + ui.cmn.text.xml.encode(item.alternateContactAlternateEmail) + '"';
+				xml += ' regionalManagerName="' + ui.cmn.text.xml.encode(item.regionalManagerName) + '"';
+				xml += ' hourlyEmployees="' + item.hourlyEmployees + '"';
+				xml += ' maximumEmployeesAtShiftChange="' + item.maximumEmployeesAtShiftChange + '"';
+				xml += ' union="' + item.union + '"';
+				xml += ' payFrequencyType="' + item.payFrequencyType + '"';
+				xml += ' buildingsAtFacility="' + item.buildingsAtFacility + '"';
+				xml += ' currentRoundingScheme="' + item.currentRoundingScheme + '"';
+				xml += ' currentOvertimePolicy="' + ui.cmn.text.xml.encode(item.currentOvertimePolicy) + '"';
+				xml += ' kronos="' + item.kronos + '"';
+				xml += ' groupsOfEmployeesWithDifferentPayRules="' + item.groupsOfEmployeesWithDifferentPayRules + '"';
+				xml += ' shiftDifferentialsComments="' + ui.cmn.text.xml.encode(item.shiftDifferentialsComments) + '"';
+				xml += ' phonesAvailable="' + item.phonesAvailable + '"';
+				xml += ' tollFree="' + item.tollFree + '"';
+				xml += ' comments="' + ui.cmn.text.xml.encode(item.comments) + '"';
+				xml += ' ePayGroupType="' + item.ePayGroupType + '"';
+				xml += ' reportingFrequencyType="' + item.reportingFrequencyType + '"';
+				xml += ' firstDayOfReportingPeriod="' + ui.cmn.text.xml.encode(item.firstDayOfReportingPeriod) + '"';
+				xml += ' firstDayOfWeek="' + item.firstDayOfWeek + '"';
+				xml += ' deviceType="' + item.deviceType + '"';
+				xml += ' preferredConnectionMethod="' + item.preferredConnectionMethod + '"';
+				xml += ' dailyRebootTime="' + ui.cmn.text.xml.encode(item.dailyRebootTime) + '"';
+				xml += ' useWorkOrders="' + item.useWorkOrders + '"';
+				xml += ' taskSelectionMethod="' + item.taskSelectionMethod + '"';		
+				xml += ' accidentFreeQuestions="' + item.accidentFreeQuestions + '"';
+				xml += ' enableLunchLogic="' + item.enableLunchLogic + '"';
+				xml += ' fixPunchesOnClock="' + item.fixPunchesOnClock + '"';
+				xml += ' businessAnalyst="' + ui.cmn.text.xml.encode(item.businessAnalyst) + '"';
+				xml += ' reviewDate="' + item.reviewDate + '"';
+				xml += ' poNumber="' + ui.cmn.text.xml.encode(item.poNumber) + '"';
+				xml += ' siteGroup="' + item.siteGroup + '"';
+				xml += ' siteGroupID="' + ui.cmn.text.xml.encode(item.siteGroupID) + '"';
+				xml += ' siteGroupName="' + ui.cmn.text.xml.encode(item.siteGroupName) + '"';
+				xml += ' goLiveDate="' + item.goLiveDate + '"';
+				xml += ' confirmSiteIsLive="' + item.confirmSiteIsLive + '"';
+				xml += ' type="' + me.action + '"';
 				xml += '/>';
+
+				if (me.action == "SiteSurvey") {
+					for (var index = 0; index < me.ePaySiteSurveyPayCodes.length; index++) {
+						if (me.ePaySiteSurveyPayCodes[index].modified || me.ePaySiteSurveyPayCodes[index].id == 0) {
+							xml += '<ePaySiteSurveyPayCode';
+							xml += ' id="' + me.ePaySiteSurveyPayCodes[index].id + '"';
+							xml += ' ePaySiteSurvey="' + me.ePaySiteSurveyPayCodes[index].ePaySiteSurvey + '"';
+							xml += ' payCode="' + me.ePaySiteSurveyPayCodes[index].payCode + '"';
+							xml += ' description="' + ui.cmn.text.xml.encode(me.ePaySiteSurveyPayCodes[index].description) + '"';
+							xml += ' active="' + me.ePaySiteSurveyPayCodes[index].active + '"';
+							xml += '/>';
+						}
+					}
+				}
+			}
+			else if (me.action == "ClockManagement") {
+				for (var index = 0; index < me.clockAssets.length; index++) {
+					if (me.clockAssets[index].modified || me.clockAssets[index].id == 0) {
+						xml += '<clockAsset';
+						xml += ' id="' + me.clockAssets[index].id + '"';
+						xml += ' houseCodeId="' + me.clockAssets[index].houseCodeId + '"';
+						xml += ' deviceType="' + me.clockAssets[index].deviceType.id + '"';
+						xml += ' deviceStatusType="' + me.clockAssets[index].deviceStatusType.id + '"';
+						xml += ' assetTransferStatusType="' + me.clockAssets[index].assetTransferStatusType.id + '"';
+						xml += ' serialNumber="' + ui.cmn.text.xml.encode(me.clockAssets[index].serialNumber) + '"';
+						xml += ' groupNumber="' + ui.cmn.text.xml.encode(me.clockAssets[index].groupNumber)+ '"';
+						xml += ' groupName="' + ui.cmn.text.xml.encode(me.clockAssets[index].groupName) + '"';
+						xml += ' upsTrackingNumber="' + ui.cmn.text.xml.encode(me.clockAssets[index].upsTrackingNumber) + '"';
+						xml += ' active="' + me.clockAssets[index].active + '"';
+						xml += '/>';
+					}
+				}
+			}
+			else if (me.action == "ManageDeviceType") {
+				for (var index = 0; index < me.deviceTypes.length; index++) {
+					if (me.deviceTypes[index].modified || me.deviceTypes[index].id == 0) {
+						xml += '<deviceType';
+						xml += ' id="' + me.deviceTypes[index].id + '"';
+						xml += ' name="' + ui.cmn.text.xml.encode(me.deviceTypes[index].name) + '"';
+						xml += ' lan="' + me.deviceTypes[index].lan + '"';
+						xml += ' wifi="' + me.deviceTypes[index].wifi + '"';
+						xml += ' dialup="' + me.deviceTypes[index].dialup + '"';
+						xml += ' cellular="' + me.deviceTypes[index].cellular + '"';
+						xml += ' touchscreen="' + me.deviceTypes[index].touchscreen + '"';
+						xml += ' swipeCard="' + me.deviceTypes[index].swipeCard + '"';
+						xml += ' trainingVideos="' + me.deviceTypes[index].trainingVideos + '"';
+						xml += ' active="' + me.deviceTypes[index].active + '"';
+						xml += '/>';
+					}
+				}				
 			}
 			
 			return xml;
@@ -2016,13 +2469,37 @@ ii.Class({
 			var status = $(args.xmlNode).attr("status");
 
 			if (status == "success") {
-				me.modified(false);
-				ii.trace("Epay Site Survey details saved successfully.", ii.traceTypes.Information, "Info");
-			}
-			else 
-				alert("[SAVE FAILURE] Error while updating Epay Site Survey details: " + $(args.xmlNode).attr("message"));
+				if (me.action == "SiteSurvey") {
+					if (me.siteDetails[0].id == 0) {
+						$(args.xmlNode).find("*").each(function(){
+							switch (this.tagName) {
+								case "ePaySiteSurvey":
+									item.id = parseInt($(this).attr("id"), 10);
+									me.siteDetails[0] = item;
+									break;
+							}
+						});
+					}
+					
+					me.ePaySiteSurveyPayCodeStore.reset();
+					me.ePaySiteSurveyPayCodeStore.fetch("userId:[user],id:" + me.siteDetails[0].id, me.ePaySiteSurveyPayCodesLoaded, me);
+				}
+				else if (me.action == "ClockManagement") {
+					me.actionSearchItem();
+				}
+				else if (me.action == "ManageDeviceType") {
+					me.loadDeviceTypes();
+				}
 
-			$("#pageLoading").hide();
+				me.modified(false);
+				me.setStatus("Saved");
+			}
+			else {
+				me.setStatus("Error");
+				alert("[SAVE FAILURE] Error while updating Epay Site Survey details: " + $(args.xmlNode).attr("message"));
+			}
+
+			$("#pageLoading").fadeOut("slow");
 		}		
 	}
 });
