@@ -145,7 +145,6 @@ ii.init.register( function() {
 		, reportingFrequencyType: {type: Number, required: false, defaultValue: 0}
 		, firstDayOfReportingPeriod: {type: String, required: false, defaultValue: ""}
 		, firstDayOfWeek: {type: String, required: false, defaultValue: ""}
-		, deviceType: {type: Number, required: false, defaultValue: 0}
 		, preferredConnectionMethod: {type: Number, required: false, defaultValue: 0}
 		, dailyRebootTime: {type: String, required: false, defaultValue: ""}
 		, useWorkOrders: {type: Boolean, required: false, defaultValue: false}
@@ -173,6 +172,23 @@ ii.init.register( function() {
 		, description: {type: String, required: false, defaultValue: ""}
 		, active: {type: Boolean, required: false, defaultValue: true}
 		, modified: {type: Boolean, required: false, defaultValue: false}
+	};
+	
+	fin.hcm.ePaySiteSurvey.ePaySiteSurveyClockAssetArgs = {
+		id: {type: Number}
+		, ePaySiteSurvey: {type: Number}
+		, clockAsset: {type: Number}
+		, deviceType: {type: fin.hcm.ePaySiteSurvey.DeviceType, required: false}
+		, serialNumber: {type: String, required: false, defaultValue: ""}
+		, trackingNumber: {type: String, required: false, defaultValue: ""}
+		, active: {type: Boolean, required: false, defaultValue: true}
+		, assigned: {type: Boolean, required: false, defaultValue: false}
+		, modified: {type: Boolean, required: false, defaultValue: false}
+	};
+	
+	fin.hcm.ePaySiteSurvey.fileNameArgs = {
+		id: {type: Number}
+		, fileName: {type: String, required: false, defaultValue: ""}
 	};
 		
 }, 2);
@@ -332,6 +348,26 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.ePaySiteSurvey.ePaySiteSurveyPayCodeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.ePaySiteSurvey.EPaySiteSurveyClockAsset",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.ePaySiteSurvey.ePaySiteSurveyClockAssetArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.ePaySiteSurvey.FileName",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.ePaySiteSurvey.fileNameArgs);
 			$.extend(this, args);
 		}
 	}
