@@ -478,7 +478,7 @@ dl.editArea dd
 
 #itemStatusDiv {
 	float: left;
-	width: 400px;
+	width: 800px;
 	padding: 5px 0px 0px 10px;
 }
 
@@ -525,6 +525,10 @@ dl.editArea dd
 
 .itemStatusImage.Error {
 	background-image: url(media/Common/error.gif);
+}
+
+.itemStatusImage.Info {
+	background-image: url(media/Common/info.gif);
 }
 
 .itemModifiedImage {
