@@ -1047,11 +1047,11 @@ ii.Class({
 				changeFunction: function() { me.modified(); }
 		    });
 			
-			me.deviceGrid.addColumn("houseCode", "houseCode", "House Code", "House Code", 100, null, me.houseCodeCM);
 			me.deviceGrid.addColumn("deviceType", "deviceType", "Device Type", "Device Type", 150, function( type ) { return type.name; }, me.deviceTypeCM);
 			me.deviceGrid.addColumn("deviceStatusType", "deviceStatusType", "Device Status", "Device Status", 150, function( type ) { return type.name; }, me.deviceStatusTypeCM);
 			me.deviceGrid.addColumn("assetTransferStatusType", "assetTransferStatusType", "Asset Transfer Status", "Asset Transfer Status", 170, function( type ) { return type.name; }, me.assetTransferStatusTypeCM);
 			me.deviceGrid.addColumn("serialNumber", "serialNumber", "Serial Number", "Serial Number", 150, null, me.serialNumberCM);
+			me.deviceGrid.addColumn("houseCode", "houseCode", "House Code", "House Code", 100, null, me.houseCodeCM);
 			me.deviceGrid.addColumn("groupNumber", "groupNumber", "Group Number", "Group Number", 150, null, me.groupNumberCM);
 			me.deviceGrid.addColumn("groupName", "groupName", "Group Name", "Group Name", null, null, me.groupNameCM);
 			me.deviceGrid.addColumn("upsTrackingNumber", "upsTrackingNumber", "UPS Tracking Number", "UPS Tracking Number", 160, null, me.upsTrackingNumberCM);
@@ -1757,7 +1757,7 @@ ii.Class({
 			$("input[name='Kronos'][value='" + me.siteDetails[0].kronos + "']").attr("checked", "checked"); 
 			$("input[name='GroupsOfEmployeesWithDifferentPayRules'][value='" + me.siteDetails[0].groupsOfEmployeesWithDifferentPayRules + "']").attr("checked", "checked"); 
 			me.shiftDifferentialsComments.value = me.siteDetails[0].shiftDifferentialsComments;
-			$("input[name='PhonesAvailable'][value='" + me.siteDetails[0].phonesAvailable + "']").attr("checked", "checked"); 
+			$("input[name='PhonesAvailable'][value='" + me.siteDetails[0].phonesAvailable + "']").attr("checked", "checked");
 			$("input[name='TollFree'][value='" + me.siteDetails[0].tollFree + "']").attr("checked", "checked"); 
 			me.comments.value = me.siteDetails[0].comments;
 
@@ -1855,6 +1855,9 @@ ii.Class({
 						, payCode: me.payCodeTypes[index].id
 						, brief: me.payCodeTypes[index].brief
 						, name: me.payCodeTypes[index].name
+						, description: ""
+						, active: true
+						, modified: true
 					});
 					me.ePaySiteSurveyPayCodes.push(item);
 				}
@@ -1960,7 +1963,6 @@ ii.Class({
 			var index = args.index;
 
 			if (me.deviceTypeGrid.data[index] != undefined) {
-				me.lastSelectedRowIndex = index;
 				me.deviceTypeGrid.data[index].modified = true;
 				me.lan.check.checked = me.deviceTypeGrid.data[index].lan;
 				me.wifi.check.checked = me.deviceTypeGrid.data[index].wifi;
@@ -1975,16 +1977,17 @@ ii.Class({
 		
 		itemDeSelect: function() {
 			var me = this;
+			var index = me.deviceTypeGrid.selectedRows[0];
 
-			if (me.lastSelectedRowIndex >= 0) {
-				$(me.deviceTypeGrid.rows[me.lastSelectedRowIndex].getElement("lan")).text(me.lan.check.checked ? "Y" : "N");
-				$(me.deviceTypeGrid.rows[me.lastSelectedRowIndex].getElement("wifi")).text(me.wifi.check.checked ? "Y" : "N");
-				$(me.deviceTypeGrid.rows[me.lastSelectedRowIndex].getElement("dialup")).text(me.dialup.check.checked ? "Y" : "N");
-				$(me.deviceTypeGrid.rows[me.lastSelectedRowIndex].getElement("cellular")).text(me.cellular.check.checked ? "Y" : "N");
-				$(me.deviceTypeGrid.rows[me.lastSelectedRowIndex].getElement("touchscreen")).text(me.touchscreen.check.checked ? "Y" : "N");
-				$(me.deviceTypeGrid.rows[me.lastSelectedRowIndex].getElement("swipeCard")).text(me.swipeCard.check.checked ? "Y" : "N");
-				$(me.deviceTypeGrid.rows[me.lastSelectedRowIndex].getElement("trainingVideos")).text(me.trainingVideos.check.checked ? "Y" : "N");
-				$(me.deviceTypeGrid.rows[me.lastSelectedRowIndex].getElement("active")).text(me.active.check.checked ? "Y" : "N");
+			if (index >= 0) {
+				$(me.deviceTypeGrid.rows[index].getElement("lan")).text(me.lan.check.checked ? "Y" : "N");
+				$(me.deviceTypeGrid.rows[index].getElement("wifi")).text(me.wifi.check.checked ? "Y" : "N");
+				$(me.deviceTypeGrid.rows[index].getElement("dialup")).text(me.dialup.check.checked ? "Y" : "N");
+				$(me.deviceTypeGrid.rows[index].getElement("cellular")).text(me.cellular.check.checked ? "Y" : "N");
+				$(me.deviceTypeGrid.rows[index].getElement("touchscreen")).text(me.touchscreen.check.checked ? "Y" : "N");
+				$(me.deviceTypeGrid.rows[index].getElement("swipeCard")).text(me.swipeCard.check.checked ? "Y" : "N");
+				$(me.deviceTypeGrid.rows[index].getElement("trainingVideos")).text(me.trainingVideos.check.checked ? "Y" : "N");
+				$(me.deviceTypeGrid.rows[index].getElement("active")).text(me.active.check.checked ? "Y" : "N");
 			}
 		},
 		
@@ -2179,7 +2182,7 @@ ii.Class({
 			$("#header").html("Site Methodology");
 
 			if (me.siteDetails[0].id == 0) {
-				me.setStatus("Error", "Epay site survey details not available. Please verify.");
+				me.setStatus("Info", "Epay site survey details are not available for the selected house code. Please verify.");
 				$("#divHouseCodeInfo").hide();
 				$("#divManager").hide();
 				$("#SiteMethodology").hide();
@@ -2238,12 +2241,16 @@ ii.Class({
 			$("#AnchorNext").hide();
 			$("#AnchorSaveAndSend").hide();
 			$("#AnchorSave").show();
-			$("#AnchorCancel").show();			
+			$("#AnchorCancel").show();
+			$("input[name='CMSearch'][value='false']").attr("checked", "checked");
 			if (me.manageDeviceTypeShow) {
 				$("#AnchorManageDeviceTypes").show();				
 			}
 			
 			$("#header").html("Clock Management");
+			me.deviceTypeCMSearch.resizeText();
+			me.deviceStatusCMSearch.resizeText();
+			me.assetTransferStatusCMSearch.resizeText();
 			me.deviceGrid.setData(me.clockAssets);
 			me.deviceGrid.setHeight($(window).height() - 320);
 			
@@ -2387,7 +2394,8 @@ ii.Class({
 		    if (!me.houseCodeCache[houseCode].valid) {
 				$("#HouseCodeCMText").removeClass("Loading");
 				me.houseCodeCM.setInvalid("The House Code [" + houseCode + "] is not valid.");
-				me.deviceGrid.data[me.deviceGrid.activeRowIndex].houseCodeId = 0;
+				if (me.deviceGrid.data[me.deviceGrid.activeRowIndex] != undefined)
+					me.deviceGrid.data[me.deviceGrid.activeRowIndex].houseCodeId = 0;
 		    }
 			else {
 				if (me.deviceGrid.data[me.deviceGrid.activeRowIndex] != undefined)
@@ -2689,6 +2697,7 @@ ii.Class({
 			else if (me.action == "ClockManagement") {
 				for (var index = 0; index < me.clockAssets.length; index++) {
 					if (me.clockAssets[index].modified || me.clockAssets[index].id == 0) {
+						me.clockAssets[index].modified = true;
 						var houseCodeId = 0;
 						if (me.clockAssets[index].houseCode != "")
 							houseCodeId = me.houseCodeCache[me.clockAssets[index].houseCode].id;
@@ -2710,6 +2719,7 @@ ii.Class({
 			else if (me.action == "ManageDeviceType") {
 				for (var index = 0; index < me.deviceTypes.length; index++) {
 					if (me.deviceTypes[index].modified || me.deviceTypes[index].id == 0) {
+						me.deviceTypes[index].modified = true;
 						xml += '<deviceType';
 						xml += ' id="' + me.deviceTypes[index].id + '"';
 						xml += ' name="' + ui.cmn.text.xml.encode(me.deviceTypes[index].name) + '"';
@@ -2740,32 +2750,78 @@ ii.Class({
 			var status = $(args.xmlNode).attr("status");
 
 			if (status == "success") {
-				if (me.action == "SiteSurvey") {
-					if (me.siteDetails[0].id == 0) {
-						$(args.xmlNode).find("*").each(function(){
-							switch (this.tagName) {
-								case "ePaySiteSurvey":
-									item.id = parseInt($(this).attr("id"), 10);
-									me.siteDetails[0] = item;
-									break;
+				$(args.xmlNode).find("*").each(function() {
+					switch (this.tagName) {
+						case "ePaySiteSurvey":
+							if (me.action == "SiteSurvey" && me.siteDetails[0].id == 0) {
+								item.id = parseInt($(this).attr("id"), 10);
+								me.siteDetails[0] = item;
 							}
-						});
-					}
+							break;
 
-					me.ePaySiteSurveyPayCodeStore.reset();
-					me.ePaySiteSurveyPayCodeStore.fetch("userId:[user],id:" + me.siteDetails[0].id, me.ePaySiteSurveyPayCodesLoaded, me);
-				}
-				else if (me.action == "SiteMethodology") {
-					me.ePaySiteSurveyClockAssetStore.reset();
-					me.ePaySiteSurveyClockAssetStore.fetch("userId:[user],id:" + me.siteDetails[0].id, me.ePaySiteSurveyClockAssetsLoaded, me);
+						case "ePaySiteSurveyPayCode":
+							var id = parseInt($(this).attr("id"), 10);
+							var payCodeId = parseInt($(this).attr("payCodeId"), 10);
+
+							for (var index = 0; index < me.payCodeGrid.data.length; index++) {
+								if (me.payCodeGrid.data[index].modified) {
+									if (me.payCodeGrid.data[index].id == 0 && me.payCodeGrid.data[index].payCode == payCodeId)
+										me.payCodeGrid.data[index].id = id;
+									me.payCodeGrid.data[index].modified = false;
+									break;
+								}
+							}
+							break;
+							
+						case "ePaySiteSurveyClockAsset":
+							var id = parseInt($(this).attr("id"), 10);
+							var clockAssetId = parseInt($(this).attr("clockAssetId"), 10);
+
+							for (var index = 0; index < me.deviceTypeClockAssetGrid.data.length; index++) {
+								if (me.deviceTypeClockAssetGrid.data[index].modified) {
+									me.deviceTypeClockAssetGrid.data[index].modified = false;
+									if (me.deviceTypeClockAssetGrid.data[index].clockAsset == clockAssetId) {
+										if (me.deviceTypeClockAssetGrid.data[index].id == 0)
+											me.deviceTypeClockAssetGrid.data[index].id = id;
+										else if (!($("#selectInputCheck" + index)[0].checked))
+											me.deviceTypeClockAssetGrid.data[index].id = 0;
+										break;
+									}
+								}
+							}
+							break;
+							
+						case "clockAsset":
+							var id = parseInt($(this).attr("id"), 10);
+
+							for (var index = 0; index < me.deviceGrid.data.length; index++) {
+								if (me.deviceGrid.data[index].modified) {
+									if (me.deviceGrid.data[index].id == 0)
+										me.deviceGrid.data[index].id = id;
+									me.deviceGrid.data[index].modified = false;
+									break;
+								}
+							}
+							break;
+							
+						case "deviceType":
+							var id = parseInt($(this).attr("id"), 10);
+
+							for (var index = 0; index < me.deviceTypeGrid.data.length; index++) {
+								if (me.deviceTypeGrid.data[index].modified) {
+									if (me.deviceTypeGrid.data[index].id == 0)
+										me.deviceTypeGrid.data[index].id = id;
+									me.deviceTypeGrid.data[index].modified = false;
+									break;
+								}
+							}
+							break;
+					}
+				});
+
+				if (me.action == "SiteMethodology") {
 					if (me.exportToExcel)
 						me.actionExportToExcelItem();
-				}
-				else if (me.action == "ClockManagement") {
-					me.actionSearchItem();
-				}
-				else if (me.action == "ManageDeviceType") {
-					me.loadDeviceTypes();
 				}
 
 				me.modified(false);
