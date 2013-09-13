@@ -39,6 +39,7 @@ ii.Class({
 			me.localTaxCodesLoading = 0;
 			me.employeeLoading = false;
 			me.batchId = 0;
+			me.minimumRecords = 0;
 
 			//pagination setup
 			me.startPoint = 1;
@@ -68,6 +69,7 @@ ii.Class({
 			me.configureCommunications();
 			me.anchorUpload.display(ui.cmn.behaviorStates.disabled);
 
+			me.systemVariableStore.fetch("userId:[user],name:EmployeeImportMinimumRecords", me.systemVariablesLoaded, me);
 			me.statusTypeStore.fetch("userId:[user],personId:0", me.statusTypesLoaded, me);
 			me.payFrequencyTypeStore.fetch("userId:[user]", me.payFrequencyTypesLoaded, me);
 			me.federalAdjustmentStore.fetch("userId:[user]", me.federalAdjustmentsLoaded, me);
@@ -434,6 +436,14 @@ ii.Class({
 				itemConstructorArgs: fin.emp.employeeImport.basicLifeIndicatorTypeArgs,
 				injectionArray: me.basicLifeIndicatorTypes
 			});
+			
+			me.systemVariables = [];
+			me.systemVariableStore = me.cache.register({
+				storeId: "systemVariables",
+				itemConstructor: fin.emp.employeeImport.SystemVariable,
+				itemConstructorArgs: fin.emp.employeeImport.systemVariableArgs,
+				injectionArray: me.systemVariables
+			});
 		},
 		
 		dirtyCheck: function(me) {
@@ -447,6 +457,12 @@ ii.Class({
 			});
 
 			parent.fin.appUI.modified = args.modified;
+		},
+		
+		systemVariablesLoaded:function(me, activeId) {
+
+			if (me.systemVariables.length > 0)
+				me.minimumRecords = parseInt(me.systemVariables[0].variableValue);
 		},
 		
 		statusTypesLoaded: function(me, activeId) {
@@ -2360,6 +2376,7 @@ ii.Class({
 			var xml = '<appGenericImport';
 				xml += ' fileName="' + me.fileName + '"';
 				xml += ' object="Employee"';
+				xml += ' minimumRecords="' + me.minimumRecords + '"';
 				xml += '/>';
 
 			// Send the object back to the server as a transaction
@@ -2397,6 +2414,10 @@ ii.Class({
 					}
 				});
 			}
+			else if (status == "invalid") {
+                alert("Minimum " + me.minimumRecords + " records should be available in excel sheet for employee import. Please verify.");
+				$("#pageLoading").hide();
+            }
 			else {
 				alert("[SAVE FAILURE] Error while importing Employee details: " + $(args.xmlNode).attr("message"));
 				$("#pageLoading").hide();

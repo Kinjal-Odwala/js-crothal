@@ -271,6 +271,12 @@ ii.init.register( function() {
 		id: {type: Number}
 		, name: {type: String}
 	};
+	
+	fin.emp.employeeImport.systemVariableArgs = {
+		id: {type: Number, defaultValue: 0}
+		, variableName: {type: String, required: false, defaultValue: ""}
+		, variableValue: {type: String, required: false, defaultValue: ""}	
+	};
 
 }, 2);
 
@@ -602,6 +608,16 @@ ii.Class({
 		init: function() {
 			var args = ii.args(arguments, fin.emp.employeeImport.basicLifeIndicatorTypeArgs);
 			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.emp.employeeImport.SystemVariable",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.emp.employeeImport.systemVariableArgs);
+			$.extend(this, args);			
 		}
 	}
 });
