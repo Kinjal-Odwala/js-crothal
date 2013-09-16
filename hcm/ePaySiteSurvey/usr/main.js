@@ -33,6 +33,8 @@ ii.Class({
 			me.prevWizard = "";
 			me.status = "";
 			me.action = "";
+			me.exportToExcel = false;
+			me.mouseOverContex = false;
 			me.houseCodeCache = [];
 				
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
@@ -48,9 +50,10 @@ ii.Class({
 			me.session = new ii.Session(me.cache);
 
 			$(window).bind("resize", me, me.resize);
+			$(document).bind("mousedown", me, me.mouseDownProcessor);
 
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
-			me.authorizePath = "\\crothall\\chimes\\fin\\HouseCodeSetup\\EPaySiteSurvey";
+			me.authorizePath = "\\crothall\\chimes\\fin\\HouseCodeSetup\\EPay Site Survey";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
 					me.authorizationProcess.apply(me);
@@ -64,23 +67,12 @@ ii.Class({
 			me.configureCommunications();
 			me.setStatus("Loading");
 			me.modified(false);
+			me.initialize();
 
 			if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
 				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
 			else
 				me.houseCodesLoaded(me, 0);
-
-			$("input[name='Union']").change(function() { me.modified(true); });
-			$("input[name='Kronos']").change(function() { me.modified(true); });
-			$("input[name='GroupsOfEmployeesWithDifferentPayRules']").change(function() { me.modified(true); });
-			$("input[name='PhonesAvailable']").change(function() { me.modified(true); });
-			$("input[name='TollFree']").change(function() { me.modified(true); });
-
-			$("a").click(function() {
-				me.currentWizard = this.id.replace("edit", "");
-				me.actionShowWizard();
-				me.checkWizardSecurity();
-			});
 
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
@@ -102,11 +94,22 @@ ii.Class({
 			me.deviceTypeGrid.setHeight($(window).height() - 170);
 		},
 		
+		mouseDownProcessor: function() {
+			var args = ii.args(arguments, {
+				event: {type: Object}		// The (mousedown) event object
+			});			
+			var event = args.event;
+			var me = event.data;
+
+			if (!me.mouseOverContext && event.target.id != "DeviceTypeDropImage")
+				$("#DeviceTypeClockAssetGrid").hide();
+		},
+		
 		authorizationProcess: function fin_hcm_ePaySiteSurvey_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
 
-			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
@@ -130,10 +133,10 @@ ii.Class({
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 
-			me.siteSurveyShow =  me.authorizer.isAuthorized(me.authorizePath + "\\SiteSurvey");
-			me.siteMethodologyShow = me.authorizer.isAuthorized(me.authorizePath + "\\SiteMethodology");
-			me.clockManagementShow = me.authorizer.isAuthorized(me.authorizePath + "\\ClockManagement");
-			me.manageDeviceTypeShow = me.authorizer.isAuthorized(me.authorizePath + "\\ManageDeviceType");
+			me.siteSurveyShow =  me.authorizer.isAuthorized(me.authorizePath + "\\Site Survey");
+			me.siteMethodologyShow = me.authorizer.isAuthorized(me.authorizePath + "\\Site Methodology");
+			me.clockManagementShow = me.authorizer.isAuthorized(me.authorizePath + "\\Clock Management");
+			me.manageDeviceTypeShow = me.authorizer.isAuthorized(me.authorizePath + "\\Manage Device Type");
 
 			if (!me.siteSurveyShow)
 				$("#siteSurveyAction").hide();
@@ -141,8 +144,10 @@ ii.Class({
 				$("#siteMethodologylAction").hide();
 			if (!me.clockManagementShow)
 				$("#clockManagementAction").hide();
-			if (!me.manageDeviceTypeShow)
+			if (!me.manageDeviceTypeShow) {
 				$("#manageDeviceTypeAction").hide();
+				$("#AnchorManageDeviceTypes").hide();				
+			}
 		},
 
 		sessionLoaded: function fin_hcm_houseCode_UserInterface_sessionLoaded() {
@@ -153,9 +158,9 @@ ii.Class({
 			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 		
-		defineFormControls: function() {			
+		defineFormControls: function() {
 			var me = this;
-			
+
 			me.actionMenu = new ui.ctl.Toolbar.ActionMenu({
 				id: "actionMenu"
 			});  
@@ -201,7 +206,7 @@ ii.Class({
 				clickFunction: function() { me.actionPrevItem(); },
 				hasHotState: true
 			});
-			
+
 			me.anchorSaveAndSend = new ui.ctl.buttons.Sizeable({
 				id: "AnchorSaveAndSend",
 				className: "iiButton",
@@ -345,14 +350,14 @@ ii.Class({
 				.setValidationMaster( me.validator )
 				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
-	
+
 					var enteredText = me.managerPhone.text.value;
-					
+
 					if (enteredText == "") return;
 
 					me.managerPhone.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.managerPhone.text.value;
-					
+
 					if (ui.cmn.text.validate.phone(enteredText) == false)
 						this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");					
 				});
@@ -362,19 +367,19 @@ ii.Class({
 		        maxLength: 14,
 				changeFunction: function() { me.modified(); }
 		    });
-				
+
 			me.managerCellPhone.makeEnterTab()
 				.setValidationMaster( me.validator )
 				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
-					
+
 					var enteredText = me.managerCellPhone.text.value;
 					
 					if (enteredText == "") return;
 
 					me.managerCellPhone.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.managerCellPhone.text.value;
-					
+
 					if (ui.cmn.text.validate.phone(enteredText) == false)
 						this.setInvalid("Please enter valid cell number. Example: (999) 999-9999");
 				});
@@ -384,7 +389,7 @@ ii.Class({
 		        maxLength: 100,
 				changeFunction: function() { me.modified(); }
 		    });
-			    
+
 			me.managerEmail.makeEnterTab()
 				.setValidationMaster( me.validator )
 				.addValidation( ui.ctl.Input.Validation.required )
@@ -652,16 +657,26 @@ ii.Class({
 					if (me.reportingFrequency.indexSelected == -1)
 						this.setInvalid("Please select the correct Reporting Frequency.");
 				});
-				
-			me.firstDayOfReportingPeriod = new ui.ctl.Input.Text({
+
+			me.firstDayOfReportingPeriod = new ui.ctl.Input.Date({
 		        id: "FirstDayOfReportingPeriod",
-		        maxLength: 50,
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
 				changeFunction: function() { me.modified(); }
 		    });
-			
+
 			me.firstDayOfReportingPeriod.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {					
+					
+					var enteredText = me.firstDayOfReportingPeriod.text.value;
+					
+					if (enteredText == "") 
+						return;
+											
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+						this.setInvalid("Please enter valid date.");
+				});
 			
 			me.firstDayOfWeek = new ui.ctl.Input.DropDown.Filtered({
 		        id: "FirstDayOfWeek",
@@ -677,21 +692,40 @@ ii.Class({
 					if (me.firstDayOfWeek.indexSelected == -1)
 						this.setInvalid("Please select the correct First Day of Week.");
 				});
-					
-			me.deviceType = new ui.ctl.Input.DropDown.Filtered({
-		        id: "DeviceType",
-				formatFunction: function(type) { return type.name; },
-				changeFunction: function() { me.modified(); }
-		    });
-			
-			me.deviceType.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				.addValidation( function( isFinal, dataMap ) {
-					
-					if (me.deviceType.indexSelected == -1)
-						this.setInvalid("Please select the correct Device Type.");
-				});
+
+			me.deviceType = $("#DeviceType")[0];
+			me.deviceType.readOnly = true;
+
+//			me.deviceType = new ui.ctl.Input.DropDown.Filtered({
+//		        id: "DeviceType",
+//				formatFunction: function(type) { return type.name; },
+//				changeFunction: function() { me.modified(); }
+//		    });
+//			
+//			me.deviceType.makeEnterTab()
+//				.setValidationMaster( me.validator )
+//				.addValidation( ui.ctl.Input.Validation.required )
+//				.addValidation( function( isFinal, dataMap ) {
+//					
+//					if (me.deviceType.indexSelected == -1)
+//						this.setInvalid("Please select the correct Device Type.");
+//					else {
+//						if (me.preferredConnectionMethod.indexSelected >= 0) {
+//							var valid = true;
+//							var preferredConnectionMethod = me.preferredConnectionMethod.data[me.preferredConnectionMethod.indexSelected].name;
+//							if (preferredConnectionMethod == "LAN" && !me.deviceType.data[me.deviceType.indexSelected].lan)
+//								valid = false;
+//							else if (preferredConnectionMethod == "Wi-Fi" && !me.deviceType.data[me.deviceType.indexSelected].wifi)
+//								valid = false;
+//							else if (preferredConnectionMethod == "Dialup" && !me.deviceType.data[me.deviceType.indexSelected].dialup)
+//								valid = false;
+//							else if (preferredConnectionMethod == "Cellular" && !me.deviceType.data[me.deviceType.indexSelected].cellular)
+//								valid = false;
+//							if (!valid)
+//								this.setInvalid("Selected device type does not have the preferred connection method available.");
+//						}
+//					}
+//				});
 			
 			me.preferredConnectionMethod = new ui.ctl.Input.DropDown.Filtered({
 		        id: "PreferredConnectionMethod",
@@ -843,17 +877,32 @@ ii.Class({
 				changeFunction: function() { me.modified(); }
 		    });
 			
-			me.serialNumber = new ui.ctl.Input.Text({
-		        id: "SerialNumber",
-		        maxLength: 50,
-				changeFunction: function() { me.modified(); }
-		    });
+//			me.serialNumber = new ui.ctl.Input.Text({
+//		        id: "SerialNumber",
+//		        maxLength: 50,
+//				changeFunction: function() { me.modified(); }
+//		    });
+//
+//			me.trackingNumber = new ui.ctl.Input.Text({
+//		        id: "TrackingNumber",
+//		        maxLength: 50,
+//				changeFunction: function() { me.modified(); }
+//		    });
+			
+			me.deviceTypeClockAssetGrid = new ui.ctl.Grid({
+				id: "DeviceTypeClockAssetGrid",
+				appendToId: "divForm",
+				allowAdds: false
+			});
 
-			me.trackingNumber = new ui.ctl.Input.Text({
-		        id: "TrackingNumber",
-		        maxLength: 50,
-				changeFunction: function() { me.modified(); }
-		    });
+			me.deviceTypeClockAssetGrid.addColumn("assigned", "assigned", "", "", 30, function() {
+				var index = me.deviceTypeClockAssetGrid.rows.length - 1;
+               	return "<input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onclick=\"fin.hcmEPaySiteSurveyUi.actionClickItem(this);\" onchange=\"parent.fin.appUI.modified = true;\" />";
+            });
+			me.deviceTypeClockAssetGrid.addColumn("deviceType", "deviceType", "Device Type", "Device Type", 90, function( type ) { return type.name; });
+			me.deviceTypeClockAssetGrid.addColumn("serialNumber", "serialNumber", "Serial Number", "Serial Number", 120);
+			me.deviceTypeClockAssetGrid.addColumn("trackingNumber", "trackingNumber", "Tracking Number", "Tracking Number", null);
+			me.deviceTypeClockAssetGrid.capColumns();
 			
 			me.deviceTypeCMSearch = new ui.ctl.Input.DropDown.Filtered({
 		        id: "DeviceTypeCMSearch",
@@ -930,7 +979,6 @@ ii.Class({
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)	
 				.addValidation( function( isFinal, dataMap ) {
-					//ii.trace("focused: " + this.focused + "  touched: " + this.touched, ii.traceTypes.information, "Info");
 					if ((this.focused || this.touched) && me.deviceTypeCM.indexSelected == -1)
 						this.setInvalid("Please select the correct Device Type.");
 				});
@@ -999,11 +1047,11 @@ ii.Class({
 				changeFunction: function() { me.modified(); }
 		    });
 			
-			me.deviceGrid.addColumn("houseCode", "houseCode", "House Code", "House Code", 100, null, me.houseCodeCM);
 			me.deviceGrid.addColumn("deviceType", "deviceType", "Device Type", "Device Type", 150, function( type ) { return type.name; }, me.deviceTypeCM);
 			me.deviceGrid.addColumn("deviceStatusType", "deviceStatusType", "Device Status", "Device Status", 150, function( type ) { return type.name; }, me.deviceStatusTypeCM);
 			me.deviceGrid.addColumn("assetTransferStatusType", "assetTransferStatusType", "Asset Transfer Status", "Asset Transfer Status", 170, function( type ) { return type.name; }, me.assetTransferStatusTypeCM);
 			me.deviceGrid.addColumn("serialNumber", "serialNumber", "Serial Number", "Serial Number", 150, null, me.serialNumberCM);
+			me.deviceGrid.addColumn("houseCode", "houseCode", "House Code", "House Code", 100, null, me.houseCodeCM);
 			me.deviceGrid.addColumn("groupNumber", "groupNumber", "Group Number", "Group Number", 150, null, me.groupNumberCM);
 			me.deviceGrid.addColumn("groupName", "groupName", "Group Name", "Group Name", null, null, me.groupNameCM);
 			me.deviceGrid.addColumn("upsTrackingNumber", "upsTrackingNumber", "UPS Tracking Number", "UPS Tracking Number", 160, null, me.upsTrackingNumberCM);
@@ -1140,7 +1188,7 @@ ii.Class({
 			me.reportingFrequency.text.tabIndex = 52;
 			me.firstDayOfReportingPeriod.text.tabIndex = 53;
 			me.firstDayOfWeek.text.tabIndex = 54;
-			me.deviceType.text.tabIndex = 55;
+			me.deviceType.tabIndex = 55;
 			me.preferredConnectionMethod.text.tabIndex = 56;
 			me.dailyRebootTime.text.tabIndex = 57;
 			me.useWorkOrders.check.tabIndex = 58;
@@ -1156,8 +1204,8 @@ ii.Class({
 			me.siteGroupName.text.tabIndex = 68;
 			me.goLiveDate.text.tabIndex = 69;
 			me.confirmSiteIsLive.check.tabIndex = 70;
-			me.serialNumber.text.tabIndex = 71;
-			me.trackingNumber.text.tabIndex = 72;
+			//me.serialNumber.text.tabIndex = 71;
+			//me.trackingNumber.text.tabIndex = 72;
 			
 			$("#HouseCode")[0].tabIndex = 81;
 			$("#DeviceInfo")[0].tabIndex = 82;
@@ -1171,8 +1219,8 @@ ii.Class({
 			$("#UnionYes")[0].disabled = true;
 			$("#UnionNo")[0].disabled = true;
 			me.payrollFrequency.text.readOnly = true;
-			me.serialNumber.text.readOnly = true;
-			me.trackingNumber.text.readOnly = true;
+			//me.serialNumber.text.readOnly = true;
+			//me.trackingNumber.text.readOnly = true;
 		},
 
 		configureCommunications: function() {
@@ -1299,19 +1347,92 @@ ii.Class({
 				itemConstructorArgs: fin.hcm.ePaySiteSurvey.ePaySiteSurveyPayCodeArgs,
 				injectionArray: me.ePaySiteSurveyPayCodes
 			});
+			
+			me.ePaySiteSurveyClockAssets = [];
+			me.ePaySiteSurveyClockAssetStore = me.cache.register({
+				storeId: "ePaySiteSurveyClockAssets",
+				itemConstructor: fin.hcm.ePaySiteSurvey.EPaySiteSurveyClockAsset,
+				itemConstructorArgs: fin.hcm.ePaySiteSurvey.ePaySiteSurveyClockAssetArgs,
+				injectionArray: me.ePaySiteSurveyClockAssets,
+				lookupSpec: { deviceType: me.deviceTypes }
+			});
+
+			me.fileNames = [];
+			me.fileNameStore = me.cache.register({
+				storeId: "hcmFileNames",
+				itemConstructor: fin.hcm.ePaySiteSurvey.FileName,
+				itemConstructorArgs: fin.hcm.ePaySiteSurvey.fileNameArgs,
+				injectionArray: me.fileNames
+			});
 		},
 		
-		setStatus: function(status) {
+		initialize: function() {
+			var me = this;
+			
+			$("input[name='Union']").change(function() { me.modified(true); });
+			$("input[name='Kronos']").change(function() { me.modified(true); });
+			$("input[name='GroupsOfEmployeesWithDifferentPayRules']").change(function() { me.modified(true); });
+			$("input[name='PhonesAvailable']").change(function() { me.modified(true); });
+			$("input[name='TollFree']").change(function() { me.modified(true); });
+
+			$("a").click(function() {
+				if (this.id.indexOf("edit") >= 0) {
+					me.currentWizard = this.id.replace("edit", "");
+					me.actionShowWizard();
+					me.checkWizardSecurity();
+				}
+			});
+			
+			$("#DeviceTypeClockAssetGrid").mouseover(function() { 
+				me.mouseOverContext = true;}).mouseout(function() { 
+					me.mouseOverContext = false; });
+					
+			$("#DeviceTypeDropImage").mousedown(function() {
+				if ($("#DeviceTypeClockAssetGrid").is(':visible')) {
+					$("#DeviceTypeClockAssetGrid").hide();
+					return;
+				}
+				
+				me.showDeviceTypeGrid();
+			});
+			$("#fragment-1").bind("scroll", me.pageScroll);
+		},
+		
+		showDeviceTypeGrid: function() {			
+			var me = this;
+			var pos = $("#DeviceTypeContainer").offset();
+			var parentElementHeight = $("#DeviceTypeContainer").outerHeight();
+
+			$("#DeviceTypeClockAssetGrid").css({
+				left: pos.left + 'px'
+				, top: pos.top + parentElementHeight + 'px'
+			});
+
+			$("#DeviceTypeClockAssetGrid").show();
+			me.deviceTypeClockAssetGrid.setHeight(200);
+		},
+		
+		pageScroll: function() {
+			var pos = $("#DeviceTypeContainer").offset();
+			var parentElementHeight = $("#DeviceTypeContainer").outerHeight();
+
+			$("#DeviceTypeClockAssetGrid").css({
+				left: pos.left + 'px'
+				, top: pos.top + parentElementHeight + 'px'
+			});
+		},
+
+		setStatus: function(status, message) {
 			var me = this;
 
-			fin.cmn.status.setStatus(status);
+			fin.cmn.status.setStatus(status, message);
 		},
 		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
 		},
-	
+
 		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
@@ -1389,7 +1510,7 @@ ii.Class({
 			me.reportingFrequency.resizeText();
 			me.firstDayOfReportingPeriod.resizeText();
 			me.firstDayOfWeek.resizeText();
-			me.deviceType.resizeText();
+			//me.deviceType.resizeText();
 			me.preferredConnectionMethod.resizeText();
 			me.dailyRebootTime.resizeText();
 			me.taskSelectionMethod.resizeText();
@@ -1399,8 +1520,8 @@ ii.Class({
 			me.siteGroupID.resizeText();
 			me.siteGroupName.resizeText();
 			me.goLiveDate.resizeText();
-			me.serialNumber.resizeText();
-			me.trackingNumber.resizeText();
+			//me.serialNumber.resizeText();
+			//me.trackingNumber.resizeText();
 
 			me.resize();
 		},
@@ -1520,7 +1641,7 @@ ii.Class({
 			
 			me.reportingFrequency.setData(me.reportingFrequencyTypes);
 			me.firstDayOfWeek.setData(me.weekDays);
-			me.deviceType.setData(me.deviceTypes);
+			//me.deviceType.setData(me.deviceTypes);
 			me.preferredConnectionMethod.setData(me.preferredConnectionMethods);
 			me.taskSelectionMethod.setData(me.taskSelectionMethods);
 
@@ -1583,7 +1704,10 @@ ii.Class({
 
 			me.ePaySiteSurveyPayCodeStore.fetch("userId:[user],id:" + me.siteDetails[0].id, me.ePaySiteSurveyPayCodesLoaded, me);
 			me.setSiteSurveyDetails();
-			me.ePaySiteSurvey();
+			if (me.action == "" || me.action == "SiteSurvey")
+				me.ePaySiteSurvey();
+			else
+				me.actionSiteMethodologyItem();
 		},
 		
 		setSiteSurveyDetails: function() {
@@ -1594,7 +1718,7 @@ ii.Class({
 			me.ePayGroupType.reset();
 			me.reportingFrequency.reset();
 			me.firstDayOfWeek.reset();
-			me.deviceType.reset();
+			//me.deviceType.reset();
 			me.preferredConnectionMethod.reset();
 			me.taskSelectionMethod.reset();
 			me.reportingFrequency.reset();
@@ -1633,7 +1757,7 @@ ii.Class({
 			$("input[name='Kronos'][value='" + me.siteDetails[0].kronos + "']").attr("checked", "checked"); 
 			$("input[name='GroupsOfEmployeesWithDifferentPayRules'][value='" + me.siteDetails[0].groupsOfEmployeesWithDifferentPayRules + "']").attr("checked", "checked"); 
 			me.shiftDifferentialsComments.value = me.siteDetails[0].shiftDifferentialsComments;
-			$("input[name='PhonesAvailable'][value='" + me.siteDetails[0].phonesAvailable + "']").attr("checked", "checked"); 
+			$("input[name='PhonesAvailable'][value='" + me.siteDetails[0].phonesAvailable + "']").attr("checked", "checked");
 			$("input[name='TollFree'][value='" + me.siteDetails[0].tollFree + "']").attr("checked", "checked"); 
 			me.comments.value = me.siteDetails[0].comments;
 
@@ -1650,9 +1774,9 @@ ii.Class({
 				if (index != null) 
 					me.firstDayOfWeek.select(index, me.firstDayOfWeek.focused);
 					
-				index = me.findIndexByTitle("T6", me.deviceTypes);
-				if (index != null) 
-					me.deviceType.select(index, me.deviceType.focused);
+//				index = me.findIndexByTitle("T6", me.deviceTypes);
+//				if (index != null) 
+//					me.deviceType.select(index, me.deviceType.focused);
 					
 				index = me.findIndexByTitle("LAN", me.preferredConnectionMethods);
 				if (index != null) 
@@ -1662,6 +1786,7 @@ ii.Class({
 				if (index != null) 
 					me.taskSelectionMethod.select(index, me.taskSelectionMethod.focused);
 
+				me.firstDayOfReportingPeriod.setValue("");
 				me.reviewDate.setValue("");
 				me.goLiveDate.setValue("");
 				me.dailyRebootTime.setValue("03:00:00 AM");				
@@ -1679,9 +1804,9 @@ ii.Class({
 				if (index != undefined) 
 					me.firstDayOfWeek.select(index, me.firstDayOfWeek.focused);
 					
-				index = ii.ajax.util.findIndexById(me.siteDetails[0].deviceType.toString(), me.deviceTypes);
-				if (index != undefined) 
-					me.deviceType.select(index, me.deviceType.focused);
+//				index = ii.ajax.util.findIndexById(me.siteDetails[0].clockAsset.toString(), me.deviceTypes);
+//				if (index != undefined) 
+//					me.deviceType.select(index, me.deviceType.focused);
 				
 				index = ii.ajax.util.findIndexById(me.siteDetails[0].preferredConnectionMethod.toString(), me.preferredConnectionMethods);
 				if (index != undefined) 
@@ -1691,12 +1816,12 @@ ii.Class({
 				if (index != undefined) 
 					me.taskSelectionMethod.select(index, me.taskSelectionMethod.focused);
 					
+				me.firstDayOfReportingPeriod.setValue(me.siteDetails[0].firstDayOfReportingPeriod);
 				me.reviewDate.setValue(me.siteDetails[0].reviewDate);
 				me.goLiveDate.setValue(me.siteDetails[0].goLiveDate);
 				me.dailyRebootTime.setValue(me.siteDetails[0].dailyRebootTime);
 			}
 			
-			me.firstDayOfReportingPeriod.setValue(me.siteDetails[0].firstDayOfReportingPeriod);
 			me.useWorkOrders.setValue(me.siteDetails[0].useWorkOrders.toString());
 			me.accidentFreeQuestions.setValue(me.siteDetails[0].accidentFreeQuestions.toString());
 			me.enableLunchLogic.setValue(me.siteDetails[0].enableLunchLogic.toString());
@@ -1730,10 +1855,78 @@ ii.Class({
 						, payCode: me.payCodeTypes[index].id
 						, brief: me.payCodeTypes[index].brief
 						, name: me.payCodeTypes[index].name
+						, description: ""
+						, active: true
+						, modified: true
 					});
 					me.ePaySiteSurveyPayCodes.push(item);
 				}
 			}
+		},
+		
+		ePaySiteSurveyClockAssetsLoaded: function(me, activeId) {
+			
+			var clockAssetsTemp = [];
+
+			for (var index = 0; index < me.clockAssets.length; index++) {
+				var found = false;
+				for (var iIndex = 0; iIndex < me.ePaySiteSurveyClockAssets.length; iIndex++) {
+					if (me.clockAssets[index].id == me.ePaySiteSurveyClockAssets[iIndex].clockAsset) {
+						found = true;
+						me.ePaySiteSurveyClockAssets[iIndex].deviceType = me.clockAssets[index].deviceType;
+						me.ePaySiteSurveyClockAssets[iIndex].serialNumber = me.clockAssets[index].serialNumber;
+						me.ePaySiteSurveyClockAssets[iIndex].trackingNumber = me.clockAssets[index].upsTrackingNumber;
+						me.ePaySiteSurveyClockAssets[iIndex].assigned = true;
+						break;
+					}
+				}
+				if (!found) {
+					if (me.clockAssets[index].deviceStatusType.name == "Unassigned")
+						clockAssetsTemp.push(me.clockAssets[index]);
+				}
+			}
+			
+			for (var index = 0; index < clockAssetsTemp.length; index++) {
+				var item = new fin.hcm.ePaySiteSurvey.EPaySiteSurveyClockAsset({
+						id: 0
+						, ePaySiteSurvey: me.siteDetails[0].id
+						, clockAsset: clockAssetsTemp[index].id
+						, deviceType: clockAssetsTemp[index].deviceType
+						, serialNumber: clockAssetsTemp[index].serialNumber
+						, trackingNumber: clockAssetsTemp[index].upsTrackingNumber
+					});
+					me.ePaySiteSurveyClockAssets.push(item);
+			}
+
+			me.deviceTypeClockAssetGrid.setData(me.ePaySiteSurveyClockAssets);
+			for (var index = 0; index < me.ePaySiteSurveyClockAssets.length; index++) {
+				$("#selectInputCheck" + index)[0].checked = me.ePaySiteSurveyClockAssets[index].assigned;
+			}
+			me.setDeviceTypeTitle();			
+		},
+		
+		setDeviceTypeTitle: function() {
+			var me = this;			
+			var selectedDeviceTypes = "";
+
+			for (var index = 0; index < me.deviceTypeClockAssetGrid.data.length; index++) {
+				if ($("#selectInputCheck" + index)[0].checked) {
+					if (selectedDeviceTypes == "")
+						selectedDeviceTypes = me.deviceTypeClockAssetGrid.data[index].deviceType.name;
+					else
+						selectedDeviceTypes += ", " + me.deviceTypeClockAssetGrid.data[index].deviceType.name;
+				}
+			}
+
+			me.deviceType.value = selectedDeviceTypes;
+		},
+		
+		actionClickItem: function(objCheckBox) {
+			var me = this;
+			var index = parseInt(objCheckBox.id.replace("selectInputCheck", ""), 10);
+
+			me.deviceTypeClockAssetGrid.data[index].modified = true;
+			me.setDeviceTypeTitle();
 		},
 		
 		itemPayCodeSelect: function() {
@@ -1750,7 +1943,7 @@ ii.Class({
 			else 
 				me.payCodeDescription.text.readOnly = false;
 		},
-		
+
 		itemDeviceSelect: function() {
 			var args = ii.args(arguments,{
 				index: {type: Number}  // The index of the data subItem to select
@@ -1770,7 +1963,6 @@ ii.Class({
 			var index = args.index;
 
 			if (me.deviceTypeGrid.data[index] != undefined) {
-				me.lastSelectedRowIndex = index;
 				me.deviceTypeGrid.data[index].modified = true;
 				me.lan.check.checked = me.deviceTypeGrid.data[index].lan;
 				me.wifi.check.checked = me.deviceTypeGrid.data[index].wifi;
@@ -1785,16 +1977,17 @@ ii.Class({
 		
 		itemDeSelect: function() {
 			var me = this;
+			var index = me.deviceTypeGrid.selectedRows[0];
 
-			if (me.lastSelectedRowIndex >= 0) {
-				$(me.deviceTypeGrid.rows[me.lastSelectedRowIndex].getElement("lan")).text(me.lan.check.checked ? "Y" : "N");
-				$(me.deviceTypeGrid.rows[me.lastSelectedRowIndex].getElement("wifi")).text(me.wifi.check.checked ? "Y" : "N");
-				$(me.deviceTypeGrid.rows[me.lastSelectedRowIndex].getElement("dialup")).text(me.dialup.check.checked ? "Y" : "N");
-				$(me.deviceTypeGrid.rows[me.lastSelectedRowIndex].getElement("cellular")).text(me.cellular.check.checked ? "Y" : "N");
-				$(me.deviceTypeGrid.rows[me.lastSelectedRowIndex].getElement("touchscreen")).text(me.touchscreen.check.checked ? "Y" : "N");
-				$(me.deviceTypeGrid.rows[me.lastSelectedRowIndex].getElement("swipeCard")).text(me.swipeCard.check.checked ? "Y" : "N");
-				$(me.deviceTypeGrid.rows[me.lastSelectedRowIndex].getElement("trainingVideos")).text(me.trainingVideos.check.checked ? "Y" : "N");
-				$(me.deviceTypeGrid.rows[me.lastSelectedRowIndex].getElement("active")).text(me.active.check.checked ? "Y" : "N");
+			if (index >= 0) {
+				$(me.deviceTypeGrid.rows[index].getElement("lan")).text(me.lan.check.checked ? "Y" : "N");
+				$(me.deviceTypeGrid.rows[index].getElement("wifi")).text(me.wifi.check.checked ? "Y" : "N");
+				$(me.deviceTypeGrid.rows[index].getElement("dialup")).text(me.dialup.check.checked ? "Y" : "N");
+				$(me.deviceTypeGrid.rows[index].getElement("cellular")).text(me.cellular.check.checked ? "Y" : "N");
+				$(me.deviceTypeGrid.rows[index].getElement("touchscreen")).text(me.touchscreen.check.checked ? "Y" : "N");
+				$(me.deviceTypeGrid.rows[index].getElement("swipeCard")).text(me.swipeCard.check.checked ? "Y" : "N");
+				$(me.deviceTypeGrid.rows[index].getElement("trainingVideos")).text(me.trainingVideos.check.checked ? "Y" : "N");
+				$(me.deviceTypeGrid.rows[index].getElement("active")).text(me.active.check.checked ? "Y" : "N");
 			}
 		},
 		
@@ -1976,13 +2169,30 @@ ii.Class({
 			$("#header").html("Site Survey");
 			me.action = "SiteSurvey";
 			me.ePaySiteSurvey();
+			me.setStatus("Normal");
 		},
-		
+
 		actionSiteMethodologyItem: function() {
 			var me = this;
 			
 			if (!parent.fin.cmn.status.itemValid())
 				return;
+			
+			me.action = "SiteMethodology";
+			$("#header").html("Site Methodology");
+
+			if (me.siteDetails[0].id == 0) {
+				me.setStatus("Info", "Epay site survey details are not available for the selected house code. Please verify.");
+				$("#divHouseCodeInfo").hide();
+				$("#divManager").hide();
+				$("#SiteMethodology").hide();
+				$("#AnchorPrev").hide();
+				$("#AnchorNext").hide();
+				$("#AnchorSaveAndSend").hide();
+				$("#AnchorSave").hide();
+				$("#AnchorCancel").hide();
+				return;
+			}
 			
 			$("#editHouseCode").hide();
 			$("#editManager").hide();
@@ -2007,10 +2217,14 @@ ii.Class({
 			$("#AnchorManageDeviceTypes").hide();
 			$("#AnchorSave").show();
 			$("#AnchorCancel").show();
-			$("#header").html("Site Methodology");
 			
-			me.action = "SiteMethodology";
+			me.setStatus("Normal");
 			me.resizeControls();
+
+			me.clockAssetStore.reset();
+			me.ePaySiteSurveyClockAssetStore.reset();
+			me.clockAssetStore.fetch("userId:[user],houseCodeId:0,deviceType:0,deviceStatusType:0,assetTransferStatusType:0", me.clockAssetsLoaded, me);
+			me.ePaySiteSurveyClockAssetStore.fetch("userId:[user],id:" + me.siteDetails[0].id, me.ePaySiteSurveyClockAssetsLoaded, me);
 		},
 		
 		actionClockManagementItem: function() {
@@ -2022,20 +2236,26 @@ ii.Class({
 			$("#SiteSurvey").hide();
 			$("#SiteMethodology").hide();
 			$("#ClockManagement").show();
-			$("#ManageDeviceType").hide();
-			
+			$("#ManageDeviceType").hide();			
 			$("#AnchorPrev").hide();
 			$("#AnchorNext").hide();
 			$("#AnchorSaveAndSend").hide();
-			$("#AnchorManageDeviceTypes").show();
 			$("#AnchorSave").show();
 			$("#AnchorCancel").show();
+			$("input[name='CMSearch'][value='false']").attr("checked", "checked");
+			if (me.manageDeviceTypeShow) {
+				$("#AnchorManageDeviceTypes").show();				
+			}
 			
 			$("#header").html("Clock Management");
+			me.deviceTypeCMSearch.resizeText();
+			me.deviceStatusCMSearch.resizeText();
+			me.assetTransferStatusCMSearch.resizeText();
 			me.deviceGrid.setData(me.clockAssets);
 			me.deviceGrid.setHeight($(window).height() - 320);
 			
 			me.action = "ClockManagement";
+			me.setStatus("Normal");
 			me.resizeControls();
 		},
 		
@@ -2061,6 +2281,7 @@ ii.Class({
 			me.deviceTypeGrid.setData(me.deviceTypes);
 			me.deviceTypeGrid.setHeight($(window).height() - 170);
 			me.action = "ManageDeviceType";
+			me.setStatus("Normal");
 			me.status = status;
 		},
 		
@@ -2095,7 +2316,7 @@ ii.Class({
 				, me.clockAssetsLoaded
 				, me);
 		},
-		
+
 		clockAssetsLoaded: function(me, activeId) {
 
 			for (var index = 0; index < me.clockAssets.length; index++) {
@@ -2111,11 +2332,11 @@ ii.Class({
 			me.deviceGrid.setData(me.clockAssets);
 			me.checkLoadCount();
 		},
-		
+
 		houseCodeBlur: function() {
 			var me = this;
-
 			var houseCode = me.houseCodeCM.getValue().replace(/[^0-9]/g, "");
+
 			if (houseCode != "")
 				me.houseCodeCheck(houseCode);
 		},
@@ -2173,11 +2394,12 @@ ii.Class({
 		    if (!me.houseCodeCache[houseCode].valid) {
 				$("#HouseCodeCMText").removeClass("Loading");
 				me.houseCodeCM.setInvalid("The House Code [" + houseCode + "] is not valid.");
-				me.deviceGrid.data[me.deviceGrid.activeRowIndex].houseCodeId = 0;
+				if (me.deviceGrid.data[me.deviceGrid.activeRowIndex] != undefined)
+					me.deviceGrid.data[me.deviceGrid.activeRowIndex].houseCodeId = 0;
 		    }
 			else {
 				if (me.deviceGrid.data[me.deviceGrid.activeRowIndex] != undefined)
-					me.deviceGrid.data[me.deviceGrid.activeRowIndex].houseCodeId = me.houseCodeCache[houseCode].id
+					me.deviceGrid.data[me.deviceGrid.activeRowIndex].houseCodeId = me.houseCodeCache[houseCode].id;
 			}
 		},
 		
@@ -2186,8 +2408,10 @@ ii.Class({
 
 			if (me.status == "Clock Management") {
 				$("#ManageDeviceType").hide();
-				$("#AnchorManageDeviceTypes").show();
 				$("#ClockManagement").show();
+				if (me.manageDeviceTypeShow) {
+					$("#AnchorManageDeviceTypes").show();				
+				}
 				me.status = "";
 			}
 			else if (me.status == "Manage Device Type") {
@@ -2198,18 +2422,39 @@ ii.Class({
 			}
 			else if (me.status == "" && me.action == "SiteMethodology") {
 				me.setSiteSurveyDetails();
+				me.setStatus("Normal");
+				$("#houseCodeText").focus();
 			}
 		},
 		
 		actionSaveAndExportItem: function() {
 			var me = this;
+
+			me.exportToExcel = true;
+			me.actionSaveItem();
+		},
+		
+		actionExportToExcelItem: function() {
+			var me = this;
 			
+			me.fileNameStore.reset();
+			me.fileNameStore.fetch("userId:[user],houseCodeId:" + me.siteDetails[0].houseCodeId, me.fileNamesLoaded, me);
+		},
+		
+		fileNamesLoaded: function(me, activeId) {
+
+			$("#pageLoading").fadeOut("slow");
+			me.exportToExcel = false;
+			
+			if (me.fileNames.length == 1) {
+				$("iframe")[0].contentWindow.document.getElementById("FileName").value = me.fileNames[0].fileName;
+				$("iframe")[0].contentWindow.document.getElementById("DownloadButton").click();
+			}
 		},
 
 		actionSaveItem: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
-			var item = [];
 
 			if (me.action == "" || parent.fin.appUI.houseCodeId <= 0) {
 				alert("House Code information not loaded properly. Please reload.");
@@ -2219,7 +2464,7 @@ ii.Class({
 			if (me.action == "SiteSurvey") {
 				me.payCodeGrid.body.deselectAll();
 			}
-			else if (me.action == "SiteMethodology") {
+			else if (me.action == "SiteMethodology") {					
 				me.validator.forceBlur();
 				// Check to see if the data entered is valid
 				me.validator.queryValidity(true);
@@ -2227,13 +2472,31 @@ ii.Class({
 				if (!me.address1.valid || !me.address2.valid || !me.city.valid || !me.state.valid || !me.zipCode.valid 
 					|| !me.timeZone.valid | !me.managerName.valid || !me.managerPhone.valid || !me.managerCellPhone.valid
 					|| !me.ePayGroupType.valid || !me.reportingFrequency.valid || !me.firstDayOfReportingPeriod.valid 
-					|| !me.firstDayOfWeek.valid || !me.deviceType.valid || !me.preferredConnectionMethod.valid 
+					|| !me.firstDayOfWeek.valid || !me.preferredConnectionMethod.valid 
 					|| !me.dailyRebootTime.valid || !me.taskSelectionMethod.valid || !me.businessAnalyst.valid 
 					|| !me.reviewDate.valid || !me.poNumber.valid || !me.siteGroupID.valid || !me.siteGroupName.valid 
 					|| !me.goLiveDate.valid) {
 					alert("In order to save, the errors on the page must be corrected.");
 					return false;
-				}				
+				}
+				
+				if (me.deviceType.value == "") {
+					alert("Please select Device Type.");
+					return false;
+				}
+					
+				var preferredConnectionMethod = me.preferredConnectionMethod.data[me.preferredConnectionMethod.indexSelected].name;
+				for (var index = 0; index < me.deviceTypeClockAssetGrid.data.length; index++) {
+					if ($("#selectInputCheck" + index)[0].checked) {
+						if (!((preferredConnectionMethod == "LAN" && me.deviceTypeClockAssetGrid.data[index].deviceType.lan)
+							|| (preferredConnectionMethod == "Wi-Fi" && me.deviceTypeClockAssetGrid.data[index].deviceType.wifi)
+							|| (preferredConnectionMethod == "Dialup" && me.deviceTypeClockAssetGrid.data[index].deviceType.dialup)
+							|| (preferredConnectionMethod == "Cellular" && me.deviceTypeClockAssetGrid.data[index].deviceType.cellular))) {
+							alert("Selected device type(s) does not have the preferred connection method available.");
+							return false;
+						}
+					}
+				}
 			}
 
 			if (me.action == "SiteSurvey" || me.action == "SiteMethodology") {
@@ -2273,9 +2536,8 @@ ii.Class({
 					, me.comments.value
 					, me.ePayGroupTypes[me.ePayGroupType.indexSelected].id
 					, me.reportingFrequencyTypes[me.reportingFrequency.indexSelected].id
-					, me.firstDayOfReportingPeriod.getValue()
+					, me.firstDayOfReportingPeriod.lastBlurValue
 					, me.firstDayOfWeek.lastBlurValue
-					, me.deviceTypes[me.deviceType.indexSelected].id
 					, me.preferredConnectionMethods[me.preferredConnectionMethod.indexSelected].id
 					, me.dailyRebootTime.getValue()
 					, me.useWorkOrders.check.checked				
@@ -2383,9 +2645,8 @@ ii.Class({
 				xml += ' comments="' + ui.cmn.text.xml.encode(item.comments) + '"';
 				xml += ' ePayGroupType="' + item.ePayGroupType + '"';
 				xml += ' reportingFrequencyType="' + item.reportingFrequencyType + '"';
-				xml += ' firstDayOfReportingPeriod="' + ui.cmn.text.xml.encode(item.firstDayOfReportingPeriod) + '"';
+				xml += ' firstDayOfReportingPeriod="' + item.firstDayOfReportingPeriod + '"';
 				xml += ' firstDayOfWeek="' + item.firstDayOfWeek + '"';
-				xml += ' deviceType="' + item.deviceType + '"';
 				xml += ' preferredConnectionMethod="' + item.preferredConnectionMethod + '"';
 				xml += ' dailyRebootTime="' + ui.cmn.text.xml.encode(item.dailyRebootTime) + '"';
 				xml += ' useWorkOrders="' + item.useWorkOrders + '"';
@@ -2402,6 +2663,7 @@ ii.Class({
 				xml += ' goLiveDate="' + item.goLiveDate + '"';
 				xml += ' confirmSiteIsLive="' + item.confirmSiteIsLive + '"';
 				xml += ' type="' + me.action + '"';
+				xml += ' exported="' + me.exportToExcel + '"';
 				xml += '/>';
 
 				if (me.action == "SiteSurvey") {
@@ -2417,13 +2679,31 @@ ii.Class({
 						}
 					}
 				}
+				else if (me.action == "SiteMethodology") {
+					for (var index = 0; index < me.deviceTypeClockAssetGrid.data.length; index++) {
+						if (me.deviceTypeClockAssetGrid.data[index].modified && 
+							(me.deviceTypeClockAssetGrid.data[index].id > 0 || $("#selectInputCheck" + index)[0].checked)) {
+							xml += '<ePaySiteSurveyClockAsset'
+						    xml += ' id="' + me.deviceTypeClockAssetGrid.data[index].id + '"';
+						    xml += ' ePaySiteSurveyId="' + me.deviceTypeClockAssetGrid.data[index].ePaySiteSurvey + '"';
+						    xml += ' clockAssetId="' + me.deviceTypeClockAssetGrid.data[index].clockAsset + '"';
+						    xml += ' status="' + $("#selectInputCheck" + index)[0].checked + '"';
+						    xml += ' active="' + me.deviceTypeClockAssetGrid.data[index].active + '"';
+						    xml += '/>';
+						}
+					}
+				}				
 			}
 			else if (me.action == "ClockManagement") {
 				for (var index = 0; index < me.clockAssets.length; index++) {
 					if (me.clockAssets[index].modified || me.clockAssets[index].id == 0) {
+						me.clockAssets[index].modified = true;
+						var houseCodeId = 0;
+						if (me.clockAssets[index].houseCode != "")
+							houseCodeId = me.houseCodeCache[me.clockAssets[index].houseCode].id;
 						xml += '<clockAsset';
 						xml += ' id="' + me.clockAssets[index].id + '"';
-						xml += ' houseCodeId="' + me.clockAssets[index].houseCodeId + '"';
+						xml += ' houseCodeId="' + houseCodeId + '"';
 						xml += ' deviceType="' + me.clockAssets[index].deviceType.id + '"';
 						xml += ' deviceStatusType="' + me.clockAssets[index].deviceStatusType.id + '"';
 						xml += ' assetTransferStatusType="' + me.clockAssets[index].assetTransferStatusType.id + '"';
@@ -2439,6 +2719,7 @@ ii.Class({
 			else if (me.action == "ManageDeviceType") {
 				for (var index = 0; index < me.deviceTypes.length; index++) {
 					if (me.deviceTypes[index].modified || me.deviceTypes[index].id == 0) {
+						me.deviceTypes[index].modified = true;
 						xml += '<deviceType';
 						xml += ' id="' + me.deviceTypes[index].id + '"';
 						xml += ' name="' + ui.cmn.text.xml.encode(me.deviceTypes[index].name) + '"';
@@ -2469,26 +2750,78 @@ ii.Class({
 			var status = $(args.xmlNode).attr("status");
 
 			if (status == "success") {
-				if (me.action == "SiteSurvey") {
-					if (me.siteDetails[0].id == 0) {
-						$(args.xmlNode).find("*").each(function(){
-							switch (this.tagName) {
-								case "ePaySiteSurvey":
-									item.id = parseInt($(this).attr("id"), 10);
-									me.siteDetails[0] = item;
-									break;
+				$(args.xmlNode).find("*").each(function() {
+					switch (this.tagName) {
+						case "ePaySiteSurvey":
+							if (me.action == "SiteSurvey" && me.siteDetails[0].id == 0) {
+								item.id = parseInt($(this).attr("id"), 10);
+								me.siteDetails[0] = item;
 							}
-						});
+							break;
+
+						case "ePaySiteSurveyPayCode":
+							var id = parseInt($(this).attr("id"), 10);
+							var payCodeId = parseInt($(this).attr("payCodeId"), 10);
+
+							for (var index = 0; index < me.payCodeGrid.data.length; index++) {
+								if (me.payCodeGrid.data[index].modified) {
+									if (me.payCodeGrid.data[index].id == 0 && me.payCodeGrid.data[index].payCode == payCodeId)
+										me.payCodeGrid.data[index].id = id;
+									me.payCodeGrid.data[index].modified = false;
+									break;
+								}
+							}
+							break;
+							
+						case "ePaySiteSurveyClockAsset":
+							var id = parseInt($(this).attr("id"), 10);
+							var clockAssetId = parseInt($(this).attr("clockAssetId"), 10);
+
+							for (var index = 0; index < me.deviceTypeClockAssetGrid.data.length; index++) {
+								if (me.deviceTypeClockAssetGrid.data[index].modified) {
+									me.deviceTypeClockAssetGrid.data[index].modified = false;
+									if (me.deviceTypeClockAssetGrid.data[index].clockAsset == clockAssetId) {
+										if (me.deviceTypeClockAssetGrid.data[index].id == 0)
+											me.deviceTypeClockAssetGrid.data[index].id = id;
+										else if (!($("#selectInputCheck" + index)[0].checked))
+											me.deviceTypeClockAssetGrid.data[index].id = 0;
+										break;
+									}
+								}
+							}
+							break;
+							
+						case "clockAsset":
+							var id = parseInt($(this).attr("id"), 10);
+
+							for (var index = 0; index < me.deviceGrid.data.length; index++) {
+								if (me.deviceGrid.data[index].modified) {
+									if (me.deviceGrid.data[index].id == 0)
+										me.deviceGrid.data[index].id = id;
+									me.deviceGrid.data[index].modified = false;
+									break;
+								}
+							}
+							break;
+							
+						case "deviceType":
+							var id = parseInt($(this).attr("id"), 10);
+
+							for (var index = 0; index < me.deviceTypeGrid.data.length; index++) {
+								if (me.deviceTypeGrid.data[index].modified) {
+									if (me.deviceTypeGrid.data[index].id == 0)
+										me.deviceTypeGrid.data[index].id = id;
+									me.deviceTypeGrid.data[index].modified = false;
+									break;
+								}
+							}
+							break;
 					}
-					
-					me.ePaySiteSurveyPayCodeStore.reset();
-					me.ePaySiteSurveyPayCodeStore.fetch("userId:[user],id:" + me.siteDetails[0].id, me.ePaySiteSurveyPayCodesLoaded, me);
-				}
-				else if (me.action == "ClockManagement") {
-					me.actionSearchItem();
-				}
-				else if (me.action == "ManageDeviceType") {
-					me.loadDeviceTypes();
+				});
+
+				if (me.action == "SiteMethodology") {
+					if (me.exportToExcel)
+						me.actionExportToExcelItem();
 				}
 
 				me.modified(false);
@@ -2500,7 +2833,7 @@ ii.Class({
 			}
 
 			$("#pageLoading").fadeOut("slow");
-		}		
+		}
 	}
 });
 

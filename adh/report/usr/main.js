@@ -105,30 +105,31 @@ ii.Class({
 			me.defineFormControls();
 			me.configureCommunications();
 			me.anchorLoad.display(ui.cmn.behaviorStates.disabled);
-			me.report.fetchingData();
-			me.moduleStore.fetch("userId:[user]", me.modulesLoaded, me);
-			me.reportStore.fetch("userId:[user],active:1", me.reportLoaded, me);
-			me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
-			me.stateTypeStore.fetch("userId:[user]", me.typesLoaded, me);
 			me.modified(false);
 
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$("#divAdhReportGrid").bind("scroll", me.adhReportGridScroll);
-			
+			$("#divFilterHeader").hide();
+			$("#FilterGrid").hide();
+
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
 			}
-			$("#divFilterHeader").hide();
-			$("#FilterGrid").hide();
 		},
 
 		authorizationProcess: function fin_adh_report_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments, {});
 			var me = this;
-			
+
 			ii.timer.timing("Page displayed");
 			me.session.registerFetchNotify(me.sessionLoaded, me);
+
+			me.report.fetchingData();
+			me.moduleStore.fetch("userId:[user]", me.modulesLoaded, me);
+			me.reportStore.fetch("userId:[user],active:1", me.reportLoaded, me);
+			me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
+			me.stateTypeStore.fetch("userId:[user]", me.typesLoaded, me);
 		},
 		
 		sessionLoaded: function fin_adh_report_UserInterface_sessionLoaded() {

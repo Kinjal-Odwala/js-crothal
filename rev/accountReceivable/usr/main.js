@@ -1,4 +1,3 @@
-
 ii.Import( "ii.krn.sys.ajax" );
 ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
@@ -10,8 +9,6 @@ ii.Style( "fin.cmn.usr.common", 2 );
 ii.Style( "fin.cmn.usr.statusBar", 3 );
 ii.Style( "fin.cmn.usr.input", 4 );
 ii.Style( "fin.cmn.usr.button", 5 );
-ii.Style( "fin.cmn.usr.dropDown", 6 );
-ii.Style( "fin.cmn.usr.dateDropDown", 7 );
 
 ii.Class({
     Name: "fin.rev.accountReceivable.UserInterface",
@@ -36,9 +33,9 @@ ii.Class({
 			var index = parent.fin.revMasterUi.lastSelectedRowIndex;
 			if (index >= 0) {				
 				me.invoice = parent.fin.revMasterUi.invoices[index];
-				me.invoiceByCustomer = !me.invoice.invoiceByHouseCode;	
+				me.invoiceByCustomer = !me.invoice.invoiceByHouseCode;
 			}
-							
+
 			me.replaceContext = false;        // replace the system context menu?
 			me.mouseOverContext = false;      // is the mouse over the context menu?
 			me.noContext = true;              // disable the context menu?
@@ -58,6 +55,7 @@ ii.Class({
 				},
 				me);
 
+			me.validator = new ui.ctl.Input.Validation.Master();
 			me.session = new ii.Session(me.cache);
 			me.session.displaySetStandard();
 
@@ -160,7 +158,35 @@ ii.Class({
 		
 		defineFormControls: function() {
 			var me = this;
-					
+			
+			me.payer = new ui.ctl.Input.Text({
+                id: "Payer",
+                maxLength: 50,
+				changeFunction: function() { me.modified(); }
+            });
+
+            me.payer.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+
+			me.notes = new ui.ctl.Input.Text({
+                id: "Notes",
+                maxLength: 1024,
+				changeFunction: function() { me.modified(); }
+            });
+
+            me.notes.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+
+			me.anchorCreditMemoOK = new ui.ctl.buttons.Sizeable({
+				id: "AnchorCreditMemoOK",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionCreditMemoOKItem(); },
+				hasHotState: true
+			});
+			
 			me.anchorCreditInvoice = new ui.ctl.buttons.Sizeable({
 				id: "AnchorCreditInvoice",
 				className: "iiButton",
@@ -329,9 +355,9 @@ ii.Class({
 						, "CM"			    
 						, me.invoiceItems[index].amount
 					    ,  me.getAccountNumberName(me.invoiceItems[index].account)
-						, ""
+						, me.payer.getValue()
 						, "Open"
-					    , ""
+					    , me.notes.getValue()
 				        )
 					
 				    rowHtml += "</tr>";
@@ -905,7 +931,12 @@ ii.Class({
 				
 			if (me.accountReceivables.length == 0) {
 				if (confirm("Would you like to do a Full Credit on the selected Invoice?")) {
-					me.invoiceItemStore.fetch("userId:[user],invoiceId:" + me.invoiceId, me.invoiceItemsLoaded, me);
+					showPopup("popupCreditMemo");
+					me.validator.reset();
+					me.payer.setValue("");
+					me.notes.setValue("");
+					me.payer.resizeText();
+					me.notes.resizeText();
 					return;
 				}
 			}
@@ -913,10 +944,21 @@ ii.Class({
 			me.accountReceivableGridRowAdd();
 		},
 		
+		actionCreditMemoOKItem: function() {
+			var me = this;
+
+			me.validator.forceBlur();
+
+			if (me.validator.queryValidity(true)) {
+				me.invoiceItemStore.fetch("userId:[user],invoiceId:" + me.invoiceId, me.invoiceItemsLoaded, me);
+				hidePopup("popupCreditMemo");
+			}
+		},
+		
 		actionOkItem: function() {
 			var me = this;
 			
-			disablePopup();
+			hidePopup("popupMessage");
 			$("#pageLoading").hide();
 		},
 		
@@ -1156,66 +1198,62 @@ ii.Class({
 			}
 			else {
 				if (status == "invalid") {
-
-					switch ($(args.xmlNode).attr("message")) {
-						
+					switch ($(args.xmlNode).attr("message")) {						
 						case "1":
 							errorMessage = "The data that was being modified is out of date. Please reload this page " +
 								"by selecting it from the menu to the left and try again. Thank you!";
 							break;
-							
+
 						case "1011":
 							errorMessage = "Error Number 1011 - Sorry, you cannot add account receivable items on " +
 								"an invoice whose amount due equals zero. Add charged items to the invoice prior to " +
 								"entering account receivables. Your request has been aborted.";
 							break;
-						
+
 						case "1019":
 							errorMessage = "Error Number 1019 - You cannot enter receivables in excess of the " +
 								"outstanding invoiced amount for the specified account code OR in excess of the total " +
 								"outstanding invoiced amount. Please resolve the issue and try again. Thank you!";
 							break;
-							
+
 						case "1021":
 							errorMessage = "Error Number 1021 - You have attempted to credit an amount greater than the " +
 								"charged amount against the specified account code. Transaction aborted. Please enter " +
 								"an amount less than or equal to the charged amount and try again. Thank you!";
 							break;						
 					}
-					
-					$("#messageHeader").text("Your modifications have not been saved.");
+
+					$("#messageHeader").text("Your modifications have not been saved");
 					$("#divMessage").text(errorMessage);
-					centerPopup();
+					showPopup("popupMessage");
 				}
 				else {
 					alert("[SAVE FAILURE] Error while updating Account Receivable record: " + $(args.xmlNode).attr("message"));
 					$("#pageLoading").hide();
-				}				
+				}
 			}
-		}		
+		}
 	}
 });
 
-function loadPopup() {
-	$("#popupMessage").fadeIn("slow");
-}
-
-function disablePopup() {	
-	$("#popupMessage").fadeOut("slow");
-}
-
-function centerPopup() {
+function showPopup(id) {
 	var windowWidth = document.documentElement.clientWidth;
 	var windowHeight = document.documentElement.clientHeight;
-	var popupWidth = $("#popupMessage").width();
-	var popupHeight = $("#popupMessage").height();
-		
-	$("#popupMessage").css({
+	var popupWidth = $("#" + id).width();
+	var popupHeight = $("#" + id).height();
+
+	$("#" + id).css({
 		"top": windowHeight/2 - popupHeight/2,
 		"left": windowWidth/2 - popupWidth/2
-	});
-	
-	loadPopup();
+	});	
+
+	$("#backGroundPopup").fadeIn("slow");
+	$("#" + id).fadeIn("slow");
+}
+
+function hidePopup(id) {
+	$("#backGroundPopup").fadeOut("slow");
+	$("#" + id).fadeOut("slow");
 }
 
 function main() {

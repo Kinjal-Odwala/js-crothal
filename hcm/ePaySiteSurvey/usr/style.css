@@ -134,11 +134,14 @@
 	text-align: center;	
 }
 
-#PayCodeGrid {
-	padding: 0px 10px 10px 10px;
+#DeviceTypeClockAssetGrid {
+	width: 450px;
+	position: absolute;
+	z-index: 5000;
+	display: none;
 }
 
-#DeviceTypeGrid {
+#PayCodeGrid, #DeviceTypeGrid {
 	padding: 0px 10px 10px 10px;
 }
 
