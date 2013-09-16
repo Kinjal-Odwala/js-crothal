@@ -34,15 +34,20 @@
 	        </div>
 			<div class="body">
 				<div id="TableEditArea" class="containerUnit">
-					<div class="labelTextUnit">House Code:</div>
+					<div class="labelTextUnit"><input type="radio" name="modeSwicher" checked="checked" id="rdHouseCode" />&nbsp;<label for="rdHouseCode" >House Code</label>:</div>
 					<div id="AppUnitLoader">
 						<div id="AppUnit"></div>
-					</div>					
-					<div class="contentArea">
+					</div>			
+                    <div class="contentArea">
 						<div id="LoadButtonContainer">
 							<div id="AnchorLoad"></div>
 						</div>
-					</div>
+					</div>	
+                    <div class="labelTextUnit"><input type="radio" name="modeSwicher" id="rdJdeCompany" />&nbsp;<label for="rdJdeCompany" >JDE Company</label>:</div>
+					<div id="Div2">
+						<select id="JDECompany" name="JDECompany" multiple="multiple"></select>
+					</div>						
+					
 				</div>
 			</div>
 			<div style="clear:both;"></div>
@@ -62,14 +67,6 @@
 				<div class="contentArea">					
 					<div id="detailContainer">
 						<div class="body">
-							<div id="TableEditArea">
-								<div id="LabelTextAreaLeft">
-									<span class="requiredFieldIndicator">&#149;</span>JDE Company:
-								</div>
-								<div id="InputTextAreaRight">
-									<select id="JDECompany" name="JDECompany" multiple="multiple"></select>
-								</div>
-							</div>
 							<div style="clear:both;"></div>
 							<div id="TableEditArea">
 								<div id="LabelTextAreaLeft">
