@@ -47,7 +47,7 @@
 			    	<tr>
 			        	<td>				
 							<div style="height: 66px; width: 100%; position: relative; z-index: 3; overflow: hidden">
-			                	<table id="tblHouseCodeGridHeader" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 2; width: 10900px">
+			                	<table id="tblHouseCodeGridHeader" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 2; width: 11300px">
 			                    	<thead id="HouseCodeGridHead">
 										<tr>
 											<th class="gridHeaderColumn">&nbsp;</th>
@@ -59,7 +59,7 @@
 											<th class="gridHeaderColumn" colspan="13">Statistics Information</th>
 											<th class="gridHeaderColumn" colspan="5">Shipping Information</th>
 											<th class="gridHeaderColumn" colspan="20">Financial Information</th>
-											<th class="gridHeaderColumnRight" colspan="8">Payroll Information</th>
+											<th class="gridHeaderColumnRight" colspan="10">Payroll Information</th>
 										</tr>
 										<tr id="trHouseCodeGridHead">
 											<th class="gridHeaderColumn" width="30px">#</th>
@@ -162,7 +162,9 @@
 											<th class="gridHeaderColumn" width="100px">Rounding Time Period</th>
 											<th class="gridHeaderColumn" width="100px">Time And Attendance</th>
 											<th class="gridHeaderColumn" width="50px">EPay Site</th>
-											<th class="gridHeaderColumnRight" width="100px">EPay Pay Group</th>
+											<th class="gridHeaderColumn" width="100px">EPay Pay Group</th>
+											<th class="gridHeaderColumn" width="200px">Payroll Company Hourly</th>
+											<th class="gridHeaderColumnRight" width="200px">Payroll Company Salaried</th>
 										</tr>
 									</thead>
 								</table>
@@ -172,7 +174,7 @@
 					<tr>
 		                <td>
 		                    <div id="divHouseCodeGrid" style="position: relative; overflow: auto;">                              
-		                        <table id="HouseCodeGrid" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 1; width: 10900px">
+		                        <table id="HouseCodeGrid" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 1; width: 11300px">
 		                            <tbody id="HouseCodeGridBody"></tbody>
 		                        </table>
 		                    </div>
@@ -305,7 +307,9 @@
 					    <td class="gridColumn" style="width: 100px" align="center"><input type="text" maxlength="20" id="txtRoundingTimePeriodRowCount" style="width: 96px;" /></td>
                    	    <td class="gridColumn" style="width: 100px" align="center"><input type="checkbox" id="chkTimeAndAttendanceRowCount" style="width: 96px;" /></select></td>
 					    <td class="gridColumn" style="width: 50px" align="center"><input type="checkbox" id="chkEPaySiteRowCount" style="width: 46px;" /></select></td>
-						<td class="gridColumnRight" style="width: 100px" align="center"><select id="selEPayGroupTypeRowCount" style="width: 96px;"></select></td>
+						<td class="gridColumn" style="width: 100px" align="center"><select id="selEPayGroupTypeRowCount" style="width: 96px;"></select></td>
+						<td class="gridColumn" style="width: 200px" align="center"><select id="selPayrollCompanyHourlyRowCount" style="width: 196px;"></select></td>
+						<td class="gridColumnRight" style="width: 200px" align="center"><select id="selPayrollCompanySalariedRowCount" style="width: 196px;"></select></td>
 	    			</tr>
                 </tbody>
             </table>
