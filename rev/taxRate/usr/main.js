@@ -473,6 +473,16 @@ ii.Class({
 		actionExportToExcelItem: function() {
 			var me = this;
 
+			if (me.zipCode.getValue() == "" && me.state.indexSelected == -1) {
+				alert("Please enter search criteria: Zip Code or State.")
+				return false;
+			}
+
+			if (me.state.indexSelected >= 0)
+				me.stateId = me.stateTypes[me.state.indexSelected].id;
+			else
+				me.stateId = 0;
+
 			$("#messageToUser").text("Exporting");
 			$("#pageLoading").show();
 
