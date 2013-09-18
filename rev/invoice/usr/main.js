@@ -716,7 +716,7 @@ ii.Class({
 			if (args.columnName == "job" && !me.invoiceByCustomer) {
 				for (var index = 0; index < me.houseCodeCache[me.houseCodeBrief].jobs.length; index++) {
 					var job = me.houseCodeCache[me.houseCodeBrief].jobs[index];
-					title = job.jobNumber + " - " + job.jobTitle;
+					title = ui.cmn.text.xml.encode(job.jobNumber + " - " + job.jobTitle);
 					if (args.columnValue == title)
 						rowHtml += "	<option title='" + title + "' value='" + job.id + "' selected>" + title + "</option>";
 					else
@@ -1248,7 +1248,7 @@ ii.Class({
 		    
 		    for (var index = 0; index < me.houseCodeCache[houseCode].jobs.length; index++) {
 		        job = me.houseCodeCache[houseCode].jobs[index];
-				title = job.jobNumber + " - " + job.jobTitle;
+				title = ui.cmn.text.xml.encode(job.jobNumber + " - " + job.jobTitle);
 				options += "<option  title='" + title + "' value='" + job.id + "'>" + title + "</option>\n";
 		    }
 
