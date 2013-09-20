@@ -27,6 +27,9 @@ ii.init.register( function() {
 		, invoiceId: {type: Number, required: false, defaultValue: 0}
 		, houseCodeId: {type: Number, required: false, defaultValue: 0}
 		, houseCode: {type: String, required: false, defaultValue: ""}
+		, houseCodeJob: {type: Number, required: false, defaultValue: 0}
+		, jobBrief: {type: String, required: false, defaultValue: ""}
+		, jobTitle: {type: String, required: false, defaultValue: ""}
 		, depositDate: {type: String, required: false, defaultValue: ""}
 		, checkDate: {type: String, required: false, defaultValue: ""}
 		, checkNumber: {type: String, required: false, defaultValue: ""}
@@ -45,6 +48,9 @@ ii.init.register( function() {
 		, houseCodeId: {type: Number, required: false, defaultValue: 0}
 		, hirNodeId: {type: Number, required: false, defaultValue: 0}
 		, houseCode: {type: String, required: false, defaultValue: ""}
+		, houseCodeJob: {type: Number, required: false, defaultValue: 0}
+		, jobBrief: {type: String, required: false, defaultValue: ""}
+		, jobTitle: {type: String, required: false, defaultValue: ""}
 		, account: {type: Number, required: false, defaultValue: 0}
 		, amount: {type: String, required: false, defaultValue: ""}
 	};
