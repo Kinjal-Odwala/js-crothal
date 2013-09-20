@@ -604,6 +604,11 @@ ii.init.register( function() {
 		, title: {type: String}
 	};
 	
+	fin.adh.hcmSiteTypeArgs = {
+		id: {type: Number}
+		, name: {type: String}
+	};
+	
 }, 2);
 
 ii.Class({
@@ -1400,3 +1405,13 @@ ii.Class({
 			}				
 		}			
 });	
+
+ii.Class({
+	Name: "fin.adh.HcmSiteType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.hcmSiteTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
