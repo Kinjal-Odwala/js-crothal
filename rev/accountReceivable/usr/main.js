@@ -506,6 +506,7 @@ ii.Class({
 					$(this).removeClass("trover");});
 						
 			$("#AccountReceivableContextMenu tr").click(function() {
+				if (me.rowBeingEdited) return;
 
 				if (this.id == "menuAdd")
 					me.accountReceivableGridRowAdd();
@@ -518,7 +519,6 @@ ii.Class({
 			});
 	
 			$("#AccountReceivableGridBody td").mousedown(function() {
-
 				if (me.rowBeingEdited) return;
 				
 				if (this.cellIndex >= 0 && this.cellIndex <= 10)
