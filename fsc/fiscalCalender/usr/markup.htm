@@ -24,7 +24,7 @@
 		
 		<div id="fiscalPeriodsLoading" style="position: absolute; top: 115px; left: 48%; z-index: 5000; width: 51%; height: 40%; background-color: white; display:none;">
 	        <div style="position: absolute; width: 66; height: 70;top: 50%; left: 49.5%; margin-top: -50px; margin-left: -33px">
-	            <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+	            <img id="imgLoading" src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
 	            <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px;">Loading</div>    
 	        </div>
 	    </div>
@@ -32,7 +32,13 @@
         <div class="pageHeader">
 	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
         </div>
-
+		<div style="clear:both;"></div>
+		<div id="itemStatusDiv">
+			<div id="itemStatusImage" class="itemStatusImage"></div>
+			<div id="itemModifiedImage" class="itemModifiedImage"></div>
+			<div id="itemStatusText">Loading, please wait...</div>
+		</div>
+		<div style="clear:both;"></div>
 		<div class="pageBody">
 		    <div id="contentAreasContainerLeft" >
                 <div class="contentArea" >

@@ -2,6 +2,7 @@ ii.Import( "ii.krn.sys.ajax" );
 ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import("ui.ctl.usr.buttons");
 ii.Import( "fin.fsc.jdeCompany.usr.defs" );
@@ -25,6 +26,7 @@ ii.Class({
 			me.jdeCompanyId = 0;
 			me.jdeCompanyCountOnLoad = 0;
 			me.isReadOnly = false;
+			me.loadCount = 0;
 			
 			me.gateway = ii.ajax.addGateway("fsc", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -34,6 +36,7 @@ ii.Class({
 			); 
 			
 			me.validator = new ui.ctl.Input.Validation.Master();
+			me.session = new ii.Session(me.cache);
 			
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\Fiscal\\JDECompanies";
@@ -42,18 +45,14 @@ ii.Class({
 					me.authorizationProcess.apply(me);
 				},
 				me);
-			
-			me.session = new ii.Session(me.cache);
-
+				
 			me.defineFormControls();
 			me.configureCommunications();			
+			me.setStatus("Loading");
+			me.modified(false);
 			
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
-			
-			me.patternStore.fetch("userId:[user]", me.patternsLoaded, me); 
-			me.jdeCompanyStore.fetch("userId:[user]", me.jdeCompanyLoaded, me);
-			me.modified(false);
 			
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
@@ -63,13 +62,29 @@ ii.Class({
 		authorizationProcess: function fin_fsc_jdeCompany_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
+			
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
+			
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
 
-			$("#pageLoading").hide();
-			me.isReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
-			me.controlVisible();
-				
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+				ii.timer.timing("Page displayed");
+				me.loadCount = 2;
+				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.patternStore.fetch("userId:[user]", me.patternsLoaded, me); 
+				me.jdeCompanyStore.fetch("userId:[user]", me.jdeCompanyLoaded, me);
+				me.isReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
+				me.controlVisible();
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},	
 		
 		sessionLoaded: function fin_fsc_jdeCompany_UserInterface_sessionLoaded(){
@@ -90,7 +105,7 @@ ii.Class({
 		resize: function() {
 			var args = ii.args(arguments,{});
 
-			fin.fsc.jdeCompanyGridUi.jdeCompanyGrid.setHeight($(window).height() - 115);	
+			fin.fsc.jdeCompanyGridUi.jdeCompanyGrid.setHeight($(window).height() - 140);	
 		},
 		
 		defineFormControls: function() {
@@ -202,6 +217,12 @@ ii.Class({
 			});
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
@@ -211,14 +232,37 @@ ii.Class({
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
+			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		patternsLoaded: function (me, activeId) {
 
 			me.jdeFiscalPattern.reset();
-			me.jdeFiscalPattern.setData(me.patterns);			
+			me.jdeFiscalPattern.setData(me.patterns);	
+			me.checkLoadCount();		
 		},
 		
 		controlVisible: function(){
@@ -241,10 +285,10 @@ ii.Class({
 			me.jdeCompanyGrid.setData(me.jdeCompanys);
 			me.jdeCompanyCountOnLoad = me.jdeCompanys.length - 1;
 			
-			me.jdeCompanyGrid.setHeight($("#pageLoading").height() - 115);	
+			me.jdeCompanyGrid.setHeight($("#pageLoading").height() - 130);	
 			
-			$("#pageLoading").hide();
 			me.resizeControls();
+			me.checkLoadCount();
 		},
 		
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
@@ -281,7 +325,8 @@ ii.Class({
 			
 			if (!parent.fin.cmn.status.itemValid())
 				return;
-				
+			
+			me.setStatus("Loading");	
 			window.location = "/fin/fsc/jdeCompany/usr/markup.htm";			
 		},
 		
@@ -324,6 +369,8 @@ ii.Class({
 			}
 
 			if (item.length <=0) return;
+			
+			me.setStatus("Saving");
 			
 			$("#messageToUser").text("Saving");
 			$("#pageLoading").show();
@@ -375,12 +422,15 @@ ii.Class({
 			
 			if (status == "success") {
 				me.modified(false);
+				me.setStatus("Saved");
 				me.actionUndoItem();
 			}
 			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating JDE Company details: " + $(args.xmlNode).attr("message"));
-				$("#pageLoading").hide();
 			}
+			
+			$("#pageLoading").fadeOut("slow");
 		}
 	}
 });

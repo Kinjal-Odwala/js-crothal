@@ -27,6 +27,7 @@ ii.Class({
 			me.status = "";
 			me.lastSelectedIndex = -1;	
 			me.accountReadOnly = false;
+			me.loadCount = 0;
 			
 			me.gateway = ii.ajax.addGateway("fsc", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -36,6 +37,7 @@ ii.Class({
 			);
 						
 			me.validator = new ui.ctl.Input.Validation.Master();
+			me.session = new ii.Session(me.cache);
 			
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\Fiscal\\ChartOfAccounts";
@@ -44,18 +46,14 @@ ii.Class({
 					me.authorizationProcess.apply(me);
 				},
 				me);
-						
-			me.session = new ii.Session(me.cache);
 
 			me.defineFormControls();
 			me.configureCommunications();
+			me.setStatus("Loading");
+			me.modified(false);
 			
 			$(window).bind("resize", me, me.resize);
-			$(document).bind("keydown", me, me.controlKeyProcessor);			
-			
-			me.accountCategory.fetchingData();
-			me.accountCategoryStore.fetch("userId:[user]", me.accountCategorysLoaded, me);
-			me.modified(false);
+			$(document).bind("keydown", me, me.controlKeyProcessor);
 			
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
@@ -66,11 +64,28 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 			
-			me.accountReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
-			me.controlVisible();
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
+			
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
 
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+				ii.timer.timing("Page displayed");
+				me.loadCount = 1;
+				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.accountCategory.fetchingData();
+				me.accountCategoryStore.fetch("userId:[user]", me.accountCategorysLoaded, me);
+				me.accountReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
+				me.controlVisible();
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},	
 		
 		sessionLoaded: function fin_fsc_account_UserInterface_sessionLoaded(){
@@ -84,8 +99,8 @@ ii.Class({
 		resize: function() {
 			var args = ii.args(arguments, {});
 
-			fin.fsc.fscAccountUi.fiscalAccountGrid.setHeight($(window).height() - 85);
-			$("#accountDetailContentArea").height($(window).height() - 127);					
+			fin.fsc.fscAccountUi.fiscalAccountGrid.setHeight($(window).height() - 110);
+			$("#accountDetailContentArea").height($(window).height() - 152);					
 		},
 		
 		defineFormControls: function() {
@@ -314,6 +329,12 @@ ii.Class({
 			});			
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
@@ -323,8 +344,30 @@ ii.Class({
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
+			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		controlVisible: function(){
@@ -366,8 +409,8 @@ ii.Class({
 			me.fiscalAccountGrid.setData([]);
 			me.fiscalAccountGrid.setData(me.accounts);
 			
-			$("#pageLoading").hide();
-			me.resizeControls();			
+			me.resizeControls();
+			me.checkLoadCount();			
 		},
 
 		itemSelect: function() {
@@ -380,7 +423,8 @@ ii.Class({
 				me.fiscalAccountGrid.body.deselect(args.index, true);
 				return;
 			}
-
+			
+			me.setLoadCount();
 			me.status = "";
 			me.accountId = item.id;
 			me.lastSelectedIndex = args.index;			
@@ -409,6 +453,7 @@ ii.Class({
 	        me.accountReceivable.setValue(item.accountReceivables.toString());
 	        me.wor.setValue(item.wor.toString());
 	        me.otherRevenue.setValue(item.otherRevenue.toString());
+			me.checkLoadCount();
 		},
 
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
@@ -452,7 +497,8 @@ ii.Class({
 				return;
 				
 			if (me.accountReadOnly) return;
-
+			
+			me.setLoadCount();
 			me.actionResetItem();
 			me.status = "new";
 		},
@@ -465,10 +511,11 @@ ii.Class({
 				return;
 				
 			me.status = "";	
+			me.setStatus("Loading");
 			
-			if (me.lastSelectedIndex > 0) {
+			if (me.lastSelectedIndex >= 0) {
 				me.fiscalAccountGrid.body.select(me.lastSelectedIndex);
-				me.itemSelect(me.lastSelectedIndex);
+				//me.itemSelect(me.lastSelectedIndex);
 			}
 		},
 
@@ -503,6 +550,7 @@ ii.Class({
 			me.fiscalAccountGrid.body.deselectAll();
 			me.accountCode.text.focus();
 			me.validator.reset();
+			me.checkLoadCount();
 		},
 
 		actionSaveItem: function() {
@@ -523,9 +571,11 @@ ii.Class({
 				alert( "In order to save, the errors on the page must be corrected.");
 				return false;
 			}
+			
+			me.setStatus("Saving");
 
 			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 
 			var item = new fin.fsc.account.Account(
 				me.accountId
@@ -612,13 +662,10 @@ ii.Class({
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
 			var id = parseInt($(this).attr("id"), 10);
-			var index = 0;			
-
-			$("#pageLoading").hide();
+			var index = 0;	
 
 			if (status == "success") {
 				me.modified(false);
-				
 				$(args.xmlNode).find("*").each(function () {
 
 					switch (this.tagName) {
@@ -669,10 +716,15 @@ ii.Class({
 							break;
 					}
 				});
+				$("#messageToUser").text("Saving");
+				me.setStatus("Saved");
 			}
 			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating Chart of Account details: " + $(args.xmlNode).attr("message"));
 			}
+			
+			$("#pageLoading").fadeOut("slow");
 		}
 	}
 });
