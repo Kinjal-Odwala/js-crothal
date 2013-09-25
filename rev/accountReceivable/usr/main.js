@@ -29,6 +29,8 @@ ii.Class({
 			me.invoiceByCustomer = false;
 			me.invalidHouseCode = "";
 			me.descriptionAccount = parent.fin.revMasterUi.descriptionAccount;
+			me.houseCodeCache = parent.fin.revMasterUi.houseCodeCache;
+			me.houseCodeBrief = parent.fin.revMasterUi.houseCodeBrief;
 
 			var index = parent.fin.revMasterUi.lastSelectedRowIndex;
 			if (index >= 0) {				
@@ -297,6 +299,16 @@ ii.Class({
 			$("#AccountReceivableGrid tbody").html("");	
 		},
 
+		getJobTitle: function(brief, title) {
+			var me = this;
+			var jobTitle = "";
+
+			if (brief != "")
+				jobTitle = brief + " - " + title;
+
+			return jobTitle == "" ? "&nbsp;" : jobTitle;
+		},
+
 		getAccountNumberName: function(Id) {
 			var me = this;
 			var accountNumberName = "";
@@ -350,6 +362,7 @@ ii.Class({
 						, true // Editing Row
 				        , 0
 						, me.invoiceItems[index].houseCode
+						, me.getJobTitle(me.invoiceItems[index].jobBrief, me.invoiceItems[index].jobTitle)
 					    , currentDate
 						, currentDate
 						, "CM"			    
@@ -365,9 +378,15 @@ ii.Class({
 					insertAt = $("#AccountReceivableGridBody").find("tr").length - 1;
 					
 					$($("#AccountReceivableGridBody tr")[insertAt]).before(rowHtml);
+					
+					if (me.invoiceByCustomer) {
+						if ($("#houseCode" + rowNumber).val() != "") {
+							me.houseCodeCheck($("#houseCode" + rowNumber).val(), rowNumber, me.invoiceItems[index].houseCodeJob);
+						}
+					}
 				}
 			}
-
+			
 			$("#AccountReceivableGridBody input[id^=houseCode]").attr("readonly", true);
 			$("#AccountReceivableGridBody input[id^=amount]").attr("readonly", true);
 			$("#AccountReceivableGridBody option:not(:selected)").attr("disabled", true);
@@ -393,6 +412,7 @@ ii.Class({
 					, false
 					, me.accountReceivables[index].id
 					, me.accountReceivables[index].houseCode
+					, me.getJobTitle(me.accountReceivables[index].jobBrief, me.accountReceivables[index].jobTitle)
 					, me.accountReceivables[index].depositDate
 					, me.accountReceivables[index].checkDate
 					, me.accountReceivables[index].checkNumber
@@ -452,6 +472,7 @@ ii.Class({
 				, "&nbsp;"
 				, "&nbsp;"
 				, "&nbsp;"
+				, "&nbsp;"
 				, args.title
 				, args.totalAmount.toFixed(5)
 				, "&nbsp;"
@@ -500,7 +521,7 @@ ii.Class({
 
 				if (me.rowBeingEdited) return;
 				
-				if (this.cellIndex >= 0 && this.cellIndex <= 9)
+				if (this.cellIndex >= 0 && this.cellIndex <= 10)
 					me.currentRowSelected = this.parentNode;
 				else
 					me.currentRowSelected = null;
@@ -521,6 +542,7 @@ ii.Class({
 				, rowEditable: {type: Boolean}
 				, id: {type: Number}
 				, houseCode: {type: String}
+				, job: {type: String}
 				, depositDate: {type: String}
 				, checkDate: {type: String}
 				, checkNumber: {type: String}
@@ -555,11 +577,12 @@ ii.Class({
 				rowHtml += me.getEditableRowColumn(false, false, 0, "rowNumber", rowNumberText, 4, "right");
 				rowHtml += me.getEditableRowColumn(false, false, 1, "id", args.id.toString(), 0, "left");
 				rowHtml += me.getEditableRowColumn(editHouseCode, false, 2, "houseCode" + args.rowNumber, args.houseCode, 10, "left");
-				rowHtml += me.getEditableRowColumn(false, false, 3, "depositDate", args.depositDate, 8, "left");
-				rowHtml += me.getEditableRowColumn(false, false, 4, "checkDate", args.checkDate, 8, "left");
-				rowHtml += me.getEditableRowColumn(false, false, 5, "checkNumber", args.checkNumber, 8, "left");
-				rowHtml += me.getEditableRowColumn(true, false, 6, "amount" + args.rowNumber, args.amount, 8, "right");
-				rowHtml += me.getEditableRowColumn(true, false, 7, "account" + args.rowNumber, args.account, 21, "left", "dropdown");
+				rowHtml += me.getEditableRowColumn(true, false, 11, "job" + args.rowNumber, args.job, 12, "left", "dropdown");
+				rowHtml += me.getEditableRowColumn(false, false, 3, "depositDate", args.depositDate, 6, "left");
+				rowHtml += me.getEditableRowColumn(false, false, 4, "checkDate", args.checkDate, 6, "left");
+				rowHtml += me.getEditableRowColumn(false, false, 5, "checkNumber", args.checkNumber, 6, "left");
+				rowHtml += me.getEditableRowColumn(true, false, 6, "amount" + args.rowNumber, args.amount, 6, "right");
+				rowHtml += me.getEditableRowColumn(true, false, 7, "account" + args.rowNumber, args.account, 17, "left", "dropdown");
 			    rowHtml += me.getEditableRowColumn(true, false, 8, "payer" + args.rowNumber, args.payer, 10, "left");
 				rowHtml += me.getEditableRowColumn(false, false, 9, "status", args.status, 8, "center");
 				rowHtml += me.getEditableRowColumn(true, false, 10, "notes" + args.rowNumber, args.notes, 15, "left");
@@ -568,11 +591,12 @@ ii.Class({
 				rowHtml += me.getEditableRowColumn(false, false, 0, "rowNumber", rowNumberText, 4, "right");
 				rowHtml += me.getEditableRowColumn(false, false, 1, "id", args.id.toString(), 0, "left");
 				rowHtml += me.getEditableRowColumn(false, false, 2, "houseCode", args.houseCode, 10, "left");
-				rowHtml += me.getEditableRowColumn(false, false, 3, "depositDate", args.depositDate, 8, "left");
-				rowHtml += me.getEditableRowColumn(false, false, 4, "checkDate", args.checkDate, 8, "left");
-				rowHtml += me.getEditableRowColumn(false, columnBold, 5, "checkNumber", args.checkNumber, 8, "left");
-				rowHtml += me.getEditableRowColumn(false, columnBold, 6, "amount", args.amount, 8, "right");
-				rowHtml += me.getEditableRowColumn(false, false, 7, "account", args.account, 21, "left", "dropdown");
+				rowHtml += me.getEditableRowColumn(false, false, 11, "job", args.job, 12, align);
+				rowHtml += me.getEditableRowColumn(false, false, 3, "depositDate", args.depositDate, 6, "left");
+				rowHtml += me.getEditableRowColumn(false, false, 4, "checkDate", args.checkDate, 6, "left");
+				rowHtml += me.getEditableRowColumn(false, columnBold, 5, "checkNumber", args.checkNumber, 6, "left");
+				rowHtml += me.getEditableRowColumn(false, columnBold, 6, "amount", args.amount, 6, "right");
+				rowHtml += me.getEditableRowColumn(false, false, 7, "account", args.account, 17, "left", "dropdown");
 			    rowHtml += me.getEditableRowColumn(false, false, 8, "payer", args.payer, 10, "left");
 				rowHtml += me.getEditableRowColumn(false, false, 9, "status", args.status, 8, "center");
 				rowHtml += me.getEditableRowColumn(false, false, 10, "notes", args.notes, 15, "left");
@@ -617,18 +641,32 @@ ii.Class({
 			});
 			var me = this;
 			var rowHtml = "";
-			
+			var title = "";
+			var columnName = args.columnName.replace(/\d/g, "");
+
 			rowHtml = "<select id='" + args.columnName + "' style='width:100%;'>";
-			
-			for (var index = 0; index < me.accounts.length; index++) {
-				if (args.columnValue == me.accounts[index].code + " - " + me.accounts[index].description)
-					rowHtml += "	<option value='" + me.accounts[index].id + "' selected>" + me.accounts[index].code + " - " + me.accounts[index].description + "</option>";
-				else
-					rowHtml += "	<option value='" + me.accounts[index].id + "'>" + me.accounts[index].code + " - " + me.accounts[index].description + "</option>";
+
+			if (columnName == "job" && !me.invoiceByCustomer) {
+				rowHtml += "<option value='0'></option>";
+				for (var index = 0; index < me.houseCodeCache[me.houseCodeBrief].jobs.length; index++) {
+					var job = me.houseCodeCache[me.houseCodeBrief].jobs[index];
+					title = ui.cmn.text.xml.encode(job.jobNumber + " - " + job.jobTitle);
+					if (args.columnValue == title) 
+						rowHtml += "<option title='" + title + "' value='" + job.id + "' selected>" + title + "</option>";
+					else 
+						rowHtml += "<option title='" + title + "' value='" + job.id + "'>" + title + "</option>";
+				}
+			}
+			else if (columnName == "account") {
+				for (var index = 0; index < me.accounts.length; index++) {
+					if (args.columnValue == me.accounts[index].code + " - " + me.accounts[index].description) 
+						rowHtml += "<option value='" + me.accounts[index].id + "' selected>" + me.accounts[index].code + " - " + me.accounts[index].description + "</option>";
+					else 
+						rowHtml += "<option value='" + me.accounts[index].id + "'>" + me.accounts[index].code + " - " + me.accounts[index].description + "</option>";
+				}
 			}
 			
 			rowHtml += "</select>";
-			
 			return rowHtml;
 		},
 		
@@ -640,7 +678,7 @@ ii.Class({
 			if (me.rowBeingEdited || me.currentRowSelected == null)
 				return;
 
-			if (parseInt(me.currentRowSelected.cells[1].innerHTML) == 0 || me.currentRowSelected.cells[5].innerHTML != "CM")
+			if (parseInt(me.currentRowSelected.cells[1].innerHTML) == 0 || me.currentRowSelected.cells[6].innerHTML != "CM")
 				editable = false;
 			else {
 				rowNumber = parseInt(me.currentRowSelected.cells[0].innerHTML) - 1;
@@ -664,11 +702,12 @@ ii.Class({
 					return false;
 			});
 			
-			$("#amount" + rowNumber).change(function() { me.modified(); });
+			$("#job" + rowNumber).change(function() { me.modified(); });
 			$("#account" + rowNumber).change(function() { me.modified(); });
+			$("#amount" + rowNumber).change(function() { me.modified(); });
 			$("#payer" + rowNumber).change(function() { me.modified(); });
 			$("#notes" + rowNumber).change(function() { me.modified(); });
-			
+
 			if (me.invoiceByCustomer) {
 				$("#houseCode" + rowNumber).bind("keydown", me, me.searchHouseCode);
 				$("#houseCode" + rowNumber).bind("blur", function() { me.houseCodeBlur(this); });
@@ -683,8 +722,8 @@ ii.Class({
 				return;				
 
 			var rowNumber = parseInt(me.currentRowSelected.cells[0].innerHTML);
-			var payer = me.currentRowSelected.cells[8].innerHTML;
-			var notes = me.currentRowSelected.cells[10].innerHTML == "&nbsp;" ? "" : me.currentRowSelected.cells[10].innerHTML;
+			var payer = me.currentRowSelected.cells[9].innerHTML;
+			var notes = me.currentRowSelected.cells[11].innerHTML == "&nbsp;" ? "" : me.currentRowSelected.cells[11].innerHTML;
 
 		    var rowHtml = me.getAccountReceivableGridRow(
 		        rowNumber
@@ -694,10 +733,11 @@ ii.Class({
 				, me.currentRowSelected.cells[3].innerHTML
 				, me.currentRowSelected.cells[4].innerHTML
 				, me.currentRowSelected.cells[5].innerHTML
-			    , me.currentRowSelected.cells[6].innerHTML == "&nbsp;" ? "" : me.currentRowSelected.cells[6].innerHTML
-			    , me.currentRowSelected.cells[7].innerHTML
+				, me.currentRowSelected.cells[6].innerHTML
+			    , me.currentRowSelected.cells[7].innerHTML == "&nbsp;" ? "" : me.currentRowSelected.cells[7].innerHTML
+			    , me.currentRowSelected.cells[8].innerHTML
 			    , ""
-			    , me.currentRowSelected.cells[9].innerHTML
+			    , me.currentRowSelected.cells[10].innerHTML
 				, ""
 		        )
 
@@ -709,10 +749,10 @@ ii.Class({
 			me.rowBeingEdited = true;
 			me.status = "Edit";			
 			me.invalidHouseCode = "";
-			
+
 			if (me.invoiceByCustomer) {
 				if ($("#houseCode" + rowNumber).val() != "") {
-					me.houseCodeCheck($("#houseCode" + rowNumber).val());
+					me.houseCodeCheck($("#houseCode" + rowNumber).val(), rowNumber);
 				}
 			}
 		},
@@ -733,6 +773,7 @@ ii.Class({
 		        rowNumber
 				, true // Editing Row
 		        , 0
+				, ""
 				, ""
 			    , currentDate
 				, currentDate
@@ -793,40 +834,102 @@ ii.Class({
 
 		houseCodeBlur: function(objInput) {
 			var me = this;
-	    
+			var rowNumber = parseInt(objInput.id.replace("houseCode", ""), 10);
+	    	
 		    //remove any unwanted characters
 		    objInput.value = objInput.value.replace(/[^0-9]/g, "");
 		    if (objInput.value == "") objInput.value = parent.parent.fin.appUI.houseCodeBrief;
 			
 			if (me.invalidHouseCode != objInput.value) {
 				me.invalidHouseCode = objInput.value;
-				me.houseCodeCheck(objInput.value);
+				me.houseCodeCheck(objInput.value, rowNumber);
 			}
 		},
-
-		houseCodeCheck: function(houseCode) {
+		
+		houseCodeCheck: function(houseCode, rowNumber, columnValue) {
 			var me = this;
 
 		    if (me.houseCodeCache[houseCode] != undefined) {
+				var rowArray = {};
+				rowArray.rowNumber = rowNumber;
+				rowArray.columnValue = columnValue;
+				
 	            if (me.houseCodeCache[houseCode].loaded)
-	                me.houseCodeValidate(houseCode);
+	                me.houseCodeValidate(houseCode, [rowArray]);
+				 else
+	                me.houseCodeCache[houseCode].buildQueue.push(rowArray);
 	        }
 	        else
-	            me.houseCodeLoad(houseCode);
+	            me.houseCodeLoad(houseCode, rowNumber, columnValue);
+		},
+		
+		houseCodeValidate: function(houseCode, rowArray) {
+		    var me = this;
+
+			$("#pageLoading").hide();
+			var rowNumber = rowArray[0].rowNumber;
+			
+		    if (me.houseCodeCache[houseCode].valid) {
+				var found = false;
+
+			    for (var index = 0; index < me.houseCodeCache[houseCode].customers.length; index++) {
+					if (me.invoice.jobBrief == me.houseCodeCache[houseCode].customers[index].jobNumber) {
+						found = true;
+						break;
+					}
+			    }
+
+				if (found) {
+					me.invalidHouseCode = "";
+					me.houseCodeCache[houseCode].validCustomer = true;
+					$("#houseCode" + rowNumber).css("background-color", "white");
+					$("#houseCode" + rowNumber).attr("title", "");
+
+					if (me.houseCodeCache[houseCode].jobsLoaded) {
+				        for (var index = 0; index < rowArray.length; index++) {
+				            rowNumber = Number(rowArray[index].rowNumber);
+							me.jobRebuild(houseCode, rowNumber, rowArray[index].columnValue);
+				        }
+					}
+					if (me.status == "AddFullCredit")
+						$("#AccountReceivableGridBody option:not(:selected)").attr("disabled", true);
+				}
+				else {					
+					me.houseCodeCache[houseCode].validCustomer = false;
+					$("#houseCode" + rowNumber).css("background-color", "red");
+					$("#houseCode" + rowNumber).attr("title", "Customer is not associated with the House Code [" + houseCode + "].");
+			        $("#houseCode" + rowNumber).select();
+					alert("Customer is not associated with the House Code [" + houseCode + "].");
+				}
+		    }
+		    else {
+				$("#houseCode" + rowNumber).css("background-color", "red");
+				$("#houseCode" + rowNumber).attr("title", "The House Code [" + houseCode + "] is not valid.");
+		        $("#houseCode" + rowNumber).select();
+		        alert("The House Code [" + houseCode + "] is not valid.");
+		    }
 		},
 
-		houseCodeLoad: function(houseCode) {
+		houseCodeLoad: function(houseCode, rowNumber, columnValue) {
 		    var me = this;
 		    
 			$("#messageToUser").text("Loading");
 		    $("#pageLoading").show();
+			
+			var rowArray = {};
+			rowArray.rowNumber = rowNumber;
+			rowArray.columnValue = columnValue;
 		    
 		    me.houseCodeCache[houseCode] = {};
 		    me.houseCodeCache[houseCode].valid = false;
 		    me.houseCodeCache[houseCode].loaded = false;
-			me.houseCodeCache[houseCode].customersLoaded = false;			
+			me.houseCodeCache[houseCode].customersLoaded = false;
+			me.houseCodeCache[houseCode].jobsLoaded = false;
 			me.houseCodeCache[houseCode].validCustomer = false;
 			me.houseCodeCache[houseCode].customers = [];
+			me.houseCodeCache[houseCode].jobs = [];
+			me.houseCodeCache[houseCode].buildQueue = [];
+			me.houseCodeCache[houseCode].buildQueue.push(rowArray);
 		    
 		    $.ajax({
                 type: "POST",
@@ -844,18 +947,18 @@ ii.Class({
 		                $(xml).find("item").each(function() {
 		                    me.houseCodeCache[houseCode].valid = true;
 		                    me.houseCodeCache[houseCode].id = $(this).attr("id");
-		                    me.houseCodeJobCustomersLoad(houseCode);
+		                    me.houseCodeJobCustomersLoad(houseCode, rowNumber);
 		                });
 		            }
 		            else {
 		                //the house code is invalid
-		                me.houseCodeValidate(houseCode);
+		                me.houseCodeValidate(houseCode, me.houseCodeCache[houseCode].buildQueue);
 		            }
 				}
 			});
 		},
 		
-		houseCodeJobCustomersLoad: function(houseCode) {
+		houseCodeJobCustomersLoad: function(houseCode, rowNumber) {
 		    var me = this;
 
 		    $.ajax({
@@ -878,49 +981,67 @@ ii.Class({
 		            });
 
 					me.houseCodeCache[houseCode].customersLoaded = true;
-					//validate the list of rows
-		            me.houseCodeValidate(houseCode);
+					me.houseCodeJobsLoad(houseCode, rowNumber);
 				}
 			});
-		},		
-
-		houseCodeValidate: function(houseCode) {
+		},
+		
+		houseCodeJobsLoad: function(houseCode, rowNumber) {
 		    var me = this;
 
-			$("#pageLoading").hide();
+		    $.ajax({
+                type: "POST",
+                dataType: "xml",
+                url: "/net/crothall/chimes/fin/rev/act/provider.aspx",
+                data: "moduleId=rev&requestId=1&targetId=iiCache"
+                    + "&requestXml=<criteria>storeId:houseCodeJobs,userId:[user]"
+                    + ",houseCodeId:" + me.houseCodeCache[houseCode].id + ",<criteria>",
 
-			var rowNumber = me.currentRowSelected.cells[0].innerHTML;
-			
-		    if (me.houseCodeCache[houseCode].valid) {
-				var found = false;
+                success: function(xml) {
 
-			    for (var index = 0; index < me.houseCodeCache[houseCode].customers.length; index++) {
-					if (me.invoice.jobBrief == me.houseCodeCache[houseCode].customers[index].jobNumber) {
-						found = true;
+		            $(xml).find("item").each(function() {
+		                var job = {};						
+		                job.id = Number($(this).attr("id"));
+		                job.jobNumber = $(this).attr("jobNumber");
+		                job.jobTitle = $(this).attr("jobTitle");
+		                me.houseCodeCache[houseCode].jobs.push(job);
+		            });
+
+					me.houseCodeCache[houseCode].jobsLoaded = true;
+					//validate the list of rows
+		            me.houseCodeValidate(houseCode, me.houseCodeCache[houseCode].buildQueue);
+				}
+			});			
+		},
+		
+		jobRebuild: function(houseCode, rowNumber, columnValue) {
+		    var me = this;
+		    var job = {};
+		    var selJob = $("#job" + rowNumber);
+			var options = "<option value='0'></option>";
+			var title = "";
+
+		    for (var index = 0; index < me.houseCodeCache[houseCode].jobs.length; index++) {
+		        job = me.houseCodeCache[houseCode].jobs[index];
+				title = ui.cmn.text.xml.encode(job.jobNumber + " - " + job.jobTitle);
+				options += "<option  title='" + title + "' value='" + job.id + "'>" + title + "</option>\n";
+		    }
+
+			selJob.empty();
+			selJob.append(options);
+
+			if (me.status == "Edit") {
+				var id = parseInt(me.currentRowSelected.cells[1].innerHTML);
+
+				for (var index = 0; index < me.accountReceivables.length; index++) {
+					if (me.accountReceivables[index].id == id) {
+						selJob.val(me.accountReceivables[index].houseCodeJob);
 						break;
 					}
-			    }
-
-				if (found) {
-					me.invalidHouseCode = "";
-					me.houseCodeCache[houseCode].validCustomer = true;
-					$("#houseCode" + rowNumber).css("background-color", "white");
-					$("#houseCode" + rowNumber).attr("title", "");
 				}
-				else {
-					me.houseCodeCache[houseCode].validCustomer = false;
-					$("#houseCode" + rowNumber).css("background-color", "red");
-					$("#houseCode" + rowNumber).attr("title", "Customer it is not associated with the House Code [" + houseCode + "].");
-			        $("#houseCode" + rowNumber).select();
-					alert("Customer it is not associated with the House Code [" + houseCode + "].");
-				}
-		    }
-		    else {
-				$("#houseCode" + rowNumber).css("background-color", "red");
-				$("#houseCode" + rowNumber).attr("title", "The House Code [" + houseCode + "] is not valid.");
-		        $("#houseCode" + rowNumber).select();
-		        alert("The House Code [" + houseCode + "] is not valid.");
-		    }
+			}
+			else
+				selJob.val(columnValue);
 		},
 		
 		actionCreditInvoiceItem: function() {
@@ -991,13 +1112,14 @@ ii.Class({
 					, false
 					, parseInt(me.currentRowSelected.cells[1].innerHTML)
 					, me.accountReceivables[rowNumber].houseCode
+					, me.getJobTitle(me.accountReceivables[rowNumber].jobBrief, me.accountReceivables[rowNumber].jobTitle)
 					, me.accountReceivables[rowNumber].depositDate
 					, me.accountReceivables[rowNumber].checkDate
 					, me.accountReceivables[rowNumber].checkNumber
 					, me.accountReceivables[rowNumber].amount == "0" ? "&nbsp;" : parseFloat(me.accountReceivables[rowNumber].amount).toFixed(5).toString()
 					, me.getAccountNumberName(me.accountReceivables[rowNumber].account)
 					, me.accountReceivables[rowNumber].payer
-					, me.currentRowSelected.cells[9].innerHTML
+					, me.currentRowSelected.cells[10].innerHTML
 					, me.accountReceivables[rowNumber].notes == "" ? "&nbsp;" : me.accountReceivables[rowNumber].notes
 					);
 				
@@ -1052,9 +1174,12 @@ ii.Class({
 							, me.invoiceId
 							, houseCodeId
 							, ""
-							, this.cells[3].innerHTML
+							, parseInt($("#job" + rowNumber).val())
+							, ""
+							, ""
 							, this.cells[4].innerHTML
 							, this.cells[5].innerHTML
+							, this.cells[6].innerHTML
 							, $("#amount" + rowNumber).val()
 							, parseInt($("#account" + rowNumber).val())
 							, $("#payer" + rowNumber).val()
@@ -1112,9 +1237,12 @@ ii.Class({
 					, me.invoiceId
 					, houseCodeId
 					, ""
-					, me.currentRowSelected.cells[3].innerHTML
+					, parseInt($("#job" + rowNumber).val())
+					, ""
+					, ""
 					, me.currentRowSelected.cells[4].innerHTML
 					, me.currentRowSelected.cells[5].innerHTML
+					, me.currentRowSelected.cells[6].innerHTML
 					, $("#amount" + rowNumber).val()
 					, parseInt($("#account" + rowNumber).val())
 					, $("#payer" + rowNumber).val()
@@ -1154,6 +1282,7 @@ ii.Class({
 					xml += ' id="' + items[index].id + '"';
 					xml += ' invoiceId="' + items[index].invoiceId + '"';
 					xml += ' houseCodeId="' + items[index].houseCodeId + '"';
+					xml += ' houseCodeJobId="' + items[index].houseCodeJob + '"';
 					xml += ' depositDate="' + items[index].depositDate + '"';
 					xml += ' checkDate="' + items[index].checkDate + '"';
 					xml += ' checkNumber="' + ui.cmn.text.xml.encode(items[index].checkNumber) + '"';

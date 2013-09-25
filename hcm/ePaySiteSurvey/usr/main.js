@@ -300,7 +300,11 @@ ii.Class({
 			me.zipCode = new ui.ctl.Input.Text({
 		        id: "ZipCode",
 		        maxLength: 10,
-				changeFunction: function() { me.modified(); }
+				changeFunction: function() {
+					me.modified();
+					if (ui.cmn.text.validate.postalCode(me.zipCode.getValue()))
+						me.loadTimeZones(me.zipCode.getValue());
+				}
 		    });
 			
 			me.zipCode.makeEnterTab()
@@ -315,16 +319,21 @@ ii.Class({
 					this.setInvalid("Please enter valid postal code. Example 99999 or 99999-9999");
 			});
 
-			me.timeZone = new ui.ctl.Input.Text({
+			me.timeZone = new ui.ctl.Input.DropDown.Filtered({
 		        id: "TimeZone",
-		        maxLength: 50,
+				formatFunction: function( type ) { return type.name; },
 				changeFunction: function() { me.modified(); }
 		    });
-			
+
 			me.timeZone.makeEnterTab()
 				.setValidationMaster( me.validator )
 				.addValidation( ui.ctl.Input.Validation.required )
-			
+				.addValidation( function( isFinal, dataMap ) {
+
+					if (me.timeZone.indexSelected == -1)
+						this.setInvalid("Please select the correct Time Zone.");
+				});
+
 			me.dayLightSavings = new ui.ctl.Input.Check({
 		        id: "DayLightSavings",
 				changeFunction: function() { me.modified(); }
@@ -1242,7 +1251,15 @@ ii.Class({
 				itemConstructorArgs: fin.hcm.ePaySiteSurvey.houseCodeArgs,
 				injectionArray: me.houseCodes
 			});
-						
+
+			me.timeZones = [];
+			me.timeZoneStore = me.cache.register({
+				storeId: "appTimeZones",
+				itemConstructor: fin.hcm.ePaySiteSurvey.TimeZone,
+				itemConstructorArgs: fin.hcm.ePaySiteSurvey.timeZoneArgs,
+				injectionArray: me.timeZones	
+			});
+
 			me.stateTypes = [];
 			me.stateTypeStore = me.cache.register({
 				storeId: "stateTypes",
@@ -1592,7 +1609,7 @@ ii.Class({
 				$("#StateAction").addClass("iiInputAction");
 			}
 		},	
-		
+
 		stateTypesLoaded: function(me, activeId) {
 
 			me.state.setData(me.stateTypes);
@@ -1703,13 +1720,14 @@ ii.Class({
 			}
 
 			me.ePaySiteSurveyPayCodeStore.fetch("userId:[user],id:" + me.siteDetails[0].id, me.ePaySiteSurveyPayCodesLoaded, me);
+			me.loadTimeZones(me.siteDetails[0].zipCode);
 			me.setSiteSurveyDetails();
 			if (me.action == "" || me.action == "SiteSurvey")
 				me.ePaySiteSurvey();
 			else
 				me.actionSiteMethodologyItem();
 		},
-		
+
 		setSiteSurveyDetails: function() {
 			var me = this;
 			var index = 0;
@@ -1732,7 +1750,7 @@ ii.Class({
 			if (index != undefined) 
 				me.state.select(index, me.state.focused);
 			me.zipCode.setValue(me.siteDetails[0].zipCode);
-			me.timeZone.setValue(me.siteDetails[0].timeZone);
+			//me.timeZone.setValue(me.siteDetails[0].timeZone);
 			me.dayLightSavings.setValue(me.siteDetails[0].dayLightSavings.toString());
 			me.managerName.setValue(me.siteDetails[0].managerName);
 			me.managerPhone.setValue(me.siteDetails[0].managerPhone);
@@ -1832,6 +1850,24 @@ ii.Class({
 			me.siteGroupID.setValue(me.siteDetails[0].siteGroupID);
 			me.siteGroupName.setValue(me.siteDetails[0].siteGroupName);
 			me.confirmSiteIsLive.setValue(me.siteDetails[0].confirmSiteIsLive.toString());
+		},
+
+		loadTimeZones: function(zipCode) {
+			var me = this;
+
+			me.timeZone.fetchingData();
+			me.timeZoneStore.fetch("userId:[user],zipCode:" + zipCode, me.timeZonesLoaded, me);
+		},
+
+		timeZonesLoaded: function(me, activeId) {
+
+			me.checkLoadCount();
+			me.timeZone.reset();
+			me.timeZone.setData(me.timeZones);
+			me.timeZone.setValue(me.siteDetails[0].timeZone);
+
+			if (me.siteDetails[0].id == 0 && me.timeZones.length > 0)
+				me.dayLightSavings.setValue(me.timeZones[0].daylightSavingTime.toString());
 		},
 		
 		ePaySiteSurveyPayCodesLoaded: function(me, activeId) {
@@ -2508,7 +2544,7 @@ ii.Class({
 					, me.city.getValue()
 					, me.stateTypes[me.state.indexSelected].id
 					, me.zipCode.getValue()
-					, me.timeZone.getValue()
+					, me.timeZone.lastBlurValue
 					, me.dayLightSavings.check.checked
 					, me.managerName.getValue()
 					, fin.cmn.text.mask.phone(me.managerPhone.getValue(), true)

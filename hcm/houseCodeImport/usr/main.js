@@ -465,6 +465,7 @@ ii.Class({
 		
 		payPayrollCompanysLoaded: function(me, activeId) {
 			
+			me.payPayrollCompanys.unshift(new fin.hcm.houseCodeImport.PayPayrollCompany({ id: 0, name: "" }));
 			me.payrollProcessings.unshift(new fin.hcm.houseCodeImport.PayrollProcessingLocationType({ id: 0, name: "" }));
 			me.houseCodeTypes.unshift(new fin.hcm.houseCodeImport.HouseCodeType({ id: 0, name: ""}));
 			me.ePayGroupTypes.unshift(new fin.hcm.houseCodeImport.EPayGroupType({ id: 0, name: ""}));
@@ -674,8 +675,10 @@ ii.Class({
 			me.buildDropDown("PayrollProcessingLocationType", me.payrollProcessings);
 			me.buildDropDown("HouseCodeType", me.houseCodeTypes);
 			me.buildDropDown("EPayGroupType", me.ePayGroupTypes);
+			me.buildDropDown("PayrollCompanyHourly", me.payPayrollCompanys);
+			me.buildDropDown("PayrollCompanySalaried", me.payPayrollCompanys);
 
-			houseCodeRow = '<tr height="100%"><td colspan="101" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>';
+			houseCodeRow = '<tr height="100%"><td colspan="103" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>';
 			$("#HouseCodeGridBody").append(houseCodeRow);
 			$("#HouseCodeGrid tr:odd").addClass("gridRow");
         	$("#HouseCodeGrid tr:even").addClass("alternateGridRow");
@@ -798,6 +801,8 @@ ii.Class({
 				if (me.houseCodes[index].column99 == "1")
 					$("#chkEPaySite" + index)[0].checked = true;
 				me.setDropDownValue(me.ePayGroupTypes, me.houseCodes[index].column100, "EPayGroupType", index);
+				me.setDropDownValue(me.payPayrollCompanys, me.houseCodes[index].column101, "PayrollCompanyHourly", index);
+				me.setDropDownValue(me.payPayrollCompanys, me.houseCodes[index].column102, "PayrollCompanySalaried", index);
 			}
 			
 			$("#pageLoading").hide();
@@ -1536,6 +1541,8 @@ ii.Class({
 				xml += ' timeAndAttendance="' + $("#chkTimeAndAttendance" + index)[0].checked + '"';
 				xml += ' ePaySite="' + $("#chkEPaySite" + index)[0].checked + '"';
 				xml += ' ePayGroupType="' + $("#selEPayGroupType" + index).val() + '"';
+				xml += ' payrollCompanyHourly="' + $("#selPayrollCompanyHourly" + index).val() + '"';
+				xml += ' payrollCompanySalaried="' + $("#selPayrollCompanySalaried" + index).val() + '"';
 				xml += '/>';
 			}
 	

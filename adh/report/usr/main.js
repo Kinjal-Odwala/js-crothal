@@ -541,6 +541,14 @@ ii.Class({
 				itemConstructorArgs: fin.adh.payPayrollCompanyArgs,
 				injectionArray: me.payPayrollCompanys	
 			});
+			
+			me.hcmSiteTypes = [];
+			me.hcmSiteTypeStore = me.cache.register({
+				storeId: "hcmSiteTypes",
+				itemConstructor: fin.adh.HcmSiteType,
+				itemConstructorArgs: fin.adh.hcmSiteTypeArgs,
+				injectionArray: me.hcmSiteTypes
+			});
 
 			// Site Types
 			me.siteMasters = [];
@@ -1230,13 +1238,14 @@ ii.Class({
 							break;
 							
 						case "House Code":
-							me.typesLoadedCount = 4;
+							me.typesLoadedCount = 5;
 							me.invoiceLogoTypeStore.reset();
 							me.ePayGroupTypeStore.reset();
 							me.serviceTypeStore.fetch("userId:[user],", me.typesLoaded, me);
 							me.contractTypeStore.fetch("userId:[user]", me.typesLoaded, me);
 							me.payPayrollCompanyStore.fetch("userId:[user]", me.typesLoaded, me);
 							me.jdeCompanysStore.fetch("userId:[user]", me.typesLoaded, me);
+							me.hcmSiteTypeStore.fetch("userId:[user]", me.typesLoaded, me);
 							break;
 							
 						case "Person":
@@ -3768,6 +3777,10 @@ ii.Class({
 			else if (args.typeTable == "RevInvoiceTemplates") {
 				me.typeNoneAdd(me.invoiceTemplates);
 				typeTable = me.invoiceTemplates;
+			}
+			else if (args.typeTable == "HcmSiteTypes") {
+				me.typeNoneAdd(me.hcmSiteTypes);
+				typeTable = me.hcmSiteTypes;
 			}
 			return typeTable;
 		},

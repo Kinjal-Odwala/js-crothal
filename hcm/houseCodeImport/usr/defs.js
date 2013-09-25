@@ -110,6 +110,8 @@ ii.init.register( function() {
 		, column98: {type: String, required: false, defaultValue: ""} // timeAndAttendance
 		, column99: {type: String, required: false, defaultValue: ""} // ePaySite
 		, column100: {type: String, required: false, defaultValue: ""} // ePayGroupType
+		, column101: {type: String, required: false, defaultValue: ""} // payrollCompanyHourly
+		, column102: {type: String, required: false, defaultValue: ""} // payrollCompanySalaried
 	};
 	
 	fin.hcm.houseCodeImport.bulkImportValidationArgs = {
@@ -234,6 +236,10 @@ ii.init.register( function() {
 	
 	fin.hcm.houseCodeImport.payPayrollCompanyArgs = {
 		id: {type: Number}
+		, name: {type: String}
+		, houseCodePayrollCompanyId: {type: String, required: false, defaultValue: "0"}
+		, salary: {type: Boolean, defaultValue: false, defaultValue: false}
+		, hourly: {type: Boolean, defaultValue: false, defaultValue: false}
 	};
 	
 	fin.hcm.houseCodeImport.payrollProcessingLocationTypeArgs = {

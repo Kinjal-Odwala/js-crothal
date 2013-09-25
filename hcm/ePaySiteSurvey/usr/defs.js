@@ -27,6 +27,12 @@ ii.init.register( function() {
 		, hirNode: {type: Number}
 	};
 
+	fin.hcm.ePaySiteSurvey.timeZoneArgs = {
+		id: {type: Number}
+		, name: {type: String}
+		, daylightSavingTime: {type: Boolean, required: false, defaultValue: false}
+	};
+	
 	fin.hcm.ePaySiteSurvey.stateTypeArgs = {
 		id: {type: Number}
 		, name: {type: String}
@@ -209,6 +215,16 @@ ii.Class({
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.ePaySiteSurvey.houseCodeArgs);
 			$.extend(this, args);			
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.ePaySiteSurvey.TimeZone",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.ePaySiteSurvey.timeZoneArgs);
+			$.extend(this, args);
 		}
 	}
 });
