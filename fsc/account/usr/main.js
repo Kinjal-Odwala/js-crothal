@@ -424,7 +424,6 @@ ii.Class({
 				return;
 			}
 			
-			me.setLoadCount();
 			me.status = "";
 			me.accountId = item.id;
 			me.lastSelectedIndex = args.index;			
@@ -453,7 +452,7 @@ ii.Class({
 	        me.accountReceivable.setValue(item.accountReceivables.toString());
 	        me.wor.setValue(item.wor.toString());
 	        me.otherRevenue.setValue(item.otherRevenue.toString());
-			me.checkLoadCount();
+			me.setStatus("Loaded");
 		},
 
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
@@ -498,9 +497,9 @@ ii.Class({
 				
 			if (me.accountReadOnly) return;
 			
-			me.setLoadCount();
 			me.actionResetItem();
 			me.status = "new";
+			me.setStatus("Loaded");
 		},
 
 		actionUndoItem: function() {
@@ -550,7 +549,6 @@ ii.Class({
 			me.fiscalAccountGrid.body.deselectAll();
 			me.accountCode.text.focus();
 			me.validator.reset();
-			me.checkLoadCount();
 		},
 
 		actionSaveItem: function() {
