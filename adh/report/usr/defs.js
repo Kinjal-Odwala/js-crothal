@@ -151,6 +151,56 @@ ii.init.register( function() {
 	    , column98: {type: String, required: false, defaultValue: "" }
 	    , column99: {type: String, required: false, defaultValue: "" }
 	    , column100: {type: String, required: false, defaultValue: "" }
+		, column101: {type: String, required: false, defaultValue: "" }
+	    , column102: {type: String, required: false, defaultValue: "" }
+	    , column103: {type: String, required: false, defaultValue: "" }
+	    , column104: {type: String, required: false, defaultValue: "" }
+	    , column105: {type: String, required: false, defaultValue: "" }
+	    , column106: {type: String, required: false, defaultValue: "" }
+	    , column107: {type: String, required: false, defaultValue: "" }
+	    , column108: {type: String, required: false, defaultValue: "" }
+	    , column109: {type: String, required: false, defaultValue: "" }
+	    , column110: {type: String, required: false, defaultValue: "" }
+	    , column111: {type: String, required: false, defaultValue: "" }
+	    , column112: {type: String, required: false, defaultValue: "" }
+	    , column113: {type: String, required: false, defaultValue: "" }
+	    , column114: {type: String, required: false, defaultValue: "" }
+	    , column115: {type: String, required: false, defaultValue: "" }
+	    , column116: {type: String, required: false, defaultValue: "" }
+	    , column117: {type: String, required: false, defaultValue: "" }
+	    , column118: {type: String, required: false, defaultValue: "" }
+	    , column119: {type: String, required: false, defaultValue: "" }
+	    , column120: {type: String, required: false, defaultValue: "" }
+	    , column121: {type: String, required: false, defaultValue: "" }
+	    , column122: {type: String, required: false, defaultValue: "" }
+	    , column123: {type: String, required: false, defaultValue: "" }
+	    , column124: {type: String, required: false, defaultValue: "" }
+	    , column125: {type: String, required: false, defaultValue: "" }
+	    , column126: {type: String, required: false, defaultValue: "" }
+	    , column127: {type: String, required: false, defaultValue: "" }
+	    , column128: {type: String, required: false, defaultValue: "" }
+	    , column129: {type: String, required: false, defaultValue: "" }
+	    , column130: {type: String, required: false, defaultValue: "" }
+	    , column131: {type: String, required: false, defaultValue: "" }
+	    , column132: {type: String, required: false, defaultValue: "" }
+	    , column133: {type: String, required: false, defaultValue: "" }
+	    , column134: {type: String, required: false, defaultValue: "" }
+	    , column135: {type: String, required: false, defaultValue: "" }
+	    , column136: {type: String, required: false, defaultValue: "" }
+	    , column137: {type: String, required: false, defaultValue: "" }
+	    , column138: {type: String, required: false, defaultValue: "" }
+	    , column139: {type: String, required: false, defaultValue: "" }
+	    , column140: {type: String, required: false, defaultValue: "" }
+	    , column141: {type: String, required: false, defaultValue: "" }
+	    , column142: {type: String, required: false, defaultValue: "" }
+	    , column143: {type: String, required: false, defaultValue: "" }
+	    , column144: {type: String, required: false, defaultValue: "" }
+	    , column145: {type: String, required: false, defaultValue: "" }
+	    , column146: {type: String, required: false, defaultValue: "" }
+	    , column147: {type: String, required: false, defaultValue: "" }
+	    , column148: {type: String, required: false, defaultValue: "" }
+	    , column149: {type: String, required: false, defaultValue: "" }
+	    , column150: {type: String, required: false, defaultValue: "" }
 	};
 
 	fin.adh.adhFileNameArgs = {

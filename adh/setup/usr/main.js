@@ -644,6 +644,7 @@ ii.Class({
 			var hirNode = 0;
 			var sortOrder ="";
 			var sortColumnsCount = 0;
+			var selectedColumnsCount = 0;
 
 			if (me.reportTitle.text.value == "")	{
 				alert("Please enter valid title.");
@@ -699,7 +700,10 @@ ii.Class({
 
 				if (sortOrder == "Asc" || sortOrder == "Desc")
 					sortColumnsCount++;
-
+				
+				if (columnType == 1 || columnType == 2 || columnType == 3)
+					selectedColumnsCount++;
+					
 				if ($("#editableInputRadio" + index)[0].checked && me.appModuleColumnGrid.data[index].dependantColumns != "") {
 					var dependantColumns = me.appModuleColumnGrid.data[index].dependantColumns.split(",");
 					var message = "";
@@ -740,7 +744,11 @@ ii.Class({
 			if (sortColumnsCount > 4) {
 				return alert("Maximum 4 Sort By columns can be selected.");
 			}
-
+			
+			if (selectedColumnsCount > 150) {
+				return alert("Maximum 150 [Editable/Hidden/Readonly] columns can be selected.");
+			}
+			
 			$("#messageToUser").text("Saving");
 			$("#pageLoading").show();
 
