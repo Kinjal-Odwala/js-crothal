@@ -3,6 +3,7 @@ ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.pay.payCheck.usr.defs" );
@@ -30,7 +31,8 @@ ii.Class({
 			me.status = "new";
 			me.personId = 0;
 			me.users = [];
-
+			me.loadCount = 0;
+			
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 
 			me.gateway = ii.ajax.addGateway("pay", ii.config.xmlProvider);
@@ -59,17 +61,8 @@ ii.Class({
 			me.setTabIndexes();
 			me.resizeControls();
 			me.statusesLoaded();
+			me.setStatus("Loading");
 			me.modified(false);
-
-			me.state.fetchingData();
-			me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
-			me.payCodeTypeStore.fetch("userId:[user],payCodeType:", me.payCodeTypesLoaded, me);
-			me.personStore.fetch("userId:[user],id:" + me.session.propertyGet("personId"), me.personsLoaded, me);
-
-			if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
-				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
-			else
-				me.houseCodesLoaded(me, 0);
 
 			$(window).bind("resize", me, me.resize);
 			
@@ -114,10 +107,32 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 
-			$("#pageLoading").hide();
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
+			
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
 
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded, me);
+				ii.timer.timing("Page displayed");
+				me.loadCount = 4;
+				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.state.fetchingData();
+				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
+				me.payCodeTypeStore.fetch("userId:[user],payCodeType:", me.payCodeTypesLoaded, me);
+				me.personStore.fetch("userId:[user],id:" + me.session.propertyGet("personId"), me.personsLoaded, me);
+				if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
+					me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
+				else
+					me.houseCodesLoaded(me, 0);
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},
 
 		sessionLoaded: function fin_pay_payCheck_UserInterface_sessionLoaded() {
@@ -665,6 +680,12 @@ ii.Class({
 			});	
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
@@ -674,8 +695,30 @@ ii.Class({
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
+			var me = this;
 		
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		setTabIndexes: function() {
@@ -860,6 +903,7 @@ ii.Class({
 		stateTypesLoaded: function(me, activeId) {
 
 			me.state.setData(me.stateTypes);
+			me.checkLoadCount();
 		},
 		
 		payCodeTypesLoaded: function(me, activeId) {
@@ -867,6 +911,7 @@ ii.Class({
 			me.payCodeType.setData(me.payCodeTypes);
 			me.payCodeDetailGrid.setData(me.payCodeDetails);
 			me.payCodeDetailGrid.setHeight(150);
+			me.checkLoadCount();
 		},
 
 		houseCodesLoaded: function(me, activeId) {
@@ -880,6 +925,7 @@ ii.Class({
 			}
 
 			me.houseCodeGlobalParametersUpdate(false);
+			me.checkLoadCount();
 		},
 
 		houseCodeTemplateChanged: function() { 
@@ -975,6 +1021,7 @@ ii.Class({
 				else
 					me.setEmployeeAddress();
 			}
+			me.checkLoadCount();
 		},
 		
 		setEmployeeAddress: function() {
@@ -1047,8 +1094,7 @@ ii.Class({
 		actionSearchItem: function() {
 			var me = this;
 
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").show();
+			me.setLoadCount();
 
 			me.resetControls("");
 			me.payCheckRequestStore.reset();
@@ -1059,9 +1105,9 @@ ii.Class({
 		
 		payCheckRequestsLoaded: function(me, activeId) {
 			var index = 0;
-
-			$("#pageLoading").hide();
+			
 			me.payCheckRequestGrid.setData(me.payCheckRequests);
+			me.checkLoadCount();
 		},
 		
 		itemSelect: function() {
@@ -1105,16 +1151,16 @@ ii.Class({
 			me.managerName.setValue(item.managerName);
 			me.managerEmail.setValue(item.managerEmail);
 
-			$("#pageLoading").show();
+			me.setLoadCount();
 			me.payCodeDetailStore.fetch("userId:[user],payCheckRequest:" + item.id, me.payCodeDetailsLoaded, me);
 		},
 		
 		payCodeDetailsLoaded: function(me, activeId) {
 			var index = 0;
-
-			$("#pageLoading").hide();
+			
 			me.payCodeDetailReadOnlyGrid.setData(me.payCodeDetails);
 			me.payCodeDetailReadOnlyGrid.setHeight(150);
+			me.checkLoadCount();
 		},
 
 		actionNewItem: function() {
@@ -1123,7 +1169,7 @@ ii.Class({
 
 			if (!parent.fin.cmn.status.itemValid())
 				return;
-
+			
 			me.resetControls("new");
 		},
 		
@@ -1133,7 +1179,7 @@ ii.Class({
 
 			if (!parent.fin.cmn.status.itemValid())
 				return;
-
+				
 			me.resetControls("new");
 		},
 		
@@ -1155,8 +1201,10 @@ ii.Class({
 				return false;
 			}
 			
+			me.setStatus("Saving");
+			
 			$("#messageToUser").text("Sending Request");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 			
 			var item = new fin.pay.payCheck.PayCheckRequest(
 				0
@@ -1275,15 +1323,19 @@ ii.Class({
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
 
-			$("#pageLoading").hide();
-
+			
 			if (status == "success") {
 				alert("Payroll check request sent successfully.");
 				me.modified(false);
+				me.setStatus("Saved");
 				me.resetControls("new");
 			}
-			else
+			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while sending the payroll check request: " + $(args.xmlNode).attr("message"));
+			}
+			
+			$("#pageLoading").fadeOut("slow");
 		}
     }
 });
