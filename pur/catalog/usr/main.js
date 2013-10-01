@@ -3,6 +3,7 @@ ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.cmn.usr.tabsPack" );
@@ -37,6 +38,7 @@ ii.Class({
 			me.units = [];
 			me.houseCodesTabNeedUpdate = true;
 			me.itemsTabNeedUpdate = true;
+			me.loadCount = 0;
 			
 			//pagination setup
 			me.maximumRows = 250;
@@ -60,6 +62,8 @@ ii.Class({
 			
 			me.defineFormControls();
 			me.configureCommunications();
+			me.setStatus("Loading");
+			me.modified(false);
 			
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\Purchasing\\Catalogs";
@@ -74,7 +78,6 @@ ii.Class({
 			
 			me.catalogUnitGrid.setData([]);
 			me.catalogItemGrid.setData([]);
-			me.modified(false);
 			
 			// blur event is not firing when clicking on the tab. Due to this dirty check function and prompt message was not working.
 			$("#TabCollection a").mouseover(function() {
@@ -139,15 +142,29 @@ ii.Class({
 		authorizationProcess: function fin_pur_catalog_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
+			
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 
-			$("#pageLoading").hide();	
-					
-			me.catalogsReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
-			me.controlVisible();
-			me.resizeControls();
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
 
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+				ii.timer.timing("Page displayed");
+				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.catalogsReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
+				me.controlVisible();
+				me.resizeControls();
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},
 		
 		sessionLoaded: function fin_pur_catalog_UserInterface_sessionLoaded(){
@@ -162,12 +179,12 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = fin.pur.purCatalogUi;
 	   
-			$("#catalogAssociationsContent").height($(window).height() - 203);
-		    $("#catalogItemContent").height($(window).height() - 203);
+			$("#catalogAssociationsContent").height($(window).height() - 228);
+		    $("#catalogItemContent").height($(window).height() - 228);
 			$("#container-1").tabs(1);
-			me.catalogGrid.setHeight($(window).height() - 137);
-			me.catalogUnitGrid.setHeight($(window).height() - 315);
-			me.catalogItemGrid.setHeight($(window).height() - 235);
+			me.catalogGrid.setHeight($(window).height() - 162);
+			me.catalogUnitGrid.setHeight($(window).height() - 340);
+			me.catalogItemGrid.setHeight($(window).height() - 260);
 		},
 		
 		defineFormControls: function() {
@@ -555,6 +572,12 @@ ii.Class({
 			});
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
@@ -564,8 +587,30 @@ ii.Class({
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
+			var me = this;
 			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
@@ -628,8 +673,7 @@ ii.Class({
 				me.searchInput.updateStatus();
 			}
 			
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").show();			
+			me.setLoadCount();			
 			
 			me.catalogUnitGrid.setData([]);
 			me.catalogItemGrid.setData([]);
@@ -644,7 +688,7 @@ ii.Class({
 			me.resetControls();			
 			me.catalogGrid.setData(me.catalogs);
 			
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 		},
 		
 		itemSelect: function() {
@@ -724,7 +768,7 @@ ii.Class({
 			}, 100);
 			
 			if (me.houseCodesTabNeedUpdate) {			
-				$("#catalogItemsLoading").show();
+				me.setLoadCount();
 				me.houseCodesTabNeedUpdate = false;
 				me.recordCountStore.reset();
 				me.recordCountStore.fetch("userId:[user]," + "catalogId:" + me.catalogId + ",type:catalogHouseCodes", me.catalogHouseCodesCountLoaded, me);
@@ -756,8 +800,7 @@ ii.Class({
 		
 		loadHouseCodes: function() {
 		    var me = this;
-		    
-			$("#catalogItemsLoading").show();
+			
 			$("#selHouseCodesPageNumber").val(me.houseCodesPageCurrent);
 			
 			me.houseCodesStartPoint = ((me.houseCodesPageCurrent - 1) * me.maximumRows) + 1;
@@ -801,14 +844,14 @@ ii.Class({
 			me.catalogHouseCodesCountOnLoad = me.catalogHouseCodes.length;
 			me.units = [];
 			me.controlVisible();
-			$("#catalogItemsLoading").hide();
+			me.checkLoadCount();
 		},
 		
 		loadCatalogItemsCount: function() {
 			var me = this;
 			
 			if (me.itemsTabNeedUpdate) {			
-				$("#catalogItemsLoading").show();
+				me.setLoadCount();
 				me.itemsTabNeedUpdate = false;
 				me.recordCountStore.reset();
 				me.recordCountStore.fetch("userId:[user]," + "catalogId:" + me.catalogId + ",type:catalogItems", me.catalogItemsCountLoaded, me);
@@ -840,8 +883,7 @@ ii.Class({
 		
 		loadItems: function() {
 		    var me = this;
-
-			$("#catalogItemsLoading").show();
+			
 			$("#selItemsPageNumber").val(me.itemsPageCurrent);
 
 			me.itemsStartPoint = ((me.itemsPageCurrent - 1) * me.maximumRows) + 1;
@@ -855,7 +897,7 @@ ii.Class({
 			me.catalogItemGrid.resize();
 			me.catalogItemsCountOnLoad = me.catalogItems.length;
 			me.controlVisible();			
-			$("#catalogItemsLoading").hide();
+			me.checkLoadCount();
 		},
 
 		catalogHouseCodeGridSelect: function() {
@@ -966,10 +1008,10 @@ ii.Class({
 			me.houseCodesTabNeedUpdate = true;
 			me.itemsTabNeedUpdate = true;
 			
-			if (me.activeFrameId == 0)
-				me.loadCatalogHouseCodesCount();
-			else if (me.activeFrameId == 1)
-				me.loadCatalogItemsCount();
+			//if (me.activeFrameId == 0)
+			//	me.loadCatalogHouseCodesCount();
+			//else if (me.activeFrameId == 1)
+			//	me.loadCatalogItemsCount();
 		},
 		
 		addHouseCodes: function() {
@@ -1157,6 +1199,7 @@ ii.Class({
 			}
 			
 			disablePopup();
+			me.setStatus("Loaded");
 		},
 
 		actionUndoItem: function() {
@@ -1173,6 +1216,8 @@ ii.Class({
 				me.catalogGrid.body.select(me.lastSelectedRowIndex);
 			else
 				me.resetControls();
+				
+			me.setStatus("Loaded");
 		},
 				
 		actionNewItem: function() {
@@ -1185,6 +1230,7 @@ ii.Class({
 			me.resetControls();
 			me.resetGrids();
 			me.status = "new";
+			me.setStatus("Loaded");
 		},
 		
 		actionDownloadItem: function(type) {
@@ -1467,8 +1513,10 @@ ii.Class({
 			if (xml == "")
 				return;
 			
+			me.setStatus("Saving");
+			
 			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 			
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
@@ -1493,7 +1541,6 @@ ii.Class({
 			var id = 0;
 					
 			if (status == "success") {
-				me.modified(false);
 				
 				if (me.status == "addHouseCodes") {
 					me.houseCodesTabNeedUpdate = true;
@@ -1558,8 +1605,12 @@ ii.Class({
 						}
 					});
 				}
+				
+				me.modified(false);
+				me.setStatus("Saved");
 			}
 			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating Catalog details: " + $(args.xmlNode).attr("message"));
 			}
 			 
@@ -1567,7 +1618,7 @@ ii.Class({
 			me.catalogHouseCodesCountOnLoad = me.catalogHouseCodes.length;
 			me.catalogItemsCountOnLoad = me.catalogItems.length;
 			
-			$("#pageLoading").hide();		
+			$("#pageLoading").fadeOut("slow");		
 		}
 	}
 });

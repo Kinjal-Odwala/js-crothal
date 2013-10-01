@@ -3,6 +3,7 @@ ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.pur.item.usr.defs" );
@@ -28,6 +29,7 @@ ii.Class({
 			me.status = "";
 			me.lastSelectedRowIndex = -1;
 			me.validateControl = false;
+			me.loadCount = 0;
 						
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -49,14 +51,11 @@ ii.Class({
 			
 			me.defineFormControls();
 			me.configureCommunications();
+			me.setStatus("Loading");
+			me.modified(false);
 			
 			$(window).bind("resize", me, me.resize );
-			$(document).bind("keydown", me, me.controlKeyProcessor);	
-			
-			me.itemAccount.fetchingData();
-			me.accountStore.fetch("userId:[user]", me.accountsLoaded, me);				
-			me.itemStatusesLoaded();
-			me.modified(false);
+			$(document).bind("keydown", me, me.controlKeyProcessor);
 			
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
@@ -66,13 +65,30 @@ ii.Class({
 		authorizationProcess: function fin_pur_item_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
+			
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 
-			me.itemsReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
-			$("#pageLoading").hide();	
-			me.controlVisible();
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
 
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+				ii.timer.timing("Page displayed");
+				me.loadCount = 1;
+				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.itemAccount.fetchingData();
+				me.accountStore.fetch("userId:[user]", me.accountsLoaded, me);				
+				me.itemStatusesLoaded();
+				me.itemsReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
+				me.controlVisible();
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},
 		
 		sessionLoaded: function fin_pur_item_UserInterface_sessionLoaded(){
@@ -88,9 +104,9 @@ ii.Class({
 			var me = fin.purItemUi;
 			
 			if (me != undefined)
-				me.itemGrid.setHeight($(window).height() - 130);
+				me.itemGrid.setHeight($(window).height() - 155);
 			
-			$("#itemContentAreaContainer").height($(window).height() - 175);		
+			$("#itemContentAreaContainer").height($(window).height() - 200);		
 		},
 		
 		defineFormControls: function() {
@@ -367,6 +383,12 @@ ii.Class({
 			});	
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
@@ -376,8 +398,30 @@ ii.Class({
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
+			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		itemStatusesLoaded: function() {
@@ -419,8 +463,7 @@ ii.Class({
 				me.searchInput.updateStatus();
 			}
 			
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").show();
+			me.setLoadCount();
 						
 			me.itemStore.fetch("searchValue:" + me.searchInput.getValue() 
 				+ ",active:" + (me.itemStatus.indexSelected == -1 ? -1 : me.itemStatuses[me.itemStatus.indexSelected].number) 
@@ -458,7 +501,7 @@ ii.Class({
 			me.itemGrid.setData(me.items);
 			
 			me.controlVisible();
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 		},
 				
 		accountsLoaded: function(me, activeId) {
@@ -468,7 +511,7 @@ ii.Class({
 			me.validateControl = true;
 			me.resizeControls();
 
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 		},
 		
 		itemSelect: function() {
@@ -514,6 +557,7 @@ ii.Class({
 				me.itemId = 0;	
 				
 			me.controlVisible();	
+			me.setStatus("Loaded");	
 		},
 
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
@@ -583,6 +627,8 @@ ii.Class({
 			}
 			else
 				me.resetControls();
+				
+			me.setStatus("Loaded");
 		},
 		
 		actionNewItem: function() {
@@ -595,6 +641,7 @@ ii.Class({
 			me.resetControls();
 			me.itemGrid.body.deselectAll();
 			me.status = "new";
+			me.setStatus("Loaded");
 		},
 		
 		actionSaveItem: function() {
@@ -618,8 +665,10 @@ ii.Class({
 				return false;
 			}
 			
+			me.setStatus("Saving");
+			
 			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 			
 			var item = new fin.pur.item.Item(
 				me.itemId
@@ -713,12 +762,15 @@ ii.Class({
 							break;
 					}
 				});
+				
+				me.setStatus("Saved");
 			}
 			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating Item details: " + $(args.xmlNode).attr("message"));
 			}
 			
-			$("#pageLoading").hide();
+			$("#pageLoading").fadeOut("slow");
 		}
 	}
 });
