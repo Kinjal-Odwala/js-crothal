@@ -24,6 +24,9 @@
 		<div id="divFrame" style="height: 0px;">				
 			<iframe id="iFrameUpload" src="/net/crothall/chimes/fin/app/act/FileUpload.aspx" frameborder="0" width="100" height="0"></iframe>
 		</div>
+		<div id="divFramePrint" style="height: 0px;">				
+			<iframe id="iFramePrint" frameborder="0" width="100" height="0"></iframe>
+		</div>
 		<div class="pageHeader">
 			 <div style="float: left; width: 10%;"><div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div></div>
 			 <div style="float: left; width: 80%;"><div id="header" class="header">Site Survey</div></div>
@@ -588,7 +591,7 @@
 									<span class="requiredFieldIndicator">&#149;</span>Device Type:
 								</div>
 								<div class="inputTextArea">
-									<div id="DeviceType"></div>
+									<select id="DeviceType" name="DeviceType" multiple="multiple" tabindex="57"></select>
 								</div>
 								<div style="clear:both;"></div>
 							</div>
@@ -709,37 +712,7 @@
 								<div style="clear:both;"></div>
 							</div>
 						</div>
-					</div>
-					<!--<div style="clear:both;"></div>
-					<div class="contentArea popupHeader">
-						 <div>Devices</div>
-					</div>
-					<div class="leftContainer">
-						<div class="body">
-							<div class="tableEditArea">
-								<div class="labelTextArea">
-									<span class="requiredFieldIndicator">&#149;</span>Serial Number:
-								</div>
-								<div class="inputTextArea">
-									<div id="SerialNumber"></div>
-								</div>
-								<div style="clear:both;"></div>
-							</div>
-						</div>
-					</div>
-					<div class="rightContainer">
-						<div class="body">
-							<div class="tableEditArea">
-								<div class="labelTextArea">
-									<span class="requiredFieldIndicator">&#149;</span>Tracking Number:
-								</div>
-								<div class="inputTextArea">
-									<div id="TrackingNumber"></div>
-								</div>
-								<div style="clear:both;"></div>
-							</div>
-						</div>
-					</div>-->
+					</div>					
 				</div>	
 				<div id="ClockManagement" style="display:none;">
 					<div style="clear:both;height:10px;"></div>
@@ -835,6 +808,7 @@
 				<div id="AnchorManageDeviceTypes" style="display:none;"></div>
 				<div id="AnchorSave" style="display:none;"></div>
 				<div id="AnchorCancel" style="display:none;"></div>
+				<div id="AnchorPrint" style="display:none;"></div>
 			</div>			
 		</div>
 		<div id="iiInputValidationMaster"></div>
