@@ -6142,9 +6142,9 @@ ii.Class({
 			}
 			
 			if (me.actionType == "ReverseTermination") {			
-				if (me.isDateValid(me.employeeGenerals[0].terminationDate, 'ReverseTermination') == false) {
-					alert('You cannot reverse terminate an employee who was terminated in a prior pay period. \n' +
-						'Contact the Corporate Payroll department for further instructions.');
+				if (me.isDateValid(me.employeeGenerals[0].modAt, "ReverseTermination") == false) {
+					alert("You cannot reverse terminate an employee who was terminated in a prior pay period. \n" +
+						"Contact the Corporate Payroll department for further instructions.");
 					return false;
 				}
 
