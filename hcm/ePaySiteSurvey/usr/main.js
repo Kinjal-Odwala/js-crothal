@@ -1937,7 +1937,6 @@ ii.Class({
 
 		deviceTypeChanged: function() {
 			var me = this;
-			var clockAssetsTemp = [];
 			var ePaySiteSurveyClockAssetsTemp = [];
 			var deviceTypes = $("#DeviceType").val();
 
@@ -1952,33 +1951,29 @@ ii.Class({
 							item.serialNumber = me.clockAssets[index].serialNumber;
 							item.trackingNumber = me.clockAssets[index].upsTrackingNumber;
 							me.ePaySiteSurveyClockAssets[iIndex] = item;
-										
+
 							if ($.inArray(me.clockAssets[index].deviceType.id.toString(), deviceTypes) > -1)
 								ePaySiteSurveyClockAssetsTemp.push(item);
 							break;
 						}
 					}
-					if (!found) {
-						var item = new fin.hcm.ePaySiteSurvey.EPaySiteSurveyClockAsset({
-							id: 0
-							, ePaySiteSurvey: me.siteDetails[0].id
-							, clockAsset: me.clockAssets[index].id
-							, deviceType: me.clockAssets[index].deviceType
-							, serialNumber: me.clockAssets[index].serialNumber
-							, trackingNumber: me.clockAssets[index].upsTrackingNumber
-						});
 
-						clockAssetsTemp.push(item);
-						if ($.inArray(me.clockAssets[index].deviceType.id.toString(), deviceTypes) > -1)							
+					if (!found) {
+						if ($.inArray(me.clockAssets[index].deviceType.id.toString(), deviceTypes) > -1) {
+							var item = new fin.hcm.ePaySiteSurvey.EPaySiteSurveyClockAsset({
+								id: 0
+								, ePaySiteSurvey: me.siteDetails[0].id
+								, clockAsset: me.clockAssets[index].id
+								, deviceType: me.clockAssets[index].deviceType
+								, serialNumber: me.clockAssets[index].serialNumber
+								, trackingNumber: me.clockAssets[index].upsTrackingNumber
+							});
 							ePaySiteSurveyClockAssetsTemp.push(item);
+						}
 					}
 				}
 			}
 
-			for (var index = 0; index < clockAssetsTemp.length; index++) {
-				me.ePaySiteSurveyClockAssets.push(clockAssetsTemp[index]);
-			}
-			
 			me.deviceTypeClockAssetGrid.setData(ePaySiteSurveyClockAssetsTemp);
 			for (var index = 0; index < ePaySiteSurveyClockAssetsTemp.length; index++) {
 				$("#selectInputCheck" + index)[0].checked = ePaySiteSurveyClockAssetsTemp[index].assigned;
@@ -2006,14 +2001,7 @@ ii.Class({
 			var index = parseInt(objCheckBox.id.replace("selectInputCheck", ""), 10);
 
 			me.deviceTypeClockAssetGrid.data[index].modified = true;
-			for (var iIndex = 0; iIndex < me.ePaySiteSurveyClockAssets.length; iIndex++) {
-				if (me.ePaySiteSurveyClockAssets[iIndex].clockAsset == me.deviceTypeClockAssetGrid.data[index].clockAsset) {
-					me.ePaySiteSurveyClockAssets[iIndex].assigned = objCheckBox.checked;
-					me.ePaySiteSurveyClockAssets[iIndex].modified = true;
-					break;
-				}
-			}
-			
+			me.deviceTypeClockAssetGrid.data[index].assigned = objCheckBox.checked;			
 			me.setDeviceTypeTitle();
 		},
 			
@@ -2026,15 +2014,8 @@ ii.Class({
 
 			me.serialNumber.resizeText();
 			me.trackingNumber.resizeText();
-			me.serialNumber.text.readOnly = true;			
+			me.serialNumber.text.readOnly = true;
 			me.deviceTypeClockAssetGrid.data[index].modified = true;
-
-			for (var iIndex = 0; iIndex < me.ePaySiteSurveyClockAssets.length; iIndex++) {
-				if (me.ePaySiteSurveyClockAssets[iIndex].clockAsset == me.deviceTypeClockAssetGrid.data[index].clockAsset) {
-					me.ePaySiteSurveyClockAssets[iIndex].modified = true;
-					break;
-				}
-			}
 		},
 		
 		itemPayCodeSelect: function() {
@@ -2718,17 +2699,6 @@ ii.Class({
 						}
 					}
 				}
-				
-				for (var index = 0; index < me.deviceTypeClockAssetGrid.data.length; index++) {
-					if (me.deviceTypeClockAssetGrid.data[index].modified) {
-						for (var iIndex = 0; iIndex < me.ePaySiteSurveyClockAssets.length; iIndex++) {
-							if (me.deviceTypeClockAssetGrid.data[index].id == me.ePaySiteSurveyClockAssets[iIndex].id) {
-								me.ePaySiteSurveyClockAssets[iIndex].trackingNumber = me.deviceTypeClockAssetGrid.data[index].trackingNumber;
-								break;
-							}
-						}
-					}	
-				}
 			}
 
 			if (me.action == "SiteSurvey" || me.action == "SiteMethodology") {
@@ -2953,9 +2923,7 @@ ii.Class({
 								break;
 							}
 						}
-						if (!found && me.ePaySiteSurveyClockAssets[index].id > 0) {
-							me.ePaySiteSurveyClockAssets[index].assigned = false;
-							me.ePaySiteSurveyClockAssets[index].modified = false;
+						if (!found) {
 							xml += '<ePaySiteSurveyClockAsset'
 						    xml += ' id="' + me.ePaySiteSurveyClockAssets[index].id + '"';
 						    xml += ' ePaySiteSurveyId="' + me.ePaySiteSurveyClockAssets[index].ePaySiteSurvey + '"';
@@ -2972,7 +2940,7 @@ ii.Class({
 									, ""
 									, me.clockAssets[itemIndex].deviceType
 									, me.deviceStatusTypes[1]
-									, 0
+									, me.assetTransferStatusTypes[0]
 									, me.clockAssets[itemIndex].serialNumber
 									, me.clockAssets[itemIndex].groupNumber
 									, me.clockAssets[itemIndex].groupName
@@ -2981,6 +2949,14 @@ ii.Class({
 									)
 								);
 							}
+
+							me.ePaySiteSurveyClockAssets[index].id = 0;
+						}
+					}
+
+					for (var index = me.ePaySiteSurveyClockAssets.length - 1; index >= 0; index--) {
+						if (me.ePaySiteSurveyClockAssets[index].id == 0) {
+							me.ePaySiteSurveyClockAssets.splice(index, 1);
 						}
 					}
 					
@@ -3082,20 +3058,20 @@ ii.Class({
 						case "ePaySiteSurveyClockAsset":
 							var id = parseInt($(this).attr("id"), 10);
 							var clockAssetId = parseInt($(this).attr("clockAssetId"), 10);
-
-							for (var index = 0; index < me.ePaySiteSurveyClockAssets.length; index++) {
-								if (me.ePaySiteSurveyClockAssets[index].modified) {
-									me.ePaySiteSurveyClockAssets[index].modified = false;
-									if (me.ePaySiteSurveyClockAssets[index].clockAsset == clockAssetId) {
-										if (me.ePaySiteSurveyClockAssets[index].id == 0) {
-											me.ePaySiteSurveyClockAssets[index].id = id;
-											//me.ePaySiteSurveyClockAssets.push(me.deviceTypeClockAssetGrid.data[index]);
+	
+							for (var index = 0; index < me.deviceTypeClockAssetGrid.data.length; index++) {
+								if (me.deviceTypeClockAssetGrid.data[index].modified) {
+									me.deviceTypeClockAssetGrid.data[index].modified = false;
+									if (me.deviceTypeClockAssetGrid.data[index].clockAsset == clockAssetId) {
+										if (me.deviceTypeClockAssetGrid.data[index].id == 0) {
+											me.deviceTypeClockAssetGrid.data[index].id = id;
+											me.ePaySiteSurveyClockAssets.push(me.deviceTypeClockAssetGrid.data[index]);
 										}
-										else if (!me.ePaySiteSurveyClockAssets[index].assigned) {
-											//var itemIndex = ii.ajax.util.findIndexById(id.toString(), me.ePaySiteSurveyClockAssets);
-											//if (itemIndex != undefined)
-												//me.ePaySiteSurveyClockAssets.splice(itemIndex, 1);
-											me.ePaySiteSurveyClockAssets[index].id = 0;
+										else if (!($("#selectInputCheck" + index)[0].checked)) {
+											me.deviceTypeClockAssetGrid.data[index].id = 0;
+											var itemIndex = ii.ajax.util.findIndexById(id.toString(), me.ePaySiteSurveyClockAssets);
+											if (itemIndex != undefined)
+												me.ePaySiteSurveyClockAssets.splice(itemIndex, 1);
 										}
 										break;
 									}
@@ -3134,7 +3110,6 @@ ii.Class({
 				});
 
 				if (me.action == "SiteMethodology") {
-					me.deviceTypeChanged();
 					if (me.exportToExcel)
 						me.actionExportToExcelItem();
 				}
