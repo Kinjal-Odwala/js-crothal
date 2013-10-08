@@ -107,7 +107,7 @@ ii.Class({
 		
 		resize: function() {
 			var args = ii.args(arguments,{});
-			var offset = document.documentElement.clientHeight - 145;
+			var offset = document.documentElement.clientHeight - 170;
 			
 			fin.completeWorkOrderUi.workOrderGrid.setHeight(offset);
 		},
