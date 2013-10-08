@@ -38,6 +38,7 @@ ii.Class({
 			me.module = "";
 			me.lastSelectedRowIndex = -1;
 			me.setPopupPeriod = false;
+			me.loadCount = 0;
 
 			// pagination setup
 			me.startPoint = 1;
@@ -63,21 +64,11 @@ ii.Class({
 
 			me.validator = new ui.ctl.Input.Validation.Master();
 			me.session = new ii.Session(me.cache);
+			me.setStatus("Loading");
+			me.modified(false);
 
 			me.defineFormControls();			
 			me.configureCommunications();
-
-			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
-			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
-			if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
-				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
-			else
-				me.houseCodesLoaded(me, 0);
-
-			me.fiscalYear.fetchingData();
-			me.fiscalPeriod.fetchingData();
-			me.fiscalYearStore.fetch("userId:[user],", me.yearsLoaded, me);
-			me.modified(false);
 
 			$(window).bind("resize", me, me.resize);
 			$("#countCompleteHeader").hide();
@@ -108,63 +99,87 @@ ii.Class({
 		authorizationProcess: function fin_inv_administration_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments, {});
 			var me = this;
-
-			me.isReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
-
-			if (me.isReadOnly) {
-				me.inventoryGrid.columns["countComplete"].inputControl = null;
-				me.inventoryGrid.columns["totalCost"].inputControl = null;
-				$("#generateInventoryListAction").hide();
-				$("#AnchorSave").hide();
-			}
-
-			me.actionMenu = new ui.ctl.Toolbar.ActionMenu({
-				id: "actionMenu"
-			});  
 			
-			me.actionMenu
-				.addAction({
-					id: "searchInventoryCountAction",
-					brief: "Search & Edit Inventory Counts", 
-					title: "Search & Edit Inventory Counts.",
-					actionFunction: function() { me.actionSearchInventoryCount(); }
-				})
-				.addAction({
-					id: "inventoryStatusAction", 
-					brief: "Show Inventory Status (Completed / Not Completed)", 
-					title: "Show Inventory Status (Completed / Not Completed).",
-					actionFunction: function() { me.actionInventoryStatus(); }
-				})
-				.addAction({
-					id: "auditLogReportAction",
-					brief: "Audit Log Lookup Web Report",
-					title: "Audit Log Lookup Web Report.",
-					actionFunction: function() { me.actionAuditLogReport(); }
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
+			
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
 				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
+
+				ii.timer.timing("Page displayed");
+				me.session.registerFetchNotify(me.sessionLoaded,me);
+				
+				me.houseCodeSearch = new ui.lay.HouseCodeSearch();
+				if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
+				if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
+					me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
+				else
+					me.houseCodesLoaded(me, 0);
+	
+				me.fiscalYear.fetchingData();
+				me.fiscalPeriod.fetchingData();
+				me.fiscalYearStore.fetch("userId:[user],", me.yearsLoaded, me);
 			
-			me.reportInventoryMidYearToYearEnd = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\InventoryMidYear");
-			if (me.reportInventoryMidYearToYearEnd) {
+				me.isReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
+				
+				if (me.isReadOnly) {
+					me.inventoryGrid.columns["countComplete"].inputControl = null;
+					me.inventoryGrid.columns["totalCost"].inputControl = null;
+					$("#generateInventoryListAction").hide();
+					$("#AnchorSave").hide();
+				}
+
+				me.actionMenu = new ui.ctl.Toolbar.ActionMenu({
+					id: "actionMenu"
+				});  
+				
 				me.actionMenu
 					.addAction({
-						id: "inventoryReportAction",
-						brief: "Inventory Mid Year and Year End",
-						title: "Inventory Mid Year and Year End.",
-						actionFunction: function() { me.actionInventoryReport(); }
+						id: "searchInventoryCountAction",
+						brief: "Search & Edit Inventory Counts", 
+						title: "Search & Edit Inventory Counts.",
+						actionFunction: function() { me.actionSearchInventoryCount(); }
+					})
+					.addAction({
+						id: "inventoryStatusAction", 
+						brief: "Show Inventory Status (Completed / Not Completed)", 
+						title: "Show Inventory Status (Completed / Not Completed).",
+						actionFunction: function() { me.actionInventoryStatus(); }
+					})
+					.addAction({
+						id: "auditLogReportAction",
+						brief: "Audit Log Lookup Web Report",
+						title: "Audit Log Lookup Web Report.",
+						actionFunction: function() { me.actionAuditLogReport(); }
 					});
-			}
-
-			me.actionMenu
-				.addAction({
-					id: "generateInventoryListAction", 
-					brief: "Generate Inventory List", 
-					title: "Generate list of Inventories from Purchase Orders.",
-					actionFunction: function() { me.actionGenerateInventoryList(); }
-				});
-
-			$("#pageLoading").hide();
-
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded, me);
+				
+				me.reportInventoryMidYearToYearEnd = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\InventoryMidYear");
+				if (me.reportInventoryMidYearToYearEnd) {
+					me.actionMenu
+						.addAction({
+							id: "inventoryReportAction",
+							brief: "Inventory Mid Year and Year End",
+							title: "Inventory Mid Year and Year End.",
+							actionFunction: function() { me.actionInventoryReport(); }
+						});
+				}
+	
+				me.actionMenu
+					.addAction({
+						id: "generateInventoryListAction", 
+						brief: "Generate Inventory List", 
+						title: "Generate list of Inventories from Purchase Orders.",
+						actionFunction: function() { me.actionGenerateInventoryList(); }
+					});
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},	
 
 		sessionLoaded: function fin_inv_administration_UserInterface_sessionLoaded() {
@@ -184,15 +199,15 @@ ii.Class({
 			if (me.actionType == 0) {
 				me.inventoryGrid.setHeight(150);
 				if (ii.browser.ie && ii.browser.version == 7)
-					me.inventoryItemGrid.setHeight($(window).height() - 346);
+					me.inventoryItemGrid.setHeight($(window).height() - 371);
 				else
-					me.inventoryItemGrid.setHeight($(window).height() - 320);
+					me.inventoryItemGrid.setHeight($(window).height() - 345);
 			}
 			else {
 				if (ii.browser.ie && ii.browser.version == 7)
-					me.inventoryGrid.setHeight($(window).height() - 145);
+					me.inventoryGrid.setHeight($(window).height() - 170);
 				else
-					me.inventoryGrid.setHeight($(window).height() - 133);
+					me.inventoryGrid.setHeight($(window).height() - 158);
 			}
 		},
 
@@ -471,6 +486,12 @@ ii.Class({
 			});
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
@@ -480,8 +501,30 @@ ii.Class({
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
+			var me = this;
 		
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		resetControls: function() {
@@ -617,8 +660,7 @@ ii.Class({
 		listInventories: function() {
 			var me = this;
 
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").show();
+			me.setLoadCount();
 
 			$("#selPageNumber").val(me.pageCurrent);
 			me.startPoint = ((me.pageCurrent - 1) * me.maximumRows) + 1;
@@ -664,7 +706,7 @@ ii.Class({
 				me.resetControls();
 			}
 			
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 		},
 
 		itemSelect: function() {
@@ -727,8 +769,7 @@ ii.Class({
 		listInventoryItems: function() {
 			var me = this;
 
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").show();
+			me.setLoadCount();
 			$("#selPageNumber").val(me.pageCurrent);
 	
 			me.startPoint = ((me.pageCurrent - 1) * me.maximumRows) + 1;
@@ -743,7 +784,7 @@ ii.Class({
 		inventoryItemsLoaded: function(me, activeId) {	
 		
 			me.inventoryItemGrid.setData(me.inventoryItems);
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 		},
 
 		prevItems: function() {
@@ -922,6 +963,7 @@ ii.Class({
 				return;
 				
 			me.hidePopup();
+			me.setStatus("Loaded");
 		},
 
 		loadPopup: function() {
@@ -970,9 +1012,11 @@ ii.Class({
 
 			if (me.inventoryGrid.activeRowIndex == -1 || me.isReadOnly)
 				return;
-
+			
+			me.setStatus("Saving");
+			
 			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 
 			xml += '<invInventory';
 			xml += ' id="' + me.inventoryId + '"';
@@ -1004,14 +1048,16 @@ ii.Class({
 			var status = $(args.xmlNode).attr("status");
 
 			if (status == "success") {
-				me.modified(false);
 				ii.trace("Inventory record updated successfully.", ii.traceTypes.Information, "Info");
+				me.modified(false);
+				me.setStatus("Saved");
 			}
 			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating Inventory details: " + $(args.xmlNode).attr("message"));
 			}
 			
-			$("#pageLoading").hide();
+			$("#pageLoading").fadeOut("slow");
 		},
 
 		actionExportToExcel: function() {
@@ -1020,9 +1066,11 @@ ii.Class({
 
 			if (me.actionType == 0 && me.inventoryGrid.activeRowIndex == -1)
 				return;
-
+			
+			me.setStatus("Loading");
+			
 			$("#messageToUser").text("Exporting");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 
 			if (me.actionType == 0 || me.actionType == 2)
 				me.houseCodeId = parent.fin.appUI.houseCodeId;
@@ -1066,7 +1114,8 @@ ii.Class({
 		fileNamesLoaded: function(me, activeId) {
 			var excelFileName = "";
 
-			$("#pageLoading").hide();
+			me.setStatus("Loaded");
+			$("#pageLoading").fadeOut("slow");
 
 			if (me.fileNames.length == 1) {
 				$("iframe")[0].contentWindow.document.getElementById("FileName").value = me.fileNames[0].fileName;
@@ -1127,9 +1176,11 @@ ii.Class({
 					xml += '/>';
 				}
 			}
-
-			$("#popupMessageToUser").text("Generating");
-			$("#popupLoading").show();
+						
+			me.setStatus("Loading");
+			
+			$("#messageToUser").text("Generating");
+			$("#pageLoading").fadeIn("slow");
 
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
@@ -1153,14 +1204,17 @@ ii.Class({
 			var status = $(args.xmlNode).attr("status");
 
 			if (status == "success") {
-				$("#popupLoading").hide();
-				alert("Inventory list generated successfully.");
 				me.modified(false);
+				me.setStatus("Loaded");
+				alert("Inventory list generated successfully.");
 				me.hidePopup();
 			}
 			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while generating Inventory list: " + $(args.xmlNode).attr("message"));
 			}
+			
+			$("#pageLoading").fadeOut("slow");
 		}
 	}
 });

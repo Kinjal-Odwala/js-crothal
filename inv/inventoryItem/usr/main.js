@@ -3,6 +3,7 @@ ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons");
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.cmn.usr.houseCodeSearch" );
@@ -33,6 +34,7 @@ ii.Class({
 			me.inventoryId = 0;
 			me.status = "";
 			me.lastSelectedRowIndex = -1;
+			me.loadCount = 0;
 
 			// pagination setup
 			me.startPoint = 1;
@@ -58,22 +60,12 @@ ii.Class({
 
 			me.validator = new ui.ctl.Input.Validation.Master();
 			me.session = new ii.Session(me.cache);
+			me.setStatus("Loading");
+			me.modified(false);
 
 			me.defineFormControls();			
 			me.configureCommunications();
-
-			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
-			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
-			if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
-				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
-			else
-				me.houseCodesLoaded(me, 0);
-
-			me.fiscalYear.fetchingData();
-			me.fiscalPeriod.fetchingData();
-			me.fiscalYearStore.fetch("userId:[user],", me.yearsLoaded, me);
-			me.modified(false);
-
+			
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$(window).bind("resize", me, me.resize);
 
@@ -92,22 +84,46 @@ ii.Class({
 		authorizationProcess: function fin_inv_inventoryItem_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments, {});
 			var me = this;
+			
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 
-			me.isReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");			
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
 
-			if (me.isReadOnly) {
-				$("#actionMenu").hide();
-				$("#AnchorSave").hide();
-				$("#AnchorNew").hide();
-				me.inventoryGrid.columns["countComplete"].inputControl = null;
-				me.inventoryGrid.columns["totalCost"].inputControl = null;
-				me.inventoryItemGrid.columns["quantity"].inputControl = null;
+				ii.timer.timing("Page displayed");
+				me.session.registerFetchNotify(me.sessionLoaded,me);
+				
+				me.houseCodeSearch = new ui.lay.HouseCodeSearch();
+				if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
+				if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
+					me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
+				else
+					me.houseCodesLoaded(me, 0);
+	
+				me.fiscalYear.fetchingData();
+				me.fiscalPeriod.fetchingData();
+				me.fiscalYearStore.fetch("userId:[user],", me.yearsLoaded, me);
+
+				me.isReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
+				
+				if (me.isReadOnly) {
+					$("#actionMenu").hide();
+					$("#AnchorSave").hide();
+					$("#AnchorNew").hide();
+					me.inventoryGrid.columns["countComplete"].inputControl = null;
+					me.inventoryGrid.columns["totalCost"].inputControl = null;
+					me.inventoryItemGrid.columns["quantity"].inputControl = null;
+				}
 			}				
-
-			$("#pageLoading").hide();
-
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},	
 
 		sessionLoaded: function fin_inv_inventoryItem_UserInterface_sessionLoaded() {
@@ -122,7 +138,7 @@ ii.Class({
 			var me = fin.inv.inventoryItemUI;			
 			
 			me.inventoryGrid.setHeight(150);
-			me.inventoryItemGrid.setHeight($(window).height() - 290);
+			me.inventoryItemGrid.setHeight($(window).height() - 315);
 		},
 		
 		controlKeyProcessor: function() {
@@ -489,17 +505,45 @@ ii.Class({
 			});
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
 		},
-	
+		
 		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
+			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		resizeControls: function() {
@@ -597,8 +641,7 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 				
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").show();
+			me.setLoadCount();
 
 			if (me.inventoryGrid.activeRowIndex >= 0)
 				me.inventoryGrid.body.deselect(me.inventoryGrid.activeRowIndex, true);
@@ -645,7 +688,7 @@ ii.Class({
 			
 			me.inventoryItemGrid.setData([]);
 			me.inventoryItemStore.reset();
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 		},
 
 		itemSelect: function() {
@@ -701,8 +744,7 @@ ii.Class({
 		listInventoryItems: function() {
 			var me = this;
 
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").show();
+			me.setLoadCount();
 			$("#selPageNumber").val(me.pageCurrent);
 	
 			me.startPoint = ((me.pageCurrent - 1) * me.maximumRows) + 1;
@@ -717,7 +759,7 @@ ii.Class({
 		inventoryItemsLoaded: function(me, activeId) {	
 		
 			me.inventoryItemGrid.setData(me.inventoryItems);
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 		},
 
 		inventoryItemSelect: function() {
@@ -807,7 +849,8 @@ ii.Class({
 			var index = me.inventoryItemGrid.activeRowIndex;
 			if (index >= 0)
 				me.inventoryItemGrid.body.deselect(index, true);
-
+			
+			me.setLoadCount();
 			me.uom.fetchingData();
 			me.accountCode.fetchingData();
 			me.uomStore.fetch("userId:[user]", me.uomsLoaded, me);
@@ -828,6 +871,7 @@ ii.Class({
 		accountsLoaded: function (me, activeId) {
 
 			me.accountCode.setData(me.accounts);
+			me.checkLoadCount();
 		},		
 		
 		loadPopup: function() {
@@ -876,6 +920,7 @@ ii.Class({
 				return;
 				
 			me.hidePopup();
+			me.setStatus("Loaded");
 		},
 
 		actionUndoItem: function() {
@@ -938,8 +983,10 @@ ii.Class({
 					return false;
 				}
 
-				$("#popupMessageToUser").text("Saving");
-				$("#popupLoading").show();
+				me.setStatus("Saving");
+			
+				$("#messageToUser").text("Saving");
+				$("#pageLoading").fadeIn("slow");
 
 				var item = new fin.inv.inventoryItem.InventoryItem(
 					0
@@ -1008,7 +1055,6 @@ ii.Class({
 			var status = $(args.xmlNode).attr("status");
 
 			if (status == "success") {
-				me.modified(false);
 				
 				$(args.xmlNode).find("*").each(function() {
 					switch (this.tagName) {
@@ -1048,13 +1094,17 @@ ii.Class({
 							break;
 					}
 				});
+				
+				me.modified(false);
+				me.setStatus("Saved");
 			}
 			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating Inventory details: " + $(args.xmlNode).attr("message"));
 			}
 
 			me.status = "";
-			$("#pageLoading").hide();
+			$("#pageLoading").fadeOut("slow");
 		},
 
 		actionExportToExcel: function() {
@@ -1062,9 +1112,10 @@ ii.Class({
 
 			if (me.inventoryGrid.activeRowIndex == -1)
 				return;
-
+			
+			me.setStatus("Loading");
 			$("#messageToUser").text("Exporting");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 
 			me.fileNameStore.reset();
 			me.fileNameStore.fetch("userId:[user],inventoryId:" + me.inventoryId + ",type:InventoryItems", me.fileNamesLoaded, me);
@@ -1072,8 +1123,9 @@ ii.Class({
 
 		fileNamesLoaded: function(me, activeId) {
 			var excelFileName = "";
-
-			$("#pageLoading").hide();
+			
+			me.setStatus("Loaded");
+			$("#pageLoading").fadeOut("slow");
 
 			if (me.fileNames.length == 1) {
 				$("iframe")[0].contentWindow.document.getElementById("FileName").value = me.fileNames[0].fileName;
