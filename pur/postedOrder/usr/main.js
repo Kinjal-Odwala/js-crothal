@@ -52,7 +52,7 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 
-			$("#pageLoading").hide();
+			//$("#pageLoading").fadeOut("slow");
 		
 			me.isAuthorized = me.authorizer.isAuthorized( me.authorizePath);
 
@@ -169,6 +169,7 @@ ii.Class({
 				me.houseCodeJobs.push(new fin.pur.postedOrder.HouseCodeJob(job.id, job.jobNumber, job.jobTitle));
 			}
 			
+			parent.fin.purMasterUi.setLoadCount();
 			me.purchaseOrderDetailStore.fetch("userId:[user],purchaseOrder:" + me.purchaseOrderId, me.purchaseOrderDetailsLoaded, me);
 		},
 		
@@ -256,7 +257,7 @@ ii.Class({
 				$("#ButtonPlacedOrder").hide();
 			}
 			
-			$("#pageLoading").hide();
+			parent.fin.purMasterUi.checkLoadCount();
 		},
 		
 		getTotalGridRow: function() {
@@ -499,6 +500,7 @@ ii.Class({
 
 			me.rowBeingEdited = false;
 			me.status = "";
+			parent.fin.purMasterUi.setStatus("Loaded");
 		},
 		
 		actionSaveItem: function(){
@@ -508,9 +510,8 @@ ii.Class({
 			
 			if (me.status == "")
 				return true;
-							
-			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();			
+			
+			parent.fin.purMasterUi.pageLoading();
 
 			var xml = me.saveXmlBuildPurchaseOrder(item);
 	
@@ -576,12 +577,14 @@ ii.Class({
 			var traceType = ii.traceTypes.errorDataCorruption;
 						
 			if (status == "success") {
-				parent.fin.purMasterUi.modified(false);
 				me.status = "";
 				me.rowBeingEdited = false;
 				me.purchaseOrderGridRowSet();	
+				parent.fin.purMasterUi.modified(false);
+				parent.fin.purMasterUi.setStatus("Saved");
 			}
 			else {
+				parent.fin.purMasterUi.setStatus("Error");
 				alert('Error while updating Purchase Order Record: ' + $(args.xmlNode).attr("message"));
 				errorMessage = $(args.xmlNode).attr("error");
 				if(status == "invalid") {
@@ -592,7 +595,7 @@ ii.Class({
 				}
 			}
 			
-			$("#pageLoading").hide();
+			parent.fin.purMasterUi.pageLoaded();
 		}
 
 	}

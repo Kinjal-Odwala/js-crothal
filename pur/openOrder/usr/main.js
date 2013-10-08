@@ -61,7 +61,7 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 
-			$("#pageLoading").hide();
+			//$("#pageLoading").hide();
 		
 			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
 
@@ -256,6 +256,7 @@ ii.Class({
 				me.houseCodeJobs.push(new fin.pur.openOrder.HouseCodeJob(job.id, job.jobNumber, job.jobTitle));
 			}
 			
+			parent.fin.purMasterUi.setLoadCount();
 			me.purchaseOrderDetailStore.fetch("userId:[user],purchaseOrder:" + me.purchaseOrderId, me.purchaseOrderDetailsLoaded, me);			
 		},
 		
@@ -401,7 +402,7 @@ ii.Class({
 				$("#PurchaseOrderContextMenu").hide();
 			}
 
-			$("#pageLoading").hide();
+			parent.fin.purMasterUi.checkLoadCount();
 		},
 		
 		getTotalGridRow: function() {
@@ -741,6 +742,7 @@ ii.Class({
 			me.rowBeingEdited = false;
 			me.status = "";			
 			me.purchaseOrderGridMouseDownEventSetup();
+			parent.fin.purMasterUi.setStatus("Loaded");
 		},		
 		
 		actionSaveItem: function() {
@@ -751,8 +753,7 @@ ii.Class({
 			if (me.status == "")
 				return true;
 							
-			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();			
+			parent.fin.purMasterUi.pageLoading();			
 
 			var xml = me.saveXmlBuildPurchaseOrder(item);
 	
@@ -824,13 +825,14 @@ ii.Class({
 			var traceType = ii.traceTypes.errorDataCorruption;
 						
 			if (status == "success") {	
-				parent.fin.purMasterUi.modified(false);			
 				me.status = "";
 				me.rowBeingEdited = false;
 				me.currentRowSelected = null;
 				me.bindRow = true;
-				me.purchaseOrderDetailStore.reset();	
+				me.purchaseOrderDetailStore.reset();
 				me.purchaseOrderDetailStore.fetch("userId:[user],purchaseOrder:" + me.purchaseOrderId, me.purchaseOrderDetailsLoaded, me);
+				parent.fin.purMasterUi.modified(false);	
+				parent.fin.purMasterUi.setStatus("Saved");
 			}
 			else {
 				errorMessage = $(args.xmlNode).attr("error");
@@ -840,9 +842,12 @@ ii.Class({
 				else {
 					errorMessage += " [SAVE FAILURE]";
 				}
+				parent.fin.purMasterUi.setStatus("Error");
 				alert("Error while updating Purchase Order Record: " + $(args.xmlNode).attr("message") + " " + errorMessage);
-				$("#pageLoading").hide();
+				//$("#pageLoading").hide();
 			}
+			
+			parent.fin.purMasterUi.pageLoaded();
 		}
 		
 	}

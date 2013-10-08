@@ -47,7 +47,7 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 
-			$("#pageLoading").hide();
+			//$("#pageLoading").hide();
 		
 			me.isAuthorized = me.authorizer.isAuthorized( me.authorizePath);
 
@@ -141,6 +141,7 @@ ii.Class({
 				me.houseCodeJobs.push(new fin.pur.placedOrder.HouseCodeJob(job.id, job.jobNumber, job.jobTitle));
 			}
 			
+			parent.fin.purMasterUi.setLoadCount();
 			me.purchaseOrderDetailStore.fetch("userId:[user],purchaseOrder:" + me.purchaseOrderId, me.purchaseOrderDetailsLoaded, me);
 		},
 		
@@ -222,7 +223,7 @@ ii.Class({
 			$("#PurchaseOrderGrid tbody").html(rowHtml);
 			me.orderDetailsLoaded();
 			me.resize();
-			$("#pageLoading").hide();
+			parent.fin.purMasterUi.checkLoadCount();
 		},
 		
 		orderDetailsLoaded: function(me) {
