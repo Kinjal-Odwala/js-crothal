@@ -176,26 +176,26 @@ ii.Class({
 
 			me.actionMenu
 				.addAction({
-					id: "siteSurveyAction", 
-					brief: "Site Survey - Add / Edit / View", 
+					id: "siteSurveyAction",
+					brief: "Site Survey - Add / Edit / View",
 					title: "Add or Edit or View the site survey information.",
 					actionFunction: function() { me.actionSiteSurveyItem(); }
 				})
 				.addAction({
-					id: "siteMethodologylAction", 
-					brief: "Site Methodology - Add / Edit / View", 
+					id: "siteMethodologylAction",
+					brief: "Site Methodology - Add / Edit / View",
 					title: "Add or Edit or View the site methodology information.",
 					actionFunction: function() { me.actionSiteMethodologyItem(); }
 				})
 				.addAction({
-					id: "clockManagementAction", 
-					brief: "Clock Management", 
+					id: "clockManagementAction",
+					brief: "Clock Management",
 					title: "Add or Edit the current clock assets, assigned and unassigned.",
 					actionFunction: function() { me.actionClockManagementItem(); }
 				})
 				.addAction({
-					id: "manageDeviceTypeAction", 
-					brief: "Manage Device Types", 
+					id: "manageDeviceTypeAction",
+					brief: "Manage Device Types",
 					title: "Add or Edit the device types.",
 					actionFunction: function() { me.actionManageDeviceTypeItem("Manage Device Type"); }
 				})
@@ -987,8 +987,14 @@ ii.Class({
 
 					if ((this.focused || this.touched) && me.deviceStatusTypeCM.indexSelected == -1)
 						this.setInvalid("Please select the correct Device Status Type.");
+					else if (me.deviceGrid.activeRowIndex != -1) {
+						if (me.deviceGrid.data[me.deviceGrid.activeRowIndex] == undefined || me.deviceGrid.data[me.deviceGrid.activeRowIndex].id == 0) {
+							if (me.deviceStatusTypeCM.data[me.deviceStatusTypeCM.indexSelected].name == "Assigned")
+								this.setInvalid("Device Status Type should be Unassigned.");
+						}
+					}
 				});
-				
+
 			me.assetTransferStatusTypeCM = new ui.ctl.Input.DropDown.Filtered({
 		        id: "AssetTransferStatusTypeCM",
 				appendToId: "DeviceGridControlHolder",
