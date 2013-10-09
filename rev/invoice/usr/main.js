@@ -1524,7 +1524,7 @@ ii.Class({
 					, 1
 					, quantity
 					, price
-					, amount
+					, (quantity * price).toFixed(5)
 					, taxable
 					, $("#lineShow")[0].checked
 					, $("#description").val()
