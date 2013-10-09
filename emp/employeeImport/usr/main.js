@@ -467,6 +467,14 @@ ii.Class({
 		
 		statusTypesLoaded: function(me, activeId) {
 						
+			me.statusTypesTemp = me.statusTypes.slice();
+			me.statusTypes = [];
+			
+			for (var index = 0; index < me.statusTypesTemp.length; index++) {
+				if (me.statusTypesTemp[index].name == "Active")
+					me.statusTypes.push(me.statusTypesTemp[index]);
+			}
+			
 			me.genderTypes.unshift(new fin.emp.employeeImport.GenderType({ id: 2, name: "Female" }));
 			me.genderTypes.unshift(new fin.emp.employeeImport.GenderType({ id: 1, name: "Male" }));
 			me.genderTypes.unshift(new fin.emp.employeeImport.GenderType({ id: 0, name: "" }));
@@ -1799,14 +1807,54 @@ ii.Class({
 					me.setCellColor($("#txtBenefitsPercentage" + index), me.cellColorValid, "");
 				}
 				
-				if ($("#txtScheduledHours" + index).val() != "" && !(/^[0-9]+$/.test($("#txtScheduledHours" + index).val()))) {
+				if (($("#txtScheduledHours" + index).val() == "") || ($("#txtScheduledHours" + index).val() != "" && !(/^[0-9]+$/.test($("#txtScheduledHours" + index).val())))) {
 					rowValid = false;
 					me.setCellColor($("#txtScheduledHours" + index), me.cellColorInvalid, "Please enter valid Scheduled Hours.");
 				}
 				else {
 					me.setCellColor($("#txtScheduledHours" + index), me.cellColorValid, "");
 				}
-				
+
+				if ($("#selPayrollCompany" + index).val() != "0" && $("#txtScheduledHours" + index).val() != "") {
+					var statusType = $("#selStatusType" + index).val();
+					var houseCode = $("#txtHouseCode" + index).val();
+					var scheduledHours = parseInt($("#txtScheduledHours" + index).val(), 10);
+					var itemIndex = ii.ajax.util.findIndexById($("#selPayrollCompany" + index).val(), me.houseCodeCache[houseCode].payrollCompanies);
+					var statusTypeTitle = "";
+					
+					if (itemIndex != undefined)	{
+						if (me.houseCodeCache[houseCode].payrollCompanies[itemIndex].payFrequencyType == "Weekly") {
+							if (scheduledHours > 40) {
+								rowValid = false;
+								me.setCellColor($("#txtScheduledHours" + index), me.cellColorInvalid, "Scheduled Hours should not be greater than 40 hours for the Weekly Pay Frequency.");
+							}
+							else {
+								if (scheduledHours >= 30)
+									statusTypeTitle = "Full Time";
+								else
+									statusTypeTitle = "Part Time";
+							}
+						}
+						else if (me.houseCodeCache[houseCode].payrollCompanies[itemIndex].payFrequencyType == "Bi-Weekly") {
+							if (scheduledHours > 80) {
+								rowValid = false;
+								me.setCellColor($("#txtScheduledHours" + index), me.cellColorInvalid, "Scheduled Hours should not be greater than 80 hours for the Bi-Weekly Pay Frequency.");
+							}
+							else {
+								if (scheduledHours >= 60)
+									statusTypeTitle = "Full Time";
+								else
+									statusTypeTitle = "Part Time";
+							}
+						}
+					}
+					
+					if (statusTypeTitle != "") {
+						itemIndex = me.findIndexByTitle(statusTypeTitle, me.statusTypesCache[statusType].statusCategoryTypes);
+						$("#selStatusCategoryType" + index).val(me.statusTypesCache[statusType].statusCategoryTypes[itemIndex].id);
+					}
+				}
+
 				if ($("#txtEmployeeNumber" + index).val() != "" && !(/^[0-9]+$/.test($("#txtEmployeeNumber" + index).val()))) {
 					rowValid = false;
 					me.setCellColor($("#txtEmployeeNumber" + index), me.cellColorInvalid, "Please enter valid Employee Number.");
