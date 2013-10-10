@@ -3,6 +3,7 @@ ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons");
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.rev.bulkInvoiceImport.usr.defs" );
@@ -34,6 +35,7 @@ ii.Class({
 			me.cellColorInvalid = "red";
 			me.batches = [];
 			me.status = "";
+			me.loadCount = 0;
 
 			me.gateway = ii.ajax.addGateway("rev", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -42,20 +44,22 @@ ii.Class({
 				, function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
 			);
 
+			me.validator = new ui.ctl.Input.Validation.Master();
+			me.session = new ii.Session(me.cache);
+			
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "rev\\bulkInvoiceImport";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
 					me.authorizationProcess.apply(me);
 				},
-				me);
-
-			me.session = new ii.Session(me.cache);
-			me.validator = new ui.ctl.Input.Validation.Master();
+				me);			
 
 			me.defineFormControls();			
 			me.configureCommunications();
+			me.setStatus("Loading");
 			me.modified(false);
+			
 			me.anchorUpload.display(ui.cmn.behaviorStates.disabled);
 
 			$(window).bind("resize", me, me.resize);
@@ -79,20 +83,27 @@ ii.Class({
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
 			}
-			
-			me.taxableServiceStore.fetch("userId:[user]", me.taxableServicesLoaded, me);
 		},
 
 		authorizationProcess: function fin_rev_bulkInvoiceImport_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments, {});
 			var me = this;
-			
-			$("#pageLoading").hide();
 
 			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);				
-
+			
+			$("#pageLoading").hide();
+			$("#pageLoading").css({
+				"opacity": "0.5",
+				"background-color": "black"
+			});
+			$("#messageToUser").css({ "color": "white" });
+			$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+			$("#pageLoading").fadeIn("slow");
+			
 			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+			me.loadCount = 1;
+			me.session.registerFetchNotify(me.sessionLoaded,me);	
+			me.taxableServiceStore.fetch("userId:[user]", me.taxableServicesLoaded, me);		
 		},	
 		
 		sessionLoaded: function fin_rev_bulkInvoiceImport_UserInterface_sessionLoaded() {
@@ -106,10 +117,10 @@ ii.Class({
 		resize: function() {
 			var me = this;
 
-			fin.rev.bulkInvoiceImportUI.batchGrid.setHeight($(window).height() - 85);			
+			fin.rev.bulkInvoiceImportUI.batchGrid.setHeight($(window).height() - 110);			
 			
 			var divInvoiceGridWidth = $(window).width() - 22;
-			var divInvoiceGridHeight = $(window).height() - 115;
+			var divInvoiceGridHeight = $(window).height() - 140;
 
 			$("#divInvoiceGrid").css({"width" : divInvoiceGridWidth + "px", "height" : divInvoiceGridHeight + "px"});
 		},
@@ -310,22 +321,51 @@ ii.Class({
 			});
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
 		},
-	
+		
 		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
+			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		taxableServicesLoaded: function(me, activeId) {
  
 			me.taxableServices.unshift(new fin.rev.bulkInvoiceImport.TaxableService(0, "", ""));
+			me.checkLoadCount();
         },
 
 		buildDropDown: function(controlName, types, title) {
@@ -374,7 +414,7 @@ ii.Class({
 				return;
 
 			$("#pageHeader").text("Batch Process Status");
-			$("#messageToUser").text("Loading");
+			me.setLoadCount();
 			$("#pageLoading").show();
 			$("#divFrame").height(0);
 			$("#iFrameUpload").height(0);
@@ -416,7 +456,7 @@ ii.Class({
 
 			me.batchProcessCompleted = true;
 			
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 			
 			for (var index = 0; index < me.batches.length; index++) {
 				if (me.batches[index].statusType == 2 && me.batches[index].insertedRows > 0) {
@@ -485,8 +525,9 @@ ii.Class({
 			var batchId = me.batches[me.batchGrid.activeRowIndex].batchId;
 			var title = me.batches[me.batchGrid.activeRowIndex].title;
 			
+			me.setStatus("Exporting");
 			$("#messageToUser").text("Exporting to Excel");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 			
 			me.fileNameStore.reset();
 			me.fileNameStore.fetch("userId:[user],title:" + title + ",batchId:" + batchId, me.fileNamesLoaded, me);
@@ -495,7 +536,8 @@ ii.Class({
 		fileNamesLoaded: function(me, activeId) {
 			var excelFileName = "";
 
-			$("#pageLoading").hide();
+			me.setStatus("Loaded");
+			$("#pageLoading").fadeOut("slow");
 
 			if (me.fileNames.length == 1) {
 
@@ -517,8 +559,8 @@ ii.Class({
 			me.dataLoaded = false;
 			me.fileName = "";
 			
+			me.setLoadCount();
 			$("#messageToUser").text("Uploading");
-			$("#pageLoading").show();
 			$("iframe")[0].contentWindow.document.getElementById("FileName").value = "";
 			$("iframe")[0].contentWindow.document.getElementById("UploadButton").click();
 		
@@ -530,7 +572,7 @@ ii.Class({
 					
 					if (me.fileName == "Error") {
 						alert("Unable to upload the file. Please try again.")
-						$("#pageLoading").hide();
+						me.checkLoadCount();
 					}
 					else {
 						$("#messageToUser").text("Processing");
@@ -600,7 +642,7 @@ ii.Class({
 			me.dataLoaded = true;
 			me.modified();
 			
-			$("#pageLoading").hide();
+			me.checkLoadCount();
   		},
 
 //		setTaxable: function(objCheckBox) {
@@ -858,8 +900,8 @@ ii.Class({
 
 			// If all required fields are entered correctly then validate the Customer Numbers, House Codes and Account Codes
 			if (valid) {
+				me.setLoadCount();
 				$("#messageToUser").text("Validating");
-				$("#pageLoading").show();
 			
 				me.bulkImportValidationStore.reset();
 				me.bulkImportValidationStore.fetch("userId:[user]"
@@ -878,7 +920,7 @@ ii.Class({
 
 		validationsLoaded: function(me, activeId) {
 
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 
 			if (me.bulkImportValidations.length > 0) {
 
@@ -959,9 +1001,9 @@ ii.Class({
 
 			if (!parent.fin.cmn.status.itemValid())
 				return;
-
+			
+			me.setLoadCount();
 			$("#messageToUser").text("Clearing");
-			$("#pageLoading").show();
 			
 			me.invoiceStore.reset();
 			me.invoiceStore.fetch("userId:[user],status:delete,fileName:" + me.fileName, me.invoiceFileRemoved, me);
@@ -978,7 +1020,7 @@ ii.Class({
 			$("#tblInvoices").hide();
 			$("#divFrame").show();
 			$("#divUpload").show();
-			$("#pageLoading").hide();
+			me.checkLoadCount();
   		},
 
 		actionCreateBatch: function() {
@@ -992,7 +1034,7 @@ ii.Class({
 				return false;
 			}
 
-			$("#popupLoading").show();
+			$("#pageLoading").fadeIn("slow");
 
 			me.status = "createBatch";
 			
@@ -1017,6 +1059,9 @@ ii.Class({
 
 			me.hidePopup();
 			$("#AnchorSaveCancel").show();
+			
+			me.setStatus("Loaded");
+			$("#pageLoading").fadeOut("slow"); 
 		},
 		
 		actionCancelBatch: function() {
@@ -1024,8 +1069,9 @@ ii.Class({
 			var item = [];
 			var xml = "";
 
+			me.setStatus("Loading");
 			$("#messageToUser").text("Cancelling");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 
 			me.status = "cancelBatch";
 
@@ -1048,9 +1094,11 @@ ii.Class({
 			var me = this;
 			var item = [];
 			var xml = "";
-
+			
+			me.setStatus("Saving");
+			
 			$("#messageToUser").text("Processing the batch, please wait...");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow"); 
 
 			xml = me.saveXmlBuildInvoice();
 
@@ -1138,7 +1186,8 @@ ii.Class({
 								}, 5000);
 							}
 							else if (me.status == "cancelBatch") {
-								$("#pageLoading").hide();
+								me.setStatus("Loaded");
+								$("#pageLoading").fadeOut("slow"); 
 								
 								if (parseInt($(this).attr("statustype"), 10) == 6) {
 									var index = me.batchGrid.activeRowIndex;
@@ -1155,6 +1204,7 @@ ii.Class({
 				});
 			}
 			else {
+				me.setStatus("Error");
 				$("#popupLoading").hide();
 				alert("[SAVE FAILURE]: " + $(args.xmlNode).attr("message"));
 			}
