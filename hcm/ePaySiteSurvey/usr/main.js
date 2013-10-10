@@ -5,9 +5,7 @@ ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.grid" );
 ii.Import( "fin.cmn.usr.util" );
-ii.Import( "fin.cmn.usr.ui.core" );
-ii.Import( "fin.cmn.usr.ui.widget" );
-ii.Import( "fin.cmn.usr.multiselect" );
+
 ii.Import( "fin.cmn.usr.houseCodeSearch" );
 ii.Import( "fin.cmn.usr.houseCodeSearchTemplate" );
 ii.Import( "fin.hcm.ePaySiteSurvey.usr.defs" );
@@ -24,6 +22,17 @@ ii.Style( "fin.cmn.usr.grid", 9 );
 ii.Style( "fin.cmn.usr.theme", 10 );
 ii.Style( "fin.cmn.usr.core", 11 );
 ii.Style( "fin.cmn.usr.multiselect", 12 );
+
+var importCompleted = false;
+var iiScript = new ii.Script( "fin.cmn.usr.ui.core", function() { coreLoaded(); });
+
+function coreLoaded() { 
+	var iiScript = new ii.Script( "fin.cmn.usr.ui.widget", function() { widgetLoaded(); });
+}
+
+function widgetLoaded() { 
+	var iiScript = new ii.Script( "fin.cmn.usr.multiselect", function() { importCompleted = true; }); 
+}
 
 ii.Class({
     Name: "fin.hcm.ePaySiteSurvey.UserInterface",
@@ -2284,9 +2293,12 @@ ii.Class({
 				$("#divHouseCodeInfo").hide();
 				$("#divManager").hide();
 				$("#SiteMethodology").hide();
+				$("#ClockManagement").hide();
+				$("#ManageDeviceType").hide();
 				$("#AnchorPrev").hide();
 				$("#AnchorNext").hide();
 				$("#AnchorSaveAndSend").hide();
+				$("#AnchorManageDeviceTypes").hide();
 				$("#AnchorSave").hide();
 				$("#AnchorCancel").hide();
 				$("#AnchorPrint").hide();
@@ -3135,7 +3147,12 @@ ii.Class({
 
 function main() {
 
-	fin.hcmEPaySiteSurveyUi = new fin.hcm.ePaySiteSurvey.UserInterface();
-	fin.hcmEPaySiteSurveyUi.resize();
-	fin.houseCodeSearchUi = fin.hcmEPaySiteSurveyUi;
+	var intervalId = setInterval(function() {
+		if (importCompleted) {
+			clearInterval(intervalId);
+			fin.hcmEPaySiteSurveyUi = new fin.hcm.ePaySiteSurvey.UserInterface();
+			fin.hcmEPaySiteSurveyUi.resize();
+			fin.houseCodeSearchUi = fin.hcmEPaySiteSurveyUi;
+		}
+	}, 100);
 }
