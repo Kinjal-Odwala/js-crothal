@@ -737,8 +737,8 @@ ii.Class({
 			});
 
 			me.jobTypes = [];
-			me.jobMasterStore = me.cache.register({
-				storeId: "jobMasters", //jobTypes
+			me.jobTypeStore = me.cache.register({
+				storeId: "jobTypes", //jobTypes
 				itemConstructor: fin.hcm.job.JobType,
 				itemConstructorArgs: fin.hcm.job.jobTypeArgs,
 				injectionArray: me.jobTypes	
@@ -828,11 +828,11 @@ ii.Class({
 
 			me.houseCodeGlobalParametersUpdate(false);
 			
-			me.jobMasterStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.jobMastersLoaded, me);
+			me.jobTypeStore.fetch("userId:[user],", me.jobTypesLoaded, me);
 		},
 				
-		jobMastersLoaded: function fin_hcm_job_UserInterface_jobMastersLoaded(me, activeId) {
-			ii.trace("Job Masters Loaded", ii.traceTypes.information, "Info");			
+		jobTypesLoaded: function fin_hcm_job_UserInterface_jobTypesLoaded(me, activeId) {
+			ii.trace("Job Types Loaded", ii.traceTypes.information, "Info");			
 
 			for (var index = 0; index < me.jobTypes.length; index++) {
 				if (me.jobTypes[index].name == "Epay Site")
@@ -894,7 +894,7 @@ ii.Class({
 				me.searchInput.updateStatus();
 			}
 			
-			me.jobMasterStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.jobMastersLoaded, me);
+			me.jobTypeStore.fetch("userId:[user]", me.jobTypesLoaded, me);
 		},
 
 		jobTemplateChanged: function fin_hcm_job_UserInterface_jobTemplateChanged() {
