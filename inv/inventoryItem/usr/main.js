@@ -66,6 +66,13 @@ ii.Class({
 			me.defineFormControls();			
 			me.configureCommunications();
 			
+			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
+			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
+			if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
+				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
+			else
+				me.houseCodesLoaded(me, 0);
+			
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$(window).bind("resize", me, me.resize);
 
@@ -86,7 +93,18 @@ ii.Class({
 			var me = this;
 			
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
-
+			
+			me.isReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
+			
+			if (me.isReadOnly) {
+				$("#actionMenu").hide();
+				$("#AnchorSave").hide();
+				$("#AnchorNew").hide();
+				me.inventoryGrid.columns["countComplete"].inputControl = null;
+				me.inventoryGrid.columns["totalCost"].inputControl = null;
+				me.inventoryItemGrid.columns["quantity"].inputControl = null;
+			}
+			
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
 				$("#pageLoading").css({
@@ -99,28 +117,10 @@ ii.Class({
 
 				ii.timer.timing("Page displayed");
 				me.session.registerFetchNotify(me.sessionLoaded,me);
-				
-				me.houseCodeSearch = new ui.lay.HouseCodeSearch();
-				if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
-				if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
-					me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
-				else
-					me.houseCodesLoaded(me, 0);
 	
 				me.fiscalYear.fetchingData();
 				me.fiscalPeriod.fetchingData();
 				me.fiscalYearStore.fetch("userId:[user],", me.yearsLoaded, me);
-
-				me.isReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
-				
-				if (me.isReadOnly) {
-					$("#actionMenu").hide();
-					$("#AnchorSave").hide();
-					$("#AnchorNew").hide();
-					me.inventoryGrid.columns["countComplete"].inputControl = null;
-					me.inventoryGrid.columns["totalCost"].inputControl = null;
-					me.inventoryItemGrid.columns["quantity"].inputControl = null;
-				}
 			}				
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";

@@ -69,6 +69,13 @@ ii.Class({
 
 			me.defineFormControls();			
 			me.configureCommunications();
+			
+			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
+			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
+			if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
+				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
+			else
+				me.houseCodesLoaded(me, 0);	
 
 			$(window).bind("resize", me, me.resize);
 			$("#countCompleteHeader").hide();
@@ -102,6 +109,58 @@ ii.Class({
 			
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 			
+			me.isReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
+
+			if (me.isReadOnly) {
+				me.inventoryGrid.columns["countComplete"].inputControl = null;
+				me.inventoryGrid.columns["totalCost"].inputControl = null;
+				$("#generateInventoryListAction").hide();
+				$("#AnchorSave").hide();
+			}
+
+			me.actionMenu = new ui.ctl.Toolbar.ActionMenu({
+				id: "actionMenu"
+			});  
+			
+			me.actionMenu
+				.addAction({
+					id: "searchInventoryCountAction",
+					brief: "Search & Edit Inventory Counts", 
+					title: "Search & Edit Inventory Counts.",
+					actionFunction: function() { me.actionSearchInventoryCount(); }
+				})
+				.addAction({
+					id: "inventoryStatusAction", 
+					brief: "Show Inventory Status (Completed / Not Completed)", 
+					title: "Show Inventory Status (Completed / Not Completed).",
+					actionFunction: function() { me.actionInventoryStatus(); }
+				})
+				.addAction({
+					id: "auditLogReportAction",
+					brief: "Audit Log Lookup Web Report",
+					title: "Audit Log Lookup Web Report.",
+					actionFunction: function() { me.actionAuditLogReport(); }
+				});
+			
+			me.reportInventoryMidYearToYearEnd = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\InventoryMidYear");
+			if (me.reportInventoryMidYearToYearEnd) {
+				me.actionMenu
+					.addAction({
+						id: "inventoryReportAction",
+						brief: "Inventory Mid Year and Year End",
+						title: "Inventory Mid Year and Year End.",
+						actionFunction: function() { me.actionInventoryReport(); }
+					});
+			}
+
+			me.actionMenu
+				.addAction({
+					id: "generateInventoryListAction", 
+					brief: "Generate Inventory List", 
+					title: "Generate list of Inventories from Purchase Orders.",
+					actionFunction: function() { me.actionGenerateInventoryList(); }
+				});
+
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
 				$("#pageLoading").css({
@@ -114,70 +173,10 @@ ii.Class({
 
 				ii.timer.timing("Page displayed");
 				me.session.registerFetchNotify(me.sessionLoaded,me);
-				
-				me.houseCodeSearch = new ui.lay.HouseCodeSearch();
-				if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
-				if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
-					me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
-				else
-					me.houseCodesLoaded(me, 0);
-	
 				me.fiscalYear.fetchingData();
 				me.fiscalPeriod.fetchingData();
 				me.fiscalYearStore.fetch("userId:[user],", me.yearsLoaded, me);
-			
-				me.isReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
-				
-				if (me.isReadOnly) {
-					me.inventoryGrid.columns["countComplete"].inputControl = null;
-					me.inventoryGrid.columns["totalCost"].inputControl = null;
-					$("#generateInventoryListAction").hide();
-					$("#AnchorSave").hide();
-				}
-
-				me.actionMenu = new ui.ctl.Toolbar.ActionMenu({
-					id: "actionMenu"
-				});  
-				
-				me.actionMenu
-					.addAction({
-						id: "searchInventoryCountAction",
-						brief: "Search & Edit Inventory Counts", 
-						title: "Search & Edit Inventory Counts.",
-						actionFunction: function() { me.actionSearchInventoryCount(); }
-					})
-					.addAction({
-						id: "inventoryStatusAction", 
-						brief: "Show Inventory Status (Completed / Not Completed)", 
-						title: "Show Inventory Status (Completed / Not Completed).",
-						actionFunction: function() { me.actionInventoryStatus(); }
-					})
-					.addAction({
-						id: "auditLogReportAction",
-						brief: "Audit Log Lookup Web Report",
-						title: "Audit Log Lookup Web Report.",
-						actionFunction: function() { me.actionAuditLogReport(); }
-					});
-				
-				me.reportInventoryMidYearToYearEnd = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\InventoryMidYear");
-				if (me.reportInventoryMidYearToYearEnd) {
-					me.actionMenu
-						.addAction({
-							id: "inventoryReportAction",
-							brief: "Inventory Mid Year and Year End",
-							title: "Inventory Mid Year and Year End.",
-							actionFunction: function() { me.actionInventoryReport(); }
-						});
-				}
-	
-				me.actionMenu
-					.addAction({
-						id: "generateInventoryListAction", 
-						brief: "Generate Inventory List", 
-						title: "Generate list of Inventories from Purchase Orders.",
-						actionFunction: function() { me.actionGenerateInventoryList(); }
-					});
-			}				
+				}				
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},	
@@ -849,6 +848,7 @@ ii.Class({
 			me.actionType = 0;
 			me.createGrid();
 			me.resetControls();
+			me.setStatus("Loaded");
 		},
 
 		actionInventoryStatus: function() {
@@ -869,6 +869,7 @@ ii.Class({
 			me.countCompleteStatus.resizeText();
 			me.actionType = 1;
 			me.createGrid();
+			me.setStatus("Loaded");
 		},
 		
 		actionAuditLogReport: function() {
@@ -888,6 +889,7 @@ ii.Class({
 
 			me.actionType = 2;
 			me.createGrid();
+			me.setStatus("Loaded");
 		},
 		
 		actionInventoryReport: function() {
@@ -906,6 +908,7 @@ ii.Class({
 			);
 
 			window.open(reportURL);
+			me.setStatus("Loaded");
 		},
 
 		actionGenerateInventoryList: function() {
@@ -942,6 +945,7 @@ ii.Class({
 			me.maidCartItems.push(new fin.inv.administration.InventoryItem({ id: 2, itemNumber: 'MAIDCART', description: 'Maid Carts' }));
 			me.maidCartItems.push(new fin.inv.administration.InventoryItem({ id: 3, itemNumber: 'PBSETUP', description: 'Project/Bucket Set-Up' }));
 			me.maidCartItemGrid.setData(me.maidCartItems);
+			me.setStatus("Loaded");
 		},
 
 		popupYearChanged: function() {
