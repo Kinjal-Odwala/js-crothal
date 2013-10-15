@@ -35,7 +35,7 @@ ii.Class({
 			me.validZipCode = true;
 			me.cityNames = [];
 			me.units = [];
-			me.tempJobs = [];
+			me.jobsList = [];
 			me.lastSelectedRowIndex = -1;
 			me.activeFrameId = 0;
 			me.houseCodesTabNeedUpdate = true;
@@ -76,6 +76,7 @@ ii.Class({
 			me.invoiceTemplate.fetchingData();
 			me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
 			me.invoiceTemplateStore.fetch("userId:[user]", me.invoiceTemplatesLoaded, me);
+			me.jobMasterStore.fetch("userId:[user]", me.jobMastersLoaded, me);
 			me.modified(false);
 
 			$(window).bind("resize", me, me.resize);
@@ -111,23 +112,18 @@ ii.Class({
 				}					
 			});
 			
-			$("#TabCollection a").click(function() {
-				
+			$("#TabCollection a").click(function() {				
 				switch(this.id) {
-					case "JobDetails":
-						
+					case "JobDetails":						
 						me.activeFrameId = 0;
-						if (me.status == "" && me.jobs[me.lastSelectedRowIndex] != undefined)
-							me.jobDetailsLoad(me.jobs[me.lastSelectedRowIndex]);
-							
+						if (me.status == "" && me.jobsList[me.lastSelectedRowIndex] != undefined)
+							me.jobDetailsLoad(me.jobsList[me.lastSelectedRowIndex]);
 						break;
 
 					case "JobAssociations":
-
 						me.activeFrameId = 1;
 						me.loadHouseCodes();
 						me.houseCodesTabNeedUpdate = false;
-
 						break;
 				}
 			});
@@ -737,8 +733,8 @@ ii.Class({
 			});
 
 			me.jobTypes = [];
-			me.jobTypeStore = me.cache.register({
-				storeId: "jobTypes", //jobTypes
+			me.jobMasterStore = me.cache.register({
+				storeId: "jobMasters", //jobTypes
 				itemConstructor: fin.hcm.job.JobType,
 				itemConstructorArgs: fin.hcm.job.jobTypeArgs,
 				injectionArray: me.jobTypes	
@@ -802,21 +798,15 @@ ii.Class({
 		
 		stateTypesLoaded: function fin_hcm_job_UserInterface_stateTypesLoaded(me, activeId) {
 
-			ii.trace("State Types Loaded", ii.traceTypes.information, "Info");
-
 			me.jobState.setData(me.stateTypes);
 		},
 		
 		invoiceTemplatesLoaded: function fin_hcm_job_UserInterface_invoiceTemplatesLoaded(me, activeId) {
 
-			ii.trace("Invoice Templates Loaded", ii.traceTypes.information, "Info");
-
 			me.invoiceTemplate.setData(me.invoiceTemplates);
 		},
 
 		houseCodesLoaded: function fin_hcm_job_UserInterface_houseCodesLoaded(me, activeId) {
-
-			ii.trace("HouseCodes Loaded", ii.traceTypes.information, "Info");
 
 			if (parent.fin.appUI.houseCodeId == 0) {
 				if (me.houseCodes.length <= 0) {
@@ -827,12 +817,9 @@ ii.Class({
 			}
 
 			me.houseCodeGlobalParametersUpdate(false);
-			
-			me.jobTypeStore.fetch("userId:[user],", me.jobTypesLoaded, me);
 		},
 				
-		jobTypesLoaded: function fin_hcm_job_UserInterface_jobTypesLoaded(me, activeId) {
-			ii.trace("Job Types Loaded", ii.traceTypes.information, "Info");			
+		jobMastersLoaded: function fin_hcm_job_UserInterface_jobMastersLoaded(me, activeId) {
 
 			for (var index = 0; index < me.jobTypes.length; index++) {
 				if (me.jobTypes[index].name == "Epay Site")
@@ -841,31 +828,30 @@ ii.Class({
 
 			me.jobType.setData(me.jobTypes);
 			me.jobTemplate.setData(me.jobTemplates);
-			
-			me.houseCodeGrid.body.deselectAll();
-			me.houseCodeGrid.setData([]);
-			
-			me.jobGrid.body.deselectAll();
-			me.jobGrid.setData([]);
-			
+			me.loadJobs();
+		},
+		
+		loadJobs: function() {
+			var me = this;
+
 			if ($("#SearchByHouseCode")[0].checked)
-				me.jobStore.fetch("houseCodeId:" + parent.fin.appUI.houseCodeId + ",jobType:1,userId:[user],", me.houseCodeJobsLoaded, me);
+				me.jobStore.fetch("houseCodeId:" + parent.fin.appUI.houseCodeId + ",jobType:1,userId:[user],", me.jobsLoaded, me);
 			else if ($("#SearchByJob")[0].checked && me.searchInput.getValue().length >= 3)
-				me.jobStore.fetch("title:" + me.searchInput.getValue() + ",jobType:1,userId:[user],", me.houseCodeJobsLoaded, me);
+				me.jobStore.fetch("title:" + me.searchInput.getValue() + ",jobType:1,userId:[user],", me.jobsLoaded, me);
 		},
 
-		houseCodeJobsLoaded: function fin_hcm_job_UserInterface_houseCodeJobsLoaded(me, activeId) {
+		jobsLoaded: function fin_hcm_job_UserInterface_jobsLoaded(me, activeId) {
 
-			ii.trace("HouseCode Jobs Loaded", ii.traceTypes.information, "Info");			
+			me.jobsList = me.jobs.slice();
 
-			if (me.jobs.length <= 0) {
+			if (me.jobsList.length <= 0) {
 				me.jobGrid.setData([]);
 				me.actionClearItem();
 				me.status = "new";
 				return;
 			}
 
-			me.jobGrid.setData(me.jobs);
+			me.jobGrid.setData(me.jobsList);
 			me.jobGrid.body.select(0);
 		},
 		
@@ -894,7 +880,23 @@ ii.Class({
 				me.searchInput.updateStatus();
 			}
 			
-			me.jobTypeStore.fetch("userId:[user]", me.jobTypesLoaded, me);
+			me.loadJobs();
+		},
+
+		jobNumberCheck: function fin_hcm_job_UserInterface_jobNumberCheck() {
+			var args = ii.args(arguments,{});
+			var me = this;
+
+			if (me.jobNumber.getValue().length > 0) {
+				me.jobStore.reset();
+				me.jobStore.fetch("jobNumber:" + me.jobNumber.getValue() + ",userId:[user],", me.singleJobLoaded, me);
+			}
+		},
+
+		singleJobLoaded: function fin_hcm_job_UserInterface_singleJobLoaded(me, activeId) {
+
+			if (me.jobs.length > 0)
+				me.jobDetailsLoad(me.jobs[0]);
 		},
 
 		jobTemplateChanged: function fin_hcm_job_UserInterface_jobTemplateChanged() {
@@ -902,43 +904,6 @@ ii.Class({
 			var me = this;
 
 			me.jobDetailsLoad(me.jobTemplates[me.jobTemplate.indexSelected]);
-		},
-
-		jobNumberCheck: function fin_hcm_job_UserInterface_jobNumberCheck() {
-			var args = ii.args(arguments,{});
-			var me = this;
-			
-			me.tempJobs = [];
-			for (var index = me.jobs.length-1; index >= 0; index--) {
-				var item = new fin.hcm.Tempjob({ 
-					id: me.jobs[index].id,
-					number: me.jobs[index].number,
-					name: me.jobs[index].name,
-					brief: me.jobs[index].brief,
-					title: me.jobs[index].title,
-					description: me.jobs[index].description,
-					contact: me.jobs[index].contact,
-					address1: me.jobs[index].address1,
-					address2: me.jobs[index].address2,
-					city: me.jobs[index].city,
-					appStateTypeId: me.jobs[index].appStateTypeId,
-					postalCode: me.jobs[index].postalCode,
-					geoCode: me.jobs[index].geoCode,
-					jobType: me.jobs[index].jobType,
-					invoiceTemplate: me.jobs[index].invoiceTemplate,
-					taxId: me.jobs[index].taxId,
-					overrideSiteTax: me.jobs[index].overrideSiteTax, 
-					serviceContract:me.jobs[index].serviceContract,
-					generalLocationCode:me.jobs[index].generalLocationCode,
-					active:me.jobs[index].active 
-				});
-				me.tempJobs.push(item)
-			}
-					
-			if (me.jobNumber.getValue().length > 0) {
-				me.jobStore.reset();
-				me.jobStore.fetch("jobNumber:" + me.jobNumber.getValue() + ",userId:[user],", me.jobsLoaded, me);
-			}
 		},
 
 		itemSelect: function fin_hcm_job_UserInterface_itemSelect() {
@@ -952,55 +917,21 @@ ii.Class({
 			}
 			
 			me.status = "";
-			me.jobId = me.jobs[index].id;
+			me.jobId = me.jobsList[index].id;
 			me.lastSelectedRowIndex = index;
 			me.houseCodesTabNeedUpdate = true;
 			
-			if (me.jobs[index] != undefined) 			
-				me.jobDetailsLoad(me.jobs[index]);
+			if (me.jobsList[index] != undefined) 			
+				me.jobDetailsLoad(me.jobsList[index]);
 				
 			if (me.activeFrameId == 1)				
 				me.loadHouseCodes();
-		},
-				
-		jobsLoaded: function fin_hcm_job_UserInterface_jobsLoaded(me, activeId) {
-			
-			if (me.jobs.length > 0)
-				me.jobDetailsLoad(me.jobs[0]);
-
-			me.jobStore.reset();
-			for (var index = me.tempJobs.length-1; index >= 0; index--) {
-				var item = new fin.hcm.job.Job({ 
-					id: me.tempJobs[index].id,
-					number: me.tempJobs[index].number,
-					name: me.tempJobs[index].name,
-					brief: me.tempJobs[index].brief,
-					title: me.tempJobs[index].title,
-					description: me.tempJobs[index].description,
-					contact: me.tempJobs[index].contact,
-					address1: me.tempJobs[index].address1,
-					address2: me.tempJobs[index].address2,
-					city: me.tempJobs[index].city,
-					appStateTypeId: me.tempJobs[index].appStateTypeId,
-					postalCode: me.tempJobs[index].postalCode,
-					geoCode: me.tempJobs[index].geoCode,
-					jobType: me.tempJobs[index].jobType,
-					invoiceTemplate: me.tempJobs[index].invoiceTemplate,
-					taxId: me.tempJobs[index].taxId,
-					overrideSiteTax: me.tempJobs[index].overrideSiteTax, 
-					serviceContract:me.tempJobs[index].serviceContract,
-					generalLocationCode:me.tempJobs[index].generalLocationCode,
-					active:me.tempJobs[index].active 
-				});
-				me.jobs.push(item)
-			}
 		},
 
 		jobDetailsLoad: function fin_hcm_job_UserInterface_jobDetailsLoad() {
 			var args = ii.args(arguments, {
 				job: { type: fin.hcm.job.Job }
 			});
-			
 			var me = this;
 
 			me.jobNumber.setValue(args.job.brief);
@@ -1091,31 +1022,31 @@ ii.Class({
 			me.jobCity.setData(me.cityNames);
 			me.geoCode.setData(me.zipCodeTypes);
 
-			if (me.jobGrid.activeRowIndex >= 0 && me.jobs[me.jobGrid.activeRowIndex].id > 0) {
+			if (me.jobGrid.activeRowIndex >= 0 && me.jobsList[me.jobGrid.activeRowIndex].id > 0) {
 				for (index = 0; index < me.zipCodeTypes.length; index++) {
-					if (me.zipCodeTypes[index].geoCode == me.jobs[me.jobGrid.activeRowIndex].geoCode) {
+					if (me.zipCodeTypes[index].geoCode == me.jobsList[me.jobGrid.activeRowIndex].geoCode) {
 						me.geoCode.select(index, me.geoCode.focused);
 						break;
 					}
 				}
 
 				for (index = 0; index < me.cityNames.length; index++) {
-					if (me.cityNames[index].city.toUpperCase() == me.jobs[me.jobGrid.activeRowIndex].city.toUpperCase()) {
+					if (me.cityNames[index].city.toUpperCase() == me.jobsList[me.jobGrid.activeRowIndex].city.toUpperCase()) {
 						me.jobCity.select(index, me.jobCity.focused);
 						break;
 					}
 				}
 			}
-			else if (me.jobs.length > 0) {
+			else if (me.jobsList.length > 0) {
 				for (index = 0; index < me.zipCodeTypes.length; index++) {
-					if (me.zipCodeTypes[index].geoCode == me.jobs[0].geoCode) {
+					if (me.zipCodeTypes[index].geoCode == me.jobsList[0].geoCode) {
 						me.geoCode.select(index, me.geoCode.focused);
 						break;
 					}
 				}
 
 				for (index = 0; index < me.cityNames.length; index++) {
-					if (me.cityNames[index].city.toUpperCase() == me.jobs[0].city.toUpperCase()) {
+					if (me.cityNames[index].city.toUpperCase() == me.jobsList[0].city.toUpperCase()) {
 						me.jobCity.select(index, me.jobCity.focused);
 						break;
 					}
@@ -1126,15 +1057,15 @@ ii.Class({
 				me.validZipCode = false;
 				
 				if (me.jobGrid.activeRowIndex >= 0) {
-					me.jobCity.setValue(me.jobs[me.jobGrid.activeRowIndex].city);
-					index = ii.ajax.util.findIndexById(me.jobs[me.jobGrid.activeRowIndex].appStateTypeId.toString(), me.stateTypes);
+					me.jobCity.setValue(me.jobsList[me.jobGrid.activeRowIndex].city);
+					index = ii.ajax.util.findIndexById(me.jobsList[me.jobGrid.activeRowIndex].appStateTypeId.toString(), me.stateTypes);
 					if (index != undefined) 
 						me.jobState.select(index, me.jobState.focused);
 				}
-				else if (me.jobs.length > 0) {
-					me.geoCode.setValue(me.jobs[0].geoCode);
-					me.jobCity.setValue(me.jobs[0].city);
-					index = ii.ajax.util.findIndexById(me.jobs[0].appStateTypeId.toString(), me.stateTypes);
+				else if (me.jobsList.length > 0) {
+					me.geoCode.setValue(me.jobsList[0].geoCode);
+					me.jobCity.setValue(me.jobsList[0].city);
+					index = ii.ajax.util.findIndexById(me.jobsList[0].appStateTypeId.toString(), me.stateTypes);
 					if (index != undefined) 
 						me.jobState.select(index, me.jobState.focused);
 				}
@@ -1172,7 +1103,7 @@ ii.Class({
 		loadHouseCodes: function fin_hcm_job_UserInterface_loadHouseCodes() {
 		    var me = this;
 
-			if (me.jobs[me.lastSelectedRowIndex] == undefined) return;
+			if (me.jobsList[me.lastSelectedRowIndex] == undefined) return;
 
 			if (me.houseCodesTabNeedUpdate) {
 				var index = me.houseCodeGrid.activeRowIndex;
@@ -1185,12 +1116,12 @@ ii.Class({
 				else {
 					me.houseCodesTabNeedUpdate = false;
 					me.houseCodeJobStore.reset();
-					me.houseCodeJobStore.fetch("userId:[user],jobId:" + me.jobId, me.jobAssociationsLoaded, me);
+					me.houseCodeJobStore.fetch("userId:[user],jobId:" + me.jobId, me.houseCodeJobLoaded, me);
 				}
 			}
 		},
 
-		jobAssociationsLoaded: function fin_hcm_job_UserInterface_jobAssociationsLoaded(me, activeId) {
+		houseCodeJobLoaded: function fin_hcm_job_UserInterface_houseCodeJobLoaded(me, activeId) {
 
 			me.houseCodeGrid.setData(me.houseCodeJobs);
 			me.houseCodeGrid.resize();
@@ -1324,9 +1255,8 @@ ii.Class({
 				return;
 			
 			$("#container-1").triggerTab(1);
-			
-			me.jobId = 0;
 			$("#JobTemplateDiv").hide();
+			me.jobId = 0;			
 			me.actionClearItem();
 			me.resetGrids();
 			me.status = "new";
@@ -1370,7 +1300,7 @@ ii.Class({
 			
 			if (!parent.fin.cmn.status.itemValid())
 				return;
-				
+
 			me.status = "";
 
 			$("#JobTemplateDiv").hide();
@@ -1410,12 +1340,11 @@ ii.Class({
 				return false;
 			}
 
-			//me.jobId = 0;
 			me.houseCodeJobId = 0;
 
 			if (me.status == "removeAssociation") {
-				if (me.jobs[me.jobGrid.activeRowIndex] != undefined) {
-					me.jobId = me.jobs[me.jobGrid.activeRowIndex].id;
+				if (me.jobsList[me.jobGrid.activeRowIndex] != undefined) {
+					me.jobId = me.jobsList[me.jobGrid.activeRowIndex].id;
 					me.houseCodeJobId = me.houseCodeGrid.data[me.houseCodeGrid.activeRowIndex].id;
 				}
 			}
@@ -1493,8 +1422,7 @@ ii.Class({
 					xml += ' active="' + item.active + '"';
 					xml += ' clientId="2"';	
 					xml += '/>';
-				}
-				
+				}				
 				
 				xml += '</job>';
 			}	
@@ -1558,13 +1486,13 @@ ii.Class({
 									ii.trace("New Job Added", ii.traceTypes.information, "Info");
 									me.jobId = parseInt($(this).attr("id"), 10);
 									item.id = me.jobId;
-									me.jobs.push(item);
-									me.lastSelectedRowIndex = me.jobs.length - 1;
-									me.jobGrid.setData(me.jobs);
+									me.jobsList.push(item);
+									me.lastSelectedRowIndex = me.jobsList.length - 1;
+									me.jobGrid.setData(me.jobsList);
 									me.jobGrid.body.select(me.lastSelectedRowIndex);
 								}
 								else {
-									me.jobs[me.lastSelectedRowIndex] = item;
+									me.jobsList[me.lastSelectedRowIndex] = item;
 									me.jobGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
 								}
 
@@ -1573,7 +1501,6 @@ ii.Class({
 							case "houseCodeJob":
 								
 								if (me.status == "removeAssociation") {
-									
 									me.houseCodeJobs.splice(me.houseCodeGrid.activeRowIndex, 1);
 									me.houseCodeGrid.setData(me.houseCodeJobs);
 									if (me.houseCodeJobs.length > 0)
