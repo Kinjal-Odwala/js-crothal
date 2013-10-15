@@ -51,7 +51,17 @@ ii.Class({
 			me.configureCommunications();
 			me.setStatus("Loading");
 			me.modified(false);
+
+			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 			
+			me.houseCodeSearch = new ui.lay.HouseCodeSearch();			
+		
+			if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
+				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
+			else {
+				me.houseCodesLoaded(me, 0);
+			}
+						
 			me.startDate.setValue("");
 			me.endDate.setValue("");
 			
@@ -68,6 +78,8 @@ ii.Class({
 			
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 			
+			me.cwoReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
+			
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
 				$("#pageLoading").css({
@@ -80,17 +92,6 @@ ii.Class({
 			
 				ii.timer.timing("Page displayed");
 				me.session.registerFetchNotify(me.sessionLoaded,me);
-				if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
-				
-				me.houseCodeSearch = new ui.lay.HouseCodeSearch();			
-			
-				if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
-					me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
-				else {
-					me.houseCodesLoaded(me, 0);
-				}
-					
-				me.cwoReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
 			}				
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
@@ -524,7 +525,7 @@ ii.Class({
 			me.setStatus("Saving");
 			
 			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow"); 
 	
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({

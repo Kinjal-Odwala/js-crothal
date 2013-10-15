@@ -64,7 +64,19 @@ ii.Class({
 			me.configureCommunications();
 			me.setStatus("Loading");
 			me.modified(false);			
+
+			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 			
+			me.houseCodeSearch = new ui.lay.HouseCodeSearch();			
+		
+			if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
+				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
+			else {
+				me.houseCodesLoaded(me, 0);
+			}
+			
+			me.initialize();
+						
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$("input[name='Subcontracted']").change(function() { me.modified(true); });
@@ -162,6 +174,11 @@ ii.Class({
 
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 			
+			me.workOrdersShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
+			me.workOrdersReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
+			me.workOrdersWriteApprove = me.authorizer.isAuthorized(me.authorizePath + "\\WriteApprove");
+			me.woWriteNoApprove = me.authorizer.isAuthorized(me.authorizePath + "\\WriteNoApprove");
+				
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
 				$("#pageLoading").css({
@@ -171,29 +188,11 @@ ii.Class({
 				$("#messageToUser").css({ "color": "white" });
 				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
 				$("#pageLoading").fadeIn("slow");
-
-			
+							
 				ii.timer.timing("Page displayed");
-				me.loadCount = 3;
-				me.session.registerFetchNotify(me.sessionLoaded,me);
-					
-				if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
-				
-				me.houseCodeSearch = new ui.lay.HouseCodeSearch();	
-					
-				if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
-					me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
-				else {
-					me.houseCodesLoaded(me, 0);
-				}
-				
-				me.systemVariableStore.fetch("userId:[user],name:WorkOrderBackDays", me.systemVariablesLoaded, me);
-				me.initialize();
-					
-				me.workOrdersShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
-				me.workOrdersReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
-				me.workOrdersWriteApprove = me.authorizer.isAuthorized(me.authorizePath + "\\WriteApprove");
-				me.woWriteNoApprove = me.authorizer.isAuthorized(me.authorizePath + "\\WriteNoApprove");
+				me.loadCount = 1;
+				me.session.registerFetchNotify(me.sessionLoaded,me);				
+				me.systemVariableStore.fetch("userId:[user],name:WorkOrderBackDays", me.systemVariablesLoaded, me);	
 			}				
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
@@ -1463,7 +1462,6 @@ ii.Class({
 		workOrderTaskLoaded: function(me, activeId) {
 			
 			me.workOrderTask.setData(me.workOrderTasks);
-			me.checkLoadCount();
 		},
 
 		houseCodesLoaded: function(me, activeId) {
@@ -1488,8 +1486,7 @@ ii.Class({
 		houseCodeChanged: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
-
-			me.setLoadCount();
+			
 			me.job.fetchingData();
 			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.houseCodeJobsLoaded, me);
 		},
@@ -1527,7 +1524,6 @@ ii.Class({
 			me.customers.unshift(new fin.wom.workOrder.HouseCodeJob({ id: parent.fin.appUI.houseCodeId, jobNumber: "", jobTitle: parent.fin.appUI.houseCodeTitle }));
 			me.customer.setData(me.customers);
 			me.customerPopup.setData(me.customers);
-			me.checkLoadCount();
 		},
 		
 		actionLoadItem: function() {
