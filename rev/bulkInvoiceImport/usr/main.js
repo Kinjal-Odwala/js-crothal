@@ -102,8 +102,8 @@ ii.Class({
 			
 			ii.timer.timing("Page displayed");
 			me.loadCount = 1;
-			me.session.registerFetchNotify(me.sessionLoaded,me);	
-			me.taxableServiceStore.fetch("userId:[user]", me.taxableServicesLoaded, me);		
+			me.session.registerFetchNotify(me.sessionLoaded, me);
+			me.taxableServiceStore.fetch("userId:[user]", me.taxableServicesLoaded, me);
 		},	
 		
 		sessionLoaded: function fin_rev_bulkInvoiceImport_UserInterface_sessionLoaded() {
@@ -238,8 +238,8 @@ ii.Class({
 					if (me.title.getValue() == "")
 						return;
 
-					if (!(/^[^\\\/\:\*\?\"\<\>\|\.]+$/.test(me.title.getValue())))
-						this.setInvalid("Please enter the correct Title. The title can't contain any of the following characters: \\/:*?\"<>|.");
+					if (!(/^[^\\\/\:\*\?\"\<\>\|\.\;\,]+$/.test(me.title.getValue())))
+						this.setInvalid("Please enter the correct Title. The title can't contain any of the following characters: \\/:*?\"<>|.;,");
 				});
 
 			me.batchGrid = new ui.ctl.Grid({
@@ -1039,7 +1039,7 @@ ii.Class({
 			me.status = "createBatch";
 			
 			xml = '<revInvoiceBatch';
-			xml += ' title="' + me.title.getValue() + '"';
+			xml += ' title="' + ui.cmn.text.xml.encode(me.title.getValue()) + '"';
 			xml += ' totalRows="' + me.invoices.length + '"';
 			xml += '/>';
 
