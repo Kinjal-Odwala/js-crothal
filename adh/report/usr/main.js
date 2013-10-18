@@ -52,6 +52,8 @@ ii.Class({
 			me.typesCache = [];
 			me.invoiceCache = [];
  			me.editSalesTax = false;
+			me.save = false;
+			me.loadCount = 0;
 			
 			// Pagination setup
 			me.startPoint = 1;
@@ -105,6 +107,7 @@ ii.Class({
 			me.defineFormControls();
 			me.configureCommunications();
 			me.anchorLoad.display(ui.cmn.behaviorStates.disabled);
+			me.setStatus("Loading");
 			me.modified(false);
 
 			$(window).bind("resize", me, me.resize);
@@ -121,15 +124,30 @@ ii.Class({
 		authorizationProcess: function fin_adh_report_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments, {});
 			var me = this;
-
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded, me);
-
-			me.report.fetchingData();
-			me.moduleStore.fetch("userId:[user]", me.modulesLoaded, me);
-			me.reportStore.fetch("userId:[user],active:1", me.reportLoaded, me);
-			me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
-			me.stateTypeStore.fetch("userId:[user]", me.typesLoaded, me);
+			
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
+			
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
+				
+				ii.timer.timing("Page displayed");
+				me.session.registerFetchNotify(me.sessionLoaded, me);
+				me.loadCount = 2;
+				me.report.fetchingData();
+				me.moduleStore.fetch("userId:[user]", me.modulesLoaded, me);
+				me.reportStore.fetch("userId:[user],active:1", me.reportLoaded, me);
+				me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
+				me.stateTypeStore.fetch("userId:[user]", me.typesLoaded, me);
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},
 		
 		sessionLoaded: function fin_adh_report_UserInterface_sessionLoaded() {
@@ -143,10 +161,10 @@ ii.Class({
 		resize: function() {
 			var me = this;						
 			var divAdhReportGridWidth = $(window).width() - 22;
-			var divAdhReportGridHeight = $(window).height() - 145;
+			var divAdhReportGridHeight = $(window).height() - 170;
 
-			$("#HirOrgContainer").height($(window).height() - 130);
-			$("#divFilterGrid").height($(window).height() - 145);
+			$("#HirOrgContainer").height($(window).height() - 155);
+			$("#divFilterGrid").height($(window).height() - 170);
 			$("#divAdhReportGrid").css({"width" : divAdhReportGridWidth + "px", "height" : divAdhReportGridHeight + "px"});
 		},
 		
@@ -940,17 +958,45 @@ ii.Class({
 			});
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
 		},
-	
+		
 		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
+			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		resizeControls: function() {
@@ -1044,14 +1090,15 @@ ii.Class({
 		hirOrgsLoaded: function (me, activeId) {
 			
 			if (me.hirOrgs.length == 0) {
+				me.setStatus("Loaded");
 				$("#messageToUser").html("Load Failed.");
-				$("#pageLoading").show();
+				$("#pageLoading").fadeOut("slow");
 				ii.trace("Could not fetch required [Org Info].", ii.traceTypes.errorUserAffected, "Error");
 				return false;
 			}
 
 			$("#hirOrg").html("");
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 		
 			me.orgHierarchy = new ui.ctl.Hierarchy({
 				nodeStore: me.hirOrgStore,
@@ -1108,6 +1155,7 @@ ii.Class({
 
 			if (found) {
 				me.searchNode = true;
+				me.setLoadCount();
 				me.hirOrgsLoaded(me, 0);
 			}
 			else {
@@ -1129,8 +1177,7 @@ ii.Class({
 			me.appUnit.setValue(me.units[0].description);
 			me.hirNodeCurrentId = me.units[0].hirNode;
 
-			$("#messageToUser").html("Loading");
-			$("#pageLoading").show();
+			me.setLoadCount();
 			ii.trace("Organization Nodes Loading", ii.traceTypes.Information, "Info");
 			me.searchNode = true;
 			me.hirOrgLoad("search");
@@ -1161,6 +1208,7 @@ ii.Class({
 			var me = event.data;
 				
 			if (event.keyCode == 13) {
+				me.setLoadCount();
 				me.site.fetchingData();
 				me.siteTypeStore.reset();
 				me.siteTypeStore.fetch("userId:[user],title:" + me.site.text.value, me.siteTypesLoaded, me);
@@ -1174,14 +1222,15 @@ ii.Class({
 			
 			if (me.siteTypes.length > 0)
 				me.site.select(0, me.site.focused);
+				
+			me.checkLoadCount();
 		},
 		
 		reportChange: function() {
 			var me = this;
 			
 			if (me.report.indexSelected >= 0) {
-				$("#messageToUser").html("Loading");
-				$("#pageLoading").show();
+				me.setLoadCount();
 				me.typesLoadedCount = 0;
 				me.reportId = me.reports[me.report.indexSelected].id;
 				me.reportName = me.reports[me.report.indexSelected].name;
@@ -1396,7 +1445,7 @@ ii.Class({
 			if (me.reportFilters.length > 0) {
 				$("#divFilterHeader").show();
 				$("#FilterGrid").show();
-				$("#divFilterGrid").height($(window).height() - 145);
+				$("#divFilterGrid").height($(window).height() - 170);
 			}
 			else {
 				$("#divFilterHeader").hide();
@@ -1448,7 +1497,7 @@ ii.Class({
 				});
 			}
 
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 		},
 
 		actionLoadItem: function() {
@@ -1477,7 +1526,7 @@ ii.Class({
 			$("#AdhReportGrid").show();
 			$("#ReportHierarchy").hide();
 			$("#messageToUser").html("Loading");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 			
 			me.reportId = me.reports[me.report.indexSelected].id;
 			me.reportName = me.reports[me.report.indexSelected].name;	
@@ -1513,7 +1562,7 @@ ii.Class({
 			}
 
 			$("#DivAdhReportGridHeader").height(40);
-			$("#divAdhReportGrid").height($(window).height() - 145);
+			$("#divAdhReportGrid").height($(window).height() - 170);
 			
 			me.sortColumns = "";
 
@@ -1669,10 +1718,13 @@ ii.Class({
 					me.sortColumns = "HcmHouseCodes.HcmHouseCode#Asc|";
 				else
 					me.sortColumns = "HcmJobs.HcmJob#Asc|";
-			}	
+			}
 			
-			$("#messageToUser").html("Loading");
-			$("#pageLoading").show();
+			if (!me.save) {
+				me.setStatus("Loading");
+				$("#messageToUser").text("Loading");
+				$("#pageLoading").fadeIn("slow");
+			}
 			
 			me.moduleColumnDataStore.reset();
 			me.moduleColumnDataStore.fetch("userId:[user],report:" + me.reportId 
@@ -1750,8 +1802,15 @@ ii.Class({
 					$(this).removeClass("trover");
 				});
 			}
-
-			$("#pageLoading").hide();	
+			
+			if (!me.save) {
+				me.setStatus("Loaded");
+			}
+			else if (me.save) {
+				me.save = false;
+				me.setStatus("Saved");
+			}
+			$("#pageLoading").fadeOut("slow");
 		},
 		
 		getAdhReprotDetailGridRow: function() {			
@@ -4022,8 +4081,9 @@ ii.Class({
 		actionExportToExcelItem: function() {
 			var me = this;
 			
+			me.setStatus("Loading");
 			$("#messageToUser").html("Exporting");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 			
 			me.reportId = me.reports[me.report.indexSelected].id;
 			me.reportName = me.reports[me.report.indexSelected].name;
@@ -4041,7 +4101,8 @@ ii.Class({
 		fileNamesLoaded: function(me, activeId) {
 			var excelFileName = "";
 
-			$("#pageLoading").hide();
+			me.setStatus("Loaded");
+			$("#pageLoading").fadeOut("slow");
 
 			if (me.adhFileNames.length == 1) {
 				$("iframe")[0].contentWindow.document.getElementById("FileName").value = me.adhFileNames[0].fileName;
@@ -4073,6 +4134,7 @@ ii.Class({
 
 			$("#AdhReportGrid").hide();
 			$("#ReportHierarchy").show();
+			me.setStatus("Loaded");
 		},
 		
 		actionValidateItem: function() {
@@ -4166,8 +4228,11 @@ ii.Class({
 						return;
 					}
 
+					me.save = true;
+					me.setStatus("Saving");
+					
 					$("#messageToUser").html("Saving");
-			    	$("#pageLoading").show(); 
+			    	$("#pageLoading").fadeIn("slow"); 
 				}		
 				
     			// Send the object back to the server as a transaction
@@ -4302,8 +4367,9 @@ ii.Class({
 				}				
 			}
 			else {				
+				me.setStatus("Error");			
 				alert("[SAVE FAILURE] Error while updating the Ad-Hoc Report details: " + $(args.xmlNode).attr("message"));
-				$("#pageLoading").hide();
+				$("#pageLoading").fadeOut("slow");
 			}
 
 			me.status = "";
