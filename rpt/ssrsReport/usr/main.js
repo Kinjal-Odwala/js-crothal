@@ -4,6 +4,7 @@ ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.ctl.usr.hierarchy" );
 ii.Import( "fin.cmn.usr.treeView" );
 ii.Import( "ui.cmn.usr.text" );
@@ -41,6 +42,7 @@ ii.Class({
 			me.ssrsReportSubscriptions = [];
 			me.controls = [];
 			me.reportNodes = [];
+			me.loadCount = 0;
 
 			me.gateway = ii.ajax.addGateway("rpt", ii.config.xmlProvider);			
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -63,10 +65,8 @@ ii.Class({
 
 			me.defineFormControls();			
 			me.configureCommunications();
+			me.setStatus("Loading");
 			me.initialize();
-			me.fiscalYearStore.fetch("userId:[user],", me.yearsLoaded, me);
-			me.reportStore.fetch("userId:[user],", me.reportsLoaded, me);
-			me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
 
 			$(window).bind("resize", me, me.resize);
 		},
@@ -74,10 +74,29 @@ ii.Class({
 		authorizationProcess: function fin_rpt_ssrs_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments, {});
 			var me = this;
-
-			ii.timer.timing("Page Displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
-			me.hirNodeStore.fetch("userId:[user],hirHierarchy:1,fullPath:" + me.authorizePath, me.hirNodesLoaded, me);
+			
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
+			
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
+				
+				ii.timer.timing("Page Displayed");
+				me.loadCount = 4;
+				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.fiscalYearStore.fetch("userId:[user],", me.yearsLoaded, me);
+				me.reportStore.fetch("userId:[user],", me.reportsLoaded, me);
+				me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
+				me.hirNodeStore.fetch("userId:[user],hirHierarchy:1,fullPath:" + me.authorizePath, me.hirNodesLoaded, me);
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},
 
 		sessionLoaded: function fin_rpt_ssrs_UserInterface_sessionLoaded() {
@@ -92,9 +111,9 @@ ii.Class({
 		resize: function() {
 			var me = fin.reportUi;
 
-			$("#TreeviewContainer").height($(window).height() - 50);
-			$("#Subscription").height($(window).height() - 90);
-			me.subscriptionGrid.setHeight($(window).height() - 80);
+			$("#TreeviewContainer").height($(window).height() - 75);
+			$("#Subscription").height($(window).height() - 115);
+			me.subscriptionGrid.setHeight($(window).height() - 105);
 		},
 
 		defineFormControls: function() {
@@ -700,6 +719,31 @@ ii.Class({
 			});
 		},
 
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
+		},
+		
 		initialize: function() {
 			var me = this;
 
@@ -927,7 +971,7 @@ ii.Class({
 		},
 		
 		yearsLoaded: function(me, activeId) {
-
+			me.checkLoadCount();
 		},
 
 		loggedInUsersLoaded: function(me, activeId) {
@@ -938,6 +982,7 @@ ii.Class({
 			}
 
 			me.hirNodeCurrentId = me.getHirNodeCurrentId();
+			me.checkLoadCount();
 		},
 
 		getHirNodeCurrentId: function() {
@@ -959,6 +1004,7 @@ ii.Class({
 			}
 			
 			me.actionReportItem();
+			me.checkLoadCount();
 		},
 
 		hirNodesLoaded: function(me, activeId) {
@@ -973,6 +1019,8 @@ ii.Class({
 
 				$("#HirNodeText").removeClass("Loading");
 			}
+			
+			me.checkLoadCount();
 		},
 
 		actionAddNodes: function() {
@@ -999,8 +1047,6 @@ ii.Class({
 
 			if (me.reportNodes.length > 0)
 				$("#liNode" + me.reportNodes[0].id).find(">.hitarea").click();
-
-			$("#pageLoading").hide();
 		},
 
 		actionNodeAppend: function() {
@@ -1634,6 +1680,7 @@ ii.Class({
 							else if (me.reportParameters[iIndex].controlType == "TreeView") {
 								$("#HirNodeText").addClass("Loading");
 								me.hirNodeId = params[1];
+								me.setLoadCount();
 								me.hirNodeStore.fetch("userId:[user],hirNode:" + params[1], me.hirNodesLoaded, me);
 							}
 							break;
