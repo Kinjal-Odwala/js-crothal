@@ -723,12 +723,19 @@ ii.Class({
 			
 			me.employeeNumber = new ui.ctl.Input.Text({
 		        id: "EmployeeNumber",
-		        maxLength: 7,
+		        maxLength: 6,
 				changeFunction: function() { me.employeeNumberChanged = true;} //happens only for HC Transfer.
 		    });
-			
-			me.employeeNumber.makeEnterTab()
-				.setValidationMaster( me.validator );
+
+			 me.employeeNumber.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(function (isFinal, dataMap) {
+
+			        if (/^\d{6}$/.test(me.employeeNumber.getValue()) == false)
+			            this.setInvalid("Please enter valid Employee Number.");
+				   
+				});
 			
 			me.employeePayrollCompany = new ui.ctl.Input.DropDown.Filtered({
 				id: "EmployeePayrollCompany", 
