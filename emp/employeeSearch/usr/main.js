@@ -73,6 +73,7 @@ ii.Class({
 			me.houseCodeJobChanged = false;
 			me.employeeValidationCalledFrom = "";
 			me.employeeNameChanged = false;
+			me.loadCount = 0;
 
 			me.replaceContext = false;        // replace the system context menu?
 			me.mouseOverContext = false;      // is the mouse over the context menu?
@@ -99,6 +100,7 @@ ii.Class({
 
 			me.defineFormControls();
 			me.configureCommunications();
+			me.setStatus("Loading");
 			
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
@@ -186,8 +188,6 @@ ii.Class({
 			
 			$("#CrothallEmployeeYes").attr('disabled', true);
 			$("#CrothallEmployeeNo").attr('disabled', true);
-
-			me.statusStore.fetch("userId:[user],", me.statusTypesLoaded, me);
 		},
 		
 		authorizationProcess: function fin_emp_employeeSearch_UserInterface_authorizationProcess() {
@@ -228,13 +228,23 @@ ii.Class({
 				return false;
 			}
 
-			if (me.isAuthorized)
+			if (me.isAuthorized) {
 				$("#pageLoading").hide();
-			else {
-				$("#messageToUser").html("Access Denied");
-				alert("Access Denied. Please contact your Administrator.");
-				return false;
-			}
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
+			
+				ii.timer.timing("Page displayed");
+				me.loadCount = 1;
+				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.statusStore.fetch("userId:[user],", me.statusTypesLoaded, me);
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 
 			if (me.employeeReadOnly) {
 				$("#EmployeeButton").hide();
@@ -360,9 +370,6 @@ ii.Class({
 			else {
 				me.houseCodesLoaded(me, 0);
 			}
-				
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded, me);
 		},	
 		
 		sessionLoaded: function fin_emp_employeeSearch_UserInterface_sessionLoaded() {
@@ -379,7 +386,7 @@ ii.Class({
 			if (!fin.empSearchUi) return;
 			
 			fin.empSearchUi.searchInput.resizeText();
-		    fin.empSearchUi.employeeSearch.setHeight($(window).height() - 130);
+		    fin.empSearchUi.employeeSearch.setHeight($(window).height() - 155);
 			
 			$("#employeeGridLoading").css({
 				"width": $("#EmployeeSearch").width() + 1,
@@ -2336,6 +2343,31 @@ ii.Class({
 			});
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
+		},
+		
 		customSort: function(me, dataProperty, a, b) {
 			var aValue = a[dataProperty];
 			var bValue = b[dataProperty];
@@ -2412,6 +2444,7 @@ ii.Class({
 			me.statusType.reset();		
 			me.typeNoneAdd(me.statusTypes);
 			me.statusType.setData(me.statusTypes);
+			me.checkLoadCount();
 		},
 		
 		loadSearchResults: function() {
@@ -2422,7 +2455,7 @@ ii.Class({
 				return false;
 			}
 
-			$("#employeeGridLoading").show();
+			me.setLoadCount();
 			me.employeeStore.reset();
 			me.employeeStore.fetch("searchValue:" + me.searchInput.getValue()
 				+ ($("#houseCodeText").val() != "" ?  "," + "hcmHouseCodeId:" + parent.fin.appUI.houseCodeId : "")
@@ -2434,7 +2467,7 @@ ii.Class({
 		
 		employeesLoaded: function fin_emp_UserInterface_employeesLoaded(me, activeId) {
 
-			$("#employeeGridLoading").hide();
+			me.checkLoadCount();
 
 			if (me.employees.length == 0) {
 				me.employeeSearch.setData([]);

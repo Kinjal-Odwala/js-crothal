@@ -3,6 +3,7 @@ ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "fin.app.systemVariable.usr.defs" );
 
 ii.Style( "style", 1 );
@@ -23,7 +24,8 @@ ii.Class({
 			
 			me.accountId = 0;
 			me.status = "";
-			me.lastSelectedIndex = -1;	
+			me.lastSelectedIndex = -1;
+			me.loadCount = 0;	
 			
 			me.gateway = ii.ajax.addGateway("emp", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -45,12 +47,11 @@ ii.Class({
 						
 			me.defineFormControls();
 			me.configureCommunications();
+			me.setStatus("Loading");
 			me.modified(false);
 			
 			$(window).bind("resize", me, me.resize);
-			$(document).bind("keydown", me, me.controlKeyProcessor);	
-			
-			me.systemVariableStore.fetch("userId:[user]", me.systemVariablesLoaded, me); 	
+			$(document).bind("keydown", me, me.controlKeyProcessor);
 
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
@@ -60,15 +61,31 @@ ii.Class({
 		authorizationProcess: function fin_app_systemVariable_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
-
-			me.resize();
-			me.resizeControls();
-		
-			me.systemVariableReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
-			me.controlVisible();
 			
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
+			
+			me.systemVariableReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
+			
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
+			
+				me.resize();
+				me.resizeControls();				
+				me.controlVisible();				
+				ii.timer.timing("Page displayed");
+				me.loadCount = 1;
+				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.systemVariableStore.fetch("userId:[user]", me.systemVariablesLoaded, me); 
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},
 		
 		sessionLoaded: function fin_app_systemVariable_UserInterface_sessionLoaded() {
@@ -82,8 +99,8 @@ ii.Class({
 		resize: function() {
 			var args = ii.args(arguments, {});
 			
-			fin.app.systemVariableUi.systemVariableGrid.setHeight($(window).height() - 85);
-			$("#SystemVariableContentArea").height($(window).height() - 127);					
+			fin.app.systemVariableUi.systemVariableGrid.setHeight($(window).height() - 110);
+			$("#SystemVariableContentArea").height($(window).height() - 152);					
 		},
 		
 		defineFormControls: function() {
@@ -225,17 +242,45 @@ ii.Class({
 			
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
 		},
-	
+		
 		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
+			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		controlVisible: function(){
@@ -254,7 +299,7 @@ ii.Class({
 			me.controlVisible();			
 			me.systemVariableGrid.setData(me.systemVariables);
 			me.systemVariableGrid.body.select(0);
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 		},
 		
 		itemSelect: function() {			
@@ -279,6 +324,8 @@ ii.Class({
 			}
 			else
 				me.systemVariableId = 0;
+				
+			me.setStatus("Loaded");
 		},
 		
 		actionNewItem: function() {
@@ -293,6 +340,7 @@ ii.Class({
 			me.systemVariableId = 0;
 			me.systemName.setValue("");
 			me.systemValue.setValue("");
+			me.setStatus("Loaded");
 		},
 		
 		actionUndoItem: function() {
@@ -331,8 +379,10 @@ ii.Class({
 				return false;
 			}
 			
+			me.setStatus("Saving");
+			
 			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 				
 			var item = new fin.app.systemVariable.SystemVariable(
 				me.systemVariableId
@@ -408,12 +458,14 @@ ii.Class({
 							break;	
 					}
 				});
+				me.setStatus("Saved");
 			}
 			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating System Variable details: " + $(args.xmlNode).attr("message"));
 			}
 			
-			$("#pageLoading").hide();
+			$("#pageLoading").fadeOut("slow");
 		}
 	}
 });
