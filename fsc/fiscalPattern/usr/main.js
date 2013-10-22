@@ -61,7 +61,8 @@ ii.Class({
 			var me = this;
 
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
-
+			me.patternsReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
+			
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
 				$("#pageLoading").css({
@@ -75,8 +76,7 @@ ii.Class({
 				ii.timer.timing("Page displayed");
 				me.loadCount = 1;
 				me.session.registerFetchNotify(me.sessionLoaded,me);
-				me.patternStore.fetch("userId:[user]", me.patternsLoaded, me);
-				me.patternsReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
+				me.patternStore.fetch("userId:[user]", me.patternsLoaded, me);				
 				me.controlVisible();
 			}				
 			else

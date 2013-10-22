@@ -64,6 +64,7 @@ ii.Class({
 			var me = this;
 			
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
+			me.isReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
 			
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
@@ -79,8 +80,7 @@ ii.Class({
 				me.loadCount = 2;
 				me.session.registerFetchNotify(me.sessionLoaded,me);
 				me.patternStore.fetch("userId:[user]", me.patternsLoaded, me); 
-				me.jdeCompanyStore.fetch("userId:[user]", me.jdeCompanyLoaded, me);
-				me.isReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
+				me.jdeCompanyStore.fetch("userId:[user]", me.jdeCompanyLoaded, me);				
 				me.controlVisible();
 			}				
 			else
@@ -373,7 +373,7 @@ ii.Class({
 			me.setStatus("Saving");
 			
 			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 						
 			var xml = me.saveXmlBuild(item);
 			

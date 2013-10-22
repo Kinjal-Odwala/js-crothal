@@ -68,6 +68,7 @@ ii.Class({
 			var me = this;
 			
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
+			me.calendarReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
 			
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
@@ -82,8 +83,7 @@ ii.Class({
 				ii.timer.timing("Page displayed");
 				me.loadCount = 1;
 				me.session.registerFetchNotify(me.sessionLoaded,me);
-				me.fiscalYearStore.fetch("userId:[user]", me.fiscalYearsLoaded, me);
-				me.calendarReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
+				me.fiscalYearStore.fetch("userId:[user]", me.fiscalYearsLoaded, me);				
 				me.controlVisible();
 			}				
 			else

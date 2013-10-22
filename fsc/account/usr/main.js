@@ -65,6 +65,7 @@ ii.Class({
 			var me = this;
 			
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
+			me.accountReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
 			
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
@@ -80,8 +81,7 @@ ii.Class({
 				me.loadCount = 1;
 				me.session.registerFetchNotify(me.sessionLoaded,me);
 				me.accountCategory.fetchingData();
-				me.accountCategoryStore.fetch("userId:[user]", me.accountCategorysLoaded, me);
-				me.accountReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
+				me.accountCategoryStore.fetch("userId:[user]", me.accountCategorysLoaded, me);				
 				me.controlVisible();
 			}				
 			else
