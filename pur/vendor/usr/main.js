@@ -67,6 +67,7 @@ ii.Class({
 			var me = this;
 			
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
+			me.vendorsReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
 
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
@@ -85,8 +86,7 @@ ii.Class({
 				me.poSendMethodStore.fetch("userId:[user]", me.poSendMethodLoaded, me);
 				me.stateType.fetchingData();					
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);	
-				me.itemStatusesLoaded();
-				me.vendorsReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
+				me.itemStatusesLoaded();				
 				me.controlVisible();
 			}				
 			else

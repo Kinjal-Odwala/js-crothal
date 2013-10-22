@@ -144,6 +144,7 @@ ii.Class({
 			var me = this;
 			
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
+			me.catalogsReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
 
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
@@ -156,8 +157,7 @@ ii.Class({
 				$("#pageLoading").fadeIn("slow");
 
 				ii.timer.timing("Page displayed");
-				me.session.registerFetchNotify(me.sessionLoaded,me);
-				me.catalogsReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
+				me.session.registerFetchNotify(me.sessionLoaded,me);				
 				me.controlVisible();
 				me.resizeControls();
 				me.setStatus("Loaded");
@@ -1242,8 +1242,9 @@ ii.Class({
 			if (me.catalogGrid.activeRowIndex == -1)
 				return;
 			
+			me.setStatus("Loading");
 			$("#messageToUser").text("Exporting");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 			
 			me.fileNameStore.reset();
 			me.fileNameStore.fetch("userId:[user],export:1,catalogId:" + me.catalogId + ",type:" + type, me.fileNamesLoaded, me);
@@ -1252,7 +1253,8 @@ ii.Class({
 		fileNamesLoaded: function(me, activeId) {
 			var excelFileName = "";
 
-			$("#pageLoading").hide();
+			me.setStatus("Loaded");
+			$("#pageLoading").fadeOut("slow");
 
 			if(me.fileNames.length == 1) {
 
@@ -1285,9 +1287,10 @@ ii.Class({
 			var fileName = "";			
 
 			hideFrame();
-
+			
+			me.setStatus("Loading");
 			$("#messageToUser").text("Uploading");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow"); 
 			$("iframe")[0].contentWindow.document.getElementById("FileName").value = "";
 			$("iframe")[0].contentWindow.document.getElementById("UploadButton").click();
 		
@@ -1299,7 +1302,8 @@ ii.Class({
 					
 					if (fileName == "Error") {
 						alert("Unable to upload the file. Please try again.")
-						$("#pageLoading").hide();
+						me.setStatus("Error");
+						$("#pageLoading").fadeOut("slow");
 					}
 					else {
 						$("#messageToUser").text("Importing");
@@ -1344,9 +1348,7 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-			var errorMessage = "";
-			
-			$("#pageLoading").hide();
+			var errorMessage = "";			
 									
 			if (status == "success") {
 				if (me.activeFrameId == 0) {
@@ -1359,14 +1361,18 @@ ii.Class({
 				}
 			}
 			else if(status == "invalid") {
-				alert("The Id of the selected Catalog and the Catalog Id that exists in selected file doesn't match. Please download the Catalog and try again.");			
+				me.setStatus("Error");
+				alert("The Id of the selected Catalog and the Catalog Id that exists in selected file doesn't match. Please download the Catalog and try again.");
+				$("#pageLoading").fadeOut("slow");			
 			}	
 			else {
 				if (me.activeFrameId == 0)				
 					errorMessage = "Error while importing the house codes: " + $(args.xmlNode).attr("message");
 				else
 					errorMessage = "Error while importing the items: " + $(args.xmlNode).attr("message");
+				me.setStatus("Error");
 				alert(errorMessage);
+				$("#pageLoading").fadeOut("slow");
 			}			
 		},
 		

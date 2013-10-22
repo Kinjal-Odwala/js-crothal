@@ -67,6 +67,7 @@ ii.Class({
 			var me = this;
 			
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
+			me.itemsReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
 
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
@@ -83,8 +84,7 @@ ii.Class({
 				me.session.registerFetchNotify(me.sessionLoaded,me);
 				me.itemAccount.fetchingData();
 				me.accountStore.fetch("userId:[user]", me.accountsLoaded, me);				
-				me.itemStatusesLoaded();
-				me.itemsReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
+				me.itemStatusesLoaded();				
 				me.controlVisible();
 			}				
 			else
