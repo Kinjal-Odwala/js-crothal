@@ -415,7 +415,6 @@ ii.Class({
 
 			$("#pageHeader").text("Batch Process Status");
 			me.setLoadCount();
-			$("#pageLoading").show();
 			$("#divFrame").height(0);
 			$("#iFrameUpload").height(0);
 			$("#divUpload").hide();
