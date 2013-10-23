@@ -365,6 +365,7 @@ Rev.data.apInvoiceStore = WebLight.extend(Rev.data.XmlStore, {
              { name: 'openAmount', mapping: '@openAmount', type: 'float' },
              { name: 'houseCode', mapping: '@houseCode', type: 'string' },
              { name: 'subLedger', mapping: '@subLedger', type: 'string' },
+			 { name: 'houseCodeAmount', mapping: '@houseCodeAmount', type: 'float' },
 			 { name: 'poNumber', mapping: '@poNumber', type: 'string' },
 			 { name: 'purchaseOrderId', mapping: '@purchaseOrderId', type: 'int' }
             ],
@@ -477,7 +478,7 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
             if (metaData && record) {
 				if (colIndex == 0 || colIndex == 1 || colIndex == 12 || colIndex == 13)
 				    metaData.attr = 'style="text-align:left;"';
-				else if (colIndex == 10 || colIndex == 11) {
+				else if (colIndex == 10 || colIndex == 11 || colIndex == 14) {
 					 metaData.attr = 'style="text-align:right;"';
 					 return Ext.util.Format.number(value, '0,000.00');
 				}
@@ -495,13 +496,14 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 					  { dataIndex: 'payItem', header: 'Pay Item', width: 80 },
 					  { dataIndex: 'voidDocType', header: 'Void Doc Type', width: 110 },
 					  { dataIndex: 'vendorInvoiceNumber', header: 'Vendor Invoice #', width: 120 },
-					  { dataIndex: 'invoiceDate', header: 'Invoice Date',  width: 100, renderer: Ext.util.Format.dateRenderer('m/d/y')},
+					  { dataIndex: 'invoiceDate', header: 'Invoice Date', width: 100, renderer: Ext.util.Format.dateRenderer('m/d/y')},
 					  { dataIndex: 'glDate', header: 'GL Date',  width: 80, renderer: Ext.util.Format.dateRenderer('m/d/y') },
 					  { dataIndex: 'payStatus', header: 'Pay Status', width: 90 },
 					  { dataIndex: 'grossAmount', header: 'Gross Amount', width: 110, renderer: displayRenderer },
 					  { dataIndex: 'openAmount', header: 'Open Amount', width: 110, renderer: displayRenderer },
 					  { dataIndex: 'houseCode', header: 'House Code', width: 100, renderer: displayRenderer },
 					  { dataIndex: 'subLedger', header: 'Sub Ledger', width: 100, renderer: displayRenderer },
+					  { dataIndex: 'houseCodeAmount', header: 'House Code Amount', width: 130, renderer: displayRenderer },
                       { dataIndex: 'poNumber', header: 'PO Number', width: 100,
                        	renderer: function (value, meta, record) {
 							if (record.data.purchaseOrderId > 0)
