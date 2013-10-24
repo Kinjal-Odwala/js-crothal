@@ -6435,7 +6435,7 @@ ii.Class({
 				me.actionType == "Person" || me.actionType == "Termination") {
 				xml += '<employeeGeneralPerson';
 				xml += ' person="' + itemPerson.id + '"';
-				xml += ' brief="' + itemPerson.brief + '"';
+				xml += ' brief="' + ui.cmn.text.xml.encode(itemPerson.brief) + '"';
 				xml += ' firstName="' + ui.cmn.text.xml.encode(itemPerson.firstName) + '"';
 				xml += ' lastName="' + ui.cmn.text.xml.encode(itemPerson.lastName) + '"';
 				xml += ' middleName="' + ui.cmn.text.xml.encode(itemPerson.middleName) + '"';
@@ -6447,7 +6447,7 @@ ii.Class({
 				xml += ' homePhone="' + me.phoneMask(itemPerson.homePhone, true) + '"';
 				xml += ' fax="' + me.phoneMask(itemPerson.fax, true) + '"';
 				xml += ' cellPhone="' + me.phoneMask(itemPerson.cellPhone, true) + '"';
-				xml += ' email="' + itemPerson.email + '"';
+				xml += ' email="' + ui.cmn.text.xml.encode(itemPerson.email) + '"';
 				xml += ' pager="' + me.phoneMask(itemPerson.pager, true) + '"';
 				xml += ' active="' + (itemGeneral.statusType != 6 ? true : false) + '"';
 				xml += ' hirNode="' + itemPerson.hirNode + '"';
@@ -6477,7 +6477,7 @@ ii.Class({
 				xml += ' employeeNumber="' + itemGeneral.employeeNumber + '"';
 				xml += ' hcmHouseCode="' + itemGeneral.hcmHouseCode + '"';
 				xml += ' hirNode="' + itemGeneral.hirNode + '"';
-				xml += ' brief="' + itemPerson.brief + '"';
+				xml += ' brief="' + ui.cmn.text.xml.encode(itemPerson.brief) + '"';
 				xml += ' ssn="' + itemGeneral.ssn.replace(/-/g, '') + '"';
 				xml += ' statusType="' + itemGeneral.statusType + '"';
 				xml += ' statusCategoryType="' + itemGeneral.statusCategoryType + '"';
