@@ -2126,6 +2126,7 @@ ii.Class({
 			me.action = "New";
 						
 			loadPopup();
+			me.setStatus("Loaded");
 		},			
 		
 		actionNextItem: function() {

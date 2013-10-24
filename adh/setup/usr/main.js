@@ -619,6 +619,7 @@ ii.Class({
 			me.moduleAssociateGroup.reset();
 			me.appModuleColumnGrid.setData([]);
 			me.action = "new";
+			me.setStatus("Loaded");
 		},
 
 		actionClickItem: function(object, index) {
