@@ -228,7 +228,7 @@ ii.Class({
 		resize: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
-			var offset = 85;
+			var offset = 110;
 
 		    $("#iFrameHouseCode").height($(window).height() - offset);
 		    $("#iFrameStatistics").height($(window).height() - offset);
