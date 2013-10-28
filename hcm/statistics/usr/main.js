@@ -41,9 +41,6 @@ ii.Class({
 			
 			$(window).bind("resize", me, me.resize );
 			$(document).bind("keydown", me, me.controlKeyProcessor);
-			
-			me.siteType.fetchingData();
-			me.siteTypeStore.fetch("userId:[user]", me.siteTypesLoaded, me);
 		},
 
 		authorizationProcess: function fin_hcm_statistics_UserInterface_authorizationProcess() {
@@ -51,13 +48,16 @@ ii.Class({
 			var me = this;
 
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
-			if (me.isAuthorized)
-				$("#pageLoading").hide();
-			else {
-				$("#messageToUser").html("Unauthorized");
-				alert("You are not authorized to view this content. Please contact your Administrator.");
-				return false;
-			}
+			
+			if (me.isAuthorized) {
+				ii.timer.timing("Page displayed");
+				me.session.registerFetchNotify(me.sessionLoaded, me);
+				parent.fin.hcmMasterUi.setLoadCount();
+				me.siteType.fetchingData();
+				me.siteTypeStore.fetch("userId:[user]", me.siteTypesLoaded, me);
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 			
 			//Statistics
 			me.statisticsWrite = me.authorizer.isAuthorized(me.authorizePath + '\\Write');
@@ -129,11 +129,6 @@ ii.Class({
 			me.tsStandardizationScoreReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabStatistics\\StandardizationScore\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
 			
 			me.resetUIElements();
-			
-			$("#pageLoading").hide();
-				
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
 		},	
 		
 		sessionLoaded: function fin_hcm_statistics_UserInterface_sessionLoaded() {
@@ -851,7 +846,9 @@ ii.Class({
 			me.standardizationScore.setValue(houseCode.standardizationScore);
 			me.checkIntegrator();
 
-			$("#pageLoading").hide();
+			parent.fin.hcmMasterUi.checkLoadCount();
+			if(parent.parent.fin.appUI.modified)
+				parent.fin.hcmMasterUi.setStatus("Edit");
 			me.resizeControls();
 		}
 	}

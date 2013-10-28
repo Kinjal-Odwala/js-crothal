@@ -40,10 +40,6 @@ ii.Class({
 
 			$(window).bind("resize", me, me.resize );
 			$(document).bind("keydown", me, me.controlKeyProcessor);
-						
-			me.shippingState.fetchingData();
-			me.bankState.fetchingData();
-			me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);		
 		},
 		
 		authorizationProcess: function fin_hcm_financial_UserInterface_authorizationProcess() {
@@ -51,13 +47,18 @@ ii.Class({
 			var me = this;
 
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
-			if (me.isAuthorized)
-				$("#pageLoading").hide();
-			else {
-				$("#messageToUser").html("Unauthorized");
-				alert("You are not authorized to view this content. Please contact your Administrator.");
-				return false;
-			}
+			
+			if (me.isAuthorized) {
+				ii.timer.timing("Page displayed");
+				me.session.registerFetchNotify(me.sessionLoaded, me);
+				parent.fin.hcmMasterUi.setLoadCount();
+				me.shippingState.fetchingData();
+				me.bankState.fetchingData();
+				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
+				
 			//HouseCode
 			me.financialWrite = me.authorizer.isAuthorized(me.authorizePath + '\\Write');
 			me.financialReadOnly = me.authorizer.isAuthorized(me.authorizePath + '\\Read');
@@ -929,7 +930,9 @@ ii.Class({
 				me.budgetLaborCalcMethod.select(index, me.budgetLaborCalcMethod.focused);
 			
 			me.budgetComputerRelatedCharge.check.checked = houseCode.budgetComputerRelatedCharge;
-			$("#pageLoading").hide();
+			parent.fin.hcmMasterUi.checkLoadCount();
+			if(parent.parent.fin.appUI.modified)
+				parent.fin.hcmMasterUi.setStatus("Edit");
 			me.resizeControls();
 		},
 		
