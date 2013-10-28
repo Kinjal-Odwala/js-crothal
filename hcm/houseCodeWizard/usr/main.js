@@ -29,6 +29,7 @@ ii.Class({
 			me.currentWizard = "";
 			me.nextWizard = "";
 			me.prevWizard = "";
+			me.loadCount = 0;
 				
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 			if (!parent.fin.appUI.hirNode) parent.fin.appUI.hirNode = 0;
@@ -56,9 +57,10 @@ ii.Class({
 
 			me.defineFormControls();
 			me.configureCommunications();
-			
-			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
+			me.setStatus("Loading");
 			me.modified(false); 
+			
+			me.houseCodeSearch = new ui.lay.HouseCodeSearch();			
 			
 			if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
 				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
@@ -79,7 +81,7 @@ ii.Class({
 
 		resize: function() {
 			var me = this;
-			var offset = 95;
+			var offset = 120;
 
 		    $("#divHouseCode").height($(window).height() - offset);
 		    $("#divStatistics").height($(window).height() - offset);
@@ -121,13 +123,22 @@ ii.Class({
 			var me = this;
 
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
-			if (me.isAuthorized)
+			
+			if (me.isAuthorized) {
 				$("#pageLoading").hide();
-			else {
-				$("#messageToUser").html("Unauthorized");
-				alert("You are not authorized to view this content. Please contact your Administrator.");
-				return false;
-			}
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
+			
+				ii.timer.timing("Page displayed");
+				me.session.registerFetchNotify(me.sessionLoaded,me);
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 
 			//HouseCode
 			me.houseCodeWrite = me.authorizer.isAuthorized(me.authorizePath + '\\Write');
@@ -440,11 +451,6 @@ ii.Class({
 			}
 			
 			me.resetUIElements();
-
-			$("#pageLoading").hide();
-
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
 		},	
 		
 		sessionLoaded: function fin_hcm_houseCode_UserInterface_sessionLoaded() {
@@ -2401,8 +2407,14 @@ ii.Class({
 			});			
 		},
 		
-		dirtyCheck: function(me) {
+		setStatus: function(status) {
+			var me = this;
 
+			fin.cmn.status.setStatus(status);
+		},
+		
+		dirtyCheck: function(me) {
+				
 			return !fin.cmn.status.itemValid();
 		},
 		
@@ -2410,8 +2422,30 @@ ii.Class({
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-
+			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		resizeControls: function() {
@@ -2602,6 +2636,7 @@ ii.Class({
 		houseCodeWizard: function(){
 			var me = this;
 			
+			me.setLoadCount();
 			me.unitId = parent.fin.appUI.unitId;
 			me.currentWizard = "";
 			me.jdeCompany.fetchingData();
@@ -3078,6 +3113,7 @@ ii.Class({
 
 			me.houseCodePayrollsLoaded();
 			me.houseCodeSafetyLoaded();
+			me.checkLoadCount();
 		},		
 		
 		houseCodePayrollsLoaded: function() {			
@@ -3710,8 +3746,10 @@ ii.Class({
 				
 			var xml = me.saveXmlBuild(item);
 			
+			me.setStatus("Saving");
+			
 			$("#messageToUser").text("Saving");			
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 			
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
@@ -3877,14 +3915,17 @@ ii.Class({
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
 
-			if (status == "success") {
-				me.modified(false);
+			if (status == "success") {				
 				ii.trace("House Code details saved successfully.", ii.traceTypes.Information, "Info");
+				me.modified(false);
+				me.setStatus("Saved");
 			}
-			else 
+			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating House Code details: " + $(args.xmlNode).attr("message"));
+			}
 
-			$("#pageLoading").hide();
+			$("#pageLoading").fadeOut("slow");
 		}		
 	}
 });
