@@ -4,6 +4,7 @@ ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons");
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "fin.emp.employeeImport.usr.defs" );
 
 ii.Style( "style", 1 );
@@ -40,6 +41,7 @@ ii.Class({
 			me.employeeLoading = false;
 			me.batchId = 0;
 			me.minimumRecords = 0;
+			me.loadCount = 0;
 
 			//pagination setup
 			me.startPoint = 1;
@@ -67,14 +69,9 @@ ii.Class({
 
 			me.defineFormControls();			
 			me.configureCommunications();
-			me.anchorUpload.display(ui.cmn.behaviorStates.disabled);
-
-			me.systemVariableStore.fetch("userId:[user],name:EmployeeImportMinimumRecords", me.systemVariablesLoaded, me);
-			me.statusTypeStore.fetch("userId:[user],personId:0", me.statusTypesLoaded, me);
-			me.payFrequencyTypeStore.fetch("userId:[user]", me.payFrequencyTypesLoaded, me);
-			me.federalAdjustmentStore.fetch("userId:[user]", me.federalAdjustmentsLoaded, me);
-			me.stateStore.fetch("userId:[user]", me.statesLoaded, me);
+			me.setStatus("Loading");
 			me.modified(false);
+			me.anchorUpload.display(ui.cmn.behaviorStates.disabled);
 			
 			$(window).bind("resize", me, me.resize);
 			$("#divEmployeeGrid").bind("scroll", me.employeeGridScroll);
@@ -97,13 +94,26 @@ ii.Class({
 		authorizationProcess: function fin_emp_employeeImport_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments, {});
 			var me = this;
+						
+			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
 			
 			$("#pageLoading").hide();
-			
-			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
-				
+			$("#pageLoading").css({
+				"opacity": "0.5",
+				"background-color": "black"
+			});
+			$("#messageToUser").css({ "color": "white" });
+			$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+			$("#pageLoading").fadeIn("slow");
+					
 			ii.timer.timing("Page displayed");
+			me.loadCount = 5;
 			me.session.registerFetchNotify(me.sessionLoaded,me);
+			me.systemVariableStore.fetch("userId:[user],name:EmployeeImportMinimumRecords", me.systemVariablesLoaded, me);
+			me.statusTypeStore.fetch("userId:[user],personId:0", me.statusTypesLoaded, me);
+			me.payFrequencyTypeStore.fetch("userId:[user]", me.payFrequencyTypesLoaded, me);
+			me.federalAdjustmentStore.fetch("userId:[user]", me.federalAdjustmentsLoaded, me);
+			me.stateStore.fetch("userId:[user]", me.statesLoaded, me);
 		},	
 		
 		sessionLoaded: function fin_emp_employeeImport_UserInterface_sessionLoaded(){
@@ -117,7 +127,7 @@ ii.Class({
 		resize: function() {
 			var me = this;
 			var divGridWidth = $(window).width() - 22;
-			var divGridHeight = $(window).height() - 180;
+			var divGridHeight = $(window).height() - 205;
 
 			$("#divEmployeeGrid").css({"width" : divGridWidth + "px", "height" : divGridHeight + "px"});
 		},
@@ -446,23 +456,53 @@ ii.Class({
 			});
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
 		},
-	
+		
 		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-
+			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		systemVariablesLoaded:function(me, activeId) {
 
 			if (me.systemVariables.length > 0)
 				me.minimumRecords = parseInt(me.systemVariables[0].variableValue);
+				
+			me.checkLoadCount();
 		},
 		
 		statusTypesLoaded: function(me, activeId) {
@@ -491,21 +531,24 @@ ii.Class({
 			me.vetTypes.unshift(new fin.emp.employeeImport.VetType({ id: 0, name: "" }));			
 			me.maritalStatusTypes.unshift(new fin.emp.employeeImport.MaritalStatusType({ id: 0, name: "" }));
 			me.jobStartReasonTypes.unshift(new fin.emp.employeeImport.JobStartReasonType({ id: 0, name: "" }));
+			me.checkLoadCount();
 		},
 		
 		payFrequencyTypesLoaded: function(me, activeId) {
-						
+			me.checkLoadCount();			
 		},
 		
 		federalAdjustmentsLoaded: function(me, activeId) {			
 			
 			me.federalAdjustments.unshift(new fin.emp.employeeImport.FederalAdjustment({ id: 0, name: "" }));
 			me.maritalStatusFederalTaxTypes.unshift(new fin.emp.employeeImport.MaritalStatusFederalTaxType({ id: 0, name: "" }));
+			me.checkLoadCount();
 		},
 	
 		statesLoaded: function(me, activeId) {
 			
 			me.states.unshift(new fin.emp.employeeImport.State({ id: 0, name: "" }));
+			me.checkLoadCount();
 		},
 		
 		prevEmployeeList: function() {
@@ -551,8 +594,9 @@ ii.Class({
 		changeEmployeeList: function() {
 		    var me = this;
 		    		        
-		    $("#messageToUser").text("Loading");
-			$("#pageLoading").show();				
+		    me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");				
 			$("#selPageNumber").val(me.pageCurrent);
 
 			me.startPoint = ((me.pageCurrent - 1) * me.maximumRows) + 1;		
@@ -562,8 +606,9 @@ ii.Class({
 		employeeCountLoad: function() {
 		    var me = this;
 			
+			me.setStatus("Loading");
 			$("#messageToUser").text("Loading");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 				    
 		    me.recordCountStore.reset();
 			me.recordCountStore.fetch("userId:[user]," + "id:" + me.batchId + ",module:ImportEmployees", me.recordCountLoaded, me);
@@ -613,13 +658,15 @@ ii.Class({
 			$("#divUpload").show();
 			$("iframe")[0].contentWindow.document.getElementById("FormReset").click();
 			me.anchorUpload.display(ui.cmn.behaviorStates.disabled);
+			me.setStatus("Loaded");
 		},
 		
 		actionCancelItem: function() {
 			var me = this;
 
 			$("iframe")[0].contentWindow.document.getElementById("FormReset").click();
-			me.anchorUpload.display(ui.cmn.behaviorStates.disabled);			
+			me.anchorUpload.display(ui.cmn.behaviorStates.disabled);
+			me.setStatus("Loaded");			
 		},
 		
 		actionUploadItem: function() {
@@ -627,8 +674,9 @@ ii.Class({
 
 			me.fileName = "";
 			
+			me.setStatus("Loading");
 			$("#messageToUser").text("Uploading");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 			$("iframe")[0].contentWindow.document.getElementById("FileName").value = "";
 			$("iframe")[0].contentWindow.document.getElementById("UploadButton").click();
 		
@@ -639,6 +687,7 @@ ii.Class({
 					clearInterval(me.intervalId);
 					
 					if (me.fileName == "Error") {
+						me.setStatus("Loaded");
 						alert("Unable to upload the file. Please try again.")
 						$("#pageLoading").hide();
 					}
@@ -864,7 +913,8 @@ ii.Class({
 			
 			me.employeeLoading = false;
 
-			$("#pageLoading").hide();
+			me.setStatus("Loaded");
+			$("#pageLoading").fadeOut("slow");
 		},
 		
 		stripTimeStamp: function(date) {
@@ -1038,7 +1088,6 @@ ii.Class({
 			
 		    ii.trace("HouseCode Loading : " + houseCode, ii.traceTypes.information, "Startup");
 			$("#messageToUser").text("Loading");
-		    $("#pageLoading").show();
 		    me.houseCodeLoading++;
 		   
 		    me.houseCodeCache[houseCode] = {};
@@ -1073,7 +1122,7 @@ ii.Class({
 		                //validate the list of rows
 		                me.houseCodeValidate(houseCode, me.houseCodeCache[houseCode].buildQueue);    		            
 		                me.houseCodeLoading--;
-						if (me.houseCodeLoading <= 0 && !me.employeeLoading) $("#pageLoading").hide();
+						if (me.houseCodeLoading <= 0 && !me.employeeLoading) $("#pageLoading").fadeOut("slow");
 		            }
 				}
 			});
@@ -1146,7 +1195,7 @@ ii.Class({
 					//validate the list of rows
 		            me.houseCodeValidate(houseCode, me.houseCodeCache[houseCode].buildQueue);
 		            me.houseCodeLoading--;
-					if (me.houseCodeLoading <= 0 && !me.employeeLoading) $("#pageLoading").hide();
+					if (me.houseCodeLoading <= 0 && !me.employeeLoading) $("#pageLoading").fadeOut("slow");
 				}
 			});
 		},
@@ -1212,8 +1261,9 @@ ii.Class({
 		statusCategoryTypesLoad: function(rowNumber, statusType) {
 		    var me = this;
 
+			me.setStatus("Loading");
 			$("#messageToUser").text("Loading");
-		    $("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 		    me.statusTypesLoading++;
 
 		    me.statusTypesCache[statusType] = {};
@@ -1244,7 +1294,10 @@ ii.Class({
 					me.statusTypesCache[statusType].valid = true;
 					me.statusTypesCache[statusType].loaded = true;
 					me.statusTypeValidate(statusType, me.statusTypesCache[statusType].buildQueue);
-					if (me.statusTypesLoading <= 0 && !me.employeeLoading) $("#pageLoading").hide();
+					if (me.statusTypesLoading <= 0 && !me.employeeLoading) {
+						me.setStatus("Loaded");
+						$("#pageLoading").fadeOut("slow");
+					}
 				}
 			});			
 		},
@@ -1284,8 +1337,9 @@ ii.Class({
 		terminationReasonTypesLoad: function(rowNumber, terminationReasonType) {
 		    var me = this;
 
+			me.setStatus("Loading");
 			$("#messageToUser").text("Loading");
-		    $("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 		    me.terminationReasonTypesLoading++;
 
 		    me.terminationReasonTypesCache[terminationReasonType] = {};
@@ -1316,7 +1370,10 @@ ii.Class({
 					me.terminationReasonTypesCache[terminationReasonType].valid = true;
 					me.terminationReasonTypesCache[terminationReasonType].loaded = true;
 					me.terminationReasonTypeValidate(terminationReasonType, me.terminationReasonTypesCache[terminationReasonType].buildQueue);
-					if (me.terminationReasonTypesLoading <= 0 && !me.employeeLoading) $("#pageLoading").hide();
+					if (me.terminationReasonTypesLoading <= 0 && !me.employeeLoading) {
+						me.setStatus("Loaded");
+						$("#pageLoading").fadeOut("slow");
+					}
 				}
 			});			
 		},
@@ -1373,8 +1430,9 @@ ii.Class({
 		maritalStatusPrimaryTypesLoad: function(rowNumber, state, primary) {
 		    var me = this;
 
+			me.setStatus("Loading");
 			$("#messageToUser").text("Loading");
-		    $("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 		    me.statesLoading++;
 
 		    me.statesCache[state] = {};
@@ -1484,7 +1542,10 @@ ii.Class({
 					me.statesCache[state].valid = true;
 					me.statesCache[state].loaded = true;
 					me.stateValidate(state, me.statesCache[state].buildQueue, primary);
-					if (me.statesLoading <= 0 && !me.employeeLoading) $("#pageLoading").hide();
+					if (me.statesLoading <= 0 && !me.employeeLoading) {
+						me.setStatus("Loaded");
+						$("#pageLoading").fadeOut("slow");
+					}
 				}
 			});
 		},
@@ -1519,8 +1580,9 @@ ii.Class({
 		localTaxCodesLoad: function(rowNumber, state, payrollCompany) {
 		    var me = this;
 
+			me.setStatus("Loading");
 			$("#messageToUser").text("Loading");
-		    $("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 		    me.localTaxCodesLoading++;
 
 		    me.localTaxCodesCache[state + "," + payrollCompany] = {};
@@ -1552,7 +1614,10 @@ ii.Class({
 					me.localTaxCodesCache[state + "," + payrollCompany].valid = true;
 					me.localTaxCodesCache[state + "," + payrollCompany].loaded = true;
 					me.localTaxCodeValidate(state, payrollCompany, me.localTaxCodesCache[state + "," + payrollCompany].buildQueue);
-					if (me.localTaxCodesLoading <= 0 && !me.employeeLoading) $("#pageLoading").hide();
+					if (me.localTaxCodesLoading <= 0 && !me.employeeLoading) {
+						me.setStatus("Loaded");
+						$("#pageLoading").fadeOut("slow");
+					}
 				}
 			});
 		},
@@ -1603,8 +1668,9 @@ ii.Class({
 			
 			me.actionSave = args.save;
 			
+			me.setStatus("Loading");
 			$("#messageToUser").text("Validating");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 			
 			setTimeout(function() { 
 				me.validate(); 
@@ -2182,8 +2248,10 @@ ii.Class({
 			
 			// If all required fields are entered correctly then validate the House Codes, Briefs, SSN Numbers and Employee Numbers
 			if (valid) {
+				
+				me.setStatus("Loading");
 				$("#messageToUser").text("Validating");
-				$("#pageLoading").show();
+				$("#pageLoading").fadeIn("slow");
 			
 				me.bulkImportValidationStore.reset();
 				me.bulkImportValidationStore.fetch("userId:[user]"
@@ -2195,7 +2263,8 @@ ii.Class({
 					, me);
 			}
 			else {
-				$("#pageLoading").hide();
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
 				$("#AnchorSave").hide();
 				alert("In order to save, the errors on the page must be corrected.");
 			}			
@@ -2203,7 +2272,8 @@ ii.Class({
 
 		validationsLoaded: function(me, activeId) {
 
-			$("#pageLoading").hide();
+			me.setStatus("Loaded");
+			$("#pageLoading").fadeOut("slow");
 
 			if (me.bulkImportValidations.length > 0) {				
 				
@@ -2263,9 +2333,11 @@ ii.Class({
 		actionSaveItem: function() {
 			var me = this;
 			var item = [];
-
+			
+			me.setStatus("Saving");
+			
 			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 			
 			var xml = me.saveXmlBuildEmployee(item);
 
@@ -2402,16 +2474,18 @@ ii.Class({
 									
 			if (status == "success") {
 				me.pages[me.pageCurrent - 1].saved = true;
-				me.modified(false);
-
+				
 				$("#AnchorValidate").hide();
 				$("#AnchorSave").hide();
+				me.modified(false);
+				me.setStatus("Saved");
 			}
 			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating Employee details: " + $(args.xmlNode).attr("message"));
 			}
 
-			$("#pageLoading").hide();
+			$("#pageLoading").fadeOut("slow");
 		},
 		
 		actionImportSave: function() {
@@ -2419,7 +2493,7 @@ ii.Class({
 			var item = [];
 
 			$("#messageToUser").text("Importing");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 			
 			var xml = '<appGenericImport';
 				xml += ' fileName="' + me.fileName + '"';
@@ -2452,6 +2526,7 @@ ii.Class({
 			var status = $(args.xmlNode).attr("status");
 
 			if (status == "success") {
+				me.modified(false);
 				$(args.xmlNode).find("*").each(function() {
 					switch (this.tagName) {
 
@@ -2463,12 +2538,14 @@ ii.Class({
 				});
 			}
 			else if (status == "invalid") {
+				me.setStatus("Error");
                 alert("Minimum " + me.minimumRecords + " records should be available in excel sheet for employee import. Please verify.");
-				$("#pageLoading").hide();
+				$("#pageLoading").fadeOut("slow");
             }
 			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while importing Employee details: " + $(args.xmlNode).attr("message"));
-				$("#pageLoading").hide();
+				$("#pageLoading").fadeOut("slow");
 			}
 		}
 	}
