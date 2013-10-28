@@ -31,7 +31,7 @@ ii.Class({
 				var argName = pairs[index].substring(0, pos); 
 				var value = pairs[index].substring(pos + 1); 
 				queryStringArgs[argName] = unescape(value); 
-			} 
+			}
 
 			me.houseCodeId = queryStringArgs["houseCodeId"];
 
@@ -53,6 +53,7 @@ ii.Class({
 			me.workShiftId = 0;
 			me.allocatedPaycodes = [];
 			me.prevBlurValue = "";
+			me.status = "";
 			
 			//pagination setup
 			me.startPoint = 1;
@@ -60,9 +61,7 @@ ii.Class({
 			me.recordCount = 0;
 			me.pageCount = 0;
 			me.pageCurrent = 1;
-			
-			me.validator = new ui.ctl.Input.Validation.Master();			
-			
+
 			me.gateway = ii.ajax.addGateway("pay", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
 			me.transactionMonitor = new ii.ajax.TransactionMonitor( 
@@ -70,26 +69,22 @@ ii.Class({
 				function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
 			);
 			
+			me.validator = new ui.ctl.Input.Validation.Master();			
+			me.session = new ii.Session(me.cache);
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\Payroll\\SalaryWages";
-
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
 					me.authorizationProcess.apply(me);
 				},
 				me);
-			
-			me.session = new ii.Session(me.cache);
 
 			me.defineFormControls();
 			me.configureCommunications();
 
-			me.workDay.fetchingData();
-			me.workShift.fetchingData();
-
+			$("#pageBody").show();
 			$(window).bind("resize", me, me.resize);
-			$(document).bind("keydown", me, me.controlKeyProcessor);			
-			me.weekDayDetailsLoaded();
+			$(document).bind("keydown", me, me.controlKeyProcessor);
 		},
 		
 		authorizationProcess: function fin_pay_dailyPayroll_UserInterface_authorizationProcess() {
@@ -98,20 +93,18 @@ ii.Class({
 
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 
-			if (!me.isAuthorized) {
-				$("#messageToUser").text("Load Failed");
-				$("#pageLoading").show();
-				return;
+			if (me.isAuthorized) {
+				ii.timer.timing("Page displayed");
+				me.session.registerFetchNotify(me.sessionLoaded, me);
+				me.dailyPayrollReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\TabDailyPayroll\\Read");
+				me.dailyPayrollWriteApprove = me.authorizer.isAuthorized(me.authorizePath + "\\TabDailyPayroll\\WriteApprove");
+				me.dailyPayrollWriteNoApprove = me.authorizer.isAuthorized(me.authorizePath + "\\TabDailyPayroll\\WriteNoApprove");
+				me.workDay.fetchingData();
+				me.workShift.fetchingData();
+				me.weekDayDetailsLoaded();
 			}
-
-			me.dailyPayrollReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\TabDailyPayroll\\Read");
-			me.dailyPayrollWriteApprove = me.authorizer.isAuthorized(me.authorizePath + "\\TabDailyPayroll\\WriteApprove");			
-			me.dailyPayrollWriteNoApprove = me.authorizer.isAuthorized(me.authorizePath + "\\TabDailyPayroll\\WriteNoApprove");
-			
-			$("#pageLoading").hide();
-				
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},
 		
 		sessionLoaded: function fin_pay_dailyPayroll_UserInterface_sessionLoaded() {
@@ -259,7 +252,7 @@ ii.Class({
 				id: "DailyEmployeePunchGrid",
 				appendToId: "divForm",
 				allowAdds: true,
-				createNewFunction: fin.pay.dailyPayroll.EmployeePunch,				
+				createNewFunction: fin.pay.dailyPayroll.EmployeePunch,
 				selectFunction: function( index ) { me.itemEmployeePunchSelect(index); }
 			});
 			
@@ -281,11 +274,11 @@ ii.Class({
 	
 					if (enteredText.length < 12) {
 						dateText = new Date("1/1/1900 " + enteredText);
-						
+
 						if (dateText == "Invalid Date" || isNaN(new Date("1/1/1900 " + enteredText))) {
 							this.setInvalid("Please enter valid date.");
 							return;
-						}							
+						}
 					}
 					else {
 						dateText = new Date(enteredText);
@@ -293,7 +286,7 @@ ii.Class({
 						if (dateText == "Invalid Date" || isNaN(new Date(enteredText))) {
 							this.setInvalid("Please enter valid date.");
 							return;
-						}							
+						}
 					}
 
 					var overRideTime;
@@ -338,7 +331,7 @@ ii.Class({
 
 			me.dailyLunch = new ui.ctl.Input.Check({
 		        id: "DailyLunch",
-				changeFunction: function() { me.modified(); me.dailyLunchChanged(); }
+				changeFunction: function() { me.dailyLunchChanged(); me.modified(); }
 		    });
 
 			me.payCodeAllocatedGrid = new ui.ctl.Grid({
@@ -514,8 +507,10 @@ ii.Class({
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
+
 			parent.parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				parent.fin.payMasterUi.setStatus("Edit");
 		},
 		
 		findIndexByTitle: function() {
@@ -658,10 +653,8 @@ ii.Class({
 		
 		dailyPayrollCountLoad: function() {
 		    var me = this;
-			
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").show();
-				    
+
+			parent.fin.payMasterUi.showPageLoading("Loading");
 		    me.dailyPayrollCountStore.reset();
 			me.dailyPayrollCountStore.fetch("userId:[user]," + "houseCodeId:" + me.houseCodeId + ",shiftType:" + me.shiftType + ",type:daily", me.dailyPayrollCountLoaded, me);
 		},
@@ -696,7 +689,7 @@ ii.Class({
 			
 			if (me.employeeDetails.length <= 0) {
 				me.empEmployeeId = 0;
-				$("#pageLoading").hide();
+				parent.fin.payMasterUi.hidePageLoading("");
 				return false;				
 			}
 			
@@ -750,13 +743,9 @@ ii.Class({
 			me.empEmployeeId = me.employeeDetailGrid.data[index].id;
 			$("#EmployeeName").text(me.employeeDetails[index].name);
 			$("#EmployeeNumber").text(me.employeeDetails[index].employeeNumber);
-
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").show();
-
+			parent.fin.payMasterUi.showPageLoading("Loading");
 			me.dailyEmployeePunchGrid.body.deselectAll(true);
-			me.payCodeAllocatedGrid.body.deselectAll(true);
-			
+			me.payCodeAllocatedGrid.body.deselectAll(true);			
 			me.employeePayPeriodStore.fetch("userId:[user],empEmployee:" + me.empEmployeeId + ",workDay:" + me.payrollDate, me.employeePayPeriodLoaded, me);
 		},	
 		
@@ -771,12 +760,13 @@ ii.Class({
 				me.empApprove = this.approve;				
 			});
 
-			me.loadPaycodeAllocations();
+			me.loadPaycodeAllocations("");
 		},
 		
-		loadPaycodeAllocations: function() {
+		loadPaycodeAllocations: function(status) {
 			var me = this;
 
+			me.status = status;
 			me.paycodeAllocationStore.reset();
 			me.employeeWorkShiftStore.reset();
 			me.employeeWorkShiftStore.fetch("empEmployee:" + me.empEmployeeId + ",payrollDate:" + me.payrollDate + ",weekStartDate:" + me.weekStartDate + ",weekEndDate:" + me.weekEndDate + ",userId:[user]", me.employeeWorkShiftsLoaded, me);
@@ -856,7 +846,7 @@ ii.Class({
 				hours = parseFloat(me.paycodeAllocations[index].hours);
 				remainingHours = remainingHours - hours;
 				totalHours += hours;
-				me.paycodeAllocations[index].remainingHours = (remainingHours > 0 ? remainingHours.toFixed(2) : "0.00")
+				me.paycodeAllocations[index].remainingHours = (remainingHours > 0 ? remainingHours.toFixed(2) : "0.00");
 				
 				var allocatedPaycode = {};
 			    allocatedPaycode.index = index;
@@ -875,8 +865,15 @@ ii.Class({
 			$("#TotalHours").text(totalHours.toFixed(2));
 			$("#TotalHoursRemaining").text(remainingHours.toFixed(2));
 			$("#PaycodeWeeklyTotal").text(paycodeWeeklyTotal.toFixed(2));
-			$("#pageLoading").hide();
 
+			if (me.status == "Saved")
+				me.status = "SavingLoaded";
+			else if (me.status == "SavingLoaded") {
+				me.status = "";
+				parent.fin.payMasterUi.hidePageLoading("Saved");
+			}				
+			else
+				parent.fin.payMasterUi.hidePageLoading("Edit");
 			me.controlReadOnly();
 		},
 
@@ -979,10 +976,8 @@ ii.Class({
 		changeDailyPayroll: function() {
 		    var me = this;
 		    		        
-		    $("#messageToUser").text("Loading");
-			$("#pageLoading").show();				
 			$("#selPageNumber").val(me.pageCurrent);
-			
+			parent.fin.payMasterUi.showPageLoading("Loading");
 			me.lastSelectedRowIndex = -1;
 			me.startPoint = ((me.pageCurrent - 1) * me.maximumRows) + 1;
 				
@@ -1020,8 +1015,7 @@ ii.Class({
 				return;
 			}
 
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").show();
+			parent.fin.payMasterUi.showPageLoading("Loading");
 			me.payrollDate = me.workDay.lastBlurValue;
 			me.employeeDetailStore.reset();
 			me.employeeDetailStore.fetch("houseCodeId:" + me.houseCodeId + ",shiftType:" + me.shiftType + ",punchDate:" + me.payrollDate + ",startPoint:" + me.startPoint + ",maximumRows:" + me.maximumRows + ",userId:[user]", me.employeeDetailsLoaded, me);	
@@ -1039,15 +1033,14 @@ ii.Class({
 			if (me.workShiftId == 0)
 				$("#PunchWorkShift").text("");
 			else {
-				$("#messageToUser").text("Loading");
-				$("#pageLoading").show();
+				parent.fin.payMasterUi.showPageLoading("Loading");
 				me.payrollDate = me.workDay.lastBlurValue;
 				me.loadEmployeePunches();
 				me.workShiftStore.reset();
 				me.workShiftStore.fetch("workShift:" + me.workShiftId + ",punchDate:" + me.payrollDate + ",userId:[user]", me.workShiftsLoaded, me);						
 			}
 		},
-		
+
 		workShiftsLoaded: function(me, activeId) {
 
 			if (me.workShifts.length > 0) {				
@@ -1055,8 +1048,6 @@ ii.Class({
 				me.shiftStartTime = me.workShifts[0].shiftStartTime;
 				me.shiftEndTime = me.workShifts[0].shiftEndTime;
 			}
-			
-			$("#pageLoading").hide();
 		},
 		
 		dailyLunchChanged: function() {
@@ -1219,6 +1210,7 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 
+			parent.fin.payMasterUi.setStatus("Normal");
 		    me.payCodeClose();
 		},
 		
@@ -1228,6 +1220,8 @@ ii.Class({
 
 			if (!parent.fin.cmn.status.itemValid())
 				return;
+
+			parent.fin.payMasterUi.setStatus("Normal");
 
 			$("#divPageShield").css({
 				"opacity": "0.5"
@@ -1300,8 +1294,7 @@ ii.Class({
 			var payCodeList = "";
 			
 			//start the process...
-			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			parent.fin.payMasterUi.showPageLoading("Saving");
 			me.actionCommand = "Insert";
 			
 			if (employeeList == "ALL")
@@ -1350,8 +1343,7 @@ ii.Class({
 					alert("In order to undo, the errors on the page must be corrected.");
 					return false;
 				}
-				$("#messageToUser").text("Loading");
-				$("#pageLoading").show();
+				parent.fin.payMasterUi.showPageLoading("Loading");
 				me.itemEmployeeSelect(me.employeeDetailGrid.activeRowIndex);
 			}				
 		},
@@ -1365,9 +1357,7 @@ ii.Class({
 			if (!confirm("Are you sure you want to delete the override punch time " + me.dailyEmployeePunchGrid.data[index].overRidetime + "?"))
 				return;
 
-			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
-
+			parent.fin.payMasterUi.showPageLoading("Saving");
 			id = me.dailyEmployeePunchGrid.data[index].id;
 			me.dailyEmployeePunchGrid.body.deselect(index, true);
 			me.employeePunches.splice(index, 1);
@@ -1398,9 +1388,7 @@ ii.Class({
 			if (!confirm("Are you sure you want to delete the pay code " + me.payCodeAllocatedGrid.data[index].payCode.name + "?"))
 				return;
 
-			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
-
+			parent.fin.payMasterUi.showPageLoading("Saving");
 			id = me.payCodeAllocatedGrid.data[index].employeePunchPayCodeAllocation;
 			me.payCodeAllocatedGrid.body.deselect(index, true);
 			me.paycodeAllocations.splice(index, 1);
@@ -1494,15 +1482,8 @@ ii.Class({
 
 			if (xml == "")
 				return;
-				
-			if (me.actionCommand == "Save")
-				$("#messageToUser").text("Saving");
-			else if (me.actionCommand == "Approving")
-				$("#messageToUser").text("Approving");
-			else if (me.actionCommand == "UnApproving")
-				$("#messageToUser").text("UnApproving");
-				
-			$("#pageLoading").show();
+
+			parent.fin.payMasterUi.showPageLoading("Saving");
 
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
@@ -1680,10 +1661,9 @@ ii.Class({
 						}
 					}
 
-					me.loadPaycodeAllocations();
+					me.loadPaycodeAllocations("Saved");
 				}
 				else if (me.actionCommand == "Approving") {
-
 					index = me.employeeDetailGrid.activeRowIndex;
 					if (index >= 0) {
 						me.employeeDetails[index].name += " [POSTED]";
@@ -1692,13 +1672,12 @@ ii.Class({
 						$("#EmployeeName").text(me.employeeDetails[index].name);
 					}
 
-					me.loadPaycodeAllocations();
+					me.loadPaycodeAllocations("Saved");
 
 					$("#ApproveButton").hide();
 					$("#UnApproveButton").show();
 				}
 				else if (me.actionCommand == "UnApproving") {
-
 					index = me.employeeDetailGrid.activeRowIndex;
 					if (index >= 0) {
 						me.employeeDetails[index].name = me.employeeDetails[index].name.replace('[POSTED]', '')
@@ -1706,14 +1685,13 @@ ii.Class({
 						$("#EmployeeName").text(me.employeeDetails[index].name);
 					}
 
-					me.loadPaycodeAllocations();
+					me.loadPaycodeAllocations("Saved");
 
 					$("#ApproveButton").show();
 					$("#UnApproveButton").hide();
 				}
 				else if (me.actionCommand == "DeletePunch") {
 					me.dailyEmployeePunchGrid.body.deselectAll();
-
 					index = me.employeeDetailGrid.activeRowIndex;
 					if (index >= 0) {
 						me.employeeDetails[index].punches = me.dailyEmployeePunchGrid.data.length;
@@ -1731,18 +1709,19 @@ ii.Class({
 					if (parseFloat(totalHours) > parseFloat(me.netHours)) {
 						alert("Warning: Productive hours cannot be greater than the net hours.\nPlease make adjustments and save the data.");
 					}
+					parent.fin.payMasterUi.hidePageLoading("");
 				}
 				else if (me.actionCommand == "DeletePayCode") {
 					me.payCodeAllocatedGrid.body.deselectAll();
+					parent.fin.payMasterUi.setStatus("Saved");
 				}
 
 				me.actionCommand = "";				
 			}
 			else {
+				parent.fin.payMasterUi.hidePageLoading("Error");
 				alert("[SAVE FAILURE] Error while updating Employee Daily Payroll details: " + $(args.xmlNode).attr("message"));
 			}
-
-			$("#pageLoading").hide();
 		}
 	}
 });

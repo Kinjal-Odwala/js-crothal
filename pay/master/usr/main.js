@@ -4,6 +4,7 @@ ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "fin.cmn.usr.tabsPack" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "fin.pay.master.usr.defs" );
 ii.Import( "fin.cmn.usr.houseCodeSearch" );
 
@@ -25,8 +26,10 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 			
+			me.loadCount = 0;
 			me.activeFrameId = 0;
 			me.timeAndAttendance = false;
+			me.status = "";
 
 			me.gateway = ii.ajax.addGateway("pay", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -46,10 +49,9 @@ ii.Class({
 			
 			me.defineFormControls();			
 			me.configureCommunications();
+			me.setStatus("Loading");
 			me.modified(false);
 			me.initialize();			
-			me.week.fetchingData();
-			me.weekPeriodYearStore.fetch("userId:[user],", me.weekPeriodYearsLoaded, me);
 			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
 
 			if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
@@ -69,15 +71,29 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 
-			me.salaryWagesReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");			
-			me.dailyPayrollReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\TabDailyPayroll\\Read");
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 			
-			$("#pageLoading").hide();
-			
-			me.actionMenuVisible();
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
 
-			ii.timer.timing("Page Displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+				ii.timer.timing("Page displayed");
+				me.session.registerFetchNotify(me.sessionLoaded, me);
+				me.loadCount = 1;
+				me.week.fetchingData();
+				me.weekPeriodYearStore.fetch("userId:[user],", me.weekPeriodYearsLoaded, me);
+				me.salaryWagesReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");			
+				me.dailyPayrollReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\TabDailyPayroll\\Read");
+				me.actionMenuVisible();
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},
 		
 		actionMenuVisible: function() {
@@ -96,13 +112,13 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("Session Loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 		
 		resize: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
-			var offset = 84;	
+			var offset = 110;	
 
 		    $("#iFrameDailyPayroll").height($(window).height() - offset);
 		    $("#iFrameWeeklyPayroll").height($(window).height() - offset);
@@ -330,6 +346,12 @@ ii.Class({
 			});			
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
@@ -339,8 +361,59 @@ ii.Class({
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
+			var me = this;
+
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
+		},
+		
+		showPageLoading: function(status) {
+			var me = this;
+
+			me.setStatus(status);
+			me.status = status;
+			$("#messageToUser").text(status);
+			$("#pageLoading").fadeIn("slow");
+		},
+
+		hidePageLoading: function(status) {
+			var me = this;
+
+			if (status == "") {
+				if (me.status == "Loading")
+					me.setStatus("Loaded");
+				else if (me.status == "Saving")
+					me.setStatus("Saved");
+			}
+			else if (status == "Edit") {
+				if (parent.fin.appUI.modified)
+					me.setStatus("Edit");
+				else
+					me.setStatus("Loaded");
+			}
+			else 
+				me.setStatus(status);
+			$("#pageLoading").fadeOut("slow");
 		},
 		
 		weekPeriodYearsLoaded: function(me, activeId) {
@@ -402,21 +475,6 @@ ii.Class({
 			me.houseCodeSingleStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.payrollLoaded, me);
 		},
 
-		payrollPrint: function fin_pay_master_UserInterface_payrollPrint() {			
-			var me = this;
-
-			if (parent.fin.appUI.hirNode == null ||	me.week.indexSelected == -1) {
-				alert("Please select House Code, Week.");
-				return false;
-			}
-
-	        window.open(location.protocol + '//' + location.hostname 
-				+ '/reports/printpayroll.aspx?hirnode=' + parent.fin.appUI.hirNode 
-				+ '&weekStartDate=' + me.weeks[me.week.indexSelected].weekStartDate
-				+ '&weekEndDate=' + me.weeks[me.week.indexSelected].weekEndDate, 
-				+ 'PrintPayroll', 'type=fullWindow,status=yes,toolbar=no,menubar=no,location=no,resizable=yes');
-		},
-
 		payrollLoaded: function(me, activeId) {
 			var args = ii.args(arguments,{});
 
@@ -445,8 +503,6 @@ ii.Class({
 					$("#container").tabs(1);
 			}
 
-			$("#pageLoading").hide();
-
 			var queryString = "houseCodeId=" + parent.fin.appUI.houseCodeId;
 
 			if (me.activeFrameId == 0 && me.timeAndAttendance) {
@@ -457,6 +513,21 @@ ii.Class({
 				$("iframe")[1].src = "/fin/pay/weeklyPayRoll/usr/markup.htm?" + queryString;
 				$("#PrintButton").show();
 			}
+		},
+		
+		payrollPrint: function fin_pay_master_UserInterface_payrollPrint() {			
+			var me = this;
+
+			if (parent.fin.appUI.hirNode == null ||	me.week.indexSelected == -1) {
+				alert("Please select House Code, Week.");
+				return false;
+			}
+
+	        window.open(location.protocol + '//' + location.hostname 
+				+ '/reports/printpayroll.aspx?hirnode=' + parent.fin.appUI.hirNode 
+				+ '&weekStartDate=' + me.weeks[me.week.indexSelected].weekStartDate
+				+ '&weekEndDate=' + me.weeks[me.week.indexSelected].weekEndDate, 
+				+ 'PrintPayroll', 'type=fullWindow,status=yes,toolbar=no,menubar=no,location=no,resizable=yes');
 		},
 		
 		actionOKItem: function() {
@@ -472,6 +543,7 @@ ii.Class({
 			$("#SearchIcon").html("<img src='/fin/cmn/usr/media/Common/searchPlus.png'/>");
 			$("#SearchOption").hide("slow");
 
+			me.setLoadCount();
 			me.week.fetchingData();
 			me.weekStore.fetch("userId:[user],year:" + me.years[me.year.indexSelected].name + ",currentYear:" + me.currentFiscalYear, me.weeksLoaded, me);
 		},
