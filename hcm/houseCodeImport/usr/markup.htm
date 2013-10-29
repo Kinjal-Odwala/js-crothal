@@ -19,7 +19,7 @@
 			<table width="100%" height="100%">
 				<tr>
 					<td align="center">
-						<img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+						<img id="imgLoading" src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
 						<div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;">Loading</div>
 		        	</td>
 				</tr>
@@ -29,6 +29,14 @@
 		<div class="actionHeader">
 	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>			
         </div>
+		
+		<div style="clear:both;"></div>
+		<div id="itemStatusDiv">
+			<div id="itemStatusImage" class="itemStatusImage"></div>
+			<div id="itemModifiedImage" class="itemModifiedImage"></div>
+			<div id="itemStatusText">Loading, please wait...</div>
+		</div>
+		<div style="clear:both;"></div>
 		
 		<div class="pageBody">
 			<div class="contentArea">
