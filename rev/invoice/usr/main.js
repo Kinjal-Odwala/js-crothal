@@ -3,6 +3,7 @@ ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.grid" );
 ii.Import( "ui.ctl.usr.buttons" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "fin.rev.invoice.usr.defs" );
 
 ii.Style( "style", 1 );
@@ -23,6 +24,8 @@ ii.Class({
 			var me = this;
 			var searchString = location.search.substring(1);
 			var pos = searchString.indexOf("=");
+
+			parent.fin.revMasterUi.showPageLoading("Loading");
 
 			me.invoiceId = parseInt(searchString.substring(pos + 1));
 			me.rowBeingEdited = false;
@@ -61,7 +64,7 @@ ii.Class({
 			);
 
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
-			me.authorizePath = "rev\\invoice";
+			me.authorizePath = "\\crothall\\chimes\\fin\\AccountsReceivable\\Invoicing/AR";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
 					me.authorizationProcess.apply(me);
@@ -72,7 +75,8 @@ ii.Class({
 
 			me.defineFormControls();
 			me.configureCommunications();
-			
+
+			$("#pageBody").show();
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$(document).bind("mousedown", me, me.mouseDownProcessor);
@@ -91,19 +95,21 @@ ii.Class({
 			me.taxableServicesLoaded();
 			me.invoiceItemStore.fetch("userId:[user],invoiceId:" + me.invoiceId, me.invoiceItemsLoaded, me);
 		},
-		
+
 		authorizationProcess: function fin_rev_invoice_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
 
-			$("#pageLoading").hide();
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 
-			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
+			if (me.isAuthorized) {
+				ii.timer.timing("Page displayed");
+				me.session.registerFetchNotify(me.sessionLoaded, me);
+			}
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
+		},
 
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
-		},	
-		
 		sessionLoaded: function fin_rev_invoice_UserInterface_sessionLoaded() {
 			var args = ii.args(arguments, {
 				me: {type: Object}
@@ -297,6 +303,8 @@ ii.Class({
 			});
 
 			parent.parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				parent.fin.revMasterUi.setStatus("Edit");
 		},
 
 		resetGrid: function() {
@@ -463,7 +471,7 @@ ii.Class({
 			}
 	
 			me.resize();
-			$("#pageLoading").hide();
+			parent.fin.revMasterUi.hidePageLoading("");
 		},
 		
 		getItemGridRow: function() {
@@ -864,6 +872,7 @@ ii.Class({
 			me.rowBeingEdited = true;
 			me.status = "Edit";
 			me.invalidHouseCode = "";
+			parent.fin.revMasterUi.setStatus("Normal");
 
 			if (!me.editSalesTax) {
 				$("#taxable")[0].disabled = true;
@@ -937,7 +946,8 @@ ii.Class({
 			me.setupEvents();		
 			me.invoiceItemGridEventSetup(me);		 
 			me.rowBeingEdited = true;
-			me.currentRowSelected = $($("#InvoiceItemGridBody tr")[insertAt])[0];			
+			me.currentRowSelected = $($("#InvoiceItemGridBody tr")[insertAt])[0];
+			parent.fin.revMasterUi.setStatus("Normal");
 		},
 		
 		invoiceItemGridRowDelete: function() {
@@ -982,11 +992,13 @@ ii.Class({
 						if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57))
 							return false;
 					});
+					$("#displayOrder" + rowNumber).change(function() { me.modified(); });
 				}
 			});
 
 			me.status = "Reorder";
 			me.rowBeingEdited = true;
+			parent.fin.revMasterUi.setStatus("Normal");
 		},
 		
 		actionUpdateSalesTaxItem: function() {
@@ -1043,10 +1055,9 @@ ii.Class({
 
 		houseCodeLoad: function(houseCode) {
 		    var me = this;
-		    
-			$("#messageToUser").text("Loading");
-		    $("#pageLoading").show();
-		    
+
+			parent.fin.revMasterUi.showPageLoading("Loading");
+
 		    me.houseCodeCache[houseCode] = {};
 		    me.houseCodeCache[houseCode].valid = false;
 		    me.houseCodeCache[houseCode].loaded = false;
@@ -1111,8 +1122,8 @@ ii.Class({
 						me.houseCodeJobsLoad(houseCode);
 				}
 				else {
+					parent.fin.revMasterUi.hidePageLoading("");
 					me.houseCodeCache[houseCode].validCustomer = false;
-					$("#pageLoading").hide();
 					$("#job").empty();
 					$("#houseCode").css("background-color", "red");
 					$("#houseCode").attr("title", "Customer it is not associated with the House Code [" + houseCode + "].");
@@ -1121,7 +1132,7 @@ ii.Class({
 				}
 		    }
 		    else {
-				$("#pageLoading").hide();
+				parent.fin.revMasterUi.hidePageLoading("");
 				$("#job").empty();
 				$("#houseCode").css("background-color", "red");
 				$("#houseCode").attr("title", "The House Code [" + houseCode + "] is not valid.");
@@ -1267,14 +1278,13 @@ ii.Class({
 			}
 
 			me.setTaxable();
-			$("#pageLoading").hide();
+			parent.fin.revMasterUi.hidePageLoading("");
 		},
 
 		actionOkItem: function() {
 			var me = this;
 			
 			disablePopup();
-			$("#pageLoading").hide();
 		},
 		
 		actionUndoItem: function() {
@@ -1347,7 +1357,8 @@ ii.Class({
 			}
 			
 			me.invoiceItemGridEventSetup(me);
-			me.status = "";
+			parent.fin.revMasterUi.setStatus("Normal");
+			me.status = "";			
 			me.rowBeingEdited = false;
 			me.currentRowSelected = null;
 		},
@@ -1472,8 +1483,7 @@ ii.Class({
 				id = parseInt(me.currentRowSelected.cells[1].innerHTML);
 			}
 
-			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			parent.fin.revMasterUi.showPageLoading("Saving");
 
 			if (me.status == "Add" || me.status == "Edit") {
 				if (id > 0) {
@@ -1683,11 +1693,12 @@ ii.Class({
 				
 				$("#messageHeader").text("Your modifications have not been saved.");
 				$("#divMessage").text(errorMessage);
+				parent.fin.revMasterUi.hidePageLoading("Edit");
 				centerPopup();
 			}
 			else {
-				alert("[SAVE FAILURE] Error while updating Invoice Item Record: " + $(args.xmlNode).attr("message"));
-				$("#pageLoading").hide();
+				parent.fin.revMasterUi.hidePageLoading("Error");
+				alert("[SAVE FAILURE] Error while updating Invoice Item Record: " + $(args.xmlNode).attr("message"));				
 			}
 		}
 		
