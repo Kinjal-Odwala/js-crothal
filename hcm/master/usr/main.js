@@ -343,9 +343,6 @@ ii.Class({
 			}
 			
 			me.houseCodeGlobalParametersUpdate(false);			
-			
-			//$("#pageLoading").hide();
-			
 			me.houseCodeDetailStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.houseCodeDetailsLoaded, me);
 		},
 		
@@ -402,7 +399,7 @@ ii.Class({
 			switch (fin.hcmMasterUi.activeFrameId) {
 				
 				case 0:	
-					
+
 					$("iframe")[0].src = "/fin/hcm/houseCode/usr/markup.htm?unitId=" + parent.fin.appUI.unitId;
 					$("#container-1").triggerTab(1);
 					me.houseCodeNeedUpdate = false;					

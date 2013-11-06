@@ -38,6 +38,7 @@ ii.Class({
 			
 			me.session = new ii.Session(me.cache);
 
+			$("#pageBody").show();
 			$(window).bind("resize", me, me.resize );
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 		},
@@ -931,7 +932,7 @@ ii.Class({
 			
 			me.budgetComputerRelatedCharge.check.checked = houseCode.budgetComputerRelatedCharge;
 			parent.fin.hcmMasterUi.checkLoadCount();
-			if(parent.parent.fin.appUI.modified)
+			if (parent.parent.fin.appUI.modified)
 				parent.fin.hcmMasterUi.setStatus("Edit");
 			me.resizeControls();
 		},

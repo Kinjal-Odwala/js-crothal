@@ -34,7 +34,8 @@ ii.Class({
 
 			me.defineFormControls();
 			me.configureCommunications();
-			
+
+			$("#pageBody").show();
 			$(window).bind("resize", me, me.resize );
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 		},
@@ -291,7 +292,7 @@ ii.Class({
 			me.oshaRecordable.setValue(houseCode.oshaRecordable);
 
 			parent.fin.hcmMasterUi.checkLoadCount();
-			if(parent.parent.fin.appUI.modified)
+			if (parent.parent.fin.appUI.modified)
 				parent.fin.hcmMasterUi.setStatus("Edit");
 			me.resizeControls();
 		}

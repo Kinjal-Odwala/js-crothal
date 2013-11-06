@@ -37,6 +37,7 @@ ii.Class({
 				queryStringArgs[argName] = unescape(value); 
 			} 
 
+			parent.fin.hcmMasterUi.loadCount = 0;
 			me.unitId = parseInt(queryStringArgs["unitId"]);
 
 			me.gateway = ii.ajax.addGateway("hcm", ii.config.xmlProvider); 
@@ -45,10 +46,7 @@ ii.Class({
 				me.gateway
 				, function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
 			);
-			
-			$(window).bind("resize", me, me.resize);
-			$(document).bind("keydown", me, me.controlKeyProcessor);
-			
+
 			me.validator = new ui.ctl.Input.Validation.Master(); 
 			me.session = new ii.Session(me.cache);
 			
@@ -63,7 +61,9 @@ ii.Class({
 			me.defineFormControls();			
 			me.configureCommunications();
 			
-			ii.trace("HouseCode - Init", ii.traceTypes.information, "Info");
+			$("#pageBody").show();
+			$(window).bind("resize", me, me.resize);
+			$(document).bind("keydown", me, me.controlKeyProcessor);
 			
 			$("#CheckBoxTextDropImage").click(function() {
 				if ($("#ServiceGroup").is(":visible")) {
@@ -85,8 +85,7 @@ ii.Class({
 			
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);		
 			
-			if (me.isAuthorized) {
-				
+			if (me.isAuthorized) {				
 				ii.timer.timing("Page displayed");
 				me.session.registerFetchNotify(me.sessionLoaded, me);
 				parent.fin.hcmMasterUi.setLoadCount();
@@ -955,7 +954,7 @@ ii.Class({
 			me.clientAssistantPhone.setValue(houseCode.clientAssistantPhone);
 
 			parent.fin.hcmMasterUi.checkLoadCount();
-			if(parent.parent.fin.appUI.modified)
+			if (parent.parent.fin.appUI.modified)
 				parent.fin.hcmMasterUi.setStatus("Edit");
 			me.resizeControls();
 		},

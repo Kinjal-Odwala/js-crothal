@@ -15,15 +15,7 @@
 
 	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
 	<body id="appBody" onload="iiForceBodyReady = true;">
-		<!---<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: #F0EFDD; filter: alpha(opacity = 50); opacity:.8;"><img src="/fin/cmn/usr/media/Common/ajax-loader.gif" style="float: left; padding: 10px" /><span id="messageToUser" style="float: left; font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top: 51px;">Page loading. Please wait...</span></div>--->
-		<!-- <div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
-		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
-		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
-		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
-		    </div>
-		</div> -->
-
-		<div class="pageBody">
+		<div id="pageBody" class="pageBody" style="display:none;">
 			<div class="houseCodeAreasContainerLeft">
 				<div class="body">
 					<div class="TableEditArea">
@@ -72,8 +64,7 @@
 			<div class="contentArea">
 	        	<div class="header">Services Provided</div>
         	</div>
-			<div style="height:10px;"></div>
-			
+			<div style="height:10px;"></div>			
 			<div class="houseCodeAreasContainerLeft">
 				<div class="body">
 					<div class="TableEditArea">
@@ -110,16 +101,12 @@
 						<div class="InputTextAreaRight">
 							<div id="ServiceLine"></div>
 						</div>
-
 						<div style="clear:both;"></div>
-					</div>
-					
+					</div>					
 				</div>
-			</div>
-			
+			</div>			
 			<div class="houseCodeAreasContainerRight">
-				<div class="body">
-					
+				<div class="body">					
 					<div class="TableEditArea">
 						<div class="LabelhouseCodeAreaLeft">
 							<span class="nonRequiredFieldIndicator">Additional Services:</span>
@@ -129,16 +116,12 @@
 							</div>
 							<div id="CheckBoxTextDropImage" class="CheckBoxDropDown"></div>
 						</div>
-						<div id="ServiceGroup">
-							
-						</div>
+						<div id="ServiceGroup"></div>
 						<div style="clear:both;"></div>
 					</div>
 				</div>
-			</div>
-			
+			</div>			
 			<div style="clear:both;"></div>
-
 			<div class="contentArea">
 	        	<div class="header">Manager Information</div>
         	</div>
@@ -227,8 +210,7 @@
 			<div class="contentArea">
 	        	<div class="header">Client Information</div>
         	</div>
-			<div style="height:10px;"></div>
-			
+			<div style="height:10px;"></div>			
 			<div class="houseCodeAreasContainerLeft">
 				<div class="body">
 					<div class="TableEditArea">
@@ -305,235 +287,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
-		
-		
-		
+		</div>		
 		<div id="iiInputValidationMaster"></div>		
 	</body>
 </html>
-<!---
-
-<table width="820px" border="0" cellpadding="5" cellspacing="0">
-			    <tr>
-			        <td width="200px" class="LabelhouseCodeAreaLeft">
-			            <span class="requiredFieldIndicator">&#149;</span>JDE Company:
-			        </td>
-			        <td width="200px">
-			            <div id="JDECompanys"></div>
-			        </td>
-			        <td width="200px" class="LabelhouseCodeAreaLeft">
-			            <span class="requiredFieldIndicator">&#149;</span>Site:
-			        </td>
-			        <td width="200px">
-			            <div id="Sites"></div>
-			        </td>
-			    </tr>
-			    <tr>
-			        <td class="LabelhouseCodeAreaLeft">
-			            <span class="requiredFieldIndicator">&#149;</span>House Code:
-			        </td>
-			        <td>
-			           <div id="HouseCodeNumber"></div> 
-			        </td>
-			        <td class="LabelhouseCodeAreaLeft">
-			            <span class="requiredFieldIndicator">&#149;</span>Start Date:
-			        </td>
-			        <td>
-			            <div id="StartDate"></div>
-			        </td>
-			    </tr>
-			</table>
-			<div style="clear:both;"></div>
-			<div class="contentArea">
-	        	<div class="header">Services Provided</div>
-        	</div>
-			<div style="height:10px;"></div>
-			<table width="830px" border="0" cellpadding="5" cellspacing="0">
-			    <tr>
-			        <td width="210px" class="LabelhouseCodeAreaLeft">
-			            <span class="requiredFieldIndicator">&#149;</span>Primary Service Provided:
-			        </td>
-			        <td width="210px" style="padding-left:15px;">
-			            <div id="PrimaryServiceProvided"></div>
-			        </td>
-			        <td width="200px" rowspan="3" valign="top" class="LabelhouseCodeAreaLeft">
-			            <span class="nonRequiredFieldIndicator">Additional Services:</span>
-			        </td>
-			        <td width="210px" rowspan="3" style="" valign="top">
-			           <div id="AddServicevContainer">
-							<div id="AdditionalServiceContainer" class="CheckBoxContainer">
-							</div>
-							<div id="CheckBoxTextDropImage" class="CheckBoxDropDown"></div>
-						</div>
-						<div id="ServiceGroup"></div>
-			        </td>
-			    </tr>
-			    <tr>
-			        <td class="LabelhouseCodeAreaLeft">
-			            <span class="nonRequiredFieldIndicator">Enforce Labor Control:</span>
-			        </td>
-			        <td style="padding-left:15px;">
-			            <div id="LabelRadioEnforceLaborControl">
-							<div id="houseCodeYesRadioButtonLeft">
-								<input id="EnforceLaborControlYes" name="EnforceLaborControl" tabindex="6" type="radio" value="true"/>
-							</div>
-							<div id="houseCodeYesRadioTextLeft">Yes</div>
-							<div id="houseCodeNoRadioButtonRight">
-								<input id="EnforceLaborControlNo" name="EnforceLaborControl" tabindex="7" type="radio" checked="true" value="false"/>
-							</div>
-							<div id="houseCodeNoRadioTextRight">No</div>
-						</div>
-			        </td>
-			    </tr>
-			    <tr>
-			        <td class="LabelhouseCodeAreaLeft">
-			            <span class="nonRequiredFieldIndicator">Service Line:</span>
-			        </td>
-			        <td style="padding-left:15px;">
-			            <div id="ServiceLine"></div>
-			        </td>
-			    </tr>
-			</table>
-		
-			<div style="clear:both;"></div>
-
-			<div class="contentArea">
-	        	<div class="header">Manager Information</div>
-        	</div>
-			<div style="height:10px;"></div>
-			    <table width="820px" border="0" cellpadding="5" cellspacing="0">
-			        <tr>
-			            <td width="200px" class="LabelhouseCodeAreaLeft">
-			                <span class="nonRequiredFieldIndicator">Manager Name:</span>
-			            </td>
-			            <td width="200px">
-			                <div id="ManagerName"></div>
-			            </td>
-			            <td width="200px" class="LabelhouseCodeAreaLeft">
-			                <span class="nonRequiredFieldIndicator">Email:</span>
-			            </td>
-			            <td width="200px">
-			                <div id="ManagerEmail"></div>
-			            </td>
-			        </tr>
-			        <tr>
-			            <td class="LabelhouseCodeAreaLeft">
-			                <span class="nonRequiredFieldIndicator">Phone:</span>
-			            </td>
-			            <td>
-			                <div id="ManagerPhone"></div>
-			            </td>
-			            <td class="LabelhouseCodeAreaLeft">
-			                <span class="nonRequiredFieldIndicator">Fax:</span>
-			            </td>
-			            <td>
-			                <div id="ManagerFax"></div>
-			            </td>
-			        </tr>
-			        <tr>
-			            <td class="LabelhouseCodeAreaLeft">
-			                <span class="nonRequiredFieldIndicator">Cell Phone Number:</span>
-			            </td>
-			            <td>
-			                <div id="ManagerCellPhone"></div>
-			            </td>
-			            <td class="LabelhouseCodeAreaLeft">
-			                <span class="nonRequiredFieldIndicator">Pager Number:</span>
-			            </td>
-			            <td>
-			                <div id="ManagerPager"></div>
-			            </td>
-			        </tr>
-			        <tr>
-			            <td class="LabelhouseCodeAreaLeft">
-			                <span class="nonRequiredFieldIndicator">Assistant Name:</span>
-			            </td>
-			            <td>
-			                <div id="ManagerAssistantName"></div>
-			            </td>
-			            <td class="LabelhouseCodeAreaLeft">
-			                <span class="nonRequiredFieldIndicator">Assistant Phone:</span>
-			            </td>
-			            <td>
-			                <div id="ManagerAssistantPhone"></div>
-			            </td>
-			        </tr>
-			    </table>
-			<div style="clear:both;"></div>
-			<div class="contentArea">
-	        	<div class="header">Client Information</div>
-        	</div>
-			<div style="height:10px;"></div>
-			<table width="820px" cellpadding="5" cellspacing="0" border="0">
-			    <tr>
-			        <td width="200px" class="LabelhouseCodeAreaLeft">
-			            <span class="nonRequiredFieldIndicator">First Name:</span>
-			        </td>
-			         <td width="200px">
-			            <div id="ClientFirstName"></div>
-			        </td>
-			         <td width="200px" class="LabelhouseCodeAreaLeft">
-			            <span class="nonRequiredFieldIndicator">Last Name:</span>
-			        </td>
-			         <td width="200px">
-			            <div id="ClientLastName"></div>
-			        </td>
-			    </tr>
-			    <tr>
-			        <td class="LabelhouseCodeAreaLeft">
-			            <span class="nonRequiredFieldIndicator">Title:</span>
-			        </td>
-			         <td>
-			            <div id="ClientTitle"></div>
-			        </td>
-			         <td>
-			            
-			        </td>
-			         <td>
-			            
-			        </td>
-			    </tr>
-			    <tr>
-			        <td class="LabelhouseCodeAreaLeft">
-			            <span class="nonRequiredFieldIndicator">Phone:</span>
-			        </td>
-			         <td>
-			            <div id="ClientPhone"></div>
-			        </td>
-			         <td class="LabelhouseCodeAreaLeft">
-			            <span class="nonRequiredFieldIndicator">Fax:</span>
-			        </td>
-			         <td>
-			            <div id="ClientFax"></div>
-			        </td>
-			    </tr>
-			    <tr>
-			        <td class="LabelhouseCodeAreaLeft">
-			            <span class="nonRequiredFieldIndicator">Assistant Name:</span>
-			        </td>
-			         <td>
-			            <div id="ClientAssistantName"></div>
-			        </td>
-			         <td class="LabelhouseCodeAreaLeft">
-			            <span class="nonRequiredFieldIndicator">Assistant Phone:</span>
-			        </td>
-			         <td>
-			            <div id="ClientAssistantPhone"></div>
-			        </td>
-			    </tr>
-			</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
---->
