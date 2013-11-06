@@ -743,6 +743,14 @@ ii.Class({
 			            this.setInvalid("Please enter valid Employee Number.");
 				   
 				});
+				
+			me.employeeNumberMask = new ui.ctl.Input.Text({
+		        id: "EmployeeNumberMask",
+		        maxLength: 6
+		    });
+			
+			me.employeeNumberMask.text.readOnly = true;
+			me.employeeNumberMask.setValue("######");
 			
 			me.employeePayrollCompany = new ui.ctl.Input.DropDown.Filtered({
 				id: "EmployeePayrollCompany", 
@@ -1859,7 +1867,8 @@ ii.Class({
 			me.personPager.text.tabIndex = 133;
 			me.personCellPhone.text.tabIndex = 134; 
 			//General1
-			me.employeeNumber.text.tabIndex = 200; 
+			me.employeeNumber.text.tabIndex = 200;
+			me.employeeNumberMask.text.tabIndex = 200;
 			$("#houseCodeTemplateText").attr("tabindex", "201");
 			me.employeePayrollCompany.text.tabIndex = 202; 
 			//CrothallEmployeeYes - 203 //defined in markup.htm
@@ -5154,6 +5163,8 @@ ii.Class({
 			});			
 			var me = this;
 			
+			$("#EmployeeNumber").show();
+			$("#EmployeeNumberMask").hide();
 			$("#ViewHistory").hide();
 			
 			me.employeeSearch.body.deselectAll();			
@@ -5164,6 +5175,8 @@ ii.Class({
 
 				case "NewHire":
 					$("#popupHeader").text("New Hire -");
+					$("#EmployeeNumber").hide();
+					$("#EmployeeNumberMask").show();
 					me.actionNewEmployee();
 					me.fetchData();	
 					break;
