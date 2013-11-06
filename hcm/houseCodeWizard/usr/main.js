@@ -13,7 +13,7 @@ ii.Style( "fin.cmn.usr.common", 2 ) ;
 ii.Style( "fin.cmn.usr.statusBar", 3 );
 ii.Style( "fin.cmn.usr.button", 4 );
 ii.Style( "fin.cmn.usr.toolbar", 5 );
-ii.Style( "fin.cmn.usr.input", 6) ;
+ii.Style( "fin.cmn.usr.input", 6 ) ;
 ii.Style( "fin.cmn.usr.dropDown", 7 );
 ii.Style( "fin.cmn.usr.dateDropDown", 8 );
 ii.Style( "fin.cmn.usr.checkList", 9 );
@@ -59,14 +59,7 @@ ii.Class({
 			me.configureCommunications();
 			me.setStatus("Loading");
 			me.modified(false); 
-			
 			me.houseCodeSearch = new ui.lay.HouseCodeSearch();			
-			
-			if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
-				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
-			else {
-				me.houseCodesLoaded(me, 0);
-			}
 
 			$("input[name='TimeAttendance']").change(function() { me.modified(true); });
 			$("input[name='DefaultLunchBreak']").change(function() { me.modified(true); });
@@ -135,7 +128,14 @@ ii.Class({
 				$("#pageLoading").fadeIn("slow");
 			
 				ii.timer.timing("Page displayed");
-				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.session.registerFetchNotify(me.sessionLoaded, me);
+				
+				// Fetch the default house code after loading the security nodes to set the wizard correctly.
+				if (parent.fin.appUI.houseCodeId == 0)
+					me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
+				else {
+					me.houseCodesLoaded(me, 0);
+				}
 			}				
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
@@ -2605,7 +2605,7 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 
-			ii.trace("HouseCode HouseCodeWizard - UnitChanged'", ii.traceTypes.information, "Startup");
+			ii.trace("HouseCode HouseCodeWizard - UnitChanged", ii.traceTypes.information, "Startup");
 
 			if (parent.fin.appUI.houseCodeId <= 0) return;
 
@@ -2616,8 +2616,6 @@ ii.Class({
 		houseCodeDetailsLoaded: function(me, activeId) {
 
 			ii.trace("HouseCode HouseCodeWizard - HouseCodeLoaded", ii.traceTypes.information, "Startup");			
-			
-			$("#unitLoading").hide();
            
 			if (me.houseCodeDetails[0] == undefined) {
 				alert("Error: Selected House code is not setup correctly. Please review.");
@@ -3596,13 +3594,13 @@ ii.Class({
 				return;
 			}
 						
-			if (me.houseCodeDetails[0].startDate == "") {
+			if (me.houseCodeDetails[0].startDate == "" || !me.startDate.validate(true)) {
 				alert("[Start Date] is required in order for TeamFin to recognize the House Code throughout the application. Please select it on HouseCode Wizard.");
 				me.houseCodeDetails[0].startDate = '01/01/1900';
 				return;
 			}
-			
-			if (me.houseCodeDetails[0].serviceTypeId < 0) {
+	
+			if (me.houseCodeDetails[0].serviceTypeId <= 0) {
 				alert("[Primary Service] Provided is required for accurate reporting. Please select it on HouseCode Wizard.");
 				return;
 			}
