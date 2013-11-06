@@ -42,6 +42,7 @@ ii.Class({
 			me.defineFormControls();
 			me.configureCommunications();
 			
+			$("#pageBody").show();
 			$(window).bind("resize", me, me.resize);
 			$().bind("keydown", me, me.controlKeyProcessor);
 			
@@ -51,9 +52,7 @@ ii.Class({
 		authorizationProcess: function fin_pur_postedOrder_UserInterface_authorizationProcess(){
 			var args = ii.args(arguments,{});
 			var me = this;
-
-			//$("#pageLoading").fadeOut("slow");
-		
+	
 			me.isAuthorized = me.authorizer.isAuthorized( me.authorizePath);
 
 			ii.timer.timing("Page displayed");
@@ -65,7 +64,7 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("session loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 		
 		resize: function() {
@@ -572,9 +571,7 @@ ii.Class({
 			});
 			var transaction = args.transaction;
 			var me = transaction.referenceData.me;
-			var errorMessage = "";
 			var status = $(args.xmlNode).attr("status");
-			var traceType = ii.traceTypes.errorDataCorruption;
 						
 			if (status == "success") {
 				me.status = "";
@@ -585,14 +582,7 @@ ii.Class({
 			}
 			else {
 				parent.fin.purMasterUi.setStatus("Error");
-				alert('Error while updating Purchase Order Record: ' + $(args.xmlNode).attr("message"));
-				errorMessage = $(args.xmlNode).attr("error");
-				if(status == "invalid") {
-					traceType = ii.traceTypes.warning;
-				}
-				else {
-					errorMessage += " [SAVE FAILURE]";
-				}
+				alert("Error while updating Purchase Order info: " + $(args.xmlNode).attr("message"));
 			}
 			
 			parent.fin.purMasterUi.pageLoaded();
