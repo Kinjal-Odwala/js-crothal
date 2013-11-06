@@ -850,6 +850,18 @@ Ext.reg('lovcombo', Ext.ux.form.LovCombo);
  
 // eof
 
+if (top.ui.ctl.menu) {
+      var me = this;
+      top.ui.ctl.menu.Dom.me.registerDirtyCheck(dirtyCheck, me);
+}
+
+function dirtyCheck(me) {
+      return !window.top.fin.cmn.status.itemValid();
+}
+            
+function modified(status) {
+      window.top.fin.appUI.modified = status;
+}
 
 Ext.Ajax.timeout = 300000; //5 minutes
 
@@ -1373,7 +1385,7 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
 
         var frequencyField = new Ext.form.ComboBox({ valueField: 'name', allowBlank: false, name: 'frequency',
             triggerAction: 'all', editable: false, displayField: 'name',
-            store: new Ext.data.ArrayStore({ idIndex: 0, fields: ['name'], data: [['Monthly'], ['Weekly']] }), mode: 'local'
+            store: new Ext.data.ArrayStore({ idIndex: 0, fields: ['name'], data: [['Weekly'], ['Monthly'], ['Semiannual']] }), mode: 'local'
         });
         var numberOfColumnsField = new Ext.form.TextField({ name: 'numberOfColumns', editable: false, value: 0, minValue: 0, width: 50 });
         var houseCodeField = new Ext.form.ComboBox({ valueField: 'id', allowBlank: false, resizeable: true, name: 'houseCodeId', triggerAction: 'all', forceSelection: true,
