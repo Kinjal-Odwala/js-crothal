@@ -90,6 +90,16 @@ ii.Class({
 					return false;
 				}
 			});	
+			
+			// blur event is not firing when clicking on the tab. Due to this dirty check function and prompt message was not working.
+			$("#TabCollection a").mouseover(function() {
+				if (!parent.parent.fin.appUI.modified) {
+					var focusedControl = $("iframe")[me.activeFrameId].contentWindow.document.activeElement;
+
+					if (focusedControl.type != undefined && (focusedControl.type == "text" || focusedControl.type == "textarea"))
+						$(focusedControl).blur();
+				}
+			});
 
 			$("#TabCollection a").mousedown(function() {
 				if (!parent.fin.cmn.status.itemValid()) 
@@ -187,6 +197,7 @@ ii.Class({
 			var me = this;
 					
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
+			me.purchaseOrdersReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
 
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
@@ -213,7 +224,6 @@ ii.Class({
 					me.houseCodesLoaded(me, 0);
 					
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
-				me.purchaseOrdersReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
 			}				
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
