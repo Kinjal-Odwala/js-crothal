@@ -42,6 +42,10 @@ ii.init.register( function fin_cmn_startup_init(){
 					message = status + ", please wait...";
 				else if (status == "Saved")
 					message = "Data saved successfully.";
+				else if (status == "Imported")
+					message = "Data imported successfully.";
+				else if (status == "Exported")
+					message = "Data exported successfully.";
 				else if (status == "Locked")
 					message = "The current page is Readonly.";
 				else if (status == "Error")
@@ -60,7 +64,7 @@ ii.init.register( function fin_cmn_startup_init(){
 			else
 				me.$itemModifiedImage.removeClass("Modified");
 
-			if (status == "Edit" || status == "Loaded" || status == "Saved")
+			if (status == "Edit" || status == "Loaded" || status == "Saved" || status == "Imported" || status == "Exported")
 				status = "Normal";
 
 			me.$itemStatusImage.attr("class", "itemStatusImage " + status);

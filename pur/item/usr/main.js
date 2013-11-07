@@ -81,7 +81,7 @@ ii.Class({
 
 				ii.timer.timing("Page displayed");
 				me.loadCount = 1;
-				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.session.registerFetchNotify(me.sessionLoaded, me);
 				me.itemAccount.fetchingData();
 				me.accountStore.fetch("userId:[user]", me.accountsLoaded, me);				
 				me.itemStatusesLoaded();				
@@ -157,6 +157,30 @@ ii.Class({
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Save&nbsp;&nbsp;</span>",
 				clickFunction: function() { me.actionSaveItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorImport = new ui.ctl.buttons.Sizeable({
+				id: "AnchorImport",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Import&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionImportItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorUpload = new ui.ctl.buttons.Sizeable({
+				id: "AnchorUpload",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Upload&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionUploadItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorUploadCancel = new ui.ctl.buttons.Sizeable({
+				id: "AnchorUploadCancel",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionUploadCancelItem(); },
 				hasHotState: true
 			});
 			
@@ -643,12 +667,83 @@ ii.Class({
 			me.status = "new";
 			me.setStatus("Loaded");
 		},
+
+		actionImportItem: function(type) {
+			var me = this;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
+			$("iframe")[0].contentWindow.document.getElementById("FormReset").click();
+			me.setStatus("Normal");
+			me.anchorUpload.display(ui.cmn.behaviorStates.disabled);
+			showFrame();
+		},
+
+		actionUploadItem: function() {
+			var me = this;
+			var fileName = "";			
+
+			hideFrame();
+			me.setStatus("Uploading");
+			$("#messageToUser").text("Uploading");
+			$("#pageLoading").fadeIn("slow"); 
+			$("iframe")[0].contentWindow.document.getElementById("FileName").value = "";
+			$("iframe")[0].contentWindow.document.getElementById("UploadButton").click();
 		
+			me.intervalId = setInterval(function() {
+				
+				if ($("iframe")[0].contentWindow.document.getElementById("FileName").value != "")	{
+					fileName = $("iframe")[0].contentWindow.document.getElementById("FileName").value;					
+					clearInterval(me.intervalId);
+					
+					if (fileName == "Error") {
+						alert("Unable to upload the file. Please try again.")
+						me.setStatus("Error");
+						$("#pageLoading").fadeOut("slow");
+					}
+					else {
+						$("#messageToUser").text("Importing");
+						me.setStatus("Importing");
+						me.actionImport(fileName);
+					}
+				}			
+				
+			}, 1000);
+		},
+		
+		actionUploadCancelItem: function() {
+			var me = this;
+			
+			hideFrame();
+		},
+		
+		actionImport: function(fileName) {
+			var me = this;
+			var item = [];
+			var xml = "";
+
+			me.status = "import";
+			xml = '<purItemImport';
+			xml += ' fileName="' + fileName + '"';
+			xml += '/>';
+			
+			// Send the object back to the server as a transaction
+			me.transactionMonitor.commit({
+				transactionType: "itemUpdate",
+				transactionXml: xml,
+				responseFunction: me.saveResponseItem,
+				referenceData: {me: me, item: item}
+			});
+			
+			return true;
+		},
+
 		actionSaveItem: function() {
 			var args = ii.args(arguments,{});
 			var me = this;			
 			
-			if(me.itemsReadOnly) return;
+			if (me.itemsReadOnly) return;
 				
 			if (me.status == "") {
 				if (me.lastSelectedRowIndex == -1)
@@ -660,8 +755,8 @@ ii.Class({
 			me.validator.forceBlur();		
 			
 			// Check to see if the data entered is valid
-			if( !me.validator.queryValidity(true) ){
-				alert( "In order to save, the errors on the page must be corrected.");
+			if (!me.validator.queryValidity(true)) {
+				alert("In order to save, the errors on the page must be corrected.");
 				return false;
 			}
 			
@@ -739,41 +834,85 @@ ii.Class({
 			if (status == "success") {
 				me.modified(false);
 
-				$(args.xmlNode).find("*").each(function() {
-					switch (this.tagName) {
+				if (me.status == "import") {
+					me.setStatus("Imported");
+				}
+				else {
+					$(args.xmlNode).find("*").each(function() {
+						switch (this.tagName) {
 
-						case "purItem":
-						
-							if (me.status == "new") {
-								me.itemId = parseInt($(this).attr("id"), 10);
-								item.id = me.itemId;
-								me.items.push(item);
-								me.lastSelectedRowIndex = me.items.length - 1;
-							}
-							else {
-								me.lastSelectedRowIndex = me.itemGrid.activeRowIndex;
-								me.items[me.lastSelectedRowIndex] = item;
-							}
-							
-							me.status = "";
-							me.itemGrid.setData(me.items);
-							me.itemGrid.body.select(me.lastSelectedRowIndex);
-												
-							break;
-					}
-				});
-				
-				me.setStatus("Saved");
+							case "purItem":
+
+								if (me.status == "new") {
+									me.itemId = parseInt($(this).attr("id"), 10);
+									item.id = me.itemId;
+									me.items.push(item);
+									me.lastSelectedRowIndex = me.items.length - 1;
+								}
+								else {
+									me.lastSelectedRowIndex = me.itemGrid.activeRowIndex;
+									me.items[me.lastSelectedRowIndex] = item;
+								}
+
+								me.itemGrid.setData(me.items);
+								me.itemGrid.body.select(me.lastSelectedRowIndex);
+
+								break;
+						}
+					});
+					
+					me.setStatus("Saved");
+				}
+
+				me.status = "";
 			}
 			else {
 				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating Item details: " + $(args.xmlNode).attr("message"));
 			}
-			
+
 			$("#pageLoading").fadeOut("slow");
 		}
 	}
 });
+
+function showFrame() {
+	
+	var windowWidth = document.documentElement.clientWidth;
+	var windowHeight = document.documentElement.clientHeight;
+	var frameWidth = $("#divFrame").width();
+	var frameHeight = $("#divFrame").height();
+	
+	$("#divFrame").css({
+		"top": windowHeight/2 - frameHeight/2,
+		"left": windowWidth/2 - frameWidth/2
+	});
+	
+	$("#backgroundPopup").css({
+		"height": windowHeight,
+		"opacity": "0.5"
+	});	
+
+	$("#backgroundPopup").fadeIn("slow");
+	$("#divFrame").fadeIn("slow");	
+}
+
+function hideFrame() {
+
+	$("#backgroundPopup").fadeOut("slow");
+	$("#divFrame").fadeOut("slow");
+}
+
+function onFileChange() {
+	
+	var fileName = $("iframe")[0].contentWindow.document.getElementById("UploadFile").value;	
+	var fileExtension = fileName.substring(fileName.lastIndexOf("."));
+	
+	if (fileExtension == ".xlsx")
+		fin.purItemUi.anchorUpload.display(ui.cmn.behaviorStates.enabled);
+	else
+		alert("Invalid file format. Please select the correct XLSX file.");
+}
 
 function main() {
 	fin.purItemUi = new fin.pur.item.UserInterface();

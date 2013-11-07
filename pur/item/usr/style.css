@@ -1,116 +1,115 @@
-﻿#itemContentArea{ width:100%;}
-#itemContentAreaContainer
-	{
-		border:solid #AAAAAA thin;
-		border-width:1px;
-		padding:10px;
-	}
-#InputDropActive
-	{
-		width:190px;
-		float:left;
-	}
-#InputTextAreaItem
-	{
-		width:150px; 
-		float:left; 
-		height:27px;
-	}
-#LabelTextAreaLeftItem
-	{
-		width:210px;
-		float:left;
-		height:27px;
-		font-family:Verdana;
-		font-size:12px;
-		color:#032D23;
-	}
-#LabelTextAreaItemActive
-	{
-		width:70px;
-		float:left;
-		height:27px;
-		font-family:Verdana;
-		font-size:12px;
-		color:#032D23;
-	}
-#LabelTextAreaItemDetails
-	{
-		width:130px;
-		float:left;
-		height:27px;
-		font-family:Verdana;
-		font-size:12px;
-		color:#032D23;
-	}
-#searchButtonItem
-	{
-		width:85px;
-		float:left;
-		padding-left:5px;
-		margin-right:5px;
-		padding-bottom:5px;
-	}
-#LabelTextRadioButton
-	{
-		width:85px;
-		float:left;
-		height:27px;
-		font-family:Verdana;
-		font-size:12px;
-		color:#032D23;
-	}
-#LabelTextRadioButtonActive
-	{
-		width:55px;
-		float:left;
-		height:27px;
-		font-family:Verdana;
-		font-size:12px;
-		color:#032D23;
-	}
-#radioButton
-	{
-		width:15px;
-		float:left;
-		padding-left:5px;
-		padding-right:25px;
-		padding-bottom:5px;
-	}
-
-
-/*.GridTable
-{
-	height:375px;
-	width:350px;
-	padding-left:10px;
+﻿.iiInputText {
+	width: 182px;
+	white-space: nowrap;
 }
 
-.gridHeaderFont
-	{
-		width:340px;
-	}
+.iiInputTable {
+	width: 188px;
+	white-space: nowrap;
+}
 
-.tdBorderTop
-	{
-		border-left:solid #000000 thin;
-		border-right:solid #000000 thin;
-		border-top:solid #000000 thin;
-		border-bottom:solid #000000 thin;
-		height:365px;
-		width:350px;
-		padding-right:10px;
-		padding-top:18px;
-		vertical-align:top;
-	}
-*/
-.iiInputText
-	{
-		width:182px;
-		white-space:nowrap;
-	}
-.iiInputTable
-	{
-		width:188px;
-		white-space:nowrap;
-	}
+#itemContentArea { 
+	width:100%;
+}
+
+#itemContentAreaContainer {
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	padding: 10px;
+}
+
+#InputDropActive {
+	float: left;
+	width: 190px;
+}
+	
+#InputTextAreaItem {
+	float: left;
+	width: 150px;	
+	height: 27px;
+}
+
+#LabelTextAreaLeftItem {
+	float: left;
+	width: 210px;	
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
+
+#LabelTextAreaItemActive {
+	float: left;
+	width: 70px;	
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
+	
+#LabelTextAreaItemDetails {
+	float: left;
+	width: 130px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
+
+#searchButtonItem {
+	float: left;
+	width: 85px;	
+	padding-left: 5px;
+	padding-bottom: 5px;
+	margin-right: 5px;	
+}
+
+#AnchorImport {
+	float: left;
+	width: 82px;	
+	padding-left: 5px;
+	padding-top: 5px;
+	margin-right: 5px;	
+}
+	
+#AnchorUpload {
+	float: left;
+	width: 82px;	
+	padding-left: 10px;
+	padding-top: 0px;
+	margin-right: 5px;
+}
+
+#AnchorUploadCancel {
+	float: left;
+	width: 80px;	
+	padding-left: 5px;
+	padding-top: 0px;
+	margin-right: 5px;
+}
+
+#divFrame {
+	width: 600px; 
+	height: 120px;
+	top: 0px;
+	left: 0px;
+	position: absolute;
+	z-index: 5050;
+	background-color: white;	
+}
+
+#iFrameUpload {
+	padding-left: 10px;
+}
+
+#backgroundPopup {
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	position: fixed;
+	z-index: 5000;
+	border: 1px solid #cecece; 
+	background-color: black;
+	display: none;
+}

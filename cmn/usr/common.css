@@ -505,11 +505,8 @@ dl.editArea dd
 	background-image: url(media/Common/newFile.gif);
 }
 
-.itemStatusImage.Saving {
-	background-image: url(media/Common/indicator.gif);
-}
-
-.itemStatusImage.Loading {
+.itemStatusImage.Loading, .itemStatusImage.Saving, .itemStatusImage.Exporting
+, .itemStatusImage.Uploading, .itemStatusImage.Importing {
 	background-image: url(media/Common/indicator.gif);
 }
 
