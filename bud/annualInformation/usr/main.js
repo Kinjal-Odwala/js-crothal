@@ -3,6 +3,7 @@ ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.bud.annualInformation.usr.defs" );
 
@@ -56,23 +57,19 @@ ii.Class({
 
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
-			
-			me.fiscalYear.fetchingData();			
-			me.yearStore.fetch("userId:[user],", me.yearsLoaded, me);
-			me.accountStore.fetch("userId:[user],", me.accountsLoaded, me);
 		},
 			
 		authorizationProcess: function fin_bud_annualInformation_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
 
-			$("#pageLoading").hide();
-		
 			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
-			me.showAccountsLoading();
-				
 			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+			me.session.registerFetchNotify(me.sessionLoaded, me);
+			me.fiscalYear.fetchingData();			
+			me.yearStore.fetch("userId:[user],", me.yearsLoaded, me);
+			me.accountStore.fetch("userId:[user],", me.accountsLoaded, me);
+			//me.showAccountsLoading();
 		},	
 		
 		sessionLoaded: function fin_bud_annualInformation_UserInterface_sessionLoaded(){
@@ -378,6 +375,8 @@ ii.Class({
 			var me = this;
 
 			parent.parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				parent.fin.budAdminMasterUi.setStatus("Edit");
 		},
 		
 		resizeControls: function() {
@@ -398,16 +397,16 @@ ii.Class({
 			me.resize();
 		},
 		
-		showAccountsLoading: function() {
-			var me = this;
-	
-			$("#accountsLoading").css({
-				"width": $("#AccountGrid").width() + 10,
-				"height": $("#AccountGrid").height() + 10
-			});
-			
-			$("#accountsLoading").show();
-		},
+//		showAccountsLoading: function() {
+//			var me = this;
+//	
+//			$("#accountsLoading").css({
+//				"width": $("#AccountGrid").width() + 10,
+//				"height": $("#AccountGrid").height() + 10
+//			});
+//			
+//			$("#accountsLoading").show();
+//		},
 		
 		yearsLoaded: function(me, activeId) {
 
@@ -425,6 +424,7 @@ ii.Class({
 			me.fiscalYearId = me.fiscalYear.data[me.fiscalYear.indexSelected].id;				
 			me.loadPeriods();
 			me.modified();
+			me.yearChange = true;
 		},
 		
 		loadPeriods: function() {
@@ -442,7 +442,8 @@ ii.Class({
 			
 			me.startPeriod.setData(me.startPeriods);			
 			me.endPeriod.setData(me.endPeriods);
-			me.showAccountsLoading();
+			//me.showAccountsLoading();
+			parent.fin.budAdminMasterUi.setLoadCount();
 			me.annualInformationStore.fetch("userId:[user],fscYear:" + me.fiscalYearId, me.annualInformationsLoaded, me);
 		},
 		
@@ -506,7 +507,12 @@ ii.Class({
 			}
 
 			me.resizeControls();
-			$("#accountsLoading").hide();			
+			//$("#accountsLoading").hide();
+			parent.fin.budAdminMasterUi.checkLoadCount();	
+			if (me.yearChange) {
+				me.yearChange = false;
+				parent.fin.budAdminMasterUi.setStatus("Edit");
+			}	
 		},
 		
 		isCodeAssigned: function(code) {
@@ -529,7 +535,8 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 
-			me.showAccountsLoading();
+			//me.showAccountsLoading();
+			parent.fin.budAdminMasterUi.setLoadCount();
 			me.annualInformationsLoaded(me);			
 		},
 		
@@ -551,8 +558,7 @@ ii.Class({
 				return;
 			}
 			
-			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();			
+			parent.fin.budAdminMasterUi.showPageLoading("Saving");			
 				
 			item = new fin.bud.annualInformation.AnnualInformation(
 				me.annualInformationId
@@ -622,7 +628,7 @@ ii.Class({
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
 			
-			$("#pageLoading").hide();
+			parent.fin.budAdminMasterUi.hidePageLoading();
 
 			if (status == "success") {
 				me.modified(false);
@@ -644,8 +650,11 @@ ii.Class({
 							break;
 					}
 				});
+				
+				parent.fin.budAdminMasterUi.setStatus("Saved");
 			}
 			else {
+				parent.fin.budAdminMasterUi.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating the annual information: " + $(args.xmlNode).attr("message"));
 			}
 		}

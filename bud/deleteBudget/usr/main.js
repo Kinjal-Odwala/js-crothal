@@ -64,14 +64,6 @@ ii.Class({
             $(window).bind("resize", me, me.resize);
             $(document).bind("keydown", me, me.controlKeyProcessor);
 
-            me.fiscalYear.fetchingData();
-            me.yearStore.fetch("userId:[user],", me.yearsLoaded, me);
-            me.jdeCompanysStore.fetch("userId:[user],", me.jdeCompanysLoaded, me);
-            me.weekPeriodYearStore.fetch("userId:[user],", me.weekPeriodYearsLoaded, me);
-            $("#hirNodeLoading").show();
-            ii.trace("Hierarchy Nodes Loading", ii.traceTypes.Information, "Info");
-            me.hirNodeStore.fetch("userId:[user],hierarchy:2,", me.hirNodesLoaded, me);
-
             var toggleDisplay = function () {
                 var isHouseCodeMode = $('#rdHouseCode').is(':checked');
 
@@ -110,11 +102,16 @@ ii.Class({
             var args = ii.args(arguments, {});
             var me = this;
 
-            $("#pageLoading").hide();
             me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
 
             ii.timer.timing("Page displayed");
             me.session.registerFetchNotify(me.sessionLoaded, me);
+			me.fiscalYear.fetchingData();
+            me.yearStore.fetch("userId:[user],", me.yearsLoaded, me);
+            me.jdeCompanysStore.fetch("userId:[user],", me.jdeCompanysLoaded, me);
+            me.weekPeriodYearStore.fetch("userId:[user],", me.weekPeriodYearsLoaded, me);
+            ii.trace("Hierarchy Nodes Loading", ii.traceTypes.Information, "Info");
+            me.hirNodeStore.fetch("userId:[user],hierarchy:2,", me.hirNodesLoaded, me);
         },
 
         sessionLoaded: function fin_bud_deleteBudget_UserInterface_sessionLoaded() {
@@ -348,6 +345,8 @@ ii.Class({
             var me = this;
 
             parent.parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				parent.fin.budAdminMasterUi.setStatus("Edit");
         },
 
         resizeControls: function () {
@@ -502,7 +501,8 @@ ii.Class({
 
             if (!found) {
                 ii.trace("Hirnodes Loading", ii.traceTypes.Information, "Info");
-                $("#hirNodeLoading").show();
+                //$("#hirNodeLoading").show();
+				parent.fin.budAdminMasterUi.setLoadCount();
                 me.hirOrgStore.reset();
                 me.hirOrgStore.fetch("userId:[user],hirOrgId:" + me.hirNodeCurrentId + ",hirNodeSearchId:" + me.hirNodeCurrentId + ",ancestors:true", me.hirOrgsLoaded, me);
             }
@@ -620,8 +620,9 @@ ii.Class({
                 me.hirNodeSingleLoaded(me.hirNodesTemp[0].id);
             }
 
-            $("#pageLoading").hide();
-            $("#hirNodeLoading").hide();
+            //$("#pageLoading").hide();
+            //$("#hirNodeLoading").hide();
+			parent.fin.budAdminMasterUi.checkLoadCount();
         },
 
         actionNodeAppend: function () {
@@ -705,7 +706,8 @@ ii.Class({
             var me = this;
 
             if ($("#ulEdit" + nodeId)[0].innerHTML == "") {
-                $("#hirNodeLoading").show();
+                //$("#hirNodeLoading").show();
+				parent.fin.budAdminMasterUi.setLoadCount();
                 me.hirNodeStore.fetch("userId:[user],hirNodeParent:" + nodeId + ",", me.hirNodesLoaded, me);
             }
         },
@@ -812,8 +814,7 @@ ii.Class({
                 return false;
             }
 
-            $("#messageToUser").text("Saving");
-            $("#pageLoading").show();
+            parent.fin.budAdminMasterUi.showPageLoading("Saving");
 
             item = new fin.bud.deleteBudget.AnnualBudget(0, "", "", false, 0);
             var xml = me.saveXmlBuild(item);
@@ -869,14 +870,16 @@ ii.Class({
             var item = transaction.referenceData.item;
             var status = $(args.xmlNode).attr("status");
 
-            $("#pageLoading").hide();
+           parent.fin.budAdminMasterUi.hidePageLoading();
 
             if (status == "success") {
                 me.actionClearItem();
                 me.modified(false);
+				parent.fin.budAdminMasterUi.setStatus("Saved");
                 ii.trace("Budget Deleted", ii.traceTypes.Information, "Info");
             }
             else {
+				parent.fin.budAdminMasterUi.setStatus("Error");
                 alert("[SAVE FAILURE] Error while deleting the budget information: " + $(args.xmlNode).attr("message"));
             }
         }
