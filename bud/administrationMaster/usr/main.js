@@ -85,25 +85,19 @@ ii.Class({
 					
 						if (($("iframe")[0].contentWindow.fin == undefined || me.annualInfoNeedUpdate))
 							$("iframe")[0].src = "/fin/bud/annualInformation/usr/markup.htm";
-						else if (parent.fin.appUI.modified)
-							me.setStatus("Edit");
 						else 
-							me.setStatus("Loaded");
-	
+							$("iframe")[0].contentWindow.fin.annualInformationUI.setStatus("Loaded")
+							
 						me.activeFrameId = 0;
 						me.annualInfoNeedUpdate = false;
 						break;
 
 					case "TabApproveBudget":
 					
-						if (($("iframe")[1].contentWindow.fin == undefined || me.approveBudgetNeedUpdate)) {
-							me.setLoadCount();
+						if (($("iframe")[1].contentWindow.fin == undefined || me.approveBudgetNeedUpdate)) 
 							$("iframe")[1].src = "/fin/bud/approveBudget/usr/markup.htm";
-						}
-						else if (parent.fin.appUI.modified)
-							me.setStatus("Edit");
 						else 
-							me.setStatus("Loaded");
+							$("iframe")[1].contentWindow.fin.approveBudgetUi.setStatus("Loaded")
 							
 						me.activeFrameId = 1;
 						me.approveBudgetNeedUpdate = false;
@@ -111,30 +105,22 @@ ii.Class({
 							
 					case "TabDeleteBudget":
 					
-						if (($("iframe")[2].contentWindow.fin == undefined || me.deleteBudgetNeedUpdate)) {
-							me.setLoadCount();
+						if (($("iframe")[2].contentWindow.fin == undefined || me.deleteBudgetNeedUpdate)) 
 							$("iframe")[2].src = "/fin/bud/deleteBudget/usr/markup.htm";
-						}
-						else if (parent.fin.appUI.modified)
-							me.setStatus("Edit");
 						else 
-							me.setStatus("Loaded");
-	
+							$("iframe")[2].contentWindow.fin.deleteBudgetUi.setStatus("Loaded")
+							
 						me.activeFrameId = 2;
 						me.deleteBudgetNeedUpdate = false;
 						break;
 							
 					case "TabExportBudget":
 					
-						if (($("iframe")[3].contentWindow.fin == undefined || me.exportBudgetNeedUpdate)) {
-							me.setLoadCount();
+						if (($("iframe")[3].contentWindow.fin == undefined || me.exportBudgetNeedUpdate))
 							$("iframe")[3].src = "/fin/bud/exportBudget/usr/markup.htm";
-						}
-						else if (parent.fin.appUI.modified)
-							me.setStatus("Edit");
 						else 
-							me.setStatus("Loaded");
-	
+							$("iframe")[3].contentWindow.fin.exportBudgetUi.setStatus("Loaded")
+								
 						me.activeFrameId = 3;
 						me.exportBudgetNeedUpdate = false;
 						break;
@@ -157,16 +143,12 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 			
-			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);			
-			
 			$("#pageLoading").hide();
-			$("#pageLoading").css({
-				"opacity": "0.5",
-				"background-color": "black"
-			});
-			$("#messageToUser").css({ "color": "white" });
-			$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
-			$("#pageLoading").fadeIn("slow");
+		
+			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
+				
+			ii.timer.timing("Page displayed");
+			me.session.registerFetchNotify(me.sessionLoaded,me);			
 		},	
 		
 		sessionLoaded: function fin_bud_administrationMaster_UserInterface_sessionLoaded(){
@@ -180,7 +162,7 @@ ii.Class({
 		resize: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
-			var offset = 67;
+			var offset = 42;
 			
 			$("#iFrameAnnualInfo").height($(window).height() - offset);
 			$("#iFrameApproveBudget").height($(window).height() - offset);
@@ -237,37 +219,16 @@ ii.Class({
 			return !fin.cmn.status.itemValid();
 		},
 		
-		setLoadCount: function(me, activeId) {
-			var me = this;
+		modified: function () {
+            var args = ii.args(arguments, {
+                modified: { type: Boolean, required: false, defaultValue: true }
+            });
+            var me = this;
 
-			me.loadCount++;
-			me.setStatus("Loading");
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").fadeIn("slow");
-		},
-		
-		checkLoadCount: function() {
-			var me = this;
-
-			me.loadCount--;
-			if (me.loadCount <= 0) {
-				me.setStatus("Loaded");
-				$("#pageLoading").fadeOut("slow");
-			}
-		},
-		
-		showPageLoading: function(status) {
-			var me = this;
-
-			me.setStatus(status);
-			$("#messageToUser").text(status);
-			$("#pageLoading").fadeIn("slow");
-		},
-		
-		hidePageLoading: function() {
-			var me = this;
-			$("#pageLoading").fadeOut("slow");
-		},
+            parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+        },
 		
 		actionSaveItem: function() {
 			var args = ii.args(arguments,{});

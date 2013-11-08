@@ -35,6 +35,7 @@ ii.Class({
             me.houseCodeId = 0;
             me.jobId = 0;
             me.hirNodeCurrentId = 1;
+			me.loadCount = 0;
 
             me.gateway = ii.ajax.addGateway("bud", ii.config.xmlProvider);
             me.cache = new ii.ajax.Cache(me.gateway);
@@ -58,14 +59,12 @@ ii.Class({
             me.defineFormControls();
             me.configureCommunications();
             me.modified(false);
+			me.setStatus("Loading");
 
             $(window).bind("resize", me, me.resize);
             $(document).bind("keydown", me, me.controlKeyProcessor);
             
             //$("#hirNodeLoading").show();
-
-            ii.trace("Hierarchy Nodes Loading", ii.traceTypes.Information, "Info");
-            me.hirOrgStore.fetch("userId:[user],hirOrgId:1,ancestors:true", me.hirOrgsLoaded, me);
 
             var toggleDisplay = function () {
                 var isHouseCodeMode = $('#rdHouseCode').is(':checked');
@@ -104,12 +103,24 @@ ii.Class({
             var me = this;
 
             me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
-
+			
+			$("#pageLoading").hide();
+			$("#pageLoading").css({
+				"opacity": "0.5",
+				"background-color": "black"
+			});
+			$("#messageToUser").css({ "color": "white" });
+			$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+			$("#pageLoading").fadeIn("slow");
+			
             ii.timer.timing("Page displayed");
+			me.loadCount = 1;
             me.session.registerFetchNotify(me.sessionLoaded, me);
 			me.fiscalYear.fetchingData();
             me.yearStore.fetch("userId:[user],", me.yearsLoaded, me);
             me.jdeCompanysStore.fetch("userId:[user],", me.jdeCompanysLoaded, me);
+			ii.trace("Hierarchy Nodes Loading", ii.traceTypes.Information, "Info");
+            me.hirOrgStore.fetch("userId:[user],hirOrgId:1,ancestors:true", me.hirOrgsLoaded, me);
         },
 
         sessionLoaded: function fin_bud_exportBudget_UserInterface_sessionLoaded() {
@@ -123,7 +134,7 @@ ii.Class({
         resize: function fin_bud_exportBudget_UserInterface_resize() {
             var args = ii.args(arguments, {});
             var me = this;
-            var offset = 105;
+            var offset = 130;
 
             $("#hirContainer").height($(window).height() - offset);
             $("#detailContainer").height($(window).height() - offset);
@@ -294,7 +305,18 @@ ii.Class({
             }
         },
 
-        modified: function () {
+        setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
+		dirtyCheck: function(me) {
+
+			return !fin.cmn.status.itemValid();
+		},
+		
+		modified: function () {
             var args = ii.args(arguments, {
                 modified: { type: Boolean, required: false, defaultValue: true }
             });
@@ -302,8 +324,27 @@ ii.Class({
 
             parent.parent.fin.appUI.modified = args.modified;
 			if (args.modified)
-				parent.fin.budAdminMasterUi.setStatus("Edit");
+				me.setStatus("Edit");
         },
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
+		},
 
         resizeControls: function () {
             var me = this;
@@ -329,7 +370,7 @@ ii.Class({
             }
 
             $("#JDECompany").multiselect("refresh");
-			parent.fin.budAdminMasterUi.checkLoadCount();
+			me.checkLoadCount();
         },
 
         actionYearChanged: function () {
@@ -417,7 +458,7 @@ ii.Class({
             me.hirNodeCurrentId = me.units[0].hirNode;
 
             //$("#pageLoading").show();
-			parent.fin.budAdminMasterUi.setLoadCount();
+			me.setLoadCount();
             ii.trace("organization node loading", ii.traceTypes.Information, "Info");
 
             me.hirOrgLoad("search");
@@ -471,7 +512,7 @@ ii.Class({
 
             //$("#pageLoading").hide();
             //$("#hirNodeLoading").hide();
-			parent.fin.budAdminMasterUi.checkLoadCount();
+			me.checkLoadCount();
 
         },
 
@@ -531,8 +572,8 @@ ii.Class({
                 budRequest(criteriaXml, function (responseXml) {
                     partialBudgetExported = $('item', $(responseXml)).length > 0;
                     if (partialBudgetExported && !confirm('1 or more budget already exported, do you want to continue to export all the selected budgets?')) {
-                        parent.fin.budAdminMasterUi.setStatus("Loaded");
-						parent.fin.budAdminMasterUi.hidePageLoading();
+                        me.setStatus("Loaded");
+						$("#pageLoading").fadeOut("slow");
                         return;
                     }
                     else {
@@ -568,7 +609,10 @@ ii.Class({
             if (!confirm("Are you sure you want to export the budgeting information for the " + selectedNames.join(',') + "?"))
                 return false;
 
-			parent.fin.budAdminMasterUi.showPageLoading("Exporting");
+			me.setStatus("Saving");
+			
+			$("#messageToUser").text("Exporting");
+			$("#pageLoading").fadeIn("slow");
 
             var jobId = me.isLevel7NodeSelected() ? me.jobId : 0;
 
@@ -577,8 +621,8 @@ ii.Class({
             budRequest(criteriaXml, function (responseXml) {
                 partialBudgetExported = $('item', $(responseXml)).length > 0;
                 if (partialBudgetExported && !confirm('1 or more budget already exported, do you want to continue to export all the selected budgets?')) {
-                    parent.fin.budAdminMasterUi.setStatus("Loaded");
-					parent.fin.budAdminMasterUi.hidePageLoading();
+                    me.setStatus("Loaded");
+					$("#pageLoading").fadeOut("slow");
                     return;
                 }
                 else {
@@ -593,8 +637,8 @@ ii.Class({
         exportItemsLoaded: function (me, activeId) {
 
             if (me.exports.length <= 0) {
-                parent.fin.budAdminMasterUi.setStatus("Loaded");
-				parent.fin.budAdminMasterUi.hidePageLoading();
+                me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
                 alert("Budgeting data is either already exported or not available or not approved.");
                 return;
             }
@@ -611,8 +655,8 @@ ii.Class({
             }
 
             if (me.exports.length == pItems.length) {
-                parent.fin.budAdminMasterUi.setStatus("Loaded");
-				parent.fin.budAdminMasterUi.hidePageLoading();
+                me.setStatus("Loaded");
+			 	$("#pageLoading").fadeOut("slow");
                 return;
             }
 
@@ -663,16 +707,16 @@ ii.Class({
             var item = transaction.referenceData.item;
             var status = $(args.xmlNode).attr("status");
 
-            parent.fin.budAdminMasterUi.hidePageLoading();
+            $("#pageLoading").fadeOut("slow");
 
             if (status == "success") {
                 me.modified(false);
-				parent.fin.budAdminMasterUi.setStatus("Saved");
+				me.setStatus("Saved");
                 ii.trace("Budget Exported", ii.traceTypes.Information, "Info");
                 alert("Budgeting data exported successfully.");
             }
             else {
-				parent.fin.budAdminMasterUi.setStatus("Error");
+				me.setStatus("Error");
                 alert("[SAVE FAILURE] Error while exporting the budget information: " + $(args.xmlNode).attr("message"));
             }
         }
