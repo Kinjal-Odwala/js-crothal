@@ -851,16 +851,16 @@ Ext.reg('lovcombo', Ext.ux.form.LovCombo);
 // eof
 
 if (top.ui.ctl.menu) {
-      var me = this;
-      top.ui.ctl.menu.Dom.me.registerDirtyCheck(dirtyCheck, me);
+	var me = this;
+	top.ui.ctl.menu.Dom.me.registerDirtyCheck(dirtyCheck, me);
 }
 
 function dirtyCheck(me) {
-      return !window.top.fin.cmn.status.itemValid();
+	return !window.top.fin.cmn.status.itemValid();
 }
             
 function modified(status) {
-      window.top.fin.appUI.modified = status;
+	window.top.fin.appUI.modified = status;
 }
 
 Ext.Ajax.timeout = 300000; //5 minutes
@@ -1023,7 +1023,6 @@ eFin.data.XmlStore = WebLight.extend(WebLight.data.Store, {
             me._ignoredRecords.concat(records);
         else
             me._ignoredRecords.push(records);
-
     },
 
     getChangedRecords: function () {
@@ -1119,7 +1118,7 @@ eFin.data.app.DataCollectorStore = WebLight.extend(eFin.data.XmlStore, {
                { name: 'messageText', mapping: '@messageText' },
                { name: 'lockoutMessage', mapping: '@lockoutMessage', type: 'bool' },
                { name: 'lockoutMessageText', mapping: '@lockoutMessageText' },
-                 { name: 'active', mapping: '@active', type: 'bool' },
+               { name: 'active', mapping: '@active', type: 'bool' },
                { name: 'description', mapping: '@description' }
            ]
 
@@ -1183,6 +1182,7 @@ eFin.data.app.ModuleColumnStore = WebLight.extend(eFin.data.XmlStore, {
         return { module: this.moduleName };
     }
 });
+
 eFin.data.hcm.HouseCodeStore = WebLight.extend(eFin.data.XmlStore, {
 
     url: '/net/crothall/chimes/fin/hcm/act/provider.aspx',
@@ -1236,7 +1236,6 @@ eFin.data.app.DataCollectorColumnStore = WebLight.extend(eFin.data.XmlStore, {
     ,
     load: function (dataCollectorId) {
         this.dataCollectorId = dataCollectorId;
-
 
         eFin.data.app.ModuleColumnStore.superclass.load.call(this);
     },
@@ -1309,6 +1308,7 @@ eFin.data.app.DataCollectorUserStore = WebLight.extend(eFin.data.XmlStore, {
         return { dataCollectorId: this.dataCollectorId };
     }
 });
+
 Ext.override(Ext.ux.form.LovCombo, {
     beforeBlur: Ext.emptyFn
 });
@@ -1343,7 +1343,6 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
 
         store.on('beforeload', me.onDataBeforeLoad.createDelegate(me));
         store.on('load', me.onDataLoad.createDelegate(me));
-
     },
 
     createChildControls: function () {
@@ -1385,35 +1384,42 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
 
         var frequencyField = new Ext.form.ComboBox({ valueField: 'name', allowBlank: false, name: 'frequency',
             triggerAction: 'all', editable: false, displayField: 'name',
-            store: new Ext.data.ArrayStore({ idIndex: 0, fields: ['name'], data: [['Weekly'], ['Monthly'], ['Semiannual']] }), mode: 'local'
+            store: new Ext.data.ArrayStore({ idIndex: 0, fields: ['name'], data: [['Weekly'], ['Monthly'], ['Semiannual']] }), mode: 'local',
+			listeners: { 'change': function() { modified(true); } }
         });
         var numberOfColumnsField = new Ext.form.TextField({ name: 'numberOfColumns', editable: false, value: 0, minValue: 0, width: 50 });
         var houseCodeField = new Ext.form.ComboBox({ valueField: 'id', allowBlank: false, resizeable: true, name: 'houseCodeId', triggerAction: 'all', forceSelection: true,
-            editable: true, displayField: 'name', store: me.houseCodeStore, mode: 'local', width: 300
+            editable: true, displayField: 'name', store: me.houseCodeStore, mode: 'local', width: 300,
+			listeners: { 'change': function() { modified(true); } }
         });
-        var moduleField = new Ext.form.ComboBox({ valueField: 'id', displayField: 'name', editable: false, triggerAction: 'all', mode: 'local', name: 'moduleId', store: me.moduleStore });
+        var moduleField = new Ext.form.ComboBox({ valueField: 'id', displayField: 'name', editable: false, triggerAction: 'all', mode: 'local', name: 'moduleId', store: me.moduleStore, listeners: { 'change': function() { modified(true); } } });
         var descriptionField = new Ext.form.TextField({ name: 'description', width: 300, maxLength: 60,
-            autoCreate: { tag: 'input', type: 'text', maxLength: 60, autocomplete: 'off' }
-        }); ;
+            autoCreate: { tag: 'input', type: 'text', maxLength: 60, autocomplete: 'off' },
+			listeners: { 'change': function() { modified(true); } }
+        });
         var columnField = new Ext.ux.form.LovCombo({ valueField: 'id', resizable: true, width: 350, displayField: 'description', editable: false,
-            triggerAction: 'all', mode: 'local', name: 'columns', store: me.moduleColumnStore, allowBlank: false
+            triggerAction: 'all', mode: 'local', name: 'columns', store: me.moduleColumnStore, allowBlank: false,
+			listeners: { 'change': function() { modified(true); } }
         });
         var userField = new Ext.ux.form.LovCombo({ valueField: 'id', resizable: true, width: 350, displayField: 'name', editable: false, triggerAction: 'all', allowBlank: false,
-            mode: 'local', name: 'users', store: me.userStore
+            mode: 'local', name: 'users', store: me.userStore,
+			listeners: { 'change': function() { modified(true); } }
         });
         var lockoutField = new Ext.form.Checkbox({ name: 'lockout' });
         var activeField = new Ext.form.Checkbox({ name: 'active' });
         var sendEmailField = new Ext.form.Checkbox({ name: 'email' });
         var emailAddressField = new Ext.form.TextField({ width: 300, name: 'emailAddress', maxLength: 100,
-            autoCreate: { tag: 'input', type: 'text', maxLength: 100, autocomplete: 'off' }
+            autoCreate: { tag: 'input', type: 'text', maxLength: 100, autocomplete: 'off' },
+			listeners: { 'change': function() { modified(true); } }
         });
         var messageSendField = new Ext.form.Checkbox({ boxLabel: '', name: 'message' });
-        var messageField = new Ext.form.TextArea({ width: 350, height: 70, name: 'messageText' });
+        var messageField = new Ext.form.TextArea({ width: 350, height: 70, name: 'messageText', listeners: { 'change': function() { modified(true); } } });
         var lockoutMessageSendField = new Ext.form.Checkbox({ boxLabel: '', name: 'lockoutMessage' });
-        var lockoutMessageField = new Ext.form.TextArea({ width: 350, height: 70, name: 'lockoutMessageText' });
+        var lockoutMessageField = new Ext.form.TextArea({ width: 350, height: 70, name: 'lockoutMessageText', listeners: { 'change': function() { modified(true); } } });
 
         var toggleEmailAddressField = function () {
             var checked = me.getData().email;
+
             if (arguments.length > 0)
                 checked = sendEmailField.getValue();
             if (checked) {
@@ -1472,7 +1478,6 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
             }
             else
                 me.moduleColumnStore.loadData({ data: [] });
-
         };
 
         var reloadUsers = function () {
@@ -1498,15 +1503,23 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
             columnField.setValue(values.join(','));
             me.getData().columns = values.join(',');
             me.fireEvent('update', 'columns', values.join(','));
-
         };
 
         me.dataCollectorColumnStore.on('load', applyColumns);
         me.moduleColumnStore.on('load', applyColumns);
 
-
-        sendEmailField.on('check', toggleEmailAddressField);
-        messageSendField.on('check', toggleMessageTextField);
+		//sendEmailField.on('check', toggleEmailAddressField);
+        //messageSendField.on('check', toggleMessageTextField);
+		
+		sendEmailField.on('check', function () {
+			toggleEmailAddressField(1);
+            modified(true);
+        });
+		
+		messageSendField.on('check', function () {
+			toggleMessageTextField(1);
+            modified(true);
+        });
 
         var applyUsers = function () {
 
@@ -1525,7 +1538,6 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
 
         me.dataCollectorUserStore.on('load', applyUsers);
         me.userStore.on('load', applyUsers);
-
 
         me.on('update', function (name, newValue, oldValue) {
             if (oldValue == newValue)
@@ -1548,7 +1560,6 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
             }
         });
 
-
         me.on('bound', function (data) {
 
             me.enableButton('AnchorSave');
@@ -1567,13 +1578,22 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
             toggleUsersContainer();
         });
 
-
-        lockoutField.on('check', function () {
+		activeField.on('check', function () {
+             modified(true);
+        });
+		
+        lockoutField.on('check', function () {			
             lockoutMessageSendField.setValue(lockoutField.getValue());
             toggleLockoutMessageTextField(1);       // post 1 to ensure arguments length is not zero
+            modified(true);
         });
 
-        lockoutMessageSendField.on('check', toggleLockoutMessageTextField);
+		lockoutMessageSendField.on('check', function () {			
+            toggleLockoutMessageTextField(1);       // post 1 to ensure arguments length is not zero
+            modified(true);
+        });
+		
+        //lockoutMessageSendField.on('check', toggleLockoutMessageTextField);
 
         me.on('bound', function () {
             me.dataCollectorUserStore.removeAll(true);
@@ -1581,12 +1601,12 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
             toggleEmailAddressField();
             toggleLockoutMessageTextField();
             toggleMessageTextField();
+			modified(false);
         });
 
         me.addFields([frequencyField, numberOfColumnsField, houseCodeField, moduleField, descriptionField,
-                    columnField, userField, lockoutField, activeField, sendEmailField, emailAddressField,
-                    messageSendField, messageField, lockoutMessageSendField, lockoutMessageField]);
-
+			columnField, userField, lockoutField, activeField, sendEmailField, emailAddressField,
+			messageSendField, messageField, lockoutMessageSendField, lockoutMessageField]);
     },
 
     initButtons: function () {
@@ -1602,6 +1622,8 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
 
         me.$newButton.click(function () {
             if (me.$newButton.hasClass('Enabled')) {
+				if (!window.top.fin.cmn.status.itemValid())
+					return;
                 me.fireEvent('createnew', me);
             }
         });
@@ -1614,11 +1636,11 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
 
         me.$undoButton.click(function () {
             if (me.$undoButton.hasClass('Enabled')) {
+				if (!window.top.fin.cmn.status.itemValid())
+					return;
                 me.fireEvent('undo', me, me.getData());
             }
         });
-
-
     },
 
     enableButton: function (name) {
@@ -1645,9 +1667,7 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
         me.moduleStore.load();
         if (me.houseCodeStore.getCount() == 0)
             me.houseCodeStore.load();
-
     }
-
 });
 
 eFin.page.app.DataCollector = WebLight.extend(WebLight.Page, {
@@ -1685,7 +1705,6 @@ eFin.page.app.DataCollector = WebLight.extend(WebLight.Page, {
 
         };
 
-
         me.rowSelectionModel = new Ext.grid.RowSelectionModel({ singleSelect: true });
 
         me.dataCollectorGrid = new Ext.grid.GridPanel({
@@ -1715,6 +1734,9 @@ eFin.page.app.DataCollector = WebLight.extend(WebLight.Page, {
         });
 
         me.rowSelectionModel.on('rowselect', function (sm, rowIndex, record) {
+			if (!window.top.fin.cmn.status.itemValid())
+				return;
+
             if (me.lastSelectedRowIndex != rowIndex) {
                 if (me.lastSelectedRowIndex != -1 && me.lastSelectedRowIndex < me.dataCollectorStore.getCount())
                     me.dataCollectorStore.getAt(me.lastSelectedRowIndex).reject();
@@ -1730,7 +1752,6 @@ eFin.page.app.DataCollector = WebLight.extend(WebLight.Page, {
         me.addChildControl(me.dataCollectorGrid, 'data-collector-grid');
 
         me.initDataCollectorEditor();
-
 
         me.dataCollectorStore.on('beforeload', function () { me.mask('Loading...'); });
         me.dataCollectorStore.on('load', function () {
@@ -1750,13 +1771,10 @@ eFin.page.app.DataCollector = WebLight.extend(WebLight.Page, {
         me.moduleStore.on('load', function () {
             me.dataCollectorGrid.getView().refresh();
         });
-
-
     },
 
     initDataCollectorEditor: function () {
         var me = this;
-
 
         me.dataCollectorEditor.on('createnew', function () {
             var data = { frequency: 'Monthly',
@@ -1791,6 +1809,7 @@ eFin.page.app.DataCollector = WebLight.extend(WebLight.Page, {
             if (me.dataCollectorEditor.isValid()) {
                 me.mask('Saving...');
                 me.dataCollectorStore.submitChanges(function () {
+					modified(false);
                     me.unmask();
                     me.dataCollectorStore.reload();
                 });
@@ -1803,7 +1822,6 @@ eFin.page.app.DataCollector = WebLight.extend(WebLight.Page, {
                 record.set(name, newValue);
             }
         });
-
     },
 
     safeUnmask: function () {
@@ -1824,7 +1842,6 @@ eFin.page.app.DataCollector = WebLight.extend(WebLight.Page, {
         me.moduleStore.load();
         me.dataCollectorStore.load();
         setTimeout(function () { me.houseCodeStore.load(); }, 10000);
-
     }
 
 });
