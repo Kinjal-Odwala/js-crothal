@@ -814,7 +814,8 @@ ii.Class({
 			var status = $(args.xmlNode).attr("status");
 			
 			if (status == "success") {
-					
+				
+				me.modified(false);	
 				$(args.xmlNode).find("*").each(function() {
 					switch (this.tagName) {
 
@@ -839,7 +840,6 @@ ii.Class({
 					}
 				});
 				
-				me.modified(false);
 				me.setStatus("Saved");
 			}
 			else {
