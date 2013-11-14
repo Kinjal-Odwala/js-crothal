@@ -8,12 +8,25 @@ ii.init.register( function() {
 
 ii.init.register( function() {
 	
-	fin.adh.moduleArgs = {
+	fin.adh.hirNodeArgs = {
 		id: {type: Number}
-		, name: {type: String}
+		, nodeParentId: {type: Number}
+		, hirLevel: {type: Number, required: false, defaultValue: 0}
+		, hirLevelTitle: {type: String, required: false, defaultValue: ""}
+		, hirHierarchyId: {type: Number, required: false, defaultValue: 0}
+		, brief: {type: String, required: false, defaultValue: ""}
+		, title: {type: String, required: false, defaultValue: ""}
+		, childNodeCount: {type: Number, required: false, defaultValue: 0}
+		, fullPath: {type: String, required: false, defaultValue: ""}
+	};
+
+	fin.adh.appUnitArgs = {
+		id: {type: Number}
+		, hirNode: {type: Number}
+		, brief: {type: String}
+		, title: {type: String, required: false, defaultValue: ""}
 		, description: {type: String}
-		, editable: {type: Boolean, required: false, defaultValue:false}
-		, houseCodeAssociated: {type: Boolean, required: false, defaultValue:false}
+		, active: {type: Boolean}
 	};
 	
 	fin.adh.userArgs = {
@@ -24,6 +37,28 @@ ii.init.register( function() {
 	fin.adh.roleArgs = {
 		id: {type: Number}
 		, hirNodeCurrent: {type: Number, required: false, defaultValue: 0}
+	};
+	
+	fin.adh.roleNodeArgs = {
+		id: {type: Number}
+		, fullPath: {type: String, required: false, defaultValue: ""}
+	};
+	
+	fin.adh.houseCodeArgs = {
+		id: {type: Number}
+		, appUnit: {type: Number}
+		, number: {type: Number}
+		, name: {type: String}
+		, brief:{type: String, required: false, defaultValue: ""}
+		, hirNode: {type: Number}
+	};
+	
+	fin.adh.moduleArgs = {
+		id: {type: Number}
+		, name: {type: String}
+		, description: {type: String}
+		, editable: {type: Boolean, required: false, defaultValue:false}
+		, houseCodeAssociated: {type: Boolean, required: false, defaultValue:false}
 	};
 	
 	fin.adh.moduleColumnHeaderArgs = {
@@ -215,29 +250,6 @@ ii.init.register( function() {
 		, moduleAssociate: {type: String, defaultValue: "0"}
 		, active: {type: Boolean}
 		, hirNode: {type: Number ,required:false, defaultValue: 0}
-	};
-	
-	fin.adh.hirNodeArgs = {
-		id: {type: Number}
-		, number: {type: Number, required: false, defaultValue: 0}
-		, name: {type: String, required: false, defaultValue: ""}
-		, title: {type: String, required: false, defaultValue: ""}
-		, hirLevel: {type: Number, required: false, defaultValue: 0}
-		, nodeParentId: {type: Number, required: false, defaultValue: 0}
-		, fullPath: {type: String, required: false, defaultValue: ""}
-		, childNodeCount: {type: Number, required: false, defaultValue: 0}
-		, editable:{type: Boolean, required: false, defaultValue: false}
-		, serverStatus:{type: String, required: false, defaultValue: ""}
-		, serverMessage:{type: String, required: false, defaultValue: ""}
-	};
-		
-	fin.adh.appUnitArgs = {
-		id: {type: Number}
-		, hirNode: {type: Number}
-		, brief: {type: String}
-		, title: {type: String, required: false, defaultValue: ""}
-		, description: {type: String}
-		, active: {type: Boolean}
 	};
 	
 	fin.adh.reportTotalRowArgs = {
@@ -662,10 +674,20 @@ ii.init.register( function() {
 }, 2);
 
 ii.Class({
-	Name: "fin.adh.Module",
+	Name: "fin.adh.HirNode",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.adh.moduleArgs);
+			var args = ii.args(arguments, fin.adh.hirNodeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.adh.AppUnit",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.appUnitArgs);
 			$.extend(this, args);
 		}
 	}
@@ -690,6 +712,36 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.adh.roleArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.adh.RoleNode",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.roleNodeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.adh.HouseCode",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.houseCodeArgs);
+			$.extend(this, args);			
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.adh.Module",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.moduleArgs);
 			$.extend(this, args);
 		}
 	}
@@ -730,26 +782,6 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.adh.reportArgs);
-			$.extend(this, args);
-		}
-	}
-});
-
-ii.Class({
-	Name: "fin.adh.HirNode",
-	Definition: {
-		init: function() {
-			var args = ii.args(arguments, fin.adh.hirNodeArgs);
-			$.extend(this, args);
-		}
-	}
-});
-
-ii.Class({
-	Name: "fin.adh.AppUnit",
-	Definition: {
-		init: function() {
-			var args = ii.args(arguments, fin.adh.appUnitArgs);
 			$.extend(this, args);
 		}
 	}

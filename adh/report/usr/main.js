@@ -5,12 +5,13 @@ ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.grid" );
 ii.Import( "ui.ctl.usr.hierarchy" );
 ii.Import( "ui.cmn.usr.text" );
-ii.Import( "fin.adh.report.usr.defs" );
+ii.Import( "fin.cmn.usr.treeView" );
 ii.Import( "fin.cmn.usr.datepicker" );
 ii.Import( "fin.cmn.usr.util" );
 ii.Import( "fin.cmn.usr.ui.core" );
 ii.Import( "fin.cmn.usr.ui.widget" );
 ii.Import( "fin.cmn.usr.multiselect" );
+ii.Import( "fin.adh.report.usr.defs" );
 
 ii.Style( "style", 1 );
 ii.Style( "fin.cmn.usr.common", 2 );
@@ -26,6 +27,7 @@ ii.Style( "fin.cmn.usr.core", 11 );
 ii.Style( "fin.cmn.usr.dropDown", 12 );
 ii.Style( "fin.cmn.usr.dateDropDown", 13 );
 ii.Style( "fin.cmn.usr.multiselect", 14 );
+ii.Style( "fin.cmn.usr.treeview", 15 );
 
 ii.Class({
     Name: "fin.adh.UserInterface",
@@ -35,6 +37,9 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 			
+			me.hirNodesList = [];
+            me.hirNodesTemp = [];
+			me.hirNode = 0;
 			me.reportId = 0;
 			me.delimitedOrgSelectedNodes = "";
 			me.rowModifed = false;
@@ -143,8 +148,8 @@ ii.Class({
 				me.report.fetchingData();
 				me.moduleStore.fetch("userId:[user]", me.modulesLoaded, me);
 				me.reportStore.fetch("userId:[user],active:1", me.reportLoaded, me);
-				me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
-				me.stateTypeStore.fetch("userId:[user]", me.typesLoaded, me);
+				me.stateTypeStore.fetch("userId:[user]", me.typesLoaded, me);				
+				me.roleNodeStore.fetch("userId:[user],roleId:" + me.session.propertyGet("roleId"), me.roleNodesLoaded, me);
 			}				
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
@@ -173,7 +178,7 @@ ii.Class({
 		    
 			$("#tblAdhReportGridHeader").css("left", -scrollLeft + "px");
 		},
-				
+
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
 			var args = ii.args(arguments, {
 				event: {type: Object}	// The (key) event object
@@ -205,7 +210,13 @@ ii.Class({
 		defineFormControls: function() {
 			var args = ii.args(arguments, {});
 			var me = this;
-			
+
+			$("#ulEdit0").treeview({
+                animated: "medium",
+                persist: "location",
+                collapsed: true
+            });
+
 			me.report = new ui.ctl.Input.DropDown.Filtered({
 				id: "Report",
 				formatFunction: function( type ) { return type.name; },
@@ -318,12 +329,33 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 			
-			me.modules = [];
-			me.moduleStore = me.cache.register({
-				storeId: "appModules",
-				itemConstructor: fin.adh.Module,
-				itemConstructorArgs: fin.adh.moduleArgs,
-				injectionArray: me.modules
+			me.hirOrgs = [];
+			me.hirOrgStore = me.hierarchy.register( {
+				storeId: "hirOrgs",
+				itemConstructor: ui.ctl.Hierarchy.Node,
+				itemConstructorArgs: ui.ctl.Hierarchy.nodeArgs,
+				isRecursive: true,
+				addToParentItem: true,
+				parentPropertyName: "nodes",
+				parentField: "parent",
+				multipleFetchesAllowed: true,
+				injectionArray: me.hirOrgs
+			});
+			
+			me.hirNodes = [];
+            me.hirNodeStore = me.cache.register({
+                storeId: "hirNodes",
+                itemConstructor: fin.adh.HirNode,
+                itemConstructorArgs: fin.adh.hirNodeArgs,
+                injectionArray: me.hirNodes
+            });
+			
+			me.units = [];
+			me.unitStore = me.cache.register({
+				storeId: "units",
+				itemConstructor: fin.adh.AppUnit,
+				itemConstructorArgs: fin.adh.appUnitArgs,
+				injectionArray: me.units
 			});
 			
 			me.users = [];
@@ -346,6 +378,30 @@ ii.Class({
 				multipleFetchesAllowed: true
 			});
 			
+			me.roleNodes = [];
+			me.roleNodeStore = me.cache.register({
+				storeId: "roleNodes",
+				itemConstructor: fin.adh.RoleNode,
+				itemConstructorArgs: fin.adh.roleNodeArgs,
+				injectionArray: me.roleNodes
+			});
+			
+			me.houseCodes = [];
+			me.houseCodeStore = me.cache.register({
+				storeId: "hcmHouseCodes",
+				itemConstructor: fin.adh.HouseCode,
+				itemConstructorArgs: fin.adh.houseCodeArgs,
+				injectionArray: me.houseCodes
+			});	
+			
+			me.modules = [];
+			me.moduleStore = me.cache.register({
+				storeId: "appModules",
+				itemConstructor: fin.adh.Module,
+				itemConstructorArgs: fin.adh.moduleArgs,
+				injectionArray: me.modules
+			});
+
 			me.moduleColumnHeaders = [];
 			me.moduleColumnHeaderStore = me.cache.register({
 				storeId: "adhReportColumnHeaders",
@@ -392,27 +448,6 @@ ii.Class({
 				itemConstructor: fin.adh.ReportTotalRow,
 				itemConstructorArgs: fin.adh.reportTotalRowArgs,
 				injectionArray: me.reportTotalRows
-			});
-			
-			me.units = [];
-			me.unitStore = me.cache.register({
-				storeId: "units",
-				itemConstructor: fin.adh.AppUnit,
-				itemConstructorArgs: fin.adh.appUnitArgs,
-				injectionArray: me.units
-			});
-			
-			me.hirOrgs = [];
-			me.hirOrgStore = me.hierarchy.register( {
-				storeId: "hirOrgs",
-				itemConstructor: ui.ctl.Hierarchy.Node,
-				itemConstructorArgs: ui.ctl.Hierarchy.nodeArgs,
-				isRecursive: true,
-				addToParentItem: true,
-				parentPropertyName: "nodes",
-				parentField: "parent",
-				multipleFetchesAllowed: true,
-				injectionArray: me.hirOrgs
 			});
 			
 			// HouseCode Types
@@ -1069,59 +1104,10 @@ ii.Class({
 			me.report.select(0, me.report.focused);
 			me.resizeControls();
 		},
-		
-		loggedInUsersLoaded: function(me, activeId) {
 
-			if (me.users.length == 0) {
-				ii.trace("Failed to load logged-in user information.", ii.traceTypes.Information, "Info");
-				return false;
-			}
+		roleNodesLoaded: function (me, activeId) {
 			
-			for (var index = 0; index < me.roles.length; index++) {
-				if (me.roles[index].id == me.users[0].roleCurrent) {
-					me.hirNodeCurrentId = me.roles[index].hirNodeCurrent;
-					break;
-				}
-			}
-
-			me.hirOrgStore.fetch("userId:[user],hirOrgId:" + me.hirNodeCurrentId + ",ancestors:true", me.hirOrgsLoaded, me);
-		},
-		
-		hirOrgsLoaded: function (me, activeId) {
-			
-			if (me.hirOrgs.length == 0) {
-				me.setStatus("Loaded");
-				$("#messageToUser").html("Load Failed.");
-				$("#pageLoading").fadeOut("slow");
-				ii.trace("Could not fetch required [Org Info].", ii.traceTypes.errorUserAffected, "Error");
-				return false;
-			}
-
-			$("#hirOrg").html("");
-			me.checkLoadCount();
-		
-			me.orgHierarchy = new ui.ctl.Hierarchy({
-				nodeStore: me.hirOrgStore,
-				domId: "hirOrg", //OrganizationHierarchy
-				baseClass: "iiHierarchy",
-				actionLevel: 9,
-				actionCallback: function(node) { me.hirNodeCallBack(node); },
-				topNode: me.hirOrgs[0],
-				currentNode: ii.ajax.util.findItemById(me.hirNodeCurrentId.toString(), me.hirOrgs),
-				hasSelectedState: false,
-				multiSelect: true
-			});	
-			
-			if (me.searchNode) {
-				me.searchNode = false;
-				var orgNodes = [];
-				var node = me.orgHierarchy.currentNode;
-				var item = new fin.adh.HirNode({ id: node.id, number: node.id, fullPath: node.fullPath });
-				orgNodes.push(item);
-				me.orgHierarchy.setData(orgNodes);
-			}
-			
-			ii.trace("Org/Management Nodes Loaded.", ii.traceTypes.Information, "Info");
+			me.hirNodeStore.fetch("userId:[user],hierarchy:2,", me.hirNodesLoaded, me);
 		},
 
 		actionSearchItem: function() {
@@ -1160,25 +1146,24 @@ ii.Class({
 			}
 			else {
 				$("#AppUnitText").addClass("Loading");			
-				me.unitStore.fetch("userId:[user],unitBrief:" + searchText + ",", me.actionUnitsLoaded, me);
+				me.houseCodeStore.fetch("userId:[user],appUnitBrief:" + searchText + ",", me.houseCodesLoaded, me);
 			}						
 		},
 		
-		actionUnitsLoaded: function(me, activeId) {
+		houseCodesLoaded: function(me, activeId) {
 
 			$("#AppUnitText").removeClass("Loading");
 
-			if (me.units.length <= 0) {
-				ii.trace("Could not load the said Unit.", ii.traceTypes.Information, "Info");
-				alert("There is no corresponding Unit available or you do not have enough permission to access it.");
+			if (me.houseCodes.length <= 0) {
+				ii.trace("Could not load the House Code.", ii.traceTypes.Information, "Info");
+				alert("There is no corresponding House Code available or you do not have enough permission to access it.");
 				return;
 			}
 
-			me.appUnit.setValue(me.units[0].description);
-			me.hirNodeCurrentId = me.units[0].hirNode;
+			me.appUnit.setValue(me.houseCodes[0].name);
+			me.hirNodeCurrentId = me.houseCodes[0].hirNode;
 
 			me.setLoadCount();
-			ii.trace("Organization Nodes Loading", ii.traceTypes.Information, "Info");
 			me.searchNode = true;
 			me.hirOrgLoad("search");
 		},
@@ -1188,10 +1173,9 @@ ii.Class({
 				flag: {type: String, required: false}
 			});				
 			var me = this;
-			
-			me.actionClearItem(true);			
+
 			me.hirOrgStore.reset();
-			
+
 			if (args.flag)
 				me.hirOrgStore.fetch("userId:[user],hirOrgId:" + me.hirNodeCurrentId + ",hirNodeSearchId:" + me.hirNodeCurrentId + ",ancestors:true", me.hirOrgsLoaded, me);
 			else
@@ -1199,6 +1183,351 @@ ii.Class({
 
 			ii.trace("Organization Nodes Loading", ii.traceTypes.Information, "Info");
 		},
+		
+		hirOrgsLoaded: function(me, activeId) {
+
+            var childNodesCount = 0;
+            var found = false;
+
+            me.hirNodesTemp = [];
+
+            for (var index = 0; index < me.hirOrgs.length; index++) {
+                if (me.hirOrgs[index].hirLevel != -1) {
+                    found = false;
+
+                    for (var nodeIndex = 0; nodeIndex < me.hirNodesList.length; nodeIndex++) {
+                        if (me.hirNodesList[nodeIndex].id == me.hirOrgs[index].id) {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found) {
+                        if (me.hirOrgs[index].hirLevel == 7)
+                            childNodesCount = 0;
+                        else
+                            childNodesCount = 1;
+
+                        var item = new fin.adh.HirNode(me.hirOrgs[index].id
+							, me.hirOrgs[index].parent.id
+							, me.hirOrgs[index].hirLevel
+							, me.hirOrgs[index].hirLevelTitle
+							, 2
+							, me.hirOrgs[index].brief
+							, me.hirOrgs[index].title
+							, childNodesCount
+							, me.hirOrgs[index].fullPath
+							)
+
+                        me.hirNodesTemp.push(item);
+                    }
+                }
+            }
+
+			if (me.hirOrgs.length > 1) {
+				found = false;
+			
+				for (var index = 0; index < me.hirNodesList.length; index++) {
+					if (me.hirOrgs[1].id == me.hirNodesList[index].id) {
+						found = true;
+						break;
+					}
+				}
+				
+				if (!found) {
+					me.hirNodeStore.fetch("userId:[user],hirNodeRoot:" + me.hirOrgs[1].id, me.hirNodesLoaded, me);
+				}
+				else {
+					me.actionAddNodes();
+            		me.selectNode();
+				}
+			}
+			else  {
+				me.actionAddNodes();
+            	me.selectNode();
+			}
+
+            ii.trace("Hirnodes Loaded", ii.traceTypes.Information, "Info");
+        },
+		
+		hirNodesLoaded: function (me, activeId) {
+
+			if (me.searchNode) {
+				for (var index = me.hirNodes.length - 1; index >= 0; index--) {
+					var nodeIndex = me.getNodeIndex(me.hirNodes[index].id);
+
+                    if (nodeIndex == -1) {
+						found = false;
+						
+						for (var iIndex = 0; iIndex < me.hirNodesTemp.length; iIndex++) {
+	                        if (me.hirNodesTemp[iIndex].id == me.hirNodes[index].id) {
+	                            found = true;
+	                            break;
+	                        }
+	                    }
+
+						if (!found) {
+							var item = new fin.adh.HirNode(me.hirNodes[index].id
+								, me.hirNodes[index].nodeParentId
+								, me.hirNodes[index].hirLevel
+								, me.hirNodes[index].hirLevelTitle
+								, 2
+								, me.hirNodes[index].brief
+								, me.hirNodes[index].title
+								, me.hirNodes[index].childNodeCount
+								, me.hirNodes[index].fullPath
+								)
+
+							var position = 0;
+							for (var iIndex = 0; iIndex < me.hirNodesTemp.length; iIndex++) {
+		                        if (item.nodeParentId == me.hirNodesTemp[iIndex].id) {
+									position = iIndex + 1;
+		                            break;
+		                        }
+		                    }
+
+							me.hirNodesTemp.splice(position, 0, item);
+						}
+						else {
+							for (var iIndex = 0; iIndex < me.hirNodesTemp.length; iIndex++) {
+		                        if (me.hirNodesTemp[iIndex].id == me.hirNodes[index].id) {
+									if (me.hirNodesTemp[iIndex].nodeParentId == 0)
+										me.hirNodesTemp[iIndex].nodeParentId = me.hirNodes[index].nodeParentId;
+		                            break;
+		                        }
+		                    }
+						}                       
+                    }
+                }
+				
+				me.searchNode = false;
+				me.actionAddNodes();
+				me.selectNode();
+			}
+			else {
+				me.hirNodesTemp = me.hirNodes.slice();
+            	me.actionAddNodes();
+				$("#span" + me.hirNode).replaceClass("loading", "normal");
+			}
+
+			if (me.hirNodesList.length == me.hirNodesTemp.length) {
+				if (me.hirNodesList.length > 0)
+					$("#liNode" + me.hirNodesList[0].id).find(">.hitarea").click();
+			}
+        },
+
+		selectNode: function () {
+            var me = this;
+            var hirNodeId = me.hirNodeCurrentId;
+            var found = true;
+
+            while (found) {
+                for (var index = 0; index < me.hirNodesList.length; index++) {
+                    if (me.hirNodesList[index].id == hirNodeId) {
+                        var parentId = me.hirNodesList[index].nodeParentId;
+                        var parentNode = $("#liNode" + parentId)[0];
+                        hirNodeId = parentId;
+
+                        if (parentNode != undefined) {
+                            found = true;
+
+                            if (parentNode.className == "expandable" || parentNode.className == "expandable lastExpandable")
+                                $("#liNode" + hirNodeId).find(">.hitarea").click();
+                        }
+
+                        break;
+                    }
+                    else
+                        found = false;
+                }
+            }
+
+            me.hirNodeSelect(me.hirNodeCurrentId);
+            $("#liNode" + me.hirNodeCurrentId).focus();
+        },
+
+		actionAddNodes: function () {
+            var me = this;
+            var hirNode = 0;
+            var hirParentNode = 0;
+            var hirNodeTitle = "";
+            var childNodeCount = 0;
+            var fullPath = "";
+
+            for (var index = 0; index < me.hirNodesTemp.length; index++) {
+                hirNode = me.hirNodesTemp[index].id;
+                hirParentNode = me.hirNodesTemp[index].nodeParentId;
+                hirNodeTitle = me.hirNodesTemp[index].title;
+                childNodeCount = me.hirNodesTemp[index].childNodeCount;
+                fullPath = me.hirNodesTemp[index].fullPath;
+
+                //set up the edit tree
+                //add the item underneath the parent list
+                me.actionNodeAppend(hirNode, hirNodeTitle, hirParentNode, childNodeCount, fullPath);
+            }
+
+            me.storeHirNodes();
+
+            if (me.hirNodePreviousSelected == 0) {
+                me.hirNodeSelect(me.hirNodesTemp[0].id);
+            }
+
+			me.checkLoadCount();
+        },
+
+        actionNodeAppend: function () {
+            var args = ii.args(arguments, {
+                hirNode: { type: Number }
+				, hirNodeTitle: { type: String }
+				, hirNodeParent: { type: Number }
+				, childNodeCount: { type: Number }
+				, fullPath: { type: String }
+            });
+            var me = this;
+			var nodeAuthorized = false;
+			var nodeHtml = "";
+
+			for (var index = 0; index < me.roleNodes.length; index++ ) {
+				if (args.fullPath.indexOf(me.roleNodes[index].fullPath) >= 0) {
+					nodeAuthorized = true;
+					break;
+				}
+			}
+
+            nodeHtml = "<li id=\"liNode" + args.hirNode + "\">";
+			if (nodeAuthorized) { 
+				nodeHtml += "<input type=\"checkbox\" id=\"chkNode" + args.hirNode + "\" parent=\"" + args.hirNodeParent + "\" />";
+				nodeHtml += "<span id=\"span" + args.hirNode + "\" class='normal' style='vertical-align: middle;'>" + args.hirNodeTitle + "</span>";
+			}
+			else
+				nodeHtml += "<span id=\"span" + args.hirNode + "\" class='normal' style='vertical-align: top;'>" + args.hirNodeTitle + "</span>";
+
+            //add a list holder if the node has children
+            if (args.childNodeCount != 0) {
+                nodeHtml += "<ul id=\"ulEdit" + args.hirNode + "\"></ul>";
+            }
+
+            nodeHtml += "</li>";
+
+            if ($("#liNode" + args.hirNodeParent)[0] == undefined)
+				args.hirNodeParent = 0;
+
+            var treeNode = $(nodeHtml).appendTo("#ulEdit" + args.hirNodeParent);
+            $("#ulEdit0").treeview({ add: treeNode });
+
+            //link up the node
+            $("#span" + args.hirNode).bind("click", function () {
+                me.hirNodeSelect(args.hirNode);
+            });
+
+            $("#liNode" + args.hirNode).find(">.hitarea").bind("click", function () {
+                me.hitAreaSelect(args.hirNode);
+            });
+			
+            $("#chkNode" + args.hirNode).bind("click", function() { 
+				me.nodeClick(this); 
+			});
+        },
+		
+		nodeClick: function(chkNode) {
+			var me = this;
+			
+		    me.childNodeCheck(chkNode);
+		    me.parentNodeCheck(chkNode);
+		},
+		
+		childNodeCheck: function(chkNodeParent) {
+		    var me = this;
+		    var hirParentNode = chkNodeParent.id.replace(/chkNode/, "");
+		    var nodeChecked = chkNodeParent.checked;
+				    
+		    //get a list of the children of the node
+		    $("input[parent=" + hirParentNode + "]").each(function()
+		    {
+		        //find out if the parent node is checked
+		        if (nodeChecked)
+					this.checked = this.disabled = true;
+				else 
+					this.checked = this.disabled = false;
+		        
+		        //check the children of the children
+		        me.childNodeCheck(this);
+		    });
+		},
+		
+		parentNodeCheck: function(chkNodeChild) {
+		    var me = this;
+		    var hirNode = $(chkNodeChild).attr("parent");
+		    var allChecked = true;
+		    
+		    //make sure that the child has a parent
+		    $("#chkNode" + hirNode).each(function()
+		    {
+		        //go through the list of child nodes of the parent
+		        $("input[parent=" + hirNode + "]").each(function() {
+		            if (this.checked == false) 
+						allChecked = false;
+		        });
+    		    
+    		    //if all have been checked... check this one
+		        if (allChecked)
+		        {
+		            this.checked = true;
+		            me.childNodeCheck(this);
+		        }
+    		    
+		        //check the parent of the parent
+		        me.parentNodeCheck(this);
+		    });
+		},
+		
+		storeHirNodes: function () {
+            var me = this;
+            var index = 0;
+
+            for (index = 0; index < me.hirNodesTemp.length; index++) {
+                me.hirNodesList.push(me.hirNodesTemp[index]);
+            }
+        },
+
+  		hitAreaSelect: function (nodeId) {
+            var me = this;
+
+            if ($("#ulEdit" + nodeId)[0].innerHTML == "") {
+				$("#span" + nodeId).replaceClass("normal", "loading");
+				me.hirNode = nodeId;
+				me.setLoadCount();
+                me.hirNodeStore.fetch("userId:[user],hirNodeParent:" + nodeId + ",", me.hirNodesLoaded, me);
+            }
+        },
+		
+		hirNodeSelect: function(nodeId) {
+            var me = this;
+            var index = me.getNodeIndex(nodeId);
+
+            if (me.hirNodePreviousSelected > 0)
+                $("#span" + me.hirNodePreviousSelected).replaceClass("normalSelected", "normal");
+ 
+ 			me.hirNodeSelected = me.hirNodesList[index].id;
+            me.hirNodePreviousSelected = me.hirNodeSelected;
+            $("#span" + me.hirNodeSelected).replaceClass("normal", "normalSelected");
+			$("#chkNode" + + me.hirNodeSelected).attr("checked", "checked");
+        },
+
+        getNodeIndex: function () {
+            var args = ii.args(arguments, {
+                hirNode: { type: Number }
+            });
+            var me = this;
+            var index = -1;
+
+            for (index = 0; index < me.hirNodesList.length; index++) {
+                if (me.hirNodesList[index].id == args.hirNode)
+                    return index;
+            }
+
+            return -1;
+        },
 		
 		actionSearchSite: function() {
 			var args = ii.args(arguments, {
@@ -1511,18 +1840,20 @@ ii.Class({
 				alert("Please select valid Report.");
 				return;
 			}
-			
-			for (var index in me.orgHierarchy.selectedNodes) {
-				orgHierarchy = me.orgHierarchy.selectedNodes[index];
-				if (orgHierarchy)
-					me.delimitedOrgSelectedNodes += orgHierarchy.id.toString() + "#";
-			}
+
+			$("input[id^='chkNode']").each(function() {
+				if (this.checked && !this.disabled) {
+					me.delimitedOrgSelectedNodes += this.id.replace(/chkNode/, "") + "#";
+				}
+			});
 
 			if (me.delimitedOrgSelectedNodes == "" && (houseCodeAssociated || me.reports[me.report.indexSelected].moduleAssociate != 0)) {
 				alert("Please select correct House Code.");
 				return;
 			}
 
+			$("#AdhReportItemGridHead").html("");
+			$("#AdhReportItemGridBody").html("");
 			$("#AdhReportGrid").show();
 			$("#ReportHierarchy").hide();
 			$("#messageToUser").html("Loading");
@@ -3443,8 +3774,7 @@ ii.Class({
 			if (me.invBillToOnChange == 1) {
 				for(var index = 0; index < types.length; index++) {
 			        type = types[index];
-					if (type.name == selectedValue)
-					{
+					if (type.name == selectedValue) {
 						$("#RevInvCompany_" + rowNumber).val(type.company);
 						$("#RevInvAddress1_" + rowNumber).val(type.address1);
 						$("#RevInvAddress2_" + rowNumber).val(type.address2);
@@ -3482,7 +3812,6 @@ ii.Class({
 			var me = this;
 
 		    if (me.geoCodeCache[postalCode] != undefined) {
-
 	            if (me.geoCodeCache[postalCode].loaded)
 					me.geoCodeValidate(postalCode, [rowNumber], columnValue);              
 	            else
@@ -3560,8 +3889,7 @@ ii.Class({
 			else {
 				for(var index = 0; index < types.length; index++) {
 			        type = types[index];
-					if (type.name == selectedValue)
-					{
+					if (type.name == selectedValue) {
 						$("#HcmJobCity_" + rowNumber).val(type.city);
 						$("#AppStateType_" + rowNumber).val(type.stateType.toString());
 						$("#HcmJobCity_" + rowNumber).attr("readonly", true);
@@ -4024,6 +4352,7 @@ ii.Class({
 		listAdhReports: function() {
 			var me = this;
 
+			$("#AdhReportItemGridBody").html("");
 			$("#selPageNumber").val(me.pageCurrent);
 			me.startPoint = ((me.pageCurrent - 1) * me.maximumRows) + 1;
 			me.endPoint = (me.startPoint + me.maximumRows) - 1;
@@ -4059,29 +4388,11 @@ ii.Class({
 		    me.pageCurrent = Number(selPageNumber.val());
 			me.listAdhReports();
 		},
-		
-		actionClearItem: function() {
-			var args = ii.args(arguments,{
-				clearAll: {type: Boolean, required: false, defaultValue: false}
-			});
-			var me = this;
 
-			if (args.clearAll) {
-
-				me.hirNodeSelected = null;		
-				me.hirNodePreviousSelected = null;	
-				me.hirNodeParentSelected = null;
-				$("#parentNode").hide();
-				$("#hirOrgParent").html("");
-			}
-			
-			me.validator.reset();
-		},
-		
 		actionExportToExcelItem: function() {
 			var me = this;
 			
-			me.setStatus("Loading");
+			me.setStatus("Exporting");
 			$("#messageToUser").html("Exporting");
 			$("#pageLoading").fadeIn("slow");
 			
@@ -4101,7 +4412,7 @@ ii.Class({
 		fileNamesLoaded: function(me, activeId) {
 			var excelFileName = "";
 
-			me.setStatus("Loaded");
+			me.setStatus("Exported");
 			$("#pageLoading").fadeOut("slow");
 
 			if (me.adhFileNames.length == 1) {
