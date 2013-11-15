@@ -95,9 +95,9 @@ ii.Class({
 			});
 
 			$("#TabCollection a").mousedown(function() {
-				//if (!parent.fin.cmn.status.itemValid()) 
-				//	return false;
-				//else {
+				if (!parent.fin.cmn.status.itemValid()) 
+					return false;
+				else {
 					var tabIndex = 0;
 					if (this.id == "JobDetails")
 						tabIndex = 1;
@@ -106,7 +106,7 @@ ii.Class({
 						
 					$("#container-1").tabs(tabIndex);
 					$("#container-1").triggerTab(tabIndex);
-				//}					
+				}					
 			});
 			
 			$("#TabCollection a").click(function() {				
@@ -185,7 +185,8 @@ ii.Class({
 
 			if (me.jobsReadOnly) {
 				$(".footer").hide();
-				$("#actionMenu").hide();				
+				$("#actionMenu").hide();
+				$("#imgAddHouseCodes").hide();
 			}	
 					
 			if (me.isAuthorized) {
@@ -199,7 +200,7 @@ ii.Class({
 				$("#pageLoading").fadeIn("slow");
 			
 				ii.timer.timing("Page displayed");
-				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.session.registerFetchNotify(me.sessionLoaded, me);
 				me.jobState.fetchingData();
 				me.invoiceTemplate.fetchingData();
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
