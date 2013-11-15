@@ -121,6 +121,12 @@ ii.Class({
 			if (me.isAuthorized) {
 				ii.timer.timing("Page displayed");
 				me.session.registerFetchNotify(me.sessionLoaded, me);
+
+				if (parent.fin.payMasterUi.salaryWagesReadOnly) {
+					$("#imgPayCodeAdd").hide();
+					$("#imgPayCodeDelete").hide();
+					$("#imgSave").hide();
+				}
 			}
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
@@ -282,9 +288,11 @@ ii.Class({
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
 
-			parent.parent.fin.appUI.modified = args.modified;
-			if (args.modified)
-				parent.fin.payMasterUi.setStatus("Edit");
+			if (!parent.fin.payMasterUi.salaryWagesReadOnly) {
+				parent.parent.fin.appUI.modified = args.modified;
+				if (args.modified)
+					parent.fin.payMasterUi.setStatus("Edit");
+			}
 		},
 
 		payCodeTypesLoaded: function(me, activeId) {
