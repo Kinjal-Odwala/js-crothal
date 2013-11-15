@@ -121,19 +121,19 @@ ii.Class({
 					id: "saveAction", 
 					brief: "Save Item (Ctrl+S)", 
 					title: "Save the Item",
-					actionFunction: function(){ me.actionSaveItem(); }
+					actionFunction: function() { me.actionSaveItem(); }
 				})
 				.addAction({
 					id: "newAction",
 					brief: "New Item (Ctrl+N)", 
 					title: "Add new Item",
-					actionFunction: function(){ me.actionNewItem(); }
+					actionFunction: function() { me.actionNewItem(); }
 				})
 				.addAction({
 					id: "undoAction", 
 					brief: "Undo Changes (Ctrl+U)", 
 					title: "Undo changes to the selected Item",
-					actionFunction: function(){ me.actionUndoItem(); }
+					actionFunction: function() { me.actionUndoItem(); }
 				})
 				
 			me.anchorNew = new ui.ctl.buttons.Sizeable({
@@ -209,7 +209,7 @@ ii.Class({
 			
 			me.itemStatus = new ui.ctl.Input.DropDown.Filtered({
 		        id: "ItemStatus",
-				formatFunction: function( type ){ return type.name; }
+				formatFunction: function( type ) { return type.name; }
 		    });
 			
 			me.itemStatus.makeEnterTab()
@@ -304,8 +304,8 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
 			
 			me.itemAccount = new ui.ctl.Input.DropDown.Filtered({
-				id : "ItemAccount",
-				formatFunction: function( type ){ return type.code + " - " + type.description; },
+				id: "ItemAccount",
+				formatFunction: function( type ) { return type.code + " - " + type.description; },
 				changeFunction: function() { me.modified(); }
 		    });
 			
@@ -331,14 +331,12 @@ ii.Class({
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
-					
-				var message = "";
-				var valid = true;
+
 				var enteredText = me.itemPrice.getValue();
 
-				if(enteredText == '') return;
-				
-				if(/^[0-9]+(\.[0-9]+)?$/.test(me.itemPrice.getValue()) == false)
+				if (enteredText == "") return;
+
+				if (/^[0-9]+(\.[0-9]+)?$/.test(enteredText) == false)
 					this.setInvalid("Please enter valid Price.");
 			});
 						
@@ -478,7 +476,7 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 				
-			if(me.searchInput.getValue().length < 3) {
+			if (me.searchInput.getValue().length < 3) {
 				me.searchInput.setInvalid("Please enter search criteria (minimum 3 characters).");
 				return false;
 			}			
