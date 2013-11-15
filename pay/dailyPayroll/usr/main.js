@@ -102,6 +102,7 @@ ii.Class({
 				me.workDay.fetchingData();
 				me.workShift.fetchingData();
 				me.weekDayDetailsLoaded();
+				me.controlReadOnly();
 			}
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
@@ -551,7 +552,9 @@ ii.Class({
 					$("#imgPayCodeDelete" + index).hide();
 				}
 
-				$("#DailyLunchCheck").attr('disabled', true);
+				$("#WorkShiftText").attr("disabled", true);
+				$("#WorkShiftAction").removeClass("iiInputAction");
+				$("#DailyLunchCheck").attr("disabled", true);
 				$("#imgPayCodeAdd").hide();
 				$("#actionMenu").hide();
 				$("#footerCommand").hide();			
