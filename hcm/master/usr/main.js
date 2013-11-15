@@ -542,6 +542,11 @@ ii.Class({
 				me.houseCodeDetails[0].integratorName = statisticsUIControls.integratorName.getValue();
 				me.houseCodeDetails[0].auditScore = statisticsUIControls.auditScore.getValue();
 				me.houseCodeDetails[0].standardizationScore = statisticsUIControls.standardizationScore.getValue();
+				me.houseCodeDetails[0].adminHours = statisticsUIControls.adminHours.getValue();
+				me.houseCodeDetails[0].surgicalHours = statisticsUIControls.surgicalHours.getValue();
+				me.houseCodeDetails[0].edHours = statisticsUIControls.edHours.getValue();
+				me.houseCodeDetails[0].groundsHours = statisticsUIControls.groundsHours.getValue();
+				me.houseCodeDetails[0].otherLockInHours = statisticsUIControls.otherLockInHours.getValue();
 			}
 
 			//Financial
@@ -720,6 +725,11 @@ ii.Class({
 				, me.houseCodeDetails[0].integratorName
 				, me.houseCodeDetails[0].auditScore
 				, me.houseCodeDetails[0].standardizationScore
+				, me.houseCodeDetails[0].adminHours == "" ? 0 : parseFloat(me.houseCodeDetails[0].adminHours)
+				, me.houseCodeDetails[0].surgicalHours == "" ? 0 : parseFloat(me.houseCodeDetails[0].surgicalHours)
+				, me.houseCodeDetails[0].edHours == "" ? 0 : parseFloat(me.houseCodeDetails[0].edHours)
+				, me.houseCodeDetails[0].groundsHours == "" ? 0 : parseFloat(me.houseCodeDetails[0].groundsHours)
+				, me.houseCodeDetails[0].otherLockInHours == "" ? 0 : parseFloat(me.houseCodeDetails[0].otherLockInHours)
 				
 				//Financial
 				, me.houseCodeDetails[0].shippingAddress1
@@ -854,6 +864,11 @@ ii.Class({
 			xml += ' integratorName="' + ui.cmn.text.xml.encode(item.integratorName) + '"';
 			xml += ' auditScore="' + ui.cmn.text.xml.encode(item.auditScore) + '"';
 			xml += ' standardizationScore="' + ui.cmn.text.xml.encode(item.standardizationScore) + '"';
+			xml += ' adminHours="' + item.adminHours + '"';
+			xml += ' surgicalHours="' + item.surgicalHours + '"';
+			xml += ' edHours="' + item.edHours + '"';
+			xml += ' groundsHours="' + item.groundsHours + '"';
+			xml += ' otherLockInHours="' + item.otherLockInHours + '"';
 			
 			//Financial
 			xml += ' shippingAddress1="' + ui.cmn.text.xml.encode(item.shippingAddress1) + '"';

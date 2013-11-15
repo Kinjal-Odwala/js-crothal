@@ -261,7 +261,12 @@ ii.Class({
 			me.tsIntegratorNameShow = me.isCtrlVisibleTabStatistics(me.authorizePath + "\\TabStatistics\\IntegratorName", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
 			me.tsAuditScoreShow = me.isCtrlVisibleTabStatistics(me.authorizePath + "\\TabStatistics\\AuditScore", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
 			me.tsStandardizationScoreShow = me.isCtrlVisibleTabStatistics(me.authorizePath + "\\TabStatistics\\StandardizationScore", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
-		
+			me.tsAdminHoursShow = me.isCtrlVisibleTabStatistics(me.authorizePath + "\\TabStatistics\\AdminHours", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
+			me.tsSurgicalHoursShow = me.isCtrlVisibleTabStatistics(me.authorizePath + "\\TabStatistics\\SurgicalHours", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
+			me.tsEDHoursShow = me.isCtrlVisibleTabStatistics(me.authorizePath + "\\TabStatistics\\EDHours", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
+			me.tsGroundsHoursShow = me.isCtrlVisibleTabStatistics(me.authorizePath + "\\TabStatistics\\GroundsHours", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
+			me.tsOtherLockInHoursShow = me.isCtrlVisibleTabStatistics(me.authorizePath + "\\TabStatistics\\OtherLockInHours", me.tabStatisticsShow, (me.tabStatisticsWrite || me.tabStatisticsReadOnly));
+			
 			me.tsManagedEmployeesReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\ManagedEmployees\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
 			me.tsCrothallEmployeesReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\CrothallEmployees\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
 			me.tsBedsLicensedReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\BedsLicensed\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
@@ -291,6 +296,11 @@ ii.Class({
 			me.tsIntegratorNameReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\IntegratorName\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
 			me.tsAuditScoreReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\AuditScore\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
 			me.tsStandardizationScoreReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\StandardizationScore\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
+			me.tsAdminHoursReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\AdminHours\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
+			me.tsSurgicalHoursReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\SurgicalHours\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
+			me.tsEDHoursReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\EDHours\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
+			me.tsGroundsHoursReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\GroundsHours\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
+			me.tsOtherLockInHoursReadOnly = me.isCtrlReadOnlyTabStatistics(me.authorizePath + "\\TabStatistics\\OtherLockInHours\\Read", me.tabStatisticsWrite, me.tabStatisticsReadOnly);
 			
 			//Financial
 			me.financialWrite = me.authorizer.isAuthorized(me.authorizePath + '\\Write');
@@ -775,6 +785,11 @@ ii.Class({
 			me.setControlState("IntegratorName", me.tsIntegratorNameReadOnly, me.tsIntegratorNameShow);
 			me.setControlState("AuditScore", me.tsAuditScoreReadOnly, me.tsAuditScoreShow);
 			me.setControlState("StandardizationScore", me.tsStandardizationScoreReadOnly, me.tsStandardizationScoreShow);
+			me.setControlState("AdminHours", me.tsAdminHoursReadOnly, me.tsAdminHoursShow);
+			me.setControlState("SurgicalHours", me.tsSurgicalHoursReadOnly, me.tsSurgicalHoursShow);
+			me.setControlState("EDHours", me.tsEDHoursReadOnly, me.tsEDHoursShow);
+			me.setControlState("GroundsHours", me.tsGroundsHoursReadOnly, me.tsGroundsHoursShow);
+			me.setControlState("OtherLockInHours", me.tsOtherLockInHoursReadOnly, me.tsOtherLockInHoursShow);
 			
 			//Financial
 			//ss=SectionShipping
@@ -1726,6 +1741,96 @@ ii.Class({
 				changeFunction: function() { me.modified(); }
 		    });
 
+			me.adminHours = new ui.ctl.Input.Text({
+		        id: "AdminHours",
+		        maxLength: 11,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.adminHours.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.adminHours.getValue();
+
+					if (enteredText == "") return;
+
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,8}(\\.\\d{1,2})?$")))
+						this.setInvalid("Please enter numeric value. Expected number format is 99.99");
+				});
+
+			me.surgicalHours = new ui.ctl.Input.Text({
+		        id: "SurgicalHours",
+		        maxLength: 11,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.surgicalHours.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.surgicalHours.getValue();
+
+					if (enteredText == "") return;
+
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,8}(\\.\\d{1,2})?$")))
+						this.setInvalid("Please enter numeric value. Expected number format is 99.99");
+				});
+
+			me.edHours = new ui.ctl.Input.Text({
+		        id: "EDHours",
+		        maxLength: 11,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.edHours.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.edHours.getValue();
+
+					if (enteredText == "") return;
+
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,8}(\\.\\d{1,2})?$")))
+						this.setInvalid("Please enter numeric value. Expected number format is 99.99");
+				});
+
+			me.groundsHours = new ui.ctl.Input.Text({
+		        id: "GroundsHours",
+		        maxLength: 11,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.groundsHours.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.groundsHours.getValue();
+
+					if (enteredText == "") return;
+
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,8}(\\.\\d{1,2})?$")))
+						this.setInvalid("Please enter numeric value. Expected number format is 99.99");
+				});
+
+			me.otherLockInHours = new ui.ctl.Input.Text({
+		        id: "OtherLockInHours",
+		        maxLength: 11,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.otherLockInHours.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.otherLockInHours.getValue();
+
+					if (enteredText == "") return;
+
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,8}(\\.\\d{1,2})?$")))
+						this.setInvalid("Please enter numeric value. Expected number format is 99.99");
+				});
+
 			me.managedEmployees.text.tabIndex = 1;
 			me.crothallEmployees.text.tabIndex = 2;
 			me.bedsLicensed.text.tabIndex = 3;
@@ -1755,7 +1860,12 @@ ii.Class({
 			me.integratorName.text.tabIndex = 27;
 			me.auditScore.text.tabIndex = 28;
 			me.standardizationScore.text.tabIndex = 29;
-			
+			me.adminHours.text.tabIndex = 30;
+			me.surgicalHours.text.tabIndex = 31;
+			me.edHours.text.tabIndex = 32;
+			me.groundsHours.text.tabIndex = 33;
+			me.otherLockInHours.text.tabIndex = 34;
+
 			//Financial
 			me.company = new ui.ctl.Input.Text({
 		        id: "Company",
@@ -2173,37 +2283,37 @@ ii.Class({
 			me.incidentFrequencyRate = new ui.ctl.Input.Text({
 		        id: "IncidentFrequencyRate",
 		        maxLength: 50,
-				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.trir = new ui.ctl.Input.Text({
 		        id: "TRIR",
 		        maxLength: 50,
-				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.lostDays = new ui.ctl.Input.Text({
 		        id: "LostDays",
 		        maxLength: 50,
-				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.reportedClaims = new ui.ctl.Input.Text({
 		        id: "ReportedClaims",
 		        maxLength: 50,
-				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.nearMisses = new ui.ctl.Input.Text({
 		        id: "NearMisses",
 		        maxLength: 50,
-				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
+				changeFunction: function() { me.modified(); }
 		    });
 
 			me.oshaRecordable = new ui.ctl.Input.Text({
 		        id: "OSHARecordable",
 		        maxLength: 50,
-				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.incidentFrequencyRate.text.tabIndex = 1;
@@ -2502,7 +2612,12 @@ ii.Class({
 			me.integratorName.resizeText();
 			me.auditScore.resizeText();
 			me.standardizationScore.resizeText();
-			
+			me.adminHours.resizeText();
+			me.surgicalHours.resizeText();
+			me.edHours.resizeText();
+			me.groundsHours.resizeText();
+			me.otherLockInHours.resizeText();
+
 			//Financial
 			me.company.resizeText();
 			me.remitToTitle.resizeText();
@@ -2884,6 +2999,11 @@ ii.Class({
 			me.integratorName.setValue(houseCode.integratorName);
 			me.auditScore.setValue(houseCode.auditScore);
 			me.standardizationScore.setValue(houseCode.standardizationScore);
+			me.adminHours.setValue(houseCode.adminHours);
+			me.surgicalHours.setValue(houseCode.surgicalHours);
+			me.edHours.setValue(houseCode.edHours);
+			me.groundsHours.setValue(houseCode.groundsHours);
+			me.otherLockInHours.setValue(houseCode.otherLockInHours);
 			me.checkIntegrator();
 		},
 
@@ -3526,6 +3646,11 @@ ii.Class({
 			me.houseCodeDetails[0].integratorName = me.integratorName.getValue();
 			me.houseCodeDetails[0].auditScore = me.auditScore.getValue();
 			me.houseCodeDetails[0].standardizationScore = me.standardizationScore.getValue();
+			me.houseCodeDetails[0].adminHours = me.adminHours.getValue();
+			me.houseCodeDetails[0].surgicalHours = me.surgicalHours.getValue();
+			me.houseCodeDetails[0].edHours = me.edHours.getValue();
+			me.houseCodeDetails[0].groundsHours = me.groundsHours.getValue();
+			me.houseCodeDetails[0].otherLockInHours = me.otherLockInHours.getValue();
 
 			//Financial				
 			me.houseCodeDetails[0].shippingAddress1 = me.shippingAddress1.getValue();
@@ -3691,6 +3816,11 @@ ii.Class({
 				, me.houseCodeDetails[0].integratorName
 				, me.houseCodeDetails[0].auditScore
 				, me.houseCodeDetails[0].standardizationScore
+				, me.houseCodeDetails[0].adminHours == "" ? 0 : parseFloat(me.houseCodeDetails[0].adminHours)
+				, me.houseCodeDetails[0].surgicalHours == "" ? 0 : parseFloat(me.houseCodeDetails[0].surgicalHours)
+				, me.houseCodeDetails[0].edHours == "" ? 0 : parseFloat(me.houseCodeDetails[0].edHours)
+				, me.houseCodeDetails[0].groundsHours == "" ? 0 : parseFloat(me.houseCodeDetails[0].groundsHours)
+				, me.houseCodeDetails[0].otherLockInHours == "" ? 0 : parseFloat(me.houseCodeDetails[0].otherLockInHours)
 				
 				//Financial
 				, me.houseCodeDetails[0].shippingAddress1
@@ -3741,7 +3871,7 @@ ii.Class({
 				, me.houseCodeDetails[0].nearMisses
 				, me.houseCodeDetails[0].oshaRecordable
 			);
-				
+
 			var xml = me.saveXmlBuild(item);
 			
 			me.setStatus("Saving");
@@ -3825,6 +3955,11 @@ ii.Class({
 			xml += ' integratorName="' + ui.cmn.text.xml.encode(item.integratorName) + '"';
 			xml += ' auditScore="' + ui.cmn.text.xml.encode(item.auditScore) + '"';
 			xml += ' standardizationScore="' + ui.cmn.text.xml.encode(item.standardizationScore) + '"';
+			xml += ' adminHours="' + item.adminHours + '"';
+			xml += ' surgicalHours="' + item.surgicalHours + '"';
+			xml += ' edHours="' + item.edHours + '"';
+			xml += ' groundsHours="' + item.groundsHours + '"';
+			xml += ' otherLockInHours="' + item.otherLockInHours + '"';
 
 			//Financial
 			xml += ' shippingAddress1="' + ui.cmn.text.xml.encode(item.shippingAddress1) + '"';
