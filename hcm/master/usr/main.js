@@ -77,8 +77,10 @@ ii.Class({
 				switch(this.id) {
 					case "TabHouseCode":
 
-						if ($("iframe")[0].contentWindow.fin == undefined || fin.hcmMasterUi.houseCodeNeedUpdate)
+						if ($("iframe")[0].contentWindow.fin == undefined || fin.hcmMasterUi.houseCodeNeedUpdate) {
+							me.showPageLoading("Loading");
 							$("iframe")[0].src = "/fin/hcm/houseCode/usr/markup.htm?unitId=" + parent.fin.appUI.unitId;
+						}
 						else if (parent.fin.appUI.modified)
 							me.setStatus("Edit");
 						else 
@@ -90,8 +92,10 @@ ii.Class({
 						
 					case "TabStatistics":
 
-						if ($("iframe")[1].contentWindow.fin == undefined || fin.hcmMasterUi.statisticsNeedUpdate)
+						if ($("iframe")[1].contentWindow.fin == undefined || fin.hcmMasterUi.statisticsNeedUpdate) {
+							me.showPageLoading("Loading");
 							$("iframe")[1].src = "/fin/hcm/statistics/usr/markup.htm?unitId=" + parent.fin.appUI.unitId;
+						}							
 						else if (parent.fin.appUI.modified)
 							me.setStatus("Edit");
 						else 
@@ -103,8 +107,10 @@ ii.Class({
 
 					case "TabFinancial":
 
-						if ($("iframe")[2].contentWindow.fin == undefined || fin.hcmMasterUi.financialNeedUpdate)
+						if ($("iframe")[2].contentWindow.fin == undefined || fin.hcmMasterUi.financialNeedUpdate) {
+							me.showPageLoading("Loading");
 							$("iframe")[2].src = "/fin/hcm/financial/usr/markup.htm?unitId=" + parent.fin.appUI.unitId;
+						}
 						else if (parent.fin.appUI.modified)
 							me.setStatus("Edit");
 						else 
@@ -116,8 +122,10 @@ ii.Class({
 
 					case "TabPayroll":
 
-						if ($("iframe")[3].contentWindow.fin == undefined || fin.hcmMasterUi.payrollNeedUpdate)
+						if ($("iframe")[3].contentWindow.fin == undefined || fin.hcmMasterUi.payrollNeedUpdate) {
+							me.showPageLoading("Loading");
 							$("iframe")[3].src = "/fin/hcm/payroll/usr/markup.htm?unitId=" + parent.fin.appUI.unitId;
+						}
 						else if (parent.fin.appUI.modified)
 							me.setStatus("Edit");
 						else 
@@ -129,8 +137,10 @@ ii.Class({
 						
 					case "TabSafety":
 
-						if ($("iframe")[4].contentWindow.fin == undefined || fin.hcmMasterUi.safetyNeedUpdate)
+						if ($("iframe")[4].contentWindow.fin == undefined || fin.hcmMasterUi.safetyNeedUpdate) {
+							me.showPageLoading("Loading");
 							$("iframe")[4].src = "/fin/hcm/safety/usr/markup.htm?unitId=" + parent.fin.appUI.unitId;
+						}
 						else if (parent.fin.appUI.modified)
 							me.setStatus("Edit");
 						else 
@@ -327,6 +337,14 @@ ii.Class({
 				me.setStatus("Loaded");
 				$("#pageLoading").fadeOut("slow");
 			}
+		},
+		
+		showPageLoading: function(status) {
+			var me = this;
+
+			me.setStatus(status);
+			$("#messageToUser").text(status);
+			$("#pageLoading").fadeIn("slow");
 		},
 		
 		houseCodesLoaded: function(me, activeId) {

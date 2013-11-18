@@ -393,15 +393,16 @@ ii.Class({
 
 				me.bindRow = false;
 				parent.fin.purMasterUi.purchaseOrders[index].orderAmount = "$" + totalCost.toFixed(2);
-				parent.fin.purMasterUi.purchaseOrderGrid.body.renderRow(index, index);					
+				parent.fin.purMasterUi.purchaseOrderGrid.body.renderRow(index, index);
+				parent.fin.purMasterUi.hidePageLoading();
 			}
+			else
+				parent.fin.purMasterUi.checkLoadCount();
 
 			if (parent.fin.purMasterUi.purchaseOrdersReadOnly) {
 				$("#ButtonOpenOrder").hide();
 				$("#PurchaseOrderContextMenu").hide();
 			}
-
-			parent.fin.purMasterUi.checkLoadCount();
 		},
 		
 		getTotalGridRow: function() {
@@ -652,6 +653,7 @@ ii.Class({
 				}
 			});
 			
+			parent.fin.purMasterUi.setStatus("Normal");
 			me.rowBeingEdited = true;
 			me.status = "EditQuantity";
 		},
@@ -752,7 +754,7 @@ ii.Class({
 			if (me.status == "")
 				return true;
 							
-			parent.fin.purMasterUi.pageLoading();			
+			parent.fin.purMasterUi.showPageLoading("Saving");
 
 			var xml = me.saveXmlBuildPurchaseOrder(item);
 	
@@ -820,7 +822,7 @@ ii.Class({
 			var transaction = args.transaction;
 			var me = transaction.referenceData.me;
 			var status = $(args.xmlNode).attr("status");
-						
+
 			if (status == "success") {	
 				me.status = "";
 				me.rowBeingEdited = false;
@@ -833,10 +835,9 @@ ii.Class({
 			}
 			else {
 				parent.fin.purMasterUi.setStatus("Error");
+				parent.fin.purMasterUi.hidePageLoading();
 				alert("Error while updating Purchase Order info: " + $(args.xmlNode).attr("message"));
-			}
-			
-			parent.fin.purMasterUi.pageLoaded();
+			}			
 		}
 
 	}

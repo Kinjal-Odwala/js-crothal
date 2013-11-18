@@ -390,7 +390,7 @@ ii.Class({
 			var rowNumber = 0;
 			var dataRow = 0;
 	
-			if(me.rowBeingEdited) 
+			if (me.rowBeingEdited) 
 				return;
 				
 			$("#PurchaseOrderGridBody").find('tr').each(function() {
@@ -425,6 +425,7 @@ ii.Class({
 				}
 			});
 
+			parent.fin.purMasterUi.setStatus("Normal");
 			me.rowBeingEdited = true;
 			me.status = "EditQuantity";
 		},
@@ -510,7 +511,7 @@ ii.Class({
 			if (me.status == "")
 				return true;
 			
-			parent.fin.purMasterUi.pageLoading();
+			parent.fin.purMasterUi.showPageLoading("Saving");
 
 			var xml = me.saveXmlBuildPurchaseOrder(item);
 	
@@ -585,7 +586,7 @@ ii.Class({
 				alert("Error while updating Purchase Order info: " + $(args.xmlNode).attr("message"));
 			}
 			
-			parent.fin.purMasterUi.pageLoaded();
+			parent.fin.purMasterUi.hidePageLoading();
 		}
 
 	}

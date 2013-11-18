@@ -471,6 +471,7 @@ ii.Class({
 				return false;
 			}
 
+			me.showPageLoading("Loading");
 			me.houseCodeSingleStore.reset();
 			me.houseCodeSingleStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.payrollLoaded, me);
 		},

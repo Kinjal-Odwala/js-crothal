@@ -25,8 +25,6 @@ ii.Class({
 			var searchString = location.search.substring(1);
 			var pos = searchString.indexOf("=");
 
-			parent.fin.revMasterUi.showPageLoading("Loading");
-
 			me.invoiceId = parseInt(searchString.substring(pos + 1));
 			me.rowBeingEdited = false;
 			me.currentRowSelected = null;

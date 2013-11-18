@@ -835,15 +835,15 @@ ii.Class({
 			}
 		},
 		
-		pageLoading: function(me, activeId) {
+		showPageLoading: function(status) {
 			var me = this;
-			
-			me.setStatus("Saving");
-			$("#messageToUser").text("Saving");
+
+			me.setStatus(status);
+			$("#messageToUser").text(status);
 			$("#pageLoading").fadeIn("slow");
 		},
-		
-		pageLoaded: function() {
+
+		hidePageLoading: function() {
 			
 			$("#pageLoading").fadeOut("slow");
 		},
@@ -1052,6 +1052,7 @@ ii.Class({
 			
 			if (me.purchaseOrderGrid.data[index] != undefined) {
 				me.purchaseOrderId = me.purchaseOrderGrid.data[index].id;
+				me.showPageLoading("Loading");
 				me.showPurchaseOrderDetails();
 			}
 			else 

@@ -156,8 +156,10 @@ ii.Class({
                 switch (this.id) {
                     case "TabCreateInvoices":
 
-                        if (($("iframe")[0].contentWindow.fin == undefined || me.invoiceNeedUpdate) && me.lastSelectedRowIndex >= 0)
-                            $("iframe")[0].src = "/fin/rev/invoice/usr/markup.htm?invoiceId=" + me.invoiceId;
+                        if (($("iframe")[0].contentWindow.fin == undefined || me.invoiceNeedUpdate) && me.lastSelectedRowIndex >= 0) {
+							me.showPageLoading("Loading");
+							$("iframe")[0].src = "/fin/rev/invoice/usr/markup.htm?invoiceId=" + me.invoiceId;
+						}
 
                         me.activeFrameId = 0;
                         me.invoiceNeedUpdate = false;
@@ -168,8 +170,10 @@ ii.Class({
 
                     case "TabInvoiceHeaderInfo":
 
-                        if (($("iframe")[1].contentWindow.fin == undefined || me.invoiceInfoNeedUpdate) && me.lastSelectedRowIndex >= 0)
-                            $("iframe")[1].src = "/fin/rev/invoiceInfo/usr/markup.htm?invoiceId=" + me.invoiceId;
+                        if (($("iframe")[1].contentWindow.fin == undefined || me.invoiceInfoNeedUpdate) && me.lastSelectedRowIndex >= 0) {
+							me.showPageLoading("Loading");
+							$("iframe")[1].src = "/fin/rev/invoiceInfo/usr/markup.htm?invoiceId=" + me.invoiceId;
+						}
 
                         me.activeFrameId = 1;
                         me.invoiceInfoNeedUpdate = false;
@@ -178,8 +182,10 @@ ii.Class({
 
                     case "TabModifyAccountsReceivable":
 
-                        if (($("iframe")[2].contentWindow.fin == undefined || me.accountReceivableNeedUpdate) && me.lastSelectedRowIndex >= 0)
-                            $("iframe")[2].src = "/fin/rev/accountReceivable/usr/markup.htm?invoiceId=" + me.invoiceId;
+                        if (($("iframe")[2].contentWindow.fin == undefined || me.accountReceivableNeedUpdate) && me.lastSelectedRowIndex >= 0) {
+							me.showPageLoading("Loading");
+							$("iframe")[2].src = "/fin/rev/accountReceivable/usr/markup.htm?invoiceId=" + me.invoiceId;
+						} 
 
                         me.activeFrameId = 2;
                         me.accountReceivableNeedUpdate = false;
@@ -1293,6 +1299,8 @@ ii.Class({
         invoiceDetailsLoaded: function() {
             var me = this;
 
+			me.showPageLoading("Loading");
+			
             switch (me.activeFrameId) {
 
                 case 0:

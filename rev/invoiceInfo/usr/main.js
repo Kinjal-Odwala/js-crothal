@@ -24,8 +24,6 @@ ii.Class({
 			var searchString = location.search.substring(1);
 			var pos = searchString.indexOf("=");
 
-			parent.fin.revMasterUi.showPageLoading("Loading");
-
 			me.invoiceLogoTypes = [];
 			me.invoiceAddressTypes = [];
 			me.serviceLocations = [];
