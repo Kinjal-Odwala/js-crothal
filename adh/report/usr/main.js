@@ -85,8 +85,7 @@ ii.Class({
 			// Job module
 			me.jobTypeCache = [];
 			me.geoCodeCache = [];
-			
-			me.pkeyId = -1;
+
  			me.invoiceItem = false;
 			
 			me.gateway = ii.ajax.addGateway("adh", ii.config.xmlProvider);			
@@ -1906,21 +1905,98 @@ ii.Class({
 					className = "gridHeaderColumn";
 				
 				if (me.invoiceItem) {
+					
+					var invoiceHeaderWidth = 150;
+					me.invoiceJob = false;
+					me.invoiceTaxableService = false;
+					me.invoiceAccountCode = false;
+					me.invoiceQuantity = false;
+					me.invoicePrice = false;
+					me.invoiceAmount = false;
+					me.invoiceStatus = false;
+					me.invoiceTaxable = false;
+					me.invoiceShow = false;
+					me.invoiceDescription = false;
+					
+					for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
+						if (me.moduleColumnHeaders[index].title == 'HcmHouseCodeJob') 
+							me.invoiceJob = true;
+						if (me.moduleColumnHeaders[index].title == 'RevTaxableService') 
+							me.invoiceTaxableService = true;
+						if (me.moduleColumnHeaders[index].title == 'FscAccount') 
+							me.invoiceAccountCode = true;
+						if (me.moduleColumnHeaders[index].title == 'RevInviQuantity') 
+							me.invoiceQuantity = true;
+						if (me.moduleColumnHeaders[index].title == 'RevInviPrice') 
+							me.invoicePrice = true;
+						if (me.moduleColumnHeaders[index].title == 'RevInviAmount') 
+							me.invoiceAmount = true;
+						if (me.moduleColumnHeaders[index].title == 'AppTransactionStatusType') 
+							me.invoiceStatus = true;
+						if (me.moduleColumnHeaders[index].title == 'RevInviTaxable') 
+							me.invoiceTaxable = true;
+						if (me.moduleColumnHeaders[index].title == 'RevInviShow') 
+							me.invoiceShow = true;
+						if (me.moduleColumnHeaders[index].title == 'RevInviDescription') 
+							me.invoiceDescription = true;
+					}
+					
 					rowData += "<th class='gridHeaderColumn' width='50px'>#</th>";
 					rowData += "<th class='gridColumnHidden'></th>";
 					rowData += "<th class='gridHeaderColumn' width='100px'>House Code</th>";
-					rowData += "<th class='gridHeaderColumn' width='100px'>Job</th>";
-					rowData += "<th class='gridHeaderColumn' width='100px'>Taxable Service</th>";
-					rowData += "<th class='gridHeaderColumn' width='200px'>Account Code</th>";
-					rowData += "<th class='gridHeaderColumn' width='100px'>Quantity</th>";
-					rowData += "<th class='gridHeaderColumn' width='100px'>Price</th>";
-					rowData += "<th class='gridHeaderColumn' width='100px'>Total</th>";
-					rowData += "<th class='gridHeaderColumn' width='100px'>Status</th>";
-					rowData += "<th class='gridHeaderColumn' width='100px'>Taxable</th>";
-					rowData += "<th class='gridHeaderColumn' width='100px'>Show</th>";
-					rowData += "<th class='gridHeaderColumn' width='300px'>Description</th>";
-					$("#tblAdhReportGridHeader").width("1510");
-					$("#tblAdhReportGrid").width("1510");
+					
+					if(me.invoiceJob) {
+						rowData += "<th class='gridHeaderColumn' width='100px'>Job</th>";
+						invoiceHeaderWidth = invoiceHeaderWidth + 100;
+					}	
+						
+					if(me.invoiceTaxableService) {
+						rowData += "<th class='gridHeaderColumn' width='100px'>Taxable Service</th>";
+						invoiceHeaderWidth = invoiceHeaderWidth + 100;
+					}	
+						
+					if(me.invoiceAccountCode) {
+						rowData += "<th class='gridHeaderColumn' width='200px'>Account Code</th>";
+						invoiceHeaderWidth = invoiceHeaderWidth + 200;
+					}	
+						
+					if(me.invoiceQuantity) {
+						rowData += "<th class='gridHeaderColumn' width='100px'>Quantity</th>";
+						invoiceHeaderWidth = invoiceHeaderWidth + 100;
+					}	
+						
+					if(me.invoicePrice) {
+						rowData += "<th class='gridHeaderColumn' width='100px'>Price</th>";
+						invoiceHeaderWidth = invoiceHeaderWidth + 100;
+					}	
+						
+					if(me.invoiceAmount) {
+						rowData += "<th class='gridHeaderColumn' width='100px'>Total</th>";
+						invoiceHeaderWidth = invoiceHeaderWidth + 100;
+					}	
+						
+					if(me.invoiceStatus) {
+						rowData += "<th class='gridHeaderColumn' width='100px'>Status</th>";
+						invoiceHeaderWidth = invoiceHeaderWidth + 100;
+					}	
+						
+					if(me.invoiceTaxable) {
+						rowData += "<th class='gridHeaderColumn' width='100px'>Taxable</th>";
+						invoiceHeaderWidth = invoiceHeaderWidth + 100;
+					}	
+						
+					if(me.invoiceShow) {
+						rowData += "<th class='gridHeaderColumn' width='100px'>Show</th>";
+						invoiceHeaderWidth = invoiceHeaderWidth + 100;
+					}	
+						
+					if(me.invoiceDescription) {
+						rowData += "<th class='gridHeaderColumn' width='300px'>Description</th>";
+						invoiceHeaderWidth = invoiceHeaderWidth + 300;
+					}	
+						
+					$("#tblAdhReportGridHeader").width(invoiceHeaderWidth);
+					$("#tblAdhReportGrid").width(invoiceHeaderWidth);
 				}
 				else {
 					rowData += "<th onclick=(fin.reportUi.sortColumn(-1)); class='" + className + "' style='width:100px;'>House Code</th>";
@@ -2077,8 +2153,8 @@ ii.Class({
 			me.gridData = [];
 			
 			for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
-				if (me.moduleColumnHeaders[index].title == "RevInvoice") 
-					invoiceIdColumn = index;
+				//if (me.moduleColumnHeaders[index].title == "RevInvoice") 
+				//	invoiceIdColumn = index;
 				if (me.moduleColumnHeaders[index].title == "RevInvInvoiceNumber") 
 					invoiceNoColumn = index;
 			}
@@ -2091,9 +2167,8 @@ ii.Class({
 					var appSite = me.moduleColumnDatas[index].appSite;
 					var appSitTitle = me.moduleColumnDatas[index].appSitTitle;
 					
-					if (invoiceIdColumn != -1) {
-						invoiceId = unescape(me.moduleColumnDatas[index]["column" + (invoiceIdColumn + 1)]);
-						invoiceNo = unescape(me.moduleColumnDatas[index]["column" + (invoiceNoColumn + 1)]);
+					if (invoiceNoColumn != -1) {
+						invoiceNo = unescape(me.moduleColumnDatas[index]["column1"]);
 					}
 					
 					if (!me.invoiceItem) {
@@ -2108,7 +2183,7 @@ ii.Class({
 						rowData += "<td colspan='100'>"
 						rowData += "<div >"
 						rowData += "<table width='100%' class='invoiceTable'>"
-						rowData += "<tr onclick='fin.reportUi.invoiceItemsLoad(" + index + "," + invoiceId + ");'>";
+						rowData += "<tr onclick='fin.reportUi.invoiceItemsLoad(" + index + "," + pkId + ");'>";
 						rowData += "<td class='gridColumn' style='font-weight:bold; border-bottom:solid 2px #99bbe8'><img id='expandCollapse" + index + "' src='/fin/cmn/usr/media/Common/Plus.gif' style='cursor: pointer' alt='expand/collapse' title='expand/collapse' />  Invoice #: " + invoiceNo + "</td>"
 						rowData += "</tr>";
 						rowData += "<tr id='InvoiceDetailsRow" + index + "'></tr>"
@@ -2538,7 +2613,7 @@ ii.Class({
 			
 			var me = this;
 			var invoiceId = args.invoiceId;
-			me.pkeyId = args.pkId;
+			//me.pkeyId = args.pkId;
 			//me.invoiceItemStore.fetch("userId:[user],invoiceId:" + invoiceId, me.invoiceItemsLoaded, me);
 			
 			if (me.invoiceCache[invoiceId] != undefined) {
@@ -2798,16 +2873,36 @@ ii.Class({
 			rowHtml += me.getEditableRowColumn(false, false, 0, "rowNumber", rowNumberText, 50, "right");
 			rowHtml += me.getEditableRowColumn(false, false, 1, "id", args.id.toString(), 0, "left");
 			rowHtml += me.getEditableRowColumn(false, false, 11, "houseCode", args.houseCode, 100, "left");
-			rowHtml += me.getEditableRowColumn(false, false, 2, "job", args.job, 100, align);
-			rowHtml += me.getEditableRowColumn(false, false, 12, "taxableService", args.taxableService, 100, align);
-			rowHtml += me.getEditableRowColumn(false, columnBold, 3, "account", args.account, 200, align);
-			rowHtml += me.getEditableRowColumn(false, false, 4, "quantity", args.quantity, 100, "right");
-			rowHtml += me.getEditableRowColumn(false, false, 5, "price", args.price, 100, "right");
-			rowHtml += me.getEditableRowColumn(false, columnBold, 6, "amount", args.amount, 100, "right");
-			rowHtml += me.getEditableRowColumn(false, false, 7, "status", args.status, 100, "center");
-			rowHtml += me.getEditableRowColumn(false, false, 8, "taxable", args.taxable, 100, "center");
-			rowHtml += me.getEditableRowColumn(false, false, 9, "lineShow", args.lineShow, 100, "center");
-			rowHtml += me.getEditableRowColumn(false, false, 10, "description", args.description, 300, "left");
+			
+			if (me.invoiceJob)
+				rowHtml += me.getEditableRowColumn(false, false, 2, "job", args.job, 100, align);
+				
+			if (me.invoiceTaxableService)
+				rowHtml += me.getEditableRowColumn(false, false, 12, "taxableService", args.taxableService, 100, align);
+				
+			if (me.invoiceAccountCode)
+				rowHtml += me.getEditableRowColumn(false, columnBold, 3, "account", args.account, 200, align);
+				
+			if (me.invoiceQuantity)
+				rowHtml += me.getEditableRowColumn(false, false, 4, "quantity", args.quantity, 100, "right");
+				
+			if (me.invoicePrice)
+				rowHtml += me.getEditableRowColumn(false, false, 5, "price", args.price, 100, "right");
+				
+			if (me.invoiceAmount)
+				rowHtml += me.getEditableRowColumn(false, columnBold, 6, "amount", args.amount, 100, "right");
+				
+			if (me.invoiceStatus)
+				rowHtml += me.getEditableRowColumn(false, false, 7, "status", args.status, 100, "center");
+				
+			if (me.invoiceTaxable)
+				rowHtml += me.getEditableRowColumn(false, false, 8, "taxable", args.taxable, 100, "center");
+				
+			if (me.invoiceShow)
+				rowHtml += me.getEditableRowColumn(false, false, 9, "lineShow", args.lineShow, 100, "center");
+				
+			if (me.invoiceDescription)
+				rowHtml += me.getEditableRowColumn(false, false, 10, "description", args.description, 300, "left");
 
 			return rowHtml;
 		},
