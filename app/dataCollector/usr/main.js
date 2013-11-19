@@ -1,4 +1,4 @@
-﻿window.__weblight_t_c0e3a119 = ['<?xml version="1.0" encoding="utf-8"?><transmission>  <target id="iiCache" requestId="2">    <store id="appDataCollectors" activeId="0" criteria="storeId:appDataCollectors,userId:[user],">      <item id="1" houseCodeId="363" moduleId="5" numberOfColumns="6" frequency="Monthly" lockout="true" email="1" emailAddress="admin@crothall.com" message="True" messageText="Your monthly BI Statistics update is overdue. Click here to enter the data now before you can no longer access the other modules." lockoutMessage="True" lockoutMessageText="Your monthly BI Statistics update is overdue. You will no longer be able to access any modules until you complete the update. Click here to enter the data now." />    </store>  </target></transmission>','<div>    <div class="form-header">        Data Collector Information    </div>    <div id="DataCollectorContentArea" class="body">         <div id="TableEditArea">            <div class="LabelTextAreaLeftDataCollector">                <span class="requiredFieldIndicator"></span>Description:            </div>            <div id="Div14">                <div id="description">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div id="TableEditArea">            <div class="LabelTextAreaLeftDataCollector">                <span class="requiredFieldIndicator">&#149;</span>Frequency:            </div>            <div id="InputTextAreaRight">                <div id="frequency">                </div>            </div>            <div style="clear: both;">            </div>        </div>         <div id="Div13">            <div class="LabelTextAreaLeftDataCollector">                Active:            </div>            <div id="InputTextAreaRight">                <div id="active">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both;">        </div>         <div id="TableEditArea">            <div class="LabelTextAreaLeftDataCollector">                <span class="requiredFieldIndicator">&#149;</span>House Code:            </div>            <div id="InputTextAreaRight">                <div id="houseCodeId">                </div>            </div>        </div>        <div style="clear: both;">        </div>        <div id="TableEditArea">            <div class="LabelTextAreaLeftDataCollector">                <span class="requiredFieldIndicator">&#149;</span>Module:            </div>            <div id="InputTextAreaRight">                <div id="moduleId">                </div>            </div>        </div>        <div style="clear: both;">        </div>        <div id="Div6">            <div class="LabelTextAreaLeftDataCollector">               <span class="requiredFieldIndicator">&#149;</span>Columns:            </div>            <div id="InputTextAreaRight" class="lov-combo">                <div id="columns">                </div>            </div>        </div>                 <div style="clear: both;">        </div>       <div id="Div7">            <div class="LabelTextAreaLeftDataCollector">                <span class="requiredFieldIndicator">&#149;</span>Number of columns:            </div>            <div id="Div9">                <div id="numberOfColumns">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both;">        </div>        <div id="users-holder">            <div class="LabelTextAreaLeftDataCollector">              <span class="requiredFieldIndicator">&#149;</span>Users:            </div>            <div id="Div11" class="lov-combo">                <div id="users">                </div>            </div>        </div>        <div style="clear: both;">        </div>        <div id="Div3">            <div class="LabelTextAreaLeftDataCollector">                Lockout:            </div>            <div id="Div5">                <div id="lockout">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both;">        </div>        <div id="Div1">            <div class="LabelTextAreaLeftDataCollector">                Email Address:            </div>            <div id="Div2" style="float:left;">                <table cellpadding="0" cellspacing="0">                  <tr>                      <td><div id="email" style="padding-bottom: 5px;"></div></td>                      <td><div id="emailAddress"></div></td>                  </tr>                </table>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both; height: 5px;">        </div>        <div id="Div4">            <div class="LabelTextAreaLeftDataCollector">                Message:            </div>            <div id="Div8">                <div id="message" style="padding-bottom: 5px;">                </div>                <div id="messageText">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both; height: 5px;">        </div>        <div id="Div10">            <div class="LabelTextAreaLeftDataCollector">                Lockout Message:            </div>            <div id="Div12">                <div id="lockoutMessage" style="padding-bottom: 5px;">                </div>                <div id="lockoutMessageText">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both;">        </div>    </div>    <div class="footer">        <div class="iiButton AnchorSave" id="AnchorSave">            <div class="iiButtonPart Begin" id="AnchorSaveBegin">            </div>            <div class="iiButtonPart Middle" id="AnchorSaveMiddle">                <span>&nbsp;&nbsp;Save&nbsp;&nbsp;</span></div>            <div class="iiButtonPart End" id="AnchorSaveEnd">            </div>        </div>        <div class="iiButton AnchorNew" id="AnchorNew">            <div class="iiButtonPart Begin" id="AnchorNewBegin">            </div>            <div class="iiButtonPart Middle" id="AnchorNewMiddle">                <span>&nbsp;&nbsp;New&nbsp;&nbsp;</span></div>            <div class="iiButtonPart End" id="AnchorNewEnd">            </div>        </div>        <div class="iiButton AnchorUndo" id="AnchorUndo">            <div class="iiButtonPart Begin" id="AnchorUndoBegin">            </div>            <div class="iiButtonPart Middle" id="AnchorUndoMiddle">                <span>&nbsp;&nbsp;Undo&nbsp;&nbsp;</span></div>            <div class="iiButtonPart End" id="AnchorUndoEnd">            </div>        </div>        <div style="clear: both;">        </div>    </div></div>','<div style="margin: 10px">    <table>        <tr>            <td id="data-collector-grid" style="width:500px; vertical-align:top;"></td>            <td id="data-collector-editor" style="width:500px; vertical-align:top;"></td>        </tr>    </table>    </div>',''];
+﻿window.__weblight_t_c0e3a119 = ['<?xml version="1.0" encoding="utf-8"?><transmission>  <target id="iiCache" requestId="2">    <store id="appDataCollectors" activeId="0" criteria="storeId:appDataCollectors,userId:[user],">      <item id="1" houseCodeId="363" moduleId="5" numberOfColumns="6" frequency="Monthly" lockout="true" email="1" emailAddress="admin@crothall.com" message="True" messageText="Your monthly BI Statistics update is overdue. Click here to enter the data now before you can no longer access the other modules." lockoutMessage="True" lockoutMessageText="Your monthly BI Statistics update is overdue. You will no longer be able to access any modules until you complete the update. Click here to enter the data now." />    </store>  </target></transmission>','<div>    <div class="form-header">        Data Collector Information    </div>    <div id="DataCollectorContentArea" class="body">         <div id="TableEditArea">            <div class="LabelTextAreaLeftDataCollector">                <span class="requiredFieldIndicator"></span>Description:            </div>            <div id="Div14">                <div id="description">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div id="TableEditArea">            <div class="LabelTextAreaLeftDataCollector">                <span class="requiredFieldIndicator">&#149;</span>Frequency:            </div>            <div id="InputTextAreaRight">                <div id="frequency">                </div>            </div>            <div style="clear: both;">            </div>        </div>         <div id="Div13">            <div class="LabelTextAreaLeftDataCollector">                Active:            </div>            <div id="InputTextAreaRight">                <div id="active">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both;">        </div>         <div id="TableEditArea">            <div class="LabelTextAreaLeftDataCollector">                <span class="requiredFieldIndicator">&#149;</span>House Code:            </div>            <div id="InputTextAreaRight">                <div id="houseCodeId">                </div>            </div>        </div>        <div style="clear: both;">        </div>        <div id="TableEditArea">            <div class="LabelTextAreaLeftDataCollector">                <span class="requiredFieldIndicator">&#149;</span>Module:            </div>            <div id="InputTextAreaRight">                <div id="moduleId">                </div>            </div>        </div>        <div style="clear: both;">        </div>        <div id="Div6">            <div class="LabelTextAreaLeftDataCollector">               <span class="requiredFieldIndicator">&#149;</span>Columns:            </div>            <div id="InputTextAreaRight" class="lov-combo">                <div id="columns">                </div>            </div>        </div>                 <div style="clear: both;">        </div>       <div id="Div7">            <div class="LabelTextAreaLeftDataCollector">                <span class="requiredFieldIndicator">&#149;</span>Number of columns:            </div>            <div id="Div9">                <div id="numberOfColumns">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both;">        </div>        <div id="users-holder">            <div class="LabelTextAreaLeftDataCollector">              <span class="requiredFieldIndicator">&#149;</span>Users:            </div>            <div id="Div11" class="lov-combo">                <div id="users">                </div>            </div>        </div>        <div style="clear: both;">        </div>        <div id="Div3">            <div class="LabelTextAreaLeftDataCollector">                Lockout:            </div>            <div id="Div5">                <div id="lockout">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both;">        </div>        <div id="Div1">            <div class="LabelTextAreaLeftDataCollector">                Email Address:            </div>            <div id="Div2" style="float:left;">                <table cellpadding="0" cellspacing="0">                  <tr>                      <td><div id="email" style="padding-bottom: 5px;"></div></td>                      <td><div id="emailAddress"></div></td>                  </tr>                </table>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both; height: 5px;">        </div>        <div id="Div4">            <div class="LabelTextAreaLeftDataCollector">                Message:            </div>            <div id="Div8">                <div id="message" style="padding-bottom: 5px;">                </div>                <div id="messageText">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both; height: 5px;">        </div>        <div id="Div10">            <div class="LabelTextAreaLeftDataCollector">                Lockout Message:            </div>            <div id="Div12">                <div id="lockoutMessage" style="padding-bottom: 5px;">                </div>                <div id="lockoutMessageText">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both;">        </div>    </div>    <div class="footer">        <div class="iiButton AnchorSave" id="AnchorSave">            <div class="iiButtonPart Begin" id="AnchorSaveBegin">            </div>            <div class="iiButtonPart Middle" id="AnchorSaveMiddle">                <span>&nbsp;&nbsp;Save&nbsp;&nbsp;</span></div>            <div class="iiButtonPart End" id="AnchorSaveEnd">            </div>        </div>        <div class="iiButton AnchorNew" id="AnchorNew">            <div class="iiButtonPart Begin" id="AnchorNewBegin">            </div>            <div class="iiButtonPart Middle" id="AnchorNewMiddle">                <span>&nbsp;&nbsp;New&nbsp;&nbsp;</span></div>            <div class="iiButtonPart End" id="AnchorNewEnd">            </div>        </div>        <div class="iiButton AnchorUndo" id="AnchorUndo">            <div class="iiButtonPart Begin" id="AnchorUndoBegin">            </div>            <div class="iiButtonPart Middle" id="AnchorUndoMiddle">                <span>&nbsp;&nbsp;Undo&nbsp;&nbsp;</span></div>            <div class="iiButtonPart End" id="AnchorUndoEnd">            </div>        </div>        <div style="clear: both;">        </div>    </div></div>','<div style="margin: 5px 10px 10px 10px;"> <div id="itemStatusDiv"><div id="itemStatusImage" class="itemStatusImage"></div><div id="itemModifiedImage" class="itemModifiedImage"></div><div id="itemStatusText">Loading, please wait...</div></div><div style="clear:both;height:5px;"></div>   <table>        <tr>            <td id="data-collector-grid" style="width:500px; vertical-align:top;"></td>            <td id="data-collector-editor" style="width:500px; vertical-align:top;"></td>        </tr>    </table>    </div>',''];
 
 /**
 * Copyright (c) 2009 Sergiy Kovalchuk (serg472@gmail.com)
@@ -861,6 +861,50 @@ function dirtyCheck(me) {
             
 function modified(status) {
 	window.top.fin.appUI.modified = status;
+	
+	if (status)
+		me.setStatus("Edit");
+}
+
+function setStatus(status) {
+	var me = this;
+
+	me.$itemStatusImage = $("#wl-ctrl-100-itemStatusImage");
+	me.$itemModifiedImage = $("#wl-ctrl-100-itemModifiedImage");
+	me.$itemStatusText = $("#wl-ctrl-100-itemStatusText");
+
+	if (status == "New")
+		message = "New";
+	else if (status == "Loading" || status == "Saving" || status == "Exporting" || status == "Uploading" || status == "Importing")
+		message = status + ", please wait...";
+	else if (status == "Saved")
+		message = "Data saved successfully.";
+	else if (status == "Imported")
+		message = "Data imported successfully.";
+	else if (status == "Exported")
+		message = "Data exported successfully.";
+	else if (status == "Locked")
+		message = "The current page is Readonly.";
+	else if (status == "Error")
+		message = "Error while updating the data.";
+	else
+		message = "Normal";
+
+	if (status == "Locked")
+		me.$itemModifiedImage.addClass("Locked");
+	else
+		me.$itemModifiedImage.removeClass("Locked");
+
+	if (status == "Edit")
+		me.$itemModifiedImage.addClass("Modified");
+	else
+		me.$itemModifiedImage.removeClass("Modified");
+
+	if (status == "Edit" || status == "Loaded" || status == "Saved" || status == "Imported" || status == "Exported")
+		status = "Normal";
+
+	me.$itemStatusImage.attr("class", "itemStatusImage " + status);
+	me.$itemStatusText.text(message);
 }
 
 Ext.Ajax.timeout = 300000; //5 minutes
@@ -874,12 +918,18 @@ Ext.override(WebLight.Control, {
     mask: function (msg) {
         if (!msg)
             msg = 'Please wait...';
-        this.$this.maskEl(msg);
+        //this.$this.maskEl(msg);
+		setStatus(msg.replace("...", ""));
+		Ext.getBody().mask(msg);
     },
-    unmask: function () {
-        this.$this.unmaskEl();
+    unmask: function (msg) {
+        //this.$this.unmaskEl();
+		if (window.top.fin.appUI.modified)
+			setStatus("Edit");
+		else
+			setStatus(msg);
+		Ext.getBody().unmask();
     }
-
 });
 
 Ext.override(WebLight.Page, {
@@ -887,12 +937,11 @@ Ext.override(WebLight.Page, {
     mask: function (msg) {
         if (!msg)
             msg = 'Please wait...';
-        this.$this.maskEl(msg);
+        //this.$this.maskEl(msg);
     },
     unmask: function () {
-        this.$this.unmaskEl();
+        //this.$this.unmaskEl();
     }
-
 });
 
 eFin.data.XmlReader = Ext.extend(Ext.data.XmlReader, {
@@ -1335,7 +1384,7 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
     onDataLoad: function () {
         var me = this;
         if (--me.loadingCount == 0)
-            me.unmask();
+            me.unmask("Loaded");
     },
 
     attachLoadMaskEvent: function (store) {
@@ -1624,6 +1673,7 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
             if (me.$newButton.hasClass('Enabled')) {
 				if (!window.top.fin.cmn.status.itemValid())
 					return;
+
                 me.fireEvent('createnew', me);
             }
         });
@@ -1807,10 +1857,11 @@ eFin.page.app.DataCollector = WebLight.extend(WebLight.Page, {
         me.dataCollectorEditor.on('save', function () {
 
             if (me.dataCollectorEditor.isValid()) {
-                me.mask('Saving...');
+
+                me._controls[0].mask('Saving...');
                 me.dataCollectorStore.submitChanges(function () {
 					modified(false);
-                    me.unmask();
+                    me._controls[0].unmask("Saved");
                     me.dataCollectorStore.reload();
                 });
             }
@@ -1827,7 +1878,7 @@ eFin.page.app.DataCollector = WebLight.extend(WebLight.Page, {
     safeUnmask: function () {
         var me = this;
         if (me.moduleStore.getCount() > 0  && me.houseCodeStore.getCount() > 0)
-            me.unmask();
+            me.unmask("Normal");
     },
 
     dataBind: function () {
