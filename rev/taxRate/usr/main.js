@@ -402,7 +402,7 @@ ii.Class({
 		listTaxes: function() {
 			var me = this;
 
-			me.setLoadCount();				
+			me.setLoadCount();
 			$("#selPageNumber").val(me.pageCurrent);			
 	
 			me.startPoint = ((me.pageCurrent - 1) * me.maximumRows) + 1;	
@@ -516,7 +516,7 @@ ii.Class({
 			else
 				me.stateId = 0;
 			
-			me.setStatus("Loading");
+			me.setStatus("Exporting");
 			$("#messageToUser").text("Exporting");
 			$("#pageLoading").fadeIn("slow");
 
@@ -526,7 +526,7 @@ ii.Class({
 
 		fileNamesLoaded: function(me, activeId) {
 			
-			me.setStatus("Loaded");
+			me.setStatus("Exported");
 			$("#pageLoading").fadeOut("slow");
 
 			if (me.fileNames.length == 1) {
@@ -540,7 +540,7 @@ ii.Class({
 
 			me.fileName = "";
 			
-			me.setStatus("Loading");
+			me.setStatus("Uploading");
 			$("#messageToUser").text("Upload process will take few minutes, please wait...");
 			$("#pageLoading").fadeIn("slow");
 			$("iframe")[0].contentWindow.document.getElementById("FileName").value = "";
@@ -569,7 +569,7 @@ ii.Class({
 			var me = this;
 			var item = [];
 			
-			me.setStatus("Saving");
+			me.setStatus("Importing");
 			$("#messageToUser").text("Import process will take few minutes, please wait...");
 
 			var xml = '<revTaxImport';
@@ -599,7 +599,6 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-			var errorMessage = "";			
 
 			if (status == "success") {
 				me.resetControls();
@@ -609,10 +608,7 @@ ii.Class({
 			}
 			else {
 				me.setStatus("Error");
-				errorMessage = "Error while importing Tax File: " + $(args.xmlNode).attr("message");
-				errorMessage += $(args.xmlNode).attr("error");
-				errorMessage += " [SAVE FAILURE]";
-				alert(errorMessage);				
+				alert("[SAVE FAILURE] Error while importing Tax File: " + $(args.xmlNode).attr("message"));
 			}
 			
 			$("#pageLoading").fadeOut("slow");

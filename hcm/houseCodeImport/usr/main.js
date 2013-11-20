@@ -25,7 +25,6 @@ ii.Class({
 			
 			me.actionSave = false;
 			me.fileName = "";
-			//me.typesLoading = 5;
 			me.cellColorValid = "";
 			me.cellColorInvalid = "red";
 			me.pages = [];
@@ -449,21 +448,12 @@ ii.Class({
 			me.profitDesignationTypes.unshift(new fin.hcm.houseCodeImport.ProfitDesignationType({ id: 0, name: "" }));
 			me.gpoTypes.unshift(new fin.hcm.houseCodeImport.GPOType({ id: 0, name: "" }));
 			me.ownershipTypes.unshift(new fin.hcm.houseCodeImport.OwnershipType({ id: 0, name: "" }));
-			
-//			me.typesLoading--;
-//			
-//			if (me.typesLoading <= 0)
-//				$("#pageLoading").hide();
 			me.checkLoadCount();
 		},
 		
 		jdeCompanysLoaded: function(me, activeId) {
 		
             me.jdeCompanys.unshift(new fin.hcm.houseCodeImport.JdeCompany({ id: 0, name: "" }));
-//			me.typesLoading--;
-//			
-//			if (me.typesLoading <= 0)
-//				$("#pageLoading").hide();
 			me.checkLoadCount();
 		},
 	
@@ -486,10 +476,6 @@ ii.Class({
 			me.financialEntities.unshift(new fin.hcm.houseCodeImport.FinancialEntity({ id: 0, name: "" }));			
 			me.serviceLineTypes.unshift(new fin.hcm.houseCodeImport.ServiceLine({ id: 0, name: "" }));
 			me.serviceTypes.unshift(new fin.hcm.houseCodeImport.ServiceType({ id: 0, name: "" }));
-//			me.typesLoading--;
-//			
-//			if (me.typesLoading <= 0)
-//				$("#pageLoading").hide();
 			me.checkLoadCount();
 		},
 		
@@ -500,10 +486,6 @@ ii.Class({
 			me.termsOfContractTypes.unshift(new fin.hcm.houseCodeImport.TermsOfContractType({ id: 0, name: "" }));
 			me.billingCycleFrequencys.unshift(new fin.hcm.houseCodeImport.BillingCycleFrequency({ id: 0, name: "" }));
 			me.invoiceLogoTypes.unshift(new fin.hcm.houseCodeImport.InvoiceLogoType({ id: 0, name: "" }));
-//			me.typesLoading--;
-//			
-//			if (me.typesLoading <= 0)
-//				$("#pageLoading").hide();
 			me.checkLoadCount();
 		},
 		
@@ -513,10 +495,6 @@ ii.Class({
 			me.payrollProcessings.unshift(new fin.hcm.houseCodeImport.PayrollProcessingLocationType({ id: 0, name: "" }));
 			me.houseCodeTypes.unshift(new fin.hcm.houseCodeImport.HouseCodeType({ id: 0, name: ""}));
 			me.ePayGroupTypes.unshift(new fin.hcm.houseCodeImport.EPayGroupType({ id: 0, name: ""}));
-//			me.typesLoading--;
-//			
-//			if (me.typesLoading <= 0)
-//				$("#pageLoading").hide();
 			me.checkLoadCount();
 		},
 		
@@ -640,7 +618,7 @@ ii.Class({
 
 			me.fileName = "";
 			
-			me.setStatus("Loading");			
+			me.setStatus("Uploading");			
 			$("#messageToUser").text("Uploading");
 			$("#pageLoading").fadeIn("slow");
 			$("iframe")[0].contentWindow.document.getElementById("FileName").value = "";
@@ -653,8 +631,8 @@ ii.Class({
 					clearInterval(me.intervalId);
 					
 					if (me.fileName == "Error") {
-						me.setStatus("Loaded");
-						alert("Unable to upload the file. Please try again.")
+						me.setStatus("Info", "Unable to upload the file. Please try again.");
+						alert("Unable to upload the file. Please try again.");
 						$("#pageLoading").fadeOut("slow");
 					}
 					else {
@@ -927,11 +905,7 @@ ii.Class({
 			var me = this;
 			
 			me.actionSave = args.save;
-			
-			me.setStatus("Loading");
-			$("#messageToUser").text("Validating");
-			$("#pageLoading").fadeIn("slow");
-			
+
 			setTimeout(function() { 
 				me.validate(); 
 			}, 100);			
@@ -1059,7 +1033,7 @@ ii.Class({
 					me.setCellColor($("#selJDECompany" + index), me.cellColorValid, "");
 				}
 				
-				if(ui.cmn.text.validate.generic($("#txtStartDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
+				if (ui.cmn.text.validate.generic($("#txtStartDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtStartDate" + index), me.cellColorInvalid, "Please enter valid Start Date.");
 				}
@@ -1386,6 +1360,7 @@ ii.Class({
 
 			// If all required fields are entered correctly then validate the Briefs and FullPaths
 			if (valid) {
+				me.setStatus("Validating");
 				$("#messageToUser").text("Validating");
 				$("#pageLoading").fadeIn("slow");
 
@@ -1629,6 +1604,7 @@ ii.Class({
 			var me = this;
 			var item = [];
 
+			me.setStatus("Importing");
 			$("#messageToUser").text("Importing");
 			
 			var xml = '<appGenericImport';

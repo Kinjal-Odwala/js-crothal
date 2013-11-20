@@ -423,7 +423,7 @@ ii.Class({
 
 			me.employeeGrid.addColumn("column13", "column13", "", "", 30, function() {
 				var index = me.employeeGrid.rows.length - 1;
-                return "<input type=\"checkbox\" id=\"assignInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true;\" onclick=\"actionClickItem(this);\" " + (me.employeePayRates[index].column13 == "1" ? checked='checked' : '') + " />";
+                return "<input type=\"checkbox\" id=\"assignInputCheck" + index + "\" class=\"iiInputCheck\" onclick=\"actionClickItem(this);\" " + (me.employeePayRates[index].column13 == "1" ? checked='checked' : '') + " />";
             });
 			me.employeeGrid.addColumn("column6", "column6", "House Code", "House Code", 90);
 			me.employeeGrid.addColumn("column8", "column8", "First Name", "First Name", null);
@@ -561,7 +561,7 @@ ii.Class({
 			}
 		},
 		
-		systemVariablesLoaded:function(me, activeId) {
+		systemVariablesLoaded: function(me, activeId) {
 
 			if (me.systemVariables.length > 0)
 				me.federalMinimumWage = me.systemVariables[0].variableValue;
@@ -705,7 +705,8 @@ ii.Class({
 			$("#popupMessageToUser").text("Loading");
 			$("#popupLoading").show();				
 			$("#selPageNumber").val(me.pageCurrent);
-
+			
+			me.setStatus("Loading");
 			me.startPoint = ((me.pageCurrent - 1) * me.maximumRows) + 1;
 			me.employeePayRateStore.reset();
 			me.employeePayRateStore.fetch("userId:[user],object:PayRateUpdate"
@@ -721,11 +722,15 @@ ii.Class({
 
 			me.employeeGrid.setData(me.employeePayRates);
 			me.employeeGrid.setHeight(450);
+			me.setStatus("Loaded");
 			$("#popupLoading").hide();
 		},
 	
 		prevEmployeePayRates: function() {
 		    var me = this;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
 
 			me.pageCurrent--;
 
@@ -737,6 +742,9 @@ ii.Class({
 
 		nextEmployeePayRates: function() {
 		    var me = this;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
 
 			me.pageCurrent++;
 
@@ -750,6 +758,9 @@ ii.Class({
 		    var me = this;
 		    var selPageNumber = $("#selPageNumber");
 		    
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
 		    me.pageCurrent = Number(selPageNumber.val());
 		    me.listEmployeePayRates();
 		},
@@ -771,6 +782,9 @@ ii.Class({
 		
 		actionCloseItem: function() {
 			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
 			hidePopup();
 		},
 		
@@ -779,7 +793,7 @@ ii.Class({
 
 			$("#popupMessageToUser").text("Exporting");
 			$("#popupLoading").show();
-
+			me.setStatus("Exporting");
 			me.fileNameStore.reset();
 			me.fileNameStore.fetch("userId:[user],object:PayRateUpdate,batch:" + me.stateMinimumWageId, me.fileNamesLoaded, me);
 		},
@@ -787,7 +801,8 @@ ii.Class({
 		fileNamesLoaded: function(me, activeId) {
 
 			$("#popupLoading").hide();
-
+			me.setStatus("Exported");
+			
 			if (me.fileNames.length == 1) {
 				$("iframe")[0].contentWindow.document.getElementById("FileName").value = me.fileNames[0].fileName;
 				$("iframe")[0].contentWindow.document.getElementById("DownloadButton").click();
@@ -1037,6 +1052,8 @@ function actionClickItem(objCheckBox) {
 	var allSelected = true;
 	var index = 0;
 
+	me.modified();
+
 	if (objCheckBox.checked) {
 		for (index = 0; index < me.employeePayRates.length; index++) {
 			if ($("#assignInputCheck" + index)[0].checked == false) {
@@ -1077,11 +1094,6 @@ function centerPopup() {
 	var windowHeight = document.documentElement.clientHeight;
 	var popupWidth = $("#popupEmployee").width();
 	var popupHeight = $("#popupEmployee").height();
-
-	$("#popupEmployee").css({
-		"top": windowHeight/2 - popupHeight/2,
-		"left": windowWidth/2 - popupWidth/2
-	});
 
 	$("#popupLoading, #popupEmployee").css({
 		"top": windowHeight/2 - popupHeight/2,

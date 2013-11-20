@@ -54,7 +54,7 @@ ii.Class({
 			me.cache = new ii.ajax.Cache(me.gateway);
 			me.transactionMonitor = new ii.ajax.TransactionMonitor( 
 				me.gateway, 
-				function(status, errorMessage){ me.nonPendingError(status, errorMessage); }
+				function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
 			);	
 			
 			me.validator = new ui.ctl.Input.Validation.Master();
@@ -157,12 +157,12 @@ ii.Class({
 				$("#pageLoading").fadeIn("slow");
 
 				ii.timer.timing("Page displayed");
-				me.session.registerFetchNotify(me.sessionLoaded,me);				
+				me.session.registerFetchNotify(me.sessionLoaded, me);
 				me.controlVisible();
 				me.resizeControls();
 				me.setStatus("Loaded");
 				$("#pageLoading").fadeOut("slow");
-			}				
+			}
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},
@@ -402,7 +402,7 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation(function( isFinal, dataMap) {
 				
-				if(me.purItemSearchInput.getValue().length < 3)
+				if (me.purItemSearchInput.getValue().length < 3)
 					this.setInvalid("Please enter search criteria (minimum 3 characters).");					
 			});
 						
@@ -454,7 +454,7 @@ ii.Class({
 		    });	
 			
 			me.purItemGrid.addColumn("assigned", "assigned", "", "Checked means associated to the Catalog", 30, function() { var rowNumber = me.purItemGrid.rows.length - 1;
-                return "<input type=\"checkbox\" id=\"assignItemInputCheck" + rowNumber + "\" class=\"iiInputCheck\" onclick=\"parent.fin.appUI.modified = true;\" />";				
+                return "<input type=\"checkbox\" id=\"assignItemInputCheck" + rowNumber + "\" class=\"iiInputCheck\" onclick=\"fin.pur.purCatalogUi.modified();\" />";				
             });
 			me.purItemGrid.addColumn("number", "number", "Number", "Item Number", 150);
 			me.purItemGrid.addColumn("description", "description", "Description", "Item Description", null);
@@ -673,8 +673,7 @@ ii.Class({
 				me.searchInput.updateStatus();
 			}
 			
-			me.setLoadCount();			
-			
+			me.setLoadCount();
 			me.catalogUnitGrid.setData([]);
 			me.catalogItemGrid.setData([]);
 			me.units = [];
@@ -685,9 +684,8 @@ ii.Class({
 		catalogsLoaded: function(me, activeId) {
 
 			me.lastSelectedRowIndex = -1;
-			me.resetControls();			
+			me.resetControls();
 			me.catalogGrid.setData(me.catalogs);
-			
 			me.checkLoadCount();
 		},
 		
@@ -802,7 +800,10 @@ ii.Class({
 		    var me = this;
 			
 			$("#selHouseCodesPageNumber").val(me.houseCodesPageCurrent);
-			
+			var index = me.catalogUnitGrid.activeRowIndex;
+			if (index >= 0)
+	   			me.catalogUnitGrid.body.deselect(index, true);
+			me.catalogUnitGrid.setData([]);
 			me.houseCodesStartPoint = ((me.houseCodesPageCurrent - 1) * me.maximumRows) + 1;
 			me.catalogHouseCodeStore.reset();
 			me.catalogHouseCodeStore.fetch("userId:[user],catalogId:" + me.catalogId + ",startPoint:" + me.houseCodesStartPoint + ",maximumRows:" + me.maximumRows, me.catalogHouseCodesLoaded, me);	
@@ -858,14 +859,14 @@ ii.Class({
 			}			
 		},
 		
-		catalogItemsCountLoaded: function(me, activeId) {		    
+		catalogItemsCountLoaded: function(me, activeId) {
 		    var selPageNumber = $("#selItemsPageNumber");
 			
 			me.itemsStartPoint = 1;
 		    me.recordCount = me.recordCounts[0].recordCount;
 		    me.itemsPageCount = Math.ceil(me.recordCount / me.maximumRows);
 		    me.itemsPageCurrent = Math.ceil(me.itemsStartPoint / me.maximumRows);
-		    		    
+
 		    //if we don't have records...
 		    if (me.itemsPageCount == 0) me.itemsPageCount = 1;
 		    
@@ -885,14 +886,17 @@ ii.Class({
 		    var me = this;
 			
 			$("#selItemsPageNumber").val(me.itemsPageCurrent);
-
+			var index = me.catalogItemGrid.activeRowIndex;
+			if (index >= 0)
+	   			me.catalogItemGrid.body.deselect(index, true);
+			me.catalogItemGrid.setData([]);
 			me.itemsStartPoint = ((me.itemsPageCurrent - 1) * me.maximumRows) + 1;
 			me.catalogItemStore.reset();
 			me.catalogItemStore.fetch("userId:[user],catalogId:" + me.catalogId + ",startPoint:" + me.itemsStartPoint + ",maximumRows:" + me.maximumRows, me.catalogItemsLoaded, me);
 		},
 
 		catalogItemsLoaded: function(me, activeId) {
-
+			
 			me.catalogItemGrid.setData(me.catalogItems);
 			me.catalogItemGrid.resize();
 			me.catalogItemsCountOnLoad = me.catalogItems.length;
@@ -996,7 +1000,7 @@ ii.Class({
 		
 		resetGrids: function() {
 			var me = this;
-						
+
 			me.catalogGrid.body.deselectAll();
 			me.catalogUnitGrid.body.deselectAll();
 			me.catalogItemGrid.body.deselectAll();			
@@ -1007,20 +1011,19 @@ ii.Class({
 			me.units = [];			
 			me.houseCodesTabNeedUpdate = true;
 			me.itemsTabNeedUpdate = true;
-			
-			//if (me.activeFrameId == 0)
-			//	me.loadCatalogHouseCodesCount();
-			//else if (me.activeFrameId == 1)
-			//	me.loadCatalogItemsCount();
 		},
 		
 		addHouseCodes: function() {
 			var me = this;
-			
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
 			if (me.catalogGrid.activeRowIndex == -1)
 				return;
 				
 			loadPopup();
+			me.setStatus("Normal");
 
 			$("#houseCodeTemplateText").val("");
 			$("#itemsList").hide();
@@ -1057,7 +1060,8 @@ ii.Class({
 				return;
 					
 			loadPopup();
-			
+			me.setStatus("Normal");
+
 			$("#houseCodesList").hide();
 			$("#itemsList").show();		
 			$("#popupContact").show();
@@ -1084,20 +1088,24 @@ ii.Class({
 				me.loadItemSearchResults();
 			}
 		},
-			
+
 		loadItemSearchResults: function() {		
 		    var me = this;
-			
-			if(me.purItemSearchInput.getValue().length < 3) {
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
+			if (me.purItemSearchInput.getValue().length < 3) {
 				me.purItemSearchInput.setInvalid("Please enter search criteria (minimum 3 characters).");
 				return false;
-			}			
+			}
 			else {
 				me.purItemSearchInput.valid = true;
 				me.purItemSearchInput.updateStatus();
-			}	
-		
+			}
+
 			$("#popupLoading").show();
+			me.setStatus("Loading");
 			me.purItemStore.fetch("searchValue:" + me.purItemSearchInput.getValue() + ",active:1,userId:[user],", me.itemsGridLoaded, me);		
 		},	
 		
@@ -1106,7 +1114,7 @@ ii.Class({
 			if (me.purItemGrid.activeRowIndex >= 0)		
 				me.purItemGrid.body.deselect(me.purItemGrid.activeRowIndex);
 			me.purItemGrid.setData(me.purItems);
-			
+			me.setStatus("Loaded");
 			$("#popupLoading").hide();
 		},
 		
@@ -1242,7 +1250,7 @@ ii.Class({
 			if (me.catalogGrid.activeRowIndex == -1)
 				return;
 			
-			me.setStatus("Loading");
+			me.setStatus("Exporting");
 			$("#messageToUser").text("Exporting");
 			$("#pageLoading").fadeIn("slow");
 			
@@ -1253,11 +1261,10 @@ ii.Class({
 		fileNamesLoaded: function(me, activeId) {
 			var excelFileName = "";
 
-			me.setStatus("Loaded");
+			me.setStatus("Exported");
 			$("#pageLoading").fadeOut("slow");
 
-			if(me.fileNames.length == 1) {
-
+			if (me.fileNames.length == 1) {
 				$("iframe")[0].contentWindow.document.getElementById("FileName").value = me.fileNames[0].fileName;
 				$("iframe")[0].contentWindow.document.getElementById("DownloadButton").click();
 			}
@@ -1288,7 +1295,7 @@ ii.Class({
 
 			hideFrame();
 			
-			me.setStatus("Loading");
+			me.setStatus("Uploading");
 			$("#messageToUser").text("Uploading");
 			$("#pageLoading").fadeIn("slow"); 
 			$("iframe")[0].contentWindow.document.getElementById("FileName").value = "";
@@ -1301,12 +1308,13 @@ ii.Class({
 					clearInterval(me.intervalId);
 					
 					if (fileName == "Error") {
-						alert("Unable to upload the file. Please try again.")
-						me.setStatus("Error");
+						me.setStatus("Info", "Unable to upload the file. Please try again.");
+						alert("Unable to upload the file. Please try again.");
 						$("#pageLoading").fadeOut("slow");
 					}
 					else {
 						$("#messageToUser").text("Importing");
+						me.setStatus("Importing");
 						me.actionImport(fileName);
 					}
 				}			
@@ -1360,7 +1368,7 @@ ii.Class({
 					me.loadCatalogItemsCount();
 				}
 			}
-			else if(status == "invalid") {
+			else if (status == "invalid") {
 				me.setStatus("Error");
 				alert("The Id of the selected Catalog and the Catalog Id that exists in selected file doesn't match. Please download the Catalog and try again.");
 				$("#pageLoading").fadeOut("slow");			
@@ -1386,7 +1394,7 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 			
-			if(me.catalogsReadOnly) return;
+			if (me.catalogsReadOnly) return;
 			
 			var catalogItemDatas = [];
 			var catalogItemData;
@@ -1429,7 +1437,7 @@ ii.Class({
 		
 			for (var index = 0; index < me.catalogItems.length; index++) {
 				
-				if(me.catalogItems[index].modified == false && index < me.catalogItemsCountOnLoad) continue;
+				if (me.catalogItems[index].modified == false && index < me.catalogItemsCountOnLoad) continue;
 				
 				catalogItemData = new fin.pur.catalog.CatalogItem(					
 					me.catalogItems[index].id						

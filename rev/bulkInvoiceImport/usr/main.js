@@ -321,10 +321,10 @@ ii.Class({
 			});
 		},
 		
-		setStatus: function(status) {
+		setStatus: function(status, message) {
 			var me = this;
 
-			fin.cmn.status.setStatus(status);
+			fin.cmn.status.setStatus(status, message);
 		},
 		
 		dirtyCheck: function(me) {
@@ -357,7 +357,10 @@ ii.Class({
 
 			me.loadCount--;
 			if (me.loadCount <= 0) {
-				me.setStatus("Loaded");
+				if (parent.fin.appUI.modified)
+					me.setStatus("Edit");
+				else
+					me.setStatus("Loaded");
 				$("#pageLoading").fadeOut("slow");
 			}
 		},
@@ -405,6 +408,7 @@ ii.Class({
 			$("#divUpload").show();
 			$("iframe")[0].contentWindow.document.getElementById("FormReset").click();
 			me.anchorUpload.display(ui.cmn.behaviorStates.disabled);
+			me.setStatus("Normal");
 		},
 
 		actionBatchProcessStatus: function() {
@@ -413,8 +417,7 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 
-			$("#pageHeader").text("Batch Process Status");
-			me.setLoadCount();
+			$("#pageHeader").text("Batch Process Status");			
 			$("#divFrame").height(0);
 			$("#iFrameUpload").height(0);
 			$("#divUpload").hide();
@@ -425,6 +428,7 @@ ii.Class({
 			$("#AnchorExportToExcel").show();
 			$("#AnchorCancelBatch").show();			
 			$("#divDownload").show();
+			me.setLoadCount();
 			me.batchGrid.resize();
 			me.batchStore.reset();
 			me.batchStore.fetch("userId:[user],statusType:0", me.batchesLoaded, me);
@@ -454,7 +458,6 @@ ii.Class({
 			}
 
 			me.batchProcessCompleted = true;
-			
 			me.checkLoadCount();
 			
 			for (var index = 0; index < me.batches.length; index++) {
@@ -512,7 +515,9 @@ ii.Class({
 			else {
 				me.anchorExportToExcel.display(ui.cmn.behaviorStates.disabled);
 				me.anchorCancelBatch.display(ui.cmn.behaviorStates.disabled);
-			}				
+			}
+
+			me.setStatus("Normal");
 		},
 		
 		actionExportToExcel: function() {
@@ -525,7 +530,7 @@ ii.Class({
 			var title = me.batches[me.batchGrid.activeRowIndex].title;
 			
 			me.setStatus("Exporting");
-			$("#messageToUser").text("Exporting to Excel");
+			$("#messageToUser").text("Exporting");
 			$("#pageLoading").fadeIn("slow");
 			
 			me.fileNameStore.reset();
@@ -535,11 +540,10 @@ ii.Class({
 		fileNamesLoaded: function(me, activeId) {
 			var excelFileName = "";
 
-			me.setStatus("Loaded");
+			me.setStatus("Exported");
 			$("#pageLoading").fadeOut("slow");
 
 			if (me.fileNames.length == 1) {
-
 				$("iframe")[0].contentWindow.document.getElementById("FileName").value = me.fileNames[0].fileName;
 				$("iframe")[0].contentWindow.document.getElementById("DownloadButton").click();
 			}
@@ -559,6 +563,7 @@ ii.Class({
 			me.fileName = "";
 			
 			me.setLoadCount();
+			me.setStatus("Uploading");
 			$("#messageToUser").text("Uploading");
 			$("iframe")[0].contentWindow.document.getElementById("FileName").value = "";
 			$("iframe")[0].contentWindow.document.getElementById("UploadButton").click();
@@ -568,10 +573,11 @@ ii.Class({
 				if ($("iframe")[0].contentWindow.document.getElementById("FileName").value != "")	{
 					me.fileName = $("iframe")[0].contentWindow.document.getElementById("FileName").value;					
 					clearInterval(me.intervalId);
-					
+
 					if (me.fileName == "Error") {
-						alert("Unable to upload the file. Please try again.")
 						me.checkLoadCount();
+						me.setStatus("Info", "Unable to upload the file. Please try again.");
+						alert("Unable to upload the file. Please try again.");
 					}
 					else {
 						$("#messageToUser").text("Processing");
@@ -900,6 +906,7 @@ ii.Class({
 			// If all required fields are entered correctly then validate the Customer Numbers, House Codes and Account Codes
 			if (valid) {
 				me.setLoadCount();
+				me.setStatus("Validating");
 				$("#messageToUser").text("Validating");
 			
 				me.bulkImportValidationStore.reset();
@@ -1034,8 +1041,8 @@ ii.Class({
 			}
 
 			$("#pageLoading").fadeIn("slow");
-
 			me.status = "createBatch";
+			me.setStatus("Saving");
 			
 			xml = '<revInvoiceBatch';
 			xml += ' title="' + ui.cmn.text.xml.encode(me.title.getValue()) + '"';
@@ -1057,10 +1064,9 @@ ii.Class({
 			var me = this;
 
 			me.hidePopup();
-			$("#AnchorSaveCancel").show();
-			
 			me.setStatus("Loaded");
-			$("#pageLoading").fadeOut("slow"); 
+			$("#AnchorSaveCancel").show();			
+			$("#pageLoading").fadeOut("slow");
 		},
 		
 		actionCancelBatch: function() {
@@ -1068,11 +1074,10 @@ ii.Class({
 			var item = [];
 			var xml = "";
 
-			me.setStatus("Loading");
+			me.status = "cancelBatch";
+			me.setStatus("Saving");
 			$("#messageToUser").text("Cancelling");
 			$("#pageLoading").fadeIn("slow");
-
-			me.status = "cancelBatch";
 
 			xml = '<revInvoiceBatchCancel';
 			xml += ' id="' + me.batches[me.batchGrid.activeRowIndex].id + '"';
@@ -1185,7 +1190,6 @@ ii.Class({
 								}, 5000);
 							}
 							else if (me.status == "cancelBatch") {
-								me.setStatus("Loaded");
 								$("#pageLoading").fadeOut("slow"); 
 								
 								if (parseInt($(this).attr("statustype"), 10) == 6) {
@@ -1194,6 +1198,7 @@ ii.Class({
 									me.batchGrid.body.renderRow(index, index);
 									me.anchorExportToExcel.display(ui.cmn.behaviorStates.disabled);
 									me.anchorCancelBatch.display(ui.cmn.behaviorStates.disabled);
+									me.setStatus("Saved");
 								}
 								else {
 									alert("Warning: You cannot cancel the invoices which already been exported.");
@@ -1202,6 +1207,10 @@ ii.Class({
 					}
 				});
 			}
+			else if (status == "invalid") {
+				me.setStatus("Info", $(args.xmlNode).attr("message"));
+				alert("[SAVE FAILURE]: " + $(args.xmlNode).attr("message"));
+			}			
 			else {
 				me.setStatus("Error");
 				$("#popupLoading").hide();

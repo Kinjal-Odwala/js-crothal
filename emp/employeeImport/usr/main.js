@@ -456,10 +456,10 @@ ii.Class({
 			});
 		},
 		
-		setStatus: function(status) {
+		setStatus: function(status, message) {
 			var me = this;
 
-			fin.cmn.status.setStatus(status);
+			fin.cmn.status.setStatus(status, message);
 		},
 		
 		dirtyCheck: function(me) {
@@ -674,7 +674,7 @@ ii.Class({
 
 			me.fileName = "";
 			
-			me.setStatus("Loading");
+			me.setStatus("Uploading");
 			$("#messageToUser").text("Uploading");
 			$("#pageLoading").fadeIn("slow");
 			$("iframe")[0].contentWindow.document.getElementById("FileName").value = "";
@@ -687,14 +687,14 @@ ii.Class({
 					clearInterval(me.intervalId);
 					
 					if (me.fileName == "Error") {
-						me.setStatus("Loaded");
-						alert("Unable to upload the file. Please try again.")
-						$("#pageLoading").hide();
+						me.setStatus("Info", "Unable to upload the file. Please try again.");
+						alert("Unable to upload the file. Please try again.");
+						$("#pageLoading").fadeOut("slow");
 					}
 					else {
 						me.actionImportSave();
 					}
-				}			
+				}
 				
 			}, 1000);
 		},
@@ -1668,10 +1668,6 @@ ii.Class({
 			
 			me.actionSave = args.save;
 			
-			me.setStatus("Loading");
-			$("#messageToUser").text("Validating");
-			$("#pageLoading").fadeIn("slow");
-			
 			setTimeout(function() { 
 				me.validate(); 
 			}, 100);			
@@ -2249,7 +2245,7 @@ ii.Class({
 			// If all required fields are entered correctly then validate the House Codes, Briefs, SSN Numbers and Employee Numbers
 			if (valid) {
 				
-				me.setStatus("Loading");
+				me.setStatus("Validating");
 				$("#messageToUser").text("Validating");
 				$("#pageLoading").fadeIn("slow");
 			
@@ -2492,6 +2488,7 @@ ii.Class({
 			var me = this;
 			var item = [];
 
+			me.setStatus("Importing");
 			$("#messageToUser").text("Importing");
 			$("#pageLoading").fadeIn("slow");
 			
@@ -2538,7 +2535,7 @@ ii.Class({
 				});
 			}
 			else if (status == "invalid") {
-				me.setStatus("Error");
+				me.setStatus("Info", "Minimum " + me.minimumRecords + " records should be available in excel sheet for employee import. Please verify.");
                 alert("Minimum " + me.minimumRecords + " records should be available in excel sheet for employee import. Please verify.");
 				$("#pageLoading").fadeOut("slow");
             }
