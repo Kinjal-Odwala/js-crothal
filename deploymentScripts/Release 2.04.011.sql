@@ -31,6 +31,12 @@ ALTER TABLE [TeamFinV2].[dbo].[AppGenericImports] ADD AppgiCol107 Varchar(Max) N
 ALTER TABLE [TeamFinV2].[dbo].[AppGenericImports] ADD AppgiCol108 Varchar(Max) NULL
 ALTER TABLE [TeamFinV2].[dbo].[AppGenericImports] ADD AppgiCol109 Varchar(Max) NULL
 ALTER TABLE [TeamFinV2].[dbo].[AppGenericImports] ADD AppgiCol110 Varchar(Max) NULL
+
+ALTER TABLE [TeamFinV2].[dbo].[HcmHouseCodes] ADD HcmHoucAdminHours DECIMAL(10, 2) NULL
+ALTER TABLE [TeamFinV2].[dbo].[HcmHouseCodes] ADD HcmHoucSurgicalHours DECIMAL(10, 2) NULL
+ALTER TABLE [TeamFinV2].[dbo].[HcmHouseCodes] ADD HcmHoucEDHours DECIMAL(10, 2) NULL
+ALTER TABLE [TeamFinV2].[dbo].[HcmHouseCodes] ADD HcmHoucGroundsHours DECIMAL(10, 2) NULL
+ALTER TABLE [TeamFinV2].[dbo].[HcmHouseCodes] ADD HcmHoucOtherLockInHours DECIMAL(10, 2) NULL
 */
 
 Update EG
@@ -51,6 +57,10 @@ Values (11, 3, 1, 'compass-usa\data conversion', GetDate())
 Update AppModuleColumns Set AppModcAdHocActive = 1 Where AppModule = 3 And AppModcTitle = 'RevInvoice'
 
 -- Invoice Items Ad-Hoc Report [End]
+
+-- Add the following assembly references in adh->act->config spring-persistence.xml file
+<value>crothall.chimes.fin.rev.dom, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+<value>crothall.chimes.fin.fsc.dom, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
 
 -- Add the following key in app->act web.config file
 <add key="ExcelTemplateFilePath" value="E:\Sites\iiDev\TeamFin\js\crothall\chimes\fin\app\state\usr\" />
@@ -429,4 +439,173 @@ INCREMENT BY 1 -- This is how you want to increment the number
 
 /*
 CT updated on 9th October 2013 11PM EST
+*/
+
+-- Add Read/Write security nodes for newly added fields in House Code [Begin]
+
+Declare @HirNode As Int
+Declare @DisplayOrder Int
+
+Select @DisplayOrder = Max(HirNode) From ESMV2.dbo.HirNodes
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'AdminHours', 'AdminHours', 'AdminHours', @DisplayOrder + 1, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics\AdminHours', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodes', 'TabStatistics', 'AdminHours', 'Compass-USA\Data Conversion', GetDate())
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics\AdminHours'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Read', 'Read', 'Read', @DisplayOrder + 2, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics\AdminHours\Read', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodes', 'TabStatistics', 'AdminHours', 'Read', 'Compass-USA\Data Conversion', GetDate())
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Write', 'Write', 'Write', @DisplayOrder + 3, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics\AdminHours\Write', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodes', 'TabStatistics', 'AdminHours', 'Write', 'Compass-USA\Data Conversion', GetDate())
+
+Select @DisplayOrder = Max(HirNode) From ESMV2.dbo.HirNodes
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'SurgicalHours', 'SurgicalHours', 'SurgicalHours', @DisplayOrder + 1, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics\SurgicalHours', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodes', 'TabStatistics', 'SurgicalHours', 'Compass-USA\Data Conversion', GetDate())
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics\SurgicalHours'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Read', 'Read', 'Read', @DisplayOrder + 2, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics\SurgicalHours\Read', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodes', 'TabStatistics', 'SurgicalHours', 'Read', 'Compass-USA\Data Conversion', GetDate())
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Write', 'Write', 'Write', @DisplayOrder + 3, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics\SurgicalHours\Write', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodes', 'TabStatistics', 'SurgicalHours', 'Write', 'Compass-USA\Data Conversion', GetDate())
+
+Select @DisplayOrder = Max(HirNode) From ESMV2.dbo.HirNodes
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'EDHrs', 'EDHrs', 'EDHrs', @DisplayOrder + 1, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics\EDHrs', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodes', 'TabStatistics', 'EDHrs', 'Compass-USA\Data Conversion', GetDate())
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics\EDHrs'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Read', 'Read', 'Read', @DisplayOrder + 2, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics\EDHrs\Read', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodes', 'TabStatistics', 'EDHrs', 'Read', 'Compass-USA\Data Conversion', GetDate())
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Write', 'Write', 'Write', @DisplayOrder + 3, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics\EDHrs\Write', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodes', 'TabStatistics', 'EDHrs', 'Write', 'Compass-USA\Data Conversion', GetDate())
+
+Select @DisplayOrder = Max(HirNode) From ESMV2.dbo.HirNodes
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'GroundsHours', 'GroundsHours', 'GroundsHours', @DisplayOrder + 1, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics\GroundsHours', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodes', 'TabStatistics', 'GroundsHours', 'Compass-USA\Data Conversion', GetDate())
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics\GroundsHours'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Read', 'Read', 'Read', @DisplayOrder + 2, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics\GroundsHours\Read', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodes', 'TabStatistics', 'GroundsHours', 'Read', 'Compass-USA\Data Conversion', GetDate())
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Write', 'Write', 'Write', @DisplayOrder + 3, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics\GroundsHours\Write', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodes', 'TabStatistics', 'GroundsHours', 'Write', 'Compass-USA\Data Conversion', GetDate())
+
+Select @DisplayOrder = Max(HirNode) From ESMV2.dbo.HirNodes
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'OtherLockInHours', 'OtherLockInHours', 'OtherLockInHours', @DisplayOrder + 1, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics\OtherLockInHours', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodes', 'TabStatistics', 'OtherLockInHours', 'Compass-USA\Data Conversion', GetDate())
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics\OtherLockInHours'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Read', 'Read', 'Read', @DisplayOrder + 2, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics\OtherLockInHours\Read', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodes', 'TabStatistics', 'OtherLockInHours', 'Read', 'Compass-USA\Data Conversion', GetDate())
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Write', 'Write', 'Write', @DisplayOrder + 3, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodes\TabStatistics\OtherLockInHours\Write', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodes', 'TabStatistics', 'OtherLockInHours', 'Write', 'Compass-USA\Data Conversion', GetDate())
+
+-- Add Read/Write security nodes for newly added fields in House Code [End]
+
+-- Add Read/Write security nodes for newly added fields in House Code Wizard [Begin]
+Declare @HirNode As Int
+Declare @DisplayOrder Int
+
+Select @DisplayOrder = Max(HirNode) From ESMV2.dbo.HirNodes
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'AdminHours', 'AdminHours', 'AdminHours', @DisplayOrder + 1, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics\AdminHours', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodeWizard', 'TabStatistics', 'AdminHours', 'Compass-USA\Data Conversion', GetDate())
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics\AdminHours'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Read', 'Read', 'Read', @DisplayOrder + 2, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics\AdminHours\Read', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodeWizard', 'TabStatistics', 'AdminHours', 'Read', 'Compass-USA\Data Conversion', GetDate())
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Write', 'Write', 'Write', @DisplayOrder + 3, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics\AdminHours\Write', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodeWizard', 'TabStatistics', 'AdminHours', 'Write', 'Compass-USA\Data Conversion', GetDate())
+
+Select @DisplayOrder = Max(HirNode) From ESMV2.dbo.HirNodes
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'SurgicalHours', 'SurgicalHours', 'SurgicalHours', @DisplayOrder + 1, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics\SurgicalHours', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodeWizard', 'TabStatistics', 'SurgicalHours', 'Compass-USA\Data Conversion', GetDate())
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics\SurgicalHours'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Read', 'Read', 'Read', @DisplayOrder + 2, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics\SurgicalHours\Read', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodeWizard', 'TabStatistics', 'SurgicalHours', 'Read', 'Compass-USA\Data Conversion', GetDate())
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Write', 'Write', 'Write', @DisplayOrder + 3, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics\SurgicalHours\Write', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodeWizard', 'TabStatistics', 'SurgicalHours', 'Write', 'Compass-USA\Data Conversion', GetDate())
+
+Select @DisplayOrder = Max(HirNode) From ESMV2.dbo.HirNodes
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'EDHours', 'EDHours', 'EDHours', @DisplayOrder + 1, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics\EDHours', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodeWizard', 'TabStatistics', 'EDHours', 'Compass-USA\Data Conversion', GetDate())
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics\EDHours'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Read', 'Read', 'Read', @DisplayOrder + 2, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics\EDHours\Read', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodeWizard', 'TabStatistics', 'EDHours', 'Read', 'Compass-USA\Data Conversion', GetDate())
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Write', 'Write', 'Write', @DisplayOrder + 3, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics\EDHours\Write', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodeWizard', 'TabStatistics', 'EDHours', 'Write', 'Compass-USA\Data Conversion', GetDate())
+
+Select @DisplayOrder = Max(HirNode) From ESMV2.dbo.HirNodes
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'GroundsHours', 'GroundsHours', 'GroundsHours', @DisplayOrder + 1, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics\GroundsHours', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodeWizard', 'TabStatistics', 'GroundsHours', 'Compass-USA\Data Conversion', GetDate())
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics\GroundsHours'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Read', 'Read', 'Read', @DisplayOrder + 2, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics\GroundsHours\Read', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodeWizard', 'TabStatistics', 'GroundsHours', 'Read', 'Compass-USA\Data Conversion', GetDate())
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Write', 'Write', 'Write', @DisplayOrder + 3, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics\GroundsHours\Write', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodeWizard', 'TabStatistics', 'GroundsHours', 'Write', 'Compass-USA\Data Conversion', GetDate())
+
+Select @DisplayOrder = Max(HirNode) From ESMV2.dbo.HirNodes
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'OtherLockInHours', 'OtherLockInHours', 'OtherLockInHours', @DisplayOrder + 1, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics\OtherLockInHours', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodeWizard', 'TabStatistics', 'OtherLockInHours', 'Compass-USA\Data Conversion', GetDate())
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics\OtherLockInHours'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Read', 'Read', 'Read', @DisplayOrder + 2, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics\OtherLockInHours\Read', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodeWizard', 'TabStatistics', 'OtherLockInHours', 'Read', 'Compass-USA\Data Conversion', GetDate())
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodLevel7, HirNodLevel8, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Write', 'Write', 'Write', @DisplayOrder + 3, 1, '\crothall\chimes\fin\HouseCodeSetup\HouseCodeWizard\TabStatistics\OtherLockInHours\Write', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'HouseCodeWizard', 'TabStatistics', 'OtherLockInHours', 'Write', 'Compass-USA\Data Conversion', GetDate())
+
+-- Add Read/Write security nodes for newly added fields in House Code Wizard [End]
+
+
+-- Add new columns to House Code Ad-Hoc report, Data Collector and updated the correct display order [Begin]
+
+Update dbo.AppModuleColumns Set AppModcDisplayOrder = AppModcDisplayOrder + 5 where AppModule = 1 And AppModcDisplayOrder >= 50
+Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
+Values (1, 'HcmHoucAdminHours', 'Admin Hours', 50, 1, 'compass-usa\data conversion', GetDate(), 'Decimal', 1, 'Decimal', 1, Null, Null, Null, 150, 1, 11)
+Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
+Values (1, 'HcmHoucSurgicalHours', 'Surgical Hours', 51, 1, 'compass-usa\data conversion', GetDate(), 'Decimal', 1, 'Decimal', 1, Null, Null, Null, 150, 1, 11)
+Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
+Values (1, 'HcmHoucEDHours', 'ED Hours', 52, 1, 'compass-usa\data conversion', GetDate(), 'Decimal', 1, 'Decimal', 1, Null, Null, Null, 150, 1, 11)
+Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
+Values (1, 'HcmHoucGroundsHours', 'Grounds Hours', 53, 1, 'compass-usa\data conversion', GetDate(), 'Decimal', 1, 'Decimal', 1, Null, Null, Null, 150, 1, 11)
+Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
+Values (1, 'HcmHoucOtherLockInHours', 'Other Lock-In Hours', 54, 1, 'compass-usa\data conversion', GetDate(), 'Decimal', 1, 'Decimal', 1, Null, Null, Null, 150, 1, 11)
+
+-- Add new columns to House Code Ad-Hoc report, Data Collector and updated the correct display order [End]
+
+-- Add columns to Invoice Item Ad-Hoc report [Begin]
+Update AppModuleColumns Set AppModcAdHocActive = 0 where AppModule = 3 And AppModcTitle = 'RevInvoice'
+
+Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
+Values (11, 'HcmHouseCodeJob', 'Job', 1, 1, 'compass-usa\data conversion', GetDate(), 'Int', 1, 'Int', 1, Null, 0, Null, 100, 0, Null)
+
+Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
+Values (11, 'RevTaxableService', 'Taxable Service', 2, 1, 'compass-usa\data conversion', GetDate(), 'Int', 1, 'Int', 1, Null, 0, Null, 100, 0, Null)
+
+Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
+Values (11, 'FscAccount', 'Account Code', 3, 1, 'compass-usa\data conversion', GetDate(), 'Int', 1, 'Int', 1, Null, 0, Null, 200, 0, Null)
+
+Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
+Values (11, 'RevInviQuantity', 'Quantity', 4, 1, 'compass-usa\data conversion', GetDate(), 'Decimal', 1, 'Decimal', 1, Null, 0, Null, 100, 0, Null)
+
+Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
+Values (11, 'RevInviPrice', 'Price', 5, 1, 'compass-usa\data conversion', GetDate(), 'Decimal', 1, 'Decimal', 1, Null, 0, Null, 100, 0, Null)
+
+Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
+Values (11, 'RevInviAmount', 'Total', 6, 1, 'compass-usa\data conversion', GetDate(), 'Decimal', 1, 'Decimal', 1, Null, 0, Null, 100, 0, Null)
+
+Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
+Values (11, 'AppTransactionStatusType', 'Status', 7, 1, 'compass-usa\data conversion', GetDate(), 'Int', 1, 'Int', 1, Null, 0, Null, 100, 0, Null)
+
+Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
+Values (11, 'RevInviTaxable', 'Job', 8, 1, 'compass-usa\data conversion', GetDate(), 'Bit', 1, 'Bit', 1, Null, 0, Null, 100, 0, Null)
+
+Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
+Values (11, 'RevInviShow', 'Show', 9, 1, 'compass-usa\data conversion', GetDate(), 'Bit', 1, 'Bit', 1, Null, 0, Null, 100, 0, Null)
+
+Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
+Values (11, 'RevInviDescription', 'Description', 10, 1, 'compass-usa\data conversion', GetDate(), 'Varchar', 1, Null, 1, Null, 0, Null, 300, 0, 1000)
+
+-- Add columns to Invoice Item Ad-Hoc report [End]
+
+/*
+CT updated on 20th November 2013 11PM EST
 */
