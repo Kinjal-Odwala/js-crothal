@@ -875,13 +875,20 @@ ii.Class({
 			var item = [];
 			var xml = "";
 
-			for (var index = 0; index < me.employeePayRates.length; index++) {
-				if (me.employeePayRates[index].modified) {
-					xml += '<appGenericImportPayRateApprove';
-					xml += ' id="' + me.employeePayRates[index].id + '"';
-					xml += ' approved="' + ($("#assignInputCheck" + index)[0].checked ? "1" : "0") + '"';
-					xml += ' status="' + ($("#assignInputCheck" + index)[0].checked ? "Approved" : "") + '"';
-					xml += '/>';
+			if (me.selectAll.check.checked) {
+				xml += '<appGenericImportPayRateApproveAll';
+				xml += ' id="' + me.stateMinimumWageId + '"';				
+				xml += '/>';
+			}
+			else {
+				for (var index = 0; index < me.employeePayRates.length; index++) {
+					if (me.employeePayRates[index].modified) {
+						xml += '<appGenericImportPayRateApprove';
+						xml += ' id="' + me.employeePayRates[index].id + '"';
+						xml += ' approved="' + ($("#assignInputCheck" + index)[0].checked ? "1" : "0") + '"';
+						xml += ' status="' + ($("#assignInputCheck" + index)[0].checked ? "Approved" : "") + '"';
+						xml += '/>';
+					}
 				}
 			}
 			
@@ -1021,8 +1028,14 @@ ii.Class({
 							
 						case "appGenericImport":
 							for (var index = 0; index < me.employeePayRates.length; index++) {
-								me.employeePayRates[index].column13 = ($("#assignInputCheck" + index)[0].checked ? "1" : "0");
-								me.employeePayRates[index].column14 = ($("#assignInputCheck" + index)[0].checked ? "Approved" : "");
+								if (me.selectAll.check.checked) {
+									me.employeePayRates[index].column13 = "1";
+									me.employeePayRates[index].column14 = "Approved";
+								}
+								else {
+									me.employeePayRates[index].column13 = ($("#assignInputCheck" + index)[0].checked ? "1" : "0");
+									me.employeePayRates[index].column14 = ($("#assignInputCheck" + index)[0].checked ? "Approved" : "");
+								}
 								me.employeePayRates[index].modified = false;
 							}
 							
@@ -1054,18 +1067,18 @@ function actionClickItem(objCheckBox) {
 
 	me.modified();
 
-	if (objCheckBox.checked) {
-		for (index = 0; index < me.employeePayRates.length; index++) {
-			if ($("#assignInputCheck" + index)[0].checked == false) {
-				allSelected = false;
-				break;
-			}
-		}
-	}
-	else
-		allSelected = false;
-	
-	me.selectAll.setValue(allSelected.toString());
+//	if (objCheckBox.checked) {
+//		for (index = 0; index < me.employeePayRates.length; index++) {
+//			if ($("#assignInputCheck" + index)[0].checked == false) {
+//				allSelected = false;
+//				break;
+//			}
+//		}
+//	}
+//	else
+//		allSelected = false;
+//	
+//	me.selectAll.setValue(allSelected.toString());
 	index = parseInt(objCheckBox.id.substring(objCheckBox.id.length - 1), 10);
 	if (objCheckBox.checked)
 		me.employeePayRates[index].modified = (me.employeePayRates[index].column13 != "1");
