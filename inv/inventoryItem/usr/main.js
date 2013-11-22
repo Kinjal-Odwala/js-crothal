@@ -93,7 +93,6 @@ ii.Class({
 			var me = this;
 			
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
-			
 			me.isReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
 			
 			if (me.isReadOnly) {
@@ -116,7 +115,7 @@ ii.Class({
 				$("#pageLoading").fadeIn("slow");
 
 				ii.timer.timing("Page displayed");
-				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.session.registerFetchNotify(me.sessionLoaded, me);
 	
 				me.fiscalYear.fetchingData();
 				me.fiscalPeriod.fetchingData();
@@ -849,8 +848,8 @@ ii.Class({
 			var index = me.inventoryItemGrid.activeRowIndex;
 			if (index >= 0)
 				me.inventoryItemGrid.body.deselect(index, true);
-			
-			me.setLoadCount();
+
+			me.setStatus("Loading");
 			me.uom.fetchingData();
 			me.accountCode.fetchingData();
 			me.uomStore.fetch("userId:[user]", me.uomsLoaded, me);
@@ -871,7 +870,7 @@ ii.Class({
 		accountsLoaded: function (me, activeId) {
 
 			me.accountCode.setData(me.accounts);
-			me.checkLoadCount();
+			me.setStatus("Loaded");
 		},		
 		
 		loadPopup: function() {
@@ -959,9 +958,6 @@ ii.Class({
 
 				if (!confirm("You are about to save your inventory counts. If you checked the Count Complete box you will no longer be able to access the counts for this House Code. Do you wish to continue?")) 
 					return false;
-				
-				$("#messageToUser").text("Saving");
-				$("#pageLoading").show();
 
 				for (var index = 0; index < me.inventoryItems.length; index++) {
 					if (me.inventoryItems[index].modified) {
@@ -983,11 +979,6 @@ ii.Class({
 					return false;
 				}
 
-				me.setStatus("Saving");
-			
-				$("#messageToUser").text("Saving");
-				$("#pageLoading").fadeIn("slow");
-
 				var item = new fin.inv.inventoryItem.InventoryItem(
 					0
 					, me.inventoryId
@@ -1007,6 +998,10 @@ ii.Class({
 					
 				xml = me.saveXmlBuildItem(item);
 			}			
+
+			me.setStatus("Saving");
+			$("#messageToUser").text("Saving");
+			$("#pageLoading").fadeIn("slow");
 
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
@@ -1094,7 +1089,7 @@ ii.Class({
 							break;
 					}
 				});
-				
+
 				me.modified(false);
 				me.setStatus("Saved");
 			}
@@ -1113,7 +1108,7 @@ ii.Class({
 			if (me.inventoryGrid.activeRowIndex == -1)
 				return;
 			
-			me.setStatus("Loading");
+			me.setStatus("Exporting");
 			$("#messageToUser").text("Exporting");
 			$("#pageLoading").fadeIn("slow");
 
@@ -1124,7 +1119,7 @@ ii.Class({
 		fileNamesLoaded: function(me, activeId) {
 			var excelFileName = "";
 			
-			me.setStatus("Loaded");
+			me.setStatus("Exported");
 			$("#pageLoading").fadeOut("slow");
 
 			if (me.fileNames.length == 1) {

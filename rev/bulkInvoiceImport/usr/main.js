@@ -1040,7 +1040,6 @@ ii.Class({
 				return false;
 			}
 
-			$("#pageLoading").fadeIn("slow");
 			me.status = "createBatch";
 			me.setStatus("Saving");
 			
@@ -1064,7 +1063,6 @@ ii.Class({
 			var me = this;
 
 			me.hidePopup();
-			me.setStatus("Loaded");
 			$("#AnchorSaveCancel").show();			
 			$("#pageLoading").fadeOut("slow");
 		},
@@ -1099,10 +1097,9 @@ ii.Class({
 			var item = [];
 			var xml = "";
 			
-			me.setStatus("Saving");
-			
+			me.setStatus("Saving");			
 			$("#messageToUser").text("Processing the batch, please wait...");
-			$("#pageLoading").fadeIn("slow"); 
+			$("#pageLoading").fadeIn("slow");
 
 			xml = me.saveXmlBuildInvoice();
 
@@ -1184,14 +1181,13 @@ ii.Class({
 								me.dataLoaded = false;
 								me.actionSaveItem();
 								me.hidePopup();
-								$("#popupLoading").hide();
 								setTimeout(function() {
 									me.actionBatchProcessStatus();
 								}, 5000);
 							}
 							else if (me.status == "cancelBatch") {
 								$("#pageLoading").fadeOut("slow"); 
-								
+
 								if (parseInt($(this).attr("statustype"), 10) == 6) {
 									var index = me.batchGrid.activeRowIndex;
 									me.batches[index].statusType = 6;
@@ -1213,7 +1209,6 @@ ii.Class({
 			}			
 			else {
 				me.setStatus("Error");
-				$("#popupLoading").hide();
 				alert("[SAVE FAILURE]: " + $(args.xmlNode).attr("message"));
 			}
 
@@ -1245,11 +1240,6 @@ ii.Class({
 			var popupHeight = $("#batchPopup").height();
 
 			$("#batchPopup").css({
-				"top": windowHeight/2 - popupHeight/2,
-				"left": windowWidth/2 - popupWidth/2
-			});
-
-			$("#popupLoading").css({
 				"top": windowHeight/2 - popupHeight/2,
 				"left": windowWidth/2 - popupWidth/2
 			});

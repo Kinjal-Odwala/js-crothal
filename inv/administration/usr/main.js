@@ -108,7 +108,6 @@ ii.Class({
 			var me = this;
 			
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
-			
 			me.isReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
 
 			if (me.isReadOnly) {
@@ -172,14 +171,14 @@ ii.Class({
 				$("#pageLoading").fadeIn("slow");
 
 				ii.timer.timing("Page displayed");
-				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.session.registerFetchNotify(me.sessionLoaded, me);
 				me.fiscalYear.fetchingData();
 				me.fiscalPeriod.fetchingData();
 				me.fiscalYearStore.fetch("userId:[user],", me.yearsLoaded, me);
-				}				
+			}
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
-		},	
+		},
 
 		sessionLoaded: function fin_inv_administration_UserInterface_sessionLoaded() {
 			var args = ii.args(arguments, {
@@ -1018,7 +1017,6 @@ ii.Class({
 				return;
 			
 			me.setStatus("Saving");
-			
 			$("#messageToUser").text("Saving");
 			$("#pageLoading").fadeIn("slow");
 
@@ -1071,8 +1069,7 @@ ii.Class({
 			if (me.actionType == 0 && me.inventoryGrid.activeRowIndex == -1)
 				return;
 			
-			me.setStatus("Loading");
-			
+			me.setStatus("Exporting");			
 			$("#messageToUser").text("Exporting");
 			$("#pageLoading").fadeIn("slow");
 
@@ -1118,7 +1115,7 @@ ii.Class({
 		fileNamesLoaded: function(me, activeId) {
 			var excelFileName = "";
 
-			me.setStatus("Loaded");
+			me.setStatus("Exported");
 			$("#pageLoading").fadeOut("slow");
 
 			if (me.fileNames.length == 1) {
@@ -1180,9 +1177,9 @@ ii.Class({
 					xml += '/>';
 				}
 			}
-						
-			me.setStatus("Loading");
-			
+
+			me.hidePopup();	
+			me.setStatus("Saving");
 			$("#messageToUser").text("Generating");
 			$("#pageLoading").fadeIn("slow");
 
@@ -1209,15 +1206,14 @@ ii.Class({
 
 			if (status == "success") {
 				me.modified(false);
-				me.setStatus("Loaded");
+				me.setStatus("Saved");
 				alert("Inventory list generated successfully.");
-				me.hidePopup();
 			}
 			else {
 				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while generating Inventory list: " + $(args.xmlNode).attr("message"));
 			}
-			
+
 			$("#pageLoading").fadeOut("slow");
 		}
 	}
