@@ -589,13 +589,13 @@ ii.Class({
         },
 
         exportItemsLoaded: function (me, activeId) {
-
+           
             if (me.exports.length <= 0) {
                 $("#pageLoading").hide();
                 alert("Budgeting data is either already exported or not available or not approved.");
                 return;
             }
-
+           
             var pItems = [];
             $.each(me.exports, function (index, bItem) {
                 if (bItem.currentExported == "false")
@@ -635,14 +635,27 @@ ii.Class({
             var item = args.item;
             var xml = "";
 
-            $.each(me.orgHierarchy.selectedNodes, function (index, node) {
+            var isHouseCodeMode = $('#rdHouseCode').is(':checked');
+            if (!isHouseCodeMode) {
                 xml += '<budAnnualBudgetExportUpdate';
                 xml += ' id="' + item.id + '"';
-                xml += ' hirNode="' + node.id + '"';
+                xml += ' hirNode=""';
                 xml += ' yearId="' + me.fiscalYearId + '"';
                 xml += ' jobId="' + me.jobId + '"';
+                xml += ' jdeCompanys="' + $('#JDECompany').val() + '"';
                 xml += '/>';
-            });
+            }
+            else {
+
+                $.each(me.orgHierarchy.selectedNodes, function (index, node) {
+                    xml += '<budAnnualBudgetExportUpdate';
+                    xml += ' id="' + item.id + '"';
+                    xml += ' hirNode="' + node.id + '"';
+                    xml += ' yearId="' + me.fiscalYearId + '"';
+                    xml += ' jobId="' + me.jobId + '"';
+                    xml += '/>';
+                });
+            }
 
             ii.trace("Xml Build", ii.traceTypes.Information, "Info");
 
