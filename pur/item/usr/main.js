@@ -3,6 +3,7 @@ ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.pur.item.usr.defs" );
@@ -28,6 +29,7 @@ ii.Class({
 			me.status = "";
 			me.lastSelectedRowIndex = -1;
 			me.validateControl = false;
+			me.loadCount = 0;
 						
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -49,14 +51,11 @@ ii.Class({
 			
 			me.defineFormControls();
 			me.configureCommunications();
+			me.setStatus("Loading");
+			me.modified(false);
 			
 			$(window).bind("resize", me, me.resize );
-			$(document).bind("keydown", me, me.controlKeyProcessor);	
-			
-			me.itemAccount.fetchingData();
-			me.accountStore.fetch("userId:[user]", me.accountsLoaded, me);				
-			me.itemStatusesLoaded();
-			me.modified(false);
+			$(document).bind("keydown", me, me.controlKeyProcessor);
 			
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
@@ -66,13 +65,30 @@ ii.Class({
 		authorizationProcess: function fin_pur_item_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
-
+			
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 			me.itemsReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
-			$("#pageLoading").hide();	
-			me.controlVisible();
 
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
+
+				ii.timer.timing("Page displayed");
+				me.loadCount = 1;
+				me.session.registerFetchNotify(me.sessionLoaded, me);
+				me.itemAccount.fetchingData();
+				me.accountStore.fetch("userId:[user]", me.accountsLoaded, me);				
+				me.itemStatusesLoaded();				
+				me.controlVisible();
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},
 		
 		sessionLoaded: function fin_pur_item_UserInterface_sessionLoaded(){
@@ -88,9 +104,9 @@ ii.Class({
 			var me = fin.purItemUi;
 			
 			if (me != undefined)
-				me.itemGrid.setHeight($(window).height() - 130);
+				me.itemGrid.setHeight($(window).height() - 155);
 			
-			$("#itemContentAreaContainer").height($(window).height() - 175);		
+			$("#itemContentAreaContainer").height($(window).height() - 200);		
 		},
 		
 		defineFormControls: function() {
@@ -105,19 +121,19 @@ ii.Class({
 					id: "saveAction", 
 					brief: "Save Item (Ctrl+S)", 
 					title: "Save the Item",
-					actionFunction: function(){ me.actionSaveItem(); }
+					actionFunction: function() { me.actionSaveItem(); }
 				})
 				.addAction({
 					id: "newAction",
 					brief: "New Item (Ctrl+N)", 
 					title: "Add new Item",
-					actionFunction: function(){ me.actionNewItem(); }
+					actionFunction: function() { me.actionNewItem(); }
 				})
 				.addAction({
 					id: "undoAction", 
 					brief: "Undo Changes (Ctrl+U)", 
 					title: "Undo changes to the selected Item",
-					actionFunction: function(){ me.actionUndoItem(); }
+					actionFunction: function() { me.actionUndoItem(); }
 				})
 				
 			me.anchorNew = new ui.ctl.buttons.Sizeable({
@@ -141,6 +157,30 @@ ii.Class({
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Save&nbsp;&nbsp;</span>",
 				clickFunction: function() { me.actionSaveItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorImport = new ui.ctl.buttons.Sizeable({
+				id: "AnchorImport",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Import&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionImportItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorUpload = new ui.ctl.buttons.Sizeable({
+				id: "AnchorUpload",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Upload&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionUploadItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorUploadCancel = new ui.ctl.buttons.Sizeable({
+				id: "AnchorUploadCancel",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionUploadCancelItem(); },
 				hasHotState: true
 			});
 			
@@ -169,7 +209,7 @@ ii.Class({
 			
 			me.itemStatus = new ui.ctl.Input.DropDown.Filtered({
 		        id: "ItemStatus",
-				formatFunction: function( type ){ return type.name; }
+				formatFunction: function( type ) { return type.name; }
 		    });
 			
 			me.itemStatus.makeEnterTab()
@@ -264,8 +304,8 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
 			
 			me.itemAccount = new ui.ctl.Input.DropDown.Filtered({
-				id : "ItemAccount",
-				formatFunction: function( type ){ return type.code + " - " + type.description; },
+				id: "ItemAccount",
+				formatFunction: function( type ) { return type.code + " - " + type.description; },
 				changeFunction: function() { me.modified(); }
 		    });
 			
@@ -291,14 +331,12 @@ ii.Class({
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
-					
-				var message = "";
-				var valid = true;
+
 				var enteredText = me.itemPrice.getValue();
 
-				if(enteredText == '') return;
-				
-				if(/^[0-9]+(\.[0-9]+)?$/.test(me.itemPrice.getValue()) == false)
+				if (enteredText == "") return;
+
+				if (/^[0-9]+(\.[0-9]+)?$/.test(enteredText) == false)
 					this.setInvalid("Please enter valid Price.");
 			});
 						
@@ -367,6 +405,12 @@ ii.Class({
 			});	
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
@@ -376,8 +420,30 @@ ii.Class({
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
+			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		itemStatusesLoaded: function() {
@@ -410,7 +476,7 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 				
-			if(me.searchInput.getValue().length < 3) {
+			if (me.searchInput.getValue().length < 3) {
 				me.searchInput.setInvalid("Please enter search criteria (minimum 3 characters).");
 				return false;
 			}			
@@ -419,8 +485,7 @@ ii.Class({
 				me.searchInput.updateStatus();
 			}
 			
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").show();
+			me.setLoadCount();
 						
 			me.itemStore.fetch("searchValue:" + me.searchInput.getValue() 
 				+ ",active:" + (me.itemStatus.indexSelected == -1 ? -1 : me.itemStatuses[me.itemStatus.indexSelected].number) 
@@ -458,7 +523,7 @@ ii.Class({
 			me.itemGrid.setData(me.items);
 			
 			me.controlVisible();
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 		},
 				
 		accountsLoaded: function(me, activeId) {
@@ -468,7 +533,7 @@ ii.Class({
 			me.validateControl = true;
 			me.resizeControls();
 
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 		},
 		
 		itemSelect: function() {
@@ -514,6 +579,7 @@ ii.Class({
 				me.itemId = 0;	
 				
 			me.controlVisible();	
+			me.setStatus("Loaded");	
 		},
 
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
@@ -583,6 +649,8 @@ ii.Class({
 			}
 			else
 				me.resetControls();
+				
+			me.setStatus("Loaded");
 		},
 		
 		actionNewItem: function() {
@@ -595,13 +663,85 @@ ii.Class({
 			me.resetControls();
 			me.itemGrid.body.deselectAll();
 			me.status = "new";
+			me.setStatus("Loaded");
+		},
+
+		actionImportItem: function(type) {
+			var me = this;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
+			$("iframe")[0].contentWindow.document.getElementById("FormReset").click();
+			me.setStatus("Normal");
+			me.anchorUpload.display(ui.cmn.behaviorStates.disabled);
+			showFrame();
+		},
+
+		actionUploadItem: function() {
+			var me = this;
+			var fileName = "";			
+
+			hideFrame();
+			me.setStatus("Uploading");
+			$("#messageToUser").text("Uploading");
+			$("#pageLoading").fadeIn("slow"); 
+			$("iframe")[0].contentWindow.document.getElementById("FileName").value = "";
+			$("iframe")[0].contentWindow.document.getElementById("UploadButton").click();
+		
+			me.intervalId = setInterval(function() {
+				
+				if ($("iframe")[0].contentWindow.document.getElementById("FileName").value != "")	{
+					fileName = $("iframe")[0].contentWindow.document.getElementById("FileName").value;					
+					clearInterval(me.intervalId);
+					
+					if (fileName == "Error") {
+						alert("Unable to upload the file. Please try again.")
+						me.setStatus("Error");
+						$("#pageLoading").fadeOut("slow");
+					}
+					else {
+						$("#messageToUser").text("Importing");
+						me.setStatus("Importing");
+						me.actionImport(fileName);
+					}
+				}			
+				
+			}, 1000);
 		},
 		
+		actionUploadCancelItem: function() {
+			var me = this;
+			
+			hideFrame();
+		},
+		
+		actionImport: function(fileName) {
+			var me = this;
+			var item = [];
+			var xml = "";
+
+			me.status = "import";
+			xml = '<purItemImport';
+			xml += ' fileName="' + fileName + '"';
+			xml += '/>';
+			
+			// Send the object back to the server as a transaction
+			me.transactionMonitor.commit({
+				transactionType: "itemUpdate",
+				transactionXml: xml,
+				responseFunction: me.saveResponseItem,
+				referenceData: {me: me, item: item}
+			});
+			
+			return true;
+		},
+
 		actionSaveItem: function() {
 			var args = ii.args(arguments,{});
 			var me = this;			
 			
-			if(me.itemsReadOnly) return;
+			if (me.itemsReadOnly) return;
 				
 			if (me.status == "") {
 				if (me.lastSelectedRowIndex == -1)
@@ -613,13 +753,15 @@ ii.Class({
 			me.validator.forceBlur();		
 			
 			// Check to see if the data entered is valid
-			if( !me.validator.queryValidity(true) ){
-				alert( "In order to save, the errors on the page must be corrected.");
+			if (!me.validator.queryValidity(true)) {
+				alert("In order to save, the errors on the page must be corrected.");
 				return false;
 			}
 			
+			me.setStatus("Saving");
+			
 			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 			
 			var item = new fin.pur.item.Item(
 				me.itemId
@@ -690,38 +832,85 @@ ii.Class({
 			if (status == "success") {
 				me.modified(false);
 
-				$(args.xmlNode).find("*").each(function() {
-					switch (this.tagName) {
+				if (me.status == "import") {
+					me.setStatus("Imported");
+				}
+				else {
+					$(args.xmlNode).find("*").each(function() {
+						switch (this.tagName) {
 
-						case "purItem":
-						
-							if (me.status == "new") {
-								me.itemId = parseInt($(this).attr("id"), 10);
-								item.id = me.itemId;
-								me.items.push(item);
-								me.lastSelectedRowIndex = me.items.length - 1;
-							}
-							else {
-								me.lastSelectedRowIndex = me.itemGrid.activeRowIndex;
-								me.items[me.lastSelectedRowIndex] = item;
-							}
-							
-							me.status = "";
-							me.itemGrid.setData(me.items);
-							me.itemGrid.body.select(me.lastSelectedRowIndex);
-												
-							break;
-					}
-				});
+							case "purItem":
+
+								if (me.status == "new") {
+									me.itemId = parseInt($(this).attr("id"), 10);
+									item.id = me.itemId;
+									me.items.push(item);
+									me.lastSelectedRowIndex = me.items.length - 1;
+								}
+								else {
+									me.lastSelectedRowIndex = me.itemGrid.activeRowIndex;
+									me.items[me.lastSelectedRowIndex] = item;
+								}
+
+								me.itemGrid.setData(me.items);
+								me.itemGrid.body.select(me.lastSelectedRowIndex);
+
+								break;
+						}
+					});
+					
+					me.setStatus("Saved");
+				}
+
+				me.status = "";
 			}
 			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating Item details: " + $(args.xmlNode).attr("message"));
 			}
-			
-			$("#pageLoading").hide();
+
+			$("#pageLoading").fadeOut("slow");
 		}
 	}
 });
+
+function showFrame() {
+	
+	var windowWidth = document.documentElement.clientWidth;
+	var windowHeight = document.documentElement.clientHeight;
+	var frameWidth = $("#divFrame").width();
+	var frameHeight = $("#divFrame").height();
+	
+	$("#divFrame").css({
+		"top": windowHeight/2 - frameHeight/2,
+		"left": windowWidth/2 - frameWidth/2
+	});
+	
+	$("#backgroundPopup").css({
+		"height": windowHeight,
+		"opacity": "0.5"
+	});	
+
+	$("#backgroundPopup").fadeIn("slow");
+	$("#divFrame").fadeIn("slow");	
+}
+
+function hideFrame() {
+
+	$("#backgroundPopup").fadeOut("slow");
+	$("#divFrame").fadeOut("slow");
+}
+
+function onFileChange() {
+	
+	var fileName = $("iframe")[0].contentWindow.document.getElementById("UploadFile").value;	
+	var fileExtension = fileName.substring(fileName.lastIndexOf("."));
+	
+	if (fileExtension == ".xlsx")
+		fin.purItemUi.anchorUpload.display(ui.cmn.behaviorStates.enabled);
+	else
+		alert("Invalid file format. Please select the correct XLSX file.");
+}
 
 function main() {
 	fin.purItemUi = new fin.pur.item.UserInterface();

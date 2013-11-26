@@ -3,6 +3,7 @@ ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "fin.pay.ceridianCompany.usr.defs" );
 
 ii.Style( "fin.cmn.usr.common", 1 );
@@ -24,6 +25,7 @@ ii.Class({
 			me.ceridianFrequencyTypes = [];
 			me.duplicateCode = "";
 			me.duplicateDescription = "";
+			me.loadCount = 0;
 			
 			me.gateway = ii.ajax.addGateway("pay", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -46,12 +48,11 @@ ii.Class({
 			
 			me.defineFormControls();			
 			me.configureCommunications();
+			me.setStatus("Loading");
+			me.modified(false);
 			
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$(window).bind("resize", me, me.resize);
-
-			me.frequencyTypeStore.fetch("userId:[user]", me.frequencyTypesLoaded, me);	
-			me.modified(false);
 			
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
@@ -61,14 +62,28 @@ ii.Class({
 		authorizationProcess: function fin_pay_ceridianCompany_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
+			
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
+			
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
 
-			me.ceridianCompaniesReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
-			$("#pageLoading").hide();
-			
-			me.controlVisible();
-			
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+				ii.timer.timing("Page displayed");
+				me.loadCount = 1;
+				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.frequencyTypeStore.fetch("userId:[user]", me.frequencyTypesLoaded, me);
+				me.ceridianCompaniesReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
+				me.controlVisible();
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},
 		
 		sessionLoaded: function fin_pay_ceridianCompany_UserInterface_sessionLoaded(){
@@ -83,7 +98,7 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 			
-			fin.payCeridianCompanyUi.ceridianCompany.setHeight($(window).height() - 105);
+			fin.payCeridianCompanyUi.ceridianCompany.setHeight($(window).height() - 130);
 		},
 		
 		defineFormControls: function(){
@@ -224,6 +239,12 @@ ii.Class({
 			});	
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
@@ -233,8 +254,30 @@ ii.Class({
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
+			var me = this;
 		
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		checkForDuplicates: function() {
@@ -285,12 +328,12 @@ ii.Class({
 				
 			me.ceridianCompany.setData(me.companies);
 			
-			$("#pageLoading").hide();
 			me.resizeControls();
 			me.companyCountOnLoad = me.companies.length - 1;			
 			me.saveFrequencyTypes(me);
 			
 			me.controlVisible();
+			me.checkLoadCount();
 		},
 		
 		saveFrequencyTypes: function(me) {
@@ -333,10 +376,9 @@ ii.Class({
 			
 			if (!parent.fin.cmn.status.itemValid())
 				return;
-				
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").show();
-	
+							
+			me.setLoadCount();
+			
 			if (me.ceridianCompany.activeRowIndex >= 0)
 				me.ceridianCompany.body.deselect(me.ceridianCompany.activeRowIndex, true);
 			me.companyStore.reset();
@@ -393,9 +435,11 @@ ii.Class({
 			var xml = me.saveXmlBuild(item);
 
 			if (item.length <= 0) return; //no records modified
+			
+			me.setStatus("Saving");
 							
 			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
@@ -444,12 +488,15 @@ ii.Class({
 				
 			if (status == "success") {
 				me.modified(false);
+				me.setStatus("Saved");
 				me.actionUndoItem();
 			}
 			else {
-				$("#pageLoading").hide();
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating Ceridian Company details: " + $(args.xmlNode).attr("message"));
 			}
+			
+			$("#pageLoading").fadeOut("slow");
 		}
 	}
 });

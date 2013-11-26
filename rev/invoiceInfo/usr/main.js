@@ -3,6 +3,7 @@ ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.cmn.usr.text" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "fin.rev.invoiceInfo.usr.defs" );
 
 ii.Style( "style", 1 );
@@ -22,13 +23,13 @@ ii.Class({
 			var me = this;
 			var searchString = location.search.substring(1);
 			var pos = searchString.indexOf("=");
-			
+
 			me.invoiceLogoTypes = [];
 			me.invoiceAddressTypes = [];
 			me.serviceLocations = [];
 			me.invoiceId = searchString.substring(pos + 1);
 			me.houseCode = 0;
-				
+
 			var index = parent.fin.revMasterUi.lastSelectedRowIndex;
 			if (index >= 0) {
 				me.invoice = parent.fin.revMasterUi.invoices[index];
@@ -46,7 +47,7 @@ ii.Class({
 			me.session = new ii.Session(me.cache);
 			
 			me.authorizer = new ii.ajax.Authorizer(me.gateway);
-			me.authorizePath = "rev\\invoiceInfo";
+			me.authorizePath = "\\crothall\\chimes\\fin\\AccountsReceivable\\Invoicing/AR";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
 					me.authorizationProcess.apply(me);
@@ -61,9 +62,9 @@ ii.Class({
 			me.billTo.fetchingData();
 			me.state.fetchingData();
 			
+			$("#pageBody").show();
 			$(window).bind("resize", me, me.resize);
-			$(document).bind("keydown", me, me.controlKeyProcessor);
-			
+
 			me.taxExemptsLoaded();
 			me.loadInvoiceTypes();
 			
@@ -71,19 +72,21 @@ ii.Class({
 			me.stateTypeStore.fetch("userId:[user],", me.statesLoaded, me);
 		},
 		
-		authorizationProcess: function fin_rev_invoiceInfo_UserInterface_authorizationProcess(){
+		authorizationProcess: function fin_rev_invoiceInfo_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
 
-			$("#pageLoading").hide();			
-
-			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 				
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+			if (me.isAuthorized) {
+				ii.timer.timing("Page displayed");
+				me.session.registerFetchNotify(me.sessionLoaded, me);
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},	
 		
-		sessionLoaded: function fin_rev_invoiceInfo_UserInterface_sessionLoaded(){
+		sessionLoaded: function fin_rev_invoiceInfo_UserInterface_sessionLoaded() {
 			var args = ii.args(arguments, {
 				me: {type: Object}
 			});
@@ -97,7 +100,7 @@ ii.Class({
 			
 		},
 		
-		defineFormControls: function(){
+		defineFormControls: function() {
 			var me = this;
 			
 			me.taxExempt = new ui.ctl.Input.DropDown.Filtered({
@@ -476,6 +479,8 @@ ii.Class({
 			});
 
 			parent.parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				parent.fin.revMasterUi.setStatus("Edit");
 		},
 		
 		taxExemptsLoaded: function() {
@@ -626,8 +631,9 @@ ii.Class({
 			var me = this;
 			var index = 0;
 
+			parent.fin.revMasterUi.hidePageLoading("");
+			
 			if (me.invoice == undefined) {
-				$("#pageLoading").hide();
 				me.resizeControls();
 				return;
 			}				

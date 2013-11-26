@@ -4,6 +4,7 @@ ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "fin.app.hierarchy.usr.defs" );
 ii.Import( "fin.cmn.usr.treeView" );
 
@@ -62,6 +63,7 @@ ii.Class({
 			me.nodeAction = "";
 			me.preview = false;
 			me.expand = false;
+			me.loadCount = 0;
 
 			me.levels["ENT"] = "";
 			me.levels["SVP"] = "ENT";
@@ -96,7 +98,9 @@ ii.Class({
 			me.session.displaySetStandard();
 
 			me.defineFormControls();
-			me.configureCommunications();	
+			me.configureCommunications();
+			me.setStatus("Loading");
+			me.modified(false);	
 
 			$(window).bind("resize", me, me.resize );
 			$(document).bind("keydown", me, me.controlKeyProcessor);
@@ -106,13 +110,9 @@ ii.Class({
 				$("input[id^='chkNodeM']").attr("checked", this.checked);
 			});
 
-			ii.trace("Hierarchy Nodes Loading", ii.traceTypes.Information, "Info");
-			me.level.fetchingData();
-			me.hirLevelStore.fetch("userId:[user],hierarchy:2", me.hirLevelsLoaded, me);
-			me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
+			ii.trace("Hierarchy Nodes Loading", ii.traceTypes.Information, "Info");			
 			me.hierarchyTreeMouseDownEventSetup();
-			me.movableNodeEventSetup();
-			me.modified(false);
+			me.movableNodeEventSetup();			
 			
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
@@ -217,10 +217,8 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 
-			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
-			me.isReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
-			ii.timer.timing("Page displayed");
-            me.session.registerFetchNotify(me.sessionLoaded, me);		
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
+			me.isReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");			
 
 			if (me.isReadOnly) {
 				$("#actionMenu").hide();
@@ -229,6 +227,25 @@ ii.Class({
 				$("#AnchorUndo").hide();
 				$("#hierarchyAreaRight").hide();
 			}
+			
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
+				
+				ii.timer.timing("Page displayed");
+            	me.session.registerFetchNotify(me.sessionLoaded, me);
+				me.level.fetchingData();
+				me.hirLevelStore.fetch("userId:[user],hierarchy:2", me.hirLevelsLoaded, me);
+				me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},
 
 		sessionLoaded: function fin_app_hierarchy_UserInterface_sessionLoaded() {
@@ -241,7 +258,7 @@ ii.Class({
 
 		resize: function fin_app_hierarchy_UserInterface_resize() {
 
-			$("#hirContainer").height($(window).height() - 130);
+			$("#hirContainer").height($(window).height() - 155);
 		},
 
 		defineFormControls: function fin_app_hierarchy_UserInterface_defineFormControls() {
@@ -480,17 +497,45 @@ ii.Class({
 			});
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
 		},
-	
+		
 		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-
+			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		hierarchyTreeMouseDownEventSetup: function() {
@@ -680,8 +725,7 @@ ii.Class({
 				}
 			}
 
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").show();
+			me.setLoadCount();
 
 			ii.trace("Logged in user info loaded", ii.traceTypes.Information, "Info");
 			me.hirNodeStore.reset();
@@ -733,6 +777,7 @@ ii.Class({
 				criteria = "hirLevel:" + levelId + ",title:" + searchText;
 			}
 			
+			me.setLoadCount();
 			me.hirNodeStore.reset();
 			me.hirNodeStore.fetch("userId:[user]," + criteria, me.hirNodesLoaded, me);
 		},
@@ -749,8 +794,7 @@ ii.Class({
 			}
 
 			if (!found) {
-				$("#messageToUser").text("Loading");
-				$("#pageLoading").show();
+				me.setLoadCount();
 				ii.trace("Hirnodes Loading", ii.traceTypes.Information, "Info");
 				me.hirNodeStore.fetch("userId:[user],hirNodeSnapshotId:" + me.hirNodeCurrentId + ",hirNodeSearchId:" + me.hirNodeCurrentId + ",ancestors:true", me.hirNodesLoaded, me);
 			}
@@ -883,10 +927,11 @@ ii.Class({
 				}
 
 				me.expand = false;
-				me.hirNodesTemp = [];
-				$("#pageLoading").hide();
+				me.hirNodesTemp = [];				
 				ii.trace("Hirnodes Loaded", ii.traceTypes.Information, "Info");
 			}
+			
+			me.checkLoadCount();
 		},
 
 		actionAddNodes: function(storeNodes) {
@@ -913,7 +958,7 @@ ii.Class({
 				me.actionNodeAppend(levelBrief, hirNode, hirNodeTitle, hirParentNode, childNodeCount);
 			}
 
-			$("#pageLoading").hide();
+			$("#pageLoading").fadeOut("slow");
 
 			if (me.levelClass != "" ) {
 				$("#span" + me.hirNode).replaceClass("loading", me.levelClass);
@@ -1191,6 +1236,7 @@ ii.Class({
 				me.levelClass = me.hirNodesList[nodeIndex].levelBrief.toLowerCase();
 				me.expand = true;
 				$("#span" + nodeId).replaceClass(me.levelClass, "loading");
+				me.setLoadCount();
 				me.hirNodeStore.fetch("userId:[user],hirNodeSnapshotId:" + nodeId + ",ancestors:true", me.hirNodesLoaded, me);
 			}
 		},
@@ -1509,6 +1555,7 @@ ii.Class({
 			$("#ulEditP").empty();
 			me.loadPopup("hierarchyPreviewPopup");
 			me.preview = true;
+			me.setLoadCount();
 			me.hirNodeStore.reset();
 			me.hirNodeStore.fetch("userId:[user],preview:1", me.hirNodesLoaded, me);
 		},
@@ -1686,6 +1733,7 @@ ii.Class({
 
 			me.hidePopup("hierarchyPopup");
 			me.nodeAction = "";
+			me.setStatus("Loaded");
 		},
 
 		actionClickItem: function(objCheckBox) {
@@ -1779,7 +1827,8 @@ ii.Class({
 				item = me.hirNodesList[nodeIndex];
 			}			
 
-			me.actionSaveItem(item);				
+			me.actionSaveItem(item);
+			me.setStatus("Loaded");				
 		},
 
 		saveXmlBuild: function() {
@@ -1849,7 +1898,7 @@ ii.Class({
 
 			if (me.nodeAction != "reset")
 				$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
@@ -1872,8 +1921,6 @@ ii.Class({
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
 
-			$("#pageLoading").hide();
-
 			if (status == "success") {
 				$(args.xmlNode).find("*").each(function() {
 					switch (this.tagName) {
@@ -1885,11 +1932,14 @@ ii.Class({
 				});
 				ii.trace("Save Success", ii.traceTypes.Information, "Info");
 				me.updateNode(item);
-				me.modified(false);
+				me.modified(false);				
 			}
 			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating the hirnode snapshot information: " + $(args.xmlNode).attr("message"));
 			}
+			
+			$("#pageLoading").fadeOut("slow");
 		}
 	}
 });

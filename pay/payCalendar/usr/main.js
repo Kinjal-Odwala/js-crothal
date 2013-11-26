@@ -2,6 +2,7 @@ ii.Import( "ii.krn.sys.ajax" );
 ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.pay.payCalendar.usr.defs" );
@@ -26,6 +27,7 @@ ii.Class({
 			
 			me.yearId = 0;
 			me.frequencyTypeId = 0;
+			me.loadCount = 0;
 			
 			me.gateway = ii.ajax.addGateway("pay", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -48,14 +50,11 @@ ii.Class({
 			
 			me.defineFormControls();			
 			me.configureCommunications();
+			me.setStatus("Loading");
 			me.modified(false);
 			
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$(window).bind("resize", me, me.resize);
-			
-			me.payFrequency.fetchingData();
-			me.fiscalYearStore.fetch("userId:[user]", me.fiscalYearsLoaded, me);
-			me.frequencyTypeStore.fetch("userId:[user]", me.frequencyTypesLoaded, me);
 			
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
@@ -65,14 +64,30 @@ ii.Class({
 		authorizationProcess: function fin_pay_payCalendar_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
+			
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
+			
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
 
-			me.calendarReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
-			$("#pageLoading").hide();
-			
-			me.controlVisible();
-			
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+				ii.timer.timing("Page displayed");
+				me.loadCount = 2;
+				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.payFrequency.fetchingData();
+				me.fiscalYearStore.fetch("userId:[user]", me.fiscalYearsLoaded, me);
+				me.frequencyTypeStore.fetch("userId:[user]", me.frequencyTypesLoaded, me);
+				me.calendarReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
+				me.controlVisible();
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},
 		
 		sessionLoaded: function fin_pay_payCalendar_UserInterface_sessionLoaded(){
@@ -87,9 +102,9 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 			
-			fin.payCalendarUi.fiscalYearGrid.setHeight($(window).height() - 80);	
-			fin.payCalendarUi.payPeriodGrid.setHeight($(window).height() - 165);	
-			$("#payPeriodsLoading").height($(window).height() - 158);
+			fin.payCalendarUi.fiscalYearGrid.setHeight($(window).height() - 105);	
+			fin.payCalendarUi.payPeriodGrid.setHeight($(window).height() - 190);	
+			$("#payPeriodsLoading").height($(window).height() - 183);
 		},
 			
 		defineFormControls: function() {
@@ -273,6 +288,12 @@ ii.Class({
 			});
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
@@ -282,8 +303,30 @@ ii.Class({
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
+			var me = this;
 		
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		controlKeyProcessor: function() {
@@ -340,6 +383,7 @@ ii.Class({
 			me.fiscalYearGrid.setData(me.fiscalYears);
 			me.controlVisible();
 			me.resizeControls();
+			me.checkLoadCount();
 		},
 		
 		frequencyTypesLoaded: function fin_pay_UserInterface_frequencyTypesLoaded(me, activeId) {
@@ -347,12 +391,13 @@ ii.Class({
 			me.payFrequency.setData(me.frequencyTypes);
 			me.payFrequency.select(0, me.payFrequency.focused);
 			me.frequencyTypeId = me.payFrequency.data[me.payFrequency.indexSelected].id;
+			me.checkLoadCount();
 		},
 		
 		payPeriodsLoaded: function fin_pay_UserInterface_payPeriodsLoaded(me, activeId) {
 	
 			me.payPeriodGrid.setData(me.payPeriods);
-			$("#payPeriodsLoading").hide();
+			me.checkLoadCount();
 		},
 		
 		actionItemSelect: function() { 
@@ -367,7 +412,7 @@ ii.Class({
 				me.yearId = me.fiscalYearGrid.data[index].id;
 				me.fiscalYear.setValue(me.fiscalYearGrid.data[index].title);
 
-				$("#payPeriodsLoading").show();								
+				me.setLoadCount();							
 				me.payPeriodStore.fetch("fiscalYearId:" + me.yearId + ",frequencyType:" + me.frequencyTypeId + ",userId:[user]", me.payPeriodsLoaded, me);
 			}
 			else
@@ -399,9 +444,9 @@ ii.Class({
 				
 			if (me.fiscalYearGrid.activeRowIndex < 0)
 				return;
+				
+			me.setStatus("Loading");
 			
-  			$("#payPeriodsLoading").show();
-
 			if (me.payPeriodGrid.activeRowIndex >= 0)
 				me.payPeriodGrid.body.deselect(me.payPeriodGrid.activeRowIndex, true);
 			me.payPeriodStore.reset();	
@@ -487,8 +532,10 @@ ii.Class({
 			if (xml == "")
 				return;
 				
+			me.setStatus("Saving");
+				
 			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();	
+			$("#pageLoading").fadeIn("slow");
 
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
@@ -541,7 +588,6 @@ ii.Class({
 			var status = $(args.xmlNode).attr("status");
 
 			if (status == "success") {
-				me.modified(false);
 
 				$(args.xmlNode).find("*").each(function() {
 
@@ -563,12 +609,16 @@ ii.Class({
 							break;
 					}
 				});
+				
+				me.modified(false);
+				me.setStatus("Saved");
 			}
 			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating Pay Calendar details: " + $(args.xmlNode).attr("message"));
 			}
 			
-			$("#pageLoading").hide();
+			$("#pageLoading").fadeOut("slow");
 		}
 	}
 });

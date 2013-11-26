@@ -38,6 +38,7 @@ ii.Class({
             me.hirNodePreviousSelected = 0;
             me.fiscalYearId = 0;
             me.jobId = 0;
+			me.loadCount = 0;
 
             me.gateway = ii.ajax.addGateway("bud", ii.config.xmlProvider);
             me.cache = new ii.ajax.Cache(me.gateway);
@@ -61,17 +62,14 @@ ii.Class({
             me.defineFormControls();
             me.configureCommunications();
             me.modified(false);
+			me.setStatus("Loading");
 
             $(window).bind("resize", me, me.resize);
             $(document).bind("keydown", me, me.controlKeyProcessor);
-
-            me.fiscalYear.fetchingData();
+			
+			me.fiscalYear.fetchingData();
             me.yearStore.fetch("userId:[user],", me.yearsLoaded, me);
-            me.jdeCompanysStore.fetch("userId:[user],", me.jdeCompanysLoaded, me);
-            $("#hirNodeLoading").show();
-            ii.trace("Hierarchy Nodes Loading", ii.traceTypes.Information, "Info");
-            me.hirNodeStore.fetch("userId:[user],hierarchy:2,", me.hirNodesLoaded, me);
-
+			me.jdeCompanysStore.fetch("userId:[user],", me.jdeCompanysLoaded, me);
 
             var toggleDisplay = function () {
                 var isHouseCodeMode = $('#rdHouseCode').is(':checked');
@@ -101,19 +99,29 @@ ii.Class({
 
             $('#rdHouseCode').attr('checked', true);
             toggleDisplay();
-
         },
 
         authorizationProcess: function fin_bud_approveBudget_UserInterface_authorizationProcess() {
             var args = ii.args(arguments, {});
             var me = this;
 
-            $("#pageLoading").hide();
-
             me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
 
+			$("#pageLoading").hide();
+			$("#pageLoading").css({
+				"opacity": "0.5",
+				"background-color": "black"
+			});
+			$("#messageToUser").css({ "color": "white" });
+			$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+			$("#pageLoading").fadeIn("slow");
+			
             ii.timer.timing("Page displayed");
-            me.session.registerFetchNotify(me.sessionLoaded, me);
+			me.loadCount = 1;
+            me.session.registerFetchNotify(me.sessionLoaded, me);            
+			$("#hirNodeLoading").show();
+            ii.trace("Hierarchy Nodes Loading", ii.traceTypes.Information, "Info");
+			me.hirNodeStore.fetch("userId:[user],hierarchy:2,", me.hirNodesLoaded, me);
         },
 
         sessionLoaded: function fin_bud_approveBudget_UserInterface_sessionLoaded() {
@@ -127,7 +135,7 @@ ii.Class({
         resize: function fin_bud_approveBudget_UserInterface_resize() {
             var args = ii.args(arguments, {});
             var me = this;
-            var offset = 105;
+            var offset = 130;
 
             $("#hirContainer").height($(window).height() - offset);
             $("#detailContainer").height($(window).height() - offset);
@@ -318,14 +326,46 @@ ii.Class({
             }
         },
 
-        modified: function () {
+        setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
+		dirtyCheck: function(me) {
+
+			return !fin.cmn.status.itemValid();
+		},
+		
+		modified: function () {
             var args = ii.args(arguments, {
                 modified: { type: Boolean, required: false, defaultValue: true }
             });
             var me = this;
 
             parent.parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
         },
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
+		},
 
         resizeControls: function () {
             var me = this;
@@ -429,7 +469,7 @@ ii.Class({
             if (me.appUnit.getValue() == "") return;
 
             $("#AppUnitText").addClass("Loading");
-
+			
             me.unitStore.fetch("userId:[user],unitBrief:" + me.appUnit.getValue() + ",", me.actionUnitsLoaded, me);
         },
 
@@ -458,13 +498,14 @@ ii.Class({
             }
 
             if (!found) {
-                ii.trace("Hirnodes Loading", ii.traceTypes.Information, "Info");
-                $("#hirNodeLoading").show();
-                me.hirOrgStore.reset();
-                me.hirOrgStore.fetch("userId:[user],hirOrgId:" + me.hirNodeCurrentId + ",hirNodeSearchId:" + me.hirNodeCurrentId + ",ancestors:true", me.hirOrgsLoaded, me);
-            }
-            else
-                me.selectNode();
+				ii.trace("Hirnodes Loading", ii.traceTypes.Information, "Info");
+				//$("#hirNodeLoading").show();
+				me.setLoadCount();
+				me.hirOrgStore.reset();
+				me.hirOrgStore.fetch("userId:[user],hirOrgId:" + me.hirNodeCurrentId + ",hirNodeSearchId:" + me.hirNodeCurrentId + ",ancestors:true", me.hirOrgsLoaded, me);
+			}
+			else
+				me.selectNode();
         },
 
         hirOrgsLoaded: function fin_bud_approveBudget_UserInterface_hirOrgsLoaded(me, activeId) {
@@ -577,8 +618,9 @@ ii.Class({
                 me.hirNodeSingleLoaded(me.hirNodesTemp[0].id);
             }
 
-            $("#pageLoading").hide();
-            $("#hirNodeLoading").hide();
+            //$("#pageLoading").hide();
+            //$("#hirNodeLoading").hide();
+			me.checkLoadCount();
         },
 
         actionNodeAppend: function () {
@@ -662,7 +704,8 @@ ii.Class({
             var me = this;
 
             if ($("#ulEdit" + nodeId)[0].innerHTML == "") {
-                $("#hirNodeLoading").show();
+                //$("#hirNodeLoading").show();
+				me.setLoadCount();
                 me.hirNodeStore.fetch("userId:[user],hirNodeParent:" + nodeId + ",", me.hirNodesLoaded, me);
             }
         },
@@ -720,8 +763,10 @@ ii.Class({
                 return false;
             }
 
-            $("#messageToUser").text("Saving");
-            $("#pageLoading").show();
+            me.setStatus("Saving");
+			
+			$("#messageToUser").text("Saving");
+			$("#pageLoading").fadeIn("slow");
 
             item = new fin.bud.approveBudget.AnnualBudget(0, "", "", false, 0);
             var xml = me.saveXmlBuild(item);
@@ -777,16 +822,18 @@ ii.Class({
             var item = transaction.referenceData.item;
             var status = $(args.xmlNode).attr("status");
 
-            $("#pageLoading").hide();
+            $("#pageLoading").fadeOut("slow");
 
             alert('The selected budgets have been approved');
 
             if (status == "success") {
                 me.actionClearItem();
                 me.modified(false);
+				me.setStatus("Saved");
                 ii.trace("Budget Approved", ii.traceTypes.Information, "Info");
             }
             else {
+				me.setStatus("Error");
                 alert("[SAVE FAILURE] Error while approving the budget information: " + $(args.xmlNode).attr("message"));
             }
         }

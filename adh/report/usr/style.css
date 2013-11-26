@@ -298,6 +298,7 @@
 	position: relative;	
 	border: solid #aaaaaa thin;
 	border-width: 1px;
+	padding: 5px;
 }
 
 #AnchorSearch {

@@ -3,6 +3,7 @@ ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "fin.hcm.remitTo.usr.defs" );
 
@@ -26,6 +27,7 @@ ii.Class({
 			me.remitToId = 0;
 			me.status = "";
 			me.lastSelectedRowIndex = -1;
+			me.loadCount = 0;
 			
 			me.gateway = ii.ajax.addGateway("hcm", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -47,13 +49,11 @@ ii.Class({
 			
 			me.defineFormControls();
 			me.configureCommunications();
+			me.setStatus("Loading");	
+			me.modified(false);
 			
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
-			
-			me.remitToStateType.fetchingData();			
-			me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);	
-			me.modified(false);
 			
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
@@ -64,12 +64,28 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 
-			$("#pageLoading").hide();
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 			me.remitToReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
-			me.controlVisible();
-				
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+			
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
+					
+				ii.timer.timing("Page displayed");
+				me.loadCount = 1;
+				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.remitToStateType.fetchingData();			
+				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
+				me.controlVisible();
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},	
 		
 		sessionLoaded: function fin_hcm_remitTo_UserInterface_sessionLoaded() {
@@ -83,8 +99,8 @@ ii.Class({
 		resize: function() {
 			var args = ii.args(arguments, {});
 			
-			fin.hcm.hcmRemitToUi.remitToGrid.setHeight($(window).height() - 85);
-			$("#remitToContentArea").height($(window).height() - 125);
+			fin.hcm.hcmRemitToUi.remitToGrid.setHeight($(window).height() - 110);
+			$("#remitToContentArea").height($(window).height() - 150);
 		},
 		
 		defineFormControls: function() {
@@ -258,19 +274,47 @@ ii.Class({
 			});	
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
 		},
-	
+		
 		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
+			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
 		},
 		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
+		},
+				
 		stateTypesLoaded: function(me, activeId) {
 			
 			me.remitToStateType.reset();
@@ -304,7 +348,7 @@ ii.Class({
 			me.remitToStateType.updateStatus();
 			me.remitToGrid.body.select(0);
 
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 			me.resizeControls();
 		},
 
@@ -345,7 +389,9 @@ ii.Class({
 			}
 			else {
 				me.remitToId = 0;
-			}					
+			}
+			
+			me.setStatus("Loaded");					
 		},
 
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
@@ -418,7 +464,8 @@ ii.Class({
 			
 			me.resetControls();
 			me.remitToGrid.body.deselectAll();
-			me.status = "new";			
+			me.status = "new";	
+			me.setStatus("Loaded");		
 		},
 		
 		actionSaveItem: function() {
@@ -442,8 +489,10 @@ ii.Class({
 				return false;
 			}
 			
+			me.setStatus("Saving");
+			
 			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 				
 			var item = new fin.hcm.remitTo.RemitTo(
 				me.remitToId
@@ -532,12 +581,15 @@ ii.Class({
 							break;
 					}
 				});
+				
+				me.setStatus("Saved");
 			}
 			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating Remit To Location details: " + $(args.xmlNode).attr("message"));
 			}	
 			
-			$("#pageLoading").hide();
+			$("#pageLoading").fadeOut("slow");
 		}
 	}
 });

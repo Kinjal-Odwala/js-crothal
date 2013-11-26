@@ -34,8 +34,8 @@ ii.Class({
 
 			me.defineFormControls();
 			me.configureCommunications();
-			me.houseCodeSafetyLoaded();
-			
+
+			$("#pageBody").show();
 			$(window).bind("resize", me, me.resize );
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 		},
@@ -45,13 +45,15 @@ ii.Class({
 			var me = this;
 
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
-			if (me.isAuthorized)
-				$("#pageLoading").hide();
-			else {
-				$("#messageToUser").html("Unauthorized");
-				alert("You are not authorized to view this content. Please contact your Administrator.");
-				return false;
-			}
+			
+			if (me.isAuthorized) {
+				ii.timer.timing("Page displayed");
+				me.session.registerFetchNotify(me.sessionLoaded, me);
+				parent.fin.hcmMasterUi.setLoadCount();
+				me.houseCodeSafetyLoaded();
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 			
 			//Safety
 			me.safetyWrite = me.authorizer.isAuthorized(me.authorizePath + '\\Write');
@@ -289,7 +291,9 @@ ii.Class({
 			me.nearMisses.setValue(houseCode.nearMisses);
 			me.oshaRecordable.setValue(houseCode.oshaRecordable);
 
-			$("#pageLoading").hide();
+			parent.fin.hcmMasterUi.checkLoadCount();
+			if (parent.parent.fin.appUI.modified)
+				parent.fin.hcmMasterUi.setStatus("Edit");
 			me.resizeControls();
 		}
 	}

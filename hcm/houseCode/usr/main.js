@@ -37,6 +37,7 @@ ii.Class({
 				queryStringArgs[argName] = unescape(value); 
 			} 
 
+			parent.fin.hcmMasterUi.loadCount = 0;
 			me.unitId = parseInt(queryStringArgs["unitId"]);
 
 			me.gateway = ii.ajax.addGateway("hcm", ii.config.xmlProvider); 
@@ -45,10 +46,7 @@ ii.Class({
 				me.gateway
 				, function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
 			);
-			
-			$(window).bind("resize", me, me.resize);
-			$(document).bind("keydown", me, me.controlKeyProcessor);
-			
+
 			me.validator = new ui.ctl.Input.Validation.Master(); 
 			me.session = new ii.Session(me.cache);
 			
@@ -63,13 +61,9 @@ ii.Class({
 			me.defineFormControls();			
 			me.configureCommunications();
 			
-			ii.trace("HouseCode - Init", ii.traceTypes.information, "Info");
-			
-			me.jdeCompany.fetchingData();
-			me.jdeCompanysStore.fetch("userId:[user],", me.jdeCompanysLoaded, me);
-			me.houseCodeSiteUnitsStore.fetch("unitId:" + me.unitId + ",userId:[user]", me.siteUnitsLoaded, me);
-			me.serviceLine.fetchingData();
-			me.houseCodeServiceStore.fetch("userId:[user],houseCodeId:" + parent.fin.hcmMasterUi.getHouseCodeId(), me.houseCodeServicesLoaded, me);
+			$("#pageBody").show();
+			$(window).bind("resize", me, me.resize);
+			$(document).bind("keydown", me, me.controlKeyProcessor);
 			
 			$("#CheckBoxTextDropImage").click(function() {
 				if ($("#ServiceGroup").is(":visible")) {
@@ -89,14 +83,21 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 			
-			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
-			if (me.isAuthorized)
-				$("#pageLoading").hide();
-			else {
-				$("#messageToUser").html("Unauthorized");
-				alert("You are not authorized to view this content. Please contact your Administrator.");
-				return false;
-			}
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);		
+			
+			if (me.isAuthorized) {				
+				ii.timer.timing("Page displayed");
+				me.session.registerFetchNotify(me.sessionLoaded, me);
+				parent.fin.hcmMasterUi.setLoadCount();
+				me.jdeCompany.fetchingData();
+				me.jdeCompanysStore.fetch("userId:[user],", me.jdeCompanysLoaded, me);
+				me.houseCodeSiteUnitsStore.fetch("unitId:" + me.unitId + ",userId:[user]", me.siteUnitsLoaded, me);
+				me.serviceLine.fetchingData();
+				me.houseCodeServiceStore.fetch("userId:[user],houseCodeId:" + parent.fin.hcmMasterUi.getHouseCodeId(), me.houseCodeServicesLoaded, me);
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
+				
 			//HouseCode
 			me.houseCodeWrite = me.authorizer.isAuthorized(me.authorizePath + '\\Write');
 			me.houseCodeReadOnly = me.authorizer.isAuthorized(me.authorizePath + '\\Read');
@@ -180,11 +181,6 @@ ii.Class({
 			me.scClientAssistantPhoneReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabHouseCode\\SectionClient\\AssistantPhone\\Read", me.sectionClientWrite, me.sectionClientReadOnly);
 			
 			me.resetUIElements();
-			
-			$("#pageLoading").hide();
-				
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
 		},	
 		
 		sessionLoaded: function fin_hcm_houseCode_UserInterface_sessionLoaded(){
@@ -827,7 +823,7 @@ ii.Class({
 			me.serviceLines.unshift(new fin.hcm.houseCode.ServiceLine({id: 0, name: "None"}));
 			me.serviceLine.setData(me.serviceLines);
 			me.serviceLine.select(0, me.serviceLine.focused);
-
+			
 			me.houseCodesLoaded();
 		},		
 		
@@ -957,7 +953,9 @@ ii.Class({
 			me.clientAssistantName.setValue(houseCode.clientAssistantName);
 			me.clientAssistantPhone.setValue(houseCode.clientAssistantPhone);
 
-			$("#pageLoading").hide();
+			parent.fin.hcmMasterUi.checkLoadCount();
+			if (parent.parent.fin.appUI.modified)
+				parent.fin.hcmMasterUi.setStatus("Edit");
 			me.resizeControls();
 		},
 		

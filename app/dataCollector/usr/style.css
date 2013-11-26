@@ -8,6 +8,20 @@
     padding-bottom: 4px;
 }
 
+#wl-ctrl-100-itemStatusDiv {
+	float: left;
+	width: 800px;
+	padding: 5px 0px 0px 10px;
+}
+
+#wl-ctrl-100-itemStatusText {
+	float: left;
+	text-align: left;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 1px 0px 0px 5px;
+}
 
 .x-form-invalid, textarea.x-form-invalid {
     background-color: #FE7774;
@@ -16,8 +30,6 @@
     color: #FFFFFF;
 }
 
-
-
 .AnchorSave {
     float: left;
     margin-right: 5px;
@@ -25,6 +37,7 @@
     padding-top: 5px;
     width: 67px;
 }
+
 .AnchorUndo {
     float: left;
     margin-right: 5px;
@@ -40,6 +53,7 @@
     padding-top: 5px;
     width: 88px;
 }
+
 .AnchorNew {
     float: left;
     margin-right: 5px;
@@ -48,12 +62,11 @@
     width: 65px;
 }
 
-
-.loadmask {
+.loadmask, .ext-el-mask  {
     z-index: 100;
     position: absolute;
-    top:0;
-    left:0;
+    top: 0;
+    left: 0;
     -moz-opacity: 0.5;
     opacity: .50;
     filter: alpha(opacity=50);
@@ -62,39 +75,40 @@
     height: 100%;
     zoom: 1;
 }
-.loadmask-msg {
+
+.loadmask-msg, .ext-el-mask-msg {
     z-index: 20001;
     position: absolute;
     top: 0;
     left: 0;
-    border:1px solid #6593cf;
+    border: 1px solid #6593cf;
     background: #c3daf9;
-    padding:2px;
+    padding: 2px;
 }
-.loadmask-msg div {
-    padding:5px 10px 5px 25px;
+
+.loadmask-msg div, .ext-el-mask-msg div {
+    padding: 5px 10px 5px 25px;
     background: #fbfbfb url('/fin/app/res/images/loading.gif') no-repeat 5px 5px;
     line-height: 16px;
-	border:1px solid #a3bad9;
-    color:#222;
-    font:normal 11px tahoma, arial, helvetica, sans-serif;
-    cursor:wait;
+	border: 1px solid #a3bad9;
+    color: #222;
+    font: normal 11px tahoma, arial, helvetica, sans-serif;
+    cursor: wait;
 }
+
 .masked {
     overflow: hidden !important;
 }
+
 .masked-relative {
     position: relative !important;
 }
+
 .masked-hidden {
     visibility: hidden !important;
 }
 
-
-
-
-.LabelTextAreaLeftDataCollector
-{
+.LabelTextAreaLeftDataCollector {
     color: #032D23;
     float: left;
     font-family: Verdana;
@@ -103,39 +117,32 @@
     width: 140px;
 }
         
-.requiredFieldIndicator
-{
+.requiredFieldIndicator {
     color: red;
 }
         
-.dataCollectorButtonLeft
-{
+.dataCollectorButtonLeft {
     float: left;
     padding-left: 3px;
     width: 25px;
 }
         
-.nonRequiredFieldIndicator
-{
+.nonRequiredFieldIndicator {
     color: #032D23;
     font-family: Verdana;
     font-size: 12px;
     padding-left: 7px;
 }
         
-.dataCollectorTextBox
-{
+.dataCollectorTextBox {
     float: left;
     padding-left: 7px;
     width: 320px;
 }
-        
-        
+
 .contentArea {
     margin:20px;
 }
-
-
 
 .form-header {
     background: none repeat scroll 0 0 #C2E4C1;
@@ -147,64 +154,58 @@
     text-align: center;
 }
 
-.ux-grid-1 .x-grid3-hd-row td,.ux-grid-2 .x-grid3-hd-row td{
+.ux-grid-1 .x-grid3-hd-row td,.ux-grid-2 .x-grid3-hd-row td {
     border-left-color: #669966;
     border-right-color: #669966;
 }
 
-.ux-grid-1 .x-grid3-header,.ux-grid-2 .x-grid3-header , .ux-grid-2 .x-grid3-hd-over .x-grid3-hd-inner{
+.ux-grid-1 .x-grid3-header,.ux-grid-2 .x-grid3-header , .ux-grid-2 .x-grid3-hd-over .x-grid3-hd-inner {
     background-color: #669966;
     background-image: none;
     color:#fff;
     font-weight:bold;
 }
 
-.ux-grid-1 .x-panel-body ,.ux-grid-2 .x-panel-body 
-{
+.ux-grid-1 .x-panel-body ,.ux-grid-2 .x-panel-body {
     border-color: #aaa !important;
 }
 
-.ux-grid-1 .x-grid3-hd-inner 
-{
+.ux-grid-1 .x-grid3-hd-inner {
     font-size:12px !important;
     font-weight:bold;
 }
-.ux-grid-1 .x-grid3-cell-inner ,.ux-grid-2 .x-grid3-cell-inner 
-{
+
+.ux-grid-1 .x-grid3-cell-inner ,.ux-grid-2 .x-grid3-cell-inner {
     font-size:12px !important;
 }
-.ux-grid-2 .x-grid3-hd-inner 
-{
+
+.ux-grid-2 .x-grid3-hd-inner {
     font-size:12px !important;
     font-weight:bold;
     text-align:center;
 }
-.ux-grid-2 .x-grid3-hd-inner 
-{
+
+.ux-grid-2 .x-grid3-hd-inner {
   white-space:  normal;
   break-all:break-all;
   word-wrap:break-word;
 }
 
-.ux-grid-1 .x-grid3-row ,.ux-grid-2 .x-grid3-row 
-{
+.ux-grid-1 .x-grid3-row ,.ux-grid-2 .x-grid3-row {
     font-size:12px !important;
     border-width:0 !important;
 }
 
-.ux-grid-1 .x-grid3-row-over, .ux-grid-1 .x-grid3-row-selected,.ux-grid-2 .x-grid3-row-over, .ux-grid-2 .x-grid3-row-selected
-{
+.ux-grid-1 .x-grid3-row-over, .ux-grid-1 .x-grid3-row-selected,.ux-grid-2 .x-grid3-row-over, .ux-grid-2 .x-grid3-row-selected {
     background-color: #c2e4c1 !important;
     background-image:none !important;
 }
 
-.ux-grid-1 .x-grid3-row-alt,.ux-grid-2 .x-grid3-row-alt 
-{
+.ux-grid-1 .x-grid3-row-alt,.ux-grid-2 .x-grid3-row-alt {
     background-color:#f0efdd;
 }
 
-.ux-grid-1 .x-grid3-row td ,.ux-grid-2 .x-grid3-row td 
-{
+.ux-grid-1 .x-grid3-row td ,.ux-grid-2 .x-grid3-row td {
     border-right: 1px solid #aaa !important;
     border-bottom: 1px solid #aaa !important;
 }
@@ -233,9 +234,11 @@
 	background-position: -1px -1px ! important;
 	background-repeat:no-repeat ! important;
 }
+
 .ux-lovcombo-icon-checked {
 	background: transparent url(/fin/app/res/images/checked.gif) no-repeat;
 }
+
 .ux-lovcombo-icon-unchecked {
 	background: transparent url(/fin/app/res/images/unchecked.gif)  no-repeat;
 }
@@ -245,31 +248,28 @@
 	left:16px;
 	top:3px;
 }
+
 .ext-ie .ux-lovcombo-icon {
 	float:none;
 }
+
 .ext-ie .x-combo-list-item {
 	position:relative;
 }
- 
-/* eof */
+ /* eof */
 
-
-.lov-combo .x-form-trigger 
-{
+.lov-combo .x-form-trigger {
  background-image:url(/fin/cmn/usr/media/Common/edit.png) !important;
   border-bottom-width:0px;
    width:20px;
    height:20px;
 }
 
-.lov-combo .x-form-trigger, .lov-combo .x-trigger-wrap-focus .x-form-trigger, .lov-combo .x-trigger-wrap-focus .x-form-trigger-over 
-{
+.lov-combo .x-form-trigger, .lov-combo .x-trigger-wrap-focus .x-form-trigger, .lov-combo .x-trigger-wrap-focus .x-form-trigger-over {
     background-position: 0 0 !important;
     
 } 
 
-.lov-combo .x-trigger-wrap-focus .x-form-trigger 
-{
+.lov-combo .x-trigger-wrap-focus .x-form-trigger {
      background-image:url(/fin/cmn/usr/media/Common/editSelected.png) !important;
 }

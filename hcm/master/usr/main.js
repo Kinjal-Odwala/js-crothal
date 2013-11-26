@@ -27,6 +27,7 @@ ii.Class({
 			
 			me.status = true;
 			me.hirNode = 0;
+			me.loadCount = 0;
 			
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 			if (!parent.fin.appUI.hirNode) parent.fin.appUI.hirNode = 0;
@@ -53,14 +54,15 @@ ii.Class({
 
 			me.defineFormControls();
 			me.configureCommunications();
+			me.setStatus("Loading");
+			me.modified(false);
 			
 			me.activeFrameId = 0;			
 			me.houseCodeNeedUpdate = true;
 			me.statisticsNeedUpdate = true;
 			me.financialNeedUpdate = true;
 			me.payrollNeedUpdate = true;
-			me.safetyNeedUpdate = true;
-			me.modified(false);
+			me.safetyNeedUpdate = true;			
 			
 			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
 
@@ -75,8 +77,14 @@ ii.Class({
 				switch(this.id) {
 					case "TabHouseCode":
 
-						if ($("iframe")[0].contentWindow.fin == undefined || fin.hcmMasterUi.houseCodeNeedUpdate)
+						if ($("iframe")[0].contentWindow.fin == undefined || fin.hcmMasterUi.houseCodeNeedUpdate) {
+							me.showPageLoading("Loading");
 							$("iframe")[0].src = "/fin/hcm/houseCode/usr/markup.htm?unitId=" + parent.fin.appUI.unitId;
+						}
+						else if (parent.fin.appUI.modified)
+							me.setStatus("Edit");
+						else 
+							me.setStatus("Loaded");
 
 						fin.hcmMasterUi.activeFrameId = 0;
 						fin.hcmMasterUi.houseCodeNeedUpdate = false;
@@ -84,8 +92,14 @@ ii.Class({
 						
 					case "TabStatistics":
 
-						if ($("iframe")[1].contentWindow.fin == undefined || fin.hcmMasterUi.statisticsNeedUpdate)
+						if ($("iframe")[1].contentWindow.fin == undefined || fin.hcmMasterUi.statisticsNeedUpdate) {
+							me.showPageLoading("Loading");
 							$("iframe")[1].src = "/fin/hcm/statistics/usr/markup.htm?unitId=" + parent.fin.appUI.unitId;
+						}							
+						else if (parent.fin.appUI.modified)
+							me.setStatus("Edit");
+						else 
+							me.setStatus("Loaded");
 
 						fin.hcmMasterUi.activeFrameId = 1;
 						fin.hcmMasterUi.statisticsNeedUpdate = false;
@@ -93,8 +107,14 @@ ii.Class({
 
 					case "TabFinancial":
 
-						if ($("iframe")[2].contentWindow.fin == undefined || fin.hcmMasterUi.financialNeedUpdate)
+						if ($("iframe")[2].contentWindow.fin == undefined || fin.hcmMasterUi.financialNeedUpdate) {
+							me.showPageLoading("Loading");
 							$("iframe")[2].src = "/fin/hcm/financial/usr/markup.htm?unitId=" + parent.fin.appUI.unitId;
+						}
+						else if (parent.fin.appUI.modified)
+							me.setStatus("Edit");
+						else 
+							me.setStatus("Loaded");
 							
 						fin.hcmMasterUi.activeFrameId = 2;
 						fin.hcmMasterUi.financialNeedUpdate = false;
@@ -102,8 +122,14 @@ ii.Class({
 
 					case "TabPayroll":
 
-						if ($("iframe")[3].contentWindow.fin == undefined || fin.hcmMasterUi.payrollNeedUpdate)
+						if ($("iframe")[3].contentWindow.fin == undefined || fin.hcmMasterUi.payrollNeedUpdate) {
+							me.showPageLoading("Loading");
 							$("iframe")[3].src = "/fin/hcm/payroll/usr/markup.htm?unitId=" + parent.fin.appUI.unitId;
+						}
+						else if (parent.fin.appUI.modified)
+							me.setStatus("Edit");
+						else 
+							me.setStatus("Loaded");
 	
 						fin.hcmMasterUi.activeFrameId = 3;
 						fin.hcmMasterUi.payrollNeedUpdate = false;
@@ -111,8 +137,14 @@ ii.Class({
 						
 					case "TabSafety":
 
-						if ($("iframe")[4].contentWindow.fin == undefined || fin.hcmMasterUi.safetyNeedUpdate)
+						if ($("iframe")[4].contentWindow.fin == undefined || fin.hcmMasterUi.safetyNeedUpdate) {
+							me.showPageLoading("Loading");
 							$("iframe")[4].src = "/fin/hcm/safety/usr/markup.htm?unitId=" + parent.fin.appUI.unitId;
+						}
+						else if (parent.fin.appUI.modified)
+							me.setStatus("Edit");
+						else 
+							me.setStatus("Loaded");
 	
 						fin.hcmMasterUi.activeFrameId = 4;
 						fin.hcmMasterUi.safetyNeedUpdate = false;
@@ -135,13 +167,22 @@ ii.Class({
 			var me = this;
 			
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
-			if (me.isAuthorized)
+			
+			if (me.isAuthorized) {
 				$("#pageLoading").hide();
-			else {
-				$("#messageToUser").html("Unauthorized");
-				alert("You are not authorized to view this content. Please contact your Administrator.");
-				return false;
-			}
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
+				
+				ii.timer.timing("Page displayed");
+				me.session.registerFetchNotify(me.sessionLoaded, me);
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 			
 			me.houseCodeWrite = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\Write");
 			me.houseCodeReadOnly = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\Read");
@@ -182,10 +223,7 @@ ii.Class({
 				
 			if (me.tabHouseCodeReadOnly || me.houseCodeReadOnly) {
 				$("#actionMenu").hide();
-			}		
-				
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+			}
 		},	
 		
 		sessionLoaded: function fin_hcm_master_UserInterface_sessionLoaded() {
@@ -200,7 +238,7 @@ ii.Class({
 		resize: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
-			var offset = 85;
+			var offset = 110;
 
 		    $("#iFrameHouseCode").height($(window).height() - offset);
 		    $("#iFrameStatistics").height($(window).height() - offset);
@@ -260,17 +298,53 @@ ii.Class({
 			});			
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
 		},
-	
+		
 		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
+			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
+		},
+		
+		showPageLoading: function(status) {
+			var me = this;
+
+			me.setStatus(status);
+			$("#messageToUser").text(status);
+			$("#pageLoading").fadeIn("slow");
 		},
 		
 		houseCodesLoaded: function(me, activeId) {
@@ -287,9 +361,6 @@ ii.Class({
 			}
 			
 			me.houseCodeGlobalParametersUpdate(false);			
-			
-			$("#pageLoading").hide();
-			
 			me.houseCodeDetailStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.houseCodeDetailsLoaded, me);
 		},
 		
@@ -346,7 +417,7 @@ ii.Class({
 			switch (fin.hcmMasterUi.activeFrameId) {
 				
 				case 0:	
-					
+
 					$("iframe")[0].src = "/fin/hcm/houseCode/usr/markup.htm?unitId=" + parent.fin.appUI.unitId;
 					$("#container-1").triggerTab(1);
 					me.houseCodeNeedUpdate = false;					
@@ -489,6 +560,11 @@ ii.Class({
 				me.houseCodeDetails[0].integratorName = statisticsUIControls.integratorName.getValue();
 				me.houseCodeDetails[0].auditScore = statisticsUIControls.auditScore.getValue();
 				me.houseCodeDetails[0].standardizationScore = statisticsUIControls.standardizationScore.getValue();
+				me.houseCodeDetails[0].adminHours = statisticsUIControls.adminHours.getValue();
+				me.houseCodeDetails[0].surgicalHours = statisticsUIControls.surgicalHours.getValue();
+				me.houseCodeDetails[0].edHours = statisticsUIControls.edHours.getValue();
+				me.houseCodeDetails[0].groundsHours = statisticsUIControls.groundsHours.getValue();
+				me.houseCodeDetails[0].otherLockInHours = statisticsUIControls.otherLockInHours.getValue();
 			}
 
 			//Financial
@@ -667,6 +743,11 @@ ii.Class({
 				, me.houseCodeDetails[0].integratorName
 				, me.houseCodeDetails[0].auditScore
 				, me.houseCodeDetails[0].standardizationScore
+				, me.houseCodeDetails[0].adminHours == "" ? 0 : parseFloat(me.houseCodeDetails[0].adminHours)
+				, me.houseCodeDetails[0].surgicalHours == "" ? 0 : parseFloat(me.houseCodeDetails[0].surgicalHours)
+				, me.houseCodeDetails[0].edHours == "" ? 0 : parseFloat(me.houseCodeDetails[0].edHours)
+				, me.houseCodeDetails[0].groundsHours == "" ? 0 : parseFloat(me.houseCodeDetails[0].groundsHours)
+				, me.houseCodeDetails[0].otherLockInHours == "" ? 0 : parseFloat(me.houseCodeDetails[0].otherLockInHours)
 				
 				//Financial
 				, me.houseCodeDetails[0].shippingAddress1
@@ -720,8 +801,10 @@ ii.Class({
 				
 			var xml = me.saveXmlBuild(item);
 			
+			me.setStatus("Saving");
+			
 			$("#messageToUser").text("Saving");			
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 			
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
@@ -799,6 +882,11 @@ ii.Class({
 			xml += ' integratorName="' + ui.cmn.text.xml.encode(item.integratorName) + '"';
 			xml += ' auditScore="' + ui.cmn.text.xml.encode(item.auditScore) + '"';
 			xml += ' standardizationScore="' + ui.cmn.text.xml.encode(item.standardizationScore) + '"';
+			xml += ' adminHours="' + item.adminHours + '"';
+			xml += ' surgicalHours="' + item.surgicalHours + '"';
+			xml += ' edHours="' + item.edHours + '"';
+			xml += ' groundsHours="' + item.groundsHours + '"';
+			xml += ' otherLockInHours="' + item.otherLockInHours + '"';
 			
 			//Financial
 			xml += ' shippingAddress1="' + ui.cmn.text.xml.encode(item.shippingAddress1) + '"';
@@ -904,12 +992,14 @@ ii.Class({
 				if ($("iframe")[0].contentWindow.fin != undefined) {
 					$("iframe")[0].contentWindow.fin.hcmHouseCodeUi.reloadHouseCodeServices();
 				}
+				me.setStatus("Saved");
 			}
 			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating House Code details: " + $(args.xmlNode).attr("message"));
 			}
 			
-			$("#pageLoading").hide();
+			$("#pageLoading").fadeOut("slow");
 		}
 	}
 });

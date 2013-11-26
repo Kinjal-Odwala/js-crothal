@@ -40,6 +40,7 @@ ii.Class({
 			me.action = "";
 			me.workOrderBackDays = 0;
 			me.search = false;
+			me.loadCount = 0;
 			
 			me.gateway = ii.ajax.addGateway("wom", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -61,6 +62,8 @@ ii.Class({
 				
 			me.defineFormControls();			
 			me.configureCommunications();
+			me.setStatus("Loading");
+			me.modified(false);			
 
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 			
@@ -72,10 +75,8 @@ ii.Class({
 				me.houseCodesLoaded(me, 0);
 			}
 			
-			me.systemVariableStore.fetch("userId:[user],name:WorkOrderBackDays", me.systemVariablesLoaded, me);
 			me.initialize();
-			me.modified(false);
-			
+						
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$("input[name='Subcontracted']").change(function() { me.modified(true); });
@@ -172,22 +173,29 @@ ii.Class({
 			var me = this;
 
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
-
-			if (!me.isAuthorized) {
-				$("#messageToUser").text("Load Failed");
-				$("#pageLoading").show();
-				return;
-			}
-
+			
 			me.workOrdersShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 			me.workOrdersReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
 			me.workOrdersWriteApprove = me.authorizer.isAuthorized(me.authorizePath + "\\WriteApprove");
 			me.woWriteNoApprove = me.authorizer.isAuthorized(me.authorizePath + "\\WriteNoApprove");
-
-			$("#pageLoading").hide();
-
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+				
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
+							
+				ii.timer.timing("Page displayed");
+				me.loadCount = 1;
+				me.session.registerFetchNotify(me.sessionLoaded,me);				
+				me.systemVariableStore.fetch("userId:[user],name:WorkOrderBackDays", me.systemVariablesLoaded, me);	
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},
 		
 		sessionLoaded: function fin_wom_workOrder_UserInterface_sessionLoaded() {
@@ -1154,7 +1162,7 @@ ii.Class({
 				else if (statusType == 6) return "Canceled";
 			});
 			me.workOrderGrid.capColumns();
-			me.workOrderGrid.setHeight($(window).height() - 430);
+			me.workOrderGrid.setHeight($(window).height() - 450);
 		},
 
 		configureCommunications: function() {
@@ -1227,17 +1235,45 @@ ii.Class({
 			});
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
 		},
-	
+		
 		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
+			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
@@ -1356,6 +1392,8 @@ ii.Class({
 
 			if (me.systemVariables.length > 0)
 				me.workOrderBackDays = parseInt(me.systemVariables[0].variableValue);
+				
+			me.checkLoadCount();
 		},
 		
 		statusesLoaded: function() {
@@ -1448,7 +1486,7 @@ ii.Class({
 		houseCodeChanged: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
-
+			
 			me.job.fetchingData();
 			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.houseCodeJobsLoaded, me);
 		},
@@ -1494,9 +1532,7 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 					
-			$("#messageToUser").text("Loading");	
-			$("#pageLoading").show();
-			
+			me.setLoadCount();
 			me.createGrid(7);
 				
 			me.workOrderStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId 
@@ -1520,6 +1556,7 @@ ii.Class({
 				return;
 					
 			me.actionCancelSearchItem();
+			me.setLoadCount(); 
 			
 			$("#messageToUser").text("Loading");	
 			$("#pageLoading").show();
@@ -1641,7 +1678,7 @@ ii.Class({
 			me.anchorView.display(ui.cmn.behaviorStates.disabled);
 			me.anchorPrint.display(ui.cmn.behaviorStates.disabled);
 
-			$("#pageLoading").hide();
+			me.checkLoadCount(); 
 			me.resizeControls();
 		},
 		
@@ -1745,7 +1782,8 @@ ii.Class({
 				$("#CommissionableYes").attr("checked", true);
 			else
 				$("#CommissionableNo").attr("checked", true);	
-			me.controlReadOnly();				
+			me.controlReadOnly();
+			me.setStatus("Loaded");				
 		},		
 		
 		setReadOnly: function(readOnly) {
@@ -1908,6 +1946,7 @@ ii.Class({
 			me.hideWorkOrderSetupPopup();
 			me.action = "";
 			me.nextCount = 0;
+			me.setStatus("Loaded");
 		},
 		
 		actionCancelSearchItem: function() {
@@ -1944,7 +1983,7 @@ ii.Class({
 			me.action = "Cancel";
 			
 			$("#messageToUser").text("Canceling");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow"); 
 			
 			xml += '<womWorkOrderStatus';
 			xml += ' id="' + me.workOrderId + '"';
@@ -1975,8 +2014,10 @@ ii.Class({
 			
 			me.action = "Approve";
 			
+			me.setStatus("Saving");
+			
 			$("#messageToUser").text("Approving");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow"); 
 			
 			xml += '<womWorkOrderStatus';
 			xml += ' id="' + me.workOrderId + '"';
@@ -2023,8 +2064,7 @@ ii.Class({
 			
 			loadPopup();
 			
-			$("#popupMessageToUser").text("Loading");	
-			$("#popupLoading").show();
+			me.setLoadCount(); 
 			me.workOrderItemStore.reset();
 			me.workOrderItemStore.fetch("userId:[user],workOrderId:" + me.workOrderId, me.workOrdersItemsLoaded, me);
 		},
@@ -2042,7 +2082,7 @@ ii.Class({
 			}
 			
 			me.workOrderItemsCountOnLoad = me.workOrderItems.length;
-			$("#popupLoading").hide();
+			me.checkLoadCount();
 		},
 		
 		actionPrintItem: function() {
@@ -2086,6 +2126,7 @@ ii.Class({
 			me.action = "New";
 						
 			loadPopup();
+			me.setStatus("Loaded");
 		},			
 		
 		actionNextItem: function() {
@@ -2450,9 +2491,11 @@ ii.Class({
 		saveWorkOrder: function() {
 			var me = this;
 			var item = [];
+			
+			me.setStatus("Saving");
 											
 			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow"); 
 			
 			if (me.action == "New") {
 				me.workOrderId = 0;
@@ -2737,11 +2780,14 @@ ii.Class({
 				}
 				
 				me.action = "";
+				me.setStatus("Saved");
 			}
-			else
+			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating Work Order details: " + $(args.xmlNode).attr("message"));
+			}				
 				
-			$("#pageLoading").hide();
+			$("#pageLoading").fadeOut("slow"); 
 		}
 	}
 });

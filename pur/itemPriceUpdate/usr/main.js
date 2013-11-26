@@ -3,6 +3,7 @@ ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.pur.itemPriceUpdate.usr.defs" );
@@ -27,6 +28,8 @@ ii.Class({
 
 			me.itemId = 0;
 			me.lastSelectedRowIndex = -1;
+			me.status = "";
+			me.loadCount = 0;
 
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -48,6 +51,7 @@ ii.Class({
 
 			me.defineFormControls();
 			me.configureCommunications();
+			me.setStatus("Loading");
 			me.modified(false);
 
 			$(window).bind("resize", me, me.resize );
@@ -87,10 +91,25 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 
-			$("#pageLoading").hide();
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
+
+				ii.timer.timing("Page displayed");
+				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},
 
 		sessionLoaded: function fin_pur_itemPriceUpdate_UserInterface_sessionLoaded() {
@@ -106,11 +125,11 @@ ii.Class({
 			var me = fin.itemPriceUpdateUi;
 			
 			if (me != undefined) {
-				me.itemGrid.setHeight($(window).height() - 135);
-				me.catalogItemGrid.setHeight($(window).height() - 360);
+				me.itemGrid.setHeight($(window).height() - 160);
+				me.catalogItemGrid.setHeight($(window).height() - 385);
 			}
 
-			$("#catalogItemsLoading").height($(window).height() - 125);			
+			$("#catalogItemsLoading").height($(window).height() - 150);			
 		},
 
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
@@ -319,6 +338,12 @@ ii.Class({
 			});
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
@@ -328,8 +353,30 @@ ii.Class({
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-
+			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		resizeControls: function() {
@@ -386,10 +433,7 @@ ii.Class({
 				me.searchInput.valid = true;
 				me.searchInput.updateStatus();
 			}
-			
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").show();
-						
+			me.setLoadCount();
 			me.itemStore.fetch("userId:[user],searchValue:" + me.searchInput.getValue() + ",active:-1", me.itemsLoaded, me);				
 		},
 		
@@ -401,8 +445,7 @@ ii.Class({
 			me.lastSelectedRowIndex = -1;
 			me.resetControls();
 			me.itemGrid.setData(me.items);
-
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 		},
 
 		itemSelect: function() {
@@ -422,8 +465,9 @@ ii.Class({
 				me.itemId = 0;
 				me.itemPrice.setValue("");
 			}
-
-			$("#catalogItemsLoading").show();
+			
+			if(me.status == "")
+				me.setLoadCount();
 			me.catalogItemStore.fetch("userId:[user],itemId:" + me.itemId, me.catalogItemsLoaded, me);
 		},
 
@@ -441,8 +485,11 @@ ii.Class({
 					$("#selectInputCheck" + index)[0].checked = me.selectAll.check.checked;
 				}		
 			}
-
-			$("#catalogItemsLoading").hide();
+			
+			if(me.status == "")
+				me.checkLoadCount();
+			else
+				me.setStatus("Loaded");
 		},
 
 		actionClickItem: function(objCheckBox) {
@@ -558,12 +605,14 @@ ii.Class({
 					if ($("#selectInputCheck" + index)[0].checked)
 						me.catalogItems[index].effectivePrice = "";
 				}
-
-				me.resetControls();
+				
+				me.status = "Undo";
 				me.itemSelect(me.lastSelectedRowIndex);
 			}
-			else
-				me.resetControls();
+			else 
+				me.resetControls();	
+			
+			me.setStatus("Loaded")	
 		},
 
 		actionSaveItem: function() {
@@ -573,7 +622,8 @@ ii.Class({
 			var xml = "";
 			var valid = true;
 			var ScheduleOn = $("input[name='ScheduleOn']:checked").val();
-
+			
+			me.status = "";
 			// Check to see if the data entered is valid
 			if (!(me.price.validate(true)))
 				valid = false;
@@ -649,9 +699,11 @@ ii.Class({
 
 			if (xml == "")
 				return;
-
+			
+			me.setStatus("Saving");
+			
 			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
@@ -675,16 +727,19 @@ ii.Class({
 			var status = $(args.xmlNode).attr("status");
 			
 			if (status == "success") {
-				me.modified(false);
 
 				if ($("input[name='ScheduleOn']:checked").val() == "1")
 					me.updatePrice();
+				
+				me.modified(false);	
+				me.setStatus("Saved");
 			}
 			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating Catalog Item price: " + $(args.xmlNode).attr("message"));
 			}
 
-			$("#pageLoading").hide();
+			$("#pageLoading").fadeOut("slow");
 		}
 	}
 });

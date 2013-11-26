@@ -30,6 +30,7 @@ ii.Class({
 			me.fiscalYearRowId;
 			me.yearId = 0;
 			me.calendarReadOnly = false;
+			me.loadCount = 0;
 			
 			me.gateway = ii.ajax.addGateway("fsc", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -39,6 +40,7 @@ ii.Class({
 			);			
 				
 			me.validator = new ui.ctl.Input.Validation.Master();
+			me.session = new ii.Session(me.cache);
 			
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\Fiscal\\Calendar";
@@ -47,17 +49,14 @@ ii.Class({
 					me.authorizationProcess.apply(me);
 				},
 				me);
-			
-			me.session = new ii.Session(me.cache);
 
 			me.defineFormControls();			
 			me.configureCommunications();
+			me.setStatus("Loading");
+			me.modified(false);
 			
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
-			
-			me.fiscalYearStore.fetch("userId:[user]", me.fiscalYearsLoaded, me);
-			me.modified(false);
 			
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
@@ -67,12 +66,28 @@ ii.Class({
 		authorizationProcess: function fin_fsc_fiscalCalender_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
-
+			
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 			me.calendarReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
-			me.controlVisible();
-				
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+			
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
+
+				ii.timer.timing("Page displayed");
+				me.loadCount = 1;
+				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.fiscalYearStore.fetch("userId:[user]", me.fiscalYearsLoaded, me);				
+				me.controlVisible();
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},	
 		
 		sessionLoaded: function fin_fsc_fiscalCalender_UserInterface_sessionLoaded() {
@@ -92,9 +107,9 @@ ii.Class({
 			else
 				$("#FiscalPeriod").width($("#GridContianer").width() - 5);
 
-			fin.fiscalCalenderUi.fiscalYearGrid.setHeight($(window).height() - 80);	
-			fin.fiscalCalenderUi.fiscalPeriodGrid.setHeight($(window).height() - 185);	
-			$("#fiscalPeriodsLoading").height($(window).height() - 158);
+			fin.fiscalCalenderUi.fiscalYearGrid.setHeight($(window).height() - 105);	
+			fin.fiscalCalenderUi.fiscalPeriodGrid.setHeight($(window).height() - 210);	
+			$("#fiscalPeriodsLoading").height($(window).height() - 183);
 		},
 			
 		defineFormControls: function() {
@@ -385,6 +400,12 @@ ii.Class({
 			});			
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
@@ -394,8 +415,30 @@ ii.Class({
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
+			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		controlVisible: function() {
@@ -417,8 +460,6 @@ ii.Class({
 		},
 		
 		fiscalYearsLoaded: function fin_fsc_UserInterface_fiscalYearsLoaded(me, activeId) {
-
-			me.controlVisible();
 			
 			if (me.fiscalYears[0] == null)
 				alert("No matching record found!!");
@@ -427,6 +468,7 @@ ii.Class({
 			me.fiscalYearGrid.setData(me.fiscalYears);
 			me.fiscalCalenderPattern.fetchingData();
 			me.patternStore.fetch("userId:[user]", me.patternsLoaded, me);
+			me.controlVisible();
 			me.resizeControls();
 		},
 		
@@ -435,7 +477,7 @@ ii.Class({
 			me.fiscalCalenderPattern.reset();
 			me.fiscalCalenderPattern.setData(me.patterns);
 					
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 		},
 		
 		fiscalPeriodsLoaded: function fin_fsc_UserInterface_fiscalPeriodsLoaded(me, activeId) {
@@ -450,7 +492,7 @@ ii.Class({
 			me.fiscalPeriodGrid.setData(me.fiscalPeriods);
 			me.fiscalCalenderYear.setValue(me.fiscalPeriods[0].fscYeaTitle);
 			
-			$("#fiscalPeriodsLoading").hide();
+			me.checkLoadCount();
 		},
 		
 		itemSelectYear: function() { 
@@ -482,10 +524,8 @@ ii.Class({
 				
 				if (me.yearId == "")
 					return false;
-					
 								
-				$("#fiscalPeriodsLoading").show();
-								
+				me.setLoadCount();			
 				me.fiscalPeriodStore.fetch("fiscalYearId:" + me.yearId + ",userId:[user]", me.fiscalPeriodsLoaded, me);
 			}
 			else
@@ -548,7 +588,7 @@ ii.Class({
 			
 			me.fiscalYearId = 0;
 
-			$("#fiscalPeriodsLoading").show();
+			me.setLoadCount();
 			me.fiscalCalenderPattern.reset();
 			me.fiscalYearGrid.body.deselectAll();
 			me.fiscalPeriodStore.fetch("fiscalYearId:0,userId:[user]", me.fiscalPeriodsLoaded, me);
@@ -578,7 +618,7 @@ ii.Class({
 			if (me.fiscalPeriodGrid.activeRowIndex >= 0)
 				me.fiscalPeriodGrid.body.deselect(me.fiscalPeriodGrid.activeRowIndex, true);
 
-  			$("#fiscalPeriodsLoading").show();
+  			me.setStatus("Loading");
 			me.fiscalPeriodStore.reset();	
 			me.itemSelectYear(me.fiscalYearGrid.activeRowIndex);
 		},
@@ -673,9 +713,11 @@ ii.Class({
 				
 				fiscalPeriodDatas.push(fiscalPeriodData);
 			};
-
+			
+			me.setStatus("Saving");
+			
 			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 
 			var item = new fin.fsc.fiscalCalender.FiscalYear(
 				me.fiscalYearId
@@ -754,7 +796,6 @@ ii.Class({
 			var status = $(args.xmlNode).attr("status");
 			
 			if (status == "success") {
-				me.modified(false);
 				me.status = "";
 				
 				for (var index = 0; index < me.fiscalPeriods.length; index++) {
@@ -790,12 +831,16 @@ ii.Class({
 						
 					}
 				});
+				
+				me.modified(false);
+				me.setStatus("Saved");
 			}
 			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating Fiscal Calendar details: " + $(args.xmlNode).attr("message"));
 			}
 
-			$("#pageLoading").hide();
+			$("#pageLoading").fadeOut("slow");
 		}
 	}
 });

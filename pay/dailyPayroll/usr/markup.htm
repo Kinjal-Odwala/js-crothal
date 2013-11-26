@@ -14,19 +14,8 @@
 	</head>
 
 	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
-	<body id="appBody">
-		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
-	        <table width="100%" height="100%">
-				<tr>
-					<td align="center">
-						<img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
-						<div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;">Loading</div>    
-		        	</td>
-				</tr>
-			</table>
-		</div>	
-		
-		<div class="pageBody">
+	<body id="appBody">		
+		<div id="pageBody" class="pageBody" style="display: none;">
 			<div id="divLeftGrid">
 				<div class="body">
                     <div id="LabelDay">Day:</div>

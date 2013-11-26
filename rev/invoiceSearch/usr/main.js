@@ -24,6 +24,7 @@ ii.Class({
 		init: function() {
 			var args = ii.args(arguments, {});
 			var me = this;
+			me.loadCount = 0;
 			
 			me.gateway = ii.ajax.addGateway("rev", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -46,13 +47,13 @@ ii.Class({
 
 			me.defineFormControls();
 			me.configureCommunications();
-
+			me.setStatus("Loading");
+			
 			me.sortSelections = [];
 			
 			$(window).bind("resize", me, me.resize);
 			
 			me.houseCodeSearch = new ui.lay.HouseCodeSearch();			
-
 			if (parent.fin.appUI.houseCodeId == 0 || parent.fin.appUI.houseCodeId == undefined) //usually happens on pageLoad			
 				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
 			else
@@ -62,9 +63,7 @@ ii.Class({
 		authorizationProcess: function fin_rev_invoiceSearch_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
-
-			$("#pageLoading").hide();			
-		
+			
 			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
 				
 			ii.timer.timing("Page displayed");
@@ -84,7 +83,7 @@ ii.Class({
 			
 			if(!fin.invoiceSearchUi) return;
 			
-		    fin.invoiceSearchUi.invoiceSearch.setHeight($(window).height() - 115);
+		    fin.invoiceSearchUi.invoiceSearch.setHeight($(window).height() - 140);
 		},
 		
 		defineFormControls: function() {			
@@ -154,11 +153,18 @@ ii.Class({
 			me.invoiceSearch.addColumn("credited", "credited", "Credited", "Credited", 80);
 			me.invoiceSearch.addColumn("lastPrinted", "lastPrinted", "Last Printed", "Last Printed", 120);
 			me.invoiceSearch.capColumns();
-			me.invoiceSearch.setHeight($("#pageLoading").height() - 130);
+			me.invoiceSearch.setHeight($("#pageLoading").height() - 155);
 			
 			$("#InvoiceText").bind("keydown", me, me.actionSearchItem);
 			$("#InvoiceDateText").bind("keydown", me, me.actionSearchItem);
 			$("#CustomerText").bind("keydown", me, me.actionSearchItem);
+			
+			$("#pageLoading").css({
+				"opacity": "0.5",
+				"background-color": "black"
+			});
+			$("#messageToUser").css({ "color": "white" });
+			$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
 		},				
 		
 		resizeControls: function() {
@@ -200,6 +206,31 @@ ii.Class({
 			});			
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
+		},
+		
 		houseCodesLoaded: function(me, activeId) {			
 			ii.trace("HouseCodesLoaded", ii.traceTypes.information, "Startup");
 
@@ -220,9 +251,10 @@ ii.Class({
 			else {
 				me.houseCodeGlobalParametersUpdate(false);
 			}
-				
-			$("#pageLoading").hide();
+			
 			me.resizeControls();	
+			me.setStatus("Loaded");
+			$("#pageLoading").fadeOut("slow");
 		},
 
 		houseCodeChanged: function() {
@@ -250,8 +282,7 @@ ii.Class({
 					return false;
 				}
 				
-			$("#messageToUser").text("Loading");			
-			$("#pageLoading").show();
+			me.setLoadCount();
 
 			var invoiceNumber = me.invoice.getValue();
 			var invoiceDate = me.invoiceDate.text.value;
@@ -271,7 +302,7 @@ ii.Class({
 		invoiceLoaded: function(me, activeId) { 					
 			me.invoiceSearch.setData(me.invoices);
 			
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 			me.resize();
   		},
 		
@@ -287,6 +318,9 @@ ii.Class({
 				me.houseCodeChangedAtInvoiceSearch = true;
 				me.invoiceId = item.id;
 				me.invoiceNumber = item.invoiceNumber;
+				me.setStatus("Loading");
+				$("#messageToUser").text("Loading");
+				$("#pageLoading").fadeIn("slow");
 				me.houseCodeStore.fetch("userId:[user],appUnitBrief:" + item.houseCodeBrief + ",", me.houseCodesLoaded, me);
 			}
 			else {

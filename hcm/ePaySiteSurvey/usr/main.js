@@ -5,9 +5,10 @@ ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.grid" );
 ii.Import( "fin.cmn.usr.util" );
-ii.Import( "fin.hcm.ePaySiteSurvey.usr.defs" );
+
 ii.Import( "fin.cmn.usr.houseCodeSearch" );
 ii.Import( "fin.cmn.usr.houseCodeSearchTemplate" );
+ii.Import( "fin.hcm.ePaySiteSurvey.usr.defs" );
 
 ii.Style( "style", 1 );
 ii.Style( "fin.cmn.usr.common", 2 ) ;
@@ -18,6 +19,20 @@ ii.Style( "fin.cmn.usr.input", 6) ;
 ii.Style( "fin.cmn.usr.dropDown", 7 );
 ii.Style( "fin.cmn.usr.dateDropDown", 8 );
 ii.Style( "fin.cmn.usr.grid", 9 );
+ii.Style( "fin.cmn.usr.theme", 10 );
+ii.Style( "fin.cmn.usr.core", 11 );
+ii.Style( "fin.cmn.usr.multiselect", 12 );
+
+var importCompleted = false;
+var iiScript = new ii.Script( "fin.cmn.usr.ui.core", function() { coreLoaded(); });
+
+function coreLoaded() { 
+	var iiScript = new ii.Script( "fin.cmn.usr.ui.widget", function() { widgetLoaded(); });
+}
+
+function widgetLoaded() { 
+	var iiScript = new ii.Script( "fin.cmn.usr.multiselect", function() { importCompleted = true; }); 
+}
 
 ii.Class({
     Name: "fin.hcm.ePaySiteSurvey.UserInterface",
@@ -89,7 +104,11 @@ ii.Class({
 			else
 				$("#DeviceGrid").width($(window).width() - 45);
 
-			me.payCodeGrid.setHeight($(window).height() - 240);
+			if (me.currentWizard == "PayCode")
+				me.payCodeGrid.setHeight($(window).height() - 240);
+			else if (me.currentWizard == "Review")
+				me.payCodeGrid.setHeight(210);
+
 			me.deviceGrid.setHeight($(window).height() - 320);
 			me.deviceTypeGrid.setHeight($(window).height() - 170);
 		},
@@ -126,8 +145,7 @@ ii.Class({
 				me.loadCount = 4;
 				me.state.fetchingData();
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
-				me.frequencyTypeStore.fetch("userId:[user]", me.frequencyTypesLoaded, me);	
-				me.payCodeTypeStore.fetch("userId:[user],payCodeType:productive", me.payCodeTypesLoaded, me);
+				me.frequencyTypeStore.fetch("userId:[user]", me.frequencyTypesLoaded, me);
 				me.ePaySiteSurveyMasterStore.fetch("userId:[user]", me.ePaySiteSurveyMastersLoaded, me);
 			}
 			else
@@ -167,26 +185,26 @@ ii.Class({
 
 			me.actionMenu
 				.addAction({
-					id: "siteSurveyAction", 
-					brief: "Site Survey - Add / Edit / View", 
+					id: "siteSurveyAction",
+					brief: "Site Survey - Add / Edit / View",
 					title: "Add or Edit or View the site survey information.",
 					actionFunction: function() { me.actionSiteSurveyItem(); }
 				})
 				.addAction({
-					id: "siteMethodologylAction", 
-					brief: "Site Methodology - Add / Edit / View", 
+					id: "siteMethodologylAction",
+					brief: "Site Methodology - Add / Edit / View",
 					title: "Add or Edit or View the site methodology information.",
 					actionFunction: function() { me.actionSiteMethodologyItem(); }
 				})
 				.addAction({
-					id: "clockManagementAction", 
-					brief: "Clock Management", 
+					id: "clockManagementAction",
+					brief: "Clock Management",
 					title: "Add or Edit the current clock assets, assigned and unassigned.",
 					actionFunction: function() { me.actionClockManagementItem(); }
 				})
 				.addAction({
-					id: "manageDeviceTypeAction", 
-					brief: "Manage Device Types", 
+					id: "manageDeviceTypeAction",
+					brief: "Manage Device Types",
 					title: "Add or Edit the device types.",
 					actionFunction: function() { me.actionManageDeviceTypeItem("Manage Device Type"); }
 				})
@@ -239,7 +257,15 @@ ii.Class({
 				hasHotState: true
 			});
 			
-			me.AnchorSearch = new ui.ctl.buttons.Sizeable({
+			me.anchorPrint = new ui.ctl.buttons.Sizeable({
+				id: "AnchorPrint",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Print&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionPrintItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorSearch = new ui.ctl.buttons.Sizeable({
 				id: "AnchorSearch",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Search&nbsp;&nbsp;</span>",
@@ -259,16 +285,6 @@ ii.Class({
 		    });
 			
 			me.address1.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-			
-			me.address2 = new ui.ctl.Input.Text({
-		        id: "Address2",
-		        maxLength: 255,
-				changeFunction: function() { me.modified(); }
-		    });
-			
-			me.address2.makeEnterTab()
 				.setValidationMaster( me.validator )
 				.addValidation( ui.ctl.Input.Validation.required )
 			
@@ -637,6 +653,11 @@ ii.Class({
 			me.payCodeGrid.addColumn("description", "description", "Description", "Description", null, null, me.payCodeDescription);
 			me.payCodeGrid.capColumns();
 			
+			me.ePaySite = new ui.ctl.Input.Check({
+		        id: "EPaySite",
+				changeFunction: function() { me.modified(); }
+		    });
+			
 			me.ePayGroupType = new ui.ctl.Input.DropDown.Filtered({
 		        id: "EPayGroupType",
 				formatFunction: function( type ) { return type.name; },
@@ -702,44 +723,10 @@ ii.Class({
 						this.setInvalid("Please select the correct First Day of Week.");
 				});
 
-			me.deviceType = $("#DeviceType")[0];
-			me.deviceType.readOnly = true;
-
-//			me.deviceType = new ui.ctl.Input.DropDown.Filtered({
-//		        id: "DeviceType",
-//				formatFunction: function(type) { return type.name; },
-//				changeFunction: function() { me.modified(); }
-//		    });
-//			
-//			me.deviceType.makeEnterTab()
-//				.setValidationMaster( me.validator )
-//				.addValidation( ui.ctl.Input.Validation.required )
-//				.addValidation( function( isFinal, dataMap ) {
-//					
-//					if (me.deviceType.indexSelected == -1)
-//						this.setInvalid("Please select the correct Device Type.");
-//					else {
-//						if (me.preferredConnectionMethod.indexSelected >= 0) {
-//							var valid = true;
-//							var preferredConnectionMethod = me.preferredConnectionMethod.data[me.preferredConnectionMethod.indexSelected].name;
-//							if (preferredConnectionMethod == "LAN" && !me.deviceType.data[me.deviceType.indexSelected].lan)
-//								valid = false;
-//							else if (preferredConnectionMethod == "Wi-Fi" && !me.deviceType.data[me.deviceType.indexSelected].wifi)
-//								valid = false;
-//							else if (preferredConnectionMethod == "Dialup" && !me.deviceType.data[me.deviceType.indexSelected].dialup)
-//								valid = false;
-//							else if (preferredConnectionMethod == "Cellular" && !me.deviceType.data[me.deviceType.indexSelected].cellular)
-//								valid = false;
-//							if (!valid)
-//								this.setInvalid("Selected device type does not have the preferred connection method available.");
-//						}
-//					}
-//				});
-			
 			me.preferredConnectionMethod = new ui.ctl.Input.DropDown.Filtered({
 		        id: "PreferredConnectionMethod",
 				formatFunction: function(type) { return type.name; },
-				changeFunction: function() { me.modified(); }
+				changeFunction: function() { me.modified(); me.preferredConnectionMethodChanged(); }
 		    });
 			
 			me.preferredConnectionMethod.makeEnterTab()
@@ -750,6 +737,18 @@ ii.Class({
 					if (me.preferredConnectionMethod.indexSelected == -1)
 						this.setInvalid("Please select the correct Preferred Connection Method.");
 				});
+
+			$("#DeviceType").multiselect({
+				minWidth: 230
+				, header: false
+				, noneSelectedText: ""
+				, selectedList: 4
+				, click: function() { me.modified(true); }
+				, close: function() { me.deviceTypeChanged(); }
+			});
+
+			me.deviceAssignment = $("#DeviceAssignment")[0];
+			me.deviceAssignment.readOnly = true;
 			
 			me.dailyRebootTime = new ui.ctl.Input.Text({
 		        id: "DailyRebootTime",
@@ -830,11 +829,7 @@ ii.Class({
 		        id: "PONumber",
 		        maxLength: 50,
 				changeFunction: function() { me.modified(); }
-		    });
-			
-			me.poNumber.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
+		    });			
 			
 			me.siteGroup = new ui.ctl.Input.Check({
 		        id: "SiteGroup",
@@ -846,21 +841,13 @@ ii.Class({
 		        maxLength: 50,
 				changeFunction: function() { me.modified(); }
 		    });
-			
-			me.siteGroupID.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				
+	
 			me.siteGroupName = new ui.ctl.Input.Text({
 		        id: "SiteGroupName",
 		        maxLength: 100,
 				changeFunction: function() { me.modified(); }
 		    });
-			
-			me.siteGroupName.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-			
+				
 			me.goLiveDate = new ui.ctl.Input.Date({
 		        id: "GoLiveDate",
 				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
@@ -885,32 +872,34 @@ ii.Class({
 		        id: "ConfirmSiteIsLive",
 				changeFunction: function() { me.modified(); }
 		    });
-			
-//			me.serialNumber = new ui.ctl.Input.Text({
-//		        id: "SerialNumber",
-//		        maxLength: 50,
-//				changeFunction: function() { me.modified(); }
-//		    });
-//
-//			me.trackingNumber = new ui.ctl.Input.Text({
-//		        id: "TrackingNumber",
-//		        maxLength: 50,
-//				changeFunction: function() { me.modified(); }
-//		    });
-			
+
 			me.deviceTypeClockAssetGrid = new ui.ctl.Grid({
 				id: "DeviceTypeClockAssetGrid",
 				appendToId: "divForm",
-				allowAdds: false
+				allowAdds: false,
+				selectFunction: function(index) { me.deviceTypeClockAssetSelect(index); }
 			});
+			
+			me.serialNumber = new ui.ctl.Input.Text({
+		        id: "SerialNumber",
+		        maxLength: 50, 
+				appendToId: "DeviceTypeClockAssetGridControlHolder"
+		    });
+			
+			me.trackingNumber = new ui.ctl.Input.Text({
+		        id: "TrackingNumber",
+		        maxLength: 50, 
+				appendToId: "DeviceTypeClockAssetGridControlHolder",
+				changeFunction: function() { me.modified(); }
+		    });
 
 			me.deviceTypeClockAssetGrid.addColumn("assigned", "assigned", "", "", 30, function() {
 				var index = me.deviceTypeClockAssetGrid.rows.length - 1;
                	return "<input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onclick=\"fin.hcmEPaySiteSurveyUi.actionClickItem(this);\" onchange=\"parent.fin.appUI.modified = true;\" />";
             });
 			me.deviceTypeClockAssetGrid.addColumn("deviceType", "deviceType", "Device Type", "Device Type", 90, function( type ) { return type.name; });
-			me.deviceTypeClockAssetGrid.addColumn("serialNumber", "serialNumber", "Serial Number", "Serial Number", 120);
-			me.deviceTypeClockAssetGrid.addColumn("trackingNumber", "trackingNumber", "Tracking Number", "Tracking Number", null);
+			me.deviceTypeClockAssetGrid.addColumn("serialNumber", "serialNumber", "Serial Number", "Serial Number", 120, null, me.serialNumber);
+			me.deviceTypeClockAssetGrid.addColumn("trackingNumber", "trackingNumber", "Tracking Number", "Tracking Number", null, null, me.trackingNumber);
 			me.deviceTypeClockAssetGrid.capColumns();
 			
 			me.deviceTypeCMSearch = new ui.ctl.Input.DropDown.Filtered({
@@ -922,11 +911,11 @@ ii.Class({
 				.setValidationMaster( me.validator )
 				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
-					
+
 					if (me.deviceTypeCMSearch.indexSelected == -1)
 						this.setInvalid("Please select the correct Device Type.");
 				});
-			
+
 			me.deviceStatusCMSearch = new ui.ctl.Input.DropDown.Filtered({
 		        id: "DeviceStatusCMSearch",
 				formatFunction: function(type) { return type.name; }
@@ -988,6 +977,7 @@ ii.Class({
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)	
 				.addValidation( function( isFinal, dataMap ) {
+
 					if ((this.focused || this.touched) && me.deviceTypeCM.indexSelected == -1)
 						this.setInvalid("Please select the correct Device Type.");
 				});
@@ -1006,24 +996,40 @@ ii.Class({
 
 					if ((this.focused || this.touched) && me.deviceStatusTypeCM.indexSelected == -1)
 						this.setInvalid("Please select the correct Device Status Type.");
+					else if (me.deviceGrid.activeRowIndex != -1) {
+						if (me.deviceGrid.data[me.deviceGrid.activeRowIndex] == undefined || me.deviceGrid.data[me.deviceGrid.activeRowIndex].id == 0) {
+							if (me.deviceStatusTypeCM.data[me.deviceStatusTypeCM.indexSelected].name == "Assigned")
+								this.setInvalid("Device Status Type should be Unassigned.");
+						}
+					}
 				});
-				
+
 			me.assetTransferStatusTypeCM = new ui.ctl.Input.DropDown.Filtered({
 		        id: "AssetTransferStatusTypeCM",
 				appendToId: "DeviceGridControlHolder",
 				formatFunction: function(type) { return type.name; },
 				changeFunction: function() { me.modified(); }
 		    });
-			
+
 			 me.assetTransferStatusTypeCM.makeEnterTab()
 				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)	
+				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
-					
-					if ((this.focused || this.touched) && me.assetTransferStatusTypeCM.indexSelected == -1)
-						this.setInvalid("Please select the correct Asset Transfer Status Type.");
+
+					if (me.deviceStatusTypeCM.indexSelected >= 0) {
+						if (me.deviceStatusTypeCM.data[me.deviceStatusTypeCM.indexSelected].name == "Assigned") {
+							if ((this.focused || this.touched) && me.assetTransferStatusTypeCM.indexSelected <= 0)
+								this.setInvalid("Please select the correct Asset Transfer Status Type.");
+						}
+						else if (me.deviceStatusTypeCM.data[me.deviceStatusTypeCM.indexSelected].name == "Unassigned") {
+							if ((this.focused || this.touched) && me.assetTransferStatusTypeCM.indexSelected > 0)
+								this.setInvalid("Asset Transfer Status Type should be blank or [None].");
+							else 
+								this.valid = true;
+						}
+					}
 				});
-			
+
 			me.serialNumberCM = new ui.ctl.Input.Text({
 		        id: "SerialNumberCM",
 		        maxLength: 50, 
@@ -1060,7 +1066,7 @@ ii.Class({
 			me.deviceGrid.addColumn("deviceStatusType", "deviceStatusType", "Device Status", "Device Status", 150, function( type ) { return type.name; }, me.deviceStatusTypeCM);
 			me.deviceGrid.addColumn("assetTransferStatusType", "assetTransferStatusType", "Asset Transfer Status", "Asset Transfer Status", 170, function( type ) { return type.name; }, me.assetTransferStatusTypeCM);
 			me.deviceGrid.addColumn("serialNumber", "serialNumber", "Serial Number", "Serial Number", 150, null, me.serialNumberCM);
-			me.deviceGrid.addColumn("houseCode", "houseCode", "House Code", "House Code", 100, null, me.houseCodeCM);
+			me.deviceGrid.addColumn("houseCode", "houseCode", "House Code", "House Code", 100, null, null);
 			me.deviceGrid.addColumn("groupNumber", "groupNumber", "Group Number", "Group Number", 150, null, me.groupNumberCM);
 			me.deviceGrid.addColumn("groupName", "groupName", "Group Name", "Group Name", null, null, me.groupNameCM);
 			me.deviceGrid.addColumn("upsTrackingNumber", "upsTrackingNumber", "UPS Tracking Number", "UPS Tracking Number", 160, null, me.upsTrackingNumberCM);
@@ -1157,7 +1163,6 @@ ii.Class({
 			$("#houseCodeText")[0].tabIndex = 1;
 			me.houseCodeName.text.tabIndex = 2;
 			me.address1.text.tabIndex = 3;
-			me.address2.text.tabIndex = 4;
 			me.city.text.tabIndex = 5;
 			me.state.text.tabIndex = 6;
 			me.zipCode.text.tabIndex = 7;			
@@ -1193,28 +1198,28 @@ ii.Class({
 			$("#TollFreeNo")[0].tabIndex = 37;
 			me.comments.tabIndex = 38;
 			
-			me.ePayGroupType.text.tabIndex = 51;
-			me.reportingFrequency.text.tabIndex = 52;
-			me.firstDayOfReportingPeriod.text.tabIndex = 53;
-			me.firstDayOfWeek.text.tabIndex = 54;
-			me.deviceType.tabIndex = 55;
+			me.ePaySite.check.tabIndex = 51;
+			me.ePayGroupType.text.tabIndex = 52;
+			me.reportingFrequency.text.tabIndex = 53;
+			me.firstDayOfReportingPeriod.text.tabIndex = 54;
+			me.firstDayOfWeek.text.tabIndex = 55;
 			me.preferredConnectionMethod.text.tabIndex = 56;
-			me.dailyRebootTime.text.tabIndex = 57;
-			me.useWorkOrders.check.tabIndex = 58;
-			me.taskSelectionMethod.text.tabIndex = 59;
-			me.accidentFreeQuestions.check.tabIndex = 60;
-			me.enableLunchLogic.check.tabIndex = 61;
-			me.fixPunchesOnClock.check.tabIndex = 62;
-			me.businessAnalyst.text.tabIndex = 63;
-			me.reviewDate.text.tabIndex = 64;
-			me.poNumber.text.tabIndex = 65;
-			me.siteGroup.check.tabIndex = 66;
-			me.siteGroupID.text.tabIndex = 67;
-			me.siteGroupName.text.tabIndex = 68;
-			me.goLiveDate.text.tabIndex = 69;
-			me.confirmSiteIsLive.check.tabIndex = 70;
-			//me.serialNumber.text.tabIndex = 71;
-			//me.trackingNumber.text.tabIndex = 72;
+			//$("#DeviceType")[0].tabIndex = 57;
+			me.deviceAssignment.tabIndex = 58;
+			me.dailyRebootTime.text.tabIndex = 59;
+			me.useWorkOrders.check.tabIndex = 60;
+			me.taskSelectionMethod.text.tabIndex = 61;
+			me.accidentFreeQuestions.check.tabIndex = 62;
+			me.enableLunchLogic.check.tabIndex = 63;
+			me.fixPunchesOnClock.check.tabIndex = 64;
+			me.businessAnalyst.text.tabIndex = 65;
+			me.reviewDate.text.tabIndex = 66;
+			me.poNumber.text.tabIndex = 67;
+			me.siteGroup.check.tabIndex = 68;
+			me.siteGroupID.text.tabIndex = 69;
+			me.siteGroupName.text.tabIndex = 70;
+			me.goLiveDate.text.tabIndex = 71;
+			me.confirmSiteIsLive.check.tabIndex = 72;
 			
 			$("#HouseCode")[0].tabIndex = 81;
 			$("#DeviceInfo")[0].tabIndex = 82;
@@ -1228,8 +1233,6 @@ ii.Class({
 			$("#UnionYes")[0].disabled = true;
 			$("#UnionNo")[0].disabled = true;
 			me.payrollFrequency.text.readOnly = true;
-			//me.serialNumber.text.readOnly = true;
-			//me.trackingNumber.text.readOnly = true;
 		},
 
 		configureCommunications: function() {
@@ -1501,7 +1504,6 @@ ii.Class({
 			
 			me.houseCodeName.resizeText();
 			me.address1.resizeText();
-			me.address2.resizeText();
 			me.city.resizeText();
 			me.zipCode.resizeText();
 			me.state.resizeText();
@@ -1526,8 +1528,7 @@ ii.Class({
 			me.ePayGroupType.resizeText();
 			me.reportingFrequency.resizeText();
 			me.firstDayOfReportingPeriod.resizeText();
-			me.firstDayOfWeek.resizeText();
-			//me.deviceType.resizeText();
+			me.firstDayOfWeek.resizeText();			
 			me.preferredConnectionMethod.resizeText();
 			me.dailyRebootTime.resizeText();
 			me.taskSelectionMethod.resizeText();
@@ -1537,8 +1538,6 @@ ii.Class({
 			me.siteGroupID.resizeText();
 			me.siteGroupName.resizeText();
 			me.goLiveDate.resizeText();
-			//me.serialNumber.resizeText();
-			//me.trackingNumber.resizeText();
 
 			me.resize();
 		},
@@ -1547,7 +1546,6 @@ ii.Class({
 			var me = this;
 
 			me.address1.text.readOnly = readOnly;
-			me.address2.text.readOnly = readOnly;
 			me.city.text.readOnly = readOnly;
 			me.zipCode.text.readOnly = readOnly;
 			me.state.text.readOnly = readOnly;
@@ -1577,8 +1575,10 @@ ii.Class({
 			$("#PhonesAvailableNo")[0].disabled = readOnly;
 			$("#TollFreeYes")[0].disabled = readOnly;
 			$("#TollFreeNo")[0].disabled = readOnly;
-			//me.comments.readOnly = readOnly;
+
 			/*
+			me.comments.readOnly = readOnly;
+			me.ePaySite.check.disabled = readOnly;
 			me.ePayGroupType.text.readOnly = readOnly;
 			me.reportingFrequency.text.readOnly = readOnly;
 			me.firstDayOfReportingPeriod.text.readOnly = readOnly;
@@ -1599,8 +1599,6 @@ ii.Class({
 			me.siteGroupName.text.readOnly = readOnly;
 			me.goLiveDate.text.readOnly = readOnly;
 			me.confirmSiteIsLive.check.tabIndex = 70;
-			me.serialNumber.text.readOnly = readOnly;
-			me.trackingNumber.text.readOnly = readOnly;
 			*/
 			if (readOnly) {
 				$("#StateAction").removeClass("iiInputAction");
@@ -1638,34 +1636,30 @@ ii.Class({
 			me.weekDays.push(new fin.hcm.ePaySiteSurvey.WeekDay({ id: 1, name: "Thursday"}));
 			me.weekDays.push(new fin.hcm.ePaySiteSurvey.WeekDay({ id: 1, name: "Friday"}));
 			me.weekDays.push(new fin.hcm.ePaySiteSurvey.WeekDay({ id: 1, name: "Saturday"}));
-			
-			me.deviceTypeCM.setData(me.deviceTypes);
-			me.deviceStatusTypeCM.setData(me.deviceStatusTypes);			
-			me.assetTransferStatusTypeCM.setData(me.assetTransferStatusTypes);
-			
-			me.deviceTypesTemp = me.deviceTypes.slice();
+		
 			me.deviceStatusTypesTemp = me.deviceStatusTypes.slice();
 			me.assetTransferStatusTypesTemp = me.assetTransferStatusTypes.slice();
 			
-			me.deviceTypesTemp.unshift(new fin.hcm.ePaySiteSurvey.DeviceType({ id: 0, name: "[ALL]"}));
+			me.assetTransferStatusTypes.unshift(new fin.hcm.ePaySiteSurvey.AssetTransferStatusType({ id: 0, name: "[None]"}));
+			
+			me.deviceStatusTypeCM.setData(me.deviceStatusTypes);			
+			me.assetTransferStatusTypeCM.setData(me.assetTransferStatusTypes);
+			
 			me.deviceStatusTypesTemp.unshift(new fin.hcm.ePaySiteSurvey.DeviceStatusType({ id: 0, name: "[ALL]"}));
 			me.assetTransferStatusTypesTemp.unshift(new fin.hcm.ePaySiteSurvey.AssetTransferStatusType({ id: 0, name: "[ALL]"}));
-			
-			me.deviceTypeCMSearch.setData(me.deviceTypesTemp);
+
 			me.deviceStatusCMSearch.setData(me.deviceStatusTypesTemp);
 			me.assetTransferStatusCMSearch.setData(me.assetTransferStatusTypesTemp);
 			me.ePayGroupType.setData(me.ePayGroupTypes);
 			
 			me.reportingFrequency.setData(me.reportingFrequencyTypes);
-			me.firstDayOfWeek.setData(me.weekDays);
-			//me.deviceType.setData(me.deviceTypes);
+			me.firstDayOfWeek.setData(me.weekDays);			
 			me.preferredConnectionMethod.setData(me.preferredConnectionMethods);
 			me.taskSelectionMethod.setData(me.taskSelectionMethods);
 
-			me.deviceTypeCMSearch.select(0, me.deviceTypeCMSearch.focused);
 			me.deviceStatusCMSearch.select(0, me.deviceStatusCMSearch.focused);
 			me.assetTransferStatusCMSearch.select(0, me.assetTransferStatusCMSearch.focused);
-						
+
 			me.resizeControls();
 			me.checkLoadCount();
 		},
@@ -1673,20 +1667,40 @@ ii.Class({
 		loadDeviceTypes: function() {
 			var me = this;
 
-			if (me.deviceTypeTitle.getValue() == "") 
+			if (me.action == "ManageDeviceType" && me.deviceTypeGrid.activeRowIndex >= 0 && me.deviceTypeTitle.getValue() == "") 
 				return false;
-			
+
 			if (me.deviceTypeGrid.activeRowIndex >= 0)
 				me.deviceTypeGrid.body.deselect(me.deviceTypeGrid.activeRowIndex, true);
-				
+
 			me.setLoadCount();
-			me.deviceTypeStore.reset();
-			me.deviceTypeStore.fetch("userId:[user]", me.deviceTypesLoaded, me);
+			me.deviceTypeStore.reset()
+
+			if (me.action == "SiteMethodology" || me.action == "ClockManagement")
+				me.deviceTypeStore.fetch("userId:[user],active:1", me.deviceTypesLoaded, me);
+			else if (me.action == "ManageDeviceType")
+				me.deviceTypeStore.fetch("userId:[user],active:-1", me.deviceTypesLoaded, me);
 		},
 		
 		deviceTypesLoaded: function(me, activeId) {
-			
-			me.deviceTypeGrid.setData(me.deviceTypes);
+
+			if (me.action == "ManageDeviceType")
+				me.deviceTypeGrid.setData(me.deviceTypes);
+			else if (me.action == "SiteMethodology") {
+				$("#DeviceType").html("");
+				for (var index = 0; index < me.deviceTypes.length; index++) {
+					$("#DeviceType").append("<option title='" + me.deviceTypes[index].name + "' value='" + me.deviceTypes[index].id + "'>" + me.deviceTypes[index].name + "</option>");
+				}
+				$("#DeviceType").multiselect("refresh");
+			}
+			else if (me.action == "ClockManagement") {
+				me.deviceTypeCM.setData(me.deviceTypes);
+				me.deviceTypesTemp = me.deviceTypes.slice();
+				me.deviceTypesTemp.unshift(new fin.hcm.ePaySiteSurvey.DeviceType({ id: 0, name: "[ALL]"}));
+				me.deviceTypeCMSearch.setData(me.deviceTypesTemp);
+				me.deviceTypeCMSearch.select(0, me.deviceTypeCMSearch.focused);
+			}
+
 			me.checkLoadCount();
 		},
 
@@ -1709,6 +1723,7 @@ ii.Class({
 
 			if (parent.fin.appUI.houseCodeId <= 0) return;
 
+			me.payCodeTypeStore.fetch("userId:[user],payCodeType:ePaySiteSurvey,houseCodeId:" + parent.fin.appUI.houseCodeId, me.payCodeTypesLoaded, me);
 			me.siteDetailStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.siteDetailsLoaded, me);
 		},
 		
@@ -1736,7 +1751,6 @@ ii.Class({
 			me.ePayGroupType.reset();
 			me.reportingFrequency.reset();
 			me.firstDayOfWeek.reset();
-			//me.deviceType.reset();
 			me.preferredConnectionMethod.reset();
 			me.taskSelectionMethod.reset();
 			me.reportingFrequency.reset();
@@ -1744,13 +1758,11 @@ ii.Class({
 			
 			me.houseCodeName.setValue(parent.fin.appUI.houseCodeTitle);
 			me.address1.setValue(me.siteDetails[0].address1);
-			me.address2.setValue(me.siteDetails[0].address2);
 			me.city.setValue(me.siteDetails[0].city);
 			index = ii.ajax.util.findIndexById(me.siteDetails[0].state.toString(), me.stateTypes);
 			if (index != undefined) 
 				me.state.select(index, me.state.focused);
 			me.zipCode.setValue(me.siteDetails[0].zipCode);
-			//me.timeZone.setValue(me.siteDetails[0].timeZone);
 			me.dayLightSavings.setValue(me.siteDetails[0].dayLightSavings.toString());
 			me.managerName.setValue(me.siteDetails[0].managerName);
 			me.managerPhone.setValue(me.siteDetails[0].managerPhone);
@@ -1778,6 +1790,7 @@ ii.Class({
 			$("input[name='PhonesAvailable'][value='" + me.siteDetails[0].phonesAvailable + "']").attr("checked", "checked");
 			$("input[name='TollFree'][value='" + me.siteDetails[0].tollFree + "']").attr("checked", "checked"); 
 			me.comments.value = me.siteDetails[0].comments;
+			me.ePaySite.setValue(me.siteDetails[0].ePaySite.toString());
 
 			if (me.siteDetails[0].id == 0 || me.siteDetails[0].ePayGroupType == 0) {
 				index = me.findIndexByTitle("STD OT 1/10 HR Rounding", me.ePayGroupTypes);
@@ -1791,11 +1804,7 @@ ii.Class({
 				index = me.findIndexByTitle("Sunday", me.weekDays);
 				if (index != null) 
 					me.firstDayOfWeek.select(index, me.firstDayOfWeek.focused);
-					
-//				index = me.findIndexByTitle("T6", me.deviceTypes);
-//				if (index != null) 
-//					me.deviceType.select(index, me.deviceType.focused);
-					
+
 				index = me.findIndexByTitle("LAN", me.preferredConnectionMethods);
 				if (index != null) 
 					me.preferredConnectionMethod.select(index, me.preferredConnectionMethod.focused);
@@ -1821,11 +1830,7 @@ ii.Class({
 				index = me.findIndexByTitle(me.siteDetails[0].firstDayOfWeek, me.weekDays);
 				if (index != undefined) 
 					me.firstDayOfWeek.select(index, me.firstDayOfWeek.focused);
-					
-//				index = ii.ajax.util.findIndexById(me.siteDetails[0].clockAsset.toString(), me.deviceTypes);
-//				if (index != undefined) 
-//					me.deviceType.select(index, me.deviceType.focused);
-				
+			
 				index = ii.ajax.util.findIndexById(me.siteDetails[0].preferredConnectionMethod.toString(), me.preferredConnectionMethods);
 				if (index != undefined) 
 					me.preferredConnectionMethod.select(index, me.preferredConnectionMethod.focused);
@@ -1901,48 +1906,98 @@ ii.Class({
 		},
 		
 		ePaySiteSurveyClockAssetsLoaded: function(me, activeId) {
-			
-			var clockAssetsTemp = [];
 
-			for (var index = 0; index < me.clockAssets.length; index++) {
-				var found = false;
-				for (var iIndex = 0; iIndex < me.ePaySiteSurveyClockAssets.length; iIndex++) {
-					if (me.clockAssets[index].id == me.ePaySiteSurveyClockAssets[iIndex].clockAsset) {
-						found = true;
-						me.ePaySiteSurveyClockAssets[iIndex].deviceType = me.clockAssets[index].deviceType;
-						me.ePaySiteSurveyClockAssets[iIndex].serialNumber = me.clockAssets[index].serialNumber;
-						me.ePaySiteSurveyClockAssets[iIndex].trackingNumber = me.clockAssets[index].upsTrackingNumber;
-						me.ePaySiteSurveyClockAssets[iIndex].assigned = true;
-						break;
+			var deviceTypesTemp = [];
+
+			for (var index = 0; index < me.ePaySiteSurveyClockAssets.length; index++) {
+				var itemIndex = ii.ajax.util.findIndexById(me.ePaySiteSurveyClockAssets[index].clockAsset.toString(), me.clockAssets);
+				if (itemIndex != undefined) 
+					deviceTypesTemp.push(me.clockAssets[itemIndex].deviceType.id.toString());
+			}
+
+			$("#DeviceType").multiselect("widget").find(":checkbox").each(function() {
+		 		if ($.inArray(this.value, deviceTypesTemp) >= 0) {
+		 			this.click();
+		 		}
+			});
+
+			me.deviceTypeChanged();
+		},
+
+		preferredConnectionMethodChanged: function() {
+			var me = this;
+			var deviceTypesTemp = [];
+
+			if (me.preferredConnectionMethod.indexSelected >= 0) {
+				var preferredConnectionMethod = me.preferredConnectionMethod.data[me.preferredConnectionMethod.indexSelected].name;
+				for (var index = 0; index < me.deviceTypes.length; index++) {
+					if (preferredConnectionMethod == "LAN" && me.deviceTypes[index].lan)
+						deviceTypesTemp.push(me.deviceTypes[index]);
+					else if (preferredConnectionMethod == "Wi-Fi" && me.deviceTypes[index].wifi)
+						deviceTypesTemp.push(me.deviceTypes[index]);
+					else if (preferredConnectionMethod == "Dialup" && me.deviceTypes[index].dialup)
+						deviceTypesTemp.push(me.deviceTypes[index]);
+					else if (preferredConnectionMethod == "Cellular" && me.deviceTypes[index].cellular)
+						deviceTypesTemp.push(me.deviceTypes[index]);
+				}				
+			}
+
+			$("#DeviceType").html("");
+			for (var index = 0; index < deviceTypesTemp.length; index++) {
+				$("#DeviceType").append("<option title='" + deviceTypesTemp[index].name + "' value='" + deviceTypesTemp[index].id + "'>" + deviceTypesTemp[index].name + "</option>");
+			}
+			$("#DeviceType").multiselect("refresh");
+			me.deviceTypeChanged();
+		},
+
+		deviceTypeChanged: function() {
+			var me = this;
+			var ePaySiteSurveyClockAssetsTemp = [];
+			var deviceTypes = $("#DeviceType").val();
+
+			if (me.preferredConnectionMethod.indexSelected >= 0 && deviceTypes != null) {
+				for (var index = 0; index < me.clockAssets.length; index++) {
+					var found = false;
+					for (var iIndex = 0; iIndex < me.ePaySiteSurveyClockAssets.length; iIndex++) {
+						if (me.clockAssets[index].id == me.ePaySiteSurveyClockAssets[iIndex].clockAsset) {
+							found = true;
+							var item = me.ePaySiteSurveyClockAssets[iIndex];
+							item.deviceType = me.clockAssets[index].deviceType;
+							item.serialNumber = me.clockAssets[index].serialNumber;
+							item.trackingNumber = me.clockAssets[index].upsTrackingNumber;
+							me.ePaySiteSurveyClockAssets[iIndex] = item;
+
+							if ($.inArray(me.clockAssets[index].deviceType.id.toString(), deviceTypes) > -1)
+								ePaySiteSurveyClockAssetsTemp.push(item);
+							break;
+						}
+					}
+
+					if (!found) {
+						if ($.inArray(me.clockAssets[index].deviceType.id.toString(), deviceTypes) > -1) {
+							var item = new fin.hcm.ePaySiteSurvey.EPaySiteSurveyClockAsset({
+								id: 0
+								, ePaySiteSurvey: me.siteDetails[0].id
+								, clockAsset: me.clockAssets[index].id
+								, deviceType: me.clockAssets[index].deviceType
+								, serialNumber: me.clockAssets[index].serialNumber
+								, trackingNumber: me.clockAssets[index].upsTrackingNumber
+							});
+							ePaySiteSurveyClockAssetsTemp.push(item);
+						}
 					}
 				}
-				if (!found) {
-					if (me.clockAssets[index].deviceStatusType.name == "Unassigned")
-						clockAssetsTemp.push(me.clockAssets[index]);
-				}
-			}
-			
-			for (var index = 0; index < clockAssetsTemp.length; index++) {
-				var item = new fin.hcm.ePaySiteSurvey.EPaySiteSurveyClockAsset({
-						id: 0
-						, ePaySiteSurvey: me.siteDetails[0].id
-						, clockAsset: clockAssetsTemp[index].id
-						, deviceType: clockAssetsTemp[index].deviceType
-						, serialNumber: clockAssetsTemp[index].serialNumber
-						, trackingNumber: clockAssetsTemp[index].upsTrackingNumber
-					});
-					me.ePaySiteSurveyClockAssets.push(item);
 			}
 
-			me.deviceTypeClockAssetGrid.setData(me.ePaySiteSurveyClockAssets);
-			for (var index = 0; index < me.ePaySiteSurveyClockAssets.length; index++) {
-				$("#selectInputCheck" + index)[0].checked = me.ePaySiteSurveyClockAssets[index].assigned;
+			me.deviceTypeClockAssetGrid.setData(ePaySiteSurveyClockAssetsTemp);
+			for (var index = 0; index < ePaySiteSurveyClockAssetsTemp.length; index++) {
+				$("#selectInputCheck" + index)[0].checked = ePaySiteSurveyClockAssetsTemp[index].assigned;
 			}
-			me.setDeviceTypeTitle();			
+			me.setDeviceTypeTitle();
 		},
-		
+
 		setDeviceTypeTitle: function() {
-			var me = this;			
+			var me = this;
 			var selectedDeviceTypes = "";
 
 			for (var index = 0; index < me.deviceTypeClockAssetGrid.data.length; index++) {
@@ -1953,8 +2008,7 @@ ii.Class({
 						selectedDeviceTypes += ", " + me.deviceTypeClockAssetGrid.data[index].deviceType.name;
 				}
 			}
-
-			me.deviceType.value = selectedDeviceTypes;
+			me.deviceAssignment.value = selectedDeviceTypes;
 		},
 		
 		actionClickItem: function(objCheckBox) {
@@ -1962,7 +2016,21 @@ ii.Class({
 			var index = parseInt(objCheckBox.id.replace("selectInputCheck", ""), 10);
 
 			me.deviceTypeClockAssetGrid.data[index].modified = true;
+			me.deviceTypeClockAssetGrid.data[index].assigned = objCheckBox.checked;			
 			me.setDeviceTypeTitle();
+		},
+			
+		deviceTypeClockAssetSelect: function() {
+			var args = ii.args(arguments,{
+				index: {type: Number}  // The index of the data subItem to select
+			});
+			var me = this;
+			var index = args.index;
+
+			me.serialNumber.resizeText();
+			me.trackingNumber.resizeText();
+			me.serialNumber.text.readOnly = true;
+			me.deviceTypeClockAssetGrid.data[index].modified = true;
 		},
 		
 		itemPayCodeSelect: function() {
@@ -2099,7 +2167,7 @@ ii.Class({
 			var me = this;
 	
 			if (me.currentWizard == "HouseCode") {
-				if (!me.address1.validate(true) || !me.address2.validate(true) || !me.city.validate(true) 
+				if (!me.address1.validate(true) || !me.city.validate(true) 
 					|| !me.state.validate(true) || !me.zipCode.validate(true) || !me.timeZone.validate(true))
 					return false;
 			}
@@ -2178,6 +2246,7 @@ ii.Class({
 					$("#editFonen").show();
 					$("#AnchorSave").show();
 					me.setReadOnly(true);
+					me.payCodeGrid.setHeight(200);
 					break;
 			}
 
@@ -2201,6 +2270,7 @@ ii.Class({
 			$("#AnchorManageDeviceTypes").hide();
 			$("#AnchorSave").hide();
 			$("#AnchorCancel").hide();
+			$("#AnchorPrint").hide();
 
 			$("#header").html("Site Survey");
 			me.action = "SiteSurvey";
@@ -2215,6 +2285,7 @@ ii.Class({
 				return;
 			
 			me.action = "SiteMethodology";
+			me.status = "";
 			$("#header").html("Site Methodology");
 
 			if (me.siteDetails[0].id == 0) {
@@ -2222,11 +2293,15 @@ ii.Class({
 				$("#divHouseCodeInfo").hide();
 				$("#divManager").hide();
 				$("#SiteMethodology").hide();
+				$("#ClockManagement").hide();
+				$("#ManageDeviceType").hide();
 				$("#AnchorPrev").hide();
 				$("#AnchorNext").hide();
 				$("#AnchorSaveAndSend").hide();
+				$("#AnchorManageDeviceTypes").hide();
 				$("#AnchorSave").hide();
 				$("#AnchorCancel").hide();
+				$("#AnchorPrint").hide();
 				return;
 			}
 			
@@ -2253,31 +2328,34 @@ ii.Class({
 			$("#AnchorManageDeviceTypes").hide();
 			$("#AnchorSave").show();
 			$("#AnchorCancel").show();
+			$("#AnchorPrint").show();
 			
 			me.setStatus("Normal");
 			me.resizeControls();
-
+			me.setReadOnly(false);
+			me.loadDeviceTypes();
 			me.clockAssetStore.reset();
 			me.ePaySiteSurveyClockAssetStore.reset();
-			me.clockAssetStore.fetch("userId:[user],houseCodeId:0,deviceType:0,deviceStatusType:0,assetTransferStatusType:0", me.clockAssetsLoaded, me);
+			me.clockAssetStore.fetch("userId:[user],ePaySiteSurveyId:" + me.siteDetails[0].id + ",houseCodeId:0,deviceType:0,deviceStatusType:2,assetTransferStatusType:0", me.clockAssetsLoaded, me);
 			me.ePaySiteSurveyClockAssetStore.fetch("userId:[user],id:" + me.siteDetails[0].id, me.ePaySiteSurveyClockAssetsLoaded, me);
 		},
 		
 		actionClockManagementItem: function() {
 			var me = this;
-			
+
 			if (!parent.fin.cmn.status.itemValid())
 				return;
-						
+
 			$("#SiteSurvey").hide();
 			$("#SiteMethodology").hide();
 			$("#ClockManagement").show();
-			$("#ManageDeviceType").hide();			
+			$("#ManageDeviceType").hide();
 			$("#AnchorPrev").hide();
 			$("#AnchorNext").hide();
 			$("#AnchorSaveAndSend").hide();
 			$("#AnchorSave").show();
 			$("#AnchorCancel").show();
+			$("#AnchorPrint").show();
 			$("input[name='CMSearch'][value='false']").attr("checked", "checked");
 			if (me.manageDeviceTypeShow) {
 				$("#AnchorManageDeviceTypes").show();				
@@ -2287,17 +2365,19 @@ ii.Class({
 			me.deviceTypeCMSearch.resizeText();
 			me.deviceStatusCMSearch.resizeText();
 			me.assetTransferStatusCMSearch.resizeText();
-			me.deviceGrid.setData(me.clockAssets);
+			me.deviceGrid.setData([]);
 			me.deviceGrid.setHeight($(window).height() - 320);
 			
 			me.action = "ClockManagement";
+			me.status = "";
 			me.setStatus("Normal");
 			me.resizeControls();
+			me.loadDeviceTypes();
 		},
 		
 		actionManageDeviceTypeItem: function(status) {
 			var me = this;
-			
+
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 			
@@ -2312,13 +2392,14 @@ ii.Class({
 			$("#AnchorManageDeviceTypes").hide();
 			$("#AnchorSave").show();
 			$("#AnchorCancel").show();
+			$("#AnchorPrint").hide();
 			
-			$("#header").html("");
-			me.deviceTypeGrid.setData(me.deviceTypes);
+			$("#header").html("");	
 			me.deviceTypeGrid.setHeight($(window).height() - 170);
 			me.action = "ManageDeviceType";
 			me.setStatus("Normal");
 			me.status = status;
+			me.loadDeviceTypes();
 		},
 		
 		actionSearchItem: function() {
@@ -2345,7 +2426,7 @@ ii.Class({
 
 			me.setLoadCount();
 			me.clockAssetStore.reset();
-			me.clockAssetStore.fetch("userId:[user],houseCodeId:" + houseCodeId
+			me.clockAssetStore.fetch("userId:[user],ePaySiteSurveyId:0,houseCodeId:" + houseCodeId
 				+ ",deviceType:" + deviceType
 				+ ",deviceStatusType:" + deviceStatusType
 				+ ",assetTransferStatusType:" + assetTransferStatusType
@@ -2365,7 +2446,8 @@ ii.Class({
 				}
 			}
 
-			me.deviceGrid.setData(me.clockAssets);
+			if (me.action == "ClockManagement")
+				me.deviceGrid.setData(me.clockAssets);
 			me.checkLoadCount();
 		},
 
@@ -2446,9 +2528,11 @@ ii.Class({
 				$("#ManageDeviceType").hide();
 				$("#ClockManagement").show();
 				if (me.manageDeviceTypeShow) {
-					$("#AnchorManageDeviceTypes").show();				
+					$("#AnchorManageDeviceTypes").show();
 				}
+				me.action = "ClockManagement";
 				me.status = "";
+				me.loadDeviceTypes();
 			}
 			else if (me.status == "Manage Device Type") {
 				me.loadDeviceTypes();
@@ -2462,7 +2546,107 @@ ii.Class({
 				$("#houseCodeText").focus();
 			}
 		},
-		
+
+		actionPrintItem: function() {
+			var me = this;
+			var htmlContent = "<html><head><link rel='stylesheet' type='text/css' href='style.css'></head><body>";
+			
+			if (me.action == "SiteMethodology") {
+				var deviceTypeContent = "";
+				
+				me.ePaySiteSurveyClockAssets.sort(
+					function (ca1, ca2) {
+						if (ca1.deviceType.id > ca2.deviceType.id) return 1;
+		  				if (ca1.deviceType.id < ca2.deviceType.id) return -1;
+		  				return 0;
+					}
+				);
+				
+				for (var index = 0; index < me.ePaySiteSurveyClockAssets.length; index++) {
+					if (me.ePaySiteSurveyClockAssets[index].id > 0 && me.ePaySiteSurveyClockAssets[index].assigned) {
+						deviceTypeContent += "<tr><td width='150'>" + me.ePaySiteSurveyClockAssets[index].deviceType.name + "</td>"
+						+ "<td width='200'>" + me.ePaySiteSurveyClockAssets[index].serialNumber + "</td>"
+						+ "<td width='250'>" + me.ePaySiteSurveyClockAssets[index].trackingNumber + "</td></tr>"
+					}
+				}
+			
+				htmlContent += "<center><b><span style='font-family: Verdana; font-size: 12pt;'>Site Methodology</span></b></center></br>"
+					+ "<table width=100% border=1 cellspacing=0 cellpadding=5 style='font-family: Verdana; font-size: 8pt;border-color:Gray;border-width:1px;border-style:Solid;border-collapse:collapse;'>"
+	                + "<tr><td width=25%>House Code:</td><td width=75% colspan=3>" + parent.fin.appUI.houseCodeBrief + "</td></tr>"
+					+ "<tr><td colspan=4 align=center><b>House Code Information</b></td></tr>"
+	                + "<tr><td width=25%>House Code Name:</td><td width=75% colspan=3>" + me.houseCodeName.getValue() + "</td></tr>"
+					+ "<tr><td width=25%>Address 1:</td><td width=75% colspan=3>" + me.address1.getValue() + "</td></tr>"
+   				    + "<tr><td width=25%>City:</td><td width=25%>" + me.city.getValue() + "</td><td width=25%>State:</td><td width=25%>" + me.state.lastBlurValue + "</td></tr>"
+					+ "<tr><td width=25%>Zip Code:</td><td width=75% colspan=3>" + me.zipCode.getValue() + "</td></tr>"
+					+ "<tr><td width=25%>Time Zone:</td><td width=25%>" + me.timeZone.lastBlurValue + "</td><td width=25%>Day Light Savings:</td><td width=25%>" + (me.dayLightSavings.check.checked ? 'Yes' : 'No') + "</td></tr>"
+					+ "<tr><td colspan=4 align=center><b>Manager Information</b></td></tr>"
+					+ "<tr><td width=25%>Manager Name:</td><td width=75% colspan=3>" + me.managerName.getValue() + "</td></tr>"
+					+ "<tr><td width=25%>Phone:</td><td width=25%>" + me.managerPhone.getValue() + "</td><td width=25%>Email:</td><td width=25%>" +  me.managerEmail.getValue() + "</td></tr>"
+					+ "<tr><td colspan=4 align=center><b>Site Reporting Settings</b></td></tr>"
+					+ "<tr><td width=25%>EPay Site:</td><td width=75% colspan=3>" + (me.ePaySite.check.checked ? 'Yes' : 'No') + "</td></tr>"
+					+ "<tr><td width=25%>Default Pay Group:</td><td width=25%>" + me.ePayGroupType.lastBlurValue + "</td><td width=25%>Reporting Frequency:</td><td width=25%>" + me.reportingFrequency.lastBlurValue + "</td></tr>"
+					+ "<tr><td width=25%>First Day of Reporting Period:</td><td width=25%>" + me.firstDayOfReportingPeriod.lastBlurValue + "</td><td width=25%>First Day of Week:</td><td width=25%>" + me.firstDayOfWeek.lastBlurValue + "</td></tr>"
+					+ "<tr><td colspan=4 align=center><b>Device Information</b></td></tr>"
+					+ "<tr><td width=25%>Preferred Connection Method:</td><td width=75% colspan=3>" + me.preferredConnectionMethod.lastBlurValue + "</td></tr>"
+					+ "<tr><td width=25%>Assigned Devices:</td><td width=75% colspan=3>"
+					+ "<table border='1' cellspacing='0' cellpadding='5' style='font-family:Verdana; font-size:8pt;border-color:Gray;border-width:1px;border-style:Solid;border-collapse:collapse;'>"
+					+ "<tr><td width='150' align='center'><b>Device Type</b></td>"
+					+ "<td width='200' align='center'><b>Serial Number</b></td>"
+					+ "<td width='250' align='center'><b>Tracking Number</b></td></tr>"
+					+ deviceTypeContent	+ "</table></td></tr>"
+					+ "<tr><td width=25%>Daily Reboot Time:</td><td width=25%>" +me.dailyRebootTime.getValue() + "</td><td width=25%>Use Work Orders:</td><td width=25%>" + (me.useWorkOrders.check.checked ? 'Yes' : 'No') + "</td></tr>"
+					+ "<tr><td width=25%>Task Selection Method:</td><td width=25%>" + me.taskSelectionMethod.lastBlurValue + "</td><td width=25%>Accident Free Questions:</td><td width=25%>" + (me.accidentFreeQuestions.check.checked ? 'Yes' : 'No') + "</td></tr>"
+					+ "<tr><td width=25%>Enable Lunch Logic:</td><td width=25%>" + (me.enableLunchLogic.check.checked ? 'Yes' : 'No') + "</td><td width=25%>Fix Punches on Clock:</td><td width=25%>" + (me.fixPunchesOnClock.check.checked ? 'Yes' : 'No') + "</td></tr>"
+					+ "<tr><td colspan=4 align=center><b>Logistics</b></td></tr>"
+					+ "<tr><td width=25%>Business Analyst:</td><td width=25%>" + me.businessAnalyst.getValue() + "</td><td width=25%>Review Date:</td><td width=25%>" + me.reviewDate.lastBlurValue + "</td></tr>"
+					+ "<tr><td width=25%>P.O. #:</td><td width=25%>" + me.poNumber.getValue() + "</td><td width=25%>Site Group:</td><td width=25%>" + (me.siteGroup.check.checked ? 'Yes' : 'No') + "</td></tr>"
+					+ "<tr><td width=25%>Site Group ID:</td><td width=25%>" + me.siteGroupID.getValue() + "</td><td width=25%>Site Group Name:</td><td width=25%>" + me.siteGroupName.getValue() + "</td></tr>"
+					+ "<tr><td width=25%>Go-Live Date:</td><td width=25%>" +  me.goLiveDate.lastBlurValue + "</td><td width=25%>Confirm site is live at above date:</td><td width=25%>" + (me.confirmSiteIsLive.check.checked ? 'Yes' : 'No') + "</td></tr>";
+			}
+			else if (me.action == "ClockManagement") {
+				me.deviceGrid.body.deselectAll();
+				me.validator.forceBlur();
+				
+				// Check to see if the data entered is valid
+				if (!me.validator.queryValidity(true) && me.deviceGrid.activeRowIndex >= 0) {
+					alert("In order to print, the errors on the page must be corrected.");
+					return false;
+				}
+				
+				htmlContent += "<center><b><span style='font-family: Verdana; font-size: 12pt;'>Clock Assets</span></b></center></br>"
+					+ "<table border=1 cellspacing=0 cellpadding=5 style='font-family: Verdana; font-size: 8pt;border-color:Gray;border-width:1px;border-style:Solid;border-collapse:collapse;'>"
+	                + "<tr><td width=30 align=center><b>#</b></td>"
+	                + "<td width=200 align=center><b>Device Type</b></td>"
+	                + "<td width=200 align=center><b>Device Status</b></td>"
+	                + "<td width=200 align=center><b>Asset Transfer Status</b></td>"
+	                + "<td width=200 align=center><b>Serial Number</b></td>"
+	                + "<td width=150 align=center><b>House Code</b></td>"
+					+ "<td width=200 align=center><b>Group Number</b></td>"
+					+ "<td width=200 align=center><b>Group Name</b></td>"
+	                + "<td width=200 align=center><b>UPS Tracking Number</b></td></tr>";
+
+				for (var index = 0; index < me.clockAssets.length; index++) {
+					if (me.clockAssets[index].id > 0) {
+						htmlContent += "<tr><td width=30 align=center>" + (index + 1) + "</td>"
+			                + "<td width=200>" + $(me.deviceGrid.rows[index].getElement("deviceType")).text() + "</td>"
+			                + "<td width=200>" + $(me.deviceGrid.rows[index].getElement("deviceStatusType")).text() + "</td>"
+			                + "<td width=200>" + $(me.deviceGrid.rows[index].getElement("assetTransferStatusType")).text() + "</td>"
+			                + "<td width=200>" + $(me.deviceGrid.rows[index].getElement("serialNumber")).text() + "</td>"
+			                + "<td width=150>" + $(me.deviceGrid.rows[index].getElement("houseCode")).text() + "</td>"
+							+ "<td width=200>" + $(me.deviceGrid.rows[index].getElement("groupNumber")).text() + "</td>"
+							+ "<td width=200>" + $(me.deviceGrid.rows[index].getElement("groupName")).text() + "</td>"
+							+ "<td width=200>" + $(me.deviceGrid.rows[index].getElement("upsTrackingNumber")).text() + "</td></tr>";
+					}
+				}
+			}
+			
+			htmlContent += "</table></body></html>";
+
+			$("#iFramePrint").contents().find("html").html(htmlContent);
+			$("#iFramePrint").get(0).contentWindow.focus();
+			$("#iFramePrint").get(0).contentWindow.print();
+		},
+
 		actionSaveAndExportItem: function() {
 			var me = this;
 
@@ -2500,24 +2684,24 @@ ii.Class({
 			if (me.action == "SiteSurvey") {
 				me.payCodeGrid.body.deselectAll();
 			}
-			else if (me.action == "SiteMethodology") {					
+			else if (me.action == "SiteMethodology") {
+				me.deviceTypeClockAssetGrid.body.deselectAll();					
 				me.validator.forceBlur();
 				// Check to see if the data entered is valid
 				me.validator.queryValidity(true);
 
-				if (!me.address1.valid || !me.address2.valid || !me.city.valid || !me.state.valid || !me.zipCode.valid 
+				if (!me.address1.valid || !me.city.valid || !me.state.valid || !me.zipCode.valid 
 					|| !me.timeZone.valid | !me.managerName.valid || !me.managerPhone.valid || !me.managerCellPhone.valid
 					|| !me.ePayGroupType.valid || !me.reportingFrequency.valid || !me.firstDayOfReportingPeriod.valid 
 					|| !me.firstDayOfWeek.valid || !me.preferredConnectionMethod.valid 
 					|| !me.dailyRebootTime.valid || !me.taskSelectionMethod.valid || !me.businessAnalyst.valid 
-					|| !me.reviewDate.valid || !me.poNumber.valid || !me.siteGroupID.valid || !me.siteGroupName.valid 
-					|| !me.goLiveDate.valid) {
+					|| !me.reviewDate.valid || !me.goLiveDate.valid) {
 					alert("In order to save, the errors on the page must be corrected.");
 					return false;
 				}
 				
-				if (me.deviceType.value == "") {
-					alert("Please select Device Type.");
+				if (me.deviceAssignment.value == "") {
+					alert("Please assign the available devices [Device Assignment].");
 					return false;
 				}
 					
@@ -2540,7 +2724,6 @@ ii.Class({
 					me.siteDetails[0].id
 					, parent.fin.appUI.houseCodeId
 					, me.address1.getValue()
-					, me.address2.getValue()
 					, me.city.getValue()
 					, me.stateTypes[me.state.indexSelected].id
 					, me.zipCode.getValue()
@@ -2570,6 +2753,7 @@ ii.Class({
 					, $("input[name='PhonesAvailable']:checked").val() == "true" ? true : false
 					, $("input[name='TollFree']:checked").val() == "true" ? true : false
 					, me.comments.value
+					, me.ePaySite.check.checked
 					, me.ePayGroupTypes[me.ePayGroupType.indexSelected].id
 					, me.reportingFrequencyTypes[me.reportingFrequency.indexSelected].id
 					, me.firstDayOfReportingPeriod.lastBlurValue
@@ -2649,7 +2833,6 @@ ii.Class({
 				xml += ' id="' + item.id + '"';
 				xml += ' houseCodeId="' + item.houseCodeId + '"';
 				xml += ' address1="' + ui.cmn.text.xml.encode(item.address1) + '"';
-				xml += ' address2="' + ui.cmn.text.xml.encode(item.address2) + '"';
 				xml += ' city="' + ui.cmn.text.xml.encode(item.city) + '"';
 				xml += ' stateType="' + item.state + '"';
 				xml += ' zipCode="' + item.zipCode + '"';
@@ -2679,6 +2862,7 @@ ii.Class({
 				xml += ' phonesAvailable="' + item.phonesAvailable + '"';
 				xml += ' tollFree="' + item.tollFree + '"';
 				xml += ' comments="' + ui.cmn.text.xml.encode(item.comments) + '"';
+				xml += ' ePaySite="' + item.ePaySite + '"';
 				xml += ' ePayGroupType="' + item.ePayGroupType + '"';
 				xml += ' reportingFrequencyType="' + item.reportingFrequencyType + '"';
 				xml += ' firstDayOfReportingPeriod="' + item.firstDayOfReportingPeriod + '"';
@@ -2716,19 +2900,99 @@ ii.Class({
 					}
 				}
 				else if (me.action == "SiteMethodology") {
+					var clockAssetsTemp = [];
+
 					for (var index = 0; index < me.deviceTypeClockAssetGrid.data.length; index++) {
 						if (me.deviceTypeClockAssetGrid.data[index].modified && 
-							(me.deviceTypeClockAssetGrid.data[index].id > 0 || $("#selectInputCheck" + index)[0].checked)) {
+							(me.deviceTypeClockAssetGrid.data[index].id > 0 || me.deviceTypeClockAssetGrid.data[index].assigned)) {
 							xml += '<ePaySiteSurveyClockAsset'
 						    xml += ' id="' + me.deviceTypeClockAssetGrid.data[index].id + '"';
 						    xml += ' ePaySiteSurveyId="' + me.deviceTypeClockAssetGrid.data[index].ePaySiteSurvey + '"';
 						    xml += ' clockAssetId="' + me.deviceTypeClockAssetGrid.data[index].clockAsset + '"';
-						    xml += ' status="' + $("#selectInputCheck" + index)[0].checked + '"';
+						    xml += ' status="' + me.deviceTypeClockAssetGrid.data[index].assigned + '"';
 						    xml += ' active="' + me.deviceTypeClockAssetGrid.data[index].active + '"';
 						    xml += '/>';
+	
+							var itemIndex = ii.ajax.util.findIndexById(me.deviceTypeClockAssetGrid.data[index].clockAsset.toString(), me.clockAssets);
+							if (itemIndex != undefined) {
+								clockAssetsTemp.push(new fin.hcm.ePaySiteSurvey.ClockAsset(
+									me.deviceTypeClockAssetGrid.data[index].clockAsset
+									, (me.deviceTypeClockAssetGrid.data[index].assigned ? parent.fin.appUI.houseCodeId : 0)
+									, ""
+									, me.clockAssets[itemIndex].deviceType
+									, (me.deviceTypeClockAssetGrid.data[index].assigned ? me.deviceStatusTypes[0] : me.deviceStatusTypes[1])
+									, (me.exportToExcel ? me.assetTransferStatusTypes[1] : me.clockAssets[itemIndex].assetTransferStatusType)
+									, me.clockAssets[itemIndex].serialNumber
+									, (me.siteGroup.check.checked ? (me.deviceTypeClockAssetGrid.data[index].assigned ? me.siteGroupID.getValue() : "") : "")
+									, (me.siteGroup.check.checked ? (me.deviceTypeClockAssetGrid.data[index].assigned ? me.siteGroupName.getValue() : "") : "")
+									, me.deviceTypeClockAssetGrid.data[index].trackingNumber
+									, me.clockAssets[itemIndex].active
+									)
+								);
+							}
 						}
 					}
-				}				
+
+					for (var index = 0; index < me.ePaySiteSurveyClockAssets.length; index++) {
+						var found = false;
+						for (var iIndex = 0; iIndex < me.deviceTypeClockAssetGrid.data.length; iIndex++) {
+							if (me.ePaySiteSurveyClockAssets[index].id == me.deviceTypeClockAssetGrid.data[iIndex].id) {
+								found = true;
+								break;
+							}
+						}
+						if (!found) {
+							xml += '<ePaySiteSurveyClockAsset'
+						    xml += ' id="' + me.ePaySiteSurveyClockAssets[index].id + '"';
+						    xml += ' ePaySiteSurveyId="' + me.ePaySiteSurveyClockAssets[index].ePaySiteSurvey + '"';
+						    xml += ' clockAssetId="' + me.ePaySiteSurveyClockAssets[index].clockAsset + '"';
+						    xml += ' status="false"';
+						    xml += ' active="' + me.ePaySiteSurveyClockAssets[index].active + '"';
+						    xml += '/>';
+							
+							var itemIndex = ii.ajax.util.findIndexById(me.ePaySiteSurveyClockAssets[index].clockAsset.toString(), me.clockAssets);
+							if (itemIndex != undefined) {
+								clockAssetsTemp.push(new fin.hcm.ePaySiteSurvey.ClockAsset(
+									me.ePaySiteSurveyClockAssets[index].clockAsset
+									, 0
+									, ""
+									, me.clockAssets[itemIndex].deviceType
+									, me.deviceStatusTypes[1]
+									, me.assetTransferStatusTypes[0]
+									, me.clockAssets[itemIndex].serialNumber
+									, me.clockAssets[itemIndex].groupNumber
+									, me.clockAssets[itemIndex].groupName
+									, me.clockAssets[itemIndex].upsTrackingNumber
+									, me.clockAssets[itemIndex].active
+									)
+								);
+							}
+
+							me.ePaySiteSurveyClockAssets[index].id = 0;
+						}
+					}
+
+					for (var index = me.ePaySiteSurveyClockAssets.length - 1; index >= 0; index--) {
+						if (me.ePaySiteSurveyClockAssets[index].id == 0) {
+							me.ePaySiteSurveyClockAssets.splice(index, 1);
+						}
+					}
+					
+					for (var index = 0; index < clockAssetsTemp.length; index++) {
+						xml += '<clockAsset';
+						xml += ' id="' + clockAssetsTemp[index].id + '"';
+						xml += ' houseCodeId="' + clockAssetsTemp[index].houseCodeId + '"';
+						xml += ' deviceType="' + clockAssetsTemp[index].deviceType.id + '"';
+						xml += ' deviceStatusType="' + clockAssetsTemp[index].deviceStatusType.id + '"';
+						xml += ' assetTransferStatusType="' + (clockAssetsTemp[index].assetTransferStatusType == null ? 0 : clockAssetsTemp[index].assetTransferStatusType.id) + '"';
+						xml += ' serialNumber="' + ui.cmn.text.xml.encode(clockAssetsTemp[index].serialNumber) + '"';
+						xml += ' groupNumber="' + ui.cmn.text.xml.encode(clockAssetsTemp[index].groupNumber)+ '"';
+						xml += ' groupName="' + ui.cmn.text.xml.encode(clockAssetsTemp[index].groupName) + '"';
+						xml += ' upsTrackingNumber="' + ui.cmn.text.xml.encode(clockAssetsTemp[index].upsTrackingNumber) + '"';
+						xml += ' active="' + clockAssetsTemp[index].active + '"';
+						xml += '/>';
+					}
+				}
 			}
 			else if (me.action == "ClockManagement") {
 				for (var index = 0; index < me.clockAssets.length; index++) {
@@ -2742,7 +3006,7 @@ ii.Class({
 						xml += ' houseCodeId="' + houseCodeId + '"';
 						xml += ' deviceType="' + me.clockAssets[index].deviceType.id + '"';
 						xml += ' deviceStatusType="' + me.clockAssets[index].deviceStatusType.id + '"';
-						xml += ' assetTransferStatusType="' + me.clockAssets[index].assetTransferStatusType.id + '"';
+						xml += ' assetTransferStatusType="' + (me.clockAssets[index].assetTransferStatusType == null ? 0 : me.clockAssets[index].assetTransferStatusType.id) + '"';
 						xml += ' serialNumber="' + ui.cmn.text.xml.encode(me.clockAssets[index].serialNumber) + '"';
 						xml += ' groupNumber="' + ui.cmn.text.xml.encode(me.clockAssets[index].groupNumber)+ '"';
 						xml += ' groupName="' + ui.cmn.text.xml.encode(me.clockAssets[index].groupName) + '"';
@@ -2812,15 +3076,21 @@ ii.Class({
 						case "ePaySiteSurveyClockAsset":
 							var id = parseInt($(this).attr("id"), 10);
 							var clockAssetId = parseInt($(this).attr("clockAssetId"), 10);
-
+	
 							for (var index = 0; index < me.deviceTypeClockAssetGrid.data.length; index++) {
 								if (me.deviceTypeClockAssetGrid.data[index].modified) {
 									me.deviceTypeClockAssetGrid.data[index].modified = false;
 									if (me.deviceTypeClockAssetGrid.data[index].clockAsset == clockAssetId) {
-										if (me.deviceTypeClockAssetGrid.data[index].id == 0)
+										if (me.deviceTypeClockAssetGrid.data[index].id == 0) {
 											me.deviceTypeClockAssetGrid.data[index].id = id;
-										else if (!($("#selectInputCheck" + index)[0].checked))
+											me.ePaySiteSurveyClockAssets.push(me.deviceTypeClockAssetGrid.data[index]);
+										}
+										else if (!($("#selectInputCheck" + index)[0].checked)) {
 											me.deviceTypeClockAssetGrid.data[index].id = 0;
+											var itemIndex = ii.ajax.util.findIndexById(id.toString(), me.ePaySiteSurveyClockAssets);
+											if (itemIndex != undefined)
+												me.ePaySiteSurveyClockAssets.splice(itemIndex, 1);
+										}
 										break;
 									}
 								}
@@ -2828,16 +3098,18 @@ ii.Class({
 							break;
 							
 						case "clockAsset":
-							var id = parseInt($(this).attr("id"), 10);
+							if (me.action == "ClockManagement") {
+								var id = parseInt($(this).attr("id"), 10);
 
-							for (var index = 0; index < me.deviceGrid.data.length; index++) {
-								if (me.deviceGrid.data[index].modified) {
-									if (me.deviceGrid.data[index].id == 0)
-										me.deviceGrid.data[index].id = id;
-									me.deviceGrid.data[index].modified = false;
-									break;
+								for (var index = 0; index < me.deviceGrid.data.length; index++) {
+									if (me.deviceGrid.data[index].modified) {
+										if (me.deviceGrid.data[index].id == 0)
+											me.deviceGrid.data[index].id = id;
+										me.deviceGrid.data[index].modified = false;
+										break;
+									}
 								}
-							}
+							}							
 							break;
 							
 						case "deviceType":
@@ -2875,7 +3147,12 @@ ii.Class({
 
 function main() {
 
-	fin.hcmEPaySiteSurveyUi = new fin.hcm.ePaySiteSurvey.UserInterface();
-	fin.hcmEPaySiteSurveyUi.resize();
-	fin.houseCodeSearchUi = fin.hcmEPaySiteSurveyUi;
+	var intervalId = setInterval(function() {
+		if (importCompleted) {
+			clearInterval(intervalId);
+			fin.hcmEPaySiteSurveyUi = new fin.hcm.ePaySiteSurvey.UserInterface();
+			fin.hcmEPaySiteSurveyUi.resize();
+			fin.houseCodeSearchUi = fin.hcmEPaySiteSurveyUi;
+		}
+	}, 100);
 }

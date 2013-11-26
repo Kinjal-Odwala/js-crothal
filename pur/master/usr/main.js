@@ -2,6 +2,7 @@ ii.Import( "ii.krn.sys.ajax" );
 ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
@@ -48,6 +49,7 @@ ii.Class({
 			me.windowWidth = 0;
 			me.windowHeight = 0;
 			me.lastSelectedItemRowIndex = -1;
+			me.loadCount = 0;
 			
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -69,16 +71,13 @@ ii.Class({
 
 			me.defineFormControls();
 			me.configureCommunications();
+			me.setStatus("Loading");
+			me.modified(false);
 
 			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
 			me.houseCodeSearchTemplate = new ui.lay.HouseCodeSearchTemplate();
 
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
-		
-			if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
-				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
-			else
-				me.houseCodesLoaded(me, 0);
 			
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
@@ -91,7 +90,7 @@ ii.Class({
 					return false;
 				}
 			});	
-
+			
 			// blur event is not firing when clicking on the tab. Due to this dirty check function and prompt message was not working.
 			$("#TabCollection a").mouseover(function() {
 				if (!parent.parent.fin.appUI.modified) {
@@ -186,10 +185,7 @@ ii.Class({
 					me.doResize = true;
 					if (!ii.browser.ie || (ii.browser.ie && ii.browser.version > 8))
 						me.resize();
-	    	});			
-			
-			me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
-			me.modified(false);
+	    	});	
 			
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
@@ -199,17 +195,38 @@ ii.Class({
 		authorizationProcess: function fin_pur_item_master_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
-
+					
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 			me.purchaseOrdersReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
-			$("#pageLoading").hide();	
 
-			if (me.purchaseOrdersReadOnly) {
-				$("#actionMenu").hide();
-				$("#AnchorMasterButtons").hide();				
-			}
-
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
+				
+				if (me.purchaseOrdersReadOnly) {
+					$("#actionMenu").hide();
+					$("#AnchorMasterButtons").hide();				
+				}
+					
+				ii.timer.timing("Page displayed");
+				me.loadCount = 1;
+				me.session.registerFetchNotify(me.sessionLoaded,me);
+				
+				if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
+					me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
+				else
+					me.houseCodesLoaded(me, 0);
+					
+				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},
 		
 		sessionLoaded: function fin_pur_item_master_UserInterface_sessionLoaded() {
@@ -242,7 +259,7 @@ ii.Class({
 					setTimeout(function() { me.resizeDetailGrid(); }, 100);
 				}
 				else {
-					offset = document.documentElement.clientHeight - gridHeight - 120;
+					offset = document.documentElement.clientHeight - gridHeight - 145;
 					me.purchaseOrderGrid.setHeight(150);
 				}
 
@@ -777,6 +794,12 @@ ii.Class({
 			});
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
@@ -786,8 +809,43 @@ ii.Class({
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
+			var me = this;
 			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
+		},
+		
+		showPageLoading: function(status) {
+			var me = this;
+
+			me.setStatus(status);
+			$("#messageToUser").text(status);
+			$("#pageLoading").fadeIn("slow");
+		},
+
+		hidePageLoading: function() {
+			
+			$("#pageLoading").fadeOut("slow");
 		},
 		
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
@@ -896,8 +954,7 @@ ii.Class({
 			}
 
 			me.checkStatus = true;
-			$("#messageToUser").text("Loading");	
-			$("#pageLoading").show();
+			me.setLoadCount();
 			me.purchaseOrderStore.fetch("userId:[user],status:0,houseCode:0,orderNumber:" + me.searchInput.getValue(), me.purchaseOrdersLoaded, me);
 		},
 		
@@ -910,16 +967,16 @@ ii.Class({
 			else if (me.activeFrameId == 1)
 				statusType = 2;
 			else if (me.activeFrameId == 2)
-				statusType = 3;					
+				statusType = 3;	
 			
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").show();
 			me.searchInput.setValue("");
 			me.resetGrids();
+			me.setLoadCount();
 			me.purchaseOrderStore.fetch("userId:[user],orderNumber:0,status:" + statusType + ",houseCode:" + parent.fin.appUI.houseCodeId, me.purchaseOrdersLoaded, me);
 		},
 		
 		purchaseOrdersLoaded: function(me, activeId) {
+			var reload = me.reloadGrid;
 			
 			if (me.checkStatus && me.purchaseOrders[0] == null) {
 				alert("There are no purchase orders matching the given criteria or you do not have enough permission to access it.");	
@@ -971,8 +1028,9 @@ ii.Class({
 			if (me.lastSelectedRowIndex >= 0 && me.purchaseOrders.length > 0) {
 				me.purchaseOrderGrid.body.select(me.lastSelectedRowIndex);
 			}
-
-			$("#pageLoading").hide();
+			
+			if(!reload)
+				me.checkLoadCount();
 		},
 		
 		itemSelect: function() {
@@ -994,6 +1052,7 @@ ii.Class({
 			
 			if (me.purchaseOrderGrid.data[index] != undefined) {
 				me.purchaseOrderId = me.purchaseOrderGrid.data[index].id;
+				me.showPageLoading("Loading");
 				me.showPurchaseOrderDetails();
 			}
 			else 
@@ -1040,6 +1099,7 @@ ii.Class({
 		
 			me.vendor.reset();
 			me.vendor.setData(me.vendors);
+			me.checkLoadCount();
 		},
 		
 		vendorChanged: function() {
@@ -1060,7 +1120,8 @@ ii.Class({
 				me.catalog.setData([]);
 				return;
 			}			
-					
+			
+			me.setLoadCount();		
 			me.account.fetchingData();
 			me.catalog.fetchingData();
 			me.accountStore.reset();
@@ -1087,7 +1148,8 @@ ii.Class({
 		catalogsLoaded: function(me, activeId) {
 			
 			me.catalog.reset();
-			me.catalog.setData(me.catalogs);			
+			me.catalog.setData(me.catalogs);
+			me.checkLoadCount();			
 		},
 		
 		catalogChanged: function() {
@@ -1107,7 +1169,7 @@ ii.Class({
 		loadPurchaseOrderItems: function() {
 			var me = this;
 			
-			$("#popupLoading").show();
+			me.setLoadCount();	
 			me.purchaseOrderItemStore.reset();		
 			me.purchaseOrderItemStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId + ",catalogId:" + me.catalogId + ",orderId:" + me.purchaseOrderId + ",accountId:" + me.accountId + ",searchValue:" + me.searchItem.getValue(), me.purchaseOrderItemsLoaded, me);
 			me.searchItem.setValue("");
@@ -1119,13 +1181,14 @@ ii.Class({
 			
 			me.orderItemGrid.setData(me.purchaseOrderItems);			
 			
-			$("#popupLoading").hide();
+			me.checkLoadCount();
 		},
 		
 		stateTypesLoaded: function(me,activeId) {
 
 			me.stateTypes.unshift(new fin.pur.master.StateType({ id: 0, number: 0, name: "None" }));
-			me.state.setData(me.stateTypes);			
+			me.state.setData(me.stateTypes);	
+			me.checkLoadCount();		
 		},
 		
 		houseCodeDetailsLoaded: function(me, activeId) {		
@@ -1170,6 +1233,8 @@ ii.Class({
 			me.account.setData([]);
 			me.catalog.reset();
 			me.catalog.setData([]);
+			
+			me.setLoadCount();
 			me.vendor.fetchingData();
 			me.vendorStore.reset();
 			me.vendorStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId, me.vendorsLoaded, me);
@@ -1193,7 +1258,7 @@ ii.Class({
 			loadPopup();
 			me.templateGrid.setHeight($(window).height() - 160);
 			$("#houseCodeTemplateText").val(parent.fin.appUI.houseCodeTitle);
-			$("#popupLoading").show();
+			me.setLoadCount();
 			
 			me.purchaseOrderId = 0;
 			me.status = "NewOrderFromTemplate";
@@ -1337,7 +1402,7 @@ ii.Class({
 			var args = ii.args(arguments,{});			
 			var me = this;	
 			
-			$("#popupLoading").show();
+			me.setLoadCount();
 			me.purchaseOrderTemplateStore.fetch("userId:[user],template:1,sourceHouseCode:" + me.houseCodeSearchTemplate.houseCodeIdTemplate + ",destHouseCode:" + parent.fin.appUI.houseCodeId, me.purchaseOrderTemplatesLoaded, me);
 		},
 		
@@ -1345,7 +1410,7 @@ ii.Class({
 			
 			me.templateGrid.setData(me.purchaseOrderTemplates);
 			me.templateGrid.resize();
-			$("#popupLoading").hide();
+			me.checkLoadCount();
 		},
 
 		actionPrintOrder: function fin_pur_item_master_actionPrintOrder() {
@@ -1438,6 +1503,7 @@ ii.Class({
 			}
 				
 			me.status = "";
+			me.setStatus("Loaded");
 		},
 		
 		actionDeleteItem: function() {
@@ -1497,6 +1563,8 @@ ii.Class({
 			me.searchItem.resizeText();
 			me.vendorName.setValue(me.purchaseOrderGrid.data[me.purchaseOrderGrid.activeRowIndex].vendorName);
 			me.searchItem.setValue("");
+			
+			me.setLoadCount();
 			me.account.fetchingData();
 			me.catalog.fetchingData();
 			me.accountStore.reset();
@@ -1638,8 +1706,10 @@ ii.Class({
 					}
 
 					if (me.status != "DeleteTemplate") {
+						me.setStatus("Saving");
+						
 						$("#messageToUser").text("Saving");
-						$("#pageLoading").show();
+						$("#pageLoading").fadeIn("slow");
 					}	
 			
 					// Send the object back to the server as a transaction
@@ -1845,13 +1915,15 @@ ii.Class({
 					me.purchaseOrderStore.fetch("userId:[user],status:1,houseCode:" + parent.fin.appUI.houseCodeId, me.purchaseOrdersLoaded, me);
 				}
 				else if (hidePageLoading)
-					$("#pageLoading").hide();
+					$("#pageLoading").fadeOut("slow");
+					
+				me.setStatus("Saved");
 			}
-			else {				
+			else {	
+				me.setStatus("Error");			
 				alert("[SAVE FAILURE] Error while updating Purchase Order details: " + $(args.xmlNode).attr("message"));
-				$("#pageLoading").hide();
+				$("#pageLoading").fadeOut("slow");
 			}
-			me.modified(false);
 		},
 
 		emailNotificationResponse: function() {
@@ -1860,7 +1932,7 @@ ii.Class({
 				xmlNode: {type: "XmlNode:transaction"}
 			});
 
-			$("#pageLoading").hide();
+			$("#pageLoading").fadeOut("slow");
 		}
 
 	} 

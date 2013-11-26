@@ -16,15 +16,25 @@
 	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
 	<body id="appBody">
 		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
-		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
-		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
-		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
-		    </div>
+			<table width="100%" height="100%">
+				<tr>
+					<td align="center">
+						<img id="imgLoading" src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+						<div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;">Loading</div>    
+		        	</td>
+				</tr>
+			</table>
 		</div>
-		
 	  	<div class="pageHeader">
 	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
         </div>
+		<div style="clear:both;"></div>
+		<div id="itemStatusDiv">
+			<div id="itemStatusImage" class="itemStatusImage"></div>
+			<div id="itemModifiedImage" class="itemModifiedImage"></div>
+			<div id="itemStatusText">Loading, please wait...</div>
+		</div>
+		<div style="clear:both;"></div>
 		<div class="pageBody">
 			<div id="vendorContentArea" class="contentArea">
                 <div class="header">Item Search</div>
@@ -166,17 +176,27 @@
 							<div style="clear:both;"></div>
 						</div>
 					</div>
-					</div>
-					<div style="clear:both;"></div>
-					<div class="footer">
-                        <div id="AnchorSave"></div>
-                        <div id="AnchorNew"></div>
-                        <div id="AnchorUndo"></div>
-                        <div style="clear:both;"></div>
-                    </div>
-				
+				</div>
+				<div style="clear:both;"></div>
+				<div class="footer">
+                    <div id="AnchorSave"></div>
+                    <div id="AnchorNew"></div>
+                    <div id="AnchorUndo"></div>
+					<div id="AnchorImport"></div>
+                    <div style="clear:both;"></div>
+                </div>
+			</div>
+			<div id="divFrame" class="contentArea" style="display: none;">				
+				<div id="importHeader" class="header">Import Items</div>
+				<div style="clear:both; height:10px;"></div>
+				<iframe id="iFrameUpload" src="/net/crothall/chimes/fin/pur/act/FileUpload.aspx" frameborder="0" width="580" height="30"></iframe>
+				<div id="divUpload" class="body">
+					<div id="AnchorUpload"></div>
+					<div id="AnchorUploadCancel"></div>
+				</div>	
 			</div>
 		</div>
 	    <div id="iiInputValidationMaster"></div>
+		<div id="backgroundPopup"></div>
 	</body>
 </html>

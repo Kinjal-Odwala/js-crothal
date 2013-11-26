@@ -15,15 +15,7 @@
 
 	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
 	<body id="appBody" onload="iiForceBodyReady = true;">
-		<!--<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: #F0EFDD; filter: alpha(opacity = 50); opacity:.8;"><img src="/fin/cmn/usr/media/Common/ajax-loader.gif" style="float: left; padding: 10px" /><span id="messageToUser" style="float: left; font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top: 51px;">Page loading. Please wait...</span></div>-->
-		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
-		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
-		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
-		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
-		    </div>
-		</div>
-
-		<div class="pageBody">
+		<div id="pageBody" class="pageBody" style="display:none;">
 			<div class="contentArea">
 	        	<div class="header">Secondary Address - Shipping</div>
         	</div>

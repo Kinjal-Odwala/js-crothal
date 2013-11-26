@@ -4,6 +4,7 @@ ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons");
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "fin.hcm.houseCodeImport.usr.defs" );
 
 ii.Style( "style", 1 );
@@ -24,12 +25,12 @@ ii.Class({
 			
 			me.actionSave = false;
 			me.fileName = "";
-			me.typesLoading = 5;
 			me.cellColorValid = "";
 			me.cellColorInvalid = "red";
 			me.pages = [];
 			me.batchId = 0;
 			me.firstTimeLoading = true;
+			me.loadCount = 0;
 			
 			//pagination setup
 			me.startPoint = 1;
@@ -57,14 +58,9 @@ ii.Class({
 
 			me.defineFormControls();			
 			me.configureCommunications();
-			me.anchorUpload.display(ui.cmn.behaviorStates.disabled);
-
-			me.siteMasterStore.fetch("userId:[user],siteId:1", me.siteMastersLoaded, me);
-			me.jdeCompanysStore.fetch("userId:[user],", me.jdeCompanysLoaded, me);
-			me.houseCodeServiceStore.fetch("userId:[user],houseCodeId:0", me.houseCodeServicesLoaded, me);			
-			me.contractTypeStore.fetch("userId:[user]", me.contractTypesLoaded, me);
-			me.payPayrollCompanyStore.fetch("userId:[user],houseCodeId:0", me.payPayrollCompanysLoaded, me);
+			me.setStatus("Loading");
 			me.modified(false);
+			me.anchorUpload.display(ui.cmn.behaviorStates.disabled);			
 
 			$(window).bind("resize", me, me.resize);
 			$("#divHouseCodeGrid").bind("scroll", me.houseCodeGridScroll);
@@ -90,8 +86,23 @@ ii.Class({
 			
 			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
 				
+			$("#pageLoading").hide();
+			$("#pageLoading").css({
+				"opacity": "0.5",
+				"background-color": "black"
+			});
+			$("#messageToUser").css({ "color": "white" });
+			$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+			$("#pageLoading").fadeIn("slow");
+			
 			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+			me.loadCount = 5;
+			me.session.registerFetchNotify(me.sessionLoaded, me);
+			me.siteMasterStore.fetch("userId:[user],siteId:1", me.siteMastersLoaded, me);
+			me.jdeCompanysStore.fetch("userId:[user],", me.jdeCompanysLoaded, me);
+			me.houseCodeServiceStore.fetch("userId:[user],houseCodeId:0", me.houseCodeServicesLoaded, me);			
+			me.contractTypeStore.fetch("userId:[user]", me.contractTypesLoaded, me);
+			me.payPayrollCompanyStore.fetch("userId:[user],houseCodeId:0", me.payPayrollCompanysLoaded, me);
 		},	
 		
 		sessionLoaded: function fin_hcm_houseCodeImport_UserInterface_sessionLoaded() {
@@ -105,7 +116,7 @@ ii.Class({
 		resize: function() {
 			var me = this;
 			var divGridWidth = $(window).width() - 22;
-			var divGridHeight = $(window).height() - 200;
+			var divGridHeight = $(window).height() - 225;
 
 			$("#divHouseCodeGrid").css({"width" : divGridWidth + "px", "height" : divGridHeight + "px"});
 		},
@@ -386,17 +397,45 @@ ii.Class({
 			});
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
 		},
-	
+		
 		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
+			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		siteMastersLoaded: function (me, activeId) {
@@ -409,20 +448,13 @@ ii.Class({
 			me.profitDesignationTypes.unshift(new fin.hcm.houseCodeImport.ProfitDesignationType({ id: 0, name: "" }));
 			me.gpoTypes.unshift(new fin.hcm.houseCodeImport.GPOType({ id: 0, name: "" }));
 			me.ownershipTypes.unshift(new fin.hcm.houseCodeImport.OwnershipType({ id: 0, name: "" }));
-			
-			me.typesLoading--;
-			
-			if (me.typesLoading <= 0)
-				$("#pageLoading").hide();
+			me.checkLoadCount();
 		},
 		
 		jdeCompanysLoaded: function(me, activeId) {
 		
             me.jdeCompanys.unshift(new fin.hcm.houseCodeImport.JdeCompany({ id: 0, name: "" }));
-			me.typesLoading--;
-			
-			if (me.typesLoading <= 0)
-				$("#pageLoading").hide();
+			me.checkLoadCount();
 		},
 	
 		houseCodeServicesLoaded: function (me, activeId) {
@@ -444,10 +476,7 @@ ii.Class({
 			me.financialEntities.unshift(new fin.hcm.houseCodeImport.FinancialEntity({ id: 0, name: "" }));			
 			me.serviceLineTypes.unshift(new fin.hcm.houseCodeImport.ServiceLine({ id: 0, name: "" }));
 			me.serviceTypes.unshift(new fin.hcm.houseCodeImport.ServiceType({ id: 0, name: "" }));
-			me.typesLoading--;
-			
-			if (me.typesLoading <= 0)
-				$("#pageLoading").hide();
+			me.checkLoadCount();
 		},
 		
 		contractTypesLoaded: function(me, activeId) {
@@ -457,10 +486,7 @@ ii.Class({
 			me.termsOfContractTypes.unshift(new fin.hcm.houseCodeImport.TermsOfContractType({ id: 0, name: "" }));
 			me.billingCycleFrequencys.unshift(new fin.hcm.houseCodeImport.BillingCycleFrequency({ id: 0, name: "" }));
 			me.invoiceLogoTypes.unshift(new fin.hcm.houseCodeImport.InvoiceLogoType({ id: 0, name: "" }));
-			me.typesLoading--;
-			
-			if (me.typesLoading <= 0)
-				$("#pageLoading").hide();
+			me.checkLoadCount();
 		},
 		
 		payPayrollCompanysLoaded: function(me, activeId) {
@@ -469,10 +495,7 @@ ii.Class({
 			me.payrollProcessings.unshift(new fin.hcm.houseCodeImport.PayrollProcessingLocationType({ id: 0, name: "" }));
 			me.houseCodeTypes.unshift(new fin.hcm.houseCodeImport.HouseCodeType({ id: 0, name: ""}));
 			me.ePayGroupTypes.unshift(new fin.hcm.houseCodeImport.EPayGroupType({ id: 0, name: ""}));
-			me.typesLoading--;
-			
-			if (me.typesLoading <= 0)
-				$("#pageLoading").hide();
+			me.checkLoadCount();
 		},
 		
 		prevHouseCodeList: function() {
@@ -518,8 +541,7 @@ ii.Class({
 		changeHouseCodeList: function() {
 		    var me = this;
 		    		        
-		    $("#messageToUser").text("Loading");
-			$("#pageLoading").show();				
+		    me.setLoadCount();				
 			$("#selPageNumber").val(me.pageCurrent);			
 
 			me.startPoint = ((me.pageCurrent - 1) * me.maximumRows) + 1;		
@@ -529,8 +551,7 @@ ii.Class({
 		houseCodeCountLoad: function() {
 		    var me = this;
 			
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").show();
+			me.setLoadCount();
 				    
 		    me.recordCountStore.reset();
 			me.recordCountStore.fetch("userId:[user]," + "id:" + me.batchId + ",module:ImportHouseCodes", me.recordCountLoaded, me);
@@ -597,8 +618,9 @@ ii.Class({
 
 			me.fileName = "";
 			
+			me.setStatus("Uploading");			
 			$("#messageToUser").text("Uploading");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 			$("iframe")[0].contentWindow.document.getElementById("FileName").value = "";
 			$("iframe")[0].contentWindow.document.getElementById("UploadButton").click();
 		
@@ -609,8 +631,9 @@ ii.Class({
 					clearInterval(me.intervalId);
 					
 					if (me.fileName == "Error") {
-						alert("Unable to upload the file. Please try again.")
-						$("#pageLoading").hide();
+						me.setStatus("Info", "Unable to upload the file. Please try again.");
+						alert("Unable to upload the file. Please try again.");
+						$("#pageLoading").fadeOut("slow");
 					}
 					else {
 						me.actionImportSave();
@@ -626,7 +649,6 @@ ii.Class({
 			var houseCodeRowTemplate = $("#tblHouseCodeTemplate").html();
 			var idIndex = 0;
 
-			$("#messageToUser").text("Loading");
 			$("#HouseCodeGridBody").html("");			
 			$("#divFrame").hide();
 			$("#divUpload").hide();			
@@ -805,7 +827,7 @@ ii.Class({
 				me.setDropDownValue(me.payPayrollCompanys, me.houseCodes[index].column102, "PayrollCompanySalaried", index);
 			}
 			
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 		},
 
 		stripTimeStamp: function(date) {
@@ -883,10 +905,7 @@ ii.Class({
 			var me = this;
 			
 			me.actionSave = args.save;
-			
-			$("#messageToUser").text("Validating");
-			$("#pageLoading").show();
-			
+
 			setTimeout(function() { 
 				me.validate(); 
 			}, 100);			
@@ -1014,7 +1033,7 @@ ii.Class({
 					me.setCellColor($("#selJDECompany" + index), me.cellColorValid, "");
 				}
 				
-				if(ui.cmn.text.validate.generic($("#txtStartDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
+				if (ui.cmn.text.validate.generic($("#txtStartDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtStartDate" + index), me.cellColorInvalid, "Please enter valid Start Date.");
 				}
@@ -1341,8 +1360,9 @@ ii.Class({
 
 			// If all required fields are entered correctly then validate the Briefs and FullPaths
 			if (valid) {
+				me.setStatus("Validating");
 				$("#messageToUser").text("Validating");
-				$("#pageLoading").show();
+				$("#pageLoading").fadeIn("slow");
 
 				me.bulkImportValidationStore.reset();
 				me.bulkImportValidationStore.fetch("userId:[user]"
@@ -1352,7 +1372,8 @@ ii.Class({
 					, me);
 			}
 			else {
-				$("#pageLoading").hide();
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
 				$("#AnchorSave").hide();
 				alert("In order to save, the errors on the page must be corrected.");
 			}
@@ -1360,7 +1381,7 @@ ii.Class({
 
 		validationsLoaded: function(me, activeId) {
 
-			$("#pageLoading").hide();
+			$("#pageLoading").fadeOut("slow");
 			
 			for (var rowIndex = 0; rowIndex < me.houseCodes.length; rowIndex++) {
 				for (var index = 1; index <= 16; index++) {
@@ -1399,15 +1420,18 @@ ii.Class({
 						}
 					}
 				}
-
+				
+				me.setStatus("Loaded");
 				$("#AnchorSave").hide();
 				alert("In order to save, the errors on the page must be corrected.");				
 			}
 			else {
-				if (me.actionSave)
+				if (me.actionSave) 
 					me.actionSaveItem();
-				else
+				else {
 					$("#AnchorSave").show();
+					me.setStatus("Loaded");
+				}
 			}
 		},
 
@@ -1580,8 +1604,8 @@ ii.Class({
 			var me = this;
 			var item = [];
 
+			me.setStatus("Importing");
 			$("#messageToUser").text("Importing");
-			$("#pageLoading").show();
 			
 			var xml = '<appGenericImport';
 				xml += ' fileName="' + me.fileName + '"';
@@ -1626,8 +1650,9 @@ ii.Class({
 				});
 			}
 			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while importing House Code details: " + $(args.xmlNode).attr("message"));
-				$("#pageLoading").hide();
+				$("#pageLoading").fadeOut("slow");
 			}
 		}		
 	}

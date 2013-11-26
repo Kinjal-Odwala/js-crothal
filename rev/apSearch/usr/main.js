@@ -1,4 +1,4 @@
-﻿window.weblight_container = ['<div style="margin: 10px"><div class="header">AP Search</div><div><table><tr><td class="labelText">House Code:</td><td class="labelText">Vendor:</td><td class="labelText">Invoice #:</td><td class="labelText">GL Start Date:</td><td class="labelText">GL End Date:</td></tr><tr><td><div id="HouseCode" class="textArea"></div></td><td><div id="Vendor" class="textArea"></div></td><td><div id="InvoiceNumber" class="textArea"></div></td><td><div id="GLStartDate" class="textArea"></div></td><td><div id="GLEndDate" class="textArea"></div></td></tr><tr height="35px"><td align="center"><div id="Search"></div></td><td><div id="Export"></div></td></tr></table></div><div style="clear:both; height:10px;"></div><div id="APInvoiceGrid"></div></div><div id="divFrame" style="height: 0px;"><iframe id="iFrameUpload" src="/net/crothall/chimes/fin/app/act/FileUpload.aspx" frameborder="0" width="100" height="0"></iframe></div>'];
+﻿window.weblight_container = ['<div style="margin: 10px"><div class="header">AP Search</div><div style="clear:both;"></div><div id="itemStatusDiv"><div id="itemStatusImage" class="itemStatusImage"></div><div id="itemModifiedImage" class="itemModifiedImage"></div><div id="itemStatusText">Loading, please wait...</div></div><div style="clear:both;"></div><div><table><tr><td class="labelText">House Code:</td><td class="labelText">Vendor:</td><td class="labelText">Invoice #:</td><td class="labelText">GL Start Date:</td><td class="labelText">GL End Date:</td></tr><tr><td><div id="HouseCode" class="textArea"></div></td><td><div id="Vendor" class="textArea"></div></td><td><div id="InvoiceNumber" class="textArea"></div></td><td><div id="GLStartDate" class="textArea"></div></td><td><div id="GLEndDate" class="textArea"></div></td></tr><tr height="35px"><td align="center"><div id="Search"></div></td><td><div id="Export"></div></td></tr></table></div><div style="clear:both; height:10px;"></div><div id="APInvoiceGrid"></div></div><div id="divFrame" style="height: 0px;"><iframe id="iFrameUpload" src="/net/crothall/chimes/fin/app/act/FileUpload.aspx" frameborder="0" width="100" height="0"></iframe></div>'];
 
 /**
 * Copyright (c) 2009 Sergiy Kovalchuk (serg472@gmail.com)
@@ -141,6 +141,34 @@
  * </form>
  */
 
+function setStatus(status) {
+	var me = this;
+	
+	me.$itemStatusImage = $("#rev-apSearch-itemStatusImage");
+	me.$itemModifiedImage = $("#rev-apSearch-itemModifiedImage");
+	me.$itemStatusText = $("#rev-apSearch-itemStatusText");
+
+	if (status == "Loading" || status == "Exporting")
+		message = status + ", please wait...";
+	else if (status == "Exported")
+		message = "Data exported successfully.";
+	else if (status == "Locked")
+		message = "The current page is Readonly.";
+	else
+		message = "Normal";
+
+	if (status == "Locked")
+		me.$itemModifiedImage.addClass("Locked");
+	else
+		me.$itemModifiedImage.removeClass("Locked");
+
+	if (status == "Loaded" || status == "Exported")
+		status = "Normal";
+
+	me.$itemStatusImage.attr("class", "itemStatusImage " + status);
+	me.$itemStatusText.text(message);
+}
+		
 Ext.Ajax.timeout = 300000; //5 minutes
 
 jQuery.ajaxSettings.contentType = 'application/x-www-form-urlencoded; charset=utf-8';
@@ -365,6 +393,7 @@ Rev.data.apInvoiceStore = WebLight.extend(Rev.data.XmlStore, {
              { name: 'openAmount', mapping: '@openAmount', type: 'float' },
              { name: 'houseCode', mapping: '@houseCode', type: 'string' },
              { name: 'subLedger', mapping: '@subLedger', type: 'string' },
+			 { name: 'houseCodeAmount', mapping: '@houseCodeAmount', type: 'float' },
 			 { name: 'poNumber', mapping: '@poNumber', type: 'string' },
 			 { name: 'purchaseOrderId', mapping: '@purchaseOrderId', type: 'int' }
             ],
@@ -477,7 +506,7 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
             if (metaData && record) {
 				if (colIndex == 0 || colIndex == 1 || colIndex == 12 || colIndex == 13)
 				    metaData.attr = 'style="text-align:left;"';
-				else if (colIndex == 10 || colIndex == 11) {
+				else if (colIndex == 10 || colIndex == 11 || colIndex == 14) {
 					 metaData.attr = 'style="text-align:right;"';
 					 return Ext.util.Format.number(value, '0,000.00');
 				}
@@ -495,13 +524,14 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 					  { dataIndex: 'payItem', header: 'Pay Item', width: 80 },
 					  { dataIndex: 'voidDocType', header: 'Void Doc Type', width: 110 },
 					  { dataIndex: 'vendorInvoiceNumber', header: 'Vendor Invoice #', width: 120 },
-					  { dataIndex: 'invoiceDate', header: 'Invoice Date',  width: 100, renderer: Ext.util.Format.dateRenderer('m/d/y')},
+					  { dataIndex: 'invoiceDate', header: 'Invoice Date', width: 100, renderer: Ext.util.Format.dateRenderer('m/d/y')},
 					  { dataIndex: 'glDate', header: 'GL Date',  width: 80, renderer: Ext.util.Format.dateRenderer('m/d/y') },
 					  { dataIndex: 'payStatus', header: 'Pay Status', width: 90 },
 					  { dataIndex: 'grossAmount', header: 'Gross Amount', width: 110, renderer: displayRenderer },
 					  { dataIndex: 'openAmount', header: 'Open Amount', width: 110, renderer: displayRenderer },
 					  { dataIndex: 'houseCode', header: 'House Code', width: 100, renderer: displayRenderer },
 					  { dataIndex: 'subLedger', header: 'Sub Ledger', width: 100, renderer: displayRenderer },
+					  { dataIndex: 'houseCodeAmount', header: 'House Code Amount', width: 130, renderer: displayRenderer },
                       { dataIndex: 'poNumber', header: 'PO Number', width: 100,
                        	renderer: function (value, meta, record) {
 							if (record.data.purchaseOrderId > 0)
@@ -516,7 +546,7 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
         me.apInvoiceGrid = new Ext.grid.GridPanel({
             store: me.apInvoiceStore,
 			cm: apInvoiceCMModel,
-            height: $(window).height() - 150,
+            height: $(window).height() - 175,
             ctCls: 'ux-grid-1',
             enableHdMenu: false,
             layout: 'fit',
@@ -550,12 +580,14 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 		me.apCheckStore = new Rev.data.apCheckStore();
         me.createAPInvoiceGrid();
 
-		me.apHouseCodeStore.on('beforeload', function () { me.mask('Loading...'); });
-        me.apHouseCodeStore.on('load', function () { me.unmask(); });
-        me.apInvoiceStore.on('beforeload', function () { me.mask('Loading...'); });
-        me.apInvoiceStore.on('load', function () { me.unmask(); this.totalRecords = this.totalLength; });
-		me.apExportStore.on('beforeload', function () { me.mask('Exporting...'); });
-        me.apExportStore.on('load', function () { me.downLoadExcelFile(); me.unmask(); });
+		me.apHouseCodeStore.on('beforeload', function () { me.mask('Loading...'); setStatus("Loading"); });
+        me.apHouseCodeStore.on('load', function () { me.unmask(); setStatus("Loaded"); });
+        me.apInvoiceStore.on('beforeload', function () { me.mask('Loading...'); setStatus("Loading"); });
+        me.apInvoiceStore.on('load', function () { me.unmask(); setStatus("Loaded"); this.totalRecords = this.totalLength; });
+		me.apCheckStore.on('beforeload', function () { setStatus("Loading"); });
+		me.apCheckStore.on('load', function () { setStatus("Loaded"); });
+		me.apExportStore.on('beforeload', function () { me.mask('Exporting...'); setStatus("Exporting"); });
+        me.apExportStore.on('load', function () { me.downLoadExcelFile(); me.unmask(); setStatus("Exported"); });
 
 		me.initFields();
     },
@@ -777,7 +809,7 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 
 $(window).resize(function() {
 
-	Ext.getCmp('InvoiceGrid').setHeight($(window).height() - 150); 
+	Ext.getCmp('InvoiceGrid').setHeight($(window).height() - 175); 
 });
 
 WebLight.PageMgr.registerType('rev.apSearch', Rev.page.apSearch);

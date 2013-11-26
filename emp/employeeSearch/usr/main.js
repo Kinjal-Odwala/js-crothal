@@ -73,6 +73,7 @@ ii.Class({
 			me.houseCodeJobChanged = false;
 			me.employeeValidationCalledFrom = "";
 			me.employeeNameChanged = false;
+			me.loadCount = 0;
 
 			me.replaceContext = false;        // replace the system context menu?
 			me.mouseOverContext = false;      // is the mouse over the context menu?
@@ -99,6 +100,7 @@ ii.Class({
 
 			me.defineFormControls();
 			me.configureCommunications();
+			me.setStatus("Loading");
 			
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
@@ -186,8 +188,6 @@ ii.Class({
 			
 			$("#CrothallEmployeeYes").attr('disabled', true);
 			$("#CrothallEmployeeNo").attr('disabled', true);
-
-			me.statusStore.fetch("userId:[user],", me.statusTypesLoaded, me);
 		},
 		
 		authorizationProcess: function fin_emp_employeeSearch_UserInterface_authorizationProcess() {
@@ -228,13 +228,23 @@ ii.Class({
 				return false;
 			}
 
-			if (me.isAuthorized)
+			if (me.isAuthorized) {
 				$("#pageLoading").hide();
-			else {
-				$("#messageToUser").html("Access Denied");
-				alert("Access Denied. Please contact your Administrator.");
-				return false;
-			}
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
+			
+				ii.timer.timing("Page displayed");
+				me.loadCount = 1;
+				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.statusStore.fetch("userId:[user],", me.statusTypesLoaded, me);
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 
 			if (me.employeeReadOnly) {
 				$("#EmployeeButton").hide();
@@ -360,9 +370,6 @@ ii.Class({
 			else {
 				me.houseCodesLoaded(me, 0);
 			}
-				
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded, me);
 		},	
 		
 		sessionLoaded: function fin_emp_employeeSearch_UserInterface_sessionLoaded() {
@@ -379,7 +386,7 @@ ii.Class({
 			if (!fin.empSearchUi) return;
 			
 			fin.empSearchUi.searchInput.resizeText();
-		    fin.empSearchUi.employeeSearch.setHeight($(window).height() - 130);
+		    fin.empSearchUi.employeeSearch.setHeight($(window).height() - 155);
 			
 			$("#employeeGridLoading").css({
 				"width": $("#EmployeeSearch").width() + 1,
@@ -723,12 +730,27 @@ ii.Class({
 			
 			me.employeeNumber = new ui.ctl.Input.Text({
 		        id: "EmployeeNumber",
-		        maxLength: 7,
+		        maxLength: 6,
 				changeFunction: function() { me.employeeNumberChanged = true;} //happens only for HC Transfer.
 		    });
+
+			 me.employeeNumber.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(function (isFinal, dataMap) {
+
+			        if (/^\d{6}$/.test(me.employeeNumber.getValue()) == false)
+			            this.setInvalid("Please enter valid Employee Number.");
+				   
+				});
+				
+			me.employeeNumberMask = new ui.ctl.Input.Text({
+		        id: "EmployeeNumberMask",
+		        maxLength: 6
+		    });
 			
-			me.employeeNumber.makeEnterTab()
-				.setValidationMaster( me.validator );
+			me.employeeNumberMask.text.readOnly = true;
+			me.employeeNumberMask.setValue("######");
 			
 			me.employeePayrollCompany = new ui.ctl.Input.DropDown.Filtered({
 				id: "EmployeePayrollCompany", 
@@ -1845,7 +1867,8 @@ ii.Class({
 			me.personPager.text.tabIndex = 133;
 			me.personCellPhone.text.tabIndex = 134; 
 			//General1
-			me.employeeNumber.text.tabIndex = 200; 
+			me.employeeNumber.text.tabIndex = 200;
+			me.employeeNumberMask.text.tabIndex = 200;
 			$("#houseCodeTemplateText").attr("tabindex", "201");
 			me.employeePayrollCompany.text.tabIndex = 202; 
 			//CrothallEmployeeYes - 203 //defined in markup.htm
@@ -2329,6 +2352,31 @@ ii.Class({
 			});
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
+		},
+		
 		customSort: function(me, dataProperty, a, b) {
 			var aValue = a[dataProperty];
 			var bValue = b[dataProperty];
@@ -2405,6 +2453,7 @@ ii.Class({
 			me.statusType.reset();		
 			me.typeNoneAdd(me.statusTypes);
 			me.statusType.setData(me.statusTypes);
+			me.checkLoadCount();
 		},
 		
 		loadSearchResults: function() {
@@ -2415,7 +2464,7 @@ ii.Class({
 				return false;
 			}
 
-			$("#employeeGridLoading").show();
+			me.setLoadCount();
 			me.employeeStore.reset();
 			me.employeeStore.fetch("searchValue:" + me.searchInput.getValue()
 				+ ($("#houseCodeText").val() != "" ?  "," + "hcmHouseCodeId:" + parent.fin.appUI.houseCodeId : "")
@@ -2427,7 +2476,7 @@ ii.Class({
 		
 		employeesLoaded: function fin_emp_UserInterface_employeesLoaded(me, activeId) {
 
-			$("#employeeGridLoading").hide();
+			me.checkLoadCount();
 
 			if (me.employees.length == 0) {
 				me.employeeSearch.setData([]);
@@ -5114,6 +5163,8 @@ ii.Class({
 			});			
 			var me = this;
 			
+			$("#EmployeeNumber").show();
+			$("#EmployeeNumberMask").hide();
 			$("#ViewHistory").hide();
 			
 			me.employeeSearch.body.deselectAll();			
@@ -5124,6 +5175,8 @@ ii.Class({
 
 				case "NewHire":
 					$("#popupHeader").text("New Hire -");
+					$("#EmployeeNumber").hide();
+					$("#EmployeeNumberMask").show();
 					me.actionNewEmployee();
 					me.fetchData();	
 					break;
@@ -6142,9 +6195,9 @@ ii.Class({
 			}
 			
 			if (me.actionType == "ReverseTermination") {			
-				if (me.isDateValid(me.employeeGenerals[0].terminationDate, 'ReverseTermination') == false) {
-					alert('You cannot reverse terminate an employee who was terminated in a prior pay period. \n' +
-						'Contact the Corporate Payroll department for further instructions.');
+				if (me.isDateValid(me.employeeGenerals[0].modAt, "ReverseTermination") == false) {
+					alert("You cannot reverse terminate an employee who was terminated in a prior pay period. \n" +
+						"Contact the Corporate Payroll department for further instructions.");
 					return false;
 				}
 
@@ -6395,7 +6448,7 @@ ii.Class({
 				me.actionType == "Person" || me.actionType == "Termination") {
 				xml += '<employeeGeneralPerson';
 				xml += ' person="' + itemPerson.id + '"';
-				xml += ' brief="' + itemPerson.brief + '"';
+				xml += ' brief="' + ui.cmn.text.xml.encode(itemPerson.brief) + '"';
 				xml += ' firstName="' + ui.cmn.text.xml.encode(itemPerson.firstName) + '"';
 				xml += ' lastName="' + ui.cmn.text.xml.encode(itemPerson.lastName) + '"';
 				xml += ' middleName="' + ui.cmn.text.xml.encode(itemPerson.middleName) + '"';
@@ -6407,7 +6460,7 @@ ii.Class({
 				xml += ' homePhone="' + me.phoneMask(itemPerson.homePhone, true) + '"';
 				xml += ' fax="' + me.phoneMask(itemPerson.fax, true) + '"';
 				xml += ' cellPhone="' + me.phoneMask(itemPerson.cellPhone, true) + '"';
-				xml += ' email="' + itemPerson.email + '"';
+				xml += ' email="' + ui.cmn.text.xml.encode(itemPerson.email) + '"';
 				xml += ' pager="' + me.phoneMask(itemPerson.pager, true) + '"';
 				xml += ' active="' + (itemGeneral.statusType != 6 ? true : false) + '"';
 				xml += ' hirNode="' + itemPerson.hirNode + '"';
@@ -6437,7 +6490,7 @@ ii.Class({
 				xml += ' employeeNumber="' + itemGeneral.employeeNumber + '"';
 				xml += ' hcmHouseCode="' + itemGeneral.hcmHouseCode + '"';
 				xml += ' hirNode="' + itemGeneral.hirNode + '"';
-				xml += ' brief="' + itemPerson.brief + '"';
+				xml += ' brief="' + ui.cmn.text.xml.encode(itemPerson.brief) + '"';
 				xml += ' ssn="' + itemGeneral.ssn.replace(/-/g, '') + '"';
 				xml += ' statusType="' + itemGeneral.statusType + '"';
 				xml += ' statusCategoryType="' + itemGeneral.statusCategoryType + '"';

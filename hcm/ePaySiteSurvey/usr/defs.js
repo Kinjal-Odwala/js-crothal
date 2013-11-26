@@ -117,12 +117,11 @@ ii.init.register( function() {
 		id: {type: Number}
 		, houseCodeId: {type: Number}
 		, address1: {type: String, required: false, defaultValue: ""}
-		, address2: {type: String, required: false, defaultValue: ""}
 		, city: {type: String, required: false, defaultValue: ""}
 		, state: {type: Number, required: false, defaultValue: 0}
 		, zipCode: {type: String, required: false, defaultValue: ""}
 		, timeZone: {type: String, required: false, defaultValue: ""}
-		, dayLightSavings: {type: Boolean, required: false, defaultValue: false}		
+		, dayLightSavings: {type: Boolean, required: false, defaultValue: false}
 		, managerName: {type: String, required: false, defaultValue: ""}
 		, managerPhone: {type: String, required: false, defaultValue: ""}
 		, managerCellPhone: {type: String, required: false, defaultValue: ""}
@@ -147,6 +146,7 @@ ii.init.register( function() {
 		, phonesAvailable: {type: Boolean, required: false, defaultValue: false}
 		, tollFree: {type: Boolean, required: false, defaultValue: false}
 		, comments: {type: String, required: false, defaultValue: ""}
+		, ePaySite: {type: Boolean, required: false, defaultValue: false}
 		, ePayGroupType: {type: Number, required: false, defaultValue: 0}
 		, reportingFrequencyType: {type: Number, required: false, defaultValue: 0}
 		, firstDayOfReportingPeriod: {type: String, required: false, defaultValue: ""}

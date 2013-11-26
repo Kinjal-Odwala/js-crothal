@@ -3,6 +3,7 @@ ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons");
 ii.Import( "ui.cmn.usr.text" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "fin.rev.apImport.usr.defs" );
 
 ii.Style( "style" , 1);
@@ -20,6 +21,7 @@ ii.Class({
 			var me = this;
 
 			me.fileName = "";
+			me.loadCount = 0;
 				
 			me.gateway = ii.ajax.addGateway("rev", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -41,6 +43,7 @@ ii.Class({
 
 			me.defineFormControls();			
 			me.configureCommunications();
+			me.setStatus("Loading");
 
 			me.anchorUpload.display(ui.cmn.behaviorStates.disabled);
 			$(window).bind("resize", me, me.resize);
@@ -55,12 +58,21 @@ ii.Class({
 
 		authorizationProcess: function fin_rev_apImport_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments, {});
-			var me = this;		
-
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
-
-			$("#pageLoading").hide();
+			var me = this;
+			
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
+				
+				ii.timer.timing("Page displayed");
+				me.session.registerFetchNotify(me.sessionLoaded, me);	
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");			
 		},	
 
 		sessionLoaded: function fin_rev_apImport_UserInterface_sessionLoaded() {
@@ -103,6 +115,12 @@ ii.Class({
 
 		},
 
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		actionImportItem: function() {
 			var me = this;
 
@@ -120,6 +138,7 @@ ii.Class({
 			var me = this;
 
 			$("iframe")[0].contentWindow.document.getElementById("FormReset").click();
+			me.setStatus("Loaded");
 		},
 
 		actionUploadItem: function() {
@@ -128,7 +147,7 @@ ii.Class({
 			me.fileName = "";
 
 			$("#messageToUser").text("Upload process will take few minutes, please wait...");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 			$("iframe")[0].contentWindow.document.getElementById("FileName").value = "";
 			$("iframe")[0].contentWindow.document.getElementById("UploadButton").click();
 
@@ -140,7 +159,7 @@ ii.Class({
 
 					if (me.fileName == "Error") {
 						alert("Unable to upload the file. Please try again.")
-						$("#pageLoading").hide();
+						$("#pageLoading").fadeOut("slow");
 					}
 					else {
 						me.actionImportSave();
@@ -153,9 +172,11 @@ ii.Class({
 		actionImportSave: function() {
 			var me = this;
 			var item = [];
-
+			
+			me.setStatus("Saving");
+			
 			$("#messageToUser").text("Import process will take few minutes, please wait...");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 
 			var xml = '<apImport';
 				xml += ' fileName="' + me.fileName + '"';
@@ -185,13 +206,15 @@ ii.Class({
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
 
-			$("#pageLoading").hide();
+			$("#pageLoading").fadeOut("slow");
 
 			if (status == "success") {
 				me.actionCancelItem();
 				alert("AP file imported successfully.")
+				me.setStatus("Saved");
 			}
 			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while importing AP File: " + $(args.xmlNode).attr("message"));
 			}
 		}				

@@ -2,6 +2,7 @@ ii.Import( "ii.krn.sys.ajax" );
 ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "fin.rev.accountReceivable.usr.defs" );
 
 ii.Style( "style", 1 );
@@ -19,7 +20,7 @@ ii.Class({
 			var me = this;
 			var searchString = location.search.substring(1);
 			var pos = searchString.indexOf("=");
-			
+
 			me.invoiceId = parseInt(searchString.substring(pos + 1));
 			me.rowBeingEdited = false;
 			me.currentRowSelected = null;
@@ -28,6 +29,7 @@ ii.Class({
 			me.houseCodeCache = [];
 			me.invoiceByCustomer = false;
 			me.invalidHouseCode = "";
+			me.loadCount = 0;
 			me.descriptionAccount = parent.fin.revMasterUi.descriptionAccount;
 			me.houseCodeCache = parent.fin.revMasterUi.houseCodeCache;
 			me.houseCodeBrief = parent.fin.revMasterUi.houseCodeBrief;
@@ -50,7 +52,7 @@ ii.Class({
 			);
 
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
-			me.authorizePath = "rev\\accountReceivable";
+			me.authorizePath = "\\crothall\\chimes\\fin\\AccountsReceivable\\Invoicing/AR";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
 					me.authorizationProcess.apply(me);
@@ -64,6 +66,7 @@ ii.Class({
 			me.defineFormControls();
 			me.configureCommunications();
 
+			$("#pageBody").show();
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$(document).bind("mousedown", me, me.mouseDownProcessor);
@@ -84,12 +87,14 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 
-			$("#pageLoading").hide();
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 
-			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
-
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded, me);
+			if (me.isAuthorized) {
+				ii.timer.timing("Page displayed");
+				me.session.registerFetchNotify(me.sessionLoaded, me);
+			}
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},	
 		
 		sessionLoaded: function fin_rev_accountReceivable_UserInterface_sessionLoaded() {
@@ -292,6 +297,25 @@ ii.Class({
 			});
 
 			parent.parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				parent.fin.revMasterUi.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			parent.fin.revMasterUi.showPageLoading("Loading");
+			ii.trace("Set Load Count: " + me.loadCount, ii.traceTypes.Information, "Info");
+		},
+
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0)
+				parent.fin.revMasterUi.hidePageLoading("");
+			ii.trace("Check Load Count: " + me.loadCount, ii.traceTypes.Information, "Info");
 		},
 		
 		resetGrid: function() {
@@ -395,6 +419,7 @@ ii.Class({
 			me.rowBeingEdited = true;
 			me.currentRowSelected = $($("#AccountReceivableGridBody tr")[insertAt])[0];
 			me.modified();
+			me.checkLoadCount();
 		},
 		
 		accountReceivablesLoaded: function(me, activeId) {
@@ -451,7 +476,7 @@ ii.Class({
 				me.rowBeingEdited = true;
 			}
 
-			$("#pageLoading").hide();
+			parent.fin.revMasterUi.hidePageLoading("");
 		},
 		
 		getTotalGridRow: function() {
@@ -506,6 +531,7 @@ ii.Class({
 					$(this).removeClass("trover");});
 						
 			$("#AccountReceivableContextMenu tr").click(function() {
+				if (me.rowBeingEdited) return;
 
 				if (this.id == "menuAdd")
 					me.accountReceivableGridRowAdd();
@@ -518,7 +544,6 @@ ii.Class({
 			});
 	
 			$("#AccountReceivableGridBody td").mousedown(function() {
-
 				if (me.rowBeingEdited) return;
 				
 				if (this.cellIndex >= 0 && this.cellIndex <= 10)
@@ -711,7 +736,7 @@ ii.Class({
 			if (me.invoiceByCustomer) {
 				$("#houseCode" + rowNumber).bind("keydown", me, me.searchHouseCode);
 				$("#houseCode" + rowNumber).bind("blur", function() { me.houseCodeBlur(this); });
-				$("#houseCode" + rowNumber).change(function() { me.modified(); });
+				//$("#houseCode" + rowNumber).change(function() { me.modified(); });
 			}
 		},
 
@@ -749,6 +774,7 @@ ii.Class({
 			me.rowBeingEdited = true;
 			me.status = "Edit";			
 			me.invalidHouseCode = "";
+			parent.fin.revMasterUi.setStatus("Normal");
 
 			if (me.invoiceByCustomer) {
 				if ($("#houseCode" + rowNumber).val() != "") {
@@ -794,6 +820,7 @@ ii.Class({
 			me.receivablesLoaded(me);		 
 			me.rowBeingEdited = true;
 			me.currentRowSelected = $($("#AccountReceivableGridBody tr")[insertAt])[0];
+			parent.fin.revMasterUi.setStatus("Normal");
 		},
 		
 		accountReceivableGridRowDelete: function() {
@@ -841,6 +868,7 @@ ii.Class({
 		    if (objInput.value == "") objInput.value = parent.parent.fin.appUI.houseCodeBrief;
 			
 			if (me.invalidHouseCode != objInput.value) {
+				me.modified();
 				me.invalidHouseCode = objInput.value;
 				me.houseCodeCheck(objInput.value, rowNumber);
 			}
@@ -865,8 +893,6 @@ ii.Class({
 		
 		houseCodeValidate: function(houseCode, rowArray) {
 		    var me = this;
-
-			$("#pageLoading").hide();
 			var rowNumber = rowArray[0].rowNumber;
 			
 		    if (me.houseCodeCache[houseCode].valid) {
@@ -912,11 +938,9 @@ ii.Class({
 
 		houseCodeLoad: function(houseCode, rowNumber, columnValue) {
 		    var me = this;
-		    
-			$("#messageToUser").text("Loading");
-		    $("#pageLoading").show();
-			
 			var rowArray = {};
+
+			me.setLoadCount();
 			rowArray.rowNumber = rowNumber;
 			rowArray.columnValue = columnValue;
 		    
@@ -953,6 +977,7 @@ ii.Class({
 		            else {
 		                //the house code is invalid
 		                me.houseCodeValidate(houseCode, me.houseCodeCache[houseCode].buildQueue);
+						me.checkLoadCount();
 		            }
 				}
 			});
@@ -1010,8 +1035,9 @@ ii.Class({
 					me.houseCodeCache[houseCode].jobsLoaded = true;
 					//validate the list of rows
 		            me.houseCodeValidate(houseCode, me.houseCodeCache[houseCode].buildQueue);
+					me.checkLoadCount();
 				}
-			});			
+			});
 		},
 		
 		jobRebuild: function(houseCode, rowNumber, columnValue) {
@@ -1071,6 +1097,7 @@ ii.Class({
 			me.validator.forceBlur();
 
 			if (me.validator.queryValidity(true)) {
+				me.setLoadCount();
 				me.invoiceItemStore.fetch("userId:[user],invoiceId:" + me.invoiceId, me.invoiceItemsLoaded, me);
 				hidePopup("popupCreditMemo");
 			}
@@ -1080,7 +1107,6 @@ ii.Class({
 			var me = this;
 			
 			hidePopup("popupMessage");
-			$("#pageLoading").hide();
 		},
 		
 		actionUndoItem: function() {
@@ -1127,6 +1153,7 @@ ii.Class({
 			}
 			
 			me.receivablesLoaded(me);
+			parent.fin.revMasterUi.setStatus("Normal");
 			me.status = "";
 			me.rowBeingEdited = false;
 			me.currentRowSelected = null;
@@ -1222,8 +1249,7 @@ ii.Class({
 			if (!valid)
 				return false;
 
-			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();			
+			parent.fin.revMasterUi.showPageLoading("Saving");
 			
 			id = parseInt(me.currentRowSelected.cells[1].innerHTML);
 			if (id > 0) {
@@ -1354,11 +1380,12 @@ ii.Class({
 
 					$("#messageHeader").text("Your modifications have not been saved");
 					$("#divMessage").text(errorMessage);
+					parent.fin.revMasterUi.hidePageLoading("Edit");
 					showPopup("popupMessage");
 				}
 				else {
+					parent.fin.revMasterUi.hidePageLoading("Error");
 					alert("[SAVE FAILURE] Error while updating Account Receivable record: " + $(args.xmlNode).attr("message"));
-					$("#pageLoading").hide();
 				}
 			}
 		}
