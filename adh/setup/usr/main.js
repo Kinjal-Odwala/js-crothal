@@ -35,7 +35,8 @@ ii.Class({
 			me.lastSelectedIndex = -1;
 			me.renderRowIndex = -1;
 			me.loadCount = 0;
-
+			me.newReport = false;
+			
 			me.gateway = ii.ajax.addGateway("adh", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
 			me.transactionMonitor = new ii.ajax.TransactionMonitor(
@@ -429,8 +430,10 @@ ii.Class({
 			if (!me.moduleModified) 
 				me.setStatus("Loading");
 				
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").fadeIn("slow");
+			if (!me.newReport) {
+				$("#messageToUser").text("Loading");
+				$("#pageLoading").fadeIn("slow");
+			}
 			
 			me.moduleColumnStore.reset();
 			me.moduleColumnStore.fetch("userId:[user],module:" + args.moduleId + ",moduleAssociate:" + args.moduleAssociateIds + ",report:"+ args.reportId + ",", me.moduleColumnsLoaded, me);
@@ -445,7 +448,10 @@ ii.Class({
 			else if (me.moduleModified)	
 				me.moduleModified = false;
 				
-			$("#pageLoading").fadeOut("slow");
+			if (!me.newReport) 
+				$("#pageLoading").fadeOut("slow");
+			else if (me.newReport)	
+				me.newReport = false;
 		},
 
 		itemSelect: function() {
@@ -551,7 +557,8 @@ ii.Class({
 			$("#editableInputRadio" + index)[0].checked = false;
 			$("#hiddenInputRadio" + index)[0].checked = false;
 			$("#readOnlyInputRadio" + index)[0].checked = false;
-			$("#filterInputCheck" + index)[0].checked = false;
+			if ($("#filterInputCheck" + index)[0] != undefined)
+				$("#filterInputCheck" + index)[0].checked = false;
 			$("#sortOrderAscInputRadio" + index)[0].checked = false;
 			$("#sortOrderDescInputRadio" + index)[0].checked = false;
 		},
@@ -713,6 +720,7 @@ ii.Class({
 			}
 
 			if (me.action == "new") {
+				me.newReport = true;
 				reportId = 0;
 				hirNode = 0;
 			}
