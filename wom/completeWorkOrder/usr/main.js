@@ -91,7 +91,7 @@ ii.Class({
 				$("#pageLoading").fadeIn("slow");
 			
 				ii.timer.timing("Page displayed");
-				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.session.registerFetchNotify(me.sessionLoaded, me);
 			}				
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
@@ -498,7 +498,7 @@ ii.Class({
 			me.validator.forceBlur();
 			
 			// Check to see if the data entered is valid
-			if(!me.validator.queryValidity(true) && me.workOrderGrid.activeRowIndex >= 0) {
+			if (!me.validator.queryValidity(true) && me.workOrderGrid.activeRowIndex >= 0) {
 				alert("In order to save, the errors on the page must be corrected.");
 				return false;
 			}
@@ -514,7 +514,7 @@ ii.Class({
 					xml += ' id="' + me.workOrders[index].id + '"';
 					xml += ' statusType="9"';
 					xml += ' notes="' + ui.cmn.text.xml.encode(me.workOrders[index].notes) + '"';
-					xml += ' completedDate="' + me.workOrders[index].completedDate.toLocaleString() + '"';
+					xml += ' completedDate="' + ui.cmn.text.date.format(me.workOrders[index].completedDate, "mm/dd/yyyy") + '"';
 					xml += '/>';
 				}
 			}
@@ -523,7 +523,6 @@ ii.Class({
 				return;
 			
 			me.setStatus("Saving");
-			
 			$("#messageToUser").text("Saving");
 			$("#pageLoading").fadeIn("slow"); 
 	
