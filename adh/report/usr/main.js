@@ -1919,26 +1919,28 @@ ii.Class({
 					me.invoiceDescription = false;
 					
 					for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
-						if (me.moduleColumnHeaders[index].title == 'HcmHouseCodeJob') 
+						if (me.moduleColumnHeaders[index].columnType != 2) {
+							if (me.moduleColumnHeaders[index].title == 'HcmHouseCodeJob') 
 							me.invoiceJob = true;
-						if (me.moduleColumnHeaders[index].title == 'RevTaxableService') 
-							me.invoiceTaxableService = true;
-						if (me.moduleColumnHeaders[index].title == 'FscAccount') 
-							me.invoiceAccountCode = true;
-						if (me.moduleColumnHeaders[index].title == 'RevInviQuantity') 
-							me.invoiceQuantity = true;
-						if (me.moduleColumnHeaders[index].title == 'RevInviPrice') 
-							me.invoicePrice = true;
-						if (me.moduleColumnHeaders[index].title == 'RevInviAmount') 
-							me.invoiceAmount = true;
-						if (me.moduleColumnHeaders[index].title == 'AppTransactionStatusType') 
-							me.invoiceStatus = true;
-						if (me.moduleColumnHeaders[index].title == 'RevInviTaxable') 
-							me.invoiceTaxable = true;
-						if (me.moduleColumnHeaders[index].title == 'RevInviShow') 
-							me.invoiceShow = true;
-						if (me.moduleColumnHeaders[index].title == 'RevInviDescription') 
-							me.invoiceDescription = true;
+							if (me.moduleColumnHeaders[index].title == 'RevTaxableService') 
+								me.invoiceTaxableService = true;
+							if (me.moduleColumnHeaders[index].title == 'FscAccount') 
+								me.invoiceAccountCode = true;
+							if (me.moduleColumnHeaders[index].title == 'RevInviQuantity') 
+								me.invoiceQuantity = true;
+							if (me.moduleColumnHeaders[index].title == 'RevInviPrice') 
+								me.invoicePrice = true;
+							if (me.moduleColumnHeaders[index].title == 'RevInviAmount') 
+								me.invoiceAmount = true;
+							if (me.moduleColumnHeaders[index].title == 'AppTransactionStatusType') 
+								me.invoiceStatus = true;
+							if (me.moduleColumnHeaders[index].title == 'RevInviTaxable') 
+								me.invoiceTaxable = true;
+							if (me.moduleColumnHeaders[index].title == 'RevInviShow') 
+								me.invoiceShow = true;
+							if (me.moduleColumnHeaders[index].title == 'RevInviDescription') 
+								me.invoiceDescription = true;
+						}
 					}
 					
 					rowData += "<th class='gridHeaderColumn' width='50px'>#</th>";
@@ -2176,9 +2178,7 @@ ii.Class({
 						rowData += me.getAdhReprotDetailGridRow(index, pkId, houseCode, appSite, appSitTitle);
 						rowData += "</tr>"	
 					}
-					else {	
-						if (invoiceId == "")
-							invoiceId = -1;
+					else {
 						rowData += "<tr>"
 						rowData += "<td colspan='100'>"
 						rowData += "<div >"
