@@ -79,7 +79,7 @@ ii.Class({
 
 				ii.timer.timing("Page displayed");
 				me.loadCount = 2;
-				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.session.registerFetchNotify(me.sessionLoaded, me);
 				me.payFrequency.fetchingData();
 				me.fiscalYearStore.fetch("userId:[user]", me.fiscalYearsLoaded, me);
 				me.frequencyTypeStore.fetch("userId:[user]", me.frequencyTypesLoaded, me);
@@ -566,8 +566,8 @@ ii.Class({
 				xml += ' year="' + periodItem.year + '"';
 				xml += ' frequencyType="' + periodItem.frequencyType + '"';
 				xml += ' title="' + periodItem.title + '"';
-				xml += ' startDate="' + periodItem.startDate.toLocaleString() + '"';
-				xml += ' endDate="' + periodItem.endDate.toLocaleString() + '"';
+				xml += ' startDate="' + ui.cmn.text.date.format(periodItem.startDate, "mm/dd/yyyy") + '"';
+				xml += ' endDate="' + ui.cmn.text.date.format(periodItem.endDate, "mm/dd/yyyy") + '"';
 				xml += ' active="true"';
 				xml += ' displayOrder="1"';
 				xml += ' clientId="' + ++clientId + '"';

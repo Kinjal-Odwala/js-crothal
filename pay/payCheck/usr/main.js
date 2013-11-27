@@ -121,7 +121,7 @@ ii.Class({
 
 				ii.timer.timing("Page displayed");
 				me.loadCount = 4;
-				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.session.registerFetchNotify(me.sessionLoaded, me);
 				me.state.fetchingData();
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
 				me.payCodeTypeStore.fetch("userId:[user],payCodeType:", me.payCodeTypesLoaded, me);
@@ -1296,7 +1296,7 @@ ii.Class({
 				xml += ' payCheckRequestId="0"';
 				xml += ' payCode="' + me.payCodeDetailGrid.data[index].payCode.id + '"';
 				xml += ' hours="' + me.payCodeDetailGrid.data[index].hours + '"';
-				xml += ' date="' + me.payCodeDetailGrid.data[index].date.toLocaleString() + '"';
+				xml += ' date="' + ui.cmn.text.date.format(me.payCodeDetailGrid.data[index].date, "mm/dd/yyyy") + '"';
 				xml += ' earnings="' + me.payCodeDetailGrid.data[index].earnings + '"';
 				xml += ' alternateBaseRate="' + me.payCodeDetailGrid.data[index].alternateBaseRate + '"';
 				xml += ' workOrderNumber="' + ui.cmn.text.xml.encode(me.payCodeDetailGrid.data[index].workOrderTicketNumber) + '"';

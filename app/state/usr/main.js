@@ -87,7 +87,7 @@ ii.Class({
 
 				me.loadCount = 1;
 				ii.timer.timing("Page displayed");
-				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.session.registerFetchNotify(me.sessionLoaded, me);
 				me.systemVariableStore.fetch("userId:[user],name:FederalMinimumWage", me.systemVariablesLoaded, me);
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
 			}
@@ -939,7 +939,7 @@ ii.Class({
 					xml += ' groupType="' + me.stateWages[index].groupType + '"';
 					xml += ' name="' + ui.cmn.text.xml.encode(me.stateWages[index].name) + '"';
 					xml += ' minimumWage="' + me.stateWages[index].minimumWage + '"';
-					xml += ' effectiveDate="' + me.stateWages[index].effectiveDate.toLocaleString() + '"';
+					xml += ' effectiveDate="' + ui.cmn.text.date.format(me.stateWages[index].effectiveDate, "mm/dd/yyyy") + '"';
 					xml += ' active="' + me.stateWages[index].active + '"';
 					xml += '/>';
 				}				
@@ -953,7 +953,7 @@ ii.Class({
 					xml += ' groupType="' + me.countyWages[index].groupType + '"';
 					xml += ' name="' + ui.cmn.text.xml.encode(me.countyWages[index].name) + '"';
 					xml += ' minimumWage="' + me.countyWages[index].minimumWage + '"';
-					xml += ' effectiveDate="' + me.countyWages[index].effectiveDate.toLocaleString() + '"';
+					xml += ' effectiveDate="' + ui.cmn.text.date.format(me.countyWages[index].effectiveDate, "mm/dd/yyyy") + '"';
 					xml += ' active="' + me.countyWages[index].active + '"';
 					xml += '/>';
 				}				
@@ -967,7 +967,7 @@ ii.Class({
 					xml += ' groupType="' + me.cityWages[index].groupType + '"';
 					xml += ' name="' + ui.cmn.text.xml.encode(me.cityWages[index].name) + '"';
 					xml += ' minimumWage="' + me.cityWages[index].minimumWage + '"';
-					xml += ' effectiveDate="' + me.cityWages[index].effectiveDate.toLocaleString() + '"';
+					xml += ' effectiveDate="' + ui.cmn.text.date.format(me.cityWages[index].effectiveDate, "mm/dd/yyyy") + '"';
 					xml += ' active="' + me.cityWages[index].active + '"';
 					xml += '/>';
 				}				

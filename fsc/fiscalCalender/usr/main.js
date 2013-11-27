@@ -82,7 +82,7 @@ ii.Class({
 
 				ii.timer.timing("Page displayed");
 				me.loadCount = 1;
-				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.session.registerFetchNotify(me.sessionLoaded, me);
 				me.fiscalYearStore.fetch("userId:[user]", me.fiscalYearsLoaded, me);				
 				me.controlVisible();
 			}				
@@ -206,7 +206,7 @@ ii.Class({
 			me.fiscalPeriodGrid = new ui.ctl.Grid({
 				id: "FiscalPeriod",
 				appendToId: "divForm",
-				selectFunction: function(index) { if(me.fiscalPeriods[index]) me.fiscalPeriods[index].modified = true; }
+				selectFunction: function(index) { if (me.fiscalPeriods[index]) me.fiscalPeriods[index].modified = true; }
 			});
 				
 			me.fiscalStartDate = new ui.ctl.Input.Date({
@@ -225,7 +225,9 @@ ii.Class({
 				if (enteredText == "") 
 					return;
 					
-				me.modified();
+				if (me.fiscalPeriodGrid.activeRowIndex >=0 && (enteredText != ui.cmn.text.date.format(me.fiscalPeriodGrid.data[me.fiscalPeriodGrid.activeRowIndex].startDate, "mm/dd/yyyy"))) {
+					me.modified();
+				}
 										
 				if (/^(0[1-9]|1[012]|[1]?[0])[\/-](0[1-9]|[12][0-9]|3[01])[\/-](\d{4}|\d{2})$/.test(enteredText) == false) {							
 					this.setInvalid("Please enter valid date.");
@@ -248,7 +250,9 @@ ii.Class({
 				if (enteredText == "") 
 					return;
 
-				me.modified();
+				if (me.fiscalPeriodGrid.activeRowIndex >=0 && (enteredText != ui.cmn.text.date.format(me.fiscalPeriodGrid.data[me.fiscalPeriodGrid.activeRowIndex].endDate, "mm/dd/yyyy"))) {
+					me.modified();
+				}
 				
 				if (/^(0[1-9]|1[012]|[1]?[0])[\/-](0[1-9]|[12][0-9]|3[01])[\/-](\d{4}|\d{2})$/.test(enteredText) == false) {							
 					this.setInvalid("Please enter valid date.");
@@ -416,7 +420,7 @@ ii.Class({
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
 			var me = this;
-			
+
 			parent.fin.appUI.modified = args.modified;
 			if (args.modified)
 				me.setStatus("Edit");
@@ -502,12 +506,7 @@ ii.Class({
 			var me = this;
 			var index = args.index;
 			var selectId = 0;
-			
-			if (!parent.fin.cmn.status.itemValid()){
-				me.fiscalYearGrid.body.deselect(args.index, true);
-				return;
-			}
-				
+
 			me.status = "";	
 						
 			if (me.fiscalYearGrid.data[index] != undefined) {
@@ -524,7 +523,7 @@ ii.Class({
 				
 				if (me.yearId == "")
 					return false;
-								
+
 				me.setLoadCount();			
 				me.fiscalPeriodStore.fetch("fiscalYearId:" + me.yearId + ",userId:[user]", me.fiscalPeriodsLoaded, me);
 			}
@@ -715,7 +714,6 @@ ii.Class({
 			};
 			
 			me.setStatus("Saving");
-			
 			$("#messageToUser").text("Saving");
 			$("#pageLoading").fadeIn("slow");
 
@@ -766,8 +764,8 @@ ii.Class({
 				xml += ' id="' + (me.status == "new" ? 0 : periodItem.id ) + '"';
 				xml += ' year="' + (me.status == "new" ? 0 : periodItem.year  ) + '"';
 				xml += ' title="' + periodItem.title + '"';
-				xml += ' startDate="' + periodItem.startDate.toLocaleString() + '"';
-				xml += ' endDate="' + periodItem.endDate.toLocaleString() + '"';
+				xml += ' startDate="' + ui.cmn.text.date.format(periodItem.startDate, "mm/dd/yyyy") + '"';
+				xml += ' endDate="' + ui.cmn.text.date.format(periodItem.endDate, "mm/dd/yyyy") + '"';
 				xml += ' week1="' + periodItem.week1 + '"';
 				xml += ' week2="' + periodItem.week2 + '"';
 				xml += ' week3="' + periodItem.week3 + '"';
