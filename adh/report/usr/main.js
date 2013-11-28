@@ -1853,6 +1853,8 @@ ii.Class({
 
 			$("#AdhReportItemGridHead").html("");
 			$("#AdhReportItemGridBody").html("");
+			$("#selPageNumber").empty();
+			$("#spnPageInfo").html("");
 			$("#AdhReportGrid").show();
 			$("#ReportHierarchy").hide();
 			$("#messageToUser").html("Loading");
