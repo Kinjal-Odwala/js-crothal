@@ -102,7 +102,7 @@ ii.Class({
 			me.setStatus("Loading");
 			me.modified(false);	
 
-			$(window).bind("resize", me, me.resize );
+			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$(document).bind("mousedown", me, me.mouseDownProcessor);
 			$("#ulEdit0").bind("contextmenu", me, me.contextMenuProcessor);
@@ -110,7 +110,7 @@ ii.Class({
 				$("input[id^='chkNodeM']").attr("checked", this.checked);
 			});
 
-			ii.trace("Hierarchy Nodes Loading", ii.traceTypes.Information, "Info");			
+			ii.trace("Hierarchy Nodes Loading", ii.traceTypes.Information, "Info");
 			me.hierarchyTreeMouseDownEventSetup();
 			me.movableNodeEventSetup();			
 			
@@ -257,8 +257,10 @@ ii.Class({
 		},
 
 		resize: function fin_app_hierarchy_UserInterface_resize() {
+			var me = fin.hierarchyUi;
 
 			$("#hirContainer").height($(window).height() - 155);
+			me.setUnitContainerHeight();
 		},
 
 		defineFormControls: function fin_app_hierarchy_UserInterface_defineFormControls() {
@@ -694,11 +696,11 @@ ii.Class({
 		setUnitContainerHeight: function() {
 			var me = this;
 
-			$("#unitContainer").height($(window).height() - 210);
+			$("#unitContainer").height($(window).height() - 230);
 
 			if ($("#hirContainer")[0].scrollHeight > ($("#hirContainer").height() + 20)) {
 				var height = ($("#hirContainer")[0].scrollHeight) - $("#hirContainer").height();
-				$("#unitContainer").height($(window).height() + height - 210);
+				$("#unitContainer").height($(window).height() + height - 230);
 			}
 		},
 
