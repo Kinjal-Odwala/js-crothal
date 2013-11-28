@@ -2623,8 +2623,10 @@ ii.Class({
 	            else
 	                me.invoiceCache[invoiceId].buildQueue.push(args.pkId);
 	        }
-	        else
-	            me.invoiceLoad(invoiceId, args.pkId);
+	        else {
+				me.setLoadCount();
+				me.invoiceLoad(invoiceId, args.pkId);
+			} 
 		},
 		
 		invoiceValidate: function(invoiceId,pkId) {
@@ -2685,6 +2687,7 @@ ii.Class({
 					me.invoiceCache[invoiceId].loaded = true;
 					//validate the list of rows
 		            me.invoiceValidate(invoiceId, pkId);
+					me.checkLoadCount();
 				}
 			});
 		},
