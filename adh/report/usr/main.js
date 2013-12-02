@@ -2148,17 +2148,13 @@ ii.Class({
 		},
 		
 		moduleColumnDataLoaded: function(me, activeId) {
-			var rowData = "" ;     		
-			var invoiceIdColumn = -1;
-			var invoiceId = -1;
+			var rowData = "" ; 
 			var invoiceNoColumn = -1;
 			var invoiceNo = -1;
 			
 			me.gridData = [];
 			
 			for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
-				//if (me.moduleColumnHeaders[index].title == "RevInvoice") 
-				//	invoiceIdColumn = index;
 				if (me.moduleColumnHeaders[index].title == "RevInvInvoiceNumber") 
 					invoiceNoColumn = index;
 			}
@@ -2171,16 +2167,19 @@ ii.Class({
 					var appSite = me.moduleColumnDatas[index].appSite;
 					var appSitTitle = me.moduleColumnDatas[index].appSitTitle;
 					
-					if (invoiceNoColumn != -1) {
+					if (invoiceNoColumn != -1) 
 						invoiceNo = unescape(me.moduleColumnDatas[index]["column1"]);
-					}
+					else
+						invoiceNo = unescape(me.moduleColumnDatas[index]["column150"]);
 					
 					if (!me.invoiceItem) {
 						rowData += "<tr id='adhReportDataRow" + pkId + "' onclick=(fin.reportUi.getAdhReprotGridRowEdit(" + pkId + "," + index + "," + houseCodeId + "));>";	
 						rowData += me.getAdhReprotDetailGridRow(index, pkId, houseCode, appSite, appSitTitle);
 						rowData += "</tr>"	
 					}
-					else {
+					else {	
+						if(pkId == "0")
+							pkId = -1;
 						rowData += "<tr>"
 						rowData += "<td colspan='100'>"
 						rowData += "<div >"
