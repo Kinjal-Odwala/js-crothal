@@ -834,7 +834,6 @@ ii.Class({
 				me.setStatus("Loaded");
 				$("#pageLoading").fadeOut("slow");
 			}
-			ii.trace("Load Count: " + me.loadCount, ii.traceTypes.Information, "Session");
 		},
 		
 		stateTypesLoaded: function fin_hcm_job_UserInterface_stateTypesLoaded(me, activeId) {
