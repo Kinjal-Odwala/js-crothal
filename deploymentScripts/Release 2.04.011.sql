@@ -58,18 +58,18 @@ Update AppModuleColumns Set AppModcAdHocActive = 1 Where AppModule = 3 And AppMo
 
 -- Invoice Items Ad-Hoc Report [End]
 
--- Add the following assembly references in adh->act->config spring-persistence.xml file
+-- Add the following assembly references in adh->act->config spring-persistence.xml file (Not Required)
 <value>crothall.chimes.fin.rev.dom, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
 <value>crothall.chimes.fin.fsc.dom, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
 
 -- Add the following key in app->act web.config file
-<add key="ExcelTemplateFilePath" value="E:\Sites\iiDev\TeamFin\js\crothall\chimes\fin\app\state\usr\" />
+<add key="ExcelTemplateFilePath" value="E:\Sites\TeamFin\js\crothall\chimes\fin\app\state\usr\" />
 
 -- Add the following key in rev->act web.config file
-<add key="TaxRatesTemplateFilePath" value="E:\Sites\iiDev\TeamFin\js\crothall\chimes\fin\rev\taxRate\usr\" />
+<add key="TaxRatesTemplateFilePath" value="E:\Sites\TeamFin\js\crothall\chimes\fin\rev\taxRate\usr\" />
 
 -- Add the following key in hcm->act web.config file
-<add key="ExcelTemplateFilePath" value="E:\Sites\iiDev\TeamFin\js\crothall\chimes\fin\hcm\ePaySiteSurvey\usr\" />
+<add key="ExcelTemplateFilePath" value="E:\Sites\TeamFin\js\crothall\chimes\fin\hcm\ePaySiteSurvey\usr\" />
 
 -- Add the following key in adh->act web.config file
 <httpRuntime executionTimeout="300" />
@@ -196,7 +196,6 @@ Values (13, 'HcmHoucjModAt', 'Mod At', 7, 1, 'compass-usa\data conversion', GetD
 Update AppModuleColumns Set AppModcDescription = 'Site Title' Where AppModule = 4 And AppModcTitle = 'AppSitTitle'
 Update AppModuleColumns Set AppModcDescription = 'HirNode Title' Where AppModule = 7 And AppModcTitle = 'HirNodTitle'
 Update AppModuleColumns Set AppModcDescription = 'Unit Title' Where AppModule = 8 And AppModcTitle = 'AppUniTitle'
-
 Update AppModuleColumns Set AppModcDescription = 'Epay Site Active' Where AppModule = 12 And AppModcTitle = 'HcmJobActive'
 Update AppModuleColumns Set AppModcDescription = 'Epay Site Association Active' Where AppModule = 13 And AppModcTitle = 'HcmHoucjActive'
 -- Change the Header Title to fix the Export To Excel issue [End]
@@ -608,4 +607,15 @@ Values (11, 'RevInviDescription', 'Description', 10, 1, 'compass-usa\data conver
 
 /*
 CT updated on 20th November 2013 11PM EST
+*/
+
+Update dbo.AppModules Set AppModDescription = 'RevInvoiceItems' where AppModTitle = 'Invoice Item'
+Update dbo.AppModuleColumns Set AppModcDescription = 'Taxable' Where AppModcTitle = 'RevInviTaxable' And AppModule = 11 
+
+/*
+CT updated on 1st December 2013 11PM EST
+*/
+
+/*
+Last production release version 2.04.011 on 4th December 2013 11PM EST
 */
