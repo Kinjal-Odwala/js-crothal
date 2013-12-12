@@ -844,29 +844,29 @@ ii.Class({
 				return false;
 			}
 			
-			if (me.stateWageGrid.data[0].modified) {
-				me.setStatus("Saving");
-				$("#messageToUser").text("Saving");
-				$("#pageLoading").show();
-
-				var item = me.stateGrid.data[me.stateGrid.activeRowIndex];
-				item.minimumWage = parseFloat(me.stateWageGrid.data[0].minimumWage);
-
-				var xml = me.saveXmlBuildItem(item);
-				
-				// Send the object back to the server as a transaction
-				me.transactionMonitor.commit({
-					transactionType: "itemUpdate",
-					transactionXml: xml,
-					responseFunction: me.saveResponseItem,
-					referenceData: { me: me, item: item	}
-				});
-				
-				return true;
-			}
-			else {
+//			if (me.stateWageGrid.data[0].modified) {
+//				me.setStatus("Saving");
+//				$("#messageToUser").text("Saving");
+//				$("#pageLoading").show();
+//
+//				var item = me.stateGrid.data[me.stateGrid.activeRowIndex];
+//				item.minimumWage = parseFloat(me.stateWageGrid.data[0].minimumWage);
+//
+//				var xml = me.saveXmlBuildItem(item);
+//				
+//				// Send the object back to the server as a transaction
+//				me.transactionMonitor.commit({
+//					transactionType: "itemUpdate",
+//					transactionXml: xml,
+//					responseFunction: me.saveResponseItem,
+//					referenceData: { me: me, item: item	}
+//				});
+//				
+//				return true;
+//			}
+//			else {
 				me.saveMinimunWages("");
-			}
+//			}
 		},
 		
 		actionApproveItem: function() {
@@ -974,18 +974,18 @@ ii.Class({
 			}
 
 			if (xml == "") {
-				me.modified(false);
-				if (status == "Saved") {
-					me.setStatus("Saved");
-					$("#pageLoading").fadeOut("slow");
-				}
+//				me.modified(false);
+//				if (status == "Saved") {
+//					me.setStatus("Saved");
+//					$("#pageLoading").fadeOut("slow");
+//				}
 				return;
 			}
-			else if (status == "") {
+//			else if (status == "") {
 				me.setStatus("Saving");
 				$("#messageToUser").text("Saving");
-				$("#pageLoading").show();
-			}
+				$("#pageLoading").fadeIn("slow");
+//			}
 
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
@@ -1013,11 +1013,11 @@ ii.Class({
 				$(args.xmlNode).find("*").each(function() {
 					switch (this.tagName) {
 
-						case "appStateType":
-							me.stateTypes[me.stateGrid.activeRowIndex] = item;
-							me.stateGrid.body.renderRow(me.stateGrid.activeRowIndex, me.stateGrid.activeRowIndex);
-							me.saveMinimunWages("Saved");
-							break;
+//						case "appStateType":
+//							me.stateTypes[me.stateGrid.activeRowIndex] = item;
+//							me.stateGrid.body.renderRow(me.stateGrid.activeRowIndex, me.stateGrid.activeRowIndex);
+//							me.saveMinimunWages("Saved");
+//							break;
 							
 						case "appStateMinimumWage":
 							me.modified(false);
