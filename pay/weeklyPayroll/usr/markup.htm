@@ -15,216 +15,212 @@
 
 	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
 	<body id="appBody">
-		
-		<table cellpadding="10" cellspacing="0" width="100%;" height="100%;">
-		    <tr>
-		        <td>
-		            <table cellpadding="0" cellspacing="0">
-                        <tr><td class="BorderHorizontal" colspan="5"></td></tr>
-                        <tr><td class="BorderHorizontal" colspan="5"></td></tr>
-                        <tr>
-                            <td class="BorderVertical"></td>
-                            <td class="BorderVertical"></td>
-                            <td>
-                                <div style="height: 20px; width: 100%; position: relative; z-index: 5; overflow: hidden">
-                                    <table id="tblEmployeeHeader" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 4">
-                                        <thead>
-                                            <tr class="Header">
-                                                <td style="width: 25px">&nbsp;</td>
-                                                <td style="width: 25px">&nbsp;</td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 50px">&nbsp;Type</td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 50px">&nbsp;Shift</td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 200px">&nbsp;Employee</td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;Number</td>
-                                                <td class="HeaderBorderVertical"></td>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                    <table id="tblWageHeader" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 3; width: 1768px">
-                                        <thead>
-                                            <tr class="Header">
-                                                <td style="width: 455px">&nbsp;</td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;House Code</td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;Job</td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;Work Order</td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;Pay Code</td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;<span id="spnDay1"></span></td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;<span id="spnDay2"></span></td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;<span id="spnDay3"></span></td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;<span id="spnDay4"></span></td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;<span id="spnDay5"></span></td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;<span id="spnDay6"></span></td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;<span id="spnDay7"></span></td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;Pay Status</td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;Total</td>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </div>
-                            </td>
-                            <td class="BorderVertical"></td>
-                            <td class="BorderVertical"></td>
-                        </tr>
-                        <tr>
-                            <td class="BorderVertical"></td>
-                            <td class="BorderVertical"></td>
-                            <td>
-                                <div id="divWeekly" style="width: 600px; height: 400px; position: relative; overflow: auto;">
-                                    <table id="tblEmployee" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 2">
-                                        <tbody id="tblEmployeeBody"></tbody>
-                                    </table>                                
-                                    <table cellpadding="0" cellspacing="0" style="position: absolute; z-index: 1; width: 1768px">
-                                        <tbody id="tblWageBody"></tbody>
-                                    </table>
-                                </div>
-                            </td>
-                            <td class="BorderVertical"></td>
-                            <td class="BorderVertical"></td>
-                        </tr>
-						<tr>
-                            <td class="BorderVertical"></td>
-                            <td class="BorderVertical"></td>
-                            <td>
-                                <div style="height: 20px; width: 100%; position: relative; z-index: 8; overflow: hidden">
-                                    <table cellpadding="0" cellspacing="0" style="position: absolute; z-index: 7">
-                                        <thead>
-                                            <tr class="Header">
-                                                <td colapn="11" style="width: 405px">&nbsp;</td>                                               
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                    <table id="tblTotalHeader" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 6; width: 1768px">
-                                        <thead>
-                                            <tr class="Header">												
-                                                <td colpan="10" style="width: 860px" align="right">Total Hours:&nbsp;</td>                                               
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;<span id="spnTotalDay1"></span></td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;<span id="spnTotalDay2"></span></td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;<span id="spnTotalDay3"></span></td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;<span id="spnTotalDay4"></span></td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;<span id="spnTotalDay5"></span></td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;<span id="spnTotalDay6"></span></td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;<span id="spnTotalDay7"></span></td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;</td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;<span id="spnTotal"></span></td>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </div>
-                            </td>
-                            <td class="BorderVertical"></td>
-                            <td class="BorderVertical"></td>
-                        </tr>
-						<tr><td class="BorderHorizontal" colspan="5"></td></tr>
-						<tr>
-                            <td class="BorderVertical"></td>
-                            <td class="BorderVertical"></td>
-                            <td>
-                                <div style="height: 20px; width: 100%; position: relative; z-index: 11; overflow: hidden">
-                                    <table cellpadding="0" cellspacing="0" style="position: absolute; z-index: 10">
-                                        <thead>
-                                            <tr class="Header">
-                                                <td colapn="11" style="width: 405px" >&nbsp;</td>                                               
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                    <table id="tblGrandTotalHeader" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 9; width: 1768px">
-                                        <thead>
-                                            <tr class="Header">												
-                                                <td colpan="10" style="width: 860px" align="right">Grand Total:&nbsp;</td>                                               
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;<span id="spnGrandTotalDay1"></span></td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;<span id="spnGrandTotalDay2"></span></td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;<span id="spnGrandTotalDay3"></span></td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;<span id="spnGrandTotalDay4"></span></td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;<span id="spnGrandTotalDay5"></span></td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;<span id="spnGrandTotalDay6"></span></td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;<span id="spnGrandTotalDay7"></span></td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;</td>
-                                                <td class="HeaderBorderVertical"></td>
-                                                <td style="width: 100px">&nbsp;<span id="spnGrandTotal"></span></td>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </div>
-                            </td>
-                            <td class="BorderVertical"></td>
-                            <td class="BorderVertical"></td>
-                        </tr>
-                        <tr><td class="BorderHorizontal" colspan="5"></td></tr>
-                        <tr class="Header">
-                            <td class="BorderVertical"></td>
-                            <td class="BorderVertical"></td>
-                            <td>
-                                <table cellpadding="0" cellspacing="0" style="width: 100%">
-                                    <tr class="Header">
-                                        <td style="width: 25px">
-                                            &nbsp;<img id="imgPayCodeAdd" src="/fin/cmn/usr/media/Common/add.png" style="cursor: pointer" alt="Add Pay Code for All" title="Add Pay Code for All" />
-                                        </td>
-                                        <td style="width: 25px">
-                                            <img id="imgPayCodeDelete" src="/fin/cmn/usr/media/Common/delete.png" style="cursor: pointer" alt="Delete Pay Code for All" title="Delete Pay Code for All" />
-                                        </td>
-                                        <td style="width: 50px"><select id="selFilterType"><option value="2">(All)</option><option value="1">H</option><option value="0">S</option></select></td>
-                                        <td style="width: 70px"><select id="selFilterWorkShift"></select></td>
-                                        <td align="center">
-                                            Page:
-                                            <select id="selPageNumber"></select>
-                                            <span id="spnPageInfo"></span>
-                                        </td>   
-                                        <td style="width: 70px; background-color: white">
-                                            &nbsp;
-                                            <img id="imgSave" src="/fin/cmn/usr/media/Common/save.png" style="cursor: pointer" alt="Save Payroll" title="Save Payroll" />
-                                            <img id="imgPrev" src="/fin/cmn/usr/media/Common/previous.png" style="cursor: pointer" alt="Previous Page" title="Previous Page" />
-                                            <img id="imgNext" src="/fin/cmn/usr/media/Common/next.png" style="cursor: pointer" alt="Next Page" title="Next Page" />
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                            <td class="BorderVertical"></td>
-                            <td class="BorderVertical"></td>
-                        </tr>
-                        <tr><td class="BorderHorizontal" colspan="5"></td></tr>
-                        <tr><td class="BorderHorizontal" colspan="5"></td></tr>
-                    </table>
-		        </td>
-		    </tr>
-		</table>
-		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 300; width: 100%; height: 100%; background-color: #012C40; filter: alpha(opacity = 50); opacity: .5">
-		    <div style="position: absolute; width: 66; height: 66;top: 50%; left: 50%; margin-top: -33px; margin-left: -33px">
-		        <img src="/fin/cmn/usr/media/Common/loadingwhite.gif" alt="Loading"/>
-		    </div>
+		<div id="pageBody" style="display: none;">
+			<table cellpadding="10" cellspacing="0" width="100%;" height="100%;">
+			    <tr>
+			        <td>
+			            <table cellpadding="0" cellspacing="0">
+	                        <tr><td class="BorderHorizontal" colspan="5"></td></tr>
+	                        <tr><td class="BorderHorizontal" colspan="5"></td></tr>
+	                        <tr>
+	                            <td class="BorderVertical"></td>
+	                            <td class="BorderVertical"></td>
+	                            <td>
+	                                <div style="height: 20px; width: 100%; position: relative; z-index: 5; overflow: hidden">
+	                                    <table id="tblEmployeeHeader" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 4">
+	                                        <thead>
+	                                            <tr class="Header">
+	                                                <td style="width: 25px">&nbsp;</td>
+	                                                <td style="width: 25px">&nbsp;</td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 50px">&nbsp;Type</td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 50px">&nbsp;Shift</td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 200px">&nbsp;Employee</td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;Number</td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                            </tr>
+	                                        </thead>
+	                                    </table>
+	                                    <table id="tblWageHeader" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 3; width: 1768px">
+	                                        <thead>
+	                                            <tr class="Header">
+	                                                <td style="width: 455px">&nbsp;</td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;House Code</td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;Job</td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;Work Order</td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;Pay Code</td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;<span id="spnDay1"></span></td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;<span id="spnDay2"></span></td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;<span id="spnDay3"></span></td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;<span id="spnDay4"></span></td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;<span id="spnDay5"></span></td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;<span id="spnDay6"></span></td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;<span id="spnDay7"></span></td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;Pay Status</td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;Total</td>
+	                                            </tr>
+	                                        </thead>
+	                                    </table>
+	                                </div>
+	                            </td>
+	                            <td class="BorderVertical"></td>
+	                            <td class="BorderVertical"></td>
+	                        </tr>
+	                        <tr>
+	                            <td class="BorderVertical"></td>
+	                            <td class="BorderVertical"></td>
+	                            <td>
+	                                <div id="divWeekly" style="width: 600px; height: 400px; position: relative; overflow: auto;">
+	                                    <table id="tblEmployee" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 2">
+	                                        <tbody id="tblEmployeeBody"></tbody>
+	                                    </table>                                
+	                                    <table cellpadding="0" cellspacing="0" style="position: absolute; z-index: 1; width: 1768px">
+	                                        <tbody id="tblWageBody"></tbody>
+	                                    </table>
+	                                </div>
+	                            </td>
+	                            <td class="BorderVertical"></td>
+	                            <td class="BorderVertical"></td>
+	                        </tr>
+							<tr>
+	                            <td class="BorderVertical"></td>
+	                            <td class="BorderVertical"></td>
+	                            <td>
+	                                <div style="height: 20px; width: 100%; position: relative; z-index: 8; overflow: hidden">
+	                                    <table cellpadding="0" cellspacing="0" style="position: absolute; z-index: 7">
+	                                        <thead>
+	                                            <tr class="Header">
+	                                                <td colapn="11" style="width: 405px">&nbsp;</td>                                               
+	                                            </tr>
+	                                        </thead>
+	                                    </table>
+	                                    <table id="tblTotalHeader" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 6; width: 1768px">
+	                                        <thead>
+	                                            <tr class="Header">												
+	                                                <td colpan="10" style="width: 860px" align="right">Total Hours:&nbsp;</td>                                               
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;<span id="spnTotalDay1"></span></td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;<span id="spnTotalDay2"></span></td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;<span id="spnTotalDay3"></span></td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;<span id="spnTotalDay4"></span></td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;<span id="spnTotalDay5"></span></td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;<span id="spnTotalDay6"></span></td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;<span id="spnTotalDay7"></span></td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;</td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;<span id="spnTotal"></span></td>
+	                                            </tr>
+	                                        </thead>
+	                                    </table>
+	                                </div>
+	                            </td>
+	                            <td class="BorderVertical"></td>
+	                            <td class="BorderVertical"></td>
+	                        </tr>
+							<tr><td class="BorderHorizontal" colspan="5"></td></tr>
+							<tr>
+	                            <td class="BorderVertical"></td>
+	                            <td class="BorderVertical"></td>
+	                            <td>
+	                                <div style="height: 20px; width: 100%; position: relative; z-index: 11; overflow: hidden">
+	                                    <table cellpadding="0" cellspacing="0" style="position: absolute; z-index: 10">
+	                                        <thead>
+	                                            <tr class="Header">
+	                                                <td colapn="11" style="width: 405px" >&nbsp;</td>                                               
+	                                            </tr>
+	                                        </thead>
+	                                    </table>
+	                                    <table id="tblGrandTotalHeader" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 9; width: 1768px">
+	                                        <thead>
+	                                            <tr class="Header">												
+	                                                <td colpan="10" style="width: 860px" align="right">Grand Total:&nbsp;</td>                                               
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;<span id="spnGrandTotalDay1"></span></td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;<span id="spnGrandTotalDay2"></span></td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;<span id="spnGrandTotalDay3"></span></td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;<span id="spnGrandTotalDay4"></span></td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;<span id="spnGrandTotalDay5"></span></td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;<span id="spnGrandTotalDay6"></span></td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;<span id="spnGrandTotalDay7"></span></td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;</td>
+	                                                <td class="HeaderBorderVertical"></td>
+	                                                <td style="width: 100px">&nbsp;<span id="spnGrandTotal"></span></td>
+	                                            </tr>
+	                                        </thead>
+	                                    </table>
+	                                </div>
+	                            </td>
+	                            <td class="BorderVertical"></td>
+	                            <td class="BorderVertical"></td>
+	                        </tr>
+	                        <tr><td class="BorderHorizontal" colspan="5"></td></tr>
+	                        <tr class="Header">
+	                            <td class="BorderVertical"></td>
+	                            <td class="BorderVertical"></td>
+	                            <td>
+	                                <table cellpadding="0" cellspacing="0" style="width: 100%">
+	                                    <tr class="Header">
+	                                        <td style="width: 25px">
+	                                            &nbsp;<img id="imgPayCodeAdd" src="/fin/cmn/usr/media/Common/add.png" style="cursor: pointer" alt="Add Pay Code for All" title="Add Pay Code for All" />
+	                                        </td>
+	                                        <td style="width: 25px">
+	                                            <img id="imgPayCodeDelete" src="/fin/cmn/usr/media/Common/delete.png" style="cursor: pointer" alt="Delete Pay Code for All" title="Delete Pay Code for All" />
+	                                        </td>
+	                                        <td style="width: 50px"><select id="selFilterType"><option value="2">(All)</option><option value="1">H</option><option value="0">S</option></select></td>
+	                                        <td style="width: 70px"><select id="selFilterWorkShift"></select></td>
+	                                        <td align="center">
+	                                            Page:
+	                                            <select id="selPageNumber"></select>
+	                                            <span id="spnPageInfo"></span>
+	                                        </td>   
+	                                        <td style="width: 70px; background-color: white">
+	                                            &nbsp;
+	                                            <img id="imgSave" src="/fin/cmn/usr/media/Common/save.png" style="cursor: pointer" alt="Save Payroll" title="Save Payroll" />
+	                                            <img id="imgPrev" src="/fin/cmn/usr/media/Common/previous.png" style="cursor: pointer" alt="Previous Page" title="Previous Page" />
+	                                            <img id="imgNext" src="/fin/cmn/usr/media/Common/next.png" style="cursor: pointer" alt="Next Page" title="Next Page" />
+	                                        </td>
+	                                    </tr>
+	                                </table>
+	                            </td>
+	                            <td class="BorderVertical"></td>
+	                            <td class="BorderVertical"></td>
+	                        </tr>
+	                        <tr><td class="BorderHorizontal" colspan="5"></td></tr>
+	                        <tr><td class="BorderHorizontal" colspan="5"></td></tr>
+	                    </table>
+			        </td>
+			    </tr>
+			</table>
 		</div>
 		
 		<div id="divPageShield" style="position: absolute; top: 0px; left: 0px; z-index: 100; width: 100%; height: 100%; background-color: #012C40; filter: alpha(opacity = 50); opacity: .5; display: none">
@@ -239,7 +235,7 @@
                 <tr class="Header">
                     <td class="BorderVertical"></td>
                     <td class="BorderVertical"></td>
-                    <td id="PayCodeHeader">&nbsp;Add Aditional Pay Code</td>
+                    <td id="PayCodeHeader">&nbsp;Add Additional Pay Code</td>
                     <td class="BorderVertical"></td>
                     <td class="BorderVertical"></td>
                 </tr>

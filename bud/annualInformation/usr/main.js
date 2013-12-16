@@ -3,6 +3,7 @@ ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.bud.annualInformation.usr.defs" );
 
@@ -30,6 +31,7 @@ ii.Class({
 			me.liabilityAccountCodes = [];
 			me.windowWidth = 0;
 			me.windowHeight = 0;
+			me.loadCount = 0;
 
 			me.gateway = ii.ajax.addGateway("bud", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -53,26 +55,33 @@ ii.Class({
 			me.configureCommunications();
 			me.defineFormControls();
 			me.modified(false);
+			me.setStatus("Loading");
 
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
-			
-			me.fiscalYear.fetchingData();			
-			me.yearStore.fetch("userId:[user],", me.yearsLoaded, me);
-			me.accountStore.fetch("userId:[user],", me.accountsLoaded, me);
 		},
 			
 		authorizationProcess: function fin_bud_annualInformation_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
 
-			$("#pageLoading").hide();
-		
 			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
-			me.showAccountsLoading();
-				
+			
+			$("#pageLoading").hide();
+			$("#pageLoading").css({
+				"opacity": "0.5",
+				"background-color": "black"
+			});
+			$("#messageToUser").css({ "color": "white" });
+			$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+			$("#pageLoading").fadeIn("slow");
+			
 			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+			me.session.registerFetchNotify(me.sessionLoaded, me);
+			me.fiscalYear.fetchingData();			
+			me.yearStore.fetch("userId:[user],", me.yearsLoaded, me);
+			me.accountStore.fetch("userId:[user],", me.accountsLoaded, me);
+			//me.showAccountsLoading();
 		},	
 		
 		sessionLoaded: function fin_bud_annualInformation_UserInterface_sessionLoaded(){
@@ -86,10 +95,10 @@ ii.Class({
 		resize: function fin_bud_annualInformation_UserInterface_resize() {
 			var args = ii.args(arguments,{});
 			var me = fin.annualInformationUI;
-			var offset = 180;
+			var offset = 185;
 			
 			if (ii.browser.ie) {
-				offset = 175;
+				offset = 180;
 			}
 
 			if ((me.windowWidth != $(window).width()) || (me.windowHeight != $(window).height())) {
@@ -262,13 +271,13 @@ ii.Class({
 				maxLength: 255,
 				textArea: true
 		    });
-
+			
 			me.accountCodes.setValue("");
 			me.accountCodes.text.readOnly = true;		
 
 			me.announcement = $("#Announcement")[0];
 
-			$("#Announcement").height(80);
+			$("#Announcement").height(65);
 			$("#Announcement").keypress(function() {
 				if (me.announcement.value.length > 999) {
 					me.announcement.value = me.announcement.value.substring(0, 1000);
@@ -371,13 +380,45 @@ ii.Class({
 				return false;
 		},
 		
-		modified: function() {
-			var args = ii.args(arguments, {
-				modified: {type: Boolean, required: false, defaultValue: true}
-			});
+		setStatus: function(status) {
 			var me = this;
 
-			parent.parent.fin.appUI.modified = args.modified;
+			fin.cmn.status.setStatus(status);
+		},
+		
+		dirtyCheck: function(me) {
+
+			return !fin.cmn.status.itemValid();
+		},
+		
+		modified: function () {
+            var args = ii.args(arguments, {
+                modified: { type: Boolean, required: false, defaultValue: true }
+            });
+            var me = this;
+
+            parent.parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+        },
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		resizeControls: function() {
@@ -398,16 +439,16 @@ ii.Class({
 			me.resize();
 		},
 		
-		showAccountsLoading: function() {
-			var me = this;
-	
-			$("#accountsLoading").css({
-				"width": $("#AccountGrid").width() + 10,
-				"height": $("#AccountGrid").height() + 10
-			});
-			
-			$("#accountsLoading").show();
-		},
+//		showAccountsLoading: function() {
+//			var me = this;
+//	
+//			$("#accountsLoading").css({
+//				"width": $("#AccountGrid").width() + 10,
+//				"height": $("#AccountGrid").height() + 10
+//			});
+//			
+//			$("#accountsLoading").show();
+//		},
 		
 		yearsLoaded: function(me, activeId) {
 
@@ -425,6 +466,7 @@ ii.Class({
 			me.fiscalYearId = me.fiscalYear.data[me.fiscalYear.indexSelected].id;				
 			me.loadPeriods();
 			me.modified();
+			me.yearChange = true;
 		},
 		
 		loadPeriods: function() {
@@ -442,7 +484,8 @@ ii.Class({
 			
 			me.startPeriod.setData(me.startPeriods);			
 			me.endPeriod.setData(me.endPeriods);
-			me.showAccountsLoading();
+			//me.showAccountsLoading();
+			me.setLoadCount();
 			me.annualInformationStore.fetch("userId:[user],fscYear:" + me.fiscalYearId, me.annualInformationsLoaded, me);
 		},
 		
@@ -506,7 +549,12 @@ ii.Class({
 			}
 
 			me.resizeControls();
-			$("#accountsLoading").hide();			
+			//$("#accountsLoading").hide();
+			me.checkLoadCount();	
+			if (me.yearChange) {
+				me.yearChange = false;
+				me.setStatus("Edit");
+			}	
 		},
 		
 		isCodeAssigned: function(code) {
@@ -529,7 +577,8 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 
-			me.showAccountsLoading();
+			//me.showAccountsLoading();
+			me.setLoadCount();
 			me.annualInformationsLoaded(me);			
 		},
 		
@@ -551,8 +600,10 @@ ii.Class({
 				return;
 			}
 			
+			me.setStatus("Saving");
+			
 			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();			
+			$("#pageLoading").fadeIn("slow");			
 				
 			item = new fin.bud.annualInformation.AnnualInformation(
 				me.annualInformationId
@@ -622,7 +673,7 @@ ii.Class({
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
 			
-			$("#pageLoading").hide();
+			$("#pageLoading").fadeOut("slow");
 
 			if (status == "success") {
 				me.modified(false);
@@ -644,8 +695,11 @@ ii.Class({
 							break;
 					}
 				});
+				
+				me.setStatus("Saved");
 			}
 			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating the annual information: " + $(args.xmlNode).attr("message"));
 			}
 		}

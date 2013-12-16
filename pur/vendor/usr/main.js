@@ -3,6 +3,7 @@ ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.pur.vendor.usr.defs" );
@@ -28,6 +29,7 @@ ii.Class({
 			me.status = "";
 			me.lastSelectedRowIndex = -1;
 			me.validateControl = false;
+			me.loadCount = 0;
 			
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -49,16 +51,11 @@ ii.Class({
 			
 			me.defineFormControls();
 			me.configureCommunications();
+			me.setStatus("Loading");
+			me.modified(false);
 			
 			$(window).bind("resize", me, me.resize);
-			$(document).bind("keydown", me, me.controlKeyProcessor);	
-			
-			me.sendMethodId.fetchingData();
-			me.poSendMethodStore.fetch("userId:[user]", me.poSendMethodLoaded, me);
-			me.stateType.fetchingData();					
-			me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);			
-			me.itemStatusesLoaded();	
-			me.modified(false);
+			$(document).bind("keydown", me, me.controlKeyProcessor);
 			
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
@@ -68,14 +65,32 @@ ii.Class({
 		authorizationProcess: function fin_pur_vendor_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
-
-			me.vendorsReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
-			$("#pageLoading").hide();
 			
-			me.controlVisible();
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
+			me.vendorsReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
 
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
+
+				ii.timer.timing("Page displayed");
+				me.loadCount = 2;
+				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.sendMethodId.fetchingData();
+				me.poSendMethodStore.fetch("userId:[user]", me.poSendMethodLoaded, me);
+				me.stateType.fetchingData();					
+				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);	
+				me.itemStatusesLoaded();				
+				me.controlVisible();
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},
 		
 		sessionLoaded: function fin_pur_vendor_UserInterface_sessionLoaded(){
@@ -90,8 +105,8 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 			
-			fin.purVendorUi.vendorGrid.setHeight($(window).height() - 105);
-			$("#vendorDetailContentArea").height($(window).height() - 148);
+			fin.purVendorUi.vendorGrid.setHeight($(window).height() - 130);
+			$("#vendorDetailContentArea").height($(window).height() - 173);
 			
 
 			fin.purVendorUi.vendorNumber.resizeText();
@@ -426,6 +441,12 @@ ii.Class({
 			});	
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
@@ -435,8 +456,30 @@ ii.Class({
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-
+			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		itemStatusesLoaded: function() {
@@ -478,8 +521,7 @@ ii.Class({
 				me.searchInput.updateStatus();
 			}
 			
-			$("#messageToUser").text("Loading");		
-			$("#pageLoading").show();
+			me.setLoadCount();
  
 			me.vendorStore.fetch("searchValue:" + me.searchInput.getValue() 
 				+ ",vendorStatus:" + (me.vendorStatus.indexSelected == -1 ? -1 : me.vendorStatuses[me.vendorStatus.indexSelected].number)
@@ -490,11 +532,13 @@ ii.Class({
 			
 			me.stateType.setData(me.stateTypes);
 			me.validateControl = true;
+			me.checkLoadCount();
 		},
 		
 		poSendMethodLoaded: function(me, activeId) {
 
 			me.sendMethodId.setData(me.poSendMethods);
+			me.checkLoadCount();
 		},
 		
 		controlVisible: function() {
@@ -529,7 +573,7 @@ ii.Class({
 			me.resetControls();
 			me.vendorGrid.setData(me.vendors);
 			me.controlVisible();
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 		},					
 
 		itemSelect: function() {			
@@ -579,7 +623,8 @@ ii.Class({
 			}
 			else
 				me.vendorId = 0;
-			me.controlVisible();	
+			me.controlVisible();
+			me.setStatus("Loaded");	
 		},
 
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
@@ -646,12 +691,15 @@ ii.Class({
 				return;
 				
 			me.status = "";
+			
 			if (me.lastSelectedRowIndex >= 0) {
 				me.vendorGrid.body.select(me.lastSelectedRowIndex);
 				me.itemSelect(me.lastSelectedRowIndex);
 			}
 			else
 				me.resetControls();
+				
+			me.setStatus("Loaded");
 		},
 		
 		actionNewItem: function() {
@@ -663,7 +711,8 @@ ii.Class({
 			
 			me.resetControls();	
 			me.vendorGrid.body.deselectAll();
-			me.status = "new";					
+			me.status = "new";	
+			me.setStatus("Loaded");				
 		},
 		
 		actionSaveItem: function() {
@@ -687,8 +736,10 @@ ii.Class({
 				return false;
 			}
 			
+			me.setStatus("Saving");
+			
 			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 				
 			var item = new fin.pur.vendor.Vendor(
 				me.vendorId
@@ -763,8 +814,8 @@ ii.Class({
 			var status = $(args.xmlNode).attr("status");
 			
 			if (status == "success") {
-				me.modified(false);
-					
+				
+				me.modified(false);	
 				$(args.xmlNode).find("*").each(function() {
 					switch (this.tagName) {
 
@@ -788,11 +839,14 @@ ii.Class({
 							break;	
 					}
 				});
+				
+				me.setStatus("Saved");
 			}
 			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating Vendor Record: " + $(args.xmlNode).attr("message"));
 			}
-			$("#pageLoading").hide();
+			$("#pageLoading").fadeOut("slow");
 		}
 	}
 });

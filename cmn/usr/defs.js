@@ -38,10 +38,14 @@ ii.init.register( function fin_cmn_startup_init(){
 			if (message == "") {
 				if (status == "New")
 					message = "New";
-				else if (status == "Loading" || status == "Saving" || status == "Exporting" || status == "Uploading" || status == "Importing")
+				else if (status == "Loading" || status == "Saving" || status == "Exporting" || status == "Uploading" || status == "Importing" || status == "Validating")
 					message = status + ", please wait...";
 				else if (status == "Saved")
 					message = "Data saved successfully.";
+				else if (status == "Imported")
+					message = "Data imported successfully.";
+				else if (status == "Exported")
+					message = "Data exported successfully.";
 				else if (status == "Locked")
 					message = "The current page is Readonly.";
 				else if (status == "Error")
@@ -60,7 +64,7 @@ ii.init.register( function fin_cmn_startup_init(){
 			else
 				me.$itemModifiedImage.removeClass("Modified");
 
-			if (status == "Edit" || status == "Loaded" || status == "Saved")
+			if (status == "Edit" || status == "Loaded" || status == "Saved" || status == "Imported" || status == "Exported")
 				status = "Normal";
 
 			me.$itemStatusImage.attr("class", "itemStatusImage " + status);
@@ -147,6 +151,7 @@ ii.init.register( function fin_cmn_startup_init1() {
 	
 	// extend the session object for our use!!!
 	
+	ii.Session.dataArgs.roleId = {type: Number, required: false, defaultValue: 0};
 	ii.Session.dataArgs.personId = {type: Number, required: false, defaultValue: 0};
     ii.Session.dataArgs.environmentName = {type: String, required: false, defaultValue: ""};
 	

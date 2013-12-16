@@ -47,6 +47,13 @@
 	position: relative;
 }
 
+#AnchorExportToExcel {
+	float: left;
+	width: 140px;
+	position: relative;
+	margin: 10px 10px 10px 0px;
+}
+
 .iiGridHeaderColumn, .iiGridBodyColumn {
 	font-size: 8pt;
 }

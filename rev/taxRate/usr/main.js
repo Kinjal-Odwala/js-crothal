@@ -3,18 +3,19 @@ ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons");
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.rev.taxRate.usr.defs" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.toolbar" , 4);
-ii.Style( "fin.cmn.usr.input" , 5);
-ii.Style( "fin.cmn.usr.grid" , 6);
-ii.Style( "fin.cmn.usr.button" , 7);
-ii.Style( "fin.cmn.usr.dropDown" , 8);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.toolbar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.grid", 6 );
+ii.Style( "fin.cmn.usr.button", 7 );
+ii.Style( "fin.cmn.usr.dropDown", 8 );
 
 ii.Class({
     Name: "fin.rev.taxRate.UserInterface",
@@ -26,6 +27,7 @@ ii.Class({
 
 			me.fileName = "";
 			me.stateId = 0;
+			me.loadCount = 0;
 			
 			//pagination setup
 			me.startPoint = 1;
@@ -54,9 +56,8 @@ ii.Class({
 
 			me.defineFormControls();			
 			me.configureCommunications();
-
-			me.state.fetchingData();
-			me.stateTypeStore.fetch("userId:[user],", me.statesLoaded, me);
+			me.setStatus("Loading");
+			
 			me.anchorUpload.display(ui.cmn.behaviorStates.disabled);
 
 			$("#divFrame").height(0);
@@ -75,16 +76,26 @@ ii.Class({
 		authorizationProcess: function fin_rev_taxRate_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments, {});
 			var me = this;
-
+			
 			me.isReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");			
 
 			if (me.isReadOnly)
-				$("#actionHeader").hide();
-
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
-
+				$("#actionHeader").hide();			
+			
 			$("#pageLoading").hide();
+			$("#pageLoading").css({
+				"opacity": "0.5",
+				"background-color": "black"
+			});
+			$("#messageToUser").css({ "color": "white" });
+			$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+			$("#pageLoading").fadeIn("slow");
+			
+			ii.timer.timing("Page displayed");
+			me.loadCount = 1;
+			me.session.registerFetchNotify(me.sessionLoaded,me);
+			me.state.fetchingData();
+			me.stateTypeStore.fetch("userId:[user],", me.statesLoaded, me);
 		},	
 
 		sessionLoaded: function fin_rev_taxRate_UserInterface_sessionLoaded() {
@@ -92,14 +103,14 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("Session Loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 		
 		resize: function() {
 			var me = this;
 			
-			$("#GridContianer").height($(window).height() - 186);
-			fin.rev.taxRateUI.taxGrid.setHeight($(window).height() - 205);			
+			$("#GridContianer").height($(window).height() - 225);
+			fin.rev.taxRateUI.taxGrid.setHeight($(window).height() - 245);			
 		},
 		
 		defineFormControls: function() {
@@ -147,7 +158,15 @@ ii.Class({
 				clickFunction: function() { me.loadSearchResults(); },
 				hasHotState: true
 			});
-			
+
+			me.anchorExportToExcel = new ui.ctl.buttons.Sizeable({
+				id: "AnchorExportToExcel",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Export To Excel&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionExportToExcelItem(); },
+				hasHotState: true
+			});
+
 			me.zipCode = new ui.ctl.Input.Text({
                 id: "ZipCode",
                 maxLength: 5
@@ -247,8 +266,41 @@ ii.Class({
 				itemConstructorArgs: fin.rev.taxRate.recordCountArgs,
 				injectionArray: me.recordCounts
 			});
+			
+			me.fileNames = [];
+			me.fileNameStore = me.cache.register({
+				storeId: "revInvoiceExcelFileNames",
+				itemConstructor: fin.rev.taxRate.FileName,
+				itemConstructorArgs: fin.rev.taxRate.fileNameArgs,
+				injectionArray: me.fileNames
+			});
 		},
+		
+		setStatus: function(status) {
+			var me = this;
 
+			fin.cmn.status.setStatus(status);
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
+		},
+		
 		resizeControls: function() {
 			var me = this;
 			
@@ -286,6 +338,7 @@ ii.Class({
 
 			me.state.setData(me.stateTypes);
 			me.resizeControls();
+			me.checkLoadCount();
 		},
 		
 		actionSearchItem: function() {
@@ -315,9 +368,6 @@ ii.Class({
 				alert("Please enter search criteria: Zip Code or State.")
 				return false;
 			}
-
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").show();
 			
 			if (me.state.indexSelected >= 0)
 				me.stateId = me.stateTypes[me.state.indexSelected].id;
@@ -352,8 +402,7 @@ ii.Class({
 		listTaxes: function() {
 			var me = this;
 
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").show();				
+			me.setLoadCount();
 			$("#selPageNumber").val(me.pageCurrent);			
 	
 			me.startPoint = ((me.pageCurrent - 1) * me.maximumRows) + 1;	
@@ -392,7 +441,7 @@ ii.Class({
 				me.state.reset();
 			}
 			
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 		},
 		
 		prevTaxes: function() {
@@ -453,14 +502,47 @@ ii.Class({
 
 			me.actionViewItem();
 		},
+		
+		actionExportToExcelItem: function() {
+			var me = this;
+
+			if (me.zipCode.getValue() == "" && me.state.indexSelected == -1) {
+				alert("Please enter search criteria: Zip Code or State.")
+				return false;
+			}
+
+			if (me.state.indexSelected >= 0)
+				me.stateId = me.stateTypes[me.state.indexSelected].id;
+			else
+				me.stateId = 0;
+			
+			me.setStatus("Exporting");
+			$("#messageToUser").text("Exporting");
+			$("#pageLoading").fadeIn("slow");
+
+			me.fileNameStore.reset();
+			me.fileNameStore.fetch("userId:[user],exportType:taxRates,stateId:" + me.stateId + ",zipCode:" + me.zipCode.getValue(), me.fileNamesLoaded, me);
+		},
+
+		fileNamesLoaded: function(me, activeId) {
+			
+			me.setStatus("Exported");
+			$("#pageLoading").fadeOut("slow");
+
+			if (me.fileNames.length == 1) {
+				$("iframe")[0].contentWindow.document.getElementById("FileName").value = me.fileNames[0].fileName;
+				$("iframe")[0].contentWindow.document.getElementById("DownloadButton").click();
+			}
+		},
 
 		actionUploadItem: function() {
 			var me = this;
 
 			me.fileName = "";
-
+			
+			me.setStatus("Uploading");
 			$("#messageToUser").text("Upload process will take few minutes, please wait...");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 			$("iframe")[0].contentWindow.document.getElementById("FileName").value = "";
 			$("iframe")[0].contentWindow.document.getElementById("UploadButton").click();
 
@@ -472,7 +554,8 @@ ii.Class({
 
 					if (me.fileName == "Error") {
 						alert("Unable to upload the file. Please try again.")
-						$("#pageLoading").hide();
+						me.setStatus("Error");
+						$("#pageLoading").fadeOut("slow");
 					}
 					else {
 						me.actionImportSave();
@@ -485,9 +568,9 @@ ii.Class({
 		actionImportSave: function() {
 			var me = this;
 			var item = [];
-
+			
+			me.setStatus("Importing");
 			$("#messageToUser").text("Import process will take few minutes, please wait...");
-			$("#pageLoading").show();
 
 			var xml = '<revTaxImport';
 				xml += ' fileName="' + me.fileName + '"';
@@ -516,21 +599,19 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-			var errorMessage = "";
-			
-			$("#pageLoading").hide();
 
 			if (status == "success") {
 				me.resetControls();
 				me.actionViewItem();
+				me.setStatus("Saved");
 				alert("Tax Rates imported successfully.")
 			}
 			else {
-				errorMessage = "Error while importing Tax File: " + $(args.xmlNode).attr("message");
-				errorMessage += $(args.xmlNode).attr("error");
-				errorMessage += " [SAVE FAILURE]";
-				alert(errorMessage);				
+				me.setStatus("Error");
+				alert("[SAVE FAILURE] Error while importing Tax File: " + $(args.xmlNode).attr("message"));
 			}
+			
+			$("#pageLoading").fadeOut("slow");
 		}				
 	}
 });

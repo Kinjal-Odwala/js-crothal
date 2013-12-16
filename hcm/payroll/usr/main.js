@@ -41,6 +41,7 @@ ii.Class({
 			me.defineFormControls();			
 			me.configureCommunications();
 			
+			$("#pageBody").show();
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 		
@@ -49,9 +50,7 @@ ii.Class({
 			$("input[name='DefaultLunchBreak']").change(function() {parent.fin.hcmMasterUi.modified(true);});
 			$("input[name='LunchBreakTrigger']").change(function() {parent.fin.hcmMasterUi.modified(true);});
 			$("input[name='HouseCodeType']").change(function() {parent.fin.hcmMasterUi.modified(true);});
-			$("input[name='RoundingTimePeriod']").change(function() {parent.fin.hcmMasterUi.modified(true);});
-			me.payrollProcessing.fetchingData();
-			me.payPayrollCompanyStore.fetch("userId:[user],houseCodeId:" + parent.fin.hcmMasterUi.getHouseCodeId(), me.payPayrollCompanysLoaded, me);	
+			$("input[name='RoundingTimePeriod']").change(function() {parent.fin.hcmMasterUi.modified(true);});				
 		},
 		
 		authorizationProcess: function fin_hcm_payroll_UserInterface_authorizationProcess() {
@@ -59,13 +58,17 @@ ii.Class({
 			var me = this;
 
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
-			if (me.isAuthorized)
-				$("#pageLoading").hide();
-			else{
-				$("#messageToUser").html("Unauthorized");
-				alert("You are not authorized to view this content. Please contact your Administrator.");
-				return false;
-			}
+			
+			if (me.isAuthorized) {
+				ii.timer.timing("Page displayed");
+				me.session.registerFetchNotify(me.sessionLoaded, me);
+				parent.fin.hcmMasterUi.setLoadCount();
+				me.payrollProcessing.fetchingData();
+				me.payPayrollCompanyStore.fetch("userId:[user],houseCodeId:" + parent.fin.hcmMasterUi.getHouseCodeId(), me.payPayrollCompanysLoaded, me);
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
+				
 			//Payroll
 			me.payrollWrite = me.authorizer.isAuthorized(me.authorizePath + "\\Write");
 			me.payrollReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
@@ -98,11 +101,6 @@ ii.Class({
 			me.tpCeridianCompanySalariedReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabPayroll\\CeridianCompanySalaried\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
 			
 			me.resetUIElements();
-			
-			$("#pageLoading").hide();
-				
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
 		},	
 		
 		sessionLoaded: function fin_hcm_payroll_UserInterface_sessionLoaded() {
@@ -526,7 +524,9 @@ ii.Class({
 			
 			me.assignValue();
 			
-			$("#pageLoading").hide();
+			parent.fin.hcmMasterUi.checkLoadCount();
+			if (parent.parent.fin.appUI.modified)
+				parent.fin.hcmMasterUi.setStatus("Edit");
 			me.resizeControls();
 		},
 		

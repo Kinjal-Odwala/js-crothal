@@ -8,15 +8,15 @@ ii.Import( "ui.cmn.usr.text" );
 ii.Import( "ui.ctl.usr.checkList" );
 ii.Import( "fin.hcm.houseCode.usr.defs" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.toolbar" , 4);
-ii.Style( "fin.cmn.usr.input" , 5);
-ii.Style( "fin.cmn.usr.checkList" , 6);
-ii.Style( "fin.cmn.usr.button" , 7);
-ii.Style( "fin.cmn.usr.dropDown" , 8);
-ii.Style( "fin.cmn.usr.dateDropDown" , 9);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.toolbar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.checkList", 6 );
+ii.Style( "fin.cmn.usr.button", 7 );
+ii.Style( "fin.cmn.usr.dropDown", 8 );
+ii.Style( "fin.cmn.usr.dateDropDown", 9 );
 
 ii.Class({
     Name: "fin.hcm.houseCode.UserInterface",
@@ -29,7 +29,7 @@ ii.Class({
 			var queryString = location.search.substring(1); 
 			var pairs = queryString.split("&");
 			
-			for(var i = 0; i < pairs.length; i++) { 
+			for (var i = 0; i < pairs.length; i++) { 
 				var pos = pairs[i].indexOf('='); 
 				if (pos == -1) continue; 
 				var argName = pairs[i].substring(0, pos); 
@@ -37,21 +37,20 @@ ii.Class({
 				queryStringArgs[argName] = unescape(value); 
 			} 
 
+			parent.fin.hcmMasterUi.loadCount = 0;
 			me.unitId = parseInt(queryStringArgs["unitId"]);
 
 			me.gateway = ii.ajax.addGateway("hcm", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
-			me.transactionMonitor = new ii.ajax.TransactionMonitor(me.gateway, function(status, errorMessage){
-				me.nonPendingError(status, errorMessage);
-				});
-			
-			$(window).bind("resize", me, me.resize);
-			$(document).bind("keydown", me, me.controlKeyProcessor);
-			
+			me.transactionMonitor = new ii.ajax.TransactionMonitor(
+				me.gateway
+				, function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
+			);
+
 			me.validator = new ui.ctl.Input.Validation.Master(); 
 			me.session = new ii.Session(me.cache);
 			
-			me.authorizer = new ii.ajax.Authorizer( me.gateway );	//@iiDoc {Property:ii.ajax.Authorizer} Boolean
+			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\HouseCodeSetup\\HouseCodes";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
@@ -62,18 +61,12 @@ ii.Class({
 			me.defineFormControls();			
 			me.configureCommunications();
 			
-			ii.trace("HouseCode - Init", ii.traceTypes.information, "Startup");
-			
-			me.jdeCompany.fetchingData();
-			me.jdeCompanysStore.fetch("userId:[user],", me.jdeCompanysLoaded, me);
-			me.houseCodeSiteUnitsStore.fetch("unitId:" + me.unitId + ",userId:[user]", me.siteUnitsLoaded, me);
-			me.serviceLine.fetchingData();
-			me.houseCodeServiceStore.fetch("userId:[user],houseCodeId:" + parent.fin.hcmMasterUi.getHouseCodeId(), me.houseCodeServicesLoaded, me);
+			$("#pageBody").show();
+			$(window).bind("resize", me, me.resize);
+			$(document).bind("keydown", me, me.controlKeyProcessor);
 			
 			$("#CheckBoxTextDropImage").click(function() {
-						
-				if($("#ServiceGroup").is(":visible")) {
-					
+				if ($("#ServiceGroup").is(":visible")) {
 					$("#CheckBoxTextDropImage").html("<img src='/fin/cmn/usr/media/Common/edit.png' title='detail selection'/>");
 					$("#ServiceGroup").hide("slow");
 					
@@ -90,14 +83,21 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 			
-			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
-			if(me.isAuthorized)
-				$("#pageLoading").hide();
-			else{
-				$("#messageToUser").html("Unauthorized");
-				alert("You are not authorized to view this content. Please contact your Administrator.");
-				return false;
-			}
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);		
+			
+			if (me.isAuthorized) {				
+				ii.timer.timing("Page displayed");
+				me.session.registerFetchNotify(me.sessionLoaded, me);
+				parent.fin.hcmMasterUi.setLoadCount();
+				me.jdeCompany.fetchingData();
+				me.jdeCompanysStore.fetch("userId:[user],", me.jdeCompanysLoaded, me);
+				me.houseCodeSiteUnitsStore.fetch("unitId:" + me.unitId + ",userId:[user]", me.siteUnitsLoaded, me);
+				me.serviceLine.fetchingData();
+				me.houseCodeServiceStore.fetch("userId:[user],houseCodeId:" + parent.fin.hcmMasterUi.getHouseCodeId(), me.houseCodeServicesLoaded, me);
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
+				
 			//HouseCode
 			me.houseCodeWrite = me.authorizer.isAuthorized(me.authorizePath + '\\Write');
 			me.houseCodeReadOnly = me.authorizer.isAuthorized(me.authorizePath + '\\Read');
@@ -181,11 +181,6 @@ ii.Class({
 			me.scClientAssistantPhoneReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabHouseCode\\SectionClient\\AssistantPhone\\Read", me.sectionClientWrite, me.sectionClientReadOnly);
 			
 			me.resetUIElements();
-			
-			$("#pageLoading").hide();
-				
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
 		},	
 		
 		sessionLoaded: function fin_hcm_houseCode_UserInterface_sessionLoaded(){
@@ -193,57 +188,55 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("session loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 		
-		isCtrlVisible: function fin_hcm_houseCode_UserInterface_isCtrlVisible(){ 
+		isCtrlVisible: function fin_hcm_houseCode_UserInterface_isCtrlVisible() { 
 			var args = ii.args(arguments, {
 				path: {type: String}, // The path to check to see if it is authorized
 				sectionShow: {type: Boolean},
 				sectionReadWrite: {type: Boolean}
 			});
-			
 			var me = this;
 			var ctrlShow = parent.fin.cmn.util.authorization.isAuthorized(me, args.path);
 			var ctrlWrite = parent.fin.cmn.util.authorization.isAuthorized(me, args.path + "\\Write");
 			var ctrlReadOnly = parent.fin.cmn.util.authorization.isAuthorized(me, args.path + "\\Read");
 			
-			if(me.houseCodeWrite || me.houseCodeReadOnly)
+			if (me.houseCodeWrite || me.houseCodeReadOnly)
 				return true;
 			
-			if(me.tabHouseCodeWrite || me.tabHouseCodeReadOnly)
+			if (me.tabHouseCodeWrite || me.tabHouseCodeReadOnly)
 				return true;
 
-			if(args.sectionReadWrite)
+			if (args.sectionReadWrite)
 				return true;
 
-			if(args.sectionShow && (ctrlWrite || ctrlReadOnly))
+			if (args.sectionShow && (ctrlWrite || ctrlReadOnly))
 				return true;
 
 			return ctrlShow;
 		},
 
-		isCtrlReadOnly: function fin_hcm_houseCode_UserInterface_isCtrlReadOnly(){ 
+		isCtrlReadOnly: function fin_hcm_houseCode_UserInterface_isCtrlReadOnly() { 
 			var args = ii.args(arguments, {
 				path: {type: String}, // The path to check to see if it is authorized
 				sectionWrite: {type: Boolean},
 				sectionReadOnly: {type: Boolean}
-			});
-			
+			});			
 			var me = this;
 
-			if(args.sectionWrite && !me.tabHouseCodeReadOnly && !me.houseCodeReadOnly)
+			if (args.sectionWrite && !me.tabHouseCodeReadOnly && !me.houseCodeReadOnly)
 				return false;
 
-			if(me.tabHouseCodeWrite && !me.houseCodeReadOnly)
+			if (me.tabHouseCodeWrite && !me.houseCodeReadOnly)
 				return false;
 
-			if(me.houseCodeWrite)
+			if (me.houseCodeWrite)
 				return false;
 			
-			if(me.houseCodeReadOnly) return true;
-			if(me.tabHouseCodeReadOnly) return true;
-			if(args.sectionReadOnly) return true;
+			if (me.houseCodeReadOnly) return true;
+			if (me.tabHouseCodeReadOnly) return true;
+			if (args.sectionReadOnly) return true;
 			
 			return me.authorizer.isAuthorized(args.path);
 		},
@@ -294,26 +287,26 @@ ii.Class({
 			});
 			var me = this;
 			
-			if(args.ctrlReadOnly && args.ctrlType != "Radio"){
+			if (args.ctrlReadOnly && args.ctrlType != "Radio") {
 				$("#" + args.ctrlName + "Text").attr('disabled', true);
 				$("#" + args.ctrlName + "Action").removeClass("iiInputAction");
 			}
-			if(!args.ctrlShow && args.ctrlType != "Radio"){
+			if (!args.ctrlShow && args.ctrlType != "Radio") {
 				$("#" + args.ctrlName).hide();
 				$("#" + args.ctrlName + "Text").hide(); //not required for DropList
 				
 			}
-			if(args.ctrlReadOnly && args.ctrlType == "Radio"){
+			if (args.ctrlReadOnly && args.ctrlType == "Radio") {
 				$("#" + args.ctrlName + "Yes").attr('disabled', true);
 				$("#" + args.ctrlName + "No").attr('disabled', true);
 			} 
-			if(!args.ctrlShow && args.ctrlType == "Radio"){
+			if (!args.ctrlShow && args.ctrlType == "Radio") {
 				$("#" + args.ctrlDiv).hide();
 			}			
-			if(args.ctrlReadOnly && args.ctrlName == "AdditionalServiceContainer"){
+			if (args.ctrlReadOnly && args.ctrlName == "AdditionalServiceContainer") {
 				$("#CheckBoxTextDropImage").hide();
 			} 
-			if(!args.ctrlShow && args.ctrlName == "AdditionalServiceContainer"){
+			if (!args.ctrlShow && args.ctrlName == "AdditionalServiceContainer") {
 				$("#CheckBoxTextDropImage").hide();
 			}			
 		},
@@ -381,10 +374,10 @@ ii.Class({
 				.addValidation( function( isFinal, dataMap ) {					
 					var enteredText = me.startDate.text.value;
 					
-					if(enteredText == "") 
+					if (enteredText == "") 
 						return;
 											
-					if(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
+					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
 						this.setInvalid("Please enter valid date.");
 				});
 			
@@ -431,21 +424,13 @@ ii.Class({
 			me.managerEmail.makeEnterTab()
 				.setValidationMaster( me.validator )
 				.addValidation( function( isFinal, dataMap ){
-					
-					var message = "";
-					var valid = true;
+
 					var enteredText = me.managerEmail.getValue();
 					
-					if(enteredText == '') return;
+					if (enteredText == "") return;
 					
-					if(/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(enteredText) == false){
-						valid = false;
-						message = 'Please enter valid Email Address.';
-					}
-					
-					if(!valid){
-						this.setInvalid( message );
-					}
+					if (/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(enteredText) == false)
+						this.setInvalid("Please enter valid Email Address.");
 				});
 			
 			me.managerPhone = new ui.ctl.Input.Text({
@@ -460,12 +445,12 @@ ii.Class({
 	
 					var enteredText = me.managerPhone.text.value;
 					
-					if(enteredText == '') return;
+					if (enteredText == "") return;
 
 					me.managerPhone.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.managerPhone.text.value;
 					
-					if(ui.cmn.text.validate.phone(enteredText) == false)
+					if (ui.cmn.text.validate.phone(enteredText) == false)
 						this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");					
 				});
 			
@@ -481,12 +466,12 @@ ii.Class({
 					
 					var enteredText = me.managerFax.text.value;
 					
-					if(enteredText == '') return;
+					if (enteredText == "") return;
 
 					me.managerFax.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.managerFax.text.value;
 					
-					if(ui.cmn.text.validate.phone(enteredText) == false)
+					if (ui.cmn.text.validate.phone(enteredText) == false)
 						this.setInvalid("Please enter valid fax number. Example: (999) 999-9999");
 				});
 			
@@ -502,12 +487,12 @@ ii.Class({
 					
 					var enteredText = me.managerCellPhone.text.value;
 					
-					if(enteredText == '') return;
+					if (enteredText == "") return;
 
 					me.managerCellPhone.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.managerCellPhone.text.value;
 					
-					if(ui.cmn.text.validate.phone(enteredText) == false)
+					if (ui.cmn.text.validate.phone(enteredText) == false)
 						this.setInvalid("Please enter valid cell number. Example: (999) 999-9999");
 				});
 			
@@ -523,12 +508,12 @@ ii.Class({
 					
 					var enteredText = me.managerPager.text.value;
 					
-					if(enteredText == '') return;
+					if (enteredText == "") return;
 
 					me.managerPager.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.managerPager.text.value;
 					
-					if(ui.cmn.text.validate.phone(enteredText) == false)
+					if (ui.cmn.text.validate.phone(enteredText) == false)
 						this.setInvalid("Please enter valid pager number. Example: (999) 999-9999");
 				});
 			
@@ -550,12 +535,12 @@ ii.Class({
 	
 					var enteredText = me.managerAssistantPhone.text.value;
 					
-					if(enteredText == '') return;
+					if (enteredText == "") return;
 
 					me.managerAssistantPhone.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.managerAssistantPhone.text.value;
 					
-					if(ui.cmn.text.validate.phone(enteredText) == false)
+					if (ui.cmn.text.validate.phone(enteredText) == false)
 						this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
 				});
 			
@@ -589,12 +574,12 @@ ii.Class({
 		
 					var enteredText = me.clientPhone.text.value;
 					
-					if(enteredText == '') return;
+					if (enteredText == "") return;
 
 					me.clientPhone.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.clientPhone.text.value;
 					
-					if(ui.cmn.text.validate.phone(enteredText) == false)
+					if (ui.cmn.text.validate.phone(enteredText) == false)
 						this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
 				});
 			
@@ -610,12 +595,12 @@ ii.Class({
 
 					var enteredText = me.clientFax.text.value;
 					
-					if(enteredText == '') return;
+					if (enteredText == "") return;
 
 					me.clientFax.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.clientFax.text.value;
 					
-					if(ui.cmn.text.validate.phone(enteredText) == false)
+					if (ui.cmn.text.validate.phone(enteredText) == false)
 						this.setInvalid("Please enter valid fax number. Example: (999) 999-9999");
 				});
 			
@@ -637,12 +622,12 @@ ii.Class({
 	
 					var enteredText = me.clientAssistantPhone.text.value;
 					
-					if(enteredText == '') return;
+					if (enteredText == "") return;
 
 					me.clientAssistantPhone.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.clientAssistantPhone.text.value;
 					
-					if(ui.cmn.text.validate.phone(enteredText) == false)
+					if (ui.cmn.text.validate.phone(enteredText) == false)
 						this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
 				});
 				
@@ -802,7 +787,7 @@ ii.Class({
 		
 		siteTypesLoaded: function(me, activeId) {
 		
-			ii.trace("HouseCode - SitesLoaded", ii.traceTypes.information, "Startup");
+			ii.trace("HouseCode - SitesLoaded", ii.traceTypes.information, "Info");
 						
             me.site.reset();
 			me.site.setData(me.siteTypes);
@@ -813,8 +798,9 @@ ii.Class({
 		
 		jdeCompanysLoaded: function(me, activeId) {
 		
-			ii.trace("HouseCode - JdeCompaniesLoaded", ii.traceTypes.information, "Startup");
-            me.jdeCompany.reset();
+			ii.trace("HouseCode - JdeCompaniesLoaded", ii.traceTypes.information, "Info");
+            
+			me.jdeCompany.reset();
             me.jdeCompanys.unshift(new fin.hcm.houseCode.JdeCompany({ id: 0, number: 0, name: "None" }));
 			me.jdeCompany.setData(me.jdeCompanys);
 			me.jdeCompany.select(0, me.jdeCompany.focused);
@@ -822,23 +808,33 @@ ii.Class({
 	
 		houseCodeServicesLoaded: function (me, activeId) {
             
-			ii.trace("HouseCode - HouseCodeServicesLoaded", ii.traceTypes.information, "Startup");
+			ii.trace("HouseCode - HouseCodeServicesLoaded", ii.traceTypes.information, "Info");
 
+			var serviceLinesTemp = [];
+
+			for (var index = 0; index < me.serviceLines.length; index++) {
+				if (!me.serviceLines[index].financialEntity) {
+					var item = new fin.hcm.houseCode.ServiceLine({ id: me.serviceLines[index].id, name: me.serviceLines[index].name });
+					serviceLinesTemp.push(item);
+				}
+			}
+			
+			me.serviceLines = serviceLinesTemp;
 			me.serviceLines.unshift(new fin.hcm.houseCode.ServiceLine({id: 0, name: "None"}));
 			me.serviceLine.setData(me.serviceLines);
 			me.serviceLine.select(0, me.serviceLine.focused);
-
+			
 			me.houseCodesLoaded();
 		},		
 		
-		additionalServiceDetails: function(){
+		additionalServiceDetails: function() {
 			var me = this;
-			var serviceNames = '', item;
+			var serviceNames = "", item;
 			
 			for (var index in me.serviceGroup.selectedItems){
 				item = ii.ajax.util.findItemById(me.serviceGroup.selectedItems[index].id.toString(), me.jdeServices);
 				if (item)
-					serviceNames += item.name + ', ';
+					serviceNames += item.name + ", ";
 			}
 
 			$("#AdditionalServiceContainer").html(serviceNames.substring(0, serviceNames.length - 2));			
@@ -846,10 +842,9 @@ ii.Class({
 		
 		siteUnitsLoaded: function(me, activeId) {	
 			
-			ii.trace("HouseCode - SiteUnitsLoaded", ii.traceTypes.information, "Startup");
+			ii.trace("HouseCode - SiteUnitsLoaded", ii.traceTypes.information, "Info");
 			
-			if(me.houseCodeSiteUnits[0]) {
-				
+			if (me.houseCodeSiteUnits[0]) {
 				if (me.houseCodeSiteUnits[0].appSite > 0) {
 					me.site.fetchingData();
 					me.siteTypeStore.fetch("userId:[user],siteId:" + me.houseCodeSiteUnits[0].appSite, me.siteTypesLoaded, me);
@@ -857,16 +852,18 @@ ii.Class({
 			}
 		},		
 		
-		jdeCompanyChanged: function(){
+		jdeCompanyChanged: function() {
 			var me = this;
 			
-			if(me.jdeCompany.indexSelected < 0) return;
+			if (me.jdeCompany.indexSelected < 0) return;
 			
 			me.primaryService.fetchingData();
 			me.jdeServiceStore.fetch("userId:[user],jdeCompanyId:" + me.jdeCompanys[me.jdeCompany.indexSelected].id, me.jdeServicesLoaded, me);
 		},
 		
-		jdeServicesLoaded: function(me, activeId){
+		jdeServicesLoaded: function(me, activeId) {
+			var serviceNames = "", item;
+			
 			me.primaryService.reset();
 			me.primaryService.setData(me.jdeServices);
 			
@@ -875,11 +872,7 @@ ii.Class({
 			me.serviceGroup.setList(me.jdeServices);
 			me.serviceGroup.setData(me.houseCodeServices);
 			
-			var serviceNames = '', item;
-
-			
-			if(me.setHouseCodeServices) {//on pageload or housecodeChange
-				
+			if (me.setHouseCodeServices) {//on pageload or housecodeChange
 				if (parent.fin.hcmMasterUi.houseCodeDetails[0]) {
 					index = ii.ajax.util.findIndexById(parent.fin.hcmMasterUi.houseCodeDetails[0].serviceTypeId.toString(), me.jdeServices);
 					if (index != undefined) 
@@ -889,28 +882,26 @@ ii.Class({
 				for (var index in me.serviceGroup.selectedItems) {			
 					item = ii.ajax.util.findItemById(me.serviceGroup.selectedItems[index].id.toString(), me.jdeServices);
 					if (item)
-						serviceNames += item.name + ', ';
+						serviceNames += item.name + ", ";
 				}
 	
 				$("#AdditionalServiceContainer").html(serviceNames.substring(0, serviceNames.length - 2));
 				me.setHouseCodeServices = false;
 			}
-			else{ //clear if JdeCompanyChange
-
+			else { //clear if JdeCompanyChange
 				me.primaryService.reset();
 				me.serviceGroup.reset();
-				$("#AdditionalServiceContainer").html('');
+				$("#AdditionalServiceContainer").html("");
 			}
 		},
 		
 		houseCodesLoaded: function() {
-			
-			ii.trace("HouseCode - HouseCodesLoaded", ii.traceTypes.information, "Startup");
-			
 			var me = this;
 			var index = 0;
 			
-			if(parent.fin.hcmMasterUi == undefined || parent.fin.hcmMasterUi.houseCodeDetails[0] == undefined) return;
+			ii.trace("HouseCode - HouseCodesLoaded", ii.traceTypes.information, "Info");
+			
+			if (parent.fin.hcmMasterUi == undefined || parent.fin.hcmMasterUi.houseCodeDetails[0] == undefined) return;
 
 			var houseCode = parent.fin.hcmMasterUi.houseCodeDetails[0];
 
@@ -936,12 +927,12 @@ ii.Class({
 					me.serviceLine.select(index, me.serviceLine.focused);
 			}
 			
-			if(houseCode.enforceLaborControl)
+			if (houseCode.enforceLaborControl)
 				$("#EnforceLaborControlYes").attr('checked', true);
 			else
 				$("#EnforceLaborControlNo").attr('checked', true);
 
-			if(houseCode.teamChimesAccount)
+			if (houseCode.teamChimesAccount)
 				$("#TeamChimesAccountYes").attr('checked', true);
 			else
 				$("#TeamChimesAccountNo").attr('checked', true);
@@ -962,7 +953,9 @@ ii.Class({
 			me.clientAssistantName.setValue(houseCode.clientAssistantName);
 			me.clientAssistantPhone.setValue(houseCode.clientAssistantPhone);
 
-			$("#pageLoading").hide();
+			parent.fin.hcmMasterUi.checkLoadCount();
+			if (parent.parent.fin.appUI.modified)
+				parent.fin.hcmMasterUi.setStatus("Edit");
 			me.resizeControls();
 		},
 		
@@ -975,7 +968,7 @@ ii.Class({
 			
 			me.houseCodeServices = [];
 			
-			for (index = 0; index < me.serviceGroup.selectedItems.length; index++) {
+			for (var index = 0; index < me.serviceGroup.selectedItems.length; index++) {
 				id = me.serviceGroup.selectedItems[index].id;
 
 				for (rowIndex = 0; rowIndex < me.serviceGroup.data.length; rowIndex++) {
@@ -1003,4 +996,3 @@ function main() {
 	fin.hcmHouseCodeUi = new fin.hcm.houseCode.UserInterface();
 	fin.hcmHouseCodeUi.resize();
 }
-

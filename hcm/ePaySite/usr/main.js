@@ -39,6 +39,7 @@ ii.Class({
 			me.lastSelectedRowIndex = -1;
 			me.activeFrameId = 0;
 			me.houseCodesTabNeedUpdate = true;
+			me.loadCount = 0;
 			
 			me.gateway = ii.ajax.addGateway("hcm", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -47,6 +48,9 @@ ii.Class({
 				, function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
 			);
 
+			me.validator = new ui.ctl.Input.Validation.Master();
+			me.session = new ii.Session(me.cache);
+			
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\HouseCodeSetup\\EpaySites";
 			me.authorizer.authorize([me.authorizePath],
@@ -55,19 +59,12 @@ ii.Class({
 				},
 				me);
 
-			me.validator = new ui.ctl.Input.Validation.Master();
-			me.session = new ii.Session(me.cache);
-
 			me.defineFormControls();
 			me.configureCommunications();
-
-			me.jobState.fetchingData();
-			me.ePayGroupType.fetchingData();
-			me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
-			me.jobTypeStore.fetch("userId:[user]", me.jobTypesLoaded, me);
-			me.ePayGroupTypeStore.fetch("userId:[user]", me.ePayGroupTypesLoaded, me);
+			me.setStatus("Loading");
 			me.modified(false);
 			
+			me.jobTypeStore.fetch("userId:[user]", me.jobTypesLoaded, me);
 			
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
@@ -93,9 +90,9 @@ ii.Class({
 			});
 
 			$("#TabCollection a").mousedown(function() {
-				if (!parent.fin.cmn.status.itemValid()) 
-					return false;
-				else {
+				//if (!parent.fin.cmn.status.itemValid()) 
+				//	return false;
+				//else {
 					var tabIndex = 0;
 					if (this.id == "EpaySiteDetails")
 						tabIndex = 1;
@@ -104,7 +101,7 @@ ii.Class({
 						
 					$("#container-1").tabs(tabIndex);
 					$("#container-1").triggerTab(tabIndex);
-				}					
+				//}					
 			});
 			
 			$("#TabCollection a").click(function() {
@@ -115,12 +112,13 @@ ii.Class({
 						me.activeFrameId = 0;
 						if (me.status == "")
 							me.jobDetailsLoad();
-
+						me.jobDetailsTabNeedUpdate = false;
 						break;
 
 					case "EpaySiteAssociations":
 
 						me.activeFrameId = 1;
+						me.houseCodeGrid.resize();
 						me.loadHouseCodes();
 						me.houseCodesTabNeedUpdate = false;
 
@@ -141,16 +139,27 @@ ii.Class({
 			var me = this;
 
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
-			if (!me.isAuthorized) {
-				$("#messageToUser").text("Load Failed");
-				$("#pageLoading").show();
-				return;
-			}
-					
-			$("#pageLoading").hide();
-
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded, me);
+			
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
+			
+				ii.timer.timing("Page displayed");
+				me.session.registerFetchNotify(me.sessionLoaded,me);
+				
+				me.jobState.fetchingData();
+				me.ePayGroupType.fetchingData();
+				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);																
+				me.ePayGroupTypeStore.fetch("userId:[user]", me.ePayGroupTypesLoaded, me);
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},	
 
 		sessionLoaded: function fin_hcm_ePaySite_UserInterface_sessionLoaded() {
@@ -175,10 +184,10 @@ ii.Class({
 				$("#AddHouseCodes").width($("#EpayHouseCodeContainer").width() - 5);
 			}				
 				
-			$("#popupEpaySite").height($(window).height() - 191);
-			$("#EpayHouseCodeContainer").height($(window).height() - 181);
-			me.jobGrid.setHeight($(window).height() - 115);
-			me.houseCodeGrid.setHeight($(window).height() - 225);
+			$("#popupEpaySite").height($(window).height() - 203);
+			$("#EpayHouseCodeContainer").height($(window).height() - 193);
+			me.jobGrid.setHeight($(window).height() - 140);
+			me.houseCodeGrid.setHeight($(window).height() - 237);
 		},
 		
 		controlKeyProcessor: function fin_hcm_ePaySite_UserInterface_controlKeyProcessor() {
@@ -641,17 +650,45 @@ ii.Class({
 			});
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
 		},
-	
+		
 		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
+			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		resizeControls: function() {
@@ -736,8 +773,7 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 			
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").show();
+			me.setLoadCount();
 			
 			me.houseCodeGrid.body.deselectAll();
 			me.houseCodeGrid.setData([]);
@@ -751,15 +787,14 @@ ii.Class({
 				me.jobStore.fetch("userId:[user],jobType:4,title:" + me.searchInput.getValue(), me.jobsLoaded, me);
 		},	
 		
-		jobsLoaded: function fin_hcm_ePaySite_UserInterface_jobsLoaded(me, activeId) {
+		jobsLoaded: function fin_hcm_ePaySite_UserInterface_jobsLoaded(me, activeId) {			
 			
-			//me.lastSelectedRowIndex = -1;
 			me.resetControls();		
 			me.jobGrid.setData(me.jobs);
 			if (me.jobs.length > 0) 
 				me.jobGrid.body.select(0);
 			
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 		},
 
 		itemSelect: function fin_hcm_ePaySite_UserInterface_itemSelect() {
@@ -776,9 +811,10 @@ ii.Class({
 			me.jobId = me.jobs[index].id;
 			me.lastSelectedRowIndex = index;			
 			me.houseCodesTabNeedUpdate = true;
+			me.jobDetailsTabNeedUpdate = true;
 			me.jobDetailsLoad();
-
-			if (me.activeFrameId == 1)				
+			
+			//if (me.activeFrameId == 1)
 				me.loadHouseCodes();
 		},
 		
@@ -787,29 +823,33 @@ ii.Class({
 			var item = me.jobs[me.lastSelectedRowIndex];	
 
 			if (item == undefined) return;
-
-			me.jobNumber.setValue(item.brief);
-			me.jobDescription.setValue(item.description);
-			me.jobContact.setValue(item.contact);
-			me.jobAddress1.setValue(item.address1);
-			me.jobAddress2.setValue(item.address2);
-			me.jobPostalCode.setValue(item.postalCode);
-			me.loadZipCodeTypes();
-
-			var index = ii.ajax.util.findIndexById(item.appStateTypeId.toString(), me.stateTypes);
-			if (index  != undefined)
-				me.jobState.select(index, me.jobState.focused);
-			else
-				me.jobState.reset();
+			
+			if (me.jobDetailsTabNeedUpdate) {
+				me.jobDetailsTabNeedUpdate = false;
+				me.setLoadCount();
+				me.jobNumber.setValue(item.brief);
+				me.jobDescription.setValue(item.description);
+				me.jobContact.setValue(item.contact);
+				me.jobAddress1.setValue(item.address1);
+				me.jobAddress2.setValue(item.address2);
+				me.jobPostalCode.setValue(item.postalCode);
+				me.loadZipCodeTypes();
 				
-			index = ii.ajax.util.findIndexById(item.ePayGroupType.toString(), me.ePayGroupTypes);
-			if (index  != undefined)
-				me.ePayGroupType.select(index, me.ePayGroupType.focused);
-			else
-				me.ePayGroupType.reset();
-
-			me.jobActive.setValue(item.active.toString());
-
+				var index = ii.ajax.util.findIndexById(item.appStateTypeId.toString(), me.stateTypes);
+				if (index != undefined) 
+					me.jobState.select(index, me.jobState.focused);
+				else 
+					me.jobState.reset();
+				
+				index = ii.ajax.util.findIndexById(item.ePayGroupType.toString(), me.ePayGroupTypes);
+				if (index != undefined) 
+					me.ePayGroupType.select(index, me.ePayGroupType.focused);
+				else 
+					me.ePayGroupType.reset();
+				
+				me.jobActive.setValue(item.active.toString());
+			}
+			
 			setTimeout(function() { 
 				me.resizeControls();
 			}, 100);
@@ -884,6 +924,7 @@ ii.Class({
 				else
 					me.jobState.reset();
 			}
+			me.checkLoadCount();
 		},
 
 		geoCodeChanged: function() {
@@ -918,9 +959,9 @@ ii.Class({
 				if (me.jobId == 0) {
 					me.houseCodeGrid.setData([]);
 				}
-				else {
-					$("#houseCodesLoading").show();
+				else {						
 					me.houseCodesTabNeedUpdate = false;
+					//me.setLoadCount();
 					me.houseCodeJobStore.reset();
 					me.houseCodeJobStore.fetch("userId:[user],jobId:" + me.jobId, me.houseCodeJobsLoaded, me);
 				}
@@ -931,7 +972,8 @@ ii.Class({
 
 			me.houseCodeGrid.setData(me.houseCodeJobs);
 			me.houseCodeGrid.resize();
-			$("#houseCodesLoading").hide();
+			me.pageLoadForHouseCodeAssociations = true;
+			//me.checkLoadCount();
 		},
 
 		addHouseCodes: function() {
@@ -948,6 +990,7 @@ ii.Class({
 			me.units = [];
 			me.houseCodePopupGrid.setData(me.units);
 			me.houseCodePopupGrid.setHeight($(window).height() - 200);
+			me.setStatus("Loaded");
 		},
 
 		houseCodeTemplateChanged: function() {
@@ -1063,6 +1106,7 @@ ii.Class({
 	   			me.houseCodeGrid.body.deselect(index);
 			
 			disablePopup();
+			me.setStatus("Loaded");
 		},
 
 		actionNewItem: function fin_hcm_ePaySite_UserInterface_actionNewItem() {
@@ -1077,6 +1121,7 @@ ii.Class({
 			me.resetControls();
 			me.resetGrids();
 			me.status = "new";
+			me.setStatus("Loaded");
 		},
 
 		actionUndoItem: function fin_hcm_ePaySite_UserInterface_actionUndoItem() {
@@ -1088,10 +1133,10 @@ ii.Class({
 			me.status = "";			
 			me.resetGrids();
 			
-			if (me.activeFrameId == 0)
-				me.jobDetailsLoad();
-			else if (me.activeFrameId == 1)				
-				me.loadHouseCodes();
+			//if (me.activeFrameId == 0)
+			//	me.jobDetailsLoad();
+			//else if (me.activeFrameId == 1)				
+			//	me.loadHouseCodes();
 
 			if (me.lastSelectedRowIndex >= 0)
 				me.jobGrid.body.select(me.lastSelectedRowIndex);
@@ -1118,7 +1163,9 @@ ii.Class({
 				alert("In order to save, the errors on the page must be corrected.");
 				return false;
 			}
-
+			
+			me.houseCodeJobId = 0;
+			
 			item = new fin.hcm.ePaySite.Job({
 				id: me.jobId,
 				brief: me.jobNumber.getValue(),
@@ -1195,6 +1242,21 @@ ii.Class({
 			xml += ' overrideSiteTax="' + item.overrideSiteTax + '"';
 			xml += ' clone="false"';
 			xml += ' ePaySite="true"';
+			if ($("#SearchByHouseCode")[0].checked) 
+				xml += ' houseCodeId="' + parent.fin.appUI.houseCodeId + '"';		
+			xml += ' clientId="1">';
+			
+			if ($("#SearchByHouseCode")[0].checked) {
+				xml += '<houseCodeJob';
+				xml += ' id="' + me.houseCodeJobId + '"';
+				xml += ' houseCodeId="' + parent.fin.appUI.houseCodeId + '"';
+				xml += ' hirNode="' + parent.fin.appUI.hirNode + '"';				
+				xml += ' jobId="' + me.jobId + '"';
+				xml += ' active="' + item.active + '"';
+				xml += ' clientId="2"';	
+				xml += '/>';
+			}
+			
 			xml += ' />';
 
 			return xml;
@@ -1239,8 +1301,10 @@ ii.Class({
 			if (xml == "")
 				return;
 			
+			me.setStatus("Saving");
+			
 			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 			
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
@@ -1312,13 +1376,16 @@ ii.Class({
 						}
 					});
 				}
+				
+				me.setStatus("Saved");
 			}
 			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating Epay Site details: " + $(args.xmlNode).attr("message"));
 			}
 
 			me.status = "";
-			$("#pageLoading").hide();
+			$("#pageLoading").fadeOut("slow");
 		}
 	}
 });

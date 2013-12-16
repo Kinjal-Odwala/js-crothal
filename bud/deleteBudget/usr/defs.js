@@ -37,6 +37,11 @@ ii.init.register( function() {
 		, hirNode: {type: Number}
 	};
 	
+	fin.bud.deleteBudget.jdeCompanyArgs = {		
+		id: {type: Number}
+		, name: {type: String}		
+	};
+	
 	fin.bud.deleteBudget.houseCodeJobArgs = {
 		id: {type: Number}
 		, jobId: {type: Number}
@@ -95,6 +100,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.bud.deleteBudget.houseCodeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.bud.deleteBudget.JdeCompany",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.bud.deleteBudget.jdeCompanyArgs);
 			$.extend(this, args);
 		}
 	}

@@ -3,6 +3,7 @@ ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.ctl.usr.checkList" );
 ii.Import( "fin.adh.setup.usr.defs" );
 
@@ -30,9 +31,12 @@ ii.Class({
 			me.reportId = 0;
 			me.moduleAssociateIds = "";
 			me.moduleChanged = false;
+			me.moduleModified = false;
 			me.lastSelectedIndex = -1;
 			me.renderRowIndex = -1;
-
+			me.loadCount = 0;
+			me.newReport = false;
+			
 			me.gateway = ii.ajax.addGateway("adh", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
 			me.transactionMonitor = new ii.ajax.TransactionMonitor(
@@ -53,6 +57,7 @@ ii.Class({
 
 			me.defineFormControls();			
 			me.configureCommunications();
+			me.setStatus("Loading");
 			me.modified(false);
 
 			$("#AssociateModuleImage").click(function() {				
@@ -74,8 +79,7 @@ ii.Class({
 			$("#ImageDown").click(function() {
 				me.actionDownItem();
 			});
-
-			me.moduleStore.fetch("userId:[user]", me.moduleLoaded, me);
+			
 			$(window).bind("resize", me, me.resize);
 			
 			if (top.ui.ctl.menu) {
@@ -86,9 +90,19 @@ ii.Class({
 		authorizationProcess: function fin_adh_setup_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments, {});
 			var me = this;
-
+						
+			$("#pageLoading").hide();
+			$("#pageLoading").css({
+				"opacity": "0.5",
+				"background-color": "black"
+			});
+			$("#messageToUser").css({ "color": "white" });
+			$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+			$("#pageLoading").fadeIn("slow");
+			
 			ii.timer.timing("Page displayed");
 			me.session.registerFetchNotify(me.sessionLoaded, me);
+			me.moduleStore.fetch("userId:[user]", me.moduleLoaded, me);
 		},
 
 		sessionLoaded: function fin_adh_setup_UserInterface_sessionLoaded() {
@@ -103,8 +117,8 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 
-			fin.adhUi.appReportGrid.setHeight($(window).height() - 55);
-			fin.adhUi.appModuleColumnGrid.setHeight($(window).height() - 280);
+			fin.adhUi.appReportGrid.setHeight($(window).height() - 80);
+			fin.adhUi.appModuleColumnGrid.setHeight($(window).height() - 305);
 		},
 
 		defineFormControls: function() {
@@ -309,19 +323,47 @@ ii.Class({
 			});
 		},	
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
 		},
-	
+		
 		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
+			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
 		},
 		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
+		},
+				
 		moduleLoaded: function(me, activeId) {
 
 			var found = true;
@@ -363,6 +405,7 @@ ii.Class({
 				me.moduleId = me.modules[me.module.indexSelected].id;
 				me.moduleDescription = me.modules[me.module.indexSelected].description;
 				me.moduleChanged = true;
+				me.moduleModified = true;
 				me.moduleAssociateStore.reset();
 				me.moduleAssociateStore.fetch("userId:[user],module:" + me.moduleId + ",", me.moduleAssociateLoaded, me);
 				me.moduleAndAssociateModuleColumnsLoad(me.reportId, me.moduleId, "0", true);
@@ -384,8 +427,14 @@ ii.Class({
 				me.moduleAssociateGroup.reset();
 			}
 			
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").show();
+			if (!me.moduleModified) 
+				me.setStatus("Loading");
+				
+			if (!me.newReport) {
+				$("#messageToUser").text("Loading");
+				$("#pageLoading").fadeIn("slow");
+			}
+			
 			me.moduleColumnStore.reset();
 			me.moduleColumnStore.fetch("userId:[user],module:" + args.moduleId + ",moduleAssociate:" + args.moduleAssociateIds + ",report:"+ args.reportId + ",", me.moduleColumnsLoaded, me);
 		},
@@ -393,7 +442,16 @@ ii.Class({
 		moduleColumnsLoaded: function(me, activeId) {
 
 			me.appModuleColumnGrid.setData(me.moduleColumns);
-			$("#pageLoading").hide();
+			
+			if (!me.moduleModified) 
+				me.setStatus("Loaded");
+			else if (me.moduleModified)	
+				me.moduleModified = false;
+				
+			if (!me.newReport) 
+				$("#pageLoading").fadeOut("slow");
+			else if (me.newReport)	
+				me.newReport = false;
 		},
 
 		itemSelect: function() {
@@ -466,7 +524,8 @@ ii.Class({
 			var item = null;
 
 			me.moduleAssociateIds = "";
-
+			me.moduleModified = true;
+			
 			for (var index in me.moduleAssociateGroup.selectedItems) {
 				item = ii.ajax.util.findItemById(me.moduleAssociateGroup.selectedItems[index].id.toString(), me.moduleAssociates);
 				if (item) {
@@ -498,7 +557,8 @@ ii.Class({
 			$("#editableInputRadio" + index)[0].checked = false;
 			$("#hiddenInputRadio" + index)[0].checked = false;
 			$("#readOnlyInputRadio" + index)[0].checked = false;
-			$("#filterInputCheck" + index)[0].checked = false;
+			if ($("#filterInputCheck" + index)[0] != undefined)
+				$("#filterInputCheck" + index)[0].checked = false;
 			$("#sortOrderAscInputRadio" + index)[0].checked = false;
 			$("#sortOrderDescInputRadio" + index)[0].checked = false;
 		},
@@ -535,6 +595,8 @@ ii.Class({
 					$("#sortOrderDescInputRadio" + index)[0].checked = false;
 				}
 			}
+			
+			me.setStatus("Loaded");
 		},
 
 		actionNewItem: function() {
@@ -564,6 +626,7 @@ ii.Class({
 			me.moduleAssociateGroup.reset();
 			me.appModuleColumnGrid.setData([]);
 			me.action = "new";
+			me.setStatus("Loaded");
 		},
 
 		actionClickItem: function(object, index) {
@@ -644,6 +707,7 @@ ii.Class({
 			var hirNode = 0;
 			var sortOrder ="";
 			var sortColumnsCount = 0;
+			var selectedColumnsCount = 0;
 
 			if (me.reportTitle.text.value == "")	{
 				alert("Please enter valid title.");
@@ -656,6 +720,7 @@ ii.Class({
 			}
 
 			if (me.action == "new") {
+				me.newReport = true;
 				reportId = 0;
 				hirNode = 0;
 			}
@@ -699,7 +764,10 @@ ii.Class({
 
 				if (sortOrder == "Asc" || sortOrder == "Desc")
 					sortColumnsCount++;
-
+				
+				if (columnType == 1 || columnType == 2 || columnType == 3)
+					selectedColumnsCount++;
+					
 				if ($("#editableInputRadio" + index)[0].checked && me.appModuleColumnGrid.data[index].dependantColumns != "") {
 					var dependantColumns = me.appModuleColumnGrid.data[index].dependantColumns.split(",");
 					var message = "";
@@ -740,9 +808,15 @@ ii.Class({
 			if (sortColumnsCount > 4) {
 				return alert("Maximum 4 Sort By columns can be selected.");
 			}
-
+			
+			if (selectedColumnsCount > 150) {
+				return alert("Maximum 150 [Editable/Hidden/Readonly] columns can be selected.");
+			}
+			
+			me.setStatus("Saving");
+			
 			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow"); 
 
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
@@ -805,8 +879,10 @@ ii.Class({
 				});
 
 				me.action = "";
+				me.setStatus("Saved");
 			}
 			else {
+				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating Ad-Hoc Report Setup details: " + $(args.xmlNode).attr("message"));
 			}
 		}

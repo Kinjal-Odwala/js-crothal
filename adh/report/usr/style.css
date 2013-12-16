@@ -88,13 +88,18 @@
 }
 
 .filterLabel {
+	border-right: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
 	float: left;
 	width: 180px;
 	height: 27px;
 	font-family: Verdana;
-	font-size: 12px;
-	color: #032D23;
-	padding: 4px 0px 0px 10px;
+	font-size: 8pt;
+	color: #032D23;	
+	vertical-align: middle;
+	padding: 5px 0px 0px 10px;
 }
 
 .inputTextSize {
@@ -103,7 +108,7 @@
     background-color: white;
     border: 1px solid #AAAAAA;
     border-spacing: 0;
-	margin: 5px 5px 5px 3px;
+	margin: 1px 0px 1px 0px;
     height: 20px;
     width: 180px;
 }
@@ -205,6 +210,51 @@
 	cursor: pointer;
 }
 
+.gridColumnFilter {	
+	border-right: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	color: #032D23;	
+	vertical-align: middle;
+	padding: 3px 2px 3px 2px;
+	height: 20px;
+	cursor: pointer;
+	width:200px;
+}
+
+.gridColumnOperator {	
+	border-right: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	color: #032D23;	
+	vertical-align: middle;
+	padding: 3px 2px 3px 2px;
+	height: 20px;
+	cursor: pointer;
+	width:22%;
+}
+
+.gridColumnValue {	
+	border-right: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	color: #032D23;	
+	vertical-align: middle;
+	padding: 3px 2px 3px 2px;
+	height: 20px;
+	cursor: pointer;
+	width:40%;
+}
+
 .gridColumnRight {	
 	border-spacing: 0px 0px;
 	border-collapse: collapse;
@@ -236,12 +286,19 @@
     text-align: left;
 }
 
+.tbodyBorder {
+	height: 390px;
+	width:537px;
+	overflow: auto;
+}
+
 #HirOrgContainer {
 	width: 100%;
 	overflow: scroll;
 	position: relative;	
 	border: solid #aaaaaa thin;
 	border-width: 1px;
+	padding: 5px;
 }
 
 #AnchorSearch {
@@ -313,4 +370,8 @@
 	z-index: 5025;
 	background-color: white;
 	display: none;
+}
+
+.invoiceTable {
+ 	border-collapse:collapse;
 }

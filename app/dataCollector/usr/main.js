@@ -1,4 +1,4 @@
-﻿window.__weblight_t_c0e3a119 = ['<?xml version="1.0" encoding="utf-8"?><transmission>  <target id="iiCache" requestId="2">    <store id="appDataCollectors" activeId="0" criteria="storeId:appDataCollectors,userId:[user],">      <item id="1" houseCodeId="363" moduleId="5" numberOfColumns="6" frequency="Monthly" lockout="true" email="1" emailAddress="admin@crothall.com" message="True" messageText="Your monthly BI Statistics update is overdue. Click here to enter the data now before you can no longer access the other modules." lockoutMessage="True" lockoutMessageText="Your monthly BI Statistics update is overdue. You will no longer be able to access any modules until you complete the update. Click here to enter the data now." />    </store>  </target></transmission>','<div>    <div class="form-header">        Data Collector Information    </div>    <div id="DataCollectorContentArea" class="body">         <div id="TableEditArea">            <div class="LabelTextAreaLeftDataCollector">                <span class="requiredFieldIndicator"></span>Description:            </div>            <div id="Div14">                <div id="description">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div id="TableEditArea">            <div class="LabelTextAreaLeftDataCollector">                <span class="requiredFieldIndicator">&#149;</span>Frequency:            </div>            <div id="InputTextAreaRight">                <div id="frequency">                </div>            </div>            <div style="clear: both;">            </div>        </div>         <div id="Div13">            <div class="LabelTextAreaLeftDataCollector">                Active:            </div>            <div id="InputTextAreaRight">                <div id="active">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both;">        </div>         <div id="TableEditArea">            <div class="LabelTextAreaLeftDataCollector">                <span class="requiredFieldIndicator">&#149;</span>House Code:            </div>            <div id="InputTextAreaRight">                <div id="houseCodeId">                </div>            </div>        </div>        <div style="clear: both;">        </div>        <div id="TableEditArea">            <div class="LabelTextAreaLeftDataCollector">                <span class="requiredFieldIndicator">&#149;</span>Module:            </div>            <div id="InputTextAreaRight">                <div id="moduleId">                </div>            </div>        </div>        <div style="clear: both;">        </div>        <div id="Div6">            <div class="LabelTextAreaLeftDataCollector">               <span class="requiredFieldIndicator">&#149;</span>Columns:            </div>            <div id="InputTextAreaRight" class="lov-combo">                <div id="columns">                </div>            </div>        </div>                 <div style="clear: both;">        </div>       <div id="Div7">            <div class="LabelTextAreaLeftDataCollector">                <span class="requiredFieldIndicator">&#149;</span>Number of columns:            </div>            <div id="Div9">                <div id="numberOfColumns">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both;">        </div>        <div id="users-holder">            <div class="LabelTextAreaLeftDataCollector">              <span class="requiredFieldIndicator">&#149;</span>Users:            </div>            <div id="Div11" class="lov-combo">                <div id="users">                </div>            </div>        </div>        <div style="clear: both;">        </div>        <div id="Div3">            <div class="LabelTextAreaLeftDataCollector">                Lockout:            </div>            <div id="Div5">                <div id="lockout">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both;">        </div>        <div id="Div1">            <div class="LabelTextAreaLeftDataCollector">                Email Address:            </div>            <div id="Div2" style="float:left;">                <table cellpadding="0" cellspacing="0">                  <tr>                      <td><div id="email" style="padding-bottom: 5px;"></div></td>                      <td><div id="emailAddress"></div></td>                  </tr>                </table>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both; height: 5px;">        </div>        <div id="Div4">            <div class="LabelTextAreaLeftDataCollector">                Message:            </div>            <div id="Div8">                <div id="message" style="padding-bottom: 5px;">                </div>                <div id="messageText">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both; height: 5px;">        </div>        <div id="Div10">            <div class="LabelTextAreaLeftDataCollector">                Lockout Message:            </div>            <div id="Div12">                <div id="lockoutMessage" style="padding-bottom: 5px;">                </div>                <div id="lockoutMessageText">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both;">        </div>    </div>    <div class="footer">        <div class="iiButton AnchorSave" id="AnchorSave">            <div class="iiButtonPart Begin" id="AnchorSaveBegin">            </div>            <div class="iiButtonPart Middle" id="AnchorSaveMiddle">                <span>&nbsp;&nbsp;Save&nbsp;&nbsp;</span></div>            <div class="iiButtonPart End" id="AnchorSaveEnd">            </div>        </div>        <div class="iiButton AnchorNew" id="AnchorNew">            <div class="iiButtonPart Begin" id="AnchorNewBegin">            </div>            <div class="iiButtonPart Middle" id="AnchorNewMiddle">                <span>&nbsp;&nbsp;New&nbsp;&nbsp;</span></div>            <div class="iiButtonPart End" id="AnchorNewEnd">            </div>        </div>        <div class="iiButton AnchorUndo" id="AnchorUndo">            <div class="iiButtonPart Begin" id="AnchorUndoBegin">            </div>            <div class="iiButtonPart Middle" id="AnchorUndoMiddle">                <span>&nbsp;&nbsp;Undo&nbsp;&nbsp;</span></div>            <div class="iiButtonPart End" id="AnchorUndoEnd">            </div>        </div>        <div style="clear: both;">        </div>    </div></div>','<div style="margin: 10px">    <table>        <tr>            <td id="data-collector-grid" style="width:500px; vertical-align:top;"></td>            <td id="data-collector-editor" style="width:500px; vertical-align:top;"></td>        </tr>    </table>    </div>',''];
+﻿window.__weblight_t_c0e3a119 = ['<?xml version="1.0" encoding="utf-8"?><transmission>  <target id="iiCache" requestId="2">    <store id="appDataCollectors" activeId="0" criteria="storeId:appDataCollectors,userId:[user],">      <item id="1" houseCodeId="363" moduleId="5" numberOfColumns="6" frequency="Monthly" lockout="true" email="1" emailAddress="admin@crothall.com" message="True" messageText="Your monthly BI Statistics update is overdue. Click here to enter the data now before you can no longer access the other modules." lockoutMessage="True" lockoutMessageText="Your monthly BI Statistics update is overdue. You will no longer be able to access any modules until you complete the update. Click here to enter the data now." />    </store>  </target></transmission>','<div>    <div class="form-header">        Data Collector Information    </div>    <div id="DataCollectorContentArea" class="body">         <div id="TableEditArea">            <div class="LabelTextAreaLeftDataCollector">                <span class="requiredFieldIndicator"></span>Description:            </div>            <div id="Div14">                <div id="description">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div id="TableEditArea">            <div class="LabelTextAreaLeftDataCollector">                <span class="requiredFieldIndicator">&#149;</span>Frequency:            </div>            <div id="InputTextAreaRight">                <div id="frequency">                </div>            </div>            <div style="clear: both;">            </div>        </div>         <div id="Div13">            <div class="LabelTextAreaLeftDataCollector">                Active:            </div>            <div id="InputTextAreaRight">                <div id="active">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both;">        </div>         <div id="TableEditArea">            <div class="LabelTextAreaLeftDataCollector">                <span class="requiredFieldIndicator">&#149;</span>House Code:            </div>            <div id="InputTextAreaRight">                <div id="houseCodeId">                </div>            </div>        </div>        <div style="clear: both;">        </div>        <div id="TableEditArea">            <div class="LabelTextAreaLeftDataCollector">                <span class="requiredFieldIndicator">&#149;</span>Module:            </div>            <div id="InputTextAreaRight">                <div id="moduleId">                </div>            </div>        </div>        <div style="clear: both;">        </div>        <div id="Div6">            <div class="LabelTextAreaLeftDataCollector">               <span class="requiredFieldIndicator">&#149;</span>Columns:            </div>            <div id="InputTextAreaRight" class="lov-combo">                <div id="columns">                </div>            </div>        </div>                 <div style="clear: both;">        </div>       <div id="Div7">            <div class="LabelTextAreaLeftDataCollector">                <span class="requiredFieldIndicator">&#149;</span>Number of columns:            </div>            <div id="Div9">                <div id="numberOfColumns">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both;">        </div>        <div id="users-holder">            <div class="LabelTextAreaLeftDataCollector">              <span class="requiredFieldIndicator">&#149;</span>Users:            </div>            <div id="Div11" class="lov-combo">                <div id="users">                </div>            </div>        </div>        <div style="clear: both;">        </div>        <div id="Div3">            <div class="LabelTextAreaLeftDataCollector">                Lockout:            </div>            <div id="Div5">                <div id="lockout">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both;">        </div>        <div id="Div1">            <div class="LabelTextAreaLeftDataCollector">                Email Address:            </div>            <div id="Div2" style="float:left;">                <table cellpadding="0" cellspacing="0">                  <tr>                      <td><div id="email" style="padding-bottom: 5px;"></div></td>                      <td><div id="emailAddress"></div></td>                  </tr>                </table>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both; height: 5px;">        </div>        <div id="Div4">            <div class="LabelTextAreaLeftDataCollector">                Message:            </div>            <div id="Div8">                <div id="message" style="padding-bottom: 5px;">                </div>                <div id="messageText">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both; height: 5px;">        </div>        <div id="Div10">            <div class="LabelTextAreaLeftDataCollector">                Lockout Message:            </div>            <div id="Div12">                <div id="lockoutMessage" style="padding-bottom: 5px;">                </div>                <div id="lockoutMessageText">                </div>            </div>            <div style="clear: both;">            </div>        </div>        <div style="clear: both;">        </div>    </div>    <div class="footer">        <div class="iiButton AnchorSave" id="AnchorSave">            <div class="iiButtonPart Begin" id="AnchorSaveBegin">            </div>            <div class="iiButtonPart Middle" id="AnchorSaveMiddle">                <span>&nbsp;&nbsp;Save&nbsp;&nbsp;</span></div>            <div class="iiButtonPart End" id="AnchorSaveEnd">            </div>        </div>        <div class="iiButton AnchorNew" id="AnchorNew">            <div class="iiButtonPart Begin" id="AnchorNewBegin">            </div>            <div class="iiButtonPart Middle" id="AnchorNewMiddle">                <span>&nbsp;&nbsp;New&nbsp;&nbsp;</span></div>            <div class="iiButtonPart End" id="AnchorNewEnd">            </div>        </div>        <div class="iiButton AnchorUndo" id="AnchorUndo">            <div class="iiButtonPart Begin" id="AnchorUndoBegin">            </div>            <div class="iiButtonPart Middle" id="AnchorUndoMiddle">                <span>&nbsp;&nbsp;Undo&nbsp;&nbsp;</span></div>            <div class="iiButtonPart End" id="AnchorUndoEnd">            </div>        </div>        <div style="clear: both;">        </div>    </div></div>','<div style="margin: 5px 10px 10px 10px;"> <div id="itemStatusDiv"><div id="itemStatusImage" class="itemStatusImage"></div><div id="itemModifiedImage" class="itemModifiedImage"></div><div id="itemStatusText">Loading, please wait...</div></div><div style="clear:both;height:5px;"></div>   <table>        <tr>            <td id="data-collector-grid" style="width:500px; vertical-align:top;"></td>            <td id="data-collector-editor" style="width:500px; vertical-align:top;"></td>        </tr>    </table>    </div>',''];
 
 /**
 * Copyright (c) 2009 Sergiy Kovalchuk (serg472@gmail.com)
@@ -850,6 +850,62 @@ Ext.reg('lovcombo', Ext.ux.form.LovCombo);
  
 // eof
 
+if (top.ui.ctl.menu) {
+	var me = this;
+	top.ui.ctl.menu.Dom.me.registerDirtyCheck(dirtyCheck, me);
+}
+
+function dirtyCheck(me) {
+	return !window.top.fin.cmn.status.itemValid();
+}
+            
+function modified(status) {
+	window.top.fin.appUI.modified = status;
+	
+	if (status)
+		me.setStatus("Edit");
+}
+
+function setStatus(status) {
+	var me = this;
+
+	me.$itemStatusImage = $("#wl-ctrl-100-itemStatusImage");
+	me.$itemModifiedImage = $("#wl-ctrl-100-itemModifiedImage");
+	me.$itemStatusText = $("#wl-ctrl-100-itemStatusText");
+
+	if (status == "New")
+		message = "New";
+	else if (status == "Loading" || status == "Saving" || status == "Exporting" || status == "Uploading" || status == "Importing")
+		message = status + ", please wait...";
+	else if (status == "Saved")
+		message = "Data saved successfully.";
+	else if (status == "Imported")
+		message = "Data imported successfully.";
+	else if (status == "Exported")
+		message = "Data exported successfully.";
+	else if (status == "Locked")
+		message = "The current page is Readonly.";
+	else if (status == "Error")
+		message = "Error while updating the data.";
+	else
+		message = "Normal";
+
+	if (status == "Locked")
+		me.$itemModifiedImage.addClass("Locked");
+	else
+		me.$itemModifiedImage.removeClass("Locked");
+
+	if (status == "Edit")
+		me.$itemModifiedImage.addClass("Modified");
+	else
+		me.$itemModifiedImage.removeClass("Modified");
+
+	if (status == "Edit" || status == "Loaded" || status == "Saved" || status == "Imported" || status == "Exported")
+		status = "Normal";
+
+	me.$itemStatusImage.attr("class", "itemStatusImage " + status);
+	me.$itemStatusText.text(message);
+}
 
 Ext.Ajax.timeout = 300000; //5 minutes
 
@@ -862,12 +918,18 @@ Ext.override(WebLight.Control, {
     mask: function (msg) {
         if (!msg)
             msg = 'Please wait...';
-        this.$this.maskEl(msg);
+        //this.$this.maskEl(msg);
+		setStatus(msg.replace("...", ""));
+		Ext.getBody().mask(msg);
     },
-    unmask: function () {
-        this.$this.unmaskEl();
+    unmask: function (msg) {
+        //this.$this.unmaskEl();
+		if (window.top.fin.appUI.modified)
+			setStatus("Edit");
+		else
+			setStatus(msg);
+		Ext.getBody().unmask();
     }
-
 });
 
 Ext.override(WebLight.Page, {
@@ -875,12 +937,11 @@ Ext.override(WebLight.Page, {
     mask: function (msg) {
         if (!msg)
             msg = 'Please wait...';
-        this.$this.maskEl(msg);
+        //this.$this.maskEl(msg);
     },
     unmask: function () {
-        this.$this.unmaskEl();
+        //this.$this.unmaskEl();
     }
-
 });
 
 eFin.data.XmlReader = Ext.extend(Ext.data.XmlReader, {
@@ -1011,7 +1072,6 @@ eFin.data.XmlStore = WebLight.extend(WebLight.data.Store, {
             me._ignoredRecords.concat(records);
         else
             me._ignoredRecords.push(records);
-
     },
 
     getChangedRecords: function () {
@@ -1107,7 +1167,7 @@ eFin.data.app.DataCollectorStore = WebLight.extend(eFin.data.XmlStore, {
                { name: 'messageText', mapping: '@messageText' },
                { name: 'lockoutMessage', mapping: '@lockoutMessage', type: 'bool' },
                { name: 'lockoutMessageText', mapping: '@lockoutMessageText' },
-                 { name: 'active', mapping: '@active', type: 'bool' },
+               { name: 'active', mapping: '@active', type: 'bool' },
                { name: 'description', mapping: '@description' }
            ]
 
@@ -1171,6 +1231,7 @@ eFin.data.app.ModuleColumnStore = WebLight.extend(eFin.data.XmlStore, {
         return { module: this.moduleName };
     }
 });
+
 eFin.data.hcm.HouseCodeStore = WebLight.extend(eFin.data.XmlStore, {
 
     url: '/net/crothall/chimes/fin/hcm/act/provider.aspx',
@@ -1224,7 +1285,6 @@ eFin.data.app.DataCollectorColumnStore = WebLight.extend(eFin.data.XmlStore, {
     ,
     load: function (dataCollectorId) {
         this.dataCollectorId = dataCollectorId;
-
 
         eFin.data.app.ModuleColumnStore.superclass.load.call(this);
     },
@@ -1297,6 +1357,7 @@ eFin.data.app.DataCollectorUserStore = WebLight.extend(eFin.data.XmlStore, {
         return { dataCollectorId: this.dataCollectorId };
     }
 });
+
 Ext.override(Ext.ux.form.LovCombo, {
     beforeBlur: Ext.emptyFn
 });
@@ -1323,7 +1384,7 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
     onDataLoad: function () {
         var me = this;
         if (--me.loadingCount == 0)
-            me.unmask();
+            me.unmask("Loaded");
     },
 
     attachLoadMaskEvent: function (store) {
@@ -1331,7 +1392,6 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
 
         store.on('beforeload', me.onDataBeforeLoad.createDelegate(me));
         store.on('load', me.onDataLoad.createDelegate(me));
-
     },
 
     createChildControls: function () {
@@ -1373,35 +1433,42 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
 
         var frequencyField = new Ext.form.ComboBox({ valueField: 'name', allowBlank: false, name: 'frequency',
             triggerAction: 'all', editable: false, displayField: 'name',
-            store: new Ext.data.ArrayStore({ idIndex: 0, fields: ['name'], data: [['Monthly'], ['Weekly']] }), mode: 'local'
+            store: new Ext.data.ArrayStore({ idIndex: 0, fields: ['name'], data: [['Weekly'], ['Monthly'], ['Semiannual']] }), mode: 'local',
+			listeners: { 'change': function() { modified(true); } }
         });
         var numberOfColumnsField = new Ext.form.TextField({ name: 'numberOfColumns', editable: false, value: 0, minValue: 0, width: 50 });
         var houseCodeField = new Ext.form.ComboBox({ valueField: 'id', allowBlank: false, resizeable: true, name: 'houseCodeId', triggerAction: 'all', forceSelection: true,
-            editable: true, displayField: 'name', store: me.houseCodeStore, mode: 'local', width: 300
+            editable: true, displayField: 'name', store: me.houseCodeStore, mode: 'local', width: 300,
+			listeners: { 'change': function() { modified(true); } }
         });
-        var moduleField = new Ext.form.ComboBox({ valueField: 'id', displayField: 'name', editable: false, triggerAction: 'all', mode: 'local', name: 'moduleId', store: me.moduleStore });
+        var moduleField = new Ext.form.ComboBox({ valueField: 'id', displayField: 'name', editable: false, triggerAction: 'all', mode: 'local', name: 'moduleId', store: me.moduleStore, listeners: { 'change': function() { modified(true); } } });
         var descriptionField = new Ext.form.TextField({ name: 'description', width: 300, maxLength: 60,
-            autoCreate: { tag: 'input', type: 'text', maxLength: 60, autocomplete: 'off' }
-        }); ;
+            autoCreate: { tag: 'input', type: 'text', maxLength: 60, autocomplete: 'off' },
+			listeners: { 'change': function() { modified(true); } }
+        });
         var columnField = new Ext.ux.form.LovCombo({ valueField: 'id', resizable: true, width: 350, displayField: 'description', editable: false,
-            triggerAction: 'all', mode: 'local', name: 'columns', store: me.moduleColumnStore, allowBlank: false
+            triggerAction: 'all', mode: 'local', name: 'columns', store: me.moduleColumnStore, allowBlank: false,
+			listeners: { 'change': function() { modified(true); } }
         });
         var userField = new Ext.ux.form.LovCombo({ valueField: 'id', resizable: true, width: 350, displayField: 'name', editable: false, triggerAction: 'all', allowBlank: false,
-            mode: 'local', name: 'users', store: me.userStore
+            mode: 'local', name: 'users', store: me.userStore,
+			listeners: { 'change': function() { modified(true); } }
         });
         var lockoutField = new Ext.form.Checkbox({ name: 'lockout' });
         var activeField = new Ext.form.Checkbox({ name: 'active' });
         var sendEmailField = new Ext.form.Checkbox({ name: 'email' });
         var emailAddressField = new Ext.form.TextField({ width: 300, name: 'emailAddress', maxLength: 100,
-            autoCreate: { tag: 'input', type: 'text', maxLength: 100, autocomplete: 'off' }
+            autoCreate: { tag: 'input', type: 'text', maxLength: 100, autocomplete: 'off' },
+			listeners: { 'change': function() { modified(true); } }
         });
         var messageSendField = new Ext.form.Checkbox({ boxLabel: '', name: 'message' });
-        var messageField = new Ext.form.TextArea({ width: 350, height: 70, name: 'messageText' });
+        var messageField = new Ext.form.TextArea({ width: 350, height: 70, name: 'messageText', listeners: { 'change': function() { modified(true); } } });
         var lockoutMessageSendField = new Ext.form.Checkbox({ boxLabel: '', name: 'lockoutMessage' });
-        var lockoutMessageField = new Ext.form.TextArea({ width: 350, height: 70, name: 'lockoutMessageText' });
+        var lockoutMessageField = new Ext.form.TextArea({ width: 350, height: 70, name: 'lockoutMessageText', listeners: { 'change': function() { modified(true); } } });
 
         var toggleEmailAddressField = function () {
             var checked = me.getData().email;
+
             if (arguments.length > 0)
                 checked = sendEmailField.getValue();
             if (checked) {
@@ -1460,7 +1527,6 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
             }
             else
                 me.moduleColumnStore.loadData({ data: [] });
-
         };
 
         var reloadUsers = function () {
@@ -1486,15 +1552,23 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
             columnField.setValue(values.join(','));
             me.getData().columns = values.join(',');
             me.fireEvent('update', 'columns', values.join(','));
-
         };
 
         me.dataCollectorColumnStore.on('load', applyColumns);
         me.moduleColumnStore.on('load', applyColumns);
 
-
-        sendEmailField.on('check', toggleEmailAddressField);
-        messageSendField.on('check', toggleMessageTextField);
+		//sendEmailField.on('check', toggleEmailAddressField);
+        //messageSendField.on('check', toggleMessageTextField);
+		
+		sendEmailField.on('check', function () {
+			toggleEmailAddressField(1);
+            modified(true);
+        });
+		
+		messageSendField.on('check', function () {
+			toggleMessageTextField(1);
+            modified(true);
+        });
 
         var applyUsers = function () {
 
@@ -1513,7 +1587,6 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
 
         me.dataCollectorUserStore.on('load', applyUsers);
         me.userStore.on('load', applyUsers);
-
 
         me.on('update', function (name, newValue, oldValue) {
             if (oldValue == newValue)
@@ -1536,7 +1609,6 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
             }
         });
 
-
         me.on('bound', function (data) {
 
             me.enableButton('AnchorSave');
@@ -1555,13 +1627,22 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
             toggleUsersContainer();
         });
 
-
-        lockoutField.on('check', function () {
+		activeField.on('check', function () {
+             modified(true);
+        });
+		
+        lockoutField.on('check', function () {			
             lockoutMessageSendField.setValue(lockoutField.getValue());
             toggleLockoutMessageTextField(1);       // post 1 to ensure arguments length is not zero
+            modified(true);
         });
 
-        lockoutMessageSendField.on('check', toggleLockoutMessageTextField);
+		lockoutMessageSendField.on('check', function () {			
+            toggleLockoutMessageTextField(1);       // post 1 to ensure arguments length is not zero
+            modified(true);
+        });
+		
+        //lockoutMessageSendField.on('check', toggleLockoutMessageTextField);
 
         me.on('bound', function () {
             me.dataCollectorUserStore.removeAll(true);
@@ -1569,12 +1650,12 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
             toggleEmailAddressField();
             toggleLockoutMessageTextField();
             toggleMessageTextField();
+			modified(false);
         });
 
         me.addFields([frequencyField, numberOfColumnsField, houseCodeField, moduleField, descriptionField,
-                    columnField, userField, lockoutField, activeField, sendEmailField, emailAddressField,
-                    messageSendField, messageField, lockoutMessageSendField, lockoutMessageField]);
-
+			columnField, userField, lockoutField, activeField, sendEmailField, emailAddressField,
+			messageSendField, messageField, lockoutMessageSendField, lockoutMessageField]);
     },
 
     initButtons: function () {
@@ -1590,6 +1671,9 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
 
         me.$newButton.click(function () {
             if (me.$newButton.hasClass('Enabled')) {
+				if (!window.top.fin.cmn.status.itemValid())
+					return;
+
                 me.fireEvent('createnew', me);
             }
         });
@@ -1602,11 +1686,11 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
 
         me.$undoButton.click(function () {
             if (me.$undoButton.hasClass('Enabled')) {
+				if (!window.top.fin.cmn.status.itemValid())
+					return;
                 me.fireEvent('undo', me, me.getData());
             }
         });
-
-
     },
 
     enableButton: function (name) {
@@ -1633,9 +1717,7 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
         me.moduleStore.load();
         if (me.houseCodeStore.getCount() == 0)
             me.houseCodeStore.load();
-
     }
-
 });
 
 eFin.page.app.DataCollector = WebLight.extend(WebLight.Page, {
@@ -1673,7 +1755,6 @@ eFin.page.app.DataCollector = WebLight.extend(WebLight.Page, {
 
         };
 
-
         me.rowSelectionModel = new Ext.grid.RowSelectionModel({ singleSelect: true });
 
         me.dataCollectorGrid = new Ext.grid.GridPanel({
@@ -1703,6 +1784,9 @@ eFin.page.app.DataCollector = WebLight.extend(WebLight.Page, {
         });
 
         me.rowSelectionModel.on('rowselect', function (sm, rowIndex, record) {
+			if (!window.top.fin.cmn.status.itemValid())
+				return;
+
             if (me.lastSelectedRowIndex != rowIndex) {
                 if (me.lastSelectedRowIndex != -1 && me.lastSelectedRowIndex < me.dataCollectorStore.getCount())
                     me.dataCollectorStore.getAt(me.lastSelectedRowIndex).reject();
@@ -1718,7 +1802,6 @@ eFin.page.app.DataCollector = WebLight.extend(WebLight.Page, {
         me.addChildControl(me.dataCollectorGrid, 'data-collector-grid');
 
         me.initDataCollectorEditor();
-
 
         me.dataCollectorStore.on('beforeload', function () { me.mask('Loading...'); });
         me.dataCollectorStore.on('load', function () {
@@ -1738,13 +1821,10 @@ eFin.page.app.DataCollector = WebLight.extend(WebLight.Page, {
         me.moduleStore.on('load', function () {
             me.dataCollectorGrid.getView().refresh();
         });
-
-
     },
 
     initDataCollectorEditor: function () {
         var me = this;
-
 
         me.dataCollectorEditor.on('createnew', function () {
             var data = { frequency: 'Monthly',
@@ -1777,9 +1857,11 @@ eFin.page.app.DataCollector = WebLight.extend(WebLight.Page, {
         me.dataCollectorEditor.on('save', function () {
 
             if (me.dataCollectorEditor.isValid()) {
-                me.mask('Saving...');
+
+                me._controls[0].mask('Saving...');
                 me.dataCollectorStore.submitChanges(function () {
-                    me.unmask();
+					modified(false);
+                    me._controls[0].unmask("Saved");
                     me.dataCollectorStore.reload();
                 });
             }
@@ -1791,13 +1873,12 @@ eFin.page.app.DataCollector = WebLight.extend(WebLight.Page, {
                 record.set(name, newValue);
             }
         });
-
     },
 
     safeUnmask: function () {
         var me = this;
         if (me.moduleStore.getCount() > 0  && me.houseCodeStore.getCount() > 0)
-            me.unmask();
+            me.unmask("Normal");
     },
 
     dataBind: function () {
@@ -1812,7 +1893,6 @@ eFin.page.app.DataCollector = WebLight.extend(WebLight.Page, {
         me.moduleStore.load();
         me.dataCollectorStore.load();
         setTimeout(function () { me.houseCodeStore.load(); }, 10000);
-
     }
 
 });

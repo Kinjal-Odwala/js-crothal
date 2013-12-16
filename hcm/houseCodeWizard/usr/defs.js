@@ -81,6 +81,11 @@ ii.init.register( function() {
 		, integratorName: {type: String, required: false, defaultValue: ""}
 		, auditScore: {type: String, required: false, defaultValue: ""}
 		, standardizationScore: {type: String, required: false, defaultValue: ""}
+		, adminHours: {type: Number, required: false, defaultValue: 0}
+		, surgicalHours: {type: Number, required: false, defaultValue: 0}
+		, edHours: {type: Number, required: false, defaultValue: 0}
+		, groundsHours: {type: Number, required: false, defaultValue: 0}
+		, otherLockInHours: {type: Number, required: false, defaultValue: 0}
 		, shippingAddress1: {type: String, required: false, defaultValue: ""}
 		, shippingAddress2: {type: String, required: false, defaultValue: ""}
 		, shippingZip: {type: String, required: false, defaultValue: ""}

@@ -428,6 +428,34 @@ dl.editArea dd
 	background-color:#ffffff;
 }
 
+.treeview span.normal  {
+	font-family: Verdana; 
+	font-size: 12px;
+	color: #032D23;	
+	padding: 0 0 0 5px;
+}
+
+.treeview span.loading {
+	font-family: Verdana; 
+	font-size: 12px;
+	color: #032D23;
+	padding: 1px 0 1px 20px;
+	background: url(media/Common/indicator.gif) 0 0 no-repeat; 
+}
+
+.treeview span.normal:hover {
+	color: red;
+}
+
+.treeview span.normalSelected  {
+	height: 27px;
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 12px;
+	color: red;
+	padding: 0 0 0 5px;
+}
+
 .TreeNodeText
 {
 	height: 27px;
@@ -478,7 +506,7 @@ dl.editArea dd
 
 #itemStatusDiv {
 	float: left;
-	width: 400px;
+	width: 800px;
 	padding: 5px 0px 0px 10px;
 }
 
@@ -505,11 +533,8 @@ dl.editArea dd
 	background-image: url(media/Common/newFile.gif);
 }
 
-.itemStatusImage.Saving {
-	background-image: url(media/Common/indicator.gif);
-}
-
-.itemStatusImage.Loading {
+.itemStatusImage.Loading, .itemStatusImage.Saving, .itemStatusImage.Exporting
+, .itemStatusImage.Uploading, .itemStatusImage.Importing {
 	background-image: url(media/Common/indicator.gif);
 }
 
@@ -525,6 +550,10 @@ dl.editArea dd
 
 .itemStatusImage.Error {
 	background-image: url(media/Common/error.gif);
+}
+
+.itemStatusImage.Info {
+	background-image: url(media/Common/info.gif);
 }
 
 .itemModifiedImage {

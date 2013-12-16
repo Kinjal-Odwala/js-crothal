@@ -2,6 +2,21 @@
     font-size: 12px;
 }
 
+#rev-apSearch-itemStatusDiv {
+	float: left;
+	width: 800px;
+	padding: 5px 0px 0px 10px;
+}
+
+#rev-apSearch-itemStatusText {
+	float: left;
+	text-align: left;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 1px 0px 0px 5px;
+}
+
 .header	{
 	background: #C2E4C1;
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;

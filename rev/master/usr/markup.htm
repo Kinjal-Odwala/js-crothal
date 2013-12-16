@@ -17,7 +17,7 @@
 	<body id="appBody">
 		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
 		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
-		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <img id="imgLoading" src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
 		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
 		    </div>
 		</div>
@@ -30,6 +30,13 @@
 			</div>
 			<div id="backLabel"><a href="/fin/rev/invoiceSearch/usr/markup.htm" class="linkTextBack">New Invoicing Search</a></div>
         </div>
+		<div style="clear:both;"></div>
+		<div id="itemStatusDiv">
+			<div id="itemStatusImage" class="itemStatusImage"></div>
+			<div id="itemModifiedImage" class="itemModifiedImage"></div>
+			<div id="itemStatusText">Loading, please wait...</div>
+		</div>
+		<div style="clear:both;"></div>
 		<div class="pageBody">
 			<div id="divGrid">
 				<div class="contentArea">
@@ -115,35 +122,32 @@
 					</div>
 					<div style="clear:both; height:5px"></div>
 					<div id="divAreasContainerLeft">
-						<div class="body">
-							<div class="TableEditArea">
-								<div id="LabelTextAreaLeft"><span class="requiredFieldIndicator">&#149;</span>Start Date:</div>
-								<div id="InputTextAreaSmall">
-									<div id="StartDate"></div>
-								</div>
+						<div class="TableEditArea">
+							<div id="LabelTextAreaLeft"><span class="requiredFieldIndicator">&#149;</span>Start Date:</div>
+							<div id="InputTextAreaSmall">
+								<div id="StartDate"></div>
 							</div>
-							<div class="TableEditArea">
-								<div id="LabelTextAreaLeft"><span class="requiredFieldIndicator">&#149;</span>Invoice Date:</div>
-								<div id="InputTextAreaSmall">
-									<div id="InvoiceDate"></div>
-								</div>
+						</div>
+						<div style="clear:both;"></div>
+						<div class="TableEditArea">
+							<div id="LabelTextAreaLeft"><span class="requiredFieldIndicator">&#149;</span>Invoice Date:</div>
+							<div id="InputTextAreaSmall">
+								<div id="InvoiceDate"></div>
 							</div>
-							<div style="clear:both;"></div>
 						</div>
 					</div>
 					<div id="divAreasContainerRight">
-						<div class="body">
-							<div class="TableEditArea">
-								<div id="LabelTextAreaRight"><span class="requiredFieldIndicator">&#149;</span>End Date:</div>
-								<div id="InputTextAreaSmall">
-									<div id="EndDate"></div>
-								</div>
+						<div class="TableEditArea">
+							<div id="LabelTextAreaRight"><span class="requiredFieldIndicator">&#149;</span>End Date:</div>
+							<div id="InputTextAreaSmall">
+								<div id="EndDate"></div>
 							</div>
-							<div class="TableEditArea">
-								<div id="LabelTextAreaRight"><span class="requiredFieldIndicator">&#149;</span>Due Date:</div>
-								<div id="InputTextAreaSmall">
-									<div id="DueDate"></div>
-								</div>
+						</div>
+						<div style="clear:both;"></div>
+						<div class="TableEditArea">
+							<div id="LabelTextAreaRight"><span class="requiredFieldIndicator">&#149;</span>Due Date:</div>
+							<div id="InputTextAreaSmall">
+								<div id="DueDate"></div>
 							</div>
 						</div>
 					</div>
@@ -190,12 +194,14 @@
 								<div id="State"></div>
 							</div>
 						</div>
+						<div style="clear:both;"></div>
 						<div class="TableEditArea">
 							<div id="LabelTextAreaLeft"><span id="nonRequiredFieldIndicator">PO Number:</span></div>
 							<div id="InputTextAreaSmall">
 								<div id="PONumber"></div>
 							</div>
 						</div>
+						<div style="clear:both;"></div>
 						<div class="TableEditArea">
 							<div id="LabelTextAreaLeft"><span id="nonRequiredFieldIndicator">Invoice Address:</span></div>
 							<div id="InputTextAreaSmall">
@@ -210,14 +216,16 @@
 								<div id="Zip"></div>
 							</div>
 						</div>
+						<div style="clear:both;"></div>
 						<div class="TableEditArea">
 							<div id="LabelTextAreaRight"><span id="nonRequiredFieldIndicator">Invoice Logo:</span></div>
 							<div id="InputTextAreaSmall">
 								<div id="InvoiceLogo"></div>
 							</div>
 						</div>
+						<div style="clear:both;"></div>
 						<div class="TableEditArea">
-							<div id="LabelTextAreaRight"><span id="nonRequiredFieldIndicator">Service Location:</span></div>
+							<div id="LabelTextAreaRight"><span class="requiredFieldIndicator">&#149;</span>Service Location:</div>
 							<div id="InputTextAreaSmall">
 								<div id="ServiceLocation"></div>
 							</div>

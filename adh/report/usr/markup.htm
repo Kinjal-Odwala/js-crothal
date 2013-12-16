@@ -16,12 +16,22 @@
 	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
 	<body id="appBody">
 		 <div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
-		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
-		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
-		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; font-size:100%; text-align:center;">Loading</div>    
-		    </div>
+			<table width="100%" height="100%">
+				<tr>
+					<td align="center">
+						<img id="imgLoading" src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+						<div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;">Loading</div>    
+		        	</td>
+				</tr>
+			</table>
 		</div>
-
+		<div style="clear:both;"></div>
+		<div id="itemStatusDiv">
+			<div id="itemStatusImage" class="itemStatusImage"></div>
+			<div id="itemModifiedImage" class="itemModifiedImage"></div>
+			<div id="itemStatusText">Loading, please wait...</div>
+		</div>
+		<div style="clear:both;"></div>
 		<div class="pageBody">			
 			<div class="contentArea">
 				<div class="header">Ad-Hoc Report</div>
@@ -42,15 +52,35 @@
 						</div>
 						<div id="AnchorSearch"></div>
 						<div style="clear:both; height:4px;"></div>
-						<div id="HirOrgContainer">
-							<div id="hirOrg"></div>
-						</div>	
+						<div id="HirOrgContainer" >
+							<ul class="treeview" id="ulEdit0"></ul>
+						</div>
 					</div>
 					<div class="contentAreasContainerRight">
 						<div class="body">
-							<table width="100%" id="AdhReportFilterGridBody" cellpadding="0" cellspacing="0">
-								<tr id="filterHeader"><td height="24px"></td></tr>
-							</table>
+							<div id="divFilterHeader" class="header">Filter</div>
+							<div id="FilterGrid">
+								<table id="AdhReportFilterGridBody" class="gridBorder" cellpadding="0" cellspacing="0"width="100%" height="100%"  >
+									<tr>
+							        	<td>
+											<div id="divFilterGridHeader" style="overflow-y: scroll;">
+												<table id="tblFilterGridHeader" border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
+													<thead id="FilterGridHead"></thead>
+												</table>
+											</div>
+										</td>
+									</tr>
+									<tr>
+						                <td>
+						                    <div id="divFilterGrid" style="overflow-y: scroll;">                              
+						                        <table id="tblFilterGrid" border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
+						                            <tbody id="FilterGridBody"></tbody>
+						                        </table>
+						                    </div>
+						                </td>
+					            	</tr>
+								</table>
+							</div>
 							<div style="clear:both; height:10px"></div>
 							<div id="AnchorLoad"></div>
 						</div>

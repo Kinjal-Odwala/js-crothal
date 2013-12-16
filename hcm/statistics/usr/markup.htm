@@ -15,14 +15,7 @@
 
 	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
 	<body id="appBody" onload="iiForceBodyReady = true;">
-		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
-		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
-		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
-		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
-		    </div>
-		</div>
-		
-		<div class="pageBody">
+		<div id="pageBody" class="pageBody" style="display:none;">
 		    <div class="contentArea">
 	        	<div class="header">House Code Statistic</div>
         	</div>
@@ -152,6 +145,27 @@
 							<div id="AuditScore"></div>
 						</div>
 						<div style="clear:both;"></div>
+					</div>					
+					<div class="TableEditArea">
+						<div class="LabelstatisticsAreaLeft">Admin Hours:</div>
+						<div class="InputTextAreaRight">
+							<div id="AdminHours"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>					
+					<div class="TableEditArea">
+						<div class="LabelstatisticsAreaLeft">ED Hours:</div>
+						<div class="InputTextAreaRight">
+							<div id="EDHours"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>					
+					<div class="TableEditArea">
+						<div class="LabelstatisticsAreaLeft">Other Lock-In Hours:</div>
+						<div class="InputTextAreaRight">
+							<div id="OtherLockInHours"></div>
+						</div>
+						<div style="clear:both;"></div>
 					</div>
 					<div style="clear:both;"></div>
 				</div>
@@ -272,13 +286,27 @@
 							<div id="StandardizationScore"></div>
 						</div>
 						<div style="clear:both;"></div>
+					</div>					
+					<div class="TableEditArea">
+						<div class="LabelstatisticsAreaLeft">Surgical Hours:</div>
+						<div class="InputTextAreaRight">
+							<div id="SurgicalHours"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="TableEditArea">
+						<div class="LabelstatisticsAreaLeft">Grounds Hours:</div>
+						<div class="InputTextAreaRight">
+							<div id="GroundsHours"></div>
+						</div>
+						<div style="clear:both;"></div>
 					</div>
 					<div style="clear:both;"></div>
 				</div>
 			</div>
 		</div>
-	   
-	  <div id="iiInputValidationMaster"></div>
+
+		<div id="iiInputValidationMaster"></div>
 	</body>
 </html>
 

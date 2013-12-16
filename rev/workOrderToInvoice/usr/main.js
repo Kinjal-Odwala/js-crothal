@@ -24,6 +24,7 @@ ii.Class({
         init: function() {
 			var args = ii.args(arguments, {});
 			var me = this;
+			me.loadCount = 0;
 			
 			me.gateway = ii.ajax.addGateway("rev", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -33,6 +34,7 @@ ii.Class({
 			);
 			
 			me.validator = new ui.ctl.Input.Validation.Master();
+			me.session = new ii.Session(me.cache);
 			
 			me.authorizer = new ii.ajax.Authorizer(me.gateway);
 			me.authorizePath = "\\crothall\\chimes\\fin\\Accounts Receivable\\Convert WO to Invoice";
@@ -40,18 +42,16 @@ ii.Class({
 				function authorizationsLoaded() {
 					me.authorizationProcess.apply(me);
 				},
-				me);
-			
-			me.session = new ii.Session(me.cache);
+				me);			
 
 			me.defineFormControls();
 			me.configureCommunications();
+			me.setStatus("Loading");
 			me.modified(false);
 
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
-
+			
 			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
-			me.closeReasonTypeStore.fetch("userId:[user]", me.closeReasonTypesLoaded, me);
 			me.startDate.setValue(me.getDate("firstDayOfMonth"));
 			me.endDate.setValue(me.getDate("today"));
 
@@ -65,13 +65,22 @@ ii.Class({
 		authorizationProcess: function fin_rev_workOrderToInvoice_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
-
-			$("#pageLoading").hide();
 		
 			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
+			
+			$("#pageLoading").hide();
+			$("#pageLoading").css({
+				"opacity": "0.5",
+				"background-color": "black"
+			});
+			$("#messageToUser").css({ "color": "white" });
+			$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+			$("#pageLoading").fadeIn("slow");		
 				
 			ii.timer.timing("Page displayed");
+			me.loadCount = 1;
 			me.session.registerFetchNotify(me.sessionLoaded,me);
+			me.closeReasonTypeStore.fetch("userId:[user]", me.closeReasonTypesLoaded, me);
 		},	
 		
 		sessionLoaded: function fin_rev_workOrderToInvoice_UserInterface_sessionLoaded(){
@@ -84,7 +93,7 @@ ii.Class({
 		
 		resize: function() {
 			var args = ii.args(arguments,{});
-			var offset = document.documentElement.clientHeight - 120;
+			var offset = document.documentElement.clientHeight - 145;
 			
 			fin.workOrderToInvoiceUi.workOrderGrid.setHeight(offset);
 		},
@@ -236,19 +245,47 @@ ii.Class({
 			});
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
 		},
-	
+		
 		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
+			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
 		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
 
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
+		},
+		
 		resizeControls: function() {
 			var me = this;
 
@@ -288,6 +325,7 @@ ii.Class({
 		closeReasonTypesLoaded: function(me, activeId) {
 
 			me.closeReasonType.setData(me.closeReasonTypes);
+			me.checkLoadCount();
 		},
 
 		actionLoadItem: function() {
@@ -309,7 +347,7 @@ ii.Class({
 				return false;
 			}
 
-			$("#pageLoading").show();
+			me.setLoadCount();
 			
 			if ($("#houseCodeText").val() != "" )
 				houseCodeId = parent.fin.appUI.houseCodeId;
@@ -327,7 +365,7 @@ ii.Class({
 		workOrdersLoaded: function(me, activeId) {
 			
 			me.workOrderGrid.setData(me.workOrders);
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 			me.resizeControls();
 		},
 		
@@ -370,7 +408,7 @@ ii.Class({
 			}			
 			else {
 				$("#messageToUser").text("Validating");
-				$("#pageLoading").show();
+				$("#pageLoading").fadeIn("slow");
 
 				me.taxValidationStore.reset();
 				me.taxValidationStore.fetch("userId:[user],houseCodes:" + houseCodes, me.validationsLoaded, me);
@@ -380,7 +418,7 @@ ii.Class({
 		validationsLoaded: function(me, activeId) {
 
 			if (me.taxValidations.length > 0 && me.taxValidations[0].taxHouseCodes != "") {
-				$("#pageLoading").hide();
+				$("#pageLoading").fadeOut("slow");
 				
 				var taxHouseCodes = me.taxValidations[0].taxHouseCodes.split('|');
 
@@ -460,9 +498,11 @@ ii.Class({
 		actionSaveItem: function(xml) {
 			var me = this;
 			var item = [];
-
+			
+			me.setStatus("Saving");
+			
 			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow"); 
 
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
@@ -492,9 +532,10 @@ ii.Class({
 				me.modified(false);
 				me.actionLoadItem();
 			}
-			else {				
+			else {	
+				me.setStatus("Error");			
 				alert("[SAVE FAILURE] Error while converting the Work Order to Invoice: " + $(args.xmlNode).attr("message"));
-				$("#pageLoading").hide();
+				$("#pageLoading").fadeOut("slow"); 
 			}
 		}		
 	} 

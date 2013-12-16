@@ -2,6 +2,7 @@ ii.Import( "ii.krn.sys.ajax" );
 ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "fin.pay.weeklyPayroll.usr.defs" );
 
 ii.Style( "style", 1 );
@@ -66,6 +67,8 @@ ii.Class({
 				function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
 			);	
 
+			me.validator = new ui.ctl.Input.Validation.Master();
+			me.session = new ii.Session(me.cache);
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\Payroll\\SalaryWages";
 			me.authorizer.authorize([me.authorizePath],
@@ -73,10 +76,7 @@ ii.Class({
 					me.authorizationProcess.apply(me);
 				},
 				me);
-			
-			me.validator = new ui.ctl.Input.Validation.Master();
-			me.session = new ii.Session(me.cache);
-			
+
 			me.defineFormControls();
 			me.configureCommunications();
 			
@@ -91,6 +91,7 @@ ii.Class({
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			
+			$("#pageBody").show();
 			$("#divWeekly").bind("scroll", me.weeklyScroll);
 			$("#imgPayCodeAdd").bind("click", function() { me.payCodeOpen("", true); });
 			$("#imgPayCodeDelete").bind("click", function() { me.payCodeDeleteAll(""); });
@@ -114,11 +115,21 @@ ii.Class({
 		authorizationProcess: function fin_pay_weeklyPayroll_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
+			
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 
-			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);			
+			if (me.isAuthorized) {
+				ii.timer.timing("Page displayed");
+				me.session.registerFetchNotify(me.sessionLoaded, me);
 
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+				if (parent.fin.payMasterUi.salaryWagesReadOnly) {
+					$("#imgPayCodeAdd").hide();
+					$("#imgPayCodeDelete").hide();
+					$("#imgSave").hide();
+				}
+			}
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},
 		
 		sessionLoaded: function fin_pay_weeklyPayroll_UserInterface_sessionLoaded() {
@@ -276,8 +287,12 @@ ii.Class({
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
-			parent.parent.fin.appUI.modified = args.modified;
+
+			if (!parent.fin.payMasterUi.salaryWagesReadOnly) {
+				parent.parent.fin.appUI.modified = args.modified;
+				if (args.modified)
+					parent.fin.payMasterUi.setStatus("Edit");
+			}
 		},
 
 		payCodeTypesLoaded: function(me, activeId) {
@@ -310,7 +325,7 @@ ii.Class({
 				return false;
 			}
 
-			$("#pageLoading").show();
+			parent.fin.payMasterUi.showPageLoading("Loading");
 			me.startPoint = 1;
 			me.pageCurrent = 1;
 			me.weeklyPayrollLoading = true;
@@ -397,7 +412,7 @@ ii.Class({
 
 		    $("#selPCRowCount").html(PayCode);	
 			$("input[id^=chkPC]").bind("change", function() { me.modified(); });
-		    me.weeklyPayrollsLoad();
+		    me.weeklyPayrollsLoad(true);
 		},
 		
 		getPayCodeByPayCode: function(payCode) {
@@ -409,12 +424,12 @@ ii.Class({
 			}
 		},
 		
-		weeklyPayrollsLoad: function() {
+		weeklyPayrollsLoad: function(showLoadingIcon) {
 		    var me = this;
 
 			ii.trace("Weekly payroll total count loading", ii.traceTypes.information, "Info");
-
-		    $("#pageLoading").show();
+			if (showLoadingIcon)
+				parent.fin.payMasterUi.showPageLoading("Loading");
 		    me.weeklyPayrollLoading = true;
 		    
 		    me.weeklyPayrollCountStore.reset();
@@ -587,7 +602,7 @@ ii.Class({
 
 			//make sure we aren't loading any house codes..
 			me.weeklyPayrollLoading = false;
-			if (me.houseCodeLoading <= 0) $("#pageLoading").hide();
+			if (me.houseCodeLoading <= 0) parent.fin.payMasterUi.hidePageLoading("");
 			
 			//UI level security kaushal kishor
 			if (parent.fin.payMasterUi.salaryWagesReadOnly) {
@@ -605,7 +620,7 @@ ii.Class({
 					$("#txtD4" + rowNumber).attr('disabled', true);
 					$("#txtD5" + rowNumber).attr('disabled', true);
 					$("#txtD6" + rowNumber).attr('disabled', true);
-					$("#txtD7" + rowNumber).attr('disabled', true);					
+					$("#txtD7" + rowNumber).attr('disabled', true);
 				}
 				
 				$("#imgPayCodeAdd").hide();
@@ -746,7 +761,7 @@ ii.Class({
 	        }
 
 		    me.empHourly = Number($("#selFilterType").val());
-		    me.weeklyPayrollsLoad();
+		    me.weeklyPayrollsLoad(true);
 		},
 		
 		filterWorkShiftChange: function() {
@@ -758,7 +773,7 @@ ii.Class({
 	        }
 			
 		    me.shiftType = Number($("#selFilterWorkShift").val());
-		    me.weeklyPayrollsLoad();
+		    me.weeklyPayrollsLoad(true);
 		},
 		
 		payrollHouseCodeLoaded: function(me, activeId) {
@@ -967,8 +982,8 @@ ii.Class({
 		
 		houseCodeLoad: function(rowNumber, houseCode) {
 		    var me = this;
-		    
-		    $("#pageLoading").show();
+
+		    parent.fin.payMasterUi.showPageLoading("Loading");
 		    me.houseCodeLoading++;
 		    
 		    me.houseCodeCache[houseCode] = {};
@@ -1004,7 +1019,7 @@ ii.Class({
 		                me.houseCodeValidate(houseCode, me.houseCodeCache[houseCode].buildQueue);
     		            
 		                me.houseCodeLoading--;
-		                if (me.houseCodeLoading <= 0 && !me.weeklyPayrollLoading) $("#pageLoading").hide();
+		                if (me.houseCodeLoading <= 0 && !me.weeklyPayrollLoading) parent.fin.payMasterUi.hidePageLoading("Edit");
 		            }
 				}
 			});
@@ -1070,7 +1085,7 @@ ii.Class({
 		            me.houseCodeValidate(houseCode, me.houseCodeCache[houseCode].buildQueue);
 		            
 		            me.houseCodeLoading--;
-		            if (me.houseCodeLoading <= 0 && !me.weeklyPayrollLoading) $("#pageLoading").hide();
+		            if (me.houseCodeLoading <= 0 && !me.weeklyPayrollLoading) parent.fin.payMasterUi.hidePageLoading("Edit");
 				}
 			});		    
 		},		
@@ -1420,7 +1435,7 @@ ii.Class({
 			if (!confirm("Are you sure you want to delete the pay code [" + payCode.description + "] for the employee [" + weeklyPayroll.name + "]?"))
 				return;
 			
-			$("#pageLoading").show();
+			parent.fin.payMasterUi.showPageLoading("Saving");
 			me.action = "delete";
 			xml = me.deleteXmlBuild(weeklyPayroll);
 	        			
@@ -1486,8 +1501,10 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 
+			parent.fin.payMasterUi.setStatus("Normal");
+
 			if (add)
-				$("#PayCodeHeader").html("&nbsp;Add Aditional Pay Code");
+				$("#PayCodeHeader").html("&nbsp;Add Additional Pay Code");
 			else
 				$("#PayCodeHeader").html("&nbsp;Delete Pay Code");
 
@@ -1632,7 +1649,7 @@ ii.Class({
 			if (xml == "")
 				return;
 			
-			$("#pageLoading").show();
+			parent.fin.payMasterUi.showPageLoading("Saving");
 			me.action = "delete";
 	        			
 	        // Send the object back to the server as a transaction
@@ -1657,7 +1674,7 @@ ii.Class({
 			payCodes.each(function() { payCodeList += this.value + "|"; });
 			
 			//start the process...
-			$("#pageLoading").show();
+			parent.fin.payMasterUi.showPageLoading("Saving");
 			me.action = "delete";
 			
 			//build the xml string				
@@ -1812,6 +1829,7 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 
+			parent.fin.payMasterUi.setStatus("Normal");
 		    me.payCodeClose();
 		},
 		
@@ -1878,7 +1896,7 @@ ii.Class({
 		        else
 		            me.weeklyPayrollsLoad();
 		    }*/
-			 me.weeklyPayrollsLoad();
+			 me.weeklyPayrollsLoad(true);
 		},
 		
 		actionUndoWeeklyPayroll: function() {
@@ -1888,7 +1906,7 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 
-			me.weeklyPayrollsLoad();
+			me.weeklyPayrollsLoad(true);
 		},	
 		
 		insertHouseCodePayCode: function(type, shift, payCodes, houseCodeId, job, workOrder) {
@@ -1903,7 +1921,7 @@ ii.Class({
 			//if (payCodeList != "") payCodeList = payCodeList.substr(0, payCodeList.length-1);
 			
 			//start the process...
-			$("#pageLoading").show();
+			parent.fin.payMasterUi.showPageLoading("Saving");
 			me.action = "insert";
 			
 			//build the xml string
@@ -1945,9 +1963,9 @@ ii.Class({
 			
 			if (xml != "") {
 				ii.trace("Weekly payroll data saving", ii.traceTypes.information, "Info");
-			    $("#pageLoading").show();
+			   	parent.fin.payMasterUi.showPageLoading("Saving");
     			
-    			// Send the object back to the server as a transaction
+ 				// Send the object back to the server as a transaction
 			    me.transactionMonitor.commit({
 				    transactionType: "itemUpdate",
 				    transactionXml: xml,
@@ -2049,10 +2067,10 @@ ii.Class({
 				ii.trace("Weekly payroll data saved successfully", ii.traceTypes.information, "Info");
 				me.modified(false);
 				me.action = "";
-				me.weeklyPayrollsLoad();
+				me.weeklyPayrollsLoad(false);
 			}
 			else {
-				$("#pageLoading").hide();
+				parent.fin.payMasterUi.hidePageLoading("Error");
 
 				if (me.action == "insert")
 					alert("[SAVE FAILURE] Error while inserting Pay Code(s): " + $(args.xmlNode).attr("message"));

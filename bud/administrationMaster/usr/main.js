@@ -1,6 +1,7 @@
 ii.Import( "ii.krn.sys.ajax" );
 ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "fin.cmn.usr.tabsPack" );
 ii.Import( "fin.bud.administrationMaster.usr.defs" );
 
@@ -23,6 +24,7 @@ ii.Class({
 			me.approveBudgetNeedUpdate = true;
 			me.deleteBudgetNeedUpdate = true;
 			me.exportBudgetNeedUpdate = true;
+			me.loadCount = 0;
 
 			me.gateway = ii.ajax.addGateway("bud", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -43,6 +45,7 @@ ii.Class({
 
 			me.defineFormControls();
 			me.configureCommunications();
+			me.setStatus("Loading");
 
 			// blur event is not firing when clicking on the tab. Due to this dirty check function and prompt message was not working.
 			$("#TabCollection a").mouseover(function() {
@@ -82,37 +85,45 @@ ii.Class({
 					
 						if (($("iframe")[0].contentWindow.fin == undefined || me.annualInfoNeedUpdate))
 							$("iframe")[0].src = "/fin/bud/annualInformation/usr/markup.htm";
-	
-							me.activeFrameId = 0;
-							me.annualInfoNeedUpdate = false;
-							break;
+						else 
+							$("iframe")[0].contentWindow.fin.annualInformationUI.setStatus("Loaded")
+							
+						me.activeFrameId = 0;
+						me.annualInfoNeedUpdate = false;
+						break;
 
 					case "TabApproveBudget":
 					
-						if (($("iframe")[1].contentWindow.fin == undefined || me.approveBudgetNeedUpdate))
+						if (($("iframe")[1].contentWindow.fin == undefined || me.approveBudgetNeedUpdate)) 
 							$("iframe")[1].src = "/fin/bud/approveBudget/usr/markup.htm";
-	
-							me.activeFrameId = 1;
-							me.approveBudgetNeedUpdate = false;
-							break;
+						else 
+							$("iframe")[1].contentWindow.fin.approveBudgetUi.setStatus("Loaded")
+							
+						me.activeFrameId = 1;
+						me.approveBudgetNeedUpdate = false;
+						break;
 							
 					case "TabDeleteBudget":
 					
-						if (($("iframe")[2].contentWindow.fin == undefined || me.deleteBudgetNeedUpdate))
+						if (($("iframe")[2].contentWindow.fin == undefined || me.deleteBudgetNeedUpdate)) 
 							$("iframe")[2].src = "/fin/bud/deleteBudget/usr/markup.htm";
-	
-							me.activeFrameId = 2;
-							me.deleteBudgetNeedUpdate = false;
-							break;
+						else 
+							$("iframe")[2].contentWindow.fin.deleteBudgetUi.setStatus("Loaded")
+							
+						me.activeFrameId = 2;
+						me.deleteBudgetNeedUpdate = false;
+						break;
 							
 					case "TabExportBudget":
 					
 						if (($("iframe")[3].contentWindow.fin == undefined || me.exportBudgetNeedUpdate))
 							$("iframe")[3].src = "/fin/bud/exportBudget/usr/markup.htm";
-	
-							me.activeFrameId = 3;
-							me.exportBudgetNeedUpdate = false;
-							break;
+						else 
+							$("iframe")[3].contentWindow.fin.exportBudgetUi.setStatus("Loaded")
+								
+						me.activeFrameId = 3;
+						me.exportBudgetNeedUpdate = false;
+						break;
 				}		
 			});
 			
@@ -131,13 +142,13 @@ ii.Class({
 		authorizationProcess: function fin_bud_administrationMaster_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
-
+			
 			$("#pageLoading").hide();
 		
 			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
 				
 			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+			me.session.registerFetchNotify(me.sessionLoaded,me);			
 		},	
 		
 		sessionLoaded: function fin_bud_administrationMaster_UserInterface_sessionLoaded(){
@@ -197,10 +208,27 @@ ii.Class({
 				return false;
 		},
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 
 			return !fin.cmn.status.itemValid();
 		},
+		
+		modified: function () {
+            var args = ii.args(arguments, {
+                modified: { type: Boolean, required: false, defaultValue: true }
+            });
+            var me = this;
+
+            parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+        },
 		
 		actionSaveItem: function() {
 			var args = ii.args(arguments,{});

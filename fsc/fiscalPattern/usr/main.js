@@ -20,9 +20,10 @@ ii.Class({
 		init: function() {
 			var args = ii.args(arguments, {});
 			var me = this;
-			me.patternsReadOnly = false;
 			
+			me.patternsReadOnly = false;			
 			me.fiscalPatternId = 0;
+			me.loadCount = 0;
 			
 			me.gateway = ii.ajax.addGateway("fsc", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);			
@@ -31,38 +32,55 @@ ii.Class({
 				function(status, errorMessage){ me.nonPendingError(status, errorMessage); }
 			);	
 			
-			me.validator = new ui.ctl.Input.Validation.Master();	//@iiDoc {Property:ui.ctl.Input.Validation.Master} The accounts payable valaidation master.
-			me.ajaxValidator = new ii.ajax.Validator(me.gateway);	//@iiDoc {Property:ii.ajax.TransactionMonitor} The AP Ajax transaction monitor.
+			me.validator = new ui.ctl.Input.Validation.Master();
+			me.session = new ii.Session(me.cache);
 
-			me.authorizer = new ii.ajax.Authorizer( me.gateway );	//@iiDoc {Property:ii.ajax.Authorizer} Boolean
+			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\Fiscal\\Patterns";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
 					me.authorizationProcess.apply(me);
 				},
 				me);
-			
-			me.session = new ii.Session(me.cache);
 
 			me.defineFormControls();			
 			me.configureCommunications();
+			me.setStatus("Loading");
+			me.modified(false);
 
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
-			
-			me.patternStore.fetch("userId:[user]", me.patternsLoaded, me);	
-			me.modified(false);			
+
+			if (top.ui.ctl.menu) {
+				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+			}
 		},
 		
 		authorizationProcess: function fin_fsc_fiscalPattern_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
 
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 			me.patternsReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
-			me.controlVisible();	
-				
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+			
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
+
+				ii.timer.timing("Page displayed");
+				me.loadCount = 1;
+				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.patternStore.fetch("userId:[user]", me.patternsLoaded, me);				
+				me.controlVisible();
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},	
 		
 		sessionLoaded: function fin_fsc_fiscalPattern_UserInterface_sessionLoaded(){
@@ -70,14 +88,14 @@ ii.Class({
 				me: {type: Object}
 			});
 
-			ii.trace("session loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 		
 		resize: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
 
-			fin.fscPatternUi.fiscalPattern.setHeight($(window).height() - 115);			
+			fin.fscPatternUi.fiscalPattern.setHeight($(window).height() - 140);			
 		},
 				
 		defineFormControls: function() {
@@ -119,7 +137,6 @@ ii.Class({
 
 			me.fiscalPattern = new ui.ctl.Grid({
 				id: "FiscalPattern",
-				//appendToId: "divForm",
 				allowAdds: true,
 				selectFunction: function( index ) { 
 					me.itemSelect(index); 
@@ -152,13 +169,6 @@ ii.Class({
 			me.fiscalPattern.setHeight($(me.fiscalPattern.element).parent().height() - 2);			
 		},
 		
-		resizeControls: function() {
-			var me = this;
-			
-			me.fiscalPatternTitle.resizeText();
-			me.resize();
-		},
-		
 		configureCommunications: function fin_fsc_UserInterface_configureCommunications() {
 			var args = ii.args(arguments, {});			
 			var me = this;
@@ -172,18 +182,58 @@ ii.Class({
 			});			
 		},
 		
-		modified: function fin_cmn_status_modified() {
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
+		dirtyCheck: function(me) {
+				
+			return !fin.cmn.status.itemValid();
+		},
+		
+		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
+			var me = this;
+
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
 		},
 		
-		controlVisible: function(){
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
+		},
+		
+		resizeControls: function() {
 			var me = this;
 			
-			if(me.patternsReadOnly){
+			me.fiscalPatternTitle.resizeText();
+			me.resize();
+		},
+		
+		controlVisible: function() {
+			var me = this;
+			
+			if (me.patternsReadOnly) {
 				me.fiscalPattern.columns["title"].inputControl = null;
 				me.fiscalPattern.columns["active"].inputControl = null;
 				me.fiscalPattern.allowAdds = false;
@@ -192,16 +242,15 @@ ii.Class({
 				$(".footer").hide();
 			}
 		},
+		
 		patternsLoaded: function fin_fsc_UserInterface_patternsLoaded(me, activeId) {
-			me.controlVisible();
 			
 			me.fiscalPatternId = this.id;
 			me.fiscalPattern.setData(me.patterns);
-
 			me.patternCountOnLoad = me.patterns.length - 1;
-			
-			$("#pageLoading").hide();
+			me.controlVisible();
 			me.resizeControls();
+			me.checkLoadCount();
 		},
 		
 		/* @iiDoc {Method}
@@ -219,8 +268,7 @@ ii.Class({
 			else 
 				me.fiscalPatternId = 0;
 				
-			me.controlVisible();	
-			
+			me.controlVisible();
 		},
 
 		controlKeyProcessor: function() {
@@ -252,9 +300,12 @@ ii.Class({
 		},
 
 		actionUndoItem: function() {
+			var me = this;
+
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 				
+			me.setStatus("Loading");
 			window.location = "/fin/fsc/fiscalPattern/usr/markup.htm";
 		},
 			
@@ -262,12 +313,10 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 			
-			me.modified(false);
 			// Check to see if the data is not entered
 			if(me.fiscalPattern.activeRowIndex < 0 || me.patternsReadOnly) return false;
 
-			me.fiscalPattern.body.deselectAll();
-			
+			me.fiscalPattern.body.deselectAll();			
 			me.validator.forceBlur();
 			
 			// Check to see if the data entered is valid
@@ -281,9 +330,9 @@ ii.Class({
 
 			for (var index = 0; index < me.patterns.length; index++) {
 
-				if(me.patterns[index].modified == false && index <= me.patternCountOnLoad) continue;
+				if (me.patterns[index].modified == false && index <= me.patternCountOnLoad) continue;
 								
-				pattern = new fin.fsc.fiscalPattern.FiscalPattern (
+				pattern = new fin.fsc.fiscalPattern.FiscalPattern(
 					me.fiscalPattern.data[index].id
 					, me.fiscalPattern.data[index].title
 					, "1"
@@ -295,10 +344,12 @@ ii.Class({
 
 			var xml = me.saveXmlBuildFiscalPattern(item);
 			
-			if(item.length <= 0 ) return; //no records modified
+			if (item.length <= 0 ) return; //no records modified
 
+			me.setStatus("Saving");
+			
 			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow");
 
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
@@ -344,28 +395,19 @@ ii.Class({
 			var transaction = args.transaction;
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
-			var errorMessage = "";
 			var status = $(args.xmlNode).attr("status");
-			var traceType = ii.traceTypes.errorDataCorruption;
 			
-			if(status == "success") {
+			if (status == "success") {
+				me.modified(false);
+				me.setStatus("Saved");
 				window.location = "/fin/fsc/fiscalPattern/usr/markup.htm"
 			}
 			else {
-								
-				alert('Error while updating Fiscal Pattern Record: ' + $(args.xmlNode).attr("message"));
-				errorMessage = $(args.xmlNode).attr("error");
-
-				if(status == "invalid") {
-					traceType = ii.traceTypes.warning;
-				}
-				else {
-					errorMessage += " [SAVE FAILURE]";
-				}
-				me.actionUndoItem();
-				$("#pageLoading").hide();
-	
+				me.setStatus("Error");
+				alert("[SAVE FAILURE] Error while updating the Fiscal Pattern record: " + $(args.xmlNode).attr("message"));
 			}
+
+			$("#pageLoading").fadeOut("slow");
 		}
 	}
 });

@@ -7,6 +7,12 @@ ii.init.register( function() {
 
 ii.init.register( function() {
 
+	fin.app.state.systemVariableArgs = {
+		id: {type: Number, defaultValue: 0}
+		, variableName: {type: String, required: false, defaultValue: ""}
+		, variableValue: {type: String, required: false, defaultValue: ""}	
+	};
+	
 	fin.app.state.stateTypeArgs = {
 		id: {type: Number, defaultValue: 0}
 		, brief: {type: String, required: false, defaultValue: ""}
@@ -22,7 +28,7 @@ ii.init.register( function() {
 		, name: {type: String, required: false, defaultValue: ""}
 		, minimumWage: {type: Number, required: false, defaultValue: 0.00}
 		, effectiveDate: {type: String, required: false, defaultValue: ""}
-		, active: {type: Boolean, required: false, defaultValue: true}
+		, active: {type: Boolean, required: false, defaultValue: false}
 		, affectedNumberOfEmployees: {type: Number, required: false, defaultValue: 0}
 		, modified: {type: Boolean, required: false, defaultValue: false}
 	};
@@ -35,7 +41,7 @@ ii.init.register( function() {
 		, name: {type: String, required: false, defaultValue: ""}
 		, minimumWage: {type: Number, required: false, defaultValue: 0.00}
 		, effectiveDate: {type: String, required: false, defaultValue: ""}
-		, active: {type: Boolean, required: false, defaultValue: true}
+		, active: {type: Boolean, required: false, defaultValue: false}
 		, affectedNumberOfEmployees: {type: Number, required: false, defaultValue: 0}
 		, modified: {type: Boolean, required: false, defaultValue: false}
 	};
@@ -48,12 +54,40 @@ ii.init.register( function() {
 		, name: {type: String, required: false, defaultValue: ""}
 		, minimumWage: {type: Number, required: false, defaultValue: 0.00}
 		, effectiveDate: {type: String, required: false, defaultValue: ""}
-		, active: {type: Boolean, required: false, defaultValue: true}
+		, active: {type: Boolean, required: false, defaultValue: false}
 		, affectedNumberOfEmployees: {type: Number, required: false, defaultValue: 0}
 		, modified: {type: Boolean, required: false, defaultValue: false}
 	};
+	
+	fin.app.state.employeePayRateArgs = {
+		id: {type: Number, defaultValue: 0}
+		, column6: {type: String, required: false, defaultValue: ""} 	// House Code
+		, column8: {type: String, required: false, defaultValue: ""} 	// First Name
+		, column9: {type: String, required: false, defaultValue: ""} 	// Last Name
+		, column10: {type: String, required: false, defaultValue: ""} 	// Employee Number
+		, column11: {type: Number, required: false, defaultValue: 0.00} // Current Pay Rate
+		, column12: {type: Number, required: false, defaultValue: 0.00} // Updated Pay Rate
+		, column13: {type: String, required: false, defaultValue: ""} 	// Approved
+		, column14: {type: String, required: false, defaultValue: ""} 	// Status
+		, modified: {type: Boolean, required: false, defaultValue: false}
+	};
+	
+	fin.app.state.fileNameArgs = {
+		id: {type: Number}
+		, fileName: {type: String, required: false, defaultValue: ""}
+	};
 
 }, 2);
+
+ii.Class({
+	Name: "fin.app.state.SystemVariable",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.app.state.systemVariableArgs);
+			$.extend(this, args);			
+		}
+	}
+});
 
 ii.Class({
 	Name: "fin.app.state.StateType",
@@ -90,6 +124,26 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.app.state.cityArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.app.state.EmployeePayRate",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.app.state.employeePayRateArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.app.state.FileName",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.app.state.fileNameArgs);
 			$.extend(this, args);
 		}
 	}

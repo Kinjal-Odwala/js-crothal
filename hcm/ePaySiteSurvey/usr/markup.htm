@@ -1,0 +1,816 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>EPay Site Survey</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/hcm/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img id="imgLoading" src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+		<div id="divFrame" style="height: 0px;">				
+			<iframe id="iFrameUpload" src="/net/crothall/chimes/fin/app/act/FileUpload.aspx" frameborder="0" width="100" height="0"></iframe>
+		</div>
+		<div id="divFramePrint" style="height: 0px;">				
+			<iframe id="iFramePrint" frameborder="0" width="100" height="0"></iframe>
+		</div>
+		<div class="pageHeader">
+			 <div style="float: left; width: 10%;"><div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div></div>
+			 <div style="float: left; width: 80%;"><div id="header" class="header">Site Survey</div></div>
+			 <div style="float: left; width: 10%;">&nbsp;</div>
+        </div>
+		<div style="clear:both;"></div>
+		<div id="itemStatusDiv">
+			<div id="itemStatusImage" class="itemStatusImage"></div>
+			<div id="itemModifiedImage" class="itemModifiedImage"></div>
+			<div id="itemStatusText">Loading, please wait...</div>
+		</div>
+		<div style="clear:both;"></div>
+		<div class="pageBody">        	
+			<div id="fragment-1" class="fragment">
+				<div id="SiteSurvey">
+					<div id="divHouseCode" style="display:none;">
+						<div style="height:10px;"></div>
+						<div class="body">
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>House Code:
+								</div>
+								<div id="houseCodeContainer" class="HouseCodeContainer"></div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+					</div>	
+					<div id="divHouseCodeInfo" class="tabContainer" style="display:none;">
+						<div class="contentArea popupHeader">
+							 <div style="float: left; width: 10%;">&nbsp;</div>
+							 <div style="float: left; width: 80%;">House Code Information</div>
+							 <div style="float: left; width: 10%;"><a id="editHouseCode" class="edit" title="Edit the House Code information">Edit</a></div>
+						</div>
+						<div class="leftContainer">
+							<div class="body">								
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="nonRequiredFieldIndicator">House Code Name:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="HouseCodeName"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Address 1:
+									</div>
+									<div class="inputTextArea">
+										<div id="Address1"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>City:
+									</div>
+									<div class="inputTextArea">
+										<div id="City"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Zip Code:
+									</div>
+									<div class="inputTextArea">
+										<div id="ZipCode"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Time Zone:
+									</div>
+									<div class="inputTextArea">
+										<div id="TimeZone"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+							</div>
+						</div>
+						<div class="rightContainer">
+							<div class="body">								
+								<div class="tableEditArea">
+									<div class="labelTextArea"></div>
+									<div class="inputTextArea"></div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextArea"></div>
+									<div class="inputTextArea"></div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>State:
+									</div>
+									<div class="inputTextArea">
+										<div id="State"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextArea"></div>
+									<div class="inputTextArea"></div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Day Light Savings:
+									</div>
+									<div class="inputTextArea">
+										<div id="DayLightSavings"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+							</div>
+						</div>									
+					</div>
+					<div style="clear:both;"></div>
+					<div id="divManager" class="tabContainer" style="display:none;">
+						<div class="contentArea popupHeader">
+							 <div style="float: left; width: 10%;">&nbsp;</div>
+							 <div style="float: left; width: 80%;">Manager Information</div>
+							 <div style="float: left; width: 10%;"><a id="editManager" class="edit" title="Edit the Manager information">Edit</a></div>
+						</div>
+						<div class="leftContainer">
+							<div class="body">
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Manager Name:
+									</div>
+									<div class="inputTextArea">
+										<div id="ManagerName"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Phone:
+									</div>
+									<div class="inputTextArea">
+										<div id="ManagerPhone"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Email:
+									</div>
+									<div class="inputTextArea">
+										<div id="ManagerEmail"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div id="AlternateInfoLeft">
+									<div class="tableEditArea">
+										<div class="labelTextArea">
+											<span class="nonRequiredFieldIndicator">Alternate Contact Name:</span>
+										</div>
+										<div class="inputTextArea">
+											<div id="AlternateContactName"></div>
+										</div>
+										<div style="clear:both;"></div>
+									</div>
+									<div class="tableEditArea">
+										<div class="labelTextArea">
+											<span class="nonRequiredFieldIndicator">Alternate Contact Phone:</span>
+										</div>
+										<div class="inputTextArea">
+											<div id="AlternateContactPhone"></div>
+										</div>
+										<div style="clear:both;"></div>
+									</div>
+									<div class="tableEditArea">
+										<div class="labelTextArea">
+											<span class="nonRequiredFieldIndicator">Alternate Contact Email:</span>
+										</div>
+										<div class="inputTextArea">
+											<div id="AlternateContactEmail"></div>
+										</div>
+										<div style="clear:both;"></div>
+									</div>
+									<div class="tableEditArea">
+										<div class="labelTextArea">
+											<span class="requiredFieldIndicator">&#149;</span>Regional Manager Name:
+										</div>
+										<div class="inputTextArea">
+											<div id="RegionalManagerName"></div>
+										</div>
+										<div style="clear:both;"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="AlternateInfoRight" class="rightContainer">
+							<div class="body">
+								<div class="tableEditArea">								
+									<div class="labelTextArea"></div>
+									<div class="inputTextArea"></div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Cell Phone:
+									</div>
+									<div class="inputTextArea">
+										<div id="ManagerCellPhone"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="nonRequiredFieldIndicator">Alternate Email:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="ManagerAlternateEmail"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextArea"></div>
+									<div class="inputTextArea"></div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="nonRequiredFieldIndicator">Alternate Contact Cell Phone:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="AlternateContactCellPhone"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>							
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="nonRequiredFieldIndicator">Alternate Contact Alternate Email:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="AlternateContactAlternateEmail"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>							
+								<div class="tableEditArea">
+									<div class="labelTextArea"></div>
+									<div class="inputTextArea"></div>
+									<div style="clear:both;"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div style="clear:both;"></div>
+					<div id="divEmployee" class="tabContainer" style="display:none">					
+						<div class="contentArea popupHeader">
+							 <div style="float: left; width: 10%;">&nbsp;</div>
+							 <div style="float: left; width: 80%;">Employee Demographics</div>
+							 <div style="float: left; width: 10%;"><a id="editEmployee" class="edit" title="Edit the Employee information">Edit</a></div>
+						</div>
+						<div class="leftContainer">
+							<div class="body">							
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span># of Hourly Employees:
+									</div>
+									<div class="inputTextArea">
+										<div id="HourlyEmployees"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Union:
+									</div>
+									<div class="radioButton">
+										<input id="UnionYes" name="Union" type="radio" checked="checked" value="true" />Yes
+									</div>
+									<div class="radioButton">
+										<input id="UnionNo" name="Union" type="radio" value="false" />No
+									</div>	
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span># of Buildings at Facility:
+									</div>
+									<div class="inputTextArea">
+										<div id="BuildingsAtFacility"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="nonRequiredFieldIndicator">Current Rounding Scheme:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="CurrentRoundingScheme"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Kronos:
+									</div>
+									<div class="radioButton">
+										<input id="KronosYes" name="Kronos" type="radio" checked="checked" value="true" />Yes
+									</div>
+									<div class="radioButton">
+										<input id="KronosNo" name="Kronos" type="radio" value="false" />No
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+							</div>
+						</div>
+						<div class="rightContainer">
+							<div class="body">
+								<div class="tableEditArea">
+									<div class="labelTextAreaLarge">
+										<span class="nonRequiredFieldIndicator">Maximum # of Employees at Shift Change:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="MaximumEmployeesAtShiftChange"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextAreaLarge">
+										<span class="requiredFieldIndicator">&#149;</span>Payroll Frequency:
+									</div>
+									<div class="inputTextArea">
+										<div id="PayrollFrequency"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextArea"></div>
+									<div class="inputTextArea"></div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextAreaLarge">
+										<span class="requiredFieldIndicator">&#149;</span>Current Overtime Policy:
+									</div>
+									<div class="inputTextArea">
+										<div id="CurrentOvertimePolicy"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextAreaLarge">
+										<span class="requiredFieldIndicator">&#149;</span>Groups of Employees with Different Pay Rules:
+									</div>
+									<div class="radioButton">
+										<input id="GroupsOfEmployeesWithDifferentPayRulesYes" name="GroupsOfEmployeesWithDifferentPayRules" type="radio" checked="checked" value="true" />Yes
+									</div>
+									<div class="radioButton">
+										<input id="GroupsOfEmployeesWithDifferentPayRulesNo" name="GroupsOfEmployeesWithDifferentPayRules" type="radio" value="false" />No
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+							</div>
+						</div>					
+					</div>
+					<div style="clear:both;"></div>
+					<div id="divPayCode" class="tabContainer" style="display:none;">
+						<div class="contentArea popupHeader">
+							 <div style="float: left; width: 10%;">&nbsp;</div>
+							 <div style="float: left; width: 80%;">Pay Codes and Shift Differentials</div>
+							 <div style="float: left; width: 10%;"><a id="editPayCode" class="edit" title="Edit the Pay Codes and Shift Differentials">Edit</a></div>
+						</div>
+						<div>
+							<div class="body">
+								<div class="tableEditArea">
+									<div id="PayCodeGrid"></div>								
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="nonRequiredFieldIndicator">Shift Differentials Comments:</span>
+									</div>
+									<div><textarea id="ShiftDifferentialsComments"></textarea></div>								
+									<div style="clear:both; height:10px;"></div>
+								</div>
+							</div>
+						</div>					
+					</div>
+					<div style="clear:both;"></div>
+					<div id="divFonen" class="tabContainer" style="display:none;">
+						<div class="contentArea popupHeader">
+							 <div style="float: left; width: 10%;">&nbsp;</div>
+							 <div style="float: left; width: 80%;">Fonen</div>
+							 <div style="float: left; width: 10%;"><a id="editFonen" class="edit" title="Edit the Fonen information">Edit</a></div>
+						</div>
+						<div class="leftContainer">
+							<div class="body">
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Phones Available:
+									</div>
+									<div class="radioButton">
+										<input id="PhonesAvailableYes" name="PhonesAvailable" type="radio" checked="checked" value="true" />Yes
+									</div>
+									<div class="radioButton">
+										<input id="PhonesAvailableNo" name="PhonesAvailable" type="radio" value="false" />No
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Can Phones dial Toll Free:
+									</div>
+									<div class="radioButton">
+										<input id="TollFreeYes" name="TollFree" type="radio" checked="checked" value="true" />Yes
+									</div>
+									<div class="radioButton">
+										<input id="TollFreeNo" name="TollFree" type="radio" value="false" />No
+									</div>								
+									<div style="clear:both;"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div style="clear:both;"></div>
+					<div id="divReview" class="tabContainer" style="display:none;">
+						<div class="contentArea">
+				        	<div class="popupHeader">Review and Submit</div>
+			        	</div>
+						<div>
+							<div class="body">
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="nonRequiredFieldIndicator">Final Comments:</span>
+									</div>
+									<div><textarea id="Comments"></textarea></div>
+									<div style="clear:both; height:10px;"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>				
+				<div id="SiteMethodology" style="display:none;">
+					<div class="contentArea popupHeader">
+						 <div>Site Reporting Settings</div>
+					</div>
+					<div class="leftContainer">
+						<div class="body">
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>EPay Site:
+								</div>
+								<div class="inputTextArea">
+									<div id="EPaySite"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Default Pay Group:
+								</div>
+								<div class="inputTextArea">
+									<div id="EPayGroupType"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>First Day of Reporting Period:
+								</div>
+								<div class="inputTextArea">
+									<div id="FirstDayOfReportingPeriod"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>							
+						</div>
+					</div>
+					<div class="rightContainer">
+						<div class="body">
+							<div class="tableEditArea">
+								<div class="labelTextArea"></div>
+								<div class="inputTextArea"></div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Reporting Frequency:
+								</div>
+								<div class="inputTextArea">
+									<div id="ReportingFrequency"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>First Day of Week:
+								</div>
+								<div class="inputTextArea">
+									<div id="FirstDayOfWeek"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+					</div>				
+					<div style="clear:both;"></div>
+					<div class="contentArea popupHeader">
+						 <div>Device Information</div>
+					</div>
+					<div class="leftContainer">
+						<div class="body">
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Preferred Connection Method:
+								</div>
+								<div class="inputTextArea">
+									<div id="PreferredConnectionMethod"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Device Assignment:
+								</div>
+								<div id="DeviceTypeContainer" class="HouseCodeContainer">
+									<input id="DeviceAssignment" class="HouseCodeText" type="text" />
+									<div id="DeviceTypeDropImage" class="HouseCodeDropDown"></div>
+									<div id="DeviceTypeClockAssetGrid"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Daily Reboot Time:
+								</div>
+								<div class="inputTextArea">
+									<div id="DailyRebootTime"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Task Selection Method:
+								</div>
+								<div class="inputTextArea">
+									<div id="TaskSelectionMethod"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Enable Lunch Logic:
+								</div>
+								<div class="inputTextArea">
+									<div id="EnableLunchLogic"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+					</div>
+					<div class="rightContainer">
+						<div class="body">
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Device Type:
+								</div>
+								<div class="inputTextArea">
+									<select id="DeviceType" name="DeviceType" multiple="multiple" tabindex="57"></select>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea"></div>
+								<div class="inputTextArea"></div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Use Work Orders:
+								</div>
+								<div class="inputTextArea">
+									<div id="UseWorkOrders"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Accident Free Questions:
+								</div>
+								<div class="inputTextArea">
+									<div id="AccidentFreeQuestions"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Fix Punches on Clock:
+								</div>
+								<div class="inputTextArea">
+									<div id="FixPunchesOnClock"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+					</div>				
+					<div style="clear:both;"></div>
+					<div class="contentArea popupHeader">
+						 <div>Logistics</div>
+					</div>
+					<div class="leftContainer">
+						<div class="body">
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Business Analyst:
+								</div>
+								<div class="inputTextArea">
+									<div id="BusinessAnalyst"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">P.O. #:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="PONumber"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">Site Group ID:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="SiteGroupID"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Go-Live Date:
+								</div>
+								<div class="inputTextArea">
+									<div id="GoLiveDate"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+					</div>
+					<div class="rightContainer">
+						<div class="body">
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Review Date:
+								</div>
+								<div class="inputTextArea">
+									<div id="ReviewDate"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">Site Group:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="SiteGroup"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">Site Group Name:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="SiteGroupName"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Confirm site is live at above date:
+								</div>
+								<div class="inputTextArea">
+									<div id="ConfirmSiteIsLive"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+					</div>					
+				</div>	
+				<div id="ClockManagement" style="display:none;">
+					<div style="clear:both;height:10px;"></div>
+					<div class="leftContainer">
+						<div class="body">
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Search By:
+								</div>
+								<div class="radioButtonSearch">
+									<input id="HouseCode" name="CMSearch" type="radio" checked="checked" value="true" />House Code
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>House Code:
+								</div>
+								<div id="DropDownRightHouseCode">
+									<div id="houseCodeTemplateContainer" class="HouseCodeContainer"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>							
+						</div>
+					</div>
+					<div class="rightContainer">
+						<div class="body">
+							<div class="tableEditArea">
+								<div class="labelTextArea"></div>
+								<div class="radioButtonSearch">
+									<input id="DeviceInfo" name="CMSearch" type="radio" value="false" />Device Info
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Device Type:
+								</div>
+								<div class="inputTextArea">
+									<div id="DeviceTypeCMSearch"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Device Status:
+								</div>
+								<div class="inputTextArea">
+									<div id="DeviceStatusCMSearch"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Asset Transfer Status:
+								</div>
+								<div class="inputTextArea">
+									<div id="AssetTransferStatusCMSearch"></div><div id="AnchorSearch"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+					</div>				
+					<div style="clear:both;"></div>
+					<div class="contentArea popupHeader">
+						 <div>Devices</div>
+					</div>
+					<div class="body">
+						<div style="clear:both;"></div>
+						<div id="GridContianer">
+						    <div id="DeviceGrid"></div>
+						 </div>						
+						<div style="clear:both;"></div>									
+					</div>				
+				</div>				
+				<div id="ManageDeviceType" style="display:none;">
+					<div class="contentArea popupHeader">
+						 <div>Device Types</div>
+					</div>
+					<div class="body">
+						<div class="tableEditArea">
+							<div id="DeviceTypeGrid"></div>
+							<div style="clear:both;"></div>
+						</div>
+					</div>
+				</div>				
+    		</div>
+			<div style="clear:both;"></div>
+			<div>
+				<div id="AnchorPrev"></div>
+				<div id="AnchorNext"></div>
+				<div id="AnchorSaveAndSend" style="display:none;"></div>
+				<div id="AnchorManageDeviceTypes" style="display:none;"></div>
+				<div id="AnchorSave" style="display:none;"></div>
+				<div id="AnchorCancel" style="display:none;"></div>
+				<div id="AnchorPrint" style="display:none;"></div>
+			</div>			
+		</div>
+		<div id="iiInputValidationMaster"></div>
+	</body>
+</html>

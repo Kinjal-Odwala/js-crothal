@@ -5,6 +5,7 @@ ii.Import( "ui.ctl.usr.grid" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.cmn.usr.tabsPack" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "fin.rev.master.usr.defs" );
 ii.Import( "fin.cmn.usr.houseCodeSearch" );
 ii.Import( "fin.cmn.usr.houseCodeSearchTemplate" );
@@ -51,6 +52,8 @@ ii.Class({
 			me.invoiceType = invoiceTypes.edit;
 			me.houseCodeBrief = "";
 			me.descriptionAccount = 0;
+			me.status = "";
+			me.loadCount = 1;
 
             if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
             
@@ -100,6 +103,7 @@ ii.Class({
 
             me.defineFormControls();
             me.configureCommunications();
+			me.setStatus("Loading");
 			me.modified(false);
             me.setTabIndexes();
             $("#backLabel").hide();
@@ -152,8 +156,10 @@ ii.Class({
                 switch (this.id) {
                     case "TabCreateInvoices":
 
-                        if (($("iframe")[0].contentWindow.fin == undefined || me.invoiceNeedUpdate) && me.lastSelectedRowIndex >= 0)
-                            $("iframe")[0].src = "/fin/rev/invoice/usr/markup.htm?invoiceId=" + me.invoiceId;
+                        if (($("iframe")[0].contentWindow.fin == undefined || me.invoiceNeedUpdate) && me.lastSelectedRowIndex >= 0) {
+							me.showPageLoading("Loading");
+							$("iframe")[0].src = "/fin/rev/invoice/usr/markup.htm?invoiceId=" + me.invoiceId;
+						}
 
                         me.activeFrameId = 0;
                         me.invoiceNeedUpdate = false;
@@ -164,8 +170,10 @@ ii.Class({
 
                     case "TabInvoiceHeaderInfo":
 
-                        if (($("iframe")[1].contentWindow.fin == undefined || me.invoiceInfoNeedUpdate) && me.lastSelectedRowIndex >= 0)
-                            $("iframe")[1].src = "/fin/rev/invoiceInfo/usr/markup.htm?invoiceId=" + me.invoiceId;
+                        if (($("iframe")[1].contentWindow.fin == undefined || me.invoiceInfoNeedUpdate) && me.lastSelectedRowIndex >= 0) {
+							me.showPageLoading("Loading");
+							$("iframe")[1].src = "/fin/rev/invoiceInfo/usr/markup.htm?invoiceId=" + me.invoiceId;
+						}
 
                         me.activeFrameId = 1;
                         me.invoiceInfoNeedUpdate = false;
@@ -174,8 +182,10 @@ ii.Class({
 
                     case "TabModifyAccountsReceivable":
 
-                        if (($("iframe")[2].contentWindow.fin == undefined || me.accountReceivableNeedUpdate) && me.lastSelectedRowIndex >= 0)
-                            $("iframe")[2].src = "/fin/rev/accountReceivable/usr/markup.htm?invoiceId=" + me.invoiceId;
+                        if (($("iframe")[2].contentWindow.fin == undefined || me.accountReceivableNeedUpdate) && me.lastSelectedRowIndex >= 0) {
+							me.showPageLoading("Loading");
+							$("iframe")[2].src = "/fin/rev/accountReceivable/usr/markup.htm?invoiceId=" + me.invoiceId;
+						} 
 
                         me.activeFrameId = 2;
                         me.accountReceivableNeedUpdate = false;
@@ -198,17 +208,29 @@ ii.Class({
             var args = ii.args(arguments, {});
             var me = this;
 
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\Invoicing/AR");
             me.invoicingReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Invoicing/AR\\Read");
-            $("#pageLoading").hide();
 
-            if (me.invoicingReadOnly) {
-				$("#AnchorNew").hide();
-				$("#AnchorCancelInvoice").hide();
-				$("#actionMenu").hide();
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
+
+				ii.timer.timing("Page displayed");
+				me.session.registerFetchNotify(me.sessionLoaded, me);
+				if (me.invoicingReadOnly) {
+					$("#AnchorNew").hide();
+					$("#AnchorCancelInvoice").hide();
+					$("#actionMenu").hide();
+				}
 			}
-			
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
         },
 		
 		sessionLoaded: function fin_rev_master_UserInterface_sessionLoaded() {
@@ -225,10 +247,10 @@ ii.Class({
             var offset = 0;
 
             if (me.windowWidth != $(window).width() || me.windowHeight != $(window).height()) {
-                offset = document.documentElement.clientHeight - 262;
+                offset = document.documentElement.clientHeight - 287;
 
                 me.invoiceGrid.setHeight($(me.invoiceGrid.element).parent().height() - 10);
-				me.invoiceSearchGrid.setHeight($("#pageLoading").height() - 160);
+				me.invoiceSearchGrid.setHeight($("#pageLoading").height() - 185);
 				
                 $("#iFrameCreateInvoices").height(offset);
                 $("#iFrameInvoiceHeaderInfo").height(offset);
@@ -513,6 +535,15 @@ ii.Class({
 				changeFunction: function() { me.modified(); },
 		        required: false
 		    });
+			
+			 me.serviceLocation.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(function (isFinal, dataMap) {
+
+				    if ((this.focused || this.touched) && me.serviceLocation.indexSelected == -1)
+				        this.setInvalid("Please select the correct Service Location.");
+				});
 
 			me.notes = $("#Notes")[0];
 
@@ -692,7 +723,7 @@ ii.Class({
 			me.invoiceSearchGrid.addColumn("invoiceNumber", "invoiceNumber", "Invoice #", "Invoice #", 80);
 			me.invoiceSearchGrid.addColumn("houseCodeBrief", "houseCodeBrief", "House Code", "House Code", 110);
 			me.invoiceSearchGrid.addColumn("billTo", "billTo", "Customer", "Customer", null);			
-			me.invoiceSearchGrid.addColumn("invoiceDate", "invoiceDate", "Invoice Date", "Invoice Date", 100);
+			me.invoiceSearchGrid.addColumn("invoiceDate", "invoiceDate", "Invoice Date", "Invoice Date", 110);
 			me.invoiceSearchGrid.addColumn("amount", "amount", "Amount", "Amount", 100);
 			me.invoiceSearchGrid.addColumn("collected", "collected", "Collected", "Collected", 100);
 			me.invoiceSearchGrid.addColumn("credited", "credited", "Credited", "Credited", 100);
@@ -910,7 +941,13 @@ ii.Class({
             if (processed)
                 return false;
         },
-		
+
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
@@ -920,11 +957,71 @@ ii.Class({
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
+			var me = this;
+
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
 		},
 
-        houseCodesLoaded: function(me, activeId) {
+        setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				if (parent.fin.appUI.modified)
+					me.setStatus("Edit");
+				else
+					me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
+		},
+
+		showPageLoading: function(status) {
+			var me = this;
+
+			me.setStatus(status);
+			me.statusMessage = status;
+			$("#messageToUser").text(status);
+			$("#pageLoading").fadeIn("slow");
+		},
+
+		hidePageLoading: function(status) {
+			var me = this;
+
+			if (status == "") {
+				if (me.statusMessage == "Loading") {
+					if (parent.fin.appUI.modified)
+						me.setStatus("Edit");
+					else
+						me.setStatus("Loaded");
+				}
+				else if (me.statusMessage == "Saving") {
+					me.setStatus("Saved");
+					me.statusMessage = "";
+				}					
+			}
+			else if (status == "Edit") {
+				if (parent.fin.appUI.modified)
+					me.setStatus("Edit");
+				else
+					me.setStatus("Loaded");
+			}
+			else 
+				me.setStatus(status);
+			$("#pageLoading").fadeOut("slow");
+		},
+
+		houseCodesLoaded: function(me, activeId) {
 
             if (parent.fin.appUI.houseCodeId == 0) {
                 if (me.houseCodes.length <= 0) {
@@ -948,33 +1045,31 @@ ii.Class({
             var args = ii.args(arguments, {});
             var me = this;
 
-            $("#messageToUser").text("Loading");
-            $("#pageLoading").show();
-
+			me.setLoadCount();
             me.lastSelectedRowIndex = -1;
             me.invoiceNeedUpdate = true;
             me.invoiceInfoNeedUpdate = true;
             me.accountReceivableNeedUpdate = true;
-            
             me.statusType = "false";
+	
 			$("#CompletedInvoices").attr("checked", false);
 			$("#OpenInvoices").attr("checked", true);
-		
+
 			me.fiscalYear.setData([]);
 			me.fiscalYear.text.value = "";
 			me.invoiceNumber = 0;
-			
             me.resetGrids();
             me.invoiceGrid.setData([]);
 
+			me.loadTypesData();
             me.invoiceStore.reset();
             me.invoiceStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",status:1,year:-1,invoiceByHouseCode:-1", me.invoiceLoaded, me);
-			me.loadTypesData();
         },
 		
 		loadTypesData: function() {
 			var me = this;
 
+			me.setLoadCount();
 			me.houseCodeBrief = parent.fin.appUI.houseCodeBrief;
 			me.houseCodeCheck(me.houseCodeBrief, parent.fin.appUI.houseCodeId, parent.fin.appUI.hirNode);
 			me.houseCodeDetailStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.houseCodeDetailsLoaded, me);
@@ -982,6 +1077,7 @@ ii.Class({
 
 		houseCodeDetailsLoaded: function(me, activeId) {
 			
+			me.checkLoadCount();
 		},
 
 		houseCodeCheck: function(houseCode, id, hirNode) {
@@ -1004,6 +1100,7 @@ ii.Class({
 			    me.houseCodeCache[houseCode].jobs = [];
 				me.houseCodeCache[houseCode].taxableServiceStates = [];
 				
+				me.loadCount += 3;
 				me.siteStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",type:invoice", me.siteStateTypeLoaded, me);
 				me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.houseCodeJobsLoaded, me);
 				me.taxableServiceStateStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.taxableServiceStatesLoaded, me);
@@ -1025,6 +1122,8 @@ ii.Class({
 
 			if (me.sites.length > 0)
 				me.houseCodeCache[me.houseCodeBrief].stateType = me.sites[0].state;
+				
+			me.checkLoadCount();
 		},
 		
 		houseCodeJobsLoaded: function(me, activeId) {
@@ -1072,6 +1171,7 @@ ii.Class({
 			}
 
 			me.houseCodeCache[me.houseCodeBrief].customersLoaded = true;
+			me.checkLoadCount();
 		},
 
 		taxableServiceStatesLoaded: function(me, activeId) {
@@ -1086,6 +1186,7 @@ ii.Class({
 			}
 
 			me.houseCodeCache[me.houseCodeBrief].taxableServiceStatesLoaded = true;
+			me.checkLoadCount();
 		},
 
         taxExemptsLoaded: function() {
@@ -1134,7 +1235,7 @@ ii.Class({
 				return;
 
 			if ($("input[name='Invoices']:checked").val() == "1") {
-				$("#pageLoading").show();
+				me.setLoadCount();
 				me.resetGrids();
 				me.invoiceStore.reset();
 				me.invoiceStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",status:1,year:-1,invoiceByHouseCode:-1", me.invoiceLoaded, me);
@@ -1146,11 +1247,8 @@ ii.Class({
 
         actionCompletedInvoicesLoad: function() {
             var me = this;
-
-            $("#messageToUser").text("Loading");
-            $("#pageLoading").show();
+			var yearId = -1;
  
-            var yearId = -1;
 			if (me.statusType == "true") {
 				yearId = me.fscYear;
 				$("#CompletedInvoices").attr("checked", true);
@@ -1160,7 +1258,8 @@ ii.Class({
 				yearId = me.fiscalYear.data[me.fiscalYear.indexSelected].id;
 				me.invoiceNumber = 0;
 			}
-			
+
+			me.setLoadCount();
             me.resetGrids();
             me.invoiceStore.reset();
             me.invoiceStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",status:5,year:" + yearId + ",invoiceByHouseCode:-1", me.invoiceLoaded, me);
@@ -1182,10 +1281,10 @@ ii.Class({
 					me.fiscalYear.select(index, me.fiscalYear.focused);
 			}
 
-            $("#pageLoading").hide();            
+			me.checkLoadCount();
             $("#container-1").tabs(1);
 			$("#fragment-1").show();
-			$("#fragment-2").hide();  
+			$("#fragment-2").hide();
 			$("#fragment-3").hide();
 			$("#TabCreateInvoices").parent().addClass("tabs-selected");
 
@@ -1200,6 +1299,8 @@ ii.Class({
         invoiceDetailsLoaded: function() {
             var me = this;
 
+			me.showPageLoading("Loading");
+			
             switch (me.activeFrameId) {
 
                 case 0:
@@ -1249,12 +1350,12 @@ ii.Class({
         },
 
         refreshPrintMemoButtonStatus:function() {
-        	var me=this;
+        	var me = this;
             
 			if (me.invoices[me.lastSelectedRowIndex].creditMemoPrintable !== true && me.invoices[me.lastSelectedRowIndex].credited <= 0 || me.invoices[me.lastSelectedRowIndex].printed == false)
-                $('#' + me.printMemo.id).hide();
+                $("#" + me.printMemo.id).hide();
             else
-                $('#' + me.printMemo.id).show();
+                $("#" + me.printMemo.id).show();
         },
 
         currentDate: function fin_rev_master_UserInterface_currentDate() {
@@ -1340,8 +1441,6 @@ ii.Class({
 
             $("#divGrid").hide();
             $("#popupSetup").show();
-            $("#messageToUser").text("Loading");
-            $("#pageLoading").show();
 
 			var index = ii.ajax.util.findIndexById(me.houseCodeDetails[0].invoiceLogoTypeId.toString(), me.invoiceLogoTypes);
 			if (index != undefined && index >= 0)
@@ -1349,7 +1448,9 @@ ii.Class({
 			else
 				me.invoiceLogo.reset();
 
+			me.setLoadCount();
             me.invoiceId = 0;
+			me.loadCount += 2;
             me.status = "Add";
             me.taxExemptsLoaded();
 			me.state.fetchingData();
@@ -1364,7 +1465,7 @@ ii.Class({
 
 			if (me.sites.length == 0) {
 				alert("Either Site information not found or Site is not associated to the House Code [" + parent.fin.appUI.houseCodeBrief + "]. Please verify and try again!")
-				$("#pageLoading").hide();
+				me.checkLoadCount();
 			}
 			else
 				me.taxRateStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.taxRatesLoaded, me);
@@ -1384,6 +1485,7 @@ ii.Class({
 			}
 
             me.billTo.setData(billTos);
+			me.checkLoadCount();
         },
 
         billToChanged: function() {
@@ -1428,6 +1530,7 @@ ii.Class({
         statesLoaded: function(me, activeId) {
 
             me.state.setData(me.stateTypes);
+			me.checkLoadCount();
         },
 
         stateChanged: function() {
@@ -1524,7 +1627,7 @@ ii.Class({
 				me.notes.value = "";
 			}			
 
-			$("#pageLoading").hide();
+			me.checkLoadCount();
         },
 		
 		getStateTitle: function(state) {
@@ -1610,12 +1713,10 @@ ii.Class({
 				return false;
 			}
 
-			$("#messageToUser").text("Loading");			
-			$("#pageLoading").show();
-
 			if (invoiceDate == undefined || invoiceDate == "")
 				invoiceDate = "1/1/1900";
 				
+			me.setLoadCount();
 			me.invoiceStore.reset();
 			me.invoiceStore.fetch("userId:[user],houseCode:" 				
 				+ ($("#houseCodeTemplateText").val() != "" ? + me.houseCodeSearchTemplate.houseCodeIdTemplate : "0")
@@ -1628,7 +1729,7 @@ ii.Class({
 
 			me.invoiceSearchGrid.setData(me.invoicesList);
 			me.invoiceSearchGrid.resize();
-			$("#pageLoading").hide();
+			me.checkLoadCount();
   		},
 		
 		 actionCancelItem: function() {
@@ -1641,6 +1742,7 @@ ii.Class({
                 me.invoiceId = me.invoiceGrid.data[me.invoiceGrid.activeRowIndex].id;
 
             me.status = "";
+			me.setStatus("Normal");
             $("#divGrid").show();
             $("#popupSetup").hide();
         },
@@ -1668,6 +1770,7 @@ ii.Class({
                 me.invoiceId = me.invoiceGrid.data[me.invoiceGrid.activeRowIndex].id;
 
             me.status = "";
+			me.setStatus("Normal");
 			enableBackGround();
 			hidePopup("popupNewInvoice");
 			$("#divGrid").show();
@@ -1695,7 +1798,7 @@ ii.Class({
 				me.searchInvoiceNumber.resizeText();
 				me.searchInvoiceDate.resizeText();
 				me.searchCustomer.resizeText();
-				me.invoiceSearchGrid.setHeight($("#pageLoading").height() - 160);
+				me.invoiceSearchGrid.setHeight($("#pageLoading").height() - 185);
 				me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",jobType:3", me.customersLoaded, me);
 			}			
 			else if ($("input[name='Clone']:checked").val() == 0) {
@@ -1754,7 +1857,7 @@ ii.Class({
             var me = this;
 
             hidePopup("popupMessage");
-            $("#pageLoading").hide();
+			me.hidePageLoading("Edit");
         },
 
         actionUndoItem: function() {
@@ -1933,8 +2036,8 @@ ii.Class({
 				}
 			}
 			
-			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			me.setStatus("Saving");
+			me.showPageLoading("Saving");
 
             var xml = me.saveXmlBuildInvoice(item);
 
@@ -1957,7 +2060,6 @@ ii.Class({
             var xml = "";
 
             if (me.status == "Printed") {
-
                 xml += '<revInvoicePrinted';
                 xml += ' id="' + args.item.id + '"';
                 xml += ' printed="' + args.item.printed + '"';
@@ -1967,7 +2069,6 @@ ii.Class({
             }
 
             if (me.status == "CreditMemoPrinted") {
-
                 xml += '<revInvoiceCreditMemoPrinted';
                 xml += ' id="' + args.item.id + '"';
                 xml += ' printed="' + args.item.printed + '"';
@@ -1977,7 +2078,6 @@ ii.Class({
             }
 			
 			if (me.status == "Cancel") {
-
                 xml += '<revInvoiceStatusUpdate';
                 xml += ' id="' + args.item.id + '"';
 				xml += ' statusType="' + args.item.statusType + '"';
@@ -2038,6 +2138,7 @@ ii.Class({
 
             if (status == "success") {
 				me.modified(false);
+				me.setStatus("Saved");
 
                 $(args.xmlNode).find("*").each(function() {
                     switch (this.tagName) {
@@ -2087,7 +2188,7 @@ ii.Class({
 
                             me.validate = 1;
                             me.status = "";
-                            $("#pageLoading").hide();
+                            $("#pageLoading").fadeOut("slow");
 
                             break;
                     }
@@ -2098,9 +2199,9 @@ ii.Class({
                     $("#divMessage").text($(args.xmlNode).attr("message"));
                     showPopup("popupMessage");
                 }
-                else {
+                else {					
+					me.hidePageLoading("Error");
                     alert("[SAVE FAILURE] Error while updating Invoice details: " + $(args.xmlNode).attr("message"));
-                    $("#pageLoading").hide();
                 }
             }
         }

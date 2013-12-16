@@ -37,6 +37,11 @@ ii.init.register( function() {
 		, hirNode: {type: Number}
 	};
 	
+	fin.bud.approveBudget.jdeCompanyArgs = {		
+		id: {type: Number}
+		, name: {type: String}		
+	};
+	
 	fin.bud.approveBudget.houseCodeJobArgs = {
 		id: {type: Number}
 		, jobId: {type: Number}
@@ -84,6 +89,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.bud.approveBudget.houseCodeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.bud.approveBudget.JdeCompany",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.bud.approveBudget.jdeCompanyArgs);
 			$.extend(this, args);
 		}
 	}

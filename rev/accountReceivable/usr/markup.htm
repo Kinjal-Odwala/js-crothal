@@ -15,14 +15,7 @@
 
 	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
 	<body id="appBody" onload="iiForceBodyReady = true;">
-		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
-		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
-		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
-		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
-		    </div>
-		</div>
-		
-        <div class="contentArea">
+        <div id="pageBody" class="contentArea" style="display:none;">
      		<div id="divAccountReceivables">
 				<div class="header">Accounts Receivable</div>
 				<div class="body">
@@ -33,6 +26,7 @@
 									<th class="gridHeaderColumn" width="20px">#</th>
 									<th class="gridColumnHidden"></th>
 									<th class="gridHeaderColumn" width="150px">House Code</th>
+									<th class="gridHeaderColumn" width="150px">Job</th>
 									<th class="gridHeaderColumn" width="150px">Deposit Date</th>
 									<th class="gridHeaderColumn" width="150px">Check Date</th>
 									<th class="gridHeaderColumn" width="150px">Check #</th>
@@ -48,17 +42,17 @@
 					</div>
 				</div>
 			</div>
-		</div>						
-  		  
+		</div>
+ 
 		<div style="clear:both;"></div>
 		<div class="contentArea" id="anchorAlign">
 			<div id="AnchorAccountReceivableLabelLeft">
 				<div id="AnchorCreditInvoice"></div>
 				<div id="AnchorSave"></div>
 				<div id="AnchorUndo"></div>
-			</div>		         	
+			</div>
 		</div>
-		
+
 		<div id="popupMessage">
 			<div class="contentArea">
 				<div class="header" id="messageHeader"></div>
@@ -71,7 +65,33 @@
 				</div>
 			</div>
 		</div>
-	
+		
+		<div id="popupCreditMemo" style="display:none;">
+			<div class="contentArea">
+				<div class="header">Credit Memo</div>
+				<div style="clear:both;height:10px;"></div>
+				<div class="body">
+					<div class="TableEditArea">
+						<div class="labelTextArea"><span class="requiredFieldIndicator">&#149;</span>Payer:</div>
+						<div class="inputTextArea">
+							<div id="Payer"></div>
+						</div>
+					</div>
+					<div style="clear:both;"></div>
+					<div class="TableEditArea">
+						<div class="labelTextArea"><span class="requiredFieldIndicator">&#149;</span>Notes:</div>
+						<div class="inputTextArea">
+							<div id="Notes"></div>
+						</div>
+					</div>
+				</div>
+				<div style="clear:both;"></div>
+				<div id="buttonAlign1">
+					<div id="AnchorCreditMemoOK"></div>
+				</div>
+			</div>
+		</div>
+
 		<div id="AccountReceivableContext" style="display:none;Z-INDEX: 999; POSITION: absolute" >
 			<table id="AccountReceivableContextMenu" class="tableBorder" cellpadding="0" cellspacing="0">
 				<tr id="menuAdd" height="20px"><td class="tdBorder">1.&nbsp;&nbsp;Add Item</td></tr>
@@ -79,6 +99,7 @@
 				<tr id="menuDelete" height="20px"><td class="tdBorder">3.&nbsp;&nbsp;Delete Item</td></tr>
 			</table>
 		</div>
-		
+		<div id="backGroundPopup"></div>
+		<div id="iiInputValidationMaster"></div>
 	</body>
 </html>

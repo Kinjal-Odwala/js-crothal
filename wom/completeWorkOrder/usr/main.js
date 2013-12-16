@@ -3,6 +3,7 @@ ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "fin.wom.completeWorkOrder.usr.defs" );
 ii.Import( "fin.cmn.usr.houseCodeSearch" );
 
@@ -26,6 +27,7 @@ ii.Class({
 			
 			me.houseCodeJobId = 0;
 			me.workOrderIndex = -1;
+			me.loadCount = 0;
 			
 			me.gateway = ii.ajax.addGateway("wom", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -47,6 +49,7 @@ ii.Class({
 				
 			me.defineFormControls();			
 			me.configureCommunications();
+			me.setStatus("Loading");
 			me.modified(false);
 
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
@@ -58,7 +61,7 @@ ii.Class({
 			else {
 				me.houseCodesLoaded(me, 0);
 			}
-			
+						
 			me.startDate.setValue("");
 			me.endDate.setValue("");
 			
@@ -73,12 +76,25 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 			
-			$("#pageLoading").hide();
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 			
 			me.cwoReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
-
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
+			
+			if (me.isAuthorized) {
+				$("#pageLoading").hide();
+				$("#pageLoading").css({
+					"opacity": "0.5",
+					"background-color": "black"
+				});
+				$("#messageToUser").css({ "color": "white" });
+				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+				$("#pageLoading").fadeIn("slow");
+			
+				ii.timer.timing("Page displayed");
+				me.session.registerFetchNotify(me.sessionLoaded, me);
+			}				
+			else
+				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},
 		
 		sessionLoaded: function fin_wom_completeWorkOrder_UserInterface_sessionLoaded() {
@@ -92,7 +108,7 @@ ii.Class({
 		
 		resize: function() {
 			var args = ii.args(arguments,{});
-			var offset = document.documentElement.clientHeight - 145;
+			var offset = document.documentElement.clientHeight - 170;
 			
 			fin.completeWorkOrderUi.workOrderGrid.setHeight(offset);
 		},
@@ -303,17 +319,45 @@ ii.Class({
 			});
 		},		
 		
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+		
 		dirtyCheck: function(me) {
 				
 			return !fin.cmn.status.itemValid();
 		},
-	
+		
 		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
-		
+			var me = this;
+			
 			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+		
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+		
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
 		},
 		
 		houseCodesLoaded: function(me, activeId) {
@@ -368,8 +412,7 @@ ii.Class({
 			if (me.workOrderGrid.activeRowIndex >= 0)
 				me.workOrderGrid.body.deselect(me.workOrderGrid.activeRowIndex, true);
 				
-			$("#messageToUser").text("Loading");	
-			$("#pageLoading").show();
+			me.setLoadCount();
 			
 			me.workOrderStore.reset();	
 			me.workOrderStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId 
@@ -385,7 +428,7 @@ ii.Class({
 
 			me.workOrderGrid.setData(me.workOrders);
 			me.selectAll.setValue("false");
-			$("#pageLoading").hide();
+			me.checkLoadCount();
 			me.resizeControls();
 			
 			if (me.cwoReadOnly) {				
@@ -431,6 +474,7 @@ ii.Class({
 					return;	
 					
 			hidePopup();
+			me.setStatus("Loaded");
 		},
 		
 		actionOkItem: function() {
@@ -438,6 +482,7 @@ ii.Class({
 
 			hidePopup();
 			me.workOrders[me.workOrderIndex].notes = me.notes.value;
+			me.setStatus("Loaded");
 		},
 
 		actionSaveItem: function() {
@@ -453,7 +498,7 @@ ii.Class({
 			me.validator.forceBlur();
 			
 			// Check to see if the data entered is valid
-			if(!me.validator.queryValidity(true) && me.workOrderGrid.activeRowIndex >= 0) {
+			if (!me.validator.queryValidity(true) && me.workOrderGrid.activeRowIndex >= 0) {
 				alert("In order to save, the errors on the page must be corrected.");
 				return false;
 			}
@@ -469,16 +514,17 @@ ii.Class({
 					xml += ' id="' + me.workOrders[index].id + '"';
 					xml += ' statusType="9"';
 					xml += ' notes="' + ui.cmn.text.xml.encode(me.workOrders[index].notes) + '"';
-					xml += ' completedDate="' + me.workOrders[index].completedDate.toLocaleString() + '"';
+					xml += ' completedDate="' + ui.cmn.text.date.format(me.workOrders[index].completedDate, "mm/dd/yyyy") + '"';
 					xml += '/>';
 				}
 			}
 
 			if (xml == "")
 				return;
-
+			
+			me.setStatus("Saving");
 			$("#messageToUser").text("Saving");
-			$("#pageLoading").show();
+			$("#pageLoading").fadeIn("slow"); 
 	
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
@@ -506,12 +552,15 @@ ii.Class({
 
 			if (status == "success") {
 				me.modified(false);
+				me.setStatus("Saved");
 				me.actionLoadItem();
 			}
-			else {				
+			else {	
+				me.setStatus("Error");			
 				alert("[SAVE FAILURE] Error while updating Work Order Status: " + $(args.xmlNode).attr("message"));
-				$("#pageLoading").hide();
 			}
+			
+			$("#pageLoading").fadeOut("slow"); 
 		}
 	}
 });
