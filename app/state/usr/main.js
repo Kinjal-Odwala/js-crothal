@@ -87,7 +87,7 @@ ii.Class({
 
 				me.loadCount = 1;
 				ii.timer.timing("Page displayed");
-				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.session.registerFetchNotify(me.sessionLoaded, me);
 				me.systemVariableStore.fetch("userId:[user],name:FederalMinimumWage", me.systemVariablesLoaded, me);
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
 			}
@@ -844,29 +844,29 @@ ii.Class({
 				return false;
 			}
 			
-			if (me.stateWageGrid.data[0].modified) {
-				me.setStatus("Saving");
-				$("#messageToUser").text("Saving");
-				$("#pageLoading").show();
-
-				var item = me.stateGrid.data[me.stateGrid.activeRowIndex];
-				item.minimumWage = parseFloat(me.stateWageGrid.data[0].minimumWage);
-
-				var xml = me.saveXmlBuildItem(item);
-				
-				// Send the object back to the server as a transaction
-				me.transactionMonitor.commit({
-					transactionType: "itemUpdate",
-					transactionXml: xml,
-					responseFunction: me.saveResponseItem,
-					referenceData: { me: me, item: item	}
-				});
-				
-				return true;
-			}
-			else {
+//			if (me.stateWageGrid.data[0].modified) {
+//				me.setStatus("Saving");
+//				$("#messageToUser").text("Saving");
+//				$("#pageLoading").show();
+//
+//				var item = me.stateGrid.data[me.stateGrid.activeRowIndex];
+//				item.minimumWage = parseFloat(me.stateWageGrid.data[0].minimumWage);
+//
+//				var xml = me.saveXmlBuildItem(item);
+//				
+//				// Send the object back to the server as a transaction
+//				me.transactionMonitor.commit({
+//					transactionType: "itemUpdate",
+//					transactionXml: xml,
+//					responseFunction: me.saveResponseItem,
+//					referenceData: { me: me, item: item	}
+//				});
+//				
+//				return true;
+//			}
+//			else {
 				me.saveMinimunWages("");
-			}
+//			}
 		},
 		
 		actionApproveItem: function() {
@@ -939,7 +939,7 @@ ii.Class({
 					xml += ' groupType="' + me.stateWages[index].groupType + '"';
 					xml += ' name="' + ui.cmn.text.xml.encode(me.stateWages[index].name) + '"';
 					xml += ' minimumWage="' + me.stateWages[index].minimumWage + '"';
-					xml += ' effectiveDate="' + me.stateWages[index].effectiveDate.toLocaleString() + '"';
+					xml += ' effectiveDate="' + ui.cmn.text.date.format(me.stateWages[index].effectiveDate, "mm/dd/yyyy") + '"';
 					xml += ' active="' + me.stateWages[index].active + '"';
 					xml += '/>';
 				}				
@@ -953,7 +953,7 @@ ii.Class({
 					xml += ' groupType="' + me.countyWages[index].groupType + '"';
 					xml += ' name="' + ui.cmn.text.xml.encode(me.countyWages[index].name) + '"';
 					xml += ' minimumWage="' + me.countyWages[index].minimumWage + '"';
-					xml += ' effectiveDate="' + me.countyWages[index].effectiveDate.toLocaleString() + '"';
+					xml += ' effectiveDate="' + ui.cmn.text.date.format(me.countyWages[index].effectiveDate, "mm/dd/yyyy") + '"';
 					xml += ' active="' + me.countyWages[index].active + '"';
 					xml += '/>';
 				}				
@@ -967,25 +967,25 @@ ii.Class({
 					xml += ' groupType="' + me.cityWages[index].groupType + '"';
 					xml += ' name="' + ui.cmn.text.xml.encode(me.cityWages[index].name) + '"';
 					xml += ' minimumWage="' + me.cityWages[index].minimumWage + '"';
-					xml += ' effectiveDate="' + me.cityWages[index].effectiveDate.toLocaleString() + '"';
+					xml += ' effectiveDate="' + ui.cmn.text.date.format(me.cityWages[index].effectiveDate, "mm/dd/yyyy") + '"';
 					xml += ' active="' + me.cityWages[index].active + '"';
 					xml += '/>';
 				}				
 			}
 
 			if (xml == "") {
-				me.modified(false);
-				if (status == "Saved") {
-					me.setStatus("Saved");
-					$("#pageLoading").fadeOut("slow");
-				}
+//				me.modified(false);
+//				if (status == "Saved") {
+//					me.setStatus("Saved");
+//					$("#pageLoading").fadeOut("slow");
+//				}
 				return;
 			}
-			else if (status == "") {
+//			else if (status == "") {
 				me.setStatus("Saving");
 				$("#messageToUser").text("Saving");
-				$("#pageLoading").show();
-			}
+				$("#pageLoading").fadeIn("slow");
+//			}
 
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
@@ -1013,11 +1013,11 @@ ii.Class({
 				$(args.xmlNode).find("*").each(function() {
 					switch (this.tagName) {
 
-						case "appStateType":
-							me.stateTypes[me.stateGrid.activeRowIndex] = item;
-							me.stateGrid.body.renderRow(me.stateGrid.activeRowIndex, me.stateGrid.activeRowIndex);
-							me.saveMinimunWages("Saved");
-							break;
+//						case "appStateType":
+//							me.stateTypes[me.stateGrid.activeRowIndex] = item;
+//							me.stateGrid.body.renderRow(me.stateGrid.activeRowIndex, me.stateGrid.activeRowIndex);
+//							me.saveMinimunWages("Saved");
+//							break;
 							
 						case "appStateMinimumWage":
 							me.modified(false);

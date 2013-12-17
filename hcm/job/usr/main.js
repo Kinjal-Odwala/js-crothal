@@ -201,6 +201,7 @@ ii.Class({
 			
 				ii.timer.timing("Page displayed");
 				me.session.registerFetchNotify(me.sessionLoaded, me);
+				me.loadCount = 3;
 				me.jobState.fetchingData();
 				me.invoiceTemplate.fetchingData();
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
@@ -838,11 +839,13 @@ ii.Class({
 		stateTypesLoaded: function fin_hcm_job_UserInterface_stateTypesLoaded(me, activeId) {
 
 			me.jobState.setData(me.stateTypes);
+			me.checkLoadCount();
 		},
 		
 		invoiceTemplatesLoaded: function fin_hcm_job_UserInterface_invoiceTemplatesLoaded(me, activeId) {
 
 			me.invoiceTemplate.setData(me.invoiceTemplates);
+			me.checkLoadCount();
 		},
 
 		houseCodesLoaded: function fin_hcm_job_UserInterface_houseCodesLoaded(me, activeId) {
@@ -887,11 +890,13 @@ ii.Class({
 				me.jobGrid.setData([]);
 				me.actionClearItem();
 				me.status = "new";
+				me.checkLoadCount();
 				return;
 			}
 
 			me.jobGrid.setData(me.jobsList);
 			me.jobGrid.body.select(0);
+			me.checkLoadCount();
 		},
 		
 		actionSearchItem: function fin_hcm_ePaySite_UserInterface_actionSearchItem() {
@@ -919,6 +924,7 @@ ii.Class({
 				me.searchInput.updateStatus();
 			}
 			
+			me.setLoadCount();
 			me.loadJobs();
 		},
 
@@ -966,8 +972,7 @@ ii.Class({
 			if (me.jobsList[index] != undefined) 			
 				me.jobDetailsLoad(me.jobsList[index]);
 				
-			//if (me.activeFrameId == 1)				
-				me.loadHouseCodes();
+			me.loadHouseCodes();
 		},
 
 		jobDetailsLoad: function fin_hcm_job_UserInterface_jobDetailsLoad() {
@@ -1029,10 +1034,10 @@ ii.Class({
 				me.generalLocationCode.setValue(args.job.generalLocationCode);
 				me.jobActive.setValue(args.job.active.toString());				
 			}
-			
-			setTimeout(function(){
-					me.resizeControls();
-				}, 100);
+
+			setTimeout(function() {
+				me.resizeControls();
+			}, 100);
 		},
 		
 		loadZipCodeTypes: function() {

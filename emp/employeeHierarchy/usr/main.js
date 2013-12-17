@@ -87,7 +87,7 @@ ii.Class({
 			me.defineFormControls();
 			me.configureCommunications();	
 
-			$(window).bind("resize", me, me.resize );
+			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$(document).bind("mousedown", me, me.mouseDownProcessor);
 			$("#ulEdit0").bind("contextmenu", me, me.contextMenuProcessor);
@@ -214,7 +214,7 @@ ii.Class({
 
 				me.loadCount = 2;
 				ii.timer.timing("Page displayed");
-				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.session.registerFetchNotify(me.sessionLoaded, me);
 				me.job.fetchingData();
 				me.jobStore.fetch("userId:[user]", me.jobsLoaded, me);
 				me.employeeStore.fetch("userId:[user],jobTitle:,employeeName:,employeeId:0,managerId:0,searchInHierarchy:true", me.employeesLoaded, me);
@@ -233,8 +233,10 @@ ii.Class({
 		},
 
 		resize: function fin_emp_hierarchy_UserInterface_resize() {
+			var me = fin.hierarchyUi;
 
 			$("#empContainer").height($(window).height() - 150);
+			me.setmovableContainerHeight();
 		},
 
 		defineFormControls: function fin_emp_hierarchy_UserInterface_defineFormControls() {
@@ -576,7 +578,7 @@ ii.Class({
 
 			if ($("#empContainer")[0].scrollHeight > ($("#empContainer").height() + 20)) {
 				var height = ($("#empContainer")[0].scrollHeight) - $("#empContainer").height();
-				$("#movableContainer").height($(window).height() + height - 210);
+				$("#movableContainer").height($(window).height() + height - 230);
 			}
 		},
 

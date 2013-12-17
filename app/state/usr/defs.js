@@ -28,7 +28,7 @@ ii.init.register( function() {
 		, name: {type: String, required: false, defaultValue: ""}
 		, minimumWage: {type: Number, required: false, defaultValue: 0.00}
 		, effectiveDate: {type: String, required: false, defaultValue: ""}
-		, active: {type: Boolean, required: false, defaultValue: true}
+		, active: {type: Boolean, required: false, defaultValue: false}
 		, affectedNumberOfEmployees: {type: Number, required: false, defaultValue: 0}
 		, modified: {type: Boolean, required: false, defaultValue: false}
 	};
@@ -41,7 +41,7 @@ ii.init.register( function() {
 		, name: {type: String, required: false, defaultValue: ""}
 		, minimumWage: {type: Number, required: false, defaultValue: 0.00}
 		, effectiveDate: {type: String, required: false, defaultValue: ""}
-		, active: {type: Boolean, required: false, defaultValue: true}
+		, active: {type: Boolean, required: false, defaultValue: false}
 		, affectedNumberOfEmployees: {type: Number, required: false, defaultValue: 0}
 		, modified: {type: Boolean, required: false, defaultValue: false}
 	};
@@ -54,7 +54,7 @@ ii.init.register( function() {
 		, name: {type: String, required: false, defaultValue: ""}
 		, minimumWage: {type: Number, required: false, defaultValue: 0.00}
 		, effectiveDate: {type: String, required: false, defaultValue: ""}
-		, active: {type: Boolean, required: false, defaultValue: true}
+		, active: {type: Boolean, required: false, defaultValue: false}
 		, affectedNumberOfEmployees: {type: Number, required: false, defaultValue: 0}
 		, modified: {type: Boolean, required: false, defaultValue: false}
 	};

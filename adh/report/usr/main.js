@@ -1853,6 +1853,8 @@ ii.Class({
 
 			$("#AdhReportItemGridHead").html("");
 			$("#AdhReportItemGridBody").html("");
+			$("#selPageNumber").empty();
+			$("#spnPageInfo").html("");
 			$("#AdhReportGrid").show();
 			$("#ReportHierarchy").hide();
 			$("#messageToUser").html("Loading");
@@ -1919,26 +1921,28 @@ ii.Class({
 					me.invoiceDescription = false;
 					
 					for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
-						if (me.moduleColumnHeaders[index].title == 'HcmHouseCodeJob') 
+						if (me.moduleColumnHeaders[index].columnType != 2) {
+							if (me.moduleColumnHeaders[index].title == 'HcmHouseCodeJob') 
 							me.invoiceJob = true;
-						if (me.moduleColumnHeaders[index].title == 'RevTaxableService') 
-							me.invoiceTaxableService = true;
-						if (me.moduleColumnHeaders[index].title == 'FscAccount') 
-							me.invoiceAccountCode = true;
-						if (me.moduleColumnHeaders[index].title == 'RevInviQuantity') 
-							me.invoiceQuantity = true;
-						if (me.moduleColumnHeaders[index].title == 'RevInviPrice') 
-							me.invoicePrice = true;
-						if (me.moduleColumnHeaders[index].title == 'RevInviAmount') 
-							me.invoiceAmount = true;
-						if (me.moduleColumnHeaders[index].title == 'AppTransactionStatusType') 
-							me.invoiceStatus = true;
-						if (me.moduleColumnHeaders[index].title == 'RevInviTaxable') 
-							me.invoiceTaxable = true;
-						if (me.moduleColumnHeaders[index].title == 'RevInviShow') 
-							me.invoiceShow = true;
-						if (me.moduleColumnHeaders[index].title == 'RevInviDescription') 
-							me.invoiceDescription = true;
+							if (me.moduleColumnHeaders[index].title == 'RevTaxableService') 
+								me.invoiceTaxableService = true;
+							if (me.moduleColumnHeaders[index].title == 'FscAccount') 
+								me.invoiceAccountCode = true;
+							if (me.moduleColumnHeaders[index].title == 'RevInviQuantity') 
+								me.invoiceQuantity = true;
+							if (me.moduleColumnHeaders[index].title == 'RevInviPrice') 
+								me.invoicePrice = true;
+							if (me.moduleColumnHeaders[index].title == 'RevInviAmount') 
+								me.invoiceAmount = true;
+							if (me.moduleColumnHeaders[index].title == 'AppTransactionStatusType') 
+								me.invoiceStatus = true;
+							if (me.moduleColumnHeaders[index].title == 'RevInviTaxable') 
+								me.invoiceTaxable = true;
+							if (me.moduleColumnHeaders[index].title == 'RevInviShow') 
+								me.invoiceShow = true;
+							if (me.moduleColumnHeaders[index].title == 'RevInviDescription') 
+								me.invoiceDescription = true;
+						}
 					}
 					
 					rowData += "<th class='gridHeaderColumn' width='50px'>#</th>";
@@ -2144,17 +2148,13 @@ ii.Class({
 		},
 		
 		moduleColumnDataLoaded: function(me, activeId) {
-			var rowData = "" ;     		
-			var invoiceIdColumn = -1;
-			var invoiceId = -1;
+			var rowData = "" ; 
 			var invoiceNoColumn = -1;
 			var invoiceNo = -1;
 			
 			me.gridData = [];
 			
 			for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
-				//if (me.moduleColumnHeaders[index].title == "RevInvoice") 
-				//	invoiceIdColumn = index;
 				if (me.moduleColumnHeaders[index].title == "RevInvInvoiceNumber") 
 					invoiceNoColumn = index;
 			}
@@ -2167,9 +2167,10 @@ ii.Class({
 					var appSite = me.moduleColumnDatas[index].appSite;
 					var appSitTitle = me.moduleColumnDatas[index].appSitTitle;
 					
-					if (invoiceNoColumn != -1) {
+					if (invoiceNoColumn != -1) 
 						invoiceNo = unescape(me.moduleColumnDatas[index]["column1"]);
-					}
+					else
+						invoiceNo = unescape(me.moduleColumnDatas[index]["column150"]);
 					
 					if (!me.invoiceItem) {
 						rowData += "<tr id='adhReportDataRow" + pkId + "' onclick=(fin.reportUi.getAdhReprotGridRowEdit(" + pkId + "," + index + "," + houseCodeId + "));>";	
@@ -2177,8 +2178,8 @@ ii.Class({
 						rowData += "</tr>"	
 					}
 					else {	
-						if (invoiceId == "")
-							invoiceId = -1;
+						if(pkId == "0")
+							pkId = -1;
 						rowData += "<tr>"
 						rowData += "<td colspan='100'>"
 						rowData += "<div >"
@@ -2623,8 +2624,10 @@ ii.Class({
 	            else
 	                me.invoiceCache[invoiceId].buildQueue.push(args.pkId);
 	        }
-	        else
-	            me.invoiceLoad(invoiceId, args.pkId);
+	        else {
+				me.setLoadCount();
+				me.invoiceLoad(invoiceId, args.pkId);
+			} 
 		},
 		
 		invoiceValidate: function(invoiceId,pkId) {
@@ -2685,6 +2688,7 @@ ii.Class({
 					me.invoiceCache[invoiceId].loaded = true;
 					//validate the list of rows
 		            me.invoiceValidate(invoiceId, pkId);
+					me.checkLoadCount();
 				}
 			});
 		},

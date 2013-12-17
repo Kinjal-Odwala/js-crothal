@@ -504,7 +504,7 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 
 		 var displayRenderer = function (value, metaData, record, rowIndex, colIndex, store) {
             if (metaData && record) {
-				if (colIndex == 0 || colIndex == 1 || colIndex == 12 || colIndex == 13)
+				if (colIndex == 0 || colIndex == 1)
 				    metaData.attr = 'style="text-align:left;"';
 				else if (colIndex == 10 || colIndex == 11 || colIndex == 14) {
 					 metaData.attr = 'style="text-align:right;"';
