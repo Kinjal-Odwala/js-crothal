@@ -1186,7 +1186,7 @@ WebLight.Router.mapRoute('^app/notification/main$', {
 });
 
 
-WebLight.Router.mapRoute('^app/notification/([0-9]+)/([0-9]+)/([0-9]+)/([0-9]+)/([a-zA-Z-]+)/([a-zA-Z_-]+)$', {
+WebLight.Router.mapRoute('^app/notification/([0-9]+)/([0-9]+)/([0-9]+)/([0-9]+)/([a-zA-Z-]+)/([a-zA-Z0-9_-]+)$', {
     xtype: 'app.datacollectortask', dataCollectorTaskId: '{0}', dataCollectorId: '{1}', hcmHouseCode: '{2}', houseCode: '{3}', frequency: '{4}', description: '{5}'
 });
 
