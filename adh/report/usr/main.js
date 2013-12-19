@@ -1239,11 +1239,13 @@ ii.Class({
 				else {
 					me.actionAddNodes();
             		me.selectNode();
+					me.searchNode = false;
 				}
 			}
 			else  {
 				me.actionAddNodes();
             	me.selectNode();
+				me.searchNode = false;
 			}
 
             ii.trace("Hirnodes Loaded", ii.traceTypes.Information, "Info");
