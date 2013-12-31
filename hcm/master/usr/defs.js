@@ -34,6 +34,8 @@ ii.init.register( function() {
 		, appSiteId: {type: Number, required: false, defaultValue: 0}
 		, jdeCompanyId: {type: String}
 		, startDate: {type: String, required: false, defaultValue: ""}
+		, closedDate: {type: String, required: false, defaultValue: ""}
+		, closedReason: {type: String, required: false, defaultValue: ""}
 		, serviceTypeId: {type: Number, required: false, defaultValue: 0}
 		, serviceLineId: {type: Number, required: false, defaultValue: 0}
 		, enforceLaborControl: {type: Boolean, required: false, defaultValue: false}
@@ -128,7 +130,7 @@ ii.init.register( function() {
 		, lostDays: {type: String, required: false, defaultValue: ""}
 		, reportedClaims: {type: String, required: false, defaultValue: ""}
 		, nearMisses: {type: String, required: false, defaultValue: ""}
-		, oshaRecordable: {type: String, required: false, defaultValue: ""}
+		, oshaRecordable: {type: String, required: false, defaultValue: ""}		
 	};
 }, 2);
 

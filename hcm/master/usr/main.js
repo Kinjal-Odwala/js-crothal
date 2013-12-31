@@ -508,6 +508,8 @@ ii.Class({
 			me.houseCodeDetails[0].appSiteId = (houseCodeUIControls.site.indexSelected < 0 ? 0 : houseCodeUIControls.siteTypes[houseCodeUIControls.site.indexSelected].id);		
 			me.houseCodeDetails[0].jdeCompanyId = (houseCodeUIControls.jdeCompany.indexSelected <= 0 ? "0" : houseCodeUIControls.jdeCompanys[houseCodeUIControls.jdeCompany.indexSelected].id.toString());		
 			me.houseCodeDetails[0].startDate = houseCodeUIControls.startDate.lastBlurValue;
+			me.houseCodeDetails[0].closedDate = houseCodeUIControls.closedDate.lastBlurValue;
+			me.houseCodeDetails[0].closedReason = houseCodeUIControls.closedReason.getValue();
 			me.houseCodeDetails[0].serviceTypeId = (houseCodeUIControls.primaryService.indexSelected < 0 ? 0 : houseCodeUIControls.jdeServices[houseCodeUIControls.primaryService.indexSelected].id);
 			me.houseCodeDetails[0].serviceLineId = (houseCodeUIControls.serviceLine.indexSelected <= 0 ? 0 : houseCodeUIControls.serviceLines[houseCodeUIControls.serviceLine.indexSelected].id);
 			me.houseCodeDetails[0].enforceLaborControl = true; //($(houseCodeUIControls.enforceLaborControl).attr("checked").val() == "true" ? true : false)
@@ -694,6 +696,8 @@ ii.Class({
 				, me.houseCodeDetails[0].appSiteId
 				, me.houseCodeDetails[0].jdeCompanyId
 				, me.houseCodeDetails[0].startDate
+				, me.houseCodeDetails[0].closedDate
+				, me.houseCodeDetails[0].closedReason
 				, me.houseCodeDetails[0].serviceTypeId
 				, me.houseCodeDetails[0].serviceLineId
 				, me.houseCodeDetails[0].enforceLaborControl
@@ -833,6 +837,8 @@ ii.Class({
 			xml += ' appSiteId="' + item.appSiteId + '"';
 			xml += ' jdeCompanyId="' + item.jdeCompanyId + '"';
 			xml += ' startDate="' + item.startDate + '"';
+			xml += ' closedDate="' + item.closedDate + '"';
+			xml += ' closedReason="' + item.closedReason + '"';
 			xml += ' serviceTypeId="' + item.serviceTypeId + '"';
 			xml += ' serviceLineId="' + item.serviceLineId + '"';
 			xml += ' enforceLaborControl="' + item.enforceLaborControl + '"';
