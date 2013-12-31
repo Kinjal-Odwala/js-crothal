@@ -1899,7 +1899,8 @@ ii.Class({
 			$("#divAdhReportGrid").height($(window).height() - 170);
 			
 			me.sortColumns = "";
-
+			me.reportEditable = false;
+			
 			if (me.moduleColumnHeaders.length > 0) {
 				rowData += "<tr id='trAdhReportItemGridHead' height='40px'>";
 				
@@ -1925,24 +1926,24 @@ ii.Class({
 					for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
 						if (me.moduleColumnHeaders[index].columnType != 2) {
 							if (me.moduleColumnHeaders[index].title == 'HcmHouseCodeJob') 
-							me.invoiceJob = true;
-							if (me.moduleColumnHeaders[index].title == 'RevTaxableService') 
+								me.invoiceJob = true;
+							else if (me.moduleColumnHeaders[index].title == 'RevTaxableService') 
 								me.invoiceTaxableService = true;
-							if (me.moduleColumnHeaders[index].title == 'FscAccount') 
+							else if (me.moduleColumnHeaders[index].title == 'FscAccount') 
 								me.invoiceAccountCode = true;
-							if (me.moduleColumnHeaders[index].title == 'RevInviQuantity') 
+							else if (me.moduleColumnHeaders[index].title == 'RevInviQuantity') 
 								me.invoiceQuantity = true;
-							if (me.moduleColumnHeaders[index].title == 'RevInviPrice') 
+							else if (me.moduleColumnHeaders[index].title == 'RevInviPrice') 
 								me.invoicePrice = true;
-							if (me.moduleColumnHeaders[index].title == 'RevInviAmount') 
+							else if (me.moduleColumnHeaders[index].title == 'RevInviAmount') 
 								me.invoiceAmount = true;
-							if (me.moduleColumnHeaders[index].title == 'AppTransactionStatusType') 
+							else if (me.moduleColumnHeaders[index].title == 'AppTransactionStatusType') 
 								me.invoiceStatus = true;
-							if (me.moduleColumnHeaders[index].title == 'RevInviTaxable') 
+							else if (me.moduleColumnHeaders[index].title == 'RevInviTaxable') 
 								me.invoiceTaxable = true;
-							if (me.moduleColumnHeaders[index].title == 'RevInviShow') 
+							else if (me.moduleColumnHeaders[index].title == 'RevInviShow') 
 								me.invoiceShow = true;
-							if (me.moduleColumnHeaders[index].title == 'RevInviDescription') 
+							else if (me.moduleColumnHeaders[index].title == 'RevInviDescription') 
 								me.invoiceDescription = true;
 						}
 					}
@@ -2010,8 +2011,12 @@ ii.Class({
 					for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
 						if (me.moduleColumnHeaders[index].columnType == 2) 
 							className = "gridColumnHidden";
-						else 
+						else { 
 							className = "gridHeaderColumn";
+							if (me.moduleColumnHeaders[index].columnType == 1)
+								me.reportEditable = true;
+						}
+						
 						if (index == me.moduleColumnHeaders.length - 1) 
 							className = "gridHeaderColumnRight";
 						rowData += "<th onclick=(fin.reportUi.sortColumn(" + index + ")); class='" + className + "' style='width:" + me.moduleColumnHeaders[index].columnWidth + "px;'>" + me.moduleColumnHeaders[index].description + "</th>";
@@ -2020,6 +2025,15 @@ ii.Class({
 					}
 					
 					rowData += "<th class='gridColumnHidden'></th></tr>";
+				}
+				
+				if (me.reportEditable) {
+					$("#AnchorSave").show();
+					$("#AnchorUndo").show();
+				}
+				else if (!me.reportEditable || me.invoiceItem) {
+					$("#AnchorSave").hide();
+					$("#AnchorUndo").hide();
 				}
 			}
 				
