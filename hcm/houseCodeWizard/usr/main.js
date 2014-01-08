@@ -1067,7 +1067,6 @@ ii.Class({
 				
 			me.closedReason = new ui.ctl.Input.Text({
 		        id: "ClosedReason",
-				maxLength: 255,
 				textArea: true,
 				changeFunction: function() { me.modified(); }
 		    });
