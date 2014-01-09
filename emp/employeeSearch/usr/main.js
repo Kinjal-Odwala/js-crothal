@@ -517,6 +517,9 @@ ii.Class({
 			me.employeeSearch.addColumn("houseCodeRM", "houseCodeRM", "Regional Manager", "Regional Manager", null);
 			me.employeeSearch.addColumn("employeeNumber", "employeeNumber", "Employee #", "Employee #", 100);
 			me.employeeSearch.addColumn("ssn", "ssn", "SSN", "SSN", 100);
+			me.employeeSearch.addColumn("", "", "History", "History", 80, function(employee) {
+				return "<div class='viewHistoryLink' title='View the employee history' onclick='fin.empSearchUi.actionViewHistory(" + employee.employeeNumber + ");'>View</div>";
+			});
 			me.employeeSearch.capColumns();
 			me.employeeSearch.setHeight($("#pageLoading").height() - 130);
 
@@ -2390,18 +2393,31 @@ ii.Class({
 			return 0;
 		},
 		
+		actionViewHistory: function(employeeNumber) {
+			var me = this; 
+
+			loadPopup("history");
+			me.actionType = "";
+			me.employeeHistoryStore.reset();
+			me.employeeHistoryStore.fetch("userId:[user],employeeNumber:" + employeeNumber + ",fieldName:", me.employeeHistoriesLoaded, me);
+		},
+
 		employeeHistoriesLoaded: function(me, activeId) { 
 
 			me.historyGrid.setData(me.employeeHistories);
 			me.historyGrid.setHeight(340);
 			$("#popupLoading").hide();
 		},
-		
+
 		actionCloseItem: function() {
-			
-			$("#popupHistory").hide();
+			var me = this;
+
+			if (me.actionType == "")
+				hidePopup("history");
+			else
+				$("#popupHistory").hide();
 		},
-		
+
 		setPersonBrief: function fin_emp_UserInterface_setPersonBrief() {
 			var me = this;
 			
@@ -5212,7 +5228,7 @@ ii.Class({
 					break;
 			}
 
-			loadPopup();									
+			loadPopup("wizard");
 			me.resizeControls();
 		},
 		
@@ -6830,20 +6846,29 @@ ii.Class({
 	}
 });
 
-function loadPopup() {
+function loadPopup(type) {
 	centerPopup();
 	
 	$("#backgroundPopup").css({
 		"opacity": "0.5"
 	});
 	$("#backgroundPopup").fadeIn("slow");
-	$("#popupEmployee").fadeIn("slow");
+	
+	if (type == "wizard")
+		$("#popupEmployee").fadeIn("slow");
+	else if (type == "history") {
+		$("#popupHistory").fadeIn("slow");
+		$("#popupLoading").show();
+	}
 }
 
-function hidePopup() {
+function hidePopup(type) {
 
 	$("#backgroundPopup").fadeOut("slow");
-	$("#popupEmployee").fadeOut("slow");
+	if (type == "wizard")
+		$("#popupEmployee").fadeOut("slow");
+	else if (type == "history")
+		$("#popupHistory").fadeOut("slow");
 }
 
 function centerPopup() {
