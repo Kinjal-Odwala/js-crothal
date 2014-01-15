@@ -237,9 +237,6 @@ ii.Class({
 
 					if (me.title.getValue() == "")
 						return;
-
-					if (!(/^[^\\\/\:\*\?\"\<\>\|\.\;\,]+$/.test(me.title.getValue())))
-						this.setInvalid("Please enter the correct Title. The title can't contain any of the following characters: \\/:*?\"<>|.;,");
 				});
 
 			me.batchGrid = new ui.ctl.Grid({
