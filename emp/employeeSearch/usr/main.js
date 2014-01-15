@@ -241,6 +241,14 @@ ii.Class({
 				ii.timer.timing("Page displayed");
 				me.loadCount = 1;
 				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.employeeGeneralMasterStore.fetch("userId:[user],personId:0,", me.typesTableLoaded, me);
+				me.stateStore.reset();						
+				me.stateStore.fetch("userId:[user]", me.typesTableLoaded, me);
+				me.unionStatusTypeStore.fetch("userId:[user],", me.typesTableLoaded, me);
+				me.stateAdditionalInfoStore.fetch("userId:[user],", me.typesTableLoaded, me);			
+				me.federalAdjustmentStore.fetch("userId:[user]", me.typesTableLoaded, me);			
+				me.payFrequencyTypeStore.fetch("userId:[user]", me.typesTableLoaded, me);
+				me.separationCodeStore.fetch("userId:[user],terminationType:" + me.terminationType + ",", me.typesTableLoaded, me);								
 				me.statusStore.fetch("userId:[user],", me.statusTypesLoaded, me);
 			}				
 			else
@@ -2397,12 +2405,114 @@ ii.Class({
 			var me = this; 
 
 			loadPopup("history");
+			$("#messageToUser2").text("Loading");
 			me.actionType = "";
+
 			me.employeeHistoryStore.reset();
 			me.employeeHistoryStore.fetch("userId:[user],employeeNumber:" + employeeNumber + ",fieldName:", me.employeeHistoriesLoaded, me);
 		},
 
+		typesTableLoaded: function(me, activeId) {			
+			
+		},
+
 		employeeHistoriesLoaded: function(me, activeId) { 
+		
+			var typesTable = [];
+			var fildValue;
+		
+			for (var index = 0; index < me.employeeHistories.length; index++) {
+				typesTable = null;
+				fildValue = "";
+				if (me.employeeHistories[index].columnName == "EmpStatusCategoryType") {
+					typesTable = me.statusCategoryTypes;
+				}
+				else if (me.employeeHistories[index].columnName == "EmpEthnicityType") {
+					typesTable = me.ethnicityTypes;
+				}
+				else if (me.employeeHistories[index].columnName == "EmpMaritalStatusType") {
+					typesTable = me.maritalStatusTypes;
+				}
+				else if (me.employeeHistories[index].columnName == "EmpI9Type") {
+					typesTable = me.i9Types;
+				}
+				else if (me.employeeHistories[index].columnName == "EmpVetType") {
+					typesTable = me.vetTypes;
+				}
+				else if (me.employeeHistories[index].columnName == "EmpMaritalStatusFederalTaxType") {
+					typesTable = me.maritalStatusFederalTaxTypes;
+				}
+				else if (me.employeeHistories[index].columnName == "EmpLocalTaxAdjustmentType") {
+					typesTable = me.localTaxAdjustmentTypes;
+				}
+				else if (me.employeeHistories[index].columnName == "EmpEmpgLocalTaxCode1" || me.employeeHistories[index].columnName == "EmpEmpgLocalTaxCode2" || me.employeeHistories[index].columnName == "EmpEmpgLocalTaxCode3") {
+					typesTable = me.localTaxCodes;
+				}
+				else if (me.employeeHistories[index].columnName == "AppStateType" || me.employeeHistories[index].columnName == "EmpEmpgPrimaryState" || me.employeeHistories[index].columnName == "EmpEmpgSecondaryState") {
+					typesTable = me.stateTypes;
+				}
+				else if (me.employeeHistories[index].columnName == "EmpSDIAdjustmentType") {
+					typesTable = me.sdiAdjustmentTypes;
+				}
+				else if (me.employeeHistories[index].columnName == "EmpMaritalStatusStateTaxTypePrimary") {
+					typesTable = me.maritalStatusStateTaxTypePrimarys;
+				}
+				else if (me.employeeHistories[index].columnName == "EmpMaritalStatusStateTaxTypeSecondary") {
+					typesTable = me.maritalStatusStateTaxTypeSecondarys;
+				}
+				else if (me.employeeHistories[index].columnName == "EmpStateAdjustmentType") {
+					typesTable = me.stateAdjustmentTypes;
+				}
+				else if (me.employeeHistories[index].columnName == "EmpBasicLifeIndicatorType") {
+					typesTable = me.basicLifeIndicatorTypes;
+				}
+				else if (me.employeeHistories[index].columnName == "EmpJobCodeType") {
+					typesTable = me.jobCodeTypes;
+				}
+				else if (me.employeeHistories[index].columnName == "EmpDeviceGroupType") {
+					typesTable = me.deviceGroupTypes;
+				}
+				else if (me.employeeHistories[index].columnName == "EmpWorkShift") {
+					typesTable = me.workShifts;
+				}
+				else if (me.employeeHistories[index].columnName == "EmpRateChangeReasonType") {
+					typesTable = me.rateChangeReasons;
+				}
+				else if (me.employeeHistories[index].columnName == "EmpFederalAdjustmentType") {
+					typesTable = me.federalAdjustments;
+				}
+				else if (me.employeeHistories[index].columnName == "EmpJobStartReasonType") {
+					typesTable = me.jobStartReasonTypes;
+				}
+				else if (me.employeeHistories[index].columnName == "EmpUnionType") {
+					typesTable = me.unionTypes;
+				}
+				else if (me.employeeHistories[index].columnName == "EmpStatusType") {
+					typesTable = me.statusTypes;
+				}
+				else if (me.employeeHistories[index].columnName == "EmpSeparationCode") {
+					typesTable = me.separationCodes;
+				}
+				else if (me.employeeHistories[index].columnName == "EmpTerminationReasonType") {
+					typesTable = me.terminationReasons;
+				}
+				else if (me.employeeHistories[index].columnName == "HcmHouseCodeJob") {
+					var item = ii.ajax.util.findItemById(me.employeeHistories[index].previousFieldValue, me.houseCodeJobs);
+					if (item)
+						fildValue = item.jobTitle;
+				}
+				else 
+					fildValue = me.employeeHistories[index].previousFieldValue;		
+
+				if (typesTable != null) {
+					var item = ii.ajax.util.findItemById(me.employeeHistories[index].previousFieldValue, typesTable);
+					if (item)
+						fildValue = item.name;
+				}
+				
+				if (fildValue != "")
+					me.employeeHistories[index].previousFieldValue = fildValue;
+			}
 
 			me.historyGrid.setData(me.employeeHistories);
 			me.historyGrid.setHeight(340);
