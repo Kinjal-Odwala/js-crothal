@@ -125,6 +125,7 @@ ii.init.register( function() {
 		, ePaySite: {type: Boolean, required: false, defaultValue: false}
 		, ePayGroupType: {type: Number, required: false, defaultValue: 0}
 		, ePayTask: {type: Number, required: false, defaultValue: 0}
+		, ePayHours: {type: Boolean, required: false, defaultValue: false}
 		, incidentFrequencyRate: {type: String, required: false, defaultValue: ""}
 		, trir: {type: String, required: false, defaultValue: ""}
 		, lostDays: {type: String, required: false, defaultValue: ""}

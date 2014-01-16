@@ -419,6 +419,7 @@ ii.Class({
 			me.tpRoundingTimePeriodShow = me.isCtrlVisibleTabPayroll(me.authorizePath + "\\TabPayroll\\RoundingTimePeriod", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));
 			me.tpEPaySiteShow = me.isCtrlVisibleTabPayroll(me.authorizePath + "\\TabPayroll\\EPaySite", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));
 			me.tpEPayTaskShow = me.isCtrlVisibleTabPayroll(me.authorizePath + "\\TabPayroll\\EPayTask", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));
+			me.tpEPayHoursShow = me.isCtrlVisibleTabPayroll(me.authorizePath + "\\TabPayroll\\EPayHours", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));
 			me.tpCeridianCompanyHourlyShow = me.isCtrlVisibleTabPayroll(me.authorizePath + "\\TabPayroll\\CeridianCompanyHourly", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));
 			me.tpCeridianCompanySalariedShow = me.isCtrlVisibleTabPayroll(me.authorizePath + "\\TabPayroll\\CeridianCompanySalaried", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));			
 			
@@ -430,6 +431,7 @@ ii.Class({
 			me.tpRoundingTimePeriodReadOnly = me.isCtrlReadOnlyTabPayroll(me.authorizePath + "\\TabPayroll\\RoundingTimePeriod\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
 			me.tpEPaySiteReadOnly = me.isCtrlReadOnlyTabPayroll(me.authorizePath + "\\TabPayroll\\EPaySite\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
 			me.tpEPayTaskReadOnly = me.isCtrlReadOnlyTabPayroll(me.authorizePath + "\\TabPayroll\\EPayTask\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
+			me.tpEPayHoursReadOnly = me.isCtrlReadOnlyTabPayroll(me.authorizePath + "\\TabPayroll\\EPayHours\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
 			me.tpCeridianCompanyHourlyReadOnly = me.isCtrlReadOnlyTabPayroll(me.authorizePath + "\\TabPayroll\\CeridianCompanyHourly\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
 			me.tpCeridianCompanySalariedReadOnly = me.isCtrlReadOnlyTabPayroll(me.authorizePath + "\\TabPayroll\\CeridianCompanySalaried\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
 
@@ -846,7 +848,8 @@ ii.Class({
 			me.setControlState("RoundingTimePeriod", me.tpRoundingTimePeriodReadOnly, me.tpRoundingTimePeriodShow, "Radio", "RoundingTimePeriodRadio");			
 			me.setControlState("TimeAttendance", me.tpTimeAndAttendanceReadOnly, me.tpTimeAndAttendanceShow, "Radio", "TimeAttendanceRadio");			
 			me.setControlState("EPaySite", me.tpEPaySiteReadOnly, me.tpEPaySiteShow, "Check", "EPaySiteCheckText");
-			me.setControlState("EPayTask", me.tpEPayTaskReadOnly, me.tpEPayTaskShow, "Check", "EPayTaskCheck");			
+			me.setControlState("EPayTask", me.tpEPayTaskReadOnly, me.tpEPayTaskShow, "Check", "EPayTaskCheck");
+			me.setControlState("EPayHours", me.tpEPayHoursReadOnly, me.tpEPayHoursShow, "Check", "EPayHoursCheck");			
 			me.setControlState("CeridianCompanyHourly", me.tpCeridianCompanyHourlyReadOnly, me.tpCeridianCompanyHourlyShow);			
 			me.setControlState("CeridianCompanySalaried", me.tpCeridianCompanySalariedReadOnly, me.tpCeridianCompanySalariedShow);
 			
@@ -2307,6 +2310,11 @@ ii.Class({
 				changeFunction: function() { me.modified(); }
 		    });
 			
+			me.ePayHours = new ui.ctl.Input.Check({
+		        id: "EPayHours",
+				required: false,
+				changeFunction: function() { me.modified(); }
+		    });
 			
 			//Safety
 			me.incidentFrequencyRate = new ui.ctl.Input.Text({
@@ -3283,6 +3291,7 @@ ii.Class({
 				
 			me.ePaySiteSelect = houseCode.ePaySite;
 			me.ePayTask.check.checked = houseCode.ePayTask;
+			me.ePayHours.check.checked = houseCode.ePayHours;
 				
 			if (houseCode.ePaySite == true)
 				$('#EPaySiteCheck').attr('checked', true);
@@ -3734,6 +3743,7 @@ ii.Class({
 			me.houseCodeDetails[0].ePaySite = me.ePaySiteSelect;
 			me.houseCodeDetails[0].ePayGroupType = (me.ePayPayGroup.indexSelected <= 0 ? 0 : me.ePayGroupTypes[me.ePayPayGroup.indexSelected].id);
 			me.houseCodeDetails[0].ePayTask = (me.ePayTask.check.checked ? 1 : 0);
+			me.houseCodeDetails[0].ePayHours = (me.ePayHours.check.checked ? 1 : 0);
 			
 			//Safety
 			me.houseCodeDetails[0].incidentFrequencyRate = me.incidentFrequencyRate.getValue();
@@ -3898,6 +3908,7 @@ ii.Class({
 				, me.houseCodeDetails[0].ePaySite
 				, me.houseCodeDetails[0].ePayGroupType
 				, me.houseCodeDetails[0].ePayTask
+				, me.houseCodeDetails[0].ePayHours
 
 				//Safety
 				, me.houseCodeDetails[0].incidentFrequencyRate
@@ -4039,6 +4050,7 @@ ii.Class({
 			xml += ' ePaySite="' + item.ePaySite + '"';
 			xml += ' ePayGroupType="' + item.ePayGroupType + '"';
 			xml += ' ePayTask="' + item.ePayTask + '"';
+			xml += ' ePayHours="' + item.ePayHours + '"';
 			
 			//Safety
 			xml += ' incidentFrequencyRate="' + ui.cmn.text.xml.encode(item.incidentFrequencyRate) + '"';
