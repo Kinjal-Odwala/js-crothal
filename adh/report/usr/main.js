@@ -992,10 +992,10 @@ ii.Class({
 			});
 		},
 		
-		setStatus: function(status) {
+		setStatus: function(status, message) {
 			var me = this;
 
-			fin.cmn.status.setStatus(status);
+			fin.cmn.status.setStatus(status, message);
 		},
 		
 		dirtyCheck: function(me) {
@@ -1239,11 +1239,13 @@ ii.Class({
 				else {
 					me.actionAddNodes();
             		me.selectNode();
+					me.searchNode = false;
 				}
 			}
 			else  {
 				me.actionAddNodes();
             	me.selectNode();
+				me.searchNode = false;
 			}
 
             ii.trace("Hirnodes Loaded", ii.traceTypes.Information, "Info");
@@ -1897,7 +1899,8 @@ ii.Class({
 			$("#divAdhReportGrid").height($(window).height() - 170);
 			
 			me.sortColumns = "";
-
+			me.reportEditable = false;
+			
 			if (me.moduleColumnHeaders.length > 0) {
 				rowData += "<tr id='trAdhReportItemGridHead' height='40px'>";
 				
@@ -1923,24 +1926,24 @@ ii.Class({
 					for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
 						if (me.moduleColumnHeaders[index].columnType != 2) {
 							if (me.moduleColumnHeaders[index].title == 'HcmHouseCodeJob') 
-							me.invoiceJob = true;
-							if (me.moduleColumnHeaders[index].title == 'RevTaxableService') 
+								me.invoiceJob = true;
+							else if (me.moduleColumnHeaders[index].title == 'RevTaxableService') 
 								me.invoiceTaxableService = true;
-							if (me.moduleColumnHeaders[index].title == 'FscAccount') 
+							else if (me.moduleColumnHeaders[index].title == 'FscAccount') 
 								me.invoiceAccountCode = true;
-							if (me.moduleColumnHeaders[index].title == 'RevInviQuantity') 
+							else if (me.moduleColumnHeaders[index].title == 'RevInviQuantity') 
 								me.invoiceQuantity = true;
-							if (me.moduleColumnHeaders[index].title == 'RevInviPrice') 
+							else if (me.moduleColumnHeaders[index].title == 'RevInviPrice') 
 								me.invoicePrice = true;
-							if (me.moduleColumnHeaders[index].title == 'RevInviAmount') 
+							else if (me.moduleColumnHeaders[index].title == 'RevInviAmount') 
 								me.invoiceAmount = true;
-							if (me.moduleColumnHeaders[index].title == 'AppTransactionStatusType') 
+							else if (me.moduleColumnHeaders[index].title == 'AppTransactionStatusType') 
 								me.invoiceStatus = true;
-							if (me.moduleColumnHeaders[index].title == 'RevInviTaxable') 
+							else if (me.moduleColumnHeaders[index].title == 'RevInviTaxable') 
 								me.invoiceTaxable = true;
-							if (me.moduleColumnHeaders[index].title == 'RevInviShow') 
+							else if (me.moduleColumnHeaders[index].title == 'RevInviShow') 
 								me.invoiceShow = true;
-							if (me.moduleColumnHeaders[index].title == 'RevInviDescription') 
+							else if (me.moduleColumnHeaders[index].title == 'RevInviDescription') 
 								me.invoiceDescription = true;
 						}
 					}
@@ -2008,8 +2011,12 @@ ii.Class({
 					for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
 						if (me.moduleColumnHeaders[index].columnType == 2) 
 							className = "gridColumnHidden";
-						else 
+						else { 
 							className = "gridHeaderColumn";
+							if (me.moduleColumnHeaders[index].columnType == 1)
+								me.reportEditable = true;
+						}
+						
 						if (index == me.moduleColumnHeaders.length - 1) 
 							className = "gridHeaderColumnRight";
 						rowData += "<th onclick=(fin.reportUi.sortColumn(" + index + ")); class='" + className + "' style='width:" + me.moduleColumnHeaders[index].columnWidth + "px;'>" + me.moduleColumnHeaders[index].description + "</th>";
@@ -2018,6 +2025,15 @@ ii.Class({
 					}
 					
 					rowData += "<th class='gridColumnHidden'></th></tr>";
+				}
+				
+				if (me.reportEditable) {
+					$("#AnchorSave").show();
+					$("#AnchorUndo").show();
+				}
+				else if (!me.reportEditable || me.invoiceItem) {
+					$("#AnchorSave").hide();
+					$("#AnchorUndo").hide();
 				}
 			}
 				
@@ -4490,33 +4506,66 @@ ii.Class({
 
 		actionExportToExcelItem: function() {
 			var me = this;
-			
-			me.setStatus("Exporting");
+
+			if (me.recordCount == 0)
+				return;
+
+			if (me.invoiceItem && me.recordCount > 2000) {
+				alert("You cannot export more than 2000 invoices at a time. Please filter the invoices and try again.");
+				return;
+			}
+			else if (me.recordCount > 20000) {
+				alert("You cannot export more than 20000 rows at a time. Please filter the rows and try again.");
+				return;
+			}
+
+			if (me.invoiceItem)
+				me.reportMaximumRows = 2000;
+			else
+				me.reportMaximumRows = 20000;
+
+			me.reportStartPoint = 1;
+			me.reportEndPoint = (me.reportStartPoint + me.reportMaximumRows) - 1;
+
 			$("#messageToUser").html("Exporting");
 			$("#pageLoading").fadeIn("slow");
-			
+			me.setStatus("Exporting");
+			me.exportToExcel("");
+		},
+		
+		exportToExcel: function(fileName) {
+			var me = this;
 			me.reportId = me.reports[me.report.indexSelected].id;
 			me.reportName = me.reports[me.report.indexSelected].name;
 			
-			me.adhFileNameStore.fetch("userId:[user],report:"+ me.reportId 
-				+ ",hirNode:"+ me.delimitedOrgSelectedNodes 
+			me.adhFileNameStore.fetch("userId:[user],report:" + me.reportId
+				+ ",hirNode:" + me.delimitedOrgSelectedNodes
 				+ ",filter:" + me.filter
-				+ ",startPoint:" + 0
-				+ ",endPoint:" +  0
-				+ ",sortColumns:" +  me.sortColumns
-				+ ",invoiceItem:" +  me.invoiceItem
-				+ ",", me.fileNamesLoaded, me);						
+				+ ",startPoint:" + me.reportStartPoint
+				+ ",endPoint:" +  me.reportEndPoint
+				+ ",sortColumns:" + me.sortColumns
+				+ ",invoiceItem:" + me.invoiceItem
+				+ ",fileName:" + fileName
+				+ "", me.fileNamesLoaded, me);
 		},
 		
 		fileNamesLoaded: function(me, activeId) {
 			var excelFileName = "";
 
-			me.setStatus("Exported");
-			$("#pageLoading").fadeOut("slow");
+			if (me.recordCount > me.reportEndPoint) {
+				me.setStatus("Exporting", "Exporting, please wait... (" + me.reportEndPoint + " of " + me.recordCount + " records are exported)");
+				me.reportStartPoint = me.reportEndPoint + 1;
+				me.reportEndPoint = (me.reportStartPoint + me.reportMaximumRows) - 1;
+				me.exportToExcel(me.adhFileNames[0].fileName);
+			}
+			else {
+				me.setStatus("Exported");
+				$("#pageLoading").fadeOut("slow");
 
-			if (me.adhFileNames.length == 1) {
-				$("iframe")[0].contentWindow.document.getElementById("FileName").value = me.adhFileNames[0].fileName;
-				$("iframe")[0].contentWindow.document.getElementById("DownloadButton").click();
+				if (me.adhFileNames.length == 1) {
+					$("iframe")[0].contentWindow.document.getElementById("FileName").value = me.adhFileNames[0].fileName;
+					$("iframe")[0].contentWindow.document.getElementById("DownloadButton").click();
+				}
 			}
 		},
 		

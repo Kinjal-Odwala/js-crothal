@@ -127,11 +127,15 @@ ii.Class({
 			me.shSiteShow = me.isCtrlVisible(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\Site", me.sectionHouseCodeShow, (me.sectionHouseCodeWrite || me.sectionHouseCodeReadOnly));
 			me.shHouseCodeShow = me.isCtrlVisible(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\HouseCode", me.sectionHouseCodeShow, (me.sectionHouseCodeWrite || me.sectionHouseCodeReadOnly));
 			me.shStartDateShow = me.isCtrlVisible(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\StartDate", me.sectionHouseCodeShow, (me.sectionHouseCodeWrite || me.sectionHouseCodeReadOnly));
+			me.shClosedDateShow = me.isCtrlVisible(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\ClosedDate", me.sectionHouseCodeShow, (me.sectionHouseCodeWrite || me.sectionHouseCodeReadOnly));
+			me.shClosedReasonShow = me.isCtrlVisible(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\ClosedReason", me.sectionHouseCodeShow, (me.sectionHouseCodeWrite || me.sectionHouseCodeReadOnly));
 			
 			me.shJDECompanyReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\JDECompany\\Read", me.sectionHouseCodeWrite, me.sectionHouseCodeReadOnly);
 			me.shSiteReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\Site\\Read", me.sectionHouseCodeWrite, me.sectionHouseCodeReadOnly);
 			me.shHouseCodeReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\HouseCode\\Read", me.sectionHouseCodeWrite, me.sectionHouseCodeReadOnly);
 			me.shStartDateReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\StartDate\\Read", me.sectionHouseCodeWrite, me.sectionHouseCodeReadOnly);
+			me.shClosedDateReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\ClosedDate\\Read", me.sectionHouseCodeWrite, me.sectionHouseCodeReadOnly);
+			me.shClosedReasonReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\ClosedReason\\Read", me.sectionHouseCodeWrite, me.sectionHouseCodeReadOnly);
 			
 			//ss=sectionServices
 			me.ssPrimaryServiceShow = me.isCtrlVisible(me.authorizePath + "\\TabHouseCode\\SectionServices\\PrimaryService", me.sectionServicesShow, (me.sectionServicesWrite || me.sectionServicesReadOnly));
@@ -249,6 +253,8 @@ ii.Class({
 			me.setControlState("Sites", me.shSiteReadOnly, me.shSiteShow);
 			me.setControlState("HouseCodeNumber", me.shHouseCodeReadOnly, me.shHouseCodeShow);
 			me.setControlState("StartDate", me.shStartDateReadOnly, me.shStartDateShow);
+			me.setControlState("ClosedDate", me.shClosedDateReadOnly, me.shClosedDateShow);
+			me.setControlState("ClosedReason", me.shClosedReasonReadOnly, me.shClosedReasonShow);
 			
 			//SectionServices
 			me.setControlState("PrimaryServiceProvided", me.ssPrimaryServiceReadOnly, me.ssPrimaryServiceShow);			
@@ -380,6 +386,27 @@ ii.Class({
 					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
 						this.setInvalid("Please enter valid date.");
 				});
+			
+			me.closedDate = new ui.ctl.Input.Date({
+		        id: "ClosedDate",
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
+		    });
+				
+			me.closedDate.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation( function( isFinal, dataMap ) {					
+					var enteredText = me.closedDate.text.value;
+											
+					if (enteredText != "" && ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
+						this.setInvalid("Please enter valid date.");
+				});
+					
+			me.closedReason = new ui.ctl.Input.Text({
+		        id: "ClosedReason",
+				textArea: true,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
+		    });
 			
 			me.primaryService = new ui.ctl.Input.DropDown.Filtered({
 		        id: "PrimaryServiceProvided",
@@ -637,7 +664,9 @@ ii.Class({
 			me.site.text.tabIndex = 2;
 			me.houseCodeNumber.text.tabIndex = 3;
 			me.startDate.text.tabIndex = 4;
-			me.primaryService.text.tabIndex = 5;
+			me.closedDate.text.tabIndex = 5;
+			me.closedReason.text.tabIndex = 6;
+			me.primaryService.text.tabIndex = 7;
 			me.serviceLine.text.tabIndex = 8;
 			me.managerName.text.tabIndex = 23;
 			me.managerEmail.text.tabIndex = 24;
@@ -920,6 +949,9 @@ ii.Class({
 			if (houseCode.startDate) {
 				me.startDate.setValue(houseCode.startDate); 
 			}
+			
+			me.closedDate.setValue(houseCode.closedDate);
+			me.closedReason.setValue(houseCode.closedReason);
 			
 			if (houseCode.serviceLineId) {
 				index = ii.ajax.util.findIndexById(houseCode.serviceLineId.toString(), me.serviceLines);

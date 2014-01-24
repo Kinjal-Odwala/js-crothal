@@ -23,6 +23,17 @@
 	padding: 1px 0px 0px 5px;
 }
 
+#wl-ctrl-101-DataCollectorContentArea {
+	border:none;
+	border:solid #AAAAAA thin;
+	border-width:1px;
+	height:370px;
+	padding:5px;
+	margin:1px;
+	overflow-y:auto;
+	overflow-x:hidden;
+}
+
 .x-form-invalid, textarea.x-form-invalid {
     background-color: #FE7774;
     background-image: none;
@@ -173,6 +184,7 @@
 .ux-grid-1 .x-grid3-hd-inner {
     font-size:12px !important;
     font-weight:bold;
+	text-align:center;
 }
 
 .ux-grid-1 .x-grid3-cell-inner ,.ux-grid-2 .x-grid3-cell-inner {

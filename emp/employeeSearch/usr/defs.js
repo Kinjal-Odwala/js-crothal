@@ -359,6 +359,7 @@ ii.init.register( function(){
 
 	fin.emp.employeeHistoryArgs = {
 		id: {type: Number},
+		columnName: {type: String, required: false, defaultValue: ""},
 		fieldName: {type: String, required: false, defaultValue: ""},
 		previousFieldValue: {type: String, required: false, defaultValue: ""},
 		lastModifiedBy: {type: String, required: false, defaultValue: ""},

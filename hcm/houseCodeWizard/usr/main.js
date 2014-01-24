@@ -146,7 +146,7 @@ ii.Class({
 			
 			me.tabHouseCodeShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\TabHouseCode");
 			me.tabHouseCodeWrite = me.authorizer.isAuthorized(me.authorizePath + "\\TabHouseCode\\Write");
-			me.tabHouseCodeReadOnly = me.authorizer.isAuthorized(me.authorizePath +"\\TabHouseCode\\Read");
+			me.tabHouseCodeReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\TabHouseCode\\Read");
 			
 			//SectionHouseCode
 			me.sectionHouseCodeShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\TabHouseCode\\SectionHouseCode");
@@ -170,11 +170,15 @@ ii.Class({
 			me.shSiteShow = me.isCtrlVisible(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\Site", me.sectionHouseCodeShow, (me.sectionHouseCodeWrite || me.sectionHouseCodeReadOnly));
 			me.shHouseCodeShow = me.isCtrlVisible(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\HouseCode", me.sectionHouseCodeShow, (me.sectionHouseCodeWrite || me.sectionHouseCodeReadOnly));
 			me.shStartDateShow = me.isCtrlVisible(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\StartDate", me.sectionHouseCodeShow, (me.sectionHouseCodeWrite || me.sectionHouseCodeReadOnly));
+			me.shClosedDateShow = me.isCtrlVisible(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\ClosedDate", me.sectionHouseCodeShow, (me.sectionHouseCodeWrite || me.sectionHouseCodeReadOnly));
+			me.shClosedReasonShow = me.isCtrlVisible(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\ClosedReason", me.sectionHouseCodeShow, (me.sectionHouseCodeWrite || me.sectionHouseCodeReadOnly));
 			
 			me.shJDECompanyReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\JDECompany\\Read", me.sectionHouseCodeWrite, me.sectionHouseCodeReadOnly);
 			me.shSiteReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\Site\\Read", me.sectionHouseCodeWrite, me.sectionHouseCodeReadOnly);
 			me.shHouseCodeReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\HouseCode\\Read", me.sectionHouseCodeWrite, me.sectionHouseCodeReadOnly);
 			me.shStartDateReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\StartDate\\Read", me.sectionHouseCodeWrite, me.sectionHouseCodeReadOnly);
+			me.shClosedDateReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\ClosedDate\\Read", me.sectionHouseCodeWrite, me.sectionHouseCodeReadOnly);
+			me.shClosedReasonReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\ClosedReason\\Read", me.sectionHouseCodeWrite, me.sectionHouseCodeReadOnly);
 			
 			//ss=sectionServices
 			me.ssPrimaryServiceShow = me.isCtrlVisible(me.authorizePath + "\\TabHouseCode\\SectionServices\\PrimaryService", me.sectionServicesShow, (me.sectionServicesWrite || me.sectionServicesReadOnly));
@@ -415,6 +419,7 @@ ii.Class({
 			me.tpRoundingTimePeriodShow = me.isCtrlVisibleTabPayroll(me.authorizePath + "\\TabPayroll\\RoundingTimePeriod", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));
 			me.tpEPaySiteShow = me.isCtrlVisibleTabPayroll(me.authorizePath + "\\TabPayroll\\EPaySite", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));
 			me.tpEPayTaskShow = me.isCtrlVisibleTabPayroll(me.authorizePath + "\\TabPayroll\\EPayTask", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));
+			me.tpEPayHoursShow = me.isCtrlVisibleTabPayroll(me.authorizePath + "\\TabPayroll\\EPayHours", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));
 			me.tpCeridianCompanyHourlyShow = me.isCtrlVisibleTabPayroll(me.authorizePath + "\\TabPayroll\\CeridianCompanyHourly", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));
 			me.tpCeridianCompanySalariedShow = me.isCtrlVisibleTabPayroll(me.authorizePath + "\\TabPayroll\\CeridianCompanySalaried", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));			
 			
@@ -426,6 +431,7 @@ ii.Class({
 			me.tpRoundingTimePeriodReadOnly = me.isCtrlReadOnlyTabPayroll(me.authorizePath + "\\TabPayroll\\RoundingTimePeriod\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
 			me.tpEPaySiteReadOnly = me.isCtrlReadOnlyTabPayroll(me.authorizePath + "\\TabPayroll\\EPaySite\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
 			me.tpEPayTaskReadOnly = me.isCtrlReadOnlyTabPayroll(me.authorizePath + "\\TabPayroll\\EPayTask\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
+			me.tpEPayHoursReadOnly = me.isCtrlReadOnlyTabPayroll(me.authorizePath + "\\TabPayroll\\EPayHours\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
 			me.tpCeridianCompanyHourlyReadOnly = me.isCtrlReadOnlyTabPayroll(me.authorizePath + "\\TabPayroll\\CeridianCompanyHourly\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
 			me.tpCeridianCompanySalariedReadOnly = me.isCtrlReadOnlyTabPayroll(me.authorizePath + "\\TabPayroll\\CeridianCompanySalaried\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
 
@@ -729,6 +735,8 @@ ii.Class({
 			me.setControlState("Sites", me.shSiteReadOnly, me.shSiteShow);
 			me.setControlState("HouseCodeNumber", me.shHouseCodeReadOnly, me.shHouseCodeShow);
 			me.setControlState("StartDate", me.shStartDateReadOnly, me.shStartDateShow);
+			me.setControlState("ClosedDate", me.shClosedDateReadOnly, me.shClosedDateShow);
+			me.setControlState("ClosedReason", me.shClosedReasonReadOnly, me.shClosedReasonShow);
 			
 			//SectionServices
 			me.setControlState("PrimaryServiceProvided", me.ssPrimaryServiceReadOnly, me.ssPrimaryServiceShow);			
@@ -840,7 +848,8 @@ ii.Class({
 			me.setControlState("RoundingTimePeriod", me.tpRoundingTimePeriodReadOnly, me.tpRoundingTimePeriodShow, "Radio", "RoundingTimePeriodRadio");			
 			me.setControlState("TimeAttendance", me.tpTimeAndAttendanceReadOnly, me.tpTimeAndAttendanceShow, "Radio", "TimeAttendanceRadio");			
 			me.setControlState("EPaySite", me.tpEPaySiteReadOnly, me.tpEPaySiteShow, "Check", "EPaySiteCheckText");
-			me.setControlState("EPayTask", me.tpEPayTaskReadOnly, me.tpEPayTaskShow, "Check", "EPayTaskCheck");			
+			me.setControlState("EPayTask", me.tpEPayTaskReadOnly, me.tpEPayTaskShow, "Check", "EPayTaskCheck");
+			me.setControlState("EPayHours", me.tpEPayHoursReadOnly, me.tpEPayHoursShow, "Check", "EPayHoursCheck");			
 			me.setControlState("CeridianCompanyHourly", me.tpCeridianCompanyHourlyReadOnly, me.tpCeridianCompanyHourlyShow);			
 			me.setControlState("CeridianCompanySalaried", me.tpCeridianCompanySalariedReadOnly, me.tpCeridianCompanySalariedShow);
 			
@@ -1043,6 +1052,27 @@ ii.Class({
 					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
 						this.setInvalid("Please enter valid date.");
 				});
+				
+			me.closedDate = new ui.ctl.Input.Date({
+		        id: "ClosedDate",
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
+				changeFunction: function() { me.modified(); }
+		    });
+				
+			me.closedDate.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation( function( isFinal, dataMap ) {					
+					var enteredText = me.closedDate.text.value;
+											
+					if (enteredText != "" && ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
+						this.setInvalid("Please enter valid date.");
+				});
+				
+			me.closedReason = new ui.ctl.Input.Text({
+		        id: "ClosedReason",
+				textArea: true,
+				changeFunction: function() { me.modified(); }
+		    });
 				
 			me.primaryService = new ui.ctl.Input.DropDown.Filtered({
 		        id: "PrimaryServiceProvided",
@@ -1299,8 +1329,10 @@ ii.Class({
 			me.site.text.tabIndex = 2;
 			me.houseCodeNumber.text.tabIndex = 3;
 			me.startDate.text.tabIndex = 4;
-			me.primaryService.text.tabIndex = 5;
-			me.serviceLine.text.tabIndex = 6;
+			me.closedDate.text.tabIndex = 5;
+			me.closedReason.text.tabIndex = 6;
+			me.primaryService.text.tabIndex = 7;
+			me.serviceLine.text.tabIndex = 8;
 			me.managerName.text.tabIndex = 20;
 			me.managerEmail.text.tabIndex = 21;
 			me.managerPhone.text.tabIndex = 22;
@@ -2278,6 +2310,11 @@ ii.Class({
 				changeFunction: function() { me.modified(); }
 		    });
 			
+			me.ePayHours = new ui.ctl.Input.Check({
+		        id: "EPayHours",
+				required: false,
+				changeFunction: function() { me.modified(); }
+		    });
 			
 			//Safety
 			me.incidentFrequencyRate = new ui.ctl.Input.Text({
@@ -2912,6 +2949,9 @@ ii.Class({
 				me.startDate.setValue(houseCode.startDate); 
 			}
 			
+			me.closedDate.setValue(houseCode.closedDate);
+			me.closedReason.setValue(houseCode.closedReason);
+			
 			if (houseCode.serviceLineId) {
 				index = ii.ajax.util.findIndexById(houseCode.serviceLineId.toString(), me.serviceLineTypes);
 				if (index) 
@@ -3251,6 +3291,7 @@ ii.Class({
 				
 			me.ePaySiteSelect = houseCode.ePaySite;
 			me.ePayTask.check.checked = houseCode.ePayTask;
+			me.ePayHours.check.checked = houseCode.ePayHours;
 				
 			if (houseCode.ePaySite == true)
 				$('#EPaySiteCheck').attr('checked', true);
@@ -3597,6 +3638,8 @@ ii.Class({
 			me.houseCodeDetails[0].appSiteId = (me.site.indexSelected < 0 ? 0 : me.sites[me.site.indexSelected].id);		
 			me.houseCodeDetails[0].jdeCompanyId = (me.jdeCompany.indexSelected <= 0 ? "0" : me.jdeCompanys[me.jdeCompany.indexSelected].id.toString());		
 			me.houseCodeDetails[0].startDate = me.startDate.lastBlurValue;
+			me.houseCodeDetails[0].closedDate = me.closedDate.lastBlurValue;
+			me.houseCodeDetails[0].closedReason = me.closedReason.getValue();
 			me.houseCodeDetails[0].serviceTypeId = (me.primaryService.indexSelected < 0 ? 0 : me.jdeServices[me.primaryService.indexSelected].id);
 			me.houseCodeDetails[0].serviceLineId = (me.serviceLine.indexSelected <= 0 ? 0 : me.serviceLineTypes[me.serviceLine.indexSelected].id);
 			me.houseCodeDetails[0].enforceLaborControl = true;
@@ -3700,6 +3743,7 @@ ii.Class({
 			me.houseCodeDetails[0].ePaySite = me.ePaySiteSelect;
 			me.houseCodeDetails[0].ePayGroupType = (me.ePayPayGroup.indexSelected <= 0 ? 0 : me.ePayGroupTypes[me.ePayPayGroup.indexSelected].id);
 			me.houseCodeDetails[0].ePayTask = (me.ePayTask.check.checked ? 1 : 0);
+			me.houseCodeDetails[0].ePayHours = (me.ePayHours.check.checked ? 1 : 0);
 			
 			//Safety
 			me.houseCodeDetails[0].incidentFrequencyRate = me.incidentFrequencyRate.getValue();
@@ -3767,6 +3811,8 @@ ii.Class({
 				, me.houseCodeDetails[0].appSiteId
 				, me.houseCodeDetails[0].jdeCompanyId
 				, me.houseCodeDetails[0].startDate
+				, me.houseCodeDetails[0].closedDate
+				, me.houseCodeDetails[0].closedReason
 				, me.houseCodeDetails[0].serviceTypeId
 				, me.houseCodeDetails[0].serviceLineId
 				, me.houseCodeDetails[0].enforceLaborControl
@@ -3862,6 +3908,7 @@ ii.Class({
 				, me.houseCodeDetails[0].ePaySite
 				, me.houseCodeDetails[0].ePayGroupType
 				, me.houseCodeDetails[0].ePayTask
+				, me.houseCodeDetails[0].ePayHours
 
 				//Safety
 				, me.houseCodeDetails[0].incidentFrequencyRate
@@ -3906,6 +3953,8 @@ ii.Class({
 			xml += ' appSiteId="' + item.appSiteId + '"';
 			xml += ' jdeCompanyId="' + item.jdeCompanyId + '"';
 			xml += ' startDate="' + item.startDate + '"';
+			xml += ' closedDate="' + item.closedDate + '"';
+			xml += ' closedReason="' + item.closedReason + '"';
 			xml += ' serviceTypeId="' + item.serviceTypeId + '"';
 			xml += ' serviceLineId="' + item.serviceLineId + '"';
 			xml += ' enforceLaborControl="' + item.enforceLaborControl + '"';
@@ -4001,6 +4050,7 @@ ii.Class({
 			xml += ' ePaySite="' + item.ePaySite + '"';
 			xml += ' ePayGroupType="' + item.ePayGroupType + '"';
 			xml += ' ePayTask="' + item.ePayTask + '"';
+			xml += ' ePayHours="' + item.ePayHours + '"';
 			
 			//Safety
 			xml += ' incidentFrequencyRate="' + ui.cmn.text.xml.encode(item.incidentFrequencyRate) + '"';

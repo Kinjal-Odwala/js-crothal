@@ -409,3 +409,16 @@
 	float: left;
 	width: 60px;
 }
+
+.viewHistoryLink {
+	color: blue;
+	cursor: pointer; 
+	font-family: Verdana;
+	font-size: 12px;
+	text-align: center;
+}
+
+.viewHistoryLink:hover {	
+	color: red;
+	text-decoration: underline;
+}

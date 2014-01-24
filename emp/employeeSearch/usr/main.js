@@ -240,7 +240,14 @@ ii.Class({
 			
 				ii.timer.timing("Page displayed");
 				me.loadCount = 1;
-				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.session.registerFetchNotify(me.sessionLoaded, me);
+				me.employeeGeneralMasterStore.fetch("userId:[user],personId:0,", me.typesTableLoaded, me);
+				me.stateStore.fetch("userId:[user]", me.typesTableLoaded, me);
+				me.unionStatusTypeStore.fetch("userId:[user],", me.typesTableLoaded, me);
+				me.stateAdditionalInfoStore.fetch("userId:[user],", me.typesTableLoaded, me);
+				me.federalAdjustmentStore.fetch("userId:[user]", me.typesTableLoaded, me);
+				me.payFrequencyTypeStore.fetch("userId:[user]", me.typesTableLoaded, me);
+				me.separationCodeStore.fetch("userId:[user],terminationType:" + me.terminationType + ",", me.typesTableLoaded, me);								
 				me.statusStore.fetch("userId:[user],", me.statusTypesLoaded, me);
 			}				
 			else
@@ -517,6 +524,9 @@ ii.Class({
 			me.employeeSearch.addColumn("houseCodeRM", "houseCodeRM", "Regional Manager", "Regional Manager", null);
 			me.employeeSearch.addColumn("employeeNumber", "employeeNumber", "Employee #", "Employee #", 100);
 			me.employeeSearch.addColumn("ssn", "ssn", "SSN", "SSN", 100);
+			me.employeeSearch.addColumn("", "", "History", "History", 80, function(employee) {
+				return "<div class='viewHistoryLink' title='View the employee history' onclick='fin.empSearchUi.actionViewHistory(" + employee.employeeNumber + ");'>View</div>";
+			});
 			me.employeeSearch.capColumns();
 			me.employeeSearch.setHeight($("#pageLoading").height() - 130);
 
@@ -2390,18 +2400,112 @@ ii.Class({
 			return 0;
 		},
 		
+		actionViewHistory: function(employeeNumber) {
+			var me = this; 
+
+			loadPopup("history");
+			$("#messageToUser2").text("Loading");
+			me.actionType = "";
+
+			me.employeeHistoryStore.reset();
+			me.employeeHistoryStore.fetch("userId:[user],employeeNumber:" + employeeNumber + ",fieldName:", me.employeeHistoriesLoaded, me);
+		},
+
+		typesTableLoaded: function(me, activeId) {			
+			
+		},
+
 		employeeHistoriesLoaded: function(me, activeId) { 
+		
+			var typesTable = [];
+			var fieldValue = "";
+			var columnName = "";
+		
+			for (var index = 0; index < me.employeeHistories.length; index++) {
+				typesTable = null;
+				fieldValue = "";
+				columnName = me.employeeHistories[index].columnName;
+				
+				if (columnName == "EmpStatusCategoryType")
+					typesTable = me.statusCategoryTypes;
+				else if (columnName == "EmpEthnicityType")
+					typesTable = me.ethnicityTypes;
+				else if (columnName == "EmpMaritalStatusType")
+					typesTable = me.maritalStatusTypes;
+				else if (columnName == "EmpI9Type")
+					typesTable = me.i9Types;
+				else if (columnName == "EmpVetType")
+					typesTable = me.vetTypes;
+				else if (columnName == "EmpMaritalStatusFederalTaxType")
+					typesTable = me.maritalStatusFederalTaxTypes;
+				else if (columnName == "EmpLocalTaxAdjustmentType")
+					typesTable = me.localTaxAdjustmentTypes;
+				else if (columnName == "EmpEmpgLocalTaxCode1" || columnName == "EmpEmpgLocalTaxCode2" || columnName == "EmpEmpgLocalTaxCode3")
+					typesTable = me.localTaxCodes;
+				else if (columnName == "AppStateType" || columnName == "EmpEmpgPrimaryState" || columnName == "EmpEmpgSecondaryState")
+					typesTable = me.stateTypes;
+				else if (columnName == "EmpSDIAdjustmentType")
+					typesTable = me.sdiAdjustmentTypes;
+				else if (columnName == "EmpMaritalStatusStateTaxTypePrimary")
+					typesTable = me.maritalStatusStateTaxTypePrimarys;
+				else if (columnName == "EmpMaritalStatusStateTaxTypeSecondary")
+					typesTable = me.maritalStatusStateTaxTypeSecondarys;
+				else if (columnName == "EmpStateAdjustmentType")
+					typesTable = me.stateAdjustmentTypes;
+				else if (columnName == "EmpBasicLifeIndicatorType")
+					typesTable = me.basicLifeIndicatorTypes;
+				else if (columnName == "EmpJobCodeType")
+					typesTable = me.jobCodeTypes;
+				else if (columnName == "EmpDeviceGroupType")
+					typesTable = me.deviceGroupTypes;
+				else if (columnName == "EmpWorkShift")
+					typesTable = me.workShifts;
+				else if (columnName == "EmpRateChangeReasonType")
+					typesTable = me.rateChangeReasons;
+				else if (columnName == "EmpFederalAdjustmentType")
+					typesTable = me.federalAdjustments;
+				else if (columnName == "EmpJobStartReasonType")
+					typesTable = me.jobStartReasonTypes;
+				else if (columnName == "EmpUnionType")
+					typesTable = me.unionTypes;
+				else if (columnName == "EmpStatusType")
+					typesTable = me.statusTypes;
+				else if (columnName == "EmpSeparationCode")
+					typesTable = me.separationCodes;
+				else if (columnName == "EmpTerminationReasonType")
+					typesTable = me.terminationReasons;
+				else if (columnName == "HcmHouseCodeJob") {
+					var item = ii.ajax.util.findItemById(me.employeeHistories[index].previousFieldValue, me.houseCodeJobs);
+					if (item)
+						fieldValue = item.jobTitle;
+				}
+				else 
+					fieldValue = me.employeeHistories[index].previousFieldValue;		
+
+				if (typesTable != null) {
+					var item = ii.ajax.util.findItemById(me.employeeHistories[index].previousFieldValue, typesTable);
+					if (item)
+						fieldValue = item.name;
+				}
+				
+				if (fieldValue != "")
+					me.employeeHistories[index].previousFieldValue = fieldValue;
+			}
 
 			me.historyGrid.setData(me.employeeHistories);
 			me.historyGrid.setHeight(340);
 			$("#popupLoading").hide();
 		},
-		
+
 		actionCloseItem: function() {
-			
-			$("#popupHistory").hide();
+			var me = this;
+
+			if (me.actionType == "")
+				hidePopup("history");
+			else
+				$("#popupHistory").hide();
 		},
-		
+
 		setPersonBrief: function fin_emp_UserInterface_setPersonBrief() {
 			var me = this;
 			
@@ -5212,7 +5316,7 @@ ii.Class({
 					break;
 			}
 
-			loadPopup();									
+			loadPopup("wizard");
 			me.resizeControls();
 		},
 		
@@ -6830,20 +6934,29 @@ ii.Class({
 	}
 });
 
-function loadPopup() {
+function loadPopup(type) {
 	centerPopup();
 	
 	$("#backgroundPopup").css({
 		"opacity": "0.5"
 	});
 	$("#backgroundPopup").fadeIn("slow");
-	$("#popupEmployee").fadeIn("slow");
+	
+	if (type == "wizard")
+		$("#popupEmployee").fadeIn("slow");
+	else if (type == "history") {
+		$("#popupHistory").fadeIn("slow");
+		$("#popupLoading").show();
+	}
 }
 
-function hidePopup() {
+function hidePopup(type) {
 
 	$("#backgroundPopup").fadeOut("slow");
-	$("#popupEmployee").fadeOut("slow");
+	if (type == "wizard")
+		$("#popupEmployee").fadeOut("slow");
+	else if (type == "history")
+		$("#popupHistory").fadeOut("slow");
 }
 
 function centerPopup() {
