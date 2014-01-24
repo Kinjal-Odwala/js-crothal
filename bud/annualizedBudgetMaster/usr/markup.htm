@@ -68,6 +68,9 @@
                     fiscalYearComboBox.getValue(),
                     houseCodeComboBox.getRawValue(), jobCodeComboBox.getRawValue(),
                     fiscalYearComboBox.getRawValue(), prevYear, prevYearTitle);
+
+                if (page && page.refreshUI)
+                    page.refreshUI();
             };
 
             var onContextDataChanged = function () {
@@ -77,7 +80,7 @@
 
                 }
                 primaryNav.currentBudgetStarted = false;
-                page = WebLight.PageMgr.getCurrentPage();
+                var page = WebLight.PageMgr.getCurrentPage();
                 refreshPageContext(page);
             };
 
@@ -92,13 +95,20 @@
             var houseCodeDetailStore = new Bud.data.HcmHouseDetailStore();
             houseCodeDetailStore.on('load', function () {
                 if (houseCodeDetailStore.getCount() > 0) {
-                    primaryNav.currentContractType = houseCodeDetailStore.getAt(0).get('contractTypeId');
-                    primaryNav.currentBudgetTemplateId = houseCodeDetailStore.getAt(0).get('budgetTemplateId');
-                    primaryNav.currentBudgetLaborCalcMethod = houseCodeDetailStore.getAt(0).get('budgetLaborCalcMethod');
-                    primaryNav.currentHouseCodeTypeId = houseCodeDetailStore.getAt(0).get('houseCodeTypeId');
-                    primaryNav.currentBillingCycleFrequencyTypeId = houseCodeDetailStore.getAt(0).get('billingCycleFrequencyTypeId');
-                    
+                    // just for default value, the values has been moved to Annual Budget
+                    if (!primaryNav.currentBudgetTemplateId) {
+                        primaryNav.currentContractType = houseCodeDetailStore.getAt(0).get('contractTypeId');
+                        primaryNav.currentBudgetTemplateId = houseCodeDetailStore.getAt(0).get('budgetTemplateId');
+                        primaryNav.currentBudgetLaborCalcMethod = houseCodeDetailStore.getAt(0).get('budgetLaborCalcMethod');
+                        primaryNav.currentHouseCodeTypeId = houseCodeDetailStore.getAt(0).get('houseCodeTypeId');
+                        primaryNav.currentBillingCycleFrequencyTypeId = houseCodeDetailStore.getAt(0).get('billingCycleFrequencyTypeId');
+
+                    }
                     primaryNav.resetMenuItems();
+
+                    var page = WebLight.PageMgr.getCurrentPage();
+                    if (page && page.refreshUI)
+                        page.refreshUI();
                 }
             });
 
@@ -211,10 +221,10 @@
             houseCodeComboBox.on('blur', function (combo) {
                 if (currentHcmHouseCode != combo.getValue()) {
                     if (fin.bud.modified()) {
-                            houseCodeStore.clearFilter(false);
-                            houseCodeComboBox.suspendEvents(false);
-                            houseCodeComboBox.setValue(currentHcmHouseCode);
-                            houseCodeComboBox.resumeEvents();
+                        houseCodeStore.clearFilter(false);
+                        houseCodeComboBox.suspendEvents(false);
+                        houseCodeComboBox.setValue(currentHcmHouseCode);
+                        houseCodeComboBox.resumeEvents();
                     }
                     else {
                         currentHcmHouseCode = combo.getValue();
