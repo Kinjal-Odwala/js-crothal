@@ -992,10 +992,10 @@ ii.Class({
 			});
 		},
 		
-		setStatus: function(status) {
+		setStatus: function(status, message) {
 			var me = this;
 
-			fin.cmn.status.setStatus(status);
+			fin.cmn.status.setStatus(status, message);
 		},
 		
 		dirtyCheck: function(me) {
@@ -4506,33 +4506,53 @@ ii.Class({
 
 		actionExportToExcelItem: function() {
 			var me = this;
-			
-			me.setStatus("Exporting");
+
+			if (me.recordCount == 0)
+				return;
+
+			me.reportMaximumRows = 10000;
+			me.reportStartPoint = 1;
+			me.reportEndPoint = (me.reportStartPoint + me.reportMaximumRows) - 1;
+
 			$("#messageToUser").html("Exporting");
 			$("#pageLoading").fadeIn("slow");
-			
+			me.setStatus("Exporting");
+			me.exportToExcel("");
+		},
+		
+		exportToExcel: function(fileName) {
+			var me = this;
 			me.reportId = me.reports[me.report.indexSelected].id;
 			me.reportName = me.reports[me.report.indexSelected].name;
 			
-			me.adhFileNameStore.fetch("userId:[user],report:"+ me.reportId 
-				+ ",hirNode:"+ me.delimitedOrgSelectedNodes 
+			me.adhFileNameStore.fetch("userId:[user],report:" + me.reportId
+				+ ",hirNode:" + me.delimitedOrgSelectedNodes
 				+ ",filter:" + me.filter
-				+ ",startPoint:" + 0
-				+ ",endPoint:" +  0
-				+ ",sortColumns:" +  me.sortColumns
-				+ ",invoiceItem:" +  me.invoiceItem
-				+ ",", me.fileNamesLoaded, me);						
+				+ ",startPoint:" + me.reportStartPoint
+				+ ",endPoint:" +  me.reportEndPoint
+				+ ",sortColumns:" + me.sortColumns
+				+ ",invoiceItem:" + me.invoiceItem
+				+ ",fileName:" + fileName
+				+ "", me.fileNamesLoaded, me);
 		},
 		
 		fileNamesLoaded: function(me, activeId) {
 			var excelFileName = "";
 
-			me.setStatus("Exported");
-			$("#pageLoading").fadeOut("slow");
+			if (me.recordCount > me.reportEndPoint) {
+				me.setStatus("Exporting", "Exporting, please wait... (" + me.reportEndPoint + " of " + me.recordCount + " records are exported)");
+				me.reportStartPoint = me.reportEndPoint + 1;
+				me.reportEndPoint = (me.reportStartPoint + me.reportMaximumRows) - 1;
+				me.exportToExcel(me.adhFileNames[0].fileName);
+			}
+			else {
+				me.setStatus("Exported");
+				$("#pageLoading").fadeOut("slow");
 
-			if (me.adhFileNames.length == 1) {
-				$("iframe")[0].contentWindow.document.getElementById("FileName").value = me.adhFileNames[0].fileName;
-				$("iframe")[0].contentWindow.document.getElementById("DownloadButton").click();
+				if (me.adhFileNames.length == 1) {
+					$("iframe")[0].contentWindow.document.getElementById("FileName").value = me.adhFileNames[0].fileName;
+					$("iframe")[0].contentWindow.document.getElementById("DownloadButton").click();
+				}
 			}
 		},
 		
