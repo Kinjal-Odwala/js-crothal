@@ -4510,7 +4510,20 @@ ii.Class({
 			if (me.recordCount == 0)
 				return;
 
-			me.reportMaximumRows = 10000;
+			if (me.invoiceItem && me.recordCount > 2000) {
+				alert("You cannot export more than 2000 invoices at a time. Please filter the invoices and try again.");
+				return;
+			}
+			else if (me.recordCount > 20000) {
+				alert("You cannot export more than 20000 rows at a time. Please filter the rows and try again.");
+				return;
+			}
+
+			if (me.invoiceItem)
+				me.reportMaximumRows = 2000;
+			else
+				me.reportMaximumRows = 20000;
+
 			me.reportStartPoint = 1;
 			me.reportEndPoint = (me.reportStartPoint + me.reportMaximumRows) - 1;
 
