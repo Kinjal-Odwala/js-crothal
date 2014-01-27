@@ -185,6 +185,7 @@
     font-size:12px !important;
     font-weight:bold;
 	text-align:center;
+	border-left: 1px solid #aaa !important;
 }
 
 .ux-grid-1 .x-grid3-cell-inner ,.ux-grid-2 .x-grid3-cell-inner {
