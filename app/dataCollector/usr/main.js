@@ -944,6 +944,31 @@ Ext.override(WebLight.Page, {
     }
 });
 
+Ext.grid.RowNumberer = function(config){
+    Ext.apply(this, config);
+    if(this.rowspan){
+        this.renderer = this.renderer.createDelegate(this);
+    }
+};
+
+Ext.grid.RowNumberer.prototype = {   
+    header: "#",    
+    width: 30,
+    sortable: true,
+    fixed:false,
+    menuDisabled:false,
+    dataIndex: '',
+    id: '0',
+    rowspan: undefined,
+	cls:'ux-grid-1',
+    renderer : function(v, p, record, rowIndex){
+        if(this.rowspan){
+            p.cellAttr = 'rowspan="'+this.rowspan+'"';
+        }
+        return rowIndex+1;
+    }
+};
+
 Ext.EventManager.onWindowResize(function () {
 	
 	$("#ext-gen30").height($(window).height() - 75);
@@ -1161,7 +1186,6 @@ eFin.data.app.DataCollectorStore = WebLight.extend(eFin.data.XmlStore, {
 
     fields: [
                { name: 'id', mapping: '@id', type: 'float' },
-			   { name: 'rowNumber', mapping: '@rowNumber', type: 'float' },
                { name: 'houseCodeId', mapping: '@houseCodeId', type: 'float' },
                { name: 'houseCodeBrief', mapping: '@houseCodeBrief' },
                { name: 'moduleId', mapping: '@moduleId', type: 'float' },
@@ -1447,26 +1471,26 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
         });
         var numberOfColumnsField = new Ext.form.TextField({ name: 'numberOfColumns', editable: false, value: 0, minValue: 0, width: 50 });
         var houseCodeField = new Ext.form.ComboBox({ valueField: 'id', allowBlank: false, resizeable: true, name: 'houseCodeId', triggerAction: 'all', forceSelection: true,
-            editable: true, displayField: 'name', store: me.houseCodeStore, mode: 'local', width: 300,
+            editable: true, displayField: 'name', store: me.houseCodeStore, mode: 'local', width: 350,
 			listeners: { 'change': function() { modified(true); } }
         });
         var moduleField = new Ext.form.ComboBox({ valueField: 'id', displayField: 'name', editable: false, triggerAction: 'all', mode: 'local', name: 'moduleId', store: me.moduleStore, listeners: { 'change': function() { modified(true); } } });
-        var descriptionField = new Ext.form.TextField({ name: 'description', width: 300, maxLength: 250, allowBlank: false, regex: /^[a-zA-Z0-9\s-_]+$/, regexText: 'This field should only contain letters, numbers and special charactes like_-', msgTarget: 'side',
+        var descriptionField = new Ext.form.TextField({ name: 'description', width: 350, maxLength: 250, allowBlank: false, regex: /^[a-zA-Z0-9\s-_]+$/, regexText: 'This field should only contain letters, numbers and special charactes like_-', msgTarget: 'side',
             autoCreate: { tag: 'input', type: 'text', maxLength: 250, autocomplete: 'off' },
 			listeners: { 'change': function() { modified(true); } }
         });
-        var columnField = new Ext.ux.form.LovCombo({ valueField: 'id', resizable: true, width: 350, displayField: 'description', editable: false,
+        var columnField = new Ext.ux.form.LovCombo({ valueField: 'id', resizable: true, width: 370, displayField: 'description', editable: false,
             triggerAction: 'all', mode: 'local', name: 'columns', store: me.moduleColumnStore, allowBlank: false,
 			listeners: { 'change': function() { modified(true); } }
         });
-        var userField = new Ext.ux.form.LovCombo({ valueField: 'id', resizable: true, width: 350, displayField: 'name', editable: false, triggerAction: 'all', allowBlank: false,
+        var userField = new Ext.ux.form.LovCombo({ valueField: 'id', resizable: true, width: 370, displayField: 'name', editable: false, triggerAction: 'all', allowBlank: false,
             mode: 'local', name: 'users', store: me.userStore,
 			listeners: { 'change': function() { modified(true); } }
         });
         var lockoutField = new Ext.form.Checkbox({ name: 'lockout' });
         var activeField = new Ext.form.Checkbox({ name: 'active' });
         var sendEmailField = new Ext.form.Checkbox({ name: 'email' });
-        var emailAddressField = new Ext.form.TextField({ width: 300, name: 'emailAddress', maxLength: 250, vtype:'email', msgTarget: 'side',
+        var emailAddressField = new Ext.form.TextField({ width: 330, name: 'emailAddress', maxLength: 250, vtype:'email', msgTarget: 'side',
             autoCreate: { tag: 'input', type: 'text', maxLength: 250, autocomplete: 'off' },
 			listeners: { 'change': function() { modified(true); } }
         });
@@ -1768,14 +1792,14 @@ eFin.page.app.DataCollector = WebLight.extend(WebLight.Page, {
 
         me.dataCollectorGrid = new Ext.grid.GridPanel({
             store: me.dataCollectorStore,
-            height: 440, ctCls: 'ux-grid-1', enableHdMenu: true,
+            height: 440, ctCls: 'ux-grid-1', enableHdMenu: false,
             //  viewConfig: { forceFit: true },
             width: 480,
             sm: me.rowSelectionModel, stripeRows: true,
             cm: new Ext.grid.ColumnModel({
                 defaults: { sortable: true, align: 'left' },
                 columns: [
-							{ header: '#', width: 30, dataIndex: 'rowNumber' },
+						 	new Ext.grid.RowNumberer(),
                             { header: 'House Code', width: 80, dataIndex: 'houseCodeBrief' },
                             { header: 'Frequency', width: 70, dataIndex: 'frequency' },
                             { header: 'Module', width: 120, dataIndex: 'moduleId', renderer: moduleColumnRenderer },
