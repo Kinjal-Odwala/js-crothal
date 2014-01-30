@@ -221,7 +221,6 @@ ii.Class({
 			}				
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
-				
 		},
 
 		sessionLoaded: function fin_emp_hierarchy_UserInterface_sessionLoaded() {
@@ -293,14 +292,6 @@ ii.Class({
 				clickFunction: function() { me.actionSaveHierarchy(); },
 				hasHotState: true
 			});
-
-//			me.anchorPreview = new ui.ctl.buttons.Sizeable({
-//				id: "AnchorPreview",
-//				className: "iiButton",
-//				text: "<span>&nbsp;&nbsp;Preview&nbsp;&nbsp;</span>",
-//				clickFunction: function() { me.actionPreviewItem(); },
-//				hasHotState: true
-//			});
 
 			me.anchorUndo = new ui.ctl.buttons.Sizeable({
 				id: "AnchorUndo",
@@ -472,9 +463,11 @@ ii.Class({
 						var html = "<div><ul id='ulEditM' class='treeview'>";
 
 						for (var index = 0; index < checkedNodes.length; index++) {
-							var id = parseInt(checkedNodes[index].id.replace("chkNodeM", ""));
-							var liNode = $("#liNodeM" + id)[0];
-							html += "<li id='" + liNode.id + "' class='" + liNode.className + "'>" + liNode.innerHTML + "</li>";
+							if (!checkedNodes[index].disabled) {
+								var id = parseInt(checkedNodes[index].id.replace("chkNodeM", ""));
+								var liNode = $("#liNodeM" + id)[0];
+								html += "<li id='" + liNode.id + "' class='" + liNode.className + "'>" + liNode.innerHTML + "</li>";
+							}
 						}
 						html += "</ul></div>";
 				 		return html;
@@ -538,7 +531,12 @@ ii.Class({
 	  	  	var nodeIndex = me.getNodeIndex(id);
 
 			me.movableEmpList.push(me.employeesList[nodeIndex]);
-			me.actionMovableNodeAppend(id, me.employeesList[nodeIndex].employeeName);
+			me.actionMovableNodeAppend(id
+				, me.employeesList[nodeIndex].employeeName
+				, me.employeesList[nodeIndex].employeeNumber
+				, me.employeesList[nodeIndex].jobTitle
+				, me.employeesList[nodeIndex].employeeStatus
+				);
 
 		    if ($("#ulEdit" + id)[0] != undefined) {
 				for (var rowIndex = 0; rowIndex < node.childNodes[2].childNodes.length; rowIndex++) {
@@ -550,7 +548,12 @@ ii.Class({
 						me.moveChildNodeCheck(childNode);
 					else {
 						me.movableEmpList.push(me.employeesList[index]);
-						me.actionMovableNodeAppend(id, me.employeesList[index].employeeName);
+						me.actionMovableNodeAppend(id
+							, me.employeesList[index].employeeName
+							, me.employeesList[index].employeeNumber
+							, me.employeesList[index].jobTitle
+							, me.employeesList[index].employeeStatus
+							);
 					}
 				}
 			}
@@ -559,16 +562,43 @@ ii.Class({
 		actionMovableNodeAppend: function() {
 			var args = ii.args(arguments, {
 				employeeId: {type: Number}
-				, title: {type: String}
+				, employeeName: {type: String}
+				, employeeNumber: {type: String}				
+				, jobTitle: {type: String}
+				, employeeStatus: {type: String}
 			});
 			var me = this;
 
-            nodeHtml = "<li id='liNodeM" + args.employeeId + "'>"
-				+ "<input type='checkbox' id='chkNodeM" + args.employeeId + "' style='width:16px' onclick='fin.hierarchyUi.actionClickItem(this);' />"
-				+ "<span id='spanM" + args.employeeId + "' class='mUnit'>" + args.title + "</span></li>";
-
+            nodeHtml = "<li id='liNodeM" + args.employeeId + "'>";
+			
+			if (args.employeeStatus == "Terminated") {
+				nodeHtml += "<input type='checkbox' id='chkNodeM" + args.employeeId + "' style='width:16px' disabled />"
+					+ "<span id='spanM" + args.employeeId + "' class='mUnit'><strike>" + args.employeeName + "</strike></span></li>";
+			}
+			else {
+				nodeHtml += "<input type='checkbox' id='chkNodeM" + args.employeeId + "' style='width:16px' onclick='fin.hierarchyUi.actionClickItem(this);' />"
+					+ "<span id='spanM" + args.employeeId + "' class='mUnit'>" + args.employeeName + "</span></li>";
+			}
+			
 	        var treeNode = $(nodeHtml).appendTo("#ulEditM");
             $("#ulEditM").treeview({add: treeNode});
+			
+			var tooltipMessage = "<b>Name:</b> " + args.employeeName 
+				+ "<br><b>Employee #:</b> " + args.employeeNumber 
+				+ "<br><b>Status:</b> " + args.employeeStatus
+				+ "<br><b>Job Title:</b> " + args.jobTitle;
+	
+			var showTooltip = function(event) {
+				$("div.tooltip").remove();
+				$("<div class='tooltip'>" + tooltipMessage + "</div>").appendTo("body");
+				me.changeTooltipPosition(event);
+			};
+
+			$("#spanM" + args.employeeId).bind({
+				mousemove: me.changeTooltipPosition
+				, mouseenter: showTooltip
+				, mouseleave: me.hideTooltip
+			});
 		},
 
 		setmovableContainerHeight: function() {
@@ -711,7 +741,12 @@ ii.Class({
 
 					if (!found) {
 						me.movableEmpList.push(me.employees[index]);
-						me.actionMovableNodeAppend(me.employees[index].employeeId, me.employees[index].employeeName);
+						me.actionMovableNodeAppend(me.employees[index].employeeId
+							, me.employees[index].employeeName
+							, me.employees[index].employeeNumber
+							, me.employees[index].jobTitle
+							, me.employees[index].employeeStatus
+							);
 					}
 				}
 			}
@@ -733,9 +768,11 @@ ii.Class({
 						if (!found) {
 							var item = new fin.emp.hierarchy.Employee(me.employees[index].id
 								, me.employees[index].employeeId
-								, me.employees[index].managerId
-								, me.employees[index].jobTitle
+								, me.employees[index].managerId								
 								, me.employees[index].employeeName
+								, me.employees[index].employeeNumber
+								, me.employees[index].jobTitle
+								, me.employees[index].employeeStatus
 								, me.employees[index].orgLevel
 								, me.employees[index].childNodeCount
 								, me.employees[index].status
@@ -780,7 +817,10 @@ ii.Class({
 			var orgLevel = 0;
 			var employeeId = 0;
 		 	var managerId = 0;
-            var title = "";
+            var employeeName = "";
+			var employeeNumber = "";
+			var jobTitle = "";
+			var employeeStatus = "";
 			var childNodeCount = 0;
 			
 			if (storeNodes)
@@ -790,12 +830,15 @@ ii.Class({
 				orgLevel = me.employeesTemp[index].orgLevel;
 				employeeId = me.employeesTemp[index].employeeId;
 				managerId = me.employeesTemp[index].managerId;
-				title = me.employeesTemp[index].employeeName;
+				employeeName = me.employeesTemp[index].employeeName;
+				employeeNumber = me.employeesTemp[index].employeeNumber;
+				jobTitle = me.employeesTemp[index].jobTitle;
+				employeeStatus = me.employeesTemp[index].employeeStatus;
 				childNodeCount = me.employeesTemp[index].childNodeCount;
 
 				//set up the edit tree
                 //add the item underneath the parent list
-				me.actionNodeAppend(orgLevel, employeeId, managerId, title, childNodeCount);
+				me.actionNodeAppend(orgLevel, employeeId, managerId, employeeName, employeeNumber, jobTitle, employeeStatus, childNodeCount);
 			}
 
 			$("#pageLoading").hide();
@@ -811,14 +854,20 @@ ii.Class({
 				orgLevel: {type: Number}
 				, employeeId: {type: Number}
 				, managerId: {type: Number}
-				, title: {type: String}
+				, employeeName: {type: String}
+				, employeeNumber: {type: String}
+				, jobTitle: {type: String}
+				, employeeStatus: {type: String}
 				, childNodeCount: {type: Number}
 			});
 			var me = this;
 			var className = "level" + args.orgLevel;
 
-            nodeHtml = "<li id='liNode" + args.employeeId + "'>"
-		    	+ "<span class='" + className + "' id='span" + args.employeeId + "'>" + args.title + "</span>";
+            nodeHtml = "<li id='liNode" + args.employeeId + "'>";				
+			if (args.employeeStatus == "Terminated")
+				nodeHtml += "<span class='" + className + "' id='span" + args.employeeId + "'><strike>" + args.employeeName + "</strike></span>";
+			else
+				nodeHtml += "<span class='" + className + "' id='span" + args.employeeId + "'>" + args.employeeName + "</span>";
 
             //add a list holder if the node has children
             if (args.childNodeCount != 0) {
@@ -836,14 +885,47 @@ ii.Class({
  		    $("#liNode" + args.employeeId).find(">.hitarea").bind("click", function() {
 				me.hitAreaSelect(args.employeeId);
 			});
+			
+			var tooltipMessage = "<b>Name:</b> " + args.employeeName 
+				+ "<br><b>Employee #:</b> " + args.employeeNumber 
+				+ "<br><b>Job Title:</b> " + args.jobTitle
+				+ "<br><b>Status:</b> " + args.employeeStatus;
+	
+			var showTooltip = function(event) {
+				$("div.tooltip").remove();
+				$("<div class='tooltip'>" + tooltipMessage + "</div>").appendTo("body");
+				me.changeTooltipPosition(event);
+			};
 
-			me.hierarchyNodeEventSetup(args.orgLevel, args.employeeId);
+			$("#span" + args.employeeId).bind({
+				mousemove: me.changeTooltipPosition
+				, mouseenter: showTooltip
+				, mouseleave: me.hideTooltip
+			});
+
+			me.hierarchyNodeEventSetup(args.orgLevel, args.employeeId, args.employeeStatus);
 		},
 
-		hierarchyNodeEventSetup: function(orgLevel, employeeId) {
+		changeTooltipPosition: function() {
+			var args = ii.args(arguments, {
+				event: {type: Object}	// The (mousemove) event object
+			});
+			var event = args.event;
+
+			var tooltipX = event.pageX - 8;
+			var tooltipY = event.pageY + 8;
+			$("div.tooltip").css({top: tooltipY, left: tooltipX});
+		},
+
+		hideTooltip: function() {
+
+			$("div.tooltip").remove();
+		},
+
+		hierarchyNodeEventSetup: function(orgLevel, employeeId, employeeStatus) {
 			var me = this;
 
-			if (orgLevel != 0) {
+			if (orgLevel != 0 && employeeStatus != "Terminated") {
 				$("#span" + employeeId).draggable({
 					revert: true,
 					opacity: .75,
@@ -934,54 +1016,72 @@ ii.Class({
 
 				if (parentNode == undefined) {
 					$($("#liNode" + parentId)[0]).remove();
-					me.actionNodeAppend(me.employeesList[parentIndex].orgLevel, me.employeesList[parentIndex].employeeId, me.employeesList[parentIndex].managerId, me.employeesList[parentIndex].employeeName, 1);
+					me.actionNodeAppend(me.employeesList[parentIndex].orgLevel
+						, me.employeesList[parentIndex].employeeId
+						, me.employeesList[parentIndex].managerId
+						, me.employeesList[parentIndex].employeeName
+						, me.employeesList[parentIndex].employeeNumber
+						, me.employeesList[parentIndex].jobTitle
+						, me.employeesList[parentIndex].employeeStatus
+						, 1
+						);
 				}
 
 				for (var index = 0; index < checkedNodes.length; index++) {
-					var id = parseInt(checkedNodes[index].id.replace("chkNodeM", ""));
-					found = false;
-
-					if ($("#ulEdit" + parentId)[0] != undefined) {
-						for (var rowIndex = 0; rowIndex < $("#ulEdit" + parentId)[0].childNodes.length; rowIndex++) {
-							nodeId = parseInt($("#ulEdit" + parentId)[0].childNodes[rowIndex].id.replace("liNode", ""));
-							if (id == nodeId) {
-								found = true;
-								break;
+					if (!checkedNodes[index].disabled) {
+						var id = parseInt(checkedNodes[index].id.replace("chkNodeM", ""));
+						found = false;
+	
+						if ($("#ulEdit" + parentId)[0] != undefined) {
+							for (var rowIndex = 0; rowIndex < $("#ulEdit" + parentId)[0].childNodes.length; rowIndex++) {
+								nodeId = parseInt($("#ulEdit" + parentId)[0].childNodes[rowIndex].id.replace("liNode", ""));
+								if (id == nodeId) {
+									found = true;
+									break;
+								}
 							}
 						}
-					}
-
-					if (!found) {
-						var unitListIndex = 0;
-		
-						for (var listIndex = 0; listIndex < me.movableEmpList.length; listIndex++) {
-							if (me.movableEmpList[listIndex].employeeId == id) {
-								unitListIndex = listIndex;								
-								break;
+	
+						if (!found) {
+							var unitListIndex = 0;
+			
+							for (var listIndex = 0; listIndex < me.movableEmpList.length; listIndex++) {
+								if (me.movableEmpList[listIndex].employeeId == id) {
+									unitListIndex = listIndex;								
+									break;
+								}
 							}
+	
+							me.actionNodeAppend(me.employeesList[parentIndex].orgLevel + 1
+								, me.movableEmpList[unitListIndex].employeeId
+								, parentId
+								, me.movableEmpList[unitListIndex].employeeName
+								, me.movableEmpList[unitListIndex].employeeNumber
+								, me.movableEmpList[unitListIndex].jobTitle
+								, me.movableEmpList[unitListIndex].employeeStatus
+								, 0
+								);
+							var nodeIndex = me.getNodeIndex(me.movableEmpList[unitListIndex].employeeId);
+	
+							if (nodeIndex == -1) {
+								me.movableEmpList[unitListIndex].managerId = parentId;
+								me.movableEmpList[unitListIndex].modified = true;
+								me.modified();
+								if (me.movableEmpList[unitListIndex].status == 0)
+									me.movableEmpList[unitListIndex].status = 2;
+								me.employeesList.push(me.movableEmpList[unitListIndex]);
+							}
+							else {
+								me.employeesList[nodeIndex].managerId = parentId;
+								me.employeesList[nodeIndex].modified = true;
+								me.modified();
+								if (me.employeesList[nodeIndex].status == 0)
+									me.employeesList[nodeIndex].status = 2;
+							}
+							
+							me.movableEmpList.splice(unitListIndex, 1);
+							me.removedUnits.push(id);
 						}
-
-						me.actionNodeAppend(me.employeesList[parentIndex].orgLevel + 1, me.movableEmpList[unitListIndex].employeeId, parentId, me.movableEmpList[unitListIndex].employeeName, 0);
-						var nodeIndex = me.getNodeIndex(me.movableEmpList[unitListIndex].employeeId);
-
-						if (nodeIndex == -1) {
-							me.movableEmpList[unitListIndex].managerId = parentId;
-							me.movableEmpList[unitListIndex].modified = true;
-							me.modified();
-							if (me.movableEmpList[unitListIndex].status == 0)
-								me.movableEmpList[unitListIndex].status = 2;
-							me.employeesList.push(me.movableEmpList[unitListIndex]);
-						}
-						else {
-							me.employeesList[nodeIndex].managerId = parentId;
-							me.employeesList[nodeIndex].modified = true;
-							me.modified();
-							if (me.employeesList[nodeIndex].status == 0)
-								me.employeesList[nodeIndex].status = 2;
-						}
-						
-						me.movableEmpList.splice(unitListIndex, 1);
-						me.removedUnits.push(id);
 					}
 				}
 
@@ -1363,9 +1463,10 @@ ii.Class({
 
 		actionResetItem: function() {
 			var me = this;
-			
+
 			$("#ulEdit0").empty();
 			$("#ulEditM").empty();
+			$("#chkSelectAll").removeAttr("checked");
 			me.employeeName.setValue("");
 			me.employeesList = [];
 			me.employeesTemp = [];

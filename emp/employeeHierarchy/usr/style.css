@@ -295,3 +295,15 @@
 	font-weight: bold;
 	background-color: green;
 }
+
+.tooltip {
+	margin: 8px;
+	padding: 8px;
+	font-family: Verdana; 
+	font-size: 9pt;
+	color: #032D23;
+	border: 1px solid red;
+	background-color: #9BCD9A;
+	position: absolute;
+	z-index: 2;
+}
