@@ -1221,14 +1221,24 @@ eFin.data.app.ModuleStore = WebLight.extend(eFin.data.XmlStore, {
     recordName: 'item',
 
     storeId: 'appModules',
+	
+	module: '',
 
     fields: [
                { name: 'id', mapping: '@id', type: 'float' },
                { name: 'number', mapping: '@number', type: 'float' },
                { name: 'name', mapping: '@name' },
                { name: 'description', mapping: '@description' }
-           ]
+           ],
+	
+	load: function(){
+		this.module = "DataCollector";
+		eFin.data.app.ModuleStore.superclass.load.call(this);
+	},
 
+    getCriteria: function () {
+        return { module: this.module };
+    }
 });
 /*
 <item id="22" number="22" name="HcmHoucBedsLicensed"/>
@@ -1800,8 +1810,8 @@ eFin.page.app.DataCollector = WebLight.extend(WebLight.Page, {
                 defaults: { sortable: true, align: 'left' },
                 columns: [
 						 	new Ext.grid.RowNumberer(),
-                            { header: 'House Code', width: 80, dataIndex: 'houseCodeBrief' },
-                            { header: 'Frequency', width: 70, dataIndex: 'frequency' },
+                            { header: 'House Code', width: 90, dataIndex: 'houseCodeBrief' },
+                            { header: 'Frequency', width: 80, dataIndex: 'frequency' },
                             { header: 'Module', width: 120, dataIndex: 'moduleId', renderer: moduleColumnRenderer },
                             { header: 'Description', width: 173, dataIndex: 'description' }
                     ]
