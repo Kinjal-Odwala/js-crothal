@@ -35,9 +35,9 @@
 }
 
 .x-form-invalid, textarea.x-form-invalid {
-    background-color: #FE7774;
+    background-color: #FFC0CB;
     background-image: none;
-    border-color: #CC3300;
+    border-color: #C1C1C1;
     color: #FFFFFF;
 }
 
