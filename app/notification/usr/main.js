@@ -1210,32 +1210,34 @@ eFin.page.app.DataCollectorTask = WebLight.extend(WebLight.Page, {
 
     getEditor: function (fieldName, fieldTitle, fieldValidation) {
         var me = this;
-
-        var config = { xtype: 'textfield', width: 150, name: fieldName, allowBlank: false , listeners: { 'change': function() { modified(true); } }};
-
-        if (fieldName == 'HcmHoucDefaultLunchBreak') {
-            config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'value', displayField: 'name', 
-				listeners: { 'change': function() { modified(true); } },
-                store: me.defaultLunchBreakStore, mode: 'local',
-                store: new Ext.data.ArrayStore({ fields: [{ name: 'value', type: 'float' }, 'name'], data: [[0.25, '0.25'], [0.5, '0.50'], [0.75, '0.75'], [1, '1.00']] })
-            });
-        }
-        else if (fieldName == 'HcmHoucLunchBreakTrigger') {
-            config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'value', displayField: 'value', 
-				listeners: { 'change': function() { modified(true); } },
-                store: me.defaultLunchBreakStore, mode: 'local',
-                store: new Ext.data.ArrayStore({ fields: [{ name: 'value', type: 'float'}], data: [[4], [6], [8]] })
-            });
-        }
-
+		
+        var config = { xtype: 'textfield', width: 150, name: fieldName, allowBlank: false , msgTarget: 'side', listeners: { 'change': function() { modified(true); } }};
+		
         if (fieldValidation ==  'Int')
             config = Ext.apply(config, { width: 150, minValue: 0, msgTarget: 'side', regex: /^[0-9]+$/, regexText: 'This field should only contain numbers', 
 			listeners: { 'change': function() { modified(true); } }});
-		if (fieldValidation ==  'Decimal')
-            config = Ext.apply(config, { width: 150, minValue: 0, xtype: 'numberfield', msgTarget: 'side', 
-			listeners: { 'change': function() { modified(true); } } });
+		else if (fieldValidation ==  'Decimal') {
+						
+			if (fieldName == 'HcmHoucDefaultLunchBreak') {
+	            config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'value', displayField: 'name', msgTarget: 'none',
+					listeners: { 'change': function() { modified(true); } },
+	                store: me.defaultLunchBreakStore, mode: 'local',
+	                store: new Ext.data.ArrayStore({ fields: [{ name: 'value', type: 'float' }, 'name'], data: [[0.25, '0.25'], [0.5, '0.50'], [0.75, '0.75'], [1, '1.00']] })
+	            });
+	        }
+	        else if (fieldName == 'HcmHoucLunchBreakTrigger') {
+	            config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'value', displayField: 'value', msgTarget: 'none',
+					listeners: { 'change': function() { modified(true); } },
+	                store: me.defaultLunchBreakStore, mode: 'local',
+	                store: new Ext.data.ArrayStore({ fields: [{ name: 'value', type: 'float'}], data: [[4], [6], [8]] })
+	            });
+	        }
+			else
+				config = Ext.apply(config, { width: 150, minValue: 0, xtype: 'numberfield', msgTarget: 'side', 
+				listeners: { 'change': function() { modified(true); } } });
+		}            
         else if (fieldValidation == 'DateTime')
-            config = Ext.apply(config, { width: 150, xtype: 'datefield',
+            config = Ext.apply(config, { width: 150, xtype: 'datefield', msgTarget: 'none',
 			listeners: { 'change': function() { modified(true); } }});
         else if (fieldValidation == 'Email')
             config = Ext.apply(config, { width: 150, vtype: 'email', msgTarget: 'side', 
@@ -1246,6 +1248,9 @@ eFin.page.app.DataCollectorTask = WebLight.extend(WebLight.Page, {
         else if (fieldValidation == 'Zip')
             config = Ext.apply(config, { width: 150, mask: '99999?-9999', msgTarget: 'side', 
 			listeners: { 'change': function() { modified(true); } } });
+		else if (fieldValidation == 'Bit')
+            config = Ext.apply(config, { xtype: 'checkbox',
+			listeners: { 'change': function() { modified(true); } }});
 
         return Ext.create(config);
     },
@@ -1302,6 +1307,8 @@ eFin.page.app.DataCollectorTask = WebLight.extend(WebLight.Page, {
                 value = Ext.util.Format.date(value, 'm/d/Y');
             else if (Ext.isString(value))
                 value = value.replace(/"/gi, '&quot;');
+			else if (Ext.isBoolean(value))
+				value = (value ? 1 : 0);
             xml.push(String.format(' {0}="{1}"', key, value));
         }
         xml.push('/>');
