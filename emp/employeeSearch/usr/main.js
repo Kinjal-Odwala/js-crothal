@@ -509,7 +509,7 @@ ii.Class({
 			me.employeeSearch = new ui.ctl.Grid({
 				id: "EmployeeSearch",
 				appendToId: "divForm",
-				selectFunction: function( index ){ me.itemSelect(index); },
+				selectFunction: function( index ) { me.itemSelect(index); },
 				allowAdds: false
 			});
 			
@@ -1566,6 +1566,15 @@ ii.Class({
 			
 			me.employeeDeviceGroup.makeEnterTab()
 				.setValidationMaster( me.validator )
+			
+			me.notes = $("#Notes")[0];
+			$("#Notes").height(100);
+			$("#Notes").keypress(function() {
+				if (me.notes.value.length > 249) {
+					me.notes.value = me.notes.value.substring(0, 250);
+					return false;
+				}
+			});
 				
 			me.federalExemptions = new ui.ctl.Input.Text({
 		        id: "EmployeeFedExemptions",
@@ -1925,7 +1934,8 @@ ii.Class({
 			me.employeeAlternatePayRateB.text.tabIndex = 407;
 			me.employeeAlternatePayRateC.text.tabIndex = 408;
 			me.employeeAlternatePayRateD.text.tabIndex = 409;
-			me.employeeDeviceGroup.text.tabIndex = 410; 
+			me.employeeDeviceGroup.text.tabIndex = 410;
+			me.notes.tabIndex = 411;
 			//Federal Tax
 			me.federalExemptions.text.tabIndex = 500; 
 			me.maritalStatusFederalTaxType.text.tabIndex = 501; 
@@ -5122,6 +5132,7 @@ ii.Class({
 			me.employeeAlternatePayRateC.setValue("");	
 			me.employeeAlternatePayRateD.setValue("");			
 			me.employeeDeviceGroup.reset();
+			me.notes.value = "";
 			
 			$('#ExemptNo').attr('checked', true);
 			$('#HourlyRateYes').attr('checked', true);
@@ -5398,6 +5409,7 @@ ii.Class({
 			$("#houseCodeTerm").hide();
 			$("#JobInformation").hide();
 			$("#Compensation").hide();
+			$("#DateModificationNotes").hide();
 			$("#Federal").hide();
 			$("#StateTax").hide();
 			$("#LocalTax").hide();			
@@ -5616,6 +5628,7 @@ ii.Class({
 						$("#EmployeeInformation").hide();
 						$("#houseCodeTerm").hide();
 						$("#EditEmployee").hide();
+						$("#DateModificationNotes").show();
 						me.wizardCount = 3;
 					}
 					else if (me.actionType == "BasicLifeIndicator") {
@@ -5843,7 +5856,6 @@ ii.Class({
 					}
 					
 					me.employeeBirthDate.text.focus();
-					
 					me.resizeControls();
 					
 					break;
@@ -5858,7 +5870,7 @@ ii.Class({
 							return false;
 						}
 					}
-					
+				
 					if (me.actionType == "HouseCodeTransfer" || me.actionType == "DateModification") {
 						if ((!me.employeeNumber.validate(true)) ||
 							(!me.employeePayrollCompany.validate(true)) ||
@@ -6210,8 +6222,13 @@ ii.Class({
 				}
 			}
 			
-			if (me.houseCodeJobChanged == true && me.actionType == "Job Information" && me.jobChangeReason.indexSelected == -1){
+			if (me.houseCodeJobChanged == true && me.actionType == "Job Information" && me.jobChangeReason.indexSelected == -1) {
 				alert("Please select Job Change Reason.");
+				return false;
+			}
+			
+			if (me.actionType == "DateModification" && me.notes.value == "") {
+				alert("Please enter the Notes.");
 				return false;
 			}
 			
@@ -6546,7 +6563,34 @@ ii.Class({
 						updateFlag = true;
 					}
 				}
-			}			
+			}
+
+			if (me.actionType == "DateModification") {
+				xml += '<employeeDateModification';
+				xml += ' employeeId="' + itemGeneral.id + '"';
+				xml += ' personId="' + itemGeneral.personId + '"';
+				xml += ' hcmHouseCode="' + itemGeneral.hcmHouseCode + '"';
+				xml += ' houseCode="' + me.employeeSearch.data[me.employeeSearchSelectedRowIndex].houseCode + '"';
+				xml += ' firstName="' + ui.cmn.text.xml.encode(itemPerson.firstName) + '"';
+				xml += ' lastName="' + ui.cmn.text.xml.encode(itemPerson.lastName) + '"';
+				xml += ' employeeNumber="' + itemGeneral.employeeNumber + '"';
+				xml += ' ssn="' + itemGeneral.ssn.replace(/-/g, '') + '"';
+				xml += ' hireDate="' + ui.cmn.text.date.format(new Date(me.employeeGenerals[0].hireDate), "mm/dd/yyyy") + '"';	
+				xml += ' originalHireDate="' + ui.cmn.text.date.format(new Date(me.employeeGenerals[0].originalHireDate), "mm/dd/yyyy") + '"';
+				xml += ' seniorityDate="' + ui.cmn.text.date.format(new Date(me.employeeGenerals[0].seniorityDate), "mm/dd/yyyy") + '"';
+				xml += ' effectiveDate="' + ui.cmn.text.date.format(new Date(me.employeeGenerals[0].effectiveDate), "mm/dd/yyyy") + '"';
+				xml += ' effectiveDateJob="' + ui.cmn.text.date.format(new Date(me.employeeGenerals[0].effectiveDateJob), "mm/dd/yyyy") + '"';
+				xml += ' effectiveDateCompensation="' + ui.cmn.text.date.format(new Date(me.employeeGenerals[0].effectiveDateCompensation), "mm/dd/yyyy") + '"';
+				xml += ' newHireDate="' + itemGeneral.hireDate + '"';	
+				xml += ' newOriginalHireDate="' + itemGeneral.originalHireDate + '"';
+				xml += ' newSeniorityDate="' + itemGeneral.seniorityDate + '"';
+				xml += ' newEffectiveDate="' + itemGeneral.effectiveDate + '"';
+				xml += ' newEffectiveDateJob="' + itemGeneral.effectiveDateJob + '"';
+				xml += ' newEffectiveDateCompensation="' + itemGeneral.effectiveDateCompensation + '"';
+				xml += ' notes="' + me.notes.value + '"';
+				xml += '/>';
+				return xml;
+			}
 
 			if (me.actionType == "Rehire" || me.actionType == "NewHire" ||
 				me.actionType == "Person" || me.actionType == "Termination") {
@@ -6764,7 +6808,7 @@ ii.Class({
 			var args = ii.args(arguments, {
 				transaction: {type: ii.ajax.TransactionMonitor.Transaction},	// The transaction that was responded to.
 				xmlNode: {type: "XmlNode:transaction"}							// The XML transaction node associated with the response.
-			});			
+			});
 			var transaction = args.transaction;
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
@@ -6781,14 +6825,18 @@ ii.Class({
 				if (me.employeeGenerals.length > 0) {
 					if (me.statusTypes[me.employeeStatusType.indexSelected].id != me.employeeGenerals[0].statusType) 
 						successMessage += "Employee status updates will be transmitted to Ceridian on Monday at 1:00PM EST.\n";
-					else if (me.employeeNumberNew == 0) 
-						successMessage += "Notice: Changes will be transmitted to Ceridian on Monday at 1:00 PM EST.\n";
+					else if (me.employeeNumberNew == 0) {
+						if (me.actionType == "DateModification")
+							successMessage += "Employee date information is saved for approval process.\n";
+						else
+							successMessage += "Notice: Changes will be transmitted to Ceridian on Monday at 1:00 PM EST.\n";
+					}
 				}
 				me.isPageLoaded = false;
 				
 				if (me.employeeGenerals.length == 0 && me.employeeNumberNew > 0) //New Hire
 					successMessage += "Employee Number " + me.employeeNumber.getValue() + " has been created and will be transmitted to Ceridian on Monday at 1:00 PM EST.\n";
-
+			
 				if (me.actionType == "Edit" ||
 					me.actionType == "State Tax" ||
 					me.actionType == "Person" ||
