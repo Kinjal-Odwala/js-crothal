@@ -1336,7 +1336,15 @@ ii.Class({
 				else {
 					me.setCellColor($("#txtRoundingTimePeriod" + index), me.cellColorValid, "");
 				}
-
+				
+				if (($("#selPayrollCompanyHourly" + index).val() != "0") && ($("#selPayrollCompanyHourly" + index).val() == $("#selPayrollCompanySalaried" + index).val())) {
+					rowValid = false;
+					me.setCellColor($("#selPayrollCompanySalaried" + index), me.cellColorInvalid, "Payroll Company Hourly and Payroll Company Salaried should not be same.");
+				}
+				else {
+					me.setCellColor($("#selPayrollCompanySalaried" + index), me.cellColorValid, "");
+				}
+				
 				if (!rowValid) {
 					if (valid)
 						valid = false;
@@ -1344,7 +1352,6 @@ ii.Class({
 			}
 			
 			for (var index = 0; index < me.houseCodes.length; index++) {				
-				
 				for (var indexI = index + 1; indexI < me.houseCodes.length; indexI++) {
 					if ($("#txtBrief" + index).val() == $("#txtBrief" + indexI).val()) {
 						rowValid = false;
