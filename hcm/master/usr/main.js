@@ -690,6 +690,11 @@ ii.Class({
 				return false;
 			}
 			
+			if (payrollUIControls.ceridianCompanyHourly.indexSelected == payrollUIControls.ceridianCompanySalaried.indexSelected) {
+				alert("[Ceridian Company Hourly] & [Ceridian Company Salaried] cannot be same. Please select other option on Payroll Tab.");
+				return false;
+			}
+			
 			var item = new fin.hcm.master.HouseCodeDetail(
 				parent.fin.appUI.houseCodeId
 				, parent.fin.appUI.hirNode
