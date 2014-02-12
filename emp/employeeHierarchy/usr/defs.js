@@ -16,9 +16,11 @@ ii.init.register( function() {
 	fin.emp.hierarchy.employeeArgs = {
 		id: {type: Number}
 		, employeeId: {type: Number}
-		, managerId: {type: Number}
-		, jobTitle: {type: String, required: false, defaultValue: ""}
+		, managerId: {type: Number}		
 		, employeeName: {type: String, required: false, defaultValue: ""}
+		, employeeNumber: {type: String, required: false, defaultValue: ""}
+		, jobTitle: {type: String, required: false, defaultValue: ""}
+		, employeeStatus: {type: String, required: false, defaultValue: ""}
 		, orgLevel: {type: Number, required: false, defaultValue: 0}
 		, childNodeCount: {type: Number, required: false, defaultValue: 0}
 		, status: {type: Number, required: false, defaultValue: 0}

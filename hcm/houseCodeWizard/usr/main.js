@@ -3804,6 +3804,11 @@ ii.Class({
 				return false;
 			}
 			
+			if (me.ceridianCompanyHourly.indexSelected == me.ceridianCompanySalaried.indexSelected) {
+				alert("[Ceridian Company Hourly] & [Ceridian Company Salaried] cannot be same. Please select other option on Payroll Wizard.");
+				return false;
+			}
+			
 			var item = new fin.hcm.houseCodeWizard.HouseCodeDetail(
 				parent.fin.appUI.houseCodeId
 				, parent.fin.appUI.hirNode

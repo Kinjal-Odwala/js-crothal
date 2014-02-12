@@ -422,3 +422,11 @@
 	color: red;
 	text-decoration: underline;
 }
+
+#Notes {	
+	float: left;
+	width: 583px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: black;
+}

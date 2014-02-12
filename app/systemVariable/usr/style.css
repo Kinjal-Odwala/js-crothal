@@ -1,29 +1,20 @@
-﻿
-.LabelTextAreaApp
-	{
-		width:130px;
-		float:left;
-		height:27px;
-		font-family:Verdana;
-		font-size:12px;
-		color:#032D23;
-	}
-#SystemVariableContentArea
-	{
-		border:solid #AAAAAA thin;
-		border-width:1px;
-		padding:5px;
-		margin:1px;
-	}
-#SystemNameTextBox
-	{
-		float: left;
-	    height: 20px;
-	    width: 230px;
-	}
-#SystemValueTextBox
-	{
-		float: left;
-	    height: 20px;
-	    width: 100px;
-	}	
+﻿.labelTextArea {
+	float: left;
+	width: 130px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
+
+.inpitTextArea {
+	float: left;
+	width: 230px;
+}
+
+#SystemVariableContainer {
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	padding: 5px;
+	margin: 1px;
+}

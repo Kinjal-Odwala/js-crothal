@@ -100,7 +100,7 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			
 			fin.app.systemVariableUi.systemVariableGrid.setHeight($(window).height() - 110);
-			$("#SystemVariableContentArea").height($(window).height() - 152);					
+			$("#SystemVariableContainer").height($(window).height() - 152);					
 		},
 		
 		defineFormControls: function() {
@@ -115,20 +115,20 @@ ii.Class({
 				.addAction({
 					id: "saveAction",
 					brief: "Save (Ctrl+S)", 
-					title: "Save the current Application System Vriables.",
-					actionFunction: function(){ me.actionSaveItem(); }
+					title: "Save the current application system variable.",
+					actionFunction: function() { me.actionSaveItem(); }
 				})
 				.addAction({
 					id: "newAction", 
-					brief: "New Application System Vriables(Ctrl+N)", 
-					title: "Save the current Application System Vriables.",
-					actionFunction: function(){ me.actionNewItem(); }
+					brief: "New (Ctrl+N)", 
+					title: "Add the new application system variable.",
+					actionFunction: function() { me.actionNewItem(); }
 				})
 				.addAction({
 					id: "cancelAction", 
-					brief: "Undo Application System Vriables (Ctrl+U)", 
-					title: "Undo the changes to Application System Vriables being edited.",
-					actionFunction: function(){ me.actionUndoItem(); }
+					brief: "Undo (Ctrl+U)", 
+					title: "Undo the changes to application system variable being edited.",
+					actionFunction: function() { me.actionUndoItem(); }
 				});
 			
 			me.anchorSave = new ui.ctl.buttons.Sizeable({
