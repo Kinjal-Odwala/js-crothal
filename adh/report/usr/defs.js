@@ -653,6 +653,7 @@ ii.init.register( function() {
 		, recurringFixedCost: {type: Boolean, required: false, defaultValue: false}
 		, version: {type: Number, required: false, defaultValue: 0}
 		, displayOrder: {type: Number, required: false, defaultValue: 0}
+		, createdBy: {type: String, required: false, defaultValue: ""}
 	};
 	
 	fin.adh.accountArgs = {

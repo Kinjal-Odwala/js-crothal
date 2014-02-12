@@ -1922,6 +1922,7 @@ ii.Class({
 					me.invoiceTaxable = false;
 					me.invoiceShow = false;
 					me.invoiceDescription = false;
+					me.createdBy = false;
 					
 					for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
 						if (me.moduleColumnHeaders[index].columnType != 2) {
@@ -1945,6 +1946,8 @@ ii.Class({
 								me.invoiceShow = true;
 							else if (me.moduleColumnHeaders[index].title == 'RevInviDescription') 
 								me.invoiceDescription = true;
+							else if (me.moduleColumnHeaders[index].title == 'RevInviCrtdBy') 
+								me.createdBy = true;
 						}
 					}
 					
@@ -2000,6 +2003,11 @@ ii.Class({
 					if(me.invoiceDescription) {
 						rowData += "<th class='gridHeaderColumn' width='300px'>Description</th>";
 						invoiceHeaderWidth = invoiceHeaderWidth + 300;
+					}
+					
+					if(me.createdBy) {
+						rowData += "<th class='gridHeaderColumn' width='150px'>Created By</th>";
+						invoiceHeaderWidth = invoiceHeaderWidth + 150;
 					}	
 						
 					$("#tblAdhReportGridHeader").width(invoiceHeaderWidth);
@@ -2676,6 +2684,9 @@ ii.Class({
                  success: function(xml) {
   	                $(xml).find("item").each(function() {
 	                    var invoice = {};
+						var createdBy = $(this).attr("createdBy");
+						createdBy = createdBy.substr(createdBy.indexOf('\\') + 1, createdBy.length)
+						
 	                	invoice.id = $(this).attr("id");
 	                	invoice.invoiceId = $(this).attr("invoiceId");
 						invoice.houseCodeId = $(this).attr("houseCodeId");
@@ -2697,6 +2708,7 @@ ii.Class({
 						invoice.recurringFixedCost = $(this).attr("recurringFixedCost");
 						invoice.version = $(this).attr("version");
 						invoice.displayOrder = $(this).attr("displayOrder");
+						invoice.createdBy = createdBy;
 	                	me.invoiceCache[invoiceId].invoiceItems.push(invoice);
 	                });
 					
@@ -2791,7 +2803,7 @@ ii.Class({
 			invoiceRowHtml += me.getTotalGridRow(0, subTotal, "Sub Total:", "");
 			invoiceRowHtml += me.getTotalGridRow(0, salesTaxTotal, "Sales Tax Total:", "");
 			invoiceRowHtml += me.getTotalGridRow(0, total, "Total:", "");
-			invoiceRowHtml += "<tr height='100%'><td id='tdLastInvoiceRow' colspan='12' class='gridColumn' style='height: 100%'>&nbsp;</td></tr>";
+			invoiceRowHtml += "<tr height='100%'><td id='tdLastInvoiceRow' colspan='13' class='gridColumn' style='height: 100%'>&nbsp;</td></tr>";
 			
 			var invoiceDetailsRow = $("#InvoiceDetailsRow" + pkId);
 			
@@ -2850,6 +2862,7 @@ ii.Class({
 				, me.getDisplayValue(me.invoiceCache[invoiceId].invoiceItems[index].taxable)
 				, me.getDisplayValue(me.invoiceCache[invoiceId].invoiceItems[index].lineShow)
 				, me.invoiceCache[invoiceId].invoiceItems[index].description
+				, me.invoiceCache[invoiceId].invoiceItems[index].createdBy
 			);						
 			rowHtml += "</tr>";
 			
@@ -2872,6 +2885,7 @@ ii.Class({
 				, taxable: {type: String}
 				, lineShow: {type: String}
 				, description: {type: String}
+				, createdBy: {type: String}
 			});
 			var me = this;
 			var rowHtml = "";
@@ -2923,6 +2937,9 @@ ii.Class({
 				
 			if (me.invoiceDescription)
 				rowHtml += me.getEditableRowColumn(false, false, 10, "description", args.description, 300, "left");
+				
+			if (me.createdBy)
+				rowHtml += me.getEditableRowColumn(false, false, 12, "createdBy", args.createdBy, 150, "left");
 
 			return rowHtml;
 		},
@@ -2976,6 +2993,7 @@ ii.Class({
 				, "&nbsp;"
 				, "&nbsp;"
 				, args.description
+				, "&nbsp;"
 				);
 
 			rowHtml += "</tr>";
