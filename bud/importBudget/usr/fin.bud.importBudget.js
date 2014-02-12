@@ -1,4 +1,4 @@
-﻿window.__bt__5cb21a57 = ['<div style="margin :15px;">    <div id="uploader">    </div>    <div id="keys-form" style="margin :15px 0">        <fieldset class="l2r">           <div class="field">                <label>                    Fiscal Year</label>                <div class="item">                    <input type="text" name="FscYeaTitle" style="width: 80px" /></div>            </div>        </fieldset>    </div>    <table class="bud-grid-1">        <thead>            <tr>                <th style="width: 100px">                  House Code                </th>                  <th style="width: 50px">                    Job                </th>                <th style="width: 95px">                    Fsc Account                </th>                <th style="width: 70px">                    Period 1                </th>                <th style="width: 70px">                    Period 2                </th>                <th style="width: 70px">                    Period 3                </th>                <th style="width: 70px">                    Period 4                </th>                <th style="width: 70px">                    Period 5                </th>                <th style="width: 70px">                    Period 6                </th>                <th style="width: 70px">                    Period 7                </th>                <th style="width: 70px">                    Period 8                </th>                <th style="width: 70px">                    Period 9                </th>                <th style="width: 70px">                    Period 10                </th>                <th style="width: 70px">                    Period 11                </th>                <th style="width: 70px">                    Period 12                </th>                   <th style="width: 70px">                    Period 13                </th>                <th></th>            </tr>        </thead>        <tbody id="data-list">        </tbody>    </table>    <input type="button" id="submitButton" value="Submit" /></div>','<tr>     <td>        <input type="text" name="HouseCodeBrief" />    </td>     <td>        <input type="text" name="JobNumber" />    </td>    <td>        <input type="text" name="FscAccCode" />    </td>    <td>        <input type="text" name="Period1" />    </td>    <td>        <input type="text" name="Period2" />    </td>    <td>        <input type="text" name="Period3" />    </td>    <td>        <input type="text" name="Period4" />    </td>    <td>        <input type="text" name="Period5" />    </td>    <td>        <input type="text" name="Period6" />    </td>    <td>        <input type="text" name="Period7" />    </td>    <td>        <input type="text" name="Period8" />    </td>    <td>        <input type="text" name="Period9" />    </td>    <td>        <input type="text" name="Period10" />    </td>    <td>        <input type="text" name="Period11" />    </td>    <td>        <input type="text" name="Period12" />    </td>       <td>        <input type="text" name="Period13" />    </td></tr>',''];
+﻿window.__bt__7dcdb8e3 = ['<div style="margin: 15px;">    <div id="itemStatusDiv" style="padding:10px;">        <div class="itemStatusImage Normal" id="itemStatusImage">        </div>        <div class="itemModifiedImage" id="itemModifiedImage">        </div>        <div id="itemStatusText" class="itemStatusText">            Normal</div>    </div>    <div id="uploader">    </div>    <div id="keys-form" style="margin: 15px 0">        <fieldset class="l2r">            <div class="field">                <label>                    Fiscal Year</label>                <div class="item">                    <input type="text" name="FscYeaTitle" style="width: 80px" /></div>            </div>        </fieldset>    </div>    <table class="bud-grid-1">        <thead>            <tr>                <th style="width: 100px">                    House Code                </th>                <th style="width: 50px">                    Job                </th>                <th style="width: 95px">                    Fsc Account                </th>                <th style="width: 70px">                    Period 1                </th>                <th style="width: 70px">                    Period 2                </th>                <th style="width: 70px">                    Period 3                </th>                <th style="width: 70px">                    Period 4                </th>                <th style="width: 70px">                    Period 5                </th>                <th style="width: 70px">                    Period 6                </th>                <th style="width: 70px">                    Period 7                </th>                <th style="width: 70px">                    Period 8                </th>                <th style="width: 70px">                    Period 9                </th>                <th style="width: 70px">                    Period 10                </th>                <th style="width: 70px">                    Period 11                </th>                <th style="width: 70px">                    Period 12                </th>                <th style="width: 70px">                    Period 13                </th>                <th>                </th>            </tr>        </thead>        <tbody id="data-list">        </tbody>    </table>    <input type="button" id="submitButton" value="Submit" /></div>','<tr>     <td>        <input type="text" name="HouseCodeBrief" />    </td>     <td>        <input type="text" name="JobNumber" />    </td>    <td>        <input type="text" name="FscAccCode" />    </td>    <td>        <input type="text" name="Period1" />    </td>    <td>        <input type="text" name="Period2" />    </td>    <td>        <input type="text" name="Period3" />    </td>    <td>        <input type="text" name="Period4" />    </td>    <td>        <input type="text" name="Period5" />    </td>    <td>        <input type="text" name="Period6" />    </td>    <td>        <input type="text" name="Period7" />    </td>    <td>        <input type="text" name="Period8" />    </td>    <td>        <input type="text" name="Period9" />    </td>    <td>        <input type="text" name="Period10" />    </td>    <td>        <input type="text" name="Period11" />    </td>    <td>        <input type="text" name="Period12" />    </td>       <td>        <input type="text" name="Period13" />    </td></tr>',''];
 
 if ((typeof Range !== "undefined") && !Range.prototype.createContextualFragment) {
     Range.prototype.createContextualFragment = function (html) {
@@ -36,48 +36,54 @@ bine.namespace('fin.bud', 'fin.bud.page', 'fin.bud.data');
 
 fin.bud.budRequest = function (requestXml, callback) {
     var data = String.format('moduleId=bud&requestId=1&requestXml={0}&&targetId=iiCache', encodeURIComponent(requestXml));
-
+    fin.bud.loading();
     jQuery.post('/net/crothall/chimes/fin/bud/act/Provider.aspx', data, function (data, status) {
         callback(data);
+        fin.bud.loaded();
     });
 }
 
 fin.bud.hcmRequest = function (requestXml, callback) {
     var data = String.format('moduleId=hcm&requestId=1&requestXml={0}&&targetId=iiCache', encodeURIComponent(requestXml));
+    fin.bud.loading();
 
     jQuery.post('/net/crothall/chimes/fin/hcm/act/Provider.aspx', data, function (data, status) {
         callback(data);
+        fin.bud.loaded();
     });
 }
 
 fin.bud.fscRequest = function (requestXml, callback) {
     var data = String.format('moduleId=fsc&requestId=1&requestXml={0}&&targetId=iiCache', encodeURIComponent(requestXml));
-
+    fin.bud.loading();
     jQuery.post('/net/crothall/chimes/fin/fsc/act/Provider.aspx', data, function (data, status) {
         callback(data);
+        fin.bud.loaded();
     });
 }
 
 fin.bud.rptRequest = function (callback) {
     var data = String.format('moduleId=rpt&requestId=1&requestXml={0}&&targetId=iiCache', encodeURIComponent('<criteria>storeId:rptReports,userId:[user],</criteria>'));
-
+    fin.bud.loading();
     jQuery.post('/net/crothall/chimes/fin/rpt/act/Provider.aspx', data, function (d, status) {
         callback(d);
+        fin.bud.loaded();
     });
 
 }
 
 fin.bud.budSubmit = function (submitXml, callback) {
     var data = String.format('moduleId=bud&requestId=1&requestXml={0}&&targetId=iiTransaction', encodeURIComponent(submitXml));
-
+    fin.bud.saving();
     jQuery.post('/net/crothall/chimes/fin/bud/act/Provider.aspx', data, function (data, status) {
         callback(data);
+        fin.bud.loaded();
     });
 }
 
 if (!window.top.fin.appUI) {
     //window.top.fin = { appUI: { houseCodeId: 227, glbFscYear: 2, glbFscPeriod: 18} };
-    window.top.fin.appUI = { houseCodeId: 415, glbFscYear: 3, glbFscPeriod: 45, glbWeek: 2 };
+    window.top.fin.appUI = { houseCodeId: 415, glbFscYear: 5, glbFscPeriod: 57, glbWeek: 2 };
 }
 
 fin.bud.Context = {
@@ -231,36 +237,72 @@ if (top.ui.ctl.menu) {
 if (document.location.host == 'localhost')
     window.__fin_modified = false;
 
+
+var globalLoadingCounter = 0;
+
+fin.bud.loading = function () {
+    globalLoadingCounter++;
+    $('.itemStatusImage').removeClass('Normal').addClass('Loading');
+    $('.itemModifiedImage').removeClass('Modified');
+    $('.itemStatusText').html('Loading, please wait...');
+}
+
+fin.bud.saving = function () {
+    globalLoadingCounter++;
+    $('.itemStatusImage').removeClass('Normal').addClass('Loading');
+    $('.itemModifiedImage').removeClass('Modified');
+    $('.itemStatusText').html('Saving, please wait...');
+}
+
+fin.bud.normal = function (isModified) {
+    $('.itemStatusImage').removeClass('Loading').addClass('Normal');
+    $('.itemStatusText').html('Normal');
+    if (isModified === true) {
+        $('.itemModifiedImage').addClass('Modified');
+    }
+    else {
+        $('.itemModifiedImage').removeClass('Modified');
+    }
+}
+
+fin.bud.loaded = function () {
+    globalLoadingCounter--;
+
+    setTimeout(function () {
+        if (globalLoadingCounter <= 0) {
+            fin.bud.normal(fin.bud.modified());
+            globalLoadingCounter = 0;
+        }
+    }, 20);
+};
+
 fin.bud.modified = function () {
 
-//    if (document.location.host == 'localhost') {
-//        if (arguments.length == 0) {
-//            if (window.__fin_modified) {
-//                if (confirm('Data changed, contine?'))
-//                { window.__fin_modified = false; return false; }
-//                else
-//                    return true;
-//            }
-//            return window.__fin_modified;
+    if (arguments.length == 1) {
+        fin.bud.normal(fin.bud.modified());
+    }
 
-//        }
-//        else
-//            window.__fin_modified = arguments[0];
-//    }
-//    else {
+    if (!window.top.fin || !window.top.fin.cmn || !window.top.fin.cmn.status) {
+        if (arguments.length == 0) {
+            return window.__fin_modified;
+
+        }
+        else
+            window.__fin_modified = arguments[0];
+    }
+    else {
 
         if (arguments.length == 0)
             return !window.top.fin.cmn.status.itemValid();
         else
             window.top.fin.appUI.modified = arguments[0];
-//    }
+    }
 }
-
 
 !function (bud) {
 
     bud.page.ImportBudget = bine.extend(bine.Control, {
-        tpl: window.__bt__5cb21a57[0],
+        tpl: window.__bt__7dcdb8e3[0],
 
         dataList: null,
         $fscAccounts: null,
@@ -400,7 +442,7 @@ fin.bud.modified = function () {
 
 
                     return new bine.DataView({
-                        tpl: window.__bt__5cb21a57[1], removable: true,
+                        tpl: window.__bt__7dcdb8e3[1], removable: true,
                         onDomReady: function () {
                             var dv = this;
                             dv.on('change', function (name) {

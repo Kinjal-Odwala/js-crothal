@@ -1,4 +1,4 @@
-﻿_builtInTemplate_d72782b4 = ['<?xml version="1.0" encoding="utf-8" ?><transmission>  <target id="iiAuthorization" requestId="1">    <authorization id="1">      <authorize id="41" path="\\crothall\\chimes\\fin\\Budgeting"></authorize>      <authorize id="42" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget"></authorize>      <authorize id="16059" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Read"></authorize>      <authorize id="16060" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Write"></authorize>      <authorize id="44" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections"></authorize>      <authorize id="16063" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod"></authorize>      <authorize id="16064" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Read"></authorize>      <authorize id="16065" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Write"></authorize>      <authorize id="16066" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast"></authorize>      <authorize id="16067" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Read"></authorize>      <authorize id="16068" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Write"></authorize>      <authorize id="1213" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration"></authorize>      <authorize id="16069" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation"></authorize>      <authorize id="16070" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Read"></authorize>      <authorize id="16071" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Write"></authorize>      <authorize id="16072" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget"></authorize>      <authorize id="16073" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Approve"></authorize>      <authorize id="16074" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Read"></authorize>      <authorize id="16075" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Reject"></authorize>      <authorize id="16076" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Write"></authorize>      <authorize id="16077" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget"></authorize>      <authorize id="16078" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Read"></authorize>      <authorize id="16079" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Write"></authorize>      <authorize id="16080" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget"></authorize>      <authorize id="16081" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Read"></authorize>      <authorize id="16082" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Write"></authorize>      <authorize id="43" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary"></authorize>      <authorize id="16061" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Read"></authorize>      <authorize id="16062" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Write"></authorize>    </authorization>  </target></transmission>','<div style="color: #FFF; background-color: #659A66; padding: 10px; margin: 0 0 10px;">    <table width="100%" class="ann-proj-table">        <tbody>            <tr>                <td style="width: 35px;" class="label">Site:</td>                <td style="width: 300px"><div id="house-code-holder"></div></td>                <td style="width: 35px;" class="label">Job:</td>                <td style="width: 160px"><div id="job-code-holder"></div></td>                <td style="width: 80px;" class="label">Fiscal Year:</td>                <td style="width: 100px"><div id="fiscal-year-holder"></div></td>                <td style="width: 80px;" class="label">Period:</td>                <td style="width: 100px"><div id="period-start-holder"></div></td>                <td style="width: 10px;" class="label">-</td>                <td style="width: 100px"><div id="period-end-holder"></div></td>                <td>&nbsp;</td>                <td style="width: 120px;"></td>            </tr>        </tbody>    </table></div><div style="padding: 0 5px">    <p style="float:left">        The current page is READONLY.</p>        <div style="float:right"><span id="load-button-holder"></span></div></div><div style="clear:both;height:1px;"></div><div id="budget-summary-grid" style="padding: 10px 5px;"></div><br /><br />'];/*!
+﻿_builtInTemplate_7796cf4b = ['<?xml version="1.0" encoding="utf-8" ?><transmission>  <target id="iiAuthorization" requestId="1">    <authorization id="1">      <authorize id="41" path="\\crothall\\chimes\\fin\\Budgeting"></authorize>      <authorize id="42" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget"></authorize>      <authorize id="16059" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Read"></authorize>      <authorize id="16060" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Write"></authorize>      <authorize id="44" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections"></authorize>      <authorize id="16063" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod"></authorize>      <authorize id="16064" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Read"></authorize>      <authorize id="16065" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Write"></authorize>      <authorize id="16066" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast"></authorize>      <authorize id="16067" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Read"></authorize>      <authorize id="16068" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Write"></authorize>      <authorize id="1213" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration"></authorize>      <authorize id="16069" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation"></authorize>      <authorize id="16070" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Read"></authorize>      <authorize id="16071" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Write"></authorize>      <authorize id="16072" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget"></authorize>      <authorize id="16073" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Approve"></authorize>      <authorize id="16074" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Read"></authorize>      <authorize id="16075" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Reject"></authorize>      <authorize id="16076" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Write"></authorize>      <authorize id="16077" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget"></authorize>      <authorize id="16078" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Read"></authorize>      <authorize id="16079" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Write"></authorize>      <authorize id="16080" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget"></authorize>      <authorize id="16081" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Read"></authorize>      <authorize id="16082" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Write"></authorize>      <authorize id="43" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary"></authorize>      <authorize id="16061" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Read"></authorize>      <authorize id="16062" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Write"></authorize>    </authorization>  </target></transmission>','<div style="color: #FFF; background-color: #659A66; padding: 10px; margin: 0 0 10px;">    <table width="100%" class="ann-proj-table">        <tbody>            <tr>                <td style="width: 35px;" class="label">Site:</td>                <td style="width: 300px"><div id="house-code-holder"></div></td>                <td style="width: 35px;" class="label">Job:</td>                <td style="width: 160px"><div id="job-code-holder"></div></td>                <td style="width: 80px;" class="label">Fiscal Year:</td>                <td style="width: 100px"><div id="fiscal-year-holder"></div></td>                <td style="width: 80px;" class="label">Period:</td>                <td style="width: 100px"><div id="period-start-holder"></div></td>                <td style="width: 10px;" class="label">-</td>                <td style="width: 100px"><div id="period-end-holder"></div></td>                <td>&nbsp;</td>                <td style="width: 120px;"></td>            </tr>        </tbody>    </table></div><div id="page-status"></div><div style="padding: 0 5px">    <p style="float:left">        The current page is READONLY.</p>        <div style="float:right"><span id="load-button-holder"></span></div></div><div style="clear:both;height:1px;"></div><div id="budget-summary-grid" style="padding: 10px 5px;"></div><br /><br />'];/*!
  * Ext JS Library 3.2.0
  * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
@@ -1053,7 +1053,7 @@ WebLight.namespace('Bud', 'Bud.form', 'Bud.page', 'Bud.grid');
 var host = document.location.host;
 if (!window.top.fin) {
     //window.top.fin = { appUI: { houseCodeId: 227, glbFscYear: 2, glbFscPeriod: 18} };
-    window.top.fin = { appUI: { houseCodeId: 415, glbFscYear: 4, glbFscPeriod: 40} };
+    window.top.fin = { appUI: { glbFscYear: 4, glbFscPeriod: 46} };
 }
 
 Bud.getGlobalHouseCodeStore = function () {
@@ -1539,6 +1539,555 @@ function calcBusinessDays(date1, date2) {
 }
 
 
+Ext.ns('fin.bud');
+
+
+function dirtyCheck(me) {
+    return !window.top.fin.cmn.status.itemValid();
+}
+
+if (!top.ui)
+    top.ui = { ctl: {} };
+
+if (top.ui.ctl.menu) {
+    var me = this;
+    top.ui.ctl.menu.Dom.me.registerDirtyCheck(dirtyCheck, me);
+}
+
+if (document.location.host == 'localhost')
+    window.__fin_modified = false;
+
+
+var globalLoadingCounter = 0;
+
+fin.bud.loading = function () {
+    globalLoadingCounter++;
+    $('#itemStatusImage').removeClass('Normal').addClass('Loading');
+    $('#itemModifiedImage').removeClass('Modified');
+    $('#itemStatusText').html('Loading, please wait...');
+}
+
+fin.bud.saving = function () {
+    globalLoadingCounter++;
+    $('#itemStatusImage').removeClass('Normal').addClass('Loading');
+    $('#itemModifiedImage').removeClass('Modified');
+    $('#itemStatusText').html('Saving, please wait...');
+}
+
+fin.bud.normal = function (isModified) {
+    $('#itemStatusImage').removeClass('Loading').addClass('Normal');
+    $('#itemStatusText').html('Normal');
+    if (isModified === true) {
+        $('#itemModifiedImage').addClass('Modified');
+    }
+    else {
+        $('#itemModifiedImage').removeClass('Modified');
+    }
+}
+
+fin.bud.loaded = function () {
+    globalLoadingCounter--;
+
+    setTimeout(function () {
+        if (globalLoadingCounter <= 0) {
+            fin.bud.normal(fin.bud.modified());
+            globalLoadingCounter = 0;
+        }
+    }, 20);
+};
+
+fin.bud.modified = function () {
+
+    if (arguments.length == 1) {
+        fin.bud.normal(fin.bud.modified());
+    }
+
+    if (!window.top.fin || !window.top.fin.cmn || !window.top.fin.cmn.status) {
+        if (arguments.length == 0) {
+            if (window.__fin_modified)
+                alert('data modified');
+            return window.__fin_modified;
+
+        }
+        else
+            window.__fin_modified = arguments[0];
+    }
+    else {
+
+        if (arguments.length == 0)
+            return !window.top.fin.cmn.status.itemValid();
+        else
+            window.top.fin.appUI.modified = arguments[0];
+    }
+}
+
+fin.bud.dirtyCheck = function () { return !fin.bud.modified(); }
+
+
+
+WebLight.form.FormView = WebLight.extend(WebLight.Control, {
+
+    simulateTabKey: false,
+
+    _fields: null,
+
+    constructor: function (config) {
+
+        var me = this;
+
+        me.addEvents('bound', 'storechanged');
+
+        /// init fields
+        me._fields = new Ext.util.MixedCollection();
+
+        var setValues = function (values) {
+
+            if (Ext.isArray(values)) { // array of objects
+                for (var i = 0, len = values.length; i < len; i++) {
+                    var v = values[i];
+                    var f = me.getFieldByName(v.name);
+                    if (f) {
+                        f.setRawValue(v.value);
+                        f.suspendEvents(false);
+                        f.setValue(v.value);
+                        f.resumeEvents();
+                    }
+                }
+            } else { // object hash
+
+                me._fields.each(function (item, index, length) {
+                    var value = values[item.name];
+
+                    /// if not in data schema, ignore it
+                    if (value != undefined) {
+
+                        if (value == null)
+                            value = '';
+                        /// Combobox need use setRawValue, Checkbox need use setValue
+
+                        item.setRawValue(value);
+                        item.suspendEvents(false);
+                        item.setValue(value);
+                        item.resumeEvents();
+                    }
+                }, me);
+
+            }
+        };
+
+        var storeUpdateMonitor = function (store, record, operation) {
+            // 2010/12/23 fix, need include REJECT and COMMIT notify
+            if (record == me.boundRecord)  // && operation == Ext.data.Record.EDIT)
+                setValues(record ? record.data : {});
+        };
+
+        /// remove field containers
+        var resetHtmls = function () {
+            me._fields.each(function (item, index, length) {
+                var fieldContainer = me.$child(item.name);
+                var $innerField = fieldContainer.children();
+                $innerField.insertAfter(fieldContainer);
+                fieldContainer.remove();
+                //                if (me.enterKeyAsTabKey)
+                //                    $innerField.keyup(function (event) {
+                //                        if (event.keyCode == 13) {
+                //                            if (item.nextCtrl)
+                //                                item.nextCtrl.focus();
+                //                            event.preventDefault();
+                //                        }
+                //                    });
+            });
+        };
+
+        var refreshFields = function () {
+
+
+
+            if (me.boundRecord)
+                setValues(me.boundRecord.data);
+        };
+
+        /// update current bound
+        /// if record is null ,act as unbind feature
+        var updateBound = function (record) {
+
+            me.boundRecord = record;
+            setValues(record ? record.data : {});
+
+            if (record)
+                me.fireEvent('bound', record);
+        };
+
+        var setValue = function (name, value) {
+            if (me.boundRecord && name) {
+                // if (me.boundRecord.get(name) != value) {
+                if (Ext.isArray(value)) {
+                    /// checkboxgroup
+                    var newValue = [];
+                    Ext.each(value, function (item) {
+                        newValue.push(name);
+                    });
+                    value = newValue;
+                }
+                else if (Ext.isObject(value)) {
+                    // maybe radiogroup
+                    if (value.inputValue)
+                        value = value.inputValue;
+                }
+                me.boundRecord.set(name, value);
+                //  }
+            }
+        };
+
+        /// bind field value to record
+        var applyFieldValueToRecord = function (field) {
+            setValue(field.name, field.getValue());
+        };
+
+        var attachChangeEvent = function (f) {
+            f.on({
+                scope: me
+                    , change: function (field) {
+                        if (!me.boundRecord && me.store) {
+                            var value = field.getValue();
+
+                            var record = me.store.newRecord();
+                            me.store.add(record);
+                            updateBound(record);
+                            setValue(field.name, value);
+                        }
+                        else
+                            applyFieldValueToRecord(field);
+                        me.fireEvent('change', field.name, value);
+
+                    }
+            });
+        };
+
+        var initField = function (f) {
+            // register field if name defined. 
+            if (f.name) {
+                me._fields.add(f.name, f);
+                attachChangeEvent(f);
+            }
+
+            var label = me.$child(f.name + 'Label');
+            if (label.length)
+                label.html(f.fieldLabel);
+
+            if (f.xtype == 'compositefield' || f.xtype == 'checkboxgroup') {
+                /// must do it in render method
+                /// because compositefield not initialize, it still config, and after it rendered, the items will convert to MixedCollection, not array
+                /// cannot use Ext.each method.
+                f.on('render', function () {
+                    f.items.each(function (innerField) {
+                        if (innerField.name/* && innerField.xtype != 'radio'*/) {
+                            me._fields.add(innerField.name, innerField);
+                            attachChangeEvent(innerField);
+                        }
+                    });
+                });
+            }
+        };
+        me.initField = initField;
+
+        var initStore = function (store) {
+
+            if (store.bindControl)
+                store.bindControl(me);
+
+            store.on('update', storeUpdateMonitor);
+
+            store.on('beforesubmit', function () {
+
+                // sometimes bind store to 2 formpanels, like View mode and Edit mode
+                /// we need ingore view mode because it not changed.
+                /// if not ,it will be some issue, because current.bindRecord is null
+                if (!me.boundRecord)
+                    return;
+
+                /// because changed reject feature, if call form.reset method
+                /// record will be removed from store
+                /// if submit ,need ensure new record in store
+                if (me.store.indexOf(me.boundRecord) == -1)
+                    me.store.add(me.boundRecord);
+
+                // sometimes combobox or checkbox cannot save value to record correctly.
+                // below code ensure all fields applied to record.
+                me._fields.each(function (item, index, length) {
+                    if (item.xtype != 'displayfield')
+                        applyFieldValueToRecord(item);
+                }, me);
+            }, this);
+
+            if (store.getCount() > 0) {
+                if (store.selectedIndex)
+                    updateBound(store.getAt(store.selectedIndex()));
+                else
+                    updateBound(store.getAt(0));
+            }
+
+            store.on('selectedIndexChanged', function () {
+                if (store.selectedIndex) {
+                    if (store.selectedIndex() == -1)
+                        updateBound(null);
+                    else
+                        updateBound(store.getAt(store.selectedIndex()));
+                }
+                else
+                    updateBound(store.getAt(0));
+            });
+        };
+
+        WebLight.form.FormView.superclass.constructor.call(this, config);
+
+        if (me.items) {
+            WebLight.each(me.items, function (item, index) {
+                ctrl = item;
+                if (!ctrl.events)
+                    ctrl = me.createComponent(item);
+                me.addChildControl(ctrl, ctrl.name);
+            });
+            //            delete me.items;
+
+        }
+
+        if (config.store) {
+            initStore(config.store);
+        }
+
+        me.on('storechanged', function (newStore, oldStore) {
+            initStore(newStore);
+            if (oldStore && oldStore.unbindControl) {
+                oldStore.unbindControl(me);
+                oldStore.un('update', storeUpdateMonitor);
+            }
+        });
+
+        var simulateTabKey = function () {
+            if (me.simulateTabKey === true)
+            // exclude textarea and button fields ':input:not(textarea):not(:button):visible'
+                var inputs = $(':input:visible', me.$this).keypress(function (e) {
+                    var type = $(this).attr('type');
+                    if (this.tagName == 'TEXTAREA' || type == 'button' || type == 'image' || type == 'submit')
+                        return;
+
+                    if (e.which == 13) {
+                        e.preventDefault();
+                        var nextInput = inputs.get(inputs.index(this) + 1);
+                        if (nextInput) { nextInput.focus(); nextInput.select(); }
+                    }
+                });
+        };
+
+        me.on('render', function () { resetHtmls(); refreshFields(); simulateTabKey(); });
+    },
+
+    _setValues: function (values) {
+
+        if (Ext.isArray(values)) { // array of objects
+            for (var i = 0, len = values.length; i < len; i++) {
+                var v = values[i];
+                var f = me.getFieldByName(v.name);
+                if (f) {
+                    f.setRawValue(v.value);
+                    f.suspendEvents(false);
+                    f.setValue(v.value);
+                    f.resumeEvents();
+                }
+            }
+        } else { // object hash
+
+            me._fields.each(function (item, index, length) {
+                var value = values[item.name];
+
+                /// if not in data schema, ignore it
+                if (value != undefined) {
+
+                    if (value == null)
+                        value = '';
+                    /// Combobox need use setRawValue, Checkbox need use setValue
+
+                    item.setRawValue(value);
+                    item.suspendEvents(false);
+                    item.setValue(value);
+                    item.resumeEvents();
+                }
+            }, me);
+
+        }
+    },
+
+    _initField: function (f) {
+        // register field if name defined. 
+        if (f.name) {
+            me._fields.add(f.name, f);
+            attachChangeEvent(f);
+        }
+
+        var label = me.$child(f.name + 'Label');
+        if (label.length)
+            label.html(f.fieldLabel);
+
+        if (f.xtype == 'compositefield' || f.xtype == 'checkboxgroup') {
+            /// must do it in render method
+            /// because compositefield not initialize, it still config, and after it rendered, the items will convert to MixedCollection, not array
+            /// cannot use Ext.each method.
+            f.on('render', function () {
+                f.items.each(function (innerField) {
+                    if (innerField.name/* && innerField.xtype != 'radio'*/) {
+                        me._fields.add(innerField.name, innerField);
+                        attachChangeEvent(innerField);
+                    }
+                });
+            });
+        }
+    },
+
+    _attachChangeEvent: function (f) {
+        f.on({
+            scope: me
+                    , change: function (field) {
+                        if (!me.boundRecord && me.store) {
+                            var value = field.getValue();
+
+                            var record = me.store.newRecord();
+                            me.store.add(record);
+                            updateBound(record);
+                            setValue(field.name, value);
+                        }
+                        else
+                            applyFieldValueToRecord(field);
+                    }
+        });
+    },
+
+    loadTemplate: function (html, container) {
+        var me = this;
+        if (me.$this != container) {
+            WebLight.form.FormView.superclass.loadTemplate.call(me, html, container);
+            return;
+        }
+
+        var regex = new RegExp('\{.*?\}', 'gi');
+        var match;
+
+        var formattedHtml = html;
+        var cmps = [];
+        this.cmpIndex = 0;
+        while (match = regex.exec(formattedHtml)) {
+            var config = Ext.decode(match[0]);
+            if (!config.name)
+                config.name = String.format('{0}', this.cmpIndex++);
+
+            var replaceHtml = String.format('<span id="{0}"></span>', config.name);
+            formattedHtml = formattedHtml.replace(match[0], replaceHtml);
+            cmps.push(config);
+        }
+
+        WebLight.form.FormView.superclass.loadTemplate.call(this, formattedHtml, container);
+
+        Ext.each(cmps, function (item, index) {
+            me.addChildControl(Ext.create(item), item.name);
+
+            me.$child(item.name).replaceWith(me.$child(item.name).html());
+        });
+    },
+
+    // private
+    applyDefaults: function (c) {
+        var d = this.defaults;
+        if (d) {
+            if (Ext.isFunction(d)) {
+                d = d.call(this, c);
+            }
+            if (Ext.isString(c)) {
+                c = Ext.ComponentMgr.get(c);
+                Ext.apply(c, d);
+            } else if (!c.events) {
+                Ext.applyIf(c, d);
+            } else {
+                Ext.apply(c, d);
+            }
+        }
+        return c;
+    },
+
+    // private
+    createComponent: function (config, defaultType) {
+        if (config.render) {
+            return config;
+        }
+        var c = Ext.create(config, defaultType || this.defaultType);
+        return c;
+    },
+
+    _lastField: null,
+    addChildControl: function (control, containerId) {
+        var me = this;
+        WebLight.form.FormView.superclass.addChildControl.call(this, control, containerId);
+
+        if (me.isField(control)) {
+            me.initField(control);
+            //            if (me.enterKeyAsTabKey) {
+            //                if (me._lastField) {
+            //                    me._lastField.nextCtrl = control;
+            //                }
+
+            //                me._lastField = control;
+            //            }
+        }
+        return me;
+    },
+
+    getBoundRecord: function () {
+        return this.boundRecord;
+    },
+
+    addField: function (field) {
+        if (this.isField(field))
+            this.addChildControl(field, field.name);
+    },
+
+    isValid: function () {
+        var valid = true;
+        this._fields.each(function (f) {
+            if (!f.validate()) {
+                valid = false;
+            }
+        });
+        return valid;
+    },
+
+    findField: function (name) {
+        if (this._fields && this._fields.containsKey(name))
+            return this._fields.get(name);
+        return null;
+    },
+
+    bindStore: function (store) {
+        if (store != this.store) {
+            var oldStore = this.store;
+            this.store = store;
+            this.fireEvent('storechanged', store, oldStore);
+        }
+        return this;
+    },
+
+    ///obsolete, use findField
+    getFieldByName: function (name) {
+        return this.findField(name);
+    },
+
+    // Determine if a Component is usable as a form Field.
+    isField: function (c) {
+        return !!c.name && !!c.setValue && !!c.getValue && !!c.markInvalid && !!c.clearInvalid;
+    }
+
+});
+
+
+
 
 WebLight.Router.mapRoute('^budget/startbudget$', {
     xtype: 'startbudget'
@@ -1628,7 +2177,8 @@ Bud.NavbarItem = Ext.extend(Ext.Button, {
 
         if (!this.handler && this.url) {
             this.setHandler(function () {
-                WebLight.Router.route(this.url);
+                if (!fin.bud.modified())
+                    WebLight.Router.route(this.url);
             }, this);
         }
 
@@ -1721,6 +2271,11 @@ Bud.data.XmlStore = WebLight.extend(WebLight.data.Store, {
         }
 
         Bud.data.XmlStore.superclass.constructor.call(this, config);
+
+        this.on('beforeload', function () { fin.bud.loading(); });
+        this.on('beforesubmit', function () { fin.bud.saving(); });
+        this.on('submit', function () { fin.bud.loaded(); });
+        this.on('load', function () { fin.bud.loaded(); });
 
     },
 
@@ -1945,7 +2500,7 @@ Bud.data.AuthorizationStore = WebLight.extend(Bud.data.XmlStore, {
     },
 
     loadSampleData: function () {
-        this.loadData(_builtInTemplate_d72782b4[0]);
+        this.loadData(_builtInTemplate_7796cf4b[0]);
     },
 
     allowBudgetRead: function () {
@@ -2064,8 +2619,13 @@ Bud.data.FiscalPeriodStore = WebLight.extend(Bud.data.XmlStore, {
 
         this.on('load', function () {
             Bud.Context.ytdBusinessDays = this.getTotalBusinessDays();
-           // console.log(Bud.Context.ytdBusinessDays);
 
+            if (Bud.Context.primaryNav && Bud.Context.primaryNav.currentBudgetLaborCalcMethod == 1)
+                Bud.Context.ytdBusinessDays4Final = 364;     //this.getTotalDays();
+            else
+                Bud.Context.ytdBusinessDays4Final = this.getTotalBusinessDays();
+
+            console.log(Bud.Context.ytdBusinessDays, Bud.Context.ytdBusinessDays4Final);
         });
     },
 
@@ -2117,11 +2677,19 @@ Bud.data.FiscalPeriodStore = WebLight.extend(Bud.data.XmlStore, {
 
     },
 
-    getDaysByTitle: function(title) {
+    getDaysByTitle: function (title) {
         var me = this;
         var record = me.getByTitle(title);
 
         return calcDaysInDateRange(record.get('startDate'), record.get('endDate'));
+
+    },
+
+    getTotalDays: function () {
+        var me = this;
+        var period1 = me.getByTitle(1);
+        var period12 = me.getByTitle(12);
+        return calcDaysInDateRange(period1.get('startDate'), period12.get('endDate'));
 
     },
 
@@ -2316,6 +2884,7 @@ Bud.data.BudDetailsStore = WebLight.extend(Bud.data.XmlStore, {
     _hcmHouseCode: 0,
     _fscYear: 0,
     _hcmJob: 0,
+    includeReadOnly: false,
 
     _accountStore: null,
     isInitialed: false,
@@ -2373,7 +2942,7 @@ Bud.data.BudDetailsStore = WebLight.extend(Bud.data.XmlStore, {
     },
 
     getCriteria: function () {
-        return { hcmHouseCode: this._hcmHouseCode, fscYear: this._fscYear, hcmJob: this._hcmJob };
+        return { hcmHouseCode: this._hcmHouseCode, fscYear: this._fscYear, hcmJob: this._hcmJob, includeReadOnly: this.includeReadOnly ? "1" : "0" };
     },
 
     addAttributes: function (data) {
@@ -2549,7 +3118,7 @@ Bud.data.BudDetailsStore = WebLight.extend(Bud.data.XmlStore, {
     relateTo: function (store) {
         var me = this;
         this._accountStore = store;
-        
+
         var periods = {};
         for (var i = 0; i < 16; i++) {
             var fieldName = String.format('period{0}', i + 1);
@@ -2590,7 +3159,7 @@ Bud.data.BudDetailsStore = WebLight.extend(Bud.data.XmlStore, {
 
     addNewRecord: function (record) {
         var me = this;
-me.calculating = true;
+        me.calculating = true;
 
         var accCode = record.get('code');
         var cateId = record.get('accountCategoryId');
@@ -3026,7 +3595,7 @@ Bud.data.BudgetSummaryStore = WebLight.extend(Bud.data.XmlStore, {
 
 Bud.page.BudgetSummaryPage = WebLight.extend(WebLight.Page, {
 
-    html: _builtInTemplate_d72782b4[1],
+    html: _builtInTemplate_7796cf4b[1],
     title: 'Budget Summary',
 
     _houseCodeStore: null,
@@ -3341,6 +3910,9 @@ Bud.page.BudgetSummaryPage = WebLight.extend(WebLight.Page, {
     createChildControls: function () {
         var me = this;
 
+        $('#' + this.getClientId('page-status')).append('<div id="itemStatusDiv"><div class="itemStatusImage Normal" id="itemStatusImage"></div>' +
+			'<div class="itemModifiedImage" id="itemModifiedImage"></div><div id="itemStatusText">Normal</div></div>');
+
         this._houseCodeStore = new Bud.data.HouseCodeStore(); // Bud.getGlobalHouseCodeStore();
         this._jobCodeStore = new Bud.data.JobCodeStore();
         this._fiscalYearStore = new Bud.data.FiscalYearStore();
@@ -3356,6 +3928,7 @@ Bud.page.BudgetSummaryPage = WebLight.extend(WebLight.Page, {
         this.createSummaryGrid();
 
         Bud.page.BudgetSummaryPage.superclass.createChildControls.call(this);
+
     },
 
     dataBind: function () {

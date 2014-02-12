@@ -1,4 +1,4 @@
-﻿window.__bt__063f49d7 = ['<div>    <div id="mop-filter">        <div style="color: #FFF; background-color: #659A66; font-size: 14px; padding: 5px;">            <table class="mop-filter">                <tr>                    <td>                        Site:                    </td>                    <td id="hcmHouseCode">                    </td>                    <td>                        Job:                    </td>                    <td id="hcmJob">                    </td>                    <td>                        Fiscal Year:                    </td>                    <td id="fscYear">                    </td>                    <td style="padding-left: 15px;" id="load-button" class="row-btn">                    </td>                </tr>            </table>        </div>    </div>    <div id="mop-column-switch">        <div style="color: #FFF;  background-color: #659A66; border-top: 1px solid #555; font-size: 14px;            padding: 5px;">            <div style="float:left">                           <table class="mop-filter">                <tr>                    <td>                        <input type="checkbox" name="Budget" id="Budget" />&nbsp;<label for="Budget">Budget</label>                    </td>                    <td>                        <input type="checkbox" name="Variance" id="Variance" />&nbsp;<label for="Variance">Variance</label>                    </td>                    <td>                        <input type="checkbox" name="RunRate" id="RunRate" />&nbsp;<label for="RunRate">Run                            Rate</label>                    </td>                    <td style="padding-left: 20px;">                        Period:                    </td>                    <td id="fscPeriodStart">                    </td>                    <td>                        -                    </td>                    <td id="fscPeriodEnd">                    </td>                       <td style="padding-left: 15px;" id="apply-button" class="row-btn">                    </td>                </tr>            </table>            </div>            <div style="position: relative; float:left; width:110px; margin-top:-1px;">                <a id="popupButton" class="popup-button"><span>Comment</span><em></em></a>                <div style="clear: both">                </div>                <div class="popup-box" id="popupBox">                    <div class="popup-box-inner-wrapper" style="width:500px">                        <div class="popup-box-form ">                            <label id="commentLabel">                                Summary Comments:</label>                            <textarea rows="5" class="textarea" id="summaryComment"></textarea>                            <div style="text-align:right; padding-right:20px; padding-top:5px;">                                <img id="saveButton"  src="images/button-ok.png" style="cursor:pointer"/>    <img id="cancelButton"  src="images/button-cancel.png"  style="cursor:pointer"/></div>                        </div>                    </div>                </div>            </div>        </div>    </div>    <div id="mop-footer">        <div style="color: #FFF; background-color: #659A66; padding: 10px; font-size: 14px;">            <table class="mop-filter" style="width: 100%;">                <tr class="row-btn">                    <td style="width: 40%">                        <table id="add-account-warpper">                            <tr>                                <td>                                    Account:                                </td>                                <td id="fscAccount">                                </td>                                <td id="addAccountButton">                                </td>                            </tr>                        </table>                    </td>                    <td style="text-align: right; width: 60%; padding-right: 20px;">                        <span id="saveButton" />&nbsp;  <span id="cancelButton" />&nbsp; <span id="payrollRegisterButton" />&nbsp; <span id="transactionDetailButton" />                        &nbsp; <span id="printMopButton" />&nbsp;                    </td>                </tr>            </table>        </div>    </div>    <div id="wor-filter">        <div style="color: #FFF; background-color: #659A66; font-size: 14px;">            <div style="float: left; background-color: #555; color: #fff; font-weight: bold;                width: 100px; height: 24px; padding: 5px; 0; text-align: center;">                WOR</div>            <div style="padding: 5px; float: left;">                <table class="mop-filter">                    <tr>                        <td style="font-weight: bold;">                            Site:                        </td>                        <td name="hcmHouseCode">                        </td>                        <td style="font-weight: bold;">                            Job:                        </td>                        <td name="hcmJob">                        </td>                        <td style="font-weight: bold;">                            Fiscal Year:                        </td>                        <td name="fscYear">                        </td>                        <td style="font-weight: bold;">                            Period:                        </td>                        <td id="fscPeriod">                        </td>                        <td id="backToMopButton" class="row-btn">                        </td>                    </tr>                </table>            </div>            <div style="position: relative; float: left; width: 110px; margin-top:4px;">                <a id="popupButton" class="popup-button"><span>Comment</span><em></em></a>                <div style="clear: both">                </div>                <div class="popup-box" id="popupBox">                    <div class="popup-box-inner-wrapper" style="width: 500px">                        <div class="popup-box-form ">                            <label id="commentLabel">                                Summary Comments:</label>                            <textarea rows="5" class="textarea" id="summaryComment"></textarea>                            <div style="text-align: right; padding-right: 20px; padding-top: 5px;">                                <img id="saveButton" src="images/button-ok.png" style="cursor: pointer" />                                <img id="cancelButton" src="images/button-cancel.png" style="cursor: pointer" />                            </div>                        </div>                    </div>                </div>            </div>            <div style="clear:both; " ></div>        </div>    </div>    <div id="wor-comment">        <div style="margin-top: 15px;">            <div style="font-size: 14px; padding-left: 5px;">                Comments:</div>            <textarea name="Comment" id="Comment" cols="100" rows="3" />        </div>    </div></div>','<div style="min-height: 400px" class="mop">    <div id="mop-top">        <div style="background-color: #555; color: #fff; float: left; text-align: center;            height: 60px; vertical-align: middle; font-size: 14px; font-weight: bold; width: 180px;            padding-top: 15px;">            Monthly Operating Projection        </div>        <div style="margin-left: 180px; background-color: #659A66; vertical-align:text-bottom">            <div id="filter-wrapper">            </div>            <div id="column-swith">            </div>            <div style="clear: both">            </div>        </div>    </div>    <div style="padding-top: 10px;" id="mop-wrapper">        <div class="list-header">            <div class="mop-controller" style="float:left;overflow:hidden"><div style="width:500px" id="controller-header"></div> </div>            <div class="mop-grid-main" style="overflow:hidden" id="mop-grid-header-wrapper"><div  id="grid-header" style="width:12000px"></div></div>            <div class="clear"></div>        </div>        <div>            <div class="mop-controller" style="float:left;overflow:hidden" id="mop-controller-wrapper"><div style="width:500px" id="mop-controller"></div> </div>            <div class="mop-grid-main" style="overflow:auto" id="mop-grid-wrapper"><div id="mop-grid"></div></div>            <div class="clear"></div>        </div>    </div>       <div style=" width: 100%;">        <div id="mop-footer">        </div>    </div></div>','<div>    <div id="controller-header">         <table class="bud-table-2">            <thead class="table-head">                <tr>                    <th class="boundary mop-updatefuture" style="width: 100px">                        <div class="row1-btn">                            <button class="bine-btn bine-btn-txt bine-ctrl" id="updatefuture-button" style="height: 50px;">                                Update Future<br />                                Periods w/MOP</button></div>                        <div style="padding: 5px;">                            <div style="width: 13px; height: 20px; padding-top: 3px; float: left;">                                <input type="checkbox" name="selectAllPeriods" id="SelectAllPeriods" /></div>                            <span style="line-height: 18px; height: 20px; padding-left: 5px;">Select All</span><div                                style="clear: both;">                            </div>                        </div>                    </th>                    <th class="boundary mop-updaterunrate" style="width: 90px">                        <div class="row1-btn">                            <button class="bine-btn bine-btn-txt bine-ctrl " id="updaterunrate-button" style="height: 50px;">                                Update With<br />                                Run Rate</button></div>                        <div style="padding: 5px;">                            <div style="width: 13px; height: 20px; padding-top: 3px; float: left;">                                <input type="checkbox" name="selectAll" id="SelectAllRunRate" /></div>                            <span style="float: left; line-height: 18px; height: 20px; padding-left: 5px;">Select                                All</span><div style="clear: both;">                                </div>                        </div>                    </th>                    <th class="boundary mop-accountcode-title" style="width: 245px; height: 85px;">                        Account Code                    </th>                </tr>            </thead>        </table>    </div>    <div id="controller-list">        <div>            <div id="holder"></div>        </div>    </div>    <table>        <tbody id="controller-view">            <tr>                <td class="boundary mop-updatefuture" style="width: 100px; height: 20px;">                    <div style="padding: 3px 7px;">                        <input type="checkbox" name="UpdateFuture" /></div>                </td>                <td class="boundary mop-updaterunrate" style="width: 90px; height: 20px;">                    <div style="padding: 3px 7px;">                        <input type="checkbox" name="UpdateRunRate" /></div>                </td>                <td class="boundary mop-account-column" style="white-space: nowrap; width: 245px; padding-top:0; padding-bottom:0; vertical-align:middle;                    height: 26px;">                    <a href="#" class="account-link" name="FscAccountDescription"></a>                </td>            </tr>        </tbody>    </table></div>','<div style="min-height: 400px" class="mop">    <div id="mop-top">        <div id="wor-filter">        </div>    </div>    <div id="mop-list-wrapper" style="padding-top: 10px; width: 99%;         margin: 0 auto; overflow: auto;">        <div id="wor-list">        </div>        <div id="wor-comment">        </div>    </div>    <div style="position: absolute; bottom: 0px; width: 100%;">        <div id="mop-footer">        </div>    </div></div>',''];
+﻿window.__bt__eb50bd57 = ['<div>    <div id="mop-filter">        <div style="color: #FFF; background-color: #659A66; font-size: 14px; padding: 5px;">            <table class="mop-filter">                <tr>                    <td>                        Site:                    </td>                    <td id="hcmHouseCode">                    </td>                    <td>                        Job:                    </td>                    <td id="hcmJob">                    </td>                    <td>                        Fiscal Year:                    </td>                    <td id="fscYear">                    </td>                    <td style="padding-left: 15px;" id="load-button" class="row-btn">                    </td>                </tr>            </table>        </div>    </div>    <div id="mop-column-switch">        <div style="color: #FFF;  background-color: #659A66; border-top: 1px solid #555; font-size: 14px;            padding: 5px;">            <div style="float:left">                           <table class="mop-filter">                <tr>                    <td>                        <input type="checkbox" name="Budget" id="Budget" />&nbsp;<label for="Budget">Budget</label>                    </td>                    <td>                        <input type="checkbox" name="Variance" id="Variance" />&nbsp;<label for="Variance">Variance</label>                    </td>                    <td>                        <input type="checkbox" name="RunRate" id="RunRate" />&nbsp;<label for="RunRate">Run                            Rate</label>                    </td>                    <td style="padding-left: 20px;">                        Period:                    </td>                    <td id="fscPeriodStart">                    </td>                    <td>                        -                    </td>                    <td id="fscPeriodEnd">                    </td>                       <td style="padding-left: 15px;" id="apply-button" class="row-btn">                    </td>                </tr>            </table>            </div>            <div style="position: relative; float:left; width:110px; margin-top:-1px;">                <a id="popupButton" class="popup-button"><span>Comment</span><em></em></a>                <div style="clear: both">                </div>                <div class="popup-box" id="popupBox">                    <div class="popup-box-inner-wrapper" style="width:500px">                        <div class="popup-box-form ">                            <label id="commentLabel">                                Summary Comments:</label>                            <textarea rows="5" class="textarea" id="summaryComment"></textarea>                            <div style="text-align:right; padding-right:20px; padding-top:5px;">                                <img id="saveButton"  src="images/button-ok.png" style="cursor:pointer"/>    <img id="cancelButton"  src="images/button-cancel.png"  style="cursor:pointer"/></div>                        </div>                    </div>                </div>            </div>        </div>    </div>    <div id="mop-footer">        <div style="color: #FFF; background-color: #659A66; padding: 10px; font-size: 14px;">            <table class="mop-filter" style="width: 100%;">                <tr class="row-btn">                    <td style="width: 40%">                        <table id="add-account-warpper">                            <tr>                                <td>                                    Account:                                </td>                                <td id="fscAccount">                                </td>                                <td id="addAccountButton">                                </td>                            </tr>                        </table>                    </td>                    <td style="text-align: right; width: 60%; padding-right: 20px;">                        <span id="saveButton" />&nbsp;  <span id="cancelButton" />&nbsp; <span id="payrollRegisterButton" />&nbsp; <span id="transactionDetailButton" />                        &nbsp; <span id="printMopButton" />&nbsp;                    </td>                </tr>            </table>        </div>    </div>    <div id="wor-filter">        <div style="color: #FFF; background-color: #659A66; font-size: 14px;">            <div style="float: left; background-color: #555; color: #fff; font-weight: bold;                width: 100px; height: 24px; padding: 5px; 0; text-align: center;">                WOR</div>            <div style="padding: 5px; float: left;">                <table class="mop-filter">                    <tr>                        <td style="font-weight: bold;">                            Site:                        </td>                        <td name="hcmHouseCode">                        </td>                        <td style="font-weight: bold;">                            Job:                        </td>                        <td name="hcmJob">                        </td>                        <td style="font-weight: bold;">                            Fiscal Year:                        </td>                        <td name="fscYear">                        </td>                        <td style="font-weight: bold;">                            Period:                        </td>                        <td id="fscPeriod">                        </td>                        <td id="backToMopButton" class="row-btn">                        </td>                    </tr>                </table>            </div>            <div style="position: relative; float: left; width: 110px; margin-top:4px;">                <a id="popupButton" class="popup-button"><span>Comment</span><em></em></a>                <div style="clear: both">                </div>                <div class="popup-box" id="popupBox">                    <div class="popup-box-inner-wrapper" style="width: 500px">                        <div class="popup-box-form ">                            <label id="commentLabel">                                Summary Comments:</label>                            <textarea rows="5" class="textarea" id="summaryComment"></textarea>                            <div style="text-align: right; padding-right: 20px; padding-top: 5px;">                                <img id="saveButton" src="images/button-ok.png" style="cursor: pointer" />                                <img id="cancelButton" src="images/button-cancel.png" style="cursor: pointer" />                            </div>                        </div>                    </div>                </div>            </div>            <div style="clear:both; " ></div>        </div>    </div>    <div id="wor-comment">        <div style="margin-top: 15px;">            <div style="font-size: 14px; padding-left: 5px;">                Comments:</div>            <textarea name="Comment" id="Comment" cols="100" rows="3" />        </div>    </div></div>','<div style="min-height: 400px" class="mop">    <div id="mop-top">        <div style="background-color: #555; color: #fff; float: left; text-align: center;            height: 60px; vertical-align: middle; font-size: 14px; font-weight: bold; width: 180px;            padding-top: 15px;">            Monthly Operating Projection        </div>        <div style="margin-left: 180px; background-color: #659A66; vertical-align:text-bottom">            <div id="filter-wrapper">            </div>            <div id="column-swith">            </div>            <div style="clear: both">            </div>        </div>         <div id="page-status" style="display:block; width:100%; clear:both;"></div>    </div>       <div style="padding-top: 10px;" id="mop-wrapper">        <div class="list-header">            <div class="mop-controller" style="float:left;overflow:hidden"><div style="width:500px" id="controller-header"></div> </div>            <div class="mop-grid-main" style="overflow:hidden" id="mop-grid-header-wrapper"><div  id="grid-header" style="width:12000px"></div></div>            <div class="clear"></div>        </div>        <div>            <div class="mop-controller" style="float:left;overflow:hidden" id="mop-controller-wrapper"><div style="width:500px" id="mop-controller"></div> </div>            <div class="mop-grid-main" style="overflow:auto" id="mop-grid-wrapper"><div id="mop-grid"></div></div>            <div class="clear"></div>        </div>    </div>       <div style=" width: 100%;">        <div id="mop-footer">        </div>    </div></div>','<div>    <div id="controller-header">         <table class="bud-table-2">            <thead class="table-head">                <tr>                    <th class="boundary mop-updatefuture" style="width: 100px">                        <div class="row1-btn">                            <button class="bine-btn bine-btn-txt bine-ctrl" id="updatefuture-button" style="height: 50px;">                                Update Future<br />                                Periods w/MOP</button></div>                        <div style="padding: 5px;">                            <div style="width: 13px; height: 20px; padding-top: 3px; float: left;">                                <input type="checkbox" name="selectAllPeriods" id="SelectAllPeriods" /></div>                            <span style="line-height: 18px; height: 20px; padding-left: 5px;">Select All</span><div                                style="clear: both;">                            </div>                        </div>                    </th>                    <th class="boundary mop-updaterunrate" style="width: 90px">                        <div class="row1-btn">                            <button class="bine-btn bine-btn-txt bine-ctrl " id="updaterunrate-button" style="height: 50px;">                                Update With<br />                                Run Rate</button></div>                        <div style="padding: 5px;">                            <div style="width: 13px; height: 20px; padding-top: 3px; float: left;">                                <input type="checkbox" name="selectAll" id="SelectAllRunRate" /></div>                            <span style="float: left; line-height: 18px; height: 20px; padding-left: 5px;">Select                                All</span><div style="clear: both;">                                </div>                        </div>                    </th>                    <th class="boundary mop-accountcode-title" style="width: 245px; height: 85px;">                        Account Code                    </th>                </tr>            </thead>        </table>    </div>    <div id="controller-list">        <div>            <div id="holder"></div>        </div>    </div>    <table>        <tbody id="controller-view">            <tr>                <td class="boundary mop-updatefuture" style="width: 100px; height: 20px;">                    <div style="padding: 3px 7px;">                        <input type="checkbox" name="UpdateFuture" /></div>                </td>                <td class="boundary mop-updaterunrate" style="width: 90px; height: 20px;">                    <div style="padding: 3px 7px;">                        <input type="checkbox" name="UpdateRunRate" /></div>                </td>                <td class="boundary mop-account-column" style="white-space: nowrap; width: 245px; padding-top:0; padding-bottom:0; vertical-align:middle;                    height: 26px;">                    <a href="#" class="account-link" name="FscAccountDescription"></a>                </td>            </tr>        </tbody>    </table></div>','<div style="min-height: 400px" class="mop">    <div id="mop-top">        <div id="wor-filter">        </div>        <div id="page-status" style="display: block; width: 100%; clear: both;">        </div>    </div>    <div id="mop-list-wrapper" style="padding-top: 10px; width: 99%; margin: 0 auto;        overflow: auto;">        <div id="wor-list">        </div>        <div id="wor-comment">        </div>    </div>    <div style="position: absolute; bottom: 0px; width: 100%;">        <div id="mop-footer">        </div>    </div></div>',''];
 
 /*
 * jquery.fixheadertable
@@ -1026,48 +1026,54 @@ bine.namespace('fin.bud', 'fin.bud.page', 'fin.bud.data');
 
 fin.bud.budRequest = function (requestXml, callback) {
     var data = String.format('moduleId=bud&requestId=1&requestXml={0}&&targetId=iiCache', encodeURIComponent(requestXml));
-
+    fin.bud.loading();
     jQuery.post('/net/crothall/chimes/fin/bud/act/Provider.aspx', data, function (data, status) {
         callback(data);
+        fin.bud.loaded();
     });
 }
 
 fin.bud.hcmRequest = function (requestXml, callback) {
     var data = String.format('moduleId=hcm&requestId=1&requestXml={0}&&targetId=iiCache', encodeURIComponent(requestXml));
+    fin.bud.loading();
 
     jQuery.post('/net/crothall/chimes/fin/hcm/act/Provider.aspx', data, function (data, status) {
         callback(data);
+        fin.bud.loaded();
     });
 }
 
 fin.bud.fscRequest = function (requestXml, callback) {
     var data = String.format('moduleId=fsc&requestId=1&requestXml={0}&&targetId=iiCache', encodeURIComponent(requestXml));
-
+    fin.bud.loading();
     jQuery.post('/net/crothall/chimes/fin/fsc/act/Provider.aspx', data, function (data, status) {
         callback(data);
+        fin.bud.loaded();
     });
 }
 
 fin.bud.rptRequest = function (callback) {
     var data = String.format('moduleId=rpt&requestId=1&requestXml={0}&&targetId=iiCache', encodeURIComponent('<criteria>storeId:rptReports,userId:[user],</criteria>'));
-
+    fin.bud.loading();
     jQuery.post('/net/crothall/chimes/fin/rpt/act/Provider.aspx', data, function (d, status) {
         callback(d);
+        fin.bud.loaded();
     });
 
 }
 
 fin.bud.budSubmit = function (submitXml, callback) {
     var data = String.format('moduleId=bud&requestId=1&requestXml={0}&&targetId=iiTransaction', encodeURIComponent(submitXml));
-
+    fin.bud.saving();
     jQuery.post('/net/crothall/chimes/fin/bud/act/Provider.aspx', data, function (data, status) {
         callback(data);
+        fin.bud.loaded();
     });
 }
 
 if (!window.top.fin.appUI) {
     //window.top.fin = { appUI: { houseCodeId: 227, glbFscYear: 2, glbFscPeriod: 18} };
-    window.top.fin.appUI = { houseCodeId: 415, glbFscYear: 3, glbFscPeriod: 45, glbWeek: 2 };
+    window.top.fin.appUI = { houseCodeId: 415, glbFscYear: 5, glbFscPeriod: 57, glbWeek: 2 };
 }
 
 fin.bud.Context = {
@@ -1221,12 +1227,53 @@ if (top.ui.ctl.menu) {
 if (document.location.host == 'localhost')
     window.__fin_modified = false;
 
+
+var globalLoadingCounter = 0;
+
+fin.bud.loading = function () {
+    globalLoadingCounter++;
+    $('.itemStatusImage').removeClass('Normal').addClass('Loading');
+    $('.itemModifiedImage').removeClass('Modified');
+    $('.itemStatusText').html('Loading, please wait...');
+}
+
+fin.bud.saving = function () {
+    globalLoadingCounter++;
+    $('.itemStatusImage').removeClass('Normal').addClass('Loading');
+    $('.itemModifiedImage').removeClass('Modified');
+    $('.itemStatusText').html('Saving, please wait...');
+}
+
+fin.bud.normal = function (isModified) {
+    $('.itemStatusImage').removeClass('Loading').addClass('Normal');
+    $('.itemStatusText').html('Normal');
+    if (isModified === true) {
+        $('.itemModifiedImage').addClass('Modified');
+    }
+    else {
+        $('.itemModifiedImage').removeClass('Modified');
+    }
+}
+
+fin.bud.loaded = function () {
+    globalLoadingCounter--;
+
+    setTimeout(function () {
+        if (globalLoadingCounter <= 0) {
+            fin.bud.normal(fin.bud.modified());
+            globalLoadingCounter = 0;
+        }
+    }, 20);
+};
+
 fin.bud.modified = function () {
-    
-    if (document.location.host == 'localhost') {
+
+    if (arguments.length == 1) {
+        fin.bud.normal(fin.bud.modified());
+    }
+
+    if (!window.top.fin || !window.top.fin.cmn || !window.top.fin.cmn.status) {
         if (arguments.length == 0) {
-            if (window.__fin_modified)
-                alert('data modified');
             return window.__fin_modified;
 
         }
@@ -1234,1536 +1281,1535 @@ fin.bud.modified = function () {
             window.__fin_modified = arguments[0];
     }
     else {
-    
+
         if (arguments.length == 0)
             return !window.top.fin.cmn.status.itemValid();
         else
             window.top.fin.appUI.modified = arguments[0];
- }
+    }
 }
-
 !function (bud) {
     //
 
-    var FscYears = [];
-    var FscAccounts = [];
-    var FscAccountCategories = [];
-    var HcmHouseCodes = [];
-    var RptReportUrls = [];
+var FscYears = [];
+var FscAccounts = [];
+var FscAccountCategories = [];
+var HcmHouseCodes = [];
+var RptReportUrls = [];
 
-    var FscPeriodLookup = {};
-    var FscPeriodLookup2 = {};
-    var HcmHouseCodeLookup = {};
-    var FscAccountLookup = {};
-    var FscAccountCategoryLookup = {};
+var FscPeriodLookup = {};
+var FscPeriodLookup2 = {};
+var HcmHouseCodeLookup = {};
+var FscAccountLookup = {};
+var FscAccountCategoryLookup = {};
 
-    var HcmHouseCodeStore = new Ext.data.JsonStore({
-        root: 'data',
-        idProperty: 'Id',
-        fields: [{ name: 'Id' }, { name: 'Description'}]
-    });
+var HcmHouseCodeStore = new Ext.data.JsonStore({
+    root: 'data',
+    idProperty: 'Id',
+    fields: [{ name: 'Id' }, { name: 'Description'}]
+});
 
-    var HcmJobStore = new Ext.data.JsonStore({
-        root: 'data',
-        idProperty: 'Id',
-        fields: [{ name: 'Id' }, { name: 'Description'}]
-    });
+var HcmJobStore = new Ext.data.JsonStore({
+    root: 'data',
+    idProperty: 'Id',
+    fields: [{ name: 'Id' }, { name: 'Description'}]
+});
 
-    var FscYearStore = new Ext.data.JsonStore({
-        root: 'data',
-        idProperty: 'Id',
-        fields: [{ name: 'Id' }, { name: 'Description'}]
-    });
+var FscYearStore = new Ext.data.JsonStore({
+    root: 'data',
+    idProperty: 'Id',
+    fields: [{ name: 'Id' }, { name: 'Description'}]
+});
 
-    var FscPeriodStore = new Ext.data.JsonStore({
-        root: 'data',
-        idProperty: 'Id',
-        fields: [{ name: 'Id' }, { name: 'Description'}]
-    });
+var FscPeriodStore = new Ext.data.JsonStore({
+    root: 'data',
+    idProperty: 'Id',
+    fields: [{ name: 'Id' }, { name: 'Description'}]
+});
 
 
-    var FscAccountStore = new Ext.data.JsonStore({
-        root: 'data',
-        idProperty: 'Id',
-        fields: [{ name: 'Id' }, { name: 'Description'}]
-    });
+var FscAccountStore = new Ext.data.JsonStore({
+    root: 'data',
+    idProperty: 'Id',
+    fields: [{ name: 'Id' }, { name: 'Description'}]
+});
 
-    var loadFscYears = function (callback) {
-        var criteriaXml = '<criteria>storeId:fiscalYears,userId:[user],</criteria>';
+var loadFscYears = function (callback) {
+    var criteriaXml = '<criteria>storeId:fiscalYears,userId:[user],</criteria>';
 
-        fin.bud.budRequest(criteriaXml, function (data) {
-            FscYears = [];
-            $('item', $(data)).each(function (index, item) {
-                var $item = $(item);
-                FscYears.push({ Id: parseInt($item.attr('id')), Description: $item.attr('title') });
-            });
-
-            FscYearStore.loadData({ data: FscYears });
-            if (callback)
-                callback();
+    fin.bud.budRequest(criteriaXml, function (data) {
+        FscYears = [];
+        $('item', $(data)).each(function (index, item) {
+            var $item = $(item);
+            FscYears.push({ Id: parseInt($item.attr('id')), Description: $item.attr('title') });
         });
-    };
 
-    var loadFscPeriods = function (fscYearId, callback) {
+        FscYearStore.loadData({ data: FscYears });
+        if (callback)
+            callback();
+    });
+};
 
-        var fscYear = bine.query(FscYears).where(function (i) { return i.Id == fscYearId; }).first();
+var loadFscPeriods = function (fscYearId, callback) {
 
-        if (fscYear && fscYear.Periods) {
-            FscPeriodStore.loadData({ data: fscYear.Periods });
+    var fscYear = bine.query(FscYears).where(function (i) { return i.Id == fscYearId; }).first();
 
-            callback(fscYear.Periods);
-            return;
-        }
+    if (fscYear && fscYear.Periods) {
+        FscPeriodStore.loadData({ data: fscYear.Periods });
 
-        var criteriaXml = String.format('<criteria>fiscalYearId:{0},storeId:fiscalPeriods,userId:[user],</criteria>', fscYear.Id);
+        callback(fscYear.Periods);
+        return;
+    }
 
-        fin.bud.fscRequest(criteriaXml, function (data) {
-            var fscPeriods = [];
-            $('item', $(data)).each(function (index, item) {
-                var $item = $(item);
-                var fscPeriod = { Id: parseInt($item.attr('id')), Number: parseFloat($item.attr('title')),
-                    Description: 'Period ' + $item.attr('title'),
-                    StartDt: Date.parseDate($item.attr('startDate'), 'n/j/Y'), EndDt: Date.parseDate($item.attr('endDate'), 'n/j/Y')
-                };
-                fscPeriod.Days = $bud.calcDaysInDateRange(fscPeriod.StartDt, fscPeriod.EndDt);
+    var criteriaXml = String.format('<criteria>fiscalYearId:{0},storeId:fiscalPeriods,userId:[user],</criteria>', fscYear.Id);
 
-                var weeks = [];
-                var startDt = fscPeriod.StartDt;
-                var endDt = fscPeriod.StartDt;
+    fin.bud.fscRequest(criteriaXml, function (data) {
+        var fscPeriods = [];
+        $('item', $(data)).each(function (index, item) {
+            var $item = $(item);
+            var fscPeriod = { Id: parseInt($item.attr('id')), Number: parseFloat($item.attr('title')),
+                Description: 'Period ' + $item.attr('title'),
+                StartDt: Date.parseDate($item.attr('startDate'), 'n/j/Y'), EndDt: Date.parseDate($item.attr('endDate'), 'n/j/Y')
+            };
+            fscPeriod.Days = $bud.calcDaysInDateRange(fscPeriod.StartDt, fscPeriod.EndDt);
 
-                while (endDt < fscPeriod.EndDt) {
+            var weeks = [];
+            var startDt = fscPeriod.StartDt;
+            var endDt = fscPeriod.StartDt;
 
-                    if (endDt.getDay() == 6) {
-                        weeks.push({ StartDt: startDt, EndDt: endDt, Days: $bud.calcDaysInDateRange(startDt, endDt) });
-                        startDt = endDt.addDays(1);
-                    }
-                    endDt = endDt.addDays(1);
-                }
-                if (startDt != endDt) {
+            while (endDt < fscPeriod.EndDt) {
+
+                if (endDt.getDay() == 6) {
                     weeks.push({ StartDt: startDt, EndDt: endDt, Days: $bud.calcDaysInDateRange(startDt, endDt) });
+                    startDt = endDt.addDays(1);
                 }
-                fscPeriod.Weeks = weeks;
-                fscPeriod.FscYear = fscYear.Id;
-                fscPeriods.push(fscPeriod);
-            });
-
-            $.each(fscPeriods, function (index, fscPeriod) {
-                FscPeriodLookup2[fscPeriod.Id] = fscPeriod;
-                FscPeriodLookup[fscYearId + '_' + fscPeriod.Number] = fscPeriod;
-            });
-
-            fscYear.Periods = fscPeriods;
-            FscPeriodStore.loadData({ data: fscPeriods });
-            callback(fscPeriods);
-
+                endDt = endDt.addDays(1);
+            }
+            if (startDt != endDt) {
+                weeks.push({ StartDt: startDt, EndDt: endDt, Days: $bud.calcDaysInDateRange(startDt, endDt) });
+            }
+            fscPeriod.Weeks = weeks;
+            fscPeriod.FscYear = fscYear.Id;
+            fscPeriods.push(fscPeriod);
         });
-    };
 
-    var loadFscAccounts = function (callback) {
-        var criteriaXml = '<criteria>storeId:budFscAccounts,userId:[user],</criteria>';
+        $.each(fscPeriods, function (index, fscPeriod) {
+            FscPeriodLookup2[fscPeriod.Id] = fscPeriod;
+            FscPeriodLookup[fscYearId + '_' + fscPeriod.Number] = fscPeriod;
+        });
 
-        fin.bud.budRequest(criteriaXml, function (data) {
-            FscAccounts = [];
-            FscAccountCategories = [];
-            $('item', $(data)).each(function (index, item) {
-                var $item = $(item);
-                var categoryId = parseInt($item.attr('accountCategoryId'));
-                var category = bine.query(FscAccountCategories).where(function (i) { return i.Id == categoryId; }).first();
+        fscYear.Periods = fscPeriods;
+        FscPeriodStore.loadData({ data: fscPeriods });
+        callback(fscPeriods);
 
-                var FscAccount = {
-                    Id: parseInt($item.attr('id')),
-                    Code: parseFloat($item.attr('code')),
-                    CategoryId: categoryId,
-                    Name: $item.attr('name'),
-                    Description: String.format('{0} {1}', $item.attr('code'), $item.attr('name')),
+    });
+};
+
+var loadFscAccounts = function (callback) {
+    var criteriaXml = '<criteria>storeId:budFscAccounts,userId:[user],</criteria>';
+
+    fin.bud.budRequest(criteriaXml, function (data) {
+        FscAccounts = [];
+        FscAccountCategories = [];
+        $('item', $(data)).each(function (index, item) {
+            var $item = $(item);
+            var categoryId = parseInt($item.attr('accountCategoryId'));
+            var category = bine.query(FscAccountCategories).where(function (i) { return i.Id == categoryId; }).first();
+
+            var FscAccount = {
+                Id: parseInt($item.attr('id')),
+                Code: parseFloat($item.attr('code')),
+                CategoryId: categoryId,
+                Name: $item.attr('name'),
+                Description: String.format('{0} {1}', $item.attr('code'), $item.attr('name')),
+                IsNegative: $item.attr('isNegative') == 'true'
+            };
+
+
+            if (!category) {
+                var FscAccountCategory = {
+                    Id: categoryId,
+                    Description: $item.attr('accountCategory'),
+                    OrderIndex: parseFloat($item.attr('categoryDisplayOrder')),
                     IsNegative: $item.attr('isNegative') == 'true'
                 };
+                FscAccountCategories.push(FscAccountCategory);
+                FscAccountCategoryLookup[FscAccountCategory.Id] = FscAccountCategory;
+            }
+            FscAccounts.push(FscAccount);
+            FscAccountLookup[FscAccount.Id] = FscAccount;
+        });
 
+        FscAccountStore.loadData({ data: FscAccounts });
 
-                if (!category) {
-                    var FscAccountCategory = {
-                        Id: categoryId,
-                        Description: $item.attr('accountCategory'),
-                        OrderIndex: parseFloat($item.attr('categoryDisplayOrder')),
-                        IsNegative: $item.attr('isNegative') == 'true'
-                    };
-                    FscAccountCategories.push(FscAccountCategory);
-                    FscAccountCategoryLookup[FscAccountCategory.Id] = FscAccountCategory;
+        if (callback)
+            callback();
+    });
+};
+
+var loadHcmHouseCodes = function (callback) {
+    var criteriaXml = '<criteria>appUnitBrief:,storeId:hcmHouseCodes,userId:[user],</criteria>';
+
+    fin.bud.hcmRequest(criteriaXml, function (data) {
+        HcmHouseCodes = [];
+        $('item', $(data)).each(function (index, item) {
+            var $item = $(item);
+            var HcmHouseCode = { Id: parseInt($item.attr('id')), Description: $item.attr('name'), Code: $item.attr('brief'), HirNode: $item.attr('hirNode'), AppUnit: $item.attr('appUnit') };
+            HcmHouseCodes.push(HcmHouseCode);
+            HcmHouseCodeLookup[HcmHouseCode.Id] = HcmHouseCode;
+        });
+
+        HcmHouseCodeStore.loadData({ data: HcmHouseCodes });
+
+        if (callback)
+            callback();
+    });
+};
+
+var loadHcmHouseJobs = function (hcmHouseCodeId, callback) {
+
+    var hcmHouseCode = HcmHouseCodeLookup[hcmHouseCodeId];         // bine.query(HcmHouseCodes).where(function (h) { return h.Id == hcmHouseCodeId; }).first();
+    if (hcmHouseCode && hcmHouseCode.Jobs) {
+        HcmJobStore.loadData({ data: hcmHouseCode.Jobs });
+        callback(hcmHouseCode.Jobs);
+        return;
+    }
+
+    var criteriaXml = String.format('<criteria>houseCodeId:{0},jobType:0,storeId:houseCodeJobs,userId:[user],</criteria>', hcmHouseCode.Id);
+
+    fin.bud.hcmRequest(criteriaXml, function (data) {
+        var hcmJobs = [];
+        $('item', $(data)).each(function (index, item) {
+            var $item = $(item);
+            hcmJobs.push({ Id: parseInt($item.attr('jobId')), Description: $item.attr('jobTitle') });
+        });
+        HcmJobStore.loadData({ data: hcmJobs });
+        hcmHouseCode.Jobs = hcmJobs;
+        callback(hcmJobs);
+    });
+};
+
+var loadReportUrls = function (callback) {
+
+    fin.bud.rptRequest(function (data) {
+        var rptReportUrls = [];
+        $('item', $(data)).each(function (index, item) {
+            var $item = $(item);
+            rptReportUrls.push({ Title: $item.attr('title'), Url: $item.attr('reportURL') });
+        });
+        RptReportUrls = rptReportUrls;
+
+    });
+};
+
+var GetFscPeriod = function (fscPeriod) {
+    return FscPeriodLookup2[fscPeriod];
+    var FscPeriod = {};
+    $.each(FscYears, function (index, FscYearItem) {
+
+        if (FscYearItem.Periods) {
+            $.each(FscYearItem.Periods, function (i, period) {
+                if (period.Id == fscPeriod) {
+                    FscPeriod = period;
+                    return true;
                 }
-                FscAccounts.push(FscAccount);
-                FscAccountLookup[FscAccount.Id] = FscAccount;
             });
-
-            FscAccountStore.loadData({ data: FscAccounts });
-
-            if (callback)
-                callback();
-        });
-    };
-
-    var loadHcmHouseCodes = function (callback) {
-        var criteriaXml = '<criteria>appUnitBrief:,storeId:hcmHouseCodes,userId:[user],</criteria>';
-
-        fin.bud.hcmRequest(criteriaXml, function (data) {
-            HcmHouseCodes = [];
-            $('item', $(data)).each(function (index, item) {
-                var $item = $(item);
-                var HcmHouseCode = { Id: parseInt($item.attr('id')), Description: $item.attr('name'), Code: $item.attr('brief'), HirNode: $item.attr('hirNode'), AppUnit: $item.attr('appUnit') };
-                HcmHouseCodes.push(HcmHouseCode);
-                HcmHouseCodeLookup[HcmHouseCode.Id] = HcmHouseCode;
-            });
-
-            HcmHouseCodeStore.loadData({ data: HcmHouseCodes });
-
-            if (callback)
-                callback();
-        });
-    };
-
-    var loadHcmHouseJobs = function (hcmHouseCodeId, callback) {
-
-        var hcmHouseCode = HcmHouseCodeLookup[hcmHouseCodeId];         // bine.query(HcmHouseCodes).where(function (h) { return h.Id == hcmHouseCodeId; }).first();
-        if (hcmHouseCode && hcmHouseCode.Jobs) {
-            HcmJobStore.loadData({ data: hcmHouseCode.Jobs });
-            callback(hcmHouseCode.Jobs);
-            return;
         }
 
-        var criteriaXml = String.format('<criteria>houseCodeId:{0},jobType:0,storeId:houseCodeJobs,userId:[user],</criteria>', hcmHouseCode.Id);
+    });
+    return FscPeriod;
+};
 
-        fin.bud.hcmRequest(criteriaXml, function (data) {
-            var hcmJobs = [];
-            $('item', $(data)).each(function (index, item) {
-                var $item = $(item);
-                hcmJobs.push({ Id: parseInt($item.attr('jobId')), Description: $item.attr('jobTitle') });
+var GetFscPeriod2 = function (fscYear, number) {
+    //    var FscYear = bine.query(FscYears).where(function (y) { return y.Id == fscYear; }).first();
+    //    return bine.query(FscYear.Periods).where(function (p) { return p.Number == number; }).first();
+    return FscPeriodLookup[fscYear + '_' + number];
+};
+
+
+
+var GetCurrentFscPeriod = function () {
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    var FscPeriod = FscPeriodLookup2[fin.bud.Context.getFscPeriod()];
+    if (!FscPeriod)
+        return { Number: -1 };
+
+    return FscPeriod;
+//    var FscPeriod = { Number: -1 };
+//    $.each(FscYears, function (index, FscYearItem) {
+
+//        if (FscYearItem.Periods) {
+//            $.each(FscYearItem.Periods, function (i, period) {
+//                if (period.StartDt <= today && period.EndDt >= today) {
+//                    FscPeriod = period;
+//                    return true;
+//                }
+//            });
+//        }
+
+//    });
+//    return FscPeriod;
+};
+
+var GetCurrentFscPeriodByToday = function () {
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+
+    var FscPeriod = { Number: -1 };
+    $.each(FscYears, function (index, FscYearItem) {
+
+        if (FscYearItem.Periods) {
+            $.each(FscYearItem.Periods, function (i, period) {
+                if (period.StartDt <= today && period.EndDt >= today) {
+                    FscPeriod = period;
+                    return true;
+                }
             });
-            HcmJobStore.loadData({ data: hcmJobs });
-            hcmHouseCode.Jobs = hcmJobs;
-            callback(hcmJobs);
-        });
-    };
+        }
 
-    var loadReportUrls = function (callback) {
+    });
 
-        fin.bud.rptRequest(function (data) {
-            var rptReportUrls = [];
-            $('item', $(data)).each(function (index, item) {
-                var $item = $(item);
-                rptReportUrls.push({ Title: $item.attr('title'), Url: $item.attr('reportURL') });
-            });
-            RptReportUrls = rptReportUrls;
-
-        });
-    };
-
-    var GetFscPeriod = function (fscPeriod) {
-        return FscPeriodLookup2[fscPeriod];
-        var FscPeriod = {};
-        $.each(FscYears, function (index, FscYearItem) {
-
-            if (FscYearItem.Periods) {
-                $.each(FscYearItem.Periods, function (i, period) {
-                    if (period.Id == fscPeriod) {
-                        FscPeriod = period;
-                        return true;
-                    }
-                });
-            }
-
-        });
-        return FscPeriod;
-    };
-
-    var GetFscPeriod2 = function (fscYear, number) {
-        //    var FscYear = bine.query(FscYears).where(function (y) { return y.Id == fscYear; }).first();
-        //    return bine.query(FscYear.Periods).where(function (p) { return p.Number == number; }).first();
-        return FscPeriodLookup[fscYear + '_' + number];
-    };
-
-
-
-    var GetCurrentFscPeriod = function () {
-        var today = new Date();
-        today.setHours(0, 0, 0, 0);
-        var FscPeriod = FscPeriodLookup2[fin.bud.Context.getFscPeriod()];
-        if (!FscPeriod)
-            return { Number: -1 };
-
-        return FscPeriod;
-        //    var FscPeriod = { Number: -1 };
-        //    $.each(FscYears, function (index, FscYearItem) {
-
-        //        if (FscYearItem.Periods) {
-        //            $.each(FscYearItem.Periods, function (i, period) {
-        //                if (period.StartDt <= today && period.EndDt >= today) {
-        //                    FscPeriod = period;
-        //                    return true;
-        //                }
-        //            });
-        //        }
-
-        //    });
-        //    return FscPeriod;
-    };
-
-    var GetCurrentFscPeriodByToday = function () {
-        var today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-
-        var FscPeriod = { Number: -1 };
-        $.each(FscYears, function (index, FscYearItem) {
-
-            if (FscYearItem.Periods) {
-                $.each(FscYearItem.Periods, function (i, period) {
-                    if (period.StartDt <= today && period.EndDt >= today) {
-                        FscPeriod = period;
-                        return true;
-                    }
-                });
-            }
-
-        });
-
-        return FscPeriod;
-    };
+    return FscPeriod;
+};
 
 
     //
 
-    var BudDetails = [];
-    var ProjectedComments = [];
-    var ProjectedDetails = [];
-    var ProjectedWorDetails = [];
-    var MopPeriodItems = [];
+var BudDetails = [];
+var ProjectedComments = [];
+var ProjectedDetails = [];
+var ProjectedWorDetails = [];
+var MopPeriodItems = [];
 
-    var FiscalPeriodCloseDays = 1;
-    var MopDetails = [];
+var FiscalPeriodCloseDays = 1;
+var MopDetails = [];
 
-    var isBudgetStarted = function (hcmHouseCode, hcmJob, fscYear, callback) {
-        var criteriaXml = String.format('<criteria>hcmHouseCode:{0},fscYear:{2},hcmJob:{1},storeId:budAnnualBudgets,userId:[user],</criteria>', hcmHouseCode, hcmJob, fscYear);
+var isBudgetStarted = function (hcmHouseCode, hcmJob, fscYear, callback) {
+    var criteriaXml = String.format('<criteria>hcmHouseCode:{0},fscYear:{2},hcmJob:{1},storeId:budAnnualBudgets,userId:[user],</criteria>', hcmHouseCode, hcmJob, fscYear);
 
-        fin.bud.budRequest(criteriaXml, function (data) {
-            var isStarted = $('item', $(data)).length > 0;
-            var exported = false;
-            if (isStarted)
-                exported = $('item', $(data)).first().attr('exported') == 'true';
-            callback(isStarted, exported);
-        });
-    };
+    fin.bud.budRequest(criteriaXml, function (data) {
+        var isStarted = $('item', $(data)).length > 0;
+        var exported = false;
+        if (isStarted)
+            exported = $('item', $(data)).first().attr('exported') == 'true';
+        callback(isStarted, exported);
+    });
+};
 
-    var loadPeriodData = function (storeId, hcmHouseCode, hcmJob, fscYear, array, isAmountField, callback) {
+var loadPeriodData = function (storeId, hcmHouseCode, hcmJob, fscYear, array, isAmountField, callback) {
 
-        var criteriaXml = String.format('<criteria>hcmHouseCode:{0},fscYear:{2},hcmJob:{1},storeId:{3},userId:[user],</criteria>', hcmHouseCode, hcmJob, fscYear, storeId);
+    var criteriaXml = String.format('<criteria>hcmHouseCode:{0},fscYear:{2},hcmJob:{1},storeId:{3},userId:[user],</criteria>', hcmHouseCode, hcmJob, fscYear, storeId);
 
-        fin.bud.budRequest(criteriaXml, function (data) {
-            array.length = 0;
+    fin.bud.budRequest(criteriaXml, function (data) {
+        array.length = 0;
 
-            $('item', $(data)).each(function (index, item) {
-                var $item = $(item);
-                var dataItem = { FscAccount: $item.attr('fscAccount') };
-                for (var i = 1; i <= 16; i++) {
-                    var periodField = 'Period' + i;
-                    if (isAmountField === true) {
-                        dataItem[periodField] = parseFloat($item.attr('period' + i));
-                        if (isNaN(dataItem[periodField]))
-                            dataItem[periodField] = 0;
-                    }
-                    else
-                        dataItem[periodField] = $item.attr('period' + i);
+        $('item', $(data)).each(function (index, item) {
+            var $item = $(item);
+            var dataItem = { FscAccount: $item.attr('fscAccount') };
+            for (var i = 1; i <= 16; i++) {
+                var periodField = 'Period' + i;
+                if (isAmountField === true) {
+                    dataItem[periodField] = parseFloat($item.attr('period' + i));
+                    if (isNaN(dataItem[periodField]))
+                        dataItem[periodField] = 0;
                 }
-                array.push(dataItem);
-            });
-
-            callback(array);
-
+                else
+                    dataItem[periodField] = $item.attr('period' + i);
+            }
+            array.push(dataItem);
         });
-    };
 
-    var loadBudDetails = function (hcmHouseCode, hcmJob, fscYear, callback) {
-        loadPeriodData('budDetails', hcmHouseCode, hcmJob, fscYear, BudDetails, true, callback);
-    };
+        callback(array);
 
-    var loadProjectedDetails = function (hcmHouseCode, hcmJob, fscYear, callback) {
-        loadPeriodData('budProjectedDetails', hcmHouseCode, hcmJob, fscYear, ProjectedDetails, true, callback);
-    };
+    });
+};
 
-    var loadProjectedWorDetails = function (hcmHouseCode, hcmJob, fscYear, callback) {
-        loadPeriodData('budProjectedWORDetails', hcmHouseCode, hcmJob, fscYear, ProjectedWorDetails, true, callback);
-    };
+var loadBudDetails = function (hcmHouseCode, hcmJob, fscYear, callback) {
+    loadPeriodData('budDetails', hcmHouseCode, hcmJob, fscYear, BudDetails, true, callback);
+};
 
-    var loadProjectedComments = function (hcmHouseCode, hcmJob, fscYear, callback) {
-        loadPeriodData('budProjectedComments', hcmHouseCode, hcmJob, fscYear, ProjectedComments, false, callback);
-    };
+var loadProjectedDetails = function (hcmHouseCode, hcmJob, fscYear, callback) {
+    loadPeriodData('budProjectedDetails', hcmHouseCode, hcmJob, fscYear, ProjectedDetails, true, callback);
+};
 
-    var initMopDataItem = function (dataItem) {
-        for (var i = 1; i <= 14; i++) {
-            dataItem['Budget' + i] = 0;
-            dataItem['Projection' + i] = 0;
-            dataItem['Variance' + i] = 0;
-            dataItem['RunRate' + i] = 0;
-            dataItem['DailyRunRate' + i] = 0;
-            dataItem['Forecast' + i] = 0;
-            dataItem['Comment' + i] = '';
-            dataItem['WorModified' + i] = false;
+var loadProjectedWorDetails = function (hcmHouseCode, hcmJob, fscYear, callback) {
+    loadPeriodData('budProjectedWORDetails', hcmHouseCode, hcmJob, fscYear, ProjectedWorDetails, true, callback);
+};
+
+var loadProjectedComments = function (hcmHouseCode, hcmJob, fscYear, callback) {
+    loadPeriodData('budProjectedComments', hcmHouseCode, hcmJob, fscYear, ProjectedComments, false, callback);
+};
+
+var initMopDataItem = function (dataItem) {
+    for (var i = 1; i <= 14; i++) {
+        dataItem['Budget' + i] = 0;
+        dataItem['Projection' + i] = 0;
+        dataItem['Variance' + i] = 0;
+        dataItem['RunRate' + i] = 0;
+        dataItem['DailyRunRate' + i] = 0;
+        dataItem['Forecast' + i] = 0;
+        dataItem['Comment' + i] = '';
+        dataItem['WorModified' + i] = false;
+    }
+    dataItem['BudgetTotal'] = 0;
+    dataItem['ProjectionTotal'] = 0;
+    //dataItem['WorModified'] = false;
+};
+
+var createFscAccountDataItem = function (fscAccount) {
+    var FscAccount = FscAccountLookup[fscAccount];           // bine.query(FscAccounts).where(function (f) { return f.Id == fscAccount; }).first();
+    var FscAccountCategory = FscAccountCategoryLookup[FscAccount.CategoryId];          // bine.query(FscAccountCategories).where(function (f) { return f.Id == FscAccount.CategoryId; }).first();
+
+    var dataItem = { FscAccount: fscAccount, FscAccountDescription: FscAccount.Description, IsAccount: true };
+
+    dataItem.CategoryId = FscAccountCategory.Id;
+    dataItem.SortIndex = FscAccountCategory.OrderIndex.toString().padLeft('0', 4) + '_' + FscAccount.Code;
+
+    initMopDataItem(dataItem);
+
+    return dataItem;
+
+};
+
+var createFscAccountCategoryDataItem = function (fscAccountCategory) {
+
+    var FscAccountCategory = FscAccountCategoryLookup[fscAccountCategory];            //bine.query(FscAccountCategories).where(function (f) { return f.Id == fscAccountCategory; }).first();
+
+    var dataItem = { FscAccount: FscAccountCategory.Id, FscAccountDescription: FscAccountCategory.Description, IsCategory: true };
+
+    dataItem.SortIndex = FscAccountCategory.OrderIndex.toString().padLeft('0', 4) + '_9999';
+
+    initMopDataItem(dataItem);
+
+    return dataItem;
+
+};
+
+var loadFiscalPeriodCloseDays = function () {
+    var criteriaXml = '<criteria>variableName:FiscalPeriodCloseDays ,storeId:budSystemVariables,userId:[user],</criteria>';
+
+    fin.bud.budRequest(criteriaXml, function (data) {
+        FiscalPeriodCloseDays=  $('item:first', $(data)).attr('variableValue');
+    });
+
+};
+
+loadFiscalPeriodCloseDays();
+
+var populateMopDetails = function () {
+
+    MopDetails = [];
+
+
+    var fscAccounts = bine.query(BudDetails).select('FscAccount').toArray();
+    fscAccounts = fscAccounts.concat(bine.query(ProjectedDetails).select('FscAccount').toArray());
+    fscAccounts = fscAccounts.distinct();
+
+    var categories = {};
+
+    var totalItem = { FscAccount: 99999, FscAccountDescription: 'Total', IsTotal: true, SortIndex: '9999_9999' };
+    initMopDataItem(totalItem);
+    MopDetails.push(totalItem);
+
+    $.each(fscAccounts, function (index, fscAccount) {
+
+        var dataItem = createFscAccountDataItem(fscAccount);
+
+        var categoryItem = categories[dataItem.CategoryId];
+        if (!categoryItem) {
+            categoryItem = createFscAccountCategoryDataItem(dataItem.CategoryId);
+            categories[dataItem.CategoryId] = categoryItem;
         }
-        dataItem['BudgetTotal'] = 0;
-        dataItem['ProjectionTotal'] = 0;
-        //dataItem['WorModified'] = false;
+
+        var budgetTotal = 0;
+        var projectionTotal = 0;
+
+        var budget = bine.query(BudDetails).where(function (b) { return b.FscAccount == fscAccount; }).first();
+        if (budget) {
+            for (var i = 1; i <= 14; i++) {
+                dataItem['Budget' + i] = budget['Period' + i] || 0;
+                categoryItem['Budget' + i] += dataItem['Budget' + i];
+                totalItem['Budget' + i] += dataItem['Budget' + i];
+                budgetTotal += budget['Period' + i] || 0;
+            }
+        }
+
+        var projection = bine.query(ProjectedDetails).where(function (b) { return b.FscAccount == fscAccount; }).first();
+        if (projection) {
+            for (var i = 1; i <= 14; i++) {
+                dataItem['Projection' + i] = Math.round((projection['Period' + i] || 0) * 100) / 100;
+                categoryItem['Projection' + i] += dataItem['Projection' + i];
+                totalItem['Projection' + i] += dataItem['Projection' + i];
+
+            }
+        }
+
+        var forecast = bine.query(ProjectedWorDetails).where(function (b) { return b.FscAccount == fscAccount; }).first();
+        if (forecast) {
+            for (var i = 1; i <= 14; i++) {
+                dataItem['Forecast' + i] = forecast['Period' + i] || 0;
+                categoryItem['Forecast' + i] += dataItem['Forecast' + i];
+                totalItem['Forecast' + i] += dataItem['Forecast' + i];
+                projectionTotal += dataItem['Forecast' + i] || 0;
+            }
+        }
+        for (var i = 1; i <= 14; i++) {
+            dataItem['Variance' + i] = (dataItem['Projection' + i] - dataItem['Budget' + i]) || 0;
+            categoryItem['Variance' + i] += (dataItem['Projection' + i] - dataItem['Budget' + i]) || 0;
+            totalItem['Variance' + i] += (dataItem['Projection' + i] - dataItem['Budget' + i]) || 0;
+
+        }
+
+        var comment = bine.query(ProjectedComments).where(function (b) { return b.FscAccount == fscAccount; }).first();
+        if (comment) {
+            for (var i = 1; i <= 14; i++) {
+                dataItem['Comment' + i] = comment['Period' + i] || '';
+            }
+        }
+
+        dataItem['ProjectionTotal'] = projectionTotal;
+        dataItem['BudgetTotal'] = budgetTotal;
+
+        categoryItem['ProjectionTotal'] += projectionTotal;
+        categoryItem['BudgetTotal'] += budgetTotal;
+
+        totalItem['ProjectionTotal'] += projectionTotal;
+        totalItem['BudgetTotal'] += budgetTotal;
+
+
+        MopDetails.push(dataItem);
+    });
+
+    for (var key in categories)
+        MopDetails.push(categories[key]);
+
+    MopDetails = bine.query(MopDetails).orderBy('SortIndex').toArray();
+
+};
+
+var loadMopData = function (hcmHouseCode, hcmJob, fscYear, callback) {
+
+    var dataLoadedCount = 0;
+    var innerCallback = function () {
+        dataLoadedCount++;
+        if (dataLoadedCount == 4) {
+
+            populateMopDetails();
+
+            callback(MopDetails);
+
+        }
     };
 
-    var createFscAccountDataItem = function (fscAccount) {
-        var FscAccount = FscAccountLookup[fscAccount];           // bine.query(FscAccounts).where(function (f) { return f.Id == fscAccount; }).first();
-        var FscAccountCategory = FscAccountCategoryLookup[FscAccount.CategoryId];          // bine.query(FscAccountCategories).where(function (f) { return f.Id == FscAccount.CategoryId; }).first();
+    loadBudDetails(hcmHouseCode, hcmJob, fscYear, innerCallback);
+    loadProjectedDetails(hcmHouseCode, hcmJob, fscYear, innerCallback);
+    loadProjectedComments(hcmHouseCode, hcmJob, fscYear, innerCallback);
+    loadProjectedWorDetails(hcmHouseCode, hcmJob, fscYear, innerCallback);
+    //loadMopPeriodItems(hcmHouseCode, hcmJob, fscYear);
+};
 
-        var dataItem = { FscAccount: fscAccount, FscAccountDescription: FscAccount.Description, IsAccount: true };
+var loadMopPeriodItems = function (hcmHouseCode, hcmJob, fscYear, callback) {
+    var criteriaXml = String.format('<criteria>hcmHouseCode:{0},fscYear:{2},hcmJob:{1},storeId:budMopPeriodItems,userId:[user],</criteria>', hcmHouseCode, hcmJob, fscYear);
 
-        dataItem.CategoryId = FscAccountCategory.Id;
-        dataItem.SortIndex = FscAccountCategory.OrderIndex.toString().padLeft('0', 4) + '_' + FscAccount.Code;
-
-        initMopDataItem(dataItem);
-
-        return dataItem;
-
-    };
-
-    var createFscAccountCategoryDataItem = function (fscAccountCategory) {
-
-        var FscAccountCategory = FscAccountCategoryLookup[fscAccountCategory];            //bine.query(FscAccountCategories).where(function (f) { return f.Id == fscAccountCategory; }).first();
-
-        var dataItem = { FscAccount: FscAccountCategory.Id, FscAccountDescription: FscAccountCategory.Description, IsCategory: true };
-
-        dataItem.SortIndex = FscAccountCategory.OrderIndex.toString().padLeft('0', 4) + '_9999';
-
-        initMopDataItem(dataItem);
-
-        return dataItem;
-
-    };
-
-    var loadFiscalPeriodCloseDays = function () {
-        var criteriaXml = '<criteria>variableName:FiscalPeriodCloseDays ,storeId:budSystemVariables,userId:[user],</criteria>';
-
-        fin.bud.budRequest(criteriaXml, function (data) {
-            FiscalPeriodCloseDays = $('item:first', $(data)).attr('variableValue');
-        });
-
-    };
-
-    loadFiscalPeriodCloseDays();
-
-    var populateMopDetails = function () {
+    var innerCallback = function (data) {
 
         MopDetails = [];
 
-
-        var fscAccounts = bine.query(BudDetails).select('FscAccount').toArray();
-        fscAccounts = fscAccounts.concat(bine.query(ProjectedDetails).select('FscAccount').toArray());
-        fscAccounts = fscAccounts.distinct();
-
-        var categories = {};
+        var mopItemIndex = {};
 
         var totalItem = { FscAccount: 99999, FscAccountDescription: 'Total', IsTotal: true, SortIndex: '9999_9999' };
         initMopDataItem(totalItem);
         MopDetails.push(totalItem);
 
-        $.each(fscAccounts, function (index, fscAccount) {
+        var currentPeriodIndex = -1;
 
-            var dataItem = createFscAccountDataItem(fscAccount);
+        var currentPeriod = GetCurrentFscPeriodByToday();
+        var currentDay = (new Date()).getDate();
+        console.log(currentDay);
 
-            var categoryItem = categories[dataItem.CategoryId];
-            if (!categoryItem) {
-                categoryItem = createFscAccountCategoryDataItem(dataItem.CategoryId);
-                categories[dataItem.CategoryId] = categoryItem;
-            }
+        if (currentPeriod.FscYear == fscYear)
+            currentPeriodIndex = GetCurrentFscPeriodByToday()['Number'];
 
-            var budgetTotal = 0;
-            var projectionTotal = 0;
+        /*
+        $('item', $(data)).each(function (index, item) {
+        var $item = $(item);
 
-            var budget = bine.query(BudDetails).where(function (b) { return b.FscAccount == fscAccount; }).first();
-            if (budget) {
-                for (var i = 1; i <= 14; i++) {
-                    dataItem['Budget' + i] = budget['Period' + i] || 0;
-                    categoryItem['Budget' + i] += dataItem['Budget' + i];
-                    totalItem['Budget' + i] += dataItem['Budget' + i];
-                    budgetTotal += budget['Period' + i] || 0;
-                }
-            }
-
-            var projection = bine.query(ProjectedDetails).where(function (b) { return b.FscAccount == fscAccount; }).first();
-            if (projection) {
-                for (var i = 1; i <= 14; i++) {
-                    dataItem['Projection' + i] = Math.round((projection['Period' + i] || 0) * 100) / 100;
-                    categoryItem['Projection' + i] += dataItem['Projection' + i];
-                    totalItem['Projection' + i] += dataItem['Projection' + i];
-
-                }
-            }
-
-            var forecast = bine.query(ProjectedWorDetails).where(function (b) { return b.FscAccount == fscAccount; }).first();
-            if (forecast) {
-                for (var i = 1; i <= 14; i++) {
-                    dataItem['Forecast' + i] = forecast['Period' + i] || 0;
-                    categoryItem['Forecast' + i] += dataItem['Forecast' + i];
-                    totalItem['Forecast' + i] += dataItem['Forecast' + i];
-                    projectionTotal += dataItem['Forecast' + i] || 0;
-                }
-            }
-            for (var i = 1; i <= 14; i++) {
-                dataItem['Variance' + i] = (dataItem['Projection' + i] - dataItem['Budget' + i]) || 0;
-                categoryItem['Variance' + i] += (dataItem['Projection' + i] - dataItem['Budget' + i]) || 0;
-                totalItem['Variance' + i] += (dataItem['Projection' + i] - dataItem['Budget' + i]) || 0;
-
-            }
-
-            var comment = bine.query(ProjectedComments).where(function (b) { return b.FscAccount == fscAccount; }).first();
-            if (comment) {
-                for (var i = 1; i <= 14; i++) {
-                    dataItem['Comment' + i] = comment['Period' + i] || '';
-                }
-            }
-
-            dataItem['ProjectionTotal'] = projectionTotal;
-            dataItem['BudgetTotal'] = budgetTotal;
-
-            categoryItem['ProjectionTotal'] += projectionTotal;
-            categoryItem['BudgetTotal'] += budgetTotal;
-
-            totalItem['ProjectionTotal'] += projectionTotal;
-            totalItem['BudgetTotal'] += budgetTotal;
-
-
-            MopDetails.push(dataItem);
-        });
-
-        for (var key in categories)
-            MopDetails.push(categories[key]);
-
-        MopDetails = bine.query(MopDetails).orderBy('SortIndex').toArray();
-
-    };
-
-    var loadMopData = function (hcmHouseCode, hcmJob, fscYear, callback) {
-
-        var dataLoadedCount = 0;
-        var innerCallback = function () {
-            dataLoadedCount++;
-            if (dataLoadedCount == 4) {
-
-                populateMopDetails();
-
-                callback(MopDetails);
-
-            }
+        var dataItem = { fscPeriod: parseInt($item.attr('fscPeriod')), fscAccount: parseInt($item.attr('fscAccount')),
+        mop: parseFloat($item.attr('mop')), budget: parseFloat($item.attr('budget')), runrate: parseFloat($item.attr('runrate')), wor: parseFloat($item.attr('wor')),
+        worModified: $item.attr('wormodified') == '1',
+        comments: $item.attr('comments')
         };
+        dataItem.mop2Budget = dataItem.mop - dataItem.budget;
+        dataItem.runrate = Math.round(dataItem.runrate * 100) / 100;
 
-        loadBudDetails(hcmHouseCode, hcmJob, fscYear, innerCallback);
-        loadProjectedDetails(hcmHouseCode, hcmJob, fscYear, innerCallback);
-        loadProjectedComments(hcmHouseCode, hcmJob, fscYear, innerCallback);
-        loadProjectedWorDetails(hcmHouseCode, hcmJob, fscYear, innerCallback);
-        //loadMopPeriodItems(hcmHouseCode, hcmJob, fscYear);
-    };
+        MopPeriodItems.push(dataItem);
 
-    var loadMopPeriodItems = function (hcmHouseCode, hcmJob, fscYear, callback) {
-        var criteriaXml = String.format('<criteria>hcmHouseCode:{0},fscYear:{2},hcmJob:{1},storeId:budMopPeriodItems,userId:[user],</criteria>', hcmHouseCode, hcmJob, fscYear);
+        var mopAccountItem = mopItemIndex[dataItem.fscAccount];
+        if (!mopAccountItem) {
+        mopAccountItem = createFscAccountDataItem(dataItem.fscAccount);
+        MopDetails.push(mopAccountItem);
+        mopItemIndex[dataItem.fscAccount] = mopAccountItem;
+        }
 
-        var innerCallback = function (data) {
+        var mopCategoryItem = mopItemIndex[mopAccountItem.CategoryId];
+        if (!mopCategoryItem) {
+        mopCategoryItem = createFscAccountCategoryDataItem(mopAccountItem.CategoryId);
+        MopDetails.push(mopCategoryItem);
+        mopItemIndex[mopAccountItem.CategoryId] = mopCategoryItem;
+        }
 
-            MopDetails = [];
+        //var FscPeriod = GetFscPeriod(dataItem.fscPeriod);
+        });*/
 
-            var mopItemIndex = {};
-
-            var totalItem = { FscAccount: 99999, FscAccountDescription: 'Total', IsTotal: true, SortIndex: '9999_9999' };
-            initMopDataItem(totalItem);
-            MopDetails.push(totalItem);
-
-            var currentPeriodIndex = -1;
-
-            var currentPeriod = GetCurrentFscPeriodByToday();
-            var currentDay = (new Date()).getDate();
-            console.log(currentDay);
-
-            if (currentPeriod.FscYear == fscYear)
-                currentPeriodIndex = GetCurrentFscPeriodByToday()['Number'];
-
-            /*
-            $('item', $(data)).each(function (index, item) {
+        $('item', $(data)).each(function (index, item) {
             var $item = $(item);
 
             var dataItem = { fscPeriod: parseInt($item.attr('fscPeriod')), fscAccount: parseInt($item.attr('fscAccount')),
-            mop: parseFloat($item.attr('mop')), budget: parseFloat($item.attr('budget')), runrate: parseFloat($item.attr('runrate')), wor: parseFloat($item.attr('wor')),
-            worModified: $item.attr('wormodified') == '1',
-            comments: $item.attr('comments')
+                mop: parseFloat($item.attr('mop')), budget: parseFloat($item.attr('budget')), runrate: parseFloat($item.attr('runrate')), wor: parseFloat($item.attr('wor')), forecast: parseFloat($item.attr('forecast')),
+                worModified: $item.attr('wormodified') == '1',
+                comments: $item.attr('comments')
             };
             dataItem.mop2Budget = dataItem.mop - dataItem.budget;
             dataItem.runrate = Math.round(dataItem.runrate * 100) / 100;
 
-            MopPeriodItems.push(dataItem);
-
             var mopAccountItem = mopItemIndex[dataItem.fscAccount];
             if (!mopAccountItem) {
-            mopAccountItem = createFscAccountDataItem(dataItem.fscAccount);
-            MopDetails.push(mopAccountItem);
-            mopItemIndex[dataItem.fscAccount] = mopAccountItem;
+                mopAccountItem = createFscAccountDataItem(dataItem.fscAccount);
+                MopDetails.push(mopAccountItem);
+                mopItemIndex[dataItem.fscAccount] = mopAccountItem;
             }
 
             var mopCategoryItem = mopItemIndex[mopAccountItem.CategoryId];
             if (!mopCategoryItem) {
-            mopCategoryItem = createFscAccountCategoryDataItem(mopAccountItem.CategoryId);
-            MopDetails.push(mopCategoryItem);
-            mopItemIndex[mopAccountItem.CategoryId] = mopCategoryItem;
+                mopCategoryItem = createFscAccountCategoryDataItem(mopAccountItem.CategoryId);
+                MopDetails.push(mopCategoryItem);
+                mopItemIndex[mopAccountItem.CategoryId] = mopCategoryItem;
             }
 
-            //var FscPeriod = GetFscPeriod(dataItem.fscPeriod);
-            });*/
+            var FscPeriod = GetFscPeriod(dataItem.fscPeriod);
+            var FscAccount = FscAccountLookup[dataItem.fscAccount];
 
-            $('item', $(data)).each(function (index, item) {
-                var $item = $(item);
+            var periodNumber = FscPeriod.Number;
+            var dailyRunRate = Math.round(dataItem.runrate / FscPeriod.Days * 100) / 100;
 
-                var dataItem = { fscPeriod: parseInt($item.attr('fscPeriod')), fscAccount: parseInt($item.attr('fscAccount')),
-                    mop: parseFloat($item.attr('mop')), budget: parseFloat($item.attr('budget')), runrate: parseFloat($item.attr('runrate')), wor: parseFloat($item.attr('wor')), forecast: parseFloat($item.attr('forecast')),
-                    worModified: $item.attr('wormodified') == '1',
-                    comments: $item.attr('comments')
-                };
-                dataItem.mop2Budget = dataItem.mop - dataItem.budget;
-                dataItem.runrate = Math.round(dataItem.runrate * 100) / 100;
+            mopAccountItem['WorModified' + periodNumber] = dataItem.worModified;
 
-                var mopAccountItem = mopItemIndex[dataItem.fscAccount];
-                if (!mopAccountItem) {
-                    mopAccountItem = createFscAccountDataItem(dataItem.fscAccount);
-                    MopDetails.push(mopAccountItem);
-                    mopItemIndex[dataItem.fscAccount] = mopAccountItem;
-                }
+            mopAccountItem['Budget' + periodNumber] = dataItem.budget;
+            mopCategoryItem['Budget' + periodNumber] += dataItem.budget;
+            totalItem['Budget' + periodNumber] += FscAccount.IsNegative ? dataItem.budget : -dataItem.budget;
 
-                var mopCategoryItem = mopItemIndex[mopAccountItem.CategoryId];
-                if (!mopCategoryItem) {
-                    mopCategoryItem = createFscAccountCategoryDataItem(mopAccountItem.CategoryId);
-                    MopDetails.push(mopCategoryItem);
-                    mopItemIndex[mopAccountItem.CategoryId] = mopCategoryItem;
-                }
+            mopAccountItem['Projection' + periodNumber] = dataItem.mop;
+            mopCategoryItem['Projection' + periodNumber] += dataItem.mop;
+            totalItem['Projection' + periodNumber] += FscAccount.IsNegative ? dataItem.mop : -dataItem.mop;
 
-                var FscPeriod = GetFscPeriod(dataItem.fscPeriod);
-                var FscAccount = FscAccountLookup[dataItem.fscAccount];
+            mopAccountItem['BudgetTotal'] += dataItem.budget;
+            mopCategoryItem['BudgetTotal'] += dataItem.budget;
+            totalItem['BudgetTotal'] += FscAccount.IsNegative ? dataItem.budget : -dataItem.budget;
 
-                var periodNumber = FscPeriod.Number;
-                var dailyRunRate = Math.round(dataItem.runrate / FscPeriod.Days * 100) / 100;
+            /* 2013/04/19
+            Use actual values for periods before current period, and projection value for periods after current period.  As for perious period, a new value called FiscalPeriodCloseDays created in AppSystemVariables table. for example, right now the value in findev db is 7. So when current date is after 7 (include 7), then use actual for perious period, if current date is before  7, then use projection for previous period. An example is:
 
-                mopAccountItem['WorModified' + periodNumber] = dataItem.worModified;
+            If FiscalPeriodCloseDays = 7 Current Period = 7 if current Date before or =  04/06/2013 then period 1-5 are actual and period 6-12 are forecast. Since 6 is before 7 
+            If FiscalPeriodCloseDays = 7 Current Period = 7 if current Date is after 04/07/2013 Then period 1-6 are actual and period 7-12 are forecast. 
+            */
 
-                mopAccountItem['Budget' + periodNumber] = dataItem.budget;
-                mopCategoryItem['Budget' + periodNumber] += dataItem.budget;
-                totalItem['Budget' + periodNumber] += FscAccount.IsNegative ? dataItem.budget : -dataItem.budget;
-
-                mopAccountItem['Projection' + periodNumber] = dataItem.mop;
-                mopCategoryItem['Projection' + periodNumber] += dataItem.mop;
-                totalItem['Projection' + periodNumber] += FscAccount.IsNegative ? dataItem.mop : -dataItem.mop;
-
-                mopAccountItem['BudgetTotal'] += dataItem.budget;
-                mopCategoryItem['BudgetTotal'] += dataItem.budget;
-                totalItem['BudgetTotal'] += FscAccount.IsNegative ? dataItem.budget : -dataItem.budget;
-
-                /* 2013/04/19
-                Use actual values for periods before current period, and projection value for periods after current period.  As for perious period, a new value called FiscalPeriodCloseDays created in AppSystemVariables table. for example, right now the value in findev db is 7. So when current date is after 7 (include 7), then use actual for perious period, if current date is before  7, then use projection for previous period. An example is:
-
-                If FiscalPeriodCloseDays = 7 Current Period = 7 if current Date before or =  04/06/2013 then period 1-5 are actual and period 6-12 are forecast. Since 6 is before 7 
-                If FiscalPeriodCloseDays = 7 Current Period = 7 if current Date is after 04/07/2013 Then period 1-6 are actual and period 7-12 are forecast. 
-                */
-
-                if (currentPeriod.FscYear >= fscYear && (currentPeriodIndex <= periodNumber || currentPeriodIndex - 1 == periodNumber && currentDay < FiscalPeriodCloseDays)) {
-                    mopAccountItem['ProjectionTotal'] += dataItem.forecast;
-                    mopCategoryItem['ProjectionTotal'] += dataItem.forecast;
-                    totalItem['ProjectionTotal'] += FscAccount.IsNegative ? dataItem.forecast : -dataItem.forecast;
-                }
-                else {
-                    mopAccountItem['ProjectionTotal'] += dataItem.wor;
-                    mopCategoryItem['ProjectionTotal'] += dataItem.wor;
-                    totalItem['ProjectionTotal'] += FscAccount.IsNegative ? dataItem.wor : -dataItem.wor;
-                }
-
-                mopAccountItem['RunRate' + periodNumber] = dataItem.runrate;
-                mopCategoryItem['RunRate' + periodNumber] += dataItem.runrate;
-                totalItem['RunRate' + periodNumber] += FscAccount.IsNegative ? dataItem.runrate : -dataItem.runrate;
-
-                mopAccountItem['DailyRunRate' + periodNumber] = dailyRunRate;
-                mopCategoryItem['DailyRunRate' + periodNumber] += dailyRunRate;
-                totalItem['DailyRunRate' + periodNumber] += FscAccount.IsNegative ? dailyRunRate : -dailyRunRate;
-
-                mopAccountItem['Forecast' + periodNumber] = dataItem.wor;
-                mopCategoryItem['Forecast' + periodNumber] += dataItem.wor;
-                totalItem['Forecast' + periodNumber] += FscAccount.IsNegative ? dataItem.wor : -dataItem.wor;
-
-
-
-                mopAccountItem['Comment' + periodNumber] += dataItem.comments;
-
-                mopAccountItem['WorModified' + periodNumber] = dataItem.worModified;
-                if (currentPeriodIndex == periodNumber) {
-                    mopAccountItem['WorModified'] = dataItem.worModified;
-                }
-
-                mopAccountItem['Variance' + periodNumber] = dataItem.mop2Budget;
-                mopCategoryItem['Variance' + periodNumber] += dataItem.mop2Budget;
-                //totalItem['Variance' + periodNumber] += dataItem.mop2Budget;
-            });
-
-            for (var i = 1; i <= 14; i++) {
-                totalItem['Variance' + i] = (totalItem['Projection' + i] || 0) - (totalItem['Budget' + i] || 0);
+            if (currentPeriod.FscYear >= fscYear && (currentPeriodIndex <= periodNumber || currentPeriodIndex - 1 == periodNumber && currentDay < FiscalPeriodCloseDays)) {
+                mopAccountItem['ProjectionTotal'] += dataItem.forecast;
+                mopCategoryItem['ProjectionTotal'] += dataItem.forecast;
+                totalItem['ProjectionTotal'] += FscAccount.IsNegative ? dataItem.forecast : -dataItem.forecast;
+            }
+            else {
+                mopAccountItem['ProjectionTotal'] += dataItem.wor;
+                mopCategoryItem['ProjectionTotal'] += dataItem.wor;
+                totalItem['ProjectionTotal'] += FscAccount.IsNegative ? dataItem.wor : -dataItem.wor;
             }
 
-            MopDetails = bine.query(MopDetails).orderBy('SortIndex').toArray();
+            mopAccountItem['RunRate' + periodNumber] = dataItem.runrate;
+            mopCategoryItem['RunRate' + periodNumber] += dataItem.runrate;
+            totalItem['RunRate' + periodNumber] += FscAccount.IsNegative ? dataItem.runrate : -dataItem.runrate;
 
-            callback(MopDetails);
+            mopAccountItem['DailyRunRate' + periodNumber] = dailyRunRate;
+            mopCategoryItem['DailyRunRate' + periodNumber] += dailyRunRate;
+            totalItem['DailyRunRate' + periodNumber] += FscAccount.IsNegative ? dailyRunRate : -dailyRunRate;
 
-        };
-
-        // innerCallback(test_data);
-        fin.bud.budRequest(criteriaXml, innerCallback); ;
-
-    }
-
+            mopAccountItem['Forecast' + periodNumber] = dataItem.wor;
+            mopCategoryItem['Forecast' + periodNumber] += dataItem.wor;
+            totalItem['Forecast' + periodNumber] += FscAccount.IsNegative ? dataItem.wor : -dataItem.wor;
 
 
 
-    var submitMopItems = function (changes, callback) {
-        var xml = ['<transaction id="1">\r\n'];
+            mopAccountItem['Comment' + periodNumber] += dataItem.comments;
 
-        $.each(changes, function (index, item) {
-
-            xml.push('<budProjectedDetail ');
-            xml.push(String.format(' hcmHouseCode="{0}"', item.HcmHouseCode));
-            xml.push(String.format(' hcmJob="{0}"', item.HcmJob));
-            xml.push(String.format(' fscYear="{0}"', item.FscYear));
-            xml.push(String.format(' fscAccount="{0}"', item.FscAccount));
-
-            for (var i = 1; i <= 14; i++) {
-                xml.push(String.format(' period{1}="{0}"', item['Projection' + i] || 0, i));
+            mopAccountItem['WorModified' + periodNumber] = dataItem.worModified;
+            if (currentPeriodIndex == periodNumber) {
+                mopAccountItem['WorModified'] = dataItem.worModified;
             }
-            xml.push(' />\r\n');
 
-            xml.push('<budProjectedComment ');
-            xml.push(String.format(' hcmHouseCode="{0}"', item.HcmHouseCode));
-            xml.push(String.format(' hcmJob="{0}"', item.HcmJob));
-            xml.push(String.format(' fscYear="{0}"', item.FscYear));
-            xml.push(String.format(' fscAccount="{0}"', item.FscAccount));
-
-            for (var i = 1; i <= 14; i++) {
-                xml.push(String.format(' period{1}="{0}"', htmlEncode(item['Comment' + i] || ''), i));
-            }
-            xml.push(' />\r\n');
-
-
+            mopAccountItem['Variance' + periodNumber] = dataItem.mop2Budget;
+            mopCategoryItem['Variance' + periodNumber] += dataItem.mop2Budget;
+            //totalItem['Variance' + periodNumber] += dataItem.mop2Budget;
         });
 
-        xml.push('</transaction>');
+        for (var i = 1; i <= 14; i++) {
+            totalItem['Variance' + i] = (totalItem['Projection' + i] || 0) - (totalItem['Budget' + i] || 0);
+        }
 
-        fin.bud.budSubmit(xml.join(''), callback);
-    };
+        MopDetails = bine.query(MopDetails).orderBy('SortIndex').toArray();
 
-
-    var loadWorSummaryComment = function (hcmHouseCode, hcmJob, fscYear, fscPeriod, callback) {
-        var criteriaXml = String.format('<criteria>hcmHouseCode:{0},fscYear:{2},hcmJob:{1},storeId:budBudgetWORForecastComments, fscPeriod: {3},userId:[user],</criteria>',
-             hcmHouseCode, hcmJob, fscYear, fscPeriod);
-
-        fin.bud.budRequest(criteriaXml, function (data) {
-
-            var first = $('item:first', $(data));
-            if (first.length == 0)
-                callback('');
-            else
-                callback(first.attr('comment'));
-        });
+        callback(MopDetails);
 
     };
 
-    var saveWorSummaryComment = function (hcmHouseCode, hcmJob, fscYear, fscPeriod, comment, callback) {
-        var xml = ['<transaction id="1">\r\n'];
+    // innerCallback(test_data);
+    fin.bud.budRequest(criteriaXml, innerCallback); ;
 
-        xml.push('<budBudgetWORForecastComment ');
-        xml.push(String.format(' hcmHouseCode="{0}"', hcmHouseCode));
-        xml.push(String.format(' hcmJob="{0}"', hcmJob));
-        xml.push(String.format(' fscYear="{0}"', fscYear));
-        xml.push(String.format(' fscPeriod="{0}"', fscPeriod));
-        xml.push(String.format(' comment="{0}"', comment.replace(/&/gi, '&amp;').replace(/"/gi, '&quot;').replace(/</gi, '&lt;').replace(/>/gi, '&gt;')));
+}
+
+
+
+
+var submitMopItems = function (changes, callback) {
+    var xml = ['<transaction id="1">\r\n'];
+
+    $.each(changes, function (index, item) {
+
+        xml.push('<budProjectedDetail ');
+        xml.push(String.format(' hcmHouseCode="{0}"', item.HcmHouseCode));
+        xml.push(String.format(' hcmJob="{0}"', item.HcmJob));
+        xml.push(String.format(' fscYear="{0}"', item.FscYear));
+        xml.push(String.format(' fscAccount="{0}"', item.FscAccount));
+
+        for (var i = 1; i <= 14; i++) {
+            xml.push(String.format(' period{1}="{0}"', item['Projection' + i] || 0, i));
+        }
         xml.push(' />\r\n');
 
-        xml.push('</transaction>');
+        xml.push('<budProjectedComment ');
+        xml.push(String.format(' hcmHouseCode="{0}"', item.HcmHouseCode));
+        xml.push(String.format(' hcmJob="{0}"', item.HcmJob));
+        xml.push(String.format(' fscYear="{0}"', item.FscYear));
+        xml.push(String.format(' fscAccount="{0}"', item.FscAccount));
 
-        fin.bud.budSubmit(xml.join(''), callback);
+        for (var i = 1; i <= 14; i++) {
+            xml.push(String.format(' period{1}="{0}"', htmlEncode(item['Comment' + i] || ''), i));
+        }
+        xml.push(' />\r\n');
+
+
+    });
+
+    xml.push('</transaction>');
+
+    fin.bud.budSubmit(xml.join(''), callback);
+};
+
+
+var loadWorSummaryComment = function (hcmHouseCode, hcmJob, fscYear, fscPeriod, callback) {
+    var criteriaXml = String.format('<criteria>hcmHouseCode:{0},fscYear:{2},hcmJob:{1},storeId:budBudgetWORForecastComments, fscPeriod: {3},userId:[user],</criteria>',
+             hcmHouseCode, hcmJob, fscYear, fscPeriod);
+
+    fin.bud.budRequest(criteriaXml, function (data) {
+
+        var first = $('item:first', $(data));
+        if (first.length == 0)
+            callback('');
+        else
+            callback(first.attr('comment'));
+    });
+
+};
+
+var saveWorSummaryComment = function (hcmHouseCode, hcmJob, fscYear, fscPeriod, comment, callback) {
+    var xml = ['<transaction id="1">\r\n'];
+
+    xml.push('<budBudgetWORForecastComment ');
+    xml.push(String.format(' hcmHouseCode="{0}"', hcmHouseCode));
+    xml.push(String.format(' hcmJob="{0}"', hcmJob));
+    xml.push(String.format(' fscYear="{0}"', fscYear));
+    xml.push(String.format(' fscPeriod="{0}"', fscPeriod));
+    xml.push(String.format(' comment="{0}"', comment.replace(/&/gi, '&amp;').replace(/"/gi, '&quot;').replace(/</gi,'&lt;').replace(/>/gi,'&gt;')));
+    xml.push(' />\r\n');
+
+    xml.push('</transaction>');
+
+    fin.bud.budSubmit(xml.join(''), callback);
+}
+    //
+
+ var $mop_templates = $(window.__bt__eb50bd57[2]);
+
+
+ var MopDataControllerHeader = function () {
+
+     var Header = bine.extend(bine.Control, {
+         tpl: $('#controller-header', $mop_templates).html(),
+
+         onDomReady: function () {
+             var me = this;
+
+             me.$("#SelectAllRunRate").change(function (e) {
+                 me.fireEvent('checkrunrate', $(this).attr("checked") == "checked");
+             });
+
+             me.$("#SelectAllPeriods").change(function () {
+                 me.fireEvent('checkfuture', $(this).attr("checked") == "checked");
+             });
+
+             me.$('#updaterunrate-button').click(function (e) {
+                 if (e)
+                     e.preventDefault();
+                 me.fireEvent('updaterunrate');
+             });
+
+             me.$('#updatefuture-button').click(function (e) {
+                 if (e)
+                     e.preventDefault();
+
+                 me.fireEvent('updatefuture');
+             });
+
+         }
+     });
+
+     return Header;
+ } ();
+
+
+var MopGridHeader = function () {
+
+    var htmlBuilder = [];
+    htmlBuilder.push('<table class="bud-table-2"><thead class="table-head">');
+
+    htmlBuilder.push('<tr>');
+    for (var i = 1; i <= 13; i++) {
+        htmlBuilder.push(String.format('<th colspan="7" class="boundary mop-period-title mop-period-{0}" style="text-align:center; height:30px;">Period {0}</th>', i));
     }
-    //
+    htmlBuilder.push('<th rowspan="2" class="boundary"  style="text-align:center; width:100px; height:73px;"><br/>Full Year<br/>Projections</th>');
+    htmlBuilder.push('<th rowspan="2" class=""  style="text-align:center; width:100px;"><br/>Full Year<br/>Budget</th>');
 
-    var $mop_templates = $(window.__bt__063f49d7[2]);
+    htmlBuilder.push('</tr>');
+
+    htmlBuilder.push('<tr style="height:55px;">');
+    for (var i = 1; i <= 13; i++) {
+        htmlBuilder.push(String.format('<th class="mop-projection amount-col mop-period-{0}" style="width:100px; display:none;">MOP</th>', i));
+        htmlBuilder.push(String.format('<th class="mop-budget amount-col  mop-period-{0}" style="width:100px; display:none;">Budget</th>', i));
+        htmlBuilder.push(String.format('<th style="text-align:center;width:100px; display:none;"  class="mop-variance mop-period-{0}" >MOP to <br/>Budget Var</th>', i));
+        htmlBuilder.push(String.format('<th class="mop-drunrate amount-col mop-period-{0}" style="width:100px; display:none;">Daily Run Rate</th>', i));
+        htmlBuilder.push(String.format('<th style="width:100px; display:none;" class="mop-runrate amount-col mop-period-{0}" >Run Rate</th>', i));
+        htmlBuilder.push(String.format('<th style="text-align:center;width:100px; display:none;" class="mop-actual mop-period-{0}">Current Month<br/>Actual</th>', i));
+        htmlBuilder.push(String.format('<th style="width:150px;; display:none;" class="boundary mop-comment mop-period-{0}" >Comments</th>', i));
+    }
+
+    htmlBuilder.push('</tr>');
+    htmlBuilder.push('</thead></table>');
+
+    var Header = bine.extend(bine.Control, {
+        tpl: htmlBuilder.join('')
+    });
+
+    return Header;
+} ();
 
 
-    var MopDataControllerHeader = function () {
+var MopController = function () {
 
-        var Header = bine.extend(bine.Control, {
-            tpl: $('#controller-header', $mop_templates).html(),
+    var fieldConfig = { UpdateRunRate: { type: 'bool' }, UpdateFuture: { type: 'bool'} };
 
-            onDomReady: function () {
-                var me = this;
+    var DataViewList = bine.extend(bine.DataViewList, {
+        tpl: $('#controller-list', $mop_templates).html(), itemContainerId: 'item-wrapper',
+        fscYear: 0, 
+        createDataView: function () {
+            var me = this;
 
-                me.$("#SelectAllRunRate").change(function (e) {
-                    me.fireEvent('checkrunrate', $(this).attr("checked") == "checked");
-                });
+            var dv = new bine.DataView({ tpl: $('#controller-view', $mop_templates).html(),
+                onDomReady: function () {
+                    var dv = this;
 
-                me.$("#SelectAllPeriods").change(function () {
-                    me.fireEvent('checkfuture', $(this).attr("checked") == "checked");
-                });
-
-                me.$('#updaterunrate-button').click(function (e) {
-                    if (e)
+                    dv.$('.account-link').click(function (e) {
                         e.preventDefault();
-                    me.fireEvent('updaterunrate');
-                });
+                        if (dv.val('IsAccount'))
+                            me.fireEvent('showaccountwor', dv.val('FscAccount'));
+                    });
 
-                me.$('#updatefuture-button').click(function (e) {
-                    if (e)
+
+                    dv.on('change', function (name, value) {
+                        if (name == dv.name) {
+                            if (dv.val('IsCategory') || dv.val('IsTotal')) {
+                                dv.$this.addClass('account-category-data-view');
+                                dv.$this.addClass('summary');
+                                // dv.disable();
+                                if (dv.getField('UpdateFuture'))
+                                    dv.getField('UpdateFuture').css('display', 'none');
+                                if (dv.getField('UpdateRunRate'))
+                                    dv.getField('UpdateRunRate').css('display', 'none');
+                                dv.$('.account-link').addClass('display-as-text');
+                            }
+                            else
+                                dv.$('.account-link').addClass('account-item-link');
+
+                            if (dv.getField('UpdateRunRate')) {
+                                if (dv.val('WorModified'))
+                                    dv.getField('UpdateRunRate').prop('disabled', true);
+                                else
+                                    dv.getField('UpdateRunRate').prop('disabled', false);
+                            }
+                        }
+
+                    });
+                }
+            }, fieldConfig);
+            return dv;
+        }
+    });
+
+    return DataViewList;
+} ();
+
+
+var MopGrid = function () {
+
+
+    var htmlBuilder = [];
+    htmlBuilder.push('<tr>');
+
+    for (var i = 1; i <= 13; i++) {
+        htmlBuilder.push(String.format('<td class="mop-projection amount-col mop-period-{0}" style="width:100px; display:none;"><input type="text"  style="width:100%;" name="Projection{0}" /></td>', i));
+        htmlBuilder.push(String.format('<td class="mop-budget amount-col mop-period-{0}" style="width:100px; display:none;" name="Budget{0}"></td>', i));
+        htmlBuilder.push(String.format('<td class="mop-variance amount-col mop-period-{0}" style="width:100px; display:none;" name="Variance{0}"></td>', i));
+        htmlBuilder.push(String.format('<td class="mop-drunrate amount-col mop-period-{0}" style="width:100px; display:none;" name="DailyRunRate{0}"></td>', i));
+        htmlBuilder.push(String.format('<td class="mop-runrate amount-col mop-period-{0}" style="width:100px; display:none;" name="RunRate{0}"></td>', i));
+        htmlBuilder.push(String.format('<td class="mop-actual amount-col mop-period-{0}" style="width:100px; display:none;" name="Forecast{0}"></td>', i));
+        htmlBuilder.push(String.format('<td class="mop-comment mop-period-{0} boundary" style="width:150px; display:none;"><input type="text" name="Comment{0}" style="width:100%;" /></td>', i));
+    }
+
+    htmlBuilder.push('<td  class="boundary amount-col" style="width:100px;height:20px; padding-top:0; padding-bottom:0; vertical-align:baseline;"  name="ProjectionTotal"></td>');
+    htmlBuilder.push('<td  class=" amount-col" style="width:100px;" name="BudgetTotal"></td>');
+
+    htmlBuilder.push('</tr>');
+
+    var TPL_VIEW = htmlBuilder.join('\r\n');
+
+    var amountDisplay = function (value) {
+        if (!value)
+            return '0.00';
+        return bine.format(value, '0,000.00');
+    };
+
+    var amountEdit = function (value) {
+        if (!value)
+            return 0;
+        return value;
+    };
+
+    var amountConfig = {
+        convertDisplay: amountDisplay,
+        convertBack: amountEdit,
+        convert: function (value) {
+            return parseFloat(value);
+        }
+    }
+
+    var fieldConfig = { UpdateRunRate: { type: 'bool' }, UpdateFuture: { type: 'bool'} };
+
+    for (var i = 1; i <= 13; i++) {
+        fieldConfig['Budget' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
+        fieldConfig['Projection' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
+        fieldConfig['Forecast' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
+        fieldConfig['Variance' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
+        fieldConfig['RunRate' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
+        fieldConfig['DailyRunRate' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
+    }
+
+    fieldConfig['BudgetTotal'] = { type: 'number', format: '0,000.00', convertDisplay: function (value) {
+        var total = 0;
+        for (var i = 1; i <= 13; i++) {
+            total += this.val('Budget' + i) || 0;
+        }
+        this.val()['BudgetTotal'] = total;
+        return bine.format(total, '0,000.00');
+    }
+    };
+
+    fieldConfig['ProjectionTotal'] = { type: 'number', format: '0,000.00', convertDisplay: function (value) {
+        var total = 0;
+        for (var i = 1; i <= 13; i++) {
+            total += this.val('Projection' + i) || 0;
+        }
+        this.val()['ProjectionTotal'] = total;
+        return bine.format(total, '0,000.00');
+    }
+    };
+
+    var DataViewList = bine.extend(bine.DataViewList, {
+        tpl: $('#controller-list', $mop_templates).html(), itemContainerId: 'item-wrapper',
+        fscYear: 0,
+        createDataView: function () {
+            var me = this;
+
+            var dv = new bine.DataView({ tpl: TPL_VIEW,
+                onDomReady: function () {
+                    var dv = this;
+
+
+                    me.$("#SelectAllRunRate").change(function (e) {
+                        if ($(this).attr("checked") == "checked" && !dv.val('WorModified')) {
+                            dv.val('UpdateRunRate', true);
+                        }
+                        else {
+                            dv.val('UpdateRunRate', false);
+                        }
+                    });
+
+                    me.$("#SelectAllPeriods").change(function () {
+                        if ($(this).attr("checked") == "checked") {
+                            dv.val('UpdateFuture', true);
+                        }
+                        else {
+                            dv.val('UpdateFuture', false);
+                        }
+                    });
+
+                    dv.$('.account-link').click(function (e) {
                         e.preventDefault();
-
-                    me.fireEvent('updatefuture');
-                });
-
-            }
-        });
-
-        return Header;
-    } ();
+                        if (dv.val('IsAccount'))
+                            me.fireEvent('showaccountwor', dv.val('FscAccount'));
+                    });
 
 
-    var MopGridHeader = function () {
-
-        var htmlBuilder = [];
-        htmlBuilder.push('<table class="bud-table-2"><thead class="table-head">');
-
-        htmlBuilder.push('<tr>');
-        for (var i = 1; i <= 13; i++) {
-            htmlBuilder.push(String.format('<th colspan="7" class="boundary mop-period-title mop-period-{0}" style="text-align:center; height:30px;">Period {0}</th>', i));
-        }
-        htmlBuilder.push('<th rowspan="2" class="boundary"  style="text-align:center; width:100px; height:73px;"><br/>Full Year<br/>Projections</th>');
-        htmlBuilder.push('<th rowspan="2" class=""  style="text-align:center; width:100px;"><br/>Full Year<br/>Budget</th>');
-
-        htmlBuilder.push('</tr>');
-
-        htmlBuilder.push('<tr style="height:55px;">');
-        for (var i = 1; i <= 13; i++) {
-            htmlBuilder.push(String.format('<th class="mop-projection amount-col mop-period-{0}" style="width:100px; display:none;">MOP</th>', i));
-            htmlBuilder.push(String.format('<th class="mop-budget amount-col  mop-period-{0}" style="width:100px; display:none;">Budget</th>', i));
-            htmlBuilder.push(String.format('<th style="text-align:center;width:100px; display:none;"  class="mop-variance mop-period-{0}" >MOP to <br/>Budget Var</th>', i));
-            htmlBuilder.push(String.format('<th class="mop-drunrate amount-col mop-period-{0}" style="width:100px; display:none;">Daily Run Rate</th>', i));
-            htmlBuilder.push(String.format('<th style="width:100px; display:none;" class="mop-runrate amount-col mop-period-{0}" >Run Rate</th>', i));
-            htmlBuilder.push(String.format('<th style="text-align:center;width:100px; display:none;" class="mop-actual mop-period-{0}">Current Month<br/>Actual</th>', i));
-            htmlBuilder.push(String.format('<th style="width:150px;; display:none;" class="boundary mop-comment mop-period-{0}" >Comments</th>', i));
-        }
-
-        htmlBuilder.push('</tr>');
-        htmlBuilder.push('</thead></table>');
-
-        var Header = bine.extend(bine.Control, {
-            tpl: htmlBuilder.join('')
-        });
-
-        return Header;
-    } ();
+                    var today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    dv.on('change', function (name, value) {
 
 
-    var MopController = function () {
+                        if (name == dv.name) {
+                            if (dv.val('IsCategory') || dv.val('IsTotal')) {
+                                dv.$this.addClass('account-category-data-view');
+                                dv.$this.addClass('summary');
+                                // dv.disable();
+                                if (dv.getField('UpdateFuture'))
+                                    dv.getField('UpdateFuture').css('display', 'none');
+                                if (dv.getField('UpdateRunRate'))
+                                    dv.getField('UpdateRunRate').css('display', 'none');
+                                dv.$('.account-link').addClass('display-as-text');
+                            }
+                            else
+                                dv.$('.account-link').addClass('account-item-link');
 
-        var fieldConfig = { UpdateRunRate: { type: 'bool' }, UpdateFuture: { type: 'bool'} };
-
-        var DataViewList = bine.extend(bine.DataViewList, {
-            tpl: $('#controller-list', $mop_templates).html(), itemContainerId: 'item-wrapper',
-            fscYear: 0,
-            createDataView: function () {
-                var me = this;
-
-                var dv = new bine.DataView({ tpl: $('#controller-view', $mop_templates).html(),
-                    onDomReady: function () {
-                        var dv = this;
-
-                        dv.$('.account-link').click(function (e) {
-                            e.preventDefault();
-                            if (dv.val('IsAccount'))
-                                me.fireEvent('showaccountwor', dv.val('FscAccount'));
-                        });
-
-
-                        dv.on('change', function (name, value) {
-                            if (name == dv.name) {
-                                if (dv.val('IsCategory') || dv.val('IsTotal')) {
-                                    dv.$this.addClass('account-category-data-view');
-                                    dv.$this.addClass('summary');
-                                    // dv.disable();
-                                    if (dv.getField('UpdateFuture'))
-                                        dv.getField('UpdateFuture').css('display', 'none');
-                                    if (dv.getField('UpdateRunRate'))
-                                        dv.getField('UpdateRunRate').css('display', 'none');
-                                    dv.$('.account-link').addClass('display-as-text');
-                                }
+                            if (dv.getField('UpdateRunRate')) {
+                                if (dv.val('WorModified'))
+                                    dv.getField('UpdateRunRate').prop('disabled', true);
                                 else
-                                    dv.$('.account-link').addClass('account-item-link');
-
-                                if (dv.getField('UpdateRunRate')) {
-                                    if (dv.val('WorModified'))
-                                        dv.getField('UpdateRunRate').prop('disabled', true);
-                                    else
-                                        dv.getField('UpdateRunRate').prop('disabled', false);
-                                }
+                                    dv.getField('UpdateRunRate').prop('disabled', false);
                             }
+                        }
 
-                        });
-                    }
-                }, fieldConfig);
-                return dv;
-            }
-        });
-
-        return DataViewList;
-    } ();
-
-
-    var MopGrid = function () {
-
-
-        var htmlBuilder = [];
-        htmlBuilder.push('<tr>');
-
-        for (var i = 1; i <= 13; i++) {
-            htmlBuilder.push(String.format('<td class="mop-projection amount-col mop-period-{0}" style="width:100px; display:none;"><input type="text"  style="width:100%;" name="Projection{0}" /></td>', i));
-            htmlBuilder.push(String.format('<td class="mop-budget amount-col mop-period-{0}" style="width:100px; display:none;" name="Budget{0}"></td>', i));
-            htmlBuilder.push(String.format('<td class="mop-variance amount-col mop-period-{0}" style="width:100px; display:none;" name="Variance{0}"></td>', i));
-            htmlBuilder.push(String.format('<td class="mop-drunrate amount-col mop-period-{0}" style="width:100px; display:none;" name="DailyRunRate{0}"></td>', i));
-            htmlBuilder.push(String.format('<td class="mop-runrate amount-col mop-period-{0}" style="width:100px; display:none;" name="RunRate{0}"></td>', i));
-            htmlBuilder.push(String.format('<td class="mop-actual amount-col mop-period-{0}" style="width:100px; display:none;" name="Forecast{0}"></td>', i));
-            htmlBuilder.push(String.format('<td class="mop-comment mop-period-{0} boundary" style="width:150px; display:none;"><input type="text" name="Comment{0}" style="width:100%;" /></td>', i));
-        }
-
-        htmlBuilder.push('<td  class="boundary amount-col" style="width:100px;height:20px; padding-top:0; padding-bottom:0; vertical-align:baseline;"  name="ProjectionTotal"></td>');
-        htmlBuilder.push('<td  class=" amount-col" style="width:100px;" name="BudgetTotal"></td>');
-
-        htmlBuilder.push('</tr>');
-
-        var TPL_VIEW = htmlBuilder.join('\r\n');
-
-        var amountDisplay = function (value) {
-            if (!value)
-                return '0.00';
-            return bine.format(value, '0,000.00');
-        };
-
-        var amountEdit = function (value) {
-            if (!value)
-                return 0;
-            return value;
-        };
-
-        var amountConfig = {
-            convertDisplay: amountDisplay,
-            convertBack: amountEdit,
-            convert: function (value) {
-                return parseFloat(value);
-            }
-        }
-
-        var fieldConfig = { UpdateRunRate: { type: 'bool' }, UpdateFuture: { type: 'bool'} };
-
-        for (var i = 1; i <= 13; i++) {
-            fieldConfig['Budget' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
-            fieldConfig['Projection' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
-            fieldConfig['Forecast' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
-            fieldConfig['Variance' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
-            fieldConfig['RunRate' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
-            fieldConfig['DailyRunRate' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
-        }
-
-        fieldConfig['BudgetTotal'] = { type: 'number', format: '0,000.00', convertDisplay: function (value) {
-            var total = 0;
-            for (var i = 1; i <= 13; i++) {
-                total += this.val('Budget' + i) || 0;
-            }
-            this.val()['BudgetTotal'] = total;
-            return bine.format(total, '0,000.00');
-        }
-        };
-
-        fieldConfig['ProjectionTotal'] = { type: 'number', format: '0,000.00', convertDisplay: function (value) {
-            var total = 0;
-            for (var i = 1; i <= 13; i++) {
-                total += this.val('Projection' + i) || 0;
-            }
-            this.val()['ProjectionTotal'] = total;
-            return bine.format(total, '0,000.00');
-        }
-        };
-
-        var DataViewList = bine.extend(bine.DataViewList, {
-            tpl: $('#controller-list', $mop_templates).html(), itemContainerId: 'item-wrapper',
-            fscYear: 0,
-            createDataView: function () {
-                var me = this;
-
-                var dv = new bine.DataView({ tpl: TPL_VIEW,
-                    onDomReady: function () {
-                        var dv = this;
-
-
-                        me.$("#SelectAllRunRate").change(function (e) {
-                            if ($(this).attr("checked") == "checked" && !dv.val('WorModified')) {
-                                dv.val('UpdateRunRate', true);
-                            }
-                            else {
-                                dv.val('UpdateRunRate', false);
-                            }
-                        });
-
-                        me.$("#SelectAllPeriods").change(function () {
-                            if ($(this).attr("checked") == "checked") {
-                                dv.val('UpdateFuture', true);
-                            }
-                            else {
-                                dv.val('UpdateFuture', false);
-                            }
-                        });
-
-                        dv.$('.account-link').click(function (e) {
-                            e.preventDefault();
-                            if (dv.val('IsAccount'))
-                                me.fireEvent('showaccountwor', dv.val('FscAccount'));
-                        });
-
-
-                        var today = new Date();
-                        today.setHours(0, 0, 0, 0);
-                        dv.on('change', function (name, value) {
-
-
-                            if (name == dv.name) {
-                                if (dv.val('IsCategory') || dv.val('IsTotal')) {
-                                    dv.$this.addClass('account-category-data-view');
-                                    dv.$this.addClass('summary');
-                                    // dv.disable();
-                                    if (dv.getField('UpdateFuture'))
-                                        dv.getField('UpdateFuture').css('display', 'none');
-                                    if (dv.getField('UpdateRunRate'))
-                                        dv.getField('UpdateRunRate').css('display', 'none');
-                                    dv.$('.account-link').addClass('display-as-text');
-                                }
-                                else
-                                    dv.$('.account-link').addClass('account-item-link');
-
-                                if (dv.getField('UpdateRunRate')) {
-                                    if (dv.val('WorModified'))
-                                        dv.getField('UpdateRunRate').prop('disabled', true);
-                                    else
-                                        dv.getField('UpdateRunRate').prop('disabled', false);
-                                }
-                            }
-
-                            var projectionTotal = 0;
-                            if (!me.isController) {
-                                for (var i = 1; i <= 13; i++) {
-                                    var FscPeriod = GetFscPeriod2(me.fscYear, i);
-                                    if (FscPeriod) {
-                                        if (dv.val('WorModified' + i) || dv.val('IsCategory') || dv.val('IsTotal')
+                        var projectionTotal = 0;
+                        if (!me.isController) {
+                            for (var i = 1; i <= 13; i++) {
+                                var FscPeriod = GetFscPeriod2(me.fscYear, i);
+                                if (FscPeriod) {
+                                    if (dv.val('WorModified' + i) || dv.val('IsCategory') || dv.val('IsTotal')
                               || FscPeriod.EndDt < today) {
-                                            dv.getField('Projection' + i).attr('readonly', 'readonly');
-                                            dv.getField('Comment' + i).attr('readonly', 'readonly');        //.prop('disabled', true);
-                                            dv.getField('Projection' + i).addClass('mop-disabled');
-                                        }
-                                        else {
-                                            dv.getField('Projection' + i).removeAttr('readOnly');               //.prop('disabled', false);
-                                            dv.getField('Projection' + i).removeClass('mop-disabled');
-                                        }
+                                        dv.getField('Projection' + i).attr('readonly', 'readonly');
+                                        dv.getField('Comment' + i).attr('readonly', 'readonly');        //.prop('disabled', true);
+                                        dv.getField('Projection' + i).addClass('mop-disabled');
+                                    }
+                                    else {
+                                        dv.getField('Projection' + i).removeAttr('readOnly');               //.prop('disabled', false);
+                                        dv.getField('Projection' + i).removeClass('mop-disabled');
                                     }
                                 }
                             }
+                        }
 
-                            if (name.startsWith('Projection') && name != 'ProjectionTotal') {
-                                var periodNumber = name.replace('Projection', '');
-                                dv.val('Variance' + periodNumber, value - dv.val('Budget' + periodNumber));
+                        if (name.startsWith('Projection') && name != 'ProjectionTotal') {
+                            var periodNumber = name.replace('Projection', '');
+                            dv.val('Variance' + periodNumber, value - dv.val('Budget' + periodNumber));
 
-                                var projectionTotal = 0;
-                                for (var i = 1; i <= 13; i++) {
-                                    projectionTotal += dv.val('Projection' + i);
-                                }
-                                dv.val('ProjectionTotal', projectionTotal);
-
-                                var mopDetails = me.val();
-
-                                if (dv.val('IsAccount')) {
-                                    var categoryView = me.getDataView(mopDetails.indexOf(bine.query(mopDetails).where(function (f) { return f.FscAccount == dv.val('CategoryId'); }).first()));
-
-                                    categoryView.val(name, bine.query(mopDetails).where(function (i) { return i.CategoryId == categoryView.val('FscAccount'); }).select(name).toArray().sum());
-                                }
-                                else if (dv.val('IsCategory')) {
-                                    var totalView = me.getDataView(me.itemCount() - 1);
-                                    totalView.val(name, bine.query(mopDetails).where(function (i) { return i.IsCategory; }).select(name).toArray().sum());
-                                }
+                            var projectionTotal = 0;
+                            for (var i = 1; i <= 13; i++) {
+                                projectionTotal += dv.val('Projection' + i);
                             }
-                        });
-                    }
-                }, fieldConfig);
-                return dv;
-            },
+                            dv.val('ProjectionTotal', projectionTotal);
 
-            onDomReady: function () {
-                var me = this;
+                            var mopDetails = me.val();
 
-                me.$('#updaterunrate-button').click(function () {
-                    var periodIndex = GetCurrentFscPeriod()['Number'];
-                    me.each(function (index, dv) {
-                        if (dv.val('UpdateRunRate'))
-                            dv.val('Projection' + periodIndex, dv.val('RunRate' + periodIndex));
-                    });
-                });
+                            if (dv.val('IsAccount')) {
+                                var categoryView = me.getDataView(mopDetails.indexOf(bine.query(mopDetails).where(function (f) { return f.FscAccount == dv.val('CategoryId'); }).first()));
 
-                me.$('#updatefuture-button').click(function () {
-                    var periodIndex = me.periodStart;         //GetCurrentFscPeriod()['Number'];
-                    me.each(function (index, dv) {
-                        if (dv.val('UpdateFuture')) {
-                            for (var i = periodIndex + 1; i <= 13; i++) {
-                                dv.val('Projection' + i, dv.val('Projection' + periodIndex));
+                                categoryView.val(name, bine.query(mopDetails).where(function (i) { return i.CategoryId == categoryView.val('FscAccount'); }).select(name).toArray().sum());
+                            }
+                            else if (dv.val('IsCategory')) {
+                                var totalView = me.getDataView(me.itemCount() - 1);
+                                totalView.val(name, bine.query(mopDetails).where(function (i) { return i.IsCategory; }).select(name).toArray().sum());
                             }
                         }
                     });
-                });
-
-            },
-
-            addFscAccount: function (fscAccount) {
-                var me = this;
-
-                var mopDetails = me.val();
-
-                var exists = bine.query(mopDetails).where(function (f) { return f.FscAccount == fscAccount; }).first() != null;
-                if (exists)
-                    return;
-
-                var getPriorIndex = function (sortIndex) {
-                    for (var i = 0; i < mopDetails.length; i++) {
-                        if (mopDetails[i].SortIndex > sortIndex)
-                            return i;
-                    }
-                    return mopDetails.length;
-                };
-
-                var dataItem = createFscAccountDataItem(fscAccount);
-
-                //            var dataItemIndex = mopDetails.indexOf(bine.query(mopDetails).where(function (f) { return f.SortIndex < dataItem.SortIndex; }).orderBy('SortIndex', false).first()) + 1;
-                //            if (dataItemIndex < 0)
-                //                dataItemIndex = 0;
-                var dataItemIndex = getPriorIndex(dataItem.SortIndex);
-
-                var dv = me.insert(dataItemIndex, dataItem);
-
-                mopDetails = me.val();
-                var categoryItem = bine.query(mopDetails).where(function (f) { return f.FscAccount == dataItem.CategoryId; }).first();
-                if (!categoryItem) {
-                    categoryItem = createFscAccountCategoryDataItem(dataItem.CategoryId);
-
-                    //                var categoryItemIndex = mopDetails.indexOf(bine.query(mopDetails).where(function (f) { return f.SortIndex < categoryItem.SortIndex; }).orderBy('SortIndex', false).first()) + 1;
-                    //                if (categoryItemIndex < 0)
-                    //                    categoryItemIndex = 0;
-
-                    var categoryItemIndex = getPriorIndex(categoryItem.SortIndex);
-
-                    me.insert(categoryItemIndex, categoryItem);
                 }
+            }, fieldConfig);
+            return dv;
+        },
 
-                //            mopDetails = bine.query(mopDetails).orderBy('SortIndex').toArray();
-                //            console.log(mopDetails);
-                //            me.val(mopDetails);
+        onDomReady: function () {
+            var me = this;
+
+            me.$('#updaterunrate-button').click(function () {
+                var periodIndex = GetCurrentFscPeriod()['Number'];
+                me.each(function (index, dv) {
+                    if (dv.val('UpdateRunRate'))
+                        dv.val('Projection' + periodIndex, dv.val('RunRate' + periodIndex));
+                });
+            });
+
+            me.$('#updatefuture-button').click(function () {
+                var periodIndex = me.periodStart;         //GetCurrentFscPeriod()['Number'];
+                me.each(function (index, dv) {
+                    if (dv.val('UpdateFuture')) {
+                        for (var i = periodIndex + 1; i <= 13; i++) {
+                            dv.val('Projection' + i, dv.val('Projection' + periodIndex));
+                        }
+                    }
+                });
+            });
+
+        },
+
+        addFscAccount: function (fscAccount) {
+            var me = this;
+
+            var mopDetails = me.val();
+
+            var exists = bine.query(mopDetails).where(function (f) { return f.FscAccount == fscAccount; }).first() != null;
+            if (exists)
+                return;
+
+            var getPriorIndex = function (sortIndex) {
+                for (var i = 0; i < mopDetails.length; i++) {
+                    if (mopDetails[i].SortIndex > sortIndex)
+                        return i;
+                }
+                return mopDetails.length;
+            };
+
+            var dataItem = createFscAccountDataItem(fscAccount);
+
+            //            var dataItemIndex = mopDetails.indexOf(bine.query(mopDetails).where(function (f) { return f.SortIndex < dataItem.SortIndex; }).orderBy('SortIndex', false).first()) + 1;
+            //            if (dataItemIndex < 0)
+            //                dataItemIndex = 0;
+            var dataItemIndex = getPriorIndex(dataItem.SortIndex);
+
+            var dv = me.insert(dataItemIndex, dataItem);
+
+            mopDetails = me.val();
+            var categoryItem = bine.query(mopDetails).where(function (f) { return f.FscAccount == dataItem.CategoryId; }).first();
+            if (!categoryItem) {
+                categoryItem = createFscAccountCategoryDataItem(dataItem.CategoryId);
+
+                //                var categoryItemIndex = mopDetails.indexOf(bine.query(mopDetails).where(function (f) { return f.SortIndex < categoryItem.SortIndex; }).orderBy('SortIndex', false).first()) + 1;
+                //                if (categoryItemIndex < 0)
+                //                    categoryItemIndex = 0;
+
+                var categoryItemIndex = getPriorIndex(categoryItem.SortIndex);
+
+                me.insert(categoryItemIndex, categoryItem);
             }
-        });
 
-        return DataViewList;
-    } ();
+            //            mopDetails = bine.query(mopDetails).orderBy('SortIndex').toArray();
+            //            console.log(mopDetails);
+            //            me.val(mopDetails);
+        }
+    });
+
+    return DataViewList;
+} ();
 
 
-    var MopDataViewList = function () {
+var MopDataViewList = function () {
 
 
-        var htmlBuilder = [];
-        htmlBuilder.push('<div id="mop-list-header" class="list-header" style="width: 100%; margin: 0 auto; overflow: hidden; border: 1px solid #c6c6c6;"><div style="width:10000px" class="mop-table-container"><table class="bud-table-2"><thead class="table-head">');
+    var htmlBuilder = [];
+    htmlBuilder.push('<div id="mop-list-header" class="list-header" style="width: 100%; margin: 0 auto; overflow: hidden; border: 1px solid #c6c6c6;"><div style="width:10000px" class="mop-table-container"><table class="bud-table-2"><thead class="table-head">');
 
-        htmlBuilder.push('<tr>');
+    htmlBuilder.push('<tr>');
+    for (var i = 1; i <= 13; i++) {
+        htmlBuilder.push(String.format('<th colspan="7" class="boundary mop-period-title mop-period-{0}" style="text-align:center">Period {0}</th>', i));
+    }
+    htmlBuilder.push('<th rowspan="2" class="boundary"  style="text-align:center; width:100px; height:73px;"><br/>Full Year<br/>Projections</th>');
+    htmlBuilder.push('<th rowspan="2" class=""  style="text-align:center; width:100px;"><br/>Full Year<br/>Budget</th>');
+
+    htmlBuilder.push('</tr>');
+
+    htmlBuilder.push('<tr style="height:55px;">');
+    for (var i = 1; i <= 13; i++) {
+        htmlBuilder.push(String.format('<th class="mop-projection amount-col mop-period-{0}" style="width:100px; display:none;">MOP</th>', i));
+        htmlBuilder.push(String.format('<th class="mop-budget amount-col  mop-period-{0}" style="width:100px; display:none;">Budget</th>', i));
+        htmlBuilder.push(String.format('<th style="text-align:center;width:100px; display:none;"  class="mop-variance mop-period-{0}" >MOP to <br/>Budget Var</th>', i));
+        htmlBuilder.push(String.format('<th class="mop-drunrate amount-col mop-period-{0}" style="width:100px; display:none;">Daily Run Rate</th>', i));
+        htmlBuilder.push(String.format('<th style="width:100px; display:none;" class="mop-runrate amount-col mop-period-{0}" >Run Rate</th>', i));
+        htmlBuilder.push(String.format('<th style="text-align:center;width:100px; display:none;" class="mop-actual mop-period-{0}">Current Month<br/>Actual</th>', i));
+        htmlBuilder.push(String.format('<th style="width:150px;; display:none;" class="boundary mop-comment mop-period-{0}" >Comments</th>', i));
+    }
+
+    htmlBuilder.push('</tr>');
+    htmlBuilder.push('</thead></table></div></div>');
+    htmlBuilder.push('<div id="mop-list-wrapper" class="list-body" style="width: 100%; min-height: 300px;margin: 0 auto; overflow: auto; overflow-x: visible;"><div class="mop-table-container" style="width:10000px"><table id="mop-item-table" class="bud-table-2">');
+
+    htmlBuilder.push('<tbody id="item-wrapper"></tbody></table></div></div>');
+
+    var TPL_LIST = htmlBuilder.join('\r\n');
+
+    htmlBuilder = [];
+    htmlBuilder.push('<tr>');
+
+    for (var i = 1; i <= 13; i++) {
+        htmlBuilder.push(String.format('<td class="mop-projection amount-col mop-period-{0}" style="width:100px; display:none;"><input type="text"  style="width:100%;" name="Projection{0}" /></td>', i));
+        htmlBuilder.push(String.format('<td class="mop-budget amount-col mop-period-{0}" style="width:100px; display:none;" name="Budget{0}"></td>', i));
+        htmlBuilder.push(String.format('<td class="mop-variance amount-col mop-period-{0}" style="width:100px; display:none;" name="Variance{0}"></td>', i));
+        htmlBuilder.push(String.format('<td class="mop-drunrate amount-col mop-period-{0}" style="width:100px; display:none;" name="DailyRunRate{0}"></td>', i));
+        htmlBuilder.push(String.format('<td class="mop-runrate amount-col mop-period-{0}" style="width:100px; display:none;" name="RunRate{0}"></td>', i));
+        htmlBuilder.push(String.format('<td class="mop-actual amount-col mop-period-{0}" style="width:100px; display:none;" name="Forecast{0}"></td>', i));
+        htmlBuilder.push(String.format('<td class="mop-comment mop-period-{0} boundary" style="width:150px; display:none;"><input type="text" name="Comment{0}" style="width:100%;" /></td>', i));
+    }
+
+    htmlBuilder.push('<td  class="boundary amount-col" style="width:100px"  name="ProjectionTotal"></td>');
+    htmlBuilder.push('<td  class=" amount-col" style="width:100px" name="BudgetTotal"></td>');
+
+    htmlBuilder.push('</tr>');
+
+    var TPL_VIEW = htmlBuilder.join('\r\n');
+
+    htmlBuilder = [];
+    htmlBuilder.push('<div class="list-header" style="width: 100%; margin: 0 auto; overflow: hidden; border: 1px solid #c6c6c6;"><div class="mop-table-container"><table class="bud-table-2"><thead class="table-head">');
+
+    htmlBuilder.push('<tr>');
+    htmlBuilder.push('<th class="boundary mop-updatefuture" style="width:100px"><br/><div class="row1-btn"><button class="bine-btn bine-btn-txt bine-ctrl" id="updatefuture-button"  style="height:50px;">Update Future<br/>Periods w/MOP</button></div><div style="padding:5px;"><div style="width:13px; height:20px;padding-top:3px;float:left;"><input type="checkbox" name="selectAllPeriods" id="SelectAllPeriods"/></div><span style="line-height:18px; height:20px;padding-left:5px;">Select All</span><div style="clear:both;"></div></div></th>');
+    htmlBuilder.push('<th class="boundary mop-updaterunrate"   style="width:90px"><br/><div class="row1-btn"><button class="bine-btn bine-btn-txt bine-ctrl " id="updaterunrate-button" style="height:50px;">Update With<br/>Run Rate</button></div><div style="padding:5px;"><div style="width:13px; height:20px;padding-top:3px;float:left;"><input type="checkbox" name="selectAll" id="SelectAllRunRate"/></div><span style="float:left;line-height:18px; height:20px;padding-left:5px;">Select All</span><div style="clear:both;"></div></div></th>');
+    htmlBuilder.push('<th class="boundary mop-accountcode-title" style="width:245px">Account Code</th>');
+    htmlBuilder.push('</tr>');
+    htmlBuilder.push('</thead></table></div></div>');
+    htmlBuilder.push('<div  class="list-body" style="width: 100%; min-height: 300px;margin: 0 auto; overflow: auto; overflow-x: visible;"><div class="mop-table-container" ><table id="mop-item-table" class="bud-table-2">');
+
+    htmlBuilder.push('<tbody id="item-wrapper"></tbody></table></div></div>');
+
+    var LEFT_TPL_LIST = htmlBuilder.join('\r\n');
+
+    htmlBuilder = [];
+    htmlBuilder.push('<tr>');
+    htmlBuilder.push('<td class="boundary mop-updatefuture" style="width:100px"><div style="padding:3px 7px;"><input type="checkbox" name="UpdateFuture" /></div></td>');
+    htmlBuilder.push('<td class="boundary mop-updaterunrate" style="width:90px"><div style="padding:3px 7px;"><input type="checkbox" name="UpdateRunRate" /></div></td>');
+    htmlBuilder.push('<td class="boundary mop-account-column" style="white-space:nowrap;width:245px"><a href="#" class="account-link"  name="FscAccountDescription"></a></td>');
+    htmlBuilder.push('</tr>');
+
+    var LEFT_TPL_VIEW = htmlBuilder.join('\r\n');
+
+    var amountDisplay = function (value) {
+        if (!value)
+            return '0.00';
+        return bine.format(value, '0,000.00');
+    };
+
+    var amountEdit = function (value) {
+        if (!value)
+            return 0;
+        return value;
+    };
+
+    var amountConfig = {
+        convertDisplay: amountDisplay,
+        convertBack: amountEdit,
+        convert: function (value) {
+            return parseFloat(value);
+        }
+    }
+
+    var fieldConfig = { UpdateRunRate: { type: 'bool' }, UpdateFuture: { type: 'bool'} };
+
+    for (var i = 1; i <= 13; i++) {
+        fieldConfig['Budget' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
+        fieldConfig['Projection' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
+        fieldConfig['Forecast' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
+        fieldConfig['Variance' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
+        fieldConfig['RunRate' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
+        fieldConfig['DailyRunRate' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
+    }
+
+    fieldConfig['BudgetTotal'] = { type: 'number', format: '0,000.00', convertDisplay: function (value) {
+        var total = 0;
         for (var i = 1; i <= 13; i++) {
-            htmlBuilder.push(String.format('<th colspan="7" class="boundary mop-period-title mop-period-{0}" style="text-align:center">Period {0}</th>', i));
+            total += this.val('Budget' + i) || 0;
         }
-        htmlBuilder.push('<th rowspan="2" class="boundary"  style="text-align:center; width:100px; height:73px;"><br/>Full Year<br/>Projections</th>');
-        htmlBuilder.push('<th rowspan="2" class=""  style="text-align:center; width:100px;"><br/>Full Year<br/>Budget</th>');
+        this.val()['BudgetTotal'] = total;
+        return bine.format(total, '0,000.00');
+    }
+    };
 
-        htmlBuilder.push('</tr>');
-
-        htmlBuilder.push('<tr style="height:55px;">');
+    fieldConfig['ProjectionTotal'] = { type: 'number', format: '0,000.00', convertDisplay: function (value) {
+        var total = 0;
         for (var i = 1; i <= 13; i++) {
-            htmlBuilder.push(String.format('<th class="mop-projection amount-col mop-period-{0}" style="width:100px; display:none;">MOP</th>', i));
-            htmlBuilder.push(String.format('<th class="mop-budget amount-col  mop-period-{0}" style="width:100px; display:none;">Budget</th>', i));
-            htmlBuilder.push(String.format('<th style="text-align:center;width:100px; display:none;"  class="mop-variance mop-period-{0}" >MOP to <br/>Budget Var</th>', i));
-            htmlBuilder.push(String.format('<th class="mop-drunrate amount-col mop-period-{0}" style="width:100px; display:none;">Daily Run Rate</th>', i));
-            htmlBuilder.push(String.format('<th style="width:100px; display:none;" class="mop-runrate amount-col mop-period-{0}" >Run Rate</th>', i));
-            htmlBuilder.push(String.format('<th style="text-align:center;width:100px; display:none;" class="mop-actual mop-period-{0}">Current Month<br/>Actual</th>', i));
-            htmlBuilder.push(String.format('<th style="width:150px;; display:none;" class="boundary mop-comment mop-period-{0}" >Comments</th>', i));
+            total += this.val('Projection' + i) || 0;
         }
+        this.val()['ProjectionTotal'] = total;
+        return bine.format(total, '0,000.00');
+    }
+    };
 
-        htmlBuilder.push('</tr>');
-        htmlBuilder.push('</thead></table></div></div>');
-        htmlBuilder.push('<div id="mop-list-wrapper" class="list-body" style="width: 100%; min-height: 300px;margin: 0 auto; overflow: auto; overflow-x: visible;"><div class="mop-table-container" style="width:10000px"><table id="mop-item-table" class="bud-table-2">');
+    var DataViewList = bine.extend(bine.DataViewList, {
+        tpl: TPL_LIST, itemContainerId: 'item-wrapper',
+        fscYear: 0, isController: false,
+        createDataView: function () {
+            var me = this;
 
-        htmlBuilder.push('<tbody id="item-wrapper"></tbody></table></div></div>');
+            var dv = new bine.DataView({ tpl: me.isController ? LEFT_TPL_VIEW : TPL_VIEW,
+                onDomReady: function () {
+                    var dv = this;
 
-        var TPL_LIST = htmlBuilder.join('\r\n');
+                    //                    $(".mop-comment").focusin(function () {
+                    //                        if (!$(this).parent().hasClass("summary"))
+                    //                            $(this).addClass("focus");
+                    //                    });
+                    //                    $(".mop-comment").focusout(function () {
+                    //                        if (!$(this).parent().hasClass("summary"))
+                    //                            $(this).removeClass("focus");
+                    //                    });
 
-        htmlBuilder = [];
-        htmlBuilder.push('<tr>');
-
-        for (var i = 1; i <= 13; i++) {
-            htmlBuilder.push(String.format('<td class="mop-projection amount-col mop-period-{0}" style="width:100px; display:none;"><input type="text"  style="width:100%;" name="Projection{0}" /></td>', i));
-            htmlBuilder.push(String.format('<td class="mop-budget amount-col mop-period-{0}" style="width:100px; display:none;" name="Budget{0}"></td>', i));
-            htmlBuilder.push(String.format('<td class="mop-variance amount-col mop-period-{0}" style="width:100px; display:none;" name="Variance{0}"></td>', i));
-            htmlBuilder.push(String.format('<td class="mop-drunrate amount-col mop-period-{0}" style="width:100px; display:none;" name="DailyRunRate{0}"></td>', i));
-            htmlBuilder.push(String.format('<td class="mop-runrate amount-col mop-period-{0}" style="width:100px; display:none;" name="RunRate{0}"></td>', i));
-            htmlBuilder.push(String.format('<td class="mop-actual amount-col mop-period-{0}" style="width:100px; display:none;" name="Forecast{0}"></td>', i));
-            htmlBuilder.push(String.format('<td class="mop-comment mop-period-{0} boundary" style="width:150px; display:none;"><input type="text" name="Comment{0}" style="width:100%;" /></td>', i));
-        }
-
-        htmlBuilder.push('<td  class="boundary amount-col" style="width:100px"  name="ProjectionTotal"></td>');
-        htmlBuilder.push('<td  class=" amount-col" style="width:100px" name="BudgetTotal"></td>');
-
-        htmlBuilder.push('</tr>');
-
-        var TPL_VIEW = htmlBuilder.join('\r\n');
-
-        htmlBuilder = [];
-        htmlBuilder.push('<div class="list-header" style="width: 100%; margin: 0 auto; overflow: hidden; border: 1px solid #c6c6c6;"><div class="mop-table-container"><table class="bud-table-2"><thead class="table-head">');
-
-        htmlBuilder.push('<tr>');
-        htmlBuilder.push('<th class="boundary mop-updatefuture" style="width:100px"><br/><div class="row1-btn"><button class="bine-btn bine-btn-txt bine-ctrl" id="updatefuture-button"  style="height:50px;">Update Future<br/>Periods w/MOP</button></div><div style="padding:5px;"><div style="width:13px; height:20px;padding-top:3px;float:left;"><input type="checkbox" name="selectAllPeriods" id="SelectAllPeriods"/></div><span style="line-height:18px; height:20px;padding-left:5px;">Select All</span><div style="clear:both;"></div></div></th>');
-        htmlBuilder.push('<th class="boundary mop-updaterunrate"   style="width:90px"><br/><div class="row1-btn"><button class="bine-btn bine-btn-txt bine-ctrl " id="updaterunrate-button" style="height:50px;">Update With<br/>Run Rate</button></div><div style="padding:5px;"><div style="width:13px; height:20px;padding-top:3px;float:left;"><input type="checkbox" name="selectAll" id="SelectAllRunRate"/></div><span style="float:left;line-height:18px; height:20px;padding-left:5px;">Select All</span><div style="clear:both;"></div></div></th>');
-        htmlBuilder.push('<th class="boundary mop-accountcode-title" style="width:245px">Account Code</th>');
-        htmlBuilder.push('</tr>');
-        htmlBuilder.push('</thead></table></div></div>');
-        htmlBuilder.push('<div  class="list-body" style="width: 100%; min-height: 300px;margin: 0 auto; overflow: auto; overflow-x: visible;"><div class="mop-table-container" ><table id="mop-item-table" class="bud-table-2">');
-
-        htmlBuilder.push('<tbody id="item-wrapper"></tbody></table></div></div>');
-
-        var LEFT_TPL_LIST = htmlBuilder.join('\r\n');
-
-        htmlBuilder = [];
-        htmlBuilder.push('<tr>');
-        htmlBuilder.push('<td class="boundary mop-updatefuture" style="width:100px"><div style="padding:3px 7px;"><input type="checkbox" name="UpdateFuture" /></div></td>');
-        htmlBuilder.push('<td class="boundary mop-updaterunrate" style="width:90px"><div style="padding:3px 7px;"><input type="checkbox" name="UpdateRunRate" /></div></td>');
-        htmlBuilder.push('<td class="boundary mop-account-column" style="white-space:nowrap;width:245px"><a href="#" class="account-link"  name="FscAccountDescription"></a></td>');
-        htmlBuilder.push('</tr>');
-
-        var LEFT_TPL_VIEW = htmlBuilder.join('\r\n');
-
-        var amountDisplay = function (value) {
-            if (!value)
-                return '0.00';
-            return bine.format(value, '0,000.00');
-        };
-
-        var amountEdit = function (value) {
-            if (!value)
-                return 0;
-            return value;
-        };
-
-        var amountConfig = {
-            convertDisplay: amountDisplay,
-            convertBack: amountEdit,
-            convert: function (value) {
-                return parseFloat(value);
-            }
-        }
-
-        var fieldConfig = { UpdateRunRate: { type: 'bool' }, UpdateFuture: { type: 'bool'} };
-
-        for (var i = 1; i <= 13; i++) {
-            fieldConfig['Budget' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
-            fieldConfig['Projection' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
-            fieldConfig['Forecast' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
-            fieldConfig['Variance' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
-            fieldConfig['RunRate' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
-            fieldConfig['DailyRunRate' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
-        }
-
-        fieldConfig['BudgetTotal'] = { type: 'number', format: '0,000.00', convertDisplay: function (value) {
-            var total = 0;
-            for (var i = 1; i <= 13; i++) {
-                total += this.val('Budget' + i) || 0;
-            }
-            this.val()['BudgetTotal'] = total;
-            return bine.format(total, '0,000.00');
-        }
-        };
-
-        fieldConfig['ProjectionTotal'] = { type: 'number', format: '0,000.00', convertDisplay: function (value) {
-            var total = 0;
-            for (var i = 1; i <= 13; i++) {
-                total += this.val('Projection' + i) || 0;
-            }
-            this.val()['ProjectionTotal'] = total;
-            return bine.format(total, '0,000.00');
-        }
-        };
-
-        var DataViewList = bine.extend(bine.DataViewList, {
-            tpl: TPL_LIST, itemContainerId: 'item-wrapper',
-            fscYear: 0, isController: false,
-            createDataView: function () {
-                var me = this;
-
-                var dv = new bine.DataView({ tpl: me.isController ? LEFT_TPL_VIEW : TPL_VIEW,
-                    onDomReady: function () {
-                        var dv = this;
-
-                        //                    $(".mop-comment").focusin(function () {
-                        //                        if (!$(this).parent().hasClass("summary"))
-                        //                            $(this).addClass("focus");
-                        //                    });
-                        //                    $(".mop-comment").focusout(function () {
-                        //                        if (!$(this).parent().hasClass("summary"))
-                        //                            $(this).removeClass("focus");
-                        //                    });
-
-                        //                    $(".mop-projection").focusin(function () {
-                        //                        if (!$(this).parent().hasClass("summary"))
-                        //                            $(this).addClass("focus");
-                        //                    });
-                        //                    $(".mop-projection").focusout(function () {
-                        //                        if (!$(this).parent().hasClass("summary"))
-                        //                            $(this).removeClass("focus");
-                        //                    });
+                    //                    $(".mop-projection").focusin(function () {
+                    //                        if (!$(this).parent().hasClass("summary"))
+                    //                            $(this).addClass("focus");
+                    //                    });
+                    //                    $(".mop-projection").focusout(function () {
+                    //                        if (!$(this).parent().hasClass("summary"))
+                    //                            $(this).removeClass("focus");
+                    //                    });
 
 
-                        me.$("#SelectAllRunRate").change(function (e) {
-                            if ($(this).attr("checked") == "checked" && !dv.val('WorModified')) {
-                                dv.val('UpdateRunRate', true);
+                    me.$("#SelectAllRunRate").change(function (e) {
+                        if ($(this).attr("checked") == "checked" && !dv.val('WorModified')) {
+                            dv.val('UpdateRunRate', true);
+                        }
+                        else {
+                            dv.val('UpdateRunRate', false);
+                        }
+                    });
+
+                    me.$("#SelectAllPeriods").change(function () {
+                        if ($(this).attr("checked") == "checked") {
+                            dv.val('UpdateFuture', true);
+                        }
+                        else {
+                            dv.val('UpdateFuture', false);
+                        }
+                    });
+
+                    dv.$('.account-link').click(function (e) {
+                        e.preventDefault();
+                        if (dv.val('IsAccount'))
+                            me.fireEvent('showaccountwor', dv.val('FscAccount'));
+                    });
+
+
+                    var today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    dv.on('change', function (name, value) {
+
+
+                        if (name == dv.name) {
+                            if (dv.val('IsCategory') || dv.val('IsTotal')) {
+                                dv.$this.addClass('account-category-data-view');
+                                dv.$this.addClass('summary');
+                                // dv.disable();
+                                if (dv.getField('UpdateFuture'))
+                                    dv.getField('UpdateFuture').css('display', 'none');
+                                if (dv.getField('UpdateRunRate'))
+                                    dv.getField('UpdateRunRate').css('display', 'none');
+                                dv.$('.account-link').addClass('display-as-text');
                             }
-                            else {
-                                dv.val('UpdateRunRate', false);
-                            }
-                        });
+                            else
+                                dv.$('.account-link').addClass('account-item-link');
 
-                        me.$("#SelectAllPeriods").change(function () {
-                            if ($(this).attr("checked") == "checked") {
-                                dv.val('UpdateFuture', true);
-                            }
-                            else {
-                                dv.val('UpdateFuture', false);
-                            }
-                        });
-
-                        dv.$('.account-link').click(function (e) {
-                            e.preventDefault();
-                            if (dv.val('IsAccount'))
-                                me.fireEvent('showaccountwor', dv.val('FscAccount'));
-                        });
-
-
-                        var today = new Date();
-                        today.setHours(0, 0, 0, 0);
-                        dv.on('change', function (name, value) {
-
-
-                            if (name == dv.name) {
-                                if (dv.val('IsCategory') || dv.val('IsTotal')) {
-                                    dv.$this.addClass('account-category-data-view');
-                                    dv.$this.addClass('summary');
-                                    // dv.disable();
-                                    if (dv.getField('UpdateFuture'))
-                                        dv.getField('UpdateFuture').css('display', 'none');
-                                    if (dv.getField('UpdateRunRate'))
-                                        dv.getField('UpdateRunRate').css('display', 'none');
-                                    dv.$('.account-link').addClass('display-as-text');
-                                }
+                            if (dv.getField('UpdateRunRate')) {
+                                if (dv.val('WorModified'))
+                                    dv.getField('UpdateRunRate').prop('disabled', true);
                                 else
-                                    dv.$('.account-link').addClass('account-item-link');
-
-                                if (dv.getField('UpdateRunRate')) {
-                                    if (dv.val('WorModified'))
-                                        dv.getField('UpdateRunRate').prop('disabled', true);
-                                    else
-                                        dv.getField('UpdateRunRate').prop('disabled', false);
-                                }
+                                    dv.getField('UpdateRunRate').prop('disabled', false);
                             }
+                        }
 
-                            var projectionTotal = 0;
-                            if (!me.isController) {
-                                for (var i = 1; i <= 13; i++) {
-                                    var FscPeriod = GetFscPeriod2(me.fscYear, i);
-                                    if (FscPeriod) {
-                                        if (dv.val('WorModified' + i) || dv.val('IsCategory') || dv.val('IsTotal')
+                        var projectionTotal = 0;
+                        if (!me.isController) {
+                            for (var i = 1; i <= 13; i++) {
+                                var FscPeriod = GetFscPeriod2(me.fscYear, i);
+                                if (FscPeriod) {
+                                    if (dv.val('WorModified' + i) || dv.val('IsCategory') || dv.val('IsTotal')
                               || FscPeriod.EndDt < today) {
-                                            dv.getField('Projection' + i).attr('readonly', 'readonly');
-                                            dv.getField('Comment' + i).attr('readonly', 'readonly');        //.prop('disabled', true);
-                                            dv.getField('Projection' + i).addClass('mop-disabled');
-                                        }
-                                        else {
-                                            dv.getField('Projection' + i).removeAttr('readOnly');               //.prop('disabled', false);
-                                            dv.getField('Projection' + i).removeClass('mop-disabled');
-                                        }
+                                        dv.getField('Projection' + i).attr('readonly', 'readonly');
+                                        dv.getField('Comment' + i).attr('readonly', 'readonly');        //.prop('disabled', true);
+                                        dv.getField('Projection' + i).addClass('mop-disabled');
+                                    }
+                                    else {
+                                        dv.getField('Projection' + i).removeAttr('readOnly');               //.prop('disabled', false);
+                                        dv.getField('Projection' + i).removeClass('mop-disabled');
                                     }
                                 }
                             }
+                        }
 
-                            if (name.startsWith('Projection') && name != 'ProjectionTotal') {
-                                var periodNumber = name.replace('Projection', '');
-                                dv.val('Variance' + periodNumber, value - dv.val('Budget' + periodNumber));
+                        if (name.startsWith('Projection') && name != 'ProjectionTotal') {
+                            var periodNumber = name.replace('Projection', '');
+                            dv.val('Variance' + periodNumber, value - dv.val('Budget' + periodNumber));
 
-                                var projectionTotal = 0;
-                                for (var i = 1; i <= 13; i++) {
-                                    projectionTotal += dv.val('Projection' + i);
-                                }
-                                dv.val('ProjectionTotal', projectionTotal);
-
-                                var mopDetails = me.val();
-
-                                if (dv.val('IsAccount')) {
-                                    var categoryView = me.getDataView(mopDetails.indexOf(bine.query(mopDetails).where(function (f) { return f.FscAccount == dv.val('CategoryId'); }).first()));
-
-                                    categoryView.val(name, bine.query(mopDetails).where(function (i) { return i.CategoryId == categoryView.val('FscAccount'); }).select(name).toArray().sum());
-                                }
-                                else if (dv.val('IsCategory')) {
-                                    var totalView = me.getDataView(me.itemCount() - 1);
-                                    totalView.val(name, bine.query(mopDetails).where(function (i) { return i.IsCategory; }).select(name).toArray().sum());
-                                }
+                            var projectionTotal = 0;
+                            for (var i = 1; i <= 13; i++) {
+                                projectionTotal += dv.val('Projection' + i);
                             }
-                        });
-                    }
-                }, fieldConfig);
-                return dv;
-            },
+                            dv.val('ProjectionTotal', projectionTotal);
 
-            onDomReady: function () {
-                var me = this;
+                            var mopDetails = me.val();
 
-                me.$('.wor-link').click(function (e) {
-                    e.preventDefault();
+                            if (dv.val('IsAccount')) {
+                                var categoryView = me.getDataView(mopDetails.indexOf(bine.query(mopDetails).where(function (f) { return f.FscAccount == dv.val('CategoryId'); }).first()));
 
-                    me.fireEvent('showwor', parseFloat($(this).attr('periodNumber')));
-                });
-
-                me.$('#updaterunrate-button').click(function () {
-                    var periodIndex = GetCurrentFscPeriod()['Number'];
-                    me.each(function (index, dv) {
-                        if (dv.val('UpdateRunRate'))
-                            dv.val('Projection' + periodIndex, dv.val('RunRate' + periodIndex));
-                    });
-                });
-
-                me.$('#updatefuture-button').click(function () {
-                    var periodIndex = me.periodStart;         //GetCurrentFscPeriod()['Number'];
-                    me.each(function (index, dv) {
-                        if (dv.val('UpdateFuture')) {
-                            for (var i = periodIndex + 1; i <= 13; i++) {
-                                dv.val('Projection' + i, dv.val('Projection' + periodIndex));
+                                categoryView.val(name, bine.query(mopDetails).where(function (i) { return i.CategoryId == categoryView.val('FscAccount'); }).select(name).toArray().sum());
+                            }
+                            else if (dv.val('IsCategory')) {
+                                var totalView = me.getDataView(me.itemCount() - 1);
+                                totalView.val(name, bine.query(mopDetails).where(function (i) { return i.IsCategory; }).select(name).toArray().sum());
                             }
                         }
                     });
+                }
+            }, fieldConfig);
+            return dv;
+        },
+
+        onDomReady: function () {
+            var me = this;
+
+            me.$('.wor-link').click(function (e) {
+                e.preventDefault();
+
+                me.fireEvent('showwor', parseFloat($(this).attr('periodNumber')));
+            });
+
+            me.$('#updaterunrate-button').click(function () {
+                var periodIndex = GetCurrentFscPeriod()['Number'];
+                me.each(function (index, dv) {
+                    if (dv.val('UpdateRunRate'))
+                        dv.val('Projection' + periodIndex, dv.val('RunRate' + periodIndex));
                 });
+            });
 
-                me.$('#mop-list-wrapper').scroll(function () {
-                    me.$('#mop-list-header').scrollLeft(me.$('#mop-list-wrapper').scrollLeft());
-                });
-            },
-
-            addFscAccount: function (fscAccount) {
-                var me = this;
-
-                var mopDetails = me.val();
-
-                var exists = bine.query(mopDetails).where(function (f) { return f.FscAccount == fscAccount; }).first() != null;
-                if (exists)
-                    return;
-
-                var getPriorIndex = function (sortIndex) {
-                    for (var i = 0; i < mopDetails.length; i++) {
-                        if (mopDetails[i].SortIndex > sortIndex)
-                            return i;
+            me.$('#updatefuture-button').click(function () {
+                var periodIndex = me.periodStart;         //GetCurrentFscPeriod()['Number'];
+                me.each(function (index, dv) {
+                    if (dv.val('UpdateFuture')) {
+                        for (var i = periodIndex + 1; i <= 13; i++) {
+                            dv.val('Projection' + i, dv.val('Projection' + periodIndex));
+                        }
                     }
-                    return mopDetails.length;
-                };
-
-                var dataItem = createFscAccountDataItem(fscAccount);
-
-                //            var dataItemIndex = mopDetails.indexOf(bine.query(mopDetails).where(function (f) { return f.SortIndex < dataItem.SortIndex; }).orderBy('SortIndex', false).first()) + 1;
-                //            if (dataItemIndex < 0)
-                //                dataItemIndex = 0;
-                var dataItemIndex = getPriorIndex(dataItem.SortIndex);
-
-                var dv = me.insert(dataItemIndex, dataItem);
-
-                mopDetails = me.val();
-                var categoryItem = bine.query(mopDetails).where(function (f) { return f.FscAccount == dataItem.CategoryId; }).first();
-                if (!categoryItem) {
-                    categoryItem = createFscAccountCategoryDataItem(dataItem.CategoryId);
-
-                    //                var categoryItemIndex = mopDetails.indexOf(bine.query(mopDetails).where(function (f) { return f.SortIndex < categoryItem.SortIndex; }).orderBy('SortIndex', false).first()) + 1;
-                    //                if (categoryItemIndex < 0)
-                    //                    categoryItemIndex = 0;
-
-                    var categoryItemIndex = getPriorIndex(categoryItem.SortIndex);
-
-                    me.insert(categoryItemIndex, categoryItem);
-                }
-
-                //            mopDetails = bine.query(mopDetails).orderBy('SortIndex').toArray();
-                //            console.log(mopDetails);
-                //            me.val(mopDetails);
-            }
-        });
-
-        DataViewList.CONTROLLER_TPL = LEFT_TPL_LIST;
-
-        return DataViewList;
-    } ();
-    //
-    MopDataController = function () {
-
-        var DataGrid = bine.extend(bine.Control, {
-            tpl: '<div></div>',
-
-            _items: null,
-
-            refreshUi: function () {
-
-                var me = this;
-
-                me.$this.empty();
-
-                if (!me._items || !bine.isArray(me._items))
-                    return;
-
-                var html = [];
-                //html.push('  <table class="bud-table-2 list-body mop-grid" cellpadding="0" cellspacing="0">');
-                for (var i = 0; i < me._items.length; i++) {
-                    me.renderDataItem(me._items[i], html);
-                }
-                html.push('');
-                //  html.push('</table>');
-                html.push('<div style="height:50px" ></div>');
-                me.$this.html(html.join('\r\n'));
-
-                me.$('input').change(function () {
-                    var $el = $(this);
-                    var val = $el.val() || '0';
-                    val = val.replace(/,/gi, '');
-                    me.fireEvent('change', $el.attr('id'), val);
                 });
+            });
+
+            me.$('#mop-list-wrapper').scroll(function () {
+                me.$('#mop-list-header').scrollLeft(me.$('#mop-list-wrapper').scrollLeft());
+            });
+        },
+
+        addFscAccount: function (fscAccount) {
+            var me = this;
+
+            var mopDetails = me.val();
+
+            var exists = bine.query(mopDetails).where(function (f) { return f.FscAccount == fscAccount; }).first() != null;
+            if (exists)
+                return;
+
+            var getPriorIndex = function (sortIndex) {
+                for (var i = 0; i < mopDetails.length; i++) {
+                    if (mopDetails[i].SortIndex > sortIndex)
+                        return i;
+                }
+                return mopDetails.length;
+            };
+
+            var dataItem = createFscAccountDataItem(fscAccount);
+
+            //            var dataItemIndex = mopDetails.indexOf(bine.query(mopDetails).where(function (f) { return f.SortIndex < dataItem.SortIndex; }).orderBy('SortIndex', false).first()) + 1;
+            //            if (dataItemIndex < 0)
+            //                dataItemIndex = 0;
+            var dataItemIndex = getPriorIndex(dataItem.SortIndex);
+
+            var dv = me.insert(dataItemIndex, dataItem);
+
+            mopDetails = me.val();
+            var categoryItem = bine.query(mopDetails).where(function (f) { return f.FscAccount == dataItem.CategoryId; }).first();
+            if (!categoryItem) {
+                categoryItem = createFscAccountCategoryDataItem(dataItem.CategoryId);
+
+                //                var categoryItemIndex = mopDetails.indexOf(bine.query(mopDetails).where(function (f) { return f.SortIndex < categoryItem.SortIndex; }).orderBy('SortIndex', false).first()) + 1;
+                //                if (categoryItemIndex < 0)
+                //                    categoryItemIndex = 0;
+
+                var categoryItemIndex = getPriorIndex(categoryItem.SortIndex);
+
+                me.insert(categoryItemIndex, categoryItem);
+            }
+
+            //            mopDetails = bine.query(mopDetails).orderBy('SortIndex').toArray();
+            //            console.log(mopDetails);
+            //            me.val(mopDetails);
+        }
+    });
+
+    DataViewList.CONTROLLER_TPL = LEFT_TPL_LIST;
+
+    return DataViewList;
+} ();
+    //
+MopDataController = function () {
+
+    var DataGrid = bine.extend(bine.Control, {
+        tpl: '<div></div>',
+
+        _items: null,
+
+        refreshUi: function () {
+
+            var me = this;
+
+            me.$this.empty();
+
+            if (!me._items || !bine.isArray(me._items))
+                return;
+
+            var html = [];
+            //html.push('  <table class="bud-table-2 list-body mop-grid" cellpadding="0" cellspacing="0">');
+            for (var i = 0; i < me._items.length; i++) {
+                me.renderDataItem(me._items[i], html);
+            }
+            html.push('');
+            //  html.push('</table>');
+            html.push('<div style="height:50px" ></div>');
+            me.$this.html(html.join('\r\n'));
+
+            me.$('input').change(function () {
+                var $el = $(this);
+                var val = $el.val() || '0';
+                val = val.replace(/,/gi, '');
+                me.fireEvent('change', $el.attr('id'), val);
+            });
 
 
 
-                me.$('.bine-dv-right-field').keydown(function (e) {
-                    var key = e.charCode || e.keyCode || 0;
+            me.$('.bine-dv-right-field').keydown(function (e) {
+                var key = e.charCode || e.keyCode || 0;
 
-                    if (e.ctrlKey)
-                        return true;
+                if (e.ctrlKey)
+                    return true;
 
-                    // allow backspace, tab, delete, arrows, numbers and keypad numbers ONLY 
-                    return (
+                // allow backspace, tab, delete, arrows, numbers and keypad numbers ONLY 
+                return (
                                         key == 8 ||
                                         key == 9 ||
                                         key == 46 ||
@@ -2773,250 +2819,250 @@ fin.bud.modified = function () {
                                         || (key == 109 || key == 189)  // FF: 109, IE: 189
                                         || key == 190
                                         || key == 110);
-                });
+            });
 
-                me.$('a').click(function (e) {
-                    e.preventDefault();
-                    var $el = $(this);
-                    me.fireEvent('showaccountwor', $el.attr('id'));
-                });
+            me.$('a').click(function (e) {
+                e.preventDefault();
+                var $el = $(this);
+                me.fireEvent('showaccountwor', $el.attr('id'));
+            });
 
-            },
+        },
 
-            renderDataItem: function (dataItem, html) {
-                var me = this;
+        renderDataItem: function (dataItem, html) {
+            var me = this;
 
-                var width = (me.endPeriod - me.startPeriod + 1) * (bine.isIE ? 757 : 750) + 200;
+            var width = (me.endPeriod - me.startPeriod + 1) * (bine.isIE ? 757 : 750) + 200;
 
-                html.push('<table class="bud-table-2 list-body mop-grid" style="width:' + width + 'px" >');
+            html.push('<table class="bud-table-2 list-body mop-grid" style="width:' + width + 'px" >');
 
-                if (dataItem.IsCategory || dataItem.IsTotal)
-                    html.push('<tr class="bine-ctrl bine-dv account-category-data-view" >');
-                else
-                    html.push('<tr class="bine-ctrl bine-dv">');
+            if (dataItem.IsCategory || dataItem.IsTotal)
+                html.push('<tr class="bine-ctrl bine-dv account-category-data-view" >');
+            else
+                html.push('<tr class="bine-ctrl bine-dv">');
 
-                if (me.currentPeriodAvailable) {
-                    if (dataItem.IsCategory || dataItem.IsTotal) {
-                        html.push(' <td style="width: 100px;; " class="boundary">&nbsp;</td>');
-                        html.push(' <td style="width: 90px; " class="boundary">&nbsp;</td>');
-                    }
-                    else {
-                        html.push(String.format(' <td style="width: 100px; " class="boundary"><input id="UpdateFuture_' + dataItem.FscAccount + '" type="checkbox" name="UpdateFuture" {0}></td>', (dataItem.UpdateFuture ? 'checked="checked"' : '')));
-                        html.push(String.format(' <td style="width: 90px; " class="boundary"><input id="UpdateRunRate_' + dataItem.FscAccount + '" type="checkbox" name="UpdateRunRate" {0}></td>', (dataItem.UpdateRunRate ? 'checked="checked"' : '')));
-                    }
-
+            if (me.currentPeriodAvailable) {
+                if (dataItem.IsCategory || dataItem.IsTotal) {
+                    html.push(' <td style="width: 100px;; " class="boundary">&nbsp;</td>');
+                    html.push(' <td style="width: 90px; " class="boundary">&nbsp;</td>');
                 }
-
-                if (dataItem.IsCategory || dataItem.IsTotal)
-                    html.push('<td class="boundary" style=" width: 245px;  text-align:right;height:20px "><div style="">');
-                else
-                    html.push('<td class="boundary" style=" width: 245px;text-align:left;height:20px "><div style="">');
-
-                if (!me.currentPeriodAvailable || dataItem.IsCategory || dataItem.IsTotal)
-                    html.push(dataItem['FscAccountDescription']);
-                else
-                    html.push('<a href="#" class="account-link" id="' + dataItem['FscAccount'] + '">' + dataItem['FscAccountDescription'] + '</a>');
-                html.push('</div></td>');
-
-                html.push('</tr>');
-                html.push('</table>');
-
-            },
-
-            val: function (data) {
-                var me = this;
-
-                if (arguments.length == 0)
-                    return me._items;
-
-                if (data && me._items != data) {
-                    me._items = data;
-                    me.refreshUi();
+                else {
+                    html.push(String.format(' <td style="width: 100px; " class="boundary"><input id="UpdateFuture_' + dataItem.FscAccount + '" type="checkbox" name="UpdateFuture" {0}></td>', (dataItem.UpdateFuture ? 'checked="checked"' : '')));
+                    html.push(String.format(' <td style="width: 90px; " class="boundary"><input id="UpdateRunRate_' + dataItem.FscAccount + '" type="checkbox" name="UpdateRunRate" {0}></td>', (dataItem.UpdateRunRate ? 'checked="checked"' : '')));
                 }
 
             }
 
-        });
+            if (dataItem.IsCategory || dataItem.IsTotal)
+                html.push('<td class="boundary" style=" width: 245px;  text-align:right;height:20px "><div style="">');
+            else
+                html.push('<td class="boundary" style=" width: 245px;text-align:left;height:20px "><div style="">');
 
-        return DataGrid;
-    } ();
+            if (!me.currentPeriodAvailable || dataItem.IsCategory || dataItem.IsTotal)
+                html.push(dataItem['FscAccountDescription']);
+            else
+                html.push('<a href="#" class="account-link" id="' + dataItem['FscAccount'] + '">' + dataItem['FscAccountDescription'] + '</a>');
+            html.push('</div></td>');
 
-    MopDataGridHeader = function () {
+            html.push('</tr>');
+            html.push('</table>');
 
-        var Header = bine.extend(bine.Control, {
-            tpl: '<div></div>',
+        },
 
-            startPeriod: 1,
+        val: function (data) {
+            var me = this;
 
-            endPeriod: 14,
+            if (arguments.length == 0)
+                return me._items;
 
-            showBudget: true,
-            showRunRate: true,
-            showVariance: true,
-
-            setPeriodRange: function (start, end) {
-                var me = this;
-                me.startPeriod = start;
-                me.endPeriod = end;
+            if (data && me._items != data) {
+                me._items = data;
                 me.refreshUi();
-            },
-
-            refreshUi: function () {
-
-                var me = this;
-
-                me.$this.empty();
-
-                var html = [];
-                html.push('<table class="bud-table-2"><thead class="table-head">');
-
-                html.push('<tr>');
-                for (var i = me.startPeriod; i <= me.endPeriod; i++) {
-                    var colspan = 4 + (me.showBudget ? 1 : 0) + (me.showRunRate ? 1 : 0) + (me.showVariance ? 1 : 0);
-                    html.push(String.format('<th colspan="{1}" class="boundary mop-period-title mop-period-{0}" style="text-align:center; height:58px;">Period {0}</th>', i, colspan));
-                }
-                html.push('<th rowspan="2" class="boundary"  style="text-align:center; width:100px; height:89px;"><br/>Full Year<br/>Projections</th>');
-                html.push('<th rowspan="2" class=""  style="text-align:center; width:100px;"><br/>Full Year<br/>Budget</th>');
-
-                html.push('</tr>');
-
-                html.push('<tr>');
-                for (var i = me.startPeriod; i <= me.endPeriod; i++) {
-                    html.push(String.format('<th class="mop-projection mop-period-{0}" style="text-align:center;width:100px; ">MOP</th>', i));
-                    if (me.showBudget)
-                        html.push(String.format('<th class="mop-budget mop-period-{0}" style="text-align:center;width:100px; ">Budget</th>', i));
-                    if (me.showVariance)
-                        html.push(String.format('<th style="text-align:center;width:100px; "  class="mop-variance mop-period-{0}" >MOP to <br/>Budget Var</th>', i));
-                    html.push(String.format('<th class="mop-drunrate  mop-period-{0}" style="text-align:center;width:100px; ">Daily Run Rate</th>', i));
-                    if (me.showRunRate)
-                        html.push(String.format('<th style="text-align:center;width:100px; " class="mop-runrate  mop-period-{0}" >Run Rate</th>', i));
-                    html.push(String.format('<th style="text-align:center;width:100px;  height: 24px;" class="mop-actual mop-period-{0}">Current Month<br/>Actual</th>', i));
-                    html.push(String.format('<th style="text-align:center;width:150px;; " class="boundary mop-comment mop-period-{0}" >Comments</th>', i));
-                }
-
-                html.push('</tr>');
-                html.push('</thead></table>');
-
-
-                html.push('</table>');
-
-                me.$this.html(html.join('\r\n'));
-
             }
 
-        });
+        }
 
-        return Header;
+    });
 
-    } ();
+    return DataGrid;
+} ();
 
-    MopDataGrid = function () {
+MopDataGridHeader = function () {
 
-        var DataGrid = bine.extend(bine.Control, {
-            tpl: $('#controller-list', $mop_templates).html(),
+    var Header = bine.extend(bine.Control, {
+        tpl: '<div></div>',
 
-            _items: null,
+        startPeriod: 1,
 
-            fscYear: 3,
-            startPeriod: 1,
-            endPeriod: 14,
+        endPeriod: 14,
 
-            showBudget: true,
-            showRunRate: true,
-            showVariance: true,
+        showBudget: true,
+        showRunRate: true,
+        showVariance: true,
 
-            setPeriodRange: function (start, end, refreshIt) {
-                var me = this;
-                me.startPeriod = start;
-                me.endPeriod = end;
-                if (refreshIt)
-                    me.refreshUi();
+        setPeriodRange: function (start, end) {
+            var me = this;
+            me.startPeriod = start;
+            me.endPeriod = end;
+            me.refreshUi();
+        },
 
-            },
+        refreshUi: function () {
 
-            refreshUi: function () {
+            var me = this;
 
-                var me = this;
+            me.$this.empty();
 
-                document.getElementById(me.id('holder')).innerHTML = '';
+            var html = [];
+            html.push('<table class="bud-table-2"><thead class="table-head">');
 
-                if (!bine.isArray(me._items))
+            html.push('<tr>');
+            for (var i = me.startPeriod; i <= me.endPeriod; i++) {
+                var colspan = 4 + (me.showBudget ? 1 : 0) + (me.showRunRate ? 1 : 0) + (me.showVariance ? 1 : 0);
+                html.push(String.format('<th colspan="{1}" class="boundary mop-period-title mop-period-{0}" style="text-align:center; height:58px;">Period {0}</th>', i, colspan));
+            }
+            html.push('<th rowspan="2" class="boundary"  style="text-align:center; width:100px; height:89px;"><br/>Full Year<br/>Projections</th>');
+            html.push('<th rowspan="2" class=""  style="text-align:center; width:100px;"><br/>Full Year<br/>Budget</th>');
+
+            html.push('</tr>');
+
+            html.push('<tr>');
+            for (var i = me.startPeriod; i <= me.endPeriod; i++) {
+                html.push(String.format('<th class="mop-projection mop-period-{0}" style="text-align:center;width:100px; ">MOP</th>', i));
+                if (me.showBudget)
+                    html.push(String.format('<th class="mop-budget mop-period-{0}" style="text-align:center;width:100px; ">Budget</th>', i));
+                if (me.showVariance)
+                    html.push(String.format('<th style="text-align:center;width:100px; "  class="mop-variance mop-period-{0}" >MOP to <br/>Budget Var</th>', i));
+                html.push(String.format('<th class="mop-drunrate  mop-period-{0}" style="text-align:center;width:100px; ">Daily Run Rate</th>', i));
+                if (me.showRunRate)
+                    html.push(String.format('<th style="text-align:center;width:100px; " class="mop-runrate  mop-period-{0}" >Run Rate</th>', i));
+                html.push(String.format('<th style="text-align:center;width:100px;  height: 24px;" class="mop-actual mop-period-{0}">Current Month<br/>Actual</th>', i));
+                html.push(String.format('<th style="text-align:center;width:150px;; " class="boundary mop-comment mop-period-{0}" >Comments</th>', i));
+            }
+
+            html.push('</tr>');
+            html.push('</thead></table>');
+
+
+            html.push('</table>');
+
+            me.$this.html(html.join('\r\n'));
+
+        }
+
+    });
+
+    return Header;
+
+} ();
+
+MopDataGrid = function () {
+
+    var DataGrid = bine.extend(bine.Control, {
+        tpl: $('#controller-list', $mop_templates).html(),
+
+        _items: null,
+
+        fscYear: 3,
+        startPeriod: 1,
+        endPeriod: 14,
+
+        showBudget: true,
+        showRunRate: true,
+        showVariance: true,
+
+        setPeriodRange: function (start, end, refreshIt) {
+            var me = this;
+            me.startPeriod = start;
+            me.endPeriod = end;
+            if (refreshIt)
+                me.refreshUi();
+
+        },
+
+        refreshUi: function () {
+
+            var me = this;
+
+            document.getElementById(me.id('holder')).innerHTML = '';
+
+            if (!bine.isArray(me._items))
+                return;
+
+            var html = [];
+            // html.push('  <table id="mop-item-table" class="bud-table-2 list-body mop-grid" cellpadding="0" cellspacing="0">');
+            for (var i = 0; i < me._items.length; i++) {
+                me.renderDataItem(me._items[i], html);
+            }
+            html.push('<div stye="height:200px">&nbsp;</div>');
+
+
+            document.getElementById(me.id('holder')).innerHTML = html.join('\r\n');
+
+
+            me.$('input').change(function () {
+
+                var $el = $(this);
+                var val = $el.val() || '0';
+                val = val.replace(/,/gi, '');
+                me.fireEvent('change', $el.attr('id'), val);
+
+//                var $el = $(this);
+//                me.fireEvent('change', $el.attr('id'), $el.val());
+            }).focus(function () {
+                $(this).select();
+            });
+
+            var verticalFocusElement = function ($el, step) {
+                var $currentCell = $el.parent();
+                var $currentRow = $currentCell.parent();
+
+                var $cells = $currentRow.find('td');
+                var $rows = $currentRow.parents('div.mop-grid-main').find('tr');
+                var rowIndex = $rows.index($currentRow);
+                var cellIndex = $cells.index($currentCell);
+
+                var newRowIndex = rowIndex + step;
+                if (newRowIndex < 0 || newRowIndex >= $rows.length)
                     return;
 
-                var html = [];
-                // html.push('  <table id="mop-item-table" class="bud-table-2 list-body mop-grid" cellpadding="0" cellspacing="0">');
-                for (var i = 0; i < me._items.length; i++) {
-                    me.renderDataItem(me._items[i], html);
-                }
-                html.push('<div stye="height:200px">&nbsp;</div>');
+                var $newCell = $rows.eq(newRowIndex).find('td').eq(cellIndex);
+                var $newEl = $newCell.find('input');
+                if ($newEl.length > 0)
+                    $newEl.focus();
+                else
+                    verticalFocusElement($el, step > 0 ? step + 1 : step - 1);
+            };
 
 
-                document.getElementById(me.id('holder')).innerHTML = html.join('\r\n');
+            me.$('.bine-dv-text-field').keydown(function (e) {
+                var key = e.charCode || e.keyCode || 0;
 
+                if (e.ctrlKey)
+                    return true;
 
-                me.$('input').change(function () {
+                var $this = $(this);
+                var $thisRow = $this.parent().parent();
 
-                    var $el = $(this);
-                    var val = $el.val() || '0';
-                    val = val.replace(/,/gi, '');
-                    me.fireEvent('change', $el.attr('id'), val);
+                if (key == 37)    // left key
+                    $this.focusPrevInputField();
+                else if (key == 39) // right key
+                    $this.focusNextInputField();
+                else if (key == 38) // up key
+                    verticalFocusElement($this, -1);
+                else if (key == 40) // down key
+                    verticalFocusElement($this, 1);
+                return key < 37 || key > 40;
+            });
 
-                    //                var $el = $(this);
-                    //                me.fireEvent('change', $el.attr('id'), $el.val());
-                }).focus(function () {
-                    $(this).select();
-                });
+            me.$('.bine-dv-right-field').keydown(function (e) {
+                var key = e.charCode || e.keyCode || 0;
 
-                var verticalFocusElement = function ($el, step) {
-                    var $currentCell = $el.parent();
-                    var $currentRow = $currentCell.parent();
-
-                    var $cells = $currentRow.find('td');
-                    var $rows = $currentRow.parents('div.mop-grid-main').find('tr');
-                    var rowIndex = $rows.index($currentRow);
-                    var cellIndex = $cells.index($currentCell);
-
-                    var newRowIndex = rowIndex + step;
-                    if (newRowIndex < 0 || newRowIndex >= $rows.length)
-                        return;
-
-                    var $newCell = $rows.eq(newRowIndex).find('td').eq(cellIndex);
-                    var $newEl = $newCell.find('input');
-                    if ($newEl.length > 0)
-                        $newEl.focus();
-                    else
-                        verticalFocusElement($el, step > 0 ? step + 1 : step - 1);
-                };
-
-
-                me.$('.bine-dv-text-field').keydown(function (e) {
-                    var key = e.charCode || e.keyCode || 0;
-
-                    if (e.ctrlKey)
-                        return true;
-
-                    var $this = $(this);
-                    var $thisRow = $this.parent().parent();
-
-                    if (key == 37)    // left key
-                        $this.focusPrevInputField();
-                    else if (key == 39) // right key
-                        $this.focusNextInputField();
-                    else if (key == 38) // up key
-                        verticalFocusElement($this, -1);
-                    else if (key == 40) // down key
-                        verticalFocusElement($this, 1);
-                    return key < 37 || key > 40;
-                });
-
-                me.$('.bine-dv-right-field').keydown(function (e) {
-                    var key = e.charCode || e.keyCode || 0;
-
-                    if (e.ctrlKey)
-                        return true;
-                    //console.log(key.toString());
-                    // allow backspace, tab, delete, arrows, numbers and keypad numbers ONLY 
-                    return (
+                if (e.ctrlKey)
+                    return true;
+                //console.log(key.toString());
+                // allow backspace, tab, delete, arrows, numbers and keypad numbers ONLY 
+                return (
                                         key == 8 ||
                                         key == 9 ||
                                         key == 46 ||
@@ -3026,91 +3072,91 @@ fin.bud.modified = function () {
                                         || (key == 109 || key == 189)  // FF: 109, IE: 189
                                         || key == 190 || key == 173
                                         || key == 110);
-                });
+            });
 
-            },
+        },
 
-            updateElement: function (elId, value) {
-                var me = this;
-                var $el = $('#' + elId);
-                if ($el.length > 0) {
-                    if ($el.prop('tagName') == 'INPUT')
-                        $el.val(value);
-                    else
-                        $el.html(value);
-                }
-            },
-
-            renderDataItem: function (dataItem, html) {
-                var me = this;
-                //var html = [];
-
-                var renderAmount = function (value, format) {
-                    if (!format)
-                        format = '0,000.00';
-                    if (!value)
-                        return '0.00';
-                    return bine.format(Math.round(value * 100) / 100, format);
-                };
-
-                var currentPeriod = FscPeriodLookup2[fin.bud.Context.getFscPeriod()];
-
-                var width = (me.endPeriod - me.startPeriod + 1) * (bine.isIE ? 757 : 750) + 200;
-                html.push('<table class="bud-table-2 list-body mop-grid" >');
-                if (dataItem.IsCategory || dataItem.IsTotal)
-                    html.push('<tr class="bine-ctrl bine-dv account-category-data-view" >');
+        updateElement: function (elId, value) {
+            var me = this;
+            var $el = $('#' + elId);
+            if ($el.length > 0) {
+                if ($el.prop('tagName') == 'INPUT')
+                    $el.val(value);
                 else
-                    html.push('<tr class="bine-ctrl bine-dv">');
-                for (var i = me.startPeriod; i <= me.endPeriod; i++) {
+                    $el.html(value);
+            }
+        },
 
-                    var FscPeriod = GetFscPeriod2(me.fscYear, i);
+        renderDataItem: function (dataItem, html) {
+            var me = this;
+            //var html = [];
 
-                    if (dataItem['WorModified' + i] || dataItem.IsCategory || dataItem.IsTotal || !currentPeriod || FscPeriod.EndDt < currentPeriod.EndDt)
-                        html.push('<td class="amount-col" style="width:100px; "><div ' + (dataItem['WorModified' + i] ? 'style="color:#802a2a;" ' : '') + ' id="' + dataItem['FscAccount'] + '_Projection_' + i + '">' + renderAmount(dataItem['Projection' + i]) + '</div></td>');
-                    else
-                        html.push('<td class="amount-col editable-col" style="width:100px; padding:0px;"><input id="' + dataItem['FscAccount'] + '_Projection_' + i + '" class="bine-dv-text-field bine-dv-right-field" type="text" style="width:90px; height:16px;" value="' + renderAmount(dataItem['Projection' + i], '0,000.00') + '" /></td>');
+            var renderAmount = function (value, format) {
+                if (!format)
+                    format = '0,000.00';
+                if (!value)
+                    return '0.00';
+                return bine.format(Math.round(value * 100) / 100, format);
+            };
 
-                    if (me.showBudget)
-                        html.push('<td class="amount-col" style="width:100px; ">' + renderAmount(dataItem['Budget' + i]) + '</td>');
-                    if (me.showVariance)
-                        html.push('<td id="' + dataItem['FscAccount'] + '_Variance_' + i + '"  class="amount-col" style="width:100px">' + renderAmount(dataItem['Variance' + i]) + '</td>');
-                    html.push('<td class="amount-col" style="width:100px">' + renderAmount(dataItem['DailyRunRate' + i]) + '</td>');
-                    if (me.showRunRate)
-                        html.push('<td class="amount-col" style="width:100px">' + renderAmount(dataItem['RunRate' + i]) + '</td>');
-                    html.push('<td class="amount-col" style="width:100px;height:20px;">' + renderAmount(dataItem['Forecast' + i]) + '</td>');
+            var currentPeriod = FscPeriodLookup2[fin.bud.Context.getFscPeriod()];
 
-                    if (dataItem.IsCategory || dataItem.IsTotal || !currentPeriod || FscPeriod.EndDt < currentPeriod.EndDt)
-                        html.push('<td  style="width:150px"><div style="overflow:hidden; width:139px;"><div style="width:500px"><a style="color:#000; " title="' + dataItem['Comment' + i] + '">' + dataItem['Comment' + i] + '</a></div></div></td>');
-                    else
-                        html.push('<td style="width:150px" class="editable-col"><input type="text" id="' + dataItem['FscAccount'] + '_Comment_' + i + '"  style="width:130px; height:16px;"  class="bine-dv-text-field"value="' + dataItem['Comment' + i] + '" /></td>');
-                }
+            var width = (me.endPeriod - me.startPeriod + 1) * (bine.isIE ? 757 : 750) + 200;
+            html.push('<table class="bud-table-2 list-body mop-grid" >');
+            if (dataItem.IsCategory || dataItem.IsTotal)
+                html.push('<tr class="bine-ctrl bine-dv account-category-data-view" >');
+            else
+                html.push('<tr class="bine-ctrl bine-dv">');
+            for (var i = me.startPeriod; i <= me.endPeriod; i++) {
 
-                html.push('<td  id="' + dataItem['FscAccount'] + '_Projection_Total" class="boundary amount-col" style="width:100px;" >' + renderAmount(dataItem['ProjectionTotal']) + '</td>');
-                html.push('<td  class=" amount-col" style="width:100px;">' + renderAmount(dataItem['BudgetTotal']) + '</td>');
+                var FscPeriod = GetFscPeriod2(me.fscYear, i);
 
-                html.push('</tr>');
-                html.push('</table>');
-            },
+                if (dataItem['WorModified' + i] || dataItem.IsCategory || dataItem.IsTotal || !currentPeriod || FscPeriod.EndDt < currentPeriod.EndDt)
+                    html.push('<td class="amount-col" style="width:100px; "><div ' + (dataItem['WorModified' + i] ? 'style="color:#802a2a;" ' : '') + ' id="' + dataItem['FscAccount'] + '_Projection_' + i + '">' + renderAmount(dataItem['Projection' + i]) + '</div></td>');
+                else
+                    html.push('<td class="amount-col editable-col" style="width:100px; padding:0px;"><input id="' + dataItem['FscAccount'] + '_Projection_' + i + '" class="bine-dv-text-field bine-dv-right-field" type="text" style="width:90px; height:16px;" value="' + renderAmount(dataItem['Projection' + i], '0,000.00') + '" /></td>');
 
-            val: function (data) {
-                var me = this;
+                if (me.showBudget)
+                    html.push('<td class="amount-col" style="width:100px; ">' + renderAmount(dataItem['Budget' + i]) + '</td>');
+                if (me.showVariance)
+                    html.push('<td id="' + dataItem['FscAccount'] + '_Variance_' + i + '"  class="amount-col" style="width:100px">' + renderAmount(dataItem['Variance' + i]) + '</td>');
+                html.push('<td class="amount-col" style="width:100px">' + renderAmount(dataItem['DailyRunRate' + i]) + '</td>');
+                if (me.showRunRate)
+                    html.push('<td class="amount-col" style="width:100px">' + renderAmount(dataItem['RunRate' + i]) + '</td>');
+                html.push('<td class="amount-col" style="width:100px;height:20px;">' + renderAmount(dataItem['Forecast' + i]) + '</td>');
 
-                if (arguments.length == 0)
-                    return me._items;
-
-                if (data && me._items != data) {
-                    me._items = data;
-                    me.refreshUi();
-                }
-
+                if (dataItem.IsCategory || dataItem.IsTotal || !currentPeriod || FscPeriod.EndDt < currentPeriod.EndDt)
+                    html.push('<td  style="width:150px"><div style="overflow:hidden; width:139px;"><div style="width:500px"><a style="color:#000; " title="' + dataItem['Comment' + i] + '">' + dataItem['Comment' + i] + '</a></div></div></td>');
+                else
+                    html.push('<td style="width:150px" class="editable-col"><input type="text" id="' + dataItem['FscAccount'] + '_Comment_' + i + '"  style="width:130px; height:16px;"  class="bine-dv-text-field"value="' + dataItem['Comment' + i] + '" /></td>');
             }
 
-        });
+            html.push('<td  id="' + dataItem['FscAccount'] + '_Projection_Total" class="boundary amount-col" style="width:100px;" >' + renderAmount(dataItem['ProjectionTotal']) + '</td>');
+            html.push('<td  class=" amount-col" style="width:100px;">' + renderAmount(dataItem['BudgetTotal']) + '</td>');
 
-        return DataGrid;
-    } ();
+            html.push('</tr>');
+            html.push('</table>');
+        },
 
-    var $templates = $(window.__bt__063f49d7[0]);
+        val: function (data) {
+            var me = this;
+
+            if (arguments.length == 0)
+                return me._items;
+
+            if (data && me._items != data) {
+                me._items = data;
+                me.refreshUi();
+            }
+
+        }
+
+    });
+
+    return DataGrid;
+} ();
+
+    var $templates = $(window.__bt__eb50bd57[0]);
 
     var TPL_MOP_FILTER = $('#mop-filter', $templates).html();
     var TPL_MOP_COLUMN_SWITH = $('#mop-column-switch', $templates).html();
@@ -3186,11 +3232,8 @@ fin.bud.modified = function () {
                 fscYear: { isValid: function (value) { return value; } }
             });
 
-            dv.on('change', function (name, value, oldValue) {
+            dv.on('change', function (name, value) {
                 if (name == dv.name || name == 'hcmHouseCode') {
-
-
-
                     var hcmHouseCode = dv.val('hcmHouseCode');
                     if (hcmHouseCode) {
                         dv.mask('Loading...');
@@ -3334,808 +3377,814 @@ fin.bud.modified = function () {
     });
 
     //
-    bud.page.WOR = function () {
-        var WorFilter = bine.extend(bine.DataView, {
-            tpl: TPL_WOR_FILTER,
+bud.page.WOR = function () {
+    var WorFilter = bine.extend(bine.DataView, {
+        tpl: TPL_WOR_FILTER,
 
-            createFields: function () {
-                var dv = this;
-                var fscPeriod = new ComboBox({ store: FscPeriodStore, name: 'fscPeriod', width: 100 });
-                dv.addField(fscPeriod);
-            },
+        createFields: function () {
+            var dv = this;
+            var fscPeriod = new ComboBox({ store: FscPeriodStore, name: 'fscPeriod', width: 100 });
+            dv.addField(fscPeriod);
+        },
 
-            onDomReady: function () {
-                var dv = this;
+        onDomReady: function () {
+            var dv = this;
 
-                var backToMopButton = new bine.Button({ text: 'Back to MOP' });
-                dv.append(backToMopButton, 'backToMopButton');
+            var backToMopButton = new bine.Button({ text: 'Back to MOP' });
+            dv.append(backToMopButton, 'backToMopButton');
 
-                backToMopButton.on('click', function () {
-                    if (fin.bud.modified())
-                        return;
+            backToMopButton.on('click', function () {
+                if (fin.bud.modified())
+                    return;
 
-                    dv.fireEvent('backtomop');
-                });
+                dv.fireEvent('backtomop');
+            });
 
-                dv.$('#popupButton').click(function (e) {
-                    e.preventDefault();
-                    if (!$(this).hasClass('active')) {
-                        $(this).addClass('active');
-                        dv.$('#popupBox').slideDown('slow', function () {
-                            var FscPeriod = GetCurrentFscPeriod();
-                            dv.$('#commentLabel').html('Summary Comments for Period ' + FscPeriod.Number);
+            dv.$('#popupButton').click(function (e) {
+                e.preventDefault();
+                if (!$(this).hasClass('active')) {
+                    $(this).addClass('active');
+                    dv.$('#popupBox').slideDown('slow', function () {
+                        var FscPeriod = GetCurrentFscPeriod();
+                        dv.$('#commentLabel').html('Summary Comments for Period ' + FscPeriod.Number);
 
-                            bine.$mask(dv.$('#popupBox'), ('Loading...'));
-                            loadWorSummaryComment(dv.val('hcmHouseCode'), dv.val('hcmJob'), dv.val('fscYear'), FscPeriod['Id'], function (comment) {
-                                dv.$('#summaryComment').val(comment);
-                                bine.$unmask(dv.$('#popupBox'));
-                            });
+                        bine.$mask(dv.$('#popupBox'), ('Loading...'));
+                        loadWorSummaryComment(dv.val('hcmHouseCode'), dv.val('hcmJob'), dv.val('fscYear'), FscPeriod['Id'], function (comment) {
+                            dv.$('#summaryComment').val(comment);
+                            bine.$unmask(dv.$('#popupBox'));
                         });
-
-                    }
-                });
-
-                dv.$('#saveButton').click(function (e) {
-                    e.preventDefault();
-                    bine.$mask(dv.$('#popupBox'), ('Saving...'));
-                    saveWorSummaryComment(dv.val('hcmHouseCode'), dv.val('hcmJob'), dv.val('fscYear'), GetCurrentFscPeriod()['Id'], dv.$('#summaryComment').val(), function () {
-                        dv.$('#popupBox').slideUp('slow');
-                        dv.$('#popupButton').removeClass('active');
-                        bine.$unmask(dv.$('#popupBox'));
                     });
-                });
 
-                dv.$('#cancelButton').click(function (e) {
-                    e.preventDefault();
+                }
+            });
+
+            dv.$('#saveButton').click(function (e) {
+                e.preventDefault();
+                bine.$mask(dv.$('#popupBox'), ('Saving...'));
+                saveWorSummaryComment(dv.val('hcmHouseCode'), dv.val('hcmJob'), dv.val('fscYear'), GetCurrentFscPeriod()['Id'], dv.$('#summaryComment').val(), function () {
                     dv.$('#popupBox').slideUp('slow');
                     dv.$('#popupButton').removeClass('active');
+                    bine.$unmask(dv.$('#popupBox'));
                 });
+            });
 
-                dv.fieldConfig({
-                    hcmHouseCode: {
-                        convertDisplay: function (value) {
-                            return HcmHouseCodeLookup[value]['Description'];
-                            //return bine.query(HcmHouseCodes).where(function (i) { return i.Id == value; }).select('Description').first();
-                        }
-                    },
-                    hcmJob: {
-                        convertDisplay: function (value) {
-                            var hcmHouseCode = HcmHouseCodeLookup[dv.val('hcmHouseCode')];    //bine.query(HcmHouseCodes).where(function (i) { return i.Id == dv.val('hcmHouseCode'); }).first();
-                            return bine.query(hcmHouseCode.Jobs).where(function (i) { return i.Id == value; }).select('Description').first();
-                        }
-                    },
-                    fscYear: {
-                        convertDisplay: function (value) {
-                            return bine.query(FscYears).where(function (i) { return i.Id == value; }).select('Description').first();
-                        }
+            dv.$('#cancelButton').click(function (e) {
+                e.preventDefault();
+                dv.$('#popupBox').slideUp('slow');
+                dv.$('#popupButton').removeClass('active');
+            });
+
+            dv.fieldConfig({
+                hcmHouseCode: {
+                    convertDisplay: function (value) {
+                        return HcmHouseCodeLookup[value]['Description'];
+                        //return bine.query(HcmHouseCodes).where(function (i) { return i.Id == value; }).select('Description').first();
                     }
-                });
-            }
-        });
-
-        var WorCommentView = bine.extend(bine.DataView, {
-            tpl: TPL_WOR_COMMENT
-        });
-
-        //
-        var WorDataViewList = function () {
-            var htmlBuilder = [];
-            htmlBuilder.push('<table class="bud-table-2"><thead class="table-head" style=" border: 1px solid #c6c6c6;">');
-
-            htmlBuilder.push('<tr>');
-            //  htmlBuilder.push('<th class="boundary" ><button class="bine-btn bine-btn-txt bine-ctrl gray" style="height:50px;">SearchUpdate Future<br/>Periods w/MOP</button></th>');
-            htmlBuilder.push('<th class="boundary" ><div  class="row1-btn"><button id="updaterunrate-button" class="bine-btn bine-btn-txt bine-ctrl " style="height:50px;">Update With<br/>Run Rate</button></div><div style="padding:5px;display:none"><div style="width:13px; height:20px;padding-top:3px;float:left;"><input style="" type="checkbox" name="selectAll" id="SelectAll"/></div><span style="float:left;line-height:18px; height:20px;padding-left:5px;">Select All</span><div style="clear:both;"></div></div></th>');
-            htmlBuilder.push('<th class="boundary"  style="text-align:center">Account Code</th>');
-
-            for (var i = 1; i <= 6; i++) {
-                htmlBuilder.push(String.format('<th class="boundary mop-week-{0} mop-week-title row-btn" style="text-align:center"><span>Week {0}</span><br/><button class="copy-button copy-button-{0} bine-btn bine-btn-txt bine-ctrl gray" week="{0}">Copy Preposted</button></th>', i));
-            }
-            htmlBuilder.push('<th class="boundary"  style="text-align:center">MOP Monthly<br/>Operating Report</th>');
-            htmlBuilder.push('<th class="boundary"  style="text-align:center;width:100px;">Budget</th>');
-            htmlBuilder.push('<th class="boundary"  style="text-align:center; width:100px;">Run Rate</th>');
-            htmlBuilder.push('<th class="boundary"  style="text-align:center">Mop to Budget<br/>Variance</th>');
-            htmlBuilder.push('<th class="boundary"  style="text-align:center; ">Comments</th>');
-            htmlBuilder.push('<th class="boundary"  style="text-align:center">Full Year<br/>Projections</th>');
-            htmlBuilder.push('<th class=""  style="text-align:center">Full Year<br/>Budget</th>');
-
-            htmlBuilder.push('</tr>');
-
-            htmlBuilder.push('</thead><tbody id="item-wrapper"  class="list-body"></tbody></table>');
-
-            var TPL_LIST = htmlBuilder.join('');
-
-            htmlBuilder = [];
-            htmlBuilder.push('<tr>');
-            // htmlBuilder.push('<td class="boundary"><input type="checkbox" /></td>');
-            htmlBuilder.push('<td class="boundary"><div style="padding:3px 7px;"><input type="checkbox" name="UpdateRunRate" style="display:none" /></div></td>');
-            htmlBuilder.push('<td class="boundary mop-account-column" name="FscAccountDescription" style="white-space:nowrap"></td>');
-
-            for (var i = 1; i <= 6; i++) {
-                htmlBuilder.push(String.format('<td  class=" mop-projection boundary mop-week-amount mop-week-{0}"><input type="text"  style="width:100%;" name="Week{0}" /></td>', i));
-            }
-
-            htmlBuilder.push(String.format('<td class=" boundary wor-amount-col" name="Projection"></td>', i));
-            htmlBuilder.push(String.format('<td class=" boundary wor-amount-col" name="Budget"></td>', i));
-            htmlBuilder.push(String.format('<td class=" boundary wor-amount-col" name="RunRate"></td>', i));
-            htmlBuilder.push(String.format('<td class=" boundary wor-amount-col" name="Variance"></td>', i));
-            htmlBuilder.push(String.format('<td class="mop-comment boundary wor-amount-col" style=""><input type="text"  style="width:100%;" name="Comment" /></td>', i));
-
-            htmlBuilder.push('<td  class="boundary amount-col"  name="ProjectionTotal"></td>');
-            htmlBuilder.push('<td  class=" amount-col" name="BudgetTotal"></td>');
-
-            htmlBuilder.push('</tr>');
-
-            var TPL_VIEW = htmlBuilder.join('');
-
-            var amountDisplay = function (value) {
-                if (!value)
-                    return '0.00';
-                return bine.format(value, '0,000.00');
-            };
-
-            var amountEdit = function (value) {
-                if (!value)
-                    return 0;
-                return value;
-            };
-
-            var amountConfig = {
-                convertDisplay: amountDisplay,
-                convertBack: amountEdit,
-                convert: function (value) {
-                    return parseFloat(value);
+                },
+                hcmJob: {
+                    convertDisplay: function (value) {
+                        var hcmHouseCode = HcmHouseCodeLookup[dv.val('hcmHouseCode')];    //bine.query(HcmHouseCodes).where(function (i) { return i.Id == dv.val('hcmHouseCode'); }).first();
+                        return bine.query(hcmHouseCode.Jobs).where(function (i) { return i.Id == value; }).select('Description').first();
+                    }
+                },
+                fscYear: {
+                    convertDisplay: function (value) {
+                        return bine.query(FscYears).where(function (i) { return i.Id == value; }).select('Description').first();
+                    }
                 }
-            }
+            });
+        }
+    });
 
-            var fieldConfig = {};
+    var WorCommentView = bine.extend(bine.DataView, {
+        tpl: TPL_WOR_COMMENT
+    });
 
-            for (var i = 1; i <= 6; i++) {
-                fieldConfig['Week' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
-            }
-            fieldConfig['Budget'] = { type: 'number', format: '0,000.00', allowNegative: true }
-            fieldConfig['Projection'] = { type: 'number', format: '0,000.00', allowNegative: true }
-            fieldConfig['Variance'] = { type: 'number', format: '0,000.00', allowNegative: true }
-            fieldConfig['RunRate'] = { type: 'number', format: '0,000.00', allowNegative: true }
+    //
+var WorDataViewList = function () {
+    var htmlBuilder = [];
+    htmlBuilder.push('<table class="bud-table-2"><thead class="table-head" style=" border: 1px solid #c6c6c6;">');
 
-            fieldConfig['BudgetTotal'] = { type: 'number', format: '0,000.00' }
-            fieldConfig['ProjectionTotal'] = { type: 'number', format: '0,000.00' }
-            fieldConfig['UpdateRunRate'] = { type: 'bool' };
+    htmlBuilder.push('<tr>');
+    //  htmlBuilder.push('<th class="boundary" ><button class="bine-btn bine-btn-txt bine-ctrl gray" style="height:50px;">SearchUpdate Future<br/>Periods w/MOP</button></th>');
+    htmlBuilder.push('<th class="boundary" ><div  class="row1-btn"><button id="updaterunrate-button" class="bine-btn bine-btn-txt bine-ctrl " style="height:50px;">Update With<br/>Run Rate</button></div><div style="padding:5px;display:none"><div style="width:13px; height:20px;padding-top:3px;float:left;"><input style="" type="checkbox" name="selectAll" id="SelectAll"/></div><span style="float:left;line-height:18px; height:20px;padding-left:5px;">Select All</span><div style="clear:both;"></div></div></th>');
+    htmlBuilder.push('<th class="boundary"  style="text-align:center">Account Code</th>');
 
-            var DataViewList = bine.extend(bine.DataViewList, {
-                tpl: TPL_LIST, itemContainerId: 'item-wrapper',
-                fscPeriod: null,
+    for (var i = 1; i <= 6; i++) {
+        htmlBuilder.push(String.format('<th class="boundary mop-week-{0} mop-week-title row-btn" style="text-align:center"><span>Week {0}</span><br/><button class="copy-button copy-button-{0} bine-btn bine-btn-txt bine-ctrl gray" week="{0}">Copy Preposted</button></th>', i));
+    }
+    htmlBuilder.push('<th class="boundary"  style="text-align:center">MOP Monthly<br/>Operating Report</th>');
+    htmlBuilder.push('<th class="boundary"  style="text-align:center;width:100px;">Budget</th>');
+    htmlBuilder.push('<th class="boundary"  style="text-align:center; width:100px;">Run Rate</th>');
+    htmlBuilder.push('<th class="boundary"  style="text-align:center">Mop to Budget<br/>Variance</th>');
+    htmlBuilder.push('<th class="boundary"  style="text-align:center; ">Comments</th>');
+    htmlBuilder.push('<th class="boundary"  style="text-align:center">Full Year<br/>Projections</th>');
+    htmlBuilder.push('<th class=""  style="text-align:center">Full Year<br/>Budget</th>');
 
-                createDataView: function () {
-                    var me = this;
-                    return new bine.DataView({ tpl: TPL_VIEW,
-                        onDomReady: function () {
-                            var dv = this;
+    htmlBuilder.push('</tr>');
 
-                            $(".mop-comment").focusin(function () {
-                                if (!$(this).parent().hasClass("summary"))
-                                    $(this).addClass("focus");
-                            });
-                            $(".mop-comment").focusout(function () {
-                                if (!$(this).parent().hasClass("summary"))
-                                    $(this).removeClass("focus");
-                            });
+    htmlBuilder.push('</thead><tbody id="item-wrapper"  class="list-body"></tbody></table>');
 
-                            $(".mop-projection").focusin(function (e) {
-                                if (!$(this).parent().hasClass("summary") && $("input", $(this)).attr('readonly') != "readonly")
-                                    $(this).addClass("focus");
-                            });
-                            $(".mop-projection").focusout(function () {
-                                if (!$(this).parent().hasClass("summary") && $("input", $(this)).attr('readonly') != "readonly")
-                                    $(this).removeClass("focus");
-                            });
+    var TPL_LIST = htmlBuilder.join('');
 
-                            me.$("#SelectAll").change(function (e) {
-                                if ($(this).attr("checked") == "checked") {
-                                    dv.val('UpdateRunRate', true);
+    htmlBuilder = [];
+    htmlBuilder.push('<tr>');
+    // htmlBuilder.push('<td class="boundary"><input type="checkbox" /></td>');
+    htmlBuilder.push('<td class="boundary"><div style="padding:3px 7px;"><input type="checkbox" name="UpdateRunRate" style="display:none" /></div></td>');
+    htmlBuilder.push('<td class="boundary mop-account-column" name="FscAccountDescription" style="white-space:nowrap"></td>');
+
+    for (var i = 1; i <= 6; i++) {
+        htmlBuilder.push(String.format('<td  class=" mop-projection boundary mop-week-amount mop-week-{0}"><input type="text"  style="width:100%;" name="Week{0}" /></td>', i));
+    }
+
+    htmlBuilder.push(String.format('<td class=" boundary wor-amount-col" name="Projection"></td>', i));
+    htmlBuilder.push(String.format('<td class=" boundary wor-amount-col" name="Budget"></td>', i));
+    htmlBuilder.push(String.format('<td class=" boundary wor-amount-col" name="RunRate"></td>', i));
+    htmlBuilder.push(String.format('<td class=" boundary wor-amount-col" name="Variance"></td>', i));
+    htmlBuilder.push(String.format('<td class="mop-comment boundary wor-amount-col" style=""><input type="text"  style="width:100%;" name="Comment" /></td>', i));
+
+    htmlBuilder.push('<td  class="boundary amount-col"  name="ProjectionTotal"></td>');
+    htmlBuilder.push('<td  class=" amount-col" name="BudgetTotal"></td>');
+
+    htmlBuilder.push('</tr>');
+
+    var TPL_VIEW = htmlBuilder.join('');
+
+    var amountDisplay = function (value) {
+        if (!value)
+            return '0.00';
+        return bine.format(value, '0,000.00');
+    };
+
+    var amountEdit = function (value) {
+        if (!value)
+            return 0;
+        return value;
+    };
+
+    var amountConfig = {
+        convertDisplay: amountDisplay,
+        convertBack: amountEdit,
+        convert: function (value) {
+            return parseFloat(value);
+        }
+    }
+
+    var fieldConfig = {};
+
+    for (var i = 1; i <= 6; i++) {
+        fieldConfig['Week' + i] = { type: 'number', format: '0,000.00', allowNegative: true }
+    }
+    fieldConfig['Budget'] = { type: 'number', format: '0,000.00', allowNegative: true }
+    fieldConfig['Projection'] = { type: 'number', format: '0,000.00', allowNegative: true }
+    fieldConfig['Variance'] = { type: 'number', format: '0,000.00', allowNegative: true }
+    fieldConfig['RunRate'] = { type: 'number', format: '0,000.00', allowNegative: true }
+
+    fieldConfig['BudgetTotal'] = { type: 'number', format: '0,000.00' }
+    fieldConfig['ProjectionTotal'] = { type: 'number', format: '0,000.00' }
+    fieldConfig['UpdateRunRate'] = { type: 'bool' };
+
+    var DataViewList = bine.extend(bine.DataViewList, {
+        tpl: TPL_LIST, itemContainerId: 'item-wrapper',
+        fscPeriod: null,
+
+        createDataView: function () {
+            var me = this;
+            return new bine.DataView({ tpl: TPL_VIEW,
+                onDomReady: function () {
+                    var dv = this;
+
+                    $(".mop-comment").focusin(function () {
+                        if (!$(this).parent().hasClass("summary"))
+                            $(this).addClass("focus");
+                    });
+                    $(".mop-comment").focusout(function () {
+                        if (!$(this).parent().hasClass("summary"))
+                            $(this).removeClass("focus");
+                    });
+
+                    $(".mop-projection").focusin(function (e) {
+                        if (!$(this).parent().hasClass("summary") && $("input", $(this)).attr('readonly') != "readonly")
+                            $(this).addClass("focus");
+                    });
+                    $(".mop-projection").focusout(function () {
+                        if (!$(this).parent().hasClass("summary") && $("input", $(this)).attr('readonly') != "readonly")
+                            $(this).removeClass("focus");
+                    });
+
+                    me.$("#SelectAll").change(function (e) {
+                        if ($(this).attr("checked") == "checked") {
+                            dv.val('UpdateRunRate', true);
+                        }
+                        else {
+                            dv.val('UpdateRunRate', false);
+                        }
+                    });
+
+                    dv.on('change', function (name, value, oldValue) {
+
+                        if (name == dv.name) {
+                            if (dv.val('IsCategory') || dv.val('IsTotal')) {
+                                dv.$this.addClass('account-category-data-view');
+                                dv.$this.addClass('summary');
+                                dv.getField('UpdateRunRate').hide();
+
+                                for (var i = 1; i <= 6; i++) {
+                                    dv.getField('Week' + i).attr('readonly', 'readonly');
                                 }
-                                else {
-                                    dv.val('UpdateRunRate', false);
-                                }
-                            });
+                                dv.getField('Comment').attr('readonly', 'readonly').attr('disabled', true);
+                            }
+                            else {
+                                var FscPeriod = GetFscPeriod(me.fscPeriod);
 
-                            dv.on('change', function (name, value, oldValue) {
+                                var today = new Date();
+                                today.setHours(0, 0, 0, 0);
 
-                                if (name == dv.name) {
-                                    if (dv.val('IsCategory') || dv.val('IsTotal')) {
-                                        dv.$this.addClass('account-category-data-view');
-                                        dv.$this.addClass('summary');
-                                        dv.getField('UpdateRunRate').hide();
-
-                                        for (var i = 1; i <= 6; i++) {
-                                            dv.getField('Week' + i).attr('readonly', 'readonly');
-                                        }
-                                        dv.getField('Comment').attr('readonly', 'readonly').attr('disabled', true);
+                                var currentPeriod = GetCurrentFscPeriodByToday();
+                                $.each(FscPeriod.Weeks, function (i, week) {
+                                    var weekNumber = i + 1;
+                                    if (week.EndDt < today || week.EndDt < currentPeriod.StartDt || week.StartDt > currentPeriod.EndDt) {
+                                        //if (weekNumber < fin.bud.Context.getWeekNumber()) {
+                                        dv.getField('Week' + weekNumber).attr('readonly', 'readonly').css({ "border-width": "0px" }).addClass('readonly');
+                                        $('input[name="Week' + weekNumber + '"]').parent().removeClass("mop-projection");      //.attr('disabled', true);
                                     }
                                     else {
-                                        var FscPeriod = GetFscPeriod(me.fscPeriod);
-
-                                        var today = new Date();
-                                        today.setHours(0, 0, 0, 0);
-
-                                        var currentPeriod = GetCurrentFscPeriodByToday();
-                                        $.each(FscPeriod.Weeks, function (i, week) {
-                                            var weekNumber = i + 1;
-                                            if (week.EndDt < today || week.EndDt < currentPeriod.StartDt || week.StartDt > currentPeriod.EndDt) {
-                                                //if (weekNumber < fin.bud.Context.getWeekNumber()) {
-                                                dv.getField('Week' + weekNumber).attr('readonly', 'readonly').css({ "border-width": "0px" }).addClass('readonly');
-                                                $('input[name="Week' + weekNumber + '"]').parent().removeClass("mop-projection");      //.attr('disabled', true);
-                                            }
-                                            else {
-                                                dv.getField('Week' + weekNumber).removeAttr('readonly').removeClass('readonly');            //.attr('disabled', false);
-                                            }
-                                        });
+                                        dv.getField('Week' + weekNumber).removeAttr('readonly').removeClass('readonly');            //.attr('disabled', false);
                                     }
-                                }
-
-                                fin.bud.modified(true);
-                                if (name.startsWith('Week') || name.startsWith('Mop')) {
-                                    var weekNumber = name.replace('Week', '');
-
-                                    var worDetails = me.val();
-
-                                    if (dv.val('IsAccount')) {
-                                        var categoryView = me.getDataView(worDetails.indexOf(bine.query(worDetails).where(function (f) { return f.FscAccount == dv.val('CategoryId'); }).first()));
-                                        categoryView.val(name, categoryView.val(name) + value - oldValue);
-                                        //categoryView.val(name, bine.query(worDetails).where(function (i) { return i.CategoryId == categoryView.val('FscAccount'); }).select(name).toArray().sum());
-                                    }
-                                    else if (dv.val('IsCategory')) {
-                                        var totalView = me.getDataView(me.itemCount() - 1);
-                                        var changedValue = value - oldValue;
-                                        var FscAccount = FscAccountCategoryLookup[dv.val('FscAccount')];
-                                        if (!FscAccount.IsNegative)
-                                            changedValue = -changedValue;
-                                        totalView.val(name, totalView.val(name) + changedValue);
-                                        //totalView.val(name, bine.query(worDetails).where(function (i) { return i.IsCategory; }).select(name).toArray().sum());
-
-                                        //                                totalView.val(name, bine.query(worDetails).where(function (i) { return i.IsCategory; }).select(function (i) {
-
-                                        //                                    var FscAccount = FscAccountCategoryLookup[i.FscAccount];
-                                        //                                    return FscAccount.IsNegative ? i[name] : -i[name];
-
-                                        //                                }).toArray().sum());
-                                    }
-
-                                    if (name.startsWith('Week')) {
-                                        var mopValue = 0;
-                                        for (var i = 0; i <= 6; i++)
-                                            mopValue += dv.val('Week' + i) || 0;
-                                        dv.val('Projection', mopValue);
-                                    }
-                                }
-                            });
-                        }
-                    }, fieldConfig);
-                },
-
-                onDomReady: function () {
-                    var me = this;
-
-                    me.$('.copy-button').click(function () {
-                        var week = $(this).attr('week');
-                        me.fireEvent('copyflash', week);
-                    });
-
-                    me.$('#updaterunrate-button').click(function () {
-                        var FscPeriod = GetFscPeriod(me.fscPeriod);
-                        var today = new Date();
-                        today.setHours(0, 0, 0, 0);
-
-                        me.each(function (index, dv) {
-                            if (dv.val('UpdateRunRate') && dv.val('IsAccount')) {
-                                var dailyRunRate = Math.round(dv.val('RunRate') / FscPeriod.Days * 100) / 100;
-                                $.each(FscPeriod.Weeks, function (i, week) {
-                                    // if (week.EndDt >= today) {
-                                    var weekNumber = i + 1;
-                                    if (weekNumber >= fin.bud.Context.getWeekNumber())
-                                        dv.val('Week' + weekNumber, dailyRunRate * week.Days);
-                                    // }
                                 });
                             }
-                        });
+                        }
+
+                        fin.bud.modified(true);
+                        if (name.startsWith('Week') || name.startsWith('Mop')) {
+                            var weekNumber = name.replace('Week', '');
+
+                            var worDetails = me.val();
+
+                            if (dv.val('IsAccount')) {
+                                var categoryView = me.getDataView(worDetails.indexOf(bine.query(worDetails).where(function (f) { return f.FscAccount == dv.val('CategoryId'); }).first()));
+                                categoryView.val(name, categoryView.val(name) + value - oldValue);
+                                //categoryView.val(name, bine.query(worDetails).where(function (i) { return i.CategoryId == categoryView.val('FscAccount'); }).select(name).toArray().sum());
+                            }
+                            else if (dv.val('IsCategory')) {
+                                var totalView = me.getDataView(me.itemCount() - 1);
+                                var changedValue = value - oldValue;
+                                var FscAccount = FscAccountCategoryLookup[dv.val('FscAccount')];
+                                if (!FscAccount.IsNegative)
+                                    changedValue = -changedValue;
+                                totalView.val(name, totalView.val(name) + changedValue);
+                                //totalView.val(name, bine.query(worDetails).where(function (i) { return i.IsCategory; }).select(name).toArray().sum());
+
+                                //                                totalView.val(name, bine.query(worDetails).where(function (i) { return i.IsCategory; }).select(function (i) {
+
+                                //                                    var FscAccount = FscAccountCategoryLookup[i.FscAccount];
+                                //                                    return FscAccount.IsNegative ? i[name] : -i[name];
+
+                                //                                }).toArray().sum());
+                            }
+
+                            if (name.startsWith('Week')) {
+                                var mopValue = 0;
+                                for (var i = 0; i <= 6; i++)
+                                    mopValue += dv.val('Week' + i) || 0;
+                                dv.val('Projection', mopValue);
+                            }
+                        }
                     });
-                },
-
-                addFscAccount: function (fscAccount) {
-                    var me = this;
-
-                    var worItems = me.val();
-
-                    var exists = bine.query(worItems).where(function (f) { return f.FscAccount == fscAccount; }).first() != null;
-                    if (exists)
-                        return;
-
-                    var dataItem = createFscAccountWorDataItem(fscAccount);
-
-                    var dataItemIndex = worItems.indexOf(bine.query(worItems).where(function (f) { return f.SortIndex < dataItem.SortIndex; }).orderBy('SortIndex', false).first()) + 1;
-                    if (dataItemIndex < 0)
-                        dataItemIndex = 0;
-
-                    var dv = me.insert(dataItemIndex, dataItem);
-
-                    worItems = me.val();
-                    var categoryItem = bine.query(worItems).where(function (f) { return f.FscAccount == dataItem.CategoryId; }).first();
-                    if (!categoryItem) {
-                        categoryItem = createFscAccountCategoryWorDataItem(dataItem.CategoryId);
-
-                        var categoryItemIndex = worItems.indexOf(bine.query(worItems).where(function (f) { return f.SortIndex < categoryItem.SortIndex; }).orderBy('SortIndex', false).first()) + 1;
-                        if (categoryItemIndex < 0)
-                            categoryItemIndex = 0;
-                        me.insert(categoryItemIndex, categoryItem);
-                    }
                 }
-            });
-
-            return DataViewList;
-        } ();
-
-        //
-
-        var WorForecasts = [];
-        var WorDetails = [];
-
-        var initWorDataItem = function (dataItem) {
-            for (var i = 1; i <= 6; i++) {
-                dataItem['Week' + i] = 0;
-            }
-            dataItem['Budget'] = 0;
-            dataItem['Projection'] = 0;
-            dataItem['Variance'] = 0;
-            dataItem['RunRate'] = 0;
-            dataItem['Comment'] = '';
-            dataItem['BudgetTotal'] = 0;
-            dataItem['ProjectionTotal'] = 0;
-            dataItem['UpdateRunRate'] = true;
-        };
-
-        var createFscAccountWorDataItem = function (fscAccount) {
-            //    var FscAccount = bine.query(FscAccounts).where(function (f) { return f.Id == fscAccount; }).first();
-            //    var FscAccountCategory = bine.query(FscAccountCategories).where(function (f) { return f.Id == FscAccount.CategoryId; }).first();
-
-            var FscAccount = FscAccountLookup[fscAccount];
-            var FscAccountCategory = FscAccountCategoryLookup[FscAccount.CategoryId];
-
-            var dataItem = { FscAccount: fscAccount, FscAccountDescription: FscAccount.Description, IsAccount: true };
-
-            dataItem.CategoryId = FscAccountCategory.Id;
-            dataItem.SortIndex = FscAccountCategory.OrderIndex.toString().padLeft('0', 4) + '_' + FscAccount.Code;
-
-            initWorDataItem(dataItem);
-
-            return dataItem;
-
-        };
-
-        var createFscAccountCategoryWorDataItem = function (fscAccountCategory) {
-
-            //  var FscAccountCategory = bine.query(FscAccountCategories).where(function (f) { return f.Id == fscAccountCategory; }).first();
-            var FscAccountCategory = FscAccountCategoryLookup[fscAccountCategory];
-
-            var dataItem = { FscAccount: FscAccountCategory.Id, FscAccountDescription: FscAccountCategory.Description, IsCategory: true };
-
-            dataItem.SortIndex = FscAccountCategory.OrderIndex.toString().padLeft('0', 4) + '_9999';
-
-            initWorDataItem(dataItem);
-
-            return dataItem;
-
-        };
-
-        var populateWorDetails = function (periodNumber, specifiedFscAccount) {
-
-            WorDetails = [];
-
-            var mopItems = bine.query(MopDetails).where(function (i) { return i.IsAccount && (!specifiedFscAccount || specifiedFscAccount == i.FscAccount); }).toArray();
-
-            var worItemIndex = {};
-
-            var totalItem = { FscAccount: 99999, FscAccountDescription: 'Total', IsTotal: true };
-
-            totalItem.SortIndex = '9999_9999';
-            initWorDataItem(totalItem);
-            WorDetails.push(totalItem);
-
-            $.each(mopItems, function (index, mopItem) {
-
-                var fscAccount = mopItem.FscAccount;
-                var dataItem = createFscAccountWorDataItem(fscAccount);
-                WorDetails.push(dataItem);
-
-                var FscAccount = FscAccountLookup[fscAccount];
-
-                var categoryItem = worItemIndex[dataItem.CategoryId];
-                if (!categoryItem) {
-                    categoryItem = createFscAccountCategoryWorDataItem(dataItem.CategoryId);
-                    WorDetails.push(categoryItem);
-                    worItemIndex[dataItem.CategoryId] = categoryItem;
-                }
-
-                dataItem.IsAccount = mopItem.IsAccount;
-                dataItem.IsCategory = mopItem.IsCategory;
-
-                dataItem['Budget'] = mopItem['Budget' + periodNumber];
-                dataItem['Comment'] = mopItem['Comment' + periodNumber];
-                categoryItem['Budget'] += mopItem['Budget' + periodNumber];
-                totalItem['Budget'] += FscAccount.IsNegative ? mopItem['Budget' + periodNumber] : -mopItem['Budget' + periodNumber];
-
-
-                dataItem['RunRate'] = mopItem['RunRate' + periodNumber];
-                categoryItem['RunRate'] += mopItem['RunRate' + periodNumber];
-                totalItem['RunRate'] += FscAccount.IsNegative ? mopItem['RunRate' + periodNumber] : -mopItem['RunRate' + periodNumber];
-
-                dataItem['BudgetTotal'] = mopItem['BudgetTotal'];
-                dataItem['ProjectionTotal'] = mopItem['ProjectionTotal'];
-
-                categoryItem['BudgetTotal'] += mopItem['BudgetTotal'];
-                categoryItem['ProjectionTotal'] += mopItem['ProjectionTotal'];
-
-                totalItem['BudgetTotal'] += FscAccount.IsNegative ? mopItem['BudgetTotal'] : -mopItem['BudgetTotal'];
-                totalItem['ProjectionTotal'] += FscAccount.IsNegative ? mopItem['ProjectionTotal'] : -mopItem['ProjectionTotal'];
-
-                var forecast = bine.query(WorForecasts).where(function (b) { return b.FscAccount == fscAccount; }).first();
-                if (forecast) {
-
-                    for (var i = 1; i <= 6; i++) {
-                        dataItem['Week' + i] += forecast['Week' + i] || 0;
-                        categoryItem['Week' + i] += forecast['Week' + i] || 0;
-                        totalItem['Week' + i] += FscAccount.IsNegative ? (forecast['Week' + i] || 0) : -(forecast['Week' + i] || 0);
-                    }
-                    dataItem['Modified'] = forecast['Modified'];
-
-                }
-
-                if (dataItem['Modified']) {
-                    var weekTotal = 0;
-                    for (var i = 1; i <= 6; i++)
-                        weekTotal += dataItem['Week' + i] || 0;
-
-                    dataItem['Projection'] = weekTotal;
-                    categoryItem['Projection'] += weekTotal;
-                    totalItem['Projection'] += FscAccount.IsNegative ? weekTotal : -weekTotal;
-
-                    mopItem['Projection' + periodNumber] = weekTotal;
-
-                }
-                else {
-                    dataItem['Projection'] = mopItem['Projection' + periodNumber];
-                    categoryItem['Projection'] += mopItem['Projection' + periodNumber];
-                    totalItem['Projection'] += FscAccount.IsNegative ? mopItem['Projection' + periodNumber] : -mopItem['Projection' + periodNumber];
-                }
-
-            });
-
-            //    var categories = bine.query(WorDetails).select('CategoryId').toArray().distinct();
-
-            //    $.each(categories, function (index, category) {
-            //        var categoryItem = createFscAccountCategoryWorDataItem(category);
-
-            //        for (var i = 1; i <= 6; i++) {
-            //            categoryItem['Week' + i] = bine.query(WorDetails).where(function (d) { return d.CategoryId == category; }).select('Week' + i).toArray().sum();
-            //        }
-            //        categoryItem['Projection'] = bine.query(WorDetails).where(function (d) { return d.CategoryId == category; }).select('Projection').toArray().sum();
-            //        categoryItem['Budget'] = bine.query(WorDetails).where(function (d) { return d.CategoryId == category; }).select('Budget').toArray().sum();
-            //        categoryItem['Variance'] = bine.query(WorDetails).where(function (d) { return d.CategoryId == category; }).select('Variance').toArray().sum();
-
-            //        categoryItem['BudgetTotal'] = bine.query(WorDetails).where(function (d) { return d.CategoryId == category; }).select('BudgetTotal').toArray().sum();
-            //        categoryItem['ProjectionTotal'] = bine.query(WorDetails).where(function (d) { return d.CategoryId == category; }).select('ProjectionTotal').toArray().sum();
-
-            //        WorDetails.push(categoryItem);
-            //    });
-
-            //    var totalItem = { FscAccount: 99999, FscAccountDescription: 'Total', IsTotal: true };
-
-            //    totalItem.SortIndex = '9999_9999';
-            //    WorDetails.push(totalItem);
-
-            //    var calculateTotal = function (field) {
-            //        return bine.query(WorDetails).where(function (d) { return d.IsCategory; }).select(function (d) {
-            //            var FscAccount = FscAccountCategoryLookup[d.FscAccount];
-            //            return FscAccount.IsNegative ? d[field] : -d[field];
-            //        }).toArray().sum();
-            //    }
-
-            //    for (var i = 1; i <= 6; i++) {
-            //        totalItem['Week' + i] = calculateTotal('Week' + i);        //bine.query(WorDetails).where(function (d) { return d.IsCategory; }).select('Week' + i).toArray().sum();
-            //    }
-
-            //    totalItem['Projection'] = calculateTotal('Projection');  ///bine.query(WorDetails).where(function (d) { return d.IsCategory; }).select('Projection').toArray().sum();
-            //    totalItem['Budget'] = calculateTotal('Budget');  //bine.query(WorDetails).where(function (d) { return d.IsCategory; }).select('Budget').toArray().sum();
-            //    totalItem['Variance'] = calculateTotal('Variance');  // bine.query(WorDetails).where(function (d) { return d.IsCategory; }).select('Variance').toArray().sum();
-
-            //    totalItem['BudgetTotal'] = calculateTotal('BudgetTotal');  // bine.query(WorDetails).where(function (d) { return d.IsCategory; }).select('BudgetTotal').toArray().sum();
-            //    totalItem['ProjectionTotal'] = calculateTotal('ProjectionTotal');  // bine.query(WorDetails).where(function (d) { return d.IsCategory; }).select('ProjectionTotal').toArray().sum();
-
-            WorDetails = bine.query(WorDetails).orderBy('SortIndex').toArray();
-
-        };
-
-
-        var loadWorData = function (hcmHouseCode, hcmJob, fscYear, fscPeriod, callback) {
-
-            var criteriaXml = String.format('<criteria>hcmHouseCode:{0},fscYear:{2},hcmJob:{1},storeId:budBudgetWORForecasts,fscPeriod:{3},userId:[user],</criteria>',
-                hcmHouseCode, hcmJob, fscYear, fscPeriod);
-
-            fin.bud.budRequest(criteriaXml, function (data) {
-                WorForecasts = [];
-
-                //<item id="3879529" hcmHouseCode="36" hcmJob="1" fscYear="3" fscAccount="169" fscPeriod="27" week1="16215.91" week2="16215.91" 
-                //week3="16215.91" week4="16215.91" crtdAt="6/15/2011 3:31:53 PM" crtdBy="COMPASS-USA\kaym01"></item>
-
-                $('item', $(data)).each(function (index, item) {
-                    var $item = $(item);
-                    var dataItem = { FscAccount: $item.attr('fscAccount') };
-                    for (var i = 1; i <= 6; i++) {
-                        var periodField = 'Week' + i;
-                        dataItem[periodField] = parseFloat($item.attr('week' + i));
-                        if (isNaN(dataItem[periodField]))
-                            dataItem[periodField] = 0;
-
-                    }
-                    dataItem.Modified = $item.attr('modified') == "1";
-                    WorForecasts.push(dataItem);
-                });
-
-                callback(WorForecasts);
-
-            });
-        };
-
-        var loadWorDetails = function (hcmHouseCode, hcmJob, fscYear, fscPeriod, fscAccount, callback) {
-
-            loadWorData(hcmHouseCode, hcmJob, fscYear, fscPeriod, function () {
-                var FscYear = bine.query(FscYears).where(function (y) { return y.Id == fscYear; }).first();
-                var FscPeriod = bine.query(FscYear.Periods).where(function (p) { return p.Id == fscPeriod; }).first();
-
-                populateWorDetails(FscPeriod.Number);
-
-                var result = WorDetails;
-
-                if (fscAccount) {
-                    var item = bine.query(WorDetails).where(function (i) { return i.FscAccount == fscAccount; }).first();
-                    var categoryItem = bine.query(WorDetails).where(function (f) { return f.FscAccount == item.CategoryId; }).first();
-                    var totalItem = bine.query(WorDetails).where(function (f) { return f.FscAccount == 99999; }).first();
-                    result = [item, categoryItem, totalItem];
-                }
-
-                callback(result);
-            });
-
-        };
-
-
-        var loadWorForecastComment = function (hcmHouseCode, hcmJob, fscYear, fscPeriod, callback) {
-
-            var criteriaXml = String.format('<criteria>hcmHouseCode:{0},fscYear:{2},hcmJob:{1},storeId:budBudgetWORForecastComments,fscPeriod:{3},userId:[user],</criteria>',
-                hcmHouseCode, hcmJob, fscYear, fscPeriod);
-
-            fin.bud.budRequest(criteriaXml, function (data) {
-                var item = $('item', $(data)).first();
-                if (item)
-                    callback(item.attr('comment'));
-            });
-
-        };
-
-        var copyFlashData = function (hcmHouseCode, hcmJob, fscYear, fscPeriod, weekNumber, callback) {
-            var xml = String.format('<transaction id="1"><budWorCopyFlashData hcmHouseCode="{0}" hcmJob="{1}" fscYear="{2}" fscPeriod="{3}" week="{4}"/></transaction>',
-                hcmHouseCode, hcmJob, fscYear, fscPeriod, weekNumber);
-
-            fin.bud.budSubmit(xml, callback);
-        };
-
-        var submitWorItems = function (changes, commentXml, callback) {
-            var xml = ['<transaction id="1">\r\n'];
-
-            $.each(changes, function (index, item) {
-
-                xml.push('<budBudgetWORForecast ');
-                xml.push(String.format(' hcmHouseCode="{0}"', item.HcmHouseCode));
-                xml.push(String.format(' hcmJob="{0}"', item.HcmJob));
-                xml.push(String.format(' fscYear="{0}"', item.FscYear));
-                xml.push(String.format(' fscAccount="{0}"', item.FscAccount));
-                xml.push(String.format(' fscPeriod="{0}"', item.FscPeriod));
-
-                for (var i = 1; i <= 6; i++) {
-                    xml.push(String.format(' week{1}="{0}"', item['Week' + i] || 0, i));
-                }
-                xml.push(String.format(' comment="{0}"', htmlEncode(item.Comment)));
-                xml.push(String.format(' periodNumber="{0}"', FscPeriodLookup2[item.FscPeriod].Number));
-
-                xml.push(' />\r\n');
-            });
-
-            //xml.push(commentXml);
-
-            xml.push('</transaction>');
-
-            var innerCallback = function () {
-
-                if (changes && changes.length > 0) {
-                    var mopItem = bine.query(MopDetails).where(function (i) { return changes[0].FscAccount == i.FscAccount; }).first();
-                    mopItem['Comment' + FscPeriodLookup2[changes[0].FscPeriod].Number] = changes[0]['Comment'];
-                }
-                if (callback)
-                    callback();
-
-            };
-
-            fin.bud.budSubmit(xml.join(''), innerCallback);
-        };
-
-
-
-        var WOR = bine.extend(bine.Control, {
-            tpl: window.__bt__063f49d7[3],
-
-            hcmHouseCode: null,
-            hcmJob: null,
-            fscYear: null,
-            fscPeriod: null,
-            fscAccount: null,
-
-            onDomReady: function () {
-                var me = this;
-
-                var resetListHeight = function () {
-                    var winHeight = $(window).height();
-                    // me.$('#mop-list-wrapper').css('height', winHeight - me.$('#mop-top').outerHeight() - 60);
-                }
-
-                me.onInit(function () {
-                    me.createControls();
-                    resetListHeight();
-                });
-            },
-
-            onInit: function (callback) {
-                callback();
-            },
-
-            saveChanges: function () {
-                var me = this;
-
-                var changes = bine.query(me.worList.val()).clean().where(function (i) { return bine.ObjectStatus.isModified(i) && i.IsAccount; }).toArray();
-
-                $.each(changes, function (index, item) {
-                    bine.apply(item, { HcmHouseCode: me.hcmHouseCode, HcmJob: me.hcmJob,
-                        FscYear: me.fscYear, FscPeriod: me.fscPeriod
-                    });
-                });
-
-                var xml = [];
-                xml.push('<budBudgetWORForecastComment ');
-                xml.push(String.format(' hcmHouseCode="{0}"', me.hcmHouseCode));
-                xml.push(String.format(' hcmJob="{0}"', me.hcmJob));
-                xml.push(String.format(' fscYear="{0}"', me.fscYear));
-                xml.push(String.format(' fscPeriod="{0}"', me.fscPeriod));
-                // xml.push(String.format(' comment="{0}"', me.commentView.$('#Comment').val()));
-                xml.push(' />\r\n');
-
-
-                // console.log(changes);
-                me.mask('Saving...');
-                submitWorItems(changes, xml.join(''), function () {
-                    me.unmask();
-                    fin.bud.modified(false);
-                    $.each(changes, function (index, item) {
-                        me.fireEvent('mopreadonly', item.FscAccount, item.Projection);
-                    });
-                    me.loadWorDetails();
-                });
-            },
-
-            createControls: function () {
-                var me = this;
-
-                me.filter = new WorFilter();
-                me.append(me.filter, 'wor-filter');
-
-                me.footer = new MopFooter();
-                me.append(me.footer, 'mop-footer');
-
-                me.footer.$('#add-account-warpper').hide();
-
-                me.footer.on('addaccount', function (fscAccount) {
-                    me.worList.addFscAccount(fscAccount);
-                });
-
-                me.footer.on('save', function () {
-                    me.saveChanges();
-                });
-
-                me.footer.on('cancel', function () {
-                    me.loadWorDetails();
-                });
-
-                me.worList = new WorDataViewList({ fscPeriod: me.fscPeriod });
-                me.append(me.worList, 'wor-list');
-
-                me.worList.on('add', function (name) {
-                    me.refreshWorListLayout();
-                });
-
-                me.worList.on('copyflash', function (week) {
-                    me.mask('Loading...');
-                    copyFlashData(me.hcmHouseCode, me.hcmJob, me.fscYear, me.fscPeriod, week, function () {
-                        me.unmask();
-                        me.loadWorDetails();
-                    });
-                });
-
-                me.filter.on('change', function (name, value) {
-                    if (name == 'fscPeriod') {
-                        me.fscPeriod = value;
-                        me.worList.fscPeriod = value;
-                        me.loadWorDetails();
-                    }
-                });
-
-                //            me.commentView = new WorCommentView();
-                //            me.append(me.commentView, 'wor-comment');
-
-                me.filter.val({ hcmHouseCode: me.hcmHouseCode, hcmJob: me.hcmJob, fscYear: me.fscYear, fscPeriod: me.fscPeriod });
-
-                me.filter.on('backtomop', function () {
-                    me.dispose();
-                });
-
-                me.loadWorDetails();
-            },
-
-            refreshWorListLayout: function () {
-                var me = this;
-                var FscPeriod = GetFscPeriod(me.fscPeriod);
-
-                var today = new Date();
-                today.setHours(0, 0, 0, 0);
-                $.each(FscPeriod.Weeks, function (index, week) {
-                    var weekIndex = index + 1;
-                    me.worList.$('.mop-week-title.mop-week-' + weekIndex + ' span').html(String.format('Week {0}<br/>{1} ({2} Day{3})', weekIndex, bine.format(week.StartDt, 'MMM dd'), week.Days, (week.Days > 1 ? 's' : '')));
-                    if (today <= week.StartDt || today <= week.EndDt)
-                        me.worList.$('.copy-button-' + weekIndex).show();
-                    else
-                        me.worList.$('.copy-button-' + weekIndex).hide();
-                });
-
-                me.$('.mop-week-5').css('display', FscPeriod.Weeks.length > 4 ? 'table-cell' : 'none');
-                me.$('.mop-week-6').css('display', FscPeriod.Weeks.length > 5 ? 'table-cell' : 'none');
-            },
-            loadWorDetails: function () {
-                var me = this;
-
-                me.mask('Loading...');
-
-                //            loadWorForecastComment(me.hcmHouseCode, me.hcmJob, me.fscYear, me.fscPeriod, function (comment) {
-                //                me.commentView.$('#Comment').val(comment);
-                //            });
-
-                loadWorDetails(me.hcmHouseCode, me.hcmJob, me.fscYear, me.fscPeriod, me.fscAccount, function (worDetails) {
-                    var worItem = bine.query(worDetails).where(function (i) { return i.IsAccount; }).first();
-
-                    if (worItem && worItem.Modified) {
-                        me.fireEvent('mopreadonly', worItem.FscAccount, worItem.Projection);
-                    }
-
-                    me.worList.val(worDetails);
-                    me.refreshWorListLayout();
-                    fin.bud.modified(false);
-                    me.unmask();
-                });
-            }
-        });
-
-        return WOR;
-    } ();
-
-    bud.page.MOP = bine.extend(bine.Control, {
-        tpl: window.__bt__063f49d7[1],
+            }, fieldConfig);
+        },
 
         onDomReady: function () {
             var me = this;
+
+            me.$('.copy-button').click(function () {
+                var week = $(this).attr('week');
+                me.fireEvent('copyflash', week);
+            });
+
+            me.$('#updaterunrate-button').click(function () {
+                var FscPeriod = GetFscPeriod(me.fscPeriod);
+                var today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                me.each(function (index, dv) {
+                    if (dv.val('UpdateRunRate') && dv.val('IsAccount')) {
+                        var dailyRunRate = Math.round(dv.val('RunRate') / FscPeriod.Days * 100) / 100;
+                        $.each(FscPeriod.Weeks, function (i, week) {
+                            // if (week.EndDt >= today) {
+                            var weekNumber = i + 1;
+                            if (weekNumber >= fin.bud.Context.getWeekNumber())
+                                dv.val('Week' + weekNumber, dailyRunRate * week.Days);
+                            // }
+                        });
+                    }
+                });
+            });
+        },
+
+        addFscAccount: function (fscAccount) {
+            var me = this;
+
+            var worItems = me.val();
+
+            var exists = bine.query(worItems).where(function (f) { return f.FscAccount == fscAccount; }).first() != null;
+            if (exists)
+                return;
+
+            var dataItem = createFscAccountWorDataItem(fscAccount);
+
+            var dataItemIndex = worItems.indexOf(bine.query(worItems).where(function (f) { return f.SortIndex < dataItem.SortIndex; }).orderBy('SortIndex', false).first()) + 1;
+            if (dataItemIndex < 0)
+                dataItemIndex = 0;
+
+            var dv = me.insert(dataItemIndex, dataItem);
+
+            worItems = me.val();
+            var categoryItem = bine.query(worItems).where(function (f) { return f.FscAccount == dataItem.CategoryId; }).first();
+            if (!categoryItem) {
+                categoryItem = createFscAccountCategoryWorDataItem(dataItem.CategoryId);
+
+                var categoryItemIndex = worItems.indexOf(bine.query(worItems).where(function (f) { return f.SortIndex < categoryItem.SortIndex; }).orderBy('SortIndex', false).first()) + 1;
+                if (categoryItemIndex < 0)
+                    categoryItemIndex = 0;
+                me.insert(categoryItemIndex, categoryItem);
+            }
+        }
+    });
+
+    return DataViewList;
+} ();
+
+    //
+
+var WorForecasts = [];
+var WorDetails = [];
+
+var initWorDataItem = function (dataItem) {
+    for (var i = 1; i <= 6; i++) {
+        dataItem['Week' + i] = 0;
+    }
+    dataItem['Budget'] = 0;
+    dataItem['Projection'] = 0;
+    dataItem['Variance'] = 0;
+    dataItem['RunRate'] = 0;
+    dataItem['Comment'] = '';
+    dataItem['BudgetTotal'] = 0;
+    dataItem['ProjectionTotal'] = 0;
+    dataItem['UpdateRunRate'] = true;
+};
+
+var createFscAccountWorDataItem = function (fscAccount) {
+//    var FscAccount = bine.query(FscAccounts).where(function (f) { return f.Id == fscAccount; }).first();
+//    var FscAccountCategory = bine.query(FscAccountCategories).where(function (f) { return f.Id == FscAccount.CategoryId; }).first();
+
+    var FscAccount = FscAccountLookup[fscAccount];
+    var FscAccountCategory = FscAccountCategoryLookup[FscAccount.CategoryId];
+
+    var dataItem = { FscAccount: fscAccount, FscAccountDescription: FscAccount.Description, IsAccount: true };
+
+    dataItem.CategoryId = FscAccountCategory.Id;
+    dataItem.SortIndex = FscAccountCategory.OrderIndex.toString().padLeft('0', 4) + '_' + FscAccount.Code;
+
+    initWorDataItem(dataItem);
+
+    return dataItem;
+
+};
+
+var createFscAccountCategoryWorDataItem = function (fscAccountCategory) {
+
+  //  var FscAccountCategory = bine.query(FscAccountCategories).where(function (f) { return f.Id == fscAccountCategory; }).first();
+    var FscAccountCategory = FscAccountCategoryLookup[fscAccountCategory];    
+
+    var dataItem = { FscAccount: FscAccountCategory.Id, FscAccountDescription: FscAccountCategory.Description, IsCategory: true };
+
+    dataItem.SortIndex = FscAccountCategory.OrderIndex.toString().padLeft('0', 4) + '_9999';
+
+    initWorDataItem(dataItem);
+
+    return dataItem;
+
+};
+
+var populateWorDetails = function (periodNumber, specifiedFscAccount) {
+
+    WorDetails = [];
+
+    var mopItems = bine.query(MopDetails).where(function (i) { return i.IsAccount && (!specifiedFscAccount || specifiedFscAccount == i.FscAccount); }).toArray();
+
+    var worItemIndex = {};
+
+    var totalItem = { FscAccount: 99999, FscAccountDescription: 'Total', IsTotal: true };
+
+    totalItem.SortIndex = '9999_9999';
+    initWorDataItem(totalItem);
+    WorDetails.push(totalItem);
+
+    $.each(mopItems, function (index, mopItem) {
+
+        var fscAccount = mopItem.FscAccount;
+        var dataItem = createFscAccountWorDataItem(fscAccount);
+        WorDetails.push(dataItem);
+
+        var FscAccount = FscAccountLookup[fscAccount];
+
+        var categoryItem = worItemIndex[dataItem.CategoryId];
+        if (!categoryItem) {
+            categoryItem = createFscAccountCategoryWorDataItem(dataItem.CategoryId);
+            WorDetails.push(categoryItem);
+            worItemIndex[dataItem.CategoryId] = categoryItem;
+        }
+
+        dataItem.IsAccount = mopItem.IsAccount;
+        dataItem.IsCategory = mopItem.IsCategory;
+
+        dataItem['Budget'] = mopItem['Budget' + periodNumber];
+        dataItem['Comment'] = mopItem['Comment' + periodNumber];
+        categoryItem['Budget'] += mopItem['Budget' + periodNumber];
+        totalItem['Budget'] += FscAccount.IsNegative ? mopItem['Budget' + periodNumber] : -mopItem['Budget' + periodNumber];
+
+
+        dataItem['RunRate'] = mopItem['RunRate' + periodNumber];
+        categoryItem['RunRate'] += mopItem['RunRate' + periodNumber];
+        totalItem['RunRate'] += FscAccount.IsNegative ? mopItem['RunRate' + periodNumber] : -mopItem['RunRate' + periodNumber];
+
+        dataItem['BudgetTotal'] = mopItem['BudgetTotal'];
+        dataItem['ProjectionTotal'] = mopItem['ProjectionTotal'];
+
+        categoryItem['BudgetTotal'] += mopItem['BudgetTotal'];
+        categoryItem['ProjectionTotal'] += mopItem['ProjectionTotal'];
+
+        totalItem['BudgetTotal'] += FscAccount.IsNegative ? mopItem['BudgetTotal'] : -mopItem['BudgetTotal'];
+        totalItem['ProjectionTotal'] += FscAccount.IsNegative ? mopItem['ProjectionTotal'] : -mopItem['ProjectionTotal'];
+
+        var forecast = bine.query(WorForecasts).where(function (b) { return b.FscAccount == fscAccount; }).first();
+        if (forecast) {
+
+            for (var i = 1; i <= 6; i++) {
+                dataItem['Week' + i] += forecast['Week' + i] || 0;
+                categoryItem['Week' + i] += forecast['Week' + i] || 0;
+                totalItem['Week' + i] += FscAccount.IsNegative ? (forecast['Week' + i] || 0) : -(forecast['Week' + i] || 0);
+            }
+            dataItem['Modified'] = forecast['Modified'];
+
+        }
+
+        if (dataItem['Modified']) {
+            var weekTotal = 0;
+            for (var i = 1; i <= 6; i++)
+                weekTotal += dataItem['Week' + i] || 0;
+
+            dataItem['Projection'] = weekTotal;
+            categoryItem['Projection'] += weekTotal;
+            totalItem['Projection'] += FscAccount.IsNegative ? weekTotal : -weekTotal;
+
+            mopItem['Projection' + periodNumber] = weekTotal;
+
+        }
+        else {
+            dataItem['Projection'] = mopItem['Projection' + periodNumber];
+            categoryItem['Projection'] += mopItem['Projection' + periodNumber];
+            totalItem['Projection'] += FscAccount.IsNegative ? mopItem['Projection' + periodNumber] : -mopItem['Projection' + periodNumber];
+        }
+
+    });
+
+    //    var categories = bine.query(WorDetails).select('CategoryId').toArray().distinct();
+
+    //    $.each(categories, function (index, category) {
+    //        var categoryItem = createFscAccountCategoryWorDataItem(category);
+
+    //        for (var i = 1; i <= 6; i++) {
+    //            categoryItem['Week' + i] = bine.query(WorDetails).where(function (d) { return d.CategoryId == category; }).select('Week' + i).toArray().sum();
+    //        }
+    //        categoryItem['Projection'] = bine.query(WorDetails).where(function (d) { return d.CategoryId == category; }).select('Projection').toArray().sum();
+    //        categoryItem['Budget'] = bine.query(WorDetails).where(function (d) { return d.CategoryId == category; }).select('Budget').toArray().sum();
+    //        categoryItem['Variance'] = bine.query(WorDetails).where(function (d) { return d.CategoryId == category; }).select('Variance').toArray().sum();
+
+    //        categoryItem['BudgetTotal'] = bine.query(WorDetails).where(function (d) { return d.CategoryId == category; }).select('BudgetTotal').toArray().sum();
+    //        categoryItem['ProjectionTotal'] = bine.query(WorDetails).where(function (d) { return d.CategoryId == category; }).select('ProjectionTotal').toArray().sum();
+
+    //        WorDetails.push(categoryItem);
+    //    });
+
+    //    var totalItem = { FscAccount: 99999, FscAccountDescription: 'Total', IsTotal: true };
+
+    //    totalItem.SortIndex = '9999_9999';
+    //    WorDetails.push(totalItem);
+
+    //    var calculateTotal = function (field) {
+    //        return bine.query(WorDetails).where(function (d) { return d.IsCategory; }).select(function (d) {
+    //            var FscAccount = FscAccountCategoryLookup[d.FscAccount];
+    //            return FscAccount.IsNegative ? d[field] : -d[field];
+    //        }).toArray().sum();
+    //    }
+
+    //    for (var i = 1; i <= 6; i++) {
+    //        totalItem['Week' + i] = calculateTotal('Week' + i);        //bine.query(WorDetails).where(function (d) { return d.IsCategory; }).select('Week' + i).toArray().sum();
+    //    }
+
+    //    totalItem['Projection'] = calculateTotal('Projection');  ///bine.query(WorDetails).where(function (d) { return d.IsCategory; }).select('Projection').toArray().sum();
+    //    totalItem['Budget'] = calculateTotal('Budget');  //bine.query(WorDetails).where(function (d) { return d.IsCategory; }).select('Budget').toArray().sum();
+    //    totalItem['Variance'] = calculateTotal('Variance');  // bine.query(WorDetails).where(function (d) { return d.IsCategory; }).select('Variance').toArray().sum();
+
+    //    totalItem['BudgetTotal'] = calculateTotal('BudgetTotal');  // bine.query(WorDetails).where(function (d) { return d.IsCategory; }).select('BudgetTotal').toArray().sum();
+    //    totalItem['ProjectionTotal'] = calculateTotal('ProjectionTotal');  // bine.query(WorDetails).where(function (d) { return d.IsCategory; }).select('ProjectionTotal').toArray().sum();
+
+    WorDetails = bine.query(WorDetails).orderBy('SortIndex').toArray();
+
+};
+
+
+var loadWorData = function (hcmHouseCode, hcmJob, fscYear, fscPeriod, callback) {
+
+    var criteriaXml = String.format('<criteria>hcmHouseCode:{0},fscYear:{2},hcmJob:{1},storeId:budBudgetWORForecasts,fscPeriod:{3},userId:[user],</criteria>',
+                hcmHouseCode, hcmJob, fscYear, fscPeriod);
+
+    fin.bud.budRequest(criteriaXml, function (data) {
+        WorForecasts = [];
+
+        //<item id="3879529" hcmHouseCode="36" hcmJob="1" fscYear="3" fscAccount="169" fscPeriod="27" week1="16215.91" week2="16215.91" 
+        //week3="16215.91" week4="16215.91" crtdAt="6/15/2011 3:31:53 PM" crtdBy="COMPASS-USA\kaym01"></item>
+
+        $('item', $(data)).each(function (index, item) {
+            var $item = $(item);
+            var dataItem = { FscAccount: $item.attr('fscAccount') };
+            for (var i = 1; i <= 6; i++) {
+                var periodField = 'Week' + i;
+                dataItem[periodField] = parseFloat($item.attr('week' + i));
+                if (isNaN(dataItem[periodField]))
+                    dataItem[periodField] = 0;
+
+            }
+            dataItem.Modified = $item.attr('modified') == "1";
+            WorForecasts.push(dataItem);
+        });
+
+        callback(WorForecasts);
+
+    });
+};
+
+var loadWorDetails = function (hcmHouseCode, hcmJob, fscYear, fscPeriod, fscAccount, callback) {
+
+    loadWorData(hcmHouseCode, hcmJob, fscYear, fscPeriod, function () {
+        var FscYear = bine.query(FscYears).where(function (y) { return y.Id == fscYear; }).first();
+        var FscPeriod = bine.query(FscYear.Periods).where(function (p) { return p.Id == fscPeriod; }).first();
+
+        populateWorDetails(FscPeriod.Number);
+
+        var result = WorDetails;
+
+        if (fscAccount) {
+            var item = bine.query(WorDetails).where(function (i) { return i.FscAccount == fscAccount; }).first();
+            var categoryItem = bine.query(WorDetails).where(function (f) { return f.FscAccount == item.CategoryId; }).first();
+            var totalItem = bine.query(WorDetails).where(function (f) { return f.FscAccount == 99999; }).first();
+            result = [item, categoryItem, totalItem];
+        }
+
+        callback(result);
+    });
+
+};
+
+
+var loadWorForecastComment = function (hcmHouseCode, hcmJob, fscYear, fscPeriod, callback) {
+
+    var criteriaXml = String.format('<criteria>hcmHouseCode:{0},fscYear:{2},hcmJob:{1},storeId:budBudgetWORForecastComments,fscPeriod:{3},userId:[user],</criteria>',
+                hcmHouseCode, hcmJob, fscYear, fscPeriod);
+
+    fin.bud.budRequest(criteriaXml, function (data) {
+        var item = $('item', $(data)).first();
+        if (item)
+            callback(item.attr('comment'));
+    });
+
+};
+
+var copyFlashData = function (hcmHouseCode, hcmJob, fscYear, fscPeriod, weekNumber, callback) {
+    var xml = String.format('<transaction id="1"><budWorCopyFlashData hcmHouseCode="{0}" hcmJob="{1}" fscYear="{2}" fscPeriod="{3}" week="{4}"/></transaction>',
+                hcmHouseCode, hcmJob, fscYear, fscPeriod, weekNumber);
+
+    fin.bud.budSubmit(xml, callback);
+};
+
+var submitWorItems = function (changes, commentXml, callback) {
+    var xml = ['<transaction id="1">\r\n'];
+
+    $.each(changes, function (index, item) {
+
+        xml.push('<budBudgetWORForecast ');
+        xml.push(String.format(' hcmHouseCode="{0}"', item.HcmHouseCode));
+        xml.push(String.format(' hcmJob="{0}"', item.HcmJob));
+        xml.push(String.format(' fscYear="{0}"', item.FscYear));
+        xml.push(String.format(' fscAccount="{0}"', item.FscAccount));
+        xml.push(String.format(' fscPeriod="{0}"', item.FscPeriod));
+
+        for (var i = 1; i <= 6; i++) {
+            xml.push(String.format(' week{1}="{0}"', item['Week' + i] || 0, i));
+        }
+        xml.push(String.format(' comment="{0}"', htmlEncode(item.Comment)));
+        xml.push(String.format(' periodNumber="{0}"', FscPeriodLookup2[item.FscPeriod].Number));
+
+        xml.push(' />\r\n');
+    });
+
+    //xml.push(commentXml);
+
+    xml.push('</transaction>');
+
+    var innerCallback = function () {
+
+        if (changes && changes.length > 0) {
+            var mopItem = bine.query(MopDetails).where(function (i) { return changes[0].FscAccount == i.FscAccount; }).first();
+            mopItem['Comment' + FscPeriodLookup2[changes[0].FscPeriod].Number] = changes[0]['Comment'];
+        }
+        if (callback)
+            callback();
+
+    };
+
+    fin.bud.budSubmit(xml.join(''), innerCallback);
+};
+
+
+
+    var WOR = bine.extend(bine.Control, {
+        tpl: window.__bt__eb50bd57[3],
+
+        hcmHouseCode: null,
+        hcmJob: null,
+        fscYear: null,
+        fscPeriod: null,
+        fscAccount: null,
+
+        onDomReady: function () {
+            var me = this;
+
+            me.$('#page-status').append('<div id="itemStatusDiv"><div class="itemStatusImage Normal" id="itemStatusImage"></div>' +
+			'<div class="itemModifiedImage" id="itemModifiedImage"></div><div id="itemStatusText" class="itemStatusText">Normal</div></div>');
+
+            var resetListHeight = function () {
+                var winHeight = $(window).height();
+                // me.$('#mop-list-wrapper').css('height', winHeight - me.$('#mop-top').outerHeight() - 60);
+            }
+
+            me.onInit(function () {
+                me.createControls();
+                resetListHeight();
+            });
+        },
+
+        onInit: function (callback) {
+            callback();
+        },
+
+        saveChanges: function () {
+            var me = this;
+
+            var changes = bine.query(me.worList.val()).clean().where(function (i) { return bine.ObjectStatus.isModified(i) && i.IsAccount; }).toArray();
+
+            $.each(changes, function (index, item) {
+                bine.apply(item, { HcmHouseCode: me.hcmHouseCode, HcmJob: me.hcmJob,
+                    FscYear: me.fscYear, FscPeriod: me.fscPeriod
+                });
+            });
+
+            var xml = [];
+            xml.push('<budBudgetWORForecastComment ');
+            xml.push(String.format(' hcmHouseCode="{0}"', me.hcmHouseCode));
+            xml.push(String.format(' hcmJob="{0}"', me.hcmJob));
+            xml.push(String.format(' fscYear="{0}"', me.fscYear));
+            xml.push(String.format(' fscPeriod="{0}"', me.fscPeriod));
+            // xml.push(String.format(' comment="{0}"', me.commentView.$('#Comment').val()));
+            xml.push(' />\r\n');
+
+
+            // console.log(changes);
+            me.mask('Saving...');
+            submitWorItems(changes, xml.join(''), function () {
+                me.unmask();
+                fin.bud.modified(false);
+                $.each(changes, function (index, item) {
+                    me.fireEvent('mopreadonly', item.FscAccount, item.Projection);
+                });
+                me.loadWorDetails();
+            });
+        },
+
+        createControls: function () {
+            var me = this;
+
+            me.filter = new WorFilter();
+            me.append(me.filter, 'wor-filter');
+
+            me.footer = new MopFooter();
+            me.append(me.footer, 'mop-footer');
+
+            me.footer.$('#add-account-warpper').hide();
+
+            me.footer.on('addaccount', function (fscAccount) {
+                me.worList.addFscAccount(fscAccount);
+            });
+
+            me.footer.on('save', function () {
+                me.saveChanges();
+            });
+
+            me.footer.on('cancel', function () {
+                me.loadWorDetails();
+            });
+
+            me.worList = new WorDataViewList({ fscPeriod: me.fscPeriod });
+            me.append(me.worList, 'wor-list');
+
+            me.worList.on('add', function (name) {
+                me.refreshWorListLayout();
+            });
+
+            me.worList.on('copyflash', function (week) {
+                me.mask('Loading...');
+                copyFlashData(me.hcmHouseCode, me.hcmJob, me.fscYear, me.fscPeriod, week, function () {
+                    me.unmask();
+                    me.loadWorDetails();
+                });
+            });
+
+            me.filter.on('change', function (name, value) {
+                if (name == 'fscPeriod') {
+                    me.fscPeriod = value;
+                    me.worList.fscPeriod = value;
+                    me.loadWorDetails();
+                }
+            });
+
+            //            me.commentView = new WorCommentView();
+            //            me.append(me.commentView, 'wor-comment');
+
+            me.filter.val({ hcmHouseCode: me.hcmHouseCode, hcmJob: me.hcmJob, fscYear: me.fscYear, fscPeriod: me.fscPeriod });
+
+            me.filter.on('backtomop', function () {
+                me.dispose();
+            });
+
+            me.loadWorDetails();
+        },
+
+        refreshWorListLayout: function () {
+            var me = this;
+            var FscPeriod = GetFscPeriod(me.fscPeriod);
+
+            var today = new Date();
+            today.setHours(0, 0, 0, 0);
+            $.each(FscPeriod.Weeks, function (index, week) {
+                var weekIndex = index + 1;
+                me.worList.$('.mop-week-title.mop-week-' + weekIndex + ' span').html(String.format('Week {0}<br/>{1} ({2} Day{3})', weekIndex, bine.format(week.StartDt, 'MMM dd'), week.Days, (week.Days > 1 ? 's' : '')));
+                if (today <= week.StartDt || today <= week.EndDt)
+                    me.worList.$('.copy-button-' + weekIndex).show();
+                else
+                    me.worList.$('.copy-button-' + weekIndex).hide();
+            });
+
+            me.$('.mop-week-5').css('display', FscPeriod.Weeks.length > 4 ? 'table-cell' : 'none');
+            me.$('.mop-week-6').css('display', FscPeriod.Weeks.length > 5 ? 'table-cell' : 'none');
+        },
+        loadWorDetails: function () {
+            var me = this;
+
+            me.mask('Loading...');
+
+            //            loadWorForecastComment(me.hcmHouseCode, me.hcmJob, me.fscYear, me.fscPeriod, function (comment) {
+            //                me.commentView.$('#Comment').val(comment);
+            //            });
+
+            loadWorDetails(me.hcmHouseCode, me.hcmJob, me.fscYear, me.fscPeriod, me.fscAccount, function (worDetails) {
+                var worItem = bine.query(worDetails).where(function (i) { return i.IsAccount; }).first();
+
+                if (worItem && worItem.Modified) {
+                    me.fireEvent('mopreadonly', worItem.FscAccount, worItem.Projection);
+                }
+
+                me.worList.val(worDetails);
+                me.refreshWorListLayout();
+                fin.bud.modified(false);
+                me.unmask();
+            });
+        }
+    });
+
+    return WOR;
+} ();
+
+    bud.page.MOP = bine.extend(bine.Control, {
+        tpl: window.__bt__eb50bd57[1],
+
+        onDomReady: function () {
+            var me = this;
+
+            me.$('#page-status').append('<div id="itemStatusDiv"><div class="itemStatusImage Normal" id="itemStatusImage"></div>' +
+			'<div class="itemModifiedImage" id="itemModifiedImage"></div><div id="itemStatusText" class="itemStatusText">Normal</div></div>');
 
             var resetListHeight = function () {
                 var winHeight = $(window).height();
