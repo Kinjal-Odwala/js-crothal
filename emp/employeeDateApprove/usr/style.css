@@ -1,29 +1,71 @@
-﻿.checkBoxLabel {	
-	height: 25px;
+﻿.header {
 	font-family: Verdana;
-	font-size: 12px;
-	color: #032D23;
-	padding: 10px 0px 5px 5px;
+	font-weight: bold;
+	font-size: 18px;	
+	color: #2C2F50;
+	text-align: center;
+	margin-bottom: 5px;
+}
+
+.leftContainer {
+	float: left;
+	width: 48%;
+	vertical-align: top;
+	margin-right: 20px;
+	position: relative;
+}
+
+.rightContainer {
+	float: left;
+	width: 49.3%;
+	vertical-align: top;
+	position: relative;
+}
+
+.subHeader {
+    height: 20px;
+    font-family: Verdana;
+    font-size: 13px;
+    font-weight: bold;
+    color: #2C2F50;
+	background: #C2E4C1;
+    text-align: left;
+	padding-left: 10px;
 }
 
 .iiGridHeaderColumn, .iiGridBodyColumn {
 	font-size: 8pt;
 }
 
-.iiGridHeaderColumn, .iiGridHeaderColumnEndCap {
-	height: 30px;
+.labelTextArea {	
+	float: left;
+	width: 200px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 0px 0px 0px 5px;
 }
 
-#SelectAllDiv {
+.inputTextArea {
 	float: left;
-	width: 300px;
-	margin-left: 31px;
+	width: 190px;
 }
 
-#SelectAll {
+#EmployeeContentArea {
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	padding: 5px;
+	margin: 1px;
+}
+
+#Notes {	
 	float: left;
-	width: 25px;
-	padding: 7px 0px 5px 5px;
+	width: 280px;
+	height: 50px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: black;
 }
 
 #AnchorApprove {
