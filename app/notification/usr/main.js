@@ -962,7 +962,8 @@ eFin.data.app.DataCollectorColumnStore = WebLight.extend(eFin.data.XmlStore, {
                { name: 'title', mapping: '@title', type: 'string' },
                { name: 'active', mapiing: '@active', type: 'bool' },
                { name: 'displayOrder', mapping: '@displayOrder', type: 'int' },
-			   { name: 'validation', mapping: '@validation', type: 'string' }
+			   { name: 'validation', mapping: '@validation', type: 'string' },
+			   { name: 'referenceTableName', mapping: '@referenceTableName', type: 'string' }
            ]
     ,
     load: function (dataCollectorId) {
@@ -976,6 +977,7 @@ eFin.data.app.DataCollectorColumnStore = WebLight.extend(eFin.data.XmlStore, {
         return { dataCollectorId: this.dataCollectorId };
     }
 });
+
 
 eFin.data.app.DataCollectorTaskStore = WebLight.extend(eFin.data.XmlStore, {
     url: '/net/crothall/chimes/fin/app/act/Provider.aspx',
@@ -1008,6 +1010,7 @@ eFin.data.app.DataCollectorTaskStore = WebLight.extend(eFin.data.XmlStore, {
         this.loadData(window.__weblight_t_fbd3614b[1]);
     }
 });
+
 eFin.page.app.Notification = WebLight.extend(WebLight.Page, {
     html: window.__weblight_t_fbd3614b[2],
     title: 'Notification',
@@ -1074,7 +1077,9 @@ eFin.page.app.Notification = WebLight.extend(WebLight.Page, {
 
         me.dataCollectorTaskStore = new eFin.data.app.DataCollectorTaskStore();
         me.createDataCollectorTaskGrid();
-
+		
+		
+		
         me.dataCollectorTaskStore.on('beforeload', function () { me.mask('Loading...'); });
         me.dataCollectorTaskStore.on('load', function () {
             //me.$child('title').html(String.format('Notifications ({0})', me.dataCollectorTaskStore.getCount()));
@@ -1185,10 +1190,11 @@ eFin.page.app.DataCollectorTask = WebLight.extend(WebLight.Page, {
             var fieldName = item.get('brief');
             var fieldTitle = item.get('title');
 			var fieldValidation = item.get('validation');
+			var fieldReferenceTableName = item.get('referenceTableName');
 
             html.push(String.format(window.__weblight_t_fbd3614b[4],
                     fieldName, fieldTitle, ''));
-            fields.push(me.getEditor(fieldName, fieldTitle, fieldValidation));
+            fields.push(me.getEditor(fieldName, fieldTitle, fieldValidation, fieldReferenceTableName));
         });
 		
 		html.push('<div style="clear:both; height:10px;"></div>');
@@ -1208,49 +1214,57 @@ eFin.page.app.DataCollectorTask = WebLight.extend(WebLight.Page, {
 		$("#" + me.dataCollectorTaskForm.id + "-divColumns").height($(window).height() - 95);
     },
 
-    getEditor: function (fieldName, fieldTitle, fieldValidation) {
+    getEditor: function (fieldName, fieldTitle, fieldValidation, fieldReferenceTableName) {
         var me = this;
 		
         var config = { xtype: 'textfield', width: 150, name: fieldName, allowBlank: false , msgTarget: 'side', listeners: { 'change': function() { modified(true); } }};
 		
-        if (fieldValidation ==  'Int')
-            config = Ext.apply(config, { width: 150, minValue: 0, msgTarget: 'side', regex: /^[0-9]+$/, regexText: 'This field should only contain numbers', 
-			listeners: { 'change': function() { modified(true); } }});
-		else if (fieldValidation ==  'Decimal') {
-						
-			if (fieldName == 'HcmHoucDefaultLunchBreak') {
-	            config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'value', displayField: 'name', msgTarget: 'none',
-					listeners: { 'change': function() { modified(true); } },
-	                store: me.defaultLunchBreakStore, mode: 'local',
-	                store: new Ext.data.ArrayStore({ fields: [{ name: 'value', type: 'float' }, 'name'], data: [[0.25, '0.25'], [0.5, '0.50'], [0.75, '0.75'], [1, '1.00']] })
-	            });
-	        }
-	        else if (fieldName == 'HcmHoucLunchBreakTrigger') {
-	            config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'value', displayField: 'value', msgTarget: 'none',
-					listeners: { 'change': function() { modified(true); } },
-	                store: me.defaultLunchBreakStore, mode: 'local',
-	                store: new Ext.data.ArrayStore({ fields: [{ name: 'value', type: 'float'}], data: [[4], [6], [8]] })
-	            });
-	        }
-			else
-				config = Ext.apply(config, { width: 150, minValue: 0, xtype: 'numberfield', msgTarget: 'side', 
+		if (fieldReferenceTableName !=  '') {
+			 config = Ext.apply(config, {  
+				listeners: { 'change': function() { modified(true); } }});
+		}
+		else {
+			if (fieldValidation ==  'Int')
+	            config = Ext.apply(config, { width: 150, minValue: 0, msgTarget: 'side', regex: /^[0-9]+$/, regexText: 'This field should only contain numbers', 
+				listeners: { 'change': function() { modified(true); } }});
+			else if (fieldValidation ==  'Decimal') {
+							
+				if (fieldName == 'HcmHoucDefaultLunchBreak') {
+		            config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'value', displayField: 'name', msgTarget: 'none',
+						listeners: { 'change': function() { modified(true); } },
+		                store: me.defaultLunchBreakStore, mode: 'local',
+		                store: new Ext.data.ArrayStore({ fields: [{ name: 'value', type: 'float' }, 'name'], data: [[0.25, '0.25'], [0.5, '0.50'], [0.75, '0.75'], [1, '1.00']] })
+		            });
+		        }
+		        else if (fieldName == 'HcmHoucLunchBreakTrigger') {
+		            config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'value', displayField: 'value', msgTarget: 'none',
+						listeners: { 'change': function() { modified(true); } },
+		                store: me.defaultLunchBreakStore, mode: 'local',
+		                store: new Ext.data.ArrayStore({ fields: [{ name: 'value', type: 'float'}], data: [[4], [6], [8]] })
+		            });
+		        }
+				else
+					config = Ext.apply(config, { width: 150, minValue: 0, xtype: 'numberfield', msgTarget: 'side', 
+					listeners: { 'change': function() { modified(true); } } });
+			}            
+	        else if (fieldValidation == 'DateTime')
+	            config = Ext.apply(config, { width: 150, xtype: 'datefield', msgTarget: 'none',
+				listeners: { 'change': function() { modified(true); } }});
+	        else if (fieldValidation == 'Email')
+	            config = Ext.apply(config, { width: 150, vtype: 'email', msgTarget: 'side', 
+				listeners: { 'change': function() { modified(true); } }});
+	        else if (fieldValidation == 'Phone')
+	            config = Ext.apply(config, { width: 150, mask: '(999) 999-9999', msgTarget: 'side', 
 				listeners: { 'change': function() { modified(true); } } });
-		}            
-        else if (fieldValidation == 'DateTime')
-            config = Ext.apply(config, { width: 150, xtype: 'datefield', msgTarget: 'none',
-			listeners: { 'change': function() { modified(true); } }});
-        else if (fieldValidation == 'Email')
-            config = Ext.apply(config, { width: 150, vtype: 'email', msgTarget: 'side', 
-			listeners: { 'change': function() { modified(true); } }});
-        else if (fieldValidation == 'Phone')
-            config = Ext.apply(config, { width: 150, mask: '(999) 999-9999', msgTarget: 'side', 
-			listeners: { 'change': function() { modified(true); } } });
-        else if (fieldValidation == 'Zip')
-            config = Ext.apply(config, { width: 150, mask: '99999?-9999', msgTarget: 'side', 
-			listeners: { 'change': function() { modified(true); } } });
-		else if (fieldValidation == 'Bit')
-            config = Ext.apply(config, { xtype: 'checkbox',
-			listeners: { 'change': function() { modified(true); } }});
+	        else if (fieldValidation == 'Zip')
+	            config = Ext.apply(config, { width: 150, mask: '99999?-9999', msgTarget: 'side', 
+				listeners: { 'change': function() { modified(true); } } });
+			else if (fieldValidation == 'Bit')
+	            config = Ext.apply(config, { xtype: 'checkbox',
+				listeners: { 'change': function() { modified(true); } }});
+		}
+		
+        
 
         return Ext.create(config);
     },
