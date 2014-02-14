@@ -1,4 +1,4 @@
-﻿_builtInTemplate_7796cf4b = ['<?xml version="1.0" encoding="utf-8" ?><transmission>  <target id="iiAuthorization" requestId="1">    <authorization id="1">      <authorize id="41" path="\\crothall\\chimes\\fin\\Budgeting"></authorize>      <authorize id="42" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget"></authorize>      <authorize id="16059" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Read"></authorize>      <authorize id="16060" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Write"></authorize>      <authorize id="44" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections"></authorize>      <authorize id="16063" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod"></authorize>      <authorize id="16064" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Read"></authorize>      <authorize id="16065" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Write"></authorize>      <authorize id="16066" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast"></authorize>      <authorize id="16067" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Read"></authorize>      <authorize id="16068" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Write"></authorize>      <authorize id="1213" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration"></authorize>      <authorize id="16069" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation"></authorize>      <authorize id="16070" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Read"></authorize>      <authorize id="16071" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Write"></authorize>      <authorize id="16072" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget"></authorize>      <authorize id="16073" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Approve"></authorize>      <authorize id="16074" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Read"></authorize>      <authorize id="16075" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Reject"></authorize>      <authorize id="16076" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Write"></authorize>      <authorize id="16077" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget"></authorize>      <authorize id="16078" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Read"></authorize>      <authorize id="16079" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Write"></authorize>      <authorize id="16080" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget"></authorize>      <authorize id="16081" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Read"></authorize>      <authorize id="16082" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Write"></authorize>      <authorize id="43" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary"></authorize>      <authorize id="16061" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Read"></authorize>      <authorize id="16062" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Write"></authorize>    </authorization>  </target></transmission>','<div style="color: #FFF; background-color: #659A66; padding: 10px; margin: 0 0 10px;">    <table width="100%" class="ann-proj-table">        <tbody>            <tr>                <td style="width: 35px;" class="label">Site:</td>                <td style="width: 300px"><div id="house-code-holder"></div></td>                <td style="width: 35px;" class="label">Job:</td>                <td style="width: 160px"><div id="job-code-holder"></div></td>                <td style="width: 80px;" class="label">Fiscal Year:</td>                <td style="width: 100px"><div id="fiscal-year-holder"></div></td>                <td style="width: 80px;" class="label">Period:</td>                <td style="width: 100px"><div id="period-start-holder"></div></td>                <td style="width: 10px;" class="label">-</td>                <td style="width: 100px"><div id="period-end-holder"></div></td>                <td>&nbsp;</td>                <td style="width: 120px;"></td>            </tr>        </tbody>    </table></div><div id="page-status"></div><div style="padding: 0 5px">    <p style="float:left">        The current page is READONLY.</p>        <div style="float:right"><span id="load-button-holder"></span></div></div><div style="clear:both;height:1px;"></div><div id="budget-summary-grid" style="padding: 10px 5px;"></div><br /><br />'];/*!
+﻿_builtInTemplate_f8e27395 = ['<?xml version="1.0" encoding="utf-8" ?><transmission>  <target id="iiAuthorization" requestId="1">    <authorization id="1">      <authorize id="41" path="\\crothall\\chimes\\fin\\Budgeting"></authorize>      <authorize id="42" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget"></authorize>      <authorize id="16059" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Read"></authorize>      <authorize id="16060" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Write"></authorize>      <authorize id="44" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections"></authorize>      <authorize id="16063" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod"></authorize>      <authorize id="16064" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Read"></authorize>      <authorize id="16065" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Write"></authorize>      <authorize id="16066" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast"></authorize>      <authorize id="16067" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Read"></authorize>      <authorize id="16068" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Write"></authorize>      <authorize id="1213" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration"></authorize>      <authorize id="16069" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation"></authorize>      <authorize id="16070" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Read"></authorize>      <authorize id="16071" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Write"></authorize>      <authorize id="16072" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget"></authorize>      <authorize id="16073" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Approve"></authorize>      <authorize id="16074" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Read"></authorize>      <authorize id="16075" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Reject"></authorize>      <authorize id="16076" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Write"></authorize>      <authorize id="16077" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget"></authorize>      <authorize id="16078" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Read"></authorize>      <authorize id="16079" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Write"></authorize>      <authorize id="16080" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget"></authorize>      <authorize id="16081" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Read"></authorize>      <authorize id="16082" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Write"></authorize>      <authorize id="43" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary"></authorize>      <authorize id="16061" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Read"></authorize>      <authorize id="16062" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Write"></authorize>    </authorization>  </target></transmission>','<div style="color: #FFF; background-color: #659A66; padding: 10px; margin: 0 0 10px;">    <table width="100%" class="ann-proj-table">        <tbody>            <tr>                <td style="width: 35px;" class="label">Site:</td>                <td style="width: 300px"><div id="house-code-holder"></div></td>                <td style="width: 35px;" class="label">Job:</td>                <td style="width: 160px"><div id="job-code-holder"></div></td>                <td style="width: 80px;" class="label">Fiscal Year:</td>                <td style="width: 100px"><div id="fiscal-year-holder"></div></td>                <td style="width: 80px;" class="label">Period:</td>                <td style="width: 100px"><div id="period-start-holder"></div></td>                <td style="width: 10px;" class="label">-</td>                <td style="width: 100px"><div id="period-end-holder"></div></td>                <td>&nbsp;</td>                <td style="width: 120px;"></td>            </tr>        </tbody>    </table></div><div id="page-status"></div><div style="padding: 0 5px">    <p style="float:left">        The current page is READONLY.</p>        <div style="float:right"><span id="load-button-holder"></span></div></div><div style="clear:both;height:1px;"></div><div id="budget-summary-grid" style="padding: 10px 5px;"></div><br /><br />'];/*!
  * Ext JS Library 3.2.0
  * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
@@ -1590,7 +1590,7 @@ fin.bud.loaded = function () {
 
     setTimeout(function () {
         if (globalLoadingCounter <= 0) {
-            fin.bud.normal(fin.bud.modified());
+            fin.bud.normal(window.__fin_modified);
             globalLoadingCounter = 0;
         }
     }, 20);
@@ -1599,24 +1599,20 @@ fin.bud.loaded = function () {
 fin.bud.modified = function () {
 
     if (arguments.length == 1) {
-        fin.bud.normal(fin.bud.modified());
+        fin.bud.normal(arguments[0]);
     }
 
-    if (!window.top.fin || !window.top.fin.cmn || !window.top.fin.cmn.status) {
-        if (arguments.length == 0) {
-            if (window.__fin_modified)
-                alert('data modified');
+    if (arguments.length == 0) {
+        if (!window.top.fin || !window.top.fin.cmn || !window.top.fin.cmn.status) {
             return window.__fin_modified;
-
         }
         else
-            window.__fin_modified = arguments[0];
+            return !window.top.fin.cmn.status.itemValid();
     }
     else {
+        window.__fin_modified = arguments[0];
 
-        if (arguments.length == 0)
-            return !window.top.fin.cmn.status.itemValid();
-        else
+        if (window.top.fin && window.top.fin.appUI)
             window.top.fin.appUI.modified = arguments[0];
     }
 }
@@ -2500,7 +2496,7 @@ Bud.data.AuthorizationStore = WebLight.extend(Bud.data.XmlStore, {
     },
 
     loadSampleData: function () {
-        this.loadData(_builtInTemplate_7796cf4b[0]);
+        this.loadData(_builtInTemplate_f8e27395[0]);
     },
 
     allowBudgetRead: function () {
@@ -3595,7 +3591,7 @@ Bud.data.BudgetSummaryStore = WebLight.extend(Bud.data.XmlStore, {
 
 Bud.page.BudgetSummaryPage = WebLight.extend(WebLight.Page, {
 
-    html: _builtInTemplate_7796cf4b[1],
+    html: _builtInTemplate_f8e27395[1],
     title: 'Budget Summary',
 
     _houseCodeStore: null,
