@@ -1,3 +1,4 @@
+//ii.config.xmlTimeout = 600000;
 ii.Import( "ii.krn.sys.ajax" );
 ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
@@ -63,9 +64,7 @@ ii.Class({
 
             $(window).bind("resize", me, me.resize);
             $(document).bind("keydown", me, me.controlKeyProcessor);
-            
-            //$("#hirNodeLoading").show();
-
+ 
             var toggleDisplay = function () {
                 var isHouseCodeMode = $('#rdHouseCode').is(':checked');
 
@@ -82,7 +81,6 @@ ii.Class({
                 }
 
                 $('#AppUnitText').attr('disabled', !isHouseCodeMode);
-
             };
 
             $('#rdHouseCode').change(function () {
@@ -95,7 +93,6 @@ ii.Class({
 
             $('#rdHouseCode').attr('checked', true);
             toggleDisplay();
-
         },
 
         authorizationProcess: function fin_bud_exportBudget_UserInterface_authorizationProcess() {
@@ -438,7 +435,6 @@ ii.Class({
             if (me.appUnit.getValue() == "") return;
 
             $("#AppUnitText").addClass("Loading");
-
             me.unitStore.fetch("userId:[user],unitBrief:" + me.appUnit.getValue() + ",", me.actionUnitsLoaded, me);
         },
 
@@ -447,20 +443,14 @@ ii.Class({
             $("#AppUnitText").removeClass("Loading");
 
             if (me.units.length <= 0) {
-
                 ii.trace("could not load the said Unit.", ii.traceTypes.Information, "Info");
                 alert("There is no corresponding Unit available or you do not have enough permission to access it.");
-
                 return;
             }
 
             $("#HirUnit").val(me.units[0].description);
             me.hirNodeCurrentId = me.units[0].hirNode;
-
-            //$("#pageLoading").show();
 			me.setLoadCount();
-            ii.trace("organization node loading", ii.traceTypes.Information, "Info");
-
             me.hirOrgLoad("search");
         },
 
@@ -470,7 +460,6 @@ ii.Class({
             });
             var me = this;
 
-            //me.actionClearItem(true);			
             me.hirOrgStore.reset();
 
             if (args.flag)
@@ -478,12 +467,11 @@ ii.Class({
             else
                 me.hirOrgStore.fetch("userId:[user],hirOrgId:" + me.hirNodeCurrentId + ",ancestors:true,sFilter:false", me.hirOrgsLoaded, me);
 
-            ii.trace("organization nodes loading", ii.traceTypes.Information, "Info");
+            ii.trace("Organization nodes loading", ii.traceTypes.Information, "Info");
         },
 
         hirOrgsLoaded: function (me, activeId) {
 
-            //me.actionAddNodes();
             $("#hirOrg").html("");
 
             if (me.orgHierarchy)
@@ -510,10 +498,7 @@ ii.Class({
             if (me.prevSelectedNodes)
                 me.orgHierarchy.setData(me.prevSelectedNodes);
 
-            //$("#pageLoading").hide();
-            //$("#hirNodeLoading").hide();
 			me.checkLoadCount();
-
         },
 
         lastSelectedNode: null,
@@ -609,13 +594,11 @@ ii.Class({
             if (!confirm("Are you sure you want to export the budgeting information for the " + selectedNames.join(',') + "?"))
                 return false;
 
-			me.setStatus("Saving");
-			
+			me.setStatus("Exporting");
 			$("#messageToUser").text("Exporting");
 			$("#pageLoading").fadeIn("slow");
 
             var jobId = me.isLevel7NodeSelected() ? me.jobId : 0;
-
             var criteriaXml = '<criteria>storeId:budAnnualBudgetExports,exportedCheck:1,userId:[user],hirNode:' + selectedNodes.join('~') + ',yearId:' + me.fiscalYearId + ',jobId:' + jobId + '</criteria>';
 
             budRequest(criteriaXml, function (responseXml) {
@@ -630,8 +613,6 @@ ii.Class({
                     me.exportStore.fetch("userId:[user],hirNode:" + selectedNodes.join('~') + ",yearId:" + me.fiscalYearId + ",jobId:" + jobId, me.exportItemsLoaded, me);
                 }
             });
-
-
         },
 
         exportItemsLoaded: function (me, activeId) {
@@ -647,7 +628,6 @@ ii.Class({
             $.each(me.exports, function (index, bItem) {
                 if (bItem.currentExported == "false")
                     pItems.push(bItem.houseCode);
-
             });
 
             if (pItems.length > 0) {
@@ -661,7 +641,6 @@ ii.Class({
             }
 
             var item = new fin.bud.exportBudget.AnnualBudget(0, "", "", false, false);
-
             var xml = me.saveXmlBuild(item);
 
             // Send the object back to the server as a transaction
@@ -694,7 +673,6 @@ ii.Class({
                 xml += '/>';
             }
             else {
-
                 $.each(me.orgHierarchy.selectedNodes, function (index, node) {
                     xml += '<budAnnualBudgetExportUpdate';
                     xml += ' id="' + item.id + '"';
@@ -706,7 +684,6 @@ ii.Class({
             }
 
             ii.trace("Xml Build", ii.traceTypes.Information, "Info");
-
             return xml;
         },
 
@@ -724,7 +701,7 @@ ii.Class({
 
             if (status == "success") {
                 me.modified(false);
-				me.setStatus("Saved");
+				me.setStatus("Exported");
                 ii.trace("Budget Exported", ii.traceTypes.Information, "Info");
                 alert("Budgeting data exported successfully.");
             }

@@ -966,30 +966,6 @@ ii.Class({
 				itemConstructorArgs: fin.adh.invoiceTemplateArgs,
 				injectionArray: me.invoiceTemplates
 			});
-			
-			me.invoiceItems = [];
-			me.invoiceItemStore = me.cache.register({
-				storeId: "revInvoiceItems",
-				itemConstructor: fin.adh.InvoiceItem,
-				itemConstructorArgs: fin.adh.invoiceItemArgs,
-				injectionArray: me.invoiceItems
-			});
-			
-			me.accounts = [];
-			me.accountStore = me.cache.register({
-				storeId: "accounts",
-				itemConstructor: fin.adh.Account,
-				itemConstructorArgs: fin.adh.accountArgs,
-				injectionArray: me.accounts	
-			});
-			
-			me.taxableServices = [];
-			me.taxableServiceStore = me.cache.register({
-				storeId: "revTaxableServices",
-				itemConstructor: fin.adh.TaxableService,
-				itemConstructorArgs: fin.adh.taxableServiceArgs,
-				injectionArray: me.taxableServices
-			});
 		},
 		
 		setStatus: function(status, message) {
@@ -1657,8 +1633,6 @@ ii.Class({
 							me.transactionStatusTypeStore.fetch("userId:[user]", me.typesLoaded, me);
 							me.invoiceLogoTypeStore.fetch("userId:[user]", me.typesLoaded, me);
 							me.invoiceAddressTypeStore.fetch("userId:[user]", me.typesLoaded, me);
-							me.accountStore.fetch("userId:[user],moduleId:invoice", me.accountsLoaded, me);
- 							me.taxableServiceStore.fetch("userId:[user]", me.taxableServicesLoaded, me);
 							break;
 							
 						case "Job":
@@ -1922,6 +1896,7 @@ ii.Class({
 					me.invoiceTaxable = false;
 					me.invoiceShow = false;
 					me.invoiceDescription = false;
+					me.createdBy = false;
 					
 					for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
 						if (me.moduleColumnHeaders[index].columnType != 2) {
@@ -1945,6 +1920,8 @@ ii.Class({
 								me.invoiceShow = true;
 							else if (me.moduleColumnHeaders[index].title == 'RevInviDescription') 
 								me.invoiceDescription = true;
+							else if (me.moduleColumnHeaders[index].title == 'RevInviCrtdBy') 
+								me.createdBy = true;
 						}
 					}
 					
@@ -2000,6 +1977,11 @@ ii.Class({
 					if(me.invoiceDescription) {
 						rowData += "<th class='gridHeaderColumn' width='300px'>Description</th>";
 						invoiceHeaderWidth = invoiceHeaderWidth + 300;
+					}
+					
+					if(me.createdBy) {
+						rowData += "<th class='gridHeaderColumn' width='150px'>Created By</th>";
+						invoiceHeaderWidth = invoiceHeaderWidth + 150;
 					}	
 						
 					$("#tblAdhReportGridHeader").width(invoiceHeaderWidth);
@@ -2670,33 +2652,41 @@ ii.Class({
                 dataType: "xml",
                 url: "/net/crothall/chimes/fin/adh/act/provider.aspx",
                 data: "moduleId=adh&requestId=1&targetId=iiCache"
-					+ "&requestXml=<criteria>storeId:revInvoiceItems,userId:[user],"
-					+ "invoiceId:" + invoiceId + ",<criteria>",
+					+ "&requestXml=<criteria>storeId:adhReportColumnDatas,userId:[user]"
+					+ ",report:" + me.reportId
+					+ ",hirNode:" + ""
+					+ ",filter:" + invoiceId
+					+ ",startPoint:" + me.startPoint
+					+ ",endPoint:" + me.endPoint
+					+ ",sortColumns:" + "RevInvoiceItem#Asc|" + ",<criteria>",
                   
                  success: function(xml) {
   	                $(xml).find("item").each(function() {
 	                    var invoice = {};
-	                	invoice.id = $(this).attr("id");
-	                	invoice.invoiceId = $(this).attr("invoiceId");
-						invoice.houseCodeId = $(this).attr("houseCodeId");
-						invoice.hirNodeId = $(this).attr("hirNodeId");
-						invoice.houseCode = $(this).attr("houseCode");
-						invoice.houseCodeJob = $(this).attr("houseCodeJob");
-	                	invoice.taxableService = $(this).attr("taxableService");
-						invoice.jobBrief = $(this).attr("jobBrief");
-						invoice.jobTitle = $(this).attr("jobTitle");
-						invoice.overrideSiteTax = $(this).attr("overrideSiteTax");
-						invoice.account = $(this).attr("account");
-	                	invoice.statusType = $(this).attr("statusType");
-						invoice.quantity = $(this).attr("quantity");
-						invoice.price = $(this).attr("price");
-						invoice.amount = $(this).attr("amount");
-						invoice.taxable = $(this).attr("taxable");
-	                	invoice.lineShow = $(this).attr("lineShow");
-						invoice.description = $(this).attr("description");
-						invoice.recurringFixedCost = $(this).attr("recurringFixedCost");
-						invoice.version = $(this).attr("version");
-						invoice.displayOrder = $(this).attr("displayOrder");
+						var createdBy = $(this).attr("column19");
+						createdBy = createdBy.substr(createdBy.indexOf('\\') + 1, createdBy.length)
+						
+	                	invoice.id = $(this).attr("primeColumn");
+						invoice.houseCodeId = $(this).attr("column12");
+						invoice.houseCode = $(this).attr("column14");
+						invoice.houseCodeJob = $(this).attr("column1");
+	                	invoice.taxableService = $(this).attr("column2");
+						invoice.jobBrief = $(this).attr("column15");
+						invoice.jobTitle = $(this).attr("column16");
+						invoice.overrideSiteTax = $(this).attr("column13");
+						invoice.account = $(this).attr("column3");
+	                	invoice.statusType = $(this).attr("column7");
+						invoice.quantity = $(this).attr("column4");
+						invoice.price = $(this).attr("column5");
+						invoice.amount = $(this).attr("column6");
+						invoice.taxable = $(this).attr("column8");
+	                	invoice.lineShow = $(this).attr("column9");
+						invoice.description = $(this).attr("column10");
+						invoice.displayOrder = $(this).attr("column11");
+						invoice.code = $(this).attr("column17");
+						invoice.accDescription = $(this).attr("column18");
+						invoice.descriptionAccount = $(this).attr("column20");
+						invoice.createdBy = createdBy;
 	                	me.invoiceCache[invoiceId].invoiceItems.push(invoice);
 	                });
 					
@@ -2791,7 +2781,7 @@ ii.Class({
 			invoiceRowHtml += me.getTotalGridRow(0, subTotal, "Sub Total:", "");
 			invoiceRowHtml += me.getTotalGridRow(0, salesTaxTotal, "Sales Tax Total:", "");
 			invoiceRowHtml += me.getTotalGridRow(0, total, "Total:", "");
-			invoiceRowHtml += "<tr height='100%'><td id='tdLastInvoiceRow' colspan='12' class='gridColumn' style='height: 100%'>&nbsp;</td></tr>";
+			invoiceRowHtml += "<tr height='100%'><td id='tdLastInvoiceRow' colspan='13' class='gridColumn' style='height: 100%'>&nbsp;</td></tr>";
 			
 			var invoiceDetailsRow = $("#InvoiceDetailsRow" + pkId);
 			
@@ -2830,7 +2820,7 @@ ii.Class({
 				price = "&nbsp";
 			}				
 			else {
-				accountName = me.getAccountNumberName(me.invoiceCache[invoiceId].invoiceItems[index].account);
+				accountName = me.invoiceCache[invoiceId].invoiceItems[index].code + ' - ' + me.invoiceCache[invoiceId].invoiceItems[index].accDescription
 				quantity = me.invoiceCache[invoiceId].invoiceItems[index].quantity.toString()
 				price = me.invoiceCache[invoiceId].invoiceItems[index].price;
 			}
@@ -2841,7 +2831,7 @@ ii.Class({
 				, me.invoiceCache[invoiceId].invoiceItems[index].id
 				, me.invoiceCache[invoiceId].invoiceItems[index].houseCode
 				, me.getJobTitle(me.invoiceCache[invoiceId].invoiceItems[index].jobBrief, me.invoiceCache[invoiceId].invoiceItems[index].jobTitle)
-				, me.getTaxableServiceTitle(me.invoiceCache[invoiceId].invoiceItems[index].taxableService)
+				, me.invoiceCache[invoiceId].invoiceItems[index].taxableService
 				, accountName
 				, quantity
 				, price
@@ -2850,6 +2840,7 @@ ii.Class({
 				, me.getDisplayValue(me.invoiceCache[invoiceId].invoiceItems[index].taxable)
 				, me.getDisplayValue(me.invoiceCache[invoiceId].invoiceItems[index].lineShow)
 				, me.invoiceCache[invoiceId].invoiceItems[index].description
+				, me.invoiceCache[invoiceId].invoiceItems[index].createdBy
 			);						
 			rowHtml += "</tr>";
 			
@@ -2872,6 +2863,7 @@ ii.Class({
 				, taxable: {type: String}
 				, lineShow: {type: String}
 				, description: {type: String}
+				, createdBy: {type: String}
 			});
 			var me = this;
 			var rowHtml = "";
@@ -2923,6 +2915,9 @@ ii.Class({
 				
 			if (me.invoiceDescription)
 				rowHtml += me.getEditableRowColumn(false, false, 10, "description", args.description, 300, "left");
+				
+			if (me.createdBy)
+				rowHtml += me.getEditableRowColumn(false, false, 12, "createdBy", args.createdBy, 150, "left");
 
 			return rowHtml;
 		},
@@ -2976,6 +2971,7 @@ ii.Class({
 				, "&nbsp;"
 				, "&nbsp;"
 				, args.description
+				, "&nbsp;"
 				);
 
 			rowHtml += "</tr>";
@@ -2997,9 +2993,9 @@ ii.Class({
 		},
 		
 		getDisplayValue: function(item) {
-			if (item == "true")
+			if (item == "True")
 				return "Yes";
-			else if (item == "false")
+			else if (item == "False")
 				return "No";
 		},
 		
@@ -3011,49 +3007,6 @@ ii.Class({
 				jobTitle = brief + " - " + title;
 
 			return jobTitle == "" ? "&nbsp;" : jobTitle;
-		},
-		
-		getTaxableServiceTitle: function(id) {
-			var me = this;
-
-			var index = ii.ajax.util.findIndexById(id.toString(), me.taxableServices);
-			if (index != undefined && index >= 0)
-				return me.taxableServices[index].title;
-			else
-				return "";
-		},
-			
-		taxableServicesLoaded: function(me, activeId) {
- 
- 			me.taxableServices.unshift(new fin.adh.TaxableService({ id: 0, title: "" }));
-        },
-			
-		accountsLoaded: function(me, activeId) {
-			for (var index = 0; index < me.accounts.length; index++) {
-				if (me.accounts[index].code == "0000") {
-					me.descriptionAccount = me.accounts[index].id;
-					me.accounts.push(me.accounts[index]);
-					me.accounts.splice(index, 1);
-					break;
-				}
-			}
-		},
-		
-		getAccountNumberName: function(id) {
-			var me = this;
-			var accountNumberName = "";
-
-			for (var index = 0; index < me.accounts.length; index++) {
-				if (me.accounts[index].id == id) {
-					accountNumberName = me.accounts[index].code + " - " + me.accounts[index].description;
-					break;
-				}
-			}
-
-			if (accountNumberName == "")
-				return "&nbsp;"
-			else
-				return accountNumberName;
 		},
 		
 		sortColumn: function(index) {

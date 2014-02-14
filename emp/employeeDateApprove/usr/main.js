@@ -15,6 +15,8 @@ ii.Style( "fin.cmn.usr.toolbar", 4 );
 ii.Style( "fin.cmn.usr.input", 5 );
 ii.Style( "fin.cmn.usr.grid", 6 );
 ii.Style( "fin.cmn.usr.button", 7 );
+ii.Style( "fin.cmn.usr.dropDown", 8 );
+ii.Style( "fin.cmn.usr.dateDropDown", 9 );
 
 ii.Class({
     Name: "fin.emp.UserInterface",
@@ -48,6 +50,7 @@ ii.Class({
 			me.defineFormControls();
 			me.configureCommunications();
 			me.setStatus("Loading");
+			me.modified(false);
 
 			$(window).bind("resize", me, me.resize);
 			if (top.ui.ctl.menu) {
@@ -99,7 +102,8 @@ ii.Class({
 			
 			if (!fin.employeeDateApproveUi) return;
 
-		    fin.employeeDateApproveUi.employeeGrid.setHeight($(window).height() - 155);
+		    fin.employeeDateApproveUi.employeeGrid.setHeight($(window).height() - 75);
+			$("#EmployeeContentArea").height($(window).height() - 120);
 		},
 		
 		defineFormControls: function() {
@@ -108,30 +112,155 @@ ii.Class({
 			me.employeeGrid = new ui.ctl.Grid({
 				id: "EmployeeGrid",
 				appendToId: "divForm",
-				allowAdds: false
+				allowAdds: false,
+				selectFunction: function(index) { me.itemSelect(index); },
+				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});
 
-			me.employeeGrid.addColumn("assigned", "assigned", "", "", 30, function() {
-				var index = me.employeeGrid.rows.length - 1;
-                return "<input type=\"checkbox\" id=\"assignInputCheck" + index + "\" class=\"iiInputCheck\" onclick=\"fin.employeeDateApproveUi.actionClickItem(this);\" />";
-            });
 			me.employeeGrid.addColumn("column4", "column4", "House Code", "House Code", 90);
 			me.employeeGrid.addColumn("column5", "column5", "First Name", "First Name", null);
 			me.employeeGrid.addColumn("column6", "column6", "Last Name", "Last Name", 120);
 			me.employeeGrid.addColumn("column7", "column7", "Employee #", "Employee Number", 90);
-			me.employeeGrid.addColumn("column15", "column15", "Hire Date", "Hire Date", 80);
-			me.employeeGrid.addColumn("column16", "column16", "Original Hire Date", "Original Hire Date", 120);
-			me.employeeGrid.addColumn("column17", "column17", "Seniority Date", "Seniority Date", 120);
-			me.employeeGrid.addColumn("column18", "column18", "Effective Date", "Effective Date", 80);
-			me.employeeGrid.addColumn("column19", "column19", "Effective Date Job", "Effective Date Job", 80);
-			me.employeeGrid.addColumn("column20", "column20", "Effective Date Compensation", "Effective Date Compensation", 120);
+			me.employeeGrid.addColumn("column8", "column8", "SSN", "SSN", 80);
 			me.employeeGrid.capColumns();
 
-			me.selectAll = new ui.ctl.Input.Check({
-		        id: "SelectAll",
-				changeFunction: function() { me.actionSelectAllItem(); }
-		    });
-			
+			me.hireDate = new ui.ctl.Input.Date({ 
+				id: "HireDate",
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+			});
+
+			me.hireDate.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required )					
+				.addValidation( function( isFinal, dataMap ) {
+					var enteredText = me.hireDate.text.value;
+
+					if (enteredText == "") return;
+					
+					if (me.employeeGrid.activeRowIndex != -1) {
+						var hireDate = new Date(me.employeeGrid.data[me.employeeGrid.activeRowIndex].column15);
+						if (ui.cmn.text.date.format(hireDate, "mm/dd/yyyy") != ui.cmn.text.date.format(new Date(enteredText), "mm/dd/yyyy"))
+							me.modified(true);
+					}
+					
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+						this.setInvalid("Please enter valid date.");
+				});
+				
+			me.originalHireDate = new ui.ctl.Input.Date({ 
+				id: "OriginalHireDate",
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+			});
+
+			me.originalHireDate.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required )					
+				.addValidation( function( isFinal, dataMap ) {
+					var enteredText = me.originalHireDate.text.value;
+
+					if (enteredText == "") return;
+					
+					if (me.employeeGrid.activeRowIndex != -1) {
+						var originalHireDate = new Date(me.employeeGrid.data[me.employeeGrid.activeRowIndex].column16);
+						if (ui.cmn.text.date.format(originalHireDate, "mm/dd/yyyy") != ui.cmn.text.date.format(new Date(enteredText), "mm/dd/yyyy"))
+							me.modified(true);
+					}
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+						this.setInvalid("Please enter valid date.");
+				});
+				
+			me.seniorityDate = new ui.ctl.Input.Date({ 
+				id: "SeniorityDate",
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+			});
+
+			me.seniorityDate.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required )					
+				.addValidation( function( isFinal, dataMap ) {
+					var enteredText = me.seniorityDate.text.value;
+
+					if (enteredText == "") return;
+
+					if (me.employeeGrid.activeRowIndex != -1) {
+						var seniorityDate = new Date(me.employeeGrid.data[me.employeeGrid.activeRowIndex].column17);
+						if (ui.cmn.text.date.format(seniorityDate, "mm/dd/yyyy") != ui.cmn.text.date.format(new Date(enteredText), "mm/dd/yyyy"))
+							me.modified(true);
+					}
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+						this.setInvalid("Please enter valid date.");
+				});
+				
+			me.effectiveDate = new ui.ctl.Input.Date({ 
+				id: "EffectiveDate",
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+			});
+
+			me.effectiveDate.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required )					
+				.addValidation( function( isFinal, dataMap ) {
+					var enteredText = me.effectiveDate.text.value;
+
+					if (enteredText == "") return;
+
+					if (me.employeeGrid.activeRowIndex != -1) {
+						var effectiveDate = new Date(me.employeeGrid.data[me.employeeGrid.activeRowIndex].column18);
+						if (ui.cmn.text.date.format(effectiveDate, "mm/dd/yyyy") != ui.cmn.text.date.format(new Date(enteredText), "mm/dd/yyyy"))
+							me.modified(true);
+					}
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+						this.setInvalid("Please enter valid date.");
+				});
+				
+			me.jobEffectiveDate = new ui.ctl.Input.Date({ 
+				id: "JobEffectiveDate",
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+			});
+
+			me.jobEffectiveDate.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required )					
+				.addValidation( function( isFinal, dataMap ) {
+					var enteredText = me.jobEffectiveDate.text.value;
+
+					if (enteredText == "") return;
+
+					if (me.employeeGrid.activeRowIndex != -1) {
+						var jobEffectiveDate = new Date(me.employeeGrid.data[me.employeeGrid.activeRowIndex].column19);
+						if (ui.cmn.text.date.format(jobEffectiveDate, "mm/dd/yyyy") != ui.cmn.text.date.format(new Date(enteredText), "mm/dd/yyyy"))
+							me.modified(true);
+					}
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+						this.setInvalid("Please enter valid date.");
+				});
+				
+			me.compensationEffectiveDate = new ui.ctl.Input.Date({ 
+				id: "CompensationEffectiveDate",
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.compensationEffectiveDate.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required )					
+				.addValidation( function( isFinal, dataMap ) {
+					var enteredText = me.compensationEffectiveDate.text.value;
+
+					if (enteredText == "") return;
+
+					if (me.employeeGrid.activeRowIndex != -1) {
+						var compensationEffectiveDate = new Date(me.employeeGrid.data[me.employeeGrid.activeRowIndex].column20);
+						if (ui.cmn.text.date.format(compensationEffectiveDate, "mm/dd/yyyy") != ui.cmn.text.date.format(new Date(enteredText), "mm/dd/yyyy"))
+							me.modified(true);
+					}
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+						this.setInvalid("Please enter valid date.");
+				});
+
+			me.notes = $("#Notes")[0];
+			me.notes.readOnly = true;
+
 			me.anchorApprove = new ui.ctl.buttons.Sizeable({
 				id: "AnchorApprove",
 				className: "iiButton",
@@ -203,52 +332,76 @@ ii.Class({
 			}
 		},
 		
+		resizeControls: function() {
+			var me = this;
+
+			me.hireDate.resizeText();
+			me.originalHireDate.resizeText();
+			me.seniorityDate.resizeText();
+			me.effectiveDate.resizeText();
+			me.jobEffectiveDate.resizeText();
+			me.compensationEffectiveDate.resizeText();
+			me.resize();
+		},
+
+		resetControls: function() {
+			var me = this;
+
+			me.validator.reset();
+			me.hireDate.setValue("");
+			me.originalHireDate.setValue("");
+			me.seniorityDate.setValue("");
+			me.effectiveDate.setValue("");
+			me.jobEffectiveDate.setValue("");
+			me.compensationEffectiveDate.setValue("");
+			me.notes.value = "";
+			$("#CurrentHireDate").text("");
+			$("#CurrentOriginalHireDate").text("");
+			$("#CurrentSeniorityDate").text("");
+			$("#CurrentEffectiveDate").text("");
+			$("#CurrentJobEffectiveDate").text("");
+			$("#CurrentCompensationEffectiveDate").text("");
+		},
+
 		employeesLoaded: function(me, activeId) { 
 
 			me.employeeGrid.setData(me.employees);
 			me.setStatus("Loaded");
 			me.checkLoadCount();
+			me.resizeControls();
+			me.resetControls();
 		},
-		
-		actionClickItem: function(objCheckBox) {
+
+		itemSelect: function() {
+			var args = ii.args(arguments, {
+				index: {type: Number},  // The index of the data item to select
+			});
 			var me = this;
-			var allSelected = true;
+			var index = args.index;
+			var item = me.employeeGrid.data[index];
 
-			if (objCheckBox.checked) {
-				for (var index = 0; index < me.employees.length; index++) {
-					if ($("#assignInputCheck" + index)[0].checked == false) {
-						allSelected = false;
-						break;
-					}
-				}
-			}
-			else
-				allSelected = false;
-			
-			me.modified();
-			me.selectAll.setValue(allSelected.toString());
+			$("#CurrentHireDate").text(item.column9);
+			$("#CurrentOriginalHireDate").text(item.column10);
+			$("#CurrentSeniorityDate").text(item.column11);
+			$("#CurrentEffectiveDate").text(item.column12);
+			$("#CurrentJobEffectiveDate").text(item.column13);
+			$("#CurrentCompensationEffectiveDate").text(item.column14);
+			me.hireDate.setValue(item.column15);
+			me.originalHireDate.setValue(item.column16);
+			me.seniorityDate.setValue(item.column17);
+			me.effectiveDate.setValue(item.column18);
+			me.jobEffectiveDate.setValue(item.column19);
+			me.compensationEffectiveDate.setValue(item.column20);
+			me.notes.value = item.column21;
+			me.setStatus("Normal");
 		},
-		
-		actionSelectAllItem: function() {
-			var me = this;
 
-			me.modified(true);
-
-			for (var index = 0; index < me.employees.length; index++) {
-				$("#assignInputCheck" + index)[0].checked = me.selectAll.check.checked;
-			}
-		},
-		
 		setEmployeeGrid: function() {
 			var me = this;
 
-			for (var index = me.employees.length - 1; index >= 0; index--) {
-				if ($("#assignInputCheck" + index)[0].checked) {
-					me.employees.splice(index, 1);
-				}
-			}
+			me.employees.splice(me.employeeGrid.activeRowIndex, 1);
 			me.employeeGrid.setData(me.employees);
-			me.selectAll.setValue("false");
+			me.resetControls();
 		},
 		
 		actionApproveItem: function() {
@@ -270,36 +423,64 @@ ii.Class({
 			var item = [];
 			var xml = "";
 
-			if (me.status == "Approved") {
-				for (var index = 0; index < me.employees.length; index++) {
-					if ($("#assignInputCheck" + index)[0].checked) {
-						xml += '<employeeDateUpdate';
-						xml += ' employeeId="' + me.employees[index].column1 + '"';
-						xml += ' hireDate="' + me.employees[index].column9 + '"';
-						xml += ' originalHireDate="' + me.employees[index].column10 + '"';
-						xml += ' seniorityDate="' + me.employees[index].column11 + '"';
-						xml += ' effectiveDate="' + me.employees[index].column12 + '"';
-						xml += ' effectiveDateJob="' + me.employees[index].column13 + '"';
-						xml += ' effectiveDateCompensation="' + me.employees[index].column14 + '"';
-						xml += '/>';
-					}
-				}
+			if (me.employeeGrid.activeRowIndex == -1)
+				return;
+
+			// Check to see if the data entered is valid
+			me.validator.forceBlur();
+
+			if (!me.validator.queryValidity(true) && me.employeeGrid.activeRowIndex >= 0) {
+				alert("In order to save, the errors on the page must be corrected.");
+				return false;
 			}
 
-			for (var index = 0; index < me.employees.length; index++) {
-				if ($("#assignInputCheck" + index)[0].checked) {
-					xml += '<appGenericImportDateModification';
-					xml += ' id="' + me.employees[index].id + '"';
-					xml += ' status="' + me.status + '"';
-					xml += '/>';
-				}
+			if (me.status == "Approved") {
+				xml += '<employeeDateUpdate';
+				xml += ' employeeId="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column1 + '"';
+				xml += ' hireDate="' + me.hireDate.text.value + '"';
+				xml += ' originalHireDate="' + me.originalHireDate.text.value + '"';
+				xml += ' seniorityDate="' + me.seniorityDate.text.value + '"';
+				xml += ' effectiveDate="' + me.effectiveDate.text.value + '"';
+				xml += ' effectiveDateJob="' + me.jobEffectiveDate.text.value + '"';
+				xml += ' effectiveDateCompensation="' + me.compensationEffectiveDate.text.value + '"';
+				xml += '/>';
+			}
+			else {
+				xml += '<appGenericImportDateModification';
+				xml += ' id="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].id + '"';
+				xml += ' status="' + me.status + '"';
+				xml += '/>';
 			}
 
 			if (xml == "")
 				return;
 
+			me.setStatus("Saving");
 			$("#messageToUser").html("Saving");
 			$("#pageLoading").fadeIn("slow");
+
+			// Send the object back to the server as a transaction
+			me.transactionMonitor.commit({
+				transactionType: "itemUpdate",
+				transactionXml: xml,
+				responseFunction: me.saveResponse,
+				referenceData: {me: me, item: item}
+			});
+			
+			return true;
+		},
+		
+		actionUpdateItem: function() {
+			var me = this;
+			var item = [];
+			var xml = "";
+
+			xml += '<appGenericImportDateModification';
+			xml += ' id="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].id + '"';
+			xml += ' status="' + me.status + '"';
+			xml += '/>';
+
+			me.status = "";
 
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
@@ -323,10 +504,15 @@ ii.Class({
 			var status = $(args.xmlNode).attr("status");
 
 			if (status == "success") {
-				me.modified(false);
-				me.setEmployeeGrid();
-				me.status = "";
-				me.setStatus("Saved");
+				if (me.status == "Approved") {
+					me.actionUpdateItem();
+				}
+				else {
+					me.modified(false);
+					me.setEmployeeGrid();
+					me.status = "";
+					me.setStatus("Saved");
+				}
 			}
 			else {
 				me.setStatus("Error");
