@@ -1011,6 +1011,81 @@ eFin.data.app.DataCollectorTaskStore = WebLight.extend(eFin.data.XmlStore, {
     }
 });
 
+eFin.data.app.hcmSiteTypeStore = WebLight.extend(eFin.data.XmlStore, {
+    url: '/net/crothall/chimes/fin/app/act/Provider.aspx',
+
+    moduleId: 'app',
+
+    recordName: 'item',
+
+    storeId: 'hcmSiteTypes',
+
+    fields: [
+                 { name: 'id', mapping: '@id', type: 'int' },                 
+                 { name: 'name', mapping: '@name', type: 'string' }
+                ],
+});
+
+eFin.data.app.remitToStore = WebLight.extend(eFin.data.XmlStore, {
+    url: '/net/crothall/chimes/fin/app/act/Provider.aspx',
+
+    moduleId: 'app',
+
+    recordName: 'item',
+
+    storeId: 'remitToLocations',
+
+    fields: [
+                 { name: 'id', mapping: '@id', type: 'int' },                 
+                 { name: 'name', mapping: '@name', type: 'string' }
+                ],
+});
+
+eFin.data.app.budgetLaborCalcMethodStore = WebLight.extend(eFin.data.XmlStore, {
+    url: '/net/crothall/chimes/fin/app/act/Provider.aspx',
+
+    moduleId: 'app',
+
+    recordName: 'item',
+
+    storeId: 'budgetLaborCalcMethods',
+
+    fields: [
+                 { name: 'id', mapping: '@id', type: 'int' },                 
+                 { name: 'name', mapping: '@name', type: 'string' }
+                ],
+});
+
+eFin.data.app.budgetTemplateStore = WebLight.extend(eFin.data.XmlStore, {
+    url: '/net/crothall/chimes/fin/app/act/Provider.aspx',
+
+    moduleId: 'app',
+
+    recordName: 'item',
+
+    storeId: 'budgetTemplates',
+
+    fields: [
+                 { name: 'id', mapping: '@id', type: 'int' },                 
+                 { name: 'name', mapping: '@name', type: 'string' }
+                ],
+});
+
+eFin.data.app.serviceTypeStore = WebLight.extend(eFin.data.XmlStore, {
+    url: '/net/crothall/chimes/fin/app/act/Provider.aspx',
+
+    moduleId: 'app',
+
+    recordName: 'item',
+
+    storeId: 'serviceTypes',
+
+    fields: [
+                 { name: 'id', mapping: '@id', type: 'int' },                 
+                 { name: 'name', mapping: '@name', type: 'string' }
+                ],
+});
+
 eFin.page.app.Notification = WebLight.extend(WebLight.Page, {
     html: window.__weblight_t_fbd3614b[2],
     title: 'Notification',
@@ -1078,8 +1153,6 @@ eFin.page.app.Notification = WebLight.extend(WebLight.Page, {
         me.dataCollectorTaskStore = new eFin.data.app.DataCollectorTaskStore();
         me.createDataCollectorTaskGrid();
 		
-		
-		
         me.dataCollectorTaskStore.on('beforeload', function () { me.mask('Loading...'); });
         me.dataCollectorTaskStore.on('load', function () {
             //me.$child('title').html(String.format('Notifications ({0})', me.dataCollectorTaskStore.getCount()));
@@ -1139,7 +1212,20 @@ eFin.page.app.DataCollectorTask = WebLight.extend(WebLight.Page, {
         //        me.dataCollectorStore.on('load', me.onDataLoaded.createDelegate(me));
         me.initButtons();
 
-
+		me.hcmSiteTypeStore = new eFin.data.app.hcmSiteTypeStore();
+		me.hcmSiteTypeStore.load();
+		
+		me.remitToStore = new eFin.data.app.remitToStore();
+		me.remitToStore.load();
+		
+		me.budgetLaborCalcMethodStore = new eFin.data.app.budgetLaborCalcMethodStore();
+		me.budgetLaborCalcMethodStore.load();
+		
+		me.budgetTemplateStore = new eFin.data.app.budgetTemplateStore();
+		me.budgetTemplateStore.load();
+		
+		me.serviceTypeStore = new eFin.data.app.serviceTypeStore();
+		me.serviceTypeStore.load();
     },
 
 	onDataBeforeLoad: function () {
@@ -1220,8 +1306,36 @@ eFin.page.app.DataCollectorTask = WebLight.extend(WebLight.Page, {
         var config = { xtype: 'textfield', width: 150, name: fieldName, allowBlank: false , msgTarget: 'side', listeners: { 'change': function() { modified(true); } }};
 		
 		if (fieldReferenceTableName !=  '') {
-			 config = Ext.apply(config, {  
-				listeners: { 'change': function() { modified(true); } }});
+			if (fieldName == 'HcmSiteType') {
+				config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'id', displayField: 'name', msgTarget: 'none',
+					listeners: {'change': function(){modified(true);}},
+					store: me.hcmSiteTypeStore,mode: 'local'
+				});
+			}
+			if (fieldName == 'HcmRemitToLocation') {
+				config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'id', displayField: 'name', msgTarget: 'none',
+					listeners: {'change': function(){modified(true);}},
+					store: me.remitToStore,mode: 'local'
+				});
+			}
+			if (fieldName == 'HcmBudgetLaborCalcMethod') {
+				config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'id', displayField: 'name', msgTarget: 'none',
+					listeners: {'change': function(){modified(true);}},
+					store: me.budgetLaborCalcMethodStore,mode: 'local'
+				});
+			}
+			if (fieldName == 'HcmBudgetTemplate') {
+				config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'id', displayField: 'name', msgTarget: 'none',
+					listeners: {'change': function(){modified(true);}},
+					store: me.budgetTemplateStore,mode: 'local'
+				});
+			}
+			if (fieldName == 'HcmServiceType') {
+				config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'id', displayField: 'name', msgTarget: 'none',
+					listeners: {'change': function(){modified(true);}},
+					store: me.serviceTypeStore,mode: 'local'
+				});
+			}			
 		}
 		else {
 			if (fieldValidation ==  'Int')
@@ -1262,9 +1376,7 @@ eFin.page.app.DataCollectorTask = WebLight.extend(WebLight.Page, {
 			else if (fieldValidation == 'Bit')
 	            config = Ext.apply(config, { xtype: 'checkbox',
 				listeners: { 'change': function() { modified(true); } }});
-		}
-		
-        
+		}       
 
         return Ext.create(config);
     },
