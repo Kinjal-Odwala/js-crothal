@@ -1500,7 +1500,9 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
         var lockoutField = new Ext.form.Checkbox({ name: 'lockout' });
         var activeField = new Ext.form.Checkbox({ name: 'active' });
         var sendEmailField = new Ext.form.Checkbox({ name: 'email' });
-        var emailAddressField = new Ext.form.TextField({ width: 330, name: 'emailAddress', maxLength: 250, vtype:'email', msgTarget: 'side',
+        var emailAddressField = new Ext.form.TextField({ width: 330, name: 'emailAddress', maxLength: 250, 
+			regex: /^(\w([-_+.']*\w+)+@(\w(-*\w+)+\.)+[a-zA-Z]{2,4}[;])*\w([-_+.']*\w+)+@(\w(-*\w+)+\.)+[a-zA-Z]{2,4}$/, 
+			regexText: 'Please enter valid Email Address. Use semicolon to separate two addresses.', msgTarget: 'side',
             autoCreate: { tag: 'input', type: 'text', maxLength: 250, autocomplete: 'off' },
 			listeners: { 'change': function() { modified(true); } }
         });
