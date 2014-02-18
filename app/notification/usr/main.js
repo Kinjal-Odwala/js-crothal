@@ -1307,31 +1307,31 @@ eFin.page.app.DataCollectorTask = WebLight.extend(WebLight.Page, {
 		
 		if (fieldReferenceTableName !=  '') {
 			if (fieldName == 'HcmSiteType') {
-				config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'id', displayField: 'name', msgTarget: 'none',
+				config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'id', displayField: 'name', msgTarget: 'none', triggerAction: 'all', allowBlank: false, editable: false,
 					listeners: {'change': function(){modified(true);}},
 					store: me.hcmSiteTypeStore,mode: 'local'
 				});
 			}
 			if (fieldName == 'HcmRemitToLocation') {
-				config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'id', displayField: 'name', msgTarget: 'none',
+				config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'id', displayField: 'name', msgTarget: 'none', triggerAction: 'all', allowBlank: false, editable: false,
 					listeners: {'change': function(){modified(true);}},
 					store: me.remitToStore,mode: 'local'
 				});
 			}
 			if (fieldName == 'HcmBudgetLaborCalcMethod') {
-				config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'id', displayField: 'name', msgTarget: 'none',
+				config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'id', displayField: 'name', msgTarget: 'none', triggerAction: 'all', allowBlank: false, editable: false,
 					listeners: {'change': function(){modified(true);}},
 					store: me.budgetLaborCalcMethodStore,mode: 'local'
 				});
 			}
 			if (fieldName == 'HcmBudgetTemplate') {
-				config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'id', displayField: 'name', msgTarget: 'none',
+				config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'id', displayField: 'name', msgTarget: 'none', triggerAction: 'all', allowBlank: false, editable: false,
 					listeners: {'change': function(){modified(true);}},
 					store: me.budgetTemplateStore,mode: 'local'
 				});
 			}
 			if (fieldName == 'HcmServiceType') {
-				config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'id', displayField: 'name', msgTarget: 'none',
+				config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'id', displayField: 'name', msgTarget: 'none', triggerAction: 'all', allowBlank: false, editable: false,
 					listeners: {'change': function(){modified(true);}},
 					store: me.serviceTypeStore,mode: 'local'
 				});
