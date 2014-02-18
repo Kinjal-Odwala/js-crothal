@@ -5,7 +5,6 @@ ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.grid" );
 ii.Import( "fin.cmn.usr.util" );
-
 ii.Import( "fin.cmn.usr.houseCodeSearch" );
 ii.Import( "fin.cmn.usr.houseCodeSearchTemplate" );
 ii.Import( "fin.hcm.ePaySiteSurvey.usr.defs" );
@@ -46,7 +45,6 @@ ii.Class({
 			me.currentWizard = "";
 			me.nextWizard = "";
 			me.prevWizard = "";
-			me.status = "";
 			me.action = "";
 			me.exportToExcel = false;
 			me.mouseOverContex = false;
@@ -89,6 +87,7 @@ ii.Class({
 			else
 				me.houseCodesLoaded(me, 0);
 
+			ui.cmn.behavior.disableBackspaceNavigation();
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
 			}
@@ -99,8 +98,8 @@ ii.Class({
 
 		    $("#fragment-1").height($(window).height() - 110);
 
-			if ($(window).width() < 1300)
-				$("#DeviceGrid").width(1300);
+			if ($(window).width() < 1500)
+				$("#DeviceGrid").width(1500);
 			else
 				$("#DeviceGrid").width($(window).width() - 45);
 
@@ -241,6 +240,14 @@ ii.Class({
 				hasHotState: true
 			});
 			
+			me.anchorClockManagement = new ui.ctl.buttons.Sizeable({
+				id: "AnchorClockManagement",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Clock Management&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionClockManagementItem(); },
+				hasHotState: true
+			});
+			
 			me.anchorSave = new ui.ctl.buttons.Sizeable({
 				id: "AnchorSave",
 				className: "iiButton",
@@ -249,11 +256,11 @@ ii.Class({
 				hasHotState: true
 			});
 			
-			me.anchorCancel = new ui.ctl.buttons.Sizeable({
-				id: "AnchorCancel",
+			me.anchorUndo = new ui.ctl.buttons.Sizeable({
+				id: "AnchorUndo",
 				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionCancelItem(); },
+				text: "<span>&nbsp;&nbsp;Undo&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionUndoItem(); },
 				hasHotState: true
 			});
 			
@@ -315,10 +322,10 @@ ii.Class({
 			
 			me.zipCode = new ui.ctl.Input.Text({
 		        id: "ZipCode",
-		        maxLength: 10,
+		        maxLength: 5,
 				changeFunction: function() {
 					me.modified();
-					if (ui.cmn.text.validate.postalCode(me.zipCode.getValue()))
+					if (/^\d{5}$/.test(me.zipCode.getValue()))
 						me.loadTimeZones(me.zipCode.getValue());
 				}
 		    });
@@ -331,8 +338,9 @@ ii.Class({
 				if (me.zipCode.getValue() == "") 
 					return;
 
-				if (ui.cmn.text.validate.postalCode(me.zipCode.getValue()) == false)
-					this.setInvalid("Please enter valid postal code. Example 99999 or 99999-9999");
+				if (!(/^\d{5}$/.test(me.zipCode.getValue()))) {
+					this.setInvalid("Please enter valid Zip Code. Example 99999");
+				}
 			});
 
 			me.timeZone = new ui.ctl.Input.DropDown.Filtered({
@@ -1040,6 +1048,17 @@ ii.Class({
 			me.serialNumberCM.makeEnterTab()
 				.setValidationMaster( me.validator )
 				.addValidation( ui.ctl.Input.Validation.required )
+				.addValidation(function(isFinal, dataMap) {
+
+					if (me.deviceGrid.activeRowIndex == -1) return;
+					for (var index = 0; index < me.deviceGrid.data.length; index++) {
+						if (me.deviceGrid.data[index].serialNumber.toLowerCase() == me.serialNumberCM.getValue().toLowerCase() 
+							&& index != me.deviceGrid.activeRowIndex) {
+							this.setInvalid("Serial Number [" + me.serialNumberCM.getValue() + "] already exists. Please enter unique Serial Number.");
+							break;
+						}
+					}
+				});
 			
 			me.groupNumberCM = new ui.ctl.Input.Text({
 		        id: "GroupNumberCM",
@@ -1066,7 +1085,7 @@ ii.Class({
 			me.deviceGrid.addColumn("deviceStatusType", "deviceStatusType", "Device Status", "Device Status", 150, function( type ) { return type.name; }, me.deviceStatusTypeCM);
 			me.deviceGrid.addColumn("assetTransferStatusType", "assetTransferStatusType", "Asset Transfer Status", "Asset Transfer Status", 170, function( type ) { return type.name; }, me.assetTransferStatusTypeCM);
 			me.deviceGrid.addColumn("serialNumber", "serialNumber", "Serial Number", "Serial Number", 150, null, me.serialNumberCM);
-			me.deviceGrid.addColumn("houseCode", "houseCode", "House Code", "House Code", 100, null, null);
+			me.deviceGrid.addColumn("houseCodeTitle", "houseCodeTitle", "House Code Title", "House Code Title", 300, null, null);
 			me.deviceGrid.addColumn("groupNumber", "groupNumber", "Group Number", "Group Number", 150, null, me.groupNumberCM);
 			me.deviceGrid.addColumn("groupName", "groupName", "Group Name", "Group Name", null, null, me.groupNameCM);
 			me.deviceGrid.addColumn("upsTrackingNumber", "upsTrackingNumber", "UPS Tracking Number", "UPS Tracking Number", 160, null, me.upsTrackingNumberCM);
@@ -2269,7 +2288,7 @@ ii.Class({
 			$("#AnchorSaveAndSend").hide();
 			$("#AnchorManageDeviceTypes").hide();
 			$("#AnchorSave").hide();
-			$("#AnchorCancel").hide();
+			$("#AnchorUndo").hide();
 			$("#AnchorPrint").hide();
 
 			$("#header").html("Site Survey");
@@ -2285,7 +2304,6 @@ ii.Class({
 				return;
 			
 			me.action = "SiteMethodology";
-			me.status = "";
 			$("#header").html("Site Methodology");
 
 			if (me.siteDetails[0].id == 0) {
@@ -2300,7 +2318,7 @@ ii.Class({
 				$("#AnchorSaveAndSend").hide();
 				$("#AnchorManageDeviceTypes").hide();
 				$("#AnchorSave").hide();
-				$("#AnchorCancel").hide();
+				$("#AnchorUndo").hide();
 				$("#AnchorPrint").hide();
 				return;
 			}
@@ -2327,7 +2345,7 @@ ii.Class({
 			$("#AnchorSaveAndSend").show();
 			$("#AnchorManageDeviceTypes").hide();
 			$("#AnchorSave").show();
-			$("#AnchorCancel").show();
+			$("#AnchorUndo").show();
 			$("#AnchorPrint").show();
 			
 			me.setStatus("Normal");
@@ -2353,8 +2371,9 @@ ii.Class({
 			$("#AnchorPrev").hide();
 			$("#AnchorNext").hide();
 			$("#AnchorSaveAndSend").hide();
+			$("#AnchorClockManagement").hide();
 			$("#AnchorSave").show();
-			$("#AnchorCancel").show();
+			$("#AnchorUndo").show();
 			$("#AnchorPrint").show();
 			$("input[name='CMSearch'][value='false']").attr("checked", "checked");
 			if (me.manageDeviceTypeShow) {
@@ -2369,7 +2388,6 @@ ii.Class({
 			me.deviceGrid.setHeight($(window).height() - 320);
 			
 			me.action = "ClockManagement";
-			me.status = "";
 			me.setStatus("Normal");
 			me.resizeControls();
 			me.loadDeviceTypes();
@@ -2386,22 +2404,26 @@ ii.Class({
 			$("#ClockManagement").hide();
 			$("#ManageDeviceType").show();
 			
+			if (status == "Clock Management")
+				$("#AnchorClockManagement").show();
+			else
+				$("#AnchorClockManagement").hide();
+			
 			$("#AnchorPrev").hide();
 			$("#AnchorNext").hide();
 			$("#AnchorSaveAndSend").hide();
 			$("#AnchorManageDeviceTypes").hide();
 			$("#AnchorSave").show();
-			$("#AnchorCancel").show();
+			$("#AnchorUndo").show();
 			$("#AnchorPrint").hide();
 			
 			$("#header").html("");	
 			me.deviceTypeGrid.setHeight($(window).height() - 170);
 			me.action = "ManageDeviceType";
 			me.setStatus("Normal");
-			me.status = status;
 			me.loadDeviceTypes();
 		},
-		
+
 		actionSearchItem: function() {
 			var me = this;
 			var houseCodeId = 0;
@@ -2521,26 +2543,19 @@ ii.Class({
 			}
 		},
 		
-		actionCancelItem: function() {
+		actionUndoItem: function() {
 			var me = this;
 
-			if (me.status == "Clock Management") {
-				$("#ManageDeviceType").hide();
-				$("#ClockManagement").show();
-				if (me.manageDeviceTypeShow) {
-					$("#AnchorManageDeviceTypes").show();
-				}
-				me.action = "ClockManagement";
-				me.status = "";
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
+			if (me.action == "ManageDeviceType") {
 				me.loadDeviceTypes();
 			}
-			else if (me.status == "Manage Device Type") {
-				me.loadDeviceTypes();
-			}
-			else if (me.status == "" && me.action == "ClockManagement") {
+			else if (me.action == "ClockManagement") {
 				me.actionSearchItem();
 			}
-			else if (me.status == "" && me.action == "SiteMethodology") {
+			else if (me.action == "SiteMethodology") {
 				me.setSiteSurveyDetails();
 				me.setStatus("Normal");
 				$("#houseCodeText").focus();
@@ -3135,6 +3150,10 @@ ii.Class({
 				me.modified(false);
 				me.setStatus("Saved");
 			}
+			else if (status == "invalid") {
+                me.setStatus("Info", $(args.xmlNode).attr("message"));
+				alert("[SAVE FAILURE] Error while updating Clock Asset details: " + $(args.xmlNode).attr("message"));
+            }
 			else {
 				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating Epay Site Survey details: " + $(args.xmlNode).attr("message"));

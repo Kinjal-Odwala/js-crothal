@@ -102,6 +102,7 @@ ii.init.register( function() {
 		id: {type: Number}
 		, houseCodeId: {type: Number, required: false, defaultValue: 0}
 		, houseCode: {type: String, required: false, defaultValue: ""}
+		, houseCodeTitle: {type: String, required: false, defaultValue: ""}
 		, deviceType: {type: fin.hcm.ePaySiteSurvey.DeviceType, required: false}
 		, deviceStatusType: {type: fin.hcm.ePaySiteSurvey.DeviceStatusType, required: false}
 		, assetTransferStatusType: {type: fin.hcm.ePaySiteSurvey.AssetTransferStatusType, required: false}
