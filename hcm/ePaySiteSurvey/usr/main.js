@@ -47,7 +47,7 @@ ii.Class({
 			me.prevWizard = "";
 			me.action = "";
 			me.exportToExcel = false;
-			me.mouseOverContex = false;
+			me.mouseOverContext = false;
 			me.houseCodeCache = [];
 				
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
@@ -1857,7 +1857,7 @@ ii.Class({
 				index = ii.ajax.util.findIndexById(me.siteDetails[0].taskSelectionMethod.toString(), me.taskSelectionMethods);
 				if (index != undefined) 
 					me.taskSelectionMethod.select(index, me.taskSelectionMethod.focused);
-					
+
 				me.firstDayOfReportingPeriod.setValue(me.siteDetails[0].firstDayOfReportingPeriod);
 				me.reviewDate.setValue(me.siteDetails[0].reviewDate);
 				me.goLiveDate.setValue(me.siteDetails[0].goLiveDate);
@@ -2800,7 +2800,7 @@ ii.Class({
 					alert("In order to save, the errors on the page must be corrected.");
 					return false;
 				}
-				
+
 				var item = new fin.hcm.ePaySiteSurvey.SiteDetail({ id: 0, houseCodeId: 0});
 			}
 			else if (me.action == "ManageDeviceType") {
@@ -2847,6 +2847,7 @@ ii.Class({
 				xml += '<ePaySiteSurvey';
 				xml += ' id="' + item.id + '"';
 				xml += ' houseCodeId="' + item.houseCodeId + '"';
+				xml += ' houseCodeTitle="' + ui.cmn.text.xml.encode(parent.fin.appUI.houseCodeTitle) + '"';
 				xml += ' address1="' + ui.cmn.text.xml.encode(item.address1) + '"';
 				xml += ' city="' + ui.cmn.text.xml.encode(item.city) + '"';
 				xml += ' stateType="' + item.state + '"';
@@ -2899,6 +2900,22 @@ ii.Class({
 				xml += ' confirmSiteIsLive="' + item.confirmSiteIsLive + '"';
 				xml += ' type="' + me.action + '"';
 				xml += ' exported="' + me.exportToExcel + '"';
+				if (me.exportToExcel) {
+					xml += ' stateName="' + ui.cmn.text.xml.encode(me.stateTypes[me.state.indexSelected].name) + '"';
+					xml += ' defaultPayGroupTitle="' + ui.cmn.text.xml.encode(me.ePayGroupTypes[me.ePayGroupType.indexSelected].name) + '"';
+					xml += ' reportingFrequencyTitle="' + ui.cmn.text.xml.encode(me.reportingFrequencyTypes[me.reportingFrequency.indexSelected].name) + '"';
+					xml += ' preferredConnectionMethodTitle="' + ui.cmn.text.xml.encode(me.preferredConnectionMethods[me.preferredConnectionMethod.indexSelected].name) + '"';
+					xml += ' taskSelectionMethodTitle="' + ui.cmn.text.xml.encode(me.taskSelectionMethods[me.taskSelectionMethod.indexSelected].name) + '"';
+					var clockAssetDetails = "";
+					for (var index = 0; index < me.deviceTypeClockAssetGrid.data.length; index++) {
+						if (me.deviceTypeClockAssetGrid.data[index].assigned) {
+							clockAssetDetails += me.deviceTypeClockAssetGrid.data[index].deviceType.name + "|"
+								+ me.deviceTypeClockAssetGrid.data[index].serialNumber + "|"
+								+ me.deviceTypeClockAssetGrid.data[index].trackingNumber + "#"
+						}
+					}
+					xml += ' clockAssetDetails="' + ui.cmn.text.xml.encode(clockAssetDetails) + '"';
+				}
 				xml += '/>';
 
 				if (me.action == "SiteSurvey") {
@@ -2933,6 +2950,7 @@ ii.Class({
 								clockAssetsTemp.push(new fin.hcm.ePaySiteSurvey.ClockAsset(
 									me.deviceTypeClockAssetGrid.data[index].clockAsset
 									, (me.deviceTypeClockAssetGrid.data[index].assigned ? parent.fin.appUI.houseCodeId : 0)
+									, ""
 									, ""
 									, me.clockAssets[itemIndex].deviceType
 									, (me.deviceTypeClockAssetGrid.data[index].assigned ? me.deviceStatusTypes[0] : me.deviceStatusTypes[1])
@@ -2971,6 +2989,7 @@ ii.Class({
 									me.ePaySiteSurveyClockAssets[index].clockAsset
 									, 0
 									, ""
+									, ""
 									, me.clockAssets[itemIndex].deviceType
 									, me.deviceStatusTypes[1]
 									, me.assetTransferStatusTypes[0]
@@ -2992,7 +3011,7 @@ ii.Class({
 							me.ePaySiteSurveyClockAssets.splice(index, 1);
 						}
 					}
-					
+
 					for (var index = 0; index < clockAssetsTemp.length; index++) {
 						xml += '<clockAsset';
 						xml += ' id="' + clockAssetsTemp[index].id + '"';
