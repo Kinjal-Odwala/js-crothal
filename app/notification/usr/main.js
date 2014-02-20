@@ -1157,7 +1157,20 @@ eFin.page.app.Notification = WebLight.extend(WebLight.Page, {
         me.createDataCollectorTaskGrid();
 		
         me.dataCollectorTaskStore.on('beforeload', function () { me.mask('Loading...'); });
-        me.dataCollectorTaskStore.on('load', function () { me.unmask("Loaded"); });
+        me.dataCollectorTaskStore.on('load', function () {
+            //me.$child('title').html(String.format('Notifications ({0})', me.dataCollectorTaskStore.getCount()));
+            var notificationCount = me.dataCollectorTaskStore.getCount();
+            var menuText = 'Notification (' + notificationCount + ')';
+            var menuItem1 = top.document.getElementById('iiMenuHorizontalSubNotificationMiddle');
+            if (menuItem1)
+                menuItem1.childNodes[0].innerHTML = menuText;
+
+            var menuItem2 = top.document.getElementById('iiMenuVerticalSubNotification');
+            if (menuItem2)
+                menuItem2.innerHTML = menuText;
+
+            me.unmask("Loaded");
+        });
 				
         me.initButtons();
 		$("#app-notification-divButtons").hide();
