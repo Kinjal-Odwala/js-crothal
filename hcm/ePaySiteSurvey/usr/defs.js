@@ -42,7 +42,12 @@ ii.init.register( function() {
 		id: {type: Number}
 		, title: {type: String}
 	};
-	
+
+	fin.hcm.ePaySiteSurvey.roundingTimePeriodArgs = {
+		id: {type: Number}
+		, name: {type: String}
+	};
+
 	fin.hcm.ePaySiteSurvey.payCodeTypeArgs = {
 		id: {type: Number}
 		, brief: {type: String}
@@ -245,6 +250,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.ePaySiteSurvey.frequencyTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.ePaySiteSurvey.RoundingTimePeriod",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.ePaySiteSurvey.roundingTimePeriodArgs);
 			$.extend(this, args);
 		}
 	}

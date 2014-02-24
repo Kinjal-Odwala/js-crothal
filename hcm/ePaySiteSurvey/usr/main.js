@@ -596,13 +596,13 @@ ii.Class({
 					if (/^\d+$/.test(enteredText) == false)
 						this.setInvalid("Please enter valid number.");
 				});
-				
-			me.currentRoundingScheme = new ui.ctl.Input.Text({
+
+			me.currentRoundingScheme = new ui.ctl.Input.DropDown.Filtered({
 		        id: "CurrentRoundingScheme",
-		        maxLength: 50,
+				formatFunction: function( type ) { return type.name; },
 				changeFunction: function() { me.modified(); }
 		    });
-			
+
 			me.currentOvertimePolicy = new ui.ctl.Input.Text({
 		        id: "CurrentOvertimePolicy",
 		        maxLength: 256,
@@ -1621,9 +1621,13 @@ ii.Class({
 			*/
 			if (readOnly) {
 				$("#StateAction").removeClass("iiInputAction");
+				$("#CurrentRoundingSchemeAction").removeClass("iiInputAction");
+				$("#TimeZoneAction").removeClass("iiInputAction");
 			}
 			else {
 				$("#StateAction").addClass("iiInputAction");
+				$("#CurrentRoundingSchemeAction").addClass("iiInputAction");
+				$("#TimeZoneAction").addClass("iiInputAction");
 			}
 		},	
 
@@ -1647,6 +1651,7 @@ ii.Class({
 		ePaySiteSurveyMastersLoaded: function(me, activeId) {
 
 			me.weekDays = [];
+			me.roundingTimePeriods = [];
 			
 			me.weekDays.push(new fin.hcm.ePaySiteSurvey.WeekDay({ id: 1, name: "Sunday"}));
 			me.weekDays.push(new fin.hcm.ePaySiteSurvey.WeekDay({ id: 1, name: "Monday"}));
@@ -1655,7 +1660,12 @@ ii.Class({
 			me.weekDays.push(new fin.hcm.ePaySiteSurvey.WeekDay({ id: 1, name: "Thursday"}));
 			me.weekDays.push(new fin.hcm.ePaySiteSurvey.WeekDay({ id: 1, name: "Friday"}));
 			me.weekDays.push(new fin.hcm.ePaySiteSurvey.WeekDay({ id: 1, name: "Saturday"}));
-		
+			
+			me.roundingTimePeriods.push(new fin.hcm.ePaySiteSurvey.RoundingTimePeriod({ id: 0, name: "No Rounding"}));
+			me.roundingTimePeriods.push(new fin.hcm.ePaySiteSurvey.RoundingTimePeriod({ id: 6, name: "Tenth Hour Rounding"}));
+			me.roundingTimePeriods.push(new fin.hcm.ePaySiteSurvey.RoundingTimePeriod({ id: 15, name: "Quarter Hour Rounding"}));
+			me.currentRoundingScheme.setData(me.roundingTimePeriods);
+
 			me.deviceStatusTypesTemp = me.deviceStatusTypes.slice();
 			me.assetTransferStatusTypesTemp = me.assetTransferStatusTypes.slice();
 			
@@ -1767,6 +1777,7 @@ ii.Class({
 			var index = 0;
 			
 			me.state.reset();
+			me.currentRoundingScheme.reset();
 			me.ePayGroupType.reset();
 			me.reportingFrequency.reset();
 			me.firstDayOfWeek.reset();
@@ -1797,11 +1808,16 @@ ii.Class({
 			me.hourlyEmployees.setValue(me.siteDetails[0].hourlyEmployees);
 			me.maximumEmployeesAtShiftChange.setValue(me.siteDetails[0].maximumEmployeesAtShiftChange);
 			$("input[name='Union'][value='" + me.siteDetails[0].union + "']").attr("checked", "checked");
+			
 			index = ii.ajax.util.findIndexById(me.siteDetails[0].payFrequencyType.toString(), me.frequencyTypes);
 			if (index != undefined) 
 				me.payrollFrequency.setValue(me.frequencyTypes[index].title);			
 			me.buildingsAtFacility.setValue(me.siteDetails[0].buildingsAtFacility);
-			me.currentRoundingScheme.setValue(me.siteDetails[0].currentRoundingScheme);
+
+			index = ii.ajax.util.findIndexById(me.siteDetails[0].currentRoundingScheme.toString(), me.roundingTimePeriods);
+			if (index != undefined) 
+				me.currentRoundingScheme.select(index, me.currentRoundingScheme.focused);
+
 			me.currentOvertimePolicy.setValue(me.siteDetails[0].currentOvertimePolicy);
 			$("input[name='Kronos'][value='" + me.siteDetails[0].kronos + "']").attr("checked", "checked"); 
 			$("input[name='GroupsOfEmployeesWithDifferentPayRules'][value='" + me.siteDetails[0].groupsOfEmployeesWithDifferentPayRules + "']").attr("checked", "checked"); 
@@ -2760,7 +2776,7 @@ ii.Class({
 					, $("input[name='Union']:checked").val() == "true" ? true : false
 					, me.siteDetails[0].payFrequencyType
 					, me.buildingsAtFacility.getValue()
-					, me.currentRoundingScheme.getValue()
+					, (me.currentRoundingScheme.indexSelected >= 0 ? me.roundingTimePeriods[me.currentRoundingScheme.indexSelected].id : 0)
 					, me.currentOvertimePolicy.getValue()
 					, $("input[name='Kronos']:checked").val() == "true" ? true : false
 					, $("input[name='GroupsOfEmployeesWithDifferentPayRules']:checked").val() == "true" ? true : false
