@@ -977,6 +977,28 @@ Ext.EventManager.onWindowResize(function () {
 	$("#wl-ctrl-101-DataCollectorContentArea").width($(window).width() - 550);
 });
 
+Ext.apply(Ext.form.VTypes, {
+    multipleEmail: function (value, field) {
+        
+		var email = value.split(';');
+		for (var i = 0; i < email.length; i++) {
+			if (email[i] != '') {
+				if (!this.validateEmail(email[i])) {
+					return false;
+				}
+			}
+		}
+		return true; 
+    },
+	
+	validateEmail: function(field) {
+	    var regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,5}$/;
+	    return (regex.test(field)) ? true : false;
+	},
+	
+    multipleEmailText: 'Please enter valid Email Address. Use semicolon to separate two addresses.'
+});
+
 eFin.data.XmlReader = Ext.extend(Ext.data.XmlReader, {
 
     read: function (response) {
@@ -1501,8 +1523,8 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
         var activeField = new Ext.form.Checkbox({ name: 'active' });
         var sendEmailField = new Ext.form.Checkbox({ name: 'email' });
         var emailAddressField = new Ext.form.TextField({ width: 330, name: 'emailAddress', maxLength: 250, 
-			regex: /^(\w([-_+.']*\w+)+@(\w(-*\w+)+\.)+[a-zA-Z]{2,4}[;])*\w([-_+.']*\w+)+@(\w(-*\w+)+\.)+[a-zA-Z]{2,4}$/, 
-			regexText: 'Please enter valid Email Address. Use semicolon to separate two addresses.', msgTarget: 'side',
+			msgTarget: 'side',
+			vtype: 'multipleEmail',
             autoCreate: { tag: 'input', type: 'text', maxLength: 250, autocomplete: 'off' },
 			listeners: { 'change': function() { modified(true); } }
         });
