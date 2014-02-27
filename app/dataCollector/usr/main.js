@@ -980,6 +980,9 @@ Ext.EventManager.onWindowResize(function () {
 Ext.apply(Ext.form.VTypes, {
     multipleEmail: function (value, field) {
         
+		if (value.indexOf(';;') != -1 || value.indexOf(';') == 0)
+			return false;
+			
 		var email = value.split(';');
 		for (var i = 0; i < email.length; i++) {
 			if (email[i] != '') {
@@ -992,7 +995,7 @@ Ext.apply(Ext.form.VTypes, {
     },
 	
 	validateEmail: function(field) {
-	    var regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,5}$/;
+	    var regex = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
 	    return (regex.test(field)) ? true : false;
 	},
 	
