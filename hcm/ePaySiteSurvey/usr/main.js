@@ -104,7 +104,7 @@ ii.Class({
 				$("#DeviceGrid").width($(window).width() - 45);
 
 			if (me.currentWizard == "PayCode")
-				me.payCodeGrid.setHeight($(window).height() - 240);
+				me.payCodeGrid.setHeight($(window).height() - 270);
 			else if (me.currentWizard == "Review")
 				me.payCodeGrid.setHeight(210);
 
@@ -2260,7 +2260,7 @@ ii.Class({
 				case "PayCode":
 					$("#divPayCode").show();
 					me.payCodeGrid.setData(me.ePaySiteSurveyPayCodes);
-					me.payCodeGrid.setHeight($(window).height() - 240);
+					me.payCodeGrid.setHeight($(window).height() - 270);
 					break;
 
 				case "Fonen":			
@@ -2651,7 +2651,7 @@ ii.Class({
 	                + "<td width=200 align=center><b>Device Status</b></td>"
 	                + "<td width=200 align=center><b>Asset Transfer Status</b></td>"
 	                + "<td width=200 align=center><b>Serial Number</b></td>"
-	                + "<td width=150 align=center><b>House Code</b></td>"
+	                + "<td width=150 align=center><b>House Code Title</b></td>"
 					+ "<td width=200 align=center><b>Group Number</b></td>"
 					+ "<td width=200 align=center><b>Group Name</b></td>"
 	                + "<td width=200 align=center><b>UPS Tracking Number</b></td></tr>";
@@ -2663,7 +2663,7 @@ ii.Class({
 			                + "<td width=200>" + $(me.deviceGrid.rows[index].getElement("deviceStatusType")).text() + "</td>"
 			                + "<td width=200>" + $(me.deviceGrid.rows[index].getElement("assetTransferStatusType")).text() + "</td>"
 			                + "<td width=200>" + $(me.deviceGrid.rows[index].getElement("serialNumber")).text() + "</td>"
-			                + "<td width=150>" + $(me.deviceGrid.rows[index].getElement("houseCode")).text() + "</td>"
+			                + "<td width=250>" + $(me.deviceGrid.rows[index].getElement("houseCodeTitle")).text() + "</td>"
 							+ "<td width=200>" + $(me.deviceGrid.rows[index].getElement("groupNumber")).text() + "</td>"
 							+ "<td width=200>" + $(me.deviceGrid.rows[index].getElement("groupName")).text() + "</td>"
 							+ "<td width=200>" + $(me.deviceGrid.rows[index].getElement("upsTrackingNumber")).text() + "</td></tr>";
@@ -2970,7 +2970,7 @@ ii.Class({
 									, ""
 									, me.clockAssets[itemIndex].deviceType
 									, (me.deviceTypeClockAssetGrid.data[index].assigned ? me.deviceStatusTypes[0] : me.deviceStatusTypes[1])
-									, (me.exportToExcel ? me.assetTransferStatusTypes[1] : me.clockAssets[itemIndex].assetTransferStatusType)
+									, (me.deviceTypeClockAssetGrid.data[index].assigned ? me.assetTransferStatusTypes[1] : me.assetTransferStatusTypes[0])
 									, me.clockAssets[itemIndex].serialNumber
 									, (me.siteGroup.check.checked ? (me.deviceTypeClockAssetGrid.data[index].assigned ? me.siteGroupID.getValue() : "") : "")
 									, (me.siteGroup.check.checked ? (me.deviceTypeClockAssetGrid.data[index].assigned ? me.siteGroupName.getValue() : "") : "")
@@ -2998,7 +2998,7 @@ ii.Class({
 						    xml += ' status="false"';
 						    xml += ' active="' + me.ePaySiteSurveyClockAssets[index].active + '"';
 						    xml += '/>';
-							
+
 							var itemIndex = ii.ajax.util.findIndexById(me.ePaySiteSurveyClockAssets[index].clockAsset.toString(), me.clockAssets);
 							if (itemIndex != undefined) {
 								clockAssetsTemp.push(new fin.hcm.ePaySiteSurvey.ClockAsset(
