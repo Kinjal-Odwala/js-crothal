@@ -4849,18 +4849,18 @@ ii.Class({
 			if (me.houseCodePayrollCompanys[me.employeePayrollCompany.indexSelected].hourly == false &&
 				me.houseCodePayrollCompanys[me.employeePayrollCompany.indexSelected].salary) {
 				//Employee Number change - Start with 6.
-				salNumber = $("#EmployeeNumberText").val();
-				if (salNumber.substring(0, 1) == 6) return;
-				me.employeeNewNumber = 6 + salNumber.substring(1, 10);
+				me.employeeNewNumber = $("#EmployeeNumberText").val();
+				//if (salNumber.substring(0, 1) == 6) return;
+				//me.employeeNewNumber = 6 + salNumber.substring(1, 10);
 				me.empEmployeeNumberValidationStore.fetch("userId:[user],employeeNumber:" + me.employeeNewNumber + ",", me.employeeNewNumberLoaded, me);
 			}
 			else if (me.houseCodePayrollCompanys[me.employeePayrollCompany.indexSelected].hourly &&
 				me.houseCodePayrollCompanys[me.employeePayrollCompany.indexSelected].salary == false) {
 				if (me.actionType == "NewHire") {
 					//Employee Number change - Start with 4.
-					salNumber = $("#EmployeeNumberText").val();
-					if (salNumber.substring(0, 1) == 4) return;
-					me.employeeNewNumber = 4 + salNumber.substring(1, 10);
+					me.employeeNewNumber = $("#EmployeeNumberText").val();
+					//if (salNumber.substring(0, 1) == 4) return;
+					//me.employeeNewNumber = 4 + salNumber.substring(1, 10);
 					me.employeeNumber.setValue(me.employeeNewNumber);
 				}
 				else if (me.actionType == "HouseCodeTransfer")
@@ -4872,7 +4872,7 @@ ii.Class({
 
 			if (me.empEmployeeNumberValidations.length > 0) {
 				me.employeeNumber.setValue(me.employeeNewNumber);
-				alert(me.employeeNewNumber + " Employee Number already exists.");
+				//alert(me.employeeNewNumber + " Employee Number already exists.");
 			}
 			else {
 				me.employeeNumber.setValue(me.employeeNewNumber);
