@@ -2449,6 +2449,8 @@ ii.Class({
 
 			if ($("input[name='CMSearch']:checked").val() == "true") {
 				houseCodeId = me.houseCodeSearchTemplate.houseCodeIdTemplate;
+				if (houseCodeId == 0)
+					return;
 			}
 			else {
 				if (me.deviceTypeCMSearch.indexSelected == -1 || me.deviceStatusCMSearch.indexSelected == -1 
@@ -2645,6 +2647,25 @@ ii.Class({
 				}
 				
 				htmlContent += "<center><b><span style='font-family: Verdana; font-size: 12pt;'>Clock Assets</span></b></center></br>"
+					+ "<table cellspacing=0 cellpadding=5 style='font-family: Verdana; font-size: 8pt;'>"
+					+ "<tr><td width=200><b>Search By:</b></td>";
+
+				if ($("input[name='CMSearch']:checked").val() == "true") {
+	                htmlContent += "<td width=200>House Code</td></tr>"
+						+ "<tr><td width=200><b>House Code Title:</b></td>"
+		                + "<td width=400>" + $("#houseCodeTemplateText").val(); + "</td></tr>";
+				}
+				else {					
+	                htmlContent += "<td width=200>Device Info</td></tr>"
+						+ "<tr><td width=200><b>Device Type:</b></td>"
+		                + "<td width=400>" + me.deviceTypeCMSearch.lastBlurValue + "</td></tr>"
+						+ "<tr><td width=200><b>Device Status:</b></td>"
+		                + "<td width=400>" + me.deviceStatusCMSearch.lastBlurValue + "</td></tr>"
+						+ "<tr><td width=200><b>Asset Transfer Status:</b></td>"
+		                + "<td width=400>" + me.assetTransferStatusCMSearch.lastBlurValue + "</td></tr>";
+				}
+			
+				htmlContent += "</table></br><center><b><span style='font-family: Verdana; font-size: 12pt;'>Devices</span></b></center></br>"
 					+ "<table border=1 cellspacing=0 cellpadding=5 style='font-family: Verdana; font-size: 8pt;border-color:Gray;border-width:1px;border-style:Solid;border-collapse:collapse;'>"
 	                + "<tr><td width=30 align=center><b>#</b></td>"
 	                + "<td width=200 align=center><b>Device Type</b></td>"
