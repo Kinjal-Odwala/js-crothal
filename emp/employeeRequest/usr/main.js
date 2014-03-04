@@ -6,7 +6,7 @@ ii.Import( "ui.ctl.usr.statusBar" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.cmn.usr.util" );
 ii.Import( "fin.cmn.usr.defs" );
-ii.Import( "fin.emp.employeeDateApprove.usr.defs" );
+ii.Import( "fin.emp.employeeRequest.usr.defs" );
 
 ii.Style( "style", 1 );
 ii.Style( "fin.cmn.usr.common", 2 );
@@ -40,7 +40,7 @@ ii.Class({
 			me.session = new ii.Session(me.cache);
 
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
-			me.authorizePath = "\\crothall\\chimes\\fin\\Setup\\EmpDateApprove";
+			me.authorizePath = "\\crothall\\chimes\\fin\\Setup\\EmpRequest";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
 					me.authorizationProcess.apply(me);
@@ -100,9 +100,9 @@ ii.Class({
 		
 		resize: function() {
 			
-			if (!fin.employeeDateApproveUi) return;
+			if (!fin.employeeRequestUi) return;
 
-		    fin.employeeDateApproveUi.employeeGrid.setHeight($(window).height() - 75);
+		    fin.employeeRequestUi.employeeGrid.setHeight($(window).height() - 75);
 			$("#EmployeeContentArea").height($(window).height() - 120);
 		},
 		
@@ -525,6 +525,6 @@ ii.Class({
 });
 
 function main() {
-	fin.employeeDateApproveUi = new fin.emp.UserInterface();
-	fin.employeeDateApproveUi.resize();
+	fin.employeeRequestUi = new fin.emp.UserInterface();
+	fin.employeeRequestUi.resize();
 }
