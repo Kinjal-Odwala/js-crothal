@@ -73,6 +73,7 @@ ii.Class({
 			me.houseCodeJobChanged = false;
 			me.employeeValidationCalledFrom = "";
 			me.employeeNameChanged = false;
+			me.previousSSN = "";
 			me.loadCount = 0;
 
 			me.replaceContext = false;        // replace the system context menu?
@@ -536,8 +537,16 @@ ii.Class({
 			$("#EmployeeSearch").bind("dblclick", me, me.employeeDetailsShow);
 			
 			me.employeeSSN = new ui.ctl.Input.Text({
-		        id: "EmployeeSSN",					
-				maxLength: 11
+		        id: "EmployeeSSN",
+				maxLength: 11,
+				changeFunction: function() {
+					var me = fin.empSearchUi;
+					var currentSSN = me.employeeSSN.getValue().replace(/-/g, "");
+					if (currentSSN != me.previousSSN) {
+						me.previousSSN = currentSSN;
+						me.wizardCount = 0;
+					}
+				}
 			});
 			
 			me.employeeSSN.makeEnterTab()
