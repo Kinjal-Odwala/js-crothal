@@ -977,6 +977,31 @@ Ext.EventManager.onWindowResize(function () {
 	$("#wl-ctrl-101-DataCollectorContentArea").width($(window).width() - 550);
 });
 
+Ext.apply(Ext.form.VTypes, {
+    multipleEmail: function (value, field) {
+        
+		if (value.indexOf(';;') != -1 || value.indexOf(';') == 0)
+			return false;
+			
+		var email = value.split(';');
+		for (var i = 0; i < email.length; i++) {
+			if (email[i] != '') {
+				if (!this.validateEmail(email[i])) {
+					return false;
+				}
+			}
+		}
+		return true; 
+    },
+	
+	validateEmail: function(field) {
+	    var regex = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+	    return (regex.test(field)) ? true : false;
+	},
+	
+    multipleEmailText: 'Please enter valid Email Address. Use semicolon to separate two addresses.'
+});
+
 eFin.data.XmlReader = Ext.extend(Ext.data.XmlReader, {
 
     read: function (response) {
@@ -1500,7 +1525,9 @@ eFin.ctrl.app.DataCollectorEditor = WebLight.extend(WebLight.form.DataView, {
         var lockoutField = new Ext.form.Checkbox({ name: 'lockout' });
         var activeField = new Ext.form.Checkbox({ name: 'active' });
         var sendEmailField = new Ext.form.Checkbox({ name: 'email' });
-        var emailAddressField = new Ext.form.TextField({ width: 330, name: 'emailAddress', maxLength: 250, vtype:'email', msgTarget: 'side',
+        var emailAddressField = new Ext.form.TextField({ width: 330, name: 'emailAddress', maxLength: 250, 
+			msgTarget: 'side',
+			vtype: 'multipleEmail',
             autoCreate: { tag: 'input', type: 'text', maxLength: 250, autocomplete: 'off' },
 			listeners: { 'change': function() { modified(true); } }
         });

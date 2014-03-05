@@ -1885,104 +1885,61 @@ ii.Class({
 				
 				if (me.invoiceItem) {
 					
-					var invoiceHeaderWidth = 150;
-					me.invoiceJob = false;
-					me.invoiceTaxableService = false;
-					me.invoiceAccountCode = false;
-					me.invoiceQuantity = false;
-					me.invoicePrice = false;
-					me.invoiceAmount = false;
-					me.invoiceStatus = false;
-					me.invoiceTaxable = false;
-					me.invoiceShow = false;
-					me.invoiceDescription = false;
-					me.createdBy = false;
-					
-					for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
-						if (me.moduleColumnHeaders[index].columnType != 2) {
-							if (me.moduleColumnHeaders[index].title == 'HcmHouseCodeJob') 
-								me.invoiceJob = true;
-							else if (me.moduleColumnHeaders[index].title == 'RevTaxableService') 
-								me.invoiceTaxableService = true;
-							else if (me.moduleColumnHeaders[index].title == 'FscAccount') 
-								me.invoiceAccountCode = true;
-							else if (me.moduleColumnHeaders[index].title == 'RevInviQuantity') 
-								me.invoiceQuantity = true;
-							else if (me.moduleColumnHeaders[index].title == 'RevInviPrice') 
-								me.invoicePrice = true;
-							else if (me.moduleColumnHeaders[index].title == 'RevInviAmount') 
-								me.invoiceAmount = true;
-							else if (me.moduleColumnHeaders[index].title == 'AppTransactionStatusType') 
-								me.invoiceStatus = true;
-							else if (me.moduleColumnHeaders[index].title == 'RevInviTaxable') 
-								me.invoiceTaxable = true;
-							else if (me.moduleColumnHeaders[index].title == 'RevInviShow') 
-								me.invoiceShow = true;
-							else if (me.moduleColumnHeaders[index].title == 'RevInviDescription') 
-								me.invoiceDescription = true;
-							else if (me.moduleColumnHeaders[index].title == 'RevInviCrtdBy') 
-								me.createdBy = true;
-						}
-					}
+					var invoiceHeaderWidth = 150;					
 					
 					rowData += "<th class='gridHeaderColumn' width='50px'>#</th>";
 					rowData += "<th class='gridColumnHidden'></th>";
 					rowData += "<th class='gridHeaderColumn' width='100px'>House Code</th>";
 					
-					if(me.invoiceJob) {
-						rowData += "<th class='gridHeaderColumn' width='100px'>Job</th>";
-						invoiceHeaderWidth = invoiceHeaderWidth + 100;
-					}	
-						
-					if(me.invoiceTaxableService) {
-						rowData += "<th class='gridHeaderColumn' width='100px'>Taxable Service</th>";
-						invoiceHeaderWidth = invoiceHeaderWidth + 100;
-					}	
-						
-					if(me.invoiceAccountCode) {
-						rowData += "<th class='gridHeaderColumn' width='200px'>Account Code</th>";
-						invoiceHeaderWidth = invoiceHeaderWidth + 200;
-					}	
-						
-					if(me.invoiceQuantity) {
-						rowData += "<th class='gridHeaderColumn' width='100px'>Quantity</th>";
-						invoiceHeaderWidth = invoiceHeaderWidth + 100;
-					}	
-						
-					if(me.invoicePrice) {
-						rowData += "<th class='gridHeaderColumn' width='100px'>Price</th>";
-						invoiceHeaderWidth = invoiceHeaderWidth + 100;
-					}	
-						
-					if(me.invoiceAmount) {
-						rowData += "<th class='gridHeaderColumn' width='100px'>Total</th>";
-						invoiceHeaderWidth = invoiceHeaderWidth + 100;
-					}	
-						
-					if(me.invoiceStatus) {
-						rowData += "<th class='gridHeaderColumn' width='100px'>Status</th>";
-						invoiceHeaderWidth = invoiceHeaderWidth + 100;
-					}	
-						
-					if(me.invoiceTaxable) {
-						rowData += "<th class='gridHeaderColumn' width='100px'>Taxable</th>";
-						invoiceHeaderWidth = invoiceHeaderWidth + 100;
-					}	
-						
-					if(me.invoiceShow) {
-						rowData += "<th class='gridHeaderColumn' width='100px'>Show</th>";
-						invoiceHeaderWidth = invoiceHeaderWidth + 100;
-					}	
-						
-					if(me.invoiceDescription) {
-						rowData += "<th class='gridHeaderColumn' width='300px'>Description</th>";
-						invoiceHeaderWidth = invoiceHeaderWidth + 300;
-					}
-					
-					if(me.createdBy) {
-						rowData += "<th class='gridHeaderColumn' width='150px'>Created By</th>";
-						invoiceHeaderWidth = invoiceHeaderWidth + 150;
-					}	
+					for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
+						if (me.moduleColumnHeaders[index].columnType != 2) {
+							
+							if (me.moduleColumnHeaders[index].title == 'HcmHouseCodeJob') {
+								rowData += "<th class='gridHeaderColumn' width='100px'>Job</th>";
+								invoiceHeaderWidth = invoiceHeaderWidth + 100;
+							}
+							else if (me.moduleColumnHeaders[index].title == 'RevTaxableService') {
+								rowData += "<th class='gridHeaderColumn' width='100px'>Taxable Service</th>";
+								invoiceHeaderWidth = invoiceHeaderWidth + 100;
+							}
+							else if (me.moduleColumnHeaders[index].title == 'FscAccount') {
+								rowData += "<th class='gridHeaderColumn' width='200px'>Account Code</th>";
+								invoiceHeaderWidth = invoiceHeaderWidth + 200;
+							}
+							else if (me.moduleColumnHeaders[index].title == 'RevInviQuantity') {
+								rowData += "<th class='gridHeaderColumn' width='100px'>Quantity</th>";
+								invoiceHeaderWidth = invoiceHeaderWidth + 100;
+							}
+							else if (me.moduleColumnHeaders[index].title == 'RevInviPrice') {
+								rowData += "<th class='gridHeaderColumn' width='100px'>Price</th>";
+								invoiceHeaderWidth = invoiceHeaderWidth + 100;
+							}
+							else if (me.moduleColumnHeaders[index].title == 'RevInviAmount') {
+								rowData += "<th class='gridHeaderColumn' width='100px'>Total</th>";
+								invoiceHeaderWidth = invoiceHeaderWidth + 100;
+							}
+							else if (me.moduleColumnHeaders[index].title == 'AppTransactionStatusType') {
+								rowData += "<th class='gridHeaderColumn' width='100px'>Status</th>";
+								invoiceHeaderWidth = invoiceHeaderWidth + 100;
+							}
+							else if (me.moduleColumnHeaders[index].title == 'RevInviTaxable') {
+								rowData += "<th class='gridHeaderColumn' width='100px'>Taxable</th>";
+								invoiceHeaderWidth = invoiceHeaderWidth + 100;
+							}
+							else if (me.moduleColumnHeaders[index].title == 'RevInviShow') {
+								rowData += "<th class='gridHeaderColumn' width='100px'>Show</th>";
+								invoiceHeaderWidth = invoiceHeaderWidth + 100;
+							}
+							else if (me.moduleColumnHeaders[index].title == 'RevInviDescription') {
+								rowData += "<th class='gridHeaderColumn' width='300px'>Description</th>";
+								invoiceHeaderWidth = invoiceHeaderWidth + 300;
+							}
+							else if (me.moduleColumnHeaders[index].title == 'RevInviCrtdBy') {
+								rowData += "<th class='gridHeaderColumn' width='150px'>Created By</th>";
+								invoiceHeaderWidth = invoiceHeaderWidth + 150;
+							}
+						}
+					}						
 						
 					$("#tblAdhReportGridHeader").width(invoiceHeaderWidth);
 					$("#tblAdhReportGrid").width(invoiceHeaderWidth);
@@ -2886,38 +2843,41 @@ ii.Class({
 			rowHtml += me.getEditableRowColumn(false, false, 1, "id", args.id.toString(), 0, "left");
 			rowHtml += me.getEditableRowColumn(false, false, 11, "houseCode", args.houseCode, 100, "left");
 			
-			if (me.invoiceJob)
-				rowHtml += me.getEditableRowColumn(false, false, 2, "job", args.job, 100, align);
-				
-			if (me.invoiceTaxableService)
-				rowHtml += me.getEditableRowColumn(false, false, 12, "taxableService", args.taxableService, 100, align);
-				
-			if (me.invoiceAccountCode)
-				rowHtml += me.getEditableRowColumn(false, columnBold, 3, "account", args.account, 200, align);
-				
-			if (me.invoiceQuantity)
-				rowHtml += me.getEditableRowColumn(false, false, 4, "quantity", args.quantity, 100, "right");
-				
-			if (me.invoicePrice)
-				rowHtml += me.getEditableRowColumn(false, false, 5, "price", args.price, 100, "right");
-				
-			if (me.invoiceAmount)
-				rowHtml += me.getEditableRowColumn(false, columnBold, 6, "amount", args.amount, 100, "right");
-				
-			if (me.invoiceStatus)
-				rowHtml += me.getEditableRowColumn(false, false, 7, "status", args.status, 100, "center");
-				
-			if (me.invoiceTaxable)
-				rowHtml += me.getEditableRowColumn(false, false, 8, "taxable", args.taxable, 100, "center");
-				
-			if (me.invoiceShow)
-				rowHtml += me.getEditableRowColumn(false, false, 9, "lineShow", args.lineShow, 100, "center");
-				
-			if (me.invoiceDescription)
-				rowHtml += me.getEditableRowColumn(false, false, 10, "description", args.description, 300, "left");
-				
-			if (me.createdBy)
-				rowHtml += me.getEditableRowColumn(false, false, 12, "createdBy", args.createdBy, 150, "left");
+			for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
+					
+					if (me.moduleColumnHeaders[index].title == 'HcmHouseCodeJob') 
+						rowHtml += me.getEditableRowColumn(false, false, 2, "job", args.job, 100, align);
+					
+					if (me.moduleColumnHeaders[index].title == 'RevTaxableService') 
+						rowHtml += me.getEditableRowColumn(false, false, 12, "taxableService", args.taxableService, 100, align);
+					
+					if (me.moduleColumnHeaders[index].title == 'FscAccount') 
+						rowHtml += me.getEditableRowColumn(false, columnBold, 3, "account", args.account, 200, align);
+					
+					if (me.moduleColumnHeaders[index].title == 'RevInviQuantity') 
+						rowHtml += me.getEditableRowColumn(false, false, 4, "quantity", args.quantity, 100, "right");
+					
+					if (me.moduleColumnHeaders[index].title == 'RevInviPrice') 
+						rowHtml += me.getEditableRowColumn(false, false, 5, "price", args.price, 100, "right");
+					
+					if (me.moduleColumnHeaders[index].title == 'RevInviAmount') 
+						rowHtml += me.getEditableRowColumn(false, columnBold, 6, "amount", args.amount, 100, "right");
+					
+					if (me.moduleColumnHeaders[index].title == 'AppTransactionStatusType') 
+						rowHtml += me.getEditableRowColumn(false, false, 7, "status", args.status, 100, "center");
+					
+					if (me.moduleColumnHeaders[index].title == 'RevInviTaxable') 
+						rowHtml += me.getEditableRowColumn(false, false, 8, "taxable", args.taxable, 100, "center");
+					
+					if (me.moduleColumnHeaders[index].title == 'RevInviShow') 
+						rowHtml += me.getEditableRowColumn(false, false, 9, "lineShow", args.lineShow, 100, "center");
+					
+					if (me.moduleColumnHeaders[index].title == 'RevInviDescription') 
+						rowHtml += me.getEditableRowColumn(false, false, 10, "description", args.description, 300, "left");
+					
+					if (me.moduleColumnHeaders[index].title == 'RevInviCrtdBy') 
+						rowHtml += me.getEditableRowColumn(false, false, 12, "createdBy", args.createdBy, 150, "left");
+			}
 
 			return rowHtml;
 		},

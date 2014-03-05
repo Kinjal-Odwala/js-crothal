@@ -29,7 +29,7 @@
 		</div>
 		<div class="pageHeader">
 			 <div style="float: left; width: 10%;"><div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div></div>
-			 <div style="float: left; width: 80%;"><div id="header" class="header">Site Survey</div></div>
+			 <div style="float: left; width: 80%;"><div id="header" class="header"></div></div>
 			 <div style="float: left; width: 10%;">&nbsp;</div>
         </div>
 		<div style="clear:both;"></div>
@@ -399,6 +399,16 @@
 						</div>
 						<div>
 							<div class="body">
+								<div class="tableEditArea">
+									<div class="labelTextArea">
+										<span class="nonRequiredFieldIndicator">Instructions:</span>
+									</div>
+									<div class="instruction">
+										For each productive pay rate other than ST, please enter an explanation for how that pay rate is used.<br>
+										Example: Shift .50 - Pay rate is used for 2nd Shift on Monday through Friday for 3:00 PM to 11:00 PM.
+									</div>
+									<div style="clear:both; height:10px;"></div>
+								</div>
 								<div class="tableEditArea">
 									<div id="PayCodeGrid"></div>								
 									<div style="clear:both;"></div>
@@ -802,12 +812,13 @@
     		</div>
 			<div style="clear:both;"></div>
 			<div>
-				<div id="AnchorPrev"></div>
-				<div id="AnchorNext"></div>
+				<div id="AnchorPrev" style="display:none;"></div>
+				<div id="AnchorNext" style="display:none;"></div>
 				<div id="AnchorSaveAndSend" style="display:none;"></div>
 				<div id="AnchorManageDeviceTypes" style="display:none;"></div>
+				<div id="AnchorClockManagement" style="display:none;"></div>
 				<div id="AnchorSave" style="display:none;"></div>
-				<div id="AnchorCancel" style="display:none;"></div>
+				<div id="AnchorUndo" style="display:none;"></div>
 				<div id="AnchorPrint" style="display:none;"></div>
 			</div>			
 		</div>

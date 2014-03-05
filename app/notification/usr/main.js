@@ -1,4 +1,4 @@
-﻿window.__weblight_t_fbd3614b = ['<?xml version="1.0" encoding="utf-8"?><transmission>  <target id="iiCache" requestId="2">    <store id="appDataCollectors" activeId="0" criteria="storeId:appDataCollectors,userId:[user],">      <item id="1" houseCodeId="363" moduleId="5" numberOfColumns="6" frequency="Monthly" lockout="true" email="1" emailAddress="admin@crothall.com" message="True" messageText="Your monthly BI Statistics update is overdue. Click here to enter the data now before you can no longer access the other modules." lockoutMessage="True" lockoutMessageText="Your monthly BI Statistics update is overdue. You will no longer be able to access any modules until you complete the update. Click here to enter the data now." />    </store>  </target></transmission>','<?xml version="1.0" encoding="utf-8"?><transmission>  <target id="iiCache" requestId="2">    <store id="appDataCollectorTasks" activeId="0" criteria="storeId:appDataCollectorTasks,userId:[user],">      <item id="42" appUserId="1630" dataCollectorId="1" module="House Code" houseCodeId="466" houseCodeBrief="900002" frequency="Weekly" messageText="Your monthly BI Statistics update is overdue. Click here to enter the data now before you can no longer access the other modules." description="Patient Stat" startDate="9/12/2011" endDate="11/11/2011" active="True" modBy="Compass-usa\setup" modAt="9/20/2011 4:35:37 PM" />      <item id="25" appUserId="1630" dataCollectorId="1" module="House Code" houseCodeId="466" houseCodeBrief="900002" frequency="Weekly" messageText="Your monthly BI Statistics update is overdue. Click here to enter the data now before you can no longer access the other modules." description="Patient Stat" startDate="9/19/2011" endDate="11/18/2011" active="True" modBy="Compass-usa\setup" modAt="9/20/2011 4:35:30 PM" />      <item id="50" appUserId="1630" dataCollectorId="3" module="House Code" houseCodeId="306" houseCodeBrief="1003" frequency="Weekly" messageText="Your monthly BI Statistics update is overdue. Click here to enter the data now before you can no longer access the other modules." description="Client Data" startDate="9/12/2011" endDate="11/11/2011" active="True" modBy="Compass-usa\setup" modAt="9/20/2011 4:35:37 PM" />      <item id="33" appUserId="1630" dataCollectorId="3" module="House Code" houseCodeId="306" houseCodeBrief="1003" frequency="Weekly" messageText="Your monthly BI Statistics update is overdue. Click here to enter the data now before you can no longer access the other modules." description="Client Data" startDate="9/19/2011" endDate="11/18/2011" active="True" modBy="Compass-usa\setup" modAt="9/20/2011 4:35:30 PM" />    </store>  </target></transmission>','<div id="title" class="notification-title" style="width:100%">Notifications</div><div style="margin: 5px 10px 10px 10px;"><div id="itemStatusDiv"><div id="itemStatusImage" class="itemStatusImage"></div><div id="itemModifiedImage" class="itemModifiedImage"></div><div id="itemStatusText">Loading, please wait...</div></div><div style="clear:both;height:5px;"></div><div id="dataCollectorTask-grid"></div></div>','<div id="title" class="notification-title" style="width:100%">Notifications</div><div style="margin: 5px 10px 10px 10px;"><div id="itemStatusDiv"><div id="itemStatusImage" class="itemStatusImage"></div><div id="itemModifiedImage" class="itemModifiedImage"></div><div id="itemStatusText">Loading, please wait...</div></div><div style="clear:both;height:1px;"></div></div><div style="height: 100px">    <div id="task-form">    </div>    <div style="padding-left: 8px"> <div class="iiButton AnchorSave" id="AnchorSave">        <div class="iiButtonPart Begin" id="AnchorSaveBegin">        </div>        <div class="iiButtonPart Middle" id="AnchorSaveMiddle">            <span>&nbsp;&nbsp;Save&nbsp;&nbsp;</span></div>        <div class="iiButtonPart End" id="AnchorSaveEnd">        </div>    </div>    <div class="iiButton AnchorCancel" id="AnchorCancel">        <div class="iiButtonPart Begin" id="AnchorCancelBegin">        </div>        <div class="iiButtonPart Middle" id="AnchorCancelMiddle">            <span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span></div>        <div class="iiButtonPart End" id="AnchorCancelEnd">        </div>    </div></div></div>','<div id="{0}_container">    <div class="LabelhouseCodeAreaLeft" id="{0}_title">{1}:       </div>    <div class="InputTextAreaRight"><div id="{0}">{2}</div></div></div>','<div id="{0}_container">    <div class="LabelhouseCodeAreaLeft" id="{0}_title">{1}:       </div>    <div class="LabelhouseCodeAreaRight"><div id="{0}">{2}</div></div></div>',''];
+﻿window.__weblight_t_fbd3614b = ['<?xml version="1.0" encoding="utf-8"?><transmission>  <target id="iiCache" requestId="2">    <store id="appDataCollectors" activeId="0" criteria="storeId:appDataCollectors,userId:[user],">      <item id="1" houseCodeId="363" moduleId="5" numberOfColumns="6" frequency="Monthly" lockout="true" email="1" emailAddress="admin@crothall.com" message="True" messageText="Your monthly BI Statistics update is overdue. Click here to enter the data now before you can no longer access the other modules." lockoutMessage="True" lockoutMessageText="Your monthly BI Statistics update is overdue. You will no longer be able to access any modules until you complete the update. Click here to enter the data now." />    </store>  </target></transmission>','<?xml version="1.0" encoding="utf-8"?><transmission>  <target id="iiCache" requestId="2">    <store id="appDataCollectorTasks" activeId="0" criteria="storeId:appDataCollectorTasks,userId:[user],">      <item id="42" appUserId="1630" dataCollectorId="1" module="House Code" houseCodeId="466" houseCodeBrief="900002" frequency="Weekly" messageText="Your monthly BI Statistics update is overdue. Click here to enter the data now before you can no longer access the other modules." description="Patient Stat" startDate="9/12/2011" endDate="11/11/2011" active="True" modBy="Compass-usa\setup" modAt="9/20/2011 4:35:37 PM" />      <item id="25" appUserId="1630" dataCollectorId="1" module="House Code" houseCodeId="466" houseCodeBrief="900002" frequency="Weekly" messageText="Your monthly BI Statistics update is overdue. Click here to enter the data now before you can no longer access the other modules." description="Patient Stat" startDate="9/19/2011" endDate="11/18/2011" active="True" modBy="Compass-usa\setup" modAt="9/20/2011 4:35:30 PM" />      <item id="50" appUserId="1630" dataCollectorId="3" module="House Code" houseCodeId="306" houseCodeBrief="1003" frequency="Weekly" messageText="Your monthly BI Statistics update is overdue. Click here to enter the data now before you can no longer access the other modules." description="Client Data" startDate="9/12/2011" endDate="11/11/2011" active="True" modBy="Compass-usa\setup" modAt="9/20/2011 4:35:37 PM" />      <item id="33" appUserId="1630" dataCollectorId="3" module="House Code" houseCodeId="306" houseCodeBrief="1003" frequency="Weekly" messageText="Your monthly BI Statistics update is overdue. Click here to enter the data now before you can no longer access the other modules." description="Client Data" startDate="9/19/2011" endDate="11/18/2011" active="True" modBy="Compass-usa\setup" modAt="9/20/2011 4:35:30 PM" />    </store>  </target></transmission>','<div id="title" class="notification-title" style="width:100%">Notifications</div><div style="margin: 5px 10px 10px 10px;"><div id="itemStatusDiv"><div id="itemStatusImage" class="itemStatusImage"></div><div id="itemModifiedImage" class="itemModifiedImage"></div><div id="itemStatusText">Loading, please wait...</div></div><div style="clear:both;height:5px;"></div><div id="dataCollectorTask-grid"></div></div><div style="height: 100px">    <div id="task-form">    </div>    <div id="divButtons" style="padding-left: 8px"> <div class="iiButton AnchorSave" id="AnchorSave">        <div class="iiButtonPart Begin" id="AnchorSaveBegin">        </div>        <div class="iiButtonPart Middle" id="AnchorSaveMiddle">            <span>&nbsp;&nbsp;Save&nbsp;&nbsp;</span></div>        <div class="iiButtonPart End" id="AnchorSaveEnd">        </div>    </div>    <div class="iiButton AnchorCancel" id="AnchorCancel">        <div class="iiButtonPart Begin" id="AnchorCancelBegin">        </div>        <div class="iiButtonPart Middle" id="AnchorCancelMiddle">            <span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span></div>        <div class="iiButtonPart End" id="AnchorCancelEnd">        </div>    </div></div></div>','<div id="{0}_container">    <div class="LabelhouseCodeAreaLeft" id="{0}_title">{1}:       </div>    <div class="InputTextAreaRight"><div id="{0}">{2}</div></div></div>','<div id="{0}_container">    <div class="LabelhouseCodeAreaLeft" id="{0}_title">{1}:       </div>    <div class="LabelhouseCodeAreaRight"><div id="{0}">{2}</div></div></div>',''];
 
 /**
 * Copyright (c) 2009 Sergiy Kovalchuk (serg472@gmail.com)
@@ -539,7 +539,11 @@ function modified(status) {
 
 function setStatus(status) {
 	var me = this;
-
+	
+	me.$itemStatusImage = $("#app-notification-itemStatusImage");
+	me.$itemModifiedImage = $("#app-notification-itemModifiedImage");
+	me.$itemStatusText = $("#app-notification-itemStatusText");
+	
 	if (status == "New")
 		message = "New";
 	else if (status == "Loading" || status == "Saving" || status == "Exporting" || status == "Uploading" || status == "Importing")
@@ -558,37 +562,21 @@ function setStatus(status) {
 		message = "Normal";
 
 	if (status == "Locked")
-	{
-		$("#app-notification-itemModifiedImage").addClass("Locked");
-		$("#app-datacollectortask-itemModifiedImage").addClass("Locked");
-	}
+		me.$itemModifiedImage.addClass("Locked");
 	else
-	{
-		$("#app-notification-itemModifiedImage").removeClass("Locked");
-		$("#app-datacollectortask-itemModifiedImage").removeClass("Locked");
-	}
-		
+		me.$itemModifiedImage.removeClass("Locked");		
 
 	if (status == "Edit")
-	{
-		$("#app-notification-itemModifiedImage").addClass("Modified");
-		$("#app-datacollectortask-itemModifiedImage").addClass("Modified");
-	}
-		
+		me.$itemModifiedImage.addClass("Modified");		
 	else
-	{
-		$("#app-notification-itemModifiedImage").removeClass("Modified");
-		$("#app-datacollectortask-itemModifiedImage").removeClass("Modified");
-	}
+		me.$itemModifiedImage.removeClass("Modified");
 		
 
 	if (status == "Edit" || status == "Loaded" || status == "Saved" || status == "Imported" || status == "Exported")
 		status = "Normal";
 
-	$("#app-notification-itemStatusImage").attr("class", "itemStatusImage " + status);
-	$("#app-datacollectortask-itemStatusImage").attr("class", "itemStatusImage " + status);
-	$("#app-notification-itemStatusText").text(message);
-	$("#app-datacollectortask-itemStatusText").text(message);
+	me.$itemStatusImage.attr("class", "itemStatusImage " + status);
+	me.$itemStatusText.text(message);
 }
 
 Ext.Ajax.timeout = 300000; //5 minutes
@@ -665,9 +653,9 @@ Ext.grid.RowNumberer.prototype = {
 
 Ext.EventManager.onWindowResize(function () {
 	
-	if(Ext.get('app-datacollectortask-task-form') != null) {
-		var el = Ext.get('app-datacollectortask-task-form').select('div.columns');
-		el.setHeight($(window).height() - 95);
+	if(Ext.get('app-notification-task-form') != null) {
+		var el = Ext.get('app-notification-task-form').select('div.columns');
+		el.setHeight($(window).height() - 105);
 	}	
 });
 		
@@ -1011,13 +999,97 @@ eFin.data.app.DataCollectorTaskStore = WebLight.extend(eFin.data.XmlStore, {
     }
 });
 
+eFin.data.app.hcmSiteTypeStore = WebLight.extend(eFin.data.XmlStore, {
+    url: '/net/crothall/chimes/fin/app/act/Provider.aspx',
+
+    moduleId: 'app',
+
+    recordName: 'item',
+
+    storeId: 'hcmSiteTypes',
+
+    fields: [
+                 { name: 'id', mapping: '@id', type: 'int' },                 
+                 { name: 'name', mapping: '@name', type: 'string' }
+                ],
+});
+
+eFin.data.app.remitToStore = WebLight.extend(eFin.data.XmlStore, {
+    url: '/net/crothall/chimes/fin/app/act/Provider.aspx',
+
+    moduleId: 'app',
+
+    recordName: 'item',
+
+    storeId: 'remitToLocations',
+
+    fields: [
+                 { name: 'id', mapping: '@id', type: 'int' },                 
+                 { name: 'name', mapping: '@name', type: 'string' }
+                ],
+});
+
+eFin.data.app.budgetLaborCalcMethodStore = WebLight.extend(eFin.data.XmlStore, {
+    url: '/net/crothall/chimes/fin/app/act/Provider.aspx',
+
+    moduleId: 'app',
+
+    recordName: 'item',
+
+    storeId: 'budgetLaborCalcMethods',
+
+    fields: [
+                 { name: 'id', mapping: '@id', type: 'int' },                 
+                 { name: 'name', mapping: '@name', type: 'string' }
+                ],
+});
+
+eFin.data.app.budgetTemplateStore = WebLight.extend(eFin.data.XmlStore, {
+    url: '/net/crothall/chimes/fin/app/act/Provider.aspx',
+
+    moduleId: 'app',
+
+    recordName: 'item',
+
+    storeId: 'budgetTemplates',
+
+    fields: [
+                 { name: 'id', mapping: '@id', type: 'int' },                 
+                 { name: 'name', mapping: '@name', type: 'string' }
+                ],
+});
+
+eFin.data.app.serviceTypeStore = WebLight.extend(eFin.data.XmlStore, {
+    url: '/net/crothall/chimes/fin/app/act/Provider.aspx',
+
+    moduleId: 'app',
+
+    recordName: 'item',
+
+    storeId: 'serviceTypes',
+
+    fields: [
+                 { name: 'id', mapping: '@id', type: 'int' },                 
+                 { name: 'name', mapping: '@name', type: 'string' }
+                ],
+});
+
 eFin.page.app.Notification = WebLight.extend(WebLight.Page, {
     html: window.__weblight_t_fbd3614b[2],
     title: 'Notification',
 
     dataCollectorTaskStore: null,
     dataCollectorTaskGrid: null,
-
+	dataCollectorColumnStore: null,
+    dataCollectorStore: null,
+    dataCollectorTaskForm: null,
+	dataCollectorTaskId:0,
+	dataCollectorId: 0,	
+	houseCode:0,
+	frequency:'Monthly',
+	description:'',
+	rowNumber:-1,	
+	
     createDataCollectorTaskGrid: function () {
         var me = this;
 
@@ -1060,13 +1132,19 @@ eFin.page.app.Notification = WebLight.extend(WebLight.Page, {
             if (rows.getCount() > 0) {
                 alert('You must finish the oldest task of this data collector first.');
                 return;
-            }
-
-            var description = record.get('description').replace(/\s/gi, '_');
-
-            var url = String.format('/app/notification/{0}/{1}/{2}/{3}/{4}/{5}', record.get('id'), record.get('dataCollectorId'), record.get('houseCodeId'), record.get('houseCodeBrief'), record.get('frequency'), description);
+            }			
 			
-            WebLight.Router.route(url);
+			me.rowNumber = rowIndex;
+			me.dataCollectorTaskId = record.get('id');
+			me.dataCollectorId = record.get('dataCollectorId');
+			me.houseCode = record.get('houseCodeBrief');
+			me.frequency = record.get('frequency');
+            me.description = record.get('description').replace(/\s/gi, '_');			
+			
+			me.dataCollectorColumnStore = new eFin.data.app.DataCollectorColumnStore();
+			me.dataCollectorColumnStore.on('beforeload', function () { me.mask('Loading...'); });
+			me.dataCollectorColumnStore.load(me.dataCollectorId);			
+			me.dataCollectorColumnStore.on('load', function () { me.createDataCollectorTaskForm(); me.unmask("Loaded");});
         });
 
         me.addChildControl(me.dataCollectorTaskGrid, "dataCollectorTask-grid");
@@ -1077,8 +1155,6 @@ eFin.page.app.Notification = WebLight.extend(WebLight.Page, {
 
         me.dataCollectorTaskStore = new eFin.data.app.DataCollectorTaskStore();
         me.createDataCollectorTaskGrid();
-		
-		
 		
         me.dataCollectorTaskStore.on('beforeload', function () { me.mask('Loading...'); });
         me.dataCollectorTaskStore.on('load', function () {
@@ -1095,7 +1171,25 @@ eFin.page.app.Notification = WebLight.extend(WebLight.Page, {
 
             me.unmask("Loaded");
         });
-
+				
+        me.initButtons();
+		$("#app-notification-divButtons").hide();
+		
+		me.hcmSiteTypeStore = new eFin.data.app.hcmSiteTypeStore();
+		me.hcmSiteTypeStore.load();
+		
+		me.remitToStore = new eFin.data.app.remitToStore();
+		me.remitToStore.load();
+		
+		me.budgetLaborCalcMethodStore = new eFin.data.app.budgetLaborCalcMethodStore();
+		me.budgetLaborCalcMethodStore.load();
+		
+		me.budgetTemplateStore = new eFin.data.app.budgetTemplateStore();
+		me.budgetTemplateStore.load();
+		
+		me.serviceTypeStore = new eFin.data.app.serviceTypeStore();
+		me.serviceTypeStore.load();
+		
         eFin.page.app.Notification.superclass.createChildControls.call(this);
     },
 
@@ -1103,70 +1197,11 @@ eFin.page.app.Notification = WebLight.extend(WebLight.Page, {
         var me = this;
 
         me.dataCollectorTaskStore.load();
-        //me.dataCollectorTaskStore.loadSampleData();
 
         eFin.page.app.Notification.superclass.dataBind.call(this);
-    }
-});
-
-WebLight.PageMgr.registerType('app.notification', eFin.page.app.Notification);
-eFin.page.app.DataCollectorTask = WebLight.extend(WebLight.Page, {
-    html: window.__weblight_t_fbd3614b[3],
-
-    dataCollectorId: 0,
-    dataCollectorTaskId: 0,
-    frequency: 'Monthly',
-    hcmHouseCode: 0,
-    houseCode: 0,
-    description: '',
-
-    dataCollectorColumnStore: null,
-    dataCollectorStore: null,
-
-    dataCollectorTaskForm: null,
-
-    createChildControls: function () {
-        var me = this;
-
-        //        me.dataCollectorStore = new eFin.data.app.DataCollectorStore();
-        me.dataCollectorColumnStore = new eFin.data.app.DataCollectorColumnStore();
-
-
-        eFin.page.app.DataCollectorTask.superclass.createChildControls.call(this);
-
-
-        me.dataCollectorColumnStore.on('load', me.onDataLoaded.createDelegate(me));
-        //        me.dataCollectorStore.on('load', me.onDataLoaded.createDelegate(me));
-        me.initButtons();
-
-
-    },
-
-	onDataBeforeLoad: function () {
-        var me = this;
-        
-        me.mask('Loading...');
     },
 	
-    onDataLoaded: function () {
-        var me = this;
-
-        if (me.dataCollectorColumnStore.getCount() == 0)
-            return;
-
-        me.createDataCollectorTaskForm();
-
-        me.unmask("Loaded");
-    },
-	
-	attachLoadMaskEvent: function (store) {
-        var me = this;
-
-        store.on('beforeload', me.onDataBeforeLoad.createDelegate(me));
-        store.on('load', me.onDataLoaded.createDelegate(me));
-    },
-
-    createDataCollectorTaskForm: function () {
+	createDataCollectorTaskForm: function () {
 
         var me = this;
         var html = [];
@@ -1178,13 +1213,13 @@ eFin.page.app.DataCollectorTask = WebLight.extend(WebLight.Page, {
 		html.push('<div id="divColumns" class="columns">');
 		html.push('<div style="height:10px;"></div>');
 		
-        html.push(String.format(window.__weblight_t_fbd3614b[5],
+        html.push(String.format(window.__weblight_t_fbd3614b[4],
                     'HouseCode', 'HouseCode', me.houseCode));
-        html.push(String.format(window.__weblight_t_fbd3614b[5],
+        html.push(String.format(window.__weblight_t_fbd3614b[4],
                     'Frequency', 'Frequency', me.frequency));
-        html.push(String.format(window.__weblight_t_fbd3614b[5],
+        html.push(String.format(window.__weblight_t_fbd3614b[4],
                     'Description', 'Description', me.description.replace(/_/gi, ' ')));
-        html.push(String.format(window.__weblight_t_fbd3614b[5],
+        html.push(String.format(window.__weblight_t_fbd3614b[4],
                     'Date', 'Date', Ext.util.Format.date(new Date(), 'M d, Y')));
         me.dataCollectorColumnStore.each(function (item, index) {
             var fieldName = item.get('brief');
@@ -1192,7 +1227,7 @@ eFin.page.app.DataCollectorTask = WebLight.extend(WebLight.Page, {
 			var fieldValidation = item.get('validation');
 			var fieldReferenceTableName = item.get('referenceTableName');
 
-            html.push(String.format(window.__weblight_t_fbd3614b[4],
+            html.push(String.format(window.__weblight_t_fbd3614b[3],
                     fieldName, fieldTitle, ''));
             fields.push(me.getEditor(fieldName, fieldTitle, fieldValidation, fieldReferenceTableName));
         });
@@ -1211,7 +1246,10 @@ eFin.page.app.DataCollectorTask = WebLight.extend(WebLight.Page, {
         me.addChildControl(me.dataCollectorTaskForm, 'task-form');
 
         me.dataCollectorTaskForm.updateData({});
-		$("#" + me.dataCollectorTaskForm.id + "-divColumns").height($(window).height() - 95);
+		$("#app-notification-dataCollectorTask-grid").hide();
+		$("#" + me.dataCollectorTaskForm.id + "-divContainer").show();
+		$("#app-notification-divButtons").show();		
+		$("#" + me.dataCollectorTaskForm.id + "-divColumns").height($(window).height() - 105);
     },
 
     getEditor: function (fieldName, fieldTitle, fieldValidation, fieldReferenceTableName) {
@@ -1220,8 +1258,36 @@ eFin.page.app.DataCollectorTask = WebLight.extend(WebLight.Page, {
         var config = { xtype: 'textfield', width: 150, name: fieldName, allowBlank: false , msgTarget: 'side', listeners: { 'change': function() { modified(true); } }};
 		
 		if (fieldReferenceTableName !=  '') {
-			 config = Ext.apply(config, {  
-				listeners: { 'change': function() { modified(true); } }});
+			if (fieldName == 'HcmSiteType') {
+				config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'id', displayField: 'name', msgTarget: 'none', triggerAction: 'all', allowBlank: false, editable: false,
+					listeners: {'change': function(){modified(true);}},
+					store: me.hcmSiteTypeStore,mode: 'local'
+				});
+			}
+			if (fieldName == 'HcmRemitToLocation') {
+				config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'id', displayField: 'name', msgTarget: 'none', triggerAction: 'all', allowBlank: false, editable: false,
+					listeners: {'change': function(){modified(true);}},
+					store: me.remitToStore,mode: 'local'
+				});
+			}
+			if (fieldName == 'HcmBudgetLaborCalcMethod') {
+				config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'id', displayField: 'name', msgTarget: 'none', triggerAction: 'all', allowBlank: false, editable: false,
+					listeners: {'change': function(){modified(true);}},
+					store: me.budgetLaborCalcMethodStore,mode: 'local'
+				});
+			}
+			if (fieldName == 'HcmBudgetTemplate') {
+				config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'id', displayField: 'name', msgTarget: 'none', triggerAction: 'all', allowBlank: false, editable: false,
+					listeners: {'change': function(){modified(true);}},
+					store: me.budgetTemplateStore,mode: 'local'
+				});
+			}
+			if (fieldName == 'HcmServiceType') {
+				config = Ext.apply(config, { width: 150, xtype: 'combo', valueField: 'id', displayField: 'name', msgTarget: 'none', triggerAction: 'all', allowBlank: false, editable: false,
+					listeners: {'change': function(){modified(true);}},
+					store: me.serviceTypeStore,mode: 'local'
+				});
+			}			
 		}
 		else {
 			if (fieldValidation ==  'Int')
@@ -1262,26 +1328,12 @@ eFin.page.app.DataCollectorTask = WebLight.extend(WebLight.Page, {
 			else if (fieldValidation == 'Bit')
 	            config = Ext.apply(config, { xtype: 'checkbox',
 				listeners: { 'change': function() { modified(true); } }});
-		}
-		
-        
+		}       
 
         return Ext.create(config);
     },
-
-    dataBind: function () {
-        var me = this;
-
-        if (me.dataCollectorId > 0) {
-            me.mask('Loading...');
-            //            me.dataCollectorStore.load(me.dataCollectorId);
-            me.dataCollectorColumnStore.load(me.dataCollectorId);
-        }
-
-        eFin.page.app.DataCollectorTask.superclass.dataBind.call(this);
-    },
 	
-    initButtons: function () {
+	initButtons: function () {
         var me = this;
 
         me.$cancelButton = me.$child('AnchorCancel');
@@ -1299,12 +1351,12 @@ eFin.page.app.DataCollectorTask = WebLight.extend(WebLight.Page, {
         me.$cancelButton.click(function () {
             if (me.$cancelButton.hasClass('Enabled')) {
 				modified(false);
-				me.mask('Loaded');
-                WebLight.Router.route('/app/notification/main');
+				me.unmask('Loaded');
+				$("#app-notification-dataCollectorTask-grid").show();				
+				$("#" + me.dataCollectorTaskForm.id + "-divContainer").hide();
+				$("#app-notification-divButtons").hide();
             }
         });
-
-
     },
 
     saveData: function () {
@@ -1337,13 +1389,16 @@ eFin.page.app.DataCollectorTask = WebLight.extend(WebLight.Page, {
         jQuery.post('/net/crothall/chimes/fin/app/act/Provider.aspx', postData, function (data, status) {
             var nodes = data.getElementsByTagName("appDataCollectorTask");
             if (nodes.length == 0)
-                alert('The task has been completed by someone else.');
+				alert('The task has been completed by someone else.');			
 			modified(false);
-            WebLight.Router.route('/app/notification/main');
+			me.unmask("Loaded");			
+			me.dataCollectorTaskStore.removeAt(me.rowNumber);
+			me.dataCollectorTaskGrid.getView().refresh();
+			$("#app-notification-dataCollectorTask-grid").show();
+			$("#" + me.dataCollectorTaskForm.id + "-divContainer").hide();
+			$("#app-notification-divButtons").hide();			
         });
-
     },
-
 
     enableButton: function (name) {
         var me = this;
@@ -1355,14 +1410,12 @@ eFin.page.app.DataCollectorTask = WebLight.extend(WebLight.Page, {
     }
 });
 
-WebLight.PageMgr.registerType('app.datacollectortask', eFin.page.app.DataCollectorTask);
+WebLight.PageMgr.registerType('app.notification', eFin.page.app.Notification);
+eFin.page.app.DataCollectorTask = WebLight.extend(WebLight.Page, {
+    html: window.__weblight_t_fbd3614b[1],
+    
+});
 
 WebLight.Router.mapRoute('^app/notification/main$', {
     xtype: 'app.notification'
 });
-
-
-WebLight.Router.mapRoute('^app/notification/([0-9]+)/([0-9]+)/([0-9]+)/([0-9]+)/([a-zA-Z-]+)/([a-zA-Z0-9_-]+)$', {
-    xtype: 'app.datacollectortask', dataCollectorTaskId: '{0}', dataCollectorId: '{1}', hcmHouseCode: '{2}', houseCode: '{3}', frequency: '{4}', description: '{5}'
-});
-

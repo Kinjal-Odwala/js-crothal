@@ -8,13 +8,13 @@
     padding-bottom: 4px;
 }
 
-#app-datacollectortask-itemStatusDiv, #app-notification-itemStatusDiv {
+#app-notification-itemStatusDiv {
 	float: left;
 	width: 800px;
 	padding: 5px 0px 0px 10px;
 }
 
-#app-datacollectortask-itemStatusText, #app-notification-itemStatusText {
+#app-notification-itemStatusText {
 	float: left;
 	text-align: left;
 	font-family: Verdana;

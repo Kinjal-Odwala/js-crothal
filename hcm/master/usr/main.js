@@ -690,7 +690,7 @@ ii.Class({
 				return false;
 			}
 			
-			if (payrollUIControls.ceridianCompanyHourly.indexSelected == payrollUIControls.ceridianCompanySalaried.indexSelected) {
+			if (payrollUIControls != undefined && payrollUIControls.ceridianCompanyHourly.indexSelected == payrollUIControls.ceridianCompanySalaried.indexSelected) {
 				alert("[Ceridian Company Hourly] & [Ceridian Company Salaried] cannot be same. Please select other option on Payroll Tab.");
 				return false;
 			}
