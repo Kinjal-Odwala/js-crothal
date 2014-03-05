@@ -66,7 +66,7 @@ ii.Class({
 			$(document).bind("mousedown", me, me.mouseDownProcessor);
 
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
-			me.authorizePath = "\\crothall\\chimes\\fin\\HouseCodeSetup\\EPay Site Survey";
+			me.authorizePath = "\\crothall\\chimes\\fin\\HouseCodeSetup\\PaySiteSurvey";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
 					me.authorizationProcess.apply(me);
@@ -150,10 +150,11 @@ ii.Class({
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 
-			me.siteSurveyShow =  me.authorizer.isAuthorized(me.authorizePath + "\\Site Survey");
-			me.siteMethodologyShow = me.authorizer.isAuthorized(me.authorizePath + "\\Site Methodology");
-			me.clockManagementShow = me.authorizer.isAuthorized(me.authorizePath + "\\Clock Management");
-			me.manageDeviceTypeShow = me.authorizer.isAuthorized(me.authorizePath + "\\Manage Device Type");
+			me.siteSurveyShow =  me.authorizer.isAuthorized(me.authorizePath + "\\SiteSurvey");
+			me.siteMethodologyShow = me.authorizer.isAuthorized(me.authorizePath + "\\SiteMethodology");
+			me.clockManagementShow = me.authorizer.isAuthorized(me.authorizePath + "\\ClockManagement");
+			me.manageDeviceTypeShow = me.authorizer.isAuthorized(me.authorizePath + "\\ManageDeviceType");
+			me.surveySummaryShow =  me.authorizer.isAuthorized(me.authorizePath + "\\SurveySummary");
 
 			if (!me.siteSurveyShow)
 				$("#siteSurveyAction").hide();
@@ -165,6 +166,8 @@ ii.Class({
 				$("#manageDeviceTypeAction").hide();
 				$("#AnchorManageDeviceTypes").hide();				
 			}
+			if (!me.surveySummaryShow)
+				$("#surveySummaryAction").hide();
 		},
 
 		sessionLoaded: function fin_hcm_houseCode_UserInterface_sessionLoaded() {
@@ -206,6 +209,12 @@ ii.Class({
 					brief: "Manage Device Types",
 					title: "Add or Edit the device types.",
 					actionFunction: function() { me.actionManageDeviceTypeItem("Manage Device Type"); }
+				})
+				.addAction({
+					id: "surveySummaryAction",
+					brief: "Site Survey Summary",
+					title: "View the site survey information.",
+					actionFunction: function() { me.actionSiteSurveySummaryItem(); }
 				})
 
 			me.anchorNext = new ui.ctl.buttons.Sizeable({
@@ -1766,10 +1775,17 @@ ii.Class({
 			me.ePaySiteSurveyPayCodeStore.fetch("userId:[user],id:" + me.siteDetails[0].id, me.ePaySiteSurveyPayCodesLoaded, me);
 			me.loadTimeZones(me.siteDetails[0].zipCode);
 			me.setSiteSurveyDetails();
-			if (me.action == "" || me.action == "SiteSurvey")
-				me.ePaySiteSurvey();
-			else
+
+			if (me.siteSurveyShow && (me.action == "" || me.action == "SiteSurvey"))
+				me.actionSiteSurveyItem();
+			else if (me.siteMethodologyShow &&  me.action == "SiteMethodology")
 				me.actionSiteMethodologyItem();
+			else if (me.surveySummaryShow &&  me.action == "SiteSurveySummary")
+				 me.actionSiteSurveySummaryItem();
+			else if (me.clockManagementShow)
+				me.actionClockManagementItem();
+			else if (me.manageDeviceTypeShow)
+				me.actionManageDeviceTypeItem("Manage Device Type");
 		},
 
 		setSiteSurveyDetails: function() {
@@ -1938,6 +1954,8 @@ ii.Class({
 					me.ePaySiteSurveyPayCodes.push(item);
 				}
 			}
+
+			me.payCodeGrid.setData(me.ePaySiteSurveyPayCodes);
 		},
 		
 		ePaySiteSurveyClockAssetsLoaded: function(me, activeId) {
@@ -1956,6 +1974,8 @@ ii.Class({
 		 		}
 			});
 
+			me.modified(false);
+			me.setStatus("Normal");
 			me.deviceTypeChanged();
 		},
 
@@ -2077,7 +2097,7 @@ ii.Class({
 
 			me.payCodeGrid.data[index].modified = true;
 			me.payCodeTitle.text.readOnly = true;
-			if (me.currentWizard == "Review") 
+			if (me.currentWizard == "Review" || me.action == "SiteSurveySummary") 
 				me.payCodeDescription.text.readOnly = true;
 			else 
 				me.payCodeDescription.text.readOnly = false;
@@ -2282,6 +2302,7 @@ ii.Class({
 					$("#AnchorSave").show();
 					me.setReadOnly(true);
 					me.payCodeGrid.setHeight(200);
+					me.payCodeGrid.body.deselectAll();
 					break;
 			}
 
@@ -2311,6 +2332,7 @@ ii.Class({
 			me.action = "SiteSurvey";
 			me.ePaySiteSurvey();
 			me.setStatus("Normal");
+			me.comments.readOnly = false;
 		},
 
 		actionSiteMethodologyItem: function() {
@@ -2438,6 +2460,48 @@ ii.Class({
 			me.action = "ManageDeviceType";
 			me.setStatus("Normal");
 			me.loadDeviceTypes();
+		},
+
+		actionSiteSurveySummaryItem: function() {
+			var me = this;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
+			$("#header").html("Site Survey Summary");
+			$("#SiteSurvey").show();
+			$("#SiteMethodology").hide();
+			$("#ClockManagement").hide();
+			$("#ManageDeviceType").hide();
+			$("#divHouseCode").show();
+			$("#divHouseCodeInfo").show();
+			$("#divManager").show();
+			$("#divEmployee").show();
+			$("#divPayCode").show();
+			$("#divFonen").show();
+			$("#divReview").show();
+			$("#AlternateInfoLeft").show();
+			$("#AlternateInfoRight").show();
+			$("#editHouseCode").hide();
+			$("#editManager").hide();
+			$("#editEmployee").hide();
+			$("#editPayCode").hide();
+			$("#editFonen").hide();
+			$("#AnchorPrev").hide();
+			$("#AnchorNext").hide();
+			$("#AnchorSaveAndSend").hide();
+			$("#AnchorManageDeviceTypes").hide();
+			$("#AnchorSave").hide();
+			$("#AnchorUndo").hide();
+			$("#AnchorPrint").show();
+
+			me.setReadOnly(true);
+			me.comments.readOnly = true;
+			me.payCodeGrid.setData(me.ePaySiteSurveyPayCodes);
+			me.payCodeGrid.setHeight(200);			
+			me.action = "SiteSurveySummary";
+			me.setStatus("Normal");
+			me.resizeControls();
 		},
 
 		actionSearchItem: function() {
@@ -2627,7 +2691,7 @@ ii.Class({
 					+ "<td width='200' align='center'><b>Serial Number</b></td>"
 					+ "<td width='250' align='center'><b>Tracking Number</b></td></tr>"
 					+ deviceTypeContent	+ "</table></td></tr>"
-					+ "<tr><td width=25%>Daily Reboot Time:</td><td width=25%>" +me.dailyRebootTime.getValue() + "</td><td width=25%>Use Work Orders:</td><td width=25%>" + (me.useWorkOrders.check.checked ? 'Yes' : 'No') + "</td></tr>"
+					+ "<tr><td width=25%>Daily Reboot Time:</td><td width=25%>" + me.dailyRebootTime.getValue() + "</td><td width=25%>Use Work Orders:</td><td width=25%>" + (me.useWorkOrders.check.checked ? 'Yes' : 'No') + "</td></tr>"
 					+ "<tr><td width=25%>Task Selection Method:</td><td width=25%>" + me.taskSelectionMethod.lastBlurValue + "</td><td width=25%>Accident Free Questions:</td><td width=25%>" + (me.accidentFreeQuestions.check.checked ? 'Yes' : 'No') + "</td></tr>"
 					+ "<tr><td width=25%>Enable Lunch Logic:</td><td width=25%>" + (me.enableLunchLogic.check.checked ? 'Yes' : 'No') + "</td><td width=25%>Fix Punches on Clock:</td><td width=25%>" + (me.fixPunchesOnClock.check.checked ? 'Yes' : 'No') + "</td></tr>"
 					+ "<tr><td colspan=4 align=center><b>Logistics</b></td></tr>"
@@ -2690,7 +2754,53 @@ ii.Class({
 							+ "<td width=200>" + $(me.deviceGrid.rows[index].getElement("upsTrackingNumber")).text() + "</td></tr>";
 					}
 				}
-			}
+			}			
+			else if (me.action == "SiteSurveySummary") {
+				me.payCodeGrid.body.deselectAll();
+
+				htmlContent += "<center><b><span style='font-family: Verdana; font-size: 12pt;'>Site Survey Summary</span></b></center></br>"
+					+ "<table width=100% border=1 cellspacing=0 cellpadding=5 style='font-family: Verdana; font-size: 8pt;border-color:Gray;border-width:1px;border-style:Solid;border-collapse:collapse;'>"
+	                + "<tr><td width=25%>House Code:</td><td width=75% colspan=3>" + parent.fin.appUI.houseCodeBrief + "</td></tr>"
+					+ "<tr><td colspan=4 align=center><b>House Code Information</b></td></tr>"
+	                + "<tr><td width=25%>House Code Name:</td><td width=75% colspan=3>" + me.houseCodeName.getValue() + "</td></tr>"
+					+ "<tr><td width=25%>Address 1:</td><td width=75% colspan=3>" + me.address1.getValue() + "</td></tr>"
+   				    + "<tr><td width=25%>City:</td><td width=25%>" + me.city.getValue() + "</td><td width=25%>State:</td><td width=25%>" + me.state.lastBlurValue + "</td></tr>"
+					+ "<tr><td width=25%>Zip Code:</td><td width=75% colspan=3>" + me.zipCode.getValue() + "</td></tr>"
+					+ "<tr><td width=25%>Time Zone:</td><td width=25%>" + me.timeZone.lastBlurValue + "</td><td width=25%>Day Light Savings:</td><td width=25%>" + (me.dayLightSavings.check.checked ? 'Yes' : 'No') + "</td></tr>"
+					+ "<tr><td colspan=4 align=center><b>Manager Information</b></td></tr>"
+					+ "<tr><td width=25%>Manager Name:</td><td width=75% colspan=3>" + me.managerName.getValue() + "</td></tr>"
+					+ "<tr><td width=25%>Phone:</td><td width=25%>" + me.managerPhone.getValue() + "</td><td width=25%>Cell Phone:</td><td width=25%>" + me.managerCellPhone.getValue() + "</td></tr>"
+					+ "<tr><td width=25%>Email:</td><td width=25%>" + me.managerEmail.getValue() + "</td><td width=25%>Alternate Email:</td><td width=25%>" + me.managerAlternateEmail.getValue() + "</td></tr>"
+					+ "<tr><td width=25%>Alternate Contact Name:</td><td width=75% colspan=3>" + me.alternateContactName.getValue() + "</td></tr>"
+					+ "<tr><td width=25%>Alternate Contact Phone:</td><td width=25%>" + me.alternateContactPhone.getValue() + "</td><td width=25%>Alternate Contact Cell Phone:</td><td width=25%>" + me.alternateContactCellPhone.getValue() + "</td></tr>"
+					+ "<tr><td width=25%>Alternate Contact Email:</td><td width=25%>" + me.alternateContactEmail.getValue() + "</td><td width=25%>Alternate Contact Alternate Email:</td><td width=25%>" + me.alternateContactAlternateEmail.getValue() + "</td></tr>"
+					+ "<tr><td width=25%>Regional Manager Name:</td><td width=75% colspan=3>" + me.regionalManagerName.getValue() + "</td></tr>"
+					+ "<tr><td colspan=4 align=center><b>Employee Demographics</b></td></tr>"
+					+ "<tr><td width=25%># of Hourly Employees:</td><td width=25%>" + me.hourlyEmployees.getValue() + "</td><td width=25%>Maximum # of Employees at Shift Change:</td><td width=25%>" + me.maximumEmployeesAtShiftChange.getValue() + "</td></tr>"
+					+ "<tr><td width=25%>Union:</td><td width=25%>" + ($("input[name='Union']:checked").val() == 'true' ? 'Yes' : 'No') + "</td><td width=25%>Payroll Frequency:</td><td width=25%>" +  me.payrollFrequency.getValue() + "</td></tr>"
+					+ "<tr><td width=25%># of Buildings at Facility:</td><td width=75% colspan=3>" + me.buildingsAtFacility.getValue() + "</td></tr>"
+					+ "<tr><td width=25%>Current Rounding Scheme:</td><td width=25%>" + me.currentRoundingScheme.lastBlurValue + "</td><td width=25%>Current Overtime Policy:</td><td width=25%>" +  me.currentOvertimePolicy.getValue() + "</td></tr>"
+					+ "<tr><td width=25%>Kronos:</td><td width=25%>" + ($("input[name='Kronos']:checked").val() == 'true' ? 'Yes' : 'No') + "</td><td width=25%>Groups of Employees with Different Pay Rules:</td><td width=25%>" + ($("input[name='GroupsOfEmployeesWithDifferentPayRules']:checked").val() == 'true' ? 'Yes' : 'No') + "</td></tr>"
+					+ "<tr><td colspan=4 align=center><b>Pay Codes and Shift Differentials</b></td></tr>"
+					+ "<tr><td width=25%>Instructions:</td><td width=75% colspan=3>For each productive pay rate other than ST, please enter an explanation for how that pay rate is used. Example: Shift .50 - Pay rate is used for 2nd Shift on Monday through Friday for 3:00 PM to 11:00 PM. </td></tr>"
+					+ "<tr><td width=95% colspan=4><table border=1 cellspacing=0 cellpadding=5 style='font-family: Verdana; font-size: 8pt;border-color:Gray;border-width:1px;border-style:Solid;border-collapse:collapse;'>"
+	                + "<tr><td width=30 align=center><b>#</b></td>"
+	                + "<td width=100 align=center><b>Brief</b></td>"
+	                + "<td width=200 align=center><b>Title</b></td>"
+	                + "<td width=300 align=center><b>Description</b></td></tr>";
+
+				for (var index = 0; index < me.ePaySiteSurveyPayCodes.length; index++) {
+					htmlContent += "<tr><td width=30 align=center>" + (index + 1) + "</td>"
+		                + "<td width=200>" + $(me.payCodeGrid.rows[index].getElement("brief")).text() + "</td>"
+		                + "<td width=200>" + $(me.payCodeGrid.rows[index].getElement("name")).text() + "</td>"
+		                + "<td width=200>" + $(me.payCodeGrid.rows[index].getElement("description")).text() + "</td></tr>";
+				}
+
+				htmlContent += "</table></td></tr><tr><td width=25%>Shift Differentials Comments:</td><td width=75% colspan=3>" + me.shiftDifferentialsComments.value + "</td></tr>"
+					+ "<tr><td width=25%>Phones Available:</td><td width=75% colspan=3>" + ($("input[name='PhonesAvailable']:checked").val() == 'true' ? 'Yes' : 'No') + "</td></tr>"
+					+ "<tr><td width=25%>Can Phones dial Toll Free:</td><td width=75% colspan=3>" + ($("input[name='TollFree']:checked").val() == 'true' ? 'Yes' : 'No') + "</td></tr>"
+					+ "<tr><td width=25%>Final Comments:</td><td width=75% colspan=3>" + me.comments.value + "</td></tr>";
+			}			
 			
 			htmlContent += "</table></body></html>";
 
