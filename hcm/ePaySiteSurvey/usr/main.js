@@ -2422,6 +2422,8 @@ ii.Class({
 			me.deviceTypeCMSearch.resizeText();
 			me.deviceStatusCMSearch.resizeText();
 			me.assetTransferStatusCMSearch.resizeText();
+			me.deviceStatusCMSearch.select(0, me.deviceStatusCMSearch.focused);
+			me.assetTransferStatusCMSearch.select(0, me.assetTransferStatusCMSearch.focused);
 			me.deviceGrid.setData([]);
 			me.deviceGrid.setHeight($(window).height() - 320);
 			
@@ -2429,6 +2431,7 @@ ii.Class({
 			me.setStatus("Normal");
 			me.resizeControls();
 			me.loadDeviceTypes();
+			me.clockAssetStore.fetch("userId:[user],ePaySiteSurveyId:0,houseCodeId:-1,deviceType:-1,deviceStatusType:-1,assetTransferStatusType:-1", me.clockAssetsLoaded, me);
 		},
 		
 		actionManageDeviceTypeItem: function(status) {
