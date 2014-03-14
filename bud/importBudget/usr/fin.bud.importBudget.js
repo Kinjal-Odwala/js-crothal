@@ -1,4 +1,4 @@
-﻿window.__bt__0ca940fb = ['<div style="margin: 15px;">    <div id="itemStatusDiv" style="padding:10px;">        <div class="itemStatusImage Normal" id="itemStatusImage">        </div>        <div class="itemModifiedImage" id="itemModifiedImage">        </div>        <div id="itemStatusText" class="itemStatusText">            Normal</div>    </div>    <div id="uploader">    </div>    <div id="keys-form" style="margin: 15px 0">        <fieldset class="l2r">            <div class="field">                <label>                    Fiscal Year</label>                <div class="item">                    <input type="text" name="FscYeaTitle" style="width: 80px" /></div>            </div>        </fieldset>    </div>    <table class="bud-grid-1">        <thead>            <tr>                <th style="width: 100px">                    House Code                </th>                <th style="width: 50px">                    Job                </th>                <th style="width: 95px">                    Fsc Account                </th>                <th style="width: 70px">                    Period 1                </th>                <th style="width: 70px">                    Period 2                </th>                <th style="width: 70px">                    Period 3                </th>                <th style="width: 70px">                    Period 4                </th>                <th style="width: 70px">                    Period 5                </th>                <th style="width: 70px">                    Period 6                </th>                <th style="width: 70px">                    Period 7                </th>                <th style="width: 70px">                    Period 8                </th>                <th style="width: 70px">                    Period 9                </th>                <th style="width: 70px">                    Period 10                </th>                <th style="width: 70px">                    Period 11                </th>                <th style="width: 70px">                    Period 12                </th>                <th style="width: 70px">                    Period 13                </th>                <th>                </th>            </tr>        </thead>        <tbody id="data-list">        </tbody>    </table>    <input type="button" id="submitButton" value="Submit" /></div>','<tr>     <td>        <input type="text" name="HouseCodeBrief" />    </td>     <td>        <input type="text" name="JobNumber" />    </td>    <td>        <input type="text" name="FscAccCode" />    </td>    <td>        <input type="text" name="Period1" />    </td>    <td>        <input type="text" name="Period2" />    </td>    <td>        <input type="text" name="Period3" />    </td>    <td>        <input type="text" name="Period4" />    </td>    <td>        <input type="text" name="Period5" />    </td>    <td>        <input type="text" name="Period6" />    </td>    <td>        <input type="text" name="Period7" />    </td>    <td>        <input type="text" name="Period8" />    </td>    <td>        <input type="text" name="Period9" />    </td>    <td>        <input type="text" name="Period10" />    </td>    <td>        <input type="text" name="Period11" />    </td>    <td>        <input type="text" name="Period12" />    </td>       <td>        <input type="text" name="Period13" />    </td></tr>',''];
+﻿window.__bt__ca1325f0 = ['<div style="margin: 15px;">    <div id="itemStatusDiv" style="padding:10px;">        <div class="itemStatusImage Normal" id="itemStatusImage">        </div>        <div class="itemModifiedImage" id="itemModifiedImage">        </div>        <div id="itemStatusText" class="itemStatusText">            Normal</div>    </div>    <div id="uploader">    </div>    <div id="keys-form" style="margin: 15px 0">        <fieldset class="l2r">            <div class="field">                <label>                    Fiscal Year</label>                <div class="item">                    <input type="text" name="FscYeaTitle" style="width: 80px" /></div>            </div>        </fieldset>    </div>    <table class="bud-grid-1">        <thead>            <tr>                <th style="width: 100px">                    House Code                </th>                <th style="width: 50px">                    Job                </th>                <th style="width: 95px">                    Fsc Account                </th>                <th style="width: 70px">                    Period 1                </th>                <th style="width: 70px">                    Period 2                </th>                <th style="width: 70px">                    Period 3                </th>                <th style="width: 70px">                    Period 4                </th>                <th style="width: 70px">                    Period 5                </th>                <th style="width: 70px">                    Period 6                </th>                <th style="width: 70px">                    Period 7                </th>                <th style="width: 70px">                    Period 8                </th>                <th style="width: 70px">                    Period 9                </th>                <th style="width: 70px">                    Period 10                </th>                <th style="width: 70px">                    Period 11                </th>                <th style="width: 70px">                    Period 12                </th>                <th style="width: 70px">                    Period 13                </th>                <th>                </th>            </tr>        </thead>        <tbody id="data-list">        </tbody>    </table>    <input type="button" id="submitButton" value="Submit" /></div>','<tr>     <td>        <input type="text" name="HouseCodeBrief" />    </td>     <td>        <input type="text" name="JobNumber" />    </td>    <td>        <input type="text" name="FscAccCode" />    </td>    <td>        <input type="text" name="Period1" />    </td>    <td>        <input type="text" name="Period2" />    </td>    <td>        <input type="text" name="Period3" />    </td>    <td>        <input type="text" name="Period4" />    </td>    <td>        <input type="text" name="Period5" />    </td>    <td>        <input type="text" name="Period6" />    </td>    <td>        <input type="text" name="Period7" />    </td>    <td>        <input type="text" name="Period8" />    </td>    <td>        <input type="text" name="Period9" />    </td>    <td>        <input type="text" name="Period10" />    </td>    <td>        <input type="text" name="Period11" />    </td>    <td>        <input type="text" name="Period12" />    </td>       <td>        <input type="text" name="Period13" />    </td></tr>',''];
 
 if ((typeof Range !== "undefined") && !Range.prototype.createContextualFragment) {
     Range.prototype.createContextualFragment = function (html) {
@@ -77,7 +77,7 @@ fin.bud.budSubmit = function (submitXml, callback) {
     fin.bud.saving();
     jQuery.post('/net/crothall/chimes/fin/bud/act/Provider.aspx', data, function (data, status) {
         callback(data);
-        fin.bud.loaded();
+        fin.bud.saved();
     });
 }
 
@@ -239,6 +239,7 @@ if (document.location.host == 'localhost')
 
 
 var globalLoadingCounter = 0;
+window.isSavedSuccessfully = false;
 
 fin.bud.loading = function () {
     globalLoadingCounter++;
@@ -254,9 +255,27 @@ fin.bud.saving = function () {
     $('.itemStatusText').html('Saving, please wait...');
 }
 
+
+fin.bud.saved = function () {
+    globalLoadingCounter--;
+    window.isSavedSuccessfully = true;
+
+    setTimeout(function () {
+        if (globalLoadingCounter <= 0) {
+            fin.bud.normal(window.__fin_modified);
+            globalLoadingCounter = 0;
+
+            setTimeout(function () {
+                window.isSavedSuccessfully = false;
+            }, 5000);
+        }
+    }, 20);
+}
+
+
 fin.bud.normal = function (isModified) {
     $('.itemStatusImage').removeClass('Loading').addClass('Normal');
-    $('.itemStatusText').html('Normal');
+    $('#itemStatusText').html(window.isSavedSuccessfully && !isModified ? 'Data Save Successfully' : 'Normal');
     if (isModified === true) {
         $('.itemModifiedImage').addClass('Modified');
     }
@@ -300,7 +319,7 @@ fin.bud.modified = function () {
 !function (bud) {
 
     bud.page.ImportBudget = bine.extend(bine.Control, {
-        tpl: window.__bt__0ca940fb[0],
+        tpl: window.__bt__ca1325f0[0],
 
         dataList: null,
         $fscAccounts: null,
@@ -440,7 +459,7 @@ fin.bud.modified = function () {
 
 
                     return new bine.DataView({
-                        tpl: window.__bt__0ca940fb[1], removable: true,
+                        tpl: window.__bt__ca1325f0[1], removable: true,
                         onDomReady: function () {
                             var dv = this;
                             dv.on('change', function (name) {
