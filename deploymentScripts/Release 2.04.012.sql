@@ -231,8 +231,134 @@ Select * From EsmV2.dbo.HirNodes Where HirNodFullPath Like'\crothall\chimes\fin\
 
 -- Setup --> Employee Date Approve Menu Insert [End]
 
+Insert Into dbo.HcmBudgetTemplates(HcmBudtBrief, HcmBudtTitle, HcmBudtDescription, HcmBudtDisplayOrder, HcmBudtActive, HcmBudtModBy, HcmBudtModAt)
+Values ('Education', 'Education', 'Education', 5, 1, 'Compass-USA\Data Conversion', GetDate())
+
 /*
 CT updated on 12th February 2014 11PM EST
 */
 
+Update AppModuleColumns Set AppModcAdHocActive = 1, AppModcLength = 50 where AppModule = 3 And AppModcTitle = 'RevInvCrtdBy'
+Update AppModuleColumns Set AppModcReferenceTableName = 'HcmServiceTypes' Where AppModule = 1 And AppModcTitle = 'HcmServiceType'  
+Update AppModuleColumns Set AppModcReferenceTableName = 'HcmRemitToLocations' Where AppModule = 1 And AppModcTitle = 'HcmRemitToLocation'
+Update AppModuleAssociations Set AppModaActive = 0 Where AppModule = 11 And AppModuleAssociate = 3
+Update AppModuleColumns set AppModcEditable = 0 , AppModcDescription = 'Created By' Where AppModule = 3 And AppModcTitle = 'RevInvCrtdBy'
+Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, AppModcDisplayOrder, AppModcActive, AppModcModBy, AppModcModAt, AppModcType, AppModcIsNullable, AppModcValidation, AppModcAdHocActive, AppModcReferenceTableName, AppModcFilter, AppModcDependantColumns, AppModcWidth, AppModcEditable, AppModcLength)
+Values (11, 'RevInviCrtdBy', 'Created By', 11, 1, 'compass-usa\data conversion', GetDate(), 'Varchar', 1, Null, 1, Null, 0, Null, 200, 0, Null)
 
+--Add the following system variables
+BudgetAdminEmailId
+HRDepartmentEmailId
+
+-- Add the following key in emp-->act web.config file
+<add key="FinSMTPServer" value="relay.compass-usa.com" />
+<add key="FinSenderEmail" value="teamfinpostoffice@crothall.com" />
+
+-- Add the following key in hcm-->act web.config file
+<add key="FinSMTPServer" value="relay.compass-usa.com" />
+<add key="FinSenderEmail" value="teamfinpostoffice@crothall.com" />
+<add key="EPayEmailId" value="EPAY@eurestservices.us" />
+
+-- Add the following key in bud-->act web.config file
+<add key="FinSMTPServer" value="relay.compass-usa.com" />
+<add key="FinSenderEmail" value="teamfinpostoffice@crothall.com" />
+<add key="ExportTimeout" value="1200" />
+<httpRuntime executionTimeout="1200" /> 
+
+/* No need to execute the following scripts
+Insert Into dbo.HcmRoundingTimePeriods(HcmRtpBrief, HcmRtpTitle, HcmRtpDescription, HcmRtpDisplayOrder, HcmRtpActive, HcmRtpModBy, HcmRtpModAt)
+Values ('NoRounding', 'No Rounding', 'No Rounding', 1, 1, 'Compass-USA\Data Conversion', GetDate())
+Insert Into dbo.HcmRoundingTimePeriods(HcmRtpBrief, HcmRtpTitle, HcmRtpDescription, HcmRtpDisplayOrder, HcmRtpActive, HcmRtpModBy, HcmRtpModAt)
+Values ('TenthHourRound', 'Tenth Hour Rounding', 'Tenth Hour Rounding', 2, 1, 'Compass-USA\Data Conversion', GetDate())
+Insert Into dbo.HcmRoundingTimePeriods(HcmRtpBrief, HcmRtpTitle, HcmRtpDescription, HcmRtpDisplayOrder, HcmRtpActive, HcmRtpModBy, HcmRtpModAt)
+Values ('QuarterHourRound', 'Quarter Hour Rounding', 'Quarter Hour Rounding', 3, 1, 'Compass-USA\Data Conversion', GetDate())
+
+Update HcmEPaySiteSurveys Set HcmRoundingTimePeriod = Case HcmRoundingTimePeriod When 6 Then 2 When 15 Then 3 Else 1 End
+*/
+
+-- Add security nodes for action menu items in Epay Site Survey UI [Begin]
+
+Declare @HirNode As Int
+Declare @DisplayOrder Int
+
+Select @DisplayOrder = Max(HirNode) From ESMV2.dbo.HirNodes
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\EPay Site Survey'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'SurveySummary', 'Site Survey Summary', 'Site Survey Summary', @DisplayOrder + 4, 1, '\crothall\chimes\fin\HouseCodeSetup\EPay Site Survey\Site Survey Summary', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'EPay Site Survey', 'Site Survey Summary', 'Compass-USA\Data Conversion', GetDate())
+
+Select * From ESMV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\HouseCodeSetup\PaySiteSurvey%'
+
+Update EsmV2.dbo.HirNodes 
+Set HirNodBrief = 'PaySiteSurvey'
+	, HirNodLevel5 = 'PaySiteSurvey'
+	, HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\PaySiteSurvey' 
+Where HirNode = 20410
+
+Update EsmV2.dbo.HirNodes 
+Set HirNodDescription = 'Clock Management'
+	, HirNodLevel5 = 'PaySiteSurvey'
+	, HirNodLevel6 = 'ClockManagement'
+	, HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\PaySiteSurvey\ClockManagement' 
+Where HirNode = 20413
+
+Update EsmV2.dbo.HirNodes 
+Set HirNodDescription = 'Manage Device Type'
+	, HirNodLevel5 = 'PaySiteSurvey'
+	, HirNodLevel6 = 'ManageDeviceType'
+	, HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\PaySiteSurvey\ManageDeviceType' 
+Where HirNode = 20414
+
+Update EsmV2.dbo.HirNodes 
+Set HirNodDescription = 'Site Methodology'
+	, HirNodLevel5 = 'PaySiteSurvey'
+	, HirNodLevel6 = 'SiteMethodology'
+	, HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\PaySiteSurvey\SiteMethodology' 
+Where HirNode = 20412
+
+Update EsmV2.dbo.HirNodes 
+Set HirNodDescription = 'Site Survey'
+	, HirNodLevel5 = 'PaySiteSurvey'
+	, HirNodLevel6 = 'SiteSurvey'
+	, HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\PaySiteSurvey\SiteSurvey' 
+Where HirNode = 20411
+
+Update EsmV2.dbo.HirNodes 
+Set HirNodLevel5 = 'PaySiteSurvey'
+	, HirNodLevel6 = 'SurveySummary'
+	, HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\PaySiteSurvey\SurveySummary' 
+Where HirNode = 20497
+-- Add security nodes for action menu items in Epay Site Survey UI [End]
+
+Select * From [Esmv2].[dbo].[AppMenuItems] Where AppMeniBrief = 'Emp Date Approve'
+
+Update [Esmv2].[dbo].[AppMenuItems] 
+Set AppMeniBrief = 'Emp Request'
+	, AppMeniTitle = 'Employee Change Request'
+	, AppMeniID = 'Emp Request'
+	, AppMeniActionData = '/fin/emp/employeeRequest/usr/markup.htm'
+Where AppMeniBrief = 'Emp Date Approve'
+
+Select * From [Esmv2].[dbo].[HirNodes] Where HirNodFullPath = '\crothall\chimes\fin\Setup\EmpDateApprove'
+
+Update [Esmv2].[dbo].[HirNodes]
+Set HirNodBrief = 'EmpRequest'
+	, HirNodTitle = 'Empoloyee Request'
+	, HirNodDescription = 'Empoloyee Request'
+	, HirNodFullPath = '\crothall\chimes\fin\Setup\EmpRequest'
+	, HirNodLevel5 = 'EmpRequest'
+Where HirNodFullPath = '\crothall\chimes\fin\Setup\EmpDateApprove'
+
+INSERT INTO dbo.EmpSocialSecurityNumbers(EmpSsnSSN, EmpSsnActive, EmpSsnModBy, EmpSsnModAt)
+VALUES ('567891234', 1, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.EmpSocialSecurityNumbers(EmpSsnSSN, EmpSsnActive, EmpSsnModBy, EmpSsnModAt)
+VALUES ('567891235', 1, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.EmpSocialSecurityNumbers(EmpSsnSSN, EmpSsnActive, EmpSsnModBy, EmpSsnModAt)
+VALUES ('567891236', 1, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.EmpSocialSecurityNumbers(EmpSsnSSN, EmpSsnActive, EmpSsnModBy, EmpSsnModAt)
+VALUES ('567891237', 1, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.EmpSocialSecurityNumbers(EmpSsnSSN, EmpSsnActive, EmpSsnModBy, EmpSsnModAt)
+VALUES ('567891238', 1, 'Compass-USA\Data Conversion', GetDate())
+
+/*
+CT updated on 5th March 2014 11PM EST
+*/

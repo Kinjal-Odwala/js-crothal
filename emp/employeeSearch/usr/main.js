@@ -538,15 +538,7 @@ ii.Class({
 			
 			me.employeeSSN = new ui.ctl.Input.Text({
 		        id: "EmployeeSSN",
-				maxLength: 11,
-				changeFunction: function() {
-					var me = fin.empSearchUi;
-					var currentSSN = me.employeeSSN.getValue().replace(/-/g, "");
-					if (currentSSN != me.previousSSN) {
-						me.previousSSN = currentSSN;
-						me.wizardCount = 0;
-					}
-				}
+				maxLength: 11
 			});
 			
 			me.employeeSSN.makeEnterTab()
@@ -3881,6 +3873,7 @@ ii.Class({
 				me.validateEmployeeDetails();				
 				me.hireDateAccessSetup();	
 				me.effectiveDateAccessSetup();
+				me.notes.value = "";
 
 				setTimeout(function() { 
 					me.resizeControls();
@@ -5459,7 +5452,16 @@ ii.Class({
 			else {
 				me = this;
 			}	
-			
+
+			var currentSSN = me.employeeSSN.getValue().replace(/-/g, "");
+			if (currentSSN != me.previousSSN) {
+				me.previousSSN = currentSSN;
+				if (me.actionType == "HouseCodeTransfer" || me.actionType == "DateModification")
+					me.wizardCount = 3;
+				else
+					me.wizardCount = 0;
+			}
+
 			if (me.actionType != "NewHire" || me.wizardCount > 0) { //actionNext click on Wizard other than first (SSN search)
 				me.employeeValidationCalledFrom = "";
 				me.actionNext();
@@ -6579,7 +6581,7 @@ ii.Class({
 				xml += ' employeeId="' + itemGeneral.id + '"';
 				xml += ' personId="' + itemGeneral.personId + '"';
 				xml += ' hcmHouseCode="' + itemGeneral.hcmHouseCode + '"';
-				xml += ' houseCode="' + me.employeeSearch.data[me.employeeSearchSelectedRowIndex].houseCode + '"';
+				xml += ' houseCode="' + me.employees[0].houseCode + '"';
 				xml += ' firstName="' + ui.cmn.text.xml.encode(itemPerson.firstName) + '"';
 				xml += ' lastName="' + ui.cmn.text.xml.encode(itemPerson.lastName) + '"';
 				xml += ' employeeNumber="' + itemGeneral.employeeNumber + '"';
