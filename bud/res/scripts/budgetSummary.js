@@ -1,4 +1,4 @@
-﻿_builtInTemplate_f8e27395 = ['<?xml version="1.0" encoding="utf-8" ?><transmission>  <target id="iiAuthorization" requestId="1">    <authorization id="1">      <authorize id="41" path="\\crothall\\chimes\\fin\\Budgeting"></authorize>      <authorize id="42" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget"></authorize>      <authorize id="16059" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Read"></authorize>      <authorize id="16060" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Write"></authorize>      <authorize id="44" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections"></authorize>      <authorize id="16063" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod"></authorize>      <authorize id="16064" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Read"></authorize>      <authorize id="16065" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Write"></authorize>      <authorize id="16066" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast"></authorize>      <authorize id="16067" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Read"></authorize>      <authorize id="16068" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Write"></authorize>      <authorize id="1213" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration"></authorize>      <authorize id="16069" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation"></authorize>      <authorize id="16070" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Read"></authorize>      <authorize id="16071" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Write"></authorize>      <authorize id="16072" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget"></authorize>      <authorize id="16073" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Approve"></authorize>      <authorize id="16074" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Read"></authorize>      <authorize id="16075" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Reject"></authorize>      <authorize id="16076" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Write"></authorize>      <authorize id="16077" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget"></authorize>      <authorize id="16078" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Read"></authorize>      <authorize id="16079" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Write"></authorize>      <authorize id="16080" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget"></authorize>      <authorize id="16081" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Read"></authorize>      <authorize id="16082" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Write"></authorize>      <authorize id="43" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary"></authorize>      <authorize id="16061" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Read"></authorize>      <authorize id="16062" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Write"></authorize>    </authorization>  </target></transmission>','<div style="color: #FFF; background-color: #659A66; padding: 10px; margin: 0 0 10px;">    <table width="100%" class="ann-proj-table">        <tbody>            <tr>                <td style="width: 35px;" class="label">Site:</td>                <td style="width: 300px"><div id="house-code-holder"></div></td>                <td style="width: 35px;" class="label">Job:</td>                <td style="width: 160px"><div id="job-code-holder"></div></td>                <td style="width: 80px;" class="label">Fiscal Year:</td>                <td style="width: 100px"><div id="fiscal-year-holder"></div></td>                <td style="width: 80px;" class="label">Period:</td>                <td style="width: 100px"><div id="period-start-holder"></div></td>                <td style="width: 10px;" class="label">-</td>                <td style="width: 100px"><div id="period-end-holder"></div></td>                <td>&nbsp;</td>                <td style="width: 120px;"></td>            </tr>        </tbody>    </table></div><div id="page-status"></div><div style="padding: 0 5px">    <p style="float:left">        The current page is READONLY.</p>        <div style="float:right"><span id="load-button-holder"></span></div></div><div style="clear:both;height:1px;"></div><div id="budget-summary-grid" style="padding: 10px 5px;"></div><br /><br />'];/*!
+﻿_builtInTemplate_8d27d888 = ['<?xml version="1.0" encoding="utf-8" ?><transmission>  <target id="iiAuthorization" requestId="1">    <authorization id="1">      <authorize id="41" path="\\crothall\\chimes\\fin\\Budgeting"></authorize>      <authorize id="42" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget"></authorize>      <authorize id="16059" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Read"></authorize>      <authorize id="16060" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Write"></authorize>      <authorize id="44" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections"></authorize>      <authorize id="16063" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod"></authorize>      <authorize id="16064" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Read"></authorize>      <authorize id="16065" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Write"></authorize>      <authorize id="16066" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast"></authorize>      <authorize id="16067" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Read"></authorize>      <authorize id="16068" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Write"></authorize>      <authorize id="1213" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration"></authorize>      <authorize id="16069" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation"></authorize>      <authorize id="16070" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Read"></authorize>      <authorize id="16071" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Write"></authorize>      <authorize id="16072" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget"></authorize>      <authorize id="16073" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Approve"></authorize>      <authorize id="16074" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Read"></authorize>      <authorize id="16075" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Reject"></authorize>      <authorize id="16076" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Write"></authorize>      <authorize id="16077" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget"></authorize>      <authorize id="16078" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Read"></authorize>      <authorize id="16079" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Write"></authorize>      <authorize id="16080" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget"></authorize>      <authorize id="16081" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Read"></authorize>      <authorize id="16082" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Write"></authorize>      <authorize id="43" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary"></authorize>      <authorize id="16061" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Read"></authorize>      <authorize id="16062" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Write"></authorize>    </authorization>  </target></transmission>','<div style="color: #FFF; background-color: #659A66; padding: 10px; margin: 0 0 10px;">    <table width="100%" class="ann-proj-table">        <tbody>            <tr>                <td style="width: 35px;" class="label">Site:</td>                <td style="width: 300px"><div id="house-code-holder"></div></td>                <td style="width: 35px;" class="label">Job:</td>                <td style="width: 160px"><div id="job-code-holder"></div></td>                <td style="width: 80px;" class="label">Fiscal Year:</td>                <td style="width: 100px"><div id="fiscal-year-holder"></div></td>                <td style="width: 80px;" class="label">Period:</td>                <td style="width: 100px"><div id="period-start-holder"></div></td>                <td style="width: 10px;" class="label">-</td>                <td style="width: 100px"><div id="period-end-holder"></div></td>                <td>&nbsp;</td>                <td style="width: 120px;"></td>            </tr>        </tbody>    </table></div><div id="page-status"></div><div style="padding: 0 5px">    <p style="float:left">        The current page is READONLY.</p>        <div style="float:right"><span id="load-button-holder"></span></div></div><div style="clear:both;height:1px;"></div><div id="budget-summary-grid" style="padding: 10px 5px;"></div><br /><br />'];/*!
  * Ext JS Library 3.2.0
  * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
@@ -1559,6 +1559,7 @@ if (document.location.host == 'localhost')
 
 
 var globalLoadingCounter = 0;
+window.isSavedSuccessfully = false;
 
 fin.bud.loading = function () {
     globalLoadingCounter++;
@@ -1574,9 +1575,25 @@ fin.bud.saving = function () {
     $('#itemStatusText').html('Saving, please wait...');
 }
 
+fin.bud.saved = function () {
+    globalLoadingCounter--;
+    window.isSavedSuccessfully = true;
+
+    setTimeout(function () {
+        if (globalLoadingCounter <= 0) {
+            fin.bud.normal(window.__fin_modified);
+            globalLoadingCounter = 0;
+
+            setTimeout(function () {
+                window.isSavedSuccessfully = false;
+            }, 5000);
+        }
+    }, 20);
+}
+
 fin.bud.normal = function (isModified) {
     $('#itemStatusImage').removeClass('Loading').addClass('Normal');
-    $('#itemStatusText').html('Normal');
+    $('#itemStatusText').css('color','#032D23').html(window.isSavedSuccessfully && !isModified ? 'Data saved successfully.' : 'Normal');
     if (isModified === true) {
         $('#itemModifiedImage').addClass('Modified');
     }
@@ -2083,6 +2100,382 @@ WebLight.form.FormView = WebLight.extend(WebLight.Control, {
 });
 
 
+WebLight.override(WebLight.form.FormPanel, {
+    autoStoreMask: false
+});
+
+WebLight.override(WebLight.grid.GridPanel, {
+    autoStoreMask: false
+});
+
+WebLight.override(WebLight.form.FormView, {
+    autoStoreMask: false
+});
+
+/// <reference path="../../references/jquery-1.4.1.js" />
+/// <reference path="../Core.js" />
+
+WebLight.data.Store = Ext.extend(Ext.data.Store, {
+
+    trackingChanges: false,
+
+    /// Your changes have not been saved. \r\n\r\n Discard the changes?
+    discardMessage: 'Your changes have not been saved. \r\n\r\n Discard the changes?',
+
+    constructor: function (config) {
+        config = config || {};
+        var me = this;
+        var current = this;
+
+        WebLight.data.Store.superclass.constructor.call(this, config);
+
+        this.changes = [];
+
+        this.boundControls = [];
+
+        var computeFields = function (record) {
+            if (null == me._computedFields)
+                return;
+
+            WebLight.each(me._computedFields, function (item, index) {
+                var value = 0;
+                switch (item[1]) {
+                    case 'func':
+                        value = item[2](record);
+                        break;
+                    case 'sum':
+                        var value = 0;
+                        WebLight.each(item[2], function (field, fieldIndex) {
+                            value += record.get(field) || 0;
+                        });
+                        break;
+                };
+
+                if (record.get(item[0] != value))
+                    record.set(item[0], value);
+            });
+        };
+
+        var calculateColumns = function (record) {
+            if (me._columnSummaryRelations == null)
+                return;
+
+            WebLight.each(me._columnSummaryRelations, function (relation, index) {
+                var value = 0;
+
+                WebLight.each(relation[1], function (column, columnIndex) {
+                    var rValue = record.get(column);
+                    if (rValue)
+                        value += rValue;
+                });
+
+                if (record.get(relation[0]) != value)
+                    record.set(relation[0], value);
+            });
+        };
+
+        var calculateRows = function (record) {
+            if (null == me._rowSummaryRelations)
+                return;
+
+            WebLight.each(me._rowSummaryRelations, function (relation, index) {
+                if (!record || relation[2].indexOf(record) != -1) {
+                    WebLight.each(relation[1], function (column) {
+                        var value = 0;
+                        WebLight.each(relation[2], function (r) {
+                            var rValue = r.get(column);
+                            if (rValue)
+                                value += rValue;
+                        });
+
+                        if (relation[0].get(column) != value)
+                            relation[0].set(column, value);
+
+                    });
+                }
+            });
+        };
+
+
+        this.on('add', function (store, records, index) {
+            Ext.each(records, function (record) {
+                if (store.changes.indexOf(record) == -1) {
+                    //TODO:
+                    //                    record.set('_sysStatus', 1);
+                    //                    record.set('_sysName', this.otype);
+                    store.changes.push(record);
+                    computeFields(record);
+                    calculateColumns(record);
+                    calculateRows(record);
+                }
+            }, this);
+        });
+
+        this.on('remove', function (store, record, index) {
+            var sysStatus = record.get('_sysStatus');
+            if (sysStatus == 1)
+            //if remove new record, just take it out from changes array
+                store.changes.remove(record);
+            else if (store.changes.indexOf(record) < 0) {
+                // push record in changes
+                store.changes.push(record);
+            }
+            record.set('_sysStatus', 3);
+        });
+
+        this.on('update', function (store, record, action) {
+            if (action == Ext.data.Record.REJECT || action == Ext.data.Record.COMMIT) {
+                if (store.changes.indexOf(record) >= 0)
+                    store.changes.remove(record);
+                /// remove rejected new record
+                if (action == Ext.data.Record.REJECT && record.get('_sysStatus') == 1)
+                    this.remove(record);
+            }
+            else if (action == Ext.data.Record.EDIT) {
+                if (store.changes.indexOf(record) == -1) {
+                    store.changes.push(record);
+                    if (record.get('_sysStatus') != 1)
+                        record.set('_sysStatus', 2);
+                }
+                computeFields(record);
+                calculateColumns(record);
+                calculateRows(record);
+            }
+        });
+
+        var maskControls = function (message) {
+            WebLight.each(current.boundControls, function (item, index, array) {
+                if (item.getEl) {
+                    var el = item.getEl();
+
+                    if (item.autoStoreMask === false)
+                        return;
+
+                    if (el && el.mask && el.isMasked && !el.isMasked())
+                        el.mask(message, 'x-mask-loading');
+                }
+            }, current);
+        };
+
+        var unmaskControls = function () {
+            WebLight.each(current.boundControls, function (item, index, array) {
+                if (item.getEl) {
+                    var el = item.getEl();
+                    ///ATTENTION, cannot check el.isMasked(), 
+                    /// because if element is hidden or parent is hidden, it always return false even if masked
+                    if (el && el.unmask)    // && el.isMasked && el.isMasked())
+                        el.unmask();
+                }
+            }, current);
+        };
+
+        this.on('beforeload', function () {
+
+            maskControls(Ext.LoadMask.prototype.msg);
+        }, this);
+        this.on('load', function () {
+            /// ensure selectedIndex less than page count;
+            current.selectedIndex(current.selectedIndex());
+            /// let method executed after other event listener
+            unmaskControls();
+        });
+
+        this.on('beforesubmit', function () {
+            maskControls('Saving');
+        });
+        this.on('submit', function () {
+            unmaskControls();
+        });
+
+        //        me.on('datachanged', function () {
+        //            me.changes = [];
+        //        });
+
+        me.on('datachanged', function () {
+            me._columnSummaryRelations = null;
+            me.clearComputedFieldSettings();
+            me._rowSummaryRelations = null;
+            me.changes = [];
+
+            setTimeout(function () {
+                me.each(function (record) {
+                    computeFields(record);
+                    calculateColumns(record);
+                });
+                calculateRows();
+            }, 100);
+        });
+
+    },
+    bindControl: function (control) {
+        if (this.boundControls.indexOf(control) < 0)
+            this.boundControls.push(control);
+    },
+    unbindControl: function (control) {
+        if (this.boundControls.indexOf(control) >= 0)
+            this.boundControls.remove(control);
+    },
+
+    getChangedRecords: function () {
+        return this.changes || [];
+    },
+
+
+    rejectChanges: function () {
+        WebLight.data.Store.superclass.rejectChanges.call(this);
+        this.changes = [];
+    },
+    /// load data
+    load: function (options) {
+        if (!this.trackingChanges || this.changes.length == 0)
+        { return WebLight.data.Store.superclass.load.call(this, options); }
+        else
+            Ext.MessageBox.confirm('Confirm', discardMessage, function (btn) {
+                if (btn == 'yes')
+                    return WebLight.data.Store.superclass.load.call(this, options);
+            }, this);
+        return false;
+    },
+
+    // create new record 
+    newRecord: function (defaultData) {
+        var me = this;
+        if (!WebLight.isDefined(this.recordType)) {
+            alert('record Type not defined');
+            return null;
+        }
+
+        var id = null;
+        if (me.idProperty && defaultData && defaultData[me.idProperty])
+            id = defaultData[me.idProperty];
+        return new this.recordType(Ext.apply(defaultData || {}, { _sysStatus: 1 }), id);
+    },
+
+    isNewRecord: function (record) {
+        return record.get('_sysStatus') == 1;
+    },
+
+    selectedIndex: function () {
+        if (!this._selectedIndex)
+            this._selectedIndex = 0;
+
+        if (!arguments || arguments.length == 0)
+            return this._selectedIndex;
+
+        var index = arguments[0];
+        if (index < 0)
+            index = 0;
+
+        if (this._selectedIndex != index || this._selectedIndex >= this.getCount()) {
+            if (this.getCount() == 0)
+                this._selectedIndex = -1;
+            else
+                this._selectedIndex = index;
+
+            if (this._selectedIndex >= this.getCount())
+                this._selectedIndex = 0;
+        }
+        /// CANNOT put fireEvent in above scope, because if store reload,and index in count range, the event not fired
+        /// but it need be fired, because need update formpanel selected record
+        this.fireEvent('selectedIndexChanged', this, this._selectedIndex);
+        return this;
+    },
+
+    _rowSummaryRelations: null,
+
+    addRowRelations: function (type, source, target, columns) {
+        var me = this;
+        if (type == 'sum') {
+            if (me._rowSummaryRelations == null)
+                me._rowSummaryRelations = [];
+
+            var sources = source;
+            if (!WebLight.isArray(source))
+                sources = [source];
+
+            var targetExisted = false;
+            WebLight.each(me._rowSummaryRelations, function (item, index) {
+                if (item[0] == target) {
+                    item[2] = item[2].concat(sources).unique();
+                    targetExisted = true;
+                    return true;
+                }
+            });
+
+            if (!targetExisted)
+                me._rowSummaryRelations.push([target, columns, sources]);
+
+        }
+        return me;
+    },
+
+
+
+    _computedFields: null,
+    clearComputedFieldSettings: function () {
+        var me = this;
+        me._computedFields = null;
+    },
+    setComputedField: function (field, computeType, expression) {
+        var me = this;
+        if (me._computedFields == null)
+            me._computedFields = [];
+
+        WebLight.each(me._computedFields, function (item, index) {
+            if (item[0] == field) {
+                me._computedFields.remove(item);
+                return true;
+            }
+        });
+
+        me._computedFields.push([field, computeType, expression]);
+    },
+
+    _columnSummaryRelations: null,
+    addColumnRelations: function (type, source, target) {
+        var me = this;
+        if (type == 'sum') {
+
+            if (me._columnSummaryRelations == null)
+                me._columnSummaryRelations = [];
+
+            var sources = source;
+            if (!WebLight.isArray(source))
+                sources = [source];
+
+            me._columnSummaryRelations.push([target, sources]);
+        }
+    }
+});
+
+
+
+WebLight.data.Store.create = function (cacheId, creator) {
+    // shift arguments if data argument was omited
+    if (jQuery.isFunction(cacheId)) {
+        creator = cacheId;
+        cacheId = null;
+    }
+
+    if (!WebLight.data.Store.__cachedStores)
+        WebLight.data.Store.__cachedStores = new Ext.util.MixedCollection();
+
+    var store;
+    if (cacheId) {
+        store = WebLight.data.Store.__cachedStores.get(cacheId);
+        if (store)
+            return store;
+    }
+
+    store = creator();
+
+    if (cacheId)
+        WebLight.data.Store.__cachedStores.add(cacheId, store);
+
+    return store;
+};
+
+
 
 
 WebLight.Router.mapRoute('^budget/startbudget$', {
@@ -2270,7 +2663,7 @@ Bud.data.XmlStore = WebLight.extend(WebLight.data.Store, {
 
         this.on('beforeload', function () { fin.bud.loading(); });
         this.on('beforesubmit', function () { fin.bud.saving(); });
-        this.on('submit', function () { fin.bud.loaded(); });
+        this.on('submit', function () { fin.bud.saved(); });
         this.on('load', function () { fin.bud.loaded(); });
 
     },
@@ -2496,7 +2889,7 @@ Bud.data.AuthorizationStore = WebLight.extend(Bud.data.XmlStore, {
     },
 
     loadSampleData: function () {
-        this.loadData(_builtInTemplate_f8e27395[0]);
+        this.loadData(_builtInTemplate_8d27d888[0]);
     },
 
     allowBudgetRead: function () {
@@ -3591,7 +3984,7 @@ Bud.data.BudgetSummaryStore = WebLight.extend(Bud.data.XmlStore, {
 
 Bud.page.BudgetSummaryPage = WebLight.extend(WebLight.Page, {
 
-    html: _builtInTemplate_f8e27395[1],
+    html: _builtInTemplate_8d27d888[1],
     title: 'Budget Summary',
 
     _houseCodeStore: null,
