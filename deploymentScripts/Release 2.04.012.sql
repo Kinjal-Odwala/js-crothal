@@ -14,6 +14,8 @@ ALTER TABLE [TeamFinV2].[dbo].[EmpEmployeeHierarchies] ADD EmpEmphEmployeeNumber
 ALTER TABLE [TeamFinV2].[dbo].[EmpEmployeeParentHierarchies] ADD EmpEmpphMiddleName VARCHAR(50) NULL
 ALTER TABLE [TeamFinV2].[dbo].[EmpEmployeeParentHierarchies] ADD EmpEmpphEmployeeNumber INT NULL
 ALTER TABLE [TeamFinV2].[dbo].[AppModules] ADD AppModDataCollector BIT NULL
+ALTER TABLE [TeamFinV2].[dbo].[EmpEmployeeHierarchies] ADD EmpEmphManagerId Int NULL
+ALTER TABLE [TeamFinV2].[dbo].[EmpEmployeeHierarchies] ADD EmpEmphModAt DateTime NULL
 */
 
 -- Employee PTO type table data [Begin]
@@ -129,7 +131,6 @@ Values(1, 9, @HirNode, 'PTODays', 'PTO Days', 'PTO Days', @DisplayOrder + 4, 1, 
 
 Select * From EsmV2.dbo.HirNodes Where HirNodFullPath Like'\crothall\chimes\fin\Setup\EmployeePTO%'
 -- Add security nodes for action menu items in Employee PTO UI [End]
-
 
 -- Add Read/Write security nodes for HcmHoucClosedDate, HcmHoucClosedReason and EPayHours fields in House Code [Begin]
 
@@ -247,7 +248,7 @@ Insert Into dbo.AppModuleColumns (AppModule, AppModcTitle, AppModcDescription, A
 Values (11, 'RevInviCrtdBy', 'Created By', 11, 1, 'compass-usa\data conversion', GetDate(), 'Varchar', 1, Null, 1, Null, 0, Null, 200, 0, Null)
 
 --Add the following system variables
-BudgetAdminEmailId
+BudgetAdminEmailId [Joe.Eckert@compass-usa.com]
 HRDepartmentEmailId
 
 -- Add the following key in emp-->act web.config file
@@ -284,7 +285,7 @@ Declare @DisplayOrder Int
 Select @DisplayOrder = Max(HirNode) From ESMV2.dbo.HirNodes
 Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup\EPay Site Survey'
 Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodModBy, HirNodModAt)
-Values(1, 9, @HirNode, 'SurveySummary', 'Site Survey Summary', 'Site Survey Summary', @DisplayOrder + 4, 1, '\crothall\chimes\fin\HouseCodeSetup\EPay Site Survey\Site Survey Summary', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'EPay Site Survey', 'Site Survey Summary', 'Compass-USA\Data Conversion', GetDate())
+Values(1, 9, @HirNode, 'SurveySummary', 'Site Survey Summary', 'Site Survey Summary', @DisplayOrder + 1, 1, '\crothall\chimes\fin\HouseCodeSetup\EPay Site Survey\Site Survey Summary', 'crothall', 'chimes', 'fin', 'HouseCodeSetup', 'EPay Site Survey', 'Site Survey Summary', 'Compass-USA\Data Conversion', GetDate())
 
 Select * From ESMV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\HouseCodeSetup\PaySiteSurvey%'
 
@@ -348,6 +349,7 @@ Set HirNodBrief = 'EmpRequest'
 	, HirNodLevel5 = 'EmpRequest'
 Where HirNodFullPath = '\crothall\chimes\fin\Setup\EmpDateApprove'
 
+/* No need to execute the following scripts
 INSERT INTO dbo.EmpSocialSecurityNumbers(EmpSsnSSN, EmpSsnActive, EmpSsnModBy, EmpSsnModAt)
 VALUES ('567891234', 1, 'Compass-USA\Data Conversion', GetDate())
 INSERT INTO dbo.EmpSocialSecurityNumbers(EmpSsnSSN, EmpSsnActive, EmpSsnModBy, EmpSsnModAt)
@@ -358,7 +360,19 @@ INSERT INTO dbo.EmpSocialSecurityNumbers(EmpSsnSSN, EmpSsnActive, EmpSsnModBy, E
 VALUES ('567891237', 1, 'Compass-USA\Data Conversion', GetDate())
 INSERT INTO dbo.EmpSocialSecurityNumbers(EmpSsnSSN, EmpSsnActive, EmpSsnModBy, EmpSsnModAt)
 VALUES ('567891238', 1, 'Compass-USA\Data Conversion', GetDate())
+*/
 
 /*
 CT updated on 5th March 2014 11PM EST
+*/
+
+-- Add the following key in pay-->act web.config file
+<add key="TempFilePath" value="E:\Sites\TeamFin\js\crothall\chimes\fin\temp\" />
+
+/*
+CT updated on 18th March 2014 11PM EST
+*/
+
+/*
+Last production release version 2.04.012 on 19th March 2014 11PM EST
 */
