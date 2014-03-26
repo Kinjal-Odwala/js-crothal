@@ -86,6 +86,7 @@ ii.Class({
 			me.tpRoundingTimePeriodShow = me.isCtrlVisible(me.authorizePath + "\\TabPayroll\\RoundingTimePeriod", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));
 			me.tpEPaySiteShow = me.isCtrlVisible(me.authorizePath + "\\TabPayroll\\EPaySite", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));
 			me.tpEPayTaskShow = me.isCtrlVisible(me.authorizePath + "\\TabPayroll\\EPayTask", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));
+			me.tpEPayHoursShow = me.isCtrlVisible(me.authorizePath + "\\TabPayroll\\EPayHours", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));
 			me.tpCeridianCompanyHourlyShow = me.isCtrlVisible(me.authorizePath + "\\TabPayroll\\CeridianCompanyHourly", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));
 			me.tpCeridianCompanySalariedShow = me.isCtrlVisible(me.authorizePath + "\\TabPayroll\\CeridianCompanySalaried", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));			
 			
@@ -97,6 +98,7 @@ ii.Class({
 			me.tpRoundingTimePeriodReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabPayroll\\RoundingTimePeriod\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
 			me.tpEPaySiteReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabPayroll\\EPaySite\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
 			me.tpEPayTaskReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabPayroll\\EPayTask\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
+			me.tpEPayHoursReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabPayroll\\EPayHours\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
 			me.tpCeridianCompanyHourlyReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabPayroll\\CeridianCompanyHourly\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
 			me.tpCeridianCompanySalariedReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabPayroll\\CeridianCompanySalaried\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
 			
@@ -173,7 +175,8 @@ ii.Class({
 			me.setControlState("RoundingTimePeriod", me.tpRoundingTimePeriodReadOnly, me.tpRoundingTimePeriodShow, "Radio", "RoundingTimePeriodRadio");
 			me.setControlState("TimeAttendance", me.tpTimeAndAttendanceReadOnly, me.tpTimeAndAttendanceShow, "Radio", "TimeAttendanceRadio");
 			me.setControlState("EPaySite", me.tpEPaySiteReadOnly, me.tpEPaySiteShow, "Check", "EPaySiteCheckText");
-			me.setControlState("EPayTask", me.tpEPayTaskReadOnly, me.tpEPayTaskShow, "Check", "EPayTaskCheck");			
+			me.setControlState("EPayTask", me.tpEPayTaskReadOnly, me.tpEPayTaskShow, "Check", "EPayTaskCheck");
+			me.setControlState("EPayHours", me.tpEPayHoursReadOnly, me.tpEPayHoursShow, "Check", "EPayHoursCheck");			
 			me.setControlState("CeridianCompanyHourly", me.tpCeridianCompanyHourlyReadOnly, me.tpCeridianCompanyHourlyShow);
 			me.setControlState("CeridianCompanySalaried", me.tpCeridianCompanySalariedReadOnly, me.tpCeridianCompanySalariedShow);
 		},
@@ -332,6 +335,12 @@ ii.Class({
 				required: false,
 				changeFunction: function() { parent.fin.hcmMasterUi.modified(); } 
 		    });
+			
+			me.ePayHours = new ui.ctl.Input.Check({
+		        id: "EPayHours",
+				required: false,
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
+		    });
 		},
 		
 		resizeControls: function() {
@@ -471,6 +480,7 @@ ii.Class({
 				
 			me.ePaySiteSelect = houseCode.ePaySite;
 			me.ePayTask.check.checked = houseCode.ePayTask;
+			me.ePayHours.check.checked = houseCode.ePayHours;
 			
 			if (houseCode.ePaySite == true)
 				$('#EPaySiteCheck').attr('checked', true);

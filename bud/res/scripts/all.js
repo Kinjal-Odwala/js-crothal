@@ -1,4 +1,4 @@
-﻿_builtInTemplate_efa21bad = ['<?xml version="1.0" encoding="utf-8" ?><transmission>  <target id="iiAuthorization" requestId="1">    <authorization id="1">      <authorize id="41" path="\\crothall\\chimes\\fin\\Budgeting"></authorize>      <authorize id="42" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget"></authorize>      <authorize id="16059" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Read"></authorize>      <authorize id="16060" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Write"></authorize>      <authorize id="44" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections"></authorize>      <authorize id="16063" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod"></authorize>      <authorize id="16064" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Read"></authorize>      <authorize id="16065" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Write"></authorize>      <authorize id="16066" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast"></authorize>      <authorize id="16067" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Read"></authorize>      <authorize id="16068" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Write"></authorize>      <authorize id="1213" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration"></authorize>      <authorize id="16069" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation"></authorize>      <authorize id="16070" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Read"></authorize>      <authorize id="16071" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Write"></authorize>      <authorize id="16072" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget"></authorize>      <authorize id="16073" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Approve"></authorize>      <authorize id="16074" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Read"></authorize>      <authorize id="16075" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Reject"></authorize>      <authorize id="16076" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Write"></authorize>      <authorize id="16077" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget"></authorize>      <authorize id="16078" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Read"></authorize>      <authorize id="16079" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Write"></authorize>      <authorize id="16080" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget"></authorize>      <authorize id="16081" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Read"></authorize>      <authorize id="16082" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Write"></authorize>      <authorize id="43" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary"></authorize>      <authorize id="16061" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Read"></authorize>      <authorize id="16062" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Write"></authorize>    </authorization>  </target></transmission>','<?xml version="1.0" encoding="utf-8"?><transmission>	<target id="iiCache" requestId="5">		<store id="houseCodeJobs" activeId="169" criteria="storeId:houseCodeJobs,houseCodeId:286,userId:RAYMOND-DEV-XP\Raymond Liu,">			<item fscAccount="169" fscAccCode="4005" description="Full Service Billings" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="170" fscAccCode="4010" description="Management Fee Billings" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="174" fscAccCode="4015" description="Client Paid Labor" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="175" fscAccCode="4020" description="Miscellaneous Income" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="176" fscAccCode="4030" description="Reimbursement Start-Up Costs" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="177" fscAccCode="4040" description="Reimbursement Direct Costs" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="180" fscAccCode="4050" description="Reimbursement Equipment" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="181" fscAccCode="4060" description="Quality Incentive Income" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="182" fscAccCode="4070" description="Prepayment Discount" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="183" fscAccCode="4080" description="Financial Incentive Reimb" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="184" fscAccCode="4085" description="Standard Hours Income" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="185" fscAccCode="4090" description="Control Account Income" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="186" fscAccCode="4095" description="Financial Incentive Income" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			</store>	</target></transmission>','<?xml version="1.0" encoding="utf-8" ?><transmission>	<target id="iiCache" requestId="5">		<store id="houseCodeJobs" activeId="1036" criteria="storeId:houseCodeJobs,houseCodeId:286,userId:RAYMOND-DEV-XP\Raymond Liu,">			<item id="126" fscYear="2010" period="1" startDate="2009-09-27 00:00:00" endDate="2009-10-24 00:00:00"/>			<item id="127" fscYear="2010" period="2" startDate="2009-10-25 00:00:00" endDate="2009-11-21 00:00:00"/>			<item id="128" fscYear="2010" period="3" startDate="2009-11-22 00:00:00" endDate="2009-12-19 00:00:00"/>			<item id="129" fscYear="2010" period="4" startDate="2009-12-20 00:00:00" endDate="2010-01-16 00:00:00"/>			<item id="130" fscYear="2010" period="5" startDate="2010-01-17 00:00:00" endDate="2010-02-13 00:00:00"/>			<item id="131" fscYear="2010" period="6" startDate="2010-02-14 00:00:00" endDate="2010-03-13 00:00:00"/>			<item id="132" fscYear="2010" period="7" startDate="2010-03-14 00:00:00" endDate="2010-04-10 00:00:00"/>			<item id="133" fscYear="2010" period="8" startDate="2010-04-11 00:00:00" endDate="2010-05-08 00:00:00"/>			<item id="134" fscYear="2010" period="9" startDate="2010-05-09 00:00:00" endDate="2010-06-05 00:00:00"/>			<item id="135" fscYear="2010" period="10" startDate="2010-06-06 00:00:00" endDate="2010-07-03 00:00:00"/>			<item id="136" fscYear="2010" period="11" startDate="2010-07-04 00:00:00" endDate="2010-07-31 00:00:00"/>			<item id="137" fscYear="2010" period="12" startDate="2010-08-01 00:00:00" endDate="2010-08-28 00:00:00"/>			<item id="138" fscYear="2010" period="13" startDate="2010-08-29 00:00:00" endDate="2010-09-25 23:59:00"/>		</store>	</target></transmission>','<?xml version="1.0" encoding="utf-8"?><transmission>	<target id="iiCache" requestId="5">		<store id="shiftTypes" activeId="169" criteria="storeId:houseCodeJobs,houseCodeId:286,userId:RAYMOND-DEV-XP\Raymond Liu,">			<item id="1" title="Day" />			<item id="2" title="Evening" />			<item id="3" title="Night" />		</store>	</target></transmission>','<?xml version="1.0" encoding="utf-8"?><transmission>	<target id="iiCache" requestId="5">		<store id="houseCodeJobs" activeId="1" criteria="storeId:houseCodeJobs,houseCodeId:286,userId:RAYMOND-DEV-XP\Raymond Liu,">			<item rowId="1" description="Productive Hours" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="2" description="Short Staffing Legal Holidays" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="3" description="Productive Hours Standard" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="4" description="Average Wage Rate" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="5" description="Prod Labor Standard Cost" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="6" description="Average Wage Rate For Paid Leave" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="7" description="Paid Leave Calculation" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="8" description="Sick Pay" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="9" description="Personal and other pay" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="10" description="Legal Holiday" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="11" description="Sub-Total Paid Leave" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="12" description="Vacation Pay Accrual" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="13" description="Overtime Hours" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="14" description="Cost associated with overtime" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="99" description="Total Labor Cost" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />		</store>	</target></transmission>','<?xml version="1.0" encoding="utf-8"?><transmission>	<target id="iiCache" requestId="5">		<store id="houseCodeJobs" activeId="1" criteria="storeId:houseCodeJobs,houseCodeId:286,userId:RAYMOND-DEV-XP\Raymond Liu,">			<item rowId="1" description="Productive Hours" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="2" description="Short Staffing Legal Holidays" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="3" description="Productive Hours Standard" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="4" description="Average Wage Rate" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="5" description="Prod Labor Standard Cost" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="6" description="Average Wage Rate For Paid Leave" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="7" description="Paid Leave Calculation" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="8" description="Sick Pay" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="9" description="Personal and other pay" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="10" description="Legal Holiday" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="11" description="Sub-Total Paid Leave" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="12" description="Vacation Pay Accrual" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="13" description="Overtime Hours" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="14" description="Cost associated with overtime" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item rowId="51" description="Project Work Wage Rate" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item rowId="52" description="Non-Chargeable Project Work " period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item rowId="53" description="Non-Chargeable Project Work Subtotal" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item rowId="54" description="Chargeable Project Work" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item rowId="55" description="Chargeable Project Work Subtotal" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item rowId="99" description="Total Labor Cost" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />		</store>	</target></transmission>','<?xml version="1.0" encoding="utf-8"?><transmission>  <target id="iiCache" requestId="5">    <store id="houseCodeJobs" activeId="169" criteria="storeId:houseCodeJobs,houseCodeId:286,userId:RAYMOND-DEV-XP\Raymond Liu,">      <item fscAccount="191" fscAccCode="5210" description="Productive Labor" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item fscAccount="193" fscAccCode="5220" description="Vacation Pay" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item fscAccount="194" fscAccCode="5230" description="Holiday Pay" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item fscAccount="195" fscAccCode="5240" description="Sick Pay" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item fscAccount="205" fscAccCode="5405" description="Fringe Benefits" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item fscAccount="206" fscAccCode="5410" description="Health/Dental" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item fscAccount="216" fscAccCode="5610" description="Management Labor" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item fscAccount="228" fscAccCode="5805" description="Fringe Benefits - Management" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item fscAccount="248" fscAccCode="6015" description="Janitorial Supplies" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item fscAccount="249" fscAccCode="6020" description="Paper Supplies" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item fscAccount="250" fscAccCode="6025" description="Plastic Supplies" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />    </store>  </target></transmission>','<h1 class="page-title">Budget Adjustments</h1><p>    Please make adjustments to Acct Codes on this page. They will be reflected in the Budget Details Page.</p><div id="budget-adjustment-grid"></div><h2 class="page-sub-title" style="margin-top:10px;">Notes</h2><div id="budget-adjustment-note-form"></div><table width="100%">    <tbody>        <tr>            <td>&nbsp;</td>            <td style="width:90px"><div id="save-button"></div></td>            <td style="width:90px"><div id="cancel-button"></div></td>            <td style="width:90px"><div id="print-button"></div></td>        </tr>    </tbody></table>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h2 class="page-sub-title">        Budget Adjustments</h2>        <p>            Please make adjustments to Acct Codes on this page. They will be reflected in the Budget Details Page.        </p>    <div style="padding:10px 0">        {incomeTypes}    </div>    <div style="padding:10px 0">    <h2>Notes</h2>    <div style="font-size:12px; border:1px dashed #666;padding:10px;">        {notes}    </div>    </div></div>','<h1 class="page-title">    Budget Approval</h1><p style="padding:5px;width:600px;line-height:1.5em;">    When Approving the Fiscal Year Budget, all sections of the budget process will be    locked down. You will still be able to view the data that was entered, but not be    able to change the data. Please ensure that the data is entered correctly before    approving the budget.</p><p style="padding:5px;width:600px">    Please provide Comments before choosing Budget status.</p><div id="budget-approval-form" style="padding:5px;width:600px"></div><div id="budget-approval-grid"></div>','<h1 class="page-title">Budget Details</h1><div id="budget-details-grid"></div><div>    <table width="100%">        <tbody>            <tr>                <td>&nbsp;</td>                <td style="width:250px; vertical-align:middle;">                    <div id="account-combobox"></div>                </td>                <td style="width:130px">                    <div id="add-account-code-button"></div>                </td>                <td style="width:90px">                    <div id="save-button"></div>                </td>                <td style="width:90px">                    <div id="cancel-button"></div>                </td>                <td style="width:90px">                    <div id="print-button"></div>                </td>            </tr>        </tbody>    </table></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h2 class="page-sub-title">        Budget Details</h2>    <div style="padding:10px 0">        {incomeTypes}    </div></div>','<h1 class="page-title">Budget Summary</h1><div id="budget-summary-grid"></div><div>    <table width="100%">        <tbody>            <tr>                <td>&nbsp;</td>                <td style="width:90px">                    <div id="save-button"></div>                </td>                <td style="width:90px">                    <div id="cancel-button"></div>                </td>                <td style="width:90px">                    <div id="print-button"></div>                </td>            </tr>        </tbody>    </table></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h2 class="page-sub-title">        Budget Summary</h2>    <div style="padding:10px 0">        {incomeTypes}    </div></div>','<h1 class="page-title">Capital Expenditures</h1><div id="capital-expanditurer-tab-panel">    <ul class="main-tab">        <li class="tab-item"><a href="#capital-expanditurer-tab-1"><span>New Capital Equipment</span></a></li>        <li class="tab-item"><a href="#capital-expanditurer-tab-2"><span>Capital Equipment Disposal Worksheet</span></a></li>        <li class="tab-item"><a href="#capital-expanditurer-tab-3"><span>Depreciation Worksheet</span></a></li>        <li class="tab-item"><a href="#capital-expanditurer-tab-4"><span>Depreciation Disposal Worksheet</span></a></li>    </ul>    <div class="clear"></div>    <div id="capital-expanditurer-tab-1">        <h2 class="page-sub-title">New Capital Equipment Worksheet</h2>        <div id="new-capital-equipment-grid"></div>        <div>            <table width="100%">            <tbody>                <tr>                    <td>&nbsp;</td>                    <td style="width: 100px;">                        <div id="nce-addNewRowButton"></div>                    </td>                    <td style="width: 100px;">                        <div id="nce-saveButton"></div>                    </td>                    <td style="width: 100px;">                        <div id="nce-cancelButton"></div>                    </td>                    <td style="width: 100px;">                        <div id="nce-printButton"></div>                    </td>                </tr>            </tbody>            </table>        </div>    </div>    <div id="capital-expanditurer-tab-2">        <h2 class="page-sub-title">Capital Equipment Disposal Worksheet</h2>        <div id="capital-equipment-disposal-grid"></div>        <div>            <table width="100%">            <tbody>                <tr>                    <td>&nbsp;</td>                    <td style="width: 100px;">                        <div id="ced-addNewRowButton"></div>                    </td>                    <td style="width: 100px;">                        <div id="ced-saveButton"></div>                    </td>                    <td style="width: 100px;">                        <div id="ced-cancelButton"></div>                    </td>                    <td style="width: 100px;">                        <div id="ced-printButton"></div>                    </td>                </tr>            </tbody>            </table>        </div>    </div>    <div id="capital-expanditurer-tab-3">        <h2 class="page-sub-title">Depreciation Worksheet</h2>        <div id="depreciation-grid1"></div>        <div id="depreciation-grid2"></div>        <div>            <table width="100%">            <tbody>                <tr>                    <td>&nbsp;</td>                    <td style="width: 100px;">                        <div id="depreciation-printButton"></div>                    </td>                </tr>            </tbody>            </table>        </div>    </div>    <div id="capital-expanditurer-tab-4">        <h2 class="page-sub-title">Depreciation Disposal Worksheet</h2>        <div id="depreciation-disposal-grid"></div>        <div>            <table width="100%">            <tbody>                <tr>                    <td>&nbsp;</td>                    <td style="width: 100px;">                        <div id="dd-printButton"></div>                    </td>                </tr>            </tbody>            </table>        </div>    </div></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h2 class="page-sub-title">        New Capital Equipment Worksheet</h2>    <div style="padding:10px 0">        {incomeTypes}    </div></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h2 class="page-sub-title">        Capital Equipment Disposal Worksheet</h2>    <div style="padding:10px 0">        {incomeTypes}    </div></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h2 class="page-sub-title">        Depreciation Worksheet</h2>    <div style="padding:10px 0">        {incomeTypes}    </div>    <div style="padding:10px 0">        {incomeTypes2}    </div></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h2 class="page-sub-title">        Depreciation Disposal Worksheet</h2>    <div style="padding:10px 0">        {incomeTypes}    </div></div>','<div class="contract-billing">    <h2 class="page-title">Contract Billing</h2><br/>    <table class="ux-table-2">        <thead>            <tr>                <td style="width: 15%">                    Billing Period                </td>                <td style="width: 25%">                    Current Billing Rate                </td>                <td style="width: 35%">                </td>                <td style="width: 25%">                    New Billing Rate                </td>                </tr>        </thead>        <tbody>            <tr>                <td>                    <table class="ux-table-1">                        <tbody>                            <tr style="background-color: #659A66">                                <td>                                </td>                            </tr>                            <tr>                                <td>                                    <div id="billing-period" ></div>                                </td>                            </tr>                        </tbody>                    </table>                </td>                <td>                    <table class="ux-table-1">                        <tbody>                            <tr>                                <td>                                    Rate                                </td>                                <td>                                    Daily Rate                                </td>                            </tr>                            <tr>                                <td class="right">                                    <div id="current-billing-rate"></div>                                </td>                                <td>                                    <div id="current-billing-daily-rate" ></div>                                </td>                            </tr>                        </tbody>                    </table>                </td>                <td>                    <table class="ux-table-1">                        <tbody>                            <tr>                                <td>                                    Percent Increase(%)                                </td>                                <td>                                    Increase in $                                </td>                                <td>                                    Date Effective                                </td>                            </tr>                            <tr>                                <td class="right">                                     <div id="current-billing-percent-increase" ></div>                                </td>                                <td>                                     <div id="current-billing-amount-increase" ></div>                                </td>                                <td class="date-effective">                                     <div id="current-billing-date-effective" ></div>                                </td>                            </tr>                        </tbody>                    </table>                </td>                <td>                    <table class="ux-table-1">                        <tbody>                            <tr>                                <td>                                    Rate                                </td>                                <td class="left">                                    Daily Rate                                </td>                            </tr>                            <tr>                                <td>                                     <div id="new-billing-rate" ></div>                                </td>                                <td>                                     <div id="new-billing-daily-rate" ></div>                                </td>                            </tr>                        </tbody>                    </table>                </td>            </tr>        </tbody>    </table>    <h3 style="color:#000000;">Billings Per Period</h3>    <div id="period-grid-holder">        </div>    <div id="billing-notes" style="padding:20px 0 10px;">    </div>       <table width="100%">        <tbody>            <tr>                <td>&nbsp;</td>                <td style="width:100px">                     <div id="billing-save-button"></div>                </td>                <td style="width:100px">                    <div id="billing-cancel-button"></div>                </td>                <td style="width:100px">                    <div id="billing-print-button"></div>                </td>            </tr>        </tbody>    </table></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <table>        <thead>            <tr>                <td style="width: 10%">                    Billing Period                </td>                <td style="width: 30%" colspan="3">                    Current Billing Rate                </td>                <td style="width: 30%" colspan="3">                </td>                <td style="width: 30%" colspan="3">                    New Billing Rate                </td>            </tr>        </thead>        <tbody>            <tr>                <td style="background-color: #659A66">                </td>                <td>                    Rate                </td>                <td>                    Daily Rate                </td>                <td>                    Percent Increase(%)                </td>                <td>                    Increase in $                </td>                <td>                    Date Effective                </td>                <td>                    Rate                </td>                <td>                    Daily Rate                </td>            </tr>            <tr>                <td>                    {billing-period}                </td>                <td>                    {current-rate}                </td>                <td>                    {current-daily-rate}                </td>                <td>                    {percent-increase}                </td>                <td>                    {amount-increase}                </td>                <td>                    {date-effective}                </td>                <td>                    {new-rate}                </td>                <td>                    {new-daily-rate}                </td>            </tr>        </tbody>    </table>    <h3 style="color: #000000; padding-top: 10px">        Billings Per Period</h3>    <div style="padding-bottom:10px">        {incomeTypes}    </div>    <table><tr><td>{description}</td></tr></table></div>','<h1 class="page-title">Employee Data</h1><div id="employee-grid"></div><div class="padding-top-bottom-10" id="employee-form"></div><div>    <table width="100%">        <tbody>            <tr>                <td>&nbsp;</td>                <td style="width:110px">                    <div id="employee-save-button"></div>                </td>                <!--<td style="width:110px">                    <div id="employee-update-button"></div>                </td>-->                <td style="width:100px">                    <div id="employee-print-button"></div>                </td>            </tr>        </tbody>    </table></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h3 style="color: #000000; padding-top: 10px">        Employees</h3>    <div style="padding-bottom:10px">        {incomeTypes}    </div>    <table width="100%">        <tbody>            <tr>                <td style="text-align:right;padding-right:10px">Number of Employees:</td>                <td>                    {numberOfEmployees}                </td>                <td style="text-align:right;padding-right:10px">Average Wage Rate:</td>                <td>                    {averageWageRate}                </td>                <td style="text-align:right;padding-right:10px">Base Average Wage Rate Excluding Differential:</td>                <td>                    {averageBaseWageRate}                </td>            </tr>        </tbody>    </table></div>','<h1 class="page-title">    Final Computation Of Labor</h1><div id="period-grid-holder"></div><div style="float: right; padding-right:20px; ">    <table>        <tbody>            <tr>                <td>                    &nbsp;                </td>                <td style="width:100px;">                    <div id="save-button">                    </div>                </td>                <td style="width:100px;">                    <div id="print-button">                    </div>                </td>            </tr>        </tbody>    </table></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h3 style="color: #000000; padding-top: 10px">        Final Computation Of Labor</h3>    <div style="padding-bottom:10px">        {finalLabors}    </div></div>','<div id="container"></div>','<table style="width: 100%" class="ux-table">    <tbody>        <tr class="odd">            <td>                Sick day entitlements earned per year (days per employee)            </td>            <td>                <div id="sickDays"></div>            </td>        </tr>        <tr>            <td>                Average sick days taken over last 52 weeks (days per employee)            </td>            <td>                <div id="sickDaysTaken"></div>            </td>        </tr>        <tr class="odd">            <td>                Proj. number of sick days to be used in budget year (days per employee)            </td>            <td>                 <div id="sickDaysProjected"></div>            </td>        </tr>    </tbody></table>','<table style="width: 100%" class="ux-table">    <tbody>        <tr class="odd">            <td>                Number of Employee Personal Days Granted Per Year            </td>            <td>                <div id="personalDays"></div>            </td>        </tr>        <tr>            <td>                Other Paid Leave            </td>            <td>                <div id="otherPaidLeave" ></div>            </td>        </tr>    </tbody></table>','<p class="table-title">    Table1 - # of Employees</p><table class="ux-table">    <thead>        <tr>            <th>            </th>            <th>                Medical 1            </th>            <th>                Medical 2            </th>               <th>                Medical 3            </th>               <th>                Medical 4            </th>               <th>                Medical 5            </th>            <th>                Liberty Plan            </th>            <th>                Dental Only            </th>            <th>                Total            </th>            <th>                Life            </th>            <th>                Union            </th>        </tr>    </thead>    <tbody>        <tr class="odd">            <td>                Single Coverage            </td>            <td>                <div id="singleHMOCount"></div>            </td>            <td>                <div id="singlePOSCount"></div>            </td>             <td>                <div id="singleMedical3Count"></div>            </td>             <td>                <div id="singleMedical4Count"></div>            </td>             <td>                <div id="singleMedical5Count"></div>            </td>            <td>               <div id="singleLibertyCount"></div>            </td>            <td>                <div id="singleDentalCount"></div>            </td>            <td>                <div id="singleTotalCount"></div>            </td>            <td>               <div id="singleLifeCount"></div>            </td>            <td>               <div id="singleUnionCount"></div>            </td>        </tr>		<tr>            <td>                Single + Spouse            </td>            <td>                <div id="singleSpouseHMOCount"></div>            </td>            <td>                <div id="singleSpousePOSCount"></div>            </td>             <td>                <div id="singleSpouseMedical3Count"></div>            </td>             <td>                <div id="singleSpouseMedical4Count"></div>            </td>             <td>                <div id="singleSpouseMedical5Count"></div>            </td>            <td>               <div id="singleSpouseLibertyCount"></div>            </td>            <td>                <div id="singleSpouseDentalCount"></div>            </td>            <td>                <div id="singleSpouseTotalCount"></div>            </td>            <td>               <div id="singleSpouseLifeCount"></div>            </td>            <td>               <div id="singleSpouseUnionCount"></div>            </td>        </tr>		<tr class="odd">            <td>                Single + Dependant            </td>            <td>                <div id="singleDependantHMOCount"></div>            </td>            <td>                <div id="singleDependantPOSCount"></div>            </td>             <td>                <div id="singleDependantMedical3Count"></div>            </td>             <td>                <div id="singleDependantMedical4Count"></div>            </td>             <td>                <div id="singleDependantMedical5Count"></div>            </td>            <td>               <div id="singleDependantLibertyCount"></div>            </td>            <td>                <div id="singleDependantDentalCount"></div>            </td>            <td>                <div id="singleDependantTotalCount"></div>            </td>            <td>               <div id="singleDependantLifeCount"></div>            </td>            <td>               <div id="singleDependantUnionCount"></div>            </td>        </tr>        <tr>            <td>                Family Coverage            </td>            <td>                <div id="familyHMOCount"></div>            </td>            <td>                <div id="familyPOSCount"></div>            </td>              <td>                <div id="familyMedical3Count"></div>            </td>              <td>                <div id="familyMedical4Count"></div>            </td>              <td>                <div id="familyMedical5Count"></div>            </td>            <td>                <div id="familyLibertyCount"></div>            </td>            <td>                <div id="familyDentalCount"></div>            </td>            <td>                <div id="familyTotalCount"></div>            </td>            <td>                <div id="familyLifeCount"></div>            </td>            <td>                <div id="familyUnionCount"></div>            </td>        </tr>        <tr class="odd">            <td>                Total            </td>            <td>                <div id="totalHMOCount"></div>            </td>            <td>                <div id="totalPOSCount"></div>            </td>             <td>                <div id="totalMedical3Count"></div>            </td>             <td>                <div id="totalMedical4Count"></div>            </td>             <td>                <div id="totalMedical5Count"></div>            </td>            <td>                <div id="totalLibertyCount"></div>            </td>            <td>                <div id="totalDentalCount"></div>            </td>            <td>                <div id="totalCount"></div>            </td>            <td>                <div id="totalLifeCount"></div>            </td>            <td>                <div id="totalUnionCount"></div>            </td>        </tr>    </tbody></table><p class="table-title">    Table2 - BI weekly Cost of Health/Dental/Life Insurance Contributions</p><table class="ux-table">    <thead>        <tr>            <th>            </th>            <th>                Medical 1            </th>            <th>                Medical 2            </th>			 <th>                Medical 3            </th>               <th>                Medical 4            </th>               <th>                Medical 5            </th>            <th>                Liberty Plan            </th>            <th>                Dental Only            </th>            <th>                Total            </th>            <th>                Life            </th>            <th>                Union            </th>        </tr>    </thead>    <tbody>        <tr class="odd">            <td>                Single Coverage            </td>            <td>                <div id="singleHMOCost"></div>            </td>            <td>                <div id="singlePOSCost"></div>            </td>			<td>                <div id="singleMedical3Cost"></div>            </td>			<td>                <div id="singleMedical4Cost"></div>            </td>			<td>                <div id="singleMedical5Cost"></div>            </td>            <td>                <div id="singleLibertyCost"></div>            </td>            <td>                <div id="singleDentalCost"></div>            </td>            <td>                <div id="singleTotalCost"></div>            </td>            <td>                <div id="singleLifeCost"></div>            </td>            <td>                <div id="singleUnionCost"></div>            </td>        </tr>         <tr >            <td>                Single + Spouse            </td>            <td>                <div id="singleSpouseHMOCost"></div>            </td>            <td>                <div id="singleSpousePOSCost"></div>            </td>			<td>                <div id="singleSpouseMedical3Cost"></div>            </td>			<td>                <div id="singleSpouseMedical4Cost"></div>            </td>			<td>                <div id="singleSpouseMedical5Cost"></div>            </td>            <td>                <div id="singleSpouseLibertyCost"></div>            </td>            <td>                <div id="singleSpouseDentalCost"></div>            </td>            <td>                <div id="singleSpouseTotalCost"></div>            </td>            <td>                <div id="singleSpouseLifeCost"></div>            </td>            <td>                <div id="singleSpouseUnionCost"></div>            </td>        </tr>         <tr class="odd">            <td>                Single + Dependant            </td>            <td>                <div id="singleDependantHMOCost"></div>            </td>            <td>                <div id="singleDependantPOSCost"></div>            </td>			<td>                <div id="singleDependantMedical3Cost"></div>            </td>			<td>                <div id="singleDependantMedical4Cost"></div>            </td>			<td>                <div id="singleDependantMedical5Cost"></div>            </td>            <td>                <div id="singleDependantLibertyCost"></div>            </td>            <td>                <div id="singleDependantDentalCost"></div>            </td>            <td>                <div id="singleDependantTotalCost"></div>            </td>            <td>                <div id="singleDependantLifeCost"></div>            </td>            <td>                <div id="singleDependantUnionCost"></div>            </td>        </tr>        <tr>            <td>                Family Coverage            </td>            <td>                <div id="familyHMOCost"></div>            </td>            <td>                <div id="familyPOSCost"></div>            </td>			<td>                <div id="familyMedical3Cost"></div>            </td>			<td>                <div id="familyMedical4Cost"></div>            </td>			<td>                <div id="familyMedical5Cost"></div>            </td>            <td>                <div id="familyLibertyCost"></div>            </td>            <td>                <div id="familyDentalCost"></div>            </td>            <td>                <div id="familyTotalCost"></div>            </td>            <td>                <div id="familyLifeCost"></div>            </td>            <td>                <div id="familyUnionCost"></div>            </td>        </tr>        <tr class="odd">            <td>                Total            </td>            <td>                <div id="totalHMOCost"></div>            </td>            <td>                <div id="totalPOSCost"></div>            </td>			<td>                <div id="totalMedical3Cost"></div>            </td>			<td>                <div id="totalMedical4Cost"></div>            </td>			<td>                <div id="totalMedical5Cost"></div>            </td>            <td>                <div id="totalLibertyCost"></div>            </td>            <td>                <div id="totalDentalCost"></div>            </td>            <td>                <div id="totalCost"></div>            </td>            <td>                <div id="totalLifeCost"></div>            </td>            <td>                <div id="totalUnionCost"></div>            </td>        </tr>    </tbody></table>','<h2 class="page-sub-title">    V. Computation Of Net Productive Days Per Employee</h2><div style="margin:15px 0;">    <div style="font-weight:bold;">Work Days per 52 wks: <span id="ytdBusinessDays"></span></div>    <table style="width:100%; margin:20px 0;" class="ux-table">        <tbody>            <tr class="odd">                <td>Sick days Taken</td>                <td>                    <div id="sickDaysProjected"></div>                </td>                <td>                    <div id="sickDaysTakenPercentage"></div>                </td>            </tr>            <tr>                <td>Legal Holidays</td>                <td>                    <div id="legalHolidays"></div>                </td>                <td>                    <div id="legalHolidaysPercentage"></div>                </td>            </tr>            <tr class="odd">                <td>Personal Days</td>                <td>                    <div id="personalDays"></div>                </td>                <td>                    <div id="personalDaysPercentage"></div>                </td>            </tr>            <tr>                <td>Other Paid Leave</td>                <td>                    <div id="otherPaidLeave"></div>                </td>                <td>                    <div id="otherPaidLeavePercentage"></div>                </td>            </tr>            <tr class="odd">                <td>Vacation Earned</td>                <td>                    <div id="vacationEarned"></div>                </td>                <td>                    <div id="vacationEarnedPercentage"></div>                </td>            </tr>            <tr>                <td style="text-align:right"><span style="font-weight:bold;">Total Paid Leave</span></td>                <td>                    <div id="totalPaidLeave" style="font-weight:bold;"></div>                </td>                <td>                    <div id="totalPaidLeavePercentage" style="font-weight:bold;"></div>                </td>            </tr>            <tr>                <td style="text-align:right"><span style="font-weight:bold;">Net Employee Productive Days Per Year</span></td>                <td>                    <div id="netEmployeeProductiveDaysPerYear" style="font-weight:bold;"></div>                </td>                <td>&nbsp;</td>            </tr>        </tbody>    </table></div><h2 class="page-sub-title">    VI. Estimate of FTEs needed for productive and nonproductive labor</h2><div style="margin:15px 0;">    <table style="width:100%" class="ux-table">        <tbody>            <tr class="odd">                <td>Hours Per Day Per Employee</td>                <td>                    <div id="employeeHoursPerDay"></div>                </td>            </tr>            <tr>                <td style="text-align:right"><span style="font-weight:bold">Approximate Staffing in FTE Required</span></td>                <td>                    <div id="approximateStaffingInFTERequired"></div>                </td>            </tr>        </tbody>    </table></div>','<h2 class="page-sub-title">    VII. Computation Of Labor Standards</h2><div style="margin: 15px 0;">    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">A. Labor standard before short staffing : </span></td>                <td>                    <div id="laborStandardBeforeShortStaffing"></div>                </td>            </tr>            <tr class="odd">                <td>Projected number of new employees </td>                <td>                    <div id="projectedNewEmployees"></div>                </td>            </tr>            <tr>                <td>Projected hours to train each employee while overlapping with existing employee</td>                <td>                    <div id="projectedEmployeeTrainingHours"></div>                </td>            </tr>            <tr class="odd">                <td>Total hours spent training new employees</td>                <td>                    <div id="totalTrainingHours"></div>                </td>            </tr>            <tr>                <td>Sub-Total Productive Labor Standard</td>                <td>                    <div id="productiveLaborStandard"></div>                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">B. Adjusted labor standard due to short-staffing</span></td>                <td>                    % Factor                </td>                <td>&nbsp;</td>            </tr>            <tr class="odd">                <td>Non replacement of employees on vacation</td>                <td>                    <span id="nonReplaceVacationPerc"></span>%                </td>                <td>                    <div id="nonReplaceVacationCount"></div>                </td>            </tr>            <tr>                <td>Non replacement of employees on sick pay</td>                <td>                    <span id="nonReplaceSickPayPerc"></span>%                </td>                <td>                    <div id="nonReplaceSickPayCount"></div>                </td>            </tr>            <tr class="odd">                <td>Non replacement for paid time off in lieu of working a legal holiday</td>                <td>                    <span id="nonReplaceHolidayPerc"></span>%                </td>                <td>                    <div id="nonReplaceHolidayCount"></div>                </td>            </tr>            <tr>                <td>Non replacement of employees on personal leave</td>                <td>                    <span id="nonReplacePersonalPerc"></span>%                </td>                <td>                    <div id="nonReplacePersonalCount"></div>                </td>            </tr>            <tr class="odd">                <td style="text-align:right"><span style="font-weight:bold">Sub-Total of Short-Staffing</span></td>                <td>                    &nbsp;                </td>                <td><div id="totalShortStaffing"></div></td>            </tr>            <tr>                <td>Sub-Total Productive Labor Standards</td>                <td>                   &nbsp;                 </td>                <td><div id="productiveLaborStandards"></div></td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">C. Computation of short-staffing on legal holidays</span></td>                <td>                    <div id="shortStaffingOnLegalHolidays"></div>                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">D. Net Productive Standard</span></td>                <td>                    <div id="netProductiveStandard"></div>                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">E. Computation of Paid Leave Standard</span></td>                <td>                    &nbsp;                </td>            </tr>            <tr class="odd">                <td>Sick Pay Standard</td>                <td>                    <div id="sickPayStandard"></div>                </td>            </tr>            <tr>                <td>Legal Holiday Standard</td>                <td>                    <div id="legalHolidayStandard"></div>                </td>            </tr>            <tr class="odd">                <td>Personal Leave Standard</td>                <td>                    <div id="personalLeaveStandard"></div>                </td>            </tr>            <tr>                <td>Vacation Accrual Standard</td>                <td>                    <div id="vacationAccrualStandard"></div>                </td>            </tr>            <tr class="odd">                <td style="text-align:right;"><span style="font-weight:bold">Paid Leave Standards</span></td>                <td>                    <div id="paidLeaveStandards"></div>                </td>            </tr>            <tr>                <td>Total 52 Week Paid Hours Standard</td>                <td>                    <div id="total52WeekPaidHoursStandard"></div>                </td>            </tr>        </tbody>    </table></div>','<h2 class="page-sub-title">    VIII. Computation of Labor Standards in Dollars</h2><div style="margin: 15px 0;">    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">A. Current Avg Wage Rate(from employee data file):</span></td>                <td>                    <span style="font-weight:bold"><div id="avgWageRate"></div></span>                </td>            </tr>            <tr class="odd">                <td>Avg wage rate excluding differential</td>                <td>                    <div id="avgWageRateExcludingDifferential"></div>                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">B. Project Effect of Merit Increase:</span></td>                <td>                    &nbsp;                </td>            </tr>            <tr class="odd">                <td>#Employees to get merit increase</td>                <td>                    <div id="meritIncreaseEmployees"></div>                </td>            </tr>            <tr>                <td>Total # of employees</td>                <td>                    <div id="totalEmployees"></div>                </td>            </tr>            <tr class="odd">                <td>Avg amount of merit increase per hour</td>                <td>                    $<div id="meritIncreasePerHour" style="float:right;"></div>                </td>            </tr>            <tr>                <td>Total increase in wage cost/per pay period</td>                <td>                    <div id="totalIncreaseInWageCost"></div>                </td>            </tr>            <tr class="odd">                <td># of employees who will leave</td>                <td>                    <div id="employeesLeaving"></div>                </td>            </tr>            <tr>                <td>Average reduction in wage rate of their replacement(Avg wage rate minus starting wage rate)</td>                <td>                    <div id="avgWageRateReduction"></div>                </td>            </tr>            <tr class="odd">                <td>Starting wage rate</td>                <td>                    $<div id="startingWageRate" style="float:right;"></div>                </td>            </tr>            <tr>                <td>Decrease in wage rate/per pay period</td>                <td>                    <div id="decreaseInWageRate"></div>                </td>            </tr>            <tr class="odd">                <td>Net effect of Avg wage rate of merit increase</td>                <td>                    <div id="avgWageRateNetEffect"></div>                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">C. Projected Avg Wage Rate before cost of living increase including defferential</span></td>                <td>                    <div id="projectedAvgWageRate"></div>                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">D. Cost of Living Increase</span></td>                <td>&nbsp;</td>            </tr>            <tr class="odd">                <td>Estimated date of increase(period)</td>                <td>                    <div id="estimatedCOLPeriodOfIncrease"></div>                </td>            </tr>            <tr>                <td>Estimated increase per hour</td>                <td>                    <div id="estimatedCOLIncreasePerHour"></div>                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">E. Estimated Avg Wage Rate including COL increase</span></td>                <td>                    <div id="estimatedCOLAvgWageRate"></div>                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">F.Paid Leave does not get Evening Shift Differential</span></td>                <td>                    <div id="paidLeaveNoNightDifferential"></div>                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>Average Wage Rate for paid leave after COL increase excluding night differential</td>                <td>                    <div id="avgWageRateCOLNoNightDifferential"></div>                </td>            </tr>        </tbody>    </table></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h3 style="color: #000000; padding-top: 10px">        Vacation</h3>    <div style="padding-bottom:10px">        {incomeTypes}    </div>    <table width="100%">        <tbody>            <tr>                <td>Average Vacation Entitlement:</td>                <td>                    {averageVacation}                    Days                </td>            </tr>        </tbody>    </table></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div></div><h2 class="page-sub-title">    VII. Computation Of Labor Standards</h2><div style="margin: 15px 0;">    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">A. Labor standard before short staffing : </span></td>                <td>                    {laborStandardBeforeShortStaffing}                </td>            </tr>            <tr class="odd">                <td>Projected number of new employees </td>                <td>                    {projectedNewEmployees}                </td>            </tr>            <tr>                <td>Projected hours to train each employee while overlapping with existing employee</td>                <td>                    {projectedEmployeeTrainingHours}                </td>            </tr>            <tr class="odd">                <td>Total hours spent training new employees</td>                <td>                    {totalTrainingHours}                </td>            </tr>            <tr>                <td>Sub-Total Productive Labor Standard</td>                <td>                    {productiveLaborStandard}                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>B. Adjusted labor standard due to short-staffing</td>                <td>                    % Factor                </td>                <td>&nbsp;</td>            </tr>            <tr class="odd">                <td>Non replacement of employees on vacation</td>                <td>                    {nonReplaceVacationPerc}%                </td>                <td>                    {nonReplaceVacationCount}                </td>            </tr>            <tr>                <td>Non replacement of employees on sick pay</td>                <td>                    {nonReplaceSickPayPerc}%                </td>                <td>                    {nonReplaceSickPayCount}                </td>            </tr>            <tr class="odd">                <td>Non replacement for paid time off in lieu of working a legal holiday</td>                <td>                    {nonReplaceHolidayPerc}%                </td>                <td>                    {nonReplaceHolidayCount}                </td>            </tr>            <tr>                <td>Non replacement of employees on personal leave</td>                <td>                    {nonReplacePersonalPerc}%                </td>                <td>                    {nonReplacePersonalCount}                </td>            </tr>            <tr class="odd">                <td style="text-align:right"><span style="font-weight:bold">Sub-Total of Short-Staffing</span></td>                <td>                    &nbsp;                </td>                <td>{totalShortStaffing}</td>            </tr>            <tr>                <td>Sub-Total Productive Labor Standards</td>                <td>                   &nbsp;                 </td>                <td>{productiveLaborStandards}</td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>C. Computation of short-staffing on legal holidays</td>                <td>                    {shortStaffingOnLegalHolidays}                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>D. Net Productive Standard</td>                <td>                    {netProductiveStandard}                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>E. Computation of Paid Leave Standard</td>                <td>                    &nbsp;                </td>            </tr>            <tr class="odd">                <td>Sick Pay Standard</td>                <td>                    {sickPayStandard}                </td>            </tr>            <tr>                <td>Legal Holiday Standard</td>                <td>                    {legalHolidayStandard}                </td>            </tr>            <tr class="odd">                <td>Personal Leave Standard</td>                <td>                    {personalLeaveStandard}                </td>            </tr>            <tr>                <td>Vacation Accrual Standard</td>                <td>                    {vacationAccrualStandard}                </td>            </tr>            <tr class="odd">                <td style="text-align:right;"><span style="font-weight:bold">Paid Leave Standards</span></td>                <td>                    {paidLeaveStandards}                </td>            </tr>            <tr>                <td>Total 52 Week Paid Hours Standard</td>                <td>                    {total52WeekPaidHoursStandard}                </td>            </tr>        </tbody>    </table></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div></div><h2 class="page-sub-title">    VIII. Computation of Labor Standards in Dollars</h2><div style="margin: 15px 0;">    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>A. Current Avg Wage Rate(from employee data file):</td>                <td>                    {avgWageRate}                </td>            </tr>            <tr class="odd">                <td>Avg wage rate excluding differential</td>                <td>                    {avgWageRateExcludingDifferential}                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>B. Project Effect of Merit Increase:</td>                <td>                    &nbsp;                </td>            </tr>            <tr class="odd">                <td>#Employees to get merit increase</td>                <td>                    {meritIncreaseEmployees}                </td>            </tr>            <tr>                <td>Total # of employees</td>                <td>                    {totalEmployees}                </td>            </tr>            <tr class="odd">                <td>Avg amount of merit increase per hour</td>                <td>                    ${meritIncreasePerHour}                </td>            </tr>            <tr>                <td>Total increase in wage cost/per pay period</td>                <td>                    {totalIncreaseInWageCost}                </td>            </tr>            <tr class="odd">                <td># of employees who will leave</td>                <td>                    {employeesLeaving}                </td>            </tr>            <tr>                <td>Average reduction in wage rate of their replacement(Avg wage rate minus starting wage rate)</td>                <td>                    {avgWageRateReduction}                </td>            </tr>            <tr class="odd">                <td>Starting wage rate</td>                <td>                    ${startingWageRate}                </td>            </tr>            <tr>                <td>Decrease in wage rate/per pay period</td>                <td>                    {decreaseInWageRate}                </td>            </tr>            <tr class="odd">                <td>Net effect of Avg wage rate of merit increase</td>                <td>                    {avgWageRateNetEffect}                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>C. Projected Avg Wage Rate before cost of living increase including defferential</td>                <td>                    {projectedAvgWageRate}                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>D. Cost of Living Increase</td>                <td>&nbsp;</td>            </tr>            <tr class="odd">                <td>Estimated date of increase(period)</td>                <td>                    {estimatedCOLPeriodOfIncrease}                </td>            </tr>            <tr>                <td>Estimated increase per hour</td>                <td>                    {estimatedCOLIncreasePerHour}                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>E. Estimated Avg Wage Rate including COL increase</td>                <td>                    {estimatedCOLAvgWageRate}                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>F.Paid Leave does not get Evening Shift Differential</td>                <td>                    {paidLeaveNoNightDifferential}                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>Average Wage Rate for paid leave after COL increase excluding night differential</td>                <td>                    {avgWageRateCOLNoNightDifferential}                </td>            </tr>        </tbody>    </table></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h3 style="color: #000000; padding-top: 10px">        Productive Employees Health/Dental/Life Insurance BI-Weekly Cost</h3>    <div style="padding-bottom:10px">        {incomeTypes}    </div></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div></div><h2 class="page-sub-title">    V. Computation Of Net Productive Days Per Employee</h2><div style="margin:15px 0;">    <div style="font-weight:bold;">Work Days per 52 wks: {ytdBusinessDays}</div>    <table style="width:100%; margin:20px 0;" class="ux-table">        <tbody>            <tr class="odd">                <td>Sick days Taken</td>                <td>                    {sickDaysProjected}                </td>                <td>                    {sickDaysTakenPercentage}                </td>            </tr>            <tr>                <td>Legal Holidays</td>                <td>                    {legalHolidays}                </td>                <td>                    {legalHolidaysPercentage}                </td>            </tr>            <tr class="odd">                <td>Personal Days</td>                <td>                    {personalDays}                </td>                <td>                    {personalDaysPercentage}                </td>            </tr>            <tr>                <td>Other Paid Leave</td>                <td>                    {otherPaidLeave}                </td>                <td>                    {otherPaidLeavePercentage}                </td>            </tr>            <tr class="odd">                <td>Vacation Earned</td>                <td>                    {vacationEarned}                </td>                <td>                    {vacationEarnedPercentage}                </td>            </tr>            <tr>                <td style="text-align:right"><span style="font-weight:bold;">Total Paid Leave</span></td>                <td>                    <span style="font-weight:bold;">{totalPaidLeave}</span>                </td>                <td>                    <span style="font-weight:bold;">{totalPaidLeavePercentage}</span>                </td>            </tr>            <tr>                <td style="text-align:right"><span style="font-weight:bold;">Net Employee Productive Days Per Year</span></td>                <td>                    <span style="font-weight:bold;">{netEmployeeProductiveDaysPerYear}</span>                </td>                <td>&nbsp;</td>            </tr>        </tbody>    </table></div><h2 class="page-sub-title">    VI. Estimate of FTEs needed for productive and nonproductive labor</h2><div style="margin:15px 0;">    <table style="width:100%" class="ux-table">        <tbody>            <tr class="odd">                <td>Hours Per Day Per Employee</td>                <td>                    {employeeHoursPerDay}                </td>            </tr>            <tr>                <td style="text-align:right"><span style="font-weight:bold">Approximate Staffing in FTE Required</span></td>                <td>                    {approximateStaffingInFTERequired}                </td>            </tr>        </tbody>    </table></div>','<h1 class="page-title">Management History</h1><div id="management-history-tab-panel">    <ul class="main-tab">        <li class="tab-item"><a href="#management-history-tab-1"><span>Personal Salary Review Worksheet</span></a></li>        <li class="tab-item"><a href="#management-history-tab-2"><span>Management Administration Worksheet</span></a></li>    </ul>    <div id="management-history-tab-1">        <h2 class="page-sub-title">Personal Salary Review</h2>        <div id="personal-salary-review-grid"></div>        <table width="100%">            <tbody>                <tr>                    <td>&nbsp;</td>                    <td style="width:90px">                        <div id="personal-salary-review-add-button"></div>                    </td>                    <td style="width:110px">                        <div id="personal-salary-review-save-button"></div>                    </td>                       <td style="width:90px">                        <div id="personal-salary-review-cancel-button"></div>                    </td>                    <td style="width:90px">                        <div id="personal-salary-review-print-button"></div>                    </td>                </tr>            </tbody>        </table>            </div>    <div id="management-history-tab-2">        <h2 class="page-sub-title">Management History</h2>        <div id="management-admin-worksheet-grid"></div>        <table width="100%">            <tbody>                <tr>                    <td>&nbsp;</td>                    <td style="width:90px">                        <div id="management-admin-worksheet-print-button"></div>                    </td>                </tr>            </tbody>        </table>       </div></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h3 style="color: #000000; padding-top: 10px">        Personal Salary Review</h3>    <div style="padding-bottom:10px">        {incomeTypes}    </div></div>','<h1 class="page-title">Staffing Hours</h1><div id="staffing-tab-panel">    <ul class="main-tab">        <li class="tab-item"><a href="#staffing-tab-1"><span>Staffing Hours Detail Worksheet</span></a></li>        <li class="tab-item"><a href="#staffing-tab-2"><span>Staffing Hours Summary Worksheet</span></a></li>    </ul>    <div class="clear"></div>    <div id="staffing-tab-1">        <h2 class="page-sub-title">Staffing Detail</h2>        <div>            <table width="100%">                <tbody>                    <tr>                        <td style="width:100px">                            Shift Selected:                        </td>                        <td>                            <div id="staffing-shift-select-box"></div>                        </td>                    </tr>                </tbody>            </table>        </div>        <div>            <table width="100%">                <tbody>                    <tr>                        <td>&nbsp;</td>                        <td style="width:130px">                            <div id="staffing-add-unit-button"></div>                        </td>                        <td style="width:90px">                            <div id="staffing-update-button"></div>                        </td>                        <td style="width:90px">                            <div id="staffing-cancel-button"></div>                        </td>                        <td style="width:90px">                            <div id="staffing-print-button"></div>                        </td>                    </tr>                </tbody>            </table>        </div>        <div id="staffing-detail-worksheet-grid"></div>    </div>    <div id="staffing-tab-2">        <h2 class="page-sub-title">Staffing Summary</h2>        <div id="staffing-hours-summary-worksheet-grid"></div>        <div style="margin-top:10px;">            <table>                <tbody>                    <tr>                        <td style="width:400px;text-align:right;padding:8px;">Planned(Reduction) or Increase per Week:</td>                        <td>                            <div id="increase-per-week-textbox"></div>                        </td>                    </tr>                    <tr>                        <td style="text-align:right;padding:8px;">Short Staffing Reduction or (Increase) on Legal Holidays:</td>                        <td>                            <div id="increase-on-legal-holidays-textbox"></div>                        </td>                    </tr>                </tbody>            </table>        </div>    </div></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>        <h3 style="color: #000000; padding-top: 10px">        Billings Per Period</h3>    <div style="padding-bottom:10px">        {staffingHours}    </div></div>','<h1 class="page-title">Budget Start Page</h1><div id="add-new-budget-button" style="margin-bottom:30px"></div><div>    <table width="100%" class="ux-table">        <tbody>            <tr class="odd">                <td style="text-align: right; width:50%;">Budget Start Time</td>                <td style="text-align: left; width:50%;"><div id="start-date-label"></div></td>            </tr>            <tr>                <td style="text-align: right;">Budget Started By</td>                <td style="text-align: left;"><div id="start-by-label"></div></td>            </tr>            <tr class="odd">                <td>&nbsp;</td>                <td>&nbsp;</td>            </tr>        </tbody>    </table></div><br /><br /><div>    <h2 class="page-sub-title">Announcements</h2>    <div class="startbudget-content" id="start-budget-comment">        2011 Fiscal Year Budget Process        Start:April6, 2010<br />        Prerequisites<br />        <ul>            <li>1.Review/Update Employee Information</li>            <li>2.Review/Update Mgmt Employee Information</li>            <li>3.Review Update House Code Information</li>        </ul>        <br />        Once the budget has been started this information cannot be updated in the Budget Process    </div></div>','<h1 class="page-title">Supply Expenditures</h1><div id="supply-expanditures-tab-panel">    <ul class="main-tab">        <li class="tab-item"><a href="#supply-expanditures-tab-1"><span>Paper Worksheet</span></a></li>        <li class="tab-item"><a href="#supply-expanditures-tab-2"><span>Plastic Worksheet</span></a></li>        <li class="tab-item"><a href="#supply-expanditures-tab-3"><span>Janitorial Worksheet</span></a></li>        <li class="tab-item"><a href="#supply-expanditures-tab-4"><span>Hand Soap Worksheet</span></a></li>    </ul>    <div class="clear"></div>    <div id="supply-expanditures-tab-1">        <h2 class="page-sub-title">Paper Supplies</h2>    </div>    <div id="supply-expanditures-tab-2">        <h2 class="page-sub-title">Plastic Supplies</h2>    </div>    <div id="supply-expanditures-tab-3">        <h2 class="page-sub-title">Janitorial Supplies</h2>    </div>    <div id="supply-expanditures-tab-4">        <h2 class="page-sub-title">Hand Soap Supplies</h2>    </div>    <div>        <table width="100%">            <tbody>                <tr>                    <td>&nbsp;</td>                    <td style="width:100px">                        <div id="supply-expanditures-tab-save-button"></div>                    </td>                    <td style="width:100px">                        <div id="supply-expanditures-tab-add-button"></div>                    </td>                    <td style="width:100px">                        <div id="supply-expanditures-tab-cancel-button"></div>                    </td>                    <td style="width:100px">                        <div id="supply-expanditures-tab-print-button"></div>                    </td>                </tr>            </tbody>        </table>    </div>    <div id="supply-expanditures-tab-grid"></div></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h2 class="page-sub-title">        Supply Expenditure - {title}</h2>    <div style="padding:10px 0">        {incomeTypes}    </div></div>'];/*!
+﻿_builtInTemplate_23fed001 = ['<?xml version="1.0" encoding="utf-8" ?><transmission>  <target id="iiAuthorization" requestId="1">    <authorization id="1">      <authorize id="41" path="\\crothall\\chimes\\fin\\Budgeting"></authorize>      <authorize id="42" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget"></authorize>      <authorize id="16059" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Read"></authorize>      <authorize id="16060" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Write"></authorize>      <authorize id="44" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections"></authorize>      <authorize id="16063" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod"></authorize>      <authorize id="16064" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Read"></authorize>      <authorize id="16065" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Write"></authorize>      <authorize id="16066" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast"></authorize>      <authorize id="16067" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Read"></authorize>      <authorize id="16068" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Write"></authorize>      <authorize id="1213" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration"></authorize>      <authorize id="16069" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation"></authorize>      <authorize id="16070" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Read"></authorize>      <authorize id="16071" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Write"></authorize>      <authorize id="16072" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget"></authorize>      <authorize id="16073" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Approve"></authorize>      <authorize id="16074" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Read"></authorize>      <authorize id="16075" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Reject"></authorize>      <authorize id="16076" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Write"></authorize>      <authorize id="16077" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget"></authorize>      <authorize id="16078" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Read"></authorize>      <authorize id="16079" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Write"></authorize>      <authorize id="16080" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget"></authorize>      <authorize id="16081" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Read"></authorize>      <authorize id="16082" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Write"></authorize>      <authorize id="43" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary"></authorize>      <authorize id="16061" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Read"></authorize>      <authorize id="16062" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Write"></authorize>    </authorization>  </target></transmission>','<?xml version="1.0" encoding="utf-8"?><transmission>	<target id="iiCache" requestId="5">		<store id="houseCodeJobs" activeId="169" criteria="storeId:houseCodeJobs,houseCodeId:286,userId:RAYMOND-DEV-XP\Raymond Liu,">			<item fscAccount="169" fscAccCode="4005" description="Full Service Billings" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="170" fscAccCode="4010" description="Management Fee Billings" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="174" fscAccCode="4015" description="Client Paid Labor" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="175" fscAccCode="4020" description="Miscellaneous Income" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="176" fscAccCode="4030" description="Reimbursement Start-Up Costs" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="177" fscAccCode="4040" description="Reimbursement Direct Costs" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="180" fscAccCode="4050" description="Reimbursement Equipment" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="181" fscAccCode="4060" description="Quality Incentive Income" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="182" fscAccCode="4070" description="Prepayment Discount" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="183" fscAccCode="4080" description="Financial Incentive Reimb" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="184" fscAccCode="4085" description="Standard Hours Income" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="185" fscAccCode="4090" description="Control Account Income" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item fscAccount="186" fscAccCode="4095" description="Financial Incentive Income" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			</store>	</target></transmission>','<?xml version="1.0" encoding="utf-8" ?><transmission>	<target id="iiCache" requestId="5">		<store id="houseCodeJobs" activeId="1036" criteria="storeId:houseCodeJobs,houseCodeId:286,userId:RAYMOND-DEV-XP\Raymond Liu,">			<item id="126" fscYear="2010" period="1" startDate="2009-09-27 00:00:00" endDate="2009-10-24 00:00:00"/>			<item id="127" fscYear="2010" period="2" startDate="2009-10-25 00:00:00" endDate="2009-11-21 00:00:00"/>			<item id="128" fscYear="2010" period="3" startDate="2009-11-22 00:00:00" endDate="2009-12-19 00:00:00"/>			<item id="129" fscYear="2010" period="4" startDate="2009-12-20 00:00:00" endDate="2010-01-16 00:00:00"/>			<item id="130" fscYear="2010" period="5" startDate="2010-01-17 00:00:00" endDate="2010-02-13 00:00:00"/>			<item id="131" fscYear="2010" period="6" startDate="2010-02-14 00:00:00" endDate="2010-03-13 00:00:00"/>			<item id="132" fscYear="2010" period="7" startDate="2010-03-14 00:00:00" endDate="2010-04-10 00:00:00"/>			<item id="133" fscYear="2010" period="8" startDate="2010-04-11 00:00:00" endDate="2010-05-08 00:00:00"/>			<item id="134" fscYear="2010" period="9" startDate="2010-05-09 00:00:00" endDate="2010-06-05 00:00:00"/>			<item id="135" fscYear="2010" period="10" startDate="2010-06-06 00:00:00" endDate="2010-07-03 00:00:00"/>			<item id="136" fscYear="2010" period="11" startDate="2010-07-04 00:00:00" endDate="2010-07-31 00:00:00"/>			<item id="137" fscYear="2010" period="12" startDate="2010-08-01 00:00:00" endDate="2010-08-28 00:00:00"/>			<item id="138" fscYear="2010" period="13" startDate="2010-08-29 00:00:00" endDate="2010-09-25 23:59:00"/>		</store>	</target></transmission>','<?xml version="1.0" encoding="utf-8"?><transmission>	<target id="iiCache" requestId="5">		<store id="shiftTypes" activeId="169" criteria="storeId:houseCodeJobs,houseCodeId:286,userId:RAYMOND-DEV-XP\Raymond Liu,">			<item id="1" title="Day" />			<item id="2" title="Evening" />			<item id="3" title="Night" />		</store>	</target></transmission>','<?xml version="1.0" encoding="utf-8"?><transmission>	<target id="iiCache" requestId="5">		<store id="houseCodeJobs" activeId="1" criteria="storeId:houseCodeJobs,houseCodeId:286,userId:RAYMOND-DEV-XP\Raymond Liu,">			<item rowId="1" description="Productive Hours" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="2" description="Short Staffing Legal Holidays" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="3" description="Productive Hours Standard" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="4" description="Average Wage Rate" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="5" description="Prod Labor Standard Cost" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="6" description="Average Wage Rate For Paid Leave" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="7" description="Paid Leave Calculation" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="8" description="Sick Pay" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="9" description="Personal and other pay" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="10" description="Legal Holiday" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="11" description="Sub-Total Paid Leave" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="12" description="Vacation Pay Accrual" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="13" description="Overtime Hours" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="14" description="Cost associated with overtime" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="99" description="Total Labor Cost" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />		</store>	</target></transmission>','<?xml version="1.0" encoding="utf-8"?><transmission>	<target id="iiCache" requestId="5">		<store id="houseCodeJobs" activeId="1" criteria="storeId:houseCodeJobs,houseCodeId:286,userId:RAYMOND-DEV-XP\Raymond Liu,">			<item rowId="1" description="Productive Hours" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="2" description="Short Staffing Legal Holidays" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="3" description="Productive Hours Standard" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="4" description="Average Wage Rate" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="5" description="Prod Labor Standard Cost" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="6" description="Average Wage Rate For Paid Leave" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="7" description="Paid Leave Calculation" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="8" description="Sick Pay" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="9" description="Personal and other pay" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="10" description="Legal Holiday" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="11" description="Sub-Total Paid Leave" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="12" description="Vacation Pay Accrual" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="13" description="Overtime Hours" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />			<item rowId="14" description="Cost associated with overtime" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item rowId="51" description="Project Work Wage Rate" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item rowId="52" description="Non-Chargeable Project Work " period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item rowId="53" description="Non-Chargeable Project Work Subtotal" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item rowId="54" description="Chargeable Project Work" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item rowId="55" description="Chargeable Project Work Subtotal" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item rowId="99" description="Total Labor Cost" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />		</store>	</target></transmission>','<?xml version="1.0" encoding="utf-8"?><transmission>  <target id="iiCache" requestId="5">    <store id="houseCodeJobs" activeId="169" criteria="storeId:houseCodeJobs,houseCodeId:286,userId:RAYMOND-DEV-XP\Raymond Liu,">      <item fscAccount="191" fscAccCode="5210" description="Productive Labor" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item fscAccount="193" fscAccCode="5220" description="Vacation Pay" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item fscAccount="194" fscAccCode="5230" description="Holiday Pay" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item fscAccount="195" fscAccCode="5240" description="Sick Pay" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item fscAccount="205" fscAccCode="5405" description="Fringe Benefits" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item fscAccount="206" fscAccCode="5410" description="Health/Dental" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item fscAccount="216" fscAccCode="5610" description="Management Labor" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item fscAccount="228" fscAccCode="5805" description="Fringe Benefits - Management" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item fscAccount="248" fscAccCode="6015" description="Janitorial Supplies" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item fscAccount="249" fscAccCode="6020" description="Paper Supplies" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />      <item fscAccount="250" fscAccCode="6025" description="Plastic Supplies" period1="0" period2="0" period3="0"  period4="0" period5="0" period6="0" period7="0" period8="0" period9="0" period10="0" period11="0" period12="0" period13="0"  period14="0" period15="0" period16="0" />    </store>  </target></transmission>','<h1 class="page-title">Budget Adjustments</h1><p>    Please make adjustments to Acct Codes on this page. They will be reflected in the Budget Details Page.</p><div id="budget-adjustment-grid"></div><h2 class="page-sub-title" style="margin-top:10px;">Notes</h2><div id="budget-adjustment-note-form"></div><table width="100%">    <tbody>        <tr>            <td>&nbsp;</td>            <td style="width:90px"><div id="save-button"></div></td>            <td style="width:90px"><div id="cancel-button"></div></td>            <td style="width:90px"><div id="print-button"></div></td>        </tr>    </tbody></table>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h2 class="page-sub-title">        Budget Adjustments</h2>        <p>            Please make adjustments to Acct Codes on this page. They will be reflected in the Budget Details Page.        </p>    <div style="padding:10px 0">        {incomeTypes}    </div>    <div style="padding:10px 0">    <h2>Notes</h2>    <div style="font-size:12px; border:1px dashed #666;padding:10px;">        {notes}    </div>    </div></div>','<h1 class="page-title">    Budget Approval</h1><p style="padding:5px;width:600px;line-height:1.5em;">    When Approving the Fiscal Year Budget, all sections of the budget process will be    locked down. You will still be able to view the data that was entered, but not be    able to change the data. Please ensure that the data is entered correctly before    approving the budget.</p><p style="padding:5px;width:600px">    Please provide Comments before choosing Budget status.</p><div id="budget-approval-form" style="padding:5px;width:600px"></div><div id="budget-approval-grid"></div>','<h1 class="page-title">Budget Details</h1><div id="budget-details-grid"></div><div>    <table width="100%">        <tbody>            <tr>                <td>&nbsp;</td>                <td style="width:250px; vertical-align:middle;">                    <div id="account-combobox"></div>                </td>                <td style="width:130px">                    <div id="add-account-code-button"></div>                </td>                <td style="width:90px">                    <div id="save-button"></div>                </td>                <td style="width:90px">                    <div id="cancel-button"></div>                </td>                <td style="width:90px">                    <div id="print-button"></div>                </td>            </tr>        </tbody>    </table></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h2 class="page-sub-title">        Budget Details</h2>    <div style="padding:10px 0">        {incomeTypes}    </div></div>','<h1 class="page-title">Budget Summary</h1><div id="budget-summary-grid"></div><div>    <table width="100%">        <tbody>            <tr>                <td>&nbsp;</td>                <td style="width:90px">                    <div id="save-button"></div>                </td>                <td style="width:90px">                    <div id="cancel-button"></div>                </td>                <td style="width:90px">                    <div id="print-button"></div>                </td>            </tr>        </tbody>    </table></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h2 class="page-sub-title">        Budget Summary</h2>    <div style="padding:10px 0">        {incomeTypes}    </div></div>','<h1 class="page-title">Capital Expenditures</h1><div id="capital-expanditurer-tab-panel">    <ul class="main-tab">        <li class="tab-item"><a href="#capital-expanditurer-tab-1"><span>New Capital Equipment</span></a></li>        <li class="tab-item"><a href="#capital-expanditurer-tab-2"><span>Capital Equipment Disposal Worksheet</span></a></li>        <li class="tab-item"><a href="#capital-expanditurer-tab-3"><span>Depreciation Worksheet</span></a></li>        <li class="tab-item"><a href="#capital-expanditurer-tab-4"><span>Depreciation Disposal Worksheet</span></a></li>    </ul>    <div class="clear"></div>    <div id="capital-expanditurer-tab-1">        <h2 class="page-sub-title">New Capital Equipment Worksheet</h2>        <div id="new-capital-equipment-grid"></div>        <div>            <table width="100%">            <tbody>                <tr>                    <td>&nbsp;</td>                    <td style="width: 100px;">                        <div id="nce-addNewRowButton"></div>                    </td>                    <td style="width: 100px;">                        <div id="nce-saveButton"></div>                    </td>                    <td style="width: 100px;">                        <div id="nce-cancelButton"></div>                    </td>                    <td style="width: 100px;">                        <div id="nce-printButton"></div>                    </td>                </tr>            </tbody>            </table>        </div>    </div>    <div id="capital-expanditurer-tab-2">        <h2 class="page-sub-title">Capital Equipment Disposal Worksheet</h2>        <div id="capital-equipment-disposal-grid"></div>        <div>            <table width="100%">            <tbody>                <tr>                    <td>&nbsp;</td>                    <td style="width: 100px;">                        <div id="ced-addNewRowButton"></div>                    </td>                    <td style="width: 100px;">                        <div id="ced-saveButton"></div>                    </td>                    <td style="width: 100px;">                        <div id="ced-cancelButton"></div>                    </td>                    <td style="width: 100px;">                        <div id="ced-printButton"></div>                    </td>                </tr>            </tbody>            </table>        </div>    </div>    <div id="capital-expanditurer-tab-3">        <h2 class="page-sub-title">Depreciation Worksheet</h2>        <div id="depreciation-grid1"></div>        <div id="depreciation-grid2"></div>        <div>            <table width="100%">            <tbody>                <tr>                    <td>&nbsp;</td>                    <td style="width: 100px;">                        <div id="depreciation-printButton"></div>                    </td>                </tr>            </tbody>            </table>        </div>    </div>    <div id="capital-expanditurer-tab-4">        <h2 class="page-sub-title">Depreciation Disposal Worksheet</h2>        <div id="depreciation-disposal-grid"></div>        <div>            <table width="100%">            <tbody>                <tr>                    <td>&nbsp;</td>                    <td style="width: 100px;">                        <div id="dd-printButton"></div>                    </td>                </tr>            </tbody>            </table>        </div>    </div></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h2 class="page-sub-title">        New Capital Equipment Worksheet</h2>    <div style="padding:10px 0">        {incomeTypes}    </div></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h2 class="page-sub-title">        Capital Equipment Disposal Worksheet</h2>    <div style="padding:10px 0">        {incomeTypes}    </div></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h2 class="page-sub-title">        Depreciation Worksheet</h2>    <div style="padding:10px 0">        {incomeTypes}    </div>    <div style="padding:10px 0">        {incomeTypes2}    </div></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h2 class="page-sub-title">        Depreciation Disposal Worksheet</h2>    <div style="padding:10px 0">        {incomeTypes}    </div></div>','<div class="contract-billing">    <h2 class="page-title">Contract Billing</h2><br/>    <table class="ux-table-2">        <thead>            <tr>                <td style="width: 15%">                    Billing Period                </td>                <td style="width: 25%">                    Current Billing Rate                </td>                <td style="width: 35%">                </td>                <td style="width: 25%">                    New Billing Rate                </td>                </tr>        </thead>        <tbody>            <tr>                <td>                    <table class="ux-table-1">                        <tbody>                            <tr style="background-color: #659A66">                                <td>                                </td>                            </tr>                            <tr>                                <td>                                    <div id="billing-period" ></div>                                </td>                            </tr>                        </tbody>                    </table>                </td>                <td>                    <table class="ux-table-1">                        <tbody>                            <tr>                                <td>                                    Rate                                </td>                                <td>                                    Daily Rate                                </td>                            </tr>                            <tr>                                <td class="right">                                    <div id="current-billing-rate"></div>                                </td>                                <td>                                    <div id="current-billing-daily-rate" ></div>                                </td>                            </tr>                        </tbody>                    </table>                </td>                <td>                    <table class="ux-table-1">                        <tbody>                            <tr>                                <td>                                    Percent Increase(%)                                </td>                                <td>                                    Increase in $                                </td>                                <td>                                    Date Effective                                </td>                            </tr>                            <tr>                                <td class="right">                                     <div id="current-billing-percent-increase" ></div>                                </td>                                <td>                                     <div id="current-billing-amount-increase" ></div>                                </td>                                <td class="date-effective">                                     <div id="current-billing-date-effective" ></div>                                </td>                            </tr>                        </tbody>                    </table>                </td>                <td>                    <table class="ux-table-1">                        <tbody>                            <tr>                                <td>                                    Rate                                </td>                                <td class="left">                                    Daily Rate                                </td>                            </tr>                            <tr>                                <td>                                     <div id="new-billing-rate" ></div>                                </td>                                <td>                                     <div id="new-billing-daily-rate" ></div>                                </td>                            </tr>                        </tbody>                    </table>                </td>            </tr>        </tbody>    </table>    <h3 style="color:#000000;">Billings Per Period</h3>    <div id="period-grid-holder">        </div>    <div id="billing-notes" style="padding:20px 0 10px;">    </div>       <table width="100%">        <tbody>            <tr>                <td>&nbsp;</td>                <td style="width:100px">                     <div id="billing-save-button"></div>                </td>                <td style="width:100px">                    <div id="billing-cancel-button"></div>                </td>                <td style="width:100px">                    <div id="billing-print-button"></div>                </td>            </tr>        </tbody>    </table></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <table>        <thead>            <tr>                <td style="width: 10%">                    Billing Period                </td>                <td style="width: 30%" colspan="3">                    Current Billing Rate                </td>                <td style="width: 30%" colspan="3">                </td>                <td style="width: 30%" colspan="3">                    New Billing Rate                </td>            </tr>        </thead>        <tbody>            <tr>                <td style="background-color: #659A66">                </td>                <td>                    Rate                </td>                <td>                    Daily Rate                </td>                <td>                    Percent Increase(%)                </td>                <td>                    Increase in $                </td>                <td>                    Date Effective                </td>                <td>                    Rate                </td>                <td>                    Daily Rate                </td>            </tr>            <tr>                <td>                    {billing-period}                </td>                <td>                    {current-rate}                </td>                <td>                    {current-daily-rate}                </td>                <td>                    {percent-increase}                </td>                <td>                    {amount-increase}                </td>                <td>                    {date-effective}                </td>                <td>                    {new-rate}                </td>                <td>                    {new-daily-rate}                </td>            </tr>        </tbody>    </table>    <h3 style="color: #000000; padding-top: 10px">        Billings Per Period</h3>    <div style="padding-bottom:10px">        {incomeTypes}    </div>    <table><tr><td>{description}</td></tr></table></div>','<h1 class="page-title">Employee Data</h1><div id="employee-grid"></div><div class="padding-top-bottom-10" id="employee-form"></div><div>    <table width="100%">        <tbody>            <tr>                <td>&nbsp;</td>                <td style="width:110px">                    <div id="employee-save-button"></div>                </td>                <!--<td style="width:110px">                    <div id="employee-update-button"></div>                </td>-->                <td style="width:100px">                    <div id="employee-print-button"></div>                </td>            </tr>        </tbody>    </table></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h3 style="color: #000000; padding-top: 10px">        Employees</h3>    <div style="padding-bottom:10px">        {incomeTypes}    </div>    <table width="100%">        <tbody>            <tr>                <td style="text-align:right;padding-right:10px">Number of Employees:</td>                <td>                    {numberOfEmployees}                </td>                <td style="text-align:right;padding-right:10px">Average Wage Rate:</td>                <td>                    {averageWageRate}                </td>                <td style="text-align:right;padding-right:10px">Base Average Wage Rate Excluding Differential:</td>                <td>                    {averageBaseWageRate}                </td>            </tr>        </tbody>    </table></div>','<h1 class="page-title">    Final Computation Of Labor</h1><div id="period-grid-holder"></div><div style="float: right; padding-right:20px; ">    <table>        <tbody>            <tr>                <td>                    &nbsp;                </td>                <td style="width:100px;">                    <div id="save-button">                    </div>                </td>                <td style="width:100px;">                    <div id="print-button">                    </div>                </td>            </tr>        </tbody>    </table></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h3 style="color: #000000; padding-top: 10px">        Final Computation Of Labor</h3>    <div style="padding-bottom:10px">        {finalLabors}    </div></div>','<div id="container"></div>','<table style="width: 100%" class="ux-table">    <tbody>        <tr class="odd">            <td>                Sick day entitlements earned per year (days per employee)            </td>            <td>                <div id="sickDays"></div>            </td>        </tr>        <tr>            <td>                Average sick days taken over last 52 weeks (days per employee)            </td>            <td>                <div id="sickDaysTaken"></div>            </td>        </tr>        <tr class="odd">            <td>                Proj. number of sick days to be used in budget year (days per employee)            </td>            <td>                 <div id="sickDaysProjected"></div>            </td>        </tr>    </tbody></table>','<table style="width: 100%" class="ux-table">    <tbody>        <tr class="odd">            <td>                Number of Employee Personal Days Granted Per Year            </td>            <td>                <div id="personalDays"></div>            </td>        </tr>        <tr>            <td>                Other Paid Leave            </td>            <td>                <div id="otherPaidLeave" ></div>            </td>        </tr>    </tbody></table>','<p class="table-title">    Table1 - # of Employees</p><table class="ux-table">    <thead>        <tr>            <th>            </th>            <th>                Medical 1            </th>            <th>                Medical 2            </th>               <th>                Medical 3            </th>               <th>                Medical 4            </th>               <th>                Medical 5            </th>            <th>                Liberty Plan            </th>            <th>                Dental Only            </th>            <th>                Total            </th>            <th>                Life            </th>            <th>                Union            </th>        </tr>    </thead>    <tbody>        <tr class="odd">            <td>                Single Coverage            </td>            <td>                <div id="singleHMOCount"></div>            </td>            <td>                <div id="singlePOSCount"></div>            </td>             <td>                <div id="singleMedical3Count"></div>            </td>             <td>                <div id="singleMedical4Count"></div>            </td>             <td>                <div id="singleMedical5Count"></div>            </td>            <td>               <div id="singleLibertyCount"></div>            </td>            <td>                <div id="singleDentalCount"></div>            </td>            <td>                <div id="singleTotalCount"></div>            </td>            <td>               <div id="singleLifeCount"></div>            </td>            <td>               <div id="singleUnionCount"></div>            </td>        </tr>		<tr>            <td>                Single + Spouse            </td>            <td>                <div id="singleSpouseHMOCount"></div>            </td>            <td>                <div id="singleSpousePOSCount"></div>            </td>             <td>                <div id="singleSpouseMedical3Count"></div>            </td>             <td>                <div id="singleSpouseMedical4Count"></div>            </td>             <td>                <div id="singleSpouseMedical5Count"></div>            </td>            <td>               <div id="singleSpouseLibertyCount"></div>            </td>            <td>                <div id="singleSpouseDentalCount"></div>            </td>            <td>                <div id="singleSpouseTotalCount"></div>            </td>            <td>               <div id="singleSpouseLifeCount"></div>            </td>            <td>               <div id="singleSpouseUnionCount"></div>            </td>        </tr>		<tr class="odd">            <td>                Single + Dependant            </td>            <td>                <div id="singleDependantHMOCount"></div>            </td>            <td>                <div id="singleDependantPOSCount"></div>            </td>             <td>                <div id="singleDependantMedical3Count"></div>            </td>             <td>                <div id="singleDependantMedical4Count"></div>            </td>             <td>                <div id="singleDependantMedical5Count"></div>            </td>            <td>               <div id="singleDependantLibertyCount"></div>            </td>            <td>                <div id="singleDependantDentalCount"></div>            </td>            <td>                <div id="singleDependantTotalCount"></div>            </td>            <td>               <div id="singleDependantLifeCount"></div>            </td>            <td>               <div id="singleDependantUnionCount"></div>            </td>        </tr>        <tr>            <td>                Family Coverage            </td>            <td>                <div id="familyHMOCount"></div>            </td>            <td>                <div id="familyPOSCount"></div>            </td>              <td>                <div id="familyMedical3Count"></div>            </td>              <td>                <div id="familyMedical4Count"></div>            </td>              <td>                <div id="familyMedical5Count"></div>            </td>            <td>                <div id="familyLibertyCount"></div>            </td>            <td>                <div id="familyDentalCount"></div>            </td>            <td>                <div id="familyTotalCount"></div>            </td>            <td>                <div id="familyLifeCount"></div>            </td>            <td>                <div id="familyUnionCount"></div>            </td>        </tr>        <tr class="odd">            <td>                Total            </td>            <td>                <div id="totalHMOCount"></div>            </td>            <td>                <div id="totalPOSCount"></div>            </td>             <td>                <div id="totalMedical3Count"></div>            </td>             <td>                <div id="totalMedical4Count"></div>            </td>             <td>                <div id="totalMedical5Count"></div>            </td>            <td>                <div id="totalLibertyCount"></div>            </td>            <td>                <div id="totalDentalCount"></div>            </td>            <td>                <div id="totalCount"></div>            </td>            <td>                <div id="totalLifeCount"></div>            </td>            <td>                <div id="totalUnionCount"></div>            </td>        </tr>    </tbody></table><p class="table-title">    Table2 - BI weekly Cost of Health/Dental/Life Insurance Contributions</p><table class="ux-table">    <thead>        <tr>            <th>            </th>            <th>                Medical 1            </th>            <th>                Medical 2            </th>			 <th>                Medical 3            </th>               <th>                Medical 4            </th>               <th>                Medical 5            </th>            <th>                Liberty Plan            </th>            <th>                Dental Only            </th>            <th>                Total            </th>            <th>                Life            </th>            <th>                Union            </th>        </tr>    </thead>    <tbody>        <tr class="odd">            <td>                Single Coverage            </td>            <td>                <div id="singleHMOCost"></div>            </td>            <td>                <div id="singlePOSCost"></div>            </td>			<td>                <div id="singleMedical3Cost"></div>            </td>			<td>                <div id="singleMedical4Cost"></div>            </td>			<td>                <div id="singleMedical5Cost"></div>            </td>            <td>                <div id="singleLibertyCost"></div>            </td>            <td>                <div id="singleDentalCost"></div>            </td>            <td>                <div id="singleTotalCost"></div>            </td>            <td>                <div id="singleLifeCost"></div>            </td>            <td>                <div id="singleUnionCost"></div>            </td>        </tr>         <tr >            <td>                Single + Spouse            </td>            <td>                <div id="singleSpouseHMOCost"></div>            </td>            <td>                <div id="singleSpousePOSCost"></div>            </td>			<td>                <div id="singleSpouseMedical3Cost"></div>            </td>			<td>                <div id="singleSpouseMedical4Cost"></div>            </td>			<td>                <div id="singleSpouseMedical5Cost"></div>            </td>            <td>                <div id="singleSpouseLibertyCost"></div>            </td>            <td>                <div id="singleSpouseDentalCost"></div>            </td>            <td>                <div id="singleSpouseTotalCost"></div>            </td>            <td>                <div id="singleSpouseLifeCost"></div>            </td>            <td>                <div id="singleSpouseUnionCost"></div>            </td>        </tr>         <tr class="odd">            <td>                Single + Dependant            </td>            <td>                <div id="singleDependantHMOCost"></div>            </td>            <td>                <div id="singleDependantPOSCost"></div>            </td>			<td>                <div id="singleDependantMedical3Cost"></div>            </td>			<td>                <div id="singleDependantMedical4Cost"></div>            </td>			<td>                <div id="singleDependantMedical5Cost"></div>            </td>            <td>                <div id="singleDependantLibertyCost"></div>            </td>            <td>                <div id="singleDependantDentalCost"></div>            </td>            <td>                <div id="singleDependantTotalCost"></div>            </td>            <td>                <div id="singleDependantLifeCost"></div>            </td>            <td>                <div id="singleDependantUnionCost"></div>            </td>        </tr>        <tr>            <td>                Family Coverage            </td>            <td>                <div id="familyHMOCost"></div>            </td>            <td>                <div id="familyPOSCost"></div>            </td>			<td>                <div id="familyMedical3Cost"></div>            </td>			<td>                <div id="familyMedical4Cost"></div>            </td>			<td>                <div id="familyMedical5Cost"></div>            </td>            <td>                <div id="familyLibertyCost"></div>            </td>            <td>                <div id="familyDentalCost"></div>            </td>            <td>                <div id="familyTotalCost"></div>            </td>            <td>                <div id="familyLifeCost"></div>            </td>            <td>                <div id="familyUnionCost"></div>            </td>        </tr>        <tr class="odd">            <td>                Total            </td>            <td>                <div id="totalHMOCost"></div>            </td>            <td>                <div id="totalPOSCost"></div>            </td>			<td>                <div id="totalMedical3Cost"></div>            </td>			<td>                <div id="totalMedical4Cost"></div>            </td>			<td>                <div id="totalMedical5Cost"></div>            </td>            <td>                <div id="totalLibertyCost"></div>            </td>            <td>                <div id="totalDentalCost"></div>            </td>            <td>                <div id="totalCost"></div>            </td>            <td>                <div id="totalLifeCost"></div>            </td>            <td>                <div id="totalUnionCost"></div>            </td>        </tr>    </tbody></table>','<h2 class="page-sub-title">    V. Computation Of Net Productive Days Per Employee</h2><div style="margin:15px 0;">    <div style="font-weight:bold;">Work Days per 52 wks: <span id="ytdBusinessDays"></span></div>    <table style="width:100%; margin:20px 0;" class="ux-table">        <tbody>            <tr class="odd">                <td>Sick days Taken</td>                <td>                    <div id="sickDaysProjected"></div>                </td>                <td>                    <div id="sickDaysTakenPercentage"></div>                </td>            </tr>            <tr>                <td>Legal Holidays</td>                <td>                    <div id="legalHolidays"></div>                </td>                <td>                    <div id="legalHolidaysPercentage"></div>                </td>            </tr>            <tr class="odd">                <td>Personal Days</td>                <td>                    <div id="personalDays"></div>                </td>                <td>                    <div id="personalDaysPercentage"></div>                </td>            </tr>            <tr>                <td>Other Paid Leave</td>                <td>                    <div id="otherPaidLeave"></div>                </td>                <td>                    <div id="otherPaidLeavePercentage"></div>                </td>            </tr>            <tr class="odd">                <td>Vacation Earned</td>                <td>                    <div id="vacationEarned"></div>                </td>                <td>                    <div id="vacationEarnedPercentage"></div>                </td>            </tr>            <tr>                <td style="text-align:right"><span style="font-weight:bold;">Total Paid Leave</span></td>                <td>                    <div id="totalPaidLeave" style="font-weight:bold;"></div>                </td>                <td>                    <div id="totalPaidLeavePercentage" style="font-weight:bold;"></div>                </td>            </tr>            <tr>                <td style="text-align:right"><span style="font-weight:bold;">Net Employee Productive Days Per Year</span></td>                <td>                    <div id="netEmployeeProductiveDaysPerYear" style="font-weight:bold;"></div>                </td>                <td>&nbsp;</td>            </tr>        </tbody>    </table></div><h2 class="page-sub-title">    VI. Estimate of FTEs needed for productive and nonproductive labor</h2><div style="margin:15px 0;">    <table style="width:100%" class="ux-table">        <tbody>            <tr class="odd">                <td>Hours Per Day Per Employee</td>                <td>                    <div id="employeeHoursPerDay"></div>                </td>            </tr>            <tr>                <td style="text-align:right"><span style="font-weight:bold">Approximate Staffing in FTE Required</span></td>                <td>                    <div id="approximateStaffingInFTERequired"></div>                </td>            </tr>        </tbody>    </table></div>','<h2 class="page-sub-title">    VII. Computation Of Labor Standards</h2><div style="margin: 15px 0;">    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">A. Labor standard before short staffing : </span></td>                <td>                    <div id="laborStandardBeforeShortStaffing"></div>                </td>            </tr>            <tr class="odd">                <td>Projected number of new employees </td>                <td>                    <div id="projectedNewEmployees"></div>                </td>            </tr>            <tr>                <td>Projected hours to train each employee while overlapping with existing employee</td>                <td>                    <div id="projectedEmployeeTrainingHours"></div>                </td>            </tr>            <tr class="odd">                <td>Total hours spent training new employees</td>                <td>                    <div id="totalTrainingHours"></div>                </td>            </tr>            <tr>                <td>Sub-Total Productive Labor Standard</td>                <td>                    <div id="productiveLaborStandard"></div>                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">B. Adjusted labor standard due to short-staffing</span></td>                <td>                    % Factor                </td>                <td>&nbsp;</td>            </tr>            <tr class="odd">                <td>Non replacement of employees on vacation</td>                <td>                    <span id="nonReplaceVacationPerc"></span>%                </td>                <td>                    <div id="nonReplaceVacationCount"></div>                </td>            </tr>            <tr>                <td>Non replacement of employees on sick pay</td>                <td>                    <span id="nonReplaceSickPayPerc"></span>%                </td>                <td>                    <div id="nonReplaceSickPayCount"></div>                </td>            </tr>            <tr class="odd">                <td>Non replacement for paid time off in lieu of working a legal holiday</td>                <td>                    <span id="nonReplaceHolidayPerc"></span>%                </td>                <td>                    <div id="nonReplaceHolidayCount"></div>                </td>            </tr>            <tr>                <td>Non replacement of employees on personal leave</td>                <td>                    <span id="nonReplacePersonalPerc"></span>%                </td>                <td>                    <div id="nonReplacePersonalCount"></div>                </td>            </tr>            <tr class="odd">                <td style="text-align:right"><span style="font-weight:bold">Sub-Total of Short-Staffing</span></td>                <td>                    &nbsp;                </td>                <td><div id="totalShortStaffing"></div></td>            </tr>            <tr>                <td>Sub-Total Productive Labor Standards</td>                <td>                   &nbsp;                 </td>                <td><div id="productiveLaborStandards"></div></td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">C. Computation of short-staffing on legal holidays</span></td>                <td>                    <div id="shortStaffingOnLegalHolidays"></div>                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">D. Net Productive Standard</span></td>                <td>                    <div id="netProductiveStandard"></div>                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">E. Computation of Paid Leave Standard</span></td>                <td>                    &nbsp;                </td>            </tr>            <tr class="odd">                <td>Sick Pay Standard</td>                <td>                    <div id="sickPayStandard"></div>                </td>            </tr>            <tr>                <td>Legal Holiday Standard</td>                <td>                    <div id="legalHolidayStandard"></div>                </td>            </tr>            <tr class="odd">                <td>Personal Leave Standard</td>                <td>                    <div id="personalLeaveStandard"></div>                </td>            </tr>            <tr>                <td>Vacation Accrual Standard</td>                <td>                    <div id="vacationAccrualStandard"></div>                </td>            </tr>            <tr class="odd">                <td style="text-align:right;"><span style="font-weight:bold">Paid Leave Standards</span></td>                <td>                    <div id="paidLeaveStandards"></div>                </td>            </tr>            <tr>                <td>Total 52 Week Paid Hours Standard</td>                <td>                    <div id="total52WeekPaidHoursStandard"></div>                </td>            </tr>        </tbody>    </table></div>','<h2 class="page-sub-title">    VIII. Computation of Labor Standards in Dollars</h2><div style="margin: 15px 0;">    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">A. Current Avg Wage Rate(from employee data file):</span></td>                <td>                    <span style="font-weight:bold"><div id="avgWageRate"></div></span>                </td>            </tr>            <tr class="odd">                <td>Avg wage rate excluding differential</td>                <td>                    <div id="avgWageRateExcludingDifferential"></div>                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">B. Project Effect of Merit Increase:</span></td>                <td>                    &nbsp;                </td>            </tr>            <tr class="odd">                <td>#Employees to get merit increase</td>                <td>                    <div id="meritIncreaseEmployees"></div>                </td>            </tr>            <tr>                <td>Total # of employees</td>                <td>                    <div id="totalEmployees"></div>                </td>            </tr>            <tr class="odd">                <td>Avg amount of merit increase per hour</td>                <td>                    $<div id="meritIncreasePerHour" style="float:right;"></div>                </td>            </tr>            <tr>                <td>Total increase in wage cost/per pay period</td>                <td>                    <div id="totalIncreaseInWageCost"></div>                </td>            </tr>            <tr class="odd">                <td># of employees who will leave</td>                <td>                    <div id="employeesLeaving"></div>                </td>            </tr>            <tr>                <td>Average reduction in wage rate of their replacement(Avg wage rate minus starting wage rate)</td>                <td>                    <div id="avgWageRateReduction"></div>                </td>            </tr>            <tr class="odd">                <td>Starting wage rate</td>                <td>                    $<div id="startingWageRate" style="float:right;"></div>                </td>            </tr>            <tr>                <td>Decrease in wage rate/per pay period</td>                <td>                    <div id="decreaseInWageRate"></div>                </td>            </tr>            <tr class="odd">                <td>Net effect of Avg wage rate of merit increase</td>                <td>                    <div id="avgWageRateNetEffect"></div>                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">C. Projected Avg Wage Rate before cost of living increase including defferential</span></td>                <td>                    <div id="projectedAvgWageRate"></div>                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">D. Cost of Living Increase</span></td>                <td>&nbsp;</td>            </tr>            <tr class="odd">                <td>Estimated date of increase(period)</td>                <td>                    <div id="estimatedCOLPeriodOfIncrease"></div>                </td>            </tr>            <tr>                <td>Estimated increase per hour</td>                <td>                    <div id="estimatedCOLIncreasePerHour"></div>                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">E. Estimated Avg Wage Rate including COL increase</span></td>                <td>                    <div id="estimatedCOLAvgWageRate"></div>                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">F.Paid Leave does not get Evening Shift Differential</span></td>                <td>                    <div id="paidLeaveNoNightDifferential"></div>                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>Average Wage Rate for paid leave after COL increase excluding night differential</td>                <td>                    <div id="avgWageRateCOLNoNightDifferential"></div>                </td>            </tr>        </tbody>    </table></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h3 style="color: #000000; padding-top: 10px">        Vacation</h3>    <div style="padding-bottom:10px">        {incomeTypes}    </div>    <table width="100%">        <tbody>            <tr>                <td>Average Vacation Entitlement:</td>                <td>                    {averageVacation}                    Days                </td>            </tr>        </tbody>    </table></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div></div><h2 class="page-sub-title">    VII. Computation Of Labor Standards</h2><div style="margin: 15px 0;">    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td><span style="font-weight:bold">A. Labor standard before short staffing : </span></td>                <td>                    {laborStandardBeforeShortStaffing}                </td>            </tr>            <tr class="odd">                <td>Projected number of new employees </td>                <td>                    {projectedNewEmployees}                </td>            </tr>            <tr>                <td>Projected hours to train each employee while overlapping with existing employee</td>                <td>                    {projectedEmployeeTrainingHours}                </td>            </tr>            <tr class="odd">                <td>Total hours spent training new employees</td>                <td>                    {totalTrainingHours}                </td>            </tr>            <tr>                <td>Sub-Total Productive Labor Standard</td>                <td>                    {productiveLaborStandard}                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>B. Adjusted labor standard due to short-staffing</td>                <td>                    % Factor                </td>                <td>&nbsp;</td>            </tr>            <tr class="odd">                <td>Non replacement of employees on vacation</td>                <td>                    {nonReplaceVacationPerc}%                </td>                <td>                    {nonReplaceVacationCount}                </td>            </tr>            <tr>                <td>Non replacement of employees on sick pay</td>                <td>                    {nonReplaceSickPayPerc}%                </td>                <td>                    {nonReplaceSickPayCount}                </td>            </tr>            <tr class="odd">                <td>Non replacement for paid time off in lieu of working a legal holiday</td>                <td>                    {nonReplaceHolidayPerc}%                </td>                <td>                    {nonReplaceHolidayCount}                </td>            </tr>            <tr>                <td>Non replacement of employees on personal leave</td>                <td>                    {nonReplacePersonalPerc}%                </td>                <td>                    {nonReplacePersonalCount}                </td>            </tr>            <tr class="odd">                <td style="text-align:right"><span style="font-weight:bold">Sub-Total of Short-Staffing</span></td>                <td>                    &nbsp;                </td>                <td>{totalShortStaffing}</td>            </tr>            <tr>                <td>Sub-Total Productive Labor Standards</td>                <td>                   &nbsp;                 </td>                <td>{productiveLaborStandards}</td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>C. Computation of short-staffing on legal holidays</td>                <td>                    {shortStaffingOnLegalHolidays}                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>D. Net Productive Standard</td>                <td>                    {netProductiveStandard}                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>E. Computation of Paid Leave Standard</td>                <td>                    &nbsp;                </td>            </tr>            <tr class="odd">                <td>Sick Pay Standard</td>                <td>                    {sickPayStandard}                </td>            </tr>            <tr>                <td>Legal Holiday Standard</td>                <td>                    {legalHolidayStandard}                </td>            </tr>            <tr class="odd">                <td>Personal Leave Standard</td>                <td>                    {personalLeaveStandard}                </td>            </tr>            <tr>                <td>Vacation Accrual Standard</td>                <td>                    {vacationAccrualStandard}                </td>            </tr>            <tr class="odd">                <td style="text-align:right;"><span style="font-weight:bold">Paid Leave Standards</span></td>                <td>                    {paidLeaveStandards}                </td>            </tr>            <tr>                <td>Total 52 Week Paid Hours Standard</td>                <td>                    {total52WeekPaidHoursStandard}                </td>            </tr>        </tbody>    </table></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div></div><h2 class="page-sub-title">    VIII. Computation of Labor Standards in Dollars</h2><div style="margin: 15px 0;">    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>A. Current Avg Wage Rate(from employee data file):</td>                <td>                    {avgWageRate}                </td>            </tr>            <tr class="odd">                <td>Avg wage rate excluding differential</td>                <td>                    {avgWageRateExcludingDifferential}                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>B. Project Effect of Merit Increase:</td>                <td>                    &nbsp;                </td>            </tr>            <tr class="odd">                <td>#Employees to get merit increase</td>                <td>                    {meritIncreaseEmployees}                </td>            </tr>            <tr>                <td>Total # of employees</td>                <td>                    {totalEmployees}                </td>            </tr>            <tr class="odd">                <td>Avg amount of merit increase per hour</td>                <td>                    ${meritIncreasePerHour}                </td>            </tr>            <tr>                <td>Total increase in wage cost/per pay period</td>                <td>                    {totalIncreaseInWageCost}                </td>            </tr>            <tr class="odd">                <td># of employees who will leave</td>                <td>                    {employeesLeaving}                </td>            </tr>            <tr>                <td>Average reduction in wage rate of their replacement(Avg wage rate minus starting wage rate)</td>                <td>                    {avgWageRateReduction}                </td>            </tr>            <tr class="odd">                <td>Starting wage rate</td>                <td>                    ${startingWageRate}                </td>            </tr>            <tr>                <td>Decrease in wage rate/per pay period</td>                <td>                    {decreaseInWageRate}                </td>            </tr>            <tr class="odd">                <td>Net effect of Avg wage rate of merit increase</td>                <td>                    {avgWageRateNetEffect}                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>C. Projected Avg Wage Rate before cost of living increase including defferential</td>                <td>                    {projectedAvgWageRate}                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>D. Cost of Living Increase</td>                <td>&nbsp;</td>            </tr>            <tr class="odd">                <td>Estimated date of increase(period)</td>                <td>                    {estimatedCOLPeriodOfIncrease}                </td>            </tr>            <tr>                <td>Estimated increase per hour</td>                <td>                    {estimatedCOLIncreasePerHour}                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>E. Estimated Avg Wage Rate including COL increase</td>                <td>                    {estimatedCOLAvgWageRate}                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>F.Paid Leave does not get Evening Shift Differential</td>                <td>                    {paidLeaveNoNightDifferential}                </td>            </tr>        </tbody>    </table>    <table style="width:100%; margin:10px 0;" class="ux-table">        <tbody>            <tr>                <td>Average Wage Rate for paid leave after COL increase excluding night differential</td>                <td>                    {avgWageRateCOLNoNightDifferential}                </td>            </tr>        </tbody>    </table></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h3 style="color: #000000; padding-top: 10px">        Productive Employees Health/Dental/Life Insurance BI-Weekly Cost</h3>    <div style="padding-bottom:10px">        {incomeTypes}    </div></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div></div><h2 class="page-sub-title">    V. Computation Of Net Productive Days Per Employee</h2><div style="margin:15px 0;">    <div style="font-weight:bold;">Work Days per 52 wks: {ytdBusinessDays}</div>    <table style="width:100%; margin:20px 0;" class="ux-table">        <tbody>            <tr class="odd">                <td>Sick days Taken</td>                <td>                    {sickDaysProjected}                </td>                <td>                    {sickDaysTakenPercentage}                </td>            </tr>            <tr>                <td>Legal Holidays</td>                <td>                    {legalHolidays}                </td>                <td>                    {legalHolidaysPercentage}                </td>            </tr>            <tr class="odd">                <td>Personal Days</td>                <td>                    {personalDays}                </td>                <td>                    {personalDaysPercentage}                </td>            </tr>            <tr>                <td>Other Paid Leave</td>                <td>                    {otherPaidLeave}                </td>                <td>                    {otherPaidLeavePercentage}                </td>            </tr>            <tr class="odd">                <td>Vacation Earned</td>                <td>                    {vacationEarned}                </td>                <td>                    {vacationEarnedPercentage}                </td>            </tr>            <tr>                <td style="text-align:right"><span style="font-weight:bold;">Total Paid Leave</span></td>                <td>                    <span style="font-weight:bold;">{totalPaidLeave}</span>                </td>                <td>                    <span style="font-weight:bold;">{totalPaidLeavePercentage}</span>                </td>            </tr>            <tr>                <td style="text-align:right"><span style="font-weight:bold;">Net Employee Productive Days Per Year</span></td>                <td>                    <span style="font-weight:bold;">{netEmployeeProductiveDaysPerYear}</span>                </td>                <td>&nbsp;</td>            </tr>        </tbody>    </table></div><h2 class="page-sub-title">    VI. Estimate of FTEs needed for productive and nonproductive labor</h2><div style="margin:15px 0;">    <table style="width:100%" class="ux-table">        <tbody>            <tr class="odd">                <td>Hours Per Day Per Employee</td>                <td>                    {employeeHoursPerDay}                </td>            </tr>            <tr>                <td style="text-align:right"><span style="font-weight:bold">Approximate Staffing in FTE Required</span></td>                <td>                    {approximateStaffingInFTERequired}                </td>            </tr>        </tbody>    </table></div>','<h1 class="page-title">Management History</h1><div id="management-history-tab-panel">    <ul class="main-tab">        <li class="tab-item"><a href="#management-history-tab-1"><span>Personal Salary Review Worksheet</span></a></li>        <li class="tab-item"><a href="#management-history-tab-2"><span>Management Administration Worksheet</span></a></li>    </ul>    <div id="management-history-tab-1">        <h2 class="page-sub-title">Personal Salary Review</h2>        <div id="personal-salary-review-grid"></div>        <table width="100%">            <tbody>                <tr>                    <td>&nbsp;</td>                    <td style="width:90px">                        <div id="personal-salary-review-add-button"></div>                    </td>                    <td style="width:110px">                        <div id="personal-salary-review-save-button"></div>                    </td>                       <td style="width:90px">                        <div id="personal-salary-review-cancel-button"></div>                    </td>                    <td style="width:90px">                        <div id="personal-salary-review-print-button"></div>                    </td>                </tr>            </tbody>        </table>            </div>    <div id="management-history-tab-2">        <h2 class="page-sub-title">Management History</h2>        <div id="management-admin-worksheet-grid"></div>        <table width="100%">            <tbody>                <tr>                    <td>&nbsp;</td>                    <td style="width:90px">                        <div id="management-admin-worksheet-print-button"></div>                    </td>                </tr>            </tbody>        </table>       </div></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h3 style="color: #000000; padding-top: 10px">        Personal Salary Review</h3>    <div style="padding-bottom:10px">        {incomeTypes}    </div></div>','<h1 class="page-title">    Staffing Hours</h1><div id="staffing-tab-panel">    <ul class="main-tab">        <li class="tab-item"><a href="#staffing-tab-1"><span>Staffing Hours Detail Worksheet</span></a></li>        <li class="tab-item" id="summayTabLink"><a href="#staffing-tab-2"><span>Staffing Hours            Summary Worksheet</span></a></li>    </ul>    <div class="clear">    </div>    <div id="staffing-tab-1">        <h2 class="page-sub-title">            Staffing Detail</h2>        <div id="general-wrapper">            <div>                <table width="100%">                    <tbody>                        <tr>                            <td style="width: 100px">                                Shift Selected:                            </td>                            <td>                                <div id="staffing-shift-select-box">                                </div>                            </td>                        </tr>                    </tbody>                </table>            </div>            <div>                <table width="100%">                    <tbody>                        <tr>                            <td>                                &nbsp;                            </td>                            <td style="width: 130px">                                <div id="staffing-add-unit-button">                                </div>                            </td>                            <td style="width: 90px">                                <div id="staffing-update-button">                                </div>                            </td>                            <td style="width: 90px">                                <div id="staffing-cancel-button">                                </div>                            </td>                            <td style="width: 90px">                                <div id="staffing-print-button">                                </div>                            </td>                        </tr>                    </tbody>                </table>            </div>            <div id="staffing-detail-worksheet-grid">            </div>        </div>        <div id="education-wrapper">         <div>                <table width="100%">                    <tbody>                        <tr>                            <td>                                &nbsp;                            </td>                            <td style="width: 130px">                                <div id="education-staffing-save-button">                                </div>                            </td>                                                 </tr>                    </tbody>                </table>            </div>            <div id="education-staffing-grid">                        </div>            <div style="text-align:right; padding: 10px 30px; font-size:14px; font-weight:bold;">                Fiscal Year: <span id="educationFiscalYear" />            </div>        </div>    </div>    <div id="staffing-tab-2">        <h2 class="page-sub-title">            Staffing Summary</h2>        <div id="staffing-hours-summary-worksheet-grid">        </div>        <div style="margin-top: 10px;">            <table>                <tbody>                    <tr>                        <td style="width: 400px; text-align: right; padding: 8px;">                            Planned(Reduction) or Increase per Week:                        </td>                        <td>                            <div id="increase-per-week-textbox">                            </div>                        </td>                    </tr>                    <tr>                        <td style="text-align: right; padding: 8px;">                            Short Staffing Reduction or (Increase) on Legal Holidays:                        </td>                        <td>                            <div id="increase-on-legal-holidays-textbox">                            </div>                        </td>                    </tr>                </tbody>            </table>        </div>    </div></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>        <h3 style="color: #000000; padding-top: 10px">        Billings Per Period</h3>    <div style="padding-bottom:10px">        {staffingHours}    </div></div>','<h1 class="page-title">Budget Start Page</h1><div id="add-new-budget-button" style="margin-bottom:30px"></div><div>    <table width="100%" class="ux-table">        <tbody>            <tr class="odd">                <td style="text-align: right; width:50%;">Budget Start Time</td>                <td style="text-align: left; width:50%;"><div id="start-date-label"></div></td>            </tr>            <tr>                <td style="text-align: right;">Budget Started By</td>                <td style="text-align: left;"><div id="start-by-label"></div></td>            </tr>            <tr class="odd">                <td>&nbsp;</td>                <td>&nbsp;</td>            </tr>        </tbody>    </table></div><br /><br /><div>    <h2 class="page-sub-title">Announcements</h2>    <div class="startbudget-content" id="start-budget-comment">        2011 Fiscal Year Budget Process        Start:April6, 2010<br />        Prerequisites<br />        <ul>            <li>1.Review/Update Employee Information</li>            <li>2.Review/Update Mgmt Employee Information</li>            <li>3.Review Update House Code Information</li>        </ul>        <br />        Once the budget has been started this information cannot be updated in the Budget Process    </div></div>','<h1 class="page-title">Supply Expenditures</h1><div id="supply-expanditures-tab-panel">    <ul class="main-tab">        <li class="tab-item"><a href="#supply-expanditures-tab-1"><span>Paper Worksheet</span></a></li>        <li class="tab-item"><a href="#supply-expanditures-tab-2"><span>Plastic Worksheet</span></a></li>        <li class="tab-item"><a href="#supply-expanditures-tab-3"><span>Janitorial Worksheet</span></a></li>        <li class="tab-item"><a href="#supply-expanditures-tab-4"><span>Hand Soap Worksheet</span></a></li>    </ul>    <div class="clear"></div>    <div id="supply-expanditures-tab-1">        <h2 class="page-sub-title">Paper Supplies</h2>    </div>    <div id="supply-expanditures-tab-2">        <h2 class="page-sub-title">Plastic Supplies</h2>    </div>    <div id="supply-expanditures-tab-3">        <h2 class="page-sub-title">Janitorial Supplies</h2>    </div>    <div id="supply-expanditures-tab-4">        <h2 class="page-sub-title">Hand Soap Supplies</h2>    </div>    <div>        <table width="100%">            <tbody>                <tr>                    <td>&nbsp;</td>                    <td style="width:100px">                        <div id="supply-expanditures-tab-save-button"></div>                    </td>                    <td style="width:100px">                        <div id="supply-expanditures-tab-add-button"></div>                    </td>                    <td style="width:100px">                        <div id="supply-expanditures-tab-cancel-button"></div>                    </td>                    <td style="width:100px">                        <div id="supply-expanditures-tab-print-button"></div>                    </td>                </tr>            </tbody>        </table>    </div>    <div id="supply-expanditures-tab-grid"></div></div>','<div style="margin: 10px">    <div style="padding-bottom: 5px">        <table>            <tr>                <td>                    Site:                </td>                <td>                    {hcmHouseCodeTitle}                </td>                <td>                    Job:                </td>                <td>                    {hcmJobTitle}                </td>                <td>                    Fiscal Year:                </td>                <td>                    {fscYearTitle}                </td>            </tr>        </table>    </div>    <h2 class="page-sub-title">        Supply Expenditure - {title}</h2>    <div style="padding:10px 0">        {incomeTypes}    </div></div>'];/*!
  * Ext JS Library 3.2.0
  * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
@@ -1606,23 +1606,79 @@ if (top.ui.ctl.menu) {
 if (document.location.host == 'localhost')
     window.__fin_modified = false;
 
-fin.bud.modified = function () {
 
-    if (document.location.host == 'localhost') {
-        if (arguments.length == 0) {
-            if (window.__fin_modified)
-                alert('data modified');
-            return window.__fin_modified;
+var globalLoadingCounter = 0;
+window.isSavedSuccessfully = false;
 
+fin.bud.loading = function () {
+    globalLoadingCounter++;
+    $('#itemStatusImage').removeClass('Normal').addClass('Loading');
+    $('#itemModifiedImage').removeClass('Modified');
+    $('#itemStatusText').html('Loading, please wait...');
+}
+
+fin.bud.saving = function () {
+    globalLoadingCounter++;
+    $('#itemStatusImage').removeClass('Normal').addClass('Loading');
+    $('#itemModifiedImage').removeClass('Modified');
+    $('#itemStatusText').html('Saving, please wait...');
+}
+
+fin.bud.saved = function () {
+    globalLoadingCounter--;
+    window.isSavedSuccessfully = true;
+
+    setTimeout(function () {
+        if (globalLoadingCounter <= 0) {
+            fin.bud.normal(window.__fin_modified);
+            globalLoadingCounter = 0;
+
+            setTimeout(function () {
+                window.isSavedSuccessfully = false;
+            }, 5000);
         }
-        else
-            window.__fin_modified = arguments[0];
+    }, 20);
+}
+
+fin.bud.normal = function (isModified) {
+    $('#itemStatusImage').removeClass('Loading').addClass('Normal');
+    $('#itemStatusText').css('color','#032D23').html(window.isSavedSuccessfully && !isModified ? 'Data saved successfully.' : 'Normal');
+    if (isModified === true) {
+        $('#itemModifiedImage').addClass('Modified');
     }
     else {
+        $('#itemModifiedImage').removeClass('Modified');
+    }
+}
 
-        if (arguments.length == 0)
-            return !window.top.fin.cmn.status.itemValid();
+fin.bud.loaded = function () {
+    globalLoadingCounter--;
+
+    setTimeout(function () {
+        if (globalLoadingCounter <= 0) {
+            fin.bud.normal(window.__fin_modified);
+            globalLoadingCounter = 0;
+        }
+    }, 20);
+};
+
+fin.bud.modified = function () {
+
+    if (arguments.length == 1) {
+        fin.bud.normal(arguments[0]);
+    }
+
+    if (arguments.length == 0) {
+        if (!window.top.fin || !window.top.fin.cmn || !window.top.fin.cmn.status) {
+            return window.__fin_modified;
+        }
         else
+            return !window.top.fin.cmn.status.itemValid();
+    }
+    else {
+        window.__fin_modified = arguments[0];
+
+        if (window.top.fin && window.top.fin.appUI)
             window.top.fin.appUI.modified = arguments[0];
     }
 }
@@ -2093,6 +2149,382 @@ WebLight.form.FormView = WebLight.extend(WebLight.Control, {
 });
 
 
+WebLight.override(WebLight.form.FormPanel, {
+    autoStoreMask: false
+});
+
+WebLight.override(WebLight.grid.GridPanel, {
+    autoStoreMask: false
+});
+
+WebLight.override(WebLight.form.FormView, {
+    autoStoreMask: false
+});
+
+/// <reference path="../../references/jquery-1.4.1.js" />
+/// <reference path="../Core.js" />
+
+WebLight.data.Store = Ext.extend(Ext.data.Store, {
+
+    trackingChanges: false,
+
+    /// Your changes have not been saved. \r\n\r\n Discard the changes?
+    discardMessage: 'Your changes have not been saved. \r\n\r\n Discard the changes?',
+
+    constructor: function (config) {
+        config = config || {};
+        var me = this;
+        var current = this;
+
+        WebLight.data.Store.superclass.constructor.call(this, config);
+
+        this.changes = [];
+
+        this.boundControls = [];
+
+        var computeFields = function (record) {
+            if (null == me._computedFields)
+                return;
+
+            WebLight.each(me._computedFields, function (item, index) {
+                var value = 0;
+                switch (item[1]) {
+                    case 'func':
+                        value = item[2](record);
+                        break;
+                    case 'sum':
+                        var value = 0;
+                        WebLight.each(item[2], function (field, fieldIndex) {
+                            value += record.get(field) || 0;
+                        });
+                        break;
+                };
+
+                if (record.get(item[0] != value))
+                    record.set(item[0], value);
+            });
+        };
+
+        var calculateColumns = function (record) {
+            if (me._columnSummaryRelations == null)
+                return;
+
+            WebLight.each(me._columnSummaryRelations, function (relation, index) {
+                var value = 0;
+
+                WebLight.each(relation[1], function (column, columnIndex) {
+                    var rValue = record.get(column);
+                    if (rValue)
+                        value += rValue;
+                });
+
+                if (record.get(relation[0]) != value)
+                    record.set(relation[0], value);
+            });
+        };
+
+        var calculateRows = function (record) {
+            if (null == me._rowSummaryRelations)
+                return;
+
+            WebLight.each(me._rowSummaryRelations, function (relation, index) {
+                if (!record || relation[2].indexOf(record) != -1) {
+                    WebLight.each(relation[1], function (column) {
+                        var value = 0;
+                        WebLight.each(relation[2], function (r) {
+                            var rValue = r.get(column);
+                            if (rValue)
+                                value += rValue;
+                        });
+
+                        if (relation[0].get(column) != value)
+                            relation[0].set(column, value);
+
+                    });
+                }
+            });
+        };
+
+
+        this.on('add', function (store, records, index) {
+            Ext.each(records, function (record) {
+                if (store.changes.indexOf(record) == -1) {
+                    //TODO:
+                    //                    record.set('_sysStatus', 1);
+                    //                    record.set('_sysName', this.otype);
+                    store.changes.push(record);
+                    computeFields(record);
+                    calculateColumns(record);
+                    calculateRows(record);
+                }
+            }, this);
+        });
+
+        this.on('remove', function (store, record, index) {
+            var sysStatus = record.get('_sysStatus');
+            if (sysStatus == 1)
+            //if remove new record, just take it out from changes array
+                store.changes.remove(record);
+            else if (store.changes.indexOf(record) < 0) {
+                // push record in changes
+                store.changes.push(record);
+            }
+            record.set('_sysStatus', 3);
+        });
+
+        this.on('update', function (store, record, action) {
+            if (action == Ext.data.Record.REJECT || action == Ext.data.Record.COMMIT) {
+                if (store.changes.indexOf(record) >= 0)
+                    store.changes.remove(record);
+                /// remove rejected new record
+                if (action == Ext.data.Record.REJECT && record.get('_sysStatus') == 1)
+                    this.remove(record);
+            }
+            else if (action == Ext.data.Record.EDIT) {
+                if (store.changes.indexOf(record) == -1) {
+                    store.changes.push(record);
+                    if (record.get('_sysStatus') != 1)
+                        record.set('_sysStatus', 2);
+                }
+                computeFields(record);
+                calculateColumns(record);
+                calculateRows(record);
+            }
+        });
+
+        var maskControls = function (message) {
+            WebLight.each(current.boundControls, function (item, index, array) {
+                if (item.getEl) {
+                    var el = item.getEl();
+
+                    if (item.autoStoreMask === false)
+                        return;
+
+                    if (el && el.mask && el.isMasked && !el.isMasked())
+                        el.mask(message, 'x-mask-loading');
+                }
+            }, current);
+        };
+
+        var unmaskControls = function () {
+            WebLight.each(current.boundControls, function (item, index, array) {
+                if (item.getEl) {
+                    var el = item.getEl();
+                    ///ATTENTION, cannot check el.isMasked(), 
+                    /// because if element is hidden or parent is hidden, it always return false even if masked
+                    if (el && el.unmask)    // && el.isMasked && el.isMasked())
+                        el.unmask();
+                }
+            }, current);
+        };
+
+        this.on('beforeload', function () {
+
+            maskControls(Ext.LoadMask.prototype.msg);
+        }, this);
+        this.on('load', function () {
+            /// ensure selectedIndex less than page count;
+            current.selectedIndex(current.selectedIndex());
+            /// let method executed after other event listener
+            unmaskControls();
+        });
+
+        this.on('beforesubmit', function () {
+            maskControls('Saving');
+        });
+        this.on('submit', function () {
+            unmaskControls();
+        });
+
+        //        me.on('datachanged', function () {
+        //            me.changes = [];
+        //        });
+
+        me.on('datachanged', function () {
+            me._columnSummaryRelations = null;
+            me.clearComputedFieldSettings();
+            me._rowSummaryRelations = null;
+            me.changes = [];
+
+            setTimeout(function () {
+                me.each(function (record) {
+                    computeFields(record);
+                    calculateColumns(record);
+                });
+                calculateRows();
+            }, 100);
+        });
+
+    },
+    bindControl: function (control) {
+        if (this.boundControls.indexOf(control) < 0)
+            this.boundControls.push(control);
+    },
+    unbindControl: function (control) {
+        if (this.boundControls.indexOf(control) >= 0)
+            this.boundControls.remove(control);
+    },
+
+    getChangedRecords: function () {
+        return this.changes || [];
+    },
+
+
+    rejectChanges: function () {
+        WebLight.data.Store.superclass.rejectChanges.call(this);
+        this.changes = [];
+    },
+    /// load data
+    load: function (options) {
+        if (!this.trackingChanges || this.changes.length == 0)
+        { return WebLight.data.Store.superclass.load.call(this, options); }
+        else
+            Ext.MessageBox.confirm('Confirm', discardMessage, function (btn) {
+                if (btn == 'yes')
+                    return WebLight.data.Store.superclass.load.call(this, options);
+            }, this);
+        return false;
+    },
+
+    // create new record 
+    newRecord: function (defaultData) {
+        var me = this;
+        if (!WebLight.isDefined(this.recordType)) {
+            alert('record Type not defined');
+            return null;
+        }
+
+        var id = null;
+        if (me.idProperty && defaultData && defaultData[me.idProperty])
+            id = defaultData[me.idProperty];
+        return new this.recordType(Ext.apply(defaultData || {}, { _sysStatus: 1 }), id);
+    },
+
+    isNewRecord: function (record) {
+        return record.get('_sysStatus') == 1;
+    },
+
+    selectedIndex: function () {
+        if (!this._selectedIndex)
+            this._selectedIndex = 0;
+
+        if (!arguments || arguments.length == 0)
+            return this._selectedIndex;
+
+        var index = arguments[0];
+        if (index < 0)
+            index = 0;
+
+        if (this._selectedIndex != index || this._selectedIndex >= this.getCount()) {
+            if (this.getCount() == 0)
+                this._selectedIndex = -1;
+            else
+                this._selectedIndex = index;
+
+            if (this._selectedIndex >= this.getCount())
+                this._selectedIndex = 0;
+        }
+        /// CANNOT put fireEvent in above scope, because if store reload,and index in count range, the event not fired
+        /// but it need be fired, because need update formpanel selected record
+        this.fireEvent('selectedIndexChanged', this, this._selectedIndex);
+        return this;
+    },
+
+    _rowSummaryRelations: null,
+
+    addRowRelations: function (type, source, target, columns) {
+        var me = this;
+        if (type == 'sum') {
+            if (me._rowSummaryRelations == null)
+                me._rowSummaryRelations = [];
+
+            var sources = source;
+            if (!WebLight.isArray(source))
+                sources = [source];
+
+            var targetExisted = false;
+            WebLight.each(me._rowSummaryRelations, function (item, index) {
+                if (item[0] == target) {
+                    item[2] = item[2].concat(sources).unique();
+                    targetExisted = true;
+                    return true;
+                }
+            });
+
+            if (!targetExisted)
+                me._rowSummaryRelations.push([target, columns, sources]);
+
+        }
+        return me;
+    },
+
+
+
+    _computedFields: null,
+    clearComputedFieldSettings: function () {
+        var me = this;
+        me._computedFields = null;
+    },
+    setComputedField: function (field, computeType, expression) {
+        var me = this;
+        if (me._computedFields == null)
+            me._computedFields = [];
+
+        WebLight.each(me._computedFields, function (item, index) {
+            if (item[0] == field) {
+                me._computedFields.remove(item);
+                return true;
+            }
+        });
+
+        me._computedFields.push([field, computeType, expression]);
+    },
+
+    _columnSummaryRelations: null,
+    addColumnRelations: function (type, source, target) {
+        var me = this;
+        if (type == 'sum') {
+
+            if (me._columnSummaryRelations == null)
+                me._columnSummaryRelations = [];
+
+            var sources = source;
+            if (!WebLight.isArray(source))
+                sources = [source];
+
+            me._columnSummaryRelations.push([target, sources]);
+        }
+    }
+});
+
+
+
+WebLight.data.Store.create = function (cacheId, creator) {
+    // shift arguments if data argument was omited
+    if (jQuery.isFunction(cacheId)) {
+        creator = cacheId;
+        cacheId = null;
+    }
+
+    if (!WebLight.data.Store.__cachedStores)
+        WebLight.data.Store.__cachedStores = new Ext.util.MixedCollection();
+
+    var store;
+    if (cacheId) {
+        store = WebLight.data.Store.__cachedStores.get(cacheId);
+        if (store)
+            return store;
+    }
+
+    store = creator();
+
+    if (cacheId)
+        WebLight.data.Store.__cachedStores.add(cacheId, store);
+
+    return store;
+};
+
+
 
 WebLight.namespace('Bud.data');
 
@@ -2143,6 +2575,11 @@ Bud.data.XmlStore = WebLight.extend(WebLight.data.Store, {
         }
 
         Bud.data.XmlStore.superclass.constructor.call(this, config);
+
+        this.on('beforeload', function () { fin.bud.loading(); });
+        this.on('beforesubmit', function () { fin.bud.saving(); });
+        this.on('submit', function () { fin.bud.saved(); });
+        this.on('load', function () { fin.bud.loaded(); });
 
     },
 
@@ -2367,7 +2804,7 @@ Bud.data.AuthorizationStore = WebLight.extend(Bud.data.XmlStore, {
     },
 
     loadSampleData: function () {
-        this.loadData(_builtInTemplate_efa21bad[0]);
+        this.loadData(_builtInTemplate_23fed001[0]);
     },
 
     allowBudgetRead: function () {
@@ -2788,7 +3225,7 @@ Bud.data.IncomeTypeStore = WebLight.extend(Bud.data.XmlStore, {
     },
 
     loadSampleData: function () {
-        this.loadData(_builtInTemplate_efa21bad[1]);
+        this.loadData(_builtInTemplate_23fed001[1]);
     },
 
     addAttributes: function (data) {
@@ -2823,7 +3260,7 @@ Bud.data.PeriodDefinitionStore = WebLight.extend(Ext.data.XmlStore, {
     },
 
     loadSampleData: function () {
-        var xml = _builtInTemplate_efa21bad[2];
+        var xml = _builtInTemplate_23fed001[2];
         var doc;
         if (window.ActiveXObject) {
             doc = new ActiveXObject("Microsoft.XMLDOM");
@@ -3168,7 +3605,7 @@ Bud.data.BudShiftTypeStore = Ext.extend(Bud.data.XmlStore, {
                { name: 'title', mapping: '@title' }
            ],
     loadSampleData: function () {
-        this.loadData(_builtInTemplate_efa21bad[3]);
+        this.loadData(_builtInTemplate_23fed001[3]);
     }
 
 });
@@ -4166,10 +4603,10 @@ Bud.data.BudFinalLaborCalculationSummaryStore = WebLight.extend(Bud.data.XmlStor
     },
 
     loadSampleData: function () {
-        this.loadData(_builtInTemplate_efa21bad[4]);
+        this.loadData(_builtInTemplate_23fed001[4]);
     },
     loadSampleData4Retail: function () {
-        this.loadData(_builtInTemplate_efa21bad[5]);
+        this.loadData(_builtInTemplate_23fed001[5]);
     }
 });
 
@@ -4996,7 +5433,7 @@ Bud.data.BudAdjustmentStore = Ext.extend(Bud.data.XmlStore, {
         this._hcmHouseCode = hcmHouseCode;
         this._hcmJob = hcmJob;
 
-        this.loadData(_builtInTemplate_efa21bad[6]);
+        this.loadData(_builtInTemplate_23fed001[6]);
     },
 
     relateTo: function (store) {
@@ -6049,6 +6486,10 @@ Bud.page.BudgetPage = WebLight.extend(WebLight.Page, {
 
     createChildControls: function () {
         var me = this;
+
+        window.isSavedSuccessfully = false;
+
+
         me.budAnnualBudgetStore = new Bud.data.BudAnnualBudgetStore();
         me.annualInformationStore = new Bud.data.BudAnnualInformationStore();
 
@@ -6126,7 +6567,7 @@ WebLight.namespace('Bud.page');
 
 Bud.page.BudgetAdjustmentsPage = WebLight.extend(Bud.page.BudgetPage, {
     title: 'Bgt Adj',
-    html: _builtInTemplate_efa21bad[7],
+    html: _builtInTemplate_23fed001[7],
 
     _adjustmentRemoteStore: null,
     _adjustmentStore: null,
@@ -6315,7 +6756,7 @@ Bud.page.BudgetAdjustmentsPage = WebLight.extend(Bud.page.BudgetPage, {
     printBudgetAdjustmentGrid: function () {
         var me = this;
 
-        Ext.ux.Printer.print('Budget Adjustments', _builtInTemplate_efa21bad[8],
+        Ext.ux.Printer.print('Budget Adjustments', _builtInTemplate_23fed001[8],
          { incomeTypes: me._adjustmentGrid,
              'hcmHouseCodeTitle': me.getHcmHouseCodeTitle(),
              'hcmJobTitle': me.getHcmJobTitle(),
@@ -6402,7 +6843,7 @@ WebLight.namespace('Bud.page');
 
 Bud.page.BudgetApprovalPage = WebLight.extend(Bud.page.BudgetPage, {
     title: 'Bgt Approval',
-    html: _builtInTemplate_efa21bad[9],
+    html: _builtInTemplate_23fed001[9],
 
     _annualForm: null,
     _annualStore: null,
@@ -6466,10 +6907,10 @@ Bud.page.BudgetApprovalPage = WebLight.extend(Bud.page.BudgetPage, {
                 { fieldLabel: 'Send Email to', name: 'email', xtype: 'textfield' },
                 { fieldLabel: 'Subject', name: 'subject', xtype: 'textarea', height: 35 },
                 { fieldLabel: 'Comments', name: 'comments', xtype: 'textarea', height: 100 }
-            ],
+            ], store: this._annualStore,
             buttons: [this._budApprovedButton, this._budRejectButton]
-        })
-        this._annualForm.bindStore(this._annualStore);
+        });
+        //this._annualForm.bindStore(this._annualStore);
     },
 
     createAnnualHistoryGrid: function () {
@@ -6491,14 +6932,14 @@ Bud.page.BudgetApprovalPage = WebLight.extend(Bud.page.BudgetPage, {
         this._annualHistoryGrid = new WebLight.grid.GridPanel({
             ctCls: 'ux-grid-1', height: 400,
             enableHdMenu: false,
-            cm: colModel
+            cm: colModel, store: this._annualHistoryStore
         });
 
-        this._annualHistoryGrid.bindStore(this._annualHistoryStore);
+        //this._annualHistoryGrid.bindStore(this._annualHistoryStore);
     },
 
     createChildControls: function () {
-
+        var me = this;
         this._annualStore = new Bud.data.BudAnnualBudgetStore();
         this._annualHistoryStore = new Bud.data.BudAnnualBudgetHistoryStore();
 
@@ -6506,8 +6947,16 @@ Bud.page.BudgetApprovalPage = WebLight.extend(Bud.page.BudgetPage, {
 
         this._annualStore.on('load', function () { fin.bud.modified(false); });
 
+
         this.createAnnualForm();
         this.createAnnualHistoryGrid();
+
+        this.grouping([this, this._annualStore, this._annualHistoryStore], {
+            load: function () {
+                me.refreshButtons();
+            }
+        });
+
 
         this.addChildControl(this._annualForm, 'budget-approval-form');
         this.addChildControl(this._annualHistoryGrid, 'budget-approval-grid');
@@ -6536,11 +6985,7 @@ Bud.page.BudgetApprovalPage = WebLight.extend(Bud.page.BudgetPage, {
 
         this.on('modechanged', function () { me.refreshButtons(); });
 
-        this.grouping([this, this._annualStore, this._annualHistoryStore], {
-            load: function () {
-                me.refreshButtons();
-            }
-        });
+
 
         Bud.page.BudgetApprovalPage.superclass.dataBind.call(this);
     },
@@ -6574,7 +7019,7 @@ WebLight.namespace('Bud.page');
 
 Bud.page.BudgetDetailsPage = WebLight.extend(Bud.page.BudgetPage, {
     title: 'Bgt Details',
-    html: _builtInTemplate_efa21bad[10],
+    html: _builtInTemplate_23fed001[10],
 
     _budDetailsGrid: null,
     _budDetailsStore: null,
@@ -6746,7 +7191,7 @@ Bud.page.BudgetDetailsPage = WebLight.extend(Bud.page.BudgetPage, {
     printDetailsGrid: function () {
         var me = this;
 
-        Ext.ux.Printer.print('Budget Details', _builtInTemplate_efa21bad[11],
+        Ext.ux.Printer.print('Budget Details', _builtInTemplate_23fed001[11],
          { incomeTypes: me._budDetailsGrid,
              'hcmHouseCodeTitle': me.getHcmHouseCodeTitle(),
              'hcmJobTitle': me.getHcmJobTitle(),
@@ -6875,7 +7320,7 @@ WebLight.namespace('Bud.page');
 
 Bud.page.BudgetSummaryPage = WebLight.extend(Bud.page.BudgetPage, {
     title: 'Bgt Summary',
-    html: _builtInTemplate_efa21bad[12],
+    html: _builtInTemplate_23fed001[12],
 
     _summaryGridColumnModel: null,
     _summaryGrid: null,
@@ -6992,7 +7437,7 @@ Bud.page.BudgetSummaryPage = WebLight.extend(Bud.page.BudgetPage, {
     printSummaryGrid: function () {
         var me = this;
 
-        Ext.ux.Printer.print('Budget Summary', _builtInTemplate_efa21bad[13],
+        Ext.ux.Printer.print('Budget Summary', _builtInTemplate_23fed001[13],
          { incomeTypes: me._summaryGrid,
              'hcmHouseCodeTitle': me.getHcmHouseCodeTitle(),
              'hcmJobTitle': me.getHcmJobTitle(),
@@ -7125,7 +7570,7 @@ WebLight.namespace('Bud.page');
 
 Bud.page.CapitalExpendituresPage = WebLight.extend(Bud.page.BudgetPage, {
     title: 'Capital Exp',
-    html: _builtInTemplate_efa21bad[14],
+    html: _builtInTemplate_23fed001[14],
 
     _capitalExpenditureTab: null,
     _appJDEGLTransactionStore: null,
@@ -7504,7 +7949,7 @@ Bud.page.CapitalExpendituresPage = WebLight.extend(Bud.page.BudgetPage, {
         var me = this;
         me._newCapitalEquipmentGrid.getColumnModel().config[me._newCapitalEquipmentGrid.getColumnModel().config.length - 1].hidden = true;
 
-        Ext.ux.Printer.print('New Capital Equipment Worksheet', _builtInTemplate_efa21bad[15],
+        Ext.ux.Printer.print('New Capital Equipment Worksheet', _builtInTemplate_23fed001[15],
          { incomeTypes: me._newCapitalEquipmentGrid,
              'hcmHouseCodeTitle': me.getHcmHouseCodeTitle(),
              'hcmJobTitle': me.getHcmJobTitle(),
@@ -7519,7 +7964,7 @@ Bud.page.CapitalExpendituresPage = WebLight.extend(Bud.page.BudgetPage, {
         var me = this;
         me._capitalEquipmentDisposalGrid.getColumnModel().config[me._capitalEquipmentDisposalGrid.getColumnModel().config.length - 1].hidden = true;
 
-        Ext.ux.Printer.print('Capital Equipment Disposal Worksheet', _builtInTemplate_efa21bad[16],
+        Ext.ux.Printer.print('Capital Equipment Disposal Worksheet', _builtInTemplate_23fed001[16],
          { incomeTypes: me._capitalEquipmentDisposalGrid,
              'hcmHouseCodeTitle': me.getHcmHouseCodeTitle(),
              'hcmJobTitle': me.getHcmJobTitle(),
@@ -7533,7 +7978,7 @@ Bud.page.CapitalExpendituresPage = WebLight.extend(Bud.page.BudgetPage, {
     printDepreciationWorksheet: function () {
         var me = this;
 
-        Ext.ux.Printer.print('Depreciation Worksheet', _builtInTemplate_efa21bad[17],
+        Ext.ux.Printer.print('Depreciation Worksheet', _builtInTemplate_23fed001[17],
          { incomeTypes: me._deprecationGrid,
              incomeTypes2: me._deprecationGrid2,
              'hcmHouseCodeTitle': me.getHcmHouseCodeTitle(),
@@ -7546,7 +7991,7 @@ Bud.page.CapitalExpendituresPage = WebLight.extend(Bud.page.BudgetPage, {
     printDepreciationDisposalWorksheet: function () {
         var me = this;
 
-        Ext.ux.Printer.print('Depreciation Disposal Worksheet', _builtInTemplate_efa21bad[18],
+        Ext.ux.Printer.print('Depreciation Disposal Worksheet', _builtInTemplate_23fed001[18],
          { incomeTypes: me._deprecationDisposalGrid,
              'hcmHouseCodeTitle': me.getHcmHouseCodeTitle(),
              'hcmJobTitle': me.getHcmJobTitle(),
@@ -7706,7 +8151,9 @@ Bud.page.CapitalExpendituresPage = WebLight.extend(Bud.page.BudgetPage, {
         });
 
         this.grouping([this, this._newCapitalEquipmentStore, this._capitalEquipmentDisposalStore]
-        , null);
+        , {
+
+        });
 
         Bud.page.CapitalExpendituresPage.superclass.dataBind.call(this);
         this.onModeChanged();
@@ -7746,7 +8193,7 @@ WebLight.namespace('Bud.page');
 
 Bud.page.ContractBillingPage = WebLight.extend(Bud.page.BudgetPage, {
     title: 'Contract Billing',
-    html: _builtInTemplate_efa21bad[19],
+    html: _builtInTemplate_23fed001[19],
     arrayStore: null,
 
     _billingPeriodLabel: null,
@@ -8101,7 +8548,8 @@ Bud.page.ContractBillingPage = WebLight.extend(Bud.page.BudgetPage, {
 
         this.grouping([this, this._fiscalPeriodStore, this._liveIncomeTypeStore, this._billingPeriodStore,
              this._incomeTypeStore, this._hcmHouseDetailStore]
-        , { load: function () {
+        , { 
+            load: function () {
 
             var billingCycleFrequencyTypeId = Bud.Context.primaryNav.currentBillingCycleFrequencyTypeId;               //me._hcmHouseDetailStore.getAt(0).get('billingCycleFrequencyTypeId');
             switch (billingCycleFrequencyTypeId) {
@@ -8157,7 +8605,7 @@ Bud.page.ContractBillingPage = WebLight.extend(Bud.page.BudgetPage, {
 
     print: function () {
 
-        Ext.ux.Printer.print('Contract Billing', _builtInTemplate_efa21bad[20],
+        Ext.ux.Printer.print('Contract Billing', _builtInTemplate_23fed001[20],
          { incomeTypes: this._incomeTypeGrid,
              'billing-period': this._billingPeriodLabel.getValue(),
              'current-rate': Ext.util.Format.number(this._currentBillingRateTextBox.getValue(), '0,000.00'),
@@ -8207,7 +8655,7 @@ WebLight.namespace('Bud.page');
 
 Bud.page.EmployeePage = WebLight.extend(Bud.page.BudgetPage, {
     title: 'Employee',
-    html: _builtInTemplate_efa21bad[21],
+    html: _builtInTemplate_23fed001[21],
 
     _employeeStore: null,
 
@@ -8415,14 +8863,15 @@ Bud.page.EmployeePage = WebLight.extend(Bud.page.BudgetPage, {
             current._statisticsForm.getFieldByName('averageWageRate').setValue(current._employeeStore.averageWageRate);
         }, this);
 
-        this.grouping([this, this._employeeStore], null);
+        this.grouping([this, this._employeeStore], {
+        });
 
         Bud.page.EmployeePage.superclass.dataBind.call(this);
         this.onModeChanged();
     },
 
     print: function () {
-        Ext.ux.Printer.print('Employee', _builtInTemplate_efa21bad[22],
+        Ext.ux.Printer.print('Employee', _builtInTemplate_23fed001[22],
          { incomeTypes: this._employeeGrid,
              'numberOfEmployees': this._statisticsForm.getFieldByName('numberOfEmployees').getValue(),
              'averageBaseWageRate': this._statisticsForm.getFieldByName('averageBaseWageRate').getValue(),
@@ -8456,7 +8905,7 @@ WebLight.namespace('Bud.page');
 
 Bud.page.FinalLaborCalculationsPage = WebLight.extend(Bud.page.BudgetPage, {
     title: 'Fnl Labor Calc',
-    html: _builtInTemplate_efa21bad[23],
+    html: _builtInTemplate_23fed001[23],
 
     _flcsStore: null,
     _flcsGrid: null,
@@ -8638,7 +9087,7 @@ Bud.page.FinalLaborCalculationsPage = WebLight.extend(Bud.page.BudgetPage, {
         this.addChildControl(this._saveButton, 'save-button');
 
         this._printButton = Ext.create({ xtype: 'button', ctCls: 'ux-button-1', text: 'Print', width: 80, handler: function () {
-            Ext.ux.Printer.print('Final Labor Calculation', _builtInTemplate_efa21bad[24],
+            Ext.ux.Printer.print('Final Labor Calculation', _builtInTemplate_23fed001[24],
          { finalLabors: me._flcsGrid,
              'hcmHouseCodeTitle': me.getHcmHouseCodeTitle(),
              'hcmJobTitle': me.getHcmJobTitle(),
@@ -8853,13 +9302,13 @@ WebLight.namespace('Bud.page');
 
 Bud.page.LaborCalculationsPage = WebLight.extend(Bud.page.BudgetPage, {
     title: 'Labor Calc',
-    html: _builtInTemplate_efa21bad[25],
-    sickPayHtml: _builtInTemplate_efa21bad[26],
-    legalHolidaysHtml: _builtInTemplate_efa21bad[27],
-    insuranceHtml: _builtInTemplate_efa21bad[28],
-    netProdDaysPerEmpFtesHtml: _builtInTemplate_efa21bad[29],
-    laborStandardsHtml: _builtInTemplate_efa21bad[30],
-    laborStandardsInDollarsHtml: _builtInTemplate_efa21bad[31],
+    html: _builtInTemplate_23fed001[25],
+    sickPayHtml: _builtInTemplate_23fed001[26],
+    legalHolidaysHtml: _builtInTemplate_23fed001[27],
+    insuranceHtml: _builtInTemplate_23fed001[28],
+    netProdDaysPerEmpFtesHtml: _builtInTemplate_23fed001[29],
+    laborStandardsHtml: _builtInTemplate_23fed001[30],
+    laborStandardsInDollarsHtml: _builtInTemplate_23fed001[31],
 
     _staffingSummaryStore: null,
     _budLaborCalculationStore: null,
@@ -8906,7 +9355,7 @@ Bud.page.LaborCalculationsPage = WebLight.extend(Bud.page.BudgetPage, {
 
     createInsuranceForm: function (config) {
         var me = this;
-        return new WebLight.form.FormView({ html: this.insuranceHtml, items: [
+        return new WebLight.form.FormView({ html: this.insuranceHtml, autoStoreMask:false, items: [
         { xtype: 'numberfield', name: 'singleHMOCount', decimalPrecision: 0, maskRe: '' },
          { xtype: 'numberfield', name: 'singlePOSCount', decimalPrecision: 0 },
          { xtype: 'numberfield', name: 'singleMedical3Count', decimalPrecision: 0 },
@@ -9157,7 +9606,7 @@ Bud.page.LaborCalculationsPage = WebLight.extend(Bud.page.BudgetPage, {
     },
 
     printVacation: function () {
-        Ext.ux.Printer.print('Vacation', _builtInTemplate_efa21bad[32],
+        Ext.ux.Printer.print('Vacation', _builtInTemplate_23fed001[32],
          { incomeTypes: this._vacationGrid,
              'averageVacation': this._averageVacationBox.getValue(),
              'hcmHouseCodeTitle': this.getHcmHouseCodeTitle(),
@@ -9242,7 +9691,7 @@ Bud.page.LaborCalculationsPage = WebLight.extend(Bud.page.BudgetPage, {
             return;
         var record = this._budLaborCalculationStore.getAt(0);
 
-        Ext.ux.Printer.print('Labor Standards', _builtInTemplate_efa21bad[33],
+        Ext.ux.Printer.print('Labor Standards', _builtInTemplate_23fed001[33],
          {
              'hcmHouseCodeTitle': this.getHcmHouseCodeTitle(),
              'hcmJobTitle': this.getHcmJobTitle(),
@@ -9346,7 +9795,7 @@ Bud.page.LaborCalculationsPage = WebLight.extend(Bud.page.BudgetPage, {
         var record = this._budLaborCalculationStore.getAt(0);
 
         Ext.ux.Printer.print('Labor Standard In Dollars',
-            _builtInTemplate_efa21bad[34],
+            _builtInTemplate_23fed001[34],
         Ext.apply({}, record.data, {
             'hcmHouseCodeTitle': this.getHcmHouseCodeTitle(),
             'hcmJobTitle': this.getHcmJobTitle(),
@@ -9443,7 +9892,7 @@ Bud.page.LaborCalculationsPage = WebLight.extend(Bud.page.BudgetPage, {
     },
 
     printInsurance: function () {
-        Ext.ux.Printer.print('Productive Employees Health/Dental/Life Insurance BI-Weekly Cost', _builtInTemplate_efa21bad[35],
+        Ext.ux.Printer.print('Productive Employees Health/Dental/Life Insurance BI-Weekly Cost', _builtInTemplate_23fed001[35],
          { incomeTypes: this._insuranceGrid,
              'hcmHouseCodeTitle': this.getHcmHouseCodeTitle(),
              'hcmJobTitle': this.getHcmJobTitle(),
@@ -9516,7 +9965,7 @@ Bud.page.LaborCalculationsPage = WebLight.extend(Bud.page.BudgetPage, {
             return;
         var record = this._budLaborCalculationStore.getAt(0);
 
-        Ext.ux.Printer.print('Net Prod Days Per Emp &amp; FTEs', _builtInTemplate_efa21bad[36],
+        Ext.ux.Printer.print('Net Prod Days Per Emp &amp; FTEs', _builtInTemplate_23fed001[36],
          {
              'hcmHouseCodeTitle': this.getHcmHouseCodeTitle(),
              'hcmJobTitle': this.getHcmJobTitle(),
@@ -9645,6 +10094,12 @@ Bud.page.LaborCalculationsPage = WebLight.extend(Bud.page.BudgetPage, {
             //retail
             items = [
              { title: 'Legal Holidays', header: false, border: false, autoHeight: true, items: [gridTitleII, panelII] },
+              { title: 'Prod Employees Health/Dental/Life <br/>and Union Contributions & BI-Weekly Cost', autoHeight: true, header: false, border: false, items: [gridTitleIV, panelIV] }
+            ];
+        }
+        else if (Bud.Context.primaryNav.currentBudgetTemplateId == 5) {
+            //Education
+            items = [
               { title: 'Prod Employees Health/Dental/Life <br/>and Union Contributions & BI-Weekly Cost', autoHeight: true, header: false, border: false, items: [gridTitleIV, panelIV] }
             ];
         }
@@ -10116,7 +10571,7 @@ WebLight.namespace('Bud.page');
 
 Bud.page.ManagementHistoryPage = WebLight.extend(Bud.page.BudgetPage, {
     title: 'Mgt Hist',
-    html: _builtInTemplate_efa21bad[37],
+    html: _builtInTemplate_23fed001[37],
 
     _managementHistoryStore: null,
 
@@ -10309,14 +10764,15 @@ Bud.page.ManagementHistoryPage = WebLight.extend(Bud.page.BudgetPage, {
             fin.bud.modified(false);
         }, this);
 
-        this.grouping([this, this._managementHistoryStore], null);
+        this.grouping([this, this._managementHistoryStore], {
+        });
 
         Bud.page.ManagementHistoryPage.superclass.dataBind.call(this);
         current.onModeChanged();
     },
 
     print: function () {
-        Ext.ux.Printer.print('Management History', _builtInTemplate_efa21bad[38],
+        Ext.ux.Printer.print('Management History', _builtInTemplate_23fed001[38],
          { incomeTypes: this._personalSalaryGrid,
              'hcmHouseCodeTitle': this.getHcmHouseCodeTitle(),
              'hcmJobTitle': this.getHcmJobTitle(),
@@ -10355,16 +10811,18 @@ Bud.form.StaffingHourNumberField = Ext.extend(Ext.form.NumberField, {
 
 Bud.page.StaffingHourPage = WebLight.extend(Bud.page.BudgetPage, {
     title: 'Staffing Hours',
-    html: _builtInTemplate_efa21bad[39],
+    html: _builtInTemplate_23fed001[39],
     arrayStore: null,
 
     _shiftTypeStore: null,
     _staffingDetailStore: null,
     _staffingSummaryStore: null,
+    _educationStaffingStore: null,
 
     _shiftTypeDorpdown: null,
     _staffingDetailGrid: null,
     _staffingSummaryGrid: null,
+    _educatioStaffingGrid: null,
 
     createStaffingDetailGrid: function () {
         var current = this;
@@ -10527,6 +10985,63 @@ Bud.page.StaffingHourPage = WebLight.extend(Bud.page.BudgetPage, {
         });
     },
 
+    createEducationStaffingGrid: function () {
+        var current = this;
+
+        var xRenderer = function (value, metaData, record, rowIndex, colIndex, store) {
+
+            if (typeof value == 'number')
+                return Ext.util.Format.number(value, '0,000.00').replace(/\.00$/gi, '');
+
+            return value;
+        }
+
+        var groupRow = [];
+
+        for (var i = 1; i <= 12; i++) {
+            groupRow.push({ header: String.format('<div style="text-align:center;">Period {0}</div>', i), colspan: 4 });
+        }
+        //groupRow.push({ header: 'Fiscal Year', colspan: 1 });
+
+        var group = new Ext.ux.grid.ColumnHeaderGroup({
+            rows: [groupRow]
+        });
+
+
+        var columns = [];
+
+        for (var i = 1; i <= 12; i++) {
+            columns.push({ header: 'Hours<br/>Per<br/>Day', width: 52, dataIndex: 'hoursPerDay' + i, renderer: xRenderer, editor: new Bud.form.StaffingHourNumberField() });
+            columns.push({ header: 'Avg.<br/>Wage<br/>Rate', width: 52, dataIndex: 'avgWageRate' + i, renderer: xRenderer, editor: new Bud.form.StaffingHourNumberField() });
+            columns.push({ header: 'Days<br/>Per<br/>Month', width: 52, dataIndex: 'daysPerMonth' + i, renderer: xRenderer, editor: new Bud.form.StaffingHourNumberField() });
+            columns.push({ header: 'Amount', width: 60, dataIndex: 'amount' + i, renderer: xRenderer });
+        }
+        //columns.push({ header: 'Amount', dataIndex: 'amountFY', renderer: xRenderer });
+
+        current._educatioStaffingGrid = new Bud.grid.EditorGridPanel({
+            ctCls: 'ux-grid-1', enableHdMenu: false,
+            store: this._educationStaffingStore,
+            height: 150, clicksToEdit: 1,
+            plugins: [group],
+            cm: new Ext.grid.ColumnModel({
+                defaults: { sortable: false, width: 120, renderer: xRenderer, align: 'right' },
+                isCellEditable: function (col, row) {
+                    return col != 48 && col % 4 != 3;
+                },
+                columns: columns
+            })
+        });
+
+        this._educatioStaffingGrid.on('beforeedit', function (e) {
+            if (current.isReadOnlyMode())
+                e.cancel = true;
+        });
+
+        this._educatioStaffingGrid.on('afteredit', function (e) {
+            fin.bud.modified(true);
+        });
+    },
+
     createChildControls: function () {
         var current = this;
         this._shiftTypeStore = new Bud.data.BudShiftTypeStore();
@@ -10569,7 +11084,7 @@ Bud.page.StaffingHourPage = WebLight.extend(Bud.page.BudgetPage, {
         this.addChildControl(Ext.create({ xtype: 'button', ctCls: 'ux-button-1', text: 'Print', width: 80, handler: function () {
             current._staffingDetailGrid.getColumnModel().config[current._staffingDetailGrid.getColumnModel().config.length - 1].hidden = true;
 
-            Ext.ux.Printer.print('Staffing Hour', _builtInTemplate_efa21bad[40],
+            Ext.ux.Printer.print('Staffing Hour', _builtInTemplate_23fed001[40],
          { staffingHours: current._staffingDetailGrid,
              'hcmHouseCodeTitle': current.getHcmHouseCodeTitle(),
              'hcmJobTitle': current.getHcmJobTitle(),
@@ -10586,14 +11101,52 @@ Bud.page.StaffingHourPage = WebLight.extend(Bud.page.BudgetPage, {
         this.createStaffingDetailGrid();
         this.addChildControl(this._staffingDetailGrid, 'staffing-detail-worksheet-grid');
 
+        this._educationStaffingStore = new Bud.data.BudEducationStaffingHourStore();
+
+        this.createEducationStaffingGrid();
+        this.addChildControl(this._educatioStaffingGrid, 'education-staffing-grid');
+
+        this._educationStaffingStore.on('datarefresh', function () {
+            $('#' + current.getClientId('educationFiscalYear')).html(Ext.util.Format.number(current._educationStaffingStore.getAt(0).get('amountFY'), '0,000.00'));
+        });
+
         this._staffingSummaryStore = new Bud.data.BudStaffingHourStore();
         this.createStaffingSummaryGrid();
         this.addChildControl(this._staffingSummaryGrid, 'staffing-hours-summary-worksheet-grid');
+
+
 
         this.addChildControl(this._increasePerWeek = Ext.create({ xtype: 'displayfield' }), 'increase-per-week-textbox');
         this.addChildControl(this._increaseOnLegalHolidays = Ext.create({ xtype: 'displayfield' }), 'increase-on-legal-holidays-textbox');
 
         Bud.page.StaffingHourPage.superclass.createChildControls.call(this);
+
+        this.addChildControl(Ext.create({ xtype: 'button', ctCls: 'ux-button-1', text: 'Save', width: 80, id: current.getClientId('btnEducationSave'),
+            handler: function () {
+                current._educationStaffingStore.submitChanges(function () {
+                    fin.bud.modified(false);
+                    current._educationStaffingStore.load(current.getHcmHouseCode(), current.getHcmJob(),
+                            current.getFscYear(), current._shiftTypeDorpdown.getValue());
+                });
+            }
+        }), 'education-staffing-save-button');
+
+        var toggleWrapper = function () {
+
+            if (Bud.Context.primaryNav.currentBudgetTemplateId == 5) {
+                $('#' + current.getClientId('summayTabLink')).hide();
+                $('#' + current.getClientId('general-wrapper')).hide();
+                $('#' + current.getClientId('education-wrapper')).show();
+            }
+            else {
+                $('#' + current.getClientId('general-wrapper')).show();
+                $('#' + current.getClientId('education-wrapper')).hide();
+            }
+        };
+
+        this.on('render', toggleWrapper);
+        this.on('resume', toggleWrapper);
+        toggleWrapper();
 
         $('#' + this.getClientId('staffing-tab-panel')).tabs();
     },
@@ -10609,14 +11162,16 @@ Bud.page.StaffingHourPage = WebLight.extend(Bud.page.BudgetPage, {
         this.on('contextChanged', function () {
             current._staffingDetailStore.load(current.getHcmHouseCode(), current.getHcmJob(), current.getFscYear(), current._shiftTypeDorpdown.getValue());
             current._staffingSummaryStore.load(current.getHcmHouseCode(), current.getHcmJob(), current.getFscYear(), 0);
+            current._educationStaffingStore.load(current.getHcmHouseCode(), current.getHcmJob(), current.getFscYear());
         });
 
         this.on('modechanged', function () {
             current.onModeChanged();
         });
 
-        this.grouping([this, this._staffingDetailStore, this._staffingSummaryStore]
-        , null);
+        this.grouping([this, this._staffingDetailStore, this._staffingSummaryStore, this._educationStaffingStore]
+        , { 
+        });
 
         this._staffingDetailStore.on('datarefresh', function () {
             current._staffingDetailGrid.getView().refresh();
@@ -10625,6 +11180,10 @@ Bud.page.StaffingHourPage = WebLight.extend(Bud.page.BudgetPage, {
 
         this._staffingSummaryStore.on('datarefresh', function (store) {
             current.refreshSummayValues();
+        });
+
+        this._educationStaffingStore.on('datarefresh', function (store) {
+            current._educatioStaffingGrid.getView().refresh();
         });
 
         Bud.page.StaffingHourPage.superclass.dataBind.call(this);
@@ -10638,19 +11197,40 @@ Bud.page.StaffingHourPage = WebLight.extend(Bud.page.BudgetPage, {
         current._increaseOnLegalHolidays.setValue(current._staffingSummaryStore.shortStaffingOnLegalHolidays);
     },
 
+    refreshUI: function () {
+        var current = this;
+
+        if (Bud.Context.primaryNav.currentBudgetTemplateId == 5) {
+            $('#' + current.getClientId('summayTabLink')).hide();
+            $('#' + current.getClientId('general-wrapper')).hide();
+            $('#' + current.getClientId('education-wrapper')).show();
+        }
+        else {
+            $('#' + current.getClientId('general-wrapper')).show();
+            $('#' + current.getClientId('education-wrapper')).hide();
+        }
+
+    },
+
     onModeChanged: function () {
         var me = this;
         var btnSave = Ext.get(me.getClientId('btnSave'));
+        if (!btnSave)
+            return;
+
         var btnCancel = Ext.get(me.getClientId('btnCancel'));
         var btnAdd = Ext.get(me.getClientId('btnAdd'));
+        var btnEducationSave = Ext.get(me.getClientId('btnEducationSave'));
         if (me.isReadOnlyMode()) {
             btnSave.hide();
             btnCancel.hide();
             btnAdd.hide();
+            btnEducationSave.hide();
         } else {
             btnSave.show();
             btnCancel.show();
             btnAdd.show();
+            btnEducationSave.show();
         }
     }
 });
@@ -10667,7 +11247,7 @@ WebLight.namespace('Bud.page');
 
 Bud.page.StartBudgetPage = WebLight.extend(Bud.page.BudgetPage, {
     title: 'Start Budget',
-    html: _builtInTemplate_efa21bad[41],
+    html: _builtInTemplate_23fed001[41],
 
     _annualInformationStore: null,
     _annualBudgetStore: null,
@@ -10777,7 +11357,7 @@ WebLight.namespace('Bud.page');
 
 Bud.page.SupplyExpendituresPage = WebLight.extend(Bud.page.BudgetPage, {
     title: 'Supply Exp',
-    html: _builtInTemplate_efa21bad[42],
+    html: _builtInTemplate_23fed001[42],
     supplyExpenditureStore: null,
     supplyExpenditureGrid: null,
 
@@ -10894,7 +11474,7 @@ Bud.page.SupplyExpendituresPage = WebLight.extend(Bud.page.BudgetPage, {
 
         this.supplyExpenditureGrid = new Bud.grid.EditorGridPanel({
             ctCls: 'ux-grid-1', width: 1250,
-           enableHdMenu: false, height: 400,
+            enableHdMenu: false, height: 400,
             clicksToEdit: 1,
             viewConfig: { forceFit: true },
             store: this.supplyExpenditureStore,
@@ -10931,7 +11511,7 @@ Bud.page.SupplyExpendituresPage = WebLight.extend(Bud.page.BudgetPage, {
         }
         me.supplyExpenditureGrid.getColumnModel().config[me.supplyExpenditureGrid.getColumnModel().config.length - 1].hidden = true;
 
-        Ext.ux.Printer.print('Supply Expenditure', _builtInTemplate_efa21bad[43],
+        Ext.ux.Printer.print('Supply Expenditure', _builtInTemplate_23fed001[43],
          { incomeTypes: me.supplyExpenditureGrid,
              'title': title,
              'hcmHouseCodeTitle': me.getHcmHouseCodeTitle(),
@@ -10999,7 +11579,8 @@ Bud.page.SupplyExpendituresPage = WebLight.extend(Bud.page.BudgetPage, {
         });
 
         this.grouping([this, this.supplyExpenditureStore]
-        , null);
+        , {
+        });
 
         Bud.page.SupplyExpendituresPage.superclass.dataBind.call(this);
         this.onModeChanged();
@@ -11473,5 +12054,124 @@ Bud.data.BudProjectedDetailStore = WebLight.extend(Bud.data.XmlStore, {
         { name: 'period14', mapping: '@period14', type: 'float' },
         { name: 'total', type: 'float' }
     ]
+});
+
+/// <reference path="XmlStore.js" />
+
+Bud.data.BudEducationStaffingHourStore = Ext.extend(Bud.data.XmlStore, {
+    url: '/net/crothall/chimes/fin/bud/act/Provider.aspx',
+
+    moduleId: 'bud',
+
+    storeId: 'budEducationStaffingHours',
+
+    _hcmHouseCode: 0,
+    _fscYear: 0,
+    _hcmJob: 0,
+
+    isDataLoaded: false,
+
+    constructor: function (config) {
+        var me = this;
+
+        var fields = [{ name: 'id', mapping: '@id', type: 'float' },
+                { name: 'hcmHouseCode', mapping: '@hcmHouseCode', type: 'float' },
+                { name: 'hcmJob', mapping: '@hcmJob', type: 'float' },
+                { name: 'fscYear', mapping: '@fscYear', type: 'float'}];
+
+        for (var i = 1; i <= 12; i++) {
+            fields = fields.concat([{ name: 'daysPerMonth' + i, mapping: '@daysPerMonth' + i, type: 'float' },
+                { name: 'hoursPerDay' + i, mapping: '@hoursPerDay' + i, type: 'float' },
+                { name: 'avgWageRate' + i, mapping: '@avgWageRate' + i, type: 'float' },
+                 { name: 'amount' + i, mapping: '@amount' + i, type: 'float'}]);
+        }
+
+        fields.push({ name: 'amountFY', mapping: '@amountFY', type: 'float' });
+
+        config = Ext.apply(config || {}, { record: 'item',
+            idProperty: '@id',
+            fields: fields
+        });
+
+        Bud.data.BudEducationStaffingHourStore.superclass.constructor.call(this, config);
+
+        this.on({
+            add: { fn: this.updateTotals },
+            remove: { fn: this.updateTotals },
+            update: { fn: this.updateTotals },
+            datachanged: { fn: me.updateTotals }
+        });
+
+    },
+
+    round2: function (d) {
+        return Math.round(d * 100) / 100;
+    },
+
+    updateTotals: function (commitIt) {
+        var me = this;
+
+        this.suspendEvents(false);
+
+        if (this.getCount() == 0) {
+            var newItem = {};
+            for (var i = 1; i <= 12; i++) {
+                newItem['hoursPerDay' + i] = 0;
+                newItem['daysPerMonth' + i] = 0;
+                newItem['avgWageRate' + i] = 0;
+            }
+            this.add(this.newRecord(newItem));
+        }
+
+        var totalAmount = 0;
+        this.each(function (record) {
+            for (var i = 1; i <= 12; i++) {
+                amount = me.round2(record.get('hoursPerDay' + i) * record.get('daysPerMonth' + i) * record.get('avgWageRate' + i)) || 0;
+                record.set('amount' + i, amount);
+                totalAmount += amount;
+            }
+            record.set('amountFY', totalAmount);
+        });
+
+        this.each(function (record) {
+            var total = 0;
+            for (var i = 0; i < 16; i++) {
+                var fieldName = String.format('period{0}', i + 1);
+                total += record.get(fieldName);
+            }
+            record.set('total', me.round2(total));
+        });
+
+        // commit changes for data loaded.
+        // mark all data is valid, not dirty.
+        if (commitIt === true)
+            me.commitChanges();
+
+        this.resumeEvents();
+
+        this.fireEvent('datarefresh', this);
+    },
+
+    getCriteria: function () {
+        return { hcmHouseCode: this._hcmHouseCode, fscYear: this._fscYear, hcmJob: this._hcmJob };
+    },
+
+    addAttributes: function (data) {
+        Ext.apply(data, { hcmHouseCode: this._hcmHouseCode, hcmJob: this._hcmJob, fscYear: this._fscYear });
+    },
+
+    getChangedRecords: function () {
+        return [this.getAt(0)];
+    },
+
+    load: function (hcmHouseCode, hcmJob, fscYear) {
+        var me = this;
+
+        this._fscYear = fscYear;
+        this._hcmHouseCode = hcmHouseCode;
+        this._hcmJob = hcmJob;
+
+        Bud.data.BudEducationStaffingHourStore.superclass.load.call(this);
+    }
 });
 

@@ -73,6 +73,7 @@ ii.Class({
 			me.houseCodeJobChanged = false;
 			me.employeeValidationCalledFrom = "";
 			me.employeeNameChanged = false;
+			me.previousSSN = "";
 			me.loadCount = 0;
 
 			me.replaceContext = false;        // replace the system context menu?
@@ -240,7 +241,14 @@ ii.Class({
 			
 				ii.timer.timing("Page displayed");
 				me.loadCount = 1;
-				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.session.registerFetchNotify(me.sessionLoaded, me);
+				me.employeeGeneralMasterStore.fetch("userId:[user],personId:0,", me.typesTableLoaded, me);
+				me.stateStore.fetch("userId:[user]", me.typesTableLoaded, me);
+				me.unionStatusTypeStore.fetch("userId:[user],", me.typesTableLoaded, me);
+				me.stateAdditionalInfoStore.fetch("userId:[user],", me.typesTableLoaded, me);
+				me.federalAdjustmentStore.fetch("userId:[user]", me.typesTableLoaded, me);
+				me.payFrequencyTypeStore.fetch("userId:[user]", me.typesTableLoaded, me);
+				me.separationCodeStore.fetch("userId:[user],terminationType:" + me.terminationType + ",", me.typesTableLoaded, me);								
 				me.statusStore.fetch("userId:[user],", me.statusTypesLoaded, me);
 			}				
 			else
@@ -502,7 +510,7 @@ ii.Class({
 			me.employeeSearch = new ui.ctl.Grid({
 				id: "EmployeeSearch",
 				appendToId: "divForm",
-				selectFunction: function( index ){ me.itemSelect(index); },
+				selectFunction: function( index ) { me.itemSelect(index); },
 				allowAdds: false
 			});
 			
@@ -517,6 +525,9 @@ ii.Class({
 			me.employeeSearch.addColumn("houseCodeRM", "houseCodeRM", "Regional Manager", "Regional Manager", null);
 			me.employeeSearch.addColumn("employeeNumber", "employeeNumber", "Employee #", "Employee #", 100);
 			me.employeeSearch.addColumn("ssn", "ssn", "SSN", "SSN", 100);
+			me.employeeSearch.addColumn("", "", "History", "History", 80, function(employee) {
+				return "<div class='viewHistoryLink' title='View the employee history' onclick='fin.empSearchUi.actionViewHistory(" + employee.employeeNumber + ");'>View</div>";
+			});
 			me.employeeSearch.capColumns();
 			me.employeeSearch.setHeight($("#pageLoading").height() - 130);
 
@@ -526,7 +537,7 @@ ii.Class({
 			$("#EmployeeSearch").bind("dblclick", me, me.employeeDetailsShow);
 			
 			me.employeeSSN = new ui.ctl.Input.Text({
-		        id: "EmployeeSSN",					
+		        id: "EmployeeSSN",
 				maxLength: 11
 			});
 			
@@ -1556,6 +1567,15 @@ ii.Class({
 			
 			me.employeeDeviceGroup.makeEnterTab()
 				.setValidationMaster( me.validator )
+			
+			me.notes = $("#Notes")[0];
+			$("#Notes").height(100);
+			$("#Notes").keypress(function() {
+				if (me.notes.value.length > 249) {
+					me.notes.value = me.notes.value.substring(0, 250);
+					return false;
+				}
+			});
 				
 			me.federalExemptions = new ui.ctl.Input.Text({
 		        id: "EmployeeFedExemptions",
@@ -1915,7 +1935,8 @@ ii.Class({
 			me.employeeAlternatePayRateB.text.tabIndex = 407;
 			me.employeeAlternatePayRateC.text.tabIndex = 408;
 			me.employeeAlternatePayRateD.text.tabIndex = 409;
-			me.employeeDeviceGroup.text.tabIndex = 410; 
+			me.employeeDeviceGroup.text.tabIndex = 410;
+			me.notes.tabIndex = 411;
 			//Federal Tax
 			me.federalExemptions.text.tabIndex = 500; 
 			me.maritalStatusFederalTaxType.text.tabIndex = 501; 
@@ -2390,18 +2411,112 @@ ii.Class({
 			return 0;
 		},
 		
+		actionViewHistory: function(employeeNumber) {
+			var me = this; 
+
+			loadPopup("history");
+			$("#messageToUser2").text("Loading");
+			me.actionType = "";
+
+			me.employeeHistoryStore.reset();
+			me.employeeHistoryStore.fetch("userId:[user],employeeNumber:" + employeeNumber + ",fieldName:", me.employeeHistoriesLoaded, me);
+		},
+
+		typesTableLoaded: function(me, activeId) {			
+			
+		},
+
 		employeeHistoriesLoaded: function(me, activeId) { 
+		
+			var typesTable = [];
+			var fieldValue = "";
+			var columnName = "";
+		
+			for (var index = 0; index < me.employeeHistories.length; index++) {
+				typesTable = null;
+				fieldValue = "";
+				columnName = me.employeeHistories[index].columnName;
+				
+				if (columnName == "EmpStatusCategoryType")
+					typesTable = me.statusCategoryTypes;
+				else if (columnName == "EmpEthnicityType")
+					typesTable = me.ethnicityTypes;
+				else if (columnName == "EmpMaritalStatusType")
+					typesTable = me.maritalStatusTypes;
+				else if (columnName == "EmpI9Type")
+					typesTable = me.i9Types;
+				else if (columnName == "EmpVetType")
+					typesTable = me.vetTypes;
+				else if (columnName == "EmpMaritalStatusFederalTaxType")
+					typesTable = me.maritalStatusFederalTaxTypes;
+				else if (columnName == "EmpLocalTaxAdjustmentType")
+					typesTable = me.localTaxAdjustmentTypes;
+				else if (columnName == "EmpEmpgLocalTaxCode1" || columnName == "EmpEmpgLocalTaxCode2" || columnName == "EmpEmpgLocalTaxCode3")
+					typesTable = me.localTaxCodes;
+				else if (columnName == "AppStateType" || columnName == "EmpEmpgPrimaryState" || columnName == "EmpEmpgSecondaryState")
+					typesTable = me.stateTypes;
+				else if (columnName == "EmpSDIAdjustmentType")
+					typesTable = me.sdiAdjustmentTypes;
+				else if (columnName == "EmpMaritalStatusStateTaxTypePrimary")
+					typesTable = me.maritalStatusStateTaxTypePrimarys;
+				else if (columnName == "EmpMaritalStatusStateTaxTypeSecondary")
+					typesTable = me.maritalStatusStateTaxTypeSecondarys;
+				else if (columnName == "EmpStateAdjustmentType")
+					typesTable = me.stateAdjustmentTypes;
+				else if (columnName == "EmpBasicLifeIndicatorType")
+					typesTable = me.basicLifeIndicatorTypes;
+				else if (columnName == "EmpJobCodeType")
+					typesTable = me.jobCodeTypes;
+				else if (columnName == "EmpDeviceGroupType")
+					typesTable = me.deviceGroupTypes;
+				else if (columnName == "EmpWorkShift")
+					typesTable = me.workShifts;
+				else if (columnName == "EmpRateChangeReasonType")
+					typesTable = me.rateChangeReasons;
+				else if (columnName == "EmpFederalAdjustmentType")
+					typesTable = me.federalAdjustments;
+				else if (columnName == "EmpJobStartReasonType")
+					typesTable = me.jobStartReasonTypes;
+				else if (columnName == "EmpUnionType")
+					typesTable = me.unionTypes;
+				else if (columnName == "EmpStatusType")
+					typesTable = me.statusTypes;
+				else if (columnName == "EmpSeparationCode")
+					typesTable = me.separationCodes;
+				else if (columnName == "EmpTerminationReasonType")
+					typesTable = me.terminationReasons;
+				else if (columnName == "HcmHouseCodeJob") {
+					var item = ii.ajax.util.findItemById(me.employeeHistories[index].previousFieldValue, me.houseCodeJobs);
+					if (item)
+						fieldValue = item.jobTitle;
+				}
+				else 
+					fieldValue = me.employeeHistories[index].previousFieldValue;		
+
+				if (typesTable != null) {
+					var item = ii.ajax.util.findItemById(me.employeeHistories[index].previousFieldValue, typesTable);
+					if (item)
+						fieldValue = item.name;
+				}
+				
+				if (fieldValue != "")
+					me.employeeHistories[index].previousFieldValue = fieldValue;
+			}
 
 			me.historyGrid.setData(me.employeeHistories);
 			me.historyGrid.setHeight(340);
 			$("#popupLoading").hide();
 		},
-		
+
 		actionCloseItem: function() {
-			
-			$("#popupHistory").hide();
+			var me = this;
+
+			if (me.actionType == "")
+				hidePopup("history");
+			else
+				$("#popupHistory").hide();
 		},
-		
+
 		setPersonBrief: function fin_emp_UserInterface_setPersonBrief() {
 			var me = this;
 			
@@ -3758,6 +3873,7 @@ ii.Class({
 				me.validateEmployeeDetails();				
 				me.hireDateAccessSetup();	
 				me.effectiveDateAccessSetup();
+				me.notes.value = "";
 
 				setTimeout(function() { 
 					me.resizeControls();
@@ -4735,18 +4851,18 @@ ii.Class({
 			if (me.houseCodePayrollCompanys[me.employeePayrollCompany.indexSelected].hourly == false &&
 				me.houseCodePayrollCompanys[me.employeePayrollCompany.indexSelected].salary) {
 				//Employee Number change - Start with 6.
-				salNumber = $("#EmployeeNumberText").val();
-				if (salNumber.substring(0, 1) == 6) return;
-				me.employeeNewNumber = 6 + salNumber.substring(1, 10);
+				me.employeeNewNumber = $("#EmployeeNumberText").val();
+				//if (salNumber.substring(0, 1) == 6) return;
+				//me.employeeNewNumber = 6 + salNumber.substring(1, 10);
 				me.empEmployeeNumberValidationStore.fetch("userId:[user],employeeNumber:" + me.employeeNewNumber + ",", me.employeeNewNumberLoaded, me);
 			}
 			else if (me.houseCodePayrollCompanys[me.employeePayrollCompany.indexSelected].hourly &&
 				me.houseCodePayrollCompanys[me.employeePayrollCompany.indexSelected].salary == false) {
 				if (me.actionType == "NewHire") {
 					//Employee Number change - Start with 4.
-					salNumber = $("#EmployeeNumberText").val();
-					if (salNumber.substring(0, 1) == 4) return;
-					me.employeeNewNumber = 4 + salNumber.substring(1, 10);
+					me.employeeNewNumber = $("#EmployeeNumberText").val();
+					//if (salNumber.substring(0, 1) == 4) return;
+					//me.employeeNewNumber = 4 + salNumber.substring(1, 10);
 					me.employeeNumber.setValue(me.employeeNewNumber);
 				}
 				else if (me.actionType == "HouseCodeTransfer")
@@ -4758,7 +4874,7 @@ ii.Class({
 
 			if (me.empEmployeeNumberValidations.length > 0) {
 				me.employeeNumber.setValue(me.employeeNewNumber);
-				alert(me.employeeNewNumber + " Employee Number already exists.");
+				//alert(me.employeeNewNumber + " Employee Number already exists.");
 			}
 			else {
 				me.employeeNumber.setValue(me.employeeNewNumber);
@@ -5018,6 +5134,7 @@ ii.Class({
 			me.employeeAlternatePayRateC.setValue("");	
 			me.employeeAlternatePayRateD.setValue("");			
 			me.employeeDeviceGroup.reset();
+			me.notes.value = "";
 			
 			$('#ExemptNo').attr('checked', true);
 			$('#HourlyRateYes').attr('checked', true);
@@ -5212,7 +5329,7 @@ ii.Class({
 					break;
 			}
 
-			loadPopup();									
+			loadPopup("wizard");
 			me.resizeControls();
 		},
 		
@@ -5294,6 +5411,7 @@ ii.Class({
 			$("#houseCodeTerm").hide();
 			$("#JobInformation").hide();
 			$("#Compensation").hide();
+			$("#DateModificationNotes").hide();
 			$("#Federal").hide();
 			$("#StateTax").hide();
 			$("#LocalTax").hide();			
@@ -5334,7 +5452,16 @@ ii.Class({
 			else {
 				me = this;
 			}	
-			
+
+			var currentSSN = me.employeeSSN.getValue().replace(/-/g, "");
+			if (currentSSN != me.previousSSN) {
+				me.previousSSN = currentSSN;
+				if (me.actionType == "HouseCodeTransfer" || me.actionType == "DateModification")
+					me.wizardCount = 3;
+				else
+					me.wizardCount = 0;
+			}
+
 			if (me.actionType != "NewHire" || me.wizardCount > 0) { //actionNext click on Wizard other than first (SSN search)
 				me.employeeValidationCalledFrom = "";
 				me.actionNext();
@@ -5512,6 +5639,7 @@ ii.Class({
 						$("#EmployeeInformation").hide();
 						$("#houseCodeTerm").hide();
 						$("#EditEmployee").hide();
+						$("#DateModificationNotes").show();
 						me.wizardCount = 3;
 					}
 					else if (me.actionType == "BasicLifeIndicator") {
@@ -5739,7 +5867,6 @@ ii.Class({
 					}
 					
 					me.employeeBirthDate.text.focus();
-					
 					me.resizeControls();
 					
 					break;
@@ -5754,7 +5881,7 @@ ii.Class({
 							return false;
 						}
 					}
-					
+				
 					if (me.actionType == "HouseCodeTransfer" || me.actionType == "DateModification") {
 						if ((!me.employeeNumber.validate(true)) ||
 							(!me.employeePayrollCompany.validate(true)) ||
@@ -6106,8 +6233,13 @@ ii.Class({
 				}
 			}
 			
-			if (me.houseCodeJobChanged == true && me.actionType == "Job Information" && me.jobChangeReason.indexSelected == -1){
+			if (me.houseCodeJobChanged == true && me.actionType == "Job Information" && me.jobChangeReason.indexSelected == -1) {
 				alert("Please select Job Change Reason.");
+				return false;
+			}
+			
+			if (me.actionType == "DateModification" && me.notes.value == "") {
+				alert("Please enter the Notes.");
 				return false;
 			}
 			
@@ -6442,7 +6574,34 @@ ii.Class({
 						updateFlag = true;
 					}
 				}
-			}			
+			}
+
+			if (me.actionType == "DateModification") {
+				xml += '<employeeDateModification';
+				xml += ' employeeId="' + itemGeneral.id + '"';
+				xml += ' personId="' + itemGeneral.personId + '"';
+				xml += ' hcmHouseCode="' + itemGeneral.hcmHouseCode + '"';
+				xml += ' houseCode="' + me.employees[0].houseCode + '"';
+				xml += ' firstName="' + ui.cmn.text.xml.encode(itemPerson.firstName) + '"';
+				xml += ' lastName="' + ui.cmn.text.xml.encode(itemPerson.lastName) + '"';
+				xml += ' employeeNumber="' + itemGeneral.employeeNumber + '"';
+				xml += ' ssn="' + itemGeneral.ssn.replace(/-/g, '') + '"';
+				xml += ' hireDate="' + ui.cmn.text.date.format(new Date(me.employeeGenerals[0].hireDate), "mm/dd/yyyy") + '"';	
+				xml += ' originalHireDate="' + ui.cmn.text.date.format(new Date(me.employeeGenerals[0].originalHireDate), "mm/dd/yyyy") + '"';
+				xml += ' seniorityDate="' + ui.cmn.text.date.format(new Date(me.employeeGenerals[0].seniorityDate), "mm/dd/yyyy") + '"';
+				xml += ' effectiveDate="' + ui.cmn.text.date.format(new Date(me.employeeGenerals[0].effectiveDate), "mm/dd/yyyy") + '"';
+				xml += ' effectiveDateJob="' + ui.cmn.text.date.format(new Date(me.employeeGenerals[0].effectiveDateJob), "mm/dd/yyyy") + '"';
+				xml += ' effectiveDateCompensation="' + ui.cmn.text.date.format(new Date(me.employeeGenerals[0].effectiveDateCompensation), "mm/dd/yyyy") + '"';
+				xml += ' newHireDate="' + itemGeneral.hireDate + '"';	
+				xml += ' newOriginalHireDate="' + itemGeneral.originalHireDate + '"';
+				xml += ' newSeniorityDate="' + itemGeneral.seniorityDate + '"';
+				xml += ' newEffectiveDate="' + itemGeneral.effectiveDate + '"';
+				xml += ' newEffectiveDateJob="' + itemGeneral.effectiveDateJob + '"';
+				xml += ' newEffectiveDateCompensation="' + itemGeneral.effectiveDateCompensation + '"';
+				xml += ' notes="' + me.notes.value + '"';
+				xml += '/>';
+				return xml;
+			}
 
 			if (me.actionType == "Rehire" || me.actionType == "NewHire" ||
 				me.actionType == "Person" || me.actionType == "Termination") {
@@ -6660,7 +6819,7 @@ ii.Class({
 			var args = ii.args(arguments, {
 				transaction: {type: ii.ajax.TransactionMonitor.Transaction},	// The transaction that was responded to.
 				xmlNode: {type: "XmlNode:transaction"}							// The XML transaction node associated with the response.
-			});			
+			});
 			var transaction = args.transaction;
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
@@ -6677,14 +6836,18 @@ ii.Class({
 				if (me.employeeGenerals.length > 0) {
 					if (me.statusTypes[me.employeeStatusType.indexSelected].id != me.employeeGenerals[0].statusType) 
 						successMessage += "Employee status updates will be transmitted to Ceridian on Monday at 1:00PM EST.\n";
-					else if (me.employeeNumberNew == 0) 
-						successMessage += "Notice: Changes will be transmitted to Ceridian on Monday at 1:00 PM EST.\n";
+					else if (me.employeeNumberNew == 0) {
+						if (me.actionType == "DateModification")
+							successMessage += "Employee date information is saved for approval process.\n";
+						else
+							successMessage += "Notice: Changes will be transmitted to Ceridian on Monday at 1:00 PM EST.\n";
+					}
 				}
 				me.isPageLoaded = false;
 				
 				if (me.employeeGenerals.length == 0 && me.employeeNumberNew > 0) //New Hire
 					successMessage += "Employee Number " + me.employeeNumber.getValue() + " has been created and will be transmitted to Ceridian on Monday at 1:00 PM EST.\n";
-
+			
 				if (me.actionType == "Edit" ||
 					me.actionType == "State Tax" ||
 					me.actionType == "Person" ||
@@ -6830,20 +6993,29 @@ ii.Class({
 	}
 });
 
-function loadPopup() {
+function loadPopup(type) {
 	centerPopup();
 	
 	$("#backgroundPopup").css({
 		"opacity": "0.5"
 	});
 	$("#backgroundPopup").fadeIn("slow");
-	$("#popupEmployee").fadeIn("slow");
+	
+	if (type == "wizard")
+		$("#popupEmployee").fadeIn("slow");
+	else if (type == "history") {
+		$("#popupHistory").fadeIn("slow");
+		$("#popupLoading").show();
+	}
 }
 
-function hidePopup() {
+function hidePopup(type) {
 
 	$("#backgroundPopup").fadeOut("slow");
-	$("#popupEmployee").fadeOut("slow");
+	if (type == "wizard")
+		$("#popupEmployee").fadeOut("slow");
+	else if (type == "history")
+		$("#popupHistory").fadeOut("slow");
 }
 
 function centerPopup() {

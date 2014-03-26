@@ -1248,7 +1248,7 @@ ii.Class({
         actionCompletedInvoicesLoad: function() {
             var me = this;
 			var yearId = -1;
- 
+
 			if (me.statusType == "true") {
 				yearId = me.fscYear;
 				$("#CompletedInvoices").attr("checked", true);
@@ -1257,9 +1257,9 @@ ii.Class({
 			else {
 				yearId = me.fiscalYear.data[me.fiscalYear.indexSelected].id;
 				me.invoiceNumber = 0;
+				me.setLoadCount();
 			}
 
-			me.setLoadCount();
             me.resetGrids();
             me.invoiceStore.reset();
             me.invoiceStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",status:5,year:" + yearId + ",invoiceByHouseCode:-1", me.invoiceLoaded, me);

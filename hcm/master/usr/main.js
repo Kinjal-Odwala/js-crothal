@@ -508,6 +508,8 @@ ii.Class({
 			me.houseCodeDetails[0].appSiteId = (houseCodeUIControls.site.indexSelected < 0 ? 0 : houseCodeUIControls.siteTypes[houseCodeUIControls.site.indexSelected].id);		
 			me.houseCodeDetails[0].jdeCompanyId = (houseCodeUIControls.jdeCompany.indexSelected <= 0 ? "0" : houseCodeUIControls.jdeCompanys[houseCodeUIControls.jdeCompany.indexSelected].id.toString());		
 			me.houseCodeDetails[0].startDate = houseCodeUIControls.startDate.lastBlurValue;
+			me.houseCodeDetails[0].closedDate = houseCodeUIControls.closedDate.lastBlurValue;
+			me.houseCodeDetails[0].closedReason = houseCodeUIControls.closedReason.getValue();
 			me.houseCodeDetails[0].serviceTypeId = (houseCodeUIControls.primaryService.indexSelected < 0 ? 0 : houseCodeUIControls.jdeServices[houseCodeUIControls.primaryService.indexSelected].id);
 			me.houseCodeDetails[0].serviceLineId = (houseCodeUIControls.serviceLine.indexSelected <= 0 ? 0 : houseCodeUIControls.serviceLines[houseCodeUIControls.serviceLine.indexSelected].id);
 			me.houseCodeDetails[0].enforceLaborControl = true; //($(houseCodeUIControls.enforceLaborControl).attr("checked").val() == "true" ? true : false)
@@ -622,6 +624,7 @@ ii.Class({
 				me.houseCodeDetails[0].ePaySite = payrollUIControls.ePaySiteSelect;
 				me.houseCodeDetails[0].ePayGroupType = (payrollUIControls.ePayPayGroup.indexSelected <= 0 ? 0 : payrollUIControls.ePayGroupTypes[payrollUIControls.ePayPayGroup.indexSelected].id);
 				me.houseCodeDetails[0].ePayTask = (payrollUIControls.ePayTask.check.checked ? 1 : 0);
+				me.houseCodeDetails[0].ePayHours = (payrollUIControls.ePayHours.check.checked ? 1 : 0);
 			}
 			
 			//Safety
@@ -687,6 +690,11 @@ ii.Class({
 				return false;
 			}
 			
+			if (payrollUIControls != undefined && payrollUIControls.ceridianCompanyHourly.indexSelected == payrollUIControls.ceridianCompanySalaried.indexSelected) {
+				alert("[Ceridian Company Hourly] & [Ceridian Company Salaried] cannot be same. Please select other option on Payroll Tab.");
+				return false;
+			}
+			
 			var item = new fin.hcm.master.HouseCodeDetail(
 				parent.fin.appUI.houseCodeId
 				, parent.fin.appUI.hirNode
@@ -694,6 +702,8 @@ ii.Class({
 				, me.houseCodeDetails[0].appSiteId
 				, me.houseCodeDetails[0].jdeCompanyId
 				, me.houseCodeDetails[0].startDate
+				, me.houseCodeDetails[0].closedDate
+				, me.houseCodeDetails[0].closedReason
 				, me.houseCodeDetails[0].serviceTypeId
 				, me.houseCodeDetails[0].serviceLineId
 				, me.houseCodeDetails[0].enforceLaborControl
@@ -789,6 +799,7 @@ ii.Class({
 				, me.houseCodeDetails[0].ePaySite
 				, me.houseCodeDetails[0].ePayGroupType
 				, me.houseCodeDetails[0].ePayTask
+				, me.houseCodeDetails[0].ePayHours
 				
 				//Safety
 				, me.houseCodeDetails[0].incidentFrequencyRate
@@ -833,6 +844,8 @@ ii.Class({
 			xml += ' appSiteId="' + item.appSiteId + '"';
 			xml += ' jdeCompanyId="' + item.jdeCompanyId + '"';
 			xml += ' startDate="' + item.startDate + '"';
+			xml += ' closedDate="' + item.closedDate + '"';
+			xml += ' closedReason="' + item.closedReason + '"';
 			xml += ' serviceTypeId="' + item.serviceTypeId + '"';
 			xml += ' serviceLineId="' + item.serviceLineId + '"';
 			xml += ' enforceLaborControl="' + item.enforceLaborControl + '"';
@@ -928,6 +941,7 @@ ii.Class({
 			xml += ' ePaySite="' + item.ePaySite + '"';
 			xml += ' ePayGroupType="' + item.ePayGroupType + '"';
 			xml += ' ePayTask="' + item.ePayTask + '"';
+			xml += ' ePayHours="' + item.ePayHours + '"';
 			
 			//Safety
 			xml += ' incidentFrequencyRate="' + ui.cmn.text.xml.encode(item.incidentFrequencyRate) + '"';

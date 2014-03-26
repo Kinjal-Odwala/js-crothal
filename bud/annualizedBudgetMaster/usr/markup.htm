@@ -6,7 +6,8 @@
     <link href="../../res/css/ext-all.css" rel="stylesheet" type="text/css" />
     <link href="../../res/css/xtheme-gray.css" rel="stylesheet" type="text/css" />
     <link href="../../res/css/all.css" rel="stylesheet" type="text/css" />
-    <!-- js -->
+        <link href="/fin/cmn/usr/common.css" rel="stylesheet" type="text/css" />
+ <!-- js -->
     <script src="../../res/references/jquery-1.4.1.js" type="text/javascript"></script>
     <script src="../../res/references/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script>
     <script src="../../res/references/ext-jquery-adapter.js" type="text/javascript"></script>
@@ -68,6 +69,9 @@
                     fiscalYearComboBox.getValue(),
                     houseCodeComboBox.getRawValue(), jobCodeComboBox.getRawValue(),
                     fiscalYearComboBox.getRawValue(), prevYear, prevYearTitle);
+
+                if (page && page.refreshUI)
+                    page.refreshUI();
             };
 
             var onContextDataChanged = function () {
@@ -77,7 +81,7 @@
 
                 }
                 primaryNav.currentBudgetStarted = false;
-                page = WebLight.PageMgr.getCurrentPage();
+                var page = WebLight.PageMgr.getCurrentPage();
                 refreshPageContext(page);
             };
 
@@ -92,13 +96,20 @@
             var houseCodeDetailStore = new Bud.data.HcmHouseDetailStore();
             houseCodeDetailStore.on('load', function () {
                 if (houseCodeDetailStore.getCount() > 0) {
-                    primaryNav.currentContractType = houseCodeDetailStore.getAt(0).get('contractTypeId');
-                    primaryNav.currentBudgetTemplateId = houseCodeDetailStore.getAt(0).get('budgetTemplateId');
-                    primaryNav.currentBudgetLaborCalcMethod = houseCodeDetailStore.getAt(0).get('budgetLaborCalcMethod');
-                    primaryNav.currentHouseCodeTypeId = houseCodeDetailStore.getAt(0).get('houseCodeTypeId');
-                    primaryNav.currentBillingCycleFrequencyTypeId = houseCodeDetailStore.getAt(0).get('billingCycleFrequencyTypeId');
-                    
+                    // just for default value, the values has been moved to Annual Budget
+                    if (!primaryNav.currentBudgetTemplateId) {
+                        primaryNav.currentContractType = houseCodeDetailStore.getAt(0).get('contractTypeId');
+                        primaryNav.currentBudgetTemplateId = houseCodeDetailStore.getAt(0).get('budgetTemplateId');
+                        primaryNav.currentBudgetLaborCalcMethod = houseCodeDetailStore.getAt(0).get('budgetLaborCalcMethod');
+                        primaryNav.currentHouseCodeTypeId = houseCodeDetailStore.getAt(0).get('houseCodeTypeId');
+                        primaryNav.currentBillingCycleFrequencyTypeId = houseCodeDetailStore.getAt(0).get('billingCycleFrequencyTypeId');
+
+                    }
                     primaryNav.resetMenuItems();
+
+                    var page = WebLight.PageMgr.getCurrentPage();
+                    if (page && page.refreshUI)
+                        page.refreshUI();
                 }
             });
 
@@ -211,10 +222,10 @@
             houseCodeComboBox.on('blur', function (combo) {
                 if (currentHcmHouseCode != combo.getValue()) {
                     if (fin.bud.modified()) {
-                            houseCodeStore.clearFilter(false);
-                            houseCodeComboBox.suspendEvents(false);
-                            houseCodeComboBox.setValue(currentHcmHouseCode);
-                            houseCodeComboBox.resumeEvents();
+                        houseCodeStore.clearFilter(false);
+                        houseCodeComboBox.suspendEvents(false);
+                        houseCodeComboBox.setValue(currentHcmHouseCode);
+                        houseCodeComboBox.resumeEvents();
                     }
                     else {
                         currentHcmHouseCode = combo.getValue();
@@ -301,7 +312,11 @@
             <table style="width: 100%;" class="menu-drop">
                 <tr>
                     <td>
-                        &nbsp;
+                       <div id="itemStatusDiv" style="width:400px">
+			<div class="itemStatusImage Normal" id="itemStatusImage"></div>
+			<div class="itemModifiedImage" id="itemModifiedImage"></div>
+			<div id="itemStatusText" style="color:White;">Normal</div>
+		</div>
                     </td>
                     <td style="width: 50px;" class="label">
                         Site:
