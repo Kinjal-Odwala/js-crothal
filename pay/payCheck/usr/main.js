@@ -101,6 +101,9 @@ ii.Class({
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
 			}
+			me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
+			$("#AnchorResendRequest").hide();
+			me.action = "checkRequest";
         },
 		
 		authorizationProcess: function fin_pay_payCheck_UserInterface_authorizationProcess() {
@@ -212,6 +215,10 @@ ii.Class({
                 	return "Approved";
 				else if (statusType == 9)
                 	return "Completed";
+				else if (statusType == 6)
+                	return "Cancelled";
+				else if (statusType == 10)
+                	return "Rejected";
            	});
 			me.payCheckRequestGrid.capColumns();
 
@@ -542,7 +549,7 @@ ii.Class({
 				changeFunction: function() { me.modified(); }
 		    });
 
-			me.payCodeDetailGrid.addColumn("payCode", "payCode", "Pay Code", "Pay Code", null, null, me.payCodeType);
+			me.payCodeDetailGrid.addColumn("payCode", "payCode", "Pay Code", "Pay Code", null, function(payCode) { return payCode.brief + " - " + payCode.name 	} , me.payCodeType);
 			me.payCodeDetailGrid.addColumn("hours", "hours", "Hours", "Hours", 100, null, me.hours);
 			me.payCodeDetailGrid.addColumn("date", "date", "Date", "Date", 120, null, me.date);
 			me.payCodeDetailGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 100, function(earning) { return ui.cmn.text.money.format(earning); }, me.earning);
@@ -593,11 +600,27 @@ ii.Class({
 				hasHotState: true
 			});
 			
+			me.anchorResendRequest = new ui.ctl.buttons.Sizeable({
+				id: "AnchorResendRequest",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Resend Request&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionResendRequestItem(); },
+				hasHotState: true
+			});
+			
 			me.anchorUndo = new ui.ctl.buttons.Sizeable({
 				id: "AnchorUndo",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Undo&nbsp;&nbsp;</span>",
 				clickFunction: function() { me.actionUndoItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorCancel = new ui.ctl.buttons.Sizeable({
+				id: "AnchorCancel",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionCancelItem(); },
 				hasHotState: true
 			});
 		},
@@ -783,9 +806,10 @@ ii.Class({
 			var me = this;
 
 			me.status = status;
-			if (me.payCodeDetailGrid.activeRowIndex >= 0)
-				me.payCodeDetailGrid.body.deselect(me.payCodeDetailGrid.activeRowIndex, true);
-
+			//if (me.payCodeDetailGrid.activeRowIndex >= 0)
+			//	me.payCodeDetailGrid.body.deselect(me.payCodeDetailGrid.activeRowIndex, true);
+			
+			me.payCodeDetailGrid.body.deselectAll();
 			me.requestedDate.resetValidation(true);
 			me.deliveryDate.resetValidation(true);
 			me.employeeNumber.resetValidation(true);
@@ -815,7 +839,7 @@ ii.Class({
 			me.managerName.setValue("");
 			me.managerEmail.setValue("");
 			me.payCodeDetailGrid.setData([]);
-			me.payCodeDetailReadOnlyGrid.setData([]);
+			//me.payCodeDetailReadOnlyGrid.setData([]);
 			
 			$("#houseCodeText").val("");
 			$("#houseCodeTemplateText").val("");
@@ -895,11 +919,13 @@ ii.Class({
 			me.statuses.push(new fin.pay.payCheck.Status(2, "In Process"));
 			me.statuses.push(new fin.pay.payCheck.Status(8, "Approved"));
 			me.statuses.push(new fin.pay.payCheck.Status(9, "Completed"));
+			me.statuses.push(new fin.pay.payCheck.Status(6, "Cancelled"));
+			me.statuses.push(new fin.pay.payCheck.Status(10, "Rejected"));
 
 			me.statusType.setData(me.statuses);
 			me.statusType.select(0, me.statusType.focused);
 		},
-		
+
 		stateTypesLoaded: function(me, activeId) {
 
 			me.state.setData(me.stateTypes);
@@ -1062,9 +1088,16 @@ ii.Class({
 
 			me.setReadOnly(false);
 			me.resetControls("new");
-			me.anchorNew.display(ui.cmn.behaviorStates.enabled);
 			me.anchorSendRequest.display(ui.cmn.behaviorStates.enabled);
 			me.anchorUndo.display(ui.cmn.behaviorStates.enabled);
+			me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
+			me.payCheckRequestGrid.body.deselectAll();
+			me.payCodeDetailGrid.setHeight(150);
+			$("#AnchorResendRequest").hide();
+			$("#AnchorSendRequest").show();
+			me.action = "checkRequest";
+			me.setStatus("Loaded");
+			me.modified(false);
 		},
 		
 		actionPayCheckRequestStatus: function() {
@@ -1083,12 +1116,18 @@ ii.Class({
 			me.statusType.select(0, me.statusType.focused);
 			me.searchInput.resizeText();
 			me.statusType.resizeText();
-			me.anchorNew.display(ui.cmn.behaviorStates.disabled);
 			me.anchorSendRequest.display(ui.cmn.behaviorStates.disabled);
 			me.anchorUndo.display(ui.cmn.behaviorStates.disabled);
+			me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
+			$("#AnchorResendRequest").hide();
+			$("#AnchorSendRequest").show();			
 			me.payCheckRequestGrid.setData([]);
 			me.payCheckRequestGrid.setHeight(200);
+			me.payCodeDetailReadOnlyGrid.setData([]);
 			me.payCodeDetailReadOnlyGrid.setHeight(150);
+			me.action = "checkRequestStatus";
+			me.setStatus("Loaded");
+			me.modified(false);
 		},
 		
 		actionSearchItem: function() {
@@ -1097,6 +1136,41 @@ ii.Class({
 			me.setLoadCount();
 
 			me.resetControls("");
+			
+			if (me.statuses[me.statusType.indexSelected].id == 10) {
+				me.setReadOnly(false);
+				me.anchorSendRequest.display(ui.cmn.behaviorStates.enabled);
+				me.anchorUndo.display(ui.cmn.behaviorStates.enabled);
+				me.anchorCancel.display(ui.cmn.behaviorStates.enabled);
+				$("#AnchorResendRequest").show();
+				$("#AnchorSendRequest").hide();
+				$("#PayCodeDetailGrid").show();
+				$("#PayCodeDetailReadOnlyGrid").hide();
+			}
+			else if (me.statuses[me.statusType.indexSelected].id == 2) {
+				me.setReadOnly(true);
+				me.anchorSendRequest.display(ui.cmn.behaviorStates.disabled);
+				me.anchorUndo.display(ui.cmn.behaviorStates.disabled);
+				me.anchorCancel.display(ui.cmn.behaviorStates.enabled);
+				$("#AnchorResendRequest").hide();
+				$("#AnchorSendRequest").show();
+				$("#PayCodeDetailGrid").hide();
+				$("#PayCodeDetailReadOnlyGrid").show();
+			}
+			else {
+				me.setReadOnly(true);
+				me.anchorSendRequest.display(ui.cmn.behaviorStates.disabled);
+				me.anchorUndo.display(ui.cmn.behaviorStates.disabled);
+				me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
+				$("#AnchorResendRequest").hide();
+				$("#AnchorSendRequest").show();
+				$("#PayCodeDetailGrid").hide();
+				$("#PayCodeDetailReadOnlyGrid").show();				
+			}
+			
+			me.payCheckRequestGrid.setData([]);
+			me.payCodeDetailReadOnlyGrid.setData([]);
+			me.payCodeDetailGrid.body.deselectAll();
 			me.payCheckRequestStore.reset();
 			me.payCheckRequestStore.fetch("userId:[user],searchValue:" + me.searchInput.getValue() 
 				+ ",statusType:" + (me.statusType.indexSelected == -1 ? 0 : me.statuses[me.statusType.indexSelected].id)
@@ -1152,15 +1226,21 @@ ii.Class({
 			me.managerEmail.setValue(item.managerEmail);
 
 			me.setLoadCount();
+			me.payCodeDetailGrid.body.deselectAll();
+			me.payCodeDetailStore.reset();
 			me.payCodeDetailStore.fetch("userId:[user],payCheckRequest:" + item.id, me.payCodeDetailsLoaded, me);
 		},
 		
 		payCodeDetailsLoaded: function(me, activeId) {
 			var index = 0;
 			
+			me.payCodeDetailGrid.setData(me.payCodeDetails);
+			me.payCodeDetailGrid.setHeight(150);
 			me.payCodeDetailReadOnlyGrid.setData(me.payCodeDetails);
 			me.payCodeDetailReadOnlyGrid.setHeight(150);
+			
 			me.checkLoadCount();
+			me.modified(false);
 		},
 
 		actionNewItem: function() {
@@ -1170,7 +1250,7 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 			
-			me.resetControls("new");
+			me.actionPayCheckRequest();
 		},
 		
 		actionUndoItem: function() {
@@ -1180,14 +1260,51 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 				
-			me.resetControls("new");
+			if(me.action == "checkRequest") {
+				me.resetControls("new");
+				me.setStatus("Loaded");
+			}								
+			else if(me.action == "checkRequestStatus")
+				me.itemSelect(me.payCheckRequestGrid.activeRowIndex);			
+		},
+		
+		actionCancelItem: function() {
+			var args = ii.args(arguments,{});
+			var me = this;		
+			
+			$("#messageToUser").text("Cancelling Request");
+			me.action = "checkRequestCancel";
+			me.actionSaveItem();
+		},
+		
+		actionResendRequestItem: function() {
+			var args = ii.args(arguments,{});
+			var me = this;
+			
+			if (me.payCheckRequestGrid.activeRowIndex == -1) {
+				alert("Please select Payroll Check Requst");
+				return false;
+			}
+			
+			$("#messageToUser").text("Resending Request");	 
+			me.action = "checkResendRequest";
+			me.actionSaveItem();
 		},
 		
 		actionSendRequestItem: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
 			
-			if ($("input[name='UPSDeliveryToUnit']:checked").val() == "true" && me.houseCodeSearchTemplate.houseCodeIdTemplate == 0) {
+			$("#messageToUser").text("Sending Request");
+			me.actionSaveItem();
+		},
+		
+		actionSaveItem: function() {
+			var args = ii.args(arguments,{});
+			var me = this;
+			var id = 0;
+			
+			if ($("input[name='UPSDeliveryToUnit']:checked").val() == "true" && me.houseCodeSearchTemplate.houseCodeIdTemplate == 0 && me.action == "checkRequest") {
 				alert("Please select the Unit (House Code).");
 				return false;
 			}
@@ -1201,13 +1318,15 @@ ii.Class({
 				return false;
 			}
 			
-			me.setStatus("Saving");
+			me.setStatus("Saving");			
 			
-			$("#messageToUser").text("Sending Request");
 			$("#pageLoading").fadeIn("slow");
 			
+			if (me.payCheckRequestGrid.activeRowIndex >= 0)
+				id = me.payCheckRequestGrid.data[me.payCheckRequestGrid.activeRowIndex].id
+			
 			var item = new fin.pay.payCheck.PayCheckRequest(
-				0
+				id
 				, 2
 				, parent.fin.appUI.houseCodeId
 				, parent.fin.appUI.houseCodeTitle
@@ -1258,7 +1377,7 @@ ii.Class({
 			var me = this;
 			var item = args.item;
 			var xml = "";
-		
+							
 			xml += '<payCheckRequest';
 			xml += ' id="' + item.id + '"';
 			xml += ' houseCodeId="' + item.houseCodeId + '"';
@@ -1292,21 +1411,36 @@ ii.Class({
 
 			for (var index = 0; index < me.payCodeDetailGrid.data.length; index++) {
 				xml += '<payCheckRequestPayCode';
-				xml += ' id="0"';
-				xml += ' payCheckRequestId="0"';
+				xml += ' id="' + me.payCodeDetailGrid.data[index].id + '"';;
+				xml += ' payCheckRequestId="' + item.id + '"';
 				xml += ' payCode="' + me.payCodeDetailGrid.data[index].payCode.id + '"';
-				xml += ' hours="' + me.payCodeDetailGrid.data[index].hours + '"';
-				xml += ' date="' + ui.cmn.text.date.format(me.payCodeDetailGrid.data[index].date, "mm/dd/yyyy") + '"';
+				xml += ' hours="' + me.payCodeDetailGrid.data[index].hours + '"';				
 				xml += ' earnings="' + me.payCodeDetailGrid.data[index].earnings + '"';
 				xml += ' alternateBaseRate="' + me.payCodeDetailGrid.data[index].alternateBaseRate + '"';
-				xml += ' workOrderNumber="' + ui.cmn.text.xml.encode(me.payCodeDetailGrid.data[index].workOrderTicketNumber) + '"';
+				
+				if (me.payCodeDetailGrid.data[index].id > 0) {
+					xml += ' date="' + me.payCodeDetailGrid.data[index].date + '"';
+					xml += ' workOrderNumber="' + me.payCodeDetailGrid.data[index].workOrderTicketNumber + '"';
+				}
+				else {
+					xml += ' date="' + ui.cmn.text.date.format(me.payCodeDetailGrid.data[index].date, "mm/dd/yyyy") + '"';
+					xml += ' workOrderNumber="' + ui.cmn.text.xml.encode(me.payCodeDetailGrid.data[index].workOrderTicketNumber) + '"';
+				}
 				xml += '/>';
 			}
 			
 			xml += '<payCheckRequestNotification';
 			xml += ' id="0"';
+			xml += ' action="' + me.action + '"';
 			xml += '/>';
-
+			
+			if (me.action == "checkRequestCancel") {
+				xml += '<payCheckRequestStatus';
+				xml += ' id="' + item.id + '"';
+				xml += ' transactionStatusType="6"';			
+				xml += '/>';
+			}
+			
 			return xml;			
 		},	
 
@@ -1325,10 +1459,21 @@ ii.Class({
 
 			
 			if (status == "success") {
-				alert("Payroll check request sent successfully.");
+				if (me.action == "checkRequest") {
+					alert("Payroll check request sent successfully.");
+					me.resetControls("new");
+				}
+				else if (me.action == "checkResendRequest") {
+					alert("Payroll check request resent successfully.");
+					me.actionSearchItem();
+				}
+				else if (me.action == "checkRequestCancel") {
+					alert("Payroll check request cancelled successfully.");
+					me.actionSearchItem();
+				}
+				
 				me.modified(false);
 				me.setStatus("Saved");
-				me.resetControls("new");
 			}
 			else {
 				me.setStatus("Error");

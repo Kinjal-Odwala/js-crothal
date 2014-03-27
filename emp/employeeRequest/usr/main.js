@@ -5,6 +5,7 @@ ii.Import( "ui.ctl.usr.grid" );
 ii.Import( "ui.ctl.usr.statusBar" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.cmn.usr.util" );
+ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "fin.cmn.usr.defs" );
 ii.Import( "fin.emp.employeeRequest.usr.defs" );
 
@@ -82,9 +83,8 @@ ii.Class({
 				$("#pageLoading").fadeIn("slow");
 
 				ii.timer.timing("Page displayed");
-				me.loadCount = 1;
 				me.session.registerFetchNotify(me.sessionLoaded, me);
-				me.employeeStore.fetch("userId:[user],object:DateModification,batch:0,startPoint:0,maximumRows:0", me.employeesLoaded, me);
+				me.actionDateItem();
 			}
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
@@ -108,7 +108,25 @@ ii.Class({
 		
 		defineFormControls: function() {
 			var me = this;
-
+			
+			me.actionMenu = new ui.ctl.Toolbar.ActionMenu({
+ 							id: "actionMenu"
+ 						});  
+ 						
+			me.actionMenu
+				.addAction({
+					id: "importAction",
+					brief: "Date Modification",
+					title: "Employee Date Modification Details.",
+					actionFunction: function() { me.actionDateItem(); }
+				})				
+				.addAction({
+					id: "viewAction", 
+					brief: "Reverse Termination", 
+					title: "Employee Reverse Termination Details.",
+					actionFunction: function() { me.actionRevTerminationItem(); }
+				});
+		
 			me.employeeGrid = new ui.ctl.Grid({
 				id: "EmployeeGrid",
 				appendToId: "divForm",
@@ -119,7 +137,7 @@ ii.Class({
 
 			me.employeeGrid.addColumn("column4", "column4", "House Code", "House Code", 90);
 			me.employeeGrid.addColumn("column5", "column5", "First Name", "First Name", null);
-			me.employeeGrid.addColumn("column6", "column6", "Last Name", "Last Name", 120);
+			me.employeeGrid.addColumn("column6", "column6", "Last Name", "Last Name", 110);
 			me.employeeGrid.addColumn("column7", "column7", "Employee #", "Employee Number", 90);
 			me.employeeGrid.addColumn("column8", "column8", "SSN", "SSN", 80);
 			me.employeeGrid.capColumns();
@@ -361,6 +379,9 @@ ii.Class({
 			$("#CurrentEffectiveDate").text("");
 			$("#CurrentJobEffectiveDate").text("");
 			$("#CurrentCompensationEffectiveDate").text("");
+			$("#Status").text("");
+			$("#StatusCategory").text("");
+			$("#ReverseTerminationEffectiveDate").text("");
 		},
 
 		employeesLoaded: function(me, activeId) { 
@@ -379,20 +400,27 @@ ii.Class({
 			var me = this;
 			var index = args.index;
 			var item = me.employeeGrid.data[index];
-
-			$("#CurrentHireDate").text(item.column9);
-			$("#CurrentOriginalHireDate").text(item.column10);
-			$("#CurrentSeniorityDate").text(item.column11);
-			$("#CurrentEffectiveDate").text(item.column12);
-			$("#CurrentJobEffectiveDate").text(item.column13);
-			$("#CurrentCompensationEffectiveDate").text(item.column14);
-			me.hireDate.setValue(item.column15);
-			me.originalHireDate.setValue(item.column16);
-			me.seniorityDate.setValue(item.column17);
-			me.effectiveDate.setValue(item.column18);
-			me.jobEffectiveDate.setValue(item.column19);
-			me.compensationEffectiveDate.setValue(item.column20);
-			me.notes.value = item.column21;
+			if (me.modification == "DateModification") {
+				$("#CurrentHireDate").text(item.column9);
+				$("#CurrentOriginalHireDate").text(item.column10);
+				$("#CurrentSeniorityDate").text(item.column11);
+				$("#CurrentEffectiveDate").text(item.column12);
+				$("#CurrentJobEffectiveDate").text(item.column13);
+				$("#CurrentCompensationEffectiveDate").text(item.column14);
+				me.hireDate.setValue(item.column15);
+				me.originalHireDate.setValue(item.column16);
+				me.seniorityDate.setValue(item.column17);
+				me.effectiveDate.setValue(item.column18);
+				me.jobEffectiveDate.setValue(item.column19);
+				me.compensationEffectiveDate.setValue(item.column20);
+				me.notes.value = item.column21;
+			}
+			if (me.modification == "ReverseTermination") {
+				$("#Status").text(item.column18);
+				$("#StatusCategory").text(item.column19);
+				$("#ReverseTerminationEffectiveDate").text(item.column14);
+			}
+			
 			me.setStatus("Normal");
 		},
 
@@ -402,6 +430,35 @@ ii.Class({
 			me.employees.splice(me.employeeGrid.activeRowIndex, 1);
 			me.employeeGrid.setData(me.employees);
 			me.resetControls();
+		},
+		
+		actionDateItem: function() {
+			var me = this;
+			
+			if (me.modification != "DateModification") {
+				$("#pageHeader").text("Employee Date Modification Details");
+				$("#divRevTerminationValues").hide();
+				$("#divDateProposedValues").show();
+				$("#divDateCurrentValues").show();
+				me.modification = "DateModification"
+				me.setLoadCount();
+				me.employeeStore.fetch("userId:[user],object:DateModification,batch:0,startPoint:0,maximumRows:0", me.employeesLoaded, me);
+			}					
+		},
+		
+		actionRevTerminationItem: function() {
+			var me = this;
+			
+			if (me.modification != "ReverseTermination") {
+				$("#pageHeader").text("Employee Reverse Termination Details");
+				$("#divDateProposedValues").hide();
+				$("#divDateCurrentValues").hide();
+				$("#divRevTerminationValues").height(230);
+				$("#divRevTerminationValues").show();
+				me.modification = "ReverseTermination"
+				me.setLoadCount();
+				me.employeeStore.fetch("userId:[user],object:ReverseTermination,batch:0,startPoint:0,maximumRows:0", me.employeesLoaded, me);
+			}					
 		},
 		
 		actionApproveItem: function() {
@@ -429,21 +486,37 @@ ii.Class({
 			// Check to see if the data entered is valid
 			me.validator.forceBlur();
 
-			if (!me.validator.queryValidity(true) && me.employeeGrid.activeRowIndex >= 0) {
+			if (me.modification == "DateModification" && !me.validator.queryValidity(true) && me.employeeGrid.activeRowIndex >= 0) {
 				alert("In order to save, the errors on the page must be corrected.");
 				return false;
 			}
-
+			
 			if (me.status == "Approved") {
-				xml += '<employeeDateUpdate';
-				xml += ' employeeId="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column1 + '"';
-				xml += ' hireDate="' + me.hireDate.text.value + '"';
-				xml += ' originalHireDate="' + me.originalHireDate.text.value + '"';
-				xml += ' seniorityDate="' + me.seniorityDate.text.value + '"';
-				xml += ' effectiveDate="' + me.effectiveDate.text.value + '"';
-				xml += ' effectiveDateJob="' + me.jobEffectiveDate.text.value + '"';
-				xml += ' effectiveDateCompensation="' + me.compensationEffectiveDate.text.value + '"';
-				xml += '/>';
+				if (me.modification == "DateModification") {
+					xml += '<employeeDateUpdate';
+					xml += ' employeeId="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column1 + '"';
+					xml += ' hireDate="' + me.hireDate.text.value + '"';
+					xml += ' originalHireDate="' + me.originalHireDate.text.value + '"';
+					xml += ' seniorityDate="' + me.seniorityDate.text.value + '"';
+					xml += ' effectiveDate="' + me.effectiveDate.text.value + '"';
+					xml += ' effectiveDateJob="' + me.jobEffectiveDate.text.value + '"';
+					xml += ' effectiveDateCompensation="' + me.compensationEffectiveDate.text.value + '"';
+					xml += '/>';
+				}
+				if (me.modification == "ReverseTermination") {
+					xml += '<employeeRevTerminationUpdate';
+					xml += ' employeeId="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column1 + '"';
+					xml += ' statusType="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column9 + '"';
+					xml += ' statusCategoryType="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column10 + '"';
+					xml += ' active="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column11 + '"';
+					xml += ' changeStatusCode="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column12 + '"';
+					xml += ' payrollStatus="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column13 + '"';
+					xml += ' effectiveDate="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column14 + '"';
+					xml += ' terminationDate="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column15 + '"';
+					xml += ' terminationReason="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column16 + '"';
+					xml += ' exportEPerson="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column17 + '"';
+					xml += '/>';
+				}
 			}
 			else {
 				xml += '<appGenericImportDateModification';

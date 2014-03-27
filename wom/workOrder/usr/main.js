@@ -2106,6 +2106,11 @@ ii.Class({
 			if (me.action != "")
 				return;
 			
+			if (me.job.indexSelected < 0) {
+				alert("In order to create new work order please select correct job.");
+				return;
+			}
+			
 			$("#popupHeader").text("Work Order Setup");
 			$("#popupWorkOrder").show();
 			$("#workOrderContentAreaPopup").hide();

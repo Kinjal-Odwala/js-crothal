@@ -148,8 +148,20 @@
 	margin: 10px 0px 10px 10px;
 }
 
+#AnchorResendRequest {
+	float: left;
+	width: 140px;
+	margin: 10px 0px 10px 10px;
+}
+
 #AnchorUndo {
 	float: left;
 	width: 70px;
 	margin: 5px 0px 10px 10px;
+}
+
+#AnchorCancel {
+	float: left;
+	width: 80px;
+	margin: 10px 0px 10px 10px;
 }

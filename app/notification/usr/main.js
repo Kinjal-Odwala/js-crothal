@@ -654,8 +654,10 @@ Ext.grid.RowNumberer.prototype = {
 Ext.EventManager.onWindowResize(function () {
 	
 	if(Ext.get('app-notification-task-form') != null) {
-		var el = Ext.get('app-notification-task-form').select('div.columns');
-		el.setHeight($(window).height() - 105);
+		var divcolumns = Ext.get('app-notification-task-form').select('div.columns');
+		divcolumns.setHeight($(window).height() - 105);
+		var divcolumnsContainer = Ext.get('app-notification-task-form').select('div.columnsContainer');
+		divcolumnsContainer.setWidth($(window).width() - 20);
 	}	
 });
 		
@@ -1250,6 +1252,7 @@ eFin.page.app.Notification = WebLight.extend(WebLight.Page, {
 		$("#" + me.dataCollectorTaskForm.id + "-divContainer").show();
 		$("#app-notification-divButtons").show();		
 		$("#" + me.dataCollectorTaskForm.id + "-divColumns").height($(window).height() - 105);
+		$("#" + me.dataCollectorTaskForm.id + "-divContainer").width($(window).width() - 20);
     },
 
     getEditor: function (fieldName, fieldTitle, fieldValidation, fieldReferenceTableName) {
