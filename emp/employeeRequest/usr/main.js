@@ -379,11 +379,9 @@ ii.Class({
 			$("#CurrentEffectiveDate").text("");
 			$("#CurrentJobEffectiveDate").text("");
 			$("#CurrentCompensationEffectiveDate").text("");
-			$("#RevStatus").text("");
-			$("#RevStatusCategory").text("");
-			$("#RevTerminationDate").text("");
-			$("#RevTerminationReason").text("");
-			$("#RevEffectiveDate").text("");
+			$("#Status").text("");
+			$("#StatusCategory").text("");
+			$("#ReverseTerminationEffectiveDate").text("");
 		},
 
 		employeesLoaded: function(me, activeId) { 
@@ -402,7 +400,7 @@ ii.Class({
 			var me = this;
 			var index = args.index;
 			var item = me.employeeGrid.data[index];
-			if (me.modification == "date") {
+			if (me.modification == "DateModification") {
 				$("#CurrentHireDate").text(item.column9);
 				$("#CurrentOriginalHireDate").text(item.column10);
 				$("#CurrentSeniorityDate").text(item.column11);
@@ -418,9 +416,9 @@ ii.Class({
 				me.notes.value = item.column21;
 			}
 			if (me.modification == "ReverseTermination") {
-				$("#RevStatus").text(item.column18);
-				$("#RevStatusCategory").text(item.column19);
-				$("#RevEffectiveDate").text(item.column14);
+				$("#Status").text(item.column18);
+				$("#StatusCategory").text(item.column19);
+				$("#ReverseTerminationEffectiveDate").text(item.column14);
 			}
 			
 			me.setStatus("Normal");
@@ -437,12 +435,12 @@ ii.Class({
 		actionDateItem: function() {
 			var me = this;
 			
-			if (me.modification != "date") {
+			if (me.modification != "DateModification") {
 				$("#pageHeader").text("Employee Date Modification Details");
 				$("#divRevTerminationValues").hide();
 				$("#divDateProposedValues").show();
 				$("#divDateCurrentValues").show();
-				me.modification = "date"
+				me.modification = "DateModification"
 				me.setLoadCount();
 				me.employeeStore.fetch("userId:[user],object:DateModification,batch:0,startPoint:0,maximumRows:0", me.employeesLoaded, me);
 			}					
@@ -451,7 +449,7 @@ ii.Class({
 		actionRevTerminationItem: function() {
 			var me = this;
 			
-			if (me.actionType != "ReverseTermination") {
+			if (me.modification != "ReverseTermination") {
 				$("#pageHeader").text("Employee Reverse Termination Details");
 				$("#divDateProposedValues").hide();
 				$("#divDateCurrentValues").hide();
@@ -488,13 +486,13 @@ ii.Class({
 			// Check to see if the data entered is valid
 			me.validator.forceBlur();
 
-			if (me.modification == "date" && !me.validator.queryValidity(true) && me.employeeGrid.activeRowIndex >= 0) {
+			if (me.modification == "DateModification" && !me.validator.queryValidity(true) && me.employeeGrid.activeRowIndex >= 0) {
 				alert("In order to save, the errors on the page must be corrected.");
 				return false;
 			}
 			
 			if (me.status == "Approved") {
-				if (me.modification == "date") {
+				if (me.modification == "DateModification") {
 					xml += '<employeeDateUpdate';
 					xml += ' employeeId="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column1 + '"';
 					xml += ' hireDate="' + me.hireDate.text.value + '"';
