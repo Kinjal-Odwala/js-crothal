@@ -216,7 +216,7 @@ ii.Class({
 				else if (statusType == 9)
                 	return "Completed";
 				else if (statusType == 6)
-                	return "Cancel";
+                	return "Cancelled";
 				else if (statusType == 10)
                 	return "Rejected";
            	});
@@ -919,7 +919,7 @@ ii.Class({
 			me.statuses.push(new fin.pay.payCheck.Status(2, "In Process"));
 			me.statuses.push(new fin.pay.payCheck.Status(8, "Approved"));
 			me.statuses.push(new fin.pay.payCheck.Status(9, "Completed"));
-			me.statuses.push(new fin.pay.payCheck.Status(6, "Cancel"));
+			me.statuses.push(new fin.pay.payCheck.Status(6, "Cancelled"));
 			me.statuses.push(new fin.pay.payCheck.Status(10, "Rejected"));
 
 			me.statusType.setData(me.statuses);
