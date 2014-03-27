@@ -2467,7 +2467,12 @@ ii.Class({
 				return;
 
 			me.workOrderItemGrid.body.deselectAll();
-
+			
+			if (me.action == "New" && me.job.indexSelected < 0) {
+				alert("Please select Job.");
+				return;
+			}
+			
 			if (me.workOrderItemGrid.data != undefined && me.workOrderItemGrid.data.length <= 0) {
 				alert("Please enter work order line item.");
 				return;
