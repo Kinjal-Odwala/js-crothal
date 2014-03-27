@@ -6602,6 +6602,29 @@ ii.Class({
 				xml += '/>';
 				return xml;
 			}
+			
+			if (me.actionType == "ReverseTermination") {
+				xml += '<employeeReverseTermination';
+				xml += ' employeeId="' + itemGeneral.id + '"';
+				xml += ' personId="' + itemGeneral.personId + '"';
+				xml += ' hcmHouseCode="' + itemGeneral.hcmHouseCode + '"';
+				xml += ' houseCode="' + me.employees[0].houseCode + '"';
+				xml += ' firstName="' + ui.cmn.text.xml.encode(itemPerson.firstName) + '"';
+				xml += ' lastName="' + ui.cmn.text.xml.encode(itemPerson.lastName) + '"';
+				xml += ' employeeNumber="' + itemGeneral.employeeNumber + '"';
+				xml += ' ssn="' + itemGeneral.ssn.replace(/-/g, '') + '"';				
+				xml += ' statusType="' + itemGeneral.statusType + '"';
+				xml += ' statusCategoryType="' + itemGeneral.statusCategoryType + '"';
+				xml += ' active="' + (itemGeneral.statusType != 6 ? true : false) + '"';				
+				xml += ' changeStatusCode="' + itemGeneral.changeStatusCode + '"';
+				xml += ' payrollStatus="' + itemGeneral.payrollStatus + '"';
+				xml += ' effectiveDate="' + itemGeneral.effectiveDate + '"';
+				xml += ' terminationDate="' + itemGeneral.terminationDate + '"';
+				xml += ' terminationReason="' + itemGeneral.terminationReason + '"';
+				xml += ' exportEPerson="false"';
+				xml += '/>';
+				return xml;
+			}
 
 			if (me.actionType == "Rehire" || me.actionType == "NewHire" ||
 				me.actionType == "Person" || me.actionType == "Termination") {
@@ -6641,7 +6664,6 @@ ii.Class({
 				me.actionType == "State Tax" ||
 				me.actionType == "Local Tax" ||
 				me.actionType == "BasicLifeIndicator" ||
-				me.actionType == "ReverseTermination" ||
 				updateFlag == true) {
 				xml += '<employeeGeneralWizard';
 				xml += ' id="' + itemGeneral.id + '"';
@@ -6676,7 +6698,7 @@ ii.Class({
 				xml += ' version="1"';
 			}
 				
-			if (me.actionType == "Termination" || me.actionType == "ReverseTermination") {
+			if (me.actionType == "Termination") {
 				xml += ' payrollCompany="' + itemGeneral.payrollCompany + '"';
 				xml += ' crothallEmployee="' + itemGeneral.crothallEmployee + '"';
 				xml += ' effectiveDate="' + itemGeneral.effectiveDate + '"';
@@ -6777,7 +6799,6 @@ ii.Class({
 				me.actionType == "State Tax" ||
 				me.actionType == "Local Tax" ||
 				me.actionType == "BasicLifeIndicator" ||
-				me.actionType == "ReverseTermination" ||
 				updateFlag == true) {
 				xml += '/>';
 			}
@@ -6834,7 +6855,9 @@ ii.Class({
 			if (status == "success") {
 
 				if (me.employeeGenerals.length > 0) {
-					if (me.statusTypes[me.employeeStatusType.indexSelected].id != me.employeeGenerals[0].statusType) 
+					if (me.actionType == "ReverseTermination")
+							successMessage += "Employee Reverse Termination information is saved for approval process.\n";
+					else if (me.statusTypes[me.employeeStatusType.indexSelected].id != me.employeeGenerals[0].statusType) 
 						successMessage += "Employee status updates will be transmitted to Ceridian on Monday at 1:00PM EST.\n";
 					else if (me.employeeNumberNew == 0) {
 						if (me.actionType == "DateModification")

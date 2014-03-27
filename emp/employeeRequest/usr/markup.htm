@@ -21,9 +21,12 @@
 		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
 		    </div>
 		</div>
-		<div class="pageHeader">
-       		<div class="header">Employee Date Modification Details</div>
-	    </div>
+		<div id="actionHeader">
+			<div id="actionMenu" title="Menu of actions that you can perform.">Actions<span></span></div>
+			<div class="pageHeader">
+	       		<div id="pageHeader" class="header">Employee Date Modification Details</div>
+		    </div>
+		</div>
 		<div style="clear:both;"></div>
 		<div id="itemStatusDiv">
 			<div id="itemStatusImage" class="itemStatusImage"></div>
@@ -45,123 +48,156 @@
 						<div class="body">
 							<div class="subHeader">Current Values</div>
 							<div style="clear:both;height:10px;"></div>
-							<div id="TableEditArea">
-								<div class="labelTextArea">
-									<span class="nonRequiredFieldIndicator">&nbsp;</span>Hire Date:				
+							<div id="divRevTerminationValues">
+								<div id="TableEditArea">
+									<div class="labelTextArea">
+										<span class="nonRequiredFieldIndicator">&nbsp;</span>Status:				
+									</div>
+									<div class="labelTextArea">
+										<div id="RevStatus"></div>
+									</div>
 								</div>
-								<div class="labelTextArea">
-									<div id="CurrentHireDate"></div>
+								<div style="clear:both"></div>
+								<div id="TableEditArea">
+									<div class="labelTextArea">
+										<span class="nonRequiredFieldIndicator">&nbsp;</span>Status Category:				
+									</div>
+									<div class="labelTextArea">
+										<div id="RevStatusCategory"></div>
+									</div>
 								</div>
+								<div style="clear:both"></div>								
+								<div id="TableEditArea">
+									<div class="labelTextArea">
+										<span class="nonRequiredFieldIndicator">&nbsp;</span>Effective Date:				
+									</div>
+									<div class="labelTextArea">
+										<div id="RevEffectiveDate"></div>
+									</div>
+								</div>
+								<div style="clear:both"></div>
 							</div>
-							<div style="clear:both"></div>
-							<div id="TableEditArea">
-								<div class="labelTextArea">
-									<span class="nonRequiredFieldIndicator">&nbsp;</span>Original Hire Date:				
+							<div id="divDateCurrentValues">
+								<div id="TableEditArea">
+									<div class="labelTextArea">
+										<span class="nonRequiredFieldIndicator">&nbsp;</span>Hire Date:				
+									</div>
+									<div class="labelTextArea">
+										<div id="CurrentHireDate"></div>
+									</div>
 								</div>
-								<div class="labelTextArea">
-									<div id="CurrentOriginalHireDate"></div>
+								<div style="clear:both"></div>
+								<div id="TableEditArea">
+									<div class="labelTextArea">
+										<span class="nonRequiredFieldIndicator">&nbsp;</span>Original Hire Date:				
+									</div>
+									<div class="labelTextArea">
+										<div id="CurrentOriginalHireDate"></div>
+									</div>
 								</div>
+								<div style="clear:both"></div>
+								<div id="TableEditArea">
+									<div class="labelTextArea">
+										<span class="nonRequiredFieldIndicator">&nbsp;</span>Seniority Date:				
+									</div>
+									<div class="labelTextArea">
+										<div id="CurrentSeniorityDate"></div>
+									</div>
+								</div>
+								<div style="clear:both"></div>
+								<div id="TableEditArea">
+									<div class="labelTextArea">
+										<span class="nonRequiredFieldIndicator">&nbsp;</span>Effective Date:				
+									</div>
+									<div class="labelTextArea">
+										<div id="CurrentEffectiveDate"></div>
+									</div>
+								</div>
+								<div style="clear:both"></div>
+								<div id="TableEditArea">
+									<div class="labelTextArea">
+										<span class="nonRequiredFieldIndicator">&nbsp;</span>Job Effective Date:				
+									</div>
+									<div class="labelTextArea">
+										<div id="CurrentJobEffectiveDate"></div>
+									</div>
+								</div>
+								<div style="clear:both"></div>
+								<div id="TableEditArea">
+									<div class="labelTextArea">
+										<span class="nonRequiredFieldIndicator">&nbsp;</span>Compensation Effective Date:				
+									</div>
+									<div class="labelTextArea">
+										<div id="CurrentCompensationEffectiveDate"></div>
+									</div>
+								</div>
+								<div style="clear:both"></div>
+								<div id="TableEditArea">
+									<div class="labelTextArea">
+										<span class="nonRequiredFieldIndicator">&nbsp;</span>Notes:				
+									</div>
+									<div><textarea id="Notes"></textarea></div>
+								</div>
+								<div style="clear:both;height:10px;"></div>
 							</div>
-							<div style="clear:both"></div>
-							<div id="TableEditArea">
-								<div class="labelTextArea">
-									<span class="nonRequiredFieldIndicator">&nbsp;</span>Seniority Date:				
-								</div>
-								<div class="labelTextArea">
-									<div id="CurrentSeniorityDate"></div>
-								</div>
-							</div>
-							<div style="clear:both"></div>
-							<div id="TableEditArea">
-								<div class="labelTextArea">
-									<span class="nonRequiredFieldIndicator">&nbsp;</span>Effective Date:				
-								</div>
-								<div class="labelTextArea">
-									<div id="CurrentEffectiveDate"></div>
-								</div>
-							</div>
-							<div style="clear:both"></div>
-							<div id="TableEditArea">
-								<div class="labelTextArea">
-									<span class="nonRequiredFieldIndicator">&nbsp;</span>Job Effective Date:				
-								</div>
-								<div class="labelTextArea">
-									<div id="CurrentJobEffectiveDate"></div>
-								</div>
-							</div>
-							<div style="clear:both"></div>
-							<div id="TableEditArea">
-								<div class="labelTextArea">
-									<span class="nonRequiredFieldIndicator">&nbsp;</span>Compensation Effective Date:				
-								</div>
-								<div class="labelTextArea">
-									<div id="CurrentCompensationEffectiveDate"></div>
-								</div>
-							</div>
-							<div style="clear:both"></div>
-							<div id="TableEditArea">
-								<div class="labelTextArea">
-									<span class="nonRequiredFieldIndicator">&nbsp;</span>Notes:				
-								</div>
-								<div><textarea id="Notes"></textarea></div>
-							</div>
-							<div style="clear:both;height:10px;""></div>
 							<div class="subHeader">Proposed Values</div>
 							<div style="clear:both;height:10px;"></div>
-							<div id="TableEditArea">
-								<div class="labelTextArea">
-									<span class="requiredFieldIndicator">&#149;</span>Hire Date:				
+							<div id="divDateProposedValues">
+								<div id="TableEditArea">
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Hire Date:				
+									</div>
+									<div class="inputTextArea">
+										<div id="HireDate"></div>
+									</div>
 								</div>
-								<div class="inputTextArea">
-									<div id="HireDate"></div>
+								<div style="clear:both"></div>
+								<div id="TableEditArea">
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Original Hire Date:				
+									</div>
+									<div class="inputTextArea">
+										<div id="OriginalHireDate"></div>
+									</div>
 								</div>
+								<div style="clear:both"></div>
+								<div id="TableEditArea">
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Seniority Date:				
+									</div>
+									<div class="inputTextArea">
+										<div id="SeniorityDate"></div>
+									</div>
+								</div>
+								<div style="clear:both"></div>
+								<div id="TableEditArea">
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Effective Date:				
+									</div>
+									<div class="inputTextArea">
+										<div id="EffectiveDate"></div>
+									</div>
+								</div>
+								<div style="clear:both"></div>
+								<div id="TableEditArea">
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Job Effective Date:				
+									</div>
+									<div class="inputTextArea">
+										<div id="JobEffectiveDate"></div>
+									</div>
+								</div>
+								<div style="clear:both"></div>
+								<div id="TableEditArea">
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Compensation Effective Date:				
+									</div>
+									<div class="inputTextArea">
+										<div id="CompensationEffectiveDate"></div>
+									</div>
+								</div>
+								<div style="clear:both"></div>
 							</div>
-							<div style="clear:both"></div>
-							<div id="TableEditArea">
-								<div class="labelTextArea">
-									<span class="requiredFieldIndicator">&#149;</span>Original Hire Date:				
-								</div>
-								<div class="inputTextArea">
-									<div id="OriginalHireDate"></div>
-								</div>
-							</div>
-							<div style="clear:both"></div>
-							<div id="TableEditArea">
-								<div class="labelTextArea">
-									<span class="requiredFieldIndicator">&#149;</span>Seniority Date:				
-								</div>
-								<div class="inputTextArea">
-									<div id="SeniorityDate"></div>
-								</div>
-							</div>
-							<div style="clear:both"></div>
-							<div id="TableEditArea">
-								<div class="labelTextArea">
-									<span class="requiredFieldIndicator">&#149;</span>Effective Date:				
-								</div>
-								<div class="inputTextArea">
-									<div id="EffectiveDate"></div>
-								</div>
-							</div>
-							<div style="clear:both"></div>
-							<div id="TableEditArea">
-								<div class="labelTextArea">
-									<span class="requiredFieldIndicator">&#149;</span>Job Effective Date:				
-								</div>
-								<div class="inputTextArea">
-									<div id="JobEffectiveDate"></div>
-								</div>
-							</div>
-							<div style="clear:both"></div>
-							<div id="TableEditArea">
-								<div class="labelTextArea">
-									<span class="requiredFieldIndicator">&#149;</span>Compensation Effective Date:				
-								</div>
-								<div class="inputTextArea">
-									<div id="CompensationEffectiveDate"></div>
-								</div>
-							</div>
-							<div style="clear:both"></div>
 						</div>
 					</div>
 					<div style="clear:both;"></div>
