@@ -1,4 +1,4 @@
-﻿window.__bt__679755e6 = ['<div style="margin: 15px;">    <div id="itemStatusDiv" style="padding:10px;">        <div class="itemStatusImage Normal" id="itemStatusImage">        </div>        <div class="itemModifiedImage" id="itemModifiedImage">        </div>        <div id="itemStatusText" class="itemStatusText">            Normal</div>    </div>    <div id="uploader">    </div>    <div id="keys-form" style="margin: 15px 0">        <fieldset class="l2r">            <div class="field">                <label>                    Fiscal Year</label>                <div class="item">                    <input type="text" name="FscYeaTitle" style="width: 80px" /></div>            </div>        </fieldset>    </div>    <table class="bud-grid-1">        <thead>            <tr>                <th style="width: 100px">                    House Code                </th>                <th style="width: 50px">                    Job                </th>                <th style="width: 95px">                    Fsc Account                </th>                <th style="width: 70px">                    Period 1                </th>                <th style="width: 70px">                    Period 2                </th>                <th style="width: 70px">                    Period 3                </th>                <th style="width: 70px">                    Period 4                </th>                <th style="width: 70px">                    Period 5                </th>                <th style="width: 70px">                    Period 6                </th>                <th style="width: 70px">                    Period 7                </th>                <th style="width: 70px">                    Period 8                </th>                <th style="width: 70px">                    Period 9                </th>                <th style="width: 70px">                    Period 10                </th>                <th style="width: 70px">                    Period 11                </th>                <th style="width: 70px">                    Period 12                </th>                <th style="width: 70px">                    Period 13                </th>                <th>                </th>            </tr>        </thead>        <tbody id="data-list">        </tbody>    </table>    <input type="button" id="submitButton" value="Submit" /></div>','<tr>     <td>        <input type="text" name="HouseCodeBrief" />    </td>     <td>        <input type="text" name="JobNumber" />    </td>    <td>        <input type="text" name="FscAccCode" />    </td>    <td>        <input type="text" name="Period1" />    </td>    <td>        <input type="text" name="Period2" />    </td>    <td>        <input type="text" name="Period3" />    </td>    <td>        <input type="text" name="Period4" />    </td>    <td>        <input type="text" name="Period5" />    </td>    <td>        <input type="text" name="Period6" />    </td>    <td>        <input type="text" name="Period7" />    </td>    <td>        <input type="text" name="Period8" />    </td>    <td>        <input type="text" name="Period9" />    </td>    <td>        <input type="text" name="Period10" />    </td>    <td>        <input type="text" name="Period11" />    </td>    <td>        <input type="text" name="Period12" />    </td>       <td>        <input type="text" name="Period13" />    </td></tr>',''];
+﻿window.__bt__316a6fc6 = ['<div style="margin: 15px;">    <div id="itemStatusDiv" style="padding: 10px;">        <div class="itemStatusImage Normal" id="itemStatusImage">        </div>        <div class="itemModifiedImage" id="itemModifiedImage">        </div>        <div id="itemStatusText" class="itemStatusText">            Normal</div>    </div>    <div id="uploader">    </div>    <div id="keys-form" style="margin: 15px 0">        <fieldset class="l2r">            <div class="field">                <label>                    Fiscal Year</label>                <div class="item">                    <input type="text" name="FscYeaTitle" style="width: 80px" /></div>            </div>        </fieldset>    </div>    <table class="bud-grid-1">        <thead>            <tr>                <th style="width: 100px">                    House Code                </th>                <th style="width: 50px">                    Job                </th>                <th style="width: 95px">                    Fsc Account                </th>                <th style="width: 70px">                    Period 1                </th>                <th style="width: 70px">                    Period 2                </th>                <th style="width: 70px">                    Period 3                </th>                <th style="width: 70px">                    Period 4                </th>                <th style="width: 70px">                    Period 5                </th>                <th style="width: 70px">                    Period 6                </th>                <th style="width: 70px">                    Period 7                </th>                <th style="width: 70px">                    Period 8                </th>                <th style="width: 70px">                    Period 9                </th>                <th style="width: 70px">                    Period 10                </th>                <th style="width: 70px">                    Period 11                </th>                <th style="width: 70px">                    Period 12                </th>                <th>                </th>            </tr>        </thead>        <tbody id="data-list">        </tbody>    </table>    <div style="padding: 10px">        <input type="button" id="submitButton" value="Submit" />    </div></div>','<tr>     <td>        <input type="text" name="HouseCodeBrief" />    </td>     <td>        <input type="text" name="JobNumber" />    </td>    <td>        <input type="text" name="FscAccCode" />    </td>    <td>        <input type="text" name="Period1" />    </td>    <td>        <input type="text" name="Period2" />    </td>    <td>        <input type="text" name="Period3" />    </td>    <td>        <input type="text" name="Period4" />    </td>    <td>        <input type="text" name="Period5" />    </td>    <td>        <input type="text" name="Period6" />    </td>    <td>        <input type="text" name="Period7" />    </td>    <td>        <input type="text" name="Period8" />    </td>    <td>        <input type="text" name="Period9" />    </td>    <td>        <input type="text" name="Period10" />    </td>    <td>        <input type="text" name="Period11" />    </td>    <td>        <input type="text" name="Period12" />    </td></tr>',''];
 
 if ((typeof Range !== "undefined") && !Range.prototype.createContextualFragment) {
     Range.prototype.createContextualFragment = function (html) {
@@ -275,7 +275,7 @@ fin.bud.saved = function () {
 
 fin.bud.normal = function (isModified) {
     $('.itemStatusImage').removeClass('Loading').addClass('Normal');
-    $('#itemStatusText').css('color', '#032D23').html(window.isSavedSuccessfully && !isModified ? 'Data saved successfully.' : 'Normal');
+    $('.itemStatusText').css('color', '#032D23').html(window.isSavedSuccessfully && !isModified ? 'Data saved successfully.' : 'Normal');
     if (isModified === true) {
         $('.itemModifiedImage').addClass('Modified');
     }
@@ -319,7 +319,7 @@ fin.bud.modified = function () {
 !function (bud) {
 
     bud.page.ImportBudget = bine.extend(bine.Control, {
-        tpl: window.__bt__679755e6[0],
+        tpl: window.__bt__316a6fc6[0],
 
         dataList: null,
         $fscAccounts: null,
@@ -459,7 +459,7 @@ fin.bud.modified = function () {
 
 
                     return new bine.DataView({
-                        tpl: window.__bt__679755e6[1], removable: true,
+                        tpl: window.__bt__316a6fc6[1], removable: true,
                         onDomReady: function () {
                             var dv = this;
                             dv.on('change', function (name) {
@@ -512,7 +512,7 @@ fin.bud.modified = function () {
                 item['JobNumber'] = row[1];
                 item['HouseCodeBrief'] = row[0];
 
-                for (var i = 1; i <= 13; i++) {
+                for (var i = 1; i <= 12; i++) {
                     item['Period' + i] = me.parseFloat(row, i + 3);
                 }
                 list.push(item);
@@ -576,7 +576,7 @@ fin.bud.modified = function () {
                 xml.push(String.format(' fscAccount="{0}"', me.getFscAccount(item.FscAccCode)));
                 xml.push(' genericImport="1"');
 
-                for (var i = 1; i <= 16; i++) {
+                for (var i = 1; i <= 12; i++) {
                     xml.push(String.format(' period{1}="{0}"', item['Period' + i] || 0, i));
                 }
                 xml.push(' />\r\n');
