@@ -250,21 +250,23 @@
 						</div>
 					</div>
 					<div style="clear:both"></div>
-					<div id="TableEditArea">
-						<div class="LabelTextAreaEmployee">
-							<span class="requiredFieldIndicator">&#149;</span>Ceridian Company:				
+					<div id="CompanyStatus">
+						<div id="TableEditArea">
+							<div class="LabelTextAreaEmployee">
+								<span class="requiredFieldIndicator">&#149;</span>Ceridian Company:				
+							</div>
+							<div class="InputTextArea">
+								<div id="EmployeePayrollCompany"></div>
+							</div>
 						</div>
-						<div class="InputTextArea">
-							<div id="EmployeePayrollCompany"></div>
-						</div>
-					</div>
-					<div style="clear:both"></div>
-					<div id="TableEditArea">
-						<div class="LabelTextAreaEmployee">
-							<span class="requiredFieldIndicator">&#149;</span>Status:				
-						</div>
-						<div class="InputTextArea">
-							<div id="EmployeeGeneralStatusType"></div>
+						<div style="clear:both"></div>
+						<div id="TableEditArea">
+							<div class="LabelTextAreaEmployee">
+								<span class="requiredFieldIndicator">&#149;</span>Status:				
+							</div>
+							<div class="InputTextArea">
+								<div id="EmployeeGeneralStatusType"></div>
+							</div>
 						</div>
 					</div>
 					<div style="clear:both"></div>
@@ -310,34 +312,36 @@
 					</div>
 				</div>
 				<div id="contianerRight">
-            		<div id="TableEditArea">
-						<div class="LabelTextAreaEmployee"></div>
-						<div class="InputTextArea"></div>
-					</div>
-            		<div style="clear:both"></div>
-		            <div id="TableEditArea">
-						<div class="LabelTextAreaEmployee">
-							<span class="requiredFieldIndicator">&#149;</span>Crothall Employee:				
+					<div id="CrothallCategory">
+	            		<div id="TableEditArea">
+							<div class="LabelTextAreaEmployee"></div>
+							<div class="InputTextArea"></div>
 						</div>
-						<div class="InputTextArea">
-							<div class="radioButtonAuth">
-								<input type="radio" id="CrothallEmployeeYes" name="CrothallEmployee" tabindex="203" checked="true" value="true" /><span class="labelRadio">Yes</span>					
+	            		<div style="clear:both"></div>
+			            <div id="TableEditArea">
+							<div class="LabelTextAreaEmployee">
+								<span class="requiredFieldIndicator">&#149;</span>Crothall Employee:				
 							</div>
-							<div class="radioButtonAuth">
-								<input type="radio" id="CrothallEmployeeNo" name="CrothallEmployee" tabindex="204" value="false" /><span class="labelRadio">No</span>					
+							<div class="InputTextArea">
+								<div class="radioButtonAuth">
+									<input type="radio" id="CrothallEmployeeYes" name="CrothallEmployee" tabindex="203" checked="true" value="true" /><span class="labelRadio">Yes</span>					
+								</div>
+								<div class="radioButtonAuth">
+									<input type="radio" id="CrothallEmployeeNo" name="CrothallEmployee" tabindex="204" value="false" /><span class="labelRadio">No</span>					
+								</div>
 							</div>
 						</div>
-					</div>
-					<div style="clear:both"></div>
-					<div id="TableEditArea">
-						<div class="LabelTextAreaEmployee">
-							<span class="requiredFieldIndicator">&#149;</span>Status Category:				
-						</div>
-						<div class="InputTextArea">
-							<div id="EmployeeStatusCategoryType"></div>
-						</div>
-					</div>            
-            		<div style="clear:both"></div>	
+						<div style="clear:both"></div>
+						<div id="TableEditArea">
+							<div class="LabelTextAreaEmployee">
+								<span class="requiredFieldIndicator">&#149;</span>Status Category:				
+							</div>
+							<div class="InputTextArea">
+								<div id="EmployeeStatusCategoryType"></div>
+							</div>
+						</div>            
+	            		<div style="clear:both"></div>
+					</div>	
 					<div id="GeneralOriginalHireDate">
 						<div id="TableEditArea">
 							<div class="LabelTextAreaEmployee">
@@ -832,6 +836,23 @@
 					</div>
 				</div>
 			</div>
+			<div id="SSNModification" class="ssnDetailsDiv">
+                <div id="TableEditArea">    
+                    <div class="LabelTextAreaEmployee">     
+                        <span class="requiredFieldIndicator">&#149;</span>SSN:
+                    </div>
+                    <div class="InputTextArea">
+                        <div id="ProposedSSN"></div>
+                    </div>
+                </div>
+                <div style="clear:both"></div>
+                <div id="TableEditArea">
+                    <div id="SSNModificationNotes" class="TableEditArea">
+                        <div class="LabelTextAreaEmployee"><span class="requiredFieldIndicator">&#149;</span>Notes:</div>
+                        <div><textarea id="ProposedSSNNotes"></textarea></div>
+                    </div>
+                </div>
+            </div>
 			<div id="houseCodeTerm" style="display:none;">
 			    <div class="LabelTextAreaEmployee">
 				    <span class="requiredFieldIndicator">&#149;</span>House Code:				
