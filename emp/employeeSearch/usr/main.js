@@ -1077,7 +1077,15 @@ ii.Class({
 		    });
 			
 			me.separationCode.makeEnterTab()
-				.setValidationMaster( me.validator );
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required )
+				.addValidation( function( isFinal, dataMap ) {
+					
+					if (me.separationCode.indexSelected == -1 || me.separationCode.text.value == "None") {
+						this.setInvalid("Please select Separation Code.");
+						return;
+					}
+				});
 		
 			me.employeeBirthDate = new ui.ctl.Input.Date({ 
 				id: "EmployeeBirthDate",
@@ -4312,7 +4320,7 @@ ii.Class({
 		terminationReasonChangedLoaded:	function(me, activeId) {
 			
 			me.separationCode.reset();
-			me.separationCodes.unshift(new fin.emp.SeparationCode({ id: 0, number: 0, name: "None" }));
+			//me.separationCodes.unshift(new fin.emp.SeparationCode({ id: 0, number: 0, name: "None" }));
 			me.separationCode.setData(me.separationCodes);
 			
 			if (me.employeeGenerals.length > 0) {
