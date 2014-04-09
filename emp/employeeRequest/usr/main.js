@@ -38,7 +38,7 @@ ii.Class({
 			);
 
 			me.validator = new ui.ctl.Input.Validation.Master();
-			me.ssnValidator = new ui.ctl.Input.Validation.Master();
+			//me.ssnValidator = new ui.ctl.Input.Validation.Master();
 			me.session = new ii.Session(me.cache);
 
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
@@ -292,7 +292,7 @@ ii.Class({
             });
             
             me.proposedSSN.makeEnterTab()
-                .setValidationMaster( me.ssnValidator )
+                //.setValidationMaster( me.ssnValidator )
                 .addValidation( ui.ctl.Input.Validation.required )
                 .addValidation( function( isFinal, dataMap ) {
                     
@@ -309,6 +309,9 @@ ii.Class({
             
             me.currentSSNNotes = $("#CurrentSSNNotes")[0];
             me.currentSSNNotes.readOnly = true;
+			
+			me.reverseTerminationNotes = $("#ReverseTerminationNotes")[0];
+            me.reverseTerminationNotes.readOnly = true;
 			
 			me.anchorApprove = new ui.ctl.buttons.Sizeable({
 				id: "AnchorApprove",
@@ -398,14 +401,16 @@ ii.Class({
 			var me = this;
 
 			me.validator.reset();
-			me.ssnValidator.reset();
+			//me.proposedSSN.reset();
+			me.proposedSSN.setValue("");
+			me.proposedSSN.valid = true;
 			me.hireDate.setValue("");
 			me.originalHireDate.setValue("");
 			me.seniorityDate.setValue("");
 			me.effectiveDate.setValue("");
 			me.jobEffectiveDate.setValue("");
 			me.compensationEffectiveDate.setValue("");
-			me.proposedSSN.setValue("");
+			
 			me.notes.value = "";
 			$("#CurrentHireDate").text("");
 			$("#CurrentOriginalHireDate").text("");
@@ -416,8 +421,18 @@ ii.Class({
 			$("#Status").text("");
 			$("#StatusCategory").text("");
 			$("#ReverseTerminationEffectiveDate").text("");
+			$("#SeparationCode").text("");
+			$("#TerminationDate").text("");
+			$("#TerminationReason").text("");
+			$("#ProposedStatus").text("");
+			$("#ProposedStatusCategory").text("");
+			$("#ProposedReverseTerminationEffectiveDate").text("");
+			$("#ProposedSeparationCode").text("");
+			$("#ProposedTerminationDate").text("");
+			$("#ProposedTerminationReason").text("");			
 			$("#CurrentSSN").text("");
             me.currentSSNNotes.value = "";
+			me.reverseTerminationNotes.value = "";
 		},
 
 		employeesLoaded: function(me, activeId) { 
@@ -458,9 +473,19 @@ ii.Class({
                 me.currentSSNNotes.value = item.column10;
             }
 			else if (me.modification == "ReverseTermination") {
-				$("#Status").text(item.column18);
-				$("#StatusCategory").text(item.column19);
-				$("#ReverseTerminationEffectiveDate").text(item.column14);
+				$("#Status").text(item.column28);
+				$("#StatusCategory").text(item.column30);
+				$("#ReverseTerminationEffectiveDate").text(item.column15);
+				$("#SeparationCode").text(item.column32);
+				$("#TerminationDate").text(item.column17);
+				$("#TerminationReason").text(item.column34);
+				me.reverseTerminationNotes.value = item.column20;
+				$("#ProposedStatus").text(item.column29);
+				$("#ProposedStatusCategory").text(item.column31);
+				$("#ProposedReverseTerminationEffectiveDate").text(item.column24);
+				$("#ProposedSeparationCode").text(item.column33);
+				$("#ProposedTerminationDate").text(item.column26);
+				$("#ProposedTerminationReason").text(item.column35);
 			}
 			
 			me.setStatus("Normal");
@@ -481,7 +506,8 @@ ii.Class({
 				$("#pageHeader").text("Employee Date Modification Details");
 				$("#divSSNCurrentValues").hide();
                 $("#divSSNProposedValues").hide();
-				$("#divRevTerminationValues").hide();
+				$("#divReverseTerminationCurrentValues").hide();
+				$("#divReverseTerminationProposedValues").hide();
 				$("#divDateProposedValues").show();
 				$("#divDateCurrentValues").show();
 				me.modification = "DateModification"
@@ -497,7 +523,8 @@ ii.Class({
                 $("#pageHeader").text("Employee SSN Modification Details");
                 $("#divDateProposedValues").hide();
                 $("#divDateCurrentValues").hide();
-				$("#divRevTerminationValues").hide();
+				$("#divReverseTerminationCurrentValues").hide();
+				$("#divReverseTerminationProposedValues").hide();
                 $("#divSSNCurrentValues").height(230);
                 $("#divSSNCurrentValues").show();
                 $("#divSSNProposedValues").show();
@@ -514,10 +541,11 @@ ii.Class({
 				$("#pageHeader").text("Employee Reverse Termination Details");
 				$("#divDateProposedValues").hide();
 				$("#divDateCurrentValues").hide();
-				 $("#divSSNCurrentValues").hide();
+				$("#divSSNCurrentValues").hide();
                 $("#divSSNProposedValues").hide();
-				$("#divRevTerminationValues").height(230);
-				$("#divRevTerminationValues").show();
+				$("#divReverseTerminationCurrentValues").height(230);
+				$("#divReverseTerminationCurrentValues").show();
+				$("#divReverseTerminationProposedValues").show();
 				me.modification = "ReverseTermination"
 				me.setLoadCount();
 				me.employeeStore.fetch("userId:[user],object:ReverseTermination,batch:0,startPoint:0,maximumRows:0", me.employeesLoaded, me);
@@ -548,14 +576,14 @@ ii.Class({
 
 			// Check to see if the data entered is valid
 			me.validator.forceBlur();
-			me.ssnValidator.forceBlur();
+			//me.ssnValidator.forceBlur();
 
 			if (me.modification == "DateModification" && !me.validator.queryValidity(true) && me.employeeGrid.activeRowIndex >= 0) {
 				alert("In order to save, the errors on the page must be corrected.");
 				return false;
 			}
 			
-			if (me.modification == "SSNModification" && !me.ssnValidator.queryValidity(true) && me.employeeGrid.activeRowIndex >= 0) {
+			if (me.modification == "SSNModification" && !me.proposedSSN.validate(true) && me.employeeGrid.activeRowIndex >= 0) {
                 alert("In order to save, the errors on the page must be corrected.");
                 return false;
             }
@@ -579,17 +607,19 @@ ii.Class({
                     xml += '/>';
                 }
 				else if (me.modification == "ReverseTermination") {
-					xml += '<employeeRevTerminationUpdate';
+					xml += '<employeeReverseTerminationUpdate';
 					xml += ' employeeId="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column1 + '"';
-					xml += ' statusType="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column9 + '"';
-					xml += ' statusCategoryType="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column10 + '"';
+					xml += ' statusType="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column21 + '"';
+					xml += ' statusCategoryType="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column23 + '"';
 					xml += ' active="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column11 + '"';
 					xml += ' changeStatusCode="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column12 + '"';
 					xml += ' payrollStatus="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column13 + '"';
-					xml += ' effectiveDate="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column14 + '"';
-					xml += ' terminationDate="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column15 + '"';
-					xml += ' terminationReason="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column16 + '"';
-					xml += ' exportEPerson="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column17 + '"';
+					xml += ' previousPayrollStatus="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column14 + '"';
+					xml += ' effectiveDate="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column24 + '"';
+					xml += ' separationCode="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column25 + '"';
+					xml += ' terminationDate="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column26 + '"';
+					xml += ' terminationReason="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column27 + '"';
+					xml += ' exportEPerson="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].column19 + '"';
 					xml += '/>';
 				}
 			}

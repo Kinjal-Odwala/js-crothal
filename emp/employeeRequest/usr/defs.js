@@ -31,6 +31,19 @@ ii.init.register( function() {
 		, column20: {type: String, required: false, defaultValue: ""} 	// New Effective Date Compensation
 		, column21: {type: String, required: false, defaultValue: ""} 	// Notes
 		, column22: {type: String, required: false, defaultValue: ""} 	// Status(Approved/Rejected)
+		, column23: {type: String, required: false, defaultValue: ""}
+		, column24: {type: String, required: false, defaultValue: ""}
+		, column25: {type: String, required: false, defaultValue: ""}
+		, column26: {type: String, required: false, defaultValue: ""}
+		, column27: {type: String, required: false, defaultValue: ""}
+		, column28: {type: String, required: false, defaultValue: ""}
+		, column29: {type: String, required: false, defaultValue: ""}
+		, column30: {type: String, required: false, defaultValue: ""}
+		, column31: {type: String, required: false, defaultValue: ""}
+		, column32: {type: String, required: false, defaultValue: ""}
+		, column33: {type: String, required: false, defaultValue: ""}
+		, column34: {type: String, required: false, defaultValue: ""}
+		, column35: {type: String, required: false, defaultValue: ""}
 		, assigned: {type: Boolean, required: false, defaultValue: false}
 	};
 

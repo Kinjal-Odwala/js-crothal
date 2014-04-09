@@ -70,6 +70,15 @@
     color: black;
 }
 
+#ReverseTerminationNotes {  
+    float: left;
+    width: 280px;
+    height: 50px;
+    font-family: Verdana;
+    font-size: 12px;
+    color: black;
+}
+
 #Notes {	
 	float: left;
 	width: 280px;

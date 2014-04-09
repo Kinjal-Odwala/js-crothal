@@ -1861,32 +1861,41 @@ ii.Class({
 				required: false 
 		    });
 			
-			me.proposedSSN = new ui.ctl.Input.Text({    
-                id: "ProposedSSN",    
+			me.newSSN = new ui.ctl.Input.Text({    
+                id: "NewSSN",    
                 maxLength: 11   
             });         
             
-            me.proposedSSN.makeEnterTab()
+            me.newSSN.makeEnterTab()
                 .setValidationMaster( me.validator )
                 .addValidation( ui.ctl.Input.Validation.required )
                 .addValidation( function( isFinal, dataMap ) {
                     
-                    var enteredText = me.proposedSSN.getValue();
+                    var enteredText = me.newSSN.getValue();
                     
                     if (enteredText == "") return;
  
-                    me.proposedSSN.text.value = fin.cmn.text.mask.ssn(enteredText);
-                    proposedSSN = me.proposedSSN.text.value;
+                    me.newSSN.text.value = fin.cmn.text.mask.ssn(enteredText);
+                    newSSN = me.newSSN.text.value;
                                         
                     if (/^(?!000)^([0-8]\d{2})([ -]?)((?!00)\d{2})([ -]?)((?!0000)\d{4})$/.test(enteredText) == false)
                         this.setInvalid("Please enter valid Social Security Number. Example: 001-01-0001, 899-99-9999.");
             });
             
-            me.proposedSSNNotes = $("#ProposedSSNNotes")[0];
-            $("#ProposedSSNNotes").height(100);
-            $("#ProposedSSNNotes").keypress(function() {
-                if (me.proposedSSNNotes.value.length > 249) {
-                    me.proposedSSNNotes.value = me.proposedSSNNotes.value.substring(0, 250);
+            me.newSSNNotes = $("#NewSSNNotes")[0];
+            $("#NewSSNNotes").height(100);
+            $("#NewSSNNotes").keypress(function() {
+                if (me.newSSNNotes.value.length > 249) {
+                    me.newSSNNotes.value = me.newSSNNotes.value.substring(0, 250);
+                    return false;
+                }
+            });
+			
+			me.reverseTerminationNotes = $("#ReverseTerminationNotes")[0];
+            $("#ReverseTerminationNotes").height(100);
+            $("#ReverseTerminationNotes").keypress(function() {
+                if (me.reverseTerminationNotes.value.length > 249) {
+                    me.reverseTerminationNotes.value = me.reverseTerminationNotes.value.substring(0, 250);
                     return false;
                 }
             });
@@ -2011,7 +2020,7 @@ ii.Class({
 			//Basic Life Indicator
 			me.basicLifeIndicatorType.text.tabIndex = 600;
 			//SSN Modification
-            me.proposedSSN.text.tabIndex = 610;
+            me.newSSN.text.tabIndex = 610;
 		},		
 		
 		resizeControls: function() {
@@ -2098,7 +2107,7 @@ ii.Class({
 			me.localTaxCode3.resizeText();
 
 			me.basicLifeIndicatorType.resizeText();
-			me.proposedSSN.resizeText();
+			me.newSSN.resizeText();
 		},
 		
 		configureCommunications: function fin_emp_UserInterface_configureCommunications() {
@@ -3714,7 +3723,7 @@ ii.Class({
 				
 				//Employee General Section - Start
 				me.employeeSSN.setValue(me.employeeGenerals[0].ssn);
-				me.proposedSSN.setValue(me.employeeGenerals[0].ssn);
+				me.newSSN.setValue(me.employeeGenerals[0].ssn);
 				
 				me.houseCodeSearchTemplate.houseCodeIdTemplate = me.employeeGenerals[0].hcmHouseCode;
 				me.houseCodeSearchTemplate.hirNodeTemplate = me.employeeGenerals[0].hirNode;
@@ -5249,7 +5258,8 @@ ii.Class({
 			me.localTaxCode2.reset();
 			me.localTaxCode3.reset();
 			
-			me.proposedSSNNotes.value = "";
+			me.newSSNNotes.value = "";
+			me.reverseTerminationNotes.value = "";
 			
 			$("#EmployeeNumberText").attr('disabled', false);
 			$("#houseCodeTemplateText").attr('disabled', false);
@@ -5516,6 +5526,7 @@ ii.Class({
 			$("#LocalHeader").hide();
 			$("#LifeIndicator").hide();
 			$("#SSNModification").hide();
+			$("#ReverseTermination").hide();
 			me.wizardCount = 0;
 			me.alertMessage = 0;
 			me.showWizard();
@@ -5749,6 +5760,7 @@ ii.Class({
 						$("#popupSubHeader").text("Person");
 						$("#EmployeeInformation").hide();
 						$("#houseCodeTerm").hide();
+						$("#ReverseTermination").hide();
 						$("#AnchorNext").show();
 						$("#AnchorSave").hide();
 						if (me.firstTimeShow)
@@ -5921,6 +5933,7 @@ ii.Class({
 						$("#PersonalDetails").hide();
 						$("#GeneralCurrentHireDate").hide();
 						$("#GeneralOriginalHireDate").hide();
+						$("#ReverseTermination").show();
 						$("#AnchorBack").show();
 						$("#AnchorNext").hide();
 						$("#AnchorSave").show();
@@ -6280,7 +6293,7 @@ ii.Class({
                         $("#CompanyStatus").hide();
                         $("#CrothallCategory").hide();
                         
-                        me.proposedSSN.text.focus();
+                        me.newSSN.text.focus();
     
                     break;
 					
@@ -6401,7 +6414,8 @@ ii.Class({
 					(!me.employeeStatusType.validate(true)) ||
 					(!me.employeeTerminationDate.validate(true)) ||
 					(!me.employeeTerminationReason.validate(true)) ||
-					(!me.employeeEffectiveDate.validate(true))) {
+					(!me.employeeEffectiveDate.validate(true)) ||
+					(!me.separationCode.validate(true))) {
 						return false;
 					}
 			
@@ -6481,6 +6495,11 @@ ii.Class({
 					(!me.employeeStatusCategoryType.validate(true))) {
 					return false;
 				}
+			}
+			
+			if (me.actionType == "SSNModification" && me.employeeSSN.getValue() == me.newSSN.getValue()) {
+				alert("SSN should be different than current SSN.");
+				return false;
 			}
 			
 			$("#messageToUser2").html("Saving");
@@ -6728,8 +6747,8 @@ ii.Class({
                 xml += ' lastName="' + ui.cmn.text.xml.encode(itemPerson.lastName) + '"';     
                 xml += ' employeeNumber="' + itemGeneral.employeeNumber + '"';    
                 xml += ' ssn="' + itemGeneral.ssn.replace(/-/g, '') + '"';    
-                xml += ' proposedSSN="' + me.proposedSSN.getValue() + '"';    
-                xml += ' notes="' + me.proposedSSNNotes.value + '"';  
+                xml += ' newSSN="' + me.newSSN.getValue() + '"';    
+                xml += ' notes="' + me.newSSNNotes.value + '"';  
                 xml += '/>';
     
                 return xml;     
@@ -6772,15 +6791,24 @@ ii.Class({
 				xml += ' lastName="' + ui.cmn.text.xml.encode(itemPerson.lastName) + '"';
 				xml += ' employeeNumber="' + itemGeneral.employeeNumber + '"';
 				xml += ' ssn="' + itemGeneral.ssn.replace(/-/g, '') + '"';				
-				xml += ' statusType="' + itemGeneral.statusType + '"';
-				xml += ' statusCategoryType="' + itemGeneral.statusCategoryType + '"';
+				xml += ' statusType="' + me.employeeGenerals[0].statusType + '"';
+				xml += ' statusCategoryType="' + me.employeeGenerals[0].statusCategoryType + '"';
 				xml += ' active="' + (itemGeneral.statusType != 6 ? true : false) + '"';				
 				xml += ' changeStatusCode="' + itemGeneral.changeStatusCode + '"';
 				xml += ' payrollStatus="' + itemGeneral.payrollStatus + '"';
-				xml += ' effectiveDate="' + itemGeneral.effectiveDate + '"';
-				xml += ' terminationDate="' + itemGeneral.terminationDate + '"';
-				xml += ' terminationReason="' + itemGeneral.terminationReason + '"';
+				xml += ' previousPayrollStatus="' + itemGeneral.previousPayrollStatus + '"';
+				xml += ' effectiveDate="' + ui.cmn.text.date.format(new Date(me.employeeGenerals[0].effectiveDate), "mm/dd/yyyy") + '"';
+				xml += ' separationCode="' + me.employeeGenerals[0].separationCode + '"';
+				xml += ' terminationDate="' + ui.cmn.text.date.format(new Date(me.employeeGenerals[0].terminationDate), "mm/dd/yyyy") + '"';
+				xml += ' terminationReason="' + me.employeeGenerals[0].terminationReason + '"';
 				xml += ' exportEPerson="false"';
+				xml += ' notes="' + me.reverseTerminationNotes.value + '"';
+				xml += ' newStatusType="' + itemGeneral.statusType + '"';
+				xml += ' newStatusCategoryType="' + itemGeneral.statusCategoryType + '"';
+				xml += ' newEffectiveDate="' + itemGeneral.effectiveDate + '"';
+				xml += ' newSeparationCode="' + itemGeneral.separationCode + '"';
+				xml += ' newTerminationDate="' + itemGeneral.terminationDate + '"';
+				xml += ' newTerminationReason="' + itemGeneral.terminationReason + '"';				
 				xml += '/>';
 				return xml;
 			}
