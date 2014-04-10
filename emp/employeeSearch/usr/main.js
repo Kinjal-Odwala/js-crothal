@@ -6495,11 +6495,23 @@ ii.Class({
 					(!me.employeeStatusCategoryType.validate(true))) {
 					return false;
 				}
+				
+				if (me.reverseTerminationNotes.value == "") {
+					alert("Please enter the Notes.");
+					return false;
+				}
 			}
 			
-			if (me.actionType == "SSNModification" && me.employeeSSN.getValue() == me.newSSN.getValue()) {
-				alert("SSN should be different than current SSN.");
-				return false;
+			if (me.actionType == "SSNModification") {
+				if (me.employeeSSN.getValue() == me.newSSN.getValue()) {
+					alert("SSN should be different than current SSN.");
+					return false;
+				}
+				
+				if (me.newSSNNotes.value == "") {
+					alert("Please enter the Notes.");
+					return false;
+				}
 			}
 			
 			$("#messageToUser2").html("Saving");
@@ -6746,7 +6758,7 @@ ii.Class({
                 xml += ' firstName="' + ui.cmn.text.xml.encode(itemPerson.firstName) + '"';   
                 xml += ' lastName="' + ui.cmn.text.xml.encode(itemPerson.lastName) + '"';     
                 xml += ' employeeNumber="' + itemGeneral.employeeNumber + '"';    
-                xml += ' ssn="' + itemGeneral.ssn.replace(/-/g, '') + '"';    
+                xml += ' ssn="' + itemGeneral.ssn + '"';    
                 xml += ' newSSN="' + me.newSSN.getValue() + '"';    
                 xml += ' notes="' + me.newSSNNotes.value + '"';  
                 xml += '/>';
