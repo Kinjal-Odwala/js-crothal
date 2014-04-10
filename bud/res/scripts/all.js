@@ -6312,6 +6312,7 @@ Bud.PrimaryNavbar = Ext.extend(Ext.Toolbar, {
         for (var i = 1; i < this.menuItems.length; i++) {
             if (!budgetStarted || budgetTemplateId == 3 && (i == 1 || i == 2 || i == 3 || i == 5 || i == 6 || i == 7)
                 || budgetTemplateId == 4 && i == 7
+                || budgetTemplateId == 5 && (i == 7 || i == 3 || i==6)
                 || budgetTemplateId == 1 && (i == 2 || i == 3 || i == 5 || i == 6))
                 this.menuItems[i].hide();
             else
