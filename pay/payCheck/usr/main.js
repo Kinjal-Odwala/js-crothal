@@ -218,7 +218,7 @@ ii.Class({
 				else if (statusType == 6)
                 	return "Cancelled";
 				else if (statusType == 10)
-                	return "Rejected";
+                	return "Unapproved";
            	});
 			me.payCheckRequestGrid.capColumns();
 
@@ -542,8 +542,8 @@ ii.Class({
 						this.setInvalid("Please enter valid Alternate Base Rate. Example: 99.99");
 				});
 				
-			me.workOrderTicketNumber = new ui.ctl.Input.Text({
-		        id: "WorkOrderTicketNumber",
+			me.workOrderNumber = new ui.ctl.Input.Text({
+		        id: "WorkOrderNumber",
 		        maxLength: 16, 
 				appendToId: "PayCodeDetailGridControlHolder",
 				changeFunction: function() { me.modified(); }
@@ -554,7 +554,7 @@ ii.Class({
 			me.payCodeDetailGrid.addColumn("date", "date", "Date", "Date", 120, null, me.date);
 			me.payCodeDetailGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 100, function(earning) { return ui.cmn.text.money.format(earning); }, me.earning);
 			me.payCodeDetailGrid.addColumn("alternateBaseRate", "alternateBaseRate", "Alternate Base Rate", "Alternate Base Rate", 180, function(alternateBaseRate) { return ui.cmn.text.money.format(alternateBaseRate); }, me.alternateBaseRate);
-			me.payCodeDetailGrid.addColumn("workOrderTicketNumber", "workOrderTicketNumber", "Work Order Ticket #", "Work Order Ticket Number", 170, null, me.workOrderTicketNumber);
+			me.payCodeDetailGrid.addColumn("workOrderNumber", "workOrderNumber", "Work Order Ticket #", "Work Order Ticket Number", 170, null, me.workOrderNumber);
 			me.payCodeDetailGrid.capColumns();
 			
 			me.payCodeType.active = false;
@@ -562,7 +562,7 @@ ii.Class({
 			me.date.active = false;
 			me.earning.active = false;
 			me.alternateBaseRate.active = false;
-			me.workOrderTicketNumber.active = false;
+			me.workOrderNumber.active = false;
 			
 			me.payCodeDetailReadOnlyGrid = new ui.ctl.Grid({
 				id: "PayCodeDetailReadOnlyGrid"
@@ -573,7 +573,7 @@ ii.Class({
 			me.payCodeDetailReadOnlyGrid.addColumn("date", "date", "Date", "Date", 120);
 			me.payCodeDetailReadOnlyGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 100, function(earning) { return ui.cmn.text.money.format(earning); });
 			me.payCodeDetailReadOnlyGrid.addColumn("alternateBaseRate", "alternateBaseRate", "Alternate Base Rate", "Alternate Base Rate", 180, function(alternateBaseRate) { return ui.cmn.text.money.format(alternateBaseRate); });
-			me.payCodeDetailReadOnlyGrid.addColumn("workOrderTicketNumber", "workOrderTicketNumber", "Work Order Ticket #", "Work Order Ticket Number", 170);
+			me.payCodeDetailReadOnlyGrid.addColumn("workOrderNumber", "workOrderNumber", "Work Order Ticket #", "Work Order Ticket Number", 170);
 			me.payCodeDetailReadOnlyGrid.capColumns();
 
 			me.anchorSearch = new ui.ctl.buttons.Sizeable({
@@ -920,7 +920,7 @@ ii.Class({
 			me.statuses.push(new fin.pay.payCheck.Status(8, "Approved"));
 			me.statuses.push(new fin.pay.payCheck.Status(9, "Completed"));
 			me.statuses.push(new fin.pay.payCheck.Status(6, "Cancelled"));
-			me.statuses.push(new fin.pay.payCheck.Status(10, "Rejected"));
+			me.statuses.push(new fin.pay.payCheck.Status(10, "Unapproved"));
 
 			me.statusType.setData(me.statuses);
 			me.statusType.select(0, me.statusType.focused);
@@ -1134,40 +1134,7 @@ ii.Class({
 			var me = this;
 
 			me.setLoadCount();
-
-			me.resetControls("");
-			
-			if (me.statuses[me.statusType.indexSelected].id == 10) {
-				me.setReadOnly(false);
-				me.anchorSendRequest.display(ui.cmn.behaviorStates.enabled);
-				me.anchorUndo.display(ui.cmn.behaviorStates.enabled);
-				me.anchorCancel.display(ui.cmn.behaviorStates.enabled);
-				$("#AnchorResendRequest").show();
-				$("#AnchorSendRequest").hide();
-				$("#PayCodeDetailGrid").show();
-				$("#PayCodeDetailReadOnlyGrid").hide();
-			}
-			else if (me.statuses[me.statusType.indexSelected].id == 2) {
-				me.setReadOnly(true);
-				me.anchorSendRequest.display(ui.cmn.behaviorStates.disabled);
-				me.anchorUndo.display(ui.cmn.behaviorStates.disabled);
-				me.anchorCancel.display(ui.cmn.behaviorStates.enabled);
-				$("#AnchorResendRequest").hide();
-				$("#AnchorSendRequest").show();
-				$("#PayCodeDetailGrid").hide();
-				$("#PayCodeDetailReadOnlyGrid").show();
-			}
-			else {
-				me.setReadOnly(true);
-				me.anchorSendRequest.display(ui.cmn.behaviorStates.disabled);
-				me.anchorUndo.display(ui.cmn.behaviorStates.disabled);
-				me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
-				$("#AnchorResendRequest").hide();
-				$("#AnchorSendRequest").show();
-				$("#PayCodeDetailGrid").hide();
-				$("#PayCodeDetailReadOnlyGrid").show();				
-			}
-			
+			me.resetControls("");			
 			me.payCheckRequestGrid.setData([]);
 			me.payCodeDetailReadOnlyGrid.setData([]);
 			me.payCodeDetailGrid.body.deselectAll();
@@ -1191,7 +1158,38 @@ ii.Class({
 			var me = this;
 			var index = args.index;
 			var item = me.payCheckRequestGrid.data[index];
-
+			
+			if (item.statusType == 10) {
+				me.setReadOnly(false);
+				me.anchorSendRequest.display(ui.cmn.behaviorStates.enabled);
+				me.anchorUndo.display(ui.cmn.behaviorStates.enabled);
+				me.anchorCancel.display(ui.cmn.behaviorStates.enabled);
+				$("#AnchorResendRequest").show();
+				$("#AnchorSendRequest").hide();
+				$("#PayCodeDetailGrid").show();
+				$("#PayCodeDetailReadOnlyGrid").hide();
+			}
+			else if (item.statusType == 2) {
+				me.setReadOnly(true);
+				me.anchorSendRequest.display(ui.cmn.behaviorStates.disabled);
+				me.anchorUndo.display(ui.cmn.behaviorStates.disabled);
+				me.anchorCancel.display(ui.cmn.behaviorStates.enabled);
+				$("#AnchorResendRequest").hide();
+				$("#AnchorSendRequest").show();
+				$("#PayCodeDetailGrid").hide();
+				$("#PayCodeDetailReadOnlyGrid").show();
+			}
+			else {
+				me.setReadOnly(true);
+				me.anchorSendRequest.display(ui.cmn.behaviorStates.disabled);
+				me.anchorUndo.display(ui.cmn.behaviorStates.disabled);
+				me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
+				$("#AnchorResendRequest").hide();
+				$("#AnchorSendRequest").show();
+				$("#PayCodeDetailGrid").hide();
+				$("#PayCodeDetailReadOnlyGrid").show();				
+			}
+			
 			$("#houseCodeText").val(item.houseCodeTitle);
 			$("#houseCodeTemplateText").val(item.deliveryHouseCodeTitle);
 			me.requestedDate.setValue(item.requestedDate);
@@ -1308,8 +1306,9 @@ ii.Class({
 				alert("Please select the Unit (House Code).");
 				return false;
 			}
-
+			
 			me.payCodeDetailGrid.body.deselectAll();
+				
 			me.validator.forceBlur();
 
 			// Check to see if the data entered is valid
@@ -1417,17 +1416,10 @@ ii.Class({
 				xml += ' hours="' + me.payCodeDetailGrid.data[index].hours + '"';				
 				xml += ' earnings="' + me.payCodeDetailGrid.data[index].earnings + '"';
 				xml += ' alternateBaseRate="' + me.payCodeDetailGrid.data[index].alternateBaseRate + '"';
-				
-				if (me.payCodeDetailGrid.data[index].id > 0) {
-					xml += ' date="' + me.payCodeDetailGrid.data[index].date + '"';
-					xml += ' workOrderNumber="' + me.payCodeDetailGrid.data[index].workOrderTicketNumber + '"';
-				}
-				else {
-					xml += ' date="' + ui.cmn.text.date.format(me.payCodeDetailGrid.data[index].date, "mm/dd/yyyy") + '"';
-					xml += ' workOrderNumber="' + ui.cmn.text.xml.encode(me.payCodeDetailGrid.data[index].workOrderTicketNumber) + '"';
-				}
+				xml += ' date="' + ui.cmn.text.date.format(new Date(me.payCodeDetailGrid.data[index].date), "mm/dd/yyyy") + '"';
+				xml += ' workOrderNumber="' + me.payCodeDetailGrid.data[index].workOrderNumber + '"';
 				xml += '/>';
-			}
+			} 
 			
 			xml += '<payCheckRequestNotification';
 			xml += ' id="0"';
