@@ -38,7 +38,6 @@ ii.Class({
 			);
 
 			me.validator = new ui.ctl.Input.Validation.Master();
-			//me.ssnValidator = new ui.ctl.Input.Validation.Master();
 			me.session = new ii.Session(me.cache);
 
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
@@ -292,7 +291,7 @@ ii.Class({
             });
             
             me.proposedSSN.makeEnterTab()
-                //.setValidationMaster( me.ssnValidator )
+                .setValidationMaster( me.validator )
                 .addValidation( ui.ctl.Input.Validation.required )
                 .addValidation( function( isFinal, dataMap ) {
                     
@@ -306,12 +305,6 @@ ii.Class({
                     if (/^(?!000)^([0-8]\d{2})([ -]?)((?!00)\d{2})([ -]?)((?!0000)\d{4})$/.test(enteredText) == false)
                         this.setInvalid("Please enter valid Social Security Number. Example: 001-01-0001, 899-99-9999.");
             });
-            
-            me.currentSSNNotes = $("#CurrentSSNNotes")[0];
-            me.currentSSNNotes.readOnly = true;
-			
-			me.reverseTerminationNotes = $("#ReverseTerminationNotes")[0];
-            me.reverseTerminationNotes.readOnly = true;
 			
 			me.anchorApprove = new ui.ctl.buttons.Sizeable({
 				id: "AnchorApprove",
@@ -401,9 +394,7 @@ ii.Class({
 			var me = this;
 
 			me.validator.reset();
-			//me.proposedSSN.reset();
 			me.proposedSSN.setValue("");
-			me.proposedSSN.valid = true;
 			me.hireDate.setValue("");
 			me.originalHireDate.setValue("");
 			me.seniorityDate.setValue("");
@@ -430,9 +421,7 @@ ii.Class({
 			$("#ProposedSeparationCode").text("");
 			$("#ProposedTerminationDate").text("");
 			$("#ProposedTerminationReason").text("");			
-			$("#CurrentSSN").text("");
-            me.currentSSNNotes.value = "";
-			me.reverseTerminationNotes.value = "";
+			$("#CurrentSSN").text("");           
 		},
 
 		employeesLoaded: function(me, activeId) { 
@@ -470,7 +459,7 @@ ii.Class({
 			else if (me.modification == "SSNModification") {
                 $("#CurrentSSN").text(item.column8);
                 me.proposedSSN.setValue(item.column9);
-                me.currentSSNNotes.value = item.column10;
+                me.notes.value = item.column10;
             }
 			else if (me.modification == "ReverseTermination") {
 				$("#Status").text(item.column28);
@@ -479,12 +468,12 @@ ii.Class({
 				$("#SeparationCode").text(item.column32);
 				$("#TerminationDate").text(item.column17);
 				$("#TerminationReason").text(item.column34);
-				me.reverseTerminationNotes.value = item.column20;
+				me.notes.value = item.column20;
 				$("#ProposedStatus").text(item.column29);
 				$("#ProposedStatusCategory").text(item.column31);
 				$("#ProposedReverseTerminationEffectiveDate").text(item.column24);
 				$("#ProposedSeparationCode").text(item.column33);
-				$("#ProposedTerminationDate").text(item.column26);
+				$("#ProposedTerminationDate").text("");
 				$("#ProposedTerminationReason").text(item.column35);
 			}
 			
@@ -502,6 +491,9 @@ ii.Class({
 		actionDateModificationItem: function() {
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid()) 
+				return false;
+			
 			if (me.modification != "DateModification") {
 				$("#pageHeader").text("Employee Date Modification Details");
 				$("#divSSNCurrentValues").hide();
@@ -510,6 +502,8 @@ ii.Class({
 				$("#divReverseTerminationProposedValues").hide();
 				$("#divDateProposedValues").show();
 				$("#divDateCurrentValues").show();
+				$("#divNotes").show();
+				$("#divNotes").height(68);
 				me.modification = "DateModification"
 				me.setLoadCount();
 				me.employeeStore.fetch("userId:[user],object:DateModification,batch:0,startPoint:0,maximumRows:0", me.employeesLoaded, me);
@@ -518,16 +512,20 @@ ii.Class({
 		
 		actionSSNModificationItem: function() {
             var me = this;
- 
+ 			
+			if (!parent.fin.cmn.status.itemValid()) 
+				return false;
+					
             if (me.modification != "SSNModification") {
                 $("#pageHeader").text("Employee SSN Modification Details");
                 $("#divDateProposedValues").hide();
                 $("#divDateCurrentValues").hide();
 				$("#divReverseTerminationCurrentValues").hide();
 				$("#divReverseTerminationProposedValues").hide();
-                $("#divSSNCurrentValues").height(230);
                 $("#divSSNCurrentValues").show();
                 $("#divSSNProposedValues").show();
+				$("#divNotes").show();
+				$("#divNotes").height(203);
                 me.modification = "SSNModification"
                 me.setLoadCount();
                 me.employeeStore.fetch("userId:[user],object:SSNModification,batch:0,startPoint:0,maximumRows:0", me.employeesLoaded, me);
@@ -537,15 +535,19 @@ ii.Class({
 		actionRevTerminationItem: function() {
 			var me = this;
 			
+			if (!parent.fin.cmn.status.itemValid()) 
+				return false;
+					
 			if (me.modification != "ReverseTermination") {
 				$("#pageHeader").text("Employee Reverse Termination Details");
 				$("#divDateProposedValues").hide();
 				$("#divDateCurrentValues").hide();
 				$("#divSSNCurrentValues").hide();
                 $("#divSSNProposedValues").hide();
-				$("#divReverseTerminationCurrentValues").height(230);
 				$("#divReverseTerminationCurrentValues").show();
 				$("#divReverseTerminationProposedValues").show();
+				$("#divNotes").show();
+				$("#divNotes").height(68);
 				me.modification = "ReverseTermination"
 				me.setLoadCount();
 				me.employeeStore.fetch("userId:[user],object:ReverseTermination,batch:0,startPoint:0,maximumRows:0", me.employeesLoaded, me);
@@ -576,7 +578,6 @@ ii.Class({
 
 			// Check to see if the data entered is valid
 			me.validator.forceBlur();
-			//me.ssnValidator.forceBlur();
 
 			if (me.modification == "DateModification" && !me.validator.queryValidity(true) && me.employeeGrid.activeRowIndex >= 0) {
 				alert("In order to save, the errors on the page must be corrected.");
