@@ -3674,6 +3674,7 @@ ii.Class({
 					$("#CompensationEffectiveDateText").attr('disabled', false);
 					$("#CompensationEffectiveDateAction").addClass("iiInputAction");
 					$("#EmployeeInformation").removeClass("ssnEmployeeDiv");
+					$("#EmployeeInformation").removeClass("reverseTerminationDiv");
                     $("#EmployeeInformation").addClass("employeeInformationDiv");
 				  	$("#popupSubHeader").text("General");
 				  	$("#SSNContianer").hide();
