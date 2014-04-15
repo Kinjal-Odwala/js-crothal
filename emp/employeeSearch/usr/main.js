@@ -6394,9 +6394,21 @@ ii.Class({
 				return false;
 			}
 			
-			if (me.actionType == "DateModification" && me.notes.value == "") {
-				alert("Please enter the Notes.");
-				return false;
+			if (me.actionType == "DateModification") {
+				if ((ui.cmn.text.date.format(new Date(me.employeeGenerals[0].hireDate), "mm/dd/yyyy") == me.employeeHireDate.text.value) &&
+					(ui.cmn.text.date.format(new Date(me.employeeGenerals[0].originalHireDate), "mm/dd/yyyy") == me.employeeOriginalHireDate.text.value) &&
+					(ui.cmn.text.date.format(new Date(me.employeeGenerals[0].seniorityDate), "mm/dd/yyyy") == me.employeeSeniorityDate.text.value) &&
+					(ui.cmn.text.date.format(new Date(me.employeeGenerals[0].effectiveDate), "mm/dd/yyyy") == me.employeeEffectiveDate.text.value) &&
+					(ui.cmn.text.date.format(new Date(me.employeeGenerals[0].effectiveDateJob), "mm/dd/yyyy") == me.jobEffectiveDate.text.value) &&
+					(ui.cmn.text.date.format(new Date(me.employeeGenerals[0].effectiveDateCompensation), "mm/dd/yyyy") == me.compensationEffectiveDate.text.value)) { 
+					alert("In order to save, at least one date should be different than original date.");
+					return false;
+				}
+				
+				if (me.notes.value == "") {
+					alert("Please enter the Notes.");
+					return false;
+				}
 			}
 			
 			if (me.actionType == "HouseCodeTransfer" || me.actionType == "DateModification" || me.actionType == "Compensation") {						  
