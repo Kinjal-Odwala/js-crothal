@@ -73,6 +73,10 @@ ii.Class({
 						$("#LabelUnit").html("<span class='requiredFieldIndicator'>&#149;</span>Unit (House Code):");
 						$("#LabelUnitAddress").html("<span class='requiredFieldIndicator'>&#149;</span>Unit (House Code) Address:");
 						me.setUnitAddress();
+						$("#CurrentPayCardUserNo")[0].checked = true;
+						$("#UPSDeliveryToHomeNo")[0].checked = true;
+						me.homeAddress.resetValidation(true);
+						me.homeAddress.setValue("");
 						break;
 						
 					case "UPSDeliveryToUnitNo":
@@ -85,12 +89,35 @@ ii.Class({
 					case "UPSDeliveryToHomeYes":
 						$("#LabelHome").html("<span class='requiredFieldIndicator'>&#149;</span>Home Address:");
 						me.setEmployeeAddress();
+						$("#CurrentPayCardUserNo")[0].checked = true;
+						$("#UPSDeliveryToUnitNo")[0].checked = true;
+						me.unitAddress.resetValidation(true);
+						me.unitAddress.setValue("");
 						break;
 						
 					case "UPSDeliveryToHomeNo":
 						$("#LabelHome").html("<span id='nonRequiredFieldIndicator'>Home Address:</span>");
 						me.homeAddress.resetValidation(true);
 						me.homeAddress.setValue("");
+						break;
+						
+					case "CurrentPayCardUserYes":
+						$("#UPSDeliveryToUnitNo")[0].checked = true;
+						$("#UPSDeliveryToHomeNo")[0].checked = true;
+						me.homeAddress.resetValidation(true);
+						me.homeAddress.setValue("");
+						me.unitAddress.resetValidation(true);
+						me.unitAddress.setValue("");
+						break;
+						
+					case "TermRequestYes":
+						$("#LabelState").html("<span class='requiredFieldIndicator'>&#149;</span>State:");
+						break;
+						
+					case "TermRequestNo":
+						$("#LabelState").html("<span id='nonRequiredFieldIndicator'>State:</span>");
+						me.state.resetValidation(true);
+						me.state.setValue("");
 						break;
 				}
 			});
@@ -311,7 +338,10 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)	
 				.addValidation( function( isFinal, dataMap ) {
 					
-					if ((this.focused || this.touched) && me.state.indexSelected == -1)
+					if ($("#TermRequestNo")[0].checked) {
+							this.valid = true;
+						}
+					else if ((this.focused || this.touched) && me.state.indexSelected == -1)
 						this.setInvalid("Please select the correct State.");
 				});
 				
@@ -474,10 +504,15 @@ ii.Class({
 
 					var enteredText = me.hours.getValue();
 
-					if (enteredText == "")
-						return;
+					if (me.earning.getValue() == "" && enteredText == "") {
+						this.setInvalid("Please enter Hours.");
+						me.earning.setInvalid("Please enter Earnings.");
+					}
+					else if (me.earning.getValue() != "" || enteredText != "") {
+							this.valid = true;
+						}
 
-					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d+\\.?\\d{0,2}$")))
+					if (enteredText != ""  && !(ui.cmn.text.validate.generic(enteredText, "^\\d+\\.?\\d{0,2}$")))
 						this.setInvalid("Please enter valid Hours. Example: 99.99");
 				});	
 				
@@ -514,11 +549,16 @@ ii.Class({
 				.addValidation( function( isFinal, dataMap ){
 
 					var enteredText = me.earning.getValue();
-
-					if (enteredText == "")
-						return;
-
-					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d+\\.?\\d{0,2}$")))
+					
+					if (me.hours.getValue() == "" && enteredText == "") {
+						this.setInvalid("Please enter Earnings.");
+						me.hours.setInvalid("Please enter Hours.");
+					}
+					else if (me.hours.getValue() != "" || enteredText != "") {
+							this.valid = true;
+						}			
+					
+					if (enteredText != "" && !(ui.cmn.text.validate.generic(enteredText, "^\\d+\\.?\\d{0,2}$")))
 						this.setInvalid("Please enter valid Earnings. Example: 99.99");
 				});	
 				
@@ -844,12 +884,12 @@ ii.Class({
 			$("#houseCodeText").val("");
 			$("#houseCodeTemplateText").val("");
 			$("#TermRequestYes")[0].checked = true;
-			$("#CurrentPayCardUserYes")[0].checked = true;
-			$("#InstantIssueRequestYes")[0].checked = true;
-			$("#UPSDeliveryToUnitYes")[0].checked = true;
-			$("#SaturdayDeliveryUnitYes")[0].checked = true;
-			$("#UPSDeliveryToHomeYes")[0].checked = true;
-			$("#SaturdayDeliveryHomeYes")[0].checked = true;
+			$("#CurrentPayCardUserNo")[0].checked = true;
+			$("#InstantIssueRequestNo")[0].checked = true;
+			$("#UPSDeliveryToUnitNo")[0].checked = true;
+			$("#SaturdayDeliveryUnitNo")[0].checked = true;
+			$("#UPSDeliveryToHomeNo")[0].checked = true;
+			$("#SaturdayDeliveryHomeNo")[0].checked = true;
 			$("#ProcessingFeeYes")[0].checked = true;
 
 			if (me.status == "new") {
@@ -1335,7 +1375,7 @@ ii.Class({
 				, me.employeeName.getValue()
 				, me.reasonForRequest.getValue()
 				, $("input[name='TermRequest']:checked").val() == "true" ? true : false
-				, me.stateTypes[me.state.indexSelected].id
+				, $("input[name='TermRequest']:checked").val() == "true" ? me.stateTypes[me.state.indexSelected].id : 0 
 				, $("input[name='CurrentPayCardUser']:checked").val() == "true" ? true : false
 				, $("input[name='InstantIssueRequest']:checked").val() == "true" ? true : false
 				, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? true : false

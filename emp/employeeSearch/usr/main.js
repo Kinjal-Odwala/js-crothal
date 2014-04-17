@@ -1882,24 +1882,6 @@ ii.Class({
                         this.setInvalid("Please enter valid Social Security Number. Example: 001-01-0001, 899-99-9999.");
             });
             
-            me.newSSNNotes = $("#NewSSNNotes")[0];
-            $("#NewSSNNotes").height(100);
-            $("#NewSSNNotes").keypress(function() {
-                if (me.newSSNNotes.value.length > 249) {
-                    me.newSSNNotes.value = me.newSSNNotes.value.substring(0, 250);
-                    return false;
-                }
-            });
-			
-			me.reverseTerminationNotes = $("#ReverseTerminationNotes")[0];
-            $("#ReverseTerminationNotes").height(100);
-            $("#ReverseTerminationNotes").keypress(function() {
-                if (me.reverseTerminationNotes.value.length > 249) {
-                    me.reverseTerminationNotes.value = me.reverseTerminationNotes.value.substring(0, 250);
-                    return false;
-                }
-            });
-			
 			me.setTabIndexes();		
 		},		
 		
@@ -3515,12 +3497,13 @@ ii.Class({
 					$("#CompensationEffectiveDateAction").removeClass("iiInputAction");
 					$("#PersonalDetails").removeClass("ssnPersonDiv");
                     $("#PersonalDetails").addClass("personalDetailsDiv");
+					$("#EmployeeInformation").removeClass("reverseTerminationDiv");
 					
 					if (me.actionType != "Termination") {
 						$("#EmployeeOriginalHireDateText").attr('disabled', true);
 						$("#EmployeeOriginalHireDateAction").removeClass("iiInputAction");
 						$("#EmployeeSeniorityDateText").attr('disabled', true);
-						$("#EmployeeSeniorityDateAction").removeClass("iiInputAction");
+						$("#EmployeeSeniorityDateAction").removeClass("iiInputAction");						
 					}
 				}
 				
@@ -3531,7 +3514,9 @@ ii.Class({
 					$("#AnchorNext").hide();
 					$("#AnchorSave").show();
 					$("#AnchorBack").show();
-					me.isPageLoaded = true;		
+					me.isPageLoaded = true;
+					$("#Compensation").removeClass("dateModificationDiv");
+					$("#Compensation").addClass("compensationDiv");		
 				}
 				
 				if (me.actionType == "Person") { 
@@ -3644,6 +3629,7 @@ ii.Class({
 					$("#CompensationEffectiveDateText").attr('disabled', true);
 					$("#CompensationEffectiveDateAction").removeClass("iiInputAction");
 					$("#EmployeeInformation").removeClass("ssnEmployeeDiv");
+					$("#EmployeeInformation").removeClass("reverseTerminationDiv");
                     $("#EmployeeInformation").addClass("employeeInformationDiv");							
 				
 				  	$("#popupSubHeader").text("General");
@@ -3688,6 +3674,7 @@ ii.Class({
 					$("#CompensationEffectiveDateText").attr('disabled', false);
 					$("#CompensationEffectiveDateAction").addClass("iiInputAction");
 					$("#EmployeeInformation").removeClass("ssnEmployeeDiv");
+					$("#EmployeeInformation").removeClass("reverseTerminationDiv");
                     $("#EmployeeInformation").addClass("employeeInformationDiv");
 				  	$("#popupSubHeader").text("General");
 				  	$("#SSNContianer").hide();
@@ -5258,9 +5245,6 @@ ii.Class({
 			me.localTaxCode2.reset();
 			me.localTaxCode3.reset();
 			
-			me.newSSNNotes.value = "";
-			me.reverseTerminationNotes.value = "";
-			
 			$("#EmployeeNumberText").attr('disabled', false);
 			$("#houseCodeTemplateText").attr('disabled', false);
 			$("#houseCodeTemplateTextDropImage").addClass("HouseCodeDropDown");
@@ -5481,6 +5465,7 @@ ii.Class({
 			$("#LocalHeader").hide();
 			$("#EditEmployee").hide();
 			$("#SSNModification").hide();
+			$("#ModificationNotes").hide();
 			me.resizeControls();
 		},
 		
@@ -5511,8 +5496,8 @@ ii.Class({
 			$("#TermEmployeeGeneral").hide();
 			$("#houseCodeTerm").hide();
 			$("#JobInformation").hide();
-			$("#Compensation").hide();
-			$("#DateModificationNotes").hide();
+			$("#Compensation").hide();			
+			$("#ModificationNotes").hide();
 			$("#Federal").hide();
 			$("#StateTax").hide();
 			$("#LocalTax").hide();			
@@ -5526,7 +5511,6 @@ ii.Class({
 			$("#LocalHeader").hide();
 			$("#LifeIndicator").hide();
 			$("#SSNModification").hide();
-			$("#ReverseTermination").hide();
 			me.wizardCount = 0;
 			me.alertMessage = 0;
 			me.showWizard();
@@ -5745,7 +5729,7 @@ ii.Class({
 						$("#EmployeeInformation").hide();
 						$("#houseCodeTerm").hide();
 						$("#EditEmployee").hide();
-						$("#DateModificationNotes").show();
+						$("#ModificationNotes").hide();
 						me.wizardCount = 3;
 					}
 					else if (me.actionType == "BasicLifeIndicator") {
@@ -5760,7 +5744,7 @@ ii.Class({
 						$("#popupSubHeader").text("Person");
 						$("#EmployeeInformation").hide();
 						$("#houseCodeTerm").hide();
-						$("#ReverseTermination").hide();
+						$("#ModificationNotes").hide();
 						$("#AnchorNext").show();
 						$("#AnchorSave").hide();
 						if (me.firstTimeShow)
@@ -5769,7 +5753,8 @@ ii.Class({
 					else if (me.actionType == "SSNModification") {    
                         $("#popupSubHeader").text("General");   
                         $("#SSNModification").hide();
-                        $("#EmployeeInformation").hide();     
+                        $("#EmployeeInformation").hide();
+						$("#ModificationNotes").hide();     
                         $("#AnchorNext").show();  
                         $("#AnchorSave").hide();
                         if (me.firstTimeShow)   
@@ -5932,8 +5917,12 @@ ii.Class({
 						$("#SSNContianer").hide();
 						$("#PersonalDetails").hide();
 						$("#GeneralCurrentHireDate").hide();
-						$("#GeneralOriginalHireDate").hide();
-						$("#ReverseTermination").show();
+						$("#GeneralOriginalHireDate").hide();						
+						$("#ModificationNotes").show();
+						$("#ModificationNotes").css("height", "240");
+						$("#EmployeeInformation").removeClass("employeeInformationDiv");
+						$("#EmployeeInformation").removeClass("ssnEmployeeDiv");
+						$("#EmployeeInformation").addClass("reverseTerminationDiv");
 						$("#AnchorBack").show();
 						$("#AnchorNext").hide();
 						$("#AnchorSave").show();
@@ -6058,6 +6047,7 @@ ii.Class({
 						$("#EmployeeInformation").hide();
 						$("#houseCodeTerm").hide();
 						$("#Compensation").hide();
+						$("#ModificationNotes").hide();
 						$("#AnchorNext").show();
 						$("#AnchorBack").show();
 						me.firstTimeShow == false;
@@ -6120,13 +6110,15 @@ ii.Class({
 					}
 					else if (me.actionType == "HouseCodeTransfer" || me.actionType == "DateModification") {
 						$("#popupSubHeader").text("Compensation");
-						$("#JobInformation").hide();
+						$("#JobInformation").hide();						
 						$("#AnchorBack").show();
 						$("#AnchorSave").show();
 						$("#AnchorNext").hide();
 					}
 
 					if (me.actionType == "DateModification") {
+						$("#ModificationNotes").show();
+						$("#ModificationNotes").css("height", "150");
 						$("#EmployeeRateChangeReasonText").attr('disabled', true);
 						$("#EmployeeRateChangeReasonAction").removeClass("iiInputAction");
 						$("#EmployeePayRateText").attr('disabled', true);
@@ -6141,6 +6133,13 @@ ii.Class({
 						$("#EmployeeAlternatePayRateDText").attr('disabled', true);
 						$("#EmployeeDeviceGroupText").attr('disabled', true);
 						$("#EmployeeDeviceGroupAction").removeClass("iiInputAction");
+						$("#Compensation").removeClass("compensationDiv");
+						$("#Compensation").addClass("dateModificationDiv");
+					}
+					
+					if (me.actionType == "HouseCodeTransfer") {
+						$("#Compensation").removeClass("dateModificationDiv");
+						$("#Compensation").addClass("compensationDiv");
 					}
 
 					me.employeePayRate.text.focus();
@@ -6279,6 +6278,8 @@ ii.Class({
                         $("#AnchorSave").show();
                         $("#SSNModification").show();
                         $("#PersonalDetails").show();
+						$("#ModificationNotes").show();
+						$("#ModificationNotes").css("height", "180");
                         $("#PersonalDetails").removeClass("personalDetailsDiv");
                         $("#PersonalDetails").addClass("ssnPersonDiv");
                         $("#FirstNameText").attr('disabled', true);
@@ -6289,6 +6290,7 @@ ii.Class({
                         $("#LastNameAction").removeClass("iiInputAction");                      
                         $("#EmployeeInformation").show();
                         $("#EmployeeInformation").removeClass("employeeInformationDiv");
+						$("#EmployeeInformation").removeClass("reverseTerminationDiv");
                         $("#EmployeeInformation").addClass("ssnEmployeeDiv");
                         $("#CompanyStatus").hide();
                         $("#CrothallCategory").hide();
@@ -6393,9 +6395,21 @@ ii.Class({
 				return false;
 			}
 			
-			if (me.actionType == "DateModification" && me.notes.value == "") {
-				alert("Please enter the Notes.");
-				return false;
+			if (me.actionType == "DateModification") {
+				if ((ui.cmn.text.date.format(new Date(me.employeeGenerals[0].hireDate), "mm/dd/yyyy") == me.employeeHireDate.text.value) &&
+					(ui.cmn.text.date.format(new Date(me.employeeGenerals[0].originalHireDate), "mm/dd/yyyy") == me.employeeOriginalHireDate.text.value) &&
+					(ui.cmn.text.date.format(new Date(me.employeeGenerals[0].seniorityDate), "mm/dd/yyyy") == me.employeeSeniorityDate.text.value) &&
+					(ui.cmn.text.date.format(new Date(me.employeeGenerals[0].effectiveDate), "mm/dd/yyyy") == me.employeeEffectiveDate.text.value) &&
+					(ui.cmn.text.date.format(new Date(me.employeeGenerals[0].effectiveDateJob), "mm/dd/yyyy") == me.jobEffectiveDate.text.value) &&
+					(ui.cmn.text.date.format(new Date(me.employeeGenerals[0].effectiveDateCompensation), "mm/dd/yyyy") == me.compensationEffectiveDate.text.value)) { 
+					alert("In order to save, at least one date should be different than original date.");
+					return false;
+				}
+				
+				if (me.notes.value == "") {
+					alert("Please enter the Notes.");
+					return false;
+				}
 			}
 			
 			if (me.actionType == "HouseCodeTransfer" || me.actionType == "DateModification" || me.actionType == "Compensation") {						  
@@ -6495,11 +6509,23 @@ ii.Class({
 					(!me.employeeStatusCategoryType.validate(true))) {
 					return false;
 				}
+				
+				if (me.notes.value == "") {
+					alert("Please enter the Notes.");
+					return false;
+				}
 			}
 			
-			if (me.actionType == "SSNModification" && me.employeeSSN.getValue() == me.newSSN.getValue()) {
-				alert("SSN should be different than current SSN.");
-				return false;
+			if (me.actionType == "SSNModification") {
+				if (me.employeeSSN.getValue() == me.newSSN.getValue()) {
+					alert("SSN should be different than current SSN.");
+					return false;
+				}
+				
+				if (me.notes.value == "") {
+					alert("Please enter the Notes.");
+					return false;
+				}
 			}
 			
 			$("#messageToUser2").html("Saving");
@@ -6746,9 +6772,9 @@ ii.Class({
                 xml += ' firstName="' + ui.cmn.text.xml.encode(itemPerson.firstName) + '"';   
                 xml += ' lastName="' + ui.cmn.text.xml.encode(itemPerson.lastName) + '"';     
                 xml += ' employeeNumber="' + itemGeneral.employeeNumber + '"';    
-                xml += ' ssn="' + itemGeneral.ssn.replace(/-/g, '') + '"';    
+                xml += ' ssn="' + itemGeneral.ssn + '"';    
                 xml += ' newSSN="' + me.newSSN.getValue() + '"';    
-                xml += ' notes="' + me.newSSNNotes.value + '"';  
+                xml += ' notes="' + me.notes.value + '"';  
                 xml += '/>';
     
                 return xml;     
@@ -6802,7 +6828,7 @@ ii.Class({
 				xml += ' terminationDate="' + ui.cmn.text.date.format(new Date(me.employeeGenerals[0].terminationDate), "mm/dd/yyyy") + '"';
 				xml += ' terminationReason="' + me.employeeGenerals[0].terminationReason + '"';
 				xml += ' exportEPerson="false"';
-				xml += ' notes="' + me.reverseTerminationNotes.value + '"';
+				xml += ' notes="' + me.notes.value + '"';
 				xml += ' newStatusType="' + itemGeneral.statusType + '"';
 				xml += ' newStatusCategoryType="' + itemGeneral.statusCategoryType + '"';
 				xml += ' newEffectiveDate="' + itemGeneral.effectiveDate + '"';

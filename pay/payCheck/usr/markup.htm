@@ -146,7 +146,7 @@
 					</div>
 					<div class="contentAreaLeft">
 						<div id="TableEditArea">
-							<div class="labelText">
+							<div class="labelText" id="LabelState">
 								<span class="requiredFieldIndicator">&#149;</span>State:
 							</div>
 							<div class="inputTextArea">
@@ -166,10 +166,10 @@
 							<div class="inputTextArea">
 								<div id="CurrentPayCardUserRadio">
 									<div class="radioButton">
-										<input type="radio" id="CurrentPayCardUserYes" name="CurrentPayCardUser" checked="true" value="true" /><span class="labelRadio">Yes</span>
+										<input type="radio" id="CurrentPayCardUserYes" name="CurrentPayCardUser" value="true" /><span class="labelRadio">Yes</span>
 									</div>
 									<div class="radioButton">
-										<input type="radio" id="CurrentPayCardUserNo" name="CurrentPayCardUser" value="false" /><span class="labelRadio">No</span>
+										<input type="radio" id="CurrentPayCardUserNo" name="CurrentPayCardUser" checked="true" value="false" /><span class="labelRadio">No</span>
 									</div>
 								</div>
 							</div>
@@ -184,10 +184,10 @@
 							<div class="inputTextArea">
 								<div id="InstantIssueRequestRadio">
 									<div class="radioButton">
-										<input type="radio" id="InstantIssueRequestYes" name="InstantIssueRequest" checked="true" value="true" /><span class="labelRadio">Yes</span>
+										<input type="radio" id="InstantIssueRequestYes" name="InstantIssueRequest" value="true" /><span class="labelRadio">Yes</span>
 									</div>
 									<div class="radioButton">
-										<input type="radio" id="InstantIssueRequestNo" name="InstantIssueRequest" value="false" /><span class="labelRadio">No</span>
+										<input type="radio" id="InstantIssueRequestNo" name="InstantIssueRequest" checked="true" value="false" /><span class="labelRadio">No</span>
 									</div>
 								</div>
 							</div>
@@ -207,10 +207,10 @@
 							<div class="inputTextArea">
 								<div id="SubcontractedRadio">
 									<div class="radioButton">
-										<input type="radio" id="UPSDeliveryToUnitYes" name="UPSDeliveryToUnit" checked="true" value="true" /><span class="labelRadio">Yes</span>
+										<input type="radio" id="UPSDeliveryToUnitYes" name="UPSDeliveryToUnit" value="true" /><span class="labelRadio">Yes</span>
 									</div>
 									<div class="radioButton">
-										<input type="radio" id="UPSDeliveryToUnitNo" name="UPSDeliveryToUnit" value="false" /><span class="labelRadio">No</span>
+										<input type="radio" id="UPSDeliveryToUnitNo" name="UPSDeliveryToUnit" checked="true" value="false" /><span class="labelRadio">No</span>
 									</div>
 								</div>
 							</div>
@@ -218,7 +218,7 @@
 						</div>
 						<div id="TableEditArea">
 							<div class="labelText" id="LabelUnit">
-								<span class="requiredFieldIndicator">&#149;</span>Unit (House Code):
+								<span id="nonRequiredFieldIndicator">Unit (House Code):</span>
 							</div>
 							<div class="inputTextAreaHouseCode">
 								<div id="houseCodeTemplateContainer" class="HouseCodeContainer"></div>
@@ -234,10 +234,10 @@
 							<div class="inputTextArea">
 								<div id="CommissionableRadio">
 									<div class="radioButton">
-										<input type="radio" id="SaturdayDeliveryUnitYes" name="SaturdayDeliveryUnit" checked="true" value="true" /><span class="labelRadio">Yes</span>
+										<input type="radio" id="SaturdayDeliveryUnitYes" name="SaturdayDeliveryUnit" value="true" /><span class="labelRadio">Yes</span>
 									</div>
 									<div class="radioButton">
-										<input type="radio" id="SaturdayDeliveryUnitNo" name="SaturdayDeliveryUnit" value="false" /><span class="labelRadio">No</span>
+										<input type="radio" id="SaturdayDeliveryUnitNo" name="SaturdayDeliveryUnit" checked="true" value="false" /><span class="labelRadio">No</span>
 									</div>
 								</div>
 							</div>
@@ -252,7 +252,7 @@
 					<div style="clear:both;"></div>
 					<div id="TableEditArea">
 						<div class="labelText" id="LabelUnitAddress">
-							<span class="requiredFieldIndicator">&#149;</span>Unit (House Code) Address:
+							<span id="nonRequiredFieldIndicator">Unit (House Code) Address:</span>
 						</div>
 						<div class="inputTextAreaLarge">
 							<div id="UnitAddress"></div>
@@ -278,10 +278,10 @@
 							<div class="inputTextArea">
 								<div id="SubcontractedRadio">
 									<div class="radioButton">
-										<input type="radio" id="UPSDeliveryToHomeYes" name="UPSDeliveryToHome" checked="true" value="true" /><span class="labelRadio">Yes</span>
+										<input type="radio" id="UPSDeliveryToHomeYes" name="UPSDeliveryToHome" value="true" /><span class="labelRadio">Yes</span>
 									</div>
 									<div class="radioButton">
-										<input type="radio" id="UPSDeliveryToHomeNo" name="UPSDeliveryToHome" value="false" /><span class="labelRadio">No</span>
+										<input type="radio" id="UPSDeliveryToHomeNo" name="UPSDeliveryToHome" checked="true" value="false" /><span class="labelRadio">No</span>
 									</div>
 								</div>
 							</div>
@@ -296,10 +296,10 @@
 							<div class="inputTextArea">
 								<div id="CommissionableRadio">
 									<div class="radioButton">
-										<input type="radio" id="SaturdayDeliveryHomeYes" name="SaturdayDeliveryHome" checked="true" value="true" /><span class="labelRadio">Yes</span>
+										<input type="radio" id="SaturdayDeliveryHomeYes" name="SaturdayDeliveryHome" value="true" /><span class="labelRadio">Yes</span>
 									</div>
 									<div class="radioButton">
-										<input type="radio" id="SaturdayDeliveryHomeNo" name="SaturdayDeliveryHome" value="false" /><span class="labelRadio">No</span>
+										<input type="radio" id="SaturdayDeliveryHomeNo" name="SaturdayDeliveryHome" checked="true" value="false" /><span class="labelRadio">No</span>
 									</div>
 								</div>
 							</div>							
@@ -308,7 +308,7 @@
 					<div style="clear:both;"></div>
 					<div id="TableEditArea">
 						<div class="labelText" id="LabelHome">
-							<span class="requiredFieldIndicator">&#149;</span>Home Address:
+							<span id="nonRequiredFieldIndicator">Home Address:</span>
 						</div>
 						<div class="inputTextAreaLarge">
 							<div id="HomeAddress"></div>
