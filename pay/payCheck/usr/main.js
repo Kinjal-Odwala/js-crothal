@@ -72,6 +72,7 @@ ii.Class({
 					case "UPSDeliveryToUnitYes":
 						$("#LabelUnit").html("<span class='requiredFieldIndicator'>&#149;</span>Unit (House Code):");
 						$("#LabelUnitAddress").html("<span class='requiredFieldIndicator'>&#149;</span>Unit (House Code) Address:");
+						$("#LabelHome").html("<span id='nonRequiredFieldIndicator'>Home Address:</span>");
 						me.setUnitAddress();
 						$("#CurrentPayCardUserNo")[0].checked = true;
 						$("#UPSDeliveryToHomeNo")[0].checked = true;
@@ -88,6 +89,8 @@ ii.Class({
 						
 					case "UPSDeliveryToHomeYes":
 						$("#LabelHome").html("<span class='requiredFieldIndicator'>&#149;</span>Home Address:");
+						$("#LabelUnit").html("<span id='nonRequiredFieldIndicator'>Unit (House Code):</span>");
+						$("#LabelUnitAddress").html("<span id='nonRequiredFieldIndicator'>Unit (House Code) Address:</span>");
 						me.setEmployeeAddress();
 						$("#CurrentPayCardUserNo")[0].checked = true;
 						$("#UPSDeliveryToUnitNo")[0].checked = true;
@@ -102,6 +105,9 @@ ii.Class({
 						break;
 						
 					case "CurrentPayCardUserYes":
+						$("#LabelUnit").html("<span id='nonRequiredFieldIndicator'>Unit (House Code):</span>");
+						$("#LabelUnitAddress").html("<span id='nonRequiredFieldIndicator'>Unit (House Code) Address:</span>");
+						$("#LabelHome").html("<span id='nonRequiredFieldIndicator'>Home Address:</span>");
 						$("#UPSDeliveryToUnitNo")[0].checked = true;
 						$("#UPSDeliveryToHomeNo")[0].checked = true;
 						me.homeAddress.resetValidation(true);
