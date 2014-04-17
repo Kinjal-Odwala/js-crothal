@@ -505,11 +505,14 @@ ii.Class({
 					var enteredText = me.hours.getValue();
 
 					if (me.earning.getValue() == "" && enteredText == "") {
-						this.setInvalid("Please enter Hours.");
-						me.earning.setInvalid("Please enter Earnings.");
+						this.setInvalid("Please enter either Hours or Earnings.");
+						me.earning.setInvalid("Please enter either Hours or Earnings.");
 					}
 					else if (me.earning.getValue() != "" || enteredText != "") {
 							this.valid = true;
+							me.earning.resetValidation(true);
+							if (me.earning.getValue() == "")
+								me.earning.setValue("");
 						}
 
 					if (enteredText != ""  && !(ui.cmn.text.validate.generic(enteredText, "^\\d+\\.?\\d{0,2}$")))
@@ -551,11 +554,14 @@ ii.Class({
 					var enteredText = me.earning.getValue();
 					
 					if (me.hours.getValue() == "" && enteredText == "") {
-						this.setInvalid("Please enter Earnings.");
-						me.hours.setInvalid("Please enter Hours.");
+						this.setInvalid("Please enter either Hours or Earnings.");
+						me.hours.setInvalid("Please enter either Hours or Earnings.");
 					}
 					else if (me.hours.getValue() != "" || enteredText != "") {
 							this.valid = true;
+							me.hours.resetValidation(true);
+							if (me.hours.getValue() == "")
+								me.hours.setValue("");
 						}			
 					
 					if (enteredText != "" && !(ui.cmn.text.validate.generic(enteredText, "^\\d+\\.?\\d{0,2}$")))
