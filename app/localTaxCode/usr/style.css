@@ -1,0 +1,64 @@
+﻿.header {
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 18px;	
+	color: #2C2F50;
+	text-align: center;
+	margin-bottom: 5px;
+}
+
+.labelTextArea {
+	float: left;
+	width: 180px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
+
+.inputTextArea {
+	float: left;
+	width: 200px;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default { 
+	border: 1px solid #d3d3d3; 
+	font-family: Verdana;
+	font-size: 12px;
+	background: #ffffff;
+	font-weight: normal; 
+	color: #000000; 
+	outline: none;
+}
+
+.ui-widget-content .ui-state-hover { 
+	background: #C2E4C1;
+}
+
+.ui-corner-all {
+	-moz-border-radius: 0px;
+}
+
+.ui-icon.ui-icon-triangle-2-n-s {
+	background-image: url(/fin/cmn/usr/media/DropDown/dropDownEnabled.gif);
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+.ui-multiselect { 
+	padding: 0px; 
+	text-align: left;
+	border: solid #aaaaaa thin;
+	border-width: 1px;
+}
+
+#Container {
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	padding: 5px;
+	margin: 2px;
+}
+
+#CeridianCompany {
+	width: 350px;
+}
