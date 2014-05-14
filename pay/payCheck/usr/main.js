@@ -1359,6 +1359,11 @@ ii.Class({
 				return false;
 			}
 			
+			if ($("input[name='CurrentPayCardUser']:checked").val() == "false" && $("input[name='UPSDeliveryToUnit']:checked").val() == "false" && $("input[name='UPSDeliveryToHome']:checked").val() == "false") {
+				alert("Please select one pay check delivery location: Comdata Pay Card, Unit Delivery, or Employee Home Delivery.");
+				return false;
+			}
+			
 			me.payCodeDetailGrid.body.deselectAll();
 				
 			me.validator.forceBlur();
