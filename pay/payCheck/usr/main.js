@@ -72,6 +72,7 @@ ii.Class({
 					case "UPSDeliveryToUnitYes":
 						$("#LabelUnit").html("<span class='requiredFieldIndicator'>&#149;</span>Unit (House Code):");
 						$("#LabelUnitAddress").html("<span class='requiredFieldIndicator'>&#149;</span>Unit (House Code) Address:");
+						$("#LabelHome").html("<span id='nonRequiredFieldIndicator'>Home Address:</span>");
 						me.setUnitAddress();
 						$("#CurrentPayCardUserNo")[0].checked = true;
 						$("#UPSDeliveryToHomeNo")[0].checked = true;
@@ -88,6 +89,8 @@ ii.Class({
 						
 					case "UPSDeliveryToHomeYes":
 						$("#LabelHome").html("<span class='requiredFieldIndicator'>&#149;</span>Home Address:");
+						$("#LabelUnit").html("<span id='nonRequiredFieldIndicator'>Unit (House Code):</span>");
+						$("#LabelUnitAddress").html("<span id='nonRequiredFieldIndicator'>Unit (House Code) Address:</span>");
 						me.setEmployeeAddress();
 						$("#CurrentPayCardUserNo")[0].checked = true;
 						$("#UPSDeliveryToUnitNo")[0].checked = true;
@@ -102,6 +105,9 @@ ii.Class({
 						break;
 						
 					case "CurrentPayCardUserYes":
+						$("#LabelUnit").html("<span id='nonRequiredFieldIndicator'>Unit (House Code):</span>");
+						$("#LabelUnitAddress").html("<span id='nonRequiredFieldIndicator'>Unit (House Code) Address:</span>");
+						$("#LabelHome").html("<span id='nonRequiredFieldIndicator'>Home Address:</span>");
 						$("#UPSDeliveryToUnitNo")[0].checked = true;
 						$("#UPSDeliveryToHomeNo")[0].checked = true;
 						me.homeAddress.resetValidation(true);
@@ -505,11 +511,14 @@ ii.Class({
 					var enteredText = me.hours.getValue();
 
 					if (me.earning.getValue() == "" && enteredText == "") {
-						this.setInvalid("Please enter Hours.");
-						me.earning.setInvalid("Please enter Earnings.");
+						this.setInvalid("Please enter either Hours or Earnings.");
+						me.earning.setInvalid("Please enter either Hours or Earnings.");
 					}
 					else if (me.earning.getValue() != "" || enteredText != "") {
 							this.valid = true;
+							me.earning.resetValidation(true);
+							if (me.earning.getValue() == "")
+								me.earning.setValue("");
 						}
 
 					if (enteredText != ""  && !(ui.cmn.text.validate.generic(enteredText, "^\\d+\\.?\\d{0,2}$")))
@@ -551,11 +560,14 @@ ii.Class({
 					var enteredText = me.earning.getValue();
 					
 					if (me.hours.getValue() == "" && enteredText == "") {
-						this.setInvalid("Please enter Earnings.");
-						me.hours.setInvalid("Please enter Hours.");
+						this.setInvalid("Please enter either Hours or Earnings.");
+						me.hours.setInvalid("Please enter either Hours or Earnings.");
 					}
 					else if (me.hours.getValue() != "" || enteredText != "") {
 							this.valid = true;
+							me.hours.resetValidation(true);
+							if (me.hours.getValue() == "")
+								me.hours.setValue("");
 						}			
 					
 					if (enteredText != "" && !(ui.cmn.text.validate.generic(enteredText, "^\\d+\\.?\\d{0,2}$")))
@@ -1344,6 +1356,11 @@ ii.Class({
 			
 			if ($("input[name='UPSDeliveryToUnit']:checked").val() == "true" && me.houseCodeSearchTemplate.houseCodeIdTemplate == 0 && me.action == "checkRequest") {
 				alert("Please select the Unit (House Code).");
+				return false;
+			}
+			
+			if ($("input[name='CurrentPayCardUser']:checked").val() == "false" && $("input[name='UPSDeliveryToUnit']:checked").val() == "false" && $("input[name='UPSDeliveryToHome']:checked").val() == "false") {
+				alert("Please select one pay check delivery location: Comdata Pay Card, Unit Delivery, or Employee Home Delivery.");
 				return false;
 			}
 			
