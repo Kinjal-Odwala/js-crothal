@@ -81,13 +81,26 @@ ii.init.register( function() {
 		, vendorPhoneNumber: {type: String, required: false, defaultValue: ""}
 		, vendorEmail: {type: String, required: false, defaultValue: ""}
 		, reasonForRequest: {type: String, required: false, defaultValue: ""}
-		, requisitionType: {type: Number, required: false, defaultValue: 0}
-		, urgency: {type: Number, required: false, defaultValue: 0}
-		, lifeSpan: {type: Number, required: false, defaultValue: 0}
+		, requisitionType: {type: String, required: false, defaultValue: ""}
+		, urgency: {type: String, required: false, defaultValue: ""}
+		, lifeSpan: {type: String, required: false, defaultValue: ""}
 		, chargeToPeriod: {type: String, required: false, defaultValue: ""}			
 	};
 	
 	fin.pur.poRequisition.poRequisitionDetailArgs = {
+		id: {type: Number, defaultValue: 0}
+		, poRequisitionId: {type: Number, defaultValue: 0}
+		, account: {type: fin.pur.poRequisition.Account, required: false}
+		, itemSelect: {type: Boolean, required: false, defaultValue: true}
+		, number: {type: String, required: false, defaultValue: ""}
+		, description: {type: String, required: false, defaultValue: ""}
+		, unit: {type: String, required: false, defaultValue: ""}
+		, manufactured: {type: String, required: false, defaultValue: ""}
+		, price: {type: String, required: false, defaultValue: ""}
+		, quantity: {type: String, required: false, defaultValue: "0"}
+	};
+	
+	fin.pur.poRequisition.itemArgs = {
 		id: {type: Number, defaultValue: 0}
 		, poRequisitionId: {type: Number, defaultValue: 0}
 		, account: {type: fin.pur.poRequisition.Account, required: false}
@@ -98,7 +111,6 @@ ii.init.register( function() {
 		, manufactured: {type: String, required: false, defaultValue: ""}
 		, price: {type: String, required: false, defaultValue: ""}
 		, quantity: {type: String, required: false, defaultValue: "0"}
-		, total: {type: String, required: false, defaultValue: "0"}
 	};
 	
 	fin.pur.poRequisition.vendorArgs = {
@@ -199,6 +211,20 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.pur.poRequisition.poRequisitionDetailArgs);
+			$.extend(this, args);
+			
+			if(!this.account) {
+				this.account = [];
+			}
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.pur.poRequisition.Item",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pur.poRequisition.itemArgs);
 			$.extend(this, args);
 			
 			if(!this.account) {

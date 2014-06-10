@@ -28,7 +28,7 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;			
 				
-			poRequisitionId = 0;
+			me.poRequisitionId = 0;
 			me.vendorId = 0;
 			me.accountId = 0;
 			me.catalogId = 0;
@@ -48,7 +48,7 @@ ii.Class({
 			);
 			
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
-			me.authorizePath = "\\crothall\\chimes\\fin\\Purchasing\\PurchaseOrders";
+			me.authorizePath = "\\crothall\\chimes\\fin\\Purchasing\\PORequisition";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
 					me.authorizationProcess.apply(me);
@@ -84,7 +84,6 @@ ii.Class({
 			var me = this;
 					
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
-			me.purchaseOrdersReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
 
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
@@ -95,12 +94,7 @@ ii.Class({
 				$("#messageToUser").css({ "color": "white" });
 				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
 				$("#pageLoading").fadeIn("slow");
-				
-				if (me.purchaseOrdersReadOnly) {
-					$("#actionMenu").hide();
-					$("#AnchorMasterButtons").hide();				
-				}
-					
+	
 				ii.timer.timing("Page displayed");
 				me.loadCount = 3;
 				me.session.registerFetchNotify(me.sessionLoaded,me);
@@ -135,35 +129,11 @@ ii.Class({
 				
 			//TO DO: Set the grid height
 			fin.pur.poRequisitionUi.requisitionGrid.setHeight($(window).height() - 135);
-			fin.pur.poRequisitionUi.itemGrid.setHeight($(window).height() - 165);
+			fin.pur.poRequisitionUi.itemGrid.setHeight($(window).height() - 205);
 		},
 		
 		defineFormControls: function() {
 			var me = this;
-			
-			me.actionMenu = new ui.ctl.Toolbar.ActionMenu({
-				id: "actionMenu"
-			});  
-			
-			me.actionMenu
-				.addAction({
-					id: "saveAction",
-					brief: "Save PO Requisition (Ctrl+S)", 
-					title: "Save the current PO Requisition.",
-					actionFunction: function() { me.actionSaveItem(); }
-				})
-				.addAction({
-					id: "cancelAction", 
-					brief: "Undo current changes to PO Requisition (Ctrl+U)", 
-					title: "Undo the changes to PO Requisition being edited.",
-					actionFunction: function() { me.actionUndoItem(); }
-				})
-				.addAction({
-					id: "EditAction", 
-					brief: "View / Edit PO Requisition Info", 
-					title: "View / Edit the PO Requisition Info.",
-					actionFunction: function() { me.actionEditItem(); }
-				})			
 			
 			me.anchorNew = new ui.ctl.buttons.Sizeable({
 				id: "AnchorNew",
@@ -186,6 +156,14 @@ ii.Class({
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Next&nbsp;&nbsp;</span>",
 				clickFunction: function() { me.actionNextItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorPrint = new ui.ctl.buttons.Sizeable({
+				id: "AnchorPrint",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Print&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionPrintItem(); },
 				hasHotState: true
 			});
 			
@@ -221,8 +199,8 @@ ii.Class({
 				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});
 			
-			me.requisitionGrid.addColumn("requestorName", "requestorName", "Requestor Name", "Requestor Name", 150);
-			me.requisitionGrid.addColumn("requestorEmail", "requestorEmail", "Requestor Email", "Requestor Email", 150);		
+			me.requisitionGrid.addColumn("requestorName", "requestorName", "Requestor Name", "Requestor Name", 250);
+			me.requisitionGrid.addColumn("requestorEmail", "requestorEmail", "Requestor Email", "Requestor Email", 200);		
 			me.requisitionGrid.addColumn("requestedDate ", "requestedDate", "Requested Date", "Requested Date", 150);
 			me.requisitionGrid.addColumn("deliveryDate", "deliveryDate", "Delivery Date", "Delivery Date", 150);
 			me.requisitionGrid.addColumn("reasonForRequest", "reasonForRequest", "Reason For Request", "Reason For Request", null);
@@ -456,7 +434,7 @@ ii.Class({
 			me.itemGrid = new ui.ctl.Grid({
 				id: "ItemGrid",
 				allowAdds: true,
-				createNewFunction: fin.pur.poRequisition.PORequisitionDetail,
+				createNewFunction: fin.pur.poRequisition.Item,
 				preDeactivateFunction: function( ) {
 					var index = me.itemGrid.data.length - 1;
 					me.itemGrid.body.renderRow(index, index); 
@@ -768,13 +746,22 @@ ii.Class({
 				injectionArray: me.poRequisitions
 			});
 			
+			me.items = [];
+			me.itemStore = me.cache.register({
+				storeId: "purPurchaseOrderItems",
+				itemConstructor: fin.pur.poRequisition.Item,
+				itemConstructorArgs: fin.pur.poRequisition.itemArgs,
+				injectionArray: me.items,
+				lookupSpec: { account: me.accounts }	
+			});
+			
 			me.poRequisitionDetails = [];
 			me.poRequisitionDetailStore = me.cache.register({
-				storeId: "purPurchaseOrderItems",
+				storeId: "purPORequisitionDetails",
 				itemConstructor: fin.pur.poRequisition.PORequisitionDetail,
 				itemConstructorArgs: fin.pur.poRequisition.poRequisitionDetailArgs,
 				injectionArray: me.poRequisitionDetails,
-				lookupSpec: { account: me.accounts }	
+				lookupSpec: { account: me.accounts }
 			});
 			
 			me.vendors = [];
@@ -885,6 +872,8 @@ ii.Class({
 			me.reasonForRequest.resizeText();
 			me.vendor.resizeText();
 			me.searchItem.resizeText();
+			me.company.resizeText();
+			me.shippingJob.resizeText();
 			me.shippingAddress1.resizeText();
 			me.shippingAddress2.resizeText();
 			me.shippingCity.resizeText();
@@ -972,16 +961,34 @@ ii.Class({
 		loadPOItems: function() {
 			var me = this;
 			
-			me.setLoadCount();	
-			me.poRequisitionDetailStore.reset();		
-			me.poRequisitionDetailStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId + ",catalogId:" + me.catalogId + ",orderId:0,accountId:" + me.accountId + ",searchValue:" + me.searchItem.getValue(), me.poItemsLoaded, me);
+			$("#pageLoading").fadeIn("slow");	
+			me.itemStore.reset();		
+			me.itemStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId + ",catalogId:" + me.catalogId + ",orderId:0,accountId:" + me.accountId + ",searchValue:" + me.searchItem.getValue(), me.poItemsLoaded, me);
 			me.searchItem.setValue("");
 		},
 		
-		poItemsLoaded: function(me, activeId) {
-
-			me.itemGrid.setData(me.poRequisitionDetails);
-			me.checkLoadCount();
+		poItemsLoaded: function(me, activeId) {			
+			
+			if (me.status == "EditPORequisition") {
+				for (var index = 0; index < me.poRequisitionDetails.length; index++) {				
+					var item = new fin.pur.poRequisition.PORequisitionDetail({ 
+					id: me.poRequisitionDetails[index].id,
+					itemSelect: me.poRequisitionDetails[index].itemSelect, 
+					poRequisitionId: me.poRequisitionDetails[index].poRequisitionId,
+					account: me.poRequisitionDetails[index].account,
+					number: me.poRequisitionDetails[index].number,
+					description: me.poRequisitionDetails[index].description,
+					unit: me.poRequisitionDetails[index].unit,
+					manufactured: me.poRequisitionDetails[index].manufactured,
+					price: me.poRequisitionDetails[index].price,
+					quantity: me.poRequisitionDetails[index].quantity
+					});
+					me.items.push(item);
+				}
+			}
+			
+			me.itemGrid.setData(me.items);
+			$("#pageLoading").fadeOut("slow");
 		},
 		
 		personsLoaded: function(me, activeId) {
@@ -990,9 +997,8 @@ ii.Class({
 			if (me.persons.length > 0) {
 				me.users = me.persons.slice();				
 				me.requestorName.text.readOnly = true;
-				me.requestorName.setValue(me.users[0].firstName + " " + me.users[0].lastName + " [" + me.session.propertyGet("userName") + "]");
-				me.requestorEmail.setValue(me.users[0].email);
-				me.requestedDate.setValue(me.currentDate());								
+				me.requestorName.setValue(me.users[0].firstName + " " + me.users[0].lastName + " [" + me.session.propertyGet("userName") + "]");				
+				//me.requestedDate.setValue(me.currentDate());								
 			}
 			me.checkLoadCount();
 		},
@@ -1012,17 +1018,18 @@ ii.Class({
 				return;
 			
 			if (me.requisitionGrid.data[index] != undefined) {
-				poRequisitionId = me.requisitionGrid.data[index].id;
-				//me.setLoadCount();
-				//me.itemStore.fetch("userId:[user],pORequisitionId:" + pORequisitionId, me.itemsLoaded, me);
+				me.poRequisitionId = me.requisitionGrid.data[index].id;
+				me.setLoadCount();
+				me.poRequisitionDetailStore.reset();
+				me.poRequisitionDetailStore.fetch("userId:[user],pORequisitionId:" + me.poRequisitionId, me.poRequisitonDetailsLoaded, me);
 			}
 			else 
-				poRequisitionId = 0;
+				me.poRequisitionId = 0;
 		},	
 		
-		itemsLoaded: function(me, activeId) {
+		poRequisitonDetailsLoaded: function(me, activeId) {
 			
-			me.itemGrid.setData(me.items);
+			me.itemGrid.setData(me.poRequisitionDetails);
 			me.checkLoadCount();
 		},
 		
@@ -1031,7 +1038,9 @@ ii.Class({
 			
 			me.vendorStore.reset();
 			if(me.vendorName.getValue() != "") {
-				me.setLoadCount();
+				//me.setLoadCount();
+				$("#pageLoading").fadeIn("slow");
+				me.vendorStore.reset();
 				me.vendorStore.fetch("searchValue:" + me.vendorName.getValue() + ",vendorStatus:-2,userId:[user]", me.vendorsLoaded, me);
 			}
 			else {
@@ -1066,6 +1075,12 @@ ii.Class({
 				me.vendorContactName.setValue(me.vendors[0].contactName);
 				me.vendorPhone.setValue(me.vendors[0].phoneNumber);
 				me.vendorEmail.setValue(me.vendors[0].email);
+				me.category.fetchingData();
+				me.catalog.fetchingData();
+				me.accountStore.reset();
+				me.accountStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.categoriesLoaded, me);
+				me.catalogStore.reset();
+				me.catalogStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.catalogsLoaded, me);
 			}
 			else {
 				me.vendorId = 0;
@@ -1080,7 +1095,24 @@ ii.Class({
 				me.vendorEmail.setValue("");
 			}
 			
-			me.checkLoadCount();
+			$("#pageLoading").fadeOut("slow");			
+		},
+		
+		vendorsLoad: function(me, activeId) {
+			var itemIndex = 0;
+			
+			if (me.vendors.length > 0) {
+				me.vendorId = me.vendors[0].number;
+				
+				me.category.fetchingData();
+				me.catalog.fetchingData();
+				me.accountStore.reset();
+				me.accountStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.categoriesLoaded, me);
+				me.catalogStore.reset();
+				me.catalogStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.catalogsLoaded, me);
+			}
+			
+			$("#pageLoading").fadeOut("slow");			
 		},
 		
 		categoriesLoaded: function(me, activeId) {
@@ -1105,7 +1137,6 @@ ii.Class({
 			
 			me.catalog.reset();
 			me.catalog.setData(me.catalogs);
-			me.checkLoadCount();
 		},
 		
 		catalogChanged: function() {
@@ -1117,24 +1148,59 @@ ii.Class({
 				me.catalogId = 0;
 		},
 		
-		actionClickItem: function(object, index) {
+		validatePORequisition: function() {
 			var me = this;
+			var valid = true;			
+			
+			me.validator.forceBlur();
 
-			if (object.type == "text") {
-				if (object.id == "price" + index) {
-					
-					if (me.moduleColumns[index].columnTypeFilter == 0) {
-						me.moduleColumns[index].columnTypeFilter = 0;
-						$("#filterInputCheck" + index)[0].checked = false;
-					}
-					else if (me.moduleColumns[index].columnTypeFilter == 1) {
-						me.moduleColumns[index].columnTypeFilter = 1;
-						$("#filterInputCheck" + index)[0].checked = true;;
-					}
+			if (me.wizardCount == 1) {
+				valid = me.validator.queryValidity(true);
+			
+				if (!me.requestorEmail.valid
+					|| !me.requestedDate.valid
+					|| !me.deliveryDate.valid
+					|| !me.vendorName.valid
+					|| !me.vendorAddress1.valid					
+					|| !me.vendorAddress2.valid					
+					|| !me.vendorCity.valid
+					|| !me.vendorState.valid
+					|| !me.vendorZip.valid
+					|| !me.vendorContactName.valid
+					|| !me.vendorPhone.valid
+					|| !me.vendorEmail.valid
+					|| !me.reasonForRequest.valid
+					|| $('input:radio[name="RequisitionType"]:checked').length == 0
+					|| $('input:radio[name="Urgency"]:checked').length == 0
+					|| $('input:radio[name="LifeSpan"]:checked').length == 0
+					) {
+					return false;
 				}
+				else
+					return true;
 			}
-		},
+			else if (me.wizardCount == 2) {
 				
+				if (me.itemGrid.activeRowIndex == -1)
+				 	return true;
+				
+				//me.itemGrid.body.deselectAll();
+				valid = me.validator.queryValidity(true);
+				
+				if (!me.itemNumber.valid
+					|| !me.itemDescription.valid
+					|| !me.account.valid
+					|| !me.price.valid
+					|| !me.quantity.valid
+					|| !me.uom.valid
+				) {
+					return false;
+				}
+				else
+					return true;
+			}			
+		},
+					
 		actionNewItem: function() {
 			var me = this;
 				
@@ -1157,7 +1223,9 @@ ii.Class({
 			if (index >= 0)
 				me.itemGrid.body.deselect(index, true);
 			me.itemGrid.setData([]);
-			me.itemGrid.setHeight($(window).height() - 165);
+			me.itemGrid.setHeight($(window).height() - 205);
+			me.requestorEmail.setValue(me.users[0].email);
+			me.requestedDate.setValue(me.currentDate());
 			me.deliveryDate.setValue("");
 			me.vendorName.setValue("");
 			me.vendorAddress1.setValue("");
@@ -1179,29 +1247,42 @@ ii.Class({
 			me.category.setData([]);
 			me.catalog.reset();
 			me.catalog.setData([]);
-			me.company.setValue("");
-			me.shippingAddress1.setValue("");
-			me.shippingAddress2.setValue("");
-			me.shippingCity.setValue("");
-			me.shippingState.select(0, me.shippingState.focused);
-			me.shippingZip.setValue("");
+			me.company.setValue(parent.fin.appUI.houseCodeTitle);
+			me.shippingAddress1.setValue(me.houseCodeDetails[0].shippingAddress1);
+			me.shippingAddress2.setValue(me.houseCodeDetails[0].shippingAddress2);
+			me.shippingCity.setValue(me.houseCodeDetails[0].shippingCity);
+			
+			index = ii.ajax.util.findIndexById(me.houseCodeDetails[0].shippingState.toString(), me.stateTypes);
+			if (index >= 0 && index != undefined)
+				me.shippingState.select(index, me.shippingState.focused);
+	
+			me.shippingZip.setValue(me.houseCodeDetails[0].shippingZip);
 			me.shippingPhone.setValue("");
 			me.shippingFax.setValue("");
 			
 			me.resizeControls();
-			poRequisitionId = 0;
+			me.poRequisitionId = 0;
 			me.status = "NewPORequisition";
 			me.wizardCount = 1;
+			me.modified(false);
+			me.setStatus("Loaded");
 		},
 		
 		actionEditItem: function() {
 			var me = this;
-				
+			var itemIndex = 0;			
+			var name;
+						
 			if (parent.fin.appUI.houseCodeId == 0) {
 				alert('Please select the House Code before adding the new PO Requisition.')
 				return true;
 			}
-						
+			
+			if (me.requisitionGrid.activeRowIndex == -1) {
+				alert('Please select PO Requisition to edit.')
+				return true;
+			}
+					
 			$("#GeneralInfo").show();
 			$("#ItemInfo").hide();			
 			$("#ShippingInfo").hide();
@@ -1212,8 +1293,70 @@ ii.Class({
 			
 			loadPopup();
 			
+			if (me.requisitionGrid.data[me.lastSelectedRowIndex] != undefined) {
+				
+				me.requestorEmail.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].requestorEmail);
+				me.requestedDate.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].requestedDate);
+				me.deliveryDate.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].deliveryDate);					
+				me.vendorName.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle);
+				me.vendorAddress1.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorAddressLine1);
+				me.vendorAddress2.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorAddressLine2);
+				me.vendorCity.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorCity);
+				
+				itemIndex = ii.ajax.util.findIndexById(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorStateType.toString(), me.stateTypes);				
+				if(itemIndex >= 0 && itemIndex != undefined)
+					me.vendorState.select(itemIndex, me.vendorState.focused);
+					
+				me.vendorZip.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorZip);
+				me.vendorContactName.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorContactName);
+				me.vendorPhone.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorPhoneNumber);
+				me.vendorEmail.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorEmail);
+				me.reasonForRequest.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].reasonForRequest);
+				
+				if (me.requisitionGrid.data[me.lastSelectedRowIndex].requisitionType == "SpecialSupply")
+					$('#RequisitionTypeSpecialSupply').attr('checked', true);
+				else if (me.requisitionGrid.data[me.lastSelectedRowIndex].requisitionType == "OffContract")
+					$('#RequisitionTypeOffContract').attr('checked', true);
+					
+				if (me.requisitionGrid.data[me.lastSelectedRowIndex].urgency == "Urgent")
+					$('#UrgencyUrgent').attr('checked', true);
+				else if (me.requisitionGrid.data[me.lastSelectedRowIndex].urgency == "NotUrgent")
+					$('#UrgencyNotUrgent').attr('checked', true);
+					
+				if (me.requisitionGrid.data[me.lastSelectedRowIndex].lifeSpan == "Permanent")
+					$('#LifeSpanPermanent').attr('checked', true);
+				else if(me.requisitionGrid.data[me.lastSelectedRowIndex].lifeSpan == "Temporary")
+					$('#LifeSpanTemporary').attr('checked', true);
+				
+				me.vendor.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle);
+				
+				itemIndex = ii.ajax.util.findIndexById(me.requisitionGrid.data[me.lastSelectedRowIndex].houseCode.toString(), me.houseCodes);
+				if(itemIndex != undefined)
+					me.company.setValue(me.houseCodes[itemIndex].name);				
+				
+				itemIndex = ii.ajax.util.findIndexById(me.requisitionGrid.data[me.lastSelectedRowIndex].houseCodeJob.toString(), me.houseCodeJobs);
+				if(itemIndex >= 0 && itemIndex != undefined)
+					me.shippingJob.select(itemIndex, me.shippingJob.focused);
+				
+				me.shippingAddress1.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToAddress1);
+				me.shippingAddress2.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToAddress2);
+				me.shippingCity.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToCity);
+				
+				itemIndex = ii.ajax.util.findIndexById(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToState.toString(), me.stateTypes);				
+				if(itemIndex >= 0 && itemIndex != undefined)
+					me.shippingState.select(itemIndex, me.shippingState.focused);
+					
+				me.shippingState.select(0, me.shippingState.focused);
+				me.shippingZip.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToZip);
+				me.shippingPhone.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToPhone);
+				me.shippingFax.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToFax);
+				
+				$("#pageLoading").fadeIn("slow");				
+				me.vendorStore.fetch("searchValue:" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle + ",vendorStatus:-2,userId:[user]", me.vendorsLoad, me);
+			}
+			
 			me.resizeControls();
-			poRequisitionId = 0;
+			me.poRequisitionId = me.requisitionGrid.data[me.lastSelectedRowIndex].id;
 			me.vendorId = 0;
 			me.status = "EditPORequisition";
 			me.wizardCount = 1;
@@ -1221,6 +1364,11 @@ ii.Class({
 		
 		actionNextItem: function() {
 			var me = this;								
+			
+			if (!me.validatePORequisition()) {
+				alert("In order to continue, the errors on the page must be corrected.");
+				return;
+			}
 			
 			me.wizardCount = me.wizardCount + 1;
 			
@@ -1231,16 +1379,8 @@ ii.Class({
 				me.anchorNext.display(ui.cmn.behaviorStates.enabled);
 				me.anchorBack.display(ui.cmn.behaviorStates.enabled);
 				me.anchorSave.display(ui.cmn.behaviorStates.disabled);
-				$("#Header").text("PO Requisition Item Information");
-				
-				me.setLoadCount();
+				$("#Header").text("PO Requisition Item Information");				
 				me.vendor.resizeText();
-				me.category.fetchingData();
-				me.catalog.fetchingData();
-				me.accountStore.reset();
-				me.accountStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.categoriesLoaded, me);
-				me.catalogStore.reset();
-				me.catalogStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.catalogsLoaded, me);
 			}
 			else if (me.wizardCount == 3) {				
 				$("#GeneralInfo").hide();
@@ -1249,24 +1389,65 @@ ii.Class({
 				me.anchorNext.display(ui.cmn.behaviorStates.disabled);
 				me.anchorBack.display(ui.cmn.behaviorStates.enabled);
 				me.anchorSave.display(ui.cmn.behaviorStates.enabled);
-				$("#Header").text("Shipping Information");	
-				
-				me.company.setValue(parent.fin.appUI.houseCodeTitle);
-				me.shippingAddress1.setValue(me.houseCodeDetails[0].shippingAddress1);
-				me.shippingAddress2.setValue(me.houseCodeDetails[0].shippingAddress2);
-				me.shippingCity.setValue(me.houseCodeDetails[0].shippingCity);
-				
-				index = ii.ajax.util.findIndexById(me.houseCodeDetails[0].shippingState.toString(), me.stateTypes);
-				if (index >= 0 && index != undefined)
-					me.shippingState.select(index, me.shippingState.focused);
-		
-				me.shippingZip.setValue(me.houseCodeDetails[0].shippingZip);
-				me.shippingPhone.setValue("");
-				me.shippingFax.setValue("");					
+				$("#Header").text("Shipping Information");
 			}
 			
+			me.resizeControls();
 			me.validator.reset();
-			me.itemGrid.setHeight($(window).height() - 165);
+			me.itemGrid.setHeight($(window).height() - 205);
+		},
+		
+		actionPrintItem: function() {
+			var me = this;								
+			
+			if (me.requisitionGrid.activeRowIndex == -1) {
+				alert('Please select PO Requisition to print.')
+				return true;
+			}
+
+			var htmlContent = "<html><head><link rel='stylesheet' type='text/css' href='style.css'></head><body>";
+			
+			if (me.requisitionGrid.data[me.lastSelectedRowIndex] != undefined) {
+			
+				htmlContent += "<center><b><span style='font-family: Verdana; font-size: 12pt;'>PO Requisitions</span></b></center></br>"
+					+ "<table width=100% border=1 cellspacing=0 cellpadding=5 style='font-family: Verdana; font-size: 8pt;border-color:Gray;border-width:1px;border-style:Solid;border-collapse:collapse;'>"
+	                + "<tr><td width=25%>House Code:</td><td width=75% colspan=3>" + parent.fin.appUI.houseCodeBrief + "</td></tr>"
+					+ "<tr><td colspan=4 align=center><b>Requestor Details</b></td></tr>"
+	                + "<tr><td width=25%>Requestor Name:</td><td width=75% colspan=3>" + me.requestorName.getValue() + "</td></tr>"
+					+ "<tr><td width=25%>Requestor Email:</td><td width=75% colspan=3>" + me.requisitionGrid.data[me.lastSelectedRowIndex].requestorEmail + "</td></tr>"
+   				    + "<tr><td width=25%>Requested Date:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].requestedDate + "</td><td width=25%>Delivery Date:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].deliveryDate + "</td></tr>"					
+					+ "<tr><td colspan=4 align=center><b>Vendor Details</b></td></tr>"
+					+ "<tr><td width=25%>Name:</td><td width=75% colspan=3>" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle + "</td></tr>"
+					+ "<tr><td width=25%>Address 1:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorAddressLine1 + "</td><td width=25%>Address 2:</td><td width=25%>" +  me.requisitionGrid.data[me.lastSelectedRowIndex].vendorAddressLine2 + "</td></tr>"
+					
+					+ "<tr><td width=25%>City:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorCity + "</td><td width=25%>State:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorStateType + "</td></tr>"
+					+ "<tr><td width=25%>Zip:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorZip + "</td><td width=25%>Contact Name:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorContactName + "</td></tr>"
+					+ "<tr><td width=25%>Phone:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorPhoneNumber + "</td><td width=25%>Email:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorEmail + "</td></tr>"
+					
+					+ "<tr><td width=25%>Reason For Request:</td><td width=75% colspan=3>" + me.requisitionGrid.data[me.lastSelectedRowIndex].reasonForRequest + "</td></tr>"
+					+ "<tr><td width=25%>Requisition Type:</td><td width=75% colspan=3>" + me.requisitionGrid.data[me.lastSelectedRowIndex].requisitionType + "</td></tr>"
+					+ "<tr><td width=25%>Urgency:</td><td width=75% colspan=3>" + me.requisitionGrid.data[me.lastSelectedRowIndex].urgency + "</td></tr>"
+					+ "<tr><td width=25%>Life Span:</td><td width=75% colspan=3>" + me.requisitionGrid.data[me.lastSelectedRowIndex].lifeSpan + "</td></tr>"
+					
+					+ "<tr><td colspan=4 align=center><b>Shipping Information</b></td></tr>"
+					+ "<tr><td width=25%>Company:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].houseCode + "</td><td width=25%>Job:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].houseCodeJob + "</td></tr>"
+					+ "<tr><td width=25%>Address 1:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToAddress1 + "</td><td width=25%>Address 2:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToAddress2 + "</td></tr>"
+					+ "<tr><td width=25%>City:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToCity + "</td><td width=25%>State:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToState + "</td></tr>"
+					+ "<tr><td width=25%>Zip:</td><td width=25%>" +  me.requisitionGrid.data[me.lastSelectedRowIndex].shipToZip + "</td><td width=25%>Fax:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToFax + "</td></tr>";
+					
+//					for (var index = 0; index < me.poRequisitionDetails.length; index++) {
+//						htmlContent += "<tr><td width=30 align=center>" + (index + 1) + "</td>"
+//			                + "<td width=200>" + $(me.itemGrid.rows[index].getElement("number")).text() + "</td>"
+//			                + "<td width=200>" + $(me.itemGrid.rows[index].getElement("description")).text() + "</td>"
+//			                + "<td width=200>" + $(me.itemGrid.rows[index].getElement("unit")).text() + "</td></tr>";
+//					}
+			}		
+			
+			htmlContent += "</table></body></html>";
+
+			$("#iFramePrint").contents().find("html").html(htmlContent);
+			$("#iFramePrint").get(0).contentWindow.focus();
+			$("#iFramePrint").get(0).contentWindow.print();
 		},
 		
 		actionBackItem: function() {
@@ -1294,7 +1475,7 @@ ii.Class({
 			
 			me.resizeControls();
 			me.validator.reset();
-			me.itemGrid.setHeight($(window).height() - 165);
+			me.itemGrid.setHeight($(window).height() - 205);
 			me.wizardCount = me.wizardCount - 1;
 		},
 		
@@ -1306,7 +1487,7 @@ ii.Class({
 				
 			disablePopup();
 			if (me.requisitionGrid.activeRowIndex >= 0)
-				poRequisitionId = me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].id;
+				me.poRequisitionId = me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].id;
 			
 			me.wizardCount = 0;	
 			me.status = "";
@@ -1361,13 +1542,13 @@ ii.Class({
 
 			if (me.status == "NewPORequisition" || me.status == "EditPORequisition") {
 				xml += '<purPORequisition';
-				xml += ' id="' + poRequisitionId + '"';
+				xml += ' id="' + me.poRequisitionId + '"';
 				
 				if (me.status == "NewPORequisition") {
 					xml += ' vendorId="' + me.vendorId + '"';
 					xml += ' houseCode="' + parent.fin.appUI.houseCodeId + '"';
 				}
-				else {
+				else if (me.status == "EditPORequisition"){
 					xml += ' vendorId="' + me.requisitionGrid.data[rowIndex].vendorId + '"';
 					xml += ' houseCode="' + me.requisitionGrid.data[rowIndex].houseCode + '"';
 				}
@@ -1401,18 +1582,25 @@ ii.Class({
 				xml += '/>';
 			}
 			
-			for (var index = 0; index < me.poRequisitionDetails.length; index++) {			
+			for (var index = 0; index < me.items.length; index++) {			
 				if ($("#selectInputCheck" + index)[0].checked) {
 					xml += '<purPORequisitionDetail';
-					xml += ' id="0"';
-					xml += ' poRequisitionId="' + poRequisitionId + '"';
-					xml += ' account="' +  me.poRequisitionDetails[index].account.id + '"';
-					xml += ' number="' + me.poRequisitionDetails[index].number + '"';
-					xml += ' description="' + me.poRequisitionDetails[index].description + '"';
-					xml += ' price="' + parseFloat(me.poRequisitionDetails[index].price) + '"';
-					xml += ' quantity="' + me.poRequisitionDetails[index].quantity + '"';
-					xml += ' uom="' + me.poRequisitionDetails[index].unit + '"';
-					xml += ' manufactured="' + me.poRequisitionDetails[index].manufactured + '"';										
+					
+					if (me.status == "NewPORequisition") {
+						xml += ' id="0"';
+					}
+					else if (me.status == "EditPORequisition"){
+						xml += ' id="' +  me.items[index].id + '"';
+					}
+					
+					xml += ' poRequisitionId="' + me.poRequisitionId + '"';
+					xml += ' account="' +  me.items[index].account.id + '"';
+					xml += ' number="' + me.items[index].number + '"';
+					xml += ' description="' + me.items[index].description + '"';
+					xml += ' price="' + parseFloat(me.items[index].price) + '"';
+					xml += ' quantity="' + me.items[index].quantity + '"';
+					xml += ' uom="' + me.items[index].unit + '"';
+					xml += ' manufactured="' + me.items[index].manufactured + '"';										
 					xml += '/>';
 				}
 			}
@@ -1434,20 +1622,20 @@ ii.Class({
 
 			if (status == "success") {
 				me.modified(false);
-				if (me.status == "NewPORequisition") {
-					poRequisitionId = parseInt($(this).attr("id"), 10)
-					me.reloadGrid = true;
-				}
-				else if (me.status == "EditPORequisition")
-					me.bindRow();				
-				else
-					me.status = "";
+//				if (me.status == "NewPORequisition") {
+//					me.poRequisitionId = parseInt($(this).attr("id"), 10)
+//					me.reloadGrid = true;
+//				}
+//				else if (me.status == "EditPORequisition")
+//					me.bindRow();				
+//				else
+//					me.status = "";
 
-				if (me.reloadGrid) {
+//				if (me.reloadGrid) {
 					me.setLoadCount();
 					me.poRequisitionStore.reset();	
 					me.poRequisitionStore.fetch("houseCode:" + parent.fin.appUI.houseCodeId, me.poRequisitionsLoaded, me);
-				}
+//				}
 					
 				me.setStatus("Saved");
 			}
@@ -1486,8 +1674,8 @@ function disablePopup() {
 function centerPopup() {
 	var windowWidth = document.documentElement.clientWidth;
 	var windowHeight = document.documentElement.clientHeight;	
-	var popupWidth = windowWidth - 40;
-	var popupHeight = windowHeight - 10;	
+	var popupWidth = windowWidth - 180;
+	var popupHeight = windowHeight - 60;	
 
 	$("#popupContact").css({
 		"width": popupWidth,

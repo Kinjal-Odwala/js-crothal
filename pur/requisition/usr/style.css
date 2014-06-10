@@ -53,7 +53,7 @@
 .inputTextAreaLarge {
 	float: left;
 	height: 20px;
-	width: 690px;
+	width: 660px;
 }
 
 #ShippingInfo {
@@ -101,6 +101,14 @@
 	width: 80px;
 	padding-left: 0px;
 	margin-right: 5px;
+	padding-top: 5px;
+}
+
+#AnchorPrint {
+	float: left;
+	width: 80px;
+	padding-left: 0px;
+	margin-right: 0px;
 	padding-top: 5px;
 }
 
