@@ -59,11 +59,14 @@ ii.init.register( function() {
 	fin.pur.poRequisition.poRequisitionArgs = {
 		id: {type: Number}
 		, houseCode: {type: Number}
-		, houseCodeJob: {type: Number, required: false, defaultValue: 0}		
+		, houseCodeTitle: {type: String, required: false, defaultValue: ""}
+		, houseCodeJob: {type: Number, required: false, defaultValue: 0}
+		, houseCodeJobTitle: {type: String, required: false, defaultValue: ""}		
 		, shipToAddress1: {type: String, required: false, defaultValue: ""}
 		, shipToAddress2: {type: String, required: false, defaultValue: ""}
 		, shipToCity: {type: String, required: false, defaultValue: ""}
 		, shipToState: {type: Number, required: false, defaultValue: 0}
+		, shipToStateTitle: {type: String, required: false, defaultValue: ""}
 		, shipToZip: {type: String, required: false, defaultValue: ""}
 		, shipToPhone: {type: String, required: false, defaultValue: ""}
 		, shipToFax: {type: String, required: false, defaultValue: ""}		
@@ -76,6 +79,7 @@ ii.init.register( function() {
 		, vendorAddressLine2: {type: String, required: false, defaultValue: ""}
 		, vendorCity: {type: String, required: false, defaultValue: ""}
 		, vendorStateType: {type: Number, required: false, defaultValue: 0}
+		, vendorStateTitle: {type: String, required: false, defaultValue: ""}
 		, vendorZip: {type: String, required: false, defaultValue: ""}
 		, vendorContactName: {type: String, required: false, defaultValue: ""}
 		, vendorPhoneNumber: {type: String, required: false, defaultValue: ""}
@@ -97,7 +101,7 @@ ii.init.register( function() {
 		, unit: {type: String, required: false, defaultValue: ""}
 		, manufactured: {type: String, required: false, defaultValue: ""}
 		, price: {type: String, required: false, defaultValue: ""}
-		, quantity: {type: String, required: false, defaultValue: "0"}
+		, quantity: {type: String, required: false, defaultValue: ""}
 	};
 	
 	fin.pur.poRequisition.itemArgs = {
@@ -110,7 +114,7 @@ ii.init.register( function() {
 		, unit: {type: String, required: false, defaultValue: ""}
 		, manufactured: {type: String, required: false, defaultValue: ""}
 		, price: {type: String, required: false, defaultValue: ""}
-		, quantity: {type: String, required: false, defaultValue: "0"}
+		, quantity: {type: String, required: false, defaultValue: ""}
 	};
 	
 	fin.pur.poRequisition.vendorArgs = {
