@@ -35,8 +35,6 @@ ii.init.register( function() {
 		, weeklyPayrollTotalAmount: {type: String, required: false, defaultValue: ""}
 		, totalHours: {type: String, required: false, defaultValue: ""}
 		, valid: {type: Boolean, required: false, defaultValue: true}
-		//, status: {type: String, required: false, defaultValue: ""}
-		//, assigned: {type: Boolean, required: false, defaultValue: false}
 	};
 
 	fin.pay.automation.ePayBatchDetailArgs = {
