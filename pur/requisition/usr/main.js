@@ -40,12 +40,19 @@ ii.Class({
 			me.wizardCount = 0;
 			me.loadCount = 0;
 			
+			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
 			me.transactionMonitor = new ii.ajax.TransactionMonitor( 
 				me.gateway, 
 				function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
 			);
+			
+			me.validator = new ui.ctl.Input.Validation.Master();			
+			me.session = new ii.Session(me.cache);
+			
+			$(window).bind("resize", me, me.resize);
+			$(document).bind("keydown", me, me.controlKeyProcessor);
 			
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\Purchasing\\PORequisition";
@@ -54,26 +61,17 @@ ii.Class({
 					me.authorizationProcess.apply(me);
 				},
 				me);
-			
-			me.validator = new ui.ctl.Input.Validation.Master();			
-			me.session = new ii.Session(me.cache);
 
 			me.defineFormControls();
 			me.configureCommunications();
 			me.setStatus("Loading");
 			me.modified(false);
-
 			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
-			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
-			
-			$(window).bind("resize", me, me.resize);
-			$(document).bind("keydown", me, me.controlKeyProcessor);
 		
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
-			}
+			}			
 			
-			me.vendor.text.readOnly = true;
 			$("input[name='RequisitionType']").change(function() { me.modified(); });
 			$("input[name='Urgency']").change(function() { me.modified(); });
 			$("input[name='LifeSpan']").change(function() { me.modified(); });
@@ -579,7 +577,7 @@ ii.Class({
 			
 			me.shippingAddress1 = new ui.ctl.Input.Text({
 		        id: "ShippingAddress1",
-				maxLength: 50,
+				maxLength: 256,
 				changeFunction: function() { me.modified(); }
 		    });
 			
@@ -589,13 +587,13 @@ ii.Class({
 			
 			me.shippingAddress2 = new ui.ctl.Input.Text({
 		        id: "ShippingAddress2",
-				maxLength: 50,
+				maxLength: 256,
 				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.shippingCity = new ui.ctl.Input.Text({
 		        id: "ShippingCity",
-				maxLength: 50,
+				maxLength: 100,
 				changeFunction: function() { me.modified(); }
 		    });
 			
@@ -678,7 +676,8 @@ ii.Class({
 					if(ui.cmn.text.validate.phone(enteredText) == false)
 						this.setInvalid("Please enter valid fax number. (999) 999-9999");
 			});
-					
+			
+			me.vendor.text.readOnly = true;		
 			$("#SearchInputText").bind("keydown", me, me.actionSearchItem);
 			$("#SearchInputText").keypress(function (e) {
 				if( e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57))
@@ -692,6 +691,7 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 			
+			parent.fin.appUI.houseCodeId = 0;
 			me.houseCodes = [];
 			me.houseCodeStore = me.cache.register({
 				storeId: "hcmHouseCodes",
@@ -699,7 +699,7 @@ ii.Class({
 				itemConstructorArgs: fin.pur.poRequisition.houseCodeArgs,
 				injectionArray: me.houseCodes
 			});
-			
+
 			me.houseCodeDetails = [];
 			me.houseCodeDetailStore = me.cache.register({
 				storeId: "houseCodes",
@@ -950,14 +950,14 @@ ii.Class({
 		loadPORequisitions: function() {
 			var me = this;
 
-			//me.setLoadCount();
+			me.setLoadCount();
 			me.poRequisitionStore.fetch("houseCode:" + parent.fin.appUI.houseCodeId, me.poRequisitionsLoaded, me);
 		},
 		
 		poRequisitionsLoaded: function(me, activeId) {
 				
 			me.requisitionGrid.setData(me.poRequisitions);			
-			//me.checkLoadCount();
+			me.checkLoadCount();
 		},
 		
 		loadPOItems: function() {
@@ -1368,9 +1368,8 @@ ii.Class({
 				
 				itemIndex = ii.ajax.util.findIndexById(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToState.toString(), me.stateTypes);
 				if (itemIndex >= 0 && itemIndex != undefined) 
-					me.shippingState.select(itemIndex, me.shippingState.focused);
+					me.shippingState.select(itemIndex, me.shippingState.focused);				
 				
-				me.shippingState.select(0, me.shippingState.focused);
 				me.shippingZip.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToZip);
 				me.shippingPhone.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToPhone);
 				me.shippingFax.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToFax);
