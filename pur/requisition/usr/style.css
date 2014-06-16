@@ -32,6 +32,13 @@
 	padding: 3px 0px 0px 5px;
 }
 
+.dropdownRight
+{
+	width: 200px;
+	float: left;
+	padding-top: 5px;
+}
+
 .labelTextArea {
 	width: 160px;
 	float: left;
