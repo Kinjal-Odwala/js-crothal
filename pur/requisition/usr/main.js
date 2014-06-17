@@ -126,9 +126,9 @@ ii.Class({
 				return;				
 			
 			fin.pur.poRequisitionUi.requisitionGrid.setHeight($(window).height() - 135);
-			fin.pur.poRequisitionUi.itemGrid.setHeight($(window).height() - 245);
-			$("#GeneralInfo").height($(window).height() - 195);
-			$("#ShippingInfo").height($(window).height() - 195);
+			fin.pur.poRequisitionUi.itemGrid.setHeight($(window).height() - 255);
+			$("#GeneralInfo").height($(window).height() - 210);
+			$("#ShippingInfo").height($(window).height() - 210);
 		},
 		
 		defineFormControls: function() {
@@ -1043,9 +1043,8 @@ ii.Class({
 			
 			me.vendorStore.reset();
 			if(me.vendorName.getValue() != "") {
-				//me.setLoadCount();
+				
 				$("#VendorNameText").addClass("Loading");
-				$("#pageLoading").fadeIn("slow");
 				me.vendorStore.reset();
 				me.vendorStore.fetch("searchValue:" + me.vendorName.getValue() + ",vendorStatus:-2,userId:[user]", me.vendorsLoaded, me);
 			}
@@ -1102,7 +1101,6 @@ ii.Class({
 			}
 			
 			$("#VendorNameText").removeClass("Loading");
-			$("#pageLoading").fadeOut("slow");			
 		},
 		
 		vendorsLoad: function(me, activeId) {			
@@ -1791,7 +1789,7 @@ function centerPopup() {
 	var windowWidth = document.documentElement.clientWidth;
 	var windowHeight = document.documentElement.clientHeight;	
 	var popupWidth = windowWidth - 150;
-	var popupHeight = windowHeight - 100;	
+	var popupHeight = windowHeight - 120;	
 
 	$("#popupContact").css({
 		"width": popupWidth,
