@@ -40,8 +40,14 @@ ii.init.register( function() {
 	
 	fin.pur.poRequisition.accountArgs = {
 		id: {type: Number}
+		, code: {type: String}
 		, name: {type: String}
-		, description: {type: String}
+	};
+	
+	fin.pur.poRequisition.glAccountArgs = {
+		id: {type: Number}
+		, code: {type: String}
+		, name: {type: String}
 	};
 	
 	fin.pur.poRequisition.personArgs = {
@@ -94,7 +100,7 @@ ii.init.register( function() {
 	fin.pur.poRequisition.poRequisitionDetailArgs = {
 		id: {type: Number, defaultValue: 0}
 		, poRequisitionId: {type: Number, defaultValue: 0}
-		, account: {type: fin.pur.poRequisition.Account, required: false}
+		, account: {type: fin.pur.poRequisition.GLAccount, required: false}
 		, itemSelect: {type: Boolean, required: false, defaultValue: true}
 		, number: {type: String, required: false, defaultValue: ""}
 		, description: {type: String, required: false, defaultValue: ""}
@@ -107,7 +113,7 @@ ii.init.register( function() {
 	fin.pur.poRequisition.itemArgs = {
 		id: {type: Number, defaultValue: 0}
 		, poRequisitionId: {type: Number, defaultValue: 0}
-		, account: {type: fin.pur.poRequisition.Account, required: false}
+		, account: {type: fin.pur.poRequisition.GLAccount, required: false}
 		, itemSelect: {type: Boolean, required: false, defaultValue: false}
 		, number: {type: String, required: false, defaultValue: ""}
 		, description: {type: String, required: false, defaultValue: ""}
@@ -191,6 +197,16 @@ ii.Class({
 });
 
 ii.Class({
+	Name: "fin.pur.poRequisition.GLAccount",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pur.poRequisition.glAccountArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
 	Name: "fin.pur.poRequisition.Person",
 	Definition: {
 		init: function() {
@@ -203,7 +219,7 @@ ii.Class({
 ii.Class({
 	Name: "fin.pur.poRequisition.PORequisition",
 	Definition: {
-		init: function (){
+		init: function() {
 			var args = ii.args(arguments, fin.pur.poRequisition.poRequisitionArgs);
 			$.extend(this, args);
 		}

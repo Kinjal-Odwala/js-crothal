@@ -39,6 +39,7 @@ ii.Class({
 			me.users = [];
 			me.wizardCount = 0;
 			me.loadCount = 0;
+			me.glAccounts = [];
 			
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
@@ -409,7 +410,7 @@ ii.Class({
 			
 			me.category = new ui.ctl.Input.DropDown.Filtered({
 				id: "Category",
-				formatFunction: function(type) { return type.description; },
+				formatFunction: function(type) { return type.name; },
 				changeFunction: function() { me.categoryChanged(); },				
 				required: false
 			});
@@ -464,7 +465,7 @@ ii.Class({
 			me.account = new ui.ctl.Input.DropDown.Filtered({
 		        id: "Account",
 				appendToId: "ItemGridControlHolder",
-				formatFunction: function(type) { return type.name; },
+				formatFunction: function(type) { return type.code + " - " + type.name; },
 				changeFunction: function() { me.modified(); }
 		    });
 
@@ -476,7 +477,36 @@ ii.Class({
 					if ((this.focused || this.touched) && me.account.indexSelected == -1)
 						this.setInvalid("Please select the correct Account No.");
 				});
-				
+			
+			me.uom = new ui.ctl.Input.Text({
+		        id: "Uom",
+		        maxLength: 255,
+				appendToId: "ItemGridControlHolder",
+				changeFunction: function() { me.modified(); }
+		    });
+			
+			me.uom.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+			
+			me.manufactured = new ui.ctl.Input.Text({
+		        id: "Manufactured",
+		        maxLength: 11,
+				appendToId: "ItemGridControlHolder",
+				changeFunction: function() { me.modified(); }
+		    });
+			
+			me.quantity = new ui.ctl.Input.Text({
+		        id: "Quantity",
+		        maxLength: 11,
+				appendToId: "ItemGridControlHolder",
+				changeFunction: function() { me.modified(); }
+		    });
+			
+			me.quantity.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+								
 			me.price = new ui.ctl.Input.Text({
 		        id: "Price",
 				appendToId: "ItemGridControlHolder",
@@ -496,42 +526,6 @@ ii.Class({
 					this.setInvalid("Please enter valid Price.");
 			});
 			
-			me.quantity = new ui.ctl.Input.Text({
-		        id: "Quantity",
-		        maxLength: 11,
-				appendToId: "ItemGridControlHolder",
-				changeFunction: function() { me.modified(); }
-		    });
-			
-			me.quantity.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-			
-			me.uom = new ui.ctl.Input.Text({
-		        id: "Uom",
-		        maxLength: 255,
-				appendToId: "ItemGridControlHolder",
-				changeFunction: function() { me.modified(); }
-		    });
-			
-			me.uom.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-				
-			me.manufactured = new ui.ctl.Input.Text({
-		        id: "Manufactured",
-		        maxLength: 11,
-				appendToId: "ItemGridControlHolder",
-				changeFunction: function() { me.modified(); }
-		    });
-			
-			me.extendedPrice = new ui.ctl.Input.Text({
-		        id: "ExtendedPrice",
-		        maxLength: 11,
-				appendToId: "ItemGridControlHolder",
-				changeFunction: function() { me.modified(); }
-		    });
-			
 			me.itemGrid.addColumn("itemSelect", "itemSelect", "", "", 30, function(data) {
 								
 				var index = me.itemGrid.rows.length - 1;
@@ -542,23 +536,11 @@ ii.Class({
             });
 			me.itemGrid.addColumn("number", "number", "Item Number", "Item Number", 100, null, me.itemNumber);
 			me.itemGrid.addColumn("description", "description", "Item Description", "Item Description", null, null, me.itemDescription);
-			me.itemGrid.addColumn("account", "account", "GL Account No", "GL Account No", 120, function( account ) { return account.name; }, me.account);
+			me.itemGrid.addColumn("account", "account", "GL Account No", "GL Account No", 120, function( account ) { return account.code + " - " + account.name; }, me.account);
 			me.itemGrid.addColumn("unit", "unit", "UOM", "UOM", 100, null, me.uom);
 			me.itemGrid.addColumn("manufactured", "manufactured", "Manufactured", "Manufactured", 120, null, me.manufactured);
 			me.itemGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 100, null, me.quantity);
-			me.itemGrid.addColumn("price", "price", "Price", "Price", 100, null, me.price);
-//			me.itemGrid.addColumn("price", "", "Price", "Price", "", function(data) {
-//				var index = me.itemGrid.rows.length - 1;
-//				
-//            	return "<div><center><input type=\"text\" name=\"price" + index + "\" id=\"price" + index + "\" class=\"iiInputText\"" + "/></center><div>";
-//				
-//            });
-//			me.itemGrid.addColumn("total", "", "Total", "Total", "", function(data) {
-//				var index = me.itemGrid.rows.length - 1;
-//				if (me.itemGrid.activeRowIndex != -1)
-//					index = me.renderRowIndex;
-//				return "<center><input type=\"text\" name=\"total" + index + "\" id=\"total" + index + "\" class=\"iiInputText\"" + " onclick=\"fin.adhUi.actionClickItem(this," + index + ");\" onchange=\"fin.adhUi.modified(true);\" /></center>";
-//            });			
+			me.itemGrid.addColumn("price", "price", "Price", "Price", 100, null, me.price);			
 			me.itemGrid.capColumns();
 			
 			me.company = new ui.ctl.Input.Text({
@@ -754,7 +736,7 @@ ii.Class({
 				itemConstructor: fin.pur.poRequisition.Item,
 				itemConstructorArgs: fin.pur.poRequisition.itemArgs,
 				injectionArray: me.items,
-				lookupSpec: { account: me.accounts }	
+				lookupSpec: { account: me.glAccounts }	
 			});
 			
 			me.poRequisitionDetails = [];
@@ -763,7 +745,7 @@ ii.Class({
 				itemConstructor: fin.pur.poRequisition.PORequisitionDetail,
 				itemConstructorArgs: fin.pur.poRequisition.poRequisitionDetailArgs,
 				injectionArray: me.poRequisitionDetails,
-				lookupSpec: { account: me.accounts }
+				lookupSpec: { account: me.glAccounts }
 			});
 			
 			me.vendors = [];
@@ -895,10 +877,12 @@ ii.Class({
 			return month + "/" + day + "/" + year;
 		},
 		
-		accountsLoaded: function(me,activeId) {
-			me.glAccounts = [];			
+		accountsLoaded: function(me, activeId) {
 			
-			me.glAccounts = me.accounts.slice();
+			for (var index = 0; index < me.accounts.length; index++) {
+				var item = new fin.pur.poRequisition.GLAccount(me.accounts[index].id, me.accounts[index].code, me.accounts[index].name);
+				me.glAccounts.push(item);
+			}
 			me.account.setData(me.glAccounts);	
 			me.checkLoadCount();		
 		},
@@ -1025,7 +1009,7 @@ ii.Class({
 				return;
 			
 			if (me.requisitionGrid.data[index] != undefined) {
-				me.poRequisitionId = me.requisitionGrid.data[index].id;				
+				me.poRequisitionId = me.requisitionGrid.data[index].id;												
 			}
 			else 
 				me.poRequisitionId = 0;
@@ -1080,6 +1064,7 @@ ii.Class({
 				me.vendorContactName.setValue(me.vendors[0].contactName);
 				me.vendorPhone.setValue(me.vendors[0].phoneNumber);
 				me.vendorEmail.setValue(me.vendors[0].email);
+				me.account.setData(me.glAccounts);
 				me.category.fetchingData();
 				me.catalog.fetchingData();
 				me.accountStore.reset();
@@ -1118,9 +1103,9 @@ ii.Class({
 		},
 		
 		categoriesLoaded: function(me, activeId) {
-			
+
 			me.category.reset();
-			if(me.vendorId == 0)
+			if (me.vendorId == 0)
 				me.category.setData([]);
 			else
 				me.category.setData(me.accounts);
@@ -1243,11 +1228,11 @@ ii.Class({
 			
 			loadPopup();
 			
+			me.requisitionGrid.body.deselectAll();
 			var index = me.itemGrid.activeRowIndex;
 			if (index >= 0)
-				me.itemGrid.body.deselect(index, true);
+				me.itemGrid.body.deselect(index, true);		
 			me.itemGrid.setData([]);
-			me.requisitionGrid.body.deselectAll();
 			//me.requestorName.setValue(me.users[0].firstName + " " + me.users[0].lastName + " [" + me.session.propertyGet("userName") + "]");
 			me.requestorName.setValue(me.users[0].firstName + " " + me.users[0].lastName + "");
 			me.requestorEmail.setValue(me.users[0].email);
@@ -1373,7 +1358,6 @@ ii.Class({
 				me.shippingFax.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToFax);
 				
 				me.setLoadCount();
-				//me.itemGrid.setData([]);
 				me.poRequisitionDetailStore.reset();
 				me.poRequisitionDetailStore.fetch("userId:[user],pORequisitionId:" + me.poRequisitionId, me.poRequisitonDetailsLoaded, me);
 				me.vendorStore.reset();
@@ -1543,9 +1527,6 @@ ii.Class({
 			if (me.requisitionGrid.activeRowIndex >= 0)
 				me.poRequisitionId = me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].id;
 			
-			me.setLoadCount();
-			me.accountStore.reset();
-			me.accountStore.fetch("userId:[user]", me.accountsLoaded, me);
 			me.itemGrid.body.deselectAll();
 			me.wizardCount = 0;	
 			me.status = "";
@@ -1747,15 +1728,10 @@ ii.Class({
 								me.poRequisitions[me.lastSelectedRowIndex] = item;
 								me.requisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
 							}							
-							
-							me.setLoadCount();
-							me.accountStore.reset();
-							me.accountStore.fetch("userId:[user]", me.accountsLoaded, me);
-			
 							break;
 					}
 				});
-
+				
 				me.modified(false);
 				me.setStatus("Saved");
 			}
