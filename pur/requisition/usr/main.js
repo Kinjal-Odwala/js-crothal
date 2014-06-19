@@ -1663,7 +1663,7 @@ ii.Class({
 				xml += ' vendorStateTitle="' + me.stateTypes[me.vendorState.indexSelected].name + '"';
 				xml += ' vendorZip="' + me.vendorZip.getValue() + '"';
 				xml += ' vendorContactName="' + ui.cmn.text.xml.encode(me.vendorContactName.getValue()) + '"';
-				xml += ' vendorPhoneNumber="' + fin.cmn.text.mask.phone(me.vendorPhone.getValue()) + '"';
+				xml += ' vendorPhoneNumber="' + fin.cmn.text.mask.phone(me.vendorPhone.getValue(), true) + '"';
 				xml += ' vendorEmail="' + me.vendorEmail.getValue() + '"';
 				xml += ' reasonForRequest="' + ui.cmn.text.xml.encode(me.reasonForRequest.getValue()) + '"';
 				xml += ' requisitionType="' + $("input[name='RequisitionType']:checked").val() + '"';
