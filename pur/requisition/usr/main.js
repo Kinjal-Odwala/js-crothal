@@ -507,6 +507,19 @@ ii.Class({
 			me.quantity.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
+			
+			me.quantity.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+				var enteredText = me.quantity.getValue();
+
+				if (enteredText == "") return;
+
+				if (/^[0-9]+(\[0-9]+)?$/.test(enteredText) == false)
+					this.setInvalid("Please enter valid Quantity.");
+			});
 								
 			me.price = new ui.ctl.Input.Text({
 		        id: "Price",
@@ -1352,16 +1365,16 @@ ii.Class({
 				me.vendorEmail.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorEmail);
 				me.reasonForRequest.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].reasonForRequest);
 				
-				if (me.requisitionGrid.data[me.lastSelectedRowIndex].requisitionType == "SpecialSupply") 
+				if (me.requisitionGrid.data[me.lastSelectedRowIndex].requisitionType == "Special Supply") 
 					$('#RequisitionTypeSpecialSupply').attr('checked', true);
 				else 
-					if (me.requisitionGrid.data[me.lastSelectedRowIndex].requisitionType == "OffContract") 
+					if (me.requisitionGrid.data[me.lastSelectedRowIndex].requisitionType == "Off Contract") 
 						$('#RequisitionTypeOffContract').attr('checked', true);
 				
 				if (me.requisitionGrid.data[me.lastSelectedRowIndex].urgency == "Urgent") 
 					$('#UrgencyUrgent').attr('checked', true);
 				else 
-					if (me.requisitionGrid.data[me.lastSelectedRowIndex].urgency == "NotUrgent") 
+					if (me.requisitionGrid.data[me.lastSelectedRowIndex].urgency == "Not Urgent") 
 						$('#UrgencyNotUrgent').attr('checked', true);
 				
 				if (me.requisitionGrid.data[me.lastSelectedRowIndex].lifeSpan == "Permanent") 
@@ -1540,7 +1553,7 @@ ii.Class({
 					+ "<tr><td width=25%>Address 1:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToAddress1 + "</td><td width=25%>Address 2:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToAddress2 + "</td></tr>"
 					+ "<tr><td width=25%>City:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToCity + "</td><td width=25%>State:</td><td width=25%>" + shippingState + "</td></tr>"
 					+ "<tr><td width=25%>Zip:</td><td width=25%>" +  me.requisitionGrid.data[me.lastSelectedRowIndex].shipToZip + "</td><td width=25%>Fax:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToFax + "</td></tr>"
-					+ "<tr><td width=25%>Phone:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToPhone + "</td></tr>";
+					+ "<tr><td width=25%>Phone:</td><td width=75% colspan=7>" + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToPhone + "</td></tr>";
 			}		
 			
 			htmlContent += "</table></body></html>";
