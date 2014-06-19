@@ -533,8 +533,8 @@ dl.editArea dd
 	background-image: url(media/Common/newFile.gif);
 }
 
-.itemStatusImage.Loading, .itemStatusImage.Saving, .itemStatusImage.Exporting
-, .itemStatusImage.Uploading, .itemStatusImage.Importing {
+.itemStatusImage.Loading, .itemStatusImage.Saving, .itemStatusImage.Exporting, .itemStatusImage.Importing
+, .itemStatusImage.Validating, .itemStatusImage.Uploading, .itemStatusImage.Downloading {
 	background-image: url(media/Common/indicator.gif);
 }
 

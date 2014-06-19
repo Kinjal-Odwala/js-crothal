@@ -38,7 +38,7 @@ ii.init.register( function fin_cmn_startup_init(){
 			if (message == "") {
 				if (status == "New")
 					message = "New";
-				else if (status == "Loading" || status == "Saving" || status == "Exporting" || status == "Uploading" || status == "Importing" || status == "Validating")
+				else if (status == "Loading" || status == "Saving" || status == "Exporting" || status == "Importing" || status == "Validating" || status == "Uploading" || status == "Downloading")
 					message = status + ", please wait...";
 				else if (status == "Saved")
 					message = "Data saved successfully.";
