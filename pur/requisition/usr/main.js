@@ -269,10 +269,11 @@ ii.Class({
 						this.setInvalid("Please enter valid date.");
 				});
 				
-			me.vendorName = new ui.ctl.Input.Text({
+			me.vendorName = new ui.ctl.Input.DropDown.Filtered({
 		        id: "VendorName",
-				maxLength: 256,
-				changeFunction: function() { me.vendorCheck(); me.modified(); }
+				title: "To search a specific Vendor, type-in Vendor Number or Title and press Enter key.",
+				formatFunction: function( type ) { return type.name; },
+				changeFunction: function() { me.vendorChanged(); me.modified();}
 		    });
 			
 			me.vendorName.makeEnterTab()
@@ -659,12 +660,16 @@ ii.Class({
 						this.setInvalid("Please enter valid fax number. (999) 999-9999");
 			});
 			
-			me.vendor.text.readOnly = true;		
-			$("#SearchInputText").bind("keydown", me, me.actionSearchItem);
-			$("#SearchInputText").keypress(function (e) {
-				if( e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57))
-					return false;
-			});
+			me.vendor.text.readOnly = true;
+			$("#VendorName").bind("keydown", me, me.actionVendorSearch);
+//			$("#VendorName").keypress(function (e) {
+//				if( e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57))
+//					return false;
+//			});
+//			$("#VendorName").bind("onChange", me, me.actionVendorSearch);
+//			$("#VendorName").change( function(){
+//				alert('hi')
+//		    });
 			
 			me.setTabIndexes();
 		},		
@@ -947,7 +952,8 @@ ii.Class({
 		loadPOItems: function() {
 			var me = this;
 			
-			$("#pageLoading").fadeIn("slow");	
+			$("#popupMessageToUser").text("Loading");
+			$("#popupLoading").show();	
 			me.itemStore.reset();		
 			me.itemStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId + ",catalogId:" + me.catalogId + ",orderId:0,accountId:" + me.accountId + ",searchValue:" + me.searchItem.getValue(), me.poItemsLoaded, me);
 			me.searchItem.setValue("");
@@ -978,7 +984,7 @@ ii.Class({
 			}
 			
 			me.itemGrid.setData(me.items);
-			$("#pageLoading").fadeOut("slow");
+			$("#popupLoading").hide();
 		},
 		
 		personsLoaded: function(me, activeId) {
@@ -1009,7 +1015,10 @@ ii.Class({
 				return;
 			
 			if (me.requisitionGrid.data[index] != undefined) {
-				me.poRequisitionId = me.requisitionGrid.data[index].id;												
+				me.poRequisitionId = me.requisitionGrid.data[index].id;
+				me.setLoadCount();
+				me.poRequisitionDetailStore.reset();
+				me.poRequisitionDetailStore.fetch("userId:[user],pORequisitionId:" + me.poRequisitionId, me.poRequisitonDetailsLoaded, me);												
 			}
 			else 
 				me.poRequisitionId = 0;
@@ -1022,48 +1031,69 @@ ii.Class({
 			me.checkLoadCount();
 		},
 		
-		vendorCheck: function() {
-			var me = this;
-			
-			me.vendorStore.reset();
-			if(me.vendorName.getValue() != "") {
+		actionVendorSearch: function() {
+			var args = ii.args(arguments, {
+				event: {type: Object} // The (key) event object
+			});			
+			var event = args.event;
+			var me = event.data;
 				
-				$("#VendorNameText").addClass("Loading");
-				me.vendorStore.reset();
-				me.vendorStore.fetch("searchValue:" + me.vendorName.getValue() + ",vendorStatus:-2,userId:[user]", me.vendorsLoaded, me);
+			if (event.keyCode == 13) {
+				
+				if (me.vendorName.text.value != "") {
+					me.vendorName.fetchingData();
+					me.vendorStore.reset();
+					me.vendorStore.fetch("searchValue:" + me.vendorName.text.value + ",vendorStatus:-1,userId:[user]", me.vendorsLoaded, me);
+				}
+				else {
+					me.vendorId = 0;
+					me.vendor.setValue("");
+					me.vendorAddress1.setValue("");
+					me.vendorAddress2.setValue("");
+					me.vendorCity.setValue("");				
+					me.vendorState.select(0, me.vendorState.focused);				
+					me.vendorZip.setValue("");
+					me.vendorContactName.setValue("");
+					me.vendorPhone.setValue("");
+					me.vendorEmail.setValue("");
+				}
 			}
-			else {
-				me.vendorId = 0;
-				me.vendor.setValue("");
-				me.vendorAddress1.setValue("");
-				me.vendorAddress2.setValue("");
-				me.vendorCity.setValue("");				
-				me.vendorState.select(0, me.vendorState.focused);				
-				me.vendorZip.setValue("");
-				me.vendorContactName.setValue("");
-				me.vendorPhone.setValue("");
-				me.vendorEmail.setValue("");
-			} 			
 		},
 		
 		vendorsLoaded: function(me, activeId) {
-			var itemIndex = 0;
 			
-			if (me.vendors.length > 0) {
-				me.vendorId = me.vendors[0].number;
-				me.vendor.setValue(me.vendors[0].name);
-				me.vendorAddress1.setValue(me.vendors[0].addressLine1);
-				me.vendorAddress2.setValue(me.vendors[0].addressLine2);
-				me.vendorCity.setValue(me.vendors[0].city);
+			me.vendorName.reset();
+			me.vendorName.setData(me.vendors);
+						
+			if (me.vendors.length > 0)
+				me.vendorName.select(0, me.vendorName.focused);
+	
+			me.vendorChanged();	
+		},
+		
+		vendorChanged: function() {
+			var me = this;
+			var index = 0;			
+			var itemIndex = -1;
+			
+			itemIndex = me.vendorName.indexSelected;	
+			me.lastIndexSelected = itemIndex;
+			
+			if (itemIndex >= 0) {
+				me.vendorId = me.vendors[itemIndex].number;
+				me.vendor.setValue(me.vendors[itemIndex].name);
+				me.vendorAddress1.setValue(me.vendors[itemIndex].addressLine1);
+				me.vendorAddress2.setValue(me.vendors[itemIndex].addressLine2);
+				me.vendorCity.setValue(me.vendors[itemIndex].city);
 				
-				itemIndex = ii.ajax.util.findIndexById(me.vendors[0].stateType.toString(), me.stateTypes);				
-				if(itemIndex >= 0 && itemIndex != undefined)
-					me.vendorState.select(itemIndex, me.vendorState.focused);
+				index = ii.ajax.util.findIndexById(me.vendors[itemIndex].stateType.toString(), me.stateTypes);				
+				if(index >= 0 && index != undefined)
+					me.vendorState.select(index, me.vendorState.focused);
 					
-				me.vendorZip.setValue(me.vendors[0].zip);
-				me.vendorContactName.setValue(me.vendors[0].contactName);
-				me.vendorPhone.setValue(me.vendors[0].phoneNumber);
-				me.vendorEmail.setValue(me.vendors[0].email);
+				me.vendorZip.setValue(me.vendors[itemIndex].zip);
+				me.vendorContactName.setValue(me.vendors[itemIndex].contactName);
+				me.vendorPhone.setValue(me.vendors[itemIndex].phoneNumber);
+				me.vendorEmail.setValue(me.vendors[itemIndex].email);
 				me.account.setData(me.glAccounts);
 				me.category.fetchingData();
 				me.catalog.fetchingData();
@@ -1083,9 +1113,8 @@ ii.Class({
 				me.vendorContactName.setValue("");
 				me.vendorPhone.setValue("");
 				me.vendorEmail.setValue("");
+				$("#popupLoading").hide();
 			}
-			
-			$("#VendorNameText").removeClass("Loading");
 		},
 		
 		vendorsLoad: function(me, activeId) {			
@@ -1127,6 +1156,9 @@ ii.Class({
 				me.catalog.setData([]);
 			else
 				me.catalog.setData(me.catalogs);
+				
+			//me.setStatus("Loaded");
+			$("#popupLoading").hide();
 		},
 		
 		catalogChanged: function() {
@@ -1226,8 +1258,6 @@ ii.Class({
 				return true;
 			}
 			
-			loadPopup();
-			
 			me.requisitionGrid.body.deselectAll();
 			var index = me.itemGrid.activeRowIndex;
 			if (index >= 0)
@@ -1238,7 +1268,9 @@ ii.Class({
 			me.requestorEmail.setValue(me.users[0].email);
 			me.requestedDate.setValue(me.currentDate());
 			me.deliveryDate.setValue("");
-			me.vendorName.setValue("");
+			me.vendorStore.reset();
+			me.vendorName.reset();
+			me.vendorName.select(-1, me.vendorName.focused);
 			me.vendorAddress1.setValue("");
 			me.vendorAddress2.setValue("");
 			me.vendorCity.setValue("");
@@ -1271,12 +1303,13 @@ ii.Class({
 			me.shippingPhone.setValue("");
 			me.shippingFax.setValue("");			
 			
+			loadPopup();
 			me.poRequisitionId = 0;
 			me.status = "NewPORequisition";
-			me.wizardCount = 1;
-			me.actionShowWizard();
+			me.wizardCount = 1;			
 			me.modified(false);
-			me.setStatus("Loaded");
+			me.setStatus("Loaded");			
+			me.actionShowWizard();
 		},
 		
 		actionEditItem: function() {
@@ -1294,7 +1327,9 @@ ii.Class({
 				return true;
 			}
 			
-			loadPopup();			
+			loadPopup();
+			$("#popupMessageToUser").text("Loading");
+			$("#popupLoading").show();			
 			
 			if (me.requisitionGrid.data[me.lastSelectedRowIndex] != undefined) {
 				
@@ -1302,7 +1337,7 @@ ii.Class({
 				me.requestorEmail.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].requestorEmail);
 				me.requestedDate.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].requestedDate);
 				me.deliveryDate.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].deliveryDate);
-				me.vendorName.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle);
+				$('#VendorNameText').val(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle);					
 				me.vendorAddress1.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorAddressLine1);
 				me.vendorAddress2.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorAddressLine2);
 				me.vendorCity.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorCity);
@@ -1355,13 +1390,10 @@ ii.Class({
 				
 				me.shippingZip.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToZip);
 				me.shippingPhone.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToPhone);
-				me.shippingFax.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToFax);
+				me.shippingFax.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToFax);			
 				
-				me.setLoadCount();
-				me.poRequisitionDetailStore.reset();
-				me.poRequisitionDetailStore.fetch("userId:[user],pORequisitionId:" + me.poRequisitionId, me.poRequisitonDetailsLoaded, me);
 				me.vendorStore.reset();
-				me.vendorStore.fetch("searchValue:" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle + ",vendorStatus:-2,userId:[user]", me.vendorsLoad, me);
+				me.vendorStore.fetch("searchValue:" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle + ",vendorStatus:-1,userId:[user]", me.vendorsLoad, me);
 			}			
 			
 			me.poRequisitionId = me.requisitionGrid.data[me.lastSelectedRowIndex].id;
@@ -1427,7 +1459,7 @@ ii.Class({
 					$("#Header").text("Shipping Information");
 					break;
 			}
-
+			
 			me.resizeControls();
 		},
 		
@@ -1507,7 +1539,8 @@ ii.Class({
 					+ "<tr><td width=25%>Company:</td><td width=25%>" + company + "</td><td width=25%>Job:</td><td width=25%>" + shippingJob + "</td></tr>"
 					+ "<tr><td width=25%>Address 1:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToAddress1 + "</td><td width=25%>Address 2:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToAddress2 + "</td></tr>"
 					+ "<tr><td width=25%>City:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToCity + "</td><td width=25%>State:</td><td width=25%>" + shippingState + "</td></tr>"
-					+ "<tr><td width=25%>Zip:</td><td width=25%>" +  me.requisitionGrid.data[me.lastSelectedRowIndex].shipToZip + "</td><td width=25%>Fax:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToFax + "</td></tr>";
+					+ "<tr><td width=25%>Zip:</td><td width=25%>" +  me.requisitionGrid.data[me.lastSelectedRowIndex].shipToZip + "</td><td width=25%>Fax:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToFax + "</td></tr>"
+					+ "<tr><td width=25%>Phone:</td><td width=25%>" + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToPhone + "</td></tr>";
 			}		
 			
 			htmlContent += "</table></body></html>";
@@ -1609,7 +1642,7 @@ ii.Class({
 				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(me.requestorEmail.getValue()) + '"';
 				xml += ' requestedDate="' + me.requestedDate.lastBlurValue + '"';
 				xml += ' deliveryDate="' + me.deliveryDate.lastBlurValue + '"';
-				xml += ' vendorTitle="' + ui.cmn.text.xml.encode(me.vendorName.getValue()) + '"';
+				xml += ' vendorTitle="' + ui.cmn.text.xml.encode($('#VendorNameText').val()) + '"';
 				xml += ' vendorAddressLine1="' + ui.cmn.text.xml.encode(me.vendorAddress1.getValue()) + '"';
 				xml += ' vendorAddressLine2="' + ui.cmn.text.xml.encode(me.vendorAddress2.getValue()) + '"';
 				xml += ' vendorCity="' + ui.cmn.text.xml.encode(me.vendorCity.getValue()) + '"';
@@ -1640,7 +1673,7 @@ ii.Class({
 					
 					xml += ' poRequisitionId="' + me.poRequisitionId + '"';
 					xml += ' account="' + me.itemGrid.data[index].account.id + '"';
-					xml += ' accountTitle="' + me.itemGrid.data[index].account.name+ '"';
+					xml += ' accountTitle="' + me.itemGrid.data[index].account.code + ' - ' + me.itemGrid.data[index].account.name + '"';
 					xml += ' number="' + me.itemGrid.data[index].number + '"';
 					xml += ' description="' + me.itemGrid.data[index].description + '"';
 					xml += ' price="' + me.itemGrid.data[index].price + '"';
@@ -1702,7 +1735,7 @@ ii.Class({
 								, me.requestorEmail.getValue()
 								, me.requestedDate.lastBlurValue
 								, me.deliveryDate.lastBlurValue
-								, me.vendorName.getValue()
+								, $('#VendorNameText').val()
 								, me.vendorAddress1.getValue()
 								, me.vendorAddress2.getValue()
 								, me.vendorCity.getValue()
