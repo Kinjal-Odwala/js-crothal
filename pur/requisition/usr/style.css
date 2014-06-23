@@ -215,3 +215,8 @@
 	background-color: white;
 	display: none;
 }
+
+#priceBodyColumn, #quantityBodyColumn
+{
+	text-align: right;	
+}
