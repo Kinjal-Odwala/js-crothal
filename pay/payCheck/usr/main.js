@@ -71,7 +71,7 @@ ii.Class({
 			ui.cmn.behavior.disableBackspaceNavigation();
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
-			}
+			}			
         },
 
 		authorizationProcess: function fin_pay_payCheck_UserInterface_authorizationProcess() {
@@ -120,7 +120,7 @@ ii.Class({
 
 			$("#pageLoading").height(document.body.scrollHeight);
 			//$("#Container").height($(window).height() - 95);
-			$("#Container").height(1190);
+			$("#Container").height(1170);
 			me.payCheckRequestGrid.setHeight(200);
 			me.payCodeDetailGrid.setHeight(150);
 			me.payCodeDetailReadOnlyGrid.setHeight(150);
@@ -457,7 +457,7 @@ ii.Class({
 								me.earning.setValue("");
 						}
 
-					if (enteredText != ""  && !(ui.cmn.text.validate.generic(enteredText, "^\\d+\\.?\\d{0,2}$")))
+					if (enteredText != ""  && !(ui.cmn.text.validate.generic(enteredText, "^\\d{0,}\\.?\\d{0,2}$")))
 						this.setInvalid("Please enter valid Hours. Example: 99.99");
 				});	
 				
@@ -937,7 +937,7 @@ ii.Class({
 			me.managerEmail.resetValidation(true);
 			me.state.updateStatus();
 			
-			me.requestedDate.setValue("");
+			//me.requestedDate.setValue("");
 			me.deliveryDate.setValue("");
 			me.employeeNumber.setValue("");
 			me.employeeName.setValue("");
@@ -957,7 +957,7 @@ ii.Class({
 			
 			$("#houseCodeText").val("");
 			$("#houseCodeTemplateText").val("");
-			$("#TermRequestYes")[0].checked = true;
+			$("#TermRequestNo")[0].checked = true;
 			$("#CurrentPayCardUserNo")[0].checked = true;
 			$("#InstantIssueRequestNo")[0].checked = true;
 			$("#UPSDeliveryToUnitNo")[0].checked = true;
@@ -1044,7 +1044,16 @@ ii.Class({
 				$("#houseCodeTemplateTextDropImage").addClass("HouseCodeDropDown");
 			}
 		},
-
+		
+		currentDate: function() {
+			var currentTime = new Date();
+			var month = currentTime.getMonth() + 1;
+			var day = currentTime.getDate();
+			var year = currentTime.getFullYear();
+			
+			return month + "/" + day + "/" + year;
+		},
+		
 		statusesLoaded: function() {
 			var me = this;
 
@@ -1071,6 +1080,8 @@ ii.Class({
 			me.payCodeType.setData(me.payCodeTypes);
 			me.payCodeDetailGrid.setData(me.payCodeDetails);
 			me.payCodeDetailGrid.setHeight(150);
+			me.requestedDate.setValue(me.currentDate());
+			me.modified(false);
 			me.checkLoadCount();
 		},
 
@@ -1135,7 +1146,7 @@ ii.Class({
 		employeesLoaded: function(me, activeId) {
 
 			$("#EmployeeNumberText").removeClass("Loading");
-
+			
 			if (me.employees.length == 1) {
 				me.employeeName.setValue(me.employees[0].firstName + " " + me.employees[0].lastName);
 				if (me.personId != me.employees[0].id) {
@@ -1165,7 +1176,7 @@ ii.Class({
 				}
 				else
 					me.setEmployeeAddress();
-			}
+			}			
 			me.checkLoadCount();
 		},
 		
@@ -1214,6 +1225,7 @@ ii.Class({
 			me.payCodeDetailGrid.setHeight(150);
 			$("#AnchorResendRequest").hide();
 			$("#AnchorSendRequest").show();
+			me.requestedDate.setValue(me.currentDate());
 			me.setStatus("Loaded");
 			me.modified(false);
 		},
@@ -1276,7 +1288,7 @@ ii.Class({
 			var index = args.index;
 			var item = me.payCheckRequestGrid.data[index];
 			
-			if (item.statusType == 10) {
+			if (item.statusType == 10 || item.statusType == 2) {
 				me.setReadOnly(false);
 				me.anchorSendRequest.display(ui.cmn.behaviorStates.enabled);
 				me.anchorUndo.display(ui.cmn.behaviorStates.enabled);
@@ -1290,12 +1302,8 @@ ii.Class({
 				$("#PayCodeDetailGrid").show();
 				$("#PayCodeDetailReadOnlyGrid").hide();
 			}
-			else {
-				if (item.statusType == 2)
-					me.anchorCancel.display(ui.cmn.behaviorStates.enabled);
-				else
-					me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
-
+			else {				
+				me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
 				me.setReadOnly(true);
 				me.anchorSendRequest.display(ui.cmn.behaviorStates.disabled);
 				me.anchorUndo.display(ui.cmn.behaviorStates.disabled);
@@ -1571,6 +1579,11 @@ ii.Class({
 			
 				if ($("input[name='CurrentPayCardUser']:checked").val() == "false" && $("input[name='UPSDeliveryToUnit']:checked").val() == "false" && $("input[name='UPSDeliveryToHome']:checked").val() == "false") {
 					alert("Please select one pay check delivery location: Comdata Pay Card, Unit Delivery, or Employee Home Delivery.");
+					return false;
+				}
+				
+				if ($("input[name='InstantIssueRequest']:checked").val() == "true" && me.payCheckRequestDocuments.length <= 0) {
+					alert("Please attach atleast one Additional Document or unselect Instant Issue Requst.");
 					return false;
 				}
 				
