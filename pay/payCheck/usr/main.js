@@ -808,6 +808,7 @@ ii.Class({
 						$("#LabelUnitAddress").html("<span id='nonRequiredFieldIndicator'>Unit (House Code) Address:</span>");
 						me.unitAddress.resetValidation(true);
 						me.unitAddress.setValue("");
+						$("#houseCodeTemplateText").val("");
 						break;
 						
 					case "UPSDeliveryToHomeYes":
@@ -1622,13 +1623,13 @@ ii.Class({
 					, $("input[name='InstantIssueRequest']:checked").val() == "true" ? true : false
 					, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? true : false
 					, $("input[name='SaturdayDeliveryUnit']:checked").val() == "true" ? true : false
-					, me.houseCodeSearchTemplate.houseCodeIdTemplate
-					, me.houseCodeSearchTemplate.houseCodeTitleTemplate
-					, me.unitAddress.getValue()
-					, me.upsPackageAttentionTo.getValue()
+					, $("input[name='UPSDeliveryToUnitYes']:checked").val() == "true" ? me.houseCodeSearchTemplate.houseCodeIdTemplate : 0
+					, $("input[name='UPSDeliveryToUnitYes']:checked").val() == "true" ? me.houseCodeSearchTemplate.houseCodeTitleTemplate : ""
+					, $("input[name='UPSDeliveryToUnitYes']:checked").val() == "true" ? me.unitAddress.getValue() : ""
+					, $("input[name='UPSDeliveryToUnitYes']:checked").val() == "true" ? me.upsPackageAttentionTo.getValue() : ""
 					, $("input[name='UPSDeliveryToHome']:checked").val() == "true" ? true : false
 					, $("input[name='SaturdayDeliveryHome']:checked").val() == "true" ? true : false
-					, me.homeAddress.getValue()
+					, $("input[name='UPSDeliveryToHomeYes']:checked").val() == "true" ? me.homeAddress.getValue() : ""
 					, $("input[name='ProcessingFee']:checked").val() == "true" ? true : false
 					, me.deductionCode.getValue()
 					, me.amount.getValue()
