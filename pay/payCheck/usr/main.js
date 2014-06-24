@@ -1288,7 +1288,7 @@ ii.Class({
 			var index = args.index;
 			var item = me.payCheckRequestGrid.data[index];
 			
-			if (item.statusType == 10 || item.statusType == 2) {
+			if (item.statusType == 10) {
 				me.setReadOnly(false);
 				me.anchorSendRequest.display(ui.cmn.behaviorStates.enabled);
 				me.anchorUndo.display(ui.cmn.behaviorStates.enabled);
@@ -1302,10 +1302,17 @@ ii.Class({
 				$("#PayCodeDetailGrid").show();
 				$("#PayCodeDetailReadOnlyGrid").hide();
 			}
-			else {				
-				me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
+			else {
+				if (item.statusType == 2) {
+					me.anchorSendRequest.display(ui.cmn.behaviorStates.enabled);
+					me.anchorCancel.display(ui.cmn.behaviorStates.enabled);
+				}					
+				else {
+					me.anchorSendRequest.display(ui.cmn.behaviorStates.disabled);
+					me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
+				}			
+				
 				me.setReadOnly(true);
-				me.anchorSendRequest.display(ui.cmn.behaviorStates.disabled);
 				me.anchorUndo.display(ui.cmn.behaviorStates.disabled);
 				$("#imgAdd").hide();
 				$("#imgEdit").hide();
