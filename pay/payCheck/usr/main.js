@@ -1307,19 +1307,21 @@ ii.Class({
 				if (item.statusType == 2) {
 					me.anchorSendRequest.display(ui.cmn.behaviorStates.enabled);
 					me.anchorCancel.display(ui.cmn.behaviorStates.enabled);
+					$("#AnchorResendRequest").show();
+					$("#AnchorSendRequest").hide();
 				}					
 				else {
 					me.anchorSendRequest.display(ui.cmn.behaviorStates.disabled);
 					me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
+					$("#AnchorResendRequest").hide();
+					$("#AnchorSendRequest").show();
 				}			
 				
 				me.setReadOnly(true);
 				me.anchorUndo.display(ui.cmn.behaviorStates.disabled);
 				$("#imgAdd").hide();
 				$("#imgEdit").hide();
-				$("#imgRemove").hide();
-				$("#AnchorResendRequest").hide();
-				$("#AnchorSendRequest").show();
+				$("#imgRemove").hide();				
 				$("#PayCodeDetailGrid").hide();
 				$("#PayCodeDetailReadOnlyGrid").show();
 			}
@@ -1591,7 +1593,7 @@ ii.Class({
 				}
 				
 				if ($("input[name='InstantIssueRequest']:checked").val() == "true" && me.payCheckRequestDocuments.length <= 0) {
-					alert("Please attach atleast one Additional Document or unselect Instant Issue Requst.");
+					alert("Please attach at least one Additional Document.");
 					return false;
 				}
 				
@@ -1623,13 +1625,13 @@ ii.Class({
 					, $("input[name='InstantIssueRequest']:checked").val() == "true" ? true : false
 					, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? true : false
 					, $("input[name='SaturdayDeliveryUnit']:checked").val() == "true" ? true : false
-					, $("input[name='UPSDeliveryToUnitYes']:checked").val() == "true" ? me.houseCodeSearchTemplate.houseCodeIdTemplate : 0
-					, $("input[name='UPSDeliveryToUnitYes']:checked").val() == "true" ? me.houseCodeSearchTemplate.houseCodeTitleTemplate : ""
-					, $("input[name='UPSDeliveryToUnitYes']:checked").val() == "true" ? me.unitAddress.getValue() : ""
-					, $("input[name='UPSDeliveryToUnitYes']:checked").val() == "true" ? me.upsPackageAttentionTo.getValue() : ""
+					, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? me.houseCodeSearchTemplate.houseCodeIdTemplate : 0
+					, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? me.houseCodeSearchTemplate.houseCodeTitleTemplate : ""
+					, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? me.unitAddress.getValue() : ""
+					, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? me.upsPackageAttentionTo.getValue() : ""
 					, $("input[name='UPSDeliveryToHome']:checked").val() == "true" ? true : false
 					, $("input[name='SaturdayDeliveryHome']:checked").val() == "true" ? true : false
-					, $("input[name='UPSDeliveryToHomeYes']:checked").val() == "true" ? me.homeAddress.getValue() : ""
+					, $("input[name='UPSDeliveryToHome']:checked").val() == "true" ? me.homeAddress.getValue() : ""
 					, $("input[name='ProcessingFee']:checked").val() == "true" ? true : false
 					, me.deductionCode.getValue()
 					, me.amount.getValue()
