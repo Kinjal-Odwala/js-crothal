@@ -37,6 +37,8 @@ ii.Class({
 			me.action = "";
 			me.status = "";
 			me.loadCount = 0;
+			me.validateExport = false;
+			me.showDetailReport = false;
 			me.cellColorValid = "";
 			me.cellColorInvalid = "red";
 			me.employeeNumberCache = [];
@@ -154,12 +156,8 @@ ii.Class({
 
 			if (!me) return;
 
-			if (me.action == "Finalize" && me.ePayBatchGrid.activeRowIndex != -1) {
-				if (me.ePayBatchGrid.data[me.ePayBatchGrid.activeRowIndex].valid)
-					me.ePayBatchGrid.setHeight($(window).height() - 130);
-				else
-					me.ePayBatchGrid.setHeight($(window).height() - 300);
-			}
+			if ((me.action == "Finalize" || me.action == "Export") && me.ePayBatchGrid.activeRowIndex != -1)
+				me.ePayBatchGrid.setHeight($(window).height() - 330);
 			else
 				me.ePayBatchGrid.setHeight($(window).height() - 130);
 			$("#DetailInfo").width(240 + $("#detailTotalAmountBodyColumn").width() + 19);
@@ -427,11 +425,12 @@ ii.Class({
 
 		ePayBatchesLoaded: function(me, activeId) {
 
-			if (me.action == "Finalize" && me.ePayBatchGrid.activeRowIndex != -1) {
+			if (me.showDetailReport && (me.action == "Finalize" || me.action == "Export") && me.ePayBatchGrid.activeRowIndex != -1) {
 				var index = me.ePayBatchGrid.activeRowIndex;
 				var varianceTotalCount = parseInt(me.ePayBatchGrid.data[index].detailRecordCount, 10) - parseInt(me.ePayBatches[0].batchRecordCount, 10);
 				var varianceTotalHours = parseFloat(me.ePayBatchGrid.data[index].detailTotalHours) - parseFloat(me.ePayBatches[0].batchTotalHours) - parseFloat(me.ePayBatches[0].totalHours);
 				var varianceTotalAmount = parseFloat(me.ePayBatchGrid.data[index].detailTotalAmount) - parseFloat(me.ePayBatches[0].batchTotalAmount);
+
 				$("#ProcessedTotalCount").html(me.ePayBatchGrid.data[index].detailRecordCount);
 				$("#ProcessedTotalHours").html(me.ePayBatchGrid.data[index].detailTotalHours);
 				$("#ProcessedTotalAmount").html(me.ePayBatchGrid.data[index].detailTotalAmount);
@@ -461,6 +460,18 @@ ii.Class({
 					me.ePayBatchGrid.body.renderRow(index, index);
 					me.anchorFinalize.display(ui.cmn.behaviorStates.disabled);
 				}
+				me.showDetailReport = false;
+			}
+			else if (me.action == "Export" && me.validateExport) {
+				me.validateExport = false;
+
+				if (me.ePayBatches.length == 0)
+					me.anchorExport.display(ui.cmn.behaviorStates.enabled);
+				else
+					me.anchorExport.display(ui.cmn.behaviorStates.disabled);
+
+				me.setLoadCount();
+				me.ePayBatchStore.fetch("userId:[user],status:Export", me.ePayBatchesLoaded, me);
 			}
 			else {
 				me.ePayBatchList = me.ePayBatches.slice();
@@ -494,9 +505,12 @@ ii.Class({
 				me.anchorExport.display(ui.cmn.behaviorStates.disabled);
 			}
 			
-			if (me.action == "Finalize") {
+			if (me.action == "Finalize" || me.action == "Export") {
+				if (me.action == "Finalize")
+					$("#AnchorView").show();
 				$("#ReconcileInfo").show();
-				$("#AnchorView").show();
+				me.setLoadCount();
+				me.showDetailReport = true;
 				me.ePayBatchGrid.setHeight($(window).height() - 330);
 				me.ePayBatchStore.fetch("userId:[user],status:FinalizeError,batchId:" + me.ePayBatchGrid.data[me.ePayBatchGrid.activeRowIndex].batchId, me.ePayBatchesLoaded, me);
 			}
@@ -1257,7 +1271,13 @@ ii.Class({
 			$("#header").html("Payroll Automation - " + action);
 			me.action = action;
 			me.setLoadCount();
-			me.ePayBatchStore.fetch("userId:[user],status:" + action, me.ePayBatchesLoaded, me);
+			
+			if (me.action == "Export") {
+				me.validateExport = true;
+				me.ePayBatchStore.fetch("userId:[user],status:Finalize", me.ePayBatchesLoaded, me);
+			}
+			else
+				me.ePayBatchStore.fetch("userId:[user],status:" + action, me.ePayBatchesLoaded, me);
 			me.resize();
 		},
 
@@ -1401,7 +1421,9 @@ ii.Class({
 			}
 			else {
 				if (me.status == "Reconcile")
-					$("#messageToUser").text("Processing the batch, it may take few minutes. Please wait...");
+					$("#messageToUser").text("Reconcile process will take few minutes, please wait...");
+				else if (me.status == "Export")
+					$("#messageToUser").text("Export process will take few minutes, please wait...");
 				else
 					$("#messageToUser").text("Saving");
 				$("#pageLoading").fadeIn("slow");
@@ -1433,11 +1455,18 @@ ii.Class({
 					me.setBatchInfo();
 				}
 				else {
-					var index = me.ePayBatchGrid.activeRowIndex;
-					me.ePayBatchList.splice(index, 1);
-					me.ePayBatchGrid.setData(me.ePayBatchList);
+					if (me.action == "Export") {
+						me.ePayBatchList = [];
+						me.ePayBatchGrid.setData(me.ePayBatchList);
+						me.anchorExport.display(ui.cmn.behaviorStates.disabled);
+					}
+					else {
+						var index = me.ePayBatchGrid.activeRowIndex;
+						me.ePayBatchList.splice(index, 1);
+						me.ePayBatchGrid.setData(me.ePayBatchList);
+					}
 
-					if (me.action == "Finalize") {
+					if (me.action == "Finalize" || me.action == "Export") {
 						$("#ReconcileInfo").hide();
 						me.ePayBatchGrid.setHeight($(window).height() - 130);
 					}
