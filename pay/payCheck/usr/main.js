@@ -120,7 +120,7 @@ ii.Class({
 
 			$("#pageLoading").height(document.body.scrollHeight);
 			//$("#Container").height($(window).height() - 95);
-			$("#Container").height(1170);
+			$("#Container").height(1180);
 			me.payCheckRequestGrid.setHeight(200);
 			me.payCodeDetailGrid.setHeight(150);
 			me.payCodeDetailReadOnlyGrid.setHeight(150);
@@ -1227,6 +1227,10 @@ ii.Class({
 			$("#AnchorResendRequest").hide();
 			$("#AnchorSendRequest").show();
 			me.requestedDate.setValue(me.currentDate());
+			$("#LabelState").html("<span id='nonRequiredFieldIndicator'>State:</span>");
+			$("#LabelUnit").html("<span id='nonRequiredFieldIndicator'>Unit (House Code):</span>");
+			$("#LabelUnitAddress").html("<span id='nonRequiredFieldIndicator'>Unit (House Code) Address:</span>");
+			$("#LabelHome").html("<span id='nonRequiredFieldIndicator'>Home Address:</span>");
 			me.setStatus("Loaded");
 			me.modified(false);
 		},
