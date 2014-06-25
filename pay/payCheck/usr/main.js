@@ -1231,6 +1231,9 @@ ii.Class({
 			$("#LabelUnit").html("<span id='nonRequiredFieldIndicator'>Unit (House Code):</span>");
 			$("#LabelUnitAddress").html("<span id='nonRequiredFieldIndicator'>Unit (House Code) Address:</span>");
 			$("#LabelHome").html("<span id='nonRequiredFieldIndicator'>Home Address:</span>");
+			$("#imgAdd").show();
+			$("#imgEdit").show();
+			$("#imgRemove").show();
 			me.setStatus("Loaded");
 			me.modified(false);
 		},
@@ -1254,6 +1257,9 @@ ii.Class({
 			me.anchorSendRequest.display(ui.cmn.behaviorStates.disabled);
 			me.anchorUndo.display(ui.cmn.behaviorStates.disabled);
 			me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
+			$("#imgAdd").hide();
+			$("#imgEdit").hide();
+			$("#imgRemove").hide();
 			$("#AnchorResendRequest").hide();
 			$("#AnchorSendRequest").show();			
 			me.payCheckRequestGrid.setData([]);
