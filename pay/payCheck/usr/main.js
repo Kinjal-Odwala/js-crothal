@@ -33,7 +33,7 @@ ii.Class({
 			me.users = [];
 			me.loadCount = 0;
 			me.fileName = "";
-			
+
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 
 			me.gateway = ii.ajax.addGateway("pay", ii.config.xmlProvider);
@@ -1738,6 +1738,7 @@ ii.Class({
 			xml += '<payCheckRequestNotification';
 			xml += ' id="0"';
 			xml += ' action="' + me.status + '"';
+			xml += ' appVersion="' + me.session.propertyGet("appVersion") + '"';
 			xml += '/>';
 			
 			if (me.status == "CheckRequestCancel") {
