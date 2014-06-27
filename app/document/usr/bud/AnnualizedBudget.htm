@@ -1,0 +1,1418 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+</head>
+<body>
+    <div class="header">
+        <h1>Annualized Budget</h1>
+        <div class="description">Description.</div>
+    </div>
+    <h2>UI Elements</h2>
+    <table class="elementTable">
+        <tr>
+            <th style="width: 150px;">UI Element</th>
+            <th style="width: 120px;">Field Type</th>
+            <th style="width: 50px;">Mandatory</th>
+            <th style="width: 100px;">Source</th>
+            <th>Validation</th>
+        </tr>
+        <tr>
+            <td>Site</td>
+            <td>List</td>
+            <td>Yes</td>
+            <td>Enter user input</td>
+            <td><span>Site should be selected from Dropdown list.</span></td>
+        </tr>
+        <tr>
+            <td>Job</td>
+            <td>List</td>
+            <td>Yes</td>
+            <td>Enter user input</td>
+            <td><span>Job should be selected from Dropdown list.</span></td>
+        </tr>
+        <tr>
+            <td>Fiscal Year</td>
+            <td>List </td>
+            <td>Yes</td>
+            <td>Enter user input</td>
+            <td>Fiscal Year <span>&nbsp;should be selected from Dropdown list. Current year will be selected as default.</span></td>
+        </tr>
+        <tr>
+            <td colspan="5" class="uiHeader">Budget Start Page
+            </td>
+        </tr>
+        <tr>
+            <td>Add New Budget</td>
+            <td>Button</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Click to start a budget. If the budget has started, the button hides.</td>
+        </tr>
+        <tr>
+            <td colspan="5" class="uiHeader">Contract Billing
+                - (Unavaliable : Management Fee)</td>
+        </tr>
+        <tr>
+            <td>Rate</td>
+            <td>Textfield</td>
+            <td>Yes</td>
+            <td>Enter user input</td>
+            <td>Edit Rate to update values(when budget template is Full Service Billing update the columns(period 1 to 12 of 4005), otherwise update the column(period 1 to 12 of 4010)).</td>
+        </tr>
+        <tr>
+            <td>Percent Increase</td>
+            <td>Textfield</td>
+            <td>Yes</td>
+            <td>Enter user input</td>
+            <td>Edit Percent increase.</td>
+        </tr>
+        <tr>
+            <td>Date Effective</td>
+            <td>Textfield</td>
+            <td>Yes</td>
+            <td>Enter user input</td>
+            <td>Click calendar icon to select effective date. After the selected effective date, the new percent increase will be used to the selected date.</td>
+        </tr>
+        <tr>
+            <td>Auto Spread</td>
+            <td>Textfield</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Enter a data to the column to auto update values from period 1 to 12 with the input value.</td>
+        </tr>
+        <tr>
+            <td>Columns(period 1 to 12)</td>
+            <td>Textfield</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Click the column to edit.</td>
+        </tr>
+        <tr>
+            <td>Comment</td>
+            <td>Textfield</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Record the comment for Current Budget Contract Billing.</td>
+        </tr>
+        <tr>
+            <td>Save</td>
+            <td>Button</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Validate and save the changes of Budget Contract Billing.</td>
+        </tr>
+        <tr>
+            <td>Cancel</td>
+            <td>Button</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Discard the changes of Budget Contract Billing.</td>
+        </tr>
+        <tr>
+            <td>Print</td>
+            <td>Button</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>View/Print the Budget Contract Billing.</td>
+        </tr>
+        <tr>
+            <td colspan="5" class="uiHeader">Staffing - (Unavaliable : Overhead)</td>
+        </tr>
+        <tr>
+            <td colspan="5" style="background: #fff;">
+                <table width="100%">
+                    <thead>
+                        <tr>
+                            <th style="width: 150px;">UI Element</th>
+                            <th style="width: 120px;">Field Type</th>
+                            <th style="width: 50px;">Mandatory</th>
+                            <th style="width: 100px;">Source</th>
+                            <th>Validation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="5" class="uiHeader">Staffing Hours Detail Worksheet
+                                (Unavailable on Budget Template : Education)</td>
+                        </tr>
+                        <tr>
+                            <td>Shift Selected</td>
+                            <td>List</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Shift should selected from Dropdown list.</td>
+                        </tr>
+                        <tr>
+                            <td>Add Unit/Position</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Click to add a new unit/position. And the added unit/position can also be removed by clicking Remove.</td>
+                        </tr>
+                        <tr>
+                            <td>Save</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Validate and Save the changes of Staffing Hours.</td>
+                        </tr>
+                        <tr>
+                            <td>Cancel</td>
+                            <td>Button</td>
+                            <td>NA </td>
+                            <td>Enter user input</td>
+                            <td>Discard the changes of Staffing Hours.</td>
+                        </tr>
+                        <tr>
+                            <td>Print</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>View/Print the Staffing Hours.</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="uiHeader">Staffing Hours Detail Worksheet(Available on Budget Template : Education)</td>
+                        </tr>
+                        <tr>
+                            <td>Colums(Period 1 to 12 except the Amount columns, others are editable)</td>
+                            <td>Textfield</td>
+                            <td></td>
+                            <td>Enter user input</td>
+                            <td>Click to edit.</td>
+                        </tr>
+                        <tr>
+                            <td>Save</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Validate and Save the changes of Staffing Hours.</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="uiHeader">Staffing Hours Summary Worksheet
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5" class="uiHeader">Employee - (Unavaliable on Budget Template : Overhead, Education)</td>
+        </tr>
+        <tr>
+            <td>Employee Due</td>
+            <td>Checkbox</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Y/N</td>
+        </tr>
+        <tr>
+            <td>Set Increases for all</td>
+            <td>Checkbox</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Tick it to set Employees due Increase for all.</td>
+        </tr>
+        <tr>
+            <td>Save</td>
+            <td>Button</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Validate and Save the changes of the Employee Data.</td>
+        </tr>
+        <tr>
+            <td>Print</td>
+            <td>Button</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>View/Print the Employee Data.</td>
+        </tr>
+        <tr>
+            <td>Editable Column</td>
+            <td>Textfield</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Column with green font is editable. Click to edit it.</td>
+        </tr>
+        <tr>
+            <td colspan="5" class="uiHeader">Mgt Hist
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5" style="background: #fff;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 150px;">UI Element</th>
+                            <th style="width: 120px;">Field Type</th>
+                            <th style="width: 50px;">Mandatory</th>
+                            <th style="width: 100px;">Source</th>
+                            <th>Validation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="5" class="uiHeader">Personal Salary Review Worksheet</td>
+                        </tr>
+                        <tr>
+                            <td>Add</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Click to add a new personal salary review. And the added review can be removed by clicking Remove.</td>
+                        </tr>
+                        <tr>
+                            <td>Save Changes</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Validate and save the changes of Personal Salary Review.</td>
+                        </tr>
+                        <tr>
+                            <td>Cancel</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Discard the changes of Personal Salary Review.</td>
+                        </tr>
+                        <tr>
+                            <td>Print</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>View/ Print the Personal Salary Review.</td>
+                        </tr>
+                        <tr>
+                            <td>Editable Column</td>
+                            <td>Textfield</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Column with green font is editable. Click to edit it.</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="uiHeader">Management Administration Worksheet</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="5" class="uiHeader">Labor Calc - (Unavaliable on Budget Template : Overhead)</td>
+        </tr>
+        <tr>
+            <td colspan="5" style="background: #fff;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 150px;">UI Element</th>
+                            <th style="width: 120px;">Field Type</th>
+                            <th style="width: 50px;">Mandatory</th>
+                            <th style="width: 100px;">Source</th>
+                            <th>Validation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="5" class="uiHeader">Sick Pay
+                                (Unavailable on Budget Template : Retail, Education)</td>
+                        </tr>
+                        <tr>
+                            <td>Sick day entitlements earned per year (days per employee)</td>
+                            <td>Textfield</td>
+                            <td>Yes</td>
+                            <td>Enter user input</td>
+                            <td>Enter the sick days entitlements earned per year into the number field.</td>
+                        </tr>
+                        <tr>
+                            <td>Average sick days taken over last 52 weeks (days per employee)</td>
+                            <td>Textfield</td>
+                            <td>Yes</td>
+                            <td>Enter user input</td>
+                            <td>Enter the average sick days taken over last 52 weeks into the number field.</td>
+                        </tr>
+                        <tr>
+                            <td>Proj. number of sick days to be used in budget year (days per employee)</td>
+                            <td>Textfield</td>
+                            <td>Yes</td>
+                            <td>Enter user input</td>
+                            <td>Enter the proj. number of sick days to be used in budget year into the number field.</td>
+                        </tr>
+                        <tr>
+                            <td>Save</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Validate and save the changes of the Sick Pay.</td>
+                        </tr>
+                        <tr>
+                            <td>Cancel</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Discard the changes of the Sick Pay.</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="uiHeader">Legal Holidays&nbsp; (Unavailable on Budget Template :&nbsp; Education)</td>
+                        </tr>
+                        <tr>
+                            <td>Number of Employee Personal Days Grant Per Year</td>
+                            <td>Textfield</td>
+                            <td>Yes</td>
+                            <td>Enter user input</td>
+                            <td>Edit the number of employee personal days granted per year.</td>
+                        </tr>
+                        <tr>
+                            <td>Other Paid Leave</td>
+                            <td>Textfield</td>
+                            <td>Yes</td>
+                            <td>Enter user input</td>
+                            <td>Edit the number of days other paid leave.</td>
+                        </tr>
+                        <tr>
+                            <td>Add Holiday</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Click to add holiday to the list.</td>
+                        </tr>
+                        <tr>
+                            <td>Holiday Column</td>
+                            <td>Textfield</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Enter added holiday name.</td>
+                        </tr>
+                        <tr>
+                            <td>Period  Column</td>
+                            <td>List</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Period should be selected from the dropdown list.</td>
+                        </tr>
+                        <tr>
+                            <td>Remove</td>
+                            <td>Link</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Remove the added holiday in the list.</td>
+                        </tr>
+                        <tr>
+                            <td>Save</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Validate and save the changes of Legal Holiday days.</td>
+                        </tr>
+                        <tr>
+                            <td>Cancel</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Discard the changes of Legal Holiday days.</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="uiHeader">Vacation
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Print</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>View/ Print the Vacation in PDF document.</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="uiHeader">Prod Employees Heath/Dental/Life and Union Contributions & BI-Weekly Cost
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Number fields</td>
+                            <td>Textfields</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Enter and edit numbers into the number fields in both tables (except Total rows).</td>
+                        </tr>
+                        <tr>
+                            <td>Save</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Validate and save the changes of Productive Employees Health/Dental/Life Insurance BI-Weekly Cost.</td>
+                        </tr>
+                        <tr>
+                            <td>Print</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>View/Print Productive Employees Health/Dental/Life Insurance BI-Weekly Cost in PDF document.</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="uiHeader">Net Prod Days Per Emp & FTEs&nbsp; (Unavailable on Budget Template : Retail, Education)</td>
+                        </tr>
+                        <tr>
+                            <td>Hours Per Day Employee</td>
+                            <td>Textfield</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Enter the number of the days into the number field.</td>
+                        </tr>
+                        <tr>
+                            <td>Save</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Validate and save the changes of Computation of Net Productive Days Per Employee.</td>
+                        </tr>
+                        <tr>
+                            <td>Cancel</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Discard the changes of the Computation of Net Productive Days Per Employee.</td>
+                        </tr>
+                        <tr>
+                            <td>Print</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>View/ Print Computation of Net Productive Days Per Employee in PDF document.</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="uiHeader">Labor STandards&nbsp; (Unavailable on Budget Template : Retail, Education)</td>
+                        </tr>
+                        <tr>
+                            <td>Number fields</td>
+                            <td>Textfield</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Enter numbers into the number fields.</td>
+                        </tr>
+                        <tr>
+                            <td>Save</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Validate and save the changes of Computation of Labor Standards.</td>
+                        </tr>
+                        <tr>
+                            <td>Cancel</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Discard the changes of the Computation of Labor Standards.</td>
+                        </tr>
+                        <tr>
+                            <td>Print</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>View/ Print Computation of Labor Standards.</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="uiHeader">Labor STandard In Dollars&nbsp; (Unavailable on Budget Template : Retail, Education)</td>
+                        </tr>
+                        <tr>
+                            <td>Number fields</td>
+                            <td>Textfield</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Enter numbers into the number fields.</td>
+                        </tr>
+                        <tr>
+                            <td>Save</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Validate and save the changes of Computation of Labor Standards In Dollars.</td>
+                        </tr>
+                        <tr>
+                            <td>Cancel</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Discard the changes of the Computation of Labor Standards In Dollars.</td>
+                        </tr>
+                        <tr>
+                            <td>Print</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>View/ Print Computation of Labor Standards In Dollars.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5" class="uiHeader">Final Computation Of Labor - (Unavaliable on Budget Template : Overhead,Education)</td>
+        </tr>
+        <tr>
+            <td>Overtime Hours Item</td>
+            <td>Textfield</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Click the column to Edit,Edit the overtime hours from Period 1 to Period 12.</td>
+        </tr>
+        <tr>
+            <td>Project Work Wage Rate</td>
+            <td>Textfield</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Click the column to Edit,Edit the project work wage rate from Period to Period 12.</td>
+        </tr>
+        <tr>
+            <td>Non-Chargeable Project Work</td>
+            <td>Textfield</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Click the column to Edit,Edit the Non-Chargeable Project Work from Period to Period 12.</td>
+        </tr>
+        <tr>
+            <td>Chargeable Project Work</td>
+            <td>Textfield</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Click the column to Edit,Edit the Chargeable Project Work from Period to Period 12.</td>
+        </tr>
+        <tr>
+            <td>Save</td>
+            <td>Button</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Validate and save the changes of the Final Computation of Labor.</td>
+        </tr>
+        <tr>
+            <td>Cancel</td>
+            <td>Button</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>View/Print the Final Computation of Labor.</td>
+        </tr>
+        <tr>
+            <td>Editable Column</td>
+            <td>Textfield</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Column with green font is editable. Click to edit it.</td>
+        </tr>
+        <tr>
+            <td colspan="5" class="uiHeader">Supply Exp - (Unavaliable on Budget Template : Retail, Education)</td>
+        </tr>
+        <tr>
+            <td colspan="5">
+                <table style="background-color: #fff;">
+                    <thead>
+                        <tr>
+                            <th style="width: 150px;">UI Element</th>
+                            <th style="width: 120px;">Field Type</th>
+                            <th style="width: 50px;">Mandatory</th>
+                            <th style="width: 100px;">Source</th>
+                            <th>Validation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="5" class="uiHeader">Paper Worksheet
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Save</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Validate and save the changes of the Paper Worksheet.</td>
+                        </tr>
+                        <tr>
+                            <td>Add Row</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Add a new row to the list. And then Click the fields to edit.</td>
+                        </tr>
+                        <tr>
+                            <td>Remove</td>
+                            <td>Link</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Remove the added row in the list.</td>
+                        </tr>
+                        <tr>
+                            <td>Cancel</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Discard the changes of the Paper Worksheet.</td>
+                        </tr>
+                        <tr>
+                            <td>Print</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>View/ Print the Paper Worksheet.</td>
+                        </tr>
+                        <tr>
+                            <td>Editable Column</td>
+                            <td>Textfield</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Click the Column to active the editable field.</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="uiHeader">Plastic Worksheet
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Save</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Validate and save the changes of the Paper Worksheet.</td>
+                        </tr>
+                        <tr>
+                            <td>Add Row</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Add a new row to the list. And then Click the fields to edit.</td>
+                        </tr>
+                        <tr>
+                            <td>Remove</td>
+                            <td>Link</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Remove the added row in the list.</td>
+                        </tr>
+                        <tr>
+                            <td>Cancel</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Discard the changes of the Paper Worksheet.</td>
+                        </tr>
+                        <tr>
+                            <td>Print</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>View/ Print the Paper Worksheet.</td>
+                        </tr>
+                        <tr>
+                            <td>Editable Column</td>
+                            <td>Textfield</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Click the Column to active the editable field.</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="uiHeader">Janitorial Worksheet
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Save</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Validate and save the changes of the Paper Worksheet.</td>
+                        </tr>
+                        <tr>
+                            <td>Add Row</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Add a new row to the list. And then Click the fields to edit.</td>
+                        </tr>
+                        <tr>
+                            <td>Remove</td>
+                            <td>Link</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Remove the added row in the list.</td>
+                        </tr>
+                        <tr>
+                            <td>Cancel</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Discard the changes of the Paper Worksheet.</td>
+                        </tr>
+                        <tr>
+                            <td>Print</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>View/ Print the Paper Worksheet.</td>
+                        </tr>
+                        <tr>
+                            <td>Editable Column</td>
+                            <td>Textfield</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Click the Column to active the editable field.</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="uiHeader">Hand Soap Worksheet
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Save</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Validate and save the changes of the Paper Worksheet.</td>
+                        </tr>
+                        <tr>
+                            <td>Add Row</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Add a new row to the list. And then Click the fields to edit.</td>
+                        </tr>
+                        <tr>
+                            <td>Remove</td>
+                            <td>Link</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Remove the added row in the list.</td>
+                        </tr>
+                        <tr>
+                            <td>Cancel</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Discard the changes of the Paper Worksheet.</td>
+                        </tr>
+                        <tr>
+                            <td>Print</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>View/ Print the Paper Worksheet.</td>
+                        </tr>
+                        <tr>
+                            <td>Editable Column</td>
+                            <td>Textfield</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Click the Column to active the editable field.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5" class="uiHeader">Capital Exp
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5" style="background: #fff;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 150px;">UI Element</th>
+                            <th style="width: 120px;">Field Type</th>
+                            <th style="width: 50px;">Mandatory</th>
+                            <th style="width: 100px;">Source</th>
+                            <th>Validation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="5" class="uiHeader">New Capital Equipment
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Add New Row</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Click to add a new row of Capital Equipment to the list.</td>
+                        </tr>
+                        <tr>
+                            <td>Editable Column</td>
+                            <td>Textfield</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Click the column on added row to edit it.</td>
+                        </tr>
+                        <tr>
+                            <td>Remove</td>
+                            <td>Link</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Remove the added row of Capital Equipment  in the list.</td>
+                        </tr>
+                        <tr>
+                            <td>Save Changes</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Validate and save the changes of Capital Equipment Worksheet.</td>
+                        </tr>
+                        <tr>
+                            <td>Cancel</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Discard the changes of Capital Equipment Worksheet.</td>
+                        </tr>
+                        <tr>
+                            <td>Print</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>View/ Print the Capital Equipment Worksheet.</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="uiHeader">Capital Equipment Disposal Worksheet
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Add New Row</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Click to add a new row of Capital Equipment Disposal  to the list.</td>
+                        </tr>
+                        <tr>
+                            <td>Column Fields</td>
+                            <td>Textfield</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Click the added row to edit it.</td>
+                        </tr>
+                        <tr>
+                            <td>Remove</td>
+                            <td>Link</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Remove the added row of Capital Equipment Disposal   in the list.</td>
+                        </tr>
+                        <tr>
+                            <td>Save Changes</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Validate and save the changes of Capital Equipment Disposal  Worksheet.</td>
+                        </tr>
+                        <tr>
+                            <td>Cancel</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>Discard the changes of Capital Equipment Disposal  Worksheet.</td>
+                        </tr>
+                        <tr>
+                            <td>Print</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>View/ Print the Capital Equipment Disposal  Worksheet.</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="uiHeader">Depreciation Worksheet</td>
+                        </tr>
+                        <tr>
+                            <td>Print</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>View/ Print the Depreciation Worksheet.</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="uiHeader">Depreciation Worksheet </td>
+                        </tr>
+                        <tr>
+                            <td>Print</td>
+                            <td>Button</td>
+                            <td>NA</td>
+                            <td>Enter user input</td>
+                            <td>View/ Print the Depreciation Worksheet.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5" class="uiHeader">Budget Adjustments
+            </td>
+        </tr>
+        <tr>
+            <td>Notes</td>
+            <td>Textfield</td>
+            <td>NA  </td>
+            <td>Enter user input</td>
+            <td>Record notes for Budget Adjustments.</td>
+        </tr>
+        <tr>
+            <td>Editable Column</td>
+            <td>Textfield</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Column with green font is editable. Click to edit it.</td>
+        </tr>
+        <tr>
+            <td>Save</td>
+            <td>Button  </td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Validate and save the changes of Budget Adjustments.</td>
+        </tr>
+        <tr>
+            <td>Cancel</td>
+            <td>Button  </td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Discard the changes of Budget Adjustments.</td>
+        </tr>
+        <tr>
+            <td>Print</td>
+            <td>Button  </td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>View/ Print the Budget Adjustments.</td>
+        </tr>
+        <tr>
+            <td colspan="5" class="uiHeader">Budget Details
+            </td>
+        </tr>
+        <tr>
+            <td>Editable Column</td>
+            <td>Textfield</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Column with green font is editable. Click to edit it.</td>
+        </tr>
+        <tr>
+            <td>Add Account Code</td>
+            <td>Button  </td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Select an account from the dropdown list and click to add it account to the list.</td>
+        </tr>
+        <tr>
+            <td>Save </td>
+            <td>Button  </td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Validate and save the changes of Budget Details.</td>
+        </tr>
+        <tr>
+            <td>Cancel</td>
+            <td>Button  </td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Discard the changes of Budget Details.</td>
+        </tr>
+        <tr>
+            <td>Print</td>
+            <td>Button  </td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>View/ Print the Budget Details.</td>
+        </tr>
+        <tr>
+            <td colspan="5" class="uiHeader">Budget Summary
+            </td>
+        </tr>
+        <tr>
+            <td>Comments Column</td>
+            <td>Textfield  </td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Click the Column to Edit, Record comments for each GL Account.</td>
+        </tr>
+        <tr>
+            <td>Save</td>
+            <td>Button</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Validate and save the recorded comments.</td>
+        </tr>
+        <tr>
+            <td>Cancel</td>
+            <td>Button</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Discard the recorded comments.</td>
+        </tr>
+        <tr>
+            <td>Print</td>
+            <td>Button</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>View/ Print the Budget Summary.</td>
+        </tr>
+        <tr>
+            <td colspan="5" class="uiHeader">Budget Approval
+            </td>
+        </tr>
+        <tr>
+            <td>Editable Column</td>
+            <td>Textfield</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Column with green font is editable,click to edit it.</td>
+        </tr>
+        <tr>
+            <td>Send Email to</td>
+            <td>Textfield</td>
+            <td>Yes</td>
+            <td>Enter user input</td>
+            <td>Enter the address the Email sent to.</td>
+        </tr>
+        <tr>
+            <td>Subject</td>
+            <td>Textfield</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Edit the subject. By default the subject should be “Your Site” + Budget.</td>
+        </tr>
+        <tr>
+            <td>Comments</td>
+            <td>Textfield</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Record comments for the Fiscal Year Budget.</td>
+        </tr>
+        <tr>
+            <td>Approve</td>
+            <td>Button</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Click to approve the Fiscal Year Budget, apporve button as the default button.</td>
+        </tr>
+        <tr>
+            <td>Reject</td>
+            <td>Button</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>When the budget approved reject button will shows. And click to reject the Fiscal Year Budget.</td>
+        </tr>
+    </table>
+    <h2>UI Layouts</h2>
+    <table class="layoutTable">
+        <tr>
+            <td class="uiHeader">Budget Start Page</td>
+        </tr>
+        <tr>
+            <td>
+                <img src="images/BudgetStartPage.png" width="900" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Contract Billing</td>
+        </tr>
+        <tr>
+            <td>
+                <img src="images/ContractBilling.png" width="900" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Staffing Hours(Staffing Hours Detail Worksheet)</td>
+        </tr>
+        <tr>
+            <td>
+                <img src="images/Staffing Hours(Staffing Hours Detail Worksheet).png" width="900" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <img src="images/Annualized-StaffingHours(StaffingDetail1).png" width="900" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">StaffingHours(StaffingHoursSummaryWorksheet)</td>
+        </tr>
+        <tr>
+            <td>
+                <img src="images/StaffingHours(StaffingHoursSummaryWorksheet).png" width="900" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Employee Data</td>
+        </tr>
+        <tr>
+            <td>
+                <img src="images/EmployeeData.png" width="900" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Management History(Personal Salary Review Worksheet)</td>
+        </tr>
+        <tr>
+            <td>
+                <img src="images/Annualized-ManagementHistory(PSRW).png" width="900" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Management History(Management Administration Worksheet)</td>
+        </tr>
+        <tr>
+            <td>
+                <img src="images/Annualized-ManagementHistory(MAW).png" width="900" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Labor Calculation(Sick Pay)</td>
+        </tr>
+        <tr>
+            <td>
+                <img width="900" src="images/Annualized-LaborCalculation(SickPay).png" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Labor Calculation(Legal Holidays)</td>
+        </tr>
+        <tr>
+            <td>
+                <img width="900" src="images/Annualized-LaborCalculation(LegalHolidays).png" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Labor Calculation(Vacation)</td>
+        </tr>
+        <tr>
+            <td>
+                <img width="900" src="images/Annualized-LaborCalculation(Vacation).png" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Labor Calculation(Prod Employees Health/Dental/Life and Union Contributions & BI-Weekly Cost)</td>
+        </tr>
+        <tr>
+            <td>
+                <img width="900" src="images/Annualized-LaborCalculation(IV).png" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Labor Calculation(Net Prod Days Per Emp & FTEs)</td>
+        </tr>
+        <tr>
+            <td>
+                <img width="900" src="images/Annualized-LaborCalculation(NetProDaysPerEmp&FTEs).png" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Labor Calculation(Labor Standards)</td>
+        </tr>
+        <tr>
+            <td>
+                <img width="900" src="images/Annualized-LaborCalculation(LaborStandards).png" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Labor Calculation(Labor Standard In Dollars)</td>
+        </tr>
+        <tr>
+            <td>
+                <img width="900" src="images/Annualized-LaborCalculation(LaborStandardInDollars).png" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Final Computation Of Labor </td>
+        </tr>
+        <tr>
+            <td>
+                <img src="images/Annualized-FinalComputationOfLabor.png" width="900" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Supply Expenditures(Paper Worksheet)</td>
+        </tr>
+        <tr>
+            <td>
+                <img src="images/Annualized-SupplyExpenditures(PaperWorksheet).png" width="900" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Supply Expenditures(Plastic Worksheet)</td>
+        </tr>
+        <tr>
+            <td>
+                <img src="images/Annualized-SupplyExpenditures(PlasticWorksheet).png" width="900" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Supply Expenditures(Janitorial Worksheet)</td>
+        </tr>
+        <tr>
+            <td>
+                <img src="images/Annualized-SupplyExpenditures(JanitorialWorksheet).png" width="900" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Supply Expenditures(Hand Soap Worksheet)</td>
+        </tr>
+        <tr>
+            <td>
+                <img src="images/Annualized-SupplyExpenditures(HandSoapWorksheet).png" width="900" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Capital Expenditures(New Capital Equipment)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <img width="900" src="images/Annualized-CapitalExpenditures(NewCapitalEquipment).png" /></td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Capital Expenditures(Capital Equipment Disposal Worksheet)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <img src="images/Annualized-CapitalExpenditures(CapitalEquipmentDisposalWorksheet).png" width="900" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Capital Expenditures(Depreciation Worksheet)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <img src="images/Annualized-CapitalExpenditures(DepreciationWorksheet).png" width="900" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Capital Expenditures(Depreciation Disposal Worksheet)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <img src="images/Annualized-CapitalExpenditures(DepreciationDisposalWorksheet).png" width="900" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Buaget Adjustments</td>
+        </tr>
+        <tr>
+            <td>
+                <img src="images/Annualized-BudgetAdjustments.png" width="900" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Buaget Detail</td>
+        </tr>
+        <tr>
+            <td>
+                <img src="images/Annualized-BudgetDetail.png" width="900" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Buaget Summary</td>
+        </tr>
+        <tr>
+            <td>
+                <img src="images/Annualized-BudgetSummary.png" width="900" />
+            </td>
+        </tr>
+        <tr>
+            <td class="uiHeader">Buaget Approval</td>
+        </tr>
+        <tr>
+            <td>
+                <img src="images/Annualized-BudgetApproval.png" width="900" />
+            </td>
+        </tr>
+    </table>
+    <h2>Error Messages and Notifications</h2>
+    <table class="elementTable">
+        <tr>
+            <th>Error/Event</th>
+            <th>Message</th>
+        </tr>
+        <tr>
+            <td>Save</td>
+            <td>If the manadatory details are not provided, appropriate error message should be displayed.</td>
+        </tr>
+    </table>
+    <h2>Dependencies</h2>
+    <div class="reference">
+        1. House Codes must be defined in a system look up table (HcmHouseCodes)
+    </div>
+    <div class="reference">
+        2. Fiscal Years must be defined in a system look up table (FscYears)
+    </div>
+    <div class="reference">
+        3. Fiscal Periods must be defined in a system look up table (FscPeriods)
+    </div>
+    <div class="reference">
+        4. Chart of accounts must be defined in a system look up table (FscAccounts)
+    </div>
+    <div class="header">
+        <h1>Database Objects</h1>
+        <div class="description"></div>
+    </div>
+    <table class="elementTable">
+        <tr>
+            <th>Object Types</th>
+            <th>Object Names</th>
+        </tr>
+        <tr>
+            <td>Tables</td>
+            <td>BudAdjustmentNotes , BudAdjustments
+                <br />
+                BudAnnualBudgetDetails , BudAnnualBudgetHistories
+                <br />
+                BudAnnualBudgets , BudAnnualInformations
+                <br />
+                BudBillingPeriods , BudCapitalExpenditures 
+                <br />
+                BudDetails , BudDetailsTemp 
+                <br />
+                BudDetailEducationStaffingHours , BudEmployeeLocks 
+                <br />
+                BudFinalLabors , BudFringeRates 
+                <br />
+                BudFringeRatesHourlyOverrides , BudFringeRatesMgtOverrides 
+                <br />
+                BudHolidays	, BudIncomeTypes 
+                <br />
+                BudLaborCalculations , BudMgtHistoryPayrolls 
+                <br />
+                BudProductiveEmployeeInsurance , BudProjectedComments 
+                <br />
+                BudProjectedWORDetails , BudShiftTypes 
+                <br />
+                BudStaffingHours , BudSummaryComments 
+                <br />
+                BudSupplyExpenditures , BudUnits
+                
+            </td>
+        </tr>
+        <tr>
+            <td>Stored Procedures</td>
+            <td>BudAnnualBudgetApprove , BudAnnualBudgetsDelete
+                <br />
+                BudAnnualBudgetStart , BudAnnualBudgetsStartAnnualProjectionSnaps<br />
+                BudAnnualBudgetsStartEmployee , BudAnnualBudgetsStartJdeGLData<br />
+                BudAnnualBudgetsStartStaffing , BudAnnualBudgetStartSupplyExpenditure
+                <br />
+                BudAnnualBudgetsUpdate , BudAnnualInformationsSelect<br />
+                BudApplyRetailFinalLaborToBudDetail , BudDetailsDelete<br />
+                BudDetailsSelect , BudDetailsUpdate6035<br />
+                BudDetailsUpdate6240 , BudDetailsUpdateAll<br />
+                BudDetailsUpdateAll2 , BudDetailsUpdateApply<br />
+                BudDetailsUpdateDepreciation , BudDetailsUpdateDepreciation2<br />
+                BudDetailsUpdateHealthDental , BudDetailsUpdateHealthDental2<br />
+                BudDetailsUpdateHourlyPayroll , BudDetailsUpdateHourlyPayroll2<br />
+                BudDetailsUpdateManagement , BudDetailsUpdateManagement2<br />
+                BudDetailsUpdateOtherLaborExpenses , BudDetailsUpdateRevenue<br />
+                BudDetailsUpdateSuppliers , BudEmployeeLockSelect<br />
+                BudFindFscPeriod , BudFscAccountSelect
+
+                <br />
+                BudUpdateRetailEmployeeLockByStaffingHour</td>
+        </tr>
+    </table>
+    <h2>See Also</h2>
+    <div class="reference"><a href="Administration.htm">Administration</a></div>
+    <div class="reference"><a href="AnnualizedBudget.htm">Annualized Budget 2012</a></div>
+    <div class="reference"><a href="AnnualProjection.htm">Annual Projection</a> </div>
+    <div class="reference"><a href="BudgetSummary.htm">Annual Budget Summary</a></div>
+    <div class="reference"><a href="ImportBudget.htm">Import Budget</a></div>
+    <div class="reference"><a href="mop.htm">MOP</a></div>
+</body>
+</html>

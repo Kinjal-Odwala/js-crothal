@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+</head>
+<body>
+    <div class="header">
+        <h1>Annual Projections</h1>
+        <div class="description">Annual Projections.</div>
+    </div>
+    <h2>UI Elements</h2>
+    <table class="elementTable">
+        <tr>
+            <th style="width: 150px;">UI Element</th>
+            <th style="width: 120px;">Field Type</th>
+            <th style="width: 50px;">Mandatory</th>
+            <th style="width: 100px;">Source</th>
+            <th>Validation</th>
+        </tr>
+        <tr>
+            <td class="uiHeader" colspan="5">Annual Projections by Period
+            </td>
+        </tr>
+        <tr>
+            <td>Site</td>
+            <td>List</td>
+            <td>Yes</td>
+            <td>Enter user input</td>
+            <td>Site should be selected from Dropdown list.</td>
+        </tr>
+        <tr>
+            <td>Job</td>
+            <td>List</td>
+            <td>Yes</td>
+            <td>Enter user input</td>
+            <td>Job Should be selected from dropdown list.</td>
+        </tr>
+        <tr>
+            <td>Fiscal Year</td>
+            <td>List</td>
+            <td>Yes</td>
+            <td>Enter user input</td>
+            <td>Fiscal year Should be selected from dropdown list. current year will be selected as default.</td>
+        </tr>
+        <tr>
+            <td>Period</td>
+            <td>List</td>
+            <td>Yes</td>
+            <td>Enter user input</td>
+            <td>Period Should be selected from dropdown list. Period will be selected as default.</td>
+        </tr>
+        <tr>
+            <td>Load Data</td>
+            <td>Button</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>List Data Based on the search criteria.</td>
+        </tr>
+        <tr>
+            <td>Budget</td>
+            <td>Checkbox</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Toggle the Budget column on Data List.</td>
+        </tr>
+        <tr>
+            <td>Variance</td>
+            <td>Checkbox</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Toggle the Variance column on Data List.</td>
+        </tr>
+        <tr>
+            <td>WOR Forecast</td>
+            <td>Checkbox</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Toggle the WOR Forecast column on Data List.</td>
+        </tr>
+        <tr>
+            <td>Add Account</td>
+            <td>Button</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Add the selected account to the data list.</td>
+        </tr>
+        <tr>
+            <td>Save</td>
+            <td>Button</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Validate the changes and Save them.</td>
+        </tr>
+        <tr>
+            <td>Projection Column</td>
+            <td>Textfield</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Click cell to edit, Only future ones can be edited.</td>
+        </tr>
+        <tr>
+            <td>Variance Comment</td>
+            <td>Textfield</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Click cell to edit, Only future ones can be edited.</td>
+        </tr>
+        <tr>
+            <td colspan="5" class="uiHeader">WOR / Period Forecast</td>
+        </tr>
+        <tr>
+            <td>Site</td>
+            <td>List</td>
+            <td>Yes</td>
+            <td>Enter user input</td>
+            <td>Site should be selected from Dropdown list.</td>
+        </tr>
+        <tr>
+            <td>Job</td>
+            <td>List</td>
+            <td>Yes</td>
+            <td>Enter user input</td>
+            <td>Job Should be selected from dropdown list.</td>
+        </tr>
+        <tr>
+            <td>Fiscal Year</td>
+            <td>List</td>
+            <td>Yes</td>
+            <td>Enter user input</td>
+            <td>Fiscal year Should be selected from dropdown list. current year will be selected as default.</td>
+        </tr>
+        <tr>
+            <td>Period</td>
+            <td>List</td>
+            <td>Yes</td>
+            <td>Enter user input</td>
+            <td>Period Should be selected from dropdown list. Period will be selected as default.</td>
+        </tr>
+        <tr>
+            <td>Load Data</td>
+            <td>Button</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>List Data Based on the search criteria.</td>
+        </tr>
+        <tr>
+            <td>Print</td>
+            <td>Button</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>View/Print WOR/Period Forecast.</td>
+        </tr>
+        <tr>
+            <td>Week#</td>
+            <td>Textfield</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td><span>Display week # columns based on selected period. Only data of future weeks in current period can be edited.</span></td>
+        </tr>
+        <tr>
+            <td>Comments</td>
+            <td>Textfield</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td><span>Record the comment of Current period.</span></td>
+        </tr>
+        <tr>
+            <td>Add Account Code</td>
+            <td>Button</td>
+            <td></td>
+            <td>Enter user input</td>
+            <td><span>Adds the selected account to the WOR list.</span></td>
+        </tr>
+        <tr>
+            <td>Copy Preposted</td>
+            <td></td>
+            <td></td>
+            <td>Enter user input</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Save</td>
+            <td>Button</td>
+            <td>NA</td>
+            <td>Enter user input</td>
+            <td>Validate and save the changes.</td>
+        </tr>
+    </table>
+    <h2>UI Layouts</h2>
+    <table class="layoutTable">
+        <tr>
+            <td class="uiHeader">Annual projections by Period</td>
+        </tr>
+        <tr>
+            <td>
+                <img src="images/AnnualProj_AnnualProjByPeriod.png" width="900px" /></td>
+        </tr>
+        <tr>
+            <td class="uiHeader">WOR/Period Forecast</td>
+        </tr>
+        <tr>
+            <td>
+                <img src="images/AnnualProj_WORForecast.png" width="900px" /></td>
+        </tr>
+    </table>
+    <h2>Error Messages and Notifications</h2>
+    <table class="elementTable">
+        <tr>
+            <th>Error/Event</th>
+            <th>Message</th>
+        </tr>
+        <tr>
+            <td>Save</td>
+            <td>If the manadatory details are not provided, appropriate error message should be displayed.</td>
+        </tr>
+    </table>
+    <h2>Dependencies</h2>
+    <div class="reference">1. House Codes must be defined in a system look up table (HcmHouseCodes)</div>
+    <div class="reference">2. Fiscal Years must be defined in a system look up table (FscYears)</div>
+    <div class="reference">3. Fiscal Periods must be defined in a system look up table (FscPeriods)</div>
+    <div class="reference">4. Chart of accounts must be defined in a system look up table (FscAccounts)</div>
+    <div class="header">
+        <h1>Database Objects</h1>
+        <div class="description"></div>
+    </div>
+    <table class="elementTable">
+        <tr>
+            <th>Object Types</th>
+            <th>Object Names</th>
+        </tr>
+        <tr>
+            <td>Tables</td>
+            <td>BudAnnualBudgets<br />
+                BudDetails<br />
+                BudProjectedDetails<br />
+                BudProjectedComments<br />
+                BudProjectedWORDetails<br />
+                appJDEGLTransactions<br />
+                BudBudgetWORForecasts<br />
+                BudBudgetWORForecastComments </td>
+        </tr>
+        <tr>
+            <td>Stored Procedures</td>
+            <td></td>
+        </tr>
+    </table>
+    <h2>See Also</h2>
+    <div class="reference"><a href="Administration.htm">Administration</a></div>
+    <div class="reference"><a href="AnnualizedBudget.htm">Annualized Budget</a></div>
+    <div class="reference"><a href="AnnualizedBudget.htm">Annualized Budget 2012</a></div>
+    <div class="reference"><a href="BudgetSummary.htm">Annual Budget Summary</a></div>
+    <div class="reference"><a href="ImportBudget.htm">Import Budget</a></div>
+    <div class="reference"><a href="mop.htm">MOP</a></div>
+</body>
+</html>
