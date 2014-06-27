@@ -27,10 +27,11 @@
 		        <div id="popupMessageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
 		    </div>
 		</div>
-        
+        <div id="divFramePrint" style="height: 0px;">				
+			<iframe id="iFramePrint" frameborder="0" width="100" height="0"></iframe>
+		</div>
 		<div class="pageHeader">
-	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
-			<div id="LabelTextAreaLeftHeader">House Code:</div>
+			<div id="LabelTextAreaLeftHeader">&nbsp;House Code:</div>
 			<div id="DropDownRightHouseCode">
 				<div id="houseCodeContainer" class="HouseCodeContainer"></div>
 			</div>
@@ -44,15 +45,16 @@
 		<div style="clear:both;"></div>
 		<div class="pageBody">
 			<div class="contentArea">				
-	            <div class="header">PO Requisition</div>				
+	            <div class="header">PO Requisitions</div>				
 	            <div class="body">
             		<div id="RequisitionGrid"></div>
 				</div>
 			</div>
 		</div>		
-		<div id="AnchorMasterButtons">
+		<div id="anchorAlign">
 			<div id="AnchorNew"></div>
 			<div id="AnchorEdit"></div>
+			<div id="AnchorPrint"></div>
 		</div>
 		<div class="pageBody">
 			<div id="popupContact">
@@ -60,7 +62,6 @@
 					<div class="header" id="Header"></div>
 					<div style="clear:both;"></div>					
 					<div id="GeneralInfo">
-						<div style="height:10px;"></div>
 						<div id="contentAreasContainerLeft">
 							<div id="TableEditArea">
 								<div class="body">
@@ -189,15 +190,15 @@
 								</div>
 								<div id="RequisitionTypeRadio">
 									<div class="radioButtonRight">
-										<input id="RequisitionTypeSpecialSupply" name="RequisitionType"  type="radio" value="SpecialSupply"/>								
+										<input id="RequisitionTypeSpecialSupply" name="RequisitionType"  type="radio" value="Special Supply"/>								
 									</div>
 									<div class="radioTextRight">Special Supply</div>
 									<div class="radioButtonRight">
-										<input id="RequisitionTypeOffContract" name="RequisitionType"  type="radio" value="OffContract"/>								
+										<input id="RequisitionTypeOffContract" name="RequisitionType"  type="radio" value="Off Contract"/>								
 									</div>
 									<div class="radioTextRight">Off Contract</div>
 								</div>
-							<div style="clear:both;"></div>
+								<div style="clear:both;"></div>	
 								<div class="labelTextArea">
 									<span class="requiredFieldIndicator">&#149;</span>Urgency:
 								</div>
@@ -207,11 +208,11 @@
 									</div>
 									<div class="radioTextRight">Urgent</div>
 									<div class="radioButtonRight">
-										<input id="UrgencyNotUrgent" name="Urgency"  type="radio" value="NotUrgent"/>								
+										<input id="UrgencyNotUrgent" name="Urgency"  type="radio" value="Not Urgent"/>								
 									</div>
 									<div class="radioTextRight">Not Urgent</div>
 								</div>
-							<div style="clear:both;"></div>														
+								<div style="clear:both;"></div>														
 								<div class="labelTextArea">
 									<span class="requiredFieldIndicator">&#149;</span>Life Span:
 								</div>
@@ -225,7 +226,7 @@
 									</div>
 									<div class="radioTextRight">Temporary</div>
 								</div>
-							<div style="clear:both;"></div>
+								<div style="clear:both;"></div>
 						</div>
 					</div>
 					<div id="ItemInfo">					
@@ -234,13 +235,13 @@
 								<div id="LabelItemLeft">
 									<span id="nonRequiredFieldIndicator">Vendor:</span>
 								</div>
-								<div class="inputTextArea">
+								<div class="dropdownRight">
 									<div id="Vendor"></div>
 								</div>
 								<div id="LabelItemRight">
 									<span id="nonRequiredFieldIndicator">Item #, Description:</span>
 								</div>
-								<div class="inputTextArea">
+								<div class="dropdownRight">
 									<div id="SearchItem"></div>
 								</div>
 								<div id="LoadButtonItems">
@@ -254,13 +255,13 @@
 								<div id="LabelItemLeft">
 									<span id="nonRequiredFieldIndicator">Category:</span>
 								</div>
-								<div class="inputTextArea">
+								<div class="dropdownRight">
 									<div id="Category"></div>
 								</div>
 								<div id="LabelItemRight">
 									<span id="nonRequiredFieldIndicator">Catalog:</span>
 								</div>
-								<div class="inputTextArea">
+								<div class="dropdownRight">
 									<div id="Catalog"></div>
 								</div>
 							</div>
@@ -353,7 +354,7 @@
 						<div id="AnchorCancel"></div>
 						<div id="AnchorBack"></div>
 						<div id="AnchorNext"></div>												
-						<div id="AnchorSave"></div>																	
+						<div id="AnchorSave"></div>										
 					</div>
 				</div>
 			</div>		

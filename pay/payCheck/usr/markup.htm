@@ -41,7 +41,7 @@
 		<div style="clear:both;"></div>
 		<div class="pageBody">
 			<div class="contentArea">
-				<div id="searchContainer" style="display:none;">
+				<div id="SearchContainer" style="display:none;">
 					<div class="labelTextSearch">House Code, Requestor Name, Employee #:</div>
 					<div class="inputTextArea">
 						<div id="SearchInput"></div>
@@ -57,8 +57,7 @@
 					</div>
 					<div style="clear:both;"></div>
 				</div>
-				<div class="body" id="container">					
-					<div class="labelHeaderSmall">Fax # (610) 576-5221&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Email: SuS-Payroll@compass-usa.com</div>
+				<div class="body" id="Container">
 					<div style="clear:both;"></div>
 					<div class="labelHeaderSmall">Received by 4:00 pm EST, will be processed same business day (There may be exceptions based on priority and volume).</div>
 					<div style="clear:both; height:10px;"></div>
@@ -134,10 +133,10 @@
 							<div class="inputTextArea">
 								<div id="TermRequestRadio">
 									<div class="radioButton">
-										<input type="radio" id="TermRequestYes" name="TermRequest" checked="true" value="true" /><span class="labelRadio">Yes</span>
+										<input type="radio" id="TermRequestYes" name="TermRequest" value="true" /><span class="labelRadio">Yes</span>
 									</div>
 									<div class="radioButton">
-										<input type="radio" id="TermRequestNo" name="TermRequest" value="false" /><span class="labelRadio">No</span>
+										<input type="radio" id="TermRequestNo" name="TermRequest" checked="true" value="false" /><span class="labelRadio">No</span>
 									</div>
 								</div>
 							</div>
@@ -147,7 +146,7 @@
 					<div class="contentAreaLeft">
 						<div id="TableEditArea">
 							<div class="labelText" id="LabelState">
-								<span class="requiredFieldIndicator">&#149;</span>State:
+								<span id="nonRequiredFieldIndicator">State:</span>
 							</div>
 							<div class="inputTextArea">
 								<div id="State"></div>
@@ -409,6 +408,33 @@
 							<div style="clear:both;"></div>
 						</div>
 					</div>
+					<div style="clear:both;"></div>
+					<div id="AdditionalDocuments">
+						<div class="subHeader">Additional Documents</div>
+						<div style="clear:both;height:10px;"></div>
+						<div id="DocumentGrid"></div>
+						<div id="Paging">							
+				            <table cellpadding="0" cellspacing="0" style="width: 100%">
+		                        <tr class="footer">
+		                            <td class="borderVertical"></td>					                            
+		                            <td>
+		                                <table cellpadding="0" cellspacing="0" style="width: 100%">
+		                                    <tr class="footer">
+		                                    	<td>
+		                                            &nbsp;<img id="imgAdd" src="/fin/cmn/usr/media/Common/add.png" style="cursor: pointer" alt="Add Document" title="Click here to attach the supporting document" />
+													<img id="imgEdit" src="/fin/cmn/usr/media/Common/modify.png" style="cursor: pointer" alt="Edit Document" title="Click here to modify the supporting document" />
+													<img id="imgRemove" src="/fin/cmn/usr/media/Common/delete.png" style="cursor: pointer" alt="Remove Document" title="Click here to remove the supporting document" />
+													<img id="imgView" src="/fin/cmn/usr/media/Common/download.png" style="cursor: pointer" alt="View Document" title="Click here to view the supporting document" />
+												</td>
+		                                    </tr>
+		                                </table>
+		                            </td>
+		                            <td class="borderVertical"></td>
+		                        </tr>
+		                        <tr><td class="borderHorizontal" colspan="3"></td></tr>
+		                    </table>							        
+						</div>
+					</div>
 				</div>
 			</div>
 			<div style="clear:both;"></div>
@@ -421,7 +447,33 @@
 			</div>
 			<div style="clear:both;"></div>
 		</div>
- 
+ 		<div id="uploadPopup">
+			<div class="contentArea">
+				<div id="popupHeader" class="header">Upload Document</div>
+			    <div class="body">
+					<div id="divFrame" class="body" style="padding-left: 10px;">
+						<div style="clear:both;height: 10px;"></div>
+						<div id="TableEditArea">
+							<div class="labelTextUpload">
+								<span class="requiredFieldIndicator">&#149;</span>Document Title:
+							</div>
+							<div class="inputTextArea">
+								<div id="DocumentTitle"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<iframe id="iFrameUpload" src="/net/crothall/chimes/fin/app/act/FileUpload.aspx" frameborder="0" width="100%" height="30"></iframe>
+						<div style="clear:both;"></div>
+					</div>
+					<div id="divUpload" class="body">
+						<div id="AnchorUpload"></div>
+						<div id="AnchorUploadCancel"></div>
+						<div style="clear:both;"></div>
+					</div>
+			    </div>
+			</div>
+		</div>
+		<div id="backgroundPopup"></div>
 	    <div id="iiInputValidationMaster"></div>
 	</body>
 </html>

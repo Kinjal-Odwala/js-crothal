@@ -1,0 +1,286 @@
+﻿.header {
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 18px;	
+	color: #2C2F50;
+	text-align: center;
+	margin-bottom: 5px;
+}
+
+.subHeader {
+    height: 20px;
+    font-family: Verdana;
+    font-size: 8pt;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #669b67;
+    text-align: left;
+}
+
+.labelTextArea {
+	float: left;
+	width: 60px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 5px 5px 0px 10px;
+}
+
+.inputTextArea {
+	float: left;
+	width: 250px;
+	padding: 5px 5px 0px 5px;
+}
+
+.iiGridHeaderColumn, .iiGridBodyColumn {
+	font-size: 8pt;
+}
+
+.gridHeader {
+    height: 20px;
+    font-family: Verdana;
+    font-size: 10pt;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #669b67;
+    text-align: center;
+}
+
+.borderVertical {
+	border-right: 1px #adaaad solid;
+	border-width: 1px;
+}
+
+.borderHorizontal {
+    height: 2px;
+    background-color: #adaaad;
+}
+
+.gridBorder {
+	border: solid #AAAAAA thin;
+	border-width: 2px;
+}
+
+.gridHeaderColumn {
+	background-color: #669966;
+	border-right: solid #AAAAAA thin;
+	border-width: 1px;
+	border-bottom: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	font-weight: bold;
+	color: white;	
+	text-align: center;
+	padding: 3px 2px 3px 2px;
+}
+
+.gridHeaderColumnRight {
+	background-color: #669966;
+	border-bottom: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	font-weight: bold;
+	color: white;	
+	text-align: center;
+	padding: 3px 2px 3px 2px;
+}
+
+.gridColumn {	
+	border-right: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	color: #032D23;
+	height: 22px;
+	vertical-align: middle;
+	padding: 3px 2px 3px 2px;
+}
+
+.gridColumn SELECT {
+    font-family: Verdana;
+    font-size: 8pt;
+    width: 100%;
+}
+
+.gridColumnRight {	
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	color: #032D23;
+	height: 22px;
+	vertical-align: middle;
+	padding: 3px 2px 3px 2px;
+}
+
+.gridRow { 
+	background-color: #F0EFDD;
+}
+
+.gridRow input {
+    font-family: Verdana;
+    font-size: 8pt;
+	color: #032D23;
+	padding: 0px;
+	height: 18px;
+}
+
+.alternateGridRow { 
+	background-color: #FFFFFF;
+}
+
+.alternateGridRow input {
+    font-family: Verdana;
+    font-size: 8pt;
+	color: #032D23;
+	padding: 0px;
+	height: 18px;
+}
+
+.gridLeftHeader {
+	border-right: 1px #adaaad solid;
+	border-width: 1px;
+	font-family: Verdana;
+	font-size: 10pt;
+	color: #032D23;
+	font-weight: bold;
+	vertical-align: middle;
+	padding: 3px 2px 3px 5px;
+}
+
+.spanLabel {
+	font-family: Verdana;
+	font-size: 10pt;
+	color: #032D23;
+	vertical-align: middle;
+	padding: 0px 0px 5px 5px;
+}
+
+.footer {
+    height: 20px;
+    font-family: Verdana;
+    font-size: 8pt;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #669b67;
+    text-align: left;
+}
+
+.footer SELECT {
+    font-family: Verdana;
+    font-size: 8pt;
+}
+
+.loadingIndicator {
+	width: 16px;
+	height: 16px;
+	background-image: url(/fin/cmn/usr/media/common/indicator.gif);
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+.ui-datepicker.ui-widget.ui-widget-content.ui-helper-clearfix.ui-corner-all.ui-helper-hidden-accessible {
+	z-index: 11111;
+}
+
+#GridHeaderContainer {
+	margin-left: 1px;
+	margin-right: 1px;
+}
+
+#AnchorSearch {
+	float: left;
+	width: 88px;
+	margin: 5px 0px 0px 10px;
+}
+
+#AnchorPrepare {
+	float: left;
+	width: 88px;
+	margin-left: 10px;
+}
+
+#AnchorImport {
+	float: left;
+	width: 82px;
+	margin-left: 10px;
+}
+
+#AnchorReconcile {
+	float: left;
+	width: 100px;
+	margin-left: 10px;
+}
+
+#AnchorFinalize {
+	float: left;
+	width: 88px;
+	margin-left: 10px;
+}
+
+#AnchorExport {
+	float: left;
+	width: 80px;
+	margin-left: 10px;
+}
+
+#AnchorView {
+	float: left;
+	width: 76px;
+	margin-left: 10px;
+}
+
+#AnchorCancel {
+	float: left;
+	width: 80px;
+	margin-left: 10px;
+}
+
+#AnchorAdd {
+	float: left;
+	width: 70px;
+	margin-left: 10px;
+}
+
+#AnchorCancelRecord {
+	float: left;
+	width: 80px;
+	margin-left: 5px;
+}
+
+#AnchorSave {
+	float: left;
+	width: 76px;
+	padding: 0px;
+	margin: 0px 0px 10px 5px;
+}
+
+#backgroundPopup {
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	z-index: 5000; 
+	width: 100%; 
+	height: 100%;
+	border: 1px solid #cecece; 
+	background-color: black;
+	display: none;
+}
+
+#batchPopup {
+	width: 1100px; 
+	height: 600px;
+	background-color: white;
+	position: absolute;
+	z-index: 5025;
+	display: none;
+}

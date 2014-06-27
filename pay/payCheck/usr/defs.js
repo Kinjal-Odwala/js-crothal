@@ -88,6 +88,18 @@ ii.init.register( function(){
 		, workOrderNumber: {type: Number, required: false, defaultValue: 0}
 	};
 	
+	fin.pay.payCheck.payCheckRequestDocumentArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, title: {type: String, required: false, defaultValue: ""}
+		, fileName: {type: String, required: false, defaultValue: ""}
+		, tempFileName: {type: String, required: false, defaultValue: ""}
+	};
+
+	fin.pay.payCheck.fileNameArgs = {
+		id: {type: Number}
+		, fileName: {type: String, required: false, defaultValue: ""}
+	};
+
 	fin.pay.payCheck.employeeSearchArgs = {
 		id: {type: Number}
 		, employeeNumber: {type: String, required: false, defaultValue: ""}
@@ -190,6 +202,26 @@ ii.Class({
 			if (!this.payCode) {
 				this.payCode = [];
 			}
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.pay.payCheck.PayCheckRequestDocument",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pay.payCheck.payCheckRequestDocumentArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.pay.payCheck.FileName",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pay.payCheck.fileNameArgs);
+			$.extend(this, args);
 		}
 	}
 });

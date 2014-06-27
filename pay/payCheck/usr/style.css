@@ -7,7 +7,7 @@
 	margin-bottom: 5px;
 }
 
-.subHeader 	{
+.subHeader {
 	font-family: Verdana;
 	font-weight: bold;
 	font-size: 13px;	
@@ -32,7 +32,7 @@
 	font-style: italic;
 	color: #032D23;
 }
-	
+
 .labelText {
 	float: left;
 	width: 210px;
@@ -71,6 +71,15 @@
 	font-size: 12px;
 	color: #032D23;	
 	padding-top: 3px;
+}
+
+.labelTextUpload {
+	float: left;
+	width: 190px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
 }
 
 .contentAreaLeft {
@@ -119,7 +128,27 @@
 	margin: 1px;
 }
 
-#container {
+.footer {
+    height: 20px;
+    font-family: Verdana;
+    font-size: 8pt;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #669b67;
+    text-align: left;
+}
+
+.borderHorizontal {
+    height: 1px;
+    background-color: #adaaad;
+}
+
+.borderVertical {
+    width: 1px;
+    background-color: #adaaad;
+}
+
+#Container {
 	border: solid #AAAAAA thin;
 	border-width: 1px;
 	padding: 5px;
@@ -150,18 +179,61 @@
 
 #AnchorResendRequest {
 	float: left;
-	width: 143px;
+	width: 144px;
 	margin: 10px 0px 10px 10px;
 }
 
 #AnchorUndo {
 	float: left;
 	width: 70px;
-	margin: 5px 0px 10px 10px;
+	margin: 5px 0px 10px 5px;
 }
 
 #AnchorCancel {
 	float: left;
 	width: 80px;
 	margin: 10px 0px 10px 10px;
+}
+
+#AnchorUpload {
+	float: left;
+	width: 82px;
+	padding: 5px 0px 0px 20px;
+}
+
+#AnchorUploadCancel {
+	float: left;
+	width: 80px;
+	padding: 5px 0px 0px 10px;
+}
+
+#DocumentGrid {
+	width: 700px;
+	margin-left: 10px;
+}
+
+#Paging {
+	width: 700px;
+	margin-left: 11px;
+}
+
+#uploadPopup {
+	width: 600px; 
+	height: 150px;
+	background-color: white;
+	position: absolute;
+	z-index: 5025;	
+	display: none;
+}
+
+#backgroundPopup {
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	z-index: 5000; 
+	width: 100%; 
+	height: 100%;
+	border: 1px solid #cecece; 
+	background-color: black;
+	display: none;
 }

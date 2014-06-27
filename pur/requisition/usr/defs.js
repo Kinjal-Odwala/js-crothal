@@ -40,8 +40,14 @@ ii.init.register( function() {
 	
 	fin.pur.poRequisition.accountArgs = {
 		id: {type: Number}
+		, code: {type: String}
 		, name: {type: String}
-		, description: {type: String}
+	};
+	
+	fin.pur.poRequisition.glAccountArgs = {
+		id: {type: Number}
+		, code: {type: String}
+		, name: {type: String}
 	};
 	
 	fin.pur.poRequisition.personArgs = {
@@ -59,11 +65,14 @@ ii.init.register( function() {
 	fin.pur.poRequisition.poRequisitionArgs = {
 		id: {type: Number}
 		, houseCode: {type: Number}
-		, houseCodeJob: {type: Number, required: false, defaultValue: 0}		
+		, houseCodeTitle: {type: String, required: false, defaultValue: ""}
+		, houseCodeJob: {type: Number, required: false, defaultValue: 0}
+		, houseCodeJobTitle: {type: String, required: false, defaultValue: ""}		
 		, shipToAddress1: {type: String, required: false, defaultValue: ""}
 		, shipToAddress2: {type: String, required: false, defaultValue: ""}
 		, shipToCity: {type: String, required: false, defaultValue: ""}
 		, shipToState: {type: Number, required: false, defaultValue: 0}
+		, shipToStateTitle: {type: String, required: false, defaultValue: ""}
 		, shipToZip: {type: String, required: false, defaultValue: ""}
 		, shipToPhone: {type: String, required: false, defaultValue: ""}
 		, shipToFax: {type: String, required: false, defaultValue: ""}		
@@ -76,29 +85,42 @@ ii.init.register( function() {
 		, vendorAddressLine2: {type: String, required: false, defaultValue: ""}
 		, vendorCity: {type: String, required: false, defaultValue: ""}
 		, vendorStateType: {type: Number, required: false, defaultValue: 0}
+		, vendorStateTitle: {type: String, required: false, defaultValue: ""}
 		, vendorZip: {type: String, required: false, defaultValue: ""}
 		, vendorContactName: {type: String, required: false, defaultValue: ""}
 		, vendorPhoneNumber: {type: String, required: false, defaultValue: ""}
 		, vendorEmail: {type: String, required: false, defaultValue: ""}
 		, reasonForRequest: {type: String, required: false, defaultValue: ""}
-		, requisitionType: {type: Number, required: false, defaultValue: 0}
-		, urgency: {type: Number, required: false, defaultValue: 0}
-		, lifeSpan: {type: Number, required: false, defaultValue: 0}
+		, requisitionType: {type: String, required: false, defaultValue: ""}
+		, urgency: {type: String, required: false, defaultValue: ""}
+		, lifeSpan: {type: String, required: false, defaultValue: ""}
 		, chargeToPeriod: {type: String, required: false, defaultValue: ""}			
 	};
 	
 	fin.pur.poRequisition.poRequisitionDetailArgs = {
 		id: {type: Number, defaultValue: 0}
 		, poRequisitionId: {type: Number, defaultValue: 0}
-		, account: {type: fin.pur.poRequisition.Account, required: false}
+		, account: {type: fin.pur.poRequisition.GLAccount, required: false}
+		, itemSelect: {type: Boolean, required: false, defaultValue: true}
+		, number: {type: String, required: false, defaultValue: ""}
+		, description: {type: String, required: false, defaultValue: ""}
+		, unit: {type: String, required: false, defaultValue: ""}
+		, manufactured: {type: String, required: false, defaultValue: ""}
+		, price: {type: String, required: false, defaultValue: ""}
+		, quantity: {type: String, required: false, defaultValue: ""}
+	};
+	
+	fin.pur.poRequisition.itemArgs = {
+		id: {type: Number, defaultValue: 0}
+		, poRequisitionId: {type: Number, defaultValue: 0}
+		, account: {type: fin.pur.poRequisition.GLAccount, required: false}
 		, itemSelect: {type: Boolean, required: false, defaultValue: false}
 		, number: {type: String, required: false, defaultValue: ""}
 		, description: {type: String, required: false, defaultValue: ""}
 		, unit: {type: String, required: false, defaultValue: ""}
 		, manufactured: {type: String, required: false, defaultValue: ""}
 		, price: {type: String, required: false, defaultValue: ""}
-		, quantity: {type: String, required: false, defaultValue: "0"}
-		, total: {type: String, required: false, defaultValue: "0"}
+		, quantity: {type: String, required: false, defaultValue: ""}
 	};
 	
 	fin.pur.poRequisition.vendorArgs = {
@@ -175,6 +197,16 @@ ii.Class({
 });
 
 ii.Class({
+	Name: "fin.pur.poRequisition.GLAccount",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pur.poRequisition.glAccountArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
 	Name: "fin.pur.poRequisition.Person",
 	Definition: {
 		init: function() {
@@ -187,7 +219,7 @@ ii.Class({
 ii.Class({
 	Name: "fin.pur.poRequisition.PORequisition",
 	Definition: {
-		init: function (){
+		init: function() {
 			var args = ii.args(arguments, fin.pur.poRequisition.poRequisitionArgs);
 			$.extend(this, args);
 		}
@@ -199,6 +231,20 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.pur.poRequisition.poRequisitionDetailArgs);
+			$.extend(this, args);
+			
+			if(!this.account) {
+				this.account = [];
+			}
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.pur.poRequisition.Item",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pur.poRequisition.itemArgs);
 			$.extend(this, args);
 			
 			if(!this.account) {

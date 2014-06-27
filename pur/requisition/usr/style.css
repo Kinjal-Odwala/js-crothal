@@ -32,6 +32,13 @@
 	padding: 3px 0px 0px 5px;
 }
 
+.dropdownRight
+{
+	width: 200px;
+	float: left;
+	padding-top: 5px;
+}
+
 .labelTextArea {
 	width: 160px;
 	float: left;
@@ -53,7 +60,19 @@
 .inputTextAreaLarge {
 	float: left;
 	height: 20px;
-	width: 690px;
+	width: 72%;
+}
+
+.iiInputText.Loading {
+	background-image: url(/fin/cmn/usr/media/common/indicator.gif);
+	background-repeat: no-repeat;
+	background-position: right;
+	width: 16px;
+	height: 16px;
+	margin-top: 1px;
+	margin-right: 1px;
+	margin-left: 1px;
+	margin-bottom: 1px;	
 }
 
 #ShippingInfo {
@@ -90,17 +109,25 @@
 
 #AnchorNew {
 	float: left;
-	width: 80px;
-	padding-left: 10px;
-	margin-right: 0px;
+	width: 68px;
+	margin-right: 5px;
+	padding-left: 20px;
 	padding-top: 5px;
 }
 
 #AnchorEdit {
 	float: left;
-	width: 80px;
+	width: 68px;
+	margin-right: 0px;
 	padding-left: 0px;
+	padding-top: 5px;
+}
+
+#AnchorPrint {
+	float: left;
+	width: 68px;
 	margin-right: 5px;
+	padding-left: 0px;
 	padding-top: 5px;
 }
 
@@ -187,4 +214,9 @@
 	z-index: 5025;
 	background-color: white;
 	display: none;
+}
+
+#priceBodyColumn, #quantityBodyColumn
+{
+	text-align: right;	
 }
