@@ -32,6 +32,11 @@ ii.init.register( function() {
 		, jobTitle: {type: String}
 	};
 	
+	fin.pur.poRequisition.statusArgs = {
+		id: {type: Number}
+		, title: {type: String}
+	};
+	
 	fin.pur.poRequisition.stateTypeArgs = {
 		id: {type: Number}
 		, number: {type: Number}
@@ -64,15 +69,13 @@ ii.init.register( function() {
 
 	fin.pur.poRequisition.poRequisitionArgs = {
 		id: {type: Number}
+		, statusType: {type: Number, required: false, defaultValue: 0}
 		, houseCode: {type: Number}
-		, houseCodeTitle: {type: String, required: false, defaultValue: ""}
-		, houseCodeJob: {type: Number, required: false, defaultValue: 0}
-		, houseCodeJobTitle: {type: String, required: false, defaultValue: ""}		
+		, houseCodeJob: {type: Number, required: false, defaultValue: 0}		
 		, shipToAddress1: {type: String, required: false, defaultValue: ""}
 		, shipToAddress2: {type: String, required: false, defaultValue: ""}
 		, shipToCity: {type: String, required: false, defaultValue: ""}
 		, shipToState: {type: Number, required: false, defaultValue: 0}
-		, shipToStateTitle: {type: String, required: false, defaultValue: ""}
 		, shipToZip: {type: String, required: false, defaultValue: ""}
 		, shipToPhone: {type: String, required: false, defaultValue: ""}
 		, shipToFax: {type: String, required: false, defaultValue: ""}		
@@ -85,7 +88,6 @@ ii.init.register( function() {
 		, vendorAddressLine2: {type: String, required: false, defaultValue: ""}
 		, vendorCity: {type: String, required: false, defaultValue: ""}
 		, vendorStateType: {type: Number, required: false, defaultValue: 0}
-		, vendorStateTitle: {type: String, required: false, defaultValue: ""}
 		, vendorZip: {type: String, required: false, defaultValue: ""}
 		, vendorContactName: {type: String, required: false, defaultValue: ""}
 		, vendorPhoneNumber: {type: String, required: false, defaultValue: ""}
@@ -171,6 +173,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.pur.poRequisition.houseCodeJobArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.pur.poRequisition.Status",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pur.poRequisition.statusArgs);
 			$.extend(this, args);
 		}
 	}

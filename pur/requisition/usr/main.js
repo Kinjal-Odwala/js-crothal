@@ -65,6 +65,7 @@ ii.Class({
 
 			me.defineFormControls();
 			me.configureCommunications();
+			me.statusesLoaded();
 			me.setStatus("Loading");
 			me.modified(false);
 			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
@@ -126,7 +127,7 @@ ii.Class({
 			if (me == undefined)
 				return;				
 			
-			fin.pur.poRequisitionUi.requisitionGrid.setHeight($(window).height() - 135);
+			fin.pur.poRequisitionUi.requisitionGrid.setHeight($(window).height() - 145);
 			fin.pur.poRequisitionUi.itemGrid.setHeight($(window).height() - 255);
 			$("#GeneralInfo").height($(window).height() - 210);
 			$("#ShippingInfo").height($(window).height() - 210);
@@ -134,6 +135,14 @@ ii.Class({
 		
 		defineFormControls: function() {
 			var me = this;
+			
+			me.searchButton = new ui.ctl.buttons.Sizeable({
+				id: "SearchButton",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Search&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionSearchItem(); },
+				hasHotState: true
+			});
 			
 			me.anchorNew = new ui.ctl.buttons.Sizeable({
 				id: "AnchorNew",
@@ -147,6 +156,14 @@ ii.Class({
 				id: "AnchorEdit",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Edit&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionEditItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorView = new ui.ctl.buttons.Sizeable({
+				id: "AnchorView",
+				className: "iiButton",
+				text: "<span>&nbsp;View&nbsp;</span>",
 				clickFunction: function() { me.actionEditItem(); },
 				hasHotState: true
 			});
@@ -191,6 +208,36 @@ ii.Class({
 				hasHotState: true
 			});
 			
+			me.anchorSendRequisition = new ui.ctl.buttons.Sizeable({
+				id: "AnchorSendRequisition",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Send Requisition&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionSendRequisitionItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorResendRequisition = new ui.ctl.buttons.Sizeable({
+				id: "AnchorResendRequisition",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Resend Requisition&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionResendRequisitionItem(); },
+				hasHotState: true
+			});
+			
+			me.statusType = new ui.ctl.Input.DropDown.Filtered({
+				id: "StatusType",
+				formatFunction: function( type ) { return type.title; }
+			});
+
+			me.statusType.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)	
+				.addValidation( function( isFinal, dataMap ) {
+					
+					if ((this.focused || this.touched) && me.statusType.indexSelected == -1)
+						this.setInvalid("Please select the correct Status.");
+				});
+				
 			me.requisitionGrid = new ui.ctl.Grid({
 				id: "RequisitionGrid",
 				appendToId: "divForm",
@@ -200,10 +247,23 @@ ii.Class({
 			});
 			
 			me.requisitionGrid.addColumn("requestorName", "requestorName", "Requestor Name", "Requestor Name", 250);
-			me.requisitionGrid.addColumn("requestorEmail", "requestorEmail", "Requestor Email", "Requestor Email", 200);		
+			me.requisitionGrid.addColumn("requestorEmail", "requestorEmail", "Requestor Email", "Requestor Email", null);		
 			me.requisitionGrid.addColumn("requestedDate ", "requestedDate", "Requested Date", "Requested Date", 150);
 			me.requisitionGrid.addColumn("deliveryDate", "deliveryDate", "Delivery Date", "Delivery Date", 150);
-			me.requisitionGrid.addColumn("reasonForRequest", "reasonForRequest", "Reason For Request", "Reason For Request", null);
+			me.requisitionGrid.addColumn("statusType", "statusType", "Status", "Status", 100, function(statusType) {
+				if (statusType == 1)
+					return "Open";
+				else if (statusType == 2)
+					return "In Process";
+				else if (statusType == 8)
+                	return "Approved";
+				else if (statusType == 9)
+                	return "Completed";
+				else if (statusType == 6)
+                	return "Cancelled";
+				else if (statusType == 10)
+                	return "Unapproved";
+           	});
 			me.requisitionGrid.capColumns();
 			
 			me.requestorName = new ui.ctl.Input.Text({
@@ -675,15 +735,10 @@ ii.Class({
 			
 			me.vendor.text.readOnly = true;
 			$("#VendorName").bind("keydown", me, me.actionVendorSearch);
-//			$("#VendorName").keypress(function (e) {
-//				if( e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57))
-//					return false;
-//			});
-//			$("#VendorName").bind("onChange", me, me.actionVendorSearch);
-//			$("#VendorName").change( function(){
-//				alert('hi')
-//		    });
-			
+			$("#AnchorView").hide();
+			$("#AnchorEdit").hide();
+			$("#AnchorResendRequisition").hide();
+			$("#AnchorSendRequisition").hide();			
 			me.setTabIndexes();
 		},		
 
@@ -886,6 +941,69 @@ ii.Class({
 			me.resize();
 		},
 		
+		setReadOnly: function(readOnly) {
+			var me = this;
+
+			me.requestorName.text.readOnly = readOnly;
+			me.requestorEmail.text.readOnly = readOnly;
+			me.requestedDate.text.readOnly = readOnly;
+			me.deliveryDate.text.readOnly = readOnly;			
+			me.vendorName.text.readOnly = readOnly;
+			me.vendorAddress1.text.readOnly = readOnly;
+			me.vendorAddress2.text.readOnly = readOnly;
+			me.vendorCity.text.readOnly = readOnly;
+			me.vendorState.text.readOnly = readOnly;
+			me.vendorZip.text.readOnly = readOnly;
+			me.vendorContactName.resizeText();
+			me.vendorPhone.text.readOnly = readOnly;
+			me.vendorEmail.text.readOnly = readOnly;
+			me.reasonForRequest.text.readOnly = readOnly;
+			me.itemNumber.text.readOnly = readOnly;			
+			me.itemDescription.text.readOnly = readOnly;
+			me.account.text.readOnly = readOnly;
+			me.uom.text.readOnly = readOnly;
+			me.manufactured.text.readOnly = readOnly;
+			me.quantity.text.readOnly = readOnly;
+			me.price.text.readOnly = readOnly;			
+			me.company.text.readOnly = readOnly;
+			me.shippingJob.text.readOnly = readOnly;
+			me.shippingAddress1.text.readOnly = readOnly;
+			me.shippingAddress2.text.readOnly = readOnly;
+			me.shippingCity.text.readOnly = readOnly;
+			me.shippingState.text.readOnly = readOnly;
+			me.shippingZip.text.readOnly = readOnly;
+			me.shippingPhone.text.readOnly = readOnly;
+			me.shippingFax.text.readOnly = readOnly;
+			
+			
+			
+			$("#RequisitionTypeSpecialSupply")[0].disabled = readOnly;
+			$("#RequisitionTypeOffContract")[0].disabled = readOnly;
+			$("#UrgencyUrgent")[0].disabled = readOnly;
+			$("#UrgencyNotUrgent")[0].disabled = readOnly;
+			$("#LifeSpanPermanent")[0].disabled = readOnly;
+			$("#LifeSpanTemporary")[0].disabled = readOnly;
+
+			if (readOnly) {
+				$("#RequestedDateAction").removeClass("iiInputAction");
+				$("#DeliveryDateAction").removeClass("iiInputAction");
+				$("#VendorNameAction").removeClass("iiInputAction");
+				$("#VendorStateAction").removeClass("iiInputAction");
+				$("#AccountAction").removeClass("iiInputAction");
+				$("#ShippingJobAction").removeClass("iiInputAction");
+				$("#ShippingStateAction").removeClass("iiInputAction");
+			}
+			else  {
+				$("#RequestedDateAction").addClass("iiInputAction");
+				$("#DeliveryDateAction").addClass("iiInputAction");
+				$("#VendorNameAction").addClass("iiInputAction");
+				$("#VendorStateAction").addClass("iiInputAction");
+				$("#AccountAction").addClass("iiInputAction");
+				$("#ShippingJobAction").addClass("iiInputAction");
+				$("#ShippingStateAction").addClass("iiInputAction");				
+			}
+		},
+		
 		currentDate: function() {
 			var currentTime = new Date();
 			var month = currentTime.getMonth() + 1;
@@ -893,6 +1011,23 @@ ii.Class({
 			var year = currentTime.getFullYear();
 			
 			return month + "/" + day + "/" + year;
+		},
+		
+		statusesLoaded: function() {
+			var me = this;
+
+			me.statuses = [];
+			me.statuses.push(new fin.pur.poRequisition.Status(0, "[All]"));
+			me.statuses.push(new fin.pur.poRequisition.Status(1, "Open"));
+			me.statuses.push(new fin.pur.poRequisition.Status(2, "In Process"));
+			me.statuses.push(new fin.pur.poRequisition.Status(8, "Approved"));
+			me.statuses.push(new fin.pur.poRequisition.Status(11, "Completed - PO"));
+			me.statuses.push(new fin.pur.poRequisition.Status(12, "Completed - JDE"));
+			me.statuses.push(new fin.pur.poRequisition.Status(6, "Cancelled"));
+			me.statuses.push(new fin.pur.poRequisition.Status(10, "Unapproved"));
+
+			me.statusType.setData(me.statuses);
+			me.statusType.select(0, me.statusType.focused);
 		},
 		
 		accountsLoaded: function(me, activeId) {
@@ -911,6 +1046,16 @@ ii.Class({
 			me.shippingState.setData(me.stateTypes);
 			me.vendorState.setData(me.stateTypes);	
 			me.checkLoadCount();		
+		},
+		
+		actionSearchItem: function() {
+			var me = this;
+
+			me.setLoadCount();
+			me.poRequisitionStore.reset();
+			me.poRequisitionStore.fetch("houseCode:" + parent.fin.appUI.houseCodeId
+			+ ",statusType:" + (me.statusType.indexSelected == -1 ? 0 : me.statuses[me.statusType.indexSelected].id)
+			, me.poRequisitionsLoaded, me);
 		},
 		
 		houseCodesLoaded: function(me, activeId) { 
@@ -953,7 +1098,9 @@ ii.Class({
 			var me = this;
 
 			me.setLoadCount();
-			me.poRequisitionStore.fetch("houseCode:" + parent.fin.appUI.houseCodeId, me.poRequisitionsLoaded, me);
+			me.poRequisitionStore.fetch("houseCode:" + parent.fin.appUI.houseCodeId
+			+ ",statusType:" + (me.statusType.indexSelected == -1 ? 0 : me.statuses[me.statusType.indexSelected].id)
+			, me.poRequisitionsLoaded, me);
 		},
 		
 		poRequisitionsLoaded: function(me, activeId) {
@@ -1029,6 +1176,39 @@ ii.Class({
 			
 			if (me.requisitionGrid.data[index] != undefined) {
 				me.poRequisitionId = me.requisitionGrid.data[index].id;
+				
+				
+				if (me.requisitionGrid.data[index].statusType == 10 || me.requisitionGrid.data[index].statusType == 1) {
+					if (me.requisitionGrid.data[index].statusType == 10) {
+						$("#AnchorResendRequisition").show();
+						$("#AnchorSendRequisition").hide();
+					}
+					if (me.requisitionGrid.data[index].statusType == 1) {
+						$("#AnchorResendRequisition").hide();
+						$("#AnchorSendRequisition").show();
+					}
+					
+					$("#AnchorEdit").show();
+					$("#AnchorView").hide();					
+					me.anchorSave.display(ui.cmn.behaviorStates.enabled);
+					me.setReadOnly(false);															
+				}
+				else {
+					if (me.requisitionGrid.data[index].statusType == 2) {
+						$("#AnchorResendRequisition").show();
+						$("#AnchorSendRequisition").hide();
+					}					
+					else {
+						$("#AnchorResendRequisition").hide();
+						$("#AnchorSendRequisition").hide();
+					}			
+					
+					$("#AnchorEdit").hide();
+					$("#AnchorView").show();
+					me.anchorSave.display(ui.cmn.behaviorStates.disabled);
+					me.setReadOnly(true);
+				}
+					
 				me.setLoadCount();
 				me.poRequisitionDetailStore.reset();
 				me.poRequisitionDetailStore.fetch("userId:[user],pORequisitionId:" + me.poRequisitionId, me.poRequisitonDetailsLoaded, me);												
@@ -1271,6 +1451,8 @@ ii.Class({
 				return true;
 			}
 			
+			me.anchorSave.display(ui.cmn.behaviorStates.enabled);
+			me.setReadOnly(false);
 			me.requisitionGrid.body.deselectAll();
 			var index = me.itemGrid.activeRowIndex;
 			if (index >= 0)
@@ -1468,7 +1650,12 @@ ii.Class({
 					$("#ShippingInfo").show();
 					me.anchorNext.display(ui.cmn.behaviorStates.disabled);
 					me.anchorBack.display(ui.cmn.behaviorStates.enabled);
-					me.anchorSave.display(ui.cmn.behaviorStates.enabled);
+					
+					if (me.status == "NewPORequisition" || me.requisitionGrid.data[me.lastSelectedRowIndex].statusType == 10)
+						me.anchorSave.display(ui.cmn.behaviorStates.enabled);
+					else
+						me.anchorSave.display(ui.cmn.behaviorStates.disabled);
+						
 					$("#Header").text("Shipping Information");
 					break;
 			}
@@ -1526,7 +1713,7 @@ ii.Class({
 					+ "<tr><td width=25%>Requisition Type:</td><td width=75% colspan=7>" + me.requisitionGrid.data[me.lastSelectedRowIndex].requisitionType + "</td></tr>"
 					+ "<tr><td width=25%>Urgency:</td><td width=75% colspan=7>" + me.requisitionGrid.data[me.lastSelectedRowIndex].urgency + "</td></tr>"
 					+ "<tr><td width=25%>Life Span:</td><td width=75% colspan=7>" + me.requisitionGrid.data[me.lastSelectedRowIndex].lifeSpan + "</td></tr>"					
-					+ "<tr><td colspan=8 align=center><b>PO Requisition Item Information</b></td></tr>"					
+					+ "<tr><td colspan=8 align=center><b>Item Information</b></td></tr>"					
 					+ "<tr><td width=95% colspan=8><table border=1 cellspacing=0 cellpadding=5 style='font-family: Verdana; font-size: 8pt;border-color:Gray;border-width:1px;border-style:Solid;border-collapse:collapse;'>"
 	                + "<tr><td width=30 align=center><b>#</b></td>"
 	                + "<td width=100 align=center><b>Item Number</b></td>"
@@ -1579,10 +1766,44 @@ ii.Class({
 			me.setStatus("Loaded");
 		},
 		
+		actionSendRequisitionItem: function() {
+			var args = ii.args(arguments,{});
+			var me = this;
+			
+			if (me.requisitionGrid.activeRowIndex == -1) {
+				alert('Please select PO Requisition to Send.')
+				return true;
+			}
+			
+			me.setStatus("Loading");
+			$("#messageToUser").text("Sending Requisition");
+			$("#pageLoading").fadeIn("slow");
+			me.status = "SendRequisition";
+			me.sendEmailNotification();
+		},
+		
+		actionResendRequisitionItem: function() {
+			var args = ii.args(arguments,{});
+			var me = this;
+			
+			if (me.requisitionGrid.activeRowIndex == -1) {
+				alert('Please select PO Requisition to Resend.')
+				return true;
+			}
+			
+			me.setStatus("Loading");
+			$("#messageToUser").text("Resending Requisition");
+			$("#pageLoading").fadeIn("slow");	 
+			me.status = "ResendRequisition";
+			me.sendEmailNotification();
+		},
+		
 		actionSaveItem: function() {
 			var args = ii.args(arguments,{});
 			var me = this;			
-			var item = [];			
+			var item = [];
+			var houseCode;
+			var statusType;			
 			
 			if (me.status == "NewPORequisition" || me.status == "EditPORequisition") {
 				me.validator.forceBlur();
@@ -1603,7 +1824,48 @@ ii.Class({
 				me.setStatus("Saving");			
 				$("#messageToUser").text("Saving");
 				$("#pageLoading").fadeIn("slow");
-			
+				
+				if (me.status == "NewPORequisition") {
+					statusType=1;
+					houseCode=parent.fin.appUI.houseCodeId;					
+				}					
+				else if (me.status == "EditPORequisition") {
+					statusType=me.requisitionGrid.data[rowIndex].statusType;
+					houseCode=me.requisitionGrid.data[rowIndex].houseCode;					
+				}
+				
+				item = new fin.pur.poRequisition.PORequisition(
+					me.poRequisitionId
+					, statusType
+					, houseCode
+					, (me.shippingJob.indexSelected == -1 ? 0 : me.houseCodeJobs[me.shippingJob.indexSelected].id)
+					, me.shippingAddress1.getValue()
+					, me.shippingAddress2.getValue()
+					, me.shippingCity.getValue()
+					, me.stateTypes[me.shippingState.indexSelected].id
+					, me.shippingZip.getValue()
+					, me.shippingPhone.getValue()
+					, me.shippingFax.getValue()
+					, me.requestorName.getValue()
+					, me.requestorEmail.getValue()
+					, me.requestedDate.lastBlurValue
+					, me.deliveryDate.lastBlurValue
+					, $('#VendorNameText').val()
+					, me.vendorAddress1.getValue()
+					, me.vendorAddress2.getValue()
+					, me.vendorCity.getValue()
+					, me.stateTypes[me.vendorState.indexSelected].id
+					, me.vendorZip.getValue()
+					, me.vendorContactName.getValue()
+					, me.vendorPhone.getValue()
+					, me.vendorEmail.getValue()
+					, me.reasonForRequest.getValue()
+					, $("input[name='RequisitionType']:checked").val()
+					, $("input[name='Urgency']:checked").val()
+					, $("input[name='LifeSpan']:checked").val()
+					, ""
+					);
+					
 				var xml = me.saveXmlBuildPORequisition(item);
 				
 				if (xml == "") 
@@ -1624,52 +1886,45 @@ ii.Class({
 		
 		saveXmlBuildPORequisition: function() {
 			var args = ii.args(arguments,{
-				item: {type: [fin.pur.poRequisition.PORequisition]}
+				item: {type: fin.pur.poRequisition.PORequisition}
 			});			
 			var me = this;
+			var item = args.item;
 			var xml = "";			
 						
 			var rowIndex = me.requisitionGrid.activeRowIndex;
 
 			if (me.status == "NewPORequisition" || me.status == "EditPORequisition") {
 				xml += '<purPORequisition';
-				xml += ' id="' + me.poRequisitionId + '"';
-				
-				if (me.status == "NewPORequisition")				
-					xml += ' houseCode="' + parent.fin.appUI.houseCodeId + '"';				
-				else if (me.status == "EditPORequisition")
-					xml += ' houseCode="' + me.requisitionGrid.data[rowIndex].houseCode + '"';				
-				
-				xml += ' houseCodeTitle="' + ui.cmn.text.xml.encode(me.company.getValue()) + '"';
-				xml += ' houseCodeJob="' + (me.shippingJob.indexSelected == -1 ? 0 : me.houseCodeJobs[me.shippingJob.indexSelected].id) + '"';
-				xml += ' houseCodeJobTitle="' + (me.shippingJob.indexSelected == -1 ? '' : me.houseCodeJobs[me.shippingJob.indexSelected].jobNumber + ' - ' + me.houseCodeJobs[me.shippingJob.indexSelected].jobTitle) + '"';
-				xml += ' shipToAddress1="' + ui.cmn.text.xml.encode(me.shippingAddress1.getValue()) + '"';
-				xml += ' shipToAddress2="' + ui.cmn.text.xml.encode(me.shippingAddress2.getValue()) + '"';
-				xml += ' shipToCity="' + ui.cmn.text.xml.encode(me.shippingCity.getValue()) + '"';
-				xml += ' shipToState="' + me.stateTypes[me.shippingState.indexSelected].id + '"';
-				xml += ' shipToStateTitle="' + me.stateTypes[me.shippingState.indexSelected].name + '"';
-				xml += ' shipToZip="' + me.shippingZip.getValue() + '"';
-				xml += ' shipToPhone="' + fin.cmn.text.mask.phone(me.shippingPhone.getValue(), true) + '"';
-				xml += ' shipToFax="' + fin.cmn.text.mask.phone(me.shippingFax.getValue(), true) + '"';
-				xml += ' requestorName="' + ui.cmn.text.xml.encode(me.requestorName.getValue()) + '"';
-				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(me.requestorEmail.getValue()) + '"';
-				xml += ' requestedDate="' + me.requestedDate.lastBlurValue + '"';
-				xml += ' deliveryDate="' + me.deliveryDate.lastBlurValue + '"';
-				xml += ' vendorTitle="' + ui.cmn.text.xml.encode($('#VendorNameText').val()) + '"';
-				xml += ' vendorAddressLine1="' + ui.cmn.text.xml.encode(me.vendorAddress1.getValue()) + '"';
-				xml += ' vendorAddressLine2="' + ui.cmn.text.xml.encode(me.vendorAddress2.getValue()) + '"';
-				xml += ' vendorCity="' + ui.cmn.text.xml.encode(me.vendorCity.getValue()) + '"';
-				xml += ' vendorStateType="' + me.stateTypes[me.vendorState.indexSelected].id + '"';
-				xml += ' vendorStateTitle="' + me.stateTypes[me.vendorState.indexSelected].name + '"';
-				xml += ' vendorZip="' + me.vendorZip.getValue() + '"';
-				xml += ' vendorContactName="' + ui.cmn.text.xml.encode(me.vendorContactName.getValue()) + '"';
-				xml += ' vendorPhoneNumber="' + fin.cmn.text.mask.phone(me.vendorPhone.getValue(), true) + '"';
-				xml += ' vendorEmail="' + me.vendorEmail.getValue() + '"';
-				xml += ' reasonForRequest="' + ui.cmn.text.xml.encode(me.reasonForRequest.getValue()) + '"';
-				xml += ' requisitionType="' + $("input[name='RequisitionType']:checked").val() + '"';
-				xml += ' urgency="' + $("input[name='Urgency']:checked").val() + '"';
-				xml += ' lifeSpan="' + $("input[name='LifeSpan']:checked").val() + '"';				
-				xml += ' chargeToPeriod=""';
+				xml += ' id="' + item.id + '"';
+				xml += ' statusType="' + item.statusType + '"';
+				xml += ' houseCode="' + item.houseCode + '"';				
+				xml += ' houseCodeJob="' + item.houseCodeJob + '"';				
+				xml += ' shipToAddress1="' + ui.cmn.text.xml.encode(item.shipToAddress1) + '"';
+				xml += ' shipToAddress2="' + ui.cmn.text.xml.encode(item.shipToAddress2) + '"';
+				xml += ' shipToCity="' + ui.cmn.text.xml.encode(item.shipToCity) + '"';
+				xml += ' shipToState="' + item.shipToState + '"';
+				xml += ' shipToZip="' + item.shipToZip + '"';
+				xml += ' shipToPhone="' + fin.cmn.text.mask.phone(item.shipToPhone, true) + '"';
+				xml += ' shipToFax="' + fin.cmn.text.mask.phone(item.shipToFax, true) + '"';
+				xml += ' requestorName="' + ui.cmn.text.xml.encode(item.requestorName) + '"';
+				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
+				xml += ' requestedDate="' + item.requestedDate + '"';
+				xml += ' deliveryDate="' + item.deliveryDate + '"';
+				xml += ' vendorTitle="' + ui.cmn.text.xml.encode(item.vendorTitle) + '"';
+				xml += ' vendorAddressLine1="' + ui.cmn.text.xml.encode(item.vendorAddressLine1) + '"';
+				xml += ' vendorAddressLine2="' + ui.cmn.text.xml.encode(item.vendorAddressLine2) + '"';
+				xml += ' vendorCity="' + ui.cmn.text.xml.encode(item.vendorCity) + '"';
+				xml += ' vendorStateType="' + item.vendorStateType + '"';
+				xml += ' vendorZip="' + item.vendorZip + '"';
+				xml += ' vendorContactName="' + ui.cmn.text.xml.encode(item.vendorContactName) + '"';
+				xml += ' vendorPhoneNumber="' + fin.cmn.text.mask.phone(item.vendorPhoneNumber, true) + '"';
+				xml += ' vendorEmail="' + item.vendorEmail + '"';
+				xml += ' reasonForRequest="' + ui.cmn.text.xml.encode(item.reasonForRequest) + '"';
+				xml += ' requisitionType="' + item.requisitionType + '"';
+				xml += ' urgency="' + item.urgency + '"';
+				xml += ' lifeSpan="' + item.lifeSpan + '"';				
+				xml += ' chargeToPeriod="' + item.chargeToPeriod + '"';	
 				xml += '/>';
 			}
 			
@@ -1677,12 +1932,10 @@ ii.Class({
 				if ($("#selectInputCheck" + index)[0].checked) {
 					xml += '<purPORequisitionDetail';
 					
-					if (me.status == "NewPORequisition") {
-						xml += ' id="0"';
-					}
-					else if (me.status == "EditPORequisition") {
-						xml += ' id="' +  me.itemGrid.data[index].id + '"';
-					}
+					if (me.status == "NewPORequisition")
+						xml += ' id="0"';					
+					else if (me.status == "EditPORequisition")
+						xml += ' id="' +  me.itemGrid.data[index].id + '"';					
 					
 					xml += ' poRequisitionId="' + me.poRequisitionId + '"';
 					xml += ' account="' + me.itemGrid.data[index].account.id + '"';
@@ -1697,10 +1950,81 @@ ii.Class({
 				}
 			} 
 			
-			xml += '<poRequisitionNotification';
-			xml += '/>';
-			
 			return xml;
+		},
+		
+		sendEmailNotification: function() {
+			var me = this;
+			var item = [];
+			var xml = "";
+			var itemIndex;
+			var vendorState = "";								
+			var company = "";
+			var shippingJob = "";
+			var shippingState = "";
+			var rowIndex = me.requisitionGrid.activeRowIndex;
+			
+			if (rowIndex >= 0) {
+				
+				itemIndex = ii.ajax.util.findIndexById(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorStateType.toString(), me.stateTypes);
+				if(itemIndex >= 0 && itemIndex != undefined)
+					vendorState = me.stateTypes[itemIndex].name;
+					
+				itemIndex = ii.ajax.util.findIndexById(me.requisitionGrid.data[me.lastSelectedRowIndex].houseCode.toString(), me.houseCodes);
+				if(itemIndex != undefined)
+					company = me.houseCodes[itemIndex].name;
+					
+				itemIndex = ii.ajax.util.findIndexById(me.requisitionGrid.data[me.lastSelectedRowIndex].houseCodeJob.toString(), me.houseCodeJobs);
+				if(itemIndex >= 0 && itemIndex != undefined)
+					shippingJob = me.houseCodeJobs[itemIndex].jobNumber + " - " + me.houseCodeJobs[itemIndex].jobTitle;
+					
+				itemIndex = ii.ajax.util.findIndexById(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToState.toString(), me.stateTypes);				
+				if(itemIndex >= 0 && itemIndex != undefined)
+					shippingState = me.stateTypes[itemIndex].name;
+					
+				xml += '<purPORequisitionEmailNotification';
+				xml += ' id="' + me.poRequisitionId + '"';
+				xml += ' statusType="2"';
+				xml += ' houseCodeTitle="' + ui.cmn.text.xml.encode(company) + '"';
+				xml += ' houseCodeJobTitle="' + shippingJob + '"';
+				xml += ' shipToAddress1="' + ui.cmn.text.xml.encode(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToAddress1) + '"';
+				xml += ' shipToAddress2="' + ui.cmn.text.xml.encode(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToAddress2) + '"';
+				xml += ' shipToCity="' + ui.cmn.text.xml.encode(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToCity) + '"';
+				xml += ' shipToStateTitle="' + shippingState + '"';
+				xml += ' shipToZip="' + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToZip + '"';
+				xml += ' shipToPhone="' + fin.cmn.text.mask.phone(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToPhone, true) + '"';
+				xml += ' shipToFax="' + fin.cmn.text.mask.phone(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToFax, true) + '"';
+				xml += ' requestorName="' + ui.cmn.text.xml.encode(me.requisitionGrid.data[me.lastSelectedRowIndex].requestorName) + '"';
+				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(me.requisitionGrid.data[me.lastSelectedRowIndex].requestorEmail) + '"';
+				xml += ' requestedDate="' + me.requisitionGrid.data[me.lastSelectedRowIndex].requestedDate + '"';
+				xml += ' deliveryDate="' + me.requisitionGrid.data[me.lastSelectedRowIndex].deliveryDate + '"';
+				xml += ' vendorTitle="' + ui.cmn.text.xml.encode(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle) + '"';
+				xml += ' vendorAddressLine1="' + ui.cmn.text.xml.encode(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorAddressLine1) + '"';
+				xml += ' vendorAddressLine2="' + ui.cmn.text.xml.encode(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorAddressLine2) + '"';
+				xml += ' vendorCity="' + ui.cmn.text.xml.encode(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorCity) + '"';
+				xml += ' vendorStateTitle="' + vendorState + '"';
+				xml += ' vendorZip="' + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToZip + '"';
+				xml += ' vendorContactName="' + ui.cmn.text.xml.encode(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorContactName) + '"';
+				xml += ' vendorPhoneNumber="' + fin.cmn.text.mask.phone(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorPhoneNumber, true) + '"';
+				xml += ' vendorEmail="' + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorEmail + '"';
+				xml += ' reasonForRequest="' + ui.cmn.text.xml.encode(me.requisitionGrid.data[me.lastSelectedRowIndex].reasonForRequest) + '"';
+				xml += ' requisitionType="' + me.requisitionGrid.data[me.lastSelectedRowIndex].requisitionType + '"';
+				xml += ' urgency="' + me.requisitionGrid.data[me.lastSelectedRowIndex].urgency + '"';
+				xml += ' lifeSpan="' + me.requisitionGrid.data[me.lastSelectedRowIndex].lifeSpan + '"';				
+				xml += ' chargeToPeriod=""';
+				xml += ' action="' + me.status + '"';
+				xml += '/>';
+			
+				// Send the object back to the server as a transaction
+				me.transactionMonitor.commit({
+					transactionType: "itemUpdate",
+					transactionXml: xml,
+					responseFunction: me.saveResponse,
+					referenceData: {me: me, item: item}
+				});
+
+				return true;		
+			}
 		},
 		
 		/* @iiDoc {Method}
@@ -1724,23 +2048,30 @@ ii.Class({
 
 							var id = parseInt($(this).attr("id"), 10);
 							var housecode = "";
+							var statusType;
 							
-							 if (me.status == "NewPORequisition")				
-								housecode = parent.fin.appUI.houseCodeId;
-							 else if (me.status == "EditPORequisition") 
-								housecode = me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].houseCode;
+							 if (me.status == "NewPORequisition") {
+							 	housecode = parent.fin.appUI.houseCodeId;
+								statusType = "1";
+							 }
+							 else if (me.status == "EditPORequisition") {
+							 	housecode = me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].houseCode;
+								statusType = me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].statusType;
+							 }
+							 else if (me.status == "SendRequisition" || me.status == "ResendRequisition") {
+							 	housecode = me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].houseCode;
+								statusType = "2";
+							 }
 				
 							item = new fin.pur.poRequisition.PORequisition(
 								id
+								, statusType
 								, housecode
-								, me.company.getValue()
 								, (me.shippingJob.indexSelected == -1 ? 0 : me.houseCodeJobs[me.shippingJob.indexSelected].id)
-								, (me.shippingJob.indexSelected == -1 ? '' : me.houseCodeJobs[me.shippingJob.indexSelected].jobNumber + ' - ' + me.houseCodeJobs[me.shippingJob.indexSelected].jobTitle)
 								, me.shippingAddress1.getValue()
 								, me.shippingAddress2.getValue()
 								, me.shippingCity.getValue()
 								, me.stateTypes[me.shippingState.indexSelected].id
-								, me.stateTypes[me.shippingState.indexSelected].name
 								, me.shippingZip.getValue()
 								, me.shippingPhone.getValue()
 								, me.shippingFax.getValue()
@@ -1753,7 +2084,6 @@ ii.Class({
 								, me.vendorAddress2.getValue()
 								, me.vendorCity.getValue()
 								, me.stateTypes[me.vendorState.indexSelected].id
-								, me.stateTypes[me.vendorState.indexSelected].name
 								, me.vendorZip.getValue()
 								, me.vendorContactName.getValue()
 								, me.vendorPhone.getValue()
@@ -1787,7 +2117,7 @@ ii.Class({
 			}
 			
 			$("#pageLoading").fadeOut("slow");
-		},		
+		},	
 	} 
 });
 

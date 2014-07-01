@@ -39,6 +39,16 @@
 	padding-top: 5px;
 }
 
+.labelStatus {
+	float: left;
+	width: 60px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 3px 0px 0px 10px;
+}
+
 .labelTextArea {
 	width: 160px;
 	float: left;
@@ -75,6 +85,15 @@
 	margin-bottom: 1px;	
 }
 
+#InputTextStatus
+{
+	float: left; 
+	width: 120px; 
+	padding-top: 2px;
+	padding-bottom: 1px;
+	padding-right: 5px;	
+}
+
 #ShippingInfo {
 	height: 385px;
 	border: solid #AAAAAA thin;
@@ -107,28 +126,49 @@
 	padding-left: 10px;
 }
 
+#SearchButtonStatus
+{
+	float: left;
+	width: 85px;	
+	padding-top: 1px;
+	padding-bottom: 1px;
+}
+
 #AnchorNew {
 	float: left;
 	width: 68px;
-	margin-right: 5px;
-	padding-left: 20px;
-	padding-top: 5px;
+	margin: 5px 0px 5px 5px;
+	padding-top: 0px;
+}
+
+#AnchorView {
+	float: left;
+	width: 68px;
+	margin: 5px 0px 5px 5px;
 }
 
 #AnchorEdit {
 	float: left;
 	width: 68px;
-	margin-right: 0px;
-	padding-left: 0px;
-	padding-top: 5px;
+	margin: 5px 0px 5px 5px;
+}
+
+#AnchorSendRequisition {
+	float: left;
+	width: 144px;
+	margin: 5px 0px 5px 0px;
+}
+
+#AnchorResendRequisition {
+	float: left;
+	width: 160px;
+	margin: 5px 0px 5px 0px;
 }
 
 #AnchorPrint {
 	float: left;
 	width: 68px;
-	margin-right: 5px;
-	padding-left: 0px;
-	padding-top: 5px;
+	margin: 5px 0px 5px 5px;
 }
 
 #anchorAlign {
@@ -171,6 +211,17 @@
 
 #ItemGridInfo {	
 	padding: 0px 10px 0px 10px;
+}
+
+#LabelStatus
+{	
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: bold;
+	color: #032D23;
+	padding-top: 5px;
+	padding-right: 5px;	
 }
 
 #LabelItemLeft {
