@@ -137,38 +137,38 @@
 #AnchorNew {
 	float: left;
 	width: 68px;
-	margin: 5px 0px 5px 5px;
+	margin: 5px 0px 10px 10px;
 	padding-top: 0px;
 }
 
 #AnchorView {
 	float: left;
 	width: 68px;
-	margin: 5px 0px 5px 5px;
+	margin: 5px 0px 10px 10px;
 }
 
 #AnchorEdit {
 	float: left;
 	width: 68px;
-	margin: 5px 0px 5px 5px;
+	margin: 5px 0px 10px 10px;
 }
 
 #AnchorSendRequisition {
 	float: left;
-	width: 144px;
-	margin: 5px 0px 5px 0px;
+	width: 148px;
+	margin: 5px 0px 10px 5px;
 }
 
 #AnchorResendRequisition {
 	float: left;
-	width: 160px;
-	margin: 5px 0px 5px 0px;
+	width: 164px;
+	margin: 5px 0px 10px 5px;
 }
 
 #AnchorPrint {
 	float: left;
 	width: 68px;
-	margin: 5px 0px 5px 5px;
+	margin: 5px 0px 10px 10px;
 }
 
 #anchorAlign {

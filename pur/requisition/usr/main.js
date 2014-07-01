@@ -737,6 +737,7 @@ ii.Class({
 			$("#VendorName").bind("keydown", me, me.actionVendorSearch);
 			$("#AnchorView").hide();
 			$("#AnchorEdit").hide();
+			$("#AnchorPrint").hide();
 			$("#AnchorResendRequisition").hide();
 			$("#AnchorSendRequisition").hide();			
 			me.setTabIndexes();
@@ -1189,7 +1190,9 @@ ii.Class({
 					}
 					
 					$("#AnchorEdit").show();
-					$("#AnchorView").hide();					
+					$("#AnchorView").hide();
+					$("#VendorInfo").show();
+					$("#CategoryInfo").show();					
 					me.anchorSave.display(ui.cmn.behaviorStates.enabled);
 					me.setReadOnly(false);															
 				}
@@ -1205,10 +1208,13 @@ ii.Class({
 					
 					$("#AnchorEdit").hide();
 					$("#AnchorView").show();
+					$("#VendorInfo").hide();
+					$("#CategoryInfo").hide();
 					me.anchorSave.display(ui.cmn.behaviorStates.disabled);
 					me.setReadOnly(true);
 				}
-					
+				
+				$("#AnchorPrint").show();	
 				me.setLoadCount();
 				me.poRequisitionDetailStore.reset();
 				me.poRequisitionDetailStore.fetch("userId:[user],pORequisitionId:" + me.poRequisitionId, me.poRequisitonDetailsLoaded, me);												
@@ -1498,6 +1504,8 @@ ii.Class({
 			me.shippingPhone.setValue("");
 			me.shippingFax.setValue("");			
 			
+			$("#VendorInfo").show();
+			$("#CategoryInfo").show();
 			loadPopup();
 			me.poRequisitionId = 0;
 			me.status = "NewPORequisition";
