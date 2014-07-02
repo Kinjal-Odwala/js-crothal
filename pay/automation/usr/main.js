@@ -39,6 +39,11 @@ ii.Class({
 			me.loadCount = 0;
 			me.validateExport = false;
 			me.showDetailReport = false;
+			me.autoProcess = false;
+			me.autoProcessStep = "";
+			me.detailRecordCountFinalize = 0;
+			me.detailTotalHoursFinalize = 0;
+			me.detailTotalAmountFinalize = 0;
 			me.cellColorValid = "";
 			me.cellColorInvalid = "red";
 			me.employeeNumberCache = [];
@@ -425,6 +430,32 @@ ii.Class({
 
 		ePayBatchesLoaded: function(me, activeId) {
 
+			if (me.autoProcess) {
+				var varianceTotalCount = me.detailRecordCountFinalize - parseInt(me.ePayBatches[0].batchRecordCount, 10);
+				var varianceTotalHours = me.detailTotalHoursFinalize - parseFloat(me.ePayBatches[0].batchTotalHours) - parseFloat(me.ePayBatches[0].totalHours);
+				var varianceTotalAmount = me.detailTotalAmountFinalize - parseFloat(me.ePayBatches[0].batchTotalAmount);
+	
+				if (varianceTotalCount == 0 && varianceTotalHours == 0 && varianceTotalAmount == 0
+					&& me.ePayBatches[0].detailRecordCount == 0
+					&& parseFloat(me.ePayBatches[0].detailTotalHours) == 0
+					&& parseFloat(me.ePayBatches[0].detailTotalAmount) == 0) {
+						me.autoProcessStep = "Finalize";
+						me.actionSaveItem("Finalize");
+				}
+				else {
+					var index = me.ePayBatchGrid.activeRowIndex;
+					me.ePayBatchList.splice(index, 1);
+					me.ePayBatchGrid.setData(me.ePayBatchList);
+					me.autoProcess = false;
+					me.autoProcessStep = "";
+					me.modified(false);
+					me.setStatus("Saved");
+					$("#pageLoading").fadeOut("slow");
+				}
+
+				return;
+			}
+			
 			if (me.showDetailReport && (me.action == "Finalize" || me.action == "Export") && me.ePayBatchGrid.activeRowIndex != -1) {
 				var index = me.ePayBatchGrid.activeRowIndex;
 				var varianceTotalCount = parseInt(me.ePayBatchGrid.data[index].detailRecordCount, 10) - parseInt(me.ePayBatches[0].batchRecordCount, 10);
@@ -455,7 +486,7 @@ ii.Class({
 						me.ePayBatchGrid.data[index].valid = true;
 						me.ePayBatchGrid.body.renderRow(index, index);
 						me.anchorFinalize.display(ui.cmn.behaviorStates.enabled);
-					}
+				}
 				else {
 					me.ePayBatchGrid.body.renderRow(index, index);
 					me.anchorFinalize.display(ui.cmn.behaviorStates.disabled);
@@ -1190,7 +1221,7 @@ ii.Class({
  
                 success: function(xml) {
                     me.workOrderNumberCache[workOrderNumber].loaded = true;
-		    
+
 		            if ($(xml).find("item").length) {
 		                //the house code is valid
 		                $(xml).find('item').each(function() {
@@ -1292,6 +1323,8 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 
+			me.autoProcess = true;
+			me.autoProcessStep = "Import";
 			me.actionSaveItem("Import");
 		},
 		
@@ -1461,9 +1494,36 @@ ii.Class({
 						me.anchorExport.display(ui.cmn.behaviorStates.disabled);
 					}
 					else {
-						var index = me.ePayBatchGrid.activeRowIndex;
-						me.ePayBatchList.splice(index, 1);
-						me.ePayBatchGrid.setData(me.ePayBatchList);
+						if (me.autoProcess) {
+							$(args.xmlNode).find("*").each(function() {
+								switch (this.tagName) {
+									case "payBatch":
+										if (me.autoProcessStep == "Import" && $(this).attr("valid") == "true") {
+											me.autoProcessStep = "Reconcile";
+											me.actionSaveItem("Reconcile");
+										}
+										else if (me.autoProcessStep == "Reconcile") {
+											me.detailRecordCountFinalize = parseInt($(this).attr("detailRecordCount"), 10);
+											me.detailTotalHoursFinalize = parseFloat($(this).attr("detailTotalHours"));
+											me.detailTotalAmountFinalize = parseFloat($(this).attr("detailTotalAmount"));
+											me.ePayBatchStore.fetch("userId:[user],status:FinalizeError,batchId:" + me.ePayBatchGrid.data[me.ePayBatchGrid.activeRowIndex].batchId, me.ePayBatchesLoaded, me);
+										}
+										else {
+											var index = me.ePayBatchGrid.activeRowIndex;
+											me.ePayBatchList.splice(index, 1);
+											me.ePayBatchGrid.setData(me.ePayBatchList);
+											me.autoProcess = false;
+											me.autoProcessStep = "";
+										}
+									break;
+								}
+							});
+						}
+						else {
+							var index = me.ePayBatchGrid.activeRowIndex;
+							me.ePayBatchList.splice(index, 1);
+							me.ePayBatchGrid.setData(me.ePayBatchList);
+						}
 					}
 
 					if (me.action == "Finalize" || me.action == "Export") {
@@ -1471,8 +1531,11 @@ ii.Class({
 						me.ePayBatchGrid.setHeight($(window).height() - 130);
 					}
 				}
-				me.modified(false);
-				me.setStatus("Saved");
+				
+				if (!me.autoProcess) {
+					me.modified(false);
+					me.setStatus("Saved");
+				}
 			}
 			else {
 				me.setStatus("Error");
@@ -1481,7 +1544,7 @@ ii.Class({
 
 			if (me.status == "CancelEpayBatchRecord" || me.status == "SaveEpayBatchRecord")
 				$("#popupLoading").fadeOut("slow");
-			else
+			else if (!me.autoProcess)
 				$("#pageLoading").fadeOut("slow");
 		},
 		
