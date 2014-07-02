@@ -1,4 +1,4 @@
-﻿window.weblight_container = ['<div style="margin: 10px"><div class="header">AP Search</div><div style="clear:both;"></div><div id="itemStatusDiv"><div id="itemStatusImage" class="itemStatusImage"></div><div id="itemModifiedImage" class="itemModifiedImage"></div><div id="itemStatusText">Loading, please wait...</div></div><div style="clear:both;"></div><div><table><tr><td class="labelText">House Code:</td><td class="labelText">Vendor:</td><td class="labelText">Invoice #:</td><td class="labelText">GL Start Date:</td><td class="labelText">GL End Date:</td><td class="labelText">Check Date:</td><td class="labelText">Check Number:</td></tr><tr><td><div id="HouseCode" class="textArea"></div></td><td><div id="Vendor" class="textArea"></div></td><td><div id="InvoiceNumber" class="textArea"></div></td><td><div id="GLStartDate" class="textArea"></div></td><td><div id="GLEndDate" class="textArea"></div></td><td><div id="CheckDate" class="textArea"></div></td><td><div id="CheckNumber" class="textArea"></div></td></tr><tr height="35px"><td align="center"><div id="Search"></div></td><td><div id="Export"></div></td></tr></table></div><div style="clear:both; height:10px;"></div><div id="APInvoiceGrid"></div></div><div id="divFrame" style="height: 0px;"><iframe id="iFrameUpload" src="/net/crothall/chimes/fin/app/act/FileUpload.aspx" frameborder="0" width="100" height="0"></iframe></div>'];
+﻿window.weblight_container = ['<div style="margin: 10px"><div class="header">AP Search</div><div style="clear:both;"></div><div id="itemStatusDiv"><div id="itemStatusImage" class="itemStatusImage"></div><div id="itemModifiedImage" class="itemModifiedImage"></div><div id="itemStatusText">Loading, please wait...</div></div><div style="clear:both;"></div><div><table><tr><td class="labelText">House Code:</td><td class="labelText">Vendor:</td><td class="labelText">Invoice #:</td><td class="labelText">GL Start Date:</td><td class="labelText">GL End Date:</td><td class="labelText">Check Date:</td><td class="labelText">Check Number:</td><td class="labelText">PO Number:</td></tr><tr><td><div id="HouseCode" class="textArea"></div></td><td><div id="Vendor" class="textArea"></div></td><td><div id="InvoiceNumber" class="textArea"></div></td><td><div id="GLStartDate" class="textArea"></div></td><td><div id="GLEndDate" class="textArea"></div></td><td><div id="CheckDate" class="textArea"></div></td><td><div id="CheckNumber" class="textArea"></div></td><td><div id="PONumber" class="textArea"></div></td></tr><tr height="35px"><td align="center"><div id="Search"></div></td><td><div id="Export"></div></td></tr></table></div><div style="clear:both; height:10px;"></div><div id="APInvoiceGrid"></div></div><div id="divFrame" style="height: 0px;"><iframe id="iFrameUpload" src="/net/crothall/chimes/fin/app/act/FileUpload.aspx" frameborder="0" width="100" height="0"></iframe></div>'];
 
 /**
 * Copyright (c) 2009 Sergiy Kovalchuk (serg472@gmail.com)
@@ -356,6 +356,7 @@ Rev.data.apInvoiceStore = WebLight.extend(Rev.data.XmlStore, {
 	glEndDate: '',
 	checkDate: '',
 	checkNumber: '',
+	poNumber: '',
 	totalRecords: 0,
 	
     getCriteria: function() {
@@ -367,6 +368,7 @@ Rev.data.apInvoiceStore = WebLight.extend(Rev.data.XmlStore, {
 			glEndDate: this.glEndDate,
 			checkDate: this.checkDate,
 			checkNumber: this.checkNumber,
+			poNumber: this.poNumber,
 			startPoint: this.baseParams.start,
 			maximumRows: this.baseParams.limit,
 			totalRecords: this.totalRecords
@@ -458,6 +460,7 @@ Rev.data.apExportStore = WebLight.extend(Rev.data.XmlStore, {
 	glEndDate: '',
 	checkDate: '',
 	checkNumber: '',
+	poNumber: '',
 
     getCriteria: function() {
         return {
@@ -468,11 +471,12 @@ Rev.data.apExportStore = WebLight.extend(Rev.data.XmlStore, {
 			glEndDate: this.glEndDate,
 			checkDate: this.checkDate,
 			checkNumber: this.checkNumber,
+			poNumber: this.poNumber,
 			exportType: 'apInvoices'
         };
     },
 
-    load: function(houseCode, vendor, invoiceNumber, glStartDate, glEndDate, checkDate, checkNumber) {
+    load: function(houseCode, vendor, invoiceNumber, glStartDate, glEndDate, checkDate, checkNumber, poNumber) {
         var me = this;
 
         me.houseCode = houseCode;
@@ -482,6 +486,7 @@ Rev.data.apExportStore = WebLight.extend(Rev.data.XmlStore, {
 		me.glEndDate = glEndDate;
 		me.checkDate = checkDate;
 		me.checkNumber = checkNumber;
+		me.poNumber = poNumber;
 
         Rev.data.apExportStore.superclass.load.call(this);
     },
@@ -611,7 +616,7 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 			mode: 'local',
 			forceSelection: true,
 			store: me.apHouseCodeStore,
-			width: 160,
+			width: 140,
 			listeners: {
               	specialkey: function(f, e) {
                 	if (e.getKey() == e.ENTER)
@@ -621,7 +626,7 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 		});
 		
 		me.vendor = new Ext.form.TextField({ name: 'vendor',
-			width: 160,
+			width: 140,
             listeners: {
               	specialkey: function(f, e) {
                 	if (e.getKey() == e.ENTER)
@@ -631,7 +636,7 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 		});
 		
 		me.invoiceNumber = new Ext.form.TextField({ name: 'invoiceNumber',
-			width: 160,
+			width: 140,
             listeners: {
               	specialkey: function(f, e) {
                 	if (e.getKey() == e.ENTER)
@@ -641,7 +646,7 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 		});
 		
 		me.glStartDate = new Ext.form.DateField({ name: 'glStartDate',
-			width: 160,
+			width: 140,
             listeners: {
               	specialkey: function(f, e) {
                 	if (e.getKey() == e.ENTER)
@@ -651,7 +656,7 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 		});
 		
 		me.glEndDate = new Ext.form.DateField({ name: 'glEndDate',
-			width: 160,
+			width: 140,
             listeners: {
               	specialkey: function(f, e) {
                 	if (e.getKey() == e.ENTER)
@@ -661,7 +666,7 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 		});
 		
 		me.checkDate = new Ext.form.DateField({ name: 'checkDate',
-			width: 160,
+			width: 140,
             listeners: {
               	specialkey: function(f, e) {
                 	if (e.getKey() == e.ENTER)
@@ -671,7 +676,17 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 		});
 		
 		me.checkNumber = new Ext.form.TextField({ name: 'checkNumber',
-			width: 160,
+			width: 140,
+            listeners: {
+              	specialkey: function(f, e) {
+                	if (e.getKey() == e.ENTER)
+                    	me.loadAPInvoices();
+              	}
+            }
+		});
+		
+		me.poNumber = new Ext.form.TextField({ name: 'poNumber',
+			width: 140,
             listeners: {
               	specialkey: function(f, e) {
                 	if (e.getKey() == e.ENTER)
@@ -701,6 +716,7 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 		me.addChildControl(me.glEndDate, 'GLEndDate');
 		me.addChildControl(me.checkDate, 'CheckDate');
 		me.addChildControl(me.checkNumber, 'CheckNumber');
+		me.addChildControl(me.poNumber, 'PONumber');
         me.addChildControl(me.searchButton, 'Search');
 		me.addChildControl(me.exportButton, 'Export');
 	},
@@ -714,9 +730,10 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 		var glEndDate = Ext.util.Format.date(me.glEndDate.getValue(), 'm/d/y');
 		var checkDate = Ext.util.Format.date(me.checkDate.getValue(), 'm/d/y');
 		var checkNumber = me.checkNumber.getValue();
+		var poNumber = me.poNumber.getValue();
 
-		if (houseCode == "" && vendor == "" && invoiceNumber == "" && glStartDate == "" && checkDate == "" && checkNumber == "") {
-			alert("Please enter search criteria: House Code, Vendor, Invoice # or GL Start Date & GL End Date or Check Date or Check Number.");
+		if (houseCode == "" && vendor == "" && invoiceNumber == "" && glStartDate == "" && checkDate == "" && checkNumber == "" && poNumber == "") {
+			alert("Please enter search criteria: House Code, Vendor, Invoice # or GL Start Date & GL End Date or Check Date or Check Number or PO Number.");
 			return;
 		}
 		else if (me.glStartDate.activeError != undefined || me.glEndDate.activeError != undefined || me.checkDate.activeError != undefined) {
@@ -736,11 +753,12 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 		me.apInvoiceStore.glEndDate = glEndDate;
 		me.apInvoiceStore.checkDate = checkDate;
 		me.apInvoiceStore.checkNumber = checkNumber;
+		me.apInvoiceStore.poNumber = poNumber;
 
 		if (action == "loadGrid")
 			me.apInvoiceStore.load({ params: { start: 0, limit: 50 }});
 		else
-			me.apExportStore.load(houseCode, vendor, invoiceNumber, glStartDate, glEndDate, checkDate, checkNumber);
+			me.apExportStore.load(houseCode, vendor, invoiceNumber, glStartDate, glEndDate, checkDate, checkNumber, poNumber);
 	},
 
 	loadAPInvoices: function() {
