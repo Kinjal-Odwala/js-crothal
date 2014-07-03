@@ -246,10 +246,10 @@ ii.Class({
 				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});
 			
-			me.requisitionGrid.addColumn("requestorName", "requestorName", "Requestor Name", "Requestor Name", 250);
-			me.requisitionGrid.addColumn("requestorEmail", "requestorEmail", "Requestor Email", "Requestor Email", null);		
+			me.requisitionGrid.addColumn("requestorName", "requestorName", "Requestor Name", "Requestor Name", 250);				
 			me.requisitionGrid.addColumn("requestedDate ", "requestedDate", "Requested Date", "Requested Date", 150);
 			me.requisitionGrid.addColumn("deliveryDate", "deliveryDate", "Delivery Date", "Delivery Date", 150);
+			me.requisitionGrid.addColumn("vendorTitle", "vendorTitle", "Vendor Title", "Vendor Title", null);
 			me.requisitionGrid.addColumn("statusType", "statusType", "Status", "Status", 100, function(statusType) {
 				if (statusType == 1)
 					return "Open";
@@ -1659,7 +1659,7 @@ ii.Class({
 					me.anchorNext.display(ui.cmn.behaviorStates.disabled);
 					me.anchorBack.display(ui.cmn.behaviorStates.enabled);
 					
-					if (me.status == "NewPORequisition" || me.requisitionGrid.data[me.lastSelectedRowIndex].statusType == 10)
+					if (me.status == "NewPORequisition" || me.requisitionGrid.data[me.lastSelectedRowIndex].statusType == 10 || me.requisitionGrid.data[me.lastSelectedRowIndex].statusType == 1)
 						me.anchorSave.display(ui.cmn.behaviorStates.enabled);
 					else
 						me.anchorSave.display(ui.cmn.behaviorStates.disabled);
@@ -2069,39 +2069,82 @@ ii.Class({
 							 else if (me.status == "SendRequisition" || me.status == "ResendRequisition") {
 							 	housecode = me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].houseCode;
 								statusType = "2";
+								
+								item = new fin.pur.poRequisition.PORequisition(
+									id
+									, statusType
+									, housecode
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].houseCodeJob
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].shipToAddress1
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].shipToAddress2
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].shipToCity
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].shipToState
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].shipToZip
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].shipToPhone
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].shipToFax
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].requestorName
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].requestorEmail
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].requestedDate
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].deliveryDate
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].vendorTitle
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].vendorAddressLine1
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].vendorAddressLine2
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].vendorCity
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].vendorStateType
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].vendorZip
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].vendorContactName
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].vendorPhoneNumber
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].vendorEmail
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].reasonForRequest
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].requisitionType
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].urgency
+									, me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].lifeSpan
+									, ""
+								);
+								
+								$("#AnchorResendRequisition").show();
+								$("#AnchorSendRequisition").hide();
+								$("#AnchorEdit").hide();
+								$("#AnchorView").show();
+								$("#VendorInfo").hide();
+								$("#CategoryInfo").hide();
+								me.anchorSave.display(ui.cmn.behaviorStates.disabled);
+								me.setReadOnly(true);
 							 }
-				
-							item = new fin.pur.poRequisition.PORequisition(
-								id
-								, statusType
-								, housecode
-								, (me.shippingJob.indexSelected == -1 ? 0 : me.houseCodeJobs[me.shippingJob.indexSelected].id)
-								, me.shippingAddress1.getValue()
-								, me.shippingAddress2.getValue()
-								, me.shippingCity.getValue()
-								, me.stateTypes[me.shippingState.indexSelected].id
-								, me.shippingZip.getValue()
-								, me.shippingPhone.getValue()
-								, me.shippingFax.getValue()
-								, me.requestorName.getValue()
-								, me.requestorEmail.getValue()
-								, me.requestedDate.lastBlurValue
-								, me.deliveryDate.lastBlurValue
-								, $('#VendorNameText').val()
-								, me.vendorAddress1.getValue()
-								, me.vendorAddress2.getValue()
-								, me.vendorCity.getValue()
-								, me.stateTypes[me.vendorState.indexSelected].id
-								, me.vendorZip.getValue()
-								, me.vendorContactName.getValue()
-								, me.vendorPhone.getValue()
-								, me.vendorEmail.getValue()
-								, me.reasonForRequest.getValue()
-								, $("input[name='RequisitionType']:checked").val()
-								, $("input[name='Urgency']:checked").val()
-								, $("input[name='LifeSpan']:checked").val()
-								, ""
-							);
+							
+							if (me.status == "NewPORequisition" || me.status == "EditPORequisition") {
+								item = new fin.pur.poRequisition.PORequisition(
+									id
+									, statusType
+									, housecode
+									, (me.shippingJob.indexSelected == -1 ? 0 : me.houseCodeJobs[me.shippingJob.indexSelected].id)
+									, me.shippingAddress1.getValue()
+									, me.shippingAddress2.getValue()
+									, me.shippingCity.getValue()
+									, me.stateTypes[me.shippingState.indexSelected].id
+									, me.shippingZip.getValue()
+									, me.shippingPhone.getValue()
+									, me.shippingFax.getValue()
+									, me.requestorName.getValue()
+									, me.requestorEmail.getValue()
+									, me.requestedDate.lastBlurValue
+									, me.deliveryDate.lastBlurValue
+									, $('#VendorNameText').val()
+									, me.vendorAddress1.getValue()
+									, me.vendorAddress2.getValue()
+									, me.vendorCity.getValue()
+									, me.stateTypes[me.vendorState.indexSelected].id
+									, me.vendorZip.getValue()
+									, me.vendorContactName.getValue()
+									, me.vendorPhone.getValue()
+									, me.vendorEmail.getValue()
+									, me.reasonForRequest.getValue()
+									, $("input[name='RequisitionType']:checked").val()
+									, $("input[name='Urgency']:checked").val()
+									, $("input[name='LifeSpan']:checked").val()
+									, ""
+								);
+							}
 
 							if (me.requisitionGrid.activeRowIndex < 0 && me.status == "NewPORequisition") {
 								me.poRequisitions.push(item);
@@ -2111,7 +2154,8 @@ ii.Class({
 							else if (me.requisitionGrid.activeRowIndex >= 0) {
 								me.poRequisitions[me.lastSelectedRowIndex] = item;
 								me.requisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
-							}							
+							}
+							
 							break;
 					}
 				});
