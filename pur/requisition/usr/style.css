@@ -108,6 +108,8 @@
 	border-width: 1px;
 	margin: 10px;
 	padding: 10px 10px 3px 12px;
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 	
 #contentAreasContainerLeft {
