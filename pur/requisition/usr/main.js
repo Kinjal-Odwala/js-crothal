@@ -34,8 +34,6 @@ ii.Class({
 			me.catalogId = 0;
 			me.lastSelectedRowIndex = -1;		
 			me.status = "";
-			me.checkStatus = false;
-			me.reloadGrid = false;
 			me.users = [];
 			me.wizardCount = 0;
 			me.loadCount = 0;
@@ -64,6 +62,7 @@ ii.Class({
 				me);
 
 			me.defineFormControls();
+			me.itemGrid.allowAdds = false;
 			me.configureCommunications();
 			me.statusesLoaded();
 			me.setStatus("Loading");
@@ -493,7 +492,7 @@ ii.Class({
 			
 			me.itemGrid = new ui.ctl.Grid({
 				id: "ItemGrid",
-				allowAdds: true,
+				allowAdds: false,
 				createNewFunction: fin.pur.poRequisition.Item,
 				selectFunction: function(index){
 					if (me.itemGrid.rows[index].getElement("rowNumber").innerHTML == "Add") 
@@ -1194,7 +1193,8 @@ ii.Class({
 					$("#VendorInfo").show();
 					$("#CategoryInfo").show();					
 					me.anchorSave.display(ui.cmn.behaviorStates.enabled);
-					me.setReadOnly(false);															
+					me.setReadOnly(false);
+					me.itemGrid.allowAdds = true;															
 				}
 				else {
 					if (me.requisitionGrid.data[index].statusType == 2) {
@@ -1212,6 +1212,7 @@ ii.Class({
 					$("#CategoryInfo").hide();
 					me.anchorSave.display(ui.cmn.behaviorStates.disabled);
 					me.setReadOnly(true);
+					me.itemGrid.allowAdds = false;
 				}
 				
 				$("#AnchorPrint").show();	
@@ -1459,11 +1460,12 @@ ii.Class({
 			
 			me.anchorSave.display(ui.cmn.behaviorStates.enabled);
 			me.setReadOnly(false);
+			me.itemGrid.allowAdds = true;
 			me.requisitionGrid.body.deselectAll();
 			var index = me.itemGrid.activeRowIndex;
 			if (index >= 0)
 				me.itemGrid.body.deselect(index, true);		
-			me.itemGrid.setData([]);
+			me.itemGrid.setData([]);			
 			//me.requestorName.setValue(me.users[0].firstName + " " + me.users[0].lastName + " [" + me.session.propertyGet("userName") + "]");
 			me.requestorName.setValue(me.users[0].firstName + " " + me.users[0].lastName + "");
 			me.requestorEmail.setValue(me.users[0].email);
@@ -1532,8 +1534,8 @@ ii.Class({
 			
 			loadPopup();
 			$("#popupMessageToUser").text("Loading");
-			$("#popupLoading").show();			
-			
+			$("#popupLoading").show();
+					
 			if (me.requisitionGrid.data[me.lastSelectedRowIndex] != undefined) {
 				
 				me.requestorName.setValue(me.requisitionGrid.data[me.lastSelectedRowIndex].requestorName);
@@ -1639,7 +1641,7 @@ ii.Class({
 					me.anchorNext.display(ui.cmn.behaviorStates.enabled);
 					me.anchorBack.display(ui.cmn.behaviorStates.disabled);
 					me.anchorSave.display(ui.cmn.behaviorStates.disabled);
-					$("#Header").text("General Information");
+					$("#Header").text("General Information");					
 					break;
 					
 				case 2:
@@ -1649,7 +1651,7 @@ ii.Class({
 					me.anchorNext.display(ui.cmn.behaviorStates.enabled);
 					me.anchorBack.display(ui.cmn.behaviorStates.enabled);
 					me.anchorSave.display(ui.cmn.behaviorStates.disabled);
-					$("#Header").text("Item Information");
+					$("#Header").text("Item Information");					
 					break;
 					
 				case 3:	
@@ -1812,6 +1814,7 @@ ii.Class({
 			var item = [];
 			var houseCode;
 			var statusType;			
+			var rowIndex = me.requisitionGrid.activeRowIndex;
 			
 			if (me.status == "NewPORequisition" || me.status == "EditPORequisition") {
 				me.validator.forceBlur();
@@ -1898,9 +1901,7 @@ ii.Class({
 			});			
 			var me = this;
 			var item = args.item;
-			var xml = "";			
-						
-			var rowIndex = me.requisitionGrid.activeRowIndex;
+			var xml = "";
 
 			if (me.status == "NewPORequisition" || me.status == "EditPORequisition") {
 				xml += '<purPORequisition';
@@ -2109,7 +2110,7 @@ ii.Class({
 								$("#VendorInfo").hide();
 								$("#CategoryInfo").hide();
 								me.anchorSave.display(ui.cmn.behaviorStates.disabled);
-								me.setReadOnly(true);
+								me.setReadOnly(true);								
 							 }
 							
 							if (me.status == "NewPORequisition" || me.status == "EditPORequisition") {
@@ -2154,8 +2155,7 @@ ii.Class({
 							else if (me.requisitionGrid.activeRowIndex >= 0) {
 								me.poRequisitions[me.lastSelectedRowIndex] = item;
 								me.requisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
-							}
-							
+							}							
 							break;
 					}
 				});
