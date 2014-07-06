@@ -62,7 +62,6 @@ ii.Class({
 				me);
 
 			me.defineFormControls();
-			me.itemGrid.allowAdds = false;
 			me.configureCommunications();
 			me.statusesLoaded();
 			me.setStatus("Loading");
@@ -127,7 +126,8 @@ ii.Class({
 				return;				
 			
 			fin.pur.poRequisitionUi.requisitionGrid.setHeight($(window).height() - 145);
-			fin.pur.poRequisitionUi.itemGrid.setHeight($(window).height() - 255);
+			fin.pur.poRequisitionUi.itemGrid.setHeight($(window).height() - 265);
+			fin.pur.poRequisitionUi.itemReadOnlyGrid.setHeight($(window).height() - 200);
 			$("#GeneralInfo").height($(window).height() - 210);
 			$("#ShippingInfo").height($(window).height() - 210);
 		},
@@ -492,7 +492,7 @@ ii.Class({
 			
 			me.itemGrid = new ui.ctl.Grid({
 				id: "ItemGrid",
-				allowAdds: false,
+				allowAdds: true,
 				createNewFunction: fin.pur.poRequisition.Item,
 				selectFunction: function(index){
 					if (me.itemGrid.rows[index].getElement("rowNumber").innerHTML == "Add") 
@@ -607,14 +607,28 @@ ii.Class({
 				else
 				    return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true;\" /></center>";
             });
-			me.itemGrid.addColumn("number", "number", "Item Number", "Item Number", 100, null, me.itemNumber);
+			me.itemGrid.addColumn("number", "number", "Item Number", "Item Number", 120, null, me.itemNumber);
 			me.itemGrid.addColumn("description", "description", "Item Description", "Item Description", null, null, me.itemDescription);
 			me.itemGrid.addColumn("account", "account", "GL Account No", "GL Account No", 120, function( account ) { return account.code + " - " + account.name; }, me.account);
 			me.itemGrid.addColumn("unit", "unit", "UOM", "UOM", 100, null, me.uom);
 			me.itemGrid.addColumn("manufactured", "manufactured", "Manufactured", "Manufactured", 120, null, me.manufactured);
 			me.itemGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 100, null, me.quantity);
 			me.itemGrid.addColumn("price", "price", "Price", "Price", 100, null, me.price);			
-			me.itemGrid.capColumns();
+			me.itemGrid.capColumns();			
+			
+			me.itemReadOnlyGrid = new ui.ctl.Grid({
+				id: "ItemReadOnlyGrid",
+				allowAdds: false			
+			});
+			
+			me.itemReadOnlyGrid.addColumn("number", "number", "Item Number", "Item Number", 120);
+			me.itemReadOnlyGrid.addColumn("description", "description", "Item Description", "Item Description", null);
+			me.itemReadOnlyGrid.addColumn("account", "account", "GL Account No", "GL Account No", 120, function(account) { return account.code + " - " + account.name;	});
+			me.itemReadOnlyGrid.addColumn("unit", "unit", "UOM", "UOM", 100);
+			me.itemReadOnlyGrid.addColumn("manufactured", "manufactured", "Manufactured", "Manufactured", 120);
+			me.itemReadOnlyGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 100);
+			me.itemReadOnlyGrid.addColumn("price", "price", "Price", "Price", 100);
+			me.itemReadOnlyGrid.capColumns();
 			
 			me.company = new ui.ctl.Input.Text({
 		        id: "Company",
@@ -958,13 +972,6 @@ ii.Class({
 			me.vendorPhone.text.readOnly = readOnly;
 			me.vendorEmail.text.readOnly = readOnly;
 			me.reasonForRequest.text.readOnly = readOnly;
-			me.itemNumber.text.readOnly = readOnly;			
-			me.itemDescription.text.readOnly = readOnly;
-			me.account.text.readOnly = readOnly;
-			me.uom.text.readOnly = readOnly;
-			me.manufactured.text.readOnly = readOnly;
-			me.quantity.text.readOnly = readOnly;
-			me.price.text.readOnly = readOnly;			
 			me.company.text.readOnly = readOnly;
 			me.shippingJob.text.readOnly = readOnly;
 			me.shippingAddress1.text.readOnly = readOnly;
@@ -990,6 +997,8 @@ ii.Class({
 				$("#AccountAction").removeClass("iiInputAction");
 				$("#ShippingJobAction").removeClass("iiInputAction");
 				$("#ShippingStateAction").removeClass("iiInputAction");
+				$("#ItemGrid").hide();
+				$("#ItemReadOnlyGrid").show();
 			}
 			else  {
 				$("#RequestedDateAction").addClass("iiInputAction");
@@ -998,7 +1007,9 @@ ii.Class({
 				$("#VendorStateAction").addClass("iiInputAction");
 				$("#AccountAction").addClass("iiInputAction");
 				$("#ShippingJobAction").addClass("iiInputAction");
-				$("#ShippingStateAction").addClass("iiInputAction");				
+				$("#ShippingStateAction").addClass("iiInputAction");
+				$("#ItemGrid").show();
+				$("#ItemReadOnlyGrid").hide();				
 			}
 		},
 		
@@ -1120,28 +1131,20 @@ ii.Class({
 		poItemsLoaded: function(me, activeId) {	
 			
 			for (var index = 0; index < me.items.length; index++) {
-				me.items[index].id = 0;
-			}
-				
-			if (me.status == "EditPORequisition") {
-				for (var index = 0; index < me.poRequisitionDetails.length; index++) {				
-					var item = new fin.pur.poRequisition.PORequisitionDetail({ 
-						id: me.poRequisitionDetails[index].id,
-						itemSelect: me.poRequisitionDetails[index].itemSelect, 
-						poRequisitionId: me.poRequisitionDetails[index].poRequisitionId,
-						account: me.poRequisitionDetails[index].account,
-						number: me.poRequisitionDetails[index].number,
-						description: me.poRequisitionDetails[index].description,
-						unit: me.poRequisitionDetails[index].unit,
-						manufactured: me.poRequisitionDetails[index].manufactured,
-						price: me.poRequisitionDetails[index].price,
-						quantity: me.poRequisitionDetails[index].quantity
-						});
-					me.items.push(item);
+				var found = false;
+				for (var iIndex = 0; iIndex < me.poRequisitionDetails.length; iIndex++) {
+					if (me.items[index].number == me.poRequisitionDetails[iIndex].number) {
+						found = true; 
+						break;
+					}	
+				}
+				if (!found) {
+					me.poRequisitionDetails.push(me.items[index]);
 				}
 			}
-			
-			me.itemGrid.setData(me.items);
+		
+			me.itemGrid.setData(me.poRequisitionDetails);
+			me.itemReadOnlyGrid.setData(me.poRequisitionDetails);
 			$("#popupLoading").hide();
 		},
 		
@@ -1244,8 +1247,7 @@ ii.Class({
 					$("#VendorInfo").show();
 					$("#CategoryInfo").show();					
 					me.anchorSave.display(ui.cmn.behaviorStates.enabled);
-					me.setReadOnly(false);
-					me.itemGrid.allowAdds = true;															
+					me.setReadOnly(false);															
 				}
 				else {
 					if (me.requisitionGrid.data[index].statusType == 2) {
@@ -1263,10 +1265,10 @@ ii.Class({
 					$("#CategoryInfo").hide();
 					me.anchorSave.display(ui.cmn.behaviorStates.disabled);
 					me.setReadOnly(true);
-					me.itemGrid.allowAdds = false;
 				}
 				
-				$("#AnchorPrint").show();	
+				$("#AnchorPrint").show();
+				me.modified(false);	
 				me.setLoadCount();
 				me.poRequisitionDetailStore.reset();
 				me.poRequisitionDetailStore.fetch("userId:[user],pORequisitionId:" + me.poRequisitionId, me.poRequisitonDetailsLoaded, me);												
@@ -1278,6 +1280,7 @@ ii.Class({
 		poRequisitonDetailsLoaded: function(me, activeId) {
 
 			me.itemGrid.setData(me.poRequisitionDetails);
+			me.itemReadOnlyGrid.setData(me.poRequisitionDetails);
 			me.checkLoadCount();
 		},
 		
@@ -1423,9 +1426,11 @@ ii.Class({
 			var valid = true;			
 			
 			me.validator.forceBlur();
-
+			
 			if (me.wizardCount == 1) {
-				valid = me.validator.queryValidity(true);
+				
+				if (me.status == "NewPORequisition")
+					valid = me.validator.queryValidity(true);
 			
 				if (!me.requestorEmail.valid
 					|| !me.requestedDate.valid
@@ -1464,15 +1469,14 @@ ii.Class({
 				if (me.itemGrid.activeRowIndex == -1)
 				 	return true;
 				
-				//me.itemGrid.body.deselectAll();
-				valid = me.validator.queryValidity(true);
+				valid = me.validator.queryValidity(true);				
 				
-				if (!me.itemNumber.valid
+				if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked && (!me.itemNumber.valid
 					|| !me.itemDescription.valid
 					|| !me.account.valid
 					|| !me.price.valid
 					|| !me.quantity.valid
-					|| !me.uom.valid
+					|| !me.uom.valid)
 				) {
 					me.alertMessage = "In order to continue, the errors on the page must be corrected.";
 					return false;
@@ -1508,12 +1512,12 @@ ii.Class({
 			
 			me.anchorSave.display(ui.cmn.behaviorStates.enabled);
 			me.setReadOnly(false);
-			me.itemGrid.allowAdds = true;
 			me.requisitionGrid.body.deselectAll();
 			var index = me.itemGrid.activeRowIndex;
 			if (index >= 0)
 				me.itemGrid.body.deselect(index, true);		
-			me.itemGrid.setData([]);			
+			me.itemGrid.setData([]);
+			me.itemReadOnlyGrid.setData([]);						
 			me.requestorName.setValue(me.users[0].firstName + " " + me.users[0].lastName + "");
 			me.requestorEmail.setValue(me.users[0].email);
 			me.requestedDate.setValue(me.currentDate());
@@ -1556,6 +1560,7 @@ ii.Class({
 			$("#VendorInfo").show();
 			$("#CategoryInfo").show();
 			loadPopup();
+			me.poRequisitionDetailStore.reset();
 			me.poRequisitionId = 0;
 			me.status = "NewPORequisition";
 			me.wizardCount = 1;			
