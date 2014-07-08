@@ -32,26 +32,15 @@
 	padding: 3px 0px 0px 5px;
 }
 
-.dropdownRight
-{
-	width: 200px;
+.dropdownRight {
 	float: left;
+	width: 200px;
 	padding-top: 5px;
 }
 
-.labelStatus {
-	float: left;
-	width: 60px;
-	height: 27px;
-	font-family: Verdana;
-	font-size: 12px;
-	color: #032D23;
-	padding: 3px 0px 0px 10px;
-}
-
 .labelTextArea {
-	width: 160px;
 	float: left;
+	width: 160px;
 	font-family: Verdana;
 	font-size: 12px;
 	color: #032D23;
@@ -62,8 +51,8 @@
 }
 
 .inputTextArea {
+	float: left;
 	width: 190px;
-	float: left; 
 	height: 30px;	
 }
 
@@ -85,8 +74,36 @@
 	margin-bottom: 1px;	
 }
 
-#InputTextStatus
-{
+.labelTextUpload {
+	float: left;
+	width: 190px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
+
+.footer {
+    height: 20px;
+    font-family: Verdana;
+    font-size: 8pt;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #669b67;
+    text-align: left;
+}
+
+.borderHorizontal {
+    height: 1px;
+    background-color: #adaaad;
+}
+
+.borderVertical {
+    width: 1px;
+    background-color: #adaaad;
+}
+
+#InputTextStatus {
 	float: left; 
 	width: 120px; 
 	padding-top: 2px;
@@ -116,10 +133,6 @@
 	float: left;
 	margin-right: 20px;
 }
-	
-#shippingInfoContainerRight {
-	float: left;
-}
 
 #LoadButtonItems {
 	float: left;
@@ -128,8 +141,7 @@
 	padding-left: 10px;
 }
 
-#SearchButtonStatus
-{
+#SearchButtonStatus {
 	float: left;
 	width: 85px;	
 	padding-top: 1px;
@@ -211,12 +223,37 @@
 	padding-top: 5px;
 }
 
+#AnchorUpload {
+	float: left;
+	width: 82px;
+	padding: 5px 0px 0px 20px;
+}
+
+#AnchorUploadCancel {
+	float: left;
+	width: 80px;
+	padding: 5px 0px 0px 10px;
+}
+
+#DocumentGrid {
+	width: 700px;
+	margin-left: 10px;
+}
+
+#Paging {
+	width: 700px;
+	margin-left: 11px;
+}
+
 #ItemGridInfo {	
 	padding: 0px 10px 0px 10px;
 }
 
-#LabelStatus
-{	
+#priceBodyColumn, #quantityBodyColumn {
+	text-align: right;	
+}
+
+#LabelStatus {
 	float: left;
 	font-family: Verdana;
 	font-size: 12px;
@@ -248,6 +285,26 @@
 	padding-left: 5px;
 }
 
+#popupContact {
+	width: 800px; 
+	height: 400px;
+	position: absolute;
+	z-index: 5025;
+	background-color: white;
+	display: none;
+}
+
+#uploadPopup {
+	width: 600px; 
+	height: 150px;
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	background-color: white;
+	position: absolute;
+	z-index: 5025;	
+	display: none;
+}
+
 #backgroundPopup {
 	position: fixed; 
 	top: 0; 
@@ -258,18 +315,4 @@
 	border: 1px solid #cecece; 
 	background-color: black;
 	display: none;
-}
-
-#popupContact {
-	width: 800px; 
-	height: 400px;
-	position: absolute;
-	z-index: 5025;
-	background-color: white;
-	display: none;
-}
-
-#priceBodyColumn, #quantityBodyColumn
-{
-	text-align: right;	
 }

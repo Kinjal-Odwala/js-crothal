@@ -146,6 +146,18 @@ ii.init.register( function() {
 		, title: {type: String}
 	};
 	
+	fin.pur.poRequisition.poRequisitionDocumentArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, title: {type: String, required: false, defaultValue: ""}
+		, fileName: {type: String, required: false, defaultValue: ""}
+		, tempFileName: {type: String, required: false, defaultValue: ""}
+	};
+
+	fin.pur.poRequisition.fileNameArgs = {
+		id: {type: Number}
+		, fileName: {type: String, required: false, defaultValue: ""}
+	};
+	
 }, 2);
 
 ii.Class({
@@ -281,6 +293,26 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.pur.poRequisition.catalogArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.pur.poRequisition.PORequisitionDocument",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pur.poRequisition.poRequisitionDocumentArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.pur.poRequisition.FileName",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pur.poRequisition.fileNameArgs);
 			$.extend(this, args);
 		}
 	}

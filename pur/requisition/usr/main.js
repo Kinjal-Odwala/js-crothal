@@ -37,22 +37,18 @@ ii.Class({
 			me.users = [];
 			me.wizardCount = 0;
 			me.loadCount = 0;
+			me.fileName = "";
 			me.glAccounts = [];
 			
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
+
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
 			me.transactionMonitor = new ii.ajax.TransactionMonitor( 
 				me.gateway, 
 				function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
 			);
-			
-			me.validator = new ui.ctl.Input.Validation.Master();			
-			me.session = new ii.Session(me.cache);
-			
-			$(window).bind("resize", me, me.resize);
-			$(document).bind("keydown", me, me.controlKeyProcessor);
-			
+
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\Purchasing\\PORequisition";
 			me.authorizer.authorize([me.authorizePath],
@@ -61,20 +57,23 @@ ii.Class({
 				},
 				me);
 
+			me.validator = new ui.ctl.Input.Validation.Master();			
+			me.session = new ii.Session(me.cache);
+			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
+
 			me.defineFormControls();
 			me.configureCommunications();
+			me.initialize();
 			me.statusesLoaded();
 			me.setStatus("Loading");
 			me.modified(false);
-			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
-		
+
+			$(window).bind("resize", me, me.resize);
+			ui.cmn.behavior.disableBackspaceNavigation();
+
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
 			}			
-			
-			$("input[name='RequisitionType']").change(function() { me.modified(); });
-			$("input[name='Urgency']").change(function() { me.modified(); });
-			$("input[name='LifeSpan']").change(function() { me.modified(); });
         },
 		
 		authorizationProcess: function fin_pur_poRequisition_authorizationProcess() {
@@ -125,9 +124,10 @@ ii.Class({
 			if (me == undefined)
 				return;				
 			
-			fin.pur.poRequisitionUi.requisitionGrid.setHeight($(window).height() - 145);
-			fin.pur.poRequisitionUi.itemGrid.setHeight($(window).height() - 265);
-			fin.pur.poRequisitionUi.itemReadOnlyGrid.setHeight($(window).height() - 200);
+			me.requisitionGrid.setHeight($(window).height() - 145);
+			me.itemGrid.setHeight($(window).height() - 265);
+			me.itemReadOnlyGrid.setHeight($(window).height() - 200);
+			me.documentGrid.setHeight(100);
 			$("#GeneralInfo").height($(window).height() - 210);
 			$("#ShippingInfo").height($(window).height() - 210);
 		},
@@ -393,9 +393,9 @@ ii.Class({
 					
 					var enteredText = me.vendorZip.getValue();
 					
-					if(enteredText == '') return;
+					if (enteredText == "") return;
 
-					if(ui.cmn.text.validate.postalCode(enteredText) == false)
+					if (ui.cmn.text.validate.postalCode(enteredText) == false)
 						this.setInvalid("Please enter valid Zip. Example: 99999 or 99999-9999.");
 				});
 				
@@ -422,12 +422,12 @@ ii.Class({
 
 					var enteredText = me.vendorPhone.getValue();
 					
-					if(enteredText == '') return;
+					if (enteredText == "") return;
 
 					me.vendorPhone.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.vendorPhone.text.value;
 										
-					if(enteredText.length < 14)
+					if (enteredText.length < 14)
 						this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
 				});
 				
@@ -697,10 +697,10 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation(function( isFinal, dataMap) {
 					
-				if(me.shippingZip.getValue() == "") 
+				if (me.shippingZip.getValue() == "") 
 					return;
 
-				if(ui.cmn.text.validate.postalCode(me.shippingZip.getValue()) == false)
+				if (ui.cmn.text.validate.postalCode(me.shippingZip.getValue()) == false)
 					this.setInvalid("Please enter valid zip code. 99999 or 99999-9999");
 			});
 			
@@ -716,12 +716,12 @@ ii.Class({
 					
 					var enteredText = me.shippingPhone.getValue();
 					
-					if(enteredText == "") return;
+					if (enteredText == "") return;
 					
 					me.shippingPhone.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.shippingPhone.text.value;
 										
-					if(ui.cmn.text.validate.phone(enteredText) == false)
+					if (ui.cmn.text.validate.phone(enteredText) == false)
 						this.setInvalid("Please enter valid phone number. (999) 999-9999");
 			});
 			
@@ -737,23 +737,53 @@ ii.Class({
 					
 					var enteredText = me.shippingFax.getValue();
 					
-					if(enteredText == "") return;
+					if (enteredText == "") return;
 					
 					me.shippingFax.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.shippingFax.text.value;
 					
-					if(ui.cmn.text.validate.phone(enteredText) == false)
+					if (ui.cmn.text.validate.phone(enteredText) == false)
 						this.setInvalid("Please enter valid fax number. (999) 999-9999");
 			});
-			
+
+			me.documentGrid = new ui.ctl.Grid({
+				id: "DocumentGrid",
+				appendToId: "divForm",
+				allowAdds: false
+			});
+
+			me.documentGrid.addColumn("title", "title", "Title", "Title", null);
+			me.documentGrid.addColumn("fileName", "fileName", "File Name", "File Name", 350);
+			me.documentGrid.capColumns();
+
+			me.documentTitle = new ui.ctl.Input.Text({
+				id: "DocumentTitle",
+				maxLength: 100,
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.documentTitle.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				
+			me.anchorUpload = new ui.ctl.buttons.Sizeable({
+				id: "AnchorUpload",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Upload&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionUploadItem(); },
+				hasHotState: true
+			});
+
+			me.anchorUploadCancel = new ui.ctl.buttons.Sizeable({
+				id: "AnchorUploadCancel",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionUploadCancel(); },
+				hasHotState: true
+			});
+
 			me.vendor.text.readOnly = true;
-			$("#VendorName").bind("keydown", me, me.actionVendorSearch);
-			$("#AnchorView").hide();
-			$("#AnchorEdit").hide();
-			$("#AnchorPrint").hide();
-			$("#AnchorResendRequisition").hide();
-			$("#AnchorSendRequisition").hide();			
-			me.setTabIndexes();
+			me.documentTitle.active = false;
 		},		
 
 		configureCommunications: function fin_pur_UserInterface_configureCommunications() {
@@ -850,35 +880,24 @@ ii.Class({
 				itemConstructorArgs: fin.pur.poRequisition.catalogArgs,
 				injectionArray: me.catalogs	
 			});
-		},
-		
-		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
-			var args = ii.args(arguments, {
-				event: {type: Object} // The (key) event object
-			});			
-			var event = args.event;
-			var me = event.data;
-			var processed = false;
 			
-			if (event.ctrlKey) {
-					switch (event.keyCode) {
-						
-					case 83: // Ctrl+S
-						me.actionSave();
-						processed = true;
-						break;
-						
-					case 85: // Ctrl+U
-						me.actionUndoItem();
-						processed = true;
-						break;
-				}
-			}
-			
-			if (processed)
-				return false;
+			me.poRequisitionDocuments = [];
+			me.poRequisitionDocumentStore = me.cache.register({
+				storeId: "purPORequisitionDocuments",
+				itemConstructor: fin.pur.poRequisition.PORequisitionDocument,
+				itemConstructorArgs: fin.pur.poRequisition.poRequisitionDocumentArgs,
+				injectionArray: me.poRequisitionDocuments
+			});
+
+			me.fileNames = [];
+			me.fileNameStore = me.cache.register({
+			storeId: "purFileNames",
+				itemConstructor: fin.pur.poRequisition.FileName,
+				itemConstructorArgs: fin.pur.poRequisition.fileNameArgs,
+				injectionArray: me.fileNames
+			});
 		},
-	
+
 		setStatus: function(status) {
 			var me = this;
 
@@ -920,11 +939,24 @@ ii.Class({
 			}
 		},
 
-		setTabIndexes: function() {
+		initialize: function() {
 			var me = this;
 
+			$("input[name='RequisitionType']").change(function() { me.modified(); });
+			$("input[name='Urgency']").change(function() { me.modified(); });
+			$("input[name='LifeSpan']").change(function() { me.modified(); });
+			$("#VendorName").bind("keydown", me, me.actionVendorSearch);
+			$("#imgAdd").bind("click", function() { me.actionAttachItem(); });
+			$("#imgEdit").bind("click", function() { me.actionEditDocumentItem(); });
+			$("#imgRemove").bind("click", function() { me.actionRemoveItem(); });
+			$("#imgView").bind("click", function() { me.actionViewItem(); });
+			$("#AnchorView").hide();
+			$("#AnchorEdit").hide();
+			$("#AnchorPrint").hide();
+			$("#AnchorResendRequisition").hide();
+			$("#AnchorSendRequisition").hide();
 		},
-		
+
 		resizeControls: function() {
 			var me = this;
 			
@@ -1169,118 +1201,131 @@ ii.Class({
 			
 			me.lastSelectedRowIndex = index;
 			me.status = "";
+			me.poRequisitionId = 0;
 			
 			if (item == undefined) 
 				return;
-			
-			if (me.requisitionGrid.data[index] != undefined) {
-				me.poRequisitionId = me.requisitionGrid.data[index].id;
-				me.requestorName.setValue(item.requestorName);
-				me.requestorEmail.setValue(item.requestorEmail);
-				me.requestedDate.setValue(item.requestedDate);
-				me.deliveryDate.setValue(item.deliveryDate);
-				me.vendorName.lastBlurValue = item.vendorTitle;
-				$("#VendorNameText").val(item.vendorTitle);					
-				me.vendorAddress1.setValue(item.vendorAddressLine1);
-				me.vendorAddress2.setValue(item.vendorAddressLine2);
-				me.vendorCity.setValue(item.vendorCity);
-				
-				var itemIndex = ii.ajax.util.findIndexById(item.vendorStateType.toString(), me.stateTypes);
-				if (itemIndex >= 0 && itemIndex != undefined) 
-					me.vendorState.select(itemIndex, me.vendorState.focused);
-				
-				me.vendorZip.setValue(item.vendorZip);
-				me.vendorContactName.setValue(item.vendorContactName);
-				me.vendorPhone.setValue(item.vendorPhoneNumber);
-				me.vendorEmail.setValue(item.vendorEmail);
-				me.reasonForRequest.setValue(item.reasonForRequest);
-				
-				if (item.requisitionType == "Special Supply") 
-					$('#RequisitionTypeSpecialSupply').attr('checked', true);
-				else if (item.requisitionType == "Off Contract") 
-					$('#RequisitionTypeOffContract').attr('checked', true);
-				
-				if (item.urgency == "Urgent") 
-					$('#UrgencyUrgent').attr('checked', true);
-				else if (item.urgency == "Not Urgent") 
-					$('#UrgencyNotUrgent').attr('checked', true);
-				
-				if (item.lifeSpan == "Permanent") 
-					$('#LifeSpanPermanent').attr('checked', true);
-				else if (item.lifeSpan == "Temporary") 
-					$('#LifeSpanTemporary').attr('checked', true);
-				
-				me.vendor.setValue(item.vendorTitle);
-				
-				itemIndex = ii.ajax.util.findIndexById(item.houseCode.toString(), me.houseCodes);
-				if (itemIndex != undefined) 
-					me.company.setValue(me.houseCodes[itemIndex].name);
-				
-				itemIndex = ii.ajax.util.findIndexById(item.houseCodeJob.toString(), me.houseCodeJobs);
-				if (itemIndex >= 0 && itemIndex != undefined) 
-					me.shippingJob.select(itemIndex, me.shippingJob.focused);
-				
-				me.shippingAddress1.setValue(item.shipToAddress1);
-				me.shippingAddress2.setValue(item.shipToAddress2);
-				me.shippingCity.setValue(item.shipToCity);
-				
-				itemIndex = ii.ajax.util.findIndexById(item.shipToState.toString(), me.stateTypes);
-				if (itemIndex >= 0 && itemIndex != undefined) 
-					me.shippingState.select(itemIndex, me.shippingState.focused);				
-				
-				me.shippingZip.setValue(item.shipToZip);
-				me.shippingPhone.setValue(item.shipToPhone);
-				me.shippingFax.setValue(item.shipToFax);	
 
-				if (me.requisitionGrid.data[index].statusType == 10 || me.requisitionGrid.data[index].statusType == 1) {
-					if (me.requisitionGrid.data[index].statusType == 10) {
-						$("#AnchorResendRequisition").show();
-						$("#AnchorSendRequisition").hide();
-					}
-					if (me.requisitionGrid.data[index].statusType == 1) {
-						$("#AnchorResendRequisition").hide();
-						$("#AnchorSendRequisition").show();
-					}
-					
-					$("#AnchorEdit").show();
-					$("#AnchorView").hide();
-					$("#VendorInfo").show();
-					$("#CategoryInfo").show();					
-					me.anchorSave.display(ui.cmn.behaviorStates.enabled);
-					me.setReadOnly(false);															
+			me.poRequisitionId = me.requisitionGrid.data[index].id;
+			me.requestorName.setValue(item.requestorName);
+			me.requestorEmail.setValue(item.requestorEmail);
+			me.requestedDate.setValue(item.requestedDate);
+			me.deliveryDate.setValue(item.deliveryDate);
+			me.vendorName.lastBlurValue = item.vendorTitle;
+			$("#VendorNameText").val(item.vendorTitle);					
+			me.vendorAddress1.setValue(item.vendorAddressLine1);
+			me.vendorAddress2.setValue(item.vendorAddressLine2);
+			me.vendorCity.setValue(item.vendorCity);
+			
+			var itemIndex = ii.ajax.util.findIndexById(item.vendorStateType.toString(), me.stateTypes);
+			if (itemIndex >= 0 && itemIndex != undefined) 
+				me.vendorState.select(itemIndex, me.vendorState.focused);
+			
+			me.vendorZip.setValue(item.vendorZip);
+			me.vendorContactName.setValue(item.vendorContactName);
+			me.vendorPhone.setValue(item.vendorPhoneNumber);
+			me.vendorEmail.setValue(item.vendorEmail);
+			me.reasonForRequest.setValue(item.reasonForRequest);
+			
+			if (item.requisitionType == "Special Supply") 
+				$('#RequisitionTypeSpecialSupply').attr('checked', true);
+			else if (item.requisitionType == "Off Contract") 
+				$('#RequisitionTypeOffContract').attr('checked', true);
+			
+			if (item.urgency == "Urgent") 
+				$('#UrgencyUrgent').attr('checked', true);
+			else if (item.urgency == "Not Urgent") 
+				$('#UrgencyNotUrgent').attr('checked', true);
+			
+			if (item.lifeSpan == "Permanent") 
+				$('#LifeSpanPermanent').attr('checked', true);
+			else if (item.lifeSpan == "Temporary") 
+				$('#LifeSpanTemporary').attr('checked', true);
+			
+			me.vendor.setValue(item.vendorTitle);
+			
+			itemIndex = ii.ajax.util.findIndexById(item.houseCode.toString(), me.houseCodes);
+			if (itemIndex != undefined) 
+				me.company.setValue(me.houseCodes[itemIndex].name);
+			
+			itemIndex = ii.ajax.util.findIndexById(item.houseCodeJob.toString(), me.houseCodeJobs);
+			if (itemIndex >= 0 && itemIndex != undefined) 
+				me.shippingJob.select(itemIndex, me.shippingJob.focused);
+			
+			me.shippingAddress1.setValue(item.shipToAddress1);
+			me.shippingAddress2.setValue(item.shipToAddress2);
+			me.shippingCity.setValue(item.shipToCity);
+			
+			itemIndex = ii.ajax.util.findIndexById(item.shipToState.toString(), me.stateTypes);
+			if (itemIndex >= 0 && itemIndex != undefined) 
+				me.shippingState.select(itemIndex, me.shippingState.focused);				
+			
+			me.shippingZip.setValue(item.shipToZip);
+			me.shippingPhone.setValue(item.shipToPhone);
+			me.shippingFax.setValue(item.shipToFax);	
+
+			if (me.requisitionGrid.data[index].statusType == 10 || me.requisitionGrid.data[index].statusType == 1) {
+				if (me.requisitionGrid.data[index].statusType == 10) {
+					$("#AnchorResendRequisition").show();
+					$("#AnchorSendRequisition").hide();
 				}
-				else {
-					if (me.requisitionGrid.data[index].statusType == 2) {
-						$("#AnchorResendRequisition").show();
-						$("#AnchorSendRequisition").hide();
-					}					
-					else {
-						$("#AnchorResendRequisition").hide();
-						$("#AnchorSendRequisition").hide();
-					}			
-					
-					$("#AnchorEdit").hide();
-					$("#AnchorView").show();
-					$("#VendorInfo").hide();
-					$("#CategoryInfo").hide();
-					me.anchorSave.display(ui.cmn.behaviorStates.disabled);
-					me.setReadOnly(true);
+				if (me.requisitionGrid.data[index].statusType == 1) {
+					$("#AnchorResendRequisition").hide();
+					$("#AnchorSendRequisition").show();
 				}
-				
-				$("#AnchorPrint").show();
-				me.modified(false);	
-				me.setLoadCount();
-				me.poRequisitionDetailStore.reset();
-				me.poRequisitionDetailStore.fetch("userId:[user],pORequisitionId:" + me.poRequisitionId, me.poRequisitonDetailsLoaded, me);												
+
+				$("#AnchorEdit").show();
+				$("#AnchorView").hide();
+				$("#VendorInfo").show();
+				$("#CategoryInfo").show();
+				$("#imgAdd").show();
+				$("#imgEdit").show();
+				$("#imgRemove").show();				
+				me.anchorSave.display(ui.cmn.behaviorStates.enabled);
+				me.setReadOnly(false);															
 			}
-			else 
-				me.poRequisitionId = 0;
+			else {
+				if (me.requisitionGrid.data[index].statusType == 2) {
+					$("#AnchorResendRequisition").show();
+					$("#AnchorSendRequisition").hide();
+				}					
+				else {
+					$("#AnchorResendRequisition").hide();
+					$("#AnchorSendRequisition").hide();
+				}			
+
+				$("#AnchorEdit").hide();
+				$("#AnchorView").show();
+				$("#VendorInfo").hide();
+				$("#CategoryInfo").hide();
+				$("#imgAdd").hide();
+				$("#imgEdit").hide();
+				$("#imgRemove").hide();
+				me.anchorSave.display(ui.cmn.behaviorStates.disabled);
+				me.setReadOnly(true);
+			}
+			
+			$("#AnchorPrint").show();
+			me.loadCount++;
+			me.modified(false);	
+			me.setLoadCount();
+			me.poRequisitionDetailStore.reset();
+			me.poRequisitionDocumentStore.reset();
+			me.poRequisitionDetailStore.fetch("userId:[user],poRequisitionId:" + me.poRequisitionId, me.poRequisitonDetailsLoaded, me);
+			me.poRequisitionDocumentStore.fetch("userId:[user],poRequisitionId:" + me.poRequisitionId, me.poRequisitionDocumentsLoaded, me);
 		},	
 		
 		poRequisitonDetailsLoaded: function(me, activeId) {
 
 			me.itemGrid.setData(me.poRequisitionDetails);
 			me.itemReadOnlyGrid.setData(me.poRequisitionDetails);
+			me.checkLoadCount();
+		},
+		
+		poRequisitionDocumentsLoaded: function(me, activeId) {
+
+			me.documentGrid.setData(me.poRequisitionDocuments);
+			me.documentGrid.setHeight(100);
 			me.checkLoadCount();
 		},
 		
@@ -1404,7 +1449,7 @@ ii.Class({
 		catalogsLoaded: function(me, activeId) {
 			
 			me.catalog.reset();
-			if(me.vendorId == 0)
+			if (me.vendorId == 0)
 				me.catalog.setData([]);
 			else
 				me.catalog.setData(me.catalogs);
@@ -1517,7 +1562,8 @@ ii.Class({
 			if (index >= 0)
 				me.itemGrid.body.deselect(index, true);		
 			me.itemGrid.setData([]);
-			me.itemReadOnlyGrid.setData([]);						
+			me.itemReadOnlyGrid.setData([]);	
+			me.documentGrid.setData([]);					
 			me.requestorName.setValue(me.users[0].firstName + " " + me.users[0].lastName + "");
 			me.requestorEmail.setValue(me.users[0].email);
 			me.requestedDate.setValue(me.currentDate());
@@ -1561,6 +1607,7 @@ ii.Class({
 			$("#CategoryInfo").show();
 			loadPopup();
 			me.poRequisitionDetailStore.reset();
+			me.poRequisitionDocumentStore.reset();
 			me.poRequisitionId = 0;
 			me.status = "NewPORequisition";
 			me.wizardCount = 1;			
@@ -1763,6 +1810,131 @@ ii.Class({
 			me.actionSaveItem();
 		},
 		
+		actionAttachItem: function() {
+			var me = this;
+
+			$("#uploadPopup").fadeIn("slow");
+			$("#iFrameUpload")[0].contentWindow.document.getElementById("FormReset").click();
+			me.anchorUpload.display(ui.cmn.behaviorStates.disabled);
+			me.documentTitle.setValue("");
+			me.documentTitle.resizeText();
+			me.documentGrid.body.deselectAll();
+		},
+
+		actionEditDocumentItem: function() {
+			var me = this;
+			var index = me.documentGrid.activeRowIndex;
+
+			if (index != -1) {
+				$("#uploadPopup").fadeIn("slow");
+				$("#iFrameUpload")[0].contentWindow.document.getElementById("FormReset").click();
+				me.anchorUpload.display(ui.cmn.behaviorStates.disabled);
+				me.documentTitle.setValue(me.poRequisitionDocuments[index].title);
+				me.documentTitle.resizeText();
+			}
+		},
+
+		actionUploadItem: function() {
+			var me = this;
+			var tempFileName = "";
+
+			if (!me.documentTitle.validate(true)) {
+				alert("In order to save, the errors on the page must be corrected.");
+				return false;
+			}
+
+			me.setStatus("Uploading");
+			$("#uploadPopup").fadeOut("slow");
+			$("#popupMessageToUser").text("Uploading");
+			$("#popupLoading").fadeIn("slow");
+			$("#iFrameUpload")[0].contentWindow.document.getElementById("FileName").value = "";
+			$("#iFrameUpload")[0].contentWindow.document.getElementById("UploadButton").click();
+		
+			me.intervalId = setInterval(function() {
+
+				if ($("#iFrameUpload")[0].contentWindow.document.getElementById("FileName").value != "")	{
+					tempFileName = $("#iFrameUpload")[0].contentWindow.document.getElementById("FileName").value;					
+					clearInterval(me.intervalId);
+					me.setStatus("Edit");
+					$("#popupLoading").fadeOut("slow");
+
+					if (tempFileName == "Error") {
+						me.setStatus("Info", "Unable to upload the file. Please try again.");
+						alert("Unable to upload the file. Please try again.");
+					}
+					else {
+						if (me.documentGrid.activeRowIndex == -1) {
+							var item = new fin.pur.poRequisition.PORequisitionDocument(0, me.documentTitle.getValue(), me.fileName, tempFileName);
+							me.poRequisitionDocuments.push(item);
+							me.documentGrid.setData(me.poRequisitionDocuments);
+						}
+						else {
+							var index = me.documentGrid.activeRowIndex;
+							me.poRequisitionDocuments[index].title = me.documentTitle.getValue();
+							me.poRequisitionDocuments[index].fileName = me.fileName;
+							me.poRequisitionDocuments[index].tempFileName = tempFileName;
+							me.documentGrid.body.renderRow(index, index);
+						}
+					}
+				}
+			}, 1000);
+		},
+
+		actionUploadCancel: function() {
+			var me = this;
+
+			$("#uploadPopup").fadeOut("slow");
+		},
+
+		actionRemoveItem: function() {
+			var me = this;
+			var index = me.documentGrid.activeRowIndex;
+
+			if (index != -1) {
+				if (me.poRequisitionDocuments[index].id > 0) {
+					me.status = "DeleteDocument";
+					$("#popupMessageToUser").text("Removing");
+					me.actionSaveItem();
+				}
+				me.poRequisitionDocuments.splice(index, 1);
+				me.documentGrid.setData(me.poRequisitionDocuments);
+			}
+		},
+
+		actionViewItem: function() {
+			var me = this;
+			var index = me.documentGrid.activeRowIndex;
+				
+			if (index != -1) {
+				if (me.poRequisitionDocuments[index].id > 0) {
+					me.setStatus("Downloading");
+					$("#popupMessageToUser").text("Downloading");
+					$("#popupLoading").fadeIn("slow");
+					me.fileNameStore.reset();
+					me.fileNameStore.fetch("userId:[user],type:poRequisitionDocument"
+						+ ",id:" + me.poRequisitionDocuments[index].id
+						+ ",fileName:" + me.poRequisitionDocuments[index].fileName
+						, me.fileNamesLoaded
+						, me
+						);
+				}
+			}
+		},
+
+		fileNamesLoaded: function(me, activeId) {
+
+			if (parent.fin.appUI.modified)
+				me.setStatus("Edit");
+			else 
+				me.setStatus("Normal");
+			$("#popupLoading").fadeOut("slow");
+
+			if (me.fileNames.length == 1) {
+				$("#iFrameUpload")[0].contentWindow.document.getElementById("FileName").value = me.fileNames[0].fileName;
+				$("#iFrameUpload")[0].contentWindow.document.getElementById("DownloadButton").click();
+			}
+		},
+		
 		actionSaveItem: function() {
 			var args = ii.args(arguments,{});
 			var me = this;			
@@ -1825,8 +1997,11 @@ ii.Class({
 			if (xml == "") 
 				return;
 			
-			me.setStatus("Saving");			
-			$("#pageLoading").fadeIn("slow");
+			me.setStatus("Saving");
+			if (me.status == "DeleteDocument")
+				$("#popupLoading").fadeIn("slow");
+			else
+				$("#pageLoading").fadeIn("slow");
 	
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
@@ -1895,6 +2070,23 @@ ii.Class({
 						xml += '/>';
 					}
 				}
+				
+				for (var index = 0; index < me.poRequisitionDocuments.length; index++) {
+					if (me.poRequisitionDocuments[index].tempFileName != "") {
+						xml += '<purPORequisitionDocument';
+						xml += ' id="' + me.poRequisitionDocuments[index].id + '"';;
+						xml += ' title="' + ui.cmn.text.xml.encode(me.poRequisitionDocuments[index].title) + '"';
+						xml += ' description=""';				
+						xml += ' fileName="' + ui.cmn.text.xml.encode(me.poRequisitionDocuments[index].fileName) + '"';
+						xml += ' tempFileName="' + ui.cmn.text.xml.encode(me.poRequisitionDocuments[index].tempFileName) + '"';
+						xml += '/>';
+					}
+				}
+			}
+			else if (me.status == "DeleteDocument") {
+				xml += '<purPORequisitionDocumentDelete';
+				xml += ' id="' + me.poRequisitionDocuments[me.documentGrid.activeRowIndex].id + '"';			
+				xml += '/>';
 			}
 			else {
 				xml += '<purPORequisitionEmailNotification';
@@ -1948,45 +2140,67 @@ ii.Class({
 			var status = $(args.xmlNode).attr("status");
 
 			if (status == "success") {
-				$(args.xmlNode).find("*").each(function () {
-					switch (this.tagName) {
-						case "PurPORequisition":
-							if (me.status == "NewPORequisition") {
-								item.id = parseInt($(this).attr("id"), 10);
-								me.poRequisitions.push(item);
-								me.requisitionGrid.setData(me.poRequisitions);
-								me.requisitionGrid.body.select(me.poRequisitions.length - 1);
-							}
-							else {
-								me.poRequisitions[me.lastSelectedRowIndex] = item;
-								me.requisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
-
-								if (me.status == "SendRequisition" || me.status == "ResendRequisition") {
-									$("#AnchorResendRequisition").show();
-									$("#AnchorSendRequisition").hide();
-									$("#AnchorEdit").hide();
-									$("#AnchorView").show();
-									$("#VendorInfo").hide();
-									$("#CategoryInfo").hide();
-									
-									me.anchorSave.display(ui.cmn.behaviorStates.disabled);
-									me.setReadOnly(true);
+				if (me.status == "DeleteDocument") {
+					me.status = "EditPORequisition";
+					me.setStatus("Edit");
+					$("#popupLoading").fadeOut("slow");
+				}
+				else {
+					$(args.xmlNode).find("*").each(function () {
+						switch (this.tagName) {
+							case "purPORequisition":
+								if (me.status == "NewPORequisition") {
+									item.id = parseInt($(this).attr("id"), 10);
+									me.poRequisitions.push(item);
+									me.requisitionGrid.setData(me.poRequisitions);
+									me.requisitionGrid.body.select(me.poRequisitions.length - 1);
 								}
-							}
-						break;
-					}
-				});
-				
-				me.status = "";
-				me.modified(false);
-				me.setStatus("Saved");
+								else {
+									me.poRequisitions[me.lastSelectedRowIndex] = item;
+									me.requisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
+	
+									if (me.status == "SendRequisition" || me.status == "ResendRequisition") {
+										$("#AnchorResendRequisition").show();
+										$("#AnchorSendRequisition").hide();
+										$("#AnchorEdit").hide();
+										$("#AnchorView").show();
+										$("#VendorInfo").hide();
+										$("#CategoryInfo").hide();
+										$("#imgAdd").hide();
+										$("#imgEdit").hide();
+										$("#imgRemove").hide();
+										
+										me.anchorSave.display(ui.cmn.behaviorStates.disabled);
+										me.setReadOnly(true);
+									}
+								}
+								break;
+							
+							case "purPORequisitionDocument":
+								for (var index = 0; index < me.poRequisitionDocuments.length; index++) {
+									if (me.poRequisitionDocuments[index].tempFileName != "") {
+										if (me.poRequisitionDocuments[index].id == 0)
+											me.poRequisitionDocuments[index].id = parseInt($(this).attr("id"), 10);
+										me.poRequisitionDocuments[index].tempFileName = "";
+										break;
+									}
+								}
+								break;
+						}
+					});
+					
+					me.status = "";
+					me.modified(false);
+					me.setStatus("Saved");
+				}
 			}
 			else {	
 				me.setStatus("Error");			
 				alert("[SAVE FAILURE] Error while updating PO Requisition details: " + $(args.xmlNode).attr("message"));				
 			}
 			
-			$("#pageLoading").fadeOut("slow");
+			if (me.status != "DeleteDocument")
+				$("#pageLoading").fadeOut("slow");
 		},	
 	} 
 });
@@ -2026,10 +2240,27 @@ function centerPopup() {
 		"top": windowHeight/2 - popupHeight/2,
 		"left": windowWidth/2 - popupWidth/2
 	});
-		
+
+	$("#uploadPopup").css({
+		"top": windowHeight/2 - $("#uploadPopup").height()/2,
+		"left": windowWidth/2 - $("#uploadPopup").width()/2
+	});
+
 	$("#backgroundPopup").css({
 		"height": windowHeight
 	});
+}
+
+function onFileChange() {
+
+	var fileName = $("#iFrameUpload")[0].contentWindow.document.getElementById("UploadFile").value;
+	fileName = fileName.substring(fileName.lastIndexOf("\\") + 1) ;
+	fin.pur.poRequisitionUi.fileName = fileName;
+
+	if (fileName == "")
+		fin.pur.poRequisitionUi.anchorUpload.display(ui.cmn.behaviorStates.disabled);
+	else
+		fin.pur.poRequisitionUi.anchorUpload.display(ui.cmn.behaviorStates.enabled);
 }
 
 function main() {
