@@ -978,7 +978,16 @@ ii.Class({
 			$("#imgAdd").bind("click", function() { me.actionAttachItem(); });
 			$("#imgEdit").bind("click", function() { me.actionEditDocumentItem(); });
 			$("#imgRemove").bind("click", function() { me.actionRemoveItem(); });
-			$("#imgView").bind("click", function() { me.actionViewItem(); });
+			$("#imgView").bind("click", function() { me.actionViewItem(); });			
+			$("#UrgencyUrgent").bind("click", function() { 
+				$("#LabelUrgencyDate").html("<span class='requiredFieldIndicator'>&#149;</span>Urgency Date:");
+			});			
+			$("#UrgencyNotUrgent").bind("click", function() { 
+				$("#LabelUrgencyDate").html("<span id='nonRequiredFieldIndicator'>Urgency Date:</span>");
+				me.urgencyDate.resetValidation(true);
+				me.urgencyDate.setValue("");
+			});
+			
 			$("#AnchorView").hide();
 			$("#AnchorEdit").hide();
 			$("#AnchorPrint").hide();
@@ -2300,7 +2309,7 @@ function centerPopup() {
 	});
 
 	$("#backgroundPopup").css({
-		"height": windowHeight
+		"height": windowHeight + 100
 	});
 }
 
