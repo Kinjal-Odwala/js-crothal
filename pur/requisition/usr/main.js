@@ -128,6 +128,7 @@ ii.Class({
 			me.itemGrid.setHeight($(window).height() - 265);
 			me.itemReadOnlyGrid.setHeight($(window).height() - 200);
 			me.documentGrid.setHeight(100);
+			$("#popupContact").height($(window).height() - 110);
 			$("#GeneralInfo").height($(window).height() - 210);
 			$("#ShippingInfo").height($(window).height() - 210);
 		},
@@ -456,6 +457,25 @@ ii.Class({
 				changeFunction: function() { me.modified(); }
 		    });
 			
+			me.urgencyDate = new ui.ctl.Input.Date({
+                id: "UrgencyDate",
+                formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+            });
+            
+            me.urgencyDate.makeEnterTab()
+                .setValidationMaster(me.validator)
+                .addValidation(ui.ctl.Input.Validation.required)
+                .addValidation( function( isFinal, dataMap ) {                  
+                    var enteredText = me.urgencyDate.text.value;
+                    
+                    if (enteredText == "") 
+                        return;
+                        
+                    me.modified();
+                    if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+                        this.setInvalid("Please enter valid date.");
+                });
+			
 			me.vendor = new ui.ctl.Input.Text({
 				id: "Vendor",
 				maxLength: 100,
@@ -521,6 +541,13 @@ ii.Class({
 			me.itemDescription.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
+			
+			me.alternateDescription = new ui.ctl.Input.Text({
+                id: "AlternateDescription",
+                maxLength: 256,
+                appendToId: "ItemGridControlHolder",
+                changeFunction: function() { me.modified(); }
+            });
 			
 			me.account = new ui.ctl.Input.DropDown.Filtered({
 		        id: "Account",
@@ -609,6 +636,7 @@ ii.Class({
             });
 			me.itemGrid.addColumn("number", "number", "Item Number", "Item Number", 120, null, me.itemNumber);
 			me.itemGrid.addColumn("description", "description", "Item Description", "Item Description", null, null, me.itemDescription);
+			me.itemGrid.addColumn("alternateDescription", "alternateDescription", "Alternate Description", "Alternate Description", 180, null, me.alternateDescription);
 			me.itemGrid.addColumn("account", "account", "GL Account No", "GL Account No", 120, function( account ) { return account.code + " - " + account.name; }, me.account);
 			me.itemGrid.addColumn("unit", "unit", "UOM", "UOM", 100, null, me.uom);
 			me.itemGrid.addColumn("manufactured", "manufactured", "Manufactured", "Manufactured", 120, null, me.manufactured);
@@ -623,6 +651,7 @@ ii.Class({
 			
 			me.itemReadOnlyGrid.addColumn("number", "number", "Item Number", "Item Number", 120);
 			me.itemReadOnlyGrid.addColumn("description", "description", "Item Description", "Item Description", null);
+			me.itemReadOnlyGrid.addColumn("alternateDescription", "alternateDescription", "Alternate Description", "Alternate Description", 180);
 			me.itemReadOnlyGrid.addColumn("account", "account", "GL Account No", "GL Account No", 120, function(account) { return account.code + " - " + account.name;	});
 			me.itemReadOnlyGrid.addColumn("unit", "unit", "UOM", "UOM", 100);
 			me.itemReadOnlyGrid.addColumn("manufactured", "manufactured", "Manufactured", "Manufactured", 120);
@@ -973,6 +1002,7 @@ ii.Class({
 			me.vendorPhone.resizeText();
 			me.vendorEmail.resizeText();
 			me.reasonForRequest.resizeText();
+			me.urgencyDate.resizeText();
 			me.vendor.resizeText();
 			me.searchItem.resizeText();
 			me.company.resizeText();
@@ -1004,6 +1034,7 @@ ii.Class({
 			me.vendorPhone.text.readOnly = readOnly;
 			me.vendorEmail.text.readOnly = readOnly;
 			me.reasonForRequest.text.readOnly = readOnly;
+			me.urgencyDate.text.readOnly = readOnly;
 			me.company.text.readOnly = readOnly;
 			me.shippingJob.text.readOnly = readOnly;
 			me.shippingAddress1.text.readOnly = readOnly;
@@ -1227,6 +1258,15 @@ ii.Class({
 			me.vendorEmail.setValue(item.vendorEmail);
 			me.reasonForRequest.setValue(item.reasonForRequest);
 			
+			if (item.urgencyDate != "") {
+                me.urgencyDate.setValue(item.urgencyDate);
+                $("#LabelUrgencyDate").html("<span class='requiredFieldIndicator'>&#149;</span>Urgency Date:");
+            }                   
+            else {
+                me.urgencyDate.setValue("");
+                $("#LabelUrgencyDate").html("<span id='nonRequiredFieldIndicator'>Urgency Date:</span>");
+            }
+				
 			if (item.requisitionType == "Special Supply") 
 				$('#RequisitionTypeSpecialSupply').attr('checked', true);
 			else if (item.requisitionType == "Off Contract") 
@@ -1506,6 +1546,14 @@ ii.Class({
 					me.alertMessage = "Please select Life Span.";	
 					return false;
 				}
+				else if ($("input:radio[name='Urgency']:checked").val() == "Urgent" && !me.urgencyDate.valid) {                                     
+                    me.alertMessage = "In order to continue, the errors on the page must be corrected.";  
+                    return false;
+                }
+                else if ($("input:radio[name='Urgency']:checked").val() == "Not Urgent") {
+                    me.urgencyDate.resetValidation(true);
+                    return true;
+                }
 				else
 					return true;
 			}
@@ -1580,6 +1628,7 @@ ii.Class({
 			me.vendorPhone.setValue("");
 			me.vendorEmail.setValue("");
 			me.reasonForRequest.setValue("");
+			me.urgencyDate.setValue("");
 			$('input[name="RequisitionType"]').attr('checked', false);
 			$('input[name="Urgency"]').attr('checked', false);
 			$('input[name="LifeSpan"]').attr('checked', false);
@@ -1981,6 +2030,7 @@ ii.Class({
 					, me.reasonForRequest.getValue()
 					, $("input[name='RequisitionType']:checked").val()
 					, $("input[name='Urgency']:checked").val()
+					, me.urgencyDate.lastBlurValue
 					, $("input[name='LifeSpan']:checked").val()
 					, ""
 					);
@@ -2042,6 +2092,7 @@ ii.Class({
 				xml += ' reasonForRequest="' + ui.cmn.text.xml.encode(item.reasonForRequest) + '"';
 				xml += ' requisitionType="' + item.requisitionType + '"';
 				xml += ' urgency="' + item.urgency + '"';
+				xml += ' urgencyDate="' + item.urgencyDate + '"';
 				xml += ' lifeSpan="' + item.lifeSpan + '"';
 				xml += ' chargeToPeriod="' + item.chargeToPeriod + '"';
 				xml += ' houseCode="' + item.houseCode + '"';
@@ -2062,6 +2113,7 @@ ii.Class({
 						xml += ' poRequisitionId="' + me.poRequisitionId + '"';
 						xml += ' number="' + me.itemGrid.data[index].number + '"';
 						xml += ' description="' + me.itemGrid.data[index].description + '"';
+						xml += ' alternateDescription="' + me.itemGrid.data[index].alternateDescription + '"';
 						xml += ' account="' + me.itemGrid.data[index].account.id + '"';
 						xml += ' uom="' + me.itemGrid.data[index].unit + '"';
 						xml += ' manufactured="' + me.itemGrid.data[index].manufactured + '"';
@@ -2117,6 +2169,7 @@ ii.Class({
 				xml += ' reasonForRequest="' + ui.cmn.text.xml.encode(item.reasonForRequest) + '"';
 				xml += ' requisitionType="' + item.requisitionType + '"';
 				xml += ' urgency="' + item.urgency + '"';
+				xml += ' urgencyDate="' + item.urgencyDate + '"';
 				xml += ' lifeSpan="' + item.lifeSpan + '"';
 				xml += ' chargeToPeriod=""';
 				xml += ' action="' + me.status + '"';
@@ -2224,7 +2277,7 @@ function disablePopup() {
 function centerPopup() {
 	var windowWidth = document.documentElement.clientWidth;
 	var windowHeight = document.documentElement.clientHeight;	
-	var popupWidth = windowWidth - 150;
+	var popupWidth = windowWidth - 70;
 	var popupHeight = windowHeight - 120;	
 
 	$("#popupContact").css({

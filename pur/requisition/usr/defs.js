@@ -95,6 +95,7 @@ ii.init.register( function() {
 		, reasonForRequest: {type: String, required: false, defaultValue: ""}
 		, requisitionType: {type: String, required: false, defaultValue: ""}
 		, urgency: {type: String, required: false, defaultValue: ""}
+		, urgencyDate: {type: String, required: false, defaultValue: ""}
 		, lifeSpan: {type: String, required: false, defaultValue: ""}
 		, chargeToPeriod: {type: String, required: false, defaultValue: ""}			
 	};
@@ -106,6 +107,7 @@ ii.init.register( function() {
 		, itemSelect: {type: Boolean, required: false, defaultValue: true}
 		, number: {type: String, required: false, defaultValue: ""}
 		, description: {type: String, required: false, defaultValue: ""}
+		, alternateDescription: {type: String, required: false, defaultValue: ""}
 		, unit: {type: String, required: false, defaultValue: ""}
 		, manufactured: {type: String, required: false, defaultValue: ""}
 		, price: {type: String, required: false, defaultValue: ""}
@@ -119,6 +121,7 @@ ii.init.register( function() {
 		, itemSelect: {type: Boolean, required: false, defaultValue: false}
 		, number: {type: String, required: false, defaultValue: ""}
 		, description: {type: String, required: false, defaultValue: ""}
+		, alternateDescription: {type: String, required: false, defaultValue: ""}
 		, unit: {type: String, required: false, defaultValue: ""}
 		, manufactured: {type: String, required: false, defaultValue: ""}
 		, price: {type: String, required: false, defaultValue: ""}
