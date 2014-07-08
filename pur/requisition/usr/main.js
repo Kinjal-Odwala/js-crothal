@@ -1063,9 +1063,10 @@ ii.Class({
 
 			if (readOnly) {
 				$("#RequestedDateAction").removeClass("iiInputAction");
-				$("#DeliveryDateAction").removeClass("iiInputAction");
+				$("#DeliveryDateAction").removeClass("iiInputAction");				
 				$("#VendorNameAction").removeClass("iiInputAction");
 				$("#VendorStateAction").removeClass("iiInputAction");
+				$("#UrgencyDateAction").removeClass("iiInputAction");
 				$("#AccountAction").removeClass("iiInputAction");
 				$("#ShippingJobAction").removeClass("iiInputAction");
 				$("#ShippingStateAction").removeClass("iiInputAction");
@@ -1077,6 +1078,7 @@ ii.Class({
 				$("#DeliveryDateAction").addClass("iiInputAction");
 				$("#VendorNameAction").addClass("iiInputAction");
 				$("#VendorStateAction").addClass("iiInputAction");
+				$("#UrgencyDateAction").addClass("iiInputAction");
 				$("#AccountAction").addClass("iiInputAction");
 				$("#ShippingJobAction").addClass("iiInputAction");
 				$("#ShippingStateAction").addClass("iiInputAction");
@@ -1267,13 +1269,13 @@ ii.Class({
 			me.vendorEmail.setValue(item.vendorEmail);
 			me.reasonForRequest.setValue(item.reasonForRequest);
 			
-			if (item.urgencyDate != "") {
+			if (item.urgencyDate == "" || item.urgencyDate == "1/1/1900 12:00:00 AM") {
+				me.urgencyDate.setValue("");
+                $("#LabelUrgencyDate").html("<span id='nonRequiredFieldIndicator'>Urgency Date:</span>");
+            }                   
+            else {                
                 me.urgencyDate.setValue(item.urgencyDate);
                 $("#LabelUrgencyDate").html("<span class='requiredFieldIndicator'>&#149;</span>Urgency Date:");
-            }                   
-            else {
-                me.urgencyDate.setValue("");
-                $("#LabelUrgencyDate").html("<span id='nonRequiredFieldIndicator'>Urgency Date:</span>");
             }
 				
 			if (item.requisitionType == "Special Supply") 
@@ -1525,7 +1527,6 @@ ii.Class({
 				
 				if (me.status == "NewPORequisition")
 					valid = me.validator.queryValidity(true);
-			
 				if (!me.requestorEmail.valid
 					|| !me.requestedDate.valid
 					|| !me.deliveryDate.valid
@@ -1555,8 +1556,8 @@ ii.Class({
 					me.alertMessage = "Please select Life Span.";	
 					return false;
 				}
-				else if ($("input:radio[name='Urgency']:checked").val() == "Urgent" && !me.urgencyDate.valid) {                                     
-                    me.alertMessage = "In order to continue, the errors on the page must be corrected.";  
+				else if ($("input:radio[name='Urgency']:checked").val() == "Urgent" && me.urgencyDate.lastBlurValue == "") {                                     
+                    me.alertMessage = "Please select Urgency Date.";  
                     return false;
                 }
                 else if ($("input:radio[name='Urgency']:checked").val() == "Not Urgent") {
