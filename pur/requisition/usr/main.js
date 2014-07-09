@@ -464,10 +464,10 @@ ii.Class({
             
             me.urgencyDate.makeEnterTab()
                 .setValidationMaster(me.validator)
-                .addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(ui.ctl.Input.Validation.required)
                 .addValidation( function( isFinal, dataMap ) {                  
                     var enteredText = me.urgencyDate.text.value;
-                    
+
                     if (enteredText == "") 
                         return;
                         
@@ -599,6 +599,11 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
 
+				if (me.itemGrid.activeRowIndex != -1) {
+					if (!($("#selectInputCheck" + me.itemGrid.activeRowIndex))[0].checked)
+						this.valid = true;
+				}
+
 				var enteredText = me.quantity.getValue();
 
 				if (enteredText == "") return;
@@ -617,6 +622,11 @@ ii.Class({
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
+
+				if (me.itemGrid.activeRowIndex != -1) {
+					if (!($("#selectInputCheck" + me.itemGrid.activeRowIndex))[0].checked)
+						this.valid = true;
+				}
 
 				var enteredText = me.price.getValue();
 
@@ -979,13 +989,15 @@ ii.Class({
 			$("#imgEdit").bind("click", function() { me.actionEditDocumentItem(); });
 			$("#imgRemove").bind("click", function() { me.actionRemoveItem(); });
 			$("#imgView").bind("click", function() { me.actionViewItem(); });			
-			$("#UrgencyUrgent").bind("click", function() { 
+			$("#UrgencyUrgent").bind("click", function() {
 				$("#LabelUrgencyDate").html("<span class='requiredFieldIndicator'>&#149;</span>Urgency Date:");
-			});			
+ 			});
 			$("#UrgencyNotUrgent").bind("click", function() { 
 				$("#LabelUrgencyDate").html("<span id='nonRequiredFieldIndicator'>Urgency Date:</span>");
 				me.urgencyDate.resetValidation(true);
-				me.urgencyDate.setValue("");
+				var urgencyDate = me.urgencyDate.lastBlurValue;
+				if (urgencyDate == "" || !(ui.cmn.text.validate.generic(urgencyDate, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+					me.urgencyDate.setValue("");
 			});
 			
 			$("#AnchorView").hide();
@@ -1522,11 +1534,16 @@ ii.Class({
 			var valid = true;			
 			
 			me.validator.forceBlur();
+			valid = me.validator.queryValidity(true);
 			
 			if (me.wizardCount == 1) {
-				
-				if (me.status == "NewPORequisition")
-					valid = me.validator.queryValidity(true);
+				if ($("input:radio[name='Urgency']:checked").val() == "Not Urgent" || $('input:radio[name="Urgency"]:checked').length == 0) {
+					var urgencyDate = me.urgencyDate.lastBlurValue;
+                    me.urgencyDate.resetValidation(true);
+					if (urgencyDate == "" || !(ui.cmn.text.validate.generic(urgencyDate, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+						me.urgencyDate.setValue("");
+                }
+					
 				if (!me.requestorEmail.valid
 					|| !me.requestedDate.valid
 					|| !me.deliveryDate.valid
@@ -1539,41 +1556,31 @@ ii.Class({
 					|| !me.vendorContactName.valid
 					|| !me.vendorPhone.valid
 					|| !me.vendorEmail.valid
-					|| !me.reasonForRequest.valid					
+					|| !me.reasonForRequest.valid
+					|| ($("input:radio[name='Urgency']:checked").val() == "Urgent") && (!me.urgencyDate.valid)		
 					) {
-					me.alertMessage = "In order to continue, the errors on the page must be corrected.";	
+					alert("In order to continue, the errors on the page must be corrected.");	
 					return false;
 				}
 				else if ($('input:radio[name="RequisitionType"]:checked').length == 0) {
-					me.alertMessage = "Please select Requisition Type.";	
+					alert("Please select Requisition Type.");	
 					return false;
 				}
 				else if ($('input:radio[name="Urgency"]:checked').length == 0) {
-					me.alertMessage = "Please select Urgency.";	
+					alert("Please select Urgency.");	
 					return false;
 				}
 				else if ($('input:radio[name="LifeSpan"]:checked').length == 0) {
-					me.alertMessage = "Please select Life Span.";	
+					alert("Please select Life Span.");	
 					return false;
 				}
-				else if ($("input:radio[name='Urgency']:checked").val() == "Urgent" && me.urgencyDate.lastBlurValue == "") {                                     
-                    me.alertMessage = "Please select Urgency Date.";  
-                    return false;
-                }
-                else if ($("input:radio[name='Urgency']:checked").val() == "Not Urgent") {
-                    me.urgencyDate.resetValidation(true);
-                    return true;
-                }
 				else
 					return true;
 			}
 			else if (me.wizardCount == 2) {
-				
 				if (me.itemGrid.activeRowIndex == -1)
 				 	return true;
-				
-				valid = me.validator.queryValidity(true);				
-				
+
 				if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked && (!me.itemNumber.valid
 					|| !me.itemDescription.valid
 					|| !me.account.valid
@@ -1581,23 +1588,19 @@ ii.Class({
 					|| !me.quantity.valid
 					|| !me.uom.valid)
 				) {
-					me.alertMessage = "In order to continue, the errors on the page must be corrected.";
+					alert("In order to continue, the errors on the page must be corrected.");
 					return false;
 				}
 				else
 					return true;
 			}
 			else if (me.wizardCount == 3) {				
-				
-				valid = me.validator.queryValidity(true);
-				
 				if (!me.requestorEmail.valid
 					|| !me.shippingAddress1.valid
 					|| !me.shippingCity.valid
 					|| !me.shippingState.valid					
 					|| !me.shippingZip.valid					
 					) {
-					me.alertMessage = "In order to continue, the errors on the page must be corrected.";	
 					return false;
 				}
 				else
@@ -1709,7 +1712,6 @@ ii.Class({
 			var me = this;								
 			
 			if (!me.validatePORequisition()) {
-				alert(me.alertMessage);
 				return;
 			}
 			
