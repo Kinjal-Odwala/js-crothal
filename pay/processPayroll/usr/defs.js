@@ -1,24 +1,24 @@
 ii.Import("fin.cmn.usr.defs");
 
 ii.init.register( function() {
-    fin.pay = { automation: {} };
+    fin.pay = { processPayroll: {} };
 
 }, 1);
 
 ii.init.register( function() {
 
-	fin.pay.automation.payCodeTypeArgs = {
+	fin.pay.processPayroll.payCodeTypeArgs = {
 		id: {type: Number}
 		, brief: {type: String}
 		, name: {type: String}
 	};
 
-	fin.pay.automation.batchStatusArgs = {
+	fin.pay.processPayroll.batchStatusArgs = {
 		id: {type: Number}
 		, name: {type: String}
 	};
 
-	fin.pay.automation.ePayBatchArgs = {
+	fin.pay.processPayroll.ePayBatchArgs = {
 		id: {type: Number}
 		, batchId: {type: Number, required: false, defaultValue: 0}
 		, batchRecordCount: {type: Number, required: false, defaultValue: 0}
@@ -37,7 +37,7 @@ ii.init.register( function() {
 		, valid: {type: Boolean, required: false, defaultValue: true}
 	};
 
-	fin.pay.automation.ePayBatchDetailArgs = {
+	fin.pay.processPayroll.ePayBatchDetailArgs = {
 		id: {type: Number}
 		, batchId: {type: Number, required: false, defaultValue: 0}
 		, employeeNumber: {type: String, required: false, defaultValue: ""}
@@ -57,40 +57,40 @@ ii.init.register( function() {
 }, 2);
 
 ii.Class({
-	Name: "fin.pay.automation.PayCodeType",
+	Name: "fin.pay.processPayroll.PayCodeType",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.pay.automation.payCodeTypeArgs);
+			var args = ii.args(arguments, fin.pay.processPayroll.payCodeTypeArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.pay.automation.BatchStatus",
+	Name: "fin.pay.processPayroll.BatchStatus",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.pay.automation.batchStatusArgs);
+			var args = ii.args(arguments, fin.pay.processPayroll.batchStatusArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.pay.automation.EPayBatch",
+	Name: "fin.pay.processPayroll.EPayBatch",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.pay.automation.ePayBatchArgs);
+			var args = ii.args(arguments, fin.pay.processPayroll.ePayBatchArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.pay.automation.EPayBatchDetail",
+	Name: "fin.pay.processPayroll.EPayBatchDetail",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.pay.automation.ePayBatchDetailArgs);
+			var args = ii.args(arguments, fin.pay.processPayroll.ePayBatchDetailArgs);
 			$.extend(this, args);
 		}
 	}

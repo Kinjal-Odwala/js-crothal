@@ -10,7 +10,7 @@ ii.Import( "fin.cmn.usr.util" );
 ii.Import( "fin.cmn.usr.ui.core" );
 ii.Import( "fin.cmn.usr.ui.widget" );
 ii.Import( "fin.cmn.usr.defs" );
-ii.Import( "fin.pay.automation.usr.defs" );
+ii.Import( "fin.pay.processPayroll.usr.defs" );
 
 ii.Style( "style", 1 );
 ii.Style( "fin.cmn.usr.common", 2 );
@@ -68,7 +68,7 @@ ii.Class({
 			me.session = new ii.Session(me.cache);
 
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
-			me.authorizePath = "\\crothall\\chimes\\fin\\Payroll\\Automation";
+			me.authorizePath = "\\crothall\\chimes\\fin\\Payroll\\ProcessPayroll";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
 					me.authorizationProcess.apply(me);
@@ -95,7 +95,7 @@ ii.Class({
 			}
 		},
 		
-		authorizationProcess: function fin_pay_automation_UserInterface_authorizationProcess() {
+		authorizationProcess: function fin_pay_processPayroll_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
 
@@ -147,7 +147,7 @@ ii.Class({
 			me.payCodeTypeStore.fetch("userId:[user],payCodeType:ePayBatch", me.payCodeTypesLoaded, me);
 		},
 
-		sessionLoaded: function fin_pay_automation_UserInterface_sessionLoaded() {
+		sessionLoaded: function fin_pay_processPayroll_UserInterface_sessionLoaded() {
 			var args = ii.args(arguments, {
 				me: {type: Object}
 			});
@@ -157,7 +157,7 @@ ii.Class({
 
 		resize: function() {
 			var args = ii.args(arguments,{});
-			var me = fin.automationUi;
+			var me = fin.processPayrollUi;
 
 			if (!me) return;
 
@@ -334,31 +334,31 @@ ii.Class({
 			});
 		},
 
-		configureCommunications: function fin_pay_automation_configureCommunications() {
+		configureCommunications: function fin_pay_processPayroll_configureCommunications() {
 			var args = ii.args(arguments, {});
 			var me = this;
 
 			me.payCodeTypes = [];
 			me.payCodeTypeStore = me.cache.register({
 				storeId: "payCodes",
-				itemConstructor: fin.pay.automation.PayCodeType,
-				itemConstructorArgs: fin.pay.automation.payCodeTypeArgs,
+				itemConstructor: fin.pay.processPayroll.PayCodeType,
+				itemConstructorArgs: fin.pay.processPayroll.payCodeTypeArgs,
 				injectionArray: me.payCodeTypes
 			});
 
 			me.ePayBatches = [];
 			me.ePayBatchStore = me.cache.register({
 				storeId: "ePayBatchs",
-				itemConstructor: fin.pay.automation.EPayBatch,
-				itemConstructorArgs: fin.pay.automation.ePayBatchArgs,
+				itemConstructor: fin.pay.processPayroll.EPayBatch,
+				itemConstructorArgs: fin.pay.processPayroll.ePayBatchArgs,
 				injectionArray: me.ePayBatches
 			});
 
 			me.ePayBatchDetails = [];
 			me.ePayBatchDetailStore = me.cache.register({
 				storeId: "ePayBatchDetails",
-				itemConstructor: fin.pay.automation.EPayBatchDetail,
-				itemConstructorArgs: fin.pay.automation.ePayBatchDetailArgs,
+				itemConstructor: fin.pay.processPayroll.EPayBatchDetail,
+				itemConstructorArgs: fin.pay.processPayroll.ePayBatchDetailArgs,
 				injectionArray: me.ePayBatchDetails
 			});
 		},
@@ -408,8 +408,8 @@ ii.Class({
 			var me = this;
 			
 			me.batchStatuses = [];
-			me.batchStatuses.push(new fin.pay.automation.BatchStatus(1, "Records with errors"));
-			me.batchStatuses.push(new fin.pay.automation.BatchStatus(2, "Cancelled records with errors"));
+			me.batchStatuses.push(new fin.pay.processPayroll.BatchStatus(1, "Records with errors"));
+			me.batchStatuses.push(new fin.pay.processPayroll.BatchStatus(2, "Cancelled records with errors"));
 			
 			me.batchStatus.setData(me.batchStatuses);
 			me.batchStatus.select(0, me.batchStatus.focused);
@@ -754,7 +754,7 @@ ii.Class({
 			});
 
 			$("#txtEmployeeNumber" + index).focus();
-			var item = new fin.pay.automation.EPayBatchDetail({ id: 0});
+			var item = new fin.pay.processPayroll.EPayBatchDetail({ id: 0});
 			me.ePayBatchDetailsList.push(item);
 		},
 
@@ -1299,7 +1299,7 @@ ii.Class({
 				$("#AnchorExport").show();
 			}
 
-			$("#header").html("Payroll Automation - " + action);
+			$("#header").html("Process Payroll - " + action);
 			me.action = action;
 			me.setLoadCount();
 			
@@ -1654,6 +1654,6 @@ ii.Class({
 });
 
 function main() {
-	fin.automationUi = new fin.pay.UserInterface();
-	fin.automationUi.resize();
+	fin.processPayrollUi = new fin.pay.UserInterface();
+	fin.processPayrollUi.resize();
 }
