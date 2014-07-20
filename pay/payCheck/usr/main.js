@@ -799,6 +799,7 @@ ii.Class({
 						me.setUnitAddress();
 						$("#CurrentPayCardUserNo")[0].checked = true;
 						$("#UPSDeliveryToHomeNo")[0].checked = true;
+						$("#InstantIssueRequestNo")[0].checked = true;
 						me.homeAddress.resetValidation(true);
 						me.homeAddress.setValue("");
 						break;
@@ -818,6 +819,7 @@ ii.Class({
 						me.setEmployeeAddress();
 						$("#CurrentPayCardUserNo")[0].checked = true;
 						$("#UPSDeliveryToUnitNo")[0].checked = true;
+						$("#InstantIssueRequestNo")[0].checked = true;
 						me.unitAddress.resetValidation(true);
 						me.unitAddress.setValue("");
 						break;
@@ -834,6 +836,20 @@ ii.Class({
 						$("#LabelHome").html("<span id='nonRequiredFieldIndicator'>Home Address:</span>");
 						$("#UPSDeliveryToUnitNo")[0].checked = true;
 						$("#UPSDeliveryToHomeNo")[0].checked = true;
+						$("#InstantIssueRequestNo")[0].checked = true;
+						me.homeAddress.resetValidation(true);
+						me.homeAddress.setValue("");
+						me.unitAddress.resetValidation(true);
+						me.unitAddress.setValue("");
+						break;
+						
+					case "InstantIssueRequestYes":
+						$("#LabelUnit").html("<span id='nonRequiredFieldIndicator'>Unit (House Code):</span>");
+						$("#LabelUnitAddress").html("<span id='nonRequiredFieldIndicator'>Unit (House Code) Address:</span>");
+						$("#LabelHome").html("<span id='nonRequiredFieldIndicator'>Home Address:</span>");
+						$("#UPSDeliveryToUnitNo")[0].checked = true;
+						$("#UPSDeliveryToHomeNo")[0].checked = true;
+						$("#CurrentPayCardUserNo")[0].checked = true;
 						me.homeAddress.resetValidation(true);
 						me.homeAddress.setValue("");
 						me.unitAddress.resetValidation(true);
@@ -1597,8 +1613,8 @@ ii.Class({
 					return false;
 				}
 			
-				if ($("input[name='CurrentPayCardUser']:checked").val() == "false" && $("input[name='UPSDeliveryToUnit']:checked").val() == "false" && $("input[name='UPSDeliveryToHome']:checked").val() == "false") {
-					alert("Please select one pay check delivery location: Comdata Pay Card, Unit Delivery, or Employee Home Delivery.");
+				if ($("input[name='CurrentPayCardUser']:checked").val() == "false" && $("input[name='UPSDeliveryToUnit']:checked").val() == "false" && $("input[name='UPSDeliveryToHome']:checked").val() == "false" && $("input[name='InstantIssueRequest']:checked").val() == "false") {
+					alert("Please select one pay check delivery location: Current Pay Card User, Instant Issue Request, Unit Delivery, or Employee Home Delivery.");
 					return false;
 				}
 				
