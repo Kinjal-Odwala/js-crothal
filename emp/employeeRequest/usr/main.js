@@ -292,7 +292,6 @@ ii.Class({
             
             me.proposedSSN.makeEnterTab()
                 .setValidationMaster( me.validator )
-                .addValidation( ui.ctl.Input.Validation.required )
                 .addValidation( function( isFinal, dataMap ) {
                     
                     var enteredText = me.proposedSSN.getValue();
@@ -584,9 +583,15 @@ ii.Class({
 				return false;
 			}
 			
-			if (me.modification == "SSNModification" && !me.proposedSSN.validate(true) && me.employeeGrid.activeRowIndex >= 0) {
-                alert("In order to save, the errors on the page must be corrected.");
-                return false;
+			if (me.modification == "SSNModification" && me.employeeGrid.activeRowIndex >= 0) {
+				if (me.proposedSSN.getValue() == "") {
+					alert("Please enter SSN.");
+                	return false;
+				}
+				else if (!me.proposedSSN.validate(true)) {
+					alert("In order to save, the errors on the page must be corrected.");
+                	return false;
+				}
             }
 			
 			if (me.status == "Approved") {
