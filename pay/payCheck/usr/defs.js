@@ -58,6 +58,7 @@ ii.init.register( function(){
 		, stateType: {type: String, required: false, defaultValue: ""}
 		, currentPayCardUser: {type: Boolean, required: false, defaultValue: true}
 		, instantIssueRequest: {type: Boolean, required: false, defaultValue: true}
+		, terminationDate: {type: String, required: false, defaultValue: ""}
 		, upsDeliveryToUnit: {type: Boolean, required: false, defaultValue: true}
 		, saturdayDeliveryUnit: {type: Boolean, required: false, defaultValue: true}
 		, deliveryHouseCodeId: {type: Number, required: false, defaultValue: 0}

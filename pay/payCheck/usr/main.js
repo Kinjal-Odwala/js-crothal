@@ -286,7 +286,26 @@ ii.Class({
 					else if ((this.focused || this.touched) && me.state.indexSelected == -1)
 						this.setInvalid("Please select the correct State.");
 				});
-				
+			
+			me.terminationDate = new ui.ctl.Input.Date({
+		        id: "TerminationDate",
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+		    });
+			
+			me.terminationDate.makeEnterTab()
+				.setValidationMaster(me.validator)
+				//.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {					
+					var enteredText = me.terminationDate.text.value;
+					
+					if (enteredText == "") 
+						return;
+						
+					me.modified();
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+						this.setInvalid("Please enter valid date.");
+				});
+					
 			me.unitAddress = new ui.ctl.Input.Text({
 				id: "UnitAddress",
 				maxLength: 1024,
@@ -796,12 +815,15 @@ ii.Class({
 						$("#LabelUnit").html("<span class='requiredFieldIndicator'>&#149;</span>Unit (House Code):");
 						$("#LabelUnitAddress").html("<span class='requiredFieldIndicator'>&#149;</span>Unit (House Code) Address:");
 						$("#LabelHome").html("<span id='nonRequiredFieldIndicator'>Home Address:</span>");
+						$("#LabelTerminationDate").html("<span id='nonRequiredFieldIndicator'>Termination date:</span>");
 						me.setUnitAddress();
 						$("#CurrentPayCardUserNo")[0].checked = true;
 						$("#UPSDeliveryToHomeNo")[0].checked = true;
 						$("#InstantIssueRequestNo")[0].checked = true;
 						me.homeAddress.resetValidation(true);
 						me.homeAddress.setValue("");
+						if (me.terminationDate.lastBlurValue == undefined || me.terminationDate.lastBlurValue == "" || !(ui.cmn.text.validate.generic(me.terminationDate.lastBlurValue, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+							me.terminationDate.setValue("");
 						break;
 						
 					case "UPSDeliveryToUnitNo":
@@ -816,12 +838,15 @@ ii.Class({
 						$("#LabelHome").html("<span class='requiredFieldIndicator'>&#149;</span>Home Address:");
 						$("#LabelUnit").html("<span id='nonRequiredFieldIndicator'>Unit (House Code):</span>");
 						$("#LabelUnitAddress").html("<span id='nonRequiredFieldIndicator'>Unit (House Code) Address:</span>");
+						$("#LabelTerminationDate").html("<span id='nonRequiredFieldIndicator'>Termination date:</span>");
 						me.setEmployeeAddress();
 						$("#CurrentPayCardUserNo")[0].checked = true;
 						$("#UPSDeliveryToUnitNo")[0].checked = true;
 						$("#InstantIssueRequestNo")[0].checked = true;
 						me.unitAddress.resetValidation(true);
 						me.unitAddress.setValue("");
+						if (me.terminationDate.lastBlurValue == undefined || me.terminationDate.lastBlurValue == "" || !(ui.cmn.text.validate.generic(me.terminationDate.lastBlurValue, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+							me.terminationDate.setValue("");
 						break;
 						
 					case "UPSDeliveryToHomeNo":
@@ -834,6 +859,7 @@ ii.Class({
 						$("#LabelUnit").html("<span id='nonRequiredFieldIndicator'>Unit (House Code):</span>");
 						$("#LabelUnitAddress").html("<span id='nonRequiredFieldIndicator'>Unit (House Code) Address:</span>");
 						$("#LabelHome").html("<span id='nonRequiredFieldIndicator'>Home Address:</span>");
+						$("#LabelTerminationDate").html("<span id='nonRequiredFieldIndicator'>Termination date:</span>");
 						$("#UPSDeliveryToUnitNo")[0].checked = true;
 						$("#UPSDeliveryToHomeNo")[0].checked = true;
 						$("#InstantIssueRequestNo")[0].checked = true;
@@ -841,9 +867,12 @@ ii.Class({
 						me.homeAddress.setValue("");
 						me.unitAddress.resetValidation(true);
 						me.unitAddress.setValue("");
+						if (me.terminationDate.lastBlurValue == undefined || me.terminationDate.lastBlurValue == "" || !(ui.cmn.text.validate.generic(me.terminationDate.lastBlurValue, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+							me.terminationDate.setValue("");
 						break;
 						
 					case "InstantIssueRequestYes":
+						$("#LabelTerminationDate").html("<span class='requiredFieldIndicator'>&#149;</span>Termination date:");
 						$("#LabelUnit").html("<span id='nonRequiredFieldIndicator'>Unit (House Code):</span>");
 						$("#LabelUnitAddress").html("<span id='nonRequiredFieldIndicator'>Unit (House Code) Address:</span>");
 						$("#LabelHome").html("<span id='nonRequiredFieldIndicator'>Home Address:</span>");
@@ -854,6 +883,12 @@ ii.Class({
 						me.homeAddress.setValue("");
 						me.unitAddress.resetValidation(true);
 						me.unitAddress.setValue("");
+						break;
+						
+					case "InstantIssueRequestNo":
+						$("#LabelTerminationDate").html("<span id='nonRequiredFieldIndicator'>Termination date:</span>");						
+						if (me.terminationDate.lastBlurValue == undefined || me.terminationDate.lastBlurValue == "" || !(ui.cmn.text.validate.generic(me.terminationDate.lastBlurValue, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+							me.terminationDate.setValue("");
 						break;
 						
 					case "TermRequestYes":
@@ -893,26 +928,27 @@ ii.Class({
 			$("#CurrentPayCardUserNo")[0].tabIndex = 11;
 			$("#InstantIssueRequestYes")[0].tabIndex = 12;
 			$("#InstantIssueRequestNo")[0].tabIndex = 13;
-			$("#UPSDeliveryToUnitYes")[0].tabIndex = 14;
-			$("#UPSDeliveryToUnitNo")[0].tabIndex = 15;
-			$("#SaturdayDeliveryUnitYes")[0].tabIndex = 16;
-			$("#SaturdayDeliveryUnitNo")[0].tabIndex = 17;
-			$("#houseCodeTemplateText")[0].tabIndex = 18;			
-			me.unitAddress.text.tabIndex = 19;
-			me.upsPackageAttentionTo.text.tabIndex = 20;			
-			$("#UPSDeliveryToHomeYes")[0].tabIndex = 21;
-			$("#UPSDeliveryToHomeNo")[0].tabIndex = 22;
-			$("#SaturdayDeliveryHomeYes")[0].tabIndex = 23;
-			$("#SaturdayDeliveryHomeNo")[0].tabIndex = 24;			
-			me.homeAddress.text.tabIndex = 25;
-			$("#ProcessingFeeYes")[0].tabIndex = 26;
-			$("#ProcessingFeeNo")[0].tabIndex = 27;		
-			me.deductionCode.text.tabIndex = 28;
-			me.amount.text.tabIndex = 29;
-			me.requestorName.text.tabIndex = 30;
-			me.requestorEmail.text.tabIndex = 31;
-			me.managerName.text.tabIndex = 32;
-			me.managerEmail.text.tabIndex = 33;
+			me.terminationDate.text.tabIndex = 14;
+			$("#UPSDeliveryToUnitYes")[0].tabIndex = 15;
+			$("#UPSDeliveryToUnitNo")[0].tabIndex = 16;
+			$("#SaturdayDeliveryUnitYes")[0].tabIndex = 17;
+			$("#SaturdayDeliveryUnitNo")[0].tabIndex = 18;
+			$("#houseCodeTemplateText")[0].tabIndex = 19;			
+			me.unitAddress.text.tabIndex = 20;
+			me.upsPackageAttentionTo.text.tabIndex = 21;			
+			$("#UPSDeliveryToHomeYes")[0].tabIndex = 22;
+			$("#UPSDeliveryToHomeNo")[0].tabIndex = 23;
+			$("#SaturdayDeliveryHomeYes")[0].tabIndex = 24;
+			$("#SaturdayDeliveryHomeNo")[0].tabIndex = 25;			
+			me.homeAddress.text.tabIndex = 26;
+			$("#ProcessingFeeYes")[0].tabIndex = 27;
+			$("#ProcessingFeeNo")[0].tabIndex = 28;		
+			me.deductionCode.text.tabIndex = 29;
+			me.amount.text.tabIndex = 30;
+			me.requestorName.text.tabIndex = 31;
+			me.requestorEmail.text.tabIndex = 32;
+			me.managerName.text.tabIndex = 33;
+			me.managerEmail.text.tabIndex = 34;
 		},
 		
 		resizeControls: function() {
@@ -923,6 +959,7 @@ ii.Class({
 			me.employeeNumber.resizeText();
 			me.employeeName.resizeText();
 			me.reasonForRequest.resizeText();
+			me.terminationDate.resizeText();
 			me.unitAddress.resizeText();
 			me.upsPackageAttentionTo.resizeText();
 			me.homeAddress.resizeText();
@@ -942,11 +979,12 @@ ii.Class({
 			me.payCodeDetailGrid.body.deselectAll();
 			me.documentGrid.body.deselectAll();
 			me.requestedDate.resetValidation(true);
-			me.deliveryDate.resetValidation(true);
+			me.deliveryDate.resetValidation(true);			
 			me.employeeNumber.resetValidation(true);
 			me.employeeName.resetValidation(true);
 			me.reasonForRequest.resetValidation(true);
 			me.state.resetValidation(true);
+			me.terminationDate.resetValidation(true);
 			me.unitAddress.resetValidation(true);
 			me.homeAddress.resetValidation(true);
 			me.requestorEmail.resetValidation(true);
@@ -960,6 +998,7 @@ ii.Class({
 			me.employeeName.setValue("");
 			me.reasonForRequest.setValue("");
 			me.state.reset();
+			me.terminationDate.setValue("");
 			me.unitAddress.setValue("");
 			me.upsPackageAttentionTo.setValue("");
 			me.homeAddress.setValue("");
@@ -1020,6 +1059,7 @@ ii.Class({
 			me.employeeName.text.readOnly = readOnly;
 			me.reasonForRequest.text.readOnly = readOnly;
 			me.state.text.readOnly = readOnly;
+			me.terminationDate.text.readOnly = readOnly;
 			me.unitAddress.text.readOnly = readOnly;
 			me.upsPackageAttentionTo.text.readOnly = readOnly;
 			me.homeAddress.text.readOnly = readOnly;
@@ -1374,7 +1414,8 @@ ii.Class({
 			$("input[name='UPSDeliveryToHome'][value='" + item.upsDeliveryToHome + "']").attr("checked", "checked");  
 			$("input[name='SaturdayDeliveryHome'][value='" + item.saturdayDeliveryHome + "']").attr("checked", "checked");  
 			$("input[name='ProcessingFee'][value='" + item.stopPaymentProcessingFee + "']").attr("checked", "checked");  
-		
+			
+			me.terminationDate.setValue(item.terminationDate);
 			me.unitAddress.setValue(item.houseCodeAddress);
 			me.upsPackageAttentionTo.setValue(item.upsPackageAttentionTo);
 			me.homeAddress.setValue(item.homeAddress);
@@ -1618,9 +1659,15 @@ ii.Class({
 					return false;
 				}
 				
-				if ($("input[name='InstantIssueRequest']:checked").val() == "true" && me.payCheckRequestDocuments.length <= 0) {
-					alert("Please attach at least one Additional Document.");
-					return false;
+				if ($("input[name='InstantIssueRequest']:checked").val() == "true") {
+					if (me.payCheckRequestDocuments.length <= 0) {
+						alert("Please attach at least one Additional Document.");
+						return false;
+					}
+					else if (me.terminationDate.lastBlurValue == undefined || me.terminationDate.lastBlurValue == "") {
+						alert("Please enter Termination Date.");
+						return false;
+					}
 				}
 				
 				me.payCodeDetailGrid.body.deselectAll();
@@ -1649,6 +1696,7 @@ ii.Class({
 					, $("input[name='TermRequest']:checked").val() == "true" ? me.stateTypes[me.state.indexSelected].id : 0 
 					, $("input[name='CurrentPayCardUser']:checked").val() == "true" ? true : false
 					, $("input[name='InstantIssueRequest']:checked").val() == "true" ? true : false
+					, me.terminationDate.lastBlurValue
 					, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? true : false
 					, $("input[name='SaturdayDeliveryUnit']:checked").val() == "true" ? true : false
 					, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? me.houseCodeSearchTemplate.houseCodeIdTemplate : 0
@@ -1708,6 +1756,7 @@ ii.Class({
 			xml += ' stateType="' + item.stateType + '"';
 			xml += ' currentPayCardUser="' + item.currentPayCardUser + '"';
 			xml += ' instantIssueRequest="' + item.instantIssueRequest + '"';
+			xml += ' terminationDate="' + item.terminationDate + '"';
 			xml += ' upsDeliveryToUnit="' + item.upsDeliveryToUnit + '"';
 			xml += ' saturdayDeliveryUnit="' + item.saturdayDeliveryUnit + '"';
 			xml += ' deliveryHouseCodeId="' + item.deliveryHouseCodeId + '"';			
