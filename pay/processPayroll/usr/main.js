@@ -463,21 +463,21 @@ ii.Class({
 				var varianceTotalAmount = parseFloat(me.ePayBatchGrid.data[index].detailTotalAmount) - parseFloat(me.ePayBatches[0].batchTotalAmount);
 
 				$("#ProcessedTotalCount").html(me.ePayBatchGrid.data[index].detailRecordCount);
-				$("#ProcessedTotalHours").html(me.ePayBatchGrid.data[index].detailTotalHours);
-				$("#ProcessedTotalAmount").html(me.ePayBatchGrid.data[index].detailTotalAmount);
-				$("#AmountAndHours").html(me.ePayBatches[0].totalHours);
+				$("#ProcessedTotalHours").html(parseFloat(me.ePayBatchGrid.data[index].detailTotalHours).toFixed(2));
+				$("#ProcessedTotalAmount").html(parseFloat(me.ePayBatchGrid.data[index].detailTotalAmount).toFixed(2));
+				$("#AmountAndHours").html(parseFloat(me.ePayBatches[0].totalHours).toFixed(2));
 				$("#WeeklyTotalCount").html(me.ePayBatches[0].batchRecordCount);
-				$("#WeeklyTotalHours").html(me.ePayBatches[0].batchTotalHours);
-				$("#WeeklyTotalAmount").html(me.ePayBatches[0].batchTotalAmount);
+				$("#WeeklyTotalHours").html(parseFloat(me.ePayBatches[0].batchTotalHours).toFixed(2));
+				$("#WeeklyTotalAmount").html(parseFloat(me.ePayBatches[0].batchTotalAmount).toFixed(2));
 				$("#WeeklyAddTotalCount").html(me.ePayBatches[0].weeklyPayrollRecordCount);
-				$("#WeeklyAddTotalHours").html(me.ePayBatches[0].weeklyPayrollTotalHours);
-				$("#WeeklyAddTotalAmount").html(me.ePayBatches[0].weeklyPayrollTotalAmount);
+				$("#WeeklyAddTotalHours").html(parseFloat(me.ePayBatches[0].weeklyPayrollTotalHours).toFixed(2));
+				$("#WeeklyAddTotalAmount").html(parseFloat(me.ePayBatches[0].weeklyPayrollTotalAmount).toFixed(2));
 				$("#VarianceTotalCount").html(varianceTotalCount);
-				$("#VarianceTotalHours").html(varianceTotalHours);
-				$("#VarianceTotalAmount").html(varianceTotalAmount);
+				$("#VarianceTotalHours").html(parseFloat(varianceTotalHours).toFixed(2));
+				$("#VarianceTotalAmount").html(parseFloat(varianceTotalAmount).toFixed(2));
 				$("#ErrorTotalCount").html("<span style='color: red;'>" + me.ePayBatches[0].detailRecordCount + "</span> - " + me.ePayBatches[0].cancelledErrorRecordCount);
-				$("#ErrorTotalHours").html("<span style='color: red;'>" + me.ePayBatches[0].detailTotalHours + "</span> - " + me.ePayBatches[0].cancelledErrorTotalHours);
-				$("#ErrorTotalAmount").html("<span style='color: red;'>" + me.ePayBatches[0].detailTotalAmount + "</span> - " + me.ePayBatches[0].cancelledErrorTotalAmount);
+				$("#ErrorTotalHours").html("<span style='color: red;'>" + parseFloat(me.ePayBatches[0].detailTotalHours).toFixed(2) + "</span> - " + parseFloat(me.ePayBatches[0].cancelledErrorTotalHours).toFixed(2));
+				$("#ErrorTotalAmount").html("<span style='color: red;'>" + parseFloat(me.ePayBatches[0].detailTotalAmount).toFixed(2) + "</span> - " + parseFloat(me.ePayBatches[0].cancelledErrorTotalAmount).toFixed(2));
 				
 				if (varianceTotalCount == 0 && varianceTotalHours == 0 && varianceTotalAmount == 0
 					&& me.ePayBatches[0].detailRecordCount == 0
@@ -1616,6 +1616,7 @@ ii.Class({
 			me.ePayBatchGrid.data[index].detailRecordCount = me.ePayBatches[0].batchRecordCount;
 			me.ePayBatchGrid.data[index].detailTotalHours = me.ePayBatches[0].batchTotalHours;
 			me.ePayBatchGrid.data[index].detailTotalAmount = me.ePayBatches[0].batchTotalAmount;
+			me.showDetailReport = true;
 			me.ePayBatchesLoaded(me, 0);
 	
 			$("#spnPageInfo").html(" of " + me.pageCount + " (" + me.ePayBatchDetails.length + " records)");
@@ -1623,6 +1624,7 @@ ii.Class({
 
 		loadPopup: function() {
 			var me = this;
+
 			me.centerPopup();
 
 			$("#backgroundPopup").css({
