@@ -120,7 +120,7 @@ ii.Class({
 
 			$("#pageLoading").height(document.body.scrollHeight);
 			//$("#Container").height($(window).height() - 95);
-			$("#Container").height(1180);
+			$("#Container").height(1200);
 			me.payCheckRequestGrid.setHeight(200);
 			me.payCodeDetailGrid.setHeight(150);
 			me.payCodeDetailReadOnlyGrid.setHeight(150);
@@ -294,7 +294,7 @@ ii.Class({
 			
 			me.terminationDate.makeEnterTab()
 				.setValidationMaster(me.validator)
-				//.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {					
 					var enteredText = me.terminationDate.text.value;
 					
@@ -884,7 +884,8 @@ ii.Class({
 						$("#LabelState").html("<span id='nonRequiredFieldIndicator'>State:</span>");
 						$("#LabelTerminationDate").html("<span id='nonRequiredFieldIndicator'>Termination Date:</span>");
 						me.state.resetValidation(true);
-						me.state.setValue("");												
+						me.state.setValue("");
+						me.terminationDate.resetValidation(true);												
 						if (me.terminationDate.lastBlurValue == undefined || me.terminationDate.lastBlurValue == "" || !(ui.cmn.text.validate.generic(me.terminationDate.lastBlurValue, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
 							me.terminationDate.setValue("");
 						break;
@@ -1649,26 +1650,46 @@ ii.Class({
 					return false;
 				}
 				
-				if ($("input[name='TermRequest']:checked").val() == "true") {
-					if (me.terminationDate.lastBlurValue == undefined || me.terminationDate.lastBlurValue == "") {
-						alert("Please enter Termination Date.");
-						return false;
-					}
-				}
-				
 				if ($("input[name='InstantIssueRequest']:checked").val() == "true" && me.payCheckRequestDocuments.length <= 0) {
 					alert("Please attach at least one Additional Document.");
 					return false;
 				}
-				
-				me.payCodeDetailGrid.body.deselectAll();
+			
 				me.validator.forceBlur();
-	
-				// Check to see if the data entered is valid
-				if (!me.validator.queryValidity(true)) {
-					alert("In order to save, the errors on the page must be corrected.");
+				me.validator.queryValidity(true);
+				
+				if ($("input[name='TermRequest']:checked").val() == "false") {
+					me.terminationDate.resetValidation(true);												
+					if (me.terminationDate.lastBlurValue == undefined || me.terminationDate.lastBlurValue == "" || !(ui.cmn.text.validate.generic(me.terminationDate.lastBlurValue, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+						me.terminationDate.setValue("")
+				}
+
+				if (!me.requestedDate.valid
+					|| !me.deliveryDate.valid
+					|| !me.employeeNumber.valid
+					|| !me.employeeName.valid
+					|| !me.reasonForRequest.valid					
+					|| !me.state.valid					
+					|| !me.terminationDate.valid
+					|| !me.unitAddress.valid
+					|| !me.homeAddress.valid
+					|| !me.requestorEmail.valid
+					|| !me.managerName.valid
+					|| !me.managerEmail.valid
+					|| !me.terminationDate.valid	
+					) {
+					alert("In order to continue, the errors on the page must be corrected.");	
 					return false;
 				}
+				
+				me.payCodeDetailGrid.body.deselectAll();
+				//me.validator.forceBlur();
+	
+				// Check to see if the data entered is valid
+				//if (!me.validator.queryValidity(true)) {
+				//	alert("In order to save, the errors on the page must be corrected.");
+				//	return false;
+				//}
 			
 				if (me.payCheckRequestGrid.activeRowIndex >= 0)
 					id = me.payCheckRequestGrid.data[me.payCheckRequestGrid.activeRowIndex].id
