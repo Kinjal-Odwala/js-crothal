@@ -187,6 +187,13 @@
 	margin: 5px 0px 10px 10px;
 }
 
+#AnchorGeneratePurchaseOrder {
+	float: left;
+	width: 220px;
+	margin: 5px 0px 10px 10px;
+	padding-top: 0px;
+}
+
 #anchorAlign {
 	clear: both;
 	bottom: 15px;

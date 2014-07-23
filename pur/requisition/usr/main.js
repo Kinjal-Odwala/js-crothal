@@ -39,6 +39,7 @@ ii.Class({
 			me.loadCount = 0;
 			me.fileName = "";
 			me.glAccounts = [];
+			me.action = "PORequisition";
 			
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 
@@ -79,8 +80,10 @@ ii.Class({
 		authorizationProcess: function fin_pur_poRequisition_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
-					
+	
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
+			me.PORequisitionAuthorized = me.authorizer.isAuthorized(me.authorizePath + "\\PORequisition");
+			me.ConvertPORequisitionToPOAuthorized = me.authorizer.isAuthorized(me.authorizePath + "\\ConvertPORequisitionToPO");
 
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
@@ -95,6 +98,17 @@ ii.Class({
 				ii.timer.timing("Page displayed");
 				me.loadCount = 3;
 				me.session.registerFetchNotify(me.sessionLoaded,me);
+				
+				if (!me.PORequisitionAuthorized) {
+					$("#AnchorNew").hide();
+					$("#LabelStatus").hide();
+					$("#InputTextStatus").hide();			
+					$("#SearchButtonStatus").hide();
+					$("#PORequisitionAction").hide();
+				}
+					
+				if (!me.ConvertPORequisitionToPOAuthorized) 
+					$("#PORequisitionToPurchaseOrderAction").hide();				
 				
 				if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
 					me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
@@ -136,6 +150,24 @@ ii.Class({
 		defineFormControls: function() {
 			var me = this;
 			
+			me.actionMenu = new ui.ctl.Toolbar.ActionMenu({
+				id: "actionMenu"
+			});  
+
+			me.actionMenu
+				.addAction({
+					id: "PORequisitionAction", 
+					brief: "PO Requisitions", 
+					title: "PO Requisitions",
+					actionFunction: function() { me.actionPORequisitionItem(); }
+				})
+				.addAction({
+					id: "PORequisitionToPurchaseOrderAction",
+					brief: "Convert PO Requisition to Purchase Order", 
+					title: "Convert PO Requisition to Purchase Order",
+					actionFunction: function() { me.actionPORequisitionToPurchaseOrderItem(); }
+				})
+				
 			me.searchButton = new ui.ctl.buttons.Sizeable({
 				id: "SearchButton",
 				className: "iiButton",
@@ -181,6 +213,14 @@ ii.Class({
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Print&nbsp;&nbsp;</span>",
 				clickFunction: function() { me.actionPrintItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorGeneratePurchaseOrder = new ui.ctl.buttons.Sizeable({
+				id: "AnchorGeneratePurchaseOrder",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Generate Purchase Order&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionGeneratePurchaseOrderItem(); },
 				hasHotState: true
 			});
 			
@@ -250,19 +290,23 @@ ii.Class({
 			me.requisitionGrid.addColumn("requestedDate ", "requestedDate", "Requested Date", "Requested Date", 150);
 			me.requisitionGrid.addColumn("deliveryDate", "deliveryDate", "Delivery Date", "Delivery Date", 150);
 			me.requisitionGrid.addColumn("vendorTitle", "vendorTitle", "Vendor Title", "Vendor Title", null);
-			me.requisitionGrid.addColumn("statusType", "statusType", "Status", "Status", 100, function(statusType) {
+			me.requisitionGrid.addColumn("statusType", "statusType", "Status", "Status", 120, function(statusType) {
 				if (statusType == 1)
 					return "Open";
 				else if (statusType == 2)
 					return "In Process";
+				else if (statusType == 6)
+                	return "Cancelled";
 				else if (statusType == 8)
                 	return "Approved";
 				else if (statusType == 9)
-                	return "Completed";
-				else if (statusType == 6)
-                	return "Cancelled";
+                	return "Completed";				
 				else if (statusType == 10)
                 	return "Unapproved";
+				else if (statusType == 11)
+                	return "Completed - PO";
+				else if (statusType == 12)
+                	return "Completed - JDE";
            	});
 			me.requisitionGrid.capColumns();
 			
@@ -830,6 +874,15 @@ ii.Class({
 			var me = this;
 			
 			parent.fin.appUI.houseCodeId = 0;
+			
+			me.hirNodes = [];
+			me.hirNodeStore = me.cache.register({
+				storeId: "hirNodes",
+				itemConstructor: fin.pur.poRequisition.HirNode,
+				itemConstructorArgs: fin.pur.poRequisition.hirNodeArgs,
+				injectionArray: me.hirNodes
+			});
+			
 			me.houseCodes = [];
 			me.houseCodeStore = me.cache.register({
 				storeId: "hcmHouseCodes",
@@ -935,6 +988,14 @@ ii.Class({
 				itemConstructorArgs: fin.pur.poRequisition.fileNameArgs,
 				injectionArray: me.fileNames
 			});
+			
+			me.validatePORequisitions = [];
+			me.validatePORequisitionStore = me.cache.register({
+			storeId: "purValidatePORequisitions",
+				itemConstructor: fin.pur.poRequisition.ValidatePORequisition,
+				itemConstructorArgs: fin.pur.poRequisition.validatePORequisitionArgs,
+				injectionArray: me.validatePORequisitions
+			});
 		},
 
 		setStatus: function(status) {
@@ -1005,6 +1066,7 @@ ii.Class({
 			$("#AnchorPrint").hide();
 			$("#AnchorResendRequisition").hide();
 			$("#AnchorSendRequisition").hide();
+			$("#AnchorGeneratePurchaseOrder").hide();
 		},
 
 		resizeControls: function() {
@@ -1145,12 +1207,8 @@ ii.Class({
 		
 		actionSearchItem: function() {
 			var me = this;
-
-			me.setLoadCount();
-			me.poRequisitionStore.reset();
-			me.poRequisitionStore.fetch("houseCode:" + parent.fin.appUI.houseCodeId
-				+ ",statusType:" + (me.statusType.indexSelected == -1 ? 0 : me.statuses[me.statusType.indexSelected].id)
-				, me.poRequisitionsLoaded, me);
+			
+			me.loadPORequisitions();
 		},
 		
 		houseCodesLoaded: function(me, activeId) { 
@@ -1168,7 +1226,7 @@ ii.Class({
 			
 			me.houseCodeDetailStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId, me.houseCodeDetailsLoaded, me);
 			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.houseCodeJobsLoaded, me);			
-			me.loadPORequisitions();
+			//me.loadPORequisitions();
 			me.resizeControls();
 		},
 		
@@ -1185,16 +1243,27 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 
-			me.lastSelectedRowIndex = -1;			
+			me.lastSelectedRowIndex = -1;
+			me.houseCodeDetailStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId, me.houseCodeDetailsLoaded, me);
+			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.houseCodeJobsLoaded, me);			
 			me.loadPORequisitions();
 		},
 		
 		loadPORequisitions: function() {
 			var me = this;
-
+			var statusType = "";
+			
+			if (me.action == "PORequisition" && me.PORequisitionAuthorized)
+				statusType = me.statusType.indexSelected == -1 ? 0 : me.statuses[me.statusType.indexSelected].id;
+			else if (me.action == "PORequisitionToPurchaseOrder")
+				statusType = "8";
+			else
+				return;
+					
 			me.setLoadCount();
+			me.poRequisitionStore.reset();
 			me.poRequisitionStore.fetch("houseCode:" + parent.fin.appUI.houseCodeId
-				+ ",statusType:" + (me.statusType.indexSelected == -1 ? 0 : me.statuses[me.statusType.indexSelected].id)
+				+ ",statusType:" + statusType
 				, me.poRequisitionsLoaded, me);
 		},
 		
@@ -1214,12 +1283,16 @@ ii.Class({
 			me.searchItem.setValue("");
 		},
 		
-		poItemsLoaded: function(me, activeId) {	
-			
+		poItemsLoaded: function(me, activeId) {
+
 			for (var index = 0; index < me.items.length; index++) {
 				var found = false;
 				for (var iIndex = 0; iIndex < me.poRequisitionDetails.length; iIndex++) {
-					if (me.items[index].number == me.poRequisitionDetails[iIndex].number) {
+					if (me.items[index].number != me.poRequisitionDetails[iIndex].number) {
+						me.items[index].id = 0;
+					}
+					else if (me.items[index].number == me.poRequisitionDetails[iIndex].number) {
+						me.items[index].id = me.poRequisitionDetails[iIndex].id;
 						found = true; 
 						break;
 					}	
@@ -1259,123 +1332,132 @@ ii.Class({
 			
 			if (item == undefined) 
 				return;
-
-			me.poRequisitionId = me.requisitionGrid.data[index].id;
-			me.requestorName.setValue(item.requestorName);
-			me.requestorEmail.setValue(item.requestorEmail);
-			me.requestedDate.setValue(item.requestedDate);
-			me.deliveryDate.setValue(item.deliveryDate);
-			me.vendorName.lastBlurValue = item.vendorTitle;
-			$("#VendorNameText").val(item.vendorTitle);					
-			me.vendorAddress1.setValue(item.vendorAddressLine1);
-			me.vendorAddress2.setValue(item.vendorAddressLine2);
-			me.vendorCity.setValue(item.vendorCity);
 			
-			var itemIndex = ii.ajax.util.findIndexById(item.vendorStateType.toString(), me.stateTypes);
-			if (itemIndex >= 0 && itemIndex != undefined) 
-				me.vendorState.select(itemIndex, me.vendorState.focused);
-			
-			me.vendorZip.setValue(item.vendorZip);
-			me.vendorContactName.setValue(item.vendorContactName);
-			me.vendorPhone.setValue(item.vendorPhoneNumber);
-			me.vendorEmail.setValue(item.vendorEmail);
-			me.reasonForRequest.setValue(item.reasonForRequest);
-			
-			if (item.urgencyDate == "" || item.urgencyDate == "1/1/1900 12:00:00 AM") {
-				me.urgencyDate.setValue("");
-                $("#LabelUrgencyDate").html("<span id='nonRequiredFieldIndicator'>Urgency Date:</span>");
-            }                   
-            else {                
-                me.urgencyDate.setValue(item.urgencyDate);
-                $("#LabelUrgencyDate").html("<span class='requiredFieldIndicator'>&#149;</span>Urgency Date:");
-            }
+			if (me.action == "PORequisition") {				
+				me.poRequisitionId = me.requisitionGrid.data[index].id;
+				me.requestorName.setValue(item.requestorName);
+				me.requestorEmail.setValue(item.requestorEmail);
+				me.requestedDate.setValue(item.requestedDate);
+				me.deliveryDate.setValue(item.deliveryDate);
+				me.vendorName.lastBlurValue = item.vendorTitle;
+				$("#VendorNameText").val(item.vendorTitle);					
+				me.vendorAddress1.setValue(item.vendorAddressLine1);
+				me.vendorAddress2.setValue(item.vendorAddressLine2);
+				me.vendorCity.setValue(item.vendorCity);
 				
-			if (item.requisitionType == "Special Supply") 
-				$('#RequisitionTypeSpecialSupply').attr('checked', true);
-			else if (item.requisitionType == "Off Contract") 
-				$('#RequisitionTypeOffContract').attr('checked', true);
-			
-			if (item.urgency == "Urgent") 
-				$('#UrgencyUrgent').attr('checked', true);
-			else if (item.urgency == "Not Urgent") 
-				$('#UrgencyNotUrgent').attr('checked', true);
-			
-			if (item.lifeSpan == "Permanent") 
-				$('#LifeSpanPermanent').attr('checked', true);
-			else if (item.lifeSpan == "Temporary") 
-				$('#LifeSpanTemporary').attr('checked', true);
-			
-			me.vendor.setValue(item.vendorTitle);
-			
-			itemIndex = ii.ajax.util.findIndexById(item.houseCode.toString(), me.houseCodes);
-			if (itemIndex != undefined) 
-				me.company.setValue(me.houseCodes[itemIndex].name);
-			
-			itemIndex = ii.ajax.util.findIndexById(item.houseCodeJob.toString(), me.houseCodeJobs);
-			if (itemIndex >= 0 && itemIndex != undefined) 
-				me.shippingJob.select(itemIndex, me.shippingJob.focused);
-			
-			me.shippingAddress1.setValue(item.shipToAddress1);
-			me.shippingAddress2.setValue(item.shipToAddress2);
-			me.shippingCity.setValue(item.shipToCity);
-			
-			itemIndex = ii.ajax.util.findIndexById(item.shipToState.toString(), me.stateTypes);
-			if (itemIndex >= 0 && itemIndex != undefined) 
-				me.shippingState.select(itemIndex, me.shippingState.focused);				
-			
-			me.shippingZip.setValue(item.shipToZip);
-			me.shippingPhone.setValue(item.shipToPhone);
-			me.shippingFax.setValue(item.shipToFax);	
-
-			if (me.requisitionGrid.data[index].statusType == 10 || me.requisitionGrid.data[index].statusType == 1) {
-				if (me.requisitionGrid.data[index].statusType == 10) {
-					$("#AnchorResendRequisition").show();
-					$("#AnchorSendRequisition").hide();
+				var itemIndex = ii.ajax.util.findIndexById(item.vendorStateType.toString(), me.stateTypes);
+				if (itemIndex >= 0 && itemIndex != undefined) 
+					me.vendorState.select(itemIndex, me.vendorState.focused);
+				
+				me.vendorZip.setValue(item.vendorZip);
+				me.vendorContactName.setValue(item.vendorContactName);
+				me.vendorPhone.setValue(item.vendorPhoneNumber);
+				me.vendorEmail.setValue(item.vendorEmail);
+				me.reasonForRequest.setValue(item.reasonForRequest);
+				
+				if (item.urgencyDate == "" || item.urgencyDate == "1/1/1900 12:00:00 AM") {
+					me.urgencyDate.setValue("");
+	                $("#LabelUrgencyDate").html("<span id='nonRequiredFieldIndicator'>Urgency Date:</span>");
+	            }                   
+	            else {                
+	                me.urgencyDate.setValue(item.urgencyDate);
+	                $("#LabelUrgencyDate").html("<span class='requiredFieldIndicator'>&#149;</span>Urgency Date:");
+	            }
+					
+				if (item.requisitionType == "Special Supply") 
+					$('#RequisitionTypeSpecialSupply').attr('checked', true);
+				else if (item.requisitionType == "Off Contract") 
+					$('#RequisitionTypeOffContract').attr('checked', true);
+				
+				if (item.urgency == "Urgent") 
+					$('#UrgencyUrgent').attr('checked', true);
+				else if (item.urgency == "Not Urgent") 
+					$('#UrgencyNotUrgent').attr('checked', true);
+				
+				if (item.lifeSpan == "Permanent") 
+					$('#LifeSpanPermanent').attr('checked', true);
+				else if (item.lifeSpan == "Temporary") 
+					$('#LifeSpanTemporary').attr('checked', true);
+				
+				me.vendor.setValue(item.vendorTitle);
+				
+				itemIndex = ii.ajax.util.findIndexById(item.houseCode.toString(), me.houseCodes);
+				if (itemIndex != undefined) 
+					me.company.setValue(me.houseCodes[itemIndex].name);
+				
+				itemIndex = ii.ajax.util.findIndexById(item.houseCodeJob.toString(), me.houseCodeJobs);
+				if (itemIndex >= 0 && itemIndex != undefined) 
+					me.shippingJob.select(itemIndex, me.shippingJob.focused);
+				
+				me.shippingAddress1.setValue(item.shipToAddress1);
+				me.shippingAddress2.setValue(item.shipToAddress2);
+				me.shippingCity.setValue(item.shipToCity);
+				
+				itemIndex = ii.ajax.util.findIndexById(item.shipToState.toString(), me.stateTypes);
+				if (itemIndex >= 0 && itemIndex != undefined) 
+					me.shippingState.select(itemIndex, me.shippingState.focused);				
+				
+				me.shippingZip.setValue(item.shipToZip);
+				me.shippingPhone.setValue(item.shipToPhone);
+				me.shippingFax.setValue(item.shipToFax);	
+	
+				if (me.requisitionGrid.data[index].statusType == 10 || me.requisitionGrid.data[index].statusType == 1) {
+					if (me.requisitionGrid.data[index].statusType == 10) {
+						$("#AnchorResendRequisition").show();
+						$("#AnchorSendRequisition").hide();
+					}
+					if (me.requisitionGrid.data[index].statusType == 1) {
+						$("#AnchorResendRequisition").hide();
+						$("#AnchorSendRequisition").show();
+					}
+	
+					$("#AnchorEdit").show();
+					$("#AnchorView").hide();
+					$("#VendorInfo").show();
+					$("#CategoryInfo").show();
+					$("#imgAdd").show();
+					$("#imgEdit").show();
+					$("#imgRemove").show();				
+					me.anchorSave.display(ui.cmn.behaviorStates.enabled);
+					me.setReadOnly(false);															
 				}
-				if (me.requisitionGrid.data[index].statusType == 1) {
-					$("#AnchorResendRequisition").hide();
-					$("#AnchorSendRequisition").show();
-				}
-
-				$("#AnchorEdit").show();
-				$("#AnchorView").hide();
-				$("#VendorInfo").show();
-				$("#CategoryInfo").show();
-				$("#imgAdd").show();
-				$("#imgEdit").show();
-				$("#imgRemove").show();				
-				me.anchorSave.display(ui.cmn.behaviorStates.enabled);
-				me.setReadOnly(false);															
-			}
-			else {
-				if (me.requisitionGrid.data[index].statusType == 2) {
-					$("#AnchorResendRequisition").show();
-					$("#AnchorSendRequisition").hide();
-				}					
 				else {
-					$("#AnchorResendRequisition").hide();
-					$("#AnchorSendRequisition").hide();
-				}			
-
-				$("#AnchorEdit").hide();
-				$("#AnchorView").show();
-				$("#VendorInfo").hide();
-				$("#CategoryInfo").hide();
-				$("#imgAdd").hide();
-				$("#imgEdit").hide();
-				$("#imgRemove").hide();
-				me.anchorSave.display(ui.cmn.behaviorStates.disabled);
-				me.setReadOnly(true);
+					if (me.requisitionGrid.data[index].statusType == 2) {
+						$("#AnchorResendRequisition").show();
+						$("#AnchorSendRequisition").hide();
+					}					
+					else {
+						$("#AnchorResendRequisition").hide();
+						$("#AnchorSendRequisition").hide();
+					}			
+	
+					$("#AnchorEdit").hide();
+					$("#AnchorView").show();
+					$("#VendorInfo").hide();
+					$("#CategoryInfo").hide();
+					$("#imgAdd").hide();
+					$("#imgEdit").hide();
+					$("#imgRemove").hide();
+					me.anchorSave.display(ui.cmn.behaviorStates.disabled);
+					me.setReadOnly(true);
+				}
+				
+				$("#AnchorPrint").show();
+				me.loadCount++;
+				me.modified(false);	
+				me.setLoadCount();
+				me.poRequisitionDetailStore.reset();
+				me.poRequisitionDocumentStore.reset();
+				me.poRequisitionDetailStore.fetch("userId:[user],poRequisitionId:" + me.poRequisitionId, me.poRequisitonDetailsLoaded, me);
+				me.poRequisitionDocumentStore.fetch("userId:[user],poRequisitionId:" + me.poRequisitionId, me.poRequisitionDocumentsLoaded, me);
 			}
-			
-			$("#AnchorPrint").show();
-			me.loadCount++;
-			me.modified(false);	
-			me.setLoadCount();
-			me.poRequisitionDetailStore.reset();
-			me.poRequisitionDocumentStore.reset();
-			me.poRequisitionDetailStore.fetch("userId:[user],poRequisitionId:" + me.poRequisitionId, me.poRequisitonDetailsLoaded, me);
-			me.poRequisitionDocumentStore.fetch("userId:[user],poRequisitionId:" + me.poRequisitionId, me.poRequisitionDocumentsLoaded, me);
+			else if (me.action == "PORequisitionToPurchaseOrder") {
+				
+				me.poRequisitionId = me.requisitionGrid.data[index].id;
+				me.setLoadCount();
+				me.validatePORequisitionStore.reset();
+				me.validatePORequisitionStore.fetch("vendorName:" + me.requisitionGrid.data[index].vendorTitle + ",houseCodeId:" + me.requisitionGrid.data[index].houseCode + ",poRequisitionId:" + me.poRequisitionId + ",userId:[user]", me.validatePORequisitionsLoaded, me);
+			}			
 		},	
 		
 		poRequisitonDetailsLoaded: function(me, activeId) {
@@ -1389,6 +1471,20 @@ ii.Class({
 
 			me.documentGrid.setData(me.poRequisitionDocuments);
 			me.documentGrid.setHeight(100);
+			me.checkLoadCount();
+		},
+		
+		validatePORequisitionsLoaded: function(me, activeId) {
+				
+			me.validVendorId = me.validatePORequisitions[0].poRequisitionId
+			
+			if (me.validatePORequisitions[0].id >= 0)				
+				$("#AnchorGeneratePurchaseOrder").show();				
+			else if (me.validatePORequisitions[0].id == -1) {
+				alert("Selected PO Requisition is not valid");
+				$("#AnchorGeneratePurchaseOrder").hide();
+			}
+								
 			me.checkLoadCount();
 		},
 		
@@ -1457,9 +1553,11 @@ ii.Class({
 				me.account.setData(me.glAccounts);
 				me.category.fetchingData();
 				me.catalog.fetchingData();
+				me.poRequisitionDetailStore.reset();
 				me.accountStore.reset();
-				me.accountStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.categoriesLoaded, me);
 				me.catalogStore.reset();
+				me.poRequisitionDetailStore.fetch("userId:[user],poRequisitionId:" + me.poRequisitionId, me.poRequisitonDetailsLoaded, me);				
+				me.accountStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.categoriesLoaded, me);				
 				me.catalogStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.catalogsLoaded, me);
 			}
 			else {
@@ -1606,6 +1704,43 @@ ii.Class({
 				else
 					return true;
 			}			
+		},
+		
+		actionPORequisitionItem: function() {
+			var me = this;
+
+			$("#AnchorNew").show();
+			$("#AnchorEdit").hide();
+			$("#AnchorView").hide();			
+			$("#AnchorSendRequisition").hide();
+			$("#AnchorResendRequisition").hide();			
+			$("#AnchorPrint").hide();
+			$("#AnchorGeneratePurchaseOrder").hide();
+			$("#LabelStatus").show();
+			$("#InputTextStatus").show();			
+			$("#SearchButtonStatus").show();
+			me.action = "PORequisition";
+			me.loadPORequisitions();
+			me.setStatus("Loaded");
+			me.modified(false);
+		},
+		
+		actionPORequisitionToPurchaseOrderItem: function() {
+			var me = this;
+
+			$("#AnchorNew").hide();
+			$("#AnchorEdit").hide();
+			$("#AnchorView").hide();			
+			$("#AnchorSendRequisition").hide();
+			$("#AnchorResendRequisition").hide();			
+			$("#AnchorPrint").hide();
+			$("#LabelStatus").hide();
+			$("#InputTextStatus").hide();			
+			$("#SearchButtonStatus").hide();
+			me.action = "PORequisitionToPurchaseOrder";
+			me.loadPORequisitions();
+			me.setStatus("Loaded");
+			me.modified(false);
 		},
 					
 		actionNewItem: function() {
@@ -1848,7 +1983,6 @@ ii.Class({
 		},
 		
 		actionSendRequisitionItem: function() {
-			var args = ii.args(arguments,{});
 			var me = this;
 			
 			if (me.requisitionGrid.activeRowIndex == -1)
@@ -1860,7 +1994,6 @@ ii.Class({
 		},
 
 		actionResendRequisitionItem: function() {
-			var args = ii.args(arguments,{});
 			var me = this;
 			
 			if (me.requisitionGrid.activeRowIndex == -1)
@@ -1981,7 +2114,18 @@ ii.Class({
 				}
 			}
 		},
+		
+		actionGeneratePurchaseOrderItem: function() {
+			var me = this;
+			
+			if (me.requisitionGrid.activeRowIndex == -1)
+				return true;
 
+			$("#messageToUser").text("Generating Purchase Order");
+			me.status = "GeneratePurchaseOrder";
+			me.actionSaveItem();
+		},
+		
 		fileNamesLoaded: function(me, activeId) {
 
 			if (parent.fin.appUI.modified)
@@ -2048,6 +2192,10 @@ ii.Class({
 					);
 
 				$("#messageToUser").text("Saving");
+			}
+			else if (me.status == "GeneratePurchaseOrder") {
+				item = me.requisitionGrid.data[index];
+				item.statusType = 11;
 			}
 			else {
 				item = me.requisitionGrid.data[index];
@@ -2151,6 +2299,47 @@ ii.Class({
 				xml += '<purPORequisitionDocumentDelete';
 				xml += ' id="' + me.poRequisitionDocuments[me.documentGrid.activeRowIndex].id + '"';			
 				xml += '/>';
+			}			
+			else if (me.status == "GeneratePurchaseOrder") {
+				var houseCodeJobId = me.requisitionGrid.data[me.lastSelectedRowIndex].houseCodeJob;
+				
+				xml += '<purPurchaseOrder';
+					xml += ' id="' + 0 + '"';
+					xml += ' vendorId="' + me.validVendorId + '"';
+					xml += ' houseCodeId="' + me.requisitionGrid.data[me.lastSelectedRowIndex].houseCode + '"';					
+					xml += ' houseCodeJobId="' + houseCodeJobId + '"';
+					xml += ' contact="' + ui.cmn.text.xml.encode(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorContactName) + '"';
+					xml += ' address1="' + ui.cmn.text.xml.encode(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToAddress1) + '"';
+					xml += ' address2="' + ui.cmn.text.xml.encode(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToAddress2) + '"';
+					xml += ' city="' + ui.cmn.text.xml.encode(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToCity) + '"';
+					xml += ' stateType="' + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToState + '"';
+					xml += ' zip="' + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToZip + '"';
+					xml += ' phone="' + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToPhone + '"';
+					xml += ' fax="' + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToFax + '"';
+					xml += ' template="' + "false" + '"';
+					xml += ' templateTitle=""';					
+					xml += ' reportFooter=""';					
+					xml += '/>';
+				
+				if (me.validatePORequisitions[0].id > 0) {
+					for (var index = 0; index < me.validatePORequisitions.length; index++) {			
+					
+						xml += '<purPurchaseOrderDetail';
+						xml += ' id="0"';
+						xml += ' purchaseOrderId="' + 0 + '"';
+						xml += ' catalogItemId="' + me.validatePORequisitions[index].id + '"';
+						xml += ' houseCodeJobId="' + houseCodeJobId + '"';
+						xml += ' price="' + parseFloat(me.validatePORequisitions[index].price) + '"';
+						xml += ' quantity="' + me.validatePORequisitions[index].quantity + '"';
+						xml += ' quantityReceived="0"';
+						xml += '/>';
+					}
+				}
+				
+				xml += '<purPORequisitionStatusUpdate';
+				xml += ' id="' + me.requisitionGrid.data[me.lastSelectedRowIndex].id + '"';
+				xml += ' transactionStatusType="11"';			
+				xml += '/>';
 			}
 			else {
 				xml += '<purPORequisitionEmailNotification';
@@ -2211,7 +2400,7 @@ ii.Class({
 					$("#popupLoading").fadeOut("slow");
 				}
 				else {
-					$(args.xmlNode).find("*").each(function () {
+					$(args.xmlNode).find("*").each(function () { 
 						switch (this.tagName) {
 							case "purPORequisition":
 								if (me.status == "NewPORequisition") {
@@ -2220,10 +2409,15 @@ ii.Class({
 									me.requisitionGrid.setData(me.poRequisitions);
 									me.requisitionGrid.body.select(me.poRequisitions.length - 1);
 								}
+								else if (me.status == "GeneratePurchaseOrder") {
+									$("#AnchorGeneratePurchaseOrder").hide();
+									me.loadPORequisitions();
+								}
 								else {
 									me.poRequisitions[me.lastSelectedRowIndex] = item;
 									me.requisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
-	
+									me.requisitionGrid.body.select(me.lastSelectedRowIndex);
+									
 									if (me.status == "SendRequisition" || me.status == "ResendRequisition") {
 										$("#AnchorResendRequisition").show();
 										$("#AnchorSendRequisition").hide();

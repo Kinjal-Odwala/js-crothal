@@ -7,6 +7,17 @@ ii.init.register( function() {
 
 ii.init.register( function() {
 
+	fin.pur.poRequisition.hirNodeArgs = {
+		id: {type: Number}
+		, nodeParentId: {type: Number}
+		, hirLevel: {type: Number, required: false, defaultValue: 0}
+		, hierarchyId: {type: Number, required: false, defaultValue: 0}
+		, brief: {type: String, required: false, defaultValue: ""}
+		, title: {type: String, required: false, defaultValue: ""}
+		, childNodeCount: {type: Number, required: false, defaultValue: 0}
+		, active: {type: Boolean, required: false, defaultValue: true}
+	};
+	
 	fin.pur.poRequisition.houseCodeArgs = {
 		id: {type: Number}
 		, number: {type: Number}
@@ -161,7 +172,31 @@ ii.init.register( function() {
 		, fileName: {type: String, required: false, defaultValue: ""}
 	};
 	
+	fin.pur.poRequisition.validatePORequisitionArgs = {
+		id: {type: Number, defaultValue: 0}
+		, poRequisitionId: {type: Number, defaultValue: 0}
+		, account: {type: Number, defaultValue: 0, required: false}
+		, itemSelect: {type: Boolean, required: false, defaultValue: true}
+		, number: {type: String, required: false, defaultValue: ""}
+		, description: {type: String, required: false, defaultValue: ""}
+		, alternateDescription: {type: String, required: false, defaultValue: ""}
+		, unit: {type: String, required: false, defaultValue: ""}
+		, manufactured: {type: String, required: false, defaultValue: ""}
+		, price: {type: String, required: false, defaultValue: ""}
+		, quantity: {type: String, required: false, defaultValue: ""}
+	};
+	
 }, 2);
+
+ii.Class({
+	Name: "fin.pur.poRequisition.HirNode",
+	Definition: {
+		init: function (){
+			var args = ii.args(arguments, fin.pur.poRequisition.hirNodeArgs);
+			$.extend(this, args);
+		}
+	}
+});
 
 ii.Class({
 	Name: "fin.pur.poRequisition.HouseCode",
@@ -316,6 +351,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.pur.poRequisition.fileNameArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.pur.poRequisition.ValidatePORequisition",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pur.poRequisition.validatePORequisitionArgs);
 			$.extend(this, args);
 		}
 	}
