@@ -295,15 +295,20 @@ ii.Class({
 			me.terminationDate.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation( function( isFinal, dataMap ) {					
-					var enteredText = me.terminationDate.text.value;
+				.addValidation( function( isFinal, dataMap ) {
+					if ($("#TermRequestNo")[0].checked) {
+							this.valid = true;
+						}
+					else {
+						var enteredText = me.terminationDate.text.value;
 					
-					if (enteredText == "") 
-						return;
-						
-					me.modified();
-					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
-						this.setInvalid("Please enter valid date.");
+						if (enteredText == "") 
+							return;
+							
+						me.modified();
+						if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+							this.setInvalid("Please enter valid date.");
+					}
 				});
 					
 			me.unitAddress = new ui.ctl.Input.Text({
@@ -1654,42 +1659,15 @@ ii.Class({
 					alert("Please attach at least one Additional Document.");
 					return false;
 				}
-			
-				me.validator.forceBlur();
-				me.validator.queryValidity(true);
-				
-				if ($("input[name='TermRequest']:checked").val() == "false") {
-					me.terminationDate.resetValidation(true);												
-					if (me.terminationDate.lastBlurValue == undefined || me.terminationDate.lastBlurValue == "" || !(ui.cmn.text.validate.generic(me.terminationDate.lastBlurValue, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
-						me.terminationDate.setValue("")
-				}
-
-				if (!me.requestedDate.valid
-					|| !me.deliveryDate.valid
-					|| !me.employeeNumber.valid
-					|| !me.employeeName.valid
-					|| !me.reasonForRequest.valid					
-					|| !me.state.valid					
-					|| !me.terminationDate.valid
-					|| !me.unitAddress.valid
-					|| !me.homeAddress.valid
-					|| !me.requestorEmail.valid
-					|| !me.managerName.valid
-					|| !me.managerEmail.valid
-					|| !me.terminationDate.valid	
-					) {
-					alert("In order to continue, the errors on the page must be corrected.");	
-					return false;
-				}
 				
 				me.payCodeDetailGrid.body.deselectAll();
-				//me.validator.forceBlur();
+				me.validator.forceBlur();
 	
 				// Check to see if the data entered is valid
-				//if (!me.validator.queryValidity(true)) {
-				//	alert("In order to save, the errors on the page must be corrected.");
-				//	return false;
-				//}
+				if (!me.validator.queryValidity(true)) {
+					alert("In order to save, the errors on the page must be corrected.");
+					return false;
+				}
 			
 				if (me.payCheckRequestGrid.activeRowIndex >= 0)
 					id = me.payCheckRequestGrid.data[me.payCheckRequestGrid.activeRowIndex].id
