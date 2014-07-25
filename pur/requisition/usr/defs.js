@@ -108,7 +108,8 @@ ii.init.register( function() {
 		, urgency: {type: String, required: false, defaultValue: ""}
 		, urgencyDate: {type: String, required: false, defaultValue: ""}
 		, lifeSpan: {type: String, required: false, defaultValue: ""}
-		, chargeToPeriod: {type: String, required: false, defaultValue: ""}			
+		, chargeToPeriod: {type: String, required: false, defaultValue: ""}
+		, valid: {type: Boolean, required: false, defaultValue: true}		
 	};
 	
 	fin.pur.poRequisition.poRequisitionDetailArgs = {
@@ -171,21 +172,7 @@ ii.init.register( function() {
 		id: {type: Number}
 		, fileName: {type: String, required: false, defaultValue: ""}
 	};
-	
-	fin.pur.poRequisition.validatePORequisitionArgs = {
-		id: {type: Number, defaultValue: 0}
-		, poRequisitionId: {type: Number, defaultValue: 0}
-		, account: {type: Number, defaultValue: 0, required: false}
-		, itemSelect: {type: Boolean, required: false, defaultValue: true}
-		, number: {type: String, required: false, defaultValue: ""}
-		, description: {type: String, required: false, defaultValue: ""}
-		, alternateDescription: {type: String, required: false, defaultValue: ""}
-		, unit: {type: String, required: false, defaultValue: ""}
-		, manufactured: {type: String, required: false, defaultValue: ""}
-		, price: {type: String, required: false, defaultValue: ""}
-		, quantity: {type: String, required: false, defaultValue: ""}
-	};
-	
+
 }, 2);
 
 ii.Class({
@@ -351,16 +338,6 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.pur.poRequisition.fileNameArgs);
-			$.extend(this, args);
-		}
-	}
-});
-
-ii.Class({
-	Name: "fin.pur.poRequisition.ValidatePORequisition",
-	Definition: {
-		init: function() {
-			var args = ii.args(arguments, fin.pur.poRequisition.validatePORequisitionArgs);
 			$.extend(this, args);
 		}
 	}

@@ -82,8 +82,8 @@ ii.Class({
 			var me = this;
 	
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
-			me.PORequisitionAuthorized = me.authorizer.isAuthorized(me.authorizePath + "\\PORequisition");
-			me.ConvertPORequisitionToPOAuthorized = me.authorizer.isAuthorized(me.authorizePath + "\\ConvertPORequisitionToPO");
+			me.poRequisitionShow = me.authorizer.isAuthorized(me.authorizePath + "\\PORequisition");
+			me.convertPORequisitionToPOShow = me.authorizer.isAuthorized(me.authorizePath + "\\ConvertPORequisitionToPO");
 
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
@@ -94,22 +94,28 @@ ii.Class({
 				$("#messageToUser").css({ "color": "white" });
 				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
 				$("#pageLoading").fadeIn("slow");
-	
+
 				ii.timer.timing("Page displayed");
 				me.loadCount = 3;
 				me.session.registerFetchNotify(me.sessionLoaded,me);
-				
-				if (!me.PORequisitionAuthorized) {
+
+				if (!me.poRequisitionShow) {
 					$("#AnchorNew").hide();
 					$("#LabelStatus").hide();
 					$("#InputTextStatus").hide();			
 					$("#SearchButtonStatus").hide();
 					$("#PORequisitionAction").hide();
 				}
-					
-				if (!me.ConvertPORequisitionToPOAuthorized) 
-					$("#PORequisitionToPurchaseOrderAction").hide();				
-				
+
+				if (!me.convertPORequisitionToPOShow) {
+					$("#GeneratePurchaseOrderFromPORequisitionAction").hide();
+				}
+
+				if (!me.poRequisitionShow && me.convertPORequisitionToPOShow) {
+					$("#AnchorGeneratePurchaseOrder").show();
+					me.action = "GeneratePurchaseOrder";
+				}
+
 				if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
 					me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
 				else
@@ -158,14 +164,14 @@ ii.Class({
 				.addAction({
 					id: "PORequisitionAction", 
 					brief: "PO Requisitions", 
-					title: "PO Requisitions",
+					title: "To list the PO Requisitions",
 					actionFunction: function() { me.actionPORequisitionItem(); }
 				})
 				.addAction({
-					id: "PORequisitionToPurchaseOrderAction",
-					brief: "Convert PO Requisition to Purchase Order", 
-					title: "Convert PO Requisition to Purchase Order",
-					actionFunction: function() { me.actionPORequisitionToPurchaseOrderItem(); }
+					id: "GeneratePurchaseOrderFromPORequisitionAction",
+					brief: "Generate Purchase Order From PO Requisition", 
+					title: "To generate Purchase Order from PO Requisition",
+					actionFunction: function() { me.actionGeneratePurchaseOrderFromPORequisition(); }
 				})
 				
 			me.searchButton = new ui.ctl.buttons.Sizeable({
@@ -199,15 +205,7 @@ ii.Class({
 				clickFunction: function() { me.actionEditItem(); },
 				hasHotState: true
 			});
-			
-			me.anchorNext = new ui.ctl.buttons.Sizeable({
-				id: "AnchorNext",
-				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;Next&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionNextItem(); },
-				hasHotState: true
-			});
-			
+
 			me.anchorPrint = new ui.ctl.buttons.Sizeable({
 				id: "AnchorPrint",
 				className: "iiButton",
@@ -223,7 +221,31 @@ ii.Class({
 				clickFunction: function() { me.actionGeneratePurchaseOrderItem(); },
 				hasHotState: true
 			});
+
+			me.anchorSendRequisition = new ui.ctl.buttons.Sizeable({
+				id: "AnchorSendRequisition",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Send Requisition&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionSendRequisitionItem(); },
+				hasHotState: true
+			});
 			
+			me.anchorResendRequisition = new ui.ctl.buttons.Sizeable({
+				id: "AnchorResendRequisition",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Resend Requisition&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionResendRequisitionItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorNext = new ui.ctl.buttons.Sizeable({
+				id: "AnchorNext",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Next&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionNextItem(); },
+				hasHotState: true
+			});
+
 			me.anchorBack = new ui.ctl.buttons.Sizeable({
 				id: "AnchorBack",
 				className: "iiButton",
@@ -247,23 +269,7 @@ ii.Class({
 				clickFunction: function() { me.actionCancelItem(); },
 				hasHotState: true
 			});
-			
-			me.anchorSendRequisition = new ui.ctl.buttons.Sizeable({
-				id: "AnchorSendRequisition",
-				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;Send Requisition&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionSendRequisitionItem(); },
-				hasHotState: true
-			});
-			
-			me.anchorResendRequisition = new ui.ctl.buttons.Sizeable({
-				id: "AnchorResendRequisition",
-				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;Resend Requisition&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionResendRequisitionItem(); },
-				hasHotState: true
-			});
-			
+
 			me.statusType = new ui.ctl.Input.DropDown.Filtered({
 				id: "StatusType",
 				formatFunction: function( type ) { return type.title; }
@@ -312,7 +318,7 @@ ii.Class({
 			
 			me.requestorName = new ui.ctl.Input.Text({
 		        id: "RequestorName",
-				maxLength: 150,
+				maxLength: 100,
 				changeFunction: function() { me.modified(); }
 		    });
 			
@@ -497,7 +503,7 @@ ii.Class({
 				
 			me.reasonForRequest = new ui.ctl.Input.Text({
 		        id: "ReasonForRequest",
-				maxLength: 100,
+				maxLength: 200,
 				changeFunction: function() { me.modified(); }
 		    });
 			
@@ -522,7 +528,7 @@ ii.Class({
 			
 			me.vendor = new ui.ctl.Input.Text({
 				id: "Vendor",
-				maxLength: 100,
+				maxLength: 256,
 				changeFunction: function() { me.modified(); }
 			});
 			
@@ -622,14 +628,14 @@ ii.Class({
 			
 			me.manufactured = new ui.ctl.Input.Text({
 		        id: "Manufactured",
-		        maxLength: 11,
+		        maxLength: 255,
 				appendToId: "ItemGridControlHolder",
 				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.quantity = new ui.ctl.Input.Text({
 		        id: "Quantity",
-		        maxLength: 11,
+		        maxLength: 10,
 				appendToId: "ItemGridControlHolder",
 				changeFunction: function() { me.modified(); }
 		    });
@@ -658,6 +664,7 @@ ii.Class({
 								
 			me.price = new ui.ctl.Input.Text({
 		        id: "Price",
+				maxLength: 18,
 				appendToId: "ItemGridControlHolder",
 				changeFunction: function() { me.modified(); }
 		    });
@@ -873,8 +880,6 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 			
-			parent.fin.appUI.houseCodeId = 0;
-			
 			me.hirNodes = [];
 			me.hirNodeStore = me.cache.register({
 				storeId: "hirNodes",
@@ -987,14 +992,6 @@ ii.Class({
 				itemConstructor: fin.pur.poRequisition.FileName,
 				itemConstructorArgs: fin.pur.poRequisition.fileNameArgs,
 				injectionArray: me.fileNames
-			});
-			
-			me.validatePORequisitions = [];
-			me.validatePORequisitionStore = me.cache.register({
-			storeId: "purValidatePORequisitions",
-				itemConstructor: fin.pur.poRequisition.ValidatePORequisition,
-				itemConstructorArgs: fin.pur.poRequisition.validatePORequisitionArgs,
-				injectionArray: me.validatePORequisitions
 			});
 		},
 
@@ -1184,7 +1181,7 @@ ii.Class({
 			me.statuses.push(new fin.pur.poRequisition.Status(10, "Unapproved"));
 
 			me.statusType.setData(me.statuses);
-			me.statusType.select(0, me.statusType.focused);
+			me.statusType.select(1, me.statusType.focused);
 		},
 		
 		accountsLoaded: function(me, activeId) {
@@ -1215,7 +1212,6 @@ ii.Class({
 			
 			if (parent.fin.appUI.houseCodeId == 0) {
 				if (me.houseCodes.length <= 0) {
-				
 					return me.houseCodeSearchError();
 				}
 				
@@ -1223,11 +1219,10 @@ ii.Class({
 			}
 
 			me.houseCodeGlobalParametersUpdate(false);
-			
 			me.houseCodeDetailStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId, me.houseCodeDetailsLoaded, me);
 			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.houseCodeJobsLoaded, me);			
-			//me.loadPORequisitions();
 			me.resizeControls();
+			me.loadPORequisitions();
 		},
 		
 		houseCodeDetailsLoaded: function(me, activeId) {		
@@ -1253,18 +1248,20 @@ ii.Class({
 			var me = this;
 			var statusType = "";
 			
-			if (me.action == "PORequisition" && me.PORequisitionAuthorized)
+			if (me.action == "PORequisition" && me.poRequisitionShow)
 				statusType = me.statusType.indexSelected == -1 ? 0 : me.statuses[me.statusType.indexSelected].id;
-			else if (me.action == "PORequisitionToPurchaseOrder")
+			else if (me.action == "GeneratePurchaseOrder")
 				statusType = "8";
 			else
 				return;
 					
 			me.setLoadCount();
 			me.poRequisitionStore.reset();
-			me.poRequisitionStore.fetch("houseCode:" + parent.fin.appUI.houseCodeId
+			me.poRequisitionStore.fetch("poRequisitionId:0"
+				+ ",houseCodeId:" + parent.fin.appUI.houseCodeId
 				+ ",statusType:" + statusType
-				, me.poRequisitionsLoaded, me);
+				, me.poRequisitionsLoaded
+				, me);
 		},
 		
 		poRequisitionsLoaded: function(me, activeId) {
@@ -1325,22 +1322,21 @@ ii.Class({
 			var me = this;
 			var index = args.index;
 			var item = me.requisitionGrid.data[index];			
-			
-			me.lastSelectedRowIndex = index;
-			me.status = "";
-			me.poRequisitionId = 0;
-			
+
 			if (item == undefined) 
 				return;
 			
-			if (me.action == "PORequisition") {				
-				me.poRequisitionId = me.requisitionGrid.data[index].id;
+			me.lastSelectedRowIndex = index;
+			me.poRequisitionId = me.requisitionGrid.data[index].id;
+			me.status = "";
+
+			if (me.action == "PORequisition") {
 				me.requestorName.setValue(item.requestorName);
 				me.requestorEmail.setValue(item.requestorEmail);
 				me.requestedDate.setValue(item.requestedDate);
 				me.deliveryDate.setValue(item.deliveryDate);
 				me.vendorName.lastBlurValue = item.vendorTitle;
-				$("#VendorNameText").val(item.vendorTitle);					
+				$("#VendorNameText").val(item.vendorTitle);
 				me.vendorAddress1.setValue(item.vendorAddressLine1);
 				me.vendorAddress2.setValue(item.vendorAddressLine2);
 				me.vendorCity.setValue(item.vendorCity);
@@ -1451,14 +1447,7 @@ ii.Class({
 				me.poRequisitionDetailStore.fetch("userId:[user],poRequisitionId:" + me.poRequisitionId, me.poRequisitonDetailsLoaded, me);
 				me.poRequisitionDocumentStore.fetch("userId:[user],poRequisitionId:" + me.poRequisitionId, me.poRequisitionDocumentsLoaded, me);
 			}
-			else if (me.action == "PORequisitionToPurchaseOrder") {
-				
-				me.poRequisitionId = me.requisitionGrid.data[index].id;
-				me.setLoadCount();
-				me.validatePORequisitionStore.reset();
-				me.validatePORequisitionStore.fetch("vendorName:" + me.requisitionGrid.data[index].vendorTitle + ",houseCodeId:" + me.requisitionGrid.data[index].houseCode + ",poRequisitionId:" + me.poRequisitionId + ",userId:[user]", me.validatePORequisitionsLoaded, me);
-			}			
-		},	
+		},
 		
 		poRequisitonDetailsLoaded: function(me, activeId) {
 
@@ -1471,20 +1460,6 @@ ii.Class({
 
 			me.documentGrid.setData(me.poRequisitionDocuments);
 			me.documentGrid.setHeight(100);
-			me.checkLoadCount();
-		},
-		
-		validatePORequisitionsLoaded: function(me, activeId) {
-				
-			me.validVendorId = me.validatePORequisitions[0].poRequisitionId
-			
-			if (me.validatePORequisitions[0].id >= 0)				
-				$("#AnchorGeneratePurchaseOrder").show();				
-			else if (me.validatePORequisitions[0].id == -1) {
-				alert("Selected PO Requisition is not valid");
-				$("#AnchorGeneratePurchaseOrder").hide();
-			}
-								
 			me.checkLoadCount();
 		},
 		
@@ -1529,27 +1504,23 @@ ii.Class({
 		
 		vendorChanged: function() {
 			var me = this;
-			var index = 0;			
-			var itemIndex = -1;
-			
-			itemIndex = me.vendorName.indexSelected;	
-			me.lastIndexSelected = itemIndex;
-			
-			if (itemIndex >= 0) {
-				me.vendorId = me.vendors[itemIndex].number;
-				me.vendor.setValue(me.vendors[itemIndex].name);
-				me.vendorAddress1.setValue(me.vendors[itemIndex].addressLine1);
-				me.vendorAddress2.setValue(me.vendors[itemIndex].addressLine2);
-				me.vendorCity.setValue(me.vendors[itemIndex].city);
+			var index = me.vendorName.indexSelected;		
+
+			if (index >= 0) {
+				me.vendorId = me.vendors[index].number;
+				me.vendor.setValue(me.vendors[index].name);
+				me.vendorAddress1.setValue(me.vendors[index].addressLine1);
+				me.vendorAddress2.setValue(me.vendors[index].addressLine2);
+				me.vendorCity.setValue(me.vendors[index].city);
 				
-				index = ii.ajax.util.findIndexById(me.vendors[itemIndex].stateType.toString(), me.stateTypes);				
-				if(index >= 0 && index != undefined)
-					me.vendorState.select(index, me.vendorState.focused);
+				var itemIndex = ii.ajax.util.findIndexById(me.vendors[index].stateType.toString(), me.stateTypes);				
+				if (itemIndex != undefined && itemIndex >= 0)
+					me.vendorState.select(itemIndex, me.vendorState.focused);
 					
-				me.vendorZip.setValue(me.vendors[itemIndex].zip);
-				me.vendorContactName.setValue(me.vendors[itemIndex].contactName);
-				me.vendorPhone.setValue(me.vendors[itemIndex].phoneNumber);
-				me.vendorEmail.setValue(me.vendors[itemIndex].email);
+				me.vendorZip.setValue(me.vendors[index].zip);
+				me.vendorContactName.setValue(me.vendors[index].contactName);
+				me.vendorPhone.setValue(me.vendors[index].phoneNumber);
+				me.vendorEmail.setValue(me.vendors[index].email);
 				me.account.setData(me.glAccounts);
 				me.category.fetchingData();
 				me.catalog.fetchingData();
@@ -1579,7 +1550,6 @@ ii.Class({
 			
 			if (me.vendors.length > 0) {
 				me.vendorId = me.vendors[0].number;
-				
 				me.category.fetchingData();
 				me.catalog.fetchingData();
 				me.accountStore.reset();
@@ -1725,7 +1695,7 @@ ii.Class({
 			me.modified(false);
 		},
 		
-		actionPORequisitionToPurchaseOrderItem: function() {
+		actionGeneratePurchaseOrderFromPORequisition: function() {
 			var me = this;
 
 			$("#AnchorNew").hide();
@@ -1737,7 +1707,8 @@ ii.Class({
 			$("#LabelStatus").hide();
 			$("#InputTextStatus").hide();			
 			$("#SearchButtonStatus").hide();
-			me.action = "PORequisitionToPurchaseOrder";
+			$("#AnchorGeneratePurchaseOrder").show();
+			me.action = "GeneratePurchaseOrder";
 			me.loadPORequisitions();
 			me.setStatus("Loaded");
 			me.modified(false);
@@ -1815,13 +1786,6 @@ ii.Class({
 		
 		actionEditItem: function() {
 			var me = this;
-			var itemIndex = 0;			
-			var name;
-						
-			if (parent.fin.appUI.houseCodeId == 0) {
-				alert("Please select the House Code before adding the new PO Requisition.")
-				return true;
-			}
 			
 			if (me.requisitionGrid.activeRowIndex == -1)
 				return true;
@@ -2115,17 +2079,6 @@ ii.Class({
 			}
 		},
 		
-		actionGeneratePurchaseOrderItem: function() {
-			var me = this;
-			
-			if (me.requisitionGrid.activeRowIndex == -1)
-				return true;
-
-			$("#messageToUser").text("Generating Purchase Order");
-			me.status = "GeneratePurchaseOrder";
-			me.actionSaveItem();
-		},
-		
 		fileNamesLoaded: function(me, activeId) {
 
 			if (parent.fin.appUI.modified)
@@ -2138,6 +2091,17 @@ ii.Class({
 				$("#iFrameUpload")[0].contentWindow.document.getElementById("FileName").value = me.fileNames[0].fileName;
 				$("#iFrameUpload")[0].contentWindow.document.getElementById("DownloadButton").click();
 			}
+		},
+		
+		actionGeneratePurchaseOrderItem: function() {
+			var me = this;
+			
+			if (me.requisitionGrid.activeRowIndex == -1)
+				return true;
+
+			$("#messageToUser").text("Generating Purchase Order");
+			me.status = "GeneratePurchaseOrder";
+			me.actionSaveItem();
 		},
 		
 		actionSaveItem: function() {
@@ -2195,7 +2159,6 @@ ii.Class({
 			}
 			else if (me.status == "GeneratePurchaseOrder") {
 				item = me.requisitionGrid.data[index];
-				item.statusType = 11;
 			}
 			else {
 				item = me.requisitionGrid.data[index];
@@ -2235,7 +2198,8 @@ ii.Class({
 			if (me.status == "NewPORequisition" || me.status == "EditPORequisition") {
 				xml += '<purPORequisition';
 				xml += ' id="' + item.id + '"';
-				xml += ' statusType="' + item.statusType + '"';
+				xml += ' houseCodeId="' + item.houseCode + '"';
+				xml += ' houseCodeJobId="' + item.houseCodeJob + '"';
 				xml += ' requestorName="' + ui.cmn.text.xml.encode(item.requestorName) + '"';
 				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
 				xml += ' requestedDate="' + item.requestedDate + '"';
@@ -2255,8 +2219,6 @@ ii.Class({
 				xml += ' urgencyDate="' + item.urgencyDate + '"';
 				xml += ' lifeSpan="' + item.lifeSpan + '"';
 				xml += ' chargeToPeriod="' + item.chargeToPeriod + '"';
-				xml += ' houseCode="' + item.houseCode + '"';
-				xml += ' houseCodeJob="' + item.houseCodeJob + '"';
 				xml += ' shipToAddress1="' + ui.cmn.text.xml.encode(item.shipToAddress1) + '"';
 				xml += ' shipToAddress2="' + ui.cmn.text.xml.encode(item.shipToAddress2) + '"';
 				xml += ' shipToCity="' + ui.cmn.text.xml.encode(item.shipToCity) + '"';
@@ -2299,46 +2261,12 @@ ii.Class({
 				xml += '<purPORequisitionDocumentDelete';
 				xml += ' id="' + me.poRequisitionDocuments[me.documentGrid.activeRowIndex].id + '"';			
 				xml += '/>';
-			}			
+			}
 			else if (me.status == "GeneratePurchaseOrder") {
-				var houseCodeJobId = me.requisitionGrid.data[me.lastSelectedRowIndex].houseCodeJob;
-				
-				xml += '<purPurchaseOrder';
-					xml += ' id="' + 0 + '"';
-					xml += ' vendorId="' + me.validVendorId + '"';
-					xml += ' houseCodeId="' + me.requisitionGrid.data[me.lastSelectedRowIndex].houseCode + '"';					
-					xml += ' houseCodeJobId="' + houseCodeJobId + '"';
-					xml += ' contact="' + ui.cmn.text.xml.encode(me.requisitionGrid.data[me.lastSelectedRowIndex].vendorContactName) + '"';
-					xml += ' address1="' + ui.cmn.text.xml.encode(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToAddress1) + '"';
-					xml += ' address2="' + ui.cmn.text.xml.encode(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToAddress2) + '"';
-					xml += ' city="' + ui.cmn.text.xml.encode(me.requisitionGrid.data[me.lastSelectedRowIndex].shipToCity) + '"';
-					xml += ' stateType="' + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToState + '"';
-					xml += ' zip="' + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToZip + '"';
-					xml += ' phone="' + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToPhone + '"';
-					xml += ' fax="' + me.requisitionGrid.data[me.lastSelectedRowIndex].shipToFax + '"';
-					xml += ' template="' + "false" + '"';
-					xml += ' templateTitle=""';					
-					xml += ' reportFooter=""';					
-					xml += '/>';
-				
-				if (me.validatePORequisitions[0].id > 0) {
-					for (var index = 0; index < me.validatePORequisitions.length; index++) {			
-					
-						xml += '<purPurchaseOrderDetail';
-						xml += ' id="0"';
-						xml += ' purchaseOrderId="' + 0 + '"';
-						xml += ' catalogItemId="' + me.validatePORequisitions[index].id + '"';
-						xml += ' houseCodeJobId="' + houseCodeJobId + '"';
-						xml += ' price="' + parseFloat(me.validatePORequisitions[index].price) + '"';
-						xml += ' quantity="' + me.validatePORequisitions[index].quantity + '"';
-						xml += ' quantityReceived="0"';
-						xml += '/>';
-					}
-				}
-				
-				xml += '<purPORequisitionStatusUpdate';
-				xml += ' id="' + me.requisitionGrid.data[me.lastSelectedRowIndex].id + '"';
-				xml += ' transactionStatusType="11"';			
+				xml += '<purPORequisitionToPurchaseOrder';
+				xml += ' id="' + me.poRequisitionId + '"';
+				xml += ' houseCodeId="' + item.houseCode + '"';
+				xml += ' vendorTitle="' +  ui.cmn.text.xml.encode(item.vendorTitle) + '"';
 				xml += '/>';
 			}
 			else {
@@ -2410,8 +2338,8 @@ ii.Class({
 									me.requisitionGrid.body.select(me.poRequisitions.length - 1);
 								}
 								else if (me.status == "GeneratePurchaseOrder") {
-									$("#AnchorGeneratePurchaseOrder").hide();
-									me.loadPORequisitions();
+									me.poRequisitions.splice(me.requisitionGrid.activeRowIndex, 1);
+									me.requisitionGrid.setData(me.poRequisitions);
 								}
 								else {
 									me.poRequisitions[me.lastSelectedRowIndex] = item;
@@ -2452,6 +2380,10 @@ ii.Class({
 					me.modified(false);
 					me.setStatus("Saved");
 				}
+			}
+			else if (status == "invalid") {
+				alert($(args.xmlNode).attr("message"));
+				me.setStatus("Normal");
 			}
 			else {	
 				me.setStatus("Error");			
