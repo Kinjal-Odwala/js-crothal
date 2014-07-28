@@ -124,6 +124,7 @@ ii.init.register( function() {
 		, manufactured: {type: String, required: false, defaultValue: ""}
 		, price: {type: String, required: false, defaultValue: ""}
 		, quantity: {type: String, required: false, defaultValue: ""}
+		, modified: {type: Boolean, required: false, defaultValue: false}
 	};
 	
 	fin.pur.poRequisition.itemArgs = {

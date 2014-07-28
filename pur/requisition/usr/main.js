@@ -552,7 +552,7 @@ ii.Class({
 				required: false
 			});
 			
-			me.AnchorSearch = new ui.ctl.buttons.Sizeable({
+			me.anchorSearch = new ui.ctl.buttons.Sizeable({
 				id: "AnchorSearch",
 				className: "iiButton",
 				text: "<span>&nbsp;Search&nbsp;</span>",
@@ -688,10 +688,9 @@ ii.Class({
 			});
 			
 			me.itemGrid.addColumn("itemSelect", "itemSelect", "", "", 30, function(data) {
-								
 				var index = me.itemGrid.rows.length - 1;
 				if (me.itemGrid.data[index].itemSelect)
-                	return "<center><input type=\"checkbox\" checked=\"true\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true;\" /></center>";
+                	return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true;\" checked=\"true\" /></center>";
 				else
 				    return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true;\" /></center>";
             });
@@ -1713,15 +1712,15 @@ ii.Class({
 			me.setStatus("Loaded");
 			me.modified(false);
 		},
-					
+
 		actionNewItem: function() {
 			var me = this;
-				
+
 			if (parent.fin.appUI.houseCodeId == 0) {
-				alert("Please select the House Code before adding the new PO Requisition.")
+				alert("Please select the House Code before adding the new PO Requisition.");
 				return true;
 			}
-			
+
 			me.anchorSave.display(ui.cmn.behaviorStates.enabled);
 			me.setReadOnly(false);
 			me.requisitionGrid.body.deselectAll();
@@ -1800,6 +1799,7 @@ ii.Class({
 			}			
 
 			me.poRequisitionId = me.requisitionGrid.data[me.lastSelectedRowIndex].id;
+			me.itemGrid.setData(me.poRequisitionDetails);
 			me.status = "EditPORequisition";			
 			me.wizardCount = 1;
 			me.actionShowWizard();
@@ -2227,24 +2227,32 @@ ii.Class({
 				xml += ' shipToPhone="' + fin.cmn.text.mask.phone(item.shipToPhone, true) + '"';
 				xml += ' shipToFax="' + fin.cmn.text.mask.phone(item.shipToFax, true) + '"';
 				xml += '/>';
-				
-				for (var index = 0; index < me.itemGrid.data.length; index++) {
+
+				for (var index = me.poRequisitionDetails.length - 1; index >= 0; index--) {
 					if ($("#selectInputCheck" + index)[0].checked) {
-						xml += '<purPORequisitionDetail';
-						xml += ' id="' + (me.status == "NewPORequisition" ? "0" : me.itemGrid.data[index].id) + '"';
-						xml += ' poRequisitionId="' + me.poRequisitionId + '"';
-						xml += ' number="' + me.itemGrid.data[index].number + '"';
-						xml += ' description="' + me.itemGrid.data[index].description + '"';
-						xml += ' alternateDescription="' + me.itemGrid.data[index].alternateDescription + '"';
-						xml += ' account="' + me.itemGrid.data[index].account.id + '"';
-						xml += ' uom="' + me.itemGrid.data[index].unit + '"';
-						xml += ' manufactured="' + me.itemGrid.data[index].manufactured + '"';
-						xml += ' quantity="' + me.itemGrid.data[index].quantity + '"';
-						xml += ' price="' + me.itemGrid.data[index].price + '"';
-						xml += '/>';
+						me.poRequisitionDetails[index].itemSelect = true;
+						me.poRequisitionDetails[index].modified = true;
 					}
+						
+					else
+						me.poRequisitionDetails.splice(index, 1);
 				}
-				
+
+				for (var index = 0; index < me.itemGrid.data.length; index++) {
+					xml += '<purPORequisitionDetail';
+					xml += ' id="' + (me.status == "NewPORequisition" ? "0" : me.itemGrid.data[index].id) + '"';
+					xml += ' poRequisitionId="' + me.poRequisitionId + '"';
+					xml += ' number="' + me.itemGrid.data[index].number + '"';
+					xml += ' description="' + me.itemGrid.data[index].description + '"';
+					xml += ' alternateDescription="' + me.itemGrid.data[index].alternateDescription + '"';
+					xml += ' account="' + me.itemGrid.data[index].account.id + '"';
+					xml += ' uom="' + me.itemGrid.data[index].unit + '"';
+					xml += ' manufactured="' + me.itemGrid.data[index].manufactured + '"';
+					xml += ' quantity="' + me.itemGrid.data[index].quantity + '"';
+					xml += ' price="' + me.itemGrid.data[index].price + '"';
+					xml += '/>';
+				}
+
 				for (var index = 0; index < me.poRequisitionDocuments.length; index++) {
 					if (me.poRequisitionDocuments[index].tempFileName != "") {
 						xml += '<purPORequisitionDocument';
@@ -2344,7 +2352,6 @@ ii.Class({
 								else {
 									me.poRequisitions[me.lastSelectedRowIndex] = item;
 									me.requisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
-									me.requisitionGrid.body.select(me.lastSelectedRowIndex);
 									
 									if (me.status == "SendRequisition" || me.status == "ResendRequisition") {
 										$("#AnchorResendRequisition").show();
@@ -2362,7 +2369,18 @@ ii.Class({
 									}
 								}
 								break;
-							
+
+							case "purPORequisitionDetail":
+								for (var index = 0; index < me.poRequisitionDetails.length; index++) {
+									if (me.poRequisitionDetails[index].modified) {
+										if (me.poRequisitionDetails[index].id == 0)
+											me.poRequisitionDetails[index].id = parseInt($(this).attr("id"), 10);
+										me.poRequisitionDetails[index].modified = false;
+										break;
+									}
+								}
+								break;
+
 							case "purPORequisitionDocument":
 								for (var index = 0; index < me.poRequisitionDocuments.length; index++) {
 									if (me.poRequisitionDocuments[index].tempFileName != "") {
@@ -2375,7 +2393,7 @@ ii.Class({
 								break;
 						}
 					});
-					
+
 					me.status = "";
 					me.modified(false);
 					me.setStatus("Saved");
