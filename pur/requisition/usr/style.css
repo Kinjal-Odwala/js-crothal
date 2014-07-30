@@ -181,10 +181,10 @@
 	margin: 5px 0px 10px 5px;
 }
 
-#AnchorPrint {
-	float: left;
-	width: 68px;
-	margin: 5px 0px 10px 10px;
+#AnchorCancelRequisition {
+    float: left;
+    width: 84px;
+    margin: 5px 0px 10px 10px;
 }
 
 #AnchorGeneratePurchaseOrder {

@@ -205,12 +205,12 @@ ii.Class({
 				clickFunction: function() { me.actionEditItem(); },
 				hasHotState: true
 			});
-
-			me.anchorPrint = new ui.ctl.buttons.Sizeable({
-				id: "AnchorPrint",
+			
+			me.anchorCancelRequisition = new ui.ctl.buttons.Sizeable({
+				id: "AnchorCancelRequisition",
 				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;Print&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionPrintItem(); },
+				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionCancelRequisitionItem(); },
 				hasHotState: true
 			});
 			
@@ -1059,9 +1059,9 @@ ii.Class({
 			
 			$("#AnchorView").hide();
 			$("#AnchorEdit").hide();
-			$("#AnchorPrint").hide();
 			$("#AnchorResendRequisition").hide();
 			$("#AnchorSendRequisition").hide();
+			$("#AnchorCancelRequisition").hide();
 			$("#AnchorGeneratePurchaseOrder").hide();
 		},
 
@@ -1408,6 +1408,7 @@ ii.Class({
 	
 					$("#AnchorEdit").show();
 					$("#AnchorView").hide();
+					$("#AnchorCancelRequisition").show();
 					$("#VendorInfo").show();
 					$("#CategoryInfo").show();
 					$("#imgAdd").show();
@@ -1420,10 +1421,12 @@ ii.Class({
 					if (me.requisitionGrid.data[index].statusType == 2) {
 						$("#AnchorResendRequisition").show();
 						$("#AnchorSendRequisition").hide();
+						$("#AnchorCancelRequisition").show();
 					}					
 					else {
 						$("#AnchorResendRequisition").hide();
 						$("#AnchorSendRequisition").hide();
+						$("#AnchorCancelRequisition").hide();
 					}			
 	
 					$("#AnchorEdit").hide();
@@ -1437,7 +1440,6 @@ ii.Class({
 					me.setReadOnly(true);
 				}
 				
-				$("#AnchorPrint").show();
 				me.loadCount++;
 				me.modified(false);	
 				me.setLoadCount();
@@ -1682,8 +1684,7 @@ ii.Class({
 			$("#AnchorEdit").hide();
 			$("#AnchorView").hide();			
 			$("#AnchorSendRequisition").hide();
-			$("#AnchorResendRequisition").hide();			
-			$("#AnchorPrint").hide();
+			$("#AnchorResendRequisition").hide();
 			$("#AnchorGeneratePurchaseOrder").hide();
 			$("#LabelStatus").show();
 			$("#InputTextStatus").show();			
@@ -1701,8 +1702,7 @@ ii.Class({
 			$("#AnchorEdit").hide();
 			$("#AnchorView").hide();			
 			$("#AnchorSendRequisition").hide();
-			$("#AnchorResendRequisition").hide();			
-			$("#AnchorPrint").hide();
+			$("#AnchorResendRequisition").hide();
 			$("#LabelStatus").hide();
 			$("#InputTextStatus").hide();			
 			$("#SearchButtonStatus").hide();
@@ -1869,66 +1869,6 @@ ii.Class({
 			
 			me.resizeControls();
 		},
-		
-		actionPrintItem: function() {
-			var me = this;
-			
-			if (me.requisitionGrid.activeRowIndex == -1)
-				return true;
-
-			var item = me.requisitionGrid.data[me.requisitionGrid.activeRowIndex];
-			var htmlContent = "<html><head><link rel='stylesheet' type='text/css' href='style.css'></head><body>"
-				+ "<center><b><span style='font-family: Verdana; font-size: 12pt;'>PO Requisitions</span></b></center></br>"
-				+ "<table width=100% border=1 cellspacing=0 cellpadding=5 style='font-family: Verdana; font-size: 8pt;border-color:Gray;border-width:1px;border-style:Solid;border-collapse:collapse;'>"
-                + "<tr><td width=25%>House Code:</td><td width=75% colspan=7>" + parent.fin.appUI.houseCodeTitle + "</td></tr>"
-				+ "<tr><td colspan=8 align=center><b>Requestor Details</b></td></tr>"
-                + "<tr><td width=25%>Requestor Name:</td><td width=75% colspan=7>" + me.requestorName.getValue() + "</td></tr>"
-				+ "<tr><td width=25%>Requestor Email:</td><td width=75% colspan=7>" + item.requestorEmail + "</td></tr>"
-				+ "<tr><td width=25%>Requested Date:</td><td width=25%>" + item.requestedDate + "</td><td width=25%>Delivery Date:</td><td width=25%>" + item.deliveryDate + "</td></tr>"					
-				+ "<tr><td colspan=8 align=center><b>Vendor Details</b></td></tr>"
-				+ "<tr><td width=25%>Name:</td><td width=75% colspan=7>" + item.vendorTitle + "</td></tr>"
-				+ "<tr><td width=25%>Address 1:</td><td width=25%>" + item.vendorAddressLine1 + "</td><td width=25%>Address 2:</td><td width=25%>" +  item.vendorAddressLine2 + "</td></tr>"					
-				+ "<tr><td width=25%>City:</td><td width=25%>" + item.vendorCity + "</td><td width=25%>State:</td><td width=25%>" + me.vendorState.lastBlurValue + "</td></tr>"
-				+ "<tr><td width=25%>Zip:</td><td width=25%>" + item.vendorZip + "</td><td width=25%>Contact Name:</td><td width=25%>" + item.vendorContactName + "</td></tr>"
-				+ "<tr><td width=25%>Phone:</td><td width=25%>" + item.vendorPhoneNumber + "</td><td width=25%>Email:</td><td width=25%>" + item.vendorEmail + "</td></tr>"					
-				+ "<tr><td width=25%>Reason For Request:</td><td width=75% colspan=7>" + item.reasonForRequest + "</td></tr>"
-				+ "<tr><td width=25%>Requisition Type:</td><td width=75% colspan=7>" + item.requisitionType + "</td></tr>"
-				+ "<tr><td width=25%>Urgency:</td><td width=75% colspan=7>" + item.urgency + "</td></tr>"
-				+ "<tr><td width=25%>Life Span:</td><td width=75% colspan=7>" + item.lifeSpan + "</td></tr>"					
-				+ "<tr><td colspan=8 align=center><b>Item Information</b></td></tr>"					
-				+ "<tr><td width=95% colspan=8><table border=1 cellspacing=0 cellpadding=5 style='font-family: Verdana; font-size: 8pt;border-color:Gray;border-width:1px;border-style:Solid;border-collapse:collapse;'>"
-                + "<tr><td width=30 align=center><b>#</b></td>"
-                + "<td width=100 align=center><b>Item Number</b></td>"
-                + "<td width=100 align=center><b>Item Description</b></td>"
-				+ "<td width=100 align=center><b>GL Account No</b></td>"
-				+ "<td width=100 align=center><b>UOM</b></td>"
-				+ "<td width=100 align=center><b>Manufactured</b></td>"
-				+ "<td width=100 align=center><b>Quantity</b></td>"
-                + "<td width=100 align=center><b>Price</b></td></tr>";
-				
-			for (var index = 0; index < me.poRequisitionDetails.length; index++) {
-				htmlContent += "<tr><td width=30 align=center>" + (index + 1) + "</td>"
-	                + "<td width='100'>" + $(me.itemGrid.rows[index].getElement("number")).text() + "</td>"
-	                + "<td width='100'>" + $(me.itemGrid.rows[index].getElement("description")).text() + "</td>"
-					+ "<td width='100'>" + $(me.itemGrid.rows[index].getElement("account")).text() + "</td>"
-					+ "<td width='100'>" + $(me.itemGrid.rows[index].getElement("unit")).text() + "</td>"
-					+ "<td width='100'>" + $(me.itemGrid.rows[index].getElement("manufactured")).text() + "</td>"
-					+ "<td width='100' align='right'>" + $(me.itemGrid.rows[index].getElement("quantity")).text() + "</td>"
-	                + "<td width='100' align='right'>" + $(me.itemGrid.rows[index].getElement("price")).text() + "</td></tr>";
-			}
-				
-			htmlContent += "</table></td></tr><tr><td colspan=8 align=center><b>Shipping Information</b></td></tr>"
-				+ "<tr><td width=25%>Company:</td><td width=25%>" + me.company.lastBlurValue + "</td><td width=25%>Job:</td><td width=25%>" + me.shippingJob.lastBlurValue + "</td></tr>"
-				+ "<tr><td width=25%>Address 1:</td><td width=25%>" + item.shipToAddress1 + "</td><td width=25%>Address 2:</td><td width=25%>" + item.shipToAddress2 + "</td></tr>"
-				+ "<tr><td width=25%>City:</td><td width=25%>" + item.shipToCity + "</td><td width=25%>State:</td><td width=25%>" + me.shippingState.lastBlurValue + "</td></tr>"
-				+ "<tr><td width=25%>Zip:</td><td width=25%>" +  item.shipToZip + "</td><td width=25%>Fax:</td><td width=25%>" + item.shipToFax + "</td></tr>"
-				+ "<tr><td width=25%>Phone:</td><td width=75% colspan=7>" + item.shipToPhone + "</td></tr>"
-				+ "</table></body></html>";
-
-			$("#iFramePrint").contents().find("html").html(htmlContent);
-			$("#iFramePrint").get(0).contentWindow.focus();
-			$("#iFramePrint").get(0).contentWindow.print();
-		},
 				
 		actionCancelItem: function() {
 			var me = this;
@@ -1945,6 +1885,17 @@ ii.Class({
 			me.status = "";
 			me.setStatus("Loaded");
 		},
+		
+		actionCancelRequisitionItem: function() {
+            var me = this;      
+            
+            if (me.requisitionGrid.activeRowIndex == -1)
+                return true;
+                
+            $("#messageToUser").text("Cancelling Requisition");
+            me.status = "CancelRequisition";
+            me.actionSaveItem();
+        },
 		
 		actionSendRequisitionItem: function() {
 			var me = this;
@@ -2153,6 +2104,7 @@ ii.Class({
 					, me.urgencyDate.lastBlurValue
 					, $("input[name='LifeSpan']:checked").val()
 					, ""
+					, "false"
 					);
 
 				$("#messageToUser").text("Saving");
@@ -2160,6 +2112,10 @@ ii.Class({
 			else if (me.status == "GeneratePurchaseOrder") {
 				item = me.requisitionGrid.data[index];
 			}
+			else if (me.status == "CancelRequisition") {
+                item = me.requisitionGrid.data[index];
+                item.statusType = 6;                
+            }
 			else {
 				item = me.requisitionGrid.data[index];
 				item.statusType = 2;
@@ -2277,6 +2233,12 @@ ii.Class({
 				xml += ' vendorTitle="' +  ui.cmn.text.xml.encode(item.vendorTitle) + '"';
 				xml += '/>';
 			}
+			else if (me.status == "CancelRequisition") {
+                xml += '<purPORequisitionStatusUpdate';
+                xml += ' id="' + me.requisitionGrid.data[me.lastSelectedRowIndex].id + '"';
+                xml += ' statusType="6"';            
+                xml += '/>';
+            }
 			else {
 				xml += '<purPORequisitionEmailNotification';
 				xml += ' id="' + me.poRequisitionId + '"';
@@ -2349,7 +2311,7 @@ ii.Class({
 									me.poRequisitions.splice(me.requisitionGrid.activeRowIndex, 1);
 									me.requisitionGrid.setData(me.poRequisitions);
 								}
-								else {
+								else if (me.status == "SendRequisition" || me.status == "ResendRequisition" || me.status == "CancelRequisition") {
 									me.poRequisitions[me.lastSelectedRowIndex] = item;
 									me.requisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
 									
