@@ -1057,6 +1057,7 @@ ii.Class({
 					me.urgencyDate.setValue("");
 			});
 			
+			
 			$("#AnchorView").hide();
 			$("#AnchorEdit").hide();
 			$("#AnchorResendRequisition").hide();
@@ -1114,7 +1115,6 @@ ii.Class({
 			me.vendorEmail.text.readOnly = readOnly;
 			me.reasonForRequest.text.readOnly = readOnly;
 			me.urgencyDate.text.readOnly = readOnly;
-			me.company.text.readOnly = readOnly;
 			me.shippingJob.text.readOnly = readOnly;
 			me.shippingAddress1.text.readOnly = readOnly;
 			me.shippingAddress2.text.readOnly = readOnly;
@@ -1603,7 +1603,8 @@ ii.Class({
 			var valid = true;			
 			
 			me.validator.forceBlur();
-			valid = me.validator.queryValidity(true);
+			if (me.status == "NewPORequisition")
+				valid = me.validator.queryValidity(true);
 			
 			if (me.wizardCount == 1) {
 				if ($("input:radio[name='Urgency']:checked").val() == "Not Urgent" || $('input:radio[name="Urgency"]:checked').length == 0) {
@@ -2313,22 +2314,27 @@ ii.Class({
 								}
 								else if (me.status == "SendRequisition" || me.status == "ResendRequisition" || me.status == "CancelRequisition") {
 									me.poRequisitions[me.lastSelectedRowIndex] = item;
-									me.requisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
+									me.requisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);									
 									
-									if (me.status == "SendRequisition" || me.status == "ResendRequisition") {
-										$("#AnchorResendRequisition").show();
-										$("#AnchorSendRequisition").hide();
-										$("#AnchorEdit").hide();
-										$("#AnchorView").show();
-										$("#VendorInfo").hide();
-										$("#CategoryInfo").hide();
-										$("#imgAdd").hide();
-										$("#imgEdit").hide();
-										$("#imgRemove").hide();
-										
-										me.anchorSave.display(ui.cmn.behaviorStates.disabled);
-										me.setReadOnly(true);
-									}
+									if (me.status == "SendRequisition" || me.status == "ResendRequisition")
+										$("#AnchorResendRequisition").show();										
+									
+									if (me.status == "CancelRequisition") {
+										$("#AnchorResendRequisition").hide();
+										$("#AnchorCancelRequisition").hide();
+									}										 
+																		
+									$("#AnchorSendRequisition").hide();
+									$("#AnchorEdit").hide();
+									$("#AnchorView").show();
+									$("#VendorInfo").hide();
+									$("#CategoryInfo").hide();
+									$("#imgAdd").hide();
+									$("#imgEdit").hide();
+									$("#imgRemove").hide();
+									
+									me.anchorSave.display(ui.cmn.behaviorStates.disabled);
+									me.setReadOnly(true);
 								}
 								break;
 
