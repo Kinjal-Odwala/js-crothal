@@ -1603,7 +1603,7 @@ ii.Class({
 			var valid = true;			
 			
 			me.validator.forceBlur();
-			if (me.status == "NewPORequisition")
+			if (me.status == "NewPORequisition" || ($("input:radio[name='Urgency']:checked").val() == "Urgent"))
 				valid = me.validator.queryValidity(true);
 			
 			if (me.wizardCount == 1) {
