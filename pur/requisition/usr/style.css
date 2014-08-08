@@ -105,7 +105,7 @@
 
 #InputTextStatus {
 	float: left; 
-	width: 120px; 
+	width: 145px; 
 	padding-top: 2px;
 	padding-bottom: 1px;
 	padding-right: 5px;	
@@ -148,12 +148,13 @@
 	width: 85px;	
 	padding-top: 1px;
 	padding-bottom: 1px;
+	padding-left: 10px;
 }
 
 #AnchorNew {
 	float: left;
 	width: 68px;
-	margin: 5px 0px 10px 10px;
+	margin: 5px 0px 10px 5px;
 	padding-top: 0px;
 }
 
@@ -189,8 +190,15 @@
 
 #AnchorGeneratePurchaseOrder {
 	float: left;
-	width: 220px;
+	width: 210px;
 	margin: 5px 0px 10px 10px;
+	padding-top: 0px;
+}
+
+#AnchorJDEEntry {
+	float: left;
+	width: 100px;
+	margin: 5px 0px 10px 7px;
 	padding-top: 0px;
 }
 
