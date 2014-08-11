@@ -1,5 +1,3 @@
-ii.config.xmlTimeout = 1200000;
-ii.Import( "ii.krn.sys.ajax" );
 ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.toolbar" );
@@ -56,6 +54,9 @@ ii.Class({
 			me.recordCount = 0;
 			me.pageCount = 0;
 			me.pageCurrent = 1;
+
+			//Set the xmlTimeout period to 20 minutes to finish the Import/Reconcile/Finalize process without timeout error.
+			$.ajaxSetup({timeout: 1200000});
 
 			me.gateway = ii.ajax.addGateway("pay", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
