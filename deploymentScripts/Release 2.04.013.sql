@@ -230,3 +230,25 @@ Select * From EsmV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin
 /*
 CT updated on 9th July 2014 11PM EST
 */
+
+-- Add security nodes for action menu items in PO Requisition UI [Begin]
+Declare @HirNode As Int
+Declare @DisplayOrder Int
+
+Select @DisplayOrder = Max(HirNode) From ESMV2.dbo.HirNodes
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Purchasing\PORequisition'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'PORequisition', 'PO Requisition', 'PO Requisition', @DisplayOrder + 1, 1, '\crothall\chimes\fin\Purchasing\PORequisition\PORequisition', 'crothall', 'chimes', 'fin', 'Purchasing', 'PORequisition', 'PORequisition', 'Compass-USA\Data Conversion', GetDate())
+
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'RequisitionToPO', 'Convert PO Requisition to Purchase Order', 'Convert PO Requisition to Purchase Order', @DisplayOrder + 2, 1, '\crothall\chimes\fin\Purchasing\PORequisition\ConvertPORequisitionToPO', 'crothall', 'chimes', 'fin', 'Purchasing', 'PORequisition', 'ConvertPORequisitionToPO', 'Compass-USA\Data Conversion', GetDate())
+
+Select * From ESMV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\Purchasing\PORequisition%'
+
+-- Add security nodes for action menu items in PO Requisition UI [End]
+
+Update ESMV2.dbo.HirNodes Set HirNodBrief = 'PORequisition', HirNodTitle = 'PO Requisition' Where HirNodFullPath = '\crothall\chimes\fin\Purchasing\PORequisition'
+
+/*
+CT updated on 30th July 2014 11PM EST
+*/
