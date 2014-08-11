@@ -2341,6 +2341,11 @@ ii.Class({
 									me.requisitionGrid.setData(me.poRequisitions);
 									me.requisitionGrid.body.select(me.poRequisitions.length - 1);
 								}
+								else if (me.status == "EditPORequisition") {
+									me.poRequisitions[me.lastSelectedRowIndex] = item;
+									me.requisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
+									//me.requisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
+								}
 								else if (me.status == "GeneratePurchaseOrder" || me.status == "JDEEntry") {
 									me.poRequisitions.splice(me.requisitionGrid.activeRowIndex, 1);
 									me.requisitionGrid.setData(me.poRequisitions);
