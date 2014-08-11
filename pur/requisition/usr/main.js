@@ -1615,10 +1615,12 @@ ii.Class({
 			var valid = true;			
 			
 			me.validator.forceBlur();
-			if (me.status == "NewPORequisition" || ($("input:radio[name='Urgency']:checked").val() == "Urgent"))
-				valid = me.validator.queryValidity(true);
 			
 			if (me.wizardCount == 1) {
+				
+				if (me.status == "NewPORequisition" || ($("input:radio[name='Urgency']:checked").val() == "Urgent" && (me.urgencyDate.lastBlurValue == "" || !(ui.cmn.text.validate.generic(me.urgencyDate.lastBlurValue, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))))
+					valid = me.validator.queryValidity(true);
+					
 				if ($("input:radio[name='Urgency']:checked").val() == "Not Urgent" || $('input:radio[name="Urgency"]:checked').length == 0) {
 					var urgencyDate = me.urgencyDate.lastBlurValue;
                     me.urgencyDate.resetValidation(true);
@@ -1662,7 +1664,9 @@ ii.Class({
 			else if (me.wizardCount == 2) {
 				if (me.itemGrid.activeRowIndex == -1)
 				 	return true;
-
+					
+				valid = me.validator.queryValidity(true);
+				
 				if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked && (!me.itemNumber.valid
 					|| !me.itemDescription.valid
 					|| !me.account.valid
@@ -1676,7 +1680,10 @@ ii.Class({
 				else
 					return true;
 			}
-			else if (me.wizardCount == 3) {				
+			else if (me.wizardCount == 3) {
+					
+				valid = me.validator.queryValidity(true);
+							
 				if (!me.requestorEmail.valid
 					|| !me.shippingAddress1.valid
 					|| !me.shippingCity.valid
@@ -2215,8 +2222,7 @@ ii.Class({
 					if ($("#selectInputCheck" + index)[0].checked) {
 						me.poRequisitionDetails[index].itemSelect = true;
 						me.poRequisitionDetails[index].modified = true;
-					}
-						
+					}	
 					else
 						me.poRequisitionDetails.splice(index, 1);
 				}
@@ -2346,7 +2352,6 @@ ii.Class({
 								else if (me.status == "EditPORequisition") {
 									me.poRequisitions[me.lastSelectedRowIndex] = item;
 									me.requisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
-									//me.requisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
 								}
 								else if (me.status == "GeneratePurchaseOrder" || me.status == "JDEEntry") {
 									me.poRequisitions.splice(me.requisitionGrid.activeRowIndex, 1);
