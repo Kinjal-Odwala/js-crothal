@@ -888,6 +888,8 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 			
+			parent.fin.appUI.houseCodeId = 0;
+			
 			me.hirNodes = [];
 			me.hirNodeStore = me.cache.register({
 				storeId: "hirNodes",
