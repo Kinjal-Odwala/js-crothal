@@ -1795,6 +1795,9 @@ ii.Class({
 			
 			$("#VendorInfo").show();
 			$("#CategoryInfo").show();
+			$("#imgAdd").show();
+			$("#imgEdit").show();
+			$("#imgRemove").show();
 			loadPopup();
 			me.poRequisitionDetailStore.reset();
 			me.poRequisitionDocumentStore.reset();
@@ -2143,17 +2146,17 @@ ii.Class({
 
 				$("#messageToUser").text("Saving");
 			}
-			else if (me.status == "GeneratePurchaseOrder" || me.status == "JDEEntry") {
+			else if (me.status == "SendRequisition" || me.status == "ResendRequisition") {
 				item = me.requisitionGrid.data[index];
+				item.statusType = 2;
 			}
 			else if (me.status == "CancelRequisition") {
                 item = me.requisitionGrid.data[index];
                 item.statusType = 6;                
             }
-			else {
+			else if (me.status == "GeneratePurchaseOrder" || me.status == "JDEEntry") {
 				item = me.requisitionGrid.data[index];
-				item.statusType = 2;
-			}
+			}			
 					
 			var xml = me.saveXmlBuildPORequisition(item);
 			
@@ -2352,11 +2355,7 @@ ii.Class({
 								else if (me.status == "EditPORequisition") {
 									me.poRequisitions[me.lastSelectedRowIndex] = item;
 									me.requisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
-								}
-								else if (me.status == "GeneratePurchaseOrder" || me.status == "JDEEntry") {
-									me.poRequisitions.splice(me.requisitionGrid.activeRowIndex, 1);
-									me.requisitionGrid.setData(me.poRequisitions);
-								}
+								}								
 								else if (me.status == "SendRequisition" || me.status == "ResendRequisition" || me.status == "CancelRequisition") {
 									me.poRequisitions[me.lastSelectedRowIndex] = item;
 									me.requisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);									
@@ -2380,6 +2379,10 @@ ii.Class({
 									
 									me.anchorSave.display(ui.cmn.behaviorStates.disabled);
 									me.setReadOnly(true);
+								}
+								else if (me.status == "GeneratePurchaseOrder" || me.status == "JDEEntry") {
+									me.poRequisitions.splice(me.requisitionGrid.activeRowIndex, 1);
+									me.requisitionGrid.setData(me.poRequisitions);
 								}
 								break;
 
