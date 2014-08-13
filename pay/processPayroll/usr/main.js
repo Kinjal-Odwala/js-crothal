@@ -722,19 +722,19 @@ ii.Class({
 			var rowNumber = 0;
 
 			if (objInput.id.indexOf("txtEmployeeNumber") != -1)
-		    	rowNumber =  Number(objInput.id.replace("txtEmployeeNumber", ""));
+		    	rowNumber = Number(objInput.id.replace("txtEmployeeNumber", ""));
 			else if (objInput.id.indexOf("txtHouseCode") != -1)
-		    	rowNumber =  Number(objInput.id.replace("txtHouseCode", ""));
+		    	rowNumber = Number(objInput.id.replace("txtHouseCode", ""));
 			else if (objInput.id.indexOf("txtExpenseDate") != -1)
-		    	rowNumber =  Number(objInput.id.replace("txtExpenseDate", ""));
+		    	rowNumber = Number(objInput.id.replace("txtExpenseDate", ""));
 			else if (objInput.id.indexOf("txtHours") != -1)
-		    	rowNumber =  Number(objInput.id.replace("txtHours", ""));
+		    	rowNumber = Number(objInput.id.replace("txtHours", ""));
 			else if (objInput.id.indexOf("txtAmount") != -1)
-		    	rowNumber =  Number(objInput.id.replace("txtAmount", ""));
+		    	rowNumber = Number(objInput.id.replace("txtAmount", ""));
 			else if (objInput.id.indexOf("txtWorkOrderNumber") != -1)
-		    	rowNumber =  Number(objInput.id.replace("txtWorkOrderNumber", ""));
+		    	rowNumber = Number(objInput.id.replace("txtWorkOrderNumber", ""));
 			else if (objInput.id.indexOf("selPayCode") != -1)
-		    	rowNumber =  Number(objInput.id.replace("selPayCode", ""));			
+		    	rowNumber = Number(objInput.id.replace("selPayCode", ""));			
 
 			me.modified();
 			$("#chkSelect" + rowNumber)[0].checked = true;
@@ -876,7 +876,7 @@ ii.Class({
 		
 		payCodeBlur: function(objSelect) {
 			var me = this;
-		    var rowNumber =  Number(objSelect.id.replace("selPayCode", ""));
+		    var rowNumber = Number(objSelect.id.replace("selPayCode", ""));
 
 		    if (objSelect.value == "0") {
 				objSelect.title = "Invalid Pay Code";
@@ -890,7 +890,7 @@ ii.Class({
 		
 		expenseDateBlur: function(objInput) {
 			var me = this;
-		    var rowNumber =  Number(objInput.id.replace("txtExpenseDate", ""));
+		    var rowNumber = Number(objInput.id.replace("txtExpenseDate", ""));
 
 		    if (objInput.value == "" || !(ui.cmn.text.validate.generic(objInput.value, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$"))) {
 				objInput.title = "Invalid Expense Date";
@@ -908,9 +908,9 @@ ii.Class({
 		    var rowNumber = 0;
 			
 			if (objInput.id.indexOf("txtHours") != -1)
-		    	rowNumber =  Number(objInput.id.replace("txtHours", ""));
+		    	rowNumber = Number(objInput.id.replace("txtHours", ""));
 			else if (objInput.id.indexOf("txtAmount") != -1)
-		    	rowNumber =  Number(objInput.id.replace("txtAmount", ""));
+		    	rowNumber = Number(objInput.id.replace("txtAmount", ""));
 
 			me.isHoursAmountValid(rowNumber);
 		},
@@ -976,7 +976,7 @@ ii.Class({
 
 		employeeNumberBlur: function(objInput) {
 			var me = this;
-		    var rowNumber =  Number(objInput.id.replace("txtEmployeeNumber", ""));
+		    var rowNumber = Number(objInput.id.replace("txtEmployeeNumber", ""));
 		    //remove any unwanted characters
 		    objInput.value = objInput.value.replace(/[^0-9]/g, "");
 		    if (objInput.value == "")
@@ -1002,6 +1002,7 @@ ii.Class({
 	        }
 	        else
 	            me.employeeNumberLoad(rowNumber, employeeNumber);
+
 		},
 		
 		employeeNumberLoad: function(rowNumber, employeeNumber) {
@@ -1061,9 +1062,6 @@ ii.Class({
 					objInput.attr("title", "Invalid Employee #");
 					objInput.css("background-color", me.cellColorInvalid);
 		        }
-		        
-		        //select the last one changed
-		        $("#txtEmployeeNumber" + rowNumber).select();
 		    }
 
 			$("#txtEmployeeNumber" + rowNumber).removeClass("loadingIndicator");
@@ -1082,7 +1080,7 @@ ii.Class({
 
 		houseCodeBlur: function(objInput) {
 			var me = this;
-		    var rowNumber =  Number(objInput.id.replace("txtHouseCode", ""));
+		    var rowNumber = Number(objInput.id.replace("txtHouseCode", ""));
 		    
 		    //remove any unwanted characters
 		    objInput.value = objInput.value.replace(/[^0-9]/g, "");
@@ -1165,9 +1163,6 @@ ii.Class({
 					objInput.attr("title", "Invalid House Code");
 					objInput.css("background-color", me.cellColorInvalid);
 		        }
-
-		        //select the last one changed
-		        $("#txtHouseCode" + rowNumber).select();
 		    }
 
 			$("#txtHouseCode" + rowNumber).removeClass("loadingIndicator");
@@ -1186,7 +1181,7 @@ ii.Class({
 
 		workOrderNumberBlur: function(objInput) {
 			var me = this;
-		    var rowNumber =  Number(objInput.id.replace("txtWorkOrderNumber", ""));
+		    var rowNumber = Number(objInput.id.replace("txtWorkOrderNumber", ""));
 		    
 		    //remove any unwanted characters
 		    objInput.value = objInput.value.replace(/[^0-9]/g, "");
@@ -1268,9 +1263,6 @@ ii.Class({
 					objInput.attr("title", "Invalid House Code");
 					objInput.css("background-color", me.cellColorInvalid);
 		        }
-
-		        //select the last one changed
-		        $("#txtWorkOrderNumber" + rowNumber).select();
 		    }
 
 			$("#txtWorkOrderNumber" + rowNumber).removeClass("loadingIndicator");
