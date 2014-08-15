@@ -646,7 +646,7 @@ ii.Class({
 		        id: "Quantity",
 		        maxLength: 10,
 				appendToId: "ItemGridControlHolder",
-				changeFunction: function() { me.modified(); }
+				changeFunction: function() { me.modified(); me.calculateExtendedPrice(); }
 		    });
 			
 			me.quantity.makeEnterTab()
@@ -675,7 +675,7 @@ ii.Class({
 		        id: "Price",
 				maxLength: 18,
 				appendToId: "ItemGridControlHolder",
-				changeFunction: function() { me.modified(); }
+				changeFunction: function() { me.modified(); me.calculateExtendedPrice(); }
 		    });
 			
 			me.price.makeEnterTab()
@@ -703,14 +703,18 @@ ii.Class({
 				else
 				    return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true;\" /></center>";
             });
-			me.itemGrid.addColumn("number", "number", "Item Number", "Item Number", 120, null, me.itemNumber);
+			me.itemGrid.addColumn("number", "number", "Item Number", "Item Number", 100, null, me.itemNumber);
 			me.itemGrid.addColumn("description", "description", "Item Description", "Item Description", null, null, me.itemDescription);
 			me.itemGrid.addColumn("alternateDescription", "alternateDescription", "Alternate Description", "Alternate Description", 180, null, me.alternateDescription);
 			me.itemGrid.addColumn("account", "account", "GL Account No", "GL Account No", 120, function( account ) { return account.code + " - " + account.name; }, me.account);
-			me.itemGrid.addColumn("unit", "unit", "UOM", "UOM", 100, null, me.uom);
+			me.itemGrid.addColumn("unit", "unit", "UOM", "UOM", 50, null, me.uom);
 			me.itemGrid.addColumn("manufactured", "manufactured", "Manufactured", "Manufactured", 120, null, me.manufactured);
-			me.itemGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 100, null, me.quantity);
-			me.itemGrid.addColumn("price", "price", "Price", "Price", 100, null, me.price);			
+			me.itemGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 80, null, me.quantity);
+			me.itemGrid.addColumn("price", "price", "Price", "Price", 80, null, me.price);
+			me.itemGrid.addColumn("extendedPrice", "", "Extended Price", "Extended Price", 120, function(data) {				
+				if (!isNaN(data.quantity) && data.price != undefined)
+					return ui.cmn.text.money.format(data.quantity * data.price);
+            });			
 			me.itemGrid.capColumns();			
 			
 			me.itemReadOnlyGrid = new ui.ctl.Grid({
@@ -718,14 +722,18 @@ ii.Class({
 				allowAdds: false			
 			});
 			
-			me.itemReadOnlyGrid.addColumn("number", "number", "Item Number", "Item Number", 120);
+			me.itemReadOnlyGrid.addColumn("number", "number", "Item Number", "Item Number", 100);
 			me.itemReadOnlyGrid.addColumn("description", "description", "Item Description", "Item Description", null);
 			me.itemReadOnlyGrid.addColumn("alternateDescription", "alternateDescription", "Alternate Description", "Alternate Description", 180);
 			me.itemReadOnlyGrid.addColumn("account", "account", "GL Account No", "GL Account No", 120, function(account) { return account.code + " - " + account.name;	});
-			me.itemReadOnlyGrid.addColumn("unit", "unit", "UOM", "UOM", 100);
+			me.itemReadOnlyGrid.addColumn("unit", "unit", "UOM", "UOM", 50);
 			me.itemReadOnlyGrid.addColumn("manufactured", "manufactured", "Manufactured", "Manufactured", 120);
-			me.itemReadOnlyGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 100);
-			me.itemReadOnlyGrid.addColumn("price", "price", "Price", "Price", 100);
+			me.itemReadOnlyGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 80);
+			me.itemReadOnlyGrid.addColumn("price", "price", "Price", "Price", 80);
+			me.itemReadOnlyGrid.addColumn("extendedPrice", "", "Extended Price", "Extended Price", 120, function(data) {				
+				if (!isNaN(data.quantity) && data.price != undefined)
+					return ui.cmn.text.money.format(data.quantity * data.price);
+            });
 			me.itemReadOnlyGrid.capColumns();
 			
 			me.company = new ui.ctl.Input.Text({
@@ -1176,6 +1184,20 @@ ii.Class({
 			var year = currentTime.getFullYear();
 			
 			return month + "/" + day + "/" + year;
+		},
+		
+		calculateExtendedPrice: function() {
+			var me = this;
+			var index = me.itemGrid.activeRowIndex;
+			var quantity = me.quantity.getValue();
+			var price = me.price.getValue();
+
+			if (quantity != "" && !isNaN(quantity) && price != undefined)
+				var total = ui.cmn.text.money.format(quantity * price);
+			else
+				total = "0.00";
+
+			$(me.itemGrid.rows[index].getElement("extendedPrice")).text(total);
 		},
 		
 		statusesLoaded: function() {
@@ -2359,6 +2381,7 @@ ii.Class({
 								else if (me.status == "SendRequisition" || me.status == "ResendRequisition" || me.status == "CancelRequisition") {
 									me.poRequisitions[me.lastSelectedRowIndex] = item;
 									me.requisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);									
+									me.itemReadOnlyGrid.setData(me.poRequisitionDetails);
 									
 									if (me.status == "SendRequisition" || me.status == "ResendRequisition")
 										$("#AnchorResendRequisition").show();										
