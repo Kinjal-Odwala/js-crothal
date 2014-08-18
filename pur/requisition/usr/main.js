@@ -573,7 +573,7 @@ ii.Class({
 				id: "ItemGrid",
 				allowAdds: true,
 				createNewFunction: fin.pur.poRequisition.Item,
-				selectFunction: function(index){
+				selectFunction: function(index) {
 					if (me.itemGrid.rows[index].getElement("rowNumber").innerHTML == "Add") 
 						me.itemGrid.rows[index].getElement("itemSelect").innerHTML = "<input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true;\"  checked=\"true\" />";
 				}			
@@ -2332,6 +2332,7 @@ ii.Class({
 				xml += ' id="' + me.poRequisitionId + '"';
 				xml += ' houseCodeId="' + item.houseCode + '"';
 				xml += ' vendorTitle="' +  ui.cmn.text.xml.encode(item.vendorTitle) + '"';
+				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
 				xml += '/>';
 			}
 			else if (me.status == "JDEEntry") {
