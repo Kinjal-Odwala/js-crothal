@@ -167,6 +167,10 @@ ii.Class({
 			else
 				me.ePayBatchGrid.setHeight($(window).height() - 130);
 			$("#DetailInfo").width(240 + $("#detailTotalAmountBodyColumn").width() + 19);
+
+			var popupHeight = $(window).height() - 100;
+			$("#batchPopup, #tblBatchPopup, #popupLoading").height(popupHeight);
+			$("#batchDetails").height(popupHeight - 160);
 		},
 
 		defineFormControls: function() {			
@@ -702,6 +706,7 @@ ii.Class({
 			batchDetailRow = '<tr id="trLastRow" height="100%" class="' + className + '"><td id="tdLastRow" colspan="10" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>';
 			$("#tblBatchDetails").append(batchDetailRow);
 			$("input[id^=txt]").bind("change", function() { me.selectRow(this); });
+			$("input[id^=chkSelect]").bind("change", function() { me.actionClickItem(); });
 
 			me.actionValidateItem();
 			$("#popupLoading").fadeOut("slow");
@@ -710,7 +715,7 @@ ii.Class({
 		actionSelectAllItem: function() {
 			var me = this;
 
-			me.modified(true);
+			me.modified();
 			
 			for (var index = 0; index < me.ePayBatchDetailsList.length; index++) {
 				$("#chkSelect" + index)[0].checked = $("#chkSelectAll")[0].checked;
@@ -1646,7 +1651,12 @@ ii.Class({
 		},
 
 		hidePopup: function() {
+			var me = this;
 
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
+			me.setStatus("Normal");
 			$("#backgroundPopup").fadeOut("slow");
 			$("#batchPopup").fadeOut("slow");
 		},
