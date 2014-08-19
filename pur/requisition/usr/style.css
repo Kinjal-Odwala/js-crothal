@@ -112,7 +112,7 @@
 	border-color: #aaaaaa -moz-use-text-color #aaaaaa #aaaaaa;
 	border-image: none;
 	border-style: solid none solid solid;
-	border-width: 1px medium 1px 1px;
+	border-width: 0px medium 0px 0px;
 	color: white;
 	float: left;
 	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
@@ -120,7 +120,7 @@
 	font-weight: bold;
 	height: 17px;
 	padding-left: 0;
-	padding-right: 3px;
+	padding-right: 0;
 	padding-top: 3px;
 	text-align: right;
 	text-transform: uppercase;
