@@ -708,7 +708,7 @@ ii.Class({
 			$("input[id^=txt]").bind("change", function() { me.selectRow(this); });
 			$("input[id^=chkSelect]").bind("change", function() { me.actionClickItem(); });
 
-			me.actionValidateItem();
+			me.actionValidateItem(true);
 			$("#popupLoading").fadeOut("slow");
 		},
 		
@@ -793,88 +793,103 @@ ii.Class({
 			});
 		},
 
-		actionValidateItem: function() {
+		actionValidateItem: function(validateAll) {
 			var me = this;
 			var hoursAmountValid = true;
 
 			for (var index = 0; index < me.ePayBatchDetailsList.length; index++) {
-				if (!(/^[0-9]+$/.test($("#txtEmployeeNumber" + index).val())) || me.ePayBatchDetailsList[index].employeeError) {
-					$("#txtEmployeeNumber" + index).attr("title", "Invalid Employee #");
-					$("#txtEmployeeNumber" + index).css("background-color", me.cellColorInvalid);
-				}
-				else {
-					$("#txtEmployeeNumber" + index).attr("title", "");
-					$("#txtEmployeeNumber" + index).css("background-color", me.cellColorValid);
-				}						
+				if (validateAll || ($("#chkSelect" + index)[0] != undefined && $("#chkSelect" + index)[0].checked)) {
+					if (!(/^[0-9]+$/.test($("#txtEmployeeNumber" + index).val())) || me.ePayBatchDetailsList[index].employeeError) {
+						$("#txtEmployeeNumber" + index).attr("title", "Invalid Employee #");
+						$("#txtEmployeeNumber" + index).css("background-color", me.cellColorInvalid);
+					}
+					else {
+						$("#txtEmployeeNumber" + index).attr("title", "");
+						$("#txtEmployeeNumber" + index).css("background-color", me.cellColorValid);
+					}
 
-				if ($("#selPayCode" + index).val() == "0") {
-					$("#selPayCode" + index).attr("title", "Invalid Pay Code");
-					$("#selPayCode" + index).css("background-color", me.cellColorInvalid);
-				}
-				else {
-					$("#selPayCode" + index).attr("title", "");
-					$("#selPayCode" + index).css("background-color", me.cellColorValid);
-				}
-				
-				if (!(/^[0-9]+$/.test($("#txtHouseCode" + index).val())) || me.ePayBatchDetailsList[index].houseCodeError) {
-					$("#txtHouseCode" + index).attr("title", "Invalid House Code");
-					$("#txtHouseCode" + index).css("background-color", me.cellColorInvalid);
-				}
-				else {
-					$("#txtHouseCode" + index).attr("title", "");
-					$("#txtHouseCode" + index).css("background-color", me.cellColorValid);
-				}
+					if ($("#selPayCode" + index).val() == "0") {
+						$("#selPayCode" + index).attr("title", "Invalid Pay Code");
+						$("#selPayCode" + index).css("background-color", me.cellColorInvalid);
+					}
+					else {
+						$("#selPayCode" + index).attr("title", "");
+						$("#selPayCode" + index).css("background-color", me.cellColorValid);
+					}
+					
+					if (!(/^[0-9]+$/.test($("#txtHouseCode" + index).val())) || me.ePayBatchDetailsList[index].houseCodeError) {
+						$("#txtHouseCode" + index).attr("title", "Invalid House Code");
+						$("#txtHouseCode" + index).css("background-color", me.cellColorInvalid);
+					}
+					else {
+						$("#txtHouseCode" + index).attr("title", "");
+						$("#txtHouseCode" + index).css("background-color", me.cellColorValid);
+					}
 
-				if ($("#txtExpenseDate" + index).val() == "") {
-					$("#txtExpenseDate" + index).attr("title", "Invalid Expense Date");
-					$("#txtExpenseDate" + index).css("background-color", me.cellColorInvalid);
-				}
-				else {
-					$("#txtExpenseDate" + index).attr("title", "");
-					$("#txtExpenseDate" + index).css("background-color", me.cellColorValid);
-				}
-				
-				if (!(/^[+]?[0-9]+(\.[0-9]+)?$/.test($("#txtHours" + index).val()))) {
-					hoursAmountValid = false;
-					$("#txtHours" + index).attr("title", "Invalid Hours");
-					$("#txtHours" + index).css("background-color", me.cellColorInvalid);
-				}
-				else {
-					$("#txtHours" + index).attr("title", "");
-					$("#txtHours" + index).css("background-color", me.cellColorValid);
-				}
-
-				if (!(/^[-]?[0-9]+(\.[0-9]+)?$/.test($("#txtAmount" + index).val()))) {
-					hoursAmountValid = false;
-					$("#txtAmount" + index).attr("title", "Invalid Amount");
-					$("#txtAmount" + index).css("background-color", me.cellColorInvalid);
-				}
-				else {
-					$("#txtAmount" + index).attr("title", "");
-					$("#txtAmount" + index).css("background-color", me.cellColorValid);
-				}
-
-				if (hoursAmountValid) {
-					if (parseFloat($("#txtHours" + index).val()) > 0 && parseFloat($("#txtAmount" + index).val()) > 0) {
-						$("#txtHours" + index).attr("title", "Both Hours and Amount are not allowed");
+					if ($("#txtExpenseDate" + index).val() == "") {
+						$("#txtExpenseDate" + index).attr("title", "Invalid Expense Date");
+						$("#txtExpenseDate" + index).css("background-color", me.cellColorInvalid);
+					}
+					else {
+						$("#txtExpenseDate" + index).attr("title", "");
+						$("#txtExpenseDate" + index).css("background-color", me.cellColorValid);
+					}
+					
+					if (me.ePayBatchDetailsList[index].id == 0) {
+						if ($("#txtHours" + index).val() == "")
+							$("#txtHours" + index).val("0");
+						if ($("#txtAmount" + index).val() == "")
+							$("#txtAmount" + index).val("0");
+					}
+					
+					if (!(/^[+]?[0-9]+(\.[0-9]+)?$/.test($("#txtHours" + index).val()))) {
+						hoursAmountValid = false;
+						$("#txtHours" + index).attr("title", "Invalid Hours");
 						$("#txtHours" + index).css("background-color", me.cellColorInvalid);
-						$("#txtAmount" + index).attr("title", "Both Hours and Amount are not allowed");
-						$("#txtAmount" + index).css("background-color", me.cellColorInvalid);
 					}
 					else {
 						$("#txtHours" + index).attr("title", "");
 						$("#txtHours" + index).css("background-color", me.cellColorValid);
+					}
+	
+					if (!(/^[-]?[0-9]+(\.[0-9]+)?$/.test($("#txtAmount" + index).val()))) {
+						hoursAmountValid = false;
+						$("#txtAmount" + index).attr("title", "Invalid Amount");
+						$("#txtAmount" + index).css("background-color", me.cellColorInvalid);
+					}
+					else {
 						$("#txtAmount" + index).attr("title", "");
 						$("#txtAmount" + index).css("background-color", me.cellColorValid);
 					}
-				}
-				if ($("#txtWorkOrderNumber" + index).val() != "" && (!(/^[0-9]+$/.test($("#txtWorkOrderNumber" + index).val())) || me.ePayBatchDetailsList[index].workOrderNumberError)) {
-					$("#txtWorkOrderNumber" + index).attr("title", "Invalid Work Order #");
-					$("#txtWorkOrderNumber" + index).css("background-color", me.cellColorInvalid);
-				}
-				else {
-					$("#txtWorkOrderNumber" + index).attr("title", "");
-					$("#txtWorkOrderNumber" + index).css("background-color", me.cellColorValid);
+	
+					if (hoursAmountValid) {
+						if (parseFloat($("#txtHours" + index).val()) == 0 && parseFloat($("#txtAmount" + index).val()) == 0) {
+							$("#txtHours" + index).attr("title", "Both Hours and Amount cannot be zero");
+							$("#txtHours" + index).css("background-color", me.cellColorInvalid);
+							$("#txtAmount" + index).attr("title", "Both Hours and Amount cannot be zero");
+							$("#txtAmount" + index).css("background-color", me.cellColorInvalid);
+						}
+						else if (parseFloat($("#txtHours" + index).val()) > 0 && parseFloat($("#txtAmount" + index).val()) > 0) {
+							$("#txtHours" + index).attr("title", "Both Hours and Amount are not allowed");
+							$("#txtHours" + index).css("background-color", me.cellColorInvalid);
+							$("#txtAmount" + index).attr("title", "Both Hours and Amount are not allowed");
+							$("#txtAmount" + index).css("background-color", me.cellColorInvalid);
+						}
+						else {
+							$("#txtHours" + index).attr("title", "");
+							$("#txtHours" + index).css("background-color", me.cellColorValid);
+							$("#txtAmount" + index).attr("title", "");
+							$("#txtAmount" + index).css("background-color", me.cellColorValid);
+						}
+					}
+					if ($("#txtWorkOrderNumber" + index).val() != "" && (!(/^[0-9]+$/.test($("#txtWorkOrderNumber" + index).val())) || me.ePayBatchDetailsList[index].workOrderNumberError)) {
+						$("#txtWorkOrderNumber" + index).attr("title", "Invalid Work Order #");
+						$("#txtWorkOrderNumber" + index).css("background-color", me.cellColorInvalid);
+					}
+					else {
+						$("#txtWorkOrderNumber" + index).attr("title", "");
+						$("#txtWorkOrderNumber" + index).css("background-color", me.cellColorValid);
+					}
 				}
 			}
 		},
@@ -906,16 +921,20 @@ ii.Class({
 				objInput.style.backgroundColor = me.cellColorValid;
 			}
 		},
-		
+
 		hoursAmountBlur: function(objInput) {
 			var me = this;
 			var hoursAmountValid = true;
 		    var rowNumber = 0;
-			
-			if (objInput.id.indexOf("txtHours") != -1)
-		    	rowNumber = Number(objInput.id.replace("txtHours", ""));
-			else if (objInput.id.indexOf("txtAmount") != -1)
-		    	rowNumber = Number(objInput.id.replace("txtAmount", ""));
+
+			if (objInput.id.indexOf("txtHours") != -1) {
+				rowNumber = Number(objInput.id.replace("txtHours", ""));
+				$("#txtAmount" + rowNumber).val("0");
+			}
+			else if (objInput.id.indexOf("txtAmount") != -1) {
+				rowNumber = Number(objInput.id.replace("txtAmount", ""));
+				$("#txtHours" + rowNumber).val("0");
+			}
 
 			me.isHoursAmountValid(rowNumber);
 		},
@@ -945,7 +964,14 @@ ii.Class({
 			}
 
 			if (hoursAmountValid) {
-				if (parseFloat($("#txtHours" + rowNumber).val()) > 0 && parseFloat($("#txtAmount" + rowNumber).val()) > 0) {
+				if (parseFloat($("#txtHours" + rowNumber).val()) == 0 && parseFloat($("#txtAmount" + rowNumber).val()) == 0) {
+					$("#txtHours" + rowNumber).attr("title", "Both Hours and Amount cannot be zero");
+					$("#txtHours" + rowNumber).css("background-color", me.cellColorInvalid);
+					$("#txtAmount" + rowNumber).attr("title", "Both Hours and Amount cannot be zero");
+					$("#txtAmount" + rowNumber).css("background-color", me.cellColorInvalid);
+					return false;
+				}
+				else if (parseFloat($("#txtHours" + rowNumber).val()) > 0 && parseFloat($("#txtAmount" + rowNumber).val()) > 0) {
 					$("#txtHours" + rowNumber).attr("title", "Both Hours and Amount are not allowed");
 					$("#txtHours" + rowNumber).css("background-color", me.cellColorInvalid);
 					$("#txtAmount" + rowNumber).attr("title", "Both Hours and Amount are not allowed");
@@ -1289,7 +1315,7 @@ ii.Class({
 			$("#AnchorView").hide();
 			$("#AnchorExport").hide();
 			$("#ReconcileInfo").hide();
-	
+
 			if (action == "Prepare") {
 				$("#AnchorPrepare").show();
 				$("#DetailInfo").html("Epay Calculated Detail Info");
@@ -1415,6 +1441,8 @@ ii.Class({
 					me.setRowNumber();
 			}
 			else if (me.status == "SaveEpayBatchRecord") {
+				me.actionValidateItem(false);
+
 				for (var index = 0; index < me.ePayBatchDetailsList.length; index++) {
 					if ($("#chkSelect" + index)[0] != undefined && $("#chkSelect" + index)[0].checked) {
 						var employeeNumber = $("#txtEmployeeNumber" + index).val();
