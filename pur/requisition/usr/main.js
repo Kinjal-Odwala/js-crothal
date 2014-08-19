@@ -37,6 +37,7 @@ ii.Class({
 			me.users = [];
 			me.wizardCount = 0;
 			me.loadCount = 0;
+			me.total = 0;
 			me.fileName = "";
 			me.glAccounts = [];
 			me.action = "PORequisition";
@@ -146,8 +147,8 @@ ii.Class({
 				return;				
 			
 			me.requisitionGrid.setHeight($(window).height() - 145);
-			me.itemGrid.setHeight($(window).height() - 265);
-			me.itemReadOnlyGrid.setHeight($(window).height() - 200);
+			me.itemGrid.setHeight($(window).height() - 285);
+			me.itemReadOnlyGrid.setHeight($(window).height() - 220);
 			me.documentGrid.setHeight(100);
 			$("#popupContact").height($(window).height() - 110);
 			$("#GeneralInfo").height($(window).height() - 210);
@@ -575,7 +576,7 @@ ii.Class({
 				createNewFunction: fin.pur.poRequisition.Item,
 				selectFunction: function(index) {
 					if (me.itemGrid.rows[index].getElement("rowNumber").innerHTML == "Add") 
-						me.itemGrid.rows[index].getElement("itemSelect").innerHTML = "<input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true;\"  checked=\"true\" />";
+						me.itemGrid.rows[index].getElement("itemSelect").innerHTML = "<input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poRequisitionUi.calculateTotal(this);\"  checked=\"true\" />";
 				}			
 			});
 			
@@ -699,9 +700,9 @@ ii.Class({
 			me.itemGrid.addColumn("itemSelect", "itemSelect", "", "", 30, function(data) {
 				var index = me.itemGrid.rows.length - 1;
 				if (me.itemGrid.data[index].itemSelect)
-                	return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true;\" checked=\"true\" /></center>";
+                	return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poRequisitionUi.calculateTotal(this);\" checked=\"true\" /></center>";
 				else
-				    return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true;\" /></center>";
+				    return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poRequisitionUi.calculateTotal(this);\" /></center>";
             });
 			me.itemGrid.addColumn("number", "number", "Item Number", "Item Number", 100, null, me.itemNumber);
 			me.itemGrid.addColumn("description", "description", "Item Description", "Item Description", null, null, me.itemDescription);
@@ -714,7 +715,7 @@ ii.Class({
 			me.itemGrid.addColumn("extendedPrice", "", "Extended Price", "Extended Price", 120, function(data) {				
 				if (!isNaN(data.quantity) && data.price != undefined)
 					return ui.cmn.text.money.format(data.quantity * data.price);
-            });			
+            });						
 			me.itemGrid.capColumns();			
 			
 			me.itemReadOnlyGrid = new ui.ctl.Grid({
@@ -1186,18 +1187,64 @@ ii.Class({
 			return month + "/" + day + "/" + year;
 		},
 		
-		calculateExtendedPrice: function() {
+		calculateTotal: function(object) {
 			var me = this;
-			var index = me.itemGrid.activeRowIndex;
+			var iIndex = me.itemGrid.activeRowIndex;
 			var quantity = me.quantity.getValue();
 			var price = me.price.getValue();
+			me.total = 0;
+			
+			for (var index = 0; index < me.itemGrid.data.length; index++) {
+				if ($("#selectInputCheck" + index)[0].checked) {
+					if (iIndex == index && quantity != "" && !isNaN(quantity) && price != undefined)
+						me.total = me.total + (quantity * price)								
+					else if (me.itemGrid.data[index].quantity != "" && !isNaN(me.itemGrid.data[index].quantity) && me.itemGrid.data[index].price != undefined)
+						me.total = me.total + (me.itemGrid.data[index].quantity * me.itemGrid.data[index].price)						
+				}				
+			}
+			
+			if(me.itemGrid.activeRowIndex == me.itemGrid.data.length) {
+				if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked) {
+					if (quantity != "" && !isNaN(quantity) && price != undefined) 
+						me.total = me.total + quantity * price;
+				}
+			}
+			
+			$("#spnTotal").html(me.total);
+		},
+		
+		calculateExtendedPrice: function() {
+			var me = this;
+			var iIndex = me.itemGrid.activeRowIndex;
+			var quantity = me.quantity.getValue();
+			var price = me.price.getValue();
+			var extendedPrice = "0.00";
+			me.total = 0;
 
 			if (quantity != "" && !isNaN(quantity) && price != undefined)
-				var total = ui.cmn.text.money.format(quantity * price);
+				extendedPrice = ui.cmn.text.money.format(quantity * price);
 			else
-				total = "0.00";
-
-			$(me.itemGrid.rows[index].getElement("extendedPrice")).text(total);
+				extendedPrice = "0.00";			
+			
+			$(me.itemGrid.rows[iIndex].getElement("extendedPrice")).text(extendedPrice);
+			
+			for (var index = 0; index < me.itemGrid.data.length; index++) {
+				if ($("#selectInputCheck" + index)[0].checked) {
+					if (iIndex == index && quantity != "" && !isNaN(quantity) && price != undefined)
+						me.total = me.total + (quantity * price)								
+					else if (me.itemGrid.data[index].quantity != "" && !isNaN(me.itemGrid.data[index].quantity) && me.itemGrid.data[index].price != undefined)
+						me.total = me.total + (me.itemGrid.data[index].quantity * me.itemGrid.data[index].price)
+				}
+			}
+			
+			if(me.itemGrid.activeRowIndex == me.itemGrid.data.length) {
+				if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked) {
+					if (quantity != "" && !isNaN(quantity) && price != undefined) 
+						me.total = me.total + quantity * price;
+				}
+			}
+			
+			$("#spnTotal").html(me.total);
 		},
 		
 		statusesLoaded: function() {
@@ -1314,7 +1361,8 @@ ii.Class({
 		},
 		
 		poItemsLoaded: function(me, activeId) {
-
+			me.total = 0;
+			
 			for (var index = 0; index < me.items.length; index++) {
 				var found = false;
 				for (var iIndex = 0; iIndex < me.poRequisitionDetails.length; iIndex++) {
@@ -1331,9 +1379,18 @@ ii.Class({
 					me.poRequisitionDetails.push(me.items[index]);
 				}
 			}
-		
+						
 			me.itemGrid.setData(me.poRequisitionDetails);
 			me.itemReadOnlyGrid.setData(me.poRequisitionDetails);
+			
+			for (var index = 0; index < me.itemGrid.data.length; index++) {
+				if ($("#selectInputCheck" + index)[0].checked) {
+					if (me.itemGrid.data[index].quantity != "" && !isNaN(me.itemGrid.data[index].quantity) && me.itemGrid.data[index].price != undefined)
+						me.total = me.total + (me.itemGrid.data[index].quantity * me.itemGrid.data[index].price)
+				}
+			}
+			
+			$("#spnTotal").html("  " + me.total);
 			$("#popupLoading").hide();
 		},
 		
@@ -1485,7 +1542,20 @@ ii.Class({
 		},
 		
 		poRequisitonDetailsLoaded: function(me, activeId) {
-
+			var item;
+			me.total = 0;
+			
+			if (me.poRequisitionDetails.length > 0) {
+				
+				for (var iIndex = 0; iIndex < me.poRequisitionDetails.length; iIndex++) {
+					if (me.poRequisitionDetails[iIndex].quantity != "" && !isNaN(me.poRequisitionDetails[iIndex].quantity) && me.poRequisitionDetails[iIndex].price != undefined) {
+						me.total = me.total + (me.poRequisitionDetails[iIndex].quantity * me.poRequisitionDetails[iIndex].price)
+					}
+				}
+				
+				$("#spnTotal").html(me.total);
+			}		
+							
 			me.itemGrid.setData(me.poRequisitionDetails);
 			me.itemReadOnlyGrid.setData(me.poRequisitionDetails);
 			me.checkLoadCount();
@@ -1824,6 +1894,8 @@ ii.Class({
 			me.poRequisitionDetailStore.reset();
 			me.poRequisitionDocumentStore.reset();
 			me.poRequisitionId = 0;
+			me.total = 0;
+			$("#spnTotal").html(me.total);
 			me.status = "NewPORequisition";
 			me.wizardCount = 1;			
 			me.modified(false);
@@ -1835,8 +1907,9 @@ ii.Class({
 			var me = this;
 			
 			if (me.requisitionGrid.activeRowIndex == -1)
-				return true;
-
+				return true;			
+			
+			me.total = 0;
 			loadPopup();
 			$("#popupMessageToUser").text("Loading");
 			$("#popupLoading").show();
@@ -1848,6 +1921,14 @@ ii.Class({
 
 			me.poRequisitionId = me.requisitionGrid.data[me.lastSelectedRowIndex].id;
 			me.itemGrid.setData(me.poRequisitionDetails);
+			
+			for (var iIndex = 0; iIndex < me.poRequisitionDetails.length; iIndex++) {
+					if (me.poRequisitionDetails[iIndex].quantity != "" && !isNaN(me.poRequisitionDetails[iIndex].quantity) && me.poRequisitionDetails[iIndex].price != undefined && me.poRequisitionDetails[iIndex].itemSelect) {
+						me.total = me.total + (me.poRequisitionDetails[iIndex].quantity * me.poRequisitionDetails[iIndex].price)
+				}
+			}
+			
+			$("#spnTotal").html(me.total);
 			me.status = "EditPORequisition";			
 			me.wizardCount = 1;
 			me.actionShowWizard();
@@ -2313,6 +2394,7 @@ ii.Class({
 				xml += ' chargeToPeriod=""';
 				xml += ' action="' + me.status + '"';
 				xml += ' jdeCompleted="0"';
+				xml += ' total="' + me.total + '"';
 				xml += '/>';
 			}
 			else if (me.status == "DeleteDocument") {
