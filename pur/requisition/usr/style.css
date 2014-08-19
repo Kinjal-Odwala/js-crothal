@@ -120,9 +120,9 @@
 	font-weight: bold;
 	height: 17px;
 	padding-left: 0;
-	padding-right: 0;
+	padding-right: 3px;
 	padding-top: 3px;
-	text-align: left;
+	text-align: right;
 	text-transform: uppercase;
 }
 
@@ -289,7 +289,7 @@
 	padding: 0px 10px 0px 10px;
 }
 
-#priceBodyColumn, #quantityBodyColumn {
+#extendedPriceBodyColumn, #priceBodyColumn, #quantityBodyColumn {
 	text-align: right;	
 }
 

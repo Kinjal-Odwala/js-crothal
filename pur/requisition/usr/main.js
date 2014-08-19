@@ -653,10 +653,6 @@ ii.Class({
 			me.quantity.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
-			
-			me.quantity.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
 
 				if (me.itemGrid.activeRowIndex != -1) {
@@ -704,14 +700,14 @@ ii.Class({
 				else
 				    return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poRequisitionUi.calculateTotal(this);\" /></center>";
             });
-			me.itemGrid.addColumn("number", "number", "Item Number", "Item Number", 100, null, me.itemNumber);
+			me.itemGrid.addColumn("number", "number", "Item Number", "Item Number", 110, null, me.itemNumber);
 			me.itemGrid.addColumn("description", "description", "Item Description", "Item Description", null, null, me.itemDescription);
 			me.itemGrid.addColumn("alternateDescription", "alternateDescription", "Alternate Description", "Alternate Description", 180, null, me.alternateDescription);
 			me.itemGrid.addColumn("account", "account", "GL Account No", "GL Account No", 120, function( account ) { return account.code + " - " + account.name; }, me.account);
 			me.itemGrid.addColumn("unit", "unit", "UOM", "UOM", 50, null, me.uom);
 			me.itemGrid.addColumn("manufactured", "manufactured", "Manufactured", "Manufactured", 120, null, me.manufactured);
 			me.itemGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 80, null, me.quantity);
-			me.itemGrid.addColumn("price", "price", "Price", "Price", 80, null, me.price);
+			me.itemGrid.addColumn("price", "price", "Price", "Price", 70, null, me.price);
 			me.itemGrid.addColumn("extendedPrice", "", "Extended Price", "Extended Price", 120, function(data) {				
 				if (!isNaN(data.quantity) && data.price != undefined)
 					return ui.cmn.text.money.format(data.quantity * data.price);
@@ -723,14 +719,14 @@ ii.Class({
 				allowAdds: false			
 			});
 			
-			me.itemReadOnlyGrid.addColumn("number", "number", "Item Number", "Item Number", 100);
+			me.itemReadOnlyGrid.addColumn("number", "number", "Item Number", "Item Number", 110);
 			me.itemReadOnlyGrid.addColumn("description", "description", "Item Description", "Item Description", null);
 			me.itemReadOnlyGrid.addColumn("alternateDescription", "alternateDescription", "Alternate Description", "Alternate Description", 180);
 			me.itemReadOnlyGrid.addColumn("account", "account", "GL Account No", "GL Account No", 120, function(account) { return account.code + " - " + account.name;	});
 			me.itemReadOnlyGrid.addColumn("unit", "unit", "UOM", "UOM", 50);
 			me.itemReadOnlyGrid.addColumn("manufactured", "manufactured", "Manufactured", "Manufactured", 120);
 			me.itemReadOnlyGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 80);
-			me.itemReadOnlyGrid.addColumn("price", "price", "Price", "Price", 80);
+			me.itemReadOnlyGrid.addColumn("price", "price", "Price", "Price", 70);
 			me.itemReadOnlyGrid.addColumn("extendedPrice", "", "Extended Price", "Extended Price", 120, function(data) {				
 				if (!isNaN(data.quantity) && data.price != undefined)
 					return ui.cmn.text.money.format(data.quantity * data.price);
@@ -1210,7 +1206,7 @@ ii.Class({
 				}
 			}
 			
-			$("#spnTotal").html(me.total);
+			$("#spnTotal").html(me.total.toFixed(2));
 		},
 		
 		calculateExtendedPrice: function() {
@@ -1244,7 +1240,7 @@ ii.Class({
 				}
 			}
 			
-			$("#spnTotal").html(me.total);
+			$("#spnTotal").html(me.total.toFixed(2));
 		},
 		
 		statusesLoaded: function() {
@@ -1390,7 +1386,7 @@ ii.Class({
 				}
 			}
 			
-			$("#spnTotal").html("  " + me.total);
+			$("#spnTotal").html(me.total.toFixed(2));
 			$("#popupLoading").hide();
 		},
 		
@@ -1553,7 +1549,7 @@ ii.Class({
 					}
 				}
 				
-				$("#spnTotal").html(me.total);
+				$("#spnTotal").html(me.total.toFixed(2));
 			}		
 							
 			me.itemGrid.setData(me.poRequisitionDetails);
@@ -1895,7 +1891,7 @@ ii.Class({
 			me.poRequisitionDocumentStore.reset();
 			me.poRequisitionId = 0;
 			me.total = 0;
-			$("#spnTotal").html(me.total);
+			$("#spnTotal").html(me.total.toFixed(2));
 			me.status = "NewPORequisition";
 			me.wizardCount = 1;			
 			me.modified(false);
@@ -1928,7 +1924,7 @@ ii.Class({
 				}
 			}
 			
-			$("#spnTotal").html(me.total);
+			$("#spnTotal").html(me.total.toFixed(2));
 			me.status = "EditPORequisition";			
 			me.wizardCount = 1;
 			me.actionShowWizard();
@@ -2394,7 +2390,7 @@ ii.Class({
 				xml += ' chargeToPeriod=""';
 				xml += ' action="' + me.status + '"';
 				xml += ' jdeCompleted="0"';
-				xml += ' total="' + me.total + '"';
+				xml += ' total="' + me.total.toFixed(2) + '"';
 				xml += '/>';
 			}
 			else if (me.status == "DeleteDocument") {
