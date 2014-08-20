@@ -7,6 +7,13 @@ ii.init.register( function() {
 
 ii.init.register( function() {
 
+	fin.pay.processPayroll.personArgs = {
+		id: {type: Number}
+		, firstName: {type: String, required: false, defaultValue: ""}
+		, lastName: {type: String, required: false, defaultValue: ""}
+		, email: {type: String, required: false, defaultValue: ""}
+	};
+	
 	fin.pay.processPayroll.payCodeTypeArgs = {
 		id: {type: Number}
 		, brief: {type: String}
@@ -55,6 +62,16 @@ ii.init.register( function() {
 	};
 
 }, 2);
+
+ii.Class({
+	Name: "fin.pay.processPayroll.Person",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pay.processPayroll.personArgs);
+			$.extend(this, args);
+		}
+	}
+});
 
 ii.Class({
 	Name: "fin.pay.processPayroll.PayCodeType",

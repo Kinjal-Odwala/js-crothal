@@ -37,8 +37,6 @@ ii.Class({
 			me.loadCount = 0;
 			me.validateExport = false;
 			me.showDetailReport = false;
-			me.autoProcess = false;
-			me.autoProcessStep = "";
 			me.detailRecordCountFinalize = 0;
 			me.detailTotalHoursFinalize = 0;
 			me.detailTotalAmountFinalize = 0;
@@ -55,8 +53,8 @@ ii.Class({
 			me.pageCount = 0;
 			me.pageCurrent = 1;
 
-			//Set the xmlTimeout period to 20 minutes to finish the Import/Reconcile/Finalize process without timeout error.
-			$.ajaxSetup({timeout: 1200000});
+			//Set the xmlTimeout period to 30 minutes to finish the Import/Reconcile/Finalize process without timeout error.
+			$.ajaxSetup({timeout: 1800000});
 
 			me.gateway = ii.ajax.addGateway("pay", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -145,6 +143,7 @@ ii.Class({
 			else if (me.exportBatchShow)
 				me.actionShowItem("Export");
 
+			me.personStore.fetch("userId:[user],id:" + me.session.propertyGet("personId"), me.personsLoaded, me);
 			me.payCodeTypeStore.fetch("userId:[user],payCodeType:ePayBatch", me.payCodeTypesLoaded, me);
 		},
 
@@ -343,6 +342,14 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 
+			me.persons = [];
+			me.personStore = me.cache.register({ 
+				storeId: "persons",
+				itemConstructor: fin.pay.processPayroll.Person,
+				itemConstructorArgs: fin.pay.processPayroll.personArgs,
+				injectionArray: me.persons	
+			});
+
 			me.payCodeTypes = [];
 			me.payCodeTypeStore = me.cache.register({
 				storeId: "payCodes",
@@ -426,6 +433,10 @@ ii.Class({
 			$("#imgNext").bind("click", function() { me.nextEpayBatchDetails(); });
 		},
 
+		personsLoaded: function(me, activeId) {
+
+		},
+
 		payCodeTypesLoaded: function(me, activeId) {
 
 			me.payCodes = "<option value='0'></option>";
@@ -436,32 +447,6 @@ ii.Class({
 
 		ePayBatchesLoaded: function(me, activeId) {
 
-			if (me.autoProcess) {
-				var varianceTotalCount = me.detailRecordCountFinalize - parseInt(me.ePayBatches[0].batchRecordCount, 10);
-				var varianceTotalHours = me.detailTotalHoursFinalize - parseFloat(me.ePayBatches[0].batchTotalHours) - parseFloat(me.ePayBatches[0].totalHours);
-				var varianceTotalAmount = me.detailTotalAmountFinalize - parseFloat(me.ePayBatches[0].batchTotalAmount);
-	
-				if (varianceTotalCount == 0 && varianceTotalHours == 0 && varianceTotalAmount == 0
-					&& me.ePayBatches[0].detailRecordCount == 0
-					&& parseFloat(me.ePayBatches[0].detailTotalHours) == 0
-					&& parseFloat(me.ePayBatches[0].detailTotalAmount) == 0) {
-						me.autoProcessStep = "Finalize";
-						me.actionSaveItem("Finalize");
-				}
-				else {
-					var index = me.ePayBatchGrid.activeRowIndex;
-					me.ePayBatchList.splice(index, 1);
-					me.ePayBatchGrid.setData(me.ePayBatchList);
-					me.autoProcess = false;
-					me.autoProcessStep = "";
-					me.modified(false);
-					me.setStatus("Saved");
-					$("#pageLoading").fadeOut("slow");
-				}
-
-				return;
-			}
-			
 			if (me.showDetailReport && (me.action == "Finalize" || me.action == "Export") && me.ePayBatchGrid.activeRowIndex != -1) {
 				var index = me.ePayBatchGrid.activeRowIndex;
 				var varianceTotalCount = parseInt(me.ePayBatchGrid.data[index].detailRecordCount, 10) - parseInt(me.ePayBatches[0].batchRecordCount, 10);
@@ -799,7 +784,11 @@ ii.Class({
 
 			for (var index = 0; index < me.ePayBatchDetailsList.length; index++) {
 				if (validateAll || ($("#chkSelect" + index)[0] != undefined && $("#chkSelect" + index)[0].checked)) {
-					if (!(/^[0-9]+$/.test($("#txtEmployeeNumber" + index).val())) || me.ePayBatchDetailsList[index].employeeError) {
+					var employeeNumber = $("#txtEmployeeNumber" + index).val();
+					var houseCode = $("#txtHouseCode" + index).val();
+					var workOrderNumber = $("#txtWorkOrderNumber" + index).val();
+						
+					if (!(/^[0-9]+$/.test(employeeNumber)) || !me.employeeNumberCache[employeeNumber].valid) {
 						$("#txtEmployeeNumber" + index).attr("title", "Invalid Employee #");
 						$("#txtEmployeeNumber" + index).css("background-color", me.cellColorInvalid);
 					}
@@ -817,7 +806,7 @@ ii.Class({
 						$("#selPayCode" + index).css("background-color", me.cellColorValid);
 					}
 					
-					if (!(/^[0-9]+$/.test($("#txtHouseCode" + index).val())) || me.ePayBatchDetailsList[index].houseCodeError) {
+					if (!(/^[0-9]+$/.test(houseCode)) || !me.houseCodeCache[houseCode].valid) {
 						$("#txtHouseCode" + index).attr("title", "Invalid House Code");
 						$("#txtHouseCode" + index).css("background-color", me.cellColorInvalid);
 					}
@@ -882,7 +871,7 @@ ii.Class({
 							$("#txtAmount" + index).css("background-color", me.cellColorValid);
 						}
 					}
-					if ($("#txtWorkOrderNumber" + index).val() != "" && (!(/^[0-9]+$/.test($("#txtWorkOrderNumber" + index).val())) || me.ePayBatchDetailsList[index].workOrderNumberError)) {
+					if (workOrderNumber != "" && (!(/^[0-9]+$/.test(workOrderNumber)) || !me.workOrderNumberCache[workOrderNumber].valid)) {
 						$("#txtWorkOrderNumber" + index).attr("title", "Invalid Work Order #");
 						$("#txtWorkOrderNumber" + index).css("background-color", me.cellColorInvalid);
 					}
@@ -1033,7 +1022,6 @@ ii.Class({
 	        }
 	        else
 	            me.employeeNumberLoad(rowNumber, employeeNumber);
-
 		},
 		
 		employeeNumberLoad: function(rowNumber, employeeNumber) {
@@ -1308,6 +1296,7 @@ ii.Class({
 		actionShowItem: function(action) {
 			var me = this;
 
+			$("#AnchorCancel").show();
 			$("#AnchorPrepare").hide();
 			$("#AnchorImport").hide();
 			$("#AnchorReconcile").hide();
@@ -1317,6 +1306,7 @@ ii.Class({
 			$("#ReconcileInfo").hide();
 
 			if (action == "Prepare") {
+				$("#AnchorCancel").hide();
 				$("#AnchorPrepare").show();
 				$("#DetailInfo").html("Epay Calculated Detail Info");
 			}
@@ -1337,6 +1327,7 @@ ii.Class({
 			}
 
 			$("#header").html("Process Payroll - " + action);
+			me.ePayBatchGrid.setData([]);
 			me.action = action;
 			me.setLoadCount();
 			
@@ -1360,8 +1351,6 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 
-			me.autoProcess = true;
-			me.autoProcessStep = "Import";
 			me.actionSaveItem("Import");
 		},
 		
@@ -1480,6 +1469,7 @@ ii.Class({
 				xml += ' id="' + me.ePayBatchList[index].id + '"';
 				xml += ' batchId="' + me.ePayBatchList[index].batchId + '"';
 				xml += ' status="' + status + '"';
+				xml += ' emailId="' + ui.cmn.text.xml.encode(me.persons[0].email) + '"';
 				xml += '/>';
 			}
 
@@ -1495,7 +1485,7 @@ ii.Class({
 				if (me.status == "Prepare")
 					$("#messageToUser").text("Preparing");
 				else if (me.status == "Import")
-					$("#messageToUser").text("Importing");
+					$("#messageToUser").text("Import/Reconcile/Finalize process will take few minutes, please wait...");
 				else if (me.status == "Reconcile")
 					$("#messageToUser").text("Reconcile process will take few minutes, please wait...");
 				else if (me.status == "Finalize")
@@ -1541,36 +1531,9 @@ ii.Class({
 						me.anchorExport.display(ui.cmn.behaviorStates.disabled);
 					}
 					else {
-						if (me.autoProcess) {
-							$(args.xmlNode).find("*").each(function() {
-								switch (this.tagName) {
-									case "payBatch":
-										if (me.autoProcessStep == "Import" && $(this).attr("valid") == "true") {
-											me.autoProcessStep = "Reconcile";
-											me.actionSaveItem("Reconcile");
-										}
-										else if (me.autoProcessStep == "Reconcile") {
-											me.detailRecordCountFinalize = parseInt($(this).attr("detailRecordCount"), 10);
-											me.detailTotalHoursFinalize = parseFloat($(this).attr("detailTotalHours"));
-											me.detailTotalAmountFinalize = parseFloat($(this).attr("detailTotalAmount"));
-											me.ePayBatchStore.fetch("userId:[user],status:FinalizeError,batchId:" + me.ePayBatchGrid.data[me.ePayBatchGrid.activeRowIndex].batchId, me.ePayBatchesLoaded, me);
-										}
-										else {
-											var index = me.ePayBatchGrid.activeRowIndex;
-											me.ePayBatchList.splice(index, 1);
-											me.ePayBatchGrid.setData(me.ePayBatchList);
-											me.autoProcess = false;
-											me.autoProcessStep = "";
-										}
-									break;
-								}
-							});
-						}
-						else {
-							var index = me.ePayBatchGrid.activeRowIndex;
-							me.ePayBatchList.splice(index, 1);
-							me.ePayBatchGrid.setData(me.ePayBatchList);
-						}
+						var index = me.ePayBatchGrid.activeRowIndex;
+						me.ePayBatchList.splice(index, 1);
+						me.ePayBatchGrid.setData(me.ePayBatchList);
 					}
 
 					if (me.action == "Finalize" || me.action == "Export") {
@@ -1578,20 +1541,18 @@ ii.Class({
 						me.ePayBatchGrid.setHeight($(window).height() - 130);
 					}
 				}
-				
-				if (!me.autoProcess) {
-					me.modified(false);
-					me.setStatus("Saved");
-				}
+
+				me.modified(false);
+				me.setStatus("Saved");
 			}
 			else {
 				me.setStatus("Error");
-				alert("[SAVE FAILURE] Error while updating State Minimum Wage details: " + $(args.xmlNode).attr("message"));
+				alert("[SAVE FAILURE] Error while processing the batch: " + $(args.xmlNode).attr("message"));
 			}
 
 			if (me.status == "CancelEpayBatchRecord" || me.status == "SaveEpayBatchRecord")
 				$("#popupLoading").fadeOut("slow");
-			else if (!me.autoProcess)
+			else
 				$("#pageLoading").fadeOut("slow");
 		},
 		
