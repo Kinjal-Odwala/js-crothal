@@ -356,3 +356,10 @@
 	background-color: black;
 	display: none;
 }
+
+#TotalRow {	 
+	width: 100%; 
+	height: 22px;
+	overflow: hidden;
+	position: relative;
+}
