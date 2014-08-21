@@ -225,7 +225,7 @@ Select * From EsmV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin
 <add key="ConnectionString" value="Data Source=CHIUSCHD398VM;Initial Catalog=TeamFinv2;User ID=Esm;Password=Esm" />
 
 -- Add the following key in pay-->act web.config file
-<httpRuntime executionTimeout="1200" />
+<httpRuntime executionTimeout="1800" />
 
 /*
 CT updated on 9th July 2014 11PM EST
@@ -251,4 +251,11 @@ Update ESMV2.dbo.HirNodes Set HirNodBrief = 'PORequisition', HirNodTitle = 'PO R
 
 /*
 CT updated on 30th July 2014 11PM EST
+*/
+
+-- Add the following key in pay-->act web.config file
+<add key="sendPayrollProcessEmailNotification" value="true" />
+
+/*
+CT updated on 20th August 2014 11PM EST
 */
