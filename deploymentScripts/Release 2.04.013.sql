@@ -17,32 +17,12 @@ Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrie
 Values(1, 9, @HirNode, 'SSNModification', 'SSN Modification', 'SSN Modification', @DisplayOrder + 1, 1, '\crothall\chimes\fin\Setup\Employees\Wizard\SSNModification', 'crothall', 'chimes', 'fin', 'Setup', 'Employees', 'Wizard', 'SSNModification', 'Compass-USA\Data Conversion', GetDate())
 
 Select * From ESMV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\Setup\Employees\Wizard%'
-
 -- Add security nodes for action menu items in Employee Wizard [End]
-
--- Add security nodes for action menu items in Emp Request UI [Begin]
-Declare @HirNode As Int
-Declare @DisplayOrder Int
-
-Select @DisplayOrder = Max(HirNode) From ESMV2.dbo.HirNodes
-Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Setup\EmpRequest'
-Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodModBy, HirNodModAt)
-Values(1, 9, @HirNode, 'DateModification', 'Date Modification', 'Date Modification', @DisplayOrder + 1, 1, '\crothall\chimes\fin\Setup\EmpRequest\DateModification', 'crothall', 'chimes', 'fin', 'Setup', 'EmpRequest', 'DateModification', 'Compass-USA\Data Conversion', GetDate())
-
-Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodModBy, HirNodModAt)
-Values(1, 9, @HirNode, 'SSNModification', 'SSN Modification', 'SSN Modification', @DisplayOrder + 2, 1, '\crothall\chimes\fin\Setup\EmpRequest\SSNModification', 'crothall', 'chimes', 'fin', 'Setup', 'EmpRequest', 'SSNModification', 'Compass-USA\Data Conversion', GetDate())
-
-Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodModBy, HirNodModAt)
-Values(1, 9, @HirNode, 'ReverseTerminate', 'Reverse Termination', 'Reverse Termination', @DisplayOrder + 3, 1, '\crothall\chimes\fin\Setup\EmpRequest\ReverseTerminate', 'crothall', 'chimes', 'fin', 'Setup', 'EmpRequest', 'ReverseTerminate', 'Compass-USA\Data Conversion', GetDate())
-
-Select * From ESMV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\Setup\EmpRequest%'
-
--- Add security nodes for action menu items in Emp Request UI [End]
 
 INSERT INTO AppTransactionStatusTypes(AppTransactionStatusType, AppTrastBrief, AppTrastTitle, AppTrastDescription, AppTrastDisplayOrder, AppTrastActive, AppTrastModBy, AppTrastModAt)
 VALUES (10, '9', 'Rejected', 'Rejected', 1, 1, 'Compass-USA\Data Conversion', GetDate())
 
-
+-- Testing Purpose - No need to execute during the deployment [Begin]
 USE [Esmv2]
 GO
 
@@ -94,28 +74,8 @@ Exec AppUserRequestUpdate
 Select * from dbo.AppUserRequests
 Select * From AppUsers Where AppUseUserName = 'Compass-USA\Test888'
 
-
 -- truncate table AppUserRequests
---  Exec AppUserRequestUpdate
-
--- House Code --> House Code Workflow Menu Insert [Begin] 
-Declare @DisplayOrderMenu Int
-	, @HirNodeParent Int
-Set @DisplayOrderMenu = 709
-Select @HirNodeParent = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\HouseCodeSetup'
-
-Exec EsmV2.dbo.AppMenuItemUpdate 
-	'House Code Workflow' --@MenuTitle Varchar(64)
-	, 2 --@MenuAction Int 1-mainmenu, 2-submenu
-	, 4 --@MenuState Int 3-selected, 4-enabled
-	, @DisplayOrderMenu 
-	, '/fin/hcm/houseCodeWorkflow/usr/markup.htm'
-	, @HirNodeParent
-
-Update EsmV2.dbo.AppMenuItems Set AppMeniBrief = 'HC Workflow' Where AppMeniTitle = 'House Code Workflow'
-Select * From EsmV2.dbo.AppMenuItems
-Select * From EsmV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\HouseCodeSetup%'
--- House Code --> House Code Workflow Menu Insert [End] 
+-- Testing Purpose - No need to execute during the deployment [End]
 
 -- Receivables --> Unapplied Cash Menu Insert [Begin] 
 Declare @DisplayOrderMenu Int
@@ -135,6 +95,7 @@ Select * From EsmV2.dbo.AppMenuItems
 Select * From EsmV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\AccountsReceivable%'
 -- Receivables --> Unapplied Cash Menu Insert [End] 
 
+-- Testing Purpose - No need to execute during the production deployment [Begin]
 INSERT INTO dbo.RevUnappliedCashes(HirNode,HcmHouseCode,HcmHouseCodeJob,FscAccount,FscYear,FscPeriod,RevUnacWeek,RevUnacDocumentNumber
 	,RevUnacReceiptDate,RevUnacGrossAmount,RevUnacOpenAmount,RevUnacReceiptItems,RevUnacModBy,RevUnacModAt)
 VALUES( 14261, 12351, 24732, 9412, 5, 54, 5, '1234', Cast('01/12/2014' As DateTime), 19920.65000, 19920.65000, '4331,4332,4333', 'Compass-USA\Data Conversion', GetDate())
@@ -142,6 +103,7 @@ VALUES( 14261, 12351, 24732, 9412, 5, 54, 5, '1234', Cast('01/12/2014' As DateTi
 INSERT INTO dbo.RevUnappliedCashes(HirNode,HcmHouseCode,HcmHouseCodeJob,FscAccount,FscYear,FscPeriod,RevUnacWeek,RevUnacDocumentNumber
 	,RevUnacReceiptDate,RevUnacGrossAmount,RevUnacOpenAmount,RevUnacReceiptItems,RevUnacModBy,RevUnacModAt)
 VALUES( 14261, 12351, 24732, 9412, 5, 54, 5, '1234', Cast('01/15/2014' As DateTime), 23820.75000, 458.25000, '4344', 'Compass-USA\Data Conversion', GetDate())
+-- Testing Purpose - No need to execute during the production deployment [End]
 
 -- Payroll --> Process Payroll Menu Insert [Begin]
 Declare @DisplayOrderMenu Int
@@ -179,7 +141,6 @@ Select * From EsmV2.dbo.AppMenuItems
 Select * From EsmV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\Setup\localTaxCode%'
 -- Setup --> Local Tax Code Menu Insert [End] 
 
-
 -- Add security nodes for action menu items in Payroll --> Process Payroll UI [Begin]
 Declare @HirNode As Int
 Declare @DisplayOrder Int
@@ -191,11 +152,11 @@ Values(1, 9, @HirNode, 'PrepareBatch', 'Prepare Batch', 'Prepare Batch', @Displa
 Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodModBy, HirNodModAt)
 Values(1, 9, @HirNode, 'ImportBatch', 'Import Batch', 'Import Batch', @DisplayOrder + 2, 1, '\crothall\chimes\fin\Payroll\ProcessPayroll\ImportBatch', 'crothall', 'chimes', 'fin', 'Payroll', 'ProcessPayroll', 'ImportBatch', 'Compass-USA\Data Conversion', GetDate())
 Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodModBy, HirNodModAt)
-Values(1, 9, @HirNode, 'ReconcileBatch', 'Reconcile Batch', 'Reconcile Batch', @DisplayOrder + 1, 1, '\crothall\chimes\fin\Payroll\ProcessPayroll\ReconcileBatch', 'crothall', 'chimes', 'fin', 'Payroll', 'ProcessPayroll', 'ReconcileBatch', 'Compass-USA\Data Conversion', GetDate())
+Values(1, 9, @HirNode, 'ReconcileBatch', 'Reconcile Batch', 'Reconcile Batch', @DisplayOrder + 3, 1, '\crothall\chimes\fin\Payroll\ProcessPayroll\ReconcileBatch', 'crothall', 'chimes', 'fin', 'Payroll', 'ProcessPayroll', 'ReconcileBatch', 'Compass-USA\Data Conversion', GetDate())
 Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodModBy, HirNodModAt)
-Values(1, 9, @HirNode, 'FinalizeBatch', 'Finalize Batch', 'Finalize Batch', @DisplayOrder + 3, 1, '\crothall\chimes\fin\Payroll\ProcessPayroll\FinalizeBatch', 'crothall', 'chimes', 'fin', 'Payroll', 'ProcessPayroll', 'FinalizeBatch', 'Compass-USA\Data Conversion', GetDate())
+Values(1, 9, @HirNode, 'FinalizeBatch', 'Finalize Batch', 'Finalize Batch', @DisplayOrder + 4, 1, '\crothall\chimes\fin\Payroll\ProcessPayroll\FinalizeBatch', 'crothall', 'chimes', 'fin', 'Payroll', 'ProcessPayroll', 'FinalizeBatch', 'Compass-USA\Data Conversion', GetDate())
 Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodModBy, HirNodModAt)
-Values(1, 9, @HirNode, 'ExportBatch', 'Export Batch', 'Export Batch', @DisplayOrder + 4, 1, '\crothall\chimes\fin\Payroll\ProcessPayroll\ExportBatch', 'crothall', 'chimes', 'fin', 'Payroll', 'ProcessPayroll', 'ExportBatch', 'Compass-USA\Data Conversion', GetDate())
+Values(1, 9, @HirNode, 'ExportBatch', 'Export Batch', 'Export Batch', @DisplayOrder + 5, 1, '\crothall\chimes\fin\Payroll\ProcessPayroll\ExportBatch', 'crothall', 'chimes', 'fin', 'Payroll', 'ProcessPayroll', 'ExportBatch', 'Compass-USA\Data Conversion', GetDate())
 
 Select * From ESMV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\Payroll\ProcessPayroll%'
 Update ESMV2.dbo.HirNodes Set HirNodBrief = 'ProcessPayroll', HirNodTitle = 'Process Payroll' Where HirNode = 20835
@@ -220,7 +181,7 @@ Select * From EsmV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin
 -- Purchasing --> PO Requisition Menu Insert [End] 
 
 -- Add the following key in pur-->act web.config file
-<add key="PORequisitionEmail" value="chandru.balekkala@iicorporate.com" />
+<add key="PORequisitionEmail" value="sus-purchasing@compass-usa.com" />
 <add key="PORequisitionApprovalPath" value="https://findev.crothall.com/net/crothall/chimes/fin/pur/act/ApprovePORequisition.aspx" />
 <add key="ConnectionString" value="Data Source=CHIUSCHD398VM;Initial Catalog=TeamFinv2;User ID=Esm;Password=Esm" />
 
@@ -244,10 +205,8 @@ Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrie
 Values(1, 9, @HirNode, 'RequisitionToPO', 'Convert PO Requisition to Purchase Order', 'Convert PO Requisition to Purchase Order', @DisplayOrder + 2, 1, '\crothall\chimes\fin\Purchasing\PORequisition\ConvertPORequisitionToPO', 'crothall', 'chimes', 'fin', 'Purchasing', 'PORequisition', 'ConvertPORequisitionToPO', 'Compass-USA\Data Conversion', GetDate())
 
 Select * From ESMV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\Purchasing\PORequisition%'
-
--- Add security nodes for action menu items in PO Requisition UI [End]
-
 Update ESMV2.dbo.HirNodes Set HirNodBrief = 'PORequisition', HirNodTitle = 'PO Requisition' Where HirNodFullPath = '\crothall\chimes\fin\Purchasing\PORequisition'
+-- Add security nodes for action menu items in PO Requisition UI [End]
 
 /*
 CT updated on 30th July 2014 11PM EST
@@ -258,4 +217,8 @@ CT updated on 30th July 2014 11PM EST
 
 /*
 CT updated on 20th August 2014 11PM EST
+*/
+
+/*
+Last production release version 2.04.013 on 3rd September 2014 11PM EST
 */
