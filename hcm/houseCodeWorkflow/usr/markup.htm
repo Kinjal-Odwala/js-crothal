@@ -20,6 +20,12 @@
 		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
 		    </div>
 		</div>
+		<div id="popupLoading" style="position: absolute; top: 0px; left: 0px; z-index: 6001; width: 950px; height: 410px; background-color: white; display: none;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <center><img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/></center>
+		        <div id="popupMessageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
   	 	<div class="pageHeader">
 	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
         </div>
@@ -32,7 +38,7 @@
 		<div style="clear:both;"></div>
 		<div class="pageBody">
 			<div id="contentAreasContainerLeft">
-				<div  class="contentArea">
+				<div class="contentArea">
 					<div class="header">House Code Requests</div>
 					<div class="body">
 						<div id="HouseCodeRequestGrid"></div>
@@ -111,8 +117,8 @@
 					<div class="footer">
                         <div id="AnchorNew"></div>
                         <div id="AnchorEdit"></div>
-						<div id="AnchorApprove"></div>
-						<div id="AnchorReject"></div>
+						<div id="AnchorSendRequest"></div>
+						<div id="AnchorCancelRequest"></div>
                         <div style="clear:both;"></div>
                     </div>
 				</div>
@@ -136,15 +142,6 @@
 					</div>					
 					<div id="hierarchyContainer">
 						<div class="subHeader">Hierarchy Information:</div>
-						<div id="TableEditArea">
-							<div class="labelTextArea">
-								<span class="requiredFieldIndicator">&#149;</span>Division:
-							</div>
-							<div class="inputTextArea">
-								<div id="Division"></div>
-							</div>
-							<div style="clear:both;"></div>
-						</div>
 						<div id="TableEditArea">
 							<div class="labelTextArea">
 								<span class="requiredFieldIndicator">&#149;</span>SVP:
@@ -233,19 +230,19 @@
 							</div>
 							<div id="TableEditArea">
 								<div class="labelTextArea">
-									<span class="requiredFieldIndicator">&#149;</span>City:
+									<span class="requiredFieldIndicator">&#149;</span>Zip Code:
 								</div>
 								<div class="inputTextArea">
-									<div id="City"></div>
+									<div id="ZipCode"></div>
 								</div>
 								<div style="clear:both;"></div>
 							</div>
 							<div id="TableEditArea">
 								<div class="labelTextArea">
-									<span class="requiredFieldIndicator">&#149;</span>Zip Code:
+									<span class="requiredFieldIndicator">&#149;</span>State:
 								</div>
 								<div class="inputTextArea">
-									<div id="ZipCode"></div>
+									<div id="State"></div>
 								</div>
 								<div style="clear:both;"></div>
 							</div>
@@ -275,16 +272,16 @@
 							</div>
 							<div id="TableEditArea">
 								<div class="labelTextArea">
-									<span class="requiredFieldIndicator">&#149;</span>State:
+									<span class="requiredFieldIndicator">&#149;</span>City:
 								</div>
 								<div class="inputTextArea">
-									<div id="State"></div>
+									<div id="City"></div>
 								</div>
 								<div style="clear:both;"></div>
 							</div>
 							<div id="TableEditArea">
 								<div class="labelTextArea">
-									<span class="requiredFieldIndicator">&#149;</span>County:
+									<span class="nonRequiredFieldIndicator"></span>County:
 								</div>
 								<div class="inputTextArea">
 									<div id="County"></div>
@@ -395,10 +392,10 @@
 								<span class="requiredFieldIndicator">&#149;</span>Crothall Benefits:
 							</div>
 							<div class="radioButton">
-								<input id="CrothallBenefitsYes" name="CrothallBenefits" type="radio" checked="checked" value="true" />Yes
+								<input id="CrothallBenefitsYes" name="CrothallBenefits" type="radio" checked="checked" value="Yes" />Yes
 							</div>
 							<div class="radioButton">
-								<input id="CrothallBenefitsNo" name="CrothallBenefits" type="radio" value="false" />No
+								<input id="CrothallBenefitsNo" name="CrothallBenefits" type="radio" value="No" />No
 							</div>
 							<div style="clear:both;"></div>
 						</div>
@@ -463,19 +460,19 @@
 							</div>
 							<div id="TableEditArea">
 								<div class="labelTextArea">
-									<span class="requiredFieldIndicator">&#149;</span>State:
+									<span class="requiredFieldIndicator">&#149;</span>Zip Code:
 								</div>
 								<div class="inputTextArea">
-									<div id="CustomerState"></div>
+									<div id="CustomerZipCode"></div>
 								</div>
 								<div style="clear:both;"></div>
 							</div>
 							<div id="TableEditArea">
 								<div class="labelTextArea">
-									<span class="requiredFieldIndicator">&#149;</span>Phone #:
+									<span class="requiredFieldIndicator">&#149;</span>State:
 								</div>
 								<div class="inputTextArea">
-									<div id="CustomerPhone"></div>
+									<div id="CustomerState"></div>
 								</div>
 								<div style="clear:both;"></div>
 							</div>
@@ -509,6 +506,11 @@
 						</div>
 						<div class="rightContainer">
 							<div id="TableEditArea">
+								<div class="labelTextArea"></div>
+								<div class="inputTextArea"></div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
 								<div class="labelTextArea">
 									<span class="requiredFieldIndicator">&#149;</span>City:
 								</div>
@@ -519,16 +521,11 @@
 							</div>
 							<div id="TableEditArea">
 								<div class="labelTextArea">
-									<span class="requiredFieldIndicator">&#149;</span>Zip Code:
+									<span class="requiredFieldIndicator">&#149;</span>Phone #:
 								</div>
 								<div class="inputTextArea">
-									<div id="CustomerZipCode"></div>
+									<div id="CustomerPhone"></div>
 								</div>
-								<div style="clear:both;"></div>
-							</div>
-							<div id="TableEditArea">
-								<div class="labelTextArea"></div>
-								<div class="inputTextArea"></div>
 								<div style="clear:both;"></div>
 							</div>
 							<div id="TableEditArea">
@@ -606,10 +603,10 @@
 								<span class="nonRequiredFieldIndicator">Contract:</span>
 							</div>
 							<div class="radioButton">
-								<input id="SelfPreformed" name="Contract" type="radio" checked="checked" value="true" />Self Preformed
+								<input id="SelfPreformed" name="Contract" type="radio" checked="checked" value="Self Preformed" />Self Preformed
 							</div>
 							<div class="radioButton">
-								<input id="SubContracted" name="Contract" type="radio" value="false" />Sub Contracted
+								<input id="SubContracted" name="Contract" type="radio" value="Sub Contracted" />Sub Contracted
 							</div>
 							<div style="clear:both;"></div>
 						</div>
@@ -645,10 +642,10 @@
 								<span class="nonRequiredFieldIndicator">Tenet Healthcare Account:</span>
 							</div>
 							<div class="radioButton">
-								<input id="TenetHealthcareAccountYes" name="TenetHealthcareAccount" type="radio" checked="checked" value="true" />Yes
+								<input id="TenetHealthcareAccountYes" name="TenetHealthcareAccount" type="radio" checked="checked" value="Yes" />Yes
 							</div>
 							<div class="radioButton">
-								<input id="TenetHealthcareAccountNo" name="TenetHealthcareAccount" type="radio" value="false" />No
+								<input id="TenetHealthcareAccountNo" name="TenetHealthcareAccount" type="radio" value="No" />No
 							</div>
 							<div style="clear:both;"></div>
 						</div>
@@ -696,10 +693,10 @@
 								<span class="nonRequiredFieldIndicator">Compass purchase any Supplies:</span>
 							</div>
 							<div class="radioButton">
-								<input id="CompassPurchaseAnySuppliesYes" name="CompassPurchaseAnySupplies" type="radio" checked="checked" value="true" />Yes
+								<input id="CompassPurchaseAnySuppliesYes" name="CompassPurchaseAnySupplies" type="radio" checked="checked" value="Yes" />Yes
 							</div>
 							<div class="radioButton">
-								<input id="CompassPurchaseAnySuppliesNo" name="CompassPurchaseAnySupplies" type="radio" value="false" />No
+								<input id="CompassPurchaseAnySuppliesNo" name="CompassPurchaseAnySupplies" type="radio" value="No" />No
 							</div>
 							<div style="clear:both;"></div>
 						</div>
@@ -731,24 +728,24 @@
 								</div>
 								<div style="clear:both;"></div>
 							</div>
-						</div>
-						<div id="TableEditArea">
-							<div class="labelTextArea">
-								<span class="nonRequiredFieldIndicator">Chargeable:</span>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">Chargeable:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="Chargeable"></div>
+								</div>
+								<div style="clear:both;"></div>
 							</div>
-							<div class="inputTextArea">
-								<div id="Chargeable"></div>
+							<div id="TableEditArea">
+								<div class="labelTextArea" id="LabelMarkup">
+									<span class="nonRequiredFieldIndicator">Markup:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="Markup"></div>
+								</div>
+								<div style="clear:both;"></div>
 							</div>
-							<div style="clear:both;"></div>
-						</div>
-						<div id="TableEditArea">
-							<div class="labelTextArea" id="LabelMarkup">
-								<span class="nonRequiredFieldIndicator">Markup:</span>
-							</div>
-							<div class="inputTextArea">
-								<div id="Markup"></div>
-							</div>
-							<div style="clear:both;"></div>
 						</div>
 					</div>
 					<div id="serviceLocationInfoContainer">

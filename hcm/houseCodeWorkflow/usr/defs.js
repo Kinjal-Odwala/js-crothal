@@ -80,7 +80,7 @@ ii.init.register( function() {
 		, column69: {type: String, required: false, defaultValue: ""} 	// Licensed Beds
 		, column70: {type: String, required: false, defaultValue: ""} 	// GPO Member
 		, column71: {type: String, required: false, defaultValue: ""} 	// Start Date Firm
-		, column72: {type: String, required: false, defaultValue: ""} 	// Compass purchase any Supplies
+		, column72: {type: String, required: false, defaultValue: ""} 	// Compass Purchase any Supplies
 		, column73: {type: String, required: false, defaultValue: ""} 	// Contact Name
 		, column74: {type: String, required: false, defaultValue: ""} 	// Contact Number
 		, column75: {type: String, required: false, defaultValue: ""} 	// Types of Supplies Purchased
@@ -121,6 +121,11 @@ ii.init.register( function() {
 		id: {type: Number}
 		, name: {type: String}
 	};
+	
+	fin.hcm.houseCodeWorkflow.termsOfContractTypeArgs = {
+		id: {type: Number}
+		, name: {type: String}
+	};
 
 	fin.hcm.houseCodeWorkflow.serviceTypeArgs = {
 		id: {type: Number}
@@ -147,12 +152,8 @@ ii.init.register( function() {
 	
 	fin.hcm.houseCodeWorkflow.jobArgs = {
 		id: {type: Number, defaultValue: 0}
-		, number: {type: Number, required: false, defaultValue: 0}
 		, name: {type: String, required: false, defaultValue: ""}
-		, brief: {type: String, required: false, defaultValue: ""}
 		, title: {type: String, required: false, defaultValue: ""}
-		, description: {type: String, required: false, defaultValue: ""}
-		, contact: {type: String, required: false, defaultValue: ""}
 		, address1: {type: String, required: false, defaultValue: ""}
 		, address2: {type: String, required: false, defaultValue: ""}
 		, city: {type: String, required: false, defaultValue: ""}
@@ -173,6 +174,25 @@ ii.init.register( function() {
 	fin.hcm.houseCodeWorkflow.supplyContractTypeArgs = {
 		id: {type: Number}
 		, name: {type: String}
+	};
+
+	fin.hcm.houseCodeWorkflow.zipCodeTypeArgs = {
+		id: {type: Number}
+		, stateType: {type: Number, required: false, defaultValue: 0}
+		, zipCode: {type: String, required: false, defaultValue: ""}
+		, geoCode: {type: String, required: false, defaultValue: ""}
+		, city: {type: String, required: false, defaultValue: ""}
+		, county: {type: String, required: false, defaultValue: ""}
+	};
+
+	fin.hcm.houseCodeWorkflow.cityNameArgs = {
+		id: {type: Number}
+		, city: {type: String, required: false, defaultValue: ""}
+	};
+	
+	fin.hcm.houseCodeWorkflow.countyNameArgs = {
+		id: {type: Number}
+		, name: {type: String, required: false, defaultValue: ""}
 	};
 
 }, 2);
@@ -222,6 +242,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.contractTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.houseCodeWorkflow.TermsOfContractType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.termsOfContractTypeArgs);
 			$.extend(this, args);
 		}
 	}
@@ -306,3 +336,33 @@ ii.Class({
 		}
 	}
 });
+
+ii.Class({
+	Name: "fin.hcm.houseCodeWorkflow.ZipCodeType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.zipCodeTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.houseCodeWorkflow.CityName",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.cityNameArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.houseCodeWorkflow.CountyName",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.countyNameArgs);
+			$.extend(this, args);
+		}
+	}
+})

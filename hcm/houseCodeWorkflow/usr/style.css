@@ -1,5 +1,4 @@
-﻿
-.subHeader {
+﻿.subHeader {
     height: 30px;
     font-family: Verdana;
     font-size: 14px;
@@ -91,17 +90,17 @@
 	margin-right: 5px;
 }
 
-#AnchorApprove {
+#AnchorSendRequest {
 	float: left;
-	width: 92px;
+	width: 128px;
 	padding-left: 5px;
 	padding-top: 5px;
 	margin-right: 5px;
 }
 
-#AnchorReject {
+#AnchorCancelRequest {
 	float: left;
-	width: 78px;
+	width: 80px;
 	padding-left: 5px;
 	padding-top: 5px;
 	margin-right: 5px;
