@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+</head>
+<body>
+    <div class="header">
+        <h1>Budget Summary</h1>
+        <div class="description">Budget Summary</div>
+    </div>
+    <h2>UI Elements</h2>
+    <table class="elementTable">
+        <tbody>
+            <tr>
+                <th style="width: 150px;">UI Element</th>
+                <th style="width: 120px;">Field Type</th>
+                <th style="width: 50px;">Mandatory</th>
+                <th style="width: 100px;">Source</th>
+                <th>Validation</th>
+            </tr>
+            <tr>
+                <td>Site</td>
+                <td>List</td>
+                <td>Yes</td>
+                <td>End user input</td>
+                <td>Site should be selected from dropdown list.</td>
+            </tr>
+            <tr>
+                <td>Job</td>
+                <td>List </td>
+                <td>Yes</td>
+                <td>End user input</td>
+                <td>Job should be selected from dropdown list.</td>
+            </tr>
+            <tr>
+                <td>Fiscal Year</td>
+                <td>List</td>
+                <td>Yes</td>
+                <td>End user input</td>
+                <td>Fiscal Year should be selected from dropdown list.<br />
+                    Current Year will be Selected as default.</td>
+            </tr>
+            <tr>
+                <td>Period</td>
+                <td>List</td>
+                <td>Yes</td>
+                <td>End user input </td>
+                <td>Period should be selected from dropdown list.<br />
+                    Current Period&nbsp; will be Selected as default.</td>
+            </tr>
+            <tr>
+                <td>Load Data</td>
+                <td>Button</td>
+                <td>NA</td>
+                <td>End user input</td>
+                <td>List the date based on the search Criteria.</td>
+            </tr>
+        </tbody>
+    </table>
+    <h2>UI Layouts</h2>
+    <table class="layoutTable">
+        <tr>
+            <td class="uiHeader">Budget Summary</td>
+        </tr>
+        <tr>
+            <td>
+                <img src="images/BudgetSummary.jpg" width="900px" /></td>
+        </tr>
+    </table>
+    <h2>Error Messages and Notifications</h2>
+    <table class="elementTable">
+        <tr>
+            <th>Error/Event</th>
+            <th>Message</th>
+        </tr>
+        <!--  <tr>
+            <td>Save</td>
+            <td>If the manadatory details are not provided, appropriate error message should be displayed.</td>
+        </tr>-->
+    </table>
+    <h2>Dependencies</h2>
+    <div class="reference">1. House Codes must be defined in a system look up table (HcmHouseCodes)</div>
+    <div class="reference">2. Fiscal Years must be defined in a system look up table (FscYears)</div>
+    <div class="reference">3. Fiscal Periods must be defined in a system look up table (FscPeriods)</div>
+    <div class="reference">4. Chart of accounts must be defined in a system look up table (FscAccounts)</div>
+    <div class="header">
+        <h1>Database Objects</h1>
+        <div class="description"></div>
+    </div>
+    <table class="elementTable">
+        <tr>
+            <th>Object Types</th>
+            <th>Object Names</th>
+        </tr>
+        <tr>
+            <td>Tables</td>
+            <td>appJDEGLTransactions<br />
+                BudDetails </td>
+        </tr>
+        <tr>
+            <td>Stored Procedures</td>
+            <td></td>
+        </tr>
+    </table>
+    <h2>See Also</h2>
+    <div class="reference"><a href="Administration.htm">Administration</a></div>
+    <div class="reference"><a href="AnnualizedBudget.htm">Annualized Budget</a></div>
+    <div class="reference"><a href="AnnualizedBudget.htm">Annualized Budget 2012</a></div>
+    <div class="reference"><a href="AnnualProjection.htm">Annual Projection</a> </div>
+    <div class="reference"><a href="ImportBudget.htm">Import Budget</a></div>
+    <div class="reference"><a href="mop.htm">MOP</a></div>
+</body>
+</html>

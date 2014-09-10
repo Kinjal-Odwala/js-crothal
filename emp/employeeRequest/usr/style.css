@@ -57,6 +57,8 @@
 	border-width: 1px;
 	padding: 5px;
 	margin: 1px;
+	overflow-x:hidden;
+	overflow-y:auto;
 }
 
 #Notes {	

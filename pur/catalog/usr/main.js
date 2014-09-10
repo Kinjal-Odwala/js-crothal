@@ -565,7 +565,7 @@ ii.Class({
 			
 			me.fileNames = [];
 			me.fileNameStore = me.cache.register({
-			storeId: "purCatalogExcelFileNames",
+			storeId: "purFileNames",
 				itemConstructor: fin.pur.catalog.FileName,
 				itemConstructorArgs: fin.pur.catalog.fileNameArgs,
 				injectionArray: me.fileNames

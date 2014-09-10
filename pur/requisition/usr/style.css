@@ -1,0 +1,365 @@
+﻿.pageHeader {
+	background-color: #9BCD9A;
+	padding-left: 6px;
+	height: 25px;
+}
+
+.subHeader {
+    height: 30px;
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: bold;
+    color: #2C2F50;
+	padding-left: 10px;
+}
+
+.radioButtonRight {
+	float: left;
+	width: 20px;
+	padding-left: 0px;
+	vertical-align: middle;
+	height: 20px;
+}
+	
+.radioTextRight {
+	float: left;
+	width: 105px;
+	text-align: left;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	height: 20px;
+	padding: 3px 0px 0px 5px;
+}
+
+.dropdownRight {
+	float: left;
+	width: 200px;
+	padding-top: 5px;
+}
+
+.labelTextArea {
+	float: left;
+	width: 160px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	text-align: left;
+	padding-right: 10px;
+	height: 27px;
+	padding-left: 10px;
+}
+
+.inputTextArea {
+	float: left;
+	width: 190px;
+	height: 30px;	
+}
+
+.inputTextAreaLarge {
+	float: left;
+	height: 20px;
+	width: 72%;
+}
+
+.iiInputText.Loading {
+	background-image: url(/fin/cmn/usr/media/common/indicator.gif);
+	background-repeat: no-repeat;
+	background-position: right;
+	width: 16px;
+	height: 16px;
+	margin-top: 1px;
+	margin-right: 1px;
+	margin-left: 1px;
+	margin-bottom: 1px;	
+}
+
+.labelTextUpload {
+	float: left;
+	width: 190px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
+
+.footer {
+    height: 20px;
+    font-family: Verdana;
+    font-size: 8pt;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #669b67;
+    text-align: left;
+}
+
+.borderHorizontal {
+    height: 1px;
+    background-color: #adaaad;
+}
+
+.borderVertical {
+    width: 1px;
+    background-color: #adaaad;
+}
+
+.iiGridHeaderTotalColumn {
+	-moz-border-bottom-colors: none;
+	-moz-border-left-colors: none;
+	-moz-border-right-colors: none;
+	-moz-border-top-colors: none;
+	background-color: #669966;
+	border-color: #aaaaaa -moz-use-text-color #aaaaaa #aaaaaa;
+	border-image: none;
+	border-style: solid none solid solid;
+	border-width: 0px medium 0px 0px;
+	color: white;
+	float: left;
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	height: 17px;
+	padding-left: 0;
+	padding-right: 0;
+	padding-top: 3px;
+	text-align: right;
+	text-transform: uppercase;
+}
+
+#InputTextStatus {
+	float: left; 
+	width: 145px; 
+	padding-top: 2px;
+	padding-bottom: 1px;
+	padding-right: 5px;	
+}
+
+#ShippingInfo {
+	height: 385px;
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	margin: 10px;
+	padding: 10px 10px 3px 12px;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+#GeneralInfo {
+	height: 385px;
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	margin: 10px;
+	padding: 10px 10px 3px 12px;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+	
+#contentAreasContainerLeft {
+	float: left;
+	margin-right: 20px;
+}
+
+#LoadButtonItems {
+	float: left;
+	width: 80px;
+	padding-top: 5px;
+	padding-left: 10px;
+}
+
+#SearchButtonStatus {
+	float: left;
+	width: 85px;	
+	padding-top: 1px;
+	padding-bottom: 1px;
+	padding-left: 10px;
+}
+
+#AnchorNew {
+	float: left;
+	width: 68px;
+	margin: 5px 0px 10px 5px;
+	padding-top: 0px;
+}
+
+#AnchorView {
+	float: left;
+	width: 68px;
+	margin: 5px 0px 10px 10px;
+}
+
+#AnchorEdit {
+	float: left;
+	width: 68px;
+	margin: 5px 0px 10px 10px;
+}
+
+#AnchorSendRequisition {
+	float: left;
+	width: 148px;
+	margin: 5px 0px 10px 5px;
+}
+
+#AnchorResendRequisition {
+	float: left;
+	width: 164px;
+	margin: 5px 0px 10px 5px;
+}
+
+#AnchorCancelRequisition {
+    float: left;
+    width: 84px;
+    margin: 5px 0px 10px 10px;
+}
+
+#AnchorGeneratePurchaseOrder {
+	float: left;
+	width: 210px;
+	margin: 5px 0px 10px 10px;
+	padding-top: 0px;
+}
+
+#AnchorJDEEntry {
+	float: left;
+	width: 100px;
+	margin: 5px 0px 10px 7px;
+	padding-top: 0px;
+}
+
+#anchorAlign {
+	clear: both;
+	bottom: 15px;
+	position: absolute;
+}
+
+#AnchorNext {
+	float: left;
+	width: 68px;
+	margin-right: 5px;
+	padding-left: 0px;
+	padding-top: 5px;
+}
+
+#AnchorBack {
+	float: left;
+	width: 68px;
+	margin-right: 5px;
+	padding-left: 0px;
+	padding-top: 5px;
+}
+
+#AnchorSave {
+	float: left;
+	width: 68px;
+	margin-right: 5px;
+	padding-left: 0px;
+	padding-top: 5px;
+}
+
+#AnchorCancel {
+	float: left;
+	width: 80px;
+	margin-right: 5px;
+	padding-left: 20px;
+	padding-top: 5px;
+}
+
+#AnchorUpload {
+	float: left;
+	width: 82px;
+	padding: 5px 0px 0px 20px;
+}
+
+#AnchorUploadCancel {
+	float: left;
+	width: 80px;
+	padding: 5px 0px 0px 10px;
+}
+
+#DocumentGrid {
+	width: 700px;
+	margin-left: 10px;
+}
+
+#Paging {
+	width: 700px;
+	margin-left: 11px;
+}
+
+#ItemGridInfo {	
+	padding: 0px 10px 0px 10px;
+}
+
+#extendedPriceBodyColumn, #priceBodyColumn, #quantityBodyColumn {
+	text-align: right;	
+}
+
+#LabelStatus {
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: bold;
+	color: #032D23;
+	padding-top: 5px;
+	padding-right: 5px;	
+}
+
+#LabelItemLeft {
+	width: 80px;
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	text-align: left;
+	padding-top: 5px;
+	padding-left: 5px;
+}
+
+#LabelItemRight {
+	width: 140px;
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	text-align: left;
+	padding-top: 5px;
+	padding-left: 5px;
+}
+
+#popupContact {
+	width: 800px; 
+	height: 400px;
+	position: absolute;
+	z-index: 5025;
+	background-color: white;
+	display: none;
+}
+
+#uploadPopup {
+	width: 600px; 
+	height: 150px;
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	background-color: white;
+	position: absolute;
+	z-index: 5025;	
+	display: none;
+}
+
+#backgroundPopup {
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	z-index: 5000; 
+	width: 100%; 
+	height: 100%;
+	border: 1px solid #cecece; 
+	background-color: black;
+	display: none;
+}
+
+#TotalRow {	 
+	width: 100%; 
+	height: 22px;
+	overflow: hidden;
+	position: relative;
+}

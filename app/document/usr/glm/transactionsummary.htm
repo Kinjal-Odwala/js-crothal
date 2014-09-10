@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+</head>
+<body>
+    <div class="header">
+        <h1>Transaction Summary</h1>
+        <div class="description">Description.</div>
+    </div>
+    <h2>Transaction Summary</h2>
+    <table class="elementTable">
+        <tr>
+            <th style="width: 150px;">UI Element</th>
+            <th style="width: 120px;">Field Type</th>
+            <th style="width: 50px;">Mandatory</th>
+            <th style="width: 100px;">Source</th>
+            <th>Validation</th>
+        </tr>
+        <tr>
+            <td>Site</td>
+            <td>List</td>
+            <td>Yes</td>
+            <td>Enter user input</td>
+            <td>Site should be selected from dropdown list.</td>
+        </tr>
+        <tr>
+            <td>Job</td>
+            <td>List</td>
+            <td>Yes</td>
+            <td>Enter user input</td>
+            <td>Job should be selected from dropdown list.</td>
+        </tr>
+        <tr>
+            <td>Fiscal Year</td>
+            <td>List</td>
+            <td>Yes</td>
+            <td>Enter user input</td>
+            <td>Fiscal year should be selected from dropdown list. By fault current year will be selected. </td>
+        </tr>
+        <tr>
+            <td>Period</td>
+            <td>List</td>
+            <td>Yes</td>
+            <td>Enter user input</td>
+            <td>Period should be selected from the dropdown list. By default current period will be selected. </td>
+        </tr>
+        <tr>
+            <td>Load Data</td>
+            <td>Button</td>
+            <td>Yes</td>
+            <td>Enter user input</td>
+            <td>List data based on the search criteria.</td>
+        </tr>
+        <tr>
+            <td>Print</td>
+            <td>Button</td>
+            <td>Yes</td>
+            <td>Enter user input</td>
+            <td>View/ Print Transaction Summary in PDF document.</td>
+        </tr>
+    </table>
+    <h2>UI Layouts</h2>
+    <table class="layoutTable">
+        <tr>
+            <td class="uiHeader">Transaction Summary</td>
+        </tr>
+        <tr>
+            <td><img width="900" src="images/transactionsummary.png"/></td>
+        </tr>
+    </table>
+  <!--  <h2>Error Messages and Notifications</h2>
+    <table class="elementTable">
+        <tr>
+            <th>Error/Event</th>
+            <th>Message</th>
+        </tr>
+       <!-- <tr>
+            <td>Save</td>
+            <td>If the manadatory details are not provided, appropriate error message should be displayed.</td>
+        </tr>-->
+    </table>-->
+    <div class="header">
+        <h1>Database Objects</h1>
+        <div class="description"></div>
+    </div>
+    <table class="elementTable">
+        <tr>
+            <th>Object Types</th>
+            <th>Object Names</th>
+        </tr>
+        <tr>
+            <td>Tables</td>
+            <td>AppJDEGLTransactions, BudDetails,BudProjectedDetails</td>
+        </tr>
+        <tr>
+            <td>Stored Procedures</td>
+            <td></td>
+        </tr>
+    </table>
+    <h2>See Also</h2>
+    <div class="reference"><a href="journalEntry.htm">Journal Entry</a><br />
+        <a href="recurringExpense.htm">Recurring Exps</a></div>
+</body>
+</html>

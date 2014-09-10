@@ -601,12 +601,14 @@ ii.Class({
 				if (parent.parent.fin.appUI.houseCodeTitle == me.billTo.lastBlurValue)
 					alert("Warning: You have selected a House Code as the customer.");
 
-				itemIndex = me.taxExempt.indexSelected;
-
-	            if (itemIndex >= 0 && me.taxExempts[itemIndex].id == 1) {
-					if (me.invoiceBillTos[index].taxId > 0) 
+					if (me.invoiceBillTos[index].taxId > 0) {
+						me.taxExempt.select(0, me.taxExempt.focused);
 						me.taxId.setValue(me.invoiceBillTos[index].taxId);
-				}
+					}
+					else {
+						me.taxExempt.select(1, me.taxExempt.focused);
+						me.taxId.setValue("");
+					}
 
 				me.company.setValue(me.invoiceBillTos[index].company);
 				me.address1.setValue(me.invoiceBillTos[index].address1);

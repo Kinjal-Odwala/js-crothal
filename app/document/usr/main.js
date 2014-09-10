@@ -33,18 +33,18 @@
 		actionNodeAppend(201, 200, "Notifications", 0, "dataCollector/notification.htm");
 
 		actionNodeAppend(220, 20, "Budgeting", 1);
-		actionNodeAppend(221, 220, "Annualized Budget", 0, "template.htm");
-		actionNodeAppend(222, 220, "Budget Summary", 0, "template.htm");
-		actionNodeAppend(223, 220, "Annual Projections", 0, "template.htm");
-		actionNodeAppend(224, 220, "Administration", 0, "template.htm");
-		actionNodeAppend(225, 220, "Annualized Budget 2012", 0, "template.htm");
-		actionNodeAppend(226, 220, "Import Budget", 0, "template.htm");
-		actionNodeAppend(227, 220, "MOP", 0, "template.htm");
+		actionNodeAppend(221, 220, "Annualized Budget", 0, "bud/AnnualizedBudget.htm");
+		actionNodeAppend(222, 220, "Budget Summary", 0, "bud/BudgetSummary.htm");
+		actionNodeAppend(223, 220, "Annual Projections", 0, "bud/AnnualProjection.htm");
+		actionNodeAppend(224, 220, "Administration", 0, "bud/Administration.htm");
+		actionNodeAppend(225, 220, "Annualized Budget 2012", 0, "bud/AnnualizedBudget.htm");
+		actionNodeAppend(226, 220, "Import Budget", 0, "bud/ImportBudget.htm");
+		actionNodeAppend(227, 220, "MOP", 0, "bud/mop.htm");
 
 		actionNodeAppend(240, 20, "General Ledger", 1);
 		actionNodeAppend(241, 240, "Recurring Expenses", 0, "glm/recurringExpense.htm");
 		actionNodeAppend(242, 240, "Journal Entry", 0, "glm/journalEntry.htm");
-		actionNodeAppend(243, 240, "Transaction Summary", 0, "template.htm");
+		actionNodeAppend(243, 240, "Transaction Summary", 0, "glm/transactionsummary.htm");
 
 		actionNodeAppend(260, 20, "Payroll", 1);
 		actionNodeAppend(261, 260, "Calendar", 0, "pay/payCalendar.htm");

@@ -26,13 +26,14 @@ ii.Class({
         init: function() {            
 			var args = ii.args(arguments, {});
 			var me = this;
-			
+
 			me.pageLoading = true;
-			me.status = "new";
+			me.status = "CheckRequest";
 			me.personId = 0;
 			me.users = [];
 			me.loadCount = 0;
-			
+			me.fileName = "";
+
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 
 			me.gateway = ii.ajax.addGateway("pay", ii.config.xmlProvider);
@@ -52,12 +53,13 @@ ii.Class({
 
 			me.validator = new ui.ctl.Input.Validation.Master();
 			me.session = new ii.Session(me.cache);
-			
+
 			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
 			me.houseCodeSearchTemplate = new ui.lay.HouseCodeSearchTemplate();
-			
+
 			me.defineFormControls();			
 			me.configureCommunications();
+			me.initialize();
 			me.setTabIndexes();
 			me.resizeControls();
 			me.statusesLoaded();
@@ -65,50 +67,19 @@ ii.Class({
 			me.modified(false);
 
 			$(window).bind("resize", me, me.resize);
-			
-			$("input[type=radio]").click(function() {
-				switch (this.id) {
-					
-					case "UPSDeliveryToUnitYes":
-						$("#LabelUnit").html("<span class='requiredFieldIndicator'>&#149;</span>Unit (House Code):");
-						$("#LabelUnitAddress").html("<span class='requiredFieldIndicator'>&#149;</span>Unit (House Code) Address:");
-						me.setUnitAddress();
-						break;
-						
-					case "UPSDeliveryToUnitNo":
-						$("#LabelUnit").html("<span id='nonRequiredFieldIndicator'>Unit (House Code):</span>");
-						$("#LabelUnitAddress").html("<span id='nonRequiredFieldIndicator'>Unit (House Code) Address:</span>");
-						me.unitAddress.resetValidation(true);
-						me.unitAddress.setValue("");
-						break;
-						
-					case "UPSDeliveryToHomeYes":
-						$("#LabelHome").html("<span class='requiredFieldIndicator'>&#149;</span>Home Address:");
-						me.setEmployeeAddress();
-						break;
-						
-					case "UPSDeliveryToHomeNo":
-						$("#LabelHome").html("<span id='nonRequiredFieldIndicator'>Home Address:</span>");
-						me.homeAddress.resetValidation(true);
-						me.homeAddress.setValue("");
-						break;
-				}
-			});
-			
-			$("input[type='radio']").change( function() { me.modified(); });
-			
+
 			ui.cmn.behavior.disableBackspaceNavigation();
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
-			}
+			}			
         },
-		
+
 		authorizationProcess: function fin_pay_payCheck_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
 
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
-			
+
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
 				$("#pageLoading").css({
@@ -148,11 +119,12 @@ ii.Class({
 			var me = fin.payCheckUi;
 
 			$("#pageLoading").height(document.body.scrollHeight);
-			//$("#container").height($(window).height() - 95);
-			$("#container").height(1010);
+			//$("#Container").height($(window).height() - 95);
+			$("#Container").height(1200);
 			me.payCheckRequestGrid.setHeight(200);
 			me.payCodeDetailGrid.setHeight(150);
 			me.payCodeDetailReadOnlyGrid.setHeight(150);
+			me.documentGrid.setHeight(100);
 		},
 		
 		defineFormControls: function() {
@@ -212,6 +184,10 @@ ii.Class({
                 	return "Approved";
 				else if (statusType == 9)
                 	return "Completed";
+				else if (statusType == 6)
+                	return "Cancelled";
+				else if (statusType == 10)
+                	return "Unapproved";
            	});
 			me.payCheckRequestGrid.capColumns();
 
@@ -304,10 +280,37 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)	
 				.addValidation( function( isFinal, dataMap ) {
 					
-					if ((this.focused || this.touched) && me.state.indexSelected == -1)
+					if ($("#TermRequestNo")[0].checked) {
+							this.valid = true;
+						}
+					else if ((this.focused || this.touched) && me.state.indexSelected == -1)
 						this.setInvalid("Please select the correct State.");
 				});
-				
+			
+			me.terminationDate = new ui.ctl.Input.Date({
+		        id: "TerminationDate",
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+		    });
+			
+			me.terminationDate.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+					if ($("#TermRequestNo")[0].checked) {
+							this.valid = true;
+						}
+					else {
+						var enteredText = me.terminationDate.text.value;
+					
+						if (enteredText == "") 
+							return;
+							
+						me.modified();
+						if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+							this.setInvalid("Please enter valid date.");
+					}
+				});
+					
 			me.unitAddress = new ui.ctl.Input.Text({
 				id: "UnitAddress",
 				maxLength: 1024,
@@ -467,10 +470,18 @@ ii.Class({
 
 					var enteredText = me.hours.getValue();
 
-					if (enteredText == "")
-						return;
+					if (me.earning.getValue() == "" && enteredText == "") {
+						this.setInvalid("Please enter either Hours or Earnings.");
+						me.earning.setInvalid("Please enter either Hours or Earnings.");
+					}
+					else if (me.earning.getValue() != "" || enteredText != "") {
+							this.valid = true;
+							me.earning.resetValidation(true);
+							if (me.earning.getValue() == "")
+								me.earning.setValue("");
+						}
 
-					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d+\\.?\\d{0,2}$")))
+					if (enteredText != ""  && !(ui.cmn.text.validate.generic(enteredText, "^\\d{0,}\\.?\\d{0,2}$")))
 						this.setInvalid("Please enter valid Hours. Example: 99.99");
 				});	
 				
@@ -507,11 +518,19 @@ ii.Class({
 				.addValidation( function( isFinal, dataMap ){
 
 					var enteredText = me.earning.getValue();
-
-					if (enteredText == "")
-						return;
-
-					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d+\\.?\\d{0,2}$")))
+					
+					if (me.hours.getValue() == "" && enteredText == "") {
+						this.setInvalid("Please enter either Hours or Earnings.");
+						me.hours.setInvalid("Please enter either Hours or Earnings.");
+					}
+					else if (me.hours.getValue() != "" || enteredText != "") {
+							this.valid = true;
+							me.hours.resetValidation(true);
+							if (me.hours.getValue() == "")
+								me.hours.setValue("");
+						}			
+					
+					if (enteredText != "" && !(ui.cmn.text.validate.generic(enteredText, "^\\d+\\.?\\d{0,2}$")))
 						this.setInvalid("Please enter valid Earnings. Example: 99.99");
 				});	
 				
@@ -535,19 +554,19 @@ ii.Class({
 						this.setInvalid("Please enter valid Alternate Base Rate. Example: 99.99");
 				});
 				
-			me.workOrderTicketNumber = new ui.ctl.Input.Text({
-		        id: "WorkOrderTicketNumber",
+			me.workOrderNumber = new ui.ctl.Input.Text({
+		        id: "WorkOrderNumber",
 		        maxLength: 16, 
 				appendToId: "PayCodeDetailGridControlHolder",
 				changeFunction: function() { me.modified(); }
 		    });
 
-			me.payCodeDetailGrid.addColumn("payCode", "payCode", "Pay Code", "Pay Code", null, null, me.payCodeType);
+			me.payCodeDetailGrid.addColumn("payCode", "payCode", "Pay Code", "Pay Code", null, function(payCode) { return payCode.brief + " - " + payCode.name 	} , me.payCodeType);
 			me.payCodeDetailGrid.addColumn("hours", "hours", "Hours", "Hours", 100, null, me.hours);
 			me.payCodeDetailGrid.addColumn("date", "date", "Date", "Date", 120, null, me.date);
 			me.payCodeDetailGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 100, function(earning) { return ui.cmn.text.money.format(earning); }, me.earning);
 			me.payCodeDetailGrid.addColumn("alternateBaseRate", "alternateBaseRate", "Alternate Base Rate", "Alternate Base Rate", 180, function(alternateBaseRate) { return ui.cmn.text.money.format(alternateBaseRate); }, me.alternateBaseRate);
-			me.payCodeDetailGrid.addColumn("workOrderTicketNumber", "workOrderTicketNumber", "Work Order Ticket #", "Work Order Ticket Number", 170, null, me.workOrderTicketNumber);
+			me.payCodeDetailGrid.addColumn("workOrderNumber", "workOrderNumber", "Work Order Ticket #", "Work Order Ticket Number", 170, null, me.workOrderNumber);
 			me.payCodeDetailGrid.capColumns();
 			
 			me.payCodeType.active = false;
@@ -555,7 +574,7 @@ ii.Class({
 			me.date.active = false;
 			me.earning.active = false;
 			me.alternateBaseRate.active = false;
-			me.workOrderTicketNumber.active = false;
+			me.workOrderNumber.active = false;
 			
 			me.payCodeDetailReadOnlyGrid = new ui.ctl.Grid({
 				id: "PayCodeDetailReadOnlyGrid"
@@ -566,7 +585,7 @@ ii.Class({
 			me.payCodeDetailReadOnlyGrid.addColumn("date", "date", "Date", "Date", 120);
 			me.payCodeDetailReadOnlyGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 100, function(earning) { return ui.cmn.text.money.format(earning); });
 			me.payCodeDetailReadOnlyGrid.addColumn("alternateBaseRate", "alternateBaseRate", "Alternate Base Rate", "Alternate Base Rate", 180, function(alternateBaseRate) { return ui.cmn.text.money.format(alternateBaseRate); });
-			me.payCodeDetailReadOnlyGrid.addColumn("workOrderTicketNumber", "workOrderTicketNumber", "Work Order Ticket #", "Work Order Ticket Number", 170);
+			me.payCodeDetailReadOnlyGrid.addColumn("workOrderNumber", "workOrderNumber", "Work Order Ticket #", "Work Order Ticket Number", 170);
 			me.payCodeDetailReadOnlyGrid.capColumns();
 
 			me.anchorSearch = new ui.ctl.buttons.Sizeable({
@@ -593,6 +612,14 @@ ii.Class({
 				hasHotState: true
 			});
 			
+			me.anchorResendRequest = new ui.ctl.buttons.Sizeable({
+				id: "AnchorResendRequest",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Resend Request&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionResendRequestItem(); },
+				hasHotState: true
+			});
+			
 			me.anchorUndo = new ui.ctl.buttons.Sizeable({
 				id: "AnchorUndo",
 				className: "iiButton",
@@ -600,6 +627,52 @@ ii.Class({
 				clickFunction: function() { me.actionUndoItem(); },
 				hasHotState: true
 			});
+			
+			me.anchorCancel = new ui.ctl.buttons.Sizeable({
+				id: "AnchorCancel",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionCancelItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorUpload = new ui.ctl.buttons.Sizeable({
+				id: "AnchorUpload",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Upload&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionUploadItem(); },
+				hasHotState: true
+			});
+
+			me.anchorUploadCancel = new ui.ctl.buttons.Sizeable({
+				id: "AnchorUploadCancel",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionUploadCancel(); },
+				hasHotState: true
+			});
+			
+			me.documentTitle = new ui.ctl.Input.Text({
+				id: "DocumentTitle",
+				maxLength: 100,
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.documentTitle.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				
+			me.documentGrid = new ui.ctl.Grid({
+				id: "DocumentGrid",
+				appendToId: "divForm",
+				allowAdds: false
+			});
+
+			me.documentGrid.addColumn("title", "title", "Title", "Title", null);
+			me.documentGrid.addColumn("fileName", "fileName", "File Name", "File Name", 350);
+			me.documentGrid.capColumns();
+			
+			me.documentTitle.active = false;
 		},
 		
 		configureCommunications:function() {
@@ -653,6 +726,22 @@ ii.Class({
 				itemConstructorArgs: fin.pay.payCheck.payCodeDetailArgs,
 				injectionArray: me.payCodeDetails,
 				lookupSpec: { payCode: me.payCodeTypes }
+			});
+
+			me.payCheckRequestDocuments = [];
+			me.payCheckRequestDocumentStore = me.cache.register({
+				storeId: "payCheckRequestDocuments",
+				itemConstructor: fin.pay.payCheck.PayCheckRequestDocument,
+				itemConstructorArgs: fin.pay.payCheck.payCheckRequestDocumentArgs,
+				injectionArray: me.payCheckRequestDocuments
+			});
+
+			me.fileNames = [];
+			me.fileNameStore = me.cache.register({
+			storeId: "payFileNames",
+				itemConstructor: fin.pay.payCheck.FileName,
+				itemConstructorArgs: fin.pay.payCheck.fileNameArgs,
+				injectionArray: me.fileNames
 			});
 
 			me.employees = [];
@@ -721,6 +810,102 @@ ii.Class({
 			}
 		},
 		
+		initialize: function() {
+			var me = this;
+			
+			$("input[type=radio]").click(function() {
+				switch (this.id) {
+					
+					case "UPSDeliveryToUnitYes":
+						$("#LabelUnit").html("<span class='requiredFieldIndicator'>&#149;</span>Unit (House Code):");
+						$("#LabelUnitAddress").html("<span class='requiredFieldIndicator'>&#149;</span>Unit (House Code) Address:");
+						$("#LabelHome").html("<span id='nonRequiredFieldIndicator'>Home Address:</span>");
+						me.setUnitAddress();
+						$("#CurrentPayCardUserNo")[0].checked = true;
+						$("#UPSDeliveryToHomeNo")[0].checked = true;
+						$("#InstantIssueRequestNo")[0].checked = true;
+						me.homeAddress.resetValidation(true);
+						me.homeAddress.setValue("");						
+						break;
+						
+					case "UPSDeliveryToUnitNo":
+						$("#LabelUnit").html("<span id='nonRequiredFieldIndicator'>Unit (House Code):</span>");
+						$("#LabelUnitAddress").html("<span id='nonRequiredFieldIndicator'>Unit (House Code) Address:</span>");
+						me.unitAddress.resetValidation(true);
+						me.unitAddress.setValue("");
+						$("#houseCodeTemplateText").val("");
+						break;
+						
+					case "UPSDeliveryToHomeYes":
+						$("#LabelHome").html("<span class='requiredFieldIndicator'>&#149;</span>Home Address:");
+						$("#LabelUnit").html("<span id='nonRequiredFieldIndicator'>Unit (House Code):</span>");
+						$("#LabelUnitAddress").html("<span id='nonRequiredFieldIndicator'>Unit (House Code) Address:</span>");
+						me.setEmployeeAddress();
+						$("#CurrentPayCardUserNo")[0].checked = true;
+						$("#UPSDeliveryToUnitNo")[0].checked = true;
+						$("#InstantIssueRequestNo")[0].checked = true;
+						me.unitAddress.resetValidation(true);
+						me.unitAddress.setValue("");
+						break;
+						
+					case "UPSDeliveryToHomeNo":
+						$("#LabelHome").html("<span id='nonRequiredFieldIndicator'>Home Address:</span>");
+						me.homeAddress.resetValidation(true);
+						me.homeAddress.setValue("");
+						break;
+						
+					case "CurrentPayCardUserYes":
+						$("#LabelUnit").html("<span id='nonRequiredFieldIndicator'>Unit (House Code):</span>");
+						$("#LabelUnitAddress").html("<span id='nonRequiredFieldIndicator'>Unit (House Code) Address:</span>");
+						$("#LabelHome").html("<span id='nonRequiredFieldIndicator'>Home Address:</span>");
+						$("#UPSDeliveryToUnitNo")[0].checked = true;
+						$("#UPSDeliveryToHomeNo")[0].checked = true;
+						$("#InstantIssueRequestNo")[0].checked = true;
+						me.homeAddress.resetValidation(true);
+						me.homeAddress.setValue("");
+						me.unitAddress.resetValidation(true);
+						me.unitAddress.setValue("");
+						break;
+						
+					case "InstantIssueRequestYes":						
+						$("#LabelUnit").html("<span id='nonRequiredFieldIndicator'>Unit (House Code):</span>");
+						$("#LabelUnitAddress").html("<span id='nonRequiredFieldIndicator'>Unit (House Code) Address:</span>");
+						$("#LabelHome").html("<span id='nonRequiredFieldIndicator'>Home Address:</span>");
+						$("#UPSDeliveryToUnitNo")[0].checked = true;
+						$("#UPSDeliveryToHomeNo")[0].checked = true;
+						$("#CurrentPayCardUserNo")[0].checked = true;
+						me.homeAddress.resetValidation(true);
+						me.homeAddress.setValue("");
+						me.unitAddress.resetValidation(true);
+						me.unitAddress.setValue("");
+						break;
+						
+					case "TermRequestYes":
+						$("#LabelState").html("<span class='requiredFieldIndicator'>&#149;</span>State:");
+						$("#LabelTerminationDate").html("<span class='requiredFieldIndicator'>&#149;</span>Termination Date:");						
+						break;
+						
+					case "TermRequestNo":
+						$("#LabelState").html("<span id='nonRequiredFieldIndicator'>State:</span>");
+						$("#LabelTerminationDate").html("<span id='nonRequiredFieldIndicator'>Termination Date:</span>");
+						me.state.resetValidation(true);
+						me.state.setValue("");
+						me.terminationDate.resetValidation(true);												
+						if (me.terminationDate.lastBlurValue == undefined || me.terminationDate.lastBlurValue == "" || !(ui.cmn.text.validate.generic(me.terminationDate.lastBlurValue, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+							me.terminationDate.setValue("");
+						break;
+				}
+			});
+			
+			$("input[type='radio']").change( function() { me.modified(); });
+			$("#imgAdd").bind("click", function() { me.actionAttachItem(); });
+			$("#imgEdit").bind("click", function() { me.actionEditItem(); });
+			$("#imgRemove").bind("click", function() { me.actionRemoveItem(); });
+			$("#imgView").bind("click", function() { me.actionViewItem(); });
+			$("#AnchorResendRequest").hide();
+			me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
+		},
+		
 		setTabIndexes: function() {
 			var me = this;
 
@@ -733,30 +918,31 @@ ii.Class({
 			$("#TermRequestYes")[0].tabIndex = 7;
 			$("#TermRequestNo")[0].tabIndex = 8;
 			me.state.text.tabIndex = 9;
-			$("#CurrentPayCardUserYes")[0].tabIndex = 10;
-			$("#CurrentPayCardUserNo")[0].tabIndex = 11;
-			$("#InstantIssueRequestYes")[0].tabIndex = 12;
-			$("#InstantIssueRequestNo")[0].tabIndex = 13;
-			$("#UPSDeliveryToUnitYes")[0].tabIndex = 14;
-			$("#UPSDeliveryToUnitNo")[0].tabIndex = 15;
-			$("#SaturdayDeliveryUnitYes")[0].tabIndex = 16;
-			$("#SaturdayDeliveryUnitNo")[0].tabIndex = 17;
-			$("#houseCodeTemplateText")[0].tabIndex = 18;			
-			me.unitAddress.text.tabIndex = 19;
-			me.upsPackageAttentionTo.text.tabIndex = 20;			
-			$("#UPSDeliveryToHomeYes")[0].tabIndex = 21;
-			$("#UPSDeliveryToHomeNo")[0].tabIndex = 22;
-			$("#SaturdayDeliveryHomeYes")[0].tabIndex = 23;
-			$("#SaturdayDeliveryHomeNo")[0].tabIndex = 24;			
-			me.homeAddress.text.tabIndex = 25;
-			$("#ProcessingFeeYes")[0].tabIndex = 26;
-			$("#ProcessingFeeNo")[0].tabIndex = 27;		
-			me.deductionCode.text.tabIndex = 28;
-			me.amount.text.tabIndex = 29;
-			me.requestorName.text.tabIndex = 30;
-			me.requestorEmail.text.tabIndex = 31;
-			me.managerName.text.tabIndex = 32;
-			me.managerEmail.text.tabIndex = 33;
+			me.terminationDate.text.tabIndex = 10;
+			$("#CurrentPayCardUserYes")[0].tabIndex = 11;
+			$("#CurrentPayCardUserNo")[0].tabIndex = 12;
+			$("#InstantIssueRequestYes")[0].tabIndex = 13;
+			$("#InstantIssueRequestNo")[0].tabIndex = 14;			
+			$("#UPSDeliveryToUnitYes")[0].tabIndex = 15;
+			$("#UPSDeliveryToUnitNo")[0].tabIndex = 16;
+			$("#SaturdayDeliveryUnitYes")[0].tabIndex = 17;
+			$("#SaturdayDeliveryUnitNo")[0].tabIndex = 18;
+			$("#houseCodeTemplateText")[0].tabIndex = 19;			
+			me.unitAddress.text.tabIndex = 20;
+			me.upsPackageAttentionTo.text.tabIndex = 21;			
+			$("#UPSDeliveryToHomeYes")[0].tabIndex = 22;
+			$("#UPSDeliveryToHomeNo")[0].tabIndex = 23;
+			$("#SaturdayDeliveryHomeYes")[0].tabIndex = 24;
+			$("#SaturdayDeliveryHomeNo")[0].tabIndex = 25;			
+			me.homeAddress.text.tabIndex = 26;
+			$("#ProcessingFeeYes")[0].tabIndex = 27;
+			$("#ProcessingFeeNo")[0].tabIndex = 28;		
+			me.deductionCode.text.tabIndex = 29;
+			me.amount.text.tabIndex = 30;
+			me.requestorName.text.tabIndex = 31;
+			me.requestorEmail.text.tabIndex = 32;
+			me.managerName.text.tabIndex = 33;
+			me.managerEmail.text.tabIndex = 34;
 		},
 		
 		resizeControls: function() {
@@ -767,6 +953,7 @@ ii.Class({
 			me.employeeNumber.resizeText();
 			me.employeeName.resizeText();
 			me.reasonForRequest.resizeText();
+			me.terminationDate.resizeText();
 			me.unitAddress.resizeText();
 			me.upsPackageAttentionTo.resizeText();
 			me.homeAddress.resizeText();
@@ -783,15 +970,15 @@ ii.Class({
 			var me = this;
 
 			me.status = status;
-			if (me.payCodeDetailGrid.activeRowIndex >= 0)
-				me.payCodeDetailGrid.body.deselect(me.payCodeDetailGrid.activeRowIndex, true);
-
+			me.payCodeDetailGrid.body.deselectAll();
+			me.documentGrid.body.deselectAll();
 			me.requestedDate.resetValidation(true);
-			me.deliveryDate.resetValidation(true);
+			me.deliveryDate.resetValidation(true);			
 			me.employeeNumber.resetValidation(true);
 			me.employeeName.resetValidation(true);
 			me.reasonForRequest.resetValidation(true);
 			me.state.resetValidation(true);
+			me.terminationDate.resetValidation(true);
 			me.unitAddress.resetValidation(true);
 			me.homeAddress.resetValidation(true);
 			me.requestorEmail.resetValidation(true);
@@ -799,12 +986,13 @@ ii.Class({
 			me.managerEmail.resetValidation(true);
 			me.state.updateStatus();
 			
-			me.requestedDate.setValue("");
+			//me.requestedDate.setValue("");
 			me.deliveryDate.setValue("");
 			me.employeeNumber.setValue("");
 			me.employeeName.setValue("");
 			me.reasonForRequest.setValue("");
 			me.state.reset();
+			me.terminationDate.setValue("");
 			me.unitAddress.setValue("");
 			me.upsPackageAttentionTo.setValue("");
 			me.homeAddress.setValue("");
@@ -815,25 +1003,45 @@ ii.Class({
 			me.managerName.setValue("");
 			me.managerEmail.setValue("");
 			me.payCodeDetailGrid.setData([]);
-			me.payCodeDetailReadOnlyGrid.setData([]);
+			me.documentGrid.setData([]);
 			
 			$("#houseCodeText").val("");
 			$("#houseCodeTemplateText").val("");
-			$("#TermRequestYes")[0].checked = true;
-			$("#CurrentPayCardUserYes")[0].checked = true;
-			$("#InstantIssueRequestYes")[0].checked = true;
-			$("#UPSDeliveryToUnitYes")[0].checked = true;
-			$("#SaturdayDeliveryUnitYes")[0].checked = true;
-			$("#UPSDeliveryToHomeYes")[0].checked = true;
-			$("#SaturdayDeliveryHomeYes")[0].checked = true;
+			$("#TermRequestNo")[0].checked = true;
+			$("#CurrentPayCardUserNo")[0].checked = true;
+			$("#InstantIssueRequestNo")[0].checked = true;
+			$("#UPSDeliveryToUnitNo")[0].checked = true;
+			$("#SaturdayDeliveryUnitNo")[0].checked = true;
+			$("#UPSDeliveryToHomeNo")[0].checked = true;
+			$("#SaturdayDeliveryHomeNo")[0].checked = true;
 			$("#ProcessingFeeYes")[0].checked = true;
 
-			if (me.status == "new") {
+			if (me.status == "CheckRequest") {
 				me.setUserInfo();
 				me.resizeControls();
 			}				
 		},
-		
+
+		resetGrid: function() {
+			var me = this;
+			var index = me.payCheckRequestGrid.activeRowIndex;
+
+			if (me.statuses[me.statusType.indexSelected].id == 0) {
+				if (me.status == "CheckRequestResend") 
+					me.payCheckRequests[index].statusType = 2;
+				else
+					me.payCheckRequests[index].statusType = 6;
+				me.payCheckRequestGrid.body.renderRow(index, index);
+				me.payCheckRequestGrid.body.deselect(index, true);
+			}
+			else {
+				me.payCheckRequests.splice(index, 1);
+				me.payCheckRequestGrid.setData(me.payCheckRequests);
+			}
+			me.resetControls("");
+			me.setReadOnly(true);
+		},
+
 		setReadOnly: function(readOnly) {
 			var me = this;
 
@@ -845,6 +1053,7 @@ ii.Class({
 			me.employeeName.text.readOnly = readOnly;
 			me.reasonForRequest.text.readOnly = readOnly;
 			me.state.text.readOnly = readOnly;
+			me.terminationDate.text.readOnly = readOnly;
 			me.unitAddress.text.readOnly = readOnly;
 			me.upsPackageAttentionTo.text.readOnly = readOnly;
 			me.homeAddress.text.readOnly = readOnly;
@@ -875,6 +1084,7 @@ ii.Class({
 				$("#RequestedDateAction").removeClass("iiInputAction");
 				$("#DeliveryDateAction").removeClass("iiInputAction");
 				$("#StateAction").removeClass("iiInputAction");
+				$("#TerminationDateAction").removeClass("iiInputAction");
 				$("#houseCodeTextDropImage").removeClass("HouseCodeDropDown");
 				$("#houseCodeTemplateTextDropImage").removeClass("HouseCodeDropDown");
 			}
@@ -882,11 +1092,21 @@ ii.Class({
 				$("#RequestedDateAction").addClass("iiInputAction");
 				$("#DeliveryDateAction").addClass("iiInputAction");
 				$("#StateAction").addClass("iiInputAction");
+				$("#TerminationDateAction").addClass("iiInputAction");
 				$("#houseCodeTextDropImage").addClass("HouseCodeDropDown");
 				$("#houseCodeTemplateTextDropImage").addClass("HouseCodeDropDown");
 			}
 		},
-
+		
+		currentDate: function() {
+			var currentTime = new Date();
+			var month = currentTime.getMonth() + 1;
+			var day = currentTime.getDate();
+			var year = currentTime.getFullYear();
+			
+			return month + "/" + day + "/" + year;
+		},
+		
 		statusesLoaded: function() {
 			var me = this;
 
@@ -895,11 +1115,13 @@ ii.Class({
 			me.statuses.push(new fin.pay.payCheck.Status(2, "In Process"));
 			me.statuses.push(new fin.pay.payCheck.Status(8, "Approved"));
 			me.statuses.push(new fin.pay.payCheck.Status(9, "Completed"));
+			me.statuses.push(new fin.pay.payCheck.Status(6, "Cancelled"));
+			me.statuses.push(new fin.pay.payCheck.Status(10, "Unapproved"));
 
 			me.statusType.setData(me.statuses);
 			me.statusType.select(0, me.statusType.focused);
 		},
-		
+
 		stateTypesLoaded: function(me, activeId) {
 
 			me.state.setData(me.stateTypes);
@@ -911,6 +1133,8 @@ ii.Class({
 			me.payCodeType.setData(me.payCodeTypes);
 			me.payCodeDetailGrid.setData(me.payCodeDetails);
 			me.payCodeDetailGrid.setHeight(150);
+			me.requestedDate.setValue(me.currentDate());
+			me.modified(false);
 			me.checkLoadCount();
 		},
 
@@ -959,26 +1183,11 @@ ii.Class({
 				me.unitAddress.setValue(address);
 			}
 		},
-		
-		actionSearchItem: function() {
-			var args = ii.args(arguments, {
-				event: {type: Object} // The (key) event object
-			});			
-			var event = args.event;
-			var me = event.data;
-				
-			if (event.keyCode == 13) {
-				if (me.employeeNumber.getValue() == "")
-					return false;
-				else
-					me.searchEmployee();
-			}
-		},
-		
+
 		searchEmployee: function() {
 			var me = this;
 
-			if (me.status == "new") {
+			if (me.status == "CheckRequest") {
 				$("#EmployeeNumberText").addClass("Loading");
 				me.employeeStore.fetch("userId:[user],searchValue:" + me.employeeNumber.getValue()
 					+ ",employeeType:SearchFull"
@@ -990,7 +1199,7 @@ ii.Class({
 		employeesLoaded: function(me, activeId) {
 
 			$("#EmployeeNumberText").removeClass("Loading");
-
+			
 			if (me.employees.length == 1) {
 				me.employeeName.setValue(me.employees[0].firstName + " " + me.employees[0].lastName);
 				if (me.personId != me.employees[0].id) {
@@ -1020,7 +1229,7 @@ ii.Class({
 				}
 				else
 					me.setEmployeeAddress();
-			}
+			}			
 			me.checkLoadCount();
 		},
 		
@@ -1057,14 +1266,28 @@ ii.Class({
 				return;
 
 			$("#PayCodeDetailGrid").show();
-			$("#searchContainer").hide();
+			$("#SearchContainer").hide();
 			$("#PayCodeDetailReadOnlyGrid").hide();
 
 			me.setReadOnly(false);
-			me.resetControls("new");
-			me.anchorNew.display(ui.cmn.behaviorStates.enabled);
+			me.resetControls("CheckRequest");
 			me.anchorSendRequest.display(ui.cmn.behaviorStates.enabled);
 			me.anchorUndo.display(ui.cmn.behaviorStates.enabled);
+			me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
+			me.payCheckRequestGrid.body.deselectAll();
+			me.payCodeDetailGrid.setHeight(150);
+			$("#AnchorResendRequest").hide();
+			$("#AnchorSendRequest").show();
+			me.requestedDate.setValue(me.currentDate());
+			$("#LabelState").html("<span id='nonRequiredFieldIndicator'>State:</span>");
+			$("#LabelUnit").html("<span id='nonRequiredFieldIndicator'>Unit (House Code):</span>");
+			$("#LabelUnitAddress").html("<span id='nonRequiredFieldIndicator'>Unit (House Code) Address:</span>");
+			$("#LabelHome").html("<span id='nonRequiredFieldIndicator'>Home Address:</span>");
+			$("#imgAdd").show();
+			$("#imgEdit").show();
+			$("#imgRemove").show();
+			me.setStatus("Loaded");
+			me.modified(false);
 		},
 		
 		actionPayCheckRequestStatus: function() {
@@ -1074,29 +1297,39 @@ ii.Class({
 				return;
 
 			$("#PayCodeDetailGrid").hide();
-			$("#searchContainer").show();
+			$("#SearchContainer").show();
 			$("#PayCodeDetailReadOnlyGrid").show();
 			
 			me.setReadOnly(true);
-			me.resetControls("");
+			me.resetControls("CheckRequestStatus");
 			me.searchInput.setValue("");
 			me.statusType.select(0, me.statusType.focused);
 			me.searchInput.resizeText();
 			me.statusType.resizeText();
-			me.anchorNew.display(ui.cmn.behaviorStates.disabled);
 			me.anchorSendRequest.display(ui.cmn.behaviorStates.disabled);
 			me.anchorUndo.display(ui.cmn.behaviorStates.disabled);
+			me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
+			$("#imgAdd").hide();
+			$("#imgEdit").hide();
+			$("#imgRemove").hide();
+			$("#AnchorResendRequest").hide();
+			$("#AnchorSendRequest").show();			
 			me.payCheckRequestGrid.setData([]);
 			me.payCheckRequestGrid.setHeight(200);
+			me.payCodeDetailReadOnlyGrid.setData([]);
 			me.payCodeDetailReadOnlyGrid.setHeight(150);
+			me.setStatus("Loaded");
+			me.modified(false);
 		},
 		
 		actionSearchItem: function() {
 			var me = this;
 
 			me.setLoadCount();
-
-			me.resetControls("");
+			me.resetControls("");			
+			me.payCheckRequestGrid.setData([]);
+			me.payCodeDetailReadOnlyGrid.setData([]);
+			me.payCodeDetailGrid.body.deselectAll();
 			me.payCheckRequestStore.reset();
 			me.payCheckRequestStore.fetch("userId:[user],searchValue:" + me.searchInput.getValue() 
 				+ ",statusType:" + (me.statusType.indexSelected == -1 ? 0 : me.statuses[me.statusType.indexSelected].id)
@@ -1117,6 +1350,43 @@ ii.Class({
 			var me = this;
 			var index = args.index;
 			var item = me.payCheckRequestGrid.data[index];
+			
+			if (item.statusType == 10) {
+				me.setReadOnly(false);
+				me.anchorSendRequest.display(ui.cmn.behaviorStates.enabled);
+				me.anchorUndo.display(ui.cmn.behaviorStates.enabled);
+				me.anchorCancel.display(ui.cmn.behaviorStates.enabled);
+				me.resizeControls();
+				$("#imgAdd").show();
+				$("#imgEdit").show();
+				$("#imgRemove").show();
+				$("#AnchorResendRequest").show();
+				$("#AnchorSendRequest").hide();
+				$("#PayCodeDetailGrid").show();
+				$("#PayCodeDetailReadOnlyGrid").hide();
+			}
+			else {
+				if (item.statusType == 2) {
+					me.anchorSendRequest.display(ui.cmn.behaviorStates.enabled);
+					me.anchorCancel.display(ui.cmn.behaviorStates.enabled);
+					$("#AnchorResendRequest").show();
+					$("#AnchorSendRequest").hide();
+				}					
+				else {
+					me.anchorSendRequest.display(ui.cmn.behaviorStates.disabled);
+					me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
+					$("#AnchorResendRequest").hide();
+					$("#AnchorSendRequest").show();
+				}			
+				
+				me.setReadOnly(true);
+				me.anchorUndo.display(ui.cmn.behaviorStates.disabled);
+				$("#imgAdd").hide();
+				$("#imgEdit").hide();
+				$("#imgRemove").hide();				
+				$("#PayCodeDetailGrid").hide();
+				$("#PayCodeDetailReadOnlyGrid").show();
+			}
 
 			$("#houseCodeText").val(item.houseCodeTitle);
 			$("#houseCodeTemplateText").val(item.deliveryHouseCodeTitle);
@@ -1140,7 +1410,8 @@ ii.Class({
 			$("input[name='UPSDeliveryToHome'][value='" + item.upsDeliveryToHome + "']").attr("checked", "checked");  
 			$("input[name='SaturdayDeliveryHome'][value='" + item.saturdayDeliveryHome + "']").attr("checked", "checked");  
 			$("input[name='ProcessingFee'][value='" + item.stopPaymentProcessingFee + "']").attr("checked", "checked");  
-		
+			
+			me.terminationDate.setValue(item.terminationDate);
 			me.unitAddress.setValue(item.houseCodeAddress);
 			me.upsPackageAttentionTo.setValue(item.upsPackageAttentionTo);
 			me.homeAddress.setValue(item.homeAddress);
@@ -1151,15 +1422,31 @@ ii.Class({
 			me.managerName.setValue(item.managerName);
 			me.managerEmail.setValue(item.managerEmail);
 
+			me.loadCount += 1;
 			me.setLoadCount();
+			me.payCodeDetailGrid.body.deselectAll();
+			me.documentGrid.body.deselectAll();
+			me.payCodeDetailStore.reset();
+			me.payCheckRequestDocumentStore.reset();
 			me.payCodeDetailStore.fetch("userId:[user],payCheckRequest:" + item.id, me.payCodeDetailsLoaded, me);
+			me.payCheckRequestDocumentStore.fetch("userId:[user],payCheckRequestId:" + item.id, me.payCheckRequestDocumentsLoaded, me);
+			me.status = "CheckRequestStatus";
 		},
 		
 		payCodeDetailsLoaded: function(me, activeId) {
-			var index = 0;
-			
+
+			me.payCodeDetailGrid.setData(me.payCodeDetails);
+			me.payCodeDetailGrid.setHeight(150);
 			me.payCodeDetailReadOnlyGrid.setData(me.payCodeDetails);
 			me.payCodeDetailReadOnlyGrid.setHeight(150);
+			me.checkLoadCount();
+			me.modified(false);
+		},
+		
+		payCheckRequestDocumentsLoaded: function(me, activeId) {
+
+			me.documentGrid.setData(me.payCheckRequestDocuments);
+			me.documentGrid.setHeight(100);
 			me.checkLoadCount();
 		},
 
@@ -1170,7 +1457,7 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 			
-			me.resetControls("new");
+			me.actionPayCheckRequest();
 		},
 		
 		actionUndoItem: function() {
@@ -1179,66 +1466,253 @@ ii.Class({
 
 			if (!parent.fin.cmn.status.itemValid())
 				return;
-				
-			me.resetControls("new");
+
+			if (me.status == "CheckRequest") {
+				me.resetControls("CheckRequest");
+				me.setStatus("Loaded");
+			}								
+			else if (me.status == "CheckRequestStatus")
+				me.itemSelect(me.payCheckRequestGrid.activeRowIndex);			
+		},
+		
+		actionCancelItem: function() {
+			var args = ii.args(arguments,{});
+			var me = this;		
+			
+			$("#messageToUser").text("Cancelling Request");
+			me.status = "CheckRequestCancel";
+			me.actionSaveItem();
+		},
+		
+		actionResendRequestItem: function() {
+			var args = ii.args(arguments,{});
+			var me = this;
+			
+			if (me.payCheckRequestGrid.activeRowIndex == -1) {
+				alert("Please select Payroll Check Requst");
+				return false;
+			}
+			
+			$("#messageToUser").text("Resending Request");	 
+			me.status = "CheckRequestResend";
+			me.actionSaveItem();
 		},
 		
 		actionSendRequestItem: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
 			
-			if ($("input[name='UPSDeliveryToUnit']:checked").val() == "true" && me.houseCodeSearchTemplate.houseCodeIdTemplate == 0) {
-				alert("Please select the Unit (House Code).");
-				return false;
+			$("#messageToUser").text("Sending Request");
+			me.actionSaveItem();
+		},
+
+		actionAttachItem: function() {
+			var me = this;
+
+			$("iframe")[0].contentWindow.document.getElementById("FormReset").click();
+			me.anchorUpload.display(ui.cmn.behaviorStates.disabled);
+			me.loadPopup();
+			me.documentTitle.setValue("");
+			me.documentTitle.resizeText();
+			me.documentGrid.body.deselectAll();
+		},
+
+		actionEditItem: function() {
+			var me = this;
+			var index = me.documentGrid.activeRowIndex;
+
+			if (index != -1) {
+				$("iframe")[0].contentWindow.document.getElementById("FormReset").click();
+				me.anchorUpload.display(ui.cmn.behaviorStates.disabled);
+				me.loadPopup();
+				me.documentTitle.setValue(me.payCheckRequestDocuments[index].title);
+				me.documentTitle.resizeText();
 			}
+		},
 
-			me.payCodeDetailGrid.body.deselectAll();
-			me.validator.forceBlur();
+		actionUploadItem: function() {
+			var me = this;
+			var tempFileName = "";
 
-			// Check to see if the data entered is valid
-			if (!me.validator.queryValidity(true)) {
+			if (!me.documentTitle.validate(true)) {
 				alert("In order to save, the errors on the page must be corrected.");
 				return false;
 			}
-			
-			me.setStatus("Saving");
-			
-			$("#messageToUser").text("Sending Request");
-			$("#pageLoading").fadeIn("slow");
-			
-			var item = new fin.pay.payCheck.PayCheckRequest(
-				0
-				, 2
-				, parent.fin.appUI.houseCodeId
-				, parent.fin.appUI.houseCodeTitle
-				, me.requestedDate.lastBlurValue
-				, me.deliveryDate.lastBlurValue
-				, me.employeeNumber.getValue()
-				, me.employeeName.getValue()
-				, me.reasonForRequest.getValue()
-				, $("input[name='TermRequest']:checked").val() == "true" ? true : false
-				, me.stateTypes[me.state.indexSelected].id
-				, $("input[name='CurrentPayCardUser']:checked").val() == "true" ? true : false
-				, $("input[name='InstantIssueRequest']:checked").val() == "true" ? true : false
-				, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? true : false
-				, $("input[name='SaturdayDeliveryUnit']:checked").val() == "true" ? true : false
-				, me.houseCodeSearchTemplate.houseCodeIdTemplate
-				, me.houseCodeSearchTemplate.houseCodeTitleTemplate
-				, me.unitAddress.getValue()
-				, me.upsPackageAttentionTo.getValue()
-				, $("input[name='UPSDeliveryToHome']:checked").val() == "true" ? true : false
-				, $("input[name='SaturdayDeliveryHome']:checked").val() == "true" ? true : false
-				, me.homeAddress.getValue()
-				, $("input[name='ProcessingFee']:checked").val() == "true" ? true : false
-				, me.deductionCode.getValue()
-				, me.amount.getValue()
-				, me.requestorName.getValue()
-				, me.requestorEmail.getValue()
-				, me.managerName.getValue()				
-				, me.managerEmail.getValue()
-				);	
 
-			var xml = me.saveXmlBuildItem(item);
+			me.hidePopup();
+			me.setLoadCount();
+			me.setStatus("Uploading");
+			$("#messageToUser").text("Uploading");
+			$("#pageLoading").fadeIn("slow");
+			$("iframe")[0].contentWindow.document.getElementById("FileName").value = "";
+			$("iframe")[0].contentWindow.document.getElementById("UploadButton").click();
+		
+			me.intervalId = setInterval(function() {
+
+				if ($("iframe")[0].contentWindow.document.getElementById("FileName").value != "")	{
+					tempFileName = $("iframe")[0].contentWindow.document.getElementById("FileName").value;					
+					clearInterval(me.intervalId);
+					me.checkLoadCount();
+					me.setStatus("Edit");
+
+					if (tempFileName == "Error") {
+						me.setStatus("Info", "Unable to upload the file. Please try again.");
+						alert("Unable to upload the file. Please try again.");
+					}
+					else {
+						if (me.documentGrid.activeRowIndex == -1) {
+							var item = new fin.pay.payCheck.PayCheckRequestDocument(0, me.documentTitle.getValue(), me.fileName, tempFileName);
+							me.payCheckRequestDocuments.push(item);
+							me.documentGrid.setData(me.payCheckRequestDocuments);
+						}
+						else {
+							var index = me.documentGrid.activeRowIndex;
+							me.payCheckRequestDocuments[index].title = me.documentTitle.getValue();
+							me.payCheckRequestDocuments[index].fileName = me.fileName;
+							me.payCheckRequestDocuments[index].tempFileName = tempFileName;
+							me.documentGrid.body.renderRow(index, index);
+						}
+					}
+				}
+			}, 1000);
+		},
+
+		actionUploadCancel: function() {
+			var me = this;
+
+			me.hidePopup();
+			$("#pageLoading").fadeOut("slow");
+		},
+
+		actionRemoveItem: function() {
+			var me = this;
+			var index = me.documentGrid.activeRowIndex;
+
+			if (index != -1) {
+				if (me.payCheckRequestDocuments[index].id > 0) {
+					me.status = "DeleteDocument";
+					$("#messageToUser").text("Removing");
+					me.actionSaveItem();
+				}
+				me.payCheckRequestDocuments.splice(index, 1);
+				me.documentGrid.setData(me.payCheckRequestDocuments);
+			}
+		},
+
+		actionViewItem: function() {
+			var me = this;
+			var index = me.documentGrid.activeRowIndex;
+				
+			if (index != -1) {
+				if (me.payCheckRequestDocuments[index].id > 0) {
+					me.setStatus("Downloading");
+					$("#messageToUser").text("Downloading");
+					$("#pageLoading").fadeIn("slow");
+					me.fileNameStore.reset();
+					me.fileNameStore.fetch("userId:[user],id:" + me.payCheckRequestDocuments[index].id
+						+ ",fileName:" + me.payCheckRequestDocuments[index].fileName
+						, me.fileNamesLoaded
+						, me
+						);
+				}
+			}
+		},
+
+		fileNamesLoaded: function(me, activeId) {
+
+			if (parent.fin.appUI.modified)
+				me.setStatus("Edit");
+			else 
+				me.setStatus("Normal");
+			$("#pageLoading").fadeOut("slow");
+
+			if (me.fileNames.length == 1) {
+				$("iframe")[0].contentWindow.document.getElementById("FileName").value = me.fileNames[0].fileName;
+				$("iframe")[0].contentWindow.document.getElementById("DownloadButton").click();
+			}
+		},
+
+		actionSaveItem: function() {
+			var args = ii.args(arguments,{});
+			var me = this;
+			var item = [];
+			var id = 0;
+			var xml = "";
+			
+			if (me.status == "DeleteDocument") {
+				xml += '<payCheckRequestDocumentDelete';
+				xml += ' id="' + me.payCheckRequestDocuments[me.documentGrid.activeRowIndex].id + '"';			
+				xml += '/>';
+			}
+			else {
+				if ($("input[name='UPSDeliveryToUnit']:checked").val() == "true" && me.houseCodeSearchTemplate.houseCodeIdTemplate == 0 && me.action == "checkRequest") {
+					alert("Please select the Unit (House Code).");
+					return false;
+				}
+			
+				if ($("input[name='CurrentPayCardUser']:checked").val() == "false" && $("input[name='UPSDeliveryToUnit']:checked").val() == "false" && $("input[name='UPSDeliveryToHome']:checked").val() == "false" && $("input[name='InstantIssueRequest']:checked").val() == "false") {
+					alert("Please select one pay check delivery location: Current Pay Card User, Instant Issue Request, Unit Delivery, or Employee Home Delivery.");
+					return false;
+				}
+				
+				if ($("input[name='InstantIssueRequest']:checked").val() == "true" && me.payCheckRequestDocuments.length <= 0) {
+					alert("Please attach at least one Additional Document.");
+					return false;
+				}
+				
+				me.payCodeDetailGrid.body.deselectAll();
+				me.validator.forceBlur();
+	
+				// Check to see if the data entered is valid
+				if (!me.validator.queryValidity(true)) {
+					alert("In order to save, the errors on the page must be corrected.");
+					return false;
+				}
+			
+				if (me.payCheckRequestGrid.activeRowIndex >= 0)
+					id = me.payCheckRequestGrid.data[me.payCheckRequestGrid.activeRowIndex].id
+				
+				item = new fin.pay.payCheck.PayCheckRequest(
+					id
+					, 2
+					, parent.fin.appUI.houseCodeId
+					, parent.fin.appUI.houseCodeTitle
+					, me.requestedDate.lastBlurValue
+					, me.deliveryDate.lastBlurValue
+					, me.employeeNumber.getValue()
+					, me.employeeName.getValue()
+					, me.reasonForRequest.getValue()
+					, $("input[name='TermRequest']:checked").val() == "true" ? true : false
+					, $("input[name='TermRequest']:checked").val() == "true" ? me.stateTypes[me.state.indexSelected].id : 0
+					, $("input[name='TermRequest']:checked").val() == "true" ? me.terminationDate.lastBlurValue  : ""
+					, $("input[name='CurrentPayCardUser']:checked").val() == "true" ? true : false
+					, $("input[name='InstantIssueRequest']:checked").val() == "true" ? true : false					
+					, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? true : false
+					, $("input[name='SaturdayDeliveryUnit']:checked").val() == "true" ? true : false
+					, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? me.houseCodeSearchTemplate.houseCodeIdTemplate : 0
+					, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? me.houseCodeSearchTemplate.houseCodeTitleTemplate : ""
+					, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? me.unitAddress.getValue() : ""
+					, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? me.upsPackageAttentionTo.getValue() : ""
+					, $("input[name='UPSDeliveryToHome']:checked").val() == "true" ? true : false
+					, $("input[name='SaturdayDeliveryHome']:checked").val() == "true" ? true : false
+					, $("input[name='UPSDeliveryToHome']:checked").val() == "true" ? me.homeAddress.getValue() : ""
+					, $("input[name='ProcessingFee']:checked").val() == "true" ? true : false
+					, me.deductionCode.getValue()
+					, me.amount.getValue()
+					, me.requestorName.getValue()
+					, me.requestorEmail.getValue()
+					, me.managerName.getValue()				
+					, me.managerEmail.getValue()
+					);
+
+				xml = me.saveXmlBuildItem(item);
+			}
+			
+			if (xml == "")
+				return true;
+				
+			me.setStatus("Saving");	
+			$("#pageLoading").fadeIn("slow");
 
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
@@ -1258,7 +1732,7 @@ ii.Class({
 			var me = this;
 			var item = args.item;
 			var xml = "";
-		
+							
 			xml += '<payCheckRequest';
 			xml += ' id="' + item.id + '"';
 			xml += ' houseCodeId="' + item.houseCodeId + '"';
@@ -1272,6 +1746,7 @@ ii.Class({
 			xml += ' stateType="' + item.stateType + '"';
 			xml += ' currentPayCardUser="' + item.currentPayCardUser + '"';
 			xml += ' instantIssueRequest="' + item.instantIssueRequest + '"';
+			xml += ' terminationDate="' + item.terminationDate + '"';
 			xml += ' upsDeliveryToUnit="' + item.upsDeliveryToUnit + '"';
 			xml += ' saturdayDeliveryUnit="' + item.saturdayDeliveryUnit + '"';
 			xml += ' deliveryHouseCodeId="' + item.deliveryHouseCodeId + '"';			
@@ -1292,21 +1767,42 @@ ii.Class({
 
 			for (var index = 0; index < me.payCodeDetailGrid.data.length; index++) {
 				xml += '<payCheckRequestPayCode';
-				xml += ' id="0"';
-				xml += ' payCheckRequestId="0"';
+				xml += ' id="' + me.payCodeDetailGrid.data[index].id + '"';;
+				xml += ' payCheckRequestId="' + item.id + '"';
 				xml += ' payCode="' + me.payCodeDetailGrid.data[index].payCode.id + '"';
-				xml += ' hours="' + me.payCodeDetailGrid.data[index].hours + '"';
-				xml += ' date="' + ui.cmn.text.date.format(me.payCodeDetailGrid.data[index].date, "mm/dd/yyyy") + '"';
+				xml += ' hours="' + me.payCodeDetailGrid.data[index].hours + '"';				
 				xml += ' earnings="' + me.payCodeDetailGrid.data[index].earnings + '"';
 				xml += ' alternateBaseRate="' + me.payCodeDetailGrid.data[index].alternateBaseRate + '"';
-				xml += ' workOrderNumber="' + ui.cmn.text.xml.encode(me.payCodeDetailGrid.data[index].workOrderTicketNumber) + '"';
+				xml += ' date="' + ui.cmn.text.date.format(new Date(me.payCodeDetailGrid.data[index].date), "mm/dd/yyyy") + '"';
+				xml += ' workOrderNumber="' + me.payCodeDetailGrid.data[index].workOrderNumber + '"';
+				xml += '/>';
+			}
+
+			for (var index = 0; index < me.payCheckRequestDocuments.length; index++) {
+				if (me.payCheckRequestDocuments[index].tempFileName != "") {
+					xml += '<payCheckRequestDocument';
+					xml += ' id="' + me.payCheckRequestDocuments[index].id + '"';;
+					xml += ' title="' + ui.cmn.text.xml.encode(me.payCheckRequestDocuments[index].title) + '"';
+					xml += ' description=""';				
+					xml += ' fileName="' + ui.cmn.text.xml.encode(me.payCheckRequestDocuments[index].fileName) + '"';
+					xml += ' tempFileName="' + ui.cmn.text.xml.encode(me.payCheckRequestDocuments[index].tempFileName) + '"';
+					xml += '/>';
+				}
+			}
+
+			xml += '<payCheckRequestNotification';
+			xml += ' id="0"';
+			xml += ' action="' + me.status + '"';
+			xml += ' appVersion="' + me.session.propertyGet("appVersion") + '"';
+			xml += '/>';
+			
+			if (me.status == "CheckRequestCancel") {
+				xml += '<payCheckRequestStatus';
+				xml += ' id="' + item.id + '"';
+				xml += ' transactionStatusType="6"';			
 				xml += '/>';
 			}
 			
-			xml += '<payCheckRequestNotification';
-			xml += ' id="0"';
-			xml += '/>';
-
 			return xml;			
 		},	
 
@@ -1322,13 +1818,27 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-
 			
 			if (status == "success") {
-				alert("Payroll check request sent successfully.");
-				me.modified(false);
-				me.setStatus("Saved");
-				me.resetControls("new");
+				if (me.status == "DeleteDocument") {
+					me.setStatus("Edit");
+				}
+				else {
+					if (me.status == "CheckRequest") {
+						alert("Payroll check request sent successfully.");
+						me.resetControls("CheckRequest");
+					}
+					else if (me.status == "CheckRequestResend") {
+						alert("Payroll check request resent successfully.");
+						me.resetGrid();
+					}
+					else if (me.status == "CheckRequestCancel") {
+						alert("Payroll check request cancelled successfully.");
+						me.resetGrid();
+					}
+					me.modified(false);
+					me.setStatus("Saved");
+				}
 			}
 			else {
 				me.setStatus("Error");
@@ -1336,9 +1846,52 @@ ii.Class({
 			}
 			
 			$("#pageLoading").fadeOut("slow");
+		},
+
+		loadPopup: function() {
+			var me = this;
+
+			me.centerPopup();
+
+			$("#backgroundPopup").css({
+				"opacity": "0.5"
+			});
+			$("#backgroundPopup").fadeIn("slow");
+			$("#uploadPopup").fadeIn("slow");
+		},
+
+		hidePopup: function() {
+
+			$("#backgroundPopup").fadeOut("slow");
+			$("#uploadPopup").fadeOut("slow");
+		},
+
+		centerPopup: function() {
+			var me = this;
+			var windowWidth = document.documentElement.clientWidth;
+			var windowHeight = document.documentElement.clientHeight;
+			var popupWidth = $("#uploadPopup").width();
+			var popupHeight = $("#uploadPopup").height();
+
+			$("#uploadPopup").css({
+				"top": windowHeight/2 - popupHeight/2 + $(window).scrollTop(),
+				"left": windowWidth/2 - popupWidth/2 + $(window).scrollLeft()
+			});
 		}
     }
 });
+
+function onFileChange() {
+
+	var fileName = $("iframe")[0].contentWindow.document.getElementById("UploadFile").value;
+	fileName = fileName.substring(fileName.lastIndexOf("\\") + 1) ;
+	fin.payCheckUi.fileName = fileName;
+
+	if (fileName == "")
+		fin.payCheckUi.anchorUpload.display(ui.cmn.behaviorStates.disabled);
+	else
+		fin.payCheckUi.anchorUpload.display(ui.cmn.behaviorStates.enabled);
+}
 
 function main() {
 

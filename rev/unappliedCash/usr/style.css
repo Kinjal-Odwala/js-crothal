@@ -1,0 +1,30 @@
+﻿.labelTextArea {
+	float: left;
+	width: 90px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 2px 5px 0px 5px;
+}
+
+.inputTextArea {
+	float: left;
+	width: 200px;
+}
+
+.radioButton {
+	float: left;
+	width: 20px;
+	padding-left: 10px;
+}
+
+.iiGridHeaderColumn, .iiGridBodyColumn {
+	font-size: 8pt;
+}
+
+#AnchorSearch {
+	float: left;
+	width: 82px;
+	padding-left: 10px;
+}
