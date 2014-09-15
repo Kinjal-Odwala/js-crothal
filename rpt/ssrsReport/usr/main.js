@@ -7,20 +7,36 @@ ii.Import( "ui.ctl.usr.grid" );
 ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.ctl.usr.hierarchy" );
 ii.Import( "fin.cmn.usr.treeView" );
+ii.Import( "fin.cmn.usr.datepicker" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.rpt.ssrsReport.usr.defs" );
 
-ii.Style( "style", 1);
-ii.Style( "fin.cmn.usr.common", 2);
-ii.Style( "fin.cmn.usr.toolbar", 3);
-ii.Style( "fin.cmn.usr.statusBar", 4);
-ii.Style( "fin.cmn.usr.input", 5);
-ii.Style( "fin.cmn.usr.button", 6);
-ii.Style( "fin.cmn.usr.dropDown", 7);
-ii.Style( "fin.cmn.usr.dateDropDown", 8);
-ii.Style( "fin.cmn.usr.grid", 9);
-ii.Style( "fin.cmn.usr.hierarchy", 10);
-ii.Style( "fin.cmn.usr.treeview", 11);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.toolbar", 3 );
+ii.Style( "fin.cmn.usr.statusBar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.button", 6 );
+ii.Style( "fin.cmn.usr.datepicker", 7 );
+ii.Style( "fin.cmn.usr.dropDown", 8 );
+ii.Style( "fin.cmn.usr.dateDropDown", 9 );
+ii.Style( "fin.cmn.usr.grid", 10 );
+ii.Style( "fin.cmn.usr.hierarchy", 11 );
+ii.Style( "fin.cmn.usr.treeview", 12 );
+ii.Style( "fin.cmn.usr.theme", 13 );
+ii.Style( "fin.cmn.usr.core", 14 );
+ii.Style( "fin.cmn.usr.multiselect", 15 );
+
+var importCompleted = false;
+var iiScript = new ii.Script( "fin.cmn.usr.ui.core", function() { coreLoaded(); });
+
+function coreLoaded() { 
+	var iiScript = new ii.Script( "fin.cmn.usr.ui.widget", function() { widgetLoaded(); });
+}
+
+function widgetLoaded() { 
+	var iiScript = new ii.Script( "fin.cmn.usr.multiselect", function() { importCompleted = true; }); 
+}
 
 ii.Class({
     Name: "fin.rpt.ssrs.UserInterface",
@@ -43,6 +59,28 @@ ii.Class({
 			me.controls = [];
 			me.reportNodes = [];
 			me.loadCount = 0;
+			me.hirNodeCache = [];
+			me.fiscalPeriods = [];
+			me.payCodeTypes = [];
+			me.payrollCompanys = [];
+			me.statusTypes = [];
+			me.accounts = [];
+			me.invoiceBatches = [];
+			me.payPeriods = [];
+			me.workShifts = [];
+			me.customers = [];
+			me.excludeHouseCodes = [];
+			me.invoiceStatus = [];
+			me.thruFiscalPeriods = [];
+			me.payPeriodEndingDates = [];
+			me.woStatus = [];			
+			me.name = "";
+			me.level = "";
+			me.names = "";
+			me.reportURL = "";
+			me.parent = "";
+			me.parentNode = "";
+			me.ddlists = 0;
 
 			me.gateway = ii.ajax.addGateway("rpt", ii.config.xmlProvider);			
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -94,6 +132,7 @@ ii.Class({
 				me.reportStore.fetch("userId:[user],", me.reportsLoaded, me);
 				me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
 				me.hirNodeStore.fetch("userId:[user],hirHierarchy:1,fullPath:" + me.authorizePath, me.hirNodesLoaded, me);
+				me.typesTableLoaded();
 			}				
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
@@ -112,6 +151,8 @@ ii.Class({
 			var me = fin.reportUi;
 
 			$("#TreeviewContainer").height($(window).height() - 75);
+			$("#LevelNamesContainer").height(($(window).height() - 180) - $("#ParameterContainer").height());
+			//$("#ParameterContainer").height($(window).height() - 500);
 			$("#Subscription").height($(window).height() - 115);
 			me.subscriptionGrid.setHeight($(window).height() - 105);
 		},
@@ -159,7 +200,13 @@ ii.Class({
 				formatFunction: function( type ) { return type.title; },
 				changeFunction: function() { me.reportChanged(); }
 			});
-
+			
+			$("#ulEdit1").treeview({
+		        animated: "medium",
+		        persist: "location",
+				collapsed: true
+	        });
+			
 			me.ssrsReport.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)	
@@ -248,6 +295,23 @@ ii.Class({
 				clickFunction: function() { me.actionClosePopup(); },
 				hasHotState: true
 			});
+			
+			
+			me.AnchorRefresh = new ui.ctl.buttons.Sizeable({
+				id: "AnchorRefresh",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Refresh&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionRefreshItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorGenerateReport = new ui.ctl.buttons.Sizeable({
+				id: "AnchorGenerateReport",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Generate Report&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionGenerateReportItem(); },
+				hasHotState: true
+			});			
 			
 			me.subscriptionGrid = new ui.ctl.Grid({
 				id: "SubscriptionGrid",
@@ -717,6 +781,14 @@ ii.Class({
 				itemConstructorArgs: fin.rpt.ssrs.subscriptionArgs,
 				injectionArray: me.subscriptions
 			});
+
+			me.genericTypes = [];
+			me.genericTypeStore = me.cache.register({
+				storeId: "rptGenericTypes",
+				itemConstructor: fin.rpt.ssrs.GenericType,
+				itemConstructorArgs: fin.rpt.ssrs.genericTypeArgs,
+				injectionArray: me.genericTypes
+			});
 		},
 
 		setStatus: function(status) {
@@ -973,7 +1045,52 @@ ii.Class({
 		yearsLoaded: function(me, activeId) {
 			me.checkLoadCount();
 		},
-
+		
+		typesTableLoaded: function() {
+			var me = this;
+			me.levels = [];
+			me.excludeOverheadAccounts = [];
+			me.payrollReportTypes = [];
+			me.budgetTypes = [];
+			me.crothallEmployees = [];
+			me.currentWeeks = [];
+			me.comments = [];
+			
+			me.levels.push(new fin.rpt.ssrs.Level(37, "ENT", "ENT"));
+			me.levels.push(new fin.rpt.ssrs.Level(2, "SVP", "SVP"));
+			me.levels.push(new fin.rpt.ssrs.Level(34, "DVP", "DVP"));
+			me.levels.push(new fin.rpt.ssrs.Level(3, "RVP", "RVP"));
+			me.levels.push(new fin.rpt.ssrs.Level(36, "SRM", "SRM"));
+			me.levels.push(new fin.rpt.ssrs.Level(4, "RM", "RM"));
+			me.levels.push(new fin.rpt.ssrs.Level(41, "AM", "AM"));
+			me.levels.push(new fin.rpt.ssrs.Level(7, "SiteName", "SiteName"));
+			
+			me.excludeOverheadAccounts.push(new fin.rpt.ssrs.ExcludeOverheadAccount(3, "Yes", "3"));
+			me.excludeOverheadAccounts.push(new fin.rpt.ssrs.ExcludeOverheadAccount(4, "No", "4"));
+			
+			me.payrollReportTypes.push(new fin.rpt.ssrs.PayrollReportType(0, "By House Code", "0"));
+			me.payrollReportTypes.push(new fin.rpt.ssrs.PayrollReportType(1, "By Employee", "1"));
+			me.payrollReportTypes.push(new fin.rpt.ssrs.PayrollReportType(2, "Hierarchy", "2"));	
+			
+			me.budgetTypes.push(new fin.rpt.ssrs.BudgetType("Started", "Started", "Started"));
+			me.budgetTypes.push(new fin.rpt.ssrs.BudgetType("NotStarted", "Not Started", "Not Started"));
+			
+			me.crothallEmployees.push(new fin.rpt.ssrs.CrothallEmployee("All", "All", "All"));
+			me.crothallEmployees.push(new fin.rpt.ssrs.CrothallEmployee("YES", "YES", "YES"));
+			me.crothallEmployees.push(new fin.rpt.ssrs.CrothallEmployee("NO", "NO", "NO"));
+			
+			me.currentWeeks.push(new fin.rpt.ssrs.CurrentWeek(1, "1", "1"));
+			me.currentWeeks.push(new fin.rpt.ssrs.CurrentWeek(2, "2", "2"));
+			me.currentWeeks.push(new fin.rpt.ssrs.CurrentWeek(3, "3", "3"));
+			me.currentWeeks.push(new fin.rpt.ssrs.CurrentWeek(4, "4", "4"));
+			me.currentWeeks.push(new fin.rpt.ssrs.CurrentWeek(5, "5", "5"));
+			me.currentWeeks.push(new fin.rpt.ssrs.CurrentWeek(6, "6", "6"));
+			
+			me.comments.push(new fin.rpt.ssrs.Comment("GLLevel", "GL Level", "GL Level"));
+			me.comments.push(new fin.rpt.ssrs.Comment("Summary", "Summary", "Summary"));
+			me.comments.push(new fin.rpt.ssrs.Comment("Both", "Both", "Both"));
+		},
+		
 		loggedInUsersLoaded: function(me, activeId) {
 
 			if (me.users.length == 0) {
@@ -1020,9 +1137,215 @@ ii.Class({
 				$("#HirNodeText").removeClass("Loading");
 			}
 			
+			me.addLevelNodes("", 37, 'ENT', 1, 1);
+			me.addLevelNodes("", 2, 'SVP', 1, 1);
+			me.addLevelNodes("", 34, 'DVP', 1, 1);
+			me.addLevelNodes("", 3, 'RVP', 1, 1);
+			me.addLevelNodes("", 36, 'SRM', 1, 1);
+			me.addLevelNodes("", 4, 'RM', 1, 1);
+			me.addLevelNodes("", 41, 'AM', 1, 1);
+			me.addLevelNodes("", 7, 'SiteName', 1, 1);
+			
 			me.checkLoadCount();
 		},
 
+		addLevelNodes: function() {
+			var args = ii.args(arguments, {
+				parent: { type: String }
+                , hirNode: { type: Number }
+				, hirNodeTitle: { type: String }
+				, hirLevel: { type: Number }
+				, childNodeCount: {type: Number}
+            });			
+			var me = this;
+			var nodeHtml = "";			
+			
+			nodeHtml = "<li id=\"liNode" + args.hirNode + "\">";
+			nodeHtml += "<input type=\"checkbox\" id=\"chkNode" + args.hirNode + "\" name=\"" + args.hirNodeTitle + "\" parent=\"" + args.hirLevel + "\" />";
+			nodeHtml += "<span id=\"span" + args.hirNode + "\" class='normal' style='vertical-align: middle;'>" + args.hirNodeTitle + "</span>";
+			
+			if (args.childNodeCount != 0)
+                nodeHtml += "<ul id=\"ulEdit" + args.hirNode + "\"></ul>";
+            			
+			nodeHtml += "</li>";
+						
+			var treeNode = $(nodeHtml).appendTo("#ulEdit" + args.hirLevel);
+            $("#ulEdit1").treeview({ add: treeNode });
+			
+			$("#span" + args.hirNode).bind("click", function() {
+				
+			});
+			
+			$("#liNode" + args.hirNode).find(">.hitarea").bind("click", function () {
+				if ($("#ulEdit" + args.hirNode)[0].innerHTML == "") {
+					$("#span" + args.hirNode).replaceClass("normal", "loading");
+					me.setLoadCount();
+					me.parent = args.hirNodeTitle;
+					me.parentNode = args.hirNode;
+	               	me.hirNodeStore.fetch("userId:[user],levelBrief:" + args.hirNodeTitle, me.namesLoaded, me);					
+	            }
+            });
+			
+			$("#chkNode" + args.hirNode).bind("click", function() { 
+				if(args.hirLevel == 1)
+					me.childNodeCheck(this, args.hirNodeTitle);
+				else
+					me.parentNodeCheck(this, args.hirNodeTitle, args.parent); 
+			});			
+		},
+		
+		namesLoaded: function(me, activeId) {
+			
+		 	var hirNode = 0;
+            var hirNodeTitle = "";
+			var childNodeCount = 0;
+			var hirLevel = 0;			
+			
+			if (me.hirNodes.length > 0) {
+					for (var index = 0; index < me.hirNodes.length; index++) {				 
+					
+					hirNode = me.hirNodes[index].id;				
+					hirNodeTitle = me.hirNodes[index].title;
+					childNodeCount = me.hirNodes[index].childNodeCount;
+					hirLevel = me.hirNodes[index].hirLevel;
+					
+					me.addLevelNodes(me.parent, hirNode, hirNodeTitle, hirLevel, childNodeCount);
+				}
+				$("#span" + me.hirNodes[0].hirLevel).replaceClass("loading", "normal");
+			}
+			else
+				$("#span" + me.parentNode).replaceClass("loading", "normal");
+			
+			me.checkLoadCount();
+		},
+		
+		childNodeCheck: function(chkNodeParent, hirNodeTitle) {
+		    var me = this;
+		    var hirParentNode = chkNodeParent.id.replace(/chkNode/, "");
+		    var nodeChecked = chkNodeParent.checked;
+			me.name = "";
+			me.names = "";
+			
+			if (me.lastCheckedNode != undefined && me.lastCheckedNode != hirParentNode) {
+				var previousLevelNodeChecked = false;
+				
+				$("input[parent=" + me.lastCheckedNode + "]").each(function() {
+		            if (this.checked == true) 
+						previousLevelNodeChecked = true;
+		        });
+				
+				if (previousLevelNodeChecked) {					
+					if (confirm("Selected nodes in earlier level will be deselected")) {
+						$("#chkNode" + me.lastCheckedNode).attr("checked", false);
+						$("input[parent=" + me.lastCheckedNode + "]").each(function(){
+							this.checked = this.disabled = false;
+						});
+					}
+					else {
+						$("#chkNode" + hirParentNode).attr("checked", false);
+						$("input[parent=" + hirParentNode + "]").each(function(){
+							this.checked = this.disabled = false;
+						});
+						return false;
+					}
+				}
+			}
+				
+			me.lastCheckedNode = hirParentNode;
+			
+			if(chkNodeParent.checked)
+				me.level = "~Level=" + hirNodeTitle;
+			else if(!chkNodeParent.checked) {
+				var parameter = "~Level=" + hirNodeTitle;
+				me.level = me.level.replace(parameter, "");
+			}			
+					    
+		    //get a list of the children of the node
+		    $("input[parent=" + hirParentNode + "]").each(function()
+		    {
+		        //find out if the parent node is checked
+		        if (nodeChecked) {
+					this.checked = true;
+					me.name = me.name + "~Name=" + this.name;
+					me.names = me.names + "~" + this.name;
+				}					
+				else {
+					this.checked = false;
+					me.name = me.name.replace("~Name=" + this.name, "");
+					me.names = me.names.replace("~" + this.name, "");
+				}				
+		        
+		        //check the children of the children
+		        //me.childNodeCheck(this);
+		    });
+		},
+		
+		parentNodeCheck: function(chkNodeChild, hirNodeTitle, parent) {
+		    var me = this;
+		    var hirNode = $(chkNodeChild).attr("parent");
+		    var allChecked = true;
+		    
+			if (me.lastCheckedNode != undefined && me.lastCheckedNode != hirNode) {
+				var previousLevelNodeChecked = false;
+				
+				
+				$("input[parent=" + me.lastCheckedNode + "]").each(function() {
+		            if (this.checked == true) 
+						previousLevelNodeChecked = true;
+		        });
+				
+				if (previousLevelNodeChecked) {					
+					if (confirm("Selected nodes in earlier level will be deselected")) {
+						$("#chkNode" + me.lastCheckedNode).attr("checked", false);
+						$("input[parent=" + me.lastCheckedNode + "]").each(function(){
+							this.checked = this.disabled = false;
+						});
+						me.name = "";
+						me.names = "";
+					}
+					else {
+						$("#chkNode" + hirNode).attr("checked", false);
+						$("input[parent=" + hirNode + "]").each(function(){
+							this.checked = this.disabled = false;
+						});
+						return false;
+					}
+				}
+			}
+			
+			me.level = "~Level=" + parent;
+			if(chkNodeChild.checked) {
+				me.name = me.name + "~Name=" + hirNodeTitle;
+				me.names = me.names + "~" + hirNodeTitle;
+			}				
+			else if(!chkNodeChild.checked) {				
+				me.name = me.name.replace("~Name=" + hirNodeTitle, "");
+				me.names = me.names.replace("~" + hirNodeTitle, "");
+			}				
+			
+			me.lastCheckedNode = hirNode;
+			
+		    //make sure that the child has a parent
+		    $("#chkNode" + hirNode).each(function()
+		    {
+		        //go through the list of child nodes of the parent
+		        $("input[parent=" + hirNode + "]").each(function() {
+		            if (this.checked == false) 
+						allChecked = false;
+		        });
+    		    
+    		    //if all have been checked... check this one
+		        if (allChecked)
+		        {
+		            this.checked = true;
+		            me.childNodeCheck(this);
+		        }
+    		    
+		        //check the parent of the parent
+		        //me.parentNodeCheck(this);
+		    });
+		},
+		
 		actionAddNodes: function() {
 			var me = this;
 			var index = 0;
@@ -1105,7 +1428,10 @@ ii.Class({
 			var nodeIndex = me.getNodeIndex(nodeId);
 			var found = false;
 			var reportURL = "";
-
+			var rowHtml = "";
+			var reportTitle = "";
+			var reportId = 0;
+			
 			if (me.hirNodePreviousSelected > 0)
 				$("#span" + me.hirNodePreviousSelected).replaceClass("unitSelected", "unit");
 
@@ -1117,15 +1443,281 @@ ii.Class({
 			for (var index = 0; index < me.reports.length; index++) {
 				if (me.reports[index].hirNode == me.hirNodeSelected) {
 					reportURL = me.reports[index].reportURL;
+					reportTitle = me.reports[index].title;
+					reportId = me.reports[index].id;
 					found = true;
 					break;
 				}
 			}
-
+			
+			if (reportId != 0) {
+				me.setLoadCount();
+				me.reportParameterStore.fetch("userId:[user],reportId:" + reportId, me.parametersLoaded, me);				
+			}
+			
 			if (found && reportURL != "")
-				window.open(reportURL);
+				me.reportURL = reportURL;
 		},
+		
+		parametersLoaded: function(me, activeId) {
+			me.ddlists = 0;
+			me.list = "";
+			
+			var controls = me.reportParameters.length;			
+			for (var index = 0; index < me.reportParameters.length; index++) {
+				if (index == (controls - 1))
+					me.ddlists = 1;
+					
+				if (me.reportParameters[index].referenceTableName == "FscYears") {
+					me.list = "FscYears";
+					me.genericTypeStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+				}
+				else if (me.reportParameters[index].referenceTableName == "FscPeriod")	{
+					me.list = "FscPeriod";
+					me.genericTypeStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+				}
+				else if (me.reportParameters[index].referenceTableName == "PayPayCodes") {
+					me.list = "PayPayCodes";
+					me.genericTypeStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+				}
+				else if (me.reportParameters[index].referenceTableName == "PayrollCompany") {
+					me.list = "PayrollCompany";
+					me.genericTypeStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+				}
+				else if (me.reportParameters[index].referenceTableName == "EmpStatusTypes") {
+					me.list = "EmpStatusTypes";
+					me.genericTypeStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+				}
+				else if (me.reportParameters[index].referenceTableName == "FscAccounts") {
+					me.list = "FscAccounts";
+					me.genericTypeStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+				}
+				else if (me.reportParameters[index].referenceTableName == "RevInvoiceBatches") {
+					me.list = "RevInvoiceBatches";
+					me.genericTypeStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+				}
+				else if (me.reportParameters[index].referenceTableName == "PayPeriods") {
+					me.list = "PayPeriods";
+					me.genericTypeStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+				}				
+				else if (me.reportParameters[index].referenceTableName == "EmpWorkShifts")	{
+					me.list = "EmpWorkShifts";
+					me.genericTypeStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+				}	
+				else if (me.reportParameters[index].referenceTableName == "InvoiceStatus") {
+					me.list = "InvoiceStatus";
+					me.genericTypeStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+				}
+				else if (me.reportParameters[index].referenceTableName == "YearPeriods")	{
+					me.list = "YearPeriods";
+					me.genericTypeStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+				}
+				else if (me.reportParameters[index].referenceTableName == "WOStatus")	{
+					me.list = "WOStatus";
+					me.genericTypeStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+				}
+				else if (me.reportParameters[index].referenceTableName == "PayPeriodEndingDate")	{
+					me.list = "PayPeriodEndingDate";
+					me.genericTypeStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+				}	
+			}
+			
+			if(me.list == "")
+				me.controlsLoaded();			
+		},
+		
+		dropdownsLoaded: function(me, activeId) {			
+			if (me.list == 'FscYears')
+				me.fiscalYears = me.genericTypes.slice();
+			else if (me.list == 'FscPeriod')
+				me.fiscalPeriods = me.genericTypes.slice();
+			else if (me.list == 'PayPayCodes')
+				me.payCodeTypes = me.genericTypes.slice();
+			else if (me.list == 'PayrollCompany')
+				me.payrollCompanys = me.genericTypes.slice();
+			else if (me.list == 'EmpStatusTypes')
+				me.statusTypes = me.genericTypes.slice();
+			else if (me.list == 'FscAccounts')
+				me.accounts = me.genericTypes.slice();
+			else if (me.list == 'RevInvoiceBatches')
+				me.invoiceBatches = me.genericTypes.slice();
+			else if (me.list == 'PayPeriods')
+				me.payPeriods = me.genericTypes.slice();
+			else if (me.list == 'EmpWorkShifts')
+				me.workShifts = me.genericTypes.slice();
+			else if (me.list == 'InvoiceStatus')
+				me.invoiceStatus = me.genericTypes.slice();
+			else if (me.list == 'YearPeriods')
+				me.thruFiscalPeriods = me.genericTypes.slice();
+			else if (me.list == 'WOStatus')
+				me.woStatus = me.genericTypes.slice();
+			else if (me.list == 'PayPeriodEndingDates')
+				me.payPeriodEndingDates = me.genericTypes.slice();
+				
+			if(me.ddlists == 1)
+				me.controlsLoaded();			
+		},
+		
+		controlsLoaded: function() {
+			var me = this;
+			var html = "";
+			
+			for (var index = 0; index < me.reportParameters.length; index++) {
+				html += "\n<div class='labelReport'>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium'></div>"									
+				html += "\n<div style='clear:both;'></div>";
+			}
 
+			$("#ParameterContainer").html(html);
+
+			me.controls = [];
+
+			for (var index = 0; index < me.reportParameters.length; index++) {								
+				if (me.reportParameters[index].controlType == "Text") {
+					me.controls[index] = new ui.ctl.Input.Text({
+				        id: "" + me.reportParameters[index].name,
+				        maxLength: 64
+				    });
+
+					me.controls[index].makeEnterTab()
+						.setValidationMaster(me.validator)
+						.addValidation(ui.ctl.Input.Validation.required);
+
+					me.controls[index].resizeText();
+					
+					if (me.reportParameters[index].name = "UserID")
+						$("#" + me.reportParameters[index].name).val(me.session.propertyGet("userName"));
+				}
+				else if (me.reportParameters[index].controlType == "CheckBox") {
+					me.controls[index] = new ui.ctl.Input.Check({
+				        id: "" + me.reportParameters[index].name
+				    });
+				}
+				else if (me.reportParameters[index].controlType == "DropDown") {
+					me.controls[index] = new ui.ctl.Input.DropDown.Filtered({
+				        id: "" + me.reportParameters[index].name,
+						labelName: "" + me.reportParameters[index].title,
+						changeFunction: function(data) { 
+							if(data.data.id == "FiscalYear")
+								me.fiscalweeksLoad();							
+						},
+						formatFunction: function( type ) {
+								return (type.name); 
+						}
+				    });
+
+					me.controls[index].makeEnterTab()
+						.setValidationMaster(me.validator)
+						.addValidation(ui.ctl.Input.Validation.required)	
+						.addValidation( function( isFinal, dataMap ) {
+
+							if ((this.focused || this.touched) && this.indexSelected == -1)
+								this.setInvalid("Please select the correct " + this.labelName + ".");
+						});					
+						
+					if (me.reportParameters[index].referenceTableName == "FscYears")
+						me.controls[index].setData(me.fiscalYears);
+					else if (me.reportParameters[index].referenceTableName == "FscPeriod")
+						me.controls[index].setData(me.fiscalPeriods);					
+					else if (me.reportParameters[index].referenceTableName == "PayrollCompany")
+						me.controls[index].setData(me.payrollCompanys);
+					else if (me.reportParameters[index].referenceTableName == "RevInvoiceBatches")
+						me.controls[index].setData(me.invoiceBatches);
+					else if (me.reportParameters[index].referenceTableName == "PayPeriods")
+						me.controls[index].setData(me.payPeriods);
+					else if (me.reportParameters[index].referenceTableName == "OverHead")
+						me.controls[index].setData(me.excludeOverheadAccounts);
+					else if (me.reportParameters[index].referenceTableName == "YearPeriods")
+						me.controls[index].setData(me.thruFiscalPeriods);
+					else if (me.reportParameters[index].referenceTableName == "PayPeriodEndingDate")
+						me.controls[index].setData(me.payPeriodEndingDates);
+					else if (me.reportParameters[index].referenceTableName == "ExcludeHierarchyLevel")
+						me.controls[index].setData(me.levels);
+					else if (me.reportParameters[index].referenceTableName == "Report")
+						me.controls[index].setData(me.payrollReportTypes);
+					else if (me.reportParameters[index].referenceTableName == "Budget")
+						me.controls[index].setData(me.budgetTypes);
+					else if (me.reportParameters[index].referenceTableName == "CrothallEmployee")
+						me.controls[index].setData(me.crothallEmployees);
+					else if (me.reportParameters[index].referenceTableName == "CurrentWeek")
+						me.controls[index].setData(me.currentWeeks);
+					else if (me.reportParameters[index].referenceTableName == "Comments")
+						me.controls[index].setData(me.comments);					
+				}
+				else if (me.reportParameters[index].controlType == "Date") {
+					me.controls[index] = new ui.ctl.Input.Date({
+				        id: "" + me.reportParameters[index].name,
+						labelName: "" + me.reportParameters[index].title,
+						formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+				    });
+					
+					me.controls[index].resizeText();
+					
+					me.controls[index].makeEnterTab()
+						.setValidationMaster( me.validator )
+						.addValidation( function( isFinal, dataMap ) {
+		
+							var enteredText = this.text.value;
+
+							if (enteredText == "") return;
+													
+							if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+								this.setInvalid("Please enter valid " + this.labelName + ".");					
+					});
+				}
+				else if (me.reportParameters[index].controlType == "MultiSelect") {				
+					
+					$("#" + me.reportParameters[index].name).html("");
+					//if (me.reportParameters[index].referenceTableName != "Customer" && me.reportParameters[index].referenceTableName != "Exclude")					
+						me.populateMultiSelectDropDown(me.reportParameters[index].referenceTableName, me.reportParameters[index].name);						
+					$("#" + me.reportParameters[index].name).multiselect({
+						minWidth: 280,
+						header: false,
+						noneSelectedText: "",
+						selectedList: 4,
+						position: {
+							my: 'left bottom',
+							at: 'left top'
+						}
+					});
+										
+					me.controls[index] = $("#" + me.reportParameters[index].name);
+				}						
+			}			
+			
+			$("#LevelNamesContainer").height(($(window).height() - 180) - $("#ParameterContainer").height());
+			me.checkLoadCount();
+		},
+		
+		populateMultiSelectDropDown: function() {
+			var args = ii.args(arguments, {
+				referenceTableName: {type: String}
+				, name: {type: String}
+			});
+			var me = this;			
+			var typeTableData = [];
+			
+			if (args.referenceTableName == 'PayPayCodes')
+				typeTableData = me.payCodeTypes;
+			else if (args.referenceTableName == 'EmpStatusTypes')
+				typeTableData = me.statusTypes;
+			else if (args.referenceTableName == 'EmpWorkShifts')
+				typeTableData = me.workShifts;
+			else if (args.referenceTableName == 'FscAccounts')
+				typeTableData = me.accounts;
+			else if (args.name == 'InvoiceStatus')
+				typeTableData = me.invoiceStatus;
+			else if (args.name == 'WOStatus')
+				typeTableData = me.woStatus;
+				
+			for (var index = 0; index < typeTableData.length; index++) {
+				var title = "";
+				var value = typeTableData[index].id;
+				var parameter = typeTableData[index].parameter;
+				title = typeTableData[index].name;					
+				$("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + "</option>");
+			}
+		},
+		
 		getNodeIndex: function() {
 			var args = ii.args(arguments, {
 				hirNode: {type: Number} 
@@ -1139,7 +1731,45 @@ ii.Class({
 
 			return -1;
 		},
-
+		
+		customersLoaded: function(me, activeId) {
+			me.customers = me.genericTypes.slice();
+			$("#Customers").html("");
+			for (var index = 0; index < me.customers.length; index++) {
+				$("#Customers").append("<option title='" + me.customers[index].name + "' value='" + me.customers[index].id + "'>" + me.customers[index].name + "</option>");
+			}
+			$("#Customers").multiselect("refresh");			
+			me.genericTypeStore.fetch("level:" + me.levelName + ",name:" + me.namesList + ",genericType:ExcludeHouseCodes,userId:[user]", me.excludeHouseCodesLoaded, me);			
+		},
+		
+		excludeHouseCodesLoaded: function(me, activeId) {
+			me.excludeHouseCodes = me.genericTypes.slice();
+			$("#ExcludeHouseCodes").html("");
+			$("#OverheadAccounts").html("");
+			for (var index = 0; index < me.excludeHouseCodes.length; index++) {
+				$("#ExcludeHouseCodes").append("<option title='" + me.excludeHouseCodes[index].name + "' value='" + me.excludeHouseCodes[index].id + "'>" + me.excludeHouseCodes[index].name + "</option>");
+				$("#OverheadAccounts").append("<option title='" + me.excludeHouseCodes[index].name + "' value='" + me.excludeHouseCodes[index].id + "'>" + me.excludeHouseCodes[index].name + "</option>");
+			}
+			$("#ExcludeHouseCodes").multiselect("refresh");
+			$("#OverheadAccounts").multiselect("refresh");
+			me.checkLoadCount();						
+		},
+		
+		fiscalweeksLoad: function() {
+			var me = this;
+			
+			if (me.controls[1].id != "FiscalWeek")
+				return;
+						
+			me.setLoadCount(); 
+			me.genericTypeStore.fetch("name:" + me.fiscalYears[me.controls[0].indexSelected].id + ",genericType:FiscalWeek,userId:[user]", me.fiscalweeksLoaded, me);			
+		},
+		
+		fiscalweeksLoaded: function(me, activeId) {			
+			me.controls[1].setData(me.genericTypes);
+			me.checkLoadCount();			
+		},
+		
 		actionSearchItem: function() {
 			var args = ii.args(arguments, {
 				event: {type: Object}  // The (key) event object
@@ -1366,7 +1996,106 @@ ii.Class({
 
 			return null;
 		},
+		
+		actionRefreshItem: function() {
+			var me = this;
+			me.levelName = "";
+			me.namesList = "";
+			
+			if (me.reportURL == "") {
+				alert("Please select Node.");
+				return false;
+			}
+			
+			if (me.level == "") {
+				alert("Please select Level.");
+				return false;
+			}
+			
+			if (me.name == "") {
+				alert("Please select Name.");
+				return false;
+			}
+			
+			me.namesList = me.names.replace("~", "");
+			me.levelName = me.level.replace("~Level=", "");
+			me.setLoadCount();
+			me.genericTypeStore.fetch("level:" + me.levelName + ",name:" + me.namesList + ",genericType:Customers,userId:[user]", me.customersLoaded, me);
+		},
+		
+		actionGenerateReportItem: function() {
+			var me = this;
+			var parametersList = "";
+			var valid = true;
+			var parameter = "";
+			
+			for (var index = 0; index < me.controls.length; index++) {
+				if (me.reportParameters[index].controlType != "MultiSelect")
+					me.controls[index].validate(true);
+			}
 
+			for (var index = 0; index < me.controls.length; index++) {
+				if (me.reportParameters[index].controlType != "MultiSelect") {
+					if (!me.controls[index].valid) {
+						valid = false;
+						break;
+					}
+				}
+			}
+
+			if (!valid) {
+				alert("In order to save, the errors on the page must be corrected.");
+				return false;
+			}
+			
+			if (me.reportURL == "") {
+				alert("Please select Node.");
+				return false;
+			}
+			
+			if (me.level == "") {
+				alert("Please select Level.");
+				return false;
+			}
+			
+			if (me.name == "") {
+				alert("Please select Name.");
+				return false;
+			}	 
+			
+			for (var index = 0; index < me.reportParameters.length; index++) {
+				if (me.reportParameters[index].controlType == "CheckBox")
+					parametersList += "~" + me.reportParameters[index].name + "=" + me.controls[index].check.checked;
+				else if (me.reportParameters[index].controlType == "Text")
+					parametersList += "~" + me.reportParameters[index].name + "=" + me.controls[index].getValue();
+				else if (me.reportParameters[index].controlType == "Date")
+					parametersList += "~" + me.reportParameters[index].name + "=" + me.controls[index].lastBlurValue;
+				else if (me.reportParameters[index].controlType == "DropDown")	{					
+					parameter = me.controls[index].data[me.controls[index].indexSelected].parameter
+						parametersList += "~" + me.reportParameters[index].referenceTableName + "=" + parameter;
+				}
+				else if (me.reportParameters[index].controlType == "MultiSelect") {
+					var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function(){
+						return this.value;
+					}).get();
+					if(selectedValues.length > 0) {
+						for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
+							parametersList += "~" + me.reportParameters[index].referenceTableName + "=" + selectedValues[selectedIndex];
+						}
+					}
+					else {
+							alert("Please select " + me.reportParameters[index].title);
+							return false;
+					}
+				}
+			}
+			
+			//parametersList = "~Customer=540011~ExcludeHouseCode=2105~YearPeriods=20131~OverHead=3"
+			//parametersList = "~Customer=540011~Exclude=2105~StartDate=09/12/2010~EndDate=09/12/2014~Report=By Employee"
+			//parametersList = "~Customer=540011~Exclude=2105~FscPeriod=64"
+			window.openPost(me.reportURL, me.level + me.name + parametersList);
+		},
+		
 		actionReportItem: function() {
 			var me = this;
 
@@ -2302,6 +3031,39 @@ ii.Class({
 });
 
 function main() {
-	fin.reportUi = new fin.rpt.ssrs.UserInterface();
-	fin.reportUi.resize();
+	var intervalId = setInterval(function() {
+		if (importCompleted) {
+			clearInterval(intervalId);
+			fin.reportUi = new fin.rpt.ssrs.UserInterface();
+			fin.reportUi.resize();
+		}
+	}, 100);
+}
+
+window.openPost = function(url, parametersList)
+
+{
+	var parameters = [];
+	
+	parameters = parametersList.split("~");	
+	var form = document.createElement("form");	
+	form.setAttribute("method", "post");	
+	form.setAttribute("action", url);
+	form.setAttribute("target", "_blank");
+	
+	for (var index = 0; index < parameters.length; index++) {
+		var nameValuePair;
+		var nameValues = [];
+		var hiddenField = document.createElement("input");
+		
+		nameValuePair = parameters[index].toString();
+		nameValues = nameValuePair.split("=");
+		hiddenField.setAttribute("type", "hidden");		
+		hiddenField.setAttribute("name", nameValues[0]);		
+		hiddenField.setAttribute("value", nameValues[1]);		
+		form.appendChild(hiddenField);
+	}
+	
+	document.body.appendChild(form);	
+	form.submit();
 }

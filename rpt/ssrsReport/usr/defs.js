@@ -42,15 +42,15 @@ ii.init.register( function() {
 	};
 
 	fin.rpt.ssrs.fiscalYearArgs = {
-		id: {type: Number}
-		, number: {type: Number}
-		, name: {type: String}
+		id: {type: Number, required:false, defaultValue: 0}
+		, number: {type: Number, required:false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
 	};
 
 	fin.rpt.ssrs.fiscalPeriodArgs = {
-		id: {type: Number}
-		, number: {type: Number}
-		, name: {type: String}
+		id: {type: Number, required:false, defaultValue: 0}
+		, number: {type: Number, required:false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
 	};
 
 	fin.rpt.ssrs.fiscalWeekArgs = {
@@ -75,6 +75,7 @@ ii.init.register( function() {
 		, dataType: {type: String, required: false, defaultValue: ""}
 		, controlType: {type: String, required: false, defaultValue: ""}
 		, defaultValue: {type: String, required: false, defaultValue: ""}
+		, referenceTableName: {type: String, required: false, defaultValue: ""}
 	};
 
 	fin.rpt.ssrs.subscriptionArgs = {
@@ -125,8 +126,8 @@ ii.init.register( function() {
 
 	fin.rpt.ssrs.weekArgs = {
 		id: {type: Number}
-		, brief: {type: String}
-		, title: {type: String}
+		, brief: {type: String, required: false, defaultValue: ""}
+		, title: {type: String, required: false, defaultValue: ""}
 	};
 
 	fin.rpt.ssrs.hourArgs = {
@@ -153,7 +154,55 @@ ii.init.register( function() {
 		id: {type: Number}
 		, title: {type: String}
 	};
-
+	
+	fin.rpt.ssrs.genericTypeArgs = {
+		id: {type: Number, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.levelArgs = {
+		id: {type: Number, required:false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.excludeOverheadAccountArgs = {
+		id: {type: Number, required:false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.payrollReportTypeArgs = {
+		id: {type: Number, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.budgetTypeArgs = {
+		id: {type: String, required: false, defaultValue: ""}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.crothallEmployeeArgs = {
+		id: {type: String, required: false, defaultValue: ""}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.currentWeekArgs = {
+		id: {type: Number, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.commentArgs = {
+		id: {type: String, required: false, defaultValue: ""}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};	
+	
 }, 2);
 
 ii.Class({
@@ -315,6 +364,86 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.rpt.ssrs.priorityArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.GenericType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.genericTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.Level",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.levelArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.ExcludeOverheadAccount",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.excludeOverheadAccountArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.PayrollReportType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.payrollReportTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.BudgetType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.budgetTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.CrothallEmployee",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.crothallEmployeeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.CurrentWeek",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.currentWeekArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.Comment",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.commentArgs);
 			$.extend(this, args);
 		}
 	}
