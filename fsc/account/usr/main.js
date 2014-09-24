@@ -18,8 +18,8 @@ ii.Style( "fin.cmn.usr.button", 8 );
 ii.Class({
     Name: "fin.fsc.account.UserInterface",
     Definition: {
-	
-		init: function () {
+
+		init: function() {
 			var args = ii.args(arguments, {});
 			var me = this;
 			
@@ -33,7 +33,7 @@ ii.Class({
 			me.cache = new ii.ajax.Cache(me.gateway);
 			me.transactionMonitor = new ii.ajax.TransactionMonitor(
 				me.gateway
-				, function(status, errorMessage){ me.nonPendingError(status, errorMessage); }
+				, function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
 			);
 						
 			me.validator = new ui.ctl.Input.Validation.Master();
@@ -282,6 +282,11 @@ ii.Class({
 				changeFunction: function() { me.modified(); }  
 		    });
 			
+			me.excludeMOPUnitTotal = new ui.ctl.Input.Check({
+		        id: "ExcludeMOPUnitTotal",
+				changeFunction: function() { me.modified(); }  
+		    });
+			
 			me.fiscalAccountGrid = new ui.ctl.Grid({
 				id: "FiscalAccount",
 				appendToId: "divForm",
@@ -395,7 +400,7 @@ ii.Class({
 				$("#ManagementFeeCheck").attr('disabled', true);
 				$("#SuppliesCheck").attr('disabled', true);
 				$("#WORCheck").attr('disabled', true);
-				
+				$("#ExcludeMOPUnitTotalCheck").attr('disabled', true);
 				$("#actionMenu").hide();
 				$(".footer").hide();
 			}
@@ -408,7 +413,6 @@ ii.Class({
 			me.accountCategory.setData(me.accountCategories);
 			me.fiscalAccountGrid.setData([]);
 			me.fiscalAccountGrid.setData(me.accounts);
-			
 			me.resizeControls();
 			me.checkLoadCount();			
 		},
@@ -435,8 +439,7 @@ ii.Class({
 
 			me.accountDescription.setValue(item.description);
 			me.accountEditCode.setValue(item.postingEditCode);
-			me.accountHeader.setValue(item.glHeader + '');
-			
+			me.accountHeader.setValue(item.glHeader + "");
 	        me.negativeValue.setValue(item.negativeValue.toString());
 	        me.bockImportExport.setValue(item.blockImportExport.toString());
 	        me.budget.setValue(item.budget.toString());
@@ -452,6 +455,7 @@ ii.Class({
 	        me.accountReceivable.setValue(item.accountReceivables.toString());
 	        me.wor.setValue(item.wor.toString());
 	        me.otherRevenue.setValue(item.otherRevenue.toString());
+			me.excludeMOPUnitTotal.setValue(item.excludeMOPUnitTotal.toString());
 			me.setStatus("Loaded");
 		},
 
@@ -508,13 +512,11 @@ ii.Class({
 			
 			if (!parent.fin.cmn.status.itemValid())
 				return;
-				
+
 			me.status = "";	
-			me.setStatus("Loading");
-			
+
 			if (me.lastSelectedIndex >= 0) {
 				me.fiscalAccountGrid.body.select(me.lastSelectedIndex);
-				//me.itemSelect(me.lastSelectedIndex);
 			}
 		},
 
@@ -523,13 +525,11 @@ ii.Class({
 			var me = this;
 			
 			me.accountId = 0;
-
 			me.accountCode.setValue("");
 			me.accountCategory.reset();
 			me.accountDescription.setValue("");
 			me.accountEditCode.setValue("");
 			me.accountHeader.setValue("");
-			
 	        me.negativeValue.setValue("false");
 	        me.bockImportExport.setValue("false");
 	        me.budget.setValue("false");
@@ -545,7 +545,7 @@ ii.Class({
 	        me.accountReceivable.setValue("false");
 	        me.wor.setValue("false");
 	        me.otherRevenue.setValue("false");
-
+			me.excludeMOPUnitTotal.setValue("false");
 			me.fiscalAccountGrid.body.deselectAll();
 			me.accountCode.text.focus();
 			me.validator.reset();
@@ -598,6 +598,7 @@ ii.Class({
 		        , me.accountReceivable.check.checked
 		        , me.wor.check.checked
 		        , me.otherRevenue.check.checked
+				, me.excludeMOPUnitTotal.check.checked
 				, true
 			);
 				
@@ -643,6 +644,7 @@ ii.Class({
 	        xml += ' accountReceivable="' + args.item.accountReceivables + '"';
 	        xml += ' wor="' + args.item.wor + '"';
 	        xml += ' otherRevenue="' + args.item.otherRevenue + '"';
+			xml += ' excludeMOPUnitTotal="' + args.item.excludeMOPUnitTotal + '"';
 	        xml += ' active="' + args.item.active + '"';
 	        xml += ' clientId="' + ++clientId + '"';
 			xml += '/>';
@@ -694,6 +696,7 @@ ii.Class({
 						        , me.accountReceivable.check.checked
 						        , me.wor.check.checked
 						        , me.otherRevenue.check.checked
+								, me.excludeMOPUnitTotal.check.checked
 								, true
 							);
 									
