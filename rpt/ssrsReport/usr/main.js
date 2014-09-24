@@ -1428,8 +1428,7 @@ ii.Class({
 			me.lastCheckedNode = hirNode;
 			
 		    //make sure that the child has a parent
-		    $("#chkNode" + hirNode).each(function()
-		    {
+		    $("#chkNode" + hirNode).each(function() {
 		        //go through the list of child nodes of the parent
 		        $("input[parent=" + hirNode + "]").each(function() {
 		            if (this.checked == false) 
@@ -1437,12 +1436,14 @@ ii.Class({
 		        });
     		    
     		    //if all have been checked... check this one
-		        if (allChecked)
-		        {
+		        if (allChecked) {
 		            this.checked = true;
-		            me.childNodeCheck(this);
+		            me.childNodeCheck(this, parent);
 		        }
-    		    
+				else if (!allChecked) {
+					$("#" + this.id).attr("checked", false);
+				}
+   		    
 		        //check the parent of the parent
 		        //me.parentNodeCheck(this);
 		    });
@@ -2195,8 +2196,30 @@ ii.Class({
 					}
 				}
 			}
-			parametersList = "~UserID=" + me.session.propertyGet("userName") + me.level + me.name + parametersList;
-			window.openPost(me.reportURL, parametersList);
+			parametersList = "UserID=" + me.session.propertyGet("userName") + me.level + me.name + parametersList;
+			
+			var form = document.createElement("form");
+			form.setAttribute("method", "post");
+			form.setAttribute("action", me.reportURL);			
+			form.setAttribute("target", "_blank");
+			
+			var parameters = [];	
+			parameters = parametersList.split("~");
+			for (var index = 0; index < parameters.length; index++) {
+				var nameValuePair;
+				var nameValues = [];
+				var hiddenField = document.createElement("input");
+				
+				nameValuePair = parameters[index].toString();
+				nameValues = nameValuePair.split("=");
+				hiddenField.setAttribute("type", "hidden");		
+				hiddenField.setAttribute("name", nameValues[0]);		
+				hiddenField.setAttribute("value", nameValues[1]);		
+				form.appendChild(hiddenField);
+			}
+			
+			document.body.appendChild(form);
+			form.submit();				
 		},
 		
 		actionReportItem: function() {
@@ -3141,32 +3164,4 @@ function main() {
 			fin.reportUi.resize();
 		}
 	}, 100);
-}
-
-window.openPost = function(url, parametersList)
-
-{
-	var parameters = [];
-	
-	parameters = parametersList.split("~");	
-	var form = document.createElement("form");	
-	form.setAttribute("method", "post");	
-	form.setAttribute("action", url);
-	form.setAttribute("target", "_blank");
-	
-	for (var index = 0; index < parameters.length; index++) {
-		var nameValuePair;
-		var nameValues = [];
-		var hiddenField = document.createElement("input");
-		
-		nameValuePair = parameters[index].toString();
-		nameValues = nameValuePair.split("=");
-		hiddenField.setAttribute("type", "hidden");		
-		hiddenField.setAttribute("name", nameValues[0]);		
-		hiddenField.setAttribute("value", nameValues[1]);		
-		form.appendChild(hiddenField);
-	}
-	
-	document.body.appendChild(form);	
-	form.submit();
 }
