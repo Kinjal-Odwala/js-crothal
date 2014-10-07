@@ -6496,6 +6496,11 @@ ii.Class({
 					|| (!me.employeeRateChangeReason.validate(true))) { 
 					return false;
 				}
+				
+				if (me.actionType == "Compensation") {
+					if(me.compensationEffectiveDate.text.value > ui.cmn.text.date.format(new Date(me.payPeriodEndDate), "mm/dd/yyyy") || me.compensationEffectiveDate.text.value < ui.cmn.text.date.format(new Date(me.payPeriodStartDate), "mm/dd/yyyy"))
+						me.compensationEffectiveDate.text.value = me.currentDate();
+				}
 			}
 			
 			if (me.actionType == "Termination") {
