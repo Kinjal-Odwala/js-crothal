@@ -241,7 +241,7 @@ ii.Class({
 				$("#pageLoading").fadeIn("slow");
 			
 				ii.timer.timing("Page displayed");
-				me.loadCount = 1;
+				me.loadCount = 9;
 				me.session.registerFetchNotify(me.sessionLoaded, me);
 				me.employeeGeneralMasterStore.fetch("userId:[user],personId:0,", me.typesTableLoaded, me);
 				me.stateStore.fetch("userId:[user]", me.typesTableLoaded, me);
@@ -251,6 +251,7 @@ ii.Class({
 				me.payFrequencyTypeStore.fetch("userId:[user]", me.typesTableLoaded, me);
 				me.separationCodeStore.fetch("userId:[user],terminationType:" + me.terminationType + ",", me.typesTableLoaded, me);								
 				me.statusStore.fetch("userId:[user],", me.statusTypesLoaded, me);
+				me.employeePersonalStore.fetch("id:" + me.session.propertyGet("personId") + ",userId:[user]", me.userInfoLoaded, me);
 			}				
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
@@ -1588,8 +1589,51 @@ ii.Class({
 			me.employeeDeviceGroup.makeEnterTab()
 				.setValidationMaster( me.validator )
 			
+			me.requestorName = new ui.ctl.Input.Text({
+				id: "RequestorName",
+				maxLength: 150
+			});
+			
+			me.requestorName.text.readOnly = true;
+			
+			me.requestorEmail = new ui.ctl.Input.Text({
+				id: "RequestorEmail",
+				maxLength: 100
+			});
+			
+			me.requestorEmail.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+					
+					var enteredText = me.requestorEmail.getValue();
+					
+					if (enteredText == "") return;
+					
+					if (!(ui.cmn.text.validate.emailAddress(enteredText)))
+						this.setInvalid("Please enter valid Requestor Email.");
+			});
+			
+			me.requestorPhone = new ui.ctl.Input.Text({
+				id: "RequestorPhone",
+				maxLength: 150
+			});
+			
+			me.requestorPhone.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+	
+					var enteredText = me.requestorPhone.getValue();
+	
+					if (enteredText == "") return;
+											
+					if (/^\(?[\d]{3}\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$/.test(enteredText) == false)
+						this.setInvalid("Please enter valid phone number.");
+	
+					me.requestorPhone.text.value = me.phoneMask(enteredText);
+				});
+				
 			me.notes = $("#Notes")[0];
-			$("#Notes").height(100);
 			$("#Notes").keypress(function() {
 				if (me.notes.value.length > 249) {
 					me.notes.value = me.notes.value.substring(0, 250);
@@ -2090,6 +2134,9 @@ ii.Class({
 
 			me.basicLifeIndicatorType.resizeText();
 			me.newSSN.resizeText();
+			me.requestorName.resizeText();
+			me.requestorEmail.resizeText();
+			me.requestorPhone.resizeText();
 		},
 		
 		configureCommunications: function fin_emp_UserInterface_configureCommunications() {
@@ -2467,9 +2514,21 @@ ii.Class({
 		},
 
 		typesTableLoaded: function(me, activeId) {			
-			
+			me.checkLoadCount();
 		},
-
+		
+		userInfoLoaded: function(me, activeId) {
+			me.requestorFullName = "";
+			me.requestorEmailId = "";
+			me.requestorHomePhone = "";		
+			if (me.employeePersonals.length > 0) {
+				me.requestorFullName = me.employeePersonals[0].firstName + " " + me.employeePersonals[0].lastName;
+				me.requestorEmailId = me.employeePersonals[0].email;
+				me.requestorHomePhone = me.employeePersonals[0].homePhone;			
+			}
+			me.checkLoadCount();
+		},
+		
 		employeeHistoriesLoaded: function(me, activeId) { 
 		
 			var typesTable = [];
@@ -2651,7 +2710,7 @@ ii.Class({
 			}
 							
 			me.employeeSearch.setData(me.emps);
-			me.searchInput.text.focus();				
+			me.searchInput.text.focus();
 		},
 		
 		loadNewUser: function() {
@@ -3474,7 +3533,10 @@ ii.Class({
 				me.personCellPhone.setValue((me.employeePersonals[0].cellPhone == undefined ? "" : me.employeePersonals[0].cellPhone));
 				me.personEmail.setValue((me.employeePersonals[0].email == undefined ? "" : me.employeePersonals[0].email));
 				me.personPager.setValue((me.employeePersonals[0].pager == undefined ? "" : me.employeePersonals[0].pager));
-				me.hirNode = me.employeePersonals[0].hirNode;					
+				me.hirNode = me.employeePersonals[0].hirNode;
+				me.requestorName.setValue(me.requestorFullName);
+				me.requestorEmail.setValue(me.requestorEmailId);
+				me.requestorPhone.setValue(me.requestorHomePhone);
 				
 				if ((me.actionType == "Rehire") || (me.actionType == "Termination") || (me.actionType == "ReverseTermination")) {
 					$("#SSNContianer").hide();
@@ -5466,6 +5528,7 @@ ii.Class({
 			$("#EditEmployee").hide();
 			$("#SSNModification").hide();
 			$("#ModificationNotes").hide();
+			$("#Requestor").hide();
 			me.resizeControls();
 		},
 		
@@ -5498,6 +5561,7 @@ ii.Class({
 			$("#JobInformation").hide();
 			$("#Compensation").hide();			
 			$("#ModificationNotes").hide();
+			$("#Requestor").hide();
 			$("#Federal").hide();
 			$("#StateTax").hide();
 			$("#LocalTax").hide();			
@@ -5730,6 +5794,7 @@ ii.Class({
 						$("#houseCodeTerm").hide();
 						$("#EditEmployee").hide();
 						$("#ModificationNotes").hide();
+						$("#Requestor").hide();
 						me.wizardCount = 3;
 					}
 					else if (me.actionType == "BasicLifeIndicator") {
@@ -5745,6 +5810,7 @@ ii.Class({
 						$("#EmployeeInformation").hide();
 						$("#houseCodeTerm").hide();
 						$("#ModificationNotes").hide();
+						$("#Requestor").hide();
 						$("#AnchorNext").show();
 						$("#AnchorSave").hide();
 						if (me.firstTimeShow)
@@ -5754,7 +5820,8 @@ ii.Class({
                         $("#popupSubHeader").text("General");   
                         $("#SSNModification").hide();
                         $("#EmployeeInformation").hide();
-						$("#ModificationNotes").hide();     
+						$("#ModificationNotes").hide();
+						$("#Requestor").hide();     
                         $("#AnchorNext").show();  
                         $("#AnchorSave").hide();
                         if (me.firstTimeShow)   
@@ -5919,7 +5986,8 @@ ii.Class({
 						$("#GeneralCurrentHireDate").hide();
 						$("#GeneralOriginalHireDate").hide();						
 						$("#ModificationNotes").show();
-						$("#ModificationNotes").css("height", "240");
+						$("#ModificationNotes").css("height", "150");
+						$("#Requestor").show();
 						$("#EmployeeInformation").removeClass("employeeInformationDiv");
 						$("#EmployeeInformation").removeClass("ssnEmployeeDiv");
 						$("#EmployeeInformation").addClass("reverseTerminationDiv");
@@ -6048,6 +6116,7 @@ ii.Class({
 						$("#houseCodeTerm").hide();
 						$("#Compensation").hide();
 						$("#ModificationNotes").hide();
+						$("#Requestor").hide();
 						$("#AnchorNext").show();
 						$("#AnchorBack").show();
 						me.firstTimeShow == false;
@@ -6118,7 +6187,8 @@ ii.Class({
 
 					if (me.actionType == "DateModification") {
 						$("#ModificationNotes").show();
-						$("#ModificationNotes").css("height", "150");
+						$("#ModificationNotes").css("height", "60");
+						$("#Requestor").show();
 						$("#EmployeeRateChangeReasonText").attr('disabled', true);
 						$("#EmployeeRateChangeReasonAction").removeClass("iiInputAction");
 						$("#EmployeePayRateText").attr('disabled', true);
@@ -6279,7 +6349,8 @@ ii.Class({
                         $("#SSNModification").show();
                         $("#PersonalDetails").show();
 						$("#ModificationNotes").show();
-						$("#ModificationNotes").css("height", "180");
+						$("#ModificationNotes").css("height", "90");
+						$("#Requestor").show();
                         $("#PersonalDetails").removeClass("personalDetailsDiv");
                         $("#PersonalDetails").addClass("ssnPersonDiv");
                         $("#FirstNameText").attr('disabled', true);
@@ -6406,6 +6477,12 @@ ii.Class({
 					return false;
 				}
 				
+				if ((!me.requestorName.validate(true)) ||
+					(!me.requestorEmail.validate(true)) ||
+					(!me.requestorPhone.validate(true))) {
+					return false;
+				}
+				
 				if (me.notes.value == "") {
 					alert("Please enter the Notes.");
 					return false;
@@ -6506,6 +6583,9 @@ ii.Class({
 				if ((!me.employeeNumber.validate(true)) ||
 					(!me.employeePayrollCompany.validate(true)) ||
 					(!me.employeeStatusType.validate(true)) ||
+					(!me.requestorName.validate(true)) ||
+					(!me.requestorEmail.validate(true)) ||
+					(!me.requestorPhone.validate(true)) ||
 					(!me.employeeStatusCategoryType.validate(true))) {
 					return false;
 				}
@@ -6519,6 +6599,12 @@ ii.Class({
 			if (me.actionType == "SSNModification") {
 				if (me.employeeSSN.getValue() == me.newSSN.getValue()) {
 					alert("SSN should be different than current SSN.");
+					return false;
+				}
+				
+				if ((!me.requestorName.validate(true)) ||
+					(!me.requestorEmail.validate(true)) ||
+					(!me.requestorPhone.validate(true))) {
 					return false;
 				}
 				
@@ -6774,7 +6860,10 @@ ii.Class({
                 xml += ' employeeNumber="' + itemGeneral.employeeNumber + '"';    
                 xml += ' ssn="' + itemGeneral.ssn + '"';    
                 xml += ' newSSN="' + me.newSSN.getValue() + '"';    
-                xml += ' notes="' + me.notes.value + '"';  
+                xml += ' notes="' + me.notes.value + '"';
+				xml += ' requestorName="' + me.requestorName.getValue() + '"';
+				xml += ' requestorEmail="' + me.requestorEmail.getValue() + '"';
+				xml += ' requestorPhone="' + me.requestorPhone.getValue() + '"';  
                 xml += '/>';
     
                 return xml;     
@@ -6803,6 +6892,9 @@ ii.Class({
 				xml += ' newEffectiveDateJob="' + itemGeneral.effectiveDateJob + '"';
 				xml += ' newEffectiveDateCompensation="' + itemGeneral.effectiveDateCompensation + '"';
 				xml += ' notes="' + me.notes.value + '"';
+				xml += ' requestorName="' + me.requestorName.getValue() + '"';
+				xml += ' requestorEmail="' + me.requestorEmail.getValue() + '"';
+				xml += ' requestorPhone="' + me.requestorPhone.getValue() + '"';
 				xml += '/>';
 				return xml;
 			}
@@ -6834,7 +6926,10 @@ ii.Class({
 				xml += ' newEffectiveDate="' + itemGeneral.effectiveDate + '"';
 				xml += ' newSeparationCode="' + itemGeneral.separationCode + '"';
 				xml += ' newTerminationDate="' + itemGeneral.terminationDate + '"';
-				xml += ' newTerminationReason="' + itemGeneral.terminationReason + '"';				
+				xml += ' newTerminationReason="' + itemGeneral.terminationReason + '"';
+				xml += ' requestorName="' + me.requestorName.getValue() + '"';
+				xml += ' requestorEmail="' + me.requestorEmail.getValue() + '"';
+				xml += ' requestorPhone="' + me.requestorPhone.getValue() + '"';				
 				xml += '/>';
 				return xml;
 			}

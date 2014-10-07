@@ -408,6 +408,9 @@ ii.Class({
 			$("#CurrentEffectiveDate").text("");
 			$("#CurrentJobEffectiveDate").text("");
 			$("#CurrentCompensationEffectiveDate").text("");
+			$("#RequestedBy").text("");
+			$("#RequestorEmail").text("");
+			$("#RequestorPhone").text("");
 			$("#Status").text("");
 			$("#StatusCategory").text("");
 			$("#ReverseTerminationEffectiveDate").text("");
@@ -447,6 +450,9 @@ ii.Class({
 				$("#CurrentEffectiveDate").text(item.column12);
 				$("#CurrentJobEffectiveDate").text(item.column13);
 				$("#CurrentCompensationEffectiveDate").text(item.column14);
+				$("#RequestedBy").text(item.column25);
+				$("#RequestorEmail").text(item.column26);
+				$("#RequestorPhone").text(item.column27);
 				me.hireDate.setValue(item.column15);
 				me.originalHireDate.setValue(item.column16);
 				me.seniorityDate.setValue(item.column17);
@@ -458,6 +464,9 @@ ii.Class({
 			else if (me.modification == "SSNModification") {
                 $("#CurrentSSN").text(item.column8);
                 me.proposedSSN.setValue(item.column9);
+				$("#RequestedBy").text(item.column14);
+				$("#RequestorEmail").text(item.column15);
+				$("#RequestorPhone").text(item.column16);
                 me.notes.value = item.column10;
             }
 			else if (me.modification == "ReverseTermination") {
@@ -467,6 +476,9 @@ ii.Class({
 				$("#SeparationCode").text(item.column32);
 				$("#TerminationDate").text(item.column17);
 				$("#TerminationReason").text(item.column34);
+				$("#RequestedBy").text(item.column38);
+				$("#RequestorEmail").text(item.column39);
+				$("#RequestorPhone").text(item.column40);
 				me.notes.value = item.column20;
 				$("#ProposedStatus").text(item.column29);
 				$("#ProposedStatusCategory").text(item.column31);
@@ -502,7 +514,7 @@ ii.Class({
 				$("#divDateProposedValues").show();
 				$("#divDateCurrentValues").show();
 				$("#divNotes").show();
-				$("#divNotes").height(68);
+				$("#divNotes").height(148);
 				me.modification = "DateModification"
 				me.setLoadCount();
 				me.employeeStore.fetch("userId:[user],object:DateModification,batch:0,startPoint:0,maximumRows:0", me.employeesLoaded, me);
@@ -524,7 +536,7 @@ ii.Class({
                 $("#divSSNCurrentValues").show();
                 $("#divSSNProposedValues").show();
 				$("#divNotes").show();
-				$("#divNotes").height(203);
+				$("#divNotes").height(148);
                 me.modification = "SSNModification"
                 me.setLoadCount();
                 me.employeeStore.fetch("userId:[user],object:SSNModification,batch:0,startPoint:0,maximumRows:0", me.employeesLoaded, me);
@@ -546,7 +558,7 @@ ii.Class({
 				$("#divReverseTerminationCurrentValues").show();
 				$("#divReverseTerminationProposedValues").show();
 				$("#divNotes").show();
-				$("#divNotes").height(68);
+				$("#divNotes").height(148);
 				me.modification = "ReverseTermination"
 				me.setLoadCount();
 				me.employeeStore.fetch("userId:[user],object:ReverseTermination,batch:0,startPoint:0,maximumRows:0", me.employeesLoaded, me);

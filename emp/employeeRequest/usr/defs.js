@@ -22,9 +22,9 @@ ii.init.register( function() {
 		, column11: {type: String, required: false, defaultValue: ""} 	// Seniority Date or Active
 		, column12: {type: String, required: false, defaultValue: ""} 	// Effective Date or Change Status Code
 		, column13: {type: String, required: false, defaultValue: ""} 	// Effective Date Job or Payroll Status
-		, column14: {type: String, required: false, defaultValue: ""} 	// Effective Date Compensation or Previous Payroll Status
-		, column15: {type: String, required: false, defaultValue: ""}   // New Hire Date or Effective Date
-		, column16: {type: String, required: false, defaultValue: ""} 	// New Original Hire Date or Separation Code
+		, column14: {type: String, required: false, defaultValue: ""} 	// Effective Date Compensation or Previous Payroll Status or Requested By
+		, column15: {type: String, required: false, defaultValue: ""}   // New Hire Date or Effective Date or Requestor Email
+		, column16: {type: String, required: false, defaultValue: ""} 	// New Original Hire Date or Separation Code or Requestor Phone
 		, column17: {type: String, required: false, defaultValue: ""} 	// New Seniority Date or Termination Date
 		, column18: {type: String, required: false, defaultValue: ""} 	// New Effective Date or Termination Reason
 		, column19: {type: String, required: false, defaultValue: ""} 	// New Effective Date Job or Export EPerson
@@ -33,9 +33,9 @@ ii.init.register( function() {
 		, column22: {type: String, required: false, defaultValue: ""} 	// Status(Approved/Rejected)
 		, column23: {type: String, required: false, defaultValue: ""}	// New Status Category Type
 		, column24: {type: String, required: false, defaultValue: ""}   // New Effective Date
-		, column25: {type: String, required: false, defaultValue: ""}   // New Separation Code
-		, column26: {type: String, required: false, defaultValue: ""}   // New Termination Date
-		, column27: {type: String, required: false, defaultValue: ""}   // New Termination Reason
+		, column25: {type: String, required: false, defaultValue: ""}   // New Separation Code or Requested By
+		, column26: {type: String, required: false, defaultValue: ""}   // New Termination Date or Requestor Email
+		, column27: {type: String, required: false, defaultValue: ""}   // New Termination Reason or Requestor Phone
 		, column28: {type: String, required: false, defaultValue: ""}   // Status Type Title
 		, column29: {type: String, required: false, defaultValue: ""}   // New Status Type Title
 		, column30: {type: String, required: false, defaultValue: ""}   // Status Category Type Title
@@ -44,6 +44,11 @@ ii.init.register( function() {
 		, column33: {type: String, required: false, defaultValue: ""}   // New Separation Code Title
 		, column34: {type: String, required: false, defaultValue: ""}   // Termination Reason Title
 		, column35: {type: String, required: false, defaultValue: ""}   // New Termination Reason Title
+		, column36: {type: String, required: false, defaultValue: ""}
+		, column37: {type: String, required: false, defaultValue: ""}
+		, column38: {type: String, required: false, defaultValue: ""}   // Requested By
+		, column39: {type: String, required: false, defaultValue: ""}   // Requestor Email
+		, column40: {type: String, required: false, defaultValue: ""}   // Requestor Phone
 		, assigned: {type: Boolean, required: false, defaultValue: false}
 	};
 
