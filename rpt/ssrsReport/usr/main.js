@@ -143,7 +143,7 @@ ii.Class({
 			var me = fin.reportUi;
 
 			$("#TreeviewContainer").height($(window).height() - 75);
-			$("#LevelNamesContainer").height(($(window).height() - 180) - $("#ParameterContainer").height());
+			$("#LevelNamesContainer").height(($(window).height() - 153) - $("#ParameterContainer").height());
 			//$("#ParameterContainer").height($(window).height() - 500);
 			$("#Subscription").height($(window).height() - 115);
 			me.subscriptionGrid.setHeight($(window).height() - 105);
@@ -788,33 +788,23 @@ ii.Class({
 				itemConstructor: fin.rpt.ssrs.FscYear,
 				itemConstructorArgs: fin.rpt.ssrs.fscYearArgs,
 				injectionArray: me.fscYears
+			});			
+			
+			me.payCodeTypes = [];
+			me.payCodeTypeStore = me.cache.register({
+				storeId: "payCodes",
+				itemConstructor: fin.rpt.ssrs.PayCodeType,
+				itemConstructorArgs: fin.rpt.ssrs.payCodeTypeArgs,
+				injectionArray: me.payCodeTypes
 			});
 			
-			me.fscPeriods = [];
-			me.fscPeriodStore = me.cache.register({
-				storeId: "fscPeriods",
-				itemConstructor: fin.rpt.ssrs.FscPeriod,
-				itemConstructorArgs: fin.rpt.ssrs.fscPeriodArgs,
-				injectionArray: me.fscPeriods
-			});
-			
-			
-			me.payCodes = [];
-			me.payCodeStore = me.cache.register({
-				storeId: "rptPayCodes",
-				itemConstructor: fin.rpt.ssrs.PayCode,
-				itemConstructorArgs: fin.rpt.ssrs.payCodeArgs,
-				injectionArray: me.payCodes
-			});
-			
-			me.payrollCompanies = [];
+			me.payrollCompanys = [];
 			me.payrollCompanyStore = me.cache.register({
-				storeId: "payrollCompanies",
+				storeId: "payrollCompanys",
 				itemConstructor: fin.rpt.ssrs.PayrollCompany,
 				itemConstructorArgs: fin.rpt.ssrs.payrollCompanyArgs,
-				injectionArray: me.payrollCompanies
+				injectionArray: me.payrollCompanys
 			});
-			
 			
 			me.employeeStatus = [];
 			me.employeeStatusStore = me.cache.register({
@@ -887,6 +877,15 @@ ii.Class({
 				itemConstructorArgs: fin.rpt.ssrs.payPeriodEndingDateArgs,
 				injectionArray: me.payPeriodEndingDates
 			});
+			
+			me.stateTypes = [];
+			me.stateStore = me.cache.register({
+				storeId: "stateTypes",
+				itemConstructor: fin.rpt.ssrs.StateType,
+				itemConstructorArgs: fin.rpt.ssrs.stateTypeArgs,
+				injectionArray: me.stateTypes	
+			});
+			
 		},
 
 		setStatus: function(status) {
@@ -927,6 +926,7 @@ ii.Class({
 			$("#DivCalendarDays").hide();
 			$("#MonthErrorMessage").hide();
 			$("#DayErrorMessage").hide();
+			$("#AnchorRefresh").hide();
 			
 			$("input[name='rbSchedule']").click(function() {
 
@@ -1154,6 +1154,9 @@ ii.Class({
 			me.crothallEmployees = [];
 			me.currentWeeks = [];
 			me.comments = [];
+			me.unions = [];
+			me.entryMethods = [];
+			me.hour40Exceptions = [];
 			
 			me.levels.push(new fin.rpt.ssrs.Level(37, "ENT", "ENT"));
 			me.levels.push(new fin.rpt.ssrs.Level(2, "SVP", "SVP"));
@@ -1191,6 +1194,17 @@ ii.Class({
 			me.comments.push(new fin.rpt.ssrs.Comment("GLLevel", "GL Level", "GL Level"));
 			me.comments.push(new fin.rpt.ssrs.Comment("Summary", "Summary", "Summary"));
 			me.comments.push(new fin.rpt.ssrs.Comment("Both", "Both", "Both"));
+			
+			me.unions.push(new fin.rpt.ssrs.Union(1, "Both", "B"));
+			me.unions.push(new fin.rpt.ssrs.Union(2, "Union", "U"));
+			me.unions.push(new fin.rpt.ssrs.Union(3, "Non Union", "N"));
+			
+			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(1, "Epay Site and Task", "1"));
+			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(2, "Kronos Time and Attendance", "2"));
+			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(3, "Manual", "3"));
+			
+			me.hour40Exceptions.push(new fin.rpt.ssrs.Hour40Exception(0, "Equal To 40", "0"));
+			me.hour40Exceptions.push(new fin.rpt.ssrs.Hour40Exception(1, "Greater Than 40", "1"));
 		},
 		
 		loggedInUsersLoaded: function(me, activeId) {
@@ -1575,17 +1589,17 @@ ii.Class({
 				else if (me.reportParameters[index].referenceTableName == "FscPeriod" || me.reportParameters[index].referenceTableName == "FscPeriodFrom") {
 					me.ddlists = me.ddlists + 1;
 					me.list = "FscPeriod";
-					me.fscPeriodStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+					me.periodStore.fetch("userId:[user],fiscalYearId:-1", me.dropdownsLoaded, me);
 				}
 				else if (me.reportParameters[index].referenceTableName == "PayCode") {
 					me.ddlists = me.ddlists + 1;
 					me.list = "PayCode";
-					me.payCodeStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+					me.payCodeTypeStore.fetch("userId:[user],payCodeType:", me.dropdownsLoaded, me);
 				}
 				else if (me.reportParameters[index].referenceTableName == "PayrollCompany") {
 					me.ddlists = me.ddlists + 1;
 					me.list = "PayrollCompany";
-					me.payrollCompanyStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+					me.payrollCompanyStore.fetch("userId:[user]", me.dropdownsLoaded, me);
 				}
 				else if (me.reportParameters[index].referenceTableName == "EmployeeStatus") {
 					me.ddlists = me.ddlists + 1;
@@ -1631,6 +1645,11 @@ ii.Class({
 					me.ddlists = me.ddlists + 1;
 					me.list = "PayPeriod";
 					me.payPeriodEndingDateStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+				}
+				else if (me.reportParameters[index].referenceTableName == "States") {
+					me.ddlists = me.ddlists + 1;
+					me.list = "States";
+					me.stateStore.fetch("userId:[user]", me.dropdownsLoaded, me);
 				}	
 			}
 			
@@ -1647,6 +1666,7 @@ ii.Class({
 		controlsLoaded: function() {
 			var me = this;
 			var html = "";			
+			var dependentTypes = "false";
 			
 			for (var index = 0; index < me.reportParameters.length; index++) {
 				html += "\n<div class='labelReport'>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium'></div>"									
@@ -1690,7 +1710,12 @@ ii.Class({
 								me.excludeNamesLoad();							
 						},
 						formatFunction: function( type ) {
-								return (type.name); 
+							if (type.iiClass == "fin.rpt.ssrs.PayrollCompany") 
+								return type.brief +' - '+ type.name;
+							if (type.iiClass == "fin.rpt.ssrs.FiscalPeriod") 
+								return "Period " + type.title +' - '+ type.fscYeaTitle;
+							else
+								return (type.name);
 						}
 				    });
 
@@ -1706,9 +1731,9 @@ ii.Class({
 					if (me.reportParameters[index].referenceTableName == "FscYear")
 						me.controls[index].setData(me.fscYears);
 					else if (me.reportParameters[index].referenceTableName == "FscPeriod" || me.reportParameters[index].referenceTableName == "FscPeriodFrom" || me.reportParameters[index].referenceTableName == "FscPeriodTo")
-						me.controls[index].setData(me.fscPeriods);					
+						me.controls[index].setData(me.fiscalPeriods);					
 					else if (me.reportParameters[index].referenceTableName == "PayrollCompany")
-						me.controls[index].setData(me.payrollCompanies);
+						me.controls[index].setData(me.payrollCompanys);
 					else if (me.reportParameters[index].referenceTableName == "BatchNumber")
 						me.controls[index].setData(me.revInvoiceBatches);
 					else if (me.reportParameters[index].referenceTableName == "WkPeriod")
@@ -1732,7 +1757,13 @@ ii.Class({
 					else if (me.reportParameters[index].referenceTableName == "Week")
 						me.controls[index].setData(me.currentWeeks);
 					else if (me.reportParameters[index].referenceTableName == "Comments")
-						me.controls[index].setData(me.comments);					
+						me.controls[index].setData(me.comments);
+					else if (me.reportParameters[index].referenceTableName == "UnionNonUnion")
+						me.controls[index].setData(me.unions);
+					else if (me.reportParameters[index].referenceTableName == "EntryMethod")
+						me.controls[index].setData(me.entryMethods);
+					else if (me.reportParameters[index].referenceTableName == "Hour40Exception")
+						me.controls[index].setData(me.hour40Exceptions);					
 				}
 				else if (me.reportParameters[index].controlType == "Date") {
 					me.controls[index] = new ui.ctl.Input.Date({
@@ -1757,11 +1788,12 @@ ii.Class({
 					
 					me.controls[index].resizeText();
 				}
-				else if (me.reportParameters[index].controlType == "MultiSelect") {				
-					
-					$("#" + me.reportParameters[index].name).html("");
-					//if (me.reportParameters[index].referenceTableName != "Customer" && me.reportParameters[index].referenceTableName != "Exclude")					
-						me.populateMultiSelectDropDown(me.reportParameters[index].referenceTableName, me.reportParameters[index].name);						
+				else if (me.reportParameters[index].controlType == "MultiSelect") {
+					if (me.reportParameters[index].referenceTableName == "Customer" || me.reportParameters[index].referenceTableName == "Exclude" || me.reportParameters[index].referenceTableName == "ExcludeHouseCode" || me.reportParameters[index].referenceTableName == "HouseCode")				
+						dependentTypes = "true";
+						
+					$("#" + me.reportParameters[index].name).html("");										
+					me.populateMultiSelectDropDown(me.reportParameters[index].referenceTableName, me.reportParameters[index].name);						
 					$("#" + me.reportParameters[index].name).multiselect({
 						minWidth: 280,
 						header: false,
@@ -1777,7 +1809,15 @@ ii.Class({
 				}						
 			}			
 			
-			$("#LevelNamesContainer").height(($(window).height() - 180) - $("#ParameterContainer").height());
+			if(dependentTypes  == "true") {
+				$("#AnchorRefresh").show();
+				$("#LevelNamesContainer").height(($(window).height() - 180) - $("#ParameterContainer").height());
+			}				
+			else if(dependentTypes == "false") {
+				$("#AnchorRefresh").hide();
+				$("#LevelNamesContainer").height(($(window).height() - 153) - $("#ParameterContainer").height());
+			}	
+			
 			me.checkLoadCount();
 		},
 		
@@ -1790,7 +1830,7 @@ ii.Class({
 			var typeTableData = [];
 			
 			if (args.referenceTableName == 'PayCode')
-				typeTableData = me.payCodes;
+				typeTableData = me.payCodeTypes;
 			else if (args.referenceTableName == 'EmployeeStatus')
 				typeTableData = me.employeeStatus;
 			else if (args.referenceTableName == 'Shift')
@@ -1801,13 +1841,18 @@ ii.Class({
 				typeTableData = me.statusTypes;
 			else if (args.referenceTableName == 'StatusType' &&  args.name == "WOStatus")
 				typeTableData = me.woStatus;
+			else if (args.referenceTableName == 'States')
+				typeTableData = me.stateTypes;
 				
 			for (var index = 0; index < typeTableData.length; index++) {
 				var title = "";
 				var value = typeTableData[index].id;
 				var parameter = typeTableData[index].parameter;
-				title = typeTableData[index].name;					
-				$("#" + args.name).append("<option title='" + title + "' value='" + parameter + "'>" + title + "</option>");
+				title = typeTableData[index].name;
+				if (args.referenceTableName == 'States')					
+					$("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + "</option>");
+				else
+					$("#" + args.name).append("<option title='" + title + "' value='" + parameter + "'>" + title + "</option>");
 			}
 		},
 		
@@ -1845,6 +1890,16 @@ ii.Class({
 			}
 			$("#ExcludeHouseCodes").multiselect("refresh");
 			$("#OverheadAccounts").multiselect("refresh");
+			me.genericTypeStore.fetch("level:" + me.levelName + ",name:" + me.namesList + ",genericType:HouseCode,userId:[user]", me.houseCodesLoaded, me);
+		},
+		
+		houseCodesLoaded: function(me, activeId) {
+			me.excludeHouseCodes = me.genericTypes.slice();
+			$("#HouseCode").html("");
+			for (var index = 0; index < me.excludeHouseCodes.length; index++) {
+				$("#HouseCode").append("<option title='" + me.excludeHouseCodes[index].name + "' value='" + me.excludeHouseCodes[index].id + "'>" + me.excludeHouseCodes[index].name + "</option>");
+			}
+			$("#HouseCode").multiselect("refresh");
 			me.checkLoadCount();						
 		},
 		
@@ -2177,9 +2232,15 @@ ii.Class({
 					parametersList += "~" + me.reportParameters[index].name + "=" + me.controls[index].getValue();
 				else if (me.reportParameters[index].controlType == "Date")
 					parametersList += "~" + me.reportParameters[index].name + "=" + me.controls[index].lastBlurValue;
-				else if (me.reportParameters[index].controlType == "DropDown")	{					
-					parameter = me.controls[index].data[me.controls[index].indexSelected].parameter
-						parametersList += "~" + me.reportParameters[index].referenceTableName + "=" + parameter;
+				else if (me.reportParameters[index].controlType == "DropDown")	{
+					if (me.reportParameters[index].referenceTableName == "PayrollCompany")
+						parameter = me.controls[index].data[me.controls[index].indexSelected].brief
+					else if (me.reportParameters[index].referenceTableName == "FscPeriod")
+						parameter = me.controls[index].data[me.controls[index].indexSelected].id
+					else
+						parameter = me.controls[index].data[me.controls[index].indexSelected].parameter
+												
+					parametersList += "~" + me.reportParameters[index].referenceTableName + "=" + parameter;
 				}
 				else if (me.reportParameters[index].controlType == "MultiSelect") {
 					var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function(){

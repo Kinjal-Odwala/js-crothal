@@ -48,9 +48,11 @@ ii.init.register( function() {
 	};
 
 	fin.rpt.ssrs.fiscalPeriodArgs = {
-		id: {type: Number, required:false, defaultValue: 0}
-		, number: {type: Number, required:false, defaultValue: 0}
-		, name: {type: String, required: false, defaultValue: ""}
+		id: {type: Number}
+		, number: {type: Number}
+		, name: {type: String}
+		, title: {type: String}
+		, fscYeaTitle: {type: String}
 	};
 
 	fin.rpt.ssrs.fiscalWeekArgs = {
@@ -179,22 +181,16 @@ ii.init.register( function() {
 		, parameter: {type: String, required: false, defaultValue: ""}		
 	};
 	
-	fin.rpt.ssrs.fscPeriodArgs = {
-		id: {type: Number, defaultValue: 0}
-		, name: {type: String, required: false, defaultValue: ""}
-		, parameter: {type: String, required: false, defaultValue: ""}		
-	};
-	
-	fin.rpt.ssrs.payCodeArgs = {
-		id: {type: Number, defaultValue: 0}
-		, name: {type: String, required: false, defaultValue: ""}
-		, parameter: {type: String, required: false, defaultValue: ""}		
+	fin.rpt.ssrs.payCodeTypeArgs = {
+		id: {type: Number}
+		, brief: {type: String}
+		, name: {type: String}		
 	};
 	
 	fin.rpt.ssrs.payrollCompanyArgs = {
 		id: {type: Number, defaultValue: 0}
-		, name: {type: String, required: false, defaultValue: ""}
-		, parameter: {type: String, required: false, defaultValue: ""}		
+		, brief: {type: String}
+		, name: {type: String}
 	};
 	
 	fin.rpt.ssrs.employeeStatusArgs = {
@@ -285,7 +281,30 @@ ii.init.register( function() {
 		id: {type: String, required: false, defaultValue: ""}
 		, name: {type: String, required: false, defaultValue: ""}
 		, parameter: {type: String, required: false, defaultValue: ""}		
-	};	
+	};
+	
+	fin.rpt.ssrs.unionArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.entryMethodArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.hour40ExceptionArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.stateTypeArgs = {
+		id: {type: Number}
+		, name: {type: String}
+	};
 	
 }, 2);
 
@@ -494,20 +513,10 @@ ii.Class({
 });
 
 ii.Class({
-	Name: "fin.rpt.ssrs.FscPeriod",
+	Name: "fin.rpt.ssrs.PayCodeType",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.rpt.ssrs.fscPeriodArgs);
-			$.extend(this, args);
-		}
-	}
-});
-
-ii.Class({
-	Name: "fin.rpt.ssrs.PayCode",
-	Definition: {
-		init: function() {
-			var args = ii.args(arguments, fin.rpt.ssrs.payCodeArgs);
+			var args = ii.args(arguments, fin.rpt.ssrs.payCodeTypeArgs);
 			$.extend(this, args);
 		}
 	}
@@ -668,6 +677,46 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.rpt.ssrs.commentArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.Union",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.unionArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.EntryMethod",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.entryMethodArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.Hour40Exception",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.hour40ExceptionArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.StateType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.stateTypeArgs);
 			$.extend(this, args);
 		}
 	}
