@@ -8,16 +8,6 @@ ii.init.register( function() {
 
 ii.init.register( function() { 
 
-	fin.app.hierarchy.userArgs = {
-		id: {type: Number}
-		, roleCurrent: {type: Number, required: false, defaultValue: 0}
-	};
-
-	fin.app.hierarchy.roleArgs = {
-		id: {type: Number}
-		, hirNodeCurrent: {type: Number, required: false, defaultValue: 0}
-	};
-	
 	fin.app.hierarchy.hirLevelArgs = {
 		id: {type: Number}
 		, hierarchyId: {type: Number}
@@ -25,6 +15,24 @@ ii.init.register( function() {
 		, brief: {type: String, required: false, defaultValue: ""}
 		, title: {type: String, required: false, defaultValue: ""}
 	};
+
+	fin.app.hierarchy.roleNodeArgs = {
+		id: {type: Number}
+		, fullPath: {type: String, required: false, defaultValue: ""}
+	};
+
+//	fin.app.hierarchy.hierarchyNodeArgs = {
+//		id: {type: Number}
+//		, nodeParentId: {type: Number}
+//		, hierarchyId: {type: Number, required: false, defaultValue: 0}
+//		, hirLevel: {type: Number, required: false, defaultValue: 0}
+//		, brief: {type: String, required: false, defaultValue: ""}
+//		, title: {type: String, required: false, defaultValue: ""}
+//		, active: {type: Boolean, required: false, defaultValue: true}
+//		, fullPath: {type: String, required: false, defaultValue: ""}
+//		, status: {type: Number, required: false, defaultValue: 0}
+//		, childNodeCount: {type: Number, required: false, defaultValue: 0}
+//	};
 
 	fin.app.hierarchy.hirNodeArgs = {
 		id: {type: Number}
@@ -36,36 +44,13 @@ ii.init.register( function() {
 		, brief: {type: String, required: false, defaultValue: ""}
 		, title: {type: String, required: false, defaultValue: ""}
 		, active: {type: Boolean, required: false, defaultValue: true}
+		, fullPath: {type: String, required: false, defaultValue: ""}
 		, status: {type: Number, required: false, defaultValue: 0}
 		, childNodeCount: {type: Number, required: false, defaultValue: 0}
 		, modified: {type: Boolean, required: false, defaultValue: false}
-	};	
+	};
 
 }, 2);
-
-ii.Class({
-	Name: "fin.app.hierarchy.User",
-	Definition: {
-		init: function() {
-			var args = ii.args(arguments, fin.app.hierarchy.userArgs);
-			$.extend(this, args);
-			
-			if (!this.appRoles) {
-				this.appRoles = [];
-			}
-		}
-	}
-});
-
-ii.Class({
-	Name: "fin.app.hierarchy.Role",
-	Definition: {
-		init: function() {
-			var args = ii.args(arguments, fin.app.hierarchy.roleArgs);
-			$.extend(this, args);
-		}
-	}
-});
 
 ii.Class({
 	Name: "fin.app.hierarchy.HirLevel",
@@ -76,6 +61,26 @@ ii.Class({
 		}
 	}
 });
+
+ii.Class({
+	Name: "fin.app.hierarchy.RoleNode",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.app.hierarchy.roleNodeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+//ii.Class({
+//	Name: "fin.app.hierarchy.HierarchyNode",
+//	Definition: {
+//		init: function() {
+//			var args = ii.args(arguments, fin.app.hierarchy.hierarchyNodeArgs);
+//			$.extend(this, args);
+//		}
+//	}
+//});
 
 ii.Class({
 	Name: "fin.app.hierarchy.HirNode",

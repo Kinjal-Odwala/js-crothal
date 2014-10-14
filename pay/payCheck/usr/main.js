@@ -120,7 +120,7 @@ ii.Class({
 
 			$("#pageLoading").height(document.body.scrollHeight);
 			//$("#Container").height($(window).height() - 95);
-			$("#Container").height(1180);
+			$("#Container").height(1200);
 			me.payCheckRequestGrid.setHeight(200);
 			me.payCodeDetailGrid.setHeight(150);
 			me.payCodeDetailReadOnlyGrid.setHeight(150);
@@ -286,7 +286,31 @@ ii.Class({
 					else if ((this.focused || this.touched) && me.state.indexSelected == -1)
 						this.setInvalid("Please select the correct State.");
 				});
-				
+			
+			me.terminationDate = new ui.ctl.Input.Date({
+		        id: "TerminationDate",
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+		    });
+			
+			me.terminationDate.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+					if ($("#TermRequestNo")[0].checked) {
+							this.valid = true;
+						}
+					else {
+						var enteredText = me.terminationDate.text.value;
+					
+						if (enteredText == "") 
+							return;
+							
+						me.modified();
+						if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+							this.setInvalid("Please enter valid date.");
+					}
+				});
+					
 			me.unitAddress = new ui.ctl.Input.Text({
 				id: "UnitAddress",
 				maxLength: 1024,
@@ -799,8 +823,9 @@ ii.Class({
 						me.setUnitAddress();
 						$("#CurrentPayCardUserNo")[0].checked = true;
 						$("#UPSDeliveryToHomeNo")[0].checked = true;
+						$("#InstantIssueRequestNo")[0].checked = true;
 						me.homeAddress.resetValidation(true);
-						me.homeAddress.setValue("");
+						me.homeAddress.setValue("");						
 						break;
 						
 					case "UPSDeliveryToUnitNo":
@@ -818,6 +843,7 @@ ii.Class({
 						me.setEmployeeAddress();
 						$("#CurrentPayCardUserNo")[0].checked = true;
 						$("#UPSDeliveryToUnitNo")[0].checked = true;
+						$("#InstantIssueRequestNo")[0].checked = true;
 						me.unitAddress.resetValidation(true);
 						me.unitAddress.setValue("");
 						break;
@@ -834,6 +860,20 @@ ii.Class({
 						$("#LabelHome").html("<span id='nonRequiredFieldIndicator'>Home Address:</span>");
 						$("#UPSDeliveryToUnitNo")[0].checked = true;
 						$("#UPSDeliveryToHomeNo")[0].checked = true;
+						$("#InstantIssueRequestNo")[0].checked = true;
+						me.homeAddress.resetValidation(true);
+						me.homeAddress.setValue("");
+						me.unitAddress.resetValidation(true);
+						me.unitAddress.setValue("");
+						break;
+						
+					case "InstantIssueRequestYes":						
+						$("#LabelUnit").html("<span id='nonRequiredFieldIndicator'>Unit (House Code):</span>");
+						$("#LabelUnitAddress").html("<span id='nonRequiredFieldIndicator'>Unit (House Code) Address:</span>");
+						$("#LabelHome").html("<span id='nonRequiredFieldIndicator'>Home Address:</span>");
+						$("#UPSDeliveryToUnitNo")[0].checked = true;
+						$("#UPSDeliveryToHomeNo")[0].checked = true;
+						$("#CurrentPayCardUserNo")[0].checked = true;
 						me.homeAddress.resetValidation(true);
 						me.homeAddress.setValue("");
 						me.unitAddress.resetValidation(true);
@@ -842,12 +882,17 @@ ii.Class({
 						
 					case "TermRequestYes":
 						$("#LabelState").html("<span class='requiredFieldIndicator'>&#149;</span>State:");
+						$("#LabelTerminationDate").html("<span class='requiredFieldIndicator'>&#149;</span>Termination Date:");						
 						break;
 						
 					case "TermRequestNo":
 						$("#LabelState").html("<span id='nonRequiredFieldIndicator'>State:</span>");
+						$("#LabelTerminationDate").html("<span id='nonRequiredFieldIndicator'>Termination Date:</span>");
 						me.state.resetValidation(true);
 						me.state.setValue("");
+						me.terminationDate.resetValidation(true);												
+						if (me.terminationDate.lastBlurValue == undefined || me.terminationDate.lastBlurValue == "" || !(ui.cmn.text.validate.generic(me.terminationDate.lastBlurValue, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+							me.terminationDate.setValue("");
 						break;
 				}
 			});
@@ -873,30 +918,31 @@ ii.Class({
 			$("#TermRequestYes")[0].tabIndex = 7;
 			$("#TermRequestNo")[0].tabIndex = 8;
 			me.state.text.tabIndex = 9;
-			$("#CurrentPayCardUserYes")[0].tabIndex = 10;
-			$("#CurrentPayCardUserNo")[0].tabIndex = 11;
-			$("#InstantIssueRequestYes")[0].tabIndex = 12;
-			$("#InstantIssueRequestNo")[0].tabIndex = 13;
-			$("#UPSDeliveryToUnitYes")[0].tabIndex = 14;
-			$("#UPSDeliveryToUnitNo")[0].tabIndex = 15;
-			$("#SaturdayDeliveryUnitYes")[0].tabIndex = 16;
-			$("#SaturdayDeliveryUnitNo")[0].tabIndex = 17;
-			$("#houseCodeTemplateText")[0].tabIndex = 18;			
-			me.unitAddress.text.tabIndex = 19;
-			me.upsPackageAttentionTo.text.tabIndex = 20;			
-			$("#UPSDeliveryToHomeYes")[0].tabIndex = 21;
-			$("#UPSDeliveryToHomeNo")[0].tabIndex = 22;
-			$("#SaturdayDeliveryHomeYes")[0].tabIndex = 23;
-			$("#SaturdayDeliveryHomeNo")[0].tabIndex = 24;			
-			me.homeAddress.text.tabIndex = 25;
-			$("#ProcessingFeeYes")[0].tabIndex = 26;
-			$("#ProcessingFeeNo")[0].tabIndex = 27;		
-			me.deductionCode.text.tabIndex = 28;
-			me.amount.text.tabIndex = 29;
-			me.requestorName.text.tabIndex = 30;
-			me.requestorEmail.text.tabIndex = 31;
-			me.managerName.text.tabIndex = 32;
-			me.managerEmail.text.tabIndex = 33;
+			me.terminationDate.text.tabIndex = 10;
+			$("#CurrentPayCardUserYes")[0].tabIndex = 11;
+			$("#CurrentPayCardUserNo")[0].tabIndex = 12;
+			$("#InstantIssueRequestYes")[0].tabIndex = 13;
+			$("#InstantIssueRequestNo")[0].tabIndex = 14;			
+			$("#UPSDeliveryToUnitYes")[0].tabIndex = 15;
+			$("#UPSDeliveryToUnitNo")[0].tabIndex = 16;
+			$("#SaturdayDeliveryUnitYes")[0].tabIndex = 17;
+			$("#SaturdayDeliveryUnitNo")[0].tabIndex = 18;
+			$("#houseCodeTemplateText")[0].tabIndex = 19;			
+			me.unitAddress.text.tabIndex = 20;
+			me.upsPackageAttentionTo.text.tabIndex = 21;			
+			$("#UPSDeliveryToHomeYes")[0].tabIndex = 22;
+			$("#UPSDeliveryToHomeNo")[0].tabIndex = 23;
+			$("#SaturdayDeliveryHomeYes")[0].tabIndex = 24;
+			$("#SaturdayDeliveryHomeNo")[0].tabIndex = 25;			
+			me.homeAddress.text.tabIndex = 26;
+			$("#ProcessingFeeYes")[0].tabIndex = 27;
+			$("#ProcessingFeeNo")[0].tabIndex = 28;		
+			me.deductionCode.text.tabIndex = 29;
+			me.amount.text.tabIndex = 30;
+			me.requestorName.text.tabIndex = 31;
+			me.requestorEmail.text.tabIndex = 32;
+			me.managerName.text.tabIndex = 33;
+			me.managerEmail.text.tabIndex = 34;
 		},
 		
 		resizeControls: function() {
@@ -907,6 +953,7 @@ ii.Class({
 			me.employeeNumber.resizeText();
 			me.employeeName.resizeText();
 			me.reasonForRequest.resizeText();
+			me.terminationDate.resizeText();
 			me.unitAddress.resizeText();
 			me.upsPackageAttentionTo.resizeText();
 			me.homeAddress.resizeText();
@@ -926,11 +973,12 @@ ii.Class({
 			me.payCodeDetailGrid.body.deselectAll();
 			me.documentGrid.body.deselectAll();
 			me.requestedDate.resetValidation(true);
-			me.deliveryDate.resetValidation(true);
+			me.deliveryDate.resetValidation(true);			
 			me.employeeNumber.resetValidation(true);
 			me.employeeName.resetValidation(true);
 			me.reasonForRequest.resetValidation(true);
 			me.state.resetValidation(true);
+			me.terminationDate.resetValidation(true);
 			me.unitAddress.resetValidation(true);
 			me.homeAddress.resetValidation(true);
 			me.requestorEmail.resetValidation(true);
@@ -944,6 +992,7 @@ ii.Class({
 			me.employeeName.setValue("");
 			me.reasonForRequest.setValue("");
 			me.state.reset();
+			me.terminationDate.setValue("");
 			me.unitAddress.setValue("");
 			me.upsPackageAttentionTo.setValue("");
 			me.homeAddress.setValue("");
@@ -1004,6 +1053,7 @@ ii.Class({
 			me.employeeName.text.readOnly = readOnly;
 			me.reasonForRequest.text.readOnly = readOnly;
 			me.state.text.readOnly = readOnly;
+			me.terminationDate.text.readOnly = readOnly;
 			me.unitAddress.text.readOnly = readOnly;
 			me.upsPackageAttentionTo.text.readOnly = readOnly;
 			me.homeAddress.text.readOnly = readOnly;
@@ -1034,6 +1084,7 @@ ii.Class({
 				$("#RequestedDateAction").removeClass("iiInputAction");
 				$("#DeliveryDateAction").removeClass("iiInputAction");
 				$("#StateAction").removeClass("iiInputAction");
+				$("#TerminationDateAction").removeClass("iiInputAction");
 				$("#houseCodeTextDropImage").removeClass("HouseCodeDropDown");
 				$("#houseCodeTemplateTextDropImage").removeClass("HouseCodeDropDown");
 			}
@@ -1041,6 +1092,7 @@ ii.Class({
 				$("#RequestedDateAction").addClass("iiInputAction");
 				$("#DeliveryDateAction").addClass("iiInputAction");
 				$("#StateAction").addClass("iiInputAction");
+				$("#TerminationDateAction").addClass("iiInputAction");
 				$("#houseCodeTextDropImage").addClass("HouseCodeDropDown");
 				$("#houseCodeTemplateTextDropImage").addClass("HouseCodeDropDown");
 			}
@@ -1358,7 +1410,8 @@ ii.Class({
 			$("input[name='UPSDeliveryToHome'][value='" + item.upsDeliveryToHome + "']").attr("checked", "checked");  
 			$("input[name='SaturdayDeliveryHome'][value='" + item.saturdayDeliveryHome + "']").attr("checked", "checked");  
 			$("input[name='ProcessingFee'][value='" + item.stopPaymentProcessingFee + "']").attr("checked", "checked");  
-		
+			
+			me.terminationDate.setValue(item.terminationDate);
 			me.unitAddress.setValue(item.houseCodeAddress);
 			me.upsPackageAttentionTo.setValue(item.upsPackageAttentionTo);
 			me.homeAddress.setValue(item.homeAddress);
@@ -1597,8 +1650,8 @@ ii.Class({
 					return false;
 				}
 			
-				if ($("input[name='CurrentPayCardUser']:checked").val() == "false" && $("input[name='UPSDeliveryToUnit']:checked").val() == "false" && $("input[name='UPSDeliveryToHome']:checked").val() == "false") {
-					alert("Please select one pay check delivery location: Comdata Pay Card, Unit Delivery, or Employee Home Delivery.");
+				if ($("input[name='CurrentPayCardUser']:checked").val() == "false" && $("input[name='UPSDeliveryToUnit']:checked").val() == "false" && $("input[name='UPSDeliveryToHome']:checked").val() == "false" && $("input[name='InstantIssueRequest']:checked").val() == "false") {
+					alert("Please select one pay check delivery location: Current Pay Card User, Instant Issue Request, Unit Delivery, or Employee Home Delivery.");
 					return false;
 				}
 				
@@ -1630,9 +1683,10 @@ ii.Class({
 					, me.employeeName.getValue()
 					, me.reasonForRequest.getValue()
 					, $("input[name='TermRequest']:checked").val() == "true" ? true : false
-					, $("input[name='TermRequest']:checked").val() == "true" ? me.stateTypes[me.state.indexSelected].id : 0 
+					, $("input[name='TermRequest']:checked").val() == "true" ? me.stateTypes[me.state.indexSelected].id : 0
+					, $("input[name='TermRequest']:checked").val() == "true" ? me.terminationDate.lastBlurValue  : ""
 					, $("input[name='CurrentPayCardUser']:checked").val() == "true" ? true : false
-					, $("input[name='InstantIssueRequest']:checked").val() == "true" ? true : false
+					, $("input[name='InstantIssueRequest']:checked").val() == "true" ? true : false					
 					, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? true : false
 					, $("input[name='SaturdayDeliveryUnit']:checked").val() == "true" ? true : false
 					, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? me.houseCodeSearchTemplate.houseCodeIdTemplate : 0
@@ -1692,6 +1746,7 @@ ii.Class({
 			xml += ' stateType="' + item.stateType + '"';
 			xml += ' currentPayCardUser="' + item.currentPayCardUser + '"';
 			xml += ' instantIssueRequest="' + item.instantIssueRequest + '"';
+			xml += ' terminationDate="' + item.terminationDate + '"';
 			xml += ' upsDeliveryToUnit="' + item.upsDeliveryToUnit + '"';
 			xml += ' saturdayDeliveryUnit="' + item.saturdayDeliveryUnit + '"';
 			xml += ' deliveryHouseCodeId="' + item.deliveryHouseCodeId + '"';			

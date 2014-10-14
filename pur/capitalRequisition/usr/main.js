@@ -6,7 +6,7 @@ ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
-ii.Import( "fin.pur.requisition.usr.defs" );
+ii.Import( "fin.pur.capitalRequisition.usr.defs" );
 ii.Import( "fin.cmn.usr.houseCodeSearch" );
 
 ii.Style( "style", 1 );
@@ -20,7 +20,7 @@ ii.Style( "fin.cmn.usr.dropDown", 8 );
 ii.Style( "fin.cmn.usr.dateDropDown", 9 );
 
 ii.Class({
-    Name: "fin.pur.poRequisition.UserInterface",
+    Name: "fin.pur.poCapitalRequisition.UserInterface",
 	Extends: "ui.lay.HouseCodeSearch",
     Definition: {
 	
@@ -28,7 +28,7 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;			
 				
-			me.poRequisitionId = 0;
+			me.poCapitalRequisitionId = 0;
 			me.vendorId = 0;
 			me.accountId = 0;
 			me.catalogId = 0;
@@ -37,10 +37,9 @@ ii.Class({
 			me.users = [];
 			me.wizardCount = 0;
 			me.loadCount = 0;
-			me.total = 0;
 			me.fileName = "";
 			me.glAccounts = [];
-			me.action = "PORequisition";
+			me.action = "POCapitalRequisition";
 			
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 
@@ -52,7 +51,7 @@ ii.Class({
 			);
 
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
-			me.authorizePath = "\\crothall\\chimes\\fin\\Purchasing\\PORequisition";
+			me.authorizePath = "\\crothall\\chimes\\fin\\Purchasing\\CapitalRequisition";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
 					me.authorizationProcess.apply(me);
@@ -83,8 +82,8 @@ ii.Class({
 			var me = this;
 	
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
-			me.poRequisitionShow = me.authorizer.isAuthorized(me.authorizePath + "\\PORequisition");
-			me.convertPORequisitionToPOShow = me.authorizer.isAuthorized(me.authorizePath + "\\ConvertPORequisitionToPO");
+			//me.poCapitalRequisitionShow = me.authorizer.isAuthorized(me.authorizePath + "\\PORequisition");
+			//me.convertPOCapitalRequisitionToPOShow = me.authorizer.isAuthorized(me.authorizePath + "\\ConvertPORequisitionToPO");
 
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
@@ -100,23 +99,23 @@ ii.Class({
 				me.loadCount = 3;
 				me.session.registerFetchNotify(me.sessionLoaded,me);
 
-				if (!me.poRequisitionShow) {
-					$("#AnchorNew").hide();
-					$("#LabelStatus").hide();
-					$("#InputTextStatus").hide();			
-					$("#SearchButtonStatus").hide();
-					$("#PORequisitionAction").hide();
-				}
+				//if (!me.poCapitalRequisitionShow) {
+				//	$("#AnchorNew").hide();
+				//	$("#LabelStatus").hide();
+				//	$("#InputTextStatus").hide();			
+				//	$("#SearchButtonStatus").hide();
+				//	$("#POCapitalRequisitionAction").hide();
+				//}
 
-				if (!me.convertPORequisitionToPOShow) {
-					$("#GeneratePurchaseOrderFromPORequisitionAction").hide();
-				}
+				//if (!me.convertPOCapitalRequisitionToPOShow) {
+				//	$("#GeneratePurchaseOrderFromPOCapitalRequisitionAction").hide();
+				//}
 
-				if (!me.poRequisitionShow && me.convertPORequisitionToPOShow) {
-					$("#AnchorGeneratePurchaseOrder").show();
-					$("#AnchorJDEEntry").show();
-					me.action = "GeneratePurchaseOrder";
-				}
+				//if (!me.poCapitalRequisitionShow && me.convertPOCapitalRequisitionToPOShow) {
+				//	$("#AnchorGeneratePurchaseOrder").show();
+				//	$("#AnchorJDEEntry").show();
+				//	me.action = "GeneratePurchaseOrder";
+				//}
 
 				if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
 					me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
@@ -131,7 +130,7 @@ ii.Class({
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},
 		
-		sessionLoaded: function fin_pur_poRequisition_UserInterface_sessionLoaded() {
+		sessionLoaded: function fin_pur_poCapitalRequisition_UserInterface_sessionLoaded() {
 			var args = ii.args(arguments, {
 				me: {type: Object}
 			});
@@ -141,14 +140,14 @@ ii.Class({
 		
 		resize: function() {
 			var args = ii.args(arguments,{});
-			var me = fin.pur.poRequisitionUi;
+			var me = fin.pur.poCapitalRequisitionUi;
 
 			if (me == undefined)
 				return;				
 			
-			me.requisitionGrid.setHeight($(window).height() - 145);
-			me.itemGrid.setHeight($(window).height() - 285);
-			me.itemReadOnlyGrid.setHeight($(window).height() - 220);
+			me.capitalRequisitionGrid.setHeight($(window).height() - 145);
+			me.itemGrid.setHeight($(window).height() - 265);
+			me.itemReadOnlyGrid.setHeight($(window).height() - 200);
 			me.documentGrid.setHeight(100);
 			$("#popupContact").height($(window).height() - 110);
 			$("#GeneralInfo").height($(window).height() - 210);
@@ -164,16 +163,16 @@ ii.Class({
 
 			me.actionMenu
 				.addAction({
-					id: "PORequisitionAction", 
-					brief: "PO Requisitions", 
-					title: "To list the PO Requisitions",
-					actionFunction: function() { me.actionPORequisitionItem(); }
+					id: "POCapitalRequisitionAction", 
+					brief: "PO Capital Requisitions", 
+					title: "To list the PO Capital Requisitions",
+					actionFunction: function() { me.actionPOCapitalRequisitionItem(); }
 				})
 				.addAction({
-					id: "GeneratePurchaseOrderFromPORequisitionAction",
-					brief: "Generate Purchase Order From PO Requisition", 
-					title: "To generate Purchase Order from PO Requisition",
-					actionFunction: function() { me.actionGeneratePurchaseOrderFromPORequisition(); }
+					id: "GeneratePurchaseOrderFromPOCapitalRequisitionAction",
+					brief: "Generate Purchase Order From PO Capital Requisition", 
+					title: "To generate Purchase Order from PO Capital Requisition",
+					actionFunction: function() { me.actionGeneratePurchaseOrderFromPOCapitalRequisition(); }
 				})
 				
 			me.searchButton = new ui.ctl.buttons.Sizeable({
@@ -239,14 +238,15 @@ ii.Class({
 				clickFunction: function() { me.actionGeneratePurchaseOrderItem(); },
 				hasHotState: true
 			});
-			
+
 			me.anchorJDEEntry = new ui.ctl.buttons.Sizeable({
-				id: "AnchorJDEEntry",
-				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;JDE Entry&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionJDEEntryItem(); },
-				hasHotState: true
-			});
+                id: "AnchorJDEEntry",
+                className: "iiButton",
+                text: "<span>&nbsp;&nbsp;JDE Entry&nbsp;&nbsp;</span>",
+                clickFunction: function() { me.actionJDEEntryItem(); },
+                hasHotState: true
+            });
+			
 			
 			me.anchorNext = new ui.ctl.buttons.Sizeable({
 				id: "AnchorNext",
@@ -294,19 +294,19 @@ ii.Class({
 						this.setInvalid("Please select the correct Status.");
 				});
 				
-			me.requisitionGrid = new ui.ctl.Grid({
-				id: "RequisitionGrid",
+			me.capitalRequisitionGrid = new ui.ctl.Grid({
+				id: "CapitalRequisitionGrid",
 				appendToId: "divForm",
 				allowAdds: false,
 				selectFunction: function(index) { me.itemSelect(index); },
 				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});
 			
-			me.requisitionGrid.addColumn("requestorName", "requestorName", "Requestor Name", "Requestor Name", 250);				
-			me.requisitionGrid.addColumn("requestedDate ", "requestedDate", "Requested Date", "Requested Date", 150);
-			me.requisitionGrid.addColumn("deliveryDate", "deliveryDate", "Delivery Date", "Delivery Date", 150);
-			me.requisitionGrid.addColumn("vendorTitle", "vendorTitle", "Vendor Title", "Vendor Title", null);
-			me.requisitionGrid.addColumn("statusType", "statusType", "Status", "Status", 120, function(statusType) {
+			me.capitalRequisitionGrid.addColumn("requestorName", "requestorName", "Requestor Name", "Requestor Name", 250);				
+			me.capitalRequisitionGrid.addColumn("requestedDate ", "requestedDate", "Requested Date", "Requested Date", 150);
+			me.capitalRequisitionGrid.addColumn("deliveryDate", "deliveryDate", "Delivery Date", "Delivery Date", 150);
+			me.capitalRequisitionGrid.addColumn("vendorTitle", "vendorTitle", "Vendor Title", "Vendor Title", null);
+			me.capitalRequisitionGrid.addColumn("statusType", "statusType", "Status", "Status", 120, function(statusType) {
 				if (statusType == 1)
 					return "Open";
 				else if (statusType == 2)
@@ -324,7 +324,7 @@ ii.Class({
 				else if (statusType == 12)
                 	return "Completed - JDE";
            	});
-			me.requisitionGrid.capColumns();
+			me.capitalRequisitionGrid.capColumns();
 			
 			me.requestorName = new ui.ctl.Input.Text({
 		        id: "RequestorName",
@@ -517,25 +517,6 @@ ii.Class({
 				changeFunction: function() { me.modified(); }
 		    });
 			
-			me.urgencyDate = new ui.ctl.Input.Date({
-                id: "UrgencyDate",
-                formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
-            });
-            
-            me.urgencyDate.makeEnterTab()
-                .setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-                .addValidation( function( isFinal, dataMap ) {                  
-                    var enteredText = me.urgencyDate.text.value;
-
-                    if (enteredText == "") 
-                        return;
-                        
-                    me.modified();
-                    if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
-                        this.setInvalid("Please enter valid date.");
-                });
-			
 			me.vendor = new ui.ctl.Input.Text({
 				id: "Vendor",
 				maxLength: 256,
@@ -573,10 +554,10 @@ ii.Class({
 			me.itemGrid = new ui.ctl.Grid({
 				id: "ItemGrid",
 				allowAdds: true,
-				createNewFunction: fin.pur.poRequisition.Item,
-				selectFunction: function(index) {
+				createNewFunction: fin.pur.poCapitalRequisition.Item,
+				selectFunction: function(index){
 					if (me.itemGrid.rows[index].getElement("rowNumber").innerHTML == "Add") 
-						me.itemGrid.rows[index].getElement("itemSelect").innerHTML = "<input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poRequisitionUi.calculateTotal(this);\"  checked=\"true\" />";
+						me.itemGrid.rows[index].getElement("itemSelect").innerHTML = "<input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true;\"  checked=\"true\" />";
 				}			
 			});
 			
@@ -601,13 +582,6 @@ ii.Class({
 			me.itemDescription.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
-			
-			me.alternateDescription = new ui.ctl.Input.Text({
-                id: "AlternateDescription",
-                maxLength: 256,
-                appendToId: "ItemGridControlHolder",
-                changeFunction: function() { me.modified(); }
-            });
 			
 			me.account = new ui.ctl.Input.DropDown.Filtered({
 		        id: "Account",
@@ -647,8 +621,12 @@ ii.Class({
 		        id: "Quantity",
 		        maxLength: 10,
 				appendToId: "ItemGridControlHolder",
-				changeFunction: function() { me.modified(); me.calculateExtendedPrice(); }
+				changeFunction: function() { me.modified(); }
 		    });
+			
+			me.quantity.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
 			
 			me.quantity.makeEnterTab()
 				.setValidationMaster(me.validator)
@@ -672,7 +650,7 @@ ii.Class({
 		        id: "Price",
 				maxLength: 18,
 				appendToId: "ItemGridControlHolder",
-				changeFunction: function() { me.modified(); me.calculateExtendedPrice(); }
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.price.makeEnterTab()
@@ -696,22 +674,17 @@ ii.Class({
 			me.itemGrid.addColumn("itemSelect", "itemSelect", "", "", 30, function(data) {
 				var index = me.itemGrid.rows.length - 1;
 				if (me.itemGrid.data[index].itemSelect)
-                	return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poRequisitionUi.calculateTotal(this);\" checked=\"true\" /></center>";
+                	return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true;\" checked=\"true\" /></center>";
 				else
-				    return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poRequisitionUi.calculateTotal(this);\" /></center>";
+				    return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true;\" /></center>";
             });
 			me.itemGrid.addColumn("number", "number", "Item Number", "Item Number", 120, null, me.itemNumber);
-			me.itemGrid.addColumn("description", "description", "Item Description", "Item Description", null, null, me.itemDescription);
-			me.itemGrid.addColumn("alternateDescription", "alternateDescription", "Alternate Description", "Alternate Description", 180, null, me.alternateDescription);
-			me.itemGrid.addColumn("account", "account", "Gl Account No", "Gl Account No", 150, function( account ) { return account.code + " - " + account.name; }, me.account);
-			me.itemGrid.addColumn("unit", "unit", "UOM", "UOM", 80, null, me.uom);
-			me.itemGrid.addColumn("manufactured", "manufactured", "Mfg", "Mfg", 50, null, me.manufactured);
-			me.itemGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 80, null, me.quantity);
-			me.itemGrid.addColumn("price", "price", "Price", "Price", 80, null, me.price);
-			me.itemGrid.addColumn("extendedPrice", "", "Extended Price", "Extended Price", 120, function(data) {				
-				if (!isNaN(data.quantity) && data.price != undefined)
-					return ui.cmn.text.money.format(data.quantity * data.price);
-            });						
+			me.itemGrid.addColumn("description", "description", "Item Description", "Item Description", null, null, me.itemDescription);			
+			me.itemGrid.addColumn("account", "account", "GL Account No", "GL Account No", 120, function( account ) { return account.code + " - " + account.name; }, me.account);
+			me.itemGrid.addColumn("unit", "unit", "UOM", "UOM", 100, null, me.uom);
+			me.itemGrid.addColumn("manufactured", "manufactured", "Manufactured", "Manufactured", 120, null, me.manufactured);
+			me.itemGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 100, null, me.quantity);
+			me.itemGrid.addColumn("price", "price", "Price", "Price", 100, null, me.price);			
 			me.itemGrid.capColumns();			
 			
 			me.itemReadOnlyGrid = new ui.ctl.Grid({
@@ -720,17 +693,12 @@ ii.Class({
 			});
 			
 			me.itemReadOnlyGrid.addColumn("number", "number", "Item Number", "Item Number", 120);
-			me.itemReadOnlyGrid.addColumn("description", "description", "Item Description", "Item Description", null);
-			me.itemReadOnlyGrid.addColumn("alternateDescription", "alternateDescription", "Alternate Description", "Alternate Description", 180);
-			me.itemReadOnlyGrid.addColumn("account", "account", "Gl Account No", "Gl Account No", 150, function(account) { return account.code + " - " + account.name;	});
-			me.itemReadOnlyGrid.addColumn("unit", "unit", "UOM", "UOM", 80);
-			me.itemReadOnlyGrid.addColumn("manufactured", "manufactured", "Mfg", "Mfg", 50);
-			me.itemReadOnlyGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 80);
-			me.itemReadOnlyGrid.addColumn("price", "price", "Price", "Price", 80);
-			me.itemReadOnlyGrid.addColumn("extendedPrice", "", "Extended Price", "Extended Price", 120, function(data) {				
-				if (!isNaN(data.quantity) && data.price != undefined)
-					return ui.cmn.text.money.format(data.quantity * data.price);
-            });
+			me.itemReadOnlyGrid.addColumn("description", "description", "Item Description", "Item Description", null);			
+			me.itemReadOnlyGrid.addColumn("account", "account", "GL Account No", "GL Account No", 120, function(account) { return account.code + " - " + account.name;	});
+			me.itemReadOnlyGrid.addColumn("unit", "unit", "UOM", "UOM", 100);
+			me.itemReadOnlyGrid.addColumn("manufactured", "manufactured", "Manufactured", "Manufactured", 120);
+			me.itemReadOnlyGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 100);
+			me.itemReadOnlyGrid.addColumn("price", "price", "Price", "Price", 100);
 			me.itemReadOnlyGrid.capColumns();
 			
 			me.company = new ui.ctl.Input.Text({
@@ -898,114 +866,114 @@ ii.Class({
 			me.hirNodes = [];
 			me.hirNodeStore = me.cache.register({
 				storeId: "hirNodes",
-				itemConstructor: fin.pur.poRequisition.HirNode,
-				itemConstructorArgs: fin.pur.poRequisition.hirNodeArgs,
+				itemConstructor: fin.pur.poCapitalRequisition.HirNode,
+				itemConstructorArgs: fin.pur.poCapitalRequisition.hirNodeArgs,
 				injectionArray: me.hirNodes
 			});
 			
 			me.houseCodes = [];
 			me.houseCodeStore = me.cache.register({
 				storeId: "hcmHouseCodes",
-				itemConstructor: fin.pur.poRequisition.HouseCode,
-				itemConstructorArgs: fin.pur.poRequisition.houseCodeArgs,
+				itemConstructor: fin.pur.poCapitalRequisition.HouseCode,
+				itemConstructorArgs: fin.pur.poCapitalRequisition.houseCodeArgs,
 				injectionArray: me.houseCodes
 			});
 
 			me.houseCodeDetails = [];
 			me.houseCodeDetailStore = me.cache.register({
 				storeId: "houseCodes",
-				itemConstructor: fin.pur.poRequisition.HouseCodeDetail,
-				itemConstructorArgs: fin.pur.poRequisition.houseCodeDetailArgs,
+				itemConstructor: fin.pur.poCapitalRequisition.HouseCodeDetail,
+				itemConstructorArgs: fin.pur.poCapitalRequisition.houseCodeDetailArgs,
 				injectionArray: me.houseCodeDetails	
 			});
 			
 			me.houseCodeJobs = [];
 			me.houseCodeJobStore = me.cache.register({
 				storeId: "houseCodeJobs",
-				itemConstructor: fin.pur.poRequisition.HouseCodeJob,
-				itemConstructorArgs: fin.pur.poRequisition.houseCodeJobArgs,
+				itemConstructor: fin.pur.poCapitalRequisition.HouseCodeJob,
+				itemConstructorArgs: fin.pur.poCapitalRequisition.houseCodeJobArgs,
 				injectionArray: me.houseCodeJobs
 			});
 			
 			me.stateTypes = [];
 			me.stateTypeStore = me.cache.register({
 				storeId: "stateTypes",
-				itemConstructor: fin.pur.poRequisition.StateType,
-				itemConstructorArgs: fin.pur.poRequisition.stateTypeArgs,
+				itemConstructor: fin.pur.poCapitalRequisition.StateType,
+				itemConstructorArgs: fin.pur.poCapitalRequisition.stateTypeArgs,
 				injectionArray: me.stateTypes	
 			});
 			
 			me.accounts = [];
 			me.accountStore = me.cache.register({
 				storeId: "accounts",
-				itemConstructor: fin.pur.poRequisition.Account,
-				itemConstructorArgs: fin.pur.poRequisition.accountArgs,
+				itemConstructor: fin.pur.poCapitalRequisition.Account,
+				itemConstructorArgs: fin.pur.poCapitalRequisition.accountArgs,
 				injectionArray: me.accounts					
 			});
 			
 			me.persons = [];
 			me.personStore = me.cache.register({ 
 				storeId: "persons",
-				itemConstructor: fin.pur.poRequisition.Person,
-				itemConstructorArgs: fin.pur.poRequisition.personArgs,
+				itemConstructor: fin.pur.poCapitalRequisition.Person,
+				itemConstructorArgs: fin.pur.poCapitalRequisition.personArgs,
 				injectionArray: me.persons	
 			});
 			
-			me.poRequisitions = [];
-			me.poRequisitionStore = me.cache.register({
-				storeId: "purPORequisitions",
-				itemConstructor: fin.pur.poRequisition.PORequisition,
-				itemConstructorArgs: fin.pur.poRequisition.poRequisitionArgs,
-				injectionArray: me.poRequisitions
+			me.poCapitalRequisitions = [];
+			me.poCapitalRequisitionStore = me.cache.register({
+				storeId: "purPOCapitalRequisitions",
+				itemConstructor: fin.pur.poCapitalRequisition.POCapitalRequisition,
+				itemConstructorArgs: fin.pur.poCapitalRequisition.poCapitalRequisitionArgs,
+				injectionArray: me.poCapitalRequisitions
 			});
 			
 			me.items = [];
 			me.itemStore = me.cache.register({
 				storeId: "purPurchaseOrderItems",
-				itemConstructor: fin.pur.poRequisition.Item,
-				itemConstructorArgs: fin.pur.poRequisition.itemArgs,
+				itemConstructor: fin.pur.poCapitalRequisition.Item,
+				itemConstructorArgs: fin.pur.poCapitalRequisition.itemArgs,
 				injectionArray: me.items,
 				lookupSpec: { account: me.glAccounts }	
 			});
 			
-			me.poRequisitionDetails = [];
-			me.poRequisitionDetailStore = me.cache.register({
-				storeId: "purPORequisitionDetails",
-				itemConstructor: fin.pur.poRequisition.PORequisitionDetail,
-				itemConstructorArgs: fin.pur.poRequisition.poRequisitionDetailArgs,
-				injectionArray: me.poRequisitionDetails,
+			me.poCapitalRequisitionItems = [];
+			me.poCapitalRequisitionItemStore = me.cache.register({
+				storeId: "purPOCapitalRequisitionItems",
+				itemConstructor: fin.pur.poCapitalRequisition.POCapitalRequisitionItem,
+				itemConstructorArgs: fin.pur.poCapitalRequisition.poCapitalRequisitionItemArgs,
+				injectionArray: me.poCapitalRequisitionItems,
 				lookupSpec: { account: me.glAccounts }
 			});
 			
 			me.vendors = [];
 			me.vendorStore = me.cache.register({
 				storeId: "purVendors",
-				itemConstructor: fin.pur.poRequisition.Vendor,
-				itemConstructorArgs: fin.pur.poRequisition.vendorArgs,
+				itemConstructor: fin.pur.poCapitalRequisition.Vendor,
+				itemConstructorArgs: fin.pur.poCapitalRequisition.vendorArgs,
 				injectionArray: me.vendors	
 			});
 			
 			me.catalogs = [];
 			me.catalogStore = me.cache.register({
 				storeId: "purCatalogs",
-				itemConstructor: fin.pur.poRequisition.Catalog,
-				itemConstructorArgs: fin.pur.poRequisition.catalogArgs,
+				itemConstructor: fin.pur.poCapitalRequisition.Catalog,
+				itemConstructorArgs: fin.pur.poCapitalRequisition.catalogArgs,
 				injectionArray: me.catalogs	
 			});
 			
-			me.poRequisitionDocuments = [];
-			me.poRequisitionDocumentStore = me.cache.register({
-				storeId: "purPORequisitionDocuments",
-				itemConstructor: fin.pur.poRequisition.PORequisitionDocument,
-				itemConstructorArgs: fin.pur.poRequisition.poRequisitionDocumentArgs,
-				injectionArray: me.poRequisitionDocuments
+			me.poCapitalRequisitionDocuments = [];
+			me.poCapitalRequisitionDocumentStore = me.cache.register({
+				storeId: "purPOCapitalRequisitionDocuments",
+				itemConstructor: fin.pur.poCapitalRequisition.POCapitalRequisitionDocument,
+				itemConstructorArgs: fin.pur.poCapitalRequisition.poCapitalRequisitionDocumentArgs,
+				injectionArray: me.poCapitalRequisitionDocuments
 			});
 
 			me.fileNames = [];
 			me.fileNameStore = me.cache.register({
 			storeId: "purFileNames",
-				itemConstructor: fin.pur.poRequisition.FileName,
-				itemConstructorArgs: fin.pur.poRequisition.fileNameArgs,
+				itemConstructor: fin.pur.poCapitalRequisition.FileName,
+				itemConstructorArgs: fin.pur.poCapitalRequisition.fileNameArgs,
 				injectionArray: me.fileNames
 			});
 		},
@@ -1053,27 +1021,15 @@ ii.Class({
 
 		initialize: function() {
 			var me = this;
-
-			$("input[name='RequisitionType']").change(function() { me.modified(); });
-			$("input[name='Urgency']").change(function() { me.modified(); });
-			$("input[name='LifeSpan']").change(function() { me.modified(); });
+			
+			$("input[name='Funding']").change(function() { me.modified(); });
+			$("input[name='BusinessType']").change(function() { me.modified(); });
+			$("input[name='Budgeting']").change(function() { me.modified(); });
 			$("#VendorName").bind("keydown", me, me.actionVendorSearch);
 			$("#imgAdd").bind("click", function() { me.actionAttachItem(); });
 			$("#imgEdit").bind("click", function() { me.actionEditDocumentItem(); });
 			$("#imgRemove").bind("click", function() { me.actionRemoveItem(); });
-			$("#imgView").bind("click", function() { me.actionViewItem(); });			
-			$("#UrgencyUrgent").bind("click", function() {
-				$("#LabelUrgencyDate").html("<span class='requiredFieldIndicator'>&#149;</span>Urgency Date:");
- 			});
-			$("#UrgencyNotUrgent").bind("click", function() { 
-				$("#LabelUrgencyDate").html("<span id='nonRequiredFieldIndicator'>Urgency Date:</span>");
-				me.urgencyDate.resetValidation(true);
-				var urgencyDate = me.urgencyDate.lastBlurValue;
-				if (urgencyDate == "" || !(ui.cmn.text.validate.generic(urgencyDate, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
-					me.urgencyDate.setValue("");
-			});
-			
-			
+			$("#imgView").bind("click", function() { me.actionViewItem(); });
 			$("#AnchorView").hide();
 			$("#AnchorEdit").hide();
 			$("#AnchorResendRequisition").hide();
@@ -1099,7 +1055,6 @@ ii.Class({
 			me.vendorPhone.resizeText();
 			me.vendorEmail.resizeText();
 			me.reasonForRequest.resizeText();
-			me.urgencyDate.resizeText();
 			me.vendor.resizeText();
 			me.searchItem.resizeText();
 			me.company.resizeText();
@@ -1131,7 +1086,6 @@ ii.Class({
 			me.vendorPhone.text.readOnly = readOnly;
 			me.vendorEmail.text.readOnly = readOnly;
 			me.reasonForRequest.text.readOnly = readOnly;
-			me.urgencyDate.text.readOnly = readOnly;
 			me.shippingJob.text.readOnly = readOnly;
 			me.shippingAddress1.text.readOnly = readOnly;
 			me.shippingAddress2.text.readOnly = readOnly;
@@ -1140,20 +1094,20 @@ ii.Class({
 			me.shippingZip.text.readOnly = readOnly;
 			me.shippingPhone.text.readOnly = readOnly;
 			me.shippingFax.text.readOnly = readOnly;
-
-			$("#RequisitionTypeSpecialSupply")[0].disabled = readOnly;
-			$("#RequisitionTypeOffContract")[0].disabled = readOnly;
-			$("#UrgencyUrgent")[0].disabled = readOnly;
-			$("#UrgencyNotUrgent")[0].disabled = readOnly;
-			$("#LifeSpanPermanent")[0].disabled = readOnly;
-			$("#LifeSpanTemporary")[0].disabled = readOnly;
+			
+			$("#FundingCapital")[0].disabled = readOnly;
+			$("#FundingDirectReimbursement")[0].disabled = readOnly;
+			$("#BusinessTypeNewBusiness")[0].disabled = readOnly;
+			$("#BusinessTypeNewConstruction")[0].disabled = readOnly;
+			$("#BusinessTypeExistingBusiness")[0].disabled = readOnly;			
+			$("#BudgetingBudgeted")[0].disabled = readOnly;
+			$("#BudgetingUnbudgeted")[0].disabled = readOnly;
 
 			if (readOnly) {
 				$("#RequestedDateAction").removeClass("iiInputAction");
 				$("#DeliveryDateAction").removeClass("iiInputAction");				
 				$("#VendorNameAction").removeClass("iiInputAction");
 				$("#VendorStateAction").removeClass("iiInputAction");
-				$("#UrgencyDateAction").removeClass("iiInputAction");
 				$("#AccountAction").removeClass("iiInputAction");
 				$("#ShippingJobAction").removeClass("iiInputAction");
 				$("#ShippingStateAction").removeClass("iiInputAction");
@@ -1165,7 +1119,6 @@ ii.Class({
 				$("#DeliveryDateAction").addClass("iiInputAction");
 				$("#VendorNameAction").addClass("iiInputAction");
 				$("#VendorStateAction").addClass("iiInputAction");
-				$("#UrgencyDateAction").addClass("iiInputAction");
 				$("#AccountAction").addClass("iiInputAction");
 				$("#ShippingJobAction").addClass("iiInputAction");
 				$("#ShippingStateAction").addClass("iiInputAction");
@@ -1183,78 +1136,18 @@ ii.Class({
 			return month + "/" + day + "/" + year;
 		},
 		
-		calculateTotal: function(object) {
-			var me = this;
-			var iIndex = me.itemGrid.activeRowIndex;
-			var quantity = me.quantity.getValue();
-			var price = me.price.getValue();
-			me.total = 0;
-			
-			for (var index = 0; index < me.itemGrid.data.length; index++) {
-				if ($("#selectInputCheck" + index)[0].checked) {
-					if (iIndex == index && quantity != "" && !isNaN(quantity) && price != undefined)
-						me.total = me.total + (quantity * price)								
-					else if (me.itemGrid.data[index].quantity != "" && !isNaN(me.itemGrid.data[index].quantity) && me.itemGrid.data[index].price != undefined)
-						me.total = me.total + (me.itemGrid.data[index].quantity * me.itemGrid.data[index].price)						
-				}				
-			}
-			
-			if(me.itemGrid.activeRowIndex == me.itemGrid.data.length) {
-				if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked) {
-					if (quantity != "" && !isNaN(quantity) && price != undefined) 
-						me.total = me.total + quantity * price;
-				}
-			}
-			
-			$("#spnTotal").html(me.total.toFixed(2));
-		},
-		
-		calculateExtendedPrice: function() {
-			var me = this;
-			var iIndex = me.itemGrid.activeRowIndex;
-			var quantity = me.quantity.getValue();
-			var price = me.price.getValue();
-			var extendedPrice = "0.00";
-			me.total = 0;
-
-			if (quantity != "" && !isNaN(quantity) && price != undefined)
-				extendedPrice = ui.cmn.text.money.format(quantity * price);
-			else
-				extendedPrice = "0.00";			
-			
-			$(me.itemGrid.rows[iIndex].getElement("extendedPrice")).text(extendedPrice);
-			
-			for (var index = 0; index < me.itemGrid.data.length; index++) {
-				if ($("#selectInputCheck" + index)[0].checked) {
-					if (iIndex == index && quantity != "" && !isNaN(quantity) && price != undefined)
-						me.total = me.total + (quantity * price)								
-					else if (me.itemGrid.data[index].quantity != "" && !isNaN(me.itemGrid.data[index].quantity) && me.itemGrid.data[index].price != undefined)
-						me.total = me.total + (me.itemGrid.data[index].quantity * me.itemGrid.data[index].price)
-				}
-			}
-			
-			if(me.itemGrid.activeRowIndex == me.itemGrid.data.length) {
-				if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked) {
-					if (quantity != "" && !isNaN(quantity) && price != undefined) 
-						me.total = me.total + quantity * price;
-				}
-			}
-			
-			$("#spnTotal").html(me.total.toFixed(2));
-		},
-		
 		statusesLoaded: function() {
 			var me = this;
 
 			me.statuses = [];
-			me.statuses.push(new fin.pur.poRequisition.Status(0, "[All]"));
-			me.statuses.push(new fin.pur.poRequisition.Status(1, "Open"));
-			me.statuses.push(new fin.pur.poRequisition.Status(2, "In Process"));
-			me.statuses.push(new fin.pur.poRequisition.Status(8, "Approved"));
-			me.statuses.push(new fin.pur.poRequisition.Status(11, "Completed - PO"));
-			me.statuses.push(new fin.pur.poRequisition.Status(12, "Completed - JDE"));
-			me.statuses.push(new fin.pur.poRequisition.Status(6, "Cancelled"));
-			me.statuses.push(new fin.pur.poRequisition.Status(10, "Unapproved"));
+			me.statuses.push(new fin.pur.poCapitalRequisition.Status(0, "[All]"));
+			me.statuses.push(new fin.pur.poCapitalRequisition.Status(1, "Open"));
+			me.statuses.push(new fin.pur.poCapitalRequisition.Status(2, "In Process"));
+			me.statuses.push(new fin.pur.poCapitalRequisition.Status(8, "Approved"));
+			me.statuses.push(new fin.pur.poCapitalRequisition.Status(11, "Completed - PO"));
+			me.statuses.push(new fin.pur.poCapitalRequisition.Status(12, "Completed - JDE"));
+			me.statuses.push(new fin.pur.poCapitalRequisition.Status(6, "Cancelled"));
+			me.statuses.push(new fin.pur.poCapitalRequisition.Status(10, "Unapproved"));
 
 			me.statusType.setData(me.statuses);
 			me.statusType.select(1, me.statusType.focused);
@@ -1263,7 +1156,7 @@ ii.Class({
 		accountsLoaded: function(me, activeId) {
 			
 			for (var index = 0; index < me.accounts.length; index++) {
-				var item = new fin.pur.poRequisition.GLAccount(me.accounts[index].id, me.accounts[index].code, me.accounts[index].name);
+				var item = new fin.pur.poCapitalRequisition.GLAccount(me.accounts[index].id, me.accounts[index].code, me.accounts[index].name);
 				me.glAccounts.push(item);
 			}
 			me.account.setData(me.glAccounts);	
@@ -1272,7 +1165,7 @@ ii.Class({
 		
 		stateTypesLoaded: function(me,activeId) {
 
-			me.stateTypes.unshift(new fin.pur.poRequisition.StateType({ id: 0, number: 0, name: "None" }));
+			me.stateTypes.unshift(new fin.pur.poCapitalRequisition.StateType({ id: 0, number: 0, name: "None" }));
 			me.shippingState.setData(me.stateTypes);
 			me.vendorState.setData(me.stateTypes);	
 			me.checkLoadCount();		
@@ -1281,7 +1174,7 @@ ii.Class({
 		actionSearchItem: function() {
 			var me = this;
 			
-			me.loadPORequisitions();
+			me.loadPOCapitalRequisitions();
 		},
 		
 		houseCodesLoaded: function(me, activeId) { 
@@ -1298,7 +1191,7 @@ ii.Class({
 			me.houseCodeDetailStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId, me.houseCodeDetailsLoaded, me);
 			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.houseCodeJobsLoaded, me);			
 			me.resizeControls();
-			me.loadPORequisitions();
+			me.loadPOCapitalRequisitions();
 		},
 		
 		houseCodeDetailsLoaded: function(me, activeId) {		
@@ -1317,14 +1210,14 @@ ii.Class({
 			me.lastSelectedRowIndex = -1;
 			me.houseCodeDetailStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId, me.houseCodeDetailsLoaded, me);
 			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.houseCodeJobsLoaded, me);			
-			me.loadPORequisitions();
+			me.loadPOCapitalRequisitions();
 		},
 		
-		loadPORequisitions: function() {
+		loadPOCapitalRequisitions: function() {
 			var me = this;
 			var statusType = "";
 			
-			if (me.action == "PORequisition" && me.poRequisitionShow)
+			if (me.action == "POCapitalRequisition")
 				statusType = me.statusType.indexSelected == -1 ? 0 : me.statuses[me.statusType.indexSelected].id;
 			else if (me.action == "GeneratePurchaseOrder")
 				statusType = "8";
@@ -1332,17 +1225,17 @@ ii.Class({
 				return;
 					
 			me.setLoadCount();
-			me.poRequisitionStore.reset();
-			me.poRequisitionStore.fetch("poRequisitionId:0"
+			me.poCapitalRequisitionStore.reset();
+			me.poCapitalRequisitionStore.fetch("poCapitalRequisitionId:0"
 				+ ",houseCodeId:" + parent.fin.appUI.houseCodeId
 				+ ",statusType:" + statusType
-				, me.poRequisitionsLoaded
+				, me.poCapitalRequisitionsLoaded
 				, me);
 		},
 		
-		poRequisitionsLoaded: function(me, activeId) {
+		poCapitalRequisitionsLoaded: function(me, activeId) {
 				
-			me.requisitionGrid.setData(me.poRequisitions);			
+			me.capitalRequisitionGrid.setData(me.poCapitalRequisitions);			
 			me.checkLoadCount();
 		},
 		
@@ -1357,36 +1250,26 @@ ii.Class({
 		},
 		
 		poItemsLoaded: function(me, activeId) {
-			me.total = 0;
-			
+
 			for (var index = 0; index < me.items.length; index++) {
 				var found = false;
-				for (var iIndex = 0; iIndex < me.poRequisitionDetails.length; iIndex++) {
-					if (me.items[index].number != me.poRequisitionDetails[iIndex].number) {
+				for (var iIndex = 0; iIndex < me.poCapitalRequisitionItems.length; iIndex++) {
+					if (me.items[index].number != me.poCapitalRequisitionItems[iIndex].number) {
 						me.items[index].id = 0;
 					}
-					else if (me.items[index].number == me.poRequisitionDetails[iIndex].number) {
-						me.items[index].id = me.poRequisitionDetails[iIndex].id;
+					else if (me.items[index].number == me.poCapitalRequisitionItems[iIndex].number) {
+						me.items[index].id = me.poCapitalRequisitionItems[iIndex].id;
 						found = true; 
 						break;
 					}	
 				}
 				if (!found) {
-					me.poRequisitionDetails.push(me.items[index]);
+					me.poCapitalRequisitionItems.push(me.items[index]);
 				}
 			}
-						
-			me.itemGrid.setData(me.poRequisitionDetails);
-			me.itemReadOnlyGrid.setData(me.poRequisitionDetails);
-			
-			for (var index = 0; index < me.itemGrid.data.length; index++) {
-				if ($("#selectInputCheck" + index)[0].checked) {
-					if (me.itemGrid.data[index].quantity != "" && !isNaN(me.itemGrid.data[index].quantity) && me.itemGrid.data[index].price != undefined)
-						me.total = me.total + (me.itemGrid.data[index].quantity * me.itemGrid.data[index].price)
-				}
-			}
-			
-			$("#spnTotal").html(me.total.toFixed(2));
+		
+			me.itemGrid.setData(me.poCapitalRequisitionItems);
+			me.itemReadOnlyGrid.setData(me.poCapitalRequisitionItems);
 			$("#popupLoading").hide();
 		},
 		
@@ -1407,16 +1290,16 @@ ii.Class({
 			});
 			var me = this;
 			var index = args.index;
-			var item = me.requisitionGrid.data[index];			
+			var item = me.capitalRequisitionGrid.data[index];			
 
 			if (item == undefined) 
 				return;
 			
 			me.lastSelectedRowIndex = index;
-			me.poRequisitionId = me.requisitionGrid.data[index].id;
+			me.poCapitalRequisitionId = me.capitalRequisitionGrid.data[index].id;
 			me.status = "";
 
-			if (me.action == "PORequisition") {
+			if (me.action == "POCapitalRequisition") {
 				me.requestorName.setValue(item.requestorName);
 				me.requestorEmail.setValue(item.requestorEmail);
 				me.requestedDate.setValue(item.requestedDate);
@@ -1435,31 +1318,24 @@ ii.Class({
 				me.vendorContactName.setValue(item.vendorContactName);
 				me.vendorPhone.setValue(item.vendorPhoneNumber);
 				me.vendorEmail.setValue(item.vendorEmail);
-				me.reasonForRequest.setValue(item.reasonForRequest);
+				me.reasonForRequest.setValue(item.reasonForRequest);					
 				
-				if (item.urgencyDate == "" || item.urgencyDate == "1/1/1900 12:00:00 AM") {
-					me.urgencyDate.setValue("");
-	                $("#LabelUrgencyDate").html("<span id='nonRequiredFieldIndicator'>Urgency Date:</span>");
-	            }                   
-	            else {                
-	                me.urgencyDate.setValue(item.urgencyDate);
-	                $("#LabelUrgencyDate").html("<span class='requiredFieldIndicator'>&#149;</span>Urgency Date:");
-	            }
+				if (item.funding == "Capital") 
+					$('#FundingCapital').attr('checked', true);
+				else if (item.funding == "Direct Reimbursement") 
+					$('#FundingDirectReimbursement').attr('checked', true);
 					
-				if (item.requisitionType == "Special Supply") 
-					$('#RequisitionTypeSpecialSupply').attr('checked', true);
-				else if (item.requisitionType == "Off Contract") 
-					$('#RequisitionTypeOffContract').attr('checked', true);
+				if (item.businessType == "New Business") 
+					$('#BusinessTypeNewBusiness').attr('checked', true);
+				else if (item.businessType == "New Construction") 
+					$('#BusinessTypeNewConstruction').attr('checked', true);
+				else if (item.businessType == "Existing Business") 
+					$('#BusinessTypeExistingBusiness').attr('checked', true);
 				
-				if (item.urgency == "Urgent") 
-					$('#UrgencyUrgent').attr('checked', true);
-				else if (item.urgency == "Not Urgent") 
-					$('#UrgencyNotUrgent').attr('checked', true);
-				
-				if (item.lifeSpan == "Permanent") 
-					$('#LifeSpanPermanent').attr('checked', true);
-				else if (item.lifeSpan == "Temporary") 
-					$('#LifeSpanTemporary').attr('checked', true);
+				if (item.budgeting == "Budgeted") 
+					$('#BudgetingBudgeted').attr('checked', true);
+				else if (item.budgeting == "Unbudgeted") 
+					$('#BudgetingUnbudgeted').attr('checked', true);
 				
 				me.vendor.setValue(item.vendorTitle);
 				
@@ -1483,12 +1359,12 @@ ii.Class({
 				me.shippingPhone.setValue(item.shipToPhone);
 				me.shippingFax.setValue(item.shipToFax);	
 	
-				if (me.requisitionGrid.data[index].statusType == 10 || me.requisitionGrid.data[index].statusType == 1) {
-					if (me.requisitionGrid.data[index].statusType == 10) {
+				if (me.capitalRequisitionGrid.data[index].statusType == 10 || me.capitalRequisitionGrid.data[index].statusType == 1) {
+					if (me.capitalRequisitionGrid.data[index].statusType == 10) {
 						$("#AnchorResendRequisition").show();
 						$("#AnchorSendRequisition").hide();
 					}
-					if (me.requisitionGrid.data[index].statusType == 1) {
+					if (me.capitalRequisitionGrid.data[index].statusType == 1) {
 						$("#AnchorResendRequisition").hide();
 						$("#AnchorSendRequisition").show();
 					}
@@ -1505,7 +1381,7 @@ ii.Class({
 					me.setReadOnly(false);															
 				}
 				else {
-					if (me.requisitionGrid.data[index].statusType == 2) {
+					if (me.capitalRequisitionGrid.data[index].statusType == 2) {
 						$("#AnchorResendRequisition").show();
 						$("#AnchorSendRequisition").hide();
 						$("#AnchorCancelRequisition").show();
@@ -1530,36 +1406,23 @@ ii.Class({
 				me.loadCount++;
 				me.modified(false);	
 				me.setLoadCount();
-				me.poRequisitionDetailStore.reset();
-				me.poRequisitionDocumentStore.reset();
-				me.poRequisitionDetailStore.fetch("userId:[user],poRequisitionId:" + me.poRequisitionId, me.poRequisitonDetailsLoaded, me);
-				me.poRequisitionDocumentStore.fetch("userId:[user],poRequisitionId:" + me.poRequisitionId, me.poRequisitionDocumentsLoaded, me);
+				me.poCapitalRequisitionItemStore.reset();
+				me.poCapitalRequisitionDocumentStore.reset();
+				me.poCapitalRequisitionItemStore.fetch("userId:[user],poCapitalRequisitionId:" + me.poCapitalRequisitionId, me.poCapitalRequisitonItemsLoaded, me);
+				me.poCapitalRequisitionDocumentStore.fetch("userId:[user],poCapitalRequisitionId:" + me.poCapitalRequisitionId, me.poCapitalRequisitionDocumentsLoaded, me);
 			}
 		},
 		
-		poRequisitonDetailsLoaded: function(me, activeId) {
-			var item;
-			me.total = 0;
-			
-			if (me.poRequisitionDetails.length > 0) {
-				
-				for (var iIndex = 0; iIndex < me.poRequisitionDetails.length; iIndex++) {
-					if (me.poRequisitionDetails[iIndex].quantity != "" && !isNaN(me.poRequisitionDetails[iIndex].quantity) && me.poRequisitionDetails[iIndex].price != undefined) {
-						me.total = me.total + (me.poRequisitionDetails[iIndex].quantity * me.poRequisitionDetails[iIndex].price)
-					}
-				}
-				
-				$("#spnTotal").html(me.total.toFixed(2));
-			}		
-							
-			me.itemGrid.setData(me.poRequisitionDetails);
-			me.itemReadOnlyGrid.setData(me.poRequisitionDetails);
+		poCapitalRequisitonItemsLoaded: function(me, activeId) {
+
+			me.itemGrid.setData(me.poCapitalRequisitionItems);
+			me.itemReadOnlyGrid.setData(me.poCapitalRequisitionItems);
 			me.checkLoadCount();
 		},
 		
-		poRequisitionDocumentsLoaded: function(me, activeId) {
+		poCapitalRequisitionDocumentsLoaded: function(me, activeId) {
 
-			me.documentGrid.setData(me.poRequisitionDocuments);
+			me.documentGrid.setData(me.poCapitalRequisitionDocuments);
 			me.documentGrid.setHeight(100);
 			me.checkLoadCount();
 		},
@@ -1625,10 +1488,10 @@ ii.Class({
 				me.account.setData(me.glAccounts);
 				me.category.fetchingData();
 				me.catalog.fetchingData();
-				me.poRequisitionDetailStore.reset();
+				me.poCapitalRequisitionItemStore.reset();
 				me.accountStore.reset();
 				me.catalogStore.reset();
-				me.poRequisitionDetailStore.fetch("userId:[user],poRequisitionId:" + me.poRequisitionId, me.poRequisitonDetailsLoaded, me);				
+				me.poCapitalRequisitionItemStore.fetch("userId:[user],poCapitalRequisitionId:" + me.poCapitalRequisitionId, me.poCapitalRequisitonItemsLoaded, me);				
 				me.accountStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.categoriesLoaded, me);				
 				me.catalogStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.catalogsLoaded, me);
 			}
@@ -1698,23 +1561,16 @@ ii.Class({
 				me.catalogId = 0;
 		},
 		
-		validatePORequisition: function() {
+		validatePOCapitalRequisition: function() {
 			var me = this;
 			var valid = true;			
 			
-			me.validator.forceBlur();
+			me.validator.forceBlur();			
 			
 			if (me.wizardCount == 1) {
 				
-				if (me.status == "NewPORequisition" || ($("input:radio[name='Urgency']:checked").val() == "Urgent" && (me.urgencyDate.lastBlurValue == "" || !(ui.cmn.text.validate.generic(me.urgencyDate.lastBlurValue, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))))
+				if (me.status == "NewPOCapitalRequisition")
 					valid = me.validator.queryValidity(true);
-					
-				if ($("input:radio[name='Urgency']:checked").val() == "Not Urgent" || $('input:radio[name="Urgency"]:checked').length == 0) {
-					var urgencyDate = me.urgencyDate.lastBlurValue;
-                    me.urgencyDate.resetValidation(true);
-					if (urgencyDate == "" || !(ui.cmn.text.validate.generic(urgencyDate, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
-						me.urgencyDate.setValue("");
-                }
 					
 				if (!me.requestorEmail.valid
 					|| !me.requestedDate.valid
@@ -1729,21 +1585,20 @@ ii.Class({
 					|| !me.vendorPhone.valid
 					|| !me.vendorEmail.valid
 					|| !me.reasonForRequest.valid
-					|| ($("input:radio[name='Urgency']:checked").val() == "Urgent") && (!me.urgencyDate.valid)		
 					) {
 					alert("In order to continue, the errors on the page must be corrected.");	
 					return false;
 				}
-				else if ($('input:radio[name="RequisitionType"]:checked').length == 0) {
-					alert("Please select Requisition Type.");	
+				else if ($('input:radio[name="Funding"]:checked').length == 0) {
+					alert("Please select Funding.");	
 					return false;
 				}
-				else if ($('input:radio[name="Urgency"]:checked').length == 0) {
-					alert("Please select Urgency.");	
+				else if ($('input:radio[name="BusinessType"]:checked').length == 0) {
+					alert("Please select Business Type.");	
 					return false;
 				}
-				else if ($('input:radio[name="LifeSpan"]:checked').length == 0) {
-					alert("Please select Life Span.");	
+				else if ($('input:radio[name="Budgeting"]:checked').length == 0) {
+					alert("Please select Budgeting.");	
 					return false;
 				}
 				else
@@ -1769,9 +1624,8 @@ ii.Class({
 					return true;
 			}
 			else if (me.wizardCount == 3) {
-					
 				valid = me.validator.queryValidity(true);
-							
+								
 				if (!me.requestorEmail.valid
 					|| !me.shippingAddress1.valid
 					|| !me.shippingCity.valid
@@ -1785,7 +1639,7 @@ ii.Class({
 			}			
 		},
 		
-		actionPORequisitionItem: function() {
+		actionPOCapitalRequisitionItem: function() {
 			var me = this;
 
 			$("#AnchorNew").show();
@@ -1798,13 +1652,13 @@ ii.Class({
 			$("#LabelStatus").show();
 			$("#InputTextStatus").show();			
 			$("#SearchButtonStatus").show();
-			me.action = "PORequisition";
-			me.loadPORequisitions();
+			me.action = "POCapitalRequisition";
+			me.loadPOCapitalRequisitions();
 			me.setStatus("Loaded");
 			me.modified(false);
 		},
 		
-		actionGeneratePurchaseOrderFromPORequisition: function() {
+		actionGeneratePurchaseOrderFromPOCapitalRequisition: function() {
 			var me = this;
 
 			$("#AnchorNew").hide();
@@ -1819,7 +1673,7 @@ ii.Class({
 			$("#AnchorGeneratePurchaseOrder").show();
 			$("#AnchorJDEEntry").show();
 			me.action = "GeneratePurchaseOrder";
-			me.loadPORequisitions();
+			me.loadPOCapitalRequisitions();
 			me.setStatus("Loaded");
 			me.modified(false);
 		},
@@ -1828,13 +1682,13 @@ ii.Class({
 			var me = this;
 
 			if (parent.fin.appUI.houseCodeId == 0) {
-				alert("Please select the House Code before adding the new PO Requisition.");
+				alert("Please select the House Code before adding the new PO Capital Requisition.");
 				return true;
 			}
 
 			me.anchorSave.display(ui.cmn.behaviorStates.enabled);
 			me.setReadOnly(false);
-			me.requisitionGrid.body.deselectAll();
+			me.capitalRequisitionGrid.body.deselectAll();
 			var index = me.itemGrid.activeRowIndex;
 			if (index >= 0)
 				me.itemGrid.body.deselect(index, true);		
@@ -1857,10 +1711,9 @@ ii.Class({
 			me.vendorPhone.setValue("");
 			me.vendorEmail.setValue("");
 			me.reasonForRequest.setValue("");
-			me.urgencyDate.setValue("");
-			$('input[name="RequisitionType"]').attr('checked', false);
-			$('input[name="Urgency"]').attr('checked', false);
-			$('input[name="LifeSpan"]').attr('checked', false);
+			$('input[name="Funding"]').attr('checked', false);
+			$('input[name="BusinessType"]').attr('checked', false);
+			$('input[name="Budgeting"]').attr('checked', false);
 			
 			me.vendor.setValue("");
 			me.searchItem.setValue("");
@@ -1887,12 +1740,10 @@ ii.Class({
 			$("#imgEdit").show();
 			$("#imgRemove").show();
 			loadPopup();
-			me.poRequisitionDetailStore.reset();
-			me.poRequisitionDocumentStore.reset();
-			me.poRequisitionId = 0;
-			me.total = 0;
-			$("#spnTotal").html(me.total.toFixed(2));
-			me.status = "NewPORequisition";
+			me.poCapitalRequisitionItemStore.reset();
+			me.poCapitalRequisitionDocumentStore.reset();
+			me.poCapitalRequisitionId = 0;
+			me.status = "NewPOCapitalRequisition";
 			me.wizardCount = 1;			
 			me.modified(false);
 			me.setStatus("Loaded");			
@@ -1902,30 +1753,21 @@ ii.Class({
 		actionEditItem: function() {
 			var me = this;
 			
-			if (me.requisitionGrid.activeRowIndex == -1)
-				return true;			
-			
-			me.total = 0;
+			if (me.capitalRequisitionGrid.activeRowIndex == -1)
+				return true;
+
 			loadPopup();
 			$("#popupMessageToUser").text("Loading");
 			$("#popupLoading").show();
 
-			if (me.requisitionGrid.data[me.lastSelectedRowIndex] != undefined) {
+			if (me.capitalRequisitionGrid.data[me.lastSelectedRowIndex] != undefined) {
 				me.vendorStore.reset();
-				me.vendorStore.fetch("searchValue:" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle + ",vendorStatus:-1,userId:[user]", me.vendorsLoad, me);
+				me.vendorStore.fetch("searchValue:" + me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].vendorTitle + ",vendorStatus:-1,userId:[user]", me.vendorsLoad, me);
 			}			
 
-			me.poRequisitionId = me.requisitionGrid.data[me.lastSelectedRowIndex].id;
-			me.itemGrid.setData(me.poRequisitionDetails);
-			
-			for (var iIndex = 0; iIndex < me.poRequisitionDetails.length; iIndex++) {
-					if (me.poRequisitionDetails[iIndex].quantity != "" && !isNaN(me.poRequisitionDetails[iIndex].quantity) && me.poRequisitionDetails[iIndex].price != undefined && me.poRequisitionDetails[iIndex].itemSelect) {
-						me.total = me.total + (me.poRequisitionDetails[iIndex].quantity * me.poRequisitionDetails[iIndex].price)
-				}
-			}
-			
-			$("#spnTotal").html(me.total.toFixed(2));
-			me.status = "EditPORequisition";			
+			me.poCapitalRequisitionId = me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].id;
+			me.itemGrid.setData(me.poCapitalRequisitionItems);
+			me.status = "EditPOCapitalRequisition";			
 			me.wizardCount = 1;
 			me.actionShowWizard();
 			me.modified(false);
@@ -1935,7 +1777,7 @@ ii.Class({
 		actionNextItem: function() {
 			var me = this;								
 			
-			if (!me.validatePORequisition()) {
+			if (!me.validatePOCapitalRequisition()) {
 				return;
 			}
 			
@@ -1983,7 +1825,7 @@ ii.Class({
 					me.anchorNext.display(ui.cmn.behaviorStates.disabled);
 					me.anchorBack.display(ui.cmn.behaviorStates.enabled);
 					
-					if (me.status == "NewPORequisition" || me.requisitionGrid.data[me.lastSelectedRowIndex].statusType == 10 || me.requisitionGrid.data[me.lastSelectedRowIndex].statusType == 1)
+					if (me.status == "NewPOCapitalRequisition" || me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].statusType == 10 || me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].statusType == 1)
 						me.anchorSave.display(ui.cmn.behaviorStates.enabled);
 					else
 						me.anchorSave.display(ui.cmn.behaviorStates.disabled);
@@ -2002,15 +1844,15 @@ ii.Class({
 				return;
 				
 			disablePopup();
-			if (me.requisitionGrid.activeRowIndex >= 0)
-				me.poRequisitionId = me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].id;
+			if (me.capitalRequisitionGrid.activeRowIndex >= 0)
+				me.poCapitalRequisitionId = me.capitalRequisitionGrid.data[me.capitalRequisitionGrid.activeRowIndex].id;
 			
 			me.itemGrid.body.deselectAll();
 			me.wizardCount = 0;	
 			me.status = "";
 			me.setStatus("Loaded");
 		},
-				
+		
 		actionAttachItem: function() {
 			var me = this;
 
@@ -2030,7 +1872,7 @@ ii.Class({
 				$("#uploadPopup").fadeIn("slow");
 				$("#iFrameUpload")[0].contentWindow.document.getElementById("FormReset").click();
 				me.anchorUpload.display(ui.cmn.behaviorStates.disabled);
-				me.documentTitle.setValue(me.poRequisitionDocuments[index].title);
+				me.documentTitle.setValue(me.poCapitalRequisitionDocuments[index].title);
 				me.documentTitle.resizeText();
 			}
 		},
@@ -2065,15 +1907,15 @@ ii.Class({
 					}
 					else {
 						if (me.documentGrid.activeRowIndex == -1) {
-							var item = new fin.pur.poRequisition.PORequisitionDocument(0, me.documentTitle.getValue(), me.fileName, tempFileName);
-							me.poRequisitionDocuments.push(item);
-							me.documentGrid.setData(me.poRequisitionDocuments);
+							var item = new fin.pur.poCapitalRequisition.POCapitalRequisitionDocument(0, me.documentTitle.getValue(), me.fileName, tempFileName);
+							me.poCapitalRequisitionDocuments.push(item);
+							me.documentGrid.setData(me.poCapitalRequisitionDocuments);
 						}
 						else {
 							var index = me.documentGrid.activeRowIndex;
-							me.poRequisitionDocuments[index].title = me.documentTitle.getValue();
-							me.poRequisitionDocuments[index].fileName = me.fileName;
-							me.poRequisitionDocuments[index].tempFileName = tempFileName;
+							me.poCapitalRequisitionDocuments[index].title = me.documentTitle.getValue();
+							me.poCapitalRequisitionDocuments[index].fileName = me.fileName;
+							me.poCapitalRequisitionDocuments[index].tempFileName = tempFileName;
 							me.documentGrid.body.renderRow(index, index);
 						}
 					}
@@ -2092,13 +1934,13 @@ ii.Class({
 			var index = me.documentGrid.activeRowIndex;
 
 			if (index != -1) {
-				if (me.poRequisitionDocuments[index].id > 0) {
+				if (me.poCapitalRequisitionDocuments[index].id > 0) {
 					me.status = "DeleteDocument";
 					$("#popupMessageToUser").text("Removing");
 					me.actionSaveItem();
 				}
-				me.poRequisitionDocuments.splice(index, 1);
-				me.documentGrid.setData(me.poRequisitionDocuments);
+				me.poCapitalRequisitionDocuments.splice(index, 1);
+				me.documentGrid.setData(me.poCapitalRequisitionDocuments);
 			}
 		},
 
@@ -2107,14 +1949,14 @@ ii.Class({
 			var index = me.documentGrid.activeRowIndex;
 				
 			if (index != -1) {
-				if (me.poRequisitionDocuments[index].id > 0) {
+				if (me.poCapitalRequisitionDocuments[index].id > 0) {
 					me.setStatus("Downloading");
 					$("#popupMessageToUser").text("Downloading");
 					$("#popupLoading").fadeIn("slow");
 					me.fileNameStore.reset();
-					me.fileNameStore.fetch("userId:[user],type:poRequisitionDocument"
-						+ ",id:" + me.poRequisitionDocuments[index].id
-						+ ",fileName:" + me.poRequisitionDocuments[index].fileName
+					me.fileNameStore.fetch("userId:[user],type:poCapitalRequisitionDocument"
+						+ ",id:" + me.poCapitalRequisitionDocuments[index].id
+						+ ",fileName:" + me.poCapitalRequisitionDocuments[index].fileName
 						, me.fileNamesLoaded
 						, me
 						);
@@ -2139,7 +1981,7 @@ ii.Class({
 		actionSendRequisitionItem: function() {
 			var me = this;
 			
-			if (me.requisitionGrid.activeRowIndex == -1)
+			if (me.capitalRequisitionGrid.activeRowIndex == -1)
 				return true;
 			
 			$("#messageToUser").text("Sending Requisition");
@@ -2150,7 +1992,7 @@ ii.Class({
 		actionResendRequisitionItem: function() {
 			var me = this;
 			
-			if (me.requisitionGrid.activeRowIndex == -1)
+			if (me.capitalRequisitionGrid.activeRowIndex == -1)
 				return true;
 
 			$("#messageToUser").text("Resending Requisition");
@@ -2161,7 +2003,7 @@ ii.Class({
 		actionCancelRequisitionItem: function() {
             var me = this;      
             
-            if (me.requisitionGrid.activeRowIndex == -1)
+            if (me.capitalRequisitionGrid.activeRowIndex == -1)
                 return true;
                 
             $("#messageToUser").text("Cancelling Requisition");
@@ -2172,7 +2014,7 @@ ii.Class({
 		actionGeneratePurchaseOrderItem: function() {
 			var me = this;
 			
-			if (me.requisitionGrid.activeRowIndex == -1)
+			if (me.capitalRequisitionGrid.activeRowIndex == -1)
 				return true;
 
 			$("#messageToUser").text("Generating Purchase Order");
@@ -2181,27 +2023,27 @@ ii.Class({
 		},
 		
 		actionJDEEntryItem: function() {
-			var me = this;
-			
-			if (me.requisitionGrid.activeRowIndex == -1)
-				return true;
-
-			$("#messageToUser").text("Saving JDE Entry");
-			me.status = "JDEEntry";
-			me.actionSaveItem();
-		},
+            var me = this;
+            
+            if (me.capitalRequisitionGrid.activeRowIndex == -1)
+                return true;
+ 
+            $("#messageToUser").text("Saving JDE Entry");
+            me.status = "JDEEntry";
+            me.actionSaveItem();
+        },
 		
 		actionSaveItem: function() {
 			var args = ii.args(arguments,{});
 			var me = this;			
 			var item = [];
-			var index = me.requisitionGrid.activeRowIndex;
+			var index = me.capitalRequisitionGrid.activeRowIndex;
 
-			if (me.status == "NewPORequisition" || me.status == "EditPORequisition") {
+			if (me.status == "NewPOCapitalRequisition" || me.status == "EditPOCapitalRequisition") {
 				me.validator.forceBlur();
 	
 				// Check to see if the data entered is valid
-				if (!me.validatePORequisition()) {
+				if (!me.validatePOCapitalRequisition()) {
 					alert("In order to save, the errors on the page must be corrected.");
 					return false;
 				}
@@ -2209,10 +2051,10 @@ ii.Class({
 				disablePopup();
 				me.itemGrid.body.deselectAll();
 
-				item = new fin.pur.poRequisition.PORequisition(
-					me.poRequisitionId
-					, (me.status == "NewPORequisition" ? 1 : me.requisitionGrid.data[index].statusType)
-					, (me.status == "NewPORequisition" ? parent.fin.appUI.houseCodeId : me.requisitionGrid.data[index].houseCode)
+				item = new fin.pur.poCapitalRequisition.POCapitalRequisition(
+					me.poCapitalRequisitionId
+					, (me.status == "NewPOCapitalRequisition" ? 1 : me.capitalRequisitionGrid.data[index].statusType)
+					, (me.status == "NewPOCapitalRequisition" ? parent.fin.appUI.houseCodeId : me.capitalRequisitionGrid.data[index].houseCode)
 					, (me.shippingJob.indexSelected == -1 ? 0 : me.houseCodeJobs[me.shippingJob.indexSelected].id)
 					, me.shippingAddress1.getValue()
 					, me.shippingAddress2.getValue()
@@ -2234,28 +2076,27 @@ ii.Class({
 					, me.vendorContactName.getValue()
 					, me.vendorPhone.getValue()
 					, me.vendorEmail.getValue()
-					, me.reasonForRequest.getValue()
-					, $("input[name='RequisitionType']:checked").val()
-					, $("input[name='Urgency']:checked").val()
-					, me.urgencyDate.lastBlurValue
-					, $("input[name='LifeSpan']:checked").val()
+					, me.reasonForRequest.getValue()					
+					, $("input[name='Funding']:checked").val()
+					, $("input[name='BusinessType']:checked").val()
+					, $("input[name='Budgeting']:checked").val()
 					, ""
 					, "false"
 					);
 
 				$("#messageToUser").text("Saving");
-			}
+			}			
 			else if (me.status == "SendRequisition" || me.status == "ResendRequisition") {
-				item = me.requisitionGrid.data[index];
+				item = me.capitalRequisitionGrid.data[index];
 				item.statusType = 2;
 			}
 			else if (me.status == "CancelRequisition") {
-                item = me.requisitionGrid.data[index];
+                item = me.capitalRequisitionGrid.data[index];
                 item.statusType = 6;                
             }
-			else if (me.status == "GeneratePurchaseOrder" || me.status == "JDEEntry") {
-				item = me.requisitionGrid.data[index];
-			}			
+			else if (me.status == "GeneratePurchaseOrder"  || me.status == "JDEEntry") {
+				item = me.capitalRequisitionGrid.data[index];
+			}
 					
 			var xml = me.saveXmlBuildPORequisition(item);
 			
@@ -2281,14 +2122,14 @@ ii.Class({
 		
 		saveXmlBuildPORequisition: function() {
 			var args = ii.args(arguments,{
-				item: {type: fin.pur.poRequisition.PORequisition}
+				item: {type: fin.pur.poCapitalRequisition.POCapitalRequisition}
 			});			
 			var me = this;
 			var item = args.item;
 			var xml = "";
 
-			if (me.status == "NewPORequisition" || me.status == "EditPORequisition") {
-				xml += '<purPORequisition';
+			if (me.status == "NewPOCapitalRequisition" || me.status == "EditPOCapitalRequisition") {
+				xml += '<purPOCapitalRequisition';
 				xml += ' id="' + item.id + '"';
 				xml += ' houseCodeId="' + item.houseCode + '"';
 				xml += ' houseCodeJobId="' + item.houseCodeJob + '"';
@@ -2305,11 +2146,10 @@ ii.Class({
 				xml += ' vendorContactName="' + ui.cmn.text.xml.encode(item.vendorContactName) + '"';
 				xml += ' vendorPhoneNumber="' + fin.cmn.text.mask.phone(item.vendorPhoneNumber, true) + '"';
 				xml += ' vendorEmail="' + item.vendorEmail + '"';
-				xml += ' reasonForRequest="' + ui.cmn.text.xml.encode(item.reasonForRequest) + '"';
-				xml += ' requisitionType="' + item.requisitionType + '"';
-				xml += ' urgency="' + item.urgency + '"';
-				xml += ' urgencyDate="' + item.urgencyDate + '"';
-				xml += ' lifeSpan="' + item.lifeSpan + '"';
+				xml += ' reasonForRequest="' + ui.cmn.text.xml.encode(item.reasonForRequest) + '"';				
+				xml += ' funding="' + item.funding + '"';
+				xml += ' businessType="' + item.businessType + '"';
+				xml += ' budgeting="' + item.budgeting + '"';
 				xml += ' chargeToPeriod="' + item.chargeToPeriod + '"';
 				xml += ' shipToAddress1="' + ui.cmn.text.xml.encode(item.shipToAddress1) + '"';
 				xml += ' shipToAddress2="' + ui.cmn.text.xml.encode(item.shipToAddress2) + '"';
@@ -2320,22 +2160,22 @@ ii.Class({
 				xml += ' shipToFax="' + fin.cmn.text.mask.phone(item.shipToFax, true) + '"';
 				xml += '/>';
 
-				for (var index = me.poRequisitionDetails.length - 1; index >= 0; index--) {
+				for (var index = me.poCapitalRequisitionItems.length - 1; index >= 0; index--) {
 					if ($("#selectInputCheck" + index)[0].checked) {
-						me.poRequisitionDetails[index].itemSelect = true;
-						me.poRequisitionDetails[index].modified = true;
-					}	
+						me.poCapitalRequisitionItems[index].itemSelect = true;
+						me.poCapitalRequisitionItems[index].modified = true;
+					}
+						
 					else
-						me.poRequisitionDetails.splice(index, 1);
+						me.poCapitalRequisitionItems.splice(index, 1);
 				}
 
 				for (var index = 0; index < me.itemGrid.data.length; index++) {
-					xml += '<purPORequisitionDetail';
-					xml += ' id="' + (me.status == "NewPORequisition" ? "0" : me.itemGrid.data[index].id) + '"';
-					xml += ' poRequisitionId="' + me.poRequisitionId + '"';
+					xml += '<purPOCapitalRequisitionItem';
+					xml += ' id="' + (me.status == "NewPOCapitalRequisition" ? "0" : me.itemGrid.data[index].id) + '"';
+					xml += ' poCapitalRequisitionId="' + me.poCapitalRequisitionId + '"';
 					xml += ' number="' + me.itemGrid.data[index].number + '"';
 					xml += ' description="' + me.itemGrid.data[index].description + '"';
-					xml += ' alternateDescription="' + me.itemGrid.data[index].alternateDescription + '"';
 					xml += ' account="' + me.itemGrid.data[index].account.id + '"';
 					xml += ' uom="' + me.itemGrid.data[index].unit + '"';
 					xml += ' manufactured="' + me.itemGrid.data[index].manufactured + '"';
@@ -2344,21 +2184,21 @@ ii.Class({
 					xml += '/>';
 				}
 
-				for (var index = 0; index < me.poRequisitionDocuments.length; index++) {
-					if (me.poRequisitionDocuments[index].tempFileName != "") {
-						xml += '<purPORequisitionDocument';
-						xml += ' id="' + me.poRequisitionDocuments[index].id + '"';;
-						xml += ' title="' + ui.cmn.text.xml.encode(me.poRequisitionDocuments[index].title) + '"';
+				for (var index = 0; index < me.poCapitalRequisitionDocuments.length; index++) {
+					if (me.poCapitalRequisitionDocuments[index].tempFileName != "") {
+						xml += '<purPOCapitalRequisitionDocument';
+						xml += ' id="' + me.poCapitalRequisitionDocuments[index].id + '"';;
+						xml += ' title="' + ui.cmn.text.xml.encode(me.poCapitalRequisitionDocuments[index].title) + '"';
 						xml += ' description=""';				
-						xml += ' fileName="' + ui.cmn.text.xml.encode(me.poRequisitionDocuments[index].fileName) + '"';
-						xml += ' tempFileName="' + ui.cmn.text.xml.encode(me.poRequisitionDocuments[index].tempFileName) + '"';
+						xml += ' fileName="' + ui.cmn.text.xml.encode(me.poCapitalRequisitionDocuments[index].fileName) + '"';
+						xml += ' tempFileName="' + ui.cmn.text.xml.encode(me.poCapitalRequisitionDocuments[index].tempFileName) + '"';
 						xml += '/>';
 					}
 				}
 			}
-			else if (me.status == "SendRequisition" || me.status == "ResendRequisition") {
-				xml += '<purPORequisitionEmailNotification';
-				xml += ' id="' + me.poRequisitionId + '"';
+			if (me.status == "SendRequisition" || me.status == "ResendRequisition") {
+				xml += '<purPOCapitalRequisitionEmailNotification';
+				xml += ' id="' + me.poCapitalRequisitionId + '"';
 				xml += ' statusType="2"';
 				xml += ' houseCodeTitle="' + ui.cmn.text.xml.encode(me.company.getValue()) + '"';
 				xml += ' houseCodeJobTitle="' + me.shippingJob.lastBlurValue + '"';
@@ -2382,42 +2222,39 @@ ii.Class({
 				xml += ' vendorContactName="' + ui.cmn.text.xml.encode(item.vendorContactName) + '"';
 				xml += ' vendorPhoneNumber="' + fin.cmn.text.mask.phone(item.vendorPhoneNumber, true) + '"';
 				xml += ' vendorEmail="' + item.vendorEmail + '"';
-				xml += ' reasonForRequest="' + ui.cmn.text.xml.encode(item.reasonForRequest) + '"';
-				xml += ' requisitionType="' + item.requisitionType + '"';
-				xml += ' urgency="' + item.urgency + '"';
-				xml += ' urgencyDate="' + item.urgencyDate + '"';
-				xml += ' lifeSpan="' + item.lifeSpan + '"';
+				xml += ' reasonForRequest="' + ui.cmn.text.xml.encode(item.reasonForRequest) + '"';				
+				xml += ' funding="' + item.funding + '"';
+				xml += ' businessType="' + item.businessType + '"';
+				xml += ' budgeting="' + item.budgeting + '"';
 				xml += ' chargeToPeriod=""';
 				xml += ' action="' + me.status + '"';
 				xml += ' jdeCompleted="0"';
-				xml += ' total="' + me.total.toFixed(2) + '"';
 				xml += '/>';
 			}
 			else if (me.status == "DeleteDocument") {
-				xml += '<purPORequisitionDocumentDelete';
-				xml += ' id="' + me.poRequisitionDocuments[me.documentGrid.activeRowIndex].id + '"';			
+				xml += '<purPOCapitalRequisitionDocumentDelete';
+				xml += ' id="' + me.poCapitalRequisitionDocuments[me.documentGrid.activeRowIndex].id + '"';			
 				xml += '/>';
-			}
+			}			
 			else if (me.status == "CancelRequisition") {
-                xml += '<purPORequisitionStatusUpdate';
-                xml += ' id="' + me.requisitionGrid.data[me.lastSelectedRowIndex].id + '"';
+                xml += '<purPOCapitalRequisitionStatusUpdate';
+                xml += ' id="' + me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].id + '"';
                 xml += ' statusType="6"';
-				xml += ' jdeCompleted="0"';           
+				xml += ' jdeCompleted="0"';            
                 xml += '/>';
             }
 			else if (me.status == "GeneratePurchaseOrder") {
-				xml += '<purPORequisitionToPurchaseOrder';
-				xml += ' id="' + me.poRequisitionId + '"';
+				xml += '<purPOCapitalRequisitionToPurchaseOrder';
+				xml += ' id="' + me.poCapitalRequisitionId + '"';
 				xml += ' houseCodeId="' + item.houseCode + '"';
 				xml += ' vendorTitle="' +  ui.cmn.text.xml.encode(item.vendorTitle) + '"';
-				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
 				xml += '/>';
 			}
 			else if (me.status == "JDEEntry") {
-                xml += '<purPORequisitionStatusUpdate';
-                xml += ' id="' + me.requisitionGrid.data[me.lastSelectedRowIndex].id + '"';
+                xml += '<purPOCapitalRequisitionStatusUpdate';
+                xml += ' id="' + me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].id + '"';
                 xml += ' statusType="9"';
-				xml += ' jdeCompleted="1"';            
+                xml += ' jdeCompleted="1"';            
                 xml += '/>';
             }
 			
@@ -2439,28 +2276,28 @@ ii.Class({
 
 			if (status == "success") {
 				if (me.status == "DeleteDocument") {
-					me.status = "EditPORequisition";
+					me.status = "EditPOCapitalRequisition";
 					me.setStatus("Edit");
 					$("#popupLoading").fadeOut("slow");
 				}
 				else {
 					$(args.xmlNode).find("*").each(function () { 
 						switch (this.tagName) {
-							case "purPORequisition":
-								if (me.status == "NewPORequisition") {
+							case "PurPOCapitalRequisition":
+								if (me.status == "NewPOCapitalRequisition") {
 									item.id = parseInt($(this).attr("id"), 10);
-									me.poRequisitions.push(item);
-									me.requisitionGrid.setData(me.poRequisitions);
-									me.requisitionGrid.body.select(me.poRequisitions.length - 1);
+									me.poCapitalRequisitions.push(item);
+									me.capitalRequisitionGrid.setData(me.poCapitalRequisitions);
+									me.capitalRequisitionGrid.body.select(me.poCapitalRequisitions.length - 1);
 								}
-								else if (me.status == "EditPORequisition") {
-									me.poRequisitions[me.lastSelectedRowIndex] = item;
-									me.requisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
-								}								
+								else if (me.status == "EditPOCapitalRequisition") {
+                                    me.poCapitalRequisitions[me.lastSelectedRowIndex] = item;
+                                    me.capitalRequisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
+                                }								
 								else if (me.status == "SendRequisition" || me.status == "ResendRequisition" || me.status == "CancelRequisition") {
-									me.poRequisitions[me.lastSelectedRowIndex] = item;
-									me.requisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);									
-									me.itemReadOnlyGrid.setData(me.poRequisitionDetails);
+									me.poCapitalRequisitions[me.lastSelectedRowIndex] = item;
+									me.capitalRequisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);									
+									me.itemReadOnlyGrid.setData(me.poCapitalRequisitionItems);
 									
 									if (me.status == "SendRequisition" || me.status == "ResendRequisition")
 										$("#AnchorResendRequisition").show();										
@@ -2483,28 +2320,28 @@ ii.Class({
 									me.setReadOnly(true);
 								}
 								else if (me.status == "GeneratePurchaseOrder" || me.status == "JDEEntry") {
-									me.poRequisitions.splice(me.requisitionGrid.activeRowIndex, 1);
-									me.requisitionGrid.setData(me.poRequisitions);
+									me.poCapitalRequisitions.splice(me.capitalRequisitionGrid.activeRowIndex, 1);
+									me.capitalRequisitionGrid.setData(me.poCapitalRequisitions);
 								}
 								break;
 
-							case "purPORequisitionDetail":
-								for (var index = 0; index < me.poRequisitionDetails.length; index++) {
-									if (me.poRequisitionDetails[index].modified) {
-										if (me.poRequisitionDetails[index].id == 0)
-											me.poRequisitionDetails[index].id = parseInt($(this).attr("id"), 10);
-										me.poRequisitionDetails[index].modified = false;
+							case "purPOCapitalRequisitionItem":
+								for (var index = 0; index < me.poCapitalRequisitionItems.length; index++) {
+									if (me.poCapitalRequisitionItems[index].modified) {
+										if (me.poCapitalRequisitionItems[index].id == 0)
+											me.poCapitalRequisitionItems[index].id = parseInt($(this).attr("id"), 10);
+										me.poCapitalRequisitionItems[index].modified = false;
 										break;
 									}
 								}
 								break;
 
-							case "purPORequisitionDocument":
-								for (var index = 0; index < me.poRequisitionDocuments.length; index++) {
-									if (me.poRequisitionDocuments[index].tempFileName != "") {
-										if (me.poRequisitionDocuments[index].id == 0)
-											me.poRequisitionDocuments[index].id = parseInt($(this).attr("id"), 10);
-										me.poRequisitionDocuments[index].tempFileName = "";
+							case "purPOCapitalRequisitionDocument":
+								for (var index = 0; index < me.poCapitalRequisitionDocuments.length; index++) {
+									if (me.poCapitalRequisitionDocuments[index].tempFileName != "") {
+										if (me.poCapitalRequisitionDocuments[index].id == 0)
+											me.poCapitalRequisitionDocuments[index].id = parseInt($(this).attr("id"), 10);
+										me.poCapitalRequisitionDocuments[index].tempFileName = "";
 										break;
 									}
 								}
@@ -2523,7 +2360,7 @@ ii.Class({
 			}
 			else {	
 				me.setStatus("Error");			
-				alert("[SAVE FAILURE] Error while updating PO Requisition details: " + $(args.xmlNode).attr("message"));				
+				alert("[SAVE FAILURE] Error while updating PO Capital Requisition details: " + $(args.xmlNode).attr("message"));				
 			}
 			
 			if (me.status != "DeleteDocument")
@@ -2582,17 +2419,17 @@ function onFileChange() {
 
 	var fileName = $("#iFrameUpload")[0].contentWindow.document.getElementById("UploadFile").value;
 	fileName = fileName.substring(fileName.lastIndexOf("\\") + 1) ;
-	fin.pur.poRequisitionUi.fileName = fileName;
+	fin.pur.poCapitalRequisitionUi.fileName = fileName;
 
 	if (fileName == "")
-		fin.pur.poRequisitionUi.anchorUpload.display(ui.cmn.behaviorStates.disabled);
+		fin.pur.poCapitalRequisitionUi.anchorUpload.display(ui.cmn.behaviorStates.disabled);
 	else
-		fin.pur.poRequisitionUi.anchorUpload.display(ui.cmn.behaviorStates.enabled);
+		fin.pur.poCapitalRequisitionUi.anchorUpload.display(ui.cmn.behaviorStates.enabled);
 }
 
 function main() {
 
-	fin.pur.poRequisitionUi = new fin.pur.poRequisition.UserInterface();
-	fin.pur.poRequisitionUi.resize();
-	fin.houseCodeSearchUi = fin.pur.poRequisitionUi;
+	fin.pur.poCapitalRequisitionUi = new fin.pur.poCapitalRequisition.UserInterface();
+	fin.pur.poCapitalRequisitionUi.resize();
+	fin.houseCodeSearchUi = fin.pur.poCapitalRequisitionUi;
 }

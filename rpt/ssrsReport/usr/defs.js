@@ -42,15 +42,17 @@ ii.init.register( function() {
 	};
 
 	fin.rpt.ssrs.fiscalYearArgs = {
-		id: {type: Number}
-		, number: {type: Number}
-		, name: {type: String}
+		id: {type: Number, required:false, defaultValue: 0}
+		, number: {type: Number, required:false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
 	};
 
 	fin.rpt.ssrs.fiscalPeriodArgs = {
 		id: {type: Number}
 		, number: {type: Number}
 		, name: {type: String}
+		, title: {type: String}
+		, fscYeaTitle: {type: String}
 	};
 
 	fin.rpt.ssrs.fiscalWeekArgs = {
@@ -75,6 +77,7 @@ ii.init.register( function() {
 		, dataType: {type: String, required: false, defaultValue: ""}
 		, controlType: {type: String, required: false, defaultValue: ""}
 		, defaultValue: {type: String, required: false, defaultValue: ""}
+		, referenceTableName: {type: String, required: false, defaultValue: ""}
 	};
 
 	fin.rpt.ssrs.subscriptionArgs = {
@@ -125,8 +128,8 @@ ii.init.register( function() {
 
 	fin.rpt.ssrs.weekArgs = {
 		id: {type: Number}
-		, brief: {type: String}
-		, title: {type: String}
+		, brief: {type: String, required: false, defaultValue: ""}
+		, title: {type: String, required: false, defaultValue: ""}
 	};
 
 	fin.rpt.ssrs.hourArgs = {
@@ -153,7 +156,156 @@ ii.init.register( function() {
 		id: {type: Number}
 		, title: {type: String}
 	};
-
+	
+	fin.rpt.ssrs.genericTypeArgs = {
+		id: {type: Number, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.shiftArgs = {
+		id: {type: Number, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.weekPeriodArgs = {
+		id: {type: Number, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.fscYearArgs = {
+		id: {type: Number, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.payCodeTypeArgs = {
+		id: {type: Number}
+		, brief: {type: String}
+		, name: {type: String}		
+	};
+	
+	fin.rpt.ssrs.payrollCompanyArgs = {
+		id: {type: Number, defaultValue: 0}
+		, brief: {type: String}
+		, name: {type: String}
+	};
+	
+	fin.rpt.ssrs.employeeStatusArgs = {
+		id: {type: Number, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.fscAccountArgs = {
+		id: {type: Number, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.revInvoiceBatchesArgs = {
+		id: {type: Number, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.statusTypeArgs = {
+		id: {type: Number, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.yearPeriodArgs = {
+		id: {type: Number, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.woStatusArgs = {
+		id: {type: Number, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.payPeriodEndingDateArgs = {
+		id: {type: Number, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.levelArgs = {
+		id: {type: Number, required:false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.excludeOverheadAccountArgs = {
+		id: {type: Number, required:false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.payrollReportTypeArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.reportTypeArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.budgetTypeArgs = {
+		id: {type: String, required: false, defaultValue: ""}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.crothallEmployeeArgs = {
+		id: {type: String, required: false, defaultValue: ""}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.currentWeekArgs = {
+		id: {type: Number, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.commentArgs = {
+		id: {type: String, required: false, defaultValue: ""}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.unionArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.entryMethodArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.hour40ExceptionArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
+	fin.rpt.ssrs.stateTypeArgs = {
+		id: {type: Number}
+		, name: {type: String}
+	};
+	
 }, 2);
 
 ii.Class({
@@ -315,6 +467,256 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.rpt.ssrs.priorityArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.GenericType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.genericTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.Shift",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.shiftArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.WeekPeriod",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.weekPeriodArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.FscYear",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.fscYearArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.PayCodeType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.payCodeTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.PayrollCompany",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.payrollCompanyArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.EmployeeStatus",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.employeeStatusArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.FscAccount",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.fscAccountArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.RevInvoiceBatch",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.revInvoiceBatchesArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.StatusType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.statusTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.YearPeriod",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.yearPeriodArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.WOStatus",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.woStatusArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.PayPeriodEndingDate",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.payPeriodEndingDateArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.Level",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.levelArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.ExcludeOverheadAccount",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.excludeOverheadAccountArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.PayrollReportType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.payrollReportTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.ReportType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.reportTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.BudgetType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.budgetTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.CrothallEmployee",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.crothallEmployeeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.CurrentWeek",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.currentWeekArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.Comment",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.commentArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.Union",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.unionArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.EntryMethod",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.entryMethodArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.Hour40Exception",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.hour40ExceptionArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.StateType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.stateTypeArgs);
 			$.extend(this, args);
 		}
 	}

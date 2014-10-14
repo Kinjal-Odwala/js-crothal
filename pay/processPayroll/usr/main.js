@@ -1,5 +1,3 @@
-ii.config.xmlTimeout = 1200000;
-ii.Import( "ii.krn.sys.ajax" );
 ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.toolbar" );
@@ -10,7 +8,7 @@ ii.Import( "fin.cmn.usr.util" );
 ii.Import( "fin.cmn.usr.ui.core" );
 ii.Import( "fin.cmn.usr.ui.widget" );
 ii.Import( "fin.cmn.usr.defs" );
-ii.Import( "fin.pay.automation.usr.defs" );
+ii.Import( "fin.pay.processPayroll.usr.defs" );
 
 ii.Style( "style", 1 );
 ii.Style( "fin.cmn.usr.common", 2 );
@@ -39,6 +37,9 @@ ii.Class({
 			me.loadCount = 0;
 			me.validateExport = false;
 			me.showDetailReport = false;
+			me.detailRecordCountFinalize = 0;
+			me.detailTotalHoursFinalize = 0;
+			me.detailTotalAmountFinalize = 0;
 			me.cellColorValid = "";
 			me.cellColorInvalid = "red";
 			me.employeeNumberCache = [];
@@ -52,6 +53,9 @@ ii.Class({
 			me.pageCount = 0;
 			me.pageCurrent = 1;
 
+			//Set the xmlTimeout period to 30 minutes to finish the Import/Reconcile/Finalize process without timeout error.
+			$.ajaxSetup({timeout: 1800000});
+
 			me.gateway = ii.ajax.addGateway("pay", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
 			me.transactionMonitor = new ii.ajax.TransactionMonitor(
@@ -63,7 +67,7 @@ ii.Class({
 			me.session = new ii.Session(me.cache);
 
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
-			me.authorizePath = "\\crothall\\chimes\\fin\\Payroll\\Automation";
+			me.authorizePath = "\\crothall\\chimes\\fin\\Payroll\\ProcessPayroll";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
 					me.authorizationProcess.apply(me);
@@ -90,7 +94,7 @@ ii.Class({
 			}
 		},
 		
-		authorizationProcess: function fin_pay_automation_UserInterface_authorizationProcess() {
+		authorizationProcess: function fin_pay_processPayroll_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
 
@@ -139,10 +143,11 @@ ii.Class({
 			else if (me.exportBatchShow)
 				me.actionShowItem("Export");
 
+			me.personStore.fetch("userId:[user],id:" + me.session.propertyGet("personId"), me.personsLoaded, me);
 			me.payCodeTypeStore.fetch("userId:[user],payCodeType:ePayBatch", me.payCodeTypesLoaded, me);
 		},
 
-		sessionLoaded: function fin_pay_automation_UserInterface_sessionLoaded() {
+		sessionLoaded: function fin_pay_processPayroll_UserInterface_sessionLoaded() {
 			var args = ii.args(arguments, {
 				me: {type: Object}
 			});
@@ -152,7 +157,7 @@ ii.Class({
 
 		resize: function() {
 			var args = ii.args(arguments,{});
-			var me = fin.automationUi;
+			var me = fin.processPayrollUi;
 
 			if (!me) return;
 
@@ -161,6 +166,10 @@ ii.Class({
 			else
 				me.ePayBatchGrid.setHeight($(window).height() - 130);
 			$("#DetailInfo").width(240 + $("#detailTotalAmountBodyColumn").width() + 19);
+
+			var popupHeight = $(window).height() - 100;
+			$("#batchPopup, #tblBatchPopup, #popupLoading").height(popupHeight);
+			$("#batchDetails").height(popupHeight - 160);
 		},
 
 		defineFormControls: function() {			
@@ -329,31 +338,39 @@ ii.Class({
 			});
 		},
 
-		configureCommunications: function fin_pay_automation_configureCommunications() {
+		configureCommunications: function fin_pay_processPayroll_configureCommunications() {
 			var args = ii.args(arguments, {});
 			var me = this;
+
+			me.persons = [];
+			me.personStore = me.cache.register({ 
+				storeId: "persons",
+				itemConstructor: fin.pay.processPayroll.Person,
+				itemConstructorArgs: fin.pay.processPayroll.personArgs,
+				injectionArray: me.persons	
+			});
 
 			me.payCodeTypes = [];
 			me.payCodeTypeStore = me.cache.register({
 				storeId: "payCodes",
-				itemConstructor: fin.pay.automation.PayCodeType,
-				itemConstructorArgs: fin.pay.automation.payCodeTypeArgs,
+				itemConstructor: fin.pay.processPayroll.PayCodeType,
+				itemConstructorArgs: fin.pay.processPayroll.payCodeTypeArgs,
 				injectionArray: me.payCodeTypes
 			});
 
 			me.ePayBatches = [];
 			me.ePayBatchStore = me.cache.register({
 				storeId: "ePayBatchs",
-				itemConstructor: fin.pay.automation.EPayBatch,
-				itemConstructorArgs: fin.pay.automation.ePayBatchArgs,
+				itemConstructor: fin.pay.processPayroll.EPayBatch,
+				itemConstructorArgs: fin.pay.processPayroll.ePayBatchArgs,
 				injectionArray: me.ePayBatches
 			});
 
 			me.ePayBatchDetails = [];
 			me.ePayBatchDetailStore = me.cache.register({
 				storeId: "ePayBatchDetails",
-				itemConstructor: fin.pay.automation.EPayBatchDetail,
-				itemConstructorArgs: fin.pay.automation.ePayBatchDetailArgs,
+				itemConstructor: fin.pay.processPayroll.EPayBatchDetail,
+				itemConstructorArgs: fin.pay.processPayroll.ePayBatchDetailArgs,
 				injectionArray: me.ePayBatchDetails
 			});
 		},
@@ -403,16 +420,21 @@ ii.Class({
 			var me = this;
 			
 			me.batchStatuses = [];
-			me.batchStatuses.push(new fin.pay.automation.BatchStatus(1, "Records with errors"));
-			me.batchStatuses.push(new fin.pay.automation.BatchStatus(2, "Cancelled records with errors"));
+			me.batchStatuses.push(new fin.pay.processPayroll.BatchStatus(1, "Records with errors"));
+			me.batchStatuses.push(new fin.pay.processPayroll.BatchStatus(2, "Cancelled records with errors"));
 			
 			me.batchStatus.setData(me.batchStatuses);
 			me.batchStatus.select(0, me.batchStatus.focused);
-			
+
+			$("#chkSelectAll").bind("change", function() { me.actionSelectAllItem(); });
 			$("#imgClose").bind("click", function() { me.hidePopup(); });
 			$("#selPageNumber").bind("change", function() { me.pageNumberChange(); });
 			$("#imgPrev").bind("click", function() { me.prevEpayBatchDetails(); });
 			$("#imgNext").bind("click", function() { me.nextEpayBatchDetails(); });
+		},
+
+		personsLoaded: function(me, activeId) {
+
 		},
 
 		payCodeTypesLoaded: function(me, activeId) {
@@ -432,21 +454,21 @@ ii.Class({
 				var varianceTotalAmount = parseFloat(me.ePayBatchGrid.data[index].detailTotalAmount) - parseFloat(me.ePayBatches[0].batchTotalAmount);
 
 				$("#ProcessedTotalCount").html(me.ePayBatchGrid.data[index].detailRecordCount);
-				$("#ProcessedTotalHours").html(me.ePayBatchGrid.data[index].detailTotalHours);
-				$("#ProcessedTotalAmount").html(me.ePayBatchGrid.data[index].detailTotalAmount);
-				$("#AmountAndHours").html(me.ePayBatches[0].totalHours);
+				$("#ProcessedTotalHours").html(parseFloat(me.ePayBatchGrid.data[index].detailTotalHours).toFixed(2));
+				$("#ProcessedTotalAmount").html(parseFloat(me.ePayBatchGrid.data[index].detailTotalAmount).toFixed(2));
+				$("#AmountAndHours").html(parseFloat(me.ePayBatches[0].totalHours).toFixed(2));
 				$("#WeeklyTotalCount").html(me.ePayBatches[0].batchRecordCount);
-				$("#WeeklyTotalHours").html(me.ePayBatches[0].batchTotalHours);
-				$("#WeeklyTotalAmount").html(me.ePayBatches[0].batchTotalAmount);
+				$("#WeeklyTotalHours").html(parseFloat(me.ePayBatches[0].batchTotalHours).toFixed(2));
+				$("#WeeklyTotalAmount").html(parseFloat(me.ePayBatches[0].batchTotalAmount).toFixed(2));
 				$("#WeeklyAddTotalCount").html(me.ePayBatches[0].weeklyPayrollRecordCount);
-				$("#WeeklyAddTotalHours").html(me.ePayBatches[0].weeklyPayrollTotalHours);
-				$("#WeeklyAddTotalAmount").html(me.ePayBatches[0].weeklyPayrollTotalAmount);
+				$("#WeeklyAddTotalHours").html(parseFloat(me.ePayBatches[0].weeklyPayrollTotalHours).toFixed(2));
+				$("#WeeklyAddTotalAmount").html(parseFloat(me.ePayBatches[0].weeklyPayrollTotalAmount).toFixed(2));
 				$("#VarianceTotalCount").html(varianceTotalCount);
-				$("#VarianceTotalHours").html(varianceTotalHours);
-				$("#VarianceTotalAmount").html(varianceTotalAmount);
+				$("#VarianceTotalHours").html(parseFloat(varianceTotalHours).toFixed(2));
+				$("#VarianceTotalAmount").html(parseFloat(varianceTotalAmount).toFixed(2));
 				$("#ErrorTotalCount").html("<span style='color: red;'>" + me.ePayBatches[0].detailRecordCount + "</span> - " + me.ePayBatches[0].cancelledErrorRecordCount);
-				$("#ErrorTotalHours").html("<span style='color: red;'>" + me.ePayBatches[0].detailTotalHours + "</span> - " + me.ePayBatches[0].cancelledErrorTotalHours);
-				$("#ErrorTotalAmount").html("<span style='color: red;'>" + me.ePayBatches[0].detailTotalAmount + "</span> - " + me.ePayBatches[0].cancelledErrorTotalAmount);
+				$("#ErrorTotalHours").html("<span style='color: red;'>" + parseFloat(me.ePayBatches[0].detailTotalHours).toFixed(2) + "</span> - " + parseFloat(me.ePayBatches[0].cancelledErrorTotalHours).toFixed(2));
+				$("#ErrorTotalAmount").html("<span style='color: red;'>" + parseFloat(me.ePayBatches[0].detailTotalAmount).toFixed(2) + "</span> - " + parseFloat(me.ePayBatches[0].cancelledErrorTotalAmount).toFixed(2));
 				
 				if (varianceTotalCount == 0 && varianceTotalHours == 0 && varianceTotalAmount == 0
 					&& me.ePayBatches[0].detailRecordCount == 0
@@ -455,7 +477,7 @@ ii.Class({
 						me.ePayBatchGrid.data[index].valid = true;
 						me.ePayBatchGrid.body.renderRow(index, index);
 						me.anchorFinalize.display(ui.cmn.behaviorStates.enabled);
-					}
+				}
 				else {
 					me.ePayBatchGrid.body.renderRow(index, index);
 					me.anchorFinalize.display(ui.cmn.behaviorStates.disabled);
@@ -621,6 +643,7 @@ ii.Class({
 			var startIndex = me.startPoint - 1;
 			var endIndex = startIndex + me.maximumRows;
 
+			$("#chkSelectAll")[0].checked = false;
 			$("#tblBatchDetails").empty();
 			me.ePayBatchDetailsList = [];
 
@@ -632,7 +655,7 @@ ii.Class({
 			}
 
 		    for (var index = 0; index < me.ePayBatchDetailsList.length; index++) {
-				me.employeeNumberPreCheck(index, me.ePayBatchDetailsList[index].employeeNumber, !me.ePayBatchDetailsList[index].employeeError);
+				me.employeeNumberPreCheck(index, me.ePayBatchDetailsList[index].employeeNumber, me.ePayBatchDetailsList[index].employeeName, !me.ePayBatchDetailsList[index].employeeError);
 				me.houseCodePreCheck(index, me.ePayBatchDetailsList[index].houseCode, !me.ePayBatchDetailsList[index].houseCodeError);
 				me.workOrderNumberPreCheck(index, me.ePayBatchDetailsList[index].workOrderNumber, !me.ePayBatchDetailsList[index].workOrderNumberError);
 				
@@ -668,9 +691,20 @@ ii.Class({
 			batchDetailRow = '<tr id="trLastRow" height="100%" class="' + className + '"><td id="tdLastRow" colspan="10" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>';
 			$("#tblBatchDetails").append(batchDetailRow);
 			$("input[id^=txt]").bind("change", function() { me.selectRow(this); });
+			$("input[id^=chkSelect]").bind("change", function() { me.actionClickItem(); });
 
-			me.actionValidateItem();
+			me.actionValidateItem(true);
 			$("#popupLoading").fadeOut("slow");
+		},
+		
+		actionSelectAllItem: function() {
+			var me = this;
+
+			me.modified();
+			
+			for (var index = 0; index < me.ePayBatchDetailsList.length; index++) {
+				$("#chkSelect" + index)[0].checked = $("#chkSelectAll")[0].checked;
+			}
 		},
 
 		selectRow: function(objInput) {
@@ -678,19 +712,19 @@ ii.Class({
 			var rowNumber = 0;
 
 			if (objInput.id.indexOf("txtEmployeeNumber") != -1)
-		    	rowNumber =  Number(objInput.id.replace("txtEmployeeNumber", ""));
+		    	rowNumber = Number(objInput.id.replace("txtEmployeeNumber", ""));
 			else if (objInput.id.indexOf("txtHouseCode") != -1)
-		    	rowNumber =  Number(objInput.id.replace("txtHouseCode", ""));
+		    	rowNumber = Number(objInput.id.replace("txtHouseCode", ""));
 			else if (objInput.id.indexOf("txtExpenseDate") != -1)
-		    	rowNumber =  Number(objInput.id.replace("txtExpenseDate", ""));
+		    	rowNumber = Number(objInput.id.replace("txtExpenseDate", ""));
 			else if (objInput.id.indexOf("txtHours") != -1)
-		    	rowNumber =  Number(objInput.id.replace("txtHours", ""));
+		    	rowNumber = Number(objInput.id.replace("txtHours", ""));
 			else if (objInput.id.indexOf("txtAmount") != -1)
-		    	rowNumber =  Number(objInput.id.replace("txtAmount", ""));
+		    	rowNumber = Number(objInput.id.replace("txtAmount", ""));
 			else if (objInput.id.indexOf("txtWorkOrderNumber") != -1)
-		    	rowNumber =  Number(objInput.id.replace("txtWorkOrderNumber", ""));
+		    	rowNumber = Number(objInput.id.replace("txtWorkOrderNumber", ""));
 			else if (objInput.id.indexOf("selPayCode") != -1)
-		    	rowNumber =  Number(objInput.id.replace("selPayCode", ""));			
+		    	rowNumber = Number(objInput.id.replace("selPayCode", ""));			
 
 			me.modified();
 			$("#chkSelect" + rowNumber)[0].checked = true;
@@ -723,7 +757,7 @@ ii.Class({
 			});
 
 			$("#txtEmployeeNumber" + index).focus();
-			var item = new fin.pay.automation.EPayBatchDetail({ id: 0});
+			var item = new fin.pay.processPayroll.EPayBatchDetail({ id: 0});
 			me.ePayBatchDetailsList.push(item);
 		},
 
@@ -744,95 +778,114 @@ ii.Class({
 			});
 		},
 
-		actionValidateItem: function() {
+		actionValidateItem: function(validateAll) {
 			var me = this;
 			var hoursAmountValid = true;
 
 			for (var index = 0; index < me.ePayBatchDetailsList.length; index++) {
-				if (!(/^[0-9]+$/.test($("#txtEmployeeNumber" + index).val())) || me.ePayBatchDetailsList[index].employeeError) {
-					$("#txtEmployeeNumber" + index).attr("title", "Invalid Employee #");
-					$("#txtEmployeeNumber" + index).css("background-color", me.cellColorInvalid);
-				}
-				else {
-					$("#txtEmployeeNumber" + index).attr("title", "");
-					$("#txtEmployeeNumber" + index).css("background-color", me.cellColorValid);
-				}						
+				if (validateAll || ($("#chkSelect" + index)[0] != undefined && $("#chkSelect" + index)[0].checked)) {
+					var employeeNumber = $("#txtEmployeeNumber" + index).val();
+					var houseCode = $("#txtHouseCode" + index).val();
+					var workOrderNumber = $("#txtWorkOrderNumber" + index).val();
+						
+					if (!(/^[0-9]+$/.test(employeeNumber)) || !me.employeeNumberCache[employeeNumber].valid) {
+						$("#txtEmployeeNumber" + index).attr("title", "Invalid Employee #");
+						$("#txtEmployeeNumber" + index).css("background-color", me.cellColorInvalid);
+					}
+					else {
+						$("#txtEmployeeNumber" + index).attr("title", "");
+						$("#txtEmployeeNumber" + index).css("background-color", me.cellColorValid);
+					}
 
-				if ($("#selPayCode" + index).val() == "0") {
-					$("#selPayCode" + index).attr("title", "Invalid Pay Code");
-					$("#selPayCode" + index).css("background-color", me.cellColorInvalid);
-				}
-				else {
-					$("#selPayCode" + index).attr("title", "");
-					$("#selPayCode" + index).css("background-color", me.cellColorValid);
-				}
-				
-				if (!(/^[0-9]+$/.test($("#txtHouseCode" + index).val())) || me.ePayBatchDetailsList[index].houseCodeError) {
-					$("#txtHouseCode" + index).attr("title", "Invalid House Code");
-					$("#txtHouseCode" + index).css("background-color", me.cellColorInvalid);
-				}
-				else {
-					$("#txtHouseCode" + index).attr("title", "");
-					$("#txtHouseCode" + index).css("background-color", me.cellColorValid);
-				}
+					if ($("#selPayCode" + index).val() == "0") {
+						$("#selPayCode" + index).attr("title", "Invalid Pay Code");
+						$("#selPayCode" + index).css("background-color", me.cellColorInvalid);
+					}
+					else {
+						$("#selPayCode" + index).attr("title", "");
+						$("#selPayCode" + index).css("background-color", me.cellColorValid);
+					}
+					
+					if (!(/^[0-9]+$/.test(houseCode)) || !me.houseCodeCache[houseCode].valid) {
+						$("#txtHouseCode" + index).attr("title", "Invalid House Code");
+						$("#txtHouseCode" + index).css("background-color", me.cellColorInvalid);
+					}
+					else {
+						$("#txtHouseCode" + index).attr("title", "");
+						$("#txtHouseCode" + index).css("background-color", me.cellColorValid);
+					}
 
-				if ($("#txtExpenseDate" + index).val() == "") {
-					$("#txtExpenseDate" + index).attr("title", "Invalid Expense Date");
-					$("#txtExpenseDate" + index).css("background-color", me.cellColorInvalid);
-				}
-				else {
-					$("#txtExpenseDate" + index).attr("title", "");
-					$("#txtExpenseDate" + index).css("background-color", me.cellColorValid);
-				}
-				
-				if (!(/^[+]?[0-9]+(\.[0-9]+)?$/.test($("#txtHours" + index).val()))) {
-					hoursAmountValid = false;
-					$("#txtHours" + index).attr("title", "Invalid Hours");
-					$("#txtHours" + index).css("background-color", me.cellColorInvalid);
-				}
-				else {
-					$("#txtHours" + index).attr("title", "");
-					$("#txtHours" + index).css("background-color", me.cellColorValid);
-				}
-
-				if (!(/^[-]?[0-9]+(\.[0-9]+)?$/.test($("#txtAmount" + index).val()))) {
-					hoursAmountValid = false;
-					$("#txtAmount" + index).attr("title", "Invalid Amount");
-					$("#txtAmount" + index).css("background-color", me.cellColorInvalid);
-				}
-				else {
-					$("#txtAmount" + index).attr("title", "");
-					$("#txtAmount" + index).css("background-color", me.cellColorValid);
-				}
-
-				if (hoursAmountValid) {
-					if (parseFloat($("#txtHours" + index).val()) > 0 && parseFloat($("#txtAmount" + index).val()) > 0) {
-						$("#txtHours" + index).attr("title", "Both Hours and Amount are not allowed");
+					if ($("#txtExpenseDate" + index).val() == "") {
+						$("#txtExpenseDate" + index).attr("title", "Invalid Expense Date");
+						$("#txtExpenseDate" + index).css("background-color", me.cellColorInvalid);
+					}
+					else {
+						$("#txtExpenseDate" + index).attr("title", "");
+						$("#txtExpenseDate" + index).css("background-color", me.cellColorValid);
+					}
+					
+					if (me.ePayBatchDetailsList[index].id == 0) {
+						if ($("#txtHours" + index).val() == "")
+							$("#txtHours" + index).val("0");
+						if ($("#txtAmount" + index).val() == "")
+							$("#txtAmount" + index).val("0");
+					}
+					
+					if (!(/^[+]?[0-9]+(\.[0-9]+)?$/.test($("#txtHours" + index).val()))) {
+						hoursAmountValid = false;
+						$("#txtHours" + index).attr("title", "Invalid Hours");
 						$("#txtHours" + index).css("background-color", me.cellColorInvalid);
-						$("#txtAmount" + index).attr("title", "Both Hours and Amount are not allowed");
-						$("#txtAmount" + index).css("background-color", me.cellColorInvalid);
 					}
 					else {
 						$("#txtHours" + index).attr("title", "");
 						$("#txtHours" + index).css("background-color", me.cellColorValid);
+					}
+	
+					if (!(/^[-]?[0-9]+(\.[0-9]+)?$/.test($("#txtAmount" + index).val()))) {
+						hoursAmountValid = false;
+						$("#txtAmount" + index).attr("title", "Invalid Amount");
+						$("#txtAmount" + index).css("background-color", me.cellColorInvalid);
+					}
+					else {
 						$("#txtAmount" + index).attr("title", "");
 						$("#txtAmount" + index).css("background-color", me.cellColorValid);
 					}
-				}
-				if ($("#txtWorkOrderNumber" + index).val() != "" && (!(/^[0-9]+$/.test($("#txtWorkOrderNumber" + index).val())) || me.ePayBatchDetailsList[index].workOrderNumberError)) {
-					$("#txtWorkOrderNumber" + index).attr("title", "Invalid Work Order #");
-					$("#txtWorkOrderNumber" + index).css("background-color", me.cellColorInvalid);
-				}
-				else {
-					$("#txtWorkOrderNumber" + index).attr("title", "");
-					$("#txtWorkOrderNumber" + index).css("background-color", me.cellColorValid);
+	
+					if (hoursAmountValid) {
+						if (parseFloat($("#txtHours" + index).val()) == 0 && parseFloat($("#txtAmount" + index).val()) == 0) {
+							$("#txtHours" + index).attr("title", "Both Hours and Amount cannot be zero");
+							$("#txtHours" + index).css("background-color", me.cellColorInvalid);
+							$("#txtAmount" + index).attr("title", "Both Hours and Amount cannot be zero");
+							$("#txtAmount" + index).css("background-color", me.cellColorInvalid);
+						}
+						else if (parseFloat($("#txtHours" + index).val()) > 0 && parseFloat($("#txtAmount" + index).val()) > 0) {
+							$("#txtHours" + index).attr("title", "Both Hours and Amount are not allowed");
+							$("#txtHours" + index).css("background-color", me.cellColorInvalid);
+							$("#txtAmount" + index).attr("title", "Both Hours and Amount are not allowed");
+							$("#txtAmount" + index).css("background-color", me.cellColorInvalid);
+						}
+						else {
+							$("#txtHours" + index).attr("title", "");
+							$("#txtHours" + index).css("background-color", me.cellColorValid);
+							$("#txtAmount" + index).attr("title", "");
+							$("#txtAmount" + index).css("background-color", me.cellColorValid);
+						}
+					}
+					if (workOrderNumber != "" && (!(/^[0-9]+$/.test(workOrderNumber)) || !me.workOrderNumberCache[workOrderNumber].valid)) {
+						$("#txtWorkOrderNumber" + index).attr("title", "Invalid Work Order #");
+						$("#txtWorkOrderNumber" + index).css("background-color", me.cellColorInvalid);
+					}
+					else {
+						$("#txtWorkOrderNumber" + index).attr("title", "");
+						$("#txtWorkOrderNumber" + index).css("background-color", me.cellColorValid);
+					}
 				}
 			}
 		},
 		
 		payCodeBlur: function(objSelect) {
 			var me = this;
-		    var rowNumber =  Number(objSelect.id.replace("selPayCode", ""));
+		    var rowNumber = Number(objSelect.id.replace("selPayCode", ""));
 
 		    if (objSelect.value == "0") {
 				objSelect.title = "Invalid Pay Code";
@@ -846,7 +899,7 @@ ii.Class({
 		
 		expenseDateBlur: function(objInput) {
 			var me = this;
-		    var rowNumber =  Number(objInput.id.replace("txtExpenseDate", ""));
+		    var rowNumber = Number(objInput.id.replace("txtExpenseDate", ""));
 
 		    if (objInput.value == "" || !(ui.cmn.text.validate.generic(objInput.value, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$"))) {
 				objInput.title = "Invalid Expense Date";
@@ -857,16 +910,20 @@ ii.Class({
 				objInput.style.backgroundColor = me.cellColorValid;
 			}
 		},
-		
+
 		hoursAmountBlur: function(objInput) {
 			var me = this;
 			var hoursAmountValid = true;
 		    var rowNumber = 0;
-			
-			if (objInput.id.indexOf("txtHours") != -1)
-		    	rowNumber =  Number(objInput.id.replace("txtHours", ""));
-			else if (objInput.id.indexOf("txtAmount") != -1)
-		    	rowNumber =  Number(objInput.id.replace("txtAmount", ""));
+
+			if (objInput.id.indexOf("txtHours") != -1) {
+				rowNumber = Number(objInput.id.replace("txtHours", ""));
+				$("#txtAmount" + rowNumber).val("0");
+			}
+			else if (objInput.id.indexOf("txtAmount") != -1) {
+				rowNumber = Number(objInput.id.replace("txtAmount", ""));
+				$("#txtHours" + rowNumber).val("0");
+			}
 
 			me.isHoursAmountValid(rowNumber);
 		},
@@ -896,7 +953,14 @@ ii.Class({
 			}
 
 			if (hoursAmountValid) {
-				if (parseFloat($("#txtHours" + rowNumber).val()) > 0 && parseFloat($("#txtAmount" + rowNumber).val()) > 0) {
+				if (parseFloat($("#txtHours" + rowNumber).val()) == 0 && parseFloat($("#txtAmount" + rowNumber).val()) == 0) {
+					$("#txtHours" + rowNumber).attr("title", "Both Hours and Amount cannot be zero");
+					$("#txtHours" + rowNumber).css("background-color", me.cellColorInvalid);
+					$("#txtAmount" + rowNumber).attr("title", "Both Hours and Amount cannot be zero");
+					$("#txtAmount" + rowNumber).css("background-color", me.cellColorInvalid);
+					return false;
+				}
+				else if (parseFloat($("#txtHours" + rowNumber).val()) > 0 && parseFloat($("#txtAmount" + rowNumber).val()) > 0) {
 					$("#txtHours" + rowNumber).attr("title", "Both Hours and Amount are not allowed");
 					$("#txtHours" + rowNumber).css("background-color", me.cellColorInvalid);
 					$("#txtAmount" + rowNumber).attr("title", "Both Hours and Amount are not allowed");
@@ -915,13 +979,14 @@ ii.Class({
 				return false;
 		},
 
-		employeeNumberPreCheck: function(rowNumber, employeeNumber, valid) {
+		employeeNumberPreCheck: function(rowNumber, employeeNumber, employeeName, valid) {
 			var me = this;
 
 		    if (me.employeeNumberCache[employeeNumber] == undefined) {
 				me.employeeNumberCache[employeeNumber] = {};
 			    me.employeeNumberCache[employeeNumber].valid = valid;
 			    me.employeeNumberCache[employeeNumber].loaded = true;
+				me.employeeNumberCache[employeeNumber].name = employeeName;
 			    me.employeeNumberCache[employeeNumber].buildQueue = [];
 			    me.employeeNumberCache[employeeNumber].buildQueue.push(rowNumber);
 	        }
@@ -931,7 +996,7 @@ ii.Class({
 
 		employeeNumberBlur: function(objInput) {
 			var me = this;
-		    var rowNumber =  Number(objInput.id.replace("txtEmployeeNumber", ""));
+		    var rowNumber = Number(objInput.id.replace("txtEmployeeNumber", ""));
 		    //remove any unwanted characters
 		    objInput.value = objInput.value.replace(/[^0-9]/g, "");
 		    if (objInput.value == "")
@@ -1016,9 +1081,6 @@ ii.Class({
 					objInput.attr("title", "Invalid Employee #");
 					objInput.css("background-color", me.cellColorInvalid);
 		        }
-		        
-		        //select the last one changed
-		        $("#txtEmployeeNumber" + rowNumber).select();
 		    }
 
 			$("#txtEmployeeNumber" + rowNumber).removeClass("loadingIndicator");
@@ -1037,7 +1099,7 @@ ii.Class({
 
 		houseCodeBlur: function(objInput) {
 			var me = this;
-		    var rowNumber =  Number(objInput.id.replace("txtHouseCode", ""));
+		    var rowNumber = Number(objInput.id.replace("txtHouseCode", ""));
 		    
 		    //remove any unwanted characters
 		    objInput.value = objInput.value.replace(/[^0-9]/g, "");
@@ -1120,9 +1182,6 @@ ii.Class({
 					objInput.attr("title", "Invalid House Code");
 					objInput.css("background-color", me.cellColorInvalid);
 		        }
-
-		        //select the last one changed
-		        $("#txtHouseCode" + rowNumber).select();
 		    }
 
 			$("#txtHouseCode" + rowNumber).removeClass("loadingIndicator");
@@ -1141,7 +1200,7 @@ ii.Class({
 
 		workOrderNumberBlur: function(objInput) {
 			var me = this;
-		    var rowNumber =  Number(objInput.id.replace("txtWorkOrderNumber", ""));
+		    var rowNumber = Number(objInput.id.replace("txtWorkOrderNumber", ""));
 		    
 		    //remove any unwanted characters
 		    objInput.value = objInput.value.replace(/[^0-9]/g, "");
@@ -1190,7 +1249,7 @@ ii.Class({
  
                 success: function(xml) {
                     me.workOrderNumberCache[workOrderNumber].loaded = true;
-		    
+
 		            if ($(xml).find("item").length) {
 		                //the house code is valid
 		                $(xml).find('item').each(function() {
@@ -1223,9 +1282,6 @@ ii.Class({
 					objInput.attr("title", "Invalid House Code");
 					objInput.css("background-color", me.cellColorInvalid);
 		        }
-
-		        //select the last one changed
-		        $("#txtWorkOrderNumber" + rowNumber).select();
 		    }
 
 			$("#txtWorkOrderNumber" + rowNumber).removeClass("loadingIndicator");
@@ -1240,6 +1296,7 @@ ii.Class({
 		actionShowItem: function(action) {
 			var me = this;
 
+			$("#AnchorCancel").show();
 			$("#AnchorPrepare").hide();
 			$("#AnchorImport").hide();
 			$("#AnchorReconcile").hide();
@@ -1247,8 +1304,9 @@ ii.Class({
 			$("#AnchorView").hide();
 			$("#AnchorExport").hide();
 			$("#ReconcileInfo").hide();
-	
+
 			if (action == "Prepare") {
+				$("#AnchorCancel").hide();
 				$("#AnchorPrepare").show();
 				$("#DetailInfo").html("Epay Calculated Detail Info");
 			}
@@ -1268,7 +1326,8 @@ ii.Class({
 				$("#AnchorExport").show();
 			}
 
-			$("#header").html("Payroll Automation - " + action);
+			$("#header").html("Process Payroll - " + action);
+			me.ePayBatchGrid.setData([]);
 			me.action = action;
 			me.setLoadCount();
 			
@@ -1316,10 +1375,10 @@ ii.Class({
 			if (me.ePayBatchGrid.activeRowIndex == -1)
 				return;
 
-			me.loadPopup();
 			$("#popupMessageToUser").text("Loading");
 			$("#popupLoading").fadeIn("slow");
 
+			me.loadPopup();
 			me.batchStatus.select(0, me.batchStatus.focused);
 			me.batchStatus.resizeText();
 			me.ePayBatchDetailStore.reset();
@@ -1371,6 +1430,8 @@ ii.Class({
 					me.setRowNumber();
 			}
 			else if (me.status == "SaveEpayBatchRecord") {
+				me.actionValidateItem(false);
+
 				for (var index = 0; index < me.ePayBatchDetailsList.length; index++) {
 					if ($("#chkSelect" + index)[0] != undefined && $("#chkSelect" + index)[0].checked) {
 						var employeeNumber = $("#txtEmployeeNumber" + index).val();
@@ -1408,6 +1469,7 @@ ii.Class({
 				xml += ' id="' + me.ePayBatchList[index].id + '"';
 				xml += ' batchId="' + me.ePayBatchList[index].batchId + '"';
 				xml += ' status="' + status + '"';
+				xml += ' emailId="' + ui.cmn.text.xml.encode(me.persons[0].email) + '"';
 				xml += '/>';
 			}
 
@@ -1420,10 +1482,18 @@ ii.Class({
 				$("#popupLoading").fadeIn("slow");
 			}
 			else {
-				if (me.status == "Reconcile")
+				if (me.status == "Prepare")
+					$("#messageToUser").text("Preparing");
+				else if (me.status == "Import")
+					$("#messageToUser").text("Import/Reconcile/Finalize process will take few minutes, please wait...");
+				else if (me.status == "Reconcile")
 					$("#messageToUser").text("Reconcile process will take few minutes, please wait...");
+				else if (me.status == "Finalize")
+					$("#messageToUser").text("Finalizing");
 				else if (me.status == "Export")
 					$("#messageToUser").text("Export process will take few minutes, please wait...");
+				else if (me.status == "Cancel")
+					$("#messageToUser").text("Cancelling");
 				else
 					$("#messageToUser").text("Saving");
 				$("#pageLoading").fadeIn("slow");
@@ -1471,12 +1541,13 @@ ii.Class({
 						me.ePayBatchGrid.setHeight($(window).height() - 130);
 					}
 				}
+
 				me.modified(false);
 				me.setStatus("Saved");
 			}
 			else {
 				me.setStatus("Error");
-				alert("[SAVE FAILURE] Error while updating State Minimum Wage details: " + $(args.xmlNode).attr("message"));
+				alert("[SAVE FAILURE] Error while processing the batch: " + $(args.xmlNode).attr("message"));
 			}
 
 			if (me.status == "CancelEpayBatchRecord" || me.status == "SaveEpayBatchRecord")
@@ -1530,11 +1601,9 @@ ii.Class({
 					var itemIndex = ii.ajax.util.findIndexById(me.ePayBatchDetailsList[index].id.toString(), me.ePayBatchDetails);
 					if (itemIndex != undefined && itemIndex >= 0)
 						me.ePayBatchDetails.splice(itemIndex, 1);
-					me.actionDeleteItem(index);
 				}
 			}
 			
-			me.setRowNumber();
 			var index = me.ePayBatchGrid.activeRowIndex;
 
 			me.ePayBatches[0].weeklyPayrollTotalHours = parseFloat(me.ePayBatches[0].weeklyPayrollTotalHours).toFixed(2);
@@ -1553,13 +1622,14 @@ ii.Class({
 			me.ePayBatchGrid.data[index].detailRecordCount = me.ePayBatches[0].batchRecordCount;
 			me.ePayBatchGrid.data[index].detailTotalHours = me.ePayBatches[0].batchTotalHours;
 			me.ePayBatchGrid.data[index].detailTotalAmount = me.ePayBatches[0].batchTotalAmount;
+			me.showDetailReport = true;
 			me.ePayBatchesLoaded(me, 0);
-	
-			$("#spnPageInfo").html(" of " + me.pageCount + " (" + me.ePayBatchDetails.length + " records)");
+			me.ePayBatchDetailsLoaded(me, 0);
 		},
 
 		loadPopup: function() {
 			var me = this;
+
 			me.centerPopup();
 
 			$("#backgroundPopup").css({
@@ -1570,7 +1640,12 @@ ii.Class({
 		},
 
 		hidePopup: function() {
+			var me = this;
 
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
+			me.setStatus("Normal");
 			$("#backgroundPopup").fadeOut("slow");
 			$("#batchPopup").fadeOut("slow");
 		},
@@ -1591,6 +1666,6 @@ ii.Class({
 });
 
 function main() {
-	fin.automationUi = new fin.pay.UserInterface();
-	fin.automationUi.resize();
+	fin.processPayrollUi = new fin.pay.UserInterface();
+	fin.processPayrollUi.resize();
 }

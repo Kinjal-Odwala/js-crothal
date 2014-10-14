@@ -2,12 +2,12 @@ ii.Import( "fin.cmn.usr.defs" );
 
 ii.init.register( function() {
 
-	fin.pur = { poRequisition: {} };
+	fin.pur = { poCapitalRequisition: {} };
 }, 1);
 
 ii.init.register( function() {
 
-	fin.pur.poRequisition.hirNodeArgs = {
+	fin.pur.poCapitalRequisition.hirNodeArgs = {
 		id: {type: Number}
 		, nodeParentId: {type: Number}
 		, hirLevel: {type: Number, required: false, defaultValue: 0}
@@ -18,7 +18,7 @@ ii.init.register( function() {
 		, active: {type: Boolean, required: false, defaultValue: true}
 	};
 	
-	fin.pur.poRequisition.houseCodeArgs = {
+	fin.pur.poCapitalRequisition.houseCodeArgs = {
 		id: {type: Number}
 		, number: {type: Number}
 		, name: {type: String}
@@ -27,7 +27,7 @@ ii.init.register( function() {
 		, hirNode: {type: Number}
 	};
 	
-	fin.pur.poRequisition.houseCodeDetailArgs = {
+	fin.pur.poCapitalRequisition.houseCodeDetailArgs = {
 		id: {type: Number}
 		, managerEmail: {type: String, required: false, defaultValue: ""}
 		, shippingAddress1: {type: String, required: false, defaultValue: ""}
@@ -37,36 +37,36 @@ ii.init.register( function() {
 		, shippingState: {type: Number, required: false, defaultValue: 0}
 	};
 	
-	fin.pur.poRequisition.houseCodeJobArgs = {
+	fin.pur.poCapitalRequisition.houseCodeJobArgs = {
 		id: {type: Number}
 		, jobNumber: {type: String}
 		, jobTitle: {type: String}
 	};
 	
-	fin.pur.poRequisition.statusArgs = {
+	fin.pur.poCapitalRequisition.statusArgs = {
 		id: {type: Number}
 		, title: {type: String}
 	};
 	
-	fin.pur.poRequisition.stateTypeArgs = {
+	fin.pur.poCapitalRequisition.stateTypeArgs = {
 		id: {type: Number}
 		, number: {type: Number}
 		, name: {type: String}
 	};
 	
-	fin.pur.poRequisition.accountArgs = {
+	fin.pur.poCapitalRequisition.accountArgs = {
 		id: {type: Number}
 		, code: {type: String}
 		, name: {type: String}
 	};
 	
-	fin.pur.poRequisition.glAccountArgs = {
+	fin.pur.poCapitalRequisition.glAccountArgs = {
 		id: {type: Number}
 		, code: {type: String}
 		, name: {type: String}
 	};
 	
-	fin.pur.poRequisition.personArgs = {
+	fin.pur.poCapitalRequisition.personArgs = {
 		id: {type: Number}
 		, firstName: {type: String, required: false, defaultValue: ""}
 		, lastName: {type: String, required: false, defaultValue: ""}
@@ -78,7 +78,7 @@ ii.init.register( function() {
 		, email: {type: String, required: false, defaultValue: ""}
 	};
 
-	fin.pur.poRequisition.poRequisitionArgs = {
+	fin.pur.poCapitalRequisition.poCapitalRequisitionArgs = {
 		id: {type: Number}
 		, statusType: {type: Number, required: false, defaultValue: 0}
 		, houseCode: {type: Number}
@@ -104,47 +104,42 @@ ii.init.register( function() {
 		, vendorPhoneNumber: {type: String, required: false, defaultValue: ""}
 		, vendorEmail: {type: String, required: false, defaultValue: ""}
 		, reasonForRequest: {type: String, required: false, defaultValue: ""}
-		, requisitionType: {type: String, required: false, defaultValue: ""}
-		, urgency: {type: String, required: false, defaultValue: ""}
-		, urgencyDate: {type: String, required: false, defaultValue: ""}
-		, lifeSpan: {type: String, required: false, defaultValue: ""}
+		, funding: {type: String, required: false, defaultValue: ""}
+		, businessType: {type: String, required: false, defaultValue: ""}
+		, budgeting: {type: String, required: false, defaultValue: ""}
 		, chargeToPeriod: {type: String, required: false, defaultValue: ""}
 		, valid: {type: Boolean, required: false, defaultValue: true}		
 	};
 	
-	fin.pur.poRequisition.poRequisitionDetailArgs = {
+	fin.pur.poCapitalRequisition.poCapitalRequisitionItemArgs = {
 		id: {type: Number, defaultValue: 0}
-		, poRequisitionId: {type: Number, defaultValue: 0}
-		, account: {type: fin.pur.poRequisition.GLAccount, required: false}
+		, poCapitalRequisitionId: {type: Number, defaultValue: 0}
+		, account: {type: fin.pur.poCapitalRequisition.GLAccount, required: false}
 		, itemSelect: {type: Boolean, required: false, defaultValue: true}
 		, number: {type: String, required: false, defaultValue: ""}
 		, description: {type: String, required: false, defaultValue: ""}
-		, alternateDescription: {type: String, required: false, defaultValue: ""}
 		, unit: {type: String, required: false, defaultValue: ""}
 		, manufactured: {type: String, required: false, defaultValue: ""}
 		, price: {type: String, required: false, defaultValue: ""}
 		, quantity: {type: String, required: false, defaultValue: ""}
 		, modified: {type: Boolean, required: false, defaultValue: false}
-		, extendedPrice: {type: String, required: false, defaultValue: ""}
 	};
 	
-	fin.pur.poRequisition.itemArgs = {
+	fin.pur.poCapitalRequisition.itemArgs = {
 		id: {type: Number, defaultValue: 0}
-		, poRequisitionId: {type: Number, defaultValue: 0}
-		, account: {type: fin.pur.poRequisition.GLAccount, required: false}
+		, poCapitalRequisitionId: {type: Number, defaultValue: 0}
+		, account: {type: fin.pur.poCapitalRequisition.GLAccount, required: false}
 		, itemSelect: {type: Boolean, required: false, defaultValue: false}
 		, number: {type: String, required: false, defaultValue: ""}
 		, description: {type: String, required: false, defaultValue: ""}
-		, alternateDescription: {type: String, required: false, defaultValue: ""}
 		, unit: {type: String, required: false, defaultValue: ""}
 		, manufactured: {type: String, required: false, defaultValue: ""}
 		, price: {type: String, required: false, defaultValue: ""}
 		, quantity: {type: String, required: false, defaultValue: ""}
 		, modified: {type: Boolean, required: false, defaultValue: false}
-		, extendedPrice: {type: String, required: false, defaultValue: ""}
 	};
 	
-	fin.pur.poRequisition.vendorArgs = {
+	fin.pur.poCapitalRequisition.vendorArgs = {
 		id: {type: Number, defaultValue: 0}
 		, number: {type: Number}
 		, name: {type: String}
@@ -160,19 +155,19 @@ ii.init.register( function() {
 		, phoneNumber: {type: String, required: false, defaultValue: ""}
 	};
 
-	fin.pur.poRequisition.catalogArgs = {
+	fin.pur.poCapitalRequisition.catalogArgs = {
 		id: {type: Number}
 		, title: {type: String}
 	};
 	
-	fin.pur.poRequisition.poRequisitionDocumentArgs = {
+	fin.pur.poCapitalRequisition.poCapitalRequisitionDocumentArgs = {
 		id: {type: Number, required: false, defaultValue: 0}
 		, title: {type: String, required: false, defaultValue: ""}
 		, fileName: {type: String, required: false, defaultValue: ""}
 		, tempFileName: {type: String, required: false, defaultValue: ""}
 	};
 
-	fin.pur.poRequisition.fileNameArgs = {
+	fin.pur.poCapitalRequisition.fileNameArgs = {
 		id: {type: Number}
 		, fileName: {type: String, required: false, defaultValue: ""}
 	};
@@ -180,124 +175,110 @@ ii.init.register( function() {
 }, 2);
 
 ii.Class({
-	Name: "fin.pur.poRequisition.HirNode",
+	Name: "fin.pur.poCapitalRequisition.HirNode",
 	Definition: {
 		init: function (){
-			var args = ii.args(arguments, fin.pur.poRequisition.hirNodeArgs);
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.hirNodeArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.pur.poRequisition.HouseCode",
+	Name: "fin.pur.poCapitalRequisition.HouseCode",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.pur.poRequisition.houseCodeArgs);
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.houseCodeArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.pur.poRequisition.HouseCodeDetail",
+	Name: "fin.pur.poCapitalRequisition.HouseCodeDetail",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.pur.poRequisition.houseCodeDetailArgs);
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.houseCodeDetailArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.pur.poRequisition.HouseCodeJob",
+	Name: "fin.pur.poCapitalRequisition.HouseCodeJob",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.pur.poRequisition.houseCodeJobArgs);
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.houseCodeJobArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.pur.poRequisition.Status",
+	Name: "fin.pur.poCapitalRequisition.Status",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.pur.poRequisition.statusArgs);
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.statusArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.pur.poRequisition.StateType",
+	Name: "fin.pur.poCapitalRequisition.StateType",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.pur.poRequisition.stateTypeArgs);
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.stateTypeArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.pur.poRequisition.Account",
+	Name: "fin.pur.poCapitalRequisition.Account",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.pur.poRequisition.accountArgs);
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.accountArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.pur.poRequisition.GLAccount",
+	Name: "fin.pur.poCapitalRequisition.GLAccount",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.pur.poRequisition.glAccountArgs);
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.glAccountArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.pur.poRequisition.Person",
+	Name: "fin.pur.poCapitalRequisition.Person",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.pur.poRequisition.personArgs);
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.personArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.pur.poRequisition.PORequisition",
+	Name: "fin.pur.poCapitalRequisition.POCapitalRequisition",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.pur.poRequisition.poRequisitionArgs);
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.poCapitalRequisitionArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.pur.poRequisition.PORequisitionDetail",
+	Name: "fin.pur.poCapitalRequisition.POCapitalRequisitionItem",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.pur.poRequisition.poRequisitionDetailArgs);
-			$.extend(this, args);
-			
-			if(!this.account) {
-				this.account = [];
-			}
-		}
-	}
-});
-
-ii.Class({
-	Name: "fin.pur.poRequisition.Item",
-	Definition: {
-		init: function() {
-			var args = ii.args(arguments, fin.pur.poRequisition.itemArgs);
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.poCapitalRequisitionItemArgs);
 			$.extend(this, args);
 			
 			if(!this.account) {
@@ -308,40 +289,54 @@ ii.Class({
 });
 
 ii.Class({
-	Name: "fin.pur.poRequisition.Vendor",
+	Name: "fin.pur.poCapitalRequisition.Item",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.pur.poRequisition.vendorArgs);
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.itemArgs);
+			$.extend(this, args);
+			
+			if(!this.account) {
+				this.account = [];
+			}
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.pur.poCapitalRequisition.Vendor",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.vendorArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.pur.poRequisition.Catalog",
+	Name: "fin.pur.poCapitalRequisition.Catalog",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.pur.poRequisition.catalogArgs);
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.catalogArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.pur.poRequisition.PORequisitionDocument",
+	Name: "fin.pur.poCapitalRequisition.POCapitalRequisitionDocument",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.pur.poRequisition.poRequisitionDocumentArgs);
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.poCapitalRequisitionDocumentArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.pur.poRequisition.FileName",
+	Name: "fin.pur.poCapitalRequisition.FileName",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.pur.poRequisition.fileNameArgs);
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.fileNameArgs);
 			$.extend(this, args);
 		}
 	}

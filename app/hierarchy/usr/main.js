@@ -242,7 +242,7 @@ ii.Class({
             	me.session.registerFetchNotify(me.sessionLoaded, me);
 				me.level.fetchingData();
 				me.hirLevelStore.fetch("userId:[user],hierarchy:2", me.hirLevelsLoaded, me);
-				me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
+				me.roleNodeStore.fetch("userId:[user],roleId:" + me.session.propertyGet("roleId"), me.roleNodesLoaded, me);
 			}				
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
@@ -462,26 +462,6 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 
-			me.users = [];
-			me.userStore = me.cache.register({
-				storeId: "loggedInUsers",
-				itemConstructor: fin.app.hierarchy.User,
-				itemConstructorArgs: fin.app.hierarchy.userArgs,
-				injectionArray: me.users
-			});			
-
-			me.roles = [];
-			me.roleStore = me.cache.register({
-				storeId: "loggedInUserRoles",
-				itemConstructor: fin.app.hierarchy.Role,
-				itemConstructorArgs: fin.app.hierarchy.roleArgs,
-				injectionArray: me.roles,
-				addToParentItem: true,
-				parent: me.userStore,
-				parentPropertyName: "appRoles",
-				multipleFetchesAllowed: true
-			});
-
 			me.hirLevels = [];
 			me.hirLevelStore = me.cache.register({
 				storeId: "hirLevels",
@@ -489,6 +469,22 @@ ii.Class({
 				itemConstructorArgs: fin.app.hierarchy.hirLevelArgs,
 				injectionArray: me.hirLevels
 			});
+
+			me.roleNodes = [];
+			me.roleNodeStore = me.cache.register({
+				storeId: "roleNodes",
+				itemConstructor: fin.app.hierarchy.RoleNode,
+				itemConstructorArgs: fin.app.hierarchy.roleNodeArgs,
+				injectionArray: me.roleNodes
+			});
+
+//			me.hierarchyNodes = [];
+//			me.hierarchyNodeStore = me.cache.register({
+//				storeId: "hirNodes",
+//				itemConstructor: fin.app.hierarchy.HierarchyNode,
+//				itemConstructorArgs: fin.app.hierarchy.hierarchyNodeArgs,
+//				injectionArray: me.hierarchyNodes	
+//			});
 
 			me.hirNodes = [];
 			me.hirNodeStore = me.cache.register({
@@ -712,28 +708,14 @@ ii.Class({
 			me.level.setData(hirLevelsTemp);
 			me.level.select(5, me.level.focused);
 		},
-		
-		loggedInUsersLoaded: function fin_app_UserInterface_loggedInUsersLoaded(me, activeId) {
 
-			if (me.users.length == 0) {
-				ii.trace("Failed to load logged-in user information.", ii.traceTypes.Information, "Info");
-				return false;
-			}
-
-			for (var index = 0; index < me.roles.length; index++) {
-				if (me.roles[index].id == me.users[0].roleCurrent) {
-					me.hirNodeCurrentId = me.roles[index].hirNodeCurrent;
-					break;
-				}
-			}
+		roleNodesLoaded: function(me, activeId) {
 
 			me.setLoadCount();
-
-			ii.trace("Logged in user info loaded", ii.traceTypes.Information, "Info");
-			me.hirNodeStore.reset();
-			me.hirNodeStore.fetch("userId:[user],hirNodeSnapshotId:" + me.hirNodeCurrentId + ",ancestors:true", me.hirNodesLoaded, me);
+			//me.hierarchyNodeStore.fetch("userId:[user],hierarchy:2,", me.hierarchyNodesLoaded, me);
+			me.hirNodeStore.fetch("userId:[user],hirNodeRoot:1,", me.hirNodesLoaded, me);
 		},
-		
+
 		actionSearchItem: function fin_app_hierarchy_UserInterface_actionSearchItem() {
 			var args = ii.args(arguments, {
 				event: {type: Object} // The (key) event object
@@ -781,7 +763,7 @@ ii.Class({
 			
 			me.setLoadCount();
 			me.hirNodeStore.reset();
-			me.hirNodeStore.fetch("userId:[user]," + criteria, me.hirNodesLoaded, me);
+			me.hirNodeStore.fetch("userId:[user],hirNodeRoot:-1," + criteria, me.hirNodesLoaded, me);
 		},
 
 		loadHirNodes: function() {
@@ -798,7 +780,7 @@ ii.Class({
 			if (!found) {
 				me.setLoadCount();
 				ii.trace("Hirnodes Loading", ii.traceTypes.Information, "Info");
-				me.hirNodeStore.fetch("userId:[user],hirNodeSnapshotId:" + me.hirNodeCurrentId + ",hirNodeSearchId:" + me.hirNodeCurrentId + ",ancestors:true", me.hirNodesLoaded, me);
+				me.hirNodeStore.fetch("userId:[user],hirNodeRoot:" + me.hirNodeCurrentId + ",", me.hirNodesLoaded, me);
 			}
 			else
 				me.selectNode();
@@ -832,6 +814,54 @@ ii.Class({
 
 			$("#liNode" + me.hirNodeCurrentId).focus();
 		},
+
+//		hierarchyNodesLoaded: function(me, activeId) {
+//
+//			for (var index = 0; index < me.hierarchyNodes.length; index++) {
+//				var levelBrief = "";
+//				if (me.hierarchyNodes[index].hirLevel == 37)
+//					levelBrief = "ENT";
+//				else if (me.hierarchyNodes[index].hirLevel == 2)
+//					levelBrief = "SVP";
+//				else if (me.hierarchyNodes[index].hirLevel == 34)
+//					levelBrief = "DVP";
+//				else if (me.hierarchyNodes[index].hirLevel == 3)
+//					levelBrief = "RVP";
+//				else if (me.hierarchyNodes[index].hirLevel == 36)
+//					levelBrief = "SRM";
+//				else if (me.hierarchyNodes[index].hirLevel == 4)
+//					levelBrief = "RM";
+//				else if (me.hierarchyNodes[index].hirLevel == 41)
+//					levelBrief = "AM";
+//				else if (me.hierarchyNodes[index].hirLevel == 7)
+//					levelBrief = "Unit";
+//					
+//				var item = new fin.app.hierarchy.HirNode(me.hierarchyNodes[index].id
+//					, me.hierarchyNodes[index].id
+//					, me.hierarchyNodes[index].nodeParentId
+//					, me.hierarchyNodes[index].hierarchyId
+//					, me.hierarchyNodes[index].hirLevel
+//					, levelBrief
+//					, me.hierarchyNodes[index].brief
+//					, me.hierarchyNodes[index].title
+//					, me.hierarchyNodes[index].active
+//					, me.hierarchyNodes[index].fullPath
+//					, me.hierarchyNodes[index].status
+//					, me.hierarchyNodes[index].childNodeCount
+//					)
+//
+//				me.hirNodesTemp.push(item);
+//			}
+//			
+//			me.actionAddNodes(true);
+//			me.checkLoadCount();
+//			
+//			if (me.hirNodesList.length == me.hirNodesTemp.length) {
+//				me.resizeControls();
+//				if (me.hirNodesList.length > 0)
+//					$("#liNode" + me.hirNodesList[0].hirNode).find(">.hitarea").click();
+//			}
+//		},
 
 		hirNodesLoaded: function(me, activeId) {
 
@@ -905,8 +935,9 @@ ii.Class({
 								, me.hirNodes[index].levelBrief
 								, me.hirNodes[index].brief
 								, me.hirNodes[index].title
-								, me.hirNodes[index].active							
-								, me.hirNodes[index].status	
+								, me.hirNodes[index].active
+								, me.hirNodes[index].fullPath
+								, me.hirNodes[index].status
 								, me.hirNodes[index].childNodeCount
 								)
 
@@ -944,6 +975,7 @@ ii.Class({
 		 	var hirNode = 0;
             var hirNodeTitle = "";
 			var childNodeCount = 0;
+			var fullPath = "";
 			
 			if (storeNodes)
 				me.storeHirNodes();
@@ -954,10 +986,11 @@ ii.Class({
 				hirNode = me.hirNodesTemp[index].hirNode;				
 				hirNodeTitle = me.hirNodesTemp[index].title;
 				childNodeCount = me.hirNodesTemp[index].childNodeCount;
+				fullPath = me.hirNodesTemp[index].fullPath;
 
 				//set up the edit tree
                 //add the item underneath the parent list
-				me.actionNodeAppend(levelBrief, hirNode, hirNodeTitle, hirParentNode, childNodeCount);
+				me.actionNodeAppend(levelBrief, hirNode, hirNodeTitle, hirParentNode, childNodeCount, fullPath);
 			}
 
 			$("#pageLoading").fadeOut("slow");
@@ -975,6 +1008,7 @@ ii.Class({
 				, hirNodeTitle: {type: String}
 				, hirNodeParent: {type: Number}
 				, childNodeCount: {type: Number}
+				, fullPath: {type: String}
 			});
 			var me = this;
 			var className = args.levelBrief.toLowerCase();
@@ -999,16 +1033,27 @@ ii.Class({
 				me.hitAreaSelect(args.hirNode);
 			});
 
-			me.hierarchyNodeEventSetup(args.levelBrief, args.hirNode);
+			me.hierarchyNodeEventSetup(args.levelBrief, args.hirNode, args.fullPath);
 		},
 
-		hierarchyNodeEventSetup: function(levelBrief, hirNode) {
+		hierarchyNodeEventSetup: function(levelBrief, hirNode, fullPath) {
 			var me = this;
-
+			var nodeAuthorized = false;
+			
 			if (me.isReadOnly)
 				return;
 
 			if (levelBrief.toUpperCase() == "ENT")
+				return;
+
+			for (var index = 0; index < me.roleNodes.length; index++) {
+				if (fullPath.indexOf(me.roleNodes[index].fullPath) >= 0) {
+					nodeAuthorized = true;
+					break;
+				}
+			}
+
+			if (!nodeAuthorized)
 				return;
 
 			if (levelBrief.toUpperCase() != "SVP") {
@@ -1097,7 +1142,7 @@ ii.Class({
 									
 				if (parentNode == undefined) {
 					$($("#liNode" + parentId)[0]).remove();
-					me.actionNodeAppend(me.hirNodesList[parentIndex].levelBrief, me.hirNodesList[parentIndex].id, me.hirNodesList[parentIndex].title, me.hirNodesList[parentIndex].nodeParentId, 1);
+					me.actionNodeAppend(me.hirNodesList[parentIndex].levelBrief, me.hirNodesList[parentIndex].id, me.hirNodesList[parentIndex].title, me.hirNodesList[parentIndex].nodeParentId, 1, me.hirNodesList[parentIndex].fullPath);
 				}
 
 				for (var index = 0; index < checkedNodes.length; index++) {
@@ -1124,7 +1169,7 @@ ii.Class({
 							}
 						}
 
-						me.actionNodeAppend("UNIT", me.unitsList[unitListIndex].hirNode, me.unitsList[unitListIndex].title, parentId, 0);
+						me.actionNodeAppend("UNIT", me.unitsList[unitListIndex].hirNode, me.unitsList[unitListIndex].title, parentId, 0, me.unitsList[unitListIndex].fullPath);
 						var nodeIndex = me.getNodeIndex(me.unitsList[unitListIndex].hirNode);
 
 						if (nodeIndex == -1) {
@@ -1239,7 +1284,7 @@ ii.Class({
 				me.expand = true;
 				$("#span" + nodeId).replaceClass(me.levelClass, "loading");
 				me.setLoadCount();
-				me.hirNodeStore.fetch("userId:[user],hirNodeSnapshotId:" + nodeId + ",ancestors:true", me.hirNodesLoaded, me);
+				me.hirNodeStore.fetch("userId:[user],hirNodeParent:" + nodeId + ",", me.hirNodesLoaded, me);
 			}
 		},
 
@@ -1408,7 +1453,7 @@ ii.Class({
 				var nodeFound = true;
 				var nodeIndex = me.getNodeIndex(me.selectedNodeId);
 				var	newParentNode = $("#ulEdit" + me.selectedNodeId)[0];
-				
+
 				item.id = me.hirNode;
 				item.hirNode = me.hirNode;
 				me.hirNodesList.push(item);
@@ -1416,10 +1461,10 @@ ii.Class({
 				if (newParentNode == undefined) {
 					nodeFound = false;
 					$(me.selectedNode.parentNode).remove();
-					me.actionNodeAppend(me.hirNodesList[nodeIndex].levelBrief, me.hirNodesList[nodeIndex].id, me.hirNodesList[nodeIndex].title, me.hirNodesList[nodeIndex].nodeParentId, 1);
+					me.actionNodeAppend(me.hirNodesList[nodeIndex].levelBrief, me.hirNodesList[nodeIndex].id, me.hirNodesList[nodeIndex].title, me.hirNodesList[nodeIndex].nodeParentId, 1, me.hirNodesList[nodeIndex].fullPath);
 				}
 
-				me.actionNodeAppend(item.levelBrief, item.id, item.title, item.nodeParentId, 0);
+				me.actionNodeAppend(item.levelBrief, item.id, item.title, item.nodeParentId, 0, item.fullPath);
 				if (!nodeFound)
 					$("#liNode" + me.hirNodesList[nodeIndex].hirNode).find(">.hitarea").click();
 			}
@@ -1441,7 +1486,7 @@ ii.Class({
 			}
 			else if (me.nodeAction == "reset") {
 				me.actionResetItem();
-				me.loggedInUsersLoaded(me, 0);
+				me.roleNodesLoaded(me, 0);
 			}
 
 			me.nodeAction = "";
@@ -1724,7 +1769,7 @@ ii.Class({
 				return;
 
 			me.actionResetItem();
-			me.loggedInUsersLoaded(me, 0);
+			me.roleNodesLoaded(me, 0);
 		},
 
 		actionCancelItem: function() {
@@ -1792,10 +1837,12 @@ ii.Class({
 			if (me.nodeAction == "add") {
 				var brief = me.getChildLevelBrief(nodeIndex);
 				var hirLevel = 0;
+				var fullPath = "";
 
 				for (var index = 0; index < me.hirLevels.length; index++) {
 					if (me.hirLevels[index].levelParentId == me.hirNodesList[nodeIndex].hirLevel) {
 						hirLevel = me.hirLevels[index].id;
+						fullPath = me.hirNodesList[nodeIndex].fullPath + "\\" + me.title.getValue();
 						break;
 					}
 				}
@@ -1809,13 +1856,13 @@ ii.Class({
 					, me.brief.getValue()
 					, me.title.getValue()
 					, me.active.check.checked
+					, fullPath
 					, 1
 					, 0
 					, 0
 					)
 			}
 			else if (me.nodeAction == "edit") {
-				
 				me.hirNodesList[nodeIndex].brief = me.brief.getValue();
 				me.hirNodesList[nodeIndex].title = me.title.getValue();
 				me.hirNodesList[nodeIndex].active = me.active.check.checked;
@@ -1842,7 +1889,6 @@ ii.Class({
 			var xml = "";
 
 			if (me.nodeAction == "add" || me.nodeAction == "edit" || me.nodeAction == "delete") {
-
 				xml = '<hirNodeSnapshot';
 				xml += ' id="' + item.id + '"';
 				xml += ' hirNodeParent="' + item.nodeParentId + '"';
