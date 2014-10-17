@@ -8,6 +8,7 @@ ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.ctl.usr.hierarchy" );
 ii.Import( "fin.cmn.usr.treeView" );
 ii.Import( "fin.cmn.usr.datepicker" );
+ii.Import( "fin.cmn.usr.ui.position" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.rpt.ssrsReport.usr.defs" );
 
@@ -26,6 +27,7 @@ ii.Style( "fin.cmn.usr.treeview", 12 );
 ii.Style( "fin.cmn.usr.theme", 13 );
 ii.Style( "fin.cmn.usr.core", 14 );
 ii.Style( "fin.cmn.usr.multiselect", 15 );
+ii.Style( "fin.cmn.usr.angular.bootstrap", 16 );
 
 var importCompleted = false;
 var iiScript = new ii.Script( "fin.cmn.usr.ui.core", function() { coreLoaded(); });
@@ -73,6 +75,8 @@ ii.Class({
 			me.parent = "";
 			me.parentNode = "";
 			me.ddlists = 0;
+			me.siteNodes = [];
+			me.dependentTypes = [];
 
 			me.gateway = ii.ajax.addGateway("rpt", ii.config.xmlProvider);			
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -97,6 +101,7 @@ ii.Class({
 			me.configureCommunications();
 			me.setStatus("Loading");
 			me.initialize();
+			ui.cmn.behavior.disableBackspaceNavigation();
 
 			$(window).bind("resize", me, me.resize);
 		},
@@ -136,15 +141,14 @@ ii.Class({
 			});
 			var me = args.me;
 
-			ii.trace("Session Loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 
 		resize: function() {
 			var me = fin.reportUi;
 
 			$("#TreeviewContainer").height($(window).height() - 75);
-			$("#LevelNamesContainer").height(($(window).height() - 153) - $("#ParameterContainer").height());
-			//$("#ParameterContainer").height($(window).height() - 500);
+			$("#LevelNamesContainer").height(($(window).height() - 183) - $("#ParameterContainer").height());
 			$("#Subscription").height($(window).height() - 115);
 			me.subscriptionGrid.setHeight($(window).height() - 105);
 		},
@@ -287,16 +291,7 @@ ii.Class({
 				clickFunction: function() { me.actionClosePopup(); },
 				hasHotState: true
 			});
-			
-			
-			me.AnchorRefresh = new ui.ctl.buttons.Sizeable({
-				id: "AnchorRefresh",
-				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;Refresh&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionRefreshItem(); },
-				hasHotState: true
-			});
-			
+	
 			me.anchorGenerateReport = new ui.ctl.buttons.Sizeable({
 				id: "AnchorGenerateReport",
 				className: "iiButton",
@@ -351,7 +346,7 @@ ii.Class({
 					if (enteredText == "") 
 						return;
 
-					var emailAddresses = enteredText.split(';');
+					var emailAddresses = enteredText.split(";");
 
 					for (var index = 0; index < emailAddresses.length; index++) {
 						if (emailAddresses[index] != "" && !(ui.cmn.text.validate.emailAddress(emailAddresses[index])))
@@ -373,7 +368,7 @@ ii.Class({
 					if (enteredText == "") 
 						return;
 					
-					var emailAddresses = enteredText.split(';');
+					var emailAddresses = enteredText.split(";");
 
 					for (var index = 0; index < emailAddresses.length; index++) {
 						if (emailAddresses[index] != "" && !(ui.cmn.text.validate.emailAddress(emailAddresses[index])))
@@ -926,10 +921,8 @@ ii.Class({
 			$("#DivCalendarDays").hide();
 			$("#MonthErrorMessage").hide();
 			$("#DayErrorMessage").hide();
-			$("#AnchorRefresh").hide();
 			
 			$("input[name='rbSchedule']").click(function() {
-
 				me.startHour.resizeText();
 				me.startMinute.resizeText();
 				me.startDate.resizeText();
@@ -1018,7 +1011,6 @@ ii.Class({
 			});
 
 			$("input[name='rbDaily']").click(function() {
-
 				if (this.id == "RepeatDay")
 					me.numberOfDays.text.readOnly = false;
 				else
@@ -1030,7 +1022,6 @@ ii.Class({
 			});
 
 			$("input[name='rbMonthly']").click(function() {
-
 				if (this.id == "rbCalendarDays")
 					me.calendarDays.text.readOnly = false;
 				else
@@ -1228,6 +1219,107 @@ ii.Class({
 			}
 		},
 
+		selectNode: function(id, parentId, title, fullPath) {
+			var me = this;
+            var parentNode = $("#liNode" + parentId)[0];
+
+            if (parentNode != undefined) {
+                if (parentNode.className == "expandable" || parentNode.className == "expandable lastExpandable")
+                    $("#liNode" + parentId).find(">.hitarea").click();
+
+				$("#chkNode" + id).attr("checked", "checked");
+				setTimeout(function() { 
+					$("#chkNode" + id).focus();
+				}, 500);
+
+				var parent = "";
+				if (parentId == "37")
+					parent = "ENT";
+				else if (parentId == "2")
+					parent = "SVP";
+				else if (parentId == "34")
+					parent = "DVP";
+				else if (parentId == "3")
+					parent = "RVP";
+				else if (parentId == "36")
+					parent = "SRM";
+				else if (parentId == "4")
+					parent = "RM";
+				else if (parentId == "41")
+					parent = "AM";
+				else if (parentId == "7")
+					parent = "SiteName";
+ 
+				me.parentNodeCheck($("#chkNode" + id)[0], title, parent)
+            }
+		},
+		
+		resetDependentTypes: function() {
+			var me = this;
+
+			me.excludeHouseCodes = [];
+			$("#ExcludeHouseCodes").html("");
+			$("#ExcludeHouseCodes").multiselect("refresh");
+		},
+
+		checkDependentTypes: function(id, parentId, fullPath, add) {
+			var me = this;
+
+			for (var index = 0; index < me.dependentTypes.length; index++) {
+				if (me.dependentTypes[index] == "ExcludeHouseCodes" || me.dependentTypes[index] == "Exclude") {
+					if (add) {
+						var nodes = $.grep(me.siteNodes, function(item, index) {
+						    return item.fullPath.indexOf(fullPath) >= 0;
+							//$.inArray(value, toRemove) < 0;
+							
+							if ($.inArray(fullPath, deviceTypesTemp) >= 0) {
+					 			this.click();
+					 		}
+				
+						});
+
+//						if (me.excludeHouseCodes.length == 0) {
+//							var item = new fin.rpt.ssrs.HirNode({ id: 0, title: "None" });
+//							me.excludeHouseCodes.push(item);
+//						}
+						$.merge(me.excludeHouseCodes, nodes);
+
+						me.excludeHouseCodes.sort(function(a, b) {
+							if (a.title < b.title)
+						    	return -1;
+						  	if (a.title > b.title)
+						    	return 1;
+							return 0;
+						});
+					}
+					else {
+						me.excludeHouseCodes = $.grep(me.excludeHouseCodes, function(item, index) {
+						    return item.fullPath.indexOf(fullPath) < 0;
+						});
+					}
+
+					me.setExcludeHouseCodes();
+				}
+			}
+		},
+
+		setExcludeHouseCodes: function() {
+			var me = this;
+
+			$("#ExcludeHouseCodes").html("");
+			//$("#OverheadAccounts").html("");
+			$("#ExcludeHouseCodes").append("<option title='None' value='0'>None</option>");
+			//$("#OverheadAccounts").append("<option title='None' value='0'>None</option>");
+				
+			for (var index = 0; index < me.excludeHouseCodes.length; index++) {
+				$("#ExcludeHouseCodes").append("<option title='" + me.excludeHouseCodes[index].title + "' value='" + me.excludeHouseCodes[index].id + "'>" + me.excludeHouseCodes[index].title + "</option>");
+				//$("#OverheadAccounts").append("<option title='" + me.excludeHouseCodes[index].title + "' value='" + me.excludeHouseCodes[index].id + "'>" + me.excludeHouseCodes[index].title + "</option>");
+			}
+			$("#ExcludeHouseCodes").multiselect("refresh");
+			//$("#OverheadAccounts").multiselect("refresh");
+			$("#ExcludeHouseCodes").multiselect("checkAll");
+		},
+
 		reportsLoaded: function(me, activeId) {
 
 			for (var index = 0; index < me.reports.length; index++) {
@@ -1245,39 +1337,137 @@ ii.Class({
 			if (me.pageLoading) {
 				me.actionAddNodes();
 				me.pageLoading = false;
+				me.hirNodeStore.fetch("userId:[user],levelBrief:-1", me.hirNodesLoaded, me);	
 			}
 			else {
-				if (me.hirNodes.length > 0)
-					me.hirNode.setValue(me.hirNodes[0].title);
+				var nodes = [];
+				var $scope = angular.element($("#SearchContainer")).scope();
+				$scope.$apply(function() {
+					$scope.nodes = me.hirNodes.slice();
+				});
 
-				$("#HirNodeText").removeClass("Loading");
+				// Add ENT level and its child nodes
+				nodes = $.grep(me.hirNodes, function(item, index) {
+				    return item.hirLevel == 37;
+				});
+				if (nodes.length > 0) {
+					me.addLevelNode("", 37, 'ENT', 1, 1, "");
+					me.addChildNodes(nodes, "ENT");
+				}
+
+				// Add SVP level and its child nodes
+				nodes = $.grep(me.hirNodes, function(item, index) {
+				    return item.hirLevel == 2;
+				});
+				if (nodes.length > 0) {
+					me.addLevelNode("", 2, 'SVP', 1, 1, "");
+					me.addChildNodes(nodes, "SVP");
+				}
+
+				// Add DVP level and its child nodes
+				nodes = $.grep(me.hirNodes, function(item, index) {
+				    return item.hirLevel == 34;
+				});
+				if (nodes.length > 0) {
+					me.addLevelNode("", 34, 'DVP', 1, 1, "");
+					me.addChildNodes(nodes, "DVP");
+				}
+
+				// Add RVP level and its child nodes
+				nodes = $.grep(me.hirNodes, function(item, index) {
+				    return item.hirLevel == 3;
+				});
+				if (nodes.length > 0) {
+					me.addLevelNode("", 3, 'RVP', 1, 1, "");
+					me.addChildNodes(nodes, "RVP");
+				}
+
+				// Add SRM level and its child nodes
+				nodes = $.grep(me.hirNodes, function(item, index) {
+				    return item.hirLevel == 36;
+				});
+				if (nodes.length > 0) {
+					me.addLevelNode("", 36, 'SRM', 1, 1, "");
+					me.addChildNodes(nodes, "SRM");
+				}
+
+				// Add RM level and its child nodes
+				nodes = $.grep(me.hirNodes, function(item, index) {
+				    return item.hirLevel == 4;
+				});
+				if (nodes.length > 0) {
+					me.addLevelNode("", 4, 'RM', 1, 1, "");
+					me.addChildNodes(nodes, "RM");
+				}
+
+				// Add AM level and its child nodes
+				nodes = $.grep(me.hirNodes, function(item, index) {
+				    return item.hirLevel == 41;
+				});
+				if (nodes.length > 0) {
+					me.addLevelNode("", 41, 'AM', 1, 1, "");
+					me.addChildNodes(nodes, "AM");
+				}
+				
+				// Add Unit level and its child nodes
+				nodes = $.grep(me.hirNodes, function(item, index) {
+				    return item.hirLevel == 7;
+				});
+				me.siteNodes = nodes;
+				if (nodes.length > 0) {
+					me.addLevelNode("", 7, 'SiteName', 1, 1, "");
+					me.addChildNodes(nodes, "AM");
+				}
+					
+				me.checkLoadCount();
+				
+				/* Filter and sorting functionality
+				var siteNames = me.hirNodes.filter(function(item, index) {
+				    return item.hirLevel == 7;
+				});
+				siteNames.sort(function(a, b) {
+					if (a.title < b.title)
+				    	return -1;
+				  	if (a.title > b.title)
+				    	return 1;
+				  return 0;
+				});
+				*/
 			}
-			
-			me.addLevelNodes("", 37, 'ENT', 1, 1);
-			me.addLevelNodes("", 2, 'SVP', 1, 1);
-			me.addLevelNodes("", 34, 'DVP', 1, 1);
-			me.addLevelNodes("", 3, 'RVP', 1, 1);
-			me.addLevelNodes("", 36, 'SRM', 1, 1);
-			me.addLevelNodes("", 4, 'RM', 1, 1);
-			me.addLevelNodes("", 41, 'AM', 1, 1);
-			me.addLevelNodes("", 7, 'SiteName', 1, 1);
-			
-			me.checkLoadCount();
+		},
+		
+		addChildNodes: function(nodes, parentLevel) {
+			var me = this;
+			var hirNode = 0;
+            var hirNodeTitle = "";
+			var hirLevel = 0;
+			var fullPath = "";
+
+			if (nodes.length > 0) {
+				for (var index = 0; index < nodes.length; index++) {
+					hirNode = nodes[index].id;
+					hirNodeTitle = nodes[index].title;
+					hirLevel = nodes[index].hirLevel;
+					fullPath = nodes[index].fullPath;
+					me.addLevelNode(parentLevel, hirNode, hirNodeTitle, hirLevel, 0, fullPath);
+				}
+			}
 		},
 
-		addLevelNodes: function() {
+		addLevelNode: function() {
 			var args = ii.args(arguments, {
 				parent: { type: String }
                 , hirNode: { type: Number }
 				, hirNodeTitle: { type: String }
 				, hirLevel: { type: Number }
 				, childNodeCount: {type: Number}
+				, fullPath: { type: String }
             });			
 			var me = this;
 			var nodeHtml = "";			
 			
 			nodeHtml = "<li id=\"liNode" + args.hirNode + "\">";
-			nodeHtml += "<input type=\"checkbox\" id=\"chkNode" + args.hirNode + "\" name=\"" + args.hirNodeTitle + "\" parent=\"" + args.hirLevel + "\" />";
+			nodeHtml += "<input type=\"checkbox\" id=\"chkNode" + args.hirNode + "\" name=\"" + args.hirNodeTitle + "\" fullPath=\"" + args.fullPath + "\" parent=\"" + args.hirLevel + "\" />";
 			nodeHtml += "<span id=\"span" + args.hirNode + "\" class='normal' style='vertical-align: middle;'>" + args.hirNodeTitle + "</span>";
 			
 			if (args.childNodeCount != 0)
@@ -1303,7 +1493,7 @@ ii.Class({
             });
 			
 			$("#chkNode" + args.hirNode).bind("click", function() { 
-				if(args.hirLevel == 1)
+				if (args.hirLevel == 1)
 					me.childNodeCheck(this, args.hirNodeTitle);
 				else
 					me.parentNodeCheck(this, args.hirNodeTitle, args.parent); 
@@ -1315,17 +1505,18 @@ ii.Class({
 		 	var hirNode = 0;
             var hirNodeTitle = "";
 			var childNodeCount = 0;
-			var hirLevel = 0;			
+			var hirLevel = 0;
+			var fullPath = "";			
 			
 			if (me.hirNodes.length > 0) {
-					for (var index = 0; index < me.hirNodes.length; index++) {				 
-					
+				for (var index = 0; index < me.hirNodes.length; index++) {				 
 					hirNode = me.hirNodes[index].id;				
 					hirNodeTitle = me.hirNodes[index].title;
 					childNodeCount = me.hirNodes[index].childNodeCount;
 					hirLevel = me.hirNodes[index].hirLevel;
-					
-					me.addLevelNodes(me.parent, hirNode, hirNodeTitle, hirLevel, childNodeCount);
+					fullPath = nodes[index].fullPath;
+
+					me.addLevelNode(me.parent, hirNode, hirNodeTitle, hirLevel, childNodeCount, fullPath);
 				}
 				$("#span" + me.hirNodes[0].hirLevel).replaceClass("loading", "normal");
 			}
@@ -1341,106 +1532,137 @@ ii.Class({
 		    var nodeChecked = chkNodeParent.checked;
 			me.name = "";
 			me.names = "";
-			
+
 			if (me.lastCheckedNode != undefined && me.lastCheckedNode != hirParentNode) {
 				var previousLevelNodeChecked = false;
-				
+
 				$("input[parent=" + me.lastCheckedNode + "]").each(function() {
 		            if (this.checked == true) 
 						previousLevelNodeChecked = true;
 		        });
-				
-				if (previousLevelNodeChecked) {					
+
+				if (previousLevelNodeChecked) {
 					if (confirm("Selected nodes in earlier level will be deselected")) {
 						$("#chkNode" + me.lastCheckedNode).attr("checked", false);
-						$("input[parent=" + me.lastCheckedNode + "]").each(function(){
-							this.checked = this.disabled = false;
+						$("input[parent=" + me.lastCheckedNode + "]").each(function() {
+							this.checked = false;
+							me.resetDependentTypes();
+//							var id = this.id.replace(/chkNode/, "");
+//							var parent = $(this).attr("parent");
+//							var fullPath = $(this).attr("fullPath");
+//							me.checkDependentTypes(id, parent, fullPath, false);
 						});
 					}
 					else {
 						$("#chkNode" + hirParentNode).attr("checked", false);
-						$("input[parent=" + hirParentNode + "]").each(function(){
-							this.checked = this.disabled = false;
+						$("input[parent=" + hirParentNode + "]").each(function() {
+							this.checked = false;
 						});
 						return false;
 					}
 				}
 			}
-				
+
 			me.lastCheckedNode = hirParentNode;
-			
-			if(chkNodeParent.checked)
+
+			if (chkNodeParent.checked)
 				me.level = "~Level=" + hirNodeTitle;
-			else if(!chkNodeParent.checked) {
+			else if (!chkNodeParent.checked) {
 				var parameter = "~Level=" + hirNodeTitle;
 				me.level = me.level.replace(parameter, "");
-			}			
-					    
+			}
+
 		    //get a list of the children of the node
-		    $("input[parent=" + hirParentNode + "]").each(function()
-		    {
+		    $("input[parent=" + hirParentNode + "]").each(function() {
 		        //find out if the parent node is checked
 		        if (nodeChecked) {
 					this.checked = true;
 					me.name = me.name + "~Name=" + this.name;
 					me.names = me.names + "~" + this.name;
+//					var id = this.id.replace(/chkNode/, "");
+//					var parent = $(this).attr("parent");
+//					var fullPath = $(this).attr("fullPath");
+//					me.checkDependentTypes(id, parent, fullPath, true);
 				}					
 				else {
 					this.checked = false;
 					me.name = me.name.replace("~Name=" + this.name, "");
 					me.names = me.names.replace("~" + this.name, "");
-				}				
-		        
+//					var id = this.id.replace(/chkNode/, "");
+//					var parent = $(this).attr("parent");
+//					var fullPath = $(this).attr("fullPath");
+//					me.checkDependentTypes(id, parent, fullPath, false);
+				}
+
 		        //check the children of the children
 		        //me.childNodeCheck(this);
 		    });
+
+			if (nodeChecked) {
+				var nodes = $.grep(me.siteNodes, function(item, index) {
+					var found = false;
+					for (var iIndex = 0; iIndex < deviceTypesTemp.length; iIndex++) {
+						found = item.fullPath.indexOf(deviceTypesTemp[iIndex]) >= 0;
+						if (found)
+							break;
+					}
+					return found;
+				});
+				me.excludeHouseCodes = nodes;
+				me.setExcludeHouseCodes();
+			}
+			else {
+				me.resetDependentTypes();
+			}
 		},
 		
 		parentNodeCheck: function(chkNodeChild, hirNodeTitle, parent) {
 		    var me = this;
+			var id = chkNodeChild.id.replace(/chkNode/, "");
 		    var hirNode = $(chkNodeChild).attr("parent");
+			var fullPath = $(chkNodeChild).attr("fullPath");
 		    var allChecked = true;
-		    
+
 			if (me.lastCheckedNode != undefined && me.lastCheckedNode != hirNode) {
 				var previousLevelNodeChecked = false;
-				
-				
+
 				$("input[parent=" + me.lastCheckedNode + "]").each(function() {
 		            if (this.checked == true) 
 						previousLevelNodeChecked = true;
 		        });
-				
-				if (previousLevelNodeChecked) {					
+
+				if (previousLevelNodeChecked) {
 					if (confirm("Selected nodes in earlier level will be deselected")) {
 						$("#chkNode" + me.lastCheckedNode).attr("checked", false);
-						$("input[parent=" + me.lastCheckedNode + "]").each(function(){
-							this.checked = this.disabled = false;
+						$("input[parent=" + me.lastCheckedNode + "]").each(function() {
+							this.checked = false;
 						});
 						me.name = "";
 						me.names = "";
+						me.resetDependentTypes();
 					}
 					else {
 						$("#chkNode" + hirNode).attr("checked", false);
-						$("input[parent=" + hirNode + "]").each(function(){
-							this.checked = this.disabled = false;
+						$("input[parent=" + hirNode + "]").each(function() {
+							this.checked = false;
 						});
 						return false;
 					}
 				}
 			}
-			
+
 			me.level = "~Level=" + parent;
-			if(chkNodeChild.checked) {
+			if (chkNodeChild.checked) {
 				me.name = me.name + "~Name=" + hirNodeTitle;
 				me.names = me.names + "~" + hirNodeTitle;
 			}				
-			else if(!chkNodeChild.checked) {				
+			else if (!chkNodeChild.checked) {				
 				me.name = me.name.replace("~Name=" + hirNodeTitle, "");
 				me.names = me.names.replace("~" + hirNodeTitle, "");
 			}				
-			
+
 			me.lastCheckedNode = hirNode;
-			
+
 		    //make sure that the child has a parent
 		    $("#chkNode" + hirNode).each(function() {
 		        //go through the list of child nodes of the parent
@@ -1452,7 +1674,7 @@ ii.Class({
     		    //if all have been checked... check this one
 		        if (allChecked) {
 		            this.checked = true;
-		            me.childNodeCheck(this, parent);
+		            //me.childNodeCheck(this, parent);
 		        }
 				else if (!allChecked) {
 					$("#" + this.id).attr("checked", false);
@@ -1461,12 +1683,13 @@ ii.Class({
 		        //check the parent of the parent
 		        //me.parentNodeCheck(this);
 		    });
+
+			me.checkDependentTypes(id, hirNode, fullPath, chkNodeChild.checked);
 		},
 		
 		actionAddNodes: function() {
 			var me = this;
 			var index = 0;
-			var levelBrief = "";
 			var hirParentNode = 0;
 		 	var hirNode = 0;
             var hirNodeTitle = "";
@@ -1653,20 +1876,22 @@ ii.Class({
 				}	
 			}
 			
-			if(me.list == "")
+			if (me.list == "")
 				me.controlsLoaded();
 		},
 		
-		dropdownsLoaded: function(me, activeId) {			
+		dropdownsLoaded: function(me, activeId) {
+
 			me.ddlists = me.ddlists - 1;
-			if(me.ddlists <= 0)
+			if (me.ddlists <= 0)
 				me.controlsLoaded();			
 		},
 		
 		controlsLoaded: function() {
 			var me = this;
-			var html = "";			
-			var dependentTypes = "false";
+			var html = "";
+
+			me.dependentTypes = [];
 			
 			for (var index = 0; index < me.reportParameters.length; index++) {
 				html += "\n<div class='labelReport'>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium'></div>"									
@@ -1711,9 +1936,9 @@ ii.Class({
 						},
 						formatFunction: function( type ) {
 							if (type.iiClass == "fin.rpt.ssrs.PayrollCompany") 
-								return type.brief +' - '+ type.name;
+								return type.brief + " - " + type.name;
 							if (type.iiClass == "fin.rpt.ssrs.FiscalPeriod") 
-								return "Period " + type.title +' - '+ type.fscYeaTitle;
+								return "Period " + type.title + " - " + type.fscYeaTitle;
 							else
 								return (type.name);
 						}
@@ -1789,9 +2014,10 @@ ii.Class({
 					me.controls[index].resizeText();
 				}
 				else if (me.reportParameters[index].controlType == "MultiSelect") {
-					if (me.reportParameters[index].referenceTableName == "Customer" || me.reportParameters[index].referenceTableName == "Exclude" || me.reportParameters[index].referenceTableName == "ExcludeHouseCode" || me.reportParameters[index].referenceTableName == "HouseCode")				
-						dependentTypes = "true";
-						
+					me.dependentTypes.push(me.reportParameters[index].referenceTableName);
+					//if (me.reportParameters[index].referenceTableName == "Customer" || me.reportParameters[index].referenceTableName == "Exclude" || me.reportParameters[index].referenceTableName == "ExcludeHouseCode" || me.reportParameters[index].referenceTableName == "HouseCode")				
+						//dependentTypes = "true";
+
 					$("#" + me.reportParameters[index].name).html("");										
 					me.populateMultiSelectDropDown(me.reportParameters[index].referenceTableName, me.reportParameters[index].name);						
 					$("#" + me.reportParameters[index].name).multiselect({
@@ -1804,21 +2030,22 @@ ii.Class({
 							at: 'left top'
 						}
 					});
-										
+
 					me.controls[index] = $("#" + me.reportParameters[index].name);
 				}						
 			}			
 			
-			if(dependentTypes  == "true") {
-				$("#AnchorRefresh").show();
-				$("#LevelNamesContainer").height(($(window).height() - 180) - $("#ParameterContainer").height());
-			}				
-			else if(dependentTypes == "false") {
-				$("#AnchorRefresh").hide();
-				$("#LevelNamesContainer").height(($(window).height() - 153) - $("#ParameterContainer").height());
-			}	
-			
+//			if (dependentTypes == "true") {
+//				$("#AnchorRefresh").show();
+//				$("#LevelNamesContainer").height(($(window).height() - 180) - $("#ParameterContainer").height());
+//			}				
+//			else if (dependentTypes == "false") {
+//				$("#AnchorRefresh").hide();
+//				$("#LevelNamesContainer").height(($(window).height() - 153) - $("#ParameterContainer").height());
+//			}	
+
 			me.checkLoadCount();
+			$("#LevelNamesContainer").height(($(window).height() - 183) - $("#ParameterContainer").height());
 		},
 		
 		populateMultiSelectDropDown: function() {
@@ -1829,19 +2056,19 @@ ii.Class({
 			var me = this;			
 			var typeTableData = [];
 			
-			if (args.referenceTableName == 'PayCode')
+			if (args.referenceTableName == "PayCode")
 				typeTableData = me.payCodeTypes;
-			else if (args.referenceTableName == 'EmployeeStatus')
+			else if (args.referenceTableName == "EmployeeStatus")
 				typeTableData = me.employeeStatus;
-			else if (args.referenceTableName == 'Shift')
+			else if (args.referenceTableName == "Shift")
 				typeTableData = me.shifts;
-			else if (args.referenceTableName == 'FscAccount')
+			else if (args.referenceTableName == "FscAccount")
 				typeTableData = me.fscAccounts;
-			else if (args.referenceTableName == 'StatusType' &&  args.name == "InvoiceStatus")
+			else if (args.referenceTableName == "StatusType" &&  args.name == "InvoiceStatus")
 				typeTableData = me.statusTypes;
-			else if (args.referenceTableName == 'StatusType' &&  args.name == "WOStatus")
+			else if (args.referenceTableName == "StatusType" &&  args.name == "WOStatus")
 				typeTableData = me.woStatus;
-			else if (args.referenceTableName == 'States')
+			else if (args.referenceTableName == "States")
 				typeTableData = me.stateTypes;
 				
 			for (var index = 0; index < typeTableData.length; index++) {
@@ -1849,7 +2076,7 @@ ii.Class({
 				var value = typeTableData[index].id;
 				var parameter = typeTableData[index].parameter;
 				title = typeTableData[index].name;
-				if (args.referenceTableName == 'States')					
+				if (args.referenceTableName == "States")					
 					$("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + "</option>");
 				else
 					$("#" + args.name).append("<option title='" + title + "' value='" + parameter + "'>" + title + "</option>");
@@ -2160,7 +2387,7 @@ ii.Class({
 
 			return null;
 		},
-		
+		/*
 		actionRefreshItem: function() {
 			var me = this;
 			me.levelName = "";
@@ -2185,14 +2412,14 @@ ii.Class({
 			me.levelName = me.level.replace("~Level=", "");
 			me.setLoadCount();
 			me.genericTypeStore.fetch("level:" + me.levelName + ",name:" + me.namesList + ",genericType:Customers,userId:[user]", me.customersLoaded, me);
-		},
+		},*/
 		
 		actionGenerateReportItem: function() {
 			var me = this;
 			var parametersList = "";
 			var valid = true;
 			var parameter = "";
-			
+
 			for (var index = 0; index < me.controls.length; index++) {
 				if (me.reportParameters[index].controlType != "MultiSelect")
 					me.controls[index].validate(true);
@@ -2208,22 +2435,22 @@ ii.Class({
 			}
 
 			if (!valid) {
-				alert("In order to save, the errors on the page must be corrected.");
+				alert("In order to generate the report, the errors on the page must be corrected.");
 				return false;
 			}
 			
 			if (me.reportURL == "") {
-				alert("Please select Node.");
+				alert("Please select the Report.");
 				return false;
 			}
 			
 			if (me.level == "") {
-				alert("Please select Level.");
+				alert("Please select the Level.");
 				return false;
 			}
 			
 			if (me.name == "") {
-				alert("Please select Name.");
+				alert("Please select the Name.");
 				return false;
 			}	 
 			
@@ -2246,14 +2473,14 @@ ii.Class({
 					var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function(){
 						return this.value;
 					}).get();
-					if(selectedValues.length > 0) {
+					if (selectedValues.length > 0) {
 						for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
 							parametersList += "~" + me.reportParameters[index].referenceTableName + "=" + selectedValues[selectedIndex];
 						}
 					}
 					else {
-							alert("Please select " + me.reportParameters[index].title);
-							return false;
+						alert("Please select " + me.reportParameters[index].title);
+						return false;
 					}
 				}
 			}
@@ -2264,8 +2491,7 @@ ii.Class({
 			form.setAttribute("action", me.reportURL);			
 			form.setAttribute("target", "_blank");
 			
-			var parameters = [];	
-			parameters = parametersList.split("~");
+			var parameters = parametersList.split("~");
 			for (var index = 0; index < parameters.length; index++) {
 				var nameValuePair;
 				var nameValues = [];
@@ -2336,7 +2562,6 @@ ii.Class({
 			$("#ParemeterContainer").html(html);
 
 			$("#nodeSearchImage").click( function() {
-
 				if (me.status == "edit")
 					me.hirNodeCurrentId = me.hirNodeId;
 				else
