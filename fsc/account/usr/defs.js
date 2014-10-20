@@ -13,6 +13,11 @@ ii.init.register( function() {
 		, name: {type: String}
         , active: {type: Boolean}
 	};
+	
+	fin.fsc.account.mopTotalTypeArgs = {
+		id: {type: Number}
+		, title: {type: String}
+	};
 
 	fin.fsc.account.accountArgs = {
 		id: {type: Number, defaultValue: 0}
@@ -22,6 +27,7 @@ ii.init.register( function() {
 		, description: {type: String}
 		, postingEditCode: {type: String, required: false, defaultValue: " "}
 		, glHeader: {type: String, required: false, defaultValue: " "}
+		, mopTotalType: {type: Number, defaultValue: 0}
         , negativeValue: {type: Boolean}
         , blockImportExport: {type: Boolean}
         , budget: {type: Boolean}
@@ -37,7 +43,6 @@ ii.init.register( function() {
         , accountReceivables: {type: Boolean}
         , wor: {type: Boolean}
         , otherRevenue: {type: Boolean}
-		, excludeMOPUnitTotal: {type: Boolean}
         , active: {type: Boolean}
 	};
     
@@ -48,6 +53,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.fsc.account.accountCategoryArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.fsc.account.MOPTotalType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.fsc.account.mopTotalTypeArgs);
 			$.extend(this, args);
 		}
 	}

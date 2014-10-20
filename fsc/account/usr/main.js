@@ -207,6 +207,22 @@ ii.Class({
 				changeFunction: function() { me.modified(); }
 		    });
 			
+			me.mopTotalType = new ui.ctl.Input.DropDown.Filtered({
+		        id: "MOPTotalType",
+		        formatFunction: function( type ) { return type.title; },
+		        required : false,
+				changeFunction: function() { me.modified(); }
+		    });			
+
+			me.mopTotalType.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)	
+				.addValidation( function( isFinal, dataMap ) {
+					
+					if ((this.focused || this.touched) && me.mopTotalType.indexSelected == -1)
+						this.setInvalid("Please select the MOP / PL Option.");
+				});
+			
 			me.negativeValue = new ui.ctl.Input.Check({
 		        id: "Negative",
 				changeFunction: function() { me.modified(); } 
@@ -282,11 +298,6 @@ ii.Class({
 				changeFunction: function() { me.modified(); }  
 		    });
 			
-			me.excludeMOPUnitTotal = new ui.ctl.Input.Check({
-		        id: "ExcludeMOPUnitTotal",
-				changeFunction: function() { me.modified(); }  
-		    });
-			
 			me.fiscalAccountGrid = new ui.ctl.Grid({
 				id: "FiscalAccount",
 				appendToId: "divForm",
@@ -323,7 +334,15 @@ ii.Class({
 				itemConstructor: fin.fsc.account.AccountCategory,
 				itemConstructorArgs: fin.fsc.account.accountCategoryArgs,
 				injectionArray: me.accountCategories
-			});			
+			});
+
+			me.mopTotalTypes = [];
+			me.mopTotalTypeStore = me.cache.register({
+				storeId: "mopTotalTypes",
+				itemConstructor: fin.fsc.account.MOPTotalType,
+				itemConstructorArgs: fin.fsc.account.mopTotalTypeArgs,
+				injectionArray: me.mopTotalTypes
+			});
 
 			me.accounts = [];
 			me.accountStore = me.cache.register({
@@ -385,6 +404,8 @@ ii.Class({
 				$("#desciptionText").attr('disabled', true);
 				$("#editCodeText").attr('disabled', true);
 				$("#headerText").attr('disabled', true);
+				$("#MOPTotalTypeText").attr('disabled', true);
+				$("#MOPTotalTypeAction").removeClass("iiInputAction");
 				$("#NegativeCheck").attr('disabled', true);
 				$("#BudgetCheck").attr('disabled', true);
 				$("#SalariesWagesCheck").attr('disabled', true);
@@ -400,7 +421,6 @@ ii.Class({
 				$("#ManagementFeeCheck").attr('disabled', true);
 				$("#SuppliesCheck").attr('disabled', true);
 				$("#WORCheck").attr('disabled', true);
-				$("#ExcludeMOPUnitTotalCheck").attr('disabled', true);
 				$("#actionMenu").hide();
 				$(".footer").hide();
 			}
@@ -411,6 +431,7 @@ ii.Class({
 			me.controlVisible();
 			me.accountCategory.reset();
 			me.accountCategory.setData(me.accountCategories);
+			me.mopTotalType.setData(me.mopTotalTypes);
 			me.fiscalAccountGrid.setData([]);
 			me.fiscalAccountGrid.setData(me.accounts);
 			me.resizeControls();
@@ -440,6 +461,11 @@ ii.Class({
 			me.accountDescription.setValue(item.description);
 			me.accountEditCode.setValue(item.postingEditCode);
 			me.accountHeader.setValue(item.glHeader + "");
+
+			index = ii.ajax.util.findIndexById(item.mopTotalType.toString(), me.mopTotalTypes)
+			if (index != undefined)
+				me.mopTotalType.select(index, me.mopTotalType.focused);
+
 	        me.negativeValue.setValue(item.negativeValue.toString());
 	        me.bockImportExport.setValue(item.blockImportExport.toString());
 	        me.budget.setValue(item.budget.toString());
@@ -455,7 +481,6 @@ ii.Class({
 	        me.accountReceivable.setValue(item.accountReceivables.toString());
 	        me.wor.setValue(item.wor.toString());
 	        me.otherRevenue.setValue(item.otherRevenue.toString());
-			me.excludeMOPUnitTotal.setValue(item.excludeMOPUnitTotal.toString());
 			me.setStatus("Loaded");
 		},
 
@@ -530,6 +555,7 @@ ii.Class({
 			me.accountDescription.setValue("");
 			me.accountEditCode.setValue("");
 			me.accountHeader.setValue("");
+			me.mopTotalType.select(0, me.mopTotalType.focused);
 	        me.negativeValue.setValue("false");
 	        me.bockImportExport.setValue("false");
 	        me.budget.setValue("false");
@@ -545,7 +571,6 @@ ii.Class({
 	        me.accountReceivable.setValue("false");
 	        me.wor.setValue("false");
 	        me.otherRevenue.setValue("false");
-			me.excludeMOPUnitTotal.setValue("false");
 			me.fiscalAccountGrid.body.deselectAll();
 			me.accountCode.text.focus();
 			me.validator.reset();
@@ -583,6 +608,7 @@ ii.Class({
 				, me.accountDescription.getValue()
 				, me.accountEditCode.getValue()
 				, me.accountHeader.getValue()
+				, me.mopTotalType.data[me.mopTotalType.indexSelected].id
 		        , me.negativeValue.check.checked
 		        , me.bockImportExport.check.checked
 		        , me.budget.check.checked
@@ -598,7 +624,6 @@ ii.Class({
 		        , me.accountReceivable.check.checked
 		        , me.wor.check.checked
 		        , me.otherRevenue.check.checked
-				, me.excludeMOPUnitTotal.check.checked
 				, true
 			);
 				
@@ -628,7 +653,8 @@ ii.Class({
 			xml += ' code="' + args.item.code + '"';
 			xml += ' description="' + ui.cmn.text.xml.encode(args.item.description) + '"';
 			xml += ' postingEditCode="' + ui.cmn.text.xml.encode(args.item.postingEditCode) + '"';
-			xml += ' glHeader="' + ui.cmn.text.xml.encode(args.item.glHeader) + '"';			
+			xml += ' glHeader="' + ui.cmn.text.xml.encode(args.item.glHeader) + '"';
+			xml += ' mopTotalType="' + args.item.mopTotalType + '"';
 	        xml += ' negativeValue="' + args.item.negativeValue + '"';
 	        xml += ' blockImportExport="' + args.item.blockImportExport + '"';
 	        xml += ' budget="' + args.item.budget + '"';
@@ -644,7 +670,6 @@ ii.Class({
 	        xml += ' accountReceivable="' + args.item.accountReceivables + '"';
 	        xml += ' wor="' + args.item.wor + '"';
 	        xml += ' otherRevenue="' + args.item.otherRevenue + '"';
-			xml += ' excludeMOPUnitTotal="' + args.item.excludeMOPUnitTotal + '"';
 	        xml += ' active="' + args.item.active + '"';
 	        xml += ' clientId="' + ++clientId + '"';
 			xml += '/>';
@@ -681,6 +706,7 @@ ii.Class({
 								, me.accountDescription.getValue()
 								, me.accountEditCode.getValue()
 								, me.accountHeader.getValue()
+								, me.mopTotalType.data[me.mopTotalType.indexSelected].id
 						        , me.negativeValue.check.checked
 						        , me.bockImportExport.check.checked
 						        , me.budget.check.checked
@@ -696,7 +722,6 @@ ii.Class({
 						        , me.accountReceivable.check.checked
 						        , me.wor.check.checked
 						        , me.otherRevenue.check.checked
-								, me.excludeMOPUnitTotal.check.checked
 								, true
 							);
 									
