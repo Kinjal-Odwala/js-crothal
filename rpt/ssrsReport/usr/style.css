@@ -210,6 +210,14 @@
 	z-index: 9050;
 }
 
+Label {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: separate;
+}
+
 #AnchorGenerateReport {
 	float: left;
 	width: 156px;

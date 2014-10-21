@@ -1281,26 +1281,16 @@ ii.Class({
 			$("#ExcludeHouseCodes").multiselect("refresh");
 		},
 
-		checkDependentTypes: function(id, parentId, fullPath, add) {
+		checkDependentTypes: function(fullPath, add) {
 			var me = this;
 
 			for (var index = 0; index < me.dependentTypes.length; index++) {
 				if (me.dependentTypes[index] == "ExcludeHouseCodes" || me.dependentTypes[index] == "Exclude") {
 					if (add) {
-						var nodes = $.grep(me.siteNodes, function(item, index) {
+						var nodes = $.grep(me.siteNodes, function(item, itemIndex) {
 						    return item.fullPath.indexOf(fullPath) >= 0;
-							//$.inArray(value, toRemove) < 0;
-							
-							if ($.inArray(fullPath, deviceTypesTemp) >= 0) {
-					 			this.click();
-					 		}
-				
 						});
 
-//						if (me.excludeHouseCodes.length == 0) {
-//							var item = new fin.rpt.ssrs.HirNode({ id: 0, title: "None" });
-//							me.excludeHouseCodes.push(item);
-//						}
 						$.merge(me.excludeHouseCodes, nodes);
 
 						me.excludeHouseCodes.sort(function(a, b) {
@@ -1312,7 +1302,7 @@ ii.Class({
 						});
 					}
 					else {
-						me.excludeHouseCodes = $.grep(me.excludeHouseCodes, function(item, index) {
+						me.excludeHouseCodes = $.grep(me.excludeHouseCodes, function(item, itemIndex) {
 						    return item.fullPath.indexOf(fullPath) < 0;
 						});
 					}
@@ -1326,17 +1316,24 @@ ii.Class({
 			var me = this;
 
 			$("#ExcludeHouseCodes").html("");
-			//$("#OverheadAccounts").html("");
 			$("#ExcludeHouseCodes").append("<option title='None' value='0'>None</option>");
-			//$("#OverheadAccounts").append("<option title='None' value='0'>None</option>");
 				
 			for (var index = 0; index < me.excludeHouseCodes.length; index++) {
 				$("#ExcludeHouseCodes").append("<option title='" + me.excludeHouseCodes[index].title + "' value='" + me.excludeHouseCodes[index].id + "'>" + me.excludeHouseCodes[index].title + "</option>");
-				//$("#OverheadAccounts").append("<option title='" + me.excludeHouseCodes[index].title + "' value='" + me.excludeHouseCodes[index].id + "'>" + me.excludeHouseCodes[index].title + "</option>");
 			}
 			$("#ExcludeHouseCodes").multiselect("refresh");
-			//$("#OverheadAccounts").multiselect("refresh");
-			$("#ExcludeHouseCodes").multiselect("checkAll");
+		},
+		
+		setOverheadAccounts: function() {
+			var me = this;
+
+			$("#OverheadAccounts").html("");
+			$("#OverheadAccounts").append("<option title='None' value='0'>None</option>");
+				
+			for (var index = 0; index < me.excludeHouseCodes.length; index++) {
+				$("#OverheadAccounts").append("<option title='" + me.excludeHouseCodes[index].title + "' value='" + me.excludeHouseCodes[index].id + "'>" + me.excludeHouseCodes[index].title + "</option>");
+			}
+			$("#OverheadAccounts").multiselect("refresh");
 		},
 
 		reportsLoaded: function(me, activeId) {
@@ -1370,7 +1367,7 @@ ii.Class({
 				    return item.hirLevel == 37;
 				});
 				if (nodes.length > 0) {
-					me.addLevelNode("", 37, 'ENT', 1, 1, "");
+					me.addLevelNode("", 37, "ENT", 1, 1, "");
 					me.addChildNodes(nodes, "ENT");
 				}
 
@@ -1379,7 +1376,7 @@ ii.Class({
 				    return item.hirLevel == 2;
 				});
 				if (nodes.length > 0) {
-					me.addLevelNode("", 2, 'SVP', 1, 1, "");
+					me.addLevelNode("", 2, "SVP", 1, 1, "");
 					me.addChildNodes(nodes, "SVP");
 				}
 
@@ -1388,7 +1385,7 @@ ii.Class({
 				    return item.hirLevel == 34;
 				});
 				if (nodes.length > 0) {
-					me.addLevelNode("", 34, 'DVP', 1, 1, "");
+					me.addLevelNode("", 34, "DVP", 1, 1, "");
 					me.addChildNodes(nodes, "DVP");
 				}
 
@@ -1397,7 +1394,7 @@ ii.Class({
 				    return item.hirLevel == 3;
 				});
 				if (nodes.length > 0) {
-					me.addLevelNode("", 3, 'RVP', 1, 1, "");
+					me.addLevelNode("", 3, "RVP", 1, 1, "");
 					me.addChildNodes(nodes, "RVP");
 				}
 
@@ -1406,7 +1403,7 @@ ii.Class({
 				    return item.hirLevel == 36;
 				});
 				if (nodes.length > 0) {
-					me.addLevelNode("", 36, 'SRM', 1, 1, "");
+					me.addLevelNode("", 36, "SRM", 1, 1, "");
 					me.addChildNodes(nodes, "SRM");
 				}
 
@@ -1415,7 +1412,7 @@ ii.Class({
 				    return item.hirLevel == 4;
 				});
 				if (nodes.length > 0) {
-					me.addLevelNode("", 4, 'RM', 1, 1, "");
+					me.addLevelNode("", 4, "RM", 1, 1, "");
 					me.addChildNodes(nodes, "RM");
 				}
 
@@ -1424,7 +1421,7 @@ ii.Class({
 				    return item.hirLevel == 41;
 				});
 				if (nodes.length > 0) {
-					me.addLevelNode("", 41, 'AM', 1, 1, "");
+					me.addLevelNode("", 41, "AM", 1, 1, "");
 					me.addChildNodes(nodes, "AM");
 				}
 				
@@ -1434,24 +1431,11 @@ ii.Class({
 				});
 				me.siteNodes = nodes;
 				if (nodes.length > 0) {
-					me.addLevelNode("", 7, 'SiteName', 1, 1, "");
+					me.addLevelNode("", 7, "SiteName", 1, 1, "");
 					me.addChildNodes(nodes, "AM");
 				}
-					
+
 				me.checkLoadCount();
-				
-				/* Filter and sorting functionality
-				var siteNames = me.hirNodes.filter(function(item, index) {
-				    return item.hirLevel == 7;
-				});
-				siteNames.sort(function(a, b) {
-					if (a.title < b.title)
-				    	return -1;
-				  	if (a.title > b.title)
-				    	return 1;
-				  return 0;
-				});
-				*/
 			}
 		},
 		
@@ -1549,6 +1533,7 @@ ii.Class({
 		    var me = this;
 		    var hirParentNode = chkNodeParent.id.replace(/chkNode/, "");
 		    var nodeChecked = chkNodeParent.checked;
+			var fullPaths = [];
 			me.name = "";
 			me.names = "";
 
@@ -1556,8 +1541,10 @@ ii.Class({
 				var previousLevelNodeChecked = false;
 
 				$("input[parent=" + me.lastCheckedNode + "]").each(function() {
-		            if (this.checked == true) 
+		            if (this.checked) {
 						previousLevelNodeChecked = true;
+						return false;
+					}	
 		        });
 
 				if (previousLevelNodeChecked) {
@@ -1565,18 +1552,11 @@ ii.Class({
 						$("#chkNode" + me.lastCheckedNode).attr("checked", false);
 						$("input[parent=" + me.lastCheckedNode + "]").each(function() {
 							this.checked = false;
-							me.resetDependentTypes();
-//							var id = this.id.replace(/chkNode/, "");
-//							var parent = $(this).attr("parent");
-//							var fullPath = $(this).attr("fullPath");
-//							me.checkDependentTypes(id, parent, fullPath, false);
 						});
+						me.resetDependentTypes();
 					}
 					else {
 						$("#chkNode" + hirParentNode).attr("checked", false);
-						$("input[parent=" + hirParentNode + "]").each(function() {
-							this.checked = false;
-						});
 						return false;
 					}
 				}
@@ -1586,7 +1566,7 @@ ii.Class({
 
 			if (chkNodeParent.checked)
 				me.level = "~Level=" + hirNodeTitle;
-			else if (!chkNodeParent.checked) {
+			else {
 				var parameter = "~Level=" + hirNodeTitle;
 				me.level = me.level.replace(parameter, "");
 			}
@@ -1598,30 +1578,20 @@ ii.Class({
 					this.checked = true;
 					me.name = me.name + "~Name=" + this.name;
 					me.names = me.names + "~" + this.name;
-//					var id = this.id.replace(/chkNode/, "");
-//					var parent = $(this).attr("parent");
-//					var fullPath = $(this).attr("fullPath");
-//					me.checkDependentTypes(id, parent, fullPath, true);
-				}					
+					fullPaths.push($(this).attr("fullPath"));
+				}
 				else {
 					this.checked = false;
 					me.name = me.name.replace("~Name=" + this.name, "");
 					me.names = me.names.replace("~" + this.name, "");
-//					var id = this.id.replace(/chkNode/, "");
-//					var parent = $(this).attr("parent");
-//					var fullPath = $(this).attr("fullPath");
-//					me.checkDependentTypes(id, parent, fullPath, false);
 				}
-
-		        //check the children of the children
-		        //me.childNodeCheck(this);
 		    });
 
 			if (nodeChecked) {
 				var nodes = $.grep(me.siteNodes, function(item, index) {
 					var found = false;
-					for (var iIndex = 0; iIndex < deviceTypesTemp.length; iIndex++) {
-						found = item.fullPath.indexOf(deviceTypesTemp[iIndex]) >= 0;
+					for (var iIndex = 0; iIndex < fullPaths.length; iIndex++) {
+						found = item.fullPath.indexOf(fullPaths[iIndex]) >= 0;
 						if (found)
 							break;
 					}
@@ -1637,7 +1607,6 @@ ii.Class({
 		
 		parentNodeCheck: function(chkNodeChild, hirNodeTitle, parent) {
 		    var me = this;
-			var id = chkNodeChild.id.replace(/chkNode/, "");
 		    var hirNode = $(chkNodeChild).attr("parent");
 			var fullPath = $(chkNodeChild).attr("fullPath");
 		    var allChecked = true;
@@ -1646,8 +1615,10 @@ ii.Class({
 				var previousLevelNodeChecked = false;
 
 				$("input[parent=" + me.lastCheckedNode + "]").each(function() {
-		            if (this.checked == true) 
+		            if (this.checked) {
 						previousLevelNodeChecked = true;
+						return false;
+					}
 		        });
 
 				if (previousLevelNodeChecked) {
@@ -1675,7 +1646,7 @@ ii.Class({
 				me.name = me.name + "~Name=" + hirNodeTitle;
 				me.names = me.names + "~" + hirNodeTitle;
 			}				
-			else if (!chkNodeChild.checked) {				
+			else {				
 				me.name = me.name.replace("~Name=" + hirNodeTitle, "");
 				me.names = me.names.replace("~" + hirNodeTitle, "");
 			}				
@@ -1686,24 +1657,20 @@ ii.Class({
 		    $("#chkNode" + hirNode).each(function() {
 		        //go through the list of child nodes of the parent
 		        $("input[parent=" + hirNode + "]").each(function() {
-		            if (this.checked == false) 
+		            if (this.checked == false) {
 						allChecked = false;
+						return false;
+					}
 		        });
-    		    
+ 
     		    //if all have been checked... check this one
-		        if (allChecked) {
+		        if (allChecked)
 		            this.checked = true;
-		            //me.childNodeCheck(this, parent);
-		        }
-				else if (!allChecked) {
+				else
 					$("#" + this.id).attr("checked", false);
-				}
-   		    
-		        //check the parent of the parent
-		        //me.parentNodeCheck(this);
 		    });
 
-			me.checkDependentTypes(id, hirNode, fullPath, chkNodeChild.checked);
+			me.checkDependentTypes(fullPath, chkNodeChild.checked);
 		},
 		
 		actionAddNodes: function() {
@@ -2079,9 +2046,8 @@ ii.Class({
 					me.controls[index].resizeText();
 				}
 				else if (me.reportParameters[index].controlType == "MultiSelect") {
-					me.dependentTypes.push(me.reportParameters[index].referenceTableName);
-					//if (me.reportParameters[index].referenceTableName == "Customer" || me.reportParameters[index].referenceTableName == "Exclude" || me.reportParameters[index].referenceTableName == "ExcludeHouseCode" || me.reportParameters[index].referenceTableName == "HouseCode")				
-						//dependentTypes = "true";
+					if (me.reportParameters[index].referenceTableName == "Customer" || me.reportParameters[index].referenceTableName == "Exclude" || me.reportParameters[index].referenceTableName == "ExcludeHouseCode" || me.reportParameters[index].referenceTableName == "HouseCode")				
+						me.dependentTypes.push(me.reportParameters[index].referenceTableName);
 
 					$("#" + me.reportParameters[index].name).html("");										
 					me.populateMultiSelectDropDown(me.reportParameters[index].referenceTableName, me.reportParameters[index].name, me.reportParameters[index].defaultValue);                       						
@@ -2090,19 +2056,19 @@ ii.Class({
 						header: false,
 						noneSelectedText: "",
 						selectedList: 4,
-						selectedText: function(numChecked, numTotal, checkedItems) {
-                            var parametersList = "";
-                            var selectedValues = $("#" + this.element[0].id).multiselect("getChecked").map(function() {
-                                return this.title;
-                            }).get();
-                            
-                            for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
-                                if (selectedValues[selectedIndex] != "(Select All)")
-                                    parametersList = parametersList + ', ' + selectedValues[selectedIndex];
-                            }
-                            parametersList = parametersList.substring(1, parametersList.length);
-                            return parametersList;
-                        },
+//						selectedText: function(numChecked, numTotal, checkedItems) {
+//                            var parametersList = "";
+//                            var selectedValues = $("#" + this.element[0].id).multiselect("getChecked").map(function() {
+//                                return this.title;
+//                            }).get();
+//                            
+//                            for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
+//                                if (selectedValues[selectedIndex] != "(Select All)")
+//                                    parametersList = parametersList + ', ' + selectedValues[selectedIndex];
+//                            }
+//                            parametersList = parametersList.substring(1, parametersList.length);
+//                            return parametersList;
+//                        },
                         click: function(event, ui) {                                                                                    
                             if (ui.text == "(Select All)") {
                                 if (ui.checked)
@@ -2120,15 +2086,6 @@ ii.Class({
 					me.controls[index] = $("#" + me.reportParameters[index].name);
 				}						
 			}			
-			
-//			if (dependentTypes == "true") {
-//				$("#AnchorRefresh").show();
-//				$("#LevelNamesContainer").height(($(window).height() - 180) - $("#ParameterContainer").height());
-//			}				
-//			else if (dependentTypes == "false") {
-//				$("#AnchorRefresh").hide();
-//				$("#LevelNamesContainer").height(($(window).height() - 153) - $("#ParameterContainer").height());
-//			}	
 
 			me.checkLoadCount();
 			$("#LevelNamesContainer").height(($(window).height() - 183) - $("#ParameterContainer").height());
@@ -2143,39 +2100,39 @@ ii.Class({
 			var me = this;			
 			var typeTableData = [];
 			
-			if (args.referenceTableName == 'PayCode') {
+			if (args.referenceTableName == "PayCode") {
                 me.typeAllOrNoneAdd(me.payCodeTypes, "(Select All)");
                 typeTableData = me.payCodeTypes;
             }
-			else if (args.referenceTableName == 'EmployeeStatus') {
+			else if (args.referenceTableName == "EmployeeStatus") {
                 me.typeAllOrNoneAdd(me.statusTypes, "(Select All)");
                 typeTableData = me.statusTypes;
             }
-			else if (args.referenceTableName == 'Shift') {
+			else if (args.referenceTableName == "Shift") {
                 me.typeAllOrNoneAdd(me.workShifts, "(Select All)");
                 typeTableData = me.workShifts;
             }
-			else if (args.referenceTableName == 'FscAccount') {
+			else if (args.referenceTableName == "FscAccount") {
                 me.typeAllOrNoneAdd(me.accounts, "(Select All)");
                 typeTableData = me.accounts;
             }
-			else if (args.referenceTableName == 'StatusType' &&  args.name == "InvoiceStatus") {
+			else if (args.referenceTableName == "StatusType" &&  args.name == "InvoiceStatus") {
                 me.typeAllOrNoneAdd(me.rptStatusTypes, "(Select All)");
                 typeTableData = me.rptStatusTypes;
             }
-			else if (args.referenceTableName == 'StatusType' &&  args.name == "WOStatus") {
+			else if (args.referenceTableName == "StatusType" &&  args.name == "WOStatus") {
                 me.typeAllOrNoneAdd(me.woStatus, "(Select All)");
                 typeTableData = me.woStatus;
             }
-			else if (args.referenceTableName == 'States') {
+			else if (args.referenceTableName == "States") {
                 me.typeAllOrNoneAdd(me.stateTypes, "(Select All)");
                 typeTableData = me.stateTypes;
             }               
-            else if (args.referenceTableName == 'PrimaryService') {
+            else if (args.referenceTableName == "PrimaryService") {
                 me.typeAllOrNoneAdd(me.serviceTypes, "(Select All)");
                 typeTableData = me.serviceTypes;
             }       
-            else if (args.referenceTableName == 'ServiceLine') {
+            else if (args.referenceTableName == "ServiceLine") {
                 me.serviceLineTypes = [];
                 for (var index = 0; index < me.serviceLines.length; index++) {
                     if (!me.serviceLines[index].financialEntity) {
@@ -2186,7 +2143,7 @@ ii.Class({
                 me.typeAllOrNoneAdd(me.serviceLineTypes, "(Select All)");
                 typeTableData = me.serviceLineTypes;
             }               
-            else if (args.referenceTableName == 'FinancialEntity') {
+            else if (args.referenceTableName == "FinancialEntity") {
                 me.financialEntities = [];
                 for (var index = 0; index < me.serviceLines.length; index++) {
                     if (me.serviceLines[index].financialEntity) {
@@ -2197,42 +2154,42 @@ ii.Class({
                 me.typeAllOrNoneAdd(me.financialEntities, "(Select All)");
                 typeTableData = me.financialEntities;
             }               
-            else if (args.referenceTableName == 'ContractType') {
+            else if (args.referenceTableName == "ContractType") {
                 me.typeAllOrNoneAdd(me.contractTypes, "(Select All)");
                 typeTableData = me.contractTypes;
             }
 				
 			for (var index = 0; index < typeTableData.length; index++) {
-                var title = "";
                 var value = typeTableData[index].id;
                 var parameter = typeTableData[index].parameter;
-                title = typeTableData[index].name;
-                if (args.referenceTableName == 'States' || args.referenceTableName == 'PayCode')                    
+                var title = typeTableData[index].name;
+
+                if (args.referenceTableName == "States" || args.referenceTableName == "PayCode")                    
                     $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + "</option>");
-                else if (args.referenceTableName == 'Shift') {
+                else if (args.referenceTableName == "Shift") {
                     if (typeTableData[index].startTime == undefined)
                         $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + "</option>");
                     else
                         $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + ' - ' + typeTableData[index].startTime + ' - ' + typeTableData[index].endTime + "</option>");
                 }
-                else  if (args.referenceTableName == 'FscAccount') {
+                else  if (args.referenceTableName == "FscAccount") {
                     if (typeTableData[index].code == undefined)
                         $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + "</option>");
                     else
                         $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + typeTableData[index].code + ' - ' + typeTableData[index].description + "</option>");                       
                 }                   
-                else if (args.referenceTableName == 'EmployeeStatus' ||
-                    args.referenceTableName == 'PrimaryService' ||
-                    args.referenceTableName == 'ServiceLine' ||
-                    args.referenceTableName == 'FinancialEntity' ||
-                    args.referenceTableName == 'ContractType') 
+                else if (args.referenceTableName == "EmployeeStatus" ||
+                    args.referenceTableName == "PrimaryService" ||
+                    args.referenceTableName == "ServiceLine" ||
+                    args.referenceTableName == "FinancialEntity" ||
+                    args.referenceTableName == "ContractType")
                         $("#" + args.name).append("<option title='" + title + "' value='" + title + "'>" + title + "</option>");
                 else 
                     $("#" + args.name).append("<option title='" + title + "' value='" + parameter + "'>" + title + "</option>");
             }
             
-            if (args.defaultValue == '(Select All)') {
-                $('#' + args.name + ' option').prop('selected', true);
+            if (args.defaultValue == "(Select All)") {
+                $("#" + args.name + " option").prop("selected", true);
             }
 		},
 		

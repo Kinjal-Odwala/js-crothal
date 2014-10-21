@@ -1,5 +1,5 @@
 angular.module('reportApp', ['ui.bootstrap']);
-angular.module('reportApp').controller('SearchCtrl', function($scope, $http) {
+var app = angular.module('reportApp').controller('SearchCtrl', function($scope, $http) {
 	$scope.selected = undefined;
 	$scope.nodes = [];
 
