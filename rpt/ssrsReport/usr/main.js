@@ -775,14 +775,6 @@ ii.Class({
 				itemConstructor: fin.rpt.ssrs.GenericType,
 				itemConstructorArgs: fin.rpt.ssrs.genericTypeArgs,
 				injectionArray: me.genericTypes
-			});
-			
-			me.fscYears = [];
-			me.fscYearStore = me.cache.register({
-				storeId: "fscYears",
-				itemConstructor: fin.rpt.ssrs.FscYear,
-				itemConstructorArgs: fin.rpt.ssrs.fscYearArgs,
-				injectionArray: me.fscYears
 			});			
 			
 			me.payCodeTypes = [];
@@ -801,29 +793,29 @@ ii.Class({
 				injectionArray: me.payrollCompanys
 			});
 			
-			me.employeeStatus = [];
-			me.employeeStatusStore = me.cache.register({
-				storeId: "employeeStatus",
-				itemConstructor: fin.rpt.ssrs.EmployeeStatus,
-				itemConstructorArgs: fin.rpt.ssrs.employeeStatusArgs,
-				injectionArray: me.employeeStatus
-			});
-			
-			me.fscAccounts = [];
-			me.fscAccountStore = me.cache.register({
-				storeId: "fscAccounts",
-				itemConstructor: fin.rpt.ssrs.FscAccount,
-				itemConstructorArgs: fin.rpt.ssrs.fscAccountArgs,
-				injectionArray: me.fscAccounts
-			});
-			
-			me.revInvoiceBatches = [];
-			me.revInvoiceBatchStore = me.cache.register({
-				storeId: "revInvoiceBatches",
-				itemConstructor: fin.rpt.ssrs.RevInvoiceBatch,
-				itemConstructorArgs: fin.rpt.ssrs.revInvoiceBatchesArgs,
-				injectionArray: me.revInvoiceBatches
-			});
+			me.statusTypes = [];
+            me.statusStore = me.cache.register({
+                storeId: "statusTypes",
+                itemConstructor: fin.rpt.ssrs.StatusType,
+                itemConstructorArgs: fin.rpt.ssrs.statusTypeArgs,
+                injectionArray: me.statusTypes
+            });
+            
+            me.accounts = []; 
+            me.accountStore = me.cache.register({
+                storeId: "accounts", 
+                itemConstructor: fin.rpt.ssrs.Account, 
+                itemConstructorArgs: fin.rpt.ssrs.accountArgs, 
+                injectionArray: me.accounts
+            });
+            
+            me.invoiceBatches = []; 
+            me.batchStore = me.cache.register({ 
+                storeId: "revInvoiceBatchs", 
+                itemConstructor: fin.rpt.ssrs.Batch, 
+                itemConstructorArgs: fin.rpt.ssrs.batchArgs, 
+                injectionArray: me.invoiceBatches 
+            });
 			
 			me.weekPeriods = [];
 			me.weekPeriodStore = me.cache.register({
@@ -833,21 +825,21 @@ ii.Class({
 				injectionArray: me.weekPeriods
 			});
 			
-			me.shifts = [];
-			me.shiftStore = me.cache.register({
-				storeId: "shifts",
-				itemConstructor: fin.rpt.ssrs.Shift,
-				itemConstructorArgs: fin.rpt.ssrs.shiftArgs,
-				injectionArray: me.shifts
-			});
-			
-			me.statusTypes = [];
-			me.statusTypeStore = me.cache.register({
-				storeId: "statusTypes",
-				itemConstructor: fin.rpt.ssrs.StatusType,
-				itemConstructorArgs: fin.rpt.ssrs.statusTypeArgs,
-				injectionArray: me.statusTypes
-			});
+			me.workShifts = []; 
+            me.workShiftStore = me.cache.register({ 
+                storeId: "workShifts", 
+                itemConstructor: fin.rpt.ssrs.WorkShift, 
+                itemConstructorArgs: fin.rpt.ssrs.workShiftArgs, 
+                injectionArray: me.workShifts    
+            });
+            
+            me.rptStatusTypes = [];
+            me.rptStatusTypeStore = me.cache.register({
+                storeId: "rptStatusTypes",
+                itemConstructor: fin.rpt.ssrs.RptStatusType,
+                itemConstructorArgs: fin.rpt.ssrs.rptStatusTypeArgs,
+                injectionArray: me.rptStatusTypes
+            });
 			
 			me.yearPeriods = [];
 			me.yearPeriodStore = me.cache.register({
@@ -881,6 +873,29 @@ ii.Class({
 				injectionArray: me.stateTypes	
 			});
 			
+			me.serviceTypes = [];
+            me.serviceTypeStore = me.cache.register({
+                storeId: "serviceTypes",
+                itemConstructor: fin.rpt.ssrs.ServiceType,
+                itemConstructorArgs: fin.rpt.ssrs.serviceTypeArgs,
+                injectionArray: me.serviceTypes
+            });
+            
+            me.serviceLines = [];
+            me.serviceLineStore = me.cache.register({
+                storeId: "serviceLines",
+                itemConstructor: fin.rpt.ssrs.ServiceLine,
+                itemConstructorArgs: fin.rpt.ssrs.serviceLineArgs,
+                injectionArray: me.serviceLines
+            });
+            
+            me.contractTypes = [];
+            me.contractTypeStore = me.cache.register({
+                storeId: "contractTypes",
+                itemConstructor: fin.rpt.ssrs.ContractType,
+                itemConstructorArgs: fin.rpt.ssrs.contractTypeArgs,
+                injectionArray: me.contractTypes    
+            });
 		},
 
 		setStatus: function(status) {
@@ -1148,6 +1163,7 @@ ii.Class({
 			me.unions = [];
 			me.entryMethods = [];
 			me.hour40Exceptions = [];
+			me.houseCodeStatus = [];
 			
 			me.levels.push(new fin.rpt.ssrs.Level(37, "ENT", "ENT"));
 			me.levels.push(new fin.rpt.ssrs.Level(2, "SVP", "SVP"));
@@ -1158,22 +1174,22 @@ ii.Class({
 			me.levels.push(new fin.rpt.ssrs.Level(41, "AM", "AM"));
 			me.levels.push(new fin.rpt.ssrs.Level(7, "SiteName", "SiteName"));
 			
-			me.excludeOverheadAccounts.push(new fin.rpt.ssrs.ExcludeOverheadAccount(3, "Yes", "3"));
+			me.excludeOverheadAccounts.push(new fin.rpt.ssrs.ExcludeOverheadAccount(3, "Yes", "3"));//Default
 			me.excludeOverheadAccounts.push(new fin.rpt.ssrs.ExcludeOverheadAccount(-1, "No", "-1"));
 			
 			me.payrollReportTypes.push(new fin.rpt.ssrs.PayrollReportType(1, "By House Code", "HC"));
 			me.payrollReportTypes.push(new fin.rpt.ssrs.PayrollReportType(2, "By Employee", "E"));
 			me.payrollReportTypes.push(new fin.rpt.ssrs.PayrollReportType(3, "Hierarchy", "H"));
 			
-			me.reportTypes.push(new fin.rpt.ssrs.ReportType(0, "All House Codes", "0"));
+			me.reportTypes.push(new fin.rpt.ssrs.ReportType(0, "All House Codes", "0"));//Default
 			me.reportTypes.push(new fin.rpt.ssrs.ReportType(1, "Rollup", "1"));
 			
-			me.budgetTypes.push(new fin.rpt.ssrs.BudgetType("Started", "Started", "Started"));
-			me.budgetTypes.push(new fin.rpt.ssrs.BudgetType("NotStarted", "Not Started", "NotStarted"));
+			me.budgetTypes.push(new fin.rpt.ssrs.BudgetType(1, "Started", "Started"));//Default
+            me.budgetTypes.push(new fin.rpt.ssrs.BudgetType(2, "Not Started", "NotStarted"));
 			
-			me.crothallEmployees.push(new fin.rpt.ssrs.CrothallEmployee("ALL", "ALL", "ALL"));
-			me.crothallEmployees.push(new fin.rpt.ssrs.CrothallEmployee("YES", "YES", "YES"));
-			me.crothallEmployees.push(new fin.rpt.ssrs.CrothallEmployee("NO", "NO", "NO"));
+			me.crothallEmployees.push(new fin.rpt.ssrs.CrothallEmployee(1, "ALL", "ALL"));//Default
+            me.crothallEmployees.push(new fin.rpt.ssrs.CrothallEmployee(2, "YES", "YES"));
+            me.crothallEmployees.push(new fin.rpt.ssrs.CrothallEmployee(3, "NO", "NO"));
 			
 			me.currentWeeks.push(new fin.rpt.ssrs.CurrentWeek(1, "1", "1"));
 			me.currentWeeks.push(new fin.rpt.ssrs.CurrentWeek(2, "2", "2"));
@@ -1182,20 +1198,23 @@ ii.Class({
 			me.currentWeeks.push(new fin.rpt.ssrs.CurrentWeek(5, "5", "5"));
 			me.currentWeeks.push(new fin.rpt.ssrs.CurrentWeek(6, "6", "6"));
 			
-			me.comments.push(new fin.rpt.ssrs.Comment("GLLevel", "GL Level", "GL Level"));
-			me.comments.push(new fin.rpt.ssrs.Comment("Summary", "Summary", "Summary"));
-			me.comments.push(new fin.rpt.ssrs.Comment("Both", "Both", "Both"));
+			me.comments.push(new fin.rpt.ssrs.Comment(1, "GL Level", "GL Level"));
+            me.comments.push(new fin.rpt.ssrs.Comment(2, "Summary", "Summary"));
+            me.comments.push(new fin.rpt.ssrs.Comment(3, "Both", "Both"));//Default
 			
 			me.unions.push(new fin.rpt.ssrs.Union(1, "Both", "B"));
 			me.unions.push(new fin.rpt.ssrs.Union(2, "Union", "U"));
 			me.unions.push(new fin.rpt.ssrs.Union(3, "Non Union", "N"));
 			
-			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(1, "Epay Site and Task", "1"));
+			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(1, "Epay Site and Task", "1"));//Default
 			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(2, "Kronos Time and Attendance", "2"));
 			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(3, "Manual", "3"));
 			
-			me.hour40Exceptions.push(new fin.rpt.ssrs.Hour40Exception(0, "Equal To 40", "0"));
+			me.hour40Exceptions.push(new fin.rpt.ssrs.Hour40Exception(0, "Equal To 40", "0"));//Default
 			me.hour40Exceptions.push(new fin.rpt.ssrs.Hour40Exception(1, "Greater Than 40", "1"));
+			
+			me.houseCodeStatus.push(new fin.rpt.ssrs.HouseCodeStatus(1, "Active", "1"));//Default
+            me.houseCodeStatus.push(new fin.rpt.ssrs.HouseCodeStatus(0, "Closed", "0"));
 		},
 		
 		loggedInUsersLoaded: function(me, activeId) {
@@ -1807,7 +1826,7 @@ ii.Class({
 				if (me.reportParameters[index].referenceTableName == "FscYear") {
 					me.ddlists = me.ddlists + 1;
 					me.list = "FscYear";
-					me.fscYearStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+					me.fiscalYearStore.fetch("userId:[user],fscYear:>=3", me.dropdownsLoaded, me);
 				}
 				else if (me.reportParameters[index].referenceTableName == "FscPeriod" || me.reportParameters[index].referenceTableName == "FscPeriodFrom") {
 					me.ddlists = me.ddlists + 1;
@@ -1827,17 +1846,17 @@ ii.Class({
 				else if (me.reportParameters[index].referenceTableName == "EmployeeStatus") {
 					me.ddlists = me.ddlists + 1;
 					me.list = "EmployeeStatus";
-					me.employeeStatusStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+					me.statusStore.fetch("userId:[user],", me.dropdownsLoaded, me);
 				}
 				else if (me.reportParameters[index].referenceTableName == "FscAccount") {
 					me.ddlists = me.ddlists + 1;
 					me.list = "FscAccount";
-					me.fscAccountStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+					me.accountStore.fetch("userId:[user],budget:1,code:code", me.dropdownsLoaded, me);
 				}
 				else if (me.reportParameters[index].referenceTableName == "BatchNumber") {
 					me.ddlists = me.ddlists + 1;
 					me.list = "BatchNumber";
-					me.revInvoiceBatchStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+					me.batchStore.fetch("userId:[user],statusType:-1", me.dropdownsLoaded, me);
 				}
 				else if (me.reportParameters[index].referenceTableName == "WkPeriod") {
 					me.ddlists = me.ddlists + 1;
@@ -1847,12 +1866,12 @@ ii.Class({
 				else if (me.reportParameters[index].referenceTableName == "Shift") {
 					me.ddlists = me.ddlists + 1;
 					me.list = "Shift";
-					me.shiftStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+					me.workShiftStore.fetch("userId:[user],", me.dropdownsLoaded, me);
 				}	
 				else if (me.reportParameters[index].referenceTableName == "StatusType" &&  me.reportParameters[index].name == "InvoiceStatus") {
 					me.ddlists = me.ddlists + 1;
 					me.list = "StatusType";
-					me.statusTypeStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+					me.rptStatusTypeStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
 				}
 				else if (me.reportParameters[index].referenceTableName == "YearPeriods") {
 					me.ddlists = me.ddlists + 1;
@@ -1873,7 +1892,22 @@ ii.Class({
 					me.ddlists = me.ddlists + 1;
 					me.list = "States";
 					me.stateStore.fetch("userId:[user]", me.dropdownsLoaded, me);
-				}	
+				}				
+                else if (me.reportParameters[index].referenceTableName == "PrimaryService") {
+                    me.ddlists = me.ddlists + 1;
+                    me.list = "PrimaryService";
+                    me.serviceTypeStore.fetch("userId:[user]", me.dropdownsLoaded, me);
+                }
+                else if (me.reportParameters[index].referenceTableName == "ServiceLine") {
+                    me.ddlists = me.ddlists + 1;
+                    me.list = "ServiceLine";
+                    me.serviceLineStore.fetch("userId:[user]", me.dropdownsLoaded, me);
+                }
+                else if (me.reportParameters[index].referenceTableName == "ContractType") {
+                    me.ddlists = me.ddlists + 1;
+                    me.list = "ContractType";
+                    me.contractTypeStore.fetch("userId:[user]", me.dropdownsLoaded, me);
+                }	
 			}
 			
 			if (me.list == "")
@@ -1894,7 +1928,10 @@ ii.Class({
 			me.dependentTypes = [];
 			
 			for (var index = 0; index < me.reportParameters.length; index++) {
-				html += "\n<div class='labelReport'>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium'></div>"									
+				if (me.reportParameters[index].mandatory)
+                    html += "\n<div class='labelReport'>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "'></div><div><input type='checkbox' name='dateCheck' id='dateCheck' checked='true' class='labelSchedule' onchange='fin.reportUi.dateMandatory(this," + index + ");' /></div><div class='labelSchedule'>NULL</div>"                 
+                else if (!me.reportParameters[index].mandatory)
+					html += "\n<div class='labelReport'>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium'></div>"									
 				html += "\n<div style='clear:both;'></div>";
 			}
 
@@ -1914,7 +1951,7 @@ ii.Class({
 						.addValidation(ui.ctl.Input.Validation.required);
 
 					me.controls[index].resizeText();
-					if (me.reportParameters[index].name = "CreateUserID") {
+					if (me.reportParameters[index].name == "CreateUserID") {
 						$("#CreateUserIDText").val(me.session.propertyGet("userName"));
 						$("#CreateUserIDText").attr("readonly", true);
 					}
@@ -1937,8 +1974,10 @@ ii.Class({
 						formatFunction: function( type ) {
 							if (type.iiClass == "fin.rpt.ssrs.PayrollCompany") 
 								return type.brief + " - " + type.name;
-							if (type.iiClass == "fin.rpt.ssrs.FiscalPeriod") 
-								return "Period " + type.title + " - " + type.fscYeaTitle;
+							else if (type.iiClass == "fin.rpt.ssrs.FiscalPeriod") 
+                                return "Period " + type.title +' - '+ type.fscYeaTitle;
+                            else if (type.iiClass == "fin.rpt.ssrs.Batch") 
+                                return type.batchId +':'+ type.title;
 							else
 								return (type.name);
 						}
@@ -1954,17 +1993,19 @@ ii.Class({
 						});					
 						
 					if (me.reportParameters[index].referenceTableName == "FscYear")
-						me.controls[index].setData(me.fscYears);
+						me.controls[index].setData(me.fiscalYears);
 					else if (me.reportParameters[index].referenceTableName == "FscPeriod" || me.reportParameters[index].referenceTableName == "FscPeriodFrom" || me.reportParameters[index].referenceTableName == "FscPeriodTo")
 						me.controls[index].setData(me.fiscalPeriods);					
 					else if (me.reportParameters[index].referenceTableName == "PayrollCompany")
 						me.controls[index].setData(me.payrollCompanys);
 					else if (me.reportParameters[index].referenceTableName == "BatchNumber")
-						me.controls[index].setData(me.revInvoiceBatches);
+						me.controls[index].setData(me.invoiceBatches);
 					else if (me.reportParameters[index].referenceTableName == "WkPeriod")
 						me.controls[index].setData(me.weekPeriods);
-					else if (me.reportParameters[index].referenceTableName == "OverHead")
-						me.controls[index].setData(me.excludeOverheadAccounts);
+					else if (me.reportParameters[index].referenceTableName == "OverHead"){
+                        me.controls[index].setData(me.excludeOverheadAccounts);
+                        me.controls[index].select(ii.ajax.util.findIndexById(me.reportParameters[index].defaultValue, me.excludeOverheadAccounts), me.controls[index].focused);
+                    }
 					else if (me.reportParameters[index].referenceTableName == "YearPeriods")
 						me.controls[index].setData(me.yearPeriods);
 					else if (me.reportParameters[index].referenceTableName == "PayPeriod")
@@ -1973,22 +2014,40 @@ ii.Class({
 						me.controls[index].setData(me.levels);
 					else if (me.reportParameters[index].referenceTableName == "Report" && me.reportParameters[index].name == "ReportType")
 						me.controls[index].setData(me.payrollReportTypes);
-					else if (me.reportParameters[index].referenceTableName == "ReportType")
-						me.controls[index].setData(me.reportTypes);
-					else if (me.reportParameters[index].referenceTableName == "Report" && me.reportParameters[index].name == "Budget")
-						me.controls[index].setData(me.budgetTypes);
-					else if (me.reportParameters[index].referenceTableName == "CrothallEmployee")
-						me.controls[index].setData(me.crothallEmployees);
+					else if (me.reportParameters[index].referenceTableName == "ReportType") {
+                        me.controls[index].setData(me.reportTypes);
+                        me.controls[index].select(ii.ajax.util.findIndexById(me.reportParameters[index].defaultValue, me.reportTypes), me.controls[index].focused);
+                    }
+					else if (me.reportParameters[index].referenceTableName == "Report" && me.reportParameters[index].name == "Budget") {
+                        me.controls[index].setData(me.budgetTypes);
+                        me.controls[index].select(me.findIndexByTitle(me.reportParameters[index].defaultValue, me.budgetTypes), me.controls[index].focused);
+                    }
+					else if (me.reportParameters[index].referenceTableName == "CrothallEmployee") {
+                        me.controls[index].setData(me.crothallEmployees);                       
+                        me.controls[index].select(me.findIndexByTitle(me.reportParameters[index].defaultValue, me.crothallEmployees), me.controls[index].focused);                      
+                    }
 					else if (me.reportParameters[index].referenceTableName == "Week")
 						me.controls[index].setData(me.currentWeeks);
-					else if (me.reportParameters[index].referenceTableName == "Comments")
-						me.controls[index].setData(me.comments);
-					else if (me.reportParameters[index].referenceTableName == "UnionNonUnion")
-						me.controls[index].setData(me.unions);
-					else if (me.reportParameters[index].referenceTableName == "EntryMethod")
-						me.controls[index].setData(me.entryMethods);
-					else if (me.reportParameters[index].referenceTableName == "Hour40Exception")
-						me.controls[index].setData(me.hour40Exceptions);					
+					else if (me.reportParameters[index].referenceTableName == "Comments") {
+                        me.controls[index].setData(me.comments);
+                        me.controls[index].select(me.findIndexByTitle(me.reportParameters[index].defaultValue, me.comments), me.controls[index].focused);
+                    }
+					else if (me.reportParameters[index].referenceTableName == "UnionNonUnion") {
+                        me.controls[index].setData(me.unions);
+                        me.controls[index].select(me.findIndexByTitle(me.reportParameters[index].defaultValue, me.unions), me.controls[index].focused);
+                    }
+					else if (me.reportParameters[index].referenceTableName == "EntryMethod") {
+                        me.controls[index].setData(me.entryMethods);
+                        me.controls[index].select(ii.ajax.util.findIndexById(me.reportParameters[index].defaultValue, me.entryMethods), me.controls[index].focused);
+                    }
+					else if (me.reportParameters[index].referenceTableName == "Hour40Exception") {
+                        me.controls[index].setData(me.hour40Exceptions);
+                        me.controls[index].select(ii.ajax.util.findIndexById(me.reportParameters[index].defaultValue, me.hour40Exceptions), me.controls[index].focused);                        
+                    }
+					else if (me.reportParameters[index].referenceTableName == "HouseCodeStatus") {
+                        me.controls[index].setData(me.houseCodeStatus);
+                        me.controls[index].select(ii.ajax.util.findIndexById(me.reportParameters[index].defaultValue, me.houseCodeStatus), me.controls[index].focused);
+                    }					
 				}
 				else if (me.reportParameters[index].controlType == "Date") {
 					me.controls[index] = new ui.ctl.Input.Date({
@@ -2001,6 +2060,7 @@ ii.Class({
 					
 					me.controls[index].makeEnterTab()
 						.setValidationMaster( me.validator )
+						.addValidation(ui.ctl.Input.Validation.required)
 						.addValidation( function( isFinal, dataMap ) {
 		
 							var enteredText = this.text.value;
@@ -2011,6 +2071,11 @@ ii.Class({
 								this.setInvalid("Please enter valid " + this.labelName + ".");					
 					});
 					
+					if (me.reportParameters[index].mandatory) {
+                        me.controls[index].text.readOnly = "true";
+                        $("#" + me.controls[index].id + "Action").removeClass("iiInputAction");
+                    }
+					
 					me.controls[index].resizeText();
 				}
 				else if (me.reportParameters[index].controlType == "MultiSelect") {
@@ -2019,12 +2084,33 @@ ii.Class({
 						//dependentTypes = "true";
 
 					$("#" + me.reportParameters[index].name).html("");										
-					me.populateMultiSelectDropDown(me.reportParameters[index].referenceTableName, me.reportParameters[index].name);						
+					me.populateMultiSelectDropDown(me.reportParameters[index].referenceTableName, me.reportParameters[index].name, me.reportParameters[index].defaultValue);                       						
 					$("#" + me.reportParameters[index].name).multiselect({
 						minWidth: 280,
 						header: false,
 						noneSelectedText: "",
 						selectedList: 4,
+						selectedText: function(numChecked, numTotal, checkedItems) {
+                            var parametersList = "";
+                            var selectedValues = $("#" + this.element[0].id).multiselect("getChecked").map(function() {
+                                return this.title;
+                            }).get();
+                            
+                            for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
+                                if (selectedValues[selectedIndex] != "(Select All)")
+                                    parametersList = parametersList + ', ' + selectedValues[selectedIndex];
+                            }
+                            parametersList = parametersList.substring(1, parametersList.length);
+                            return parametersList;
+                        },
+                        click: function(event, ui) {                                                                                    
+                            if (ui.text == "(Select All)") {
+                                if (ui.checked)
+                                    $("#" + event.target.id).multiselect("checkAll");
+                                else if (!ui.checked)
+                                    $("#" + event.target.id).multiselect("uncheckAll");
+                            }
+                        },
 						position: {
 							my: 'left bottom',
 							at: 'left top'
@@ -2052,36 +2138,133 @@ ii.Class({
 			var args = ii.args(arguments, {
 				referenceTableName: {type: String}
 				, name: {type: String}
+				, defaultValue: {type: String}
 			});
 			var me = this;			
 			var typeTableData = [];
 			
-			if (args.referenceTableName == "PayCode")
-				typeTableData = me.payCodeTypes;
-			else if (args.referenceTableName == "EmployeeStatus")
-				typeTableData = me.employeeStatus;
-			else if (args.referenceTableName == "Shift")
-				typeTableData = me.shifts;
-			else if (args.referenceTableName == "FscAccount")
-				typeTableData = me.fscAccounts;
-			else if (args.referenceTableName == "StatusType" &&  args.name == "InvoiceStatus")
-				typeTableData = me.statusTypes;
-			else if (args.referenceTableName == "StatusType" &&  args.name == "WOStatus")
-				typeTableData = me.woStatus;
-			else if (args.referenceTableName == "States")
-				typeTableData = me.stateTypes;
+			if (args.referenceTableName == 'PayCode') {
+                me.typeAllOrNoneAdd(me.payCodeTypes, "(Select All)");
+                typeTableData = me.payCodeTypes;
+            }
+			else if (args.referenceTableName == 'EmployeeStatus') {
+                me.typeAllOrNoneAdd(me.statusTypes, "(Select All)");
+                typeTableData = me.statusTypes;
+            }
+			else if (args.referenceTableName == 'Shift') {
+                me.typeAllOrNoneAdd(me.workShifts, "(Select All)");
+                typeTableData = me.workShifts;
+            }
+			else if (args.referenceTableName == 'FscAccount') {
+                me.typeAllOrNoneAdd(me.accounts, "(Select All)");
+                typeTableData = me.accounts;
+            }
+			else if (args.referenceTableName == 'StatusType' &&  args.name == "InvoiceStatus") {
+                me.typeAllOrNoneAdd(me.rptStatusTypes, "(Select All)");
+                typeTableData = me.rptStatusTypes;
+            }
+			else if (args.referenceTableName == 'StatusType' &&  args.name == "WOStatus") {
+                me.typeAllOrNoneAdd(me.woStatus, "(Select All)");
+                typeTableData = me.woStatus;
+            }
+			else if (args.referenceTableName == 'States') {
+                me.typeAllOrNoneAdd(me.stateTypes, "(Select All)");
+                typeTableData = me.stateTypes;
+            }               
+            else if (args.referenceTableName == 'PrimaryService') {
+                me.typeAllOrNoneAdd(me.serviceTypes, "(Select All)");
+                typeTableData = me.serviceTypes;
+            }       
+            else if (args.referenceTableName == 'ServiceLine') {
+                me.serviceLineTypes = [];
+                for (var index = 0; index < me.serviceLines.length; index++) {
+                    if (!me.serviceLines[index].financialEntity) {
+                        var item = new fin.rpt.ssrs.ServiceLine({ id: me.serviceLines[index].id, name: me.serviceLines[index].name });
+                        me.serviceLineTypes.push(item);
+                    }               
+                }
+                me.typeAllOrNoneAdd(me.serviceLineTypes, "(Select All)");
+                typeTableData = me.serviceLineTypes;
+            }               
+            else if (args.referenceTableName == 'FinancialEntity') {
+                me.financialEntities = [];
+                for (var index = 0; index < me.serviceLines.length; index++) {
+                    if (me.serviceLines[index].financialEntity) {
+                        var item = new fin.rpt.ssrs.FinancialEntity({ id: me.serviceLines[index].id, name: me.serviceLines[index].name });
+                        me.financialEntities.push(item);
+                    }               
+                }
+                me.typeAllOrNoneAdd(me.financialEntities, "(Select All)");
+                typeTableData = me.financialEntities;
+            }               
+            else if (args.referenceTableName == 'ContractType') {
+                me.typeAllOrNoneAdd(me.contractTypes, "(Select All)");
+                typeTableData = me.contractTypes;
+            }
 				
 			for (var index = 0; index < typeTableData.length; index++) {
-				var title = "";
-				var value = typeTableData[index].id;
-				var parameter = typeTableData[index].parameter;
-				title = typeTableData[index].name;
-				if (args.referenceTableName == "States")					
-					$("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + "</option>");
-				else
-					$("#" + args.name).append("<option title='" + title + "' value='" + parameter + "'>" + title + "</option>");
-			}
+                var title = "";
+                var value = typeTableData[index].id;
+                var parameter = typeTableData[index].parameter;
+                title = typeTableData[index].name;
+                if (args.referenceTableName == 'States' || args.referenceTableName == 'PayCode')                    
+                    $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + "</option>");
+                else if (args.referenceTableName == 'Shift') {
+                    if (typeTableData[index].startTime == undefined)
+                        $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + "</option>");
+                    else
+                        $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + ' - ' + typeTableData[index].startTime + ' - ' + typeTableData[index].endTime + "</option>");
+                }
+                else  if (args.referenceTableName == 'FscAccount') {
+                    if (typeTableData[index].code == undefined)
+                        $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + "</option>");
+                    else
+                        $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + typeTableData[index].code + ' - ' + typeTableData[index].description + "</option>");                       
+                }                   
+                else if (args.referenceTableName == 'EmployeeStatus' ||
+                    args.referenceTableName == 'PrimaryService' ||
+                    args.referenceTableName == 'ServiceLine' ||
+                    args.referenceTableName == 'FinancialEntity' ||
+                    args.referenceTableName == 'ContractType') 
+                        $("#" + args.name).append("<option title='" + title + "' value='" + title + "'>" + title + "</option>");
+                else 
+                    $("#" + args.name).append("<option title='" + title + "' value='" + parameter + "'>" + title + "</option>");
+            }
+            
+            if (args.defaultValue == '(Select All)') {
+                $('#' + args.name + ' option').prop('selected', true);
+            }
 		},
+		
+		dateMandatory: function(object, index) {            
+            var me = this;
+            
+            if (object.checked) {
+                me.controls[index].resetValidation(true);
+                me.controls[index].setValue("");
+                me.controls[index].text.readOnly = "true";
+                $("#" + me.controls[index].id + "Action").removeClass("iiInputAction");
+                me.controls[index].resizeText();
+            }
+            else if (!object.checked) {
+                me.controls[index].text.readOnly = "false";
+                $("#" + me.controls[index].id + "Action").addClass("iiInputAction");
+                me.controls[index].resizeText();
+            }
+        },
+        
+        typeAllOrNoneAdd: function () {
+            var args = ii.args(arguments, {
+                data: {type: [Object]}
+                , title: {type: String, required: false, defaultValue: ""}
+            });         
+            var me = this;
+            
+            //index > 0, condition is included as some droplist already has None as type in it.
+            var index = me.findIndexByTitle(args.title, args.data);
+            if (index == null || index > 0) 
+                args.data.unshift({ id: 0, name: args.title });
+        },
 		
 		getNodeIndex: function() {
 			var args = ii.args(arguments, {
@@ -2127,8 +2310,72 @@ ii.Class({
 				$("#HouseCode").append("<option title='" + me.excludeHouseCodes[index].name + "' value='" + me.excludeHouseCodes[index].id + "'>" + me.excludeHouseCodes[index].name + "</option>");
 			}
 			$("#HouseCode").multiselect("refresh");
+			
+			if(me.controls[3] != undefined && me.controls[3].id == "GroupLevel")
+                me.groupLevelsLoaded();
+				
 			me.checkLoadCount();						
 		},
+		
+		groupLevelsLoaded: function() {
+            var me = this;
+            me.groupLevels = [];
+            
+            if (me.level == "~Level=ENT") {
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(37, "ENT", "ENT"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(2, "SVP", "SVP"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(34, "DVP", "DVP"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+            }
+            else if (me.level == "~Level=SVP") {
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(2, "SVP", "SVP"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(34, "DVP", "DVP"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+            }   
+            else if (me.level == "~Level=DVP") {
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(34, "DVP", "DVP"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+            }
+            else if (me.level == "~Level=RVP") {
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+            }
+            else if (me.level == "~Level=SRM") {
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+            }
+            else if (me.level == "~Level=RM") {
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+            }
+            else if (me.level == "~Level=AM") {
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+            }
+            else if (me.level == "~Level=SiteName") {
+                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+            }
+            
+            me.controls[3].setData(me.groupLevels);
+        },
 		
 		fiscalweeksLoad: function() {
 			var me = this;
@@ -2373,19 +2620,25 @@ ii.Class({
 
 		findIndexByTitle: function() {
 			var args = ii.args(arguments, {
-				title: {type: String},	// The title to use to find the object.
-				data: {type: [Object]}	// The data array to be searched.
-			});		
-			var title = args.title;
-			var data = args.data;
-
-			for (var index = 0; index < data.length; index++) {
-				if (data[index].title == title) {
-					return index;
-				}
-			}
-
-			return null;
+                title: {type: String}       // The id to use to find the object.
+                , data: {type: [Object]}    // The data array to be searched.
+            });     
+            var title = args.title;
+            var data = args.data;
+            var name = "";
+            
+            for (var index = 0; index < data.length; index++ ) {
+                if (data[index].name != undefined)
+                        name = data[index].name;
+                    else
+                        name = data[index].title;
+    
+                if (name.toLowerCase() == title.toLowerCase()) {
+                    return index; 
+                }
+            }
+ 
+            return null;
 		},
 		/*
 		actionRefreshItem: function() {
@@ -2421,12 +2674,12 @@ ii.Class({
 			var parameter = "";
 
 			for (var index = 0; index < me.controls.length; index++) {
-				if (me.reportParameters[index].controlType != "MultiSelect")
+				if (me.reportParameters[index].controlType != "MultiSelect" && ($("#dateCheck")[0] == undefined || !$("#dateCheck")[0].checked))
 					me.controls[index].validate(true);
 			}
 
 			for (var index = 0; index < me.controls.length; index++) {
-				if (me.reportParameters[index].controlType != "MultiSelect") {
+				if (me.reportParameters[index].controlType != "MultiSelect" && ($("#dateCheck")[0] == undefined || !$("#dateCheck")[0].checked)) {
 					if (!me.controls[index].valid) {
 						valid = false;
 						break;
@@ -2455,35 +2708,44 @@ ii.Class({
 			}	 
 			
 			for (var index = 0; index < me.reportParameters.length; index++) {
-				if (me.reportParameters[index].controlType == "Text")
-					parametersList += "~" + me.reportParameters[index].name + "=" + me.controls[index].getValue();
-				else if (me.reportParameters[index].controlType == "Date")
-					parametersList += "~" + me.reportParameters[index].name + "=" + me.controls[index].lastBlurValue;
-				else if (me.reportParameters[index].controlType == "DropDown")	{
-					if (me.reportParameters[index].referenceTableName == "PayrollCompany")
-						parameter = me.controls[index].data[me.controls[index].indexSelected].brief
-					else if (me.reportParameters[index].referenceTableName == "FscPeriod")
-						parameter = me.controls[index].data[me.controls[index].indexSelected].id
-					else
-						parameter = me.controls[index].data[me.controls[index].indexSelected].parameter
-												
-					parametersList += "~" + me.reportParameters[index].referenceTableName + "=" + parameter;
-				}
-				else if (me.reportParameters[index].controlType == "MultiSelect") {
-					var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function(){
-						return this.value;
-					}).get();
-					if (selectedValues.length > 0) {
-						for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
-							parametersList += "~" + me.reportParameters[index].referenceTableName + "=" + selectedValues[selectedIndex];
-						}
-					}
-					else {
-						alert("Please select " + me.reportParameters[index].title);
-						return false;
-					}
-				}
-			}
+                if (me.reportParameters[index].controlType == "Text")
+                    parametersList += "~" + me.reportParameters[index].name + "=" + me.controls[index].getValue();
+                else if (me.reportParameters[index].controlType == "Date") {
+                    if (!me.reportParameters[index].mandatory)
+                        parametersList += "~" + me.reportParameters[index].name + "=" + me.controls[index].lastBlurValue;
+                    if (me.reportParameters[index].mandatory && !$("#dateCheck")[0].checked)
+                        parametersList += "~" + me.reportParameters[index].name + "=" + me.controls[index].lastBlurValue;
+                }                   
+                else if (me.reportParameters[index].controlType == "DropDown")    {
+                    if (me.reportParameters[index].referenceTableName == "PayrollCompany")
+                        parameter = me.controls[index].data[me.controls[index].indexSelected].brief
+                    else if (me.reportParameters[index].referenceTableName == "FscPeriod"
+                            || me.reportParameters[index].referenceTableName == "BatchNumber"
+                            || me.reportParameters[index].referenceTableName == "FscPeriodFrom" 
+                            || me.reportParameters[index].referenceTableName == "FscPeriodTo")
+                        parameter = me.controls[index].data[me.controls[index].indexSelected].id
+                    else
+                        parameter = me.controls[index].data[me.controls[index].indexSelected].parameter
+                                                
+                    parametersList += "~" + me.reportParameters[index].referenceTableName + "=" + parameter;
+                }
+                else if (me.reportParameters[index].controlType == "MultiSelect") {
+                    var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function(){
+                        return this.value;
+                    }).get();
+                    if(selectedValues.length > 0) {
+                        for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
+                            if (selectedValues[selectedIndex] != "undefined")
+                            parametersList += "~" + me.reportParameters[index].referenceTableName + "=" + selectedValues[selectedIndex];
+                        }
+                    }
+                    else {
+                            alert("Please select " + me.reportParameters[index].title);
+                            return false;
+                    }
+                }
+            }
+			
 			parametersList = "UserID=" + me.session.propertyGet("userName") + me.level + me.name + parametersList;
 			
 			var form = document.createElement("form");
