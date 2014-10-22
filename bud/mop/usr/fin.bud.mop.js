@@ -1,4 +1,4 @@
-﻿window.__bt__d55bef70 = ['<div>    <div id="mop-filter">        <div style="color: #FFF; background-color: #659A66; font-size: 14px; padding: 5px;">            <table class="mop-filter">                <tr>                    <td>                        Site:                    </td>                    <td id="hcmHouseCode">                    </td>                    <td>                        Job:                    </td>                    <td id="hcmJob">                    </td>                    <td>                        Fiscal Year:                    </td>                    <td id="fscYear">                    </td>                    <td style="padding-left: 15px;" id="load-button" class="row-btn">                    </td>                </tr>            </table>        </div>    </div>    <div id="mop-column-switch">        <div style="color: #FFF;  background-color: #659A66; border-top: 1px solid #555; font-size: 14px;            padding: 5px;">            <div style="float:left">                           <table class="mop-filter">                <tr>                    <td>                        <input type="checkbox" name="Budget" id="Budget" />&nbsp;<label for="Budget">Budget</label>                    </td>                    <td>                        <input type="checkbox" name="Variance" id="Variance" />&nbsp;<label for="Variance">Variance</label>                    </td>                    <td>                        <input type="checkbox" name="RunRate" id="RunRate" />&nbsp;<label for="RunRate">Run                            Rate</label>                    </td>                    <td style="padding-left: 20px;">                        Period:                    </td>                    <td id="fscPeriodStart">                    </td>                    <td>                        -                    </td>                    <td id="fscPeriodEnd">                    </td>                       <td style="padding-left: 15px;" id="apply-button" class="row-btn">                    </td>                </tr>            </table>            </div>            <div style="position: relative; float:left; width:110px; margin-top:-1px;">                <a id="popupButton" class="popup-button"><span>Comment</span><em></em></a>                <div style="clear: both">                </div>                <div class="popup-box" id="popupBox">                    <div class="popup-box-inner-wrapper" style="width:500px">                        <div class="popup-box-form ">                            <label id="commentLabel">                                Summary Comments:</label>                            <textarea rows="5" class="textarea" id="summaryComment"></textarea>                            <div style="text-align:right; padding-right:20px; padding-top:5px;">                                <img id="saveButton"  src="images/button-ok.png" style="cursor:pointer"/>    <img id="cancelButton"  src="images/button-cancel.png"  style="cursor:pointer"/></div>                        </div>                    </div>                </div>            </div>        </div>    </div>    <div id="mop-footer">        <div style="color: #FFF; background-color: #659A66; padding: 10px; font-size: 14px;">            <table class="mop-filter" style="width: 100%;">                <tr class="row-btn">                    <td style="width: 40%">                        <table id="add-account-warpper">                            <tr>                                <td>                                    Account:                                </td>                                <td id="fscAccount">                                </td>                                <td id="addAccountButton">                                </td>                            </tr>                        </table>                    </td>                    <td style="text-align: right; width: 60%; padding-right: 20px;">                        <span id="saveButton" />&nbsp;  <span id="cancelButton" />&nbsp; <span id="payrollRegisterButton" />&nbsp; <span id="transactionDetailButton" />                        &nbsp; <span id="printMopButton" />&nbsp;                    </td>                </tr>            </table>        </div>    </div>    <div id="wor-filter">        <div style="color: #FFF; background-color: #659A66; font-size: 14px;">            <div style="float: left; background-color: #555; color: #fff; font-weight: bold;                width: 100px; height: 24px; padding: 5px; 0; text-align: center;">                WOR</div>            <div style="padding: 5px; float: left;">                <table class="mop-filter">                    <tr>                        <td style="font-weight: bold;">                            Site:                        </td>                        <td name="hcmHouseCode">                        </td>                        <td style="font-weight: bold;">                            Job:                        </td>                        <td name="hcmJob">                        </td>                        <td style="font-weight: bold;">                            Fiscal Year:                        </td>                        <td name="fscYear">                        </td>                        <td style="font-weight: bold;">                            Period:                        </td>                        <td id="fscPeriod">                        </td>                        <td id="backToMopButton" class="row-btn">                        </td>                    </tr>                </table>            </div>            <div style="position: relative; float: left; width: 110px; margin-top:4px;">                <a id="popupButton" class="popup-button"><span>Comment</span><em></em></a>                <div style="clear: both">                </div>                <div class="popup-box" id="popupBox">                    <div class="popup-box-inner-wrapper" style="width: 500px">                        <div class="popup-box-form ">                            <label id="commentLabel">                                Summary Comments:</label>                            <textarea rows="5" class="textarea" id="summaryComment"></textarea>                            <div style="text-align: right; padding-right: 20px; padding-top: 5px;">                                <img id="saveButton" src="images/button-ok.png" style="cursor: pointer" />                                <img id="cancelButton" src="images/button-cancel.png" style="cursor: pointer" />                            </div>                        </div>                    </div>                </div>            </div>            <div style="clear:both; " ></div>        </div>    </div>    <div id="wor-comment">        <div style="margin-top: 15px;">            <div style="font-size: 14px; padding-left: 5px;">                Comments:</div>            <textarea name="Comment" id="Comment" cols="100" rows="3" />        </div>    </div></div>','<div style="min-height: 400px" class="mop">    <div id="mop-top">        <div style="background-color: #555; color: #fff; float: left; text-align: center;            height: 60px; vertical-align: middle; font-size: 14px; font-weight: bold; width: 180px;            padding-top: 15px;">            Monthly Operating Projection        </div>        <div style="margin-left: 180px; background-color: #659A66; vertical-align:text-bottom">            <div id="filter-wrapper">            </div>            <div id="column-swith">            </div>            <div style="clear: both">            </div>        </div>         <div id="page-status" style="display:block; width:100%; clear:both;"></div>         <div class="clear"></div>    </div>       <div style="padding-top: 10px;" id="mop-wrapper">        <div class="list-header">            <div class="mop-controller" style="float:left;overflow:hidden"><div style="width:500px" id="controller-header"></div> </div>            <div class="mop-grid-main" style="overflow:hidden" id="mop-grid-header-wrapper"><div  id="grid-header" style="width:12000px"></div></div>            <div class="clear"></div>        </div>        <div>            <div class="mop-controller" style="float:left;overflow:hidden" id="mop-controller-wrapper"><div style="width:500px" id="mop-controller"></div> </div>            <div class="mop-grid-main" style="overflow:auto" id="mop-grid-wrapper"><div id="mop-grid"></div></div>            <div class="clear"></div>        </div>    </div>       <div style=" width: 100%;">        <div id="mop-footer">        </div>    </div></div>','<div>    <div id="controller-header">         <table class="bud-table-2">            <thead class="table-head">                <tr>                    <th class="boundary mop-updatefuture" style="width: 100px">                        <div class="row1-btn">                            <button class="bine-btn bine-btn-txt bine-ctrl" id="updatefuture-button" style="height: 50px;">                                Update Future<br />                                Periods w/MOP</button></div>                        <div style="padding: 5px;">                            <div style="width: 13px; height: 20px; padding-top: 3px; float: left;">                                <input type="checkbox" name="selectAllPeriods" id="SelectAllPeriods" /></div>                            <span style="line-height: 18px; height: 20px; padding-left: 5px;">Select All</span><div                                style="clear: both;">                            </div>                        </div>                    </th>                    <th class="boundary mop-updaterunrate" style="width: 90px">                        <div class="row1-btn">                            <button class="bine-btn bine-btn-txt bine-ctrl " id="updaterunrate-button" style="height: 50px;">                                Update With<br />                                Run Rate</button></div>                        <div style="padding: 5px;">                            <div style="width: 13px; height: 20px; padding-top: 3px; float: left;">                                <input type="checkbox" name="selectAll" id="SelectAllRunRate" /></div>                            <span style="float: left; line-height: 18px; height: 20px; padding-left: 5px;">Select                                All</span><div style="clear: both;">                                </div>                        </div>                    </th>                    <th class="boundary mop-accountcode-title" style="width: 245px; height: 85px;">                        Account Code                    </th>                </tr>            </thead>        </table>    </div>    <div id="controller-list">        <div>            <div id="holder"></div>        </div>    </div>    <table>        <tbody id="controller-view">            <tr>                <td class="boundary mop-updatefuture" style="width: 100px; height: 20px;">                    <div style="padding: 3px 7px;">                        <input type="checkbox" name="UpdateFuture" /></div>                </td>                <td class="boundary mop-updaterunrate" style="width: 90px; height: 20px;">                    <div style="padding: 3px 7px;">                        <input type="checkbox" name="UpdateRunRate" /></div>                </td>                <td class="boundary mop-account-column" style="white-space: nowrap; width: 245px; padding-top:0; padding-bottom:0; vertical-align:middle;                    height: 26px;">                    <a href="#" class="account-link" name="FscAccountDescription"></a>                </td>            </tr>        </tbody>    </table></div>','<div style="min-height: 400px" class="mop">    <div id="mop-top">        <div id="wor-filter">        </div>        <div id="page-status" style="display: block; width: 100%; clear: both;">        </div>         <div class="clear"></div>    </div>    <div id="mop-list-wrapper" style="padding-top: 10px; width: 99%; margin: 0 auto;        overflow: auto;">        <div id="wor-list">        </div>        <div id="wor-comment">        </div>    </div>    <div style="position: absolute; bottom: 0px; width: 100%;">        <div id="mop-footer">        </div>    </div></div>',''];
+﻿window.__bt__3ab3eda7 = ['<div>    <div id="mop-filter">        <div style="color: #FFF; background-color: #659A66; font-size: 14px; padding: 5px;">            <table class="mop-filter">                <tr>                    <td>                        Site:                    </td>                    <td id="hcmHouseCode">                    </td>                    <td>                        Job:                    </td>                    <td id="hcmJob">                    </td>                    <td>                        Fiscal Year:                    </td>                    <td id="fscYear">                    </td>                    <td style="padding-left: 15px;" id="load-button" class="row-btn">                    </td>                </tr>            </table>        </div>    </div>    <div id="mop-column-switch">        <div style="color: #FFF;  background-color: #659A66; border-top: 1px solid #555; font-size: 14px;            padding: 5px;">            <div style="float:left">                           <table class="mop-filter">                <tr>                    <td>                        <input type="checkbox" name="Budget" id="Budget" />&nbsp;<label for="Budget">Budget</label>                    </td>                    <td>                        <input type="checkbox" name="Variance" id="Variance" />&nbsp;<label for="Variance">Variance</label>                    </td>                    <td>                        <input type="checkbox" name="RunRate" id="RunRate" />&nbsp;<label for="RunRate">Run                            Rate</label>                    </td>                    <td style="padding-left: 20px;">                        Period:                    </td>                    <td id="fscPeriodStart">                    </td>                    <td>                        -                    </td>                    <td id="fscPeriodEnd">                    </td>                       <td style="padding-left: 15px;" id="apply-button" class="row-btn">                    </td>                </tr>            </table>            </div>            <div style="position: relative; float:left; width:110px; margin-top:-1px;">                <a id="popupButton" class="popup-button"><span>Comment</span><em></em></a>                <div style="clear: both">                </div>                <div class="popup-box" id="popupBox">                    <div class="popup-box-inner-wrapper" style="width:500px">                        <div class="popup-box-form ">                            <label id="commentLabel">                                Summary Comments:</label>                            <textarea rows="5" class="textarea" id="summaryComment"></textarea>                            <div style="text-align:right; padding-right:20px; padding-top:5px;">                                <img id="saveButton"  src="images/button-ok.png" style="cursor:pointer"/>    <img id="cancelButton"  src="images/button-cancel.png"  style="cursor:pointer"/></div>                        </div>                    </div>                </div>            </div>        </div>    </div>    <div id="mop-footer">        <div style="color: #FFF; background-color: #659A66; padding: 10px; font-size: 14px;">            <table class="mop-filter" style="width: 100%;">                <tr class="row-btn">                    <td style="width: 40%">                        <table id="add-account-warpper">                            <tr>                                <td>                                    Account:                                </td>                                <td id="fscAccount">                                </td>                                <td id="addAccountButton">                                </td>                            </tr>                        </table>                    </td>                    <td style="text-align: right; width: 60%; padding-right: 20px;">                        <span id="saveButton" />&nbsp;  <span id="cancelButton" />&nbsp; <span id="payrollRegisterButton" />&nbsp; <span id="transactionDetailButton" />                        &nbsp; <span id="printMopButton" />&nbsp;                    </td>                </tr>            </table>        </div>    </div>    <div id="wor-filter">        <div style="color: #FFF; background-color: #659A66; font-size: 14px;">            <div style="float: left; background-color: #555; color: #fff; font-weight: bold;                width: 100px; height: 24px; padding: 5px; 0; text-align: center;">                WOR</div>            <div style="padding: 5px; float: left;">                <table class="mop-filter">                    <tr>                        <td style="font-weight: bold;">                            Site:                        </td>                        <td name="hcmHouseCode">                        </td>                        <td style="font-weight: bold;">                            Job:                        </td>                        <td name="hcmJob">                        </td>                        <td style="font-weight: bold;">                            Fiscal Year:                        </td>                        <td name="fscYear">                        </td>                        <td style="font-weight: bold;">                            Period:                        </td>                        <td id="fscPeriod">                        </td>                        <td id="backToMopButton" class="row-btn">                        </td>                    </tr>                </table>            </div>            <div style="position: relative; float: left; width: 110px; margin-top:4px;">                <a id="popupButton" class="popup-button"><span>Comment</span><em></em></a>                <div style="clear: both">                </div>                <div class="popup-box" id="popupBox">                    <div class="popup-box-inner-wrapper" style="width: 500px">                        <div class="popup-box-form ">                            <label id="commentLabel">                                Summary Comments:</label>                            <textarea rows="5" class="textarea" id="summaryComment"></textarea>                            <div style="text-align: right; padding-right: 20px; padding-top: 5px;">                                <img id="saveButton" src="images/button-ok.png" style="cursor: pointer" />                                <img id="cancelButton" src="images/button-cancel.png" style="cursor: pointer" />                            </div>                        </div>                    </div>                </div>            </div>            <div style="clear:both; " ></div>        </div>    </div>    <div id="wor-comment">        <div style="margin-top: 15px;">            <div style="font-size: 14px; padding-left: 5px;">                Comments:</div>            <textarea name="Comment" id="Comment" cols="100" rows="3" />        </div>    </div></div>','<div style="min-height: 400px" class="mop">    <div id="mop-top">        <div style="background-color: #555; color: #fff; float: left; text-align: center;            height: 60px; vertical-align: middle; font-size: 14px; font-weight: bold; width: 180px;            padding-top: 15px;">            Monthly Operating Projection        </div>        <div style="margin-left: 180px; background-color: #659A66; vertical-align:text-bottom">            <div id="filter-wrapper">            </div>            <div id="column-swith">            </div>            <div style="clear: both">            </div>        </div>         <div id="page-status" style="display:block; width:100%; clear:both;"></div>         <div class="clear"></div>    </div>       <div style="padding-top: 10px;" id="mop-wrapper">        <div class="list-header">            <div class="mop-controller" style="float:left;overflow:hidden"><div style="width:500px" id="controller-header"></div> </div>            <div class="mop-grid-main" style="overflow:hidden" id="mop-grid-header-wrapper"><div  id="grid-header" style="width:12000px"></div></div>            <div class="clear"></div>        </div>        <div>            <div class="mop-controller" style="float:left;overflow:hidden" id="mop-controller-wrapper"><div style="width:500px" id="mop-controller"></div> </div>            <div class="mop-grid-main" style="overflow:auto" id="mop-grid-wrapper"><div id="mop-grid"></div></div>            <div class="clear"></div>        </div>    </div>       <div style=" width: 100%;">        <div id="mop-footer">        </div>    </div></div>','<div>    <div id="controller-header">         <table class="bud-table-2">            <thead class="table-head">                <tr>                    <th class="boundary mop-updatefuture" style="width: 100px">                        <div class="row1-btn">                            <button class="bine-btn bine-btn-txt bine-ctrl" id="updatefuture-button" style="height: 50px;">                                Update Future<br />                                Periods w/MOP</button></div>                        <div style="padding: 5px;">                            <div style="width: 13px; height: 20px; padding-top: 3px; float: left;">                                <input type="checkbox" name="selectAllPeriods" id="SelectAllPeriods" /></div>                            <span style="line-height: 18px; height: 20px; padding-left: 5px;">Select All</span><div                                style="clear: both;">                            </div>                        </div>                    </th>                    <th class="boundary mop-updaterunrate" style="width: 90px">                        <div class="row1-btn">                            <button class="bine-btn bine-btn-txt bine-ctrl " id="updaterunrate-button" style="height: 50px;">                                Update With<br />                                Run Rate</button></div>                        <div style="padding: 5px;">                            <div style="width: 13px; height: 20px; padding-top: 3px; float: left;">                                <input type="checkbox" name="selectAll" id="SelectAllRunRate" /></div>                            <span style="float: left; line-height: 18px; height: 20px; padding-left: 5px;">Select                                All</span><div style="clear: both;">                                </div>                        </div>                    </th>                    <th class="boundary mop-accountcode-title" style="width: 245px; height: 85px;">                        Account Code                    </th>                </tr>            </thead>        </table>    </div>    <div id="controller-list">        <div>            <div id="holder"></div>        </div>    </div>    <table>        <tbody id="controller-view">            <tr>                <td class="boundary mop-updatefuture" style="width: 100px; height: 20px;">                    <div style="padding: 3px 7px;">                        <input type="checkbox" name="UpdateFuture" /></div>                </td>                <td class="boundary mop-updaterunrate" style="width: 90px; height: 20px;">                    <div style="padding: 3px 7px;">                        <input type="checkbox" name="UpdateRunRate" /></div>                </td>                <td class="boundary mop-account-column" style="white-space: nowrap; width: 245px; padding-top:0; padding-bottom:0; vertical-align:middle;                    height: 26px;">                    <a href="#" class="account-link" name="FscAccountDescription"></a>                </td>            </tr>        </tbody>    </table></div>','<div style="min-height: 400px" class="mop">    <div id="mop-top">        <div id="wor-filter">        </div>        <div id="page-status" style="display: block; width: 100%; clear: both;">        </div>         <div class="clear"></div>    </div>    <div id="mop-list-wrapper" style="padding-top: 10px; width: 99%; margin: 0 auto;        overflow: auto;">        <div id="wor-list">        </div>        <div id="wor-comment">        </div>    </div>    <div style="position: absolute; bottom: 0px; width: 100%;">        <div id="mop-footer">        </div>    </div></div>',''];
 
 /*
 * jquery.fixheadertable
@@ -1447,9 +1447,15 @@ var loadFscAccounts = function (callback) {
                 CategoryId: categoryId,
                 Name: $item.attr('name'),
                 Description: String.format('{0} {1}', $item.attr('code'), $item.attr('name')),
-                IsUnitExclude: $item.attr('isUnitExclude') =='true',        // || parseFloat($item.attr('code')) == 6685 || parseFloat($item.attr('code')) == 8605,
+                MopTotalType: parseInt($item.attr('mopTotalType') || 1), 
                 IsNegative: $item.attr('isNegative') == 'true'
             };
+            /*
+            if (FscAccount.Code == 6685)
+                FscAccount.MopTotalType = 2;
+            else if (FscAccount.Code == 8605)
+                FscAccount.MopTotalType = 3;
+            */
 
             if (!category) {
                 var FscAccountCategory = {
@@ -1749,7 +1755,7 @@ var populateMopDetails = function () {
 
     var categories = {};
 
-    var totalItem = { FscAccount: 99999, FscAccountDescription: 'Total', IsTotal: true, SortIndex: '9999_9999' };
+    var totalItem = { FscAccount: 99999, FscAccountDescription: 'Total', IsTotal: true, SortIndex: '9998_9999' };
     initMopDataItem(totalItem);
     MopDetails.push(totalItem);
 
@@ -1864,11 +1870,11 @@ var loadMopPeriodItems = function (hcmHouseCode, hcmJob, fscYear, callback) {
 
 
 
-        var totalItem = { FscAccount: 99999, FscAccountDescription: 'Total', IsTotal: true, SortIndex: '9999_9999' };
+        var totalItem = { FscAccount: 99999, FscAccountDescription: 'Total', IsTotal: true, SortIndex: '9998_9999' };
         initMopDataItem(totalItem);
         MopDetails.push(totalItem);
 
-        var unitTotalItem = { FscAccount: 99998, FscAccountDescription: 'Unit Total', IsTotal: true, SortIndex: '9999_0000' };
+        var unitTotalItem = { FscAccount: 99998, FscAccountDescription: 'Unit Total', IsTotal: true, SortIndex: '9998_0000' };
         initMopDataItem(unitTotalItem);
         MopDetails.push(unitTotalItem);
 
@@ -1935,7 +1941,7 @@ var loadMopPeriodItems = function (hcmHouseCode, hcmJob, fscYear, callback) {
 
             var mopCategoryItem = null;
 
-            if (!FscAccount.IsUnitExclude) {
+            if (FscAccount.MopTotalType == 1) {
                 mopCategoryItem = mopItemIndex[mopAccountItem.CategoryId];
                 if (!mopCategoryItem) {
                     mopCategoryItem = createFscAccountCategoryDataItem(mopAccountItem.CategoryId);
@@ -1947,18 +1953,9 @@ var loadMopPeriodItems = function (hcmHouseCode, hcmJob, fscYear, callback) {
                 //fake category item, because excluded item no need category total
                 mopCategoryItem = {};
 
-                mopAccountItem.SortIndex = '9999_' + FscAccount.Code;
+                mopAccountItem.SortIndex = (FscAccount.MopTotalType == 2 ? '9998_' : '9999_') + FscAccount.Code;
             }
 
-
-            //            var itemCopyTotal = mopItemIndex['9' + FscAccount.Code];
-
-            //            if (FscAccount.IsUnitExclude && !itemCopyTotal) {
-            //                itemCopyTotal = { FscAccount: '9' + FscAccount.Code, FscAccountDescription: FscAccount.Description, IsTotal: true, SortIndex: '9999_' + FscAccount.Code };
-            //                initMopDataItem(itemCopyTotal);
-            //                MopDetails.push(itemCopyTotal);
-            //                mopItemIndex[itemCopyTotal.FscAccount] = itemCopyTotal;
-            //            }
 
             var periodNumber = FscPeriod.Number;
             var dailyRunRate = Math.round(dataItem.runrate / FscPeriod.Days * 100) / 100;
@@ -1968,20 +1965,24 @@ var loadMopPeriodItems = function (hcmHouseCode, hcmJob, fscYear, callback) {
             mopAccountItem['Budget' + periodNumber] = dataItem.budget;
             mopCategoryItem['Budget' + periodNumber] += dataItem.budget;
             totalItem['Budget' + periodNumber] += FscAccount.IsNegative ? dataItem.budget : -dataItem.budget;
-            if (!FscAccount.IsUnitExclude)
+            if (FscAccount.MopTotalType == 1)
                 unitTotalItem['Budget' + periodNumber] += FscAccount.IsNegative ? dataItem.budget : -dataItem.budget;
 
             mopAccountItem['Projection' + periodNumber] = dataItem.mop;
             mopCategoryItem['Projection' + periodNumber] += dataItem.mop;
-            totalItem['Projection' + periodNumber] += FscAccount.IsNegative ? dataItem.mop : -dataItem.mop;
-            if (!FscAccount.IsUnitExclude)
+
+            if (FscAccount.MopTotalType != 3)
+                totalItem['Projection' + periodNumber] += FscAccount.IsNegative ? dataItem.mop : -dataItem.mop;
+            if (FscAccount.MopTotalType == 1)
                 unitTotalItem['Projection' + periodNumber] += FscAccount.IsNegative ? dataItem.mop : -dataItem.mop;
 
             mopAccountItem['BudgetTotal'] += dataItem.budget;
             mopCategoryItem['BudgetTotal'] += dataItem.budget;
-            totalItem['BudgetTotal'] += FscAccount.IsNegative ? dataItem.budget : -dataItem.budget;
 
-            if (!FscAccount.IsUnitExclude)
+            if (FscAccount.MopTotalType != 3)
+                totalItem['BudgetTotal'] += FscAccount.IsNegative ? dataItem.budget : -dataItem.budget;
+
+            if (FscAccount.MopTotalType == 1)
                 unitTotalItem['BudgetTotal'] += FscAccount.IsNegative ? dataItem.budget : -dataItem.budget;
 
 
@@ -1995,39 +1996,44 @@ var loadMopPeriodItems = function (hcmHouseCode, hcmJob, fscYear, callback) {
             if (currentPeriod.FscYear >= fscYear && (currentPeriodIndex <= periodNumber || currentPeriodIndex - 1 == periodNumber && currentDay < FiscalPeriodCloseDays)) {
                 mopAccountItem['ProjectionTotal'] += dataItem.forecast;
                 mopCategoryItem['ProjectionTotal'] += dataItem.forecast;
-                totalItem['ProjectionTotal'] += FscAccount.IsNegative ? dataItem.forecast : -dataItem.forecast;
+                if (FscAccount.MopTotalType != 3)
+                    totalItem['ProjectionTotal'] += FscAccount.IsNegative ? dataItem.forecast : -dataItem.forecast;
 
-                if (!FscAccount.IsUnitExclude)
+                if (FscAccount.MopTotalType == 1)
                     unitTotalItem['ProjectionTotal'] += FscAccount.IsNegative ? dataItem.forecast : -dataItem.forecast;
             }
             else {
                 mopAccountItem['ProjectionTotal'] += dataItem.wor;
                 mopCategoryItem['ProjectionTotal'] += dataItem.wor;
-                totalItem['ProjectionTotal'] += FscAccount.IsNegative ? dataItem.wor : -dataItem.wor;
+                if (FscAccount.MopTotalType != 3)
+                    totalItem['ProjectionTotal'] += FscAccount.IsNegative ? dataItem.wor : -dataItem.wor;
 
-                if (!FscAccount.IsUnitExclude)
+                if (FscAccount.MopTotalType == 1)
                     unitTotalItem['ProjectionTotal'] += FscAccount.IsNegative ? dataItem.wor : -dataItem.wor;
             }
 
             mopAccountItem['RunRate' + periodNumber] = dataItem.runrate;
             mopCategoryItem['RunRate' + periodNumber] += dataItem.runrate;
-            totalItem['RunRate' + periodNumber] += FscAccount.IsNegative ? dataItem.runrate : -dataItem.runrate;
+            if (FscAccount.MopTotalType != 3)
+                totalItem['RunRate' + periodNumber] += FscAccount.IsNegative ? dataItem.runrate : -dataItem.runrate;
 
-            if (!FscAccount.IsUnitExclude)
+            if (FscAccount.MopTotalType == 1)
                 unitTotalItem['RunRate' + periodNumber] += FscAccount.IsNegative ? dataItem.runrate : -dataItem.runrate;
 
             mopAccountItem['DailyRunRate' + periodNumber] = dailyRunRate;
             mopCategoryItem['DailyRunRate' + periodNumber] += dailyRunRate;
-            totalItem['DailyRunRate' + periodNumber] += FscAccount.IsNegative ? dailyRunRate : -dailyRunRate;
+            if (FscAccount.MopTotalType != 3)
+                totalItem['DailyRunRate' + periodNumber] += FscAccount.IsNegative ? dailyRunRate : -dailyRunRate;
 
-            if (!FscAccount.IsUnitExclude)
+            if (FscAccount.MopTotalType == 1)
                 unitTotalItem['DailyRunRate' + periodNumber] += FscAccount.IsNegative ? dailyRunRate : -dailyRunRate;
 
             mopAccountItem['Forecast' + periodNumber] = dataItem.wor;
             mopCategoryItem['Forecast' + periodNumber] += dataItem.wor;
-            totalItem['Forecast' + periodNumber] += FscAccount.IsNegative ? dataItem.wor : -dataItem.wor;
+            if (FscAccount.MopTotalType != 3)
+                totalItem['Forecast' + periodNumber] += FscAccount.IsNegative ? dataItem.wor : -dataItem.wor;
 
-            if (!FscAccount.IsUnitExclude)
+            if (FscAccount.MopTotalType == 1)
                 unitTotalItem['Forecast' + periodNumber] += FscAccount.IsNegative ? dataItem.wor : -dataItem.wor;
 
             mopAccountItem['Comment' + periodNumber] += dataItem.comments;
@@ -2133,7 +2139,7 @@ var saveWorSummaryComment = function (hcmHouseCode, hcmJob, fscYear, fscPeriod, 
 }
     //
 
- var $mop_templates = $(window.__bt__d55bef70[2]);
+ var $mop_templates = $(window.__bt__3ab3eda7[2]);
 
 
  var MopDataControllerHeader = function () {
@@ -3252,7 +3258,7 @@ MopDataGrid = function () {
     return DataGrid;
 } ();
 
-    var $templates = $(window.__bt__d55bef70[0]);
+    var $templates = $(window.__bt__3ab3eda7[0]);
 
     var TPL_MOP_FILTER = $('#mop-filter', $templates).html();
     var TPL_MOP_COLUMN_SWITH = $('#mop-column-switch', $templates).html();
@@ -4108,7 +4114,7 @@ var submitWorItems = function (changes, commentXml, callback) {
 
 
     var WOR = bine.extend(bine.Control, {
-        tpl: window.__bt__d55bef70[3],
+        tpl: window.__bt__3ab3eda7[3],
 
         hcmHouseCode: null,
         hcmJob: null,
@@ -4274,7 +4280,7 @@ var submitWorItems = function (changes, commentXml, callback) {
 } ();
 
     bud.page.MOP = bine.extend(bine.Control, {
-        tpl: window.__bt__d55bef70[1],
+        tpl: window.__bt__3ab3eda7[1],
 
         onDomReady: function () {
             var me = this;
@@ -4573,19 +4579,19 @@ var submitWorItems = function (changes, commentXml, callback) {
             accountItem['Variance' + i] = accountItem['Variance' + i] + variance;
             accountItem._isModified = true;
 
-            if (!FscAccount.IsUnitExclude && categoryItem) {
+            if (FscAccount.MopTotalType == 1 && categoryItem) {
                 categoryItem['Projection' + i] = categoryItem['Projection' + i] + variance;
                 categoryItem['Variance' + i] = categoryItem['Variance' + i] + variance;
                 categoryItem['ProjectionTotal'] = categoryItem['ProjectionTotal'] + variance;
             }
 
-            if (totalItem) {
+            if (FscAccount.MopTotalType != 3 && totalItem) {
                 totalItem['Projection' + i] = totalItem['Projection' + i] + (FscAccount && FscAccount.IsNegative ? variance : -variance);
                 totalItem['Variance' + i] = totalItem['Variance' + i] + (FscAccount && FscAccount.IsNegative ? variance : -variance);
                 totalItem['ProjectionTotal'] = totalItem['ProjectionTotal'] + (FscAccount && FscAccount.IsNegative ? variance : -variance);
             }
 
-            if (!FscAccount.IsUnitExclude) {
+            if (FscAccount.MopTotalType == 1) {
                 if (unitTotalItem) {
                     unitTotalItem['Projection' + i] = unitTotalItem['Projection' + i] + (FscAccount && FscAccount.IsNegative ? variance : -variance);
                     unitTotalItem['Variance' + i] = unitTotalItem['Variance' + i] + (FscAccount && FscAccount.IsNegative ? variance : -variance);
@@ -4606,27 +4612,29 @@ var submitWorItems = function (changes, commentXml, callback) {
             me.mopList.updateElement(String.format('{0}_Projection_Total', accountItem.FscAccount), bine.format(accountItem.ProjectionTotal, '0,000.00'));
 
 
-            if (!FscAccount.IsUnitExclude && categoryItem) {
+            if (FscAccount.MopTotalType == 1 && categoryItem) {
                 me.mopList.updateElement(String.format('{0}_Projection_{1}', categoryItem.FscAccount, i), bine.format(categoryItem['Projection' + i], '0,000.00'));
                 me.mopList.updateElement(String.format('{0}_Variance_{1}', categoryItem.FscAccount, i), bine.format(categoryItem['Variance' + i], '0,000.00'));
                 me.mopList.updateElement(String.format('{0}_Projection_Total', categoryItem.FscAccount), bine.format(categoryItem.ProjectionTotal, '0,000.00'));
             }
 
-            me.mopList.updateElement(String.format('{0}_Projection_{1}', totalItem.FscAccount, i), bine.format(totalItem['Projection' + i], '0,000.00'));
-            me.mopList.updateElement(String.format('{0}_Variance_{1}', totalItem.FscAccount, i), bine.format(totalItem['Variance' + i], '0,000.00'));
-            me.mopList.updateElement(String.format('{0}_Projection_Total', totalItem.FscAccount), bine.format(totalItem.ProjectionTotal, '0,000.00'));
+            if (FscAccount.MopTotalType != 3) {
+                me.mopList.updateElement(String.format('{0}_Projection_{1}', totalItem.FscAccount, i), bine.format(totalItem['Projection' + i], '0,000.00'));
+                me.mopList.updateElement(String.format('{0}_Variance_{1}', totalItem.FscAccount, i), bine.format(totalItem['Variance' + i], '0,000.00'));
+                me.mopList.updateElement(String.format('{0}_Projection_Total', totalItem.FscAccount), bine.format(totalItem.ProjectionTotal, '0,000.00'));
+            }
 
-            if (!FscAccount.IsUnitExclude) {
+            if (FscAccount.MopTotalType == 1) {
                 me.mopList.updateElement(String.format('{0}_Projection_{1}', unitTotalItem.FscAccount, i), bine.format(unitTotalItem['Projection' + i], '0,000.00'));
                 me.mopList.updateElement(String.format('{0}_Variance_{1}', unitTotalItem.FscAccount, i), bine.format(unitTotalItem['Variance' + i], '0,000.00'));
                 me.mopList.updateElement(String.format('{0}_Projection_Total', unitTotalItem.FscAccount), bine.format(unitTotalItem.ProjectionTotal, '0,000.00'));
             }
-//            else {
-//                me.mopList.updateElement(String.format('{0}_Projection_{1}', '9' + FscAccount.Code, i), bine.format(accountItem['Projection' + i], '0,000.00'));
-//                me.mopList.updateElement(String.format('{0}_Variance_{1}', '9' + FscAccount.Code, i), bine.format(accountItem['Variance' + i], '0,000.00'));
-//                me.mopList.updateElement(String.format('{0}_Projection_Total', '9' + FscAccount.Code), bine.format(accountItem.ProjectionTotal, '0,000.00'));
+            //            else {
+            //                me.mopList.updateElement(String.format('{0}_Projection_{1}', '9' + FscAccount.Code, i), bine.format(accountItem['Projection' + i], '0,000.00'));
+            //                me.mopList.updateElement(String.format('{0}_Variance_{1}', '9' + FscAccount.Code, i), bine.format(accountItem['Variance' + i], '0,000.00'));
+            //                me.mopList.updateElement(String.format('{0}_Projection_Total', '9' + FscAccount.Code), bine.format(accountItem.ProjectionTotal, '0,000.00'));
 
-//            }
+            //            }
 
         },
 
