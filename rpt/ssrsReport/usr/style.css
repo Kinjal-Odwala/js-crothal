@@ -140,7 +140,7 @@
 }
 
 .treeview ul {
-	width: 400px;
+	width: 450px;
 }
 
 .treeview li { 
@@ -206,6 +206,24 @@
 	border-width: 1px;
 }
 
+.dropdown-menu {
+	z-index: 9050;
+}
+
+Label {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: separate;
+}
+
+#AnchorGenerateReport {
+	float: left;
+	width: 156px;
+	padding: 5px 0px 0px 0px;
+}
+
 #AnchorSearch {
 	float: left;
 	width: 82px;
@@ -237,7 +255,7 @@
 	padding: 5px 0px 0px 10px;
 }
 
-#TreeviewContainer, #LevelNamesContainer{
+#TreeviewContainer, #LevelNamesContainer {
 	width: 100%;
 	border: solid #aaaaaa thin;
 	border-width: 1px;
@@ -250,7 +268,7 @@
 }
 
 #ParameterContainer {
-	width: 96%;
+	width: 100%;
 	border: solid #aaaaaa thin;
 	border-width: 1px;
 	overflow: auto;
@@ -401,16 +419,4 @@
 	border: solid #aaaaaa thin;
 	border-width: 1px;
 	margin: 10px;
-}
-
-#AnchorGenerateReport {
-	float: left;
-	width: 150px;
-	padding: 5px 0px 0px 10px;
-}
-
-#AnchorRefresh {	
-	float: left;
-	width: 90px;
-	padding: 5px 0px 0px 10px;
 }
