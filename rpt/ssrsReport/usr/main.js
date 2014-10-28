@@ -63,7 +63,6 @@ ii.Class({
 			me.loadCount = 0;
 			me.hirNodeCache = [];
 			me.customers = [];
-			me.filteredCustomers = [];
 			me.houseCodes = [];
 			me.filteredHouseCodes = [];
 			me.excludeHouseCodes = [];
@@ -2118,16 +2117,22 @@ ii.Class({
 						selectedList: 4,
 						selectedText: function(numChecked, numTotal, checkedItems) {
                             var parametersList = "";
+							var selectedItems = 0;
                             var selectedValues = $("#" + this.element[0].id).multiselect("getChecked").map(function() {
                                 return this.title;
                             }).get();
                             
                             for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
-                                if (selectedValues[selectedIndex] != "(Select All)")
+                                if (selectedValues[selectedIndex] != '(Select All)')
                                     parametersList = parametersList + ', ' + selectedValues[selectedIndex];
+									selectedItems = selectedItems + 1;
                             }
                             parametersList = parametersList.substring(1, parametersList.length);
-                            return parametersList;
+							
+							if(selectedValues.length > 4)
+                                return "" + selectedItems + "" + " selected";
+                            else
+                            	return parametersList;
                         },
                         click: function(event, ui) {                                                                                    
                             if (ui.text == "(Select All)") {
@@ -2135,6 +2140,12 @@ ii.Class({
                                     $("#" + event.target.id).multiselect("checkAll");
                                 else if (!ui.checked)
                                     $("#" + event.target.id).multiselect("uncheckAll");
+                            }
+							else {
+                                if (!ui.checked
+                                && $("#ui-multiselect-"+event.target.id+"-option-0")[0].title == '(Select All)'
+                                && $("#ui-multiselect-"+event.target.id+"-option-0")[0].checked)
+                                    $("#ui-multiselect-"+event.target.id+"-option-0")[0].checked = false;
                             }
                         },
 						open: function( e ){
