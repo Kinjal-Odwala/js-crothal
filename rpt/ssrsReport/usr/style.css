@@ -30,7 +30,17 @@
 	background-position: right;
 	width: 16px;
 	height: 16px;
+	margin: 1px 1px 1px 1px;	
+}
+
+.loading {
+	background-image: url(/fin/cmn/usr/media/common/indicator.gif);
+	background-repeat: no-repeat;
+	background-position: right;
+	width: 16px;
+	height: 16px;
 	margin: 1px 1px 1px 1px;
+	float:left;
 }
 
 .labelTextArea {	
@@ -203,6 +213,7 @@
 	text-align: left;
 	border: solid #aaaaaa thin;
 	border-width: 1px;
+	float:left;
 }
 
 .dropdown-menu {

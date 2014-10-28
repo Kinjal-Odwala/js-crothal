@@ -341,6 +341,12 @@ ii.init.register( function() {
         , parameter: {type: String, required: false, defaultValue: ""}
     };
 	
+	fin.rpt.ssrs.exceptionArgs = {
+        id: {type: Number, required: false, defaultValue: 0}
+        , name: {type: String, required: false, defaultValue: ""}
+        , parameter: {type: String, required: false, defaultValue: ""}
+    };
+	
 }, 2);
 
 ii.Class({
@@ -812,6 +818,16 @@ ii.Class({
     Definition: {
         init: function() {
             var args = ii.args(arguments, fin.rpt.ssrs.countHourArgs);
+            $.extend(this, args);
+        }
+    }
+});
+
+ii.Class({
+    Name: "fin.rpt.ssrs.Exception",
+    Definition: {
+        init: function() {
+            var args = ii.args(arguments, fin.rpt.ssrs.exceptionArgs);
             $.extend(this, args);
         }
     }

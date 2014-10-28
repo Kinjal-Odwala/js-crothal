@@ -1173,6 +1173,7 @@ ii.Class({
 			me.hour40Exceptions = [];
 			me.houseCodeStatus = [];
 			me.countHours = [];
+			me.exceptions = [];
 			
 			me.levels.push(new fin.rpt.ssrs.Level(37, "ENT", "ENT"));
 			me.levels.push(new fin.rpt.ssrs.Level(2, "SVP", "SVP"));
@@ -1227,6 +1228,10 @@ ii.Class({
 			
 			me.countHours.push(new fin.rpt.ssrs.CountHour(1, "True", "True"));//Default
             me.countHours.push(new fin.rpt.ssrs.CountHour(2, "False", "False"));
+			
+			me.exceptions.push(new fin.rpt.ssrs.Exception(1, "Both", "B"));
+			me.exceptions.push(new fin.rpt.ssrs.Exception(2, "Open", "O"));
+			me.exceptions.push(new fin.rpt.ssrs.Exception(3, "Closed", "C"));
 		},
 		
 		loggedInUsersLoaded: function(me, activeId) {
@@ -1341,7 +1346,7 @@ ii.Class({
 					}
 					else {
 						me.filteredHouseCodes = $.grep(me.filteredHouseCodes, function(item, itemIndex) {
-						    return item.fullPath.indexOf(fullPath) < 0;
+						    return item.parameter.indexOf(fullPath) < 0;
 						});
 					}
 					me.setHouseCodes();
@@ -1379,18 +1384,6 @@ ii.Class({
 			$("#HouseCode").multiselect("refresh");
 		},
 		
-		setOverheadAccounts: function() {
-			var me = this;
-
-			$("#OverheadAccounts").html("");
-			$("#OverheadAccounts").append("<option title='None' value='0'>None</option>");
-				
-			for (var index = 0; index < me.excludeHouseCodes.length; index++) {
-				$("#OverheadAccounts").append("<option title='" + me.excludeHouseCodes[index].title + "' value='" + me.excludeHouseCodes[index].id + "'>" + me.excludeHouseCodes[index].title + "</option>");
-			}
-			$("#OverheadAccounts").multiselect("refresh");
-		},
-
 		reportsLoaded: function(me, activeId) {
 
 			for (var index = 0; index < me.reports.length; index++) {
@@ -1953,7 +1946,7 @@ ii.Class({
 				if (me.reportParameters[index].mandatory)
                     html += "\n<div class='labelReport'>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "'></div><div><input type='checkbox' name='dateCheck' id='dateCheck' checked='true' class='labelSchedule' onchange='fin.reportUi.dateMandatory(this," + index + ");' /></div><div class='labelSchedule'>NULL</div>"                 
                 else if (!me.reportParameters[index].mandatory)
-					html += "\n<div class='labelReport'>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium' style='width:" + me.reportParameters[index].Width + "px;'></div>"									
+					html += "\n<div><div class='labelReport'>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium' style='width:" + me.reportParameters[index].Width + "px;'></div><div id='customersLoading'></div></div>"									
 				html += "\n<div style='clear:both;'></div>";
 			}
 
@@ -2073,6 +2066,10 @@ ii.Class({
 					else if (me.reportParameters[index].referenceTableName == "ShowCntHrs") {
                         me.controls[index].setData(me.countHours);
                         me.controls[index].select(me.findIndexByTitle(me.reportParameters[index].defaultValue, me.countHours), me.controls[index].focused);
+                    }
+					else if (me.reportParameters[index].referenceTableName == "Exception") {
+                        me.controls[index].setData(me.exceptions);
+                        me.controls[index].select(me.findIndexByTitle(me.reportParameters[index].defaultValue, me.exceptions), me.controls[index].focused);
                     }					
 				}
 				else if (me.reportParameters[index].controlType == "Date") {
@@ -2114,7 +2111,7 @@ ii.Class({
 						minWidth: 280,
 						header: false,
 						noneSelectedText: "",
-						selectedList: 4,
+						selectedList: 4,						
 						selectedText: function(numChecked, numTotal, checkedItems) {
                             var parametersList = "";
 							var selectedItems = 0;
@@ -2148,7 +2145,7 @@ ii.Class({
                                     $("#ui-multiselect-"+event.target.id+"-option-0")[0].checked = false;
                             }
                         },
-						open: function( e ){
+						open: function( e ){							
 							if (e.target.id == 'Customers') {
 								$("#Customers").html("");
 								$("#Customers").multiselect("refresh");
@@ -2157,11 +2154,11 @@ ii.Class({
 								}
 								me.namesList = me.names.replace("~", "");
 								me.levelName = me.level.replace("~Level=", "");											
-								me.setLoadCount();
 								me.setStatus("Loading");
+								$("#customersLoading").addClass('loading');
 								me.genericTypeStore.fetch("level:" + me.levelName + ",name:" + me.namesList + ",genericType:Customers,userId:[user]", me.customersLoaded, me);
 							}							
-						},
+						},						
 						position: {
 							my: 'left bottom',
 							at: 'left top'
@@ -2329,9 +2326,8 @@ ii.Class({
 				$("#Customers").append("<option title='" + me.customers[index].name + "' value='" + me.customers[index].id + "'>" + me.customers[index].name + "</option>");
 			}
 			$("#Customers").multiselect("refresh");
-			//$("#CustomersText").removeClass("Loading");
 			me.setStatus("Loaded");
-			me.checkLoadCount();
+			$("#customersLoading").removeClass('loading');
 		},
 				
 		groupLevelsLoaded: function() {
@@ -2764,7 +2760,7 @@ ii.Class({
             }
 			
 			parametersList = "UserID=" + me.session.propertyGet("userName") + me.level + me.name + parametersList;
-			
+
 			var form = document.createElement("form");
 			form.setAttribute("method", "post");
 			form.setAttribute("action", me.reportURL);			
