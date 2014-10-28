@@ -63,6 +63,9 @@ ii.Class({
 			me.loadCount = 0;
 			me.hirNodeCache = [];
 			me.customers = [];
+			me.filteredCustomers = [];
+			me.houseCodes = [];
+			me.filteredHouseCodes = [];
 			me.excludeHouseCodes = [];
 			me.invoiceStatus = [];
 			me.thruFiscalPeriods = [];
@@ -123,12 +126,13 @@ ii.Class({
 				$("#pageLoading").fadeIn("slow");
 				
 				ii.timer.timing("Page Displayed");
-				me.loadCount = 4;
+				me.loadCount = 5;
 				me.session.registerFetchNotify(me.sessionLoaded,me);
 				me.fiscalYearStore.fetch("userId:[user],", me.yearsLoaded, me);
 				me.reportStore.fetch("userId:[user],", me.reportsLoaded, me);
 				me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
 				me.hirNodeStore.fetch("userId:[user],hirHierarchy:1,fullPath:" + me.authorizePath, me.hirNodesLoaded, me);
+				me.genericTypeStore.fetch("level:ENT,name:Crothall,genericType:HouseCode,userId:[user]", me.houseCodesLoaded, me);
 				me.typesTableLoaded();
 			}				
 			else
@@ -1149,6 +1153,11 @@ ii.Class({
 		yearsLoaded: function(me, activeId) {
 			me.checkLoadCount();
 		},
+				
+		houseCodesLoaded: function(me, activeId) {
+			me.houseCodes = me.genericTypes.slice();
+			me.checkLoadCount();
+		},
 		
 		typesTableLoaded: function() {
 			var me = this;
@@ -1164,6 +1173,7 @@ ii.Class({
 			me.entryMethods = [];
 			me.hour40Exceptions = [];
 			me.houseCodeStatus = [];
+			me.countHours = [];
 			
 			me.levels.push(new fin.rpt.ssrs.Level(37, "ENT", "ENT"));
 			me.levels.push(new fin.rpt.ssrs.Level(2, "SVP", "SVP"));
@@ -1215,6 +1225,9 @@ ii.Class({
 			
 			me.houseCodeStatus.push(new fin.rpt.ssrs.HouseCodeStatus(1, "Active", "1"));//Default
             me.houseCodeStatus.push(new fin.rpt.ssrs.HouseCodeStatus(0, "Closed", "0"));
+			
+			me.countHours.push(new fin.rpt.ssrs.CountHour(1, "True", "True"));//Default
+            me.countHours.push(new fin.rpt.ssrs.CountHour(2, "False", "False"));
 		},
 		
 		loggedInUsersLoaded: function(me, activeId) {
@@ -1277,15 +1290,18 @@ ii.Class({
 			var me = this;
 
 			me.excludeHouseCodes = [];
+			me.filteredHouseCodes = [];
 			$("#ExcludeHouseCodes").html("");
 			$("#ExcludeHouseCodes").multiselect("refresh");
+			$("#HouseCode").html("");
+			$("#HouseCode").multiselect("refresh");
 		},
 
 		checkDependentTypes: function(fullPath, add) {
 			var me = this;
 
 			for (var index = 0; index < me.dependentTypes.length; index++) {
-				if (me.dependentTypes[index] == "ExcludeHouseCodes" || me.dependentTypes[index] == "Exclude") {
+				if (me.dependentTypes[index] == "ExcludeHouseCode" || me.dependentTypes[index] == "Exclude") {
 					if (add) {
 						var nodes = $.grep(me.siteNodes, function(item, itemIndex) {
 						    return item.fullPath.indexOf(fullPath) >= 0;
@@ -1306,10 +1322,35 @@ ii.Class({
 						    return item.fullPath.indexOf(fullPath) < 0;
 						});
 					}
-
 					me.setExcludeHouseCodes();
 				}
+				if (me.dependentTypes[index] == "HouseCode") {
+					if (add) {
+						var nodes = $.grep(me.houseCodes, function(item, itemIndex) {
+						    return item.parameter.indexOf(fullPath) >= 0;
+						});
+
+						$.merge(me.filteredHouseCodes, nodes);
+
+						me.filteredHouseCodes.sort(function(a, b) {
+							if (a.title < b.title)
+						    	return -1;
+						  	if (a.title > b.title)
+						    	return 1;
+							return 0;
+						});
+					}
+					else {
+						me.filteredHouseCodes = $.grep(me.filteredHouseCodes, function(item, itemIndex) {
+						    return item.fullPath.indexOf(fullPath) < 0;
+						});
+					}
+					me.setHouseCodes();
+				}				
 			}
+			
+			if(me.controls[3] != undefined && me.controls[3].id == "GroupLevel")
+               me.groupLevelsLoaded();
 		},
 
 		setExcludeHouseCodes: function() {
@@ -1322,6 +1363,21 @@ ii.Class({
 				$("#ExcludeHouseCodes").append("<option title='" + me.excludeHouseCodes[index].title + "' value='" + me.excludeHouseCodes[index].id + "'>" + me.excludeHouseCodes[index].title + "</option>");
 			}
 			$("#ExcludeHouseCodes").multiselect("refresh");
+			
+			if(me.controls[3] != undefined && me.controls[3].id == "GroupLevel")
+                me.groupLevelsLoaded();
+		},
+		
+		setHouseCodes: function() {
+			var me = this;
+
+			$("#HouseCode").html("");
+			$("#HouseCode").append("<option title='None' value='0'>None</option>");
+				
+			for (var index = 0; index < me.filteredHouseCodes.length; index++) {
+				$("#HouseCode").append("<option title='" + me.filteredHouseCodes[index].name + "' value='" + me.filteredHouseCodes[index].id + "'>" + me.filteredHouseCodes[index].name + "</option>");
+			}
+			$("#HouseCode").multiselect("refresh");
 		},
 		
 		setOverheadAccounts: function() {
@@ -1898,7 +1954,7 @@ ii.Class({
 				if (me.reportParameters[index].mandatory)
                     html += "\n<div class='labelReport'>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "'></div><div><input type='checkbox' name='dateCheck' id='dateCheck' checked='true' class='labelSchedule' onchange='fin.reportUi.dateMandatory(this," + index + ");' /></div><div class='labelSchedule'>NULL</div>"                 
                 else if (!me.reportParameters[index].mandatory)
-					html += "\n<div class='labelReport'>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium'></div>"									
+					html += "\n<div class='labelReport'>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium' style='width:" + me.reportParameters[index].Width + "px;'></div>"									
 				html += "\n<div style='clear:both;'></div>";
 			}
 
@@ -2014,6 +2070,10 @@ ii.Class({
 					else if (me.reportParameters[index].referenceTableName == "HouseCodeStatus") {
                         me.controls[index].setData(me.houseCodeStatus);
                         me.controls[index].select(ii.ajax.util.findIndexById(me.reportParameters[index].defaultValue, me.houseCodeStatus), me.controls[index].focused);
+                    }
+					else if (me.reportParameters[index].referenceTableName == "ShowCntHrs") {
+                        me.controls[index].setData(me.countHours);
+                        me.controls[index].select(me.findIndexByTitle(me.reportParameters[index].defaultValue, me.countHours), me.controls[index].focused);
                     }					
 				}
 				else if (me.reportParameters[index].controlType == "Date") {
@@ -2056,19 +2116,19 @@ ii.Class({
 						header: false,
 						noneSelectedText: "",
 						selectedList: 4,
-//						selectedText: function(numChecked, numTotal, checkedItems) {
-//                            var parametersList = "";
-//                            var selectedValues = $("#" + this.element[0].id).multiselect("getChecked").map(function() {
-//                                return this.title;
-//                            }).get();
-//                            
-//                            for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
-//                                if (selectedValues[selectedIndex] != "(Select All)")
-//                                    parametersList = parametersList + ', ' + selectedValues[selectedIndex];
-//                            }
-//                            parametersList = parametersList.substring(1, parametersList.length);
-//                            return parametersList;
-//                        },
+						selectedText: function(numChecked, numTotal, checkedItems) {
+                            var parametersList = "";
+                            var selectedValues = $("#" + this.element[0].id).multiselect("getChecked").map(function() {
+                                return this.title;
+                            }).get();
+                            
+                            for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
+                                if (selectedValues[selectedIndex] != "(Select All)")
+                                    parametersList = parametersList + ', ' + selectedValues[selectedIndex];
+                            }
+                            parametersList = parametersList.substring(1, parametersList.length);
+                            return parametersList;
+                        },
                         click: function(event, ui) {                                                                                    
                             if (ui.text == "(Select All)") {
                                 if (ui.checked)
@@ -2077,6 +2137,20 @@ ii.Class({
                                     $("#" + event.target.id).multiselect("uncheckAll");
                             }
                         },
+						open: function( e ){
+							if (e.target.id == 'Customers') {
+								$("#Customers").html("");
+								$("#Customers").multiselect("refresh");
+								if (me.level == '' || me.name == '') {									
+									return false;
+								}
+								me.namesList = me.names.replace("~", "");
+								me.levelName = me.level.replace("~Level=", "");											
+								me.setLoadCount();
+								me.setStatus("Loading");
+								me.genericTypeStore.fetch("level:" + me.levelName + ",name:" + me.namesList + ",genericType:Customers,userId:[user]", me.customersLoaded, me);
+							}							
+						},
 						position: {
 							my: 'left bottom',
 							at: 'left top'
@@ -2243,37 +2317,12 @@ ii.Class({
 			for (var index = 0; index < me.customers.length; index++) {
 				$("#Customers").append("<option title='" + me.customers[index].name + "' value='" + me.customers[index].id + "'>" + me.customers[index].name + "</option>");
 			}
-			$("#Customers").multiselect("refresh");			
-			me.genericTypeStore.fetch("level:" + me.levelName + ",name:" + me.namesList + ",genericType:ExcludeHouseCodes,userId:[user]", me.excludeHouseCodesLoaded, me);			
+			$("#Customers").multiselect("refresh");
+			//$("#CustomersText").removeClass("Loading");
+			me.setStatus("Loaded");
+			me.checkLoadCount();
 		},
-		
-		excludeHouseCodesLoaded: function(me, activeId) {
-			me.excludeHouseCodes = me.genericTypes.slice();
-			$("#ExcludeHouseCodes").html("");
-			$("#OverheadAccounts").html("");
-			for (var index = 0; index < me.excludeHouseCodes.length; index++) {
-				$("#ExcludeHouseCodes").append("<option title='" + me.excludeHouseCodes[index].name + "' value='" + me.excludeHouseCodes[index].id + "'>" + me.excludeHouseCodes[index].name + "</option>");
-				$("#OverheadAccounts").append("<option title='" + me.excludeHouseCodes[index].name + "' value='" + me.excludeHouseCodes[index].id + "'>" + me.excludeHouseCodes[index].name + "</option>");
-			}
-			$("#ExcludeHouseCodes").multiselect("refresh");
-			$("#OverheadAccounts").multiselect("refresh");
-			me.genericTypeStore.fetch("level:" + me.levelName + ",name:" + me.namesList + ",genericType:HouseCode,userId:[user]", me.houseCodesLoaded, me);
-		},
-		
-		houseCodesLoaded: function(me, activeId) {
-			me.excludeHouseCodes = me.genericTypes.slice();
-			$("#HouseCode").html("");
-			for (var index = 0; index < me.excludeHouseCodes.length; index++) {
-				$("#HouseCode").append("<option title='" + me.excludeHouseCodes[index].name + "' value='" + me.excludeHouseCodes[index].id + "'>" + me.excludeHouseCodes[index].name + "</option>");
-			}
-			$("#HouseCode").multiselect("refresh");
-			
-			if(me.controls[3] != undefined && me.controls[3].id == "GroupLevel")
-                me.groupLevelsLoaded();
 				
-			me.checkLoadCount();						
-		},
-		
 		groupLevelsLoaded: function() {
             var me = this;
             me.groupLevels = [];
@@ -2341,7 +2390,7 @@ ii.Class({
 				return;
 						
 			me.setLoadCount(); 
-			me.genericTypeStore.fetch("name:" + me.fscYears[me.controls[0].indexSelected].id + ",genericType:FiscalWeek,userId:[user]", me.fiscalweeksLoaded, me);			
+			me.genericTypeStore.fetch("name:" + me.fiscalYears[me.controls[0].indexSelected].id + ",genericType:FiscalWeek,userId:[user]", me.fiscalweeksLoaded, me);			
 		},
 		
 		fiscalweeksLoaded: function(me, activeId) {			

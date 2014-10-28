@@ -1,6 +1,6 @@
 ﻿.contentAreasContainerLeft {
 	float: left;
-	width: 48%;
+	width: 40%;
 	vertical-align: top;
 	margin-right: 20px;
 	z-index: 3550;
@@ -9,7 +9,7 @@
 
 .contentAreasContainerRight {
 	float: left;
-	width: 49.3%;
+	width: 57.3%;
 	vertical-align: top;
 	z-index: 3551;
 	position: relative;
@@ -57,7 +57,6 @@
 
 .inputTextMedium {
 	float: left;
-	width: 300px;
 	padding: 3px 0px 3px 0px;
 }
 
