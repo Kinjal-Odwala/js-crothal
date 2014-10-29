@@ -1480,7 +1480,7 @@ ii.Class({
 				me.siteNodes = nodes;
 				if (nodes.length > 0) {
 					me.addLevelNode("", 7, "SiteName", 1, 1, "");
-					me.addChildNodes(nodes, "AM");
+					me.addChildNodes(nodes, "SiteName");
 				}
 
 				me.checkLoadCount();
