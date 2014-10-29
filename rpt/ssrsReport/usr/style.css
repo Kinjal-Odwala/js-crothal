@@ -1,6 +1,6 @@
 ﻿.contentAreasContainerLeft {
 	float: left;
-	width: 40%;
+	width: 43%;
 	vertical-align: top;
 	margin-right: 20px;
 	z-index: 3550;
@@ -9,7 +9,7 @@
 
 .contentAreasContainerRight {
 	float: left;
-	width: 57.3%;
+	width: 54.3%;
 	vertical-align: top;
 	z-index: 3551;
 	position: relative;
