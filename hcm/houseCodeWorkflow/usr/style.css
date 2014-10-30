@@ -75,6 +75,18 @@
 	border-width: 1px;
 }
 
+.iiInputText.Loading {
+	background-image: url(/fin/cmn/usr/media/common/indicator.gif);
+	background-repeat: no-repeat;
+	background-position: right;
+	width: 16px;
+	height: 16px;
+	margin-top: 1px;
+	margin-right: 1px;
+	margin-left: 1px;
+	margin-bottom: 1px;	
+}
+
 #houseCodeDetailContainer {
 	border: solid #AAAAAA thin;
 	border-width: 1px;

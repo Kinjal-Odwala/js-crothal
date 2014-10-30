@@ -16,8 +16,8 @@ ii.init.register( function() {
 		, column5: {type: String, required: false, defaultValue: ""} 	// Last Name
 		, column6: {type: String, required: false, defaultValue: ""} 	// Requested Date
 		, column7: {type: String, required: false, defaultValue: ""} 	// Status
-		, column8: {type: String, required: false, defaultValue: ""} 	// Approved Date
-		, column9: {type: String, required: false, defaultValue: ""}    // 
+		, column8: {type: String, required: false, defaultValue: ""} 	// Approved/Unapproved By
+		, column9: {type: String, required: false, defaultValue: ""}    // Approved/Unapproved Date
 		, column10: {type: String, required: false, defaultValue: ""}   // 
 		, column11: {type: String, required: false, defaultValue: ""} 	//
 		, column12: {type: String, required: false, defaultValue: ""}   // 
@@ -88,11 +88,22 @@ ii.init.register( function() {
 		, column77: {type: String, required: false, defaultValue: ""} 	// Markup
 		, column78: {type: String, required: false, defaultValue: ""} 	// Service Location Number
 		, column79: {type: String, required: false, defaultValue: ""} 	// Service Location Name
-		, column80: {type: String, required: false, defaultValue: ""} 	// MISC Number
-		, column81: {type: String, required: false, defaultValue: ""} 	// Exterior
-		, column82: {type: String, required: false, defaultValue: ""} 	// Food Court
-		, column83: {type: String, required: false, defaultValue: ""} 	// Common Area
-		, column84: {type: String, required: false, defaultValue: ""} 	// Other Areas
+		, column80: {type: String, required: false, defaultValue: ""} 	// Service Location Street
+		, column81: {type: String, required: false, defaultValue: ""} 	// Service Location City
+		, column82: {type: String, required: false, defaultValue: ""} 	// Service Location State
+		, column83: {type: String, required: false, defaultValue: ""} 	// Service Location Zip Code
+		, column84: {type: String, required: false, defaultValue: ""} 	// MISC Number
+		, column85: {type: String, required: false, defaultValue: ""} 	// Exterior
+		, column86: {type: String, required: false, defaultValue: ""} 	// Food Court
+		, column87: {type: String, required: false, defaultValue: ""} 	// Common Area
+		, column88: {type: String, required: false, defaultValue: ""} 	// Other Areas
+	};
+
+	fin.hcm.houseCodeWorkflow.personArgs = {
+		id: {type: Number}
+		, firstName: {type: String, required: false, defaultValue: ""}
+		, lastName: {type: String, required: false, defaultValue: ""}
+		, email: {type: String, required: false, defaultValue: ""}
 	};
 
 	fin.hcm.houseCodeWorkflow.hirNodeArgs = {
@@ -105,6 +116,11 @@ ii.init.register( function() {
 		, title: {type: String, required: false, defaultValue: ""}
 		, childNodeCount: {type: Number, required: false, defaultValue: 0}
 		, active: {type: Boolean, required: false, defaultValue: true}
+	};
+	
+	fin.hcm.houseCodeWorkflow.siteArgs = {
+	   id: {type: Number}
+	   , title: {type: String, required: false, defaultValue: ""}
 	};
 	
 	fin.hcm.houseCodeWorkflow.divisionArgs = {
@@ -208,10 +224,30 @@ ii.Class({
 });
 
 ii.Class({
+	Name: "fin.hcm.houseCodeWorkflow.Person",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.personArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
 	Name: "fin.hcm.houseCodeWorkflow.HirNode",
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.hirNodeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.houseCodeWorkflow.Site",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.siteArgs);
 			$.extend(this, args);
 		}
 	}

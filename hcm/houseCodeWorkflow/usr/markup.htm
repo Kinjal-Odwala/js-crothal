@@ -15,10 +15,14 @@
 	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
 	<body id="appBody">
 		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
-		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
-		        <img id="imgLoading" src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
-		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
-		    </div>
+			<table width="100%" height="100%">
+				<tr>
+					<td align="center">
+						<img id="imgLoading" src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+						<div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;">Loading</div>    
+		        	</td>
+				</tr>
+			</table>
 		</div>
 		<div id="popupLoading" style="position: absolute; top: 0px; left: 0px; z-index: 6001; width: 950px; height: 410px; background-color: white; display: none;">
 		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
@@ -431,7 +435,7 @@
 						<div class="subHeader">Customer Information:</div>
 						<div id="TableEditArea">
 							<div class="labelTextArea">
-								<span class="nonRequiredFieldIndicator">Customer Number:</span>
+								<span class="requiredFieldIndicator">&#149;</span>Customer Number:
 							</div>
 							<div class="inputTextArea">
 								<div id="CustomerNumber"></div>
@@ -440,7 +444,7 @@
 						</div>
 						<div id="TableEditArea">
 							<div class="labelTextArea">
-								<span class="nonRequiredFieldIndicator">Client Name:</span>
+								<span class="requiredFieldIndicator">&#149;</span>Client Name:
 							</div>
 							<div class="inputTextArea">
 								<div id="ClientName"></div>
@@ -752,8 +756,8 @@
 						<div class="subHeader">Service Location Information:</div>
 						<div id="TableEditArea">
 							<div class="labelTextArea">
-								<span class="nonRequiredFieldIndicator">Number:</span>
-								</div>
+								<span class="requiredFieldIndicator">&#149;</span>Number:
+							</div>
 							<div class="inputTextArea">
 								<div id="ServiceLocationNumber"></div>
 							</div>
@@ -761,57 +765,107 @@
 						</div>
 						<div id="TableEditArea">
 							<div class="labelTextArea">
-								<span class="nonRequiredFieldIndicator">Name:</span>
+								<span class="requiredFieldIndicator">&#149;</span>Name:
 							</div>
 							<div class="inputTextArea">
 								<div id="ServiceLocationName"></div>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
-						<div id="TableEditArea">
-							<div class="labelTextArea">
-								<span class="nonRequiredFieldIndicator">MISC Number:</span>
+						<div class="leftContainer">
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Street:
+								</div>
+								<div class="inputTextArea">
+									<div id="ServiceLocationStreet"></div>
+								</div>
+								<div style="clear:both;"></div>
 							</div>
-							<div class="inputTextArea">
-								<div id="MISCNumber"></div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Zip Code:
+								</div>
+								<div class="inputTextArea">
+									<div id="ServiceLocationZipCode"></div>
+								</div>
+								<div style="clear:both;"></div>
 							</div>
-							<div style="clear:both;"></div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>City:
+								</div>
+								<div class="inputTextArea">
+									<div id="ServiceLocationCity"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">MISC Number:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="MISCNumber"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">Food Court:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="FoodCourt"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">Other Areas:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="OtherAreas"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
 						</div>
-						<div id="TableEditArea">
-							<div class="labelTextArea">
-								<span class="nonRequiredFieldIndicator">Exterior:</span>
+						<div class="rightContainer">
+							<div id="TableEditArea">
+								<div class="labelTextArea"></div>
+								<div class="inputTextArea"></div>
+								<div style="clear:both;"></div>
 							</div>
-							<div class="inputTextArea">
-								<div id="Exterior"></div>
+							<div id="TableEditArea">
+								<div class="labelTextArea"></div>
+								<div class="inputTextArea"></div>
+								<div style="clear:both;"></div>
 							</div>
-							<div style="clear:both;"></div>
-						</div>
-						<div id="TableEditArea">
-							<div class="labelTextArea">
-								<span class="nonRequiredFieldIndicator">Food Court:</span>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>State:
+								</div>
+								<div class="inputTextArea">
+									<div id="ServiceLocationState"></div>
+								</div>
+								<div style="clear:both;"></div>
 							</div>
-							<div class="inputTextArea">
-								<div id="FoodCourt"></div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">Exterior:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="Exterior"></div>
+								</div>
+								<div style="clear:both;"></div>
 							</div>
-							<div style="clear:both;"></div>
-						</div>
-						<div id="TableEditArea">
-							<div class="labelTextArea">
-								<span class="nonRequiredFieldIndicator">Common Area:</span>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">Common Area:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="CommonArea"></div>
+								</div>
+								<div style="clear:both;"></div>
 							</div>
-							<div class="inputTextArea">
-								<div id="CommonArea"></div>
-							</div>
-							<div style="clear:both;"></div>
-						</div>
-						<div id="TableEditArea">
-							<div class="labelTextArea">
-								<span class="nonRequiredFieldIndicator">Other Areas:</span>
-							</div>
-							<div class="inputTextArea">
-								<div id="OtherAreas"></div>
-							</div>
-							<div style="clear:both;"></div>
 						</div>
 					</div>
 		        </div>

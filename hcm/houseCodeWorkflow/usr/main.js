@@ -46,9 +46,11 @@ ii.Class({
 			me.status = "";
 			me.lastSelectedRowIndex = -1;
 			me.loadCount = 0;
+			me.validSite = true;
 			me.searchZipCode = false;
 			me.searchZipCodeType = "";
 			me.searchCustomerZipCode = false;
+			me.searchServiceLocationZipCode = false;
 			me.customers = [];
 			me.serviceLocations = [];
 
@@ -84,7 +86,7 @@ ii.Class({
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
 			}
-		},	
+		},
 		
 		authorizationProcess: function fin_hcm_houseCodeWorkflow_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
@@ -103,8 +105,9 @@ ii.Class({
 				$("#pageLoading").fadeIn("slow");
 
 				ii.timer.timing("Page displayed");
-				me.loadCount = 2;
+				me.loadCount = 3;
 				me.session.registerFetchNotify(me.sessionLoaded, me);
+				me.personStore.fetch("userId:[user],id:" + me.session.propertyGet("personId"), me.personsLoaded, me);
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
 				me.houseCodeWorkflowMasterStore.fetch("userId:[user]", me.houseCodeWorkflowMastersLoaded, me);
 				me.hirNodeStore.fetch("userId:[user],hierarchy:2,", me.hirNodesLoaded, me);
@@ -112,7 +115,8 @@ ii.Class({
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},	
-		
+
+
 		sessionLoaded: function fin_hcm_houseCodeWorkflow_UserInterface_sessionLoaded() {
 			var args = ii.args(arguments, {
 				me: {type: Object}
@@ -226,6 +230,7 @@ ii.Class({
 				if (itemIndex >= 0 && itemIndex != undefined)
 					return me.contractTypes[itemIndex].name; 
 			});
+			me.houseCodeRequestGrid.addColumn("column7", "column7", "Status", "Status", 90);
 			me.houseCodeRequestGrid.capColumns();
 			
 			me.primaryContractType = new ui.ctl.Input.DropDown.Filtered({
@@ -325,23 +330,31 @@ ii.Class({
 			me.siteName = new ui.ctl.Input.Text({
 		        id: "SiteName",
 				maxLength: 64,
-				changeFunction: function() { me.modified(); } 
+				changeFunction: function() { me.modified(); me.validateSite(); }
 		    });
-			
+
 			me.siteName.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
-			
+				.addValidation( function( isFinal, dataMap ) {
+
+					if (me.siteName.getValue() == "") 
+						return;
+						
+					if (!me.validSite)
+						this.setInvalid("Site Name [" + me.siteName.getValue() + "] is already exists. Please enter different Site Name.");
+				});
+
 			me.street1 = new ui.ctl.Input.Text({
 		        id: "Street1",
 				maxLength: 100,
-				changeFunction: function() { me.modified(); } 
+				changeFunction: function() { me.modified(); }
 		    });
 			
 			me.street1.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
-				
+
 			me.street2 = new ui.ctl.Input.Text({
 		        id: "Street2",
 				maxLength: 100,
@@ -626,6 +639,7 @@ ii.Class({
 
 			me.customerNumber = new ui.ctl.Input.DropDown.Filtered({
 				id : "CustomerNumber",
+				maxLength: 8,
 				title: "To search a specific Customer, type-in Customer Number and press Enter key.",
 				formatFunction: function( type ) { return type.name; },
 				changeFunction: function() { me.modified(); me.customerNumberChanged(); } 
@@ -633,6 +647,7 @@ ii.Class({
 
 			me.customerNumber.makeEnterTab()
 				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
 
 					var enteredText = me.customerNumber.text.value;
@@ -653,6 +668,7 @@ ii.Class({
 			
 			me.clientName.makeEnterTab()
 				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
 
 			me.customerStreet = new ui.ctl.Input.Text({
 		        id: "CustomerStreet",
@@ -982,6 +998,7 @@ ii.Class({
 
 			me.serviceLocationNumber = new ui.ctl.Input.DropDown.Filtered({
 				id : "ServiceLocationNumber",
+				maxLength: 8,
 				title: "To search a specific Service Location, type-in Service Location Number and press Enter key.",
 				formatFunction: function( type ) { return type.name; },
 				changeFunction: function() { me.modified(); me.serviceLocationNumberChanged(); } 
@@ -989,6 +1006,7 @@ ii.Class({
 
 			me.serviceLocationNumber.makeEnterTab()
 				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
 
 					var enteredText = me.serviceLocationNumber.text.value;
@@ -1009,6 +1027,72 @@ ii.Class({
 
 			me.serviceLocationName.makeEnterTab()
 				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+
+			me.serviceLocationStreet = new ui.ctl.Input.Text({
+		        id: "ServiceLocationStreet",
+				maxLength: 50,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.serviceLocationStreet.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+
+			me.serviceLocationCity = new ui.ctl.Input.DropDown.Filtered({
+		        id: "ServiceLocationCity",
+				formatFunction: function( type ) { return type.city; },
+				changeFunction: function() { me.modified(); },
+		        required: false				
+		    });
+			
+			me.serviceLocationCity.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					if ((this.focused || this.touched) && me.serviceLocationCity.data.length > 0 && me.serviceLocationCity.indexSelected == -1)
+						this.setInvalid("Please select the correct City.");
+				});
+
+			me.serviceLocationState = new ui.ctl.Input.DropDown.Filtered({
+				id : "ServiceLocationState",
+				formatFunction: function( type ) { return type.name; },
+				changeFunction: function() { me.modified(); } 
+		    });
+			
+			me.serviceLocationState.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					if (me.serviceLocationState.indexSelected == -1)
+						this.setInvalid("Please select the correct State.");
+				});
+
+			me.serviceLocationZipCode = new ui.ctl.Input.Text({
+		        id: "ServiceLocationZipCode",
+				maxLength: 10,
+				changeFunction: function() {
+					if (ui.cmn.text.validate.postalCode(me.serviceLocationZipCode.getValue())) {
+						me.searchZipCode = true;
+						me.loadZipCodeTypes("ServiceLocation"); 
+						me.modified();
+					}
+				}
+		    });
+
+			me.serviceLocationZipCode.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(function( isFinal, dataMap) {
+					
+				if (me.serviceLocationZipCode.getValue() == "") 
+					return;
+
+				if (!(ui.cmn.text.validate.postalCode(me.serviceLocationZipCode.getValue())))
+					this.setInvalid("Please enter valid Zip Code. Example: 99999 or 99999-9999");
+			});
 
 			me.miscNumber = new ui.ctl.Input.Text({
 		        id: "MISCNumber",
@@ -1068,6 +1152,14 @@ ii.Class({
 				injectionArray: me.houseCodeRequests
 			});					
 
+			me.persons = [];
+			me.personStore = me.cache.register({ 
+				storeId: "persons",
+				itemConstructor: fin.hcm.houseCodeWorkflow.Person,
+				itemConstructorArgs: fin.hcm.houseCodeWorkflow.personArgs,
+				injectionArray: me.persons	
+			});
+
 			me.hirNodes = [];
 			me.hirNodeStore = me.cache.register({
 				storeId: "hirNodes",
@@ -1075,6 +1167,14 @@ ii.Class({
 				itemConstructorArgs: fin.hcm.houseCodeWorkflow.hirNodeArgs,
 				injectionArray: me.hirNodes
 			});
+
+			me.sites = [];
+			me.siteStore = me.cache.register({
+				storeId: "sites",
+				itemConstructor: fin.hcm.houseCodeWorkflow.Site,
+				itemConstructorArgs: fin.hcm.houseCodeWorkflow.siteArgs,
+				injectionArray: me.sites
+			});	
 
 			me.stateTypes = [];
 			me.stateTypeStore = me.cache.register({
@@ -1303,6 +1403,10 @@ ii.Class({
 			else if (me.currentWizard == "ServiceLocationInfo") {
 				me.serviceLocationNumber.resizeText();
 				me.serviceLocationName.resizeText();
+				me.serviceLocationStreet.resizeText();
+				me.serviceLocationCity.resizeText();
+				me.serviceLocationState.resizeText();
+				me.serviceLocationZipCode.resizeText();
 				me.miscNumber.resizeText();
 				me.exterior.resizeText();
 				me.foodCourt.resizeText();
@@ -1381,11 +1485,15 @@ ii.Class({
 			me.markup.text.tabIndex = 117;
 			me.serviceLocationNumber.text.tabIndex = 121;
 			me.serviceLocationName.text.tabIndex = 122;
-			me.miscNumber.text.tabIndex = 123;
-			me.exterior.text.tabIndex = 124;
-			me.foodCourt.text.tabIndex = 125;
-			me.commonArea.text.tabIndex = 126;
-			me.otherAreas.text.tabIndex = 127;
+			me.serviceLocationStreet.text.tabIndex = 123;
+			me.serviceLocationZipCode.text.tabIndex = 124;
+			me.serviceLocationCity.text.tabIndex = 125;
+			me.serviceLocationState.text.tabIndex = 126;
+			me.miscNumber.text.tabIndex = 127;
+			me.exterior.text.tabIndex = 128;
+			me.foodCourt.text.tabIndex = 129;
+			me.commonArea.text.tabIndex = 130;
+			me.otherAreas.text.tabIndex = 131;
 		},
 
 		resetControls: function() {
@@ -1460,6 +1568,10 @@ ii.Class({
 			me.serviceLocationNumber.reset();
 			me.serviceLocationNumber.setData([]);
 			me.serviceLocationName.setValue("");
+			me.serviceLocationStreet.setValue("");
+			me.serviceLocationCity.reset();
+			me.serviceLocationState.reset();
+			me.serviceLocationZipCode.setValue("");
 			me.miscNumber.setValue("");
 			me.exterior.setValue("");
 			me.foodCourt.setValue("");
@@ -1500,10 +1612,16 @@ ii.Class({
 			return null;
 		},
 
+		personsLoaded: function(me, activeId) {
+
+			me.checkLoadCount();
+		},
+
 		stateTypesLoaded: function(me, activeId) {
 
 			me.state.setData(me.stateTypes);
 			me.customerState.setData(me.stateTypes);
+			me.serviceLocationState.setData(me.stateTypes);
 			me.houseCodeRequestStore.fetch("userId:[user],object:HouseCodeRequest,batch:0,startPoint:0,maximumRows:0", me.houseCodeRequestsLoaded, me);
 		},
 
@@ -1520,8 +1638,8 @@ ii.Class({
 			me.companyStatusTypes = [];
 			me.supplyContractTypes = [];
 
-			me.clientStatusTypes.push(new fin.hcm.houseCodeWorkflow.ClientStatusType(1, "FP"));
-			me.clientStatusTypes.push(new fin.hcm.houseCodeWorkflow.ClientStatusType(1, "NP"));
+			me.clientStatusTypes.push(new fin.hcm.houseCodeWorkflow.ClientStatusType(1, "For Profit"));
+			me.clientStatusTypes.push(new fin.hcm.houseCodeWorkflow.ClientStatusType(1, "Non Profit"));
 
 			me.companyStatusTypes.push(new fin.hcm.houseCodeWorkflow.CompanyStatusType(1, "Public"));
 			me.companyStatusTypes.push(new fin.hcm.houseCodeWorkflow.CompanyStatusType(1, "Private"));
@@ -1635,7 +1753,7 @@ ii.Class({
 					}
 				}
 			}
-			
+
 			if (hidePopup)
 				$("#popupLoading").fadeOut("slow");
         },
@@ -1743,6 +1861,12 @@ ii.Class({
 				zipCode = zipCode.substring(0, 5);
 				me.customerCity.fetchingData();
 			}
+			else if (type == "ServiceLocation") {
+				// remove any unwanted characters
+		    	zipCode = me.serviceLocationZipCode.getValue().replace(/[^0-9]/g, "");
+				zipCode = zipCode.substring(0, 5);
+				me.serviceLocationCity.fetchingData();
+			}
 
 			me.zipCodeTypeStore.fetch("userId:[user],zipCode:" + zipCode, me.zipCodeTypesLoaded, me);
 		},
@@ -1783,6 +1907,10 @@ ii.Class({
 				me.customerCity.reset();
 				me.customerCity.setData(me.cityNames);
 			}
+			else if (me.searchZipCodeType == "ServiceLocation") {
+				me.serviceLocationCity.reset();
+				me.serviceLocationCity.setData(me.cityNames);
+			}
 
 			if (!me.searchZipCode) {
 				if (me.zipCodeTypes.length == 0) {
@@ -1792,6 +1920,8 @@ ii.Class({
 					}
 					else if (me.searchZipCodeType == "Customer")
 						me.customerCity.setValue(me.houseCodeRequestGrid.data[me.lastSelectedRowIndex].column49);
+					else if (me.searchZipCodeType == "ServiceLocation")
+						me.serviceLocationCity.setValue(me.houseCodeRequestGrid.data[me.lastSelectedRowIndex].column81);
 				}
 				else {
 					for (index = 0; index < me.cityNames.length; index++) {
@@ -1804,6 +1934,12 @@ ii.Class({
 						else if (me.searchZipCodeType == "Customer") {
 							if (me.cityNames[index].city.toUpperCase() == me.houseCodeRequestGrid.data[me.lastSelectedRowIndex].column49.toUpperCase()) {
 								me.customerCity.select(index, me.customerCity.focused);
+								break;
+							}
+						}
+						else if (me.searchZipCodeType == "ServiceLocation") {
+							if (me.cityNames[index].city.toUpperCase() == me.houseCodeRequestGrid.data[me.lastSelectedRowIndex].column81.toUpperCase()) {
+								me.serviceLocationCity.select(index, me.serviceLocationCity.focused);
 								break;
 							}
 						}
@@ -1824,6 +1960,8 @@ ii.Class({
 					me.state.reset();
 				else if (me.searchZipCodeType == "Customer")
 					me.customerState.reset();
+				else if (me.searchZipCodeType == "ServiceLocation")
+					me.serviceLocationState.reset();
 
 				if (me.zipCodeTypes.length > 0) {
 					index = ii.ajax.util.findIndexById(me.zipCodeTypes[0].stateType.toString(), me.stateTypes);
@@ -1833,6 +1971,8 @@ ii.Class({
 							me.state.select(index, me.state.focused);
 						else if (me.searchZipCodeType == "Customer")
 							me.customerState.select(index, me.customerState.focused);
+						else if (me.searchZipCodeType == "ServiceLocation")
+							me.serviceLocationState.select(index, me.serviceLocationState.focused);
 					}
 				}
 
@@ -1844,11 +1984,23 @@ ii.Class({
 						}
 					}
 				}
+				else if (me.searchZipCodeType == "ServiceLocation") {
+					for (index = 0; index < me.cityNames.length; index++) {
+						if (me.cityNames[index].city.toUpperCase() == me.serviceLocations[me.serviceLocationNumber.indexSelected].city.toUpperCase()) {
+							me.serviceLocationCity.select(index, me.serviceLocationCity.focused);
+							break;
+						}
+					}
+				}
 			}
 			
 			if (me.searchCustomerZipCode) {
 				me.searchCustomerZipCode = false;
 				me.loadZipCodeTypes("Customer");
+			}
+			else if (me.searchServiceLocationZipCode) {
+				me.searchServiceLocationZipCode = false;
+				me.loadZipCodeTypes("ServiceLocation");
 			}
 		},
 		
@@ -1919,18 +2071,53 @@ ii.Class({
 			me.serviceLocationNumber.setData(me.serviceLocations);
 			me.serviceLocationName.setValue("");
 
+			me.serviceLocationStreet.setValue("");
+			me.serviceLocationCity.reset();
+			me.serviceLocationCity.setData([]);
+			me.serviceLocationState.reset();
+			me.serviceLocationZipCode.setValue("");
+
 			if (me.serviceLocations.length > 0)
-				me.serviceLocationNumber.select(0, me.customerNumber.focused);
+				me.serviceLocationNumber.select(0, me.serviceLocationNumber.focused);
 		},
 		
 		serviceLocationNumberChanged: function() {
 			var me = this;
 			var index = me.serviceLocationNumber.indexSelected;
 
-			if (index != -1)
+			if (index != -1) {
 				me.serviceLocationName.setValue(me.serviceLocations[index].title);
+				me.serviceLocationStreet.setValue(me.serviceLocations[index].address1);
+				var itemIndex = ii.ajax.util.findIndexById(me.serviceLocations[index].appStateTypeId.toString(), me.stateTypes);
+				if (itemIndex != undefined)
+					me.serviceLocationState.select(itemIndex, me.serviceLocationState.focused);
+				else
+					me.serviceLocationState.reset();
+				me.serviceLocationZipCode.setValue(me.serviceLocations[index].postalCode);
+				me.searchZipCode = true;
+				me.loadZipCodeTypes("ServiceLocation");
+			}
 		},
 
+		validateSite: function() {
+			var me = this;
+
+			if (me.siteName.getValue() == "")
+				return;
+			$("#SiteNameText").addClass("Loading");
+			me.validSite = true;
+			me.siteStore.fetch("userId:[user],validate:1,title:" + me.siteName.getValue(), me.sitesLoaded, me);
+		},
+		
+		sitesLoaded: function(me, activeId){
+
+			if (me.sites.length > 0) {
+				me.validSite = false;
+				me.siteName.setInvalid("Site Name [" + me.siteName.getValue() + "] is already exists. Please enter different Site Name.");
+			}
+			$("#SiteNameText").removeClass("Loading");
+		},
+		
 		itemSelect: function() {			
 			var args = ii.args(arguments,{
 				index: {type: Number}  // The index of the data subItem to select
@@ -1952,13 +2139,13 @@ ii.Class({
 				return;
 			
 			if (item != undefined) {
-				if (item.column7 == "Open") {
+				if (item.column7 == "Open" || item.column7 == "Unapproved") {
 					$("#AnchorEdit").show();
 					$("#AnchorSendRequest").show();
 					$("#AnchorCancelRequest").show();
 				}
-				else if (item.column7 == "Rejected") {
-					$("#AnchorEdit").show();
+				else {
+					$("#AnchorEdit").hide();
 					$("#AnchorSendRequest").hide();
 					$("#AnchorCancelRequest").hide();
 				}
@@ -2056,7 +2243,7 @@ ii.Class({
 					return false;
 			}
 			else if (me.currentWizard == "CustomerInfo") {
-				if (!me.customerNumber.validate(true) || !me.customerStreet.validate(true) || !me.customerCity.validate(true) 
+				if (!me.customerNumber.validate(true) || !me.clientName.validate(true) || !me.customerStreet.validate(true) || !me.customerCity.validate(true) 
 					|| !me.customerState.validate(true) || !me.customerZipCode.validate(true) || !me.customerPhone.validate(true)
 					|| !me.billingFrequency.validate(true))
 					return false;
@@ -2352,182 +2539,254 @@ ii.Class({
 					me.chargeable.select(index, me.chargeable.focused);
 				me.markup.setValue(item.column77);
 
-				me.serviceLocations.push(new fin.hcm.houseCodeWorkflow.Job(0, item.column78, item.column79, "", "", "", 0, ""));
+				me.serviceLocations.push(new fin.hcm.houseCodeWorkflow.Job(0, item.column78, item.column79, item.column80, "", item.column81, item.column82, item.column83));
 				me.serviceLocationNumber.setData(me.serviceLocations);
 				me.serviceLocationNumber.select(0, me.serviceLocationNumber.focused);
 				me.serviceLocationName.setValue(item.column79);
-				me.miscNumber.setValue(item.column80);
-				me.exterior.setValue(item.column81);
-				me.foodCourt.setValue(item.column82);
-				me.commonArea.setValue(item.column83);
-				me.otherAreas.setValue(item.column84);
+				me.serviceLocationStreet.setValue(item.column80);
+				me.serviceLocationState.reset();
+				index = ii.ajax.util.findIndexById(item.column82, me.stateTypes);
+				if (index != undefined && index >= 0)
+					me.serviceLocationState.select(index, me.serviceLocationState.focused);
+				me.serviceLocationState.updateStatus();
+				me.serviceLocationZipCode.setValue(item.column83);
+				me.miscNumber.setValue(item.column84);
+				me.exterior.setValue(item.column85);
+				me.foodCourt.setValue(item.column86);
+				me.commonArea.setValue(item.column87);
+				me.otherAreas.setValue(item.column88);
 
 				me.searchZipCode = false;
 				me.searchCustomerZipCode = true;
+				me.searchServiceLocationZipCode = true;
 				me.loadZipCodeTypes("Site");
 			}
 		},
 
 		actionSendRequestItem: function() {
-			var args = ii.args(arguments,{});
 			var me = this;
 
+			if (me.houseCodeRequestGrid.activeRowIndex == -1)
+                return true;
+
+			var item = me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex];
+
+			if (parseInt(item.column16, 10) <= 0
+				|| item.column18 == "" || item.column19 == "" || item.column20 == "" || item.column21 == "" || item.column22 == "" || item.column23 == ""
+				|| !(ui.cmn.text.validate.generic(item.column24, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$"))
+				|| item.column25 == "" || item.column26 == "" || item.column28 == "" || parseInt(item.column29, 10) <= 0
+				|| !(ui.cmn.text.validate.postalCode(item.column30)) || parseInt(item.column33, 10) <= 0
+				|| (parseInt(item.column36, 10) > 0 && (parseInt(item.column36, 10) == parseInt(item.column38, 10)))
+				|| !(/^\d+$/.test(item.column46))
+				|| item.column47 == "" || item.column48 == "" || item.column49 == "" || parseInt(item.column50, 10) <= 0
+				|| !(ui.cmn.text.validate.postalCode(item.column51)) || !(/^\d{10}$/.test(item.column52)) || parseInt(item.column54, 10) <= 0
+				|| !(/^\d+$/.test(item.column78))
+				|| item.column79 == "" || item.column80 == "" || item.column81 == "" || parseInt(item.column82, 10) <= 0
+				|| !(ui.cmn.text.validate.postalCode(item.column83))
+			    ) {
+				alert("There are few mandatory fields which are not entered. Please enter values for all mandatory fields and try again.");
+				return false;
+			}
+			else {
+				$("#messageToUser").text("Sending Request");
+				me.status = "SendRequest";
+            	me.actionSaveItem();
+			}
+
+//			if (!me.primaryContractType.validate(true)
+//				|| !me.svp.validate(true) || !me.dvp.validate(true) || !me.rvp.validate(true)
+//				|| !me.srm.validate(true) || !me.rm.validate(true) || !me.am.validate(true)
+//				|| !me.startDate.validate(true) || !me.siteName.validate(true) || !me.street1.validate(true)
+//				|| !me.city.validate(true) || !me.state.validate(true) || !me.zipCode.validate(true) || !me.county.validate(true)
+//				|| !me.primaryServiceProvided.validate(true)
+//				|| !me.hourlyCompany.validate(true) || !me.salaryCompany.validate(true)
+//				|| (me.hourlyCompany.lastBlurValue != "" && (me.hourlyCompany.indexSelected == me.salaryCompany.indexSelected))
+//				|| !me.unionAccount.validate(true)
+//				|| !me.customerNumber.validate(true) || !me.customerStreet.validate(true) || !me.customerCity.validate(true) 
+//				|| !me.customerState.validate(true) || !me.customerZipCode.validate(true) || !me.customerPhone.validate(true)
+//				|| !me.billingFrequency.validate(true)
+//				|| !me.clientStatus.validate(true) || !me.companyStatus.validate(true)
+//				|| !me.chargeable.validate(true)
+//				|| !me.serviceLocationNumber.validate(true)) {
+//				alert("There are few mandatory fields which are not entered. Please enter values for all mandatory fields and try again.");
+//			}
 		},
 
 		actionCancelRequestItem: function() {
-			var args = ii.args(arguments,{});
 			var me = this;
 
+			if (me.houseCodeRequestGrid.activeRowIndex == -1)
+                return true;
+ 
+            $("#messageToUser").text("Cancelling Request");
+            me.status = "CancelRequest";
+            me.actionSaveItem();
 		},
 
 		actionSaveItem: function() {
-			var args = ii.args(arguments,{});
 			var me = this;
+			var item = [];
 
-			if (me.currentWizard == "PrimaryDriver") {
-				if (!me.primaryContractType.validate(true))
-					return false;
-			}
-			else if (me.currentWizard == "HierarchyInfo") {
-				if (!me.svp.validate(true) || !me.dvp.validate(true) || !me.rvp.validate(true)
-					|| !me.srm.validate(true) || !me.rm.validate(true) || !me.am.validate(true))
-					return false;
-			}
-			else if (me.currentWizard == "SiteInfo") {
-				if (!me.startDate.validate(true) || !me.siteName.validate(true) || !me.street1.validate(true)
-					|| !me.city.validate(true) || !me.state.validate(true) || !me.zipCode.validate(true) || !me.county.validate(true))
-					return false;
-			}
-			else if (me.currentWizard == "ServicesProvided") {
-				if (!me.primaryServiceProvided.validate(true))
-					return false;
-			}
-			else if (me.currentWizard == "PayrollInfo") {
-				if (!me.hourlyCompany.validate(true) || !me.salaryCompany.validate(true))
-					return false;
-				else if (me.hourlyCompany.lastBlurValue != "" && (me.hourlyCompany.indexSelected == me.salaryCompany.indexSelected)) {
-					alert("[Hourly Company] & [Salary Company] cannot be same.");
+			if (me.status == "New" || me.status == "Edit") {
+				if (me.currentWizard == "PrimaryDriver") {
+					if (!me.primaryContractType.validate(true))
+						return false;
+				}
+				else if (me.currentWizard == "HierarchyInfo") {
+					if (!me.svp.validate(true) || !me.dvp.validate(true) || !me.rvp.validate(true)
+						|| !me.srm.validate(true) || !me.rm.validate(true) || !me.am.validate(true))
+						return false;
+				}
+				else if (me.currentWizard == "SiteInfo") {
+					if (!me.startDate.validate(true) || !me.siteName.validate(true) || !me.street1.validate(true)
+						|| !me.city.validate(true) || !me.state.validate(true) || !me.zipCode.validate(true) || !me.county.validate(true))
+						return false;
+				}
+				else if (me.currentWizard == "ServicesProvided") {
+					if (!me.primaryServiceProvided.validate(true))
+						return false;
+				}
+				else if (me.currentWizard == "PayrollInfo") {
+					if (!me.hourlyCompany.validate(true) || !me.salaryCompany.validate(true))
+						return false;
+					else if (me.hourlyCompany.lastBlurValue != "" && (me.hourlyCompany.indexSelected == me.salaryCompany.indexSelected)) {
+						alert("[Hourly Company] & [Salary Company] cannot be same.");
+						return false;
+					}
+				}
+				else if (me.currentWizard == "BenefitsInfo") {
+					if (!me.unionAccount.validate(true))
+						return false;
+				}
+				else if (me.currentWizard == "CustomerInfo") {
+					if (!me.customerNumber.validate(true) || !me.clientName.validate(true) || !me.customerStreet.validate(true) || !me.customerCity.validate(true) 
+						|| !me.customerState.validate(true) || !me.customerZipCode.validate(true) || !me.customerPhone.validate(true)
+						|| !me.billingFrequency.validate(true))
+						return false;
+				}
+				else if (me.currentWizard == "ClientInfo") {
+					if (!me.clientStatus.validate(true) || !me.companyStatus.validate(true))
+						return false;
+				}
+				else if (me.currentWizard == "SuppliesInfo") {
+					if (!me.chargeable.validate(true))
+						return false;
+				}
+				else if (!me.serviceLocationNumber.validate(true) || !me.serviceLocationName.validate(true) || !me.serviceLocationStreet.validate(true)
+					|| !me.serviceLocationCity.validate(true) || !me.serviceLocationState.validate(true) || !me.serviceLocationZipCode.validate(true)) {
 					return false;
 				}
-			}
-			else if (me.currentWizard == "BenefitsInfo") {
-				if (!me.unionAccount.validate(true))
-					return false;
-			}
-			else if (me.currentWizard == "CustomerInfo") {
-				if (!me.customerNumber.validate(true) || !me.customerStreet.validate(true) || !me.customerCity.validate(true) 
-					|| !me.customerState.validate(true) || !me.customerZipCode.validate(true) || !me.customerPhone.validate(true)
-					|| !me.billingFrequency.validate(true))
-					return false;
-			}
-			else if (me.currentWizard == "ClientInfo") {
-				if (!me.clientStatus.validate(true) || !me.companyStatus.validate(true))
-					return false;
-			}
-			else if (me.currentWizard == "SuppliesInfo") {
-				if (!me.chargeable.validate(true))
-					return false;
-			}
-			else if (!me.serviceLocationNumber.validate(true))
-				return false;
 
-			hidePopup();
+				var otherServicesProvided = $("#OtherServicesProvided").multiselect("getChecked").map(function() {
+					return this.value;    
+				}).get();
+
+				item = new fin.hcm.houseCodeWorkflow.HouseCodeRequest(
+					(me.status == "New" ? 0 : me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].id)
+					, (me.status == "New" ? "0" : me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].column1)
+					, me.session.propertyGet("userId")
+					, me.session.propertyGet("userName")
+					, me.session.propertyGet("userFirstName")
+					, me.session.propertyGet("userLastName")
+					, (me.status == "New" ? ui.cmn.text.date.format(new Date(), "mm/dd/yyyy") : me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].column6)
+					, (me.status == "New" ? "Open" : me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].column7)
+					, (me.status == "New" ? "" : me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].column8)
+					, ""
+					, ""
+					, ""
+					, ""
+					, ""
+					, ""
+					, ""
+					, (me.primaryContractType.indexSelected >= 0 ? me.primaryContractType.data[me.primaryContractType.indexSelected].id : 0)
+					, "crothall"
+					, me.svp.lastBlurValue
+					, me.dvp.lastBlurValue
+					, me.rvp.lastBlurValue
+					, me.srm.lastBlurValue
+					, me.rm.lastBlurValue
+					, me.am.lastBlurValue
+					, me.startDate.lastBlurValue
+					, me.siteName.getValue()
+					, me.street1.getValue()
+					, me.street2.getValue()
+					, me.city.lastBlurValue
+					, (me.state.indexSelected >= 0 ? me.state.data[me.state.indexSelected].id : 0)
+					, me.zipCode.getValue()
+					, me.county.lastBlurValue
+					, fin.cmn.text.mask.phone(me.phone.getValue(), true)
+					, (me.primaryServiceProvided.indexSelected >= 0 ? me.primaryServiceProvided.data[me.primaryServiceProvided.indexSelected].id : 0)
+					, otherServicesProvided.toString()
+					, me.priorServiceProvider.getValue()
+					, (me.hourlyCompany.indexSelected >= 0 ? me.hourlyCompany.data[me.hourlyCompany.indexSelected].id : 0)
+					, me.hourlyEmployees.getValue()
+					, (me.salaryCompany.indexSelected >= 0 ? me.salaryCompany.data[me.salaryCompany.indexSelected].id : 0)
+					, me.salaryEmployees.getValue()
+					, me.ePay.check.checked ? "1" : "0"
+					, me.ePayOptions.getValue()
+					, $("input[name='CrothallBenefits']:checked").val()
+					, (me.unionAccount.indexSelected >= 0 ? me.unionAccount.data[me.unionAccount.indexSelected].id : 0)
+					, me.unionName.getValue()
+					, me.localNumber.getValue()
+					, me.customerNumber.lastBlurValue
+					, me.clientName.getValue()
+					, me.customerStreet.getValue()
+					, me.customerCity.lastBlurValue
+					, (me.customerState.indexSelected >= 0 ? me.customerState.data[me.customerState.indexSelected].id : 0)
+					, me.customerZipCode.getValue()
+					, fin.cmn.text.mask.phone(me.customerPhone.getValue(), true)
+					, me.customerBiller.getValue()
+					, (me.billingFrequency.indexSelected >= 0 ? me.billingFrequency.data[me.billingFrequency.indexSelected].id : 0)
+					, me.paymentTerms.getValue()
+					, me.creditApprovalNumber.getValue()
+					, me.regularContractPrice.getValue()
+					, me.clientStatus.lastBlurValue
+					, me.taxExemptionNumber.getValue()
+					, me.certificate.getValue()
+					, me.einNumber.getValue()
+					, me.companyStatus.lastBlurValue
+					, $("input[name='Contract']:checked").val()
+					, (me.contractType.indexSelected >= 0 ? me.contractType.data[me.contractType.indexSelected].id : 0)
+					, me.contractLength.getValue()
+					, me.expirationDate.lastBlurValue
+					, $("input[name='TenetHealthcareAccount']:checked").val()
+					, me.squareFootage.getValue()
+					, me.licensedBeds.getValue()
+					, me.gpoMember.getValue()
+					, me.startDateFirm.getValue()
+					, $("input[name='CompassPurchaseAnySupplies']:checked").val()
+					, me.contactName.getValue()
+					, me.contactNumber.getValue()
+					, me.typesOfSuppliesPurchased.getValue()
+					, me.chargeable.lastBlurValue
+					, me.markup.getValue()
+					, me.serviceLocationNumber.lastBlurValue
+					, me.serviceLocationName.getValue()
+					, me.serviceLocationStreet.getValue()
+					, me.serviceLocationCity.lastBlurValue
+					, (me.serviceLocationState.indexSelected >= 0 ? me.serviceLocationState.data[me.serviceLocationState.indexSelected].id : 0)
+					, me.serviceLocationZipCode.getValue()
+					, me.miscNumber.getValue()
+					, me.exterior.getValue()
+					, me.foodCourt.getValue()
+					, me.commonArea.getValue()
+					, me.otherAreas.getValue()
+					);
+					
+				hidePopup();
+				$("#messageToUser").text("Saving");
+			}
+			else if (me.status == "SendRequest") {
+				item = me.houseCodeRequestGrid.data[me.houseCodeRequestGrid.activeRowIndex];
+				item.column7 = "In Process";
+			}
+			else if (me.status == "CancelRequest") {
+				item = me.houseCodeRequestGrid.data[me.houseCodeRequestGrid.activeRowIndex];
+				item.column7 = "Cancelled";
+			}
+
 			me.setStatus("Saving");
-			$("#messageToUser").text("Saving");
 			$("#pageLoading").fadeIn("slow");
-
-			var otherServicesProvided = $("#OtherServicesProvided").multiselect("getChecked").map(function() {
-				return this.value;    
-			}).get();
-
-			var item = new fin.hcm.houseCodeWorkflow.HouseCodeRequest(
-				(me.status == "New" ? 0 : me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].id)
-				, (me.status == "New" ? "0" : me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].column1)
-				, me.session.propertyGet("userId")
-				, me.session.propertyGet("userName")
-				, me.session.propertyGet("userFirstName")
-				, me.session.propertyGet("userLastName")
-				, (me.status == "New" ? ui.cmn.text.date.format(new Date(), "mm/dd/yyyy") : me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].column6)
-				, (me.status == "New" ? "Open" : me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].column7)
-				, (me.status == "New" ? "" : me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].column8)
-				, ""
-				, ""
-				, ""
-				, ""
-				, ""
-				, ""
-				, ""
-				, (me.primaryContractType.indexSelected >= 0 ? me.primaryContractType.data[me.primaryContractType.indexSelected].id : 0)
-				, "crothall"
-				, me.svp.lastBlurValue
-				, me.dvp.lastBlurValue
-				, me.rvp.lastBlurValue
-				, me.srm.lastBlurValue
-				, me.rm.lastBlurValue
-				, me.am.lastBlurValue
-				, me.startDate.lastBlurValue
-				, me.siteName.getValue()
-				, me.street1.getValue()
-				, me.street2.getValue()
-				, me.city.lastBlurValue
-				, (me.state.indexSelected >= 0 ? me.state.data[me.state.indexSelected].id : 0)
-				, me.zipCode.getValue()
-				, me.county.lastBlurValue
-				, fin.cmn.text.mask.phone(me.phone.getValue(), true)
-				, (me.primaryServiceProvided.indexSelected >= 0 ? me.primaryServiceProvided.data[me.primaryServiceProvided.indexSelected].id : 0)
-				, otherServicesProvided.toString()
-				, me.priorServiceProvider.getValue()
-				, (me.hourlyCompany.indexSelected >= 0 ? me.hourlyCompany.data[me.hourlyCompany.indexSelected].id : 0)
-				, me.hourlyEmployees.getValue()
-				, (me.salaryCompany.indexSelected >= 0 ? me.salaryCompany.data[me.salaryCompany.indexSelected].id : 0)
-				, me.salaryEmployees.getValue()
-				, me.ePay.check.checked ? "1" : "0"
-				, me.ePayOptions.getValue()
-				, $("input[name='CrothallBenefits']:checked").val()
-				, (me.unionAccount.indexSelected >= 0 ? me.unionAccount.data[me.unionAccount.indexSelected].id : 0)
-				, me.unionName.getValue()
-				, me.localNumber.getValue()
-				, me.customerNumber.lastBlurValue
-				, me.clientName.getValue()
-				, me.customerStreet.getValue()
-				, me.customerCity.lastBlurValue
-				, (me.customerState.indexSelected >= 0 ? me.customerState.data[me.customerState.indexSelected].id : 0)
-				, me.customerZipCode.getValue()
-				, fin.cmn.text.mask.phone(me.customerPhone.getValue(), true)
-				, me.customerBiller.getValue()
-				, (me.billingFrequency.indexSelected >= 0 ? me.billingFrequency.data[me.billingFrequency.indexSelected].id : 0)
-				, me.paymentTerms.getValue()
-				, me.creditApprovalNumber.getValue()
-				, me.regularContractPrice.getValue()
-				, me.clientStatus.lastBlurValue
-				, me.taxExemptionNumber.getValue()
-				, me.certificate.getValue()
-				, me.einNumber.getValue()
-				, me.companyStatus.lastBlurValue
-				, $("input[name='Contract']:checked").val()
-				, (me.contractType.indexSelected >= 0 ? me.contractType.data[me.contractType.indexSelected].id : 0)
-				, me.contractLength.getValue()
-				, me.expirationDate.lastBlurValue
-				, $("input[name='TenetHealthcareAccount']:checked").val()
-				, me.squareFootage.getValue()
-				, me.licensedBeds.getValue()
-				, me.gpoMember.getValue()
-				, me.startDateFirm.getValue()
-				, $("input[name='CompassPurchaseAnySupplies']:checked").val()
-				, me.contactName.getValue()
-				, me.contactNumber.getValue()
-				, me.typesOfSuppliesPurchased.getValue()
-				, me.chargeable.lastBlurValue
-				, me.markup.getValue()
-				, me.serviceLocationNumber.lastBlurValue
-				, me.serviceLocationName.getValue()
-				, me.miscNumber.getValue()
-				, me.exterior.getValue()
-				, me.foodCourt.getValue()
-				, me.commonArea.getValue()
-				, me.otherAreas.getValue()
-				);
-			
 			var xml = me.saveXmlBuild(item);
 
 			// Send the object back to the server as a transaction
@@ -2549,86 +2808,174 @@ ii.Class({
 			var item = args.item;
 			var xml = "";
 
-			xml += '<houseCodeRequest';
-			xml += ' id="' + item.id + '"';
-			xml += ' userId="' + item.column2 + '"';
-			xml += ' userName="' + item.column3 + '"';
-			xml += ' firstName="' + ui.cmn.text.xml.encode(item.column4) + '"';
-			xml += ' lastName="' + ui.cmn.text.xml.encode(item.column5) + '"';
-			xml += ' status="' + item.column7 + '"';
-			xml += ' primaryContractType="' + item.column16 + '"';
-			xml += ' division="' + ui.cmn.text.xml.encode(item.column17) + '"';
-			xml += ' svp="' + ui.cmn.text.xml.encode(item.column18) + '"';
-			xml += ' dvp="' + ui.cmn.text.xml.encode(item.column19) + '"';
-			xml += ' rvp="' + ui.cmn.text.xml.encode(item.column20) + '"';
-			xml += ' srm="' + ui.cmn.text.xml.encode(item.column21) + '"';
-			xml += ' rm="' + ui.cmn.text.xml.encode(item.column22) + '"';
-			xml += ' am="' + ui.cmn.text.xml.encode(item.column23) + '"';
-			xml += ' startDate="' + item.column24 + '"';
-			xml += ' siteName="' + ui.cmn.text.xml.encode(item.column25) + '"';
-			xml += ' street1="' + ui.cmn.text.xml.encode(item.column26) + '"';
-			xml += ' street2="' + ui.cmn.text.xml.encode(item.column27) + '"';
-			xml += ' city="' + ui.cmn.text.xml.encode(item.column28) + '"';
-			xml += ' state="' + item.column29 + '"';
-			xml += ' zipCode="' + item.column30 + '"';
-			xml += ' county="' + ui.cmn.text.xml.encode(item.column31) + '"';
-			xml += ' phone="' + item.column32 + '"';
-			xml += ' primaryServiceProvided="' + item.column33 + '"';
-			xml += ' otherServicesProvided="' + item.column34 + '"';
-			xml += ' priorServiceProvider="' + ui.cmn.text.xml.encode(item.column35) + '"';
-			xml += ' hourlyCompany="' + item.column36 + '"';
-			xml += ' hourlyEmployees="' + item.column37 + '"';
-			xml += ' salaryCompany="' + item.column38 + '"';
-			xml += ' salaryEmployees="' + item.column39 + '"';
-			xml += ' ePay="' + item.column40 + '"';
-			xml += ' ePayOptions="' + ui.cmn.text.xml.encode(item.column41) + '"';
-			xml += ' crothallBenefits="' + item.column42 + '"';
-			xml += ' unionAccount="' + item.column43 + '"';
-			xml += ' unionName="' + ui.cmn.text.xml.encode(item.column44) + '"';
-			xml += ' localNumber="' + ui.cmn.text.xml.encode(item.column45) + '"';
-			xml += ' customerNumber="' + item.column46 + '"';
-			xml += ' clientName="' + ui.cmn.text.xml.encode(item.column47) + '"';
-			xml += ' customerStreet="' + ui.cmn.text.xml.encode(item.column48) + '"';
-			xml += ' customerCity="' + ui.cmn.text.xml.encode(item.column49) + '"';
-			xml += ' customerState="' + item.column50 + '"';
-			xml += ' customerZipCode="' + item.column51 + '"';
-			xml += ' customerPhone="' + item.column52 + '"';
-			xml += ' customerBiller="' + ui.cmn.text.xml.encode(item.column53) + '"';
-			xml += ' billingFrequency="' + item.column54 + '"';
-			xml += ' paymentTerms="' + ui.cmn.text.xml.encode(item.column55) + '"';
-			xml += ' creditApprovalNumber="' + ui.cmn.text.xml.encode(item.column56) + '"';
-			xml += ' regularContractPrice="' + ui.cmn.text.xml.encode(item.column57) + '"';
-			xml += ' clientStatus="' + ui.cmn.text.xml.encode(item.column58) + '"';
-			xml += ' taxExemptionNumber="' + ui.cmn.text.xml.encode(item.column59) + '"';
-			xml += ' certificate="' + ui.cmn.text.xml.encode(item.column60) + '"';
-			xml += ' einNumber="' + ui.cmn.text.xml.encode(item.column61) + '"';
-			xml += ' companyStatus="' + ui.cmn.text.xml.encode(item.column62) + '"';
-			xml += ' contract="' + item.column63 + '"';
-			xml += ' contractType="' + item.column64 + '"';
-			xml += ' contractLength="' + ui.cmn.text.xml.encode(item.column65) + '"';
-			xml += ' expirationDate="' + item.column66 + '"';
-			xml += ' tenetHealthcareAccount="' + item.column67 + '"';
-			xml += ' squareFootage="' + ui.cmn.text.xml.encode(item.column68) + '"';
-			xml += ' licensedBeds="' + ui.cmn.text.xml.encode(item.column69) + '"';
-			xml += ' gpoMember="' + ui.cmn.text.xml.encode(item.column70) + '"';
-			xml += ' startDateFirm="' + ui.cmn.text.xml.encode(item.column71) + '"';
-			xml += ' compassPurchaseAnySupplies="' + item.column72 + '"';
-			xml += ' contactName="' + ui.cmn.text.xml.encode(item.column73) + '"';
-			xml += ' contactNumber="' + ui.cmn.text.xml.encode(item.column74) + '"';
-			xml += ' typesOfSuppliesPurchased="' + ui.cmn.text.xml.encode(item.column75) + '"';
-			xml += ' chargeable="' + item.column76 + '"';
-			xml += ' markup="' + ui.cmn.text.xml.encode(item.column77) + '"';
-			xml += ' serviceLocationNumber="' + item.column78 + '"';
-			xml += ' serviceLocationName="' + ui.cmn.text.xml.encode(item.column79) + '"';
-			xml += ' miscNumber="' + ui.cmn.text.xml.encode(item.column80) + '"';
-			xml += ' exterior="' + ui.cmn.text.xml.encode(item.column81) + '"';
-			xml += ' foodCourt="' + ui.cmn.text.xml.encode(item.column82) + '"';
-			xml += ' commonArea="' + ui.cmn.text.xml.encode(item.column83) + '"';
-			xml += ' otherAreas="' + ui.cmn.text.xml.encode(item.column84) + '"';
-			xml += '/>';
+			if (me.status == "New" || me.status == "Edit" || me.status == "SendRequest" || me.status == "CancelRequest") {
+				xml += '<houseCodeRequest';
+				xml += ' id="' + item.id + '"';
+				xml += ' userId="' + item.column2 + '"';
+				xml += ' userName="' + item.column3 + '"';
+				xml += ' firstName="' + ui.cmn.text.xml.encode(item.column4) + '"';
+				xml += ' lastName="' + ui.cmn.text.xml.encode(item.column5) + '"';
+				xml += ' status="' + item.column7 + '"';
+				xml += ' primaryContractType="' + item.column16 + '"';
+				xml += ' division="' + ui.cmn.text.xml.encode(item.column17) + '"';
+				xml += ' svp="' + ui.cmn.text.xml.encode(item.column18) + '"';
+				xml += ' dvp="' + ui.cmn.text.xml.encode(item.column19) + '"';
+				xml += ' rvp="' + ui.cmn.text.xml.encode(item.column20) + '"';
+				xml += ' srm="' + ui.cmn.text.xml.encode(item.column21) + '"';
+				xml += ' rm="' + ui.cmn.text.xml.encode(item.column22) + '"';
+				xml += ' am="' + ui.cmn.text.xml.encode(item.column23) + '"';
+				xml += ' startDate="' + item.column24 + '"';
+				xml += ' siteName="' + ui.cmn.text.xml.encode(item.column25) + '"';
+				xml += ' street1="' + ui.cmn.text.xml.encode(item.column26) + '"';
+				xml += ' street2="' + ui.cmn.text.xml.encode(item.column27) + '"';
+				xml += ' city="' + ui.cmn.text.xml.encode(item.column28) + '"';
+				xml += ' state="' + item.column29 + '"';
+				xml += ' zipCode="' + item.column30 + '"';
+				xml += ' county="' + ui.cmn.text.xml.encode(item.column31) + '"';
+				xml += ' phone="' + item.column32 + '"';
+				xml += ' primaryServiceProvided="' + item.column33 + '"';
+				xml += ' otherServicesProvided="' + item.column34 + '"';
+				xml += ' priorServiceProvider="' + ui.cmn.text.xml.encode(item.column35) + '"';
+				xml += ' hourlyCompany="' + item.column36 + '"';
+				xml += ' hourlyEmployees="' + item.column37 + '"';
+				xml += ' salaryCompany="' + item.column38 + '"';
+				xml += ' salaryEmployees="' + item.column39 + '"';
+				xml += ' ePay="' + item.column40 + '"';
+				xml += ' ePayOptions="' + ui.cmn.text.xml.encode(item.column41) + '"';
+				xml += ' crothallBenefits="' + item.column42 + '"';
+				xml += ' unionAccount="' + item.column43 + '"';
+				xml += ' unionName="' + ui.cmn.text.xml.encode(item.column44) + '"';
+				xml += ' localNumber="' + ui.cmn.text.xml.encode(item.column45) + '"';
+				xml += ' customerNumber="' + item.column46 + '"';
+				xml += ' clientName="' + ui.cmn.text.xml.encode(item.column47) + '"';
+				xml += ' customerStreet="' + ui.cmn.text.xml.encode(item.column48) + '"';
+				xml += ' customerCity="' + ui.cmn.text.xml.encode(item.column49) + '"';
+				xml += ' customerState="' + item.column50 + '"';
+				xml += ' customerZipCode="' + item.column51 + '"';
+				xml += ' customerPhone="' + item.column52 + '"';
+				xml += ' customerBiller="' + ui.cmn.text.xml.encode(item.column53) + '"';
+				xml += ' billingFrequency="' + item.column54 + '"';
+				xml += ' paymentTerms="' + ui.cmn.text.xml.encode(item.column55) + '"';
+				xml += ' creditApprovalNumber="' + ui.cmn.text.xml.encode(item.column56) + '"';
+				xml += ' regularContractPrice="' + ui.cmn.text.xml.encode(item.column57) + '"';
+				xml += ' clientStatus="' + ui.cmn.text.xml.encode(item.column58) + '"';
+				xml += ' taxExemptionNumber="' + ui.cmn.text.xml.encode(item.column59) + '"';
+				xml += ' certificate="' + ui.cmn.text.xml.encode(item.column60) + '"';
+				xml += ' einNumber="' + ui.cmn.text.xml.encode(item.column61) + '"';
+				xml += ' companyStatus="' + ui.cmn.text.xml.encode(item.column62) + '"';
+				xml += ' contract="' + item.column63 + '"';
+				xml += ' contractType="' + item.column64 + '"';
+				xml += ' contractLength="' + ui.cmn.text.xml.encode(item.column65) + '"';
+				xml += ' expirationDate="' + item.column66 + '"';
+				xml += ' tenetHealthcareAccount="' + item.column67 + '"';
+				xml += ' squareFootage="' + ui.cmn.text.xml.encode(item.column68) + '"';
+				xml += ' licensedBeds="' + ui.cmn.text.xml.encode(item.column69) + '"';
+				xml += ' gpoMember="' + ui.cmn.text.xml.encode(item.column70) + '"';
+				xml += ' startDateFirm="' + ui.cmn.text.xml.encode(item.column71) + '"';
+				xml += ' compassPurchaseAnySupplies="' + item.column72 + '"';
+				xml += ' contactName="' + ui.cmn.text.xml.encode(item.column73) + '"';
+				xml += ' contactNumber="' + ui.cmn.text.xml.encode(item.column74) + '"';
+				xml += ' typesOfSuppliesPurchased="' + ui.cmn.text.xml.encode(item.column75) + '"';
+				xml += ' chargeable="' + item.column76 + '"';
+				xml += ' markup="' + ui.cmn.text.xml.encode(item.column77) + '"';
+				xml += ' serviceLocationNumber="' + item.column78 + '"';
+				xml += ' serviceLocationName="' + ui.cmn.text.xml.encode(item.column79) + '"';
+				xml += ' serviceLocationStreet="' + ui.cmn.text.xml.encode(item.column80) + '"';
+				xml += ' serviceLocationCity="' + ui.cmn.text.xml.encode(item.column81) + '"';
+				xml += ' serviceLocationState="' + item.column82 + '"';
+				xml += ' serviceLocationZipCode="' + item.column83 + '"';
+				xml += ' miscNumber="' + ui.cmn.text.xml.encode(item.column84) + '"';
+				xml += ' exterior="' + ui.cmn.text.xml.encode(item.column85) + '"';
+				xml += ' foodCourt="' + ui.cmn.text.xml.encode(item.column86) + '"';
+				xml += ' commonArea="' + ui.cmn.text.xml.encode(item.column87) + '"';
+				xml += ' otherAreas="' + ui.cmn.text.xml.encode(item.column88) + '"';
+				xml += ' action="' + me.status + '"';
+
+				if (me.status == "SendRequest") {
+					var index = 0;
+					var primaryContractTypeTitle = "";
+					var stateTitle = "";
+					var primaryServiceProvidedTitle = "";
+					var otherServicesProvided = "";
+					var hourlyCompanyTitle = "";
+					var salaryCompanyTitle = "";
+					var unionAccountTitle = "";
+					var customerStateTitle = "";
+					var billingFrequencyTitle = "";
+					var contractTypeTitle = "";
+					var serviceLocationStateTitle = "";
+					
+					index = ii.ajax.util.findIndexById(item.column16, me.contractTypes);
+					if (index != undefined && index >= 0)
+						primaryContractTypeTitle = me.contractTypes[index].name;
+					
+					index = ii.ajax.util.findIndexById(item.column29, me.stateTypes);
+					if (index != undefined && index >= 0)
+						stateTitle = me.stateTypes[index].name;
+						
+					index = ii.ajax.util.findIndexById(item.column33, me.serviceTypes);
+					if (index != undefined && index >= 0)
+						primaryServiceProvidedTitle = me.serviceTypes[index].name;
+
+					otherServicesProvidedTemp = item.column34.split(',');
+					for (var itemIndex = 0; itemIndex < otherServicesProvidedTemp.length; itemIndex++) {
+						index = ii.ajax.util.findIndexById(otherServicesProvidedTemp[itemIndex], me.serviceTypes);
+						if (index != undefined && index >= 0)
+							otherServicesProvided += (otherServicesProvided != "" ? ", " : "") + me.serviceTypes[index].name;
+					}
+					
+					index = ii.ajax.util.findIndexById(item.column36, me.payPayrollCompanys);
+					if (index != undefined && index >= 0)
+						hourlyCompanyTitle = me.payPayrollCompanys[index].title;
+		
+					index = ii.ajax.util.findIndexById(item.column38, me.payPayrollCompanys);
+					if (index != undefined && index >= 0)
+						salaryCompanyTitle = me.payPayrollCompanys[index].title;
 	
-			return xml;			
-		},	
+					index = ii.ajax.util.findIndexById(item.column43, me.houseCodeTypes);
+					if (index != undefined && index >= 0)
+						unionAccountTitle = me.houseCodeTypes[index].name;
+					
+					index = ii.ajax.util.findIndexById(item.column50, me.stateTypes);
+					if (index != undefined && index >= 0)
+						customerStateTitle = me.stateTypes[index].name;
+					
+					index = ii.ajax.util.findIndexById(item.column54, me.billingCycleFrequencys);
+					if (index != undefined && index >= 0)
+						billingFrequencyTitle = me.billingCycleFrequencys[index].name;
+					
+					index = ii.ajax.util.findIndexById(item.column64, me.termsOfContractTypes);
+					if (index != undefined && index >= 0)
+						contractTypeTitle = me.termsOfContractTypes[index].name;
+						
+					index = ii.ajax.util.findIndexById(item.column82, me.stateTypes);
+					if (index != undefined && index >= 0)
+						serviceLocationStateTitle = me.stateTypes[index].name;
+					
+					xml += ' requestorEmail="' + ui.cmn.text.xml.encode(me.persons[0].email) + '"';
+					xml += ' primaryContractTypeTitle="' + ui.cmn.text.xml.encode(primaryContractTypeTitle) + '"';
+					xml += ' stateTitle="' + ui.cmn.text.xml.encode(stateTitle) + '"';
+					xml += ' primaryServiceProvidedTitle="' + ui.cmn.text.xml.encode(primaryServiceProvidedTitle) + '"';
+					xml += ' otherServicesProvidedTitle="' + ui.cmn.text.xml.encode(otherServicesProvided) + '"';
+					xml += ' hourlyCompanyTitle="' + ui.cmn.text.xml.encode(hourlyCompanyTitle) + '"';
+					xml += ' salaryCompanyTitle="' + ui.cmn.text.xml.encode(salaryCompanyTitle) + '"';
+					xml += ' unionAccountTitle="' + ui.cmn.text.xml.encode(unionAccountTitle) + '"';
+					xml += ' customerStateTitle="' + ui.cmn.text.xml.encode(customerStateTitle) + '"';
+					xml += ' billingFrequencyTitle="' + ui.cmn.text.xml.encode(billingFrequencyTitle) + '"';
+					xml += ' contractTypeTitle="' + ui.cmn.text.xml.encode(contractTypeTitle) + '"';
+					xml += ' serviceLocationStateTitle="' + ui.cmn.text.xml.encode(serviceLocationStateTitle) + '"';
+				}
+				xml += '/>';
+			}
+//			else if (me.status == "CancelRequest") {
+//				xml += '<houseCodeRequestStatusUpdate';
+//                xml += ' id="' + me.houseCodeRequestGrid.data[me.lastSelectedRowIndex].id + '"';
+//                xml += ' statusType="6"';
+//                xml += '/>';
+//			}
+
+			return xml;
+		},
 
 		saveResponse: function() {
 			var args = ii.args(arguments, {
@@ -2646,7 +2993,14 @@ ii.Class({
 				$(args.xmlNode).find("*").each(function(){
 					switch (this.tagName) {
 						case "HcmHouseCode":
-							if (me.status == "New") {
+							if (me.status == "SendRequest" || me.status == "CancelRequest") {
+								me.houseCodeRequests[me.lastSelectedRowIndex] = item;
+								me.houseCodeRequestGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);									
+								$("#AnchorEdit").hide();
+								$("#AnchorSendRequest").hide();
+								$("#AnchorCancelRequest").hide();
+							}
+							else if (me.status == "New") {
 								item.id = parseInt($(this).attr("id"), 10);
 								me.houseCodeRequests.push(item);
 								me.lastSelectedRowIndex = me.houseCodeRequestGrid.data.length - 1;
