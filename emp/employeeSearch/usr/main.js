@@ -1956,12 +1956,13 @@ ii.Class({
                         this.setInvalid("Please enter valid Social Security Number. Example: 001-01-0001, 899-99-9999.");
             });
             
-            me.houseCode = new ui.ctl.Input.Text({
-		        id: "HouseCode",
+            me.houseCodeToTransfer = new ui.ctl.Input.Text({
+		        id: "HouseCodeToTransfer",
 				maxLength: 11
 			});			
             
-            $("#HouseCodeText").bind("keydown", me, me.houseCodeDetailsLoad);
+            $("#HouseCodeToTransferText").bind("keydown", me, me.houseCodeDetailsLoad);
+            $("#SSN").bind("keydown", me, me.empDetailsLoad);
             
 			me.searchEmpButton = new ui.ctl.buttons.Sizeable({
 				id: "SearchEmpButton",
@@ -1979,13 +1980,12 @@ ii.Class({
 				allowAdds: false
 			});
 			
-			me.employeeGrid.addColumn("firstName", "firstName", "First Name", "First Name", 150).setSortFunction(function(me, displayProperty, a, b) {
+			me.employeeGrid.addColumn("firstName", "firstName", "First Name", "First Name", null).setSortFunction(function(me, displayProperty, a, b) {
 				return fin.empSearchUi.customSort(me, displayProperty, a, b);
 			});
-			me.employeeGrid.addColumn("lastName", "lastName", "Last Name", "Last Name", 150).setSortFunction(function(me, displayProperty, a, b) {
+			me.employeeGrid.addColumn("lastName", "lastName", "Last Name", "Last Name", 225).setSortFunction(function(me, displayProperty, a, b) {
 				return fin.empSearchUi.customSort(me, displayProperty, a, b);
 			});
-			me.employeeGrid.addColumn("brief", "brief", "Brief", "Brief", null);
 			me.employeeGrid.addColumn("houseCode", "houseCode", "House Code", "House Code", 100);
 			me.employeeGrid.addColumn("employeeNumber", "employeeNumber", "Employee #", "Employee #", 100);
 			me.employeeGrid.addColumn("ssn", "ssn", "SSN", "SSN", 100);
@@ -2113,7 +2113,7 @@ ii.Class({
 			//SSN Modification
             me.newSSN.text.tabIndex = 610;
             //Employee To HouseCode            
-            me.houseCode.text.tabIndex = 650;
+            me.houseCodeToTransfer.text.tabIndex = 650;
             me.ssn.text.tabIndex = 651;
 		},		
 		
@@ -2207,7 +2207,7 @@ ii.Class({
 			me.requestorPhone.resizeText();
 			
 			me.ssn.resizeText();
-			me.houseCode.resizeText();
+			me.houseCodeToTransfer.resizeText();
 		},
 		
 		configureCommunications: function fin_emp_UserInterface_configureCommunications() {
@@ -2804,38 +2804,55 @@ ii.Class({
 			var me = event.data;
 				
 			if (event.keyCode == 13) {
-				me.houseCodeStore.fetch("userId:[user],appUnitBrief:" + me.houseCode.getValue() + ",", me.houseCodeDetailsLoaded, me);
+				me.houseCodeStore.fetch("userId:[user],appUnitBrief:" + me.houseCodeToTransfer.getValue() + ",", me.houseCodeDetailsLoaded, me);
 			}
 		},
 		
 		houseCodeDetailsLoaded: function(me, activeId) {
 			me.houseCodeid = 0;
 			if (me.houseCodes.length > 0) {
-				me.houseCode.setValue(me.houseCodes[0].name);
+				me.houseCodeToTransfer.setValue(me.houseCodes[0].name);
 				me.houseCodeid = me.houseCodes[0].id;
-			}				
+				me.loadEmpSearchResults();
+			}
+		},
+		
+		empDetailsLoad: function() {
+			var args = ii.args(arguments, {
+				event: {type: Object} // The (key) event object
+			});			
+			var event = args.event;
+			var me = event.data;
+				
+			if (event.keyCode == 13) 
+				me.loadEmpSearchResults();
 		},
 		
 		loadEmpSearchResults: function() {
 			var me = this;
 			
-			if ($("#HouseCodeText").val() == "" && $("#SSNText").val() == "") {
+			if ($("#HouseCodeToTransferText").val() == "" && $("#SSNText").val() == "") {
 				alert('Please enter House Code or SSN.');
 				return false;
 			}
-			//if (me.houseCodeid == 0) {
-			//	alert('Please enter correct HouseCode.');
-			//	return false;
-			//}
+			if (me.houseCodeid == parent.fin.appUI.houseCodeId) {
+				alert('Please enter House Code other than parent House Code.');
+				return false;
+			}
 
+			$("#messageToUser2").html("Loading");
 			$("#popupLoading").show();			
 			me.employeeStore.reset();
-			me.employeeStore.fetch("ssn:" + me.ssn.getValue().replace(/-/g,'')
-				+ ($("#HouseCodeText").val() != "" ?  "," + "hcmHouseCodeId:" + me.houseCodeid : "")
-				+ ",userId:[user]", me.employeesByHouseCodeLoaded, me);
+				
+			me.employeeStore.fetch("searchValue:" + me.ssn.getValue().replace(/-/g,'')
+				+ ($("#HouseCodeToTransferText").val() != "" ?  "," + "hcmHouseCodeId:" + me.houseCodeid  : "")
+				+ ",statusTypeId:0"
+				+ ",employeeType:SearchFull"
+				+ ",filterType:SSN"
+				+ ",userId:[user]", me.empToTransferLoaded, me);
 		},
 		
-		employeesByHouseCodeLoaded: function fin_emp_UserInterface_employeesLoaded(me, activeId) {
+		empToTransferLoaded: function fin_emp_UserInterface_employeesLoaded(me, activeId) {
 
 			$("#popupLoading").hide();
 
@@ -5655,7 +5672,7 @@ ii.Class({
 			$("#AnchorCancel").hide();
 			$("#AnchorNext").hide();
 			$("#backgroundPopup").hide();
-			me.houseCode.setValue('');
+			me.houseCodeToTransfer.setValue('');
 			me.ssn.setValue('');
 			me.employeeGrid.body.deselectAll();
 			me.employeeGrid.setData([]);
@@ -7216,7 +7233,10 @@ ii.Class({
 				xml += ' frequencyType="' + itemGeneral.frequencyType + '"';
 				xml += ' hourly="' + itemGeneral.hourly + '"';
 				//xml += ' actionType ="' + me.actionType +'"';
-				xml += ' actionType="' + (updateFlag ? 'Person' : me.actionType) + '"';
+				if(me.actionType == "EmpToHouseCode")
+					xml += ' actionType="HouseCodeTransfer"';
+				else
+					xml += ' actionType="' + (updateFlag ? 'Person' : me.actionType) + '"';
 				xml += ' houseCodeChanged="'+ me.houseCodeChanged +'"';				
 				xml += ' changeStatusCode="' + itemGeneral.changeStatusCode + '"';
 				xml += ' payrollStatus="' + itemGeneral.payrollStatus + '"';
