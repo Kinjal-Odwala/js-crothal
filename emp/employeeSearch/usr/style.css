@@ -50,13 +50,23 @@
 #searchButtonEmp
 {
 	
-	float:left;
+	float:left;	
 	margin-right:10px;
 	/*width:85px;
 	padding-left:5px;
 	margin-right:5px;
 	padding-top:5px;*/
 }
+
+#searchButtonEmployee
+{
+	float:left;
+	margin-right:10px;
+	width:85px;
+	padding-left:5px;
+	padding-top:7px;
+}
+
 #newEmployee
 {
 	float:left;
@@ -89,6 +99,12 @@
 		background-color: white;
 		display: none;
 	}
+	
+#employeeContent { 
+	width: 100%;
+	padding-bottom:21px;
+}
+	
 .LabelTextAreaEmployee 
 	{
 		color: #032D23;
@@ -99,13 +115,48 @@
 		width: 170px;
 		padding-top: 3px;
 	}
-	
+.LabelTextAreaHouseCode 
+	{
+		color: #032D23;
+		float: left;
+		font-family: Verdana;
+		font-size: 12px;
+		height: 27px;
+		width: 100px;
+		padding-left: 5px;
+		padding-top: 10px;
+	}
+.LabelTextAreaSSN 
+	{
+		color: #032D23;
+		float: left;
+		font-family: Verdana;
+		font-size: 12px;
+		height: 27px;
+		width: 50px;
+		padding-left: 5px;
+		padding-top: 10px;
+	}		
 .InputTextArea 
 	{
 		float: left;
 		height: 20px;
 		width: 200px;
 	}
+.SearchInputTextArea 
+	{
+		float: left;
+		height: 20px;
+		width: 200px;
+		padding-right: 10px;
+		padding-top: 8px;
+	}	
+.TransferInputTextArea 
+	{
+		float: left;
+		height: 20px;
+		width: 400px;
+	}	
 #AnchorBack
 	{
 		float:right;
@@ -149,6 +200,11 @@
 		float: left;
 		width: 50px;
 	}
+.radioButtonTransfer 
+	{
+		float: left;
+		width: 200px;
+	}	
 .radioButtonFemale 
 	{
 		float: left;
@@ -306,6 +362,15 @@
 		margin:0px;
 		width:100%;
 	}
+.selectTransferDiv
+	{
+		float:left;
+		position:relative;
+		height:320px;
+		width:100%;
+		padding:10px;
+		margin:0px;
+	}	
 .popupHeader
 	{
 		float:left;
@@ -324,7 +389,6 @@
 		font-weight:normal;
 		font-size:12px;	
 	}
-
 #houseCodeTerm
 	{
 		float:left;
