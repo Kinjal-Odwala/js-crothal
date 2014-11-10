@@ -450,7 +450,7 @@ ii.Class({
 			if (me.showDetailReport && (me.action == "Finalize" || me.action == "Export") && me.ePayBatchGrid.activeRowIndex != -1) {
 				var index = me.ePayBatchGrid.activeRowIndex;
 				var varianceTotalCount = parseInt(me.ePayBatchGrid.data[index].detailRecordCount, 10) - parseInt(me.ePayBatches[0].batchRecordCount, 10);
-				var varianceTotalHours = parseFloat(me.ePayBatchGrid.data[index].detailTotalHours) - parseFloat(me.ePayBatches[0].batchTotalHours) - parseFloat(me.ePayBatches[0].totalHours);
+				var varianceTotalHours = parseFloat((parseFloat(me.ePayBatchGrid.data[index].detailTotalHours) - parseFloat(me.ePayBatches[0].batchTotalHours)).toFixed(2)) - parseFloat(me.ePayBatches[0].totalHours);
 				var varianceTotalAmount = parseFloat(me.ePayBatchGrid.data[index].detailTotalAmount) - parseFloat(me.ePayBatches[0].batchTotalAmount);
 
 				$("#ProcessedTotalCount").html(me.ePayBatchGrid.data[index].detailRecordCount);
@@ -470,7 +470,7 @@ ii.Class({
 				$("#ErrorTotalHours").html("<span style='color: red;'>" + parseFloat(me.ePayBatches[0].detailTotalHours).toFixed(2) + "</span> - " + parseFloat(me.ePayBatches[0].cancelledErrorTotalHours).toFixed(2));
 				$("#ErrorTotalAmount").html("<span style='color: red;'>" + parseFloat(me.ePayBatches[0].detailTotalAmount).toFixed(2) + "</span> - " + parseFloat(me.ePayBatches[0].cancelledErrorTotalAmount).toFixed(2));
 				
-				if (varianceTotalCount == 0 && varianceTotalHours == 0 && varianceTotalAmount == 0
+				if (varianceTotalCount == 0 && parseFloat(varianceTotalHours.toFixed(2)) == 0.00 && parseFloat(varianceTotalAmount.toFixed(2)) == 0.00
 					&& me.ePayBatches[0].detailRecordCount == 0
 					&& parseFloat(me.ePayBatches[0].detailTotalHours) == 0
 					&& parseFloat(me.ePayBatches[0].detailTotalAmount) == 0) {
@@ -493,6 +493,7 @@ ii.Class({
 					me.anchorExport.display(ui.cmn.behaviorStates.disabled);
 
 				me.setLoadCount();
+				me.ePayBatchStore.reset();
 				me.ePayBatchStore.fetch("userId:[user],status:Export", me.ePayBatchesLoaded, me);
 			}
 			else {
@@ -534,6 +535,7 @@ ii.Class({
 				me.setLoadCount();
 				me.showDetailReport = true;
 				me.ePayBatchGrid.setHeight($(window).height() - 330);
+				me.ePayBatchStore.reset();
 				me.ePayBatchStore.fetch("userId:[user],status:FinalizeError,batchId:" + me.ePayBatchGrid.data[me.ePayBatchGrid.activeRowIndex].batchId, me.ePayBatchesLoaded, me);
 			}
 		},
@@ -1330,6 +1332,7 @@ ii.Class({
 			me.ePayBatchGrid.setData([]);
 			me.action = action;
 			me.setLoadCount();
+			me.ePayBatchStore.reset();
 			
 			if (me.action == "Export") {
 				me.validateExport = true;
@@ -1569,32 +1572,32 @@ ii.Class({
 					if (me.status == "SaveEpayBatchRecord") {
 						if (me.ePayBatchDetailsList[index].id == 0) {
 							me.ePayBatches[0].weeklyPayrollRecordCount += 1;
-							me.ePayBatches[0].weeklyPayrollTotalHours = parseFloat(me.ePayBatches[0].weeklyPayrollTotalHours) + payrollHours;
-							me.ePayBatches[0].weeklyPayrollTotalAmount = parseFloat(me.ePayBatches[0].weeklyPayrollTotalAmount) + payrollAmount;
+							me.ePayBatches[0].weeklyPayrollTotalHours = (parseFloat(me.ePayBatches[0].weeklyPayrollTotalHours) + payrollHours).toFixed(2);
+							me.ePayBatches[0].weeklyPayrollTotalAmount = (parseFloat(me.ePayBatches[0].weeklyPayrollTotalAmount) + payrollAmount).toFixed(2);
 						}
 						else {
 							me.ePayBatches[0].batchRecordCount += 1;
-							me.ePayBatches[0].batchTotalHours = parseFloat(me.ePayBatches[0].batchTotalHours) + payrollHours;
-							me.ePayBatches[0].batchTotalAmount = parseFloat(me.ePayBatches[0].batchTotalAmount) + payrollAmount;
+							me.ePayBatches[0].batchTotalHours = (parseFloat(me.ePayBatches[0].batchTotalHours) + payrollHours).toFixed(2);
+							me.ePayBatches[0].batchTotalAmount = (parseFloat(me.ePayBatches[0].batchTotalAmount) + payrollAmount).toFixed(2);
 							me.ePayBatches[0].detailRecordCount -= 1;
-							me.ePayBatches[0].detailTotalHours = parseFloat(me.ePayBatches[0].detailTotalHours) - payrollHours;
-							me.ePayBatches[0].detailTotalAmount = parseFloat(me.ePayBatches[0].detailTotalAmount) - payrollAmount;
+							me.ePayBatches[0].detailTotalHours = (parseFloat(me.ePayBatches[0].detailTotalHours) - payrollHours).toFixed(2);
+							me.ePayBatches[0].detailTotalAmount = (parseFloat(me.ePayBatches[0].detailTotalAmount) - payrollAmount).toFixed(2);
 
 							if (me.ePayBatchDetailsList[index].cancelled) {
 								me.ePayBatches[0].cancelledErrorRecordCount -= 1;
-								me.ePayBatches[0].cancelledErrorTotalHours = parseFloat(me.ePayBatches[0].cancelledErrorTotalHours) - payrollHours;
-								me.ePayBatches[0].cancelledErrorTotalAmount = parseFloat(me.ePayBatches[0].cancelledErrorTotalAmount) - payrollAmount;
+								me.ePayBatches[0].cancelledErrorTotalHours = (parseFloat(me.ePayBatches[0].cancelledErrorTotalHours) - payrollHours).toFixed(2);
+								me.ePayBatches[0].cancelledErrorTotalAmount = (parseFloat(me.ePayBatches[0].cancelledErrorTotalAmount) - payrollAmount).toFixed(2);
 							}
 						}
 					}
 					else if (me.status == "CancelEpayBatchRecord") {
 						if (me.ePayBatchDetailsList[index].id > 0) {
 							me.ePayBatches[0].detailRecordCount -= 1;
-							me.ePayBatches[0].detailTotalHours = parseFloat(me.ePayBatches[0].detailTotalHours) - payrollHours;
-							me.ePayBatches[0].detailTotalAmount = parseFloat(me.ePayBatches[0].detailTotalAmount) - payrollAmount;
+							me.ePayBatches[0].detailTotalHours = (parseFloat(me.ePayBatches[0].detailTotalHours) - payrollHours).toFixed(2);
+							me.ePayBatches[0].detailTotalAmount = (parseFloat(me.ePayBatches[0].detailTotalAmount) - payrollAmount).toFixed(2);
 							me.ePayBatches[0].cancelledErrorRecordCount += 1;
-							me.ePayBatches[0].cancelledErrorTotalHours = parseFloat(me.ePayBatches[0].cancelledErrorTotalHours) + payrollHours;
-							me.ePayBatches[0].cancelledErrorTotalAmount = parseFloat(me.ePayBatches[0].cancelledErrorTotalAmount) + payrollAmount;
+							me.ePayBatches[0].cancelledErrorTotalHours = (parseFloat(me.ePayBatches[0].cancelledErrorTotalHours) + payrollHours).toFixed(2);
+							me.ePayBatches[0].cancelledErrorTotalAmount = (parseFloat(me.ePayBatches[0].cancelledErrorTotalAmount) + payrollAmount).toFixed(2);
 						}
 					}
 
