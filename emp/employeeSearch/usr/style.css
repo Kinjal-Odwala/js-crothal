@@ -143,6 +143,18 @@
 		height: 20px;
 		width: 200px;
 	}
+.iiInputText.Loading 
+	{
+		background-image: url(/fin/cmn/usr/media/common/indicator.gif);
+		background-repeat: no-repeat;
+		background-position: right;
+		width: 16px;
+		height: 16px;
+		margin-top: 1px;
+		margin-right: 1px;
+		margin-left: 1px;
+		margin-bottom: 1px;
+	}	
 .SearchInputTextArea 
 	{
 		float: left;

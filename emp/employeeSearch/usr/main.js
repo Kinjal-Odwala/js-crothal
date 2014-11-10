@@ -2806,6 +2806,7 @@ ii.Class({
 			var me = event.data;
 				
 			if (event.keyCode == 13) {
+				$("#HouseCodeToTransferText").addClass("Loading");
 				me.houseCodeStore.fetch("userId:[user],appUnitBrief:" + me.houseCodeToTransfer.getValue() + ",", me.houseCodeDetailsLoaded, me);
 			}
 		},
@@ -2816,6 +2817,7 @@ ii.Class({
 				me.houseCodeToTransfer.setValue(me.houseCodes[0].name);
 				me.houseCodeid = me.houseCodes[0].id;				
 			}
+			$("#HouseCodeToTransferText").removeClass("Loading");
 			me.loadEmpSearchResults();
 		},
 		
