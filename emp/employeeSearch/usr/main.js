@@ -5628,7 +5628,7 @@ ii.Class({
 					break;
 				
 				case "HouseCodeTransfer":
-					$("#popupHeader").text("House Code Transfer -");
+					//$("#popupHeader").text("House Code Transfer -");
 					break;
 					
 				case "EmpToHouseCode":
@@ -5986,6 +5986,7 @@ ii.Class({
 						$("#Federal").hide();
 						$("#EditEmployee").hide();
 						$("#houseCodeTemplateText").attr("tabindex", "201");
+						$("#popupHeader").text("House Code Transfer -");
 						
 						if (me.employeeSearchActiveRow < 0)
 							$("#AnchorBack").show();
@@ -6213,6 +6214,9 @@ ii.Class({
 						me.employeeGeneralSSNSearch();
 					}
 					
+					if (me.actionType == "HouseCodeTransfer" || me.actionType == "EmpToHouseCode")
+						$("#popupHeader").text("House Code Transfer -");
+					
 					if (me.actionType == "NewHire" || me.actionType == "Rehire") {
 						$("#popupSubHeader").text("General")
 						me.employeeStatusType.text.disabled = true;
@@ -6336,7 +6340,9 @@ ii.Class({
 							return false;
 						}
 					}
-					
+					if (me.actionType == "HouseCodeTransfer" || me.actionType == "EmpToHouseCode")
+						$("#popupHeader").text("House Code Transfer -");
+						
 					$("#EmployeeGeneralInformation").hide();
 					$("#JobInformation").show();
 					$("#Compensation").hide();
@@ -6465,6 +6471,7 @@ ii.Class({
 					}
 					
 					if (me.actionType == "HouseCodeTransfer" || me.actionType == "EmpToHouseCode") {
+						$("#popupHeader").text("House Code Transfer -");
 						$("#Compensation").removeClass("dateModificationDiv");
 						$("#Compensation").addClass("compensationDiv");
 					}
