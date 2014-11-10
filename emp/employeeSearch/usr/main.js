@@ -66,6 +66,8 @@ ii.Class({
 			me.isPageLoaded = false;
 			me.houseCodeStateMinimumWage = 0;
 			me.employeeSearchSelectedRowIndex = -1;
+			me.employeeSearchActiveRow = -1;
+			me.houseCodeid = 0;
 			me.employeeNumberChanged = false;			
 			me.employeeActiveChanged = false;
 			me.employeePayRateChanged = false;
@@ -1958,7 +1960,7 @@ ii.Class({
             
             me.houseCodeToTransfer = new ui.ctl.Input.Text({
 		        id: "HouseCodeToTransfer",
-				maxLength: 11
+				maxLength: 64
 			});			
             
             $("#HouseCodeToTransferText").bind("keydown", me, me.houseCodeDetailsLoad);
@@ -2812,9 +2814,9 @@ ii.Class({
 			me.houseCodeid = 0;
 			if (me.houseCodes.length > 0) {
 				me.houseCodeToTransfer.setValue(me.houseCodes[0].name);
-				me.houseCodeid = me.houseCodes[0].id;
-				me.loadEmpSearchResults();
+				me.houseCodeid = me.houseCodes[0].id;				
 			}
+			me.loadEmpSearchResults();
 		},
 		
 		empDetailsLoad: function() {
@@ -2835,8 +2837,12 @@ ii.Class({
 				alert('Please enter House Code or SSN.');
 				return false;
 			}
+			if (me.houseCodeid == 0 && $("#SSNText").val() == "") {
+				alert('Please select correct House Code.');
+				return false;
+			}
 			if (me.houseCodeid == parent.fin.appUI.houseCodeId) {
-				alert('Please enter House Code other than parent House Code.');
+				alert('You cannot transfer into the same House Code. Please select other House Code.');
 				return false;
 			}
 
@@ -2868,7 +2874,8 @@ ii.Class({
 			for (index in me.employees) {
 				me.empsByHouseCode.push(me.employees[index]);
 			}
-						
+			
+			me.houseCodeid = 0;			
 			me.employeeGrid.setData(me.empsByHouseCode);
 			me.employeeGrid.setHeight(280);			
 		},
@@ -5599,6 +5606,7 @@ ii.Class({
 			$("#EmployeeNumberMask").hide();
 			$("#ViewHistory").hide();
 			
+			me.employeeSearchActiveRow = me.employeeSearch.activeRowIndex;
 			me.employeeSearch.body.deselectAll();			
 			me.actionType = args.actionType;
 			me.initializeWizard();
@@ -5762,7 +5770,7 @@ ii.Class({
 			$("#EmpToHouseCode").hide();
 			$("#SelectTransfer").hide();
 			
-			if (me.actionType == "HouseCodeTransfer" || me.actionType == "EmpToHouseCode")
+			if (me.employeeSearchActiveRow < 0 && (me.actionType == "HouseCodeTransfer" || me.actionType == "EmpToHouseCode"))
 				me.wizardCount = -1;
 			else
 				me.wizardCount = 0;
@@ -5929,8 +5937,9 @@ ii.Class({
 					
 					if (me.actionType == "HouseCodeTransfer" || me.actionType == "EmpToHouseCode") {
 						$("#SelectTransfer").show();
+						$("#popupHeader").text("House Code Transfer");
 						$("#popupSubHeaderEmployeeName").html("");
-						$("#popupSubHeader").text("Select Transfer")
+						$("#popupSubHeader").text("")
 						$("#ViewHistory").hide();
 						$("#EmpToHouseCode").hide();
 						$("#houseCodeTerm").hide();
@@ -5959,6 +5968,9 @@ ii.Class({
 						if ($("input[name='TransferHouseCode']:checked").val() == "HouseCodeTransfer") {
 							$("#popupSubHeader").text("General")
 							$("#EmpToHouseCode").hide();
+							
+							if (me.employeeSearchActiveRow < 0)
+								me.employeeSSN.setValue("");
 						}
 						else if ($("input[name='TransferHouseCode']:checked").val() == "HouseCodeTo") {
 							$("#popupSubHeader").text("Employee")							
@@ -5972,7 +5984,12 @@ ii.Class({
 						$("#Federal").hide();
 						$("#EditEmployee").hide();
 						$("#houseCodeTemplateText").attr("tabindex", "201");
-						$("#AnchorBack").show();
+						
+						if (me.employeeSearchActiveRow < 0)
+							$("#AnchorBack").show();
+						else
+							$("#AnchorBack").hide();
+								
 						me.resize();
 						me.wizardCount = 3;
 					}
