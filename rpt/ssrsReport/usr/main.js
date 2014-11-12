@@ -1843,7 +1843,7 @@ ii.Class({
 					me.list = "FscYear";
 					me.fiscalYearStore.fetch("userId:[user],fscYear:>=3", me.dropdownsLoaded, me);
 				}
-				else if (me.reportParameters[index].referenceTableName == "FscPeriod" || me.reportParameters[index].referenceTableName == "FscPeriodFrom") {
+				else if (me.reportParameters[index].referenceTableName == "FscPeriod" || me.reportParameters[index].referenceTableName == "YearPeriods" || me.reportParameters[index].referenceTableName == "FscPeriodFrom") {
 					me.ddlists = me.ddlists + 1;
 					me.list = "FscPeriod";
 					me.periodStore.fetch("userId:[user],fiscalYearId:-1", me.dropdownsLoaded, me);
@@ -1888,11 +1888,11 @@ ii.Class({
 					me.list = "StatusType";
 					me.rptStatusTypeStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
 				}
-				else if (me.reportParameters[index].referenceTableName == "YearPeriods") {
-					me.ddlists = me.ddlists + 1;
-					me.list = "YearPeriods";
-					me.yearPeriodStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
-				}
+				//else if (me.reportParameters[index].referenceTableName == "YearPeriods") {
+				//	me.ddlists = me.ddlists + 1;
+				//	me.list = "YearPeriods";
+				//	me.yearPeriodStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+				//}
 				else if (me.reportParameters[index].referenceTableName == "StatusType" &&  me.reportParameters[index].name == "WOStatus") {
 					me.ddlists = me.ddlists + 1;
 					me.list = "WOStatus";
@@ -1943,10 +1943,12 @@ ii.Class({
 			me.dependentTypes = [];
 			
 			for (var index = 0; index < me.reportParameters.length; index++) {
-				if (me.reportParameters[index].mandatory)
-                    html += "\n<div class='labelReport'>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "'></div><div><input type='checkbox' name='dateCheck' id='dateCheck' checked='true' class='labelSchedule' onchange='fin.reportUi.dateMandatory(this," + index + ");' /></div><div class='labelSchedule'>NULL</div>"                 
-                else if (!me.reportParameters[index].mandatory)
-					html += "\n<div><div class='labelReport'>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium' style='width:" + me.reportParameters[index].Width + "px;'></div><div id='customersLoading'></div></div>"									
+				if (me.reportParameters[index].controlType == "Date" && me.reportParameters[index].mandatory)
+					html += "\n<div><div class='labelReport'>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div><div><input type='checkbox' id='dateCheck' checked='true' class='checkMandatory' onchange='fin.reportUi.dateMandatory(this," + index + ");' /></div><div class='labelSchedule'>NULL</div></div>"
+				else if (me.reportParameters[index].controlType == "Date" && !me.reportParameters[index].mandatory)
+					html += "\n<div><div class='labelReport'>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div></div>"
+				else
+					html += "\n<div><div class='labelReport'>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium' style='width:" + me.reportParameters[index].Width + "px;'></div><div id='customersLoading'></div></div>"										
 				html += "\n<div style='clear:both;'></div>";
 			}
 
@@ -2009,7 +2011,7 @@ ii.Class({
 						
 					if (me.reportParameters[index].referenceTableName == "FscYear")
 						me.controls[index].setData(me.fiscalYears);
-					else if (me.reportParameters[index].referenceTableName == "FscPeriod" || me.reportParameters[index].referenceTableName == "FscPeriodFrom" || me.reportParameters[index].referenceTableName == "FscPeriodTo")
+					else if (me.reportParameters[index].referenceTableName == "FscPeriod" || me.reportParameters[index].referenceTableName == "YearPeriods" || me.reportParameters[index].referenceTableName == "FscPeriodFrom" || me.reportParameters[index].referenceTableName == "FscPeriodTo")
 						me.controls[index].setData(me.fiscalPeriods);					
 					else if (me.reportParameters[index].referenceTableName == "PayrollCompany")
 						me.controls[index].setData(me.payrollCompanys);
@@ -2073,36 +2075,18 @@ ii.Class({
                     }					
 				}
 				else if (me.reportParameters[index].controlType == "Date") {
-					me.controls[index] = new ui.ctl.Input.Date({
-				        id: "" + me.reportParameters[index].name,
-						labelName: "" + me.reportParameters[index].title,
-						formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
-				    });
-					
-					me.controls[index].resizeText();
-					
-					me.controls[index].makeEnterTab()
-						.setValidationMaster( me.validator )
-						.addValidation(ui.ctl.Input.Validation.required)
-						.addValidation( function( isFinal, dataMap ) {
-		
-							var enteredText = this.text.value;
-
-							if (enteredText == "") return;
-													
-							if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
-								this.setInvalid("Please enter valid " + this.labelName + ".");					
+					$("#" + me.reportParameters[index].name).datepicker({
+						changeMonth: true,
+						changeYear: true
 					});
 					
+					me.controls[index] = $("#" + me.reportParameters[index].name);
 					if (me.reportParameters[index].mandatory) {
-                        me.controls[index].text.readOnly = "true";
-                        $("#" + me.controls[index].id + "Action").removeClass("iiInputAction");
+                    	me.controls[index][0].disabled = true;
                     }
-					
-					me.controls[index].resizeText();
 				}
 				else if (me.reportParameters[index].controlType == "MultiSelect") {
-					if (me.reportParameters[index].referenceTableName == "Customer" || me.reportParameters[index].referenceTableName == "Exclude" || me.reportParameters[index].referenceTableName == "ExcludeHouseCode" || me.reportParameters[index].referenceTableName == "HouseCode")				
+					if (me.reportParameters[index].referenceTableName == "Customer" || me.reportParameters[index].referenceTableName == "Exclude" || me.reportParameters[index].referenceTableName == "ExcludeHouseCode" || me.reportParameters[index].referenceTableName == "HouseCode")
 						me.dependentTypes.push(me.reportParameters[index].referenceTableName);
 
 					$("#" + me.reportParameters[index].name).html("");										
@@ -2240,13 +2224,21 @@ ii.Class({
                 me.typeAllOrNoneAdd(me.contractTypes, "(Select All)");
                 typeTableData = me.contractTypes;
             }
+            else if (args.referenceTableName == "Exclude" || args.referenceTableName == "ExcludeHouseCode") {
+            	$("#" + args.name).append("<option title='None' value='0'>None</option>");
+                typeTableData = me.excludeHouseCodes;
+            }
+            else if (args.referenceTableName == "HouseCode") {
+            	$("#" + args.name).append("<option title='None' value='0'>None</option>");
+                typeTableData = me.filteredHouseCodes;
+            }
 				
 			for (var index = 0; index < typeTableData.length; index++) {
                 var value = typeTableData[index].id;
                 var parameter = typeTableData[index].parameter;
                 var title = typeTableData[index].name;
 
-                if (args.referenceTableName == "States" || args.referenceTableName == "PayCode")                    
+                if (args.referenceTableName == "States" || args.referenceTableName == "PayCode" || args.referenceTableName == "HouseCode")                    
                     $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + "</option>");
                 else if (args.referenceTableName == "Shift") {
                     if (typeTableData[index].startTime == undefined)
@@ -2266,6 +2258,8 @@ ii.Class({
                     args.referenceTableName == "FinancialEntity" ||
                     args.referenceTableName == "ContractType")
                         $("#" + args.name).append("<option title='" + title + "' value='" + title + "'>" + title + "</option>");
+				else if (args.referenceTableName == "Exclude" || args.referenceTableName == "ExcludeHouseCode")                    
+                    $("#" + args.name).append("<option title='" + typeTableData[index].title + "' value='" + value + "'>" + typeTableData[index].title + "</option>");                        
                 else 
                     $("#" + args.name).append("<option title='" + title + "' value='" + parameter + "'>" + title + "</option>");
             }
@@ -2279,16 +2273,11 @@ ii.Class({
             var me = this;
             
             if (object.checked) {
-                me.controls[index].resetValidation(true);
-                me.controls[index].setValue("");
-                me.controls[index].text.readOnly = "true";
-                $("#" + me.controls[index].id + "Action").removeClass("iiInputAction");
-                me.controls[index].resizeText();
+                me.controls[index][0].value = "";
+                me.controls[index][0].disabled = true;
             }
             else if (!object.checked) {
-                me.controls[index].text.readOnly = "false";
-                $("#" + me.controls[index].id + "Action").addClass("iiInputAction");
-                me.controls[index].resizeText();
+                me.controls[index][0].disabled = false;
             }
         },
         
@@ -2687,12 +2676,12 @@ ii.Class({
 			var parameter = "";
 
 			for (var index = 0; index < me.controls.length; index++) {
-				if (me.reportParameters[index].controlType != "MultiSelect" && ($("#dateCheck")[0] == undefined || !$("#dateCheck")[0].checked))
+				if (me.reportParameters[index].controlType != "MultiSelect" && me.reportParameters[index].controlType != "Date")
 					me.controls[index].validate(true);
 			}
 
 			for (var index = 0; index < me.controls.length; index++) {
-				if (me.reportParameters[index].controlType != "MultiSelect" && ($("#dateCheck")[0] == undefined || !$("#dateCheck")[0].checked)) {
+				if (me.reportParameters[index].controlType != "MultiSelect" && me.reportParameters[index].controlType != "Date") {
 					if (!me.controls[index].valid) {
 						valid = false;
 						break;
@@ -2724,10 +2713,14 @@ ii.Class({
                 if (me.reportParameters[index].controlType == "Text")
                     parametersList += "~" + me.reportParameters[index].name + "=" + me.controls[index].getValue();
                 else if (me.reportParameters[index].controlType == "Date") {
-                    if (!me.reportParameters[index].mandatory)
-                        parametersList += "~" + me.reportParameters[index].name + "=" + me.controls[index].lastBlurValue;
-                    if (me.reportParameters[index].mandatory && !$("#dateCheck")[0].checked)
-                        parametersList += "~" + me.reportParameters[index].name + "=" + me.controls[index].lastBlurValue;
+                	if (!me.reportParameters[index].mandatory || (me.reportParameters[index].mandatory && !$("#dateCheck")[0].checked)) {
+                		if (ui.cmn.text.validate.generic(me.controls[index][0].value, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$"))
+	                		parametersList += "~" + me.reportParameters[index].name + "=" + me.controls[index][0].value;	                		
+						else {
+							alert("Please enter valid " + me.reportParameters[index].title)
+							return false;
+						}
+                	}                							                    
                 }                   
                 else if (me.reportParameters[index].controlType == "DropDown")    {
                     if (me.reportParameters[index].referenceTableName == "PayrollCompany")
@@ -2735,7 +2728,8 @@ ii.Class({
                     else if (me.reportParameters[index].referenceTableName == "FscPeriod"
                             || me.reportParameters[index].referenceTableName == "BatchNumber"
                             || me.reportParameters[index].referenceTableName == "FscPeriodFrom" 
-                            || me.reportParameters[index].referenceTableName == "FscPeriodTo")
+                            || me.reportParameters[index].referenceTableName == "FscPeriodTo"
+                            || me.reportParameters[index].referenceTableName == "FscYear")
                         parameter = me.controls[index].data[me.controls[index].indexSelected].id
                     else
                         parameter = me.controls[index].data[me.controls[index].indexSelected].parameter
