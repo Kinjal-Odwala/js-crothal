@@ -68,6 +68,7 @@ ii.Class({
 			me.employeeSearchSelectedRowIndex = -1;
 			me.employeeSearchActiveRow = -1;
 			me.houseCodeid = 0;
+			me.employeehouseCode = 0;
 			me.employeeNumberChanged = false;			
 			me.employeeActiveChanged = false;
 			me.employeePayRateChanged = false;
@@ -2843,10 +2844,8 @@ ii.Class({
 				alert('Please select correct House Code.');
 				return false;
 			}
-			if (me.houseCodeid == parent.fin.appUI.houseCodeId) {
-				alert('You cannot transfer into the same House Code. Please select other House Code.');
+			if (!me.ssn.validate(true))
 				return false;
-			}
 
 			$("#messageToUser2").html("Loading");
 			$("#popupLoading").show();			
@@ -2875,9 +2874,8 @@ ii.Class({
 			
 			for (index in me.employees) {
 				me.empsByHouseCode.push(me.employees[index]);
-			}
-			
-			me.houseCodeid = 0;			
+			}			
+						
 			me.employeeGrid.setData(me.empsByHouseCode);
 			me.employeeGrid.setHeight(280);			
 		},
@@ -2889,7 +2887,8 @@ ii.Class({
 			var me = this;
 			var item = me.employeeGrid.data[args.index];
 			
-			me.employeeSSN.setValue(item.ssn); 
+			me.employeeSSN.setValue(item.ssn);
+			me.employeehouseCode = item.houseCode;
 			me.noContext = false;
 		},
 		
@@ -5807,10 +5806,20 @@ ii.Class({
 
 			var currentSSN = me.employeeSSN.getValue().replace(/-/g, "");
 			
-			if (me.actionType == "EmpToHouseCode" && me.wizardCount == 3 && me.employeeGrid.activeRowIndex < 0) {
+			if (me.actionType == "EmpToHouseCode" && me.wizardCount == 3) {
+				if(!me.ssn.validate(true))
+					me.wizardCount = -1;
+				else if(me.employeeGrid.activeRowIndex < 0) {
 					alert("Please select Employee.")
 					me.wizardCount = -1;
+				}									
+				else if(me.employeehouseCode == parent.fin.appUI.houseCodeBrief) {
+					alert('You cannot transfer into the same House Code. Please select other House Code.');
+					me.wizardCount = -1;
+				}					
 			}
+			else if (me.actionType == "HouseCodeTransfer" && me.wizardCount == 3 && !me.employeeSSN.validate(true))
+					me.wizardCount = -1;
 			else if (currentSSN != me.previousSSN) {
 				me.previousSSN = currentSSN;
 				if (me.wizardCount != -1) {
@@ -5970,9 +5979,6 @@ ii.Class({
 						if ($("input[name='TransferHouseCode']:checked").val() == "HouseCodeTransfer") {
 							$("#popupSubHeader").text("General")
 							$("#EmpToHouseCode").hide();
-							
-							if (me.employeeSearchActiveRow < 0)
-								me.employeeSSN.setValue("");
 						}
 						else if ($("input[name='TransferHouseCode']:checked").val() == "HouseCodeTo") {
 							$("#popupSubHeader").text("Employee")							
