@@ -80,6 +80,7 @@ ii.init.register( function() {
 
 	fin.pur.poCapitalRequisition.poCapitalRequisitionArgs = {
 		id: {type: Number}
+		, requisitionNumber: {type: Number, required: false, defaultValue: 0}
 		, statusType: {type: Number, required: false, defaultValue: 0}
 		, houseCode: {type: Number}
 		, houseCodeJob: {type: Number, required: false, defaultValue: 0}		

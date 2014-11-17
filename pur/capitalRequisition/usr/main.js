@@ -294,6 +294,11 @@ ii.Class({
 						this.setInvalid("Please select the correct Status.");
 				});
 				
+			me.searchRequisitionNumber = new ui.ctl.Input.Text({
+		        id: "SearchRequisitionNumber",
+				maxLength: 16
+		    });
+		    
 			me.capitalRequisitionGrid = new ui.ctl.Grid({
 				id: "CapitalRequisitionGrid",
 				appendToId: "divForm",
@@ -302,7 +307,8 @@ ii.Class({
 				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});
 			
-			me.capitalRequisitionGrid.addColumn("requestorName", "requestorName", "Requestor Name", "Requestor Name", 250);				
+			me.capitalRequisitionGrid.addColumn("requisitionNumber", "requisitionNumber", "Requisition Number", "Requisition Number", 175);
+			me.capitalRequisitionGrid.addColumn("requestorName", "requestorName", "Requestor Name", "Requestor Name", 200);				
 			me.capitalRequisitionGrid.addColumn("requestedDate ", "requestedDate", "Requested Date", "Requested Date", 150);
 			me.capitalRequisitionGrid.addColumn("deliveryDate", "deliveryDate", "Delivery Date", "Delivery Date", 150);
 			me.capitalRequisitionGrid.addColumn("vendorTitle", "vendorTitle", "Vendor Title", "Vendor Title", null);
@@ -682,7 +688,7 @@ ii.Class({
 			me.itemGrid.addColumn("description", "description", "Item Description", "Item Description", null, null, me.itemDescription);			
 			me.itemGrid.addColumn("account", "account", "GL Account No", "GL Account No", 120, function( account ) { return account.code + " - " + account.name; }, me.account);
 			me.itemGrid.addColumn("unit", "unit", "UOM", "UOM", 100, null, me.uom);
-			me.itemGrid.addColumn("manufactured", "manufactured", "Manufactured", "Manufactured", 120, null, me.manufactured);
+			me.itemGrid.addColumn("manufactured", "manufactured", "MFG", "Manufactured", 120, null, me.manufactured);
 			me.itemGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 100, null, me.quantity);
 			me.itemGrid.addColumn("price", "price", "Price", "Price", 100, null, me.price);			
 			me.itemGrid.capColumns();			
@@ -1030,6 +1036,7 @@ ii.Class({
 			$("#imgEdit").bind("click", function() { me.actionEditDocumentItem(); });
 			$("#imgRemove").bind("click", function() { me.actionRemoveItem(); });
 			$("#imgView").bind("click", function() { me.actionViewItem(); });
+			$("#SearchRequisitionNumber").bind("keydown", me, me.requisitionNumberChanged);
 			$("#AnchorView").hide();
 			$("#AnchorEdit").hide();
 			$("#AnchorResendRequisition").hide();
@@ -1082,7 +1089,7 @@ ii.Class({
 			me.vendorCity.text.readOnly = readOnly;
 			me.vendorState.text.readOnly = readOnly;
 			me.vendorZip.text.readOnly = readOnly;
-			me.vendorContactName.resizeText();
+			me.vendorContactName.text.readOnly = readOnly;
 			me.vendorPhone.text.readOnly = readOnly;
 			me.vendorEmail.text.readOnly = readOnly;
 			me.reasonForRequest.text.readOnly = readOnly;
@@ -1203,6 +1210,18 @@ ii.Class({
 			me.shippingJob.setData(me.houseCodeJobs);			
 		},
 		
+		requisitionNumberChanged: function() {
+			var args = ii.args(arguments, {
+				event: {type: Object} // The (key) event object
+			});			
+			var event = args.event;
+			var me = event.data;
+				
+			if (event.keyCode == 13) {
+				me.houseCodeChanged();
+			}
+		},
+		
 		houseCodeChanged: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
@@ -1229,6 +1248,7 @@ ii.Class({
 			me.poCapitalRequisitionStore.fetch("poCapitalRequisitionId:0"
 				+ ",houseCodeId:" + parent.fin.appUI.houseCodeId
 				+ ",statusType:" + statusType
+				+ ",requisitionNumber:" + me.searchRequisitionNumber.getValue()
 				, me.poCapitalRequisitionsLoaded
 				, me);
 		},
@@ -1300,6 +1320,9 @@ ii.Class({
 			me.status = "";
 
 			if (me.action == "POCapitalRequisition") {
+				$("#RequisitionInfo").show();
+				$("#divSpace").show();
+				$("#RequisitionNumber").html(item.requisitionNumber);
 				me.requestorName.setValue(item.requestorName);
 				me.requestorEmail.setValue(item.requestorEmail);
 				me.requestedDate.setValue(item.requestedDate);
@@ -1651,7 +1674,7 @@ ii.Class({
 			$("#AnchorJDEEntry").hide();
 			$("#LabelStatus").show();
 			$("#InputTextStatus").show();			
-			$("#SearchButtonStatus").show();
+			//$("#SearchButtonStatus").show();
 			me.action = "POCapitalRequisition";
 			me.loadPOCapitalRequisitions();
 			me.setStatus("Loaded");
@@ -1669,7 +1692,7 @@ ii.Class({
 			$("#AnchorCancelRequisition").hide();
 			$("#LabelStatus").hide();
 			$("#InputTextStatus").hide();			
-			$("#SearchButtonStatus").hide();
+			//$("#SearchButtonStatus").hide();
 			$("#AnchorGeneratePurchaseOrder").show();
 			$("#AnchorJDEEntry").show();
 			me.action = "GeneratePurchaseOrder";
@@ -1734,6 +1757,8 @@ ii.Class({
 			me.shippingPhone.setValue("");
 			me.shippingFax.setValue("");			
 			
+			$("#RequisitionInfo").hide();
+			$("#divSpace").hide();
 			$("#VendorInfo").show();
 			$("#CategoryInfo").show();
 			$("#imgAdd").show();
@@ -2053,6 +2078,7 @@ ii.Class({
 
 				item = new fin.pur.poCapitalRequisition.POCapitalRequisition(
 					me.poCapitalRequisitionId
+					, (me.status == "NewPOCapitalRequisition" ? 0 : me.capitalRequisitionGrid.data[index].requisitionNumber)
 					, (me.status == "NewPOCapitalRequisition" ? 1 : me.capitalRequisitionGrid.data[index].statusType)
 					, (me.status == "NewPOCapitalRequisition" ? parent.fin.appUI.houseCodeId : me.capitalRequisitionGrid.data[index].houseCode)
 					, (me.shippingJob.indexSelected == -1 ? 0 : me.houseCodeJobs[me.shippingJob.indexSelected].id)
@@ -2131,6 +2157,7 @@ ii.Class({
 			if (me.status == "NewPOCapitalRequisition" || me.status == "EditPOCapitalRequisition") {
 				xml += '<purPOCapitalRequisition';
 				xml += ' id="' + item.id + '"';
+				xml += ' requisitionNumber="' + item.requisitionNumber + '"';
 				xml += ' houseCodeId="' + item.houseCode + '"';
 				xml += ' houseCodeJobId="' + item.houseCodeJob + '"';
 				xml += ' requestorName="' + ui.cmn.text.xml.encode(item.requestorName) + '"';
@@ -2199,6 +2226,7 @@ ii.Class({
 			if (me.status == "SendRequisition" || me.status == "ResendRequisition") {
 				xml += '<purPOCapitalRequisitionEmailNotification';
 				xml += ' id="' + me.poCapitalRequisitionId + '"';
+				xml += ' requisitionNumber="' + item.requisitionNumber + '"';
 				xml += ' statusType="2"';
 				xml += ' houseCodeTitle="' + ui.cmn.text.xml.encode(me.company.getValue()) + '"';
 				xml += ' houseCodeJobTitle="' + me.shippingJob.lastBlurValue + '"';
@@ -2283,9 +2311,10 @@ ii.Class({
 				else {
 					$(args.xmlNode).find("*").each(function () { 
 						switch (this.tagName) {
-							case "PurPOCapitalRequisition":
+							case "purPOCapitalRequisition":
 								if (me.status == "NewPOCapitalRequisition") {
 									item.id = parseInt($(this).attr("id"), 10);
+									item.requisitionNumber = $(this).attr("requisitionNumber");
 									me.poCapitalRequisitions.push(item);
 									me.capitalRequisitionGrid.setData(me.poCapitalRequisitions);
 									me.capitalRequisitionGrid.body.select(me.poCapitalRequisitions.length - 1);
