@@ -30,6 +30,7 @@ ii.Class({
 				
 			me.poRequisitionId = 0;
 			me.vendorId = 0;
+			me.vendorNumber = "";
 			me.accountId = 0;
 			me.catalogId = 0;
 			me.lastSelectedRowIndex = -1;		
@@ -104,7 +105,7 @@ ii.Class({
 					$("#AnchorNew").hide();
 					$("#LabelStatus").hide();
 					$("#InputTextStatus").hide();			
-					$("#SearchButtonStatus").hide();
+					//$("#SearchButtonStatus").hide();
 					$("#PORequisitionAction").hide();
 				}
 
@@ -293,7 +294,12 @@ ii.Class({
 					if ((this.focused || this.touched) && me.statusType.indexSelected == -1)
 						this.setInvalid("Please select the correct Status.");
 				});
-				
+			
+			me.searchRequisitionNumber = new ui.ctl.Input.Text({
+		        id: "SearchRequisitionNumber",
+				maxLength: 16
+		    });
+		    	
 			me.requisitionGrid = new ui.ctl.Grid({
 				id: "RequisitionGrid",
 				appendToId: "divForm",
@@ -302,7 +308,8 @@ ii.Class({
 				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});
 			
-			me.requisitionGrid.addColumn("requestorName", "requestorName", "Requestor Name", "Requestor Name", 250);				
+			me.requisitionGrid.addColumn("requisitionNumber", "requisitionNumber", "Requisition Number", "Requisition Number", 175);
+			me.requisitionGrid.addColumn("requestorName", "requestorName", "Requestor Name", "Requestor Name", 200);				
 			me.requisitionGrid.addColumn("requestedDate ", "requestedDate", "Requested Date", "Requested Date", 150);
 			me.requisitionGrid.addColumn("deliveryDate", "deliveryDate", "Delivery Date", "Delivery Date", 150);
 			me.requisitionGrid.addColumn("vendorTitle", "vendorTitle", "Vendor Title", "Vendor Title", null);
@@ -516,8 +523,8 @@ ii.Class({
 				maxLength: 200,
 				changeFunction: function() { me.modified(); }
 		    });
-			
-			me.urgencyDate = new ui.ctl.Input.Date({
+		    
+		    me.urgencyDate = new ui.ctl.Input.Date({
                 id: "UrgencyDate",
                 formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
             });
@@ -1053,10 +1060,8 @@ ii.Class({
 
 		initialize: function() {
 			var me = this;
-
-			$("input[name='RequisitionType']").change(function() { me.modified(); });
+			
 			$("input[name='Urgency']").change(function() { me.modified(); });
-			$("input[name='LifeSpan']").change(function() { me.modified(); });
 			$("#VendorName").bind("keydown", me, me.actionVendorSearch);
 			$("#imgAdd").bind("click", function() { me.actionAttachItem(); });
 			$("#imgEdit").bind("click", function() { me.actionEditDocumentItem(); });
@@ -1072,7 +1077,7 @@ ii.Class({
 				if (urgencyDate == "" || !(ui.cmn.text.validate.generic(urgencyDate, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
 					me.urgencyDate.setValue("");
 			});
-			
+			$("#SearchRequisitionNumber").bind("keydown", me, me.requisitionNumberChanged);
 			
 			$("#AnchorView").hide();
 			$("#AnchorEdit").hide();
@@ -1127,7 +1132,7 @@ ii.Class({
 			me.vendorCity.text.readOnly = readOnly;
 			me.vendorState.text.readOnly = readOnly;
 			me.vendorZip.text.readOnly = readOnly;
-			me.vendorContactName.resizeText();
+			me.vendorContactName.text.readOnly = readOnly;
 			me.vendorPhone.text.readOnly = readOnly;
 			me.vendorEmail.text.readOnly = readOnly;
 			me.reasonForRequest.text.readOnly = readOnly;
@@ -1141,12 +1146,8 @@ ii.Class({
 			me.shippingPhone.text.readOnly = readOnly;
 			me.shippingFax.text.readOnly = readOnly;
 
-			$("#RequisitionTypeSpecialSupply")[0].disabled = readOnly;
-			$("#RequisitionTypeOffContract")[0].disabled = readOnly;
 			$("#UrgencyUrgent")[0].disabled = readOnly;
 			$("#UrgencyNotUrgent")[0].disabled = readOnly;
-			$("#LifeSpanPermanent")[0].disabled = readOnly;
-			$("#LifeSpanTemporary")[0].disabled = readOnly;
 
 			if (readOnly) {
 				$("#RequestedDateAction").removeClass("iiInputAction");
@@ -1310,6 +1311,18 @@ ii.Class({
 			me.shippingJob.setData(me.houseCodeJobs);			
 		},
 		
+		requisitionNumberChanged: function() {
+			var args = ii.args(arguments, {
+				event: {type: Object} // The (key) event object
+			});			
+			var event = args.event;
+			var me = event.data;
+				
+			if (event.keyCode == 13) {
+				me.houseCodeChanged();
+			}
+		},
+		
 		houseCodeChanged: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
@@ -1336,6 +1349,7 @@ ii.Class({
 			me.poRequisitionStore.fetch("poRequisitionId:0"
 				+ ",houseCodeId:" + parent.fin.appUI.houseCodeId
 				+ ",statusType:" + statusType
+				+ ",requisitionNumber:" + me.searchRequisitionNumber.getValue()
 				, me.poRequisitionsLoaded
 				, me);
 		},
@@ -1417,6 +1431,9 @@ ii.Class({
 			me.status = "";
 
 			if (me.action == "PORequisition") {
+				$("#RequisitionInfo").show();
+				$("#divSpace").show();
+				$("#RequisitionNumber").html(item.requisitionNumber);
 				me.requestorName.setValue(item.requestorName);
 				me.requestorEmail.setValue(item.requestorEmail);
 				me.requestedDate.setValue(item.requestedDate);
@@ -1445,21 +1462,11 @@ ii.Class({
 	                me.urgencyDate.setValue(item.urgencyDate);
 	                $("#LabelUrgencyDate").html("<span class='requiredFieldIndicator'>&#149;</span>Urgency Date:");
 	            }
-					
-				if (item.requisitionType == "Special Supply") 
-					$('#RequisitionTypeSpecialSupply').attr('checked', true);
-				else if (item.requisitionType == "Off Contract") 
-					$('#RequisitionTypeOffContract').attr('checked', true);
 				
 				if (item.urgency == "Urgent") 
 					$('#UrgencyUrgent').attr('checked', true);
 				else if (item.urgency == "Not Urgent") 
 					$('#UrgencyNotUrgent').attr('checked', true);
-				
-				if (item.lifeSpan == "Permanent") 
-					$('#LifeSpanPermanent').attr('checked', true);
-				else if (item.lifeSpan == "Temporary") 
-					$('#LifeSpanTemporary').attr('checked', true);
 				
 				me.vendor.setValue(item.vendorTitle);
 				
@@ -1579,6 +1586,7 @@ ii.Class({
 				}
 				else {
 					me.vendorId = 0;
+					me.vendorNumber = "";
 					me.vendor.setValue("");
 					me.vendorAddress1.setValue("");
 					me.vendorAddress2.setValue("");
@@ -1609,6 +1617,7 @@ ii.Class({
 
 			if (index >= 0) {
 				me.vendorId = me.vendors[index].number;
+				me.vendorNumber = me.vendors[index].vendorNumber;
 				me.vendor.setValue(me.vendors[index].name);
 				me.vendorAddress1.setValue(me.vendors[index].addressLine1);
 				me.vendorAddress2.setValue(me.vendors[index].addressLine2);
@@ -1623,6 +1632,11 @@ ii.Class({
 				me.vendorPhone.setValue(me.vendors[index].phoneNumber);
 				me.vendorEmail.setValue(me.vendors[index].email);
 				me.account.setData(me.glAccounts);
+				me.searchItem.text.readOnly = false;
+				$("#CategoryText").attr('disabled', false);
+				$("#CategoryAction").addClass("iiInputAction");
+				$("#CatalogText").attr('disabled', false);
+				$("#CatalogAction").addClass("iiInputAction");
 				me.category.fetchingData();
 				me.catalog.fetchingData();
 				me.poRequisitionDetailStore.reset();
@@ -1634,6 +1648,7 @@ ii.Class({
 			}
 			else {
 				me.vendorId = 0;
+				me.vendorNumber = "";
 				me.vendor.setValue("");
 				me.vendorAddress1.setValue("");
 				me.vendorAddress2.setValue("");
@@ -1643,6 +1658,11 @@ ii.Class({
 				me.vendorContactName.setValue("");
 				me.vendorPhone.setValue("");
 				me.vendorEmail.setValue("");
+				me.searchItem.text.readOnly = true;
+				$("#CategoryText").attr('disabled', true);
+				$("#CategoryAction").removeClass("iiInputAction");
+				$("#CatalogText").attr('disabled', true);
+				$("#CatalogAction").removeClass("iiInputAction");
 				$("#popupLoading").hide();
 			}
 		},
@@ -1734,16 +1754,8 @@ ii.Class({
 					alert("In order to continue, the errors on the page must be corrected.");	
 					return false;
 				}
-				else if ($('input:radio[name="RequisitionType"]:checked').length == 0) {
-					alert("Please select Requisition Type.");	
-					return false;
-				}
 				else if ($('input:radio[name="Urgency"]:checked').length == 0) {
 					alert("Please select Urgency.");	
-					return false;
-				}
-				else if ($('input:radio[name="LifeSpan"]:checked').length == 0) {
-					alert("Please select Life Span.");	
 					return false;
 				}
 				else
@@ -1797,7 +1809,7 @@ ii.Class({
 			$("#AnchorJDEEntry").hide();
 			$("#LabelStatus").show();
 			$("#InputTextStatus").show();			
-			$("#SearchButtonStatus").show();
+			//$("#SearchButtonStatus").show();
 			me.action = "PORequisition";
 			me.loadPORequisitions();
 			me.setStatus("Loaded");
@@ -1815,7 +1827,7 @@ ii.Class({
 			$("#AnchorCancelRequisition").hide();
 			$("#LabelStatus").hide();
 			$("#InputTextStatus").hide();			
-			$("#SearchButtonStatus").hide();
+			//$("#SearchButtonStatus").hide();
 			$("#AnchorGeneratePurchaseOrder").show();
 			$("#AnchorJDEEntry").show();
 			me.action = "GeneratePurchaseOrder";
@@ -1840,7 +1852,9 @@ ii.Class({
 				me.itemGrid.body.deselect(index, true);		
 			me.itemGrid.setData([]);
 			me.itemReadOnlyGrid.setData([]);	
-			me.documentGrid.setData([]);					
+			me.documentGrid.setData([]);
+			$("#RequisitionInfo").hide();
+			$("#divSpace").hide();					
 			me.requestorName.setValue(me.users[0].firstName + " " + me.users[0].lastName + "");
 			me.requestorEmail.setValue(me.users[0].email);
 			me.requestedDate.setValue(me.currentDate());
@@ -1858,9 +1872,7 @@ ii.Class({
 			me.vendorEmail.setValue("");
 			me.reasonForRequest.setValue("");
 			me.urgencyDate.setValue("");
-			$('input[name="RequisitionType"]').attr('checked', false);
 			$('input[name="Urgency"]').attr('checked', false);
-			$('input[name="LifeSpan"]').attr('checked', false);
 			
 			me.vendor.setValue("");
 			me.searchItem.setValue("");
@@ -2210,7 +2222,8 @@ ii.Class({
 				me.itemGrid.body.deselectAll();
 
 				item = new fin.pur.poRequisition.PORequisition(
-					me.poRequisitionId
+					me.poRequisitionId 
+					, (me.status == "NewPORequisition" ? 0 : me.requisitionGrid.data[index].requisitionNumber)
 					, (me.status == "NewPORequisition" ? 1 : me.requisitionGrid.data[index].statusType)
 					, (me.status == "NewPORequisition" ? parent.fin.appUI.houseCodeId : me.requisitionGrid.data[index].houseCode)
 					, (me.shippingJob.indexSelected == -1 ? 0 : me.houseCodeJobs[me.shippingJob.indexSelected].id)
@@ -2226,6 +2239,7 @@ ii.Class({
 					, me.requestedDate.lastBlurValue
 					, me.deliveryDate.lastBlurValue
 					, me.vendorName.lastBlurValue
+					, me.vendorNumber
 					, me.vendorAddress1.getValue()
 					, me.vendorAddress2.getValue()
 					, me.vendorCity.getValue()
@@ -2235,10 +2249,8 @@ ii.Class({
 					, me.vendorPhone.getValue()
 					, me.vendorEmail.getValue()
 					, me.reasonForRequest.getValue()
-					, $("input[name='RequisitionType']:checked").val()
 					, $("input[name='Urgency']:checked").val()
 					, me.urgencyDate.lastBlurValue
-					, $("input[name='LifeSpan']:checked").val()
 					, ""
 					, "false"
 					);
@@ -2290,6 +2302,7 @@ ii.Class({
 			if (me.status == "NewPORequisition" || me.status == "EditPORequisition") {
 				xml += '<purPORequisition';
 				xml += ' id="' + item.id + '"';
+				xml += ' requisitionNumber="' + item.requisitionNumber + '"';
 				xml += ' houseCodeId="' + item.houseCode + '"';
 				xml += ' houseCodeJobId="' + item.houseCodeJob + '"';
 				xml += ' requestorName="' + ui.cmn.text.xml.encode(item.requestorName) + '"';
@@ -2297,6 +2310,7 @@ ii.Class({
 				xml += ' requestedDate="' + item.requestedDate + '"';
 				xml += ' deliveryDate="' + item.deliveryDate + '"';
 				xml += ' vendorTitle="' + ui.cmn.text.xml.encode(item.vendorTitle) + '"';
+				xml += ' vendorNumber="' + ui.cmn.text.xml.encode(item.vendorNumber) + '"';
 				xml += ' vendorAddressLine1="' + ui.cmn.text.xml.encode(item.vendorAddressLine1) + '"';
 				xml += ' vendorAddressLine2="' + ui.cmn.text.xml.encode(item.vendorAddressLine2) + '"';
 				xml += ' vendorCity="' + ui.cmn.text.xml.encode(item.vendorCity) + '"';
@@ -2306,10 +2320,8 @@ ii.Class({
 				xml += ' vendorPhoneNumber="' + fin.cmn.text.mask.phone(item.vendorPhoneNumber, true) + '"';
 				xml += ' vendorEmail="' + item.vendorEmail + '"';
 				xml += ' reasonForRequest="' + ui.cmn.text.xml.encode(item.reasonForRequest) + '"';
-				xml += ' requisitionType="' + item.requisitionType + '"';
 				xml += ' urgency="' + item.urgency + '"';
 				xml += ' urgencyDate="' + item.urgencyDate + '"';
-				xml += ' lifeSpan="' + item.lifeSpan + '"';
 				xml += ' chargeToPeriod="' + item.chargeToPeriod + '"';
 				xml += ' shipToAddress1="' + ui.cmn.text.xml.encode(item.shipToAddress1) + '"';
 				xml += ' shipToAddress2="' + ui.cmn.text.xml.encode(item.shipToAddress2) + '"';
@@ -2359,6 +2371,7 @@ ii.Class({
 			else if (me.status == "SendRequisition" || me.status == "ResendRequisition") {
 				xml += '<purPORequisitionEmailNotification';
 				xml += ' id="' + me.poRequisitionId + '"';
+				xml += ' requisitionNumber="' + item.requisitionNumber + '"';
 				xml += ' statusType="2"';
 				xml += ' houseCodeTitle="' + ui.cmn.text.xml.encode(me.company.getValue()) + '"';
 				xml += ' houseCodeJobTitle="' + me.shippingJob.lastBlurValue + '"';
@@ -2367,26 +2380,25 @@ ii.Class({
 				xml += ' shipToCity="' + ui.cmn.text.xml.encode(item.shipToCity) + '"';
 				xml += ' shipToStateTitle="' + me.shippingState.lastBlurValue + '"';
 				xml += ' shipToZip="' + item.shipToZip + '"';
-				xml += ' shipToPhone="' + fin.cmn.text.mask.phone(item.shipToPhone, true) + '"';
+				xml += ' shipToPhone="' + fin.cmn.text.mask.phone(item.shipToPhone) + '"';
 				xml += ' shipToFax="' + fin.cmn.text.mask.phone(item.shipToFax, true) + '"';
 				xml += ' requestorName="' + ui.cmn.text.xml.encode(item.requestorName) + '"';
 				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
 				xml += ' requestedDate="' + item.requestedDate + '"';
 				xml += ' deliveryDate="' + item.deliveryDate + '"';
 				xml += ' vendorTitle="' + ui.cmn.text.xml.encode(item.vendorTitle) + '"';
+				xml += ' vendorNumber="' + ui.cmn.text.xml.encode(item.vendorNumber) + '"';
 				xml += ' vendorAddressLine1="' + ui.cmn.text.xml.encode(item.vendorAddressLine1) + '"';
 				xml += ' vendorAddressLine2="' + ui.cmn.text.xml.encode(item.vendorAddressLine2) + '"';
 				xml += ' vendorCity="' + ui.cmn.text.xml.encode(item.vendorCity) + '"';
 				xml += ' vendorStateTitle="' + me.vendorState.lastBlurValue + '"';
 				xml += ' vendorZip="' + item.shipToZip + '"';
 				xml += ' vendorContactName="' + ui.cmn.text.xml.encode(item.vendorContactName) + '"';
-				xml += ' vendorPhoneNumber="' + fin.cmn.text.mask.phone(item.vendorPhoneNumber, true) + '"';
+				xml += ' vendorPhoneNumber="' + fin.cmn.text.mask.phone(item.vendorPhoneNumber) + '"';
 				xml += ' vendorEmail="' + item.vendorEmail + '"';
 				xml += ' reasonForRequest="' + ui.cmn.text.xml.encode(item.reasonForRequest) + '"';
-				xml += ' requisitionType="' + item.requisitionType + '"';
 				xml += ' urgency="' + item.urgency + '"';
 				xml += ' urgencyDate="' + item.urgencyDate + '"';
-				xml += ' lifeSpan="' + item.lifeSpan + '"';
 				xml += ' chargeToPeriod=""';
 				xml += ' action="' + me.status + '"';
 				xml += ' jdeCompleted="0"';
@@ -2449,6 +2461,7 @@ ii.Class({
 							case "purPORequisition":
 								if (me.status == "NewPORequisition") {
 									item.id = parseInt($(this).attr("id"), 10);
+									item.requisitionNumber = $(this).attr("requisitionNumber");
 									me.poRequisitions.push(item);
 									me.requisitionGrid.setData(me.poRequisitions);
 									me.requisitionGrid.body.select(me.poRequisitions.length - 1);

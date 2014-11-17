@@ -80,6 +80,7 @@ ii.init.register( function() {
 
 	fin.pur.poRequisition.poRequisitionArgs = {
 		id: {type: Number}
+		, requisitionNumber: {type: Number, required: false, defaultValue: 0}
 		, statusType: {type: Number, required: false, defaultValue: 0}
 		, houseCode: {type: Number}
 		, houseCodeJob: {type: Number, required: false, defaultValue: 0}		
@@ -95,6 +96,7 @@ ii.init.register( function() {
 		, requestedDate: {type: String, required: false, defaultValue: ""}
 		, deliveryDate: {type: String, required: false, defaultValue: ""}
 		, vendorTitle: {type: String, required: false, defaultValue: ""}
+		, vendorNumber: {type: String, required: false, defaultValue: ""}
 		, vendorAddressLine1: {type: String, required: false, defaultValue: ""}
 		, vendorAddressLine2: {type: String, required: false, defaultValue: ""}
 		, vendorCity: {type: String, required: false, defaultValue: ""}
@@ -104,10 +106,8 @@ ii.init.register( function() {
 		, vendorPhoneNumber: {type: String, required: false, defaultValue: ""}
 		, vendorEmail: {type: String, required: false, defaultValue: ""}
 		, reasonForRequest: {type: String, required: false, defaultValue: ""}
-		, requisitionType: {type: String, required: false, defaultValue: ""}
 		, urgency: {type: String, required: false, defaultValue: ""}
 		, urgencyDate: {type: String, required: false, defaultValue: ""}
-		, lifeSpan: {type: String, required: false, defaultValue: ""}
 		, chargeToPeriod: {type: String, required: false, defaultValue: ""}
 		, valid: {type: Boolean, required: false, defaultValue: true}		
 	};

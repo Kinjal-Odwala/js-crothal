@@ -44,6 +44,10 @@
 			<div id="InputTextStatus">
 				<div id="StatusType"></div>
 			</div>
+			<div id="LabelTextAreaLeftHeader">&nbsp;&nbsp;Requisition Number:</div>
+			<div id="InputTextStatus">
+				<div id="SearchRequisitionNumber"></div>
+			</div>
 			<div id="SearchButtonStatus" class="contentArea">
 				<div id="SearchButton"></div>
 			</div>
@@ -78,12 +82,21 @@
 				<div class="contentArea">
 					<div class="header" id="Header"></div>
 					<div style="clear:both;"></div>					
-					<div id="GeneralInfo">
+					<div id="GeneralInfo">						
 						<div id="contentAreasContainerLeft">
 							<div id="TableEditArea">
 								<div class="body">
 									<div class="subHeader">Requestor Details:</div>
-									<div style="clear:both;"></div>									
+									<div id="RequisitionInfo">
+										<div class="labelTextArea">
+											<span id="nonRequiredFieldIndicator">Requisition Number:</span>
+										</div>
+										<div class="labelRequisitionNumber">
+											<div id="RequisitionNumber"></div>
+										</div>
+										<div style="clear:both;"></div>
+									</div>
+									<div style="clear:both;"></div>																		
 									<div class="labelTextArea">
 										<span class="requiredFieldIndicator">&#149;</span>Requestor Name:
 									</div>
@@ -92,7 +105,7 @@
 									</div>
 									<div style="clear:both;"></div>									
 									<div class="labelTextArea">
-										<span class="requiredFieldIndicator">&#149;</span>Requested Date:
+										<span class="requiredFieldIndicator">&#149;</span>Date:
 									</div>
 									<div class="inputTextArea">
 										<div id="RequestedDate"></div>
@@ -142,6 +155,7 @@
 								<div class="body">
 									<div class="labelTextArea"></div>
 									<div class="inputTextArea"></div>
+									<div id="divSpace" class="labelTextArea"></div>
 									<div style="clear:both;"></div>
 									<div class="labelTextArea">
 										<span class="requiredFieldIndicator">&#149;</span>Requestor Email:
@@ -151,7 +165,7 @@
 									</div>
 									<div style="clear:both;"></div>
 									<div class="labelTextArea">
-										<span class="requiredFieldIndicator">&#149;</span>Delivery Date:
+										<span class="requiredFieldIndicator">&#149;</span>Requested Delivery Date:
 									</div>
 									<div class="inputTextArea">
 										<div id="DeliveryDate"></div>
@@ -206,21 +220,7 @@
                         <div id="contentAreasContainerLeft">
                             <div id="TableEditArea">
                                 <div class="body">
-									<div style="clear:both;"></div>
-									<div class="labelTextArea">
-										<span class="requiredFieldIndicator">&#149;</span>Requisition Type:
-									</div>
-									<div id="RequisitionTypeRadio">
-										<div class="radioButtonRight">
-											<input id="RequisitionTypeSpecialSupply" name="RequisitionType"  type="radio" value="Special Supply"/>								
-										</div>
-										<div class="radioTextRight">Special Supply</div>
-										<div class="radioButtonRight">
-											<input id="RequisitionTypeOffContract" name="RequisitionType"  type="radio" value="Off Contract"/>								
-										</div>
-										<div class="radioTextRight">Off Contract</div>
-									</div>
-									<div style="clear:both;"></div>	
+									<div style="clear:both;"></div>										
 									<div class="labelTextArea">
 										<span class="requiredFieldIndicator">&#149;</span>Urgency:
 									</div>
@@ -234,20 +234,6 @@
 										</div>
 										<div class="radioTextRight">Not Urgent</div>
 									</div>
-									<div style="clear:both;"></div>														
-									<div class="labelTextArea">
-										<span class="requiredFieldIndicator">&#149;</span>Life Span:
-									</div>
-									<div id="LifeSpanRadio">
-										<div class="radioButtonRight">
-											<input id="LifeSpanPermanent" name="LifeSpan"  type="radio" value="Permanent"/>								
-										</div>
-										<div class="radioTextRight">Permanent</div>
-										<div class="radioButtonRight">
-											<input id="LifeSpanTemporary" name="LifeSpan"  type="radio" value="Temporary"/>								
-										</div>
-										<div class="radioTextRight">Temporary</div>
-									</div>
 									<div style="clear:both;"></div>
 								</div>
 							</div>
@@ -255,15 +241,13 @@
 						<div id="contentAreasContainerRight">
                             <div id="TableEditArea">
                                 <div class="body">
-                                        <div class="labelTextArea"></div>
-                                        <div class="inputTextArea"></div>
-                                        <div style="clear:both;"></div>
                                         <div class="labelTextArea" id="LabelUrgencyDate">
                                             <span id="nonRequiredFieldIndicator">Urgency Date:</span>
                                         </div>
                                         <div class="inputTextArea">
                                             <div id="UrgencyDate"></div>
                                         </div>
+                                        <div style="clear:both;"></div>
                                  </div>   
                             </div>
                         </div>
