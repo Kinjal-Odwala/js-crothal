@@ -90,6 +90,7 @@ ii.Class({
 				me.glbFscYear = me.weekPeriodYears[0].yearId;
 				me.glbfiscalYear = me.weekPeriodYears[0].fiscalYear;
 				me.glbCurrentDate = me.weekPeriodYears[0].currentDate;
+				me.glbWeekStartDate = me.weekPeriodYears[0].WeekStartDate;
 			}
 		},
 		

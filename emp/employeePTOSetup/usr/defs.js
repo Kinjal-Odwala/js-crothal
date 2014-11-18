@@ -39,12 +39,11 @@ ii.init.register( function() {
 	
 	fin.emp.employeePTOSetup.ptoEmployeeArgs = {
 		id: {type: Number, required: false, defaultValue: 0}
-		, ebFlxId: {type: Number, required: false, defaultValue: 0}
 		, firstName: {type: String, required: false, defaultValue: ""}
-		, middleName: {type: String, required: false, defaultValue: ""}
 		, lastName: {type: String, required: false, defaultValue: ""}
+		, employeeNumber: {type: String, required: false, defaultValue: ""}
 		, jobTitle: {type: String, required: false, defaultValue: ""}
-		, status: {type: String, required: false, defaultValue: ""}
+		, ptoAssignmentId: {type: Number, required: false, defaultValue: 0}
 		, assigned: {type: Boolean, required: false, defaultValue: false}
 	};
 	
@@ -75,6 +74,7 @@ ii.init.register( function() {
 		, employeeId: {type: Number, required: false, defaultValue: 0}
 		, ptoType: {type: fin.emp.employeePTOSetup.PTOType, required: false}
 		, ptoDate: {type: Date, required: false}
+		, hours: {type: String, required: false, defaultValue: "0"}
 		, modified: {type: Boolean, required: false, defaultValue: false}
 	};
 

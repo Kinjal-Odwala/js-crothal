@@ -17,6 +17,7 @@ ii.init.register( function fin_app_startup_init() {
 		, yearId: {type: Number, required: false, defaultValue: 0}
 		, fiscalYear: {type: String, required: false, defaultValue: "0"}
 		, currentDate: {type: String, required: false, defaultValue: ""}
+		, WeekStartDate: {type: String, required: false, defaultValue: ""}
 	}
 	
 	fin.app.systemVariableArgs = {

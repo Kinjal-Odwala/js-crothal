@@ -166,6 +166,10 @@
 	margin: 10px 10px 0px 10px;
 }
 
+#hoursBodyColumn {
+	text-align: right;
+}
+
 #backgroundPopup {
 	position: fixed; 
 	top: 0; 
