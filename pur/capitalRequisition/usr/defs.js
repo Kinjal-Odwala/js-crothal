@@ -95,7 +95,9 @@ ii.init.register( function() {
 		, requestorEmail: {type: String, required: false, defaultValue: ""}
 		, requestedDate: {type: String, required: false, defaultValue: ""}
 		, deliveryDate: {type: String, required: false, defaultValue: ""}
+		, projectNumber: {type: String, required: false, defaultValue: ""}
 		, vendorTitle: {type: String, required: false, defaultValue: ""}
+		, vendorNumber: {type: String, required: false, defaultValue: ""}
 		, vendorAddressLine1: {type: String, required: false, defaultValue: ""}
 		, vendorAddressLine2: {type: String, required: false, defaultValue: ""}
 		, vendorCity: {type: String, required: false, defaultValue: ""}
@@ -109,7 +111,10 @@ ii.init.register( function() {
 		, businessType: {type: String, required: false, defaultValue: ""}
 		, budgeting: {type: String, required: false, defaultValue: ""}
 		, chargeToPeriod: {type: String, required: false, defaultValue: ""}
-		, valid: {type: Boolean, required: false, defaultValue: true}		
+		, valid: {type: Boolean, required: false, defaultValue: true}
+		, taxPercent: {type: String, required: false, defaultValue: ""}
+		, taxAmount: {type: String, required: false, defaultValue: ""}
+		, freight: {type: String, required: false, defaultValue: ""}		
 	};
 	
 	fin.pur.poCapitalRequisition.poCapitalRequisitionItemArgs = {

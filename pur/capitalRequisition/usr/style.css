@@ -61,6 +61,31 @@
 	padding-left: 10px;
 }
 
+.labelTextAreaSmall {
+	float: left;
+	width: 90px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	text-align: left;
+	padding-right: 5px;
+	height: 27px;
+	padding-left: 5px;
+}
+
+.labelTextAreaMedium {
+	float: left;
+	width: 105px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	text-align: left;
+	padding-right: 10px;
+	height: 27px;
+	padding-left: 10px;
+}
+
+
 .labelRequisitionNumber {
 	float: left;
 	width: 160px;
@@ -95,6 +120,18 @@
 	margin-bottom: 1px;	
 }
 
+.inputTextAreaSmall {
+	float: left;
+	width: 102px;
+	height: 30px;	
+}
+
+.inputTextAreaMedium {
+	float: left;
+	width: 109px;
+	height: 30px;	
+}
+
 .labelTextUpload {
 	float: left;
 	width: 190px;
@@ -122,6 +159,29 @@
 .borderVertical {
     width: 1px;
     background-color: #adaaad;
+}
+
+.iiGridHeaderTotalColumn {
+	-moz-border-bottom-colors: none;
+	-moz-border-left-colors: none;
+	-moz-border-right-colors: none;
+	-moz-border-top-colors: none;
+	background-color: white;
+	border-color: #aaaaaa -moz-use-text-color #aaaaaa #aaaaaa;
+	border-image: none;
+	border-style: solid none solid solid;
+	border-width: 0px medium 0px 0px;
+	color: #2c2f50;
+	float: left;
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	width:100%;
+	padding-left: 0;
+	padding-right: 0;
+	padding-top: 3px;
+	text-align: right;
+	text-transform: uppercase;
 }
 
 #InputTextStatus {
@@ -154,6 +214,22 @@
 	
 #contentAreasContainerLeft {
 	float: left;
+	margin-right: 20px;
+}
+
+#itemContainerLeft {
+	float: left;
+	position: relative;
+	vertical-align: top;
+	width: 58%;	
+	margin-right: 20px;
+}
+
+#itemContainerRight {
+	float: left;
+	position: relative;
+	vertical-align: top;
+	width: 38%;
 	margin-right: 20px;
 }
 

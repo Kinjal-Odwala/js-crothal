@@ -30,6 +30,7 @@ ii.Class({
 				
 			me.poCapitalRequisitionId = 0;
 			me.vendorId = 0;
+			me.vendorNumber = "";
 			me.accountId = 0;
 			me.catalogId = 0;
 			me.lastSelectedRowIndex = -1;		
@@ -37,6 +38,8 @@ ii.Class({
 			me.users = [];
 			me.wizardCount = 0;
 			me.loadCount = 0;
+			me.subTotal = 0;
+			me.total = 0;
 			me.fileName = "";
 			me.glAccounts = [];
 			me.action = "POCapitalRequisition";
@@ -146,8 +149,8 @@ ii.Class({
 				return;				
 			
 			me.capitalRequisitionGrid.setHeight($(window).height() - 145);
-			me.itemGrid.setHeight($(window).height() - 265);
-			me.itemReadOnlyGrid.setHeight($(window).height() - 200);
+			me.itemGrid.setHeight($(window).height() - 380);
+			me.itemReadOnlyGrid.setHeight($(window).height() - 320);
 			me.documentGrid.setHeight(100);
 			$("#popupContact").height($(window).height() - 110);
 			$("#GeneralInfo").height($(window).height() - 210);
@@ -245,8 +248,7 @@ ii.Class({
                 text: "<span>&nbsp;&nbsp;JDE Entry&nbsp;&nbsp;</span>",
                 clickFunction: function() { me.actionJDEEntryItem(); },
                 hasHotState: true
-            });
-			
+            });			
 			
 			me.anchorNext = new ui.ctl.buttons.Sizeable({
 				id: "AnchorNext",
@@ -394,6 +396,24 @@ ii.Class({
 					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
 						this.setInvalid("Please enter valid date.");
 				});
+			
+			me.projectNumber = new ui.ctl.Input.Text({
+				id: "ProjectNumber",
+				maxLength: 16,
+				changeFunction: function() { me.modified(); }
+			});
+			
+			me.projectNumber.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation( function( isFinal, dataMap ) {
+
+				var enteredText = me.projectNumber.getValue();
+				
+				if (enteredText == "") return;
+				
+				if (/^[0-9]+(\.[0-9]+)?$/.test(enteredText) == false)
+					this.setInvalid("Please enter valid Project #.");
+			});
 				
 			me.vendorName = new ui.ctl.Input.DropDown.Filtered({
 		        id: "VendorName",
@@ -563,7 +583,7 @@ ii.Class({
 				createNewFunction: fin.pur.poCapitalRequisition.Item,
 				selectFunction: function(index){
 					if (me.itemGrid.rows[index].getElement("rowNumber").innerHTML == "Add") 
-						me.itemGrid.rows[index].getElement("itemSelect").innerHTML = "<input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true;\"  checked=\"true\" />";
+						me.itemGrid.rows[index].getElement("itemSelect").innerHTML = "<input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poCapitalRequisitionUi.calculateTotal(this);\"  checked=\"true\" />";
 				}			
 			});
 			
@@ -627,12 +647,8 @@ ii.Class({
 		        id: "Quantity",
 		        maxLength: 10,
 				appendToId: "ItemGridControlHolder",
-				changeFunction: function() { me.modified(); }
+				changeFunction: function() { me.modified(); me.calculateExtendedPrice(); }
 		    });
-			
-			me.quantity.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
 			
 			me.quantity.makeEnterTab()
 				.setValidationMaster(me.validator)
@@ -656,7 +672,7 @@ ii.Class({
 		        id: "Price",
 				maxLength: 18,
 				appendToId: "ItemGridControlHolder",
-				changeFunction: function() { me.modified(); }
+				changeFunction: function() { me.modified(); me.calculateExtendedPrice(); }
 		    });
 			
 			me.price.makeEnterTab()
@@ -677,20 +693,78 @@ ii.Class({
 					this.setInvalid("Please enter valid Price.");
 			});
 			
+			me.taxPercent = new ui.ctl.Input.Text({
+		        id: "TaxPercent",
+				maxLength: 18,
+				changeFunction: function() { me.modified(); me.calculateTotal();}
+		    });
+		    
+		    me.taxPercent.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation( function( isFinal, dataMap ) {
+
+				var enteredText = me.taxPercent.getValue();
+				
+				if (enteredText == "") return;
+				
+				if (/^[0-9]+(\.[0-9]+)?$/.test(enteredText) == false)
+					this.setInvalid("Please enter valid Tax %.");
+			});
+		    
+			me.taxAmount = new ui.ctl.Input.Text({
+		        id: "TaxAmount",
+				maxLength: 18,
+				changeFunction: function() { me.modified(); me.calculateTotalByTax(); me.taxPercent.setValue(""); }
+		    });
+		    
+		    me.taxAmount.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation( function( isFinal, dataMap ) {
+
+				var enteredText = me.taxAmount.getValue();
+				
+				if (enteredText == "") return;
+				
+				if (/^[0-9]+(\.[0-9]+)?$/.test(enteredText) == false)
+					this.setInvalid("Please enter valid Tax.");
+			});
+		    
+		    me.freight = new ui.ctl.Input.Text({
+		        id: "Freight",
+				maxLength: 18,
+				changeFunction: function() { me.modified(); me.calculateTotal(); }
+		    });
+		    
+		    me.freight.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation( function( isFinal, dataMap ) {
+
+				var enteredText = me.freight.getValue();
+				
+				if (enteredText == "") return;
+				
+				if (/^[0-9]+(\.[0-9]+)?$/.test(enteredText) == false)
+					this.setInvalid("Please enter valid Freight.");
+			});
+			
 			me.itemGrid.addColumn("itemSelect", "itemSelect", "", "", 30, function(data) {
 				var index = me.itemGrid.rows.length - 1;
 				if (me.itemGrid.data[index].itemSelect)
-                	return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true;\" checked=\"true\" /></center>";
+                	return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poCapitalRequisitionUi.calculateTotal(this);\" checked=\"true\" /></center>";
 				else
-				    return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true;\" /></center>";
+				    return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poCapitalRequisitionUi.calculateTotal(this);\" /></center>";
             });
 			me.itemGrid.addColumn("number", "number", "Item Number", "Item Number", 120, null, me.itemNumber);
 			me.itemGrid.addColumn("description", "description", "Item Description", "Item Description", null, null, me.itemDescription);			
-			me.itemGrid.addColumn("account", "account", "GL Account No", "GL Account No", 120, function( account ) { return account.code + " - " + account.name; }, me.account);
-			me.itemGrid.addColumn("unit", "unit", "UOM", "UOM", 100, null, me.uom);
-			me.itemGrid.addColumn("manufactured", "manufactured", "MFG", "Manufactured", 120, null, me.manufactured);
-			me.itemGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 100, null, me.quantity);
-			me.itemGrid.addColumn("price", "price", "Price", "Price", 100, null, me.price);			
+			me.itemGrid.addColumn("account", "account", "GL Account No", "GL Account No", 180, function( account ) { return account.code + " - " + account.name; }, me.account);
+			me.itemGrid.addColumn("unit", "unit", "UOM", "UOM", 90, null, me.uom);
+			me.itemGrid.addColumn("manufactured", "manufactured", "MFG", "Manufactured", 90, null, me.manufactured);
+			me.itemGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 120, null, me.quantity);
+			me.itemGrid.addColumn("price", "price", "Price", "Price", 90, null, me.price);
+			me.itemGrid.addColumn("extendedPrice", "", "Extended Price", "Extended Price", 120, function(data) {				
+				if (!isNaN(data.quantity) && data.price != undefined)
+					return ui.cmn.text.money.format(data.quantity * data.price);
+            });				
 			me.itemGrid.capColumns();			
 			
 			me.itemReadOnlyGrid = new ui.ctl.Grid({
@@ -700,11 +774,15 @@ ii.Class({
 			
 			me.itemReadOnlyGrid.addColumn("number", "number", "Item Number", "Item Number", 120);
 			me.itemReadOnlyGrid.addColumn("description", "description", "Item Description", "Item Description", null);			
-			me.itemReadOnlyGrid.addColumn("account", "account", "GL Account No", "GL Account No", 120, function(account) { return account.code + " - " + account.name;	});
-			me.itemReadOnlyGrid.addColumn("unit", "unit", "UOM", "UOM", 100);
-			me.itemReadOnlyGrid.addColumn("manufactured", "manufactured", "Manufactured", "Manufactured", 120);
-			me.itemReadOnlyGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 100);
-			me.itemReadOnlyGrid.addColumn("price", "price", "Price", "Price", 100);
+			me.itemReadOnlyGrid.addColumn("account", "account", "GL Account No", "GL Account No", 180, function(account) { return account.code + " - " + account.name;	});
+			me.itemReadOnlyGrid.addColumn("unit", "unit", "UOM", "UOM", 90);
+			me.itemReadOnlyGrid.addColumn("manufactured", "manufactured", "MFG", "Manufactured", 90);
+			me.itemReadOnlyGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 120);
+			me.itemReadOnlyGrid.addColumn("price", "price", "Price", "Price", 90);
+			me.itemReadOnlyGrid.addColumn("extendedPrice", "", "Extended Price", "Extended Price", 120, function(data) {				
+				if (!isNaN(data.quantity) && data.price != undefined)
+					return ui.cmn.text.money.format(data.quantity * data.price);
+            });
 			me.itemReadOnlyGrid.capColumns();
 			
 			me.company = new ui.ctl.Input.Text({
@@ -1053,6 +1131,7 @@ ii.Class({
 			me.requestorEmail.resizeText();
 			me.requestedDate.resizeText();
 			me.deliveryDate.resizeText();
+			me.projectNumber.resizeText();
 			me.vendorName.resizeText();
 			me.vendorAddress1.resizeText();
 			me.vendorAddress2.resizeText();
@@ -1064,6 +1143,9 @@ ii.Class({
 			me.reasonForRequest.resizeText();
 			me.vendor.resizeText();
 			me.searchItem.resizeText();
+			me.taxPercent.resizeText();
+			me.taxAmount.resizeText();
+			me.freight.resizeText();
 			me.company.resizeText();
 			me.shippingJob.resizeText();
 			me.shippingAddress1.resizeText();
@@ -1072,7 +1154,7 @@ ii.Class({
 			me.shippingState.resizeText();
 			me.shippingZip.resizeText();
 			me.shippingPhone.resizeText();
-			me.shippingFax.resizeText();
+			me.shippingFax.resizeText();			
 			me.resize();
 		},
 		
@@ -1082,7 +1164,8 @@ ii.Class({
 			me.requestorName.text.readOnly = readOnly;
 			me.requestorEmail.text.readOnly = readOnly;
 			me.requestedDate.text.readOnly = readOnly;
-			me.deliveryDate.text.readOnly = readOnly;			
+			me.deliveryDate.text.readOnly = readOnly;
+			me.projectNumber.text.readOnly = readOnly;			
 			me.vendorName.text.readOnly = readOnly;
 			me.vendorAddress1.text.readOnly = readOnly;
 			me.vendorAddress2.text.readOnly = readOnly;
@@ -1093,6 +1176,9 @@ ii.Class({
 			me.vendorPhone.text.readOnly = readOnly;
 			me.vendorEmail.text.readOnly = readOnly;
 			me.reasonForRequest.text.readOnly = readOnly;
+			me.taxPercent.text.readOnly = readOnly;
+			me.taxAmount.text.readOnly = readOnly;
+			me.freight.text.readOnly = readOnly;
 			me.shippingJob.text.readOnly = readOnly;
 			me.shippingAddress1.text.readOnly = readOnly;
 			me.shippingAddress2.text.readOnly = readOnly;
@@ -1100,7 +1186,7 @@ ii.Class({
 			me.shippingState.text.readOnly = readOnly;
 			me.shippingZip.text.readOnly = readOnly;
 			me.shippingPhone.text.readOnly = readOnly;
-			me.shippingFax.text.readOnly = readOnly;
+			me.shippingFax.text.readOnly = readOnly;			
 			
 			$("#FundingCapital")[0].disabled = readOnly;
 			$("#FundingDirectReimbursement")[0].disabled = readOnly;
@@ -1141,6 +1227,108 @@ ii.Class({
 			var year = currentTime.getFullYear();
 			
 			return month + "/" + day + "/" + year;
+		},
+		
+		calculateTotal: function(object) {
+			var me = this;
+			var iIndex = me.itemGrid.activeRowIndex;
+			var quantity = me.quantity.getValue();
+			var price = me.price.getValue();
+			
+			var freight = me.freight.getValue() == "" ? 0 : me.freight.getValue();
+			me.subTotal = 0;
+			me.total = 0;
+			
+			for (var index = 0; index < me.itemGrid.data.length; index++) {
+				if ($("#selectInputCheck" + index)[0].checked) {
+					if (iIndex == index && quantity != "" && !isNaN(quantity) && price != undefined)
+						me.subTotal = me.subTotal + (quantity * price)								
+					else if (me.itemGrid.data[index].quantity != "" && !isNaN(me.itemGrid.data[index].quantity) && me.itemGrid.data[index].price != undefined)
+						me.subTotal = me.subTotal + (me.itemGrid.data[index].quantity * me.itemGrid.data[index].price)						
+				}				
+			}
+			
+			if(me.itemGrid.activeRowIndex == me.itemGrid.data.length) {
+				if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked) {
+					if (quantity != "" && !isNaN(quantity) && price != undefined) 
+						me.subTotal = me.subTotal + quantity * price;
+				}
+			}
+			
+			if(me.subTotal != 0 && me.taxPercent.getValue() != "")
+				me.taxAmount.setValue((me.subTotal * me.taxPercent.getValue()) / 100);
+			
+			var tax = me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue();
+				
+			if (me.subTotal == 0)
+				me.total = 0;
+			else
+				me.total = me.subTotal + parseFloat(tax) + parseFloat(freight);
+				
+			$("#spnSubTotal").html(me.subTotal.toFixed(2));
+			$("#spnTotal").html(me.total.toFixed(2));
+		},
+		
+		calculateExtendedPrice: function() {
+			var me = this;
+			var iIndex = me.itemGrid.activeRowIndex;
+			var quantity = me.quantity.getValue();
+			var price = me.price.getValue();
+			var extendedPrice = "0.00";
+			
+			var freight = me.freight.getValue() == "" ? 0 : me.freight.getValue();
+			me.subTotal = 0;
+			me.total = 0;
+
+			if (quantity != "" && !isNaN(quantity) && price != undefined)
+				extendedPrice = ui.cmn.text.money.format(quantity * price);
+			else
+				extendedPrice = "0.00";			
+			
+			$(me.itemGrid.rows[iIndex].getElement("extendedPrice")).text(extendedPrice);
+			
+			for (var index = 0; index < me.itemGrid.data.length; index++) {
+				if ($("#selectInputCheck" + index)[0].checked) {
+					if (iIndex == index && quantity != "" && !isNaN(quantity) && price != undefined)
+						me.subTotal = me.subTotal + (quantity * price)								
+					else if (me.itemGrid.data[index].quantity != "" && !isNaN(me.itemGrid.data[index].quantity) && me.itemGrid.data[index].price != undefined)
+						me.subTotal = me.subTotal + (me.itemGrid.data[index].quantity * me.itemGrid.data[index].price)
+				}
+			}
+			
+			if(me.itemGrid.activeRowIndex == me.itemGrid.data.length) {
+				if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked) {
+					if (quantity != "" && !isNaN(quantity) && price != undefined) 
+						me.subTotal = me.subTotal + quantity * price;
+				}
+			}
+			
+			if(me.subTotal != 0 && me.taxPercent.getValue() != "")
+				me.taxAmount.setValue((me.subTotal * me.taxPercent.getValue()) / 100);
+			
+			var tax = me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue();
+			
+			if (me.subTotal == 0)
+				me.total = 0;
+			else
+				me.total = me.subTotal + parseFloat(tax) + parseFloat(freight);
+								
+			$("#spnSubTotal").html(me.subTotal.toFixed(2));
+			$("#spnTotal").html(me.total.toFixed(2));
+		},
+		
+		calculateTotalByTax: function() {
+			var me = this;
+			var tax = me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue();
+			var freight = me.freight.getValue() == "" ? 0 : me.freight.getValue();
+			
+			if (me.subTotal == 0)
+				me.total = 0;
+			else
+				me.total = me.subTotal + parseFloat(tax) + parseFloat(freight);
+								
+			$("#spnSubTotal").html(me.subTotal.toFixed(2));
+			$("#spnTotal").html(me.total.toFixed(2));
 		},
 		
 		statusesLoaded: function() {
@@ -1270,6 +1458,9 @@ ii.Class({
 		},
 		
 		poItemsLoaded: function(me, activeId) {
+			var tax = me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue();
+			var freight = me.freight.getValue() == "" ? 0 : me.freight.getValue();
+			me.subTotal = 0;
 
 			for (var index = 0; index < me.items.length; index++) {
 				var found = false;
@@ -1290,6 +1481,16 @@ ii.Class({
 		
 			me.itemGrid.setData(me.poCapitalRequisitionItems);
 			me.itemReadOnlyGrid.setData(me.poCapitalRequisitionItems);
+			
+			for (var index = 0; index < me.itemGrid.data.length; index++) {
+				if ($("#selectInputCheck" + index)[0].checked) {
+					if (me.itemGrid.data[index].quantity != "" && !isNaN(me.itemGrid.data[index].quantity) && me.itemGrid.data[index].price != undefined)
+						me.subTotal = me.subTotal + (me.itemGrid.data[index].quantity * me.itemGrid.data[index].price)
+				}
+			}
+			
+			$("#spnSubTotal").html(me.subTotal.toFixed(2));
+			$("#spnTotal").html(me.subTotal + parseFloat(tax) + parseFloat(freight));
 			$("#popupLoading").hide();
 		},
 		
@@ -1327,6 +1528,7 @@ ii.Class({
 				me.requestorEmail.setValue(item.requestorEmail);
 				me.requestedDate.setValue(item.requestedDate);
 				me.deliveryDate.setValue(item.deliveryDate);
+				me.projectNumber.setValue(item.projectNumber);
 				me.vendorName.lastBlurValue = item.vendorTitle;
 				$("#VendorNameText").val(item.vendorTitle);
 				me.vendorAddress1.setValue(item.vendorAddressLine1);
@@ -1361,6 +1563,9 @@ ii.Class({
 					$('#BudgetingUnbudgeted').attr('checked', true);
 				
 				me.vendor.setValue(item.vendorTitle);
+				me.taxPercent.setValue(item.taxPercent == 0 ? "" : item.taxPercent);
+				me.taxAmount.setValue(item.taxAmount == 0 ? "" : item.taxAmount);
+				me.freight.setValue(item.freight == 0 ? "" : item.freight);
 				
 				itemIndex = ii.ajax.util.findIndexById(item.houseCode.toString(), me.houseCodes);
 				if (itemIndex != undefined) 
@@ -1437,7 +1642,22 @@ ii.Class({
 		},
 		
 		poCapitalRequisitonItemsLoaded: function(me, activeId) {
-
+			var tax = me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue();
+			var freight = me.freight.getValue() == "" ? 0 : me.freight.getValue();
+			me.subTotal = 0;
+			
+			if (me.poCapitalRequisitionItems.length > 0) {
+				
+				for (var iIndex = 0; iIndex < me.poCapitalRequisitionItems.length; iIndex++) {
+					if (me.poCapitalRequisitionItems[iIndex].quantity != "" && !isNaN(me.poCapitalRequisitionItems[iIndex].quantity) && me.poCapitalRequisitionItems[iIndex].price != undefined) {
+						me.subTotal = me.subTotal + (me.poCapitalRequisitionItems[iIndex].quantity * me.poCapitalRequisitionItems[iIndex].price)
+					}
+				}
+				
+				$("#spnSubTotal").html(me.subTotal.toFixed(2));
+				$("#spnTotal").html(me.subTotal + parseFloat(tax) + parseFloat(freight));
+			}
+			
 			me.itemGrid.setData(me.poCapitalRequisitionItems);
 			me.itemReadOnlyGrid.setData(me.poCapitalRequisitionItems);
 			me.checkLoadCount();
@@ -1465,6 +1685,7 @@ ii.Class({
 				}
 				else {
 					me.vendorId = 0;
+					me.vendorNumber = "";
 					me.vendor.setValue("");
 					me.vendorAddress1.setValue("");
 					me.vendorAddress2.setValue("");
@@ -1495,6 +1716,7 @@ ii.Class({
 
 			if (index >= 0) {
 				me.vendorId = me.vendors[index].number;
+				me.vendorNumber = me.vendors[index].vendorNumber;
 				me.vendor.setValue(me.vendors[index].name);
 				me.vendorAddress1.setValue(me.vendors[index].addressLine1);
 				me.vendorAddress2.setValue(me.vendors[index].addressLine2);
@@ -1520,6 +1742,7 @@ ii.Class({
 			}
 			else {
 				me.vendorId = 0;
+				me.vendorNumber = "";
 				me.vendor.setValue("");
 				me.vendorAddress1.setValue("");
 				me.vendorAddress2.setValue("");
@@ -1606,8 +1829,7 @@ ii.Class({
 					|| !me.vendorZip.valid
 					|| !me.vendorContactName.valid
 					|| !me.vendorPhone.valid
-					|| !me.vendorEmail.valid
-					|| !me.reasonForRequest.valid
+					|| !me.vendorEmail.valid					
 					) {
 					alert("In order to continue, the errors on the page must be corrected.");	
 					return false;
@@ -1627,19 +1849,21 @@ ii.Class({
 				else
 					return true;
 			}
-			else if (me.wizardCount == 2) {
-				if (me.itemGrid.activeRowIndex == -1)
-				 	return true;
-					
-				valid = me.validator.queryValidity(true);
+			else if (me.wizardCount == 2) {					
+				//valid = me.validator.queryValidity(true);
 				
-				if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked && (!me.itemNumber.valid
+				if (me.itemGrid.activeRowIndex != -1 && $("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked && (!me.itemNumber.valid
 					|| !me.itemDescription.valid
 					|| !me.account.valid
 					|| !me.price.valid
 					|| !me.quantity.valid
-					|| !me.uom.valid)
+					|| !me.uom.valid
+					)
 				) {
+					alert("In order to continue, the errors on the page must be corrected.");
+					return false;
+				}
+				else if (!me.taxPercent.valid || !me.taxAmount.valid || !me.freight.valid) {
 					alert("In order to continue, the errors on the page must be corrected.");
 					return false;
 				}
@@ -1703,7 +1927,7 @@ ii.Class({
 
 		actionNewItem: function() {
 			var me = this;
-
+			
 			if (parent.fin.appUI.houseCodeId == 0) {
 				alert("Please select the House Code before adding the new PO Capital Requisition.");
 				return true;
@@ -1722,6 +1946,7 @@ ii.Class({
 			me.requestorEmail.setValue(me.users[0].email);
 			me.requestedDate.setValue(me.currentDate());
 			me.deliveryDate.setValue("");
+			me.projectNumber.setValue("");
 			me.vendorStore.reset();
 			me.vendorName.reset();
 			me.vendorName.select(-1, me.vendorName.focused);
@@ -1733,7 +1958,7 @@ ii.Class({
 			me.vendorContactName.setValue("");
 			me.vendorPhone.setValue("");
 			me.vendorEmail.setValue("");
-			me.reasonForRequest.setValue("");
+			me.reasonForRequest.setValue("");			
 			$('input[name="Funding"]').attr('checked', false);
 			$('input[name="BusinessType"]').attr('checked', false);
 			$('input[name="Budgeting"]').attr('checked', false);
@@ -1744,6 +1969,9 @@ ii.Class({
 			me.category.setData([]);
 			me.catalog.reset();
 			me.catalog.setData([]);
+			me.taxPercent.setValue("");
+			me.taxAmount.setValue("");
+			me.freight.setValue("");
 			me.company.setValue(parent.fin.appUI.houseCodeTitle);
 			me.shippingAddress1.setValue(me.houseCodeDetails[0].shippingAddress1);
 			me.shippingAddress2.setValue(me.houseCodeDetails[0].shippingAddress2);
@@ -1764,10 +1992,13 @@ ii.Class({
 			$("#imgAdd").show();
 			$("#imgEdit").show();
 			$("#imgRemove").show();
+			$("#spnSubTotal").html("");
+			$("#spnTotal").html("");
 			loadPopup();
 			me.poCapitalRequisitionItemStore.reset();
 			me.poCapitalRequisitionDocumentStore.reset();
 			me.poCapitalRequisitionId = 0;
+			me.subTotal = 0;			
 			me.status = "NewPOCapitalRequisition";
 			me.wizardCount = 1;			
 			me.modified(false);
@@ -1777,10 +2008,13 @@ ii.Class({
 		
 		actionEditItem: function() {
 			var me = this;
+			var tax = me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue();
+			var freight = me.freight.getValue() == "" ? 0 : me.freight.getValue();
 			
 			if (me.capitalRequisitionGrid.activeRowIndex == -1)
 				return true;
-
+			
+			me.subTotal = 0;
 			loadPopup();
 			$("#popupMessageToUser").text("Loading");
 			$("#popupLoading").show();
@@ -1792,6 +2026,15 @@ ii.Class({
 
 			me.poCapitalRequisitionId = me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].id;
 			me.itemGrid.setData(me.poCapitalRequisitionItems);
+			
+			for (var iIndex = 0; iIndex < me.poCapitalRequisitionItems.length; iIndex++) {
+					if (me.poCapitalRequisitionItems[iIndex].quantity != "" && !isNaN(me.poCapitalRequisitionItems[iIndex].quantity) && me.poCapitalRequisitionItems[iIndex].price != undefined && me.poCapitalRequisitionItems[iIndex].itemSelect) {
+						me.subTotal = me.subTotal + (me.poCapitalRequisitionItems[iIndex].quantity * me.poCapitalRequisitionItems[iIndex].price)
+				}
+			}
+			
+			$("#spnSubTotal").html(me.subTotal.toFixed(2));
+			$("#spnTotal").html(me.subTotal + parseFloat(tax) + parseFloat(freight));
 			me.status = "EditPOCapitalRequisition";			
 			me.wizardCount = 1;
 			me.actionShowWizard();
@@ -2093,7 +2336,9 @@ ii.Class({
 					, me.requestorEmail.getValue()
 					, me.requestedDate.lastBlurValue
 					, me.deliveryDate.lastBlurValue
+					, me.projectNumber.getValue()
 					, me.vendorName.lastBlurValue
+					, me.vendorNumber
 					, me.vendorAddress1.getValue()
 					, me.vendorAddress2.getValue()
 					, me.vendorCity.getValue()
@@ -2108,6 +2353,9 @@ ii.Class({
 					, $("input[name='Budgeting']:checked").val()
 					, ""
 					, "false"
+					, (me.taxPercent.getValue() == "" ? 0 : me.taxPercent.getValue()) 
+					, (me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue())
+					, (me.freight.getValue() == "" ? 0 : me.freight.getValue())
 					);
 
 				$("#messageToUser").text("Saving");
@@ -2124,7 +2372,7 @@ ii.Class({
 				item = me.capitalRequisitionGrid.data[index];
 			}
 					
-			var xml = me.saveXmlBuildPORequisition(item);
+			var xml = me.saveXmlBuildPOCapitalRequisition(item);
 			
 			if (xml == "") 
 				return;
@@ -2146,7 +2394,7 @@ ii.Class({
 			return true;
 		},
 		
-		saveXmlBuildPORequisition: function() {
+		saveXmlBuildPOCapitalRequisition: function() {
 			var args = ii.args(arguments,{
 				item: {type: fin.pur.poCapitalRequisition.POCapitalRequisition}
 			});			
@@ -2163,8 +2411,10 @@ ii.Class({
 				xml += ' requestorName="' + ui.cmn.text.xml.encode(item.requestorName) + '"';
 				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
 				xml += ' requestedDate="' + item.requestedDate + '"';
+				xml += ' projectNumber="' + item.projectNumber + '"';
 				xml += ' deliveryDate="' + item.deliveryDate + '"';
 				xml += ' vendorTitle="' + ui.cmn.text.xml.encode(item.vendorTitle) + '"';
+				xml += ' vendorNumber="' + ui.cmn.text.xml.encode(item.vendorNumber) + '"';
 				xml += ' vendorAddressLine1="' + ui.cmn.text.xml.encode(item.vendorAddressLine1) + '"';
 				xml += ' vendorAddressLine2="' + ui.cmn.text.xml.encode(item.vendorAddressLine2) + '"';
 				xml += ' vendorCity="' + ui.cmn.text.xml.encode(item.vendorCity) + '"';
@@ -2185,6 +2435,9 @@ ii.Class({
 				xml += ' shipToZip="' + item.shipToZip + '"';
 				xml += ' shipToPhone="' + fin.cmn.text.mask.phone(item.shipToPhone, true) + '"';
 				xml += ' shipToFax="' + fin.cmn.text.mask.phone(item.shipToFax, true) + '"';
+				xml += ' taxPercent="' + item.taxPercent + '"';
+				xml += ' taxAmount="' + item.taxAmount + '"';
+				xml += ' freight="' + item.freight + '"';
 				xml += '/>';
 
 				for (var index = me.poCapitalRequisitionItems.length - 1; index >= 0; index--) {
@@ -2241,7 +2494,9 @@ ii.Class({
 				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
 				xml += ' requestedDate="' + item.requestedDate + '"';
 				xml += ' deliveryDate="' + item.deliveryDate + '"';
+				xml += ' projectNumber="' + item.projectNumber + '"';
 				xml += ' vendorTitle="' + ui.cmn.text.xml.encode(item.vendorTitle) + '"';
+				xml += ' vendorNumber="' + ui.cmn.text.xml.encode(item.vendorNumber) + '"';
 				xml += ' vendorAddressLine1="' + ui.cmn.text.xml.encode(item.vendorAddressLine1) + '"';
 				xml += ' vendorAddressLine2="' + ui.cmn.text.xml.encode(item.vendorAddressLine2) + '"';
 				xml += ' vendorCity="' + ui.cmn.text.xml.encode(item.vendorCity) + '"';
@@ -2257,6 +2512,11 @@ ii.Class({
 				xml += ' chargeToPeriod=""';
 				xml += ' action="' + me.status + '"';
 				xml += ' jdeCompleted="0"';
+				xml += ' subTotal="' + me.subTotal.toFixed(2) + '"';
+				xml += ' taxPercent="' + item.taxPercent + '"';
+				xml += ' taxAmount="' + item.taxAmount + '"';
+				xml += ' freight="' + item.freight + '"';
+				xml += ' total="' + $("#spnTotal").html() + '"';
 				xml += '/>';
 			}
 			else if (me.status == "DeleteDocument") {
@@ -2275,7 +2535,10 @@ ii.Class({
 				xml += '<purPOCapitalRequisitionToPurchaseOrder';
 				xml += ' id="' + me.poCapitalRequisitionId + '"';
 				xml += ' houseCodeId="' + item.houseCode + '"';
+				xml += ' requisitionNumber="' +  item.requisitionNumber + '"';
 				xml += ' vendorTitle="' +  ui.cmn.text.xml.encode(item.vendorTitle) + '"';
+				xml += ' vendorNumber="' + item.vendorNumber + '"';
+				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
 				xml += '/>';
 			}
 			else if (me.status == "JDEEntry") {

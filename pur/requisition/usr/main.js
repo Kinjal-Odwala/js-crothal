@@ -1898,12 +1898,12 @@ ii.Class({
 			$("#imgAdd").show();
 			$("#imgEdit").show();
 			$("#imgRemove").show();
+			$("#spnTotal").html(me.total.toFixed(2));
 			loadPopup();
 			me.poRequisitionDetailStore.reset();
 			me.poRequisitionDocumentStore.reset();
 			me.poRequisitionId = 0;
-			me.total = 0;
-			$("#spnTotal").html(me.total.toFixed(2));
+			me.total = 0;			
 			me.status = "NewPORequisition";
 			me.wizardCount = 1;			
 			me.modified(false);
@@ -2421,7 +2421,9 @@ ii.Class({
 				xml += '<purPORequisitionToPurchaseOrder';
 				xml += ' id="' + me.poRequisitionId + '"';
 				xml += ' houseCodeId="' + item.houseCode + '"';
+				xml += ' requisitionNumber="' +  item.requisitionNumber + '"';
 				xml += ' vendorTitle="' +  ui.cmn.text.xml.encode(item.vendorTitle) + '"';
+				xml += ' vendorNumber="' +  item.vendorNumber + '"';
 				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
 				xml += '/>';
 			}
