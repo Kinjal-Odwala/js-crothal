@@ -153,11 +153,16 @@ ii.Class({
 						break;
 						
 					case "HouseCodeTransfer": 
-							me.actionType = "HouseCodeTransfer"
+							me.actionType = "HouseCodeTransfer";
+							me.employeeSSN.setValue("");
 						break;
 
 					case "HouseCodeTo": 
 							me.actionType = "EmpToHouseCode";
+							me.houseCodeToTransfer.setValue('');
+							me.ssn.setValue('');
+							me.employeeGrid.body.deselectAll();
+							me.employeeGrid.setData([]);
 						break;
 				}
 
@@ -3017,6 +3022,14 @@ ii.Class({
 						return;
 					}
 				}
+				else if (me.actionType == "HouseCodeTransfer") {
+					if (me.employees[0].houseCode != parent.fin.appUI.houseCodeBrief) {
+						alert("You cannot transfer other House Code Employee into the parent House Code. Please select other SSN.");
+						me.actionCancel();
+						$("#popupLoading").hide();
+						return;
+					}
+				}
 
 				//me.fetchData();
 				me.houseCodeStore.fetch("userId:[user],appUnitBrief:" + me.employees[0].houseCode + ",", me.houseCodeWizardSetup, me);
@@ -3873,6 +3886,10 @@ ii.Class({
 				if (me.actionType == "EmpToHouseCode") {					
 					$("#houseCodeTemplateText").attr('disabled', true);
 					$("#houseCodeTemplateTextDropImage").removeClass("HouseCodeDropDown");
+				}
+				else if (me.actionType == "HouseCodeTransfer") {					
+					$("#houseCodeTemplateText").attr('disabled', false);
+					$("#houseCodeTemplateTextDropImage").addClass("HouseCodeDropDown");
 				}
 				
 				if (me.actionType == "DateModification" && me.wizardCount == 4) {
@@ -5822,8 +5839,8 @@ ii.Class({
 					me.wizardCount = -1;
 			else if (currentSSN != me.previousSSN) {
 				me.previousSSN = currentSSN;
-				if (me.wizardCount != -1) {
-					if (me.actionType == "HouseCodeTransfer" || me.actionType == "EmpToHouseCode" || me.actionType == "DateModification")
+				if (me.wizardCount != -1 && me.actionType != "EmpToHouseCode" ) {
+					if (me.actionType == "HouseCodeTransfer" || me.actionType == "DateModification")
 						me.wizardCount = 3;
 					else
 						me.wizardCount = 0;
