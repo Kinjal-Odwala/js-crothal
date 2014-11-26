@@ -402,18 +402,6 @@ ii.Class({
 				maxLength: 16,
 				changeFunction: function() { me.modified(); }
 			});
-			
-			me.projectNumber.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation( function( isFinal, dataMap ) {
-
-				var enteredText = me.projectNumber.getValue();
-				
-				if (enteredText == "") return;
-				
-				if (/^[0-9]+(\.[0-9]+)?$/.test(enteredText) == false)
-					this.setInvalid("Please enter valid Project #.");
-			});
 				
 			me.vendorName = new ui.ctl.Input.DropDown.Filtered({
 		        id: "VendorName",
@@ -2411,7 +2399,7 @@ ii.Class({
 				xml += ' requestorName="' + ui.cmn.text.xml.encode(item.requestorName) + '"';
 				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
 				xml += ' requestedDate="' + item.requestedDate + '"';
-				xml += ' projectNumber="' + item.projectNumber + '"';
+				xml += ' projectNumber="' + ui.cmn.text.xml.encode(item.projectNumber) + '"';
 				xml += ' deliveryDate="' + item.deliveryDate + '"';
 				xml += ' vendorTitle="' + ui.cmn.text.xml.encode(item.vendorTitle) + '"';
 				xml += ' vendorNumber="' + ui.cmn.text.xml.encode(item.vendorNumber) + '"';
@@ -2494,7 +2482,7 @@ ii.Class({
 				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
 				xml += ' requestedDate="' + item.requestedDate + '"';
 				xml += ' deliveryDate="' + item.deliveryDate + '"';
-				xml += ' projectNumber="' + item.projectNumber + '"';
+				xml += ' projectNumber="' + ui.cmn.text.xml.encode(item.projectNumber) + '"';
 				xml += ' vendorTitle="' + ui.cmn.text.xml.encode(item.vendorTitle) + '"';
 				xml += ' vendorNumber="' + ui.cmn.text.xml.encode(item.vendorNumber) + '"';
 				xml += ' vendorAddressLine1="' + ui.cmn.text.xml.encode(item.vendorAddressLine1) + '"';
