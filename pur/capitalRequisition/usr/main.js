@@ -399,7 +399,7 @@ ii.Class({
 			
 			me.projectNumber = new ui.ctl.Input.Text({
 				id: "ProjectNumber",
-				maxLength: 16,
+				maxLength: 50,
 				changeFunction: function() { me.modified(); }
 			});
 				
@@ -1227,6 +1227,20 @@ ii.Class({
 			me.subTotal = 0;
 			me.total = 0;
 			
+			if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked && (!me.itemNumber.valid
+					|| !me.itemDescription.valid
+					|| !me.account.valid
+					|| !me.price.valid
+					|| !me.quantity.valid
+					|| !me.uom.valid)
+				) {
+					if(object.checked)
+						$("#" + object.id).attr("checked", false);
+					else if(!object.checked)
+						$("#" + object.id).attr("checked", true);
+					return false;
+			}
+			
 			for (var index = 0; index < me.itemGrid.data.length; index++) {
 				if ($("#selectInputCheck" + index)[0].checked) {
 					if (iIndex == index && quantity != "" && !isNaN(quantity) && price != undefined)
@@ -1837,9 +1851,9 @@ ii.Class({
 				else
 					return true;
 			}
-			else if (me.wizardCount == 2) {					
-				//valid = me.validator.queryValidity(true);
-				
+			else if (me.wizardCount == 2) {
+				valid = me.validator.queryValidity(true);
+								
 				if (me.itemGrid.activeRowIndex != -1 && $("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked && (!me.itemNumber.valid
 					|| !me.itemDescription.valid
 					|| !me.account.valid

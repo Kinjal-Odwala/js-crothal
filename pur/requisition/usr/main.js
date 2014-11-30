@@ -534,7 +534,12 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
                 .addValidation( function( isFinal, dataMap ) {                  
                     var enteredText = me.urgencyDate.text.value;
-
+                    
+					if($("input:radio[name='Urgency']:checked").val() == "Not Urgent" || $('input:radio[name="Urgency"]:checked').length == 0) {
+						me.urgencyDate.resetValidation(true);
+						return true;
+					}
+						
                     if (enteredText == "") 
                         return;
                         
@@ -1191,6 +1196,20 @@ ii.Class({
 			var price = me.price.getValue();
 			me.total = 0;
 			
+			if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked && (!me.itemNumber.valid
+					|| !me.itemDescription.valid
+					|| !me.account.valid
+					|| !me.price.valid
+					|| !me.quantity.valid
+					|| !me.uom.valid)
+				) {
+					if(object.checked)
+						$("#" + object.id).attr("checked", false);
+					else if(!object.checked)
+						$("#" + object.id).attr("checked", true);
+					return false;
+			}
+			
 			for (var index = 0; index < me.itemGrid.data.length; index++) {
 				if ($("#selectInputCheck" + index)[0].checked) {
 					if (iIndex == index && quantity != "" && !isNaN(quantity) && price != undefined)
@@ -1728,14 +1747,7 @@ ii.Class({
 				
 				if (me.status == "NewPORequisition" || ($("input:radio[name='Urgency']:checked").val() == "Urgent" && (me.urgencyDate.lastBlurValue == "" || !(ui.cmn.text.validate.generic(me.urgencyDate.lastBlurValue, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))))
 					valid = me.validator.queryValidity(true);
-					
-				if ($("input:radio[name='Urgency']:checked").val() == "Not Urgent" || $('input:radio[name="Urgency"]:checked').length == 0) {
-					var urgencyDate = me.urgencyDate.lastBlurValue;
-                    me.urgencyDate.resetValidation(true);
-					if (urgencyDate == "" || !(ui.cmn.text.validate.generic(urgencyDate, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
-						me.urgencyDate.setValue("");
-                }
-					
+										
 				if (!me.requestorEmail.valid
 					|| !me.requestedDate.valid
 					|| !me.deliveryDate.valid
@@ -1766,7 +1778,7 @@ ii.Class({
 				 	return true;
 					
 				valid = me.validator.queryValidity(true);
-				
+                
 				if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked && (!me.itemNumber.valid
 					|| !me.itemDescription.valid
 					|| !me.account.valid
@@ -1783,7 +1795,7 @@ ii.Class({
 			else if (me.wizardCount == 3) {
 					
 				valid = me.validator.queryValidity(true);
-							
+                			
 				if (!me.requestorEmail.valid
 					|| !me.shippingAddress1.valid
 					|| !me.shippingCity.valid
