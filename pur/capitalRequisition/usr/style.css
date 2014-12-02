@@ -363,7 +363,7 @@
 	padding: 0px 10px 0px 10px;
 }
 
-#priceBodyColumn, #quantityBodyColumn {
+#extendedPriceBodyColumn, #priceBodyColumn, #quantityBodyColumn {
 	text-align: right;	
 }
 
