@@ -1820,7 +1820,10 @@ ii.Class({
 				me.accountStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.categoriesLoaded, me);
 				me.catalogStore.reset();
 				me.catalogStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.catalogsLoaded, me);
-			}			
+			}
+			else
+				$("#popupLoading").hide();
+						
 		},
 		
 		categoriesLoaded: function(me, activeId) {
