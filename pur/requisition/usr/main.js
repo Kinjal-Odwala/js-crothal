@@ -442,11 +442,6 @@ ii.Class({
 			me.vendorState.makeEnterTab()
 				.setValidationMaster( me.validator )
 				.addValidation( ui.ctl.Input.Validation.required )
-				.addValidation( function( isFinal, dataMap ) {
-					
-					if (me.vendorState.indexSelected == -1)
-						this.setInvalid("Please select the correct State.");
-				});
 				
 			me.vendorZip = new ui.ctl.Input.Text({
 		        id: "VendorZip",
@@ -899,6 +894,7 @@ ii.Class({
 
 			me.vendor.text.readOnly = true;
 			me.documentTitle.active = false;
+			me.setTabIndexes();
 		},		
 
 		configureCommunications: function fin_pur_UserInterface_configureCommunications() {
@@ -1093,6 +1089,41 @@ ii.Class({
 			$("#AnchorJDEEntry").hide();
 		},
 
+		setTabIndexes: function() {
+			var me = this;
+
+			me.requestorName.text.tabIndex = 1;
+			me.requestorEmail.text.tabIndex = 2;
+			me.requestedDate.text.tabIndex = 3;
+			me.deliveryDate.text.tabIndex = 4;
+			me.vendorName.text.tabIndex = 5;
+			me.vendorAddress1.text.tabIndex = 6;
+			me.vendorAddress2.text.tabIndex = 7;
+			me.vendorCity.text.tabIndex = 8;
+			me.vendorState.text.tabIndex = 9;
+			me.vendorZip.text.tabIndex = 10;
+			me.vendorContactName.text.tabIndex = 11;
+			me.vendorPhone.text.tabIndex = 12;
+			me.vendorEmail.text.tabIndex = 13;
+			me.reasonForRequest.text.tabIndex = 14;
+			//Urgent - 15
+			//Not Urgent - 16
+			me.urgencyDate.text.tabIndex = 17;
+			me.vendor.text.tabIndex = 21;
+			me.searchItem.text.tabIndex = 22;
+			me.category.text.tabIndex = 23;			
+			me.catalog.text.tabIndex = 24;
+			me.company.text.tabIndex = 31;
+			me.shippingJob.text.tabIndex = 32;
+			me.shippingAddress1.text.tabIndex = 33;
+			me.shippingAddress2.text.tabIndex = 34;
+			me.shippingCity.text.tabIndex = 35;
+			me.shippingState.text.tabIndex = 36;
+			me.shippingZip.text.tabIndex = 37;
+			me.shippingFax.text.tabIndex = 38;
+			me.shippingPhone.text.tabIndex = 39;
+		},
+		
 		resizeControls: function() {
 			var me = this;
 			
@@ -1104,6 +1135,7 @@ ii.Class({
 			me.vendorAddress1.resizeText();
 			me.vendorAddress2.resizeText();
 			me.vendorCity.resizeText();
+			me.vendorState.resizeText();
 			me.vendorZip.resizeText();
 			me.vendorContactName.resizeText();
 			me.vendorPhone.resizeText();
@@ -1112,6 +1144,8 @@ ii.Class({
 			me.urgencyDate.resizeText();
 			me.vendor.resizeText();
 			me.searchItem.resizeText();
+			me.category.resizeText();			
+			me.catalog.resizeText();
 			me.company.resizeText();
 			me.shippingJob.resizeText();
 			me.shippingAddress1.resizeText();
@@ -1119,8 +1153,8 @@ ii.Class({
 			me.shippingCity.resizeText();
 			me.shippingState.resizeText();
 			me.shippingZip.resizeText();
-			me.shippingPhone.resizeText();
 			me.shippingFax.resizeText();
+			me.shippingPhone.resizeText();			
 			me.resize();
 		},
 		
@@ -1292,7 +1326,7 @@ ii.Class({
 		
 		stateTypesLoaded: function(me,activeId) {
 
-			me.stateTypes.unshift(new fin.pur.poRequisition.StateType({ id: 0, number: 0, name: "None" }));
+			//me.stateTypes.unshift(new fin.pur.poRequisition.StateType({ id: 0, number: 0, name: "None" }));
 			me.shippingState.setData(me.stateTypes);
 			me.vendorState.setData(me.stateTypes);	
 			me.checkLoadCount();		
@@ -1610,7 +1644,7 @@ ii.Class({
 					me.vendorAddress1.setValue("");
 					me.vendorAddress2.setValue("");
 					me.vendorCity.setValue("");				
-					me.vendorState.select(0, me.vendorState.focused);				
+					me.vendorState.select(-1, me.vendorState.focused);				
 					me.vendorZip.setValue("");
 					me.vendorContactName.setValue("");
 					me.vendorPhone.setValue("");
@@ -1621,11 +1655,12 @@ ii.Class({
 		
 		vendorsLoaded: function(me, activeId) {
 			
-			me.vendorName.reset();
 			me.vendorName.setData(me.vendors);
 						
-			if (me.vendors.length > 0)
+			if (me.vendors.length > 0) {
+				me.vendorName.reset();
 				me.vendorName.select(0, me.vendorName.focused);
+			}				
 	
 			me.vendorChanged();	
 		},
@@ -1672,7 +1707,7 @@ ii.Class({
 				me.vendorAddress1.setValue("");
 				me.vendorAddress2.setValue("");
 				me.vendorCity.setValue("");				
-				me.vendorState.select(0, me.vendorState.focused);				
+				me.vendorState.select(-1, me.vendorState.focused);				
 				me.vendorZip.setValue("");
 				me.vendorContactName.setValue("");
 				me.vendorPhone.setValue("");
@@ -1745,7 +1780,7 @@ ii.Class({
 			
 			if (me.wizardCount == 1) {
 				
-				if (me.status == "NewPORequisition" || ($("input:radio[name='Urgency']:checked").val() == "Urgent" && (me.urgencyDate.lastBlurValue == "" || !(ui.cmn.text.validate.generic(me.urgencyDate.lastBlurValue, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))))
+				if (me.status == "NewPORequisition" || me.vendorId == 0 || ($("input:radio[name='Urgency']:checked").val() == "Urgent" && (me.urgencyDate.lastBlurValue == "" || !(ui.cmn.text.validate.generic(me.urgencyDate.lastBlurValue, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))))
 					valid = me.validator.queryValidity(true);
 										
 				if (!me.requestorEmail.valid
@@ -1877,7 +1912,7 @@ ii.Class({
 			me.vendorAddress1.setValue("");
 			me.vendorAddress2.setValue("");
 			me.vendorCity.setValue("");
-			me.vendorState.select(0, me.vendorState.focused);
+			me.vendorState.select(-1, me.vendorState.focused);
 			me.vendorZip.setValue("");
 			me.vendorContactName.setValue("");
 			me.vendorPhone.setValue("");

@@ -449,11 +449,6 @@ ii.Class({
 			me.vendorState.makeEnterTab()
 				.setValidationMaster( me.validator )
 				.addValidation( ui.ctl.Input.Validation.required )
-				.addValidation( function( isFinal, dataMap ) {
-					
-					if (me.vendorState.indexSelected == -1)
-						this.setInvalid("Please select the correct State.");
-				});
 				
 			me.vendorZip = new ui.ctl.Input.Text({
 		        id: "VendorZip",
@@ -927,6 +922,7 @@ ii.Class({
 
 			me.vendor.text.readOnly = true;
 			me.documentTitle.active = false;
+			me.setTabIndexes();
 		},		
 
 		configureCommunications: function fin_pur_UserInterface_configureCommunications() {
@@ -1111,7 +1107,50 @@ ii.Class({
 			$("#AnchorGeneratePurchaseOrder").hide();
 			$("#AnchorJDEEntry").hide();
 		},
+		
+		setTabIndexes: function() {
+			var me = this;
 
+			me.requestorName.text.tabIndex = 1;
+			me.requestorEmail.text.tabIndex = 2;
+			me.requestedDate.text.tabIndex = 3;
+			me.deliveryDate.text.tabIndex = 4;
+			me.projectNumber.text.tabIndex = 5;
+			me.vendorName.text.tabIndex = 6;
+			me.vendorAddress1.text.tabIndex = 7;
+			me.vendorAddress2.text.tabIndex = 8;
+			me.vendorCity.text.tabIndex = 9;
+			me.vendorState.text.tabIndex = 10;
+			me.vendorZip.text.tabIndex = 11;
+			me.vendorContactName.text.tabIndex = 12;
+			me.vendorPhone.text.tabIndex = 13;
+			me.vendorEmail.text.tabIndex = 14;
+			me.reasonForRequest.text.tabIndex = 15;
+			//Capital - 16
+			//Direct Reimbursement - 17
+			//New Business - 18
+			//New Construction - 19
+			//Existing Business - 20
+			//Budgeted - 21
+			//Unbudgeted - 22
+			me.vendor.text.tabIndex = 31;
+			me.searchItem.text.tabIndex = 32;
+			me.category.text.tabIndex = 33;			
+			me.catalog.text.tabIndex = 34;
+			me.taxPercent.text.tabIndex = 35;
+			me.taxAmount.text.tabIndex = 36;
+			me.freight.text.tabIndex = 37;
+			me.company.text.tabIndex = 41;
+			me.shippingJob.text.tabIndex = 42;
+			me.shippingAddress1.text.tabIndex = 43;
+			me.shippingAddress2.text.tabIndex = 44;
+			me.shippingCity.text.tabIndex = 45;
+			me.shippingState.text.tabIndex = 46;
+			me.shippingZip.text.tabIndex = 47;
+			me.shippingFax.text.tabIndex = 48;
+			me.shippingPhone.text.tabIndex = 49;
+		},
+		
 		resizeControls: function() {
 			var me = this;
 			
@@ -1124,6 +1163,7 @@ ii.Class({
 			me.vendorAddress1.resizeText();
 			me.vendorAddress2.resizeText();
 			me.vendorCity.resizeText();
+			me.vendorState.resizeText();
 			me.vendorZip.resizeText();
 			me.vendorContactName.resizeText();
 			me.vendorPhone.resizeText();
@@ -1131,6 +1171,8 @@ ii.Class({
 			me.reasonForRequest.resizeText();
 			me.vendor.resizeText();
 			me.searchItem.resizeText();
+			me.category.resizeText();			
+			me.catalog.resizeText();
 			me.taxPercent.resizeText();
 			me.taxAmount.resizeText();
 			me.freight.resizeText();
@@ -1227,7 +1269,7 @@ ii.Class({
 			me.subTotal = 0;
 			me.total = 0;
 			
-			if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked && (!me.itemNumber.valid
+			if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0] != undefined && $("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked && (!me.itemNumber.valid
 					|| !me.itemDescription.valid
 					|| !me.account.valid
 					|| !me.price.valid
@@ -1242,7 +1284,7 @@ ii.Class({
 			}
 			
 			for (var index = 0; index < me.itemGrid.data.length; index++) {
-				if ($("#selectInputCheck" + index)[0].checked) {
+				if ($("#selectInputCheck" + index)[0] != undefined && $("#selectInputCheck" + index)[0].checked) {
 					if (iIndex == index && quantity != "" && !isNaN(quantity) && price != undefined)
 						me.subTotal = me.subTotal + (quantity * price)								
 					else if (me.itemGrid.data[index].quantity != "" && !isNaN(me.itemGrid.data[index].quantity) && me.itemGrid.data[index].price != undefined)
@@ -1251,7 +1293,7 @@ ii.Class({
 			}
 			
 			if(me.itemGrid.activeRowIndex == me.itemGrid.data.length) {
-				if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked) {
+				if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0] != undefined && $("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked) {
 					if (quantity != "" && !isNaN(quantity) && price != undefined) 
 						me.subTotal = me.subTotal + quantity * price;
 				}
@@ -1290,7 +1332,7 @@ ii.Class({
 			$(me.itemGrid.rows[iIndex].getElement("extendedPrice")).text(extendedPrice);
 			
 			for (var index = 0; index < me.itemGrid.data.length; index++) {
-				if ($("#selectInputCheck" + index)[0].checked) {
+				if ($("#selectInputCheck" + index)[0] != undefined && $("#selectInputCheck" + index)[0].checked) {
 					if (iIndex == index && quantity != "" && !isNaN(quantity) && price != undefined)
 						me.subTotal = me.subTotal + (quantity * price)								
 					else if (me.itemGrid.data[index].quantity != "" && !isNaN(me.itemGrid.data[index].quantity) && me.itemGrid.data[index].price != undefined)
@@ -1299,7 +1341,7 @@ ii.Class({
 			}
 			
 			if(me.itemGrid.activeRowIndex == me.itemGrid.data.length) {
-				if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked) {
+				if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0] != undefined && $("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked) {
 					if (quantity != "" && !isNaN(quantity) && price != undefined) 
 						me.subTotal = me.subTotal + quantity * price;
 				}
@@ -1362,7 +1404,7 @@ ii.Class({
 		
 		stateTypesLoaded: function(me,activeId) {
 
-			me.stateTypes.unshift(new fin.pur.poCapitalRequisition.StateType({ id: 0, number: 0, name: "None" }));
+			//me.stateTypes.unshift(new fin.pur.poCapitalRequisition.StateType({ id: 0, number: 0, name: "None" }));
 			me.shippingState.setData(me.stateTypes);
 			me.vendorState.setData(me.stateTypes);	
 			me.checkLoadCount();		
@@ -1692,7 +1734,7 @@ ii.Class({
 					me.vendorAddress1.setValue("");
 					me.vendorAddress2.setValue("");
 					me.vendorCity.setValue("");				
-					me.vendorState.select(0, me.vendorState.focused);				
+					me.vendorState.select(-1, me.vendorState.focused);				
 					me.vendorZip.setValue("");
 					me.vendorContactName.setValue("");
 					me.vendorPhone.setValue("");
@@ -1702,12 +1744,12 @@ ii.Class({
 		},
 		
 		vendorsLoaded: function(me, activeId) {
-			
-			me.vendorName.reset();
 			me.vendorName.setData(me.vendors);
-						
-			if (me.vendors.length > 0)
+			
+			if (me.vendors.length > 0) {				
+				me.vendorName.reset();
 				me.vendorName.select(0, me.vendorName.focused);
+			}
 	
 			me.vendorChanged();	
 		},
@@ -1733,6 +1775,11 @@ ii.Class({
 				me.vendorPhone.setValue(me.vendors[index].phoneNumber);
 				me.vendorEmail.setValue(me.vendors[index].email);
 				me.account.setData(me.glAccounts);
+				me.searchItem.text.readOnly = false;
+				$("#CategoryText").attr('disabled', false);
+				$("#CategoryAction").addClass("iiInputAction");
+				$("#CatalogText").attr('disabled', false);
+				$("#CatalogAction").addClass("iiInputAction");
 				me.category.fetchingData();
 				me.catalog.fetchingData();
 				me.poCapitalRequisitionItemStore.reset();
@@ -1749,11 +1796,16 @@ ii.Class({
 				me.vendorAddress1.setValue("");
 				me.vendorAddress2.setValue("");
 				me.vendorCity.setValue("");				
-				me.vendorState.select(0, me.vendorState.focused);				
+				me.vendorState.select(-1, me.vendorState.focused);				
 				me.vendorZip.setValue("");
 				me.vendorContactName.setValue("");
 				me.vendorPhone.setValue("");
 				me.vendorEmail.setValue("");
+				me.searchItem.text.readOnly = true;
+				$("#CategoryText").attr('disabled', true);
+				$("#CategoryAction").removeClass("iiInputAction");
+				$("#CatalogText").attr('disabled', true);
+				$("#CatalogAction").removeClass("iiInputAction");
 				$("#popupLoading").hide();
 			}
 		},
@@ -1813,11 +1865,11 @@ ii.Class({
 			var me = this;
 			var valid = true;			
 			
-			me.validator.forceBlur();			
+			me.validator.forceBlur();
 			
 			if (me.wizardCount == 1) {
 				
-				if (me.status == "NewPOCapitalRequisition")
+				if (me.status == "NewPOCapitalRequisition" || me.vendorId == 0)
 					valid = me.validator.queryValidity(true);
 					
 				if (!me.requestorEmail.valid
@@ -1853,7 +1905,7 @@ ii.Class({
 			}
 			else if (me.wizardCount == 2) {
 				valid = me.validator.queryValidity(true);
-								
+				
 				if (me.itemGrid.activeRowIndex != -1 && $("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked && (!me.itemNumber.valid
 					|| !me.itemDescription.valid
 					|| !me.account.valid
@@ -1874,7 +1926,7 @@ ii.Class({
 			}
 			else if (me.wizardCount == 3) {
 				valid = me.validator.queryValidity(true);
-								
+				
 				if (!me.requestorEmail.valid
 					|| !me.shippingAddress1.valid
 					|| !me.shippingCity.valid
@@ -1955,7 +2007,7 @@ ii.Class({
 			me.vendorAddress1.setValue("");
 			me.vendorAddress2.setValue("");
 			me.vendorCity.setValue("");
-			me.vendorState.select(0, me.vendorState.focused);
+			me.vendorState.select(-1, me.vendorState.focused);
 			me.vendorZip.setValue("");
 			me.vendorContactName.setValue("");
 			me.vendorPhone.setValue("");
@@ -2035,8 +2087,13 @@ ii.Class({
 				}
 			}
 			
+			if (me.subTotal == 0)
+				me.total = 0;
+			else
+				me.total = me.subTotal + parseFloat(tax) + parseFloat(freight);
+				
 			$("#spnSubTotal").html(me.subTotal.toFixed(2));
-			$("#spnTotal").html(me.subTotal + parseFloat(tax) + parseFloat(freight));
+			$("#spnTotal").html(me.total.toFixed(2));
 			me.status = "EditPOCapitalRequisition";			
 			me.wizardCount = 1;
 			me.actionShowWizard();
