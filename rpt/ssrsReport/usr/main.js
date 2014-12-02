@@ -1802,9 +1802,8 @@ ii.Class({
 			var nodeIndex = me.getNodeIndex(nodeId);
 			var found = false;
 			var reportURL = "";
-			var rowHtml = "";
-			var reportTitle = "";
 			var reportId = 0;
+			var parameterAvailable = false;
 			
 			if (me.hirNodePreviousSelected > 0)
 				$("#span" + me.hirNodePreviousSelected).replaceClass("unitSelected", "unit");
@@ -1817,8 +1816,8 @@ ii.Class({
 			for (var index = 0; index < me.reports.length; index++) {
 				if (me.reports[index].hirNode == me.hirNodeSelected) {
 					reportURL = me.reports[index].reportURL;
-					reportTitle = me.reports[index].title;
 					reportId = me.reports[index].id;
+					parameterAvailable = me.reports[index].parameterAvailable;
 					found = true;
 					break;
 				}
@@ -1826,8 +1825,13 @@ ii.Class({
 			
 			if (found && reportURL != "")
 				me.reportURL = reportURL;
-				
-			if (reportId != 0) {
+
+			if (found && reportURL != "" && !parameterAvailable) {
+				$("#RightContainer").hide();
+				window.open(reportURL);
+			}
+			else if (reportId != 0) {
+				$("#RightContainer").show();
 				me.setLoadCount();
 				me.reportParameterStore.fetch("userId:[user],reportId:" + reportId, me.parametersLoaded, me);				
 			}

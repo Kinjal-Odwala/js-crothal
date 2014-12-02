@@ -63,6 +63,7 @@ ii.init.register( function() {
 		, hirNode: {type: Number}
 		, title: {type: String}
 		, name: {type: String, required: false, defaultValue: ""}
+		, parameterAvailable: {type: Boolean, required: false, defaultValue: false}
 		, subscriptionAvailable: {type: Boolean, required: false, defaultValue: false}
 		, reportURL: {type: String, required: false, defaultValue: ""}
 	};
