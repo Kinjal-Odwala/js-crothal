@@ -1904,6 +1904,9 @@ ii.Class({
 					return true;
 			}
 			else if (me.wizardCount == 2) {
+				if (me.itemGrid.activeRowIndex == -1 && me.taxPercent.valid && me.taxAmount.valid && me.freight.valid)
+				 	return true;
+				 	
 				valid = me.validator.queryValidity(true);
 				
 				if (me.itemGrid.activeRowIndex != -1 && $("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked && (!me.itemNumber.valid
