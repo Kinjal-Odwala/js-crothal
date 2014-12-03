@@ -39,6 +39,20 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 
+			var queryStringArgs = {};
+			var queryString = location.search.substring(1);
+			var pairs = queryString.split("&"); 
+
+			for (var index = 0; index < pairs.length; index++) { 
+				var pos = pairs[index].indexOf("="); 
+				if (pos == -1) continue; 
+				var argName = pairs[index].substring(0, pos); 
+				var value = pairs[index].substring(pos + 1); 
+				queryStringArgs[argName] = unescape(value); 
+			}
+
+			me.workflowId = (queryStringArgs["id"] == undefined) ? 0 : parseInt(queryStringArgs["id"], 10);
+			me.workflowStep = (queryStringArgs["step"] == undefined) ? 0 : parseInt(queryStringArgs["step"], 10);
 			me.currentWizard = "";
 			me.nextWizard = "";
 			me.prevWizard = "";
@@ -46,6 +60,7 @@ ii.Class({
 			me.status = "";
 			me.lastSelectedRowIndex = -1;
 			me.loadCount = 0;
+			me.validHouseCode = true;
 			me.validSite = true;
 			me.searchZipCode = false;
 			me.searchZipCodeType = "";
@@ -128,25 +143,13 @@ ii.Class({
 		resize: function() {
 			var args = ii.args(arguments, {});
 
-			fin.hcm.houseCodeWorkflowUi.houseCodeRequestGrid.setHeight($(window).height() - 110);
-			$("#houseCodeDetailContainer").height($(window).height() - 150);
+			fin.hcm.houseCodeWorkflowUi.houseCodeRequestGrid.setHeight($(window).height() - 80);
+			$("#houseCodeDetailContainer").height($(window).height() - 120);
 		},
 		
 		defineFormControls: function() {
 			var args = ii.args(arguments, {});
 			var me = this;
-
-			me.actionMenu = new ui.ctl.Toolbar.ActionMenu({
-				id: "actionMenu"
-			});
-
-			me.actionMenu
-				.addAction({
-					id: "newAction",
-					brief: "New", 
-					title: "Create the new house code request.",
-					actionFunction: function() { me.actionNewItem(); }
-				})
 
 			me.anchorNew = new ui.ctl.buttons.Sizeable({
 				id: "AnchorNew",
@@ -180,11 +183,11 @@ ii.Class({
 				hasHotState: true
 			});
 
-			me.anchorCancel = new ui.ctl.buttons.Sizeable({
-				id: "AnchorCancel",
+			me.anchorClose = new ui.ctl.buttons.Sizeable({
+				id: "AnchorClose",
 				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionCancelItem(); },
+				text: "<span>&nbsp;&nbsp;Close&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionCloseItem(); },
 				hasHotState: true
 			});
 
@@ -212,6 +215,38 @@ ii.Class({
 				hasHotState: true
 			});
 
+			me.anchorApprove = new ui.ctl.buttons.Sizeable({
+				id: "AnchorApprove",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Approve&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionApproveItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorSaveAndApprove = new ui.ctl.buttons.Sizeable({
+				id: "AnchorSaveAndApprove",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Save and Approve&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionSaveAndApproveItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorCancel = new ui.ctl.buttons.Sizeable({
+				id: "AnchorCancel",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionCancelItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorExit = new ui.ctl.buttons.Sizeable({
+				id: "AnchorExit",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Exit&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionExitItem(); },
+				hasHotState: true
+			});
+
 			me.houseCodeRequestGrid = new ui.ctl.Grid({
 				id: "HouseCodeRequestGrid",
 				appendToId: "divForm",
@@ -225,12 +260,7 @@ ii.Class({
 
 			me.houseCodeRequestGrid.addColumn("column4", "column4", "Requestor", "Requestor", null);
 			me.houseCodeRequestGrid.addColumn("column6", "column6", "Requested Date", "Requested Date", 140, function(requestedDate) { return ui.cmn.text.date.format(new Date(requestedDate), "mm/dd/yyyy"); });
-			me.houseCodeRequestGrid.addColumn("column16", "column16", "Contract Type", "Contract Type", 150, function(contractType) { 
-				var itemIndex = ii.ajax.util.findIndexById(contractType, me.contractTypes);
-				if (itemIndex >= 0 && itemIndex != undefined)
-					return me.contractTypes[itemIndex].name; 
-			});
-			me.houseCodeRequestGrid.addColumn("column7", "column7", "Status", "Status", 90);
+			me.houseCodeRequestGrid.addColumn("column7", "column7", "Status", "Status", 150);
 			me.houseCodeRequestGrid.capColumns();
 			
 			me.primaryContractType = new ui.ctl.Input.DropDown.Filtered({
@@ -257,6 +287,11 @@ ii.Class({
 			me.svp.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.svp.getValue())))
+						this.setInvalid("Please enter the correct title for SVP. The title can't contain any of the following characters: \\/:*?\"<>|.,");
+				});
 
 			me.dvp = new ui.ctl.Input.DropDown.Filtered({
 				id : "DVP",
@@ -267,6 +302,11 @@ ii.Class({
 			me.dvp.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.dvp.getValue())))
+						this.setInvalid("Please enter the correct title for DVP. The title can't contain any of the following characters: \\/:*?\"<>|.,");
+				});
 
 			me.rvp = new ui.ctl.Input.DropDown.Filtered({
 				id : "RVP",
@@ -277,6 +317,11 @@ ii.Class({
 			me.rvp.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.rvp.getValue())))
+						this.setInvalid("Please enter the correct title for RVP. The title can't contain any of the following characters: \\/:*?\"<>|.,");
+				});
 
 			me.srm = new ui.ctl.Input.DropDown.Filtered({
 				id : "SRM",
@@ -287,6 +332,11 @@ ii.Class({
 			me.srm.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.srm.getValue())))
+						this.setInvalid("Please enter the correct title for SRM. The title can't contain any of the following characters: \\/:*?\"<>|.,");
+				});
 
 			me.rm = new ui.ctl.Input.DropDown.Filtered({
 				id : "RM",
@@ -297,6 +347,11 @@ ii.Class({
 			me.rm.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.rm.getValue())))
+						this.setInvalid("Please enter the correct title for RM. The title can't contain any of the following characters: \\/:*?\"<>|.,");
+				});
 
 			me.am = new ui.ctl.Input.DropDown.Filtered({
 				id : "AM",
@@ -307,6 +362,28 @@ ii.Class({
 			me.am.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.am.getValue())))
+						this.setInvalid("Please enter the correct title for AM. The title can't contain any of the following characters: \\/:*?\"<>|.,");
+				});
+
+			me.houseCode = new ui.ctl.Input.Text({
+		        id: "HouseCode",
+				maxLength: 16,
+				changeFunction: function() { me.modified(); me.validateHouseCode(); }
+		    });
+
+			me.houseCode.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					if (!(ui.cmn.text.validate.generic(me.houseCode.getValue(), "^\\d+$")))
+						this.setInvalid("Please enter valid numeric value.");
+					else if (!me.validHouseCode)
+						this.setInvalid("House Code [" + me.houseCode.getValue() + "] is already exists. Please enter different House Code.");
+				});
 
 			me.startDate = new ui.ctl.Input.Date({
 		        id: "StartDate",
@@ -319,10 +396,10 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {					
 					var enteredText = me.startDate.text.value;
-					
+
 					if (enteredText == "") 
 						return;
-											
+
 					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
 						this.setInvalid("Please enter valid Start Date.");
 				});
@@ -340,8 +417,10 @@ ii.Class({
 
 					if (me.siteName.getValue() == "") 
 						return;
-						
-					if (!me.validSite)
+
+					if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.siteName.getValue())))
+						this.setInvalid("Please enter the correct Site Name. The Site Name can't contain any of the following characters: \\/:*?\"<>|.,");
+					else if (!me.validSite)
 						this.setInvalid("Site Name [" + me.siteName.getValue() + "] is already exists. Please enter different Site Name.");
 				});
 
@@ -1138,6 +1217,33 @@ ii.Class({
 
 			me.otherAreas.makeEnterTab()
 				.setValidationMaster(me.validator)
+
+			me.notes = $("#Notes")[0];
+
+			$("#Notes").height(100);
+			$("#Notes").keypress(function() {
+				if (me.notes.value.length > 1023) {
+					me.notes.value = me.notes.value.substring(0, 1024);
+					return false;
+				}
+			});			
+			$("#Notes").change(function() { me.modified(true); });
+
+			me.anchorOk = new ui.ctl.buttons.Sizeable({
+				id: "AnchorOk",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;OK&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionOkItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorClosePopup = new ui.ctl.buttons.Sizeable({
+				id: "AnchorClosePopup",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Close&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionClosePopupItem(); },
+				hasHotState: true
+			});
 		},
 
 		configureCommunications: function() {
@@ -1175,6 +1281,14 @@ ii.Class({
 				itemConstructorArgs: fin.hcm.houseCodeWorkflow.siteArgs,
 				injectionArray: me.sites
 			});	
+
+			me.houseCodes = [];
+			me.houseCodeStore = me.cache.register({
+				storeId: "hcmHouseCodes",
+				itemConstructor: fin.hcm.houseCodeWorkflow.HouseCode,
+				itemConstructorArgs: fin.hcm.houseCodeWorkflow.houseCodeArgs,
+				injectionArray: me.houseCodes
+			});
 
 			me.stateTypes = [];
 			me.stateTypeStore = me.cache.register({
@@ -1255,6 +1369,7 @@ ii.Class({
 			$("#AnchorEdit").hide();
 			$("#AnchorSendRequest").hide();
 			$("#AnchorCancelRequest").hide();
+			$("#DivHouseCode").hide();
 
 			$("input[name='CompassPurchaseAnySupplies']").click(function() {
 				if (this.id == "CompassPurchaseAnySuppliesYes") {
@@ -1335,6 +1450,7 @@ ii.Class({
 				me.srm.resizeText();
 				me.rm.resizeText();
 				me.am.resizeText();
+				me.houseCode.resizeText();
 			}
 			else if (me.currentWizard == "SiteInfo") {
 				me.startDate.resizeText();
@@ -1424,7 +1540,8 @@ ii.Class({
 			me.rvp.text.tabIndex = 14;
 			me.srm.text.tabIndex = 15;
 			me.rm.text.tabIndex = 16;
-			me.am.text.tabIndex = 17;			
+			me.am.text.tabIndex = 17;
+			me.houseCode.text.tabIndex = 18;
 			me.startDate.text.tabIndex = 21;
 			me.siteName.text.tabIndex = 22;
 			me.street1.text.tabIndex = 23;
@@ -1510,6 +1627,7 @@ ii.Class({
 			me.srm.reset();
 			me.rm.reset();
 			me.am.reset();
+			me.houseCode.setValue("");
 			me.startDate.setValue("");
 			me.siteName.setValue("");
 			me.street1.setValue("");
@@ -1577,6 +1695,7 @@ ii.Class({
 			me.foodCourt.setValue("");
 			me.commonArea.setValue("");
 			me.otherAreas.setValue("");
+			me.notes.value = "";
 
 			$("#OtherServicesProvided").multiselect("uncheckAll");
 			$("#CrothallBenefitsYes")[0].checked = true;
@@ -1622,7 +1741,7 @@ ii.Class({
 			me.state.setData(me.stateTypes);
 			me.customerState.setData(me.stateTypes);
 			me.serviceLocationState.setData(me.stateTypes);
-			me.houseCodeRequestStore.fetch("userId:[user],object:HouseCodeRequest,batch:0,startPoint:0,maximumRows:0", me.houseCodeRequestsLoaded, me);
+			me.houseCodeRequestStore.fetch("userId:[user],object:HouseCodeRequest,batch:" + me.workflowId +",startPoint:0,maximumRows:0", me.houseCodeRequestsLoaded, me);
 		},
 
 		houseCodeRequestsLoaded: function(me, activeId) {
@@ -1630,6 +1749,9 @@ ii.Class({
 			me.houseCodeRequestGrid.setData(me.houseCodeRequests);
 			me.checkLoadCount();
 			me.resize();
+
+			if (me.workflowId > 0 && me.houseCodeRequests.length > 0)
+				me.houseCodeRequestGrid.body.select(0);
 		},
 
 		houseCodeWorkflowMastersLoaded: function(me, activeId) {
@@ -2098,6 +2220,25 @@ ii.Class({
 				me.loadZipCodeTypes("ServiceLocation");
 			}
 		},
+		
+		validateHouseCode: function() {
+			var me = this;
+
+			if (me.houseCode.getValue() == "")
+				return;
+			$("#HouseCodeText").addClass("Loading");
+			me.validHouseCode = true;
+			me.houseCodeStore.fetch("userId:[user],appUnitBrief:" + me.houseCode.getValue(), me.houseCodeLoaded, me);
+		},
+		
+		houseCodeLoaded: function(me, activeId){
+
+			if (me.houseCodes.length > 0) {
+				me.validHouseCode = false;
+				me.houseCode.setInvalid("House Code [" + me.houseCode.getValue() + "] is already exists. Please enter different House Code.");
+			}
+			$("#HouseCodeText").removeClass("Loading");
+		},
 
 		validateSite: function() {
 			var me = this;
@@ -2139,7 +2280,13 @@ ii.Class({
 				return;
 			
 			if (item != undefined) {
-				if (item.column7 == "Open" || item.column7 == "Unapproved") {
+				if (me.workflowId > 0) {
+					$("#AnchorEdit").show();
+					$("#AnchorNew").hide();
+					$("#AnchorSendRequest").hide();
+					$("#AnchorCancelRequest").hide();
+				}
+				else if (item.column7 == "Open" || item.column7 == "Unapproved") {
 					$("#AnchorEdit").show();
 					$("#AnchorSendRequest").show();
 					$("#AnchorCancelRequest").show();
@@ -2149,7 +2296,7 @@ ii.Class({
 					$("#AnchorSendRequest").hide();
 					$("#AnchorCancelRequest").hide();
 				}
-
+				//$("#AnchorSendRequest").show();
 				itemIndex = ii.ajax.util.findIndexById(item.column16, me.contractTypes);
 				if (itemIndex >= 0 && itemIndex != undefined)
 					$("#ReadonlyContractType").html(me.contractTypes[itemIndex].name);
@@ -2196,6 +2343,12 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 
+			$("#AnchorClose").show();
+			$("#AnchorSave").show();
+			$("#AnchorApprove").hide();
+			$("#AnchorSaveAndApprove").hide();
+			$("#AnchorCancel").hide();
+			$("#AnchorExit").hide();
 			$("#popupHeader").text("House Code Request");
 			me.status = "New";
 			me.initializeWizard();
@@ -2217,8 +2370,11 @@ ii.Class({
 					return false;
 			}
 			else if (me.currentWizard == "HierarchyInfo") {
+				var item = me.houseCodeRequestGrid.data[me.lastSelectedRowIndex];
 				if (!me.svp.validate(true) || !me.dvp.validate(true) || !me.rvp.validate(true)
 					|| !me.srm.validate(true) || !me.rm.validate(true) || !me.am.validate(true))
+					return false;
+				else if (item.column7 == "Step 1 Approved" && me.workflowId > 0 && me.workflowStep == 2 && !me.houseCode.validate(true))
 					return false;
 			}
 			else if (me.currentWizard == "SiteInfo") {
@@ -2395,7 +2551,7 @@ ii.Class({
 					break;
 			}
 			
-			if (me.nextWizard == "")
+			if (me.nextWizard == "" || (me.nextWizard == "ServicesProvided" && me.workflowId > 0 && me.workflowStep == 2))
 				me.anchorNext.display(ui.cmn.behaviorStates.disabled);
 			else
 				me.anchorNext.display(ui.cmn.behaviorStates.enabled);
@@ -2406,7 +2562,7 @@ ii.Class({
 				me.anchorPrev.display(ui.cmn.behaviorStates.enabled);
 		},
 
-		actionCancelItem: function() {
+		actionCloseItem: function() {
 			var me = this;
 
 			if (!parent.fin.cmn.status.itemValid())
@@ -2423,11 +2579,42 @@ ii.Class({
 			var index = 0;
 
 			if (me.lastSelectedRowIndex >= 0) {
-				$("#popupHeader").text("House Code Request - Edit");
 				var item = me.houseCodeRequestGrid.data[me.lastSelectedRowIndex];
+				if (item.column7 == "Open" && me.workflowId == 0) {
+					$("#AnchorClose").show();
+					$("#AnchorSave").show();
+					$("#AnchorApprove").hide();
+					$("#AnchorSaveAndApprove").hide();
+					$("#AnchorCancel").hide();
+					$("#AnchorExit").hide();
+				}
+				else if (me.workflowId > 0 && (item.column7 == "In Process" && me.workflowStep == 1) || (item.column7 == "Step 1 Approved" && me.workflowStep == 2)) {
+					$("#AnchorClose").hide();
+					$("#AnchorSave").hide();
+					$("#AnchorApprove").show();
+					$("#AnchorSaveAndApprove").show();
+					$("#AnchorCancel").show();
+					$("#AnchorExit").show();
+					if (item.column7 == "Step 1 Approved") {
+						$("#AnchorApprove").hide();
+						$("#DivHouseCode").show();
+						me.houseCode.setValue("");
+					}
+				}
+				else {
+					$("#AnchorClose").show();
+					$("#AnchorSave").hide();
+					$("#AnchorApprove").hide();
+					$("#AnchorSaveAndApprove").hide();
+					$("#AnchorCancel").hide();
+					$("#AnchorExit").hide();
+				}
+
+				$("#popupHeader").text("House Code Request - Edit");
+				$("#popupLoading").fadeIn("slow");
 				me.status = "Edit";
 				me.initializeWizard();
-				$("#popupLoading").fadeIn("slow");
+
 				index = ii.ajax.util.findIndexById(item.column16, me.contractTypes);
 				if (index != undefined && index >= 0)
 					me.primaryContractType.select(index, me.primaryContractType.focused);
@@ -2453,7 +2640,7 @@ ii.Class({
 				index = ii.ajax.util.findIndexById(item.column33, me.serviceTypes);
 				if (index != undefined && index >= 0)
 					me.primaryServiceProvided.select(index, me.primaryServiceProvided.focused);
-				var otherServicesProvidedTemp = item.column34.split(',');
+				var otherServicesProvidedTemp = item.column34.split(",");
 				$("#OtherServicesProvided").multiselect("widget").find(":checkbox").each(function() {
 			 		if ($.inArray(this.value, otherServicesProvidedTemp) >= 0) {
 			 			this.click();
@@ -2592,24 +2779,6 @@ ii.Class({
 				me.status = "SendRequest";
             	me.actionSaveItem();
 			}
-
-//			if (!me.primaryContractType.validate(true)
-//				|| !me.svp.validate(true) || !me.dvp.validate(true) || !me.rvp.validate(true)
-//				|| !me.srm.validate(true) || !me.rm.validate(true) || !me.am.validate(true)
-//				|| !me.startDate.validate(true) || !me.siteName.validate(true) || !me.street1.validate(true)
-//				|| !me.city.validate(true) || !me.state.validate(true) || !me.zipCode.validate(true) || !me.county.validate(true)
-//				|| !me.primaryServiceProvided.validate(true)
-//				|| !me.hourlyCompany.validate(true) || !me.salaryCompany.validate(true)
-//				|| (me.hourlyCompany.lastBlurValue != "" && (me.hourlyCompany.indexSelected == me.salaryCompany.indexSelected))
-//				|| !me.unionAccount.validate(true)
-//				|| !me.customerNumber.validate(true) || !me.customerStreet.validate(true) || !me.customerCity.validate(true) 
-//				|| !me.customerState.validate(true) || !me.customerZipCode.validate(true) || !me.customerPhone.validate(true)
-//				|| !me.billingFrequency.validate(true)
-//				|| !me.clientStatus.validate(true) || !me.companyStatus.validate(true)
-//				|| !me.chargeable.validate(true)
-//				|| !me.serviceLocationNumber.validate(true)) {
-//				alert("There are few mandatory fields which are not entered. Please enter values for all mandatory fields and try again.");
-//			}
 		},
 
 		actionCancelRequestItem: function() {
@@ -2622,12 +2791,121 @@ ii.Class({
             me.status = "CancelRequest";
             me.actionSaveItem();
 		},
+		
+		actionApproveItem: function() {
+			var me = this;
+			var item = me.houseCodeRequestGrid.data[me.lastSelectedRowIndex];
+			
+			$("#messageToUser").text("Approving Request");
+			
+			if (item.column7 == "In Process" && me.workflowId > 0 && me.workflowStep == 1) {
+				me.status = "ApproveRequestStep1";
+			}
+			else if (item.column7 == "Step 1 Approved" && me.workflowId > 0 && me.workflowStep == 2) {
+				if (!me.houseCode.validate(true)) {
+					return;
+				}
+				me.status = "ApproveRequestStep2";
+			}	
+
+            me.actionSaveItem();
+		},
+		
+		actionSaveAndApproveItem: function() {
+			var me = this;
+			var item = me.houseCodeRequestGrid.data[me.lastSelectedRowIndex];
+
+			if (item.column7 == "In Process" && me.workflowId > 0 && me.workflowStep == 1) {
+				if (!me.primaryContractType.validate(true)
+					|| !me.svp.validate(true) || !me.dvp.validate(true) || !me.rvp.validate(true)
+					|| !me.srm.validate(true) || !me.rm.validate(true) || !me.am.validate(true)
+					|| !me.startDate.validate(true) || !me.siteName.validate(true) || !me.street1.validate(true)
+					|| !me.city.validate(true) || !me.state.validate(true) || !me.zipCode.validate(true) || !me.county.validate(true)
+					|| !me.primaryServiceProvided.validate(true)
+					|| !me.hourlyCompany.validate(true) || !me.salaryCompany.validate(true)
+					|| (me.hourlyCompany.lastBlurValue != "" && (me.hourlyCompany.indexSelected == me.salaryCompany.indexSelected))
+					|| !me.unionAccount.validate(true)
+					|| !me.customerNumber.validate(true) || !me.clientName.validate(true) || !me.customerStreet.validate(true) || !me.customerCity.validate(true) 
+					|| !me.customerState.validate(true) || !me.customerZipCode.validate(true) || !me.customerPhone.validate(true)
+					|| !me.billingFrequency.validate(true)
+					|| !me.clientStatus.validate(true) || !me.companyStatus.validate(true)
+					|| !me.chargeable.validate(true)
+					|| !me.serviceLocationNumber.validate(true) || !me.serviceLocationName.validate(true) || !me.serviceLocationStreet.validate(true)
+					|| !me.serviceLocationCity.validate(true) || !me.serviceLocationState.validate(true) || !me.serviceLocationZipCode.validate(true)
+					) {
+					alert("There are few mandatory fields which are not entered. Please enter values for all mandatory fields and try again.");
+					return false;
+				}
+				me.status = "SaveAndApproveRequestStep1";
+			}
+			else if (item.column7 == "Step 1 Approved" && me.workflowId > 0 && me.workflowStep == 2) {
+				if (!me.primaryContractType.validate(true)
+					|| !me.svp.validate(true) || !me.dvp.validate(true) || !me.rvp.validate(true)
+					|| !me.srm.validate(true) || !me.rm.validate(true) || !me.am.validate(true) || !me.houseCode.validate(true)
+					|| !me.startDate.validate(true) || !me.siteName.validate(true) || !me.street1.validate(true)
+					|| !me.city.validate(true) || !me.state.validate(true) || !me.zipCode.validate(true) || !me.county.validate(true)
+					) {
+					alert("There are few mandatory fields which are not entered. Please enter values for all mandatory fields and try again.");
+					return false;
+				}
+				me.status = "SaveAndApproveRequestStep2";
+			}
+
+			$("#messageToUser").text("Approving Request");
+            me.actionSaveItem();
+		},
+
+		actionCancelItem: function() {
+			var me = this;	
+			var windowWidth = $("#popupWorkflow").width();
+			var windowHeight = $("#popupWorkflow").height();
+			var popupWidth = $("#popupNotes").width();
+			var popupHeight = $("#popupNotes").height();
+
+			$("#popupNotes").css({
+				"top": windowHeight/2 - popupHeight/2,
+				"left": windowWidth/2 - popupWidth/2
+			});
+
+			$("#popupNotes").fadeIn("slow");
+		},
+
+		actionClosePopupItem: function() {
+
+			$("#popupNotes").fadeOut("slow");
+		},
+
+		actionExitItem: function() {
+			var me = this;
+
+			parent.fin.appUI.modified = false;
+			top.window.close();
+		},
+
+		actionOkItem: function() {
+			var me = this;
+			var item = me.houseCodeRequestGrid.data[me.lastSelectedRowIndex];
+
+			if (me.notes.value == "") {
+				alert("Please enter the notes");
+				return false;
+			}
+			$("#messageToUser").text("Cancelling Request");
+			$("#popupNotes").fadeOut("slow");
+
+			if (item.column7 == "In Process" && me.workflowId > 0 && me.workflowStep == 1)
+				me.status = "UnApproveRequestStep1";
+			else if (item.column7 == "Step 1 Approved" && me.workflowId > 0 && me.workflowStep == 2)
+				me.status = "UnApproveRequestStep2";
+            me.actionSaveItem();
+			hidePopup();
+		},
 
 		actionSaveItem: function() {
 			var me = this;
 			var item = [];
 
-			if (me.status == "New" || me.status == "Edit") {
+			if (me.status == "New" || me.status == "Edit" || me.status == "SaveAndApproveRequestStep1" || me.status == "SaveAndApproveRequestStep2") {
 				if (me.currentWizard == "PrimaryDriver") {
 					if (!me.primaryContractType.validate(true))
 						return false;
@@ -2696,7 +2974,7 @@ ii.Class({
 					, ""
 					, ""
 					, ""
-					, ""
+					, (me.status == "New" ? me.persons[0].email : me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].column14)
 					, ""
 					, (me.primaryContractType.indexSelected >= 0 ? me.primaryContractType.data[me.primaryContractType.indexSelected].id : 0)
 					, "crothall"
@@ -2772,9 +3050,26 @@ ii.Class({
 					, me.commonArea.getValue()
 					, me.otherAreas.getValue()
 					);
-					
+
+				if (me.status == "SaveAndApproveRequestStep1") {
+					item.column7 = "Step 1 Approved";
+				}
+				else if (me.status == "SaveAndApproveRequestStep2") {
+					item.column7 = "Step 2 Approved";
+					item.column13 = me.houseCode.getValue();
+				}
 				hidePopup();
 				$("#messageToUser").text("Saving");
+			}
+			else if (me.status == "ApproveRequestStep1") {
+				item = me.houseCodeRequestGrid.data[me.houseCodeRequestGrid.activeRowIndex];
+				item.column7 = "Step 1 Approved";
+				hidePopup();
+			}
+			else if (me.status == "ApproveRequestStep2") {
+				item = me.houseCodeRequestGrid.data[me.houseCodeRequestGrid.activeRowIndex];
+				item.column7 = "Step 2 Approved";
+				hidePopup();
 			}
 			else if (me.status == "SendRequest") {
 				item = me.houseCodeRequestGrid.data[me.houseCodeRequestGrid.activeRowIndex];
@@ -2783,6 +3078,14 @@ ii.Class({
 			else if (me.status == "CancelRequest") {
 				item = me.houseCodeRequestGrid.data[me.houseCodeRequestGrid.activeRowIndex];
 				item.column7 = "Cancelled";
+			}
+			else if (me.status == "UnApproveRequestStep1") {
+				item = me.houseCodeRequestGrid.data[me.houseCodeRequestGrid.activeRowIndex];
+				item.column7 = "Open";
+			}
+			else if (me.status == "UnApproveRequestStep2") {
+				item = me.houseCodeRequestGrid.data[me.houseCodeRequestGrid.activeRowIndex];
+				item.column7 = "In Process";
 			}
 
 			me.setStatus("Saving");
@@ -2808,171 +3111,170 @@ ii.Class({
 			var item = args.item;
 			var xml = "";
 
-			if (me.status == "New" || me.status == "Edit" || me.status == "SendRequest" || me.status == "CancelRequest") {
-				xml += '<houseCodeRequest';
-				xml += ' id="' + item.id + '"';
-				xml += ' userId="' + item.column2 + '"';
-				xml += ' userName="' + item.column3 + '"';
-				xml += ' firstName="' + ui.cmn.text.xml.encode(item.column4) + '"';
-				xml += ' lastName="' + ui.cmn.text.xml.encode(item.column5) + '"';
-				xml += ' status="' + item.column7 + '"';
-				xml += ' primaryContractType="' + item.column16 + '"';
-				xml += ' division="' + ui.cmn.text.xml.encode(item.column17) + '"';
-				xml += ' svp="' + ui.cmn.text.xml.encode(item.column18) + '"';
-				xml += ' dvp="' + ui.cmn.text.xml.encode(item.column19) + '"';
-				xml += ' rvp="' + ui.cmn.text.xml.encode(item.column20) + '"';
-				xml += ' srm="' + ui.cmn.text.xml.encode(item.column21) + '"';
-				xml += ' rm="' + ui.cmn.text.xml.encode(item.column22) + '"';
-				xml += ' am="' + ui.cmn.text.xml.encode(item.column23) + '"';
-				xml += ' startDate="' + item.column24 + '"';
-				xml += ' siteName="' + ui.cmn.text.xml.encode(item.column25) + '"';
-				xml += ' street1="' + ui.cmn.text.xml.encode(item.column26) + '"';
-				xml += ' street2="' + ui.cmn.text.xml.encode(item.column27) + '"';
-				xml += ' city="' + ui.cmn.text.xml.encode(item.column28) + '"';
-				xml += ' state="' + item.column29 + '"';
-				xml += ' zipCode="' + item.column30 + '"';
-				xml += ' county="' + ui.cmn.text.xml.encode(item.column31) + '"';
-				xml += ' phone="' + item.column32 + '"';
-				xml += ' primaryServiceProvided="' + item.column33 + '"';
-				xml += ' otherServicesProvided="' + item.column34 + '"';
-				xml += ' priorServiceProvider="' + ui.cmn.text.xml.encode(item.column35) + '"';
-				xml += ' hourlyCompany="' + item.column36 + '"';
-				xml += ' hourlyEmployees="' + item.column37 + '"';
-				xml += ' salaryCompany="' + item.column38 + '"';
-				xml += ' salaryEmployees="' + item.column39 + '"';
-				xml += ' ePay="' + item.column40 + '"';
-				xml += ' ePayOptions="' + ui.cmn.text.xml.encode(item.column41) + '"';
-				xml += ' crothallBenefits="' + item.column42 + '"';
-				xml += ' unionAccount="' + item.column43 + '"';
-				xml += ' unionName="' + ui.cmn.text.xml.encode(item.column44) + '"';
-				xml += ' localNumber="' + ui.cmn.text.xml.encode(item.column45) + '"';
-				xml += ' customerNumber="' + item.column46 + '"';
-				xml += ' clientName="' + ui.cmn.text.xml.encode(item.column47) + '"';
-				xml += ' customerStreet="' + ui.cmn.text.xml.encode(item.column48) + '"';
-				xml += ' customerCity="' + ui.cmn.text.xml.encode(item.column49) + '"';
-				xml += ' customerState="' + item.column50 + '"';
-				xml += ' customerZipCode="' + item.column51 + '"';
-				xml += ' customerPhone="' + item.column52 + '"';
-				xml += ' customerBiller="' + ui.cmn.text.xml.encode(item.column53) + '"';
-				xml += ' billingFrequency="' + item.column54 + '"';
-				xml += ' paymentTerms="' + ui.cmn.text.xml.encode(item.column55) + '"';
-				xml += ' creditApprovalNumber="' + ui.cmn.text.xml.encode(item.column56) + '"';
-				xml += ' regularContractPrice="' + ui.cmn.text.xml.encode(item.column57) + '"';
-				xml += ' clientStatus="' + ui.cmn.text.xml.encode(item.column58) + '"';
-				xml += ' taxExemptionNumber="' + ui.cmn.text.xml.encode(item.column59) + '"';
-				xml += ' certificate="' + ui.cmn.text.xml.encode(item.column60) + '"';
-				xml += ' einNumber="' + ui.cmn.text.xml.encode(item.column61) + '"';
-				xml += ' companyStatus="' + ui.cmn.text.xml.encode(item.column62) + '"';
-				xml += ' contract="' + item.column63 + '"';
-				xml += ' contractType="' + item.column64 + '"';
-				xml += ' contractLength="' + ui.cmn.text.xml.encode(item.column65) + '"';
-				xml += ' expirationDate="' + item.column66 + '"';
-				xml += ' tenetHealthcareAccount="' + item.column67 + '"';
-				xml += ' squareFootage="' + ui.cmn.text.xml.encode(item.column68) + '"';
-				xml += ' licensedBeds="' + ui.cmn.text.xml.encode(item.column69) + '"';
-				xml += ' gpoMember="' + ui.cmn.text.xml.encode(item.column70) + '"';
-				xml += ' startDateFirm="' + ui.cmn.text.xml.encode(item.column71) + '"';
-				xml += ' compassPurchaseAnySupplies="' + item.column72 + '"';
-				xml += ' contactName="' + ui.cmn.text.xml.encode(item.column73) + '"';
-				xml += ' contactNumber="' + ui.cmn.text.xml.encode(item.column74) + '"';
-				xml += ' typesOfSuppliesPurchased="' + ui.cmn.text.xml.encode(item.column75) + '"';
-				xml += ' chargeable="' + item.column76 + '"';
-				xml += ' markup="' + ui.cmn.text.xml.encode(item.column77) + '"';
-				xml += ' serviceLocationNumber="' + item.column78 + '"';
-				xml += ' serviceLocationName="' + ui.cmn.text.xml.encode(item.column79) + '"';
-				xml += ' serviceLocationStreet="' + ui.cmn.text.xml.encode(item.column80) + '"';
-				xml += ' serviceLocationCity="' + ui.cmn.text.xml.encode(item.column81) + '"';
-				xml += ' serviceLocationState="' + item.column82 + '"';
-				xml += ' serviceLocationZipCode="' + item.column83 + '"';
-				xml += ' miscNumber="' + ui.cmn.text.xml.encode(item.column84) + '"';
-				xml += ' exterior="' + ui.cmn.text.xml.encode(item.column85) + '"';
-				xml += ' foodCourt="' + ui.cmn.text.xml.encode(item.column86) + '"';
-				xml += ' commonArea="' + ui.cmn.text.xml.encode(item.column87) + '"';
-				xml += ' otherAreas="' + ui.cmn.text.xml.encode(item.column88) + '"';
-				xml += ' action="' + me.status + '"';
+			xml += '<houseCodeRequest';
+			xml += ' id="' + item.id + '"';
+			xml += ' userId="' + item.column2 + '"';
+			xml += ' userName="' + item.column3 + '"';
+			xml += ' firstName="' + ui.cmn.text.xml.encode(item.column4) + '"';
+			xml += ' lastName="' + ui.cmn.text.xml.encode(item.column5) + '"';
+			xml += ' status="' + item.column7 + '"';
+			xml += ' houseCode="' + ui.cmn.text.xml.encode(item.column13) + '"';
+			xml += ' email="' + ui.cmn.text.xml.encode(item.column14) + '"';
+			xml += ' primaryContractType="' + item.column16 + '"';
+			xml += ' division="' + ui.cmn.text.xml.encode(item.column17) + '"';
+			xml += ' svp="' + ui.cmn.text.xml.encode(item.column18) + '"';
+			xml += ' dvp="' + ui.cmn.text.xml.encode(item.column19) + '"';
+			xml += ' rvp="' + ui.cmn.text.xml.encode(item.column20) + '"';
+			xml += ' srm="' + ui.cmn.text.xml.encode(item.column21) + '"';
+			xml += ' rm="' + ui.cmn.text.xml.encode(item.column22) + '"';
+			xml += ' am="' + ui.cmn.text.xml.encode(item.column23) + '"';
+			xml += ' startDate="' + item.column24 + '"';
+			xml += ' siteName="' + ui.cmn.text.xml.encode(item.column25) + '"';
+			xml += ' street1="' + ui.cmn.text.xml.encode(item.column26) + '"';
+			xml += ' street2="' + ui.cmn.text.xml.encode(item.column27) + '"';
+			xml += ' city="' + ui.cmn.text.xml.encode(item.column28) + '"';
+			xml += ' state="' + item.column29 + '"';
+			xml += ' zipCode="' + item.column30 + '"';
+			xml += ' county="' + ui.cmn.text.xml.encode(item.column31) + '"';
+			xml += ' phone="' + item.column32 + '"';
+			xml += ' primaryServiceProvided="' + item.column33 + '"';
+			xml += ' otherServicesProvided="' + item.column34 + '"';
+			xml += ' priorServiceProvider="' + ui.cmn.text.xml.encode(item.column35) + '"';
+			xml += ' hourlyCompany="' + item.column36 + '"';
+			xml += ' hourlyEmployees="' + item.column37 + '"';
+			xml += ' salaryCompany="' + item.column38 + '"';
+			xml += ' salaryEmployees="' + item.column39 + '"';
+			xml += ' ePay="' + item.column40 + '"';
+			xml += ' ePayOptions="' + ui.cmn.text.xml.encode(item.column41) + '"';
+			xml += ' crothallBenefits="' + item.column42 + '"';
+			xml += ' unionAccount="' + item.column43 + '"';
+			xml += ' unionName="' + ui.cmn.text.xml.encode(item.column44) + '"';
+			xml += ' localNumber="' + ui.cmn.text.xml.encode(item.column45) + '"';
+			xml += ' customerNumber="' + item.column46 + '"';
+			xml += ' clientName="' + ui.cmn.text.xml.encode(item.column47) + '"';
+			xml += ' customerStreet="' + ui.cmn.text.xml.encode(item.column48) + '"';
+			xml += ' customerCity="' + ui.cmn.text.xml.encode(item.column49) + '"';
+			xml += ' customerState="' + item.column50 + '"';
+			xml += ' customerZipCode="' + item.column51 + '"';
+			xml += ' customerPhone="' + item.column52 + '"';
+			xml += ' customerBiller="' + ui.cmn.text.xml.encode(item.column53) + '"';
+			xml += ' billingFrequency="' + item.column54 + '"';
+			xml += ' paymentTerms="' + ui.cmn.text.xml.encode(item.column55) + '"';
+			xml += ' creditApprovalNumber="' + ui.cmn.text.xml.encode(item.column56) + '"';
+			xml += ' regularContractPrice="' + ui.cmn.text.xml.encode(item.column57) + '"';
+			xml += ' clientStatus="' + ui.cmn.text.xml.encode(item.column58) + '"';
+			xml += ' taxExemptionNumber="' + ui.cmn.text.xml.encode(item.column59) + '"';
+			xml += ' certificate="' + ui.cmn.text.xml.encode(item.column60) + '"';
+			xml += ' einNumber="' + ui.cmn.text.xml.encode(item.column61) + '"';
+			xml += ' companyStatus="' + ui.cmn.text.xml.encode(item.column62) + '"';
+			xml += ' contract="' + item.column63 + '"';
+			xml += ' contractType="' + item.column64 + '"';
+			xml += ' contractLength="' + ui.cmn.text.xml.encode(item.column65) + '"';
+			xml += ' expirationDate="' + item.column66 + '"';
+			xml += ' tenetHealthcareAccount="' + item.column67 + '"';
+			xml += ' squareFootage="' + ui.cmn.text.xml.encode(item.column68) + '"';
+			xml += ' licensedBeds="' + ui.cmn.text.xml.encode(item.column69) + '"';
+			xml += ' gpoMember="' + ui.cmn.text.xml.encode(item.column70) + '"';
+			xml += ' startDateFirm="' + ui.cmn.text.xml.encode(item.column71) + '"';
+			xml += ' compassPurchaseAnySupplies="' + item.column72 + '"';
+			xml += ' contactName="' + ui.cmn.text.xml.encode(item.column73) + '"';
+			xml += ' contactNumber="' + ui.cmn.text.xml.encode(item.column74) + '"';
+			xml += ' typesOfSuppliesPurchased="' + ui.cmn.text.xml.encode(item.column75) + '"';
+			xml += ' chargeable="' + item.column76 + '"';
+			xml += ' markup="' + ui.cmn.text.xml.encode(item.column77) + '"';
+			xml += ' serviceLocationNumber="' + item.column78 + '"';
+			xml += ' serviceLocationName="' + ui.cmn.text.xml.encode(item.column79) + '"';
+			xml += ' serviceLocationStreet="' + ui.cmn.text.xml.encode(item.column80) + '"';
+			xml += ' serviceLocationCity="' + ui.cmn.text.xml.encode(item.column81) + '"';
+			xml += ' serviceLocationState="' + item.column82 + '"';
+			xml += ' serviceLocationZipCode="' + item.column83 + '"';
+			xml += ' miscNumber="' + ui.cmn.text.xml.encode(item.column84) + '"';
+			xml += ' exterior="' + ui.cmn.text.xml.encode(item.column85) + '"';
+			xml += ' foodCourt="' + ui.cmn.text.xml.encode(item.column86) + '"';
+			xml += ' commonArea="' + ui.cmn.text.xml.encode(item.column87) + '"';
+			xml += ' otherAreas="' + ui.cmn.text.xml.encode(item.column88) + '"';
+			xml += ' action="' + me.status + '"';
 
-				if (me.status == "SendRequest") {
-					var index = 0;
-					var primaryContractTypeTitle = "";
-					var stateTitle = "";
-					var primaryServiceProvidedTitle = "";
-					var otherServicesProvided = "";
-					var hourlyCompanyTitle = "";
-					var salaryCompanyTitle = "";
-					var unionAccountTitle = "";
-					var customerStateTitle = "";
-					var billingFrequencyTitle = "";
-					var contractTypeTitle = "";
-					var serviceLocationStateTitle = "";
+			if (me.status == "SendRequest") {
+				var index = 0;
+				var primaryContractTypeTitle = "";
+				var stateTitle = "";
+				var primaryServiceProvidedTitle = "";
+				var otherServicesProvided = "";
+				var hourlyCompanyTitle = "";
+				var salaryCompanyTitle = "";
+				var unionAccountTitle = "";
+				var customerStateTitle = "";
+				var billingFrequencyTitle = "";
+				var contractTypeTitle = "";
+				var serviceLocationStateTitle = "";
+				
+				index = ii.ajax.util.findIndexById(item.column16, me.contractTypes);
+				if (index != undefined && index >= 0)
+					primaryContractTypeTitle = me.contractTypes[index].name;
+				
+				index = ii.ajax.util.findIndexById(item.column29, me.stateTypes);
+				if (index != undefined && index >= 0)
+					stateTitle = me.stateTypes[index].name;
 					
-					index = ii.ajax.util.findIndexById(item.column16, me.contractTypes);
-					if (index != undefined && index >= 0)
-						primaryContractTypeTitle = me.contractTypes[index].name;
-					
-					index = ii.ajax.util.findIndexById(item.column29, me.stateTypes);
-					if (index != undefined && index >= 0)
-						stateTitle = me.stateTypes[index].name;
-						
-					index = ii.ajax.util.findIndexById(item.column33, me.serviceTypes);
-					if (index != undefined && index >= 0)
-						primaryServiceProvidedTitle = me.serviceTypes[index].name;
+				index = ii.ajax.util.findIndexById(item.column33, me.serviceTypes);
+				if (index != undefined && index >= 0)
+					primaryServiceProvidedTitle = me.serviceTypes[index].name;
 
-					otherServicesProvidedTemp = item.column34.split(',');
-					for (var itemIndex = 0; itemIndex < otherServicesProvidedTemp.length; itemIndex++) {
-						index = ii.ajax.util.findIndexById(otherServicesProvidedTemp[itemIndex], me.serviceTypes);
-						if (index != undefined && index >= 0)
-							otherServicesProvided += (otherServicesProvided != "" ? ", " : "") + me.serviceTypes[index].name;
-					}
-					
-					index = ii.ajax.util.findIndexById(item.column36, me.payPayrollCompanys);
+				otherServicesProvidedTemp = item.column34.split(',');
+				for (var itemIndex = 0; itemIndex < otherServicesProvidedTemp.length; itemIndex++) {
+					index = ii.ajax.util.findIndexById(otherServicesProvidedTemp[itemIndex], me.serviceTypes);
 					if (index != undefined && index >= 0)
-						hourlyCompanyTitle = me.payPayrollCompanys[index].title;
-		
-					index = ii.ajax.util.findIndexById(item.column38, me.payPayrollCompanys);
-					if (index != undefined && index >= 0)
-						salaryCompanyTitle = me.payPayrollCompanys[index].title;
-	
-					index = ii.ajax.util.findIndexById(item.column43, me.houseCodeTypes);
-					if (index != undefined && index >= 0)
-						unionAccountTitle = me.houseCodeTypes[index].name;
-					
-					index = ii.ajax.util.findIndexById(item.column50, me.stateTypes);
-					if (index != undefined && index >= 0)
-						customerStateTitle = me.stateTypes[index].name;
-					
-					index = ii.ajax.util.findIndexById(item.column54, me.billingCycleFrequencys);
-					if (index != undefined && index >= 0)
-						billingFrequencyTitle = me.billingCycleFrequencys[index].name;
-					
-					index = ii.ajax.util.findIndexById(item.column64, me.termsOfContractTypes);
-					if (index != undefined && index >= 0)
-						contractTypeTitle = me.termsOfContractTypes[index].name;
-						
-					index = ii.ajax.util.findIndexById(item.column82, me.stateTypes);
-					if (index != undefined && index >= 0)
-						serviceLocationStateTitle = me.stateTypes[index].name;
-					
-					xml += ' requestorEmail="' + ui.cmn.text.xml.encode(me.persons[0].email) + '"';
-					xml += ' primaryContractTypeTitle="' + ui.cmn.text.xml.encode(primaryContractTypeTitle) + '"';
-					xml += ' stateTitle="' + ui.cmn.text.xml.encode(stateTitle) + '"';
-					xml += ' primaryServiceProvidedTitle="' + ui.cmn.text.xml.encode(primaryServiceProvidedTitle) + '"';
-					xml += ' otherServicesProvidedTitle="' + ui.cmn.text.xml.encode(otherServicesProvided) + '"';
-					xml += ' hourlyCompanyTitle="' + ui.cmn.text.xml.encode(hourlyCompanyTitle) + '"';
-					xml += ' salaryCompanyTitle="' + ui.cmn.text.xml.encode(salaryCompanyTitle) + '"';
-					xml += ' unionAccountTitle="' + ui.cmn.text.xml.encode(unionAccountTitle) + '"';
-					xml += ' customerStateTitle="' + ui.cmn.text.xml.encode(customerStateTitle) + '"';
-					xml += ' billingFrequencyTitle="' + ui.cmn.text.xml.encode(billingFrequencyTitle) + '"';
-					xml += ' contractTypeTitle="' + ui.cmn.text.xml.encode(contractTypeTitle) + '"';
-					xml += ' serviceLocationStateTitle="' + ui.cmn.text.xml.encode(serviceLocationStateTitle) + '"';
+						otherServicesProvided += (otherServicesProvided != "" ? ", " : "") + me.serviceTypes[index].name;
 				}
-				xml += '/>';
+				
+				index = ii.ajax.util.findIndexById(item.column36, me.payPayrollCompanys);
+				if (index != undefined && index >= 0)
+					hourlyCompanyTitle = me.payPayrollCompanys[index].title;
+	
+				index = ii.ajax.util.findIndexById(item.column38, me.payPayrollCompanys);
+				if (index != undefined && index >= 0)
+					salaryCompanyTitle = me.payPayrollCompanys[index].title;
+
+				index = ii.ajax.util.findIndexById(item.column43, me.houseCodeTypes);
+				if (index != undefined && index >= 0)
+					unionAccountTitle = me.houseCodeTypes[index].name;
+				
+				index = ii.ajax.util.findIndexById(item.column50, me.stateTypes);
+				if (index != undefined && index >= 0)
+					customerStateTitle = me.stateTypes[index].name;
+				
+				index = ii.ajax.util.findIndexById(item.column54, me.billingCycleFrequencys);
+				if (index != undefined && index >= 0)
+					billingFrequencyTitle = me.billingCycleFrequencys[index].name;
+				
+				index = ii.ajax.util.findIndexById(item.column64, me.termsOfContractTypes);
+				if (index != undefined && index >= 0)
+					contractTypeTitle = me.termsOfContractTypes[index].name;
+
+				index = ii.ajax.util.findIndexById(item.column82, me.stateTypes);
+				if (index != undefined && index >= 0)
+					serviceLocationStateTitle = me.stateTypes[index].name;
+
+				xml += ' primaryContractTypeTitle="' + ui.cmn.text.xml.encode(primaryContractTypeTitle) + '"';
+				xml += ' stateTitle="' + ui.cmn.text.xml.encode(stateTitle) + '"';
+				xml += ' primaryServiceProvidedTitle="' + ui.cmn.text.xml.encode(primaryServiceProvidedTitle) + '"';
+				xml += ' otherServicesProvidedTitle="' + ui.cmn.text.xml.encode(otherServicesProvided) + '"';
+				xml += ' hourlyCompanyTitle="' + ui.cmn.text.xml.encode(hourlyCompanyTitle) + '"';
+				xml += ' salaryCompanyTitle="' + ui.cmn.text.xml.encode(salaryCompanyTitle) + '"';
+				xml += ' unionAccountTitle="' + ui.cmn.text.xml.encode(unionAccountTitle) + '"';
+				xml += ' customerStateTitle="' + ui.cmn.text.xml.encode(customerStateTitle) + '"';
+				xml += ' billingFrequencyTitle="' + ui.cmn.text.xml.encode(billingFrequencyTitle) + '"';
+				xml += ' contractTypeTitle="' + ui.cmn.text.xml.encode(contractTypeTitle) + '"';
+				xml += ' serviceLocationStateTitle="' + ui.cmn.text.xml.encode(serviceLocationStateTitle) + '"';
 			}
-//			else if (me.status == "CancelRequest") {
-//				xml += '<houseCodeRequestStatusUpdate';
-//                xml += ' id="' + me.houseCodeRequestGrid.data[me.lastSelectedRowIndex].id + '"';
-//                xml += ' statusType="6"';
-//                xml += '/>';
-//			}
+			
+			if (me.status == "UnApproveRequestStep1" || me.status == "UnApproveRequestStep2")
+				xml += ' notes="' + ui.cmn.text.xml.encode(me.notes.value) + '"';
+			else 
+				xml += ' notes=""';
+		
+			xml += '/>';
 
 			return xml;
 		},
@@ -3009,11 +3311,11 @@ ii.Class({
 								me.lastSelectedRowIndex = me.houseCodeRequestGrid.activeRowIndex;
 								me.houseCodeRequests[me.lastSelectedRowIndex] = item;
 							}
-							
+
 							me.status = "";
 							me.houseCodeRequestGrid.setData(me.houseCodeRequests);
 							me.houseCodeRequestGrid.body.select(me.lastSelectedRowIndex);
-							
+
 							break;
 					}
 				});
@@ -3032,7 +3334,7 @@ ii.Class({
 
 function loadPopup() {
 	centerPopup();
-	
+
 	$("#backgroundPopup").css({
 		"opacity": "0.5"
 	});
@@ -3041,7 +3343,7 @@ function loadPopup() {
 }
 
 function hidePopup() {
-	
+
 	$("#backgroundPopup").fadeOut("slow");
 	$("#popupWorkflow").fadeOut("slow");
 }
@@ -3051,7 +3353,7 @@ function centerPopup() {
 	var windowHeight = document.documentElement.clientHeight;
 	var popupWidth = $("#popupWorkflow").width();
 	var popupHeight = $("#popupWorkflow").height();
-		
+
 	$("#popupLoading, #popupWorkflow").css({
 		"top": windowHeight/2 - popupHeight/2,
 		"left": windowWidth/2 - popupWidth/2

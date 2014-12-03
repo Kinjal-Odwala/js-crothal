@@ -30,9 +30,6 @@
 		        <div id="popupMessageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
 		    </div>
 		</div>
-  	 	<div class="pageHeader">
-	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
-        </div>
 		<div style="clear:both;"></div>
 		<div id="itemStatusDiv">
 			<div id="itemStatusImage" class="itemStatusImage"></div>
@@ -200,6 +197,15 @@
 							</div>
 							<div style="clear:both;"></div>
 						</div>
+						<div id="DivHouseCode">
+							<div class="labelTextArea">
+								<span class="requiredFieldIndicator">&#149;</span>House Code:
+							</div>
+							<div class="inputTextArea">
+								<div id="HouseCode"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
 					</div>
 					<div id="siteInfoContainer">
 						<div class="subHeader">Date Information:</div>
@@ -322,7 +328,7 @@
 									<span class="nonRequiredFieldIndicator">Other Services Provided:</span>
 								</div>
 								<div class="inputTextArea">
-									<div id="OtherServicesProvided"></div>
+									<select id="OtherServicesProvided" name="OtherServicesProvided" multiple="multiple" tabindex="32"></select>
 								</div>
 								<div style="clear:both;"></div>
 							</div>
@@ -351,7 +357,7 @@
 							</div>
 							<div id="TableEditArea">
 								<div class="labelTextArea">
-									<span class="requiredFieldIndicator">&#149;</span>Epay:
+									<span class="nonRequiredFieldIndicator">Epay:</span>
 								</div>
 								<div class="inputTextArea">
 									<div id="Epay"></div>
@@ -869,12 +875,35 @@
 						</div>
 					</div>
 		        </div>
-				<div class="contentArea">
-					 <div id="AnchorCancel"></div>
+				<div class="contentArea" id="ButtonContainer">
+					 <div id="AnchorClose"></div>
 					 <div id="AnchorPrev"></div>
 					 <div id="AnchorNext"></div>
 					 <div id="AnchorSave"></div>
+					 <div id="AnchorApprove"></div>
+					 <div id="AnchorSaveAndApprove"></div>
+					 <div id="AnchorCancel"></div>
+					 <div id="AnchorExit"></div>
 					 <div style="clear:both;"></div>
+				</div>
+				<div id="popupNotes">
+					<div class="contentArea">
+						<div style="clear:both;height:20px;"></div>
+						<div id="TableEditArea">
+							<div class="notesLabel">
+								<span id="nonRequiredFieldIndicator">Notes:</span>
+							</div>
+							<div class="InputTextArea">
+								<textarea id="Notes"></textarea>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div class="contentArea">
+							 <div id="AnchorOk"></div>
+							 <div id="AnchorClosePopup"></div>
+							 <div style="clear:both;"></div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
