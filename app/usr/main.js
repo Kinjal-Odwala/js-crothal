@@ -79,6 +79,35 @@ ii.Class({
 			me.userRoleStore.fetch("userId:[user],", me.userRolesLoaded, me);
 			me.weekPeriodYearStore.fetch("userId:[user],", me.weekPeriodYearLoaded, me);
 			me.systemVariableStore.fetch("userId:[user],name:ShowFeedbackLink", me.systemVariablesLoaded, me);
+			
+			// Redirect to Housecode Workflow UI if user click on email link for approving the request.
+			var queryStringArgs = {};
+			var queryString = location.search.substring(1);
+			var pairs = queryString.split("&"); 
+			
+			for (var index = 0; index < pairs.length; index++) { 
+				var pos = pairs[index].indexOf("="); 
+				if (pos == -1) continue; 
+				var argName = pairs[index].substring(0, pos); 
+				var value = pairs[index].substring(pos + 1); 
+				queryStringArgs[argName] = unescape(value); 
+			}
+
+			if (queryStringArgs["type"] == "hcWorkflow") {
+				me.intervalId = setInterval(function() {
+					if (top.ui.ctl.menu.Dom.me) {
+						clearInterval(me.intervalId);
+						$(top.ui.ctl.menu.Dom.me.items["hcm"].xmlNode).find("item").each(function() {
+							if ($(this).attr("id") == "hcwf") {
+								var actionData = $(this).attr("actionData") + "?id=" + queryStringArgs["id"] + "&step=" + queryStringArgs["step"];
+								$(this).attr("actionData", actionData);
+								$(this).attr("state", "Selected");
+								$(top.ui.ctl.menu.Dom.me.items["hcm"]).select();
+							}
+						});
+					}
+				}, 500);
+			}
 		},
 		
 		weekPeriodYearLoaded: function fin_app_UserInterface_weekPeriodYearLoaded(me, activeId) {

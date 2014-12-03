@@ -87,11 +87,25 @@
 	margin-bottom: 1px;	
 }
 
+.notesLabel {
+	color: #032D23;
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	height: 27px;
+	width: 60px;
+	padding-top: 3px;
+}
+
 #houseCodeDetailContainer {
 	border: solid #AAAAAA thin;
 	border-width: 1px;
 	padding: 5px;
 	margin: 1px;
+}
+
+#ButtonContainer {
+	padding-left: 20px;
 }
 
 #AnchorEdit {
@@ -118,11 +132,11 @@
 	margin-right: 5px;
 }
 
-#AnchorCancel {
+#AnchorClose {
 	float: left;
-	width: 80px;
+	width: 72px;
 	margin-right: 5px;
-	padding-left: 20px;
+	padding-left: 0px;
 	padding-top: 5px;
 }
 
@@ -148,6 +162,69 @@
 	margin-right: 5px;
 	padding-left: 0px;
 	padding-top: 5px;
+}
+
+#AnchorApprove {
+	float: left;
+	width: 92px;
+	margin-right: 5px;
+	padding-left: 0px;
+	padding-top: 5px;
+}
+
+#AnchorSaveAndApprove {
+	float: left;
+	width: 156px;
+	margin-right: 5px;
+	padding-left: 0px;
+	padding-top: 5px;
+}
+
+#AnchorCancel {
+	float: left;
+	width: 80px;
+	margin-right: 5px;
+	padding-left: 0px;
+	padding-top: 5px;
+}
+
+#AnchorExit {
+	float: left;
+	width: 68px;
+	margin-right: 5px;
+	padding-left: 0px;
+	padding-top: 5px;
+}
+
+#popupNotes {
+	width: 530px;
+	height: 180px;
+	border: 1px black solid;
+	border-width: 1px;
+	position: absolute;
+	z-index: 5025;
+	background-color: #F0EFDD;
+	display: none;
+}
+
+#Notes {
+	float: left;
+	width: 450px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: black;
+}
+
+#AnchorOk {
+	float: left;
+	width: 54px;
+	padding: 10px 5px 0px 60px;	
+}
+
+#AnchorClosePopup {
+	float: left;	
+	width: 82px;
+	padding: 10px 5px 0px 5px;
 }
 
 #popupWorkflow {

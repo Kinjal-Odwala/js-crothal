@@ -21,9 +21,9 @@ ii.init.register( function() {
 		, column10: {type: String, required: false, defaultValue: ""}   // 
 		, column11: {type: String, required: false, defaultValue: ""} 	//
 		, column12: {type: String, required: false, defaultValue: ""}   // 
-		, column13: {type: String, required: false, defaultValue: ""}   // 
-		, column14: {type: String, required: false, defaultValue: ""} 	// 
-		, column15: {type: String, required: false, defaultValue: ""}   // 
+		, column13: {type: String, required: false, defaultValue: ""}   // House Code
+		, column14: {type: String, required: false, defaultValue: ""} 	// Email
+		, column15: {type: String, required: false, defaultValue: ""}   // Notes
 		, column16: {type: String, required: false, defaultValue: ""} 	// Contract Type
 		, column17: {type: String, required: false, defaultValue: ""} 	// Division
 		, column18: {type: String, required: false, defaultValue: ""} 	// SVP
@@ -121,6 +121,11 @@ ii.init.register( function() {
 	fin.hcm.houseCodeWorkflow.siteArgs = {
 	   id: {type: Number}
 	   , title: {type: String, required: false, defaultValue: ""}
+	};
+	
+	fin.hcm.houseCodeWorkflow.houseCodeArgs = {
+		id: {type: Number}
+		, name: {type: String}
 	};
 	
 	fin.hcm.houseCodeWorkflow.divisionArgs = {
@@ -249,6 +254,16 @@ ii.Class({
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.siteArgs);
 			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.houseCodeWorkflow.HouseCode",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.houseCodeArgs);
+			$.extend(this, args);			
 		}
 	}
 });
