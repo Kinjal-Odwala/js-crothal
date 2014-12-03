@@ -1228,21 +1228,7 @@ ii.Class({
 			var iIndex = me.itemGrid.activeRowIndex;
 			var quantity = me.quantity.getValue();
 			var price = me.price.getValue();
-			me.total = 0;
-			
-			if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked && (!me.itemNumber.valid
-					|| !me.itemDescription.valid
-					|| !me.account.valid
-					|| !me.price.valid
-					|| !me.quantity.valid
-					|| !me.uom.valid)
-				) {
-					if(object.checked)
-						$("#" + object.id).attr("checked", false);
-					else if(!object.checked)
-						$("#" + object.id).attr("checked", true);
-					return false;
-			}
+			me.total = 0;			
 			
 			for (var index = 0; index < me.itemGrid.data.length; index++) {
 				if ($("#selectInputCheck" + index)[0].checked) {
@@ -1685,12 +1671,7 @@ ii.Class({
 				me.vendorContactName.setValue(me.vendors[index].contactName);
 				me.vendorPhone.setValue(me.vendors[index].phoneNumber);
 				me.vendorEmail.setValue(me.vendors[index].email);
-				me.account.setData(me.glAccounts);
-				me.searchItem.text.readOnly = false;
-				$("#CategoryText").attr('disabled', false);
-				$("#CategoryAction").addClass("iiInputAction");
-				$("#CatalogText").attr('disabled', false);
-				$("#CatalogAction").addClass("iiInputAction");
+				me.account.setData(me.glAccounts);				
 				me.category.fetchingData();
 				me.catalog.fetchingData();
 				me.poRequisitionDetailStore.reset();
@@ -1703,7 +1684,7 @@ ii.Class({
 			else {
 				me.vendorId = 0;
 				me.vendorNumber = "";
-				me.vendor.setValue("");
+				me.vendor.setValue(me.vendorName.text.value);
 				me.vendorAddress1.setValue("");
 				me.vendorAddress2.setValue("");
 				me.vendorCity.setValue("");				
@@ -1711,12 +1692,7 @@ ii.Class({
 				me.vendorZip.setValue("");
 				me.vendorContactName.setValue("");
 				me.vendorPhone.setValue("");
-				me.vendorEmail.setValue("");
-				me.searchItem.text.readOnly = true;
-				$("#CategoryText").attr('disabled', true);
-				$("#CategoryAction").removeClass("iiInputAction");
-				$("#CatalogText").attr('disabled', true);
-				$("#CatalogAction").removeClass("iiInputAction");
+				me.vendorEmail.setValue("");				
 				$("#popupLoading").hide();
 			}
 		},
@@ -1732,7 +1708,7 @@ ii.Class({
 				me.catalogStore.reset();
 				me.catalogStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.catalogsLoaded, me);
 			}
-			else
+			else 
 				$("#popupLoading").hide();			
 		},
 		
@@ -1777,6 +1753,7 @@ ii.Class({
 		validatePORequisition: function() {
 			var me = this;
 			var valid = true;			
+			var alertMessage = false;
 			
 			me.validator.forceBlur();
 			
@@ -1811,12 +1788,9 @@ ii.Class({
 					return true;
 			}
 			else if (me.wizardCount == 2) {
-				if (me.itemGrid.activeRowIndex == -1)
-				 	return true;
-					
-				valid = me.validator.queryValidity(true);
-                
-				if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked && (!me.itemNumber.valid
+				valid = me.validator.queryValidity(true);                
+			
+				if (me.itemGrid.activeRowIndex != undefined && me.itemGrid.activeRowIndex != -1 && $("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked && (!me.itemNumber.valid
 					|| !me.itemDescription.valid
 					|| !me.account.valid
 					|| !me.price.valid
@@ -1824,8 +1798,23 @@ ii.Class({
 					|| !me.uom.valid)
 				) {
 					alert("In order to continue, the errors on the page must be corrected.");
-					return false;
+					alertMessage = true;
 				}
+				
+				if (!alertMessage) {
+					me.itemGrid.body.deselectAll();
+                
+	                for (var index = 0; index < me.itemGrid.data.length; index++) {
+	                	if ($("#selectInputCheck" + index)[0].checked && me.itemGrid.data[index].quantity == "") {
+	                		alert("Please enter Quantity.");
+	                		alertMessage = true;
+	                		break;
+	                	}                		
+					}	
+				}				
+				
+				if(alertMessage)
+					return false;
 				else
 					return true;
 			}
@@ -2034,7 +2023,25 @@ ii.Class({
 					me.anchorNext.display(ui.cmn.behaviorStates.enabled);
 					me.anchorBack.display(ui.cmn.behaviorStates.enabled);
 					me.anchorSave.display(ui.cmn.behaviorStates.disabled);
-					$("#Header").text("Item Information");					
+					$("#Header").text("Item Information");
+					
+					if (me.vendorNumber == "") {
+						me.searchItem.text.readOnly = true;
+						me.category.text.readOnly = true;
+						$("#CategoryAction").removeClass("iiInputAction");
+						me.catalog.text.readOnly = true;
+						$("#CatalogAction").removeClass("iiInputAction");
+						me.anchorSearch.display(ui.cmn.behaviorStates.disabled);							
+					}
+					else {
+						me.searchItem.text.readOnly = false;
+						me.category.text.readOnly = false;
+						$("#CategoryAction").addClass("iiInputAction");
+						me.catalog.text.readOnly = false;
+						$("#CatalogAction").addClass("iiInputAction");
+						me.anchorSearch.display(ui.cmn.behaviorStates.enabled);
+					}
+										
 					break;
 					
 				case 3:	
