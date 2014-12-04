@@ -1593,6 +1593,7 @@ ii.Class({
 					$('#BudgetingUnbudgeted').attr('checked', true);
 				
 				me.vendor.setValue(item.vendorTitle);
+				me.vendorNumber = item.vendorNumber;
 				me.taxPercent.setValue(item.taxPercent == 0 ? "" : item.taxPercent);
 				me.taxAmount.setValue(item.taxAmount == 0 ? "" : item.taxAmount);
 				me.freight.setValue(item.freight == 0 ? "" : item.freight);
@@ -2001,8 +2002,9 @@ ii.Class({
 			me.deliveryDate.setValue("");
 			me.projectNumber.setValue("");
 			me.vendorStore.reset();
-			me.vendorName.reset();
+			me.vendorName.reset();			
 			me.vendorName.select(-1, me.vendorName.focused);
+			me.vendorNumber = "";
 			me.vendorAddress1.setValue("");
 			me.vendorAddress2.setValue("");
 			me.vendorCity.setValue("");

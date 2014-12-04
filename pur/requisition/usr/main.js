@@ -1508,6 +1508,7 @@ ii.Class({
 					$('#UrgencyNotUrgent').attr('checked', true);
 				
 				me.vendor.setValue(item.vendorTitle);
+				me.vendorNumber = item.vendorNumber;
 				
 				itemIndex = ii.ajax.util.findIndexById(item.houseCode.toString(), me.houseCodes);
 				if (itemIndex != undefined) 
@@ -1900,6 +1901,7 @@ ii.Class({
 			me.vendorStore.reset();
 			me.vendorName.reset();
 			me.vendorName.select(-1, me.vendorName.focused);
+			me.vendorNumber = "";
 			me.vendorAddress1.setValue("");
 			me.vendorAddress2.setValue("");
 			me.vendorCity.setValue("");
