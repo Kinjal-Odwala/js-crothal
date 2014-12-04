@@ -184,6 +184,10 @@
 	padding-left: 10px;
 }
 
+#QuantityText, #PriceText  {
+	text-align: right;
+}
+
 #AnchorNew {
 	float: left;
 	width: 68px;

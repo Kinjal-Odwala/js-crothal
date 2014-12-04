@@ -73,6 +73,18 @@
 	padding-left: 5px;
 }
 
+.labelTextAreaSmallRight {
+	float: left;
+	width: 96px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	text-align: right;
+	padding-right: 0px;
+	height: 27px;
+	padding-left: 5px;
+}
+
 .labelTextAreaMedium {
 	float: left;
 	width: 105px;
@@ -161,29 +173,6 @@
     background-color: #adaaad;
 }
 
-.iiGridHeaderTotalColumn {
-	-moz-border-bottom-colors: none;
-	-moz-border-left-colors: none;
-	-moz-border-right-colors: none;
-	-moz-border-top-colors: none;
-	background-color: white;
-	border-color: #aaaaaa -moz-use-text-color #aaaaaa #aaaaaa;
-	border-image: none;
-	border-style: solid none solid solid;
-	border-width: 0px medium 0px 0px;
-	color: #2c2f50;
-	float: left;
-	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
-	font-size: 12px;
-	font-weight: bold;
-	width:100%;
-	padding-left: 0;
-	padding-right: 0;
-	padding-top: 3px;
-	text-align: right;
-	text-transform: uppercase;
-}
-
 #InputTextStatus {
 	float: left; 
 	width: 145px; 
@@ -246,6 +235,10 @@
 	padding-top: 1px;
 	padding-bottom: 1px;
 	padding-left: 10px;
+}
+
+#TaxAmountText, #TaxPercentText, #FreightText, #QuantityText, #PriceText  {
+	text-align: right;
 }
 
 #AnchorNew {

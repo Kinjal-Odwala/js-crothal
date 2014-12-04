@@ -2370,12 +2370,15 @@ ii.Class({
 					return false;
 			}
 			else if (me.currentWizard == "HierarchyInfo") {
-				var item = me.houseCodeRequestGrid.data[me.lastSelectedRowIndex];
+				
 				if (!me.svp.validate(true) || !me.dvp.validate(true) || !me.rvp.validate(true)
 					|| !me.srm.validate(true) || !me.rm.validate(true) || !me.am.validate(true))
 					return false;
-				else if (item.column7 == "Step 1 Approved" && me.workflowId > 0 && me.workflowStep == 2 && !me.houseCode.validate(true))
-					return false;
+				else if (me.lastSelectedRowIndex >= 0) {
+					var item = me.houseCodeRequestGrid.data[me.lastSelectedRowIndex];
+					if (item.column7 == "Step 1 Approved" && me.workflowId > 0 && me.workflowStep == 2 && !me.houseCode.validate(true))
+						return false;
+				}
 			}
 			else if (me.currentWizard == "SiteInfo") {
 				if (!me.startDate.validate(true) || !me.siteName.validate(true) || !me.street1.validate(true)

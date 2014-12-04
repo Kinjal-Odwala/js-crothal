@@ -1269,20 +1269,6 @@ ii.Class({
 			me.subTotal = 0;
 			me.total = 0;
 			
-			if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0] != undefined && $("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked && (!me.itemNumber.valid
-					|| !me.itemDescription.valid
-					|| !me.account.valid
-					|| !me.price.valid
-					|| !me.quantity.valid
-					|| !me.uom.valid)
-				) {
-					if(object.checked)
-						$("#" + object.id).attr("checked", false);
-					else if(!object.checked)
-						$("#" + object.id).attr("checked", true);
-					return false;
-			}
-			
 			for (var index = 0; index < me.itemGrid.data.length; index++) {
 				if ($("#selectInputCheck" + index)[0] != undefined && $("#selectInputCheck" + index)[0].checked) {
 					if (iIndex == index && quantity != "" && !isNaN(quantity) && price != undefined)
@@ -1299,8 +1285,8 @@ ii.Class({
 				}
 			}
 			
-			if(me.subTotal != 0 && me.taxPercent.getValue() != "")
-				me.taxAmount.setValue((me.subTotal * me.taxPercent.getValue()) / 100);
+			if(me.subTotal != 0 && me.taxPercent.getValue() != "" && !isNaN(me.taxPercent.getValue()))
+				me.taxAmount.setValue(ui.cmn.text.money.format((me.subTotal * me.taxPercent.getValue()) / 100));
 			
 			var tax = me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue();
 				
@@ -1347,8 +1333,8 @@ ii.Class({
 				}
 			}
 			
-			if(me.subTotal != 0 && me.taxPercent.getValue() != "")
-				me.taxAmount.setValue((me.subTotal * me.taxPercent.getValue()) / 100);
+			if(me.subTotal != 0 && me.taxPercent.getValue() != "" && !isNaN(me.taxPercent.getValue()))
+				me.taxAmount.setValue(ui.cmn.text.money.format((me.subTotal * me.taxPercent.getValue()) / 100));
 			
 			var tax = me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue();
 			
@@ -1607,6 +1593,7 @@ ii.Class({
 					$('#BudgetingUnbudgeted').attr('checked', true);
 				
 				me.vendor.setValue(item.vendorTitle);
+				me.vendorNumber = item.vendorNumber;
 				me.taxPercent.setValue(item.taxPercent == 0 ? "" : item.taxPercent);
 				me.taxAmount.setValue(item.taxAmount == 0 ? "" : item.taxAmount);
 				me.freight.setValue(item.freight == 0 ? "" : item.freight);
@@ -1774,12 +1761,7 @@ ii.Class({
 				me.vendorContactName.setValue(me.vendors[index].contactName);
 				me.vendorPhone.setValue(me.vendors[index].phoneNumber);
 				me.vendorEmail.setValue(me.vendors[index].email);
-				me.account.setData(me.glAccounts);
-				me.searchItem.text.readOnly = false;
-				$("#CategoryText").attr('disabled', false);
-				$("#CategoryAction").addClass("iiInputAction");
-				$("#CatalogText").attr('disabled', false);
-				$("#CatalogAction").addClass("iiInputAction");
+				me.account.setData(me.glAccounts);				
 				me.category.fetchingData();
 				me.catalog.fetchingData();
 				me.poCapitalRequisitionItemStore.reset();
@@ -1792,7 +1774,7 @@ ii.Class({
 			else {
 				me.vendorId = 0;
 				me.vendorNumber = "";
-				me.vendor.setValue("");
+				me.vendor.setValue(me.vendorName.text.value);
 				me.vendorAddress1.setValue("");
 				me.vendorAddress2.setValue("");
 				me.vendorCity.setValue("");				
@@ -1801,11 +1783,6 @@ ii.Class({
 				me.vendorContactName.setValue("");
 				me.vendorPhone.setValue("");
 				me.vendorEmail.setValue("");
-				me.searchItem.text.readOnly = true;
-				$("#CategoryText").attr('disabled', true);
-				$("#CategoryAction").removeClass("iiInputAction");
-				$("#CatalogText").attr('disabled', true);
-				$("#CatalogAction").removeClass("iiInputAction");
 				$("#popupLoading").hide();
 			}
 		},
@@ -1867,6 +1844,7 @@ ii.Class({
 		validatePOCapitalRequisition: function() {
 			var me = this;
 			var valid = true;			
+			var alertMessage = false;
 			
 			me.validator.forceBlur();
 			
@@ -1907,28 +1885,44 @@ ii.Class({
 					return true;
 			}
 			else if (me.wizardCount == 2) {
-				if (me.itemGrid.activeRowIndex == -1 && me.taxPercent.valid && me.taxAmount.valid && me.freight.valid)
+				if (me.itemGrid.activeRowIndex != undefined && me.itemGrid.activeRowIndex == -1 && me.taxPercent.valid && me.taxAmount.valid && me.freight.valid)
 				 	return true;
 				 	
 				valid = me.validator.queryValidity(true);
 				
-				if (me.itemGrid.activeRowIndex != -1 && $("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked && (!me.itemNumber.valid
+				if (me.itemGrid.activeRowIndex != undefined && me.itemGrid.activeRowIndex != -1 && $("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked && (!me.itemNumber.valid
 					|| !me.itemDescription.valid
 					|| !me.account.valid
 					|| !me.price.valid
 					|| !me.quantity.valid
-					|| !me.uom.valid
-					)
+					|| !me.uom.valid)
 				) {
 					alert("In order to continue, the errors on the page must be corrected.");
-					return false;
+					alertMessage = true;
 				}
-				else if (!me.taxPercent.valid || !me.taxAmount.valid || !me.freight.valid) {
+				
+				if (!alertMessage) {
+					me.itemGrid.body.deselectAll();
+                
+	                for (var index = 0; index < me.itemGrid.data.length; index++) {
+	                	if ($("#selectInputCheck" + index)[0].checked && me.itemGrid.data[index].quantity == "") {
+	                		alert("Please enter Quantity.");
+	                		alertMessage = true;
+	                		break;
+	                	}                		
+					}	
+				}
+				
+				if (!me.taxPercent.valid || !me.taxAmount.valid || !me.freight.valid) {
 					alert("In order to continue, the errors on the page must be corrected.");
+					alertMessage = true;
+				}			
+				
+				if(alertMessage)
 					return false;
-				}
 				else
 					return true;
+				
 			}
 			else if (me.wizardCount == 3) {
 				valid = me.validator.queryValidity(true);
@@ -2008,8 +2002,9 @@ ii.Class({
 			me.deliveryDate.setValue("");
 			me.projectNumber.setValue("");
 			me.vendorStore.reset();
-			me.vendorName.reset();
+			me.vendorName.reset();			
 			me.vendorName.select(-1, me.vendorName.focused);
+			me.vendorNumber = "";
 			me.vendorAddress1.setValue("");
 			me.vendorAddress2.setValue("");
 			me.vendorCity.setValue("");
@@ -2148,7 +2143,25 @@ ii.Class({
 					me.anchorNext.display(ui.cmn.behaviorStates.enabled);
 					me.anchorBack.display(ui.cmn.behaviorStates.enabled);
 					me.anchorSave.display(ui.cmn.behaviorStates.disabled);
-					$("#Header").text("Item Information");					
+					$("#Header").text("Item Information");
+					
+					if (me.vendorNumber == "") {
+						me.searchItem.text.readOnly = true;
+						me.category.text.readOnly = true;
+						$("#CategoryAction").removeClass("iiInputAction");
+						me.catalog.text.readOnly = true;
+						$("#CatalogAction").removeClass("iiInputAction");
+						me.anchorSearch.display(ui.cmn.behaviorStates.disabled);							
+					}
+					else {
+						me.searchItem.text.readOnly = false;
+						me.category.text.readOnly = false;
+						$("#CategoryAction").addClass("iiInputAction");
+						me.catalog.text.readOnly = false;
+						$("#CatalogAction").addClass("iiInputAction");
+						me.anchorSearch.display(ui.cmn.behaviorStates.enabled);
+					}
+										
 					break;
 					
 				case 3:	
@@ -2418,9 +2431,9 @@ ii.Class({
 					, $("input[name='Budgeting']:checked").val()
 					, ""
 					, "false"
-					, (me.taxPercent.getValue() == "" ? 0 : me.taxPercent.getValue()) 
-					, (me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue())
-					, (me.freight.getValue() == "" ? 0 : me.freight.getValue())
+					, (me.taxPercent.getValue() != "" && !isNaN(me.taxPercent.getValue())) ? parseFloat(me.taxPercent.getValue()).toFixed(2) : 0
+					, (me.taxAmount.getValue() != "" && !isNaN(me.taxAmount.getValue())) ? parseFloat(me.taxAmount.getValue()).toFixed(2) : 0
+					, (me.freight.getValue() != "" && !isNaN(me.freight.getValue())) ? parseFloat(me.freight.getValue()).toFixed(2) : 0
 					);
 
 				$("#messageToUser").text("Saving");
