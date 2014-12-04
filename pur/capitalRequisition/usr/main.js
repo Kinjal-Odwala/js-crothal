@@ -1285,8 +1285,8 @@ ii.Class({
 				}
 			}
 			
-			if(me.subTotal != 0 && me.taxPercent.getValue() != "")
-				me.taxAmount.setValue((me.subTotal * me.taxPercent.getValue()) / 100);
+			if(me.subTotal != 0 && me.taxPercent.getValue() != "" && !isNaN(me.taxPercent.getValue()))
+				me.taxAmount.setValue(ui.cmn.text.money.format((me.subTotal * me.taxPercent.getValue()) / 100));
 			
 			var tax = me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue();
 				
@@ -1333,8 +1333,8 @@ ii.Class({
 				}
 			}
 			
-			if(me.subTotal != 0 && me.taxPercent.getValue() != "")
-				me.taxAmount.setValue((me.subTotal * me.taxPercent.getValue()) / 100);
+			if(me.subTotal != 0 && me.taxPercent.getValue() != "" && !isNaN(me.taxPercent.getValue()))
+				me.taxAmount.setValue(ui.cmn.text.money.format((me.subTotal * me.taxPercent.getValue()) / 100));
 			
 			var tax = me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue();
 			
@@ -2431,9 +2431,9 @@ ii.Class({
 					, $("input[name='Budgeting']:checked").val()
 					, ""
 					, "false"
-					, (me.taxPercent.getValue() == "" ? 0 : me.taxPercent.getValue()) 
-					, (me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue())
-					, (me.freight.getValue() == "" ? 0 : me.freight.getValue())
+					, (me.taxPercent.getValue() != "" && !isNaN(me.taxPercent.getValue())) ? parseFloat(me.taxPercent.getValue()).toFixed(2) : 0
+					, (me.taxAmount.getValue() != "" && !isNaN(me.taxAmount.getValue())) ? parseFloat(me.taxAmount.getValue()).toFixed(2) : 0
+					, (me.freight.getValue() != "" && !isNaN(me.freight.getValue())) ? parseFloat(me.freight.getValue()).toFixed(2) : 0
 					);
 
 				$("#messageToUser").text("Saving");
