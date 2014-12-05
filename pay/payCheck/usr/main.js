@@ -1244,7 +1244,8 @@ ii.Class({
 				if (index != undefined && index >= 0)
 					address += me.stateTypes[index].name + ", ";
 				address += me.persons[0].postalCode;
-				me.homeAddress.setValue(address);
+				if(me.homeAddress.getValue() == "")
+					me.homeAddress.setValue(address);
 			}
 		},
 		
@@ -1767,7 +1768,7 @@ ii.Class({
 
 			for (var index = 0; index < me.payCodeDetailGrid.data.length; index++) {
 				xml += '<payCheckRequestPayCode';
-				xml += ' id="' + me.payCodeDetailGrid.data[index].id + '"';;
+				xml += ' id="' + me.payCodeDetailGrid.data[index].id + '"';
 				xml += ' payCheckRequestId="' + item.id + '"';
 				xml += ' payCode="' + me.payCodeDetailGrid.data[index].payCode.id + '"';
 				xml += ' hours="' + me.payCodeDetailGrid.data[index].hours + '"';				
@@ -1781,7 +1782,7 @@ ii.Class({
 			for (var index = 0; index < me.payCheckRequestDocuments.length; index++) {
 				if (me.payCheckRequestDocuments[index].tempFileName != "") {
 					xml += '<payCheckRequestDocument';
-					xml += ' id="' + me.payCheckRequestDocuments[index].id + '"';;
+					xml += ' id="' + me.payCheckRequestDocuments[index].id + '"';
 					xml += ' title="' + ui.cmn.text.xml.encode(me.payCheckRequestDocuments[index].title) + '"';
 					xml += ' description=""';				
 					xml += ' fileName="' + ui.cmn.text.xml.encode(me.payCheckRequestDocuments[index].fileName) + '"';
@@ -1818,27 +1819,74 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-			
+
 			if (status == "success") {
-				if (me.status == "DeleteDocument") {
-					me.setStatus("Edit");
-				}
-				else {
-					if (me.status == "CheckRequest") {
-						alert("Payroll check request sent successfully.");
-						me.resetControls("CheckRequest");
+				
+				$(args.xmlNode).find("*").each(function () {
+
+					switch (this.tagName) {
+						case "payPayCheckRequest":
+						
+							var id = parseInt($(this).attr("id"), 10);
+							
+							item = new fin.pay.payCheck.PayCheckRequest(
+									id
+									, 2
+									, parent.fin.appUI.houseCodeId
+									, parent.fin.appUI.houseCodeTitle
+									, me.requestedDate.lastBlurValue
+									, me.deliveryDate.lastBlurValue
+									, me.employeeNumber.getValue()
+									, me.employeeName.getValue()
+									, me.reasonForRequest.getValue()
+									, $("input[name='TermRequest']:checked").val() == "true" ? true : false
+									, $("input[name='TermRequest']:checked").val() == "true" ? me.stateTypes[me.state.indexSelected].id : 0
+									, $("input[name='TermRequest']:checked").val() == "true" ? me.terminationDate.lastBlurValue  : ""
+									, $("input[name='CurrentPayCardUser']:checked").val() == "true" ? true : false
+									, $("input[name='InstantIssueRequest']:checked").val() == "true" ? true : false					
+									, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? true : false
+									, $("input[name='SaturdayDeliveryUnit']:checked").val() == "true" ? true : false
+									, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? me.houseCodeSearchTemplate.houseCodeIdTemplate : 0
+									, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? me.houseCodeSearchTemplate.houseCodeTitleTemplate : ""
+									, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? me.unitAddress.getValue() : ""
+									, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? me.upsPackageAttentionTo.getValue() : ""
+									, $("input[name='UPSDeliveryToHome']:checked").val() == "true" ? true : false
+									, $("input[name='SaturdayDeliveryHome']:checked").val() == "true" ? true : false
+									, $("input[name='UPSDeliveryToHome']:checked").val() == "true" ? me.homeAddress.getValue() : ""
+									, $("input[name='ProcessingFee']:checked").val() == "true" ? true : false
+									, me.deductionCode.getValue()
+									, me.amount.getValue()
+									, me.requestorName.getValue()
+									, me.requestorEmail.getValue()
+									, me.managerName.getValue()				
+									, me.managerEmail.getValue()
+									);
+									
+							if (me.status == "DeleteDocument") {
+								me.setStatus("Edit");
+							}
+							else {
+								if (me.status == "CheckRequest") {
+									alert("Payroll check request sent successfully.");
+									me.resetControls("CheckRequest");
+								}
+								else if (me.status == "CheckRequestResend") {
+									alert("Payroll check request resent successfully.");
+									me.payCheckRequests[me.payCheckRequestGrid.activeRowIndex] = item;
+									me.resetGrid();
+								}
+								else if (me.status == "CheckRequestCancel") {
+									alert("Payroll check request cancelled successfully.");
+									me.resetGrid();
+								}								
+							}
+							
+							break;
 					}
-					else if (me.status == "CheckRequestResend") {
-						alert("Payroll check request resent successfully.");
-						me.resetGrid();
-					}
-					else if (me.status == "CheckRequestCancel") {
-						alert("Payroll check request cancelled successfully.");
-						me.resetGrid();
-					}
-					me.modified(false);
-					me.setStatus("Saved");
-				}
+				});
+				
+				me.modified(false);
+				me.setStatus("Saved");
 			}
 			else {
 				me.setStatus("Error");
