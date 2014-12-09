@@ -124,6 +124,7 @@ ii.init.register( function() {
 		, itemSelect: {type: Boolean, required: false, defaultValue: true}
 		, number: {type: String, required: false, defaultValue: ""}
 		, description: {type: String, required: false, defaultValue: ""}
+		, alternateDescription: {type: String, required: false, defaultValue: ""}
 		, unit: {type: String, required: false, defaultValue: ""}
 		, manufactured: {type: String, required: false, defaultValue: ""}
 		, price: {type: String, required: false, defaultValue: ""}
@@ -138,6 +139,7 @@ ii.init.register( function() {
 		, itemSelect: {type: Boolean, required: false, defaultValue: false}
 		, number: {type: String, required: false, defaultValue: ""}
 		, description: {type: String, required: false, defaultValue: ""}
+		, alternateDescription: {type: String, required: false, defaultValue: ""}
 		, unit: {type: String, required: false, defaultValue: ""}
 		, manufactured: {type: String, required: false, defaultValue: ""}
 		, price: {type: String, required: false, defaultValue: ""}

@@ -63,7 +63,7 @@
 
 .labelTextAreaSmall {
 	float: left;
-	width: 90px;
+	width: 8%;
 	font-family: Verdana;
 	font-size: 12px;
 	color: #032D23;
@@ -75,7 +75,7 @@
 
 .labelTextAreaSmallRight {
 	float: left;
-	width: 96px;
+	width: 10%;
 	font-family: Verdana;
 	font-size: 12px;
 	color: #032D23;
@@ -87,7 +87,7 @@
 
 .labelTextAreaMedium {
 	float: left;
-	width: 105px;
+	width: 76%;
 	font-family: Verdana;
 	font-size: 12px;
 	color: #032D23;
@@ -134,8 +134,8 @@
 
 .inputTextAreaSmall {
 	float: left;
-	width: 102px;
-	height: 30px;	
+	width: 11%;
+	height: 30px;
 }
 
 .inputTextAreaMedium {
@@ -206,19 +206,11 @@
 	margin-right: 20px;
 }
 
-#itemContainerLeft {
+#itemContainer {
 	float: left;
 	position: relative;
 	vertical-align: top;
-	width: 58%;	
-	margin-right: 20px;
-}
-
-#itemContainerRight {
-	float: left;
-	position: relative;
-	vertical-align: top;
-	width: 38%;
+	width: 100%;
 	margin-right: 20px;
 }
 
