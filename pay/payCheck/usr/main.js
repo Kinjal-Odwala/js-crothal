@@ -245,8 +245,8 @@ ii.Class({
 
 					if (!(/^[0-9]+$/.test(me.employeeNumber.getValue())))
 						this.setInvalid("Please enter valid Employee Number.");
-					else
-						me.searchEmployee();
+					//else
+					//	me.searchEmployee();
 			});
 
 			me.employeeName = new ui.ctl.Input.Text({
@@ -902,6 +902,7 @@ ii.Class({
 			$("#imgEdit").bind("click", function() { me.actionEditItem(); });
 			$("#imgRemove").bind("click", function() { me.actionRemoveItem(); });
 			$("#imgView").bind("click", function() { me.actionViewItem(); });
+			$("#EmployeeNumberText").bind("blur", function() { me.searchEmployee(); });
 			$("#AnchorResendRequest").hide();
 			me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
 		},
@@ -1186,13 +1187,15 @@ ii.Class({
 
 		searchEmployee: function() {
 			var me = this;
-
-			if (me.status == "CheckRequest") {
-				$("#EmployeeNumberText").addClass("Loading");
-				me.employeeStore.fetch("userId:[user],searchValue:" + me.employeeNumber.getValue()
-					+ ",employeeType:SearchFull"
-					+ ",filterType:Employee Number"
-					, me.employeesLoaded, me);
+			
+			if (me.employeeNumber.validate(true)) {
+				if (me.status == "CheckRequest") {
+					$("#EmployeeNumberText").addClass("Loading");
+					me.employeeStore.fetch("userId:[user],searchValue:" + me.employeeNumber.getValue()
+						+ ",employeeType:SearchFull"
+						+ ",filterType:Employee Number"
+						, me.employeesLoaded, me);
+				}
 			}
 		},
 		
@@ -1244,7 +1247,6 @@ ii.Class({
 				if (index != undefined && index >= 0)
 					address += me.stateTypes[index].name + ", ";
 				address += me.persons[0].postalCode;
-				if(me.homeAddress.getValue() == "")
 					me.homeAddress.setValue(address);
 			}
 		},
