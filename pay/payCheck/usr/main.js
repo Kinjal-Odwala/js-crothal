@@ -902,7 +902,7 @@ ii.Class({
 			$("#imgEdit").bind("click", function() { me.actionEditItem(); });
 			$("#imgRemove").bind("click", function() { me.actionRemoveItem(); });
 			$("#imgView").bind("click", function() { me.actionViewItem(); });
-			$("#EmployeeNumberText").bind("blur", function() { me.searchEmployee(); });
+			$("#EmployeeNumberText").bind("change", function() { me.searchEmployee(); });
 			$("#AnchorResendRequest").hide();
 			me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
 		},
