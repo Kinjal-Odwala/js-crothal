@@ -118,6 +118,7 @@ ii.Class({
 			me.reconcileBatchShow = me.authorizer.isAuthorized(me.authorizePath + "\\ReconcileBatch");
 			me.finalizeBatchShow = me.authorizer.isAuthorized(me.authorizePath + "\\FinalizeBatch");
 			me.exportBatchShow = me.authorizer.isAuthorized(me.authorizePath + "\\ExportBatch");
+			me.exportedBatchShow = me.authorizer.isAuthorized(me.authorizePath + "\\ExportedBatch");
 
 			if (!me.prepareBatchShow)
 				$("#prepareBatchAction").hide();
@@ -127,10 +128,10 @@ ii.Class({
 				$("#reconcileBatchAction").hide();
 			if (!me.finalizeBatchShow)
 				$("#finalizeBatchAction").hide();
-			if (!me.exportBatchShow) {
+			if (!me.exportBatchShow)
 				$("#exportBatchAction").hide();
-				$("#AnchorManageDeviceTypes").hide();
-			}
+			if (!me.exportedBatchShow)
+				$("#exportedBatchAction").hide();
 
 			if (me.prepareBatchShow)
 				me.actionShowItem("Prepare");
@@ -142,6 +143,8 @@ ii.Class({
 				me.actionShowItem("Finalize");
 			else if (me.exportBatchShow)
 				me.actionShowItem("Export");
+			else if (me.exportedBatchShow)
+				me.actionShowItem("Exported");
 
 			me.personStore.fetch("userId:[user],id:" + me.session.propertyGet("personId"), me.personsLoaded, me);
 			me.payCodeTypeStore.fetch("userId:[user],payCodeType:ePayBatch", me.payCodeTypesLoaded, me);
@@ -183,32 +186,38 @@ ii.Class({
 				.addAction({
 					id: "prepareBatchAction",
 					brief: "Prepare Batch",
-					title: "Prepare Epay Batch.",
+					title: "Prepare the Epay batch.",
 					actionFunction: function() { me.actionShowItem("Prepare"); }
 				})
 				.addAction({
 					id: "importBatchAction",
 					brief: "Import Batch",
-					title: "Import Epay Batch.",
+					title: "Import the Epay batch.",
 					actionFunction: function() { me.actionShowItem("Import"); }
 				})
 				.addAction({
 					id: "reconcileBatchAction",
 					brief: "Reconcile Batch",
-					title: "Reconcile Epay Batch.",
+					title: "Reconcile the Epay batch.",
 					actionFunction: function() { me.actionShowItem("Reconcile"); }
 				})
 				.addAction({
 					id: "finalizeBatchAction",
 					brief: "Finalize Batch",
-					title: "Finalize Epay Batch.",
+					title: "Finalize the Epay batch.",
 					actionFunction: function() { me.actionShowItem("Finalize"); }
 				})
 				.addAction({
 					id: "exportBatchAction",
 					brief: "Export Batch",
-					title: "Export Payroll Header and Hours.",
+					title: "Export the payroll header and hours.",
 					actionFunction: function() { me.actionShowItem("Export"); }
+				})
+				.addAction({
+					id: "exportedBatchAction",
+					brief: "Exported Batches List",
+					title: "View the exported list of Epay batches.",
+					actionFunction: function() { me.actionShowItem("Exported"); }
 				})
 
 			me.ePayBatchGrid = new ui.ctl.Grid({
@@ -447,7 +456,7 @@ ii.Class({
 
 		ePayBatchesLoaded: function(me, activeId) {
 
-			if (me.showDetailReport && (me.action == "Finalize" || me.action == "Export") && me.ePayBatchGrid.activeRowIndex != -1) {
+			if (me.showDetailReport && (me.action == "Finalize" || me.action == "Export" || me.action == "Exported") && me.ePayBatchGrid.activeRowIndex != -1) {
 				var index = me.ePayBatchGrid.activeRowIndex;
 				var varianceTotalCount = parseInt(me.ePayBatchGrid.data[index].detailRecordCount, 10) - parseInt(me.ePayBatches[0].batchRecordCount, 10);
 				var varianceTotalHours = parseFloat((parseFloat(me.ePayBatchGrid.data[index].detailTotalHours) - parseFloat(me.ePayBatches[0].batchTotalHours)).toFixed(2)) - parseFloat(me.ePayBatches[0].totalHours);
@@ -527,8 +536,8 @@ ii.Class({
 				me.anchorFinalize.display(ui.cmn.behaviorStates.disabled);
 				me.anchorExport.display(ui.cmn.behaviorStates.disabled);
 			}
-			
-			if (me.action == "Finalize" || me.action == "Export") {
+
+			if (me.action == "Finalize" || me.action == "Export" || me.action == "Exported") {
 				if (me.action == "Finalize")
 					$("#AnchorView").show();
 				$("#ReconcileInfo").show();
@@ -1326,6 +1335,9 @@ ii.Class({
 			}
 			else if (action == "Export") {
 				$("#AnchorExport").show();
+			}
+			else if (action == "Exported") {
+				$("#AnchorCancel").hide();
 			}
 
 			$("#header").html("Process Payroll - " + action);
