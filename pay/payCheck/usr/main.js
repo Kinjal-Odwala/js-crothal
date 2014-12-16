@@ -62,6 +62,7 @@ ii.Class({
 			me.initialize();
 			me.setTabIndexes();
 			me.resizeControls();
+			me.filterTypesLoaded();
 			me.statusesLoaded();
 			me.setStatus("Loading");
 			me.modified(false);
@@ -147,12 +148,35 @@ ii.Class({
 					title: "To view the status of the payroll check request.",
 					actionFunction: function() { me.actionPayCheckRequestStatus(); }
 				});
+			
+			me.filterType = new ui.ctl.Input.DropDown.Filtered({
+				id: "FilterType",
+				formatFunction: function( type ) { return type.title; },
+				changeFunction: function() { me.modifySearch(); }
+			});
 				
 			me.searchInput = new ui.ctl.Input.Text({
 				id: "SearchInput",
 				maxLength: 50
 			});
 			
+			me.searchRequestedDate = new ui.ctl.Input.Date({
+		        id: "SearchRequestedDate",
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+		    });
+			
+			me.searchRequestedDate.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation( function( isFinal, dataMap ) {					
+					var enteredText = me.deliveryDate.text.value;
+					
+					if (enteredText == "") 
+						return;
+
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+						this.setInvalid("Please enter valid date.");
+				});
+				
 			me.statusType = new ui.ctl.Input.DropDown.Filtered({
 				id: "StatusType",
 				formatFunction: function( type ) { return type.title; }
@@ -245,8 +269,6 @@ ii.Class({
 
 					if (!(/^[0-9]+$/.test(me.employeeNumber.getValue())))
 						this.setInvalid("Please enter valid Employee Number.");
-					//else
-					//	me.searchEmployee();
 			});
 
 			me.employeeName = new ui.ctl.Input.Text({
@@ -592,7 +614,7 @@ ii.Class({
 				id: "AnchorSearch",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Search&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionSearchItem(); },
+				clickFunction: function() { me.loadSearchResults(); },
 				hasHotState: true
 			});
 			
@@ -903,6 +925,11 @@ ii.Class({
 			$("#imgRemove").bind("click", function() { me.actionRemoveItem(); });
 			$("#imgView").bind("click", function() { me.actionViewItem(); });
 			$("#EmployeeNumberText").bind("change", function() { me.searchEmployee(); });
+			$("#FilterTypeText").bind("keydown", me, me.actionSearchItem);			
+			$("#SearchInputText").bind("keydown", me, me.actionSearchItem);
+			$("#SearchRequestedDateText").bind("keydown", me, me.actionSearchItem);			
+			$("#StatusTypesText").bind("keydown", me, me.actionSearchItem);
+			$("#SearchRequestedDate").hide();
 			$("#AnchorResendRequest").hide();
 			me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
 		},
@@ -1106,6 +1133,34 @@ ii.Class({
 			var year = currentTime.getFullYear();
 			
 			return month + "/" + day + "/" + year;
+		},
+				
+		modifySearch: function() {
+			var me = this;
+			
+			me.searchInput.setValue("");
+			
+			if (me.filterType.indexSelected == 3) {
+				$("#SearchInput").hide();
+				$("#SearchRequestedDate").show();
+			}
+			else {
+				$("#SearchInput").show();
+				$("#SearchRequestedDate").hide();
+			}
+		},
+		
+		filterTypesLoaded: function() {
+			var me = this;
+			
+			me.filterTypes = [];
+			me.filterTypes.push(new fin.pay.payCheck.FilterType(1, "House Code"));
+			me.filterTypes.push(new fin.pay.payCheck.FilterType(2, "Employee Number"));
+			me.filterTypes.push(new fin.pay.payCheck.FilterType(3, "Requestor Name"));
+			me.filterTypes.push(new fin.pay.payCheck.FilterType(4, "Requested Date"));
+
+			me.filterType.setData(me.filterTypes);
+			me.filterType.select(0, me.filterType.focused);
 		},
 		
 		statusesLoaded: function() {
@@ -1324,8 +1379,20 @@ ii.Class({
 			me.setStatus("Loaded");
 			me.modified(false);
 		},
-		
+				
 		actionSearchItem: function() {
+			var args = ii.args(arguments, {
+				event: {type: Object} // The (key) event object
+			});			
+			var event = args.event;
+			var me = event.data;
+				
+			if (event.keyCode == 13) {
+				me.loadSearchResults();
+			}
+		},
+		
+		loadSearchResults: function() {
 			var me = this;
 
 			me.setLoadCount();
@@ -1334,7 +1401,9 @@ ii.Class({
 			me.payCodeDetailReadOnlyGrid.setData([]);
 			me.payCodeDetailGrid.body.deselectAll();
 			me.payCheckRequestStore.reset();
-			me.payCheckRequestStore.fetch("userId:[user],searchValue:" + me.searchInput.getValue() 
+			me.payCheckRequestStore.fetch("userId:[user]"
+				+ ",searchValue:" + (me.filterType.indexSelected == 3 ? me.searchRequestedDate.text.value : me.searchInput.getValue()) 
+			 	+ ",filterType:" + me.filterType.text.value
 				+ ",statusType:" + (me.statusType.indexSelected == -1 ? 0 : me.statuses[me.statusType.indexSelected].id)
 				, me.payCheckRequestsLoaded, me);
 		},

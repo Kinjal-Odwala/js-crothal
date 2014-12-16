@@ -43,9 +43,9 @@
 	padding-top: 3px;
 }
 
-.labelTextSearch {
+.labelTextSearchMedium {
 	float: left;
-	width: 280px;
+	width: 120px;
 	height: 27px;
 	font-family: Verdana;
 	font-size: 12px;
@@ -53,7 +53,7 @@
 	padding: 3px 0px 0px 10px;
 }
 
-.labelStatus {
+.labelTextSearch {
 	float: left;
 	width: 60px;
 	height: 27px;
