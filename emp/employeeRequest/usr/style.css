@@ -7,6 +7,25 @@
 	margin-bottom: 5px;
 }
 
+.labelTextAreaMeal {
+	float: left;
+	width: 180px;	
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 0px 0px 0px 10px;
+}
+
+.radioButton {
+	float: left;
+	width: 80px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
+
 .leftContainer {
 	float: left;
 	width: 48%;
@@ -50,6 +69,13 @@
 .inputTextArea {
 	float: left;
 	width: 190px;
+}
+
+#MealProgramContainer {
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	padding: 5px;
+	margin: 2px;
 }
 
 #EmployeeContentArea {

@@ -233,6 +233,7 @@ ii.Class({
 			me.houseCodeIdTemplate = fin.houseCodeSearchUi.houseCodes[0].id;
 			me.houseCodeTitleTemplate = fin.houseCodeSearchUi.houseCodes[0].name;
 			me.hirNodeTemplate = fin.houseCodeSearchUi.houseCodes[0].hirNode;
+			me.unitIdTemplate = fin.houseCodeSearchUi.houseCodes[0].appUnit;
 			me.houseCodeTemplateParametersUpdate(false);
 
 			//handles change event in parent main.js.			
@@ -259,8 +260,9 @@ ii.Class({
 			
 			if (args.resetParameters) {
 				me.houseCodeIdTemplate = 0;
-				me.hirNodeTemplate = 0;
 				me.houseCodeTitleTemplate = "";
+				me.hirNodeTemplate = 0;
+				me.unitIdTemplate = 0;
 				$("#houseCodeTemplateText").val("");
 			}
 			else {
@@ -268,7 +270,8 @@ ii.Class({
 				if (args.houseCode) {
 					me.houseCodeIdTemplate = args.houseCode.id;
 					me.houseCodeTitleTemplate = args.houseCode.name;
-					me.hirNodeTemplate = args.houseCode.hirNode;					
+					me.hirNodeTemplate = args.houseCode.hirNode;
+					me.unitIdTemplate = args.houseCode.appUnit;
 				}
 				
 				$("#houseCodeTemplateText").val(me.houseCodeTitleTemplate);				
