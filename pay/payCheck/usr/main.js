@@ -200,7 +200,8 @@ ii.Class({
 			
 			me.payCheckRequestGrid.addColumn("houseCodeTitle", "houseCodeTitle", "House Code", "House Code", null);
 			me.payCheckRequestGrid.addColumn("employeeNumber", "employeeNumber", "Employee #", "Employee Number", 120);
-			me.payCheckRequestGrid.addColumn("requestorName", "requestorName", "Requestor Name", "Requestor Name", 300);
+			me.payCheckRequestGrid.addColumn("requestorName", "requestorName", "Requestor Name", "Requestor Name", 250);
+			me.payCheckRequestGrid.addColumn("requestedDate", "requestedDate", "Requested Date", "Requested Date", 150);
 			me.payCheckRequestGrid.addColumn("statusType", "statusType", "Status", "Status", 100, function(statusType) {
 				if (statusType == 2)
 					return "In Process";
@@ -1311,7 +1312,7 @@ ii.Class({
 			
 			me.houseCodeSearchTemplate.houseCodeIdTemplate = 0;
 			me.houseCodeSearchTemplate.houseCodeTitleTemplate = "";
-			me.requestorName.setValue(me.users[0].firstName + " " + me.users[0].lastName + " [" + me.session.propertyGet("userName") + "]");
+			me.requestorName.setValue(me.users[0].firstName + " " + me.users[0].lastName);
 			me.requestorEmail.setValue(me.users[0].email);			
 			$("#houseCodeText").val(parent.fin.appUI.houseCodeTitle);
 			$("#houseCodeTemplateText").val("");
