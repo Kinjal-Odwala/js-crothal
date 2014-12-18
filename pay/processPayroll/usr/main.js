@@ -98,7 +98,7 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 
-			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 
 			if (me.isAuthorized) {
 				$("#pageLoading").css({

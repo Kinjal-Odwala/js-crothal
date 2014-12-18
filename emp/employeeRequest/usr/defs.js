@@ -7,6 +7,31 @@ ii.init.register( function() {
 
 ii.init.register( function() {
 
+	fin.emp.hirNodeArgs = {
+		id: {type: Number}
+		, nodeParentId: {type: Number}
+		, hirLevel: {type: Number, required: false, defaultValue: 0}
+		, hierarchyId: {type: Number, required: false, defaultValue: 0}
+		, brief: {type: String, required: false, defaultValue: ""}
+		, title: {type: String, required: false, defaultValue: ""}
+		, childNodeCount: {type: Number, required: false, defaultValue: 0}
+		, active: {type: Boolean, required: false, defaultValue: true}
+	};	
+
+	fin.emp.houseCodeArgs = {
+		id: {type: Number}
+		, number: {type: Number}
+		, name: {type: String}
+		, appUnit: {type: Number, required: false}
+		, brief: {type: String, required: false, defaultValue: ""}
+		, hirNode: {type: Number, defaultValue: 0}
+	};
+
+	fin.emp.houseCodeDetailArgs = {
+		id: {type: Number}
+		, mealPlan: {type: Number, required: false, defaultValue: 0},
+	};
+
 	fin.emp.employeeGeneralArgs = {
 		id: {type: Number, defaultValue: 0}
 		, column1: {type: String, required: false, defaultValue: ""} 	// Employee Id
@@ -53,6 +78,36 @@ ii.init.register( function() {
 	};
 
 }, 2);
+
+ii.Class({
+	Name: "fin.emp.HirNode",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.emp.hirNodeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.emp.HouseCode",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.emp.houseCodeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.emp.HouseCodeDetail",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.emp.houseCodeDetailArgs);
+			$.extend(this, args);
+		}
+	}
+});
 
 ii.Class({
 	Name: "fin.emp.EmployeeGeneral",
