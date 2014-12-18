@@ -49,6 +49,7 @@ ii.Class({
 			var me = this;
 
 			me.pageLoading = true;
+			me.levelNamesLoaded = false;
 			me.reportType = "";
 			me.hirNodeId = 1;
 			me.hirNodeCurrentId = 1;
@@ -1404,9 +1405,11 @@ ii.Class({
 			if (me.pageLoading) {
 				me.actionAddNodes();
 				me.pageLoading = false;
-				me.hirNodeStore.fetch("userId:[user],levelBrief:-1", me.hirNodesLoaded, me);	
+				me.checkLoadCount();
+				//me.hirNodeStore.fetch("userId:[user],levelBrief:-1", me.hirNodesLoaded, me);	
 			}
 			else {
+				me.levelNamesLoaded = true;
 				var nodes = [];
 				var $scope = angular.element($("#SearchContainer")).scope();
 				$scope.$apply(function() {
@@ -1486,7 +1489,7 @@ ii.Class({
 					me.addChildNodes(nodes, "SiteName");
 				}
 
-				me.checkLoadCount();
+				//me.checkLoadCount();
 			}
 		},
 		
@@ -1839,6 +1842,8 @@ ii.Class({
 			else if (reportId != 0) {
 				$("#RightContainer").show();
 				me.setLoadCount();
+				if(!me.levelNamesLoaded)
+					me.hirNodeStore.fetch("userId:[user],levelBrief:-1", me.hirNodesLoaded, me);
 				me.reportParameterStore.fetch("userId:[user],reportId:" + reportId, me.parametersLoaded, me);				
 			}
 		},
