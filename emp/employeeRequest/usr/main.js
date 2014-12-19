@@ -311,17 +311,19 @@ ii.Class({
             me.proposedSSN.makeEnterTab()
                 .setValidationMaster( me.validator )
                 .addValidation( function( isFinal, dataMap ) {
-                    
+ 
                     var enteredText = me.proposedSSN.getValue();
-                    
+ 
                     if (enteredText == "") return;
  
                     me.proposedSSN.text.value = fin.cmn.text.mask.ssn(enteredText);
-                    proposedSSN = me.proposedSSN.text.value;
-                                        
+                    enteredText = me.proposedSSN.text.value;
+
                     if (/^(?!000)^([0-8]\d{2})([ -]?)((?!00)\d{2})([ -]?)((?!0000)\d{4})$/.test(enteredText) == false)
                         this.setInvalid("Please enter valid Social Security Number. Example: 001-01-0001, 899-99-9999.");
             });
+			
+			me.proposedSSN.text.readOnly = true;
 			
 			me.anchorApprove = new ui.ctl.buttons.Sizeable({
 				id: "AnchorApprove",

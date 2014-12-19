@@ -75,6 +75,8 @@ ii.Class({
 			me.employeeNameChanged = false;
 			me.previousSSN = "";
 			me.loadCount = 0;
+			me.validateNewSSN = false;
+			me.validNewSSN = true;
 
 			me.replaceContext = false;        // replace the system context menu?
 			me.mouseOverContext = false;      // is the mouse over the context menu?
@@ -1919,23 +1921,26 @@ ii.Class({
 			
 			me.newSSN = new ui.ctl.Input.Text({    
                 id: "NewSSN",    
-                maxLength: 11   
+                maxLength: 11,
+				changeFunction: function() { me.validateNewSSN = true; me.validNewSSN = true; me.validateEmployeeDetails(); }
             });         
             
             me.newSSN.makeEnterTab()
                 .setValidationMaster( me.validator )
                 .addValidation( ui.ctl.Input.Validation.required )
                 .addValidation( function( isFinal, dataMap ) {
-                    
+
                     var enteredText = me.newSSN.getValue();
-                    
+ 
                     if (enteredText == "") return;
  
                     me.newSSN.text.value = fin.cmn.text.mask.ssn(enteredText);
-                    newSSN = me.newSSN.text.value;
-                                        
+                    enteredText = me.newSSN.text.value;
+ 
                     if (/^(?!000)^([0-8]\d{2})([ -]?)((?!00)\d{2})([ -]?)((?!0000)\d{4})$/.test(enteredText) == false)
                         this.setInvalid("Please enter valid Social Security Number. Example: 001-01-0001, 899-99-9999.");
+					else if (!me.validNewSSN)
+						me.newSSN.setInvalid("Employee with Social Security Number [" + me.newSSN.getValue() + "] already exists in House Code " + me.employeeValidations[0].ssnHouseCode + "; contact Payroll if assistance is needed.");
             });
             
 			me.setTabIndexes();		
@@ -5082,11 +5087,21 @@ ii.Class({
 		
 		validateEmployeeDetails: function fin_emp_UserInterface_validateEmployeeDetails() {
 			var me = this;
+			var ssn = "";
 			
+			if (me.validateNewSSN) {
+				if (!me.newSSN.validate(true))
+					return ;
+				ssn = me.newSSN.getValue().replace(/-/g, "");
+				$("#NewSSNText").addClass("Loading");
+			}				
+			else
+				ssn =  me.employeeSSN.getValue().replace(/-/g, "");
+
 			me.employeeValidationStore.fetch("userId:[user]" 
 				+ ",hireDate:" + me.employeeHireDate.text.value 
 				+ ",employeeId:" + me.employeeGeneralId
-				+ ",ssn:" + me.employeeSSN.getValue().replace(/-/g,'')
+				+ ",ssn:" + ssn
 				+ ",payFrequencyTypeId:" + me.payFrequencyType
 				+ "," 
 				, me.validationsLoaded, me);
@@ -5096,29 +5111,41 @@ ii.Class({
 
 			if (me.employeeValidations.length <= 0) return;
 			
-			me.employeeSSNAlreadyExists = false;
-
-			if (me.employeeValidations[0].validSSN == false && me.validateAttribute == 'SSN') { //validation for multiple popup	
-				alert("Employee with Social Security Number: " + me.employeeSSN.getValue() + " already exists in House Code " + me.employeeValidations[0].ssnHouseCode + "; contact Payroll if assistance is needed.");
-				me.employeeSSNAlreadyExists = true;
+			if (me.validateNewSSN) {
+				$("#NewSSNText").removeClass("Loading");
+				me.validateNewSSN = false;
+				if (me.employeeValidations[0].validSSN == false) {
+					me.validNewSSN = false;
+					me.newSSN.setInvalid("Employee with Social Security Number [" + me.newSSN.getValue() + "] already exists in House Code " + me.employeeValidations[0].ssnHouseCode + "; contact Payroll if assistance is needed.");
+				}
+				else
+					me.validNewSSN = true;
 			}
 			else {
-				if (me.employeeValidationCalledFrom == "ssnLookUp") 
-					alert("SSN " + me.employeeSSN.getValue() + " does not exist in any other house code.");
-			}			
-
-			me.payPeriodStartDate = me.employeeValidations[0].payPeriodStartDate;
-			me.payPeriodEndDate = me.employeeValidations[0].payPeriodEndDate;
-			me.payRollEntries = me.employeeValidations[0].dailyPayrollEntries;
-			
-			if (me.employeeSSNAlreadyExists == false && me.employeeValidationCalledFrom == "newHire") {
+				me.employeeSSNAlreadyExists = false;
+	
+				if (me.employeeValidations[0].validSSN == false && me.validateAttribute == 'SSN') { //validation for multiple popup	
+					alert("Employee with Social Security Number: " + me.employeeSSN.getValue() + " already exists in House Code " + me.employeeValidations[0].ssnHouseCode + "; contact Payroll if assistance is needed.");
+					me.employeeSSNAlreadyExists = true;
+				}
+				else {
+					if (me.employeeValidationCalledFrom == "ssnLookUp") 
+						alert("SSN " + me.employeeSSN.getValue() + " does not exist in any other house code.");
+				}			
+	
+				me.payPeriodStartDate = me.employeeValidations[0].payPeriodStartDate;
+				me.payPeriodEndDate = me.employeeValidations[0].payPeriodEndDate;
+				me.payRollEntries = me.employeeValidations[0].dailyPayrollEntries;
+				
+				if (me.employeeSSNAlreadyExists == false && me.employeeValidationCalledFrom == "newHire") {
+					me.employeeValidationCalledFrom = "";
+					me.actionNext(); //continue with Employee record edit..
+				}
+	
 				me.employeeValidationCalledFrom = "";
-				me.actionNext(); //continue with Employee record edit..
+				me.validateAttribute = "";
+				me.employeeSSNAlreadyExists = false;
 			}
-
-			me.employeeValidationCalledFrom = "";
-			me.validateAttribute = "";
-			me.employeeSSNAlreadyExists = false;
 		},
 		
 		//this is to handle Payroll tab when Employee is new, called from EmployeeGeneral UI main.js
@@ -6693,11 +6720,11 @@ ii.Class({
 			
 			if (me.actionType == "SSNModification") {
 				if (me.employeeSSN.getValue() == me.newSSN.getValue()) {
-					alert("SSN should be different than current SSN.");
+					alert("New SSN should be different than current SSN [" + me.employeeSSN.getValue() + "].");
 					return false;
 				}
 				
-				if ((!me.requestorName.validate(true)) ||
+				if ((!me.newSSN.validate(true)) ||
 					(!me.requestorEmail.validate(true)) ||
 					(!me.requestorPhone.validate(true))) {
 					return false;
