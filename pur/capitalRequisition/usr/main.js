@@ -1365,7 +1365,10 @@ ii.Class({
 				me.total = 0;
 			else
 				me.total = me.subTotal + parseFloat(tax) + parseFloat(freight);
-								
+			
+			if (me.taxAmount.getValue() != "")
+				me.taxAmount.setValue(parseFloat(tax));
+				
 			$("#spnSubTotal").html(me.subTotal.toFixed(2));
 			$("#spnTotal").html(me.total.toFixed(2));
 		},
