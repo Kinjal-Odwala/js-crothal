@@ -1,6 +1,6 @@
 ﻿.contentAreasContainerLeft {
 	float: left;
-	width: 40%;
+	width: 35%;
 	vertical-align: top;
 	margin-right: 20px;
 	z-index: 3550;
@@ -9,7 +9,7 @@
 
 .contentAreasContainerRight {
 	float: left;
-	width: 57.3%;
+	width: 62.3%;
 	vertical-align: top;
 	z-index: 3551;
 	position: relative;
@@ -301,7 +301,7 @@ table {
 	padding: 5px 0px 0px 10px;
 }
 
-#TreeviewContainer, #LevelNamesContainer {
+#TreeviewContainer, #LevelNamesContainer  {
 	width: 100%;
 	border: solid #aaaaaa thin;
 	border-width: 1px;
@@ -318,7 +318,8 @@ table {
 	width: 100%;
 	border: solid #aaaaaa thin;
 	border-width: 1px;
-	overflow: auto;
+	overflow-x: hidden;
+	overflow-y: auto;
 	position: relative;
 	padding: 10px;
 }

@@ -149,8 +149,8 @@ ii.Class({
 				return;				
 			
 			me.capitalRequisitionGrid.setHeight($(window).height() - 145);
-			me.itemGrid.setHeight($(window).height() - 380);
-			me.itemReadOnlyGrid.setHeight($(window).height() - 320);
+			me.itemGrid.setHeight($(window).height() - 395);
+			me.itemReadOnlyGrid.setHeight($(window).height() - 335);
 			me.documentGrid.setHeight(100);
 			$("#popupContact").height($(window).height() - 110);
 			$("#GeneralInfo").height($(window).height() - 210);
@@ -591,6 +591,13 @@ ii.Class({
 			me.itemDescription.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
+				
+			me.alternateDescription = new ui.ctl.Input.Text({
+                id: "AlternateDescription",
+                maxLength: 256,
+                appendToId: "ItemGridControlHolder",
+                changeFunction: function() { me.modified(); }
+            });	
 			
 			me.account = new ui.ctl.Input.DropDown.Filtered({
 		        id: "Account",
@@ -672,7 +679,7 @@ ii.Class({
 
 				if (enteredText == "") return;
 
-				if (/^[0-9]+(\.[0-9]+)?$/.test(enteredText) == false)
+				if (enteredText != ""  && !(ui.cmn.text.validate.generic(enteredText, "^\\d{0,}\\.?\\d{0,2}$")))
 					this.setInvalid("Please enter valid Price.");
 			});
 			
@@ -690,7 +697,7 @@ ii.Class({
 				
 				if (enteredText == "") return;
 				
-				if (/^[0-9]+(\.[0-9]+)?$/.test(enteredText) == false)
+				if (enteredText != ""  && !(ui.cmn.text.validate.generic(enteredText, "^\\d{0,}\\.?\\d{0,2}$")))
 					this.setInvalid("Please enter valid Tax %.");
 			});
 		    
@@ -708,7 +715,7 @@ ii.Class({
 				
 				if (enteredText == "") return;
 				
-				if (/^[0-9]+(\.[0-9]+)?$/.test(enteredText) == false)
+				if (enteredText != ""  && !(ui.cmn.text.validate.generic(enteredText, "^\\d{0,}\\.?\\d{0,2}$")))
 					this.setInvalid("Please enter valid Tax.");
 			});
 		    
@@ -726,7 +733,7 @@ ii.Class({
 				
 				if (enteredText == "") return;
 				
-				if (/^[0-9]+(\.[0-9]+)?$/.test(enteredText) == false)
+				if (enteredText != ""  && !(ui.cmn.text.validate.generic(enteredText, "^\\d{0,}\\.?\\d{0,2}$")))
 					this.setInvalid("Please enter valid Freight.");
 			});
 			
@@ -738,11 +745,12 @@ ii.Class({
 				    return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poCapitalRequisitionUi.calculateTotal(this);\" /></center>";
             });
 			me.itemGrid.addColumn("number", "number", "Item Number", "Item Number", 120, null, me.itemNumber);
-			me.itemGrid.addColumn("description", "description", "Item Description", "Item Description", null, null, me.itemDescription);			
-			me.itemGrid.addColumn("account", "account", "GL Account No", "GL Account No", 180, function( account ) { return account.code + " - " + account.name; }, me.account);
-			me.itemGrid.addColumn("unit", "unit", "UOM", "UOM", 90, null, me.uom);
-			me.itemGrid.addColumn("manufactured", "manufactured", "MFG", "Manufactured", 90, null, me.manufactured);
-			me.itemGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 120, null, me.quantity);
+			me.itemGrid.addColumn("description", "description", "Item Description", "Item Description", null, null, me.itemDescription);
+			me.itemGrid.addColumn("alternateDescription", "alternateDescription", "Alternate Description", "Alternate Description", 180, null, me.alternateDescription);			
+			me.itemGrid.addColumn("account", "account", "GL Account No", "GL Account No", 150, function( account ) { return account.code + " - " + account.name; }, me.account);
+			me.itemGrid.addColumn("unit", "unit", "UOM", "UOM", 80, null, me.uom);
+			me.itemGrid.addColumn("manufactured", "manufactured", "MFG", "Manufactured", 40, null, me.manufactured);
+			me.itemGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 80, null, me.quantity);
 			me.itemGrid.addColumn("price", "price", "Price", "Price", 90, null, me.price);
 			me.itemGrid.addColumn("extendedPrice", "", "Extended Price", "Extended Price", 120, function(data) {				
 				if (!isNaN(data.quantity) && data.price != undefined)
@@ -756,11 +764,12 @@ ii.Class({
 			});
 			
 			me.itemReadOnlyGrid.addColumn("number", "number", "Item Number", "Item Number", 120);
-			me.itemReadOnlyGrid.addColumn("description", "description", "Item Description", "Item Description", null);			
-			me.itemReadOnlyGrid.addColumn("account", "account", "GL Account No", "GL Account No", 180, function(account) { return account.code + " - " + account.name;	});
-			me.itemReadOnlyGrid.addColumn("unit", "unit", "UOM", "UOM", 90);
-			me.itemReadOnlyGrid.addColumn("manufactured", "manufactured", "MFG", "Manufactured", 90);
-			me.itemReadOnlyGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 120);
+			me.itemReadOnlyGrid.addColumn("description", "description", "Item Description", "Item Description", null);
+			me.itemReadOnlyGrid.addColumn("alternateDescription", "alternateDescription", "Alternate Description", "Alternate Description", 180);			
+			me.itemReadOnlyGrid.addColumn("account", "account", "GL Account No", "GL Account No", 150, function(account) { return account.code + " - " + account.name;	});
+			me.itemReadOnlyGrid.addColumn("unit", "unit", "UOM", "UOM", 80);
+			me.itemReadOnlyGrid.addColumn("manufactured", "manufactured", "MFG", "Manufactured", 40);
+			me.itemReadOnlyGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 80);
 			me.itemReadOnlyGrid.addColumn("price", "price", "Price", "Price", 90);
 			me.itemReadOnlyGrid.addColumn("extendedPrice", "", "Extended Price", "Extended Price", 120, function(data) {				
 				if (!isNaN(data.quantity) && data.price != undefined)
@@ -2534,6 +2543,7 @@ ii.Class({
 					xml += ' poCapitalRequisitionId="' + me.poCapitalRequisitionId + '"';
 					xml += ' number="' + me.itemGrid.data[index].number + '"';
 					xml += ' description="' + me.itemGrid.data[index].description + '"';
+					xml += ' alternateDescription="' + me.itemGrid.data[index].alternateDescription + '"';
 					xml += ' account="' + me.itemGrid.data[index].account.id + '"';
 					xml += ' uom="' + me.itemGrid.data[index].unit + '"';
 					xml += ' manufactured="' + me.itemGrid.data[index].manufactured + '"';

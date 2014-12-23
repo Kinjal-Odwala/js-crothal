@@ -1831,6 +1831,13 @@ ii.Class({
 						me.dvpChanged();
 						hidePopup = false;
 					}
+					else {
+						me.dvp.setValue(me.houseCodeRequestGrid.data[me.lastSelectedRowIndex].column19);
+						me.rvp.setValue(me.houseCodeRequestGrid.data[me.lastSelectedRowIndex].column20);
+						me.srm.setValue(me.houseCodeRequestGrid.data[me.lastSelectedRowIndex].column21);
+						me.rm.setValue(me.houseCodeRequestGrid.data[me.lastSelectedRowIndex].column22);
+						me.am.setValue(me.houseCodeRequestGrid.data[me.lastSelectedRowIndex].column23);
+					}
 				}
 			}
 			else if (me.level == "Regional Vice President") {
@@ -1841,6 +1848,12 @@ ii.Class({
 						me.rvp.select(index, me.rvp.focused);
 						me.rvpChanged();
 						hidePopup = false;
+					}
+					else {
+						me.rvp.setValue(me.houseCodeRequestGrid.data[me.lastSelectedRowIndex].column20);
+						me.srm.setValue(me.houseCodeRequestGrid.data[me.lastSelectedRowIndex].column21);
+						me.rm.setValue(me.houseCodeRequestGrid.data[me.lastSelectedRowIndex].column22);
+						me.am.setValue(me.houseCodeRequestGrid.data[me.lastSelectedRowIndex].column23);
 					}
 				}
 			}
@@ -1853,6 +1866,11 @@ ii.Class({
 						me.srmChanged();
 						hidePopup = false;
 					}
+					else {
+						me.srm.setValue(me.houseCodeRequestGrid.data[me.lastSelectedRowIndex].column21);
+						me.rm.setValue(me.houseCodeRequestGrid.data[me.lastSelectedRowIndex].column22);
+						me.am.setValue(me.houseCodeRequestGrid.data[me.lastSelectedRowIndex].column23);
+					}
 				}
 			}
 			else if (me.level == "Regional Manager") {
@@ -1864,6 +1882,10 @@ ii.Class({
 						me.rmChanged();
 						hidePopup = false;
 					}
+					else {
+						me.rm.setValue(me.houseCodeRequestGrid.data[me.lastSelectedRowIndex].column22);
+						me.am.setValue(me.houseCodeRequestGrid.data[me.lastSelectedRowIndex].column23);
+					}
 				}
 			}
 			else if (me.level == "Area Manager") {
@@ -1872,6 +1894,9 @@ ii.Class({
 					index = me.findIndexByTitle(me.houseCodeRequestGrid.data[me.lastSelectedRowIndex].column23, me.am.data);
 					if (index != undefined && index >= 0) {
 						me.am.select(index, me.am.focused);
+					}
+					else {
+						me.am.setValue(me.houseCodeRequestGrid.data[me.lastSelectedRowIndex].column23);
 					}
 				}
 			}
@@ -2580,6 +2605,7 @@ ii.Class({
 		actionEditItem: function() {
 			var me = this;
 			var index = 0;
+			var hidePopup = false;
 
 			if (me.lastSelectedRowIndex >= 0) {
 				var item = me.houseCodeRequestGrid.data[me.lastSelectedRowIndex];
@@ -2626,6 +2652,20 @@ ii.Class({
 				if (index != undefined && index >= 0) {
 					me.svp.select(index, me.svp.focused);
 					me.svpChanged();
+				}
+				else {
+					me.dvp.setData([]);
+					me.rvp.setData([]);
+					me.srm.setData([]);
+					me.rm.setData([]);
+					me.am.setData([]);
+					me.svp.setValue(item.column18);
+					me.dvp.setValue(item.column19);
+					me.rvp.setValue(item.column20);
+					me.srm.setValue(item.column21);
+					me.rm.setValue(item.column22);
+					me.am.setValue(item.column23);
+					hidePopup = true;
 				}
 				
 				me.startDate.setValue(item.column24);
@@ -2750,6 +2790,9 @@ ii.Class({
 				me.searchCustomerZipCode = true;
 				me.searchServiceLocationZipCode = true;
 				me.loadZipCodeTypes("Site");
+				
+				if (hidePopup)
+					$("#popupLoading").fadeOut("slow");
 			}
 		},
 

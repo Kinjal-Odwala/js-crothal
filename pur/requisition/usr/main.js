@@ -696,7 +696,7 @@ ii.Class({
 
 				if (enteredText == "") return;
 
-				if (/^[0-9]+(\.[0-9]+)?$/.test(enteredText) == false)
+				if (enteredText != ""  && !(ui.cmn.text.validate.generic(enteredText, "^\\d{0,}\\.?\\d{0,2}$")))
 					this.setInvalid("Please enter valid Price.");
 			});
 			

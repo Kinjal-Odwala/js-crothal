@@ -62,6 +62,7 @@ ii.Class({
 			me.initialize();
 			me.setTabIndexes();
 			me.resizeControls();
+			me.filterTypesLoaded();
 			me.statusesLoaded();
 			me.setStatus("Loading");
 			me.modified(false);
@@ -147,12 +148,35 @@ ii.Class({
 					title: "To view the status of the payroll check request.",
 					actionFunction: function() { me.actionPayCheckRequestStatus(); }
 				});
+			
+			me.filterType = new ui.ctl.Input.DropDown.Filtered({
+				id: "FilterType",
+				formatFunction: function( type ) { return type.title; },
+				changeFunction: function() { me.modifySearch(); }
+			});
 				
 			me.searchInput = new ui.ctl.Input.Text({
 				id: "SearchInput",
 				maxLength: 50
 			});
 			
+			me.searchRequestedDate = new ui.ctl.Input.Date({
+		        id: "SearchRequestedDate",
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+		    });
+			
+			me.searchRequestedDate.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation( function( isFinal, dataMap ) {					
+					var enteredText = me.deliveryDate.text.value;
+					
+					if (enteredText == "") 
+						return;
+
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+						this.setInvalid("Please enter valid date.");
+				});
+				
 			me.statusType = new ui.ctl.Input.DropDown.Filtered({
 				id: "StatusType",
 				formatFunction: function( type ) { return type.title; }
@@ -176,7 +200,8 @@ ii.Class({
 			
 			me.payCheckRequestGrid.addColumn("houseCodeTitle", "houseCodeTitle", "House Code", "House Code", null);
 			me.payCheckRequestGrid.addColumn("employeeNumber", "employeeNumber", "Employee #", "Employee Number", 120);
-			me.payCheckRequestGrid.addColumn("requestorName", "requestorName", "Requestor Name", "Requestor Name", 300);
+			me.payCheckRequestGrid.addColumn("requestorName", "requestorName", "Requestor Name", "Requestor Name", 250);
+			me.payCheckRequestGrid.addColumn("requestedDate", "requestedDate", "Requested Date", "Requested Date", 150);
 			me.payCheckRequestGrid.addColumn("statusType", "statusType", "Status", "Status", 100, function(statusType) {
 				if (statusType == 2)
 					return "In Process";
@@ -245,8 +270,6 @@ ii.Class({
 
 					if (!(/^[0-9]+$/.test(me.employeeNumber.getValue())))
 						this.setInvalid("Please enter valid Employee Number.");
-					else
-						me.searchEmployee();
 			});
 
 			me.employeeName = new ui.ctl.Input.Text({
@@ -592,7 +615,7 @@ ii.Class({
 				id: "AnchorSearch",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Search&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionSearchItem(); },
+				clickFunction: function() { me.loadSearchResults(); },
 				hasHotState: true
 			});
 			
@@ -902,6 +925,12 @@ ii.Class({
 			$("#imgEdit").bind("click", function() { me.actionEditItem(); });
 			$("#imgRemove").bind("click", function() { me.actionRemoveItem(); });
 			$("#imgView").bind("click", function() { me.actionViewItem(); });
+			$("#EmployeeNumberText").bind("change", function() { me.searchEmployee(); });
+			$("#FilterTypeText").bind("keydown", me, me.actionSearchItem);			
+			$("#SearchInputText").bind("keydown", me, me.actionSearchItem);
+			$("#SearchRequestedDateText").bind("keydown", me, me.actionSearchItem);			
+			$("#StatusTypesText").bind("keydown", me, me.actionSearchItem);
+			$("#SearchRequestedDate").hide();
 			$("#AnchorResendRequest").hide();
 			me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
 		},
@@ -1106,6 +1135,34 @@ ii.Class({
 			
 			return month + "/" + day + "/" + year;
 		},
+				
+		modifySearch: function() {
+			var me = this;
+			
+			me.searchInput.setValue("");
+			
+			if (me.filterType.indexSelected == 3) {
+				$("#SearchInput").hide();
+				$("#SearchRequestedDate").show();
+			}
+			else {
+				$("#SearchInput").show();
+				$("#SearchRequestedDate").hide();
+			}
+		},
+		
+		filterTypesLoaded: function() {
+			var me = this;
+			
+			me.filterTypes = [];
+			me.filterTypes.push(new fin.pay.payCheck.FilterType(1, "House Code"));
+			me.filterTypes.push(new fin.pay.payCheck.FilterType(2, "Employee Number"));
+			me.filterTypes.push(new fin.pay.payCheck.FilterType(3, "Requestor Name"));
+			me.filterTypes.push(new fin.pay.payCheck.FilterType(4, "Requested Date"));
+
+			me.filterType.setData(me.filterTypes);
+			me.filterType.select(0, me.filterType.focused);
+		},
 		
 		statusesLoaded: function() {
 			var me = this;
@@ -1186,13 +1243,15 @@ ii.Class({
 
 		searchEmployee: function() {
 			var me = this;
-
-			if (me.status == "CheckRequest") {
-				$("#EmployeeNumberText").addClass("Loading");
-				me.employeeStore.fetch("userId:[user],searchValue:" + me.employeeNumber.getValue()
-					+ ",employeeType:SearchFull"
-					+ ",filterType:Employee Number"
-					, me.employeesLoaded, me);
+			
+			if (me.employeeNumber.validate(true)) {
+				if (me.status == "CheckRequest") {
+					$("#EmployeeNumberText").addClass("Loading");
+					me.employeeStore.fetch("userId:[user],searchValue:" + me.employeeNumber.getValue()
+						+ ",employeeType:SearchFull"
+						+ ",filterType:Employee Number"
+						, me.employeesLoaded, me);
+				}
 			}
 		},
 		
@@ -1244,7 +1303,7 @@ ii.Class({
 				if (index != undefined && index >= 0)
 					address += me.stateTypes[index].name + ", ";
 				address += me.persons[0].postalCode;
-				me.homeAddress.setValue(address);
+					me.homeAddress.setValue(address);
 			}
 		},
 		
@@ -1253,7 +1312,7 @@ ii.Class({
 			
 			me.houseCodeSearchTemplate.houseCodeIdTemplate = 0;
 			me.houseCodeSearchTemplate.houseCodeTitleTemplate = "";
-			me.requestorName.setValue(me.users[0].firstName + " " + me.users[0].lastName + " [" + me.session.propertyGet("userName") + "]");
+			me.requestorName.setValue(me.users[0].firstName + " " + me.users[0].lastName);
 			me.requestorEmail.setValue(me.users[0].email);			
 			$("#houseCodeText").val(parent.fin.appUI.houseCodeTitle);
 			$("#houseCodeTemplateText").val("");
@@ -1321,8 +1380,20 @@ ii.Class({
 			me.setStatus("Loaded");
 			me.modified(false);
 		},
-		
+				
 		actionSearchItem: function() {
+			var args = ii.args(arguments, {
+				event: {type: Object} // The (key) event object
+			});			
+			var event = args.event;
+			var me = event.data;
+				
+			if (event.keyCode == 13) {
+				me.loadSearchResults();
+			}
+		},
+		
+		loadSearchResults: function() {
 			var me = this;
 
 			me.setLoadCount();
@@ -1331,7 +1402,9 @@ ii.Class({
 			me.payCodeDetailReadOnlyGrid.setData([]);
 			me.payCodeDetailGrid.body.deselectAll();
 			me.payCheckRequestStore.reset();
-			me.payCheckRequestStore.fetch("userId:[user],searchValue:" + me.searchInput.getValue() 
+			me.payCheckRequestStore.fetch("userId:[user]"
+				+ ",searchValue:" + (me.filterType.indexSelected == 3 ? me.searchRequestedDate.text.value : me.searchInput.getValue()) 
+			 	+ ",filterType:" + me.filterType.text.value
 				+ ",statusType:" + (me.statusType.indexSelected == -1 ? 0 : me.statuses[me.statusType.indexSelected].id)
 				, me.payCheckRequestsLoaded, me);
 		},
@@ -1767,7 +1840,7 @@ ii.Class({
 
 			for (var index = 0; index < me.payCodeDetailGrid.data.length; index++) {
 				xml += '<payCheckRequestPayCode';
-				xml += ' id="' + me.payCodeDetailGrid.data[index].id + '"';;
+				xml += ' id="' + me.payCodeDetailGrid.data[index].id + '"';
 				xml += ' payCheckRequestId="' + item.id + '"';
 				xml += ' payCode="' + me.payCodeDetailGrid.data[index].payCode.id + '"';
 				xml += ' hours="' + me.payCodeDetailGrid.data[index].hours + '"';				
@@ -1781,7 +1854,7 @@ ii.Class({
 			for (var index = 0; index < me.payCheckRequestDocuments.length; index++) {
 				if (me.payCheckRequestDocuments[index].tempFileName != "") {
 					xml += '<payCheckRequestDocument';
-					xml += ' id="' + me.payCheckRequestDocuments[index].id + '"';;
+					xml += ' id="' + me.payCheckRequestDocuments[index].id + '"';
 					xml += ' title="' + ui.cmn.text.xml.encode(me.payCheckRequestDocuments[index].title) + '"';
 					xml += ' description=""';				
 					xml += ' fileName="' + ui.cmn.text.xml.encode(me.payCheckRequestDocuments[index].fileName) + '"';
@@ -1818,27 +1891,74 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-			
+
 			if (status == "success") {
-				if (me.status == "DeleteDocument") {
-					me.setStatus("Edit");
-				}
-				else {
-					if (me.status == "CheckRequest") {
-						alert("Payroll check request sent successfully.");
-						me.resetControls("CheckRequest");
+				
+				$(args.xmlNode).find("*").each(function () {
+
+					switch (this.tagName) {
+						case "payPayCheckRequest":
+						
+							var id = parseInt($(this).attr("id"), 10);
+							
+							item = new fin.pay.payCheck.PayCheckRequest(
+									id
+									, 2
+									, parent.fin.appUI.houseCodeId
+									, parent.fin.appUI.houseCodeTitle
+									, me.requestedDate.lastBlurValue
+									, me.deliveryDate.lastBlurValue
+									, me.employeeNumber.getValue()
+									, me.employeeName.getValue()
+									, me.reasonForRequest.getValue()
+									, $("input[name='TermRequest']:checked").val() == "true" ? true : false
+									, $("input[name='TermRequest']:checked").val() == "true" ? me.stateTypes[me.state.indexSelected].id : 0
+									, $("input[name='TermRequest']:checked").val() == "true" ? me.terminationDate.lastBlurValue  : ""
+									, $("input[name='CurrentPayCardUser']:checked").val() == "true" ? true : false
+									, $("input[name='InstantIssueRequest']:checked").val() == "true" ? true : false					
+									, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? true : false
+									, $("input[name='SaturdayDeliveryUnit']:checked").val() == "true" ? true : false
+									, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? me.houseCodeSearchTemplate.houseCodeIdTemplate : 0
+									, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? me.houseCodeSearchTemplate.houseCodeTitleTemplate : ""
+									, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? me.unitAddress.getValue() : ""
+									, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? me.upsPackageAttentionTo.getValue() : ""
+									, $("input[name='UPSDeliveryToHome']:checked").val() == "true" ? true : false
+									, $("input[name='SaturdayDeliveryHome']:checked").val() == "true" ? true : false
+									, $("input[name='UPSDeliveryToHome']:checked").val() == "true" ? me.homeAddress.getValue() : ""
+									, $("input[name='ProcessingFee']:checked").val() == "true" ? true : false
+									, me.deductionCode.getValue()
+									, me.amount.getValue()
+									, me.requestorName.getValue()
+									, me.requestorEmail.getValue()
+									, me.managerName.getValue()				
+									, me.managerEmail.getValue()
+									);
+									
+							if (me.status == "DeleteDocument") {
+								me.setStatus("Edit");
+							}
+							else {
+								if (me.status == "CheckRequest") {
+									alert("Payroll check request sent successfully.");
+									me.resetControls("CheckRequest");
+								}
+								else if (me.status == "CheckRequestResend") {
+									alert("Payroll check request resent successfully.");
+									me.payCheckRequests[me.payCheckRequestGrid.activeRowIndex] = item;
+									me.resetGrid();
+								}
+								else if (me.status == "CheckRequestCancel") {
+									alert("Payroll check request cancelled successfully.");
+									me.resetGrid();
+								}								
+							}
+							
+							break;
 					}
-					else if (me.status == "CheckRequestResend") {
-						alert("Payroll check request resent successfully.");
-						me.resetGrid();
-					}
-					else if (me.status == "CheckRequestCancel") {
-						alert("Payroll check request cancelled successfully.");
-						me.resetGrid();
-					}
-					me.modified(false);
-					me.setStatus("Saved");
-				}
+				});
+				
+				me.modified(false);
+				me.setStatus("Saved");
 			}
 			else {
 				me.setStatus("Error");

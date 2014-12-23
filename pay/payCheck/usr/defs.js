@@ -27,7 +27,12 @@ ii.init.register( function(){
 		, appUnit: {type: Number, required: false, defaultValue: 0}
 		, brief: {type: String, required: false, defaultValue: ""}
 	};
-
+	
+	fin.pay.payCheck.filterTypeArgs = {
+		id: {type: Number}
+		, title: {type: String}
+	};
+	
 	fin.pay.payCheck.statusArgs = {
 		id: {type: Number}
 		, title: {type: String}
@@ -148,6 +153,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.pay.payCheck.houseCodeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.pay.payCheck.FilterType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pay.payCheck.filterTypeArgs);
 			$.extend(this, args);
 		}
 	}
