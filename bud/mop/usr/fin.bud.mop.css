@@ -527,6 +527,7 @@ body table tbody input.readonly
  .modal {
   opacity: 1;
   visibility: visible;
+  z-index: 100;
 }
 
  .modal .modal__inner {
