@@ -3290,7 +3290,7 @@ MopDataGrid = function () {
               
 
                 if (me.showVariance) {
-                    html.push('<td class="amount-col" style="width:100px;height:20px">' + renderAmount(dataItem['Projection' + i] - dataItem['DailyRunRate' + i]) + '</td>');
+                    html.push('<td class="amount-col" style="width:100px;height:20px">' + renderAmount(dataItem['Projection' + i] - dataItem['Forecast' + i]) + '</td>');
                 }
 
                 if (dataItem.IsCategory || dataItem.IsTotal || !currentPeriod || FscPeriod.EndDt < currentPeriod.EndDt)
