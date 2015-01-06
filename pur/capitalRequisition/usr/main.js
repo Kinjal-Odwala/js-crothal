@@ -704,7 +704,7 @@ ii.Class({
 			me.taxAmount = new ui.ctl.Input.Text({
 		        id: "TaxAmount",
 				maxLength: 18,
-				changeFunction: function() { me.modified(); me.calculateTotalByTax(); me.taxPercent.setValue(""); }
+				changeFunction: function() { me.modified(); me.calculateTotalByTax(); }
 		    });
 		    
 		    me.taxAmount.makeEnterTab()
@@ -1294,8 +1294,10 @@ ii.Class({
 				}
 			}
 			
-			if(me.subTotal != 0 && me.taxPercent.getValue() != "" && !isNaN(me.taxPercent.getValue()))
-				me.taxAmount.setValue(ui.cmn.text.money.format((me.subTotal * me.taxPercent.getValue()) / 100));
+			if(me.subTotal != 0 && me.taxPercent.getValue() != "" && !isNaN(me.taxPercent.getValue())) {
+				var taxCaliculated = (me.subTotal * me.taxPercent.getValue()) / 100;
+				me.taxAmount.setValue(taxCaliculated.toFixed(2));
+			}
 			
 			var tax = me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue();
 				
@@ -1320,11 +1322,11 @@ ii.Class({
 			me.total = 0;
 
 			if (quantity != "" && !isNaN(quantity) && price != undefined)
-				extendedPrice = ui.cmn.text.money.format(quantity * price);
+				extendedPrice = quantity * price;
 			else
-				extendedPrice = "0.00";			
+				extendedPrice = 0.00;			
 			
-			$(me.itemGrid.rows[iIndex].getElement("extendedPrice")).text(extendedPrice);
+			$(me.itemGrid.rows[iIndex].getElement("extendedPrice")).text(extendedPrice.toFixed(2));
 			
 			for (var index = 0; index < me.itemGrid.data.length; index++) {
 				if ($("#selectInputCheck" + index)[0] != undefined && $("#selectInputCheck" + index)[0].checked) {
@@ -1342,8 +1344,10 @@ ii.Class({
 				}
 			}
 			
-			if(me.subTotal != 0 && me.taxPercent.getValue() != "" && !isNaN(me.taxPercent.getValue()))
-				me.taxAmount.setValue(ui.cmn.text.money.format((me.subTotal * me.taxPercent.getValue()) / 100));
+			if(me.subTotal != 0 && me.taxPercent.getValue() != "" && !isNaN(me.taxPercent.getValue())) {
+				var taxCaliculated = (me.subTotal * me.taxPercent.getValue()) / 100;
+				me.taxAmount.setValue(taxCaliculated.toFixed(2));
+			}
 			
 			var tax = me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue();
 			
@@ -1361,14 +1365,12 @@ ii.Class({
 			var tax = me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue();
 			var freight = me.freight.getValue() == "" ? 0 : me.freight.getValue();
 			
+			me.taxPercent.setValue("");
 			if (me.subTotal == 0)
 				me.total = 0;
 			else
 				me.total = me.subTotal + parseFloat(tax) + parseFloat(freight);
 			
-			if (me.taxAmount.getValue() != "")
-				me.taxAmount.setValue(parseFloat(tax));
-				
 			$("#spnSubTotal").html(me.subTotal.toFixed(2));
 			$("#spnTotal").html(me.total.toFixed(2));
 		},
@@ -2579,8 +2581,8 @@ ii.Class({
 				xml += ' shipToCity="' + ui.cmn.text.xml.encode(item.shipToCity) + '"';
 				xml += ' shipToStateTitle="' + me.shippingState.lastBlurValue + '"';
 				xml += ' shipToZip="' + item.shipToZip + '"';
-				xml += ' shipToPhone="' + fin.cmn.text.mask.phone(item.shipToPhone, true) + '"';
-				xml += ' shipToFax="' + fin.cmn.text.mask.phone(item.shipToFax, true) + '"';
+				xml += ' shipToPhone="' + fin.cmn.text.mask.phone(item.shipToPhone) + '"';
+				xml += ' shipToFax="' + fin.cmn.text.mask.phone(item.shipToFax) + '"';
 				xml += ' requestorName="' + ui.cmn.text.xml.encode(item.requestorName) + '"';
 				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
 				xml += ' requestedDate="' + item.requestedDate + '"';
@@ -2594,7 +2596,7 @@ ii.Class({
 				xml += ' vendorStateTitle="' + me.vendorState.lastBlurValue + '"';
 				xml += ' vendorZip="' + item.shipToZip + '"';
 				xml += ' vendorContactName="' + ui.cmn.text.xml.encode(item.vendorContactName) + '"';
-				xml += ' vendorPhoneNumber="' + fin.cmn.text.mask.phone(item.vendorPhoneNumber, true) + '"';
+				xml += ' vendorPhoneNumber="' + fin.cmn.text.mask.phone(item.vendorPhoneNumber) + '"';
 				xml += ' vendorEmail="' + item.vendorEmail + '"';
 				xml += ' reasonForRequest="' + ui.cmn.text.xml.encode(item.reasonForRequest) + '"';				
 				xml += ' funding="' + item.funding + '"';
