@@ -753,8 +753,10 @@ ii.Class({
 			me.itemGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 80, null, me.quantity);
 			me.itemGrid.addColumn("price", "price", "Price", "Price", 90, null, me.price);
 			me.itemGrid.addColumn("extendedPrice", "", "Extended Price", "Extended Price", 120, function(data) {				
-				if (!isNaN(data.quantity) && data.price != undefined)
-					return ui.cmn.text.money.format(data.quantity * data.price);
+				if (!isNaN(data.quantity) && data.price != undefined) {
+					var extendedPrice = data.quantity * data.price
+					return extendedPrice.toFixed(2);
+				}
             });				
 			me.itemGrid.capColumns();			
 			
@@ -772,8 +774,10 @@ ii.Class({
 			me.itemReadOnlyGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 80);
 			me.itemReadOnlyGrid.addColumn("price", "price", "Price", "Price", 90);
 			me.itemReadOnlyGrid.addColumn("extendedPrice", "", "Extended Price", "Extended Price", 120, function(data) {				
-				if (!isNaN(data.quantity) && data.price != undefined)
-					return ui.cmn.text.money.format(data.quantity * data.price);
+				if (!isNaN(data.quantity) && data.price != undefined) {
+					var extendedPrice = data.quantity * data.price
+					return extendedPrice.toFixed(2);
+				}
             });
 			me.itemReadOnlyGrid.capColumns();
 			
