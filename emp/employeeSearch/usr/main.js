@@ -95,7 +95,6 @@ ii.Class({
 				me);
 						
 			me.session = new ii.Session(me.cache);
-			
 			me.transactionMonitor = new ii.ajax.TransactionMonitor( 
 				me.gateway, 
 				function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
@@ -113,7 +112,8 @@ ii.Class({
 			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
 			me.houseCodeSearchTemplate = new ui.lay.HouseCodeSearchTemplate();
 			
-			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;	
+			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
+			ui.cmn.behavior.disableBackspaceNavigation();	
 			
 			// Disable the context menu but not on localhost because its used for debugging
 			if (location.hostname != "localhost") {
@@ -1616,7 +1616,7 @@ ii.Class({
 			});
 			
 			me.requestorEmail.makeEnterTab()
-				.setValidationMaster(me.validator)
+				.setValidationMaster( me.validator )
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
 					
@@ -1635,6 +1635,7 @@ ii.Class({
 			
 			me.requestorPhone.makeEnterTab()
 				.setValidationMaster( me.validator )
+				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
 	
 					var enteredText = me.requestorPhone.getValue();
@@ -1642,11 +1643,11 @@ ii.Class({
 					if (enteredText == "") return;
 											
 					if (/^\(?[\d]{3}\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$/.test(enteredText) == false)
-						this.setInvalid("Please enter valid phone number.");
+						this.setInvalid("Please enter valid Requestor Phone #.");
 	
 					me.requestorPhone.text.value = me.phoneMask(enteredText);
 				});
-				
+
 			me.notes = $("#Notes")[0];
 			$("#Notes").keypress(function() {
 				if (me.notes.value.length > 249) {

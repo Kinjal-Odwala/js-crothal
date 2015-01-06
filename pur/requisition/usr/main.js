@@ -716,8 +716,10 @@ ii.Class({
 			me.itemGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 80, null, me.quantity);
 			me.itemGrid.addColumn("price", "price", "Price", "Price", 80, null, me.price);
 			me.itemGrid.addColumn("extendedPrice", "", "Extended Price", "Extended Price", 120, function(data) {				
-				if (!isNaN(data.quantity) && data.price != undefined)
-					return ui.cmn.text.money.format(data.quantity * data.price);
+				if (!isNaN(data.quantity) && data.price != undefined) {
+					var extendedPrice = data.quantity * data.price
+					return extendedPrice.toFixed(2);
+				}
             });						
 			me.itemGrid.capColumns();			
 			
@@ -735,8 +737,10 @@ ii.Class({
 			me.itemReadOnlyGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 80);
 			me.itemReadOnlyGrid.addColumn("price", "price", "Price", "Price", 80);
 			me.itemReadOnlyGrid.addColumn("extendedPrice", "", "Extended Price", "Extended Price", 120, function(data) {				
-				if (!isNaN(data.quantity) && data.price != undefined)
-					return ui.cmn.text.money.format(data.quantity * data.price);
+				if (!isNaN(data.quantity) && data.price != undefined) {
+					var extendedPrice = data.quantity * data.price
+					return extendedPrice.toFixed(2);
+				}
             });
 			me.itemReadOnlyGrid.capColumns();
 			
@@ -1258,11 +1262,11 @@ ii.Class({
 			me.total = 0;
 
 			if (quantity != "" && !isNaN(quantity) && price != undefined)
-				extendedPrice = ui.cmn.text.money.format(quantity * price);
+				extendedPrice = quantity * price;
 			else
-				extendedPrice = "0.00";			
+				extendedPrice = 0.00;			
 			
-			$(me.itemGrid.rows[iIndex].getElement("extendedPrice")).text(extendedPrice);
+			$(me.itemGrid.rows[iIndex].getElement("extendedPrice")).text(extendedPrice.toFixed(2));
 			
 			for (var index = 0; index < me.itemGrid.data.length; index++) {
 				if ($("#selectInputCheck" + index)[0].checked) {
