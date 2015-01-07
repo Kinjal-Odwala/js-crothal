@@ -1357,9 +1357,6 @@ ii.Class({
 					me.setHouseCodes();
 				}				
 			}
-			
-           if(me.controls[3] != undefined && me.controls[3].id == "GroupLevel")
-               me.groupLevelsLoaded();
 		},
 
 		setExcludeHouseCodes: function() {
@@ -1372,9 +1369,6 @@ ii.Class({
 				$("#ExcludeHouseCodes").append("<option title='" + me.excludeHouseCodes[index].title + "' value='" + me.excludeHouseCodes[index].id + "'>" + me.excludeHouseCodes[index].title + "</option>");
 			}
 			$("#ExcludeHouseCodes").multiselect("refresh");
-			
-			if(me.controls[3] != undefined && me.controls[3].id == "GroupLevel")
-            	me.groupLevelsLoaded();
 		},
 		
 		setHouseCodes: function() {
@@ -1725,6 +1719,9 @@ ii.Class({
 		    });
 
 			me.checkDependentTypes(fullPath, chkNodeChild.checked);
+			
+			if(me.controls[3].selector != undefined && me.controls[3].selector == "#GroupLevel")
+            	me.groupLevelsLoaded();
 		},
 		
 		actionAddNodes: function() {
@@ -2035,106 +2032,6 @@ ii.Class({
 					});
 
 					me.controls[index] = $("#" + me.reportParameters[index].name);
-					
-					
-					/*me.controls[index] = new ui.ctl.Input.DropDown.Filtered({
-				        id: "" + me.reportParameters[index].name,
-						labelName: "" + me.reportParameters[index].title,
-						changeFunction: function(data) { 
-							if(data.data.id == "FiscalYear")
-								me.fiscalweeksLoad();
-							else if(data.data.id == "ExcludeHierarchyLevel")
-								me.excludeNamesLoaded(data.data.data[data.data.indexSelected].id);							
-						},
-						formatFunction: function( type ) {
-							if (type.iiClass == "fin.rpt.ssrs.PayrollCompany") 
-								return type.brief + " - " + type.name;
-							else if (type.iiClass == "fin.rpt.ssrs.FiscalPeriod") 
-                                return "Period " + type.title +' - '+ type.fscYeaTitle;
-                            else if (type.iiClass == "fin.rpt.ssrs.Batch") 
-                                return type.batchId +':'+ type.title;
-							else
-								return (type.name);
-						}
-				    });
-
-					me.controls[index].makeEnterTab()
-						.setValidationMaster(me.validator)
-						.addValidation(ui.ctl.Input.Validation.required)	
-						.addValidation( function( isFinal, dataMap ) {
-
-							if ((this.focused || this.touched) && this.indexSelected == -1)
-								this.setInvalid("Please select the correct " + this.labelName + ".");
-						});					
-						
-					if (me.reportParameters[index].referenceTableName == "FscYear")
-						me.controls[index].setData(me.fiscalYears);
-					else if (me.reportParameters[index].referenceTableName == "FscPeriod" || me.reportParameters[index].referenceTableName == "YearPeriods" || me.reportParameters[index].referenceTableName == "FscPeriodFrom" || me.reportParameters[index].referenceTableName == "FscPeriodTo")
-						me.controls[index].setData(me.fiscalPeriods);					
-					else if (me.reportParameters[index].referenceTableName == "PayrollCompany")
-						me.controls[index].setData(me.payrollCompanys);
-					else if (me.reportParameters[index].referenceTableName == "BatchNumber")
-						me.controls[index].setData(me.invoiceBatches);
-					else if (me.reportParameters[index].referenceTableName == "WkPeriod")
-						me.controls[index].setData(me.weekPeriods);
-					else if (me.reportParameters[index].referenceTableName == "OverHead" || me.reportParameters[index].referenceTableName == "Overhead") {
-                        me.controls[index].setData(me.excludeOverheadAccounts);
-                        me.controls[index].select(ii.ajax.util.findIndexById(me.reportParameters[index].defaultValue, me.excludeOverheadAccounts), me.controls[index].focused);
-                    }
-					else if (me.reportParameters[index].referenceTableName == "YearPeriods")
-						me.controls[index].setData(me.yearPeriods);
-					else if (me.reportParameters[index].referenceTableName == "PayPeriod")
-						me.controls[index].setData(me.payPeriodEndingDates);
-					else if (me.reportParameters[index].referenceTableName == "ExLevel") {
-                        me.controls[index].setData(me.levels);
-                        me.controls[index].select(0, me.controls[index].focused);
-                    }
-					else if (me.reportParameters[index].referenceTableName == "Report" && me.reportParameters[index].name == "ReportType")
-						me.controls[index].setData(me.payrollReportTypes);
-					else if (me.reportParameters[index].referenceTableName == "ReportType") {
-                        me.controls[index].setData(me.reportTypes);
-                        me.controls[index].select(ii.ajax.util.findIndexById(me.reportParameters[index].defaultValue, me.reportTypes), me.controls[index].focused);
-                    }
-					else if (me.reportParameters[index].referenceTableName == "Report" && me.reportParameters[index].name == "Budget") {
-                        me.controls[index].setData(me.budgetTypes);
-                        me.controls[index].select(me.findIndexByTitle(me.reportParameters[index].defaultValue, me.budgetTypes), me.controls[index].focused);
-                    }
-					else if (me.reportParameters[index].referenceTableName == "CrothallEmployee") {
-                        me.controls[index].setData(me.crothallEmployees);                       
-                        me.controls[index].select(me.findIndexByTitle(me.reportParameters[index].defaultValue, me.crothallEmployees), me.controls[index].focused);                      
-                    }
-					else if (me.reportParameters[index].referenceTableName == "Week")
-						me.controls[index].setData(me.currentWeeks);
-					else if (me.reportParameters[index].referenceTableName == "Comments") {
-                        me.controls[index].setData(me.comments);
-                        me.controls[index].select(me.findIndexByTitle(me.reportParameters[index].defaultValue, me.comments), me.controls[index].focused);
-                    }
-					else if (me.reportParameters[index].referenceTableName == "UnionNonUnion") {
-                        me.controls[index].setData(me.unions);
-                        me.controls[index].select(me.findIndexByTitle(me.reportParameters[index].defaultValue, me.unions), me.controls[index].focused);
-                    }
-					else if (me.reportParameters[index].referenceTableName == "EntryMethod") {
-                        me.controls[index].setData(me.entryMethods);
-                        me.controls[index].select(ii.ajax.util.findIndexById(me.reportParameters[index].defaultValue, me.entryMethods), me.controls[index].focused);
-                    }
-					else if (me.reportParameters[index].referenceTableName == "Hour40Exception") {
-                        me.controls[index].setData(me.hour40Exceptions);
-                        me.controls[index].select(ii.ajax.util.findIndexById(me.reportParameters[index].defaultValue, me.hour40Exceptions), me.controls[index].focused);                        
-                    }
-					else if (me.reportParameters[index].referenceTableName == "HouseCodeStatus") {
-                        me.controls[index].setData(me.houseCodeStatus);
-                        me.controls[index].select(ii.ajax.util.findIndexById(me.reportParameters[index].defaultValue, me.houseCodeStatus), me.controls[index].focused);
-                    }
-					else if (me.reportParameters[index].referenceTableName == "ShowCntHrs") {
-                        me.controls[index].setData(me.countHours);
-                        me.controls[index].select(me.findIndexByTitle(me.reportParameters[index].defaultValue, me.countHours), me.controls[index].focused);
-                    }
-					else if (me.reportParameters[index].referenceTableName == "Exception") {
-                        me.controls[index].setData(me.exceptions);
-                        me.controls[index].select(me.findIndexByTitle(me.reportParameters[index].defaultValue, me.exceptions), me.controls[index].focused);
-                    }
-                    else if (me.reportParameters[index].referenceTableName == "GroupLevel") 
-                        me.controls[index].setData(me.groupLevels);*/                    					
 				}
 				else if (me.reportParameters[index].controlType == "Date") {
 					$("#" + me.reportParameters[index].name).datepicker({
@@ -2352,7 +2249,7 @@ ii.Class({
             else if (args.referenceTableName == "Exception")
                 typeTableData = me.exceptions;
             else if (args.referenceTableName == "GroupLevel")
-                typeTableData = me.groupLevels;            
+            	me.groupLevelsLoaded();            
 				
 			for (var index = 0; index < typeTableData.length; index++) {
                 var value = typeTableData[index].id;
@@ -2509,9 +2406,13 @@ ii.Class({
             }
             else if (me.level == "~Level=SiteName") {
                 me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
-            }
+            }            
             
-            me.controls[3].setData(me.groupLevels);
+            $("#GroupLevel").html("");
+            for (var index = 0; index < me.groupLevels.length; index++) {
+                $("#GroupLevel").append("<option title='" + me.groupLevels[index].parameter + "' value='" + me.groupLevels[index].id + "'>" + me.groupLevels[index].parameter + "</option>");
+            }
+            $("#GroupLevel").multiselect("refresh");
         },
 		
 		fiscalweeksLoad: function(yearSelected) {
