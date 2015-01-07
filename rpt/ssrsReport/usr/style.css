@@ -256,6 +256,10 @@
 	z-index: 9050;
 }
 
+.ui-multiselect-single .ui-multiselect-checkboxes label {
+	padding: 0 !important;
+}
+
 Label {
 	font-weight: normal;
 }
