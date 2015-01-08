@@ -305,7 +305,7 @@ ii.Class({
 				text: "<span>&nbsp;&nbsp;Generate Report&nbsp;&nbsp;</span>",
 				clickFunction: function() { me.actionGenerateReportItem(); },
 				hasHotState: true
-			});			
+			});
 			
 			me.subscriptionGrid = new ui.ctl.Grid({
 				id: "SubscriptionGrid",
@@ -1399,8 +1399,7 @@ ii.Class({
 			if (me.pageLoading) {
 				me.actionAddNodes();
 				me.pageLoading = false;
-				me.checkLoadCount();
-				//me.hirNodeStore.fetch("userId:[user],levelBrief:-1", me.hirNodesLoaded, me);	
+				me.checkLoadCount();	
 			}
 			else {
 				me.levelNamesLoaded = true;
@@ -1482,8 +1481,6 @@ ii.Class({
 					me.addLevelNode("", 7, "SiteName", 1, 1, "");
 					me.addChildNodes(nodes, "SiteName");
 				}
-
-				//me.checkLoadCount();
 			}
 		},
 		
@@ -1651,6 +1648,12 @@ ii.Class({
 			else {
 				me.resetDependentTypes();
 			}
+			
+			if(me.controls[3].selector != undefined && me.controls[3].selector == "#GroupLevel")
+            	me.groupLevelsLoaded();
+            	
+        	$("#Customers").html("");
+			$("#Customers").multiselect("refresh");
 		},
 		
 		parentNodeCheck: function(chkNodeChild, hirNodeTitle, parent) {
@@ -1722,6 +1725,9 @@ ii.Class({
 			
 			if(me.controls[3].selector != undefined && me.controls[3].selector == "#GroupLevel")
             	me.groupLevelsLoaded();
+            
+            $("#Customers").html("");
+			$("#Customers").multiselect("refresh");	
 		},
 		
 		actionAddNodes: function() {
@@ -2355,58 +2361,60 @@ ii.Class({
             var me = this;
             me.groupLevels = [];
             
-            if (me.level == "~Level=ENT") {
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(37, "ENT", "ENT"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(2, "SVP", "SVP"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(34, "DVP", "DVP"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+            if (me.name != "") {
+            	if (me.level == "~Level=ENT") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(37, "ENT", "ENT"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(2, "SVP", "SVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(34, "DVP", "DVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }
+	            else if (me.level == "~Level=SVP") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(2, "SVP", "SVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(34, "DVP", "DVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }   
+	            else if (me.level == "~Level=DVP") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(34, "DVP", "DVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }
+	            else if (me.level == "~Level=RVP") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }
+	            else if (me.level == "~Level=SRM") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }
+	            else if (me.level == "~Level=RM") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }
+	            else if (me.level == "~Level=AM") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }
+	            else if (me.level == "~Level=SiteName") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }
             }
-            else if (me.level == "~Level=SVP") {
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(2, "SVP", "SVP"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(34, "DVP", "DVP"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
-            }   
-            else if (me.level == "~Level=DVP") {
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(34, "DVP", "DVP"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
-            }
-            else if (me.level == "~Level=RVP") {
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
-            }
-            else if (me.level == "~Level=SRM") {
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
-            }
-            else if (me.level == "~Level=RM") {
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
-            }
-            else if (me.level == "~Level=AM") {
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
-            }
-            else if (me.level == "~Level=SiteName") {
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
-            }            
             
             $("#GroupLevel").html("");
             for (var index = 0; index < me.groupLevels.length; index++) {
@@ -2722,7 +2730,7 @@ ii.Class({
 			var parametersList = "";
 			var valid = true;
 			var parameter = "";
-
+			 
 			for (var index = 0; index < me.controls.length; index++) {
 				if (me.reportParameters[index].controlType == "Text")
 					me.controls[index].validate(true);
@@ -2784,20 +2792,6 @@ ii.Class({
                             alert("Please select " + me.reportParameters[index].title);
                             return false;
                     }
-                    
-                    //if (me.reportParameters[index].referenceTableName == "PayrollCompany")
-                    //    parameter = me.controls[index].data[me.controls[index].indexSelected].brief
-                    //else if (me.reportParameters[index].referenceTableName == "FscPeriod"
-                    //        || me.reportParameters[index].referenceTableName == "BatchNumber"
-                    //        || me.reportParameters[index].referenceTableName == "FscPeriodFrom" 
-                    //        || me.reportParameters[index].referenceTableName == "FscPeriodTo"
-                    //        || me.reportParameters[index].referenceTableName == "FscYear"
-                    //        || me.reportParameters[index].referenceTableName == "YearPeriods")
-                    //    parameter = me.controls[index].data[me.controls[index].indexSelected].id
-                    //else
-                    //    parameter = me.controls[index].data[me.controls[index].indexSelected].parameter
-                                                
-                    //parametersList += "~" + me.reportParameters[index].referenceTableName + "=" + parameter;
                 }
                 else if (me.reportParameters[index].controlType == "MultiSelect") {
                     var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function(){
@@ -2838,7 +2832,7 @@ ii.Class({
 			}
 			
 			document.body.appendChild(form);
-			form.submit();				
+			form.submit();							
 		},
 		
 		actionReportItem: function() {
