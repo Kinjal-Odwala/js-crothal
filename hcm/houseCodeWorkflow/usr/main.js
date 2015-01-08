@@ -131,7 +131,6 @@ ii.Class({
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},	
 
-
 		sessionLoaded: function fin_hcm_houseCodeWorkflow_UserInterface_sessionLoaded() {
 			var args = ii.args(arguments, {
 				me: {type: Object}
@@ -1004,15 +1003,6 @@ ii.Class({
 
 			me.gpoMember.makeEnterTab()
 				.setValidationMaster(me.validator)
-			
-			me.startDateFirm = new ui.ctl.Input.Text({
-		        id: "StartDateFirm",
-		        maxLength: 50,
-				changeFunction: function() { me.modified(); }
-		    });
-
-			me.startDateFirm.makeEnterTab()
-				.setValidationMaster(me.validator)
 
 			me.contactName = new ui.ctl.Input.Text({
 		        id: "ContactName",
@@ -1507,7 +1497,6 @@ ii.Class({
 				me.squareFootage.resizeText();
 				me.licensedBeds.resizeText();
 				me.gpoMember.resizeText();
-				me.startDateFirm.resizeText();
 			}
 			else if (me.currentWizard == "SuppliesInfo") {
 				me.contactName.resizeText();
@@ -1582,7 +1571,7 @@ ii.Class({
 			me.certificate.text.tabIndex = 83;
 			me.einNumber.text.tabIndex = 84;
 			me.companyStatus.text.tabIndex = 85;
-			$("#SelfPreformed")[0].tabIndex = 91;
+			$("#SelfPerformed")[0].tabIndex = 91;
 			$("#SubContracted")[0].tabIndex = 92;
 			me.contractType.text.tabIndex = 93;
 			me.contractLength.text.tabIndex = 94;
@@ -1592,7 +1581,8 @@ ii.Class({
 			me.squareFootage.text.tabIndex = 98;
 			me.licensedBeds.text.tabIndex = 99;
 			me.gpoMember.text.tabIndex = 100;
-			me.startDateFirm.text.tabIndex = 101;
+			$("#StartDateFirmYes")[0].tabIndex = 101;
+			$("#StartDateFirmNo")[0].tabIndex = 102;
 			$("#CompassPurchaseAnySuppliesYes")[0].tabIndex = 111;
 			$("#CompassPurchaseAnySuppliesNo")[0].tabIndex = 112;
 			me.contactName.text.tabIndex = 113;
@@ -1677,7 +1667,6 @@ ii.Class({
 			me.squareFootage.setValue("");
 			me.licensedBeds.setValue("");
 			me.gpoMember.setValue("");
-			me.startDateFirm.setValue("");
 			me.contactName.setValue("");
 			me.contactNumber.setValue("");
 			me.typesOfSuppliesPurchased.setValue("");
@@ -1699,7 +1688,7 @@ ii.Class({
 
 			$("#OtherServicesProvided").multiselect("uncheckAll");
 			$("#CrothallBenefitsYes")[0].checked = true;
-			$("#SelfPreformed")[0].checked = true;
+			$("#SelfPerformed")[0].checked = true;
 			$("#TenetHealthcareAccountYes")[0].checked = true;
 			$("#CompassPurchaseAnySuppliesYes")[0].checked = true;
 			$("#LabelHourlyEmployees").hide();
@@ -2176,8 +2165,10 @@ ii.Class({
 			me.customerState.reset();
 			me.customerZipCode.setValue("");
 			
-			if (me.customers.length > 0)
+			if (me.customers.length > 0) {
+				me.customerNumber.reset();
 				me.customerNumber.select(0, me.customerNumber.focused);
+			}
 		},
 
 		customerNumberChanged: function() {
@@ -2193,8 +2184,10 @@ ii.Class({
 				else
 					me.customerState.reset();
 				me.customerZipCode.setValue(me.customers[index].postalCode);
-				me.searchZipCode = true;
-				me.loadZipCodeTypes("Customer");
+				if (me.customers[index].postalCode != "") {
+					me.searchZipCode = true;
+					me.loadZipCodeTypes("Customer");
+				}
 			}
 		},
 
@@ -2217,15 +2210,16 @@ ii.Class({
 			me.serviceLocations = me.jobs.slice();
 			me.serviceLocationNumber.setData(me.serviceLocations);
 			me.serviceLocationName.setValue("");
-
 			me.serviceLocationStreet.setValue("");
 			me.serviceLocationCity.reset();
 			me.serviceLocationCity.setData([]);
 			me.serviceLocationState.reset();
 			me.serviceLocationZipCode.setValue("");
 
-			if (me.serviceLocations.length > 0)
+			if (me.serviceLocations.length > 0) {
+				me.serviceLocationNumber.reset();
 				me.serviceLocationNumber.select(0, me.serviceLocationNumber.focused);
+			}
 		},
 		
 		serviceLocationNumberChanged: function() {
@@ -2241,8 +2235,10 @@ ii.Class({
 				else
 					me.serviceLocationState.reset();
 				me.serviceLocationZipCode.setValue(me.serviceLocations[index].postalCode);
-				me.searchZipCode = true;
-				me.loadZipCodeTypes("ServiceLocation");
+				if (me.serviceLocations[index].postalCode != "") {
+					me.searchZipCode = true;
+					me.loadZipCodeTypes("ServiceLocation");
+				}
 			}
 		},
 		
@@ -2755,7 +2751,7 @@ ii.Class({
 				me.squareFootage.setValue(item.column68);
 				me.licensedBeds.setValue(item.column69);
 				me.gpoMember.setValue(item.column70);
-				me.startDateFirm.setValue(item.column71);
+				$("input[name='StartDateFirm'][value='" + item.column71 + "']").attr("checked", "checked");
 
 				$("input[name='CompassPurchaseAnySupplies'][value='" + item.column72 + "']").attr("checked", "checked");
 				if (item.column72 == "No")
@@ -3077,7 +3073,7 @@ ii.Class({
 					, me.squareFootage.getValue()
 					, me.licensedBeds.getValue()
 					, me.gpoMember.getValue()
-					, me.startDateFirm.getValue()
+					, $("input[name='StartDateFirm']:checked").val()
 					, $("input[name='CompassPurchaseAnySupplies']:checked").val()
 					, me.contactName.getValue()
 					, me.contactNumber.getValue()
@@ -3221,7 +3217,7 @@ ii.Class({
 			xml += ' squareFootage="' + ui.cmn.text.xml.encode(item.column68) + '"';
 			xml += ' licensedBeds="' + ui.cmn.text.xml.encode(item.column69) + '"';
 			xml += ' gpoMember="' + ui.cmn.text.xml.encode(item.column70) + '"';
-			xml += ' startDateFirm="' + ui.cmn.text.xml.encode(item.column71) + '"';
+			xml += ' startDateFirm="' + item.column71 + '"';
 			xml += ' compassPurchaseAnySupplies="' + item.column72 + '"';
 			xml += ' contactName="' + ui.cmn.text.xml.encode(item.column73) + '"';
 			xml += ' contactNumber="' + ui.cmn.text.xml.encode(item.column74) + '"';
