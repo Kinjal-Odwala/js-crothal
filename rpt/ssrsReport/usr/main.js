@@ -76,7 +76,6 @@ ii.Class({
 			me.level = "";
 			me.names = "";
 			me.reportURL = "";
-			me.url = "";
 			me.parent = "";
 			me.parentNode = "";
 			me.ddlists = 0;
@@ -1164,7 +1163,7 @@ ii.Class({
 		
 		typesTableLoaded: function() {
 			var me = this;
-			me.levels = [];
+			
 			me.excludeOverheadAccounts = [];
 			me.payrollReportTypes = [];
 			me.reportTypes = [];
@@ -1178,16 +1177,6 @@ ii.Class({
 			me.houseCodeStatus = [];
 			me.countHours = [];
 			me.exceptions = [];
-			
-			me.levels.push(new fin.rpt.ssrs.Level(0, "None", "0"));
-			me.levels.push(new fin.rpt.ssrs.Level(37, "ENT", "ENT"));
-			me.levels.push(new fin.rpt.ssrs.Level(2, "SVP", "SVP"));
-			me.levels.push(new fin.rpt.ssrs.Level(34, "DVP", "DVP"));
-			me.levels.push(new fin.rpt.ssrs.Level(3, "RVP", "RVP"));
-			me.levels.push(new fin.rpt.ssrs.Level(36, "SRM", "SRM"));
-			me.levels.push(new fin.rpt.ssrs.Level(4, "RM", "RM"));
-			me.levels.push(new fin.rpt.ssrs.Level(41, "AM", "AM"));
-			me.levels.push(new fin.rpt.ssrs.Level(7, "SiteName", "SiteName"));
 			
 			me.excludeOverheadAccounts.push(new fin.rpt.ssrs.ExcludeOverheadAccount(3, "Yes", "3"));//Default
 			me.excludeOverheadAccounts.push(new fin.rpt.ssrs.ExcludeOverheadAccount(-1, "No", "-1"));
@@ -1404,11 +1393,13 @@ ii.Class({
 			else {
 				me.levelNamesLoaded = true;
 				var nodes = [];
+				me.levels = [];
 				var $scope = angular.element($("#SearchContainer")).scope();
 				$scope.$apply(function() {
 					$scope.nodes = me.hirNodes.slice();
 				});
-
+				
+				me.levels.push(new fin.rpt.ssrs.Level(0, "None", "0"));
 				// Add ENT level and its child nodes
 				nodes = $.grep(me.hirNodes, function(item, index) {
 				    return item.hirLevel == 37;
@@ -1416,6 +1407,7 @@ ii.Class({
 				if (nodes.length > 0) {
 					me.addLevelNode("", 37, "ENT", 1, 1, "");
 					me.addChildNodes(nodes, "ENT");
+					me.levels.push(new fin.rpt.ssrs.Level(37, "ENT", "ENT"));
 				}
 
 				// Add SVP level and its child nodes
@@ -1425,6 +1417,7 @@ ii.Class({
 				if (nodes.length > 0) {
 					me.addLevelNode("", 2, "SVP", 1, 1, "");
 					me.addChildNodes(nodes, "SVP");
+					me.levels.push(new fin.rpt.ssrs.Level(2, "SVP", "SVP"));
 				}
 
 				// Add DVP level and its child nodes
@@ -1434,6 +1427,7 @@ ii.Class({
 				if (nodes.length > 0) {
 					me.addLevelNode("", 34, "DVP", 1, 1, "");
 					me.addChildNodes(nodes, "DVP");
+					me.levels.push(new fin.rpt.ssrs.Level(34, "DVP", "DVP"));
 				}
 
 				// Add RVP level and its child nodes
@@ -1443,6 +1437,7 @@ ii.Class({
 				if (nodes.length > 0) {
 					me.addLevelNode("", 3, "RVP", 1, 1, "");
 					me.addChildNodes(nodes, "RVP");
+					me.levels.push(new fin.rpt.ssrs.Level(3, "RVP", "RVP"));
 				}
 
 				// Add SRM level and its child nodes
@@ -1452,6 +1447,7 @@ ii.Class({
 				if (nodes.length > 0) {
 					me.addLevelNode("", 36, "SRM", 1, 1, "");
 					me.addChildNodes(nodes, "SRM");
+					me.levels.push(new fin.rpt.ssrs.Level(36, "SRM", "SRM"));
 				}
 
 				// Add RM level and its child nodes
@@ -1461,6 +1457,7 @@ ii.Class({
 				if (nodes.length > 0) {
 					me.addLevelNode("", 4, "RM", 1, 1, "");
 					me.addChildNodes(nodes, "RM");
+					me.levels.push(new fin.rpt.ssrs.Level(4, "RM", "RM"));
 				}
 
 				// Add AM level and its child nodes
@@ -1470,6 +1467,7 @@ ii.Class({
 				if (nodes.length > 0) {
 					me.addLevelNode("", 41, "AM", 1, 1, "");
 					me.addChildNodes(nodes, "AM");
+					me.levels.push(new fin.rpt.ssrs.Level(41, "AM", "AM"));
 				}
 				
 				// Add Unit level and its child nodes
@@ -1480,6 +1478,7 @@ ii.Class({
 				if (nodes.length > 0) {
 					me.addLevelNode("", 7, "SiteName", 1, 1, "");
 					me.addChildNodes(nodes, "SiteName");
+					me.levels.push(new fin.rpt.ssrs.Level(7, "SiteName", "SiteName"));
 				}
 			}
 		},
@@ -1648,12 +1647,12 @@ ii.Class({
 			else {
 				me.resetDependentTypes();
 			}
-			
-			if(me.controls[3].selector != undefined && me.controls[3].selector == "#GroupLevel")
-            	me.groupLevelsLoaded();
-            	
+				
         	$("#Customers").html("");
 			$("#Customers").multiselect("refresh");
+			
+			if(me.controls[3] != undefined && me.controls[3].selector == "#GroupLevel")
+            	me.groupLevelsLoaded();
 		},
 		
 		parentNodeCheck: function(chkNodeChild, hirNodeTitle, parent) {
@@ -1721,13 +1720,12 @@ ii.Class({
 					$("#" + this.id).attr("checked", false);
 		    });
 
-			me.checkDependentTypes(fullPath, chkNodeChild.checked);
-			
-			if(me.controls[3].selector != undefined && me.controls[3].selector == "#GroupLevel")
-            	me.groupLevelsLoaded();
-            
+			me.checkDependentTypes(fullPath, chkNodeChild.checked);			
             $("#Customers").html("");
-			$("#Customers").multiselect("refresh");	
+			$("#Customers").multiselect("refresh");
+			
+			if(me.controls[3] != undefined && me.controls[3].selector == "#GroupLevel")
+            	me.groupLevelsLoaded();	
 		},
 		
 		actionAddNodes: function() {
@@ -2096,20 +2094,17 @@ ii.Class({
                         },
 						open: function( e ){							
 							if (e.target.id == 'Customers') {
-								if (me.namesList != me.names.replace("~", "") || me.url != me.reportURL) {
-									me.url = me.reportURL	
-									$("#Customers").html("");
-									$("#Customers").multiselect("refresh");
-									if (me.level == '' || me.name == '') 									
-										return false;
-									me.namesList = me.names.replace("~", "");
-									me.levelName = me.level.replace("~Level=", "");											
-									me.setStatus("Loading");
-									$("#customersLoading").addClass('loading');
-									me.genericTypeStore.fetch("level:" + me.levelName + ",name:" + me.namesList + ",genericType:Customers,userId:[user]", me.customersLoaded, me);
-								}
-							}							
-						},						
+								$("#Customers").html("");
+								$("#Customers").multiselect("refresh");
+								if (me.level == '' || me.name == '') 									
+									return false;
+								me.namesList = me.names.replace("~", "");
+								me.levelName = me.level.replace("~Level=", "");											
+								me.setStatus("Loading");
+								$("#customersLoading").addClass('loading');
+								me.genericTypeStore.fetch("level:" + me.levelName + ",name:" + me.namesList + ",genericType:Customers,userId:[user]", me.customersLoaded, me);
+							}
+						},
 						position: {
 							my: 'left bottom',
 							at: 'left top'
@@ -2463,6 +2458,10 @@ ii.Class({
 			for (var index = 0; index < nodes.length; index++) {
                 $("#ExcludeNames").append("<option title='" + nodes[index].title + "' value='" + nodes[index].id + "'>" + nodes[index].title + "</option>");
             }
+            
+            if (nodes.length == 0)
+            	$("#ExcludeNames").append("<option title='None' value='0'>None</option>");
+            	
 			$("#ExcludeNames").multiselect("refresh");			
 		},
 		
