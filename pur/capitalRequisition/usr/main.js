@@ -2540,8 +2540,7 @@ ii.Class({
 					if ($("#selectInputCheck" + index)[0].checked) {
 						me.poCapitalRequisitionItems[index].itemSelect = true;
 						me.poCapitalRequisitionItems[index].modified = true;
-					}
-						
+					}						
 					else
 						me.poCapitalRequisitionItems.splice(index, 1);
 				}
@@ -2610,9 +2609,9 @@ ii.Class({
 				xml += ' action="' + me.status + '"';
 				xml += ' jdeCompleted="0"';
 				xml += ' subTotal="' + me.subTotal.toFixed(2) + '"';
-				xml += ' taxPercent="' + item.taxPercent + '"';
-				xml += ' taxAmount="' + item.taxAmount + '"';
-				xml += ' freight="' + item.freight + '"';
+				xml += ' taxPercent="' + (item.taxPercent != 0 ? item.taxPercent : "") + '"';
+				xml += ' taxAmount="' + (item.taxAmount != 0 ? item.taxAmount : "") + '"';
+				xml += ' freight="' + (item.freight != 0 ? item.freight : "") + '"';
 				xml += ' total="' + $("#spnTotal").html() + '"';
 				xml += '/>';
 			}

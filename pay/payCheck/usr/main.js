@@ -589,7 +589,7 @@ ii.Class({
 			me.payCodeDetailGrid.addColumn("date", "date", "Date", "Date", 120, null, me.date);
 			me.payCodeDetailGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 100, function(earning) { return ui.cmn.text.money.format(earning); }, me.earning);
 			me.payCodeDetailGrid.addColumn("alternateBaseRate", "alternateBaseRate", "Alternate Base Rate", "Alternate Base Rate", 180, function(alternateBaseRate) { return ui.cmn.text.money.format(alternateBaseRate); }, me.alternateBaseRate);
-			me.payCodeDetailGrid.addColumn("workOrderNumber", "workOrderNumber", "Work Order Ticket #", "Work Order Ticket Number", 170, null, me.workOrderNumber);
+			me.payCodeDetailGrid.addColumn("workOrderNumber", "workOrderNumber", "Charge to House Code", "Charge to House Code", 180, null, me.workOrderNumber);
 			me.payCodeDetailGrid.capColumns();
 			
 			me.payCodeType.active = false;
@@ -608,7 +608,7 @@ ii.Class({
 			me.payCodeDetailReadOnlyGrid.addColumn("date", "date", "Date", "Date", 120);
 			me.payCodeDetailReadOnlyGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 100, function(earning) { return ui.cmn.text.money.format(earning); });
 			me.payCodeDetailReadOnlyGrid.addColumn("alternateBaseRate", "alternateBaseRate", "Alternate Base Rate", "Alternate Base Rate", 180, function(alternateBaseRate) { return ui.cmn.text.money.format(alternateBaseRate); });
-			me.payCodeDetailReadOnlyGrid.addColumn("workOrderNumber", "workOrderNumber", "Work Order Ticket #", "Work Order Ticket Number", 170);
+			me.payCodeDetailReadOnlyGrid.addColumn("workOrderNumber", "workOrderNumber", "Charge to House Code", "Charge to House Code", 180);
 			me.payCodeDetailReadOnlyGrid.capColumns();
 
 			me.anchorSearch = new ui.ctl.buttons.Sizeable({

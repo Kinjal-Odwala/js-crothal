@@ -2443,7 +2443,7 @@ ii.Class({
 				xml += ' shipToStateTitle="' + me.shippingState.lastBlurValue + '"';
 				xml += ' shipToZip="' + item.shipToZip + '"';
 				xml += ' shipToPhone="' + fin.cmn.text.mask.phone(item.shipToPhone) + '"';
-				xml += ' shipToFax="' + fin.cmn.text.mask.phone(item.shipToFax, true) + '"';
+				xml += ' shipToFax="' + fin.cmn.text.mask.phone(item.shipToFax) + '"';
 				xml += ' requestorName="' + ui.cmn.text.xml.encode(item.requestorName) + '"';
 				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
 				xml += ' requestedDate="' + item.requestedDate + '"';

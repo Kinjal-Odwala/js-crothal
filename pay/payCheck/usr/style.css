@@ -217,6 +217,10 @@
 	margin-left: 11px;
 }
 
+#hoursBodyColumn, #earningsBodyColumn, #alternateBaseRateBodyColumn {
+	text-align: right;
+}
+
 #uploadPopup {
 	width: 600px; 
 	height: 150px;

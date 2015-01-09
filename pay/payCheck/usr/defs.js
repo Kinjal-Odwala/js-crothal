@@ -91,7 +91,7 @@ ii.init.register( function(){
 		, date: {type: String, required: false, defaultValue: ""}
 		, earnings: {type: Number, required: false, defaultValue: 0}
 		, alternateBaseRate: {type: Number, required: false, defaultValue: 0}
-		, workOrderNumber: {type: Number, required: false, defaultValue: 0}
+		, workOrderNumber: {type: String, required: false, defaultValue: ""}
 	};
 	
 	fin.pay.payCheck.payCheckRequestDocumentArgs = {

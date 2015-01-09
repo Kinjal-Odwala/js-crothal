@@ -76,7 +76,6 @@ ii.Class({
 			me.level = "";
 			me.names = "";
 			me.reportURL = "";
-			me.url = "";
 			me.parent = "";
 			me.parentNode = "";
 			me.ddlists = 0;
@@ -305,7 +304,7 @@ ii.Class({
 				text: "<span>&nbsp;&nbsp;Generate Report&nbsp;&nbsp;</span>",
 				clickFunction: function() { me.actionGenerateReportItem(); },
 				hasHotState: true
-			});			
+			});
 			
 			me.subscriptionGrid = new ui.ctl.Grid({
 				id: "SubscriptionGrid",
@@ -1164,7 +1163,7 @@ ii.Class({
 		
 		typesTableLoaded: function() {
 			var me = this;
-			me.levels = [];
+			
 			me.excludeOverheadAccounts = [];
 			me.payrollReportTypes = [];
 			me.reportTypes = [];
@@ -1178,16 +1177,6 @@ ii.Class({
 			me.houseCodeStatus = [];
 			me.countHours = [];
 			me.exceptions = [];
-			
-			me.levels.push(new fin.rpt.ssrs.Level(0, "None", "0"));
-			me.levels.push(new fin.rpt.ssrs.Level(37, "ENT", "ENT"));
-			me.levels.push(new fin.rpt.ssrs.Level(2, "SVP", "SVP"));
-			me.levels.push(new fin.rpt.ssrs.Level(34, "DVP", "DVP"));
-			me.levels.push(new fin.rpt.ssrs.Level(3, "RVP", "RVP"));
-			me.levels.push(new fin.rpt.ssrs.Level(36, "SRM", "SRM"));
-			me.levels.push(new fin.rpt.ssrs.Level(4, "RM", "RM"));
-			me.levels.push(new fin.rpt.ssrs.Level(41, "AM", "AM"));
-			me.levels.push(new fin.rpt.ssrs.Level(7, "SiteName", "SiteName"));
 			
 			me.excludeOverheadAccounts.push(new fin.rpt.ssrs.ExcludeOverheadAccount(3, "Yes", "3"));//Default
 			me.excludeOverheadAccounts.push(new fin.rpt.ssrs.ExcludeOverheadAccount(-1, "No", "-1"));
@@ -1357,9 +1346,6 @@ ii.Class({
 					me.setHouseCodes();
 				}				
 			}
-			
-           if(me.controls[3] != undefined && me.controls[3].id == "GroupLevel")
-               me.groupLevelsLoaded();
 		},
 
 		setExcludeHouseCodes: function() {
@@ -1372,9 +1358,6 @@ ii.Class({
 				$("#ExcludeHouseCodes").append("<option title='" + me.excludeHouseCodes[index].title + "' value='" + me.excludeHouseCodes[index].id + "'>" + me.excludeHouseCodes[index].title + "</option>");
 			}
 			$("#ExcludeHouseCodes").multiselect("refresh");
-			
-			if(me.controls[3] != undefined && me.controls[3].id == "GroupLevel")
-            	me.groupLevelsLoaded();
 		},
 		
 		setHouseCodes: function() {
@@ -1405,17 +1388,18 @@ ii.Class({
 			if (me.pageLoading) {
 				me.actionAddNodes();
 				me.pageLoading = false;
-				me.checkLoadCount();
-				//me.hirNodeStore.fetch("userId:[user],levelBrief:-1", me.hirNodesLoaded, me);	
+				me.checkLoadCount();	
 			}
 			else {
 				me.levelNamesLoaded = true;
 				var nodes = [];
+				me.levels = [];
 				var $scope = angular.element($("#SearchContainer")).scope();
 				$scope.$apply(function() {
 					$scope.nodes = me.hirNodes.slice();
 				});
-
+				
+				me.levels.push(new fin.rpt.ssrs.Level(0, "None", "0"));
 				// Add ENT level and its child nodes
 				nodes = $.grep(me.hirNodes, function(item, index) {
 				    return item.hirLevel == 37;
@@ -1423,6 +1407,7 @@ ii.Class({
 				if (nodes.length > 0) {
 					me.addLevelNode("", 37, "ENT", 1, 1, "");
 					me.addChildNodes(nodes, "ENT");
+					me.levels.push(new fin.rpt.ssrs.Level(37, "ENT", "ENT"));
 				}
 
 				// Add SVP level and its child nodes
@@ -1432,6 +1417,7 @@ ii.Class({
 				if (nodes.length > 0) {
 					me.addLevelNode("", 2, "SVP", 1, 1, "");
 					me.addChildNodes(nodes, "SVP");
+					me.levels.push(new fin.rpt.ssrs.Level(2, "SVP", "SVP"));
 				}
 
 				// Add DVP level and its child nodes
@@ -1441,6 +1427,7 @@ ii.Class({
 				if (nodes.length > 0) {
 					me.addLevelNode("", 34, "DVP", 1, 1, "");
 					me.addChildNodes(nodes, "DVP");
+					me.levels.push(new fin.rpt.ssrs.Level(34, "DVP", "DVP"));
 				}
 
 				// Add RVP level and its child nodes
@@ -1450,6 +1437,7 @@ ii.Class({
 				if (nodes.length > 0) {
 					me.addLevelNode("", 3, "RVP", 1, 1, "");
 					me.addChildNodes(nodes, "RVP");
+					me.levels.push(new fin.rpt.ssrs.Level(3, "RVP", "RVP"));
 				}
 
 				// Add SRM level and its child nodes
@@ -1459,6 +1447,7 @@ ii.Class({
 				if (nodes.length > 0) {
 					me.addLevelNode("", 36, "SRM", 1, 1, "");
 					me.addChildNodes(nodes, "SRM");
+					me.levels.push(new fin.rpt.ssrs.Level(36, "SRM", "SRM"));
 				}
 
 				// Add RM level and its child nodes
@@ -1468,6 +1457,7 @@ ii.Class({
 				if (nodes.length > 0) {
 					me.addLevelNode("", 4, "RM", 1, 1, "");
 					me.addChildNodes(nodes, "RM");
+					me.levels.push(new fin.rpt.ssrs.Level(4, "RM", "RM"));
 				}
 
 				// Add AM level and its child nodes
@@ -1477,6 +1467,7 @@ ii.Class({
 				if (nodes.length > 0) {
 					me.addLevelNode("", 41, "AM", 1, 1, "");
 					me.addChildNodes(nodes, "AM");
+					me.levels.push(new fin.rpt.ssrs.Level(41, "AM", "AM"));
 				}
 				
 				// Add Unit level and its child nodes
@@ -1487,9 +1478,8 @@ ii.Class({
 				if (nodes.length > 0) {
 					me.addLevelNode("", 7, "SiteName", 1, 1, "");
 					me.addChildNodes(nodes, "SiteName");
+					me.levels.push(new fin.rpt.ssrs.Level(7, "SiteName", "SiteName"));
 				}
-
-				//me.checkLoadCount();
 			}
 		},
 		
@@ -1657,6 +1647,12 @@ ii.Class({
 			else {
 				me.resetDependentTypes();
 			}
+				
+        	$("#Customers").html("");
+			$("#Customers").multiselect("refresh");
+			
+			if(me.controls[3] != undefined && me.controls[3].selector == "#GroupLevel")
+            	me.groupLevelsLoaded();
 		},
 		
 		parentNodeCheck: function(chkNodeChild, hirNodeTitle, parent) {
@@ -1724,7 +1720,12 @@ ii.Class({
 					$("#" + this.id).attr("checked", false);
 		    });
 
-			me.checkDependentTypes(fullPath, chkNodeChild.checked);
+			me.checkDependentTypes(fullPath, chkNodeChild.checked);			
+            $("#Customers").html("");
+			$("#Customers").multiselect("refresh");
+			
+			if(me.controls[3] != undefined && me.controls[3].selector == "#GroupLevel")
+            	me.groupLevelsLoaded();	
 		},
 		
 		actionAddNodes: function() {
@@ -2035,106 +2036,6 @@ ii.Class({
 					});
 
 					me.controls[index] = $("#" + me.reportParameters[index].name);
-					
-					
-					/*me.controls[index] = new ui.ctl.Input.DropDown.Filtered({
-				        id: "" + me.reportParameters[index].name,
-						labelName: "" + me.reportParameters[index].title,
-						changeFunction: function(data) { 
-							if(data.data.id == "FiscalYear")
-								me.fiscalweeksLoad();
-							else if(data.data.id == "ExcludeHierarchyLevel")
-								me.excludeNamesLoaded(data.data.data[data.data.indexSelected].id);							
-						},
-						formatFunction: function( type ) {
-							if (type.iiClass == "fin.rpt.ssrs.PayrollCompany") 
-								return type.brief + " - " + type.name;
-							else if (type.iiClass == "fin.rpt.ssrs.FiscalPeriod") 
-                                return "Period " + type.title +' - '+ type.fscYeaTitle;
-                            else if (type.iiClass == "fin.rpt.ssrs.Batch") 
-                                return type.batchId +':'+ type.title;
-							else
-								return (type.name);
-						}
-				    });
-
-					me.controls[index].makeEnterTab()
-						.setValidationMaster(me.validator)
-						.addValidation(ui.ctl.Input.Validation.required)	
-						.addValidation( function( isFinal, dataMap ) {
-
-							if ((this.focused || this.touched) && this.indexSelected == -1)
-								this.setInvalid("Please select the correct " + this.labelName + ".");
-						});					
-						
-					if (me.reportParameters[index].referenceTableName == "FscYear")
-						me.controls[index].setData(me.fiscalYears);
-					else if (me.reportParameters[index].referenceTableName == "FscPeriod" || me.reportParameters[index].referenceTableName == "YearPeriods" || me.reportParameters[index].referenceTableName == "FscPeriodFrom" || me.reportParameters[index].referenceTableName == "FscPeriodTo")
-						me.controls[index].setData(me.fiscalPeriods);					
-					else if (me.reportParameters[index].referenceTableName == "PayrollCompany")
-						me.controls[index].setData(me.payrollCompanys);
-					else if (me.reportParameters[index].referenceTableName == "BatchNumber")
-						me.controls[index].setData(me.invoiceBatches);
-					else if (me.reportParameters[index].referenceTableName == "WkPeriod")
-						me.controls[index].setData(me.weekPeriods);
-					else if (me.reportParameters[index].referenceTableName == "OverHead" || me.reportParameters[index].referenceTableName == "Overhead") {
-                        me.controls[index].setData(me.excludeOverheadAccounts);
-                        me.controls[index].select(ii.ajax.util.findIndexById(me.reportParameters[index].defaultValue, me.excludeOverheadAccounts), me.controls[index].focused);
-                    }
-					else if (me.reportParameters[index].referenceTableName == "YearPeriods")
-						me.controls[index].setData(me.yearPeriods);
-					else if (me.reportParameters[index].referenceTableName == "PayPeriod")
-						me.controls[index].setData(me.payPeriodEndingDates);
-					else if (me.reportParameters[index].referenceTableName == "ExLevel") {
-                        me.controls[index].setData(me.levels);
-                        me.controls[index].select(0, me.controls[index].focused);
-                    }
-					else if (me.reportParameters[index].referenceTableName == "Report" && me.reportParameters[index].name == "ReportType")
-						me.controls[index].setData(me.payrollReportTypes);
-					else if (me.reportParameters[index].referenceTableName == "ReportType") {
-                        me.controls[index].setData(me.reportTypes);
-                        me.controls[index].select(ii.ajax.util.findIndexById(me.reportParameters[index].defaultValue, me.reportTypes), me.controls[index].focused);
-                    }
-					else if (me.reportParameters[index].referenceTableName == "Report" && me.reportParameters[index].name == "Budget") {
-                        me.controls[index].setData(me.budgetTypes);
-                        me.controls[index].select(me.findIndexByTitle(me.reportParameters[index].defaultValue, me.budgetTypes), me.controls[index].focused);
-                    }
-					else if (me.reportParameters[index].referenceTableName == "CrothallEmployee") {
-                        me.controls[index].setData(me.crothallEmployees);                       
-                        me.controls[index].select(me.findIndexByTitle(me.reportParameters[index].defaultValue, me.crothallEmployees), me.controls[index].focused);                      
-                    }
-					else if (me.reportParameters[index].referenceTableName == "Week")
-						me.controls[index].setData(me.currentWeeks);
-					else if (me.reportParameters[index].referenceTableName == "Comments") {
-                        me.controls[index].setData(me.comments);
-                        me.controls[index].select(me.findIndexByTitle(me.reportParameters[index].defaultValue, me.comments), me.controls[index].focused);
-                    }
-					else if (me.reportParameters[index].referenceTableName == "UnionNonUnion") {
-                        me.controls[index].setData(me.unions);
-                        me.controls[index].select(me.findIndexByTitle(me.reportParameters[index].defaultValue, me.unions), me.controls[index].focused);
-                    }
-					else if (me.reportParameters[index].referenceTableName == "EntryMethod") {
-                        me.controls[index].setData(me.entryMethods);
-                        me.controls[index].select(ii.ajax.util.findIndexById(me.reportParameters[index].defaultValue, me.entryMethods), me.controls[index].focused);
-                    }
-					else if (me.reportParameters[index].referenceTableName == "Hour40Exception") {
-                        me.controls[index].setData(me.hour40Exceptions);
-                        me.controls[index].select(ii.ajax.util.findIndexById(me.reportParameters[index].defaultValue, me.hour40Exceptions), me.controls[index].focused);                        
-                    }
-					else if (me.reportParameters[index].referenceTableName == "HouseCodeStatus") {
-                        me.controls[index].setData(me.houseCodeStatus);
-                        me.controls[index].select(ii.ajax.util.findIndexById(me.reportParameters[index].defaultValue, me.houseCodeStatus), me.controls[index].focused);
-                    }
-					else if (me.reportParameters[index].referenceTableName == "ShowCntHrs") {
-                        me.controls[index].setData(me.countHours);
-                        me.controls[index].select(me.findIndexByTitle(me.reportParameters[index].defaultValue, me.countHours), me.controls[index].focused);
-                    }
-					else if (me.reportParameters[index].referenceTableName == "Exception") {
-                        me.controls[index].setData(me.exceptions);
-                        me.controls[index].select(me.findIndexByTitle(me.reportParameters[index].defaultValue, me.exceptions), me.controls[index].focused);
-                    }
-                    else if (me.reportParameters[index].referenceTableName == "GroupLevel") 
-                        me.controls[index].setData(me.groupLevels);*/                    					
 				}
 				else if (me.reportParameters[index].controlType == "Date") {
 					$("#" + me.reportParameters[index].name).datepicker({
@@ -2193,20 +2094,17 @@ ii.Class({
                         },
 						open: function( e ){							
 							if (e.target.id == 'Customers') {
-								if (me.namesList != me.names.replace("~", "") || me.url != me.reportURL) {
-									me.url = me.reportURL	
-									$("#Customers").html("");
-									$("#Customers").multiselect("refresh");
-									if (me.level == '' || me.name == '') 									
-										return false;
-									me.namesList = me.names.replace("~", "");
-									me.levelName = me.level.replace("~Level=", "");											
-									me.setStatus("Loading");
-									$("#customersLoading").addClass('loading');
-									me.genericTypeStore.fetch("level:" + me.levelName + ",name:" + me.namesList + ",genericType:Customers,userId:[user]", me.customersLoaded, me);
-								}
-							}							
-						},						
+								$("#Customers").html("");
+								$("#Customers").multiselect("refresh");
+								if (me.level == '' || me.name == '') 									
+									return false;
+								me.namesList = me.names.replace("~", "");
+								me.levelName = me.level.replace("~Level=", "");											
+								me.setStatus("Loading");
+								$("#customersLoading").addClass('loading');
+								me.genericTypeStore.fetch("level:" + me.levelName + ",name:" + me.namesList + ",genericType:Customers,userId:[user]", me.customersLoaded, me);
+							}
+						},
 						position: {
 							my: 'left bottom',
 							at: 'left top'
@@ -2352,7 +2250,7 @@ ii.Class({
             else if (args.referenceTableName == "Exception")
                 typeTableData = me.exceptions;
             else if (args.referenceTableName == "GroupLevel")
-                typeTableData = me.groupLevels;            
+            	me.groupLevelsLoaded();            
 				
 			for (var index = 0; index < typeTableData.length; index++) {
                 var value = typeTableData[index].id;
@@ -2458,60 +2356,66 @@ ii.Class({
             var me = this;
             me.groupLevels = [];
             
-            if (me.level == "~Level=ENT") {
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(37, "ENT", "ENT"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(2, "SVP", "SVP"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(34, "DVP", "DVP"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
-            }
-            else if (me.level == "~Level=SVP") {
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(2, "SVP", "SVP"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(34, "DVP", "DVP"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
-            }   
-            else if (me.level == "~Level=DVP") {
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(34, "DVP", "DVP"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
-            }
-            else if (me.level == "~Level=RVP") {
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
-            }
-            else if (me.level == "~Level=SRM") {
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
-            }
-            else if (me.level == "~Level=RM") {
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
-            }
-            else if (me.level == "~Level=AM") {
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
-            }
-            else if (me.level == "~Level=SiteName") {
-                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+            if (me.name != "") {
+            	if (me.level == "~Level=ENT") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(37, "ENT", "ENT"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(2, "SVP", "SVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(34, "DVP", "DVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }
+	            else if (me.level == "~Level=SVP") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(2, "SVP", "SVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(34, "DVP", "DVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }   
+	            else if (me.level == "~Level=DVP") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(34, "DVP", "DVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }
+	            else if (me.level == "~Level=RVP") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }
+	            else if (me.level == "~Level=SRM") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }
+	            else if (me.level == "~Level=RM") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }
+	            else if (me.level == "~Level=AM") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }
+	            else if (me.level == "~Level=SiteName") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }
             }
             
-            me.controls[3].setData(me.groupLevels);
+            $("#GroupLevel").html("");
+            for (var index = 0; index < me.groupLevels.length; index++) {
+                $("#GroupLevel").append("<option title='" + me.groupLevels[index].parameter + "' value='" + me.groupLevels[index].id + "'>" + me.groupLevels[index].parameter + "</option>");
+            }
+            $("#GroupLevel").multiselect("refresh");
         },
 		
 		fiscalweeksLoad: function(yearSelected) {
@@ -2554,6 +2458,10 @@ ii.Class({
 			for (var index = 0; index < nodes.length; index++) {
                 $("#ExcludeNames").append("<option title='" + nodes[index].title + "' value='" + nodes[index].id + "'>" + nodes[index].title + "</option>");
             }
+            
+            if (nodes.length == 0)
+            	$("#ExcludeNames").append("<option title='None' value='0'>None</option>");
+            	
 			$("#ExcludeNames").multiselect("refresh");			
 		},
 		
@@ -2821,7 +2729,7 @@ ii.Class({
 			var parametersList = "";
 			var valid = true;
 			var parameter = "";
-
+			 
 			for (var index = 0; index < me.controls.length; index++) {
 				if (me.reportParameters[index].controlType == "Text")
 					me.controls[index].validate(true);
@@ -2883,20 +2791,6 @@ ii.Class({
                             alert("Please select " + me.reportParameters[index].title);
                             return false;
                     }
-                    
-                    //if (me.reportParameters[index].referenceTableName == "PayrollCompany")
-                    //    parameter = me.controls[index].data[me.controls[index].indexSelected].brief
-                    //else if (me.reportParameters[index].referenceTableName == "FscPeriod"
-                    //        || me.reportParameters[index].referenceTableName == "BatchNumber"
-                    //        || me.reportParameters[index].referenceTableName == "FscPeriodFrom" 
-                    //        || me.reportParameters[index].referenceTableName == "FscPeriodTo"
-                    //        || me.reportParameters[index].referenceTableName == "FscYear"
-                    //        || me.reportParameters[index].referenceTableName == "YearPeriods")
-                    //    parameter = me.controls[index].data[me.controls[index].indexSelected].id
-                    //else
-                    //    parameter = me.controls[index].data[me.controls[index].indexSelected].parameter
-                                                
-                    //parametersList += "~" + me.reportParameters[index].referenceTableName + "=" + parameter;
                 }
                 else if (me.reportParameters[index].controlType == "MultiSelect") {
                     var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function(){
@@ -2937,7 +2831,7 @@ ii.Class({
 			}
 			
 			document.body.appendChild(form);
-			form.submit();				
+			form.submit();							
 		},
 		
 		actionReportItem: function() {
