@@ -214,12 +214,6 @@ ii.init.register( function() {
         , parameter: {type: String, required: false, defaultValue: ""}        
     }
 	
-	fin.rpt.ssrs.yearPeriodArgs = {
-		id: {type: Number, defaultValue: 0}
-		, name: {type: String, required: false, defaultValue: ""}
-		, parameter: {type: String, required: false, defaultValue: ""}		
-	};
-	
 	fin.rpt.ssrs.woStatusArgs = {
 		id: {type: Number, defaultValue: 0}
 		, name: {type: String, required: false, defaultValue: ""}
@@ -602,16 +596,6 @@ ii.Class({
             $.extend(this, args);
         }
     }
-});
-
-ii.Class({
-	Name: "fin.rpt.ssrs.YearPeriod",
-	Definition: {
-		init: function() {
-			var args = ii.args(arguments, fin.rpt.ssrs.yearPeriodArgs);
-			$.extend(this, args);
-		}
-	}
 });
 
 ii.Class({
