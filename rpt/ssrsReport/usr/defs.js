@@ -250,6 +250,12 @@ ii.init.register( function() {
 		, parameter: {type: String, required: false, defaultValue: ""}		
 	};
 	
+	fin.rpt.ssrs.summeryReportTypeArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}		
+	};
+	
 	fin.rpt.ssrs.budgetTypeArgs = {
         id: {type: Number, required: false, defaultValue: 0}
         , name: {type: String, required: false, defaultValue: ""}
@@ -653,6 +659,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.rpt.ssrs.reportTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.SummeryReportType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.summeryReportTypeArgs);
 			$.extend(this, args);
 		}
 	}

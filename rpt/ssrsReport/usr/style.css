@@ -274,6 +274,12 @@ table {
 	padding: 5px 0px 0px 0px;
 }
 
+#AnchorReset {
+	float: left;
+	width: 82px;
+	padding: 5px 0px 0px 0px;
+}
+
 #AnchorSearch {
 	float: left;
 	width: 82px;

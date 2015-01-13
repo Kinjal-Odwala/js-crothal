@@ -71,7 +71,6 @@ ii.Class({
 			me.thruFiscalPeriods = [];
 			me.payPeriodEndingDates = [];
 			me.woStatus = [];
-			me.exNames = [];			
 			me.name = "";
 			me.level = "";
 			me.names = "";
@@ -303,6 +302,14 @@ ii.Class({
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Generate Report&nbsp;&nbsp;</span>",
 				clickFunction: function() { me.actionGenerateReportItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorReset = new ui.ctl.buttons.Sizeable({
+				id: "AnchorReset",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Reset&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionResetItem(); },
 				hasHotState: true
 			});
 			
@@ -1159,6 +1166,7 @@ ii.Class({
 			me.excludeOverheadAccounts = [];
 			me.payrollReportTypes = [];
 			me.reportTypes = [];
+			me.summeryReportTypes = [];
 			me.budgetTypes = [];
 			me.crothallEmployees = [];
 			me.currentWeeks = [];
@@ -1179,6 +1187,9 @@ ii.Class({
 			
 			me.reportTypes.push(new fin.rpt.ssrs.ReportType(0, "All House Codes", "0"));//Default
 			me.reportTypes.push(new fin.rpt.ssrs.ReportType(1, "Rollup", "1"));
+			
+			me.summeryReportTypes.push(new fin.rpt.ssrs.SummeryReportType(0, "By House Code", "0"));//Default
+			me.summeryReportTypes.push(new fin.rpt.ssrs.SummeryReportType(1, "All House Codes", "1"));
 			
 			me.budgetTypes.push(new fin.rpt.ssrs.BudgetType(1, "Started", "Started"));//Default
             me.budgetTypes.push(new fin.rpt.ssrs.BudgetType(2, "Not Started", "NotStarted"));
@@ -1296,7 +1307,10 @@ ii.Class({
 				if (me.dependentTypes[index] == "ExcludeHouseCodes") {
 					if (add) {
 						var nodes = $.grep(me.siteNodes, function(item, itemIndex) {
-						    return item.fullPath.indexOf(fullPath) >= 0;
+							if (me.excludeHouseCodes.length > 0 && ii.ajax.util.findIndexById(item.id.toString(), me.excludeHouseCodes) == null)
+						    	return item.fullPath.indexOf(fullPath) >= 0;
+					    	else if (me.excludeHouseCodes.length == 0)
+					    		return item.fullPath.indexOf(fullPath) >= 0;
 						});
 
 						$.merge(me.excludeHouseCodes, nodes);
@@ -1695,8 +1709,10 @@ ii.Class({
 
 			me.level = "~Level=" + parent;
 			if (chkNodeChild.checked) {
-				me.name = me.name + "~Name=" + hirNodeTitle;
-				me.names = me.names + "~" + hirNodeTitle;
+				if (me.name.indexOf(hirNodeTitle) < 0) {
+					me.name = me.name + "~Name=" + hirNodeTitle;
+					me.names = me.names + "~" + hirNodeTitle;
+				}
 			}				
 			else {				
 				me.name = me.name.replace("~Name=" + hirNodeTitle, "");
@@ -2202,7 +2218,7 @@ ii.Class({
             	me.typeAllOrNoneAdd(me.filteredHouseCodes, "(Select All)");
                 typeTableData = me.filteredHouseCodes;
             }
-            else if (args.referenceTableName == "ExName")
+            else if (args.referenceTableName == "ExcludeNames")
                 $("#" + args.name).append("<option selected title='None' value='0'>None</option>");            
             else if (args.referenceTableName == "FscYears")
 				typeTableData = me.fiscalYears;            
@@ -2223,7 +2239,9 @@ ii.Class({
             else if (args.referenceTableName == "PayrollReportTypes")
                 typeTableData = me.payrollReportTypes;
             else if (args.referenceTableName == "ReportTypes")
-                typeTableData = me.reportTypes;            
+                typeTableData = me.reportTypes;
+            else if (args.referenceTableName == "SummeryReportTypes")
+                typeTableData = me.summeryReportTypes;            
             else if (args.referenceTableName == "BudgetTypes")
                 typeTableData = me.budgetTypes;            
             else if (args.referenceTableName == "CrothallEmployees")
@@ -2449,6 +2467,10 @@ ii.Class({
 				});
 						
 			$("#ExName").html("");
+			
+			if (nodes.length > 1)
+            	$("#ExName").append("<option title='(Select All)' value='-1'>(Select All)</option>");
+            	
 			for (var index = 0; index < nodes.length; index++) {
                 $("#ExName").append("<option title='" + nodes[index].title + "' value='" + nodes[index].id + "'>" + nodes[index].title + "</option>");
             }
@@ -2800,6 +2822,22 @@ ii.Class({
 			
 			document.body.appendChild(form);
 			form.submit();							
+		},
+		
+		actionResetItem: function() {
+			var me = this;			
+			
+			me.level = "";
+			me.name = "";
+			me.names = "";			
+			$("#chkNode" + me.lastCheckedNode).attr("checked", false);			
+			$("input[parent=" + me.lastCheckedNode + "]").each(function() {
+				$("#" + this.id).attr("checked", false);
+			});
+			
+			me.excludeHouseCodes = [];
+			me.customers = [];
+			me.controlsLoaded();			
 		},
 		
 		actionReportItem: function() {
