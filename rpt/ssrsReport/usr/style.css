@@ -260,6 +260,10 @@
 	padding: 0 !important;
 }
 
+.ui-multiselect-checkboxes label input {
+	margin: 3px;
+}
+
 Label {
 	font-weight: normal;
 }

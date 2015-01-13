@@ -2825,11 +2825,16 @@ ii.Class({
 		},
 		
 		actionResetItem: function() {
-			var me = this;			
-			
+			var me = this;
 			me.level = "";
 			me.name = "";
-			me.names = "";			
+			me.names = "";
+			
+			var $scope = angular.element($("#SearchContainer")).scope();
+            $scope.$apply(function() {
+                    $scope.selected = "";
+            });
+						
 			$("#chkNode" + me.lastCheckedNode).attr("checked", false);			
 			$("input[parent=" + me.lastCheckedNode + "]").each(function() {
 				$("#" + this.id).attr("checked", false);
