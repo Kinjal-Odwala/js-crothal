@@ -27,7 +27,7 @@ ii.Style( "fin.cmn.usr.treeview", 12 );
 ii.Style( "fin.cmn.usr.theme", 13 );
 ii.Style( "fin.cmn.usr.core", 14 );
 ii.Style( "fin.cmn.usr.multiselect", 15 );
-ii.Style( "fin.cmn.usr.angular.bootstrap", 16 );
+ii.Style( "fin.cmn.usr.angular.css.bootstrap", 16 );
 
 var importCompleted = false;
 var iiScript = new ii.Script( "fin.cmn.usr.ui.core", function() { coreLoaded(); });
