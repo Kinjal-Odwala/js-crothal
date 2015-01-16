@@ -2434,6 +2434,7 @@ ii.Class({
 				xml += '<purPORequisitionEmailNotification';
 				xml += ' id="' + me.poRequisitionId + '"';
 				xml += ' requisitionNumber="' + item.requisitionNumber + '"';
+				xml += ' houseCodeBrief="' + ui.cmn.text.xml.encode(parent.fin.appUI.houseCodeBrief) + '"';
 				xml += ' statusType="2"';
 				xml += ' houseCodeTitle="' + ui.cmn.text.xml.encode(me.company.getValue()) + '"';
 				xml += ' houseCodeJobTitle="' + me.shippingJob.lastBlurValue + '"';
@@ -2484,6 +2485,7 @@ ii.Class({
 				xml += ' id="' + me.poRequisitionId + '"';
 				xml += ' houseCodeId="' + item.houseCode + '"';
 				xml += ' requisitionNumber="' +  item.requisitionNumber + '"';
+				xml += ' houseCodeBrief="' +  ui.cmn.text.xml.encode(parent.fin.appUI.houseCodeBrief) + '"';
 				xml += ' vendorTitle="' +  ui.cmn.text.xml.encode(item.vendorTitle) + '"';
 				xml += ' vendorNumber="' +  item.vendorNumber + '"';
 				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
