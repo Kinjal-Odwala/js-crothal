@@ -2613,7 +2613,7 @@ ii.Class({
 				xml += ' taxPercent="' + (item.taxPercent != 0 ? item.taxPercent : "") + '"';
 				xml += ' taxAmount="' + (item.taxAmount != 0 ? item.taxAmount : "") + '"';
 				xml += ' freight="' + (item.freight != 0 ? item.freight : "") + '"';
-				xml += ' total="' + $("#spnTotal").html() + '"';
+				xml += ' total="' + me.total.toFixed(2) + '"';
 				xml += '/>';
 			}
 			else if (me.status == "DeleteDocument") {
