@@ -1264,6 +1264,8 @@ ii.Class({
 				if (me.personId != me.employees[0].id) {
 					me.personId = me.employees[0].id;
 					me.personStore.fetch("userId:[user],id:" + me.employees[0].id, me.personsLoaded, me);
+					if (me.employees[0].houseCode != parent.fin.appUI.houseCodeBrief)
+						me.houseCodeFetch(me.employees[0].houseCode);
 				}
 				else
 					me.personsLoaded(me, 0);
