@@ -1595,6 +1595,10 @@ ii.Class({
 							me.ePayBatches[0].detailTotalHours = (parseFloat(me.ePayBatches[0].detailTotalHours) - payrollHours).toFixed(2);
 							me.ePayBatches[0].detailTotalAmount = (parseFloat(me.ePayBatches[0].detailTotalAmount) - payrollAmount).toFixed(2);
 
+							me.ePayBatchGrid.data[me.ePayBatchGrid.activeRowIndex].detailRecordCount += 1;
+							me.ePayBatchGrid.data[me.ePayBatchGrid.activeRowIndex].detailTotalHours = (parseFloat(me.ePayBatchGrid.data[me.ePayBatchGrid.activeRowIndex].detailTotalHours) + payrollHours).toFixed(2);
+							me.ePayBatchGrid.data[me.ePayBatchGrid.activeRowIndex].detailTotalAmount = (parseFloat(me.ePayBatchGrid.data[me.ePayBatchGrid.activeRowIndex].detailTotalAmount) + payrollAmount).toFixed(2);
+
 							if (me.ePayBatchDetailsList[index].cancelled) {
 								me.ePayBatches[0].cancelledErrorRecordCount -= 1;
 								me.ePayBatches[0].cancelledErrorTotalHours = (parseFloat(me.ePayBatches[0].cancelledErrorTotalHours) - payrollHours).toFixed(2);
@@ -1618,7 +1622,7 @@ ii.Class({
 						me.ePayBatchDetails.splice(itemIndex, 1);
 				}
 			}
-			
+
 			var index = me.ePayBatchGrid.activeRowIndex;
 
 			me.ePayBatches[0].weeklyPayrollTotalHours = parseFloat(me.ePayBatches[0].weeklyPayrollTotalHours).toFixed(2);
@@ -1633,10 +1637,9 @@ ii.Class({
 			me.ePayBatches[0].detailTotalAmount = parseFloat(me.ePayBatches[0].detailTotalAmount).toFixed(2);
 			me.ePayBatches[0].cancelledErrorTotalHours = parseFloat(me.ePayBatches[0].cancelledErrorTotalHours).toFixed(2);
 			me.ePayBatches[0].cancelledErrorTotalAmount = parseFloat(me.ePayBatches[0].cancelledErrorTotalAmount).toFixed(2);
-									
-			me.ePayBatchGrid.data[index].detailRecordCount = me.ePayBatches[0].batchRecordCount;
-			me.ePayBatchGrid.data[index].detailTotalHours = me.ePayBatches[0].batchTotalHours;
-			me.ePayBatchGrid.data[index].detailTotalAmount = me.ePayBatches[0].batchTotalAmount;
+
+			me.ePayBatchGrid.data[index].detailTotalHours = parseFloat(me.ePayBatchGrid.data[index].detailTotalHours).toFixed(2);
+			me.ePayBatchGrid.data[index].detailTotalAmount = parseFloat(me.ePayBatchGrid.data[index].detailTotalAmount).toFixed(2);
 			me.showDetailReport = true;
 			me.ePayBatchesLoaded(me, 0);
 			me.ePayBatchDetailsLoaded(me, 0);
