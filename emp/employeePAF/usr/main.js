@@ -1,6 +1,6 @@
 ﻿var paf = angular.module('paf', ['ui.bootstrap']);
 
-paf.controller('pafCtrl', ['$scope', 'PAF', function ($scope, PAF) {
+paf.controller('pafCtrl', ['$scope', '$document', 'PAF', function ($scope, $document, PAF) {
 
     $scope.dateOptions = {
         formatYear: 'yy',
@@ -14,7 +14,21 @@ paf.controller('pafCtrl', ['$scope', 'PAF', function ($scope, PAF) {
         Reason4Changes: PAF.getReasonForChange(),
         Layoffs: PAF.getLayoff(),
         Terminations: PAF.getTermination(),
-        Resignations: PAF.getResignation()
+        Resignations: PAF.getResignation(),
+        CarAllowances: PAF.getCarAllowances()
+    }
+
+    $scope.Duration = '';
+
+    $scope.pickerCardAllowance = function (item)
+    {
+        $scope.CarAllowance = item.Id;
+    }
+
+    $scope.salaryChange = function (salary,adminHourly,hourly) {
+        $scope.Salary = salary;
+        $scope.AdminHourly = adminHourly;
+        $scope.Hourly = hourly;
     }
 
 }]);
@@ -101,6 +115,16 @@ paf.factory('PAF', function () {
         { Id: '23', Code: '2500', Description: 'School' },
         { Id: '24', Code: '8500', Description: 'Death' }];
 
+    var CarAllowances = [
+        { Id: '425', Description: '425/month' },
+        { Id: '500', Description: '500/month' },
+        { Id: '600', Description: '600/month' },
+        { Id: '900', Description: '900/month' }];
+
+    var getCarAllowances = function () {
+        return CarAllowances;
+    }
+
     var getResignation = function () {
         return Resignation;
     }
@@ -126,6 +150,7 @@ paf.factory('PAF', function () {
     }
 
     return {
+        getCarAllowances: getCarAllowances,
         getResignation: getResignation,
         getTermination: getTermination,
         getLayoff: getLayoff,
@@ -183,7 +208,9 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
             var formatViewValue = function () {
                 if (typeof ngModel.$viewValue != 'undefined' && ngModel.$viewValue != null) {
                     var format = /\{0\:?([^}]+)?\}/gi.exec(attrs.pafFormat);
-                    elem.val(attrs.pafFormat.replace(/\{0(\:[^}]+)?\}/gi, (!format[1] ? ngModel.$viewValue : parseFloat(ngModel.$viewValue).numberFormat(format[1]))));
+
+                    if (ngModel.$viewValue != "")
+                        elem.val(attrs.pafFormat.replace(/\{0(\:[^}]+)?\}/gi, (!format[1] ? ngModel.$viewValue : parseFloat(ngModel.$viewValue).numberFormat(format[1]))));
                 }
             }
 
@@ -199,4 +226,22 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
             });
         }
     };
-}]);
+}])
+
+.directive('pafNumeric', function () {
+    return {
+        require: '?ngModel',
+        link: function (scope, element, attrs, modelCtrl) {
+            modelCtrl.$parsers.push(function (inputValue) {
+                if (inputValue == undefined) return ''
+                var transformedInput = inputValue.replace(/[^0-9+.]/g, '');
+                if (transformedInput != inputValue) {
+                    modelCtrl.$setViewValue(transformedInput);
+                    modelCtrl.$render();
+                }
+
+                return transformedInput;
+            });
+        }
+    };
+});
