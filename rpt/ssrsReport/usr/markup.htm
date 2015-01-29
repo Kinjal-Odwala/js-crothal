@@ -3,6 +3,9 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 		<title>SSRS Reports</title>
+		<script src="/fin/cmn/usr/angular/angular.js"></script>
+    	<script src="/fin/cmn/usr/angular/ui-bootstrap-tpls-0.12.0.js"></script>
+  		<script src="controllers.js"></script>
 		<script type="text/javascript">
 			var globalContext = "/net/crothall/chimes/fin/rpt/act";
 			var js = document.createElement("script");
@@ -20,7 +23,6 @@
 		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; font-size:100%; text-align:center;">Loading</div>    
 		    </div>
 		</div>
-		
 		<div id="popupLoading" style="position: absolute; z-index: 6000; width: 800px; height: 400px; background-color: white; display:none">
 		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
 		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
@@ -44,8 +46,30 @@
 		<div class="pageBody">
 			<div class="contentArea">
 				<div id="ReportContainer">
-					<div id="TreeviewContainer">
-						<ul class="treeview" id="ulEdit0"></ul>
+					<div class="contentAreasContainerLeft">
+						<div id="TreeviewContainer">
+							<ul class="treeview" id="ulEdit0"></ul>
+						</div>
+					</div>
+					<div id="RightContainer" class="contentAreasContainerRight" style="display:none">
+						<div style="clear:both;height:5px;"></div>
+						<div ng-app="reportApp">
+							<div id="SearchContainer" class="container-fluid" ng-controller="SearchCtrl">
+							    <input type="text" ng-model="selected" typeahead="node as node.title for node in nodes | filter:{title: $viewValue} | limitTo:10" class="form-control" placeholder="Search any Level or a Site Name" typeahead-editable="false" typeahead-on-select="onSelect($item, $model, $label)" />
+							 </div>
+						</div>
+						<div style="clear:both;height:5px;"></div>
+						<div id="LevelNamesContainer">
+							<ul class="treeview" id="ulEdit1"></ul>
+						</div>
+						<div style="clear:both; height:10px;"></div>
+						<div id="ParameterContainer"></div>												
+						<div class="body">
+							<div style="clear:both; height:5px;"></div>							
+							<div id="AnchorGenerateReport"></div>
+							<div id="AnchorReset"></div>
+							<div style="clear:both; height:10px;"></div>
+						</div>
 					</div>
 				</div>
 				<div id="SubscriptionContainer" style="display: none;">

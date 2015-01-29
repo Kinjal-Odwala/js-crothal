@@ -7,20 +7,38 @@ ii.Import( "ui.ctl.usr.grid" );
 ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.ctl.usr.hierarchy" );
 ii.Import( "fin.cmn.usr.treeView" );
+ii.Import( "fin.cmn.usr.datepicker" );
+ii.Import( "fin.cmn.usr.ui.position" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.rpt.ssrsReport.usr.defs" );
 
-ii.Style( "style", 1);
-ii.Style( "fin.cmn.usr.common", 2);
-ii.Style( "fin.cmn.usr.toolbar", 3);
-ii.Style( "fin.cmn.usr.statusBar", 4);
-ii.Style( "fin.cmn.usr.input", 5);
-ii.Style( "fin.cmn.usr.button", 6);
-ii.Style( "fin.cmn.usr.dropDown", 7);
-ii.Style( "fin.cmn.usr.dateDropDown", 8);
-ii.Style( "fin.cmn.usr.grid", 9);
-ii.Style( "fin.cmn.usr.hierarchy", 10);
-ii.Style( "fin.cmn.usr.treeview", 11);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.toolbar", 3 );
+ii.Style( "fin.cmn.usr.statusBar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.button", 6 );
+ii.Style( "fin.cmn.usr.datepicker", 7 );
+ii.Style( "fin.cmn.usr.dropDown", 8 );
+ii.Style( "fin.cmn.usr.dateDropDown", 9 );
+ii.Style( "fin.cmn.usr.grid", 10 );
+ii.Style( "fin.cmn.usr.hierarchy", 11 );
+ii.Style( "fin.cmn.usr.treeview", 12 );
+ii.Style( "fin.cmn.usr.theme", 13 );
+ii.Style( "fin.cmn.usr.core", 14 );
+ii.Style( "fin.cmn.usr.multiselect", 15 );
+ii.Style( "fin.cmn.usr.angular.css.bootstrap", 16 );
+
+var importCompleted = false;
+var iiScript = new ii.Script( "fin.cmn.usr.ui.core", function() { coreLoaded(); });
+
+function coreLoaded() { 
+	var iiScript = new ii.Script( "fin.cmn.usr.ui.widget", function() { widgetLoaded(); });
+}
+
+function widgetLoaded() { 
+	var iiScript = new ii.Script( "fin.cmn.usr.multiselect", function() { importCompleted = true; }); 
+}
 
 ii.Class({
     Name: "fin.rpt.ssrs.UserInterface",
@@ -31,6 +49,7 @@ ii.Class({
 			var me = this;
 
 			me.pageLoading = true;
+			me.levelNamesLoaded = false;
 			me.reportType = "";
 			me.hirNodeId = 1;
 			me.hirNodeCurrentId = 1;
@@ -43,6 +62,25 @@ ii.Class({
 			me.controls = [];
 			me.reportNodes = [];
 			me.loadCount = 0;
+			me.hirNodeCache = [];
+			me.customers = [];
+			me.houseCodes = [];
+			me.filteredHouseCodes = [];
+			me.excludeHouseCodes = [];
+			me.invoiceStatus = [];
+			me.thruFiscalPeriods = [];
+			me.payPeriodEndingDates = [];
+			me.woStatus = [];
+			me.name = "";
+			me.level = "";
+			me.names = "";
+			me.reportURL = "";
+			me.parent = "";
+			me.parentNode = "";
+			me.ddlists = 0;
+			me.siteNodes = [];
+			me.dependentTypes = [];
+			me.groupLevels = [];
 
 			me.gateway = ii.ajax.addGateway("rpt", ii.config.xmlProvider);			
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -67,6 +105,7 @@ ii.Class({
 			me.configureCommunications();
 			me.setStatus("Loading");
 			me.initialize();
+			ui.cmn.behavior.disableBackspaceNavigation();
 
 			$(window).bind("resize", me, me.resize);
 		},
@@ -88,12 +127,14 @@ ii.Class({
 				$("#pageLoading").fadeIn("slow");
 				
 				ii.timer.timing("Page Displayed");
-				me.loadCount = 4;
+				me.loadCount = 5;
 				me.session.registerFetchNotify(me.sessionLoaded,me);
 				me.fiscalYearStore.fetch("userId:[user],", me.yearsLoaded, me);
 				me.reportStore.fetch("userId:[user],", me.reportsLoaded, me);
 				me.userStore.fetch("userId:[user]", me.loggedInUsersLoaded, me);
 				me.hirNodeStore.fetch("userId:[user],hirHierarchy:1,fullPath:" + me.authorizePath, me.hirNodesLoaded, me);
+				me.genericTypeStore.fetch("level:ENT,name:Crothall,genericType:HouseCodes,userId:[user]", me.houseCodesLoaded, me);
+				me.typesTableLoaded();
 			}				
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
@@ -105,13 +146,14 @@ ii.Class({
 			});
 			var me = args.me;
 
-			ii.trace("Session Loaded.", ii.traceTypes.Information, "Session");
+			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 
 		resize: function() {
 			var me = fin.reportUi;
 
 			$("#TreeviewContainer").height($(window).height() - 75);
+			$("#LevelNamesContainer").height(($(window).height() - 183) - $("#ParameterContainer").height());
 			$("#Subscription").height($(window).height() - 115);
 			me.subscriptionGrid.setHeight($(window).height() - 105);
 		},
@@ -132,13 +174,13 @@ ii.Class({
 					actionFunction: function() { me.actionReportItem(); }
 				});
 
-			me.actionMenu
-				.addAction({
-					id: "subscriptionAction",
-					brief: "SSRS Report Subscriptions",
-					title: "SSRS report subscriptions.",
-					actionFunction: function() { me.actionSubscriptionItem(); }
-				});
+			//me.actionMenu
+				//.addAction({
+				//	id: "subscriptionAction",
+				//	brief: "SSRS Report Subscriptions",
+				//	title: "SSRS report subscriptions.",
+				//	actionFunction: function() { me.actionSubscriptionItem(); }
+				//});
 
 			$("#ulEdit0").treeview({
 		        animated: "medium",
@@ -159,7 +201,13 @@ ii.Class({
 				formatFunction: function( type ) { return type.title; },
 				changeFunction: function() { me.reportChanged(); }
 			});
-
+			
+			$("#ulEdit1").treeview({
+		        animated: "medium",
+		        persist: "location",
+				collapsed: true
+	        });
+			
 			me.ssrsReport.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)	
@@ -248,6 +296,22 @@ ii.Class({
 				clickFunction: function() { me.actionClosePopup(); },
 				hasHotState: true
 			});
+	
+			me.anchorGenerateReport = new ui.ctl.buttons.Sizeable({
+				id: "AnchorGenerateReport",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Generate Report&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionGenerateReportItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorReset = new ui.ctl.buttons.Sizeable({
+				id: "AnchorReset",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Reset&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionResetItem(); },
+				hasHotState: true
+			});
 			
 			me.subscriptionGrid = new ui.ctl.Grid({
 				id: "SubscriptionGrid",
@@ -295,7 +359,7 @@ ii.Class({
 					if (enteredText == "") 
 						return;
 
-					var emailAddresses = enteredText.split(';');
+					var emailAddresses = enteredText.split(";");
 
 					for (var index = 0; index < emailAddresses.length; index++) {
 						if (emailAddresses[index] != "" && !(ui.cmn.text.validate.emailAddress(emailAddresses[index])))
@@ -317,7 +381,7 @@ ii.Class({
 					if (enteredText == "") 
 						return;
 					
-					var emailAddresses = enteredText.split(';');
+					var emailAddresses = enteredText.split(";");
 
 					for (var index = 0; index < emailAddresses.length; index++) {
 						if (emailAddresses[index] != "" && !(ui.cmn.text.validate.emailAddress(emailAddresses[index])))
@@ -717,6 +781,126 @@ ii.Class({
 				itemConstructorArgs: fin.rpt.ssrs.subscriptionArgs,
 				injectionArray: me.subscriptions
 			});
+
+			me.genericTypes = [];
+			me.genericTypeStore = me.cache.register({
+				storeId: "rptGenericTypes",
+				itemConstructor: fin.rpt.ssrs.GenericType,
+				itemConstructorArgs: fin.rpt.ssrs.genericTypeArgs,
+				injectionArray: me.genericTypes
+			});			
+			
+			me.payCodeTypes = [];
+			me.payCodeTypeStore = me.cache.register({
+				storeId: "payCodes",
+				itemConstructor: fin.rpt.ssrs.PayCodeType,
+				itemConstructorArgs: fin.rpt.ssrs.payCodeTypeArgs,
+				injectionArray: me.payCodeTypes
+			});
+			
+			me.payrollCompanys = [];
+			me.payrollCompanyStore = me.cache.register({
+				storeId: "payrollCompanys",
+				itemConstructor: fin.rpt.ssrs.PayrollCompany,
+				itemConstructorArgs: fin.rpt.ssrs.payrollCompanyArgs,
+				injectionArray: me.payrollCompanys
+			});
+			
+			me.statusTypes = [];
+            me.statusStore = me.cache.register({
+                storeId: "statusTypes",
+                itemConstructor: fin.rpt.ssrs.StatusType,
+                itemConstructorArgs: fin.rpt.ssrs.statusTypeArgs,
+                injectionArray: me.statusTypes
+            });
+            
+            me.accounts = []; 
+            me.accountStore = me.cache.register({
+                storeId: "accounts", 
+                itemConstructor: fin.rpt.ssrs.Account, 
+                itemConstructorArgs: fin.rpt.ssrs.accountArgs, 
+                injectionArray: me.accounts
+            });
+            
+            me.invoiceBatches = []; 
+            me.batchStore = me.cache.register({ 
+                storeId: "revInvoiceBatchs", 
+                itemConstructor: fin.rpt.ssrs.Batch, 
+                itemConstructorArgs: fin.rpt.ssrs.batchArgs, 
+                injectionArray: me.invoiceBatches 
+            });
+			
+			me.weekPeriods = [];
+			me.weekPeriodStore = me.cache.register({
+				storeId: "weekPeriods",
+				itemConstructor: fin.rpt.ssrs.WeekPeriod,
+				itemConstructorArgs: fin.rpt.ssrs.weekPeriodArgs,
+				injectionArray: me.weekPeriods
+			});
+			
+			me.workShifts = []; 
+            me.workShiftStore = me.cache.register({ 
+                storeId: "workShifts", 
+                itemConstructor: fin.rpt.ssrs.WorkShift, 
+                itemConstructorArgs: fin.rpt.ssrs.workShiftArgs, 
+                injectionArray: me.workShifts    
+            });
+            
+            me.rptStatusTypes = [];
+            me.rptStatusTypeStore = me.cache.register({
+                storeId: "rptStatusTypes",
+                itemConstructor: fin.rpt.ssrs.RptStatusType,
+                itemConstructorArgs: fin.rpt.ssrs.rptStatusTypeArgs,
+                injectionArray: me.rptStatusTypes
+            });
+			
+			me.woStatus = [];
+			me.woStatusStore = me.cache.register({
+				storeId: "woStatus",
+				itemConstructor: fin.rpt.ssrs.WOStatus,
+				itemConstructorArgs: fin.rpt.ssrs.woStatusArgs,
+				injectionArray: me.woStatus
+			});
+						
+			me.payPeriodEndingDates = [];
+			me.payPeriodEndingDateStore = me.cache.register({
+				storeId: "payPeriodEndingDates",
+				itemConstructor: fin.rpt.ssrs.PayPeriodEndingDate,
+				itemConstructorArgs: fin.rpt.ssrs.payPeriodEndingDateArgs,
+				injectionArray: me.payPeriodEndingDates
+			});
+			
+			me.stateTypes = [];
+			me.stateStore = me.cache.register({
+				storeId: "stateTypes",
+				itemConstructor: fin.rpt.ssrs.StateType,
+				itemConstructorArgs: fin.rpt.ssrs.stateTypeArgs,
+				injectionArray: me.stateTypes	
+			});
+			
+			me.serviceTypes = [];
+            me.serviceTypeStore = me.cache.register({
+                storeId: "serviceTypes",
+                itemConstructor: fin.rpt.ssrs.ServiceType,
+                itemConstructorArgs: fin.rpt.ssrs.serviceTypeArgs,
+                injectionArray: me.serviceTypes
+            });
+            
+            me.serviceLines = [];
+            me.serviceLineStore = me.cache.register({
+                storeId: "serviceLines",
+                itemConstructor: fin.rpt.ssrs.ServiceLine,
+                itemConstructorArgs: fin.rpt.ssrs.serviceLineArgs,
+                injectionArray: me.serviceLines
+            });
+            
+            me.contractTypes = [];
+            me.contractTypeStore = me.cache.register({
+                storeId: "contractTypes",
+                itemConstructor: fin.rpt.ssrs.ContractType,
+                itemConstructorArgs: fin.rpt.ssrs.contractTypeArgs,
+                injectionArray: me.contractTypes    
+            });
 		},
 
 		setStatus: function(status) {
@@ -759,7 +943,6 @@ ii.Class({
 			$("#DayErrorMessage").hide();
 			
 			$("input[name='rbSchedule']").click(function() {
-
 				me.startHour.resizeText();
 				me.startMinute.resizeText();
 				me.startDate.resizeText();
@@ -848,7 +1031,6 @@ ii.Class({
 			});
 
 			$("input[name='rbDaily']").click(function() {
-
 				if (this.id == "RepeatDay")
 					me.numberOfDays.text.readOnly = false;
 				else
@@ -860,7 +1042,6 @@ ii.Class({
 			});
 
 			$("input[name='rbMonthly']").click(function() {
-
 				if (this.id == "rbCalendarDays")
 					me.calendarDays.text.readOnly = false;
 				else
@@ -973,7 +1154,83 @@ ii.Class({
 		yearsLoaded: function(me, activeId) {
 			me.checkLoadCount();
 		},
-
+				
+		houseCodesLoaded: function(me, activeId) {
+			me.houseCodes = me.genericTypes.slice();
+			me.checkLoadCount();
+		},
+		
+		typesTableLoaded: function() {
+			var me = this;
+			
+			me.excludeOverheadAccounts = [];
+			me.payrollReportTypes = [];
+			me.reportTypes = [];
+			me.summeryReportTypes = [];
+			me.budgetTypes = [];
+			me.crothallEmployees = [];
+			me.currentWeeks = [];
+			me.comments = [];
+			me.unions = [];
+			me.entryMethods = [];
+			me.hour40Exceptions = [];
+			me.houseCodeStatus = [];
+			me.countHours = [];
+			me.exceptions = [];
+			
+			me.excludeOverheadAccounts.push(new fin.rpt.ssrs.ExcludeOverheadAccount(3, "Yes", "3"));//Default
+			me.excludeOverheadAccounts.push(new fin.rpt.ssrs.ExcludeOverheadAccount(-1, "No", "-1"));
+			
+			me.payrollReportTypes.push(new fin.rpt.ssrs.PayrollReportType(1, "By House Code", "HC"));
+			me.payrollReportTypes.push(new fin.rpt.ssrs.PayrollReportType(2, "By Employee", "E"));
+			me.payrollReportTypes.push(new fin.rpt.ssrs.PayrollReportType(3, "Hierarchy", "H"));
+			
+			me.reportTypes.push(new fin.rpt.ssrs.ReportType(0, "All House Codes", "0"));//Default
+			me.reportTypes.push(new fin.rpt.ssrs.ReportType(1, "Rollup", "1"));
+			
+			me.summeryReportTypes.push(new fin.rpt.ssrs.SummeryReportType(0, "By House Code", "0"));//Default
+			me.summeryReportTypes.push(new fin.rpt.ssrs.SummeryReportType(1, "All House Codes", "1"));
+			
+			me.budgetTypes.push(new fin.rpt.ssrs.BudgetType(1, "Started", "Started"));//Default
+            me.budgetTypes.push(new fin.rpt.ssrs.BudgetType(2, "Not Started", "NotStarted"));
+			
+			me.crothallEmployees.push(new fin.rpt.ssrs.CrothallEmployee(1, "ALL", "ALL"));//Default
+            me.crothallEmployees.push(new fin.rpt.ssrs.CrothallEmployee(2, "YES", "YES"));
+            me.crothallEmployees.push(new fin.rpt.ssrs.CrothallEmployee(3, "NO", "NO"));
+			
+			me.currentWeeks.push(new fin.rpt.ssrs.CurrentWeek(1, "1", "1"));
+			me.currentWeeks.push(new fin.rpt.ssrs.CurrentWeek(2, "2", "2"));
+			me.currentWeeks.push(new fin.rpt.ssrs.CurrentWeek(3, "3", "3"));
+			me.currentWeeks.push(new fin.rpt.ssrs.CurrentWeek(4, "4", "4"));
+			me.currentWeeks.push(new fin.rpt.ssrs.CurrentWeek(5, "5", "5"));
+			me.currentWeeks.push(new fin.rpt.ssrs.CurrentWeek(6, "6", "6"));
+			
+			me.comments.push(new fin.rpt.ssrs.Comment(1, "GL Level", "GL Level"));
+            me.comments.push(new fin.rpt.ssrs.Comment(2, "Summary", "Summary"));
+            me.comments.push(new fin.rpt.ssrs.Comment(3, "Both", "Both"));//Default
+			
+			me.unions.push(new fin.rpt.ssrs.Union(1, "Both", "B"));
+			me.unions.push(new fin.rpt.ssrs.Union(2, "Union", "U"));
+			me.unions.push(new fin.rpt.ssrs.Union(3, "Non Union", "N"));
+			
+			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(1, "Epay Site and Task", "1"));//Default
+			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(2, "Kronos Time and Attendance", "2"));
+			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(3, "Manual", "3"));
+			
+			me.hour40Exceptions.push(new fin.rpt.ssrs.Hour40Exception(0, "Equal To 40", "0"));//Default
+			me.hour40Exceptions.push(new fin.rpt.ssrs.Hour40Exception(1, "Greater Than 40", "1"));
+			
+			me.houseCodeStatus.push(new fin.rpt.ssrs.HouseCodeStatus(1, "Active", "1"));//Default
+            me.houseCodeStatus.push(new fin.rpt.ssrs.HouseCodeStatus(0, "Closed", "0"));
+			
+			me.countHours.push(new fin.rpt.ssrs.CountHour(1, "True", "True"));//Default
+            me.countHours.push(new fin.rpt.ssrs.CountHour(2, "False", "False"));
+			
+			me.exceptions.push(new fin.rpt.ssrs.Exception(1, "Both", "B"));
+			me.exceptions.push(new fin.rpt.ssrs.Exception(2, "Open", "O"));
+			me.exceptions.push(new fin.rpt.ssrs.Exception(3, "Closed", "C"));
+		},
+		
 		loggedInUsersLoaded: function(me, activeId) {
 
 			if (me.users.length == 0) {
@@ -995,6 +1252,141 @@ ii.Class({
 			}
 		},
 
+		selectNode: function(id, parentId, title, fullPath) {
+			var me = this;
+            var parentNode = $("#liNode" + parentId)[0];
+
+            if (parentNode != undefined) {
+                if (parentNode.className == "expandable" || parentNode.className == "expandable lastExpandable")
+                    $("#liNode" + parentId).find(">.hitarea").click();
+
+				$("#chkNode" + id).attr("checked", "checked");
+				setTimeout(function() { 
+					$("#chkNode" + id).focus();
+				}, 500);
+
+				var parent = "";
+				if (parentId == "37")
+					parent = "ENT";
+				else if (parentId == "2")
+					parent = "SVP";
+				else if (parentId == "34")
+					parent = "DVP";
+				else if (parentId == "3")
+					parent = "RVP";
+				else if (parentId == "36")
+					parent = "SRM";
+				else if (parentId == "4")
+					parent = "RM";
+				else if (parentId == "41")
+					parent = "AM";
+				else if (parentId == "7")
+					parent = "SiteName";
+ 
+				me.parentNodeCheck($("#chkNode" + id)[0], title, parent)
+            }
+		},
+		
+		resetDependentTypes: function() {
+			var me = this;
+
+			me.excludeHouseCodes = [];
+			me.filteredHouseCodes = [];
+			$("#ExcludeHouseCode").html("");
+			$("#ExcludeHouseCode").multiselect("refresh");
+			$("#Exclude").html("");
+			$("#Exclude").multiselect("refresh");
+			$("#HouseCode").html("");
+			$("#HouseCode").multiselect("refresh");
+		},
+
+		checkDependentTypes: function(fullPath, add) {
+			var me = this;
+
+			for (var index = 0; index < me.dependentTypes.length; index++) {
+				if (me.dependentTypes[index] == "ExcludeHouseCodes") {
+					if (add) {
+						var nodes = $.grep(me.siteNodes, function(item, itemIndex) {
+							if (me.excludeHouseCodes.length > 0 && ii.ajax.util.findIndexById(item.id.toString(), me.excludeHouseCodes) == null)
+						    	return item.fullPath.indexOf(fullPath) >= 0;
+					    	else if (me.excludeHouseCodes.length == 0)
+					    		return item.fullPath.indexOf(fullPath) >= 0;
+						});
+
+						$.merge(me.excludeHouseCodes, nodes);
+
+						me.excludeHouseCodes.sort(function(a, b) {
+							if (a.title < b.title)
+						    	return -1;
+						  	if (a.title > b.title)
+						    	return 1;
+							return 0;
+						});
+					}
+					else {
+						me.excludeHouseCodes = $.grep(me.excludeHouseCodes, function(item, itemIndex) {
+						    return item.fullPath.indexOf(fullPath) < 0;
+						});
+					}
+					me.setExcludeHouseCodes();
+				}
+				if (me.dependentTypes[index] == "HouseCodes") {
+					if (add) {
+						var nodes = $.grep(me.houseCodes, function(item, itemIndex) {
+						    return item.parameter.indexOf(fullPath) >= 0;
+						});
+
+						$.merge(me.filteredHouseCodes, nodes);
+
+						me.filteredHouseCodes.sort(function(a, b) {
+							if (a.title < b.title)
+						    	return -1;
+						  	if (a.title > b.title)
+						    	return 1;
+							return 0;
+						});
+					}
+					else {
+						me.filteredHouseCodes = $.grep(me.filteredHouseCodes, function(item, itemIndex) {
+						    return item.parameter.indexOf(fullPath) < 0;
+						});
+					}
+					me.setHouseCodes();
+				}				
+			}
+		},
+
+		setExcludeHouseCodes: function() {
+			var me = this;
+			
+			$("#ExcludeHouseCode").html("");
+			$("#ExcludeHouseCode").append("<option title='(Select All)' value='-1'>(Select All)</option>");
+			$("#ExcludeHouseCode").append("<option title='None' value='0' selected>None</option>");	
+			for (var index = 0; index < me.excludeHouseCodes.length; index++) {
+				$("#ExcludeHouseCode").append("<option title='" + me.excludeHouseCodes[index].title + "' value='" + me.excludeHouseCodes[index].id + "'>" + me.excludeHouseCodes[index].title + "</option>");
+			}
+			$("#ExcludeHouseCode").multiselect("refresh");
+			
+			$("#Exclude").html("");
+			$("#Exclude").append("<option title='(Select All)' value='-1'>(Select All)</option>");
+			$("#Exclude").append("<option title='None' value='0' selected>None</option>");	
+			for (var index = 0; index < me.excludeHouseCodes.length; index++) {
+				$("#Exclude").append("<option title='" + me.excludeHouseCodes[index].title + "' value='" + me.excludeHouseCodes[index].id + "'>" + me.excludeHouseCodes[index].title + "</option>");
+			}
+			$("#Exclude").multiselect("refresh");
+		},
+		
+		setHouseCodes: function() {
+			var me = this;
+
+			$("#HouseCode").html("");
+				
+			for (var index = 0; index < me.filteredHouseCodes.length; index++) {
+				$("#HouseCode").append("<option title='" + me.filteredHouseCodes[index].name + "' value='" + me.filteredHouseCodes[index].id + "'>" + me.filteredHouseCodes[index].name + "</option>");
+			}
+			$("#HouseCode").multiselect("refresh");
+		},
+		
 		reportsLoaded: function(me, activeId) {
 
 			for (var index = 0; index < me.reports.length; index++) {
@@ -1012,21 +1404,351 @@ ii.Class({
 			if (me.pageLoading) {
 				me.actionAddNodes();
 				me.pageLoading = false;
+				me.checkLoadCount();	
 			}
 			else {
-				if (me.hirNodes.length > 0)
-					me.hirNode.setValue(me.hirNodes[0].title);
+				me.levelNamesLoaded = true;
+				var nodes = [];
+				me.levels = [];
+				var $scope = angular.element($("#SearchContainer")).scope();
+				$scope.$apply(function() {
+					$scope.nodes = me.hirNodes.slice();
+				});
+				
+				me.levels.push(new fin.rpt.ssrs.Level(0, "None", "0"));
+				// Add ENT level and its child nodes
+				nodes = $.grep(me.hirNodes, function(item, index) {
+				    return item.hirLevel == 37;
+				});
+				if (nodes.length > 0) {
+					me.addLevelNode("", 37, "ENT", 1, 1, "");
+					me.addChildNodes(nodes, "ENT");
+					me.levels.push(new fin.rpt.ssrs.Level(37, "ENT", "ENT"));
+				}
 
-				$("#HirNodeText").removeClass("Loading");
+				// Add SVP level and its child nodes
+				nodes = $.grep(me.hirNodes, function(item, index) {
+				    return item.hirLevel == 2;
+				});
+				if (nodes.length > 0) {
+					me.addLevelNode("", 2, "SVP", 1, 1, "");
+					me.addChildNodes(nodes, "SVP");
+					me.levels.push(new fin.rpt.ssrs.Level(2, "SVP", "SVP"));
+				}
+
+				// Add DVP level and its child nodes
+				nodes = $.grep(me.hirNodes, function(item, index) {
+				    return item.hirLevel == 34;
+				});
+				if (nodes.length > 0) {
+					me.addLevelNode("", 34, "DVP", 1, 1, "");
+					me.addChildNodes(nodes, "DVP");
+					me.levels.push(new fin.rpt.ssrs.Level(34, "DVP", "DVP"));
+				}
+
+				// Add RVP level and its child nodes
+				nodes = $.grep(me.hirNodes, function(item, index) {
+				    return item.hirLevel == 3;
+				});
+				if (nodes.length > 0) {
+					me.addLevelNode("", 3, "RVP", 1, 1, "");
+					me.addChildNodes(nodes, "RVP");
+					me.levels.push(new fin.rpt.ssrs.Level(3, "RVP", "RVP"));
+				}
+
+				// Add SRM level and its child nodes
+				nodes = $.grep(me.hirNodes, function(item, index) {
+				    return item.hirLevel == 36;
+				});
+				if (nodes.length > 0) {
+					me.addLevelNode("", 36, "SRM", 1, 1, "");
+					me.addChildNodes(nodes, "SRM");
+					me.levels.push(new fin.rpt.ssrs.Level(36, "SRM", "SRM"));
+				}
+
+				// Add RM level and its child nodes
+				nodes = $.grep(me.hirNodes, function(item, index) {
+				    return item.hirLevel == 4;
+				});
+				if (nodes.length > 0) {
+					me.addLevelNode("", 4, "RM", 1, 1, "");
+					me.addChildNodes(nodes, "RM");
+					me.levels.push(new fin.rpt.ssrs.Level(4, "RM", "RM"));
+				}
+
+				// Add AM level and its child nodes
+				nodes = $.grep(me.hirNodes, function(item, index) {
+				    return item.hirLevel == 41;
+				});
+				if (nodes.length > 0) {
+					me.addLevelNode("", 41, "AM", 1, 1, "");
+					me.addChildNodes(nodes, "AM");
+					me.levels.push(new fin.rpt.ssrs.Level(41, "AM", "AM"));
+				}
+				
+				// Add Unit level and its child nodes
+				nodes = $.grep(me.hirNodes, function(item, index) {
+				    return item.hirLevel == 7;
+				});
+				me.siteNodes = nodes;
+				if (nodes.length > 0) {
+					me.addLevelNode("", 7, "SiteName", 1, 1, "");
+					me.addChildNodes(nodes, "SiteName");
+					me.levels.push(new fin.rpt.ssrs.Level(7, "SiteName", "SiteName"));
+				}
 			}
+		},
+		
+		addChildNodes: function(nodes, parentLevel) {
+			var me = this;
+			var hirNode = 0;
+            var hirNodeTitle = "";
+			var hirLevel = 0;
+			var fullPath = "";
+
+			if (nodes.length > 0) {
+				for (var index = 0; index < nodes.length; index++) {
+					hirNode = nodes[index].id;
+					hirNodeTitle = nodes[index].title;
+					hirLevel = nodes[index].hirLevel;
+					fullPath = nodes[index].fullPath;
+					me.addLevelNode(parentLevel, hirNode, hirNodeTitle, hirLevel, 0, fullPath);
+				}
+			}
+		},
+
+		addLevelNode: function() {
+			var args = ii.args(arguments, {
+				parent: { type: String }
+                , hirNode: { type: Number }
+				, hirNodeTitle: { type: String }
+				, hirLevel: { type: Number }
+				, childNodeCount: {type: Number}
+				, fullPath: { type: String }
+            });			
+			var me = this;
+			var nodeHtml = "";			
+			
+			nodeHtml = "<li id=\"liNode" + args.hirNode + "\">";
+			nodeHtml += "<input type=\"checkbox\" id=\"chkNode" + args.hirNode + "\" name=\"" + args.hirNodeTitle + "\" fullPath=\"" + args.fullPath + "\" parent=\"" + args.hirLevel + "\" />";
+			nodeHtml += "<span id=\"span" + args.hirNode + "\" class='normal' style='vertical-align: middle;'>" + args.hirNodeTitle + "</span>";
+			
+			if (args.childNodeCount != 0)
+                nodeHtml += "<ul id=\"ulEdit" + args.hirNode + "\"></ul>";
+            			
+			nodeHtml += "</li>";
+						
+			var treeNode = $(nodeHtml).appendTo("#ulEdit" + args.hirLevel);
+            $("#ulEdit1").treeview({ add: treeNode });
+			
+			$("#span" + args.hirNode).bind("click", function() {
+				
+			});
+			
+			$("#liNode" + args.hirNode).find(">.hitarea").bind("click", function () {
+				if ($("#ulEdit" + args.hirNode)[0].innerHTML == "") {
+					$("#span" + args.hirNode).replaceClass("normal", "loading");
+					me.setLoadCount();
+					me.parent = args.hirNodeTitle;
+					me.parentNode = args.hirNode;
+	               	me.hirNodeStore.fetch("userId:[user],levelBrief:" + args.hirNodeTitle, me.namesLoaded, me);					
+	            }
+            });
+			
+			$("#chkNode" + args.hirNode).bind("click", function() { 
+				if (args.hirLevel == 1)
+					me.childNodeCheck(this, args.hirNodeTitle);
+				else
+					me.parentNodeCheck(this, args.hirNodeTitle, args.parent); 
+			});			
+		},
+		
+		namesLoaded: function(me, activeId) {
+			
+		 	var hirNode = 0;
+            var hirNodeTitle = "";
+			var childNodeCount = 0;
+			var hirLevel = 0;
+			var fullPath = "";			
+			
+			if (me.hirNodes.length > 0) {
+				for (var index = 0; index < me.hirNodes.length; index++) {				 
+					hirNode = me.hirNodes[index].id;				
+					hirNodeTitle = me.hirNodes[index].title;
+					childNodeCount = me.hirNodes[index].childNodeCount;
+					hirLevel = me.hirNodes[index].hirLevel;
+					fullPath = nodes[index].fullPath;
+
+					me.addLevelNode(me.parent, hirNode, hirNodeTitle, hirLevel, childNodeCount, fullPath);
+				}
+				$("#span" + me.hirNodes[0].hirLevel).replaceClass("loading", "normal");
+			}
+			else
+				$("#span" + me.parentNode).replaceClass("loading", "normal");
 			
 			me.checkLoadCount();
 		},
+		
+		childNodeCheck: function(chkNodeParent, hirNodeTitle) {
+		    var me = this;
+		    var hirParentNode = chkNodeParent.id.replace(/chkNode/, "");
+		    var nodeChecked = chkNodeParent.checked;
+			var fullPaths = [];
+			me.name = "";
+			me.names = "";
 
+			if (me.lastCheckedNode != undefined && me.lastCheckedNode != hirParentNode) {
+				var previousLevelNodeChecked = false;
+
+				$("input[parent=" + me.lastCheckedNode + "]").each(function() {
+		            if (this.checked) {
+						previousLevelNodeChecked = true;
+						return false;
+					}	
+		        });
+
+				if (previousLevelNodeChecked) {
+					if (confirm("Selected nodes in earlier level will be deselected")) {
+						$("#chkNode" + me.lastCheckedNode).attr("checked", false);
+						$("input[parent=" + me.lastCheckedNode + "]").each(function() {
+							this.checked = false;
+						});
+						me.resetDependentTypes();
+					}
+					else {
+						$("#chkNode" + hirParentNode).attr("checked", false);
+						return false;
+					}
+				}
+			}
+
+			me.lastCheckedNode = hirParentNode;
+
+			if (chkNodeParent.checked)
+				me.level = "~Level=" + hirNodeTitle;
+			else {
+				var parameter = "~Level=" + hirNodeTitle;
+				me.level = me.level.replace(parameter, "");
+			}
+
+		    //get a list of the children of the node
+		    $("input[parent=" + hirParentNode + "]").each(function() {
+		        //find out if the parent node is checked
+		        if (nodeChecked) {
+					this.checked = true;
+					me.name = me.name + "~Name=" + this.name;
+					me.names = me.names + "~" + this.name;
+					fullPaths.push($(this).attr("fullPath"));
+				}
+				else {
+					this.checked = false;
+					me.name = me.name.replace("~Name=" + this.name, "");
+					me.names = me.names.replace("~" + this.name, "");
+				}
+		    });
+
+			if (nodeChecked) {
+				var nodes = $.grep(me.siteNodes, function(item, index) {
+					var found = false;
+					for (var iIndex = 0; iIndex < fullPaths.length; iIndex++) {
+						found = item.fullPath.indexOf(fullPaths[iIndex]) >= 0;
+						if (found)
+							break;
+					}
+					return found;
+				});
+				me.excludeHouseCodes = nodes;
+				me.setExcludeHouseCodes();
+			}
+			else {
+				me.resetDependentTypes();
+			}
+				
+        	$("#Customer").html("");
+			$("#Customer").multiselect("refresh");
+			
+			if(me.controls[3] != undefined && me.controls[3].selector == "#GroupLevel")
+            	me.groupLevelsLoaded();
+		},
+		
+		parentNodeCheck: function(chkNodeChild, hirNodeTitle, parent) {
+		    var me = this;
+		    var hirNode = $(chkNodeChild).attr("parent");
+			var fullPath = $(chkNodeChild).attr("fullPath");
+		    var allChecked = true;
+
+			if (me.lastCheckedNode != undefined && me.lastCheckedNode != hirNode) {
+				var previousLevelNodeChecked = false;
+
+				$("input[parent=" + me.lastCheckedNode + "]").each(function() {
+		            if (this.checked) {
+						previousLevelNodeChecked = true;
+						return false;
+					}
+		        });
+
+				if (previousLevelNodeChecked) {
+					if (confirm("Selected nodes in earlier level will be deselected")) {
+						$("#chkNode" + me.lastCheckedNode).attr("checked", false);
+						$("input[parent=" + me.lastCheckedNode + "]").each(function() {
+							this.checked = false;
+						});
+						me.name = "";
+						me.names = "";
+						me.resetDependentTypes();
+					}
+					else {
+						$("#chkNode" + hirNode).attr("checked", false);
+						$("input[parent=" + hirNode + "]").each(function() {
+							this.checked = false;
+						});
+						return false;
+					}
+				}
+			}
+
+			me.level = "~Level=" + parent;
+			if (chkNodeChild.checked) {
+				if (me.name.indexOf(hirNodeTitle) < 0) {
+					me.name = me.name + "~Name=" + hirNodeTitle;
+					me.names = me.names + "~" + hirNodeTitle;
+				}
+			}				
+			else {				
+				me.name = me.name.replace("~Name=" + hirNodeTitle, "");
+				me.names = me.names.replace("~" + hirNodeTitle, "");
+			}				
+
+			me.lastCheckedNode = hirNode;
+
+		    //make sure that the child has a parent
+		    $("#chkNode" + hirNode).each(function() {
+		        //go through the list of child nodes of the parent
+		        $("input[parent=" + hirNode + "]").each(function() {
+		            if (this.checked == false) {
+						allChecked = false;
+						return false;
+					}
+		        });
+ 
+    		    //if all have been checked... check this one
+		        if (allChecked)
+		            this.checked = true;
+				else
+					$("#" + this.id).attr("checked", false);
+		    });
+
+			me.checkDependentTypes(fullPath, chkNodeChild.checked);			
+            $("#Customer").html("");
+			$("#Customer").multiselect("refresh");
+			
+			if(me.controls[3] != undefined && me.controls[3].selector == "#GroupLevel")
+            	me.groupLevelsLoaded();	
+		},
+		
 		actionAddNodes: function() {
 			var me = this;
 			var index = 0;
-			var levelBrief = "";
 			var hirParentNode = 0;
 		 	var hirNode = 0;
             var hirNodeTitle = "";
@@ -1105,7 +1827,11 @@ ii.Class({
 			var nodeIndex = me.getNodeIndex(nodeId);
 			var found = false;
 			var reportURL = "";
-
+			var rowHtml = "";
+            var reportTitle = "";
+			var reportId = 0;
+			var parameterAvailable = false;
+			
 			if (me.hirNodePreviousSelected > 0)
 				$("#span" + me.hirNodePreviousSelected).replaceClass("unitSelected", "unit");
 
@@ -1117,15 +1843,500 @@ ii.Class({
 			for (var index = 0; index < me.reports.length; index++) {
 				if (me.reports[index].hirNode == me.hirNodeSelected) {
 					reportURL = me.reports[index].reportURL;
+					reportTitle = me.reports[index].title;
+					reportId = me.reports[index].id;
+					parameterAvailable = me.reports[index].parameterAvailable;
 					found = true;
 					break;
 				}
 			}
-
+			
 			if (found && reportURL != "")
-				window.open(reportURL);
-		},
+				me.reportURL = reportURL;
 
+			if (found && reportURL != "" && !parameterAvailable) {
+				$("#RightContainer").hide();
+				window.open(reportURL);
+			}
+			else if (reportId != 0) {
+				$("#RightContainer").show();
+				me.setLoadCount();
+				if(!me.levelNamesLoaded)
+					me.hirNodeStore.fetch("userId:[user],levelBrief:-1", me.hirNodesLoaded, me);
+				me.reportParameterStore.fetch("userId:[user],reportId:" + reportId, me.parametersLoaded, me);				
+			}
+		},
+		
+		parametersLoaded: function(me, activeId) {
+			me.ddlists = 0;
+			me.list = "";
+						
+			for (var index = 0; index < me.reportParameters.length; index++) {
+				if (me.reportParameters[index].referenceTableName == "FscYears") {
+					me.ddlists = me.ddlists + 1;
+					me.list = "FscYears";
+					me.fiscalYearStore.reset();
+					me.fiscalYearStore.fetch("userId:[user],fscYear:>=3", me.dropdownsLoaded, me);
+				}
+				else if (me.reportParameters[index].referenceTableName == "FscPeriods"  && me.reportParameters[index].name != "FscPeriodTo") {
+					me.ddlists = me.ddlists + 1;
+					me.list = "FscPeriods";
+					me.periodStore.fetch("userId:[user],fiscalYearId:-1", me.dropdownsLoaded, me);
+				}
+				else if (me.reportParameters[index].referenceTableName == "PayCodes") {
+					me.ddlists = me.ddlists + 1;
+					me.list = "PayCodes";
+					me.payCodeTypeStore.fetch("userId:[user],payCodeType:", me.dropdownsLoaded, me);
+				}
+				else if (me.reportParameters[index].referenceTableName == "PayPayrollCompanies") {
+					me.ddlists = me.ddlists + 1;
+					me.list = "PayPayrollCompanies";
+					me.payrollCompanyStore.fetch("userId:[user]", me.dropdownsLoaded, me);
+				}
+				else if (me.reportParameters[index].referenceTableName == "EmpStatusTypes") {
+					me.ddlists = me.ddlists + 1;
+					me.list = "EmpStatusTypes";
+					me.statusStore.fetch("userId:[user],", me.dropdownsLoaded, me);
+				}
+				else if (me.reportParameters[index].referenceTableName == "FscAccountCategories") {
+					me.ddlists = me.ddlists + 1;
+					me.list = "FscAccountCategories";
+					me.accountStore.fetch("userId:[user],budget:1,code:code", me.dropdownsLoaded, me);
+				}
+				else if (me.reportParameters[index].referenceTableName == "RevInvoiceBatches") {
+					me.ddlists = me.ddlists + 1;
+					me.list = "RevInvoiceBatches";
+					me.batchStore.fetch("userId:[user],statusType:-1", me.dropdownsLoaded, me);
+				}
+				else if (me.reportParameters[index].referenceTableName == "WeekPeriods") {
+					me.ddlists = me.ddlists + 1;
+					me.list = "WeekPeriods";
+					me.weekPeriodStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+				}				
+				else if (me.reportParameters[index].referenceTableName == "EmpWorkShifts") {
+					me.ddlists = me.ddlists + 1;
+					me.list = "EmpWorkShifts";
+					me.workShiftStore.fetch("userId:[user],", me.dropdownsLoaded, me);
+				}	
+				else if (me.reportParameters[index].referenceTableName == "RptStatusTypes") {
+					me.ddlists = me.ddlists + 1;
+					me.list = "RptStatusTypes";
+					me.rptStatusTypeStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+				}
+				else if (me.reportParameters[index].referenceTableName == "WoStatus") {
+					me.ddlists = me.ddlists + 1;
+					me.list = "WoStatus";
+					me.woStatusStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+				}
+				else if (me.reportParameters[index].referenceTableName == "PayPeriodEndingDates") {
+					me.ddlists = me.ddlists + 1;
+					me.list = "PayPeriodEndingDates";
+					me.payPeriodEndingDateStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+				}
+				else if (me.reportParameters[index].referenceTableName == "AppStateTypes") {
+					me.ddlists = me.ddlists + 1;
+					me.list = "AppStateTypes";
+					me.stateStore.fetch("userId:[user]", me.dropdownsLoaded, me);
+				}				
+                else if (me.reportParameters[index].referenceTableName == "HcmServiceTypes") {
+                    me.ddlists = me.ddlists + 1;
+                    me.list = "HcmServiceTypes";
+                    me.serviceTypeStore.fetch("userId:[user]", me.dropdownsLoaded, me);
+                }
+                else if (me.reportParameters[index].referenceTableName == "HcmServiceLines" && me.reportParameters[index].name == "ServiceLine") {
+                    me.ddlists = me.ddlists + 1;
+                    me.list = "HcmServiceLines";
+                    me.serviceLineStore.fetch("userId:[user]", me.dropdownsLoaded, me);
+                }
+                else if (me.reportParameters[index].referenceTableName == "HcmContractTypes") {
+                    me.ddlists = me.ddlists + 1;
+                    me.list = "HcmContractTypes";
+                    me.contractTypeStore.fetch("userId:[user]", me.dropdownsLoaded, me);
+                }	
+			}
+			
+			if (me.list == "")
+				me.controlsLoaded();
+		},
+		
+		dropdownsLoaded: function(me, activeId) {
+
+			me.ddlists = me.ddlists - 1;
+			if (me.ddlists <= 0)
+				me.controlsLoaded();			
+		},
+		
+		controlsLoaded: function() {
+			var me = this;
+			var html = "";
+
+			me.dependentTypes = [];
+			
+			for (var index = 0; index < me.reportParameters.length; index++) {
+				if (me.reportParameters[index].controlType == "Date" && me.reportParameters[index].mandatory)
+					html += "\n<div><div class='labelReport'>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div><div><input type='checkbox' id='dateCheck' checked='true' class='checkMandatory' onchange='fin.reportUi.dateMandatory(this," + index + ");' /></div><div class='labelSchedule'>NULL</div></div>"
+				else if (me.reportParameters[index].controlType == "Date" && !me.reportParameters[index].mandatory)
+					html += "\n<div><div class='labelReport'>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div></div>"
+				else
+					html += "\n<div><div class='labelReport'>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium' style='width:" + me.reportParameters[index].Width + "px;'></div><div id='customersLoading'></div></div>"										
+				html += "\n<div style='clear:both;'></div>";
+			}
+
+			$("#ParameterContainer").html(html);
+
+			me.controls = [];
+
+			for (var index = 0; index < me.reportParameters.length; index++) {								
+				if (me.reportParameters[index].controlType == "Text") {
+					me.controls[index] = new ui.ctl.Input.Text({
+				        id: "" + me.reportParameters[index].name,
+				        maxLength: 64
+				    });
+
+					me.controls[index].makeEnterTab()
+						.setValidationMaster(me.validator)
+						.addValidation(ui.ctl.Input.Validation.required);
+
+					me.controls[index].resizeText();
+					if (me.reportParameters[index].name == "CreateUserID") {
+						$("#CreateUserIDText").val(me.session.propertyGet("userName"));
+						$("#CreateUserIDText").attr("readonly", true);
+					}
+				}
+				else if (me.reportParameters[index].controlType == "CheckBox") {
+					me.controls[index] = new ui.ctl.Input.Check({
+				        id: "" + me.reportParameters[index].name
+				    });
+				}
+				else if (me.reportParameters[index].controlType == "DropDown") {
+					$("#" + me.reportParameters[index].name).html("");										
+					me.populateMultiSelectDropDown(me.reportParameters[index].referenceTableName, me.reportParameters[index].name, me.reportParameters[index].defaultValue);                       						
+					$("#" + me.reportParameters[index].name).multiselect({
+						minWidth: me.reportParameters[index].Width,
+						header: false,
+						multiple: false,
+						noneSelectedText: "",
+						selectedList: 1,						
+						selectedText: function(numChecked, numTotal, checkedItems) {
+                            var parametersList = "";
+							var selectedItems = 0;
+                            var selectedValues = $("#" + this.element[0].id).multiselect("getChecked").map(function() {
+                                return this.title;
+                            }).get();
+                            
+                            for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
+                                if (selectedValues[selectedIndex] != '(Select All)')
+                                    parametersList = parametersList + ', ' + selectedValues[selectedIndex];
+									selectedItems = selectedItems + 1;
+                            }
+                            parametersList = parametersList.substring(1, parametersList.length);
+							
+							if(selectedValues.length > 4)
+                                return "" + selectedItems + "" + " selected";
+                            else
+                            	return parametersList;
+                        },
+                        click: function(event, ui) {                                                                                    
+                            if (event.originalEvent.currentTarget.id.indexOf("FscYear") > 0)
+                            	me.fiscalweeksLoad(ui.value);                            
+                            else if (event.originalEvent.currentTarget.id.indexOf("ExLevel") > 0)                           	
+                        		me.excludeNamesLoaded(ui.value);                            
+                        },						
+						position: {
+							my: 'left bottom',
+							at: 'left top'
+						}
+					});
+
+					me.controls[index] = $("#" + me.reportParameters[index].name);
+				}
+				else if (me.reportParameters[index].controlType == "Date") {
+					$("#" + me.reportParameters[index].name).datepicker({
+						changeMonth: true,
+						changeYear: true
+					});
+					
+					me.controls[index] = $("#" + me.reportParameters[index].name);
+					if (me.reportParameters[index].mandatory) {
+                    	me.controls[index][0].disabled = true;
+                    }
+				}
+				else if (me.reportParameters[index].controlType == "MultiSelect") {
+					if (me.reportParameters[index].referenceTableName == "Customers" || me.reportParameters[index].referenceTableName == "ExcludeHouseCodes" || me.reportParameters[index].referenceTableName == "HouseCodes")
+						me.dependentTypes.push(me.reportParameters[index].referenceTableName);
+
+					$("#" + me.reportParameters[index].name).html("");										
+					me.populateMultiSelectDropDown(me.reportParameters[index].referenceTableName, me.reportParameters[index].name, me.reportParameters[index].defaultValue);                       						
+					$("#" + me.reportParameters[index].name).multiselect({
+						minWidth: 280,
+						header: false,
+						noneSelectedText: "",
+						selectedList: 4,						
+						selectedText: function(numChecked, numTotal, checkedItems) {
+                            var parametersList = "";
+							var selectedItems = 0;
+                            var selectedValues = $("#" + this.element[0].id).multiselect("getChecked").map(function() {
+                                return this.title;
+                            }).get();
+                            
+                            for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
+                                if (selectedValues[selectedIndex] != '(Select All)')
+                                    parametersList = parametersList + ', ' + selectedValues[selectedIndex];
+									selectedItems = selectedItems + 1;
+                            }
+                            parametersList = parametersList.substring(1, parametersList.length);
+							
+							if(selectedValues.length > 4)
+                                return "" + selectedItems + "" + " selected";
+                            else
+                            	return parametersList;
+                        },
+                        click: function(event, ui) {                                                                                    
+                            if (ui.text == "(Select All)") {
+                                if (ui.checked)
+                                    $("#" + event.target.id).multiselect("checkAll");
+                                else if (!ui.checked)
+                                    $("#" + event.target.id).multiselect("uncheckAll");
+                            }
+							else {
+                                if (!ui.checked
+                                && $("#ui-multiselect-"+event.target.id+"-option-0")[0].title == '(Select All)'
+                                && $("#ui-multiselect-"+event.target.id+"-option-0")[0].checked)
+                                    $("#ui-multiselect-"+event.target.id+"-option-0")[0].checked = false;
+                            }
+                        },
+						open: function( e ){							
+							if (e.target.id == 'Customer') {
+								$("#Customer").html("");
+								$("#Customer").multiselect("refresh");
+								if (me.level == '' || me.name == '') 									
+									return false;
+								me.namesList = me.names.replace("~", "");
+								me.levelName = me.level.replace("~Level=", "");											
+								me.setStatus("Loading");
+								$("#customersLoading").addClass('loading');
+								me.genericTypeStore.fetch("level:" + me.levelName + ",name:" + me.namesList + ",genericType:Customers,userId:[user]", me.customersLoaded, me);
+							}
+						},
+						position: {
+							my: 'left bottom',
+							at: 'left top'
+						}
+					});
+
+					me.controls[index] = $("#" + me.reportParameters[index].name);
+				}						
+			}			
+			
+			if (me.reportParameters.length > 0) {
+                $("#ParameterContainer").show();
+                $("#LevelNamesContainer").height(($(window).height() - 183) - $("#ParameterContainer").height());
+            }               
+            else {
+                $("#ParameterContainer").hide();
+                $("#LevelNamesContainer").height(($(window).height() - 160));
+            }
+            
+			me.checkLoadCount();
+		},
+		
+		populateMultiSelectDropDown: function() {
+			var args = ii.args(arguments, {
+				referenceTableName: {type: String}
+				, name: {type: String}
+				, defaultValue: {type: String}
+			});
+			var me = this;			
+			var typeTableData = [];
+			
+			if (args.referenceTableName == "PayCodes") {
+                me.typeAllOrNoneAdd(me.payCodeTypes, "(Select All)");
+                typeTableData = me.payCodeTypes;
+            }
+			else if (args.referenceTableName == "EmpStatusTypes") {
+                me.typeAllOrNoneAdd(me.statusTypes, "(Select All)");
+                typeTableData = me.statusTypes;
+            }
+			else if (args.referenceTableName == "EmpWorkShifts") {
+                me.typeAllOrNoneAdd(me.workShifts, "(Select All)");
+                typeTableData = me.workShifts;
+            }
+			else if (args.referenceTableName == "FscAccountCategories") {
+                me.typeAllOrNoneAdd(me.accounts, "(Select All)");
+                typeTableData = me.accounts;
+            }
+			else if (args.referenceTableName == "RptStatusTypes") {
+                me.typeAllOrNoneAdd(me.rptStatusTypes, "(Select All)");
+                typeTableData = me.rptStatusTypes;
+            }
+			else if (args.referenceTableName == "WoStatus") {
+                me.typeAllOrNoneAdd(me.woStatus, "(Select All)");
+                typeTableData = me.woStatus;
+            }
+			else if (args.referenceTableName == "AppStateTypes") {
+                me.typeAllOrNoneAdd(me.stateTypes, "(Select All)");
+                typeTableData = me.stateTypes;
+            }               
+            else if (args.referenceTableName == "HcmServiceTypes") {
+                me.typeAllOrNoneAdd(me.serviceTypes, "(Select All)");
+                typeTableData = me.serviceTypes;
+            }       
+            else if (args.referenceTableName == "HcmServiceLines" && args.name == "ServiceLine") {
+                me.serviceLineTypes = [];
+                for (var index = 0; index < me.serviceLines.length; index++) {
+                    if (!me.serviceLines[index].financialEntity) {
+                        var item = new fin.rpt.ssrs.ServiceLine({ id: me.serviceLines[index].id, name: me.serviceLines[index].name });
+                        me.serviceLineTypes.push(item);
+                    }               
+                }
+                me.typeAllOrNoneAdd(me.serviceLineTypes, "(Select All)");
+                typeTableData = me.serviceLineTypes;
+            }               
+            else if (args.referenceTableName == "HcmServiceLines" && args.name == "FinancialEntity") {
+                me.financialEntities = [];
+                for (var index = 0; index < me.serviceLines.length; index++) {
+                    if (me.serviceLines[index].financialEntity) {
+                        var item = new fin.rpt.ssrs.FinancialEntity({ id: me.serviceLines[index].id, name: me.serviceLines[index].name });
+                        me.financialEntities.push(item);
+                    }               
+                }
+                me.typeAllOrNoneAdd(me.financialEntities, "(Select All)");
+                typeTableData = me.financialEntities;
+            }               
+            else if (args.referenceTableName == "HcmContractTypes") {
+                me.typeAllOrNoneAdd(me.contractTypes, "(Select All)");
+                typeTableData = me.contractTypes;
+            }
+            else if (args.referenceTableName == "ExcludeHouseCodes") {
+            	if(me.excludeHouseCodes.length > 0) {
+            		$("#" + args.name).append("<option title='(Select All)' value='-1'>(Select All)</option>");
+            		$("#" + args.name).append("<option title='None' value='0' selected>None</option>");
+            	}				
+                typeTableData = me.excludeHouseCodes;
+            }
+            else if (args.referenceTableName == "HouseCodes") {
+            	me.typeAllOrNoneAdd(me.filteredHouseCodes, "(Select All)");
+                typeTableData = me.filteredHouseCodes;
+            }
+            else if (args.referenceTableName == "ExcludeNames")
+                $("#" + args.name).append("<option selected title='None' value='0'>None</option>");            
+            else if (args.referenceTableName == "FscYears")
+				typeTableData = me.fiscalYears;            
+            else if (args.referenceTableName == "FscPeriods") 
+                typeTableData = me.fiscalPeriods;            
+            else if (args.referenceTableName == "PayPayrollCompanies")
+                typeTableData = me.payrollCompanys;            
+            else if (args.referenceTableName == "RevInvoiceBatches")
+                typeTableData = me.invoiceBatches;            
+            else if (args.referenceTableName == "WeekPeriods")
+                typeTableData = me.weekPeriods;            
+            else if (args.referenceTableName == "ExcludeOverheadAccounts") 
+                typeTableData = me.excludeOverheadAccounts;            
+            else if (args.referenceTableName == "PayPeriodEndingDates")
+                typeTableData = me.payPeriodEndingDates;            
+            else if (args.referenceTableName == "ExLevels")           	
+                typeTableData = me.levels;
+            else if (args.referenceTableName == "PayrollReportTypes")
+                typeTableData = me.payrollReportTypes;
+            else if (args.referenceTableName == "ReportTypes")
+                typeTableData = me.reportTypes;
+            else if (args.referenceTableName == "SummeryReportTypes")
+                typeTableData = me.summeryReportTypes;            
+            else if (args.referenceTableName == "BudgetTypes")
+                typeTableData = me.budgetTypes;            
+            else if (args.referenceTableName == "CrothallEmployees")
+                typeTableData = me.crothallEmployees;            
+            else if (args.referenceTableName == "CurrentWeeks")
+                typeTableData = me.currentWeeks;            
+            else if (args.referenceTableName == "Comments")
+                typeTableData = me.comments;            
+            else if (args.referenceTableName == "Unions")
+                typeTableData = me.unions;            
+            else if (args.referenceTableName == "EntryMethods")
+                typeTableData = me.entryMethods;            
+            else if (args.referenceTableName == "Hour40Exceptions")
+                typeTableData = me.hour40Exceptions;            
+            else if (args.referenceTableName == "HouseCodeStatus")
+                typeTableData = me.houseCodeStatus;            
+            else if (args.referenceTableName == "CountHours")
+                typeTableData = me.countHours;
+            else if (args.referenceTableName == "Exceptions")
+                typeTableData = me.exceptions;
+            else if (args.referenceTableName == "GroupLevels")
+            	me.groupLevelsLoaded();            
+				
+			for (var index = 0; index < typeTableData.length; index++) {
+                var value = typeTableData[index].id;
+                var parameter = typeTableData[index].parameter;
+                var title = typeTableData[index].name;
+
+                if (args.referenceTableName == "AppStateTypes" 
+	                || args.referenceTableName == "PayCodes" 
+	                || args.referenceTableName == "HouseCodes" 
+	                || args.referenceTableName == "FscYears")
+                    $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + "</option>");
+                else if (args.referenceTableName == "FscPeriods")
+                    $("#" + args.name).append("<option title='" + 'Period ' + title + ' - ' + typeTableData[index].fscYeaTitle + "' value='" + value + "'>" + 'Period ' + title + ' - ' + typeTableData[index].fscYeaTitle + "</option>");
+                else if (args.referenceTableName == "PayPayrollCompanies")
+                    $("#" + args.name).append("<option title='" + typeTableData[index].brief + ' - ' + title + "' value='" + typeTableData[index].brief + "'>" + typeTableData[index].brief + ' - ' + title + "</option>");
+                else if (args.referenceTableName == "EmpWorkShifts") {
+                    if (typeTableData[index].startTime == undefined)
+                        $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + "</option>");
+                    else
+                        $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + ' - ' + typeTableData[index].startTime + ' - ' + typeTableData[index].endTime + "</option>");
+                }
+                else  if (args.referenceTableName == "FscAccountCategories") {
+                    if (typeTableData[index].code == undefined)
+                        $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + "</option>");
+                    else
+                        $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + typeTableData[index].code + ' - ' + typeTableData[index].description + "</option>");                       
+                }                   
+                else if (args.referenceTableName == "EmpStatusTypes" ||
+                    args.referenceTableName == "HcmServiceTypes" ||
+                    args.referenceTableName == "HcmServiceLines"||
+                    args.referenceTableName == "HcmContractTypes")
+                        $("#" + args.name).append("<option title='" + title + "' value='" + title + "'>" + title + "</option>");
+				else if (args.referenceTableName == "ExcludeHouseCodes")                    
+                    $("#" + args.name).append("<option title='" + typeTableData[index].title + "' value='" + value + "'>" + typeTableData[index].title + "</option>");
+                else if (args.referenceTableName == "RevInvoiceBatches")                    
+                    $("#" + args.name).append("<option title='" + typeTableData[index].title + "' value='" + value + "'>" + typeTableData[index].batchId + ':' + typeTableData[index].title + "</option>");                        
+                else {
+                	if (title == args.defaultValue || parameter == args.defaultValue)
+                		$("#" + args.name).append("<option title='" + title + "' value='" + parameter + "' Selected>" + title + "</option>");
+            		else
+            			$("#" + args.name).append("<option title='" + title + "' value='" + parameter + "'>" + title + "</option>");
+                }                    
+            }
+            
+            if (args.defaultValue == "(Select All)")
+                $("#" + args.name + " option").prop("selected", true);            
+		},
+		
+		dateMandatory: function(object, index) {            
+            var me = this;
+            
+            if (object.checked) {
+                me.controls[index][0].value = "";
+                me.controls[index][0].disabled = true;
+            }
+            else if (!object.checked) {
+                me.controls[index][0].disabled = false;
+            }
+        },
+        
+        typeAllOrNoneAdd: function () {
+            var args = ii.args(arguments, {
+                data: {type: [Object]}
+                , title: {type: String, required: false, defaultValue: ""}
+            });         
+            var me = this;
+            
+            //index > 0, condition is included as some droplist already has None as type in it.
+            var index = me.findIndexByTitle(args.title, args.data);
+            if (index == null || index > 0) 
+                args.data.unshift({ id: 0, name: args.title });
+        },
+		
 		getNodeIndex: function() {
 			var args = ii.args(arguments, {
 				hirNode: {type: Number} 
@@ -1139,7 +2350,137 @@ ii.Class({
 
 			return -1;
 		},
-
+		
+		customersLoaded: function(me, activeId) {
+			me.customers = me.genericTypes.slice();
+			$("#Customer").html("");
+			me.typeAllOrNoneAdd(me.customers, "(Select All)");
+			for (var index = 0; index < me.customers.length; index++) {
+				$("#Customer").append("<option title='" + me.customers[index].name + "' value='" + me.customers[index].id + "'>" + me.customers[index].name + "</option>");
+			}
+			$("#Customer option").prop("selected", true);
+			$("#Customer").multiselect("refresh");
+			me.setStatus("Loaded");
+			$("#customersLoading").removeClass('loading');
+		},
+				
+		groupLevelsLoaded: function() {
+            var me = this;
+            me.groupLevels = [];
+            
+            if (me.name != "") {
+            	if (me.level == "~Level=ENT") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(37, "ENT", "ENT"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(2, "SVP", "SVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(34, "DVP", "DVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }
+	            else if (me.level == "~Level=SVP") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(2, "SVP", "SVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(34, "DVP", "DVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }   
+	            else if (me.level == "~Level=DVP") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(34, "DVP", "DVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }
+	            else if (me.level == "~Level=RVP") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(3, "RVP", "RVP"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }
+	            else if (me.level == "~Level=SRM") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(36, "SRM", "SRM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }
+	            else if (me.level == "~Level=RM") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(4, "RM", "RM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }
+	            else if (me.level == "~Level=AM") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(41, "AM", "AM"));
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }
+	            else if (me.level == "~Level=SiteName") {
+	                me.groupLevels.push(new fin.rpt.ssrs.GroupLevel(7, "SiteName", "SiteName"));
+	            }
+            }
+            
+            $("#GroupLevel").html("");
+            for (var index = 0; index < me.groupLevels.length; index++) {
+                $("#GroupLevel").append("<option title='" + me.groupLevels[index].parameter + "' value='" + me.groupLevels[index].id + "'>" + me.groupLevels[index].parameter + "</option>");
+            }
+            $("#GroupLevel").multiselect("refresh");
+        },
+		
+		fiscalweeksLoad: function(yearSelected) {
+			var me = this;
+			
+			if (me.controls[1].selector != "#WkPeriod")
+				return;
+						
+			me.setLoadCount(); 
+			me.genericTypeStore.fetch("name:" + yearSelected + ",genericType:FiscalWeeks,userId:[user]", me.fiscalweeksLoaded, me);			
+		},
+		
+		fiscalweeksLoaded: function(me, activeId) {
+			$("#WkPeriod").html("");
+			for (var index = 0; index < me.genericTypes.length; index++) {
+                $("#WkPeriod").append("<option title='" + me.genericTypes[index].parameter + "' value='" + me.genericTypes[index].id + "'>" + me.genericTypes[index].parameter + "</option>");
+            }
+			$("#WkPeriod").multiselect("refresh");			
+			//me.controls[1].setData(me.genericTypes);
+			me.checkLoadCount();			
+		},
+		
+		excludeNamesLoaded: function(levelSelected) {
+			var me = this;
+			var nodes = [];
+			var levelIndex = 0;
+			var $scope = angular.element($("#SearchContainer")).scope();
+			$scope.$apply(function() {
+				$scope.nodes = me.hirNodes.slice();
+			});
+			
+			if(levelSelected != "0")
+				levelIndex = me.findIndexByTitle(levelSelected, me.levels)
+			
+			nodes = $.grep(me.hirNodes, function(item, index) {
+				    return item.hirLevel == me.levels[levelIndex].id;
+				});
+						
+			$("#ExName").html("");
+			
+			if (nodes.length > 1)
+            	$("#ExName").append("<option title='(Select All)' value='-1'>(Select All)</option>");
+            	
+			for (var index = 0; index < nodes.length; index++) {
+                $("#ExName").append("<option title='" + nodes[index].title + "' value='" + nodes[index].id + "'>" + nodes[index].title + "</option>");
+            }
+            
+            if (nodes.length == 0)
+            	$("#ExName").append("<option title='None' value='0'>None</option>");
+            	
+			$("#ExName").multiselect("refresh");			
+		},
+		
 		actionSearchItem: function() {
 			var args = ii.args(arguments, {
 				event: {type: Object}  // The (key) event object
@@ -1352,21 +2693,158 @@ ii.Class({
 
 		findIndexByTitle: function() {
 			var args = ii.args(arguments, {
-				title: {type: String},	// The title to use to find the object.
-				data: {type: [Object]}	// The data array to be searched.
-			});		
-			var title = args.title;
-			var data = args.data;
+                title: {type: String}       // The id to use to find the object.
+                , data: {type: [Object]}    // The data array to be searched.
+            });     
+            var title = args.title;
+            var data = args.data;
+            var name = "";
+            
+            for (var index = 0; index < data.length; index++ ) {
+                if (data[index].name != undefined)
+                        name = data[index].name;
+                    else
+                        name = data[index].title;
+    
+                if (name.toLowerCase() == title.toLowerCase()) {
+                    return index; 
+                }
+            }
+ 
+            return null;
+		},
+				
+		actionGenerateReportItem: function() {
+			var me = this;
+			var parametersList = "";
+			var valid = true;
+			var parameter = "";
+			 
+			for (var index = 0; index < me.controls.length; index++) {
+				if (me.reportParameters[index].controlType == "Text")
+					me.controls[index].validate(true);
+			}
 
-			for (var index = 0; index < data.length; index++) {
-				if (data[index].title == title) {
-					return index;
+			for (var index = 0; index < me.controls.length; index++) {
+				if (me.reportParameters[index].controlType == "Text") {
+					if (!me.controls[index].valid) {
+						valid = false;
+						break;
+					}
 				}
 			}
 
-			return null;
+			if (!valid) {
+				alert("In order to generate the report, the errors on the page must be corrected.");
+				return false;
+			}
+			
+			if (me.reportURL == "") {
+				alert("Please select the Report.");
+				return false;
+			}
+			
+			if (me.level == "") {
+				alert("Please select the Level.");
+				return false;
+			}
+			
+			if (me.name == "") {
+				alert("Please select the Name.");
+				return false;
+			}	 
+			
+			for (var index = 0; index < me.reportParameters.length; index++) {
+                if (me.reportParameters[index].controlType == "Text")
+                    parametersList += "~" + me.reportParameters[index].name + "=" + me.controls[index].getValue();
+                else if (me.reportParameters[index].controlType == "Date") {
+                	if (!me.reportParameters[index].mandatory || (me.reportParameters[index].mandatory && !$("#dateCheck")[0].checked)) {
+                		if (ui.cmn.text.validate.generic(me.controls[index][0].value, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$"))
+	                		parametersList += "~" + me.reportParameters[index].name + "=" + me.controls[index][0].value;	                		
+						else {
+							alert("Please enter valid " + me.reportParameters[index].title)
+							return false;
+						}
+                	}                							                    
+                }                   
+                else if (me.reportParameters[index].controlType == "DropDown")    {
+                	var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function(){
+                        return this.value;
+                    }).get();
+                    if(selectedValues.length > 0) {
+                        for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
+                            if (selectedValues[selectedIndex] != "undefined")
+                            parametersList += "~" + me.reportParameters[index].name + "=" + selectedValues[selectedIndex];
+                        }
+                    }
+                    else {
+                            alert("Please select " + me.reportParameters[index].title);
+                            return false;
+                    }
+                }
+                else if (me.reportParameters[index].controlType == "MultiSelect") {
+                    var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function(){
+                        return this.value;
+                    }).get();
+                    if(selectedValues.length > 0) {
+                        for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
+                            if (selectedValues[selectedIndex] != "undefined")
+                            parametersList += "~" + me.reportParameters[index].name + "=" + selectedValues[selectedIndex];
+                        }
+                    }
+                    else {
+                            alert("Please select " + me.reportParameters[index].title);
+                            return false;
+                    }
+                }
+            }
+			
+			parametersList = "UserID=" + me.session.propertyGet("userName") + me.level + me.name + parametersList;
+			ii.trace("Parameters:", parametersList, "Information");
+			var form = document.createElement("form");
+			form.setAttribute("method", "post");
+			form.setAttribute("action", me.reportURL);			
+			form.setAttribute("target", "_blank");
+			
+			var parameters = parametersList.split("~");
+			for (var index = 0; index < parameters.length; index++) {
+				var nameValuePair;
+				var nameValues = [];
+				var hiddenField = document.createElement("input");
+				
+				nameValuePair = parameters[index].toString();
+				nameValues = nameValuePair.split("=");
+				hiddenField.setAttribute("type", "hidden");		
+				hiddenField.setAttribute("name", nameValues[0]);		
+				hiddenField.setAttribute("value", nameValues[1]);		
+				form.appendChild(hiddenField);
+			}
+			
+			document.body.appendChild(form);
+			form.submit();							
 		},
-
+		
+		actionResetItem: function() {
+			var me = this;
+			me.level = "";
+			me.name = "";
+			me.names = "";
+			
+			var $scope = angular.element($("#SearchContainer")).scope();
+            $scope.$apply(function() {
+                    $scope.selected = "";
+            });
+						
+			$("#chkNode" + me.lastCheckedNode).attr("checked", false);			
+			$("input[parent=" + me.lastCheckedNode + "]").each(function() {
+				$("#" + this.id).attr("checked", false);
+			});
+			
+			me.excludeHouseCodes = [];
+			me.customers = [];
+			me.controlsLoaded();			
+		},
+		
 		actionReportItem: function() {
 			var me = this;
 
@@ -1420,7 +2898,6 @@ ii.Class({
 			$("#ParemeterContainer").html(html);
 
 			$("#nodeSearchImage").click( function() {
-
 				if (me.status == "edit")
 					me.hirNodeCurrentId = me.hirNodeId;
 				else
@@ -2302,6 +3779,11 @@ ii.Class({
 });
 
 function main() {
-	fin.reportUi = new fin.rpt.ssrs.UserInterface();
-	fin.reportUi.resize();
+	var intervalId = setInterval(function() {
+		if (importCompleted) {
+			clearInterval(intervalId);
+			fin.reportUi = new fin.rpt.ssrs.UserInterface();
+			fin.reportUi.resize();
+		}
+	}, 100);
 }

@@ -98,7 +98,7 @@ ii.Class({
 			var args = ii.args(arguments,{});
 			var me = this;
 
-			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
+			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 
 			if (me.isAuthorized) {
 				$("#pageLoading").css({
@@ -118,6 +118,7 @@ ii.Class({
 			me.reconcileBatchShow = me.authorizer.isAuthorized(me.authorizePath + "\\ReconcileBatch");
 			me.finalizeBatchShow = me.authorizer.isAuthorized(me.authorizePath + "\\FinalizeBatch");
 			me.exportBatchShow = me.authorizer.isAuthorized(me.authorizePath + "\\ExportBatch");
+			me.exportedBatchShow = me.authorizer.isAuthorized(me.authorizePath + "\\ExportedBatch");
 
 			if (!me.prepareBatchShow)
 				$("#prepareBatchAction").hide();
@@ -127,10 +128,10 @@ ii.Class({
 				$("#reconcileBatchAction").hide();
 			if (!me.finalizeBatchShow)
 				$("#finalizeBatchAction").hide();
-			if (!me.exportBatchShow) {
+			if (!me.exportBatchShow)
 				$("#exportBatchAction").hide();
-				$("#AnchorManageDeviceTypes").hide();
-			}
+			if (!me.exportedBatchShow)
+				$("#exportedBatchAction").hide();
 
 			if (me.prepareBatchShow)
 				me.actionShowItem("Prepare");
@@ -142,6 +143,8 @@ ii.Class({
 				me.actionShowItem("Finalize");
 			else if (me.exportBatchShow)
 				me.actionShowItem("Export");
+			else if (me.exportedBatchShow)
+				me.actionShowItem("Exported");
 
 			me.personStore.fetch("userId:[user],id:" + me.session.propertyGet("personId"), me.personsLoaded, me);
 			me.payCodeTypeStore.fetch("userId:[user],payCodeType:ePayBatch", me.payCodeTypesLoaded, me);
@@ -183,32 +186,38 @@ ii.Class({
 				.addAction({
 					id: "prepareBatchAction",
 					brief: "Prepare Batch",
-					title: "Prepare Epay Batch.",
+					title: "Prepare the Epay batch.",
 					actionFunction: function() { me.actionShowItem("Prepare"); }
 				})
 				.addAction({
 					id: "importBatchAction",
 					brief: "Import Batch",
-					title: "Import Epay Batch.",
+					title: "Import the Epay batch.",
 					actionFunction: function() { me.actionShowItem("Import"); }
 				})
 				.addAction({
 					id: "reconcileBatchAction",
 					brief: "Reconcile Batch",
-					title: "Reconcile Epay Batch.",
+					title: "Reconcile the Epay batch.",
 					actionFunction: function() { me.actionShowItem("Reconcile"); }
 				})
 				.addAction({
 					id: "finalizeBatchAction",
 					brief: "Finalize Batch",
-					title: "Finalize Epay Batch.",
+					title: "Finalize the Epay batch.",
 					actionFunction: function() { me.actionShowItem("Finalize"); }
 				})
 				.addAction({
 					id: "exportBatchAction",
 					brief: "Export Batch",
-					title: "Export Payroll Header and Hours.",
+					title: "Export the payroll header and hours.",
 					actionFunction: function() { me.actionShowItem("Export"); }
+				})
+				.addAction({
+					id: "exportedBatchAction",
+					brief: "Exported Batches List",
+					title: "View the exported list of Epay batches.",
+					actionFunction: function() { me.actionShowItem("Exported"); }
 				})
 
 			me.ePayBatchGrid = new ui.ctl.Grid({
@@ -447,10 +456,10 @@ ii.Class({
 
 		ePayBatchesLoaded: function(me, activeId) {
 
-			if (me.showDetailReport && (me.action == "Finalize" || me.action == "Export") && me.ePayBatchGrid.activeRowIndex != -1) {
+			if (me.showDetailReport && (me.action == "Finalize" || me.action == "Export" || me.action == "Exported") && me.ePayBatchGrid.activeRowIndex != -1) {
 				var index = me.ePayBatchGrid.activeRowIndex;
 				var varianceTotalCount = parseInt(me.ePayBatchGrid.data[index].detailRecordCount, 10) - parseInt(me.ePayBatches[0].batchRecordCount, 10);
-				var varianceTotalHours = parseFloat(me.ePayBatchGrid.data[index].detailTotalHours) - parseFloat(me.ePayBatches[0].batchTotalHours) - parseFloat(me.ePayBatches[0].totalHours);
+				var varianceTotalHours = parseFloat((parseFloat(me.ePayBatchGrid.data[index].detailTotalHours) - parseFloat(me.ePayBatches[0].batchTotalHours)).toFixed(2)) - parseFloat(me.ePayBatches[0].totalHours);
 				var varianceTotalAmount = parseFloat(me.ePayBatchGrid.data[index].detailTotalAmount) - parseFloat(me.ePayBatches[0].batchTotalAmount);
 
 				$("#ProcessedTotalCount").html(me.ePayBatchGrid.data[index].detailRecordCount);
@@ -470,7 +479,7 @@ ii.Class({
 				$("#ErrorTotalHours").html("<span style='color: red;'>" + parseFloat(me.ePayBatches[0].detailTotalHours).toFixed(2) + "</span> - " + parseFloat(me.ePayBatches[0].cancelledErrorTotalHours).toFixed(2));
 				$("#ErrorTotalAmount").html("<span style='color: red;'>" + parseFloat(me.ePayBatches[0].detailTotalAmount).toFixed(2) + "</span> - " + parseFloat(me.ePayBatches[0].cancelledErrorTotalAmount).toFixed(2));
 				
-				if (varianceTotalCount == 0 && varianceTotalHours == 0 && varianceTotalAmount == 0
+				if (varianceTotalCount == 0 && parseFloat(varianceTotalHours.toFixed(2)) == 0.00 && parseFloat(varianceTotalAmount.toFixed(2)) == 0.00
 					&& me.ePayBatches[0].detailRecordCount == 0
 					&& parseFloat(me.ePayBatches[0].detailTotalHours) == 0
 					&& parseFloat(me.ePayBatches[0].detailTotalAmount) == 0) {
@@ -493,6 +502,7 @@ ii.Class({
 					me.anchorExport.display(ui.cmn.behaviorStates.disabled);
 
 				me.setLoadCount();
+				me.ePayBatchStore.reset();
 				me.ePayBatchStore.fetch("userId:[user],status:Export", me.ePayBatchesLoaded, me);
 			}
 			else {
@@ -526,14 +536,15 @@ ii.Class({
 				me.anchorFinalize.display(ui.cmn.behaviorStates.disabled);
 				me.anchorExport.display(ui.cmn.behaviorStates.disabled);
 			}
-			
-			if (me.action == "Finalize" || me.action == "Export") {
+
+			if (me.action == "Finalize" || me.action == "Export" || me.action == "Exported") {
 				if (me.action == "Finalize")
 					$("#AnchorView").show();
 				$("#ReconcileInfo").show();
 				me.setLoadCount();
 				me.showDetailReport = true;
 				me.ePayBatchGrid.setHeight($(window).height() - 330);
+				me.ePayBatchStore.reset();
 				me.ePayBatchStore.fetch("userId:[user],status:FinalizeError,batchId:" + me.ePayBatchGrid.data[me.ePayBatchGrid.activeRowIndex].batchId, me.ePayBatchesLoaded, me);
 			}
 		},
@@ -1325,11 +1336,15 @@ ii.Class({
 			else if (action == "Export") {
 				$("#AnchorExport").show();
 			}
+			else if (action == "Exported") {
+				$("#AnchorCancel").hide();
+			}
 
 			$("#header").html("Process Payroll - " + action);
 			me.ePayBatchGrid.setData([]);
 			me.action = action;
 			me.setLoadCount();
+			me.ePayBatchStore.reset();
 			
 			if (me.action == "Export") {
 				me.validateExport = true;
@@ -1569,32 +1584,36 @@ ii.Class({
 					if (me.status == "SaveEpayBatchRecord") {
 						if (me.ePayBatchDetailsList[index].id == 0) {
 							me.ePayBatches[0].weeklyPayrollRecordCount += 1;
-							me.ePayBatches[0].weeklyPayrollTotalHours = parseFloat(me.ePayBatches[0].weeklyPayrollTotalHours) + payrollHours;
-							me.ePayBatches[0].weeklyPayrollTotalAmount = parseFloat(me.ePayBatches[0].weeklyPayrollTotalAmount) + payrollAmount;
+							me.ePayBatches[0].weeklyPayrollTotalHours = (parseFloat(me.ePayBatches[0].weeklyPayrollTotalHours) + payrollHours).toFixed(2);
+							me.ePayBatches[0].weeklyPayrollTotalAmount = (parseFloat(me.ePayBatches[0].weeklyPayrollTotalAmount) + payrollAmount).toFixed(2);
 						}
 						else {
 							me.ePayBatches[0].batchRecordCount += 1;
-							me.ePayBatches[0].batchTotalHours = parseFloat(me.ePayBatches[0].batchTotalHours) + payrollHours;
-							me.ePayBatches[0].batchTotalAmount = parseFloat(me.ePayBatches[0].batchTotalAmount) + payrollAmount;
+							me.ePayBatches[0].batchTotalHours = (parseFloat(me.ePayBatches[0].batchTotalHours) + payrollHours).toFixed(2);
+							me.ePayBatches[0].batchTotalAmount = (parseFloat(me.ePayBatches[0].batchTotalAmount) + payrollAmount).toFixed(2);
 							me.ePayBatches[0].detailRecordCount -= 1;
-							me.ePayBatches[0].detailTotalHours = parseFloat(me.ePayBatches[0].detailTotalHours) - payrollHours;
-							me.ePayBatches[0].detailTotalAmount = parseFloat(me.ePayBatches[0].detailTotalAmount) - payrollAmount;
+							me.ePayBatches[0].detailTotalHours = (parseFloat(me.ePayBatches[0].detailTotalHours) - payrollHours).toFixed(2);
+							me.ePayBatches[0].detailTotalAmount = (parseFloat(me.ePayBatches[0].detailTotalAmount) - payrollAmount).toFixed(2);
+
+							me.ePayBatchGrid.data[me.ePayBatchGrid.activeRowIndex].detailRecordCount += 1;
+							me.ePayBatchGrid.data[me.ePayBatchGrid.activeRowIndex].detailTotalHours = (parseFloat(me.ePayBatchGrid.data[me.ePayBatchGrid.activeRowIndex].detailTotalHours) + payrollHours).toFixed(2);
+							me.ePayBatchGrid.data[me.ePayBatchGrid.activeRowIndex].detailTotalAmount = (parseFloat(me.ePayBatchGrid.data[me.ePayBatchGrid.activeRowIndex].detailTotalAmount) + payrollAmount).toFixed(2);
 
 							if (me.ePayBatchDetailsList[index].cancelled) {
 								me.ePayBatches[0].cancelledErrorRecordCount -= 1;
-								me.ePayBatches[0].cancelledErrorTotalHours = parseFloat(me.ePayBatches[0].cancelledErrorTotalHours) - payrollHours;
-								me.ePayBatches[0].cancelledErrorTotalAmount = parseFloat(me.ePayBatches[0].cancelledErrorTotalAmount) - payrollAmount;
+								me.ePayBatches[0].cancelledErrorTotalHours = (parseFloat(me.ePayBatches[0].cancelledErrorTotalHours) - payrollHours).toFixed(2);
+								me.ePayBatches[0].cancelledErrorTotalAmount = (parseFloat(me.ePayBatches[0].cancelledErrorTotalAmount) - payrollAmount).toFixed(2);
 							}
 						}
 					}
 					else if (me.status == "CancelEpayBatchRecord") {
 						if (me.ePayBatchDetailsList[index].id > 0) {
 							me.ePayBatches[0].detailRecordCount -= 1;
-							me.ePayBatches[0].detailTotalHours = parseFloat(me.ePayBatches[0].detailTotalHours) - payrollHours;
-							me.ePayBatches[0].detailTotalAmount = parseFloat(me.ePayBatches[0].detailTotalAmount) - payrollAmount;
+							me.ePayBatches[0].detailTotalHours = (parseFloat(me.ePayBatches[0].detailTotalHours) - payrollHours).toFixed(2);
+							me.ePayBatches[0].detailTotalAmount = (parseFloat(me.ePayBatches[0].detailTotalAmount) - payrollAmount).toFixed(2);
 							me.ePayBatches[0].cancelledErrorRecordCount += 1;
-							me.ePayBatches[0].cancelledErrorTotalHours = parseFloat(me.ePayBatches[0].cancelledErrorTotalHours) + payrollHours;
-							me.ePayBatches[0].cancelledErrorTotalAmount = parseFloat(me.ePayBatches[0].cancelledErrorTotalAmount) + payrollAmount;
+							me.ePayBatches[0].cancelledErrorTotalHours = (parseFloat(me.ePayBatches[0].cancelledErrorTotalHours) + payrollHours).toFixed(2);
+							me.ePayBatches[0].cancelledErrorTotalAmount = (parseFloat(me.ePayBatches[0].cancelledErrorTotalAmount) + payrollAmount).toFixed(2);
 						}
 					}
 
@@ -1603,7 +1622,7 @@ ii.Class({
 						me.ePayBatchDetails.splice(itemIndex, 1);
 				}
 			}
-			
+
 			var index = me.ePayBatchGrid.activeRowIndex;
 
 			me.ePayBatches[0].weeklyPayrollTotalHours = parseFloat(me.ePayBatches[0].weeklyPayrollTotalHours).toFixed(2);
@@ -1618,10 +1637,9 @@ ii.Class({
 			me.ePayBatches[0].detailTotalAmount = parseFloat(me.ePayBatches[0].detailTotalAmount).toFixed(2);
 			me.ePayBatches[0].cancelledErrorTotalHours = parseFloat(me.ePayBatches[0].cancelledErrorTotalHours).toFixed(2);
 			me.ePayBatches[0].cancelledErrorTotalAmount = parseFloat(me.ePayBatches[0].cancelledErrorTotalAmount).toFixed(2);
-									
-			me.ePayBatchGrid.data[index].detailRecordCount = me.ePayBatches[0].batchRecordCount;
-			me.ePayBatchGrid.data[index].detailTotalHours = me.ePayBatches[0].batchTotalHours;
-			me.ePayBatchGrid.data[index].detailTotalAmount = me.ePayBatches[0].batchTotalAmount;
+
+			me.ePayBatchGrid.data[index].detailTotalHours = parseFloat(me.ePayBatchGrid.data[index].detailTotalHours).toFixed(2);
+			me.ePayBatchGrid.data[index].detailTotalAmount = parseFloat(me.ePayBatchGrid.data[index].detailTotalAmount).toFixed(2);
 			me.showDetailReport = true;
 			me.ePayBatchesLoaded(me, 0);
 			me.ePayBatchDetailsLoaded(me, 0);

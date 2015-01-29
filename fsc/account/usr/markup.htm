@@ -21,8 +21,6 @@
 		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
 		    </div>
 		</div>
-		
-        <div id="iiInputValidationMaster"></div>
         <div class="pageHeader">
 	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
         </div>	
@@ -35,7 +33,7 @@
 		<div style="clear:both;"></div>
 		<div class="pageBody">
 			<div class="contentAreasContainerLeft">
-				<div  class="contentArea">
+				<div class="contentArea">
 					<div class="header">Chart of Accounts</div>
 					<div class="body">
 						<div id="FiscalAccount"></div>
@@ -47,181 +45,174 @@
 				<div class="contentArea">
 					<div id="accountDetailHeader" class="header">Account</div>
 					<div id="accountDetailContentArea" class="body">
-						<div class="TableEditArea">
-							<div class="LabelTextAreaLeftAccount">
+						<div class="tableEditArea">
+							<div class="labelTextArea">
 								<span class="requiredFieldIndicator">&#149;</span>Account Code:
 							</div>
-							<div class="InputTextAreaRight">
+							<div class="inputTextArea">
 								<div id="code"></div>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
-						<div class="TableEditArea">
-							<div class="LabelTextAreaLeftAccount">
+						<div class="tableEditArea">
+							<div class="labelTextArea">
 								<span class="requiredFieldIndicator">&#149;</span>Account Category:
 							</div>
-							<div class="InputTextAreaRight">
+							<div class="inputTextArea">
 								<div id="category"></div>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
-						<div class="TableEditArea">
-							<div class="LabelTextAreaLeftAccount">
+						<div class="tableEditArea">
+							<div class="labelTextArea">
 								<span class="requiredFieldIndicator">&#149;</span>Description:
 							</div>
-							<div class="InputTextAreaRight">
+							<div class="inputTextArea">
 								<div id="desciption"></div>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
-						<div class="TableEditArea">
-							<div class="LabelTextAreaLeftAccount">
+						<div class="tableEditArea">
+							<div class="labelTextArea">
 								<span id="nonRequiredFieldIndicator">Posting Edit Code:</span>
 							</div>
-							<div class="InputTextAreaRight">
+							<div class="inputTextArea">
 								<div id="editCode"></div>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
-						<div class="TableEditArea">
-							<div class="LabelTextAreaLeftAccount">
+						<div class="tableEditArea">
+							<div class="labelTextArea">
 								<span id="nonRequiredFieldIndicator">GL Header:</span>
 							</div>
-							<div class="InputTextAreaRight">
+							<div class="inputTextArea">
 								<div id="header"></div>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
+						<div class="tableEditArea">
+							<div class="labelTextArea">
+								<span id="nonRequiredFieldIndicator">MOP / PL Option:</span>
+							</div>
+							<div class="inputTextArea">
+								<div id="MOPTotalType"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
 						<div style="clear:both;"></div>
-						<div class="group">
-							<div class="TableEditArea">
-								<div class="accountRadioTextLeft">
-									<div id="Negative"></div>
-								</div>
-								<div class="accountRadioButtonLeft">
-									<span id="nonRequiredFieldIndicator">Negative</span>
-								</div>
-								<div class="accountRadioTextright">
-									<div id="BockImport"></div>
-								</div>
-								<div class="accountRadioButtonRight">
-									<span id="nonRequiredFieldIndicator">Block Import/Export</span>
-								</div>
-								<div style="clear:both;"></div>
+						<div class="tableEditArea">
+							<div class="inputCheckArea">
+								<div id="Negative"></div>
 							</div>
+							<div class="labelTextAreaLeft">
+								<span id="nonRequiredFieldIndicator">Negative</span>
+							</div>
+							<div class="inputCheckArea">
+								<div id="BockImport"></div>
+							</div>
+							<div class="labelTextAreaRight">
+								<span id="nonRequiredFieldIndicator">Block Import/Export</span>
+							</div>
+							<div style="clear:both;"></div>
 						</div>
-						<div class="group">
-							<div class="TableEditArea">
-								<div class="accountRadioTextLeft">
-									<div id="Budget"></div>
-								</div>
-								<div class="accountRadioButtonLeft">
-									<span id="nonRequiredFieldIndicator">Budget</span>
-								</div>
-								<div class="accountRadioTextright">
-									<div id="AccountPayables"></div>
-								</div>
-								<div class="accountRadioButtonRight">
-									<span id="nonRequiredFieldIndicator">Account Payables</span>
-								</div>
-								<div style="clear:both;"></div>
+						<div class="tableEditArea">
+							<div class="inputCheckArea">
+								<div id="Budget"></div>
 							</div>
+							<div class="labelTextAreaLeft">
+								<span id="nonRequiredFieldIndicator">Budget</span>
+							</div>
+							<div class="inputCheckArea">
+								<div id="AccountPayables"></div>
+							</div>
+							<div class="labelTextAreaRight">
+								<span id="nonRequiredFieldIndicator">Account Payables</span>
+							</div>
+							<div style="clear:both;"></div>
 						</div>
-						<div class="group">
-							<div class="TableEditArea">
-								<div class="accountRadioTextLeft">
-									<div id="SalariesWages"></div>
-								</div>
-								<div class="accountRadioButtonLeft">
-									<span id="nonRequiredFieldIndicator">Salaries/Wages</span>
-								</div>
-								<div class="accountRadioTextright">
-									<div id="RecurringExpenses"></div>
-								</div>
-								<div class="accountRadioButtonRight">
-									<span id="nonRequiredFieldIndicator">Recurring Expenses</span>
-								</div>
-								<div style="clear:both;"></div>
+						<div class="tableEditArea">
+							<div class="inputCheckArea">
+								<div id="SalariesWages"></div>
 							</div>
+							<div class="labelTextAreaLeft">
+								<span id="nonRequiredFieldIndicator">Salaries/Wages</span>
+							</div>
+							<div class="inputCheckArea">
+								<div id="RecurringExpenses"></div>
+							</div>
+							<div class="labelTextAreaRight">
+								<span id="nonRequiredFieldIndicator">Recurring Expenses</span>
+							</div>
+							<div style="clear:both;"></div>
 						</div>
-						<div class="group">
-							<div class="TableEditArea">
-								<div class="accountRadioTextLeft">
-									<div id="FieldTransfers"></div>
-								</div>
-								<div class="accountRadioButtonLeft">
-									<span id="nonRequiredFieldIndicator">Field Transfers</span>
-								</div>
-								<div class="accountRadioTextright">
-									<div id="Inventory"></div>
-								</div>
-								<div class="accountRadioButtonRight">
-									<span id="nonRequiredFieldIndicator">Inventory</span>
-								</div>
-								<div style="clear:both;"></div>
+						<div class="tableEditArea">
+							<div class="inputCheckArea">
+								<div id="FieldTransfers"></div>
 							</div>
+							<div class="labelTextAreaLeft">
+								<span id="nonRequiredFieldIndicator">Field Transfers</span>
+							</div>
+							<div class="inputCheckArea">
+								<div id="Inventory"></div>
+							</div>
+							<div class="labelTextAreaRight">
+								<span id="nonRequiredFieldIndicator">Inventory</span>
+							</div>
+							<div style="clear:both;"></div>
 						</div>
-						<div class="group">
-							<div class="TableEditArea">
-								<div class="accountRadioTextLeft">
-									<div id="PayrollWorksheet"></div>
-								</div>
-								<div class="accountRadioButtonLeft">
-									<span id="nonRequiredFieldIndicator">Payroll Worksheet</span>
-								</div>
-								<div class="accountRadioTextright">
-									<div id="ManagementFee"></div>
-								</div>
-								<div class="accountRadioButtonRight">
-									<span id="nonRequiredFieldIndicator">Management Fee</span>
-								</div>
-								<div style="clear:both;"></div>
+						<div class="tableEditArea">
+							<div class="inputCheckArea">
+								<div id="PayrollWorksheet"></div>
 							</div>
+							<div class="labelTextAreaLeft">
+								<span id="nonRequiredFieldIndicator">Payroll Worksheet</span>
+							</div>
+							<div class="inputCheckArea">
+								<div id="ManagementFee"></div>
+							</div>
+							<div class="labelTextAreaRight">
+								<span id="nonRequiredFieldIndicator">Management Fee</span>
+							</div>
+							<div style="clear:both;"></div>
 						</div>
-						<div class="group">
-							<div class="TableEditArea">
-								<div class="accountRadioTextLeft">
-									<div id="DirectCost"></div>
-								</div>
-								<div class="accountRadioButtonLeft">
-									<span id="nonRequiredFieldIndicator">Direct Cost</span>
-								</div>
-								<div class="accountRadioTextright">
-									<div id="Supplies"></div>
-								</div>
-								<div class="accountRadioButtonRight">
-									<span id="nonRequiredFieldIndicator">Supplies</span>
-								</div>
-								<div style="clear:both;"></div>
+						<div class="tableEditArea">
+							<div class="inputCheckArea">
+								<div id="DirectCost"></div>
 							</div>
+							<div class="labelTextAreaLeft">
+								<span id="nonRequiredFieldIndicator">Direct Cost</span>
+							</div>
+							<div class="inputCheckArea">
+								<div id="Supplies"></div>
+							</div>
+							<div class="labelTextAreaRight">
+								<span id="nonRequiredFieldIndicator">Supplies</span>
+							</div>
+							<div style="clear:both;"></div>
 						</div>
-						<div class="group">
-							<div class="TableEditArea">
-								<div class="accountRadioTextLeft">
-									<div id="AccountReceivable"></div>
-								</div>
-								<div class="accountRadioButtonLeft">
-									<span id="nonRequiredFieldIndicator">Account Receivable</span>
-								</div>
-								<div class="accountRadioTextright">
-									<div id="WOR"></div>
-								</div>
-								<div class="accountRadioButtonRight">
-									<span id="nonRequiredFieldIndicator">WOR</span>
-								</div>
-								<div style="clear:both;"></div>
+						<div class="tableEditArea">
+							<div class="inputCheckArea">
+								<div id="AccountReceivable"></div>
 							</div>
+							<div class="labelTextAreaLeft">
+								<span id="nonRequiredFieldIndicator">Account Receivable</span>
+							</div>
+							<div class="inputCheckArea">
+								<div id="WOR"></div>
+							</div>
+							<div class="labelTextAreaRight">
+								<span id="nonRequiredFieldIndicator">WOR</span>
+							</div>
+							<div style="clear:both;"></div>
 						</div>
-						<div class="group">
-							<div class="TableEditArea">
-								<div class="accountRadioTextLeft">
-									<div id="OtherRevenue"></div>
-								</div>
-								<div class="accountRadioButtonLeft">
-									<span id="nonRequiredFieldIndicator">Other Revenue</span>
-								</div>
-								<div style="clear:both;"></div>
+						<div class="tableEditArea">
+							<div class="inputCheckArea">
+								<div id="OtherRevenue"></div>
 							</div>
+							<div class="labelTextAreaLeft">
+								<span id="nonRequiredFieldIndicator">Other Revenue</span>
+							</div>
+							<div style="clear:both;"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
@@ -234,6 +225,6 @@
 				</div>
 			</div>
 		</div>
-	  
+		<div id="iiInputValidationMaster"></div>
 	</body>
 </html>

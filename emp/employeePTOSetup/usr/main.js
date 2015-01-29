@@ -45,6 +45,9 @@ ii.Class({
 			me.action = "";
 			me.lastSelectedRowIndex = -1;
 			me.loadCount = 0;
+			me.weekStartDate = new Date(parent.fin.appUI.glbWeekStartDate);
+			me.weekEndDate = new Date(parent.fin.appUI.glbWeekStartDate);
+			me.weekEndDate.setDate(me.weekEndDate.getDate() + 6);
 			
 			me.gateway = ii.ajax.addGateway("emp", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -305,22 +308,38 @@ ii.Class({
 			me.ptoTypeGrid.addColumn("name", "name", "PTO Type", "PTO Type", null);
 			me.ptoTypeGrid.capColumns();
 			
-			$("#PayCodeType").multiselect({
-				minWidth: 300
-				, header: false
-				, noneSelectedText: ""
-				, selectedList: 4
-				, click: function() { me.modified(true); }
-				, selectedText: function(selected, total, list) {
-					var selectedTitle = "";
-					for (var index =0; index < list.length; index++) {
-						var title = list[index].title.substring(list[index].title.indexOf("-") + 2);
-						selectedTitle += (selectedTitle == "" ? title : ", " + title);
-					}
-					return selectedTitle;
-				}
+//			$("#PayCodeType").multiselect({
+//				minWidth: 300
+//				, header: false
+//				, noneSelectedText: ""
+//				, selectedList: 4
+//				, multiple: true
+//				, click: function() { me.modified(true); }
+//				, selectedText: function(selected, total, list) {
+//					var selectedTitle = "";
+//					for (var index =0; index < list.length; index++) {
+//						var title = list[index].title.substring(list[index].title.indexOf("-") + 2);
+//						selectedTitle += (selectedTitle == "" ? title : ", " + title);
+//					}
+//					return selectedTitle;
+//				}
+//			});
+
+			me.payCodeType = new ui.ctl.Input.DropDown.Filtered({
+		        id: "PayCodeType",
+				formatFunction: function(type) { return type.brief + " - " + type.name; },
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.payCodeType.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(function( isFinal, dataMap) {				
+
+				if ((this.focused || this.touched) && me.payCodeType.indexSelected == -1)
+					this.setInvalid("Please select the correct Pay Code.");
 			});
-			
+
 			me.ptoPlanGrid = new ui.ctl.Grid({
 				id: "PTOPlanGrid",
 				appendToId: "divForm",
@@ -555,10 +574,38 @@ ii.Class({
 
 					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
 						this.setInvalid("Please enter valid date.");
+					else {
+						var ptoDateSelected = new Date(enteredText);
+						if (ptoDateSelected < me.weekStartDate || ptoDateSelected > me.weekEndDate)
+							this.setInvalid("Please enter valid date. PTO Date should be with in current week.");
+					}
 				});
+
+			me.ptoHours = new ui.ctl.Input.Text({
+				id: "PTOHours",
+				appendToId: "PTODaysGridControlHolder",
+				changeFunction: function() { me.modified(); }
+			});
+			
+			me.ptoHours.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required )
+				.addValidation( function( isFinal, dataMap ){
+
+					var enteredText = me.ptoHours.getValue();
+
+					if (enteredText == "")
+						return;
+
+					if (!(/^((\d+(\.\d+)?)|(\.\d+))$/.test(enteredText)))
+						this.setInvalid("Please enter valid number.");
+					else if (parseFloat(enteredText) <= 0)
+						this.setInvalid("Hours should be greater than zero.");
+				});	
 			
 			me.ptoDaysGrid.addColumn("ptoType", "ptoType", "PTO Type", "PTO Type", null, function( type ) { return type.name; }, me.daysPTOType);
 			me.ptoDaysGrid.addColumn("ptoDate", "ptoDate", "PTO Date", "PTO Date", 200, function( type ) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }, me.ptoDate);
+			me.ptoDaysGrid.addColumn("hours", "hours", "Hours", "Hours", 100, null, me.ptoHours);
 			me.ptoDaysGrid.capColumns();
 
 			me.unassignedEmployeeGrid = new ui.ctl.Grid({
@@ -655,12 +702,12 @@ ii.Class({
 			});
 
 			me.ptoAssignments = [];
-			me.ptoAssignmentStore = me.cache.register({
-				storeId: "ptoAssignments",
-				itemConstructor: fin.emp.employeePTOSetup.PTOAssignment,
-				itemConstructorArgs: fin.emp.employeePTOSetup.ptoAssignmentArgs,
-				injectionArray: me.ptoAssignments
-			});
+//			me.ptoAssignmentStore = me.cache.register({
+//				storeId: "ptoAssignments",
+//				itemConstructor: fin.emp.employeePTOSetup.PTOAssignment,
+//				itemConstructorArgs: fin.emp.employeePTOSetup.ptoAssignmentArgs,
+//				injectionArray: me.ptoAssignments
+//			});
 
 			me.ptoDays = [];
 			me.ptoDayStore = me.cache.register({
@@ -758,8 +805,9 @@ ii.Class({
 				me.ptoYearGrid.body.deselectAll();
 			}
 			else if (me.action == "PTO Types") {
+				me.payCodeType.reset();
 				me.ptoTypeGrid.body.deselectAll();
-				$("#PayCodeType").multiselect("uncheckAll");
+				//$("#PayCodeType").multiselect("uncheckAll");
 			}
 			else if (me.action == "PTO Plans") {
 				me.planName.setValue("");
@@ -902,17 +950,18 @@ ii.Class({
 			if (me.ptoYears.length > 0)
 				me.ptoYearSearch.select(0, me.ptoYearSearch.focused);
 		},
-		
+
 		payCodeTypesLoaded: function(me, activeId) {
-			
-			$("#PayCodeType").html("");
-			for (var index = 0; index < me.payCodeTypes.length; index++) {
-				$("#PayCodeType").append("<option title='" + me.payCodeTypes[index].name + "' value='" + me.payCodeTypes[index].id + "'>" + me.payCodeTypes[index].brief + " - " + me.payCodeTypes[index].name + "</option>");
-			}
-			$("#PayCodeType").multiselect("refresh");
+
+//			$("#PayCodeType").html("");
+//			for (var index = 0; index < me.payCodeTypes.length; index++) {
+//				$("#PayCodeType").append("<option title='" + me.payCodeTypes[index].name + "' value='" + me.payCodeTypes[index].id + "'>" + me.payCodeTypes[index].brief + " - " + me.payCodeTypes[index].name + "</option>");
+//			}
+//			$("#PayCodeType").multiselect("refresh");
+			me.payCodeType.setData(me.payCodeTypes);
 			me.checkLoadCount();
 		},
-		
+
 		loadEmployees: function() {
 			var me = this;
 
@@ -989,17 +1038,25 @@ ii.Class({
 		
 		setPayCodes: function() {
 			var me = this;
-			var payCodesTemp = [];
-
-			for (var index = 0; index < me.ptoTypePayCodes.length; index++) {
-				payCodesTemp.push(me.ptoTypePayCodes[index].payCodeId.toString());
+//			var payCodesTemp = [];
+//
+//			for (var index = 0; index < me.ptoTypePayCodes.length; index++) {
+//				payCodesTemp.push(me.ptoTypePayCodes[index].payCodeId.toString());
+//			}
+//			$("#PayCodeType").multiselect("uncheckAll");
+//			$("#PayCodeType").multiselect("widget").find(":checkbox").each(function() {
+//		 		if ($.inArray(this.value, payCodesTemp) >= 0) {
+//		 			this.click();
+//		 		}
+//			});
+			
+			me.payCodeType.reset();
+			if (me.ptoTypePayCodes.length > 0) {
+				var index = ii.ajax.util.findIndexById(me.ptoTypePayCodes[0].payCodeId.toString(), me.payCodeTypes);
+				if (index != undefined && index >= 0) 
+					me.payCodeType.select(index, me.payCodeType.focused);
 			}
-			$("#PayCodeType").multiselect("uncheckAll");
-			$("#PayCodeType").multiselect("widget").find(":checkbox").each(function() {
-		 		if ($.inArray(this.value, payCodesTemp) >= 0) {
-		 			this.click();
-		 		}
-			});
+
 			me.modified(false);
 		},
 
@@ -1043,11 +1100,13 @@ ii.Class({
 		loadPTOAssignments: function() {
 			var me = this;
 
-			me.ptoAssignmentStore.fetch("userId:[user],planId:" + me.ptoPlanGrid.data[me.ptoPlanGrid.activeRowIndex].id, me.ptoAssignmentsLoaded, me);
+			me.ptoEmployeeStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",assigned:1,ptoPlanId:" + me.ptoPlanGrid.data[me.ptoPlanGrid.activeRowIndex].id, me.ptoAssignmentsLoaded, me);
+			//me.ptoAssignmentStore.fetch("userId:[user],planId:" + me.ptoPlanGrid.data[me.ptoPlanGrid.activeRowIndex].id, me.ptoAssignmentsLoaded, me);
 		},
 		
 		ptoAssignmentsLoaded: function(me, activeId) {
 
+			me.ptoAssignments = me.ptoEmployees.slice();
 			me.ptoAssignmentGrid.setData(me.ptoAssignments);
 			me.checkLoadCount();
 		},
@@ -1098,7 +1157,7 @@ ii.Class({
 
 			if (me.ptoAssignmentGrid.activeRowIndex == -1)
 				return;
-		
+
 			me.status = "Delete";
 			me.actionSaveItem();
 		},
@@ -1170,7 +1229,7 @@ ii.Class({
 
 			if (!parent.fin.cmn.status.itemValid())
 				return;
-			
+
 			if (me.action == "PTO Years") {
 				if (me.lastSelectedRowIndex >= 0) {
 					me.ptoYearGrid.body.select(me.lastSelectedRowIndex);
@@ -1239,6 +1298,14 @@ ii.Class({
 					, me.ptoYear.getValue()			
 				);
 			}
+			else if (me.action == "PTO Types") {
+				if (me.ptoTypeGrid.activeRowIndex == -1)
+					return;
+				else if (!me.payCodeType.valid) {
+					alert("In order to save, the errors on the page must be corrected.");
+					return false;
+				}
+			}				
 			else if (me.action == "PTO Plans") {
 				if (me.status == "Clone") {
 					if (!me.ptoPlanYearFrom.valid || !me.ptoPlanYearTo.valid) {
@@ -1302,16 +1369,18 @@ ii.Class({
 				xml += '/>';
 			}
 			else if (me.action == "PTO Types") {
-				var payCodes = $("#PayCodeType").val();
+				//var payCodes = $("#PayCodeType").val();
+				var payCodes = [];
+				payCodes.push(me.payCodeTypes[me.payCodeType.indexSelected].id);
 
 				for (var index = 0; index < me.ptoTypePayCodes.length; index++) {
-					if ($.inArray(me.ptoTypePayCodes[index].payCodeId.toString(), payCodes) == -1)
+					if ($.inArray(me.ptoTypePayCodes[index].payCodeId, payCodes) == -1)
 						me.ptoTypePayCodes[index].status = "remove";
 					xml += '<ptoTypePayCode';
 					xml += ' id="' + me.ptoTypePayCodes[index].id + '"';
 					xml += ' ptoTypeId="' + me.ptoTypePayCodes[index].ptoTypeId + '"';
 					xml += ' payCodeId="' + me.ptoTypePayCodes[index].payCodeId + '"';
-					xml += ' add="' + (($.inArray(me.ptoTypePayCodes[index].payCodeId.toString(), payCodes) > -1) ? "true" : "false") + '"';
+					xml += ' add="' + (($.inArray(me.ptoTypePayCodes[index].payCodeId, payCodes) > -1) ? "true" : "false") + '"';
 					xml += '/>';
 				}
 
@@ -1364,17 +1433,23 @@ ii.Class({
 						me.ptoDays[index].modified = true;
 						xml += '<ptoDay';
 						xml += ' id="' + me.ptoDays[index].id + '"';
+						xml += ' houseCodeId="' + parent.fin.appUI.houseCodeId + '"';
 						xml += ' employeeId="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].id + '"';
+						xml += ' employeeNumber="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].employeeNumber + '"';
 						xml += ' ptoTypeId="' + me.ptoDays[index].ptoType.id + '"';
 						xml += ' ptoDate="' + ui.cmn.text.date.format(me.ptoDays[index].ptoDate, "mm/dd/yyyy") + '"';
+						xml += ' hours="' + me.ptoDays[index].hours + '"';
+						xml += ' weekStartDate="' + ui.cmn.text.date.format(me.weekStartDate, "mm/dd/yyyy") + '"';
+						xml += ' weekEndDate="' + ui.cmn.text.date.format(me.weekEndDate, "mm/dd/yyyy") + '"';
 						xml += '/>';
 					}
+					//<weeklyPayroll id="1" houseCodeId="12351" weekStartDate="11/09/2014" weekEndDate="11/15/2014" houseCodeJob="23996|23996|23996|23996|23996|23996|23996|" houseCodeWorkOrder="0|0|0|0|0|0|0|" hourly="H|H|H|H|H|H|H|" employeeId="630842|630842|630842|630842|630842|630842|630842|" payCode="2|2|2|2|2|2|2|" payrollHcmHouseCode="12351|12351|12351|12351|12351|12351|12351|" weekDay="1|2|3|4|5|6|7|" value="7|0|0|0|0|0|0|" transactionId="9638205|9638206|9638207|9638208|9638209|9638210|9638211|"/>
 				}
 			}
 			else if (me.action == "PTO Assignments") {
 				if (me.status == "Delete") {
 					xml += '<ptoAssignmentDelete';
-					xml += ' id="' + me.ptoAssignments[me.ptoAssignmentGrid.activeRowIndex].id + '"';
+					xml += ' id="' + me.ptoAssignments[me.ptoAssignmentGrid.activeRowIndex].ptoAssignmentId + '"';
 					xml += '/>';
 				}
 				else {
@@ -1456,7 +1531,7 @@ ii.Class({
 								me.ptoPlanGrid.body.select(me.lastSelectedRowIndex);
 							}
 							break;
-							
+
 						case "empPTODay":
 							if (me.action == "PTO Days") {
 								var id = parseInt($(this).attr("id"), 10);

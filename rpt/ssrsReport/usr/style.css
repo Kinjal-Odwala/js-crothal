@@ -1,6 +1,6 @@
 ﻿.contentAreasContainerLeft {
 	float: left;
-	width: 48%;
+	width: 35%;
 	vertical-align: top;
 	margin-right: 20px;
 	z-index: 3550;
@@ -9,7 +9,7 @@
 
 .contentAreasContainerRight {
 	float: left;
-	width: 49.3%;
+	width: 62.3%;
 	vertical-align: top;
 	z-index: 3551;
 	position: relative;
@@ -30,7 +30,17 @@
 	background-position: right;
 	width: 16px;
 	height: 16px;
+	margin: 1px 1px 1px 1px;	
+}
+
+.loading {
+	background-image: url(/fin/cmn/usr/media/common/indicator.gif);
+	background-repeat: no-repeat;
+	background-position: right;
+	width: 16px;
+	height: 16px;
 	margin: 1px 1px 1px 1px;
+	float:left;
 }
 
 .labelTextArea {	
@@ -57,7 +67,6 @@
 
 .inputTextMedium {
 	float: left;
-	width: 200px;
 	padding: 3px 0px 3px 0px;
 }
 
@@ -65,6 +74,32 @@
 	float: left;
 	width: 250px;
 	padding: 3px 0px 3px 0px;
+}
+
+.inputTextSize {
+	float: left;
+	position: relative;
+    background-color: white;
+    border: 1px solid #AAAAAA;
+    border-spacing: 0;
+	margin: 1px 0px 1px 0px;
+    height: 20px;
+    width: 180px;
+}
+
+.gridColumnValue {	
+	border-right: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	color: #032D23;	
+	vertical-align: middle;
+	padding: 3px 2px 3px 2px;
+	height: 20px;
+	cursor: pointer;
+	width:40%;
 }
 
 .radioButton {
@@ -88,6 +123,16 @@
 	padding: 3px 0px 0px 40px;
 }
 
+.labelReport {
+	float: left;
+	height: 27px;
+	width: 200px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;	
+	padding: 3px 0px 0px 10px;
+}
+
 .labelSchedule {
 	float: left;
 	height: 27px;
@@ -96,6 +141,15 @@
 	color: #032D23;
 	padding-right: 3px;
 }
+
+.checkMandatory {
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-right: 3px;
+	width: 25px;
+} 
 
 .checkBoxDay {
 	position: relative;
@@ -130,7 +184,7 @@
 }
 
 .treeview ul {
-	width: 400px;
+	width: 450px;
 }
 
 .treeview li { 
@@ -165,6 +219,71 @@
 	background: url(/fin/cmn/usr/media/common/indicator.gif) 0 0 no-repeat; 
 }
 
+.ui-datepicker.ui-widget.ui-widget-content.ui-helper-clearfix.ui-corner-all.ui-helper-hidden-accessible {
+	z-index: 11111;
+	width: 180px;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default { 
+	border: 1px solid #d3d3d3; 
+	font-family: Verdana;
+	font-size: 12px;
+	background: #ffffff;
+	font-weight: normal; 
+	color: #000000; 
+	outline: none; 
+}
+
+.ui-corner-all {
+	-moz-border-radius: 0px;
+}
+
+.ui-icon.ui-icon-triangle-2-n-s {
+	background-image: url(/fin/cmn/usr/media/DropDown/dropDownEnabled.gif);
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+.ui-multiselect { 
+	padding: 0px; 
+	text-align: left;
+	border: solid #aaaaaa thin;
+	border-width: 1px;
+	float:left;
+}
+
+.dropdown-menu {
+	z-index: 9050;
+}
+
+.ui-multiselect-single .ui-multiselect-checkboxes label {
+	padding: 0 !important;
+}
+
+.ui-multiselect-checkboxes label input {
+	margin: 3px;
+}
+
+Label {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: separate;
+}
+
+#AnchorGenerateReport {
+	float: left;
+	width: 156px;
+	padding: 5px 0px 0px 0px;
+}
+
+#AnchorReset {
+	float: left;
+	width: 82px;
+	padding: 5px 0px 0px 0px;
+}
+
 #AnchorSearch {
 	float: left;
 	width: 82px;
@@ -196,15 +315,26 @@
 	padding: 5px 0px 0px 10px;
 }
 
-#TreeviewContainer {
+#TreeviewContainer, #LevelNamesContainer  {
 	width: 100%;
 	border: solid #aaaaaa thin;
 	border-width: 1px;
-	overflow: auto;
+	overflow-x: hidden;
+	overflow-y: auto;
 	position: relative;
 }
 
-#ulEdit0 {
+#ulEdit0, #ulEdit1 {
+	padding: 10px;
+}
+
+#ParameterContainer {
+	width: 100%;
+	border: solid #aaaaaa thin;
+	border-width: 1px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	position: relative;
 	padding: 10px;
 }
 

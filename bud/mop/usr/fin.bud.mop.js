@@ -1,4 +1,4 @@
-﻿window.__bt__6278f202 = ['<div>    <div id="mop-filter">        <div style="color: #FFF; background-color: #659A66; font-size: 14px; padding: 5px;">            <table class="mop-filter">                <tr>                    <td>                        Site:                    </td>                    <td id="hcmHouseCode">                    </td>                    <td>                        Job:                    </td>                    <td id="hcmJob">                    </td>                    <td>                        Fiscal Year:                    </td>                    <td id="fscYear">                    </td>                    <td style="padding-left: 15px;" id="load-button" class="row-btn">                    </td>                </tr>            </table>        </div>    </div>    <div id="mop-column-switch">        <div style="color: #FFF;  background-color: #659A66; border-top: 1px solid #555; font-size: 14px;            padding: 5px;">            <div style="float:left">                           <table class="mop-filter">                <tr>                    <td>                        <input type="checkbox" name="Budget" id="Budget" />&nbsp;<label for="Budget">Budget</label>                    </td>                    <td>                        <input type="checkbox" name="Variance" id="Variance" />&nbsp;<label for="Variance">Variance</label>                    </td>                    <td>                        <input type="checkbox" name="RunRate" id="RunRate" />&nbsp;<label for="RunRate">Run                            Rate</label>                    </td>                    <td style="padding-left: 20px;">                        Period:                    </td>                    <td id="fscPeriodStart">                    </td>                    <td>                        -                    </td>                    <td id="fscPeriodEnd">                    </td>                       <td style="padding-left: 15px;" id="apply-button" class="row-btn">                    </td>                </tr>            </table>            </div>            <div style="position: relative; float:left; width:110px; margin-top:-1px;">                <a id="popupButton" class="popup-button"><span>Comment</span><em></em></a>                <div style="clear: both">                </div>                <div class="popup-box" id="popupBox">                    <div class="popup-box-inner-wrapper" style="width:500px">                        <div class="popup-box-form ">                            <label id="commentLabel">                                Summary Comments:</label>                            <textarea rows="5" class="textarea" id="summaryComment"></textarea>                            <div style="text-align:right; padding-right:20px; padding-top:5px;">                                <img id="saveButton"  src="images/button-ok.png" style="cursor:pointer"/>    <img id="cancelButton"  src="images/button-cancel.png"  style="cursor:pointer"/></div>                        </div>                    </div>                </div>            </div>        </div>    </div>    <div id="mop-footer">        <div style="color: #FFF; background-color: #659A66; padding: 10px; font-size: 14px;">            <table class="mop-filter" style="width: 100%;">                <tr class="row-btn">                    <td style="width: 40%">                        <table id="add-account-warpper">                            <tr>                                <td>                                    Account:                                </td>                                <td id="fscAccount">                                </td>                                <td id="addAccountButton">                                </td>                            </tr>                        </table>                    </td>                    <td style="text-align: right; width: 60%; padding-right: 20px;">                        <span id="saveButton" />&nbsp;  <span id="cancelButton" />&nbsp; <span id="payrollRegisterButton" />&nbsp; <span id="transactionDetailButton" />                        &nbsp; <span id="printMopButton" />&nbsp;                    </td>                </tr>            </table>        </div>    </div>    <div id="wor-filter">        <div style="color: #FFF; background-color: #659A66; font-size: 14px;">            <div style="float: left; background-color: #555; color: #fff; font-weight: bold;                width: 100px; height: 24px; padding: 5px; 0; text-align: center;">                WOR</div>            <div style="padding: 5px; float: left;">                <table class="mop-filter">                    <tr>                        <td style="font-weight: bold;">                            Site:                        </td>                        <td name="hcmHouseCode">                        </td>                        <td style="font-weight: bold;">                            Job:                        </td>                        <td name="hcmJob">                        </td>                        <td style="font-weight: bold;">                            Fiscal Year:                        </td>                        <td name="fscYear">                        </td>                        <td style="font-weight: bold;">                            Period:                        </td>                        <td id="fscPeriod">                        </td>                        <td id="backToMopButton" class="row-btn">                        </td>                    </tr>                </table>            </div>            <div style="position: relative; float: left; width: 110px; margin-top:4px;">                <a id="popupButton" class="popup-button"><span>Comment</span><em></em></a>                <div style="clear: both">                </div>                <div class="popup-box" id="popupBox">                    <div class="popup-box-inner-wrapper" style="width: 500px">                        <div class="popup-box-form ">                            <label id="commentLabel">                                Summary Comments:</label>                            <textarea rows="5" class="textarea" id="summaryComment"></textarea>                            <div style="text-align: right; padding-right: 20px; padding-top: 5px;">                                <img id="saveButton" src="images/button-ok.png" style="cursor: pointer" />                                <img id="cancelButton" src="images/button-cancel.png" style="cursor: pointer" />                            </div>                        </div>                    </div>                </div>            </div>            <div style="clear:both; " ></div>        </div>    </div>    <div id="wor-comment">        <div style="margin-top: 15px;">            <div style="font-size: 14px; padding-left: 5px;">                Comments:</div>            <textarea name="Comment" id="Comment" cols="100" rows="3" />        </div>    </div></div>','<div style="min-height: 400px" class="mop">    <div id="mop-top">        <div style="background-color: #555; color: #fff; float: left; text-align: center;            height: 60px; vertical-align: middle; font-size: 14px; font-weight: bold; width: 180px;            padding-top: 15px;">            Monthly Operating Projection        </div>        <div style="margin-left: 180px; background-color: #659A66; vertical-align:text-bottom">            <div id="filter-wrapper">            </div>            <div id="column-swith">            </div>            <div style="clear: both">            </div>        </div>         <div id="page-status" style="display:block; width:100%; clear:both;"></div>         <div class="clear"></div>    </div>       <div style="padding-top: 10px;" id="mop-wrapper">        <div class="list-header">            <div class="mop-controller" style="float:left;overflow:hidden"><div style="width:500px" id="controller-header"></div> </div>            <div class="mop-grid-main" style="overflow:hidden" id="mop-grid-header-wrapper"><div  id="grid-header" style="width:12000px"></div></div>            <div class="clear"></div>        </div>        <div>            <div class="mop-controller" style="float:left;overflow:hidden" id="mop-controller-wrapper"><div style="width:500px" id="mop-controller"></div> </div>            <div class="mop-grid-main" style="overflow:auto" id="mop-grid-wrapper"><div id="mop-grid"></div></div>            <div class="clear"></div>        </div>    </div>       <div style=" width: 100%;">        <div id="mop-footer">        </div>    </div></div>','<div>    <div id="controller-header">         <table class="bud-table-2">            <thead class="table-head">                <tr>                    <th class="boundary mop-updatefuture" style="width: 100px">                        <div class="row1-btn">                            <button class="bine-btn bine-btn-txt bine-ctrl" id="updatefuture-button" style="height: 50px;">                                Update Future<br />                                Periods w/MOP</button></div>                        <div style="padding: 5px;">                            <div style="width: 13px; height: 20px; padding-top: 3px; float: left;">                                <input type="checkbox" name="selectAllPeriods" id="SelectAllPeriods" /></div>                            <span style="line-height: 18px; height: 20px; padding-left: 5px;">Select All</span><div                                style="clear: both;">                            </div>                        </div>                    </th>                    <th class="boundary mop-updaterunrate" style="width: 90px">                        <div class="row1-btn">                            <button class="bine-btn bine-btn-txt bine-ctrl " id="updaterunrate-button" style="height: 50px;">                                Update With<br />                                Run Rate</button></div>                        <div style="padding: 5px;">                            <div style="width: 13px; height: 20px; padding-top: 3px; float: left;">                                <input type="checkbox" name="selectAll" id="SelectAllRunRate" /></div>                            <span style="float: left; line-height: 18px; height: 20px; padding-left: 5px;">Select                                All</span><div style="clear: both;">                                </div>                        </div>                    </th>                    <th class="boundary mop-accountcode-title" style="width: 245px; height: 85px;">                        Account Code                    </th>                </tr>            </thead>        </table>    </div>    <div id="controller-list">        <div>            <div id="holder"></div>        </div>    </div>    <table>        <tbody id="controller-view">            <tr>                <td class="boundary mop-updatefuture" style="width: 100px; height: 20px;">                    <div style="padding: 3px 7px;">                        <input type="checkbox" name="UpdateFuture" /></div>                </td>                <td class="boundary mop-updaterunrate" style="width: 90px; height: 20px;">                    <div style="padding: 3px 7px;">                        <input type="checkbox" name="UpdateRunRate" /></div>                </td>                <td class="boundary mop-account-column" style="white-space: nowrap; width: 245px; padding-top:0; padding-bottom:0; vertical-align:middle;                    height: 26px;">                    <a href="#" class="account-link" name="FscAccountDescription"></a>                </td>            </tr>        </tbody>    </table></div>','<div style="min-height: 400px" class="mop">    <div id="mop-top">        <div id="wor-filter">        </div>        <div id="page-status" style="display: block; width: 100%; clear: both;">        </div>         <div class="clear"></div>    </div>    <div id="mop-list-wrapper" style="padding-top: 10px; width: 99%; margin: 0 auto;        overflow: auto;">        <div id="wor-list">        </div>        <div id="wor-comment">        </div>    </div>    <div style="position: absolute; bottom: 0px; width: 100%;">        <div id="mop-footer">        </div>    </div></div>',''];
+﻿window.__bt__893ec4e6 = ['<div>    <div id="mop-filter">        <div style="color: #FFF; background-color: #659A66; font-size: 14px; padding: 5px;">            <table class="mop-filter">                <tr>                    <td>                        Site:                    </td>                    <td id="hcmHouseCode">                    </td>                    <td>                        Job:                    </td>                    <td id="hcmJob">                    </td>                    <td>                        Fiscal Year:                    </td>                    <td id="fscYear">                    </td>                    <td style="padding-left: 15px;" id="load-button" class="row-btn">                    </td>                </tr>            </table>        </div>    </div>    <div id="mop-column-switch">        <div style="color: #FFF;  background-color: #659A66; border-top: 1px solid #555; font-size: 14px;            padding: 5px;">            <div style="float:left">                           <table class="mop-filter">                <tr>                    <td>                        <input type="checkbox" name="Budget" id="Budget" />&nbsp;<label for="Budget">Budget</label>                    </td>                    <td>                        <input type="checkbox" name="Variance" id="Variance" />&nbsp;<label for="Variance">Variance</label>                    </td>                    <td>                        <input type="checkbox" name="RunRate" id="RunRate" />&nbsp;<label for="RunRate">Run                            Rate</label>                    </td>                    <td style="padding-left: 20px;">                        Period:                    </td>                    <td id="fscPeriodStart">                    </td>                    <td>                        -                    </td>                    <td id="fscPeriodEnd">                    </td>                       <td style="padding-left: 15px;" id="apply-button" class="row-btn">                    </td>                </tr>            </table>            </div>            <div style="position: relative; float:left; width:110px; margin-top:-1px;">                <a id="popupButton" class="popup-button"><span>Comment</span><em></em></a>                <div style="clear: both">                </div>                <div class="popup-box" id="popupBox">                    <div class="popup-box-inner-wrapper" style="width:500px">                        <div class="popup-box-form ">                            <label id="commentLabel">                                Summary Comments:</label>                            <textarea rows="5" class="textarea" id="summaryComment"></textarea>                            <div style="text-align:right; padding-right:20px; padding-top:5px;">                                <img id="saveButton"  src="images/button-ok.png" style="cursor:pointer"/>    <img id="cancelButton"  src="images/button-cancel.png"  style="cursor:pointer"/></div>                        </div>                    </div>                </div>            </div>        </div>    </div>    <div id="mop-footer">        <div style="color: #FFF; background-color: #659A66; padding: 10px; font-size: 14px;">            <table class="mop-filter" style="width: 100%;">                <tr class="row-btn">                    <td style="width: 40%">                        <table id="add-account-warpper">                            <tr>                                <td>                                    Account:                                </td>                                <td id="fscAccount">                                </td>                                <td id="addAccountButton">                                </td>                            </tr>                        </table>                    </td>                    <td style="text-align: right; width: 60%; padding-right: 20px;">                        <span id="saveButton" />&nbsp;  <span id="cancelButton" />&nbsp; <span id="payrollRegisterButton" />&nbsp; <span id="transactionDetailButton" />                        &nbsp; <span id="printMopButton" />&nbsp; <span id="profitReportButton" />                        &nbsp;                     </td>                </tr>            </table>        </div>    </div>    <div id="wor-filter">        <div style="color: #FFF; background-color: #659A66; font-size: 14px;">            <div style="float: left; background-color: #555; color: #fff; font-weight: bold;                width: 100px; height: 24px; padding: 5px; 0; text-align: center;">                WOR</div>            <div style="padding: 5px; float: left;">                <table class="mop-filter">                    <tr>                        <td style="font-weight: bold;">                            Site:                        </td>                        <td name="hcmHouseCode">                        </td>                        <td style="font-weight: bold;">                            Job:                        </td>                        <td name="hcmJob">                        </td>                        <td style="font-weight: bold;">                            Fiscal Year:                        </td>                        <td name="fscYear">                        </td>                        <td style="font-weight: bold;">                            Period:                        </td>                        <td id="fscPeriod">                        </td>                        <td id="backToMopButton" class="row-btn">                        </td>                    </tr>                </table>            </div>            <div style="position: relative; float: left; width: 110px; margin-top:4px;">                <a id="popupButton" class="popup-button"><span>Comment</span><em></em></a>                <div style="clear: both">                </div>                <div class="popup-box" id="popupBox">                    <div class="popup-box-inner-wrapper" style="width: 500px">                        <div class="popup-box-form ">                            <label id="commentLabel">                                Summary Comments:</label>                            <textarea rows="5" class="textarea" id="summaryComment"></textarea>                            <div style="text-align: right; padding-right: 20px; padding-top: 5px;">                                <img id="saveButton" src="images/button-ok.png" style="cursor: pointer" />                                <img id="cancelButton" src="images/button-cancel.png" style="cursor: pointer" />                            </div>                        </div>                    </div>                </div>            </div>            <div style="clear:both; " ></div>        </div>    </div>    <div id="wor-comment">        <div style="margin-top: 15px;">            <div style="font-size: 14px; padding-left: 5px;">                Comments:</div>            <textarea name="Comment" id="Comment" cols="100" rows="3" />        </div>    </div>    <div id="trans-dialog">        <div class="modal">            <label class="modal__bg">            </label>            <div class="modal__inner">                <label class="modal__close" for="modal-2">                </label>                <h2>                    Transactions</h2>                <div style="padding: 10px">                   <table class="bud-table-2 list-body mop-grid">                    <thead class="table-head">                        <tr>                            <th>GL Ticket<br />Date</th>                            <th>Document<br />Number</th>                            <th>Invoice<br />Number</th>                            <th>Invoice<br />Date</th>                            <th>PO Number</th>                            <th>Vendor</th>                            <th>Description</th>                            <th>Amount</th>                            <th>Document<br />Type</th>                            <th>Import<br />Date</th>                        </tr>                    </thead>                    <tbody id="trans-items">                                        </tbody>                   </table>                </div>            </div>        </div>    </div></div>','<div style="min-height: 400px" class="mop">    <div id="mop-top">        <div style="background-color: #555; color: #fff; float: left; text-align: center;            height: 60px; vertical-align: middle; font-size: 14px; font-weight: bold; width: 180px;            padding-top: 15px;">            Monthly Operating Projection        </div>        <div style="margin-left: 180px; background-color: #659A66; vertical-align:text-bottom">            <div id="filter-wrapper">            </div>            <div id="column-swith">            </div>            <div style="clear: both">            </div>        </div>         <div id="page-status" style="display:block; width:100%; clear:both;"></div>         <div class="clear"></div>    </div>     <div style="padding-top: 10px;" id="mop-wrapper">        <div class="list-header">            <div class="mop-controller" style="float:left;overflow:hidden"><div style="width:500px" id="controller-header"></div> </div>            <div class="mop-grid-main" style="overflow:hidden" id="mop-grid-header-wrapper"><div  id="grid-header" style="width:12000px"></div></div>            <div class="clear"></div>        </div>        <div>            <div class="mop-controller" style="float:left;overflow:hidden" id="mop-controller-wrapper"><div style="width:500px" id="mop-controller"></div> </div>            <div class="mop-grid-main" style="overflow:auto" id="mop-grid-wrapper"><div id="mop-grid"></div></div>            <div class="clear"></div>        </div>    </div>       <div style=" width: 100%;">        <div id="mop-footer">        </div>    </div></div>','<div>    <div id="controller-header">         <table class="bud-table-2">            <thead class="table-head">                <tr>                    <th class="boundary mop-updatefuture" style="width: 100px">                        <div class="row1-btn">                            <button class="bine-btn bine-btn-txt bine-ctrl" id="updatefuture-button" style="height: 50px;">                                Update Future<br />                                Periods w/MOP</button></div>                        <div style="padding: 5px;">                            <div style="width: 13px; height: 20px; padding-top: 3px; float: left;">                                <input type="checkbox" name="selectAllPeriods" id="SelectAllPeriods" /></div>                            <span style="line-height: 18px; height: 20px; padding-left: 5px;">Select All</span><div                                style="clear: both;">                            </div>                        </div>                    </th>                    <th class="boundary mop-updaterunrate" style="width: 90px">                        <div class="row1-btn">                            <button class="bine-btn bine-btn-txt bine-ctrl " id="updaterunrate-button" style="height: 50px;">                                Update With<br />                                Run Rate</button></div>                        <div style="padding: 5px;">                            <div style="width: 13px; height: 20px; padding-top: 3px; float: left;">                                <input type="checkbox" name="selectAll" id="SelectAllRunRate" /></div>                            <span style="float: left; line-height: 18px; height: 20px; padding-left: 5px;">Select                                All</span><div style="clear: both;">                                </div>                        </div>                    </th>                    <th class="boundary mop-accountcode-title" style="width: 245px; height: 85px;">                        Account Code                    </th>                </tr>            </thead>        </table>    </div>    <div id="controller-list">        <div>            <div id="holder"></div>        </div>    </div>    <table>        <tbody id="controller-view">            <tr>                <td class="boundary mop-updatefuture" style="width: 100px; height: 20px;">                    <div style="padding: 3px 7px;">                        <input type="checkbox" name="UpdateFuture" /></div>                </td>                <td class="boundary mop-updaterunrate" style="width: 90px; height: 20px;">                    <div style="padding: 3px 7px;">                        <input type="checkbox" name="UpdateRunRate" /></div>                </td>                <td class="boundary mop-account-column" style="white-space: nowrap; width: 245px; padding-top:0; padding-bottom:0; vertical-align:middle;                    height: 26px;">                    <a href="#" class="account-link" name="FscAccountDescription"></a>                </td>            </tr>        </tbody>    </table></div>','<div style="min-height: 400px" class="mop">    <div id="mop-top">        <div id="wor-filter">        </div>        <div id="page-status" style="display: block; width: 100%; clear: both;">        </div>         <div class="clear"></div>    </div>    <div id="mop-list-wrapper" style="padding-top: 10px; width: 99%; margin: 0 auto;        overflow: auto;">        <div id="wor-list">        </div>        <div id="wor-comment">        </div>    </div>    <div style="position: absolute; bottom: 0px; width: 100%;">        <div id="mop-footer">        </div>    </div></div>',''];
 
 /*
 * jquery.fixheadertable
@@ -1052,6 +1052,15 @@ fin.bud.fscRequest = function (requestXml, callback) {
     });
 }
 
+fin.bud.glmRequest = function (requestXml, callback) {
+    var data = String.format('moduleId=glm&requestId=1&requestXml={0}&&targetId=iiCache', encodeURIComponent(requestXml));
+    fin.bud.loading();
+    jQuery.post('/net/crothall/chimes/fin/glm/act/Provider.aspx', data, function (data, status) {
+        callback(data);
+        fin.bud.loaded();
+    });
+}
+
 fin.bud.rptRequest = function (callback) {
     var data = String.format('moduleId=rpt&requestId=1&requestXml={0}&&targetId=iiCache', encodeURIComponent('<criteria>storeId:rptReports,userId:[user],</criteria>'));
     fin.bud.loading();
@@ -1073,7 +1082,7 @@ fin.bud.budSubmit = function (submitXml, callback) {
 
 if (!window.top.fin.appUI) {
     //window.top.fin = { appUI: { houseCodeId: 227, glbFscYear: 2, glbFscPeriod: 18} };
-    window.top.fin.appUI = { houseCodeId: 415, glbFscYear: 5, glbFscPeriod: 57, glbWeek: 2 };
+    window.top.fin.appUI = { houseCodeId: 415, glbFscYear: 4, glbFscPeriod: 45, glbWeek: 2 };
 }
 
 fin.bud.Context = {
@@ -1447,9 +1456,15 @@ var loadFscAccounts = function (callback) {
                 CategoryId: categoryId,
                 Name: $item.attr('name'),
                 Description: String.format('{0} {1}', $item.attr('code'), $item.attr('name')),
+                MopTotalType: parseInt($item.attr('mopTotalType') || 1), 
                 IsNegative: $item.attr('isNegative') == 'true'
             };
-
+            /*
+            if (FscAccount.Code == 6685)
+                FscAccount.MopTotalType = 2;
+            else if (FscAccount.Code == 8605)
+                FscAccount.MopTotalType = 3;
+            */
 
             if (!category) {
                 var FscAccountCategory = {
@@ -1683,6 +1698,21 @@ var initMopDataItem = function (dataItem) {
     //dataItem['WorModified'] = false;
 };
 
+var copyMopDataItem = function (from, to) {
+    for (var i = 1; i <= 14; i++) {
+        to['Budget' + i] = from['Budget' + i];
+        to['Projection' + i] = from['Projection' + i];
+        to['Variance' + i] = from['Variance' + i];
+        to['RunRate' + i] = from['RunRate' + i];
+        to['DailyRunRate' + i] = from['DailyRunRate' + i];
+        to['Forecast' + i] = from['Forecast' + i];
+        to['Comment' + i] = from['Comment' + i];
+        to['WorModified' + i] = from['WorModified' + i];
+    }
+    to['BudgetTotal'] = from['BudgetTotal'];
+    to['ProjectionTotal'] = from['ProjectionTotal'];
+}
+
 var createFscAccountDataItem = function (fscAccount) {
     var FscAccount = FscAccountLookup[fscAccount];           // bine.query(FscAccounts).where(function (f) { return f.Id == fscAccount; }).first();
     var FscAccountCategory = FscAccountCategoryLookup[FscAccount.CategoryId];          // bine.query(FscAccountCategories).where(function (f) { return f.Id == FscAccount.CategoryId; }).first();
@@ -1734,7 +1764,7 @@ var populateMopDetails = function () {
 
     var categories = {};
 
-    var totalItem = { FscAccount: 99999, FscAccountDescription: 'Total', IsTotal: true, SortIndex: '9999_9999' };
+    var totalItem = { FscAccount: 99999, FscAccountDescription: 'Total', IsTotal: true, SortIndex: '9998_9999' };
     initMopDataItem(totalItem);
     MopDetails.push(totalItem);
 
@@ -1742,7 +1772,10 @@ var populateMopDetails = function () {
 
         var dataItem = createFscAccountDataItem(fscAccount);
 
-        var categoryItem = categories[dataItem.CategoryId];
+        var categoryItem = null;
+
+
+        categoryItem = categories[dataItem.CategoryId];
         if (!categoryItem) {
             categoryItem = createFscAccountCategoryDataItem(dataItem.CategoryId);
             categories[dataItem.CategoryId] = categoryItem;
@@ -1844,15 +1877,22 @@ var loadMopPeriodItems = function (hcmHouseCode, hcmJob, fscYear, callback) {
 
         var mopItemIndex = {};
 
-        var totalItem = { FscAccount: 99999, FscAccountDescription: 'Total', IsTotal: true, SortIndex: '9999_9999' };
+
+
+        var totalItem = { FscAccount: 99999, FscAccountDescription: 'Total', IsTotal: true, SortIndex: '9998_9999' };
         initMopDataItem(totalItem);
         MopDetails.push(totalItem);
+
+        var unitTotalItem = { FscAccount: 99998, FscAccountDescription: 'Unit Total', IsTotal: true, SortIndex: '9998_0000' };
+        initMopDataItem(unitTotalItem);
+        MopDetails.push(unitTotalItem);
+
 
         var currentPeriodIndex = -1;
 
         var currentPeriod = GetCurrentFscPeriodByToday();
         var currentDay = (new Date()).getDate();
-        console.log(currentDay);
+        //console.log(currentDay);
 
         if (currentPeriod.FscYear == fscYear)
             currentPeriodIndex = GetCurrentFscPeriodByToday()['Number'];
@@ -1905,16 +1945,26 @@ var loadMopPeriodItems = function (hcmHouseCode, hcmJob, fscYear, callback) {
                 MopDetails.push(mopAccountItem);
                 mopItemIndex[dataItem.fscAccount] = mopAccountItem;
             }
-
-            var mopCategoryItem = mopItemIndex[mopAccountItem.CategoryId];
-            if (!mopCategoryItem) {
-                mopCategoryItem = createFscAccountCategoryDataItem(mopAccountItem.CategoryId);
-                MopDetails.push(mopCategoryItem);
-                mopItemIndex[mopAccountItem.CategoryId] = mopCategoryItem;
-            }
-
             var FscPeriod = GetFscPeriod(dataItem.fscPeriod);
             var FscAccount = FscAccountLookup[dataItem.fscAccount];
+
+            var mopCategoryItem = null;
+
+            if (FscAccount.MopTotalType == 1) {
+                mopCategoryItem = mopItemIndex[mopAccountItem.CategoryId];
+                if (!mopCategoryItem) {
+                    mopCategoryItem = createFscAccountCategoryDataItem(mopAccountItem.CategoryId);
+                    MopDetails.push(mopCategoryItem);
+                    mopItemIndex[mopAccountItem.CategoryId] = mopCategoryItem;
+                }
+            }
+            else {
+                //fake category item, because excluded item no need category total
+                mopCategoryItem = {};
+
+                mopAccountItem.SortIndex = (FscAccount.MopTotalType == 2 ? '9998_' : '9999_') + FscAccount.Code;
+            }
+
 
             var periodNumber = FscPeriod.Number;
             var dailyRunRate = Math.round(dataItem.runrate / FscPeriod.Days * 100) / 100;
@@ -1924,14 +1974,26 @@ var loadMopPeriodItems = function (hcmHouseCode, hcmJob, fscYear, callback) {
             mopAccountItem['Budget' + periodNumber] = dataItem.budget;
             mopCategoryItem['Budget' + periodNumber] += dataItem.budget;
             totalItem['Budget' + periodNumber] += FscAccount.IsNegative ? dataItem.budget : -dataItem.budget;
+            if (FscAccount.MopTotalType == 1)
+                unitTotalItem['Budget' + periodNumber] += FscAccount.IsNegative ? dataItem.budget : -dataItem.budget;
 
             mopAccountItem['Projection' + periodNumber] = dataItem.mop;
             mopCategoryItem['Projection' + periodNumber] += dataItem.mop;
-            totalItem['Projection' + periodNumber] += FscAccount.IsNegative ? dataItem.mop : -dataItem.mop;
+
+            if (FscAccount.MopTotalType != 3)
+                totalItem['Projection' + periodNumber] += FscAccount.IsNegative ? dataItem.mop : -dataItem.mop;
+            if (FscAccount.MopTotalType == 1)
+                unitTotalItem['Projection' + periodNumber] += FscAccount.IsNegative ? dataItem.mop : -dataItem.mop;
 
             mopAccountItem['BudgetTotal'] += dataItem.budget;
             mopCategoryItem['BudgetTotal'] += dataItem.budget;
-            totalItem['BudgetTotal'] += FscAccount.IsNegative ? dataItem.budget : -dataItem.budget;
+
+            if (FscAccount.MopTotalType != 3)
+                totalItem['BudgetTotal'] += FscAccount.IsNegative ? dataItem.budget : -dataItem.budget;
+
+            if (FscAccount.MopTotalType == 1)
+                unitTotalItem['BudgetTotal'] += FscAccount.IsNegative ? dataItem.budget : -dataItem.budget;
+
 
             /* 2013/04/19
             Use actual values for periods before current period, and projection value for periods after current period.  As for perious period, a new value called FiscalPeriodCloseDays created in AppSystemVariables table. for example, right now the value in findev db is 7. So when current date is after 7 (include 7), then use actual for perious period, if current date is before  7, then use projection for previous period. An example is:
@@ -1943,27 +2005,45 @@ var loadMopPeriodItems = function (hcmHouseCode, hcmJob, fscYear, callback) {
             if (currentPeriod.FscYear >= fscYear && (currentPeriodIndex <= periodNumber || currentPeriodIndex - 1 == periodNumber && currentDay < FiscalPeriodCloseDays)) {
                 mopAccountItem['ProjectionTotal'] += dataItem.forecast;
                 mopCategoryItem['ProjectionTotal'] += dataItem.forecast;
-                totalItem['ProjectionTotal'] += FscAccount.IsNegative ? dataItem.forecast : -dataItem.forecast;
+                if (FscAccount.MopTotalType != 3)
+                    totalItem['ProjectionTotal'] += FscAccount.IsNegative ? dataItem.forecast : -dataItem.forecast;
+
+                if (FscAccount.MopTotalType == 1)
+                    unitTotalItem['ProjectionTotal'] += FscAccount.IsNegative ? dataItem.forecast : -dataItem.forecast;
             }
             else {
                 mopAccountItem['ProjectionTotal'] += dataItem.wor;
                 mopCategoryItem['ProjectionTotal'] += dataItem.wor;
-                totalItem['ProjectionTotal'] += FscAccount.IsNegative ? dataItem.wor : -dataItem.wor;
+                if (FscAccount.MopTotalType != 3)
+                    totalItem['ProjectionTotal'] += FscAccount.IsNegative ? dataItem.wor : -dataItem.wor;
+
+                if (FscAccount.MopTotalType == 1)
+                    unitTotalItem['ProjectionTotal'] += FscAccount.IsNegative ? dataItem.wor : -dataItem.wor;
             }
 
             mopAccountItem['RunRate' + periodNumber] = dataItem.runrate;
             mopCategoryItem['RunRate' + periodNumber] += dataItem.runrate;
-            totalItem['RunRate' + periodNumber] += FscAccount.IsNegative ? dataItem.runrate : -dataItem.runrate;
+            if (FscAccount.MopTotalType != 3)
+                totalItem['RunRate' + periodNumber] += FscAccount.IsNegative ? dataItem.runrate : -dataItem.runrate;
+
+            if (FscAccount.MopTotalType == 1)
+                unitTotalItem['RunRate' + periodNumber] += FscAccount.IsNegative ? dataItem.runrate : -dataItem.runrate;
 
             mopAccountItem['DailyRunRate' + periodNumber] = dailyRunRate;
             mopCategoryItem['DailyRunRate' + periodNumber] += dailyRunRate;
-            totalItem['DailyRunRate' + periodNumber] += FscAccount.IsNegative ? dailyRunRate : -dailyRunRate;
+            if (FscAccount.MopTotalType != 3)
+                totalItem['DailyRunRate' + periodNumber] += FscAccount.IsNegative ? dailyRunRate : -dailyRunRate;
+
+            if (FscAccount.MopTotalType == 1)
+                unitTotalItem['DailyRunRate' + periodNumber] += FscAccount.IsNegative ? dailyRunRate : -dailyRunRate;
 
             mopAccountItem['Forecast' + periodNumber] = dataItem.wor;
             mopCategoryItem['Forecast' + periodNumber] += dataItem.wor;
-            totalItem['Forecast' + periodNumber] += FscAccount.IsNegative ? dataItem.wor : -dataItem.wor;
+            if (FscAccount.MopTotalType != 3)
+                totalItem['Forecast' + periodNumber] += FscAccount.IsNegative ? dataItem.wor : -dataItem.wor;
 
-
+            if (FscAccount.MopTotalType == 1)
+                unitTotalItem['Forecast' + periodNumber] += FscAccount.IsNegative ? dataItem.wor : -dataItem.wor;
 
             mopAccountItem['Comment' + periodNumber] += dataItem.comments;
 
@@ -1975,10 +2055,15 @@ var loadMopPeriodItems = function (hcmHouseCode, hcmJob, fscYear, callback) {
             mopAccountItem['Variance' + periodNumber] = dataItem.mop2Budget;
             mopCategoryItem['Variance' + periodNumber] += dataItem.mop2Budget;
             //totalItem['Variance' + periodNumber] += dataItem.mop2Budget;
+
+            //            if (itemCopyTotal)
+            //                copyMopDataItem(mopAccountItem, itemCopyTotal);
+
         });
 
         for (var i = 1; i <= 14; i++) {
             totalItem['Variance' + i] = (totalItem['Projection' + i] || 0) - (totalItem['Budget' + i] || 0);
+            unitTotalItem['Variance' + i] = (unitTotalItem['Projection' + i] || 0) - (unitTotalItem['Budget' + i] || 0);
         }
 
         MopDetails = bine.query(MopDetails).orderBy('SortIndex').toArray();
@@ -2046,6 +2131,43 @@ var loadWorSummaryComment = function (hcmHouseCode, hcmJob, fscYear, fscPeriod, 
 
 };
 
+var loadJdelDetails = function (hcmHouseCode, hcmJob, fscYear, fscPeriod, fscAccount, callback) {
+    var criteriaXml = String.format('<criteria>hcmHouseCode:{0},fscYear:{2},hcmJob:{1},storeId:appJDEGLTransactionDetail2, fscPeriod: {3}, fscAccount: {4}, userId:[user],</criteria>',
+             hcmHouseCode, hcmJob, fscYear, fscPeriod, fscAccount);
+
+    var parse = function (xml) {
+
+        var data = [];
+        $('item', $(xml)).each(function (index, item) {
+            var $item = $(item);
+
+            var row = {
+                glDate: $item.attr('glDate'),
+                documentNo: $item.attr('documentNo'),
+                invoiceDate: $item.attr('invoiceDate'),
+                invoiceNo: $item.attr('invoiceNo'),
+                orderNumber: $item.attr('orderNumber'),
+                vendor: $item.attr('vendor'),
+                description: $item.attr('description'),
+                amount: $item.attr('amount'),
+                documentType: $item.attr('documentType'),
+                crtdAt: $item.attr('crtdAt')
+            };
+
+            data.push(row);
+
+        });
+
+        callback(data);
+    }
+
+    //parse('<?xml version="1.0" encoding="utf-8"?><transmission><target id="iiCache" requestId="2"><store id="appJDEGLTransactionDetail2" activeId="9979622" criteria="hcmHouseCode:415,hcmJob:1,fscYear:4,fscPeriod:40,fscAccount:175,storeId:appJDEGLTransactionDetail2,userId:[user],"><item id="9979622" amount="28511.56" crtdAt="10/25/2012" crtdBy="Persistech/Interface" description="" documentNo="349941" documentType="RI" glDate="10/16/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="592051" teamFinId="0" vendor="09/23/2012  10/20/2012" vendorNumber="541426" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="9979623" amount="661.77" crtdAt="10/25/2012" crtdBy="Persistech/Interface" description="" documentNo="349986" documentType="RI" glDate="10/16/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="592162" teamFinId="0" vendor="09/23/2012  10/20/2012" vendorNumber="541431" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="9979624" amount="1132.7" crtdAt="10/25/2012" crtdBy="Persistech/Interface" description="" documentNo="350023" documentType="RI" glDate="10/17/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="592254" teamFinId="0" vendor="09/23/2012  10/20/2012" vendorNumber="541426" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="9979625" amount="1387.38" crtdAt="10/25/2012" crtdBy="Persistech/Interface" description="" documentNo="350023" documentType="RI" glDate="10/17/2012" invoiceDate="" invoiceNo="" lineNumber="2" post="P" orderNumber="0" tableType="592253" teamFinId="0" vendor="09/23/2012  10/20/2012" vendorNumber="541426" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="9979626" amount="739.38" crtdAt="10/25/2012" crtdBy="Persistech/Interface" description="" documentNo="350804" documentType="RI" glDate="10/17/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="593850" teamFinId="0" vendor="09/23/2012  10/20/2012" vendorNumber="541424" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="9979627" amount="1313.23" crtdAt="10/25/2012" crtdBy="Persistech/Interface" description="" documentNo="350810" documentType="RI" glDate="10/17/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="593884" teamFinId="0" vendor="09/23/2012  10/20/2012" vendorNumber="541426" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="9979628" amount="4595.13" crtdAt="10/25/2012" crtdBy="Persistech/Interface" description="" documentNo="350817" documentType="RI" glDate="10/17/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="593941" teamFinId="0" vendor="09/23/2012  10/20/2012" vendorNumber="543066" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="9979629" amount="7005.31" crtdAt="10/25/2012" crtdBy="Persistech/Interface" description="" documentNo="350869" documentType="RI" glDate="10/17/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="594034" teamFinId="0" vendor="09/23/2012  10/20/2012" vendorNumber="541426" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="9979630" amount="1727" crtdAt="10/25/2012" crtdBy="Persistech/Interface" description="" documentNo="350914" documentType="RI" glDate="10/17/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="594138" teamFinId="0" vendor="09/23/2012  10/20/2012" vendorNumber="541426" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="9979631" amount="3170.54" crtdAt="10/25/2012" crtdBy="Persistech/Interface" description="" documentNo="350919" documentType="RI" glDate="10/17/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="594162" teamFinId="0" vendor="09/23/2012  10/20/2012" vendorNumber="541426" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="9979632" amount="6023.07" crtdAt="10/25/2012" crtdBy="Persistech/Interface" description="" documentNo="352745" documentType="RI" glDate="10/19/2012" invoiceDate="" invoiceNo="" lineNumber="2" post="P" orderNumber="0" tableType="597972" teamFinId="0" vendor="09/29/2012  10/12/2012" vendorNumber="541433" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="9979633" amount="6023.07" crtdAt="10/25/2012" crtdBy="Persistech/Interface" description="" documentNo="352749" documentType="RI" glDate="10/19/2012" invoiceDate="" invoiceNo="" lineNumber="2" post="P" orderNumber="0" tableType="597980" teamFinId="0" vendor="10/13/2012  10/26/2012" vendorNumber="541433" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="9979634" amount="250016.6" crtdAt="10/25/2012" crtdBy="Persistech/Interface" description="" documentNo="352753" documentType="RI" glDate="10/19/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="597988" teamFinId="0" vendor="10/09/2012  10/22/2012" vendorNumber="541426" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="9979635" amount="3228.33" crtdAt="10/25/2012" crtdBy="Persistech/Interface" description="" documentNo="352754" documentType="RI" glDate="10/19/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="597990" teamFinId="0" vendor="12/01/2012  12/31/2012" vendorNumber="541426" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="9979636" amount="21066.75" crtdAt="10/25/2012" crtdBy="Persistech/Interface" description="" documentNo="352756" documentType="RI" glDate="10/19/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="597994" teamFinId="0" vendor="09/23/2012  10/20/2012" vendorNumber="541881" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="9979637" amount="2656" crtdAt="10/25/2012" crtdBy="Persistech/Interface" description="" documentNo="352814" documentType="RI" glDate="10/19/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="598235" teamFinId="0" vendor="08/26/2012  09/22/2012" vendorNumber="541426" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="9979638" amount="-6023.07" crtdAt="10/25/2012" crtdBy="Persistech/Interface" description="" documentNo="3435" documentType="RM" glDate="10/19/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="597976" teamFinId="0" vendor="09/29/2012  10/12/2012" vendorNumber="541433" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="9979639" amount="-2656" crtdAt="10/25/2012" crtdBy="Persistech/Interface" description="" documentNo="3443" documentType="RM" glDate="10/19/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="598178" teamFinId="0" vendor="07/29/2012  08/25/2012" vendorNumber="541426" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="10081609" amount="-292193.44" crtdAt="11/2/2012" crtdBy="Persistech/Interface" description="" documentNo="420042" documentType="JE" glDate="10/31/2012" invoiceDate="" invoiceNo="" lineNumber="110" post="P" orderNumber="0" tableType="" teamFinId="0" vendor="Pd 1/13 Rev Adjmts" vendorNumber="0" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="10081750" amount="28511.56" crtdAt="11/2/2012" crtdBy="Persistech/Interface" description="" documentNo="357555" documentType="RI" glDate="10/30/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="608849" teamFinId="0" vendor="10/21/2012  11/17/2012" vendorNumber="541426" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="10081752" amount="4595.13" crtdAt="11/2/2012" crtdBy="Persistech/Interface" description="" documentNo="357560" documentType="RI" glDate="10/30/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="608861" teamFinId="0" vendor="10/21/2012  11/17/2012" vendorNumber="543066" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="10081753" amount="3170.54" crtdAt="11/2/2012" crtdBy="Persistech/Interface" description="" documentNo="357564" documentType="RI" glDate="10/30/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="608871" teamFinId="0" vendor="10/21/2012  11/17/2012" vendorNumber="541426" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="10081754" amount="6023.07" crtdAt="11/2/2012" crtdBy="Persistech/Interface" description="" documentNo="357595" documentType="RI" glDate="10/31/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="608960" teamFinId="0" vendor="10/27/2012  11/09/2012" vendorNumber="541433" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="10081755" amount="6023.07" crtdAt="11/2/2012" crtdBy="Persistech/Interface" description="" documentNo="357601" documentType="RI" glDate="10/31/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="608972" teamFinId="0" vendor="10/27/2012  11/09/2012" vendorNumber="541433" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="10081756" amount="1036.3" crtdAt="11/2/2012" crtdBy="Persistech/Interface" description="" documentNo="357726" documentType="RI" glDate="10/31/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="609236" teamFinId="0" vendor="10/21/2012  11/17/2012" vendorNumber="541426" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="10081757" amount="1387.38" crtdAt="11/2/2012" crtdBy="Persistech/Interface" description="" documentNo="357726" documentType="RI" glDate="10/31/2012" invoiceDate="" invoiceNo="" lineNumber="2" post="P" orderNumber="0" tableType="609227" teamFinId="0" vendor="10/21/2012  11/17/2012" vendorNumber="541426" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="10081758" amount="7005.31" crtdAt="11/2/2012" crtdBy="Persistech/Interface" description="" documentNo="357796" documentType="RI" glDate="10/31/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="609402" teamFinId="0" vendor="10/21/2012  11/17/2012" vendorNumber="541426" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="10081759" amount="1313.23" crtdAt="11/2/2012" crtdBy="Persistech/Interface" description="" documentNo="357797" documentType="RI" glDate="10/31/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="609404" teamFinId="0" vendor="10/21/2012  11/17/2012" vendorNumber="541426" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="10081760" amount="1727" crtdAt="11/2/2012" crtdBy="Persistech/Interface" description="" documentNo="357815" documentType="RI" glDate="10/31/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="609462" teamFinId="0" vendor="10/21/2012  11/17/2012" vendorNumber="541426" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="10081761" amount="739.38" crtdAt="11/2/2012" crtdBy="Persistech/Interface" description="" documentNo="357823" documentType="RI" glDate="10/31/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="609495" teamFinId="0" vendor="10/21/2012  11/17/2012" vendorNumber="541424" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="10081762" amount="3228.33" crtdAt="11/2/2012" crtdBy="Persistech/Interface" description="" documentNo="357837" documentType="RI" glDate="10/31/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="609515" teamFinId="0" vendor="01/01/2013  01/31/2013" vendorNumber="541426" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="10081763" amount="18217.6" crtdAt="11/2/2012" crtdBy="Persistech/Interface" description="" documentNo="357855" documentType="RI" glDate="10/31/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="609564" teamFinId="0" vendor="10/21/2012  11/17/2012" vendorNumber="541881" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="10081764" amount="661.77" crtdAt="11/2/2012" crtdBy="Persistech/Interface" description="" documentNo="357888" documentType="RI" glDate="10/31/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="609662" teamFinId="0" vendor="10/21/2012  11/17/2012" vendorNumber="541431" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /><item id="10081765" amount="-6023.07" crtdAt="11/2/2012" crtdBy="Persistech/Interface" description="" documentNo="3547" documentType="RM" glDate="10/31/2012" invoiceDate="" invoiceNo="" lineNumber="1" post="P" orderNumber="0" tableType="608964" teamFinId="0" vendor="10/27/2012  11/09/2012" vendorNumber="541433" fscAccount="175" hcmHouseCode="415" hcmJob="1" fscYear="4" fscPeriod="40" /></store></target></transmission>');
+    //return;
+    fin.bud.glmRequest(criteriaXml, function (data) {
+        parse(data);
+    });
+};
+
 var saveWorSummaryComment = function (hcmHouseCode, hcmJob, fscYear, fscPeriod, comment, callback) {
     var xml = ['<transaction id="1">\r\n'];
 
@@ -2063,7 +2185,7 @@ var saveWorSummaryComment = function (hcmHouseCode, hcmJob, fscYear, fscPeriod, 
 }
     //
 
- var $mop_templates = $(window.__bt__6278f202[2]);
+ var $mop_templates = $(window.__bt__893ec4e6[2]);
 
 
  var MopDataControllerHeader = function () {
@@ -2101,7 +2223,7 @@ var saveWorSummaryComment = function (hcmHouseCode, hcmJob, fscYear, fscPeriod, 
      return Header;
  } ();
 
-
+ /*
 var MopGridHeader = function () {
 
     var htmlBuilder = [];
@@ -2791,6 +2913,7 @@ var MopDataViewList = function () {
 
     return DataViewList;
 } ();
+*/
     //
 MopDataController = function () {
 
@@ -2819,6 +2942,7 @@ MopDataController = function () {
             me.$this.html(html.join('\r\n'));
 
             me.$('input').change(function () {
+
                 var $el = $(this);
                 var val = $el.val() || '0';
                 val = val.replace(/,/gi, '');
@@ -2943,7 +3067,7 @@ MopDataGridHeader = function () {
 
             html.push('<tr>');
             for (var i = me.startPeriod; i <= me.endPeriod; i++) {
-                var colspan = 4 + (me.showBudget ? 1 : 0) + (me.showRunRate ? 1 : 0) + (me.showVariance ? 1 : 0);
+                var colspan = 4 + (me.showBudget ? 1 : 0) + (me.showRunRate ? 1 : 0) + (me.showVariance ? 2 : 0);
                 html.push(String.format('<th colspan="{1}" class="boundary mop-period-title mop-period-{0}" style="text-align:center; height:58px;">Period {0}</th>', i, colspan));
             }
             html.push('<th rowspan="2" class="boundary"  style="text-align:center; width:100px; height:89px;"><br/>Full Year<br/>Projections</th>');
@@ -2962,6 +3086,10 @@ MopDataGridHeader = function () {
                 if (me.showRunRate)
                     html.push(String.format('<th style="text-align:center;width:100px; " class="mop-runrate  mop-period-{0}" >Run Rate</th>', i));
                 html.push(String.format('<th style="text-align:center;width:100px;  height: 24px;" class="mop-actual mop-period-{0}">Current Month<br/>Actual</th>', i));
+
+                if (me.showVariance)
+                    html.push(String.format('<th style="text-align:center;width:100px; "  class="mop-variance mop-period-{0}" >MOP to <br/>Actual Var</th>', i));
+
                 html.push(String.format('<th style="text-align:center;width:150px;; " class="boundary mop-comment mop-period-{0}" >Comments</th>', i));
             }
 
@@ -2972,7 +3100,6 @@ MopDataGridHeader = function () {
             html.push('</table>');
 
             me.$this.html(html.join('\r\n'));
-
         }
 
     });
@@ -3032,8 +3159,8 @@ MopDataGrid = function () {
                 val = val.replace(/,/gi, '');
                 me.fireEvent('change', $el.attr('id'), val);
 
-//                var $el = $(this);
-//                me.fireEvent('change', $el.attr('id'), $el.val());
+                //                var $el = $(this);
+                //                me.fireEvent('change', $el.attr('id'), $el.val());
             }).focus(function () {
                 $(this).select();
             });
@@ -3099,6 +3226,13 @@ MopDataGrid = function () {
                                         || key == 110);
             });
 
+
+            me.$('a').click(function (e) {
+                e.preventDefault();
+                var $el = $(this);
+                me.fireEvent('showcurrentmonthactual', $el.attr('id'), $el.attr('fscPeriod'));
+            });
+
         },
 
         updateElement: function (elId, value) {
@@ -3148,7 +3282,16 @@ MopDataGrid = function () {
                 html.push('<td class="amount-col" style="width:100px">' + renderAmount(dataItem['DailyRunRate' + i]) + '</td>');
                 if (me.showRunRate)
                     html.push('<td class="amount-col" style="width:100px">' + renderAmount(dataItem['RunRate' + i]) + '</td>');
-                html.push('<td class="amount-col" style="width:100px;height:20px;">' + renderAmount(dataItem['Forecast' + i]) + '</td>');
+
+                    if (dataItem.IsCategory)
+                        html.push('<td class="amount-col" style="width:100px;height:20px;">' + renderAmount(dataItem['Forecast' + i]) + '</td>');
+                    else
+                        html.push('<td class="amount-col clickable" style="width:100px;height:20px;"><a href="#" fscPeriod="' + FscPeriod.Id + '"  id="' + dataItem['FscAccount'] + '">' + renderAmount(dataItem['Forecast' + i]) + '</a></td>');
+              
+
+                if (me.showVariance) {
+                    html.push('<td class="amount-col" style="width:100px;height:20px">' + renderAmount(dataItem['Projection' + i] - dataItem['Forecast' + i]) + '</td>');
+                }
 
                 if (dataItem.IsCategory || dataItem.IsTotal || !currentPeriod || FscPeriod.EndDt < currentPeriod.EndDt)
                     html.push('<td  style="width:150px"><div style="overflow:hidden; width:139px;"><div style="width:500px"><a style="color:#000; " title="' + dataItem['Comment' + i] + '">' + dataItem['Comment' + i] + '</a></div></div></td>');
@@ -3181,11 +3324,12 @@ MopDataGrid = function () {
     return DataGrid;
 } ();
 
-    var $templates = $(window.__bt__6278f202[0]);
+    var $templates = $(window.__bt__893ec4e6[0]);
 
     var TPL_MOP_FILTER = $('#mop-filter', $templates).html();
     var TPL_MOP_COLUMN_SWITH = $('#mop-column-switch', $templates).html();
     var TPL_MOP_FOTTER = $('#mop-footer', $templates).html();
+    var TPL_TRANS_DIALOG = $('#trans-dialog', $templates).html();
 
     var TPL_WOR_FILTER = $('#wor-filter', $templates).html();
     var TPL_WOR_COMMENT = $('#wor-comment', $templates).html();
@@ -3388,6 +3532,12 @@ MopDataGrid = function () {
                 var rptUrl = bine.query(RptReportUrls).where(function (i) { return i.Title == 'Transaction Details'; }).select('Url').first();
                 if (rptUrl)
                     window.open(rptUrl);
+            });
+
+            var profitReportButton = new bine.Button({ text: 'Profit & Loss Rpt' });
+            me.append(profitReportButton, 'profitReportButton');
+            profitReportButton.on('click', function () {
+                window.open('https://reports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fTeamFin_GL%2fDetail_Profit_Loss&rs:Command=Render');
             });
 
             var printMopButton = new bine.Button({ text: 'Print MOP' });
@@ -4037,7 +4187,7 @@ var submitWorItems = function (changes, commentXml, callback) {
 
 
     var WOR = bine.extend(bine.Control, {
-        tpl: window.__bt__6278f202[3],
+        tpl: window.__bt__893ec4e6[3],
 
         hcmHouseCode: null,
         hcmJob: null,
@@ -4203,12 +4353,12 @@ var submitWorItems = function (changes, commentXml, callback) {
 } ();
 
     bud.page.MOP = bine.extend(bine.Control, {
-        tpl: window.__bt__6278f202[1],
+        tpl: window.__bt__893ec4e6[1],
 
         onDomReady: function () {
             var me = this;
 
-            me.$('#page-status').append('<div class="itemStatusDiv" style="float:none; width:100%"><div class="itemStatusImage Normal"></div>' +
+            me.$('#page-status').append('<div class="itemStatusDiv" style="float:none; width:90%"><div class="itemStatusImage Normal"></div>' +
 			'<div class="itemModifiedImage"></div><div class="itemStatusText">Normal</div></div>');
 
             var resetListHeight = function () {
@@ -4330,6 +4480,36 @@ var submitWorItems = function (changes, commentXml, callback) {
 
                 if (me.currentPeriodAvailable)
                     showWor(GetCurrentFscPeriod()['Id'], fscAccount);
+            });
+
+            me.mopList.on('showcurrentmonthactual', function (fscAccount, fscPeriod) {
+                loadJdelDetails(me.filter.val('hcmHouseCode'), me.filter.val('hcmJob'), me.filter.val('fscYear'), fscPeriod, fscAccount, function (data) {
+
+                    var $dialog = $(TPL_TRANS_DIALOG);
+                    $dialog.appendTo(document.body);
+
+                    $.each(data, function (index, row) {
+                        var html = '<tr>'
+                             + '<td>' + row.glDate + '</td>'
+                             + '<td>' + row.documentNo + '</td>'
+                             + '<td>' + row.invoiceDate + '</td>'
+                             + '<td>' + row.invoiceNo + '</td>'
+                             + '<td>' + row.orderNumber + '</td>'
+                             + '<td>' + row.vendor + '</td>'
+                             + '<td>' + row.description + '</td>'
+                             + '<td>' + row.amount + '</td>'
+                             + '<td>' + row.documentType + '</td>'
+                             + '<td>' + row.crtdAt + '</td>'
+                            + '</tr>';
+
+                        $('#trans-items').append(html);
+                    });
+
+                    $('.modal__close, .modal__bg', $dialog).click(function () {
+                        $dialog.remove();
+                    });
+
+                });
             });
 
             me.filter.on('fscyearchange', function (fscYear, fscPeriods) {
@@ -4474,7 +4654,6 @@ var submitWorItems = function (changes, commentXml, callback) {
 
         initMopDataController: function () {
             var me = this;
-
             me.controller.on('change', function (field, value) {
                 var fieldSegment = field.split('_');
                 var accountItem = bine.query(me.mopData).where(function (i) { return i.FscAccount == fieldSegment[1]; }).first();
@@ -4490,6 +4669,8 @@ var submitWorItems = function (changes, commentXml, callback) {
             var i = period;
             var categoryItem = bine.query(me.mopData).where(function (i) { return i.FscAccount == accountItem['CategoryId']; }).first();
             var totalItem = bine.query(me.mopData).where(function (i) { return i.FscAccount == 99999; }).first();
+            var unitTotalItem = bine.query(me.mopData).where(function (i) { return i.FscAccount == 99998; }).first();
+
 
             var oldValue = accountItem['Projection' + period];
             var variance = newValue - oldValue;
@@ -4501,30 +4682,62 @@ var submitWorItems = function (changes, commentXml, callback) {
             accountItem['Variance' + i] = accountItem['Variance' + i] + variance;
             accountItem._isModified = true;
 
-            if (categoryItem) {
+            if (FscAccount.MopTotalType == 1 && categoryItem) {
                 categoryItem['Projection' + i] = categoryItem['Projection' + i] + variance;
                 categoryItem['Variance' + i] = categoryItem['Variance' + i] + variance;
                 categoryItem['ProjectionTotal'] = categoryItem['ProjectionTotal'] + variance;
             }
 
-            if (totalItem) {
+            if (FscAccount.MopTotalType != 3 && totalItem) {
                 totalItem['Projection' + i] = totalItem['Projection' + i] + (FscAccount && FscAccount.IsNegative ? variance : -variance);
                 totalItem['Variance' + i] = totalItem['Variance' + i] + (FscAccount && FscAccount.IsNegative ? variance : -variance);
                 totalItem['ProjectionTotal'] = totalItem['ProjectionTotal'] + (FscAccount && FscAccount.IsNegative ? variance : -variance);
             }
+
+            if (FscAccount.MopTotalType == 1) {
+                if (unitTotalItem) {
+                    unitTotalItem['Projection' + i] = unitTotalItem['Projection' + i] + (FscAccount && FscAccount.IsNegative ? variance : -variance);
+                    unitTotalItem['Variance' + i] = unitTotalItem['Variance' + i] + (FscAccount && FscAccount.IsNegative ? variance : -variance);
+                    unitTotalItem['ProjectionTotal'] = unitTotalItem['ProjectionTotal'] + (FscAccount && FscAccount.IsNegative ? variance : -variance);
+                }
+            }
+            //            else {
+            //                var itemCopyTotal = bine.query(me.mopData).where(function (i) { return i.FscAccount == '9' + FscAccount.Code; }).first();
+            //                if (itemCopyTotal) {
+            //                    itemCopyTotal['Projection' + i] = itemCopyTotal['Projection' + i] + variance;
+            //                    itemCopyTotal['ProjectionTotal'] = itemCopyTotal['ProjectionTotal'] + variance;
+            //                    itemCopyTotal['Variance' + i] = itemCopyTotal['Variance' + i] + variance;
+            //                }
+            //            }
 
             me.mopList.updateElement(String.format('{0}_Projection_{1}', accountItem.FscAccount, i), bine.format(accountItem['Projection' + i], '0,000.00'));
             me.mopList.updateElement(String.format('{0}_Variance_{1}', accountItem.FscAccount, i), bine.format(accountItem['Variance' + i], '0,000.00'));
             me.mopList.updateElement(String.format('{0}_Projection_Total', accountItem.FscAccount), bine.format(accountItem.ProjectionTotal, '0,000.00'));
 
 
-            me.mopList.updateElement(String.format('{0}_Projection_{1}', categoryItem.FscAccount, i), bine.format(categoryItem['Projection' + i], '0,000.00'));
-            me.mopList.updateElement(String.format('{0}_Variance_{1}', categoryItem.FscAccount, i), bine.format(categoryItem['Variance' + i], '0,000.00'));
-            me.mopList.updateElement(String.format('{0}_Projection_Total', categoryItem.FscAccount), bine.format(categoryItem.ProjectionTotal, '0,000.00'));
+            if (FscAccount.MopTotalType == 1 && categoryItem) {
+                me.mopList.updateElement(String.format('{0}_Projection_{1}', categoryItem.FscAccount, i), bine.format(categoryItem['Projection' + i], '0,000.00'));
+                me.mopList.updateElement(String.format('{0}_Variance_{1}', categoryItem.FscAccount, i), bine.format(categoryItem['Variance' + i], '0,000.00'));
+                me.mopList.updateElement(String.format('{0}_Projection_Total', categoryItem.FscAccount), bine.format(categoryItem.ProjectionTotal, '0,000.00'));
+            }
 
-            me.mopList.updateElement(String.format('{0}_Projection_{1}', totalItem.FscAccount, i), bine.format(totalItem['Projection' + i], '0,000.00'));
-            me.mopList.updateElement(String.format('{0}_Variance_{1}', totalItem.FscAccount, i), bine.format(totalItem['Variance' + i], '0,000.00'));
-            me.mopList.updateElement(String.format('{0}_Projection_Total', totalItem.FscAccount), bine.format(totalItem.ProjectionTotal, '0,000.00'));
+            if (FscAccount.MopTotalType != 3) {
+                me.mopList.updateElement(String.format('{0}_Projection_{1}', totalItem.FscAccount, i), bine.format(totalItem['Projection' + i], '0,000.00'));
+                me.mopList.updateElement(String.format('{0}_Variance_{1}', totalItem.FscAccount, i), bine.format(totalItem['Variance' + i], '0,000.00'));
+                me.mopList.updateElement(String.format('{0}_Projection_Total', totalItem.FscAccount), bine.format(totalItem.ProjectionTotal, '0,000.00'));
+            }
+
+            if (FscAccount.MopTotalType == 1) {
+                me.mopList.updateElement(String.format('{0}_Projection_{1}', unitTotalItem.FscAccount, i), bine.format(unitTotalItem['Projection' + i], '0,000.00'));
+                me.mopList.updateElement(String.format('{0}_Variance_{1}', unitTotalItem.FscAccount, i), bine.format(unitTotalItem['Variance' + i], '0,000.00'));
+                me.mopList.updateElement(String.format('{0}_Projection_Total', unitTotalItem.FscAccount), bine.format(unitTotalItem.ProjectionTotal, '0,000.00'));
+            }
+            //            else {
+            //                me.mopList.updateElement(String.format('{0}_Projection_{1}', '9' + FscAccount.Code, i), bine.format(accountItem['Projection' + i], '0,000.00'));
+            //                me.mopList.updateElement(String.format('{0}_Variance_{1}', '9' + FscAccount.Code, i), bine.format(accountItem['Variance' + i], '0,000.00'));
+            //                me.mopList.updateElement(String.format('{0}_Projection_Total', '9' + FscAccount.Code), bine.format(accountItem.ProjectionTotal, '0,000.00'));
+
+            //            }
 
         },
 
@@ -4547,6 +4760,7 @@ var submitWorItems = function (changes, commentXml, callback) {
                     return;
                     var categoryItem = bine.query(me.mopData).where(function (i) { return i.FscAccount == accountItem['CategoryId']; }).first();
                     var totalItem = bine.query(me.mopData).where(function (i) { return i.FscAccount == 99999; }).first();
+                    var unitTotalItem = bine.query(me.mopData).where(function (i) { return i.FscAccount == 99998; }).first();
                     console.log(accountItem, categoryItem, totalItem);
                     var oldValue = accountItem['Projection' + fieldSegment[2]];
                     var variance = value - oldValue;
@@ -4619,7 +4833,9 @@ var submitWorItems = function (changes, commentXml, callback) {
             var winHeight = $(window).height();
 
             // me.$('#mop-list').css('width', $(window).width() - me.mopList.$('#mop-controller-list').width() - 10);
-            me.$('.mop-controller').css('width', me.controllerheader.$this.innerWidth());
+
+            if (me.controllerheader)
+                me.$('.mop-controller').css('width', me.controllerheader.$this.innerWidth());
 
             me.$('#mop-grid-wrapper').css('width', window - controllerWidth - 10);
 
@@ -4630,7 +4846,9 @@ var submitWorItems = function (changes, commentXml, callback) {
             me.$('#mop-controller-wrapper').css('height', winHeight - 288);
 
             me.$('#mop-grid').css('width', 12000);
-            me.$('#mop-grid').css('width', me.mopList.$this.children(":first").children(":first").width() + 30);
+
+            if (me.mopList)
+                me.$('#mop-grid').css('width', me.mopList.$this.children(":first").children(":first").width() + 30);
 
 
         },

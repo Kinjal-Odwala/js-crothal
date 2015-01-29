@@ -442,6 +442,34 @@
 						<div id="EmployeeVETSStatus"></div>
 					</div>
 				</div>
+				<div style="clear:both"></div>
+				<div id="MealPlanContainer">
+					<div class="LabelTextAreaEmployee">
+						<span class="requiredFieldIndicator">&#149;</span>Meal Plan:		
+					</div>
+					<div class="InputTextArea">
+						<div class="radioButtonAuth">
+							<input type="radio" id="MealPlanYes" name="MealPlan" tabindex="237" value="1" /><span class="labelRadio">Enroll</span>					
+						</div>
+						<div class="radioButtonAuth">
+							<input type="radio" id="MealPlanNo" name="MealPlan" tabindex="238" value="2" /><span class="labelRadio">Opt Out</span>					
+						</div>				
+					</div>
+					<div style="clear:both"></div>
+					<div id="PayrollDeductionContainer" style="display: none;">
+						<div class="LabelTextAreaEmployee">
+							<span class="requiredFieldIndicator">&#149;</span>Payroll Deduction:
+						</div>
+						<div>
+							<div class="radioButtonAuth">
+								<input type="radio" id="PayrollDeductionYes" name="PayrollDeduction" tabindex="239" value="1" /><span class="labelRadio">Yes</span>					
+							</div>
+							<div class="radioButtonAuth">
+								<input type="radio" id="PayrollDeductionNo" name="PayrollDeduction" tabindex="240" value="0" /><span class="labelRadio">No</span>					
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div id="JobInformation" class="jobInformationDiv">
 		        <div id="contianerLeft">
@@ -851,13 +879,43 @@
 					<div id="houseCodeTemplateContainer" class="HouseCodeContainer"></div>
 			    </div>
 		    </div>
-			<div id="ModificationNotes" class="modificationNotesDiv" style="display:none;">
+			<div id="Requestor" class="requestorDiv" style="display:none;">
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="requiredFieldIndicator">&#149;</span>Requested By:		
+					</div>
+					<div class="InputTextArea">
+						<div id="RequestorName"></div>
+					</div>
+				</div>
+				<div style="clear:both;"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="requiredFieldIndicator">&#149;</span>Requestor Email:
+					</div>
+					<div class="InputTextArea">
+						<div id="RequestorEmail"></div>
+					</div>					
+				</div>
+				<div style="clear:both;"></div>
+				<div id="TableEditArea">
+					<div class="LabelTextAreaEmployee">
+						<span class="requiredFieldIndicator">&#149;</span>Requestor Phone #:
+					</div>
+					<div class="InputTextArea">
+						<div id="RequestorPhone"></div>
+					</div>
+				</div>
+				<div style="clear:both;"></div>
+			</div>
+			<div id="ModificationNotes" class="modificationNotesDiv" style="display:none;">				
 				<div id="TableEditArea">
                     <div class="TableEditArea">
                         <div class="LabelTextAreaEmployee"><span class="requiredFieldIndicator">&#149;</span>Notes:</div>
                         <div><textarea id="Notes"></textarea></div>
                     </div>
                 </div>
+				<div style="clear:both;"></div>
 			</div>		
 			<div style="clear:both;"></div>
 			<div id="AnchorCancel"></div>

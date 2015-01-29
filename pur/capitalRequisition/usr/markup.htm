@@ -1,0 +1,520 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>PO Capital Requisition</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/pur/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+			<table width="100%" height="100%">
+				<tr>
+					<td align="center">
+						<img id="imgLoading" src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+						<div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;">Loading</div>    
+		        	</td>
+				</tr>
+			</table>
+		</div>
+		<div id="popupLoading" style="position: absolute; z-index: 6000; width: 800px; height: 400px; background-color: white; display:none">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px; text-align:center;">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="popupMessageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px;">Loading</div>    
+		    </div>
+		</div>
+        <div id="divFramePrint" style="height: 0px;">				
+			<iframe id="iFramePrint" frameborder="0" width="100" height="0"></iframe>
+		</div>
+		<div class="pageHeader">
+			<div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
+			<div id="LabelTextAreaLeftHeader">&nbsp;House Code:</div>
+			<div id="DropDownRightHouseCode">
+				<div id="houseCodeContainer" class="HouseCodeContainer"></div>
+			</div>
+			<div id="LabelStatus">Status:</div>
+			<div id="InputTextStatus">
+				<div id="StatusType"></div>
+			</div>
+			<div id="LabelTextAreaLeftHeader">&nbsp;&nbsp;Requisition Number:</div>
+			<div id="InputTextStatus">
+				<div id="SearchRequisitionNumber"></div>
+			</div>
+			<div id="SearchButtonStatus" class="contentArea">
+				<div id="SearchButton"></div>
+			</div>
+        </div>
+		<div style="clear:both;"></div>
+		<div id="itemStatusDiv">
+			<div id="itemStatusImage" class="itemStatusImage"></div>
+			<div id="itemModifiedImage" class="itemModifiedImage"></div>
+			<div id="itemStatusText">Loading, please wait...</div>
+		</div>
+		<div style="clear:both;"></div>
+		<div class="pageBody">
+			<div class="contentArea">				
+	            <div class="header">PO Capital Requisitions</div>				
+	            <div class="body">
+            		<div id="CapitalRequisitionGrid"></div>
+				</div>
+			</div>
+		</div>		
+		<div id="anchorAlign">
+			<div id="AnchorNew"></div>
+			<div id="AnchorEdit"></div>
+			<div id="AnchorView"></div>
+			<div id="AnchorSendRequisition"></div>
+			<div id="AnchorResendRequisition"></div>
+			<div id="AnchorCancelRequisition"></div>
+			<div id="AnchorGeneratePurchaseOrder"></div>
+			<div id="AnchorJDEEntry"></div>
+		</div>
+		<div class="pageBody">
+			<div id="popupContact">
+				<div class="contentArea">
+					<div class="header" id="Header"></div>
+					<div style="clear:both;"></div>					
+					<div id="GeneralInfo">
+						<div id="contentAreasContainerLeft">
+							<div id="TableEditArea">
+								<div class="body">
+									<div class="subHeader">Requestor Details:</div>
+									<div id="RequisitionInfo">
+										<div class="labelTextArea">
+											<span id="nonRequiredFieldIndicator">Requisition Number:</span>
+										</div>
+										<div class="labelRequisitionNumber">
+											<div id="RequisitionNumber"></div>
+										</div>
+										<div style="clear:both;"></div>
+									</div>
+									<div style="clear:both;"></div>									
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Requestor Name:
+									</div>
+									<div class="inputTextArea">
+										<div id="RequestorName"></div>
+									</div>
+									<div style="clear:both;"></div>									
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Date:
+									</div>
+									<div class="inputTextArea">
+										<div id="RequestedDate"></div>
+									</div>
+									<div style="clear:both;"></div>
+									<div class="labelTextArea"></div>
+									<div class="inputTextArea"></div>
+									<div style="clear:both;"></div>																	
+									<div class="subHeader">Vendor Details:</div>
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Name:
+									</div>
+									<div class="inputTextArea">
+										<div id="VendorName"></div>
+									</div>
+									<div style="clear:both;"></div>									
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Address 1:
+									</div>
+									<div class="inputTextArea">
+										<div id="VendorAddress1"></div>
+									</div>
+									<div style="clear:both;"></div>									
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>City:
+									</div>
+									<div class="inputTextArea">
+										<div id="VendorCity"></div>
+									</div>
+									<div style="clear:both;"></div>									
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Zip:
+									</div>
+									<div class="inputTextArea">
+										<div id="VendorZip"></div>
+									</div>
+									<div style="clear:both;"></div>									
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Phone:
+									</div>
+									<div class="inputTextArea">
+										<div id="VendorPhone"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+							</div>
+						</div>
+						<div id="contentAreasContainerRight">
+							<div id="TableEditArea">
+								<div class="body">
+									<div class="labelTextArea"></div>
+									<div class="inputTextArea"></div>
+									<div id="divSpace" class="labelTextArea"></div>
+									<div style="clear:both;"></div>
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Requestor Email:
+									</div>
+									<div class="inputTextArea">
+										<div id="RequestorEmail"></div>
+									</div>
+									<div style="clear:both;"></div>
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Requested Delivery Date:
+									</div>
+									<div class="inputTextArea">
+										<div id="DeliveryDate"></div>
+									</div>
+									<div style="clear:both;"></div>
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">Project #:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="ProjectNumber"></div>
+									</div>
+									<div style="clear:both;"></div>
+									<div class="labelTextArea"></div>
+									<div class="inputTextArea"></div>
+									<div style="clear:both;"></div>
+									<div class="labelTextArea"></div>
+									<div class="inputTextArea"></div>
+									<div style="clear:both;"></div>
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">Address 2:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="VendorAddress2"></div>
+									</div>
+									<div style="clear:both;"></div>
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>State:
+									</div>
+									<div class="inputTextArea">
+										<div id="VendorState"></div>
+									</div>
+									<div style="clear:both;"></div>
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Contact Name:
+									</div>
+									<div class="inputTextArea">
+										<div id="VendorContactName"></div>
+									</div>
+									<div style="clear:both;"></div>
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Email:
+									</div>
+									<div class="inputTextArea">
+										<div id="VendorEmail"></div>
+									</div>
+									<div style="clear:both;"></div>	
+								</div>
+							</div>
+						</div>
+						<div>
+                            <div class="labelTextArea">
+                                <span id="nonRequiredFieldIndicator">Reason For Request:</span>
+                            </div>
+                            <div class="inputTextAreaLarge">
+                                <div id="ReasonForRequest"></div>
+                            </div>
+                        </div>
+						<div style="clear:both;"></div>
+						<div>
+                            <div class="labelTextArea">
+								<span class="requiredFieldIndicator">&#149;</span>Funding:
+							</div>
+							<div id="FundingRadio">
+								<div class="radioButtonRight">
+									<input id="FundingCapital" name="Funding"  tabindex="16" type="radio" value="Capital"/>								
+								</div>
+								<div class="radioTextRight">Capital</div>
+								<div class="radioButtonRight">
+									<input id="FundingDirectReimbursement" name="Funding"  tabindex="17" type="radio" value="Direct Reimbursement"/>								
+								</div>
+								<div class="radioLargeTextRight">Direct Reimbursement</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div class="labelTextArea">
+								<span class="requiredFieldIndicator">&#149;</span>Business Type:
+							</div>
+							<div id="BusinessTypeRadio">
+								<div class="radioButtonRight">
+									<input id="BusinessTypeNewBusiness" name="BusinessType"  tabindex="18" type="radio" value="New Business"/>								
+								</div>
+								<div class="radioTextRight">New Business</div>
+								<div class="radioButtonRight">
+									<input id="BusinessTypeNewConstruction" name="BusinessType"  tabindex="19" type="radio" value="New Construction"/>								
+								</div>
+								<div class="radioLargeTextRight">New Construction</div>
+								<div class="radioButtonRight">
+									<input id="BusinessTypeExistingBusiness" name="BusinessType"  tabindex="20" type="radio" value="Existing Business"/>								
+								</div>
+								<div class="radioLargeTextRight">Existing Business</div>
+							</div>
+							<div style="clear:both;"></div>
+							<div class="labelTextArea">
+								<span class="requiredFieldIndicator">&#149;</span>Budgeting:
+							</div>
+							<div id="FundingRadio">
+								<div class="radioButtonRight">
+									<input id="BudgetingBudgeted" name="Budgeting"  tabindex="21" type="radio" value="Budgeted"/>								
+								</div>
+								<div class="radioTextRight">Budgeted</div>
+								<div class="radioButtonRight">
+									<input id="BudgetingUnbudgeted" name="Budgeting"  tabindex="22" type="radio" value="Unbudgeted"/>								
+								</div>
+								<div class="radioTextRight">Unbudgeted</div>
+							</div>
+							<div style="clear:both;"></div>
+                        </div>
+                    </div>
+					<div id="ItemInfo">					
+						<div id="VendorInfo">
+							<div id="TableEditArea">
+								<div id="LabelItemLeft">
+									<span id="nonRequiredFieldIndicator">Vendor:</span>
+								</div>
+								<div class="dropdownRight">
+									<div id="Vendor"></div>
+								</div>
+								<div id="LabelItemRight">
+									<span id="nonRequiredFieldIndicator">Item #, Description:</span>
+								</div>
+								<div class="dropdownRight">
+									<div id="SearchItem"></div>
+								</div>
+								<div id="LoadButtonItems">
+									<div id="AnchorSearch" ></div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="CategoryInfo">
+							<div id="TableEditArea">
+								<div id="LabelItemLeft">
+									<span id="nonRequiredFieldIndicator">Category:</span>
+								</div>
+								<div class="dropdownRight">
+									<div id="Category"></div>
+								</div>
+								<div id="LabelItemRight">
+									<span id="nonRequiredFieldIndicator">Catalog:</span>
+								</div>
+								<div class="dropdownRight">
+									<div id="Catalog"></div>
+								</div>
+							</div>
+							<div style="clear:both;height:10px"></div>						
+						</div>					
+						<div id="ItemGridInfo">
+							<div id="ItemGrid"></div>
+							<div id="ItemReadOnlyGrid"></div>
+							<div style="clear:both;height:10px"></div>
+							<div>								
+								<div id="itemContainer">
+									<div id="TableEditArea">
+										<div class="body">
+											<div>
+												<div class="labelTextAreaMedium"></div>
+												<div class="labelTextAreaSmall">
+					                                <span id="nonRequiredFieldIndicator">Sub Total:</span>
+					                            </div>
+					                            <div class="labelTextAreaSmallRight">
+					                                <span id="spnSubTotal"></span>
+					                            </div>
+											</div>
+											<div>
+												<div class="labelTextAreaMedium"></div>				                            																								
+												<div class="labelTextAreaSmall">
+					                                <span id="nonRequiredFieldIndicator">Tax %:</span>
+					                            </div>
+					                            <div class="inputTextAreaSmall">
+					                                <div id="TaxPercent"></div>
+					                            </div>
+											</div>
+											<div>
+												<div class="labelTextAreaMedium"></div>
+												<div class="labelTextAreaSmall">
+					                                <span id="nonRequiredFieldIndicator">Tax:</span>
+					                            </div>
+					                            <div class="inputTextAreaSmall">
+					                                <div id="TaxAmount"></div>
+					                            </div>
+											</div>
+											<div>
+												<div class="labelTextAreaMedium"></div>
+												<div class="labelTextAreaSmall">
+					                                <span id="nonRequiredFieldIndicator">Freight:</span>
+					                            </div>
+												<div class="inputTextAreaSmall">
+					                                <div id="Freight"></div>
+					                            </div>
+											</div>
+											<div>
+												<div class="labelTextAreaMedium"></div>
+												<div class="labelTextAreaSmall">
+					                                <span id="nonRequiredFieldIndicator">Total:</span>
+					                            </div>
+					                            <div class="labelTextAreaSmallRight">
+					                                <span id="spnTotal"></span>
+					                            </div>
+											</div>
+										</div>
+									</div>
+								</div>											
+							</div>
+						</div>
+					</div>
+					<div id="ShippingInfo">						
+						<div id="contentAreasContainerLeft">
+							<div id="TableEditArea">
+								<div class="body">																											
+									<div style="clear:both;"></div>
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">Company:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="Company"></div>
+									</div>									
+									<div style="clear:both;"></div>
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Address 1:
+									</div>
+									<div class="inputTextArea">
+										<div id="ShippingAddress1"></div>
+									</div>
+									<div style="clear:both;"></div>
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>City:
+									</div>
+									<div class="inputTextArea">
+										<div id="ShippingCity"></div>
+									</div>
+									<div style="clear:both;"></div>									
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Zip:
+									</div>
+									<div class="inputTextArea">
+										<div id="ShippingZip"></div>
+									</div>
+									<div style="clear:both;"></div>
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">Phone:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="ShippingPhone"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+							</div>
+						</div>
+						<div id="contentAreasContainerRight">
+							<div id="TableEditArea">
+								<div class="body">
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">Job:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="ShippingJob"></div>
+									</div>									
+									<div style="clear:both;"></div>
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">Address 2:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="ShippingAddress2"></div>
+									</div>
+									<div style="clear:both;"></div>									
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>State:
+									</div>
+									<div class="inputTextArea">
+										<div id="ShippingState"></div>
+									</div>
+									<div style="clear:both;"></div>
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">Fax:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="ShippingFax"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+							</div>
+						</div>
+						<div style="clear:both;height:20px;"></div>
+						<div id="AdditionalDocuments">
+							<div class="subHeader">Additional Documents:</div>
+							<div style="clear:both;height:5px;"></div>
+							<div id="DocumentGrid"></div>
+							<div id="Paging">							
+					            <table cellpadding="0" cellspacing="0" style="width: 100%">
+			                        <tr class="footer">
+			                            <td class="borderVertical"></td>					                            
+			                            <td>
+			                                <table cellpadding="0" cellspacing="0" style="width: 100%">
+			                                    <tr class="footer">
+			                                    	<td>
+			                                            &nbsp;<img id="imgAdd" src="/fin/cmn/usr/media/Common/add.png" style="cursor: pointer" alt="Add Document" title="Click here to attach the supporting document" />
+														<img id="imgEdit" src="/fin/cmn/usr/media/Common/modify.png" style="cursor: pointer" alt="Edit Document" title="Click here to modify the supporting document" />
+														<img id="imgRemove" src="/fin/cmn/usr/media/Common/delete.png" style="cursor: pointer" alt="Remove Document" title="Click here to remove the supporting document" />
+														<img id="imgView" src="/fin/cmn/usr/media/Common/download.png" style="cursor: pointer" alt="View Document" title="Click here to view the supporting document" />
+													</td>
+			                                    </tr>
+			                                </table>
+			                            </td>
+			                            <td class="borderVertical"></td>
+			                        </tr>
+			                        <tr><td class="borderHorizontal" colspan="3"></td></tr>
+			                    </table>							        
+							</div>
+						</div>
+					</div>
+					<div style="clear:both;"></div>	
+					<div id="anchorAlign">
+						<div id="AnchorCancel"></div>
+						<div id="AnchorBack"></div>
+						<div id="AnchorNext"></div>												
+						<div id="AnchorSave"></div>										
+					</div>
+				</div>
+			</div>		
+		</div>
+		<div id="uploadPopup">
+			<div class="contentArea">
+				<div id="popupHeader" class="header">Upload Document</div>
+			    <div class="body">
+					<div id="divFrame" class="body" style="padding-left: 10px;">
+						<div style="clear:both;height: 10px;"></div>
+						<div id="TableEditArea">
+							<div class="labelTextUpload">
+								<span class="requiredFieldIndicator">&#149;</span>Document Title:
+							</div>
+							<div class="inputTextArea">
+								<div id="DocumentTitle"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<iframe id="iFrameUpload" src="/net/crothall/chimes/fin/app/act/FileUpload.aspx" frameborder="0" width="100%" height="30"></iframe>
+						<div style="clear:both;"></div>
+					</div>
+					<div id="divUpload" class="body">
+						<div id="AnchorUpload"></div>
+						<div id="AnchorUploadCancel"></div>
+						<div style="clear:both;"></div>
+					</div>
+			    </div>
+			</div>
+		</div>
+		<div id="backgroundPopup"></div>
+		<div id="iiInputValidationMaster"></div>
+	</body>
+</html>

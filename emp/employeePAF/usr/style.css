@@ -1,0 +1,40 @@
+﻿.customizer .form-control, .customizer .input-group-btn .btn-default {
+    background-color: #fafafa;
+    font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+}
+
+.customizer label:not(.radio-inline) {
+    margin-top: 3px;
+    font-weight: 500;
+    color: #555;
+}
+
+.customizer h4 {
+    margin-bottom: 5px;
+    margin-top: 0;
+    padding-top: 15px;
+}
+
+.customizer .header {
+    padding: 20px;
+}
+
+.customizer .form-group {
+    margin-bottom: 5px;
+}
+
+.customizer .radio, .checkbox {
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    min-height: 20px;
+    padding-left: 20px;
+}
+
+.customizer p {
+    margin: 0 0 5px;
+}
+
+.margin-bottom20 {
+margin-bottom:20px;
+}

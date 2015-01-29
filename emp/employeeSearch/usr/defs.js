@@ -27,6 +27,11 @@ ii.init.register( function(){
 		hirNode: {type: Number}
 	};
 	
+	fin.emp.houseCodeDetailArgs = {
+		id: {type: Number},
+		mealPlan: {type: Number, required: false, defaultValue: 0}
+	};
+	
 	fin.emp.houseCodeStateMinimumWageArgs = {
 		id: {type: Number},
 		houseCodeId: {type: Number},
@@ -137,6 +142,8 @@ ii.init.register( function(){
 		basicLifeIndicatorType: {type: Number, required: false, defaultValue: 0},		
 		i9Type: {type: Number, required: false, defaultValue: 0},
 		vetType: {type: Number, required: false, defaultValue: 0},
+		mealPlan: {type: Number, required: false, defaultValue: 0},
+		mealPlanPayrollDeduction: {type: Boolean, required: false, defaultValue: false},
 		separationCode:{type: Number, required: false, defaultValue: 0},
 		jobStartReason:{type: Number, required: false, defaultValue: 0},
 		crtdBy: {type: String, required: false, defaultValue: ""},
@@ -400,6 +407,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.emp.houseCodeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.emp.HouseCodeDetail",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.emp.houseCodeDetailArgs);
 			$.extend(this, args);
 		}
 	}
