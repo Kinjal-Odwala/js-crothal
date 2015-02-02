@@ -159,6 +159,11 @@
 	margin: 10px;
 }
 
+#EmployeeGrid{
+  height: 250px;
+  padding: 0 10px;
+}
+
 #AnchorSearch {
 	float: left;
 	width: 82px;
@@ -207,6 +212,18 @@
 	padding: 5px 0px 0px 10px;
 }
 
+#AnchorEmployeeOk {
+	float: left;
+	width: 80px;
+	padding: 5px 0px 0px 10px;
+}
+
+#AnchorEmployeeCancel {
+	float: left;
+	width: 80px;
+	padding: 5px 0px 0px 10px;
+}
+
 #DocumentGrid {
 	width: 700px;
 	margin-left: 10px;
@@ -215,10 +232,6 @@
 #Paging {
 	width: 700px;
 	margin-left: 11px;
-}
-
-#hoursBodyColumn, #earningsBodyColumn, #alternateBaseRateBodyColumn {
-	text-align: right;
 }
 
 #uploadPopup {
