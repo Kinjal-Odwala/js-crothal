@@ -16,22 +16,25 @@
 	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
 	<body id="appBody">
 		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
-		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
-		        <img id="imgLoading" src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
-		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
-		    </div>
+			<table width="100%" height="100%">
+				<tr>
+					<td align="center">
+						<img id="imgLoading" src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+						<div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;">Loading</div>    
+		        	</td>
+				</tr>
+			</table>
 		</div>
-		
 		<div id="popupLoading" style="position: absolute; z-index: 6000; width: 800px; height: 400px; background-color: white; display:none">
 		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
 		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
 		        <div id="popupMessageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
 		    </div>
-		</div>		
+		</div>
 		<div class="pageHeader">
 			<div id="actionHeader">
 		        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
-				<div class="header">Hierarchy Management</div>
+				<div id="pageHeader" class="header">Hierarchy Management</div>
 	        </div>
 		</div>
 		<div style="clear:both;"></div>
@@ -42,45 +45,94 @@
 		</div>
 		<div style="clear:both;"></div>
 	    <div class="pageBody">
-			<div class="body">
-				<div class="labelText">Brief:</div>
-				<div id="AppUnitLoader">
-					<div id="AppUnit"></div>
+	    	<div id="HierarchyContainer">
+				<div class="body">
+					<div class="labelText">Brief:</div>
+					<div id="AppUnitLoader">
+						<div id="AppUnit"></div>
+					</div>
+					<div class="labelText">Level:</div>
+					<div id="HirLevel">
+						<div id="Level"></div>
+					</div>
+					<div class="contentArea">
+						<div id="AnchorSearch"></div>
+					</div>
 				</div>
-				<div class="labelText">Level:</div>
-				<div id="HirLevel">
-					<div id="Level"></div>
-				</div>
+				<div style="clear:both; height:10px;"></div>
 				<div class="contentArea">
-					<div id="AnchorSearch"></div>
-				</div>
-			</div>
-			<div style="clear:both; height:10px;"></div>
-			<div class="contentArea">
-				<div class="body" id="hirContainer">
-					<div id="hierarchyAreaLeft">
-						<ul class="treeview" id="ulEdit0"></ul>
-					</div>
-					<div id="hierarchyAreaRight">
-						<div class="unitContainerHeader">Movable Units</div>
-						<div id="unitContainer">
-							<ul class="treeview" id="ulEditM"></ul>
+					<div class="body" id="hirContainer">
+						<div id="hierarchyAreaLeft">
+							<ul class="treeview" id="ulEdit0"></ul>
 						</div>
-						<div style="clear:both;"></div>
-						<div id="divSelectAll">
-							<div id="SelectAll"><input type="checkbox" id="chkSelectAll" /></div>
-							<div class="labelSelectAll">Select all Units</div>
-							<div id="AnchorRemove"></div>
+						<div id="hierarchyAreaRight">
+							<div class="unitContainerHeader">Movable Units</div>
+							<div id="unitContainer">
+								<ul class="treeview" id="ulEditM"></ul>
+							</div>
+							<div style="clear:both;"></div>
+							<div id="divSelectAll">
+								<div id="SelectAll"><input type="checkbox" id="chkSelectAll" /></div>
+								<div class="labelSelectAll">Select all Units</div>
+								<div id="AnchorRemove"></div>
+							</div>
 						</div>
 					</div>
 				</div>
+				<div style="clear:both;"></div>
+				<div class="contentArea">
+					<div id="AnchorSave"></div>
+					<div id="AnchorPreview"></div>
+					<div id="AnchorCommit"></div>
+					<div id="AnchorUndo"></div>
+				</div>
 			</div>
-			<div style="clear:both;"></div>
-			<div class="contentArea">
-				<div id="AnchorSave"></div>
-				<div id="AnchorPreview"></div>
-				<div id="AnchorCommit"></div>
-				<div id="AnchorUndo"></div>
+			<div id="UploadContainer" class="contentArea" style="display:none;">
+				<div id="divFrame" class="body">
+					<div style="height: 10px;"></div>
+					<iframe id="iFrameUpload" src="/net/crothall/chimes/fin/app/act/FileUpload.aspx" frameborder="0" width="100%" height="30"></iframe>
+					<div style="clear:both;"></div>
+				</div>
+				<div id="divUpload" class="body">
+					<div id="AnchorUpload"></div>
+					<div id="AnchorUploadCancel"></div>
+					<div style="clear:both;"></div>
+				</div>
+				<table id="tblHouseCodes" class="gridBorder" style="display: none" cellpadding="0" cellspacing="0" width="100%;" height="100%;">
+			    	<tr>
+			        	<td>				
+							<div style="height: 20px; width: 100%; position: relative; z-index: 3; overflow: hidden">
+			                	<table id="tblHouseCodeGridHeader" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 2; width: 1600px;">
+			                    	<thead id="HouseCodeGridHead">
+										<tr id="trHouseCodeGridHead">
+											<th class="gridHeaderColumn" width="30px">#</th>
+											<th class="gridHeaderColumn" width="80px">House Code</th>
+											<th class="gridHeaderColumn" width="200px">Enterprise</th>
+											<th class="gridHeaderColumn" width="200px">SVP</th>
+											<th class="gridHeaderColumn" width="200px">DVP</th>
+											<th class="gridHeaderColumn" width="200px">RVP</th>
+											<th class="gridHeaderColumn" width="200px">SRM</th>
+											<th class="gridHeaderColumn" width="200px">RM</th>
+											<th class="gridHeaderColumnRight" width="200px">AM</th>
+										</tr>
+									</thead>
+								</table>
+							</div>
+						</td>
+					</tr>
+					<tr>
+		                <td>
+		                    <div id="divHouseCodeGrid" style="position: relative; overflow: auto;">                              
+		                        <table id="HouseCodeGrid" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 1; width: 1600px;">
+		                            <tbody id="HouseCodeGridBody"></tbody>
+		                        </table>
+		                    </div>
+		                </td>
+		            </tr>
+        		</table>
+				<div style="clear:both;"></div>		
+				<div id="AnchorValidate" style="display: none"></div>
+				<div id="AnchorBulkSave" style="display: none"></div>
 			</div>
 		</div>
 
@@ -165,6 +217,24 @@
             </div>
 		</div>
 
+		<!-- This area holds the templates for the house code -->
+		<div style="display: none">		    
+		    <table>
+		        <tbody id="tblHouseCodeTemplate">
+		            <tr id="trHouseCodeRowCount">
+		            	<td class="gridColumn" style="width: 30px" align="center">#</td>						
+                        <td class="gridColumn" style="width: 80px" align="center"><input type="text" maxlength="16" id="txtBriefRowCount" style="width: 76px;" /></td>
+                 		<td class="gridColumn" style="width: 200px" align="center"><input type="text" maxlength="256" id="txtLevel1_RowCount" style="width: 196px;" /></td>
+						<td class="gridColumn" style="width: 200px" align="center"><input type="text" maxlength="256" id="txtLevel2_RowCount" style="width: 196px;" /></td>
+						<td class="gridColumn" style="width: 200px" align="center"><input type="text" maxlength="256" id="txtLevel3_RowCount" style="width: 196px;" /></td>
+						<td class="gridColumn" style="width: 200px" align="center"><input type="text" maxlength="256" id="txtLevel4_RowCount" style="width: 196px;" /></td>
+						<td class="gridColumn" style="width: 200px" align="center"><input type="text" maxlength="256" id="txtLevel5_RowCount" style="width: 196px;" /></td>
+						<td class="gridColumn" style="width: 200px" align="center"><input type="text" maxlength="256" id="txtLevel6_RowCount" style="width: 196px;" /></td>
+						<td class="gridColumnRight" style="width: 200px" align="center"><input type="text" maxlength="256" id="txtLevel7_RowCount" style="width: 196px;" /></td>
+	    			</tr>
+                </tbody>
+            </table>
+		</div>	
 		<div id="backgroundPopup"></div>
 		<div id="iiInputValidationMaster"></div>
 	</body>

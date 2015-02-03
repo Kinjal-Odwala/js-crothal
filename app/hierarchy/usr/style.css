@@ -1,193 +1,21 @@
-#hierarchyAreaLeft {	
-	float: left;
-	width: 48%;
-}
-
-#hierarchyAreaRight {
-	float: right;
-	width: 48%;
-}
-
-#AppUnitLoader {
-	float: left;
-	position: relative;
-	width: 500px;
-}
-
-#HirLevel {
-	float: left;
-	position: relative;
-	padding-left: 5px;
-	width: 150px;
-}
-	
-#AnchorSearch {
-	float: left;
-	width: 82px;
-	padding-left: 10px;
-}
-	
-#hirContainer {
-	border: solid #AAAAAA thin; 
-	border-width: 1px;
-	padding: 10px;
-	overflow: auto;
-}
-
-#AnchorSave {
-	float: left;
-	width: 136px;
-	padding: 5px 0px 0px 5px;
-}
-
-#AnchorPreview {
-	float: left;
-	width: 156px;
-	padding: 5px 0px 0px 5px;
-	margin-right: 5px;
-}
-
-#AnchorCommit {
-	float: left;
-	width: 140px;
-	padding: 5px 0px 0px 5px;
-	margin-right: 5px;
-}
-
-#AnchorSaveNode {
-	float: left;
-	width: 68px;
-	margin: 5px 0px 5px 10px;
-}
-
-#AnchorCancel {
-	float: left;
-	width: 80px;
-	margin: 5px 0px 5px 10px;
-}
-
-#AnchorRemove {
-	float: right;
-	width: 90px;
-	margin: 5px 0px 5px 0px;
-}
-
-#AnchorPrint {
-	float: left;
-	width: 68px;
-	margin: 5px 0px 5px 20px;
-}
-
-#AnchorClose, #AnchorClosePopup {
-	float: left;
-	width: 72px;
-	margin: 5px 0px 5px 10px;
-}
-
-#AnchorOK {
-	float: left;
-	width: 54px;
-	margin: 5px 0px 5px 10px;
-}
-
-#SelectAll {
-	float: left;
-	width: 14px;
-	padding: 3px 0px 0px 24px;
-}
-
-#unitContainer {
-	float: right;
-	width: 400px;	
-    border: solid #AAAAAA thin;
-	border-width: 1px;
-	padding: 10px;
-	overflow: auto;
-}
-
-#previewContainer {
-	float: left;
-    border: solid #AAAAAA thin;
-	border-width: 1px;
-	margin-left: 10px;
-	padding: 10px;
-	overflow: auto;
-}
-
-#divSelectAll {
-	float: right;
-	width: 420px;
-}
-
-#backgroundPopup {
-	position: fixed; 
-	top: 0; 
-	left: 0; 
-	z-index: 5000; 
-	width: 100%; 
-	height: 100%;
-	border: 1px solid #cecece; 
-	background-color: black;
-	display: none;
-}
-
-#hierarchyPopup {
-	width: 550px; 
-	height: 240px;
-	background-color: white;
-	position: absolute;
-	z-index: 5025;	
-	display: none;
-}
-
-#hierarchyPreviewPopup {
-	background-color: white;
-	position: absolute;
-	z-index: 5050;
-	display: none;
-}
-
-#hierarchyNodesListPopup {
-	width: 700px; 
-	height: 500px;
-	background-color: white;
-	position: absolute;
-	z-index: 5075;	
-	display: none;
-}
-
-#nodesListContainer {
-	float: left;
-	width: 675px;
-	margin: 5px 10px 5px 10px;
-}
-
-#nodeDetailsContainer {
-	float: left;
-	width: 525px;
-    border: solid #AAAAAA thin;
-	border-width: 1px;
-	margin: 5px 10px 5px 10px;
-}
-
 .header {
 	font-family: Verdana;
 	font-weight: bold;
-	font-size: 18px;	
+	font-size: 18px;
 	color: #2C2F50;
 	text-align: center;
 	margin-bottom: 5px;
 }
 
 .labelText {
-	float: left;	
+	float: left;
 	font-family: Verdana;
 	font-size: 12px;
 	color: #032D23;
 	padding: 2px 10px 2px 10px;
 }
 
-.labelTextArea {	
+.labelTextArea {
 	float: left;
 	width: 80px;
 	height: 27px;	
@@ -197,7 +25,7 @@
 	padding: 5px 0px 0px 10px;
 }
 
-.labelLevel {	
+.labelLevel {
 	float: left;
 	font-family: Verdana;
 	font-size: 12px;
@@ -206,9 +34,9 @@
 }
 
 .inputTextArea {
-	float: left; 
-	width: 350px; 
-	padding: 3px 2px 2px 2px;	
+	float: left;
+	width: 350px;
+	padding: 3px 2px 2px 2px;
 }
 
 .labelSelectAll {
@@ -247,12 +75,85 @@
 	margin-bottom: 1px;	
 }
 
+.gridHeaderColumn {
+	background-color: #669966;
+	border-right: solid #AAAAAA thin;
+	border-width: 1px;
+	border-bottom: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	font-weight: bold;
+	color: white;	
+	text-align: center;
+	padding: 3px 2px 3px 2px;
+}
+
+.gridHeaderColumnRight {
+	background-color: #669966;
+	border-bottom: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	font-weight: bold;
+	color: white;	
+	text-align: center;
+	padding: 3px 2px 3px 2px;
+}
+
+.gridColumn {	
+	border-right: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	color: #032D23;
+	height: 18px;
+	vertical-align: middle;
+	padding: 3px 2px 3px 2px;
+}
+
+.gridColumnRight {	
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	color: #032D23;
+	height: 18px;
+	vertical-align: middle;
+	padding: 3px 2px 3px 2px;
+}
+
 .gridRow { 
 	background-color: #F0EFDD;
 }
 
+.gridRow input {
+    font-family: Verdana;
+    font-size: 8pt;
+	color: #032D23;
+	padding: 0px;
+}
+
 .alternateGridRow { 
 	background-color: #FFFFFF;
+}
+
+.alternateGridRow input {
+    font-family: Verdana;
+    font-size: 8pt;
+	color: #032D23;
+	padding: 0px;
+}
+
+.gridBorder {
+	border: solid #AAAAAA thin;
+	border-width: 1px;
 }
 
 .trover {
@@ -355,4 +256,208 @@
 	border: solid red thin;
 	border-width: 2px;
 	font-weight: bold;
+}
+
+#hierarchyAreaLeft {	
+	float: left;
+	width: 48%;
+}
+
+#hierarchyAreaRight {
+	float: right;
+	width: 48%;
+}
+
+#AppUnitLoader {
+	float: left;
+	position: relative;
+	width: 500px;
+}
+
+#HirLevel {
+	float: left;
+	position: relative;
+	padding-left: 5px;
+	width: 150px;
+}
+	
+#AnchorSearch {
+	float: left;
+	width: 82px;
+	padding-left: 10px;
+}
+	
+#hirContainer {
+	border: solid #AAAAAA thin; 
+	border-width: 1px;
+	padding: 10px;
+	overflow: auto;
+}
+
+#AnchorSave {
+	float: left;
+	width: 136px;
+	padding: 5px 0px 0px 5px;
+}
+
+#AnchorPreview {
+	float: left;
+	width: 156px;
+	padding: 5px 0px 0px 5px;
+	margin-right: 5px;
+}
+
+#AnchorCommit {
+	float: left;
+	width: 140px;
+	padding: 5px 0px 0px 5px;
+	margin-right: 5px;
+}
+
+#AnchorSaveNode {
+	float: left;
+	width: 68px;
+	margin: 5px 0px 5px 10px;
+}
+
+#AnchorCancel {
+	float: left;
+	width: 80px;
+	margin: 5px 0px 5px 10px;
+}
+
+#AnchorRemove {
+	float: right;
+	width: 90px;
+	margin: 5px 0px 5px 0px;
+}
+
+#AnchorPrint {
+	float: left;
+	width: 68px;
+	margin: 5px 0px 5px 20px;
+}
+
+#AnchorClose, #AnchorClosePopup {
+	float: left;
+	width: 72px;
+	margin: 5px 0px 5px 10px;
+}
+
+#AnchorOK {
+	float: left;
+	width: 54px;
+	margin: 5px 0px 5px 10px;
+}
+
+#AnchorUpload {
+	float: left;
+	margin-right: 5px;
+	padding-left: 5px;
+	padding-top: 0px;
+	width: 82px;
+}
+
+#AnchorUploadCancel {
+	float: left;
+	margin-right: 5px;
+	padding-left: 5px;
+	padding-top: 0px;
+	width: 80px;
+}
+
+#AnchorValidate {
+	float: left;
+	margin-right: 5px;
+	padding-left: 10px;	
+	padding-top: 15px;
+	width: 90px;
+}
+
+#AnchorBulkSave {
+	float: left;
+	margin-right: 5px;
+	padding-left: 5px;	
+	padding-top: 15px;	
+	width: 68px;
+}
+
+#SelectAll {
+	float: left;
+	width: 14px;
+	padding: 3px 0px 0px 24px;
+}
+
+#unitContainer {
+	float: right;
+	width: 400px;	
+    border: solid #AAAAAA thin;
+	border-width: 1px;
+	padding: 10px;
+	overflow: auto;
+}
+
+#previewContainer {
+	float: left;
+    border: solid #AAAAAA thin;
+	border-width: 1px;
+	margin-left: 10px;
+	padding: 10px;
+	overflow: auto;
+}
+
+#divSelectAll {
+	float: right;
+	width: 420px;
+}
+
+#nodesListContainer {
+	float: left;
+	width: 675px;
+	margin: 5px 10px 5px 10px;
+}
+
+#nodeDetailsContainer {
+	float: left;
+	width: 525px;
+    border: solid #AAAAAA thin;
+	border-width: 1px;
+	margin: 5px 10px 5px 10px;
+}
+
+#backgroundPopup {
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	z-index: 5000; 
+	width: 100%; 
+	height: 100%;
+	border: 1px solid #cecece; 
+	background-color: black;
+	display: none;
+}
+
+#hierarchyPopup {
+	width: 550px; 
+	height: 240px;
+	background-color: white;
+	position: absolute;
+	z-index: 5025;	
+	display: none;
+}
+
+#hierarchyPreviewPopup {
+	background-color: white;
+	position: absolute;
+	z-index: 5050;
+	display: none;
+}
+
+#hierarchyNodesListPopup {
+	width: 700px; 
+	height: 500px;
+	background-color: white;
+	position: absolute;
+	z-index: 5075;	
+	display: none;
 }

@@ -50,6 +50,26 @@ ii.init.register( function() {
 		, modified: {type: Boolean, required: false, defaultValue: false}
 	};
 
+	fin.app.hierarchy.houseCodeArgs = {
+		id: {type: Number}		
+		, column1: {type: String, required: false, defaultValue: ""} // brief
+		, column2: {type: String, required: false, defaultValue: ""} // title
+		, column3: {type: String, required: false, defaultValue: ""} // description
+		, column4: {type: String, required: false, defaultValue: ""} // level1
+		, column5: {type: String, required: false, defaultValue: ""} // level2
+		, column6: {type: String, required: false, defaultValue: ""} // level3
+		, column7: {type: String, required: false, defaultValue: ""} // level4
+		, column8: {type: String, required: false, defaultValue: ""} // level5
+		, column9: {type: String, required: false, defaultValue: ""} // level6
+		
+	};
+
+	fin.app.hierarchy.bulkImportValidationArgs = {
+		id: {type: Number}
+		, briefs: {type: String, required: false, defaultValue: ""}
+		, fullPaths: {type: String, required: false, defaultValue: ""}		
+	};
+
 }, 2);
 
 ii.Class({
@@ -91,3 +111,23 @@ ii.Class({
 		}
 	}
 });
+
+ii.Class({
+	Name: "fin.app.hierarchy.HouseCode",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.app.hierarchy.houseCodeArgs);
+			$.extend(this, args);			
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.app.hierarchy.BulkImportValidation",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.app.hierarchy.bulkImportValidationArgs);
+			$.extend(this, args);
+		}
+	}
+})
