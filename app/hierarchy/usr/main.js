@@ -856,7 +856,7 @@ ii.Class({
 			if (!found) {
 				me.setLoadCount();
 				ii.trace("Hirnodes Loading", ii.traceTypes.Information, "Info");
-				me.hirNodeStore.fetch("userId:[user],hirNodeRoot:" + me.hirNodeCurrentId + ",", me.hirNodesLoaded, me);
+				me.hirNodeStore.fetch("userId:[user],hirNodeSnapshotId:" + me.hirNodeCurrentId + ",hirNodeSearchId:" + me.hirNodeCurrentId + ",ancestors:true", me.hirNodesLoaded, me);
 			}
 			else
 				me.selectNode();
