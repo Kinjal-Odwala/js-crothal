@@ -74,6 +74,7 @@ ii.init.register( function() {
 		, column38: {type: String, required: false, defaultValue: ""}   // Requested By
 		, column39: {type: String, required: false, defaultValue: ""}   // Requestor Email
 		, column40: {type: String, required: false, defaultValue: ""}   // Requestor Phone
+		, column41: {type: String, required: false, defaultValue: ""}   // Change Status Code
 		, assigned: {type: Boolean, required: false, defaultValue: false}
 	};
 
