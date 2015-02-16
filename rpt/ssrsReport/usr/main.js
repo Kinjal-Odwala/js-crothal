@@ -58,11 +58,10 @@ ii.Class({
 			me.subscriptionId = "";
 			me.scheduleType = "";
 			me.status = "";
-			me.ssrsReports = [];
-			me.ssrsReportSubscriptions = [];
-			me.controls = [];
-			me.reportNodes = [];
 			me.loadCount = 0;
+			me.reportNodes = [];
+			me.subscriptionNodes = [];
+			me.controls = [];
 			me.hirNodeCache = [];
 			me.customers = [];
 			me.houseCodes = [];
@@ -176,9 +175,7 @@ ii.Class({
 					brief: "SSRS Reports",
 					title: "SSRS reports.",
 					actionFunction: function() { me.actionReportItem(); }
-				});
-
-			me.actionMenu
+				})
 				.addAction({
 					id: "subscriptionAction",
 					brief: "SSRS Report Subscriptions",
@@ -199,27 +196,12 @@ ii.Class({
 		    });
 
 			$("#AppUnitText").bind("keydown", me, me.actionSearchItem);
-
-			//me.ssrsReport = new ui.ctl.Input.DropDown.Filtered({
-			//	id: "Report",
-			//	formatFunction: function( type ) { return type.title; },
-			//	changeFunction: function() { me.reportChanged(); }
-			//});
 			
 			$("#ulEdit1").treeview({
 		        animated: "medium",
 		        persist: "location",
 				collapsed: true
 	        });
-			
-			//me.ssrsReport.makeEnterTab()
-			//	.setValidationMaster(me.validator)
-			//	.addValidation(ui.ctl.Input.Validation.required)	
-			//	.addValidation( function( isFinal, dataMap ) {
-			//
-			//		if ((this.focused || this.touched) && me.ssrsReport.indexSelected == -1)
-			//			this.setInvalid("Please select the correct Report.");
-			//	});
 
 			me.anchorSearch = new ui.ctl.buttons.Sizeable({
 				id: "AnchorSearch",
@@ -319,6 +301,7 @@ ii.Class({
 			
 			me.subscriptionGrid = new ui.ctl.Grid({
 				id: "SubscriptionGrid",
+				appendToId: "divForm",
 				selectFunction: function (index) { me.actionSelectItem(index); }
 			});
 			
@@ -1398,12 +1381,6 @@ ii.Class({
 		
 		reportsLoaded: function(me, activeId) {
 
-			for (var index = 0; index < me.reports.length; index++) {
-				me.ssrsReports.push(me.reports[index]);
-				if (me.reports[index].subscriptionAvailable)
-					me.ssrsReportSubscriptions.push(me.reports[index]);
-			}
-			
 			me.actionReportItem();
 			me.checkLoadCount();
 		},
@@ -1411,7 +1388,7 @@ ii.Class({
 		hirNodesLoaded: function(me, activeId) {
 
 			if (me.pageLoading) {
-				me.actionAddNodes();
+				me.removeUnAuthorizedNodes();
 				me.pageLoading = false;
 				me.checkLoadCount();	
 			}
@@ -1757,29 +1734,27 @@ ii.Class({
             	me.groupLevelsLoaded();	
 		},
 		
-		actionAddNodes: function() {
+		actionAddNodes: function(nodes) {
 			var me = this;
-			var index = 0;
 			var hirParentNode = 0;
 		 	var hirNode = 0;
             var hirNodeTitle = "";
 			var childNodeCount = 0;
 
-			me.removeUnAuthorizedNodes();
-
-			for (index = 0; index < me.reportNodes.length; index++) {
-				hirParentNode = me.reportNodes[index].nodeParentId;
-				hirNode = me.reportNodes[index].id;				
-				hirNodeTitle = me.reportNodes[index].title;
-				childNodeCount = me.reportNodes[index].childNodeCount;
+			$("#ulEdit0").empty();
+			for (var index = 0; index < nodes.length; index++) {
+				hirParentNode = nodes[index].nodeParentId;
+				hirNode = nodes[index].id;				
+				hirNodeTitle = nodes[index].title;
+				childNodeCount = nodes[index].childNodeCount;
 
 				//set up the edit tree
                 //add the item underneath the parent list
 				me.actionNodeAppend(hirNode, hirNodeTitle, hirParentNode, childNodeCount);
 			}
 
-			if (me.reportNodes.length > 0)
-				$("#liNode" + me.reportNodes[0].id).find(">.hitarea").click();
+			if (nodes.length > 0)
+				$("#liNode" + nodes[0].id).find(">.hitarea").click();
 		},
 
 		actionNodeAppend: function() {
@@ -1816,9 +1791,10 @@ ii.Class({
 		removeUnAuthorizedNodes: function() {
             var me = this;
             var path = "";
-			var fullPath;
+			var fullPath = "";
 
 			me.reportNodes = [];
+			me.subscriptionNodes = [];
 
             for (var index = 0; index < me.hirNodes.length; index++) {
 				 for (var authIndex = 0; authIndex < me.authorizer.authorizations.length; authIndex++) {
@@ -1831,6 +1807,32 @@ ii.Class({
 	                }
 	            }
 			}
+
+			me.subscriptionNodes.push(me.reportNodes[0]);
+			for (var index = 1; index < me.reportNodes.length; index++) {
+			 	if (me.reportNodes[index].childNodeCount > 0) {
+					nodes = $.grep(me.reportNodes, function(item, itemIndex) {
+					    return item.nodeParentId == me.reportNodes[index].id;
+					});
+	
+					var found = false;
+					for (var nodeIndex = 0; nodeIndex < nodes.length; nodeIndex++) {
+						for (var itemIndex = 0; itemIndex < me.reports.length; itemIndex++) {
+							if ((me.reports[itemIndex].hirNode == nodes[nodeIndex].id) && me.reports[itemIndex].subscriptionAvailable) {
+								if (!found) {
+									me.subscriptionNodes.push(me.reportNodes[index]);
+									found = true;
+								}
+								me.subscriptionNodes.push(nodes[nodeIndex]);
+							}
+						}
+					}
+				}
+			}
+
+			if (me.subscriptionNodes.length == 1)
+				me.subscriptionNodes = [];
+			me.actionAddNodes(me.reportNodes);
         },
 
 		hirNodeSelect: function(nodeId) {        
@@ -1839,9 +1841,9 @@ ii.Class({
 			var found = false;
 			var reportURL = "";
 			var rowHtml = "";
-            me.reportName = "";
-			var reportId = 0;
+            var reportId = 0;
 			var parameterAvailable = false;
+			me.reportName = "";
 			me.subscriptionSelected = false;
 			
 			if (me.hirNodePreviousSelected > 0)
@@ -1874,7 +1876,7 @@ ii.Class({
 				$("#ReportRightContainer").show();
 				me.setLoadCount();
 				
-				if(!me.levelNamesLoaded)
+				if (!me.levelNamesLoaded)
 					me.hirNodeStore.fetch("userId:[user],levelBrief:-1", me.hirNodesLoaded, me);
 					
 				me.reportParameterStore.fetch("userId:[user],reportId:" + reportId, me.parametersLoaded, me);
@@ -2472,8 +2474,7 @@ ii.Class({
 			for (var index = 0; index < me.genericTypes.length; index++) {
                 $("#WkPeriod").append("<option title='" + me.genericTypes[index].parameter + "' value='" + me.genericTypes[index].id + "'>" + me.genericTypes[index].parameter + "</option>");
             }
-			$("#WkPeriod").multiselect("refresh");			
-			//me.controls[1].setData(me.genericTypes);
+			$("#WkPeriod").multiselect("refresh");	
 			me.checkLoadCount();			
 		},
 		
@@ -2486,12 +2487,12 @@ ii.Class({
 				$scope.nodes = me.hirNodes.slice();
 			});
 			
-			if(levelSelected != "0")
+			if (levelSelected != "0")
 				levelIndex = me.findIndexByTitle(levelSelected, me.levels)
 			
 			nodes = $.grep(me.hirNodes, function(item, index) {
-				    return item.hirLevel == me.levels[levelIndex].id;
-				});
+			    return item.hirLevel == me.levels[levelIndex].id;
+			});
 						
 			$("#ExName").html("");
 			
@@ -2616,23 +2617,9 @@ ii.Class({
 			ii.trace("Org/Management Nodes Loaded.", ii.traceTypes.Information, "Information");
 		},
 
-		reportChanged: function() {
-			var me = this;
-
-			me.status = "";
-
-			if (me.ssrsReport.indexSelected >= 0) {
-				if ($("#pageHeader").html() == "SSRS Report Subscriptions") {
-					me.resetScheduleInfo();
-					me.loadReportParameters(me.ssrsReport.data[me.ssrsReport.indexSelected].id);
-				}
-			}
-		},
-
 		resizeControls: function() {
 			var me = this;
 
-			//me.ssrsReport.resizeText();
 			me.description.resizeText();
 			me.deliveredBy.resizeText();
 			me.to.resizeText();
@@ -2827,7 +2814,7 @@ ii.Class({
             }
 			
 			parametersList = "UserID=" + me.session.propertyGet("userName") + me.level + me.name + parametersList;
-			ii.trace("Parameters:", parametersList, "Information");
+			ii.trace("Parameters: " + parametersList, ii.traceTypes.Information, "Info");
 			var form = document.createElement("form");
 			form.setAttribute("method", "post");
 			form.setAttribute("action", me.reportURL);			
@@ -2853,20 +2840,20 @@ ii.Class({
 		
 		actionResetItem: function() {
 			var me = this;
-			me.level = "";
-			me.name = "";
-			me.names = "";
-			
 			var $scope = angular.element($("#SearchContainer")).scope();
+
             $scope.$apply(function() {
-                    $scope.selected = "";
+            	$scope.selected = "";
             });
-						
-			$("#chkNode" + me.lastCheckedNode).attr("checked", false);			
+
+			$("#chkNode" + me.lastCheckedNode).attr("checked", false);
 			$("input[parent=" + me.lastCheckedNode + "]").each(function() {
 				$("#" + this.id).attr("checked", false);
 			});
 			
+			me.level = "";
+			me.name = "";
+			me.names = "";
 			me.excludeHouseCodes = [];
 			me.customers = [];
 			me.controlsLoaded();			
@@ -2874,7 +2861,6 @@ ii.Class({
 		
 		actionReportItem: function() {
 			var me = this;
-			var hirNode;
 
 			$("#pageHeader").html("SSRS Reports");
 			$("#SubscriptionGrid").hide();
@@ -2884,21 +2870,13 @@ ii.Class({
             $("#ReportRightContainer").show();
             $("#ReportButtonContainer").show();                        
             $("#TreeviewContainer").height($(window).height() - 75);            
-
 			me.reportType = "Report";
 			me.actionResetItem();
-			
-			for (index = 0; index < me.reportNodes.length; index++) {
-				hirNode = me.reportNodes[index].id;	
-                for (var reportIndex = 0; reportIndex < me.reports.length; reportIndex++) {
-					$("#liNode" + hirNode).show();
-				}
-			}
+			me.actionAddNodes(me.reportNodes);
 		},
 
 		actionSubscriptionItem: function() {
 			var me = this;
-			var hirNode;
 
 			$("#pageHeader").html("SSRS Report Subscriptions");
             $("#ReportButtonContainer").hide();
@@ -2910,131 +2888,12 @@ ii.Class({
             $("#TreeviewContainer").height($(window).height() - 200);
             me.subscriptionStore.reset();
             me.subscriptionGrid.setData([]);
-            me.subscriptionGrid.setHeight(115);			
-
-			//me.ssrsReport.setData(me.ssrsReportSubscriptions);
+            me.subscriptionGrid.setHeight(150);			
 			me.reportType = "Subscription";
 			me.actionResetItem();
 			me.resetScheduleInfo();
 			me.resizeControls();
-
-			//if (me.ssrsReportSubscriptions.length > 0) {
-			//	me.ssrsReport.select(0, me.ssrsReport.focused);
-			//	me.loadReportParameters(me.ssrsReport.data[me.ssrsReport.indexSelected].id);
-			//}
-			//else
-			//	me.subscriptionsLoaded(me, 0);
-			
-			for (index = 0; index < me.reportNodes.length; index++) {
-				hirNode = me.reportNodes[index].id;	
-                for (var reportIndex = 0; reportIndex < me.reports.length; reportIndex++) {
-					if (me.reports[reportIndex].hirNode == hirNode && !me.reports[reportIndex].subscriptionAvailable) {
-						$("#liNode" + hirNode).hide();
-					}
-				}
-			}			
-		},
-
-		loadReportParameters: function(reportId) {
-			var me = this;			
-
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").show();
-			me.reportParameterStore.fetch("userId:[user],reportId:" + reportId, me.reportParametersLoaded, me);
-		},
-
-		reportParametersLoaded: function(me, activeId) {
-
-			var html = "";
-
-			for (var index = 0; index < me.reportParameters.length; index++) {
-				html += "\n<div class='labelSubscription'>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextSmall'></div>"
-				if (me.reportParameters[index].controlType == "TreeView") {
-					html += "<div id='nodeSearchImage' class='nodeSearch'></div>";
-				}					
-				html += "\n<div style='clear:both;'></div>";
-			}
-
-			$("#ParemeterContainer").html(html);
-
-			$("#nodeSearchImage").click( function() {
-				if (me.status == "edit")
-					me.hirNodeCurrentId = me.hirNodeId;
-				else
-					me.hirNodeCurrentId = me.getHirNodeCurrentId();
-
-				me.hirOrgLoad("search");
-				me.loadPopup("hirOrgPopup");
-				me.appUnit.setValue("");
-				me.appUnit.resizeText();
-				$("#popupLoading").show();
-			});
-
-			me.controls = [];
-
-			for (var index = 0; index < me.reportParameters.length; index++) {				
-				if (me.reportParameters[index].controlType == "Text" || me.reportParameters[index].controlType == "TreeView") {
-					me.controls[index] = new ui.ctl.Input.Text({
-				        id: "" + me.reportParameters[index].name,
-				        maxLength: 64
-				    });
-
-					me.controls[index].makeEnterTab()
-						.setValidationMaster(me.validator)
-						.addValidation(ui.ctl.Input.Validation.required);
-
-					me.controls[index].resizeText();
-
-					if (me.reportParameters[index].controlType == "TreeView") {
-						me.controls[index].text.readOnly = true;
-						me.hirNode = me.controls[index];
-					}						
-				}
-				else if (me.reportParameters[index].controlType == "CheckBox") {
-					me.controls[index] = new ui.ctl.Input.Check({
-				        id: "" + me.reportParameters[index].name
-				    });
-				}
-				else if (me.reportParameters[index].controlType == "DropDown") {
-					me.controls[index] = new ui.ctl.Input.DropDown.Filtered({
-				        id: "" + me.reportParameters[index].name,
-						labelName: "" + me.reportParameters[index].title,
-						formatFunction: function( type ) { return type.name; }
-				    });
-
-					me.controls[index].makeEnterTab()
-						.setValidationMaster(me.validator)
-						.addValidation(ui.ctl.Input.Validation.required)	
-						.addValidation( function( isFinal, dataMap ) {
-
-							if ((this.focused || this.touched) && this.indexSelected == -1)
-								this.setInvalid("Please select the correct " + this.labelName + ".");
-						});
-				}
-				else if (me.reportParameters[index].controlType == "Date") {
-					me.controls[index] = new ui.ctl.Input.Date({
-				        id: "" + me.reportParameters[index].name,
-						labelName: "" + me.reportParameters[index].title,
-						formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
-				    });
-					
-					me.controls[index].resizeText();
-					
-					me.controls[index].makeEnterTab()
-						.setValidationMaster( me.validator )
-						.addValidation( function( isFinal, dataMap ) {
-		
-							var enteredText = this.text.value;
-
-							if (enteredText == "") return;
-													
-							if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
-								this.setInvalid("Please enter valid " + this.labelName + ".");					
-					});
-				}						
-			}
-
-			me.subscriptionStore.fetch("userId:[user],reportName:" + me.ssrsReportSubscriptions[me.ssrsReport.indexSelected].name, me.subscriptionsLoaded, me);
+			me.actionAddNodes(me.subscriptionNodes);
 		},
 
 		subscriptionsLoaded: function(me, activeId) {			
@@ -3642,7 +3501,6 @@ ii.Class({
 			if (me.status == "")
 				return;
 
-			//me.ssrsReport.validate(true);
 			me.description.validate(true);
 			me.deliveredBy.validate(true);
 			me.to.validate(true);
@@ -3769,7 +3627,6 @@ ii.Class({
 						startTime = 12 + parseInt(me.startHours[me.startHour.indexSelected].title, 10);
 				}
 
-				//item.reportName = me.ssrsReportSubscriptions[me.ssrsReport.indexSelected].name;
 				item.reportName = me.reportName;
 				item.scheduleType = me.scheduleType;
 				item.description = me.description.getValue();
