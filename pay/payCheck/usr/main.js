@@ -589,7 +589,7 @@ ii.Class({
                 id: "HouseCode",
                 maxLength: 16, 
                 appendToId: "PayCodeDetailGridControlHolder",
-                changeFunction: function() { me.modified(); me.houseCodeBlur(); }
+                changeFunction: function() { me.modified(); }
             });
             		    
 			me.payCodeDetailGrid.addColumn("payCode", "payCode", "Pay Code", "Pay Code", null, function(payCode) { return payCode.brief + " - " + payCode.name 	} , me.payCodeType);
@@ -963,6 +963,7 @@ ii.Class({
 			$("#imgRemove").bind("click", function() { me.actionRemoveItem(); });
 			$("#imgView").bind("click", function() { me.actionViewItem(); });
 			$("#EmployeeNumberText").bind("change", function() { me.searchEmployeeByNumber(); });
+			$("#HouseCodeText").bind("change", function() { me.houseCodeBlur(); });			
 			$("#EmployeeNameText").bind("change", function() { me.searchEmployeeByName(); });
 			$("#FilterTypeText").bind("keydown", me, me.actionSearchItem);			
 			$("#SearchInputText").bind("keydown", me, me.actionSearchItem);
@@ -1311,9 +1312,11 @@ ii.Class({
 						, me.employeesLoaded, me);
 				}
 			}
-			else {				
-				alert("There is no Employee with Employee # [" + me.employeeNumber.getValue() + "].");
-				me.employeeNumber.setValue("");
+			else {
+				if (me.employeeNumber.validate(true)) {
+					alert("There is no Employee with Employee # [" + me.employeeNumber.getValue() + "].");
+					me.employeeNumber.setValue("");
+				}	
 			}
 		},
 		
@@ -1331,9 +1334,11 @@ ii.Class({
 						, me.employeesLoaded, me);
 				}
 			}
-			else {				
-				alert("There is no Employee with Employee Name [" + me.employeeName.getValue() + "].");
-				me.employeeName.setValue("");
+			else {
+				if (me.employeeName.validate(true)) { 
+					alert("There is no Employee with Employee Name [" + me.employeeName.getValue() + "].");
+					me.employeeName.setValue("");
+				}
 			}
 		},
 		
@@ -1691,7 +1696,7 @@ ii.Class({
                 me.houseCode.setInvalid("The House Code [" + houseCode + "] is not valid.");
                 if (me.payCodeDetailGrid.data[me.payCodeDetailGrid.activeRowIndex] != undefined) {
                 	me.payCodeDetailGrid.data[me.payCodeDetailGrid.activeRowIndex].houseCodeId = 0;
-                	me.payCodeDetailGrid.data[index].houseCodeTitle = houseCode;
+                	me.payCodeDetailGrid.data[me.payCodeDetailGrid.activeRowIndex].houseCodeTitle = houseCode;
                 }                	
             }
             else {
