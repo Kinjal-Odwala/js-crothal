@@ -87,9 +87,38 @@
     width: 180px;
 }
 
-.gridColumnValue {	
+.gridBorder {
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+}
+
+.gridRow { 
+	background-color: #F0EFDD;
+}
+
+.alternateGridRow { 
+	background-color: #FFFFFF;
+}
+
+.gridHeaderColumn {
+	background-color: #669966;
 	border-right: solid #AAAAAA thin;
 	border-width: 1px;
+	border-bottom: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 10pt;
+	font-weight: bold;
+	color: white;	
+	text-align: center;
+	padding: 3px 2px 3px 2px;
+	height: 30px;
+	cursor: pointer;
+}
+
+.gridColumnRight {	
 	border-spacing: 0px 0px;
 	border-collapse: collapse;
 	font-family: Verdana;
@@ -99,7 +128,10 @@
 	padding: 3px 2px 3px 2px;
 	height: 20px;
 	cursor: pointer;
-	width:40%;
+}
+
+.trover, .selectedRow {
+	background-color: #C2E4C1;
 }
 
 .radioButton {
@@ -274,13 +306,19 @@ table {
 
 #AnchorGenerateReport {
 	float: left;
-	width: 156px;
+	width: 160px;
 	padding: 5px 0px 0px 10px;
 }
 
 #AnchorReset {
 	float: left;
-	width: 82px;
+	width: 95px;
+	padding: 5px 0px 0px 10px;
+}
+
+#AnchorDelete {
+	float: left;
+	width: 90px;
 	padding: 5px 0px 0px 10px;
 }
 
@@ -293,13 +331,19 @@ table {
  
 #AnchorSchedule {
     float: left;
-    width: 100px;
+    width: 110px;
     padding: 2px 0px 0px 5px;
 }
  
-#AnchorSave, #AnchorNew, #AnchorUndo {
+#AnchorSave, #AnchorUndo {
     float: left;
     width: 80px;
+    padding: 5px 0px 0px 10px;
+}
+
+#AnchorNew {
+    float: left;
+    width: 77px;
     padding: 5px 0px 0px 10px;
 }
  

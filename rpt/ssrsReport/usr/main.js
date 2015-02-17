@@ -55,6 +55,7 @@ ii.Class({
 			me.hirNodeId = 1;
 			me.hirNodeCurrentId = 1;
 			me.lastSelectedRowIndex = -1;
+			me.lastBeforeSelectedRowIndex = -1;
 			me.subscriptionId = "";
 			me.scheduleType = "";
 			me.status = "";
@@ -158,7 +159,7 @@ ii.Class({
 			if (me.reportType == "Report")
 				$("#TreeviewContainer").height($(window).height() - 75);
 			else if (me.reportType == "Subscription")
-				$("#TreeviewContainer").height($(window).height() - 200);
+				$("#TreeviewContainer").height($(window).height() - 220);
 		},
 
 		defineFormControls: function() {
@@ -298,16 +299,7 @@ ii.Class({
 				clickFunction: function() { me.actionResetItem(); },
 				hasHotState: true
 			});
-			
-			me.subscriptionGrid = new ui.ctl.Grid({
-				id: "SubscriptionGrid",
-				appendToId: "divForm",
-				selectFunction: function (index) { me.actionSelectItem(index); }
-			});
-			
-			me.subscriptionGrid.addColumn("description", "description", "Description", "Description", null);
-			me.subscriptionGrid.capColumns();
-			
+						
 			me.deliveredBy = new ui.ctl.Input.DropDown.Filtered({
 				id: "DeliveredBy",
 				formatFunction: function(type) { return type.title; }
@@ -2134,7 +2126,8 @@ ii.Class({
 								if (me.level == '' || me.name == '') 									
 									return false;
 								me.namesList = me.names.replace("~", "");
-								me.levelName = me.level.replace("~Level=", "");											
+								me.levelName = me.level.replace("~Level=", "");
+								me.loadCount = 1;											
 								me.setStatus("Loading");
 								$("#customersLoading").addClass('loading');
 								me.genericTypeStore.fetch("level:" + me.levelName + ",name:" + me.namesList + ",genericType:Customers,userId:[user]", me.customersLoaded, me);
@@ -2391,6 +2384,9 @@ ii.Class({
 				$("#Customer option").prop("selected", true);
 			else if (me.subscriptionSelected)
 				me.setDependentTypes();
+			
+				
+			me.checkLoadCount();
 		},
 				
 		groupLevelsLoaded: function() {
@@ -2877,6 +2873,7 @@ ii.Class({
 
 		actionSubscriptionItem: function() {
 			var me = this;
+			var rowHeadData = "";
 
 			$("#pageHeader").html("SSRS Report Subscriptions");
             $("#ReportButtonContainer").hide();
@@ -2885,10 +2882,14 @@ ii.Class({
             $("#ReportRightContainer").show();
             $("#ScheduleContainer").show();                        
             $("#SubscriptionButtonContainer").show();            
-            $("#TreeviewContainer").height($(window).height() - 200);
-            me.subscriptionStore.reset();
-            me.subscriptionGrid.setData([]);
-            me.subscriptionGrid.setHeight(150);			
+            $("#TreeviewContainer").height($(window).height() - 220);
+            me.subscriptionStore.reset();            
+            rowHeadData += "<tr id='trSubscriptionGridHead' height='40px'>";
+			rowHeadData = "<th class='gridHeaderColumn' width='100%'>Description</th>";
+			rowHeadData += "</tr>";
+			$("#SubscriptionGridHead").html(rowHeadData);
+            $("#SubscriptionGridBody").html("");
+            $("#divSubscriptionGrid").height(110);		
 			me.reportType = "Subscription";
 			me.actionResetItem();
 			me.resetScheduleInfo();
@@ -2896,17 +2897,36 @@ ii.Class({
 			me.actionAddNodes(me.subscriptionNodes);
 		},
 
-		subscriptionsLoaded: function(me, activeId) {			
+		subscriptionsLoaded: function(me, activeId) {
 			
-			me.setControlData();
-			me.subscriptionGrid.setData(me.subscriptions);
-			me.subscriptionGrid.setHeight(115);
+			me.setControlData();			
+			me.setSubscriptionGrid();
 			me.actionResetItem();
 			me.resetControls();
 			me.resetScheduleInfo();
 			
 			if (me.reportType == "Subscription")
 				me.checkLoadCount();			
+		},
+		
+		setSubscriptionGrid: function() {
+			var me = this;
+			var rowData = "";
+			
+			for(var index = 0; index < me.subscriptions.length; index++) {
+				rowData += "<tr id='subscriptionRow" + me.subscriptions[index].id + "' onclick=(fin.reportUi.actionSelectItem(" + index + "));>";				
+				rowData += "<td id=" + me.subscriptions[index].id + " class='gridColumnRight' style='width:150px'>" + me.subscriptions[index].description + "</td>";
+				rowData += "</tr>"
+			}
+			
+			$("#SubscriptionGridBody").html(rowData);
+			$("#SubscriptionGridBody tr:odd").addClass("gridRow");
+			$("#SubscriptionGridBody tr:even").addClass("alternateGridRow");
+			$("#SubscriptionGridBody tr").mouseover(function(){
+				$(this).addClass("trover");
+			}).mouseout(function(){
+				$(this).removeClass("trover");
+			});
 		},
 		
 		setControlData: function() {
@@ -2946,80 +2966,82 @@ ii.Class({
 			});
 			var me = this;
 			var index = args.index;
-			var item = me.subscriptionGrid.data[index];
 			var levelId = "";
-			var nameValue = "";
-
-			if (item == undefined) {
-				me.subscriptionId = "";
+			var nameValue = ""; 
+			
+			if (me.subscriptions[index] == undefined) 
 				return;
-			}
-
+			
+			if(me.lastBeforeSelectedRowIndex != -1)
+				$("#subscriptionRow" + me.lastBeforeSelectedRowIndex).removeClass("selectedRow");
+				
+			$("#subscriptionRow" + me.subscriptions[index].id).addClass("selectedRow");
 			me.resetControls();
 			me.status = "edit";
-			me.lastSelectedRowIndex = index;			
-			me.scheduleType = item.scheduleType;
-			me.subscriptionId = item.subscriptionId;		
-			me.description.setValue(item.description);
-			me.to.setValue(item.to);
-			me.cc.setValue(item.cc);
-			me.subject.setValue(item.subject);
-			me.comment.value = item.comment;
-			me.includeReport.check.checked = item.includeReport;
-			me.includeLink.check.checked = item.includeLink;
+			me.lastSelectedRowIndex = index;
+			me.lastBeforeSelectedRowIndex = me.subscriptions[index].id;			
+			me.scheduleType = me.subscriptions[index].scheduleType;
+			me.subscriptionId = me.subscriptions[index].subscriptionId;		
+			me.description.setValue(me.subscriptions[index].description);
+			me.to.setValue(me.subscriptions[index].to);
+			me.cc.setValue(me.subscriptions[index].cc);
+			me.subject.setValue(me.subscriptions[index].subject);
+			me.comment.value = me.subscriptions[index].comment;
+			me.includeReport.check.checked = me.subscriptions[index].includeReport;
+			me.includeLink.check.checked = me.subscriptions[index].includeLink;
 
-			var idIndex = me.findIndexByTitle(item.reportFormat, me.reportFormats);			
+			var idIndex = me.findIndexByTitle(me.subscriptions[index].reportFormat, me.reportFormats);			
 			if (idIndex != null)
 				me.reportFormat.select(idIndex, me.reportFormat.focused);
 
-			idIndex = me.findIndexByTitle(item.priority, me.priorities);
+			idIndex = me.findIndexByTitle(me.subscriptions[index].priority, me.priorities);
 			if (idIndex != null)
 				me.priority.select(idIndex, me.priority.focused);
 
-			me.sunday.check.checked = item.sunday;
-			me.monday.check.checked = item.monday;
-			me.tuesday.check.checked = item.tuesday;
-			me.wednesday.check.checked = item.wednesday;
-			me.thursday.check.checked = item.thursday;
-			me.friday.check.checked = item.friday;
-			me.saturday.check.checked = item.saturday;
+			me.sunday.check.checked = me.subscriptions[index].sunday;
+			me.monday.check.checked = me.subscriptions[index].monday;
+			me.tuesday.check.checked = me.subscriptions[index].tuesday;
+			me.wednesday.check.checked = me.subscriptions[index].wednesday;
+			me.thursday.check.checked = me.subscriptions[index].thursday;
+			me.friday.check.checked = me.subscriptions[index].friday;
+			me.saturday.check.checked = me.subscriptions[index].saturday;
 
-			me.jan.check.checked = item.january;
-			me.feb.check.checked = item.february;
-			me.mar.check.checked = item.march;
-			me.apr.check.checked = item.april;
-			me.may.check.checked = item.may;
-			me.jun.check.checked = item.june;
-			me.jul.check.checked = item.july;
-			me.aug.check.checked = item.august;
-			me.sep.check.checked = item.september;
-			me.oct.check.checked = item.october;
-			me.nov.check.checked = item.november;
-			me.dec.check.checked = item.december;
+			me.jan.check.checked = me.subscriptions[index].january;
+			me.feb.check.checked = me.subscriptions[index].february;
+			me.mar.check.checked = me.subscriptions[index].march;
+			me.apr.check.checked = me.subscriptions[index].april;
+			me.may.check.checked = me.subscriptions[index].may;
+			me.jun.check.checked = me.subscriptions[index].june;
+			me.jul.check.checked = me.subscriptions[index].july;
+			me.aug.check.checked = me.subscriptions[index].august;
+			me.sep.check.checked = me.subscriptions[index].september;
+			me.oct.check.checked = me.subscriptions[index].october;
+			me.nov.check.checked = me.subscriptions[index].november;
+			me.dec.check.checked = me.subscriptions[index].december;
 
-			me.startDate.setValue(item.startDate);
-			me.stopSchedule.check.checked = item.stopSchedule;
-			me.endDate.setValue(item.endDate);
+			me.startDate.setValue(me.subscriptions[index].startDate);
+			me.stopSchedule.check.checked = me.subscriptions[index].stopSchedule;
+			me.endDate.setValue(me.subscriptions[index].endDate);
 
-			if (item.numberOfDays == 0)
+			if (me.subscriptions[index].numberOfDays == 0)
 				me.numberOfDays.setValue("");
 			else
-				me.numberOfDays.setValue(item.numberOfDays);
+				me.numberOfDays.setValue(me.subscriptions[index].numberOfDays);
 
-			if (item.numberOfWeeks == 0)
+			if (me.subscriptions[index].numberOfWeeks == 0)
 				me.numberOfWeeks.setValue("");
 			else
-				me.numberOfWeeks.setValue(item.numberOfWeeks);
-			me.calendarDays.setValue(item.days);
+				me.numberOfWeeks.setValue(me.subscriptions[index].numberOfWeeks);
+			me.calendarDays.setValue(me.subscriptions[index].days);
 
-			idIndex = me.findIndexByTitle(item.weekOfMonth, me.weeks);			
+			idIndex = me.findIndexByTitle(me.subscriptions[index].weekOfMonth, me.weeks);			
 			if (idIndex != null)
 				me.weekOfMonth.select(idIndex, me.weekOfMonth.focused);
 			else
 				me.weekOfMonth.select(0, me.weekOfMonth.focused);
 
-			var startTimePart = item.startTime.substring(0, 2);
-            var startMinutePart = item.startTime.substring(3, 5);
+			var startTimePart = me.subscriptions[index].startTime.substring(0, 2);
+            var startMinutePart = me.subscriptions[index].startTime.substring(3, 5);
 		
             if (parseInt(startTimePart, 10) >= 12) {
 				$("#PM")[0].checked = true;
@@ -3037,8 +3059,8 @@ ii.Class({
 				me.startMinute.select(idIndex, me.startMinute.focused);
 
 			if (me.scheduleType == "MinuteRecurrence") {
-				var hours = (item.hours.length == 1) ? "0" + item.hours : item.hours;
-				var minutes = (item.minutes.length == 1) ? "0" + item.minutes : item.minutes;
+				var hours = (me.subscriptions[index].hours.length == 1) ? "0" + me.subscriptions[index].hours : me.subscriptions[index].hours;
+				var minutes = (me.subscriptions[index].minutes.length == 1) ? "0" + me.subscriptions[index].minutes : me.subscriptions[index].minutes;
 
 				idIndex = me.findIndexByTitle(hours, me.hours);
 				if (idIndex != null)
@@ -3049,25 +3071,25 @@ ii.Class({
 					me.minute.select(idIndex, me.minute.focused);
 			}
 			else if (me.scheduleType == "DailyRecurrence") {
-				if (item.numberOfDays > 0)
+				if (me.subscriptions[index].numberOfDays > 0)
 					$("#RepeatDay")[0].checked = true;
-				else if (!item.sunday && item.monday && item.tuesday && item.wednesday && item.thursday && item.friday && !item.saturday)
+				else if (!me.subscriptions[index].sunday && me.subscriptions[index].monday && me.subscriptions[index].tuesday && me.subscriptions[index].wednesday && me.subscriptions[index].thursday && me.subscriptions[index].friday && !me.subscriptions[index].saturday)
 					$("#WeekDay")[0].checked = true;
 				else
 					$("#Days")[0].checked = true;
 			}
 			else if (me.scheduleType == "MonthlyRecurrence") {
-				if (item.weekOfMonth != "")
+				if (me.subscriptions[index].weekOfMonth != "")
 					$("#rbWeekOfMonth")[0].checked = true;
 				else
 					$("#rbCalendarDays")[0].checked = true;
 			}
 
-			if (item.parameters != "") {
+			if (me.subscriptions[index].parameters != "") {
 				me.name = "";
 				me.names = "";
 				me.subscriptionSelected = true; 
-				me.subscriptionParameters = item.parameters.split(',');
+				me.subscriptionParameters = me.subscriptions[index].parameters.split(',');
             	$("#chkNode" + me.lastCheckedNode).attr("checked", false);
             	$("input[parent=" + me.lastCheckedNode + "]").each(function() {
             		if (this.checked) {
@@ -3144,10 +3166,10 @@ ii.Class({
 				}
 				
 				me.namesList = me.names.replace("~", "");
-				me.levelName = me.level.replace("~Level=", "");											
+				me.levelName = me.level.replace("~Level=", "");
+				me.setLoadCount();																
 				me.setStatus("Loading");
 				$("#customersLoading").addClass('loading');
-				me.genericTypeStore.reset();
 				me.genericTypeStore.fetch("level:" + me.levelName + ",name:" + me.namesList + ",genericType:Customers,userId:[user]", me.customersLoaded, me);
 			}
 
@@ -3460,7 +3482,7 @@ ii.Class({
 			me.status = "";
 
 			if (me.lastSelectedRowIndex >= 0)
-				me.subscriptionGrid.body.select(me.lastSelectedRowIndex);
+				me.actionSelectItem(me.lastSelectedRowIndex);
 			else {
 				me.resetControls();
 				me.subscriptionSelected = false;
@@ -3471,8 +3493,13 @@ ii.Class({
 			var me = this;
 
 			me.status = "new";
-			me.subscriptionId = "";			
-			me.subscriptionGrid.body.deselectAll();
+			me.subscriptionId = "";
+			
+			if(me.lastBeforeSelectedRowIndex != -1)
+				$("#subscriptionRow" + me.lastBeforeSelectedRowIndex).removeClass("selectedRow");
+				
+			me.lastBeforeSelectedRowIndex = -1;						
+			//me.subscriptionGrid.body.deselectAll();
 			me.resetScheduleInfo();
 			me.actionResetItem();
 		},
@@ -3480,7 +3507,7 @@ ii.Class({
 		actionDeleteItem: function() {
 			var me = this;
 
-			if (me.subscriptionGrid.activeRowIndex == -1)
+			if (me.lastSelectedRowIndex == -1)
 				return;
 
 			if (!confirm("Are you sure you want to delete the subscription - [" + me.subscriptions[me.lastSelectedRowIndex].description + "] permanently?")) 	
@@ -3781,20 +3808,20 @@ ii.Class({
 								item.subscriptionId = me.subscriptionId;
 								me.subscriptions.push(item);
 								me.lastSelectedRowIndex = me.subscriptions.length - 1;
-								me.subscriptionGrid.setData(me.subscriptions);
-								me.subscriptionGrid.body.select(me.lastSelectedRowIndex);
+								me.setSubscriptionGrid();
+								me.actionSelectItem(me.lastSelectedRowIndex);
 								me.status = "edit";
 							}
 							else if (me.status == "delete") {
 								me.resetControls();
 								me.subscriptions.splice(me.lastSelectedRowIndex, 1);
-								me.subscriptionGrid.setData(me.subscriptions);
+								me.subscriptionsLoaded(me, 0);
 								me.lastSelectedRowIndex = -1;
 								me.status = "";
 							}
 							else {
 								me.subscriptions[me.lastSelectedRowIndex] = item;
-								me.subscriptionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
+								me.actionSelectItem(me.lastSelectedRowIndex);
 							}
 
 							break;

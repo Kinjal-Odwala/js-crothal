@@ -50,10 +50,29 @@
 						<div id="TreeviewContainer">
 							<ul class="treeview" id="ulEdit0"></ul>
 						</div>
-						<div id="SubscriptionGridContainer">
-							<div style="clear:both;height:5px;"></div>
-							<div id="SubscriptionGrid"></div>
-						</div>
+						<div style="clear:both;height:5px;"></div>
+						<div id="SubscriptionGrid" style="display:none">
+							<table id="tblSubscription" class="gridBorder" cellpadding="0" cellspacing="0" width="100%" height="100%">
+						    	<tr>
+						        	<td>
+										<div id="DivSubscriptionGridHeader" style="height: 30px; width: 100%; position: relative; z-index: 3; overflow: hidden;">
+											<table id="tblSubscriptionGridHeader" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 2; width: 100%;">
+												<thead id="SubscriptionGridHead"></thead>
+											</table>
+										</div>
+									</td>
+								</tr>
+								<tr>
+					                <td>
+					                    <div id="divSubscriptionGrid" style="position: relative; overflow: auto;">                              
+					                        <table id="tblSubscriptionGrid" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 1; width: 100%;">
+					                            <tbody id="SubscriptionGridBody"></tbody>
+					                        </table>
+					                    </div>
+					                </td>
+				            	</tr>
+	        				</table>
+	    				</div>
 					</div>
 					<div id="ReportSubscriptionContainer" class="contentAreasContainerRight">						
 						<div class="contentArea">							
@@ -125,12 +144,6 @@
 						<div id="AnchorDelete"></div>
 						<div id="AnchorUndo"></div>
 					</div>					
-				</div>
-				<div id="SubscriptionContainer" style="display: none;">
-					<div class="contentAreasContainerLeft">
-						
-					</div>
-					
 				</div>
 			</div>
 			<div id="schedulePopup">
