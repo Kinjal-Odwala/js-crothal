@@ -85,8 +85,9 @@ ii.Class({
 			var me = this;
 	
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
-			//me.poCapitalRequisitionShow = me.authorizer.isAuthorized(me.authorizePath + "\\PORequisition");
-			//me.convertPOCapitalRequisitionToPOShow = me.authorizer.isAuthorized(me.authorizePath + "\\ConvertPORequisitionToPO");
+			me.poCapitalRequisitionShow = me.authorizer.isAuthorized(me.authorizePath + "\\POCapRequisition");
+			me.convertPOCapitalRequisitionToPOShow = me.authorizer.isAuthorized(me.authorizePath + "\\ConvertPOCapRequisitionToPO");
+			me.writeInProcess = me.authorizer.isAuthorized(me.authorizePath + "\\WriteInProcess");
 
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
@@ -100,25 +101,24 @@ ii.Class({
 
 				ii.timer.timing("Page displayed");
 				me.loadCount = 3;
-				me.session.registerFetchNotify(me.sessionLoaded,me);
+				me.session.registerFetchNotify(me.sessionLoaded, me);
 
-				//if (!me.poCapitalRequisitionShow) {
-				//	$("#AnchorNew").hide();
-				//	$("#LabelStatus").hide();
-				//	$("#InputTextStatus").hide();			
-				//	$("#SearchButtonStatus").hide();
-				//	$("#POCapitalRequisitionAction").hide();
-				//}
+				if (!me.poCapitalRequisitionShow && !me.writeInProcess) {
+					$("#AnchorNew").hide();
+					$("#LabelStatus").hide();
+					$("#InputTextStatus").hide();
+					$("#POCapitalRequisitionAction").hide();
+				}
 
-				//if (!me.convertPOCapitalRequisitionToPOShow) {
-				//	$("#GeneratePurchaseOrderFromPOCapitalRequisitionAction").hide();
-				//}
+				if (!me.convertPOCapitalRequisitionToPOShow) {
+					$("#GeneratePurchaseOrderFromPOCapitalRequisitionAction").hide();
+				}
 
-				//if (!me.poCapitalRequisitionShow && me.convertPOCapitalRequisitionToPOShow) {
-				//	$("#AnchorGeneratePurchaseOrder").show();
-				//	$("#AnchorJDEEntry").show();
-				//	me.action = "GeneratePurchaseOrder";
-				//}
+				if (!me.poCapitalRequisitionShow && !me.writeInProcess && me.convertPOCapitalRequisitionToPOShow) {
+					$("#AnchorGeneratePurchaseOrder").show();
+					$("#AnchorJDEEntry").show();
+					me.action = "GeneratePurchaseOrder";
+				}
 
 				if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
 					me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
@@ -176,8 +176,8 @@ ii.Class({
 					brief: "Generate Purchase Order From PO Capital Requisition", 
 					title: "To generate Purchase Order from PO Capital Requisition",
 					actionFunction: function() { me.actionGeneratePurchaseOrderFromPOCapitalRequisition(); }
-				})
-				
+				});
+
 			me.searchButton = new ui.ctl.buttons.Sizeable({
 				id: "SearchButton",
 				className: "iiButton",
@@ -1408,7 +1408,6 @@ ii.Class({
 		
 		stateTypesLoaded: function(me,activeId) {
 
-			//me.stateTypes.unshift(new fin.pur.poCapitalRequisition.StateType({ id: 0, number: 0, name: "None" }));
 			me.shippingState.setData(me.stateTypes);
 			me.vendorState.setData(me.stateTypes);	
 			me.checkLoadCount();		
@@ -1669,15 +1668,28 @@ ii.Class({
 						$("#AnchorCancelRequisition").hide();
 					}			
 	
-					$("#AnchorEdit").hide();
-					$("#AnchorView").show();
-					$("#VendorInfo").hide();
-					$("#CategoryInfo").hide();
-					$("#imgAdd").hide();
-					$("#imgEdit").hide();
-					$("#imgRemove").hide();
-					me.anchorSave.display(ui.cmn.behaviorStates.disabled);
-					me.setReadOnly(true);
+					if (me.writeInProcess && me.capitalRequisitionGrid.data[index].statusType == 2) {
+						$("#AnchorEdit").show();
+						$("#AnchorView").hide();
+						$("#VendorInfo").show();
+						$("#CategoryInfo").show();
+						$("#imgAdd").show();
+						$("#imgEdit").show();
+						$("#imgRemove").show();				
+						me.anchorSave.display(ui.cmn.behaviorStates.enabled);
+						me.setReadOnly(false);
+					}
+					else {
+						$("#AnchorEdit").hide();
+						$("#AnchorView").show();
+						$("#VendorInfo").hide();
+						$("#CategoryInfo").hide();
+						$("#imgAdd").hide();
+						$("#imgEdit").hide();
+						$("#imgRemove").hide();
+						me.anchorSave.display(ui.cmn.behaviorStates.disabled);
+						me.setReadOnly(true);
+					}
 				}
 				
 				me.loadCount++;
@@ -1969,8 +1981,7 @@ ii.Class({
 			$("#AnchorGeneratePurchaseOrder").hide();
 			$("#AnchorJDEEntry").hide();
 			$("#LabelStatus").show();
-			$("#InputTextStatus").show();			
-			//$("#SearchButtonStatus").show();
+			$("#InputTextStatus").show();
 			me.action = "POCapitalRequisition";
 			me.loadPOCapitalRequisitions();
 			me.setStatus("Loaded");
@@ -1987,8 +1998,7 @@ ii.Class({
 			$("#AnchorResendRequisition").hide();
 			$("#AnchorCancelRequisition").hide();
 			$("#LabelStatus").hide();
-			$("#InputTextStatus").hide();			
-			//$("#SearchButtonStatus").hide();
+			$("#InputTextStatus").hide();
 			$("#AnchorGeneratePurchaseOrder").show();
 			$("#AnchorJDEEntry").show();
 			me.action = "GeneratePurchaseOrder";
@@ -2189,7 +2199,10 @@ ii.Class({
 					me.anchorNext.display(ui.cmn.behaviorStates.disabled);
 					me.anchorBack.display(ui.cmn.behaviorStates.enabled);
 					
-					if (me.status == "NewPOCapitalRequisition" || me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].statusType == 10 || me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].statusType == 1)
+					if (me.status == "NewPOCapitalRequisition" 
+						|| me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].statusType == 10 
+						|| me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].statusType == 1
+						|| (me.writeInProcess && me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].statusType == 2))
 						me.anchorSave.display(ui.cmn.behaviorStates.enabled);
 					else
 						me.anchorSave.display(ui.cmn.behaviorStates.disabled);

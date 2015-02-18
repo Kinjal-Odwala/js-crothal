@@ -82,10 +82,11 @@ ii.Class({
 		authorizationProcess: function fin_pur_poRequisition_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
-	
+
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 			me.poRequisitionShow = me.authorizer.isAuthorized(me.authorizePath + "\\PORequisition");
 			me.convertPORequisitionToPOShow = me.authorizer.isAuthorized(me.authorizePath + "\\ConvertPORequisitionToPO");
+			me.writeInProcess = me.authorizer.isAuthorized(me.authorizePath + "\\WriteInProcess");
 
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
@@ -101,11 +102,10 @@ ii.Class({
 				me.loadCount = 3;
 				me.session.registerFetchNotify(me.sessionLoaded,me);
 
-				if (!me.poRequisitionShow) {
+				if (!me.poRequisitionShow && !me.writeInProcess) {
 					$("#AnchorNew").hide();
 					$("#LabelStatus").hide();
-					$("#InputTextStatus").hide();			
-					//$("#SearchButtonStatus").hide();
+					$("#InputTextStatus").hide();
 					$("#PORequisitionAction").hide();
 				}
 
@@ -113,7 +113,7 @@ ii.Class({
 					$("#GeneratePurchaseOrderFromPORequisitionAction").hide();
 				}
 
-				if (!me.poRequisitionShow && me.convertPORequisitionToPOShow) {
+				if (!me.poRequisitionShow && !me.writeInProcess && me.convertPORequisitionToPOShow) {
 					$("#AnchorGeneratePurchaseOrder").show();
 					$("#AnchorJDEEntry").show();
 					me.action = "GeneratePurchaseOrder";
@@ -1316,7 +1316,6 @@ ii.Class({
 		
 		stateTypesLoaded: function(me,activeId) {
 
-			//me.stateTypes.unshift(new fin.pur.poRequisition.StateType({ id: 0, number: 0, name: "None" }));
 			me.shippingState.setData(me.stateTypes);
 			me.vendorState.setData(me.stateTypes);	
 			me.checkLoadCount();		
@@ -1380,7 +1379,7 @@ ii.Class({
 			var me = this;
 			var statusType = "";
 			
-			if (me.action == "PORequisition" && me.poRequisitionShow)
+			if (me.action == "PORequisition")
 				statusType = me.statusType.indexSelected == -1 ? 0 : me.statuses[me.statusType.indexSelected].id;
 			else if (me.action == "GeneratePurchaseOrder")
 				statusType = "8";
@@ -1543,7 +1542,7 @@ ii.Class({
 						$("#AnchorResendRequisition").hide();
 						$("#AnchorSendRequisition").show();
 					}
-	
+
 					$("#AnchorEdit").show();
 					$("#AnchorView").hide();
 					$("#AnchorCancelRequisition").show();
@@ -1560,22 +1559,35 @@ ii.Class({
 						$("#AnchorResendRequisition").show();
 						$("#AnchorSendRequisition").hide();
 						$("#AnchorCancelRequisition").show();
-					}					
+					}
 					else {
 						$("#AnchorResendRequisition").hide();
 						$("#AnchorSendRequisition").hide();
 						$("#AnchorCancelRequisition").hide();
-					}			
-	
-					$("#AnchorEdit").hide();
-					$("#AnchorView").show();
-					$("#VendorInfo").hide();
-					$("#CategoryInfo").hide();
-					$("#imgAdd").hide();
-					$("#imgEdit").hide();
-					$("#imgRemove").hide();
-					me.anchorSave.display(ui.cmn.behaviorStates.disabled);
-					me.setReadOnly(true);
+					}
+
+					if (me.writeInProcess && me.requisitionGrid.data[index].statusType == 2) {
+						$("#AnchorEdit").show();
+						$("#AnchorView").hide();
+						$("#VendorInfo").show();
+						$("#CategoryInfo").show();
+						$("#imgAdd").show();
+						$("#imgEdit").show();
+						$("#imgRemove").show();				
+						me.anchorSave.display(ui.cmn.behaviorStates.enabled);
+						me.setReadOnly(false);
+					}
+					else {
+						$("#AnchorEdit").hide();
+						$("#AnchorView").show();
+						$("#VendorInfo").hide();
+						$("#CategoryInfo").hide();
+						$("#imgAdd").hide();
+						$("#imgEdit").hide();
+						$("#imgRemove").hide();
+						me.anchorSave.display(ui.cmn.behaviorStates.disabled);
+						me.setReadOnly(true);
+					}
 				}
 				
 				me.loadCount++;
@@ -1818,7 +1830,7 @@ ii.Class({
 					}	
 				}				
 				
-				if(alertMessage)
+				if (alertMessage)
 					return false;
 				else
 					return true;
@@ -1851,8 +1863,7 @@ ii.Class({
 			$("#AnchorGeneratePurchaseOrder").hide();
 			$("#AnchorJDEEntry").hide();
 			$("#LabelStatus").show();
-			$("#InputTextStatus").show();			
-			//$("#SearchButtonStatus").show();
+			$("#InputTextStatus").show();
 			me.action = "PORequisition";
 			me.loadPORequisitions();
 			me.setStatus("Loaded");
@@ -1870,7 +1881,6 @@ ii.Class({
 			$("#AnchorCancelRequisition").hide();
 			$("#LabelStatus").hide();
 			$("#InputTextStatus").hide();			
-			//$("#SearchButtonStatus").hide();
 			$("#AnchorGeneratePurchaseOrder").show();
 			$("#AnchorJDEEntry").show();
 			me.action = "GeneratePurchaseOrder";
@@ -1975,8 +1985,8 @@ ii.Class({
 			me.itemGrid.setData(me.poRequisitionDetails);
 			
 			for (var iIndex = 0; iIndex < me.poRequisitionDetails.length; iIndex++) {
-					if (me.poRequisitionDetails[iIndex].quantity != "" && !isNaN(me.poRequisitionDetails[iIndex].quantity) && me.poRequisitionDetails[iIndex].price != undefined && me.poRequisitionDetails[iIndex].itemSelect) {
-						me.total = me.total + (me.poRequisitionDetails[iIndex].quantity * me.poRequisitionDetails[iIndex].price)
+				if (me.poRequisitionDetails[iIndex].quantity != "" && !isNaN(me.poRequisitionDetails[iIndex].quantity) && me.poRequisitionDetails[iIndex].price != undefined && me.poRequisitionDetails[iIndex].itemSelect) {
+					me.total = me.total + (me.poRequisitionDetails[iIndex].quantity * me.poRequisitionDetails[iIndex].price)
 				}
 			}
 			
@@ -2057,7 +2067,10 @@ ii.Class({
 					me.anchorNext.display(ui.cmn.behaviorStates.disabled);
 					me.anchorBack.display(ui.cmn.behaviorStates.enabled);
 					
-					if (me.status == "NewPORequisition" || me.requisitionGrid.data[me.lastSelectedRowIndex].statusType == 10 || me.requisitionGrid.data[me.lastSelectedRowIndex].statusType == 1)
+					if (me.status == "NewPORequisition" 
+						|| me.requisitionGrid.data[me.lastSelectedRowIndex].statusType == 10 
+						|| me.requisitionGrid.data[me.lastSelectedRowIndex].statusType == 1
+						|| (me.writeInProcess && me.requisitionGrid.data[me.lastSelectedRowIndex].statusType == 2))
 						me.anchorSave.display(ui.cmn.behaviorStates.enabled);
 					else
 						me.anchorSave.display(ui.cmn.behaviorStates.disabled);

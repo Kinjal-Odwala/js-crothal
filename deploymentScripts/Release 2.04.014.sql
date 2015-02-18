@@ -45,6 +45,11 @@ Select * From EsmV2.dbo.AppMenuItems
 Select * From EsmV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\HouseCodeSetup%'
 -- House Code --> House Code Workflow Menu Insert [End]
 
+-- Add the following keys in hcm-->act web.config file
+<add key="HouseCodeRequestApprovalPath" value="https://teamfin.crothall.com/fin/app/usr/markup.htm" />
+-- Add the following keys in hcm-->act-->config spring-persistence.xml file
+<value>crothall.chimes.fin.app.dom, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+
 -- Purchasing --> PO Capital Requisition Menu Insert [Begin]
 Declare @DisplayOrderMenu Int
 	, @HirNodeParent Int
@@ -66,6 +71,10 @@ Where HirNodFullPath = '\crothall\chimes\fin\Purchasing\CapRequisition'
 Select * From EsmV2.dbo.AppMenuItems
 Select * From EsmV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\Purchasing%'
 -- Purchasing --> PO Capital Requisition Menu Insert [End] 
+
+-- Add the following key in pur-->act web.config file
+<add key="POCapitalRequisitionEmail" value="sus-purchasing@compass-usa.com" />
+<add key="POCapitalRequisitionApprovalPath" value="https://teamfin.crothall.com/net/crothall/chimes/fin/pur/act/ApprovePOCapitalRequisition.aspx" />
 
 -- Reports --> SSRS Parameters Insert [Begin]
 --ALTER TABLE [TeamFinV2].[dbo].[RptReportParameters] ADD RptReppReferenceTableName VARCHAR(64) NULL
@@ -397,7 +406,7 @@ Values (@RptReport, 'Exclude Hierarchy Level', 'ExcludeHierarchyLevel', 'Integer
 Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder)
 Values (@RptReport, 'Exclude Names', 'ExcludeNames', 'Integer', 'MultiSelect', '', 1, 'Compass-USA\Data Conversion', GetDate(), 'ExName', 6)
 
-Select @RptReport =  RptReport From RptReports Where RptRepTitle = 'Period Forecasts'
+Select @RptReport = RptReport From RptReports Where RptRepTitle = 'Period Forecasts'
 Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder)
 Values (@RptReport, 'Customers', 'Customers', 'Integer', 'MultiSelect', '', 1, 'Compass-USA\Data Conversion', GetDate(), 'Customer', 1)
 Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder)
@@ -413,7 +422,7 @@ Values (@RptReport, 'Exclude Names', 'ExcludeNames', 'Integer', 'MultiSelect', '
 Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder)
 Values (@RptReport, 'Report Type', 'ReportType', 'Integer', 'DropDown', '', 1, 'Compass-USA\Data Conversion', GetDate(), 'ReportType', 7)
 
-Select @RptReport =  RptReport From RptReports Where RptRepTitle = 'Summary'
+Select @RptReport = RptReport From RptReports Where RptRepTitle = 'MOP Summary'
 Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder)
 Values (@RptReport, 'Customers', 'Customers', 'Integer', 'MultiSelect', '', 1, 'Compass-USA\Data Conversion', GetDate(), 'Customer', 1)
 Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder)
@@ -475,17 +484,17 @@ Values (@RptReport, 'Customers', 'Customers', 'Integer', 'MultiSelect', '', 1, '
 Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder)
 Values (@RptReport, 'Exclude Overhead Accounts', 'ExcludeOverheadAccounts', 'Integer', 'DropDown', '', 1, 'Compass-USA\Data Conversion', GetDate(), 'OverHead', 4)
 
-Select @RptReport =  RptReport From RptReports Where RptRepTitle = 'Hierarchy'
-Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder)
-Values (@RptReport, 'Fiscal Year', 'FiscalYear', 'Integer', 'DropDown', '', 1, 'Compass-USA\Data Conversion', GetDate(), 'FscYear', 1)
-Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder)
-Values (@RptReport, 'GL Accounts', 'GLAccounts', 'Integer', 'MultiSelect', '', 1, 'Compass-USA\Data Conversion', GetDate(), 'FscAccount', 2)
-Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder)
-Values (@RptReport, 'Customers', 'Customers', 'Integer', 'MultiSelect', '', 1, 'Compass-USA\Data Conversion', GetDate(), 'Customer', 3)
-Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder)
-Values (@RptReport, 'Exclude House Codes', 'ExcludeHouseCodes', 'Integer', 'MultiSelect', '', 1, 'Compass-USA\Data Conversion', GetDate(), 'ExcludeHouseCode', 4)
-Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder)
-Values (@RptReport, 'Exclude Overhead Accounts', 'ExcludeOverheadAccounts', 'Integer', 'DropDown', '', 1, 'Compass-USA\Data Conversion', GetDate(), 'OverHead', 5)
+Select @RptReport =  RptReport From RptReports Where RptRepTitle = 'Budget Hierarchy'
+Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+Values (@RptReport, 'Fiscal Year', 'FscYear', 'Integer', 'DropDown', '', 1, 'Compass-USA\Data Conversion', GetDate(), 'FscYears', 1, 100)
+Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+Values (@RptReport, 'GL Accounts', 'FscAccount', 'Integer', 'MultiSelect', '(Select All)', 1, 'Compass-USA\Data Conversion', GetDate(), 'FscAccountCategories', 2, 350)
+Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+Values (@RptReport, 'Customers', 'Customer', 'Integer', 'MultiSelect', '(Select All)', 1, 'Compass-USA\Data Conversion', GetDate(), 'Customers', 3, 400)
+Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+Values (@RptReport, 'Exclude House Codes', 'ExcludeHouseCode', 'Integer', 'MultiSelect', '', 1, 'Compass-USA\Data Conversion', GetDate(), 'ExcludeHouseCodes', 4, 400)
+Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+Values (@RptReport, 'Exclude Overhead Accounts', 'OverHead', 'Integer', 'DropDown', '3', 1, 'Compass-USA\Data Conversion', GetDate(), 'ExcludeOverheadAccounts', 5, 100)
 
 Select @RptReport =  RptReport From RptReports Where RptRepTitle = 'Payroll Register'
 Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder)
@@ -1001,10 +1010,17 @@ update RptReportParameters set RptReppWidth = 400 where RptReppName = 'BatchNumb
 --ALTER TABLE [TeamFinV2].[dbo].[RptReportParameters] ADD [RptReppWidth] [int] NULL
 --ALTER TABLE [TeamFinV2].[dbo].[RptReports] ADD RptRepParameterAvailable BIT
 Update [TeamFinV2].[dbo].[RptReports] Set RptRepParameterAvailable = 0
-Update [TeamFinV2].[dbo].[RptReports] Set RptRepParameterAvailable = 1 Where RptRepTitle = 'Budget vs Actual'
+--Update [TeamFinV2].[dbo].[RptReports] Set RptRepParameterAvailable = 1 Where RptRepTitle = 'Budget vs Actual'
 Update [TeamFinV2].[dbo].[RptReports] Set RptRepParameterAvailable = 1 Where RptRepTitle = 'EFT Stats'
-Update [TeamFinV2].[dbo].[RptReports] Set RptRepParameterAvailable = 1 Where RptRepTitle = 'Payroll Register'
+--Update [TeamFinV2].[dbo].[RptReports] Set RptRepParameterAvailable = 1 Where RptRepTitle = 'Payroll Register'
+
+Update [TeamFinV2].[dbo].[RptReports] Set RptRepParameterAvailable = 1 Where RptRepTitle = 'Forecasts by Site'
+Update [TeamFinV2].[dbo].[RptReports] Set RptRepParameterAvailable = 1 Where RptRepTitle = 'League Standings'
+Update [TeamFinV2].[dbo].[RptReports] Set RptRepParameterAvailable = 1 Where RptRepTitle = 'Period Forecasts'
 Update [TeamFinV2].[dbo].[RptReports] Set RptRepParameterAvailable = 1 Where RptRepTitle = 'MOP'
+Update [TeamFinV2].[dbo].[RptReports] Set RptRepParameterAvailable = 1 Where RptRepTitle = 'MOP Summary'
+Update [TeamFinV2].[dbo].[RptReports] Set RptRepParameterAvailable = 1 Where RptRepTitle = 'MOP Rollup'
+Update [TeamFinV2].[dbo].[RptReports] Set RptRepParameterAvailable = 1 Where RptRepTitle = 'MOP Rollup By Hierarchy'
 
 -- Reports --> SSRS Reports Update [End]
 
@@ -1077,4 +1093,173 @@ The user will have the ability to change any data on the form and at the end wil
 
 /*
 CT updated on 3rd December 2014 11PM EST
+*/
+
+-- Add the following keys in pay-->act web.config file
+<add key="LogFilePath" value="D:\Users\Chandru\Dropbox (i3)\repos\js\crothall\js-crothall-chimes-fin\logs\" />
+
+-- Add the following keys in srv-->act web.config file
+<add key="CommandTimeout" value="90" />
+
+--ALTER TABLE [TeamFinV2].[dbo].[HcmHouseCodes] ADD HcmHoucMealPlan INT NULL
+--ALTER TABLE [TeamFinV2].[dbo].[EmpEmployeeGenerals] ADD EmpEmpgMealPlan INT NULL
+--ALTER TABLE [TeamFinV2].[dbo].[EmpEmployeeGenerals] ADD EmpEmpgMealPlanChangeDate DATETIME NULL
+--ALTER TABLE [TeamFinV2].[dbo].[EmpEmployeeGenerals] ADD EmpEmpgMealPlanChangeStatus BIT NULL
+--ALTER TABLE [TeamFinV2].[dbo].[EmpEmployeeGenerals] ADD EmpEmpgMealPlanPayrollDeduction BIT NULL
+
+--ALTER TABLE HcmHouseCodes ALTER COLUMN HcmHoucMealPlan INT
+--ALTER TABLE EmpEmployeeGenerals ALTER COLUMN EmpEmpgMealPlan INT
+--EXEC sp_rename 'EmpEmployeeGenerals.EmpEmpgMealPlanOption', 'EmpEmpgMealPlanPayrollDeduction', 'COLUMN'
+
+-- Reports --> SSRS Reports Update [Begin]
+Declare @RptReport int
+select @RptReport = RptReport from RptReports where RptRepTitle = 'Detailed Profit and Loss'
+Update rptreportparameters Set RptReppReferenceTableName = 'Overhead' Where RptReppName = 'ExcludeOverheadAccounts' And RptReport = @RptReport
+
+select @RptReport = RptReport from RptReports where RptRepTitle = 'Period Forecasts'
+Update rptreportparameters Set RptReppReferenceTableName = 'Overhead' Where RptReppName = 'ExcludeOverheadAccounts' And RptReport = @RptReport
+
+select @RptReport = RptReport from RptReports where RptRepTitle = 'Summary'
+Update rptreportparameters Set RptReppReferenceTableName = 'Overhead' Where RptReppName = 'ExcludeOverheadAccounts' And RptReport = @RptReport
+-- Reports --> SSRS Reports Update [End]
+
+-- Add security nodes for action menu items in Payroll --> Process Payroll UI [Begin]
+Declare @HirNode As Int
+Declare @DisplayOrder Int
+
+Select @DisplayOrder = Max(HirNode) From ESMV2.dbo.HirNodes
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Payroll\ProcessPayroll'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'ExportedBatch', 'Exported Batches', 'Exported Batches', @DisplayOrder + 1, 1, '\crothall\chimes\fin\Payroll\ProcessPayroll\ExportedBatch', 'crothall', 'chimes', 'fin', 'Payroll', 'ProcessPayroll', 'ExportedBatch', 'Compass-USA\Data Conversion', GetDate())
+
+Select * From ESMV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\Payroll\ProcessPayroll%'
+-- Add security nodes for action menu items in Payroll --> Process Payroll UI [End]
+
+/*
+CT updated on 23rd December 2014 11PM EST
+*/
+
+Update RptReportParameters Set RptReppDefaultValue = 'None' Where RptReppName = 'ExcludeHierarchyLevel'
+
+Declare @RptReport INT
+Select @RptReport = RptReport From RptReports Where RptRepTitle = 'Lost Client Listing'
+Update RptReportParameters Set RptReppTitle = 'From Closed Date', RptReppName = 'ClosedDate' Where RptReppName = 'StartDate' And RptReport = @RptReport
+
+Declare @Count INT
+select @RptReport = RptReport from RptReports where RptRepTitle = 'League Standings'
+select @Count = count(*) from RptReportParameters where RptReppTitle = 'Exclude Overhead Accounts' And RptReport = @RptReport
+IF (@Count = 0)
+Begin
+    Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+    Values (@RptReport, 'Exclude Overhead Accounts', 'ExcludeOverheadAccounts', 'Integer', 'DropDown', '3', 1, 'Compass-USA\Data Conversion', GetDate(), 'Overhead', 4, 100)
+End
+
+Declare @RptReport INT
+Select @RptReport = RptReport From RptReports Where RptRepTitle = 'MOP Summary'
+Update RptReportParameters Set RptReppReferenceTableName = 'Overhead' Where RptReppName = 'ExcludeOverheadAccounts' and RptReport = @RptReport
+
+-- Setup --> Employee PAF Menu Insert [Begin]
+Declare @DisplayOrderMenu Int
+	, @HirNodeParent Int
+Set @DisplayOrderMenu = 819
+Select @HirNodeParent = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Setup'
+
+Exec EsmV2.dbo.AppMenuItemUpdate 
+	'Employee PAF' --@MenuTitle Varchar(64)
+	, 2 --@MenuAction Int 1-mainmenu, 2-submenu
+	, 4 --@MenuState Int 3-selected, 4-enabled
+	, @DisplayOrderMenu 
+	, '/fin/emp/employeePAF/usr/markup.htm'
+	, @HirNodeParent
+
+Select * From EsmV2.dbo.AppMenuItems
+Select * From EsmV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\Setup\EmployeePAF%'
+-- Setup --> Employee PAF Menu Insert [End] 
+
+Update RptReportParameters Set RptReppReferenceTableName = 'PayCodes', RptReppName = 'PayCode' Where RptReppName = 'PayCodes'
+Update RptReportParameters Set RptReppReferenceTableName = 'EmpStatusTypes', RptReppName = 'EmployeeStatus' Where RptReppName = 'EmployeeStatus'
+Update RptReportParameters Set RptReppReferenceTableName = 'EmpWorkShifts' Where RptReppName = 'Shift'
+Update RptReportParameters Set RptReppReferenceTableName = 'FscAccountCategories', RptReppName = 'FscAccount' Where RptReppName = 'GLAccounts'
+Update RptReportParameters Set RptReppReferenceTableName = 'RptStatusTypes', RptReppName = 'StatusType' Where RptReppName = 'InvoiceStatus'
+Update RptReportParameters Set RptReppReferenceTableName = 'WoStatus', RptReppName = 'StatusType' Where RptReppName = 'WOStatus'
+Update RptReportParameters Set RptReppReferenceTableName = 'AppStateTypes', RptReppName = 'States' Where RptReppName = 'State'
+Update RptReportParameters Set RptReppReferenceTableName = 'HcmServiceTypes' Where RptReppName = 'PrimaryService'
+Update RptReportParameters Set RptReppReferenceTableName = 'HcmServiceLines' Where RptReppName = 'ServiceLine'
+Update RptReportParameters Set RptReppReferenceTableName = 'HcmServiceLines' Where RptReppName = 'FinancialEntity'
+Update RptReportParameters Set RptReppReferenceTableName = 'HcmContractTypes' Where RptReppName = 'ContractType'
+Update RptReportParameters Set RptReppName = 'Exclude' Where RptReppReferenceTableName = 'Exclude'
+Update RptReportParameters Set RptReppName = 'ExcludeHouseCode' Where RptReppReferenceTableName = 'ExcludeHouseCode'
+Update RptReportParameters Set RptReppReferenceTableName = 'ExcludeHouseCodes' Where RptReppTitle = 'Exclude House Codes'
+Update RptReportParameters Set RptReppReferenceTableName = 'HouseCodes' Where RptReppName = 'HouseCode'
+Update RptReportParameters Set RptReppReferenceTableName = 'FscYears', RptReppName = 'FscYear' Where RptReppName = 'FiscalYear'
+Update RptReportParameters Set RptReppReferenceTableName = 'FscPeriods', RptReppName = 'FscPeriod' Where RptReppName = 'FiscalPeriod'
+Update RptReportParameters Set RptReppReferenceTableName = 'FscPeriods', RptReppName = 'YearPeriods' Where RptReppName = 'ThruFiscalPeriod'
+Update RptReportParameters Set RptReppReferenceTableName = 'FscPeriods', RptReppName = 'FscPeriodFrom' Where RptReppName = 'FiscalPeriodFrom'
+Update RptReportParameters Set RptReppReferenceTableName = 'FscPeriods', RptReppName = 'FscPeriodTo' Where RptReppName = 'FiscalPeriodTo'
+Update RptReportParameters Set RptReppReferenceTableName = 'PayPayrollCompanies' Where RptReppName = 'PayrollCompany'
+Update RptReportParameters Set RptReppReferenceTableName = 'RevInvoiceBatches' Where RptReppName = 'BatchNumber'
+Update RptReportParameters Set RptReppReferenceTableName = 'WeekPeriods', RptReppName = 'WkPeriod' Where RptReppName = 'Week'
+Update RptReportParameters Set RptReppReferenceTableName = 'WeekPeriods', RptReppName = 'WkPeriod' Where RptReppName = 'FiscalWeek'
+Update RptReportParameters Set RptReppReferenceTableName = 'PayPeriodEndingDates', RptReppName = 'PayPeriod' Where RptReppName = 'PayPeriodEndingDate'
+Update RptReportParameters Set RptReppReferenceTableName = 'ExLevels', RptReppName = 'ExLevel' Where RptReppName = 'ExcludeHierarchyLevel'
+Update RptReportParameters Set RptReppReferenceTableName = 'BudgetTypes', RptReppName = 'Report' Where RptReppName = 'Budget'
+Update RptReportParameters Set RptReppReferenceTableName = 'ReportTypes' Where RptReppName = 'ReportType'
+Update RptReportParameters Set RptReppReferenceTableName = 'CrothallEmployees' Where RptReppName = 'CrothallEmployee'
+Update RptReportParameters Set RptReppReferenceTableName = 'CurrentWeeks', RptReppName = 'Week' Where RptReppName = 'CurrentWeek'
+Update RptReportParameters Set RptReppReferenceTableName = 'Unions' Where RptReppName = 'UnionNonUnion'
+Update RptReportParameters Set RptReppReferenceTableName = 'EntryMethods' Where RptReppName = 'EntryMethod'
+Update RptReportParameters Set RptReppReferenceTableName = 'Hour40Exceptions' Where RptReppName = 'Hour40Exception'
+Update RptReportParameters Set RptReppReferenceTableName = 'CountHours' Where RptReppName = 'ShowCntHrs'
+Update RptReportParameters Set RptReppReferenceTableName = 'Exceptions', RptReppName = 'Exception' Where RptReppName = 'Exceptions'
+Update RptReportParameters Set RptReppReferenceTableName = 'GroupLevels' Where RptReppName = 'GroupLevel'
+Update RptReportParameters Set RptReppReferenceTableName = 'Customers', RptReppName = 'Customer' Where RptReppName = 'Customers'
+Update RptReportParameters Set RptReppReferenceTableName = 'ExcludeOverheadAccounts', RptReppName = 'OverHead'  Where RptReppName = 'ExcludeOverheadAccounts'
+
+Declare @RptReport INT
+Select @RptReport = RptReport From RptReports Where RptRepTitle = 'Payroll Register'
+Update RptReportParameters Set RptReppReferenceTableName = 'PayrollReportTypes', RptReppName = 'Report' Where RptReppName = 'ReportType'  and RptReport = @RptReport
+
+Select @RptReport = RptReport From RptReports Where RptRepTitle = 'Period Projections'
+Update RptReportParameters Set RptReppName = 'YearPeriods' Where RptReppTitle = 'Fiscal Period'  and RptReport = @RptReport
+
+Select @RptReport = RptReport From RptReports Where RptRepTitle = 'MOP Summary'
+Update RptReportParameters Set RptReppName = 'Overhead' Where RptReppTitle = 'Exclude Overhead Accounts'  and RptReport = @RptReport
+
+Select @RptReport = RptReport From RptReports Where RptRepTitle = 'Period Forecasts'
+Update RptReportParameters Set RptReppName = 'Overhead' Where RptReppTitle = 'Exclude Overhead Accounts'  and RptReport = @RptReport
+
+Select @RptReport = RptReport From RptReports Where RptRepTitle = 'Detailed Profit and Loss'
+Update RptReportParameters Set RptReppName = 'Overhead' Where RptReppTitle = 'Exclude Overhead Accounts'  and RptReport = @RptReport
+
+Select @RptReport = RptReport From RptReports Where RptRepTitle = 'League Standings'
+Update RptReportParameters Set RptReppName = 'Overhead' Where RptReppTitle = 'Exclude Overhead Accounts'  and RptReport = @RptReport
+
+Select @RptReport = RptReport From RptReports Where RptRepTitle = 'EPay Act vs Bud'
+Update RptReportParameters Set RptReppName = 'DateRange' Where RptReppName = 'WkPeriod'  and RptReport = @RptReport
+
+Update RptReportParameters Set RptReppReferenceTableName = 'ExcludeNames', RptReppName = 'ExName' Where RptReppName = 'ExcludeNames'
+
+Select @RptReport = RptReport From RptReports Where RptRepTitle = 'MOP Summary' 
+Update RptReportParameters Set RptReppReferenceTableName = 'SummeryReportTypes' Where RptReppName = 'ReportType'  and RptReport = @RptReport
+
+/*
+CT updated on 13th January 2015 11PM EST
+*/
+
+Copy the following files manually
+net folder
+../pur/act/bin/crothall.chimes.fin.pur.act.dll
+../pur/act/bin/crothall.chimes.fin.pur.dom.dll
+../pur/act/bin/crothall.chimes.fin.pur.srv.dll
+../pur/act/bin/crothall.chimes.fin.cmn.rep.dll
+
+js folder
+../pur/capitalRequisition/usr/main.js
+../pur/requisition/usr/main.js
+../pay/payCheck/usr/main.js
+../pay/processPayroll/usr/main.js
+
+
+/*
+Last production release version 2.04.014 on 28th January 2015 11PM EST
 */

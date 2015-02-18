@@ -50,40 +50,31 @@
 						<div id="TreeviewContainer">
 							<ul class="treeview" id="ulEdit0"></ul>
 						</div>
-					</div>
-					<div id="RightContainer" class="contentAreasContainerRight" style="display:none">
 						<div style="clear:both;height:5px;"></div>
-						<div ng-app="reportApp">
-							<div id="SearchContainer" class="container-fluid" ng-controller="SearchCtrl">
-							    <input type="text" ng-model="selected" typeahead="node as node.title for node in nodes | filter:{title: $viewValue} | limitTo:10" class="form-control" placeholder="Search any Level or a Site Name" typeahead-editable="false" typeahead-on-select="onSelect($item, $model, $label)" />
-							 </div>
-						</div>
-						<div style="clear:both;height:5px;"></div>
-						<div id="LevelNamesContainer">
-							<ul class="treeview" id="ulEdit1"></ul>
-						</div>
-						<div style="clear:both; height:10px;"></div>
-						<div id="ParameterContainer"></div>												
-						<div class="body">
-							<div style="clear:both; height:5px;"></div>							
-							<div id="AnchorGenerateReport"></div>
-							<div id="AnchorReset"></div>
-							<div style="clear:both; height:10px;"></div>
-						</div>
+						<div id="SubscriptionGrid" style="display:none">
+							<table id="tblSubscription" class="gridBorder" cellpadding="0" cellspacing="0" width="100%" height="100%">
+						    	<tr>
+						        	<td>
+										<div id="DivSubscriptionGridHeader" style="height: 30px; width: 100%; position: relative; z-index: 3; overflow: hidden;">
+											<table id="tblSubscriptionGridHeader" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 2; width: 100%;">
+												<thead id="SubscriptionGridHead"></thead>
+											</table>
+										</div>
+									</td>
+								</tr>
+								<tr>
+					                <td>
+					                    <div id="divSubscriptionGrid" style="position: relative; overflow: auto;">                              
+					                        <table id="tblSubscriptionGrid" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 1; width: 100%;">
+					                            <tbody id="SubscriptionGridBody"></tbody>
+					                        </table>
+					                    </div>
+					                </td>
+				            	</tr>
+	        				</table>
+	    				</div>
 					</div>
-				</div>
-				<div id="SubscriptionContainer" style="display: none;">
-					<div class="contentAreasContainerLeft">
-						<div id="SubscriptionGridContainer">
-							<div class="labelTextArea">Report:</div>
-							<div class="inputTextMedium">
-								<div id="Report"></div>
-							</div>
-							<div style="clear:both;"></div>
-							<div id="SubscriptionGrid"></div>
-						</div>
-					</div>
-					<div class="contentAreasContainerRight">
+					<div id="ReportSubscriptionContainer" class="contentAreasContainerRight">						
 						<div class="contentArea">							
 							<div id="Subscription">
 								<div class="header" id="RightContainerHeader">Subscription Details</div>
@@ -114,24 +105,45 @@
 								<div id="LabelDate" class="labelSchedule">Specify the report parameter values to use with this subscription.</div>
 								<div style="clear:both;"></div>
 								<div id="ParemeterContainer"></div>
-								<div style="clear:both;"></div>
+							</div>
+							<div id="ReportRightContainer" style="display:none">
+								<div style="height:5px;"></div>
+								<div ng-app="reportApp">
+									<div id="SearchContainer" class="container-fluid" ng-controller="SearchCtrl">
+									    <input type="text" ng-model="selected" typeahead="node as node.title for node in nodes | filter:{title: $viewValue} | limitTo:10" class="form-control" placeholder="Search any Level or a Site Name" typeahead-editable="false" typeahead-on-select="onSelect($item, $model, $label)" />
+									 </div>
+								</div>
+								<div style="clear:both;height:5px;"></div>
+								<div id="LevelNamesContainer">
+									<ul class="treeview" id="ulEdit1"></ul>
+								</div>
+								<div style="clear:both; height:5px;"></div>
+								<div id="ParameterContainer"></div>
+								<div style="clear:both; height:5px;"></div>
+							</div>
+							<div id="ScheduleContainer" style="display:none">
+								<div style="height:5px;"></div>
 								<div id="LabelDateHeader" class="labelSchedule">Subscription Processing Options</div>
 								<div style="clear:both;"></div>
 								<div id="LabelDate" class="labelSchedule">Run the subscription:</div>
 								<div id="AnchorSchedule"></div>
 								<div style="clear:both;"></div>
-								<div id="ScheduleInfo" class="labelSchedule"></div>								
+								<div id="ScheduleInfo" class="labelSchedule"></div>
 							</div>
-							<div class="body">
-								<div style="clear:both; height:5px;"></div>
-								<div id="AnchorSave"></div>
-								<div id="AnchorNew"></div>
-								<div id="AnchorDelete"></div>
-								<div id="AnchorUndo"></div>
-								<div style="clear:both; height:10px;"></div>
-							</div>							
 						</div>
 					</div>
+					<div id="ReportButtonContainer" class="contentAreasContainerRight" style="display:none">
+						<div style="clear:both; height:5px;"></div>
+						<div id="AnchorGenerateReport"></div>
+						<div id="AnchorReset"></div>
+					</div>
+					<div id="SubscriptionButtonContainer" class="contentAreasContainerRight" style="display:none">
+						<div style="clear:both; height:5px;"></div>						
+						<div id="AnchorSave"></div>
+						<div id="AnchorNew"></div>
+						<div id="AnchorDelete"></div>
+						<div id="AnchorUndo"></div>
+					</div>					
 				</div>
 			</div>
 			<div id="schedulePopup">
@@ -164,7 +176,6 @@
 					<div id="ScheduleDetails">
 						<div id="HourlySchedule">
 							<div class="labelSchedule"><span class="requiredFieldIndicator">&#149;</span>&nbsp;Run the schedule every:</div>
-							<div style="clear:both;"></div>
 							<div id="Hours"></div><div id="LabelHours">hours</div>						
 							<div id="Minutes"></div><div id="LabelMinutes">minutes</div>
 						</div>
@@ -312,7 +323,7 @@
 				<div class="body">
 					<div style="clear:both; height:10px;"></div>
 					<div class="labelTextArea">House Code:</div>
-					<div class="inputTextMedium">
+					<div class="inputTextLarge">
 						<div id="AppUnit"></div>
 					</div>
 					<div id="AnchorSearch"></div>

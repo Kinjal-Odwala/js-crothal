@@ -91,7 +91,8 @@ ii.init.register( function(){
 		, date: {type: String, required: false, defaultValue: ""}
 		, earnings: {type: Number, required: false, defaultValue: 0}
 		, alternateBaseRate: {type: Number, required: false, defaultValue: 0}
-		, workOrderNumber: {type: String, required: false, defaultValue: ""}
+		, houseCodeId: {type: Number, required: false, defaultValue: 0}
+		, houseCodeTitle: {type: String, required: false, defaultValue: ""}
 	};
 	
 	fin.pay.payCheck.payCheckRequestDocumentArgs = {
@@ -110,8 +111,11 @@ ii.init.register( function(){
 		id: {type: Number}
 		, employeeNumber: {type: String, required: false, defaultValue: ""}
 		, firstName: {type: String}
-		, lastName: {type: String, required: false, defaultValue: ""}		
+		, lastName: {type: String, required: false, defaultValue: ""}
+		, brief: {type: String, required: false, defaultValue: ""}		
 		, houseCode: {type: String, required: false, defaultValue: ""}
+		, employeeNumber: {type: String, required: false, defaultValue: ""}
+		, ssn: {type: String, required: false, defaultValue: ""}
 	};
 	
 	fin.pay.payCheck.personArgs = {
