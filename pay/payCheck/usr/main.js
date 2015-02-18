@@ -963,7 +963,7 @@ ii.Class({
 			$("#imgRemove").bind("click", function() { me.actionRemoveItem(); });
 			$("#imgView").bind("click", function() { me.actionViewItem(); });
 			$("#EmployeeNumberText").bind("change", function() { me.searchEmployeeByNumber(); });
-			$("#ChargeToHouseCodeText").bind("change", function() { me.chargeToHouseCodeChange(); });			
+			$("#ChargeToHouseCodeText").bind("blur keyup", me, me.chargeToHouseCodeChange);
 			$("#EmployeeNameText").bind("change", function() { me.searchEmployeeByName(); });
 			$("#FilterTypeText").bind("keydown", me, me.actionSearchItem);			
 			$("#SearchInputText").bind("keydown", me, me.actionSearchItem);
@@ -1625,19 +1625,25 @@ ii.Class({
 		},
 		
 		chargeToHouseCodeChange: function() {
-	        var me = this;
+			var args = ii.args(arguments, {
+				event: {type: Object} // The (key) event object
+			});			
+			var event = args.event;
+			var me = event.data;
 	        var houseCode = me.chargeToHouseCode.getValue().replace(/[^0-9]/g, "");
 	
-	        me.chargeToHouseCode.setValue(houseCode);
-	        if (houseCode != "") {
-                me.validChargeToHouseCode = false;
-                me.chargeToHouseCodeCheck(houseCode);
-	        }
-	        else {
-                me.validChargeToHouseCode = true;
-                if (me.payCodeDetailGrid.data[me.payCodeDetailGrid.activeRowIndex] != undefined)
-                    me.payCodeDetailGrid.data[me.payCodeDetailGrid.activeRowIndex].houseCodeId = 0;
-	        }
+			if (event.type == 'blur' || event.keyCode == 13 || event.keyCode == 9) {
+				me.chargeToHouseCode.setValue(houseCode);
+		        if (houseCode != "") {
+	                me.validChargeToHouseCode = false;
+	                me.chargeToHouseCodeCheck(houseCode);
+		        }
+		        else {
+	                me.validChargeToHouseCode = true;
+	                if (me.payCodeDetailGrid.data[me.payCodeDetailGrid.activeRowIndex] != undefined)
+	                    me.payCodeDetailGrid.data[me.payCodeDetailGrid.activeRowIndex].houseCodeId = 0;
+		        }
+			}
         },
 
         chargeToHouseCodeCheck: function(houseCode) {
