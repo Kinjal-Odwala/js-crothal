@@ -34,8 +34,8 @@ ii.Class({
 			me.loadCount = 0;
 			me.fileName = "";
 			me.searchBy == "";
-			me.validHouseCode = false;
-			me.houseCodeCache = [];
+			me.validChargeToHouseCode = false;
+			me.chargeToHouseCodeCache = [];
 
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 
@@ -457,16 +457,16 @@ ii.Class({
 				id: "PayCodeDetailGrid",
 				allowAdds: true,
 				createNewFunction: fin.pay.payCheck.PayCodeDetail,
-				preDeactivateFunction: function( ) { if (!me.validHouseCode) return false; else return true; },
+				preDeactivateFunction: function( ) { if (!me.validChargeToHouseCode) return false; else return true; },
                 selectFunction: function (index) { 
-                    me.validHouseCode = true;
+                    me.validChargeToHouseCode = true;
                     $("#HoursText, #EarningText, #AlternateBaseRate").keypress(function (e) {
                         if (e.which != 8 && e.which != 0  && e.which != 46 && (e.which < 48 || e.which > 57))
                         	return false;
                     });
                     
-                    $("#HouseCodeText").keypress(function (e) {
-                        me.validHouseCode = false;
+                    $("#ChargeToHouseCodeText").keypress(function (e) {
+                        me.validChargeToHouseCode = false;
                     });
                 }
 			});
@@ -585,8 +585,8 @@ ii.Class({
 						this.setInvalid("Please enter valid Alternate Base Rate. Example: 99.99");
 				});
 				
-			me.houseCode = new ui.ctl.Input.Text({
-                id: "HouseCode",
+			me.chargeToHouseCode = new ui.ctl.Input.Text({
+                id: "ChargeToHouseCode",
                 maxLength: 16, 
                 appendToId: "PayCodeDetailGridControlHolder",
                 changeFunction: function() { me.modified(); }
@@ -597,7 +597,7 @@ ii.Class({
 			me.payCodeDetailGrid.addColumn("date", "date", "Date", "Date", 120, null, me.date);
 			me.payCodeDetailGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 100, function(earning) { return ui.cmn.text.money.format(earning); }, me.earning);
 			me.payCodeDetailGrid.addColumn("alternateBaseRate", "alternateBaseRate", "Alternate Base Rate", "Alternate Base Rate", 180, function(alternateBaseRate) { return ui.cmn.text.money.format(alternateBaseRate); }, me.alternateBaseRate);
-			me.payCodeDetailGrid.addColumn("houseCodeTitle", "houseCodeTitle", "CHARGE TO HOUSE CODE", "CHARGE TO HOUSE CODE", 190, null, me.houseCode);
+			me.payCodeDetailGrid.addColumn("houseCodeTitle", "houseCodeTitle", "CHARGE TO HOUSE CODE", "CHARGE TO HOUSE CODE", 250, null, me.chargeToHouseCode);
 			me.payCodeDetailGrid.capColumns();
 			
 			me.payCodeType.active = false;
@@ -605,7 +605,7 @@ ii.Class({
 			me.date.active = false;
 			me.earning.active = false;
 			me.alternateBaseRate.active = false;
-			me.houseCode.active = false;
+			me.chargeToHouseCode.active = false;
 			
 			me.payCodeDetailReadOnlyGrid = new ui.ctl.Grid({
 				id: "PayCodeDetailReadOnlyGrid"
@@ -616,7 +616,7 @@ ii.Class({
 			me.payCodeDetailReadOnlyGrid.addColumn("date", "date", "Date", "Date", 120);
 			me.payCodeDetailReadOnlyGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 100, function(earning) { return ui.cmn.text.money.format(earning); });
 			me.payCodeDetailReadOnlyGrid.addColumn("alternateBaseRate", "alternateBaseRate", "Alternate Base Rate", "Alternate Base Rate", 180, function(alternateBaseRate) { return ui.cmn.text.money.format(alternateBaseRate); });
-			me.payCodeDetailReadOnlyGrid.addColumn("houseCodeTitle", "houseCodeTitle", "CHARGE TO HOUSE CODE", "CHARGE TO HOUSE CODE", 190);
+			me.payCodeDetailReadOnlyGrid.addColumn("houseCodeTitle", "houseCodeTitle", "CHARGE TO HOUSE CODE", "CHARGE TO HOUSE CODE", 250);
 			me.payCodeDetailReadOnlyGrid.capColumns();
 
 			me.anchorSearch = new ui.ctl.buttons.Sizeable({
@@ -963,7 +963,7 @@ ii.Class({
 			$("#imgRemove").bind("click", function() { me.actionRemoveItem(); });
 			$("#imgView").bind("click", function() { me.actionViewItem(); });
 			$("#EmployeeNumberText").bind("change", function() { me.searchEmployeeByNumber(); });
-			$("#HouseCodeText").bind("change", function() { me.houseCodeBlur(); });			
+			$("#ChargeToHouseCodeText").bind("change", function() { me.chargeToHouseCodeChange(); });			
 			$("#EmployeeNameText").bind("change", function() { me.searchEmployeeByName(); });
 			$("#FilterTypeText").bind("keydown", me, me.actionSearchItem);			
 			$("#SearchInputText").bind("keydown", me, me.actionSearchItem);
@@ -1358,7 +1358,7 @@ ii.Class({
 				if (me.personId != me.employees[0].id) {
 					me.personId = me.employees[0].id;
 					me.personStore.fetch("userId:[user],id:" + me.employees[0].id, me.personsLoaded, me);
-					if (me.employees[0].houseCode != parent.fin.appUI.houseCodeBrief)
+					if (me.employees[0].houseCode != parent.fin.appUI.houseCodeBrief || $("#houseCodeText").val() == "")
 						me.houseCodeFetch(me.employees[0].houseCode);
 				}
 				else
@@ -1624,41 +1624,41 @@ ii.Class({
 			me.checkLoadCount();
 		},
 		
-		houseCodeBlur: function() {
+		chargeToHouseCodeChange: function() {
 	        var me = this;
-	        var houseCode = me.houseCode.getValue().replace(/[^0-9]/g, "");
+	        var houseCode = me.chargeToHouseCode.getValue().replace(/[^0-9]/g, "");
 	
-	        me.houseCode.setValue(houseCode);
+	        me.chargeToHouseCode.setValue(houseCode);
 	        if (houseCode != "") {
-                me.validHouseCode = false;
-                me.houseCodeCheck(houseCode);
+                me.validChargeToHouseCode = false;
+                me.chargeToHouseCodeCheck(houseCode);
 	        }
 	        else {
-                me.validHouseCode = true;
+                me.validChargeToHouseCode = true;
                 if (me.payCodeDetailGrid.data[me.payCodeDetailGrid.activeRowIndex] != undefined)
                     me.payCodeDetailGrid.data[me.payCodeDetailGrid.activeRowIndex].houseCodeId = 0;
 	        }
         },
 
-        houseCodeCheck: function(houseCode) {
+        chargeToHouseCodeCheck: function(houseCode) {
         	var me = this;
 
-            if (me.houseCodeCache[houseCode] != undefined) {
-			    if (me.houseCodeCache[houseCode].loaded)
-			        me.houseCodeValidate(houseCode);
+            if (me.chargeToHouseCodeCache[houseCode] != undefined) {
+			    if (me.chargeToHouseCodeCache[houseCode].loaded)
+			        me.chargeToHouseCodeValidate(houseCode);
 			}
 			else
-			    me.houseCodeLoad(houseCode);
+			    me.chargeToHouseCodeLoad(houseCode);
 	        },
 
-        houseCodeLoad: function(houseCode) {
+        chargeToHouseCodeLoad: function(houseCode) {
             var me = this;
 
-            me.houseCodeCache[houseCode] = {};
-            me.houseCodeCache[houseCode].valid = false;
-            me.houseCodeCache[houseCode].loaded = false;
+            me.chargeToHouseCodeCache[houseCode] = {};
+            me.chargeToHouseCodeCache[houseCode].valid = false;
+            me.chargeToHouseCodeCache[houseCode].loaded = false;
                         
-            $("#HouseCodeText").addClass("Loading");
+            $("#ChargeToHouseCodeText").addClass("Loading");
 
             $.ajax({
 				type: "POST",
@@ -1668,32 +1668,33 @@ ii.Class({
 					+ "&requestXml=<criteria>storeId:hcmHouseCodes,userId:[user],appUnitBrief:" + houseCode + ",<criteria>",
 
 				success: function(xml) {
-				    me.houseCodeCache[houseCode].loaded = true;
+				    me.chargeToHouseCodeCache[houseCode].loaded = true;
 
                         if ($(xml).find("item").length) {
                         //the house code is valid
                         $(xml).find("item").each(function() {
-                            me.houseCodeCache[houseCode].valid = true;
-                            me.houseCodeCache[houseCode].id = parseInt($(this).attr("id"), 10);
-                            me.houseCodeValidate(houseCode);
-                            $("#HouseCodeText").removeClass("Loading");
+                            me.chargeToHouseCodeCache[houseCode].valid = true;
+                            me.chargeToHouseCodeCache[houseCode].id = parseInt($(this).attr("id"), 10);
+                            me.chargeToHouseCodeCache[houseCode].chargeToHouseCode = $(this).attr("name");
+                            me.chargeToHouseCodeValidate(houseCode);
+                            $("#ChargeToHouseCodeText").removeClass("Loading");
                         });
                     }
                     else {
                         //the house code is invalid
-                        me.houseCodeValidate(houseCode);
+                        me.chargeToHouseCodeValidate(houseCode);
                     }
          		}
         	});
         },
         
-        houseCodeValidate: function(houseCode) {
+        chargeToHouseCodeValidate: function(houseCode) {
             var me = this;
 
-            $("#HouseCodeText").removeClass("Loading");
+            $("#ChargeToHouseCodeText").removeClass("Loading");
                         
-            if (!me.houseCodeCache[houseCode].valid) {
-                me.houseCode.setInvalid("The House Code [" + houseCode + "] is not valid.");
+            if (!me.chargeToHouseCodeCache[houseCode].valid) {
+                me.chargeToHouseCode.setInvalid("The House Code [" + houseCode + "] is not valid.");
                 if (me.payCodeDetailGrid.data[me.payCodeDetailGrid.activeRowIndex] != undefined) {
                 	me.payCodeDetailGrid.data[me.payCodeDetailGrid.activeRowIndex].houseCodeId = 0;
                 	me.payCodeDetailGrid.data[me.payCodeDetailGrid.activeRowIndex].houseCodeTitle = houseCode;
@@ -1701,11 +1702,12 @@ ii.Class({
             }
             else {
                 var index = me.payCodeDetailGrid.activeRowIndex;
-                me.validHouseCode = true;
+                me.validChargeToHouseCode = true;
+                me.chargeToHouseCode.setValue(me.chargeToHouseCodeCache[houseCode].chargeToHouseCode);
                 me.payCodeDetailGrid.body.deselect(index);
                 if (me.payCodeDetailGrid.data[index] != undefined) {                	               	
-                    me.payCodeDetailGrid.data[index].houseCodeId = me.houseCodeCache[houseCode].id;
-                    me.payCodeDetailGrid.data[index].houseCodeTitle = houseCode;
+                    me.payCodeDetailGrid.data[index].houseCodeId = me.chargeToHouseCodeCache[houseCode].id;
+                    me.payCodeDetailGrid.data[index].houseCodeTitle = me.chargeToHouseCodeCache[houseCode].chargeToHouseCode;
                     me.payCodeDetailGrid.body.select(index + 1);
                 }
             }
@@ -1971,7 +1973,7 @@ ii.Class({
 					return false;
 				}
 				
-				if (!me.houseCode.valid) {
+				if (!me.chargeToHouseCode.valid) {
 					alert("In order to save, the errors on the page must be corrected.");
 					return false;
 				}
