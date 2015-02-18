@@ -9,6 +9,10 @@
     color: #555;
 }
 
+.customizer .has-error label {
+    color: #a94442 !important;
+}
+
 .customizer h4 {
     margin-bottom: 5px;
     margin-top: 0;
@@ -36,5 +40,11 @@
 }
 
 .margin-bottom20 {
-margin-bottom:20px;
+    margin-bottom: 20px;
+}
+
+.typeahead .dropdown-menu {
+    height: auto;
+    max-height: 400px;
+    overflow-y: auto;
 }

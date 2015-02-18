@@ -1,0 +1,1016 @@
+﻿<div class="customizer">
+
+    <div class="container bs-docs-container ">
+        <form name="pafForm">
+            <section>
+                <p class="bs-header text-center">(First Section to be filled out at all times by Hiring Manager, Manager and/or Associate)</p>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group" ng-class="{'has-error':pafForm.Date.$invalid}">
+                            <label>Date</label>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.Date" dt-name="Date" dt-required="false"></paf-datepicker>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="form-group typeahead">
+                            <label class="control-label">Site</label>
+                            <input ng-model="pafItem.HcmHouseCode" name="HcmHouseCode" class="hidden" />
+                            <input type="text" class="form-control input-sm" paf-enter="getPersonInformation(pafItem.EmployeeNumber,pafItem.HcmHouseCode)"
+                                ng-model="HcmHouseCodeFilter" typeahead-input-formatter="getHouseCode($model)"
+                                typeahead="item as item.name for item in HcmHouseCodes|filter:{name:$viewValue}| limitTo:10" ng-blur="getPersonInformation(pafItem.EmployeeNumber,HcmHouseCodeFilter.appUnit)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group" ng-class="{'has-error':pafForm.FirstName.$invalid}">
+                            <label class="control-label">FirstName</label>
+                            <input class="form-control input-sm" name="FirstName" ng-model="pafItem.FirstName" required />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group" ng-class="{'has-error':pafForm.LastName.$invalid}">
+                            <label class="control-label">LastName</label>
+                            <input class="form-control input-sm" name="LastName" ng-model="pafItem.LastName" required />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group" ng-class="{'has-error':pafForm.EmployeeNumber.$invalid}">
+                            <label class="control-label">Employee/Clock Number</label>
+                            <input class="form-control input-sm" name="EmployeeNumber" ng-model="pafItem.EmployeeNumber" paf-enter="getPersonInformation(pafItem.EmployeeNumber,pafItem.HcmHouseCode)"
+                                ng-blur="getPersonInformation(pafItem.EmployeeNumber,pafItem.HcmHouseCode)" required />
+                            <!--<button ng-click="getEmployee()">Get Employee ID</button>-->
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group" ng-class="{'has-error':pafForm.AddressLine1.$invalid}">
+                            <label class="control-label">Address</label>
+                            <input class="form-control input-sm" name="AddressLine1" ng-model="pafItem.AddressLine1" required />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group" ng-class="{'has-error':pafForm.Phone.$invalid}">
+                            <label class="control-label">Phone #</label>
+                            <input class="form-control input-sm" name="Phone" ng-model="pafItem.Phone" required />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4" ng-class="{'has-error':pafForm.City.$invalid}">
+                        <label class="control-label">City</label>
+                        <input class="form-control input-sm" name="City" ng-model="pafItem.City" required />
+                    </div>
+                    <div class="col-md-4" ng-class="{'has-error':pafForm.StateType.$invalid}">
+                        <label class="control-label">State</label>
+                        <input ng-model="pafItem.StateType" name="StateType" class="hidden" required />
+                        <input type="text" class="form-control input-sm" ng-model="StateFilter"
+                            typeahead-input-formatter="getState($model)" typeahead="item as item.name for item in States|filter:{name:$viewValue}| limitTo:10" />
+                    </div>
+                    <div class="col-md-4" ng-class="{'has-error':pafForm.PostalCode.$invalid}">
+                        <label>Zip</label>
+                        <input class="form-control input-sm" name="PostalCode" ng-model="pafItem.PostalCode" required />
+                    </div>
+                </div>
+            </section>
+            <section>
+                <h4>CHECK ALL THAT APPLY</h4>
+                <p>(Position must be posted with Recruiter for any new hire, transfer, re-hire, or promotion)</p>
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="pafItem.NewHire" />New Hire</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="pafItem.ReHire" />Re-Hire</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="pafItem.Separation" />Separation</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                        <div class="checkbox">
+                            <label>LOA<input type="checkbox" ng-model="pafItem.LOA" /></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="pafItem.Promotion" />Promotion</label>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="pafItem.Demotion" />Demotion</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="pafItem.SalaryChange" />Salary Change</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="pafItem.Transfer" />Transfer</label>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="pafItem.PersonalInfoChange" />Personal Info Change</label>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="pafItem.Relocation" style="margin-right: 5px;" />Relocation</label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--NEW HIRE/REHIRE-->
+            <section ng-if="pafItem.NewHire||pafItem.ReHire">
+                <h4>NEW HIRE/REHIRE</h4>
+                <p>(Section to be completed by Hiring Manager and Application and Background Check Release faxed to HRG )</p>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Hire Date</label>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.HireDate"></paf-datepicker>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label>Position</label>
+                            <select class="form-control input-sm" ng-model="pafItem.PositionType">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Status</label>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12">
+                                <div class="form-group">
+                                    <label>
+                                        <input type="radio" name="Status" ng-model="pafItem.Status" value="FullTime" />&nbsp;Full Time</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12">
+                                <div class="form-group">
+                                    <label>
+                                        <input type="radio" name="Status" ng-model="pafItem.Status" value="Temporary" />&nbsp;Temporary</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12">
+                                <div class="form-inline">
+                                    <div class="form-group">
+                                        <label>
+                                            <input type="radio" name="Status" ng-model="pafItem.Status" value="PartTime" />&nbsp;Part Time</label>
+                                        <input type="text" class="form-control input-sm" ng-disabled="pafItem.Status!='PartTime'" ng-model="pafItem.Hours" paf-format="{0}/number of hours" placeholder="0/number of hours" />
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12 ">
+                                <div class="form-inline">
+                                    <div class="form-group">
+                                        <label>
+                                            <input type="radio" name="Status" ng-model="pafItem.Status" value="PerDiem" />&nbsp;Per Diem</label>
+                                        <input type="text" class="form-control input-sm" ng-disabled="pafItem.Status!='PerDiem'" ng-model="pafItem.Amount" paf-format="{0} per day" placeholder="0 per day" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 form-inline">
+                                <div class="form-group">
+                                    <label>
+                                        <input type="radio" name="Salary" ng-model="pafItem.PayStatus" value="Salary" />&nbsp;Salary</label>
+
+                                    <input type="text" class="form-control input-sm" ng-disabled="pafItem.PayStatus!='Salary'" ng-model="pafItem.YearlySalary" ng-change="salaryChange(Salary,'','')" paf-format="{0}/year" placeholder="0/year" style="width: 40%" />
+                                </div>
+                            </div>
+                            <div class="col-md-3 form-inline">
+                                <div class="form-group">
+                                    <label>
+                                        <input type="radio" name="Salary" ng-model="pafItem.PayStatus" value="AdminHourly" />&nbsp;Admin.Hourly</label>
+
+                                    <input type="text" class="form-control input-sm" ng-disabled="pafItem.PayStatus!='AdminHourly'" ng-model="pafItem.HourlyRate" ng-change="salaryChange('',AdminHourly,'')" paf-format="{0}/hour" placeholder="0/hour" style="width: 40%" />
+                                </div>
+                            </div>
+                            <div class="col-md-3 form-inline">
+                                <div class="form-group">
+                                    <label>
+                                        <input type="radio" name="Salary" ng-model="pafItem.PayStatus" value="Hourly" />&nbsp;Hourly</label>
+
+                                    <input type="text" class="form-control input-sm" ng-disabled="pafItem.PayStatus!='Hourly'" ng-model="pafItem.HourlyRate" ng-change="salaryChange('','',Hourly)" paf-format="{0}/hour" placeholder="0/hour" style="width: 40%" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Pay Range</label>
+                        <div class="row">
+                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="pafItem.PayRange" />Below Min</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="pafItem.PayRange" />Min</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="pafItem.PayRange" />Min to Mid</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="pafItem.PayRange" />Mid</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="pafItem.PayRange" />Mid to Max</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="pafItem.PayRange" />Max</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="pafItem.PayRange" />Over Max</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Reporting to (name & title)</label>
+                            <input class="form-control input-sm" ng-model="pafItem.ReportingName" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Training Location</label>
+                            <input class="form-control input-sm" ng-model="pafItem.HcmHouseCodeTrainingLocation" />
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>Training Contact</label>
+                            <input class="form-control input-sm" ng-model="pafItem.TrainingContact" />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Duration</label>
+                            <input type="text" class="form-control input-sm" ng-model="pafItem.Duration" paf-numeric />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" />&nbsp;Car Allowance</label>
+                            <div class="input-group-btn" dropdown>
+                                <input class="form-control input-sm" ng-model="pafItem.CarAllowance" paf-format="{0}/month" placeholder="0/month" dropdown-toggle />
+                                <!-- <div class="input-group-btn">
+                                    <button class="btn btn-default input-sm" data-toggle="dropdown" dropdown-toggle>
+                                        <span class="caret"></span>
+                                    </button>-->
+                                <ul id="dropdown-menu" class="dropdown-menu" role="menu">
+                                    <li ng-repeat="item in pafItem.CarAllowances" ng-click="pickerCardAllowance(item)"><a>{{item.Description}}</a></li>
+                                </ul>
+                                <!--</div>-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>Bonus Eligible</label>
+                            <select class="form-control input-sm" ng-model="pafItem.BonusEligibleType" ng-options="item.Id as item.Description for item in lkup.BounsEligibles">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--SEPARATION-->
+            <section ng-if="pafItem.Separation">
+                <h4>SEPARATION </h4>
+                <p>(SCETION to be completed by Manager) REVIEWED WITH HR: Select name from menu</p>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                Separation Date</label>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.SeparationDate"></paf-datepicker>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                Number Vacation Days Due</label>
+                            <input class="form-control input-sm" ng-model="pafItem.VacationDaysDue" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                Separation Pay Number of Weeks</label>
+                            <input class="form-control input-sm" ng-model="pafItem.PayNumberOfWeeks" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" />&nbsp;Resignation - <i>Enter Reason Code Below</i></label>
+
+                            <select class="form-control input-sm" ng-model="pafItem.ResignationType" ng-options="item.Id as item.Code+' '+item.Description for item in lkup.Resignations">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" />&nbsp;Termination - <i>Enter Reason Code Below</i></label>
+
+                            <select class="form-control input-sm" ng-model="pafItem.TerminationType" ng-options="item.Id as item.Code+' '+item.Description for item in lkup.Terminations">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" />&nbsp;Layoff - <i>Enter Reason Code Below</i></label>
+
+                            <select class="form-control input-sm" ng-model="pafItem.LayoffType" ng-options="item.Id as item.Code+' '+item.Description for item in lkup.Layoffs">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <label>Note: </label>
+                        &nbsp;Send all Separation Information (Resignation Letter,Progressive Counseling,etc.) to HRD
+                    </div>
+                    <div class="col-md-4 ">
+                        <label>Rehire:</label>
+                        <label class="radio-inline">
+                            <input type="radio" ng-model="pafItem.SeparationReHire" ng-value="true" />
+                            Yes</label>
+                        <label class="radio-inline">
+                            <input type="radio" ng-model="pafItem.SeparationReHire" ng-value="false" />
+                            No
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!--LEAVE OF ABSENCE-->
+            <section ng-if="pafItem.LOA">
+                <h4>LEAVE OF ABSENCE</h4>
+                <p>(SCETION to be completed by Manager) REVIEWED WITH HR: Select name from menu</p>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                LOA Date</label>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.LOADate"></paf-datepicker>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                Date Return</label>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.DateOfReturn"></paf-datepicker>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--SALARY CHANGE/PROMOTION/Demotion-->
+            <section ng-if="pafItem.SalaryChange||pafItem.Promotion||pafItem.Demotion">
+                <div ng-if="pafItem.SalaryChange||pafItem.Promotion">
+                    <h4>SALARY CHANGE/PROMOTION</h4>
+                    <p>(Section to be completed by Hiring Manager or Manager)</p>
+                </div>
+                <div ng-if="pafItem.Demotion">
+                    <h4>DEMOTION</h4>
+                    <p>(Section to be completed by Hiring Manager or Manager)</p>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>
+                                Old Position</label>
+                            <input class="form-control input-sm" ng-model="pafItem.OldPositionType" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>
+                                New Position</label>
+                            <input class="form-control input-sm" ng-model="pafItem.NewPositionType" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                Effective Date</label>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.EffectiveDate"></paf-datepicker>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                Reason for Change*:</label>
+                            <select class="form-control input-sm" ng-model="pafItem.ChangeReasonType" ng-options="item.Id as item.Description for item in lkup.Reason4Changes"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>&nbsp;</label><br />
+                            <b>*Reason Code <span style="text-decoration: underline">MUST</span> be Entered</b>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>
+                                Date Last Increase</label>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.LastIncreaseDate"></paf-datepicker>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>
+                                Percentage Last Increase</label>
+                            <input class="form-control input-sm" ng-model="pafItem.LastIncreasePercentage" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>
+                                Present Salary</label>
+                            <input class="form-control input-sm" ng-model="pafItem.CurrentSalary" />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>
+                                Increase Amt.</label>
+                            <input class="form-control input-sm" ng-model="pafItem.IncreaseAmount" />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>
+                                Percentage</label>
+                            <input class="form-control input-sm" ng-model="pafItem.IncreasePercentage" />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>
+                                New Salary</label>
+                            <input class="form-control input-sm" ng-model="pafItem.NewSalary" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>
+                                Current Pay Grade</label>
+                            <input class="form-control input-sm" ng-model="pafItem.CurrentPayGrade" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>
+                                New Pay Grade</label>
+                            <input class="form-control input-sm" ng-model="pafItem.NewPayGrade" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Pay Range</label>
+                        <div class="row">
+                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="pafItem.NewPayRange" />Below Min</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="pafItem.NewPayRange" />Min</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="pafItem.NewPayRange" />Min to Mid</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="pafItem.NewPayRange" />Mid</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="pafItem.NewPayRange" />Mid to Max</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="pafItem.NewPayRange" />Max</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="pafItem.NewPayRange" />Over Max</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Reporting to (name & title)</label>
+                            <input class="form-control input-sm" ng-model="pafItem.NewReportingName" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Car Allowance</label>
+                            <input type="text" class="form-control input-sm" ng-model="pafItem.NewCarAllowance" paf-format="{0}/month" placeholder="0/month" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Bonus Eligible</label>
+                            <select class="form-control input-sm" ng-model="pafItem.NewBonusEligibleType" ng-options="item.Id as item.Description for item in lkup.BounsEligibles">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Other Instructions</label>
+                            <input class="form-control input-sm" ng-model="pafItem.Instructions" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--DEMOTION
+            <section ng-if="pafItem.Demotion">
+                <h4>DEMOTION</h4>
+                <p>(Section to be completed by Hiring Manager or Manager)</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>
+                                Old Position</label>
+                            <input class="form-control input-sm" ng-model="pafItem.OldPositionType" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>
+                                New Position</label>
+                            <input class="form-control input-sm" ng-model="pafItem.NewPositionType" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                Effective Date</label>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.EffectiveDate"></paf-datepicker>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                Reason for Change*:</label>
+                            <select class="form-control input-sm" ng-model="pafItem.ChangeReasonType" ng-options="item.Id as item.Description for item in lkup.Reason4Changes"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>&nbsp;</label><br />
+                            <b>*Reason Code <span style="text-decoration: underline">MUST</span> be Entered</b>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>
+                                Date Last Increase</label>
+                            <input class="form-control input-sm" ng-model="pafItem.LastIncreaseDate" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>
+                                Percentage Last Increase</label>
+                            <input class="form-control input-sm" ng-model="pafItem.LastIncreasePercentage" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>
+                                Present Salary</label>
+                            <input class="form-control input-sm" ng-model="pafItem.CurrentSalary" />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>
+                                Increase Amt.</label>
+                            <input class="form-control input-sm" ng-model="pafItem.IncreaseAmount" />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>
+                                Percentage</label>
+                            <input class="form-control input-sm" ng-model="pafItem.IncreasePercentage" />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>
+                                New Salary</label>
+                            <input class="form-control input-sm" ng-model="pafItem.NewSalary" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>
+                                Current Pay Grade</label>
+                            <input class="form-control input-sm" ng-model="pafItem.CurrentPayGrade" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>
+                                New Pay Grade</label>
+                            <input class="form-control input-sm" ng-model="pafItem.NewPayGrade" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Pay Range</label>
+                        <div class="row">
+                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="pafItem.NewPayRange" />Below Min</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="pafItem.NewPayRange" />Min</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="pafItem.NewPayRange" />Min to Mid</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="pafItem.NewPayRange" />Mid</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="pafItem.NewPayRange" />Mid to Max</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="pafItem.NewPayRange" />Max</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="pafItem.NewPayRange" />Over Max</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Reporting to (name & title)</label>
+                            <input class="form-control input-sm" ng-model="pafItem.NewReportingName" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Car Allowance</label>
+                            <input type="text" class="form-control input-sm" ng-model="pafItem.NewCarAllowance" paf-format="{0}/month" placeholder="0/month" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Bonus Eligible</label>
+                            <select class="form-control input-sm" ng-model="pafItem.NewBonusEligibleType" ng-options="item.Id as item.Description for item in lkup.BounsEligibles">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Other Instructions</label>
+                            <input class="form-control input-sm" ng-model="pafItem.Instructions" />
+                        </div>
+                    </div>
+                </div>
+
+            </section>-->
+            <!--TRANSFER-->
+            <section ng-if="pafItem.Transfer">
+                <h4>TRANSFER</h4>
+                <p>(Section to be completed by Hiring Manager)</p>
+                <div class="row">
+                    <div class="col-md-4 ">
+                        <div class="form-group">
+                            <label>Effective Date</label>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.TransferEffectiveDate"></paf-datepicker>
+                        </div>
+                    </div>
+                    <div class="col-md-4 ">
+                        <div class="form-group">
+                            <label>Old Unit</label>
+                            <input ng-model="OldUnit" class="hidden" ng-model="pafItem.HcmHouseCodeTransfer" />
+                            <input type="text" class="form-control input-sm" ng-model="OldUnitFilter" typeahead-input-formatter="getHouseCode($model,1)" typeahead="item as item.name for item in HcmHouseCodes|filter:{name:$viewValue}| limitTo:10" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 ">
+                        <div class="form-group">
+                            <label>New Unit</label>
+                            <input ng-model="NewUnit" class="hidden" ng-model="pafItem.HcmHouseCodeTransfer" />
+                            <input type="text" class="form-control input-sm" ng-model="NewUnitFilter" typeahead="item as item.name for item in HcmHouseCodes|filter:{name:$viewValue}| limitTo:10" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Reporting to (name & title)</label>
+                            <input class="form-control input-sm" ng-model="pafItem.TransferReportingName" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--PERSONAL INFORMATION CHANGE-->
+            <section ng-if="pafItem.PersonalInfoChange">
+                <h4>PERSONAL INFORMATION CHANGE</h4>
+                <p>(Section to be completed by Associate)</p>
+                <div class="row">
+                    <div class="col-md-2 col-sm-3">
+                        <label>Effective Date</label>
+                        <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.EffectiveDate"></paf-datepicker>
+                    </div>
+                    <div class="col-md-3 col-sm-5">
+                        <label>Name Changes</label>
+                        <input class="form-control input-sm" />
+                    </div>
+                    <div class="col-md-2 col-sm-4">
+                        <label>Phone #</label>
+                        <input class="form-control input-sm" ng-model="pafItem.InfoChangePhone" />
+                    </div>
+                    <div class="col-md-5 col-sm-12">
+                        <div class="form-group">
+                            <label>New Address</label>
+                            <input class="form-control input-sm" ng-model="pafItem.InfoChangeAddressLine1" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--REQUISITION-->
+            <section ng-if="pafItem.NewHire||pafItem.ReHire||pafItem.SalaryChange||pafItem.Promotion||pafItem.Demotion||pafItem.Transfer">
+                <h4>REQUISITION</h4>
+                <p>(To Be completed by Recruiter)</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Requisition #</label>
+                            <input class="form-control input-sm" ng-model="pafItem.RequisitionNumber" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input class="form-control input-sm" ng-model="pafItem.EmailAddress" />
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+            <!--RELOCATION-->
+            <section ng-if="pafItem.Relocation">
+                <h4>RELOCATION</h4>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>&nbsp;</label>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" ng-model="pafItem.CompanyRelocation" />Company Relocation</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Relocation approved by</label><input class="form-control input-sm" ng-model="pafItem.RelocationApprovedBy" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Plan/Details</label>
+                            <select class="form-control input-sm" ng-model="pafItem.RelocationPlan" ng-options="item.Id as item.Description for item in pafItem.PlanDetails">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--COMMENTS-->
+            <section>
+                <div class="form-group">
+                    <h4>COMMENTS</h4>
+                    <textarea class="form-control input-sm" ng-model="pafItem.Comments"></textarea>
+                </div>
+            </section>
+            <!--APPROVALS-->
+            <section class="margin-bottom20">
+                <h4>APPROVALS</h4>
+                <div class="row">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label>UD/Dept Mgr</label>
+                            <input class="form-control input-sm" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy"></paf-datepicker>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label>RVP/VP</label>
+                            <input class="form-control input-sm" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy"></paf-datepicker>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label>Reg. Mgr</label>
+                            <input class="form-control input-sm" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy"></paf-datepicker>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label>DVP/SVP</label>
+                            <input class="form-control input-sm" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy"></paf-datepicker>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label>SHRC</label>
+                            <input class="form-control input-sm" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy"></paf-datepicker>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label>CEO/CFO</label>
+                            <input class="form-control input-sm" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy"></paf-datepicker>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="pull-right margin-bottom20">
+
+                <button class="btn btn-primary" type="submit" ng-click="save(pafForm.$valid)">Save</button>
+                <a class="btn btn-default" href="#/list">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

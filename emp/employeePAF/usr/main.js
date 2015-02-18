@@ -1,6 +1,37 @@
-﻿var paf = angular.module('paf', ['ui.bootstrap']);
+﻿var paf = angular.module('paf', ['ui.bootstrap', 'ngRoute']);
 
-paf.controller('pafCtrl', ['$scope', '$document', 'PAF', function ($scope, $document, PAF) {
+paf.config(['$routeProvider', function ($routeProvider) {
+    $routeProvider
+    .when('/edit/:id', {
+        controller: 'pafCtrl',
+        templateUrl: 'pafeditor.html'
+    })
+    .when('/new', {
+        controller: 'pafCtrl',
+        templateUrl: 'pafeditor.html'
+
+    })
+    .when('/list', {
+        controller: 'pafListCtrl',
+        templateUrl: 'paflist.html'
+
+    })
+    .otherwise({
+        redirectTo: '/list'
+    });
+}]);
+
+paf.controller('pafListCtrl', ['$scope', 'PAF', function ($scope, PAF) {
+    
+    PAF.getPAFList(function (result) {
+        $scope.$apply(function () { $scope.PAFItems = result; });
+        
+    });
+  
+}]);
+
+paf.controller('pafCtrl', ['$scope', '$document', 'PAF', '$filter', '$timeout', '$routeParams', function ($scope, $document, PAF, $filter, $timeout, $routeParams) {
+    $scope.HcmHouseCodes = [];
 
     $scope.dateOptions = {
         formatYear: 'yy',
@@ -8,166 +39,208 @@ paf.controller('pafCtrl', ['$scope', '$document', 'PAF', function ($scope, $docu
         showWeeks: false
     };
 
-    $scope.pafItem = {
-        BounsEligibles: PAF.getBounsEligible(),
-        PlanDetails: PAF.getPlanDetails(),
-        Reason4Changes: PAF.getReasonForChange(),
-        Layoffs: PAF.getLayoff(),
-        Terminations: PAF.getTermination(),
-        Resignations: PAF.getResignation(),
-        CarAllowances: PAF.getCarAllowances()
+    $scope.lkup = {
+        CarAllowances: PAF.getCarAllowances(), BounsEligibles: null,
+        PlanDetails: null,
+        Reason4Changes: null,
+        Layoffs: null,
+        Terminations: null,
+        Resignations: null
     }
+
+    var lowercaseFirstLetter = function (input) {
+        return (!!input) ? input.replace(/^(.)|(\s|\-)(.)/g, function ($1) {
+            return $1.toLowerCase();
+        }) : '';
+    }
+    $scope.HcmHouseCodes = [];
+    $scope.States = [];
+
+    $scope.pafItem = {
+        FirstName: null,
+        LastName: null,
+        NewHire: false,
+        ReHire: false,
+        Separation: false,
+        LOA: false,
+        SalaryChange: false,
+        Promotion: false,
+        Demotion: false,
+        Transfer: false,
+        PersonalInfoChange: false,
+        Relocation: false
+    }
+
+    PAF.getHcmHouseCodes(function (result) {
+        $scope.HcmHouseCodes = result;
+        if ($scope.pafItem.HcmHouseCode > 0 && $scope.HcmHouseCodes.length > 0) {
+            $scope.HcmHouseCodeFilter = $filter('filter')($scope.HcmHouseCodes, { appUnit: $scope.pafItem.HcmHouseCode })[0];
+        }
+    });
+
+    var loadPersonInfoHandler = null;
+    $scope.getPersonInformation = function (employeeNumber, housecode) {
+        if (!angular.isDefined(housecode)) {
+            $scope.pafItem.HcmHouseCode = null;
+        }
+
+        if (angular.isDefined(employeeNumber) && angular.isDefined(housecode) && housecode.length > 0 && employeeNumber.length > 0) {
+
+            if (loadPersonInfoHandler)
+                clearTimeout(loadPersonInfoHandler);
+
+            $timeout(function () {
+                PAF.getEmployee(employeeNumber, housecode, function (result) {
+                   
+                    $scope.pafItem.FirstName = result.firstName;
+                    $scope.pafItem.LastName = result.lastName;
+                    $scope.pafItem.employeeId = result.id;
+                    PAF.getPerson(result.id, function (response) {
+                        $scope.pafItem.personId = response.id;
+                        $scope.pafItem.AddressLine1 = response.addressLine1;
+                        $scope.pafItem.City = response.city;
+                        $scope.pafItem.Phone = response.homePhone;
+                        $scope.pafItem.PostalCode = response.postalCode;
+                       $scope.pafItem.StateType = response.state;
+                        //$scope.pafItem = angular.extend({}, $scope.pafItem, {
+                        //    AddressLine1: response.addressLine1,
+                        //    City: response.city,
+                        //    Phone: response.homePhone,
+                        //    PostalCode: response.postalCode,
+                        //    StateType: response.state
+
+                        //});
+
+                        if (response.state > 0) {
+                            $scope.StateFilter = $filter('filter')($scope.States, { id: response.state })[0];
+                        }
+                        
+                    });
+                })
+            }, 300);
+        }
+    }
+    
+    if ($routeParams.id) {
+        PAF.findPAFInfo($routeParams.id, function (result) {
+
+            if (result.StateType > 0 && $scope.States.length > 0) {
+                $scope.StateFilter = $filter('filter')($scope.States, { id: result.state })[0];
+            }
+            if (result.HcmHouseCode > 0 && $scope.HcmHouseCodes.length > 0) {
+                $scope.HcmHouseCodeFilter = $filter('filter')($scope.HcmHouseCodes, { appUnit: result.HcmHouseCode })[0];
+            }
+           
+            $scope.$apply(function () { $scope.pafItem = result; });
+
+        })
+    }
+   
+
+    PAF.getPersonActionTypes(function (result) {
+        $scope.lkup.BounsEligibles = $filter('filter')(result, { typeName: "BonusEligible" });
+        $scope.lkup.PlanDetails = $filter('filter')(result, { typeName: "Plan" });
+        $scope.lkup.Reason4Changes = $filter('filter')(result, { typeName: "Reason4Change" });
+        $scope.lkup.Layoffs = $filter('filter')(result, { typeName: "Layoff" });
+        $scope.lkup.Terminations = $filter('filter')(result, { typeName: "Termination" });
+        $scope.lkup.Resignations = $filter('filter')(result, { typeName: "Resignation" });
+    });
+
+
+    $scope.States = [];
+
+    PAF.getStateTypes(function (result) {
+        $scope.States = result;
+        if ($scope.pafItem.StateType > 0 && $scope.States.length > 0) {
+            $scope.StateFilter = $filter('filter')($scope.States, { id: $scope.pafItem.StateType })[0];
+        }
+    });
 
     $scope.Duration = '';
 
-    $scope.pickerCardAllowance = function (item)
-    {
+    $scope.pickerCardAllowance = function (item) {
         $scope.CarAllowance = item.Id;
     }
 
-    $scope.salaryChange = function (salary,adminHourly,hourly) {
+    $scope.pickerHouseCode = function (item) {
+        $scope.HcmHouseCode = item.name;
+    }
+
+    $scope.salaryChange = function (salary, adminHourly, hourly) {
         $scope.Salary = salary;
         $scope.AdminHourly = adminHourly;
         $scope.Hourly = hourly;
     }
 
+    $scope.getHouseCode = function ($model, type) {
+
+        if ($scope.HcmHouseCodes.length == 0 || !angular.isDefined($model)) {
+            $scope.pafItem.HcmHouseCode = null;
+            return;
+        }
+       
+        $scope.pafItem.HcmHouseCode = $model.id;
+        $scope.pafItem.HcmHouseCodeTransfer = $model.id;
+
+        return $model.name;
+    }
+
+    $scope.getState = function ($model) {
+        if ($scope.States.length == 0 || !angular.isDefined($model)) {
+            $scope.pafItem.StateType = null;
+            return;
+        }
+
+        $scope.pafItem.StateType = $model.id;
+
+        return $model.name;
+    }
+
+    $scope.save = function (isValid) {
+        if (isValid) {
+            var xml = ['<transaction id="1">\r\n<employeePersonnelAction '];
+
+            var xmlItem = [];
+            angular.forEach($scope.pafItem, function (value, key) {
+                key = lowercaseFirstLetter(key);
+
+                if (value == null || !angular.isDefined(value))
+                    value = ""
+                else if (value == true)
+                    value = "1";
+                else if (value == false)
+                    value = "0";
+                else if (angular.isDate(value)) {
+                    value = $filter('date')(value, "MM/dd/yyyy");
+                }
+
+
+                xmlItem.push(key + '=' + '"' + value + '"');
+            });
+
+            xml.push(xmlItem.join(' '));
+
+            xml.push('/>\r\n</transaction>');
+
+            var data = 'moduleId=emp&requestId=1&requestXml=' + encodeURIComponent(xml.join(' ')) + '&&targetId=iiTransaction';
+            jQuery.post('/net/crothall/chimes/fin/emp/act/Provider.aspx', data, function (data, status) {
+                document.location.hash = 'list';
+            });
+
+        }
+    }
+
 }]);
-
-paf.factory('PAF', function () {
-    var BounsEligibles = [
-        { Id: '1', Description: 'Supervisor' },
-        { Id: '2', Description: 'Assistant Director' },
-        { Id: '3', Description: 'Unit Director' },
-        { Id: '4', Description: 'Res Reg Manager' },
-        { Id: '5', Description: 'Regional Manager' },
-        { Id: '6', Description: 'Regional Vice President' }
-    ];
-
-    var PlanDetails = [
-    { Id: '1', Description: 'Plan A NH' },
-    { Id: '2', Description: 'Plan A Existing' },
-    { Id: '3', Description: 'Plan B NH' },
-    { Id: '4', Description: 'Plan B Existing' },
-    { Id: '5', Description: 'Plan C' }
-    ];
-
-    var Reason4Changes = [
-        { Id: '1', Description: 'Merit' },
-        { Id: '2', Description: 'Annual' },
-        { Id: '3', Description: 'Promotion' },
-        { Id: '4', Description: 'Demotion' },
-        { Id: '5', Description: 'Hourly Promotion' },
-        { Id: '6', Description: 'Increase in Resposibilities' },
-        { Id: '7', Description: 'Decrease in Responsibilities' },
-        { Id: '8', Description: 'Other' }
-    ];
-
-    var Layoff = [
-        { Id: '1', Code: '7600', Description: 'Reduction in force' },
-        { Id: '2', Code: '7610', Description: 'End of temporary employment' },
-        { Id: '3', Code: '7620', Description: 'Job eliminated' },
-        { Id: '4', Code: '7640', Description: 'Account closed' },
-        { Id: '5', Code: '7660', Description: 'Client requested removal' }
-    ]
-
-    var Temination = [
-        { Id: '1', Code: '3100', Description: 'Reported under influence alcohol' },
-        { Id: '2', Code: '3700', Description: 'Tardiness-frequent' },
-        { Id: '3', Code: '3900', Description: 'Leaving work station' },
-        { Id: '4', Code: '4000', Description: 'Absenteeism-excessive absence' },
-        { Id: '5', Code: '4100', Description: 'Absenteeism-unreported' },
-        { Id: '6', Code: '4300', Description: 'Fighting on company property' },
-        { Id: '7', Code: '4400', Description: 'Quantity of work' },
-        { Id: '8', Code: '4600', Description: 'Destruction of co. property' },
-        { Id: '9', Code: '4800', Description: 'Violation of co. rules/policies' },
-        { Id: '10', Code: '4860', Description: 'Reported under influence drugs' },
-        { Id: '11', Code: '4900', Description: 'Insubordination' },
-        { Id: '12', Code: '5110', Description: 'Misconduct' },
-        { Id: '13', Code: '5120', Description: 'Quality of work' },
-        { Id: '14', Code: '5400', Description: 'Violation of safety rules' },
-        { Id: '15', Code: '5500', Description: 'Dishonesty-monetary theft' },
-        { Id: '16', Code: '5800', Description: 'Falsification of records' },
-        { Id: '17', Code: '9700', Description: 'Probationary-not qualified for job' }];
-
-    var Resignation = [
-        { Id: '1', Code: '0100', Description: 'Abandoned job' },
-        { Id: '2', Code: '0300', Description: 'Reason unknow' },
-        { Id: '3', Code: '0400', Description: 'In lieu of discharge' },
-        { Id: '4', Code: '0800', Description: 'Did not return from leave' },
-        { Id: '5', Code: '1000', Description: 'Retirement' },
-        { Id: '6', Code: '1400', Description: 'Accept another job' },
-        { Id: '7', Code: '1410', Description: 'Go into own business' },
-        { Id: '8', Code: '1420', Description: 'Military' },
-        { Id: '9', Code: '1500', Description: 'Relocate' },
-        { Id: '10', Code: '1600', Description: 'Personal-not job related' },
-        { Id: '11', Code: '1610', Description: 'Marriage' },
-        { Id: '12', Code: '1620', Description: 'Family obligations' },
-        { Id: '13', Code: '1700', Description: 'Transportation' },
-        { Id: '14', Code: '1900', Description: 'Illness' },
-        { Id: '15', Code: '2000', Description: 'Maternity' },
-        { Id: '16', Code: '2110', Description: 'Dissatisfaction-work hours' },
-        { Id: '17', Code: '2120', Description: 'Dissatisfaction-salary' },
-        { Id: '18', Code: '2130', Description: 'Dissatisfaction-working conditions' },
-        { Id: '19', Code: '2140', Description: 'Dissatisfaction-performance review' },
-        { Id: '20', Code: '2170', Description: 'Dissatisfaction-company policies' },
-        { Id: '21', Code: '2190', Description: 'Dissatisfaction-supervisor' },
-        { Id: '22', Code: '2200', Description: 'Wallked off job' },
-        { Id: '23', Code: '2500', Description: 'School' },
-        { Id: '24', Code: '8500', Description: 'Death' }];
-
-    var CarAllowances = [
-        { Id: '425', Description: '425/month' },
-        { Id: '500', Description: '500/month' },
-        { Id: '600', Description: '600/month' },
-        { Id: '900', Description: '900/month' }];
-
-    var getCarAllowances = function () {
-        return CarAllowances;
-    }
-
-    var getResignation = function () {
-        return Resignation;
-    }
-
-    var getTermination = function () {
-        return Temination;
-    }
-
-    var getLayoff = function () {
-        return Layoff;
-    }
-
-    var getBounsEligible = function () {
-        return BounsEligibles;
-    }
-
-    var getPlanDetails = function () {
-        return PlanDetails;
-    }
-
-    var getReasonForChange = function () {
-        return Reason4Changes;
-    }
-
-    return {
-        getCarAllowances: getCarAllowances,
-        getResignation: getResignation,
-        getTermination: getTermination,
-        getLayoff: getLayoff,
-        getBounsEligible: getBounsEligible,
-        getPlanDetails: getPlanDetails,
-        getReasonForChange: getReasonForChange
-    }
-});
 
 paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filter) {
     return {
         scope: {
-            dtOption: '='
+            dtOption: '=',
+            dtModel: '=dtModel'
         },
         restrict: 'E',
         require: '?ngModel',
-        template: '<p class="input-group"><input type="text" class="form-control input-sm" datepicker-popup="{{dtPopup}}" ng-model="dt" is-open="opened"  show-button-bar="{{showButtonBar}}" datepicker-append-to-body="false" datepicker-options="dateOptions" date-disabled="disabled(date, mode)"  close-text="Close" /><span class="input-group-btn"><button type="button" class="btn btn-default btn-sm" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button></span></p>',
+        template: '<p class="input-group"><input type="text" class="form-control input-sm" name="{{dtName}}" ng-required="dtRequired" datepicker-popup="{{dtPopup}}" ng-model="dtModel" is-open="opened"  show-button-bar="{{showButtonBar}}" datepicker-append-to-body="false" datepicker-options="dateOptions" date-disabled="disabled(date, mode)"  close-text="Close" /><span class="input-group-btn"><button type="button" class="btn btn-default btn-sm" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button></span></p>',
         link: function (scope, elem, attrs, ngModel) {
             scope.opened = false;
             scope.dtPopup = "dd-MMMM-yyyy";
@@ -183,6 +256,13 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
                 scope.dtPopup = attrs.dtPopup;
             }
 
+            if (angular.isDefined(attrs.dtName)) {
+                scope.dtName = attrs.dtName;
+            }
+
+            if (angular.isDefined(attrs.dtRequired)) {
+                scope.dtRequired = attrs.dtRequired;
+            }
         }
     }
 }])
@@ -244,4 +324,33 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
             });
         }
     };
+})
+.directive('pafEnter', function () {
+    return {
+        link: function (scope, element, attrs) {
+            element.bind("keydown keypress", function (event) {
+                if (event.which === 13) {
+                    scope.$apply(function () {
+                        scope.$eval(attrs.pafEnter);
+                    });
+
+                    event.preventDefault();
+                }
+            });
+        }
+    }
+});
+
+$(function () {
+    var focusedElement;
+    $(document).on('focus', 'input', function () {
+        if ($(this).closest('fieldset').prop('disabled')) {
+            $(this).blur();
+            return;
+        }
+        if (focusedElement == $(this)) return;  // already focused, return so user can now place cursor at specific point in input.
+        focusedElement = $(this);
+        setTimeout(function () { focusedElement.select(); }, 50);       // select all text in any field on focus for easy re-entry;
+    });
+
 });
