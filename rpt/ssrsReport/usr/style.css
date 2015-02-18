@@ -109,12 +109,12 @@
 	border-spacing: 0px 0px;
 	border-collapse: collapse;
 	font-family: Verdana;
-	font-size: 10pt;
+	font-size: 12px;
 	font-weight: bold;
 	color: white;	
 	text-align: center;
 	padding: 3px 2px 3px 2px;
-	height: 30px;
+	height: 17px;
 	cursor: pointer;
 }
 
@@ -143,6 +143,7 @@
 	font-family: Verdana;
 	font-size: 12px;
 	color: #032D23;
+	padding: 5px;
 }
 
 .labelSubscription {
@@ -471,7 +472,6 @@ table {
 #Hours, #Minutes {
 	float: left;
 	width: 50px;
-	padding-left: 10px;
 }
 
 #StartHours, #StartMinutes {

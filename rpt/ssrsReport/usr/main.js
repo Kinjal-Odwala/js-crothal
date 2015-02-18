@@ -155,11 +155,11 @@ ii.Class({
 			
 			$("#LevelNamesContainer").height(($(window).height() - 200) - $("#ParameterContainer").height());
 			$("#ReportSubscriptionContainer").height($(window).height() - 110);
-			
-			if (me.reportType == "Report")
+
+			if (SubscriptionGrid.attributes[0].nodeValue.indexOf("none") > 0)
 				$("#TreeviewContainer").height($(window).height() - 75);
-			else if (me.reportType == "Subscription")
-				$("#TreeviewContainer").height($(window).height() - 220);
+			else if (SubscriptionGrid.attributes[0].nodeValue.indexOf("block") > 0 || SubscriptionGrid.attributes[0].nodeValue == "")
+				$("#TreeviewContainer").height($(window).height() - 255);
 		},
 
 		defineFormControls: function() {
@@ -909,7 +909,11 @@ ii.Class({
 		
 		initialize: function() {
 			var me = this;
-
+			
+			$("#SubscriptionGrid").hide();
+            $("#ReportSubscriptionContainer").hide();
+            $("#ReportButtonContainer").hide();
+			$("#SubscriptionButtonContainer").hide();
 			$("#HourlySchedule").hide();
 			$("#DailySchedule").hide();
 			$("#WeeklySchedule").hide();
@@ -1861,11 +1865,34 @@ ii.Class({
 				me.reportURL = reportURL;
 
 			if (found && reportURL != "" && !parameterAvailable) {
-				$("#ReportRightContainer").hide();
+				$("#SubscriptionGrid").hide();
+	            $("#ReportSubscriptionContainer").hide();
+	            $("#ReportButtonContainer").hide();
+				$("#SubscriptionButtonContainer").hide();
 				window.open(reportURL);
 			}
 			else if (reportId != 0) {
-				$("#ReportRightContainer").show();
+				if (me.reportType == "Report") { 
+					$("#SubscriptionGrid").hide();
+		            $("#Subscription").hide();
+		            $("#ScheduleContainer").hide();
+		            $("#SubscriptionButtonContainer").hide();
+		            $("#ReportSubscriptionContainer").show();
+		            $("#ReportRightContainer").show();
+		            $("#ReportButtonContainer").show();
+		            $("#TreeviewContainer").height($(window).height() - 75);
+				}
+				else if (me.reportType == "Subscription") {					
+		            $("#ReportButtonContainer").hide();
+		            $("#ReportSubscriptionContainer").show();
+		            $("#SubscriptionGrid").show();
+		            $("#Subscription").show();
+		            $("#ReportRightContainer").show();
+		            $("#ScheduleContainer").show();                        
+		            $("#SubscriptionButtonContainer").show();
+		            $("#TreeviewContainer").height($(window).height() - 255);
+				}
+				
 				me.setLoadCount();
 				
 				if (!me.levelNamesLoaded)
@@ -2860,12 +2887,10 @@ ii.Class({
 
 			$("#pageHeader").html("SSRS Reports");
 			$("#SubscriptionGrid").hide();
-            $("#Subscription").hide();
-            $("#ScheduleContainer").hide();
-            $("#SubscriptionButtonContainer").hide();
-            $("#ReportRightContainer").show();
-            $("#ReportButtonContainer").show();                        
-            $("#TreeviewContainer").height($(window).height() - 75);            
+            $("#ReportSubscriptionContainer").hide();
+            $("#ReportButtonContainer").hide();
+			$("#SubscriptionButtonContainer").hide();
+			$("#TreeviewContainer").height($(window).height() - 75);
 			me.reportType = "Report";
 			me.actionResetItem();
 			me.actionAddNodes(me.reportNodes);
@@ -2874,22 +2899,19 @@ ii.Class({
 		actionSubscriptionItem: function() {
 			var me = this;
 			var rowHeadData = "";
-
+			
 			$("#pageHeader").html("SSRS Report Subscriptions");
+			$("#SubscriptionGrid").hide();
+			$("#ReportSubscriptionContainer").hide();
             $("#ReportButtonContainer").hide();
-            $("#SubscriptionGrid").show();
-            $("#Subscription").show();
-            $("#ReportRightContainer").show();
-            $("#ScheduleContainer").show();                        
-            $("#SubscriptionButtonContainer").show();            
-            $("#TreeviewContainer").height($(window).height() - 220);
-            me.subscriptionStore.reset();            
-            rowHeadData += "<tr id='trSubscriptionGridHead' height='40px'>";
-			rowHeadData = "<th class='gridHeaderColumn' width='100%'>Description</th>";
+			$("#SubscriptionButtonContainer").hide();
+			$("#TreeviewContainer").height($(window).height() - 75);
+            rowHeadData += "<tr id='trSubscriptionGridHead' height='20px'>";
+			rowHeadData = "<th class='gridHeaderColumn' width='100%'>DESCRIPTION</th>";
 			rowHeadData += "</tr>";
 			$("#SubscriptionGridHead").html(rowHeadData);
             $("#SubscriptionGridBody").html("");
-            $("#divSubscriptionGrid").height(110);		
+            $("#divSubscriptionGrid").height(150);		
 			me.reportType = "Subscription";
 			me.actionResetItem();
 			me.resetScheduleInfo();
