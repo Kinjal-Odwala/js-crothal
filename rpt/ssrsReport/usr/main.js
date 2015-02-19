@@ -154,12 +154,16 @@ ii.Class({
 			var me = fin.reportUi;
 			
 			$("#LevelNamesContainer").height(($(window).height() - 200) - $("#ParameterContainer").height());
-			$("#ReportSubscriptionContainer").height($(window).height() - 110);
+			
+			if (me.reportType == "Report")
+				$("#ReportSubscription").height($(window).height() - 120);
+			else if (me.reportType == "Subscription")
+				$("#ReportSubscription").height($(window).height() - 150);
 
-			if (SubscriptionGrid.attributes[0].nodeValue.indexOf("none") > 0)
-				$("#TreeviewContainer").height($(window).height() - 75);
-			else if (SubscriptionGrid.attributes[0].nodeValue.indexOf("block") > 0 || SubscriptionGrid.attributes[0].nodeValue == "")
-				$("#TreeviewContainer").height($(window).height() - 255);
+			if (!$('#SubscriptionGrid').is(':visible'))
+				$("#TreeviewContainer").height($(window).height() - 80);
+			else
+				$("#TreeviewContainer").height($(window).height() - 260);
 		},
 
 		defineFormControls: function() {
@@ -1874,23 +1878,27 @@ ii.Class({
 			else if (reportId != 0) {
 				if (me.reportType == "Report") { 
 					$("#SubscriptionGrid").hide();
+					$("#RightContainerHeader").hide();
 		            $("#Subscription").hide();
 		            $("#ScheduleContainer").hide();
 		            $("#SubscriptionButtonContainer").hide();
 		            $("#ReportSubscriptionContainer").show();
 		            $("#ReportRightContainer").show();
 		            $("#ReportButtonContainer").show();
-		            $("#TreeviewContainer").height($(window).height() - 75);
+		            $("#TreeviewContainer").height($(window).height() - 80);
+		            $("#ReportSubscription").height($(window).height() - 120);
 				}
 				else if (me.reportType == "Subscription") {					
 		            $("#ReportButtonContainer").hide();
 		            $("#ReportSubscriptionContainer").show();
 		            $("#SubscriptionGrid").show();
+		            $("#RightContainerHeader").show();
 		            $("#Subscription").show();
 		            $("#ReportRightContainer").show();
 		            $("#ScheduleContainer").show();                        
 		            $("#SubscriptionButtonContainer").show();
-		            $("#TreeviewContainer").height($(window).height() - 255);
+		            $("#TreeviewContainer").height($(window).height() - 260);
+		            $("#ReportSubscription").height($(window).height() - 150);
 				}
 				
 				me.setLoadCount();
@@ -2890,7 +2898,7 @@ ii.Class({
             $("#ReportSubscriptionContainer").hide();
             $("#ReportButtonContainer").hide();
 			$("#SubscriptionButtonContainer").hide();
-			$("#TreeviewContainer").height($(window).height() - 75);
+			$("#TreeviewContainer").height($(window).height() - 80);
 			me.reportType = "Report";
 			me.actionResetItem();
 			me.actionAddNodes(me.reportNodes);
@@ -2905,7 +2913,7 @@ ii.Class({
 			$("#ReportSubscriptionContainer").hide();
             $("#ReportButtonContainer").hide();
 			$("#SubscriptionButtonContainer").hide();
-			$("#TreeviewContainer").height($(window).height() - 75);
+			$("#TreeviewContainer").height($(window).height() - 80);
             rowHeadData += "<tr id='trSubscriptionGridHead' height='20px'>";
 			rowHeadData = "<th class='gridHeaderColumn' width='100%'>DESCRIPTION</th>";
 			rowHeadData += "</tr>";
@@ -3843,6 +3851,7 @@ ii.Class({
 							}
 							else {
 								me.subscriptions[me.lastSelectedRowIndex] = item;
+								me.setSubscriptionGrid();
 								me.actionSelectItem(me.lastSelectedRowIndex);
 							}
 

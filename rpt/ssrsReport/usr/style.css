@@ -122,7 +122,7 @@
 	border-spacing: 0px 0px;
 	border-collapse: collapse;
 	font-family: Verdana;
-	font-size: 8pt;
+	font-size: 12px;
 	color: #032D23;	
 	vertical-align: middle;
 	padding: 3px 2px 3px 2px;
@@ -144,6 +144,12 @@
 	font-size: 12px;
 	color: #032D23;
 	padding: 5px;
+}
+
+.labelCheck {
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
 }
 
 .labelSubscription {
@@ -190,6 +196,9 @@
 	width: 57px;
 }
 
+input[type="checkbox"] {
+	margin: 0px;
+}
 .checkBox {
 	float: left;
 	width: 23px;
@@ -410,6 +419,10 @@ table {
 #ReportSubscriptionContainer {
 	border: 1px solid #cecece;
 	padding: 0px;
+	overflow: auto;
+}
+
+#ReportSubscription {
 	overflow: auto;
 }
 
