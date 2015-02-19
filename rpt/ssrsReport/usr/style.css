@@ -24,6 +24,16 @@
 	margin-bottom: 5px;
 }
 
+.subscriptionHeader {
+	background: none repeat scroll 0 0 #c2e4c1;
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 18px;
+	color: #2C2F50;
+	text-align: center;
+	margin-bottom: 0px;
+}
+
 .iiInputText.Loading {
 	background-image: url(/fin/cmn/usr/media/common/indicator.gif);
 	background-repeat: no-repeat;
