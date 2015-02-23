@@ -57,6 +57,8 @@
 		actionNodeAppend(283, 280, "Catalogs", 0, "pur/catalog.htm");			
 		actionNodeAppend(284, 280, "Purchase Orders", 0, "pur/purchaseOrder.htm");
 		actionNodeAppend(285, 280, "Price Update", 0, "pur/itemPriceUpdate.htm");
+		actionNodeAppend(285, 280, "PO Requisition", 0, "pur/poRequisition.htm");
+		actionNodeAppend(285, 280, "Cap Requisition", 0, "pur/capitalRequisition.htm");
 
 		actionNodeAppend(300, 20, "Inventory", 1);
 		actionNodeAppend(301, 300, "Administration", 0, "inv/administration.htm");
@@ -90,6 +92,7 @@
 		actionNodeAppend(385, 380, "Import House Codes", 0, "hcm/houseCodeImport.htm");
 		actionNodeAppend(385, 380, "House Code Wizard", 0, "hcm/houseCodeWizard.htm");
 		actionNodeAppend(386, 380, "Epay Sites", 0, "hcm/ePaySite.htm");
+		actionNodeAppend(386, 380, "EPay Site Survey", 0, "hcm/ePaySiteSurvey.htm");
 
 		actionNodeAppend(400, 20, "Report", 1);
 		actionNodeAppend(401, 400, "EBR Report", 0, "template.htm");
@@ -118,6 +121,10 @@
 		actionNodeAppend(429, 420, "Ad-Hoc Report", 0, "setup/adHocReport.htm");
 		actionNodeAppend(430, 420, "Hierarchy Management", 0, "setup/hierarchyManagement.htm");
 		actionNodeAppend(431, 420, "State Minimum Wage", 0, "setup/minimumWage.htm");
+		actionNodeAppend(431, 420, "Emp Hierarchy", 0, "setup/employeeHierarchy.htm");
+		actionNodeAppend(431, 420, "Employee PTO", 0, "setup/employeePTO.htm");
+		actionNodeAppend(431, 420, "Emp Request", 0, "setup/empRequest.htm");
+		actionNodeAppend(431, 420, "Local Tax Code", 0, "setup/localTaxCode.htm");
 
 		actionNodeAppend(30, 0, "Enterprise Business Reporting (EBR)", 1);
 		actionNodeAppend(500, 30, "EBR Report", 0, "template.htm");
