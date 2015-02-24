@@ -3006,6 +3006,7 @@ ii.Class({
 				$("#subscriptionRow" + me.lastBeforeSelectedRowIndex).removeClass("selectedRow");
 				
 			$("#subscriptionRow" + me.subscriptions[index].id).addClass("selectedRow");
+			me.setLoadCount();
 			me.resetControls();
 			me.status = "edit";
 			me.lastSelectedRowIndex = index;
@@ -3196,8 +3197,7 @@ ii.Class({
 				}
 				
 				me.namesList = me.names.replace("~", "");
-				me.levelName = me.level.replace("~Level=", "");
-				me.setLoadCount();																
+				me.levelName = me.level.replace("~Level=", "");																				
 				me.setStatus("Loading");
 				$("#customersLoading").addClass('loading');
 				me.genericTypeStore.fetch("level:" + me.levelName + ",name:" + me.namesList + ",genericType:Customers,userId:[user]", me.customersLoaded, me);
@@ -3219,8 +3219,10 @@ ii.Class({
 				if (nameValues[0] != 'Level' && nameValues[0] != 'Name') { 
 					var controlIndex = me.findIndexByTitle(nameValues[0], me.reportParameters);
 					if (me.reportParameters[controlIndex].controlType == "MultiSelect") {
-						if ($(me.controls[controlIndex].selector).multiselect("widget").find(":checkbox[value="+ nameValues[1] +"]")[0] != "undefined" && $(me.controls[controlIndex].selector).multiselect("widget").find(":checkbox[value="+ nameValues[1] +"]")[0].attributes[2].nodeValue != "checked")
-							$(me.controls[controlIndex].selector).multiselect("widget").find(":checkbox[value="+ nameValues[1] +"]").click();
+						if ($(me.controls[controlIndex].selector).multiselect("widget").find(":checkbox[value="+ nameValues[1] +"]")[0] != undefined) {							
+							if ($(me.controls[controlIndex].selector).multiselect("widget").find(":checkbox[value="+ nameValues[1] +"]")[0].attributes[2].nodeValue != "checked")
+								$(me.controls[controlIndex].selector).multiselect("widget").find(":checkbox[value="+ nameValues[1] +"]").click();
+						}							
 					}
 				}
 			}
@@ -3845,7 +3847,7 @@ ii.Class({
 							else if (me.status == "delete") {
 								me.resetControls();
 								me.subscriptions.splice(me.lastSelectedRowIndex, 1);
-								me.subscriptionsLoaded(me, 0);
+								me.setSubscriptionGrid();
 								me.lastSelectedRowIndex = -1;
 								me.status = "";
 							}
