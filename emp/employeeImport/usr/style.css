@@ -1,41 +1,10 @@
-﻿
-.actionHeader 
-{
-	background-color: #9BCD9A;
-	padding-left: 6px;
-	height: 25px;
-}
-
-#AnchorUpload {
-	float: left;
-	margin-right: 5px;
-	padding-left: 5px;
-	padding-top: 0px;
-	width: 83px;
-}
-
-#AnchorCancel {
-	float: left;
-	margin-right: 5px;
-	padding-left: 5px;
-	padding-top: 0px;
-	width: 80px;
-}
-
-#AnchorValidate {
-	float: left;
-	margin-right: 5px;
-	padding-left: 10px;	
-	padding-top: 15px;
-	width: 90px;
-}
-
-#AnchorSave {
-	float: left;
-	margin-right: 5px;
-	padding-left: 5px;	
-	padding-top: 15px;	
-	width: 68px;
+﻿.header {
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 18px;
+	color: #2C2F50;
+	text-align: center;
+	margin-bottom: 5px;
 }
 
 .gridBorder {
@@ -144,4 +113,36 @@
 .paging select {
     font-family: Verdana;
     font-size: 8pt;
+}
+
+#AnchorUpload {
+	float: left;
+	margin-right: 5px;
+	padding-left: 5px;
+	padding-top: 0px;
+	width: 83px;
+}
+
+#AnchorCancel {
+	float: left;
+	margin-right: 5px;
+	padding-left: 5px;
+	padding-top: 0px;
+	width: 80px;
+}
+
+#AnchorValidate {
+	float: left;
+	margin-right: 5px;
+	padding-left: 10px;	
+	padding-top: 15px;
+	width: 90px;
+}
+
+#AnchorSave {
+	float: left;
+	margin-right: 5px;
+	padding-left: 5px;	
+	padding-top: 15px;	
+	width: 68px;
 }

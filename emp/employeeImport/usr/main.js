@@ -30,13 +30,9 @@ ii.Class({
 			me.pages = [];
 			me.houseCodeCache = [];
 			me.statesCache = [];
-			me.statusTypesCache = [];
-			me.terminationReasonTypesCache = [];
 			me.localTaxCodesCache = [];
 			me.houseCodeLoading = 0;
 			me.statesLoading = 0;
-			me.statusTypesLoading = 0;
-			me.terminationReasonTypesLoading = 0;
 			me.localTaxCodesLoading = 0;
 			me.employeeLoading = false;
 			me.batchId = 0;
@@ -55,7 +51,7 @@ ii.Class({
 			me.transactionMonitor = new ii.ajax.TransactionMonitor(
 				me.gateway
 				, function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
-			);	
+			);
 			
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "emp\\employeeImport";
@@ -127,7 +123,7 @@ ii.Class({
 		resize: function() {
 			var me = this;
 			var divGridWidth = $(window).width() - 22;
-			var divGridHeight = $(window).height() - 205;
+			var divGridHeight = $(window).height() - 185;
 
 			$("#divEmployeeGrid").css({"width" : divGridWidth + "px", "height" : divGridHeight + "px"});
 		},
@@ -506,31 +502,17 @@ ii.Class({
 		},
 		
 		statusTypesLoaded: function(me, activeId) {
-						
-			me.statusTypesTemp = me.statusTypes.slice();
-			me.statusTypes = [];
-			
-			for (var index = 0; index < me.statusTypesTemp.length; index++) {
-				if (me.statusTypesTemp[index].name == "Active")
-					me.statusTypes.push(me.statusTypesTemp[index]);
-			}
 			
 			me.genderTypes.unshift(new fin.emp.employeeImport.GenderType({ id: 2, name: "Female" }));
 			me.genderTypes.unshift(new fin.emp.employeeImport.GenderType({ id: 1, name: "Male" }));
 			me.genderTypes.unshift(new fin.emp.employeeImport.GenderType({ id: 0, name: "" }));
-			
-			me.statusTypes.unshift(new fin.emp.employeeImport.StatusType({ id: 0, name: "" }));
-			me.workShifts.unshift(new fin.emp.employeeImport.WorkShift({ id: 0, name: "" }));
+
 			me.jobCodeTypes.unshift(new fin.emp.employeeImport.JobCodeType({ id: 0, name: "" }));
-			me.deviceGroupTypes.unshift(new fin.emp.employeeImport.DeviceGroupType({ id: 0, name: "" }));
-			me.rateChangeReasons.unshift(new fin.emp.employeeImport.RateChangeReasonType({ id: 0, name: "" }));
-			me.terminationReasons.unshift(new fin.emp.employeeImport.TerminationReasonType({ id: 0, name: "" }));
 			me.ethnicityTypes.unshift(new fin.emp.employeeImport.EthnicityType({ id: 0, name: "" }));
 			me.unionTypes.unshift(new fin.emp.employeeImport.UnionType({ id: 0, name: "" }));
 			me.i9Types.unshift(new fin.emp.employeeImport.I9Type({ id: 0, name: "" }));
 			me.vetTypes.unshift(new fin.emp.employeeImport.VetType({ id: 0, name: "" }));			
 			me.maritalStatusTypes.unshift(new fin.emp.employeeImport.MaritalStatusType({ id: 0, name: "" }));
-			me.jobStartReasonTypes.unshift(new fin.emp.employeeImport.JobStartReasonType({ id: 0, name: "" }));
 			me.checkLoadCount();
 		},
 		
@@ -724,51 +706,33 @@ ii.Class({
 
 			me.employeeLoading = true;
 
-			for(var index = 0; index < me.employees.length; index++) {					
+			for (var index = 0; index < me.employees.length; index++) {					
 				//create the row for the employee information
 				employeeRow = employeeRowTemplate;
 				employeeRow = employeeRow.replace(/RowCount/g, index);
 				employeeRow = employeeRow.replace("#", index + 1);
 				
 				$("#EmployeeGridBody").append(employeeRow);
-						
+
 				me.houseCodeCheck(index, me.employees[index].column1);
-				
-				idIndex = me.findIndexByTitle(me.employees[index].column19, me.statusTypes);
-				if (idIndex != undefined) {
-					me.statusTypeCheck(index, me.statusTypes[idIndex].id);
-				}
 
-				idIndex = me.findIndexByTitle(me.employees[index].column30, me.terminationReasons);
-				if (idIndex != undefined) {
-					me.terminationReasonTypeCheck(index, me.terminationReasons[idIndex].id);
-				}
-
-				idIndex = me.findIndexByTitle(me.employees[index].column67, me.states);
+				idIndex = me.findIndexByTitle(me.employees[index].column37, me.states);
 				if (idIndex != undefined) {
 					me.stateCheck(index,  me.states[idIndex].id, true);
 				}
 				
-				idIndex = me.findIndexByTitle(me.employees[index].column68, me.states);
+				idIndex = me.findIndexByTitle(me.employees[index].column38, me.states);
 				if (idIndex != undefined) {
 					me.stateCheck(index,  me.states[idIndex].id, false);
 				}
 
 				$("#txtHouseCode" + index).bind("blur", function() { me.houseCodeBlur(this); });
-				$("#selStatusType" + index).bind("change", function() { me.statusTypeChange(this); });
-				$("#selTerminationReasonType" + index).bind("change", function() { me.terminationReasonTypeChange(this); });
-				$("#selPayrollCompany" + index).bind("change", function() { me.payrollCompanyChange(this); });
 				$("#selPrimaryState" + index).bind("change", function() { me.primaryStateChange(this); });
 				$("#selSecondaryState" + index).bind("change", function() { me.secondaryStateChange(this); });				
 			}
 			
 			me.buildDropDown("State", me.states);
-			me.buildDropDown("StatusType", me.statusTypes);	
-			me.buildDropDown("DeviceGroupType", me.deviceGroupTypes);
 			me.buildDropDown("JobCodeType", me.jobCodeTypes);
-			me.buildDropDown("ChangeReasonType", me.rateChangeReasons);
-			me.buildDropDown("TerminationReasonType", me.terminationReasons);
-			me.buildDropDown("WorkShift", me.workShifts);
 			me.buildDropDown("UnionType", me.unionTypes);
 			me.buildDropDown("GenderType", me.genderTypes);
 			me.buildDropDown("EthnicityType", me.ethnicityTypes);
@@ -778,10 +742,9 @@ ii.Class({
 			me.buildDropDown("SecondaryState", me.states);	
 			me.buildDropDown("I9Type", me.i9Types);
 			me.buildDropDown("VetType", me.vetTypes);
-			me.buildDropDown("JobStartReasonType", me.jobStartReasonTypes);
 			me.buildDropDown("MaritalStatusType", me.maritalStatusTypes);
 			
-			employeeRow = '<tr height="100%"><td colspan="92" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>';
+			employeeRow = '<tr height="100%"><td colspan="55" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>';
 			$("#EmployeeGridBody").append(employeeRow);
 			$("#EmployeeGrid tr:odd").addClass("gridRow");
         	$("#EmployeeGrid tr:even").addClass("alternateGridRow");
@@ -794,9 +757,7 @@ ii.Class({
 			me.resize();
 			
 			me.intervalId = setInterval(function() {
-
-				if (me.houseCodeLoading <= 0 && me.statesLoading <= 0 && me.statusTypesLoading <= 0 
-					&& me.terminationReasonTypesLoading <= 0 && me.localTaxCodesLoading <= 0) {
+				if (me.houseCodeLoading <= 0 && me.statesLoading <= 0 && me.localTaxCodesLoading <= 0) {
 					clearInterval(me.intervalId);
 					me.loadEmployeeData();
 				}
@@ -815,104 +776,59 @@ ii.Class({
 				$("#txtMiddleName" + index).val(me.employees[index].column5);
 				$("#txtAddress1" + index).val(me.employees[index].column6);
 				$("#txtAddress2" + index).val(me.employees[index].column7);
-				$("#txtCity" + index).val(me.employees[index].column8);				
+				$("#txtCity" + index).val(me.employees[index].column8);
 				me.setDropDownValue(me.states, me.employees[index].column9, "State", index);
 				$("#txtPostalCode" + index).val(me.employees[index].column10);
-				$("#txtHomePhone" + index).val(me.employees[index].column11);				
+				$("#txtHomePhone" + index).val(me.employees[index].column11);
 				$("#txtFax" + index).val(me.employees[index].column12);
 				$("#txtCellPhone" + index).val(me.employees[index].column13);
 				$("#txtEmail" + index).val(me.employees[index].column14);
 				$("#txtPager" + index).val(me.employees[index].column15);
-				//if (me.employees[index].column16 == "1")
-				$("#chkActive" + index)[0].checked = true;
-				if (me.employees[index].column17 == "1")
-					$("#chkEmployeeHouseCodeUpdated" + index)[0].checked = true;
-				$("#txtSSN" + index).val(me.employees[index].column18);								
-				me.setDropDownValue(me.statusTypes, me.employees[index].column19, "StatusType", index);
+				$("#txtSSN" + index).val(me.employees[index].column16);
 				var houseCode = $("#txtHouseCode" + index).val();
-				//me.setPayrollCompanyValue(me.houseCodeCache[houseCode].payrollCompanies, me.employees[index].column20, index);
-				me.setDropDownValue(me.deviceGroupTypes, me.employees[index].column21, "DeviceGroupType", index);
-				if (me.employees[index].column22 == "1")
-					$("#chkExempt" + index)[0].checked = true;				
-				me.setDropDownValue(me.jobCodeTypes, me.employees[index].column23, "JobCodeType", index);
-				$("#txtHireDate" + index).val(me.stripTimeStamp(me.employees[index].column25));
-				me.setDropDownValue(me.rateChangeReasons, me.employees[index].column26, "ChangeReasonType", index);
-				$("#txtRateChangeDate" + index).val(me.stripTimeStamp(me.employees[index].column27));
-				$("#txtSeniorityDate" + index).val(me.stripTimeStamp(me.employees[index].column28));
-				$("#txtTerminationDate" + index).val(me.stripTimeStamp(me.employees[index].column29));				
-				me.setDropDownValue(me.terminationReasons, me.employees[index].column30, "TerminationReasonType", index);
-				me.setDropDownValue(me.workShifts, me.employees[index].column31, "WorkShift", index);
-				$("#txtBenefitsPercentage" + index).val(me.employees[index].column32);
-				$("#txtScheduledHours" + index).val(me.employees[index].column33);
-				if (me.employees[index].column34 == "1")
+				me.setDropDownValue(me.jobCodeTypes, me.employees[index].column17, "JobCodeType", index);
+				$("#txtHireDate" + index).val(me.stripTimeStamp(me.employees[index].column18));
+				$("#txtSeniorityDate" + index).val(me.stripTimeStamp(me.employees[index].column19));
+				$("#txtScheduledHours" + index).val(me.employees[index].column20);
+				if (me.employees[index].column21 == "1")
 					$("#chkUnion" + index)[0].checked = true;
-				//if (me.employees[index].column35 == "1")
-				$("#chkCrothallEmployee" + index)[0].checked = true;				
-				$("#txtEmployeeNumber" + index).val(me.employees[index].column36);
-				$("#txtAlternatePayRateA" + index).val(me.employees[index].column37);
-				$("#txtAlternatePayRateB" + index).val(me.employees[index].column38);
-				$("#txtAlternatePayRateC" + index).val(me.employees[index].column39);
-				$("#txtAlternatePayRateD" + index).val(me.employees[index].column40);
-				$("#txtPTOStartDate" + index).val(me.stripTimeStamp(me.employees[index].column41));
-				if (me.employees[index].column42 == "1")
-					$("#chkPTOAccruedHourEntryAutomatic" + index)[0].checked = true;
-				$("#txtOriginalHireDate" + index).val(me.stripTimeStamp(me.employees[index].column43));
-				$("#txtEffectiveDate" + index).val(me.stripTimeStamp(me.employees[index].column44));
-				me.setDropDownValue(me.unionTypes, me.employees[index].column45, "UnionType", index);
-				var statusType = $("#selStatusType" + index).val();
-				me.setDropDownValue(me.statusTypesCache[statusType].statusCategoryTypes, me.employees[index].column46, "StatusCategoryType", index);
-				$("#txtPayRate" + index).val(me.employees[index].column47);
-				$("#txtPayRateEnteredBy" + index).val(me.employees[index].column48);
-				$("#txtPayRateEnteredAt" + index).val(me.stripTimeStamp(me.employees[index].column49));
-				$("#txtPrevPayRate" + index).val(me.employees[index].column50);
-				$("#txtPrevPayRateEnteredBy" + index).val(me.employees[index].column51);
-				$("#txtPrevPayRateEnteredAt" + index).val(me.stripTimeStamp(me.employees[index].column52));
-				$("#txtPrevPrevPayRate" + index).val(me.employees[index].column53);
-				$("#txtPrevPrevPayRateEnteredBy" + index).val(me.employees[index].column54);
-				$("#txtPrevPrevPayRateEnteredAt" + index).val(me.stripTimeStamp(me.employees[index].column55));
-				me.setDropDownValue(me.genderTypes, me.employees[index].column56, "GenderType", index);
-				me.setDropDownValue(me.ethnicityTypes, me.employees[index].column57, "EthnicityType", index);
-				$("#txtBirthDate" + index).val(me.stripTimeStamp(me.employees[index].column58));				
-				$("#txtReviewDate" + index).val(me.stripTimeStamp(me.employees[index].column59));
-				$("#txtWorkPhone" + index).val(me.employees[index].column60);
-				$("#txtWorkPhoneExt" + index).val(me.employees[index].column61);
-				$("#txtBackGroundCheckDate" + index).val(me.stripTimeStamp(me.employees[index].column62));				
-				$("#txtFederalExemptions" + index).val(me.employees[index].column63);
-				me.setDropDownValue(me.federalAdjustments, me.employees[index].column64, "FederalAdjustmentType", index);
-				me.setDropDownValue(me.maritalStatusFederalTaxTypes, me.employees[index].column65, "MaritalStatusFederalTaxType", index);
-				$("#txtFederalAdjustmentAmount" + index).val(me.employees[index].column66);
-				me.setDropDownValue(me.states, me.employees[index].column67, "PrimaryState", index);
-				me.setDropDownValue(me.states, me.employees[index].column68, "SecondaryState", index);
+				$("#txtAlternatePayRateA" + index).val(me.employees[index].column22);
+				$("#txtAlternatePayRateB" + index).val(me.employees[index].column23);
+				$("#txtAlternatePayRateC" + index).val(me.employees[index].column24);
+				$("#txtAlternatePayRateD" + index).val(me.employees[index].column25);
+				$("#txtOriginalHireDate" + index).val(me.stripTimeStamp(me.employees[index].column26));
+				me.setDropDownValue(me.unionTypes, me.employees[index].column27, "UnionType", index);
+				$("#txtPayRate" + index).val(me.employees[index].column28);
+				me.setDropDownValue(me.genderTypes, me.employees[index].column29, "GenderType", index);
+				me.setDropDownValue(me.ethnicityTypes, me.employees[index].column30, "EthnicityType", index);
+				$("#txtBirthDate" + index).val(me.stripTimeStamp(me.employees[index].column31))
+				$("#txtBackGroundCheckDate" + index).val(me.stripTimeStamp(me.employees[index].column32));				
+				$("#txtFederalExemptions" + index).val(me.employees[index].column33);
+				me.setDropDownValue(me.federalAdjustments, me.employees[index].column34, "FederalAdjustmentType", index);
+				me.setDropDownValue(me.maritalStatusFederalTaxTypes, me.employees[index].column35, "MaritalStatusFederalTaxType", index);
+				$("#txtFederalAdjustmentAmount" + index).val(me.employees[index].column36);
+				me.setDropDownValue(me.states, me.employees[index].column37, "PrimaryState", index);
+				me.setDropDownValue(me.states, me.employees[index].column38, "SecondaryState", index);
 				var primaryState = $("#selPrimaryState" + index).val();
-				me.setDropDownValue(me.statesCache[primaryState].maritalStatusStateTaxTypes, me.employees[index].column69, "MaritalStatusStateTaxTypePrimary", index);
+				me.setDropDownValue(me.statesCache[primaryState].maritalStatusStateTaxTypes, me.employees[index].column39, "MaritalStatusStateTaxTypePrimary", index);
 				var secondaryState = $("#selSecondaryState" + index).val();
-				me.setDropDownValue(me.statesCache[secondaryState].maritalStatusStateTaxTypes, me.employees[index].column70, "MaritalStatusStateTaxTypeSecondary", index);
-				$("#txtStateExemptions" + index).val(me.employees[index].column71);
-				me.setDropDownValue(me.statesCache[primaryState].stateAdjustmentTypes, me.employees[index].column72, "StateAdjustmentType", index);
-				$("#txtStateAdjustmentAmount" + index).val(me.employees[index].column73);
-				me.setDropDownValue(me.statesCache[primaryState].sdiAdjustmentTypes, me.employees[index].column74, "SDIAdjustmentType", index);
-				$("#txtSDIRate" + index).val(me.employees[index].column75);
-				me.setDropDownValue(me.statesCache[primaryState].localTaxAdjustmentTypes, me.employees[index].column76, "LocalTaxAdjustmentType", index);
-				$("#txtLocalTaxAdjustmentAmount" + index).val(me.employees[index].column77);
-				me.setDropDownValue(me.statesCache[primaryState].localTaxCodes, me.employees[index].column78, "LocalTaxCode1", index);
-				me.setDropDownValue(me.statesCache[primaryState].localTaxCodes, me.employees[index].column79, "LocalTaxCode2", index);
-				me.setDropDownValue(me.statesCache[primaryState].localTaxCodes, me.employees[index].column80, "LocalTaxCode3", index);
-				$("#txtPayrollStatus" + index).val(me.employees[index].column81);
-				$("#txtPreviousPayrollStatus" + index).val(me.employees[index].column82);
-				me.setHouseCodeJobValue(me.houseCodeCache[houseCode].jobs, me.employees[index].column84, index);
-				me.setDropDownValue(me.i9Types, me.employees[index].column85, "I9Type", index);
-				me.setDropDownValue(me.vetTypes, me.employees[index].column86, "VetType", index);
-				var terminationReasonType = $("#selTerminationReasonType" + index).val();
-				me.setDropDownValue(me.terminationReasonTypesCache[terminationReasonType].separationCodes, me.employees[index].column87, "SeparationCode", index);
-				me.setDropDownValue(me.jobStartReasonTypes, me.employees[index].column88, "JobStartReasonType", index);
-				$("#txtEffectiveDateJob" + index).val(me.stripTimeStamp(me.employees[index].column89));
-				$("#txtEffectiveDateCompensation" + index).val(me.stripTimeStamp(me.employees[index].column90));
-				me.setDropDownValue(me.maritalStatusTypes, me.employees[index].column91, "MaritalStatusType", index);
-				me.setFrequencyType(index);
+				me.setDropDownValue(me.statesCache[secondaryState].maritalStatusStateTaxTypes, me.employees[index].column40, "MaritalStatusStateTaxTypeSecondary", index);
+				$("#txtStateExemptions" + index).val(me.employees[index].column41);
+				me.setDropDownValue(me.statesCache[primaryState].stateAdjustmentTypes, me.employees[index].column42, "StateAdjustmentType", index);
+				$("#txtStateAdjustmentAmount" + index).val(me.employees[index].column43);
+				me.setDropDownValue(me.statesCache[primaryState].sdiAdjustmentTypes, me.employees[index].column44, "SDIAdjustmentType", index);
+				$("#txtSDIRate" + index).val(me.employees[index].column45);
+				me.setDropDownValue(me.statesCache[primaryState].localTaxAdjustmentTypes, me.employees[index].column46, "LocalTaxAdjustmentType", index);
+				$("#txtLocalTaxAdjustmentAmount" + index).val(me.employees[index].column47);
+				me.setDropDownValue(me.statesCache[primaryState].localTaxCodes, me.employees[index].column48, "LocalTaxCode1", index);
+				me.setDropDownValue(me.statesCache[primaryState].localTaxCodes, me.employees[index].column49, "LocalTaxCode2", index);
+				me.setDropDownValue(me.statesCache[primaryState].localTaxCodes, me.employees[index].column50, "LocalTaxCode3", index);
+				me.setDropDownValue(me.i9Types, me.employees[index].column51, "I9Type", index);
+				me.setDropDownValue(me.vetTypes, me.employees[index].column52, "VetType", index);
+				me.setDropDownValue(me.maritalStatusTypes, me.employees[index].column53, "MaritalStatusType", index);
 			}
 			
 			me.employeeLoading = false;
-
 			me.setStatus("Loaded");
 			$("#pageLoading").fadeOut("slow");
 		},
@@ -946,37 +862,19 @@ ii.Class({
 			
 			return null;
 		},
-		
-		setPayrollCompanyValue: function(types, title, index) {
+
+		getPayrollCompany: function(types) {
 			var me = this;
-			var idIndex = null;
-			
-			for (var rowNumber = 0; rowNumber < types.length; rowNumber++) {
-				if (types[rowNumber].title == title) {
-					idIndex = rowNumber;
+			var id = 0;
+
+			for (var index = 0; index < types.length; index++) {
+				if (types[index].payFrequencyType == "Weekly") {
+					id = types[index].id;
 					break;
 				}
 			}
 
-			if (idIndex != undefined) {
-				$("#selPayrollCompany" + index).val(types[idIndex].id);
-			}
-		},
-		
-		setHouseCodeJobValue: function(types, title, index) {
-			var me = this;
-			var idIndex = null;
-			
-			for (var rowNumber = 0; rowNumber < types.length; rowNumber++) {
-				if (types[rowNumber].jobTitle == title) {
-					idIndex = rowNumber;
-					break;
-				}
-			}
-
-			if (idIndex != undefined) {
-				$("#selHouseCodeJob" + index).val(types[idIndex].id);
-			}
+			return id;
 		},
 		
 		setDropDownValue: function(types, title, controlName, index) {
@@ -988,40 +886,7 @@ ii.Class({
 				$("#sel" + controlName + index).val(types[idIndex].id);				
 			}
 		},
-		
-		setFrequencyType: function(rowNumber) {
-			var me = this;
-			var houseCode = me.employees[rowNumber].column1;			
-			var index = ii.ajax.util.findIndexById($("#selPayrollCompany" + rowNumber).val(), me.houseCodeCache[houseCode].payrollCompanies);
-			
-			if (index != undefined)	{
-				$("#txtFrequencyType" + rowNumber).val(me.houseCodeCache[houseCode].payrollCompanies[index].payFrequencyType);
-				$("#chkHourly" + rowNumber)[0].checked = me.houseCodeCache[houseCode].payrollCompanies[index].hourly;
-			}	
-		},
-		
-		getFrequencyType: function(rowNumber) {
-			var me = this;			
-			var index = me.findIndexByTitle($("#txtFrequencyType" + rowNumber).val(), me.payFrequencyTypes);
-			
-			if (index != undefined)			
-				return me.payFrequencyTypes[index].id;
-			else return 0;
-		},
 
-		payrollCompanyChange: function(objSelect) {
-			var me = this;
-		    var rowNumber = Number(objSelect.id.substr(17));
-			var index = Number(objSelect.selectedIndex);
-			var houseCode = me.employees[rowNumber].column1;
-			var payrollCompany = $("#selPayrollCompany" + rowNumber).val();
-			var state = $("#selPrimaryState" + rowNumber).val();
-			
-	    	$("#txtFrequencyType" + rowNumber).val(me.houseCodeCache[houseCode].payrollCompanies[index].payFrequencyType);
-			$("#chkHourly" + rowNumber)[0].checked = me.houseCodeCache[houseCode].payrollCompanies[index].hourly;
-			me.localTaxCodeCheck(rowNumber, state, payrollCompany);
-		},
-		
 		houseCodeBlur: function(objInput) {
 			var me = this;
 		    var rowNumber = Number(objInput.id.substr(12));
@@ -1034,14 +899,13 @@ ii.Class({
 		    if (objInput.value != me.employees[rowNumber].column1) {				
 		        me.employees[rowNumber].column1 = objInput.value;
 		    	me.houseCodeCheck(rowNumber, objInput.value);
-		    }		    
+		    }
 		},
 		
 		houseCodeCheck: function(rowNumber, houseCode) {
 			var me = this;
 
 		    if (me.houseCodeCache[houseCode] != undefined) {
-
 	            if (me.houseCodeCache[houseCode].loaded)
 					me.houseCodeValidate(houseCode, [rowNumber]);              
 	            else
@@ -1061,13 +925,12 @@ ii.Class({
 		    if (me.houseCodeCache[houseCode].valid) {
 		        for (var index = 0; index < rowArray.length; index++) {
 		            rowNumber = Number(rowArray[index]);
-		            me.jobRebuild(rowNumber, houseCode);
-		            me.payrollCompanyRebuild(rowNumber, houseCode);		
-					me.setPayrollCompanyValue(me.houseCodeCache[houseCode].payrollCompanies, me.employees[rowNumber].column20, rowNumber);
-					payrollCompany = $("#selPayrollCompany" + rowNumber).val();
-					idIndex = me.findIndexByTitle(me.employees[rowNumber].column67, me.states);
+					payrollCompany = me.getPayrollCompany(me.houseCodeCache[houseCode].payrollCompanies);
+					idIndex = me.findIndexByTitle(me.employees[rowNumber].column37, me.states);
 					if (idIndex != undefined)
 						me.localTaxCodeCheck(rowNumber, me.states[idIndex].id.toString(), payrollCompany);
+					objInput = $("#txtHouseCode" + rowNumber);
+					me.setCellColor(objInput, me.cellColorValid, "");
 		        }
 		    }
 		    else {
@@ -1075,18 +938,14 @@ ii.Class({
 		            rowNumber = Number(rowArray[index]);
 					objInput = $("#txtHouseCode" + rowNumber);
 					objInput.css("background-color", me.cellColorInvalid);
-					objInput = $("#selPayrollCompany" + rowNumber);
-					objInput.empty();
-					objInput = $("#selHouseCodeJob" + rowNumber);
-					objInput.empty();
-		        }		       
+		        }
 		    }
 		},
 		
 		houseCodeLoad: function(rowNumber, houseCode) {
 		    var me = this;
 			
-		    ii.trace("HouseCode Loading : " + houseCode, ii.traceTypes.information, "Startup");
+		    $("#pageLoading").fadeIn("slow");
 			$("#messageToUser").text("Loading");
 		    me.houseCodeLoading++;
 		   
@@ -1094,7 +953,6 @@ ii.Class({
 		    me.houseCodeCache[houseCode].valid = false;
 		    me.houseCodeCache[houseCode].loaded = false;
 		    me.houseCodeCache[houseCode].buildQueue = [];
-		    me.houseCodeCache[houseCode].jobs = [];
 		    me.houseCodeCache[houseCode].payrollCompanies = [];
 		    me.houseCodeCache[houseCode].buildQueue.push(rowNumber);
 		    
@@ -1107,14 +965,12 @@ ii.Class({
                     + "appUnitBrief:" + houseCode + ",<criteria>",
                 
                 success: function(xml) {
-		    		ii.trace("HouseCode Loaded : " + houseCode, ii.traceTypes.information, "Startup");
-		            
 					if ($(xml).find('item').length) {
 		                //the house code is valid
 		                $(xml).find('item').each(function() {
 		                    me.houseCodeCache[houseCode].valid = true;
 		                    me.houseCodeCache[houseCode].id = $(this).attr("id");
-		                    me.houseCodeJobLoad(houseCode);
+							me.houseCodePayrollCompaniesLoad(houseCode);
 		                });
 		            }
 		            else {
@@ -1124,38 +980,6 @@ ii.Class({
 		                me.houseCodeLoading--;
 						if (me.houseCodeLoading <= 0 && !me.employeeLoading) $("#pageLoading").fadeOut("slow");
 		            }
-				}
-			});
-		},
-		
-		houseCodeJobLoad: function(houseCode) {
-		    var me = this;
-		    
-		    $.ajax({            
-                type: "POST",
-                dataType: "xml",
-                url: "/net/crothall/chimes/fin/emp/act/provider.aspx",
-                data: "moduleId=emp&requestId=1&targetId=iiCache"
-                    + "&requestXml=<criteria>storeId:houseCodeJobs,userId:[user],"
-                    + "houseCodeId:" + me.houseCodeCache[houseCode].id + ",<criteria>",
-                
-                success: function(xml) {
-       				var job = {};
-	                job.id = 0;		               
-	                job.jobNumber = "";
-	                job.jobTitle = "";
-	                me.houseCodeCache[houseCode].jobs.push(job);
-								
-		            $(xml).find('item').each(function() {
-		                var job = {};
-		                job.id = $(this).attr("id");		               
-		                job.jobNumber = $(this).attr("jobNumber");
-		                job.jobTitle = $(this).attr("jobTitle");
-		                me.houseCodeCache[houseCode].jobs.push(job);
-		            });
-					
-					//load the payroll companies as well
-		    		me.houseCodePayrollCompaniesLoad(houseCode);
 				}
 			});
 		},
@@ -1199,190 +1023,12 @@ ii.Class({
 				}
 			});
 		},
-		
-		jobRebuild: function(rowNumber, houseCode) {
-		    var me = this;
-		    var job = {};
-		    var selJob = $("#selHouseCodeJob" + rowNumber);
-		    
-			selJob.empty();
-			
-		    for(var index = 0; index < me.houseCodeCache[houseCode].jobs.length; index++) {
-		        job = me.houseCodeCache[houseCode].jobs[index];				
-		        selJob.append("<option  title='" + job.jobTitle + "' value='" + job.id + "'>" + job.jobTitle + "</option>");
-		    }
-		},
-		
-		payrollCompanyRebuild: function(rowNumber, houseCode) {
-		    var me = this;
-		    var payrollCompany = {};
-		    var selPayrollCompany = $("#selPayrollCompany" + rowNumber);
-			
-			selPayrollCompany.empty();
 
-		    for(var index = 0; index < me.houseCodeCache[houseCode].payrollCompanies.length; index++) {
-		        payrollCompany = me.houseCodeCache[houseCode].payrollCompanies[index];
-		        selPayrollCompany.append("<option  title='" + payrollCompany.title + "' value='" + payrollCompany.id + "'>" + payrollCompany.title + "</option>");
-		    }
-		},
-		
-		statusTypeChange: function(objSelect) {
-			var me = this;
-		    var rowNumber = Number(objSelect.id.substr(13));			
-
-	        me.statusTypeCheck(rowNumber, objSelect.value);		    
-		},
-		
-		statusTypeCheck: function(rowNumber, statusType) {
-			var me = this;
-			 
-		    if (me.statusTypesCache[statusType] != undefined) {
-	            if (me.statusTypesCache[statusType].loaded)
-	            	me.statusTypeValidate(statusType, [rowNumber]);
-	            else
-	                me.statusTypesCache[statusType].buildQueue.push(rowNumber);
-	        }
-	        else
-	            me.statusCategoryTypesLoad(rowNumber, statusType);
-		},
-		
-		statusTypeValidate: function(statusType, rowArray) {
-		    var me = this;
-		    var rowNumber = 0;
-
-		    if (me.statusTypesCache[statusType].valid) {
-		        for (var index = 0; index < rowArray.length; index++) {
-		        	rowNumber = Number(rowArray[index]);
-					me.buildSingleDropDown(rowNumber, "StatusCategoryType", me.statusTypesCache[statusType].statusCategoryTypes);
-		        }
-		    }
-		},
-		
-		statusCategoryTypesLoad: function(rowNumber, statusType) {
-		    var me = this;
-
-			me.setStatus("Loading");
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").fadeIn("slow");
-		    me.statusTypesLoading++;
-
-		    me.statusTypesCache[statusType] = {};
-		    me.statusTypesCache[statusType].valid = false;
-		    me.statusTypesCache[statusType].loaded = false;
-		    me.statusTypesCache[statusType].buildQueue = [];
-			me.statusTypesCache[statusType].statusCategoryTypes = [];
-		    me.statusTypesCache[statusType].buildQueue.push(rowNumber);
-
-		    $.ajax({
-                type: "POST",
-                dataType: "xml",
-                url: "/net/crothall/chimes/fin/emp/act/provider.aspx",
-                data: "moduleId=emp&requestId=1&targetId=iiCache"
-                    + "&requestXml=<criteria>storeId:statusCategoryTypes,userId:[user],"
-					+ "statusTypeId:" + statusType + ",<criteria>",
- 
-                success: function(xml) {
-					
-	                $(xml).find('item').each(function() {
-	                    var statusCategoryType = {};
-	                	statusCategoryType.id = $(this).attr("id");
-	                	statusCategoryType.name = $(this).attr("name");
-	                	me.statusTypesCache[statusType].statusCategoryTypes.push(statusCategoryType);
-	                });
-					
-					me.statusTypesLoading--;
-					me.statusTypesCache[statusType].valid = true;
-					me.statusTypesCache[statusType].loaded = true;
-					me.statusTypeValidate(statusType, me.statusTypesCache[statusType].buildQueue);
-					if (me.statusTypesLoading <= 0 && !me.employeeLoading) {
-						me.setStatus("Loaded");
-						$("#pageLoading").fadeOut("slow");
-					}
-				}
-			});			
-		},
-		
-		terminationReasonTypeChange: function(objSelect) {
-			var me = this;
-		    var rowNumber = Number(objSelect.id.substr(24));
-	
-	        me.terminationReasonTypeCheck(rowNumber, objSelect.value);
-		},
-		
-		terminationReasonTypeCheck: function(rowNumber, terminationReasonType) {
-			var me = this;
-			 
-		    if (me.terminationReasonTypesCache[terminationReasonType] != undefined) {
-	            if (me.terminationReasonTypesCache[terminationReasonType].loaded)
-	            	me.terminationReasonTypeValidate(terminationReasonType, [rowNumber]);
-	            else
-	                me.terminationReasonTypesCache[terminationReasonType].buildQueue.push(rowNumber);
-	        }
-	        else
-	            me.terminationReasonTypesLoad(rowNumber, terminationReasonType);
-		},
-		
-		terminationReasonTypeValidate: function(terminationReasonType, rowArray) {
-		    var me = this;
-		    var rowNumber = 0;
-
-		    if (me.terminationReasonTypesCache[terminationReasonType].valid) {
-		        for (var index = 0; index < rowArray.length; index++) {
-		        	rowNumber = Number(rowArray[index]);
-					me.buildSingleDropDown(rowNumber, "SeparationCode", me.terminationReasonTypesCache[terminationReasonType].separationCodes);
-		        }
-		    }
-		},
-		
-		terminationReasonTypesLoad: function(rowNumber, terminationReasonType) {
-		    var me = this;
-
-			me.setStatus("Loading");
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").fadeIn("slow");
-		    me.terminationReasonTypesLoading++;
-
-		    me.terminationReasonTypesCache[terminationReasonType] = {};
-		    me.terminationReasonTypesCache[terminationReasonType].valid = false;
-		    me.terminationReasonTypesCache[terminationReasonType].loaded = false;
-		    me.terminationReasonTypesCache[terminationReasonType].buildQueue = [];
-			me.terminationReasonTypesCache[terminationReasonType].separationCodes = [];
-		    me.terminationReasonTypesCache[terminationReasonType].buildQueue.push(rowNumber);
-
-		    $.ajax({
-                type: "POST",
-                dataType: "xml",
-                url: "/net/crothall/chimes/fin/emp/act/provider.aspx",
-                data: "moduleId=emp&requestId=1&targetId=iiCache"
-                    + "&requestXml=<criteria>storeId:separationCodes,userId:[user],"
-					+ "terminationType:" + terminationReasonType + ",<criteria>",
- 
-                success: function(xml) {
-						
-	                $(xml).find('item').each(function() {
-	                    var separationCode = {};
-	                	separationCode.id = $(this).attr("id");
-	                	separationCode.name = $(this).attr("name");
-	                	me.terminationReasonTypesCache[terminationReasonType].separationCodes.push(separationCode);
-	                });
-					
-					me.terminationReasonTypesLoading--;
-					me.terminationReasonTypesCache[terminationReasonType].valid = true;
-					me.terminationReasonTypesCache[terminationReasonType].loaded = true;
-					me.terminationReasonTypeValidate(terminationReasonType, me.terminationReasonTypesCache[terminationReasonType].buildQueue);
-					if (me.terminationReasonTypesLoading <= 0 && !me.employeeLoading) {
-						me.setStatus("Loaded");
-						$("#pageLoading").fadeOut("slow");
-					}
-				}
-			});			
-		},
-		
 		primaryStateChange: function(objSelect) {
 			var me = this;
 		    var rowNumber = Number(objSelect.id.substr(15));				
-
-			payrollCompany = $("#selPayrollCompany" + rowNumber).val();
+			var houseCode = me.employees[rowNumber].column1;	
+			var payrollCompany = me.getPayrollCompany(me.houseCodeCache[houseCode].payrollCompanies);
 	        me.stateCheck(rowNumber, objSelect.value, true);
 			me.localTaxCodeCheck(rowNumber, objSelect.value, payrollCompany);
 		},
@@ -1680,7 +1326,6 @@ ii.Class({
 			var briefs = "";
 			var houseCodes = "";
 			var ssnNumbers = "";
-			var employeeNumbers = "";
 			
 			for (var index = 0; index < me.employees.length; index++) {
 				rowValid = true;
@@ -1690,9 +1335,6 @@ ii.Class({
 				if ($("#txtSSN" + index).val() != "")
 					ssnNumbers += $("#txtSSN" + index).val() + "|";
 					
-				if ($("#txtEmployeeNumber" + index).val() != "")
-					employeeNumbers += $("#txtEmployeeNumber" + index).val() + "|";
-
 				if (!(/^[0-9]+$/.test($("#txtHouseCode" + index).val()))) {
 					rowValid = false;
 					me.setCellColor($("#txtHouseCode" + index), me.cellColorInvalid, "Please enter valid House Code.");
@@ -1805,22 +1447,6 @@ ii.Class({
 					me.setCellColor($("#txtSSN" + index), me.cellColorValid, "");
 				}		
 				
-				if ($("#selStatusType" + index).val() == "0") {
-					rowValid = false;
-					me.setCellColor($("#selStatusType" + index), me.cellColorInvalid, "Please select valid Status Type.");
-				}
-				else {
-					me.setCellColor($("#selStatusType" + index), me.cellColorValid, "");
-				}
-				
-				if ($("#selPayrollCompany" + index).val() == "0") {
-					rowValid = false;
-					me.setCellColor($("#selPayrollCompany" + index), me.cellColorInvalid, "Please select valid Payroll Company.");
-				}
-				else {
-					me.setCellColor($("#selPayrollCompany" + index), me.cellColorValid, "");
-				}
-				
 				if ($("#selJobCodeType" + index).val() == "0") {
 					rowValid = false;
 					me.setCellColor($("#selJobCodeType" + index), me.cellColorInvalid, "Please select valid Job Code.");
@@ -1836,15 +1462,7 @@ ii.Class({
 				else {
 					me.setCellColor($("#txtHireDate" + index), me.cellColorValid, "");
 				}
-				
-				if ($("#txtRateChangeDate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtRateChangeDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
-					rowValid = false;
-					me.setCellColor($("#txtRateChangeDate" + index), me.cellColorInvalid, "Please enter valid Rate Change Date.");
-				}
-				else {
-					me.setCellColor($("#txtRateChangeDate" + index), me.cellColorValid, "");
-				}
-				
+
 				if ($("#txtSeniorityDate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtSeniorityDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtSeniorityDate" + index), me.cellColorInvalid, "Please enter valid Seniority Date.");
@@ -1852,23 +1470,7 @@ ii.Class({
 				else {
 					me.setCellColor($("#txtSeniorityDate" + index), me.cellColorValid, "");
 				}
-				
-				if ($("#txtTerminationDate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtTerminationDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
-					rowValid = false;
-					me.setCellColor($("#txtTerminationDate" + index), me.cellColorInvalid, "Please enter valid Termination Date.");
-				}
-				else {
-					me.setCellColor($("#txtTerminationDate" + index), me.cellColorValid, "");
-				}
-				
-				if ($("#txtBenefitsPercentage" + index).val() != "" && !(/^[0-9]+$/.test($("#txtBenefitsPercentage" + index).val()))) {
-					rowValid = false;
-					me.setCellColor($("#txtBenefitsPercentage" + index), me.cellColorInvalid, "Please enter valid Benefits Percentage.");
-				}
-				else {
-					me.setCellColor($("#txtBenefitsPercentage" + index), me.cellColorValid, "");
-				}
-				
+
 				if (($("#txtScheduledHours" + index).val() == "") || ($("#txtScheduledHours" + index).val() != "" && !(/^[0-9]+$/.test($("#txtScheduledHours" + index).val())))) {
 					rowValid = false;
 					me.setCellColor($("#txtScheduledHours" + index), me.cellColorInvalid, "Please enter valid Scheduled Hours.");
@@ -1877,52 +1479,12 @@ ii.Class({
 					me.setCellColor($("#txtScheduledHours" + index), me.cellColorValid, "");
 				}
 
-				if ($("#selPayrollCompany" + index).val() != "0" && $("#txtScheduledHours" + index).val() != "") {
-					var statusType = $("#selStatusType" + index).val();
-					var houseCode = $("#txtHouseCode" + index).val();
+				if ($("#txtScheduledHours" + index).val() != "") {
 					var scheduledHours = parseInt($("#txtScheduledHours" + index).val(), 10);
-					var itemIndex = ii.ajax.util.findIndexById($("#selPayrollCompany" + index).val(), me.houseCodeCache[houseCode].payrollCompanies);
-					var statusTypeTitle = "";
-					
-					if (itemIndex != undefined)	{
-						if (me.houseCodeCache[houseCode].payrollCompanies[itemIndex].payFrequencyType == "Weekly") {
-							if (scheduledHours > 40) {
-								rowValid = false;
-								me.setCellColor($("#txtScheduledHours" + index), me.cellColorInvalid, "Scheduled Hours should not be greater than 40 hours for the Weekly Pay Frequency.");
-							}
-							else {
-								if (scheduledHours >= 30)
-									statusTypeTitle = "Full Time";
-								else
-									statusTypeTitle = "Part Time";
-							}
-						}
-						else if (me.houseCodeCache[houseCode].payrollCompanies[itemIndex].payFrequencyType == "Bi-Weekly") {
-							if (scheduledHours > 80) {
-								rowValid = false;
-								me.setCellColor($("#txtScheduledHours" + index), me.cellColorInvalid, "Scheduled Hours should not be greater than 80 hours for the Bi-Weekly Pay Frequency.");
-							}
-							else {
-								if (scheduledHours >= 60)
-									statusTypeTitle = "Full Time";
-								else
-									statusTypeTitle = "Part Time";
-							}
-						}
+					if (scheduledHours > 40) {
+						rowValid = false;
+						me.setCellColor($("#txtScheduledHours" + index), me.cellColorInvalid, "Scheduled Hours should not be greater than 40 hours for the Weekly Pay Frequency.");
 					}
-					
-					if (statusTypeTitle != "") {
-						itemIndex = me.findIndexByTitle(statusTypeTitle, me.statusTypesCache[statusType].statusCategoryTypes);
-						$("#selStatusCategoryType" + index).val(me.statusTypesCache[statusType].statusCategoryTypes[itemIndex].id);
-					}
-				}
-
-				if ($("#txtEmployeeNumber" + index).val() != "" && !(/^[0-9]+$/.test($("#txtEmployeeNumber" + index).val()))) {
-					rowValid = false;
-					me.setCellColor($("#txtEmployeeNumber" + index), me.cellColorInvalid, "Please enter valid Employee Number.");
-				}
-				else {
-					me.setCellColor($("#txtEmployeeNumber" + index), me.cellColorValid, "");
 				}
 
 				if ($("#txtAlternatePayRateA" + index).val() != "" && !(/^\d{1,6}(\.\d{1,2})?$/.test($("#txtAlternatePayRateA" + index).val()))) {
@@ -1956,15 +1518,7 @@ ii.Class({
 				else {
 					me.setCellColor($("#txtAlternatePayRateD" + index), me.cellColorValid, "");
 				}
-				
-				if (ui.cmn.text.validate.generic($("#txtPTOStartDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
-					rowValid = false;
-					me.setCellColor($("#txtPTOStartDate" + index), me.cellColorInvalid, "Please enter valid PTO Start Date.");
-				}
-				else {
-					me.setCellColor($("#txtPTOStartDate" + index), me.cellColorValid, "");
-				}
-				
+
 				if ($("#txtOriginalHireDate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtOriginalHireDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtOriginalHireDate" + index), me.cellColorInvalid, "Please enter valid Original Hire Date.");
@@ -1972,15 +1526,7 @@ ii.Class({
 				else {
 					me.setCellColor($("#txtOriginalHireDate" + index), me.cellColorValid, "");
 				}
-				
-				if (ui.cmn.text.validate.generic($("#txtEffectiveDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
-					rowValid = false;
-					me.setCellColor($("#txtEffectiveDate" + index), me.cellColorInvalid, "Please enter valid Effective Date.");
-				}
-				else {
-					me.setCellColor($("#txtEffectiveDate" + index), me.cellColorValid, "");
-				}
-				
+
 				if ($("#chkUnion" + index)[0].checked) {
 					if ($("#selUnionType" + index).val() == "0") {
 						rowValid = false;
@@ -1999,15 +1545,7 @@ ii.Class({
 						me.setCellColor($("#selUnionType" + index), me.cellColorValid, "");
 					}
 				}
-				
-				if ($("#selStatusCategoryType" + index).val() == "0") {
-					rowValid = false;
-					me.setCellColor($("#selStatusCategoryType" + index), me.cellColorInvalid, "Please select valid Status Category Type.");
-				}
-				else {
-					me.setCellColor($("#selStatusCategoryType" + index), me.cellColorValid, "");
-				}
-								
+
 				if (ui.cmn.text.validate.generic($("#txtPayRate" + index).val(), "^\\d+(\\.\\d{1,2})?$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtPayRate" + index), me.cellColorInvalid, "Please enter valid Pay Rate.");
@@ -2015,47 +1553,7 @@ ii.Class({
 				else {
 					me.setCellColor($("#txtPayRate" + index), me.cellColorValid, "");
 				}
-				
-				if ($("#txtPayRateEnteredAt" + index).val() != "" && ui.cmn.text.validate.generic($("#txtPayRateEnteredAt" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
-					rowValid = false;
-					me.setCellColor($("#txtPayRateEnteredAt" + index), me.cellColorInvalid, "Please enter valid Pay Rate Entered At.");
-				}
-				else {
-					me.setCellColor($("#txtPayRateEnteredAt" + index), me.cellColorValid, "");
-				}
-				
-				if ($("#txtPrevPayRate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtPrevPayRate" + index).val(), "^\\d+(\\.\\d{1,2})?$") == false) {
-					rowValid = false;
-					me.setCellColor($("#txtPrevPayRate" + index), me.cellColorInvalid, "Please enter valid Prev Pay Rate.");
-				}
-				else {
-					me.setCellColor($("#txtPrevPayRate" + index), me.cellColorValid, "");
-				}
-				
-				if ($("#txtPrevPayRateEnteredAt" + index).val() != "" && ui.cmn.text.validate.generic($("#txtPrevPayRateEnteredAt" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
-					rowValid = false;
-					me.setCellColor($("#txtPrevPayRateEnteredAt" + index), me.cellColorInvalid, "Please enter valid Prev Pay Rate Entered At.");
-				}
-				else {
-					me.setCellColor($("#txtPrevPayRateEnteredAt" + index), me.cellColorValid, "");
-				}
-				
-				if ($("#txtPrevPrevPayRate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtPrevPrevPayRate" + index).val(), "^\\d+(\\.\\d{1,2})?$") == false) {
-					rowValid = false;
-					me.setCellColor($("#txtPrevPrevPayRate" + index), me.cellColorInvalid, "Please enter valid Prev Prev Pay Rate.");
-				}
-				else {
-					me.setCellColor($("#txtPrevPrevPayRate" + index), me.cellColorValid, "");
-				}
-				
-				if ($("#txtPrevPrevPayRateEnteredAt" + index).val() != "" && ui.cmn.text.validate.generic($("#txtPrevPrevPayRateEnteredAt" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
-					rowValid = false;
-					me.setCellColor($("#txtPrevPrevPayRateEnteredAt" + index), me.cellColorInvalid, "Please enter valid Prev Prev Pay Rate Entered At.");
-				}
-				else {
-					me.setCellColor($("#txtPrevPrevPayRateEnteredAt" + index), me.cellColorValid, "");
-				}
-				
+
 				if ($("#selGenderType" + index).val() == "0") {
 					rowValid = false;
 					me.setCellColor($("#selGenderType" + index), me.cellColorInvalid, "Please select valid Gender Type.");
@@ -2079,31 +1577,7 @@ ii.Class({
 				else {
 					me.setCellColor($("#txtBirthDate" + index), me.cellColorValid, "");
 				}
-				
-				if ($("#txtReviewDate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtReviewDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
-					rowValid = false;
-					me.setCellColor($("#txtReviewDate" + index), me.cellColorInvalid, "Please enter valid Review Date.");
-				}
-				else {
-					me.setCellColor($("#txtReviewDate" + index), me.cellColorValid, "");
-				}
-				
-				if ($("#txtWorkPhone" + index).val() != "" && !(ui.cmn.text.validate.phone($("#txtWorkPhone" + index).val()))) {
-					rowValid = false;
-					me.setCellColor($("#txtWorkPhone" + index), me.cellColorInvalid, "Please enter valid Work Phone Number.");
-				}
-				else {
-					me.setCellColor($("#txtWorkPhone" + index), me.cellColorValid, "");
-				}
-				
-				if ($("#txtWorkPhoneExt" + index).val() != "" && !(/^[0-9]+$/.test($("#txtWorkPhoneExt" + index).val()))) {
-					rowValid = false;
-					me.setCellColor($("#txtWorkPhoneExt" + index), me.cellColorInvalid, "Please enter valid Work Phone Extension Number.");
-				}
-				else {
-					me.setCellColor($("#txtWorkPhoneExt" + index), me.cellColorValid, "");
-				}
-				
+
 				if ($("#txtBackGroundCheckDate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtBackGroundCheckDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
 					rowValid = false;
 					me.setCellColor($("#txtBackGroundCheckDate" + index), me.cellColorInvalid, "Please enter valid Background Check Date.");
@@ -2183,23 +1657,7 @@ ii.Class({
 				else {
 					me.setCellColor($("#txtLocalTaxAdjustmentAmount" + index), me.cellColorValid, "");
 				}
-				
-				if (ui.cmn.text.validate.generic($("#txtEffectiveDateJob" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
-					rowValid = false;
-					me.setCellColor($("#txtEffectiveDateJob" + index), me.cellColorInvalid, "Please enter valid Effective Date Job.");
-				}
-				else {
-					me.setCellColor($("#txtEffectiveDateJob" + index), me.cellColorValid, "");
-				}
-				
-				if (ui.cmn.text.validate.generic($("#txtEffectiveDateCompensation" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
-					rowValid = false;
-					me.setCellColor($("#txtEffectiveDateCompensation" + index), me.cellColorInvalid, "Please enter valid Effective Date Compensation.");
-				}
-				else {
-					me.setCellColor($("#txtEffectiveDateCompensation" + index), me.cellColorValid, "");
-				}
-				
+
 				if ($("#selMaritalStatusType" + index).val() == "0") {
 					rowValid = false;
 					me.setCellColor($("#selMaritalStatusType" + index), me.cellColorInvalid, "Please select valid Marital Status Type.");
@@ -2221,19 +1679,12 @@ ii.Class({
 						me.setCellColor($("#txtBrief" + indexI), me.cellColorInvalid, "Duplicate Brief is not allowed.");
 					}
 				}
-				
+
 				for (var indexI = index + 1; indexI < me.employees.length; indexI++) {
 					if ($("#txtSSN" + index).val() == $("#txtSSN" + indexI).val()) {
 						rowValid = false;
 						me.setCellColor($("#txtSSN" + indexI), me.cellColorInvalid, "Duplicate SSN is not allowed.");
 					}
-				}
-				
-				for (var indexI = index + 1; indexI < me.employees.length; indexI++) {
-					if ($("#txtEmployeeNumber" + index).val() == $("#txtEmployeeNumber" + indexI).val() && $("#txtEmployeeNumber" + indexI).val() != "") {
-						rowValid = false;
-						me.setCellColor($("#txtEmployeeNumber" + indexI), me.cellColorInvalid, "Duplicate Employee Number is not allowed.");
-					}						
 				}
 
 				if (!rowValid) {
@@ -2244,7 +1695,6 @@ ii.Class({
 			
 			// If all required fields are entered correctly then validate the House Codes, Briefs, SSN Numbers and Employee Numbers
 			if (valid) {
-				
 				me.setStatus("Validating");
 				$("#messageToUser").text("Validating");
 				$("#pageLoading").fadeIn("slow");
@@ -2254,7 +1704,6 @@ ii.Class({
 					+ ",houseCodes:" + houseCodes
 					+ ",briefs:" + briefs
 					+ ",ssnNumbers:" + ssnNumbers
-					+ ",employeeNumbers:" + employeeNumbers
 					, me.validationsLoaded
 					, me);
 			}
@@ -2276,7 +1725,6 @@ ii.Class({
 				var houseCodes = me.bulkImportValidations[0].houseCodes.split('|');
 				var briefs = me.bulkImportValidations[0].briefs.split('|');
 				var ssnNumbers = me.bulkImportValidations[0].ssnNumbers.split('|');
-				var employeeNumbers = me.bulkImportValidations[0].employeeNumbers.split('|');
 				
 				for (var rowIndex = 0; rowIndex < me.employees.length; rowIndex++) {
 					for(var index = 0; index < houseCodes.length - 1; index++) {
@@ -2299,15 +1747,8 @@ ii.Class({
 							$("#txtSSN" + rowIndex).css("background-color", me.cellColorInvalid);							
 						}							
 					}
-
-					for(var index = 0; index < employeeNumbers.length - 1; index++) {
-						if ($("#txtEmployeeNumber" + rowIndex).val() != "" && $("#txtEmployeeNumber" + rowIndex).val() == employeeNumbers[index]) {
-							$("#txtEmployeeNumber" + rowIndex).attr("title", "Employee Number already exists.");
-							$("#txtEmployeeNumber" + rowIndex).css("background-color", me.cellColorInvalid);							
-						}
-					}
 				}
-				
+
 				$("#AnchorSave").hide();
 				alert("In order to save, the errors on the page must be corrected.");
 			}
@@ -2374,52 +1815,22 @@ ii.Class({
 				xml += ' cellPhone="' + fin.cmn.text.mask.phone($("#txtCellPhone" + index).val(), true) + '"';
 				xml += ' email="' + ui.cmn.text.xml.encode($("#txtEmail" + index).val()) + '"';
 				xml += ' pager="' + fin.cmn.text.mask.phone($("#txtPager" + index).val(), true) + '"';
-				xml += ' active="' + $("#chkActive" + index)[0].checked + '"';
-				xml += ' employeeHouseCodeUpdated="' + $("#chkEmployeeHouseCodeUpdated" + index)[0].checked + '"';
 				xml += ' ssn="' + $("#txtSSN" + index).val().replace(/[- ]/g, '') + '"'; 
-				xml += ' statusType="' + $("#selStatusType" + index).val() + '"';
-				xml += ' payrollCompany="' + $("#selPayrollCompany" + index).val() + '"';
-				xml += ' deviceGroupType="' + $("#selDeviceGroupType" + index).val() + '"';				
-				xml += ' exempt="' + $("#chkExempt" + index)[0].checked + '"';				
 				xml += ' jobCodeType="' + $("#selJobCodeType" + index).val() + '"';
-				xml += ' hourly="' + $("#chkHourly" + index)[0].checked + '"';
 				xml += ' hireDate="' + $("#txtHireDate" + index).val() + '"';
-				xml += ' changeReasonType="' + $("#selChangeReasonType" + index).val() + '"';
-				xml += ' rateChangeDate="' + $("#txtRateChangeDate" + index).val() + '"';
 				xml += ' seniorityDate="' + $("#txtSeniorityDate" + index).val() + '"';
-				xml += ' terminationDate="' + $("#txtTerminationDate" + index).val() + '"';
-				xml += ' terminationReasonType="' + $("#selTerminationReasonType" + index).val() + '"';
-				xml += ' workShift="' + $("#selWorkShift" + index).val() + '"';
-				xml += ' benefitsPercentage="' + $("#txtBenefitsPercentage" + index).val() + '"';
 				xml += ' scheduledHours="' + $("#txtScheduledHours" + index).val() + '"';
 				xml += ' union="' + $("#chkUnion" + index)[0].checked + '"';
-				xml += ' crothallEmployee="' + $("#chkCrothallEmployee" + index)[0].checked + '"';
-				xml += ' employeeNumber="' + $("#txtEmployeeNumber" + index).val() + '"';
 				xml += ' alternatePayRateA="' + $("#txtAlternatePayRateA" + index).val() + '"';
 				xml += ' alternatePayRateB="' + $("#txtAlternatePayRateB" + index).val() + '"';
 				xml += ' alternatePayRateC="' + $("#txtAlternatePayRateC" + index).val() + '"';
 				xml += ' alternatePayRateD="' + $("#txtAlternatePayRateD" + index).val() + '"';
-				xml += ' ptoStartDate="' + $("#txtPTOStartDate" + index).val() + '"';
-				xml += ' ptoAccruedHourEntryAutomatic="' + $("#chkPTOAccruedHourEntryAutomatic" + index)[0].checked + '"';
 				xml += ' originalHireDate="' + $("#txtOriginalHireDate" + index).val() + '"';
-				xml += ' effectiveDate="' + $("#txtEffectiveDate" + index).val() + '"';
 				xml += ' unionType="' + $("#selUnionType" + index).val() + '"';
-				xml += ' statusCategoryType="' + $("#selStatusCategoryType" + index).val() + '"';
 				xml += ' payRate="' + $("#txtPayRate" + index).val() + '"';
-				xml += ' payRateEnteredBy="' + ui.cmn.text.xml.encode($("#txtPayRateEnteredBy" + index).val()) + '"';
-				xml += ' payRateEnteredAt="' + $("#txtPayRateEnteredAt" + index).val() + '"';
-				xml += ' prevPayRate="' + $("#txtPrevPayRate" + index).val() + '"';
-				xml += ' prevPayRateEnteredBy="' + ui.cmn.text.xml.encode($("#txtPrevPayRateEnteredBy" + index).val()) + '"';
-				xml += ' prevPayRateEnteredAt="' + $("#txtPrevPayRateEnteredAt" + index).val() + '"';
-				xml += ' prevPrevPayRate="' + $("#txtPrevPrevPayRate" + index).val() + '"';
-				xml += ' prevPrevPayRateEnteredBy="' + ui.cmn.text.xml.encode($("#txtPrevPrevPayRateEnteredBy" + index).val()) + '"';
-				xml += ' prevPrevPayRateEnteredAt="' + $("#txtPrevPrevPayRateEnteredAt" + index).val() + '"';				
 				xml += ' genderType="' + $("#selGenderType" + index).val() + '"';
 				xml += ' ethnicityType="' + $("#selEthnicityType" + index).val() + '"';
-				xml += ' birthDate="' + $("#txtBirthDate" + index).val() + '"';				
-				xml += ' reviewDate="' + $("#txtReviewDate" + index).val() + '"';
-				xml += ' workPhone="' + fin.cmn.text.mask.phone($("#txtWorkPhone" + index).val(), true) + '"';
-				xml += ' workPhoneExt="' + $("#txtWorkPhoneExt" + index).val() + '"';
+				xml += ' birthDate="' + $("#txtBirthDate" + index).val() + '"';
 				xml += ' backGroundCheckDate="' + $("#txtBackGroundCheckDate" + index).val() + '"';
 				xml += ' federalExemptions="' + $("#txtFederalExemptions" + index).val() + '"';
 				xml += ' federalAdjustmentType="' + $("#selFederalAdjustmentType" + index).val() + '"';
@@ -2439,15 +1850,8 @@ ii.Class({
 				xml += ' localTaxCode1="' + $("#selLocalTaxCode1" + index).val() + '"';
 				xml += ' localTaxCode2="' + $("#selLocalTaxCode2" + index).val() + '"';
 				xml += ' localTaxCode3="' + $("#selLocalTaxCode3" + index).val() + '"';
-				xml += ' payrollStatus="' + $("#txtPayrollStatus" + index).val() + '"';
-				xml += ' previousPayrollStatus="' + $("#txtPreviousPayrollStatus" + index).val() + '"';
-				xml += ' frequencyType="' + me.getFrequencyType(index) + '"';				
-				xml += ' houseCodeJob="' + $("#selHouseCodeJob" + index).val() + '"';
 				xml += ' i9Type="' + $("#selI9Type" + index).val() + '"';
-				xml += ' vetType="' + $("#selVetType" + index).val() + '"';				
-				xml += ' separationCode="' + $("#selSeparationCode" + index).val() + '"';
-				xml += ' effectiveDateJob="' + $("#txtEffectiveDateJob" + index).val() + '"';
-				xml += ' effectiveDateCompensation="' + $("#txtEffectiveDateCompensation" + index).val() + '"';
+				xml += ' vetType="' + $("#selVetType" + index).val() + '"';
 				xml += ' maritalStatusType="' + $("#selMaritalStatusType" + index).val() + '"';
 				xml += '/>';
 			}
