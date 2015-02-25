@@ -1361,8 +1361,8 @@ ii.Class({
 			}
 			
 			for (var index = 0; index < me.excludeHouseCodes.length; index++) {
-				$("#ExcludeHouseCode").append("<option title='" + me.excludeHouseCodes[index].title + "' value='" + me.excludeHouseCodes[index].id + "'>" + me.excludeHouseCodes[index].title + "</option>");
-				$("#Exclude").append("<option title='" + me.excludeHouseCodes[index].title + "' value='" + me.excludeHouseCodes[index].id + "'>" + me.excludeHouseCodes[index].title + "</option>");
+				$("#ExcludeHouseCode").append("<option title='" + me.excludeHouseCodes[index].title + "' value='" + me.excludeHouseCodes[index].brief + "'>" + me.excludeHouseCodes[index].title + "</option>");
+				$("#Exclude").append("<option title='" + me.excludeHouseCodes[index].title + "' value='" + me.excludeHouseCodes[index].brief + "'>" + me.excludeHouseCodes[index].title + "</option>");
 			}
 			$("#ExcludeHouseCode").multiselect("refresh");
 			$("#Exclude").multiselect("refresh");
@@ -2915,7 +2915,8 @@ ii.Class({
 			$("#SubscriptionButtonContainer").hide();
 			$("#TreeviewContainer").height($(window).height() - 80);
             rowHeadData += "<tr id='trSubscriptionGridHead' height='20px'>";
-			rowHeadData = "<th class='gridHeaderColumn' width='100%'>DESCRIPTION</th>";
+            rowHeadData += "<th class='gridHeaderColumn' width='7%'>#</th>";
+			rowHeadData += "<th class='gridHeaderColumn' width='93%'>DESCRIPTION</th>";
 			rowHeadData += "</tr>";
 			$("#SubscriptionGridHead").html(rowHeadData);
             $("#SubscriptionGridBody").html("");
@@ -2944,8 +2945,9 @@ ii.Class({
 			var rowData = "";
 			
 			for(var index = 0; index < me.subscriptions.length; index++) {
-				rowData += "<tr id='subscriptionRow" + me.subscriptions[index].id + "' onclick=(fin.reportUi.actionSelectItem(" + index + "));>";				
-				rowData += "<td id=" + me.subscriptions[index].id + " class='gridColumnRight' style='width:150px'>" + me.subscriptions[index].description + "</td>";
+				rowData += "<tr id='subscriptionRow" + me.subscriptions[index].id + "' onclick=(fin.reportUi.actionSelectItem(" + index + "));>";
+				rowData += "<td class='gridNumberColumn'  style='width:7%'>" + (index + 1) + " </td>";
+				rowData += "<td id=" + me.subscriptions[index].id + " class='gridColumnRight' style='width:93%'>" + me.subscriptions[index].description + "</td>";
 				rowData += "</tr>"
 			}
 			

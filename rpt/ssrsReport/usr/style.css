@@ -140,6 +140,11 @@
 	cursor: pointer;
 }
 
+.gridNumberColumn {
+	border-right: 1px solid #aaaaaa;
+	text-align: center;
+}
+
 .trover, .selectedRow {
 	background-color: #C2E4C1;
 }
