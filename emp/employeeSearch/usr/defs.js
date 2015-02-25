@@ -144,6 +144,7 @@ ii.init.register( function(){
 		vetType: {type: Number, required: false, defaultValue: 0},
 		mealPlan: {type: Number, required: false, defaultValue: 0},
 		mealPlanPayrollDeduction: {type: Boolean, required: false, defaultValue: false},
+		disability: {type: Number, required: false, defaultValue: 0},
 		separationCode:{type: Number, required: false, defaultValue: 0},
 		jobStartReason:{type: Number, required: false, defaultValue: 0},
 		crtdBy: {type: String, required: false, defaultValue: ""},

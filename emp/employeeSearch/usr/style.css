@@ -7,394 +7,234 @@
 	margin: 1px;
 }
 
-.contentArea
-	{
-		overflow:hidden;
-	}
-#searchArea
-{
-	margin-left:2px;
+.contentArea {
+	overflow: hidden;
 }
 
-#searchAreaEmp
-{
-	float:left;
-	margin-right:20px;
-}
-
-#searchAreaStatus
-{
-	float:left;
-	margin-right:18px;
-}
-
-#searchAreaUnits
-{
-	float:left;
-	margin-right:20px;
-}
-
-#searchAreaButtons
-{
-	float:left;
-	margin-top:18px;
-	margin-bottom:10px;
-}
-
-#inputEmpSearch
-{
-	width:175px;
-}
-
-#inputUnits
-{
-	width:255px;
-}
-
-#inputStatusTypes, #inputFilterTypes
-{
-	width:140px;	
-}
-
-#searchButtonEmp
-{
-	
-	float:left;
-	margin-right:10px;
-	/*width:85px;
-	padding-left:5px;
-	margin-right:5px;
-	padding-top:5px;*/
-}
-#newEmployee
-{
-	float:left;
-	/*width:165px;
-	padding-left:5px;
-	margin-right:5px;
-	padding-top:5px;*/
+.LabelTextAreaEmployee {
+	float: left;
+	width: 170px;
+	height: 27px;
+	color: #032D23;
+	font-family: Verdana;
+	font-size: 12px;
+	padding-top: 3px;
 }
 	
+.InputTextArea {
+	float: left;
+	width: 200px;
+	height: 20px;
+}
 
-#backgroundPopup 
-	{
-		position: fixed; 
-		top: 0; 
-		left: 0; 
-		z-index: 5000; 
-		width: 100%; 
-		height: 100%;
-		border: 1px solid #cecece; 
-		background-color: black;
-		display: none;
-	}
+.labelRadio {
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
 
-#popupEmployee 
-	{
-		width: 830px; 
-		height: 410px;
-		position: absolute;
-		z-index: 5025;
-		background-color: white;
-		display: none;
-	}
-.LabelTextAreaEmployee 
-	{
-		color: #032D23;
-		float: left;
-		font-family: Verdana;
-		font-size: 12px;
-		height: 27px;
-		width: 170px;
-		padding-top: 3px;
-	}
+.radioButtonAuth {
+	float: left;
+	width: 80px;
+}
+
+.radioButtonDisability {
+	width: 370px;
+	margin-left: 170px;
+}
+
+.radioButtonFemale {
+	float: left;
+	width: 80px;
+}
+
+.ssnDiv {
+	float: left;
+	width: 100%;
+	height: 320px;
+	position: relative;
+	padding: 10px;
+	margin: 0px;
+}
+
+.personalDetailsDiv {
+	float: left;
+	height: 320px;
+	position: relative;
+	padding: 10px;
+	margin: 0px;
+}
+
+.ssnDetailsDiv {
+    position: relative;
+    padding: 0px 10px 0px;
+    margin: 0px;
+}
+
+.ssnPersonDiv {
+    float: left;
+    position: relative;
+    padding: 10px 10px 0px;
+    margin: 0px;
+}
 	
-.InputTextArea 
-	{
-		float: left;
-		height: 20px;
-		width: 200px;
-	}
-#AnchorBack
-	{
-		float:right;
-		position:relative;
-		margin-bottom:5px;
-		padding-right:5px;
-	}
-#AnchorCancel
-	{
-		float:right;
-		position:relative;
-		margin-bottom:5px;
-		padding-right:5px;
-		padding-left:5px;
-	}	
-#AnchorNext
-	{
-		float:right;
-		position:relative;
-		margin-bottom:5px;
-	}
-#AnchorSave
-	{
-		float:right;
-		position:relative;
-		margin-bottom:5px;
-		margin-right:0px;
-		padding-top:0px;
-		padding-left:0px;
-	}
+.ssnEmployeeDiv {
+    float: left;
+    position: relative;
+    padding: 0px 10px;
+    margin: 0px;
+}
 
-.labelRadio 
-	{
-		height: 27px;
-		font-family: Verdana;
-		font-size: 12px;
-		color: #032D23;
-	}
-.radioButtonAuth 
-	{
-		float: left;
-		width: 80px;
-	}
+.addressDetailsDiv {
+	float: left;
+	height: 320px;
+	position: relative;
+	padding: 10px;
+	margin: 0px;
+}
+
+.contactDetailsDiv {
+	float: left;
+	height: 320px;
+	position: relative;
+	padding: 10px;
+	margin: 0px;
+}
+
+.employeeInformationDiv {
+	float: left;
+	width: 100%;
+	height: 320px;
+	position: relative;
+	padding: 10px;
+	margin: 0px;
+}
 	
-.radioButtonFemale 
-	{
-		float: left;
-		width: 80px;
-	}
-.ssnDiv
-	{
-		float:left;
-		position:relative;
-		height:320px;
-		width:100%;
-		padding:10px;
-		margin:0px;
-	}
-.personalDetailsDiv
-	{
-		float:left;
-		position:relative;
-		height:320px;
-		padding:10px;
-		margin:0px;
-	}
-.ssnDetailsDiv
-    {
-        position:relative;
-        padding:0px 10px 0px;
-        margin:0px;
-    }
-.ssnPersonDiv
-    {
-        float:left;
-        position:relative;
-        padding:10px 10px 0px;
-        margin:0px;
-    }
-.ssnEmployeeDiv
-    {
-        float:left;
-        position:relative;
-        padding:0px 10px;
-        margin:0px;
-    }
-.addressDetailsDiv
-	{
-		float:left;
-		position:relative;
-		height:320px;
-		padding:10px;
-		margin:0px;
-	}
+.reverseTerminationDiv {
+	float: left;
+	width: 100%;
+	height: 80px;
+	position: relative;
+	padding: 10px;
+	margin: 0px;
+}
 
-.contactDetailsDiv
-	{
-		float:left;
-		position:relative;
-		height:320px;
-		padding:10px;
-		margin:0px;
-	}
+.employeeGeneralInformationDiv {
+	float: left;
+	height: 320px;
+	position: relative;
+	padding: 10px;
+	margin: 0px;
+}
 
-.employeeInformationDiv
-	{
-		float:left;
-		position:relative;
-		height:320px;
-		padding:10px;
-		margin:0px;
-		width:100%;
-	}
+.jobInformationDiv {
+	float: left;
+	width: 100%;
+	height: 320px;
+	position: relative;
+	padding: 10px;
+	margin: 0px;
+}
 	
-.reverseTerminationDiv
-	{
-		float:left;
-		position:relative;
-		height:80px;
-		padding:10px;
-		margin:0px;
-		width:100%;
-	}
+.compensationDiv {
+	float: left;
+	width: 100%;
+	height: 320px;
+	position: relative;
+	padding: 10px;
+	margin: 0px;
+}
 
-.employeeGeneralInformationDiv
-	{
-		float:left;
-		position:relative;
-		height:320px;
-		padding:10px;
-		margin:0px;
-	}
+.dateModificationDiv {
+	float: left;
+	width: 100%;
+	height: 170px;
+	position: relative;
+	padding: 10px;
+	margin: 0px;
+}
+	
+.federalDiv {
+	float: left;
+	height: 320px;
+	position: relative;
+	padding: 10px;
+	margin: 0px;
+}
+	
+.stateTaxDiv {
+	float: left;
+	width: 100%;
+	height: 320px;
+	position: relative;
+	padding: 10px;
+	margin: 0px;
+}
 
-.jobInformationDiv
-	{
-		float:left;
-		position:relative;
-		height:320px;
-		padding:10px;
-		margin:0px;
-		width:100%;
-	}
-.compensationDiv
-	{
-		float:left;
-		position:relative;
-		height:320px;
-		padding:10px;
-		margin:0px;
-		width:100%;
-	}
-.dateModificationDiv
-	{
-		float:left;
-		position:relative;
-		height:170px;
-		padding:10px;
-		margin:0px;
-		width:100%;
-	}
-.federalDiv
-	{
-		float:left;
-		position:relative;
-		height:320px;
-		padding:10px;
-		margin:0px;
-	}
-.stateTaxDiv
-	{
-		float:left;
-		position:relative;
-		height:320px;
-		padding:10px;
-		margin:0px;
-		width:100%;
-	}
-.localTaxDiv
-	{
-		float:left;
-		position:relative;
-		height:320px;
-		padding:10px;
-		margin:0px;
-	}
-.requestorDiv
-	{
-		float:left;
-		position:relative;
-		padding:0px 0px 0px 10px;
-		margin:0px;
-	}	
-.modificationNotesDiv
-	{
-		float:left;
-		position:relative;
-		height:90px;
-		padding:0px 0px 0px 10px;
-		margin:0px;
-		width:100%;
-	}
-.popupHeader
-	{
-		float:left;
-		position:relative;
-		width:100%;
-		height:27px;
-		text-align:center;
-		background-color:#C2E4C1;
-		font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;
-		font-weight:bold;
-		font-size:18px;	
-		color:#2C2F50;
-	}
-.popupHeader .employeeName
-	{
-		font-weight:normal;
-		font-size:12px;	
-	}
+.localTaxDiv {
+	float: left;
+	height: 320px;
+	position: relative;
+	padding: 10px;
+	margin: 0px;
+}
+	
+.requestorDiv {
+	float: left;
+	position: relative;
+	padding: 0px 0px 0px 10px;
+	margin: 0px;
+}
+	
+.modificationNotesDiv {
+	float: left;
+	width: 100%;
+	height: 90px;
+	position: relative;
+	padding: 0px 0px 0px 10px;
+	margin: 0px;
+}
+	
+.popupHeader {
+	float: left;
+	width: 100%;
+	height: 27px;
+	position: relative;
+	text-align: center;
+	background-color: #C2E4C1;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	font-size: 18px;	
+	color: #2C2F50;
+}
+	
+.popupHeader .employeeName {
+	font-weight: normal;
+	font-size: 12px;	
+}
 
-#houseCodeTerm
-	{
-		float:left;
-		position:absolute;
-		z-index:322;
-		top:35px;
-		left:400px;
-	}
-#SSNLookUp
-	{
-		font-family:Verdana;
-		font-size:9px;
-		color:blue;
-		cursor:pointer;
-	}
+.TableEditArea {
+	width: 100%;
+}
 
-.TableEditArea
-	{
-		width:100%;
-	}
-.textBoxLabel
-	{
-		color: #032D23;
-		float: left;
-		font-family: Verdana;
-		font-size: 12px;
-		height: 27px;
-		width: 170px;
-		padding-top: 3px;
-	}
-.inputTextBox
-	{
-		float: left;
-		height: 20px;
-		width: 200px;
-	}
-#contianerLeft
-	{
-		position:relative;
-		float:left;
-		width:380px;
-		margin-right:10px;
-		z-index:260;
-		vertical-align:top;
-	}
-#contianerRight
-	{
-		position:relative;
-		float:left;
-		width:380px;
-		z-index:261;
-	}
-#EditEmployee
-	{
-		float:left;
-		position:relative;
-		padding-left:50px;
-	}
-.tableBorder
-{
+.textBoxLabel {
+	float: left;
+	width: 170px;
+	height: 27px;
+	color: #032D23;
+	font-family: Verdana;
+	font-size: 12px;
+	padding-top: 3px;
+}
+	
+.inputTextBox {
+	float: left;
+	width: 200px;
+	height: 20px;
+}
+
+.tableBorder {
 	border: 1px black solid;
 	border-bottom: none;
 	border-width: 1px;
@@ -402,29 +242,25 @@
 	background-color: #F0EFDD;		
 }
 
-.tdBorder
-{
+.tdBorder {
+	width: 150px;
 	border-bottom: solid black thin;
 	border-width: 1px;
 	font-family: Verdana;
 	font-size: 12px;
 	color: #032D23;
 	padding-left: 5px;
-	width: 150px;
 }
 
-.gridRow
-{ 
+.gridRow {
 	background-color: #F0EFDD;
 }
 
-.alternateGridRow
-{ 
+.alternateGridRow {
 	background-color: #FFFFFF;
 }
 
-.trover
-{
+.trover {
 	background-color: #C2E4C1;
 }
 
@@ -442,22 +278,6 @@
 .employeeViewHistory:hover {	
 	color: red;
 	text-decoration: underline;
-}
-
-#popupHistory {
-	width: 830px; 
-	height: 410px;
-	background-color: white;
-	position: absolute;
-	z-index: 5050;	
-	display: none;
-}
-
-#AnchorClose {
-	float: right;
-	width: 72px;
-	position: relative;
-	margin: 10px;
 }
 
 .stateAdditionalInfoHeader {
@@ -488,11 +308,161 @@
 	text-decoration: underline;
 }
 
+#contianerLeft {
+	float: left;
+	width: 380px;
+	position: relative;
+	margin-right: 10px;
+	z-index: 260;
+	vertical-align: top;
+}
+	
+#contianerRight {
+	float: left;
+	width: 380px;
+	position: relative;
+	z-index: 261;
+}
+
+#EditEmployee {
+	float: left;
+	position: relative;
+	padding-left: 50px;
+}
+
+#houseCodeTerm {
+	float: left;
+	position: absolute;
+	z-index: 322;
+	top: 35px;
+	left: 400px;
+}
+	
+#SSNLookUp {
+	font-family: Verdana;
+	font-size: 9px;
+	color: blue;
+	cursor: pointer;
+}
+
+#searchArea {
+	margin-left: 2px;
+}
+
+#searchAreaEmp {
+	float: left;
+	margin-right: 20px;
+}
+
+#searchAreaStatus {
+	float: left;
+	margin-right: 18px;
+}
+
+#searchAreaUnits {
+	float: left;
+	margin-right: 20px;
+}
+
+#searchAreaButtons {
+	float: left;
+	margin-top: 18px;
+	margin-bottom: 10px;
+}
+
+#inputEmpSearch {
+	width: 175px;
+}
+
+#inputUnits {
+	width: 255px;
+}
+
+#inputStatusTypes, #inputFilterTypes {
+	width: 140px;	
+}
+
+#searchButtonEmp {
+	float: left;
+	margin-right: 10px;
+}
+
+#newEmployee {
+	float:left;
+}
+
+#AnchorBack {
+	float: right;
+	position: relative;
+	margin-bottom: 5px;
+	padding-right: 5px;
+}
+
+#AnchorCancel {
+	float: right;
+	position: relative;
+	margin-bottom: 5px;
+	padding-right: 5px;
+	padding-left: 5px;
+}
+
+#AnchorNext {
+	float: right;
+	position: relative;
+	margin-bottom: 5px;
+}
+
+#AnchorSave {
+	float: right;
+	position: relative;
+	margin-bottom: 5px;
+	margin-right: 0px;
+	padding-top: 0px;
+	padding-left: 0px;
+}
+
+#AnchorClose {
+	float: right;
+	width: 72px;
+	position: relative;
+	margin: 10px;
+}
+
 #Notes {	
 	float: left;
 	width: 583px;
+	height: 40px;
 	font-family: Verdana;
 	font-size: 12px;
 	color: black;
-	height: 40px;
+}
+
+#backgroundPopup {
+	width: 100%; 
+	height: 100%;
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	z-index: 5000; 
+	border: 1px solid #cecece; 
+	background-color: black;
+	display: none;
+}
+
+#popupEmployee {
+	width: 830px; 
+	height: 410px;
+	position: absolute;
+	z-index: 5025;
+	background-color: white;
+	display: none;
+}
+
+#popupHistory {
+	width: 830px; 
+	height: 410px;
+	background-color: white;
+	position: absolute;
+	z-index: 5050;	
+	display: none;
 }
