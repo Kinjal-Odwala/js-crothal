@@ -2829,7 +2829,8 @@ ii.Class({
                 }
                 else if (me.reportParameters[index].controlType == "MultiSelect") {
                     var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function(){
-                        return this.value;
+                    	if (this.title != "(Select All)")
+                        	return this.value;
                     }).get();
                     if(selectedValues.length > 0) {
                         for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
@@ -3653,7 +3654,8 @@ ii.Class({
 					}
 					else if (me.reportParameters[index].controlType == "MultiSelect") {
 						var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function(){
-	                        return this.value;
+							if (this.title != "(Select All)")
+	                        	return this.value;
 	                    }).get();
 	                    if(selectedValues.length > 0) {
 	                        for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
