@@ -36,21 +36,23 @@ ii.init.register( function() {
 	fin.app.laundry.laundryMetricTypeArgs = {
 		id: {type: Number, required: false, defaultValue: 0}
 		, title: {type: String, required: false, defaultValue: ""}
+		, description: {type: String, required: false, defaultValue: ""}
 	};
 	
 	fin.app.laundry.laundryMetricArgs = {
 		id: {type: Number, required: false, defaultValue: 0}
 		, laundryMetricTypeId: {type: Number, required: false, defaultValue: 0}
 		, laundryMetricTypeTitle: {type: String, required: false, defaultValue: ""}
+		, laundryMetricTypeDescription: {type: String, required: false, defaultValue: ""}
 		, houseCodeId: {type: Number, required: false, defaultValue: 0}
 		, periodId: {type: Number, required: false, defaultValue: 0}
-		, sunday: {type: String, required: false, defaultValue: "0.00"}
-		, monday: {type: String, required: false, defaultValue: "0.00"}
-		, tuesday: {type: String, required: false, defaultValue: "0.00"}
-		, wednesday: {type: String, required: false, defaultValue: "0.00"}
-		, thursday: {type: String, required: false, defaultValue: "0.00"}
-		, friday: {type: String, required: false, defaultValue: "0.00"}
-		, saturday: {type: String, required: false, defaultValue: "0.00"}
+		, sunday: {type: String, required: false, defaultValue: "0.000"}
+		, monday: {type: String, required: false, defaultValue: "0.000"}
+		, tuesday: {type: String, required: false, defaultValue: "0.000"}
+		, wednesday: {type: String, required: false, defaultValue: "0.000"}
+		, thursday: {type: String, required: false, defaultValue: "0.000"}
+		, friday: {type: String, required: false, defaultValue: "0.000"}
+		, saturday: {type: String, required: false, defaultValue: "0.000"}
 		, modified: {type: Boolean, required: false, defaultValue: false}
 	};
 

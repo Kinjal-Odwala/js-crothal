@@ -50,7 +50,7 @@ ii.Class({
 			me.configureCommunications();
 			me.setStatus("Loading");
 			me.modified(false);
-			
+
 			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 			
@@ -104,6 +104,7 @@ ii.Class({
 			var me = fin.laundryUi;
 
 			me.laundryMetricGrid.setHeight($(window).height() - 150);
+			me.laundryMetricReadOnlyGrid.setHeight($(window).height() - 150);
 		},
 
 		defineFormControls: function fin_app_laundry_UserInterface_defineFormControls() {
@@ -164,8 +165,12 @@ ii.Class({
 					if (enteredText == "")
 						return;
 
-					if (!(/^\d{1,8}(\.\d{1,2})?$/.test(enteredText)))
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,7}(\.\d{1,3})?$/.test(newValue)))
 						this.setInvalid("Please enter valid value.");
+					else if (newValue != enteredText)
+						me.sunday.setValue(newValue);
 				});
 				
 			me.monday = new ui.ctl.Input.Text({
@@ -185,8 +190,12 @@ ii.Class({
 					if (enteredText == "")
 						return;
 
-					if (!(/^\d{1,8}(\.\d{1,2})?$/.test(enteredText)))
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,7}(\.\d{1,3})?$/.test(newValue)))
 						this.setInvalid("Please enter valid value.");
+					else if (newValue != enteredText)
+						me.monday.setValue(newValue);
 				});
 				
 			me.tuesday = new ui.ctl.Input.Text({
@@ -206,8 +215,12 @@ ii.Class({
 					if (enteredText == "")
 						return;
 
-					if (!(/^\d{1,8}(\.\d{1,2})?$/.test(enteredText)))
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,7}(\.\d{1,3})?$/.test(newValue)))
 						this.setInvalid("Please enter valid value.");
+					else if (newValue != enteredText)
+						me.tuesday.setValue(newValue);
 				});
 				
 			me.wednesday = new ui.ctl.Input.Text({
@@ -227,8 +240,12 @@ ii.Class({
 					if (enteredText == "")
 						return;
 
-					if (!(/^\d{1,8}(\.\d{1,2})?$/.test(enteredText)))
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,7}(\.\d{1,3})?$/.test(newValue)))
 						this.setInvalid("Please enter valid value.");
+					else if (newValue != enteredText)
+						me.wednesday.setValue(newValue);
 				});
 				
 			me.thursday = new ui.ctl.Input.Text({
@@ -248,8 +265,12 @@ ii.Class({
 					if (enteredText == "")
 						return;
 
-					if (!(/^\d{1,8}(\.\d{1,2})?$/.test(enteredText)))
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,7}(\.\d{1,3})?$/.test(newValue)))
 						this.setInvalid("Please enter valid value.");
+					else if (newValue != enteredText)
+						me.thursday.setValue(newValue);
 				});
 				
 			me.friday = new ui.ctl.Input.Text({
@@ -269,8 +290,12 @@ ii.Class({
 					if (enteredText == "")
 						return;
 
-					if (!(/^\d{1,8}(\.\d{1,2})?$/.test(enteredText)))
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,7}(\.\d{1,3})?$/.test(newValue)))
 						this.setInvalid("Please enter valid value.");
+					else if (newValue != enteredText)
+						me.friday.setValue(newValue);
 				});
 				
 			me.saturday = new ui.ctl.Input.Text({
@@ -290,11 +315,16 @@ ii.Class({
 					if (enteredText == "")
 						return;
 
-					if (!(/^\d{1,8}(\.\d{1,2})?$/.test(enteredText)))
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,7}(\.\d{1,3})?$/.test(newValue)))
 						this.setInvalid("Please enter valid value.");
+					else if (newValue != enteredText)
+						me.saturday.setValue(newValue);
 				});
 			
-			me.laundryMetricGrid.addColumn("laundryMetricTypeTitle", "laundryMetricTypeTitle", "Metric Type", "Metric Type", null);
+			me.laundryMetricGrid.addColumn("laundryMetricTypeTitle", "laundryMetricTypeTitle", "Metric Type", "Metric Type", 120);
+			me.laundryMetricGrid.addColumn("laundryMetricTypeDescription", "laundryMetricTypeDescription", "Description", "Description", null);
 			me.laundryMetricGrid.addColumn("sunday", "sunday", "Sunday", "Sunday", 120, null, me.sunday);
 			me.laundryMetricGrid.addColumn("monday", "monday", "Monday", "Monday", 120, null, me.monday);
 			me.laundryMetricGrid.addColumn("tuesday", "tuesday", "Tuesday", "Tuesday", 120, null, me.tuesday);
@@ -303,6 +333,23 @@ ii.Class({
 			me.laundryMetricGrid.addColumn("friday", "friday", "Friday", "Friday", 120, null, me.friday);
 			me.laundryMetricGrid.addColumn("saturday", "saturday", "Saturday", "Saturday", 120, null, me.saturday);
 			me.laundryMetricGrid.capColumns();
+			
+			me.laundryMetricReadOnlyGrid = new ui.ctl.Grid({
+				id: "LaundryMetricReadOnlyGrid",
+				appendToId: "divForm",
+				deleteFunction: function() { return true; }
+			});
+			
+			me.laundryMetricReadOnlyGrid.addColumn("laundryMetricTypeTitle", "laundryMetricTypeTitle", "Metric Type", "Metric Type", 120);
+			me.laundryMetricReadOnlyGrid.addColumn("laundryMetricTypeDescription", "laundryMetricTypeDescription", "Description", "Description", null);
+			me.laundryMetricReadOnlyGrid.addColumn("sunday", "sunday", "Sunday", "Sunday", 120);
+			me.laundryMetricReadOnlyGrid.addColumn("monday", "monday", "Monday", "Monday", 120);
+			me.laundryMetricReadOnlyGrid.addColumn("tuesday", "tuesday", "Tuesday", "Tuesday", 120);
+			me.laundryMetricReadOnlyGrid.addColumn("wednesday", "wednesday", "Wednesday", "Wednesday", 120);
+			me.laundryMetricReadOnlyGrid.addColumn("thursday", "thursday", "Thursday", "Thursday", 120);
+			me.laundryMetricReadOnlyGrid.addColumn("friday", "friday", "Friday", "Friday", 120);
+			me.laundryMetricReadOnlyGrid.addColumn("saturday", "saturday", "Saturday", "Saturday", 120);
+			me.laundryMetricReadOnlyGrid.capColumns();
 		},
 
 		configureCommunications: function fin_app_laundry_UserInterface_configureCommunications() {
@@ -465,6 +512,7 @@ ii.Class({
 					var item = new fin.app.laundry.LaundryMetric(0
 						, me.laundryMetricTypes[index].id
 						, me.laundryMetricTypes[index].title
+						, me.laundryMetricTypes[index].description
 						, parent.fin.appUI.houseCodeId
 						, me.payPeriods[me.payPeriod.indexSelected].id
 						)
@@ -473,7 +521,23 @@ ii.Class({
 				}
 			}
 
-			me.laundryMetricGrid.setData(me.laundryMetrics);
+			if (me.payPeriod.indexSelected > 1) {
+				me.anchorSave.display(ui.cmn.behaviorStates.disabled);
+				me.anchorUndo.display(ui.cmn.behaviorStates.disabled);
+				$("#LaundryMetricGrid").hide();
+				$("#LaundryMetricReadOnlyGrid").show();
+				me.laundryMetricReadOnlyGrid.setData(me.laundryMetrics);
+				me.laundryMetricReadOnlyGrid.setHeight($(window).height() - 150);
+			}
+			else {
+				me.anchorSave.display(ui.cmn.behaviorStates.enabled);
+				me.anchorUndo.display(ui.cmn.behaviorStates.enabled);
+				$("#LaundryMetricReadOnlyGrid").hide();
+				$("#LaundryMetricGrid").show();
+				me.laundryMetricGrid.setData(me.laundryMetrics);
+				me.laundryMetricGrid.setHeight($(window).height() - 150);
+			}
+			
 			me.checkLoadCount();
 		},
 		
@@ -486,6 +550,7 @@ ii.Class({
 						
 			if (me.laundryMetricGrid.data[index] != undefined) {
 				me.laundryMetricGrid.data[index].modified = true;
+				me.sunday.text.select();
 			}
 		},
 
