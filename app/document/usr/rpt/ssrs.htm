@@ -25,17 +25,55 @@
 				<td>Treeview</td>
 				<td>No</td>
 				<td>End user input</td>
-				<td>Lists the report nodes in a treeview control. Click on appropriate node to view the SSRS report in a separate window.</td>
+				<td>Lists the report nodes in a treeview control. Click on appropriate node to view the SSRS report.</td>
+			</tr>
+            <tr>
+				<td class="uiHeader" colspan="5">SSRS Report Details</td>
+			</tr>
+            <tr>
+				<td>Search</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Search in levelnames tree.</td>				
+			</tr>
+            <tr>
+				<td>Level Names</td>
+				<td>Treeview</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Lists the Levels and names(House Codes) in a treeview control.</td>
+			</tr>
+            <tr>
+				<td>Parameter Controls</td>
+				<td></td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>These controls are dependent on SSRS report selected.</td>
+			</tr>
+            <tr>
+				<td>Generate Report</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Generates Report in seperate window.</td>
+			</tr>
+			<tr>
+				<td>Reset</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Clears the user selected values.</td>
 			</tr>
 			<tr>
 				<td class="uiHeader" colspan="5">SSRS Report Subscriptions</td>
 			</tr>
-			<tr>
-				<td>Report</td>
-				<td>Dropdown selection</td>
-				<td>Yes</td>
-				<td>End user input</td>				
-				<td>Report should be selected from dropdown list.</td>
+            <tr>
+				<td>Report Nodes</td>
+				<td>Treeview</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Lists the report nodes in a treeview control which have subscription. Click on appropriate node to view the SSRS report Subscription details.</td>
 			</tr>
 			<tr>
 				<td>Subscriptions</td>
@@ -46,13 +84,16 @@
 			</tr>
 			<tr>
 				<td>Description</td>
-				<td></td>
+				<td>Display Field</td>
 				<td>NA</td>
-				<td></td>				
+				<td>NA</td>				
 				<td>Description of the subscription.</td>
 			</tr>			
 			<tr>
 				<td class="uiHeader" colspan="5">Subscription Details</td>
+			</tr>
+            <tr>
+				<td class="uiHeader" colspan="5">Report Delivery Options</td>
 			</tr>
 			<tr>
 				<td>Description</td>
@@ -123,6 +164,33 @@
 				<td>No</td>
 				<td>End user input</td>				
 				<td>Content of the subscription email.</td>				
+			</tr>
+            <tr>
+				<td class="uiHeader" colspan="5">Report Parameter Values</td>
+			</tr>
+            <tr>
+				<td>Search</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Search in levelnames tree.</td>				
+			</tr>
+            <tr>
+				<td>Level Names</td>
+				<td>Treeview</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Lists the Levels and names(House Codes) in a treeview control.</td>
+			</tr>
+            <tr>
+				<td>Parameter Controls</td>
+				<td></td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>These controls are dependent on SSRS report selected.</td>
+			</tr>
+            <tr>
+				<td class="uiHeader" colspan="5">Subscription Processing Options</td>
 			</tr>
 			<tr>
 				<td>Schedule</td>
@@ -483,44 +551,6 @@
 				<td>Closes the popup screen.</td>
 			</tr>
 			<tr>
-				<td class="uiHeader" colspan="5">Report Parameter Setup - HirNode Selection</td>
-			</tr>
-			<tr>
-				<td>House Code</td>
-				<td>Text field</td>
-				<td>Yes</td>
-				<td>End user input</td>
-				<td>To search a specific House Code, type-in House Code# (1455, 900000) and press Enter key/click Search button.</td>				
-			</tr>
-			<tr>
-				<td>Hierarchy Nodes</td>
-				<td>Treeview</td>
-				<td>No</td>
-				<td>End user input</td>
-				<td>Lists the hierarchy nodes in a treeview control.</td>
-			</tr>
-			<tr>
-				<td>Search</td>
-				<td>Button</td>
-				<td>NA</td>
-				<td>End user input</td>
-				<td>To search a specific House Code in a hierarchy tree.</td>
-			</tr>			
-			<tr>
-				<td>OK</td>
-				<td>Button</td>
-				<td>NA</td>
-				<td>End user input</td>
-				<td>Set top selected node as a report parameter.</td>
-			</tr>
-			<tr>
-				<td>Cancel</td>
-				<td>Button</td>
-				<td>NA</td>
-				<td>End user input</td>
-				<td>Closes the popup screen.</td>
-			</tr>
-			<tr>
 				<td class="uiHeader" colspan="5">SSRS Reports - Actions Menu</td>
 			</tr>
 			<tr>
@@ -553,10 +583,7 @@
 				<td><img src="images/ssrsReportSubscriptions.png"></td>
 			</tr>
 			<tr>
-				<td class="uiHeader">Report Parameter Setup - HirNode Selection concept</td>
-			</tr>
-			<tr>
-				<td><img src="images/nodeSearch.png"></td>
+				<td><img src="images/ssrsReportSubscriptions2.png"></td>
 			</tr>
 			<tr>
 				<td class="uiHeader">Hourly Schedule concept</td>
@@ -605,11 +632,16 @@
 			</tr>
 			<tr>
 				<td>Save</td>
-				<td>In order to save, the errors on the page must be corrected.</td>
+				<td>In order to save, the errors on the page must be corrected.<br />
+                    Failed to update the SSRS subscription.
+                    
+				</td>
 			</tr>
 			<tr>
 				<td>Delete</td>
-				<td>Are you sure you want to delete the subscription - [description] permanently?.</td>
+				<td>Are you sure you want to delete the subscription - [description] permanently?.<br />
+                    Failed to delete the SSRS subscription.
+				</td>
 			</tr>
 			<tr>
 				<td>Error</td>
@@ -630,8 +662,21 @@
 			</tr>
 			<tr>
 				<td>Tables</td>
-				<td>RptReports</br>RptReportParameters</td>
+				<td>RptReports, RptReportParameters, AppUsers, AppRoles, AppUnits, HirNodes, FscPeriods, RptReports </br>
+                    RptReportParameters, EmpEmployeeGenerals, RevInvoices, WomWorkOrders, payperiods, HcmJobs </br>
+                    PayPayCodes, PayPayrollCompanies, EmpStatusTypes, FscAccounts, RevInvoiceBatches, EmpWorkShifts </br>
+                    AppStateTypes, HcmServiceTypes, HcmServiceLines, HcmContractTypes
+				</td>
+			</tr>
+            <tr>
+				<td>Stored Procedures</td>
+				<td>
+                    AppUserUnitsSelect, HirNodeSelectByLevel, AppUserOrganizationalPathSelect, RptGenericTypeSelect,
+                    RevInvoiceBatchesSelect
+				</td>
 			</tr>
 		</table>
+        <h2>See Also</h2>
+		<div class="reference"><a href="adHoc.htm">Ad-Hoc</a></div>
 	</body>
 </html>
