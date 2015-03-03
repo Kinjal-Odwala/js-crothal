@@ -14,14 +14,25 @@
                     <div class="col-md-9">
                         <div class="form-group typeahead">
                             <label class="control-label">Site</label>
-                            <input ng-model="pafItem.HcmHouseCode" name="HcmHouseCode" class="hidden" />
-                            <input type="text" class="form-control input-sm" paf-enter="getPersonInformation(pafItem.EmployeeNumber,pafItem.HcmHouseCode)"
+                            <!--{{pafItem.HcmHouseCode}}-->
+                            <paf-typeahead ng-model="pafItem.HcmHouseCode" on-blur="getPersonInformation(pafItem.EmployeeNumber,pafItem.HcmHouseCode)"
+                                paf-enter="getPersonInformation(pafItem.EmployeeNumber,pafItem.HcmHouseCode)"
+                                source="HcmHouseCodes" typeahead-option="{displayField:'name',valueField:'id',name:'HcmHouseCode'}"></paf-typeahead>
+                            <!-- <input type="text" class="form-control input-sm" paf-enter="getPersonInformation(pafItem.EmployeeNumber,pafItem.HcmHouseCode)"
                                 ng-model="HcmHouseCodeFilter" typeahead-input-formatter="getHouseCode($model)"
-                                typeahead="item as item.name for item in HcmHouseCodes|filter:{name:$viewValue}| limitTo:10" ng-blur="getPersonInformation(pafItem.EmployeeNumber,HcmHouseCodeFilter.appUnit)" />
+                                typeahead="item as item.name for item in HcmHouseCodes|filter:{name:$viewValue}| limitTo:10" ng-blur="getPersonInformation(pafItem.EmployeeNumber,HcmHouseCodeFilter.appUnit)" />-->
                         </div>
                     </div>
                 </div>
                 <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group" ng-class="{'has-error':pafForm.EmployeeNumber.$invalid}">
+                            <label class="control-label">Employee/Clock Number</label>
+                            <input class="form-control input-sm" name="EmployeeNumber" ng-model="pafItem.EmployeeNumber" paf-enter="getPersonInformation(pafItem.EmployeeNumber,pafItem.HcmHouseCode)"
+                                ng-blur="getPersonInformation(pafItem.EmployeeNumber,pafItem.HcmHouseCode)" required paf-numeric />
+                            <!--<button ng-click="getEmployee()">Get Employee ID</button>-->
+                        </div>
+                    </div>
                     <div class="col-md-4">
                         <div class="form-group" ng-class="{'has-error':pafForm.FirstName.$invalid}">
                             <label class="control-label">FirstName</label>
@@ -32,14 +43,6 @@
                         <div class="form-group" ng-class="{'has-error':pafForm.LastName.$invalid}">
                             <label class="control-label">LastName</label>
                             <input class="form-control input-sm" name="LastName" ng-model="pafItem.LastName" required />
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group" ng-class="{'has-error':pafForm.EmployeeNumber.$invalid}">
-                            <label class="control-label">Employee/Clock Number</label>
-                            <input class="form-control input-sm" name="EmployeeNumber" ng-model="pafItem.EmployeeNumber" paf-enter="getPersonInformation(pafItem.EmployeeNumber,pafItem.HcmHouseCode)"
-                                ng-blur="getPersonInformation(pafItem.EmployeeNumber,pafItem.HcmHouseCode)" required />
-                            <!--<button ng-click="getEmployee()">Get Employee ID</button>-->
                         </div>
                     </div>
                 </div>
@@ -53,7 +56,7 @@
                     <div class="col-md-4">
                         <div class="form-group" ng-class="{'has-error':pafForm.Phone.$invalid}">
                             <label class="control-label">Phone #</label>
-                            <input class="form-control input-sm" name="Phone" ng-model="pafItem.Phone" required />
+                            <input class="form-control input-sm" name="Phone" ng-model="pafItem.Phone" paf-mask="phone" required />
                         </div>
                     </div>
                 </div>
@@ -64,13 +67,16 @@
                     </div>
                     <div class="col-md-4" ng-class="{'has-error':pafForm.StateType.$invalid}">
                         <label class="control-label">State</label>
-                        <input ng-model="pafItem.StateType" name="StateType" class="hidden" required />
+                        <select class="form-control input-sm" ng-model="pafItem.StateType" ng-options="item.id as item.name for item in States">
+                            <option></option>
+                        </select>
+                        <!--<input ng-model="pafItem.StateType" name="StateType" class="hidden" required />
                         <input type="text" class="form-control input-sm" ng-model="StateFilter"
-                            typeahead-input-formatter="getState($model)" typeahead="item as item.name for item in States|filter:{name:$viewValue}| limitTo:10" />
+                            typeahead-input-formatter="getState($model)" typeahead="item as item.name for item in States|filter:{name:$viewValue}| limitTo:10" />-->
                     </div>
                     <div class="col-md-4" ng-class="{'has-error':pafForm.PostalCode.$invalid}">
                         <label>Zip</label>
-                        <input class="form-control input-sm" name="PostalCode" ng-model="pafItem.PostalCode" required />
+                        <input class="form-control input-sm" name="PostalCode" ng-model="pafItem.PostalCode" paf-mask="zipcode" required />
                     </div>
                 </div>
             </section>
@@ -188,7 +194,8 @@
                                     <div class="form-group">
                                         <label>
                                             <input type="radio" name="Status" ng-model="pafItem.Status" value="PartTime" />&nbsp;Part Time</label>
-                                        <input type="text" class="form-control input-sm" ng-disabled="pafItem.Status!='PartTime'" ng-model="pafItem.Hours" paf-format="{0}/number of hours" placeholder="0/number of hours" />
+                                        <input type="text" class="form-control input-sm" ng-disabled="pafItem.Status!='PartTime'"
+                                            ng-model="pafItem.Hours" paf-format="{0}/number of hours" placeholder="0/number of hours" paf-numeric />
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
@@ -198,7 +205,7 @@
                                     <div class="form-group">
                                         <label>
                                             <input type="radio" name="Status" ng-model="pafItem.Status" value="PerDiem" />&nbsp;Per Diem</label>
-                                        <input type="text" class="form-control input-sm" ng-disabled="pafItem.Status!='PerDiem'" ng-model="pafItem.Amount" paf-format="{0} per day" placeholder="0 per day" />
+                                        <input type="text" class="form-control input-sm" ng-disabled="pafItem.Status!='PerDiem'" ng-model="pafItem.Amount" paf-format="{0} per day" placeholder="0 per day" paf-numeric />
                                     </div>
                                 </div>
                             </div>
@@ -209,7 +216,7 @@
                                     <label>
                                         <input type="radio" name="Salary" ng-model="pafItem.PayStatus" value="Salary" />&nbsp;Salary</label>
 
-                                    <input type="text" class="form-control input-sm" ng-disabled="pafItem.PayStatus!='Salary'" ng-model="pafItem.YearlySalary" ng-change="salaryChange(Salary,'','')" paf-format="{0}/year" placeholder="0/year" style="width: 40%" />
+                                    <input type="text" class="form-control input-sm" ng-disabled="pafItem.PayStatus!='Salary'" ng-model="pafItem.YearlySalary" ng-change="salaryChange(Salary,'','')" paf-format="{0}/year" placeholder="0/year" style="width: 40%" paf-numeric />
                                 </div>
                             </div>
                             <div class="col-md-3 form-inline">
@@ -217,7 +224,7 @@
                                     <label>
                                         <input type="radio" name="Salary" ng-model="pafItem.PayStatus" value="AdminHourly" />&nbsp;Admin.Hourly</label>
 
-                                    <input type="text" class="form-control input-sm" ng-disabled="pafItem.PayStatus!='AdminHourly'" ng-model="pafItem.HourlyRate" ng-change="salaryChange('',AdminHourly,'')" paf-format="{0}/hour" placeholder="0/hour" style="width: 40%" />
+                                    <input type="text" class="form-control input-sm" ng-disabled="pafItem.PayStatus!='AdminHourly'" ng-model="pafItem.HourlyRate" ng-change="salaryChange('',AdminHourly,'')" paf-format="{0}/hour" placeholder="0/hour" style="width: 40%" paf-numeric />
                                 </div>
                             </div>
                             <div class="col-md-3 form-inline">
@@ -225,7 +232,7 @@
                                     <label>
                                         <input type="radio" name="Salary" ng-model="pafItem.PayStatus" value="Hourly" />&nbsp;Hourly</label>
 
-                                    <input type="text" class="form-control input-sm" ng-disabled="pafItem.PayStatus!='Hourly'" ng-model="pafItem.HourlyRate" ng-change="salaryChange('','',Hourly)" paf-format="{0}/hour" placeholder="0/hour" style="width: 40%" />
+                                    <input type="text" class="form-control input-sm" ng-disabled="pafItem.PayStatus!='Hourly'" ng-model="pafItem.HourlyRate" ng-change="salaryChange('','',Hourly)" paf-format="{0}/hour" placeholder="0/hour" style="width: 40%" paf-numeric />
                                 </div>
                             </div>
                         </div>
@@ -292,7 +299,12 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>Training Location</label>
-                            <input class="form-control input-sm" ng-model="pafItem.HcmHouseCodeTrainingLocation" />
+                            <!--  {{pafItem.HcmHouseCodeTrainingLocation}}-->
+                            <paf-typeahead ng-model="pafItem.HcmHouseCodeTrainingLocation" source="HcmHouseCodes" typeahead-option="{displayField:'name',valueField:'id',name:'HcmHouseCode'}"></paf-typeahead>
+                            <!--<input class="form-control input-sm hide"  />
+                            <input type="text" class="form-control input-sm" ng-model="HcmHouseCodeTrainingLocationFilter" typeahead-input-formatter="getHouseCode($model)"
+                                typeahead="item as item.name for item in HcmHouseCodes|filter:{name:$viewValue}| limitTo:10" ng-blur="getPersonInformation(pafItem.EmployeeNumber,HcmHouseCodeFilter.appUnit)" />-->
+
                         </div>
                     </div>
                     <div class="col-md-5">
@@ -314,13 +326,13 @@
                             <label>
                                 <input type="checkbox" />&nbsp;Car Allowance</label>
                             <div class="input-group-btn" dropdown>
-                                <input class="form-control input-sm" ng-model="pafItem.CarAllowance" paf-format="{0}/month" placeholder="0/month" dropdown-toggle />
+                                <input class="form-control input-sm" ng-model="pafItem.CarAllowance" paf-format="{0}/month" placeholder="0/month" dropdown-toggle paf-numeric />
                                 <!-- <div class="input-group-btn">
                                     <button class="btn btn-default input-sm" data-toggle="dropdown" dropdown-toggle>
                                         <span class="caret"></span>
                                     </button>-->
                                 <ul id="dropdown-menu" class="dropdown-menu" role="menu">
-                                    <li ng-repeat="item in pafItem.CarAllowances" ng-click="pickerCardAllowance(item)"><a>{{item.Description}}</a></li>
+                                    <li ng-repeat="item in lkup.CarAllowances" ng-click="pickerCarAllowance(item)"><a>{{item.Description}}</a></li>
                                 </ul>
                                 <!--</div>-->
                             </div>
@@ -352,14 +364,14 @@
                         <div class="form-group">
                             <label>
                                 Number Vacation Days Due</label>
-                            <input class="form-control input-sm" ng-model="pafItem.VacationDaysDue" />
+                            <input class="form-control input-sm" ng-model="pafItem.VacationDaysDue" paf-numeric />
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>
                                 Separation Pay Number of Weeks</label>
-                            <input class="form-control input-sm" ng-model="pafItem.PayNumberOfWeeks" />
+                            <input class="form-control input-sm" ng-model="pafItem.PayNumberOfWeeks" paf-numeric />
                         </div>
                     </div>
                 </div>
@@ -494,7 +506,7 @@
                         <div class="form-group">
                             <label>
                                 Percentage Last Increase</label>
-                            <input class="form-control input-sm" ng-model="pafItem.LastIncreasePercentage" />
+                            <input class="form-control input-sm" ng-model="pafItem.LastIncreasePercentage" paf-numeric />
                         </div>
                     </div>
                 </div>
@@ -503,28 +515,28 @@
                         <div class="form-group">
                             <label>
                                 Present Salary</label>
-                            <input class="form-control input-sm" ng-model="pafItem.CurrentSalary" />
+                            <input class="form-control input-sm" ng-model="pafItem.CurrentSalary" paf-numeric />
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>
                                 Increase Amt.</label>
-                            <input class="form-control input-sm" ng-model="pafItem.IncreaseAmount" />
+                            <input class="form-control input-sm" ng-model="pafItem.IncreaseAmount" paf-numeric />
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>
                                 Percentage</label>
-                            <input class="form-control input-sm" ng-model="pafItem.IncreasePercentage" />
+                            <input class="form-control input-sm" ng-model="pafItem.IncreasePercentage" paf-numeric />
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>
                                 New Salary</label>
-                            <input class="form-control input-sm" ng-model="pafItem.NewSalary" />
+                            <input class="form-control input-sm" ng-model="pafItem.NewSalary" paf-numeric />
                         </div>
                     </div>
                 </div>
@@ -533,14 +545,14 @@
                         <div class="form-group">
                             <label>
                                 Current Pay Grade</label>
-                            <input class="form-control input-sm" ng-model="pafItem.CurrentPayGrade" />
+                            <input class="form-control input-sm" ng-model="pafItem.CurrentPayGrade" paf-numeric />
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>
                                 New Pay Grade</label>
-                            <input class="form-control input-sm" ng-model="pafItem.NewPayGrade" />
+                            <input class="form-control input-sm" ng-model="pafItem.NewPayGrade" paf-numeric />
                         </div>
                     </div>
                 </div>
@@ -603,9 +615,12 @@
                 </div>
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="form-group">
+                        <div class="form-group" dropdown>
                             <label>Car Allowance</label>
-                            <input type="text" class="form-control input-sm" ng-model="pafItem.NewCarAllowance" paf-format="{0}/month" placeholder="0/month" />
+                            <input type="text" class="form-control input-sm" ng-model="pafItem.NewCarAllowance" paf-format="{0}/month" placeholder="0/month" dropdown-toggle paf-numeric />
+                            <ul class="dropdown-menu" role="menu">
+                                <li ng-repeat="item in lkup.CarAllowances" ng-click="pickerCarAllowance(item)"><a>{{item.Description}}</a></li>
+                            </ul>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -823,15 +838,19 @@
                     <div class="col-md-4 ">
                         <div class="form-group">
                             <label>Old Unit</label>
-                            <input ng-model="OldUnit" class="hidden" ng-model="pafItem.HcmHouseCodeTransfer" />
-                            <input type="text" class="form-control input-sm" ng-model="OldUnitFilter" typeahead-input-formatter="getHouseCode($model,1)" typeahead="item as item.name for item in HcmHouseCodes|filter:{name:$viewValue}| limitTo:10" />
+
+                            <paf-typeahead ng-model="pafItem.HcmHouseCodeTransfer" source="HcmHouseCodes" typeahead-option="{displayField:'name',valueField:'id',name:'HcmHouseCode'}"></paf-typeahead>
+                            <!--     <input ng-model="OldUnit" class="hidden" ng-model="pafItem.HcmHouseCodeTransfer" />
+                            <input type="text" class="form-control input-sm" ng-model="OldUnitFilter" typeahead-input-formatter="getHouseCode($model,1)" typeahead="item as item.name for item in HcmHouseCodes|filter:{name:$viewValue}| limitTo:10" />-->
                         </div>
                     </div>
                     <div class="col-md-4 ">
                         <div class="form-group">
                             <label>New Unit</label>
-                            <input ng-model="NewUnit" class="hidden" ng-model="pafItem.HcmHouseCodeTransfer" />
-                            <input type="text" class="form-control input-sm" ng-model="NewUnitFilter" typeahead="item as item.name for item in HcmHouseCodes|filter:{name:$viewValue}| limitTo:10" />
+
+                            <paf-typeahead ng-model="pafItem.HcmHouseCodeTransfer" source="HcmHouseCodes" typeahead-option="{displayField:'name',valueField:'id',name:'HcmHouseCode'}"></paf-typeahead>
+                            <!--  <input ng-model="NewUnit" class="hidden" ng-model="pafItem.HcmHouseCodeTransfer" />
+                            <input type="text" class="form-control input-sm" ng-model="NewUnitFilter" typeahead="item as item.name for item in HcmHouseCodes|filter:{name:$viewValue}| limitTo:10" />-->
                         </div>
                     </div>
                 </div>
@@ -851,7 +870,7 @@
                 <div class="row">
                     <div class="col-md-2 col-sm-3">
                         <label>Effective Date</label>
-                        <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.EffectiveDate"></paf-datepicker>
+                        <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.InformationChangeEffectiveDate"></paf-datepicker>
                     </div>
                     <div class="col-md-3 col-sm-5">
                         <label>Name Changes</label>
@@ -859,7 +878,7 @@
                     </div>
                     <div class="col-md-2 col-sm-4">
                         <label>Phone #</label>
-                        <input class="form-control input-sm" ng-model="pafItem.InfoChangePhone" />
+                        <input class="form-control input-sm" ng-model="pafItem.InfoChangePhone" paf-mask="phone" />
                     </div>
                     <div class="col-md-5 col-sm-12">
                         <div class="form-group">
@@ -877,13 +896,13 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Requisition #</label>
-                            <input class="form-control input-sm" ng-model="pafItem.RequisitionNumber" />
+                            <input class="form-control input-sm" ng-model="pafItem.RequisitionNumber" paf-numeric />
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group">
+                        <div class="form-group" ng-class="{'has-error':pafForm.EmailAddress.$invalid}">
                             <label>Email Address</label>
-                            <input class="form-control input-sm" ng-model="pafItem.EmailAddress" />
+                            <input class="form-control input-sm" ng-model="pafItem.EmailAddress" name="EmailAddress" paf-validation="email" />
                         </div>
                     </div>
                 </div>
