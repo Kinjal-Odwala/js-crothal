@@ -2015,10 +2015,13 @@ ii.Class({
 			me.employeeMaritalStatus.text.tabIndex = 234; 
 			me.employeeI9Status.text.tabIndex = 235; 
 			me.employeeVETSStatus.text.tabIndex = 236;
-			//mealPlanYes - 237
-			//mealPlanNo - 238
+			//MealPlanYes - 237
+			//MealPlanNo - 238
 			//PayrollDeductionYes - 239
 			//PayrollDeductionNo - 240
+			//DisabilityYes - 241
+			//DisabilityNo - 242
+			//DisabilityNA - 243
 			//Job
 			me.jobEffectiveDate.text.tabIndex = 300; 
 			me.jobChangeReason.text.tabIndex = 301; 
@@ -4061,6 +4064,13 @@ ii.Class({
 				else
 					$("#PayrollDeductionNo").attr("checked", true); // 1 Yes, 0 No
 					
+				if (me.employeeGenerals[0].disability == 1)
+					$("#DisabilityYes").attr("checked", true);
+				else if (me.employeeGenerals[0].disability == 2)
+					$("#DisabilityNo").attr("checked", true);
+				else if (me.employeeGenerals[0].disability == 3)
+					$("#DisabilityNA").attr("checked", true);
+				
 				me.validateEmployeeDetails();				
 				me.hireDateAccessSetup();	
 				me.effectiveDateAccessSetup();
@@ -5354,19 +5364,19 @@ ii.Class({
 			me.employeeDeviceGroup.reset();
 			me.notes.value = "";
 			
-			$('#ExemptNo').attr('checked', true);
-			$('#HourlyRateYes').attr('checked', true);
-			$('#UnionNo').attr('checked', true);
-			
-			$('#GenderYes').attr('checked', true);
+			$("#ExemptNo").attr("checked", true);
+			$("#HourlyRateYes").attr("checked", true);
+			$("#UnionNo").attr("checked", true);
+			$("#GenderYes").attr("checked", true);
 			$("#MealPlanYes").attr("checked", false);
 			$("#MealPlanNo").attr("checked", false);
 			$("#PayrollDeductionYes").attr("checked", false);
 			$("#PayrollDeductionNo").attr("checked", false);
 			$("#PayrollDeductionContainer").hide();
-			$("#EmployeeCrtdAt").text('');
-			$("#EmployeeModAt").text('');
-			
+			$("#DisabilityYes").attr("checked", false);
+			$("#DisabilityNo").attr("checked", false);
+			$("#DisabilityNA").attr("checked", false);
+
 			me.federalExemptions.setValue("");
 			me.federalAdjustmentType.reset();
 			me.maritalStatusFederalTaxType.reset();
@@ -6171,6 +6181,12 @@ ii.Class({
 								}
 							}
 						}
+						
+						if ($("input[name='Disability']:checked").val() == undefined) {
+							alert("Please select the Disability.");
+							me.wizardCount--;
+							return false;
+						}
 					}
 
 					if (me.actionType == "HouseCodeTransfer" || me.actionType == "DateModification") {
@@ -6653,8 +6669,13 @@ ii.Class({
 						}
 					}
 				}
+
+				if ($("input[name='Disability']:checked").val() == undefined) {
+					alert("Please select the Disability.");
+					return false;
+				}
 			}
-			
+
 			if (me.actionType == "Federal") {	
 				if (!me.maritalStatusFederalTaxType.validate(true))
 				  return false;
@@ -6896,6 +6917,7 @@ ii.Class({
 				, vetType: (me.employeeVETSStatus.indexSelected >= 0 ? me.vetTypes[me.employeeVETSStatus.indexSelected].id : 0)
 				, mealPlan: ($("input[name='MealPlan']:checked").val())
 				, mealPlanPayrollDeduction: ($("input[name='PayrollDeduction']:checked").val() == "1" ? true : false)
+				, disability: ($("input[name='Disability']:checked").val())
 				, separationCode: (me.separationCode != undefined ? 
 							(me.separationCode.indexSelected >= 0 ? 
 								me.separationCodes[me.separationCode.indexSelected].id 
@@ -7149,11 +7171,11 @@ ii.Class({
 				xml += ' vetType="' + itemGeneral.vetType + '"';
 				xml += ' mealPlan="' + itemGeneral.mealPlan + '"';
 				xml += ' mealPlanPayrollDeduction="' + itemGeneral.mealPlanPayrollDeduction + '"';
-
 				if (me.houseCodeDetails[0].mealPlan == 1)
 					xml += ' houseCodeMealPlan="true"';
 				else
 					xml += ' houseCodeMealPlan="false"';
+				xml += ' disability="' + itemGeneral.disability + '"';
 			}
 			
 			if (me.actionType == "HouseCodeTransfer" || me.actionType == "DateModification" || me.actionType == "Employee" ||

@@ -1,0 +1,565 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Check Request</h1>
+			<div class="description">The purpose of <b>Check Request</b> is to setup and maintain the list of Check Requests.</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Payroll Check Request Form</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Hierarchy Tree View</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>To search a specific House Code, type-in House Code # (1455, 900000) and press Enter key.</td>				
+			</tr>
+			<tr>
+				<td>Requested Date</td>
+				<td>List</td>
+				<td>Yes</td>
+				<td>End user input</td>	
+				<td>Please enter valid date.</td>
+			</tr>
+			<tr>
+				<td>Delivery Date</td>
+				<td>List</td>
+				<td>Yes</td>
+				<td>End user input</td>	
+				<td>Please enter valid date.</td>
+			</tr>
+			<tr>
+				<td>Employee #</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Maximum length allowed - 16 <br />
+                    Please enter valid Employee Number.</td>
+			</tr>
+			<tr>
+				<td>Employee Name</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Maximum length allowed - 100</td>
+			</tr>
+			<tr>
+				<td>Reason for Request</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Maximum length allowed - 1024</td>
+			</tr>
+			<tr>
+				<td>Term Request</td>
+				<td>Radio Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>user should select State and Termination Date if Term Request is checked.</td>
+			</tr>
+            <tr>
+				<td>State</td>
+				<td>List</td>
+                <td>No</td>
+                <td>End user input</td>
+				<td>Displays States.</td>
+			</tr>
+            <tr>
+				<td>Termination Date</td>
+				<td>List</td>
+				<td>No</td>
+				<td>End user input</td>	
+				<td>Please enter valid date.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Comdata Pay Card Information</td>
+			</tr>
+			<tr>
+				<td>Current Pay Card User</td>
+				<td>Radio Button</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Allows user to select Yes or No for Current Pay Card User.</td>
+			</tr>		
+			<tr>
+				<td>Instant Issue Request</td>
+				<td>Radio Button</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Allows user to select Yes or No for Instant Issue Request.</td>
+			</tr>
+            <tr>
+				<td class="uiHeader" colspan="5">Unit (Location/Account) Delivery Information</td>
+			</tr>
+			<tr>
+				<td>UPS Delivery to Unit</td>
+				<td>Radio Button</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Allows user to select Yes or No for UPS Delivery to Unit.</td>
+			</tr>		
+			<tr>
+				<td>Saturday Delivery</td>
+				<td>Radio Button</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Allows user to select Yes or No for Saturday Delivery.</td>
+			</tr>
+            <tr>
+				<td>Unit (House Code)</td>
+				<td>Hierarchy Tree View</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>To search a specific Unit (House Code), type-in House Code # (1455, 900000) and press Enter key.</td>				
+			</tr>
+            <tr>
+				<td>Unit (House Code) Address</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Maximum length allowed - 1024 <br />
+                    Please enter the Unit (House Code) Address.</td>
+			</tr>
+            <tr>
+				<td>UPS Package Attention to</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Maximum length allowed - 512 </td>
+			</tr>
+            <tr>
+				<td class="uiHeader" colspan="5">Employee Home Delivery Information</td>
+			</tr>
+			<tr>
+				<td>UPS Delivery to Home</td>
+				<td>Radio Button</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Allows user to select Yes or No for UPS Delivery to Home.</td>
+			</tr>		
+			<tr>
+				<td>Saturday Delivery</td>
+				<td>Radio Button</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Allows user to select Yes or No for Saturday Delivery.</td>
+			</tr>
+
+			<tr>
+				<td>Home Address</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Maximum length allowed - 1024 <br />
+                    Please enter the Home Address.</td>
+			</tr>			
+			<tr>
+				<td class="uiHeader" colspan="5">Paycode Information</td>
+			</tr>
+            <tr>
+				<td>Paycode Detail Grid</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List of Pay Codes.</td>
+			</tr>
+			<tr>
+				<td>Pay Code</td>
+				<td>List</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Please select the correct Pay Code.</td>
+			</tr>
+			<tr>
+				<td>Hours</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+                <td>Please enter valid Hours. Example: 99.99</td>
+			</tr>
+			<tr>
+				<td>Date</td>
+				<td>List</td>
+				<td>Yes</td>
+				<td>End user input</td>	
+				<td>Please enter valid date.</td>
+			</tr>
+			<tr>
+				<td>Earnings</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+                <td>Please enter valid Earnings. Example: 99.99</td>
+			</tr>
+            <tr>
+				<td>Alternate Base Rate</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+                <td>Please enter valid Alternate Base Rate. Example: 99.99</td>
+			</tr>
+			<tr>
+				<td>CHARGE TO HOUSE CODE</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+                <td>The House Code is not valid.</td>
+			</tr>
+            <tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+			<tr>
+				<td>Stop Payment Processing Fee</td>
+				<td>Radio Button</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Allows user to select Yes or No for Stop Payment Processing Fe.</td>
+			</tr>
+			<tr>
+				<td>Deduction Code(s)</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+                <td></td>
+			</tr>
+            <tr>
+				<td>Amount $</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+                <td>lease enter valid Amount. Example: 99.99</td>
+			</tr>
+            <tr>
+				<td>Deduction Code(s)</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+                <td></td>
+			</tr>
+            <tr>
+				<td>Amount $</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+                <td>lease enter valid Amount. Example: 99.99</td>
+			</tr>
+			<tr>
+				<td>Requested By</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+                <td>Maximum length allowed - 100.</td>
+			</tr>
+			<tr>
+				<td>Requestor Email</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+                <td>Please enter valid Requestor Email.</td>
+			</tr>			
+			<tr>
+				<td>Manager Name</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+                <td>Maximum length allowed - 100.</td>
+			</tr>
+			<tr>
+				<td>Manager Email</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+                <td>Maximum length allowed - 100.
+                    Please enter valid Manager Email.
+                </td>
+			</tr>
+            <tr>
+				<td class="uiHeader" colspan="5">Additional Documents</td>
+			</tr>
+            <tr>
+				<td>DocumentGrid</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List of Additional Documents.</td>
+			</tr>		
+			<tr>
+				<td>Title</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>File Name</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Attach</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To attach the supporting document</td>
+			</tr>
+			<tr>
+				<td>Edit</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To modify the supporting document</td>
+			</tr>
+			<tr>
+				<td>Remove</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To remove the supporting document</td>
+			</tr>
+			<tr>
+				<td>View</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To View the supporting document</td>
+			</tr>
+            <tr>
+				<td class="uiHeader" colspan="5">Upload Document</td>
+			</tr>
+            <tr>
+				<td>Browse</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To select supporting document</td>
+			</tr>
+			<tr>
+				<td>Upload</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To Upload the supporting document</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To Cancel Uploading</td>
+			</tr>
+            <tr>
+				<td class="uiHeader" colspan="5">Payroll Check Request Status</td>
+			</tr>
+            <tr>
+				<td>Filter</td>
+				<td>List</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td>Search Criteria</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+                <td></td>
+			</tr>
+			<tr>
+				<td>Status</td>
+				<td>List</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>
+			</tr>
+			<tr>
+				<td>Search</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>List the Check requests based on the search criteria.</td>
+			</tr>
+            <tr>
+				<td>Pay Check Request Grid</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List of Pay Check Requests.</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>				
+			</tr>
+			<tr>
+				<td>Employee #</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>				
+			</tr>
+            <tr>
+				<td>Requestor Name</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>				
+			</tr>
+			<tr>
+				<td>Requested Date</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>				
+			</tr>
+            <tr>
+				<td>Status</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+			<tr>
+				<td>New</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To create new Check Request.</td>
+			</tr>
+            <tr>
+				<td>Send Request</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>To Send Check Request.</td>
+			</tr>
+			<tr>
+				<td>Resend Request</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>To Resend Check Request.</td>
+			</tr>
+            <tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>To undo the changes done to selected Check Request.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>To Cancel Check Request status to Cancelled</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Actions Menu</td>
+			</tr>
+			<tr>
+				<td>Payroll Check Request</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To create the new Payroll Check Requests.</td>
+			</tr>
+			<tr>
+				<td>Payroll Check Request Status</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To view and edit Payroll Check Requests.</td>
+			</tr>			
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Payroll Check Request</td>
+			</tr>
+			<tr>
+				<td><img src="images/payrollCheckRequest.png"/></td>
+			</tr>
+			<tr>
+				<td><img src="images/payrollCheckRequest2.png"/></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Payroll Check Request Status</td>
+			</tr>
+			<tr>
+				<td><img src="images/payrollCheckRequestStatus.png"/></td>
+			</tr>
+			<tr>
+				<td><img src="images/payrollCheckRequestStatus2.png"/></td>
+			</tr>
+			<tr>
+				<td><img src="images/payrollCheckRequestStatus3.png"/></td>
+			</tr>
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Failed to update the pay check request status.</br>
+					Failed to update the pay check request.</br>
+					Failed to update the pay check request paycode.</br>
+					Failed to update the pay check request document.</br>
+                    Failed to delete the pay check request document.</br>
+                    Failed to send the pay check request email notification.
+				</td>
+			</tr>
+			<tr>
+				<td>Error</td>
+				<td>[SAVE FAILURE] Error while sending the payroll check request.</td>
+			</tr>
+		</table>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+        <table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>HirNodes, HcmHouseCodes, AppStateTypes, PayPayCodes, PayPayCheckRequests, PayPayCheckRequestPayCodes, PayPayCheckRequestDocuments,<br/>
+                    EmpEmployeeGenerals, PplPeople, AppUsers, AppSites
+				</td>
+			</tr>
+			<tr>
+                <td>Stored Procedures</td>
+                <td>AppUserHouseCodesSelect, PayPayCheckRequestsSelect, PayPayCheckRequestPayCodesSelect, EmpEmployeeSearchSelect
+				</td>
+            </tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="payCalendar.htm">Calendar</a></div>
+		<div class="reference"><a href="ceridianCompany.htm">Ceridian Comps</a></div>
+		<div class="reference"><a href="payroll.htm">Process Payroll</a></div>
+	</body>
+</html>

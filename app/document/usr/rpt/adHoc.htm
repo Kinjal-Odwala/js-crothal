@@ -45,7 +45,7 @@
             </tr>
 			<tr>
 				<td>
-                    House Codes
+                    House Code
                 </td>
 				<td>
 				    Text field
@@ -109,44 +109,47 @@
                     Filter
                 </td>
 			</tr>
-			<tr>
-				<td>
-                    Operator
-                </td>
-                <td>
-                    List
-                </td>
-                <td>
-                    No
-                </td>
-                <td>
-                    End user input
-                </td>	
-				<td>
-                </td>		
-				<td>
-                    User can select any Filter Criteria from the List.
-                </td>		
+            <tr>
+				<td>Filter Grid</td>
+                <td></td>
+                <td>NA</td>
+                <td>NA</td>	
+				<td></td>		
+				<td></td>		
+			</tr>
+            <tr>
+				<td>Title</td>
+                <td>Display Field</td>
+                <td>No</td>
+                <td>End user input</td>	
+				<td></td>		
+				<td></td>		
+			</tr>
+            <tr>
+				<td>Filter</td>
+                <td></td>
+                <td>No</td>
+                <td>End user input</td>	
+				<td></td>		
+				<td>Select Filter by. It depends on filter title</td>		
+			</tr>
+            <tr>
+				<td>Value</td>
+                <td></td>
+                <td>No</td>
+                <td>End user input</td>	
+				<td></td>		
+				<td>Filter by given value. It depends on filter title</td>		
 			</tr>
 			<tr>
-				<td>
-                    Filter
-                </td>
-                <td>
-                    List
-                </td>
-                <td>
-                    No
-                </td>
-                <td>
-                    End user input
-                </td>	
-				<td>
-                </td>		
-				<td>
-                    Filters Ad Hoc Report according to the given value.
-                </td>		
+				<td>Operator</td>
+                <td>List</td>
+                <td>No</td>
+                <td>End user input</td>	
+				<td></td>		
+				<td>User can select any Filter Criteria from the List.</td>		
 			</tr>
+			
 			<tr>
 				<td>
                     Load
@@ -348,11 +351,18 @@
 				<th>Error/Event</th>
 				<th>Message</th>
 			</tr>
+            <tr>
+				<td>Save Ad-Hoc Report</td>
+				<td>[SAVE FAILURE] Error while updating the Ad-Hoc Report details.</td>
+			</tr>
             <tr>	
 				<td>
-                    Error</td>
+                    Error
+				</td>
                 <td>
-                    Failed to update report.</td>
+                    Failed to update report.<br />
+                    Failed to save report audit.
+                </td>
 			</tr>
 		</table>
 		<h2>Action</h2>
@@ -371,15 +381,32 @@
             <tr>
                 <td>Tables</td>
 				<td>
-                    AdhReportAudits, AppSites, HcmHouseCodes, AppUsers, PplPeople, AppSiteUnits, AppModuleColumns, AdhReportColumns, AdhReportColumnTypes, AppModules, AppUnits, HirNodes, AdhReport, HcmHouseCodeServices, HcmServiceTypes, FscJDECompanies, HcmHouseCodeTypes, HcmServiceLines, HcmRemitToLocations, HcmPayrollProcessingLocationTypes, PayPayrollCompanies, hcmHouseCodePayrollCompanies, PayPayFrequencyTypes, EmpStatusTypes, HcmContractTypes, HcmTermsOfContractTypes, HcmBillingCycleFrequencyTypes, HcmInvoiceLogoTypes, AppStateTypes, HirNodes, AppUnits,
-                    AppUsers, AppRoles</td>
+                    AdhReports, AdhReportAudits, AppSites, HcmHouseCodes, AppUsers, PplPeople, AppSiteUnits,<br /> 
+                    AppModuleColumns, AdhReportColumns, AdhReportColumnTypes, AppModules, AppUnits, HirNodes, <br />
+                    AdhReport, HcmHouseCodeServices, HcmServiceTypes, FscJDECompanies, HcmHouseCodeTypes, <br />
+                    HcmServiceLines, HcmRemitToLocations, HcmPayrollProcessingLocationTypes, HcmEPayGroupTypes,<br />
+                    PayPayrollCompanies, hcmHouseCodePayrollCompanies,PayPayFrequencyTypes, EmpStatusTypes, <br />
+                    HcmContractTypes, HcmTermsOfContractTypes, HcmBillingCycleFrequencyTypes, HcmInvoiceLogoTypes, <br />
+                    HcmBudgetTemplates, AppIndustryTypes, HcmBudgetLaborCalcMethods, AppPrimaryBusinessTypes, <br />
+                    AppLocationTypes, AppTraumaLevelTypes, AppProfitDesignationTypes, AppGPOTypes, AppOwnershipTypes, <br />
+                    AppZipCodeTypes, EmpMaritalStatusTypes, EmpDeviceGroupTypes, EmpJobCodeTypes, EmpRateChangeReasonTypes, <br />
+                    EmpTerminationReasonTypes, EmpWorkShifts, EmpEthnicityTypes, EmpUnionTypes, EmpI9Types, EmpVetTypes, <br />
+                    EmpSeparationCodes, EmpJobStartReasonTypes, HcmHouseCodeJobs, EmpLocalTaxCodePayrollCompanyStates, <br />
+                    EmpStatusCategoryTypes, EmpStateAdjustmentTypes, EmpSDIAdjustmentTypes, EmpMaritalStatusFederalTaxTypes, <br />
+                    EmpGenderTypes, EmpLocalTaxAdjustmentTypes, EmpMaritalStatusStateTaxTypes, EmpBasicLifeIndicatorTypes, <br />
+                    EmpEmployeeGenerals, EmpUnionStatusTypes, AppTransactionStatusTypes, RevInvoiceAddressTypes, HcmJobTypes, <br />
+                    RevInvoiceTemplates, AppStateTypes, HirNodes, AppUnits, AppUsers, AppRoles, HcmJobs, FscAccounts, RevInvoiceItems
+				</td>
             </tr>
             <tr>
                 <td>
                     Stored procedures
                 </td>
                 <td>
-                    AdhReportUpdate, AdhReportColumnHeaderSelect, AdhReportColumnDataSelect, AdhReportColumnDataTotalRowSelect, AdhReportFilterSelect, HcmHouseCodePayrollCompanySelect, AppSiteByUnitSelect, AppUserUnitsSelect</td>
+                    AdhReportUpdate, AdhReportColumnHeaderSelect, AdhReportColumnDataSelect, AdhReportColumnDataTotalRowSelect, <br />
+                    AdhReportFilterSelect, HcmHouseCodePayrollCompanySelect, AppSiteByUnitSelect, AppUserUnitsSelect
+                    RevInvoiceBillToSelect, 
+                </td>
             </tr>
 		</table>		
 		<h2>See Also</h2>

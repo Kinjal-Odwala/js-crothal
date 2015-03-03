@@ -56,12 +56,27 @@
 				<td>Start Date</td>
 				<td>List</td>
 				<td>Yes</td>
-				<td>Read Only</td>	
+				<td>End user input</td>	
 				<td>This field is required. Please make an entry.<br />
                     Please enter valid date.</td>	
 				<td>Start Date.</td>			
 			</tr>
-			
+			<tr>
+				<td>Closed Date</td>
+				<td>List</td>
+				<td>No</td>
+				<td>End user input</td>	
+				<td>Please enter valid date.</td>	
+				<td>Closed Date.</td>			
+			</tr>
+			<tr>
+				<td>Closed Reason</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>				
+				<td>Closed Reason.</td>				
+			</tr>
 			<tr>
 				<td class="uiHeader" colspan="6">Services Provided</td>
 			</tr>
@@ -426,14 +441,128 @@
 				<td>Number of Annual Discharges.</td>
 			</tr>
 			<tr>
-				<td>Hospital Paid Janitorial Paper Plastic Supply Cost</td>
+				<td>Client-Paid Supplies</td>
 				<td>Text field</td>
                 <td>No</td>
                 <td>End user input</td>
                 <td>Maximum length allowed - 11.</td>
-				<td>Hospital Paid Janitorial Paper Plastic Supply Cost.</td>
+				<td>Client-Paid Supplies.</td>
 			</tr>
-			
+			<tr>
+				<td>Building Population</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 19.</br>
+					Please enter numeric value. Expected number format is 99.99</td>
+				<td>Building Population.</td>
+			</tr>
+			<tr>
+				<td>Maintainable Acres</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+				<td>Maintainable Acres.</td>
+			</tr>
+			<tr>
+				<td># of Managed Rooms</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+				<td>No of Managed Rooms.</td>
+			</tr>
+			<tr>
+				<td>Site Type</td>
+				<td>List</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+				<td>Site Type.</td>
+			</tr>
+			<tr>
+				<td>Integrator</td>
+				<td>Checkbox</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>If checked, then Integrator Name becomes mandatory field.</td>
+				<td>Integrator.</td>
+			</tr>
+			<tr>
+				<td>Integrator Name</td>
+				<td>Text field</td>
+                <td>Yes</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+				<td>Integrator Name.</td>
+			</tr>
+			<tr>
+				<td>Audit Score</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+				<td>Audit Score.</td>
+			</tr>
+			<tr>
+				<td>Standardization Score</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+				<td>Standardization Score.</td>
+			</tr>
+			<tr>
+				<td>Admin Hours</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 11.</br>
+					Please enter numeric value. Expected number format is 99.99
+				</td>
+				<td>Admin Hours.</td>
+			</tr>
+			<tr>
+				<td>Surgical Hours</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 11.</br>
+					Please enter numeric value. Expected number format is 99.99
+				</td>
+				<td>Surgical Hours.</td>
+			</tr>
+			<tr>
+				<td>ED Hours</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 11.</br>
+					Please enter numeric value. Expected number format is 99.99
+				</td>
+				<td>ED Hours.</td>
+			</tr>
+			<tr>
+				<td>Grounds Hours</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 11.</br>
+					Please enter numeric value. Expected number format is 99.99
+				</td>
+				<td>Grounds Hours.</td>
+			</tr>
+			<tr>
+				<td>Other Lock-In Hours</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 11.</br>
+					Please enter numeric value. Expected number format is 99.99
+				</td>
+				<td>Other Lock-In Hours.</td>
+			</tr>
 			<tr>
 				<td class="uiHeader" colspan="6">Secondary Address - Shipping</td>
 			</tr>
@@ -702,7 +831,30 @@
                 <td></td>
 				<td>Bank Invoice Logo.</td>
 			</tr>
-			
+			<tr>
+				<td>Budget Template</td>
+				<td>List</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+				<td>Budget Template.</td>
+			</tr>
+			<tr>
+				<td>Budget Labor Calc Method</td>
+				<td>List</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+				<td>Budget Labor Calc Method.</td>
+			</tr>
+			<tr>
+				<td>Budget Computer Related Charge</td>
+				<td>Checkbox</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+				<td>Budget Computer Related Charge.</td>
+			</tr>
 			<tr>
 				<td class="uiHeader" colspan="6">House Code Payroll</td>
 			</tr>
@@ -782,6 +934,14 @@
 				<td>Indicates whether the House Code has EPay Task or not.</td>
 			</tr>
 			<tr>
+				<td>EPay Hours</td>
+				<td>Checkbox</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+				<td>EPay Hours.</td>
+			</tr>
+			<tr>
 				<td>Ceridian Company Hourly</td>
 				<td>List</td>
                 <td>No</td>
@@ -797,7 +957,57 @@
                 <td></td>
 				<td>Displays Ceridian Company Salaried types.</td>
 			</tr>
-			
+			<tr>
+				<td class="uiHeader" colspan="6">Safety Information</td>
+			</tr>
+			<tr>
+				<td>Incident Frequency Rate</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+				<td>Incident Frequency Rate.</td>
+			</tr>
+			<tr>
+				<td>TRIR</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+				<td>TRIR.</td>
+			</tr>
+			<tr>
+				<td># of Lost Days</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+				<td>No of Lost Days.</td>
+			</tr>
+			<tr>
+				<td># of Reported Claims</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+				<td>No of Reported Claims.</td>
+			</tr>
+			<tr>
+				<td># of Near Misses</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+				<td>No of Near Misses.</td>
+			</tr>
+			<tr>
+				<td># of OSHA Recordable</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 50.</td>
+				<td>No of OSHA Recordable.</td>
+			</tr>
 			<tr>
 				<td class="uiHeader" colspan="6">Previous/Next</td>
 			</tr>
@@ -843,6 +1053,12 @@
 			</tr>
 			<tr>
 				<td><img src="images/PayrollOfHousecodeWizard.png" alt="Payroll"/></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Safety</td>
+			</tr>
+			<tr>
+				<td><img src="images/SafetyOfHousecodeWizard.png" alt="Safety"/></td>
 			</tr>			
 		</table>
 		<h2>Error Messages and Notifications</h2>
@@ -867,11 +1083,11 @@
 		    1. This user interface can be accessed at <span class="iiMenuVerticalMainPart Selected undefined">
                 HouseCode</span> > Housecode Wizard.<br />
             2. Edit House Code - Enter House Code in House Code list and click Enter button to see House Code Info,
-            Statistics, Financial/Contract and Payroll of the House Code. It allows User to edit Site.
+            Statistics, Financial/Contract, Payroll, Payroll of the House Code. It allows User to edit Site.
             <br />
             3. Save House Code - &nbsp;Click on Save to save the change. 
             <br />
-            4. Undo current changes to House Code- Click Undo to cancel any changes made to selected House Code.</div>
+            4. Undo current changes to House Code - Click Undo to cancel any changes made to selected House Code.</div>
 		<div class="header">
 			<h1>Database Objects</h1>
 			<div class="description"></div>
@@ -905,5 +1121,6 @@
 		<div class="reference"><a href="job.htm">Jobs</a></div>
 		<div class="reference"><a href="houseCodeImport.htm">Import House Codes</a></div>
 		<div class="reference"><a href="ePaySite.htm">Epay Sites</a></div>
+        <div class="reference"><a href="ePaySiteSurvey.htm">EPay Site Survey</a></div>
 	</body>
 </html>

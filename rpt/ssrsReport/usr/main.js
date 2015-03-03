@@ -154,12 +154,16 @@ ii.Class({
 			var me = fin.reportUi;
 			
 			$("#LevelNamesContainer").height(($(window).height() - 200) - $("#ParameterContainer").height());
-			$("#ReportSubscriptionContainer").height($(window).height() - 110);
 			
 			if (me.reportType == "Report")
-				$("#TreeviewContainer").height($(window).height() - 75);
+				$("#ReportSubscription").height($(window).height() - 120);
 			else if (me.reportType == "Subscription")
-				$("#TreeviewContainer").height($(window).height() - 220);
+				$("#ReportSubscription").height($(window).height() - 150);
+
+			if (!$('#SubscriptionGrid').is(':visible'))
+				$("#TreeviewContainer").height($(window).height() - 80);
+			else
+				$("#TreeviewContainer").height($(window).height() - 260);
 		},
 
 		defineFormControls: function() {
@@ -909,7 +913,11 @@ ii.Class({
 		
 		initialize: function() {
 			var me = this;
-
+			
+			$("#SubscriptionGrid").hide();
+            $("#ReportSubscriptionContainer").hide();
+            $("#ReportButtonContainer").hide();
+			$("#SubscriptionButtonContainer").hide();
 			$("#HourlySchedule").hide();
 			$("#DailySchedule").hide();
 			$("#WeeklySchedule").hide();
@@ -1353,8 +1361,8 @@ ii.Class({
 			}
 			
 			for (var index = 0; index < me.excludeHouseCodes.length; index++) {
-				$("#ExcludeHouseCode").append("<option title='" + me.excludeHouseCodes[index].title + "' value='" + me.excludeHouseCodes[index].id + "'>" + me.excludeHouseCodes[index].title + "</option>");
-				$("#Exclude").append("<option title='" + me.excludeHouseCodes[index].title + "' value='" + me.excludeHouseCodes[index].id + "'>" + me.excludeHouseCodes[index].title + "</option>");
+				$("#ExcludeHouseCode").append("<option title='" + me.excludeHouseCodes[index].title + "' value='" + me.excludeHouseCodes[index].brief + "'>" + me.excludeHouseCodes[index].title + "</option>");
+				$("#Exclude").append("<option title='" + me.excludeHouseCodes[index].title + "' value='" + me.excludeHouseCodes[index].brief + "'>" + me.excludeHouseCodes[index].title + "</option>");
 			}
 			$("#ExcludeHouseCode").multiselect("refresh");
 			$("#Exclude").multiselect("refresh");
@@ -1861,11 +1869,38 @@ ii.Class({
 				me.reportURL = reportURL;
 
 			if (found && reportURL != "" && !parameterAvailable) {
-				$("#ReportRightContainer").hide();
+				$("#SubscriptionGrid").hide();
+	            $("#ReportSubscriptionContainer").hide();
+	            $("#ReportButtonContainer").hide();
+				$("#SubscriptionButtonContainer").hide();
 				window.open(reportURL);
 			}
 			else if (reportId != 0) {
-				$("#ReportRightContainer").show();
+				if (me.reportType == "Report") { 
+					$("#SubscriptionGrid").hide();
+					$("#RightContainerHeader").hide();
+		            $("#Subscription").hide();
+		            $("#ScheduleContainer").hide();
+		            $("#SubscriptionButtonContainer").hide();
+		            $("#ReportSubscriptionContainer").show();
+		            $("#ReportRightContainer").show();
+		            $("#ReportButtonContainer").show();
+		            $("#TreeviewContainer").height($(window).height() - 80);
+		            $("#ReportSubscription").height($(window).height() - 120);
+				}
+				else if (me.reportType == "Subscription") {					
+		            $("#ReportButtonContainer").hide();
+		            $("#ReportSubscriptionContainer").show();
+		            $("#SubscriptionGrid").show();
+		            $("#RightContainerHeader").show();
+		            $("#Subscription").show();
+		            $("#ReportRightContainer").show();
+		            $("#ScheduleContainer").show();                        
+		            $("#SubscriptionButtonContainer").show();
+		            $("#TreeviewContainer").height($(window).height() - 260);
+		            $("#ReportSubscription").height($(window).height() - 150);
+				}
+				
 				me.setLoadCount();
 				
 				if (!me.levelNamesLoaded)
@@ -2794,7 +2829,8 @@ ii.Class({
                 }
                 else if (me.reportParameters[index].controlType == "MultiSelect") {
                     var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function(){
-                        return this.value;
+                    	if (this.title != "(Select All)")
+                        	return this.value;
                     }).get();
                     if(selectedValues.length > 0) {
                         for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
@@ -2860,12 +2896,10 @@ ii.Class({
 
 			$("#pageHeader").html("SSRS Reports");
 			$("#SubscriptionGrid").hide();
-            $("#Subscription").hide();
-            $("#ScheduleContainer").hide();
-            $("#SubscriptionButtonContainer").hide();
-            $("#ReportRightContainer").show();
-            $("#ReportButtonContainer").show();                        
-            $("#TreeviewContainer").height($(window).height() - 75);            
+            $("#ReportSubscriptionContainer").hide();
+            $("#ReportButtonContainer").hide();
+			$("#SubscriptionButtonContainer").hide();
+			$("#TreeviewContainer").height($(window).height() - 80);
 			me.reportType = "Report";
 			me.actionResetItem();
 			me.actionAddNodes(me.reportNodes);
@@ -2874,22 +2908,20 @@ ii.Class({
 		actionSubscriptionItem: function() {
 			var me = this;
 			var rowHeadData = "";
-
+			
 			$("#pageHeader").html("SSRS Report Subscriptions");
+			$("#SubscriptionGrid").hide();
+			$("#ReportSubscriptionContainer").hide();
             $("#ReportButtonContainer").hide();
-            $("#SubscriptionGrid").show();
-            $("#Subscription").show();
-            $("#ReportRightContainer").show();
-            $("#ScheduleContainer").show();                        
-            $("#SubscriptionButtonContainer").show();            
-            $("#TreeviewContainer").height($(window).height() - 220);
-            me.subscriptionStore.reset();            
-            rowHeadData += "<tr id='trSubscriptionGridHead' height='40px'>";
-			rowHeadData = "<th class='gridHeaderColumn' width='100%'>Description</th>";
+			$("#SubscriptionButtonContainer").hide();
+			$("#TreeviewContainer").height($(window).height() - 80);
+            rowHeadData += "<tr id='trSubscriptionGridHead' height='20px'>";
+            rowHeadData += "<th class='gridHeaderColumn' width='7%'>#</th>";
+			rowHeadData += "<th class='gridHeaderColumn' width='93%'>DESCRIPTION</th>";
 			rowHeadData += "</tr>";
 			$("#SubscriptionGridHead").html(rowHeadData);
             $("#SubscriptionGridBody").html("");
-            $("#divSubscriptionGrid").height(110);		
+            $("#divSubscriptionGrid").height(150);		
 			me.reportType = "Subscription";
 			me.actionResetItem();
 			me.resetScheduleInfo();
@@ -2914,8 +2946,9 @@ ii.Class({
 			var rowData = "";
 			
 			for(var index = 0; index < me.subscriptions.length; index++) {
-				rowData += "<tr id='subscriptionRow" + me.subscriptions[index].id + "' onclick=(fin.reportUi.actionSelectItem(" + index + "));>";				
-				rowData += "<td id=" + me.subscriptions[index].id + " class='gridColumnRight' style='width:150px'>" + me.subscriptions[index].description + "</td>";
+				rowData += "<tr id='subscriptionRow" + me.subscriptions[index].id + "' onclick=(fin.reportUi.actionSelectItem(" + index + "));>";
+				rowData += "<td class='gridNumberColumn'  style='width:7%'>" + (index + 1) + " </td>";
+				rowData += "<td id=" + me.subscriptions[index].id + " class='gridColumnRight' style='width:93%'>" + me.subscriptions[index].description + "</td>";
 				rowData += "</tr>"
 			}
 			
@@ -2976,6 +3009,7 @@ ii.Class({
 				$("#subscriptionRow" + me.lastBeforeSelectedRowIndex).removeClass("selectedRow");
 				
 			$("#subscriptionRow" + me.subscriptions[index].id).addClass("selectedRow");
+			me.setLoadCount();
 			me.resetControls();
 			me.status = "edit";
 			me.lastSelectedRowIndex = index;
@@ -3166,8 +3200,7 @@ ii.Class({
 				}
 				
 				me.namesList = me.names.replace("~", "");
-				me.levelName = me.level.replace("~Level=", "");
-				me.setLoadCount();																
+				me.levelName = me.level.replace("~Level=", "");																				
 				me.setStatus("Loading");
 				$("#customersLoading").addClass('loading');
 				me.genericTypeStore.fetch("level:" + me.levelName + ",name:" + me.namesList + ",genericType:Customers,userId:[user]", me.customersLoaded, me);
@@ -3189,8 +3222,10 @@ ii.Class({
 				if (nameValues[0] != 'Level' && nameValues[0] != 'Name') { 
 					var controlIndex = me.findIndexByTitle(nameValues[0], me.reportParameters);
 					if (me.reportParameters[controlIndex].controlType == "MultiSelect") {
-						if ($(me.controls[controlIndex].selector).multiselect("widget").find(":checkbox[value="+ nameValues[1] +"]")[0] != "undefined" && $(me.controls[controlIndex].selector).multiselect("widget").find(":checkbox[value="+ nameValues[1] +"]")[0].attributes[2].nodeValue != "checked")
-							$(me.controls[controlIndex].selector).multiselect("widget").find(":checkbox[value="+ nameValues[1] +"]").click();
+						if ($(me.controls[controlIndex].selector).multiselect("widget").find(":checkbox[value="+ nameValues[1] +"]")[0] != undefined) {							
+							if ($(me.controls[controlIndex].selector).multiselect("widget").find(":checkbox[value="+ nameValues[1] +"]")[0].attributes[2].nodeValue != "checked")
+								$(me.controls[controlIndex].selector).multiselect("widget").find(":checkbox[value="+ nameValues[1] +"]").click();
+						}							
 					}
 				}
 			}
@@ -3619,7 +3654,8 @@ ii.Class({
 					}
 					else if (me.reportParameters[index].controlType == "MultiSelect") {
 						var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function(){
-	                        return this.value;
+							if (this.title != "(Select All)")
+	                        	return this.value;
 	                    }).get();
 	                    if(selectedValues.length > 0) {
 	                        for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
@@ -3815,12 +3851,13 @@ ii.Class({
 							else if (me.status == "delete") {
 								me.resetControls();
 								me.subscriptions.splice(me.lastSelectedRowIndex, 1);
-								me.subscriptionsLoaded(me, 0);
+								me.setSubscriptionGrid();
 								me.lastSelectedRowIndex = -1;
 								me.status = "";
 							}
 							else {
 								me.subscriptions[me.lastSelectedRowIndex] = item;
+								me.setSubscriptionGrid();
 								me.actionSelectItem(me.lastSelectedRowIndex);
 							}
 

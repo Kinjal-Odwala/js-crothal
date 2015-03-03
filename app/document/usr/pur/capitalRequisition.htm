@@ -1,0 +1,733 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Capital Requisition</h1>
+			<div class="description">The purpose of Capital Requisition is to edit Capital Requisition Details.</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:100px;">UI Element</th>
+				<th style="width:110px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th style="width:200px;">Validation / Description</th>
+			</tr>								
+			<tr>
+				<td>House Code</td>
+				<td>List</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Displays List of House Codes to select.</td>				
+			</tr>
+			<tr>
+				<td>Status</td>
+				<td>List</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Displays List of Status types to select.</td>				
+			</tr>
+            <tr>
+				<td>Requisition Number</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Requisition Number.</td>				
+			</tr>
+			<tr>
+				<td>Search</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>List the PO Capital Requisitions based on the search criteria.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">PO Capital Requisitions</td>
+			</tr>
+			<tr>
+				<td>Capital Requisition Grid</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List of PO Capital Requisitions.</td>
+			</tr>
+            <tr>
+				<td>Requisition Number</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>				
+			</tr>		
+			<tr>
+				<td>Requestor Name</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Requested Date</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Delivery Date</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Vendor Title</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Status</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">General Information</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Requestor Details</td>
+			</tr>
+            <tr>
+				<td>Requisition Number</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td></td>
+			</tr>
+			<tr>
+				<td>Requestor Name</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Maximum length allowed - 100.</td>
+			</tr>
+			<tr>
+				<td>Requestor Email</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>	
+				<td>Maximum length allowed - 100.<br />
+					Please enter valid Requestor Email.</td>
+			</tr>
+			<tr>
+				<td>Date</td>
+				<td>List</td>
+				<td>Yes</td>
+				<td>End user input</td>	
+				<td>Please enter valid date.</td>			
+			</tr>
+			<tr>
+				<td>Requested Delivery Date</td>
+				<td>List</td>
+				<td>Yes</td>
+				<td>End user input</td>	
+				<td>Please enter valid date.</td>			
+			</tr>
+            <tr>
+				<td>Project #</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>	
+				<td>Maximum length allowed - 50.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Vendor Details</td>
+			</tr>
+			<tr>
+				<td>Name</td>
+				<td>List</td>
+				<td>Yes</td>
+				<td>End user input</td>	
+				<td>Vendor details are populated depending on vendor name.</td>			
+			</tr>
+			<tr>
+				<td>Address 1</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Maximum length allowed - 256.</td>
+			</tr>
+			<tr>
+				<td>Address 2</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td>Maximum length allowed - 256.</td>
+			</tr>
+			<tr>
+				<td>City</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Maximum length allowed - 100.</td>				
+			</tr>
+			<tr>
+				<td>State</td>
+				<td>List</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Please select the correct State.</td>			
+			</tr>
+			<tr>
+				<td>Zip</td>
+				<td>Text field</td>
+                <td>Yes</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 10.<br />
+					Please enter valid Zip. Example: 99999 or 99999-9999.</td>
+			</tr>
+			<tr>
+				<td>Contact Name</td>
+				<td>Text field</td>
+                <td>Yes</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 100.</td>
+			</tr>
+			<tr>
+				<td>Phone</td>
+				<td>Text field</td>
+                <td>Yes</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 100.</td>
+			</tr>
+			<tr>
+				<td>Email</td>
+				<td>Text field</td>
+                <td>Yes</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 200.<br />
+					Please enter valid Email Address.</td>
+			</tr>
+			<tr>
+				<td>Reason For Request</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 200.</td>
+			</tr>
+			<tr>
+				<td>Funding</td>
+				<td>Radio Button</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td></td>
+			</tr>
+            <tr>
+				<td>Business Type</td>
+				<td>Radio Button</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td></td>
+			</tr>
+            <tr>
+				<td>Budgeting</td>
+				<td>Radio Button</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td></td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Item Information</td>
+			</tr>
+			<tr>
+				<td>Vendor</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 256.</td>
+			</tr>
+			<tr>
+				<td>Item #, Description</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td>Maximum length allowed - 256.</td>
+			</tr>
+			<tr>
+				<td>Category</td>
+				<td>List</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+			</tr>
+			<tr>
+				<td>Catalog</td>
+				<td>List</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+			</tr>
+			<tr>
+				<td>Search</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>List the Items based on the search criteria.</td>
+			</tr>
+			<tr>
+				<td>ItemGrid</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List of Items.</td>
+			</tr>		
+			<tr>
+				<td>Item Number</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Maximum length allowed - 255.</td>
+			</tr>
+			<tr>
+				<td>Item Description</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Maximum length allowed - 256.</td>
+			</tr>
+			<tr>
+				<td>Alternate Description</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Maximum length allowed - 256.</td>
+			</tr>
+			<tr>
+				<td>Gl Account No</td>
+				<td>List</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Please select the correct Account No.</td>
+			</tr>
+			<tr>
+				<td>UOM</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Maximum length allowed - 255.</td>
+			</tr>
+			<tr>
+				<td>Mfg</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Maximum length allowed - 255.</td>
+			</tr>
+			<tr>
+				<td>Quantity</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Maximum length allowed - 10.</br>
+					Please enter valid Quantity.</td>
+			</tr>
+			<tr>
+				<td>Price</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Maximum length allowed - 18.</br>
+					Please enter valid Price.</td>
+			</tr>
+			<tr>
+				<td>Extended Price</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>Read Only</td>
+				<td>Quantity * Price = Extended Price</td>
+			</tr>
+            <tr>
+				<td>Sub Total</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>Read Only</td>
+				<td>Total of Extended Prices</td>
+			</tr>
+            <tr>
+				<td>Tax %</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td></td>
+			</tr>
+            <tr>
+				<td>Tax</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td></td>
+			</tr>
+            <tr>
+				<td>Freight</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td></td>
+			</tr>
+            <tr>
+				<td>Total</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>Read Only</td>
+				<td>Total of subtotal, tax, freight values</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Shipping Information</td>
+			</tr>
+			<tr>
+				<td>Company</td>
+				<td>Text field</td>
+                <td>No</td>
+                <td>Read Only</td>
+                <td></td>
+			</tr>
+			<tr>
+				<td>Job</td>
+				<td>List</td>
+                <td>No</td>
+                <td>End user input</td>
+                <td></td>
+			</tr>
+			<tr>
+				<td>Address 1</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Maximum length allowed - 256.</td>
+			</tr>
+			<tr>
+				<td>Address 2</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Maximum length allowed - 256.</td>
+			</tr>
+			<tr>
+				<td>City</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>State</td>
+				<td>List</td>
+                <td>Yes</td>
+                <td>End user input</td>
+                <td>Please select the correct State.</td>
+			</tr>
+			<tr>
+				<td>Zip</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Maximum length allowed - 10.</br>
+					Please enter valid zip code. 99999 or 99999-9999</td>
+			</tr>
+			<tr>
+				<td>Fax</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Maximum length allowed - 14.</br>
+					Please enter valid fax number. (999) 999-9999</td>
+			</tr>
+			<tr>
+				<td>Phone</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Maximum length allowed - 14.</br>
+					Please enter valid phone number. (999) 999-9999</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Additional Documents</td>
+			</tr>
+			<tr>
+				<td>DocumentGrid</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List of Additional Documents.</td>
+			</tr>		
+			<tr>
+				<td>Title</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>File Name</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Attach</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To attach the supporting document</td>
+			</tr>
+			<tr>
+				<td>Edit</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To modify the supporting document</td>
+			</tr>
+			<tr>
+				<td>Remove</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To remove the supporting document</td>
+			</tr>
+			<tr>
+				<td>View</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To View the supporting document</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Upload Document</td>
+			</tr>
+			<tr>
+				<td>Upload</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To Upload the supporting document</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To Cancel Uploading</td>
+			</tr>
+             <tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+            <tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>Closes the pop up window</td>
+			</tr>
+			<tr>
+				<td>Back</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To go to previous wizard</td>
+			</tr>
+			<tr>
+				<td>Next</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To go to next wizard</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To save PO Capital Requisition</td>
+			</tr>
+            <tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+			<tr>
+				<td>New</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To create new PO Capital Requisition.</td>
+			</tr>
+            <tr>
+				<td>Edit</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>To edit PO Capital Requisition.</td>
+			</tr>
+			<tr>
+				<td>Send Requisition</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>To Send PO Capital Requisition.</td>
+			</tr>
+            <tr>
+				<td>Resend Requisition</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>To Resend PO Capital Requisition.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>To Cancel PO Capital Requisition status to Cancelled</td>
+			</tr>
+			<tr>
+				<td>View</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>To View PO Capital Requisition.</td>
+			</tr>
+            <tr>
+				<td class="uiHeader" colspan="5">Generate Purchase Order From PO Capital Requsition</td>
+			</tr>
+            <tr>
+				<td>Generate Purchase Order</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>Generates Purchase Order of selected PO Capital Requisition</td>
+			</tr>
+			<tr>
+				<td>JDE Entry</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>Creates JDE Entry</td>
+			</tr>
+            
+			<tr>
+				<td class="uiHeader" colspan="5">Actions Menu</td>
+			</tr>
+			<tr>
+				<td>PO Capital Requisitions</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To Add, Edit, Send PO Capital Requisition.</td>
+			</tr>
+			<tr>
+				<td>Generate Purchase Order From PO Capital Requsition</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To Generate PO Capital Requsition & JDE Entry.</td>
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">PO Requisitions</td>
+			</tr>
+			<tr>
+				<td><img src="images/POCapitalRequisitions.png" alt="PO Capital Requisitions"/></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">General Information</td>
+			</tr>
+			<tr>
+				<td><img src="images/GeneralInformationOfPOCapitalRequisition.png" alt="General Information"/></td>
+			</tr>
+            <tr>
+				<td class="uiHeader">Item Information</td>
+			</tr>
+			<tr>
+				<td><img src="images/ItemInformationOfPOCapitalRequisition.png" alt="Item Information"/></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Shipping Information</td>
+			</tr>
+			<tr>
+				<td><img src="images/ShippingInformationOfPOCapitalRequisition.png" alt="Shipping Information"/></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Generate Purchase Order</td>
+			</tr>
+			<tr>
+				<td><img src="images/GeneratePurchaseOrderOfPOCapitalRequisition.png" alt="Generate Purchase Order"/></td>
+			</tr>						
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Save PO Requisition</td>
+				<td>[SAVE FAILURE] Error while updating PO Capital Requisition details.</td>
+			</tr>
+			<tr>
+				<td>Error</td>
+				<td>Failed to save PO Capital Requisition details.<br/>
+					Failed to update the PO Capital Requisition document.<br/>
+                    Failed to delete the PO Capital Requisition document.<br/>
+					Failed to send the PO Capital Requisition email notification.<br/>
+                    Failed to update the PO Capital Requisition status.<br/>
+                    Failed to generate Purchase Order from PO Capital Requisition.<br/>
+				</td>
+			</tr>
+		</table>
+		<h2>Action</h2>
+		<div class="reference">
+		    1. This user interface can be accessed at <span class="iiMenuVerticalMainPart Selected undefined">
+                Purchasing</span> > Cap Requisition.<br />
+		</div>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>
+                    HirNodes, HcmHouseCodes, AppUnits, HcmHouseCodes, HcmHouseCodeJobs, HcmJobs, AppStateTypes, FscAccounts,
+                    PplPeople, PurPOCapitalRequisitions, PurCatalogItems, PurCatalogs, PurItems, PurCatalogHouseCodes, PurPOCapitalRequisitionItems,
+                    PurVendors, PurPOCapitalRequisitionDocuments.
+                </td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>
+                    HirNodeSelectByLevel, AppUserHouseCodesSelect, HcmJobByHouseCode, PurFscAccountsSelect, PurPOCapitalRequisitionsSelect,
+                    PurPOCapitalRequisitionUpdate, PurPOCapitalRequisitionValidate, PurPurchaseOrderItemsSelect, 
+                    PurPOCapitalRequisitionItemsSelect, PurPOCapitalRequisitionItemUpdate, PurPOCapitalRequisitionStatusUpdate.
+				</td>
+			</tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="vendor.htm">Vendors</a></div>
+		<div class="reference"><a href="catalog.htm">Catalogs</a></div>
+		<div class="reference"><a href="item.htm">Items</a></div>
+		<div class="reference"><a href="purchaseOrder.htm">Purchase Orders</a></div>
+		<div class="reference"><a href="itemPriceUpdate.htm">Price Update</a></div>
+		<div class="reference"><a href="poRequisition.htm">PO Requisition</a></div>
+	</body>
+</html>
