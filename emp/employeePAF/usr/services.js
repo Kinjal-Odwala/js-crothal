@@ -7,16 +7,16 @@ paf.factory('PAF', ["$http", function ($http) {
         { Id: '900', Description: '900/month' }];
 
     var getPAFList = function (callback) {
-        
-       
+
+
         var serializeXml = function (xml) {
             var $el = angular.element(xml);
             var actions = [];
             $el.find('item').each(function (index, item) {
                 var $item = angular.element(item);
-                actions.push({ Id: $item.attr('id'), HouseCode:'', FirstName: $item.attr('firstName'), LastName: $item.attr('lastName'), EmployeeNumber: $item.attr('employeeNumber') });
+                actions.push({ Id: $item.attr('id'), HouseCode: '', FirstName: $item.attr('firstName'), LastName: $item.attr('lastName'), EmployeeNumber: $item.attr('employeeNumber') });
             });
-          
+
             if (actions.length > 0)
                 callback(actions);
         }
@@ -35,15 +35,15 @@ paf.factory('PAF', ["$http", function ($http) {
             }
         });
 
-
         return;
-        callback([{ Id: '1', FirstName: 'CHRIS', LastName: 'CCANDLESTREE', HcmHouseCode: '12382', EmployeeNumber: '6346546' }, { Id: '2', FirstName: 'ELLEN', LastName: 'EEMPRESSTREE', HcmHouseCode: '12382', EmployeeNumber: '45756767' }]);
+
+        callback([{ Id: '1', FirstName: 'CHRIS', LastName: 'CCANDLESTREE', HcmHouseCode: '12382', EmployeeNumber: '6346546' }, { Id: '2', FirstName: 'ELLEN', LastName: 'EEMPRESSTREE', HcmHouseCode: '350', EmployeeNumber: '45756767' }]);
     }
 
     var findPAFInfo = function (id, callback) {
         var pafDetail = {};
 
-        var sampleXml = '<?xml version="1.0" encoding="utf-8"?><transaction id="1"><item id="1" firstName="Sherrie" lastName="Wendt" hcmHouseCode="259" employeeNumber="6346546" hcmHouseCodeTransfer="259" stateType="39" addressLine1="955 Chesterbrook Blvd" city="Wayne" phone="6105765219" postalCode="19087" date="02/04/2015" comments="eqw" newHire="1" hireDate="02/04/2015" status="FullTime" payStatus="Salary" yearlySalary="1000" reportingName="NEW HIRE" hcmHouseCodeTrainingLocation="NEW HIRE" trainingContact="NEW HIRE" duration="3" carAllowance="2" bonusEligibleType="4" requisitionNumber="none" emailAddress="123@test.com" promotion="1" demotion="1" reHire="1" separation="1" lOA="1" relocation="1" oldPositionType="SALARY CHANGE/PROMOTION" newPositionType="SALARY CHANGE/PROMOTION" effectiveDate="02/06/1902" changeReasonType="16" lastIncreaseDate="02/11/2015" lastIncreasePercentage="12" currentSalary="32" increaseAmount="123" increasePercentage="123" newSalary="321" currentPayGrade="3" newPayGrade="2" newReportingName="SALARY CHANGE/PROMOTION" newCarAllowance="2345" newBonusEligibleType="5" instructions="1" separationDate="02/04/2015" resignationType="46" terminationType="29" layoffType="22" separationReHire="1" payNumberOfWeeks="3" vacationDaysDue="2" salaryChange="1" lOADate="02/03/2015" dateOfReturn="02/28/2015" transfer="1" personalInfoChange="1" infoChangePhone="1231423" infoChangeAddressLine1="afsdqer" transferEffectiveDate="02/11/2015" transferReportingName="TRANSFER" /></transaction>';
+        var sampleXml = '<?xml version="1.0" encoding="utf-8"?><transaction id="1"><item id="1" firstName="Sherrie" lastName="Wendt" hcmHouseCode="392" employeeNumber="6346546" hcmHouseCodeTransfer="350" stateType="39" addressLine1="955 Chesterbrook Blvd" city="Wayne" phone="6105765219" postalCode="19087" date="02/04/2015" comments="eqw" newHire="1" hireDate="02/04/2015" status="FullTime" payStatus="Salary" yearlySalary="1000" reportingName="NEW HIRE" hcmHouseCodeTrainingLocation="221" trainingContact="NEW HIRE" duration="3" carAllowance="2" bonusEligibleType="4" requisitionNumber="none" emailAddress="123@test.com" promotion="1" demotion="1" reHire="1" separation="1" lOA="1" relocation="1" oldPositionType="SALARY CHANGE/PROMOTION" newPositionType="SALARY CHANGE/PROMOTION" effectiveDate="02/06/1902" changeReasonType="16" lastIncreaseDate="02/11/2015" lastIncreasePercentage="12" currentSalary="32" increaseAmount="123" increasePercentage="123" newSalary="321" currentPayGrade="3" newPayGrade="2" newReportingName="SALARY CHANGE/PROMOTION" newCarAllowance="2345" newBonusEligibleType="5" instructions="1" separationDate="02/04/2015" resignationType="46" terminationType="29" layoffType="22" separationReHire="1" payNumberOfWeeks="3" vacationDaysDue="2" salaryChange="1" lOADate="02/03/2015" dateOfReturn="02/28/2015" transfer="1" personalInfoChange="1" infoChangePhone="1231423" infoChangeAddressLine1="afsdqer" transferEffectiveDate="02/11/2015" transferReportingName="TRANSFER" /></transaction>';
 
         var uppercaseFirstLetter = function (input) {
             return (!!input) ? input.replace(/^(.)|(\s|\-)(.)/g, function ($1) {
@@ -54,9 +54,9 @@ paf.factory('PAF', ["$http", function ($http) {
         var chkBox = ["NewHire", "ReHire", "Separation", "LOA", "SalaryChange", "Promotion", "Demotion", "Transfer", "PersonalInfoChange", "Relocation"];
 
         var serializeXml = function (xml) {
-            
-            var xmlDoc = xml;
            
+            var xmlDoc = xml;// $.parseXML(xml);
+          
             var $xml = $(xmlDoc);
             var $item = $xml.find("item");
             $item.each(function (index, element) {
@@ -150,22 +150,22 @@ paf.factory('PAF', ["$http", function ($http) {
                 callback(states);
         }
 
-        
-                $.ajax({           
+
+        $.ajax({
             type: "POST",
             dataType: "xml",
             url: "/net/crothall/chimes/fin/emp/act/provider.aspx",
             data: "moduleId=emp&requestId=1&targetId=iiCache"
                 + "&requestXml=<criteria>storeId:stateTypes,userId:[user]"
                 + ",<criteria>",
- 
-            success: function(xml) {
-                 serializeXml(xml);
-              }
+
+            success: function (xml) {
+                serializeXml(xml);
+            }
         });
 
-        
-                return;
+
+        return;
         var sampleXml = '<?xml version="1.0" encoding="utf-8"?><transmission><target id="iiCache" requestId="3"><store id="stateTypes" activeId="1" criteria="storeId:stateTypes,userId:[user]"><item id="1" number="1" name="Alaska" brief="AK" minimumWage="12.02" /><item id="2" number="2" name="Alabama" brief="AL" minimumWage="9.20" /><item id="3" number="3" name="Arkansas" brief="AR" minimumWage="9.34" /><item id="4" number="4" name="Arizona" brief="AZ" minimumWage="7.81" /><item id="5" number="5" name="California" brief="CA" minimumWage="9.16" /><item id="6" number="6" name="Colorado" brief="CO" minimumWage="8.11" /><item id="7" number="7" name="Connecticut" brief="CT" minimumWage="8.28" /><item id="8" number="8" name="District of Columbia" brief="DC" minimumWage="8.25" /><item id="9" number="9" name="Delaware" brief="DE" minimumWage="7.25" /><item id="10" number="10" name="Florida" brief="FL" minimumWage="7.69" /><item id="11" number="11" name="Georgia" brief="GA" minimumWage="5.50" /><item id="12" number="12" name="Hawaii" brief="HI" minimumWage="15.68" /><item id="13" number="13" name="Iowa" brief="IA" minimumWage="7.25" /><item id="14" number="14" name="Idaho" brief="ID" minimumWage="7.25" /><item id="15" number="15" name="Illinois" brief="IL" minimumWage="8.30" /><item id="16" number="16" name="Indiana" brief="IN" minimumWage="8.55" /><item id="17" number="17" name="Kansas" brief="KS" minimumWage="7.25" /><item id="18" number="18" name="Kentucky" brief="KY" minimumWage="7.25" /><item id="19" number="19" name="Louisiana" brief="LA" minimumWage="0" /><item id="20" number="20" name="Massachusetts" brief="MA" minimumWage="8.00" /><item id="21" number="21" name="Maryland" brief="MD" minimumWage="7.25" /><item id="22" number="22" name="Maine" brief="ME" minimumWage="7.50" /><item id="23" number="23" name="Michigan" brief="MI" minimumWage="7.40" /><item id="24" number="24" name="Minnesota" brief="MN" minimumWage="6.15" /><item id="25" number="25" name="Missouri" brief="MO" minimumWage="7.25" /><item id="26" number="26" name="Mississippi" brief="MS" minimumWage="7.76" /><item id="27" number="27" name="Montana" brief="MT" minimumWage="9.50" /><item id="28" number="28" name="North Carolina" brief="NC" minimumWage="7.25" /><item id="29" number="29" name="North Dakota" brief="ND" minimumWage="7.25" /><item id="30" number="30" name="Nebraska" brief="NE" minimumWage="7.25" /><item id="31" number="31" name="New Hampshire" brief="NH" minimumWage="7.25" /><item id="32" number="32" name="New Jersey" brief="NJ" minimumWage="7.25" /><item id="33" number="33" name="New Mexico" brief="NM" minimumWage="7.50" /><item id="34" number="34" name="Nevada" brief="NV" minimumWage="8.25" /><item id="35" number="35" name="New York" brief="NY" minimumWage="7.25" /><item id="36" number="36" name="Ohio" brief="OH" minimumWage="11.00" /><item id="37" number="37" name="Oklahoma" brief="OK" minimumWage="7.25" /><item id="38" number="38" name="Oregon" brief="OR" minimumWage="8.80" /><item id="39" number="39" name="Pennsylvania" brief="PA" minimumWage="7.50" /><item id="40" number="40" name="Rhode Island" brief="RI" minimumWage="7.40" /><item id="41" number="41" name="South Carolina" brief="SC" minimumWage="0" /><item id="42" number="42" name="South Dakota" brief="SD" minimumWage="7.25" /><item id="43" number="43" name="Tennessee" brief="TN" minimumWage="0.00" /><item id="44" number="44" name="Texas" brief="TX" minimumWage="7.25" /><item id="45" number="45" name="Utah" brief="UT" minimumWage="7.25" /><item id="46" number="46" name="Virginia" brief="VA" minimumWage="7.25" /><item id="47" number="47" name="Vermont " brief="VT" minimumWage="8.46" /><item id="48" number="48" name="Washington" brief="WA" minimumWage="9.04" /><item id="49" number="49" name="Wisconsin" brief="WI" minimumWage="7.25" /><item id="50" number="50" name="West Virginia" brief="WV" minimumWage="7.25" /><item id="51" number="51" name="Wyoming" brief="WY" minimumWage="5.15" /><item id="52" number="52" name="Ontario" brief="ON" minimumWage="7.25" /><item id="53" number="53" name="Bahamas" brief="BS" minimumWage="7.25" /><item id="54" number="54" name="Canada" brief="CN" minimumWage="7.25" /><item id="55" number="55" name="International" brief="IT" minimumWage="7.25" /><item id="56" number="56" name="Puerto Rico" brief="PR" minimumWage="7.25" /><item id="57" number="57" name="Virgin Islands" brief="VI" minimumWage="7.25" /><item id="58" number="58" name="Pacific Islands" brief="PI" minimumWage="7.25" /><item id="59" number="59" name="Guam" brief="GU" minimumWage="7.25" /><item id="60" number="60" name="American Samoa" brief="AS" minimumWage="7.25" /><item id="61" number="61" name="Reserved" brief="PW" minimumWage="7.25" /><item id="62" number="62" name="AA" brief="AA" minimumWage="7.25" /><item id="63" number="63" name="AE" brief="AE" minimumWage="7.25" /><item id="64" number="64" name="AP" brief="AP" minimumWage="7.25" /><item id="65" number="65" name="Jamaica" brief="JM" minimumWage="7.25" /><item id="66" number="66" name="Cayman Islands" brief="Cayman Islands" minimumWage="7.25" /><item id="78" number="78" name="Turks &amp; Caicos Islands" brief="TC" minimumWage="7.25" /><item id="79" number="79" name="Aruba" brief="AW" minimumWage="7.25" /><item id="80" number="80" name="Panama" brief="Panama" minimumWage="7.25" /><item id="81" number="81" name="South Korea" brief="KR" minimumWage="7.25" /></store></target></transmission>';
 
         serializeXml(sampleXml);
@@ -179,8 +179,10 @@ paf.factory('PAF', ["$http", function ($http) {
 
             $item = $el.find('item');
 
-            if ($item.length == 0)
+            if ($item.length == 0) {
+                callback(null);
                 return;
+            }
 
             employee = {
                 id: $item.attr('id'), employeeNumber: $item.attr('employeeNumber'), lastName: $item.attr('lastName'), firstName: $item.attr('firstName'),
