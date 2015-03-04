@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Unapplied Cash</h1>
+			<div class="description">The purpose of <b>Unapplied Cash</b> is to setup and maintain the list of Unapplied Cash Items.</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Unapplied Cash</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Hierarchy Tree View</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>To search a specific House Code, type-in House Code # (1455, 900000) and press Enter key.</td>				
+			</tr>
+			<tr>
+				<td>Customer</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>To search a specific Customer, type-in Customer Number and press Enter key/click Search button.</td>				
+			</tr>
+			<tr>
+				<td>Search</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>List the Unapplied Cash Items based on the search criteria.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">House Code Jobs</td>
+			</tr>
+			<tr>
+				<td>Unapplied Cash Grid</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List of Unapplied Cash Items.</td>
+			</tr>		
+			<tr>
+				<td>House Code</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Customer</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Document Number</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>
+			</tr>
+            <tr>
+				<td>Cash Receipt Date</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>
+			</tr>
+            <tr>
+				<td>Gross Amount</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>
+			</tr>
+            <tr>
+				<td>Open Amount</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>
+			</tr>
+            <tr>
+				<td>Receipt Items</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>
+			</tr>		
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Unapplied Cash</td>
+			</tr>
+			<tr>
+				<td><img src="images/unappliedCash.png" /></td>
+			</tr>
+		</table>		
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+        <table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>HirNodes<br/>
+                    HcmHouseCodes</br>
+                    RevUnappliedCashes</br>
+                    AppUnits</br>
+                    HcmHouseCodeJobs</br>
+                    HcmJobs
+				</td>
+			</tr>
+			<tr>
+                <td>Stored Procedures</td>
+                <td>AppUserHouseCodesSelect </br>
+                    RevUnappliedCashesSelect
+				</td>
+            </tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="invoiceSearch.htm">Invoice Search</a></div>
+		<div class="reference"><a href="invoice.htm">Invoicing / AR</a></div>				
+		<div class="reference"><a href="workOrderToInvoice.htm">WO to Invoice</a></div>
+		<div class="reference"><a href="bulkInvoiceImport.htm">Bulk Import</a></div>
+		<div class="reference"><a href="taxableService.htm">Taxable Services</a></div>
+	</body>
+</html>
