@@ -78,6 +78,8 @@
 		actionNodeAppend(342, 340, "Invoicing / AR", 0, "rev/invoice.htm");
 		actionNodeAppend(343, 340, "WO to Invoice", 0, "rev/workOrderToInvoice.htm");
 		actionNodeAppend(344, 340, "Bulk Import", 0, "rev/bulkInvoiceImport.htm");
+		actionNodeAppend(345, 340, "Taxable Services", 0, "rev/taxableService.htm");
+		actionNodeAppend(346, 340, "Unapplied Cash", 0, "rev/unappliedCash.htm");
 
 		actionNodeAppend(360, 20, "Fiscal", 1);
 		actionNodeAppend(361, 360, "Patterns", 0, "fsc/fiscalPattern.htm");
