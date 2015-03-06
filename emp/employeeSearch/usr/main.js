@@ -585,7 +585,37 @@ ii.Class({
 			});
 			
 			$("#EmployeeSSNText").bind("keydown", me, me.actionPreNext);
-			
+
+			me.wotcCode = new ui.ctl.Input.Text({
+		        id: "WOTCCode",
+				maxLength: 11
+			});
+
+			me.wotcCode.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.wotcCode.getValue();
+
+					if (enteredText == "") return;
+
+					if (me.employeeSSN.valid) {
+						if (!(/^\d{11}$/.test(enteredText)))
+							this.setInvalid("Please enter valid WOTC Code.");
+						else {
+							var firstDigit = enteredText.substring(0, 1);
+							var secondDigit = enteredText.substring(1, 2);
+							var ssn = me.employeeSSN.getValue().replace(/-/g, '') + '"';
+							var secondDigitValue = Math.round(((parseInt(ssn.substring(3, 4), 10)) + (parseInt(ssn.substring(4, 5), 10))) / 2);
+
+							if ((firstDigit != "0" && firstDigit != "1" && firstDigit != "3") || (secondDigit != secondDigitValue)) {
+								this.setInvalid("Please enter valid WOTC Code.");
+							}
+						}
+					}
+			});
+
 			me.editWizardAction = new ui.ctl.Input.DropDown.Filtered({
 				id: "EditWizardAction", 
 				formatFunction: function( type ) { return type.name; },
@@ -1973,6 +2003,7 @@ ii.Class({
 			
 			me.employeeSSN.text.tabIndex = 100;
 			me.editWizardAction.text.tabIndex = 101;
+			me.wotcCode.text.tabIndex = 102;
 			//Personal1
 			me.personFirstName.text.tabIndex = 110;
 			me.personMiddleName.text.tabIndex = 111; 
@@ -2080,6 +2111,7 @@ ii.Class({
 			me.searchInput.resizeText();
 			me.statusType.resizeText();
 			me.employeeSSN.resizeText();
+			me.wotcCode.resizeText();
 
 			me.personFirstName.resizeText();
 			me.personMiddleName.resizeText();
@@ -3600,6 +3632,12 @@ ii.Class({
 						$("#EmployeeSeniorityDateText").attr('disabled', true);
 						$("#EmployeeSeniorityDateAction").removeClass("iiInputAction");						
 					}
+					
+					if (me.actionType == "Rehire") {
+						$("#PersonalDetails").hide();
+						$("#WOTCContianer").show();
+						me.wizardCount = 0;
+					}
 				}
 				
 				if (me.actionType == "Compensation") {
@@ -3805,6 +3843,7 @@ ii.Class({
 				
 				//Employee General Section - Start
 				me.employeeSSN.setValue(me.employeeGenerals[0].ssn);
+				me.wotcCode.setValue(me.employeeGenerals[0].wotcCode);
 				me.newSSN.setValue(me.employeeGenerals[0].ssn);
 				
 				me.houseCodeSearchTemplate.houseCodeIdTemplate = me.employeeGenerals[0].hcmHouseCode;
@@ -5150,6 +5189,7 @@ ii.Class({
 				
 				if (me.employeeSSNAlreadyExists == false && me.employeeValidationCalledFrom == "newHire") {
 					me.employeeValidationCalledFrom = "";
+					me.wizardCount = 12;
 					me.actionNext(); //continue with Employee record edit..
 				}
 	
@@ -5327,7 +5367,8 @@ ii.Class({
 				$("#HouseCodeSearchDropDownLabel").show();
 			}
 			
-			me.employeeSSN.setValue("");		
+			me.employeeSSN.setValue("");
+			me.wotcCode.setValue("");
 			me.employeePayrollCompany.reset();	
 			if (me.employeeStatusType.length > 0)
 				me.employeeStatusType.select(0);
@@ -5630,6 +5671,7 @@ ii.Class({
 			$("#popupSubHeaderEmployeeName").html("");
 			$("#EditWizardActionText").val("");
 			$("#SSNContianer").show();
+			$("#WOTCContianer").hide();
 			if (me.actionType != "Edit"){
 				$("#EditEmployee").hide();
 				$("#AnchorSave").hide();
@@ -5705,7 +5747,7 @@ ii.Class({
 					me.wizardCount = 0;
 			}
 
-			if (me.actionType != "NewHire" || me.wizardCount > 0) { //actionNext click on Wizard other than first (SSN search)
+			if (me.actionType != "NewHire" || me.wizardCount > 0 || $("#WOTCCodeText").is(':visible') == true) { //actionNext click on Wizard other than first (SSN search)
 				me.employeeValidationCalledFrom = "";
 				me.actionNext();
 				return;
@@ -5797,6 +5839,12 @@ ii.Class({
 			else if (me.actionType == "SSNModification") {    
                 me.wizardCount = 1; 
             }
+			else if (me.actionType == "NewHire" || me.actionType == "Rehire") {
+				if (me.wizardCount == 1) 
+					me.wizardCount = 14;
+				else if (me.wizardCount == 0) 
+					me.wizardCount = 1;
+			}
 
 			if ($("#AnchorBack").is(':visible') == false) {
 				me.initializeWizard();
@@ -5821,6 +5869,7 @@ ii.Class({
 					
 					if (me.actionType == "Rehire" || me.actionType == "NewHire" || me.actionType == "Termination") {
 						$("#EditEmployee").hide();
+						$("#WOTCContianer").hide();
 						$("#popupSubHeader").text("Person");
 					}
 					else if (me.actionType == "HouseCodeTransfer") {
@@ -5927,13 +5976,17 @@ ii.Class({
 
                 case 1:
 
-					if ((!me.employeeSSN.validate(true))) {
+					if ((me.actionType == "NewHire" || (me.actionType == "Rehire" && $("#WOTCCodeText").is(':visible'))) && !me.wotcCode.validate(true)) {
+						me.wizardCount--;
+						return false;
+					}
+					else if ((!me.employeeSSN.validate(true))) {
 						me.wizardCount--;
 						return false;
 					}
 
 					if (me.actionType == "NewHire") {
-						$("#SSNContianer").hide();
+						$("#WOTCContianer").hide();
 						$("#PersonalDetails").show();
 						$("#AddressDetails").hide();
 						$("#AnchorBack").show();
@@ -5947,12 +6000,17 @@ ii.Class({
                         $("#PersonalDetails").addClass("personalDetailsDiv");
 						me.personFirstName.text.focus();
 					}
-					else {
+					else if ($("#EmployeeSSNText").is(':visible')) {
 						$("#messageToUser2").html("Loading");
 						$("#popupLoading").show();
 						me.employeeGeneralSSNSearch();
 					}
-                    
+					else {
+						$("#WOTCContianer").hide();
+						$("#PersonalDetails").show();
+						$("#AddressDetails").hide();
+					}
+
 					me.resizeControls();
  
                     break;
@@ -6449,47 +6507,64 @@ ii.Class({
 
               		break;
 					
-				  case 11: // Basic Life Indicator
+				case 11: // Basic Life Indicator
 
-						$("#SSNContianer").hide();
-						$("#AnchorNext").hide();
-						$("#AnchorBack").show();						
-                    	$("#AnchorSave").show();
-						$("#LifeIndicator").show();
+					$("#SSNContianer").hide();
+					$("#AnchorNext").hide();
+					$("#AnchorBack").show();						
+                	$("#AnchorSave").show();
+					$("#LifeIndicator").show();
 
-						me.basicLifeIndicatorType.text.focus();
+					me.basicLifeIndicatorType.text.focus();
  
                     break;
 					
-				  case 12: // SSN Modification
+				case 12: // SSN Modification
     
-                        $("#SSNContianer").hide();    
-                        $("#AnchorNext").hide();  
-                        $("#AnchorBack").show();
-                        $("#AnchorSave").show();
-                        $("#SSNModification").show();
-                        $("#PersonalDetails").show();
-						$("#ModificationNotes").show();
-						$("#ModificationNotes").css("height", "90");
-						$("#Requestor").show();
-                        $("#PersonalDetails").removeClass("personalDetailsDiv");
-                        $("#PersonalDetails").addClass("ssnPersonDiv");
-                        $("#FirstNameText").attr('disabled', true);
-                        $("#FirstNameAction").removeClass("iiInputAction");
-                        $("#MiddleInitialText").attr('disabled', true);
-                        $("#MiddleInitialAction").removeClass("iiInputAction");
-                        $("#LastNameText").attr('disabled', true);
-                        $("#LastNameAction").removeClass("iiInputAction");                      
-                        $("#EmployeeInformation").show();
-                        $("#EmployeeInformation").removeClass("employeeInformationDiv");
-						$("#EmployeeInformation").removeClass("reverseTerminationDiv");
-                        $("#EmployeeInformation").addClass("ssnEmployeeDiv");
-                        $("#CompanyStatus").hide();
-                        $("#CrothallCategory").hide();
-                        
-                        me.newSSN.text.focus();
+                    $("#SSNContianer").hide();    
+                    $("#AnchorNext").hide();  
+                    $("#AnchorBack").show();
+                    $("#AnchorSave").show();
+                    $("#SSNModification").show();
+                    $("#PersonalDetails").show();
+					$("#ModificationNotes").show();
+					$("#ModificationNotes").css("height", "90");
+					$("#Requestor").show();
+                    $("#PersonalDetails").removeClass("personalDetailsDiv");
+                    $("#PersonalDetails").addClass("ssnPersonDiv");
+                    $("#FirstNameText").attr('disabled', true);
+                    $("#FirstNameAction").removeClass("iiInputAction");
+                    $("#MiddleInitialText").attr('disabled', true);
+                    $("#MiddleInitialAction").removeClass("iiInputAction");
+                    $("#LastNameText").attr('disabled', true);
+                    $("#LastNameAction").removeClass("iiInputAction");                      
+                    $("#EmployeeInformation").show();
+                    $("#EmployeeInformation").removeClass("employeeInformationDiv");
+					$("#EmployeeInformation").removeClass("reverseTerminationDiv");
+                    $("#EmployeeInformation").addClass("ssnEmployeeDiv");
+                    $("#CompanyStatus").hide();
+                    $("#CrothallCategory").hide();
+                    
+                    me.newSSN.text.focus();
     
                     break;
+					
+				case 13: // WOTC Code
+
+					if ((!me.employeeSSN.validate(true))) {
+						me.wizardCount--;
+						return false;
+					}
+
+					$("#SSNContianer").hide();
+					$("#PersonalDetails").hide();
+					$("#WOTCContianer").show();
+					$("#AnchorBack").show();
+					me.wotcCode.text.focus();
+					me.wizardCount = 0;
+					me.resizeControls();
+
+					break;
 					
 				default:
 					break;
@@ -6880,7 +6955,8 @@ ii.Class({
 				, statusCategoryType: (me.employeeStatusCategoryType.indexSelected >= 0 ? me.statusCategoryTypes[me.employeeStatusCategoryType.indexSelected].id : 0)
 				, houseCodeJob: (me.job.indexSelected < 0 ? 0 : me.houseCodeJobs[me.job.indexSelected].id)
 				, employeeNumber: me.employeeNumber.getValue()				
-				, ssn: me.employeeSSN.getValue()	
+				, ssn: me.employeeSSN.getValue()
+				, wotcCode: me.wotcCode.getValue()
 				, exempt: ($("input[name='Exempt']:checked").val() == "true" ? true : false)							
 				, payrollCompany: (me.employeePayrollCompany.indexSelected >= 0 ? me.houseCodePayrollCompanys[me.employeePayrollCompany.indexSelected].id : 0)
 				, frequencyType: me.payFrequencyType
@@ -7128,6 +7204,7 @@ ii.Class({
 				xml += ' hirNode="' + itemGeneral.hirNode + '"';
 				xml += ' brief="' + ui.cmn.text.xml.encode(itemPerson.brief) + '"';
 				xml += ' ssn="' + itemGeneral.ssn.replace(/-/g, '') + '"';
+				xml += ' wotcCode="' + itemGeneral.wotcCode + '"';
 				xml += ' statusType="' + itemGeneral.statusType + '"';
 				xml += ' statusCategoryType="' + itemGeneral.statusCategoryType + '"';
 				xml += ' active="' + (itemGeneral.statusType != 6 ? true : false) + '"';
