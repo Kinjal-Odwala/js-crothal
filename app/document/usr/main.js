@@ -128,6 +128,8 @@
 		actionNodeAppend(433, 420, "Employee PTO", 0, "setup/employeePTO.htm");
 		actionNodeAppend(434, 420, "Emp Request", 0, "setup/empRequest.htm");
 		actionNodeAppend(435, 420, "Local Tax Code", 0, "setup/localTaxCode.htm");
+		actionNodeAppend(436, 420, "Workflow", 0, "setup/workflow.htm");
+		actionNodeAppend(437, 420, "Laundry Metrics", 0, "setup/laundry.htm");
 
 		actionNodeAppend(30, 0, "Enterprise Business Reporting (EBR)", 1);
 		actionNodeAppend(500, 30, "EBR Report", 0, "template.htm");
