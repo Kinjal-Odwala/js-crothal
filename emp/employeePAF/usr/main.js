@@ -21,16 +21,26 @@ paf.config(['$routeProvider', function ($routeProvider) {
     });
 }]);
 
-paf.controller('pafListCtrl', ['$scope', 'PAF', function ($scope, PAF) {
+paf.controller('pafListCtrl', ['$scope', 'EmpActions', function ($scope, EmpActions) {
 
-    PAF.getPAFList(function (result) {
-        $scope.$apply(function () { $scope.PAFItems = result; });
+    EmpActions.getHcmHouseCodes(function () {
+        EmpActions.getEmployeePersonnelActions(function (result) {
+            //$scope.PAFItems = result;
+            $scope.$apply(function () { $scope.PAFItems = result; });
+        });
+
     });
+   
+    $scope.getHouseCodeDesc = function (item) {
+        return EmpActions.getHouseCodeName(item.houseCodeId);
+    }
+
 
 }]);
 
-paf.controller('pafCtrl', ['$scope', '$document', 'PAF', '$filter', '$timeout', '$routeParams', '$modal', function ($scope, $document, PAF, $filter, $timeout, $routeParams, $modal) {
+paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$timeout', '$routeParams', '$modal', function ($scope, $document, EmpActions, $filter, $timeout, $routeParams, $modal) {
     $scope.HcmHouseCodes = [];
+    $scope.viewLoading = false;
 
     $scope.dateOptions = {
         formatYear: 'yy',
@@ -39,19 +49,14 @@ paf.controller('pafCtrl', ['$scope', '$document', 'PAF', '$filter', '$timeout', 
     };
 
     $scope.lkup = {
-        CarAllowances: PAF.getCarAllowances(),
+        CarAllowances: EmpActions.getCarAllowances(),
+        PositionTypes: EmpActions.getPositionTypes(),
         BounsEligibles: null,
         PlanDetails: null,
         Reason4Changes: null,
         Layoffs: null,
         Terminations: null,
         Resignations: null
-    }
-
-    var lowercaseFirstLetter = function (input) {
-        return (!!input) ? input.replace(/^(.)|(\s|\-)(.)/g, function ($1) {
-            return $1.toLowerCase();
-        }) : '';
     }
 
     $scope.HcmHouseCodes = [];
@@ -72,16 +77,57 @@ paf.controller('pafCtrl', ['$scope', '$document', 'PAF', '$filter', '$timeout', 
         Relocation: false
     }
 
-    PAF.getHcmHouseCodes(function (result) {
-        $scope.HcmHouseCodes = result;
-        //if ($scope.pafItem.HcmHouseCode > 0 && $scope.HcmHouseCodes.length > 0) {
-        //    $scope.HcmHouseCodeFilter = $filter('filter')($scope.HcmHouseCodes, { appUnit: $scope.pafItem.HcmHouseCode })[0];
-        //}
+    if ($routeParams.id) {
+        $scope.viewLoading = true;
+        EmpActions.findEmployeePersonnelAction($routeParams.id, function (result) {
+              $scope.$apply(function () {
+            $scope.pafItem = result;
+            $scope.viewLoading = false;
+             });
+        })
+    }
 
+    EmpActions.getPersonActionTypes(function (result) {
+        // $scope.$apply(function () {
+        $scope.lkup.BounsEligibles = $filter('filter')(result, { typeName: "BonusEligible" });
+        $scope.lkup.PlanDetails = $filter('filter')(result, { typeName: "Plan" });
+        $scope.lkup.Reason4Changes = $filter('filter')(result, { typeName: "Reason4Change" });
+        $scope.lkup.Layoffs = $filter('filter')(result, { typeName: "Layoff" });
+        $scope.lkup.Terminations = $filter('filter')(result, { typeName: "Termination" });
+        $scope.lkup.Resignations = $filter('filter')(result, { typeName: "Resignation" });
+        // });
     });
+
+    EmpActions.getStateTypes(function (result) {
+        // $scope.$apply(function () {
+        $scope.States = result;
+        // });
+    });
+
+    EmpActions.getHcmHouseCodes(function (result) {
+        // $scope.$apply(function () {
+        $scope.HcmHouseCodes = result;
+        // });
+    });
+
+    $scope.pickerCarAllowance = function (item) {
+        $scope.pafItem.CarAllowance = item.Id;
+        $scope.pafItem.NewCarAllowance = item.Id;
+    }
+
+    $scope.getPositionTypeName = function () {
+        if ($scope.pafItem.PositionType) {
+            return $filter('filter')($scope.lkup.PositionTypes, function (item) {
+                return item.id == $scope.pafItem.PositionType;
+            })[0].name;
+        }
+
+        return null;
+    }
 
     var loadPersonInfoHandler = null;
     $scope.getPersonInformation = function (employeeNumber, housecode) {
+
         if (!angular.isDefined(housecode) || housecode == null) {
             $scope.pafItem.HcmHouseCode = null;
             return;
@@ -92,8 +138,10 @@ paf.controller('pafCtrl', ['$scope', '$document', 'PAF', '$filter', '$timeout', 
             if (loadPersonInfoHandler)
                 clearTimeout(loadPersonInfoHandler);
 
-            $timeout(function () {
-                PAF.getEmployee(employeeNumber, housecode, function (result) {
+            loadPersonInfoHandler = $timeout(function () {
+                $scope.viewLoading = true;
+                EmpActions.getEmployee(employeeNumber, housecode, function (result) {
+                    $scope.viewLoading = false;
                     if (result == null) {
                         alert("Employee Not Found.");
                     }
@@ -101,7 +149,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'PAF', '$filter', '$timeout', 
                         $scope.pafItem.FirstName = result.firstName;
                         $scope.pafItem.LastName = result.lastName;
                         $scope.pafItem.employeeId = result.id;
-                        PAF.getPerson(result.id, function (response) {
+                        EmpActions.getPerson(result.id, function (response) {
                             $scope.pafItem.personId = response.id;
                             $scope.pafItem.AddressLine1 = response.addressLine1;
                             $scope.pafItem.City = response.city;
@@ -109,82 +157,292 @@ paf.controller('pafCtrl', ['$scope', '$document', 'PAF', '$filter', '$timeout', 
                             $scope.pafItem.PostalCode = response.postalCode;
                             $scope.pafItem.StateType = response.state;
                         });
+                        // $scope.$apply();
                     }
                 })
             }, 300);
         }
     }
 
-    if ($routeParams.id) {
-        PAF.findPAFInfo($routeParams.id, function (result) {
+    $scope.positionChange = function (positionType, value) {
 
-            //if (result.HcmHouseCode > 0 && $scope.HcmHouseCodes.length > 0) {
-            //    $scope.HcmHouseCodeFilter = $filter('filter')($scope.HcmHouseCodes, { appUnit: result.HcmHouseCode })[0];
-            //}
-            $scope.$apply(function () { $scope.pafItem = result; });
-        })
-    }
-
-    PAF.getPersonActionTypes(function (result) {
-        $scope.lkup.BounsEligibles = $filter('filter')(result, { typeName: "BonusEligible" });
-        $scope.lkup.PlanDetails = $filter('filter')(result, { typeName: "Plan" });
-        $scope.lkup.Reason4Changes = $filter('filter')(result, { typeName: "Reason4Change" });
-        $scope.lkup.Layoffs = $filter('filter')(result, { typeName: "Layoff" });
-        $scope.lkup.Terminations = $filter('filter')(result, { typeName: "Termination" });
-        $scope.lkup.Resignations = $filter('filter')(result, { typeName: "Resignation" });
-    });
-
-    PAF.getStateTypes(function (result) {
-        $scope.States = result;
-    });
-
-    $scope.pickerCarAllowance = function (item) {
-        $scope.pafItem.CarAllowance = item.Id;
-        $scope.pafItem.NewCarAllowance = item.Id;
-    }
-
-    $scope.pickerHouseCode = function (item) {
-        $scope.HcmHouseCode = item.name;
-    }
-
-    $scope.salaryChange = function (salary, adminHourly, hourly) {
-        $scope.Salary = salary;
-        $scope.AdminHourly = adminHourly;
-        $scope.Hourly = hourly;
-    }
-
-    //$scope.getHouseCode = function ($model, type) {
-
-    //    if ($scope.HcmHouseCodes.length == 0 || !angular.isDefined($model)) {
-    //        $scope.pafItem.HcmHouseCode = null;
-    //        return;
-    //    }
-
-    //    $scope.pafItem.HcmHouseCode = $model.id;
-    //    $scope.pafItem.HcmHouseCodeTransfer = $model.id;
-    //    $scope.pafItem.HcmHouseCodeTrainingLocation = $model.id;
-
-    //    return $model.name;
-    //}
-
-    $scope.getState = function ($model) {
-        if ($scope.States.length == 0 || !angular.isDefined($model)) {
-            $scope.pafItem.StateType = null;
-            return;
+        var resetHireSection = function () {
+            $scope.pafItem.HireDate = null;
+            $scope.pafItem.PositionType = null;
+            $scope.pafItem.Status = null;
+            $scope.pafItem.PayStatus = null;
+            $scope.pafItem.FullTimeHours = null;
+            $scope.pafItem.TemporaryHours = null;
+            $scope.pafItem.Hours = null;
+            $scope.pafItem.Amount = null;
+            $scope.pafItem.YearlySalary = null;
+            $scope.pafItem.AdminHourly = null;
+            $scope.pafItem.HourlyRate = null;
+            $scope.pafItem.PayGrade = null;
+            $scope.pafItem.PayRange = null;
+            $scope.pafItem.ReportingName = null;
+            $scope.pafItem.HcmHouseCodeTrainingLocation = null;
+            $scope.pafItem.TrainingContact = null;
+            $scope.pafItem.Duration = null;
+            $scope.pafItem.IsCarAllowance = false;
+            $scope.pafItem.CarAllowance = 0;
+            $scope.pafItem.BonusEligibleType = null;
         }
 
-        $scope.pafItem.StateType = $model.id;
+        var resetSeparationSection = function () {
+            $scope.pafItem.SeparationDate = null;
+            $scope.pafItem.VacationDaysDue = null;
+            $scope.pafItem.PayNumberOfWeeks = null;
+            $scope.pafItem.SeparationReason = null;
+            $scope.pafItem.ResignationType = null;
+            $scope.pafItem.TerminationType = null;
+            $scope.pafItem.LayoffType = null;
+            $scope.pafItem.SeparationReHire = null;
+        }
 
-        return $model.name;
+        var resetLoaSection = function () {
+            $scope.pafItem.LoaDate = null;
+            $scope.pafItem.DateOfReturn = null;
+        }
+
+        var resetRequisitionSection = function () {
+            $scope.pafItem.RequisitionNumber = null;
+            $scope.pafItem.EmailAddress = null;
+        }
+
+        var resetSalaryOrPromotionOrDemotionSection = function () {
+            $scope.pafItem.OldPositionType = null;
+            $scope.pafItem.NewPositionType = null;
+            $scope.pafItem.EffectiveDate = null;
+            $scope.pafItem.ChangeReasonType = null;
+            $scope.pafItem.LastIncreaseDate = null;
+            $scope.pafItem.LastIncreasePercentage = null;
+            $scope.pafItem.CurrentSalary = null;
+            $scope.pafItem.IncreaseAmount = null;
+            $scope.pafItem.IncreasePercentage = null;
+            $scope.pafItem.NewSalary = null;
+            $scope.pafItem.CurrentPayGrade = null;
+            $scope.pafItem.NewPayGrade = null;
+            $scope.pafItem.NewPayRange = null;
+            $scope.pafItem.NewReportingName = null;
+            $scope.pafItem.NewCarAllowance = null;
+            $scope.pafItem.NewBonusEligibleType = null;
+            $scope.pafItem.Instructions = null;
+        }
+
+        var resetLOASection = function () {
+            $scope.pafItem.LoaDate = null;
+            $scope.pafItem.DateOfReturn = null;
+        }
+
+        var resetTransferSection = function () {
+            $scope.pafItem.TransferEffectiveDate = null;
+            $scope.pafItem.HcmHouseCodeTransfer = null;
+            $scope.pafItem.HcmHouseCodeTransfer = null;
+            $scope.pafItem.TransferReportingName = null;
+        }
+
+        var resetPersonalInfoChangeSection = function () {
+            $scope.pafItem.InfoChangeEffectiveDate = null;
+            $scope.pafItem.InfoChangeFirstName = null;
+            $scope.pafItem.InfoChangeMiddleName = null;
+            $scope.pafItem.InfoChangeLastName = null;
+            $scope.pafItem.InfoChangeAddressLine1 = null;
+            $scope.pafItem.InfoChangeAddressLine2 = null;
+            $scope.pafItem.InfoChangePhone = null;
+            $scope.pafItem.InfoChangeCity = null;
+            $scope.pafItem.AppStateTypeInfoChange = null;
+            $scope.pafItem.InfoChangePostalCode = null;
+        }
+
+        var resetRelocationSection = function () {
+            $scope.pafItem.CompanyRelocation = false;
+            $scope.pafItem.RelocationApprovedBy = null;
+            $scope.pafItem.RelocationPlan = null;
+        }
+
+
+        switch (positionType.toUpperCase()) {
+            case 'NEWHIRE':
+                if (value) {
+                    $scope.pafItem.ReHire = false;
+                    $scope.pafItem.Separation = false;
+                    $scope.pafItem.LOA = false;
+                }
+
+                resetHireSection();
+
+                break;
+            case "REHIRE":
+                if (value) {
+                    $scope.pafItem.NewHire = false;
+                    $scope.pafItem.Separation = false;
+                    $scope.pafItem.LOA = false;
+                }
+
+                resetHireSection();
+                break;
+            case "SEPARATION":
+                if (value) {
+                    $scope.pafItem.NewHire = false;
+                    $scope.pafItem.ReHire = false;
+                    $scope.pafItem.LOA = false;
+                }
+
+                resetSeparationSection();
+                break;
+            case "LOA":
+                if (value) {
+                    $scope.pafItem.NewHire = false;
+                    $scope.pafItem.ReHire = false;
+                    $scope.pafItem.Separation = false;
+                }
+
+                resetLOASection();
+                break;
+            case "PROMOTION":
+                if (value) {
+                    $scope.pafItem.Demotion = false;
+                    $scope.pafItem.SalaryChange = false;
+                }
+
+                resetSalaryOrPromotionOrDemotionSection();
+                break;
+            case "DEMOTION":
+                if (value) {
+                    $scope.pafItem.Promotion = false;
+                    $scope.pafItem.SalaryChange = false;
+                }
+                resetSalaryOrPromotionOrDemotionSection();
+                break;
+            case "SALARYCHANGE":
+                if (value) {
+                    $scope.pafItem.Promotion = false;
+                    $scope.pafItem.Demotion = false;
+                }
+                resetSalaryOrPromotionOrDemotionSection();
+                break;
+            case "TRANSFER":
+
+                resetTransferSection();
+                break;
+            case "PERSONALINFOCHANGE":
+
+                resetPersonalInfoChangeSection();
+                break;
+            case "RELOCATION":
+
+                resetRelocationSection();
+                break;
+        }
+
+        if (!($scope.pafItem.NewHire || $scope.pafItem.ReHire || $scope.pafItem.salaryChange || $scope.pafItem.Promotion || $scope.pafItem.Transfer || $scope.pafItem.Demotion)) {
+            resetRequisitionSection();
+        }
+
+    }
+
+    //status changes
+    $scope.statusChange = function () {
+        $scope.$watch('pafItem.Status', function (newValue, oldValue) {
+            if ((!angular.isDefined(newValue) || newValue == null) || (!angular.isDefined(oldValue) || oldValue == null))
+                return;
+
+            if (newValue.toUpperCase() != oldValue.toUpperCase()) {
+                $scope.pafItem.FullTimeHours = null;
+                $scope.pafItem.TemporaryHours = null;
+                $scope.pafItem.Hours = null;
+                $scope.pafItem.Amount = null;
+            }
+        });
+    }
+
+    //pay status changes
+    $scope.salaryChange = function () {
+
+        $scope.$watch('pafItem.PayStatus', function (newValue, oldValue) {
+            if (!angular.isDefined(newValue) || !angular.isDefined(oldValue))
+                return;
+
+            if (newValue.toUpperCase() != oldValue.toUpperCase()) {
+                $scope.pafItem.YearlySalary = null;
+                $scope.pafItem.AdminHourly = null;
+                $scope.pafItem.HourlyRate = null;
+            }
+        });
+
+    }
+
+    //date of return after loa date
+    $scope.LoaDateChange = function () {
+
+        $scope.$watch('pafItem.LoaDate', function (newValue, oldValue) {
+            var dateOfReturn = $scope.pafItem.DateOfReturn;
+            if (!angular.isDefined(newValue) || (!angular.isDefined(dateOfReturn) || dateOfReturn == null))
+                return;
+
+            if (newValue.getTime() > dateOfReturn.getTime())
+                $scope.pafItem.DateOfReturn = null;
+        });
+    }
+
+    //separation reason changes
+    $scope.SeparationReasonChange = function () {
+        $scope.$watch('pafItem.SeparationReason', function (newValue, oldValue) {
+            if ((!angular.isDefined(newValue) || newValue == null) || (!angular.isDefined(oldValue) || oldValue == null))
+                return;
+
+            if (newValue.toUpperCase() != oldValue.toUpperCase()) {
+
+                $scope.pafItem.ResignationType = null;
+                $scope.pafItem.TerminationType = null;
+                $scope.pafItem.LayoffType = null;
+            }
+        });
+
+    }
+
+    //$scope.HouseCodeChange = function (houseCode) {
+    //    if (houseCode) {
+    //        $scope.pafItem.HouseCodeTransfer = houseCode;
+    //    }
+    //}
+
+    var payRange = [];
+    var newPayRange = [];
+    $scope.payRange = function (value, itemValue, type) {
+        //type==1 payRange
+        //type==2 NewPayrange
+
+        var arrPayRange = type == 1 ? payRange : newPayRange;
+
+        if (value) {
+            arrPayRange.push(itemValue);
+        }
+        else {
+            var index = arrPayRange.indexOf(itemValue);
+            arrPayRange.splice(index, 1);
+        }
+
+        if (type == 1) {
+            payRange = arrPayRange;
+            $scope.pafItem.PayRange = payRange.join(',');
+        }
+        else {
+            newPayRange = arrPayRange;
+            $scope.pafItem.NewPayRange = payRange.join(',');
+        }
     }
 
     $scope.save = function (isValid) {
+
         if (isValid) {
-            var xml = ['<transaction id="1">\r\n<employeePersonnelAction '];
 
             var xmlItem = [];
             angular.forEach($scope.pafItem, function (value, key) {
                 key = lowercaseFirstLetter(key);
+                //if (key == "id")
+                //    return;
 
                 if (value == null || !angular.isDefined(value))
                     value = ""
@@ -199,18 +457,14 @@ paf.controller('pafCtrl', ['$scope', '$document', 'PAF', '$filter', '$timeout', 
 
                 xmlItem.push(key + '=' + '"' + value + '"');
             });
+            console.log(xmlItem.join(","));
 
-            xml.push(xmlItem.join(' '));
-
-            xml.push('/>\r\n</transaction>');
-
-            var data = 'moduleId=emp&requestId=1&requestXml=' + encodeURIComponent(xml.join(' ')) + '&&targetId=iiTransaction';
-            jQuery.post('/net/crothall/chimes/fin/emp/act/Provider.aspx', data, function (data, status) {
+            EmpActions.saveEmployeePersonnelAction(xmlItem, function (status) {
                 document.location.hash = 'list';
             });
-
         }
     }
+
 
 }]);
 
@@ -218,11 +472,13 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
     return {
         scope: {
             dtOption: '=',
-            dtModel: '=dtModel'
+            dtModel: '=dtModel',
+            minDate: '=minDate',
+            dtChange: '&dtChange'
         },
         restrict: 'E',
         require: '?ngModel',
-        template: '<p class="input-group"><input type="text" class="form-control input-sm" name="{{dtName}}" ng-required="dtRequired" datepicker-popup="{{dtPopup}}" ng-model="dtModel" is-open="opened"  show-button-bar="{{showButtonBar}}" datepicker-append-to-body="false" datepicker-options="dateOptions" date-disabled="disabled(date, mode)"  close-text="Close" /><span class="input-group-btn"><button type="button" class="btn btn-default btn-sm" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button></span></p>',
+        template: '<p class="input-group"><input class="form-control input-sm" name="{{dtName}}" min-date="minDate" ng-change="dtChange()" ng-required="dtRequired" datepicker-popup="MM/dd/yyyy" ng-model="dtModel" is-open="opened"  show-button-bar="{{showButtonBar}}" datepicker-append-to-body="false" datepicker-options="dateOptions" date-disabled="disabled(date, mode)"  close-text="Close" /><span class="input-group-btn"><button type="button" class="btn btn-default btn-sm" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button></span></p>',
         link: function (scope, elem, attrs, ngModel) {
             scope.opened = false;
             scope.dtPopup = "dd-MMMM-yyyy";
@@ -289,7 +545,6 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
         }
     };
 }])
-
 .directive('pafNumeric', function () {
     return {
         require: '?ngModel',
@@ -363,21 +618,21 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
     return {
         phoneNumber: function (ctrl, value, attr) {
             var valid = ctrl.$isEmpty(value) || (value.length >= 10 && value.length <= 14);
-            ctrl.$setValidity(attr.name, valid);
+            //ctrl.$setValidity(attr.name, valid);
             return value;
         },
         zipCode: function (ctrl, value, attr) {
             var valid = ctrl.$isEmpty(value) || (value.length >= 5 && value.length <= 9);
-            ctrl.$setValidity(attr.name, valid);
+            // ctrl.$setValidity(attr.name, valid);
             return value;
         },
     };
 }])
 .directive('pafMask', ['Validators', function (Validators) {
     /**
-	 * FIXME: all numbers will have 9 digits after 2016.
-	 * see http://portal.embratel.com.br/embratel/9-digito/
-	 */
+     * FIXME: all numbers will have 9 digits after 2016.
+     * see http://portal.embratel.com.br/embratel/9-digito/
+     */
     var StringMask = (function () {
         var tokens = {
             '0': { pattern: /\d/, _default: '0' },
@@ -550,7 +805,7 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
     }());
 
     var phoneMask8D = new StringMask('(000) 000-0000'),
-		phoneMask9D = new StringMask('(000) 000-0000X0000');
+        phoneMask9D = new StringMask('(000) 000-0000X0000');
 
     var zipcodeMask5D = new StringMask('00000'),
         zipcodeMask6D = new StringMask('00000-0000');
@@ -606,6 +861,7 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
             var $parsers = '';
 
             ctrl.$formatters.push(function (value) {
+                //console.log(value);
                 if (maskType == 'PHONE')
                     return applyPhoneMask(Validators.phoneNumber(ctrl, value, attrs));
                 else if (maskType == 'ZIPCODE')
@@ -651,9 +907,12 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
         scope: {
             source: '=',
             model: '=ngModel',
-            onBlur: '&'
+            onBlur: '&',
+            disabled: '=ngDisabled',
+            change: '=ngChange',
+            required: '=ngRequired'
         },
-        template: '<div><input ng-model="model" name="{{inputName}}" class="hide"/><input type="text" class="form-control input-sm" ng-model="TypeaheadModel" typeahead-input-formatter="inputFormatter($model)" typeahead="item as item[displayField] for item in source|filter:itemFilter($viewValue)| limitTo:10" ng-blur="onBlur()" /></div>',
+        template: '<div><input ng-model="model" ng-required="required" name="{{inputName}}" class="hide"/><input type="text" class="form-control input-sm" ng-model="TypeaheadModel" ng-disabled="disabled" ng-change="change" typeahead-input-formatter="inputFormatter($model)" typeahead="item as item[displayField] for item in source|filter:itemFilter($viewValue)| limitTo:10" ng-blur="onBlur()" /></div>',
         replace: true,
         link: function (scope, elem, attrs) {
 
