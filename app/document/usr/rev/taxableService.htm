@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Taxable Services</h1>
+			<div class="description">The <b>Taxable Services</b> module allows end user to edit Taxable Service.</div>
+		</div>
+		<h2>UI Elements</h2>
+		<table class="elementTable">			
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">States</td>
+			</tr>
+			<tr>
+				<td>State Grid</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Lists the states.</td>				
+			</tr>
+			<tr>
+				<td>Brief</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Title</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>
+			</tr>
+            <tr>
+				<td class="uiHeader" colspan="5">Taxable Services</td>
+			</tr>
+			<tr>
+				<td>Taxable Service Grid</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List the Taxable Services of the selected state.</td>				
+			</tr>
+			<tr>
+				<td>Title</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Taxable</td>
+				<td>Radio Selection</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Allows user to select Taxable or Exempt.</td>
+			</tr>
+            <tr>
+				<td>Exempt</td>
+				<td>Radio Selection</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Allows user to select Taxable or Exempt.</td>
+			</tr>			
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To save the current Taxable Service Association.</td>
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Undo the changes to Taxable Service Association.</td>
+			</tr>			
+			<tr>
+				<td class="uiHeader" colspan="5">Actions Menu</td>
+			</tr>
+			<tr>
+				<td>Save Taxable Service Association</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To save the current Taxable Service Association.</td>
+			</tr>
+			<tr>
+				<td>Undo Taxable Service Association</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Undo the changes to Taxable Service Association.</td>
+			</tr>			
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Edit / Save Taxable Service Association</td>
+			</tr>
+			<tr>
+				<td><img src="images/taxableService.png"></td>
+			</tr>			
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>[SAVE FAILURE] Error while updating the taxability matrix.
+				</td>
+			</tr>			
+			<tr>
+				<td>Error</td>
+				<td>Failed to update the service taxable association.
+				</td>
+			</tr>
+		</table>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>AppStateTypes</br>
+                    RevTaxableServices</br>
+                    RevTaxableServiceStates					
+				</td>
+			</tr>			
+		</table>
+		<h2>See Also</h2>
+		<div class="reference"><a href="invoiceSearch.htm">Invoice Search</a></div>
+		<div class="reference"><a href="invoice.htm">Invoicing / AR</a></div>				
+		<div class="reference"><a href="workOrderToInvoice.htm">WO to Invoice</a></div>
+		<div class="reference"><a href="bulkInvoiceImport.htm">Bulk Import</a></div>
+		<div class="reference"><a href="unappliedCash.htm">Unapplied Cash</a></div>
+	</body>
+</html>

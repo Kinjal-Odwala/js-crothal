@@ -647,6 +647,13 @@ ii.Class({
 											
 					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
 						this.setInvalid("Please enter valid Start Date.");
+					else {
+						var date = new Date();
+						var currentDate = (date.getMonth()+1) + "/" + date.getDate() + "/" + date.getFullYear();
+						
+						if (me.status == "new" && new Date(enteredText) < new Date(currentDate))
+							this.setInvalid("Start Date should not be less than " + currentDate);
+					}
 				});
 				
 			me.endDate = new ui.ctl.Input.Date({
@@ -665,6 +672,10 @@ ii.Class({
 
 					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
 						this.setInvalid("Please enter valid End Date.");
+					else {
+						if (new Date(enteredText) < new Date(me.startDate.text.value))
+							this.setInvalid("End Date should not be less than Start Date (" + me.startDate.text.value + ")");
+					}
 				});
 
 			me.stopSchedule = new ui.ctl.Input.Check({
@@ -2025,7 +2036,7 @@ ii.Class({
 					html += "\n<div><div class='labelReport'>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div></div>"
 				else
 					html += "\n<div><div class='labelReport'>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium' style='width:" + me.reportParameters[index].Width + "px;'></div><div id='customersLoading'></div></div>"										
-				html += "\n<div style='clear:both;'></div>";
+				html += "\n<div style='clear:both;height:3px'></div>";
 			}
 
 			$("#ParameterContainer").html(html);

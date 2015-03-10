@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Laundry Metrics</h1>
+			<div class="description">The <b>Laundry Metrics</b> module allows end user to edit Laundry Metrics.</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:100px;">UI Element</th>
+				<th style="width:110px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th style="width:200px;">Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Laundry Metrics</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Hierarchy Tree View</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Displays List of House Codes to select.</td>				
+			</tr>
+			<tr>
+				<td>Pay Period</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td></td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Users Info</td>
+			</tr>
+			<tr>
+				<td>Laundry Metric Grid</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>List the Laundry Metrics</td>				
+			</tr>
+            <tr>
+				<td>Metric Type</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>				
+			</tr>
+            <tr>
+				<td>Description</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>				
+			</tr>
+            <tr>
+				<td>Sunday</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Please enter valid value.</td>				
+			</tr>
+            <tr>
+				<td>Monday</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Please enter valid value.</td>				
+			</tr>
+            <tr>
+				<td>Tuesday</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Please enter valid value.</td>				
+			</tr>
+            <tr>
+				<td>Wednesday</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Please enter valid value.</td>				
+			</tr>
+			<tr>
+				<td>Thursday</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Please enter valid value.</td>				
+			</tr>
+			<tr>
+				<td>Friday</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Please enter valid value.</td>				
+			</tr>
+			<tr>
+				<td>Saturday</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Please enter valid value.</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5"></td>
+			</tr>			
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Save Laundry Metrics</td>				
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Undo changes</td>				
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Laundry Metrics</td>
+			</tr>
+			<tr>
+				<td><img src="images/laundryMetrics.png"></td>
+			</tr>
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>[SAVE FAILURE] Error while updating laundry metrics details.</td>
+			</tr>
+			<tr>
+				<td>Error</td>
+				<td>The Vendor Number/Title already exists. Please enter a valid Vendor Number/Title and save again.</td>
+			</tr>
+		</table>		
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>HirNodes<br/>
+                    HcmHouseCodes<br/>
+                    PayPeriods<br/>
+                    AppLaundryMetricTypes<br/>
+                    AppLaundryMetrics
+				</td>
+			</tr>
+			<tr>
+				<td>Stored Procedures</td>
+				<td>AppUserHouseCodesSelect</td>
+			</tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="hierarchy.htm">Hierarchy</a></div>
+		<div class="reference"><a href="security.htm">Security</a></div>
+        <div class="reference"><a href="systemVariables.htm">Sys Variable</a></div>
+        <div class="reference"><a href="employeeImport.htm">Import Employees</a></div>
+        <div class="reference"><a href="taxRate.htm">Tax Rates</a></div>
+        <div class="reference"><a href="adHocReport.htm">Ad-Hoc Report</a></div>
+        <div class="reference"><a href="hierarchyManagement.htm">Hierarchy Mgmt</a></div>
+        <div class="reference"><a href="minimumWage.htm">State Min Wage</a></div>
+        <div class="reference"><a href="employeeHierarchy.htm">Emp Hierarchy</a></div>
+        <div class="reference"><a href="employeePTO.htm">Employee PTO</a></div>
+        <div class="reference"><a href="empRequest.htm">Emp Request</a></div>
+        <div class="reference"><a href="localTaxCode.htm">Local Tax Code</a></div>
+        <div class="reference"><a href="workflow.htm">Workflow</a></div>
+	</body>
+</html>

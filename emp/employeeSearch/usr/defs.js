@@ -65,6 +65,7 @@ ii.init.register( function(){
 		brief: {type: String, required: false, defaultValue: ""},
 		active: {type: Boolean, required: false, defaultValue: false},
 		ssn: {type: String, required: false, defaultValue: ""},
+		wotcCode: {type: String, required: false, defaultValue: ""},
 		statusType: {type: Number, required: false, defaultValue: 0},
 		statusCategoryType: {type: Number, required: false, defaultValue: 0},
 		houseCodeJob: {type: Number, required: false, defaultValue: 0},

@@ -78,6 +78,8 @@
 		actionNodeAppend(342, 340, "Invoicing / AR", 0, "rev/invoice.htm");
 		actionNodeAppend(343, 340, "WO to Invoice", 0, "rev/workOrderToInvoice.htm");
 		actionNodeAppend(344, 340, "Bulk Import", 0, "rev/bulkInvoiceImport.htm");
+		actionNodeAppend(345, 340, "Taxable Services", 0, "rev/taxableService.htm");
+		actionNodeAppend(346, 340, "Unapplied Cash", 0, "rev/unappliedCash.htm");
 
 		actionNodeAppend(360, 20, "Fiscal", 1);
 		actionNodeAppend(361, 360, "Patterns", 0, "fsc/fiscalPattern.htm");
@@ -126,6 +128,8 @@
 		actionNodeAppend(433, 420, "Employee PTO", 0, "setup/employeePTO.htm");
 		actionNodeAppend(434, 420, "Emp Request", 0, "setup/empRequest.htm");
 		actionNodeAppend(435, 420, "Local Tax Code", 0, "setup/localTaxCode.htm");
+		actionNodeAppend(436, 420, "Workflow", 0, "setup/workflow.htm");
+		actionNodeAppend(437, 420, "Laundry Metrics", 0, "setup/laundry.htm");
 
 		actionNodeAppend(30, 0, "Enterprise Business Reporting (EBR)", 1);
 		actionNodeAppend(500, 30, "EBR Report", 0, "template.htm");
