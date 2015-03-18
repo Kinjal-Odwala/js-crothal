@@ -34,6 +34,7 @@ var deserializeXml = function (xml, nodeName, options) {
             return name;
     }
 
+    var intItems = upperCaseItems(options.intItems);
     var boolItems = upperCaseItems(options.boolItems);
     var dateItems = upperCaseItems(options.dateItems);
 
@@ -43,7 +44,7 @@ var deserializeXml = function (xml, nodeName, options) {
         xml = $.parseXML(xml);
     }
 
-    $xml = angular.element(xml);
+    $xml = $(xml);
 
     var $el = $xml.find(nodeName);
 
@@ -51,11 +52,14 @@ var deserializeXml = function (xml, nodeName, options) {
 
     $el.each(function (index, element) {
         var obj = {};
-        angular.forEach(element.attributes, function (key) {
+        $.each(element.attributes, function (index,key) {
             var value = key.value;
 
             if (boolItems.indexOf(key.name.toUpperCase()) >= 0)
-                value = key.value == '1';
+                value = key.value == '1' || key.value == 'true';
+
+            if (intItems.indexOf(key.name.toUpperCase()) >= 0)
+                value = key.value == 0 ? null : key.value;
           
             obj[convertAttrName(key.name)] = value;
 
@@ -64,7 +68,6 @@ var deserializeXml = function (xml, nodeName, options) {
         if (Object.keys(obj).length > 0)
             items.push(obj);
     });
-
     return items;
 }
 

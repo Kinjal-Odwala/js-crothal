@@ -12,12 +12,10 @@
                             <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.Date" dt-name="Date" dt-required="true"></paf-datepicker>
                         </div>
                     </div>
-                    <div class="col-md-9"> 
+                    <div class="col-md-9">
                         <div class="form-group typeahead" ng-class="{'has-error':pafForm.HcmHouseCode.$invalid}">
                             <label class="control-label">House Code or Unit Name</label>
-                            <paf-typeahead ng-model="pafItem.HcmHouseCode" on-blur="getPersonInformation(pafItem.EmployeeNumber,pafItem.HcmHouseCode)"
-                                paf-enter="getPersonInformation(pafItem.EmployeeNumber,pafItem.HcmHouseCode)"
-                                source="HcmHouseCodes" typeahead-option="{displayField:'name',valueField:'id',name:'HcmHouseCode'}" ng-required="true"></paf-typeahead>
+                            <paf-typeahead ng-model="pafItem.HcmHouseCode" source="HcmHouseCodes"  on-blur="onHouseCodeChange()" paf-enter="onHouseCodeChange()" typeahead-option="{displayField:'name',valueField:'id',name:'HcmHouseCode'}" ng-required="true"></paf-typeahead>
                         </div>
                     </div>
                 </div>
@@ -25,27 +23,25 @@
                     <div class="col-md-3">
                         <div class="form-group" ng-class="{'has-error':pafForm.EmployeeNumber.$invalid}">
                             <label class="control-label">Employee/Clock Number</label>
-                            <input class="form-control input-sm" name="EmployeeNumber" ng-model="pafItem.EmployeeNumber" paf-enter="getPersonInformation(pafItem.EmployeeNumber,pafItem.HcmHouseCode)"
-                                ng-blur="getPersonInformation(pafItem.EmployeeNumber,pafItem.HcmHouseCode)" ng-required="!pafItem.NewHire" paf-numeric />
-                            <!--<button ng-click="getEmployee()">Get Employee ID</button>-->
+                            <input class="form-control input-sm" name="EmployeeNumber" ng-blur="getPersonInformation(pafItem.EmployeeNumber)" paf-enter="getPersonInformation(pafItem.EmployeeNumber)" ng-model="pafItem.EmployeeNumber" ng-required="!pafItem.NewHire" paf-numeric />
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group" ng-class="{'has-error':pafForm.FirstName.$invalid}">
                             <label class="control-label">First Name</label>
-                            <input class="form-control input-sm" name="FirstName" ng-model="pafItem.FirstName" required />
+                            <input class="form-control input-sm" name="FirstName" ng-model="pafItem.FirstName" ng-disabled="disableInformationFields" required />
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="form-group" ng-class="{'has-error':pafForm.MiddleName.$invalid}">
+                        <div class="form-group">
                             <label class="control-label">Middle Name</label>
-                            <input class="form-control input-sm" name="MiddleName" ng-model="pafItem.MiddleName" />
+                            <input class="form-control input-sm" name="MiddleName" ng-model="pafItem.MiddleName" ng-disabled="disableInformationFields" />
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group" ng-class="{'has-error':pafForm.LastName.$invalid}">
                             <label class="control-label">Last Name</label>
-                            <input class="form-control input-sm" name="LastName" ng-model="pafItem.LastName" required />
+                            <input class="form-control input-sm" name="LastName" ng-model="pafItem.LastName" ng-disabled="disableInformationFields" required />
                         </div>
                     </div>
                 </div>
@@ -53,111 +49,52 @@
                     <div class="col-md-6">
                         <div class="form-group" ng-class="{'has-error':pafForm.AddressLine1.$invalid}">
                             <label class="control-label">Address1</label>
-                            <input class="form-control input-sm" name="AddressLine1" ng-model="pafItem.AddressLine1" required />
+                            <input class="form-control input-sm" name="AddressLine1" ng-model="pafItem.AddressLine1" ng-disabled="disableInformationFields" required />
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label class="control-label">Address2</label>
-                            <input class="form-control input-sm" name="AddressLine2" ng-model="pafItem.AddressLine2" />
+                            <input class="form-control input-sm" name="AddressLine2" ng-model="pafItem.AddressLine2" ng-disabled="disableInformationFields" />
                         </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3" ng-class="{'has-error':pafForm.City.$invalid}">
+                        <label class="control-label">City</label>
+                        <input class="form-control input-sm" name="City" ng-model="pafItem.City" ng-disabled="disableInformationFields" required />
+                    </div>
+                    <div class="col-md-3" ng-class="{'has-error':pafForm.StateType.$invalid}">
+                        <label class="control-label">State</label>
+                        <select class="form-control input-sm" name="StateType" ng-model="pafItem.StateType" ng-disabled="disableInformationFields" ng-options="item.id as item.name for item in States" required>
+                            <option></option>
+                        </select>
+                    </div>
+                    <div class="col-md-3" ng-class="{'has-error':pafForm.PostalCode.$invalid}">
+                        <label>Zip</label>
+                        <input class="form-control input-sm" name="PostalCode" ng-model="pafItem.PostalCode" paf-mask="zipcode" ng-disabled="disableInformationFields" required />
                     </div>
                     <div class="col-md-3">
                         <div class="form-group" ng-class="{'has-error':pafForm.Phone.$invalid}">
                             <label class="control-label">Phone #</label>
-                            <input class="form-control input-sm" name="Phone" ng-model="pafItem.Phone" paf-mask="phone" required />
+                            <input class="form-control input-sm" name="Phone" ng-model="pafItem.Phone" paf-mask="phone" ng-disabled="disableInformationFields" required />
                         </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4" ng-class="{'has-error':pafForm.City.$invalid}">
-                        <label class="control-label">City</label>
-                        <input class="form-control input-sm" name="City" ng-model="pafItem.City" required />
-                    </div>
-                    <div class="col-md-4" ng-class="{'has-error':pafForm.StateType.$invalid}">
-                        <label class="control-label">State</label>
-                        <select class="form-control input-sm" name="StateType" ng-model="pafItem.StateType" ng-options="item.id as item.name for item in States" required>
-                            <option></option>
-                        </select>
-                    </div>
-                    <div class="col-md-4" ng-class="{'has-error':pafForm.PostalCode.$invalid}">
-                        <label>Zip</label>
-                        <input class="form-control input-sm" name="PostalCode" ng-model="pafItem.PostalCode" paf-mask="zipcode" required />
                     </div>
                 </div>
             </section>
             <section>
-                <h4>CHECK ALL THAT APPLY</h4>
+               <h4 style="display:inline-block">CHECK ALL THAT APPLY</h4><span class="has-error" ng-show="pafForm.$error.ActionType[0].$invalid" style="display:inline-block">&nbsp;<label class="glyphicon glyphicon-info-sign"></label><label> &nbsp;At least one action type should be checked.</label></span>
                 <p>(Position must be posted with Recruiter for any new hire, transfer, re-hire, or promotion)</p>
-                <div class="row">
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" ng-model="pafItem.NewHire" ng-change="positionChange('NewHire',pafItem.NewHire)" />New Hire</label>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" ng-model="pafItem.ReHire" ng-change="positionChange('ReHire',pafItem.ReHire)" />Re-Hire</label>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" ng-model="pafItem.Separation" ng-change="positionChange('Separation',pafItem.Separation)" />Separation</label>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
-                        <div class="checkbox">
-                            <label>LOA<input type="checkbox" ng-model="pafItem.LOA" ng-change="positionChange('LOA',pafItem.LOA)" /></label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" ng-model="pafItem.Promotion" ng-change="positionChange('Promotion',pafItem.Promotion)" />Promotion</label>
 
+                <div class="row" ng-class="{'has-error':pafForm.$error.ActionType[0].$invalid}">
+                    <div ng-repeat="type in PositionTypes" ng-class="{'col-md-6 col-sm-6':type.id=='SalaryChange','col-md-3 col-sm-6':type.id!='SalaryChange'}">
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="CheckType" ng-checked="positionTypeChecked(type.id)" ng-value="type.id" ng-click="onPositionTypeChanged(type.id)" />{{type.display}}</label>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" ng-model="pafItem.Demotion" ng-change="positionChange('Demotion',pafItem.Demotion)" />Demotion</label>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" ng-model="pafItem.SalaryChange" ng-change="positionChange('SalaryChange',pafItem.SalaryChange)" />Salary Change</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" ng-model="pafItem.Transfer" ng-change="positionChange('Transfer',pafItem.Transfer)" />Transfer</label>
-
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" ng-model="pafItem.PersonalInfoChange" ng-change="positionChange('PersonalInfoChange',pafItem.PersonalInfoChange)" />Personal Info Change</label>
-
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
-
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" ng-model="pafItem.Relocation" style="margin-right: 5px;" ng-change="positionChange('Relocation',pafItem.Relocation)" />Relocation</label>
-                        </div>
-                    </div>
-                </div>
             </section>
             <!--NEW HIRE/REHIRE-->
             <section ng-if="pafItem.NewHire||pafItem.ReHire">
@@ -166,15 +103,15 @@
                 <p>(Section to be completed by Hiring Manager and Application and Background Check Release faxed to HRG )</p>
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="form-group">
+                        <div class="form-group" ng-class="{'has-error':pafForm.HireDate.$invalid}">
                             <label>Hire Date</label>
-                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.HireDate"></paf-datepicker>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.HireDate" dt-name="HireDate" dt-required="true"></paf-datepicker>
                         </div>
                     </div>
                     <div class="col-md-8">
-                        <div class="form-group">
+                        <div class="form-group" ng-class="{'has-error':pafItem.PositionType==0||pafForm.PositionType.$invalid}">
                             <label>Position</label>
-                            <select class="form-control input-sm" ng-model="pafItem.PositionType" ng-options="item.id as item.name for item in lkup.PositionTypes">
+                            <select class="form-control input-sm" name="PositionType" ng-model="pafItem.PositionType" ng-options="item.id as item.name for item in JobCodes" required>
                                 <option value=""></option>
                             </select>
                         </div>
@@ -186,68 +123,67 @@
                         <div class="row">
                             <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12">
                                 <div class="form-inline">
-                                    <div class="form-group">
+                                    <div class="form-group" ng-class="{'has-error':pafItem.Status.$invalid||pafForm.FullTimeHours.$invalid}">
                                         <label>
-                                            <input type="radio" name="Status" ng-model="pafItem.Status" value="FullTime" ng-change="statusChange()" />&nbsp;Full Time</label>
-                                        <input type="text" class="form-control input-sm" ng-disabled="pafItem.Status!='FullTime'"
-                                            ng-model="pafItem.FullTimeHours" paf-format="{0} hours/week" placeholder="0 hours/week" paf-numeric />
+                                            <input type="radio" name="Status" ng-model="pafItem.Status" value="FullTimeHours" required />&nbsp;Full Time</label>
+                                        <input type="text" class="form-control input-sm" name="FullTimeHours" ng-disabled="pafItem.Status!='FullTimeHours'"
+                                            ng-model="pafItem.FullTimeHours" paf-format="{0} hours/week" placeholder="0 hours/week" paf-numeric ng-required="pafItem.Status=='FullTimeHours'" />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12">
                                 <div class="form-inline">
-                                    <div class="form-group">
+                                    <div class="form-group" ng-class="{'has-error':pafItem.Status.$invalid||pafForm.TemporaryHours.$invalid}">
                                         <label>
-                                            <input type="radio" name="Status" ng-model="pafItem.Status" value="Temporary" ng-change="statusChange()" />&nbsp;Temporary</label>
-                                        <input type="text" class="form-control input-sm" ng-disabled="pafItem.Status!='Temporary'"
-                                            ng-model="pafItem.TemporaryHours" paf-format="{0} hours/week" placeholder="0 hours/week" paf-numeric />
+                                            <input type="radio" name="Status" ng-model="pafItem.Status" value="TemporaryHours" required />&nbsp;Temporary</label>
+                                        <input type="text" class="form-control input-sm" name="TemporaryHours" ng-disabled="pafItem.Status!='TemporaryHours'"
+                                            ng-model="pafItem.TemporaryHours" paf-format="{0} hours/week" placeholder="0 hours/week" paf-numeric ng-required="pafItem.Status=='TemporaryHours'" />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12">
                                 <div class="form-inline">
-                                    <div class="form-group">
+                                    <div class="form-group" ng-class="{'has-error':pafItem.Status.$invalid||pafForm.Hours.$invalid}">
                                         <label>
-                                            <input type="radio" name="Status" ng-model="pafItem.Status" value="PartTime" ng-change="statusChange()" />&nbsp;Part Time</label>
-                                        <input type="text" class="form-control input-sm" ng-disabled="pafItem.Status!='PartTime'"
-                                            ng-model="pafItem.Hours" paf-format="{0} hours/week" placeholder="0 hours/week" paf-numeric />
+                                            <input type="radio" name="Status" ng-model="pafItem.Status" value="PartTime" required />&nbsp;Part Time</label>
+                                        <input type="text" class="form-control input-sm" name="Hours" ng-disabled="pafItem.Status!='PartTime'"
+                                            ng-model="pafItem.Hours" paf-format="{0} hours/week" placeholder="0 hours/week" paf-numeric ng-required="pafItem.Status=='PartTime'" />
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
                             </div>
                             <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12 ">
                                 <div class="form-inline">
-                                    <div class="form-group">
+                                    <div class="form-group" ng-class="{'has-error':pafItem.Status.$invalid||pafForm.Amount.$invalid}">
                                         <label>
-                                            <input type="radio" name="Status" ng-model="pafItem.Status" value="PerDiem" ng-change="statusChange()" />&nbsp;Per Diem</label>
-                                        <input type="text" class="form-control input-sm" ng-disabled="pafItem.Status!='PerDiem'" ng-model="pafItem.Amount" paf-format="{0} per day" placeholder="0 per day" paf-numeric />
+                                            <input type="radio" name="Status" ng-model="pafItem.Status" value="PerDiem" required />&nbsp;Per Diem</label>
+                                        <input type="text" class="form-control input-sm" name="Amount" ng-disabled="pafItem.Status!='PerDiem'" ng-model="pafItem.Amount" paf-format="{0} per day" placeholder="0 per day" paf-numeric ng-required="pafItem.Status=='PerDiem'" />
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-3 form-inline">
-                                <div class="form-group">
+                                <div class="form-group" ng-class="{'has-error':pafItem.PayStatus.$invalid||pafForm.YearlySalary.$invalid}">
                                     <label>
-                                        <input type="radio" name="Salary" ng-model="pafItem.PayStatus" value="YearlySalary" ng-change="salaryChange()" />&nbsp;Salary</label>
+                                        <input type="radio" name="PayStatus" ng-model="pafItem.PayStatus" value="YearlySalary" required />&nbsp;Salary</label>
 
-                                    <input type="text" class="form-control input-sm" ng-disabled="pafItem.PayStatus!='YearlySalary'" ng-model="pafItem.YearlySalary" paf-format="{0}/year" placeholder="0/year" style="width: 40%" paf-numeric />
+                                    <input type="text" class="form-control input-sm" ng-disabled="pafItem.PayStatus!='YearlySalary'" name="YearlySalary" ng-model="pafItem.YearlySalary" paf-format="{0}/year" placeholder="0/year" style="width: 40%" paf-numeric ng-required="pafItem.PayStatus=='YearlySalary'" />
                                 </div>
                             </div>
                             <div class="col-md-3 form-inline">
-                                <div class="form-group">
+                                <div class="form-group" ng-class="{'has-error':pafItem.PayStatus.$invalid||pafForm.AdminHourly.$invalid}">
                                     <label>
-                                        <input type="radio" name="Salary" ng-model="pafItem.PayStatus" value="AdminHourly" ng-change="salaryChange()" />&nbsp;Admin.Hourly</label>
+                                        <input type="radio" name="PayStatus" ng-model="pafItem.PayStatus" value="AdminHourly" required />&nbsp;Admin.Hourly</label>
 
-                                    <input type="text" class="form-control input-sm" ng-disabled="pafItem.PayStatus!='AdminHourly'" ng-model="pafItem.AdminHourly" paf-format="{0}/hour" placeholder="0/hour" style="width: 40%" paf-numeric />
+                                    <input type="text" class="form-control input-sm" ng-disabled="pafItem.PayStatus!='AdminHourly'" name="AdminHourly" ng-model="pafItem.AdminHourly" paf-format="{0}/hour" placeholder="0/hour" style="width: 40%" paf-numeric ng-required="pafItem.PayStatus=='AdminHourly'" />
                                 </div>
                             </div>
                             <div class="col-md-3 form-inline">
-                                <div class="form-group">
+                                <div class="form-group" ng-class="{'has-error':pafItem.PayStatus.$invalid|| pafForm.HourlyRate.$invalid}">
                                     <label>
-                                        <input type="radio" name="Salary" ng-model="pafItem.PayStatus" value="HourlyRate" ng-change="salaryChange()" />&nbsp;Hourly</label>
-
-                                    <input type="text" class="form-control input-sm" ng-disabled="pafItem.PayStatus!='HourlyRate'" ng-model="pafItem.HourlyRate" paf-format="{0}/hour" placeholder="0/hour" style="width: 40%" paf-numeric />
+                                        <input type="radio" name="PayStatus" ng-model="pafItem.PayStatus" value="HourlyRate" required />&nbsp;Hourly</label>
+                                    <input type="text" class="form-control input-sm" ng-disabled="pafItem.PayStatus!='HourlyRate'" name="HourlyRate" ng-model="pafItem.HourlyRate" paf-format="{0}/hour" placeholder="0/hour" style="width: 40%" paf-numeric ng-required="pafItem.PayStatus=='HourlyRate'" />
                                 </div>
                             </div>
                         </div>
@@ -255,9 +191,9 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="gorm-group">
+                        <div class="gorm-group" ng-class="{'has-error':pafForm.PayGrade.$invalid}">
                             <label>Pay Grade</label>
-                            <input type="text" class="form-control input-sm" ng-model="pafItem.PayGrade" />
+                            <input type="text" class="form-control input-sm" name="PayGrade" ng-model="pafItem.PayGrade" required />
                         </div>
                     </div>
                 </div>
@@ -393,28 +329,28 @@
                 </div>
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="form-group" ng-class="{'has-error':pafItem.SeparationReason&&pafForm.ResignationType.$invalid}">
+                        <div class="form-group" ng-class="{'has-error':pafItem.SeparationReason.$invalid||pafForm.ResignationType.$invalid}">
                             <label>
-                                <input type="radio" name="SeparationReason" ng-model="pafItem.SeparationReason" value="Resignation" />&nbsp;Resignation <span ng-if="pafItem.SeparationReason=='Resignation'">- <i>Enter Reason Code Below</i></span></label>
-                            <select class="form-control input-sm" name="ResignationType" ng-model="pafItem.ResignationType" ng-disabled="pafItem.SeparationReason!='Resignation'" ng-options="item.id as item.brief+' '+item.title for item in lkup.Resignations" ng-required="pafItem.SeparationReason=='Resignation'" ng-change="SeparationReasonChange()">
+                                <input type="radio" name="SeparationReason" ng-model="pafItem.SeparationReason" value="ResignationType" />&nbsp;Resignation <span ng-if="pafItem.SeparationReason=='ResignationType'">- <i>Enter Reason Code Below</i></span></label>
+                            <select class="form-control input-sm" name="ResignationType" ng-model="pafItem.ResignationType" ng-disabled="pafItem.SeparationReason!='ResignationType'" ng-options="item.id as item.brief+' '+item.title for item in lkup.Resignations" ng-required="pafItem.SeparationReason=='ResignationType'">
                                 <option value=""></option>
                             </select>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group" ng-class="{'has-error':pafItem.SeparationReason&&pafForm.TerminationType.$invalid}">
+                        <div class="form-group" ng-class="{'has-error':pafItem.SeparationReason.$invalid||pafForm.TerminationType.$invalid}">
                             <label>
-                                <input type="radio" name="SeparationReason" ng-model="pafItem.SeparationReason" value="Termination" />&nbsp;Termination <span ng-if="pafItem.SeparationReason=='Termination'">- <i>Enter Reason Code Below</i></span></label>
-                            <select class="form-control input-sm" name="TerminationType" ng-model="pafItem.TerminationType" ng-disabled="pafItem.SeparationReason!='Termination'" ng-options="item.id as item.brief+' '+item.title for item in lkup.Terminations" ng-required="pafItem.SeparationReason=='Termination'" ng-change="SeparationReasonChange()">
+                                <input type="radio" name="SeparationReason" ng-model="pafItem.SeparationReason" value="TerminationType" />&nbsp;Termination <span ng-if="pafItem.SeparationReason=='TerminationType'">- <i>Enter Reason Code Below</i></span></label>
+                            <select class="form-control input-sm" name="TerminationType" ng-model="pafItem.TerminationType" ng-disabled="pafItem.SeparationReason!='TerminationType'" ng-options="item.id as item.brief+' '+item.title for item in lkup.Terminations" ng-required="pafItem.SeparationReason=='TerminationType'">
                                 <option value=""></option>
                             </select>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group" ng-class="{'has-error':pafItem.SeparationReason&&pafForm.LayoffType.$invalid}">
+                        <div class="form-group" ng-class="{'has-error':pafItem.SeparationReason.$invalid||pafForm.LayoffType.$invalid}">
                             <label>
-                                <input type="radio" name="SeparationReason" ng-model="pafItem.SeparationReason" value="Layoff" />&nbsp;Layoff <span ng-if="pafItem.SeparationReason=='Layoff'">- <i>Enter Reason Code Below</i></span></label>
-                            <select class="form-control input-sm" name="LayoffType" ng-model="pafItem.LayoffType" ng-disabled="pafItem.SeparationReason!='Layoff'" ng-options="item.id as item.brief+' '+item.title for item in lkup.Layoffs" ng-required="pafItem.SeparationReason=='Layoff'" ng-change="SeparationReasonChange()">
+                                <input type="radio" name="SeparationReason" ng-model="pafItem.SeparationReason" value="LayoffType" />&nbsp;Layoff <span ng-if="pafItem.SeparationReason=='LayoffType'">- <i>Enter Reason Code Below</i></span></label>
+                            <select class="form-control input-sm" name="LayoffType" ng-model="pafItem.LayoffType" ng-disabled="pafItem.SeparationReason!='LayoffType'" ng-options="item.id as item.brief+' '+item.title for item in lkup.Layoffs" ng-required="pafItem.SeparationReason=='LayoffType'">
                                 <option value=""></option>
                             </select>
                         </div>
@@ -439,7 +375,7 @@
             </section>
 
             <!--LEAVE OF ABSENCE-->
-            <section ng-if="pafItem.LOA">
+            <section ng-if="pafItem.Loa">
                 <h4>LEAVE OF ABSENCE</h4>
                 <p>(SCETION to be completed by Manager) REVIEWED WITH HR: Select name from menu</p>
                 <div class="row">
@@ -447,7 +383,7 @@
                         <div class="form-group" ng-class="{'has-error':pafForm.LoaDate.$invalid}">
                             <label>
                                 LOA Date</label>
-                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-name="LoaDate" dt-model="pafItem.LoaDate" dt-change="loaDateChange()"></paf-datepicker>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-name="LoaDate" dt-model="pafItem.LoaDate"></paf-datepicker>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -461,8 +397,12 @@
             </section>
             <!--SALARY CHANGE/PROMOTION/Demotion-->
             <section ng-if="pafItem.SalaryChange||pafItem.Promotion||pafItem.Demotion">
-                <div ng-if="pafItem.SalaryChange||pafItem.Promotion">
-                    <h4>SALARY CHANGE/PROMOTION</h4>
+                <div ng-if="pafItem.SalaryChange">
+                    <h4>SALARY CHANGE</h4>
+                    <p>(Section to be completed by Hiring Manager or Manager)</p>
+                </div>
+                <div ng-if="pafItem.Promotion">
+                    <h4>PROMOTION</h4>
                     <p>(Section to be completed by Hiring Manager or Manager)</p>
                 </div>
                 <div ng-if="pafItem.Demotion">
@@ -482,7 +422,7 @@
                         <div class="form-group" ng-class="{'has-error':pafForm.NewPositionType.$invalid}">
                             <label>
                                 New Position</label>
-                            <select class="form-control input-sm" name="NewPositionType" ng-model="pafItem.NewPositionType" ng-options="item.id as item.name for item in lkup.PositionTypes" ng-required="pafItem.SalaryChange||pafItem.Promotion||pafItem.Demotion">
+                            <select class="form-control input-sm" name="NewPositionType" ng-model="pafItem.NewPositionType" ng-options="item.id as item.name for item in JobCodes" ng-required="pafItem.SalaryChange||pafItem.Promotion||pafItem.Demotion">
                                 <option value=""></option>
                             </select>
 
@@ -514,15 +454,21 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>
+                            <label ng-if="!pafItem.Demotion">
                                 Date Last Increase</label>
+                            <label ng-if="pafItem.Demotion">
+                                Date Last  Decrease 
+                            </label>
                             <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.LastIncreaseDate"></paf-datepicker>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>
+                            <label ng-if="!pafItem.Demotion">
                                 Percentage Last Increase</label>
+                            <label ng-if="pafItem.Demotion">
+                                Percentage Last Decrease 
+                            </label>
                             <input class="form-control input-sm" ng-model="pafItem.LastIncreasePercentage" paf-numeric />
                         </div>
                     </div>
@@ -890,7 +836,7 @@
                 </div>
             </section>
             <div class="pull-right margin-bottom20">
-                <button class="btn btn-primary" type="submit" ng-click="save(pafForm.$valid)">Save</button>
+                <button class="btn btn-primary" type="submit" ng-click="save()">Save</button>
                 <a class="btn btn-default" href="#/list">Cancel</a>
             </div>
         </form>

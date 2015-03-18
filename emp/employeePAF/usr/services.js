@@ -6,31 +6,42 @@ paf.factory('EmpActions', ["$http", "$filter", function ($http, $filter) {
         { Id: '600', Description: '600/month' },
         { Id: '900', Description: '900/month' }];
 
-    var PositionTypes = [
-       { id: '1', name: 'Teacher' },
-       { id: '2', name: 'Painter' },
-       { id: '3', name: 'Architect' },
-       { id: '4', name: 'Doctor' }];
-
     var houseCodes = null;
+    var stateTypes = null;
+    var personActionTypes = null;
+    var jobCodes = null;
 
     var apiRequest = function (moduleId, requestXml, callback) {
-        $.ajax({
-            type: "POST",
-            dataType: "xml",
-            url: "/net/crothall/chimes/fin/" + moduleId + "/act/provider.aspx",
+        //$.ajax({
+        //    type: "POST",
+        //    dataType: "xml",
+        //    url: "/net/crothall/chimes/fin/" + moduleId + "/act/provider.aspx",
+        //    data: "moduleId=" + moduleId + "&requestId=1&targetId=iiCache"
+        //        + "&requestXml=" + encodeURIComponent(requestXml),
+        //    success: function (xml) {
+        //        if (callback)
+        //            callback(xml);
+        //    }
+        //});
+        $http({
+            method: 'POST',
+            url: '/net/crothall/chimes/fin/' + moduleId + '/act/Provider.aspx',
             data: "moduleId=" + moduleId + "&requestId=1&targetId=iiCache"
-                + "&requestXml=" + requestXml,
-            success: function (xml) {
-                if (callback)
-                    callback(xml);
+                + "&requestXml=" + encodeURIComponent(requestXml),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
             }
+        }).success(function (result) {
+            callback(result);
+        })
+        .error(function (error) {
+
         });
     }
 
     var getEmployeePersonnelActions = function (callback) {
 
-        apiRequest('emp', '<criteria>storeId:employeePersonnelActions,userId:[user] ,<criteria>', function (xml) {
+        apiRequest('emp', '<criteria>storeId:employeePersonnelActions,userId:[user] ,</criteria>', function (xml) {
             if (callback)
                 callback(deserializeXml(xml, 'item', { upperFirstLetter: true }));
         });
@@ -38,29 +49,11 @@ paf.factory('EmpActions', ["$http", "$filter", function ($http, $filter) {
     }
 
     var findEmployeePersonnelAction = function (id, callback) {
-
         var boolItems = ["NewHire", "ReHire", "Separation", "LOA", "SalaryChange", "Promotion", "Demotion", "Transfer", "PersonalInfoChange", "Relocation"];
-
-        //$.ajax({
-        //    type: "POST",
-        //    dataType: "xml",
-        //    url: "/net/crothall/chimes/fin/emp/act/provider.aspx",
-        //    data: "moduleId=emp&requestId=1&targetId=iiCache"
-        //        + "&requestXml=<criteria>storeId:employeePersonnelActions,userId:[user]"
-        //                     + ",id:" + id
-        //        + ",<criteria>",
-
-        //    success: function (xml) {
-
-        //        var items = deserializeXml(xml, 'item', true, booleanItems);
-
-        //        if (callback)
-        //            callback(items[0]);
-        //    }
-        //});
-        apiRequest('emp', '<criteria>storeId:employeePersonnelActions,userId:[user]' + ",id:" + id + ',<criteria>', function (xml) {
+        var intItems = ["HcmHouseCode", "EmployeeNumber", "StateType", "PositionType", "TrainingLocation", "Duration", "CarAllowance", "BonusEligibleType", "LayoffType", "OldPositionType", "NewPositionType", "ChangeReasonType", "NewCarAllowance", "NewBonusEligibleType", "HouseCodeTransfer", "InfoChangeStateType", "RelocationPlan"];
+        apiRequest('emp', '<criteria>storeId:employeePersonnelActions,userId:[user]' + ",id:" + id + ',</criteria>', function (xml) {
             if (callback)
-                callback(deserializeXml(xml, 'item', { upperFirstLetter: true, boolItems: boolItems })[0]);
+                callback(deserializeXml(xml, 'item', { upperFirstLetter: true, boolItems: boolItems, intItems: intItems })[0]);
         });
     }
 
@@ -68,16 +61,14 @@ paf.factory('EmpActions', ["$http", "$filter", function ($http, $filter) {
 
         var criteriaXml = '<criteria>appUnitBrief:,storeId:hcmHouseCodes,userId:[user],</criteria>';
 
-        //var data = 'moduleId=hcm&requestId=1&requestXml=' + encodeURIComponent(criteriaXml) + '&&targetId=iiCache';
+        var data = 'moduleId=hcm&requestId=1&requestXml=' + encodeURIComponent(criteriaXml) + '&targetId=iiCache';
 
-        //$.post('/net/crothall/chimes/fin/hcm/act/Provider.aspx', data, function (data, status) {
-        //    var items = deserializeXml(data, 'item', false);
+        if (houseCodes) {
+            callback(houseCodes);
+            return;
+        }
 
-        //    if (callback)
-        //        callback(items);
-        //});
-
-        apiRequest('hcm', encodeURIComponent(criteriaXml), function (xml) {
+        apiRequest('hcm', criteriaXml, function (xml) {
             houseCodes = deserializeXml(xml, 'item', { upperFirstLetter: false });
             if (callback)
                 callback(houseCodes);
@@ -88,64 +79,52 @@ paf.factory('EmpActions', ["$http", "$filter", function ($http, $filter) {
         if (houseCodes == null)
             return '';
 
-        var items = $filter('filter')(houseCodes, { id: id });
-        if (items != null && items.length>0) {
-            return items[0].name;
-        }
-        else {
-            return 'N/A';
-        }
+        var houseCodeName = 'N/A';
+
+        angular.forEach(houseCodes, function (item, index) {
+            if (item.id == id) {
+                houseCodeName = item.name;
+            }
+        });
+
+        return houseCodeName;
+    }
+
+    var getHcmHouseCodeByBrief = function (brief) {
+        if (houseCodes == null)
+            return '';
+
+        var hcmHouseCode = 0;
+
+        angular.forEach(houseCodes, function (item, index) {
+            if (item.brief == brief) {
+                hcmHouseCode = item.id;
+            }
+        });
+
+        return hcmHouseCode;
     }
 
     var getStateTypes = function (callback) {
 
-        //$.ajax({
-        //    type: "POST",
-        //    dataType: "xml",
-        //    url: "/net/crothall/chimes/fin/emp/act/provider.aspx",
-        //    data: "moduleId=emp&requestId=1&targetId=iiCache"
-        //        + "&requestXml=<criteria>storeId:stateTypes,userId:[user]"
-        //        + ",<criteria>",
-
-        //    success: function (xml) {
-
-        //        var items = deserializeXml(xml, 'item', false);
-
-        //        if (callback)
-        //            callback(items);
-        //    }
-        //});
-        apiRequest('emp', '<criteria>storeId:stateTypes,userId:[user],<criteria>', function (xml) {
+        if (stateTypes) {
+            callback(stateTypes);
+            return;
+        }
+        apiRequest('emp', '<criteria>storeId:stateTypes,userId:[user],</criteria>', function (xml) {
+            stateTypes = deserializeXml(xml, 'item', { upperFirstLetter: false });
             if (callback)
-                callback(deserializeXml(xml, 'item', { upperFirstLetter: false }));
+                callback(stateTypes);
         });
     }
 
-    var getEmployee = function (employeeNumber, houseCodeId, callback) {
+    var getEmployee = function (employeeNumber, hcmHouseCode, callback) {
 
-        //$.ajax({
-        //    type: "POST",
-        //    dataType: "xml",
-        //    url: "/net/crothall/chimes/fin/emp/act/provider.aspx",
-        //    data: "moduleId=emp&requestId=1&targetId=iiCache"
-        //        + "&requestXml=<criteria>storeId:employeeSearchs,userId:[user]"
-        //                     + ",searchValue:" + employeeNumber
-        //                     + ",hcmHouseCodeId:" + houseCodeId
-        //                     + ",employeeType:SearchFull,filterType:Employee Number"
-        //        + ",<criteria>",
-
-        //    success: function (xml) {
-        //        var items = deserializeXml(xml, 'item', false);
-
-        //        if (callback)
-        //            callback(items);
-        //    }
-        //});
         apiRequest('emp', '<criteria>storeId:employeeSearchs,userId:[user]'
                              + ',searchValue:' + employeeNumber
-                             + ',hcmHouseCodeId:' + houseCodeId
+                             + ',hcmHouseCodeId:' + hcmHouseCode
                              + ',employeeType:SearchFull,filterType:Employee Number'
-                + ',<criteria>', function (xml) {
+                + ',</criteria>', function (xml) {
                     if (callback)
                         callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
                 });
@@ -153,26 +132,9 @@ paf.factory('EmpActions', ["$http", "$filter", function ($http, $filter) {
 
     var getPerson = function (employeeId, callback) {
 
-        //$.ajax({
-        //    type: "POST",
-        //    dataType: "xml",
-        //    url: "/net/crothall/chimes/fin/emp/act/provider.aspx",
-        //    data: "moduleId=emp&requestId=1&targetId=iiCache"
-        //        + "&requestXml=<criteria>storeId:persons,userId:[user]"
-        //                     + ",id:" + employeeId
-        //        + ",<criteria>",
-
-        //    success: function (xml) {
-
-        //        var items = deserializeXml(xml, 'item', false);
-
-        //        if (callback)
-        //            callback(items);
-        //    }
-        //});
         apiRequest('emp', '<criteria>storeId:persons,userId:[user]'
                     + ',id:' + employeeId
-                    + ',<criteria>', function (xml) {
+                    + ',</criteria>', function (xml) {
                         if (callback)
                             callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
                     });
@@ -182,38 +144,52 @@ paf.factory('EmpActions', ["$http", "$filter", function ($http, $filter) {
         return CarAllowances;
     }
 
-    var getPositionTypes = function () {
-        return PositionTypes;
+    var getJobCodes = function (callback) {
+        if (jobCodes) {
+            callback(jobCodes);
+            return;
+        }
+        apiRequest('emp', '<criteria>storeId:jobCodes,userId:[user],</criteria>', function (xml) {
+            jobCodes = deserializeXml(xml, 'item', { upperFirstLetter: false });
+            if (callback)
+                callback(jobCodes);
+        });
     }
 
     var getPersonActionTypes = function (callback) {
 
-        //$.ajax({
-        //    type: "POST",
-        //    dataType: "xml",
-        //    url: "/net/crothall/chimes/fin/emp/act/provider.aspx",
-        //    data: "moduleId=emp&requestId=1&targetId=iiCache"
-        //        + "&requestXml=<criteria>storeId:personnelActionTypes,userId:[user]"
-        //        + ",<criteria>",
+        if (personActionTypes) {
+            callback(personActionTypes);
+            return;
+        }
 
-        //    success: function (xml) {
-
-        //        var items = deserializeXml(xml, 'item', false);
-
-        //        if (callback)
-        //            callback(items);
-        //    }
-        //});
-        apiRequest('emp', '<criteria>storeId:personnelActionTypes,userId:[user],<criteria>', function (xml) {
+        apiRequest('emp', '<criteria>storeId:personnelActionTypes,userId:[user],</criteria>', function (xml) {
+            personActionTypes = deserializeXml(xml, 'item', { upperFirstLetter: false });
             if (callback)
-                callback(deserializeXml(xml, 'item', { upperFirstLetter: false }));
+                callback(personActionTypes);
         });
     }
 
-    var saveEmployeePersonnelAction = function (xmlNode, callback) {
+    var saveEmployeePersonnelAction = function (employeePersonnelAction, callback) {
 
         var xml = ['<transaction id="1">\r\n<employeePersonnelAction '];
+        var xmlNode = [];
+        angular.forEach(employeePersonnelAction, function (value, key) {
+            key = lowercaseFirstLetter(key);
 
+            if (value == null || !angular.isDefined(value))
+                value = ""
+                //else if (value == true)
+                //    value = "1";
+                //else if (value == false)
+                //    value = "0";
+            else if (angular.isDate(value)) {
+                value = $filter('date')(value, "MM/dd/yyyy");
+            }
+
+
+            xmlNode.push(key + '=' + '"' + value + '"');
+        });
         xml.push(xmlNode.join(' '));
 
         xml.push('/>\r\n</transaction>');
@@ -236,11 +212,12 @@ paf.factory('EmpActions', ["$http", "$filter", function ($http, $filter) {
         getCarAllowances: getCarAllowances,
         getHcmHouseCodes: getHcmHouseCodes,
         getHouseCodeName: getHouseCodeName,
+        getHcmHouseCodeByBrief: getHcmHouseCodeByBrief,
         getStateTypes: getStateTypes,
         getEmployee: getEmployee,
         getPerson: getPerson,
         getPersonActionTypes: getPersonActionTypes,
-        getPositionTypes: getPositionTypes,
+        getJobCodes: getJobCodes,
         saveEmployeePersonnelAction: saveEmployeePersonnelAction
     }
 }]);
