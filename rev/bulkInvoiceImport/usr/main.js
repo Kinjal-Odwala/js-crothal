@@ -623,10 +623,11 @@ ii.Class({
 				$("#txtStatus" + index).val(me.invoices[index].status);
 				if (me.invoices[index].invoiceByHouseCode == "" || me.invoices[index].invoiceByHouseCode.toUpperCase() == "Y")
 					$("#chkInvoiceByHouseCode" + index)[0].checked = true;
+				$("#txtServiceLocation" + index).val(me.invoices[index].serviceLocation);
 				$("#tdInvoiceNumber" + index).hide();
 				//$("#chkTaxExempt" + index).change(function() { me.setTaxable(this); });
 			}
-			invoiceRow = '<tr height="100%"><td id="tdLastRow" colspan="20" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>';
+			invoiceRow = '<tr height="100%"><td id="tdLastRow" colspan="21" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>';
 			$("#InvoiceGridBody").append(invoiceRow);
 			$("#InvoiceGrid tr:odd").addClass("gridRow");
         	$("#InvoiceGrid tr:even").addClass("alternateGridRow");			
@@ -672,10 +673,12 @@ ii.Class({
 			var sequenceNumber = 0;
 			var customerNumber = "";
 			var houseCode = "";
+			var serviceLocation = "";
 			var customerNumbers = "";
 			var houseCodes = "";
 			var jobCodes = "";
 			var accountCodes = "";
+			var serviceLocations = "";
 			var invoiceByHouseCode = true;
 
 			for (var index = 0; index < me.invoices.length; index++) {
@@ -686,6 +689,7 @@ ii.Class({
 					customerNumber = $("#txtCustomerNumber" + index).val();
 					houseCode = $("#txtHouseCode" + index).val();
 					invoiceByHouseCode = ($("#chkInvoiceByHouseCode" + index)[0].checked);
+					serviceLocation = $("#txtServiceLocation" + index).val();
 					me.invoices[index].invoiceNumber = -1;
 
 					if (!(/^[0-9]+$/.test($("#txtSequence" + index).val()))) {
@@ -696,7 +700,7 @@ ii.Class({
 					else {
 						$("#txtSequence" + index).attr("title", "");
 						$("#txtSequence" + index).css("background-color", me.cellColorValid);
-					}						
+					}
 
 					if (!(/^[0-9]+$/.test($("#txtCustomerNumber" + index).val()))) {
 						rowValid = false;
@@ -789,7 +793,17 @@ ii.Class({
 						rowValid = false;
 						$("#txtStatus" + index).attr("title", "Invalid Status. It should be either Open or Printed.");
 						$("#txtStatus" + index).css("background-color", me.cellColorInvalid);
-					}						
+					}
+
+					if ($("#txtServiceLocation" + index).val() != "" && !(/^[0-9]+$/.test($("#txtServiceLocation" + index).val()))) {
+						rowValid = false;
+						$("#txtServiceLocation" + index).attr("title", "Invalid Service Location.");
+						$("#txtServiceLocation" + index).css("background-color", me.cellColorInvalid);
+					}
+					else {
+						$("#txtServiceLocation" + index).attr("title", "");
+						$("#txtServiceLocation" + index).css("background-color", me.cellColorValid);
+					}
 				}
 				else {
 					if ($("#txtCustomerNumber" + index).val() != "" && customerNumber != $("#txtCustomerNumber" + index).val()) {
@@ -812,6 +826,16 @@ ii.Class({
 						$("#txtHouseCode" + index).css("background-color", me.cellColorValid);
 					}
 
+					if ($("#txtServiceLocation" + index).val() != "" && serviceLocation != $("#txtServiceLocation" + index).val()) {
+						rowValid = false;
+						$("#txtServiceLocation" + index).attr("title", "Service Location should be same for same Sequence #.");
+						$("#txtServiceLocation" + index).css("background-color", me.cellColorInvalid);
+					}
+					else {
+						$("#txtServiceLocation" + index).attr("title", "");
+						$("#txtServiceLocation" + index).css("background-color", me.cellColorValid);
+					}
+
 					$("#txtSequence" + index).attr("title", "");
 					$("#txtTaxExemptId" + index).attr("title", "");
 					$("#txtInvoiceDate" + index).attr("title", "");
@@ -827,6 +851,8 @@ ii.Class({
 					$("#txtStartDate" + index).css("background-color", me.cellColorValid);
 					$("#txtEndDate" + index).css("background-color", me.cellColorValid);
 					$("#txtStatus" + index).css("background-color", me.cellColorValid);
+					
+					serviceLocation = "";
 				}
 				
 				if ($("#txtJobCode" + index).val() != "" && !(/^[0-9]+$/.test($("#txtJobCode" + index).val()))) {
@@ -892,6 +918,8 @@ ii.Class({
 						houseCodes += $("#txtHouseCode" + index).val() + "|";
 					else
 						houseCodes += houseCode + "|";
+
+					serviceLocations += serviceLocation + "|";
 				}
 
 				if (!rowValid) {					
@@ -912,6 +940,7 @@ ii.Class({
 					+ ",houseCodes:" + houseCodes
 					+ ",jobCodes:" + jobCodes
 					+ ",accountCodes:" + accountCodes
+					+ ",serviceLocations:" + serviceLocations
 					, me.validationsLoaded
 					, me);
 			}
@@ -932,6 +961,7 @@ ii.Class({
 				var jobCodes = me.bulkImportValidations[0].jobCodes.split('|');
 				var taxHouseCodes = me.bulkImportValidations[0].taxHouseCodes.split('|');
 				var accountCodes = me.bulkImportValidations[0].accountCodes.split('|');
+				var serviceLocations = me.bulkImportValidations[0].serviceLocations.split('|');
 
 				for (var rowIndex = 0; rowIndex < me.invoices.length; rowIndex++) {
 					for (var index = 0; index < customerNumbers.length - 1; index++) {
@@ -978,6 +1008,17 @@ ii.Class({
 							$("#txtHouseCode" + rowIndex).attr("title", message);
 							$("#txtHouseCode" + rowIndex).css("background-color", me.cellColorInvalid);
 						}							
+					}
+					
+					for (var index = 0; index < serviceLocations.length - 1; index++) {
+						var invalidServiceLocations = serviceLocations[index].split(':');
+						var serviceLocation = invalidServiceLocations[0];
+						var houseCode = invalidServiceLocations[1];
+
+						if ($("#txtServiceLocation" + rowIndex).val() == serviceLocation && $("#txtHouseCode" + rowIndex).val() == houseCode) {
+							$("#txtServiceLocation" + rowIndex).attr("title", "Either Service Location doesn't exists or it is not associated with the House Code [" + houseCode + "].");
+							$("#txtServiceLocation" + rowIndex).css("background-color", me.cellColorInvalid);							
+						}
 					}
 				}
 
@@ -1138,6 +1179,7 @@ ii.Class({
 				xml += ' price="' + $("#txtPrice" + index).val() + '"';
 				xml += ' status="' + $("#txtStatus" + index).val() + '"';
 				xml += ' invoiceByHouseCode="' + $("#chkInvoiceByHouseCode" + index)[0].checked + '"';
+				xml += ' serviceLocation="' + $("#txtServiceLocation" + index).val() + '"';
 				xml += '/>';
 			}
 
