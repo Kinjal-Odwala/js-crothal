@@ -51,7 +51,7 @@ paf.factory('EmpActions', ["$http", "$filter", function ($http, $filter) {
     var findEmployeePersonnelAction = function (id, callback) {
         var boolItems = ["NewHire", "ReHire", "Separation", "LOA", "SalaryChange", "Promotion", "Demotion", "Transfer", "PersonalInfoChange", "Relocation"];
         var intItems = ["HcmHouseCode", "EmployeeNumber", "StateType", "PositionType", "TrainingLocation", "Duration", "CarAllowance", "BonusEligibleType", "LayoffType", "OldPositionType", "NewPositionType", "ChangeReasonType", "NewCarAllowance", "NewBonusEligibleType", "HouseCodeTransfer", "InfoChangeStateType", "RelocationPlan"];
-        apiRequest('emp', '<criteria>storeId:employeePersonnelActions,userId:[user]' + ",id:" + id + ',</criteria>', function (xml) {
+        apiRequest('emp', '<criteria>storeId:employeePersonnelActions,userId:[user]' + ",actionId:" + id + ',</criteria>', function (xml) {
             if (callback)
                 callback(deserializeXml(xml, 'item', { upperFirstLetter: true, boolItems: boolItems, intItems: intItems })[0]);
         });
