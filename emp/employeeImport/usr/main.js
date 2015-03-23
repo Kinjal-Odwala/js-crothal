@@ -998,14 +998,6 @@ ii.Class({
 					+ ",<criteria>",
  
                 success: function(xml) {
-					var payrollCompany = {};
-	                payrollCompany.id = 0;
-	                payrollCompany.title = "";
-					payrollCompany.salary = false;
-					payrollCompany.hourly = false;
-					payrollCompany.payFrequencyType = "";
-	                me.houseCodeCache[houseCode].payrollCompanies.push(payrollCompany);
-						
 		            $(xml).find('item').each(function() {						
 		                var payrollCompany = {};
 		                payrollCompany.id = $(this).attr("id");
@@ -1480,10 +1472,28 @@ ii.Class({
 				}
 
 				if ($("#txtScheduledHours" + index).val() != "") {
+					var houseCode = $("#txtHouseCode" + index).val();
 					var scheduledHours = parseInt($("#txtScheduledHours" + index).val(), 10);
-					if (scheduledHours > 40) {
-						rowValid = false;
-						me.setCellColor($("#txtScheduledHours" + index), me.cellColorInvalid, "Scheduled Hours should not be greater than 40 hours for the Weekly Pay Frequency.");
+					var frequencyType = "";
+					
+					for (var rowNumber = 0; rowNumber < me.houseCodeCache[houseCode].payrollCompanies.length; rowNumber++) {
+						if (me.houseCodeCache[houseCode].payrollCompanies[rowNumber].hourly) {
+							frequencyType = me.houseCodeCache[houseCode].payrollCompanies[rowNumber].payFrequencyType;
+							break;
+						}
+					}
+
+					if (frequencyType == "Weekly") {
+						if (scheduledHours > 40) {
+							rowValid = false;
+							me.setCellColor($("#txtScheduledHours" + index), me.cellColorInvalid, "Scheduled Hours should not be greater than 40 hours for the Weekly Pay Frequency.");
+						}
+					}
+					else if (frequencyType == "Bi-Weekly") {
+						if (scheduledHours > 80) {
+							rowValid = false;
+							me.setCellColor($("#txtScheduledHours" + index), me.cellColorInvalid, "Scheduled Hours should not be greater than 80 hours for the Bi-Weekly Pay Frequency.");
+						}
 					}
 				}
 
