@@ -1486,6 +1486,7 @@ ii.Class({
 					}
 				}				
 				
+				me.deviceTypeClockAssetGrid.setData([]);
 				$("#DeviceAssignment")[0].value = "";
 				me.dailyRebootTime.setValue("");
 				me.taskSelectionMethod.select(-1, me.taskSelectionMethod.focused);
