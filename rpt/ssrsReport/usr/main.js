@@ -2186,7 +2186,10 @@ ii.Class({
 								$("#Customer").multiselect("refresh");
 								if (me.level == '' || me.name == '') 									
 									return false;
-																	
+									
+								$("#Customer").multiselect({
+									noneSelectedText: "Select a Value",	
+								});									
 								me.namesList = me.names.replace("~", "");
 								me.levelName = me.level.replace("~Level=", "");
 								me.loadCount = 1;											
