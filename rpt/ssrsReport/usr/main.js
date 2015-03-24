@@ -1737,7 +1737,10 @@ ii.Class({
 					$("#" + this.id).attr("checked", false);
 		    });
 
-			me.checkDependentTypes(fullPath, chkNodeChild.checked);			
+			me.checkDependentTypes(fullPath, chkNodeChild.checked);
+			$("#Customer").multiselect({
+				noneSelectedText: "Select a Value",	
+			});			
             $("#Customer").html("");
 			$("#Customer").multiselect("refresh");
 			
@@ -1857,6 +1860,11 @@ ii.Class({
 			me.reportName = "";
 			me.subscriptionSelected = false;
 			
+			if (me.hirNodePreviousSelected == undefined || me.hirNodePreviousSelected == nodeId)
+				me.nodeChanged = false;
+			else if (me.hirNodePreviousSelected != nodeId)
+				me.nodeChanged = true;
+				
 			if (me.hirNodePreviousSelected > 0)
 				$("#span" + me.hirNodePreviousSelected).replaceClass("unitSelected", "unit");
 
@@ -2035,7 +2043,7 @@ ii.Class({
 				else if (me.reportParameters[index].controlType == "Date" && !me.reportParameters[index].mandatory)
 					html += "\n<div><div class='labelReport'>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div></div>"
 				else
-					html += "\n<div><div class='labelReport'>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium' style='width:" + me.reportParameters[index].Width + "px;'></div><div id='customersLoading'></div></div>"										
+					html += "\n<div><div class='labelReport'>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium' style='height:20px;width:" + me.reportParameters[index].Width + "px;'></div><div id='customersLoading'></div></div>"										
 				html += "\n<div style='clear:both;height:3px'></div>";
 			}
 
@@ -2135,6 +2143,7 @@ ii.Class({
                             var selectedValues = $("#" + this.element[0].id).multiselect("getChecked").map(function() {
                                 return this.title;
                             }).get();
+                            var selectedValuesLength = selectedValues.length;
                             
                             for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
                                 if (selectedValues[selectedIndex] != '(Select All)')
@@ -2143,7 +2152,9 @@ ii.Class({
                             }
                             parametersList = parametersList.substring(1, parametersList.length);
 							
-							if(selectedValues.length > 4)
+							if(parametersList.indexOf("None") >= 0 && selectedValues.length > 2)
+                                return "" + selectedItems + "" + " selected";
+                            else if(parametersList.indexOf("None") < 0 && selectedValues.length > 1)
                                 return "" + selectedItems + "" + " selected";
                             else
                             	return parametersList;
@@ -2162,15 +2173,20 @@ ii.Class({
                                     $("#ui-multiselect-"+event.target.id+"-option-0")[0].checked = false;
                             }
                         },
-						open: function( e ){							
+						open: function( e ) {							
 							if (e.target.id == 'Customer') {
 								if (me.subscriptionSelected)
 									return false;
-																																		
+									
+								if (!me.nodeChanged && me.namesList == me.names.replace("~", "") && me.levelName == me.level.replace("~Level=", ""))
+									return false;
+																	
+								me.nodeChanged = false;																											
 								$("#Customer").html("");
 								$("#Customer").multiselect("refresh");
 								if (me.level == '' || me.name == '') 									
 									return false;
+																	
 								me.namesList = me.names.replace("~", "");
 								me.levelName = me.level.replace("~Level=", "");
 								me.loadCount = 1;											
@@ -3016,7 +3032,7 @@ ii.Class({
 			if (me.subscriptions[index] == undefined) 
 				return;
 			
-			if(me.lastBeforeSelectedRowIndex != -1)
+			if (me.lastBeforeSelectedRowIndex != -1)
 				$("#subscriptionRow" + me.lastBeforeSelectedRowIndex).removeClass("selectedRow");
 				
 			$("#subscriptionRow" + me.subscriptions[index].id).addClass("selectedRow");
@@ -3205,8 +3221,12 @@ ii.Class({
 						var controlIndex = me.findIndexByTitle(nameValues[0], me.reportParameters);
 						if (me.reportParameters[controlIndex].controlType == "Text")
 							me.controls[iIndex].setValue(nameValues[1]);
-						else if (me.reportParameters[controlIndex].controlType == "DropDown")
-							$(me.controls[controlIndex].selector).multiselect("widget").find(":radio[value="+ nameValues[1] +"]").click();
+						else if (me.reportParameters[controlIndex].controlType == "DropDown") {
+							 $(me.controls[controlIndex].selector).multiselect("widget").find(":radio").each(function(){
+							    if(this.value == nameValues[1])
+							            this.click();
+							   });
+						}
 					}
 				}
 				
