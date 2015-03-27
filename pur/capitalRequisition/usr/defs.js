@@ -111,6 +111,9 @@ ii.init.register( function() {
 		, businessType: {type: String, required: false, defaultValue: ""}
 		, budgeting: {type: String, required: false, defaultValue: ""}
 		, chargeToPeriod: {type: String, required: false, defaultValue: ""}
+		, regionalManagerName: {type: String, required: false, defaultValue: ""}
+		, regionalManagerTitle: {type: String, required: false, defaultValue: ""}
+		, regionalManagerEmail: {type: String, required: false, defaultValue: ""}
 		, valid: {type: Boolean, required: false, defaultValue: true}
 		, taxPercent: {type: String, required: false, defaultValue: ""}
 		, taxAmount: {type: String, required: false, defaultValue: ""}
@@ -180,6 +183,15 @@ ii.init.register( function() {
 		, fileName: {type: String, required: false, defaultValue: ""}
 	};
 
+	fin.pur.poCapitalRequisition.employeeManagerDetailArgs = {
+		id: {type: Number}
+		, employeeId: {type: String, required: false, defaultValue: ""}
+		, managerId: {type: String, required: false, defaultValue: ""}
+		, managerName: {type: String, required: false, defaultValue: ""}
+		, managerEmail: {type: String, required: false, defaultValue: ""}
+		, jobTitle: {type: String, required: false, defaultValue: ""}
+	};
+	
 }, 2);
 
 ii.Class({
@@ -345,6 +357,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.pur.poCapitalRequisition.fileNameArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.pur.poCapitalRequisition.EmployeeManagerDetail",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.employeeManagerDetailArgs);
 			$.extend(this, args);
 		}
 	}

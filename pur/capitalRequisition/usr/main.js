@@ -100,7 +100,7 @@ ii.Class({
 				$("#pageLoading").fadeIn("slow");
 
 				ii.timer.timing("Page displayed");
-				me.loadCount = 3;
+				me.loadCount = 4;
 				me.session.registerFetchNotify(me.sessionLoaded, me);
 
 				if (!me.poCapitalRequisitionShow && !me.writeInProcess) {
@@ -127,7 +127,8 @@ ii.Class({
 					
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
 				me.accountStore.fetch("userId:[user]", me.accountsLoaded, me);
-				me.personStore.fetch("userId:[user],id:" + me.session.propertyGet("personId"), me.personsLoaded, me);				
+				me.personStore.fetch("userId:[user],id:" + me.session.propertyGet("personId"), me.personsLoaded, me);
+				me.employeeManagerDetailStore.fetch("userId:[user]", me.employeeManagerDetailsLoaded, me);
 			}				
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
@@ -519,13 +520,52 @@ ii.Class({
 					if (/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(enteredText) == false)
 						this.setInvalid("Please enter valid Email Address.");
 				});
-				
+
 			me.reasonForRequest = new ui.ctl.Input.Text({
 		        id: "ReasonForRequest",
 				maxLength: 200,
 				changeFunction: function() { me.modified(); }
 		    });
-			
+
+			me.regionalManagerName = new ui.ctl.Input.Text({
+		        id: "RegionalManagerName",
+				maxLength: 100,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.regionalManagerName.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+
+			me.regionalManagerTitle = new ui.ctl.Input.Text({
+		        id: "RegionalManagerTitle",
+				maxLength: 100,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.regionalManagerTitle.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+
+			me.regionalManagerEmail = new ui.ctl.Input.Text({
+		        id: "RegionalManagerEmail",
+				maxLength: 100,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.regionalManagerEmail.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+					
+					var enteredText = me.regionalManagerEmail.getValue();
+					
+					if (enteredText == "") return;
+					
+					if (!(ui.cmn.text.validate.emailAddress(enteredText)))
+						this.setInvalid("Please enter valid Email.");
+			});
+
 			me.vendor = new ui.ctl.Input.Text({
 				id: "Vendor",
 				maxLength: 256,
@@ -1057,6 +1097,14 @@ ii.Class({
 				itemConstructorArgs: fin.pur.poCapitalRequisition.fileNameArgs,
 				injectionArray: me.fileNames
 			});
+
+			me.employeeManagerDetails = [];
+			me.employeeManagerDetailStore = me.cache.register({
+			storeId: "employeeManagerDetails",
+				itemConstructor: fin.pur.poCapitalRequisition.EmployeeManagerDetail,
+				itemConstructorArgs: fin.pur.poCapitalRequisition.employeeManagerDetailArgs,
+				injectionArray: me.employeeManagerDetails
+			});
 		},
 
 		setStatus: function(status) {
@@ -1146,6 +1194,9 @@ ii.Class({
 			//Existing Business - 20
 			//Budgeted - 21
 			//Unbudgeted - 22
+			me.regionalManagerName.text.tabIndex = 23;
+			me.regionalManagerTitle.text.tabIndex = 24;
+			me.regionalManagerEmail.text.tabIndex = 25;
 			me.vendor.text.tabIndex = 31;
 			me.searchItem.text.tabIndex = 32;
 			me.category.text.tabIndex = 33;			
@@ -1182,6 +1233,9 @@ ii.Class({
 			me.vendorPhone.resizeText();
 			me.vendorEmail.resizeText();
 			me.reasonForRequest.resizeText();
+			me.regionalManagerName.resizeText();
+			me.regionalManagerTitle.resizeText();
+			me.regionalManagerEmail.resizeText();
 			me.vendor.resizeText();
 			me.searchItem.resizeText();
 			me.category.resizeText();			
@@ -1219,6 +1273,9 @@ ii.Class({
 			me.vendorPhone.text.readOnly = readOnly;
 			me.vendorEmail.text.readOnly = readOnly;
 			me.reasonForRequest.text.readOnly = readOnly;
+			me.regionalManagerName.text.readOnly = readOnly;
+			me.regionalManagerTitle.text.readOnly = readOnly;
+			me.regionalManagerEmail.text.readOnly = readOnly;
 			me.taxPercent.text.readOnly = readOnly;
 			me.taxAmount.text.readOnly = readOnly;
 			me.freight.text.readOnly = readOnly;
@@ -1291,14 +1348,14 @@ ii.Class({
 				}				
 			}
 			
-			if(me.itemGrid.activeRowIndex == me.itemGrid.data.length) {
+			if (me.itemGrid.activeRowIndex == me.itemGrid.data.length) {
 				if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0] != undefined && $("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked) {
 					if (quantity != "" && !isNaN(quantity) && price != undefined) 
 						me.subTotal = me.subTotal + quantity * price;
 				}
 			}
 			
-			if(me.subTotal != 0 && me.taxPercent.getValue() != "" && !isNaN(me.taxPercent.getValue())) {
+			if (me.subTotal != 0 && me.taxPercent.getValue() != "" && !isNaN(me.taxPercent.getValue())) {
 				var taxCaliculated = (me.subTotal * me.taxPercent.getValue()) / 100;
 				me.taxAmount.setValue(taxCaliculated.toFixed(2));
 			}
@@ -1341,14 +1398,14 @@ ii.Class({
 				}
 			}
 			
-			if(me.itemGrid.activeRowIndex == me.itemGrid.data.length) {
+			if (me.itemGrid.activeRowIndex == me.itemGrid.data.length) {
 				if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0] != undefined && $("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked) {
 					if (quantity != "" && !isNaN(quantity) && price != undefined) 
 						me.subTotal = me.subTotal + quantity * price;
 				}
 			}
 			
-			if(me.subTotal != 0 && me.taxPercent.getValue() != "" && !isNaN(me.taxPercent.getValue())) {
+			if (me.subTotal != 0 && me.taxPercent.getValue() != "" && !isNaN(me.taxPercent.getValue())) {
 				var taxCaliculated = (me.subTotal * me.taxPercent.getValue()) / 100;
 				me.taxAmount.setValue(taxCaliculated.toFixed(2));
 			}
@@ -1542,7 +1599,6 @@ ii.Class({
 		},
 		
 		personsLoaded: function(me, activeId) {
-			var index = 0;
 
 			if (me.persons.length > 0) {
 				me.users = me.persons.slice();				
@@ -1551,7 +1607,12 @@ ii.Class({
 			}
 			me.checkLoadCount();
 		},
-				
+
+		employeeManagerDetailsLoaded: function(me, activeId) {
+
+			me.checkLoadCount();
+		},
+
 		itemSelect: function() {
 			var args = ii.args(arguments,{
 				index: {type: Number}  // The index of the data subItem to select
@@ -1590,8 +1651,8 @@ ii.Class({
 				me.vendorContactName.setValue(item.vendorContactName);
 				me.vendorPhone.setValue(item.vendorPhoneNumber);
 				me.vendorEmail.setValue(item.vendorEmail);
-				me.reasonForRequest.setValue(item.reasonForRequest);					
-				
+				me.reasonForRequest.setValue(item.reasonForRequest);
+
 				if (item.funding == "Capital") 
 					$('#FundingCapital').attr('checked', true);
 				else if (item.funding == "Direct Reimbursement") 
@@ -1608,7 +1669,10 @@ ii.Class({
 					$('#BudgetingBudgeted').attr('checked', true);
 				else if (item.budgeting == "Unbudgeted") 
 					$('#BudgetingUnbudgeted').attr('checked', true);
-				
+
+				me.regionalManagerName.setValue(item.regionalManagerName);
+				me.regionalManagerTitle.setValue(item.regionalManagerTitle);
+				me.regionalManagerEmail.setValue(item.regionalManagerEmail);
 				me.vendor.setValue(item.vendorTitle);
 				me.vendorNumber = item.vendorNumber;
 				me.taxPercent.setValue(item.taxPercent == 0 ? "" : item.taxPercent);
@@ -1894,7 +1958,10 @@ ii.Class({
 					|| !me.vendorZip.valid
 					|| !me.vendorContactName.valid
 					|| !me.vendorPhone.valid
-					|| !me.vendorEmail.valid					
+					|| !me.vendorEmail.valid
+					|| !me.regionalManagerName.valid
+					|| !me.regionalManagerTitle.valid
+					|| !me.regionalManagerEmail.valid
 					) {
 					alert("In order to continue, the errors on the page must be corrected.");	
 					return false;
@@ -2041,10 +2108,21 @@ ii.Class({
 			me.vendorContactName.setValue("");
 			me.vendorPhone.setValue("");
 			me.vendorEmail.setValue("");
-			me.reasonForRequest.setValue("");			
+			me.reasonForRequest.setValue("");
 			$('input[name="Funding"]').attr('checked', false);
 			$('input[name="BusinessType"]').attr('checked', false);
 			$('input[name="Budgeting"]').attr('checked', false);
+
+			if (me.employeeManagerDetails.length > 0) {
+				me.regionalManagerName.setValue(me.employeeManagerDetails[0].managerName);
+				me.regionalManagerTitle.setValue(me.employeeManagerDetails[0].jobTitle);
+				me.regionalManagerEmail.setValue(me.employeeManagerDetails[0].managerEmail);
+			}
+			else {
+				me.regionalManagerName.setValue("");
+				me.regionalManagerTitle.setValue("");
+				me.regionalManagerEmail.setValue("");
+			}
 			
 			me.vendor.setValue("");
 			me.searchItem.setValue("");
@@ -2059,15 +2137,15 @@ ii.Class({
 			me.shippingAddress1.setValue(me.houseCodeDetails[0].shippingAddress1);
 			me.shippingAddress2.setValue(me.houseCodeDetails[0].shippingAddress2);
 			me.shippingCity.setValue(me.houseCodeDetails[0].shippingCity);
-			
+
 			index = ii.ajax.util.findIndexById(me.houseCodeDetails[0].shippingState.toString(), me.stateTypes);
 			if (index >= 0 && index != undefined)
 				me.shippingState.select(index, me.shippingState.focused);
-	
+
 			me.shippingZip.setValue(me.houseCodeDetails[0].shippingZip);
 			me.shippingPhone.setValue("");
 			me.shippingFax.setValue("");			
-			
+
 			$("#RequisitionInfo").hide();
 			$("#divSpace").hide();
 			$("#VendorInfo").show();
@@ -2461,6 +2539,9 @@ ii.Class({
 					, $("input[name='BusinessType']:checked").val()
 					, $("input[name='Budgeting']:checked").val()
 					, ""
+					, me.regionalManagerName.getValue()
+					, me.regionalManagerTitle.getValue()
+					, me.regionalManagerEmail.getValue()
 					, "false"
 					, (me.taxPercent.getValue() != "" && !isNaN(me.taxPercent.getValue())) ? parseFloat(me.taxPercent.getValue()).toFixed(2) : 0
 					, (me.taxAmount.getValue() != "" && !isNaN(me.taxAmount.getValue())) ? parseFloat(me.taxAmount.getValue()).toFixed(2) : 0
@@ -2532,11 +2613,14 @@ ii.Class({
 				xml += ' vendorContactName="' + ui.cmn.text.xml.encode(item.vendorContactName) + '"';
 				xml += ' vendorPhoneNumber="' + fin.cmn.text.mask.phone(item.vendorPhoneNumber, true) + '"';
 				xml += ' vendorEmail="' + item.vendorEmail + '"';
-				xml += ' reasonForRequest="' + ui.cmn.text.xml.encode(item.reasonForRequest) + '"';				
+				xml += ' reasonForRequest="' + ui.cmn.text.xml.encode(item.reasonForRequest) + '"';
 				xml += ' funding="' + item.funding + '"';
 				xml += ' businessType="' + item.businessType + '"';
 				xml += ' budgeting="' + item.budgeting + '"';
 				xml += ' chargeToPeriod="' + item.chargeToPeriod + '"';
+				xml += ' regionalManagerName="' + ui.cmn.text.xml.encode(item.regionalManagerName) + '"';
+				xml += ' regionalManagerTitle="' + ui.cmn.text.xml.encode(item.regionalManagerTitle) + '"';
+				xml += ' regionalManagerEmail="' + ui.cmn.text.xml.encode(item.regionalManagerEmail) + '"';
 				xml += ' shipToAddress1="' + ui.cmn.text.xml.encode(item.shipToAddress1) + '"';
 				xml += ' shipToAddress2="' + ui.cmn.text.xml.encode(item.shipToAddress2) + '"';
 				xml += ' shipToCity="' + ui.cmn.text.xml.encode(item.shipToCity) + '"';
@@ -2585,6 +2669,7 @@ ii.Class({
 					}
 				}
 			}
+
 			if (me.status == "SendRequisition" || me.status == "ResendRequisition") {
 				xml += '<purPOCapitalRequisitionEmailNotification';
 				xml += ' id="' + me.poCapitalRequisitionId + '"';
@@ -2620,6 +2705,9 @@ ii.Class({
 				xml += ' businessType="' + item.businessType + '"';
 				xml += ' budgeting="' + item.budgeting + '"';
 				xml += ' chargeToPeriod=""';
+				xml += ' regionalManagerName="' + ui.cmn.text.xml.encode(item.regionalManagerName) + '"';
+				xml += ' regionalManagerTitle="' + ui.cmn.text.xml.encode(item.regionalManagerTitle) + '"';
+				xml += ' regionalManagerEmail="' + ui.cmn.text.xml.encode(item.regionalManagerEmail) + '"';
 				xml += ' action="' + me.status + '"';
 				xml += ' jdeCompleted="0"';
 				xml += ' subTotal="' + me.subTotal.toFixed(2) + '"';
