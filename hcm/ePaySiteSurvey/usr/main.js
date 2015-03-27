@@ -740,6 +740,11 @@ ii.Class({
 						this.setInvalid("Please select the correct First Day of Week.");
 				});
 
+			me.fonenOnlySite = new ui.ctl.Input.Check({
+		        id: "FonenOnlySite",
+				changeFunction: function() { me.modified(); }
+		    });
+		    
 			me.preferredConnectionMethod = new ui.ctl.Input.DropDown.Filtered({
 		        id: "PreferredConnectionMethod",
 				formatFunction: function(type) { return type.name; },
@@ -748,10 +753,9 @@ ii.Class({
 			
 			me.preferredConnectionMethod.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 					
-					if (me.preferredConnectionMethod.indexSelected == -1)
+					if (!$("#FonenOnlySiteCheck")[0].checked && me.preferredConnectionMethod.indexSelected == -1)
 						this.setInvalid("Please select the correct Preferred Connection Method.");
 				});
 
@@ -776,7 +780,14 @@ ii.Class({
 			me.dailyRebootTime.makeEnterTab()
 				.setValidationMaster( me.validator )
 				.addValidation( ui.ctl.Input.Validation.required )
-			
+				.addValidation( function( isFinal, dataMap ) {
+					
+					if ($("#FonenOnlySiteCheck")[0].checked) {
+						me.dailyRebootTime.resetValidation(true);
+						return true;
+					}
+				});
+				
 			me.useWorkOrders = new ui.ctl.Input.Check({
 		        id: "UseWorkOrders",
 				changeFunction: function() { me.modified(); }
@@ -790,10 +801,9 @@ ii.Class({
 			
 			me.taskSelectionMethod.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 					
-					if (me.taskSelectionMethod.indexSelected == -1)
+					if (!$("#FonenOnlySiteCheck")[0].checked && me.taskSelectionMethod.indexSelected == -1)
 						this.setInvalid("Please select the correct Task Selection Method.");
 				});
 			
@@ -1443,7 +1453,90 @@ ii.Class({
 				
 				me.showDeviceTypeGrid();
 			});
+			
+			$("#FonenOnlySite").bind("click", function() {
+				me.fonenOnlySiteChanged();
+ 			});
+ 			
 			$("#fragment-1").bind("scroll", me.pageScroll);
+		},
+		
+		fonenOnlySiteChanged: function() {
+			var me = this;
+
+			if ($("#FonenOnlySiteCheck")[0].checked) {					
+				$("#LabelPreferredConnectionMethod").html("<span class='nonRequiredFieldIndicator'>Preferred Connection Method:</span>");
+				$("#LabelDeviceType").html("<span class='nonRequiredFieldIndicator'>Device Type:</span>");
+				$("#LabelDeviceAssignment").html("<span class='nonRequiredFieldIndicator'>Device Assignment:</span>");
+				$("#LabelDailyRebootTime").html("<span class='nonRequiredFieldIndicator'>Daily Reboot Time:</span>");
+				$("#LabelUseWorkOrders").html("<span class='nonRequiredFieldIndicator'>Use Work Orders:</span>");
+				$("#LabelTaskSelectionMethod").html("<span class='nonRequiredFieldIndicator'>Task Selection Method:</span>");
+				$("#LabelAccidentFreeQuestions").html("<span class='nonRequiredFieldIndicator'>Accident Free Questions:</span>");
+				$("#LabelEnableLunchLogic").html("<span class='nonRequiredFieldIndicator'>Enable Lunch Logic:</span>");
+				$("#LabelFixPunchesOnClock").html("<span class='nonRequiredFieldIndicator'>Fix Punches on Clock:</span>");
+				
+				me.preferredConnectionMethod.select(-1, me.preferredConnectionMethod.focused);				
+				$("#DeviceType").html("");
+				$("#DeviceType").multiselect("refresh");
+				
+				if (me.deviceTypeClockAssetGrid.data != undefined) {
+					for (var index = 0; index < me.deviceTypeClockAssetGrid.data.length; index++) {
+						if ($("#selectInputCheck" + index)[0].checked)
+							$("#selectInputCheck" + index)[0].checked = false;
+					}
+				}				
+				
+				me.deviceTypeClockAssetGrid.setData([]);
+				$("#DeviceAssignment")[0].value = "";
+				me.dailyRebootTime.setValue("");
+				me.taskSelectionMethod.select(-1, me.taskSelectionMethod.focused);
+				
+				me.useWorkOrders.check.checked = false;
+				me.accidentFreeQuestions.check.checked = false;
+				me.enableLunchLogic.check.checked = false;
+				me.fixPunchesOnClock.check.checked = false;
+					        		
+				$("#PreferredConnectionMethodText").attr('disabled', true);
+				$("#DeviceType").multiselect("disable");
+				$("#DeviceAssignment").attr('disabled', true);					
+				$("#DailyRebootTimeText").attr('disabled', true);
+				$("#TaskSelectionMethodText").attr('disabled', true);
+				me.useWorkOrders.check.disabled = true;
+				me.accidentFreeQuestions.check.disabled = true;
+				me.enableLunchLogic.check.disabled = true;
+				me.fixPunchesOnClock.check.disabled = true;
+				
+				$("#PreferredConnectionMethodAction").removeClass("iiInputAction");
+				$("#DeviceTypeDropImage").removeClass("HouseCodeDropDown");
+				$("#TaskSelectionMethodAction").removeClass("iiInputAction");
+			}
+			else if (!$("#FonenOnlySiteCheck")[0].checked) {					
+				$("#LabelPreferredConnectionMethod").html("<span class='requiredFieldIndicator'>&#149;</span>Preferred Connection Method:");
+				$("#LabelDeviceType").html("<span class='requiredFieldIndicator'>&#149;</span>Device Type:");
+				$("#LabelDeviceAssignment").html("<span class='requiredFieldIndicator'>&#149;</span>Device Assignment:");
+				$("#LabelDailyRebootTime").html("<span class='requiredFieldIndicator'>&#149;</span>Daily Reboot Time:");
+				$("#LabelUseWorkOrders").html("<span class='requiredFieldIndicator'>&#149;</span>Use Work Orders:");
+				$("#LabelTaskSelectionMethod").html("<span class='requiredFieldIndicator'>&#149;</span>Task Selection Method:");
+				$("#LabelAccidentFreeQuestions").html("<span class='requiredFieldIndicator'>&#149;</span>Accident Free Questions:");
+				$("#LabelEnableLunchLogic").html("<span class='requiredFieldIndicator'>&#149;</span>Enable Lunch Logic:");
+				$("#LabelFixPunchesOnClock").html("<span class='requiredFieldIndicator'>&#149;</span>Fix Punches on Clock:");
+				
+        		$("#PreferredConnectionMethodText").attr('disabled', false);
+				$("#DeviceType").multiselect("enable");
+				$("#DeviceAssignment").attr('disabled', false);					
+				$("#DailyRebootTimeText").attr('disabled', false);
+				$("#TaskSelectionMethodText").attr('disabled', false);
+				me.useWorkOrders.check.disabled = false;
+				me.accidentFreeQuestions.check.disabled = false;
+				me.enableLunchLogic.check.disabled = false;
+				me.fixPunchesOnClock.check.disabled = false;
+				
+				$("#PreferredConnectionMethodAction").addClass("iiInputAction");
+				$("#DeviceTypeDropImage").addClass("HouseCodeDropDown");
+				$("#TaskSelectionMethodAction").addClass("iiInputAction");
+			}
+			
+			me.resizeControls();
 		},
 		
 		showDeviceTypeGrid: function() {			
@@ -1906,6 +1999,15 @@ ii.Class({
 			me.siteGroupID.setValue(me.siteDetails[0].siteGroupID);
 			me.siteGroupName.setValue(me.siteDetails[0].siteGroupName);
 			me.confirmSiteIsLive.setValue(me.siteDetails[0].confirmSiteIsLive.toString());
+			
+			if (me.preferredConnectionMethod.indexSelected < 0) {
+				$("#FonenOnlySiteCheck").attr("checked", true);
+				me.fonenOnlySiteChanged();
+			}
+			else if (me.preferredConnectionMethod.indexSelected >= 0) {
+				$("#FonenOnlySiteCheck").attr("checked", false);
+				me.fonenOnlySiteChanged();
+			}	
 		},
 
 		loadTimeZones: function(zipCode) {
@@ -2850,7 +2952,8 @@ ii.Class({
 				me.payCodeGrid.body.deselectAll();
 			}
 			else if (me.action == "SiteMethodology") {
-				me.deviceTypeClockAssetGrid.body.deselectAll();					
+				me.deviceTypeClockAssetGrid.body.deselectAll();
+									
 				me.validator.forceBlur();
 				// Check to see if the data entered is valid
 				me.validator.queryValidity(true);
@@ -2858,29 +2961,37 @@ ii.Class({
 				if (!me.address1.valid || !me.city.valid || !me.state.valid || !me.zipCode.valid 
 					|| !me.timeZone.valid | !me.managerName.valid || !me.managerPhone.valid || !me.managerCellPhone.valid
 					|| !me.ePayGroupType.valid || !me.reportingFrequency.valid || !me.firstDayOfReportingPeriod.valid 
-					|| !me.firstDayOfWeek.valid || !me.preferredConnectionMethod.valid 
-					|| !me.dailyRebootTime.valid || !me.taskSelectionMethod.valid || !me.businessAnalyst.valid 
+					|| !me.firstDayOfWeek.valid || !me.businessAnalyst.valid 
 					|| !me.reviewDate.valid || !me.goLiveDate.valid) {
 					alert("In order to save, the errors on the page must be corrected.");
 					return false;
 				}
 				
-				if (me.deviceAssignment.value == "") {
-					alert("Please assign the available devices [Device Assignment].");
-					return false;
-				}
-					
-				var preferredConnectionMethod = me.preferredConnectionMethod.data[me.preferredConnectionMethod.indexSelected].name;
-				for (var index = 0; index < me.deviceTypeClockAssetGrid.data.length; index++) {
-					if ($("#selectInputCheck" + index)[0].checked) {
-						if (!((preferredConnectionMethod == "LAN" && me.deviceTypeClockAssetGrid.data[index].deviceType.lan)
-							|| (preferredConnectionMethod == "Wi-Fi" && me.deviceTypeClockAssetGrid.data[index].deviceType.wifi)
-							|| (preferredConnectionMethod == "Dialup" && me.deviceTypeClockAssetGrid.data[index].deviceType.dialup)
-							|| (preferredConnectionMethod == "Cellular" && me.deviceTypeClockAssetGrid.data[index].deviceType.cellular))) {
-							alert("Selected device type(s) does not have the preferred connection method available.");
-							return false;
-						}
+				if (!$("#FonenOnlySiteCheck")[0].checked) {
+					if (!me.preferredConnectionMethod.valid || !me.dailyRebootTime.valid || !me.taskSelectionMethod.valid) {
+						alert("In order to save, the errors on the page must be corrected.");
+						return false;
 					}
+					
+					if (me.deviceAssignment.value == "") {
+						alert("Please assign the available devices [Device Assignment].");
+						return false;
+					}
+					
+					var preferredConnectionMethod = me.preferredConnectionMethod.data[me.preferredConnectionMethod.indexSelected].name;
+					if (me.deviceTypeClockAssetGrid.data != undefined) {
+						for (var index = 0; index < me.deviceTypeClockAssetGrid.data.length; index++) {
+							if ($("#selectInputCheck" + index)[0].checked) {
+								if (!((preferredConnectionMethod == "LAN" && me.deviceTypeClockAssetGrid.data[index].deviceType.lan)
+									|| (preferredConnectionMethod == "Wi-Fi" && me.deviceTypeClockAssetGrid.data[index].deviceType.wifi)
+									|| (preferredConnectionMethod == "Dialup" && me.deviceTypeClockAssetGrid.data[index].deviceType.dialup)
+									|| (preferredConnectionMethod == "Cellular" && me.deviceTypeClockAssetGrid.data[index].deviceType.cellular))) {
+									alert("Selected device type(s) does not have the preferred connection method available.");
+									return false;
+								}
+							}
+						}
+					}					
 				}
 			}
 
@@ -2923,10 +3034,10 @@ ii.Class({
 					, me.reportingFrequencyTypes[me.reportingFrequency.indexSelected].id
 					, me.firstDayOfReportingPeriod.lastBlurValue
 					, me.firstDayOfWeek.lastBlurValue
-					, me.preferredConnectionMethods[me.preferredConnectionMethod.indexSelected].id
+					, me.preferredConnectionMethods[me.preferredConnectionMethod.indexSelected] != undefined ? me.preferredConnectionMethods[me.preferredConnectionMethod.indexSelected].id : -1
 					, me.dailyRebootTime.getValue()
-					, me.useWorkOrders.check.checked				
-					, me.taskSelectionMethods[me.taskSelectionMethod.indexSelected].id
+					, me.useWorkOrders.check.checked
+					, me.taskSelectionMethods[me.taskSelectionMethod.indexSelected] != undefined ? me.taskSelectionMethods[me.taskSelectionMethod.indexSelected].id : -1
 					, me.accidentFreeQuestions.check.checked
 					, me.enableLunchLogic.check.checked
 					, me.fixPunchesOnClock.check.checked

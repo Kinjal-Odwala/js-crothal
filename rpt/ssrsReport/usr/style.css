@@ -321,6 +321,10 @@ input[type="checkbox"] {
 	margin: 3px;
 }
 
+.ui-corner-all .ui-state-active {
+	background: #C2E4C1;
+}
+
 Label {
 	font-weight: normal;
 }
