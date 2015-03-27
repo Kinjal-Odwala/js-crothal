@@ -25,9 +25,11 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', function ($scope, EmpActi
 
     var load = function () {
         $scope.viewLoading = true;
-        EmpActions.getHcmHouseCodes(function () {
-            EmpActions.getEmployeePersonnelActions(function (result) {
-                $scope.PAFItems = result;
+        EmpActions.getHcmHouseCodes(function (result) {
+
+            $scope.HcmHouseCodes = result;
+            EmpActions.getEmployeePersonnelActions(function (items) {
+                $scope.empActions = items;
                 //$scope.$apply(function () {
                 //    $scope.PAFItems = result;
                 //});
@@ -42,7 +44,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', function ($scope, EmpActi
     $scope.getHouseCodeDesc = function (item) {
         return EmpActions.getHouseCodeName(item.HcmHouseCode);
     }
-
+    $scope.filter = {};
 
 }]);
 
@@ -69,7 +71,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     $scope.HcmHouseCodes = [];
     $scope.States = [];
 
-    $scope.pafItem = {
+    $scope.empAction = {
         HcmHouseCode: null,
         EmployeeNumber: null,
         FirstName: null,
@@ -139,6 +141,13 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             loadCount--;
             loadComplete();
         });
+
+        loadCount++;
+        EmpActions.getPayGrades(function (result) {
+            $scope.PayGrades = result;
+            loadCount--;
+            loadComplete();
+        });
     }
 
     preLoading();
@@ -148,7 +157,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         loadCount++;
         EmpActions.findEmployeePersonnelAction($routeParams.id, function (result) {
             // $scope.$apply(function () {
-            $scope.pafItem = result;
+            $scope.empAction = result;
             lastEmployeeNumber = result.EmployeeNumber;
             // $scope.pafItem.
             $scope.viewLoading = false;
@@ -159,12 +168,12 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     }
 
     $scope.pickerCarAllowance = function (item) {
-        $scope.pafItem.CarAllowance = item.Id;
-        $scope.pafItem.NewCarAllowance = item.Id;
+        $scope.empAction.CarAllowance = item.Id;
+        $scope.empAction.NewCarAllowance = item.Id;
     }
 
     $scope.getPositionTypeName = function () {
-        var positionType = $scope.pafItem.PositionType;
+        var positionType = $scope.empAction.PositionType;
         if (positionType != 0 && positionType != null) {
             return $filter('filter')($scope.JobCodes, function (item) {
                 return item.id == positionType;
@@ -172,6 +181,66 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         }
 
         return null;
+    }
+
+    $scope.getPayGradeName = function () {
+        var currentPayGrade = null;
+        var payGrade = $scope.empAction.PayGrade;
+        if (payGrade != 0 && payGrade != null) {
+            var payGrade2 = $filter('filter')($scope.PayGrades, function (item) {
+                return item.id == payGrade;
+            })[0];
+
+            currentPayGrade = payGrade2.min + ' - ' + payGrade2.mid + ' - ' + payGrade2.max;
+        }
+        else
+            currentPayGrade = "";
+
+        $scope.empAction.CurrentPayGrade = currentPayGrade;
+    }
+
+    $scope.calPayRange = function (payGrade, payRange) {
+        var range = "";
+
+        var salary = 0;
+
+        if (payRange == "PayRange") {
+            salary = parseFloat($scope.empAction.YearlySalary | 40 * 52 * $scope.empAction.AdminHourly | 40 * 52 * $scope.empAction.HourlyRate);
+        }
+        else
+            salary = parseFloat($scope.empAction.NewSalary);
+
+        var payGradeItem = $filter('filter')($scope.PayGrades, function (item) {
+            return item.id == payGrade;
+        })[0];
+
+        if (!angular.isDefined(payGradeItem) || payGradeItem == null)
+            return null;
+        if ((!angular.isDefined(salary) || salary == null) || (payGrade == 0 || payGrade == null))
+            range = null;
+
+        var min = parseFloat(payGradeItem.min);
+        var mid = parseFloat(payGradeItem.mid);
+        var max = parseFloat(payGradeItem.max);
+
+        if (salary < min)
+            range = "Below Min";
+        else if (salary == min)
+            range = "Min";
+        else if (salary > min && salary < mid)
+            range = "Min to Mid";
+        else if (salary == mid)
+            range = "Mid";
+        else if (salary > mid && salary < max)
+            range = "Mid to Max";
+        else if (salary == max)
+            range = "Max";
+        else if (salary > max)
+            range = "Over Max";
+        else
+            range = "";
+
+        $scope.empAction[payRange] = range;
     }
 
     //  var loadPersonInfoHandler = null;
@@ -196,28 +265,28 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     var hcmHouseCode = EmpActions.getHcmHouseCodeByBrief(result.houseCode);
                     _hcmHouseCode = hcmHouseCode;
 
-                    if ($scope.pafItem.HcmHouseCode == null) {
-                        $scope.pafItem.HcmHouseCode = hcmHouseCode;
+                    if ($scope.empAction.HcmHouseCode == null) {
+                        $scope.empAction.HcmHouseCode = hcmHouseCode;
                     }
-                    else if (hcmHouseCode != $scope.pafItem.HcmHouseCode) {
+                    else if (hcmHouseCode != $scope.empAction.HcmHouseCode) {
                         alert("Employee Number is out of House Code.");
                         $scope.pafForm.EmployeeNumber.$setValidity("required", false);
 
                     }
 
                     // if ($scope.pafForm.EmployeeNumber.$valid) {
-                    $scope.pafItem.EmployeeId = result.id;
+                    $scope.empAction.EmployeeId = result.id;
                     EmpActions.getPerson(result.id, function (response) {
-                        $scope.pafItem.PersonId = response.id;
-                        $scope.pafItem.FirstName = result.firstName;
-                        $scope.pafItem.MiddleName = response.middleName;
-                        $scope.pafItem.LastName = result.lastName;
-                        $scope.pafItem.AddressLine1 = response.addressLine1;
-                        $scope.pafItem.AddressLine2 = response.addressLine2;
-                        $scope.pafItem.City = response.city;
-                        $scope.pafItem.Phone = response.homePhone;
-                        $scope.pafItem.PostalCode = response.postalCode;
-                        $scope.pafItem.StateType = response.state;
+                        $scope.empAction.PersonId = response.id;
+                        $scope.empAction.FirstName = result.firstName;
+                        $scope.empAction.MiddleName = response.middleName;
+                        $scope.empAction.LastName = result.lastName;
+                        $scope.empAction.AddressLine1 = response.addressLine1;
+                        $scope.empAction.AddressLine2 = response.addressLine2;
+                        $scope.empAction.City = response.city;
+                        $scope.empAction.Phone = response.homePhone;
+                        $scope.empAction.PostalCode = response.postalCode;
+                        $scope.empAction.StateType = response.state;
 
                         $scope.disableInformationFields = true;
                     });
@@ -229,7 +298,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         }
         else {
             lastEmployeeNumber = null;
-            if ($scope.pafItem.HcmHouseCode && lastEmployeeNumber == null)
+            if ($scope.empAction.HcmHouseCode && lastEmployeeNumber == null)
                 $scope.pafForm.HcmHouseCode.$setValidity("required", true);
             $scope.disableInformationFields = false;
         }
@@ -238,7 +307,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     $scope.onHouseCodeChange = function () {
         if (lastEmployeeNumber != null) {
 
-            if (_hcmHouseCode != $scope.pafItem.HcmHouseCode) {
+            if (_hcmHouseCode != $scope.empAction.HcmHouseCode) {
                 alert("House Code is not same as Employee Number House Code.");
                 $scope.pafForm.HcmHouseCode.$setValidity("required", false);
             }
@@ -247,7 +316,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             }
         }
         else {
-            if ($scope.pafItem.HcmHouseCode)
+            if ($scope.empAction.HcmHouseCode)
                 $scope.pafForm.HcmHouseCode.$setValidity("required", true);
         }
     }
@@ -287,32 +356,32 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     var resetPositionTypeFields = function (positionType) {
         if (positionFields[positionType]) {
             angular.forEach(positionFields[positionType], function (item, index) {
-                $scope.pafItem[item] = null;
+                $scope.empAction[item] = null;
             });
         }
     }
 
-    var initialPafItem = function () {
+    var initialEmpAction = function () {
         angular.forEach(positionFields, function (value, key) {
             resetPositionTypeFields(key);
         });
     }
 
-    initialPafItem();
+    initialEmpAction();
 
 
     var uncheckPositionType = function (positionType) {
-        if (!$scope.pafItem[positionType])
+        if (!$scope.empAction[positionType])
             return;
 
-        $scope.pafItem[positionType] = false;
+        $scope.empAction[positionType] = false;
         resetPositionTypeFields(positionType);
     }
 
     $scope.onPositionTypeChanged = function (positionType) {
-        $scope.pafItem[positionType] = !$scope.pafItem[positionType];
+        $scope.empAction[positionType] = !$scope.empAction[positionType];
 
-        if ($scope.pafItem[positionType])
+        if ($scope.empAction[positionType])
 
             $.each(postionTypeGroups, function (gi, group) {
 
@@ -328,88 +397,114 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             resetPositionTypeFields(positionType);
         }
 
-        if (!($scope.pafItem.NewHire || $scope.pafItem.ReHire || $scope.pafItem.SalaryChange || $scope.pafItem.Promotion || $scope.pafItem.Transfer || $scope.pafItem.Demotion))
+        if (!($scope.empAction.NewHire || $scope.empAction.ReHire || $scope.empAction.SalaryChange || $scope.empAction.Promotion || $scope.empAction.Transfer || $scope.empAction.Demotion))
             resetPositionTypeFields('Requisition');
 
         validateActionType();
+
+        //if ($scope.empAction.SalaryChange || $scope.empAction.Promotion || $scope.empAction.Demotion) {
+        //    $scope.getPayGradeName();
+        //    //$scope.calPayRange(empAction.CurrentPayGrade, 'CurrentPayRange');
+        //}
     }
 
     $scope.positionTypeChecked = function (positionType) {
-        return $scope.pafItem[positionType];
+        return $scope.empAction[positionType];
     }
 
 
     //status changes
     var Status = ["FullTimeHours", "TemporaryHours", "Hours", "Amount"];
-    $scope.$watch('pafItem.Status', function (newValue, oldValue) {
+    $scope.$watch('empAction.Status', function (newValue, oldValue) {
         angular.forEach(Status, function (item) {
             if (item != newValue) {
-                $scope.pafItem[item] = null;
+                $scope.empAction[item] = null;
             }
         });
     });
 
     //pay status changes
     var PayStatus = ["YearlySalary", "AdminHourly", "HourlyRate"];
-    $scope.$watch('pafItem.PayStatus', function (newValue, oldValue) {
+    $scope.$watch('empAction.PayStatus', function (newValue, oldValue) {
 
         angular.forEach(PayStatus, function (item) {
             if (item != newValue) {
-                $scope.pafItem[item] = null;
+                $scope.empAction[item] = null;
             }
         });
     });
 
     //date of return after loa date
-    $scope.$watch('pafItem.LoaDate', function (newValue, oldValue) {
-        var dateOfReturn = new Date($scope.pafItem.DateOfReturn);
+    $scope.$watch('empAction.LoaDate', function (newValue, oldValue) {
+        var dateOfReturn = new Date($scope.empAction.DateOfReturn);
 
         if ((!angular.isDefined(newValue) || newValue == null) || (!angular.isDefined(dateOfReturn) || dateOfReturn == null))
             return;
 
         if (new Date(newValue).getTime() > dateOfReturn.getTime())
-            $scope.pafItem.DateOfReturn = null;
+            $scope.empAction.DateOfReturn = null;
+
+        validateLoa();
+    });
+
+    //date of return change
+    $scope.$watch('empAction.DateOfReturn', function () {
+        validateLoa();
     });
 
     //separation reason changes
     var SeparationReason = ["ResignationType", "TerminationType", "LayoffType"];
-    $scope.$watch('pafItem.SeparationReason', function (newValue, oldValue) {
+    $scope.$watch('empAction.SeparationReason', function (newValue, oldValue) {
         angular.forEach(SeparationReason, function (item) {
             if (item != newValue) {
-                $scope.pafItem[item] = null;
+                $scope.empAction[item] = null;
             }
         });
 
     });
 
-    //$scope.salaryChange = function () {
-    //    var currentSalary = parseFloat($scope.pafItem.CurrentSalary);
-    //    var increaseAmt = parseFloat($scope.pafItem.IncreaseAmount);
-    //    var increasePercentage = parseFloat($scope.pafItem.IncreasePercentage);
-    //    var newSalary = parseFloat($scope.pafItem.NewSalary);
-    //    console.log(currentSalary, increaseAmt, increasePercentage, newSalary);
-    //    if (currentSalary != 0) {
-    //        if (increaseAmt != 0) {
-    //            $scope.pafItem.IncreasePercentage = (increaseAmt / currentSalary).toFixed(3);
-    //        }
-    //        else if (increasePercentage != 0) {
-    //            console.log(increasePercentage);
-    //            $scope.pafItem.IncreaseAmount = Math.floor(increasePercentage * currentSalary);
-    //        }
+    $scope.$watch('empAction.NewSalary', function (newValue, oldValue) {
+        if (newValue != oldValue) {
+            $scope.calPayRange($scope.empAction.NewPayGrade, "NewPayRange");
+        }
+    });
 
-    //        //if (!$scope.pafItem.Demotion)
-    //        //    $scope.pafItem.NewSalary = currentSalary + increaseAmt;
-    //        //else
-    //        //    $scope.pafItem.NewSalary = currentSalary - increaseAmt;
-    //    }
-    //}
+    $scope.onSalaryChange = function (type) {
+        var currentSalary = $scope.empAction.CurrentSalary;
+        var increaseAmt = $scope.empAction.IncreaseAmount;
+        var increasePercentage = $scope.empAction.IncreasePercentage;
 
+        if (increaseAmt == null || increaseAmt == "")
+            increaseAmt = 0;
+        else if (increasePercentage == null || increasePercentage == "")
+            increasePercentage = 0;
+
+        increaseAmt = parseFloat(increaseAmt);
+        increasePercentage = parseFloat(increasePercentage);
+
+        if (currentSalary) {
+            currentSalary = parseFloat(currentSalary);
+            if (type == 'amt')
+                $scope.empAction.IncreasePercentage = (increaseAmt / currentSalary).toFixed(3);
+            else if (type == 'percentage')
+                $scope.empAction.IncreaseAmount = increasePercentage * currentSalary;
+            else {
+                $scope.empAction.IncreaseAmount = 0;
+                $scope.empAction.IncreasePercentage = 0;
+            }
+
+            if (!$scope.empAction.Demotion)
+                $scope.empAction.NewSalary = currentSalary + parseFloat($scope.empAction.IncreaseAmount);
+            else
+                $scope.empAction.NewSalary = currentSalary - parseFloat($scope.empAction.IncreaseAmount);
+        }
+    }
 
     var validateActionType = function () {
         var isValid = false;
 
         angular.forEach($scope.PositionTypes, function (item) {
-            if ($scope.pafItem[item.id])
+            if ($scope.empAction[item.id])
                 isValid = true;
         });
 
@@ -419,15 +514,36 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         else {
             $scope.pafForm.$setValidity('ActionType', true, $scope.pafForm);
         }
-
         return isValid;
     }
 
+    var validateLoa = function () {
+        var isValid = false;
+        if ($scope.empAction.Loa) {
+            if ($scope.empAction.LoaDate != null || $scope.empAction.DateOfReturn != null) {
+                isValid = true;
+            }
+
+            if (!isValid)
+                $scope.pafForm.$setValidity('loa', false, $scope.pafForm);
+            else
+                $scope.pafForm.$setValidity('loa', true, $scope.pafForm);
+
+        }
+        else {
+            isValid = true;
+        }
+        return isValid;
+    }
+
+
     $scope.save = function () {
         validateActionType();
+        validateLoa();
+
         if ($scope.pafForm.$valid) {
 
-            EmpActions.saveEmployeePersonnelAction($scope.pafItem, function (status) {
+            EmpActions.saveEmployeePersonnelAction($scope.empAction, function (status) {
                 document.location.hash = 'list';
             });
         }
@@ -441,7 +557,7 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
         scope: {
             dtOption: '=',
             dtModel: '=dtModel',
-            minDate: '=minDate',
+            minDate: '=',
             dtChange: '&dtChange'
         },
         restrict: 'E',
@@ -451,6 +567,7 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
             scope.opened = false;
             scope.dtPopup = "dd-MMMM-yyyy";
             scope.showButtonBar = false;
+
 
             scope.open = function ($event) {
                 $event.preventDefault();
@@ -922,7 +1039,7 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
 
             scope.itemFilter = function (value) {
                 return function (item) {
-                    return item[scope.displayField].indexOf(value) >= 0;
+                    return item[scope.displayField].toUpperCase().indexOf(value.toUpperCase()) >= 0;
                 }
             }
 

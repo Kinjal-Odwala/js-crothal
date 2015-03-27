@@ -48,6 +48,14 @@ paf.factory('EmpActions', ["$http", "$filter", function ($http, $filter) {
 
     }
 
+    var getPayGrades = function (callback) {
+
+        apiRequest('emp', '<criteria>storeId:payGrades,userId:[user] ,</criteria>', function (xml) {
+            if (callback)
+                callback(deserializeXml(xml, 'item', { upperFirstLetter: false }));
+        });
+    }
+
     var findEmployeePersonnelAction = function (id, callback) {
         var boolItems = ["NewHire", "ReHire", "Separation", "LOA", "SalaryChange", "Promotion", "Demotion", "Transfer", "PersonalInfoChange", "Relocation"];
         var intItems = ["HcmHouseCode", "EmployeeNumber", "StateType", "PositionType", "TrainingLocation", "Duration", "CarAllowance", "BonusEligibleType", "LayoffType", "OldPositionType", "NewPositionType", "ChangeReasonType", "NewCarAllowance", "NewBonusEligibleType", "HouseCodeTransfer", "InfoChangeStateType", "RelocationPlan"];
@@ -218,6 +226,7 @@ paf.factory('EmpActions', ["$http", "$filter", function ($http, $filter) {
         getPerson: getPerson,
         getPersonActionTypes: getPersonActionTypes,
         getJobCodes: getJobCodes,
+        getPayGrades: getPayGrades,
         saveEmployeePersonnelAction: saveEmployeePersonnelAction
     }
 }]);

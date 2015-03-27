@@ -9,13 +9,13 @@
                     <div class="col-md-3">
                         <div class="form-group" ng-class="{'has-error':pafForm.Date.$invalid}">
                             <label>Date</label>
-                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.Date" dt-name="Date" dt-required="true"></paf-datepicker>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="empAction.Date" dt-name="Date" dt-required="true"></paf-datepicker>
                         </div>
                     </div>
                     <div class="col-md-9">
                         <div class="form-group typeahead" ng-class="{'has-error':pafForm.HcmHouseCode.$invalid}">
                             <label class="control-label">House Code or Unit Name</label>
-                            <paf-typeahead ng-model="pafItem.HcmHouseCode" source="HcmHouseCodes"  on-blur="onHouseCodeChange()" paf-enter="onHouseCodeChange()" typeahead-option="{displayField:'name',valueField:'id',name:'HcmHouseCode'}" ng-required="true"></paf-typeahead>
+                            <paf-typeahead ng-model="empAction.HcmHouseCode" source="HcmHouseCodes" on-blur="onHouseCodeChange()" paf-enter="onHouseCodeChange()" typeahead-option="{displayField:'name',valueField:'id',name:'HcmHouseCode'}" ng-required="true"></paf-typeahead>
                         </div>
                     </div>
                 </div>
@@ -23,25 +23,25 @@
                     <div class="col-md-3">
                         <div class="form-group" ng-class="{'has-error':pafForm.EmployeeNumber.$invalid}">
                             <label class="control-label">Employee/Clock Number</label>
-                            <input class="form-control input-sm" name="EmployeeNumber" ng-blur="getPersonInformation(pafItem.EmployeeNumber)" paf-enter="getPersonInformation(pafItem.EmployeeNumber)" ng-model="pafItem.EmployeeNumber" ng-required="!pafItem.NewHire" paf-numeric />
+                            <input class="form-control input-sm" name="EmployeeNumber" ng-blur="getPersonInformation(empAction.EmployeeNumber)" paf-enter="getPersonInformation(empAction.EmployeeNumber)" ng-model="empAction.EmployeeNumber" ng-required="!empAction.NewHire" paf-numeric />
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group" ng-class="{'has-error':pafForm.FirstName.$invalid}">
                             <label class="control-label">First Name</label>
-                            <input class="form-control input-sm" name="FirstName" ng-model="pafItem.FirstName" ng-disabled="disableInformationFields" required />
+                            <input class="form-control input-sm" name="FirstName" ng-model="empAction.FirstName" ng-disabled="disableInformationFields" required />
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label class="control-label">Middle Name</label>
-                            <input class="form-control input-sm" name="MiddleName" ng-model="pafItem.MiddleName" ng-disabled="disableInformationFields" />
+                            <input class="form-control input-sm" name="MiddleName" ng-model="empAction.MiddleName" ng-disabled="disableInformationFields" />
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group" ng-class="{'has-error':pafForm.LastName.$invalid}">
                             <label class="control-label">Last Name</label>
-                            <input class="form-control input-sm" name="LastName" ng-model="pafItem.LastName" ng-disabled="disableInformationFields" required />
+                            <input class="form-control input-sm" name="LastName" ng-model="empAction.LastName" ng-disabled="disableInformationFields" required />
                         </div>
                     </div>
                 </div>
@@ -49,41 +49,42 @@
                     <div class="col-md-6">
                         <div class="form-group" ng-class="{'has-error':pafForm.AddressLine1.$invalid}">
                             <label class="control-label">Address1</label>
-                            <input class="form-control input-sm" name="AddressLine1" ng-model="pafItem.AddressLine1" ng-disabled="disableInformationFields" required />
+                            <input class="form-control input-sm" name="AddressLine1" ng-model="empAction.AddressLine1" ng-disabled="disableInformationFields" required />
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="control-label">Address2</label>
-                            <input class="form-control input-sm" name="AddressLine2" ng-model="pafItem.AddressLine2" ng-disabled="disableInformationFields" />
+                            <input class="form-control input-sm" name="AddressLine2" ng-model="empAction.AddressLine2" ng-disabled="disableInformationFields" />
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-3" ng-class="{'has-error':pafForm.City.$invalid}">
                         <label class="control-label">City</label>
-                        <input class="form-control input-sm" name="City" ng-model="pafItem.City" ng-disabled="disableInformationFields" required />
+                        <input class="form-control input-sm" name="City" ng-model="empAction.City" ng-disabled="disableInformationFields" required />
                     </div>
                     <div class="col-md-3" ng-class="{'has-error':pafForm.StateType.$invalid}">
                         <label class="control-label">State</label>
-                        <select class="form-control input-sm" name="StateType" ng-model="pafItem.StateType" ng-disabled="disableInformationFields" ng-options="item.id as item.name for item in States" required>
+                        <select class="form-control input-sm" name="StateType" ng-model="empAction.StateType" ng-disabled="disableInformationFields" ng-options="item.id as item.name for item in States" required>
                             <option></option>
                         </select>
                     </div>
                     <div class="col-md-3" ng-class="{'has-error':pafForm.PostalCode.$invalid}">
                         <label>Zip</label>
-                        <input class="form-control input-sm" name="PostalCode" ng-model="pafItem.PostalCode" paf-mask="zipcode" ng-disabled="disableInformationFields" required />
+                        <input class="form-control input-sm" name="PostalCode" ng-model="empAction.PostalCode" paf-mask="zipcode" ng-disabled="disableInformationFields" required />
                     </div>
                     <div class="col-md-3">
                         <div class="form-group" ng-class="{'has-error':pafForm.Phone.$invalid}">
                             <label class="control-label">Phone #</label>
-                            <input class="form-control input-sm" name="Phone" ng-model="pafItem.Phone" paf-mask="phone" ng-disabled="disableInformationFields" required />
+                            <input class="form-control input-sm" name="Phone" ng-model="empAction.Phone" paf-mask="phone" ng-disabled="disableInformationFields" required />
                         </div>
                     </div>
                 </div>
             </section>
             <section>
-               <h4 style="display:inline-block">CHECK ALL THAT APPLY</h4><span class="has-error" ng-show="pafForm.$error.ActionType[0].$invalid" style="display:inline-block">&nbsp;<label class="glyphicon glyphicon-info-sign"></label><label> &nbsp;At least one action type should be checked.</label></span>
+                <h4 style="display: inline-block">CHECK ALL THAT APPLY</h4>
+                <span class="has-error" ng-show="pafForm.$error.ActionType[0].$invalid" style="display: inline-block">&nbsp;<label class="glyphicon glyphicon-info-sign"></label><label> &nbsp;At least one action type should be checked.</label></span>
                 <p>(Position must be posted with Recruiter for any new hire, transfer, re-hire, or promotion)</p>
 
                 <div class="row" ng-class="{'has-error':pafForm.$error.ActionType[0].$invalid}">
@@ -97,21 +98,21 @@
                     </div>
             </section>
             <!--NEW HIRE/REHIRE-->
-            <section ng-if="pafItem.NewHire||pafItem.ReHire">
-                <h4 ng-if="pafItem.NewHire">NEW HIRE</h4>
-                <h4 ng-if="pafItem.ReHire">REHIRE</h4>
+            <section ng-if="empAction.NewHire||empAction.ReHire">
+                <h4 ng-if="empAction.NewHire">NEW HIRE</h4>
+                <h4 ng-if="empAction.ReHire">REHIRE</h4>
                 <p>(Section to be completed by Hiring Manager and Application and Background Check Release faxed to HRG )</p>
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group" ng-class="{'has-error':pafForm.HireDate.$invalid}">
                             <label>Hire Date</label>
-                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.HireDate" dt-name="HireDate" dt-required="true"></paf-datepicker>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="empAction.HireDate" dt-name="HireDate" dt-required="true"></paf-datepicker>
                         </div>
                     </div>
                     <div class="col-md-8">
-                        <div class="form-group" ng-class="{'has-error':pafItem.PositionType==0||pafForm.PositionType.$invalid}">
+                        <div class="form-group" ng-class="{'has-error':empAction.PositionType==0||pafForm.PositionType.$invalid}">
                             <label>Position</label>
-                            <select class="form-control input-sm" name="PositionType" ng-model="pafItem.PositionType" ng-options="item.id as item.name for item in JobCodes" required>
+                            <select class="form-control input-sm" name="PositionType" ng-model="empAction.PositionType" ng-options="item.id as item.name for item in JobCodes" required>
                                 <option value=""></option>
                             </select>
                         </div>
@@ -123,134 +124,104 @@
                         <div class="row">
                             <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12">
                                 <div class="form-inline">
-                                    <div class="form-group" ng-class="{'has-error':pafItem.Status.$invalid||pafForm.FullTimeHours.$invalid}">
+                                    <div class="form-group" ng-class="{'has-error':empAction.Status.$invalid||pafForm.FullTimeHours.$invalid}">
                                         <label>
-                                            <input type="radio" name="Status" ng-model="pafItem.Status" value="FullTimeHours" required />&nbsp;Full Time</label>
-                                        <input type="text" class="form-control input-sm" name="FullTimeHours" ng-disabled="pafItem.Status!='FullTimeHours'"
-                                            ng-model="pafItem.FullTimeHours" paf-format="{0} hours/week" placeholder="0 hours/week" paf-numeric ng-required="pafItem.Status=='FullTimeHours'" />
+                                            <input type="radio" name="Status" ng-model="empAction.Status" value="FullTimeHours" required />&nbsp;Full Time</label>
+                                        <input type="text" class="form-control input-sm" name="FullTimeHours" ng-disabled="empAction.Status!='FullTimeHours'"
+                                            ng-model="empAction.FullTimeHours" paf-format="{0} hours/week" placeholder="0 hours/week" paf-numeric ng-required="empAction.Status=='FullTimeHours'" />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12">
                                 <div class="form-inline">
-                                    <div class="form-group" ng-class="{'has-error':pafItem.Status.$invalid||pafForm.TemporaryHours.$invalid}">
+                                    <div class="form-group" ng-class="{'has-error':empAction.Status.$invalid||pafForm.TemporaryHours.$invalid}">
                                         <label>
-                                            <input type="radio" name="Status" ng-model="pafItem.Status" value="TemporaryHours" required />&nbsp;Temporary</label>
-                                        <input type="text" class="form-control input-sm" name="TemporaryHours" ng-disabled="pafItem.Status!='TemporaryHours'"
-                                            ng-model="pafItem.TemporaryHours" paf-format="{0} hours/week" placeholder="0 hours/week" paf-numeric ng-required="pafItem.Status=='TemporaryHours'" />
+                                            <input type="radio" name="Status" ng-model="empAction.Status" value="TemporaryHours" required />&nbsp;Temporary</label>
+                                        <input type="text" class="form-control input-sm" name="TemporaryHours" ng-disabled="empAction.Status!='TemporaryHours'"
+                                            ng-model="empAction.TemporaryHours" paf-format="{0} hours/week" placeholder="0 hours/week" paf-numeric ng-required="empAction.Status=='TemporaryHours'" />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12">
                                 <div class="form-inline">
-                                    <div class="form-group" ng-class="{'has-error':pafItem.Status.$invalid||pafForm.Hours.$invalid}">
+                                    <div class="form-group" ng-class="{'has-error':empAction.Status.$invalid||pafForm.Hours.$invalid}">
                                         <label>
-                                            <input type="radio" name="Status" ng-model="pafItem.Status" value="PartTime" required />&nbsp;Part Time</label>
-                                        <input type="text" class="form-control input-sm" name="Hours" ng-disabled="pafItem.Status!='PartTime'"
-                                            ng-model="pafItem.Hours" paf-format="{0} hours/week" placeholder="0 hours/week" paf-numeric ng-required="pafItem.Status=='PartTime'" />
+                                            <input type="radio" name="Status" ng-model="empAction.Status" value="PartTime" required />&nbsp;Part Time</label>
+                                        <input type="text" class="form-control input-sm" name="Hours" ng-disabled="empAction.Status!='PartTime'"
+                                            ng-model="empAction.Hours" paf-format="{0} hours/week" placeholder="0 hours/week" paf-numeric ng-required="empAction.Status=='PartTime'" />
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
                             </div>
                             <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12 ">
                                 <div class="form-inline">
-                                    <div class="form-group" ng-class="{'has-error':pafItem.Status.$invalid||pafForm.Amount.$invalid}">
+                                    <div class="form-group" ng-class="{'has-error':empAction.Status.$invalid||pafForm.Amount.$invalid}">
                                         <label>
-                                            <input type="radio" name="Status" ng-model="pafItem.Status" value="PerDiem" required />&nbsp;Per Diem</label>
-                                        <input type="text" class="form-control input-sm" name="Amount" ng-disabled="pafItem.Status!='PerDiem'" ng-model="pafItem.Amount" paf-format="{0} per day" placeholder="0 per day" paf-numeric ng-required="pafItem.Status=='PerDiem'" />
+                                            <input type="radio" name="Status" ng-model="empAction.Status" value="PerDiem" required />&nbsp;Per Diem</label>
+                                        <input type="text" class="form-control input-sm" name="Amount" ng-disabled="empAction.Status!='PerDiem'" ng-model="empAction.Amount" paf-format="{0} per day" placeholder="0 per day" paf-numeric ng-required="empAction.Status=='PerDiem'" />
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-3 form-inline">
-                                <div class="form-group" ng-class="{'has-error':pafItem.PayStatus.$invalid||pafForm.YearlySalary.$invalid}">
+                                <div class="form-group" ng-class="{'has-error':empAction.PayStatus.$invalid||pafForm.YearlySalary.$invalid}">
                                     <label>
-                                        <input type="radio" name="PayStatus" ng-model="pafItem.PayStatus" value="YearlySalary" required />&nbsp;Salary</label>
+                                        <input type="radio" name="PayStatus" ng-model="empAction.PayStatus" value="YearlySalary" required />&nbsp;Salary</label>
 
-                                    <input type="text" class="form-control input-sm" ng-disabled="pafItem.PayStatus!='YearlySalary'" name="YearlySalary" ng-model="pafItem.YearlySalary" paf-format="{0}/year" placeholder="0/year" style="width: 40%" paf-numeric ng-required="pafItem.PayStatus=='YearlySalary'" />
+                                    <input type="text" class="form-control input-sm" ng-disabled="empAction.PayStatus!='YearlySalary'" name="YearlySalary" ng-model="empAction.YearlySalary" paf-format="{0}/year" placeholder="0/year" style="width: 40%" paf-numeric ng-required="empAction.PayStatus=='YearlySalary'" ng-change="calPayRange(empAction.PayGrade,'PayRange')" />
                                 </div>
                             </div>
                             <div class="col-md-3 form-inline">
-                                <div class="form-group" ng-class="{'has-error':pafItem.PayStatus.$invalid||pafForm.AdminHourly.$invalid}">
+                                <div class="form-group" ng-class="{'has-error':empAction.PayStatus.$invalid||pafForm.AdminHourly.$invalid}">
                                     <label>
-                                        <input type="radio" name="PayStatus" ng-model="pafItem.PayStatus" value="AdminHourly" required />&nbsp;Admin.Hourly</label>
+                                        <input type="radio" name="PayStatus" ng-model="empAction.PayStatus" value="AdminHourly" required />&nbsp;Admin.Hourly</label>
 
-                                    <input type="text" class="form-control input-sm" ng-disabled="pafItem.PayStatus!='AdminHourly'" name="AdminHourly" ng-model="pafItem.AdminHourly" paf-format="{0}/hour" placeholder="0/hour" style="width: 40%" paf-numeric ng-required="pafItem.PayStatus=='AdminHourly'" />
+                                    <input type="text" class="form-control input-sm" ng-disabled="empAction.PayStatus!='AdminHourly'" name="AdminHourly" ng-model="empAction.AdminHourly" paf-format="{0}/hour" placeholder="0/hour" style="width: 40%" paf-numeric ng-required="empAction.PayStatus=='AdminHourly'"  ng-change="calPayRange(empAction.PayGrade,'PayRange')"/>
                                 </div>
                             </div>
                             <div class="col-md-3 form-inline">
-                                <div class="form-group" ng-class="{'has-error':pafItem.PayStatus.$invalid|| pafForm.HourlyRate.$invalid}">
+                                <div class="form-group" ng-class="{'has-error':empAction.PayStatus.$invalid|| pafForm.HourlyRate.$invalid}">
                                     <label>
-                                        <input type="radio" name="PayStatus" ng-model="pafItem.PayStatus" value="HourlyRate" required />&nbsp;Hourly</label>
-                                    <input type="text" class="form-control input-sm" ng-disabled="pafItem.PayStatus!='HourlyRate'" name="HourlyRate" ng-model="pafItem.HourlyRate" paf-format="{0}/hour" placeholder="0/hour" style="width: 40%" paf-numeric ng-required="pafItem.PayStatus=='HourlyRate'" />
+                                        <input type="radio" name="PayStatus" ng-model="empAction.PayStatus" value="HourlyRate" required />&nbsp;Hourly</label>
+                                    <input type="text" class="form-control input-sm" ng-disabled="empAction.PayStatus!='HourlyRate'" name="HourlyRate" ng-model="empAction.HourlyRate" paf-format="{0}/hour" placeholder="0/hour" style="width: 40%" paf-numeric ng-required="empAction.PayStatus=='HourlyRate'"  ng-change="calPayRange(empAction.PayGrade,'PayRange')"/>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="gorm-group" ng-class="{'has-error':pafForm.PayGrade.$invalid}">
                             <label>Pay Grade</label>
-                            <input type="text" class="form-control input-sm" name="PayGrade" ng-model="pafItem.PayGrade" required />
+
+                            <select class="form-control input-sm" name="PayGrade" ng-model="empAction.PayGrade" ng-options="item.id as item.min+' - '+item.mid+' - '+item.max for item in PayGrades" required ng-change="calPayRange(empAction.PayGrade,'PayRange')">
+                                <option></option>
+                            </select>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-4">
                         <label>Pay Range</label>
-                        <div class="row">
-                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="radio" name="PayRange" ng-model="pafItem.PayRange" value="1" />Below Min</label>
-                                </div>
-                            </div>
-                            <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="radio" name="PayRange" ng-model="pafItem.PayRange" value="2" />Min</label>
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="radio" name="PayRange" ng-model="pafItem.PayRange" value="3" />Min to Mid</label>
-                                </div>
-                            </div>
-                            <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="radio" name="PayRange" ng-model="pafItem.PayRange" value="4" />Mid</label>
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="radio" name="PayRange" ng-model="pafItem.PayRange" value="5" />Mid to Max</label>
-                                </div>
-                            </div>
-                            <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="radio" name="PayRange" ng-model="pafItem.PayRange" value="6" />Max</label>
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="radio" name="PayRange" ng-model="pafItem.PayRange" value="7" />Over Max</label>
-                                </div>
-                            </div>
-                        </div>
+                        <input class="form-control input-sm" ng-model="empAction.PayRange" ng-disabled="true" />
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-4">
                         <div class="form-group">
-                            <label>Reporting to (name & title)</label>
-                            <input class="form-control input-sm" ng-model="pafItem.ReportingName" />
+                            <label>Name</label>
+                            <input class="form-control input-sm" ng-model="empAction.ReportingName" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input class="form-control input-sm" ng-model="empAction.ReportingTitle" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group" ng-class="{'has-error':pafForm.ReportingEmail.$invalid}">
+                            <label>Email</label>
+                            <input type="email" class="form-control input-sm" name="ReportingEmail" ng-model="empAction.ReportingEmail" />
                         </div>
                     </div>
                 </div>
@@ -258,20 +229,20 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>Training Location</label>
-                            <paf-typeahead ng-model="pafItem.HcmHouseCodeTrainingLocation" source="HcmHouseCodes" typeahead-option="{displayField:'name',valueField:'id',name:'HcmHouseCodeTrainingLocation'}"></paf-typeahead>
+                            <paf-typeahead ng-model="empAction.HcmHouseCodeTrainingLocation" source="HcmHouseCodes" typeahead-option="{displayField:'name',valueField:'id',name:'HcmHouseCodeTrainingLocation'}"></paf-typeahead>
 
                         </div>
                     </div>
                     <div class="col-md-5">
                         <div class="form-group">
                             <label>Training Contact</label>
-                            <input class="form-control input-sm" ng-model="pafItem.TrainingContact" />
+                            <input class="form-control input-sm" ng-model="empAction.TrainingContact" />
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>Duration</label>
-                            <input type="text" class="form-control input-sm" ng-model="pafItem.Duration" paf-format="{0} weeks" placeholder="0 weeks" paf-numeric />
+                            <input type="text" class="form-control input-sm" ng-model="empAction.Duration" paf-format="{0} weeks" placeholder="0 weeks" paf-numeric />
                         </div>
                     </div>
                 </div>
@@ -281,19 +252,18 @@
                             <label>
                                 Car Allowance</label>
                             <div class="input-group-btn" dropdown>
-                                <input class="form-control input-sm" ng-model="pafItem.CarAllowance" paf-format="{0}/month" placeholder="0/month" dropdown-toggle paf-numeric />
+                                <input class="form-control input-sm" ng-model="empAction.CarAllowance" paf-format="{0}/month" placeholder="0/month" dropdown-toggle paf-numeric />
 
                                 <ul id="dropdown-menu" class="dropdown-menu" role="menu">
                                     <li ng-repeat="item in lkup.CarAllowances" ng-click="pickerCarAllowance(item)"><a>{{item.Description}}</a></li>
                                 </ul>
-                                <!--</div>-->
                             </div>
                         </div>
                     </div>
                     <div class="col-md-5">
                         <div class="form-group">
                             <label>Bonus Eligible</label>
-                            <select class="form-control input-sm" ng-model="pafItem.BonusEligibleType" ng-options="item.id as item.title for item in lkup.BounsEligibles">
+                            <select class="form-control input-sm" ng-model="empAction.BonusEligibleType" ng-options="item.id as item.title for item in lkup.BounsEligibles">
                                 <option value=""></option>
                             </select>
                         </div>
@@ -301,7 +271,7 @@
                 </div>
             </section>
             <!--SEPARATION-->
-            <section ng-if="pafItem.Separation">
+            <section ng-if="empAction.Separation">
                 <h4>SEPARATION </h4>
                 <p>(SCETION to be completed by Manager) REVIEWED WITH HR: Select name from menu</p>
                 <div class="row">
@@ -309,48 +279,48 @@
                         <div class="form-group" ng-class="{'has-error':pafForm.SeparationDate.$invalid}">
                             <label>
                                 Separation Date</label>
-                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-name="SeparationDate" dt-model="pafItem.SeparationDate" dt-required="pafItem.Separation"></paf-datepicker>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-name="SeparationDate" dt-model="empAction.SeparationDate" dt-required="empAction.Separation"></paf-datepicker>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>
                                 Number Vacation Days Due</label>
-                            <input class="form-control input-sm" ng-model="pafItem.VacationDaysDue" paf-numeric />
+                            <input class="form-control input-sm" ng-model="empAction.VacationDaysDue" paf-numeric />
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>
                                 Separation Pay Number of Weeks</label>
-                            <input class="form-control input-sm" ng-model="pafItem.PayNumberOfWeeks" paf-numeric />
+                            <input class="form-control input-sm" ng-model="empAction.PayNumberOfWeeks" paf-numeric />
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="form-group" ng-class="{'has-error':pafItem.SeparationReason.$invalid||pafForm.ResignationType.$invalid}">
+                        <div class="form-group" ng-class="{'has-error':empAction.SeparationReason.$invalid||pafForm.ResignationType.$invalid}">
                             <label>
-                                <input type="radio" name="SeparationReason" ng-model="pafItem.SeparationReason" value="ResignationType" />&nbsp;Resignation <span ng-if="pafItem.SeparationReason=='ResignationType'">- <i>Enter Reason Code Below</i></span></label>
-                            <select class="form-control input-sm" name="ResignationType" ng-model="pafItem.ResignationType" ng-disabled="pafItem.SeparationReason!='ResignationType'" ng-options="item.id as item.brief+' '+item.title for item in lkup.Resignations" ng-required="pafItem.SeparationReason=='ResignationType'">
+                                <input type="radio" name="SeparationReason" ng-model="empAction.SeparationReason" value="ResignationType" />&nbsp;Resignation <span ng-if="empAction.SeparationReason=='ResignationType'">- <i>Enter Reason Code Below</i></span></label>
+                            <select class="form-control input-sm" name="ResignationType" ng-model="empAction.ResignationType" ng-disabled="empAction.SeparationReason!='ResignationType'" ng-options="item.id as item.brief+' '+item.title for item in lkup.Resignations" ng-required="empAction.SeparationReason=='ResignationType'">
                                 <option value=""></option>
                             </select>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group" ng-class="{'has-error':pafItem.SeparationReason.$invalid||pafForm.TerminationType.$invalid}">
+                        <div class="form-group" ng-class="{'has-error':empAction.SeparationReason.$invalid||pafForm.TerminationType.$invalid}">
                             <label>
-                                <input type="radio" name="SeparationReason" ng-model="pafItem.SeparationReason" value="TerminationType" />&nbsp;Termination <span ng-if="pafItem.SeparationReason=='TerminationType'">- <i>Enter Reason Code Below</i></span></label>
-                            <select class="form-control input-sm" name="TerminationType" ng-model="pafItem.TerminationType" ng-disabled="pafItem.SeparationReason!='TerminationType'" ng-options="item.id as item.brief+' '+item.title for item in lkup.Terminations" ng-required="pafItem.SeparationReason=='TerminationType'">
+                                <input type="radio" name="SeparationReason" ng-model="empAction.SeparationReason" value="TerminationType" />&nbsp;Termination <span ng-if="empAction.SeparationReason=='TerminationType'">- <i>Enter Reason Code Below</i></span></label>
+                            <select class="form-control input-sm" name="TerminationType" ng-model="empAction.TerminationType" ng-disabled="empAction.SeparationReason!='TerminationType'" ng-options="item.id as item.brief+' '+item.title for item in lkup.Terminations" ng-required="empAction.SeparationReason=='TerminationType'">
                                 <option value=""></option>
                             </select>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group" ng-class="{'has-error':pafItem.SeparationReason.$invalid||pafForm.LayoffType.$invalid}">
+                        <div class="form-group" ng-class="{'has-error':empAction.SeparationReason.$invalid||pafForm.LayoffType.$invalid}">
                             <label>
-                                <input type="radio" name="SeparationReason" ng-model="pafItem.SeparationReason" value="LayoffType" />&nbsp;Layoff <span ng-if="pafItem.SeparationReason=='LayoffType'">- <i>Enter Reason Code Below</i></span></label>
-                            <select class="form-control input-sm" name="LayoffType" ng-model="pafItem.LayoffType" ng-disabled="pafItem.SeparationReason!='LayoffType'" ng-options="item.id as item.brief+' '+item.title for item in lkup.Layoffs" ng-required="pafItem.SeparationReason=='LayoffType'">
+                                <input type="radio" name="SeparationReason" ng-model="empAction.SeparationReason" value="LayoffType" />&nbsp;Layoff <span ng-if="empAction.SeparationReason=='LayoffType'">- <i>Enter Reason Code Below</i></span></label>
+                            <select class="form-control input-sm" name="LayoffType" ng-model="empAction.LayoffType" ng-disabled="empAction.SeparationReason!='LayoffType'" ng-options="item.id as item.brief+' '+item.title for item in lkup.Layoffs" ng-required="empAction.SeparationReason=='LayoffType'">
                                 <option value=""></option>
                             </select>
                         </div>
@@ -364,10 +334,10 @@
                     <div class="col-md-4 ">
                         <label>Rehire:</label>
                         <label class="radio-inline">
-                            <input type="radio" ng-model="pafItem.SeparationReHire" ng-value="true" />
+                            <input type="radio" ng-model="empAction.SeparationReHire" ng-value="true" />
                             Yes</label>
                         <label class="radio-inline">
-                            <input type="radio" ng-model="pafItem.SeparationReHire" ng-value="false" />
+                            <input type="radio" ng-model="empAction.SeparationReHire" ng-value="false" />
                             No
                         </label>
                     </div>
@@ -375,37 +345,38 @@
             </section>
 
             <!--LEAVE OF ABSENCE-->
-            <section ng-if="pafItem.Loa">
-                <h4>LEAVE OF ABSENCE</h4>
+            <section ng-if="empAction.Loa">
+                <h4 style="display: inline-block;">LEAVE OF ABSENCE</h4>
+                <span class="has-error" ng-show="pafForm.$error.loa[0].$invalid" style="display: inline-block">&nbsp;<label class="glyphicon glyphicon-info-sign"></label><label> &nbsp;Require one of Loa Date or Date Return be entered.</label></span>
                 <p>(SCETION to be completed by Manager) REVIEWED WITH HR: Select name from menu</p>
-                <div class="row">
+                <div class="row" ng-class="{'has-error':pafForm.$error.loa[0].$invalid}">
                     <div class="col-md-4">
-                        <div class="form-group" ng-class="{'has-error':pafForm.LoaDate.$invalid}">
+                        <div class="form-group">
                             <label>
                                 LOA Date</label>
-                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-name="LoaDate" dt-model="pafItem.LoaDate"></paf-datepicker>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-name="LoaDate" dt-model="empAction.LoaDate"></paf-datepicker>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group" ng-class="{'has-error':pafForm.DateOfReturn.$invalid}">
+                        <div class="form-group">
                             <label>
                                 Date Return</label>
-                            <paf-datepicker dt-option="dateOptions" dt-name="DateOfReturn" min-date="pafItem.LoaDate" dt-popup="MM/dd/yyyy" dt-model="pafItem.DateOfReturn"></paf-datepicker>
+                            <paf-datepicker dt-option="dateOptions" dt-name="DateOfReturn" min-date="empAction.LoaDate" dt-popup="MM/dd/yyyy" dt-model="empAction.DateOfReturn"></paf-datepicker>
                         </div>
                     </div>
                 </div>
             </section>
             <!--SALARY CHANGE/PROMOTION/Demotion-->
-            <section ng-if="pafItem.SalaryChange||pafItem.Promotion||pafItem.Demotion">
-                <div ng-if="pafItem.SalaryChange">
+            <section ng-if="empAction.SalaryChange||empAction.Promotion||empAction.Demotion">
+                <div ng-if="empAction.SalaryChange">
                     <h4>SALARY CHANGE</h4>
                     <p>(Section to be completed by Hiring Manager or Manager)</p>
                 </div>
-                <div ng-if="pafItem.Promotion">
+                <div ng-if="empAction.Promotion">
                     <h4>PROMOTION</h4>
                     <p>(Section to be completed by Hiring Manager or Manager)</p>
                 </div>
-                <div ng-if="pafItem.Demotion">
+                <div ng-if="empAction.Demotion">
                     <h4>DEMOTION</h4>
                     <p>(Section to be completed by Hiring Manager or Manager)</p>
                 </div>
@@ -415,14 +386,14 @@
                             <label>
                                 Current Position</label>
                             <div class="form-control input-sm">{{getPositionTypeName()}}</div>
-                            <!-- <input class="form-control input-sm" ng-disabled="true" ng-model="pafItem.CurrentPositionType" />-->
+                            <!-- <input class="form-control input-sm" ng-disabled="true" ng-model="empAction.CurrentPositionType" />-->
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group" ng-class="{'has-error':pafForm.NewPositionType.$invalid}">
                             <label>
                                 New Position</label>
-                            <select class="form-control input-sm" name="NewPositionType" ng-model="pafItem.NewPositionType" ng-options="item.id as item.name for item in JobCodes" ng-required="pafItem.SalaryChange||pafItem.Promotion||pafItem.Demotion">
+                            <select class="form-control input-sm" name="NewPositionType" ng-model="empAction.NewPositionType" ng-options="item.id as item.name for item in JobCodes" ng-required="empAction.SalaryChange||empAction.Promotion||empAction.Demotion">
                                 <option value=""></option>
                             </select>
 
@@ -434,14 +405,14 @@
                         <div class="form-group" ng-class="{'has-error':pafForm.EffectiveDate.$invalid}">
                             <label>
                                 Effective Date</label>
-                            <paf-datepicker dt-option="dateOptions" dt-name="EffectiveDate" dt-popup="MM/dd/yyyy" dt-model="pafItem.EffectiveDate" dt-required="pafItem.SalaryChange||pafItem.Promotion||pafItem.Demotion"></paf-datepicker>
+                            <paf-datepicker dt-option="dateOptions" dt-name="EffectiveDate" dt-popup="MM/dd/yyyy" dt-model="empAction.EffectiveDate" dt-required="empAction.SalaryChange||empAction.Promotion||empAction.Demotion"></paf-datepicker>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group" ng-class="{'has-error':pafForm.ChangeReasonType.$invalid}">
                             <label>
                                 Reason for Change*:</label>
-                            <select class="form-control input-sm" name="ChangeReasonType" ng-model="pafItem.ChangeReasonType" ng-options="item.id as item.title for item in lkup.Reason4Changes" ng-required="pafItem.SalaryChange||pafItem.Promotion||pafItem.Demotion"></select>
+                            <select class="form-control input-sm" name="ChangeReasonType" ng-model="empAction.ChangeReasonType" ng-options="item.id as item.title for item in lkup.Reason4Changes" ng-required="empAction.SalaryChange||empAction.Promotion||empAction.Demotion"></select>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -454,22 +425,22 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label ng-if="!pafItem.Demotion">
+                            <label ng-if="!empAction.Demotion">
                                 Date Last Increase</label>
-                            <label ng-if="pafItem.Demotion">
+                            <label ng-if="empAction.Demotion">
                                 Date Last  Decrease 
                             </label>
-                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.LastIncreaseDate"></paf-datepicker>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="empAction.LastIncreaseDate"></paf-datepicker>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label ng-if="!pafItem.Demotion">
+                            <label ng-if="!empAction.Demotion">
                                 Percentage Last Increase</label>
-                            <label ng-if="pafItem.Demotion">
+                            <label ng-if="empAction.Demotion">
                                 Percentage Last Decrease 
                             </label>
-                            <input class="form-control input-sm" ng-model="pafItem.LastIncreasePercentage" paf-numeric />
+                            <input class="form-control input-sm" ng-model="empAction.LastIncreasePercentage" paf-numeric />
                         </div>
                     </div>
                 </div>
@@ -478,104 +449,130 @@
                         <div class="form-group">
                             <label>
                                 Current Salary</label>
-                            <input class="form-control input-sm" ng-model="pafItem.CurrentSalary" paf-numeric />
+                            <input class="form-control input-sm" ng-model="empAction.CurrentSalary" paf-numeric />
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="form-group" ng-class="{'has-error':!pafItem.IncreasePercentage&&pafForm.IncreaseAmount.$invalid}">
-                            <label ng-if="!pafItem.Demotion">
+                        <div class="form-group" ng-class="{'has-error':!empAction.IncreasePercentage&&pafForm.IncreaseAmount.$invalid}">
+                            <label ng-if="!empAction.Demotion">
                                 Increase Amt.</label>
-                            <label ng-if="pafItem.Demotion">
+                            <label ng-if="empAction.Demotion">
                                 Decrease Amt.
                             </label>
-                            <input class="form-control input-sm" name="IncreaseAmount" ng-model="pafItem.IncreaseAmount" paf-numeric ng-required="(pafItem.SalaryChange||pafItem.Promotion||pafItem.Demotion)&&!pafItem.IncreasePercentage" />
+                            <input class="form-control input-sm" name="IncreaseAmount" ng-model="empAction.IncreaseAmount" paf-numeric ng-required="(empAction.SalaryChange||empAction.Promotion||empAction.Demotion)&&!empAction.IncreasePercentage" ng-change="onSalaryChange('amt')" />
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="form-group" ng-class="{'has-error':!pafItem.IncreaseAmount&&pafForm.IncreasePercentage.$invalid}">
+                        <div class="form-group" ng-class="{'has-error':!empAction.IncreaseAmount&&pafForm.IncreasePercentage.$invalid}">
                             <label>
                                 Percentage</label>
-                            <input class="form-control input-sm" name="IncreasePercentage" ng-model="pafItem.IncreasePercentage" paf-numeric ng-required="(pafItem.SalaryChange||pafItem.Promotion||pafItem.Demotion)&&!pafItem.IncreaseAmount" />
+                            <input class="form-control input-sm" name="IncreasePercentage" ng-model="empAction.IncreasePercentage" paf-numeric ng-required="(empAction.SalaryChange||empAction.Promotion||empAction.Demotion)&&!empAction.IncreaseAmount" ng-change="onSalaryChange('percentage')" />
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>
                                 New Salary</label>
-                            <input class="form-control input-sm" ng-model="pafItem.NewSalary" paf-numeric />
+                            <input class="form-control input-sm" ng-model="empAction.NewSalary" paf-numeric />
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label>
                                 Current Pay Grade</label>
-                            <input class="form-control input-sm" ng-model="pafItem.CurrentPayGrade" paf-numeric />
+                            <input class="form-control input-sm" ng-model="empAction.CurrentPayGrade" ng-disabled="true" />
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Current Pay Range</label>
+                            <input class="form-control input-sm" ng-model="empAction.CurrentPayRange" ng-disabled="true" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
                         <div class="form-group" ng-class="{'has-error':pafForm.NewPayGrade.$invalid}">
                             <label>
                                 New Pay Grade</label>
-                            <input class="form-control input-sm" name="NewPayGrade" ng-model="pafItem.NewPayGrade" paf-numeric ng-required="pafItem.SalaryChange||pafItem.Promotion||pafItem.Demotion" />
+                            <select class="form-control input-sm" name="NewPayGrade" ng-model="empAction.NewPayGrade" ng-options="item.id as item.min+' - '+item.mid+' - '+item.max for item in PayGrades" ng-required="empAction.SalaryChange||empAction.Promotion||empAction.Demotion" ng-change="calPayRange(empAction.NewPayGrade,'NewPayRange')">
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>New Pay Range</label>
+                            <input class="form-control input-sm" ng-model="empAction.NewPayRange" ng-disabled="true" />
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <!--<div class="row">
                     <div class="col-md-12">
                         <label>Pay Range</label>
                         <div class="row">
                             <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="radio" name="NewPayRange" ng-model="pafItem.NewPayRange" value="1" />Below Min</label>
+                                        <input type="radio" name="NewPayRange" ng-model="empAction.NewPayRange" value="1" />Below Min</label>
                                 </div>
                             </div>
                             <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="radio" name="NewPayRange" ng-model="pafItem.NewPayRange" value="2" />Min</label>
+                                        <input type="radio" name="NewPayRange" ng-model="empAction.NewPayRange" value="2" />Min</label>
                                 </div>
                             </div>
                             <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="radio" name="NewPayRange" ng-model="pafItem.NewPayRange" value="3" />Min to Mid</label>
+                                        <input type="radio" name="NewPayRange" ng-model="empAction.NewPayRange" value="3" />Min to Mid</label>
                                 </div>
                             </div>
                             <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="radio" name="NewPayRange" ng-model="pafItem.NewPayRange" value="4" />Mid</label>
+                                        <input type="radio" name="NewPayRange" ng-model="empAction.NewPayRange" value="4" />Mid</label>
                                 </div>
                             </div>
                             <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="radio" name="NewPayRange" ng-model="pafItem.NewPayRange" value="5" />Mid to Max</label>
+                                        <input type="radio" name="NewPayRange" ng-model="empAction.NewPayRange" value="5" />Mid to Max</label>
                                 </div>
                             </div>
                             <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="radio" name="NewPayRange" ng-model="pafItem.NewPayRange" value="6" />Max</label>
+                                        <input type="radio" name="NewPayRange" ng-model="empAction.NewPayRange" value="6" />Max</label>
                                 </div>
                             </div>
                             <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="radio" name="NewPayRange" ng-model="pafItem.NewPayRange" value="7" />Over Max</label>
+                                        <input type="radio" name="NewPayRange" ng-model="empAction.NewPayRange" value="7" />Over Max</label>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>-->
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-4">
                         <div class="form-group" ng-class="{'has-error':pafForm.NewReportingName.$invalid}">
-                            <label>Reporting to (name & title)</label>
-                            <input class="form-control input-sm" name="NewReportingName" ng-model="pafItem.NewReportingName" ng-required="pafItem.SalaryChange||pafItem.Promotion||pafItem.Demotion" />
+                            <label>Name</label>
+                            <input class="form-control input-sm" name="NewReportingName" ng-model="empAction.NewReportingName" ng-required="empAction.SalaryChange||empAction.Promotion||empAction.Demotion" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input class="form-control input-sm" name="NewReportingTitle" ng-model="empAction.NewReportingTitle" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group" ng-class="{'has-error':pafForm.NewReportingEmail.$invalid}">
+                            <label>Email</label>
+                            <input type="email" class="form-control input-sm" name="NewReportingEmail" ng-model="empAction.NewReportingEmail" />
                         </div>
                     </div>
                 </div>
@@ -583,7 +580,7 @@
                     <div class="col-md-4">
                         <div class="form-group" dropdown>
                             <label>Car Allowance</label>
-                            <input type="text" class="form-control input-sm" ng-model="pafItem.NewCarAllowance" paf-format="{0}/month" placeholder="0/month" dropdown-toggle paf-numeric />
+                            <input type="text" class="form-control input-sm" ng-model="empAction.NewCarAllowance" paf-format="{0}/month" placeholder="0/month" dropdown-toggle paf-numeric />
                             <ul class="dropdown-menu" role="menu">
                                 <li ng-repeat="item in lkup.CarAllowances" ng-click="pickerCarAllowance(item)"><a>{{item.Description}}</a></li>
                             </ul>
@@ -592,7 +589,7 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>Bonus Eligible</label>
-                            <select class="form-control input-sm" ng-model="pafItem.NewBonusEligibleType" ng-options="item.id as item.title for item in lkup.BounsEligibles">
+                            <select class="form-control input-sm" ng-model="empAction.NewBonusEligibleType" ng-options="item.id as item.title for item in lkup.BounsEligibles">
                                 <option value=""></option>
                             </select>
                         </div>
@@ -600,126 +597,138 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>Other Instructions</label>
-                            <input class="form-control input-sm" ng-model="pafItem.Instructions" />
+                            <input class="form-control input-sm" ng-model="empAction.Instructions" />
                         </div>
                     </div>
                 </div>
             </section>
 
             <!--TRANSFER-->
-            <section ng-if="pafItem.Transfer">
+            <section ng-if="empAction.Transfer">
                 <h4>TRANSFER</h4>
                 <p>(Section to be completed by Hiring Manager)</p>
                 <div class="row">
                     <div class="col-md-4 ">
                         <div class="form-group" ng-class="{'has-error':pafForm.TransferEffectiveDate.$invalid}">
                             <label>Effective Date</label>
-                            <paf-datepicker dt-option="dateOptions" dt-name="TransferEffectiveDate" dt-popup="MM/dd/yyyy" dt-model="pafItem.TransferEffectiveDate" dt-required="pafItem.Transfer"></paf-datepicker>
+                            <paf-datepicker dt-option="dateOptions" dt-name="TransferEffectiveDate" dt-popup="MM/dd/yyyy" dt-model="empAction.TransferEffectiveDate" dt-required="empAction.Transfer"></paf-datepicker>
                         </div>
                     </div>
                     <div class="col-md-4 ">
                         <div class="form-group">
                             <label>Current Unit</label>
-                            <paf-typeahead ng-model="pafItem.HcmHouseCode" ng-disabled="true" source="HcmHouseCodes" typeahead-option="{displayField:'name',valueField:'id'}"></paf-typeahead>
+                            <paf-typeahead ng-model="empAction.HcmHouseCode" ng-disabled="true" source="HcmHouseCodes" typeahead-option="{displayField:'name',valueField:'id'}"></paf-typeahead>
                         </div>
                     </div>
                     <div class="col-md-4 ">
                         <div class="form-group" ng-class="{'has-error':pafForm.HouseCodeTransfer.$invalid}">
                             <label>New Unit</label>
-                            <paf-typeahead ng-model="pafItem.HouseCodeTransfer" source="HcmHouseCodes" typeahead-option="{displayField:'name',valueField:'id',name:'HouseCodeTransfer'}" ng-required="pafItem.Transfer"></paf-typeahead>
+                            <paf-typeahead ng-model="empAction.HouseCodeTransfer" source="HcmHouseCodes" typeahead-option="{displayField:'name',valueField:'id',name:'HouseCodeTransfer'}" ng-required="empAction.Transfer"></paf-typeahead>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-4">
                         <div class="form-group" ng-class="{'has-error':pafForm.TransferReportingName.$invalid}">
-                            <label>Reporting to (name & title)</label>
-                            <input class="form-control input-sm" name="TransferReportingName" ng-model="pafItem.TransferReportingName" ng-required="pafItem.Transfer" />
+                            <label>Name</label>
+                            <input class="form-control input-sm" name="TransferReportingName" ng-model="empAction.TransferReportingName" ng-required="empAction.Transfer" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input class="form-control input-sm" name="TransferReportingTitle" ng-model="empAction.TransferReportingTitle" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group" ng-class="{'has-error':pafForm.TransferReportingEmail.$invalid}">
+                            <label>Email</label>
+                            <input type="email" class="form-control input-sm" name="TransferReportingEmail" ng-model="empAction.TransferReportingEmail" />
                         </div>
                     </div>
                 </div>
             </section>
             <!--PERSONAL INFORMATION CHANGE-->
-            <section ng-if="pafItem.PersonalInfoChange">
+            <section ng-if="empAction.PersonalInfoChange">
                 <h4>PERSONAL INFORMATION CHANGE</h4>
                 <p>(Section to be completed by Associate)</p>
                 <div class="row">
                     <div class="col-md-3">
                         <label>Effective Date</label>
-                        <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.InfoChangeEffectiveDate"></paf-datepicker>
+                        <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="empAction.InfoChangeEffectiveDate"></paf-datepicker>
                     </div>
                     <div class="col-md-3">
                         <label>First Name</label>
-                        <input class="form-control input-sm" ng-model="pafItem.InfoChangeFirstName" />
+                        <input class="form-control input-sm" ng-model="empAction.InfoChangeFirstName" />
                     </div>
                     <div class="col-md-3">
                         <label>Middle Name</label>
-                        <input class="form-control input-sm" ng-model="pafItem.InfoChangeMiddleName" />
+                        <input class="form-control input-sm" ng-model="empAction.InfoChangeMiddleName" />
                     </div>
                     <div class="col-md-3">
                         <label>Last Name</label>
-                        <input class="form-control input-sm" ng-model="pafItem.InfoChangeLastName" />
+                        <input class="form-control input-sm" ng-model="empAction.InfoChangeLastName" />
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Address1</label>
-                            <input class="form-control input-sm" ng-model="pafItem.InfoChangeAddressLine1" />
+                            <input class="form-control input-sm" ng-model="empAction.InfoChangeAddressLine1" />
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>Address2</label>
-                            <input class="form-control input-sm" ng-model="pafItem.InfoChangeAddressLine2" />
+                            <input class="form-control input-sm" ng-model="empAction.InfoChangeAddressLine2" />
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>Phone #</label>
-                            <input class="form-control input-sm" ng-model="pafItem.InfoChangePhone" paf-mask="phone" />
+                            <input class="form-control input-sm" ng-model="empAction.InfoChangePhone" paf-mask="phone" />
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-4">
                         <label class="control-label">City</label>
-                        <input class="form-control input-sm" ng-model="pafItem.InfoChangeCity" />
+                        <input class="form-control input-sm" ng-model="empAction.InfoChangeCity" />
                     </div>
                     <div class="col-md-4">
                         <label class="control-label">State</label>
-                        <select class="form-control input-sm" ng-model="pafItem.AppStateTypeInfoChange" ng-options="item.id as item.name for item in States">
+                        <select class="form-control input-sm" ng-model="empAction.AppStateTypeInfoChange" ng-options="item.id as item.name for item in States">
                             <option></option>
                         </select>
                     </div>
                     <div class="col-md-4">
                         <label class="control-label">Zip</label>
-                        <input class="form-control input-sm" ng-model="pafItem.InfoChangePostalCode" paf-mask="zipcode" />
+                        <input class="form-control input-sm" ng-model="empAction.InfoChangePostalCode" paf-mask="zipcode" />
                     </div>
                 </div>
             </section>
             <!--REQUISITION-->
-            <section ng-if="pafItem.NewHire||pafItem.ReHire||pafItem.SalaryChange||pafItem.Promotion||pafItem.Demotion||pafItem.Transfer">
+            <section ng-if="empAction.NewHire||empAction.ReHire||empAction.SalaryChange||empAction.Promotion||empAction.Demotion||empAction.Transfer">
                 <h4>REQUISITION</h4>
                 <p>(To Be completed by Recruiter)</p>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Requisition #</label>
-                            <input class="form-control input-sm" ng-model="pafItem.RequisitionNumber" paf-numeric />
+                            <input class="form-control input-sm" ng-model="empAction.RequisitionNumber" paf-numeric />
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group" ng-class="{'has-error':pafForm.EmailAddress.$invalid}">
                             <label>Email Address</label>
-                            <input class="form-control input-sm" ng-model="pafItem.EmailAddress" name="EmailAddress" paf-validation="email" />
+                            <input type="email" class="form-control input-sm" ng-model="empAction.EmailAddress" name="EmailAddress" />
                         </div>
                     </div>
                 </div>
 
             </section>
             <!--RELOCATION-->
-            <section ng-if="pafItem.Relocation">
+            <section ng-if="empAction.Relocation">
                 <h4>RELOCATION</h4>
                 <div class="row">
                     <!--<div class="col-md-3">
@@ -727,19 +736,19 @@
                             <label>&nbsp;</label>
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox" ng-model="pafItem.CompanyRelocation" />Company Relocation</label>
+                                    <input type="checkbox" ng-model="empAction.CompanyRelocation" />Company Relocation</label>
                             </div>
                         </div>
                     </div>-->
                     <div class="col-md-6">
                         <div class="form-group" ng-class="{'has-error':pafForm.RelocationApprovedBy.$invalid}">
-                            <label>Relocation approved by</label><input class="form-control input-sm" name="RelocationApprovedBy" ng-model="pafItem.RelocationApprovedBy" required />
+                            <label>Relocation approved by</label><input class="form-control input-sm" name="RelocationApprovedBy" ng-model="empAction.RelocationApprovedBy" required />
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group" ng-class="{'has-error':pafForm.RelocationPlan.$invalid}">
                             <label>Plan/Details</label>
-                            <select class="form-control input-sm" name="RelocationPlan" ng-model="pafItem.RelocationPlan" ng-options="item.id as item.title for item in lkup.PlanDetails" required>
+                            <select class="form-control input-sm" name="RelocationPlan" ng-model="empAction.RelocationPlan" ng-options="item.id as item.title for item in lkup.PlanDetails" required>
                                 <option value=""></option>
                             </select>
                         </div>
@@ -750,7 +759,7 @@
             <section>
                 <div class="form-group">
                     <h4>COMMENTS</h4>
-                    <textarea class="form-control input-sm" ng-model="pafItem.Comments"></textarea>
+                    <textarea class="form-control input-sm" ng-model="empAction.Comments"></textarea>
                 </div>
             </section>
             <!--APPROVALS-->
@@ -760,25 +769,25 @@
                     <div class="col-md-3 col-sm-6">
                         <div class="form-group">
                             <label>UD/Dept Mgr</label>
-                            <input class="form-control input-sm" ng-model="pafItem.UDDeptMgr" />
+                            <input class="form-control input-sm" ng-model="empAction.UDDeptMgr" />
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6">
                         <div class="form-group">
                             <label>Date</label>
-                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.UDDate"></paf-datepicker>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="empAction.UDDate"></paf-datepicker>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6">
                         <div class="form-group">
                             <label>RVP/VP</label>
-                            <input class="form-control input-sm" ng-model="pafItem.RVP" />
+                            <input class="form-control input-sm" ng-model="empAction.RVP" />
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6">
                         <div class="form-group">
                             <label>Date</label>
-                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.RVPDate"></paf-datepicker>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="empAction.RVPDate"></paf-datepicker>
                         </div>
                     </div>
                 </div>
@@ -786,25 +795,25 @@
                     <div class="col-md-3 col-sm-6">
                         <div class="form-group">
                             <label>Reg. Mgr</label>
-                            <input class="form-control input-sm" ng-model="pafItem.RegMgr" />
+                            <input class="form-control input-sm" ng-model="empAction.RegMgr" />
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6">
                         <div class="form-group">
                             <label>Date</label>
-                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.RegDate"></paf-datepicker>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="empAction.RegDate"></paf-datepicker>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6">
                         <div class="form-group">
                             <label>DVP/SVP</label>
-                            <input class="form-control input-sm" ng-model="pafItem.DVP" />
+                            <input class="form-control input-sm" ng-model="empAction.DVP" />
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6">
                         <div class="form-group">
                             <label>Date</label>
-                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.DVPDate"></paf-datepicker>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="empAction.DVPDate"></paf-datepicker>
                         </div>
                     </div>
                 </div>
@@ -812,25 +821,25 @@
                     <div class="col-md-3 col-sm-6">
                         <div class="form-group">
                             <label>SHRC</label>
-                            <input class="form-control input-sm" ng-model="pafItem.SHRC" />
+                            <input class="form-control input-sm" ng-model="empAction.SHRC" />
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6">
                         <div class="form-group">
                             <label>Date</label>
-                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.ShrcDate"></paf-datepicker>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="empAction.ShrcDate"></paf-datepicker>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6">
                         <div class="form-group">
                             <label>CEO/CFO</label>
-                            <input class="form-control input-sm" ng-model="pafItem.CEO" />
+                            <input class="form-control input-sm" ng-model="empAction.CEO" />
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6">
                         <div class="form-group">
                             <label>Date</label>
-                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="pafItem.CEODate"></paf-datepicker>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="empAction.CEODate"></paf-datepicker>
                         </div>
                     </div>
                 </div>
