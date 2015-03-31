@@ -2039,7 +2039,7 @@ ii.Class({
 					
 			for (var index = 0; index < me.reportParameters.length; index++) {
 				if (me.reportParameters[index].controlType == "Date" && me.reportParameters[index].mandatory)
-					html += "\n<div><div id=ParameterLabel" + me.reportParameters[index].name + " class='labelReport'> <span class='nonRequiredFieldIndicator'></span>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div><div><input type='checkbox' id='dateCheck' checked='true' class='checkMandatory' onchange='fin.reportUi.dateMandatory(this," + index + ");' /></div><div class='labelSchedule'>NULL</div></div>"
+					html += "\n<div><div id=ParameterLabel" + me.reportParameters[index].name + " class='labelReport'> <span class='nonRequiredFieldIndicator'>&nbsp;&nbsp;</span>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div><div><input type='checkbox' id='dateCheck' checked='true' class='checkMandatory' onchange='fin.reportUi.dateMandatory(this," + index + ");' /></div><div class='labelSchedule'>NULL</div></div>"
 				else if (me.reportParameters[index].controlType == "Date" && !me.reportParameters[index].mandatory)
 					html += "\n<div><div class='labelReport'> <span class='requiredFieldIndicator'>&#149;</span></span>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div></div>"
 				else
@@ -2404,7 +2404,7 @@ ii.Class({
             var me = this;
             
             if (object.checked) {
-            	$("#ParameterLabel" + me.reportParameters[index].name).html("<span class='nonRequiredFieldIndicator'>&#09;</span>" + me.reportParameters[index].title + ":");
+            	$("#ParameterLabel" + me.reportParameters[index].name).html("<span class='nonRequiredFieldIndicator'>&nbsp;&nbsp;</span>" + me.reportParameters[index].title + ":");
                 me.controls[index][0].value = "";
                 me.controls[index][0].disabled = true;
             }
