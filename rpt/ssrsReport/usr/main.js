@@ -2039,11 +2039,11 @@ ii.Class({
 					
 			for (var index = 0; index < me.reportParameters.length; index++) {
 				if (me.reportParameters[index].controlType == "Date" && me.reportParameters[index].mandatory)
-					html += "\n<div><div class='labelReport'>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div><div><input type='checkbox' id='dateCheck' checked='true' class='checkMandatory' onchange='fin.reportUi.dateMandatory(this," + index + ");' /></div><div class='labelSchedule'>NULL</div></div>"
+					html += "\n<div><div id=ParameterLabel" + me.reportParameters[index].name + " class='labelReport'> <span class='nonRequiredFieldIndicator'>&nbsp;&nbsp;</span>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div><div><input type='checkbox' id='dateCheck' checked='true' class='checkMandatory' onchange='fin.reportUi.dateMandatory(this," + index + ");' /></div><div class='labelSchedule'>NULL</div></div>"
 				else if (me.reportParameters[index].controlType == "Date" && !me.reportParameters[index].mandatory)
-					html += "\n<div><div class='labelReport'>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div></div>"
+					html += "\n<div><div class='labelReport'> <span class='requiredFieldIndicator'>&#149;</span></span>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div></div>"
 				else
-					html += "\n<div><div class='labelReport'>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium' style='height:20px;width:" + me.reportParameters[index].Width + "px;'></div><div id='customersLoading'></div></div>"										
+					html += "\n<div><div class='labelReport'> <span class='requiredFieldIndicator'>&#149;</span>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium' style='height:20px;width:" + me.reportParameters[index].Width + "px;'></div><div id='customersLoading'></div></div>"										
 				html += "\n<div style='clear:both;height:3px'></div>";
 			}
 
@@ -2081,7 +2081,7 @@ ii.Class({
 						header: false,
 						multiple: false,
 						noneSelectedText: "",
-						selectedList: 1,						
+						selectedList: 1,		
 						selectedText: function(numChecked, numTotal, checkedItems) {
                             var parametersList = "";
 							var selectedItems = 0;
@@ -2106,7 +2106,13 @@ ii.Class({
                             	me.fiscalweeksLoad(ui.value);                            
                             else if (event.originalEvent.currentTarget.id.indexOf("ExLevel") > 0)                           	
                         		me.excludeNamesLoaded(ui.value);                            
-                        },						
+                        },
+                        open: function(e) {
+							$("#" + e.target.id).multiselect("widget").find(":radio").each(function() {
+							    if(this.checked)
+							    	this.focus();							       
+					   		});
+						},						
 						position: {
 							my: 'left bottom',
 							at: 'left top'
@@ -2146,9 +2152,10 @@ ii.Class({
                             var selectedValuesLength = selectedValues.length;
                             
                             for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
-                                if (selectedValues[selectedIndex] != '(Select All)')
-                                    parametersList = parametersList + ', ' + selectedValues[selectedIndex];
+                                if (selectedValues[selectedIndex] != '(Select All)') {
+                                	parametersList = parametersList + ', ' + selectedValues[selectedIndex];
 									selectedItems = selectedItems + 1;
+                                }                                    
                             }
                             parametersList = parametersList.substring(1, parametersList.length);
 							
@@ -2173,7 +2180,7 @@ ii.Class({
                                     $("#ui-multiselect-"+event.target.id+"-option-0")[0].checked = false;
                             }
                         },
-						open: function( e ) {							
+						open: function(e) {							
 							if (e.target.id == 'Customer') {
 								if (me.subscriptionSelected)
 									return false;
@@ -2397,10 +2404,12 @@ ii.Class({
             var me = this;
             
             if (object.checked) {
+            	$("#ParameterLabel" + me.reportParameters[index].name).html("<span class='nonRequiredFieldIndicator'>&nbsp;&nbsp;</span>" + me.reportParameters[index].title + ":");
                 me.controls[index][0].value = "";
                 me.controls[index][0].disabled = true;
             }
             else if (!object.checked) {
+            	$("#ParameterLabel" + me.reportParameters[index].name).html("<span class='requiredFieldIndicator'>&#149;</span>" + me.reportParameters[index].title + ":");
                 me.controls[index][0].disabled = false;
             }
         },
@@ -2561,7 +2570,7 @@ ii.Class({
             	$("#ExName").append("<option title='(Select All)' value='-1'>(Select All)</option>");
             	
 			for (var index = 0; index < nodes.length; index++) {
-                $("#ExName").append("<option title='" + nodes[index].title + "' value='" + nodes[index].id + "'>" + nodes[index].title + "</option>");
+                $("#ExName").append("<option title='" + nodes[index].title + "' value='" + nodes[index].title + "'>" + nodes[index].title + "</option>");
             }
             
             if (nodes.length == 0)
@@ -2842,7 +2851,7 @@ ii.Class({
 						}
                 	}                							                    
                 }                   
-                else if (me.reportParameters[index].controlType == "DropDown")    {
+                else if (me.reportParameters[index].controlType == "DropDown") {
                 	var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function(){
                         return this.value;
                     }).get();
