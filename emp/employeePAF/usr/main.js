@@ -30,9 +30,6 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', function ($scope, EmpActi
             $scope.HcmHouseCodes = result;
             EmpActions.getEmployeePersonnelActions(function (items) {
                 $scope.empActions = items;
-                //$scope.$apply(function () {
-                //    $scope.PAFItems = result;
-                //});
 
                 $scope.viewLoading = false;
             });
@@ -48,7 +45,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', function ($scope, EmpActi
 
 }]);
 
-paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$timeout', '$routeParams', '$modal', function ($scope, $document, EmpActions, $filter, $timeout, $routeParams, $modal) {
+paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$timeout', '$routeParams', '$modal', '$location', function ($scope, $document, EmpActions, $filter, $timeout, $routeParams, $modal, $location) {
     $scope.HcmHouseCodes = [];
     $scope.viewLoading = false;
 
@@ -156,12 +153,14 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         var separationReasonItems = [];
         loadCount++;
         EmpActions.findEmployeePersonnelAction($routeParams.id, function (result) {
-            // $scope.$apply(function () {
+            if (!result) {
+                $location.path('/list');
+                return;
+            }
             $scope.empAction = result;
             lastEmployeeNumber = result.EmployeeNumber;
-            // $scope.pafItem.
+
             $scope.viewLoading = false;
-            //});
             loadCount--;
             loadComplete();
         })
@@ -212,7 +211,13 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
         var payGradeItem = $filter('filter')($scope.PayGrades, function (item) {
             return item.id == payGrade;
-        })[0];
+        });
+
+        if (!angular.isDefined(payGradeItem)) {
+            return;
+        }
+
+        payGradeItem = payGradeItem[0];
 
         if (!angular.isDefined(payGradeItem) || payGradeItem == null)
             return null;
@@ -518,9 +523,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     }
 
     var validateLoa = function () {
-        var isValid = false;
-        if ($scope.empAction.Loa) {
-            if ($scope.empAction.LoaDate != null || $scope.empAction.DateOfReturn != null) {
+        var isValid = false; 
+        if ($scope.empAction.Loa) { 
+            if ($scope.empAction.LoaDate || $scope.empAction.DateOfReturn) {
                 isValid = true;
             }
 
@@ -724,7 +729,7 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
             return value;
         },
         zipCode: function (ctrl, value, attr) {
-            var valid = typeof (value) == "string" && value.length >= 5 && value.length <= 9;
+            var valid = typeof (value) == "string" && value.length >= 5 && value.length <= 10;
             ctrl.$setValidity(attr.name, valid);
             return value;
         },
@@ -910,7 +915,7 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
         phoneMask9D = new StringMask('(000) 000-0000X0000');
 
     var zipcodeMask5D = new StringMask('00000'),
-        zipcodeMask6D = new StringMask('00000-0000');
+        zipcodeMask6D = new StringMask('00000-00000');
 
     function clearValue(value) {
         if (!value) {
@@ -963,7 +968,6 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
             var $parsers = '';
 
             ctrl.$formatters.push(function (value) {
-                //console.log(value);
                 if (maskType == 'PHONE')
                     return applyPhoneMask(Validators.phoneNumber(ctrl, value, attrs));
                 else if (maskType == 'ZIPCODE')

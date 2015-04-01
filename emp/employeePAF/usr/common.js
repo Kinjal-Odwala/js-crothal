@@ -60,6 +60,11 @@ var deserializeXml = function (xml, nodeName, options) {
 
             if (intItems.indexOf(key.name.toUpperCase()) >= 0)
                 value = key.value == 0 ? null : key.value;
+
+            if (dateItems.indexOf(key.name.toUpperCase()) >= 0)
+            {
+                value = !key.value || key.value.substr(0, 8) == '1/1/1900' ? null : key.value;
+            }
           
             obj[convertAttrName(key.name)] = value;
 

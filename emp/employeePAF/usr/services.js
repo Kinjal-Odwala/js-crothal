@@ -59,9 +59,11 @@ paf.factory('EmpActions', ["$http", "$filter", function ($http, $filter) {
     var findEmployeePersonnelAction = function (id, callback) {
         var boolItems = ["NewHire", "ReHire", "Separation", "LOA", "SalaryChange", "Promotion", "Demotion", "Transfer", "PersonalInfoChange", "Relocation"];
         var intItems = ["HcmHouseCode", "EmployeeNumber", "StateType", "PositionType", "TrainingLocation", "Duration", "CarAllowance", "BonusEligibleType", "LayoffType", "OldPositionType", "NewPositionType", "ChangeReasonType", "NewCarAllowance", "NewBonusEligibleType", "HouseCodeTransfer", "InfoChangeStateType", "RelocationPlan"];
+        var dateItems = ["Date", "HireDate", "SeparationDate", "LoaDate", "DateOfReturn", "EffectiveDate", "LastIncreaseDate", "EffectiveDate", "TransferEffectiveDate", "InfoChangeEffectiveDate"];
+
         apiRequest('emp', '<criteria>storeId:employeePersonnelActions,userId:[user]' + ",actionId:" + id + ',</criteria>', function (xml) {
             if (callback)
-                callback(deserializeXml(xml, 'item', { upperFirstLetter: true, boolItems: boolItems, intItems: intItems })[0]);
+                callback(deserializeXml(xml, 'item', { upperFirstLetter: true, boolItems: boolItems, intItems: intItems, dateItems: dateItems })[0]);
         });
     }
 
@@ -179,18 +181,22 @@ paf.factory('EmpActions', ["$http", "$filter", function ($http, $filter) {
     }
 
     var saveEmployeePersonnelAction = function (employeePersonnelAction, callback) {
+        console.log(employeePersonnelAction);
+        var xml = [];
+        if (employeePersonnelAction.Id) {
+            xml.push('<transaction actionId="' + employeePersonnelAction.Id + '">');
+        }
+        else {
+            xml.push('<transaction actionId="0">');
+        }
+        xml.push('\r\n<employeePersonnelAction ');
 
-        var xml = ['<transaction id="1">\r\n<employeePersonnelAction '];
         var xmlNode = [];
         angular.forEach(employeePersonnelAction, function (value, key) {
             key = lowercaseFirstLetter(key);
 
             if (value == null || !angular.isDefined(value))
                 value = ""
-                //else if (value == true)
-                //    value = "1";
-                //else if (value == false)
-                //    value = "0";
             else if (angular.isDate(value)) {
                 value = $filter('date')(value, "MM/dd/yyyy");
             }
