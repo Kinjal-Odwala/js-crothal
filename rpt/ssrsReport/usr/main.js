@@ -2038,13 +2038,15 @@ ii.Class({
 			me.dependentTypes = [];
 					
 			for (var index = 0; index < me.reportParameters.length; index++) {
-				if (me.reportParameters[index].controlType == "Date" && me.reportParameters[index].mandatory)
-					html += "\n<div><div id=ParameterLabel" + me.reportParameters[index].name + " class='labelReport'> <span class='nonRequiredFieldIndicator'>&nbsp;&nbsp;</span>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div><div><input type='checkbox' id='dateCheck' checked='true' class='checkMandatory' onchange='fin.reportUi.dateMandatory(this," + index + ");' /></div><div class='labelSchedule'>NULL</div></div>"
-				else if (me.reportParameters[index].controlType == "Date" && !me.reportParameters[index].mandatory)
-					html += "\n<div><div class='labelReport'> <span class='requiredFieldIndicator'>&#149;</span></span>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div></div>"
-				else
-					html += "\n<div><div class='labelReport'> <span class='requiredFieldIndicator'>&#149;</span>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium' style='height:20px;width:" + me.reportParameters[index].Width + "px;'></div><div id='customersLoading'></div></div>"										
-				html += "\n<div style='clear:both;height:3px'></div>";
+				if (me.reportParameters[index].controlType != "Label") {
+					if (me.reportParameters[index].controlType == "Date" && me.reportParameters[index].mandatory)
+						html += "\n<div><div id=ParameterLabel" + me.reportParameters[index].name + " class='labelReport'> <span class='nonRequiredFieldIndicator'>&#149;</span>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div><div><input type='checkbox' id='dateCheck' checked='true' class='checkMandatory' onchange='fin.reportUi.dateMandatory(this," + index + ");' /></div><div class='labelSchedule'>NULL</div></div>"
+					else if (me.reportParameters[index].controlType == "Date" && !me.reportParameters[index].mandatory)
+						html += "\n<div><div class='labelReport'> <span class='requiredFieldIndicator'>&#149;</span></span>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div></div>"
+					else
+						html += "\n<div><div class='labelReport'> <span class='requiredFieldIndicator'>&#149;</span>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium' style='height:20px;width:" + me.reportParameters[index].Width + "px;'></div><div id='customersLoading'></div></div>"										
+					html += "\n<div style='clear:both;height:3px'></div>";
+				}				
 			}
 
 			$("#ParameterContainer").html(html);
@@ -2404,7 +2406,7 @@ ii.Class({
             var me = this;
             
             if (object.checked) {
-            	$("#ParameterLabel" + me.reportParameters[index].name).html("<span class='nonRequiredFieldIndicator'>&nbsp;&nbsp;</span>" + me.reportParameters[index].title + ":");
+            	$("#ParameterLabel" + me.reportParameters[index].name).html("<span class='nonRequiredFieldIndicator'>&#149;</span>" + me.reportParameters[index].title + ":");
                 me.controls[index][0].value = "";
                 me.controls[index][0].disabled = true;
             }
@@ -2858,12 +2860,22 @@ ii.Class({
                     if(selectedValues.length > 0) {
                         for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
                             if (selectedValues[selectedIndex] != "undefined")
-                            parametersList += "~" + me.reportParameters[index].name + "=" + selectedValues[selectedIndex];
+                            	parametersList += "~" + me.reportParameters[index].name + "=" + selectedValues[selectedIndex];                            	
                         }
                     }
                     else {
                             alert("Please select " + me.reportParameters[index].title);
                             return false;
+                    }
+                }
+                else if (me.reportParameters[index].controlType == "Label") {
+                	var dropDown = me.reportParameters[index].name.replace("Label", "");
+                	var selectedValues = $("#" + dropDown).multiselect("getChecked").map(function(){
+                        return this.attributes[1].nodeValue;
+                    }).get();
+                    if(selectedValues.length > 0) {                        
+                        if (selectedValues[0] != "undefined")
+                        	parametersList += "~" + me.reportParameters[index].name + "=" + selectedValues[0];
                     }
                 }
                 else if (me.reportParameters[index].controlType == "MultiSelect") {
