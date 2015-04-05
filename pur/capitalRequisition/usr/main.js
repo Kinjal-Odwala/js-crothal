@@ -2120,7 +2120,7 @@ ii.Class({
 			}
 			else {
 				me.regionalManagerName.setValue("");
-				me.regionalManagerTitle.setValue("");
+				me.regionalManagerTitle.setValue("Regional Manager");
 				me.regionalManagerEmail.setValue("");
 			}
 			
