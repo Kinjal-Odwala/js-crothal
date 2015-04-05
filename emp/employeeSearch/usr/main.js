@@ -255,7 +255,7 @@ ii.Class({
 				$("#pageLoading").fadeIn("slow");
 			
 				ii.timer.timing("Page displayed");
-				me.loadCount = 9;
+				me.loadCount = 10;
 				me.session.registerFetchNotify(me.sessionLoaded, me);
 				me.employeeGeneralMasterStore.fetch("userId:[user],personId:0,", me.typesTableLoaded, me);
 				me.stateStore.fetch("userId:[user]", me.typesTableLoaded, me);
@@ -263,7 +263,8 @@ ii.Class({
 				me.stateAdditionalInfoStore.fetch("userId:[user],", me.typesTableLoaded, me);
 				me.federalAdjustmentStore.fetch("userId:[user]", me.typesTableLoaded, me);
 				me.payFrequencyTypeStore.fetch("userId:[user]", me.typesTableLoaded, me);
-				me.separationCodeStore.fetch("userId:[user],terminationType:" + me.terminationType + ",", me.typesTableLoaded, me);								
+				me.separationCodeStore.fetch("userId:[user],terminationType:" + me.terminationType + ",", me.typesTableLoaded, me);
+				me.rehireEligibilityTypeStore.fetch("userId:[user]", me.typesTableLoaded, me);								
 				me.statusStore.fetch("userId:[user],", me.statusTypesLoaded, me);
 				me.employeePersonalStore.fetch("id:" + me.session.propertyGet("personId") + ",userId:[user]", me.userInfoLoaded, me);
 			}				
@@ -1113,6 +1114,12 @@ ii.Class({
 					else
 						return;
 				});
+				
+			me.eligibleForRehire = new ui.ctl.Input.DropDown.Filtered({
+				id: "EligibleForRehire",
+				formatFunction: function( type ) { return type.name; },
+				required: false					
+			});
 				
 			me.separationCode = new ui.ctl.Input.DropDown.Filtered({
 				id: "SeparationCode",
@@ -2416,6 +2423,14 @@ ii.Class({
 				injectionArray: me.separationCodes	
 			});
 			
+			me.rehireEligibilityTypes = [];
+			me.rehireEligibilityTypeStore = me.cache.register({
+				storeId: "rehireEligibilityTypes",
+				itemConstructor: fin.emp.RehireEligibilityType,
+				itemConstructorArgs: fin.emp.rehireEligibilityTypeArgs,
+				injectionArray: me.rehireEligibilityTypes	
+			});
+			
 			me.houseCodeJobs = [];
 			me.houseCodeJobStore = me.cache.register({
 				storeId: "houseCodeJobs",
@@ -2650,7 +2665,7 @@ ii.Class({
 				else if (columnName == "EmpStatusType")
 					typesTable = me.statusTypes;
 				else if (columnName == "EmpSeparationCode")
-					typesTable = me.separationCodes;
+					typesTable = me.separationCodes;				
 				else if (columnName == "EmpTerminationReasonType")
 					typesTable = me.terminationReasons;
 				else if (columnName == "HcmHouseCodeJob") {
@@ -3500,6 +3515,9 @@ ii.Class({
 			me.employeeTerminationReason.reset();
 			me.typeNoneAdd(me.terminationReasons);	
 			me.employeeTerminationReason.setData(me.terminationReasons);
+			
+			me.eligibleForRehire.reset();	
+			me.eligibleForRehire.setData(me.rehireEligibilityTypes);
 
 			me.employeeEthnicity.reset();
 			me.typeNoneAdd(me.ethnicityTypes);	
@@ -3937,6 +3955,10 @@ ii.Class({
 				index = ii.ajax.util.findIndexById(me.employeeGenerals[0].separationCode.toString(), me.separationCodes);
 				if (index != undefined) 
 					me.separationCode.select(index, me.separationCode.focused);
+					
+				index = ii.ajax.util.findIndexById(me.employeeGenerals[0].rehireEligibilityType.toString(), me.rehireEligibilityTypes);
+				if (index != undefined) 
+					me.eligibleForRehire.select(index, me.eligibleForRehire.focused);
 				
 				//Employee General Section - End
 				
@@ -6999,6 +7021,11 @@ ii.Class({
 								me.separationCodes[me.separationCode.indexSelected].id 
 							: 0) 
 								: 0)
+				, rehireEligibilityType: (me.eligibleForRehire != undefined ? 
+							(me.eligibleForRehire.indexSelected >= 0 ? 
+								me.rehireEligibilityTypes[me.eligibleForRehire.indexSelected].id 
+							: 0) 
+								: 0)
 				, jobStartReason: (me.jobChangeReason.indexSelected >= 0 ? me.jobStartReasonTypes[me.jobChangeReason.indexSelected].id : 0)
 				//Personal
 				, genderType: ($("input[name='Gender']:checked").val() == "Male" ? 1 : 2) 		
@@ -7237,6 +7264,7 @@ ii.Class({
 				xml += ' separationCode="' + itemGeneral.separationCode + '"';
 				xml += ' terminationDate="' + itemGeneral.terminationDate + '"';
 				xml += ' terminationReason="' + itemGeneral.terminationReason + '"';
+				xml += ' rehireEligibilityType="' + itemGeneral.rehireEligibilityType + '"';
 				xml += '/>';
 			}			
 					
