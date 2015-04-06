@@ -2044,7 +2044,8 @@ ii.Class({
 			me.employeeTerminationDate.text.tabIndex = 220; 
 			me.employeeTerminationReason.text.tabIndex = 221;
 			me.separationCode.text.tabIndex = 222;
-			me.termEmployeeEffectiveDate.text.tabIndex = 223; 	
+			me.termEmployeeEffectiveDate.text.tabIndex = 223;
+			me.eligibleForRehire.text.tabIndex = 224; 	
 			//General2		 
 			me.employeeBirthDate.text.tabIndex = 230; 
 			me.employeeEthnicity.text.tabIndex = 231; 
@@ -2154,6 +2155,7 @@ ii.Class({
 			me.employeeTerminationReason.resizeText();
 			me.separationCode.resizeText();
 			me.termEmployeeEffectiveDate.resizeText();
+			me.eligibleForRehire.resizeText();
 
 			me.jobEffectiveDate.resizeText();
 			me.jobChangeReason.resizeText();
