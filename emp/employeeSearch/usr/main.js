@@ -916,10 +916,6 @@ ii.Class({
 						}
 					}
 
-					if (me.employeeOriginalHireDate.text.value == "" || me.actionType == "NewHire") {
-						me.employeeOriginalHireDate.setValue(me.employeeHireDate.text.value + "");
-					}
-
 					if (me.actionType == "NewHire") {
 						me.employeeEffectiveDate.setValue(me.currentDate() + "");
 						
@@ -3920,7 +3916,7 @@ ii.Class({
 				me.actionEmployeeStatusChanged(); //also get corresponding Status Category.
 				
 				if (me.employeeGenerals[0].originalHireDate == "") {
-					me.employeeOriginalHireDate.setValue(me.employeeHireDate.text.value + '');
+					me.employeeOriginalHireDate.setValue("");
 				}
 				else {
 					me.employeeOriginalHireDate.setValue(me.employeeGenerals[0].originalHireDate);					
