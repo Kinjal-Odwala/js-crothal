@@ -2110,9 +2110,10 @@ ii.Class({
                         		me.excludeNamesLoaded(ui.value);                            
                         },
                         open: function(e) {
+							$("#" + e.target.id).multiselect('refresh');
 							$("#" + e.target.id).multiselect("widget").find(":radio").each(function() {
 							    if(this.checked)
-							    	this.focus();							       
+							    	this.focus();						    	
 					   		});
 						},						
 						position: {
