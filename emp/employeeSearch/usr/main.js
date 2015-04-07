@@ -951,7 +951,25 @@ ii.Class({
 			});
 			
 			me.employeeOriginalHireDate.makeEnterTab()
-				.setValidationMaster( me.validator );
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+					
+					var enteredText = me.employeeOriginalHireDate.text.value;
+					
+					if (enteredText == "") return;
+
+					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
+						this.setInvalid("Please enter valid date.");
+						return false;
+					}
+					
+					var originalHireDate = new Date(me.employeeOriginalHireDate.text.value);
+					var hireDate = new Date(me.employeeHireDate.text.value);
+
+					if (originalHireDate > hireDate) {
+						this.setInvalid("Please enter valid date. Original Hire Date should be less than or equal to Current Hire Date.");
+					}
+				});
 			
 			me.employeeSeniorityDate = new ui.ctl.Input.Date({ 
 				id: "EmployeeSeniorityDate",
