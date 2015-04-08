@@ -1607,10 +1607,17 @@ ii.Class({
 
 				if (previousLevelNodeChecked) {
 					if (confirm("Selected nodes in earlier level will be deselected")) {
+						var $scope = angular.element($("#SearchContainer")).scope();
+
+			            $scope.$apply(function() {
+			            	$scope.selected = "";
+			            });
+			            
 						$("#chkNode" + me.lastCheckedNode).attr("checked", false);
 						$("input[parent=" + me.lastCheckedNode + "]").each(function() {
 							this.checked = false;
 						});
+						
 						me.resetDependentTypes();
 					}
 					else {
@@ -1688,6 +1695,12 @@ ii.Class({
 
 				if (previousLevelNodeChecked) {
 					if (confirm("Selected nodes in earlier level will be deselected")) {
+						var $scope = angular.element($("#SearchContainer")).scope();
+
+			            $scope.$apply(function() {
+			            	$scope.selected = "";
+			            });
+			            
 						$("#chkNode" + me.lastCheckedNode).attr("checked", false);
 						$("input[parent=" + me.lastCheckedNode + "]").each(function() {
 							this.checked = false;
