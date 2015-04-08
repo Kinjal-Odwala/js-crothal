@@ -147,6 +147,7 @@ ii.init.register( function(){
 		mealPlanPayrollDeduction: {type: Boolean, required: false, defaultValue: false},
 		disability: {type: Number, required: false, defaultValue: 0},
 		separationCode:{type: Number, required: false, defaultValue: 0},
+		rehireEligibilityType:{type: Number, required: false, defaultValue: 0},
 		jobStartReason:{type: Number, required: false, defaultValue: 0},
 		crtdBy: {type: String, required: false, defaultValue: ""},
 		crtdAt: {type: String, required: false, defaultValue: ""},
@@ -278,6 +279,12 @@ ii.init.register( function(){
 	};
 	
 	fin.emp.separationCodeArgs = {
+		id: {type: Number},
+		number: {type: Number},
+		name: {type: String}
+	};
+	
+	fin.emp.rehireEligibilityTypeArgs = {
 		id: {type: Number},
 		number: {type: Number},
 		name: {type: String}
@@ -649,6 +656,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.emp.separationCodeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.emp.RehireEligibilityType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.emp.rehireEligibilityTypeArgs);
 			$.extend(this, args);
 		}
 	}
