@@ -177,14 +177,14 @@
                                     <label>
                                         <input type="radio" name="PayStatus" ng-model="empAction.PayStatus" value="AdminHourly" required />&nbsp;Admin.Hourly</label>
 
-                                    <input type="text" class="form-control input-sm" ng-disabled="empAction.PayStatus!='AdminHourly'" name="AdminHourly" ng-model="empAction.AdminHourly" paf-format="{0}/hour" placeholder="0/hour" style="width: 40%" paf-numeric ng-required="empAction.PayStatus=='AdminHourly'"  ng-change="calPayRange(empAction.PayGrade,'PayRange')"/>
+                                    <input type="text" class="form-control input-sm" ng-disabled="empAction.PayStatus!='AdminHourly'" name="AdminHourly" ng-model="empAction.AdminHourly" paf-format="{0}/hour" placeholder="0/hour" style="width: 40%" paf-numeric ng-required="empAction.PayStatus=='AdminHourly'" ng-change="calPayRange(empAction.PayGrade,'PayRange')" />
                                 </div>
                             </div>
                             <div class="col-md-3 form-inline">
                                 <div class="form-group" ng-class="{'has-error':empAction.PayStatus.$invalid|| pafForm.HourlyRate.$invalid}">
                                     <label>
                                         <input type="radio" name="PayStatus" ng-model="empAction.PayStatus" value="HourlyRate" required />&nbsp;Hourly</label>
-                                    <input type="text" class="form-control input-sm" ng-disabled="empAction.PayStatus!='HourlyRate'" name="HourlyRate" ng-model="empAction.HourlyRate" paf-format="{0}/hour" placeholder="0/hour" style="width: 40%" paf-numeric ng-required="empAction.PayStatus=='HourlyRate'"  ng-change="calPayRange(empAction.PayGrade,'PayRange')"/>
+                                    <input type="text" class="form-control input-sm" ng-disabled="empAction.PayStatus!='HourlyRate'" name="HourlyRate" ng-model="empAction.HourlyRate" paf-format="{0}/hour" placeholder="0/hour" style="width: 40%" paf-numeric ng-required="empAction.PayStatus=='HourlyRate'" ng-change="calPayRange(empAction.PayGrade,'PayRange')" />
                                 </div>
                             </div>
                         </div>
@@ -195,7 +195,7 @@
                         <div class="gorm-group" ng-class="{'has-error':pafForm.PayGrade.$invalid}">
                             <label>Pay Grade</label>
 
-                            <select class="form-control input-sm" name="PayGrade" ng-model="empAction.PayGrade" ng-options="item.id as item.min+' - '+item.mid+' - '+item.max for item in PayGrades" required ng-change="calPayRange(empAction.PayGrade,'PayRange')">
+                            <select class="form-control input-sm" name="PayGrade" ng-model="empAction.PayGrade" ng-options="item.id as item.id+' ('+item.min+' - '+item.mid+' - '+item.max+')' for item in PayGrades" required ng-change="calPayRange(empAction.PayGrade,'PayRange')">
                                 <option></option>
                             </select>
                         </div>
@@ -495,7 +495,7 @@
                         <div class="form-group" ng-class="{'has-error':pafForm.NewPayGrade.$invalid}">
                             <label>
                                 New Pay Grade</label>
-                            <select class="form-control input-sm" name="NewPayGrade" ng-model="empAction.NewPayGrade" ng-options="item.id as item.min+' - '+item.mid+' - '+item.max for item in PayGrades" ng-required="empAction.SalaryChange||empAction.Promotion||empAction.Demotion" ng-change="calPayRange(empAction.NewPayGrade,'NewPayRange')">
+                            <select class="form-control input-sm" name="NewPayGrade" ng-model="empAction.NewPayGrade" ng-options="item.id as item.id+' ('+item.min+' - '+item.mid+' - '+item.max+')' for item in PayGrades" ng-required="empAction.SalaryChange||empAction.Promotion||empAction.Demotion" ng-change="calPayRange(empAction.NewPayGrade,'NewPayRange')">
                                 <option></option>
                             </select>
                         </div>
