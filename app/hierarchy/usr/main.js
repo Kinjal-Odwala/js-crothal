@@ -2174,22 +2174,29 @@ ii.Class({
 						}
 					}
 				}
-
-				if (!valid) {
-					me.setStatus("Loaded");
-					$("#AnchorBulkSave").hide();
-					alert("In order to save, the errors on the page must be corrected.");
-					$("#pageLoading").fadeOut("slow");
+			}
+			else {
+				valid = false;
+				for (var rowIndex = 0; rowIndex < me.houseCodes.length; rowIndex++) {
+					$("#txtBrief" + rowIndex).attr("title", "House Code doesn't exists.");
+					$("#txtBrief" + rowIndex).css("background-color", me.cellColorInvalid);
 				}
+			}
+
+			if (!valid) {
+				me.setStatus("Loaded");
+				$("#AnchorBulkSave").hide();
+				alert("In order to save, the errors on the page must be corrected.");
+				$("#pageLoading").fadeOut("slow");
+			}
+			else {
+				if (me.actionSave)
+					me.actionSaveHouseCodes();
 				else {
-					if (me.actionSave)
-						me.actionSaveHouseCodes();
-					else {
-						$("#AnchorBulkSave").show();
-						$("#pageLoading").fadeOut("slow");
-						me.setStatus("Loaded");
-					}
-				}		
+					$("#AnchorBulkSave").show();
+					$("#pageLoading").fadeOut("slow");
+					me.setStatus("Loaded");
+				}
 			}
 		},
 
