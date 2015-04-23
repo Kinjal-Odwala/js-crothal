@@ -94,7 +94,6 @@ Select * From EsmV2.dbo.AppMenuItems
 Select * From EsmV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\Setup\EmployeePAF%'
 -- Setup --> Employee PAF Menu Insert [End] 
 
-
 Insert Into dbo.EmpPersonnelActionTypes(EmpPatTypeName, EmpPatBrief, EmpPatTitle, EmpPatDescription, EmpPatDisplayOrder, EmpPatActive, EmpPatModBy, EmpPatModAt)
 Values('BonusEligible', '', 'Supervisor', 'Supervisor', 1, 1, 'Compass-USA\Data Conversion', GetDate())
 Insert Into dbo.EmpPersonnelActionTypes(EmpPatTypeName, EmpPatBrief, EmpPatTitle, EmpPatDescription, EmpPatDisplayOrder, EmpPatActive, EmpPatModBy, EmpPatModAt)
@@ -308,4 +307,72 @@ Update RptReports Set RptRepName = 'Mop_Subscript', RptRepSubscriptionAvailable 
 
 /*
 CT updated on 16th March 2015 11PM EST
+*/
+
+--ALTER TABLE [TeamFinV2].[dbo].[PurPOCapitalRequisitions] ADD PurPocrRegionalManagerName VARCHAR(100) NULL
+--ALTER TABLE [TeamFinV2].[dbo].[PurPOCapitalRequisitions] ADD PurPocrRegionalManagerTitle VARCHAR(100) NULL
+--ALTER TABLE [TeamFinV2].[dbo].[PurPOCapitalRequisitions] ADD PurPocrRegionalManagerEmail VARCHAR(100) NULL
+
+Update EmpSDIAdjustmentTypes Set EmpSDIatActive = 0 Where EmpSDIAdjustmentType = 12
+Update EmpSDIAdjustmentTypes Set EmpSDIatActive = 0 Where EmpSDIAdjustmentType = 13
+
+-- SSRS Reports Parameters Update [Begin]
+Declare @RptReport INT
+
+select @RptReport =  RptReport from RptReports where RptRepTitle = 'Forecasts by Site'
+Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+Values (@RptReport, 'Fiscal Period Label', 'FscPeriodLabel', 'String', 'Label', '', 1, 'Compass-USA\Data Conversion', GetDate(), Null, 4, Null)
+
+select @RptReport =  RptReport from RptReports where RptRepTitle = 'League Standings'
+Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+Values (@RptReport, 'Fiscal Period Label', 'FscPeriodLabel', 'String', 'Label', '', 1, 'Compass-USA\Data Conversion', GetDate(), Null, 4, Null)
+
+select @RptReport =  RptReport from RptReports where RptRepTitle = 'Period Forecasts'
+Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+Values (@RptReport, 'Fiscal Period Label', 'FscPeriodLabel', 'String', 'Label', '', 1, 'Compass-USA\Data Conversion', GetDate(), Null, 4, Null)
+
+select @RptReport =  RptReport from RptReports where RptRepTitle = 'MOP Summary'
+Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+Values (@RptReport, 'Fiscal Period Label', 'FscPeriodLabel', 'String', 'Label', '', 1, 'Compass-USA\Data Conversion', GetDate(), Null, 4, Null)
+
+select @RptReport =  RptReport from RptReports where RptRepTitle = 'MOP'
+Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+Values (@RptReport, 'Fiscal Period Label', 'FscPeriodLabel', 'String', 'Label', '', 1, 'Compass-USA\Data Conversion', GetDate(), Null, 4, Null)
+
+select @RptReport =  RptReport from RptReports where RptRepTitle = 'MOP Rollup'
+Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+Values (@RptReport, 'Fiscal Period Label', 'FscPeriodLabel', 'String', 'Label', '', 1, 'Compass-USA\Data Conversion', GetDate(), Null, 4, Null)
+
+select @RptReport =  RptReport from RptReports where RptRepTitle = 'MOP Rollup By Hierarchy'
+Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+Values (@RptReport, 'Fiscal Period Label', 'FscPeriodLabel', 'String', 'Label', '', 1, 'Compass-USA\Data Conversion', GetDate(), Null, 4, Null)
+
+-- SSRS Reports Parameters Update [End]
+
+INSERT INTO dbo.EmpRehireEligibilityTypes(EmpRehetBrief, EmpRehetTitle, EmpRehetDescription, EmpRehetDisplayOrder, EmpRehetActive, EmpRehetModBy, EmpRehetModAt)
+VALUES('(none)', '(none)', '(none)', 1, 1, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.EmpRehireEligibilityTypes(EmpRehetBrief, EmpRehetTitle, EmpRehetDescription, EmpRehetDisplayOrder, EmpRehetActive, EmpRehetModBy, EmpRehetModAt)
+VALUES('Do not rehire', 'Do not rehire', 'Do not rehire', 2, 1, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.EmpRehireEligibilityTypes(EmpRehetBrief, EmpRehetTitle, EmpRehetDescription, EmpRehetDisplayOrder, EmpRehetActive, EmpRehetModBy, EmpRehetModAt)
+VALUES('Rehire', 'Rehire', 'Rehire', 3, 1, 'Compass-USA\Data Conversion', GetDate())
+
+--ALTER TABLE [TeamFinV2].[dbo].[EmpEmployeeGenerals] ADD EmpRehireEligibilityType INT NULL
+
+Declare @RptReport INT
+
+select @RptReport = RptReport from RptReports where RptRepTitle = 'MOP Rollup By Hierarchy'
+Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+Values (@RptReport, 'Group Level Label', 'GroupLevelLabel', 'String', 'Label', '', 1, 'Compass-USA\Data Conversion', GetDate(), Null, 6, Null)
+
+/*
+CT updated on 8th April 2015 11PM EST
+*/
+
+-- Update the following js files manually
+1.	emp\employeeSearch\usr\main.js
+2.	app\hierarchy\usr\main.js
+3.	bud\mop\usr\fin.bud.mop.js
+
+/*
+Last production release version 2.04.015 on 22nd April 2015 11PM EST
 */
