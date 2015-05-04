@@ -63,6 +63,7 @@ ii.init.register( function() {
 		, column51: {type: String, required: false, defaultValue: ""} // i9Type
 		, column52: {type: String, required: false, defaultValue: ""} // vetType
 		, column53: {type: String, required: false, defaultValue: ""} // maritalStatusType
+		, column54: {type: String, required: false, defaultValue: ""} // basicLifeIndicatorType
 	};
 	
 	fin.emp.employeeImport.employeeGeneralArgs = {
