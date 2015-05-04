@@ -24,6 +24,16 @@
 	margin-bottom: 5px;
 }
 
+.subscriptionHeader {
+	background: none repeat scroll 0 0 #c2e4c1;
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 18px;
+	color: #2C2F50;
+	text-align: center;
+	margin-bottom: 0px;
+}
+
 .iiInputText.Loading {
 	background-image: url(/fin/cmn/usr/media/common/indicator.gif);
 	background-repeat: no-repeat;
@@ -87,19 +97,56 @@
     width: 180px;
 }
 
-.gridColumnValue {	
+.gridBorder {
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+}
+
+.gridRow { 
+	background-color: #F0EFDD;
+}
+
+.alternateGridRow { 
+	background-color: #FFFFFF;
+}
+
+.gridHeaderColumn {
+	background-color: #669966;
 	border-right: solid #AAAAAA thin;
+	border-width: 1px;
+	border-bottom: solid #AAAAAA thin;
 	border-width: 1px;
 	border-spacing: 0px 0px;
 	border-collapse: collapse;
 	font-family: Verdana;
-	font-size: 8pt;
+	font-size: 12px;
+	font-weight: bold;
+	color: white;	
+	text-align: center;
+	padding: 3px 2px 3px 2px;
+	height: 17px;
+	cursor: pointer;
+}
+
+.gridColumnRight {	
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 12px;
 	color: #032D23;	
 	vertical-align: middle;
 	padding: 3px 2px 3px 2px;
 	height: 20px;
 	cursor: pointer;
-	width:40%;
+}
+
+.gridNumberColumn {
+	border-right: 1px solid #aaaaaa;
+	text-align: center;
+}
+
+.trover, .selectedRow {
+	background-color: #C2E4C1;
 }
 
 .radioButton {
@@ -111,12 +158,19 @@
 	font-family: Verdana;
 	font-size: 12px;
 	color: #032D23;
+	padding: 5px;
+}
+
+.labelCheck {
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
 }
 
 .labelSubscription {
 	float: left;
 	height: 27px;
-	width: 120px;
+	width: 200px;
 	font-family: Verdana;
 	font-size: 12px;
 	color: #032D23;	
@@ -157,6 +211,9 @@
 	width: 57px;
 }
 
+input[type="checkbox"] {
+	margin: 0px;
+}
 .checkBox {
 	float: left;
 	width: 23px;
@@ -264,6 +321,10 @@
 	margin: 3px;
 }
 
+.ui-corner-all .ui-state-active {
+	background: #C2E4C1;
+}
+
 Label {
 	font-weight: normal;
 }
@@ -274,54 +335,79 @@ table {
 
 #AnchorGenerateReport {
 	float: left;
-	width: 156px;
-	padding: 5px 0px 0px 0px;
+	width: 160px;
+	padding: 5px 0px 0px 10px;
 }
 
 #AnchorReset {
 	float: left;
-	width: 82px;
-	padding: 5px 0px 0px 0px;
+	width: 95px;
+	padding: 5px 0px 0px 10px;
+}
+
+#AnchorDelete {
+	float: left;
+	width: 90px;
+	padding: 5px 0px 0px 10px;
 }
 
 #AnchorSearch {
-	float: left;
-	width: 82px;
-	padding: 3px 0px 0px 10px;	
-	position: relative;
+    float: left;
+    width: 140px;
+    padding: 3px 0px 0px 10px;  
+    position: relative;
 }
-
+ 
 #AnchorSchedule {
-	float: left;
-	width: 96px;
-	padding: 2px 0px 0px 5px;
+    float: left;
+    width: 110px;
+    padding: 2px 0px 0px 5px;
+}
+ 
+#AnchorSave, #AnchorUndo {
+    float: left;
+    width: 80px;
+    padding: 5px 0px 0px 10px;
 }
 
-#AnchorSave {
-	float: left;
-	width: 68px;
-	padding: 5px 0px 0px 10px;
+#AnchorNew {
+    float: left;
+    width: 77px;
+    padding: 5px 0px 0px 10px;
 }
-
+ 
 #AnchorOK, #AnchorSelect {
-	float: left;
-	width: 54px;
-	padding: 5px 0px 0px 20px;
+    float: left;
+    width: 80px;
+    padding: 5px 0px 0px 20px;
 }
-
+ 
 #AnchorCancel, #AnchorClose {
-	float: left;
-	width: 80px;
-	padding: 5px 0px 0px 10px;
+    float: left;
+    width: 90px;
+    padding: 5px 0px 0px 10px;
 }
 
-#TreeviewContainer, #LevelNamesContainer  {
+#TreeviewContainer  {
 	width: 100%;
 	border: solid #aaaaaa thin;
 	border-width: 1px;
 	overflow-x: hidden;
 	overflow-y: auto;
 	position: relative;
+}
+
+#LevelNamesContainer  {
+	width: 96%;
+	border: solid #aaaaaa thin;
+	border-width: 1px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	position: relative;
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 15px;
+	padding-right: 15px;
 }
 
 #ulEdit0, #ulEdit1 {
@@ -329,13 +415,17 @@ table {
 }
 
 #ParameterContainer {
-	width: 100%;
+	width: 96%;
 	border: solid #aaaaaa thin;
 	border-width: 1px;
 	overflow-x: hidden;
 	overflow-y: auto;
 	position: relative;
 	padding: 10px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 15px;
+	padding-right: 15px;
 }
 
 #Comment {
@@ -345,9 +435,13 @@ table {
 	color: black;
 }
 
-#Subscription {
+#ReportSubscriptionContainer {
 	border: 1px solid #cecece;
 	padding: 0px;
+	overflow: auto;
+}
+
+#ReportSubscription {
 	overflow: auto;
 }
 
@@ -410,7 +504,6 @@ table {
 #Hours, #Minutes {
 	float: left;
 	width: 50px;
-	padding-left: 10px;
 }
 
 #StartHours, #StartMinutes {
@@ -462,7 +555,7 @@ table {
 
 #LabelStartDate, #LabelEndDate {
 	padding: 5px 10px 0px 40px;
-	width: 200px;
+	width: 300px;
 }
 
 #hirOrgPopup {

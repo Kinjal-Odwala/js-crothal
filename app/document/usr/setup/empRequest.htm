@@ -1,0 +1,513 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Emp Request</h1>
+			<div class="description">The purpose of <b>Emp Request</b> is to setup and maintain the list of Employee Requests.</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Date Modification</td>
+			</tr>
+			<tr>
+				<td>Employee Grid</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List of Employee Requests.</td>
+			</tr>		
+			<tr>
+				<td>House Code</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>House Code of Employee Request.</td>
+			</tr>
+			<tr>
+				<td>First Name</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>First Name of the Employee Request.</td>
+			</tr>
+			<tr>
+				<td>Last Name</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Last Name of the Employee Request.</td>
+			</tr>
+			<tr>
+				<td>Employee #</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Employee # of the Employee Request.</td>
+			</tr>
+			<tr>
+				<td>SSN</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>SSN of the Employee Request.</td>
+			</tr>			
+			<tr>
+				<td class="uiHeader" colspan="5">Date Modification Details</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Current Values</td>
+			</tr>
+			<tr>
+				<td>Hire Date</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Current Hire Date of Employee.</td>
+			</tr>
+			<tr>
+				<td>Original Hire Date</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Original Hire Date of Employee.</td>
+			</tr>
+			<tr>
+				<td>Seniority Date</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Current Seniority Date of Employee.</td>
+			</tr>
+			<tr>
+				<td>Effective Date</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Current Effective Date of Employee.</td>
+			</tr>
+			<tr>
+				<td>Job Effective Date</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Current Job Effective Date of Employee.</td>
+			</tr>
+			<tr>
+				<td>Compensation Effective Date</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Current Compensation Effective Date of Employee.</td>
+			</tr>
+            <tr>
+				<td>Requested By</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Requested user name.</td>
+			</tr>
+            <tr>
+				<td>Requestor Email</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Requested user email.</td>
+			</tr>
+            <tr>
+				<td>Requestor Phone #</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Requested user phone number.</td>
+			</tr>
+			<tr>
+				<td>Notes</td>
+				<td>Textarea field</td>
+				<td>No</td>
+				<td>NA</td>
+                <td>Notes of Employee Request.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Proposed Values</td>
+			</tr>
+			<tr>
+				<td>Hire Date</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+                <td>Proposed Hire Date</td>
+			</tr>
+			<tr>
+				<td>Original Hire Date</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+                <td>Proposed Original Hire Date.</td>
+			</tr>			
+			<tr>
+				<td>Seniority Date</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+                <td>Proposed Seniority Date.</td>
+			</tr>
+			<tr>
+				<td>Effective Date</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+                <td>Proposed Effective Date.</td>
+			</tr>
+			<tr>
+				<td>Job Effective Date</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+                <td>Proposed Job Effective Date.</td>
+			</tr>
+			<tr>
+				<td>Compensation Effective Date</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+                <td>Proposed Compensation Effective Date.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">SSN Modification Details</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Current Values</td>
+			</tr>
+			<tr>
+				<td>SSN</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>SSN of Employee.</td>
+			</tr>
+            <tr>
+				<td>Requested By</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Requested user name.</td>
+			</tr>
+            <tr>
+				<td>Requestor Email</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Requested user email.</td>
+			</tr>
+            <tr>
+				<td>Requestor Phone #</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Requested user phone number.</td>
+			</tr>
+			<tr>
+				<td>Notes</td>
+				<td>Textarea field</td>
+				<td>No</td>
+				<td>NA</td>
+                <td>Notes of Employee Request.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Proposed Values</td>
+			</tr>
+			<tr>
+				<td>SSN</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+                <td>Proposed SSN. Please enter SSN</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Reverse Termination Details</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Current Values</td>
+			</tr>
+			<tr>
+				<td>Status</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Current Status of Employee.</td>
+			</tr>
+			<tr>
+				<td>Status Category</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Current Status Category of Employee.</td>
+			</tr>
+			<tr>
+				<td>Effective Date</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Current Effective Date of Employee.</td>
+			</tr>
+			<tr>
+				<td>Separation Code</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Current Separation Code of Employee.</td>
+			</tr>
+			<tr>
+				<td>Termination Date</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Current Termination Date of Employee.</td>
+			</tr>
+			<tr>
+				<td>Termination Reason</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Current Termination Reason of Employee.</td>
+			</tr>
+            <tr>
+				<td>Requested By</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Requested user name.</td>
+			</tr>
+            <tr>
+				<td>Requestor Email</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Requested user email.</td>
+			</tr>
+            <tr>
+				<td>Requestor Phone #</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Requested user phone number.</td>
+			</tr>
+			<tr>
+				<td>Notes</td>
+				<td>Textarea field</td>
+				<td>No</td>
+				<td>NA</td>
+                <td>Notes of Employee Request.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Proposed Values</td>
+			</tr>
+			<tr>
+				<td>Status</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Proposed Status.</td>
+			</tr>
+			<tr>
+				<td>Status Category</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Proposed Status Category.</td>
+			</tr>
+			<tr>
+				<td>Effective Date</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Proposed Effective Date</td>
+			</tr>
+			<tr>
+				<td>Separation Code</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Proposed Separation Code.</td>
+			</tr>
+			<tr>
+				<td>Termination Date</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Proposed Termination Date.</td>
+			</tr>
+			<tr>
+				<td>Termination Reason</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+                <td>Proposed Termination Reason.</td>
+			</tr>
+			<tr>
+                <td>Approve</td>
+                <td>Button</td>
+                <td>NA</td>
+                <td>End user input</td>
+                <td>Saves Employee Request Proposed values of Employee.</td>
+			</tr>
+            <tr>
+                <td>Reject</td>
+                <td>Button</td>
+                <td>NA</td>
+                <td>End user input</td>
+                <td>Rejects Employee Request Proposed values.</td>
+			</tr>
+            <tr>
+				<td class="uiHeader" colspan="5">Employee Meal Program</td>
+			</tr>
+            <tr>
+				<td>House Code</td>
+				<td>List</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>Select the House Code.</td>	
+			</tr>
+            <tr>
+				<td>Enroll in Meal Plan</td>
+				<td>Radio Selection</td>
+                <td>No</td>
+                <td>End user input</td>
+				<td>Allows user to select Enroll or not in Meal Plan.</td>
+			</tr>
+            <tr>
+                <td>Save</td>
+                <td>Button</td>
+                <td>NA</td>
+                <td>End user input</td>
+                <td>Saves employee meal program.</td>
+			</tr>            
+			<tr>
+				<td class="uiHeader" colspan="5">Actions Menu</td>
+			</tr>
+			<tr>
+				<td>Date Modification</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To display Employee Date Modification Details.</td>
+			</tr>
+			<tr>
+				<td>SSN Modification</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To display Employee SSN Modification Details.</td>
+			</tr>
+			<tr>
+				<td>Reverse Termination</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To display Employee Reverse Termination Details.</td>
+			</tr>
+            <tr>
+				<td>Meal Program</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To allow a house code to enroll in meal program.</td>
+			</tr>			
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Emp Request - Date Modification</td>
+			</tr>
+			<tr>
+				<td><img src="images/dateModification.png" /></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Emp Request - SSN Modification</td>
+			</tr>
+			<tr>
+				<td><img src="images/ssnModification.png" /></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Emp Request - Reverse Termination</td>
+			</tr>
+			<tr>
+				<td><img src="images/reverseTermination.png" /></td>
+			</tr>
+            <tr>
+				<td class="uiHeader">Emp Request - Employee Meal Program</td>
+			</tr>
+			<tr>
+				<td><img src="images/mealProgram.png" /></td>
+			</tr>
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Approve</td>
+				<td>
+					In order to save, the errors on the page must be corrected.</br>
+				</td>
+			</tr>
+			<tr>
+				<td>Reject</td>
+				<td>In order to save, the errors on the page must be corrected.</br>
+				</td>
+			</tr>
+			<tr>
+				<td>Error</td>
+				<td>Failed to update the employee date details.</br>
+				 	Failed to save Employee SSN details.</br>
+				 	Failed to save Employee Reverse Termination details.
+				</td>
+			</tr>
+		</table>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+        <table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>AppGenericImports<br/>
+				</td>
+			</tr>
+			<tr>
+                <td>Stored Procedures</td>
+                <td>AppGenericImportsSelect<br/>
+				</td>
+            </tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="hierarchy.htm">Hierarchy</a></div>
+		<div class="reference"><a href="security.htm">Security</a></div>
+		<div class="reference"><a href="systemVariables.htm">Sys Variable</a></div>
+		<div class="reference"><a href="employeeImport.htm">Import Employees</a></div>
+		<div class="reference"><a href="taxRate.htm">Tax Rates</a></div>
+        <div class="reference"><a href="adHocReport.htm">Ad-Hoc Report</a></div>                
+		<div class="reference"><a href="hierarchyManagement.htm">Hierarchy Mgmt</a></div>
+		<div class="reference"><a href="minimumWage.htm">State Min Wage</a></div>
+        <div class="reference"><a href="employeeHierarchy.htm">Emp Hierarchy</a></div>
+        <div class="reference"><a href="employeePTO.htm">Employee PTO</a></div>
+        <div class="reference"><a href="localTaxCode.htm">Local Tax Code</a></div>
+	</body>
+</html>

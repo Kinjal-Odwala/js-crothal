@@ -50,43 +50,34 @@
 						<div id="TreeviewContainer">
 							<ul class="treeview" id="ulEdit0"></ul>
 						</div>
-					</div>
-					<div id="RightContainer" class="contentAreasContainerRight" style="display:none">
 						<div style="clear:both;height:5px;"></div>
-						<div ng-app="reportApp">
-							<div id="SearchContainer" class="container-fluid" ng-controller="SearchCtrl">
-							    <input type="text" ng-model="selected" typeahead="node as node.title for node in nodes | filter:{title: $viewValue} | limitTo:10" class="form-control" placeholder="Search any Level or a Site Name" typeahead-editable="false" typeahead-on-select="onSelect($item, $model, $label)" />
-							 </div>
-						</div>
-						<div style="clear:both;height:5px;"></div>
-						<div id="LevelNamesContainer">
-							<ul class="treeview" id="ulEdit1"></ul>
-						</div>
-						<div style="clear:both; height:10px;"></div>
-						<div id="ParameterContainer"></div>												
-						<div class="body">
-							<div style="clear:both; height:5px;"></div>							
-							<div id="AnchorGenerateReport"></div>
-							<div id="AnchorReset"></div>
-							<div style="clear:both; height:10px;"></div>
-						</div>
-					</div>
-				</div>
-				<div id="SubscriptionContainer" style="display: none;">
-					<div class="contentAreasContainerLeft">
-						<div id="SubscriptionGridContainer">
-							<div class="labelTextArea">Report:</div>
-							<div class="inputTextMedium">
-								<div id="Report"></div>
-							</div>
-							<div style="clear:both;"></div>
-							<div id="SubscriptionGrid"></div>
-						</div>
-					</div>
-					<div class="contentAreasContainerRight">
-						<div class="contentArea">							
-							<div id="Subscription">
-								<div class="header" id="RightContainerHeader">Subscription Details</div>
+						<div id="SubscriptionGrid" style="display:none">
+							<table id="tblSubscription" class="gridBorder" cellpadding="0" cellspacing="0" width="100%" height="100%">
+						    	<tr>
+						        	<td>
+										<div id="DivSubscriptionGridHeader" style="height: 22px; width: 100%; position: relative; z-index: 3; overflow: hidden;">
+											<table id="tblSubscriptionGridHeader" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 2; width: 100%;">
+												<thead id="SubscriptionGridHead"></thead>
+											</table>
+										</div>
+									</td>
+								</tr>
+								<tr>
+					                <td>
+					                    <div id="divSubscriptionGrid" style="position: relative; overflow: auto;">                              
+					                        <table id="tblSubscriptionGrid" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 1; width: 100%;">
+					                            <tbody id="SubscriptionGridBody"></tbody>
+					                        </table>
+					                    </div>
+					                </td>
+				            	</tr>
+	        				</table>
+	    				</div>
+					</div>					
+					<div id="ReportSubscriptionContainer" class="contentAreasContainerRight">
+						<div class="subscriptionHeader" id="RightContainerHeader">Subscription Details</div>												
+						<div id="ReportSubscription" class="contentArea">														
+							<div id="Subscription">								
 								<div id="LabelDateHeader" class="labelSchedule">Report Delivery Options</div>
 								<div style="clear:both;"></div>
 								<div class="labelSubscription"><span class="requiredFieldIndicator">&#149;</span>&nbsp;Description:</div><div id="Description" class="inputTextLarge"></div>
@@ -114,24 +105,45 @@
 								<div id="LabelDate" class="labelSchedule">Specify the report parameter values to use with this subscription.</div>
 								<div style="clear:both;"></div>
 								<div id="ParemeterContainer"></div>
-								<div style="clear:both;"></div>
+							</div>
+							<div id="ReportRightContainer" style="display:none">
+								<div style="height:5px;"></div>
+								<div ng-app="reportApp">
+									<div id="SearchContainer" class="container-fluid" ng-controller="SearchCtrl">
+									    <input type="text" ng-model="selected" typeahead="node as node.title for node in nodes | filter:{title: $viewValue} | limitTo:10" class="form-control" placeholder="Search any Level or a Site Name" typeahead-editable="false" typeahead-on-select="onSelect($item, $model, $label)" />
+									 </div>
+								</div>
+								<div style="clear:both;height:5px;"></div>
+								<div id="LevelNamesContainer">
+									<ul class="treeview" id="ulEdit1"></ul>
+								</div>
+								<div style="clear:both; height:5px;"></div>
+								<div id="ParameterContainer"></div>
+								<div style="clear:both; height:5px;"></div>
+							</div>
+							<div id="ScheduleContainer" style="display:none">
+								<div style="height:5px;"></div>
 								<div id="LabelDateHeader" class="labelSchedule">Subscription Processing Options</div>
 								<div style="clear:both;"></div>
 								<div id="LabelDate" class="labelSchedule">Run the subscription:</div>
 								<div id="AnchorSchedule"></div>
 								<div style="clear:both;"></div>
-								<div id="ScheduleInfo" class="labelSchedule"></div>								
+								<div id="ScheduleInfo" class="labelSchedule"></div>
 							</div>
-							<div class="body">
-								<div style="clear:both; height:5px;"></div>
-								<div id="AnchorSave"></div>
-								<div id="AnchorNew"></div>
-								<div id="AnchorDelete"></div>
-								<div id="AnchorUndo"></div>
-								<div style="clear:both; height:10px;"></div>
-							</div>							
 						</div>
 					</div>
+					<div id="ReportButtonContainer" class="contentAreasContainerRight" style="display:none">
+						<div style="clear:both; height:5px;"></div>
+						<div id="AnchorGenerateReport"></div>
+						<div id="AnchorReset"></div>
+					</div>
+					<div id="SubscriptionButtonContainer" class="contentAreasContainerRight" style="display:none">
+						<div style="clear:both; height:5px;"></div>						
+						<div id="AnchorSave"></div>
+						<div id="AnchorNew"></div>
+						<div id="AnchorDelete"></div>
+						<div id="AnchorUndo"></div>
+					</div>					
 				</div>
 			</div>
 			<div id="schedulePopup">
@@ -164,7 +176,6 @@
 					<div id="ScheduleDetails">
 						<div id="HourlySchedule">
 							<div class="labelSchedule"><span class="requiredFieldIndicator">&#149;</span>&nbsp;Run the schedule every:</div>
-							<div style="clear:both;"></div>
 							<div id="Hours"></div><div id="LabelHours">hours</div>						
 							<div id="Minutes"></div><div id="LabelMinutes">minutes</div>
 						</div>
@@ -180,43 +191,43 @@
 							<div id="MonthlyLabel" class="labelRadio"><span class="requiredFieldIndicator">&#149;</span>&nbsp;Months:</div>
 							<div class="monthlyContainer">
 								<div class="checkBox"><div id="Jan"></div></div>
-								<div class="labelRadio">Jan</div>
+								<div class="labelCheck">Jan</div>
 								<div style="clear:both;"></div>
 								<div class="checkBox"><div id="Feb"></div></div>
-								<div class="labelRadio">Feb</div>
+								<div class="labelCheck">Feb</div>
 								<div style="clear:both;"></div>
 								<div class="checkBox"><div id="Mar"></div></div>
-								<div class="labelRadio">Mar</div>
+								<div class="labelCheck">Mar</div>
 							</div>
 							<div class="monthlyContainer">
 								<div class="checkBox"><div id="Apr"></div></div>
-								<div class="labelRadio">Apr</div>
+								<div class="labelCheck">Apr</div>
 								<div style="clear:both;"></div>
 								<div class="checkBox"><div id="May"></div></div>
-								<div class="labelRadio">May</div>
+								<div class="labelCheck">May</div>
 								<div style="clear:both;"></div>
 								<div class="checkBox"><div id="Jun"></div></div>
-								<div class="labelRadio">Jun</div>
+								<div class="labelCheck">Jun</div>
 							</div>
 							<div class="monthlyContainer">
 								<div class="checkBox"><div id="Jul"></div></div>
-								<div class="labelRadio">Jul</div>
+								<div class="labelCheck">Jul</div>
 								<div style="clear:both;"></div>
 								<div class="checkBox"><div id="Aug"></div></div>
-								<div class="labelRadio">Aug</div>
+								<div class="labelCheck">Aug</div>
 								<div style="clear:both;"></div>
 								<div class="checkBox"><div id="Sep"></div></div>
-								<div class="labelRadio">Sep</div>
+								<div class="labelCheck">Sep</div>
 							</div>
 							<div class="monthlyContainer">
 								<div class="checkBox"><div id="Oct"></div></div>
-								<div class="labelRadio">Oct</div>
+								<div class="labelCheck">Oct</div>
 								<div style="clear:both;"></div>
 								<div class="checkBox"><div id="Nov"></div></div>
-								<div class="labelRadio">Nov</div>
+								<div class="labelCheck">Nov</div>
 								<div style="clear:both;"></div>
 								<div class="checkBox"><div id="Dec"></div></div>
-								<div class="labelRadio">Dec</div>
+								<div class="labelCheck">Dec</div>
 							</div>
 							<div class="monthlyContainer">
 								<img id="MonthErrorMessage" src="/fin/cmn/usr/media/Common/exclamation.gif" title="To create a schedule that runs at least one month out of the year, you must select which month to run the report."/>
@@ -231,43 +242,43 @@
 								<div class="checkBox">
 									<div id="Sunday"></div>
 								</div>
-								<span class="labelRadio">Sun</span>
+								<span class="labelCheck">Sun</span>
 							</div>
 							<div class="checkBoxDay">
 								<div class="checkBox">
 									<div id="Monday"></div>
 								</div>
-								<span class="labelRadio">Mon</span>
+								<span class="labelCheck">Mon</span>
 							</div>
 							<div class="checkBoxDay">
 								<div class="checkBox">
 									<div id="Tuesday"></div>
 								</div>
-								<span class="labelRadio">Tue</span>
+								<span class="labelCheck">Tue</span>
 							</div>
 							<div class="checkBoxDay">
 								<div class="checkBox">
 									<div id="Wednesday"></div>
 								</div>
-								<span class="labelRadio">Wed</span>
+								<span class="labelCheck">Wed</span>
 							</div>
 							<div class="checkBoxDay">
 								<div class="checkBox">
 									<div id="Thursday"></div>
 								</div>
-								<span class="labelRadio">Thu</span>
+								<span class="labelCheck">Thu</span>
 							</div>
 							<div class="checkBoxDay">
 								<div class="checkBox">
 									<div id="Friday"></div>
 								</div>
-								<span class="labelRadio">Fri</span>
+								<span class="labelCheck">Fri</span>
 							</div>
 							<div class="checkBoxDay">
 								<div class="checkBox">
 									<div id="Saturday"></div>
 								</div>
-								<span class="labelRadio">Sat</span>
+								<span class="labelCheck">Sat</span>
 							</div>
 							<div>
 								<img id="DayErrorMessage" src="/fin/cmn/usr/media/Common/exclamation.gif" title="To create a schedule that runs at least one day a week, you must select which day to run the report."/>
@@ -289,7 +300,7 @@
 						<div style="clear:both; height:10px;"></div>
 						<div id="StartTime">
 							<span class="labelSchedule"><span class="requiredFieldIndicator">&#149;</span>&nbsp;Start Time:</span>
-							<div id="StartHours"></div><span class="labelSchedule">&nbsp;:</span><div id="StartMinutes"></div>
+							<div id="StartHours"></div><span class="labelSchedule">&nbsp;:</span><div id="StartMinutes"></div>&nbsp;
 							<input type="radio" id="AM" name="rbStartTime" checked="true" value="AM" /><span class="labelRadio">A.M.</span>
 							<input type="radio" id="PM" name="rbStartTime" value="PM" /><span class="labelRadio">P.M.</span>
 						</div>
@@ -312,7 +323,7 @@
 				<div class="body">
 					<div style="clear:both; height:10px;"></div>
 					<div class="labelTextArea">House Code:</div>
-					<div class="inputTextMedium">
+					<div class="inputTextLarge">
 						<div id="AppUnit"></div>
 					</div>
 					<div id="AnchorSearch"></div>

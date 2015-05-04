@@ -33,6 +33,9 @@ ii.Class({
 			me.users = [];
 			me.loadCount = 0;
 			me.fileName = "";
+			me.searchBy == "";
+			me.validChargeToHouseCode = false;
+			me.chargeToHouseCodeCache = [];
 
 			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 
@@ -92,7 +95,7 @@ ii.Class({
 				$("#pageLoading").fadeIn("slow");
 
 				ii.timer.timing("Page displayed");
-				me.loadCount = 4;
+				me.loadCount = 3;
 				me.session.registerFetchNotify(me.sessionLoaded, me);
 				me.state.fetchingData();
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
@@ -454,13 +457,18 @@ ii.Class({
 				id: "PayCodeDetailGrid",
 				allowAdds: true,
 				createNewFunction: fin.pay.payCheck.PayCodeDetail,
-				selectFunction: function (index) { 
-
-					$("#HoursText, #EarningText, #AlternateBaseRate").keypress(function (e) {
-						if (e.which != 8 && e.which != 0  && e.which != 46 && (e.which < 48 || e.which > 57))
-							return false;
-					});
-				}
+				preDeactivateFunction: function( ) { if (!me.validChargeToHouseCode) return false; else return true; },
+                selectFunction: function (index) { 
+                    me.validChargeToHouseCode = true;
+                    $("#HoursText, #EarningText, #AlternateBaseRate").keypress(function (e) {
+                        if (e.which != 8 && e.which != 0  && e.which != 46 && (e.which < 48 || e.which > 57))
+                        	return false;
+                    });
+                    
+                    $("#ChargeToHouseCodeText").keypress(function (e) {
+                        me.validChargeToHouseCode = false;
+                    });
+                }
 			});
 
 			me.payCodeType = new ui.ctl.Input.DropDown.Filtered({
@@ -577,19 +585,19 @@ ii.Class({
 						this.setInvalid("Please enter valid Alternate Base Rate. Example: 99.99");
 				});
 				
-			me.workOrderNumber = new ui.ctl.Input.Text({
-		        id: "WorkOrderNumber",
-		        maxLength: 16, 
-				appendToId: "PayCodeDetailGridControlHolder",
-				changeFunction: function() { me.modified(); }
-		    });
-
+			me.chargeToHouseCode = new ui.ctl.Input.Text({
+                id: "ChargeToHouseCode",
+                maxLength: 16, 
+                appendToId: "PayCodeDetailGridControlHolder",
+                changeFunction: function() { me.modified(); }
+            });
+            		    
 			me.payCodeDetailGrid.addColumn("payCode", "payCode", "Pay Code", "Pay Code", null, function(payCode) { return payCode.brief + " - " + payCode.name 	} , me.payCodeType);
 			me.payCodeDetailGrid.addColumn("hours", "hours", "Hours", "Hours", 100, null, me.hours);
 			me.payCodeDetailGrid.addColumn("date", "date", "Date", "Date", 120, null, me.date);
 			me.payCodeDetailGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 100, function(earning) { return ui.cmn.text.money.format(earning); }, me.earning);
 			me.payCodeDetailGrid.addColumn("alternateBaseRate", "alternateBaseRate", "Alternate Base Rate", "Alternate Base Rate", 180, function(alternateBaseRate) { return ui.cmn.text.money.format(alternateBaseRate); }, me.alternateBaseRate);
-			me.payCodeDetailGrid.addColumn("workOrderNumber", "workOrderNumber", "Charge to House Code", "Charge to House Code", 180, null, me.workOrderNumber);
+			me.payCodeDetailGrid.addColumn("houseCodeTitle", "houseCodeTitle", "CHARGE TO HOUSE CODE", "CHARGE TO HOUSE CODE", 250, null, me.chargeToHouseCode);
 			me.payCodeDetailGrid.capColumns();
 			
 			me.payCodeType.active = false;
@@ -597,7 +605,7 @@ ii.Class({
 			me.date.active = false;
 			me.earning.active = false;
 			me.alternateBaseRate.active = false;
-			me.workOrderNumber.active = false;
+			me.chargeToHouseCode.active = false;
 			
 			me.payCodeDetailReadOnlyGrid = new ui.ctl.Grid({
 				id: "PayCodeDetailReadOnlyGrid"
@@ -608,7 +616,7 @@ ii.Class({
 			me.payCodeDetailReadOnlyGrid.addColumn("date", "date", "Date", "Date", 120);
 			me.payCodeDetailReadOnlyGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 100, function(earning) { return ui.cmn.text.money.format(earning); });
 			me.payCodeDetailReadOnlyGrid.addColumn("alternateBaseRate", "alternateBaseRate", "Alternate Base Rate", "Alternate Base Rate", 180, function(alternateBaseRate) { return ui.cmn.text.money.format(alternateBaseRate); });
-			me.payCodeDetailReadOnlyGrid.addColumn("workOrderNumber", "workOrderNumber", "Charge to House Code", "Charge to House Code", 180);
+			me.payCodeDetailReadOnlyGrid.addColumn("houseCodeTitle", "houseCodeTitle", "CHARGE TO HOUSE CODE", "CHARGE TO HOUSE CODE", 250);
 			me.payCodeDetailReadOnlyGrid.capColumns();
 
 			me.anchorSearch = new ui.ctl.buttons.Sizeable({
@@ -694,6 +702,35 @@ ii.Class({
 			me.documentGrid.addColumn("title", "title", "Title", "Title", null);
 			me.documentGrid.addColumn("fileName", "fileName", "File Name", "File Name", 350);
 			me.documentGrid.capColumns();
+			
+			me.anchorEmployeeOk = new ui.ctl.buttons.Sizeable({
+				id: "AnchorEmployeeOk",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;&nbsp;&nbsp;Ok&nbsp;&nbsp;&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionEmployeeOkItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorEmployeeCancel = new ui.ctl.buttons.Sizeable({
+				id: "AnchorEmployeeCancel",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionEmployeeCancelItem(); },
+				hasHotState: true
+			});
+			
+			me.employeeGrid = new ui.ctl.Grid({
+				id: "EmployeeGrid",
+				allowAdds: false
+			});
+
+			me.employeeGrid.addColumn("firstName", "firstName", "First Name", "First Name", 200);
+			me.employeeGrid.addColumn("lastName", "lastName", "Last Name", "Last Name", 200);
+			me.employeeGrid.addColumn("brief", "brief", "Brief", "Brief", null);
+			me.employeeGrid.addColumn("houseCode", "houseCode", "House Code", "House Code", 100);
+			me.employeeGrid.addColumn("employeeNumber", "employeeNumber", "Employee #", "Employee #", 100);
+			me.employeeGrid.addColumn("ssn", "ssn", "SSN", "SSN", 100);
+			me.employeeGrid.capColumns();
 			
 			me.documentTitle.active = false;
 		},
@@ -925,7 +962,9 @@ ii.Class({
 			$("#imgEdit").bind("click", function() { me.actionEditItem(); });
 			$("#imgRemove").bind("click", function() { me.actionRemoveItem(); });
 			$("#imgView").bind("click", function() { me.actionViewItem(); });
-			$("#EmployeeNumberText").bind("change", function() { me.searchEmployee(); });
+			$("#EmployeeNumberText").bind("change", function() { me.searchEmployeeByNumber(); });
+			$("#ChargeToHouseCodeText").bind("blur keyup", me, me.chargeToHouseCodeChange);
+			$("#EmployeeNameText").bind("change", function() { me.searchEmployeeByName(); });
 			$("#FilterTypeText").bind("keydown", me, me.actionSearchItem);			
 			$("#SearchInputText").bind("keydown", me, me.actionSearchItem);
 			$("#SearchRequestedDateText").bind("keydown", me, me.actionSearchItem);			
@@ -992,7 +1031,8 @@ ii.Class({
 			me.requestorName.resizeText();
 			me.requestorEmail.resizeText();
 			me.managerName.resizeText();
-			me.managerEmail.resizeText();			
+			me.managerEmail.resizeText();
+			me.employeeGrid.resize();			
 		},
 		
 		resetControls: function(status) {
@@ -1241,41 +1281,100 @@ ii.Class({
 			}
 		},
 
-		searchEmployee: function() {
+		houseCodeChanged: function() {
 			var me = this;
 			
-			if (me.employeeNumber.validate(true)) {
+			if (me.employees != undefined) {
+				if (me.employees.length == 1 && me.employees[0].houseCode != parent.fin.appUI.houseCodeBrief) {
+					me.employeeNumber.setValue("");
+					me.employeeName.setValue("");
+				}
+				else if (me.employees.length > 1) {
+					if(me.employeeGrid.activeRowIndex >= 0 && me.employees[me.employeeGrid.activeRowIndex].houseCode != parent.fin.appUI.houseCodeBrief) {
+						me.employeeNumber.setValue("");
+						me.employeeName.setValue("");
+					}
+				}
+			}						
+		},
+		
+		searchEmployeeByNumber: function() {
+			var me = this;
+			me.searchBy = "employeeNumber";
+			
+			if (me.employeeNumber.validate(true) && me.employeeNumber.getValue().length > 3) {
 				if (me.status == "CheckRequest") {
 					$("#EmployeeNumberText").addClass("Loading");
 					me.employeeStore.fetch("userId:[user],searchValue:" + me.employeeNumber.getValue()
+						+ ",hcmHouseCodeId:" + ($("#houseCodeText").val() != "" ? parent.fin.appUI.houseCodeId : 0) 
 						+ ",employeeType:SearchFull"
 						+ ",filterType:Employee Number"
 						, me.employeesLoaded, me);
 				}
 			}
+			else {
+				if (me.employeeNumber.validate(true)) {
+					alert("There is no Employee with Employee # [" + me.employeeNumber.getValue() + "].");
+					me.employeeNumber.setValue("");
+				}	
+			}
+		},
+		
+		searchEmployeeByName: function() {
+			var me = this;
+			me.searchBy = "employeeName";
+			
+			if (me.employeeName.getValue().length > 3) {
+				if (me.status == "CheckRequest") {
+					$("#EmployeeNameText").addClass("Loading");
+					me.employeeStore.fetch("userId:[user],searchValue:" + me.employeeName.getValue()
+						+ ",hcmHouseCodeId:" + ($("#houseCodeText").val() != "" ? parent.fin.appUI.houseCodeId : 0)
+						+ ",employeeType:SearchFull"
+						+ ",filterType:Name"
+						, me.employeesLoaded, me);
+				}
+			}
+			else {
+				if (me.employeeName.validate(true)) { 
+					alert("There is no Employee with Employee Name [" + me.employeeName.getValue() + "].");
+					me.employeeName.setValue("");
+				}
+			}
 		},
 		
 		employeesLoaded: function(me, activeId) {
-
 			$("#EmployeeNumberText").removeClass("Loading");
-			
-			if (me.employees.length == 1) {
+			$("#EmployeeNameText").removeClass("Loading");
+			if (me.employees.length > 1) {
+				me.employeeGrid.setData(me.employees);				
+				$("#upload").hide();
+				$("#employeeList").show();
+				me.loadPopup("employeeList");
+				me.employeeGrid.setHeight($(window).height() - 200);
+			}			
+			else if (me.employees.length == 1) {
+				me.employeeNumber.setValue(me.employees[0].employeeNumber);
 				me.employeeName.setValue(me.employees[0].firstName + " " + me.employees[0].lastName);
 				if (me.personId != me.employees[0].id) {
 					me.personId = me.employees[0].id;
 					me.personStore.fetch("userId:[user],id:" + me.employees[0].id, me.personsLoaded, me);
-					if (me.employees[0].houseCode != parent.fin.appUI.houseCodeBrief)
+					if (me.employees[0].houseCode != parent.fin.appUI.houseCodeBrief || $("#houseCodeText").val() == "")
 						me.houseCodeFetch(me.employees[0].houseCode);
 				}
 				else
 					me.personsLoaded(me, 0);
 			}
 			else {
-				alert("There is no Employee with Employe # [" + me.employeeNumber.getValue() + "].");
+				if (me.searchBy == "employeeNumber")
+					alert("There is no Employee with Employee # [" + me.employeeNumber.getValue() + "].");
+				if (me.searchBy == "employeeName")
+					alert("There is no Employee with Employee Name [" + me.employeeName.getValue() + "].");
+					
 				me.employeeNumber.setValue("");
 				me.employeeName.setValue("");
-				return;
 			}
+			
+			me.searchBy == "";
 		},
 		
 		personsLoaded: function(me, activeId) {
@@ -1291,7 +1390,7 @@ ii.Class({
 				else
 					me.setEmployeeAddress();
 			}			
-			me.checkLoadCount();
+			//me.checkLoadCount();
 		},
 		
 		setEmployeeAddress: function() {
@@ -1524,6 +1623,101 @@ ii.Class({
 			me.documentGrid.setHeight(100);
 			me.checkLoadCount();
 		},
+		
+		chargeToHouseCodeChange: function() {
+			var args = ii.args(arguments, {
+				event: {type: Object} // The (key) event object
+			});			
+			var event = args.event;
+			var me = event.data;
+	        var houseCode = me.chargeToHouseCode.getValue().replace(/[^0-9]/g, "");
+	
+			if (event.type == 'blur' || event.keyCode == 13 || event.keyCode == 9) {
+				me.chargeToHouseCode.setValue(houseCode);
+		        if (houseCode != "") {
+	                me.validChargeToHouseCode = false;
+	                me.chargeToHouseCodeCheck(houseCode);
+		        }
+		        else {
+	                me.validChargeToHouseCode = true;
+	                if (me.payCodeDetailGrid.data[me.payCodeDetailGrid.activeRowIndex] != undefined)
+	                    me.payCodeDetailGrid.data[me.payCodeDetailGrid.activeRowIndex].houseCodeId = 0;
+		        }
+			}
+        },
+
+        chargeToHouseCodeCheck: function(houseCode) {
+        	var me = this;
+
+            if (me.chargeToHouseCodeCache[houseCode] != undefined) {
+			    if (me.chargeToHouseCodeCache[houseCode].loaded)
+			        me.chargeToHouseCodeValidate(houseCode);
+			}
+			else
+			    me.chargeToHouseCodeLoad(houseCode);
+	        },
+
+        chargeToHouseCodeLoad: function(houseCode) {
+            var me = this;
+
+            me.chargeToHouseCodeCache[houseCode] = {};
+            me.chargeToHouseCodeCache[houseCode].valid = false;
+            me.chargeToHouseCodeCache[houseCode].loaded = false;
+                        
+            $("#ChargeToHouseCodeText").addClass("Loading");
+
+            $.ajax({
+				type: "POST",
+				dataType: "xml",
+				url: "/net/crothall/chimes/fin/hcm/act/provider.aspx",
+				data: "moduleId=hcm&requestId=1&targetId=iiCache"
+					+ "&requestXml=<criteria>storeId:hcmHouseCodes,userId:[user],appUnitBrief:" + houseCode + ",<criteria>",
+
+				success: function(xml) {
+				    me.chargeToHouseCodeCache[houseCode].loaded = true;
+
+                        if ($(xml).find("item").length) {
+                        //the house code is valid
+                        $(xml).find("item").each(function() {
+                            me.chargeToHouseCodeCache[houseCode].valid = true;
+                            me.chargeToHouseCodeCache[houseCode].id = parseInt($(this).attr("id"), 10);
+                            me.chargeToHouseCodeCache[houseCode].chargeToHouseCode = $(this).attr("name");
+                            me.chargeToHouseCodeValidate(houseCode);
+                            $("#ChargeToHouseCodeText").removeClass("Loading");
+                        });
+                    }
+                    else {
+                        //the house code is invalid
+                        me.chargeToHouseCodeValidate(houseCode);
+                    }
+         		}
+        	});
+        },
+        
+        chargeToHouseCodeValidate: function(houseCode) {
+            var me = this;
+
+            $("#ChargeToHouseCodeText").removeClass("Loading");
+                        
+            if (!me.chargeToHouseCodeCache[houseCode].valid) {
+                me.chargeToHouseCode.setInvalid("The House Code [" + houseCode + "] is not valid.");
+                if (me.payCodeDetailGrid.data[me.payCodeDetailGrid.activeRowIndex] != undefined) {
+                	me.payCodeDetailGrid.data[me.payCodeDetailGrid.activeRowIndex].houseCodeId = 0;
+                	me.payCodeDetailGrid.data[me.payCodeDetailGrid.activeRowIndex].houseCodeTitle = houseCode;
+                }                	
+            }
+            else {
+                var index = me.payCodeDetailGrid.activeRowIndex;
+                me.validChargeToHouseCode = true;
+                me.chargeToHouseCode.setValue(me.chargeToHouseCodeCache[houseCode].chargeToHouseCode);
+                me.payCodeDetailGrid.body.deselect(index);
+                if (me.payCodeDetailGrid.data[index] != undefined) {                	               	
+                    me.payCodeDetailGrid.data[index].houseCodeId = me.chargeToHouseCodeCache[houseCode].id;
+                    me.payCodeDetailGrid.data[index].houseCodeTitle = me.chargeToHouseCodeCache[houseCode].chargeToHouseCode;
+                    me.payCodeDetailGrid.body.select(index + 1);
+                }
+            }
+        },
 
 		actionNewItem: function() {
 			var args = ii.args(arguments,{});
@@ -1586,7 +1780,9 @@ ii.Class({
 
 			$("iframe")[0].contentWindow.document.getElementById("FormReset").click();
 			me.anchorUpload.display(ui.cmn.behaviorStates.disabled);
-			me.loadPopup();
+			$("#employeeList").hide();
+			$("#upload").show();
+			me.loadPopup("upload");			
 			me.documentTitle.setValue("");
 			me.documentTitle.resizeText();
 			me.documentGrid.body.deselectAll();
@@ -1599,7 +1795,9 @@ ii.Class({
 			if (index != -1) {
 				$("iframe")[0].contentWindow.document.getElementById("FormReset").click();
 				me.anchorUpload.display(ui.cmn.behaviorStates.disabled);
-				me.loadPopup();
+				$("#employeeList").hide();
+				$("#upload").show();
+				me.loadPopup("upload");
 				me.documentTitle.setValue(me.payCheckRequestDocuments[index].title);
 				me.documentTitle.resizeText();
 			}
@@ -1693,6 +1891,52 @@ ii.Class({
 			}
 		},
 
+		actionEmployeeOkItem: function() {
+			var me = this;
+			
+			if (me.employeeGrid.activeRowIndex >= 0) {
+				me.employeeNumber.setValue(me.employees[me.employeeGrid.activeRowIndex].employeeNumber);
+				me.employeeName.setValue(me.employees[me.employeeGrid.activeRowIndex].firstName + " " + me.employees[me.employeeGrid.activeRowIndex].lastName);
+				
+				if($("#houseCodeText").val() == "" || parent.fin.appUI.houseCodeId == 0) {				
+					me.houseCodeStore.fetch("userId:[user],appUnitBrief:" + me.employees[me.employeeGrid.activeRowIndex].houseCode + ",", me.employeeHouseCodesLoaded, me);
+				}
+				
+				if (me.personId != me.employees[me.employeeGrid.activeRowIndex].id) {
+					me.personId = me.employees[me.employeeGrid.activeRowIndex].id;
+					me.personStore.fetch("userId:[user],id:" + me.employees[me.employeeGrid.activeRowIndex].id, me.personsLoaded, me);
+				}
+				else
+					me.personsLoaded(me, 0);
+			}
+			else {
+				me.employeeNumber.setValue("");
+				me.employeeName.setValue("");
+			}
+			
+			me.hidePopup();
+			$("#pageLoading").fadeOut("slow");
+		},
+		
+		employeeHouseCodesLoaded: function(me, activeId) {			
+			if (me.houseCodes.length > 0) {
+				$("#houseCodeText").val(me.houseCodes[0].name);
+				parent.fin.appUI.houseCodeId = me.houseCodes[0].id;
+				parent.fin.appUI.houseCodeBrief = me.houseCodes[0].brief;
+				parent.fin.appUI.hirNode = me.houseCodes[0].hirNode;				
+				parent.fin.appUI.houseCodeTitle = me.houseCodes[0].name;				
+			}
+		},
+
+		actionEmployeeCancelItem: function() {
+			var me = this;
+			
+			me.employeeNumber.setValue("");
+			me.employeeName.setValue("");			
+			me.hidePopup();
+			$("#pageLoading").fadeOut("slow");
+		},
+		
 		fileNamesLoaded: function(me, activeId) {
 
 			if (parent.fin.appUI.modified)
@@ -1735,9 +1979,14 @@ ii.Class({
 					return false;
 				}
 				
+				if (!me.chargeToHouseCode.valid) {
+					alert("In order to save, the errors on the page must be corrected.");
+					return false;
+				}
+				
 				me.payCodeDetailGrid.body.deselectAll();
 				me.validator.forceBlur();
-	
+				
 				// Check to see if the data entered is valid
 				if (!me.validator.queryValidity(true)) {
 					alert("In order to save, the errors on the page must be corrected.");
@@ -1840,7 +2089,7 @@ ii.Class({
 			xml += ' managerEmail="' + ui.cmn.text.xml.encode(item.managerEmail) + '"';
 			xml += '/>';
 
-			for (var index = 0; index < me.payCodeDetailGrid.data.length; index++) {
+			for (var index = 0; index < me.payCodeDetailGrid.data.length; index++) {				
 				xml += '<payCheckRequestPayCode';
 				xml += ' id="' + me.payCodeDetailGrid.data[index].id + '"';
 				xml += ' payCheckRequestId="' + item.id + '"';
@@ -1848,8 +2097,9 @@ ii.Class({
 				xml += ' hours="' + me.payCodeDetailGrid.data[index].hours + '"';				
 				xml += ' earnings="' + me.payCodeDetailGrid.data[index].earnings + '"';
 				xml += ' alternateBaseRate="' + me.payCodeDetailGrid.data[index].alternateBaseRate + '"';
-				xml += ' date="' + ui.cmn.text.date.format(new Date(me.payCodeDetailGrid.data[index].date), "mm/dd/yyyy") + '"';
-				xml += ' workOrderNumber="' + me.payCodeDetailGrid.data[index].workOrderNumber + '"';
+				xml += ' date="' + ui.cmn.text.date.format(new Date(me.payCodeDetailGrid.data[index].date), "mm/dd/yyyy") + '"';				
+				xml += ' houseCodeId="' + me.payCodeDetailGrid.data[index].houseCodeId + '"';
+				xml += ' houseCodeTitle="' + (me.payCodeDetailGrid.data[index].houseCodeId != 0 ? me.payCodeDetailGrid.data[index].houseCodeTitle : "") + '"';
 				xml += '/>';
 			}
 
@@ -1970,10 +2220,10 @@ ii.Class({
 			$("#pageLoading").fadeOut("slow");
 		},
 
-		loadPopup: function() {
+		loadPopup: function(type) {
 			var me = this;
 
-			me.centerPopup();
+			me.centerPopup(type);
 
 			$("#backgroundPopup").css({
 				"opacity": "0.5"
@@ -1988,17 +2238,33 @@ ii.Class({
 			$("#uploadPopup").fadeOut("slow");
 		},
 
-		centerPopup: function() {
+		centerPopup: function(type) {
 			var me = this;
 			var windowWidth = document.documentElement.clientWidth;
 			var windowHeight = document.documentElement.clientHeight;
-			var popupWidth = $("#uploadPopup").width();
-			var popupHeight = $("#uploadPopup").height();
-
-			$("#uploadPopup").css({
-				"top": windowHeight/2 - popupHeight/2 + $(window).scrollTop(),
-				"left": windowWidth/2 - popupWidth/2 + $(window).scrollLeft()
-			});
+			
+			if (type == "upload") {
+				var popupWidth = windowWidth - 464;
+				var popupHeight = windowHeight - 337;
+				
+				$("#uploadPopup").css({
+					"width": popupWidth,
+					"height": popupHeight,
+					"top": windowHeight/2 - popupHeight/2 + $(window).scrollTop(),
+					"left": windowWidth/2 - popupWidth/2 + $(window).scrollLeft()
+				});
+			}
+			else if (type == "employeeList") {
+				var popupWidth = windowWidth - 100;
+				var popupHeight = windowHeight - 100;
+				
+				$("#uploadPopup").css({
+					"width": popupWidth,
+					"height": popupHeight,
+					"top": windowHeight/2 - popupHeight/2,
+					"left": windowWidth/2 - popupWidth/2
+				});
+			}
 		}
     }
 });

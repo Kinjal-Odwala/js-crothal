@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Workflow</h1>
+			<div class="description">The purpose of Workflow is to provide a means to setup and maintain Workflow.</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:100px;">UI Element</th>
+				<th style="width:110px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>				
+				<th style="width:200px;">Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Workflow Steps Info</td>
+			</tr>
+			<tr>
+				<td>Workflow Step</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td></td>				
+			</tr>
+            <tr>
+				<td>Description</td>
+				<td>Label</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>Description of Workflow Step</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Users Info</td>
+			</tr>
+			<tr>
+				<td>Assigned User Grid</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>List the User details based on the selected Workflow Step</td>				
+			</tr>
+            <tr>
+				<td>User Name</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>				
+			</tr>
+            <tr>
+				<td>First Name</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>				
+			</tr>
+            <tr>
+				<td>Last Name</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>				
+			</tr>
+            <tr>
+				<td>Email</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>				
+			</tr>
+            <tr>
+				<td>Add Users</td>
+				<td>Image Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Add new User</td>				
+			</tr>
+            <tr>
+				<td>Remove User</td>
+				<td>Image Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Remove selected User</td>				
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Users</td>
+			</tr>
+			<tr>
+				<td>User Name, First Name, Last Name</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>				
+				<td></td>				
+			</tr>
+            <tr>
+				<td>Search</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Lists Users based on given user info</td>				
+			</tr>
+			<tr>
+				<td>User Grid</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>				
+				<td>List the User details based on the selected Workflow Step</td>				
+			</tr>
+            <tr>
+				<td>Assigned</td>
+				<td>Checkbox</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+				<td>only assigned users will be added to assigned user grid</td>				
+			</tr>
+            <tr>
+				<td>User Name</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>				
+			</tr>
+            <tr>
+				<td>First Name</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>				
+			</tr>
+            <tr>
+				<td>Last Name</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>				
+			</tr>
+            <tr>
+				<td>Email</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td></td>				
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>adds new user to assigned user grid</td>				
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+				<td>Cancel changes</td>				
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Workflow concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/workflow.png"></td>
+			</tr>
+            <tr>
+				<td class="uiHeader">Users concept</td>
+			</tr>
+			<tr>
+				<td><img src="images/usersOfWorkflow.png"></td>
+			</tr>			
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>[SAVE FAILURE] Error while updating Workflow Step details</td>
+			</tr>
+			<tr>
+				<td>Error</td>
+				<td>Failed to update the laundry metric details.
+				</td>
+			</tr>
+		</table>		
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>AppWorkflowSteps<br>
+                    AppUsers
+				</td>
+			</tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="hierarchy.htm">Hierarchy</a></div>
+		<div class="reference"><a href="security.htm">Security</a></div>
+        <div class="reference"><a href="systemVariables.htm">Sys Variable</a></div>
+        <div class="reference"><a href="employeeImport.htm">Import Employees</a></div>
+        <div class="reference"><a href="taxRate.htm">Tax Rates</a></div>
+        <div class="reference"><a href="adHocReport.htm">Ad-Hoc Report</a></div>
+        <div class="reference"><a href="hierarchyManagement.htm">Hierarchy Mgmt</a></div>
+        <div class="reference"><a href="minimumWage.htm">State Min Wage</a></div>
+        <div class="reference"><a href="employeeHierarchy.htm">Emp Hierarchy</a></div>
+        <div class="reference"><a href="employeePTO.htm">Employee PTO</a></div>
+        <div class="reference"><a href="empRequest.htm">Emp Request</a></div>
+        <div class="reference"><a href="localTaxCode.htm">Local Tax Code</a></div>
+        <div class="reference"><a href="laundry.htm">Laundry Metrics</a></div>
+	</body>
+</html>

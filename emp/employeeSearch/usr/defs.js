@@ -65,6 +65,7 @@ ii.init.register( function(){
 		brief: {type: String, required: false, defaultValue: ""},
 		active: {type: Boolean, required: false, defaultValue: false},
 		ssn: {type: String, required: false, defaultValue: ""},
+		wotcCode: {type: String, required: false, defaultValue: ""},
 		statusType: {type: Number, required: false, defaultValue: 0},
 		statusCategoryType: {type: Number, required: false, defaultValue: 0},
 		houseCodeJob: {type: Number, required: false, defaultValue: 0},
@@ -144,7 +145,9 @@ ii.init.register( function(){
 		vetType: {type: Number, required: false, defaultValue: 0},
 		mealPlan: {type: Number, required: false, defaultValue: 0},
 		mealPlanPayrollDeduction: {type: Boolean, required: false, defaultValue: false},
+		disability: {type: Number, required: false, defaultValue: 0},
 		separationCode:{type: Number, required: false, defaultValue: 0},
+		rehireEligibilityType:{type: Number, required: false, defaultValue: 0},
 		jobStartReason:{type: Number, required: false, defaultValue: 0},
 		crtdBy: {type: String, required: false, defaultValue: ""},
 		crtdAt: {type: String, required: false, defaultValue: ""},
@@ -276,6 +279,12 @@ ii.init.register( function(){
 	};
 	
 	fin.emp.separationCodeArgs = {
+		id: {type: Number},
+		number: {type: Number},
+		name: {type: String}
+	};
+	
+	fin.emp.rehireEligibilityTypeArgs = {
 		id: {type: Number},
 		number: {type: Number},
 		name: {type: String}
@@ -647,6 +656,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.emp.separationCodeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.emp.RehireEligibilityType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.emp.rehireEligibilityTypeArgs);
 			$.extend(this, args);
 		}
 	}

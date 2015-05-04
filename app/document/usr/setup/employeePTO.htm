@@ -1,0 +1,545 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Employee PTO</h1>
+			<div class="description">The purpose of <b>Employee PTO</b> is to setup and maintain the list of Employee PTOs.</div>
+		</div>		
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">PTO Years</td>
+			</tr>
+			<tr>
+				<td>PTO Year Grid</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List of PTO Years.</td>
+			</tr>		
+			<tr>
+				<td>PTO Year</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>PTO Year.</td>
+			</tr>			
+			<tr>
+				<td class="uiHeader" colspan="5">PTO Year Details</td>
+			</tr>
+			<tr>
+				<td>Year</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>PTO Year.</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To save the PTO Year.</td>
+			</tr>
+			<tr>
+				<td>New</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>To create the new PTO Year.</td>
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>Undo the changes to PTO Year being edited.</td>
+			</tr>			
+			<tr>
+				<td class="uiHeader" colspan="5">PTO Types</td>
+			</tr>
+			<tr>
+				<td>PTO Type Grid</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List of PTO Types.</td>
+			</tr>		
+			<tr>
+				<td>PTO Type</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>PTO Type.</td>
+			</tr>			
+			<tr>
+				<td class="uiHeader" colspan="5">PTO Type Details</td>
+			</tr>
+			<tr>
+				<td>Pay Codes</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Pay Codes.</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To save the PTO Type and Pay Codes association.</td>
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>Undo the changes to PTO Type being edited.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">PTO Plans</td>
+			</tr>
+			<tr>
+				<td>House Code</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>House Code.</td>
+			</tr>
+			<tr>
+				<td>PTO Year</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>PTO Year.</td>
+			</tr>
+			<tr>
+				<td>Search</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>Lists PTO Plans based on House Code and PTO Year selected.</td>
+			</tr>
+			<tr>
+				<td>PTO Plan Grid</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List of PTO Plans associated to House Code and PTO Year selected.</td>
+			</tr>		
+			<tr>
+				<td>Plan Name</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Plan Name.</td>
+			</tr>
+			<tr>
+				<td>PTO Type</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>PTO Type.</td>
+			</tr>			
+			<tr>
+				<td class="uiHeader" colspan="5">PTO Plan Details</td>
+			</tr>
+			<tr>
+				<td>Plan Name</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>Plan Name.</td>
+			</tr>
+			<tr>
+				<td>PTO Type</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>				
+                <td>PTO Type.</td>
+			</tr>
+			<tr>
+				<td>PTO Year</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+                <td>PTO Year.</td>
+			</tr>
+			<tr>
+				<td>Start Date</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+                <td>Start Date.</td>
+			</tr>
+			<tr>
+				<td>End Date</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+                <td>End Date.</td>
+			</tr>
+			<tr>
+				<td>Plan Days</td>
+				<td>Text field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+                <td>Plan Days.</td>
+			</tr>
+			<tr>
+				<td>Active</td>
+				<td>Checkbox field</td>
+				<td>Yes</td>
+				<td>End user input</td>
+                <td>Indicates whether the PTO Plan is active or not (Y / N).</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To save the PTO Plan Details.</td>
+			</tr>			
+			<tr>
+				<td>New</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>To add new PTO Plan.</td>
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>Undo the changes to PTO Plan details being edited.</td>
+			</tr>
+			<tr>
+				<td>Clone</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>Clone PTO Plan.</td>
+			</tr>			
+			<tr>
+				<td class="uiHeader" colspan="5">PTO Assignments</td>
+			</tr>
+			<tr>
+				<td>PTO Assignment Grid</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List of PTO Assignments associated to House Code and PTO Year selected.</td>
+			</tr>		
+			<tr>
+				<td>First Name</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>First Name of Employee assigned.</td>
+			</tr>
+			<tr>
+				<td>Last Name</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Last Name of Employee assigned.</td>
+			</tr>
+			<tr>
+				<td>Job Title</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Job Title of Employee assigned.</td>
+			</tr>
+			<tr>
+				<td>Add Employees</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>Assigns PTO to Employee.</td>
+			</tr>
+			<tr>
+				<td>Remove Employee</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>Removes PTO to selected Employee.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Employees</td>
+			</tr>
+			<tr>
+				<td>Unassigned Employee Grid</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List of Unassigned Employees.</td>
+			</tr>
+			<tr>
+				<td>Assigned</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>Checked employee will be assigned.</td>
+			</tr>		
+			<tr>
+				<td>First Name</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>First Name of Employee.</td>
+			</tr>
+			<tr>
+				<td>Last Name</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Last Name of Employee.</td>
+			</tr>
+			<tr>
+				<td>Job Title</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Job Title of Employee.</td>
+			</tr>
+			<tr>
+				<td>Select all employees</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>selects all employees.</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To assign selected Employees.</td>
+			</tr>
+			<tr>
+				<td>Cancel</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>To Cancel the changes to Employees being edited.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">PTO Days</td>
+			</tr>
+			<tr>
+				<td>Employee Grid</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List of Employees associated to the selected House Code.</td>
+			</tr>		
+			<tr>
+				<td>First Name</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>First Name of Employee.</td>
+			</tr>
+			<tr>
+				<td>Last Name</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Last Name of Employee.</td>
+			</tr>
+			<tr>
+				<td>Job Title</td>
+				<td>Display field</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Job Title of Employee.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">PTO Days Details</td>
+			</tr>
+			<tr>
+				<td>PTODaysGrid</td>
+				<td>Grid</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>List of Employees associated to the selected House Code.</td>
+			</tr>		
+			<tr>
+				<td>PTO Type</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>PTO Type.</td>
+			</tr>
+			<tr>
+				<td>PTO Date</td>
+				<td>Dropdown selection</td>
+				<td>Yes</td>
+				<td>End user input</td>
+				<td>PTO Date.</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>				
+                <td>To save the PTO Days Details.</td>
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>Undo the changes to PTO Days Details being edited.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Actions Menu</td>
+			</tr>
+			<tr>
+				<td>PTO Years</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To view or modify the PTO year information.</td>
+			</tr>
+			<tr>
+				<td>PTO Types</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To view or modify the PTO Type and Pay Codes association.</td>
+			</tr>
+			<tr>
+				<td>PTO Plans</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To view or modify the PTO plan information.</td>
+			</tr>
+			<tr>
+				<td>PTO Assignments</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To view or modify the PTO assignments.</td>
+			</tr>
+			<tr>
+				<td>PTO Days</td>
+				<td>Menu item field</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>To view or modify the PTO days.</td>
+			</tr>			
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">PTO Years</td>
+			</tr>
+			<tr>
+				<td><img src="images/ptoYears.png" /></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">PTO Types</td>
+			</tr>
+			<tr>
+				<td><img src="images/ptoTypes.png" /></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">PTO Plans</td>
+			</tr>
+			<tr>
+				<td><img src="images/ptoPlans.png" /></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">PTO Assignments</td>
+			</tr>
+			<tr>
+				<td><img src="images/ptoAssignments.png" /></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">Unassigned Employees</td>
+			</tr>
+			<tr>
+				<td><img src="images/unassignedEmployees.png" /></td>
+			</tr>
+			<tr>
+				<td class="uiHeader">PTO Days</td>
+			</tr>
+			<tr>
+				<td><img src="images/ptoDays.png" /></td>
+			</tr>
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>
+					In order to save, the errors on the page must be corrected.</br>
+					The Plan Name already exists. Please enter unique Plan Name and Save again.
+				</td>
+			</tr>
+			<tr>
+				<td>Error</td>
+				<td>[SAVE FAILURE] Error while updating Employee PTO details.</td>
+			</tr>
+		</table>
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+        <table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>hirNodes<br/>
+					HcmHouseCodes<br/>
+					EmpPTOTypes<br/>
+					EmpPTOYears<br/>
+					EmpPTOEmployees<br/>
+					EmpPTOPlans<br/>
+					EmpPTOAssignments<br/>
+					EmpPTODays<br/>
+					PayPayCodes<br/>
+					EmpPTOTypePayCodes<br/>
+				</td>
+			</tr>
+			<tr>
+                <td>Stored Procedures</td>
+                <td>EmpPTOEmployeeSelect
+				</td>
+            </tr>
+		</table>		
+		<h2>See Also</h2>
+		<div class="reference"><a href="hierarchy.htm">Hierarchy</a></div>
+		<div class="reference"><a href="security.htm">Security</a></div>
+		<div class="reference"><a href="systemVariables.htm">Sys Variable</a></div>
+		<div class="reference"><a href="employeeImport.htm">Import Employees</a></div>
+		<div class="reference"><a href="taxRate.htm">Tax Rates</a></div>
+        <div class="reference"><a href="adHocReport.htm">Ad-Hoc Report</a></div>                
+		<div class="reference"><a href="hierarchyManagement.htm">Hierarchy Mgmt</a></div>
+		<div class="reference"><a href="minimumWage.htm">State Min Wage</a></div>
+        <div class="reference"><a href="employeeHierarchy.htm">Emp Hierarchy</a></div>        
+        <div class="reference"><a href="empRequest.htm">Emp Request</a></div>
+        <div class="reference"><a href="localTaxCode.htm">Local Tax Code</a></div>
+	</body>
+</html>

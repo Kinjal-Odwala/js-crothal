@@ -31,6 +31,7 @@ ii.init.register( function() {
 		id: {type: Number}
 		, number: {type: Number, required:false, defaultValue: 0}
 		, name: {type: String, required:false, defaultValue: ""}
+		, brief: {type: String, required:false, defaultValue: ""}
 		, title: {type: String, required:false, defaultValue: ""}
 		, hirLevel: {type: Number, required:false, defaultValue: 0}
 		, nodeParentId: {type: Number, required:false, defaultValue: 0}

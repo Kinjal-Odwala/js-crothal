@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../helpSkin.css" />
+	</head>
+	<body>
+		<div class="header">
+			<h1>Employee Hierarchy</h1>
+			<div class="description">The purpose of the <b>Employee Hierarchy</b> is to update the Employee Hierarchy.</div>
+		</div>
+		<h2>UI Elements</h2>
+		<table class="elementTable">
+			<tr>
+				<th style="width:150px;">UI Element</th>
+				<th style="width:120px;">Field Type</th>
+				<th style="width:50px;">Mandatory</th>
+				<th style="width:100px;">Source</th>
+				<th>Validation / Description</th>
+			</tr>
+			<tr>
+				<td>Job Title</td>
+				<td>Dropdown selection</td>
+				<td>No</td>
+				<td>End user input</td>
+                <td>
+					Job Title of Employee.	
+				</td>
+			</tr>
+			<tr>
+				<td>Employee Name or Number</td>
+				<td>Text field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>To search a specific Employee, type-in Employee name and press Enter key/click Search button.
+				</td>
+			</tr>
+			<tr>
+				<td>Search in Hierarchy</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+                <td>Indicates whether to search in Hierarchy or not (Y / N).</td>
+			</tr>
+			<tr>
+				<td>Search</td>
+				<td>Button</td>
+				<td>No</td>
+				<td>End user input</td>
+                <td>Load the Node/Employee List based on the search criteria.</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Employee Hierarchy - Treeview</td>
+			</tr>
+			<tr>
+				<td>Employee Hierarchy Nodes</td>
+				<td>Treeview</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Lists the Employee hierarchy nodes in a treeview control.</td>
+			</tr>
+			<tr>
+				<td>Save</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+                <td>To save the modified node changes in original Employee Hierarchy table.</td>
+			</tr>
+			<tr>
+				<td>Undo</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Undo the current changes.</td>
+			</tr>						
+			<tr>
+				<td class="uiHeader" colspan="5">Movable Employee List</td>
+			</tr>
+			<tr>
+				<td>Movable Employee List</td>
+				<td>Treeview</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Lists the searched Employees in a treeview control. Select the Employees to move to appropriate level.</td>
+			</tr>
+			<tr>
+				<td>Select All</td>
+				<td>Checkbox field</td>
+				<td>No</td>
+				<td>End user input</td>
+				<td>If checked, all Employees will be selected in the Movable Employee List. Only the selected Employees can be draggable and droppable at selected level.</td>
+			</tr>
+			<tr>
+				<td>Delete</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Removes the selected Employees permanently.</br>
+					Are you sure you want to delete the selected employee(s) permanently?
+				</td>
+			</tr>
+			<tr>
+				<td>Clear</td>
+				<td>Button</td>
+				<td>NA</td>
+				<td>End user input</td>
+				<td>Removes the selected Employees from Movable Employee List.
+				</td>
+			</tr>
+			<tr>
+				<td class="uiHeader" colspan="5">Hierarchy - Drag & Drop</td>
+			</tr>
+			<tr>
+				<td>Tree Node</td>
+				<td>NA</td>
+				<td>NA</td>
+				<td>Mouse event</td>
+				<td>The selected movable Employees can be draggable and droppable at selected level. 
+				The selected Employee in a tree can be draggable and droppable at another level. 
+				The selected Employee in a tree can be draggable and droppable to movable Employee list. 
+				Nodes can be moved to its parent level node in the hierarchy tree. </td>
+			</tr>
+		</table>
+		<h2>UI Layouts</h2>
+		<table class="layoutTable">
+			<tr>
+				<td class="uiHeader">Employee Hierarchy</td>
+			</tr>
+			<tr>
+				<td><img src="images/empHierarchy.png"></td>
+			</tr>			
+		</table>
+		<h2>Error Messages and Notifications</h2>
+		<table class="elementTable">
+			<tr>
+				<th>Error/Event</th>
+				<th>Message</th>
+			</tr>
+			<tr>
+				<td>Error</td>
+				<td>[SAVE FAILURE] Error while updating the employee hierarchy information.</td>
+			</tr>
+		</table>		
+		<div class="header">
+			<h1>Database Objects</h1>
+			<div class="description"></div>
+		</div>
+		<table class="elementTable">
+			<tr>
+				<th>Object Types</th>
+				<th>Object Names</th>
+			</tr>
+			<tr>
+				<td>Tables</td>
+				<td>EmpEmployeeHierarchies</br>
+					EmpEmployeeParentHierarchies
+				</td>
+			</tr>
+			<tr>
+                <td>Stored Procedures</td>
+                <td>EmpEmployeeHierarchyJobsSelect</br>
+					EmpEmployeeHierarchySelect</br>
+					EmpEmployeeHierarchyUpdate					
+				</td>
+            </tr>
+		</table>
+        <h2>See Also</h2>
+		<div class="reference"><a href="hierarchy.htm">Hierarchy</a></div>
+		<div class="reference"><a href="security.htm">Security</a></div>
+		<div class="reference"><a href="systemVariables.htm">Sys Variable</a></div>
+		<div class="reference"><a href="employeeImport.htm">Import Employees</a></div>
+		<div class="reference"><a href="taxRate.htm">Tax Rates</a></div>
+        <div class="reference"><a href="adHocReport.htm">Ad-Hoc Report</a></div>
+		<div class="reference"><a href="hierarchyManagement.htm">Hierarchy Mgmt</a></div>
+		<div class="reference"><a href="minimumWage.htm">State Min Wage</a></div>
+        <div class="reference"><a href="employeePTO.htm">Employee PTO</a></div>
+        <div class="reference"><a href="empRequest.htm">Emp Request</a></div>
+        <div class="reference"><a href="localTaxCode.htm">Local Tax Code</a></div>		
+	</body>
+</html>

@@ -64,6 +64,10 @@ ii.Class({
 			me.preview = false;
 			me.expand = false;
 			me.loadCount = 0;
+			me.actionSave = false;
+			me.fileName = "";
+			me.cellColorValid = "";
+			me.cellColorInvalid = "red";
 
 			me.levels["ENT"] = "";
 			me.levels["SVP"] = "ENT";
@@ -105,6 +109,7 @@ ii.Class({
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 			$(document).bind("mousedown", me, me.mouseDownProcessor);
+			$("#divHouseCodeGrid").bind("scroll", me.houseCodeGridScroll);
 			$("#ulEdit0").bind("contextmenu", me, me.contextMenuProcessor);
 			$("#chkSelectAll").click(function () {
 				$("input[id^='chkNodeM']").attr("checked", this.checked);
@@ -261,6 +266,17 @@ ii.Class({
 
 			$("#hirContainer").height($(window).height() - 155);
 			me.setUnitContainerHeight();
+			
+			var divGridWidth = $(window).width() - 22;
+			var divGridHeight = $(window).height() - 125;
+
+			$("#divHouseCodeGrid").css({"width" : divGridWidth + "px", "height" : divGridHeight + "px"});
+		},
+		
+		houseCodeGridScroll: function() {
+		    var scrollLeft = $("#divHouseCodeGrid").scrollLeft();
+		    
+			$("#tblHouseCodeGridHeader").css("left", -scrollLeft + "px");
 		},
 
 		defineFormControls: function fin_app_hierarchy_UserInterface_defineFormControls() {
@@ -276,6 +292,18 @@ ii.Class({
 					brief: "Get Original Version",
 					title: "Get the original version of Hierarchy.",
 					actionFunction: function() { me.actionGetVersionItem(); }
+				})
+				.addAction({
+					id: "hierarchyUpdateAction",
+					brief: "View / Edit Hierarchy",
+					title: "View or edit the Hierarchy.",
+					actionFunction: function() { me.actionHierarchyUpdateItem(); }
+				})
+				.addAction({
+					id: "bulkHierarchyUpdateAction",
+					brief: "Bulk Hierarchy Update",
+					title: "Upload a sheet and change the Hierarchy of existing house codes.",
+					actionFunction: function() { me.actionBulkHierarchyUpdateItem(); }
 				});
 
 			$("#ulEdit0").treeview({
@@ -453,6 +481,38 @@ ii.Class({
 				clickFunction: function() { me.actionCloseNodesListPopup(); },
 				hasHotState: true
 			});
+			
+			me.anchorUpload = new ui.ctl.buttons.Sizeable({
+				id: "AnchorUpload",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Upload&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionUploadItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorUploadCancel = new ui.ctl.buttons.Sizeable({
+				id: "AnchorUploadCancel",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionUploadCanceItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorValidate = new ui.ctl.buttons.Sizeable({
+				id: "AnchorValidate",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Validate&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionBulkValidateItem(false); },
+				hasHotState: true
+			});
+			
+			me.anchorBulkSave = new ui.ctl.buttons.Sizeable({
+				id: "AnchorBulkSave",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Save&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionBulkValidateItem(true); },
+				hasHotState: true
+			});
 
 			$("#AppUnitText").bind("keydown", me, me.actionSearchItem);
 			$("#LevelText").bind("keydown", me, me.actionSearchItem);
@@ -491,7 +551,23 @@ ii.Class({
 				storeId: "hirNodeSnapshots",
 				itemConstructor: fin.app.hierarchy.HirNode,
 				itemConstructorArgs: fin.app.hierarchy.hirNodeArgs,
-				injectionArray: me.hirNodes	
+				injectionArray: me.hirNodes
+			});
+			
+			me.houseCodes = [];
+			me.houseCodeStore = me.cache.register({
+				storeId: "appGenericImports",
+				itemConstructor: fin.app.hierarchy.HouseCode,
+				itemConstructorArgs: fin.app.hierarchy.houseCodeArgs,
+				injectionArray: me.houseCodes
+			});
+
+			me.bulkImportValidations = [];
+			me.bulkImportValidationStore = me.cache.register({
+				storeId: "houseCodeImportValidations",
+				itemConstructor: fin.app.hierarchy.BulkImportValidation,
+				itemConstructorArgs: fin.app.hierarchy.bulkImportValidationArgs,
+				injectionArray: me.bulkImportValidations
 			});
 		},
 		
@@ -780,7 +856,7 @@ ii.Class({
 			if (!found) {
 				me.setLoadCount();
 				ii.trace("Hirnodes Loading", ii.traceTypes.Information, "Info");
-				me.hirNodeStore.fetch("userId:[user],hirNodeRoot:" + me.hirNodeCurrentId + ",", me.hirNodesLoaded, me);
+				me.hirNodeStore.fetch("userId:[user],hirNodeSnapshotId:" + me.hirNodeCurrentId + ",hirNodeSearchId:" + me.hirNodeCurrentId + ",ancestors:true", me.hirNodesLoaded, me);
 			}
 			else
 				me.selectNode();
@@ -1449,7 +1525,7 @@ ii.Class({
 		updateNode: function(item) {
 			var me = this;
 
-			if (me.nodeAction == "add") {				
+			if (me.nodeAction == "add") {
 				var nodeFound = true;
 				var nodeIndex = me.getNodeIndex(me.selectedNodeId);
 				var	newParentNode = $("#ulEdit" + me.selectedNodeId)[0];
@@ -1487,6 +1563,12 @@ ii.Class({
 			else if (me.nodeAction == "reset") {
 				me.actionResetItem();
 				me.roleNodesLoaded(me, 0);
+			}
+			else if (me.nodeAction == "bulkUpload") {
+				$("#HouseCodeGridBody input[id^=txt]").attr("readonly", true);
+				$("#AnchorValidate").hide();
+				$("#AnchorBulkSave").hide();
+				me.setStatus("Saved");
 			}
 
 			me.nodeAction = "";
@@ -1818,6 +1900,407 @@ ii.Class({
 				$("#chkSelectAll").removeAttr("checked");
 		},
 
+		actionHierarchyUpdateItem: function() {
+			var me = this;
+
+			if (!fin.cmn.status.itemValid())
+				return;
+
+			$("#pageHeader").text("Hierarchy Management");
+			$("#UploadContainer").hide();
+			$("#HierarchyContainer").show();
+			me.actionUndoItem();
+		},
+		
+		actionBulkHierarchyUpdateItem: function() {
+			var me = this;
+
+			if (!fin.cmn.status.itemValid())
+				return;
+
+			$("#pageHeader").text("Bulk Hierarchy Update");
+			$("#HierarchyContainer").hide();
+			$("#AnchorValidate").hide();
+			$("#AnchorBulkSave").hide();
+			$("#tblHouseCodes").hide();
+			$("#iFrameUpload").height(30);
+			$("#UploadContainer").show();
+			$("#divFrame").height(45);
+			$("#divFrame").show();
+			$("#divUpload").show();
+			$("iframe")[0].contentWindow.document.getElementById("FormReset").click();
+			me.anchorUpload.display(ui.cmn.behaviorStates.disabled);
+		},
+		
+		actionUploadCanceItem: function() {
+			var me = this;
+			
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+				
+			$("iframe")[0].contentWindow.document.getElementById("FormReset").click();
+			me.anchorUpload.display(ui.cmn.behaviorStates.disabled);			
+		},
+		
+		actionUploadItem: function() {
+			var me = this;
+
+			me.fileName = "";
+			me.setStatus("Uploading");
+			$("#messageToUser").text("Uploading");
+			$("#pageLoading").fadeIn("slow");
+			$("iframe")[0].contentWindow.document.getElementById("FileName").value = "";
+			$("iframe")[0].contentWindow.document.getElementById("UploadButton").click();
+
+			me.intervalId = setInterval(function() {
+				if ($("iframe")[0].contentWindow.document.getElementById("FileName").value != "") {
+					me.fileName = $("iframe")[0].contentWindow.document.getElementById("FileName").value;
+					clearInterval(me.intervalId);
+
+					if (me.fileName == "Error") {
+						me.setStatus("Info", "Unable to upload the file. Please try again.");
+						alert("Unable to upload the file. Please try again.");
+						$("#pageLoading").fadeOut("slow");
+					}
+					else {
+						me.actionImportSave();
+					}
+				}
+			}, 1000);
+		},
+		
+		houseCodeCountLoad: function() {
+		    var me = this;
+			
+			me.setLoadCount();
+		    me.houseCodeStore.reset();
+			me.houseCodeStore.fetch("userId:[user],batch:" + me.batchId + ",object:Hierarchy,startPoint:0,maximumRows:10000", me.houseCodesLoaded, me);
+		},
+				
+		houseCodesLoaded: function(me, activeId) {
+
+			var houseCodeRow = "";
+			var houseCodeRowTemplate = $("#tblHouseCodeTemplate").html();
+
+			$("#HouseCodeGridBody").html("");			
+			$("#divFrame").hide();
+			$("#divUpload").hide();			
+			$("#AnchorBulkSave").hide();
+			$("#tblHouseCodes").show();
+
+			if (me.houseCodes.length == 0)
+				$("#AnchorValidate").hide();
+			else {
+				$("#AnchorValidate").show();
+				me.modified(true);
+			}
+
+			for (var index = 0; index < me.houseCodes.length; index++) {
+				//create the row for the house code information
+				houseCodeRow = houseCodeRowTemplate;
+				houseCodeRow = houseCodeRow.replace(/RowCount/g, index);
+				houseCodeRow = houseCodeRow.replace("#", index + 1);
+
+				$("#HouseCodeGridBody").append(houseCodeRow);
+			}
+
+			houseCodeRow = '<tr height="100%"><td colspan="9" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>';
+			$("#HouseCodeGridBody").append(houseCodeRow);
+			$("#HouseCodeGrid tr:odd").addClass("gridRow");
+        	$("#HouseCodeGrid tr:even").addClass("alternateGridRow");
+
+			for (var index = 0; index < me.houseCodes.length; index++) {
+				$("#txtBrief" + index).val(me.houseCodes[index].column1);
+				$("#txtLevel1_" + index).val(me.houseCodes[index].column2);
+				$("#txtLevel2_" + index).val(me.houseCodes[index].column3);
+				$("#txtLevel3_" + index).val(me.houseCodes[index].column4);
+				$("#txtLevel4_" + index).val(me.houseCodes[index].column5);
+				$("#txtLevel5_" + index).val(me.houseCodes[index].column6);
+				$("#txtLevel6_" + index).val(me.houseCodes[index].column7);
+				$("#txtLevel7_" + index).val(me.houseCodes[index].column8);
+			}
+
+			me.checkLoadCount();
+			me.resize();
+  		},
+		
+		setCellColor: function(control, cellColor, title) {
+			var me = this;
+			
+			control.css("background-color", cellColor);
+			control.attr("title", title);			
+		},
+		
+		actionBulkValidateItem: function() {
+			var args = ii.args(arguments, {				
+				save: {type: Boolean}
+			});
+			var me = this;
+			
+			me.actionSave = args.save;
+
+			setTimeout(function() { 
+				me.validate(); 
+			}, 100);			
+		},
+		
+		validate: function() {
+			var me = this;			
+			var valid = true;
+			var rowValid = true;
+			var briefs = "";
+			var fullPath = "";
+			var prevFullPath = "";
+			var fullPaths = "";
+
+			for (var index = 0; index < me.houseCodes.length; index++) {
+				rowValid = true;
+				fullPath = "";
+				briefs += $("#txtBrief" + index).val() + "|";
+				
+				for (var indexI = 1; indexI <= 7; indexI++) {
+					var level = $("#txtLevel" + indexI + "_" + index).val();
+					if (level != "") {
+						if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(level))) {
+							rowValid = false;
+							me.setCellColor($("#txtLevel" + indexI + "_" + index), me.cellColorInvalid, "The Level " + indexI + " can't contain any of the following characters: \\/:*?\"<>|.,");
+						}
+						else {
+							me.setCellColor($("#txtLevel" + indexI + "_" + index), me.cellColorValid, "");
+						}
+							
+						fullPath += "\\" + level;
+					}
+				}
+				
+				if (fullPath != prevFullPath) {
+					fullPaths += fullPath + "|";
+					prevFullPath = fullPath;
+				}				
+
+				if (!(/^[0-9]+$/.test($("#txtBrief" + index).val()))) {
+					rowValid = false;
+					me.setCellColor($("#txtBrief" + index), me.cellColorInvalid, "Please enter valid House Code.");
+				}
+				else {
+					me.setCellColor($("#txtBrief" + index), me.cellColorValid, "");
+				}								
+
+				if (!rowValid) {
+					if (valid)
+						valid = false;
+				}
+			}
+			
+			for (var index = 0; index < me.houseCodes.length; index++) {
+				for (var indexI = index + 1; indexI < me.houseCodes.length; indexI++) {
+					if ($("#txtBrief" + index).val() == $("#txtBrief" + indexI).val()) {
+						rowValid = false;
+						me.setCellColor($("#txtBrief" + indexI), me.cellColorInvalid, "Duplicate House Code is not allowed.");
+					}
+				}
+
+				if (!rowValid) {
+					if (valid)
+						valid = false;
+				}
+			}
+
+			// If all required fields are entered correctly then validate the House Code and FullPaths
+			if (valid) {
+				me.setStatus("Validating");
+				$("#messageToUser").text("Validating");
+				$("#pageLoading").fadeIn("slow");
+
+				me.bulkImportValidationStore.reset();
+				me.bulkImportValidationStore.fetch("userId:[user]"
+					+ ",briefs:" + briefs
+					+ ",fullPaths:" + fullPaths
+					, me.validationsLoaded
+					, me);
+			}
+			else {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+				$("#AnchorBulkSave").hide();
+				alert("In order to save, the errors on the page must be corrected.");
+			}
+		},
+
+		validationsLoaded: function(me, activeId) {
+
+			var valid = true;
+
+			for (var rowIndex = 0; rowIndex < me.houseCodes.length; rowIndex++) {
+				for (var index = 1; index <= 7; index++) {
+					$("#txtLevel" + index + "_" + rowIndex).attr("title", "");
+					$("#txtLevel" + index + "_" + rowIndex).css("background-color", me.cellColorValid);
+				}
+			}
+
+			if (me.bulkImportValidations.length > 0) {
+				var briefs = me.bulkImportValidations[0].briefs.split('|');
+				var fullPaths = me.bulkImportValidations[0].fullPaths.split('|');				
+
+				for (var rowIndex = 0; rowIndex < me.houseCodes.length; rowIndex++) {
+					var found = false;
+					for (var index = 0; index < briefs.length - 1; index++) {
+						if ($("#txtBrief" + rowIndex).val() == briefs[index]) {
+							found = true;
+							break;
+						}							
+					}
+
+					if (!found) {
+						$("#txtBrief" + rowIndex).attr("title", "House Code doesn't exists.");
+						$("#txtBrief" + rowIndex).css("background-color", me.cellColorInvalid);
+						valid = false;
+					}
+
+					for(var index = 0; index < fullPaths.length - 1; index++) {
+						var fullPath = "";
+						
+						for (var indexI = 1; indexI <= 7; indexI++) {
+							if ($("#txtLevel" + indexI + "_" + rowIndex).val() != "")
+								fullPath += "\\" + $("#txtLevel" + indexI + "_" + rowIndex).val();
+						}
+
+						if (fullPath == fullPaths[index]) {
+							for (var indexI = 1; indexI <= 7; indexI++) {
+								$("#txtLevel" + indexI + "_" + rowIndex).attr("title", "Invalid Fullpath.");
+								$("#txtLevel" + indexI + "_" + rowIndex).css("background-color", me.cellColorInvalid);
+								valid = false;
+							}
+						}
+					}
+				}
+			}
+			else {
+				valid = false;
+				for (var rowIndex = 0; rowIndex < me.houseCodes.length; rowIndex++) {
+					$("#txtBrief" + rowIndex).attr("title", "House Code doesn't exists.");
+					$("#txtBrief" + rowIndex).css("background-color", me.cellColorInvalid);
+				}
+			}
+
+			if (!valid) {
+				me.setStatus("Loaded");
+				$("#AnchorBulkSave").hide();
+				alert("In order to save, the errors on the page must be corrected.");
+				$("#pageLoading").fadeOut("slow");
+			}
+			else {
+				if (me.actionSave)
+					me.actionSaveHouseCodes();
+				else {
+					$("#AnchorBulkSave").show();
+					$("#pageLoading").fadeOut("slow");
+					me.setStatus("Loaded");
+				}
+			}
+		},
+
+		actionSaveHouseCodes: function() {
+			var me = this;
+			var item = [];
+			var xml = "";
+			
+			for (var index = 0; index < me.houseCodes.length; index++) {
+				var fullPath = "";
+
+				for (var indexI = 1; indexI <= 7; indexI++) {
+					var level = $("#txtLevel" + indexI + "_" + index).val();
+					fullPath += "\\" + level;
+				}
+
+				xml += '<hirNodeSnapshot';
+				xml += ' id="0"';
+				xml += ' hirNodeParent="0"';
+				xml += ' hirHierarchy="2"';
+				xml += ' hirLevel="7"';
+				xml += ' brief="' + ui.cmn.text.xml.encode($("#txtBrief" + index).val()) + '"';
+				xml += ' title=""';
+				xml += ' active="true"';
+				xml += ' status="2"';
+				xml += ' fullPath="' + ui.cmn.text.xml.encode(fullPath) + '"';
+				xml += '/>';
+			}
+			
+			if (xml == "")
+				return;
+
+			me.nodeAction = "bulkUpload";
+			me.setStatus("Saving");
+			$("#messageToUser").text("Saving");
+			$("#pageLoading").fadeIn("slow");
+
+			// Send the object back to the server as a transaction
+			me.transactionMonitor.commit({
+				transactionType: "itemUpdate",
+				transactionXml: xml,
+				responseFunction: me.saveResponse,
+				referenceData: {me: me, item: item}
+			});
+
+			return true;
+		},
+
+		actionImportSave: function() {
+			var me = this;
+			var item = [];
+
+			me.setStatus("Importing");
+			$("#messageToUser").text("Importing");
+
+			var xml = '<appGenericImport';
+			xml += ' fileName="' + me.fileName + '"';
+			xml += ' object="Hierarchy"';
+			xml += '/>';
+
+			// Send the object back to the server as a transaction
+			me.transactionMonitor.commit({
+				transactionType: "itemUpdate",
+				transactionXml: xml,
+				responseFunction: me.saveImportResponse,
+				referenceData: {me: me, item: item}
+			});
+
+			return true;
+		},
+
+		/* @iiDoc {Method}
+		 * Handles the server's response to a save transaction.
+		 */
+		saveImportResponse: function() {
+			var args = ii.args(arguments, {
+				transaction: {type: ii.ajax.TransactionMonitor.Transaction},	
+				xmlNode: {type: "XmlNode:transaction"}							
+			});
+			var transaction = args.transaction;
+			var me = transaction.referenceData.me;
+			var item = transaction.referenceData.item;
+			var status = $(args.xmlNode).attr("status");
+
+			if (status == "success") {
+				me.modified(false);
+				$(args.xmlNode).find("*").each(function() {
+					switch (this.tagName) {
+
+						case "appGenericImport":							
+							me.batchId = parseInt($(this).attr("batch"), 10);
+							me.houseCodeCountLoad();
+
+							break;
+					}
+				});
+			}
+			else {
+				me.setStatus("Error");
+				alert("[SAVE FAILURE] Error while importing Hierarchy details: " + $(args.xmlNode).attr("message"));
+				$("#pageLoading").fadeOut("slow");
+			}
+		},
+
 		actionSaveNode: function() {
 			var me = this;
 			var item = [];
@@ -1898,6 +2381,7 @@ ii.Class({
 				xml += ' title="' + ui.cmn.text.xml.encode(item.title) + '"';
 				xml += ' active="' + item.active + '"';
 				xml += ' status="' + item.status + '"';
+				xml += ' fullPath=""';
 				xml += '/>';
 			}
 			else if (me.nodeAction == "save" || me.nodeAction == "saveAndCommit") {
@@ -1912,6 +2396,7 @@ ii.Class({
 						xml += ' title="' + ui.cmn.text.xml.encode(me.hirNodesList[index].title) + '"';
 						xml += ' active="' + me.hirNodesList[index].active + '"';
 						xml += ' status="' + me.hirNodesList[index].status + '"';
+						xml += ' fullPath=""';
 						xml += '/>';
 					}
 				}
@@ -1980,17 +2465,28 @@ ii.Class({
 				});
 				ii.trace("Save Success", ii.traceTypes.Information, "Info");
 				me.updateNode(item);
-				me.modified(false);				
+				me.modified(false);
 			}
 			else {
 				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating the hirnode snapshot information: " + $(args.xmlNode).attr("message"));
 			}
-			
+
 			$("#pageLoading").fadeOut("slow");
 		}
 	}
 });
+
+function onFileChange() {
+	var me = fin.hierarchyUi;	
+	var fileName = $("iframe")[0].contentWindow.document.getElementById("UploadFile").value;	
+	var fileExtension = fileName.substring(fileName.lastIndexOf("."));
+
+	if (fileExtension == ".xlsx")
+		me.anchorUpload.display(ui.cmn.behaviorStates.enabled);
+	else
+		alert("Invalid file format. Please select the correct XLSX file.");
+}
 
 function main() {
 

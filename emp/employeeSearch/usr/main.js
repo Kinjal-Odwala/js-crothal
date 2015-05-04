@@ -255,7 +255,7 @@ ii.Class({
 				$("#pageLoading").fadeIn("slow");
 			
 				ii.timer.timing("Page displayed");
-				me.loadCount = 9;
+				me.loadCount = 10;
 				me.session.registerFetchNotify(me.sessionLoaded, me);
 				me.employeeGeneralMasterStore.fetch("userId:[user],personId:0,", me.typesTableLoaded, me);
 				me.stateStore.fetch("userId:[user]", me.typesTableLoaded, me);
@@ -263,7 +263,8 @@ ii.Class({
 				me.stateAdditionalInfoStore.fetch("userId:[user],", me.typesTableLoaded, me);
 				me.federalAdjustmentStore.fetch("userId:[user]", me.typesTableLoaded, me);
 				me.payFrequencyTypeStore.fetch("userId:[user]", me.typesTableLoaded, me);
-				me.separationCodeStore.fetch("userId:[user],terminationType:" + me.terminationType + ",", me.typesTableLoaded, me);								
+				me.separationCodeStore.fetch("userId:[user],terminationType:" + me.terminationType + ",", me.typesTableLoaded, me);
+				me.rehireEligibilityTypeStore.fetch("userId:[user]", me.typesTableLoaded, me);								
 				me.statusStore.fetch("userId:[user],", me.statusTypesLoaded, me);
 				me.employeePersonalStore.fetch("id:" + me.session.propertyGet("personId") + ",userId:[user]", me.userInfoLoaded, me);
 			}				
@@ -585,7 +586,37 @@ ii.Class({
 			});
 			
 			$("#EmployeeSSNText").bind("keydown", me, me.actionPreNext);
-			
+
+			me.wotcCode = new ui.ctl.Input.Text({
+		        id: "WOTCCode",
+				maxLength: 11
+			});
+
+			me.wotcCode.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.wotcCode.getValue();
+
+					if (enteredText == "") return;
+
+					if (me.employeeSSN.valid) {
+						if (!(/^\d{11}$/.test(enteredText)))
+							this.setInvalid("Please enter valid WOTC Code.");
+						else {
+							var firstDigit = enteredText.substring(0, 1);
+							var secondDigit = enteredText.substring(1, 2);
+							var ssn = me.employeeSSN.getValue().replace(/-/g, '') + '"';
+							var secondDigitValue = Math.round(((parseInt(ssn.substring(3, 4), 10)) + (parseInt(ssn.substring(4, 5), 10))) / 2);
+
+							if ((firstDigit != "0" && firstDigit != "1" && firstDigit != "3") || (secondDigit != secondDigitValue)) {
+								this.setInvalid("Please enter valid WOTC Code.");
+							}
+						}
+					}
+			});
+
 			me.editWizardAction = new ui.ctl.Input.DropDown.Filtered({
 				id: "EditWizardAction", 
 				formatFunction: function( type ) { return type.name; },
@@ -885,7 +916,7 @@ ii.Class({
 						}
 					}
 
-					if (me.employeeOriginalHireDate.text.value == "" || me.actionType == "NewHire") {
+					if (me.employeeOriginalHireDate.text.value == "") {
 						me.employeeOriginalHireDate.setValue(me.employeeHireDate.text.value + "");
 					}
 
@@ -920,7 +951,25 @@ ii.Class({
 			});
 			
 			me.employeeOriginalHireDate.makeEnterTab()
-				.setValidationMaster( me.validator );
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+					
+					var enteredText = me.employeeOriginalHireDate.text.value;
+					
+					if (enteredText == "") return;
+
+					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
+						this.setInvalid("Please enter valid date.");
+						return false;
+					}
+					
+					var originalHireDate = new Date(me.employeeOriginalHireDate.text.value);
+					var hireDate = new Date(me.employeeHireDate.text.value);
+
+					if (originalHireDate > hireDate) {
+						this.setInvalid("Please enter valid date. Original Hire Date should be less than or equal to Current Hire Date.");
+					}
+				});
 			
 			me.employeeSeniorityDate = new ui.ctl.Input.Date({ 
 				id: "EmployeeSeniorityDate",
@@ -1083,6 +1132,12 @@ ii.Class({
 					else
 						return;
 				});
+				
+			me.eligibleForRehire = new ui.ctl.Input.DropDown.Filtered({
+				id: "EligibleForRehire",
+				formatFunction: function( type ) { return type.name; },
+				required: false					
+			});
 				
 			me.separationCode = new ui.ctl.Input.DropDown.Filtered({
 				id: "SeparationCode",
@@ -1973,6 +2028,7 @@ ii.Class({
 			
 			me.employeeSSN.text.tabIndex = 100;
 			me.editWizardAction.text.tabIndex = 101;
+			me.wotcCode.text.tabIndex = 102;
 			//Personal1
 			me.personFirstName.text.tabIndex = 110;
 			me.personMiddleName.text.tabIndex = 111; 
@@ -2006,7 +2062,8 @@ ii.Class({
 			me.employeeTerminationDate.text.tabIndex = 220; 
 			me.employeeTerminationReason.text.tabIndex = 221;
 			me.separationCode.text.tabIndex = 222;
-			me.termEmployeeEffectiveDate.text.tabIndex = 223; 	
+			me.termEmployeeEffectiveDate.text.tabIndex = 223;
+			me.eligibleForRehire.text.tabIndex = 224; 	
 			//General2		 
 			me.employeeBirthDate.text.tabIndex = 230; 
 			me.employeeEthnicity.text.tabIndex = 231; 
@@ -2015,10 +2072,13 @@ ii.Class({
 			me.employeeMaritalStatus.text.tabIndex = 234; 
 			me.employeeI9Status.text.tabIndex = 235; 
 			me.employeeVETSStatus.text.tabIndex = 236;
-			//mealPlanYes - 237
-			//mealPlanNo - 238
+			//MealPlanYes - 237
+			//MealPlanNo - 238
 			//PayrollDeductionYes - 239
 			//PayrollDeductionNo - 240
+			//DisabilityYes - 241
+			//DisabilityNo - 242
+			//DisabilityNA - 243
 			//Job
 			me.jobEffectiveDate.text.tabIndex = 300; 
 			me.jobChangeReason.text.tabIndex = 301; 
@@ -2077,6 +2137,7 @@ ii.Class({
 			me.searchInput.resizeText();
 			me.statusType.resizeText();
 			me.employeeSSN.resizeText();
+			me.wotcCode.resizeText();
 
 			me.personFirstName.resizeText();
 			me.personMiddleName.resizeText();
@@ -2112,6 +2173,7 @@ ii.Class({
 			me.employeeTerminationReason.resizeText();
 			me.separationCode.resizeText();
 			me.termEmployeeEffectiveDate.resizeText();
+			me.eligibleForRehire.resizeText();
 
 			me.jobEffectiveDate.resizeText();
 			me.jobChangeReason.resizeText();
@@ -2381,6 +2443,14 @@ ii.Class({
 				injectionArray: me.separationCodes	
 			});
 			
+			me.rehireEligibilityTypes = [];
+			me.rehireEligibilityTypeStore = me.cache.register({
+				storeId: "rehireEligibilityTypes",
+				itemConstructor: fin.emp.RehireEligibilityType,
+				itemConstructorArgs: fin.emp.rehireEligibilityTypeArgs,
+				injectionArray: me.rehireEligibilityTypes	
+			});
+			
 			me.houseCodeJobs = [];
 			me.houseCodeJobStore = me.cache.register({
 				storeId: "houseCodeJobs",
@@ -2615,7 +2685,7 @@ ii.Class({
 				else if (columnName == "EmpStatusType")
 					typesTable = me.statusTypes;
 				else if (columnName == "EmpSeparationCode")
-					typesTable = me.separationCodes;
+					typesTable = me.separationCodes;				
 				else if (columnName == "EmpTerminationReasonType")
 					typesTable = me.terminationReasons;
 				else if (columnName == "HcmHouseCodeJob") {
@@ -3465,6 +3535,9 @@ ii.Class({
 			me.employeeTerminationReason.reset();
 			me.typeNoneAdd(me.terminationReasons);	
 			me.employeeTerminationReason.setData(me.terminationReasons);
+			
+			me.eligibleForRehire.reset();	
+			me.eligibleForRehire.setData(me.rehireEligibilityTypes);
 
 			me.employeeEthnicity.reset();
 			me.typeNoneAdd(me.ethnicityTypes);	
@@ -3597,6 +3670,12 @@ ii.Class({
 						$("#EmployeeSeniorityDateText").attr('disabled', true);
 						$("#EmployeeSeniorityDateAction").removeClass("iiInputAction");						
 					}
+					/* Hide the WOTC code wizard
+					if (me.actionType == "Rehire") {
+						$("#PersonalDetails").hide();
+						$("#WOTCContianer").show();
+						me.wizardCount = 0;
+					}*/
 				}
 				
 				if (me.actionType == "Compensation") {
@@ -3802,6 +3881,7 @@ ii.Class({
 				
 				//Employee General Section - Start
 				me.employeeSSN.setValue(me.employeeGenerals[0].ssn);
+				me.wotcCode.setValue(me.employeeGenerals[0].wotcCode);
 				me.newSSN.setValue(me.employeeGenerals[0].ssn);
 				
 				me.houseCodeSearchTemplate.houseCodeIdTemplate = me.employeeGenerals[0].hcmHouseCode;
@@ -3895,6 +3975,10 @@ ii.Class({
 				index = ii.ajax.util.findIndexById(me.employeeGenerals[0].separationCode.toString(), me.separationCodes);
 				if (index != undefined) 
 					me.separationCode.select(index, me.separationCode.focused);
+					
+				index = ii.ajax.util.findIndexById(me.employeeGenerals[0].rehireEligibilityType.toString(), me.rehireEligibilityTypes);
+				if (index != undefined) 
+					me.eligibleForRehire.select(index, me.eligibleForRehire.focused);
 				
 				//Employee General Section - End
 				
@@ -4061,6 +4145,13 @@ ii.Class({
 				else
 					$("#PayrollDeductionNo").attr("checked", true); // 1 Yes, 0 No
 					
+				if (me.employeeGenerals[0].disability == 1)
+					$("#DisabilityYes").attr("checked", true);
+				else if (me.employeeGenerals[0].disability == 2)
+					$("#DisabilityNo").attr("checked", true);
+				else if (me.employeeGenerals[0].disability == 3)
+					$("#DisabilityNA").attr("checked", true);
+				
 				me.validateEmployeeDetails();				
 				me.hireDateAccessSetup();	
 				me.effectiveDateAccessSetup();
@@ -5140,6 +5231,9 @@ ii.Class({
 				
 				if (me.employeeSSNAlreadyExists == false && me.employeeValidationCalledFrom == "newHire") {
 					me.employeeValidationCalledFrom = "";
+					/* Hide the WOTC code wizard
+					me.wizardCount = 12;
+					*/
 					me.actionNext(); //continue with Employee record edit..
 				}
 	
@@ -5317,7 +5411,8 @@ ii.Class({
 				$("#HouseCodeSearchDropDownLabel").show();
 			}
 			
-			me.employeeSSN.setValue("");		
+			me.employeeSSN.setValue("");
+			me.wotcCode.setValue("");
 			me.employeePayrollCompany.reset();	
 			if (me.employeeStatusType.length > 0)
 				me.employeeStatusType.select(0);
@@ -5354,19 +5449,19 @@ ii.Class({
 			me.employeeDeviceGroup.reset();
 			me.notes.value = "";
 			
-			$('#ExemptNo').attr('checked', true);
-			$('#HourlyRateYes').attr('checked', true);
-			$('#UnionNo').attr('checked', true);
-			
-			$('#GenderYes').attr('checked', true);
+			$("#ExemptNo").attr("checked", true);
+			$("#HourlyRateYes").attr("checked", true);
+			$("#UnionNo").attr("checked", true);
+			$("#GenderYes").attr("checked", true);
 			$("#MealPlanYes").attr("checked", false);
 			$("#MealPlanNo").attr("checked", false);
 			$("#PayrollDeductionYes").attr("checked", false);
 			$("#PayrollDeductionNo").attr("checked", false);
 			$("#PayrollDeductionContainer").hide();
-			$("#EmployeeCrtdAt").text('');
-			$("#EmployeeModAt").text('');
-			
+			$("#DisabilityYes").attr("checked", false);
+			$("#DisabilityNo").attr("checked", false);
+			$("#DisabilityNA").attr("checked", false);
+
 			me.federalExemptions.setValue("");
 			me.federalAdjustmentType.reset();
 			me.maritalStatusFederalTaxType.reset();
@@ -5620,6 +5715,7 @@ ii.Class({
 			$("#popupSubHeaderEmployeeName").html("");
 			$("#EditWizardActionText").val("");
 			$("#SSNContianer").show();
+			$("#WOTCContianer").hide();
 			if (me.actionType != "Edit"){
 				$("#EditEmployee").hide();
 				$("#AnchorSave").hide();
@@ -5695,6 +5791,9 @@ ii.Class({
 					me.wizardCount = 0;
 			}
 
+			/* Hide the WOTC code wizard
+			 if (me.actionType != "NewHire" || me.wizardCount > 0 || $("#WOTCCodeText").is(':visible') == true) { //actionNext click on Wizard other than first (SSN search)
+			 */
 			if (me.actionType != "NewHire" || me.wizardCount > 0) { //actionNext click on Wizard other than first (SSN search)
 				me.employeeValidationCalledFrom = "";
 				me.actionNext();
@@ -5787,7 +5886,14 @@ ii.Class({
 			else if (me.actionType == "SSNModification") {    
                 me.wizardCount = 1; 
             }
-
+			/* Hide the WOTC code wizard
+			else if (me.actionType == "NewHire" || me.actionType == "Rehire") {
+				if (me.wizardCount == 1) 
+					me.wizardCount = 14;
+				else if (me.wizardCount == 0) 
+					me.wizardCount = 1;
+			}
+			*/
 			if ($("#AnchorBack").is(':visible') == false) {
 				me.initializeWizard();
 				return;
@@ -5811,6 +5917,7 @@ ii.Class({
 					
 					if (me.actionType == "Rehire" || me.actionType == "NewHire" || me.actionType == "Termination") {
 						$("#EditEmployee").hide();
+						$("#WOTCContianer").hide();
 						$("#popupSubHeader").text("Person");
 					}
 					else if (me.actionType == "HouseCodeTransfer") {
@@ -5916,7 +6023,6 @@ ii.Class({
 					break;
 
                 case 1:
-
 					if ((!me.employeeSSN.validate(true))) {
 						me.wizardCount--;
 						return false;
@@ -5946,7 +6052,47 @@ ii.Class({
 					me.resizeControls();
  
                     break;
-                      
+
+					/* Hide the WOTC code wizard
+					if ((me.actionType == "NewHire" || (me.actionType == "Rehire" && $("#WOTCCodeText").is(':visible'))) && !me.wotcCode.validate(true)) {
+						me.wizardCount--;
+						return false;
+					}
+					else if ((!me.employeeSSN.validate(true))) {
+						me.wizardCount--;
+						return false;
+					}
+
+					if (me.actionType == "NewHire") {
+						$("#WOTCContianer").hide();
+						$("#PersonalDetails").show();
+						$("#AddressDetails").hide();
+						$("#AnchorBack").show();
+						$("#FirstNameText").attr('disabled', false);
+                        $("#FirstNameAction").addClass("iiInputAction");
+                        $("#MiddleInitialText").attr('disabled', false);
+                        $("#MiddleInitialAction").addClass("iiInputAction");
+                        $("#LastNameText").attr('disabled', false);
+                        $("#LastNameAction").addClass("iiInputAction");
+                        $("#PersonalDetails").removeClass("ssnPersonDiv");
+                        $("#PersonalDetails").addClass("personalDetailsDiv");
+						me.personFirstName.text.focus();
+					}
+					else if ($("#EmployeeSSNText").is(':visible')) {
+						$("#messageToUser2").html("Loading");
+						$("#popupLoading").show();
+						me.employeeGeneralSSNSearch();
+					}
+					else {
+						$("#WOTCContianer").hide();
+						$("#PersonalDetails").show();
+						$("#AddressDetails").hide();
+					}
+
+					me.resizeControls();
+ 
+                    break;
+                    */
                 case 2:					
 
                     if ((!me.personFirstName.validate(true)) || (!me.personLastName.validate(true))) {
@@ -6170,6 +6316,12 @@ ii.Class({
 									return false;
 								}
 							}
+						}
+						
+						if ($("input[name='Disability']:checked").val() == undefined) {
+							alert("Please select the Disability.");
+							me.wizardCount--;
+							return false;
 						}
 					}
 
@@ -6433,48 +6585,65 @@ ii.Class({
 
               		break;
 					
-				  case 11: // Basic Life Indicator
+				case 11: // Basic Life Indicator
 
-						$("#SSNContianer").hide();
-						$("#AnchorNext").hide();
-						$("#AnchorBack").show();						
-                    	$("#AnchorSave").show();
-						$("#LifeIndicator").show();
+					$("#SSNContianer").hide();
+					$("#AnchorNext").hide();
+					$("#AnchorBack").show();						
+                	$("#AnchorSave").show();
+					$("#LifeIndicator").show();
 
-						me.basicLifeIndicatorType.text.focus();
+					me.basicLifeIndicatorType.text.focus();
  
                     break;
 					
-				  case 12: // SSN Modification
+				case 12: // SSN Modification
     
-                        $("#SSNContianer").hide();    
-                        $("#AnchorNext").hide();  
-                        $("#AnchorBack").show();
-                        $("#AnchorSave").show();
-                        $("#SSNModification").show();
-                        $("#PersonalDetails").show();
-						$("#ModificationNotes").show();
-						$("#ModificationNotes").css("height", "90");
-						$("#Requestor").show();
-                        $("#PersonalDetails").removeClass("personalDetailsDiv");
-                        $("#PersonalDetails").addClass("ssnPersonDiv");
-                        $("#FirstNameText").attr('disabled', true);
-                        $("#FirstNameAction").removeClass("iiInputAction");
-                        $("#MiddleInitialText").attr('disabled', true);
-                        $("#MiddleInitialAction").removeClass("iiInputAction");
-                        $("#LastNameText").attr('disabled', true);
-                        $("#LastNameAction").removeClass("iiInputAction");                      
-                        $("#EmployeeInformation").show();
-                        $("#EmployeeInformation").removeClass("employeeInformationDiv");
-						$("#EmployeeInformation").removeClass("reverseTerminationDiv");
-                        $("#EmployeeInformation").addClass("ssnEmployeeDiv");
-                        $("#CompanyStatus").hide();
-                        $("#CrothallCategory").hide();
-                        
-                        me.newSSN.text.focus();
+                    $("#SSNContianer").hide();    
+                    $("#AnchorNext").hide();  
+                    $("#AnchorBack").show();
+                    $("#AnchorSave").show();
+                    $("#SSNModification").show();
+                    $("#PersonalDetails").show();
+					$("#ModificationNotes").show();
+					$("#ModificationNotes").css("height", "90");
+					$("#Requestor").show();
+                    $("#PersonalDetails").removeClass("personalDetailsDiv");
+                    $("#PersonalDetails").addClass("ssnPersonDiv");
+                    $("#FirstNameText").attr('disabled', true);
+                    $("#FirstNameAction").removeClass("iiInputAction");
+                    $("#MiddleInitialText").attr('disabled', true);
+                    $("#MiddleInitialAction").removeClass("iiInputAction");
+                    $("#LastNameText").attr('disabled', true);
+                    $("#LastNameAction").removeClass("iiInputAction");                      
+                    $("#EmployeeInformation").show();
+                    $("#EmployeeInformation").removeClass("employeeInformationDiv");
+					$("#EmployeeInformation").removeClass("reverseTerminationDiv");
+                    $("#EmployeeInformation").addClass("ssnEmployeeDiv");
+                    $("#CompanyStatus").hide();
+                    $("#CrothallCategory").hide();
+                    
+                    me.newSSN.text.focus();
     
                     break;
-					
+				/* Hide the WOTC code wizard	
+				case 13: // WOTC Code
+
+					if ((!me.employeeSSN.validate(true))) {
+						me.wizardCount--;
+						return false;
+					}
+
+					$("#SSNContianer").hide();
+					$("#PersonalDetails").hide();
+					$("#WOTCContianer").show();
+					$("#AnchorBack").show();
+					me.wotcCode.text.focus();
+					me.wizardCount = 0;
+					me.resizeControls();
+
+					break;
+				*/	
 				default:
 					break;
 			}
@@ -6653,8 +6822,13 @@ ii.Class({
 						}
 					}
 				}
+
+				if ($("input[name='Disability']:checked").val() == undefined) {
+					alert("Please select the Disability.");
+					return false;
+				}
 			}
-			
+
 			if (me.actionType == "Federal") {	
 				if (!me.maritalStatusFederalTaxType.validate(true))
 				  return false;
@@ -6859,7 +7033,8 @@ ii.Class({
 				, statusCategoryType: (me.employeeStatusCategoryType.indexSelected >= 0 ? me.statusCategoryTypes[me.employeeStatusCategoryType.indexSelected].id : 0)
 				, houseCodeJob: (me.job.indexSelected < 0 ? 0 : me.houseCodeJobs[me.job.indexSelected].id)
 				, employeeNumber: me.employeeNumber.getValue()				
-				, ssn: me.employeeSSN.getValue()	
+				, ssn: me.employeeSSN.getValue()
+				, wotcCode: me.wotcCode.getValue()
 				, exempt: ($("input[name='Exempt']:checked").val() == "true" ? true : false)							
 				, payrollCompany: (me.employeePayrollCompany.indexSelected >= 0 ? me.houseCodePayrollCompanys[me.employeePayrollCompany.indexSelected].id : 0)
 				, frequencyType: me.payFrequencyType
@@ -6896,9 +7071,15 @@ ii.Class({
 				, vetType: (me.employeeVETSStatus.indexSelected >= 0 ? me.vetTypes[me.employeeVETSStatus.indexSelected].id : 0)
 				, mealPlan: ($("input[name='MealPlan']:checked").val())
 				, mealPlanPayrollDeduction: ($("input[name='PayrollDeduction']:checked").val() == "1" ? true : false)
+				, disability: ($("input[name='Disability']:checked").val())
 				, separationCode: (me.separationCode != undefined ? 
 							(me.separationCode.indexSelected >= 0 ? 
 								me.separationCodes[me.separationCode.indexSelected].id 
+							: 0) 
+								: 0)
+				, rehireEligibilityType: (me.eligibleForRehire != undefined ? 
+							(me.eligibleForRehire.indexSelected >= 0 ? 
+								me.rehireEligibilityTypes[me.eligibleForRehire.indexSelected].id 
 							: 0) 
 								: 0)
 				, jobStartReason: (me.jobChangeReason.indexSelected >= 0 ? me.jobStartReasonTypes[me.jobChangeReason.indexSelected].id : 0)
@@ -7106,6 +7287,7 @@ ii.Class({
 				xml += ' hirNode="' + itemGeneral.hirNode + '"';
 				xml += ' brief="' + ui.cmn.text.xml.encode(itemPerson.brief) + '"';
 				xml += ' ssn="' + itemGeneral.ssn.replace(/-/g, '') + '"';
+				xml += ' wotcCode="' + itemGeneral.wotcCode + '"';
 				xml += ' statusType="' + itemGeneral.statusType + '"';
 				xml += ' statusCategoryType="' + itemGeneral.statusCategoryType + '"';
 				xml += ' active="' + (itemGeneral.statusType != 6 ? true : false) + '"';
@@ -7138,6 +7320,7 @@ ii.Class({
 				xml += ' separationCode="' + itemGeneral.separationCode + '"';
 				xml += ' terminationDate="' + itemGeneral.terminationDate + '"';
 				xml += ' terminationReason="' + itemGeneral.terminationReason + '"';
+				xml += ' rehireEligibilityType="' + itemGeneral.rehireEligibilityType + '"';
 				xml += '/>';
 			}			
 					
@@ -7149,11 +7332,11 @@ ii.Class({
 				xml += ' vetType="' + itemGeneral.vetType + '"';
 				xml += ' mealPlan="' + itemGeneral.mealPlan + '"';
 				xml += ' mealPlanPayrollDeduction="' + itemGeneral.mealPlanPayrollDeduction + '"';
-
 				if (me.houseCodeDetails[0].mealPlan == 1)
 					xml += ' houseCodeMealPlan="true"';
 				else
 					xml += ' houseCodeMealPlan="false"';
+				xml += ' disability="' + itemGeneral.disability + '"';
 			}
 			
 			if (me.actionType == "HouseCodeTransfer" || me.actionType == "DateModification" || me.actionType == "Employee" ||

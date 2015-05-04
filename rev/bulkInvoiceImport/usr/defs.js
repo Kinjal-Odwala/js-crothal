@@ -37,6 +37,7 @@ ii.init.register( function() {
 		, price: {type: String, required: false, defaultValue: ""}
 		, status: {type: String, required: false, defaultValue: ""}
 		, invoiceByHouseCode: {type: String, required: false, defaultValue: ""}
+		, serviceLocation: {type: String, required: false, defaultValue: ""}
 		, imported: {type: Boolean, required: false, defaultValue: false}
 	};
 	
@@ -52,6 +53,7 @@ ii.init.register( function() {
 		, taxHouseCodes: {type: String, required: false, defaultValue: ""}
 		, jobCodes: {type: String, required: false, defaultValue: ""}
 		, accountCodes: {type: String, required: false, defaultValue: ""}
+		, serviceLocations: {type: String, required: false, defaultValue: ""}
 	};
 
 	fin.rev.bulkInvoiceImport.batchArgs = {
