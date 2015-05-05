@@ -672,14 +672,19 @@ ii.Class({
 			rowHtml = "<select id='" + args.columnName + "' style='width:100%;'>";
 
 			if (columnName == "job" && !me.invoiceByCustomer) {
-				rowHtml += "<option value='0'></option>";
 				for (var index = 0; index < me.houseCodeCache[me.houseCodeBrief].jobs.length; index++) {
 					var job = me.houseCodeCache[me.houseCodeBrief].jobs[index];
-					title = ui.cmn.text.xml.encode(job.jobNumber + " - " + job.jobTitle);
-					if (args.columnValue == title) 
-						rowHtml += "<option title='" + title + "' value='" + job.id + "' selected>" + title + "</option>";
-					else 
-						rowHtml += "<option title='" + title + "' value='" + job.id + "'>" + title + "</option>";
+
+					if (job.jobNumber != "0000") {
+						if (job.jobTitle == "") 
+							title = "";
+						else 
+							title = ui.cmn.text.xml.encode(job.jobNumber + " - " + job.jobTitle);
+						if (args.columnValue == title) 
+							rowHtml += "<option title='" + title + "' value='" + job.id + "' selected>" + title + "</option>";
+						else 
+							rowHtml += "<option title='" + title + "' value='" + job.id + "'>" + title + "</option>";
+					}
 				}
 			}
 			else if (columnName == "account") {
@@ -949,9 +954,12 @@ ii.Class({
 		    me.houseCodeCache[houseCode].loaded = false;
 			me.houseCodeCache[houseCode].customersLoaded = false;
 			me.houseCodeCache[houseCode].jobsLoaded = false;
+			me.houseCodeCache[houseCode].taxableServiceStatesLoaded = false;
+			me.houseCodeCache[houseCode].stateType = 0;
 			me.houseCodeCache[houseCode].validCustomer = false;
 			me.houseCodeCache[houseCode].customers = [];
 			me.houseCodeCache[houseCode].jobs = [];
+			me.houseCodeCache[houseCode].taxableServiceStates = [];
 			me.houseCodeCache[houseCode].buildQueue = [];
 			me.houseCodeCache[houseCode].buildQueue.push(rowArray);
 		    
@@ -971,6 +979,7 @@ ii.Class({
 		                $(xml).find("item").each(function() {
 		                    me.houseCodeCache[houseCode].valid = true;
 		                    me.houseCodeCache[houseCode].id = $(this).attr("id");
+							me.houseCodeCache[houseCode].hirNode = Number($(this).attr("hirNode"));
 		                    me.houseCodeJobCustomersLoad(houseCode, rowNumber);
 		                });
 		            }
@@ -1023,34 +1032,100 @@ ii.Class({
                     + ",houseCodeId:" + me.houseCodeCache[houseCode].id + ",<criteria>",
 
                 success: function(xml) {
-
+					var job = {};
+		            job.id = 0;
+		            job.jobNumber = "";
+					job.jobTitle = "";
+					job.overrideSiteTax = false;
+					job.stateType = 0;
+		            me.houseCodeCache[houseCode].jobs.push(job);
+			
 		            $(xml).find("item").each(function() {
 		                var job = {};						
 		                job.id = Number($(this).attr("id"));
 		                job.jobNumber = $(this).attr("jobNumber");
 		                job.jobTitle = $(this).attr("jobTitle");
+						job.overrideSiteTax = ($(this).attr("overrideSiteTax") == "true" ? true: false);
+						job.stateType = Number($(this).attr("stateType"));
 		                me.houseCodeCache[houseCode].jobs.push(job);
 		            });
 
 					me.houseCodeCache[houseCode].jobsLoaded = true;
-					//validate the list of rows
-		            me.houseCodeValidate(houseCode, me.houseCodeCache[houseCode].buildQueue);
-					me.checkLoadCount();
+					me.taxableServiceStatesLoad(houseCode);
 				}
 			});
 		},
+
+		taxableServiceStatesLoad: function(houseCode) {
+		    var me = this;
+		    
+		    $.ajax({
+                type: "POST",
+                dataType: "xml",
+                url: "/net/crothall/chimes/fin/rev/act/provider.aspx",
+                data: "moduleId=rev&requestId=1&targetId=iiCache"
+                    + "&requestXml=<criteria>storeId:revTaxableServiceStates,userId:[user]"
+                    + ",houseCodeId:" + me.houseCodeCache[houseCode].id + ",<criteria>",
+
+                success: function(xml) {
+                    
+		            $(xml).find("item").each(function() {
+		                var tsState = {};
+		                tsState.id = Number($(this).attr("id"));
+		                tsState.taxableService = Number($(this).attr("taxableService"));
+		                tsState.stateType = Number($(this).attr("stateType"));
+						tsState.taxable = ($(this).attr("taxable") == "true" ? true: false);
+		                me.houseCodeCache[houseCode].taxableServiceStates.push(tsState);
+		            });					
+
+					me.houseCodeCache[houseCode].taxableServiceStatesLoaded = true;
+				}
+			});
+			
+			me.siteStateTypeLoad(houseCode);
+		},
 		
+		siteStateTypeLoad: function(houseCode) {
+		    var me = this;
+		    
+		    $.ajax({
+                type: "POST",
+                dataType: "xml",
+                url: "/net/crothall/chimes/fin/rev/act/provider.aspx",
+                data: "moduleId=rev&requestId=1&targetId=iiCache"
+                    + "&requestXml=<criteria>storeId:sites,userId:[user]"
+                    + ",houseCodeId:" + me.houseCodeCache[houseCode].id + ",type:invoice,<criteria>",
+
+                success: function(xml) {
+                    
+		            $(xml).find("item").each(function() {
+						me.houseCodeCache[houseCode].stateType = Number($(this).attr("state"));
+		            });
+				}
+			});
+
+			//validate the list of rows
+            me.houseCodeValidate(houseCode, me.houseCodeCache[houseCode].buildQueue);
+			me.checkLoadCount();
+			me.jobRebuild(houseCode);
+		},
+
 		jobRebuild: function(houseCode, rowNumber, columnValue) {
 		    var me = this;
 		    var job = {};
 		    var selJob = $("#job" + rowNumber);
-			var options = "<option value='0'></option>";
 			var title = "";
+			var options = "";
 
 		    for (var index = 0; index < me.houseCodeCache[houseCode].jobs.length; index++) {
 		        job = me.houseCodeCache[houseCode].jobs[index];
-				title = ui.cmn.text.xml.encode(job.jobNumber + " - " + job.jobTitle);
-				options += "<option  title='" + title + "' value='" + job.id + "'>" + title + "</option>\n";
+				if (job.jobNumber != "0000") {
+					if (job.jobTitle == "") 
+						title = "";
+					else 
+						title = ui.cmn.text.xml.encode(job.jobNumber + " - " + job.jobTitle);
+					options += "<option  title='" + title + "' value='" + job.id + "'>" + title + "</option>\n";
+				}
 		    }
 
 			selJob.empty();
@@ -1233,6 +1308,12 @@ ii.Class({
 						return;
 					else 
 						houseCodeId = parseInt(me.houseCodeCache[houseCode].id);
+				}
+
+				if (parseInt($("#job" + rowNumber).val()) == 0) {
+					alert("Please select the Job.");
+					$("#job" + rowNumber).focus();
+					return false;
 				}
 
 				if (isNaN(parseFloat($("#amount" + rowNumber).val())) || parseFloat($("#amount" + rowNumber).val()) <= 0) {
