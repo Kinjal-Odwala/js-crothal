@@ -513,6 +513,7 @@ ii.Class({
 			me.i9Types.unshift(new fin.emp.employeeImport.I9Type({ id: 0, name: "" }));
 			me.vetTypes.unshift(new fin.emp.employeeImport.VetType({ id: 0, name: "" }));			
 			me.maritalStatusTypes.unshift(new fin.emp.employeeImport.MaritalStatusType({ id: 0, name: "" }));
+			me.basicLifeIndicatorTypes.unshift(new fin.emp.employeeImport.BasicLifeIndicatorType({ id: 0, name: "" }));
 			me.checkLoadCount();
 		},
 		
@@ -743,8 +744,9 @@ ii.Class({
 			me.buildDropDown("I9Type", me.i9Types);
 			me.buildDropDown("VetType", me.vetTypes);
 			me.buildDropDown("MaritalStatusType", me.maritalStatusTypes);
+			me.buildDropDown("BasicLifeIndicatorType", me.basicLifeIndicatorTypes);
 			
-			employeeRow = '<tr height="100%"><td colspan="55" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>';
+			employeeRow = '<tr height="100%"><td colspan="56" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>';
 			$("#EmployeeGridBody").append(employeeRow);
 			$("#EmployeeGrid tr:odd").addClass("gridRow");
         	$("#EmployeeGrid tr:even").addClass("alternateGridRow");
@@ -826,6 +828,7 @@ ii.Class({
 				me.setDropDownValue(me.i9Types, me.employees[index].column51, "I9Type", index);
 				me.setDropDownValue(me.vetTypes, me.employees[index].column52, "VetType", index);
 				me.setDropDownValue(me.maritalStatusTypes, me.employees[index].column53, "MaritalStatusType", index);
+				me.setDropDownValue(me.basicLifeIndicatorTypes, me.employees[index].column54, "BasicLifeIndicatorType", index);
 			}
 			
 			me.employeeLoading = false;
@@ -863,18 +866,18 @@ ii.Class({
 			return null;
 		},
 
-		getPayrollCompany: function(types) {
+		getPayrollCompany: function(houseCode) {
 			var me = this;
-			var id = 0;
+			var payrollCompanyId = 0;
 
-			for (var index = 0; index < types.length; index++) {
-				if (types[index].payFrequencyType == "Weekly") {
-					id = types[index].id;
+			for (var index = 0; index < me.houseCodeCache[houseCode].payrollCompanies.length; index++) {
+				if (me.houseCodeCache[houseCode].payrollCompanies[index].hourly) {
+					payrollCompanyId = me.houseCodeCache[houseCode].payrollCompanies[index].id;
 					break;
 				}
 			}
 
-			return id;
+			return payrollCompanyId;
 		},
 		
 		setDropDownValue: function(types, title, controlName, index) {
@@ -925,7 +928,7 @@ ii.Class({
 		    if (me.houseCodeCache[houseCode].valid) {
 		        for (var index = 0; index < rowArray.length; index++) {
 		            rowNumber = Number(rowArray[index]);
-					payrollCompany = me.getPayrollCompany(me.houseCodeCache[houseCode].payrollCompanies);
+					payrollCompany = me.getPayrollCompany(houseCode);
 					idIndex = me.findIndexByTitle(me.employees[rowNumber].column37, me.states);
 					if (idIndex != undefined)
 						me.localTaxCodeCheck(rowNumber, me.states[idIndex].id.toString(), payrollCompany);
@@ -954,6 +957,7 @@ ii.Class({
 		    me.houseCodeCache[houseCode].loaded = false;
 		    me.houseCodeCache[houseCode].buildQueue = [];
 		    me.houseCodeCache[houseCode].payrollCompanies = [];
+			me.houseCodeCache[houseCode].stateMinimumWages = [];
 		    me.houseCodeCache[houseCode].buildQueue.push(rowNumber);
 		    
 		    $.ajax({
@@ -1007,6 +1011,30 @@ ii.Class({
 						payrollCompany.payFrequencyType = $(this).attr("payFrequencyType");
 		                me.houseCodeCache[houseCode].payrollCompanies.push(payrollCompany);
 		            });
+					
+					me.houseCodeStateMinimumWagesLoad(houseCode);
+				}
+			});
+		},
+
+		houseCodeStateMinimumWagesLoad: function(houseCode) {
+		    var me = this;
+
+			$.ajax({            
+                type: "POST",
+                dataType: "xml",
+                url: "/net/crothall/chimes/fin/emp/act/provider.aspx",
+                data: "moduleId=emp&requestId=1&targetId=iiCache"
+                    + "&requestXml=<criteria>storeId:houseCodeStateMinimumWages,userId:[user]"
+                    + ",houseCodeId:" + me.houseCodeCache[houseCode].id
+					+ ",<criteria>",
+ 
+                success: function(xml) {
+		            $(xml).find('item').each(function() {						
+		                var stateMinimumWage = {};
+		                stateMinimumWage.minimumWage = $(this).attr("minimumWage");
+		                me.houseCodeCache[houseCode].stateMinimumWages.push(stateMinimumWage);
+		            });
 					me.houseCodeCache[houseCode].loaded = true;
 					//validate the list of rows
 		            me.houseCodeValidate(houseCode, me.houseCodeCache[houseCode].buildQueue);
@@ -1020,7 +1048,7 @@ ii.Class({
 			var me = this;
 		    var rowNumber = Number(objSelect.id.substr(15));				
 			var houseCode = me.employees[rowNumber].column1;	
-			var payrollCompany = me.getPayrollCompany(me.houseCodeCache[houseCode].payrollCompanies);
+			var payrollCompany = me.getPayrollCompany(houseCode);
 	        me.stateCheck(rowNumber, objSelect.value, true);
 			me.localTaxCodeCheck(rowNumber, objSelect.value, payrollCompany);
 		},
@@ -1488,42 +1516,70 @@ ii.Class({
 							rowValid = false;
 							me.setCellColor($("#txtScheduledHours" + index), me.cellColorInvalid, "Scheduled Hours should not be greater than 40 hours for the Weekly Pay Frequency.");
 						}
+						else if (scheduledHours < 30) {
+							var message = "Warning: Individual will work less than 30 hours a week and therefore not eligible for full-time benefits. " 
+								+ "The employee will be categorized as PART-TIME due to hours per week being less than 30. "
+								+ "Minimum eligible hours: 30";
+							me.setCellColor($("#txtScheduledHours" + index), "yellow", message);
+						}
 					}
 					else if (frequencyType == "Bi-Weekly") {
 						if (scheduledHours > 80) {
 							rowValid = false;
 							me.setCellColor($("#txtScheduledHours" + index), me.cellColorInvalid, "Scheduled Hours should not be greater than 80 hours for the Bi-Weekly Pay Frequency.");
 						}
+						else if (scheduledHours < 60) {
+							var message = "Warning: Individual will work less than 30 hours a week and therefore not eligible for full-time benefits. " 
+								+ "The employee will be categorized as PART-TIME due to hours per week being less than 30. "
+								+ "Minimum eligible hours: 60";
+							me.setCellColor($("#txtScheduledHours" + index), "yellow", message);
+						}
 					}
 				}
 
-				if ($("#txtAlternatePayRateA" + index).val() != "" && !(/^\d{1,6}(\.\d{1,2})?$/.test($("#txtAlternatePayRateA" + index).val()))) {
+				if ($("#txtAlternatePayRateA" + index).val() != "" && !(ui.cmn.text.validate.generic($("#txtAlternatePayRateA" + index).val(), "^\\d+(\\.\\d{1,2})?$"))) {
 					rowValid = false;
 					me.setCellColor($("#txtAlternatePayRateA" + index), me.cellColorInvalid, "Please enter valid Alternate Pay Rate A.");
+				}
+				else if ($("#txtAlternatePayRateA" + index).val() != "" && parseFloat($("#txtAlternatePayRateA" + index).val()) > 99.99) {
+					rowValid = false;
+					me.setCellColor($("#txtAlternatePayRateA" + index), me.cellColorInvalid, "Please enter valid Pay Rate. Max value for Hourly is 99.99");
 				}
 				else {
 					me.setCellColor($("#txtAlternatePayRateA" + index), me.cellColorValid, "");
 				}
-				
-				if ($("#txtAlternatePayRateB" + index).val() != "" && !(/^\d{1,6}(\.\d{1,2})?$/.test($("#txtAlternatePayRateB" + index).val()))) {
+
+				if ($("#txtAlternatePayRateB" + index).val() != "" && !(ui.cmn.text.validate.generic($("#txtAlternatePayRateB" + index).val(), "^\\d+(\\.\\d{1,2})?$"))) {
 					rowValid = false;
 					me.setCellColor($("#txtAlternatePayRateB" + index), me.cellColorInvalid, "Please enter valid Alternate Pay Rate B.");
+				}
+				else if ($("#txtAlternatePayRateB" + index).val() != "" && parseFloat($("#txtAlternatePayRateB" + index).val()) > 99.99) {
+					rowValid = false;
+					me.setCellColor($("#txtAlternatePayRateB" + index), me.cellColorInvalid, "Please enter valid Pay Rate. Max value for Hourly is 99.99");
 				}
 				else {
 					me.setCellColor($("#txtAlternatePayRateB" + index), me.cellColorValid, "");
 				}
-				
-				if ($("#txtAlternatePayRateC" + index).val() != "" && !(/^\d{1,6}(\.\d{1,2})?$/.test($("#txtAlternatePayRateC" + index).val()))) {
+
+				if ($("#txtAlternatePayRateC" + index).val() != "" && !(ui.cmn.text.validate.generic($("#txtAlternatePayRateC" + index).val(), "^\\d+(\\.\\d{1,2})?$"))) {
 					rowValid = false;
 					me.setCellColor($("#txtAlternatePayRateC" + index), me.cellColorInvalid, "Please enter valid Alternate Pay Rate C.");
+				}
+				else if ($("#txtAlternatePayRateC" + index).val() != "" && parseFloat($("#txtAlternatePayRateC" + index).val()) > 99.99) {
+					rowValid = false;
+					me.setCellColor($("#txtAlternatePayRateC" + index), me.cellColorInvalid, "Please enter valid Pay Rate. Max value for Hourly is 99.99");
 				}
 				else {
 					me.setCellColor($("#txtAlternatePayRateC" + index), me.cellColorValid, "");
 				}
-				
-				if ($("#txtAlternatePayRateD" + index).val() != "" && !(/^\d{1,6}(\.\d{1,2})?$/.test($("#txtAlternatePayRateD" + index).val()))) {
+
+				if ($("#txtAlternatePayRateD" + index).val() != "" && !(ui.cmn.text.validate.generic($("#txtAlternatePayRateD" + index).val(), "^\\d+(\\.\\d{1,2})?$"))) {
 					rowValid = false;
 					me.setCellColor($("#txtAlternatePayRateD" + index), me.cellColorInvalid, "Please enter valid Alternate Pay Rate D.");
+				}
+				else if ($("#txtAlternatePayRateD" + index).val() != "" && parseFloat($("#txtAlternatePayRateD" + index).val()) > 99.99) {
+					rowValid = false;
+					me.setCellColor($("#txtAlternatePayRateD" + index), me.cellColorInvalid, "Please enter valid Pay Rate. Max value for Hourly is 99.99");
 				}
 				else {
 					me.setCellColor($("#txtAlternatePayRateD" + index), me.cellColorValid, "");
@@ -1556,12 +1612,28 @@ ii.Class({
 					}
 				}
 
-				if (ui.cmn.text.validate.generic($("#txtPayRate" + index).val(), "^\\d+(\\.\\d{1,2})?$") == false) {
+				if (!(ui.cmn.text.validate.generic($("#txtPayRate" + index).val(), "^\\d+(\\.\\d{1,2})?$"))) {
 					rowValid = false;
 					me.setCellColor($("#txtPayRate" + index), me.cellColorInvalid, "Please enter valid Pay Rate.");
 				}
+				else if (parseFloat($("#txtPayRate" + index).val()) > 99.99) {
+					rowValid = false;
+					me.setCellColor($("#txtPayRate" + index), me.cellColorInvalid, "Please enter valid Pay Rate. Max value for Hourly is 99.99");
+				}
 				else {
-					me.setCellColor($("#txtPayRate" + index), me.cellColorValid, "");
+					var houseCode = $("#txtHouseCode" + index).val();
+					var stateMinimumWage = 0;
+
+					if (me.houseCodeCache[houseCode].stateMinimumWages.length > 0)
+						stateMinimumWage = parseFloat(me.houseCodeCache[houseCode].stateMinimumWages[0].minimumWage);
+
+					if (stateMinimumWage > 0 && parseFloat($("#txtPayRate" + index).val()) < stateMinimumWage) {
+						rowValid = false;
+						me.setCellColor($("#txtPayRate" + index), me.cellColorInvalid, "Please enter valid Pay Rate. Minimum Wage for the House Code State is: " + stateMinimumWage);
+					}
+					else {
+						me.setCellColor($("#txtPayRate" + index), me.cellColorValid, "");
+					}
 				}
 
 				if ($("#selGenderType" + index).val() == "0") {
@@ -1585,7 +1657,14 @@ ii.Class({
 					me.setCellColor($("#txtBirthDate" + index), me.cellColorInvalid, "Please enter valid Birth Date.");
 				}
 				else {
-					me.setCellColor($("#txtBirthDate" + index), me.cellColorValid, "");
+					var today = new Date(parent.fin.appUI.glbCurrentDate);
+					var birthDate = new Date($("#txtBirthDate" + index).val());
+					var millisecondsPerYear = 1000 * 60 * 60 * 24 * 365.26;
+
+					if (((today - birthDate) / millisecondsPerYear) < 18)
+						me.setCellColor($("#txtBirthDate" + index), "yellow", "Employee age is under 18 years.");
+					else	
+						me.setCellColor($("#txtBirthDate" + index), me.cellColorValid, "");
 				}
 
 				if ($("#txtBackGroundCheckDate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtBackGroundCheckDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
@@ -1863,6 +1942,7 @@ ii.Class({
 				xml += ' i9Type="' + $("#selI9Type" + index).val() + '"';
 				xml += ' vetType="' + $("#selVetType" + index).val() + '"';
 				xml += ' maritalStatusType="' + $("#selMaritalStatusType" + index).val() + '"';
+				xml += ' basicLifeIndicatorType="' + $("#selBasicLifeIndicatorType" + index).val() + '"';
 				xml += '/>';
 			}
 	

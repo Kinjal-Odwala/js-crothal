@@ -1128,6 +1128,14 @@ ii.Class({
 		
 		houseCodeJobsLoaded: function(me, activeId) {
 
+			var job = {};
+            job.id = 0;
+            job.jobNumber = "";
+			job.jobTitle = "";
+			job.overrideSiteTax = false;
+			job.stateType = 0;
+            me.houseCodeCache[me.houseCodeBrief].jobs.push(job);
+				
 			for (var index = 0; index < me.houseCodeJobs.length; index++) {
 				var job = {};
                 job.id = me.houseCodeJobs[index].id;
