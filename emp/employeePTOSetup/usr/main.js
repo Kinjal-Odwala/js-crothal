@@ -261,6 +261,11 @@ ii.Class({
 					this.setInvalid("Please select the correct Year.");
 			});
 			
+			me.ptoTypeSearch = new ui.ctl.Input.DropDown.Filtered({
+		        id: "PTOTypeSearch",
+				formatFunction: function(type) { return type.name; }
+		    });
+			
 			me.ptoYearGrid = new ui.ctl.Grid({
 				id: "PTOYearGrid",
 				appendToId: "divForm",
@@ -532,10 +537,7 @@ ii.Class({
 				appendToId: "divForm",
 				allowAdds: true,
 				createNewFunction: fin.emp.employeePTOSetup.PTODay,
-				selectFunction: function(index) { 
-					if (me.ptoDaysGrid.data[index] != undefined)
-						me.ptoDaysGrid.data[index].modified = true; 
-				}
+				selectFunction: function( index ) { me.itemPTODaysSelect(index); }
 			});
 
 			me.daysPTOType = new ui.ctl.Input.DropDown.Filtered({
@@ -565,19 +567,27 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
 					var enteredText = me.ptoDate.text.value;
-					
+
 					if (enteredText == "") 
 						return;
 
-					if (this.focused || this.touched)
-						me.modified();
-
-					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
-						this.setInvalid("Please enter valid date.");
+					if (me.ptoDaysGrid.activeRowIndex != -1 
+						&& me.ptoDaysGrid.data[me.ptoDaysGrid.activeRowIndex] != undefined
+						&& me.ptoDaysGrid.data[me.ptoDaysGrid.activeRowIndex].weeklyPayrollId > 0) {
+						this.valid = true;
+					}
 					else {
-						var ptoDateSelected = new Date(enteredText);
-						if (ptoDateSelected < me.weekStartDate || ptoDateSelected > me.weekEndDate)
-							this.setInvalid("Please enter valid date. PTO Date should be with in current week.");
+						if (this.focused || this.touched) 
+							me.modified();
+
+						if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) 
+							this.setInvalid("Please enter valid date.");
+						else {
+							var ptoDateSelected = new Date(enteredText);
+							
+							if (ptoDateSelected >= me.periodStartDate) 
+								this.setInvalid("Please enter valid date. PTO Date should not be with in current pay period.");
+						}
 					}
 				});
 
@@ -733,6 +743,14 @@ ii.Class({
 				itemConstructorArgs: fin.emp.employeePTOSetup.ptoTypePayCodeArgs,
 				injectionArray: me.ptoTypePayCodes
 			});
+
+			me.employeePayPeriods = [];
+			me.employeePayPeriodStore = me.cache.register({
+				storeId: "employeePayPeriods",
+				itemConstructor: fin.emp.employeePTOSetup.EmployeePayPeriod,
+				itemConstructorArgs: fin.emp.employeePTOSetup.employeePayPeriodArgs,
+				injectionArray: me.employeePayPeriods
+			});
 		},
 
 		setStatus: function(status) {
@@ -783,6 +801,7 @@ ii.Class({
 			var me = this;
 
 			me.ptoYearSearch.resizeText();
+			me.ptoTypeSearch.resizeText();
 			me.ptoYear.resizeText();
 			me.planName.resizeText();
 			me.ptoType.resizeText();
@@ -873,6 +892,7 @@ ii.Class({
 			else if (section == "PTO Plans") {
 				$("#HouseCode").show();
 				$("#SearchTemplate").show();
+				$("#PTOTypeSearchContainer").hide();
 				$("#PTOPlanContainerLeft").show();
 				$("#PTOPlanContainerRight").show();
 				$("#AnchorClone").show();
@@ -883,13 +903,15 @@ ii.Class({
 				$("#AnchorSave").hide();
 				$("#AnchorUndo").hide();
 				$("#HouseCode").show();
+				$("#PTOTypeSearchContainer").hide();
 				$("#SearchTemplate").show();
 				$("#PTOPlanContainerLeft").show();
 				$("#PTOAssignmentContainerRight").show();
 				me.loadPlans(true);
 			}
 			else if (section == "PTO Days") {
-				$("#SearchTemplate").hide();
+				$("#PTOTypeSearchContainer").show();
+				$("#SearchTemplate").show();
 				$("#AnchorNew").hide();
 				$("#HouseCode").show();
 				$("#PTODaysContainerLeft").show();
@@ -901,11 +923,13 @@ ii.Class({
 			me.resizeControls();
 		},
 		
-		actionSearchItem: function(me, activeId) {
-			var args = ii.args(arguments, {});
+		actionSearchItem: function() {
 			var me = this;
 			
-			me.actionMenuItem(me.action);
+			if (me.action == "PTO Plans" || me.action == "PTO Assignments")
+				me.loadPlans(true);
+			else if (me.action == "PTO Days")
+				me.loadPTODays();
 		},
 		
 		houseCodesLoaded: function(me, activeId) {
@@ -935,6 +959,7 @@ ii.Class({
 			me.ptoTypeGrid.setData(me.ptoTypes);
 			me.ptoType.setData(me.ptoTypes);
 			me.daysPTOType.setData(me.ptoTypes);
+			me.ptoTypeSearch.setData(me.ptoTypes);
 		},
 		
 		ptoYearsLoaded: function(me, activeId) {
@@ -992,10 +1017,35 @@ ii.Class({
 			me.checkLoadCount();
 		},
 
+		loadPTODays: function() {
+			var me = this;
+
+			if (me.ptoYearSearch.indexSelected == -1 || me.employeeGrid.activeRowIndex == -1)
+				return;
+
+			var workDay = ui.cmn.text.date.format(new Date(parent.fin.appUI.glbCurrentDate), "mm/dd/yyyy");
+			var employeeId = me.employeeGrid.data[me.employeeGrid.activeRowIndex].id;
+			var ptoTypeId = 0;
+			
+			if (me.ptoTypeSearch.indexSelected >= 0)
+				ptoTypeId = me.ptoTypes[me.ptoTypeSearch.indexSelected].id;
+
+			me.setLoadCount();
+			me.ptoDayStore.fetch("userId:[user],employeeId:" + employeeId + ",ptoYearId:" + me.ptoYears[me.ptoYearSearch.indexSelected].id + ",ptoTypeId:" + ptoTypeId,  me.ptoDaysLoaded, me);
+			me.employeePayPeriodStore.fetch("userId:[user],empEmployee:" + employeeId + ",workDay:" + workDay, me.employeePayPeriodLoaded, me);
+		},
+		
 		ptoDaysLoaded: function(me, activeId) {
 
 			me.ptoDaysGrid.setData(me.ptoDays);
 			me.checkLoadCount();
+		},
+		
+		employeePayPeriodLoaded: function(me, activeId) {
+
+			if (me.employeePayPeriods.length > 0) {
+				me.periodStartDate = new Date(me.employeePayPeriods[0].payPeriodStartDate);
+			}
 		},
 		
 		itemYearSelect: function() { 
@@ -1120,12 +1170,51 @@ ii.Class({
 
 			if (me.ptoDaysGrid.activeRowIndex != -1)
 				me.ptoDaysGrid.body.deselect(me.ptoDaysGrid.activeRowIndex, true);
+
 			me.lastSelectedRowIndex = index;
 			me.status = "";
-			me.setLoadCount();
-			me.ptoDayStore.fetch("userId:[user],employeeId:" + me.employeeGrid.data[index].id, me.ptoDaysLoaded, me);
+			me.loadPTODays();
 		},
 		
+		itemPTODaysSelect: function() {
+			var args = ii.args(arguments, {
+				index: {type: Number}  // The index of the data subItem to select
+			});
+			var me = this;
+			var index = args.index;
+
+			if (me.ptoDaysGrid.data[index] != undefined) {
+				if (me.ptoDaysGrid.data[index].weeklyPayrollId > 0) {
+					$("#DaysPTOTypeAction").removeClass("iiInputAction");
+                    $("#DaysPTOTypeText").attr("disabled", true);
+					$("#PTODateAction").removeClass("iiInputAction");
+                    $("#PTODateText").attr("disabled", true);
+					$("#PTOHoursText").attr("disabled", true);
+					me.ptoDate.valid = true;
+					me.ptoDate.updateStatus();
+				}
+				else {
+					$("#DaysPTOTypeAction").addClass("iiInputAction");
+                    $("#DaysPTOTypeText").attr("disabled", false);
+					$("#PTODateAction").addClass("iiInputAction");
+                    $("#PTODateText").attr("disabled", false);
+					$("#PTOHoursText").attr("disabled", false);
+					me.ptoDaysGrid.data[index].modified = true;
+				}
+			}
+			else {
+				$("#DaysPTOTypeAction").addClass("iiInputAction");
+                $("#DaysPTOTypeText").attr("disabled", false);
+				$("#PTODateAction").addClass("iiInputAction");
+                $("#PTODateText").attr("disabled", false);
+				$("#PTOHoursText").attr("disabled", false);
+			}
+			
+			me.daysPTOType.resizeText();
+			me.ptoDate.resizeText();
+			me.ptoHours.resizeText();
+		},
+
 		actionAddItem: function() {
 			var me = this;
 

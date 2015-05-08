@@ -73,6 +73,7 @@ ii.init.register( function() {
 		id: {type: Number, required: false, defaultValue: 0}
 		, employeeId: {type: Number, required: false, defaultValue: 0}
 		, ptoType: {type: fin.emp.employeePTOSetup.PTOType, required: false}
+		, weeklyPayrollId: {type: Number, required: false, defaultValue: 0}
 		, ptoDate: {type: Date, required: false}
 		, hours: {type: String, required: false, defaultValue: "0"}
 		, modified: {type: Boolean, required: false, defaultValue: false}
@@ -89,6 +90,12 @@ ii.init.register( function() {
 		, ptoTypeId: {type: Number}
 		, payCodeId: {type: Number}
 		, status: {type: String, required: false, defaultValue: ""}
+	};
+
+	fin.emp.employeePTOSetup.employeePayPeriodArgs = {
+		id: {type: Number}
+		, payPeriodStartDate: {type: String, required: false, defaultValue: ""}
+		, payPeriodEndDate: {type: String, required: false, defaultValue: ""}
 	};
 
 }, 2);
@@ -188,6 +195,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.emp.employeePTOSetup.ptoTypePayCodeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.emp.employeePTOSetup.EmployeePayPeriod",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.emp.employeePTOSetup.employeePayPeriodArgs);
 			$.extend(this, args);
 		}
 	}
