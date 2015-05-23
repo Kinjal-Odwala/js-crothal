@@ -722,18 +722,24 @@ ii.Class({
 			if (args.columnName == "job" && !me.invoiceByCustomer) {
 				for (var index = 0; index < me.houseCodeCache[me.houseCodeBrief].jobs.length; index++) {
 					var job = me.houseCodeCache[me.houseCodeBrief].jobs[index];
-					title = ui.cmn.text.xml.encode(job.jobNumber + " - " + job.jobTitle);
-					if (args.columnValue == title)
-						rowHtml += "	<option title='" + title + "' value='" + job.id + "' selected>" + title + "</option>";
-					else
-						rowHtml += "	<option title='" + title + "' value='" + job.id + "'>" + title + "</option>";
+
+					if (job.jobNumber != "0000") {
+						if (job.jobTitle == "")
+							title = "";
+						else
+							title = ui.cmn.text.xml.encode(job.jobNumber + " - " + job.jobTitle);
+						if (args.columnValue == title) 
+							rowHtml += "	<option title='" + title + "' value='" + job.id + "' selected>" + title + "</option>";
+						else 
+							rowHtml += "	<option title='" + title + "' value='" + job.id + "'>" + title + "</option>";
+					}
 				}
 			}
 			else if (args.columnName == "account") {
 				for (var index = 0; index < me.accounts.length; index++) {
 					title = me.accounts[index].code + " - " + me.accounts[index].description;
 					if (args.columnValue == title)
-						rowHtml += "	<option title='" + title + "' value='" + me.accounts[index].id + "' selected >" + title + "</option>";
+						rowHtml += "	<option title='" + title + "' value='" + me.accounts[index].id + "' selected>" + title + "</option>";
 					else
 						rowHtml += "	<option title='" + title + "' value='" + me.accounts[index].id + "'>" + title + "</option>";
 				}
@@ -742,7 +748,7 @@ ii.Class({
 				for (var index = 0; index < me.taxableServices.length; index++) {
 					title = me.taxableServices[index].title;
 					if (args.columnValue == title)
-						rowHtml += "	<option title='" + title + "' value='" + me.taxableServices[index].id + "' selected >" + title + "</option>";
+						rowHtml += "	<option title='" + title + "' value='" + me.taxableServices[index].id + "' selected>" + title + "</option>";
 					else
 						rowHtml += "	<option title='" + title + "' value='" + me.taxableServices[index].id + "'>" + title + "</option>";
 				}
@@ -1180,7 +1186,14 @@ ii.Class({
                     + ",houseCodeId:" + me.houseCodeCache[houseCode].id + ",<criteria>",
 
                 success: function(xml) {
-
+					var job = {};
+		            job.id = 0;
+		            job.jobNumber = "";
+					job.jobTitle = "";
+					job.overrideSiteTax = false;
+					job.stateType = 0;
+		            me.houseCodeCache[houseCode].jobs.push(job);
+			
 		            $(xml).find("item").each(function() {
 		                var job = {};						
 		                job.id = Number($(this).attr("id"));
@@ -1257,8 +1270,14 @@ ii.Class({
 		    
 		    for (var index = 0; index < me.houseCodeCache[houseCode].jobs.length; index++) {
 		        job = me.houseCodeCache[houseCode].jobs[index];
-				title = ui.cmn.text.xml.encode(job.jobNumber + " - " + job.jobTitle);
-				options += "<option  title='" + title + "' value='" + job.id + "'>" + title + "</option>\n";
+				
+				if (job.jobNumber != "0000") {
+					if (job.jobTitle == "") 
+						title = "";
+					else 
+						title = ui.cmn.text.xml.encode(job.jobNumber + " - " + job.jobTitle);
+					options += "<option  title='" + title + "' value='" + job.id + "'>" + title + "</option>\n";
+				}
 		    }
 
 			selJob.empty();
@@ -1451,6 +1470,12 @@ ii.Class({
  
 					if (me.status == "Add" || me.status == "Edit") {
 						if (parseInt($("#account").val(), 10) != me.descriptionAccount) {
+							if (parseInt($("#job").val()) == 0) {
+								alert("Please select the Job.");
+								$("#job").focus();
+								return false;
+							}
+							
 							if (parseInt($("#taxableService").val()) == 0) {
 								alert("Please select the Taxable Service.");
 								$("#taxableService").focus();

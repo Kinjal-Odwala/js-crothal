@@ -513,6 +513,7 @@ ii.Class({
 			me.i9Types.unshift(new fin.emp.employeeImport.I9Type({ id: 0, name: "" }));
 			me.vetTypes.unshift(new fin.emp.employeeImport.VetType({ id: 0, name: "" }));			
 			me.maritalStatusTypes.unshift(new fin.emp.employeeImport.MaritalStatusType({ id: 0, name: "" }));
+			me.basicLifeIndicatorTypes.unshift(new fin.emp.employeeImport.BasicLifeIndicatorType({ id: 0, name: "" }));
 			me.checkLoadCount();
 		},
 		
@@ -743,8 +744,9 @@ ii.Class({
 			me.buildDropDown("I9Type", me.i9Types);
 			me.buildDropDown("VetType", me.vetTypes);
 			me.buildDropDown("MaritalStatusType", me.maritalStatusTypes);
+			me.buildDropDown("BasicLifeIndicatorType", me.basicLifeIndicatorTypes);
 			
-			employeeRow = '<tr height="100%"><td colspan="55" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>';
+			employeeRow = '<tr height="100%"><td colspan="56" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>';
 			$("#EmployeeGridBody").append(employeeRow);
 			$("#EmployeeGrid tr:odd").addClass("gridRow");
         	$("#EmployeeGrid tr:even").addClass("alternateGridRow");
@@ -826,6 +828,7 @@ ii.Class({
 				me.setDropDownValue(me.i9Types, me.employees[index].column51, "I9Type", index);
 				me.setDropDownValue(me.vetTypes, me.employees[index].column52, "VetType", index);
 				me.setDropDownValue(me.maritalStatusTypes, me.employees[index].column53, "MaritalStatusType", index);
+				me.setDropDownValue(me.basicLifeIndicatorTypes, me.employees[index].column54, "BasicLifeIndicatorType", index);
 			}
 			
 			me.employeeLoading = false;
@@ -1654,7 +1657,14 @@ ii.Class({
 					me.setCellColor($("#txtBirthDate" + index), me.cellColorInvalid, "Please enter valid Birth Date.");
 				}
 				else {
-					me.setCellColor($("#txtBirthDate" + index), me.cellColorValid, "");
+					var today = new Date(parent.fin.appUI.glbCurrentDate);
+					var birthDate = new Date($("#txtBirthDate" + index).val());
+					var millisecondsPerYear = 1000 * 60 * 60 * 24 * 365.26;
+
+					if (((today - birthDate) / millisecondsPerYear) < 18)
+						me.setCellColor($("#txtBirthDate" + index), "yellow", "Employee age is under 18 years.");
+					else	
+						me.setCellColor($("#txtBirthDate" + index), me.cellColorValid, "");
 				}
 
 				if ($("#txtBackGroundCheckDate" + index).val() != "" && ui.cmn.text.validate.generic($("#txtBackGroundCheckDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
@@ -1932,6 +1942,7 @@ ii.Class({
 				xml += ' i9Type="' + $("#selI9Type" + index).val() + '"';
 				xml += ' vetType="' + $("#selVetType" + index).val() + '"';
 				xml += ' maritalStatusType="' + $("#selMaritalStatusType" + index).val() + '"';
+				xml += ' basicLifeIndicatorType="' + $("#selBasicLifeIndicatorType" + index).val() + '"';
 				xml += '/>';
 			}
 	
