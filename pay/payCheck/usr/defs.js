@@ -54,6 +54,7 @@ ii.init.register( function(){
 		, statusType: {type: Number, required: false, defaultValue: 0}
 		, houseCodeId: {type: Number, required: false, defaultValue: 0}
 		, houseCodeTitle: {type: String, required: false, defaultValue: ""}
+		, mealBreakCompliance: {type: Boolean, required: false, defaultValue: false}
 		, requestedDate: {type: String, required: false, defaultValue: ""}
 		, deliveryDate: {type: String, required: false, defaultValue: ""}
 		, employeeNumber: {type: String, required: false, defaultValue: ""}

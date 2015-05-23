@@ -219,6 +219,11 @@ ii.Class({
            	});
 			me.payCheckRequestGrid.capColumns();
 
+			me.mealBreakCompliance = new ui.ctl.Input.Check({
+		        id: "MealBreakCompliance",
+				changeFunction: function() { me.modified(); } 
+		    });
+			
 			me.requestedDate = new ui.ctl.Input.Date({
 		        id: "RequestedDate",
 				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
@@ -978,39 +983,40 @@ ii.Class({
 			var me = this;
 
 			$("#houseCodeText")[0].tabIndex = 1;
-			me.requestedDate.text.tabIndex = 2;
-			me.deliveryDate.text.tabIndex = 3;
-			me.employeeNumber.text.tabIndex = 4;
-			me.employeeName.text.tabIndex = 5;
-			me.reasonForRequest.text.tabIndex = 6;
-			$("#TermRequestYes")[0].tabIndex = 7;
-			$("#TermRequestNo")[0].tabIndex = 8;
-			me.state.text.tabIndex = 9;
-			me.terminationDate.text.tabIndex = 10;
-			$("#CurrentPayCardUserYes")[0].tabIndex = 11;
-			$("#CurrentPayCardUserNo")[0].tabIndex = 12;
-			$("#InstantIssueRequestYes")[0].tabIndex = 13;
-			$("#InstantIssueRequestNo")[0].tabIndex = 14;			
-			$("#UPSDeliveryToUnitYes")[0].tabIndex = 15;
-			$("#UPSDeliveryToUnitNo")[0].tabIndex = 16;
-			$("#SaturdayDeliveryUnitYes")[0].tabIndex = 17;
-			$("#SaturdayDeliveryUnitNo")[0].tabIndex = 18;
-			$("#houseCodeTemplateText")[0].tabIndex = 19;			
-			me.unitAddress.text.tabIndex = 20;
-			me.upsPackageAttentionTo.text.tabIndex = 21;			
-			$("#UPSDeliveryToHomeYes")[0].tabIndex = 22;
-			$("#UPSDeliveryToHomeNo")[0].tabIndex = 23;
-			$("#SaturdayDeliveryHomeYes")[0].tabIndex = 24;
-			$("#SaturdayDeliveryHomeNo")[0].tabIndex = 25;			
-			me.homeAddress.text.tabIndex = 26;
-			$("#ProcessingFeeYes")[0].tabIndex = 27;
-			$("#ProcessingFeeNo")[0].tabIndex = 28;		
-			me.deductionCode.text.tabIndex = 29;
-			me.amount.text.tabIndex = 30;
-			me.requestorName.text.tabIndex = 31;
-			me.requestorEmail.text.tabIndex = 32;
-			me.managerName.text.tabIndex = 33;
-			me.managerEmail.text.tabIndex = 34;
+			$("#MealBreakComplianceCheck")[0].tabIndex = 2;
+			me.requestedDate.text.tabIndex = 3;
+			me.deliveryDate.text.tabIndex = 4;
+			me.employeeNumber.text.tabIndex = 5;
+			me.employeeName.text.tabIndex = 6;
+			me.reasonForRequest.text.tabIndex = 7;
+			$("#TermRequestYes")[0].tabIndex = 8;
+			$("#TermRequestNo")[0].tabIndex = 9;
+			me.state.text.tabIndex = 10;
+			me.terminationDate.text.tabIndex = 11;
+			$("#CurrentPayCardUserYes")[0].tabIndex = 12;
+			$("#CurrentPayCardUserNo")[0].tabIndex = 13;
+			$("#InstantIssueRequestYes")[0].tabIndex = 14;
+			$("#InstantIssueRequestNo")[0].tabIndex = 15;			
+			$("#UPSDeliveryToUnitYes")[0].tabIndex = 16;
+			$("#UPSDeliveryToUnitNo")[0].tabIndex = 17;
+			$("#SaturdayDeliveryUnitYes")[0].tabIndex = 18;
+			$("#SaturdayDeliveryUnitNo")[0].tabIndex = 19;
+			$("#houseCodeTemplateText")[0].tabIndex = 20;			
+			me.unitAddress.text.tabIndex = 21;
+			me.upsPackageAttentionTo.text.tabIndex = 22;			
+			$("#UPSDeliveryToHomeYes")[0].tabIndex = 23;
+			$("#UPSDeliveryToHomeNo")[0].tabIndex = 24;
+			$("#SaturdayDeliveryHomeYes")[0].tabIndex = 25;
+			$("#SaturdayDeliveryHomeNo")[0].tabIndex = 26;			
+			me.homeAddress.text.tabIndex = 27;
+			$("#ProcessingFeeYes")[0].tabIndex = 28;
+			$("#ProcessingFeeNo")[0].tabIndex = 29;		
+			me.deductionCode.text.tabIndex = 30;
+			me.amount.text.tabIndex = 31;
+			me.requestorName.text.tabIndex = 32;
+			me.requestorEmail.text.tabIndex = 33;
+			me.managerName.text.tabIndex = 34;
+			me.managerEmail.text.tabIndex = 35;
 		},
 		
 		resizeControls: function() {
@@ -1076,6 +1082,7 @@ ii.Class({
 			
 			$("#houseCodeText").val("");
 			$("#houseCodeTemplateText").val("");
+			$("#MealBreakComplianceCheck")[0].checked = false;
 			$("#TermRequestNo")[0].checked = true;
 			$("#CurrentPayCardUserNo")[0].checked = true;
 			$("#InstantIssueRequestNo")[0].checked = true;
@@ -1116,6 +1123,7 @@ ii.Class({
 
 			$("#houseCodeText")[0].readOnly = readOnly;
 			$("#houseCodeTemplateText")[0].readOnly = readOnly;
+			$("#MealBreakComplianceCheck")[0].disabled = readOnly;
 			me.requestedDate.text.readOnly = readOnly;
 			me.deliveryDate.text.readOnly = readOnly;
 			me.employeeNumber.text.readOnly = readOnly;
@@ -1564,6 +1572,7 @@ ii.Class({
 
 			$("#houseCodeText").val(item.houseCodeTitle);
 			$("#houseCodeTemplateText").val(item.deliveryHouseCodeTitle);
+			me.mealBreakCompliance.setValue(item.mealBreakCompliance.toString());
 			me.requestedDate.setValue(item.requestedDate);
 			me.deliveryDate.setValue(item.deliveryDate);
 			me.employeeNumber.setValue(item.employeeNumber);
@@ -2001,6 +2010,7 @@ ii.Class({
 					, 2
 					, parent.fin.appUI.houseCodeId
 					, parent.fin.appUI.houseCodeTitle
+					, me.mealBreakCompliance.getValue()
 					, me.requestedDate.lastBlurValue
 					, me.deliveryDate.lastBlurValue
 					, me.employeeNumber.getValue()
@@ -2061,6 +2071,7 @@ ii.Class({
 			xml += ' id="' + item.id + '"';
 			xml += ' houseCodeId="' + item.houseCodeId + '"';
 			xml += ' houseCodeTitle="' + ui.cmn.text.xml.encode(item.houseCodeTitle) + '"';
+			xml += ' mealBreakCompliance="' + item.mealBreakCompliance + '"';
 			xml += ' requestedDate="' + item.requestedDate + '"';
 			xml += ' deliveryDate="' + item.deliveryDate + '"';
 			xml += ' employeeNumber="' + item.employeeNumber + '"';
@@ -2086,7 +2097,7 @@ ii.Class({
 			xml += ' requestorName="' + ui.cmn.text.xml.encode(item.requestorName) + '"';
 			xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
 			xml += ' managerName="' + ui.cmn.text.xml.encode(item.managerName) + '"';
-			xml += ' managerEmail="' + ui.cmn.text.xml.encode(item.managerEmail) + '"';
+			xml += ' managerEmail="' + ui.cmn.text.xml.encode(item.managerEmail) + '"';			
 			xml += '/>';
 
 			for (var index = 0; index < me.payCodeDetailGrid.data.length; index++) {				
@@ -2158,6 +2169,7 @@ ii.Class({
 									, 2
 									, parent.fin.appUI.houseCodeId
 									, parent.fin.appUI.houseCodeTitle
+									, me.mealBreakCompliance.getValue()
 									, me.requestedDate.lastBlurValue
 									, me.deliveryDate.lastBlurValue
 									, me.employeeNumber.getValue()

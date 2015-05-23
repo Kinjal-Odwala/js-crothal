@@ -101,6 +101,25 @@
 	width: 210px;
 }
 
+.HouseCodeContainer {
+	background-color: white;
+	border: 1px solid #aaaaaa;	
+	float: left;
+	height: 16px;
+	padding: 1px;
+	width: 195px;
+}
+
+.HouseCodeText {
+	border: 0 none;
+	color: #032d23;
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	height: 13px;
+	width: 175px;
+}
+
 .inputTextAreaLarge {
 	float: left;
 	height: 20px;
