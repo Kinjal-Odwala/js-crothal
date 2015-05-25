@@ -1939,6 +1939,7 @@ ii.Class({
 			var me = this;
 			var valid = true;			
 			var alertMessage = false;
+			var lineItem = false;
 			
 			me.validator.forceBlur();
 			
@@ -1981,10 +1982,7 @@ ii.Class({
 				else
 					return true;
 			}
-			else if (me.wizardCount == 2) {
-				if (me.itemGrid.activeRowIndex != undefined && me.itemGrid.activeRowIndex == -1 && me.taxPercent.valid && me.taxAmount.valid && me.freight.valid)
-				 	return true;
-				 	
+			else if (me.wizardCount == 2) {				 	
 				valid = me.validator.queryValidity(true);
 				
 				if (me.itemGrid.activeRowIndex != undefined && me.itemGrid.activeRowIndex != -1 && $("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked && (!me.itemNumber.valid
@@ -1992,7 +1990,10 @@ ii.Class({
 					|| !me.account.valid
 					|| !me.price.valid
 					|| !me.quantity.valid
-					|| !me.uom.valid)
+					|| !me.uom.valid
+					|| !me.taxPercent.valid
+					|| !me.taxAmount.valid
+					|| !me.freight.valid)
 				) {
 					alert("In order to continue, the errors on the page must be corrected.");
 					alertMessage = true;
@@ -2010,10 +2011,23 @@ ii.Class({
 					}	
 				}
 				
+				if (!alertMessage) {
+	                for (var index = 0; index < me.itemGrid.data.length; index++) {
+	                	if ($("#selectInputCheck" + index)[0].checked) {
+	                		lineItem = true;
+	                		break;
+	                	}                		
+					}
+					if (!lineItem) {
+                		alert("Please select atleast one line item.");
+                		alertMessage = true;
+                	}	
+				}
+				
 				if (!me.taxPercent.valid || !me.taxAmount.valid || !me.freight.valid) {
 					alert("In order to continue, the errors on the page must be corrected.");
 					alertMessage = true;
-				}			
+				}		
 				
 				if(alertMessage)
 					return false;

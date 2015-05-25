@@ -1771,6 +1771,7 @@ ii.Class({
 			var me = this;
 			var valid = true;			
 			var alertMessage = false;
+			var lineItem = false;
 			
 			me.validator.forceBlur();
 			
@@ -1828,6 +1829,19 @@ ii.Class({
 	                		break;
 	                	}                		
 					}	
+				}
+				
+				if (!alertMessage) {
+	                for (var index = 0; index < me.itemGrid.data.length; index++) {
+	                	if ($("#selectInputCheck" + index)[0].checked) {
+	                		lineItem = true;
+	                		break;
+	                	}                		
+					}
+					if (!lineItem) {
+                		alert("Please select atleast one line item.");
+                		alertMessage = true;
+                	}	
 				}				
 				
 				if (alertMessage)
