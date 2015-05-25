@@ -201,6 +201,7 @@ ii.Class({
 				selectFunction: function(index) { me.itemSelect(index); }
 			});
 			
+			me.payCheckRequestGrid.addColumn("checkRequestNumber", "checkRequestNumber", "Check Request #", "Check Request #", 180);
 			me.payCheckRequestGrid.addColumn("houseCodeTitle", "houseCodeTitle", "House Code", "House Code", null);
 			me.payCheckRequestGrid.addColumn("employeeNumber", "employeeNumber", "Employee #", "Employee Number", 120);
 			me.payCheckRequestGrid.addColumn("requestorName", "requestorName", "Requestor Name", "Requestor Name", 250);
@@ -974,6 +975,8 @@ ii.Class({
 			$("#SearchInputText").bind("keydown", me, me.actionSearchItem);
 			$("#SearchRequestedDateText").bind("keydown", me, me.actionSearchItem);			
 			$("#StatusTypesText").bind("keydown", me, me.actionSearchItem);
+			$("#CheckRequestNumberInfo").hide();
+			$("#EmptyArea").show();
 			$("#SearchRequestedDate").hide();
 			$("#AnchorResendRequest").hide();
 			me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
@@ -982,17 +985,17 @@ ii.Class({
 		setTabIndexes: function() {
 			var me = this;
 
-			$("#houseCodeText")[0].tabIndex = 1;
-			$("#MealBreakComplianceCheck")[0].tabIndex = 2;
-			me.requestedDate.text.tabIndex = 3;
-			me.deliveryDate.text.tabIndex = 4;
-			me.employeeNumber.text.tabIndex = 5;
-			me.employeeName.text.tabIndex = 6;
-			me.reasonForRequest.text.tabIndex = 7;
-			$("#TermRequestYes")[0].tabIndex = 8;
-			$("#TermRequestNo")[0].tabIndex = 9;
-			me.state.text.tabIndex = 10;
-			me.terminationDate.text.tabIndex = 11;
+			$("#houseCodeText")[0].tabIndex = 1;			
+			me.requestedDate.text.tabIndex = 2;
+			me.deliveryDate.text.tabIndex = 3;
+			me.employeeNumber.text.tabIndex = 4;
+			me.employeeName.text.tabIndex = 5;
+			me.reasonForRequest.text.tabIndex = 6;
+			$("#TermRequestYes")[0].tabIndex = 7;
+			$("#TermRequestNo")[0].tabIndex = 8;
+			me.state.text.tabIndex = 9;
+			me.terminationDate.text.tabIndex = 10;
+			$("#MealBreakComplianceCheck")[0].tabIndex = 11;
 			$("#CurrentPayCardUserYes")[0].tabIndex = 12;
 			$("#CurrentPayCardUserNo")[0].tabIndex = 13;
 			$("#InstantIssueRequestYes")[0].tabIndex = 14;
@@ -1082,6 +1085,7 @@ ii.Class({
 			
 			$("#houseCodeText").val("");
 			$("#houseCodeTemplateText").val("");
+			$("#CheckRequestNumber").html("");
 			$("#MealBreakComplianceCheck")[0].checked = false;
 			$("#TermRequestNo")[0].checked = true;
 			$("#CurrentPayCardUserNo")[0].checked = true;
@@ -1207,6 +1211,7 @@ ii.Class({
 			me.filterTypes.push(new fin.pay.payCheck.FilterType(2, "Employee Number"));
 			me.filterTypes.push(new fin.pay.payCheck.FilterType(3, "Requestor Name"));
 			me.filterTypes.push(new fin.pay.payCheck.FilterType(4, "Requested Date"));
+			me.filterTypes.push(new fin.pay.payCheck.FilterType(5, "Check Request Number"));
 
 			me.filterType.setData(me.filterTypes);
 			me.filterType.select(0, me.filterType.focused);
@@ -1433,6 +1438,8 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 
+			$("#CheckRequestNumberInfo").hide();
+			$("#EmptyArea").show();
 			$("#PayCodeDetailGrid").show();
 			$("#SearchContainer").hide();
 			$("#PayCodeDetailReadOnlyGrid").hide();
@@ -1463,10 +1470,12 @@ ii.Class({
 
 			if (!parent.fin.cmn.status.itemValid())
 				return;
-
-			$("#PayCodeDetailGrid").hide();
+			
+			$("#PayCodeDetailGrid").hide();			
 			$("#SearchContainer").show();
-			$("#PayCodeDetailReadOnlyGrid").show();
+			$("#CheckRequestNumberInfo").show();
+			$("#EmptyArea").hide();
+			$("#PayCodeDetailReadOnlyGrid").show();			
 			
 			me.setReadOnly(true);
 			me.resetControls("CheckRequestStatus");
@@ -1572,6 +1581,7 @@ ii.Class({
 
 			$("#houseCodeText").val(item.houseCodeTitle);
 			$("#houseCodeTemplateText").val(item.deliveryHouseCodeTitle);
+			$("#CheckRequestNumber").html(item.checkRequestNumber);
 			me.mealBreakCompliance.setValue(item.mealBreakCompliance.toString());
 			me.requestedDate.setValue(item.requestedDate);
 			me.deliveryDate.setValue(item.deliveryDate);
@@ -2010,6 +2020,7 @@ ii.Class({
 					, 2
 					, parent.fin.appUI.houseCodeId
 					, parent.fin.appUI.houseCodeTitle
+					, $("#CheckRequestNumber").html()
 					, me.mealBreakCompliance.getValue()
 					, me.requestedDate.lastBlurValue
 					, me.deliveryDate.lastBlurValue
@@ -2071,6 +2082,7 @@ ii.Class({
 			xml += ' id="' + item.id + '"';
 			xml += ' houseCodeId="' + item.houseCodeId + '"';
 			xml += ' houseCodeTitle="' + ui.cmn.text.xml.encode(item.houseCodeTitle) + '"';
+			xml += ' checkRequestNumber="' + item.checkRequestNumber + '"';
 			xml += ' mealBreakCompliance="' + item.mealBreakCompliance + '"';
 			xml += ' requestedDate="' + item.requestedDate + '"';
 			xml += ' deliveryDate="' + item.deliveryDate + '"';
@@ -2169,6 +2181,7 @@ ii.Class({
 									, 2
 									, parent.fin.appUI.houseCodeId
 									, parent.fin.appUI.houseCodeTitle
+									, $("#CheckRequestNumber").html()
 									, me.mealBreakCompliance.getValue()
 									, me.requestedDate.lastBlurValue
 									, me.deliveryDate.lastBlurValue
