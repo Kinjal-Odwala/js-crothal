@@ -1781,6 +1781,7 @@ ii.Class({
 				
 				$("#spnSubTotal").html(me.subTotal.toFixed(2));
 				$("#spnTotal").html(me.subTotal + parseFloat(tax) + parseFloat(freight));
+				me.total = me.subTotal + parseFloat(tax) + parseFloat(freight);
 			}
 			
 			me.itemGrid.setData(me.poCapitalRequisitionItems);
