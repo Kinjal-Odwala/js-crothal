@@ -219,6 +219,12 @@
 	margin: 10px 0px 10px 10px;
 }
 
+#AnchorApprove {
+	float: left;
+	width: 90px;
+	margin: 10px 0px 10px 10px;
+}
+
 #AnchorUpload {
 	float: left;
 	width: 82px;

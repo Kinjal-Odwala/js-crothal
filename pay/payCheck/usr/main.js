@@ -673,6 +673,14 @@ ii.Class({
 				hasHotState: true
 			});
 			
+			me.anchorApprove = new ui.ctl.buttons.Sizeable({
+				id: "AnchorApprove",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Approve&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionApproveItem(); },
+				hasHotState: true
+			});
+			
 			me.anchorUpload = new ui.ctl.buttons.Sizeable({
 				id: "AnchorUpload",
 				className: "iiButton",
@@ -979,6 +987,7 @@ ii.Class({
 			$("#EmptyArea").show();
 			$("#SearchRequestedDate").hide();
 			$("#AnchorResendRequest").hide();
+			$("#AnchorApprove").hide();
 			me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
 		},
 		
@@ -1109,6 +1118,8 @@ ii.Class({
 			if (me.statuses[me.statusType.indexSelected].id == 0) {
 				if (me.status == "CheckRequestResend") 
 					me.payCheckRequests[index].statusType = 2;
+				else if (me.status == "CheckRequestApprove") 
+					me.payCheckRequests[index].statusType = 8;
 				else
 					me.payCheckRequests[index].statusType = 6;
 				me.payCheckRequestGrid.body.renderRow(index, index);
@@ -1452,6 +1463,7 @@ ii.Class({
 			me.payCheckRequestGrid.body.deselectAll();
 			me.payCodeDetailGrid.setHeight(150);
 			$("#AnchorResendRequest").hide();
+			$("#AnchorApprove").hide();
 			$("#AnchorSendRequest").show();
 			me.requestedDate.setValue(me.currentDate());
 			$("#LabelState").html("<span id='nonRequiredFieldIndicator'>State:</span>");
@@ -1490,6 +1502,7 @@ ii.Class({
 			$("#imgEdit").hide();
 			$("#imgRemove").hide();
 			$("#AnchorResendRequest").hide();
+			$("#AnchorApprove").hide();
 			$("#AnchorSendRequest").show();			
 			me.payCheckRequestGrid.setData([]);
 			me.payCheckRequestGrid.setHeight(200);
@@ -1552,6 +1565,7 @@ ii.Class({
 				$("#imgEdit").show();
 				$("#imgRemove").show();
 				$("#AnchorResendRequest").show();
+				$("#AnchorApprove").hide();
 				$("#AnchorSendRequest").hide();
 				$("#PayCodeDetailGrid").show();
 				$("#PayCodeDetailReadOnlyGrid").hide();
@@ -1561,12 +1575,14 @@ ii.Class({
 					me.anchorSendRequest.display(ui.cmn.behaviorStates.enabled);
 					me.anchorCancel.display(ui.cmn.behaviorStates.enabled);
 					$("#AnchorResendRequest").show();
+					$("#AnchorApprove").show();
 					$("#AnchorSendRequest").hide();
 				}					
 				else {
 					me.anchorSendRequest.display(ui.cmn.behaviorStates.disabled);
 					me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
 					$("#AnchorResendRequest").hide();
+					$("#AnchorApprove").hide();
 					$("#AnchorSendRequest").show();
 				}			
 				
@@ -1769,6 +1785,15 @@ ii.Class({
 			
 			$("#messageToUser").text("Cancelling Request");
 			me.status = "CheckRequestCancel";
+			me.actionSaveItem();
+		},
+		
+		actionApproveItem: function() {
+			var args = ii.args(arguments,{});
+			var me = this;		
+			
+			$("#messageToUser").text("Approving Request");
+			me.status = "CheckRequestApprove";
 			me.actionSaveItem();
 		},
 		
@@ -2151,6 +2176,13 @@ ii.Class({
 				xml += '/>';
 			}
 			
+			if (me.status == "CheckRequestApprove") {
+				xml += '<payCheckRequestStatus';
+				xml += ' id="' + item.id + '"';
+				xml += ' transactionStatusType="8"';			
+				xml += '/>';
+			}
+			
 			return xml;			
 		},	
 
@@ -2226,6 +2258,10 @@ ii.Class({
 								}
 								else if (me.status == "CheckRequestCancel") {
 									alert("Payroll check request cancelled successfully.");
+									me.resetGrid();
+								}
+								else if (me.status == "CheckRequestApprove") {
+									alert("Payroll check request Approved successfully.");
 									me.resetGrid();
 								}								
 							}
