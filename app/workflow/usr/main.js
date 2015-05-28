@@ -79,7 +79,7 @@ ii.Class({
 				ii.timer.timing("Page displayed");
 				me.loadCount = 1;
 				me.session.registerFetchNotify(me.sessionLoaded, me);
-				me.workflowStepStore.fetch("userId:[user]", me.workflowStepsLoaded, me);
+				me.workflowModuleStore.fetch("userId:[user]", me.workflowModulesLoaded, me);
 			}
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
@@ -97,7 +97,16 @@ ii.Class({
 		resize: function() {
 			var me = fin.app.workflowUi;
 
-			me.assignedUserGrid.setHeight($(window).height() - 100);
+			if ($("#AssignedUserGridContainer").width() < 850) {
+				$("#AssignedUserGrid").width(850);
+				$("#header").width(850);
+				$("#Paging").width(850);
+				me.assignedUserGrid.setHeight($(window).height() - 120);
+			}
+			else {
+				me.assignedUserGrid.setHeight($(window).height() - 105);
+			}
+
 			$("#WokkflowStepContainer").height($(window).height() - 90);
 		},
 		
@@ -105,10 +114,19 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 
-			me.workflowStep = new ui.ctl.Input.DropDown.Filtered({
-				id : "WorkflowStep",
+			me.workflowModule = new ui.ctl.Input.DropDown.Filtered({
+				id: "WorkflowModule",
 				formatFunction: function( type ) { return type.title; },
-				changeFunction: function() { me.workflowStepChanged(); } 
+				changeFunction: function() { me.workflowModuleChanged(); }
+		    });
+
+			me.workflowModule.makeEnterTab()
+				.setValidationMaster(me.validator)
+
+			me.workflowStep = new ui.ctl.Input.DropDown.Filtered({
+				id: "WorkflowStep",
+				formatFunction: function( type ) { return type.title; },
+				changeFunction: function() { me.workflowStepChanged(); }
 		    });
 
 			me.workflowStep.makeEnterTab()
@@ -185,6 +203,14 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 
+			me.workflowModules = [];
+			me.workflowModuleStore = me.cache.register({
+				storeId: "appWorkflowModules",
+				itemConstructor: fin.app.workflow.WorkflowModule,
+				itemConstructorArgs: fin.app.workflow.workflowModuleArgs,
+				injectionArray: me.workflowModules
+			});
+
 			me.workflowSteps = [];
 			me.workflowStepStore = me.cache.register({
 				storeId: "appWorkflowSteps",
@@ -250,12 +276,31 @@ ii.Class({
 			}
 		},
 		
+		workflowModulesLoaded: function(me, activeId) {
+
+			me.workflowModule.setData(me.workflowModules);
+			me.checkLoadCount();
+			me.resize();
+		},
+
+		workflowModuleChanged: function() {
+			var me = this;
+			
+			if (me.workflowModule.indexSelected >= 0) {
+				me.setLoadCount();
+				me.workflowStepStore.fetch("userId:[user],workflowModuleId:" + me.workflowModules[me.workflowModule.indexSelected].id, me.workflowStepsLoaded, me);
+			}
+		},
+
 		workflowStepsLoaded: function(me, activeId) {
 
 			me.workflowStep.setData(me.workflowSteps);
+			me.workflowStep.reset();
+			me.assignedUserGrid.setData([]);
 			me.checkLoadCount();
+			$("#Description").html("");
 		},
-		
+
 		workflowStepChanged: function() {
 			var me = this;
 			
@@ -279,7 +324,7 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 
-			if (me.workflowStep.indexSelected == -1)
+			if (me.workflowModule.indexSelected == -1 || me.workflowStep.indexSelected == -1)
 				return;
 
 			loadPopup("popupUser");
@@ -411,7 +456,7 @@ ii.Class({
 			var args = ii.args(arguments, {
 				transaction: {type: ii.ajax.TransactionMonitor.Transaction},
 				xmlNode: {type: "XmlNode:transaction"}
-			});			
+			});
 			var transaction = args.transaction;
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;

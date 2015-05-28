@@ -57,13 +57,6 @@
     background-color: #adaaad;
 }
 
-#WokkflowStepContainer {
-	border: solid #AAAAAA thin;
-	border-width: 1px;
-	padding: 5px;
-	margin: 1px;
-}
-
 #AnchorSearch {
 	float: left;
 	width: 82px;
@@ -83,6 +76,21 @@
 	width: 80px;
 	margin-right: 5px;
 	padding-top: 10px;
+}
+
+#WokkflowStepContainer {
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	padding: 5px;
+	margin: 1px;
+}
+
+#AssignedUserGridContainer {
+	float: left;
+	width: 100%;
+	position: relative;	
+	overflow-x: auto;
+	overflow-y: hidden;
 }
 
 #UserGrid{
