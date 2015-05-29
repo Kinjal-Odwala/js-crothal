@@ -1,13 +1,18 @@
 ii.Import("fin.cmn.usr.defs");
 
 ii.init.register( function() {
-    fin.hcm = { houseCodeWorkflow: {} };
+    fin.hcm = { houseCodeRequest: {} };
 
 }, 1);
 
 ii.init.register( function() {
 
-	fin.hcm.houseCodeWorkflow.houseCodeRequestArgs = {
+	fin.hcm.houseCodeRequest.workflowModuleArgs = {
+		id: {type: Number}
+		, title: {type: String, required: false, defaultValue: ""}
+	};
+
+	fin.hcm.houseCodeRequest.houseCodeRequestArgs = {
 		id: {type: Number, defaultValue: 0}
 		, column1: {type: String, required: false, defaultValue: ""} 	// Id
 		, column2: {type: String, required: false, defaultValue: ""} 	// User Id
@@ -99,14 +104,14 @@ ii.init.register( function() {
 		, column88: {type: String, required: false, defaultValue: ""} 	// Other Areas
 	};
 
-	fin.hcm.houseCodeWorkflow.personArgs = {
+	fin.hcm.houseCodeRequest.personArgs = {
 		id: {type: Number}
 		, firstName: {type: String, required: false, defaultValue: ""}
 		, lastName: {type: String, required: false, defaultValue: ""}
 		, email: {type: String, required: false, defaultValue: ""}
 	};
 
-	fin.hcm.houseCodeWorkflow.hirNodeArgs = {
+	fin.hcm.houseCodeRequest.hirNodeArgs = {
 		id: {type: Number}
 		, nodeParentId: {type: Number}
 		, hierarchyId: {type: Number, required: false, defaultValue: 0}
@@ -118,52 +123,52 @@ ii.init.register( function() {
 		, active: {type: Boolean, required: false, defaultValue: true}
 	};
 	
-	fin.hcm.houseCodeWorkflow.siteArgs = {
-	   id: {type: Number}
-	   , title: {type: String, required: false, defaultValue: ""}
+	fin.hcm.houseCodeRequest.siteArgs = {
+	   	id: {type: Number}
+	   	, title: {type: String, required: false, defaultValue: ""}
 	};
 	
-	fin.hcm.houseCodeWorkflow.houseCodeArgs = {
-		id: {type: Number}
-		, name: {type: String}
-	};
-	
-	fin.hcm.houseCodeWorkflow.divisionArgs = {
+	fin.hcm.houseCodeRequest.houseCodeArgs = {
 		id: {type: Number}
 		, name: {type: String}
 	};
 	
-	fin.hcm.houseCodeWorkflow.stateTypeArgs = {
-		id: {type: Number}
-		, name: {type: String}
-	};
-
-	fin.hcm.houseCodeWorkflow.contractTypeArgs = {
+	fin.hcm.houseCodeRequest.divisionArgs = {
 		id: {type: Number}
 		, name: {type: String}
 	};
 	
-	fin.hcm.houseCodeWorkflow.termsOfContractTypeArgs = {
+	fin.hcm.houseCodeRequest.stateTypeArgs = {
 		id: {type: Number}
 		, name: {type: String}
 	};
 
-	fin.hcm.houseCodeWorkflow.serviceTypeArgs = {
+	fin.hcm.houseCodeRequest.contractTypeArgs = {
+		id: {type: Number}
+		, name: {type: String}
+	};
+	
+	fin.hcm.houseCodeRequest.termsOfContractTypeArgs = {
 		id: {type: Number}
 		, name: {type: String}
 	};
 
-	fin.hcm.houseCodeWorkflow.billingCycleFrequencyArgs = {
+	fin.hcm.houseCodeRequest.serviceTypeArgs = {
 		id: {type: Number}
 		, name: {type: String}
 	};
 
-	fin.hcm.houseCodeWorkflow.houseCodeTypeArgs = {
+	fin.hcm.houseCodeRequest.billingCycleFrequencyArgs = {
 		id: {type: Number}
 		, name: {type: String}
 	};
 
-	fin.hcm.houseCodeWorkflow.payPayrollCompanyArgs = {
+	fin.hcm.houseCodeRequest.houseCodeTypeArgs = {
+		id: {type: Number}
+		, name: {type: String}
+	};
+
+	fin.hcm.houseCodeRequest.payPayrollCompanyArgs = {
 		id: {type: Number}
 		, title: {type: String}
 		, houseCodePayrollCompanyId: {type: String, required: false, defaultValue: "0"}
@@ -171,7 +176,7 @@ ii.init.register( function() {
 		, hourly: {type: Boolean, defaultValue: false}
 	};
 	
-	fin.hcm.houseCodeWorkflow.jobArgs = {
+	fin.hcm.houseCodeRequest.jobArgs = {
 		id: {type: Number, defaultValue: 0}
 		, name: {type: String, required: false, defaultValue: ""}
 		, title: {type: String, required: false, defaultValue: ""}
@@ -182,22 +187,22 @@ ii.init.register( function() {
 		, postalCode: {type: String, required: false, defaultValue: ""}
 	};
 
-	fin.hcm.houseCodeWorkflow.clientStatusTypeArgs = {
+	fin.hcm.houseCodeRequest.clientStatusTypeArgs = {
 		id: {type: Number}
 		, name: {type: String}
 	};
 
-	fin.hcm.houseCodeWorkflow.companyStatusTypeArgs = {
+	fin.hcm.houseCodeRequest.companyStatusTypeArgs = {
 		id: {type: Number}
 		, name: {type: String}
 	};
 
-	fin.hcm.houseCodeWorkflow.supplyContractTypeArgs = {
+	fin.hcm.houseCodeRequest.supplyContractTypeArgs = {
 		id: {type: Number}
 		, name: {type: String}
 	};
 
-	fin.hcm.houseCodeWorkflow.zipCodeTypeArgs = {
+	fin.hcm.houseCodeRequest.zipCodeTypeArgs = {
 		id: {type: Number}
 		, stateType: {type: Number, required: false, defaultValue: 0}
 		, zipCode: {type: String, required: false, defaultValue: ""}
@@ -206,12 +211,12 @@ ii.init.register( function() {
 		, county: {type: String, required: false, defaultValue: ""}
 	};
 
-	fin.hcm.houseCodeWorkflow.cityNameArgs = {
+	fin.hcm.houseCodeRequest.cityNameArgs = {
 		id: {type: Number}
 		, city: {type: String, required: false, defaultValue: ""}
 	};
 	
-	fin.hcm.houseCodeWorkflow.countyNameArgs = {
+	fin.hcm.houseCodeRequest.countyNameArgs = {
 		id: {type: Number}
 		, name: {type: String, required: false, defaultValue: ""}
 	};
@@ -219,200 +224,210 @@ ii.init.register( function() {
 }, 2);
 
 ii.Class({
-	Name: "fin.hcm.houseCodeWorkflow.HouseCodeRequest",
+	Name: "fin.hcm.houseCodeRequest.WorkflowModule",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.houseCodeRequestArgs);
+			var args = ii.args(arguments, fin.hcm.houseCodeRequest.workflowModuleArgs);
+			$.extend(this, args);
+		}
+	}
+})
+
+ii.Class({
+	Name: "fin.hcm.houseCodeRequest.HouseCodeRequest",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.houseCodeRequest.houseCodeRequestArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.hcm.houseCodeWorkflow.Person",
+	Name: "fin.hcm.houseCodeRequest.Person",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.personArgs);
+			var args = ii.args(arguments, fin.hcm.houseCodeRequest.personArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.hcm.houseCodeWorkflow.HirNode",
+	Name: "fin.hcm.houseCodeRequest.HirNode",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.hirNodeArgs);
+			var args = ii.args(arguments, fin.hcm.houseCodeRequest.hirNodeArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.hcm.houseCodeWorkflow.Site",
+	Name: "fin.hcm.houseCodeRequest.Site",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.siteArgs);
+			var args = ii.args(arguments, fin.hcm.houseCodeRequest.siteArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.hcm.houseCodeWorkflow.HouseCode",
+	Name: "fin.hcm.houseCodeRequest.HouseCode",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.houseCodeArgs);
+			var args = ii.args(arguments, fin.hcm.houseCodeRequest.houseCodeArgs);
 			$.extend(this, args);			
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.hcm.houseCodeWorkflow.Division",
+	Name: "fin.hcm.houseCodeRequest.Division",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.divisionArgs);
+			var args = ii.args(arguments, fin.hcm.houseCodeRequest.divisionArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.hcm.houseCodeWorkflow.StateType",
+	Name: "fin.hcm.houseCodeRequest.StateType",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.stateTypeArgs);
+			var args = ii.args(arguments, fin.hcm.houseCodeRequest.stateTypeArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.hcm.houseCodeWorkflow.ContractType",
+	Name: "fin.hcm.houseCodeRequest.ContractType",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.contractTypeArgs);
+			var args = ii.args(arguments, fin.hcm.houseCodeRequest.contractTypeArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.hcm.houseCodeWorkflow.TermsOfContractType",
+	Name: "fin.hcm.houseCodeRequest.TermsOfContractType",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.termsOfContractTypeArgs);
+			var args = ii.args(arguments, fin.hcm.houseCodeRequest.termsOfContractTypeArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.hcm.houseCodeWorkflow.ServiceType",
+	Name: "fin.hcm.houseCodeRequest.ServiceType",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.serviceTypeArgs);
+			var args = ii.args(arguments, fin.hcm.houseCodeRequest.serviceTypeArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.hcm.houseCodeWorkflow.BillingCycleFrequency",
+	Name: "fin.hcm.houseCodeRequest.BillingCycleFrequency",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.billingCycleFrequencyArgs);
+			var args = ii.args(arguments, fin.hcm.houseCodeRequest.billingCycleFrequencyArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.hcm.houseCodeWorkflow.HouseCodeType",
+	Name: "fin.hcm.houseCodeRequest.HouseCodeType",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.houseCodeTypeArgs);
+			var args = ii.args(arguments, fin.hcm.houseCodeRequest.houseCodeTypeArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.hcm.houseCodeWorkflow.PayPayrollCompany",
+	Name: "fin.hcm.houseCodeRequest.PayPayrollCompany",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.payPayrollCompanyArgs);
+			var args = ii.args(arguments, fin.hcm.houseCodeRequest.payPayrollCompanyArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.hcm.houseCodeWorkflow.Job",
+	Name: "fin.hcm.houseCodeRequest.Job",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.jobArgs);
+			var args = ii.args(arguments, fin.hcm.houseCodeRequest.jobArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.hcm.houseCodeWorkflow.ClientStatusType",
+	Name: "fin.hcm.houseCodeRequest.ClientStatusType",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.clientStatusTypeArgs);
+			var args = ii.args(arguments, fin.hcm.houseCodeRequest.clientStatusTypeArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.hcm.houseCodeWorkflow.CompanyStatusType",
+	Name: "fin.hcm.houseCodeRequest.CompanyStatusType",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.companyStatusTypeArgs);
+			var args = ii.args(arguments, fin.hcm.houseCodeRequest.companyStatusTypeArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.hcm.houseCodeWorkflow.SupplyContractType",
+	Name: "fin.hcm.houseCodeRequest.SupplyContractType",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.supplyContractTypeArgs);
+			var args = ii.args(arguments, fin.hcm.houseCodeRequest.supplyContractTypeArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.hcm.houseCodeWorkflow.ZipCodeType",
+	Name: "fin.hcm.houseCodeRequest.ZipCodeType",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.zipCodeTypeArgs);
+			var args = ii.args(arguments, fin.hcm.houseCodeRequest.zipCodeTypeArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.hcm.houseCodeWorkflow.CityName",
+	Name: "fin.hcm.houseCodeRequest.CityName",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.cityNameArgs);
+			var args = ii.args(arguments, fin.hcm.houseCodeRequest.cityNameArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.hcm.houseCodeWorkflow.CountyName",
+	Name: "fin.hcm.houseCodeRequest.CountyName",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.houseCodeWorkflow.countyNameArgs);
+			var args = ii.args(arguments, fin.hcm.houseCodeRequest.countyNameArgs);
 			$.extend(this, args);
 		}
 	}

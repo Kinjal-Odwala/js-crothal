@@ -7,6 +7,11 @@ ii.init.register( function() {
 
 ii.init.register( function() {
 
+	fin.app.workflow.workflowModuleArgs = {
+		id: {type: Number}
+		, title: {type: String, required: false, defaultValue: ""}
+	};
+
 	fin.app.workflow.workflowStepArgs = {
 		id: {type: Number}
 		, title: {type: String, required: false, defaultValue: ""}
@@ -23,6 +28,16 @@ ii.init.register( function() {
 	};
 
 }, 2);
+
+ii.Class({
+	Name: "fin.app.workflow.WorkflowModule",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.app.workflow.workflowModuleArgs);
+			$.extend(this, args);
+		}
+	}
+})
 
 ii.Class({
 	Name: "fin.app.workflow.WorkflowStep",
