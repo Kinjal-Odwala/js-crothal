@@ -1092,6 +1092,7 @@ ii.Class({
 			me.managerEmail.setValue("");
 			me.payCodeDetailGrid.setData([]);
 			me.documentGrid.setData([]);
+			me.payCheckRequestDocumentStore.reset();
 			
 			$("#houseCodeText").val("");
 			$("#houseCodeTemplateText").val("");
