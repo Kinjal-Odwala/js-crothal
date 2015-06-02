@@ -69,7 +69,14 @@
 .inputTextAreaLarge {
 	float: left;
 	height: 20px;
-	width: 72%;
+	width: 660px;
+}
+
+.contentAreaLeft {
+	float: left;
+	position: relative;
+	width: 460px;
+	margin-right: 10px;
 }
 
 .iiInputText.Loading {

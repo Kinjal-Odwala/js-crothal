@@ -2996,11 +2996,11 @@ ii.Class({
 
 		subscriptionsLoaded: function(me, activeId) {
 			
-			me.setControlData();			
-			me.setSubscriptionGrid();
 			me.actionResetItem();
-			me.resetControls();
-			me.resetScheduleInfo();
+			//me.resetControls();
+			//me.resetScheduleInfo();
+			//me.setControlData();			
+			me.setSubscriptionGrid();			
 			
 			if (me.reportType == "Subscription")
 				me.checkLoadCount();			
@@ -3017,7 +3017,7 @@ ii.Class({
 				rowData += "</tr>"
 			}
 			
-			$("#SubscriptionGridBody").html(rowData);
+			$("#SubscriptionGridBody").html(rowData);			
 			$("#SubscriptionGridBody tr:odd").addClass("gridRow");
 			$("#SubscriptionGridBody tr:even").addClass("alternateGridRow");
 			$("#SubscriptionGridBody tr").mouseover(function(){
@@ -3025,6 +3025,9 @@ ii.Class({
 			}).mouseout(function(){
 				$(this).removeClass("trover");
 			});
+			
+			me.subscriptions.length > 0
+				me.actionSelectItem(0);
 		},
 		
 		setControlData: function() {

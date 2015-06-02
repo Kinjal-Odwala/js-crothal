@@ -42,6 +42,15 @@
 					<div class="header">Workflow Steps Info</div>
                     <div id="WokkflowStepContainer">
                     	<div style="clear:both;height:10px;"></div>
+						<div id="TableEditArea">
+							<div class="labelTextArea">
+								<span class="requiredFieldIndicator">&#149;</span>Workflow Module:
+							</div>
+							<div class="inputTextArea">
+								<div id="WorkflowModule"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
                     	<div id="TableEditArea">
 							<div class="labelTextArea">
 								<span class="requiredFieldIndicator">&#149;</span>Workflow Step:
@@ -60,8 +69,9 @@
 			</div>
 			<div id="contentAreasContainerRight">
 				<div class="contentArea">
-					<div class="header">Users Info</div>
-					<div id="AssignedUserGrid"></div>
+					<div id="AssignedUserGridContainer">
+						<div class="header" id="header">Users Info</div>
+						<div id="AssignedUserGrid"></div>
 						<div id="Paging">							
 				            <table cellpadding="0" cellspacing="0" style="width: 100%">
 		                        <tr class="gridFooter">
@@ -84,6 +94,7 @@
 		                    </table>
 						</div>
 						<div style="clear:both;"></div>
+					</div>
 				</div>
 			</div>
 			<div id="popupUser">

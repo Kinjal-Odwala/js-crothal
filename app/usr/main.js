@@ -93,13 +93,13 @@ ii.Class({
 				queryStringArgs[argName] = unescape(value); 
 			}
 
-			if (queryStringArgs["type"] == "hcWorkflow") {
+			if (queryStringArgs["type"] == "hcRequest") {
 				me.intervalId = setInterval(function() {
 					if (top.ui.ctl.menu.Dom.me) {
 						clearInterval(me.intervalId);
 						$(top.ui.ctl.menu.Dom.me.items["hcm"].xmlNode).find("item").each(function() {
-							if ($(this).attr("id") == "hcwf") {
-								var actionData = $(this).attr("actionData") + "?id=" + queryStringArgs["id"] + "&step=" + queryStringArgs["step"];
+							if ($(this).attr("id") == "hcRequest") {
+								var actionData = $(this).attr("actionData") + "?id=" + queryStringArgs["id"] + "&stepNumber=" + queryStringArgs["stepNumber"];
 								$(this).attr("actionData", actionData);
 								$(this).attr("state", "Selected");
 								$(top.ui.ctl.menu.Dom.me.items["hcm"]).select();

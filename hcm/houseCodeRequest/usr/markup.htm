@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-		<title>House Code Workflow</title>
+		<title>House Code Request</title>
 		<script type="text/javascript">
 			var globalContext = "/net/crothall/chimes/fin/hcm/act";
 			var js = document.createElement("script");
@@ -29,6 +29,9 @@
 		        <center><img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/></center>
 		        <div id="popupMessageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
 		    </div>
+		</div>
+		<div id="divFrame" style="height: 0px;">
+			<iframe id="iFrameUpload" src="/net/crothall/chimes/fin/app/act/FileUpload.aspx" frameborder="0" width="100" height="0"></iframe>
 		</div>
 		<div style="clear:both;"></div>
 		<div id="itemStatusDiv">
@@ -120,11 +123,12 @@
                         <div id="AnchorEdit"></div>
 						<div id="AnchorSendRequest"></div>
 						<div id="AnchorCancelRequest"></div>
+						<div id="AnchorView"></div>
                         <div style="clear:both;"></div>
                     </div>
 				</div>
 			</div>
-			<div id="popupWorkflow">
+			<div id="popupRequest">
 				<div class="contentArea">
 					<div id="popupHeader" class="header">House Code Request</div>
 				</div>

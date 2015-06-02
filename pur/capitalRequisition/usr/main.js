@@ -787,11 +787,11 @@ ii.Class({
 			me.itemGrid.addColumn("number", "number", "Item Number", "Item Number", 120, null, me.itemNumber);
 			me.itemGrid.addColumn("description", "description", "Item Description", "Item Description", null, null, me.itemDescription);
 			me.itemGrid.addColumn("alternateDescription", "alternateDescription", "Alternate Description", "Alternate Description", 180, null, me.alternateDescription);			
-			me.itemGrid.addColumn("account", "account", "GL Account No", "GL Account No", 150, function( account ) { return account.code + " - " + account.name; }, me.account);
-			me.itemGrid.addColumn("unit", "unit", "UOM", "UOM", 80, null, me.uom);
-			me.itemGrid.addColumn("manufactured", "manufactured", "MFG", "Manufactured", 40, null, me.manufactured);
+			me.itemGrid.addColumn("account", "account", "GL Account No", "GL Account No", 140, function( account ) { return account.code + " - " + account.name; }, me.account);
+			me.itemGrid.addColumn("unit", "unit", "UOM", "UOM", 50, null, me.uom);
+			me.itemGrid.addColumn("manufactured", "manufactured", "MFG", "Manufactured", 120, null, me.manufactured);
 			me.itemGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 80, null, me.quantity);
-			me.itemGrid.addColumn("price", "price", "Price", "Price", 90, null, me.price);
+			me.itemGrid.addColumn("price", "price", "Price", "Price", 80, null, me.price);
 			me.itemGrid.addColumn("extendedPrice", "", "Extended Price", "Extended Price", 120, function(data) {				
 				if (!isNaN(data.quantity) && data.price != undefined) {
 					var extendedPrice = data.quantity * data.price
@@ -808,11 +808,11 @@ ii.Class({
 			me.itemReadOnlyGrid.addColumn("number", "number", "Item Number", "Item Number", 120);
 			me.itemReadOnlyGrid.addColumn("description", "description", "Item Description", "Item Description", null);
 			me.itemReadOnlyGrid.addColumn("alternateDescription", "alternateDescription", "Alternate Description", "Alternate Description", 180);			
-			me.itemReadOnlyGrid.addColumn("account", "account", "GL Account No", "GL Account No", 150, function(account) { return account.code + " - " + account.name;	});
-			me.itemReadOnlyGrid.addColumn("unit", "unit", "UOM", "UOM", 80);
-			me.itemReadOnlyGrid.addColumn("manufactured", "manufactured", "MFG", "Manufactured", 40);
+			me.itemReadOnlyGrid.addColumn("account", "account", "GL Account No", "GL Account No", 140, function(account) { return account.code + " - " + account.name;	});
+			me.itemReadOnlyGrid.addColumn("unit", "unit", "UOM", "UOM", 50);
+			me.itemReadOnlyGrid.addColumn("manufactured", "manufactured", "MFG", "Manufactured", 120);
 			me.itemReadOnlyGrid.addColumn("quantity", "quantity", "Quantity", "Quantity", 80);
-			me.itemReadOnlyGrid.addColumn("price", "price", "Price", "Price", 90);
+			me.itemReadOnlyGrid.addColumn("price", "price", "Price", "Price", 80);
 			me.itemReadOnlyGrid.addColumn("extendedPrice", "", "Extended Price", "Extended Price", 120, function(data) {				
 				if (!isNaN(data.quantity) && data.price != undefined) {
 					var extendedPrice = data.quantity * data.price
@@ -1781,6 +1781,7 @@ ii.Class({
 				
 				$("#spnSubTotal").html(me.subTotal.toFixed(2));
 				$("#spnTotal").html(me.subTotal + parseFloat(tax) + parseFloat(freight));
+				me.total = me.subTotal + parseFloat(tax) + parseFloat(freight);
 			}
 			
 			me.itemGrid.setData(me.poCapitalRequisitionItems);
@@ -1939,6 +1940,7 @@ ii.Class({
 			var me = this;
 			var valid = true;			
 			var alertMessage = false;
+			var lineItem = false;
 			
 			me.validator.forceBlur();
 			
@@ -1981,10 +1983,7 @@ ii.Class({
 				else
 					return true;
 			}
-			else if (me.wizardCount == 2) {
-				if (me.itemGrid.activeRowIndex != undefined && me.itemGrid.activeRowIndex == -1 && me.taxPercent.valid && me.taxAmount.valid && me.freight.valid)
-				 	return true;
-				 	
+			else if (me.wizardCount == 2) {				 	
 				valid = me.validator.queryValidity(true);
 				
 				if (me.itemGrid.activeRowIndex != undefined && me.itemGrid.activeRowIndex != -1 && $("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked && (!me.itemNumber.valid
@@ -1992,7 +1991,10 @@ ii.Class({
 					|| !me.account.valid
 					|| !me.price.valid
 					|| !me.quantity.valid
-					|| !me.uom.valid)
+					|| !me.uom.valid
+					|| !me.taxPercent.valid
+					|| !me.taxAmount.valid
+					|| !me.freight.valid)
 				) {
 					alert("In order to continue, the errors on the page must be corrected.");
 					alertMessage = true;
@@ -2010,10 +2012,23 @@ ii.Class({
 					}	
 				}
 				
+				if (!alertMessage) {
+	                for (var index = 0; index < me.itemGrid.data.length; index++) {
+	                	if ($("#selectInputCheck" + index)[0].checked) {
+	                		lineItem = true;
+	                		break;
+	                	}                		
+					}
+					if (!lineItem) {
+                		alert("Please select atleast one line item.");
+                		alertMessage = true;
+                	}	
+				}
+				
 				if (!me.taxPercent.valid || !me.taxAmount.valid || !me.freight.valid) {
 					alert("In order to continue, the errors on the page must be corrected.");
 					alertMessage = true;
-				}			
+				}		
 				
 				if(alertMessage)
 					return false;
