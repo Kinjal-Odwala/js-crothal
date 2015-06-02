@@ -895,7 +895,8 @@ ii.Class({
 						$("#LabelUnit").html("<span class='requiredFieldIndicator'>&#149;</span>Unit (House Code):");
 						$("#LabelUnitAddress").html("<span class='requiredFieldIndicator'>&#149;</span>Unit (House Code) Address:");
 						$("#LabelHome").html("<span id='nonRequiredFieldIndicator'>Home Address:</span>");
-						me.setUnitAddress();
+						if ($("#houseCodeTemplateText").html() != "" && $("#houseCodeTemplateText").html() == me.houseCodeSearchTemplate.houseCodeTitleTemplate)
+							me.setUnitAddress();
 						$("#CurrentPayCardUserNo")[0].checked = true;
 						$("#UPSDeliveryToHomeNo")[0].checked = true;
 						$("#InstantIssueRequestNo")[0].checked = true;
