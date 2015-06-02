@@ -95,3 +95,34 @@
         transform: rotate(359deg);
     }
 }
+
+
+.table-scroll tbody {
+    max-height: 300px;
+    overflow-y: auto;
+    width: 100%;
+    display: block;
+}
+
+.table-scroll tr {
+    width: 100%;
+    display: inline-table;
+}
+
+.toaster {
+    padding: 15px;
+    color: #880000;
+    background-color: #ffff66;
+    box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    opacity: 0.8;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+    .toaster .header {
+        padding: 5px;
+        border-bottom: 1px solid rgba(0,0,0,.175);
+    }
+    .toaster .content {
+        padding: 5px;
+    }
