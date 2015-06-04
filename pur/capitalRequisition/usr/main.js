@@ -302,6 +302,22 @@ ii.Class({
 				maxLength: 16
 		    });
 		    
+		    me.searchRequestedDate = new ui.ctl.Input.Date({
+		        id: "SearchRequestedDate",
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+		    });
+			
+			me.searchRequestedDate.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation( function( isFinal, dataMap ) {					
+					var enteredText = me.searchRequestedDate.text.value;
+					
+					if (enteredText == "") 
+						return;
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+						this.setInvalid("Please enter valid date.");
+				});
+		    
 			me.capitalRequisitionGrid = new ui.ctl.Grid({
 				id: "CapitalRequisitionGrid",
 				appendToId: "divForm",
@@ -310,10 +326,11 @@ ii.Class({
 				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});
 			
-			me.capitalRequisitionGrid.addColumn("requisitionNumber", "requisitionNumber", "Requisition Number", "Requisition Number", 175);
-			me.capitalRequisitionGrid.addColumn("requestorName", "requestorName", "Requestor Name", "Requestor Name", 200);				
+			me.capitalRequisitionGrid.addColumn("requisitionNumber", "requisitionNumber", "Requisition #", "Requisition #", 120);
+			me.capitalRequisitionGrid.addColumn("houseCodeTitle", "houseCodeTitle", "House Code", "House Code", 175);			
+			me.capitalRequisitionGrid.addColumn("requestorName", "requestorName", "Requestor Name", "Requestor Name", 150);				
 			me.capitalRequisitionGrid.addColumn("requestedDate ", "requestedDate", "Requested Date", "Requested Date", 150);
-			me.capitalRequisitionGrid.addColumn("deliveryDate", "deliveryDate", "Delivery Date", "Delivery Date", 150);
+			me.capitalRequisitionGrid.addColumn("deliveryDate", "deliveryDate", "Delivery Date", "Delivery Date", 120);
 			me.capitalRequisitionGrid.addColumn("vendorTitle", "vendorTitle", "Vendor Title", "Vendor Title", null);
 			me.capitalRequisitionGrid.addColumn("statusType", "statusType", "Status", "Status", 120, function(statusType) {
 				if (statusType == 1)
@@ -1527,6 +1544,7 @@ ii.Class({
 		loadPOCapitalRequisitions: function() {
 			var me = this;
 			var statusType = "";
+			var houseCodeBrief = $("#houseCodeText").val() != "" ? parent.fin.appUI.houseCodeId : 0;
 			
 			if (me.action == "POCapitalRequisition")
 				statusType = me.statusType.indexSelected == -1 ? 0 : me.statuses[me.statusType.indexSelected].id;
@@ -1538,9 +1556,10 @@ ii.Class({
 			me.setLoadCount();
 			me.poCapitalRequisitionStore.reset();
 			me.poCapitalRequisitionStore.fetch("poCapitalRequisitionId:0"
-				+ ",houseCodeId:" + parent.fin.appUI.houseCodeId
+				+ ",houseCodeId:" + houseCodeBrief
 				+ ",statusType:" + statusType
 				+ ",requisitionNumber:" + me.searchRequisitionNumber.getValue()
+				+ ",requestedDate:" + me.searchRequestedDate.text.value
 				, me.poCapitalRequisitionsLoaded
 				, me);
 		},
@@ -2526,6 +2545,7 @@ ii.Class({
 					, (me.status == "NewPOCapitalRequisition" ? 0 : me.capitalRequisitionGrid.data[index].requisitionNumber)
 					, (me.status == "NewPOCapitalRequisition" ? 1 : me.capitalRequisitionGrid.data[index].statusType)
 					, (me.status == "NewPOCapitalRequisition" ? parent.fin.appUI.houseCodeId : me.capitalRequisitionGrid.data[index].houseCode)
+					, $("#houseCodeText").val()
 					, (me.shippingJob.indexSelected == -1 ? 0 : me.houseCodeJobs[me.shippingJob.indexSelected].id)
 					, me.shippingAddress1.getValue()
 					, me.shippingAddress2.getValue()

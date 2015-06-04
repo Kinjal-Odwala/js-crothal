@@ -182,10 +182,22 @@
 
 #InputTextStatus {
 	float: left; 
-	width: 145px; 
+	width: 100px; 
 	padding-top: 2px;
 	padding-bottom: 1px;
 	padding-right: 5px;	
+}
+
+#DropDownRightHouseCode {
+	width: 180px;	
+}
+
+#houseCodeContainer {
+	width: 175px;	
+}
+
+#houseCodeText {
+	width: 155px;	
 }
 
 #ShippingInfo {

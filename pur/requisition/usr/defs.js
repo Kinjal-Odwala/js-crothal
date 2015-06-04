@@ -83,6 +83,7 @@ ii.init.register( function() {
 		, requisitionNumber: {type: Number, required: false, defaultValue: 0}
 		, statusType: {type: Number, required: false, defaultValue: 0}
 		, houseCode: {type: Number}
+		, houseCodeTitle: {type: String, required: false, defaultValue: ""}
 		, houseCodeJob: {type: Number, required: false, defaultValue: 0}		
 		, shipToAddress1: {type: String, required: false, defaultValue: ""}
 		, shipToAddress2: {type: String, required: false, defaultValue: ""}
