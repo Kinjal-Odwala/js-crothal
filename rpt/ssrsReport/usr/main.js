@@ -2373,6 +2373,7 @@ ii.Class({
                 var value = typeTableData[index].id;
                 var parameter = typeTableData[index].parameter;
                 var title = typeTableData[index].name;
+                var brief = typeTableData[index].brief;
 
                 if (args.referenceTableName == "AppStateTypes" 
 	                || args.referenceTableName == "PayCodes" 
@@ -2401,7 +2402,7 @@ ii.Class({
                     args.referenceTableName == "HcmContractTypes")
                         $("#" + args.name).append("<option title='" + title + "' value='" + title + "'>" + title + "</option>");
 				else if (args.referenceTableName == "ExcludeHouseCodes")                    
-                    $("#" + args.name).append("<option title='" + typeTableData[index].title + "' value='" + value + "'>" + typeTableData[index].title + "</option>");
+                    $("#" + args.name).append("<option title='" + typeTableData[index].title + "' value='" + brief + "'>" + typeTableData[index].title + "</option>");
                 else if (args.referenceTableName == "RevInvoiceBatches")                    
                     $("#" + args.name).append("<option title='" + typeTableData[index].title + "' value='" + value + "'>" + typeTableData[index].batchId + ':' + typeTableData[index].title + "</option>");                        
                 else {
