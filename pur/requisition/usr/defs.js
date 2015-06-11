@@ -48,6 +48,11 @@ ii.init.register( function() {
 		, title: {type: String}
 	};
 	
+	fin.pur.poRequisition.searchTypeArgs = {
+		id: {type: Number}
+		, title: {type: String}
+	};
+	
 	fin.pur.poRequisition.stateTypeArgs = {
 		id: {type: Number}
 		, number: {type: Number}
@@ -225,6 +230,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.pur.poRequisition.statusArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.pur.poRequisition.SearchType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pur.poRequisition.searchTypeArgs);
 			$.extend(this, args);
 		}
 	}

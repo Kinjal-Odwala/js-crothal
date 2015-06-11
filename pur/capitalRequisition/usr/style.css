@@ -49,6 +49,15 @@
 	padding-top: 5px;
 }
 
+.labelTextAreaSearch {
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: bold;
+	color: #032D23;
+	padding: 5px 0px 0px 10px;
+}
+
 .labelTextArea {
 	float: left;
 	width: 170px;
@@ -108,15 +117,19 @@
 	height: 27px;
 }
 
+.inputTextAreaSmall {
+	float: left;
+	width: 140px;
+	padding: 2px 0px 1px 5px;
+}
+
 .inputTextArea {
 	float: left;
 	width: 190px;
-	height: 30px;	
 }
 
 .inputTextAreaLarge {
 	float: left;
-	height: 20px;
 	width: 660px;
 }
 
@@ -178,26 +191,6 @@
 .borderVertical {
     width: 1px;
     background-color: #adaaad;
-}
-
-#InputTextStatus {
-	float: left; 
-	width: 100px; 
-	padding-top: 2px;
-	padding-bottom: 1px;
-	padding-right: 5px;	
-}
-
-#DropDownRightHouseCode {
-	width: 180px;	
-}
-
-#houseCodeContainer {
-	width: 175px;	
-}
-
-#houseCodeText {
-	width: 155px;	
 }
 
 #ShippingInfo {
@@ -303,6 +296,18 @@
     padding-top: 0px;
 }
 
+#AnchorPrint {
+	float: left;
+	width: 68px;
+	margin: 5px 0px 10px 10px;
+}
+
+#AnchorApprove {
+	float: left;
+	width: 92px;
+	margin: 5px 0px 10px 10px;
+}
+
 #anchorAlign {
 	clear: both;
 	bottom: 15px;
@@ -369,16 +374,6 @@
 
 #extendedPriceBodyColumn, #priceBodyColumn, #quantityBodyColumn {
 	text-align: right;	
-}
-
-#LabelStatus {
-	float: left;
-	font-family: Verdana;
-	font-size: 12px;
-	font-weight: bold;
-	color: #032D23;
-	padding-top: 5px;
-	padding-right: 5px;	
 }
 
 #LabelItemLeft {
