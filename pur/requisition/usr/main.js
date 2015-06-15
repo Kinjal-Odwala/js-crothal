@@ -1295,16 +1295,20 @@ ii.Class({
 			me.total = 0;			
 
 			for (var index = 0; index < me.itemGrid.data.length; index++) {
-				if ($("#selectInputCheck" + index)[0].checked) {
-					if (iIndex == index && quantity != "" && !(isNaN(quantity)) && price != "" && !(isNaN(price)))
-						me.total += (parseFloat(quantity) * parseFloat(price));								
-					else
-						me.total += (parseFloat(me.itemGrid.data[index].quantity) * parseFloat(me.itemGrid.data[index].price));						
-				}				
+				if ($("#selectInputCheck" + index)[0] != undefined && $("#selectInputCheck" + index)[0].checked) {
+					if (iIndex == index) {
+						if (quantity != "" && !(isNaN(quantity)) && price != "" && !(isNaN(price)))
+							me.total += (parseFloat(quantity) * parseFloat(price));	
+					}
+					else {
+						if (me.itemGrid.data[index].quantity != "" && !(isNaN(me.itemGrid.data[index].quantity)) && me.itemGrid.data[index].price != "" && !(isNaN(me.itemGrid.data[index].price)))
+							me.total += (parseFloat(me.itemGrid.data[index].quantity) * parseFloat(me.itemGrid.data[index].price));
+					}
+				}
 			}
 
 			if (me.itemGrid.activeRowIndex == me.itemGrid.data.length) {
-				if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked) {
+				if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0] != undefined && $("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked) {
 					if (quantity != "" && !(isNaN(quantity)) && price != "" && !(isNaN(price)))
 						me.total += parseFloat(quantity) * parseFloat(price);
 				}

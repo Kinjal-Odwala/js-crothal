@@ -646,7 +646,7 @@ ii.Class({
 				createNewFunction: fin.pur.poCapitalRequisition.Item,
 				selectFunction: function(index){
 					if (me.itemGrid.rows[index].getElement("rowNumber").innerHTML == "Add") 
-						me.itemGrid.rows[index].getElement("itemSelect").innerHTML = "<input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poCapitalRequisitionUi.calculateTotal(this);\"  checked=\"true\" />";
+						me.itemGrid.rows[index].getElement("itemSelect").innerHTML = "<input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poCapitalRequisitionUi.calculateSubTotal(this);\"  checked=\"true\" />";
 				}			
 			});
 			
@@ -820,9 +820,9 @@ ii.Class({
 			me.itemGrid.addColumn("itemSelect", "itemSelect", "", "", 30, function(data) {
 				var index = me.itemGrid.rows.length - 1;
 				if (me.itemGrid.data[index].itemSelect)
-                	return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poCapitalRequisitionUi.calculateTotal(this);\" checked=\"true\" /></center>";
+                	return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poCapitalRequisitionUi.calculateSubTotal(this);\" checked=\"true\" /></center>";
 				else
-				    return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poCapitalRequisitionUi.calculateTotal(this);\" /></center>";
+				    return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poCapitalRequisitionUi.calculateSubTotal(this);\" /></center>";
             });
 			me.itemGrid.addColumn("number", "number", "Item Number", "Item Number", 120, null, me.itemNumber);
 			me.itemGrid.addColumn("description", "description", "Item Description", "Item Description", null, null, me.itemDescription);
@@ -1385,60 +1385,66 @@ ii.Class({
 				$(me.itemGrid.rows[index].getElement("extendedPrice")).text("");
 			}
 
-			me.calculateTotal();
+			me.calculateSubTotal();
 		},
 		
-		calculateTotal: function(object) {
+		calculateSubTotal: function(object) {
 			var me = this;
 			var iIndex = me.itemGrid.activeRowIndex;
 			var quantity = me.quantity.getValue();
 			var price = me.price.getValue();
-			var freight = me.freight.getValue() == "" ? 0 : me.freight.getValue();
-			var tax = me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue();
+
 			me.subTotal = 0;
-			me.total = 0;
-			
+
 			for (var index = 0; index < me.itemGrid.data.length; index++) {
 				if ($("#selectInputCheck" + index)[0] != undefined && $("#selectInputCheck" + index)[0].checked) {
-					if (iIndex == index && quantity != "" && !(isNaN(quantity)) && price != "" && !(isNaN(price)))
-						me.subTotal += (parseFloat(quantity) * parseFloat(price));								
-					else
-						me.subTotal += (parseFloat(me.itemGrid.data[index].quantity) * parseFloat(me.itemGrid.data[index].price));						
-				}				
+					if (iIndex == index) {
+						if (quantity != "" && !(isNaN(quantity)) && price != "" && !(isNaN(price)))
+							me.subTotal += (parseFloat(quantity) * parseFloat(price));
+					}
+					else {
+						if (me.itemGrid.data[index].quantity != "" && !(isNaN(me.itemGrid.data[index].quantity)) && me.itemGrid.data[index].price != "" && !(isNaN(me.itemGrid.data[index].price)))
+							me.subTotal += (parseFloat(me.itemGrid.data[index].quantity) * parseFloat(me.itemGrid.data[index].price));
+					}
+				}
 			}
-			
+
 			if (me.itemGrid.activeRowIndex == me.itemGrid.data.length) {
 				if ($("#selectInputCheck" + me.itemGrid.activeRowIndex)[0] != undefined && $("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked) {
 					if (quantity != "" && !(isNaN(quantity)) && price != "" && !(isNaN(price)))
 						me.subTotal += (parseFloat(quantity) * parseFloat(price));
 				}
 			}
-			
+
+			$("#spnSubTotal").html(me.subTotal.toFixed(2));
+			me.calculateTotal();
+		},
+		
+		calculateTotal: function() {
+			var me = this;
+			var freight = me.freight.getValue() == "" ? 0 : parseFloat(me.freight.getValue());
+			var taxAmount = me.taxAmount.getValue() == "" ? 0 : parseFloat(me.taxAmount.getValue());
+
+			me.total = 0;
+
 			if (me.subTotal != 0 && me.taxPercent.getValue() != "" && !isNaN(me.taxPercent.getValue())) {
-				var taxCaliculated = (me.subTotal * me.taxPercent.getValue()) / 100;
-				me.taxAmount.setValue(taxCaliculated.toFixed(2));
+				me.taxPercent.setValue(parseFloat(me.taxPercent.getValue()).toFixed(2));
+				taxAmount = (me.subTotal * parseFloat(me.taxPercent.getValue())) / 100;
 			}
 
+			me.taxAmount.setValue(taxAmount.toFixed(2));
+			me.freight.setValue(freight.toFixed(2));
 			if (me.subTotal > 0)
-				me.total = me.subTotal + parseFloat(tax) + parseFloat(freight);
-				
-			$("#spnSubTotal").html(me.subTotal.toFixed(2));
+				me.total = me.subTotal + parseFloat(taxAmount) + parseFloat(freight);
+
 			$("#spnTotal").html(me.total.toFixed(2));
 		},
 
 		calculateTotalByTax: function() {
 			var me = this;
-			var tax = me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue();
-			var freight = me.freight.getValue() == "" ? 0 : me.freight.getValue();
-			
+
 			me.taxPercent.setValue("");
-			if (me.subTotal == 0)
-				me.total = 0;
-			else
-				me.total = me.subTotal + parseFloat(tax) + parseFloat(freight);
-			
-			$("#spnSubTotal").html(me.subTotal.toFixed(2));
-			$("#spnTotal").html(me.total.toFixed(2));
+			me.calculateTotal();
 		},
 		
 		statusesLoaded: function() {
@@ -1615,7 +1621,6 @@ ii.Class({
 			me.subTotal = 0;
 			var tax = me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue();
 			var freight = me.freight.getValue() == "" ? 0 : me.freight.getValue();
-			
 
 			for (var index = 0; index < me.items.length; index++) {
 				var found = false;
