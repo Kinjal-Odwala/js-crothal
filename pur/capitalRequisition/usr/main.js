@@ -157,6 +157,7 @@ ii.Class({
 			$("#popupContact").height($(window).height() - 110);
 			$("#GeneralInfo").height($(window).height() - 210);
 			$("#ShippingInfo").height($(window).height() - 210);
+			$(".labelTextAreaBlank").width($("#ItemGridHeader").width() - 238);
 		},
 		
 		defineFormControls: function() {
@@ -1843,6 +1844,30 @@ ii.Class({
 			me.checkLoadCount();
 			$("#spnSubTotal").html(me.subTotal.toFixed(2));
 			$("#spnTotal").html(me.total.toFixed(2));
+			me.storePOCapitalRequisitionItems();
+		},
+		
+		storePOCapitalRequisitionItems: function() {
+			var me = this;
+
+			me.poCapitalRequisitionItemsTemp = [];
+			for (var index = 0; index < me.poCapitalRequisitionItems.length; index++) {
+				var item = new fin.pur.poCapitalRequisition.POCapitalRequisitionItem(
+					me.poCapitalRequisitionItems[index].id
+					, me.poCapitalRequisitionItems[index].poCapitalRequisitionId
+					, me.poCapitalRequisitionItems[index].account
+					, me.poCapitalRequisitionItems[index].itemSelect
+					, me.poCapitalRequisitionItems[index].number
+					, me.poCapitalRequisitionItems[index].description
+					, me.poCapitalRequisitionItems[index].alternateDescription
+					, me.poCapitalRequisitionItems[index].unit
+					, me.poCapitalRequisitionItems[index].manufactured
+					, me.poCapitalRequisitionItems[index].price
+					, me.poCapitalRequisitionItems[index].quantity
+					, me.poCapitalRequisitionItems[index].modified
+				);
+				me.poCapitalRequisitionItemsTemp.push(item);
+			}
 		},
 		
 		poCapitalRequisitionDocumentsLoaded: function(me, activeId) {
@@ -2115,7 +2140,6 @@ ii.Class({
 			$("#StatusContainer").show();
 			me.action = "POCapitalRequisition";
 			me.loadPOCapitalRequisitions();
-			//me.setStatus("Loaded");
 			me.modified(false);
 		},
 		
@@ -2126,7 +2150,6 @@ ii.Class({
 			$("#StatusContainer").hide();
 			me.action = "GeneratePurchaseOrder";
 			me.loadPOCapitalRequisitions();
-			//me.setStatus("Loaded");
 			me.modified(false);
 		},
 
@@ -2249,6 +2272,25 @@ ii.Class({
 				me.vendorStore.fetch("searchValue:" + me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].vendorTitle + ",vendorStatus:-1,userId:[user]", me.vendorsLoad, me);
 			}			
 
+			me.poCapitalRequisitionItems = [];
+			for (var index = 0; index < me.poCapitalRequisitionItemsTemp.length; index++) {
+				var item = new fin.pur.poCapitalRequisition.POCapitalRequisitionItem(
+					me.poCapitalRequisitionItemsTemp[index].id
+					, me.poCapitalRequisitionItemsTemp[index].poCapitalRequisitionId
+					, me.poCapitalRequisitionItemsTemp[index].account
+					, me.poCapitalRequisitionItemsTemp[index].itemSelect
+					, me.poCapitalRequisitionItemsTemp[index].number
+					, me.poCapitalRequisitionItemsTemp[index].description
+					, me.poCapitalRequisitionItemsTemp[index].alternateDescription
+					, me.poCapitalRequisitionItemsTemp[index].unit
+					, me.poCapitalRequisitionItemsTemp[index].manufactured
+					, me.poCapitalRequisitionItemsTemp[index].price
+					, me.poCapitalRequisitionItemsTemp[index].quantity
+					, me.poCapitalRequisitionItemsTemp[index].modified
+				);
+				me.poCapitalRequisitionItems.push(item);
+			}
+			
 			me.poCapitalRequisitionId = me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].id;
 			me.itemGrid.setData(me.poCapitalRequisitionItems);
 			
@@ -2947,6 +2989,9 @@ ii.Class({
 					else
 						me.setStatus("Saved");
 
+					if (me.status == "NewPOCapitalRequisition" || me.status == "EditPOCapitalRequisition") {
+						me.storePOCapitalRequisitionItems();
+					}
 					me.status = "";
 					me.modified(false);
 				}

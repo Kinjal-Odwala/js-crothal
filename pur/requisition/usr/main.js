@@ -1690,8 +1690,33 @@ ii.Class({
 			me.itemGrid.setData(me.poRequisitionDetails);
 			me.itemReadOnlyGrid.setData(me.poRequisitionDetails);
 			me.checkLoadCount();
+			me.storePORequisitionItems();
 		},
 		
+		storePORequisitionItems: function() {
+			var me = this;
+
+			me.poRequisitionDetailsTemp = [];
+			for (var index = 0; index < me.poRequisitionDetails.length; index++) {
+				var item = new fin.pur.poRequisition.PORequisitionDetail(
+					me.poRequisitionDetails[index].id
+					, me.poRequisitionDetails[index].poRequisitionId
+					, me.poRequisitionDetails[index].account
+					, me.poRequisitionDetails[index].itemSelect
+					, me.poRequisitionDetails[index].number
+					, me.poRequisitionDetails[index].description
+					, me.poRequisitionDetails[index].alternateDescription
+					, me.poRequisitionDetails[index].unit
+					, me.poRequisitionDetails[index].manufactured
+					, me.poRequisitionDetails[index].price
+					, me.poRequisitionDetails[index].quantity
+					, me.poRequisitionDetails[index].modified
+					, me.poRequisitionDetails[index].extendedPrice
+				);
+				me.poRequisitionDetailsTemp.push(item);
+			}
+		},
+
 		poRequisitionDocumentsLoaded: function(me, activeId) {
 
 			me.documentGrid.setData(me.poRequisitionDocuments);
@@ -1945,7 +1970,6 @@ ii.Class({
 			$("#StatusContainer").show();
 			me.action = "PORequisition";
 			me.loadPORequisitions();
-			//me.setStatus("Loaded");
 			me.modified(false);
 		},
 		
@@ -1956,7 +1980,6 @@ ii.Class({
 			$("#StatusContainer").hide();
 			me.action = "GeneratePurchaseOrder";
 			me.loadPORequisitions();
-			//me.setStatus("Loaded");
 			me.modified(false);
 		},
 
@@ -2046,11 +2069,12 @@ ii.Class({
 		
 		actionEditItem: function() {
 			var me = this;
-			
+
 			if (me.requisitionGrid.activeRowIndex == -1)
 				return true;			
-			
+
 			me.total = 0;
+			
 			loadPopup();
 			$("#popupMessageToUser").text("Loading");
 			$("#popupLoading").show();
@@ -2060,15 +2084,35 @@ ii.Class({
 				me.vendorStore.fetch("searchValue:" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle + ",vendorStatus:-1,userId:[user]", me.vendorsLoad, me);
 			}			
 
+			me.poRequisitionDetails = [];
+			for (var index = 0; index < me.poRequisitionDetailsTemp.length; index++) {
+				var item = new fin.pur.poRequisition.PORequisitionDetail(
+					me.poRequisitionDetailsTemp[index].id
+					, me.poRequisitionDetailsTemp[index].poRequisitionId
+					, me.poRequisitionDetailsTemp[index].account
+					, me.poRequisitionDetailsTemp[index].itemSelect
+					, me.poRequisitionDetailsTemp[index].number
+					, me.poRequisitionDetailsTemp[index].description
+					, me.poRequisitionDetailsTemp[index].alternateDescription
+					, me.poRequisitionDetailsTemp[index].unit
+					, me.poRequisitionDetailsTemp[index].manufactured
+					, me.poRequisitionDetailsTemp[index].price
+					, me.poRequisitionDetailsTemp[index].quantity
+					, me.poRequisitionDetailsTemp[index].modified
+					, me.poRequisitionDetailsTemp[index].extendedPrice
+				);
+				me.poRequisitionDetails.push(item);;
+			}
+			
 			me.poRequisitionId = me.requisitionGrid.data[me.lastSelectedRowIndex].id;
 			me.itemGrid.setData(me.poRequisitionDetails);
-			
+
 			for (var index = 0; index < me.poRequisitionDetails.length; index++) {
 				if (me.poRequisitionDetails[index].quantity != "" && !isNaN(me.poRequisitionDetails[index].quantity) && me.poRequisitionDetails[index].price != undefined && me.poRequisitionDetails[index].itemSelect) {
 					me.total += (parseFloat(me.poRequisitionDetails[index].quantity) * parseFloat(me.poRequisitionDetails[index].price));
 				}
 			}
-			
+
 			$("#spnTotal").html(me.total.toFixed(2));
 			me.status = "EditPORequisition";			
 			me.wizardCount = 1;
@@ -2647,7 +2691,7 @@ ii.Class({
 					$("#popupLoading").fadeOut("slow");
 				}
 				else {
-					$(args.xmlNode).find("*").each(function () { 
+					$(args.xmlNode).find("*").each(function () {
 						switch (this.tagName) {
 							case "purPORequisition":
 								if (me.status == "NewPORequisition") {
@@ -2725,7 +2769,10 @@ ii.Class({
 						me.setStatus("Normal");
 					else
 						me.setStatus("Saved");
-						
+
+					if (me.status == "NewPORequisition" || me.status == "EditPORequisition") {
+						me.storePORequisitionItems();
+					}
 					me.status = "";
 					me.modified(false);
 				}

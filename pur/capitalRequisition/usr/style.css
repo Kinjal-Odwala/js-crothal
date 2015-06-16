@@ -70,42 +70,34 @@
 	padding-left: 10px;
 }
 
-.labelTextAreaSmall {
+.labelTextAreaBlank {
 	float: left;
-	width: 7.5%;
+	height: 27px;
+}
+
+.labelTextAreaTotal {
+	float: left;
+	width: 100px;
+	height: 27px;
 	font-family: Verdana;
 	font-size: 12px;
 	color: #032D23;
 	text-align: left;
-	padding-right: 5px;
-	height: 27px;
-	padding-left: 5px;
 }
 
-.labelTextAreaSmallRight {
+.inputTextAreaTotal {
 	float: left;
-	width: 10%;
+	width: 120px;
+	height: 27px;
 	font-family: Verdana;
 	font-size: 12px;
 	color: #032D23;
 	text-align: right;
-	padding-right: 0px;
-	height: 27px;
-	padding-left: 5px;
 }
 
-.labelTextAreaMedium {
-	float: left;
-	width: 76.5%;
-	font-family: Verdana;
-	font-size: 12px;
-	color: #032D23;
-	text-align: left;
-	padding-right: 10px;
-	height: 27px;
-	padding-left: 10px;
+.spanTextAreaTotal {
+	padding-right: 5px;
 }
-
 
 .labelRequisitionNumber {
 	float: left;
@@ -114,7 +106,6 @@
 	font-size: 12px;
 	color: black;
 	text-align: left;
-	height: 27px;
 }
 
 .inputTextAreaSmall {
@@ -150,18 +141,6 @@
 	margin-right: 1px;
 	margin-left: 1px;
 	margin-bottom: 1px;	
-}
-
-.inputTextAreaSmall {
-	float: left;
-	width: 11%;
-	height: 30px;
-}
-
-.inputTextAreaMedium {
-	float: left;
-	width: 109px;
-	height: 30px;	
 }
 
 .labelTextUpload {
