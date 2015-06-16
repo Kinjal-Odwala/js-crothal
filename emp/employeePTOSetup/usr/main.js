@@ -1150,20 +1150,25 @@ ii.Class({
 			me.employeeGrid.setData(me.ptoEmployees);
 			me.checkLoadCount();
 		},
-		
+
 		loadPlans: function(showLoading) {
 			var me = this;
+			var active = -1;
 
 			if (me.ptoYearSearch.indexSelected == -1)
 				return;
-			
+
 			if (showLoading)
 				me.setLoadCount();
-			me.ptoPlanStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",ptoYearId:" + me.ptoYears[me.ptoYearSearch.indexSelected].id, me.ptoPlansLoaded, me);
+				
+			if (me.action == "PTO Assignments")
+				active = 1;
+			me.ptoPlanStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",ptoYearId:" + me.ptoYears[me.ptoYearSearch.indexSelected].id + ",active:" + active, me.ptoPlansLoaded, me);
 		},
-		
+
 		ptoPlansLoaded: function(me, activeId) {
 
+			me.resetControls();
 			me.ptoPlanGrid.setData(me.ptoPlans);
 			me.checkLoadCount();
 		},
