@@ -1175,6 +1175,7 @@ ii.Class({
 			me.houseCodeStatus = [];
 			me.countHours = [];
 			me.exceptions = [];
+			me.capExpenditureTypes = [];
 			
 			me.excludeOverheadAccounts.push(new fin.rpt.ssrs.ExcludeOverheadAccount(3, "Yes", "3"));//Default
 			me.excludeOverheadAccounts.push(new fin.rpt.ssrs.ExcludeOverheadAccount(-1, "No", "-1"));
@@ -1227,6 +1228,10 @@ ii.Class({
 			me.exceptions.push(new fin.rpt.ssrs.Exception(1, "Both", "B"));
 			me.exceptions.push(new fin.rpt.ssrs.Exception(2, "Open", "O"));
 			me.exceptions.push(new fin.rpt.ssrs.Exception(3, "Closed", "C"));
+			
+			me.capExpenditureTypes.push(new fin.rpt.ssrs.CapExpenditureType(1, "New Capital", "1"));
+			me.capExpenditureTypes.push(new fin.rpt.ssrs.CapExpenditureType(2, "Disposed Capital", "2"));
+			me.capExpenditureTypes.push(new fin.rpt.ssrs.CapExpenditureType(3, "Not Yet Purchased Capital", "3"));
 		},
 		
 		loggedInUsersLoaded: function(me, activeId) {
@@ -2366,6 +2371,8 @@ ii.Class({
                 typeTableData = me.countHours;
             else if (args.referenceTableName == "Exceptions")
                 typeTableData = me.exceptions;
+			else if (args.referenceTableName == "CapExpenditureTypes")
+                typeTableData = me.capExpenditureTypes;
             else if (args.referenceTableName == "GroupLevels")
             	me.groupLevelsLoaded();            
 				
