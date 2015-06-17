@@ -1690,31 +1690,6 @@ ii.Class({
 			me.itemGrid.setData(me.poRequisitionDetails);
 			me.itemReadOnlyGrid.setData(me.poRequisitionDetails);
 			me.checkLoadCount();
-			me.storePORequisitionItems();
-		},
-		
-		storePORequisitionItems: function() {
-			var me = this;
-
-			me.poRequisitionDetailsTemp = [];
-			for (var index = 0; index < me.poRequisitionDetails.length; index++) {
-				var item = new fin.pur.poRequisition.PORequisitionDetail(
-					me.poRequisitionDetails[index].id
-					, me.poRequisitionDetails[index].poRequisitionId
-					, me.poRequisitionDetails[index].account
-					, me.poRequisitionDetails[index].itemSelect
-					, me.poRequisitionDetails[index].number
-					, me.poRequisitionDetails[index].description
-					, me.poRequisitionDetails[index].alternateDescription
-					, me.poRequisitionDetails[index].unit
-					, me.poRequisitionDetails[index].manufactured
-					, me.poRequisitionDetails[index].price
-					, me.poRequisitionDetails[index].quantity
-					, me.poRequisitionDetails[index].modified
-					, me.poRequisitionDetails[index].extendedPrice
-				);
-				me.poRequisitionDetailsTemp.push(item);
-			}
 		},
 
 		poRequisitionDocumentsLoaded: function(me, activeId) {
@@ -2022,7 +1997,8 @@ ii.Class({
 			me.reasonForRequest.setValue("");
 			me.urgencyDate.setValue("");
 			$('input[name="Urgency"]').attr('checked', false);
-			
+			$("#LabelUrgencyDate").html("<span id='nonRequiredFieldIndicator'>Urgency Date:</span>");
+
 			me.vendor.setValue("");
 			me.searchItem.setValue("");
 			me.category.reset();
@@ -2084,26 +2060,6 @@ ii.Class({
 				me.vendorStore.fetch("searchValue:" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle + ",vendorStatus:-1,userId:[user]", me.vendorsLoad, me);
 			}			
 
-			me.poRequisitionDetails = [];
-			for (var index = 0; index < me.poRequisitionDetailsTemp.length; index++) {
-				var item = new fin.pur.poRequisition.PORequisitionDetail(
-					me.poRequisitionDetailsTemp[index].id
-					, me.poRequisitionDetailsTemp[index].poRequisitionId
-					, me.poRequisitionDetailsTemp[index].account
-					, me.poRequisitionDetailsTemp[index].itemSelect
-					, me.poRequisitionDetailsTemp[index].number
-					, me.poRequisitionDetailsTemp[index].description
-					, me.poRequisitionDetailsTemp[index].alternateDescription
-					, me.poRequisitionDetailsTemp[index].unit
-					, me.poRequisitionDetailsTemp[index].manufactured
-					, me.poRequisitionDetailsTemp[index].price
-					, me.poRequisitionDetailsTemp[index].quantity
-					, me.poRequisitionDetailsTemp[index].modified
-					, me.poRequisitionDetailsTemp[index].extendedPrice
-				);
-				me.poRequisitionDetails.push(item);;
-			}
-			
 			me.poRequisitionId = me.requisitionGrid.data[me.lastSelectedRowIndex].id;
 			me.itemGrid.setData(me.poRequisitionDetails);
 
@@ -2212,11 +2168,20 @@ ii.Class({
 				return;
 				
 			disablePopup();
+			
+			var index = me.itemGrid.activeRowIndex;
+			if (index >= 0)
+				me.itemGrid.body.deselect(index, true);
+
+			for (var index = me.poRequisitionDetails.length - 1; index >= 0; index--) {
+				if (me.poRequisitionDetails[index].id == 0)
+					me.poRequisitionDetails.splice(index, 1);
+			}
+
 			if (me.requisitionGrid.activeRowIndex >= 0)
 				me.poRequisitionId = me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].id;
 			
-			me.itemGrid.body.deselectAll();
-			me.wizardCount = 0;	
+			me.wizardCount = 0;
 			me.status = "";
 			me.setStatus("Loaded");
 		},
@@ -2770,9 +2735,6 @@ ii.Class({
 					else
 						me.setStatus("Saved");
 
-					if (me.status == "NewPORequisition" || me.status == "EditPORequisition") {
-						me.storePORequisitionItems();
-					}
 					me.status = "";
 					me.modified(false);
 				}

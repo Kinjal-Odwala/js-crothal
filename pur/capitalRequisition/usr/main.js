@@ -1844,32 +1844,8 @@ ii.Class({
 			me.checkLoadCount();
 			$("#spnSubTotal").html(me.subTotal.toFixed(2));
 			$("#spnTotal").html(me.total.toFixed(2));
-			me.storePOCapitalRequisitionItems();
 		},
-		
-		storePOCapitalRequisitionItems: function() {
-			var me = this;
 
-			me.poCapitalRequisitionItemsTemp = [];
-			for (var index = 0; index < me.poCapitalRequisitionItems.length; index++) {
-				var item = new fin.pur.poCapitalRequisition.POCapitalRequisitionItem(
-					me.poCapitalRequisitionItems[index].id
-					, me.poCapitalRequisitionItems[index].poCapitalRequisitionId
-					, me.poCapitalRequisitionItems[index].account
-					, me.poCapitalRequisitionItems[index].itemSelect
-					, me.poCapitalRequisitionItems[index].number
-					, me.poCapitalRequisitionItems[index].description
-					, me.poCapitalRequisitionItems[index].alternateDescription
-					, me.poCapitalRequisitionItems[index].unit
-					, me.poCapitalRequisitionItems[index].manufactured
-					, me.poCapitalRequisitionItems[index].price
-					, me.poCapitalRequisitionItems[index].quantity
-					, me.poCapitalRequisitionItems[index].modified
-				);
-				me.poCapitalRequisitionItemsTemp.push(item);
-			}
-		},
-		
 		poCapitalRequisitionDocumentsLoaded: function(me, activeId) {
 
 			me.documentGrid.setData(me.poCapitalRequisitionDocuments);
@@ -2167,7 +2143,7 @@ ii.Class({
 			me.capitalRequisitionGrid.body.deselectAll();
 			var index = me.itemGrid.activeRowIndex;
 			if (index >= 0)
-				me.itemGrid.body.deselect(index, true);		
+				me.itemGrid.body.deselect(index, true);
 			me.itemGrid.setData([]);
 			me.itemReadOnlyGrid.setData([]);	
 			me.documentGrid.setData([]);					
@@ -2270,27 +2246,8 @@ ii.Class({
 			if (me.capitalRequisitionGrid.data[me.lastSelectedRowIndex] != undefined) {
 				me.vendorStore.reset();
 				me.vendorStore.fetch("searchValue:" + me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].vendorTitle + ",vendorStatus:-1,userId:[user]", me.vendorsLoad, me);
-			}			
-
-			me.poCapitalRequisitionItems = [];
-			for (var index = 0; index < me.poCapitalRequisitionItemsTemp.length; index++) {
-				var item = new fin.pur.poCapitalRequisition.POCapitalRequisitionItem(
-					me.poCapitalRequisitionItemsTemp[index].id
-					, me.poCapitalRequisitionItemsTemp[index].poCapitalRequisitionId
-					, me.poCapitalRequisitionItemsTemp[index].account
-					, me.poCapitalRequisitionItemsTemp[index].itemSelect
-					, me.poCapitalRequisitionItemsTemp[index].number
-					, me.poCapitalRequisitionItemsTemp[index].description
-					, me.poCapitalRequisitionItemsTemp[index].alternateDescription
-					, me.poCapitalRequisitionItemsTemp[index].unit
-					, me.poCapitalRequisitionItemsTemp[index].manufactured
-					, me.poCapitalRequisitionItemsTemp[index].price
-					, me.poCapitalRequisitionItemsTemp[index].quantity
-					, me.poCapitalRequisitionItemsTemp[index].modified
-				);
-				me.poCapitalRequisitionItems.push(item);
 			}
-			
+
 			me.poCapitalRequisitionId = me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].id;
 			me.itemGrid.setData(me.poCapitalRequisitionItems);
 			
@@ -2304,7 +2261,7 @@ ii.Class({
 				me.total = 0;
 			else
 				me.total = me.subTotal + parseFloat(tax) + parseFloat(freight);
-				
+
 			$("#spnSubTotal").html(me.subTotal.toFixed(2));
 			$("#spnTotal").html(me.total.toFixed(2));
 			me.status = "EditPOCapitalRequisition";			
@@ -2405,10 +2362,19 @@ ii.Class({
 				return;
 				
 			disablePopup();
+
+			var index = me.itemGrid.activeRowIndex;
+			if (index >= 0)
+				me.itemGrid.body.deselect(index, true);
+
+			for (var index = me.poCapitalRequisitionItems.length - 1; index >= 0; index--) {
+				if (me.poCapitalRequisitionItems[index].id == 0)
+					me.poCapitalRequisitionItems.splice(index, 1);
+			}
+
 			if (me.capitalRequisitionGrid.activeRowIndex >= 0)
 				me.poCapitalRequisitionId = me.capitalRequisitionGrid.data[me.capitalRequisitionGrid.activeRowIndex].id;
-			
-			me.itemGrid.body.deselectAll();
+
 			me.wizardCount = 0;	
 			me.status = "";
 			me.setStatus("Loaded");
@@ -2989,9 +2955,6 @@ ii.Class({
 					else
 						me.setStatus("Saved");
 
-					if (me.status == "NewPOCapitalRequisition" || me.status == "EditPOCapitalRequisition") {
-						me.storePOCapitalRequisitionItems();
-					}
 					me.status = "";
 					me.modified(false);
 				}
