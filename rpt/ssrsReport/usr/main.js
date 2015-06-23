@@ -1367,7 +1367,7 @@ ii.Class({
 			$("#ExcludeHouseCode").append("<option title='(Select All)' value='-1'>(Select All)</option>");
 			$("#Exclude").append("<option title='(Select All)' value='-1'>(Select All)</option>");
 			
-			if(me.subscriptionSelected) {
+			if (me.subscriptionSelected) {
 				$("#ExcludeHouseCode").append("<option title='None' value='0'>None</option>");
 				$("#Exclude").append("<option title='None' value='0'>None</option>");
 			}
@@ -1410,8 +1410,8 @@ ii.Class({
 			}
 			else {
 				me.levelNamesLoaded = true;
-				var nodes = [];
 				me.levels = [];
+				var nodes = [];
 				var $scope = angular.element($("#SearchContainer")).scope();
 				$scope.$apply(function() {
 					$scope.nodes = me.hirNodes.slice();
@@ -1677,7 +1677,7 @@ ii.Class({
         	$("#Customer").html("");
 			$("#Customer").multiselect("refresh");
 			
-			if(me.controls[3] != undefined && me.controls[3].selector == "#GroupLevel")
+			if (me.controls[3] != undefined && me.controls[3].selector == "#GroupLevel")
             	me.groupLevelsLoaded();
 		},
 		
@@ -1762,7 +1762,7 @@ ii.Class({
             $("#Customer").html("");
 			$("#Customer").multiselect("refresh");
 			
-			if(me.controls[3] != undefined && me.controls[3].selector == "#GroupLevel")
+			if (me.controls[3] != undefined && me.controls[3].selector == "#GroupLevel")
             	me.groupLevelsLoaded();	
 		},
 		
@@ -2112,11 +2112,11 @@ ii.Class({
                             for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
                                 if (selectedValues[selectedIndex] != '(Select All)')
                                     parametersList = parametersList + ', ' + selectedValues[selectedIndex];
-									selectedItems = selectedItems + 1;
+								selectedItems++;
                             }
                             parametersList = parametersList.substring(1, parametersList.length);
 							
-							if(selectedValues.length > 4)
+							if (selectedValues.length > 4)
                                 return "" + selectedItems + "" + " selected";
                             else
                             	return parametersList;
@@ -2130,7 +2130,7 @@ ii.Class({
                         open: function(e) {
 							$("#" + e.target.id).multiselect('refresh');
 							$("#" + e.target.id).multiselect("widget").find(":radio").each(function() {
-							    if(this.checked)
+							    if (this.checked)
 							    	this.focus();						    	
 					   		});
 						},						
@@ -2175,14 +2175,14 @@ ii.Class({
                             for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
                                 if (selectedValues[selectedIndex] != '(Select All)') {
                                 	parametersList = parametersList + ', ' + selectedValues[selectedIndex];
-									selectedItems = selectedItems + 1;
+									selectedItems++;
                                 }                                    
                             }
                             parametersList = parametersList.substring(1, parametersList.length);
 							
-							if(parametersList.indexOf("None") >= 0 && selectedValues.length > 2)
+							if (parametersList.indexOf("None") >= 0 && selectedValues.length > 2)
                                 return "" + selectedItems + "" + " selected";
-                            else if(parametersList.indexOf("None") < 0 && selectedValues.length > 1)
+                            else if (parametersList.indexOf("None") < 0 && selectedValues.length > 1)
                                 return "" + selectedItems + "" + " selected";
                             else
                             	return parametersList;
@@ -2196,13 +2196,13 @@ ii.Class({
                             }
 							else {
                                 if (!ui.checked
-                                && $("#ui-multiselect-"+event.target.id+"-option-0")[0].title == '(Select All)'
-                                && $("#ui-multiselect-"+event.target.id+"-option-0")[0].checked)
+                                	&& $("#ui-multiselect-"+event.target.id+"-option-0")[0].title == '(Select All)'
+                                	&& $("#ui-multiselect-"+event.target.id+"-option-0")[0].checked)
                                     $("#ui-multiselect-"+event.target.id+"-option-0")[0].checked = false;
                             }
                         },
-						open: function(e) {							
-							if (e.target.id == 'Customer') {
+						open: function(e) {
+							if (e.target.id == "Customer") {
 								if (me.subscriptionSelected)
 									return false;
 									
@@ -2212,11 +2212,11 @@ ii.Class({
 								me.nodeChanged = false;																											
 								$("#Customer").html("");
 								$("#Customer").multiselect("refresh");
-								if (me.level == '' || me.name == '') 									
+								if (me.level == "" || me.name == "") 									
 									return false;
 									
 								$("#Customer").multiselect({
-									noneSelectedText: "Select a Value",	
+									noneSelectedText: "Select a Value",
 								});									
 								me.namesList = me.names.replace("~", "");
 								me.levelName = me.level.replace("~Level=", "");
@@ -2382,10 +2382,8 @@ ii.Class({
                 var title = typeTableData[index].name;
                 var brief = typeTableData[index].brief;
 
-                if (args.referenceTableName == "AppStateTypes" 
-	                || args.referenceTableName == "PayCodes" 
-	                || args.referenceTableName == "HouseCodes" 
-	                || args.referenceTableName == "FscYears")
+                if (args.referenceTableName == "AppStateTypes" || args.referenceTableName == "PayCodes" 
+	                || args.referenceTableName == "HouseCodes" || args.referenceTableName == "FscYears")
                     $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + "</option>");
                 else if (args.referenceTableName == "FscPeriods")
                     $("#" + args.name).append("<option title='" + 'Period ' + title + ' - ' + typeTableData[index].fscYeaTitle + "' value='" + value + "'>" + 'Period ' + title + ' - ' + typeTableData[index].fscYeaTitle + "</option>");
@@ -2403,11 +2401,9 @@ ii.Class({
                     else
                         $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + typeTableData[index].code + ' - ' + typeTableData[index].description + "</option>");                       
                 }                   
-                else if (args.referenceTableName == "EmpStatusTypes" ||
-                    args.referenceTableName == "HcmServiceTypes" ||
-                    args.referenceTableName == "HcmServiceLines"||
-                    args.referenceTableName == "HcmContractTypes")
-                        $("#" + args.name).append("<option title='" + title + "' value='" + title + "'>" + title + "</option>");
+                else if (args.referenceTableName == "EmpStatusTypes" || args.referenceTableName == "HcmServiceTypes"
+                	|| args.referenceTableName == "HcmServiceLines" || args.referenceTableName == "HcmContractTypes")
+                    $("#" + args.name).append("<option title='" + title + "' value='" + title + "'>" + title + "</option>");
 				else if (args.referenceTableName == "ExcludeHouseCodes")                    
                     $("#" + args.name).append("<option title='" + typeTableData[index].title + "' value='" + brief + "'>" + typeTableData[index].title + "</option>");
                 else if (args.referenceTableName == "RevInvoiceBatches")                    
@@ -2482,8 +2478,7 @@ ii.Class({
 				$("#Customer option").prop("selected", true);
 			else if (me.subscriptionSelected)
 				me.setDependentTypes();
-			
-				
+		
 			me.checkLoadCount();
 		},
 				
@@ -2645,10 +2640,8 @@ ii.Class({
 			$("#AppUnitText").removeClass("Loading");
 
 			if (me.units.length <= 0) {
-
 				ii.trace("Could not load the said Unit.", ii.traceTypes.Information, "Information");
 				alert("There is no corresponding Unit available or you do not have enough permission to access it.");
-
 				return;
 			}
 
@@ -2810,9 +2803,9 @@ ii.Class({
             
             for (var index = 0; index < data.length; index++ ) {
                 if (data[index].name != undefined)
-                        name = data[index].name;
-                    else
-                        name = data[index].title;
+                    name = data[index].name;
+                else
+                    name = data[index].title;
     
                 if (name.toLowerCase() == title.toLowerCase()) {
                     return index; 
@@ -2860,7 +2853,7 @@ ii.Class({
 			if (me.name == "") {
 				alert("Please select the Name.");
 				return false;
-			}	 
+			}
 			
 			for (var index = 0; index < me.reportParameters.length; index++) {
                 if (me.reportParameters[index].controlType == "Text")
@@ -2873,47 +2866,59 @@ ii.Class({
 							alert("Please enter valid " + me.reportParameters[index].title)
 							return false;
 						}
-                	}                							                    
-                }                   
+                	}
+                }
                 else if (me.reportParameters[index].controlType == "DropDown") {
-                	var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function(){
+                	var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function() {
                         return this.value;
                     }).get();
-                    if(selectedValues.length > 0) {
+                    if (selectedValues.length > 0) {
                         for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
                             if (selectedValues[selectedIndex] != "undefined")
                             	parametersList += "~" + me.reportParameters[index].name + "=" + selectedValues[selectedIndex];                            	
                         }
                     }
-                    else {
-                            alert("Please select " + me.reportParameters[index].title);
-                            return false;
-                    }
+	                else {
+	                	alert("Please select " + me.reportParameters[index].title);
+	                    return false;
+	                }
                 }
                 else if (me.reportParameters[index].controlType == "Label") {
-                	var dropDown = me.reportParameters[index].name.replace("Label", "");
-                	var selectedValues = $("#" + dropDown).multiselect("getChecked").map(function(){
-                        return this.attributes[1].nodeValue;
-                    }).get();
-                    if(selectedValues.length > 0) {                        
-                        if (selectedValues[0] != "undefined")
-                        	parametersList += "~" + me.reportParameters[index].name + "=" + selectedValues[0];
-                    }
-                }
+					if (me.reportParameters[index].name.indexOf("_") >= 0) {
+						var dropDown = me.reportParameters[index].name.replace("Hidden_", "");
+						var childNodes = $("#" + dropDown).multiselect()[0].childNodes;
+						var hiddenValues = "";
+						for (var nodeIndex = 0; nodeIndex < childNodes.length; nodeIndex++) {
+							if (childNodes[nodeIndex].value != "0")
+								hiddenValues += (hiddenValues != "") ? "," + childNodes[nodeIndex].value : childNodes[nodeIndex].value;
+                        }
+                       	parametersList += "~" + me.reportParameters[index].name + "=" + hiddenValues;
+					}
+					else {
+						var dropDown = me.reportParameters[index].name.replace("Label", "");
+	                	var selectedValues = $("#" + dropDown).multiselect("getChecked").map(function() {
+	                        return this.attributes[1].nodeValue;
+	                    }).get();
+	                    if (selectedValues.length > 0) {                        
+	                        if (selectedValues[0] != "undefined")
+	                        	parametersList += "~" + me.reportParameters[index].name + "=" + selectedValues[0];
+	                    }
+					}
+                 }
                 else if (me.reportParameters[index].controlType == "MultiSelect") {
-                    var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function(){
+                    var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function() {
                     	if (this.title != "(Select All)")
                         	return this.value;
                     }).get();
-                    if(selectedValues.length > 0) {
+                    if (selectedValues.length > 0) {
                         for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
                             if (selectedValues[selectedIndex] != "undefined")
-                            parametersList += "~" + me.reportParameters[index].name + "=" + selectedValues[selectedIndex];
+                            	parametersList += "~" + me.reportParameters[index].name + "=" + selectedValues[selectedIndex];
                         }
                     }
                     else {
-                            alert("Please select " + me.reportParameters[index].title);
-                            return false;
+                        alert("Please select " + me.reportParameters[index].title);
+                        return false;
                     }
                 }
             }
@@ -2933,14 +2938,14 @@ ii.Class({
 				
 				nameValuePair = parameters[index].toString();
 				nameValues = nameValuePair.split("=");
-				hiddenField.setAttribute("type", "hidden");		
-				hiddenField.setAttribute("name", nameValues[0]);		
-				hiddenField.setAttribute("value", nameValues[1]);		
+				hiddenField.setAttribute("type", "hidden");
+				hiddenField.setAttribute("name", nameValues[0]);
+				hiddenField.setAttribute("value", nameValues[1]);
 				form.appendChild(hiddenField);
 			}
 			
 			document.body.appendChild(form);
-			form.submit();							
+			form.submit();
 		},
 		
 		actionResetItem: function() {
@@ -3271,10 +3276,10 @@ ii.Class({
 						if (me.reportParameters[controlIndex].controlType == "Text")
 							me.controls[iIndex].setValue(nameValues[1]);
 						else if (me.reportParameters[controlIndex].controlType == "DropDown") {
-							 $(me.controls[controlIndex].selector).multiselect("widget").find(":radio").each(function(){
-							    if(this.value == nameValues[1])
-							            this.click();
-							   });
+							 $(me.controls[controlIndex].selector).multiselect("widget").find(":radio").each(function() {
+							 	if (this.value == nameValues[1])
+							    	this.click();
+							});
 						}
 					}
 				}
@@ -3712,40 +3717,40 @@ ii.Class({
 	                		if (ui.cmn.text.validate.generic(me.controls[index][0].value, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$"))
 		                		parametersList += "," + me.reportParameters[index].name + ":" + me.controls[index][0].value;	                		
 							else {
-								alert("Please enter valid " + me.reportParameters[index].title)
+								alert("Please enter valid " + me.reportParameters[index].title);
 								return false;
 							}
 	                	}                							                    
 	                }
 					else if (me.reportParameters[index].controlType == "DropDown") {
-						var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function(){
+						var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function() {
 	                        return this.value;
 	                    }).get();
-	                    if(selectedValues.length > 0) {
-	                        for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
-	                            if (selectedValues[selectedIndex] != "undefined")
-	                            parametersList += "," + me.reportParameters[index].name + ":" + selectedValues[selectedIndex];
-	                        }
-	                    }
-	                    else {
-	                            alert("Please select " + me.reportParameters[index].title);
-	                            return false;
-	                    }	                    
-					}
-					else if (me.reportParameters[index].controlType == "MultiSelect") {
-						var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function(){
-							if (this.title != "(Select All)")
-	                        	return this.value;
-	                    }).get();
-	                    if(selectedValues.length > 0) {
+	                    if (selectedValues.length > 0) {
 	                        for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
 	                            if (selectedValues[selectedIndex] != "undefined")
 	                            	parametersList += "," + me.reportParameters[index].name + ":" + selectedValues[selectedIndex];
 	                        }
 	                    }
 	                    else {
-	                            alert("Please select " + me.reportParameters[index].title);
-	                            return false;
+                            alert("Please select " + me.reportParameters[index].title);
+                            return false;
+	                    }	                    
+					}
+					else if (me.reportParameters[index].controlType == "MultiSelect") {
+						var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function() {
+							if (this.title != "(Select All)")
+	                        	return this.value;
+	                    }).get();
+	                    if (selectedValues.length > 0) {
+	                        for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
+	                            if (selectedValues[selectedIndex] != "undefined")
+	                            	parametersList += "," + me.reportParameters[index].name + ":" + selectedValues[selectedIndex];
+	                        }
+	                    }
+	                    else {
+                            alert("Please select " + me.reportParameters[index].title);
+                            return false;
 	                    }	                    
 					}																
 				}
