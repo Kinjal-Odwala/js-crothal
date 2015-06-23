@@ -38,6 +38,15 @@
 	padding-top: 5px;
 }
 
+.labelTextAreaSearch {
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: bold;
+	color: #032D23;
+	padding: 5px 0px 0px 10px;
+}
+
 .labelTextArea {
 	float: left;
 	width: 170px;
@@ -60,15 +69,19 @@
 	height: 27px;
 }
 
+.inputTextAreaSmall {
+	float: left;
+	width: 140px;
+	padding: 2px 0px 1px 5px;
+}
+
 .inputTextArea {
 	float: left;
 	width: 190px;
-	height: 30px;	
 }
 
 .inputTextAreaLarge {
 	float: left;
-	height: 20px;
 	width: 660px;
 }
 
@@ -120,35 +133,15 @@
     background-color: #adaaad;
 }
 
-.iiGridHeaderTotalColumn {
-	-moz-border-bottom-colors: none;
-	-moz-border-left-colors: none;
-	-moz-border-right-colors: none;
-	-moz-border-top-colors: none;
+.totalColumn {
+	height: 22px;
 	background-color: #669966;
-	border-color: #aaaaaa -moz-use-text-color #aaaaaa #aaaaaa;
-	border-image: none;
-	border-style: solid none solid solid;
-	border-width: 0px medium 0px 0px;
 	color: white;
-	float: left;
-	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-family: Verdana;
 	font-size: 12px;
 	font-weight: bold;
-	height: 17px;
-	padding-left: 0;
-	padding-right: 0;
-	padding-top: 3px;
 	text-align: right;
-	text-transform: uppercase;
-}
-
-#InputTextStatus {
-	float: left; 
-	width: 145px; 
-	padding-top: 2px;
-	padding-bottom: 1px;
-	padding-right: 5px;	
+	padding: 3px 2px 2px 0px;
 }
 
 #ShippingInfo {
@@ -246,6 +239,18 @@
 	padding-top: 0px;
 }
 
+#AnchorPrint {
+	float: left;
+	width: 68px;
+	margin: 5px 0px 10px 10px;
+}
+
+#AnchorApprove {
+	float: left;
+	width: 92px;
+	margin: 5px 0px 10px 10px;
+}
+
 #anchorAlign {
 	clear: both;
 	bottom: 15px;
@@ -314,16 +319,6 @@
 	text-align: right;	
 }
 
-#LabelStatus {
-	float: left;
-	font-family: Verdana;
-	font-size: 12px;
-	font-weight: bold;
-	color: #032D23;
-	padding-top: 5px;
-	padding-right: 5px;	
-}
-
 #LabelItemLeft {
 	width: 80px;
 	float: left;
@@ -376,11 +371,4 @@
 	border: 1px solid #cecece; 
 	background-color: black;
 	display: none;
-}
-
-#TotalRow {	 
-	width: 100%; 
-	height: 22px;
-	overflow: hidden;
-	position: relative;
 }

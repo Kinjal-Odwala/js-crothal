@@ -47,7 +47,12 @@ ii.init.register( function() {
 		id: {type: Number}
 		, title: {type: String}
 	};
-	
+
+	fin.pur.poCapitalRequisition.searchTypeArgs = {
+		id: {type: Number}
+		, title: {type: String}
+	};
+
 	fin.pur.poCapitalRequisition.stateTypeArgs = {
 		id: {type: Number}
 		, number: {type: Number}
@@ -83,6 +88,7 @@ ii.init.register( function() {
 		, requisitionNumber: {type: Number, required: false, defaultValue: 0}
 		, statusType: {type: Number, required: false, defaultValue: 0}
 		, houseCode: {type: Number}
+		, houseCodeTitle: {type: String, required: false, defaultValue: ""}
 		, houseCodeJob: {type: Number, required: false, defaultValue: 0}		
 		, shipToAddress1: {type: String, required: false, defaultValue: ""}
 		, shipToAddress2: {type: String, required: false, defaultValue: ""}
@@ -239,6 +245,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.pur.poCapitalRequisition.statusArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.pur.poCapitalRequisition.SearchType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.searchTypeArgs);
 			$.extend(this, args);
 		}
 	}

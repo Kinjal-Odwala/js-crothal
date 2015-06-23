@@ -27,6 +27,11 @@ ii.init.register( function() {
 		, hirNode: {type: Number, defaultValue: 0}
 	};
 
+	fin.emp.employeePTOSetup.houseCodeDetailArgs = {
+		id: {type: Number}
+		, ptoStartDate: {type: String, required: false, defaultValue: ""},
+	};
+
 	fin.emp.employeePTOSetup.ptoTypeArgs = {
 		id: {type: Number, required: false, defaultValue: 0}
 		, name: {type: String, required: false, defaultValue: ""}
@@ -79,6 +84,14 @@ ii.init.register( function() {
 		, modified: {type: Boolean, required: false, defaultValue: false}
 	};
 
+	fin.emp.employeePTOSetup.ptoEmployeeBalanceHourArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, employeeId: {type: Number, required: false, defaultValue: 0}
+		, ptoType: {type: fin.emp.employeePTOSetup.PTOType, required: false}
+		, balanceHours: {type: Number, required: false, defaultValue: 0}
+		, modified: {type: Boolean, required: false, defaultValue: false}
+	};
+	
 	fin.emp.employeePTOSetup.payCodeTypeArgs = {
 		id: {type: Number}
 		, brief: {type: String}
@@ -115,6 +128,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.emp.employeePTOSetup.houseCodeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.emp.employeePTOSetup.HouseCodeDetail",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.emp.employeePTOSetup.houseCodeDetailArgs);
 			$.extend(this, args);
 		}
 	}
@@ -175,6 +198,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.emp.employeePTOSetup.ptoDayArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.emp.employeePTOSetup.PTOEmployeeBalanceHour",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.emp.employeePTOSetup.ptoEmployeeBalanceHourArgs);
 			$.extend(this, args);
 		}
 	}
