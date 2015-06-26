@@ -675,7 +675,7 @@ ii.Class({
 				for (var index = 0; index < me.houseCodeCache[me.houseCodeBrief].jobs.length; index++) {
 					var job = me.houseCodeCache[me.houseCodeBrief].jobs[index];
 
-					if (job.jobNumber != "0000") {
+					if ((job.jobNumber != "0000") || ((job.jobNumber == "0000") && (me.houseCodeCache[me.houseCodeBrief].jobs.length == 2))) {
 						if (job.jobTitle == "") 
 							title = "";
 						else 
@@ -1119,7 +1119,7 @@ ii.Class({
 
 		    for (var index = 0; index < me.houseCodeCache[houseCode].jobs.length; index++) {
 		        job = me.houseCodeCache[houseCode].jobs[index];
-				if (job.jobNumber != "0000") {
+				if ((job.jobNumber != "0000") || ((job.jobNumber == "0000") && (me.houseCodeCache[houseCode].jobs.length == 2))) {
 					if (job.jobTitle == "") 
 						title = "";
 					else 
@@ -1148,7 +1148,7 @@ ii.Class({
 		actionCreditInvoiceItem: function() {
 			var me = this;
 			
-			if (me.rowBeingEdited) 
+			if (me.rowBeingEdited)
 				return;
 				
 			if (me.accountReceivables.length == 0) {
