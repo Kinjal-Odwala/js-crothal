@@ -1961,7 +1961,7 @@ ii.Class({
 					me.fiscalYearStore.reset();
 					me.fiscalYearStore.fetch("userId:[user],fscYear:>=3", me.dropdownsLoaded, me);
 				}
-				else if (me.reportParameters[index].referenceTableName == "FscPeriods"  && me.reportParameters[index].name != "FscPeriodTo") {
+				else if (me.reportParameters[index].referenceTableName == "FscPeriods" && me.reportParameters[index].name != "FscPeriodTo") {
 					me.ddlists = me.ddlists + 1;
 					me.list = "FscPeriods";
 					me.periodStore.fetch("userId:[user],fiscalYearId:-1", me.dropdownsLoaded, me);
@@ -2056,7 +2056,7 @@ ii.Class({
 			me.dependentTypes = [];
 					
 			for (var index = 0; index < me.reportParameters.length; index++) {
-				if (me.reportParameters[index].controlType != "Label") {
+				if (me.reportParameters[index].controlType != "Label" && me.reportParameters[index].controlType != "Hidden") {
 					if (me.reportParameters[index].controlType == "Date" && me.reportParameters[index].mandatory)
 						html += "\n<div><div id=ParameterLabel" + me.reportParameters[index].name + " class='labelReport'> <span class='nonRequiredFieldIndicator'>&#149;</span>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div><div><input type='checkbox' id='dateCheck' checked='true' class='checkMandatory' onchange='fin.reportUi.dateMandatory(this," + index + ");' /></div><div class='labelSchedule'>NULL</div></div>"
 					else if (me.reportParameters[index].controlType == "Date" && !me.reportParameters[index].mandatory)
@@ -2151,6 +2151,9 @@ ii.Class({
 					me.controls[index] = $("#" + me.reportParameters[index].name);
 					if (me.reportParameters[index].mandatory) {
                     	me.controls[index][0].disabled = true;
+                    }
+					if (me.reportParameters[index].defaultValue == "Today") {
+                    	me.controls[index][0].value = me.currentDate();
                     }
 				}
 				else if (me.reportParameters[index].controlType == "MultiSelect") {
@@ -2248,7 +2251,16 @@ ii.Class({
 			if (me.reportType == "Report")
 				me.checkLoadCount();
 		},
-		
+
+		currentDate: function() {
+			var currentTime = new Date(parent.fin.appUI.glbCurrentDate);
+			var month = currentTime.getMonth() + 1;
+			var day = currentTime.getDate();
+			var year = currentTime.getFullYear();
+			
+			return month + "/" + day + "/" + year;
+		},
+
 		populateMultiSelectDropDown: function() {
 			var args = ii.args(arguments, {
 				referenceTableName: {type: String}
@@ -2559,6 +2571,7 @@ ii.Class({
 		},
 		
 		fiscalweeksLoaded: function(me, activeId) {
+
 			$("#WkPeriod").html("");
 			for (var index = 0; index < me.genericTypes.length; index++) {
                 $("#WkPeriod").append("<option title='" + me.genericTypes[index].parameter + "' value='" + me.genericTypes[index].id + "'>" + me.genericTypes[index].parameter + "</option>");
@@ -2887,24 +2900,41 @@ ii.Class({
 					if (me.reportParameters[index].name.indexOf("_") >= 0) {
 						var dropDown = me.reportParameters[index].name.replace("Hidden_", "");
 						var childNodes = $("#" + dropDown).multiselect()[0].childNodes;
-						var hiddenValues = "";
-						for (var nodeIndex = 0; nodeIndex < childNodes.length; nodeIndex++) {
-							if (childNodes[nodeIndex].value != "0")
-								hiddenValues += (hiddenValues != "") ? "," + childNodes[nodeIndex].value : childNodes[nodeIndex].value;
-                        }
-                       	parametersList += "~" + me.reportParameters[index].name + "=" + hiddenValues;
+                       	parametersList += "~" + me.reportParameters[index].name + "=" + (childNodes.length - 1);
+					}
+					else if (me.reportParameters[index].name == "FscAccountCount" || me.reportParameters[index].name == "YearPeriodsCount") {
+						var dropDown = me.reportParameters[index].name.replace("Count", "");
+	                	var selectedValues = $("#" + dropDown).multiselect("getChecked").map(function() {
+	                        if (this.title != "(Select All)")
+                    			return this.title;
+	                    }).get();
+
+						parametersList += "~" + me.reportParameters[index].name + "=" + (selectedValues.length);
 					}
 					else {
 						var dropDown = me.reportParameters[index].name.replace("Label", "");
-	                	var selectedValues = $("#" + dropDown).multiselect("getChecked").map(function() {
-	                        return this.attributes[1].nodeValue;
-	                    }).get();
-	                    if (selectedValues.length > 0) {                        
-	                        if (selectedValues[0] != "undefined")
-	                        	parametersList += "~" + me.reportParameters[index].name + "=" + selectedValues[0];
-	                    }
+						if (me.reportParameters[index].name == "FscAccountLabel") {
+							var selectedValues = $("#" + dropDown).multiselect("getChecked").map(function() {
+		                    	if (this.title != "(Select All)")
+		                        	return this.title;
+		                    }).get();
+							var accountNames = "";
+	                        for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
+								accountNames += (accountNames != "") ? ", " + selectedValues[selectedIndex] : selectedValues[selectedIndex];
+	                        }
+							parametersList += "~" + me.reportParameters[index].name + "=" + accountNames;
+						}
+						else {
+							var selectedValues = $("#" + dropDown).multiselect("getChecked").map(function() {
+		                        return this.attributes[1].nodeValue;
+		                    }).get();
+		                    if (selectedValues.length > 0) {                        
+		                        if (selectedValues[0] != "undefined")
+		                        	parametersList += "~" + me.reportParameters[index].name + "=" + selectedValues[0];
+		                    }
+						}
 					}
-                 }
+                }
                 else if (me.reportParameters[index].controlType == "MultiSelect") {
                     var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function() {
                     	if (this.title != "(Select All)")
@@ -2921,8 +2951,20 @@ ii.Class({
                         return false;
                     }
                 }
+				else if (me.reportParameters[index].controlType == "Hidden") {
+					var selectedNames = me.name.split("~Name=");
+					if (me.reportParameters[index].name == "NameCount")
+						parametersList += "~" + me.reportParameters[index].name + "=" + (selectedNames.length - 1);
+					else {
+						var nameValues = "";
+						for (var selectedIndex = 1; selectedIndex < selectedNames.length; selectedIndex++) {
+							nameValues += (nameValues != "") ? ", " + selectedNames[selectedIndex] : selectedNames[selectedIndex];
+						}
+						parametersList += "~" + me.reportParameters[index].name + "=" + nameValues;
+					}
+                }
             }
-			
+
 			parametersList = "UserID=" + me.session.propertyGet("userName") + me.level + me.name + parametersList;
 			ii.trace("Parameters: " + parametersList, ii.traceTypes.Information, "Info");
 			var form = document.createElement("form");
