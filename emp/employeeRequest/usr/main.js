@@ -116,7 +116,7 @@ ii.Class({
 
 		    fin.employeeRequestUi.employeeGrid.setHeight($(window).height() - 75);
 			$("#EmployeeContentArea").height($(window).height() - 120);
-			$("#MealProgramContainer").height($(window).height() - 110);
+			$("#MainContainer").height($(window).height() - 160);
 		},
 		
 		defineFormControls: function() {
@@ -150,6 +150,12 @@ ii.Class({
 					brief: "Meal Program", 
 					title: "Allow a house code to enroll in the meal program.",
 					actionFunction: function() { me.actionMealProgramItem(); }
+				})
+				.addAction({
+					id: "validateEmployeeAgeAction", 
+					brief: "Employee Age Validation", 
+					title: "Allow a house code to hire employees under the age of 18.",
+					actionFunction: function() { me.actionValidateEmployeeAgeItem(); }
 				});
 
 			me.employeeGrid = new ui.ctl.Grid({
@@ -357,7 +363,7 @@ ii.Class({
 				id: "AnchorSave",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Save&nbsp;&nbsp;</span>",
-				clickFunction: function() {	me.actionMealProgramUpdateItem(); },
+				clickFunction: function() {	me.actionSave(); },
 				hasHotState: true
 			});
 		},
@@ -596,7 +602,7 @@ ii.Class({
 			
 			if (me.modification != "DateModification") {
 				$("#pageHeader").text("Employee Date Modification Details");
-				$("#MealProgram").hide();
+				$("#HCContainer").hide();
 				$("#EmpRequest").show();
 				$("#divSSNCurrentValues").hide();
                 $("#divSSNProposedValues").hide();
@@ -622,7 +628,7 @@ ii.Class({
 					
             if (me.modification != "SSNModification") {
                 $("#pageHeader").text("Employee SSN Modification Details");
-				$("#MealProgram").hide();
+				$("#HCContainer").hide();
 				$("#EmpRequest").show();
                 $("#divDateProposedValues").hide();
                 $("#divDateCurrentValues").hide();
@@ -648,7 +654,7 @@ ii.Class({
 					
 			if (me.modification != "ReverseTermination") {
 				$("#pageHeader").text("Employee Reverse Termination Details");
-				$("#MealProgram").hide();
+				$("#HCContainer").hide();
 				$("#EmpRequest").show();
 				$("#divDateProposedValues").hide();
 				$("#divDateCurrentValues").hide();
@@ -675,8 +681,28 @@ ii.Class({
 			if (me.modification != "MealProgram") {
 				$("#pageHeader").text("Employee Meal Program");
 				$("#EmpRequest").hide();
-				$("#MealProgram").show();
+				$("#EmployeeAgeSection").hide();
+				$("#HCContainer").show();
+				$("#MealProgramSection").show();
 				me.modification = "MealProgram";
+				me.setLoadCount();
+				me.houseCodeDetailStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.houseCodeDetailsLoaded, me);
+			}
+		},
+
+		actionValidateEmployeeAgeItem: function() {
+			var me = this;
+			
+			if (!parent.fin.cmn.status.itemValid()) 
+				return false;
+				
+			if (me.modification != "ValidateEmployeeAge") {
+				$("#pageHeader").text("Validate Employee Age");
+				$("#EmpRequest").hide();
+				$("#MealProgramSection").hide();
+				$("#HCContainer").show();
+				$("#EmployeeAgeSection").show();
+				me.modification = "ValidateEmployeeAge";
 				me.setLoadCount();
 				me.houseCodeDetailStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.houseCodeDetailsLoaded, me);
 			}
@@ -690,6 +716,11 @@ ii.Class({
 			}
 			else
 				$("input[name='MealPlan'][value='" + me.houseCodeDetails[0].mealPlan + "']").attr("checked", "checked");
+
+			if (me.houseCodeDetails[0].validateEmployeeAge)
+				$("#ValidateAgeYes").attr("checked", true);
+			else
+				$("#ValidateAgeNo").attr("checked", true);
 
 			me.checkLoadCount();
 		},
@@ -716,10 +747,10 @@ ii.Class({
 			me.actionSaveItem();
 		},
 		
-		actionMealProgramUpdateItem: function() {
+		actionSave: function() {
 			var me = this;
 			
-			me.status = "MealProgram";
+			me.status = me.modification;
 			me.actionSaveItem();
 		},
 
@@ -737,6 +768,12 @@ ii.Class({
 				xml += '<houseCodeMealPlanUpdate';
 				xml += ' id="' + parent.fin.appUI.houseCodeId + '"';
 				xml += ' mealPlan="' + $("input[name='MealPlan']:checked").val() + '"';
+				xml += '/>';
+			}
+			else if (me.status == "ValidateEmployeeAge") {
+				xml += '<houseCodeValidateEmployeeAgeUpdate';
+				xml += ' id="' + parent.fin.appUI.houseCodeId + '"';
+				xml += ' validateEmployeeAge="' + $("input[name='ValidateAge']:checked").val() + '"';
 				xml += '/>';
 			}
 			else {
