@@ -49,6 +49,15 @@
 	padding-top: 5px;
 }
 
+.labelTextAreaSearch {
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: bold;
+	color: #032D23;
+	padding: 5px 0px 0px 10px;
+}
+
 .labelTextArea {
 	float: left;
 	width: 170px;
@@ -61,42 +70,34 @@
 	padding-left: 10px;
 }
 
-.labelTextAreaSmall {
+.labelTextAreaBlank {
 	float: left;
-	width: 8%;
+	height: 27px;
+}
+
+.labelTextAreaTotal {
+	float: left;
+	width: 100px;
+	height: 27px;
 	font-family: Verdana;
 	font-size: 12px;
 	color: #032D23;
 	text-align: left;
-	padding-right: 5px;
-	height: 27px;
-	padding-left: 5px;
 }
 
-.labelTextAreaSmallRight {
+.inputTextAreaTotal {
 	float: left;
-	width: 10%;
+	width: 120px;
+	height: 27px;
 	font-family: Verdana;
 	font-size: 12px;
 	color: #032D23;
 	text-align: right;
-	padding-right: 0px;
-	height: 27px;
-	padding-left: 5px;
 }
 
-.labelTextAreaMedium {
-	float: left;
-	width: 76%;
-	font-family: Verdana;
-	font-size: 12px;
-	color: #032D23;
-	text-align: left;
-	padding-right: 10px;
-	height: 27px;
-	padding-left: 10px;
+.spanTextAreaTotal {
+	padding-right: 5px;
 }
-
 
 .labelRequisitionNumber {
 	float: left;
@@ -105,19 +106,29 @@
 	font-size: 12px;
 	color: black;
 	text-align: left;
-	height: 27px;
+}
+
+.inputTextAreaSmall {
+	float: left;
+	width: 140px;
+	padding: 2px 0px 1px 5px;
 }
 
 .inputTextArea {
 	float: left;
 	width: 190px;
-	height: 30px;	
 }
 
 .inputTextAreaLarge {
 	float: left;
-	height: 20px;
-	width: 72%;
+	width: 660px;
+}
+
+.contentAreaLeft {
+	float: left;
+	position: relative;
+	width: 460px;
+	margin-right: 10px;
 }
 
 .iiInputText.Loading {
@@ -130,18 +141,6 @@
 	margin-right: 1px;
 	margin-left: 1px;
 	margin-bottom: 1px;	
-}
-
-.inputTextAreaSmall {
-	float: left;
-	width: 11%;
-	height: 30px;
-}
-
-.inputTextAreaMedium {
-	float: left;
-	width: 109px;
-	height: 30px;	
 }
 
 .labelTextUpload {
@@ -171,14 +170,6 @@
 .borderVertical {
     width: 1px;
     background-color: #adaaad;
-}
-
-#InputTextStatus {
-	float: left; 
-	width: 145px; 
-	padding-top: 2px;
-	padding-bottom: 1px;
-	padding-right: 5px;	
 }
 
 #ShippingInfo {
@@ -284,6 +275,18 @@
     padding-top: 0px;
 }
 
+#AnchorPrint {
+	float: left;
+	width: 68px;
+	margin: 5px 0px 10px 10px;
+}
+
+#AnchorApprove {
+	float: left;
+	width: 92px;
+	margin: 5px 0px 10px 10px;
+}
+
 #anchorAlign {
 	clear: both;
 	bottom: 15px;
@@ -350,16 +353,6 @@
 
 #extendedPriceBodyColumn, #priceBodyColumn, #quantityBodyColumn {
 	text-align: right;	
-}
-
-#LabelStatus {
-	float: left;
-	font-family: Verdana;
-	font-size: 12px;
-	font-weight: bold;
-	color: #032D23;
-	padding-top: 5px;
-	padding-right: 5px;	
 }
 
 #LabelItemLeft {

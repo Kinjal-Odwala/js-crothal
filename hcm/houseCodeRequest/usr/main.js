@@ -5,7 +5,7 @@ ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.grid" );
 ii.Import( "fin.cmn.usr.util" );
-ii.Import( "fin.hcm.houseCodeWorkflow.usr.defs" );
+ii.Import( "fin.hcm.houseCodeRequest.usr.defs" );
 
 ii.Style( "style", 1 );
 ii.Style( "fin.cmn.usr.common", 2 );
@@ -32,7 +32,7 @@ function widgetLoaded() {
 }
 
 ii.Class({
-    Name: "fin.hcm.houseCodeWorkflow.UserInterface",
+    Name: "fin.hcm.houseCodeRequest.UserInterface",
     Definition: {
 
 		init: function() {
@@ -52,7 +52,7 @@ ii.Class({
 			}
 
 			me.workflowId = (queryStringArgs["id"] == undefined) ? 0 : parseInt(queryStringArgs["id"], 10);
-			me.workflowStep = (queryStringArgs["step"] == undefined) ? 0 : parseInt(queryStringArgs["step"], 10);
+			me.workflowStep = (queryStringArgs["stepNumber"] == undefined) ? 0 : parseInt(queryStringArgs["stepNumber"], 10);
 			me.currentWizard = "";
 			me.nextWizard = "";
 			me.prevWizard = "";
@@ -80,7 +80,7 @@ ii.Class({
 			me.session = new ii.Session(me.cache);
 
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
-			me.authorizePath = "\\crothall\\chimes\\fin\\HouseCodeSetup\\HouseCodeWorkflow";
+			me.authorizePath = "\\crothall\\chimes\\fin\\HouseCodeSetup\\HouseCodeRequest";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
 					me.authorizationProcess.apply(me);
@@ -103,7 +103,7 @@ ii.Class({
 			}
 		},
 		
-		authorizationProcess: function fin_hcm_houseCodeWorkflow_UserInterface_authorizationProcess() {
+		authorizationProcess: function fin_hcm_houseCodeRequest_UserInterface_authorizationProcess() {
 			var args = ii.args(arguments,{});
 			var me = this;
 
@@ -124,14 +124,14 @@ ii.Class({
 				me.session.registerFetchNotify(me.sessionLoaded, me);
 				me.personStore.fetch("userId:[user],id:" + me.session.propertyGet("personId"), me.personsLoaded, me);
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
-				me.houseCodeWorkflowMasterStore.fetch("userId:[user]", me.houseCodeWorkflowMastersLoaded, me);
+				me.houseCodeRequestMasterStore.fetch("userId:[user]", me.houseCodeRequestMastersLoaded, me);
 				me.hirNodeStore.fetch("userId:[user],hierarchy:2,", me.hirNodesLoaded, me);
 			}
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},	
 
-		sessionLoaded: function fin_hcm_houseCodeWorkflow_UserInterface_sessionLoaded() {
+		sessionLoaded: function fin_hcm_houseCodeRequest_UserInterface_sessionLoaded() {
 			var args = ii.args(arguments, {
 				me: {type: Object}
 			});
@@ -142,7 +142,7 @@ ii.Class({
 		resize: function() {
 			var args = ii.args(arguments, {});
 
-			fin.hcm.houseCodeWorkflowUi.houseCodeRequestGrid.setHeight($(window).height() - 80);
+			fin.hcm.houseCodeRequestUi.houseCodeRequestGrid.setHeight($(window).height() - 80);
 			$("#houseCodeDetailContainer").height($(window).height() - 120);
 		},
 		
@@ -179,6 +179,14 @@ ii.Class({
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
 				clickFunction: function() { me.actionCancelRequestItem(); },
+				hasHotState: true
+			});
+
+			me.anchorView = new ui.ctl.buttons.Sizeable({
+				id: "AnchorView",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;View&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionViewItem(); },
 				hasHotState: true
 			});
 
@@ -1240,115 +1248,123 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 
+			me.workflowModules = [];
+			me.workflowModuleStore = me.cache.register({
+				storeId: "appWorkflowModules",
+				itemConstructor: fin.hcm.houseCodeRequest.WorkflowModule,
+				itemConstructorArgs: fin.hcm.houseCodeRequest.workflowModuleArgs,
+				injectionArray: me.workflowModules
+			});
+
 			me.houseCodeRequests = [];
 			me.houseCodeRequestStore = me.cache.register({
 				storeId: "appGenericImports",
-				itemConstructor: fin.hcm.houseCodeWorkflow.HouseCodeRequest,
-				itemConstructorArgs: fin.hcm.houseCodeWorkflow.houseCodeRequestArgs,
+				itemConstructor: fin.hcm.houseCodeRequest.HouseCodeRequest,
+				itemConstructorArgs: fin.hcm.houseCodeRequest.houseCodeRequestArgs,
 				injectionArray: me.houseCodeRequests
 			});					
 
 			me.persons = [];
 			me.personStore = me.cache.register({ 
 				storeId: "persons",
-				itemConstructor: fin.hcm.houseCodeWorkflow.Person,
-				itemConstructorArgs: fin.hcm.houseCodeWorkflow.personArgs,
+				itemConstructor: fin.hcm.houseCodeRequest.Person,
+				itemConstructorArgs: fin.hcm.houseCodeRequest.personArgs,
 				injectionArray: me.persons	
 			});
 
 			me.hirNodes = [];
 			me.hirNodeStore = me.cache.register({
 				storeId: "hirNodes",
-				itemConstructor: fin.hcm.houseCodeWorkflow.HirNode,
-				itemConstructorArgs: fin.hcm.houseCodeWorkflow.hirNodeArgs,
+				itemConstructor: fin.hcm.houseCodeRequest.HirNode,
+				itemConstructorArgs: fin.hcm.houseCodeRequest.hirNodeArgs,
 				injectionArray: me.hirNodes
 			});
 
 			me.sites = [];
 			me.siteStore = me.cache.register({
 				storeId: "sites",
-				itemConstructor: fin.hcm.houseCodeWorkflow.Site,
-				itemConstructorArgs: fin.hcm.houseCodeWorkflow.siteArgs,
+				itemConstructor: fin.hcm.houseCodeRequest.Site,
+				itemConstructorArgs: fin.hcm.houseCodeRequest.siteArgs,
 				injectionArray: me.sites
 			});	
 
 			me.houseCodes = [];
 			me.houseCodeStore = me.cache.register({
 				storeId: "hcmHouseCodes",
-				itemConstructor: fin.hcm.houseCodeWorkflow.HouseCode,
-				itemConstructorArgs: fin.hcm.houseCodeWorkflow.houseCodeArgs,
+				itemConstructor: fin.hcm.houseCodeRequest.HouseCode,
+				itemConstructorArgs: fin.hcm.houseCodeRequest.houseCodeArgs,
 				injectionArray: me.houseCodes
 			});
 
 			me.stateTypes = [];
 			me.stateTypeStore = me.cache.register({
 				storeId: "stateTypes",
-				itemConstructor: fin.hcm.houseCodeWorkflow.StateType,
-				itemConstructorArgs: fin.hcm.houseCodeWorkflow.stateTypeArgs,
+				itemConstructor: fin.hcm.houseCodeRequest.StateType,
+				itemConstructorArgs: fin.hcm.houseCodeRequest.stateTypeArgs,
 				injectionArray: me.stateTypes	
 			});
 
 			me.contractTypes = [];
-			me.houseCodeWorkflowMasterStore = me.cache.register({
-				storeId: "houseCodeWorkflowMasters",	// contractTypes
-				itemConstructor: fin.hcm.houseCodeWorkflow.ContractType,
-				itemConstructorArgs: fin.hcm.houseCodeWorkflow.contractTypeArgs,
+			me.houseCodeRequestMasterStore = me.cache.register({
+				storeId: "houseCodeRequestMasters",	// contractTypes
+				itemConstructor: fin.hcm.houseCodeRequest.ContractType,
+				itemConstructorArgs: fin.hcm.houseCodeRequest.contractTypeArgs,
 				injectionArray: me.contractTypes	
 			});
 
 			me.termsOfContractTypes = [];
 			me.termsOfContractTypeStore = me.cache.register({
 				storeId: "termsOfContractTypes",
-				itemConstructor: fin.hcm.houseCodeWorkflow.TermsOfContractType,
-				itemConstructorArgs: fin.hcm.houseCodeWorkflow.termsOfContractTypeArgs,
+				itemConstructor: fin.hcm.houseCodeRequest.TermsOfContractType,
+				itemConstructorArgs: fin.hcm.houseCodeRequest.termsOfContractTypeArgs,
 				injectionArray: me.termsOfContractTypes	
 			});
 
 			me.serviceTypes = [];
 			me.serviceTypeStore = me.cache.register({
 				storeId: "serviceTypes",
-				itemConstructor: fin.hcm.houseCodeWorkflow.ServiceType,
-				itemConstructorArgs: fin.hcm.houseCodeWorkflow.serviceTypeArgs,
+				itemConstructor: fin.hcm.houseCodeRequest.ServiceType,
+				itemConstructorArgs: fin.hcm.houseCodeRequest.serviceTypeArgs,
 				injectionArray: me.serviceTypes
 			});
 
 			me.billingCycleFrequencys = [];
 			me.billingCycleFrequencyStore = me.cache.register({
 				storeId: "billingCycleFrequencyTypes",
-				itemConstructor: fin.hcm.houseCodeWorkflow.BillingCycleFrequency,
-				itemConstructorArgs: fin.hcm.houseCodeWorkflow.billingCycleFrequencyArgs,
+				itemConstructor: fin.hcm.houseCodeRequest.BillingCycleFrequency,
+				itemConstructorArgs: fin.hcm.houseCodeRequest.billingCycleFrequencyArgs,
 				injectionArray: me.billingCycleFrequencys	
 			});
 
 			me.houseCodeTypes = [];
 			me.houseCodeTypeStore = me.cache.register({
 				storeId: "houseCodeTypes",
-				itemConstructor: fin.hcm.houseCodeWorkflow.HouseCodeType,
-				itemConstructorArgs: fin.hcm.houseCodeWorkflow.houseCodeTypeArgs,
+				itemConstructor: fin.hcm.houseCodeRequest.HouseCodeType,
+				itemConstructorArgs: fin.hcm.houseCodeRequest.houseCodeTypeArgs,
 				injectionArray: me.houseCodeTypes	
 			});
 
 			me.payPayrollCompanys = [];
 			me.payPayrollCompanyStore = me.cache.register({
 				storeId: "houseCodePayrollCompanys",
-				itemConstructor: fin.hcm.houseCodeWorkflow.PayPayrollCompany,
-				itemConstructorArgs: fin.hcm.houseCodeWorkflow.payPayrollCompanyArgs,
+				itemConstructor: fin.hcm.houseCodeRequest.PayPayrollCompany,
+				itemConstructorArgs: fin.hcm.houseCodeRequest.payPayrollCompanyArgs,
 				injectionArray: me.payPayrollCompanys
 			});
 
 			me.jobs = [];
 			me.jobStore = me.cache.register({
 				storeId: "jobs",
-				itemConstructor: fin.hcm.houseCodeWorkflow.Job,
-				itemConstructorArgs: fin.hcm.houseCodeWorkflow.jobArgs,
+				itemConstructor: fin.hcm.houseCodeRequest.Job,
+				itemConstructorArgs: fin.hcm.houseCodeRequest.jobArgs,
 				injectionArray: me.jobs
 			});
 
 			me.zipCodeTypes = [];
 			me.zipCodeTypeStore = me.cache.register({
 				storeId: "zipCodeTypes",
-				itemConstructor: fin.hcm.houseCodeWorkflow.ZipCodeType,
-				itemConstructorArgs: fin.hcm.houseCodeWorkflow.zipCodeTypeArgs,
+				itemConstructor: fin.hcm.houseCodeRequest.ZipCodeType,
+				itemConstructorArgs: fin.hcm.houseCodeRequest.zipCodeTypeArgs,
 				injectionArray: me.zipCodeTypes
 			});
 		},
@@ -1359,6 +1375,7 @@ ii.Class({
 			$("#AnchorEdit").hide();
 			$("#AnchorSendRequest").hide();
 			$("#AnchorCancelRequest").hide();
+			$("#AnchorView").hide();
 			$("#DivHouseCode").hide();
 
 			$("input[name='CompassPurchaseAnySupplies']").click(function() {
@@ -1743,20 +1760,20 @@ ii.Class({
 				me.houseCodeRequestGrid.body.select(0);
 		},
 
-		houseCodeWorkflowMastersLoaded: function(me, activeId) {
+		houseCodeRequestMastersLoaded: function(me, activeId) {
 
 			me.clientStatusTypes = [];
 			me.companyStatusTypes = [];
 			me.supplyContractTypes = [];
 
-			me.clientStatusTypes.push(new fin.hcm.houseCodeWorkflow.ClientStatusType(1, "For Profit"));
-			me.clientStatusTypes.push(new fin.hcm.houseCodeWorkflow.ClientStatusType(1, "Non Profit"));
+			me.clientStatusTypes.push(new fin.hcm.houseCodeRequest.ClientStatusType(1, "For Profit"));
+			me.clientStatusTypes.push(new fin.hcm.houseCodeRequest.ClientStatusType(1, "Non Profit"));
 
-			me.companyStatusTypes.push(new fin.hcm.houseCodeWorkflow.CompanyStatusType(1, "Public"));
-			me.companyStatusTypes.push(new fin.hcm.houseCodeWorkflow.CompanyStatusType(1, "Private"));
+			me.companyStatusTypes.push(new fin.hcm.houseCodeRequest.CompanyStatusType(1, "Public"));
+			me.companyStatusTypes.push(new fin.hcm.houseCodeRequest.CompanyStatusType(1, "Private"));
 
-			me.supplyContractTypes.push(new fin.hcm.houseCodeWorkflow.SupplyContractType(1, "Chargeable"));
-			me.supplyContractTypes.push(new fin.hcm.houseCodeWorkflow.SupplyContractType(1, "Included"));
+			me.supplyContractTypes.push(new fin.hcm.houseCodeRequest.SupplyContractType(1, "Chargeable"));
+			me.supplyContractTypes.push(new fin.hcm.houseCodeRequest.SupplyContractType(1, "Included"));
 
 			me.primaryContractType.setData(me.contractTypes);
 			me.primaryServiceProvided.setData(me.serviceTypes);
@@ -1793,19 +1810,19 @@ ii.Class({
 
 			for (index = 0; index < me.hirNodes.length; index++) {
 				if (me.hirNodes[index].hirLevelTitle == "Enterprise")
-					divisions.push(new fin.hcm.houseCodeWorkflow.Division(me.hirNodes[index].id, me.hirNodes[index].title));
+					divisions.push(new fin.hcm.houseCodeRequest.Division(me.hirNodes[index].id, me.hirNodes[index].title));
 				else if (me.hirNodes[index].hirLevelTitle == "Senior Vice President")
-					svps.push(new fin.hcm.houseCodeWorkflow.Division(me.hirNodes[index].id, me.hirNodes[index].title));
+					svps.push(new fin.hcm.houseCodeRequest.Division(me.hirNodes[index].id, me.hirNodes[index].title));
 				else if (me.hirNodes[index].hirLevelTitle == "Divisonal Vice President")
-					dvps.push(new fin.hcm.houseCodeWorkflow.Division(me.hirNodes[index].id, me.hirNodes[index].title));
+					dvps.push(new fin.hcm.houseCodeRequest.Division(me.hirNodes[index].id, me.hirNodes[index].title));
 				else if (me.hirNodes[index].hirLevelTitle == "Regional Vice President")
-					rvps.push(new fin.hcm.houseCodeWorkflow.Division(me.hirNodes[index].id, me.hirNodes[index].title));
+					rvps.push(new fin.hcm.houseCodeRequest.Division(me.hirNodes[index].id, me.hirNodes[index].title));
 				else if (me.hirNodes[index].hirLevelTitle == "Senior Regional Manager")
-					srms.push(new fin.hcm.houseCodeWorkflow.Division(me.hirNodes[index].id, me.hirNodes[index].title));
+					srms.push(new fin.hcm.houseCodeRequest.Division(me.hirNodes[index].id, me.hirNodes[index].title));
 				else if (me.hirNodes[index].hirLevelTitle == "Regional Manager")
-					rms.push(new fin.hcm.houseCodeWorkflow.Division(me.hirNodes[index].id, me.hirNodes[index].title));
+					rms.push(new fin.hcm.houseCodeRequest.Division(me.hirNodes[index].id, me.hirNodes[index].title));
 				else if (me.hirNodes[index].hirLevelTitle == "Area Manager")
-					ams.push(new fin.hcm.houseCodeWorkflow.Division(me.hirNodes[index].id, me.hirNodes[index].title));
+					ams.push(new fin.hcm.houseCodeRequest.Division(me.hirNodes[index].id, me.hirNodes[index].title));
 			}
 
 			if (me.level == "") {
@@ -2027,12 +2044,12 @@ ii.Class({
 			me.countyNames = [];
 
 			for (index = 0; index < cityNamesTemp.length; index++) {
-				me.cityNames.push(new fin.hcm.houseCodeWorkflow.CityName({ id: index + 1, city: cityNamesTemp[index] }));
+				me.cityNames.push(new fin.hcm.houseCodeRequest.CityName({ id: index + 1, city: cityNamesTemp[index] }));
 			}
 			
 			if (me.searchZipCodeType == "Site") {
 				for (index = 0; index < countyNamesTemp.length; index++) {
-					me.countyNames.push(new fin.hcm.houseCodeWorkflow.CountyName({ id: index + 1, name: countyNamesTemp[index] }));
+					me.countyNames.push(new fin.hcm.houseCodeRequest.CountyName({ id: index + 1, name: countyNamesTemp[index] }));
 				}
 				me.city.reset();
 				me.county.reset();
@@ -2301,6 +2318,8 @@ ii.Class({
 				return;
 			
 			if (item != undefined) {
+				$("#AnchorView").show();
+				//$("#AnchorSendRequest").show();
 				if (me.workflowId > 0) {
 					$("#AnchorEdit").show();
 					$("#AnchorNew").hide();
@@ -2317,7 +2336,7 @@ ii.Class({
 					$("#AnchorSendRequest").hide();
 					$("#AnchorCancelRequest").hide();
 				}
-				//$("#AnchorSendRequest").show();
+				
 				itemIndex = ii.ajax.util.findIndexById(item.column16, me.contractTypes);
 				if (itemIndex >= 0 && itemIndex != undefined)
 					$("#ReadonlyContractType").html(me.contractTypes[itemIndex].name);
@@ -2397,7 +2416,7 @@ ii.Class({
 					return false;
 				else if (me.lastSelectedRowIndex >= 0) {
 					var item = me.houseCodeRequestGrid.data[me.lastSelectedRowIndex];
-					if (item.column7 == "Step 1 Approved" && me.workflowId > 0 && me.workflowStep == 2 && !me.houseCode.validate(true))
+					if (item.column7 == "Step 2 Approved" && me.workflowId > 0 && me.workflowStep == 3 && !me.houseCode.validate(true))
 						return false;
 				}
 			}
@@ -2575,7 +2594,7 @@ ii.Class({
 					break;
 			}
 			
-			if (me.nextWizard == "" || (me.nextWizard == "ServicesProvided" && me.workflowId > 0 && me.workflowStep == 2))
+			if (me.nextWizard == "" || (me.nextWizard == "ServicesProvided" && me.workflowId > 0 && me.workflowStep == 3))
 				me.anchorNext.display(ui.cmn.behaviorStates.disabled);
 			else
 				me.anchorNext.display(ui.cmn.behaviorStates.enabled);
@@ -2600,7 +2619,6 @@ ii.Class({
 
 		actionEditItem: function() {
 			var me = this;
-			var index = 0;
 			var hidePopup = false;
 
 			if (me.lastSelectedRowIndex >= 0) {
@@ -2613,14 +2631,15 @@ ii.Class({
 					$("#AnchorCancel").hide();
 					$("#AnchorExit").hide();
 				}
-				else if (me.workflowId > 0 && (item.column7 == "In Process" && me.workflowStep == 1) || (item.column7 == "Step 1 Approved" && me.workflowStep == 2)) {
+				else if (me.workflowId > 0 && (item.column7 == "In Process" && me.workflowStep == 1) 
+					|| (item.column7 == "Step 1 Approved" && me.workflowStep == 2) || (item.column7 == "Step 2 Approved" && me.workflowStep == 3)) {
 					$("#AnchorClose").hide();
 					$("#AnchorSave").hide();
 					$("#AnchorApprove").show();
 					$("#AnchorSaveAndApprove").show();
 					$("#AnchorCancel").show();
 					$("#AnchorExit").show();
-					if (item.column7 == "Step 1 Approved") {
+					if (item.column7 == "Step 2 Approved") {
 						$("#AnchorApprove").hide();
 						$("#DivHouseCode").show();
 						me.houseCode.setValue("");
@@ -2639,11 +2658,12 @@ ii.Class({
 				$("#popupLoading").fadeIn("slow");
 				me.status = "Edit";
 				me.initializeWizard();
+				
+				var index = ii.ajax.util.findIndexById(item.column16, me.contractTypes);
 
-				index = ii.ajax.util.findIndexById(item.column16, me.contractTypes);
-				if (index != undefined && index >= 0)
+				if (index != undefined && index >= 0) 
 					me.primaryContractType.select(index, me.primaryContractType.focused);
-
+				
 				index = me.findIndexByTitle(item.column18, me.svp.data);
 				if (index != undefined && index >= 0) {
 					me.svp.select(index, me.svp.focused);
@@ -2664,37 +2684,38 @@ ii.Class({
 					hidePopup = true;
 				}
 				
+				me.houseCode.setValue(item.column13)
 				me.startDate.setValue(item.column24);
 				me.siteName.setValue(item.column25);
 				me.street1.setValue(item.column26);
 				me.street2.setValue(item.column27);
 				me.state.reset();
 				index = ii.ajax.util.findIndexById(item.column29, me.stateTypes);
-				if (index != undefined && index >= 0)
+				if (index != undefined && index >= 0) 
 					me.state.select(index, me.state.focused);
 				me.zipCode.setValue(item.column30);
 				me.phone.setValue(item.column32);
 				
 				me.primaryServiceProvided.reset();
 				index = ii.ajax.util.findIndexById(item.column33, me.serviceTypes);
-				if (index != undefined && index >= 0)
+				if (index != undefined && index >= 0) 
 					me.primaryServiceProvided.select(index, me.primaryServiceProvided.focused);
 				var otherServicesProvidedTemp = item.column34.split(",");
-				$("#OtherServicesProvided").multiselect("widget").find(":checkbox").each(function() {
-			 		if ($.inArray(this.value, otherServicesProvidedTemp) >= 0) {
-			 			this.click();
-			 		}
+				$("#OtherServicesProvided").multiselect("widget").find(":checkbox").each(function(){
+					if ($.inArray(this.value, otherServicesProvidedTemp) >= 0) {
+						this.click();
+					}
 				});
 				me.priorServiceProvider.setValue(item.column35);
-
+				
 				me.hourlyCompany.reset();
 				index = ii.ajax.util.findIndexById(item.column36, me.payPayrollCompanys);
-				if (index != undefined && index >= 0)
+				if (index != undefined && index >= 0) 
 					me.hourlyCompany.select(index, me.hourlyCompany.focused);
 				me.hourlyEmployees.setValue(item.column37);
 				me.salaryCompany.reset();
 				index = ii.ajax.util.findIndexById(item.column38, me.payPayrollCompanys);
-				if (index != undefined && index >= 0)
+				if (index != undefined && index >= 0) 
 					me.salaryCompany.select(index, me.salaryCompany.focused);
 				me.salaryEmployees.setValue(item.column39);
 				me.ePay.setValue(item.column40);
@@ -2703,19 +2724,19 @@ ii.Class({
 				$("input[name='CrothallBenefits'][value='" + item.column42 + "']").attr("checked", "checked");
 				me.unionAccount.reset();
 				index = ii.ajax.util.findIndexById(item.column43, me.houseCodeTypes);
-				if (index != undefined && index >= 0)
+				if (index != undefined && index >= 0) 
 					me.unionAccount.select(index, me.unionAccount.focused);
 				me.unionName.setValue(item.column44);
 				me.localNumber.setValue(item.column45);
-
-				me.customers.push(new fin.hcm.houseCodeWorkflow.Job(0, item.column46, item.column47, item.column48, "", item.column49, item.column50, item.column51));
+				
+				me.customers.push(new fin.hcm.houseCodeRequest.Job(0, item.column46, item.column47, item.column48, "", item.column49, item.column50, item.column51));
 				me.customerNumber.setData(me.customers);
 				me.customerNumber.select(0, me.customerNumber.focused);
 				me.clientName.setValue(item.column47);
 				me.customerStreet.setValue(item.column48);
 				me.customerState.reset();
 				index = ii.ajax.util.findIndexById(item.column50, me.stateTypes);
-				if (index != undefined && index >= 0)
+				if (index != undefined && index >= 0) 
 					me.customerState.select(index, me.customerState.focused);
 				me.customerState.updateStatus();
 				me.customerZipCode.setValue(item.column51);
@@ -2723,7 +2744,7 @@ ii.Class({
 				me.customerBiller.setValue(item.column53);
 				me.billingFrequency.reset();
 				index = ii.ajax.util.findIndexById(item.column54, me.billingCycleFrequencys);
-				if (index != undefined && index >= 0)
+				if (index != undefined && index >= 0) 
 					me.billingFrequency.select(index, me.billingFrequency.focused);
 				me.paymentTerms.setValue(item.column55);
 				me.creditApprovalNumber.setValue(item.column56);
@@ -2731,19 +2752,19 @@ ii.Class({
 				
 				me.clientStatus.reset();
 				index = me.findIndexByTitle(item.column58, me.clientStatusTypes);
-				if (index != undefined && index >= 0)
+				if (index != undefined && index >= 0) 
 					me.clientStatus.select(index, me.clientStatus.focused);
 				me.taxExemptionNumber.setValue(item.column59);
 				me.certificate.setValue(item.column60);
 				me.einNumber.setValue(item.column61);
 				me.companyStatus.reset();
 				index = me.findIndexByTitle(item.column62, me.companyStatusTypes);
-				if (index != undefined && index >= 0)
+				if (index != undefined && index >= 0) 
 					me.companyStatus.select(index, me.companyStatus.focused);
-					
+				
 				$("input[name='Contract'][value='" + item.column63 + "']").attr("checked", "checked");
 				index = ii.ajax.util.findIndexById(item.column64, me.termsOfContractTypes);
-				if (index != undefined && index >= 0)
+				if (index != undefined && index >= 0) 
 					me.contractType.select(index, me.contractType.focused);
 				me.contractLength.setValue(item.column65);
 				me.expirationDate.setValue(item.column66);
@@ -2752,27 +2773,27 @@ ii.Class({
 				me.licensedBeds.setValue(item.column69);
 				me.gpoMember.setValue(item.column70);
 				$("input[name='StartDateFirm'][value='" + item.column71 + "']").attr("checked", "checked");
-
+				
 				$("input[name='CompassPurchaseAnySupplies'][value='" + item.column72 + "']").attr("checked", "checked");
-				if (item.column72 == "No")
+				if (item.column72 == "No") 
 					$("#ContactInfo").hide();
 				me.contactName.setValue(item.column73);
 				me.contactNumber.setValue(item.column74);
 				me.typesOfSuppliesPurchased.setValue(item.column75);
 				me.chargeable.reset();
 				index = me.findIndexByTitle(item.column76, me.supplyContractTypes);
-				if (index != undefined && index >= 0)
+				if (index != undefined && index >= 0) 
 					me.chargeable.select(index, me.chargeable.focused);
 				me.markup.setValue(item.column77);
-
-				me.serviceLocations.push(new fin.hcm.houseCodeWorkflow.Job(0, item.column78, item.column79, item.column80, "", item.column81, item.column82, item.column83));
+				
+				me.serviceLocations.push(new fin.hcm.houseCodeRequest.Job(0, item.column78, item.column79, item.column80, "", item.column81, item.column82, item.column83));
 				me.serviceLocationNumber.setData(me.serviceLocations);
 				me.serviceLocationNumber.select(0, me.serviceLocationNumber.focused);
 				me.serviceLocationName.setValue(item.column79);
 				me.serviceLocationStreet.setValue(item.column80);
 				me.serviceLocationState.reset();
 				index = ii.ajax.util.findIndexById(item.column82, me.stateTypes);
-				if (index != undefined && index >= 0)
+				if (index != undefined && index >= 0) 
 					me.serviceLocationState.select(index, me.serviceLocationState.focused);
 				me.serviceLocationState.updateStatus();
 				me.serviceLocationZipCode.setValue(item.column83);
@@ -2781,12 +2802,12 @@ ii.Class({
 				me.foodCourt.setValue(item.column86);
 				me.commonArea.setValue(item.column87);
 				me.otherAreas.setValue(item.column88);
-
+				
 				me.searchZipCode = false;
 				me.searchCustomerZipCode = true;
 				me.searchServiceLocationZipCode = true;
 				me.loadZipCodeTypes("Site");
-				
+	
 				if (hidePopup)
 					$("#popupLoading").fadeOut("slow");
 			}
@@ -2834,21 +2855,35 @@ ii.Class({
             me.actionSaveItem();
 		},
 		
+		actionViewItem: function() {
+			var me = this;
+
+			if (me.houseCodeRequestGrid.activeRowIndex == -1)
+                return true;
+ 
+            $("#messageToUser").text("Downloading");
+            me.status = "ViewRequest";
+            me.actionSaveItem();
+		},
+		
 		actionApproveItem: function() {
 			var me = this;
 			var item = me.houseCodeRequestGrid.data[me.lastSelectedRowIndex];
-			
+
 			$("#messageToUser").text("Approving Request");
-			
+
 			if (item.column7 == "In Process" && me.workflowId > 0 && me.workflowStep == 1) {
 				me.status = "ApproveRequestStep1";
 			}
 			else if (item.column7 == "Step 1 Approved" && me.workflowId > 0 && me.workflowStep == 2) {
+				me.status = "ApproveRequestStep2";
+			}
+			else if (item.column7 == "Step 2 Approved" && me.workflowId > 0 && me.workflowStep == 3) {
 				if (!me.houseCode.validate(true)) {
 					return;
 				}
-				me.status = "ApproveRequestStep2";
-			}	
+				me.status = "ApproveRequestStep3";
+			}
 
             me.actionSaveItem();
 		},
@@ -2857,7 +2892,7 @@ ii.Class({
 			var me = this;
 			var item = me.houseCodeRequestGrid.data[me.lastSelectedRowIndex];
 
-			if (item.column7 == "In Process" && me.workflowId > 0 && me.workflowStep == 1) {
+			if (me.workflowId > 0 && ((item.column7 == "In Process" && me.workflowStep == 1) || (item.column7 == "Step 1 Approved" && me.workflowStep == 2))) {
 				if (!me.primaryContractType.validate(true)
 					|| !me.svp.validate(true) || !me.dvp.validate(true) || !me.rvp.validate(true)
 					|| !me.srm.validate(true) || !me.rm.validate(true) || !me.am.validate(true)
@@ -2878,9 +2913,12 @@ ii.Class({
 					alert("There are few mandatory fields which are not entered. Please enter values for all mandatory fields and try again.");
 					return false;
 				}
-				me.status = "SaveAndApproveRequestStep1";
+				if (item.column7 == "In Process" && me.workflowStep == 1)
+					me.status = "SaveAndApproveRequestStep1";
+				else if (item.column7 == "Step 1 Approved" && me.workflowStep == 2)
+					me.status = "SaveAndApproveRequestStep2";
 			}
-			else if (item.column7 == "Step 1 Approved" && me.workflowId > 0 && me.workflowStep == 2) {
+			else if (item.column7 == "Step 2 Approved" && me.workflowId > 0 && me.workflowStep == 3) {
 				if (!me.primaryContractType.validate(true)
 					|| !me.svp.validate(true) || !me.dvp.validate(true) || !me.rvp.validate(true)
 					|| !me.srm.validate(true) || !me.rm.validate(true) || !me.am.validate(true) || !me.houseCode.validate(true)
@@ -2890,7 +2928,7 @@ ii.Class({
 					alert("There are few mandatory fields which are not entered. Please enter values for all mandatory fields and try again.");
 					return false;
 				}
-				me.status = "SaveAndApproveRequestStep2";
+				me.status = "SaveAndApproveRequestStep3";
 			}
 
 			$("#messageToUser").text("Approving Request");
@@ -2899,8 +2937,8 @@ ii.Class({
 
 		actionCancelItem: function() {
 			var me = this;	
-			var windowWidth = $("#popupWorkflow").width();
-			var windowHeight = $("#popupWorkflow").height();
+			var windowWidth = $("#popupRequest").width();
+			var windowHeight = $("#popupRequest").height();
 			var popupWidth = $("#popupNotes").width();
 			var popupHeight = $("#popupNotes").height();
 
@@ -2939,6 +2977,8 @@ ii.Class({
 				me.status = "UnApproveRequestStep1";
 			else if (item.column7 == "Step 1 Approved" && me.workflowId > 0 && me.workflowStep == 2)
 				me.status = "UnApproveRequestStep2";
+			else if (item.column7 == "Step 2 Approved" && me.workflowId > 0 && me.workflowStep == 3)
+				me.status = "UnApproveRequestStep3";
             me.actionSaveItem();
 			hidePopup();
 		},
@@ -2947,7 +2987,8 @@ ii.Class({
 			var me = this;
 			var item = [];
 
-			if (me.status == "New" || me.status == "Edit" || me.status == "SaveAndApproveRequestStep1" || me.status == "SaveAndApproveRequestStep2") {
+			if (me.status == "New" || me.status == "Edit" || me.status == "SaveAndApproveRequestStep1" 
+				|| me.status == "SaveAndApproveRequestStep2" || me.status == "SaveAndApproveRequestStep3") {
 				if (me.currentWizard == "PrimaryDriver") {
 					if (!me.primaryContractType.validate(true))
 						return false;
@@ -3001,20 +3042,20 @@ ii.Class({
 					return this.value;    
 				}).get();
 
-				item = new fin.hcm.houseCodeWorkflow.HouseCodeRequest(
+				item = new fin.hcm.houseCodeRequest.HouseCodeRequest(
 					(me.status == "New" ? 0 : me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].id)
 					, (me.status == "New" ? "0" : me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].column1)
-					, me.session.propertyGet("userId")
-					, me.session.propertyGet("userName")
-					, me.session.propertyGet("userFirstName")
-					, me.session.propertyGet("userLastName")
+					, (me.status == "New" ? me.session.propertyGet("userId") : me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].column2)
+					, (me.status == "New" ? me.session.propertyGet("userName") : me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].column3)
+					, (me.status == "New" ? me.session.propertyGet("userFirstName") : me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].column4)
+					, (me.status == "New" ? me.session.propertyGet("userLastName") : me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].column5)
 					, (me.status == "New" ? ui.cmn.text.date.format(new Date(), "mm/dd/yyyy") : me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].column6)
 					, (me.status == "New" ? "Open" : me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].column7)
 					, (me.status == "New" ? "" : me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].column8)
 					, ""
 					, ""
 					, ""
-					, ""
+					, me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].column12
 					, ""
 					, (me.status == "New" ? me.persons[0].email : me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].column14)
 					, ""
@@ -3098,7 +3139,23 @@ ii.Class({
 				}
 				else if (me.status == "SaveAndApproveRequestStep2") {
 					item.column7 = "Step 2 Approved";
+				}
+				else if (me.status == "SaveAndApproveRequestStep3") {
+					//item.column7 = "Step 3 - In Process";
+					item.column7 = "Step 2 Approved";
 					item.column13 = me.houseCode.getValue();
+
+					var users = item.column12.split(",");
+					var found = false;
+					for (var index = 0; index < users.length; index++) {
+						if (users[index] == me.session.propertyGet("userId")) {
+							found = true;
+							break;
+						}
+					}
+					
+					if (!found)
+						item.column12 = (item.column12 == "" ? me.session.propertyGet("userId") : item.column12 + "," + me.session.propertyGet("userId"));
 				}
 				hidePopup();
 				$("#messageToUser").text("Saving");
@@ -3110,6 +3167,12 @@ ii.Class({
 			}
 			else if (me.status == "ApproveRequestStep2") {
 				item = me.houseCodeRequestGrid.data[me.houseCodeRequestGrid.activeRowIndex];
+				item.column7 = "Step 2 Approved";
+				hidePopup();
+			}
+			else if (me.status == "ApproveRequestStep3") {
+				item = me.houseCodeRequestGrid.data[me.houseCodeRequestGrid.activeRowIndex];
+				//item.column7 = "Step 3 - In Process";
 				item.column7 = "Step 2 Approved";
 				hidePopup();
 			}
@@ -3129,8 +3192,19 @@ ii.Class({
 				item = me.houseCodeRequestGrid.data[me.houseCodeRequestGrid.activeRowIndex];
 				item.column7 = "In Process";
 			}
+			else if (me.status == "UnApproveRequestStep3") {
+				item = me.houseCodeRequestGrid.data[me.houseCodeRequestGrid.activeRowIndex];
+				item.column7 = "Step 1 Approved";
+			}
+			else if (me.status == "ViewRequest") {
+				item = me.houseCodeRequestGrid.data[me.houseCodeRequestGrid.activeRowIndex];
+			}
 
-			me.setStatus("Saving");
+			if (me.status == "ViewRequest")
+				me.setStatus("Downloading");
+			else
+				me.setStatus("Saving");
+
 			$("#pageLoading").fadeIn("slow");
 			var xml = me.saveXmlBuild(item);
 
@@ -3147,7 +3221,7 @@ ii.Class({
 		
 		saveXmlBuild: function() {
 			var args = ii.args(arguments,{
-				item: {type: fin.hcm.houseCodeWorkflow.HouseCodeRequest}
+				item: {type: fin.hcm.houseCodeRequest.HouseCodeRequest}
 			});			
 			var me = this;
 			var item = args.item;
@@ -3159,7 +3233,9 @@ ii.Class({
 			xml += ' userName="' + item.column3 + '"';
 			xml += ' firstName="' + ui.cmn.text.xml.encode(item.column4) + '"';
 			xml += ' lastName="' + ui.cmn.text.xml.encode(item.column5) + '"';
+			xml += ' requestedDate="' + item.column6 + '"';
 			xml += ' status="' + item.column7 + '"';
+			xml += ' usersList="' + item.column12 + '"';
 			xml += ' houseCode="' + ui.cmn.text.xml.encode(item.column13) + '"';
 			xml += ' email="' + ui.cmn.text.xml.encode(item.column14) + '"';
 			xml += ' primaryContractType="' + item.column16 + '"';
@@ -3236,8 +3312,9 @@ ii.Class({
 			xml += ' commonArea="' + ui.cmn.text.xml.encode(item.column87) + '"';
 			xml += ' otherAreas="' + ui.cmn.text.xml.encode(item.column88) + '"';
 			xml += ' action="' + me.status + '"';
+			xml += ' moduleBrief="hcr"';
 
-			if (me.status == "SendRequest") {
+			if (me.status == "SendRequest" || me.status == "ViewRequest") {
 				var index = 0;
 				var primaryContractTypeTitle = "";
 				var stateTitle = "";
@@ -3311,7 +3388,7 @@ ii.Class({
 				xml += ' serviceLocationStateTitle="' + ui.cmn.text.xml.encode(serviceLocationStateTitle) + '"';
 			}
 			
-			if (me.status == "UnApproveRequestStep1" || me.status == "UnApproveRequestStep2")
+			if (me.status == "UnApproveRequestStep1" || me.status == "UnApproveRequestStep2" || me.status == "UnApproveRequestStep3")
 				xml += ' notes="' + ui.cmn.text.xml.encode(me.notes.value) + '"';
 			else 
 				xml += ' notes=""';
@@ -3330,13 +3407,14 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
+			var currentStatus = "";
 
 			if (status == "success") {
 				me.modified(false);
 
-				$(args.xmlNode).find("*").each(function(){
+				$(args.xmlNode).find("*").each(function() {
 					switch (this.tagName) {
-						case "HcmHouseCode":
+						case "appGenericImport":
 							if (me.status == "SendRequest" || me.status == "CancelRequest") {
 								me.houseCodeRequests[me.lastSelectedRowIndex] = item;
 								me.houseCodeRequestGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);									
@@ -3349,7 +3427,15 @@ ii.Class({
 								me.houseCodeRequests.push(item);
 								me.lastSelectedRowIndex = me.houseCodeRequestGrid.data.length - 1;
 							}
+							else if (me.status == "ViewRequest") {
+								currentStatus = me.status;
+								$("iframe")[0].contentWindow.document.getElementById("FileName").value = $(this).attr("fileName");
+								$("iframe")[0].contentWindow.document.getElementById("DownloadButton").click();
+							}
 							else {
+								if (me.status == "SaveAndApproveRequestStep3") {
+									item.column7 = $(this).attr("status");
+								}
 								me.lastSelectedRowIndex = me.houseCodeRequestGrid.activeRowIndex;
 								me.houseCodeRequests[me.lastSelectedRowIndex] = item;
 							}
@@ -3362,7 +3448,10 @@ ii.Class({
 					}
 				});
 
-				me.setStatus("Saved");
+				if (currentStatus == "ViewRequest")
+					me.setStatus("Normal");
+				else
+					me.setStatus("Saved");
 			}
 			else {
 				me.setStatus("Error");
@@ -3381,22 +3470,22 @@ function loadPopup() {
 		"opacity": "0.5"
 	});
 	$("#backgroundPopup").fadeIn("slow");
-	$("#popupWorkflow").fadeIn("slow");
+	$("#popupRequest").fadeIn("slow");
 }
 
 function hidePopup() {
 
 	$("#backgroundPopup").fadeOut("slow");
-	$("#popupWorkflow").fadeOut("slow");
+	$("#popupRequest").fadeOut("slow");
 }
 
 function centerPopup() {
 	var windowWidth = document.documentElement.clientWidth;
 	var windowHeight = document.documentElement.clientHeight;
-	var popupWidth = $("#popupWorkflow").width();
-	var popupHeight = $("#popupWorkflow").height();
+	var popupWidth = $("#popupRequest").width();
+	var popupHeight = $("#popupRequest").height();
 
-	$("#popupLoading, #popupWorkflow").css({
+	$("#popupLoading, #popupRequest").css({
 		"top": windowHeight/2 - popupHeight/2,
 		"left": windowWidth/2 - popupWidth/2
 	});
@@ -3411,8 +3500,8 @@ function main() {
 	var intervalId = setInterval(function() {
 		if (importCompleted) {
 			clearInterval(intervalId);
-			fin.hcm.houseCodeWorkflowUi = new fin.hcm.houseCodeWorkflow.UserInterface();
-			fin.hcm.houseCodeWorkflowUi.resize();
+			fin.hcm.houseCodeRequestUi = new fin.hcm.houseCodeRequest.UserInterface();
+			fin.hcm.houseCodeRequestUi.resize();
 		}
 	}, 100);
 }

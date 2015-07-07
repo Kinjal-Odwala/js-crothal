@@ -31,22 +31,26 @@
 		        <div id="popupMessageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px;">Loading</div>    
 		    </div>
 		</div>
-        <div id="divFramePrint" style="height: 0px;">				
-			<iframe id="iFramePrint" frameborder="0" width="100" height="0"></iframe>
-		</div>
 		<div class="pageHeader">
 			<div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
 			<div id="LabelTextAreaLeftHeader">&nbsp;House Code:</div>
 			<div id="DropDownRightHouseCode">
 				<div id="houseCodeContainer" class="HouseCodeContainer"></div>
 			</div>
-			<div id="LabelStatus">Status:</div>
-			<div id="InputTextStatus">
-				<div id="StatusType"></div>
+			<div id="StatusContainer">
+				<div class="labelTextAreaSearch">Status:</div>
+				<div class="inputTextAreaSmall">
+					<div id="StatusType"></div>
+				</div>
 			</div>
-			<div id="LabelTextAreaLeftHeader">&nbsp;&nbsp;Requisition Number:</div>
-			<div id="InputTextStatus">
-				<div id="SearchRequisitionNumber"></div>
+			<div class="labelTextAreaSearch">Search By:</div>
+			<div class="inputTextAreaSmall">
+				<div id="SearchType"></div>
+			</div>
+			<div class="labelTextAreaSearch">Search Criteria:</div>
+			<div class="inputTextAreaSmall">
+				<div id="SearchInput"></div>
+				<div id="SearchRequestedDate" style="display:none"></div>
 			</div>
 			<div id="SearchButtonStatus" class="contentArea">
 				<div id="SearchButton"></div>
@@ -76,6 +80,8 @@
 			<div id="AnchorCancelRequisition"></div>
 			<div id="AnchorGeneratePurchaseOrder"></div>
 			<div id="AnchorJDEEntry"></div>
+			<div id="AnchorPrint"></div>
+			<div id="AnchorApprove"></div>
 		</div>
 		<div class="pageBody">
 			<div id="popupContact">
@@ -83,7 +89,7 @@
 					<div class="header" id="Header"></div>
 					<div style="clear:both;"></div>					
 					<div id="GeneralInfo">						
-						<div id="contentAreasContainerLeft">
+						<div class="contentAreaLeft">
 							<div id="TableEditArea">
 								<div class="body">
 									<div class="subHeader">Requestor Details:</div>
@@ -150,7 +156,7 @@
 								</div>
 							</div>
 						</div>
-						<div id="contentAreasContainerRight">
+						<div class="contentAreaLeft">
 							<div id="TableEditArea">
 								<div class="body">
 									<div class="labelTextArea"></div>
@@ -208,7 +214,8 @@
 								</div>
 							</div>
 						</div>
-						<div>
+						<div style="clear:both;"></div> 
+						<div id="TableEditArea">
                             <div class="labelTextArea">
                                 <span id="nonRequiredFieldIndicator">Reason For Request:</span>
                             </div>
@@ -216,8 +223,8 @@
                                 <div id="ReasonForRequest"></div>
                             </div>
                         </div>
-						<div style="clear:both;"></div>   
-                        <div id="contentAreasContainerLeft">
+                        <div style="clear:both;"></div> 						  
+                        <div class="contentAreaLeft">
                             <div id="TableEditArea">
                                 <div class="body">
 									<div style="clear:both;"></div>										
@@ -238,7 +245,7 @@
 								</div>
 							</div>
 						</div>
-						<div id="contentAreasContainerRight">
+						<div class="contentAreaLeft">
                             <div id="TableEditArea">
                                 <div class="body">
                                         <div class="labelTextArea" id="LabelUrgencyDate">
@@ -294,19 +301,27 @@
 							<div id="ItemGrid"></div>
 							<div id="ItemReadOnlyGrid"></div>
 							<div id="TotalRow">
-								<table width="100%">
-									<tr width="100%">
-										<td width="78%"class="iiGridHeaderTotalColumn"></td>										
-										<td width="8%" class="iiGridHeaderTotalColumn">Total:</td>									
-										<td width="12%" class="iiGridHeaderTotalColumn"><span id="spnTotal"></span></td>
-										<td width="2%" class="iiGridHeaderTotalColumn"></td>
-									</tr>
-								</table>
+								<table cellpadding="0" cellspacing="0" style="width: 100%">
+			                        <tr class="footer">
+			                            <td class="borderVertical"></td>					                            
+			                            <td>
+			                                <table cellpadding="0" cellspacing="0" style="width: 100%">
+			                                    <tr class="footer">
+			                                    	<td id="TotalLabel" class="totalColumn">Total:</td>
+													<td width="120px" class="totalColumn"><span id="spnTotal"></span></td>
+													<td width="18px" class="totalColumn">&nbsp;</td
+			                                    </tr>
+			                                </table>
+			                            </td>
+			                            <td class="borderVertical"></td>
+			                        </tr>
+			                        <tr><td class="borderHorizontal" colspan="3"></td></tr>
+			                    </table>
 							</div>							
 						</div>
 					</div>
 					<div id="ShippingInfo">						
-						<div id="contentAreasContainerLeft">
+						<div class="contentAreaLeft">
 							<div id="TableEditArea">
 								<div class="body">																											
 									<div style="clear:both;"></div>
@@ -348,7 +363,7 @@
 								</div>
 							</div>
 						</div>
-						<div id="contentAreasContainerRight">
+						<div class="contentAreaLeft">
 							<div id="TableEditArea">
 								<div class="body">
 									<div class="labelTextArea">
