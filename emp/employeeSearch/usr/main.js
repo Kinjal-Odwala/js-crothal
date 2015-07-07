@@ -1179,9 +1179,15 @@ ii.Class({
 					var today = new Date(parent.fin.appUI.glbCurrentDate);
 					var birthDate = new Date(enteredText);
 					var millisecondsPerYear = 1000 * 60 * 60 * 24 * 365.26;
-
-					if (((today - birthDate) / millisecondsPerYear) < 18)
-						this.setInvalid("Please enter valid date. Employee is not eligible to hire.");
+						
+					if (birthDate > today) {
+						this.setInvalid("Please enter valid date. Birth Date should not be greater than current date.");
+						return;
+					}
+					else if (me.houseCodeDetails[0].validateEmployeeAge) {
+						if (((today - birthDate) / millisecondsPerYear) < 18)
+							this.setInvalid("Please enter valid date. Employee is not eligible to hire.");
+					}
 				});
 
 			me.employeeEthnicity = new ui.ctl.Input.DropDown.Filtered({

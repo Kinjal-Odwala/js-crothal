@@ -29,7 +29,8 @@ ii.init.register( function(){
 	
 	fin.emp.houseCodeDetailArgs = {
 		id: {type: Number},
-		mealPlan: {type: Number, required: false, defaultValue: 0}
+		mealPlan: {type: Number, required: false, defaultValue: 0},
+		validateEmployeeAge: {type: Boolean, required: false, defaultValue: true}
 	};
 	
 	fin.emp.houseCodeStateMinimumWageArgs = {
