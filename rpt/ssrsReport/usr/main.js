@@ -895,6 +895,14 @@ ii.Class({
                 itemConstructorArgs: fin.rpt.ssrs.contractTypeArgs,
                 injectionArray: me.contractTypes    
             });
+			
+			me.smartPSIDs = [];
+            me.smartPSIDStore = me.cache.register({
+                storeId: "smartPSIDs",
+                itemConstructor: fin.rpt.ssrs.SmartPSID,
+                itemConstructorArgs: fin.rpt.ssrs.smartPSIDArgs,
+                injectionArray: me.smartPSIDs    
+            });
 		},
 
 		setStatus: function(status) {
@@ -1176,6 +1184,10 @@ ii.Class({
 			me.countHours = [];
 			me.exceptions = [];
 			me.capExpenditureTypes = [];
+			me.benefitStatuses = [];
+			me.measurementStatuses = [];
+			me.benefits = [];
+			me.fullParts = [];
 			
 			me.excludeOverheadAccounts.push(new fin.rpt.ssrs.ExcludeOverheadAccount(3, "Yes", "3"));//Default
 			me.excludeOverheadAccounts.push(new fin.rpt.ssrs.ExcludeOverheadAccount(-1, "No", "-1"));
@@ -1228,10 +1240,25 @@ ii.Class({
 			me.exceptions.push(new fin.rpt.ssrs.Exception(1, "Both", "B"));
 			me.exceptions.push(new fin.rpt.ssrs.Exception(2, "Open", "O"));
 			me.exceptions.push(new fin.rpt.ssrs.Exception(3, "Closed", "C"));
-			
+
 			me.capExpenditureTypes.push(new fin.rpt.ssrs.CapExpenditureType(1, "New Capital", "1"));
 			me.capExpenditureTypes.push(new fin.rpt.ssrs.CapExpenditureType(2, "Disposed Capital", "2"));
 			me.capExpenditureTypes.push(new fin.rpt.ssrs.CapExpenditureType(3, "Not Yet Purchased Capital", "3"));
+
+			me.benefitStatuses.push(new fin.rpt.ssrs.BenefitStatus(1, "Both", "B")); //Default
+			me.benefitStatuses.push(new fin.rpt.ssrs.BenefitStatus(2, "Eligibile", "E"));
+			me.benefitStatuses.push(new fin.rpt.ssrs.BenefitStatus(3, "Not Eligibile", "N"));
+
+			me.measurementStatuses.push(new fin.rpt.ssrs.MeasurementStatus(1, "Measurable w/o", "Measurable w/o")); //Default
+			me.measurementStatuses.push(new fin.rpt.ssrs.MeasurementStatus(2, "Measurable w/b", "Measurable w/b"));
+
+			me.benefits.push(new fin.rpt.ssrs.Benefit(1, "Both", "B")); //Default
+			me.benefits.push(new fin.rpt.ssrs.Benefit(2, "Yes", "Y"));
+			me.benefits.push(new fin.rpt.ssrs.Benefit(3, "No", "N"));
+
+			me.fullParts.push(new fin.rpt.ssrs.FullPart(1, "Both", "B")); //Default
+			me.fullParts.push(new fin.rpt.ssrs.FullPart(2, "Full", "F"));
+			me.fullParts.push(new fin.rpt.ssrs.FullPart(3, "Part", "P"));
 		},
 		
 		loggedInUsersLoaded: function(me, activeId) {
@@ -2035,7 +2062,12 @@ ii.Class({
                     me.ddlists = me.ddlists + 1;
                     me.list = "HcmContractTypes";
                     me.contractTypeStore.fetch("userId:[user]", me.dropdownsLoaded, me);
-                }	
+                }
+				else if (me.reportParameters[index].referenceTableName == "SmartPSIDs") {
+                    me.ddlists = me.ddlists + 1;
+                    me.list = "SmartPSIDs";
+					me.smartPSIDStore.fetch("userId:[user],genericType:" + me.reportParameters[index].referenceTableName, me.dropdownsLoaded, me);
+                }
 			}
 			
 			if (me.list == "")
@@ -2062,7 +2094,7 @@ ii.Class({
 					else if (me.reportParameters[index].controlType == "Date" && !me.reportParameters[index].mandatory)
 						html += "\n<div><div class='labelReport'> <span class='requiredFieldIndicator'>&#149;</span></span>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div></div>"
 					else
-						html += "\n<div><div class='labelReport'> <span class='requiredFieldIndicator'>&#149;</span>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium' style='height:20px;width:" + me.reportParameters[index].Width + "px;'></div><div id='customersLoading'></div></div>"										
+						html += "\n<div><div class='labelReport'> <span class='requiredFieldIndicator'>&#149;</span>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium' style='height:20px;width:" + me.reportParameters[index].width + "px;'></div><div id='customersLoading'></div></div>"										
 					html += "\n<div style='clear:both;height:3px'></div>";
 				}				
 			}
@@ -2087,6 +2119,10 @@ ii.Class({
 						$("#CreateUserIDText").val(me.session.propertyGet("userName"));
 						$("#CreateUserIDText").attr("readonly", true);
 					}
+					else if (me.reportParameters[index].name == "By") {
+						$("#ByText").val(me.reportParameters[index].defaultValue);
+						$("#ByText").attr("readonly", true);
+					}
 				}
 				else if (me.reportParameters[index].controlType == "CheckBox") {
 					me.controls[index] = new ui.ctl.Input.Check({
@@ -2097,7 +2133,7 @@ ii.Class({
 					$("#" + me.reportParameters[index].name).html("");										
 					me.populateMultiSelectDropDown(me.reportParameters[index].referenceTableName, me.reportParameters[index].name, me.reportParameters[index].defaultValue);                       						
 					$("#" + me.reportParameters[index].name).multiselect({
-						minWidth: me.reportParameters[index].Width,
+						minWidth: me.reportParameters[index].width,
 						header: false,
 						multiple: false,
 						noneSelectedText: "",
@@ -2383,8 +2419,24 @@ ii.Class({
                 typeTableData = me.countHours;
             else if (args.referenceTableName == "Exceptions")
                 typeTableData = me.exceptions;
-			else if (args.referenceTableName == "CapExpenditureTypes")
-                typeTableData = me.capExpenditureTypes;
+			else if (args.referenceTableName == "CapExpenditureTypes") {
+				me.typeAllOrNoneAdd(me.capExpenditureTypes, "(Select All)");
+				typeTableData = me.capExpenditureTypes;
+			}
+			else if (args.referenceTableName == "BenefitStatuses")
+                typeTableData = me.benefitStatuses;
+			else if (args.referenceTableName == "MeasurementStatuses") {
+				me.typeAllOrNoneAdd(me.measurementStatuses, "(Select All)");
+                typeTableData = me.measurementStatuses;
+			}
+			else if (args.referenceTableName == "Benefits")
+                typeTableData = me.benefits;
+			else if (args.referenceTableName == "FullParts")
+                typeTableData = me.fullParts;
+			else if (args.referenceTableName == "SmartPSIDs") {
+				me.typeAllOrNoneAdd(me.smartPSIDs, "(Select All)");
+				typeTableData = me.smartPSIDs;
+			}
             else if (args.referenceTableName == "GroupLevels")
             	me.groupLevelsLoaded();            
 				
@@ -2928,10 +2980,11 @@ ii.Class({
 							var selectedValues = $("#" + dropDown).multiselect("getChecked").map(function() {
 		                        return this.attributes[1].nodeValue;
 		                    }).get();
-		                    if (selectedValues.length > 0) {                        
-		                        if (selectedValues[0] != "undefined")
-		                        	parametersList += "~" + me.reportParameters[index].name + "=" + selectedValues[0];
-		                    }
+							var selectedNames = "";
+	                        for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
+								selectedNames += (selectedNames != "") ? ", " + selectedValues[selectedIndex] : selectedValues[selectedIndex];
+	                        }
+							parametersList += "~" + me.reportParameters[index].name + "=" + selectedNames;
 						}
 					}
                 }
