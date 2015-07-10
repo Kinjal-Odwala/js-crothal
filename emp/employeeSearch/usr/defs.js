@@ -249,6 +249,11 @@ ii.init.register( function(){
 		name: {type: String}
 	};
 
+	fin.emp.multiRaceTypeArgs = {
+		id: {type: Number},
+		name: {type: String}
+	};
+	
 	fin.emp.unionTypeArgs = {
 		id: {type: Number},
 		number: {type: Number},
@@ -400,6 +405,15 @@ ii.init.register( function(){
 		name: {type: String}
 	};
 	
+	fin.emp.employeeMultiRaceArgs = {
+		id: {type: Number},
+		employeeId: {type: Number, required: false, defaultValue: 0},
+		multiRace1: {type: Number, required: false, defaultValue: 0},
+		multiRace2: {type: Number, required: false, defaultValue: 0},
+		multiRace3: {type: Number, required: false, defaultValue: 0},
+		multiRace4: {type: Number, required: false, defaultValue: 0},
+		multiRace5: {type: Number, required: false, defaultValue: 0}
+	};
 }, 2);
 
 ii.Class({
@@ -577,6 +591,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.emp.ethnicityTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.emp.MultiRaceType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.emp.multiRaceTypeArgs);
 			$.extend(this, args);
 		}
 	}
@@ -817,6 +841,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.emp.basicLifeIndicatorTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.emp.EmployeeMultiRace",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.emp.employeeMultiRaceArgs);
 			$.extend(this, args);
 		}
 	}
