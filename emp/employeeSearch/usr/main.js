@@ -1179,14 +1179,33 @@ ii.Class({
 					var today = new Date(parent.fin.appUI.glbCurrentDate);
 					var birthDate = new Date(enteredText);
 					var millisecondsPerYear = 1000 * 60 * 60 * 24 * 365.26;
-
-					if (((today - birthDate) / millisecondsPerYear) < 18)
-						this.setInvalid("Please enter valid date. Employee is not eligible to hire.");
+						
+					if (birthDate > today) {
+						this.setInvalid("Please enter valid date. Birth Date should not be greater than current date.");
+						return;
+					}
+					else if (me.houseCodeDetails[0].validateEmployeeAge) {
+						if (((today - birthDate) / millisecondsPerYear) < 18)
+							this.setInvalid("Please enter valid date. Employee is not eligible to hire.");
+					}
 				});
 
 			me.employeeEthnicity = new ui.ctl.Input.DropDown.Filtered({
 				id: "EmployeeEthnicity", 
 				formatFunction: function( type ) { return type.name; },
+				changeFunction: function() {
+					if (me.employeeEthnicity.indexSelected != -1) {
+						if (me.employeeEthnicity.data[me.employeeEthnicity.indexSelected].name == "Two or more races") {
+							$("#MultiRaceContianer").show();
+							me.resizeControls();
+						}
+						else
+							$("#MultiRaceContianer").hide();
+					}
+					else {
+						$("#MultiRaceContianer").hide();
+					}
+				},
 				required: false
 		    });
 
@@ -1198,7 +1217,82 @@ ii.Class({
 					if (me.employeeEthnicity.indexSelected == -1)
 						this.setInvalid("Please select Ethnicity type.");
 				});
-			
+
+			me.multiRace1 = new ui.ctl.Input.DropDown.Filtered({
+				id: "MultiRace1", 
+				formatFunction: function( type ) { return type.name; },
+				required: false
+		    });
+
+			me.multiRace1.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required )
+				.addValidation( function( isFinal, dataMap ) {
+				
+					if (me.multiRace1.indexSelected == -1)
+						this.setInvalid("Please select Race 1 type.");
+				});
+
+			me.multiRace2 = new ui.ctl.Input.DropDown.Filtered({
+				id: "MultiRace2", 
+				formatFunction: function( type ) { return type.name; },
+				required: false
+		    });
+
+			me.multiRace2.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required )
+				.addValidation( function( isFinal, dataMap ) {
+				
+					if (me.multiRace2.indexSelected == -1)
+						this.setInvalid("Please select Race 2 type.");
+				});
+
+			me.multiRace3 = new ui.ctl.Input.DropDown.Filtered({
+				id: "MultiRace3", 
+				formatFunction: function( type ) { return type.name; },
+				required: false
+		    });
+
+			me.multiRace3.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required )
+				.addValidation( function( isFinal, dataMap ) {
+				
+					if (me.multiRace3.indexSelected == -1)
+						this.setInvalid("Please select Race 3 type.");
+				});
+
+			me.multiRace4 = new ui.ctl.Input.DropDown.Filtered({
+				id: "MultiRace4", 
+				formatFunction: function( type ) { return type.name; },
+				required: false
+		    });
+
+			me.multiRace4.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required )
+				.addValidation( function( isFinal, dataMap ) {
+				
+					if (me.multiRace4.indexSelected == -1)
+						this.setInvalid("Please select Race 4 type.");
+				});
+
+			me.multiRace5 = new ui.ctl.Input.DropDown.Filtered({
+				id: "MultiRace5", 
+				formatFunction: function( type ) { return type.name; },
+				required: false
+		    });
+
+			me.multiRace5.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required )
+				.addValidation( function( isFinal, dataMap ) {
+				
+					if (me.multiRace5.indexSelected == -1)
+						this.setInvalid("Please select Race 5 type.");
+				});
+
 			me.employeeMaritalStatus = new ui.ctl.Input.DropDown.Filtered({
 				id: "EmployeeMaritalStatus",
 				formatFunction: function( type ) { return type.name; }, 
@@ -2065,8 +2159,8 @@ ii.Class({
 			me.termEmployeeEffectiveDate.text.tabIndex = 223;
 			me.eligibleForRehire.text.tabIndex = 224; 	
 			//General2		 
-			me.employeeBirthDate.text.tabIndex = 230; 
-			me.employeeEthnicity.text.tabIndex = 231; 
+			me.employeeBirthDate.text.tabIndex = 230;
+			me.employeeEthnicity.text.tabIndex = 231;
 			//GenderYes - 232
 			//GenderNo - 233
 			me.employeeMaritalStatus.text.tabIndex = 234; 
@@ -2079,6 +2173,11 @@ ii.Class({
 			//DisabilityYes - 241
 			//DisabilityNo - 242
 			//DisabilityNA - 243
+			me.multiRace1.text.tabIndex = 244;
+			me.multiRace2.text.tabIndex = 245;
+			me.multiRace3.text.tabIndex = 246;
+			me.multiRace4.text.tabIndex = 247;
+			me.multiRace5.text.tabIndex = 248;
 			//Job
 			me.jobEffectiveDate.text.tabIndex = 300; 
 			me.jobChangeReason.text.tabIndex = 301; 
@@ -2165,6 +2264,11 @@ ii.Class({
 
 			me.employeeBirthDate.resizeText();
 			me.employeeEthnicity.resizeText();
+			me.multiRace1.resizeText();
+			me.multiRace2.resizeText();
+			me.multiRace3.resizeText();
+			me.multiRace4.resizeText();
+			me.multiRace5.resizeText();
 			me.employeeMaritalStatus.resizeText();
 			me.employeeI9Status.resizeText();
 			me.employeeVETSStatus.resizeText();
@@ -2289,8 +2393,7 @@ ii.Class({
 				itemConstructorArgs: fin.emp.employeeGeneralArgs,
 				injectionArray: me.employeeGenerals	
 			});
-			
-			
+
 			me.employeeGeneralMasters = [];
 			me.employeeGeneralMasterStore = me.cache.register({
 				storeId: "employeeGeneralMasters",
@@ -2561,6 +2664,14 @@ ii.Class({
 				itemConstructor: fin.emp.BasicLifeIndicatorType,
 				itemConstructorArgs: fin.emp.basicLifeIndicatorTypeArgs,
 				injectionArray: me.basicLifeIndicatorTypes
+			});
+
+			me.employeeMultiRaces = [];
+			me.employeeMultiRaceStore = me.cache.register({
+				storeId: "employeeMultiRaces",
+				itemConstructor: fin.emp.EmployeeMultiRace,
+				itemConstructorArgs: fin.emp.employeeMultiRaceArgs,
+				injectionArray: me.employeeMultiRaces
 			});
 		},
 		
@@ -3510,8 +3621,9 @@ ii.Class({
 		},
 		
 		statusTypesGeneralLoaded: function(me, activeId) {	
-			
+
 			ii.trace("Employee Status Types Loaded", ii.traceTypes.information, "Info");
+
 			me.employeeStatusType.reset();
 			me.employeeStatusType.setData(me.statusTypes);
 			
@@ -3542,6 +3654,18 @@ ii.Class({
 			me.employeeEthnicity.reset();
 			me.typeNoneAdd(me.ethnicityTypes);	
 			me.employeeEthnicity.setData(me.ethnicityTypes);
+
+			me.multiRaceTypes = [];
+			for (var index = 0; index < me.ethnicityTypes.length; index++) {
+				if (me.ethnicityTypes[index].name != "Two or more races" && me.ethnicityTypes[index].name != "Unknown") {
+					me.multiRaceTypes.push(new fin.emp.MultiRaceType(me.ethnicityTypes[index].id, me.ethnicityTypes[index].name));
+				}
+			}
+			me.multiRace1.setData(me.multiRaceTypes);
+			me.multiRace2.setData(me.multiRaceTypes);
+			me.multiRace3.setData(me.multiRaceTypes);
+			me.multiRace4.setData(me.multiRaceTypes);
+			me.multiRace5.setData(me.multiRaceTypes);
 			
 			me.employeeUnion.reset();
 			me.typeNoneAdd(me.unionTypes);	
@@ -3903,8 +4027,17 @@ ii.Class({
 					me.employeeMaritalStatus.select(index, me.employeeMaritalStatus.focused);
 				
 				index = ii.ajax.util.findIndexById(me.employeeGenerals[0].ethnicityType.toString(), me.ethnicityTypes)
-				if (index != undefined) 
+				if (index != undefined) {
 					me.employeeEthnicity.select(index, me.employeeEthnicity.focused);
+					if (me.ethnicityTypes[index].name == "Two or more races") {
+						me.employeeMultiRaceStore.fetch("userId:[user],employeeId:" + me.employeeGeneralId, me.employeeMultiRacesLoaded, me);
+						$("#MultiRaceContianer").show();
+					}
+					else {
+						me.employeeMultiRaceStore.reset();
+						$("#MultiRaceContianer").hide();
+					}
+				}
 				
 				index = ii.ajax.util.findIndexById(me.employeeGenerals[0].i9Type.toString(), me.i9Types);
 				if (index != undefined) 
@@ -4283,6 +4416,28 @@ ii.Class({
 				}
 				$("#EmployeeStatusCategoryTypeText").attr('disabled', true);
 				$("#EmployeeStatusCategoryTypeAction").removeClass("iiInputAction");
+			}
+		},
+		
+		employeeMultiRacesLoaded: function(me, activeId) {
+
+			ii.trace("Info: " + me.employeeMultiRaces.length, ii.traceTypes.Information, "Info");
+			if (me.employeeMultiRaces.length > 0) {
+				var index = ii.ajax.util.findIndexById(me.employeeMultiRaces[0].multiRace1, me.multiRaceTypes);
+				if (index != undefined)
+					me.multiRace1.select(index, me.multiRace1.focused);
+				index = ii.ajax.util.findIndexById(me.employeeMultiRaces[0].multiRace2, me.multiRaceTypes);
+				if (index != undefined)
+					me.multiRace2.select(index, me.multiRace2.focused);
+				index = ii.ajax.util.findIndexById(me.employeeMultiRaces[0].multiRace3, me.multiRaceTypes);
+				if (index != undefined)
+					me.multiRace3.select(index, me.multiRace3.focused);
+				index = ii.ajax.util.findIndexById(me.employeeMultiRaces[0].multiRace4, me.multiRaceTypes);
+				if (index != undefined)
+					me.multiRace4.select(index, me.multiRace4.focused);
+				index = ii.ajax.util.findIndexById(me.employeeMultiRaces[0].multiRace5, me.multiRaceTypes);
+				if (index != undefined)
+					me.multiRace5.select(index, me.multiRace5.focused);
 			}
 		},
 		
@@ -5425,6 +5580,11 @@ ii.Class({
 			me.employeeEffectiveDate.setValue("");			
 			me.employeeBirthDate.setValue("");
 			me.employeeEthnicity.reset();
+			me.multiRace1.reset();
+			me.multiRace2.reset();
+			me.multiRace3.reset();
+			me.multiRace4.reset();
+			me.multiRace5.reset();
 			me.employeeMaritalStatus.reset();
 			me.employeeI9Status.reset();
 			me.employeeVETSStatus.reset();
@@ -5461,6 +5621,7 @@ ii.Class({
 			$("#DisabilityYes").attr("checked", false);
 			$("#DisabilityNo").attr("checked", false);
 			$("#DisabilityNA").attr("checked", false);
+			$("#MultiRaceContianer").hide();
 
 			me.federalExemptions.setValue("");
 			me.federalAdjustmentType.reset();
@@ -6303,6 +6464,16 @@ ii.Class({
 					}
 
 					if (me.actionType == "NewHire" || me.actionType == "Rehire") {
+						if (me.employeeEthnicity.indexSelected != -1) {
+							if (me.ethnicityTypes[me.employeeEthnicity.indexSelected].name == "Two or more races") {
+								if ((!me.multiRace1.validate(true)) || (!me.multiRace2.validate(true)) ||
+									(!me.multiRace3.validate(true)) || (!me.multiRace4.validate(true)) || (!me.multiRace5.validate(true))) {
+									me.wizardCount--;
+									return false;
+								}
+							}
+						}
+
 						if (me.houseCodeDetails[0].mealPlan == 1) {
 							if ($("input[name='MealPlan']:checked").val() == undefined) {
 								alert("Please select the Meal Plan.");
@@ -6804,9 +6975,20 @@ ii.Class({
 				}
 			}
 			
-			if (me.actionType == "Employee") {	
+			if (me.actionType == "Employee") {
+				var validateMultiRace = false;
+				if (me.employeeEthnicity.indexSelected != -1) {
+					if (me.ethnicityTypes[me.employeeEthnicity.indexSelected].name == "Two or more races")
+						validateMultiRace = true;
+				}
+				
 				if ((!me.employeeBirthDate.validate(true))
                   || (!me.employeeEthnicity.validate(true))
+				  || (validateMultiRace && !me.multiRace1.validate(true))
+				  || (validateMultiRace && !me.multiRace2.validate(true))
+				  || (validateMultiRace && !me.multiRace3.validate(true))
+				  || (validateMultiRace && !me.multiRace4.validate(true))
+				  || (validateMultiRace && !me.multiRace5.validate(true))
                   || (!me.employeeMaritalStatus.validate(true)))
 				  return false;
 
@@ -7084,11 +7266,11 @@ ii.Class({
 								: 0)
 				, jobStartReason: (me.jobChangeReason.indexSelected >= 0 ? me.jobStartReasonTypes[me.jobChangeReason.indexSelected].id : 0)
 				//Personal
-				, genderType: ($("input[name='Gender']:checked").val() == "Male" ? 1 : 2) 		
-				, birthDate: me.employeeBirthDate.text.value 		
-				, backGroundCheckDate: me.employeeBackgroundCheckDate.text.value 	
-				, reviewDate: me.employeeReviewDate.text.value 	
-				, ethnicityType: (me.employeeEthnicity.indexSelected >= 0 ? me.ethnicityTypes[me.employeeEthnicity.indexSelected].id : 0) 										
+				, genderType: ($("input[name='Gender']:checked").val() == "Male" ? 1 : 2)
+				, birthDate: me.employeeBirthDate.text.value
+				, backGroundCheckDate: me.employeeBackgroundCheckDate.text.value
+				, reviewDate: me.employeeReviewDate.text.value
+				, ethnicityType: (me.employeeEthnicity.indexSelected >= 0 ? me.ethnicityTypes[me.employeeEthnicity.indexSelected].id : 0)
 				, deviceGroup: (me.employeeDeviceGroup.indexSelected >= 0 ? me.deviceGroupTypes[me.employeeDeviceGroup.indexSelected].id : 0)
 				//Export update
 				, changeStatusCode: changeStatusCode
@@ -7425,7 +7607,51 @@ ii.Class({
 				updateFlag == true) {
 				xml += '/>';
 			}
-								
+
+			if (me.actionType == "Employee" || me.actionType == "Rehire" || me.actionType == "NewHire") {
+				if (me.employeeEthnicity.indexSelected >= 0) {
+					if (me.ethnicityTypes[me.employeeEthnicity.indexSelected].name == "Two or more races") {
+						if (me.actionType == "NewHire")
+							me.employeeMultiRaceStore.reset();
+						if (me.employeeMultiRaces.length > 0) {
+							me.employeeMultiRaces[0].multiRace1 = (me.multiRace1.indexSelected >= 0 ? me.multiRaceTypes[me.multiRace1.indexSelected].id : 0);
+							me.employeeMultiRaces[0].multiRace2 = (me.multiRace2.indexSelected >= 0 ? me.multiRaceTypes[me.multiRace2.indexSelected].id : 0);
+							me.employeeMultiRaces[0].multiRace3 = (me.multiRace3.indexSelected >= 0 ? me.multiRaceTypes[me.multiRace3.indexSelected].id : 0);
+							me.employeeMultiRaces[0].multiRace4 = (me.multiRace4.indexSelected >= 0 ? me.multiRaceTypes[me.multiRace4.indexSelected].id : 0);
+							me.employeeMultiRaces[0].multiRace5 = (me.multiRace5.indexSelected >= 0 ? me.multiRaceTypes[me.multiRace5.indexSelected].id : 0);
+						}
+						else {
+							me.employeeMultiRaces.push(new fin.emp.EmployeeMultiRace(0
+								, itemGeneral.id
+								, (me.multiRace1.indexSelected >= 0 ? me.multiRaceTypes[me.multiRace1.indexSelected].id : 0)
+								, (me.multiRace2.indexSelected >= 0 ? me.multiRaceTypes[me.multiRace2.indexSelected].id : 0)
+								, (me.multiRace3.indexSelected >= 0 ? me.multiRaceTypes[me.multiRace3.indexSelected].id : 0)
+								, (me.multiRace4.indexSelected >= 0 ? me.multiRaceTypes[me.multiRace4.indexSelected].id : 0)
+								, (me.multiRace5.indexSelected >= 0 ? me.multiRaceTypes[me.multiRace5.indexSelected].id : 0)
+							));
+						}
+
+						xml += '<employeeMultiRaceUpdate';
+						xml += ' id="' + me.employeeMultiRaces[0].id + '"';
+						xml += ' employeeId="' + me.employeeMultiRaces[0].employeeId + '"';
+						xml += ' multiRace1="' + me.employeeMultiRaces[0].multiRace1 + '"';
+						xml += ' multiRace2="' + me.employeeMultiRaces[0].multiRace2 + '"';
+						xml += ' multiRace3="' + me.employeeMultiRaces[0].multiRace3 + '"';
+						xml += ' multiRace4="' + me.employeeMultiRaces[0].multiRace4 + '"';
+						xml += ' multiRace5="' + me.employeeMultiRaces[0].multiRace5 + '"';
+						xml += '/>';
+					}
+					else {
+						if (me.employeeMultiRaces.length > 0) {
+							xml += '<employeeMultiRaceDelete';
+							xml += ' id="' + me.employeeMultiRaces[0].id + '"';
+							xml += '/>';
+							me.employeeMultiRaceStore.reset();
+						}
+					}
+				}
+			}
+
 			if (me.actionType == "NewHire") {
 				xml += '<personRole id="0" personId="' + me.personId + '" roleId="2"/>';
 			}
@@ -7476,6 +7702,16 @@ ii.Class({
 			me.saving = false;
 
 			if (status == "success") {
+				if (me.actionType == "Employee" || me.actionType == "Rehire" || me.actionType == "NewHire") {
+					$(args.xmlNode).find("*").each(function() {
+						switch (this.tagName) {
+							case "empEmployeeMultiRace":
+								if (me.employeeMultiRaces.length > 0)
+									me.employeeMultiRaces[0].id =  parseInt($(this).attr("id"), 10);
+								break;
+						}
+					});
+				}
 
 				if (me.employeeGenerals.length > 0) {
 					if (me.actionType == "ReverseTermination")

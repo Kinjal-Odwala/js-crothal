@@ -895,6 +895,14 @@ ii.Class({
                 itemConstructorArgs: fin.rpt.ssrs.contractTypeArgs,
                 injectionArray: me.contractTypes    
             });
+			
+			me.smartPSIDs = [];
+            me.smartPSIDStore = me.cache.register({
+                storeId: "smartPSIDs",
+                itemConstructor: fin.rpt.ssrs.SmartPSID,
+                itemConstructorArgs: fin.rpt.ssrs.smartPSIDArgs,
+                injectionArray: me.smartPSIDs    
+            });
 		},
 
 		setStatus: function(status) {
@@ -1176,6 +1184,10 @@ ii.Class({
 			me.countHours = [];
 			me.exceptions = [];
 			me.capExpenditureTypes = [];
+			me.benefitStatuses = [];
+			me.measurementStatuses = [];
+			me.benefits = [];
+			me.fullParts = [];
 			
 			me.excludeOverheadAccounts.push(new fin.rpt.ssrs.ExcludeOverheadAccount(3, "Yes", "3"));//Default
 			me.excludeOverheadAccounts.push(new fin.rpt.ssrs.ExcludeOverheadAccount(-1, "No", "-1"));
@@ -1228,10 +1240,25 @@ ii.Class({
 			me.exceptions.push(new fin.rpt.ssrs.Exception(1, "Both", "B"));
 			me.exceptions.push(new fin.rpt.ssrs.Exception(2, "Open", "O"));
 			me.exceptions.push(new fin.rpt.ssrs.Exception(3, "Closed", "C"));
-			
+
 			me.capExpenditureTypes.push(new fin.rpt.ssrs.CapExpenditureType(1, "New Capital", "1"));
 			me.capExpenditureTypes.push(new fin.rpt.ssrs.CapExpenditureType(2, "Disposed Capital", "2"));
 			me.capExpenditureTypes.push(new fin.rpt.ssrs.CapExpenditureType(3, "Not Yet Purchased Capital", "3"));
+
+			me.benefitStatuses.push(new fin.rpt.ssrs.BenefitStatus(1, "Both", "B")); //Default
+			me.benefitStatuses.push(new fin.rpt.ssrs.BenefitStatus(2, "Eligibile", "E"));
+			me.benefitStatuses.push(new fin.rpt.ssrs.BenefitStatus(3, "Not Eligibile", "N"));
+
+			me.measurementStatuses.push(new fin.rpt.ssrs.MeasurementStatus(1, "Measurable w/o", "Measurable w/o")); //Default
+			me.measurementStatuses.push(new fin.rpt.ssrs.MeasurementStatus(2, "Measurable w/b", "Measurable w/b"));
+
+			me.benefits.push(new fin.rpt.ssrs.Benefit(1, "Both", "B")); //Default
+			me.benefits.push(new fin.rpt.ssrs.Benefit(2, "Yes", "Y"));
+			me.benefits.push(new fin.rpt.ssrs.Benefit(3, "No", "N"));
+
+			me.fullParts.push(new fin.rpt.ssrs.FullPart(1, "Both", "B")); //Default
+			me.fullParts.push(new fin.rpt.ssrs.FullPart(2, "Full", "F"));
+			me.fullParts.push(new fin.rpt.ssrs.FullPart(3, "Part", "P"));
 		},
 		
 		loggedInUsersLoaded: function(me, activeId) {
@@ -1961,7 +1988,7 @@ ii.Class({
 					me.fiscalYearStore.reset();
 					me.fiscalYearStore.fetch("userId:[user],fscYear:>=3", me.dropdownsLoaded, me);
 				}
-				else if (me.reportParameters[index].referenceTableName == "FscPeriods"  && me.reportParameters[index].name != "FscPeriodTo") {
+				else if (me.reportParameters[index].referenceTableName == "FscPeriods" && me.reportParameters[index].name != "FscPeriodTo") {
 					me.ddlists = me.ddlists + 1;
 					me.list = "FscPeriods";
 					me.periodStore.fetch("userId:[user],fiscalYearId:-1", me.dropdownsLoaded, me);
@@ -2035,7 +2062,12 @@ ii.Class({
                     me.ddlists = me.ddlists + 1;
                     me.list = "HcmContractTypes";
                     me.contractTypeStore.fetch("userId:[user]", me.dropdownsLoaded, me);
-                }	
+                }
+				else if (me.reportParameters[index].referenceTableName == "SmartPSIDs") {
+                    me.ddlists = me.ddlists + 1;
+                    me.list = "SmartPSIDs";
+					me.smartPSIDStore.fetch("userId:[user],genericType:" + me.reportParameters[index].referenceTableName, me.dropdownsLoaded, me);
+                }
 			}
 			
 			if (me.list == "")
@@ -2056,13 +2088,13 @@ ii.Class({
 			me.dependentTypes = [];
 					
 			for (var index = 0; index < me.reportParameters.length; index++) {
-				if (me.reportParameters[index].controlType != "Label") {
+				if (me.reportParameters[index].controlType != "Label" && me.reportParameters[index].controlType != "Hidden") {
 					if (me.reportParameters[index].controlType == "Date" && me.reportParameters[index].mandatory)
 						html += "\n<div><div id=ParameterLabel" + me.reportParameters[index].name + " class='labelReport'> <span class='nonRequiredFieldIndicator'>&#149;</span>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div><div><input type='checkbox' id='dateCheck' checked='true' class='checkMandatory' onchange='fin.reportUi.dateMandatory(this," + index + ");' /></div><div class='labelSchedule'>NULL</div></div>"
 					else if (me.reportParameters[index].controlType == "Date" && !me.reportParameters[index].mandatory)
 						html += "\n<div><div class='labelReport'> <span class='requiredFieldIndicator'>&#149;</span></span>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div></div>"
 					else
-						html += "\n<div><div class='labelReport'> <span class='requiredFieldIndicator'>&#149;</span>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium' style='height:20px;width:" + me.reportParameters[index].Width + "px;'></div><div id='customersLoading'></div></div>"										
+						html += "\n<div><div class='labelReport'> <span class='requiredFieldIndicator'>&#149;</span>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium' style='height:20px;width:" + me.reportParameters[index].width + "px;'></div><div id='customersLoading'></div></div>"										
 					html += "\n<div style='clear:both;height:3px'></div>";
 				}				
 			}
@@ -2087,6 +2119,10 @@ ii.Class({
 						$("#CreateUserIDText").val(me.session.propertyGet("userName"));
 						$("#CreateUserIDText").attr("readonly", true);
 					}
+					else if (me.reportParameters[index].name == "By") {
+						$("#ByText").val(me.reportParameters[index].defaultValue);
+						$("#ByText").attr("readonly", true);
+					}
 				}
 				else if (me.reportParameters[index].controlType == "CheckBox") {
 					me.controls[index] = new ui.ctl.Input.Check({
@@ -2097,7 +2133,7 @@ ii.Class({
 					$("#" + me.reportParameters[index].name).html("");										
 					me.populateMultiSelectDropDown(me.reportParameters[index].referenceTableName, me.reportParameters[index].name, me.reportParameters[index].defaultValue);                       						
 					$("#" + me.reportParameters[index].name).multiselect({
-						minWidth: me.reportParameters[index].Width,
+						minWidth: me.reportParameters[index].width,
 						header: false,
 						multiple: false,
 						noneSelectedText: "",
@@ -2151,6 +2187,9 @@ ii.Class({
 					me.controls[index] = $("#" + me.reportParameters[index].name);
 					if (me.reportParameters[index].mandatory) {
                     	me.controls[index][0].disabled = true;
+                    }
+					if (me.reportParameters[index].defaultValue == "Today") {
+                    	me.controls[index][0].value = me.currentDate();
                     }
 				}
 				else if (me.reportParameters[index].controlType == "MultiSelect") {
@@ -2248,7 +2287,16 @@ ii.Class({
 			if (me.reportType == "Report")
 				me.checkLoadCount();
 		},
-		
+
+		currentDate: function() {
+			var currentTime = new Date(parent.fin.appUI.glbCurrentDate);
+			var month = currentTime.getMonth() + 1;
+			var day = currentTime.getDate();
+			var year = currentTime.getFullYear();
+			
+			return month + "/" + day + "/" + year;
+		},
+
 		populateMultiSelectDropDown: function() {
 			var args = ii.args(arguments, {
 				referenceTableName: {type: String}
@@ -2371,8 +2419,24 @@ ii.Class({
                 typeTableData = me.countHours;
             else if (args.referenceTableName == "Exceptions")
                 typeTableData = me.exceptions;
-			else if (args.referenceTableName == "CapExpenditureTypes")
-                typeTableData = me.capExpenditureTypes;
+			else if (args.referenceTableName == "CapExpenditureTypes") {
+				me.typeAllOrNoneAdd(me.capExpenditureTypes, "(Select All)");
+				typeTableData = me.capExpenditureTypes;
+			}
+			else if (args.referenceTableName == "BenefitStatuses")
+                typeTableData = me.benefitStatuses;
+			else if (args.referenceTableName == "MeasurementStatuses") {
+				me.typeAllOrNoneAdd(me.measurementStatuses, "(Select All)");
+                typeTableData = me.measurementStatuses;
+			}
+			else if (args.referenceTableName == "Benefits")
+                typeTableData = me.benefits;
+			else if (args.referenceTableName == "FullParts")
+                typeTableData = me.fullParts;
+			else if (args.referenceTableName == "SmartPSIDs") {
+				me.typeAllOrNoneAdd(me.smartPSIDs, "(Select All)");
+				typeTableData = me.smartPSIDs;
+			}
             else if (args.referenceTableName == "GroupLevels")
             	me.groupLevelsLoaded();            
 				
@@ -2559,6 +2623,7 @@ ii.Class({
 		},
 		
 		fiscalweeksLoaded: function(me, activeId) {
+
 			$("#WkPeriod").html("");
 			for (var index = 0; index < me.genericTypes.length; index++) {
                 $("#WkPeriod").append("<option title='" + me.genericTypes[index].parameter + "' value='" + me.genericTypes[index].id + "'>" + me.genericTypes[index].parameter + "</option>");
@@ -2887,24 +2952,42 @@ ii.Class({
 					if (me.reportParameters[index].name.indexOf("_") >= 0) {
 						var dropDown = me.reportParameters[index].name.replace("Hidden_", "");
 						var childNodes = $("#" + dropDown).multiselect()[0].childNodes;
-						var hiddenValues = "";
-						for (var nodeIndex = 0; nodeIndex < childNodes.length; nodeIndex++) {
-							if (childNodes[nodeIndex].value != "0")
-								hiddenValues += (hiddenValues != "") ? "," + childNodes[nodeIndex].value : childNodes[nodeIndex].value;
-                        }
-                       	parametersList += "~" + me.reportParameters[index].name + "=" + hiddenValues;
+                       	parametersList += "~" + me.reportParameters[index].name + "=" + (childNodes.length - 1);
+					}
+					else if (me.reportParameters[index].name == "FscAccountCount" || me.reportParameters[index].name == "YearPeriodsCount") {
+						var dropDown = me.reportParameters[index].name.replace("Count", "");
+	                	var selectedValues = $("#" + dropDown).multiselect("getChecked").map(function() {
+	                        if (this.title != "(Select All)")
+                    			return this.title;
+	                    }).get();
+
+						parametersList += "~" + me.reportParameters[index].name + "=" + (selectedValues.length);
 					}
 					else {
 						var dropDown = me.reportParameters[index].name.replace("Label", "");
-	                	var selectedValues = $("#" + dropDown).multiselect("getChecked").map(function() {
-	                        return this.attributes[1].nodeValue;
-	                    }).get();
-	                    if (selectedValues.length > 0) {                        
-	                        if (selectedValues[0] != "undefined")
-	                        	parametersList += "~" + me.reportParameters[index].name + "=" + selectedValues[0];
-	                    }
+						if (me.reportParameters[index].name == "FscAccountLabel") {
+							var selectedValues = $("#" + dropDown).multiselect("getChecked").map(function() {
+		                    	if (this.title != "(Select All)")
+		                        	return this.title;
+		                    }).get();
+							var accountNames = "";
+	                        for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
+								accountNames += (accountNames != "") ? ", " + selectedValues[selectedIndex] : selectedValues[selectedIndex];
+	                        }
+							parametersList += "~" + me.reportParameters[index].name + "=" + accountNames;
+						}
+						else {
+							var selectedValues = $("#" + dropDown).multiselect("getChecked").map(function() {
+		                        return this.attributes[1].nodeValue;
+		                    }).get();
+							var selectedNames = "";
+	                        for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
+								selectedNames += (selectedNames != "") ? ", " + selectedValues[selectedIndex] : selectedValues[selectedIndex];
+	                        }
+							parametersList += "~" + me.reportParameters[index].name + "=" + selectedNames;
+						}
 					}
-                 }
+                }
                 else if (me.reportParameters[index].controlType == "MultiSelect") {
                     var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function() {
                     	if (this.title != "(Select All)")
@@ -2921,8 +3004,20 @@ ii.Class({
                         return false;
                     }
                 }
+				else if (me.reportParameters[index].controlType == "Hidden") {
+					var selectedNames = me.name.split("~Name=");
+					if (me.reportParameters[index].name == "NameCount")
+						parametersList += "~" + me.reportParameters[index].name + "=" + (selectedNames.length - 1);
+					else {
+						var nameValues = "";
+						for (var selectedIndex = 1; selectedIndex < selectedNames.length; selectedIndex++) {
+							nameValues += (nameValues != "") ? ", " + selectedNames[selectedIndex] : selectedNames[selectedIndex];
+						}
+						parametersList += "~" + me.reportParameters[index].name + "=" + nameValues;
+					}
+                }
             }
-			
+
 			parametersList = "UserID=" + me.session.propertyGet("userName") + me.level + me.name + parametersList;
 			ii.trace("Parameters: " + parametersList, ii.traceTypes.Information, "Info");
 			var form = document.createElement("form");

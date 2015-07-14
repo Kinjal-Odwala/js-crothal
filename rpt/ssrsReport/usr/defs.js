@@ -78,7 +78,7 @@ ii.init.register( function() {
 		, defaultValue: {type: String, required: false, defaultValue: ""}
 		, referenceTableName: {type: String, required: false, defaultValue: ""}
 		, mandatory: {type: Boolean, required: false, defaultValue: false}
-        , Width: {type: String, required: false, defaultValue: ""}
+        , width: {type: String, required: false, defaultValue: ""}
 	};
 
 	fin.rpt.ssrs.subscriptionArgs = {
@@ -354,7 +354,37 @@ ii.init.register( function() {
         , name: {type: String, required: false, defaultValue: ""}
         , parameter: {type: String, required: false, defaultValue: ""}
     };
-	
+
+	fin.rpt.ssrs.benefitStatusArgs = {
+        id: {type: Number}
+        , name: {type: String}
+        , parameter: {type: String}
+    };
+
+	fin.rpt.ssrs.measurementStatusArgs = {
+        id: {type: Number}
+        , name: {type: String}
+        , parameter: {type: String}
+    };
+
+	fin.rpt.ssrs.benefitArgs = {
+        id: {type: Number}
+        , name: {type: String}
+        , parameter: {type: String}
+    };
+
+	fin.rpt.ssrs.fullPartArgs = {
+        id: {type: Number}
+        , name: {type: String}
+        , parameter: {type: String}
+    };
+
+	fin.rpt.ssrs.smartPSIDArgs = {
+        id: {type: Number}
+        , name: {type: String}
+        , parameter: {type: String}
+    };
+
 }, 2);
 
 ii.Class({
@@ -846,6 +876,56 @@ ii.Class({
     Definition: {
         init: function() {
             var args = ii.args(arguments, fin.rpt.ssrs.capExpenditureTypeArgs);
+            $.extend(this, args);
+        }
+    }
+});
+
+ii.Class({
+    Name: "fin.rpt.ssrs.BenefitStatus",
+    Definition: {
+        init: function() {
+            var args = ii.args(arguments, fin.rpt.ssrs.benefitStatusArgs);
+            $.extend(this, args);
+        }
+    }
+});
+
+ii.Class({
+    Name: "fin.rpt.ssrs.MeasurementStatus",
+    Definition: {
+        init: function() {
+            var args = ii.args(arguments, fin.rpt.ssrs.measurementStatusArgs);
+            $.extend(this, args);
+        }
+    }
+});
+
+ii.Class({
+    Name: "fin.rpt.ssrs.Benefit",
+    Definition: {
+        init: function() {
+            var args = ii.args(arguments, fin.rpt.ssrs.benefitArgs);
+            $.extend(this, args);
+        }
+    }
+});
+
+ii.Class({
+    Name: "fin.rpt.ssrs.FullPart",
+    Definition: {
+        init: function() {
+            var args = ii.args(arguments, fin.rpt.ssrs.fullPartArgs);
+            $.extend(this, args);
+        }
+    }
+});
+
+ii.Class({
+    Name: "fin.rpt.ssrs.SmartPSID",
+    Definition: {
+        init: function() {
+            var args = ii.args(arguments, fin.rpt.ssrs.smartPSIDArgs);
             $.extend(this, args);
         }
     }

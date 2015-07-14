@@ -63,6 +63,20 @@ Exec EsmV2.dbo.AppMenuItemUpdate
 
 Select * From EsmV2.dbo.AppMenuItems
 Select * From EsmV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\Setup\workflow%'
+
+Update ESMV2.dbo.HirNodes Set HirNodTitle = 'Employee PAF' Where HirNodFullPath = '\crothall\chimes\fin\Setup\EmployeePAF'
+
+Declare @HirNode As Int
+Declare @DisplayOrder Int
+
+Select @DisplayOrder = Max(HirNode) From ESMV2.dbo.HirNodes
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Setup\EmployeePAF'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Read', 'Read', 'Read', @DisplayOrder + 1, 1, '\crothall\chimes\fin\Setup\EmployeePAF\Read', 'crothall', 'chimes', 'fin', 'Setup', 'EmployeePAF', 'Read', 'Compass-USA\Data Conversion', GetDate())
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'Write', 'Write', 'Write', @DisplayOrder + 2, 1, '\crothall\chimes\fin\Setup\EmployeePAF\Write', 'crothall', 'chimes', 'fin', 'Setup', 'EmployeePAF', 'Write', 'Compass-USA\Data Conversion', GetDate())
+
+Select * From ESMV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\Setup\EmployeePAF%'
 -- Setup --> Workflow Menu Insert [End] 
 
 -- Sample Data Insert [Begin]
@@ -117,6 +131,7 @@ Select * From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Ho
 -- ALTER TABLE [TeamFinV2].[dbo].[AppWorkflowSteps] ADD AppWorkflowModule INT
 -- ALTER TABLE [TeamFinV2].[dbo].[AppWorkflowSteps] ADD AppWfsStepNumber INT
 -- ALTER TABLE [TeamFinV2].[dbo].[HcmHouseCodes] ADD HcmHoucPTOStartDate DATETIME
+-- ALTER TABLE [dbo].EmpPTOEmployeeBalanceHours ADD EmpPTOYear Int NULL
 
 INSERT INTO dbo.AppWorkflowModules(AppWfmBrief, AppWfmTitle, AppWfmDescription, AppWfmDisplayOrder, AppWfmActive, AppWfmModBy, AppWfmModAt)
 VALUES('hcr', 'House Code Request', 'House Code Request', 1, 1, 'Compass-USA\Data Conversion', GetDate())
@@ -253,4 +268,80 @@ Values (@RptReport, 'Fiscal Period Label', 'FscPeriodLabel', 'String', 'Label', 
 
 /*
 CT updated on 3rd June 2015 11PM EST
+*/
+
+-- Add security nodes for action menu items in PO Requisition UI [Begin]
+Declare @HirNode As Int
+Declare @DisplayOrder Int
+
+Select @DisplayOrder = Max(HirNode) From ESMV2.dbo.HirNodes
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Purchasing\PORequisition'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'ApproveInProcess', 'Approve - In Process Status', 'Approve - In Process Status', @DisplayOrder + 1, 1, '\crothall\chimes\fin\Purchasing\PORequisition\ApproveInProcess', 'crothall', 'chimes', 'fin', 'Purchasing', 'PORequisition', 'ApproveInProcess', 'Compass-USA\Data Conversion', GetDate())
+
+Select * From ESMV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\Purchasing\PORequisition%'
+-- Add security nodes for action menu items in PO Requisition UI [End]
+
+-- Add security nodes for action menu items in PO Capital Requisition UI [Begin]
+Declare @HirNode As Int
+Declare @DisplayOrder Int
+
+Select @DisplayOrder = Max(HirNode) From ESMV2.dbo.HirNodes
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Purchasing\CapitalRequisition'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'ApproveInProcess', 'Approve - In Process Status', 'Approve - In Process Status', @DisplayOrder + 1, 1, '\crothall\chimes\fin\Purchasing\CapitalRequisition\ApproveInProcess', 'crothall', 'chimes', 'fin', 'Purchasing', 'CapitalRequisition', 'ApproveInProcess', 'Compass-USA\Data Conversion', GetDate())
+
+Select * From ESMV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\Purchasing\CapitalRequisition%'
+-- Add security nodes for action menu items in PO Capital Requisition UI [End]
+
+-- ALTER TABLE [TeamFinV2].[dbo].[EmpPTOPlans] ADD EmpPtopAccrural BIT 
+
+Declare @RptReport INT
+select @RptReport = RptReport from RptReports where RptRepTitle = 'Capital Expenses'
+Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+Values (@RptReport, 'Cap Expenditure Type', 'CapExpenditureType', 'Integer', 'DropDown', '', 1, 'Compass-USA\Data Conversion', GetDate(), 'CapExpenditureTypes', 6, 200)
+
+-- Add LogFilePath in appropriate modules web.config file
+
+/*
+CT updated on 17th June 2015 11PM EST
+*/
+
+/*
+Update RptReports Set RptRepBrief = 'Payroll Summary', RptRepTitle = 'Payroll Summary', RptRepDescription = 'Payroll Summary' Where RptRepTitle = 'Payroll Summmary'
+
+Select * From RptReports Where RptRepTitle = 'Meal Break Detail'
+Select * From RptReportParameters Where rptreport = 68
+Update RptReportParameters Set RptReppTitle = 'Exception', RptReppReferenceTableName = 'Exceptions' Where RptReportParameter = 269
+Update RptReportParameters Set RptReppWidth = 150 Where RptReportParameter = 216
+
+Declare @RptReport INT
+Select @RptReport = RptReport From RptReports Where RptRepTitle = 'Laundry Summary'
+Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+Values (@RptReport, 'Week', 'WkPeriod', 'Integer', 'DropDown', '', 1, 'Compass-USA\Data Conversion', GetDate(), 'WeekPeriods', 1, 200)
+
+Declare @RptReport INT
+Select @RptReport = RptReport From RptReports Where RptRepTitle = 'Laundry Detail Summary'
+Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+Values (@RptReport, 'Week', 'WkPeriod', 'Integer', 'DropDown', '', 1, 'Compass-USA\Data Conversion', GetDate(), 'WeekPeriods', 1, 200)
+
+Select * From RptReports Where RptRepTitle = 'Hourly Labor Increase'
+Select * From RptReportParameters Where RptReport = 9
+Delete From RptReportParameters Where RptReportParameter In (169, 170, 171, 172, 173)
+Update RptReportParameters Set RptReppDefaultValue = '(Select All)' Where RptReportParameter = 167
+
+Declare @RptReport INT
+Select @RptReport = RptReport From RptReports Where RptRepTitle = 'Detail Pivot'
+Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+Values (@RptReport, 'Hidden FscAccount', 'Hidden_FscAccount', 'String', 'Label', '', 1, 'Compass-USA\Data Conversion', GetDate(), Null, 7, Null)
+
+Declare @RptReport INT
+Select @RptReport = RptReport From RptReports Where RptRepTitle = 'Hierarchy'
+Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+Values (@RptReport, 'Hidden FscAccount', 'Hidden_FscAccount', 'String', 'Label', '', 1, 'Compass-USA\Data Conversion', GetDate(), Null, 7, Null)
+
+*/
+
+/*
+Last production release version 2.04.016 on 24th June 2015 11PM EST
 */
