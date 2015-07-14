@@ -123,6 +123,11 @@
         padding: 5px;
         border-bottom: 1px solid rgba(0,0,0,.175);
     }
+
     .toaster .content {
         padding: 5px;
     }
+
+.table tbody td .word-wrap{
+    word-wrap: break-word;
+}
