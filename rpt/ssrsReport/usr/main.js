@@ -2970,11 +2970,9 @@ ii.Class({
 		                    	if (this.title != "(Select All)")
 		                        	return this.title;
 		                    }).get();
-							var accountNames = "";
 	                        for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
-								accountNames += (accountNames != "") ? ", " + selectedValues[selectedIndex] : selectedValues[selectedIndex];
+								parametersList += "~" + me.reportParameters[index].name + "=" + selectedValues[selectedIndex];
 	                        }
-							parametersList += "~" + me.reportParameters[index].name + "=" + accountNames;
 						}
 						else {
 							var selectedValues = $("#" + dropDown).multiselect("getChecked").map(function() {
