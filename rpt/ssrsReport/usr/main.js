@@ -2115,7 +2115,7 @@ ii.Class({
 						$("#CreateUserIDText").val(me.session.propertyGet("userName"));
 						$("#CreateUserIDText").attr("readonly", true);
 					}
-					else if (me.reportParameters[index].name == "By") {
+					else if (me.reportParameters[index].name == "BY") {
 						$("#ByText").val(me.reportParameters[index].defaultValue);
 						$("#ByText").attr("readonly", true);
 					}
@@ -2155,7 +2155,7 @@ ii.Class({
                         },
                         click: function(event, ui) {                                                                                    
                             if (event.originalEvent.currentTarget.id.indexOf("FscYear") > 0)
-                            	me.fiscalweeksLoad(ui.value);                            
+                            	me.fiscalWeeksLoad(ui.value);                            
                             else if (event.originalEvent.currentTarget.id.indexOf("ExLevel") > 0)                           	
                         		me.excludeNamesLoaded(ui.value);                            
                         },
@@ -2610,21 +2610,21 @@ ii.Class({
             $("#GroupLevel").multiselect("refresh");
         },
 		
-		fiscalweeksLoad: function(yearSelected) {
+		fiscalWeeksLoad: function(yearSelected) {
 			var me = this;
 			
 			if (me.controls[1].selector != "#WkPeriod")
 				return;
 						
 			me.setLoadCount(); 
-			me.genericTypeStore.fetch("name:" + yearSelected + ",genericType:FiscalWeeks,userId:[user]", me.fiscalweeksLoaded, me);			
+			me.genericTypeStore.fetch("name:" + yearSelected + ",genericType:FiscalWeeks,userId:[user]", me.fiscalWeeksLoaded, me);			
 		},
 		
-		fiscalweeksLoaded: function(me, activeId) {
+		fiscalWeeksLoaded: function(me, activeId) {
 
 			$("#WkPeriod").html("");
 			for (var index = 0; index < me.genericTypes.length; index++) {
-                $("#WkPeriod").append("<option title='" + me.genericTypes[index].parameter + "' value='" + me.genericTypes[index].id + "'>" + me.genericTypes[index].parameter + "</option>");
+                $("#WkPeriod").append("<option title='" + me.genericTypes[index].name + "' value='" + me.genericTypes[index].parameter + "'>" + me.genericTypes[index].name + "</option>");
             }
 			$("#WkPeriod").multiselect("refresh");	
 			me.checkLoadCount();			
@@ -3004,13 +3004,15 @@ ii.Class({
 					var selectedNames = me.name.split("~Name=");
 					if (me.reportParameters[index].name == "NameCount")
 						parametersList += "~" + me.reportParameters[index].name + "=" + (selectedNames.length - 1);
-					else {
+					else if (me.reportParameters[index].name == "NameLabel") {
 						var nameValues = "";
 						for (var selectedIndex = 1; selectedIndex < selectedNames.length; selectedIndex++) {
 							nameValues += (nameValues != "") ? ", " + selectedNames[selectedIndex] : selectedNames[selectedIndex];
 						}
 						parametersList += "~" + me.reportParameters[index].name + "=" + nameValues;
 					}
+					else
+						parametersList += "~" + me.reportParameters[index].name + "=";
                 }
             }
 
