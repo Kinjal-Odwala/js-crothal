@@ -1333,57 +1333,49 @@ ii.Class({
 		checkDependentTypes: function(fullPath, add) {
 			var me = this;
 
-			for (var index = 0; index < me.dependentTypes.length; index++) {
-				if (me.dependentTypes[index] == "ExcludeHouseCodes") {
-					if (add) {
-						var nodes = $.grep(me.siteNodes, function(item, itemIndex) {
-							if (me.excludeHouseCodes.length > 0 && ii.ajax.util.findIndexById(item.id.toString(), me.excludeHouseCodes) == null)
-						    	return item.fullPath.indexOf(fullPath) >= 0;
-					    	else if (me.excludeHouseCodes.length == 0)
-					    		return item.fullPath.indexOf(fullPath) >= 0;
-						});
+			if (add) {
+				var nodes = $.grep(me.siteNodes, function(item, itemIndex) {
+					if (me.excludeHouseCodes.length > 0 && ii.ajax.util.findIndexById(item.id.toString(), me.excludeHouseCodes) == null)
+				    	return item.fullPath.indexOf(fullPath) >= 0;
+			    	else if (me.excludeHouseCodes.length == 0)
+			    		return item.fullPath.indexOf(fullPath) >= 0;
+				});
 
-						$.merge(me.excludeHouseCodes, nodes);
+				$.merge(me.excludeHouseCodes, nodes);
 
-						me.excludeHouseCodes.sort(function(a, b) {
-							if (a.title < b.title)
-						    	return -1;
-						  	if (a.title > b.title)
-						    	return 1;
-							return 0;
-						});
-					}
-					else {
-						me.excludeHouseCodes = $.grep(me.excludeHouseCodes, function(item, itemIndex) {
-						    return item.fullPath.indexOf(fullPath) < 0;
-						});
-					}
-					me.setExcludeHouseCodes();
-				}
-				if (me.dependentTypes[index] == "HouseCodes") {
-					if (add) {
-						var nodes = $.grep(me.houseCodes, function(item, itemIndex) {
-						    return item.parameter.indexOf(fullPath) >= 0;
-						});
+				me.excludeHouseCodes.sort(function(a, b) {
+					if (a.title < b.title)
+				    	return -1;
+				  	if (a.title > b.title)
+				    	return 1;
+					return 0;
+				});
+				
+				var nodes = $.grep(me.houseCodes, function(item, itemIndex) {
+				    return item.parameter.indexOf(fullPath) >= 0;
+				});
 
-						$.merge(me.filteredHouseCodes, nodes);
+				$.merge(me.filteredHouseCodes, nodes);
 
-						me.filteredHouseCodes.sort(function(a, b) {
-							if (a.title < b.title)
-						    	return -1;
-						  	if (a.title > b.title)
-						    	return 1;
-							return 0;
-						});
-					}
-					else {
-						me.filteredHouseCodes = $.grep(me.filteredHouseCodes, function(item, itemIndex) {
-						    return item.parameter.indexOf(fullPath) < 0;
-						});
-					}
-					me.setHouseCodes();
-				}				
+				me.filteredHouseCodes.sort(function(a, b) {
+					if (a.title < b.title)
+				    	return -1;
+				  	if (a.title > b.title)
+				    	return 1;
+					return 0;
+				});
 			}
+			else {
+				me.excludeHouseCodes = $.grep(me.excludeHouseCodes, function(item, itemIndex) {
+				    return item.fullPath.indexOf(fullPath) < 0;
+				});
+				
+				me.filteredHouseCodes = $.grep(me.filteredHouseCodes, function(item, itemIndex) {
+				    return item.parameter.indexOf(fullPath) < 0;
+				});
+			}
+			me.setExcludeHouseCodes();
+			me.setHouseCodes();
 		},
 
 		setExcludeHouseCodes: function() {
@@ -1415,7 +1407,9 @@ ii.Class({
 			var me = this;
 
 			$("#HouseCode").html("");
-				
+
+			if (me.filteredHouseCodes.length > 0)
+				$("#HouseCode").append("<option title='(Select All)' value='-1'>(Select All)</option>");
 			for (var index = 0; index < me.filteredHouseCodes.length; index++) {
 				$("#HouseCode").append("<option title='" + me.filteredHouseCodes[index].name + "' value='" + me.filteredHouseCodes[index].id + "'>" + me.filteredHouseCodes[index].name + "</option>");
 			}
@@ -1695,7 +1689,9 @@ ii.Class({
 					return found;
 				});
 				me.excludeHouseCodes = nodes;
+				me.filteredHouseCodes = nodes;
 				me.setExcludeHouseCodes();
+				me.setHouseCodes();
 			}
 			else {
 				me.resetDependentTypes();
@@ -2365,14 +2361,16 @@ ii.Class({
                 typeTableData = me.contractTypes;
             }
             else if (args.referenceTableName == "ExcludeHouseCodes") {
-            	if(me.excludeHouseCodes.length > 0) {
+            	if (me.excludeHouseCodes.length > 0) {
             		$("#" + args.name).append("<option title='(Select All)' value='-1'>(Select All)</option>");
             		$("#" + args.name).append("<option title='None' value='0' selected>None</option>");
             	}				
                 typeTableData = me.excludeHouseCodes;
             }
             else if (args.referenceTableName == "HouseCodes") {
-            	me.typeAllOrNoneAdd(me.filteredHouseCodes, "(Select All)");
+            	if (me.filteredHouseCodes.length > 0) {
+            		$("#" + args.name).append("<option title='(Select All)' value='-1'>(Select All)</option>");
+            	}
                 typeTableData = me.filteredHouseCodes;
             }
             else if (args.referenceTableName == "ExcludeNames")
