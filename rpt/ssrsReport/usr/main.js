@@ -2116,8 +2116,8 @@ ii.Class({
 						$("#CreateUserIDText").attr("readonly", true);
 					}
 					else if (me.reportParameters[index].name == "BY") {
-						$("#ByText").val(me.reportParameters[index].defaultValue);
-						$("#ByText").attr("readonly", true);
+						$("#BYText").val(me.reportParameters[index].defaultValue);
+						$("#BYText").attr("readonly", true);
 					}
 				}
 				else if (me.reportParameters[index].controlType == "CheckBox") {
