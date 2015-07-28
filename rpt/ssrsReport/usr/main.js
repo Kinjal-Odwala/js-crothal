@@ -3012,7 +3012,7 @@ ii.Class({
 						parametersList += "~" + me.reportParameters[index].name + "=" + nameValues;
 					}
 					else
-						parametersList += "~" + me.reportParameters[index].name + "=";
+						parametersList += "~" + me.reportParameters[index].name + "=" + me.reportParameters[index].defaultValue;
                 }
             }
 
@@ -3132,8 +3132,8 @@ ii.Class({
 				$(this).removeClass("trover");
 			});
 			
-			me.subscriptions.length > 0
-				me.actionSelectItem(0);
+			//me.subscriptions.length > 0
+				//me.actionSelectItem(0);
 		},
 		
 		setControlData: function() {
