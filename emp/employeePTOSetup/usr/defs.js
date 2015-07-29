@@ -84,6 +84,26 @@ ii.init.register( function() {
 		, modified: {type: Boolean, required: false, defaultValue: false}
 	};
 
+	fin.emp.employeePTOSetup.managementPTOAssignmentArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, ptoPlanId: {type: Number, required: false, defaultValue: 0}
+		, employeeId: {type: Number, required: false, defaultValue: 0}
+		, firstName: {type: String, required: false, defaultValue: ""}
+		, lastName: {type: String, required: false, defaultValue: ""}
+		, jobTitle: {type: String, required: false, defaultValue: ""}
+		, modified: {type: Boolean, required: false, defaultValue: false}
+	};
+
+	fin.emp.employeePTOSetup.managementPTODayArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, employeeId: {type: Number, required: false, defaultValue: 0}
+		, ptoType: {type: fin.emp.employeePTOSetup.PTOType, required: false}
+		, startDate: {type: Date, required: false}
+		, endDate: {type: Date, required: false}
+		, hours: {type: String, required: false, defaultValue: "0"}
+		, modified: {type: Boolean, required: false, defaultValue: false}
+	};
+
 	fin.emp.employeePTOSetup.ptoEmployeeBalanceHourArgs = {
 		id: {type: Number, required: false, defaultValue: 0}
 		, employeeId: {type: Number, required: false, defaultValue: 0}
@@ -198,6 +218,26 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.emp.employeePTOSetup.ptoDayArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.emp.employeePTOSetup.ManagementPTOAssignment",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.emp.employeePTOSetup.managementPTOAssignmentArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.emp.employeePTOSetup.ManagementPTODay",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.emp.employeePTOSetup.managementPTODayArgs);
 			$.extend(this, args);
 		}
 	}

@@ -118,6 +118,8 @@ ii.Class({
 			me.ptoPlanShow = me.authorizer.isAuthorized(me.authorizePath + "\\PTOPlans");
 			me.ptoAssignmentShow = me.authorizer.isAuthorized(me.authorizePath + "\\PTOAssignments");
 			me.ptoDayShow = me.authorizer.isAuthorized(me.authorizePath + "\\PTODays");
+			me.managementPTOAssignmentShow = me.authorizer.isAuthorized(me.authorizePath + "\\ManagementPTOAssignments");
+			me.managementPTODayShow = me.authorizer.isAuthorized(me.authorizePath + "\\ManagementPTODays");
 			me.ptoBalanceHourShow = me.authorizer.isAuthorized(me.authorizePath + "\\PTOBalanceHours");
 			me.ptoStartDateShow = me.authorizer.isAuthorized(me.authorizePath + "\\PTOStartDate");
 
@@ -131,6 +133,10 @@ ii.Class({
 				$("#ptoAssignmentAction").hide();
 			if (!me.ptoDayShow)
 				$("#ptoDayAction").hide();
+			if (!me.managementPTOAssignmentShow)
+				$("#ptoManagementAssignmentAction").hide();
+			if (!me.managementPTODayShow)
+				$("#ptoManagementDayAction").hide();
 			if (!me.ptoBalanceHourShow)
 				$("#ptoBalanceHourAction").hide();
 			if (!me.ptoStartDateShow)
@@ -146,6 +152,10 @@ ii.Class({
 				me.actionMenuItem("PTO Assignments");
 			else if (me.ptoDayShow)
 				me.actionMenuItem("PTO Days");
+			else if (me.managementPTOAssignmentShow)
+				me.actionMenuItem("Management PTO Assignments");
+			else if (me.managementPTODayShow)
+				me.actionMenuItem("Management PTO Days");
 			else if (me.ptoBalanceHourShow)
 				me.actionMenuItem("PTO Balance Hours");
 			else if (me.ptoStartDateShow)
@@ -169,11 +179,12 @@ ii.Class({
 			me.ptoAssignmentGrid.setHeight($(window).height() - 155);
 			me.employeeGrid.setHeight($(window).height() - 115);
 			me.ptoDaysGrid.setHeight($(window).height() - 165);
+			me.managementPTODaysGrid.setHeight($(window).height() - 165);
 			me.ptoBalanceHoursGrid.setHeight($(window).height() - 165);
 
 			if (me.action == "PTO Years" || me.action == "PTO Types")
 				$("#ContainerArea").height($(window).height() - 123);
-			else if (me.action == "PTO Assignments")
+			else if (me.action == "PTO Assignments" || me.action == "Management PTO Assignments")
 				$("#ContainerArea").height($(window).height() - 127);
 			else
 				$("#ContainerArea").height($(window).height() - 160);
@@ -222,6 +233,18 @@ ii.Class({
 					brief: "PTO Balance Hours",
 					title: "To view or modify the PTO employee balance hours.",
 					actionFunction: function() { me.actionMenuItem("PTO Balance Hours"); }
+				})
+				.addAction({
+					id: "ptoManagementAssignmentAction",
+					brief: "Management PTO Assignments",
+					title: "To view or modify the management PTO assignments.",
+					actionFunction: function() { me.actionMenuItem("Management PTO Assignments"); }
+				})
+				.addAction({
+					id: "ptoManagementDayAction",
+					brief: "Management PTO Days",
+					title: "To view or modify the management PTO days.",
+					actionFunction: function() { me.actionMenuItem("Management PTO Days"); }
 				})
 				.addAction({
 					id: "ptoStartDateAction",
@@ -641,6 +664,108 @@ ii.Class({
 			me.ptoDaysGrid.addColumn("hours", "hours", "Hours", "Hours", 100, null, me.ptoHours);
 			me.ptoDaysGrid.capColumns();
 
+			me.managementPTODaysGrid = new ui.ctl.Grid({
+				id: "ManagementPTODaysGrid",
+				appendToId: "divForm",
+				allowAdds: true,
+				createNewFunction: fin.emp.employeePTOSetup.ManagementPTODay,
+				selectFunction: function( index ) { me.itemManagementPTODaysSelect(index); }
+			});
+
+			me.managementDaysPTOType = new ui.ctl.Input.DropDown.Filtered({
+		        id: "ManagementDaysPTOType",
+				appendToId: "ManagementPTODaysGridControlHolder",
+				formatFunction: function(type) { return type.name; },
+				changeFunction: function() { me.modified(); }
+		    });	
+			
+			me.managementDaysPTOType.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(function( isFinal, dataMap) {				
+	
+				if (me.managementDaysPTOType.indexSelected == -1)
+					this.setInvalid("Please select the correct PTO Type.");
+			});
+			
+			me.managementPTOStartDate = new ui.ctl.Input.Date({
+		        id: "ManagementPTOStartDate",
+				appendToId: "ManagementPTODaysGridControlHolder",
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+		    });
+			
+			me.managementPTOStartDate.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+					var enteredText = me.managementPTOStartDate.text.value;
+
+					if (enteredText == "") 
+						return;
+
+					if (this.focused || this.touched) 
+						me.modified();
+
+					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) 
+						this.setInvalid("Please enter valid date.");
+					else
+						me.calcualteTotalHours();
+				});
+
+			me.managementPTOEndDate = new ui.ctl.Input.Date({
+		        id: "ManagementPTOEndDate",
+				appendToId: "ManagementPTODaysGridControlHolder",
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
+		    });
+
+			me.managementPTOEndDate.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+					var enteredText = me.managementPTOEndDate.text.value;
+
+					if (enteredText == "") 
+						return;
+
+					if (this.focused || this.touched) 
+						me.modified();
+
+					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
+						this.setInvalid("Please enter valid date.");
+					else if (me.managementPTOStartDate.valid && new Date(enteredText) < new Date(me.managementPTOStartDate.text.value))
+						this.setInvalid("The End Date should not be less than Start Date.");
+					else
+						me.calcualteTotalHours();
+				});
+
+			me.managementPTOHours = new ui.ctl.Input.Text({
+				id: "ManagementPTOHours",
+				appendToId: "ManagementPTODaysGridControlHolder",
+				changeFunction: function() { me.modified(); }
+			});
+			
+			me.managementPTOHours.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required )
+				.addValidation( function( isFinal, dataMap ){
+
+					var enteredText = me.managementPTOHours.getValue();
+
+					if (enteredText == "")
+						return;
+
+					if (!(/^((\d+(\.\d+)?)|(\.\d+))$/.test(enteredText)))
+						this.setInvalid("Please enter valid number.");
+					else if (parseFloat(enteredText) <= 0)
+						this.setInvalid("Hours should be greater than zero.");
+				});	
+			
+			me.managementPTODaysGrid.addColumn("ptoType", "ptoType", "PTO Type", "PTO Type", null, function( type ) { return type.name; }, me.managementDaysPTOType);
+			me.managementPTODaysGrid.addColumn("startDate", "startDate", "PTO Start Date", "PTO Start Date", 150, function( type ) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }, me.managementPTOStartDate);
+			me.managementPTODaysGrid.addColumn("endDate", "endDate", "PTO End Date", "PTO End Date", 150, function( type ) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }, me.managementPTOEndDate);
+			me.managementPTODaysGrid.addColumn("hours", "hours", "Hours", "Hours", 100, null, me.managementPTOHours);
+			me.managementPTODaysGrid.capColumns();
+
 			me.ptoBalanceHoursGrid = new ui.ctl.Grid({
 				id: "PTOBalanceHoursGrid",
 				appendToId: "divForm",
@@ -836,6 +961,16 @@ ii.Class({
 				lookupSpec: { ptoType: me.ptoTypes }
 			});
 
+			me.managementPTOAssignments = [];
+			me.managementPTODays = [];
+			me.managementPTODayStore = me.cache.register({
+				storeId: "managementPTODays",
+				itemConstructor: fin.emp.employeePTOSetup.ManagementPTODay,
+				itemConstructorArgs: fin.emp.employeePTOSetup.managementPTODayArgs,
+				injectionArray: me.managementPTODays,
+				lookupSpec: { ptoType: me.ptoTypes }
+			});
+
 			me.ptoEmployeeBalanceHours = [];
 			me.ptoEmployeeBalanceHourStore = me.cache.register({
 				storeId: "ptoEmployeeBalanceHours",
@@ -960,7 +1095,7 @@ ii.Class({
 				me.active.setValue("true");
 				me.ptoPlanGrid.body.deselectAll();
 			}
-			else if (me.action == "PTO Assignments") {
+			else if (me.action == "PTO Assignments" || me.action == "Management PTO Assignments") {
 				me.ptoAssignmentGrid.setData([]);
 			}
 			else if (me.action == "PTO Days") {
@@ -968,6 +1103,12 @@ ii.Class({
 				if (me.ptoDaysGrid.activeRowIndex != -1)
 					me.ptoDaysGrid.body.deselect(me.ptoDaysGrid.activeRowIndex, true);
 				me.ptoDaysGrid.setData([]);
+			}
+			else if (me.action == "Management PTO Days") {
+				me.employeeGrid.body.deselectAll();
+				if (me.managementPTODaysGrid.activeRowIndex != -1)
+					me.managementPTODaysGrid.body.deselect(me.managementPTODaysGrid.activeRowIndex, true);
+				me.managementPTODaysGrid.setData([]);
 			}
 			else if (me.action == "PTO Balance Hours") {
 				me.employeeGrid.body.deselectAll();
@@ -997,6 +1138,7 @@ ii.Class({
 			$("#PTOPlanContainerRight").hide();
 			$("#PTOAssignmentContainerRight").hide();
 			$("#PTODaysContainerRight").hide();
+			$("#ManagementPTODaysContainerRight").hide();
 			$("#PTOBalanceHoursContainerRight").hide();
 			$("#PTOStartDateContainer").hide();
 			$("#AnchorClone").hide();
@@ -1024,7 +1166,7 @@ ii.Class({
 				$("#AnchorClone").show();
 				me.loadPlans(true);
 			}
-			else if (section == "PTO Assignments") {
+			else if (section == "PTO Assignments" || section == "Management PTO Assignments") {
 				$("#AnchorNew").hide();
 				$("#AnchorSave").hide();
 				$("#AnchorUndo").hide();
@@ -1042,6 +1184,15 @@ ii.Class({
 				$("#HouseCode").show();
 				$("#PTODaysContainerLeft").show();
 				$("#PTODaysContainerRight").show();
+				me.loadEmployees();
+			}
+			else if (section == "Management PTO Days") {
+				$("#PTOTypeSearchContainer").show();
+				$("#SearchTemplate").show();
+				$("#AnchorNew").hide();
+				$("#HouseCode").show();
+				$("#PTODaysContainerLeft").show();
+				$("#ManagementPTODaysContainerRight").show();
 				me.loadEmployees();
 			}
 			else if (section == "PTO Balance Hours") {
@@ -1070,9 +1221,9 @@ ii.Class({
 		actionSearchItem: function() {
 			var me = this;
 			
-			if (me.action == "PTO Plans" || me.action == "PTO Assignments")
+			if (me.action == "PTO Plans" || me.action == "PTO Assignments" ||  me.action == "Management PTO Assignments")
 				me.loadPlans(true);
-			else if (me.action == "PTO Days")
+			else if (me.action == "PTO Days" || me.action == "Management PTO Days")
 				me.loadPTODays();
 		},
 		
@@ -1109,6 +1260,7 @@ ii.Class({
 			me.ptoTypeGrid.setData(me.ptoTypes);
 			me.ptoType.setData(me.ptoTypes);
 			me.daysPTOType.setData(me.ptoTypes);
+			me.managementDaysPTOType.setData(me.ptoTypes);
 			me.ptoTypeSearch.setData(me.ptoTypes);
 			me.balanceHoursPTOType.setData(me.ptoTypes);
 		},
@@ -1142,7 +1294,10 @@ ii.Class({
 			var me = this;
 
 			me.setLoadCount();
-			me.ptoEmployeeStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",ptoPlanId:-1", me.ptoEmployeesLoaded, me);
+			if (me.action == "PTO Days" || me.action == "PTO Balance Hours")
+				me.ptoEmployeeStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",ptoPlanId:-1,searchType:Employee", me.ptoEmployeesLoaded, me);
+			else if (me.action == "Management PTO Days")
+				me.ptoEmployeeStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",ptoPlanId:-1,searchType:Management", me.ptoEmployeesLoaded, me);
 		},
 		
 		ptoEmployeesLoaded: function(me, activeId) {
@@ -1161,7 +1316,7 @@ ii.Class({
 			if (showLoading)
 				me.setLoadCount();
 				
-			if (me.action == "PTO Assignments")
+			if (me.action == "PTO Assignments" || me.action == "Management PTO Assignments")
 				active = 1;
 			me.ptoPlanStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",ptoYearId:" + me.ptoYears[me.ptoYearSearch.indexSelected].id + ",active:" + active, me.ptoPlansLoaded, me);
 		},
@@ -1187,13 +1342,24 @@ ii.Class({
 				ptoTypeId = me.ptoTypes[me.ptoTypeSearch.indexSelected].id;
 
 			me.setLoadCount();
-			me.ptoDayStore.fetch("userId:[user],employeeId:" + employeeId + ",ptoYearId:" + me.ptoYears[me.ptoYearSearch.indexSelected].id + ",ptoTypeId:" + ptoTypeId,  me.ptoDaysLoaded, me);
-			me.employeePayPeriodStore.fetch("userId:[user],empEmployee:" + employeeId + ",workDay:" + workDay, me.employeePayPeriodLoaded, me);
+			if (me.action == "PTO Days") {
+				me.ptoDayStore.fetch("userId:[user],employeeId:" + employeeId + ",ptoYearId:" + me.ptoYears[me.ptoYearSearch.indexSelected].id + ",ptoTypeId:" + ptoTypeId,  me.ptoDaysLoaded, me);
+				me.employeePayPeriodStore.fetch("userId:[user],empEmployee:" + employeeId + ",workDay:" + workDay, me.employeePayPeriodLoaded, me);
+			}
+			else if (me.action == "Management PTO Days") {
+				me.managementPTODayStore.fetch("userId:[user],employeeId:" + employeeId + ",ptoYearId:" + me.ptoYears[me.ptoYearSearch.indexSelected].id + ",ptoTypeId:" + ptoTypeId,  me.managementPTODaysLoaded, me);
+			}
 		},
 		
 		ptoDaysLoaded: function(me, activeId) {
 
 			me.ptoDaysGrid.setData(me.ptoDays);
+			me.checkLoadCount();
+		},
+		
+		managementPTODaysLoaded: function(me, activeId) {
+
+			me.managementPTODaysGrid.setData(me.managementPTODays);
 			me.checkLoadCount();
 		},
 		
@@ -1313,7 +1479,7 @@ ii.Class({
 					me.planDays.setValue(me.ptoPlanGrid.data[index].days);
 					me.active.setValue(me.ptoPlanGrid.data[index].active.toString());
 				}
-				else if (me.action == "PTO Assignments") {
+				else if (me.action == "PTO Assignments" || me.action == "Management PTO Assignments") {
 					me.setLoadCount();
 					me.loadPTOAssignments();
 				}
@@ -1323,7 +1489,10 @@ ii.Class({
 		loadPTOAssignments: function() {
 			var me = this;
 
-			me.ptoEmployeeStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",assigned:1,ptoPlanId:" + me.ptoPlanGrid.data[me.ptoPlanGrid.activeRowIndex].id, me.ptoAssignmentsLoaded, me);
+			if (me.action == "PTO Assignments")
+				me.ptoEmployeeStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",assigned:1,searchType:Employee,ptoPlanId:" + me.ptoPlanGrid.data[me.ptoPlanGrid.activeRowIndex].id, me.ptoAssignmentsLoaded, me);
+			else if (me.action == "Management PTO Assignments")
+				me.ptoEmployeeStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",assigned:1,searchType:Management,ptoPlanId:" + me.ptoPlanGrid.data[me.ptoPlanGrid.activeRowIndex].id, me.ptoAssignmentsLoaded, me);
 			//me.ptoAssignmentStore.fetch("userId:[user],planId:" + me.ptoPlanGrid.data[me.ptoPlanGrid.activeRowIndex].id, me.ptoAssignmentsLoaded, me);
 		},
 		
@@ -1347,6 +1516,11 @@ ii.Class({
 			if (me.action == "PTO Days") {
 				if (me.ptoDaysGrid.activeRowIndex != -1)
 					me.ptoDaysGrid.body.deselect(me.ptoDaysGrid.activeRowIndex, true);
+				me.loadPTODays();
+			}
+			else if (me.action == "Management PTO Days") {
+				if (me.managementPTODaysGrid.activeRowIndex != -1)
+					me.managementPTODaysGrid.body.deselect(me.managementPTODaysGrid.activeRowIndex, true);
 				me.loadPTODays();
 			}
 			else if (me.action == "PTO Balance Hours") {
@@ -1389,10 +1563,44 @@ ii.Class({
                 $("#PTODateText").attr("disabled", false);
 				$("#PTOHoursText").attr("disabled", false);
 			}
-			
+
 			me.daysPTOType.resizeText();
 			me.ptoDate.resizeText();
 			me.ptoHours.resizeText();
+		},
+
+		itemManagementPTODaysSelect: function() {
+			var args = ii.args(arguments, {
+				index: {type: Number}  // The index of the data subItem to select
+			});
+			var me = this;
+			var index = args.index;
+
+			me.managementDaysPTOType.resizeText();
+			me.managementPTOStartDate.resizeText();
+			me.managementPTOEndDate.resizeText();
+			me.managementPTOHours.resizeText();
+		},
+
+		calcualteTotalHours: function() {
+			var me = this;
+			var hours = 0;
+
+			if (me.managementPTOStartDate.lastBlurValue != "" && me.managementPTOEndDate.lastBlurValue != "" 
+				&& me.managementPTOStartDate.valid && me.managementPTOEndDate.valid) {
+				var startDate = new Date(me.managementPTOStartDate.lastBlurValue);
+				var endDate = new Date(me.managementPTOEndDate.lastBlurValue);
+
+				while (startDate <= endDate) {
+				 	if (startDate.getDay() != 0 && startDate.getDay() != 6)
+						hours += 8;
+					startDate.setDate(startDate.getDate() + 1);
+				}
+				me.managementPTOHours.setValue(hours.toFixed(2));
+			}
+			else {
+				me.managementPTOHours.setValue("");
+			}
 		},
 
 		itemPTOBalanceHoursSelect: function() {
@@ -1420,7 +1628,10 @@ ii.Class({
 			loadPopup();
 			me.selectAll.setValue("false");
 			me.setStatus("Loading");
-			me.ptoEmployeeStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",ptoPlanId:" + me.ptoPlanGrid.data[me.ptoPlanGrid.activeRowIndex].id, me.ptoUnassignedEmployeesLoaded, me);
+			if (me.action == "PTO Assignments")
+				me.ptoEmployeeStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",searchType:Employee,ptoPlanId:" + me.ptoPlanGrid.data[me.ptoPlanGrid.activeRowIndex].id, me.ptoUnassignedEmployeesLoaded, me);
+			else if (me.action == "Management PTO Assignments")
+				me.ptoEmployeeStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",searchType:Management,ptoPlanId:" + me.ptoPlanGrid.data[me.ptoPlanGrid.activeRowIndex].id, me.ptoUnassignedEmployeesLoaded, me);
 		},
 		
 		ptoUnassignedEmployeesLoaded: function(me, activeId) {
@@ -1539,6 +1750,13 @@ ii.Class({
 					me.itemEmployeeSelect(me.lastSelectedRowIndex);
 				}
 			}
+			else if (me.action == "Management PTO Days") {
+				if (me.lastSelectedRowIndex >= 0) {
+					if (me.managementPTODaysGrid.activeRowIndex != -1)
+						me.managementPTODaysGrid.body.deselect(me.managementPTODaysGrid.activeRowIndex, true);
+					me.itemEmployeeSelect(me.lastSelectedRowIndex);
+				}
+			}
 			else if (me.action == "PTO Balance Hours") {
 				if (me.lastSelectedRowIndex >= 0) {
 					if (me.ptoBalanceHoursGrid.activeRowIndex != -1)
@@ -1645,6 +1863,18 @@ ii.Class({
 					0	
 				);
 			}
+			else if (me.action == "Management PTO Days") {
+				me.managementPTODaysGrid.body.deselectAll();
+
+				// Check to see if the data entered is valid
+				if (!me.validator.queryValidity(true) && me.managementPTODaysGrid.activeRowIndex >= 0) {
+					alert("In order to save, the errors on the page must be corrected.");
+					return false;
+				}
+				item = new fin.emp.employeePTOSetup.ManagementPTODay(
+					0	
+				);
+			}
 			else if (me.action == "PTO Balance Hours") {
 				me.ptoBalanceHoursGrid.body.deselectAll();
 
@@ -1663,7 +1893,7 @@ ii.Class({
 					}
 				}
 			}
-			else if (me.action == "PTO Assignments") {
+			else if (me.action == "PTO Assignments" || me.action == "Management PTO Assignments") {
 				hidePopup();
 			}
 			else if (me.action == "PTO Start Date") {
@@ -1762,6 +1992,23 @@ ii.Class({
 					//<weeklyPayroll id="1" houseCodeId="12351" weekStartDate="11/09/2014" weekEndDate="11/15/2014" houseCodeJob="23996|23996|23996|23996|23996|23996|23996|" houseCodeWorkOrder="0|0|0|0|0|0|0|" hourly="H|H|H|H|H|H|H|" employeeId="630842|630842|630842|630842|630842|630842|630842|" payCode="2|2|2|2|2|2|2|" payrollHcmHouseCode="12351|12351|12351|12351|12351|12351|12351|" weekDay="1|2|3|4|5|6|7|" value="7|0|0|0|0|0|0|" transactionId="9638205|9638206|9638207|9638208|9638209|9638210|9638211|"/>
 				}
 			}
+			else if (me.action == "Management PTO Days") {
+				for (var index = 0; index < me.managementPTODays.length; index++) {
+					if (me.managementPTODays[index].modified || me.managementPTODays[index].id == 0) {
+						me.managementPTODays[index].modified = true;
+						xml += '<managementPTODay';
+						xml += ' id="' + me.managementPTODays[index].id + '"';
+						xml += ' houseCodeId="' + parent.fin.appUI.houseCodeId + '"';
+						xml += ' employeeId="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].id + '"';
+						xml += ' ptoYearId="' + me.ptoYears[me.ptoYearSearch.indexSelected].id + '"';
+						xml += ' ptoTypeId="' + me.managementPTODays[index].ptoType.id + '"';
+						xml += ' startDate="' + ui.cmn.text.date.format(me.managementPTODays[index].startDate, "mm/dd/yyyy") + '"';
+						xml += ' endDate="' + ui.cmn.text.date.format(me.managementPTODays[index].endDate, "mm/dd/yyyy") + '"';
+						xml += ' hours="' + me.managementPTODays[index].hours + '"';
+						xml += '/>';
+					}
+				}
+			}
 			else if (me.action == "PTO Balance Hours") {
 				for (var index = 0; index < me.ptoEmployeeBalanceHours.length; index++) {
 					if (me.ptoEmployeeBalanceHours[index].modified || me.ptoEmployeeBalanceHours[index].id == 0) {
@@ -1785,6 +2032,23 @@ ii.Class({
 					for (var index = 0; index < me.ptoEmployees.length; index++) {
 						if ($("#assignInputCheck" + index)[0].checked) {
 							xml += '<ptoAssignment';
+							xml += ' employeeId="' + me.ptoEmployees[index].id + '"';
+							xml += ' ptoPlanId="' + me.ptoPlanGrid.data[me.ptoPlanGrid.activeRowIndex].id + '"';
+							xml += '/>';
+						}
+					}
+				}
+			}
+			else if (me.action == "Management PTO Assignments") {
+				if (me.status == "Delete") {
+					xml += '<managementPTOAssignmentDelete';
+					xml += ' id="' + me.ptoAssignments[me.ptoAssignmentGrid.activeRowIndex].ptoAssignmentId + '"';
+					xml += '/>';
+				}
+				else {
+					for (var index = 0; index < me.ptoEmployees.length; index++) {
+						if ($("#assignInputCheck" + index)[0].checked) {
+							xml += '<managementPTOAssignment';
 							xml += ' employeeId="' + me.ptoEmployees[index].id + '"';
 							xml += ' ptoPlanId="' + me.ptoPlanGrid.data[me.ptoPlanGrid.activeRowIndex].id + '"';
 							xml += '/>';
@@ -1887,6 +2151,26 @@ ii.Class({
 								}
 							}
 							break;
+						
+						case "empManagementPTODay":
+							if (me.action == "Management PTO Days") {
+								var id = parseInt($(this).attr("id"), 10);
+
+								if (id == 0) {
+									invalidPTODay = true;
+									var index = ii.ajax.util.findIndexById($(this).attr("ptoTypeId"), me.ptoTypes);
+									alert("PTO Plan is not assigned to the employee for the PTO type [" +  me.ptoTypes[index].name + "]. Please verify.")
+								}
+								for (var index = 0; index < me.managementPTODaysGrid.data.length; index++) {
+									if (me.managementPTODaysGrid.data[index].modified) {
+										if (me.managementPTODaysGrid.data[index].id == 0)
+											me.managementPTODaysGrid.data[index].id = id;
+										me.managementPTODaysGrid.data[index].modified = false;
+										break;
+									}
+								}
+							}
+							break;
 							
 						case "empPTOEmployeeBalanceHour":
 							if (me.action == "PTO Balance Hours") {
@@ -1904,6 +2188,7 @@ ii.Class({
 							break;
 
 						case "empPTOAssignment":
+						case "empManagementPTOAssignment":
 							if (me.status == "Delete") {
 								me.ptoAssignments.splice(me.ptoAssignmentGrid.activeRowIndex, 1);
 								me.ptoAssignmentGrid.setData(me.ptoAssignments);
