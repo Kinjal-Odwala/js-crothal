@@ -2115,10 +2115,6 @@ ii.Class({
 						$("#CreateUserIDText").val(me.session.propertyGet("userName"));
 						$("#CreateUserIDText").attr("readonly", true);
 					}
-					else if (me.reportParameters[index].name == "BY") {
-						$("#BYText").val(me.reportParameters[index].defaultValue);
-						$("#BYText").attr("readonly", true);
-					}
 				}
 				else if (me.reportParameters[index].controlType == "CheckBox") {
 					me.controls[index] = new ui.ctl.Input.Check({
@@ -2444,9 +2440,10 @@ ii.Class({
                 var title = typeTableData[index].name;
                 var brief = typeTableData[index].brief;
 
-                if (args.referenceTableName == "AppStateTypes" || args.referenceTableName == "PayCodes" 
-	                || args.referenceTableName == "HouseCodes" || args.referenceTableName == "FscYears")
+                if (args.referenceTableName == "AppStateTypes" || args.referenceTableName == "HouseCodes" || args.referenceTableName == "FscYears")
                     $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + "</option>");
+				else if (args.referenceTableName == "PayCodes")
+					$("#" + args.name).append("<option title='" + title + "' value='" + brief + "'>" + title + "</option>");
                 else if (args.referenceTableName == "FscPeriods")
                     $("#" + args.name).append("<option title='" + 'Period ' + title + ' - ' + typeTableData[index].fscYeaTitle + "' value='" + value + "'>" + 'Period ' + title + ' - ' + typeTableData[index].fscYeaTitle + "</option>");
                 else if (args.referenceTableName == "PayPayrollCompanies")
