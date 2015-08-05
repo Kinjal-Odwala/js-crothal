@@ -42,6 +42,14 @@ ii.init.register( function() {
 		, name: {type: String, required: false, defaultValue: ""}
 	};
 	
+	fin.emp.employeePTOSetup.ptoPlanTypeArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, title: {type: String, required: false, defaultValue: ""}
+		, minHours: {type: Number, required: false, defaultValue: 0}
+		, maxHours: {type: Number, required: false, defaultValue: 0}
+		, active: {type: Boolean, required: false, defaultValue: true}
+	};
+	
 	fin.emp.employeePTOSetup.ptoEmployeeArgs = {
 		id: {type: Number, required: false, defaultValue: 0}
 		, firstName: {type: String, required: false, defaultValue: ""}
@@ -57,6 +65,7 @@ ii.init.register( function() {
 		, houseCodeId: {type: Number, required: false, defaultValue: 0}
 		, ptoYear: {type: fin.emp.employeePTOSetup.PTOYear, required: false}
 		, ptoType: {type: fin.emp.employeePTOSetup.PTOType, required: false}
+		, ptoPlanType: {type: fin.emp.employeePTOSetup.PTOPlanType, required: false}
 		, title: {type: String, required: false, defaultValue: ""}
 		, startDate: {type: String, required: false, defaultValue: ""}
 		, endDate: {type: String, required: false, defaultValue: ""}
@@ -178,6 +187,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.emp.employeePTOSetup.ptoYearArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.emp.employeePTOSetup.PTOPlanType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.emp.employeePTOSetup.ptoPlanTypeArgs);
 			$.extend(this, args);
 		}
 	}
