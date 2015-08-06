@@ -104,11 +104,12 @@ ii.Class({
 				$("#pageLoading").fadeIn("slow");
 
 				ii.timer.timing("Page displayed");
-				me.loadCount = 3;
+				me.loadCount = 4;
 				me.session.registerFetchNotify(me.sessionLoaded, me);
 				me.ptoTypeStore.fetch("userId:[user]", me.ptoTypesLoaded, me);
 				me.ptoYearStore.fetch("userId:[user]", me.ptoYearsLoaded, me);
 				me.payCodeTypeStore.fetch("userId:[user]", me.payCodeTypesLoaded, me);
+				me.ptoPlanTypeStore.fetch("userId:[user],active:0", me.ptoPlanTypesLoaded, me);
 			}				
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
