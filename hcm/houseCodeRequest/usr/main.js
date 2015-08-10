@@ -237,7 +237,15 @@ ii.Class({
 				clickFunction: function() { me.actionSaveAndApproveItem(); },
 				hasHotState: true
 			});
-			
+
+			me.anchorGenerateHouseCode = new ui.ctl.buttons.Sizeable({
+				id: "AnchorGenerateHouseCode",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Generate House Code & Export&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionSaveAndApproveItem(); },
+				hasHotState: true
+			});
+
 			me.anchorCancel = new ui.ctl.buttons.Sizeable({
 				id: "AnchorCancel",
 				className: "iiButton",
@@ -2185,6 +2193,7 @@ ii.Class({
 			if (me.customers.length > 0) {
 				me.customerNumber.reset();
 				me.customerNumber.select(0, me.customerNumber.focused);
+				me.customerNumberChanged();
 			}
 		},
 
@@ -2236,6 +2245,7 @@ ii.Class({
 			if (me.serviceLocations.length > 0) {
 				me.serviceLocationNumber.reset();
 				me.serviceLocationNumber.select(0, me.serviceLocationNumber.focused);
+				me.serviceLocationNumberChanged();
 			}
 		},
 		
@@ -2321,7 +2331,10 @@ ii.Class({
 				$("#AnchorView").show();
 				//$("#AnchorSendRequest").show();
 				if (me.workflowId > 0) {
-					$("#AnchorEdit").show();
+					if (item.column7 == "House Code Created")
+						$("#AnchorEdit").hide();
+					else
+						$("#AnchorEdit").show();
 					$("#AnchorNew").hide();
 					$("#AnchorSendRequest").hide();
 					$("#AnchorCancelRequest").hide();
@@ -2336,7 +2349,7 @@ ii.Class({
 					$("#AnchorSendRequest").hide();
 					$("#AnchorCancelRequest").hide();
 				}
-				
+
 				itemIndex = ii.ajax.util.findIndexById(item.column16, me.contractTypes);
 				if (itemIndex >= 0 && itemIndex != undefined)
 					$("#ReadonlyContractType").html(me.contractTypes[itemIndex].name);
@@ -2387,6 +2400,7 @@ ii.Class({
 			$("#AnchorSave").show();
 			$("#AnchorApprove").hide();
 			$("#AnchorSaveAndApprove").hide();
+			$("#AnchorGenerateHouseCode").hide();
 			$("#AnchorCancel").hide();
 			$("#AnchorExit").hide();
 			$("#popupHeader").text("House Code Request");
@@ -2628,6 +2642,7 @@ ii.Class({
 					$("#AnchorSave").show();
 					$("#AnchorApprove").hide();
 					$("#AnchorSaveAndApprove").hide();
+					$("#AnchorGenerateHouseCode").hide();
 					$("#AnchorCancel").hide();
 					$("#AnchorExit").hide();
 				}
@@ -2637,10 +2652,13 @@ ii.Class({
 					$("#AnchorSave").hide();
 					$("#AnchorApprove").show();
 					$("#AnchorSaveAndApprove").show();
+					$("#AnchorGenerateHouseCode").hide();
 					$("#AnchorCancel").show();
 					$("#AnchorExit").show();
 					if (item.column7 == "Step 2 Approved") {
 						$("#AnchorApprove").hide();
+						$("#AnchorSaveAndApprove").hide();
+						$("#AnchorGenerateHouseCode").show();
 						$("#DivHouseCode").show();
 						me.houseCode.setValue("");
 					}
@@ -2650,6 +2668,7 @@ ii.Class({
 					$("#AnchorSave").hide();
 					$("#AnchorApprove").hide();
 					$("#AnchorSaveAndApprove").hide();
+					$("#AnchorGenerateHouseCode").hide();
 					$("#AnchorCancel").hide();
 					$("#AnchorExit").hide();
 				}
@@ -3055,7 +3074,7 @@ ii.Class({
 					, ""
 					, ""
 					, ""
-					, me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].column12
+					, (me.status == "New" ? "" : me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].column12)
 					, ""
 					, (me.status == "New" ? me.persons[0].email : me.houseCodeRequests[me.houseCodeRequestGrid.activeRowIndex].column14)
 					, ""
@@ -3317,6 +3336,7 @@ ii.Class({
 			if (me.status == "SendRequest" || me.status == "ViewRequest") {
 				var index = 0;
 				var primaryContractTypeTitle = "";
+				var stateBrief = "";
 				var stateTitle = "";
 				var primaryServiceProvidedTitle = "";
 				var otherServicesProvided = "";
@@ -3333,8 +3353,10 @@ ii.Class({
 					primaryContractTypeTitle = me.contractTypes[index].name;
 				
 				index = ii.ajax.util.findIndexById(item.column29, me.stateTypes);
-				if (index != undefined && index >= 0)
+				if (index != undefined && index >= 0) {
+					stateBrief = me.stateTypes[index].brief;
 					stateTitle = me.stateTypes[index].name;
+				}
 					
 				index = ii.ajax.util.findIndexById(item.column33, me.serviceTypes);
 				if (index != undefined && index >= 0)
@@ -3376,6 +3398,7 @@ ii.Class({
 					serviceLocationStateTitle = me.stateTypes[index].name;
 
 				xml += ' primaryContractTypeTitle="' + ui.cmn.text.xml.encode(primaryContractTypeTitle) + '"';
+				xml += ' stateBrief="' + ui.cmn.text.xml.encode(stateBrief) + '"';
 				xml += ' stateTitle="' + ui.cmn.text.xml.encode(stateTitle) + '"';
 				xml += ' primaryServiceProvidedTitle="' + ui.cmn.text.xml.encode(primaryServiceProvidedTitle) + '"';
 				xml += ' otherServicesProvidedTitle="' + ui.cmn.text.xml.encode(otherServicesProvided) + '"';
@@ -3435,6 +3458,8 @@ ii.Class({
 							else {
 								if (me.status == "SaveAndApproveRequestStep3") {
 									item.column7 = $(this).attr("status");
+									$("iframe")[0].contentWindow.document.getElementById("FileName").value = $(this).attr("fileName");
+									$("iframe")[0].contentWindow.document.getElementById("DownloadButton").click();
 								}
 								me.lastSelectedRowIndex = me.houseCodeRequestGrid.activeRowIndex;
 								me.houseCodeRequests[me.lastSelectedRowIndex] = item;
