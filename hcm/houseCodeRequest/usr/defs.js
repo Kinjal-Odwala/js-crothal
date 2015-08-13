@@ -140,6 +140,7 @@ ii.init.register( function() {
 	
 	fin.hcm.houseCodeRequest.stateTypeArgs = {
 		id: {type: Number}
+		, brief: {type: String}
 		, name: {type: String}
 	};
 
