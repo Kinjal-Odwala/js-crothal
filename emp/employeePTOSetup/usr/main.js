@@ -2377,7 +2377,7 @@ ii.Class({
 								if (id == 0) {
 									invalidPTODay = true;
 									var index = ii.ajax.util.findIndexById($(this).attr("ptoTypeId"), me.ptoTypes);
-									alert("PTO Plan is not assigned to the employee for the PTO type [" +  me.ptoTypes[index].name + "]. Please verify.")
+									alert("Either PTO plan is not assigned to the employee for the PTO type [" +  me.ptoTypes[index].name + "] or PTO date is not within the plan start and end date. Please verify.")
 								}
 								for (var index = 0; index < me.ptoDaysGrid.data.length; index++) {
 									if (me.ptoDaysGrid.data[index].modified) {
@@ -2397,7 +2397,7 @@ ii.Class({
 								if (id == 0) {
 									invalidPTODay = true;
 									var index = ii.ajax.util.findIndexById($(this).attr("ptoTypeId"), me.ptoTypes);
-									alert("PTO Plan is not assigned to the employee for the PTO type [" +  me.ptoTypes[index].name + "]. Please verify.")
+									alert("Either PTO plan is not assigned to the employee for the PTO type [" +  me.ptoTypes[index].name + "] or PTO date is not within the plan start and end date. Please verify.")
 								}
 								for (var index = 0; index < me.managementPTODaysGrid.data.length; index++) {
 									if (me.managementPTODaysGrid.data[index].modified) {
