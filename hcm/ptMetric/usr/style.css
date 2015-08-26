@@ -1,0 +1,103 @@
+﻿.fragment {
+	border: 0;
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+}
+
+.leftContainer {
+	float: left;
+	margin: 10px 20px 10px 10px;
+}
+
+.rightContainer {
+	float: left;
+	margin: 10px 20px 10px 10px;
+}
+
+.subHeader {
+    height: 30px;
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: bold;
+    color: #2C2F50;
+	padding-left: 10px;
+}
+
+
+#LabelOrderNumber {	
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: bold;
+	color: #032D23;
+	padding: 5px 10px 5px 10px;
+}
+
+.inputTextSmall {
+	float: left; 
+	width: 120px; 
+	padding-top: 2px;
+	padding-bottom: 1px;
+	padding-right: 5px;	
+}
+
+.labelText {
+	float:left;
+	/*width: 200px;
+	height:27px;*/
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 12px;
+	color: #032D23;
+}
+
+.labelTextArea {
+	float:left;
+	width: 200px;
+	height:27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
+
+.inputTextArea {
+	float: left;
+	width: 200px;
+	height: 20px;
+}
+
+#Notes {	
+	float: left;
+	width: 620px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: black;
+	margin-left: 10px;
+}
+
+#GridLaborControl, #StrategicInitiativeGrid, #GridQualityControl, #GridQualityAssurance {
+	margin: 10px;
+}
+
+#LaborControlGridContainer, #QualityControlGridContainer, #PTPressGaneyGridContainer, #EVSHCAHPSGridContainer {
+	float: left;
+	width: 100%;
+	position: relative;	
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+
+#QualityAssuranceContainer {
+	position: relative;	
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+.iiGridHeaderColumn {
+	font-size: 8pt;
+	font-style: normal;
+}
+
+.iiGridBodyColumn {
+	font-size: 8pt;
+}
