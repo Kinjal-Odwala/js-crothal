@@ -27,7 +27,7 @@ ii.Class({
         init: function () {
 			var args = ii.args(arguments, {});
 			var me = this;			
-				
+
 			me.poRequisitionId = 0;
 			me.vendorId = 0;
 			me.vendorNumber = "";
@@ -42,8 +42,6 @@ ii.Class({
 			me.fileName = "";
 			me.glAccounts = [];
 			me.action = "PORequisition";
-			
-			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -62,7 +60,6 @@ ii.Class({
 
 			me.validator = new ui.ctl.Input.Validation.Master();			
 			me.session = new ii.Session(me.cache);
-			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
 
 			me.defineFormControls();
 			me.configureCommunications();
@@ -72,6 +69,13 @@ ii.Class({
 			me.setStatus("Loading");
 			me.modified(false);
 
+			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
+			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
+			if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
+				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
+			else
+				me.houseCodesLoaded(me, 0);
+			
 			$(window).bind("resize", me, me.resize);
 			ui.cmn.behavior.disableBackspaceNavigation();
 
@@ -120,11 +124,6 @@ ii.Class({
 					me.action = "GeneratePurchaseOrder";
 				}
 
-				if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
-					me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
-				else
-					me.houseCodesLoaded(me, 0);
-					
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
 				me.accountStore.fetch("userId:[user]", me.accountsLoaded, me);
 				me.personStore.fetch("userId:[user],id:" + me.session.propertyGet("personId"), me.personsLoaded, me);				
@@ -482,8 +481,13 @@ ii.Class({
 			
 			me.vendorState.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				
+				.addValidation( ui.ctl.Input.Validation.required )	
+				.addValidation( function( isFinal, dataMap ) {
+					
+					if ((this.focused || this.touched) && me.vendorState.indexSelected == -1)
+						this.setInvalid("Please select the correct State.");
+				});
+
 			me.vendorZip = new ui.ctl.Input.Text({
 		        id: "VendorZip",
 				maxLength: 10,
@@ -798,7 +802,16 @@ ii.Class({
 				changeFunction: function() { me.modified(); },
 				required: false
 			});
-			
+
+			me.shippingJob.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required )	
+				.addValidation( function( isFinal, dataMap ) {
+					
+					if ((this.focused || this.touched) && me.shippingJob.indexSelected == -1)
+						this.setInvalid("Please select the correct Job.");
+				});
+
 			me.shippingAddress1 = new ui.ctl.Input.Text({
 		        id: "ShippingAddress1",
 				maxLength: 256,
@@ -945,9 +958,7 @@ ii.Class({
 		configureCommunications: function fin_pur_UserInterface_configureCommunications() {
 			var args = ii.args(arguments, {});
 			var me = this;
-			
-			parent.fin.appUI.houseCodeId = 0;
-			
+
 			me.hirNodes = [];
 			me.hirNodeStore = me.cache.register({
 				storeId: "hirNodes",
@@ -1392,16 +1403,30 @@ ii.Class({
 			}
 
 			me.houseCodeGlobalParametersUpdate(false);
+			me.loadData();
+			me.resizeControls();
+		},
+
+		houseCodeChanged: function() {
+			var args = ii.args(arguments,{});
+			var me = this;
+
+			me.lastSelectedRowIndex = -1;
+			me.loadData();
+		},
+
+		loadData: function() {
+			var me = this;
+			
 			me.houseCodeDetailStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId, me.houseCodeDetailsLoaded, me);
 			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.houseCodeJobsLoaded, me);
-			me.resizeControls();
-			me.loadPORequisitions();
 		},
-		
+
 		houseCodeDetailsLoaded: function(me, activeId) {
 
+			me.loadPORequisitions();
 		},
-		
+
 		houseCodeJobsLoaded: function(me, activeId) {
 
 			me.shippingJob.setData(me.houseCodeJobs);
@@ -1424,18 +1449,8 @@ ii.Class({
 			if (event.keyCode == 13) {
 				me.loadPORequisitions();
 			}
-		},
-		
-		houseCodeChanged: function() {
-			var args = ii.args(arguments,{});
-			var me = this;
+		},		
 
-			me.lastSelectedRowIndex = -1;
-			me.houseCodeDetailStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId, me.houseCodeDetailsLoaded, me);
-			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.houseCodeJobsLoaded, me);
-			me.loadPORequisitions();
-		},
-		
 		loadPORequisitions: function() {
 			var me = this;
 			var statusType = "";
