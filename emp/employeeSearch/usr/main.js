@@ -681,10 +681,15 @@ ii.Class({
 				formatFunction: function( type ) { return type.name; },
 	        	required: false
 		    });
-			
+
 			me.personState.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
+				.addValidation( ui.ctl.Input.Validation.required )	
+				.addValidation( function( isFinal, dataMap ) {
+					
+					if ((this.focused || this.touched) && me.personState.indexSelected == -1)
+						this.setInvalid("Please select the correct State.");
+				});
 				
 			me.personPostalCode = new ui.ctl.Input.Text({
 				id: "PostalCode",
@@ -4421,7 +4426,6 @@ ii.Class({
 		
 		employeeMultiRacesLoaded: function(me, activeId) {
 
-			ii.trace("Info: " + me.employeeMultiRaces.length, ii.traceTypes.Information, "Info");
 			if (me.employeeMultiRaces.length > 0) {
 				var index = ii.ajax.util.findIndexById(me.employeeMultiRaces[0].multiRace1, me.multiRaceTypes);
 				if (index != undefined)
@@ -5345,12 +5349,13 @@ ii.Class({
 			else
 				ssn =  me.employeeSSN.getValue().replace(/-/g, "");
 
-			me.employeeValidationStore.fetch("userId:[user]" 
+			me.employeeValidationStore.fetch("userId:[user]"
 				+ ",hireDate:" + me.employeeHireDate.text.value 
 				+ ",employeeId:" + me.employeeGeneralId
 				+ ",ssn:" + ssn
 				+ ",payFrequencyTypeId:" + me.payFrequencyType
-				+ "," 
+				+ ",validateEmployeeAge:" + me.houseCodeDetails[0].validateEmployeeAge
+				+ ","
 				, me.validationsLoaded, me);
 		},
 
@@ -7484,6 +7489,7 @@ ii.Class({
 				xml += ' payrollStatus="' + itemGeneral.payrollStatus + '"';
 				xml += ' previousPayrollStatus="' + itemGeneral.previousPayrollStatus + '"';
 				xml += ' basicLifeIndicatorType="' + itemGeneral.basicLifeIndicatorType + '"';
+				xml += ' validateEmployeeAge="' + me.houseCodeDetails[0].validateEmployeeAge + '"';
 			}
 			
 			if (me.actionType == "Rehire" || me.actionType == "NewHire") {				
