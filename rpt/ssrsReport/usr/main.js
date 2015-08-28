@@ -48,6 +48,19 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 
+			var queryStringArgs = {};
+			var queryString = location.search.substring(1);
+			var pairs = queryString.split("&"); 
+
+			for (var index = 0; index < pairs.length; index++) { 
+				var pos = pairs[index].indexOf("="); 
+				if (pos == -1) continue; 
+				var argName = pairs[index].substring(0, pos); 
+				var value = pairs[index].substring(pos + 1); 
+				queryStringArgs[argName] = unescape(value); 
+			}
+			
+			me.reportTitle = (queryStringArgs["reportId"] == undefined) ? "" : queryStringArgs["reportId"];
 			me.pageLoading = true;
 			me.levelNamesLoaded = false;
 			me.subscriptionSelected = false;
@@ -1888,6 +1901,17 @@ ii.Class({
 			if (me.subscriptionNodes.length == 1)
 				me.subscriptionNodes = [];
 			me.actionAddNodes(me.reportNodes);
+
+			if (me.reportTitle != "") {
+				for (var index = 0; index < me.reportNodes.length; index++) {
+					if (me.reportNodes[index].title == me.reportTitle) {
+						$("#liNode" + me.reportNodes[index].nodeParentId).find(">.hitarea").click();
+						me.setLoadCount();
+						me.hirNodeSelect(me.reportNodes[index].id);
+						break;
+					}
+				}
+			}
         },
 
 		hirNodeSelect: function(nodeId) {        
@@ -1960,7 +1984,7 @@ ii.Class({
 		            $("#TreeviewContainer").height($(window).height() - 260);
 		            $("#ReportSubscription").height($(window).height() - 150);
 				}
-				
+
 				me.setLoadCount();
 				
 				if (!me.levelNamesLoaded)
