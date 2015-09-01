@@ -221,19 +221,11 @@ ii.Class({
 				changeFunction: function() { me.modified(); }
 		    });
 
-			me.chiefExecutiveOfficer.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-
 			me.chiefFinancialOfficer = new ui.ctl.Input.Text({
 		        id: "ChiefFinancialOfficer",
 		        maxLength: 64,
 				changeFunction: function() { me.modified(); }
 		    });
-
-			me.chiefFinancialOfficer.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
 
 			me.chiefOperatingOfficer = new ui.ctl.Input.Text({
 		        id: "ChiefOperatingOfficer",
@@ -241,19 +233,11 @@ ii.Class({
 				changeFunction: function() { me.modified(); }
 		    });
 
-			me.chiefOperatingOfficer.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-
 			me.chiefNursingOfficer = new ui.ctl.Input.Text({
 		        id: "ChiefNursingOfficer",
 		        maxLength: 64,
 				changeFunction: function() { me.modified(); }
 		    });
-
-			me.chiefNursingOfficer.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
 
 			me.contractStartDate = new ui.ctl.Input.Date({
 		        id: "ContractStartDate",
@@ -263,7 +247,6 @@ ii.Class({
 
 			me.contractStartDate.makeEnterTab()
 				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {					
 					var enteredText = me.contractStartDate.text.value;
 
@@ -282,7 +265,6 @@ ii.Class({
 
 			me.contractRenewalDate.makeEnterTab()
 				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {					
 					var enteredText = me.contractRenewalDate.text.value;
 
@@ -301,7 +283,6 @@ ii.Class({
 
 			me.cpiDueDate.makeEnterTab()
 				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {					
 					var enteredText = me.cpiDueDate.text.value;
 
@@ -320,7 +301,6 @@ ii.Class({
 
 			me.cpiCap
 				.setValidationMaster( me.validator )
-				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
 					var enteredText = me.cpiCap.getValue();
 
@@ -339,7 +319,6 @@ ii.Class({
 
 			me.hourlyFTEVacancies
 				.setValidationMaster( me.validator )
-				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
 					var enteredText = me.hourlyFTEVacancies.getValue();
 
@@ -356,10 +335,6 @@ ii.Class({
 				changeFunction: function() { me.modified(); }
 		    });
 
-			me.fullTimePartTimeRatio.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-
 			me.operatingCapacity = new ui.ctl.Input.Text({
 		        id: "OperatingCapacity",
 		        maxLength: 17,
@@ -368,7 +343,6 @@ ii.Class({
 
 			me.operatingCapacity
 				.setValidationMaster( me.validator )
-				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
 					var enteredText = me.operatingCapacity.getValue();
 
@@ -385,19 +359,11 @@ ii.Class({
 				changeFunction: function() { me.modified(); }
 		    });
 
-			me.serviceLineEVS.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-
 			me.serviceLineLaundry = new ui.ctl.Input.Text({
 		        id: "ServiceLineLaundry",
 		        maxLength: 128,
 				changeFunction: function() { me.modified(); }
 		    });
-
-			me.serviceLineLaundry.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
 
 			me.serviceLinePOM = new ui.ctl.Input.Text({
 		        id: "ServiceLinePOM",
@@ -405,19 +371,11 @@ ii.Class({
 				changeFunction: function() { me.modified(); }
 		    });
 
-			me.serviceLinePOM.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-				
 			me.serviceLineCES = new ui.ctl.Input.Text({
 		        id: "ServiceLineCES",
 		        maxLength: 128,
 				changeFunction: function() { me.modified(); }
 		    });
-
-			me.serviceLineCES.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
 
 			me.notes = $("#Notes")[0];
 
@@ -444,7 +402,6 @@ ii.Class({
 
 			me.period1.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.period1, me.laborControlGrid);
@@ -458,7 +415,6 @@ ii.Class({
 			
 			me.period2.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.period2, me.laborControlGrid);
@@ -472,7 +428,6 @@ ii.Class({
 
 			me.period3.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.period3, me.laborControlGrid);
@@ -486,7 +441,6 @@ ii.Class({
 
 			me.period4.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.period4, me.laborControlGrid);
@@ -500,7 +454,6 @@ ii.Class({
 			
 			me.period5.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.period5, me.laborControlGrid);
@@ -514,12 +467,11 @@ ii.Class({
 			
 			me.period6.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.period6, me.laborControlGrid);
 				});
-				
+
 			me.period7 = new ui.ctl.Input.Text({
 				id: "Period7",
 				appendToId: "LaborControlGridControlHolder",
@@ -528,7 +480,6 @@ ii.Class({
 			
 			me.period7.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.period7, me.laborControlGrid);
@@ -542,7 +493,6 @@ ii.Class({
 			
 			me.period8.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.period8, me.laborControlGrid);
@@ -556,7 +506,6 @@ ii.Class({
 			
 			me.period9.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.period9, me.laborControlGrid);
@@ -570,7 +519,6 @@ ii.Class({
 			
 			me.period10.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.period10, me.laborControlGrid);
@@ -584,7 +532,6 @@ ii.Class({
 			
 			me.period11.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.period11, me.laborControlGrid);
@@ -598,7 +545,6 @@ ii.Class({
 			
 			me.period12.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.period12, me.laborControlGrid);
@@ -634,30 +580,18 @@ ii.Class({
 				changeFunction: function() { me.modified(); }
 			});
 
-			me.hospitalIntiative.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				
 			me.expectedOutcome = new ui.ctl.Input.Text({
 				id: "ExpectedOutcome",
 				appendToId: "StrategicInitiativeGridControlHolder",
 				changeFunction: function() { me.modified(); }
 			});
 
-			me.expectedOutcome.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				
 			me.departmentIntiative = new ui.ctl.Input.Text({
 				id: "DepartmentIntiative",
 				appendToId: "StrategicInitiativeGridControlHolder",
 				changeFunction: function() { me.modified(); }
 			});
 
-			me.departmentIntiative.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				
 			me.strategicInitiativeGrid.addColumn("hospitalIntiative", "hospitalIntiative", "Hospital Intiative", "Hospital Intiative", null, null, me.hospitalIntiative);
 			me.strategicInitiativeGrid.addColumn("expectedOutcome", "expectedOutcome", "Expected Outcome", "Expected Outcome", 400, null, me.expectedOutcome);
 			me.strategicInitiativeGrid.addColumn("departmentIntiative", "departmentIntiative", "Department Intiative", "Department Intiative", 400, null, me.departmentIntiative);
@@ -683,7 +617,6 @@ ii.Class({
 
 			me.qcPeriod1.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.qcPeriod1, me.qualityControlGrid);
@@ -697,7 +630,6 @@ ii.Class({
 			
 			me.qcPeriod2.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.qcPeriod2, me.qualityControlGrid);
@@ -711,7 +643,6 @@ ii.Class({
 			
 			me.qcPeriod3.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.qcPeriod3, me.qualityControlGrid);
@@ -725,7 +656,6 @@ ii.Class({
 			
 			me.qcPeriod4.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.qcPeriod4, me.qualityControlGrid);
@@ -739,7 +669,6 @@ ii.Class({
 			
 			me.qcPeriod5.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.qcPeriod5, me.qualityControlGrid);
@@ -753,7 +682,6 @@ ii.Class({
 			
 			me.qcPeriod6.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.qcPeriod6, me.qualityControlGrid);
@@ -767,7 +695,6 @@ ii.Class({
 			
 			me.qcPeriod7.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.qcPeriod7, me.qualityControlGrid);
@@ -781,7 +708,6 @@ ii.Class({
 			
 			me.qcPeriod8.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.qcPeriod8, me.qualityControlGrid);
@@ -795,7 +721,6 @@ ii.Class({
 			
 			me.qcPeriod9.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.qcPeriod9, me.qualityControlGrid);
@@ -809,7 +734,6 @@ ii.Class({
 			
 			me.qcPeriod10.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.qcPeriod10, me.qualityControlGrid);
@@ -823,7 +747,6 @@ ii.Class({
 			
 			me.qcPeriod11.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.qcPeriod11, me.qualityControlGrid);
@@ -837,7 +760,6 @@ ii.Class({
 			
 			me.qcPeriod12.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.qcPeriod12, me.qualityControlGrid);
@@ -878,7 +800,6 @@ ii.Class({
 			
 			me.pgPeriod1.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.pgPeriod1, me.ptPressGaneyGrid);
@@ -892,7 +813,6 @@ ii.Class({
 			
 			me.pgPeriod2.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.pgPeriod2, me.ptPressGaneyGrid);
@@ -906,7 +826,6 @@ ii.Class({
 			
 			me.pgPeriod3.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.pgPeriod3, me.ptPressGaneyGrid);
@@ -920,7 +839,6 @@ ii.Class({
 			
 			me.pgPeriod4.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.pgPeriod4, me.ptPressGaneyGrid);
@@ -934,7 +852,6 @@ ii.Class({
 			
 			me.pgPeriod5.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.pgPeriod5, me.ptPressGaneyGrid);
@@ -948,7 +865,6 @@ ii.Class({
 			
 			me.pgPeriod6.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.pgPeriod6, me.ptPressGaneyGrid);
@@ -962,7 +878,6 @@ ii.Class({
 			
 			me.pgPeriod7.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.pgPeriod7, me.ptPressGaneyGrid);
@@ -976,7 +891,6 @@ ii.Class({
 			
 			me.pgPeriod8.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.pgPeriod8, me.ptPressGaneyGrid);
@@ -990,7 +904,6 @@ ii.Class({
 			
 			me.pgPeriod9.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.pgPeriod9, me.ptPressGaneyGrid);
@@ -1004,7 +917,6 @@ ii.Class({
 			
 			me.pgPeriod10.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.pgPeriod10, me.ptPressGaneyGrid);
@@ -1018,7 +930,6 @@ ii.Class({
 			
 			me.pgPeriod11.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.pgPeriod11, me.ptPressGaneyGrid);
@@ -1032,7 +943,6 @@ ii.Class({
 			
 			me.pgPeriod12.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.pgPeriod12, me.ptPressGaneyGrid);
@@ -1073,7 +983,6 @@ ii.Class({
 			
 			me.evsPeriod1.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.evsPeriod1, me.evsHCAHPSGrid);
@@ -1087,7 +996,6 @@ ii.Class({
 			
 			me.evsPeriod2.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.evsPeriod2, me.evsHCAHPSGrid);
@@ -1101,7 +1009,6 @@ ii.Class({
 			
 			me.evsPeriod3.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.evsPeriod3, me.evsHCAHPSGrid);
@@ -1115,7 +1022,6 @@ ii.Class({
 			
 			me.evsPeriod4.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.evsPeriod4, me.evsHCAHPSGrid);
@@ -1129,7 +1035,6 @@ ii.Class({
 			
 			me.evsPeriod5.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.evsPeriod5, me.evsHCAHPSGrid);
@@ -1143,7 +1048,6 @@ ii.Class({
 			
 			me.evsPeriod6.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.evsPeriod6, me.evsHCAHPSGrid);
@@ -1157,7 +1061,6 @@ ii.Class({
 			
 			me.evsPeriod7.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.evsPeriod7, me.evsHCAHPSGrid);
@@ -1171,7 +1074,6 @@ ii.Class({
 			
 			me.evsPeriod8.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.evsPeriod8, me.evsHCAHPSGrid);
@@ -1185,7 +1087,6 @@ ii.Class({
 			
 			me.evsPeriod9.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.evsPeriod9, me.evsHCAHPSGrid);
@@ -1199,7 +1100,6 @@ ii.Class({
 			
 			me.evsPeriod10.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.evsPeriod10, me.evsHCAHPSGrid);
@@ -1213,7 +1113,6 @@ ii.Class({
 			
 			me.evsPeriod11.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.evsPeriod11, me.evsHCAHPSGrid);
@@ -1227,7 +1126,6 @@ ii.Class({
 			
 			me.evsPeriod12.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					me.validateControl(me.evsPeriod12, me.evsHCAHPSGrid);
@@ -1269,7 +1167,6 @@ ii.Class({
 
 			me.quarter1.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ){
 
 					me.validateControl(me.quarter1, me.qualityPartnershipGrid);
@@ -1284,7 +1181,6 @@ ii.Class({
 			
 			me.quarter2.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ){
 
 					me.validateControl(me.quarter2, me.qualityPartnershipGrid);
@@ -1299,7 +1195,6 @@ ii.Class({
 			
 			me.quarter3.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ){
 
 					me.validateControl(me.quarter3, me.qualityPartnershipGrid);
@@ -1314,7 +1209,6 @@ ii.Class({
 			
 			me.quarter4.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ){
 
 					me.validateControl(me.quarter4, me.qualityPartnershipGrid);
@@ -1348,7 +1242,6 @@ ii.Class({
 
 			me.annual1.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ){
 
 					var enteredText = me.annual1.getValue();
@@ -1373,7 +1266,6 @@ ii.Class({
 			
 			me.annual2.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ){
 
 					var enteredText = me.annual2.getValue();
@@ -1846,18 +1738,6 @@ ii.Class({
 							, me.ptMetricId
 							, me.metricTypes[index]
 							, me.metricTypes[index].title
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
 							)
 
 						me.laborControls.push(item);
@@ -1868,18 +1748,6 @@ ii.Class({
 							, me.ptMetricId
 							, me.metricTypes[index]
 							, me.metricTypes[index].title
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "0")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "0")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "0")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "0")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "0")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "0")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "0")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "0")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "0")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "0")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "0")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "0")
 							)
 
 						me.qualityControls.push(item);
@@ -1890,18 +1758,6 @@ ii.Class({
 							, me.ptMetricId
 							, me.metricTypes[index]
 							, me.metricTypes[index].title
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
 							)
 
 						me.ptPressGaneys.push(item);
@@ -1912,18 +1768,6 @@ ii.Class({
 							, me.ptMetricId
 							, me.metricTypes[index]
 							, me.metricTypes[index].title
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
-							, (me.metricTypes[index].dataType == "Decimal" ? "0.00" : "")
 							)
 
 						me.evsHCAHPS.push(item);
@@ -1934,10 +1778,6 @@ ii.Class({
 							, me.ptMetricId
 							, me.metricTypes[index]
 							, me.metricTypes[index].title
-							, "0.00"
-							, "0.00"
-							, "0.00"
-							, "0.00"
 							)
 
 						me.qualityPartnerships.push(item);
@@ -1948,8 +1788,6 @@ ii.Class({
 							, me.ptMetricId
 							, me.metricTypes[index]
 							, me.metricTypes[index].title
-							, "0.0000"
-							, "0.0000"
 							)
 
 						me.auditScores.push(item);
@@ -1990,20 +1828,20 @@ ii.Class({
 							, me.numericDetails[index].ptMetricId
 							, me.numericDetails[index].ptMetricType
 							, me.numericDetails[index].ptMetricType.title
-							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period1 : parseInt(me.numericDetails[index].period1, 10)) 
-							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period2 : parseInt(me.numericDetails[index].period2, 10))
-							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period3 : parseInt(me.numericDetails[index].period3, 10))
-							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period4 : parseInt(me.numericDetails[index].period4, 10))
-							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period5 : parseInt(me.numericDetails[index].period5, 10))
-							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period6 : parseInt(me.numericDetails[index].period6, 10))
-							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period7 : parseInt(me.numericDetails[index].period7, 10))
-							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period8 : parseInt(me.numericDetails[index].period8, 10))
-							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period9 : parseInt(me.numericDetails[index].period9, 10))
-							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period10 : parseInt(me.numericDetails[index].period10, 10))
-							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period11 : parseInt(me.numericDetails[index].period11, 10))
-							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period12 : parseInt(me.numericDetails[index].period12, 10))
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period1 : (me.numericDetails[index].period1 == "" ? "" : parseInt(me.numericDetails[index].period1, 10)))
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period2 : (me.numericDetails[index].period2 == "" ? "" : parseInt(me.numericDetails[index].period2, 10)))
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period3 : (me.numericDetails[index].period3 == "" ? "" : parseInt(me.numericDetails[index].period3, 10)))
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period4 : (me.numericDetails[index].period4 == "" ? "" : parseInt(me.numericDetails[index].period4, 10)))
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period5 : (me.numericDetails[index].period5 == "" ? "" : parseInt(me.numericDetails[index].period5, 10)))
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period6 : (me.numericDetails[index].period6 == "" ? "" : parseInt(me.numericDetails[index].period6, 10)))
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period7 : (me.numericDetails[index].period7 == "" ? "" : parseInt(me.numericDetails[index].period7, 10)))
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period8 : (me.numericDetails[index].period8 == "" ? "" : parseInt(me.numericDetails[index].period8, 10)))
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period9 : (me.numericDetails[index].period9 == "" ? "" : parseInt(me.numericDetails[index].period9, 10)))
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period10 : (me.numericDetails[index].period10 == "" ? "" : parseInt(me.numericDetails[index].period10, 10)))
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period11 : (me.numericDetails[index].period11 == "" ? "" : parseInt(me.numericDetails[index].period11, 10)))
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period12 : (me.numericDetails[index].period12 == "" ? "" : parseInt(me.numericDetails[index].period12, 10)))
 							)
-							
+
 						me.qualityControls.push(item);
 					}
 					else if (me.numericDetails[index].ptMetricType.subType == "Quality Assurance - PT Press Ganey") {
@@ -2401,18 +2239,18 @@ ii.Class({
 					xml += ' id="' + me.laborControls[index].id + '"';
 					xml += ' ptMetricId="' + me.ptMetricId + '"';
 					xml += ' ptMetricTypeId="' + me.laborControls[index].ptMetricType.id + '"';
-					xml += ' period1="' + me.laborControls[index].period1 + '"';
-					xml += ' period2="' + me.laborControls[index].period2 + '"';
-					xml += ' period3="' + me.laborControls[index].period3 + '"';
-					xml += ' period4="' + me.laborControls[index].period4 + '"';
-					xml += ' period5="' + me.laborControls[index].period5 + '"';
-					xml += ' period6="' + me.laborControls[index].period6 + '"';
-					xml += ' period7="' + me.laborControls[index].period7 + '"';
-					xml += ' period8="' + me.laborControls[index].period8 + '"';
-					xml += ' period9="' + me.laborControls[index].period9 + '"';
-					xml += ' period10="' + me.laborControls[index].period10 + '"';
-					xml += ' period11="' + me.laborControls[index].period11 + '"';
-					xml += ' period12="' + me.laborControls[index].period12 + '"';
+					xml += ' period1="' + ui.cmn.text.xml.encode(me.laborControls[index].period1) + '"';
+					xml += ' period2="' + ui.cmn.text.xml.encode(me.laborControls[index].period2) + '"';
+					xml += ' period3="' + ui.cmn.text.xml.encode(me.laborControls[index].period3) + '"';
+					xml += ' period4="' + ui.cmn.text.xml.encode(me.laborControls[index].period4) + '"';
+					xml += ' period5="' + ui.cmn.text.xml.encode(me.laborControls[index].period5) + '"';
+					xml += ' period6="' + ui.cmn.text.xml.encode(me.laborControls[index].period6) + '"';
+					xml += ' period7="' + ui.cmn.text.xml.encode(me.laborControls[index].period7) + '"';
+					xml += ' period8="' + ui.cmn.text.xml.encode(me.laborControls[index].period8) + '"';
+					xml += ' period9="' + ui.cmn.text.xml.encode(me.laborControls[index].period9) + '"';
+					xml += ' period10="' + ui.cmn.text.xml.encode(me.laborControls[index].period10) + '"';
+					xml += ' period11="' + ui.cmn.text.xml.encode(me.laborControls[index].period11) + '"';
+					xml += ' period12="' + ui.cmn.text.xml.encode(me.laborControls[index].period12) + '"';
 					xml += '/>';
 				}
 			}
@@ -2427,18 +2265,18 @@ ii.Class({
 					xml += ' id="' + me.qualityControls[index].id + '"';
 					xml += ' ptMetricId="' + me.ptMetricId + '"';
 					xml += ' ptMetricTypeId="' + me.qualityControls[index].ptMetricType.id + '"';
-					xml += ' period1="' + me.qualityControls[index].period1 + '"';
-					xml += ' period2="' + me.qualityControls[index].period2 + '"';
-					xml += ' period3="' + me.qualityControls[index].period3 + '"';
-					xml += ' period4="' + me.qualityControls[index].period4 + '"';
-					xml += ' period5="' + me.qualityControls[index].period5 + '"';
-					xml += ' period6="' + me.qualityControls[index].period6 + '"';
-					xml += ' period7="' + me.qualityControls[index].period7 + '"';
-					xml += ' period8="' + me.qualityControls[index].period8 + '"';
-					xml += ' period9="' + me.qualityControls[index].period9 + '"';
-					xml += ' period10="' + me.qualityControls[index].period10 + '"';
-					xml += ' period11="' + me.qualityControls[index].period11 + '"';
-					xml += ' period12="' + me.qualityControls[index].period12 + '"';
+					xml += ' period1="' + ui.cmn.text.xml.encode(me.qualityControls[index].period1) + '"';
+					xml += ' period2="' + ui.cmn.text.xml.encode(me.qualityControls[index].period2) + '"';
+					xml += ' period3="' + ui.cmn.text.xml.encode(me.qualityControls[index].period3) + '"';
+					xml += ' period4="' + ui.cmn.text.xml.encode(me.qualityControls[index].period4) + '"';
+					xml += ' period5="' + ui.cmn.text.xml.encode(me.qualityControls[index].period5) + '"';
+					xml += ' period6="' + ui.cmn.text.xml.encode(me.qualityControls[index].period6) + '"';
+					xml += ' period7="' + ui.cmn.text.xml.encode(me.qualityControls[index].period7) + '"';
+					xml += ' period8="' + ui.cmn.text.xml.encode(me.qualityControls[index].period8) + '"';
+					xml += ' period9="' + ui.cmn.text.xml.encode(me.qualityControls[index].period9) + '"';
+					xml += ' period10="' + ui.cmn.text.xml.encode(me.qualityControls[index].period10) + '"';
+					xml += ' period11="' + ui.cmn.text.xml.encode(me.qualityControls[index].period11) + '"';
+					xml += ' period12="' + ui.cmn.text.xml.encode(me.qualityControls[index].period12) + '"';
 					xml += '/>';
 				}
 			}
@@ -2453,18 +2291,18 @@ ii.Class({
 					xml += ' id="' + me.ptPressGaneys[index].id + '"';
 					xml += ' ptMetricId="' + me.ptMetricId + '"';
 					xml += ' ptMetricTypeId="' + me.ptPressGaneys[index].ptMetricType.id + '"';
-					xml += ' period1="' + me.ptPressGaneys[index].period1 + '"';
-					xml += ' period2="' + me.ptPressGaneys[index].period2 + '"';
-					xml += ' period3="' + me.ptPressGaneys[index].period3 + '"';
-					xml += ' period4="' + me.ptPressGaneys[index].period4 + '"';
-					xml += ' period5="' + me.ptPressGaneys[index].period5 + '"';
-					xml += ' period6="' + me.ptPressGaneys[index].period6 + '"';
-					xml += ' period7="' + me.ptPressGaneys[index].period7 + '"';
-					xml += ' period8="' + me.ptPressGaneys[index].period8 + '"';
-					xml += ' period9="' + me.ptPressGaneys[index].period9 + '"';
-					xml += ' period10="' + me.ptPressGaneys[index].period10 + '"';
-					xml += ' period11="' + me.ptPressGaneys[index].period11 + '"';
-					xml += ' period12="' + me.ptPressGaneys[index].period12 + '"';
+					xml += ' period1="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period1) + '"';
+					xml += ' period2="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period2) + '"';
+					xml += ' period3="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period3) + '"';
+					xml += ' period4="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period4) + '"';
+					xml += ' period5="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period5) + '"';
+					xml += ' period6="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period6) + '"';
+					xml += ' period7="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period7) + '"';
+					xml += ' period8="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period8) + '"';
+					xml += ' period9="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period9) + '"';
+					xml += ' period10="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period10) + '"';
+					xml += ' period11="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period11) + '"';
+					xml += ' period12="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period12) + '"';
 					xml += '/>';
 				}
 			}
@@ -2479,18 +2317,18 @@ ii.Class({
 					xml += ' id="' + me.evsHCAHPS[index].id + '"';
 					xml += ' ptMetricId="' + me.ptMetricId + '"';
 					xml += ' ptMetricTypeId="' + me.evsHCAHPS[index].ptMetricType.id + '"';
-					xml += ' period1="' + me.evsHCAHPS[index].period1 + '"';
-					xml += ' period2="' + me.evsHCAHPS[index].period2 + '"';
-					xml += ' period3="' + me.evsHCAHPS[index].period3 + '"';
-					xml += ' period4="' + me.evsHCAHPS[index].period4 + '"';
-					xml += ' period5="' + me.evsHCAHPS[index].period5 + '"';
-					xml += ' period6="' + me.evsHCAHPS[index].period6 + '"';
-					xml += ' period7="' + me.evsHCAHPS[index].period7 + '"';
-					xml += ' period8="' + me.evsHCAHPS[index].period8 + '"';
-					xml += ' period9="' + me.evsHCAHPS[index].period9 + '"';
-					xml += ' period10="' + me.evsHCAHPS[index].period10 + '"';
-					xml += ' period11="' + me.evsHCAHPS[index].period11 + '"';
-					xml += ' period12="' + me.evsHCAHPS[index].period12 + '"';
+					xml += ' period1="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period1) + '"';
+					xml += ' period2="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period2) + '"';
+					xml += ' period3="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period3) + '"';
+					xml += ' period4="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period4) + '"';
+					xml += ' period5="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period5) + '"';
+					xml += ' period6="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period6) + '"';
+					xml += ' period7="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period7) + '"';
+					xml += ' period8="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period8) + '"';
+					xml += ' period9="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period9) + '"';
+					xml += ' period10="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period10) + '"';
+					xml += ' period11="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period11) + '"';
+					xml += ' period12="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period12) + '"';
 					xml += '/>';
 				}
 			}
