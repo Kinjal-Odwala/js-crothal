@@ -1236,6 +1236,8 @@ ii.Class({
 				
 					if (me.multiRace1.indexSelected == -1)
 						this.setInvalid("Please select Race 1 type.");
+					else if (me.multiRace1.data[me.multiRace1.indexSelected].name == "None")
+						this.setInvalid("[None] is not allowed for Race 1. Please select any other option for Race 1 type.");
 				});
 
 			me.multiRace2 = new ui.ctl.Input.DropDown.Filtered({
@@ -1251,6 +1253,8 @@ ii.Class({
 				
 					if (me.multiRace2.indexSelected == -1)
 						this.setInvalid("Please select Race 2 type.");
+					else if (me.multiRace2.data[me.multiRace2.indexSelected].name == "None")
+						this.setInvalid("[None] is not allowed for Race 2. Please select any other option for Race 2 type.");
 				});
 
 			me.multiRace3 = new ui.ctl.Input.DropDown.Filtered({
@@ -1259,44 +1263,17 @@ ii.Class({
 				required: false
 		    });
 
-			me.multiRace3.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				.addValidation( function( isFinal, dataMap ) {
-				
-					if (me.multiRace3.indexSelected == -1)
-						this.setInvalid("Please select Race 3 type.");
-				});
-
 			me.multiRace4 = new ui.ctl.Input.DropDown.Filtered({
 				id: "MultiRace4", 
 				formatFunction: function( type ) { return type.name; },
 				required: false
 		    });
 
-			me.multiRace4.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				.addValidation( function( isFinal, dataMap ) {
-				
-					if (me.multiRace4.indexSelected == -1)
-						this.setInvalid("Please select Race 4 type.");
-				});
-
 			me.multiRace5 = new ui.ctl.Input.DropDown.Filtered({
 				id: "MultiRace5", 
 				formatFunction: function( type ) { return type.name; },
 				required: false
 		    });
-
-			me.multiRace5.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				.addValidation( function( isFinal, dataMap ) {
-				
-					if (me.multiRace5.indexSelected == -1)
-						this.setInvalid("Please select Race 5 type.");
-				});
 
 			me.employeeMaritalStatus = new ui.ctl.Input.DropDown.Filtered({
 				id: "EmployeeMaritalStatus",
