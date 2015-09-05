@@ -121,7 +121,7 @@
 						</div>
 						<div id="TableEditArea">
 							<div class="labelText">
-								<span class="requiredFieldIndicator">&#149;</span>Employee Name:								
+								<span class="requiredFieldIndicator">&#149;</span>Employee Name:
 							</div>
 							<div class="inputTextArea">
 								<div id="EmployeeName"></div>
@@ -178,10 +178,17 @@
 						</div>
 						<div id="TableEditArea">
 							<div class="labelText">
-								<span id="nonRequiredFieldIndicator">Meal Break Compliance:</span>
+								<span class="requiredFieldIndicator">&#149;</span>Meal Break Compliance:
 							</div>
-							<div class="inputCheckArea">
-								<div id="MealBreakCompliance"></div>
+							<div class="inputTextArea">
+								<div id="MealBreakComplianceRadio">
+									<div class="radioButton">
+										<input type="radio" id="MealBreakComplianceYes" name="MealBreakCompliance" value="true" /><span class="labelRadio">Yes</span>
+									</div>
+									<div class="radioButton">
+										<input type="radio" id="MealBreakComplianceNo" name="MealBreakCompliance" value="false" /><span class="labelRadio">No</span>
+									</div>
+								</div>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
@@ -354,6 +361,32 @@
 					<div id="PayCodeGrid">
 						<div id="PayCodeDetailGrid"></div>
 						<div id="PayCodeDetailReadOnlyGrid" style="display:none;"></div>
+						<div id="TotalRow">							
+				            <table cellpadding="0" cellspacing="0" style="width: 100%">
+		                        <tr>
+		                            <td class="borderVertical"></td>
+		                            <td>
+		                                <table cellpadding="0" cellspacing="0" style="width: 100%">
+		                                    <tr class="footer">
+		                                    	<td style="text-align:right;">TOTAL:&nbsp;</td>
+												<td class="borderVertical"></td>
+												<td id="TotalHours" style="width:95px; text-align:right; padding-right: 4px;">&nbsp;</td>
+												<td class="borderVertical"></td>
+												<td style="width:119px;">&nbsp;</td>
+												<td class="borderVertical"></td>
+												<td id="TotalEarnings" style="width:95px; text-align:right; padding-right: 4px;">&nbsp;</td>
+												<td class="borderVertical"></td>
+												<td style="width:179px;">&nbsp;</td>
+												<td class="borderVertical"></td>
+												<td style="width:268px;">&nbsp;</td>
+		                                    </tr>
+		                                </table>
+		                            </td>
+		                            <td class="borderVertical"></td>
+		                        </tr>
+		                        <tr><td class="borderHorizontal" colspan="3"></td></tr>
+		                    </table>							        
+						</div>
 					</div>
 					<div style="clear:both;"></div>
 					<div id="TableEditArea">
@@ -412,6 +445,15 @@
 						</div>
 						<div id="TableEditArea">
 							<div class="labelText">
+								<span class="requiredFieldIndicator">&#149;</span>Requestor Phone:
+							</div>
+							<div class="inputTextArea">
+								<div id="RequestorPhone"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div class="labelText">
 								<span class="requiredFieldIndicator">&#149;</span>Manager Name:
 							</div>
 							<div class="inputTextArea">
@@ -428,6 +470,11 @@
 							<div class="inputTextArea">
 								<div id="RequestorEmail"></div>
 							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div class="labelText"></div>
+							<div class="inputTextArea"></div>
 							<div style="clear:both;"></div>
 						</div>
 						<div id="TableEditArea">

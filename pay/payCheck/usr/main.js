@@ -125,11 +125,20 @@ ii.Class({
 
 			$("#pageLoading").height(document.body.scrollHeight);
 			//$("#Container").height($(window).height() - 95);
-			$("#Container").height(1200);
+			$("#Container").height(1240);
 			me.payCheckRequestGrid.setHeight(200);
 			me.payCodeDetailGrid.setHeight(150);
 			me.payCodeDetailReadOnlyGrid.setHeight(150);
 			me.documentGrid.setHeight(100);
+			
+			if  (me.payCheckRequestGrid.activeRowIndex >= 0) {
+				if (me.payCheckRequestGrid.data[me.payCheckRequestGrid.activeRowIndex].statusType == 10)
+					$("#TotalRow").width($("#PayCodeDetailGridHeader").width());
+				else
+					$("#TotalRow").width($("#PayCodeDetailReadOnlyGridHeader").width());
+			}
+			else				
+				$("#TotalRow").width($("#PayCodeDetailGridHeader").width());
 		},
 		
 		defineFormControls: function() {
@@ -221,11 +230,6 @@ ii.Class({
            	});
 			me.payCheckRequestGrid.capColumns();
 
-			me.mealBreakCompliance = new ui.ctl.Input.Check({
-		        id: "MealBreakCompliance",
-				changeFunction: function() { me.modified(); } 
-		    });
-			
 			me.requestedDate = new ui.ctl.Input.Date({
 		        id: "RequestedDate",
 				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
@@ -430,7 +434,29 @@ ii.Class({
 					if (!(ui.cmn.text.validate.emailAddress(enteredText)))
 						this.setInvalid("Please enter valid Requestor Email.");
 			});
-			
+
+			me.requestorPhone = new ui.ctl.Input.Text({
+				id: "RequestorPhone",
+				maxLength: 14,
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.requestorPhone.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+	
+					var enteredText = me.requestorPhone.text.value;
+					
+					if (enteredText == "") return;
+
+					me.requestorPhone.text.value = fin.cmn.text.mask.phone(enteredText);
+					enteredText = me.requestorPhone.text.value;
+					
+					if (!(ui.cmn.text.validate.phone(enteredText)))
+						this.setInvalid("Please enter valid Phone #. Example: (999) 999-9999");					
+				});
+
 			me.managerName = new ui.ctl.Input.Text({
 				id: "ManagerName",
 				maxLength: 100,
@@ -498,7 +524,7 @@ ii.Class({
 		        id: "Hours",
 		        maxLength: 11,
 				appendToId: "PayCodeDetailGridControlHolder",
-				changeFunction: function() { me.modified(); }
+				changeFunction: function() { me.modified(); me.calculateTotal("Hours"); }
 		    });
 			
 			me.hours.makeEnterTab()
@@ -508,15 +534,15 @@ ii.Class({
 
 					var enteredText = me.hours.getValue();
 
-					if (me.earning.getValue() == "" && enteredText == "") {
+					if (me.earnings.getValue() == "" && enteredText == "") {
 						this.setInvalid("Please enter either Hours or Earnings.");
-						me.earning.setInvalid("Please enter either Hours or Earnings.");
+						me.earnings.setInvalid("Please enter either Hours or Earnings.");
 					}
-					else if (me.earning.getValue() != "" || enteredText != "") {
+					else if (me.earnings.getValue() != "" || enteredText != "") {
 							this.valid = true;
-							me.earning.resetValidation(true);
-							if (me.earning.getValue() == "")
-								me.earning.setValue("");
+							me.earnings.resetValidation(true);
+							if (me.earnings.getValue() == "")
+								me.earnings.setValue("");
 						}
 
 					if (enteredText != ""  && !(ui.cmn.text.validate.generic(enteredText, "^\\d{0,}\\.?\\d{0,2}$")))
@@ -543,19 +569,19 @@ ii.Class({
 						this.setInvalid("Please enter valid date.");
 				});
 				
-			me.earning = new ui.ctl.Input.Text({
-		        id: "Earning",
+			me.earnings = new ui.ctl.Input.Text({
+		        id: "Earnings",
 				maxLength: 11,
 				appendToId: "PayCodeDetailGridControlHolder",
-				changeFunction: function() { me.modified(); }
+				changeFunction: function() { me.modified(); me.calculateTotal("Earnings"); }
 		    });
 			
-			me.earning.makeEnterTab()
+			me.earnings.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ){
 
-					var enteredText = me.earning.getValue();
+					var enteredText = me.earnings.getValue();
 					
 					if (me.hours.getValue() == "" && enteredText == "") {
 						this.setInvalid("Please enter either Hours or Earnings.");
@@ -600,9 +626,9 @@ ii.Class({
             });
             		    
 			me.payCodeDetailGrid.addColumn("payCode", "payCode", "Pay Code", "Pay Code", null, function(payCode) { return payCode.brief + " - " + payCode.name 	} , me.payCodeType);
-			me.payCodeDetailGrid.addColumn("hours", "hours", "Hours", "Hours", 100, null, me.hours);
+			me.payCodeDetailGrid.addColumn("hours", "hours", "Hours", "Hours", 100, function(hours) { return ui.cmn.text.money.format(hours); }, me.hours);
 			me.payCodeDetailGrid.addColumn("date", "date", "Date", "Date", 120, null, me.date);
-			me.payCodeDetailGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 100, function(earning) { return ui.cmn.text.money.format(earning); }, me.earning);
+			me.payCodeDetailGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 100, function(earnings) { return ui.cmn.text.money.format(earnings); }, me.earnings);
 			me.payCodeDetailGrid.addColumn("alternateBaseRate", "alternateBaseRate", "Alternate Base Rate", "Alternate Base Rate", 180, function(alternateBaseRate) { return ui.cmn.text.money.format(alternateBaseRate); }, me.alternateBaseRate);
 			me.payCodeDetailGrid.addColumn("houseCodeTitle", "houseCodeTitle", "CHARGE TO HOUSE CODE", "CHARGE TO HOUSE CODE", 250, null, me.chargeToHouseCode);
 			me.payCodeDetailGrid.capColumns();
@@ -610,7 +636,7 @@ ii.Class({
 			me.payCodeType.active = false;
 			me.hours.active = false;
 			me.date.active = false;
-			me.earning.active = false;
+			me.earnings.active = false;
 			me.alternateBaseRate.active = false;
 			me.chargeToHouseCode.active = false;
 			
@@ -619,9 +645,9 @@ ii.Class({
 			});
 
 			me.payCodeDetailReadOnlyGrid.addColumn("payCode", "payCode", "Pay Code", "Pay Code", null, function(payCode) { return payCode.brief + " - " + payCode.name;	});
-			me.payCodeDetailReadOnlyGrid.addColumn("hours", "hours", "Hours", "Hours", 100);
+			me.payCodeDetailReadOnlyGrid.addColumn("hours", "hours", "Hours", "Hours", 100, function(hours) { return ui.cmn.text.money.format(hours); });
 			me.payCodeDetailReadOnlyGrid.addColumn("date", "date", "Date", "Date", 120);
-			me.payCodeDetailReadOnlyGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 100, function(earning) { return ui.cmn.text.money.format(earning); });
+			me.payCodeDetailReadOnlyGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 100, function(earnings) { return ui.cmn.text.money.format(earnings); });
 			me.payCodeDetailReadOnlyGrid.addColumn("alternateBaseRate", "alternateBaseRate", "Alternate Base Rate", "Alternate Base Rate", 180, function(alternateBaseRate) { return ui.cmn.text.money.format(alternateBaseRate); });
 			me.payCodeDetailReadOnlyGrid.addColumn("houseCodeTitle", "houseCodeTitle", "CHARGE TO HOUSE CODE", "CHARGE TO HOUSE CODE", 250);
 			me.payCodeDetailReadOnlyGrid.capColumns();
@@ -1006,31 +1032,33 @@ ii.Class({
 			$("#TermRequestNo")[0].tabIndex = 8;
 			me.state.text.tabIndex = 9;
 			me.terminationDate.text.tabIndex = 10;
-			$("#MealBreakComplianceCheck")[0].tabIndex = 11;
-			$("#CurrentPayCardUserYes")[0].tabIndex = 12;
-			$("#CurrentPayCardUserNo")[0].tabIndex = 13;
-			$("#InstantIssueRequestYes")[0].tabIndex = 14;
-			$("#InstantIssueRequestNo")[0].tabIndex = 15;			
-			$("#UPSDeliveryToUnitYes")[0].tabIndex = 16;
-			$("#UPSDeliveryToUnitNo")[0].tabIndex = 17;
-			$("#SaturdayDeliveryUnitYes")[0].tabIndex = 18;
-			$("#SaturdayDeliveryUnitNo")[0].tabIndex = 19;
-			$("#houseCodeTemplateText")[0].tabIndex = 20;			
-			me.unitAddress.text.tabIndex = 21;
-			me.upsPackageAttentionTo.text.tabIndex = 22;			
-			$("#UPSDeliveryToHomeYes")[0].tabIndex = 23;
-			$("#UPSDeliveryToHomeNo")[0].tabIndex = 24;
-			$("#SaturdayDeliveryHomeYes")[0].tabIndex = 25;
-			$("#SaturdayDeliveryHomeNo")[0].tabIndex = 26;			
-			me.homeAddress.text.tabIndex = 27;
-			$("#ProcessingFeeYes")[0].tabIndex = 28;
-			$("#ProcessingFeeNo")[0].tabIndex = 29;		
-			me.deductionCode.text.tabIndex = 30;
-			me.amount.text.tabIndex = 31;
-			me.requestorName.text.tabIndex = 32;
-			me.requestorEmail.text.tabIndex = 33;
-			me.managerName.text.tabIndex = 34;
-			me.managerEmail.text.tabIndex = 35;
+			$("#MealBreakComplianceYes")[0].tabIndex = 11;
+			$("#MealBreakComplianceNo")[0].tabIndex = 12;
+			$("#CurrentPayCardUserYes")[0].tabIndex = 13;
+			$("#CurrentPayCardUserNo")[0].tabIndex = 14;
+			$("#InstantIssueRequestYes")[0].tabIndex = 15;
+			$("#InstantIssueRequestNo")[0].tabIndex = 16;			
+			$("#UPSDeliveryToUnitYes")[0].tabIndex = 17;
+			$("#UPSDeliveryToUnitNo")[0].tabIndex = 18;
+			$("#SaturdayDeliveryUnitYes")[0].tabIndex = 19;
+			$("#SaturdayDeliveryUnitNo")[0].tabIndex = 20;
+			$("#houseCodeTemplateText")[0].tabIndex = 21;			
+			me.unitAddress.text.tabIndex = 22;
+			me.upsPackageAttentionTo.text.tabIndex = 23;			
+			$("#UPSDeliveryToHomeYes")[0].tabIndex = 24;
+			$("#UPSDeliveryToHomeNo")[0].tabIndex = 25;
+			$("#SaturdayDeliveryHomeYes")[0].tabIndex = 26;
+			$("#SaturdayDeliveryHomeNo")[0].tabIndex = 27;			
+			me.homeAddress.text.tabIndex = 28;
+			$("#ProcessingFeeYes")[0].tabIndex = 29;
+			$("#ProcessingFeeNo")[0].tabIndex = 30;		
+			me.deductionCode.text.tabIndex = 31;
+			me.amount.text.tabIndex = 32;
+			me.requestorName.text.tabIndex = 33;
+			me.requestorEmail.text.tabIndex = 34;
+			me.requestorPhone.text.tabIndex = 35;
+			me.managerName.text.tabIndex = 36;
+			me.managerEmail.text.tabIndex = 37;
 		},
 		
 		resizeControls: function() {
@@ -1050,6 +1078,7 @@ ii.Class({
 			me.amount.resizeText();
 			me.requestorName.resizeText();
 			me.requestorEmail.resizeText();
+			me.requestorPhone.resizeText();
 			me.managerName.resizeText();
 			me.managerEmail.resizeText();
 			me.employeeGrid.resize();			
@@ -1071,6 +1100,7 @@ ii.Class({
 			me.unitAddress.resetValidation(true);
 			me.homeAddress.resetValidation(true);
 			me.requestorEmail.resetValidation(true);
+			me.requestorPhone.resetValidation(true);
 			me.managerName.resetValidation(true);
 			me.managerEmail.resetValidation(true);
 			me.state.updateStatus();
@@ -1089,6 +1119,7 @@ ii.Class({
 			me.amount.setValue("");
 			me.requestorName.setValue("");
 			me.requestorEmail.setValue("");
+			me.requestorPhone.setValue("");
 			me.managerName.setValue("");
 			me.managerEmail.setValue("");
 			me.payCodeDetailGrid.setData([]);
@@ -1098,8 +1129,9 @@ ii.Class({
 			$("#houseCodeText").val("");
 			$("#houseCodeTemplateText").val("");
 			$("#CheckRequestNumber").html("");
-			$("#MealBreakComplianceCheck")[0].checked = false;
 			$("#TermRequestNo")[0].checked = true;
+			$("#MealBreakComplianceYes")[0].checked = false;
+			$("#MealBreakComplianceNo")[0].checked = false;
 			$("#CurrentPayCardUserNo")[0].checked = true;
 			$("#InstantIssueRequestNo")[0].checked = true;
 			$("#UPSDeliveryToUnitNo")[0].checked = true;
@@ -1107,6 +1139,8 @@ ii.Class({
 			$("#UPSDeliveryToHomeNo")[0].checked = true;
 			$("#SaturdayDeliveryHomeNo")[0].checked = true;
 			$("#ProcessingFeeYes")[0].checked = true;
+			$("#TotalHours").html("");
+			$("#TotalEarnings").html("");
 
 			if (me.status == "CheckRequest") {
 				me.setUserInfo();
@@ -1141,7 +1175,6 @@ ii.Class({
 
 			$("#houseCodeText")[0].readOnly = readOnly;
 			$("#houseCodeTemplateText")[0].readOnly = readOnly;
-			$("#MealBreakComplianceCheck")[0].disabled = readOnly;
 			me.requestedDate.text.readOnly = readOnly;
 			me.deliveryDate.text.readOnly = readOnly;
 			me.employeeNumber.text.readOnly = readOnly;
@@ -1157,9 +1190,12 @@ ii.Class({
 			me.managerName.text.readOnly = readOnly;
 			me.managerEmail.text.readOnly = readOnly;
 			me.requestorEmail.text.readOnly = readOnly;
-			
+			me.requestorPhone.text.readOnly = readOnly;
+
 			$("#TermRequestYes")[0].disabled = readOnly;
 			$("#TermRequestNo")[0].disabled = readOnly;
+			$("#MealBreakComplianceYes")[0].disabled = readOnly;
+			$("#MealBreakComplianceNo")[0].disabled = readOnly;
 			$("#CurrentPayCardUserYes")[0].disabled = readOnly;
 			$("#CurrentPayCardUserNo")[0].disabled = readOnly;
 			$("#InstantIssueRequestYes")[0].disabled = readOnly;
@@ -1441,7 +1477,8 @@ ii.Class({
 			me.houseCodeSearchTemplate.houseCodeIdTemplate = 0;
 			me.houseCodeSearchTemplate.houseCodeTitleTemplate = "";
 			me.requestorName.setValue(me.users[0].firstName + " " + me.users[0].lastName);
-			me.requestorEmail.setValue(me.users[0].email);			
+			me.requestorEmail.setValue(me.users[0].email);
+			me.requestorPhone.setValue(me.users[0].homePhone);
 			$("#houseCodeText").val(parent.fin.appUI.houseCodeTitle);
 			$("#houseCodeTemplateText").val("");
 		},
@@ -1602,7 +1639,6 @@ ii.Class({
 			$("#houseCodeText").val(item.houseCodeTitle);
 			$("#houseCodeTemplateText").val(item.deliveryHouseCodeTitle);
 			$("#CheckRequestNumber").html(item.checkRequestNumber);
-			me.mealBreakCompliance.setValue(item.mealBreakCompliance.toString());
 			me.requestedDate.setValue(item.requestedDate);
 			me.deliveryDate.setValue(item.deliveryDate);
 			me.employeeNumber.setValue(item.employeeNumber);
@@ -1615,14 +1651,15 @@ ii.Class({
 			else
 				me.state.reset();
 			
-			$("input[name='TermRequest'][value='" + item.termRequest + "']").attr("checked", "checked");  
-			$("input[name='CurrentPayCardUser'][value='" + item.currentPayCardUser + "']").attr("checked", "checked");  
-			$("input[name='InstantIssueRequest'][value='" + item.instantIssueRequest + "']").attr("checked", "checked");  
-			$("input[name='UPSDeliveryToUnit'][value='" + item.upsDeliveryToUnit + "']").attr("checked", "checked");  
-			$("input[name='SaturdayDeliveryUnit'][value='" + item.saturdayDeliveryUnit + "']").attr("checked", "checked");  
-			$("input[name='UPSDeliveryToHome'][value='" + item.upsDeliveryToHome + "']").attr("checked", "checked");  
-			$("input[name='SaturdayDeliveryHome'][value='" + item.saturdayDeliveryHome + "']").attr("checked", "checked");  
-			$("input[name='ProcessingFee'][value='" + item.stopPaymentProcessingFee + "']").attr("checked", "checked");  
+			$("input[name='TermRequest'][value='" + item.termRequest + "']").attr("checked", "checked");
+			$("input[name='MealBreakCompliance'][value='" + item.mealBreakCompliance + "']").attr("checked", "checked");
+			$("input[name='CurrentPayCardUser'][value='" + item.currentPayCardUser + "']").attr("checked", "checked");
+			$("input[name='InstantIssueRequest'][value='" + item.instantIssueRequest + "']").attr("checked", "checked");
+			$("input[name='UPSDeliveryToUnit'][value='" + item.upsDeliveryToUnit + "']").attr("checked", "checked");
+			$("input[name='SaturdayDeliveryUnit'][value='" + item.saturdayDeliveryUnit + "']").attr("checked", "checked");
+			$("input[name='UPSDeliveryToHome'][value='" + item.upsDeliveryToHome + "']").attr("checked", "checked");
+			$("input[name='SaturdayDeliveryHome'][value='" + item.saturdayDeliveryHome + "']").attr("checked", "checked");
+			$("input[name='ProcessingFee'][value='" + item.stopPaymentProcessingFee + "']").attr("checked", "checked");
 			
 			me.terminationDate.setValue(item.terminationDate);
 			me.unitAddress.setValue(item.houseCodeAddress);
@@ -1632,6 +1669,7 @@ ii.Class({
 			me.amount.setValue(item.amount);
 			me.requestorName.setValue(item.requestorName);
 			me.requestorEmail.setValue(item.requestorEmail);
+			me.requestorPhone.setValue(item.requestorPhone);
 			me.managerName.setValue(item.managerName);
 			me.managerEmail.setValue(item.managerEmail);
 
@@ -1652,6 +1690,7 @@ ii.Class({
 			me.payCodeDetailGrid.setHeight(150);
 			me.payCodeDetailReadOnlyGrid.setData(me.payCodeDetails);
 			me.payCodeDetailReadOnlyGrid.setHeight(150);
+			me.calculateTotal("");
 			me.checkLoadCount();
 			me.modified(false);
 		},
@@ -1663,6 +1702,52 @@ ii.Class({
 			me.checkLoadCount();
 		},
 		
+		calculateTotal: function(type) {
+			var me = this;
+			var totalHours = 0;
+			var totalEarnings = 0;
+
+			if (type == "Hours") {
+				var hours = me.hours.getValue();
+
+				if (hours != "" && !(isNaN(hours)))
+					totalHours += parseFloat(hours);	
+								
+				for (var index = 0; index < me.payCodeDetailGrid.data.length; index++) {
+					if (me.payCodeDetailGrid.activeRowIndex != index) {
+						if (me.payCodeDetailGrid.data[index].hours != "" && !(isNaN(me.payCodeDetailGrid.data[index].hours)))
+							totalHours += parseFloat(me.payCodeDetailGrid.data[index].hours);
+					}
+				}
+
+				$("#TotalHours").html(totalHours.toFixed(2));
+			}
+			else if (type == "Earnings") {
+				var earnings = me.earnings.getValue();
+
+				if (earnings != "" && !(isNaN(earnings)))
+					totalEarnings += parseFloat(earnings);	
+								
+				for (var index = 0; index < me.payCodeDetailGrid.data.length; index++) {
+					if (me.payCodeDetailGrid.activeRowIndex != index) {
+						if (me.payCodeDetailGrid.data[index].earnings != "" && !(isNaN(me.payCodeDetailGrid.data[index].earnings)))
+							totalEarnings += parseFloat(me.payCodeDetailGrid.data[index].earnings);
+					}
+				}
+
+				$("#TotalEarnings").html(totalEarnings.toFixed(2));
+			}
+			else {
+				for (var index = 0; index < me.payCodeDetailGrid.data.length; index++) {
+					totalHours += parseFloat(me.payCodeDetailGrid.data[index].hours);
+					totalEarnings += parseFloat(me.payCodeDetailGrid.data[index].earnings);
+				}
+
+				$("#TotalHours").html(totalHours.toFixed(2));
+				$("#TotalEarnings").html(totalEarnings.toFixed(2));
+			}
+		},
+
 		chargeToHouseCodeChange: function() {
 			var args = ii.args(arguments, {
 				event: {type: Object} // The (key) event object
@@ -2012,6 +2097,11 @@ ii.Class({
 				xml += '/>';
 			}
 			else {
+				if ($("input[name='MealBreakCompliance']:checked").val() == undefined) {
+					alert("Please select the Meal Break Compliance.");
+					return false;
+				}
+
 				if ($("input[name='UPSDeliveryToUnit']:checked").val() == "true" && me.houseCodeSearchTemplate.houseCodeIdTemplate == 0 && me.action == "checkRequest") {
 					alert("Please select the Unit (House Code).");
 					return false;
@@ -2050,7 +2140,6 @@ ii.Class({
 					, parent.fin.appUI.houseCodeId
 					, parent.fin.appUI.houseCodeTitle
 					, $("#CheckRequestNumber").html()
-					, me.mealBreakCompliance.getValue()
 					, me.requestedDate.lastBlurValue
 					, me.deliveryDate.lastBlurValue
 					, me.employeeNumber.getValue()
@@ -2059,6 +2148,7 @@ ii.Class({
 					, $("input[name='TermRequest']:checked").val() == "true" ? true : false
 					, $("input[name='TermRequest']:checked").val() == "true" ? me.stateTypes[me.state.indexSelected].id : 0
 					, $("input[name='TermRequest']:checked").val() == "true" ? me.terminationDate.lastBlurValue  : ""
+					, $("input[name='MealBreakCompliance']:checked").val() == "true" ? true : false
 					, $("input[name='CurrentPayCardUser']:checked").val() == "true" ? true : false
 					, $("input[name='InstantIssueRequest']:checked").val() == "true" ? true : false					
 					, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? true : false
@@ -2075,6 +2165,7 @@ ii.Class({
 					, me.amount.getValue()
 					, me.requestorName.getValue()
 					, me.requestorEmail.getValue()
+					, fin.cmn.text.mask.phone(me.requestorPhone.getValue(), true)
 					, me.managerName.getValue()				
 					, me.managerEmail.getValue()
 					);
@@ -2112,7 +2203,6 @@ ii.Class({
 			xml += ' houseCodeId="' + item.houseCodeId + '"';
 			xml += ' houseCodeTitle="' + ui.cmn.text.xml.encode(item.houseCodeTitle) + '"';
 			xml += ' checkRequestNumber="' + item.checkRequestNumber + '"';
-			xml += ' mealBreakCompliance="' + item.mealBreakCompliance + '"';
 			xml += ' requestedDate="' + item.requestedDate + '"';
 			xml += ' deliveryDate="' + item.deliveryDate + '"';
 			xml += ' employeeNumber="' + item.employeeNumber + '"';
@@ -2120,9 +2210,10 @@ ii.Class({
 			xml += ' reasonForRequest="' + ui.cmn.text.xml.encode(item.reasonForRequest) + '"';
 			xml += ' termRequest="' + item.termRequest + '"';
 			xml += ' stateType="' + item.stateType + '"';
+			xml += ' terminationDate="' + item.terminationDate + '"';
+			xml += ' mealBreakCompliance="' + item.mealBreakCompliance + '"';
 			xml += ' currentPayCardUser="' + item.currentPayCardUser + '"';
 			xml += ' instantIssueRequest="' + item.instantIssueRequest + '"';
-			xml += ' terminationDate="' + item.terminationDate + '"';
 			xml += ' upsDeliveryToUnit="' + item.upsDeliveryToUnit + '"';
 			xml += ' saturdayDeliveryUnit="' + item.saturdayDeliveryUnit + '"';
 			xml += ' deliveryHouseCodeId="' + item.deliveryHouseCodeId + '"';			
@@ -2137,6 +2228,7 @@ ii.Class({
 			xml += ' amount="' + item.amount + '"';
 			xml += ' requestorName="' + ui.cmn.text.xml.encode(item.requestorName) + '"';
 			xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
+			xml += ' requestorPhone="' + ui.cmn.text.xml.encode(item.requestorPhone) + '"';
 			xml += ' managerName="' + ui.cmn.text.xml.encode(item.managerName) + '"';
 			xml += ' managerEmail="' + ui.cmn.text.xml.encode(item.managerEmail) + '"';			
 			xml += '/>';
@@ -2218,7 +2310,6 @@ ii.Class({
 								, parent.fin.appUI.houseCodeId
 								, parent.fin.appUI.houseCodeTitle
 								, $("#CheckRequestNumber").html()
-								, me.mealBreakCompliance.getValue()
 								, me.requestedDate.lastBlurValue
 								, me.deliveryDate.lastBlurValue
 								, me.employeeNumber.getValue()
@@ -2227,6 +2318,7 @@ ii.Class({
 								, $("input[name='TermRequest']:checked").val() == "true" ? true : false
 								, $("input[name='TermRequest']:checked").val() == "true" ? me.stateTypes[me.state.indexSelected].id : 0
 								, $("input[name='TermRequest']:checked").val() == "true" ? me.terminationDate.lastBlurValue  : ""
+								, $("input[name='MealBreakCompliance']:checked").val() == "true" ? true : false
 								, $("input[name='CurrentPayCardUser']:checked").val() == "true" ? true : false
 								, $("input[name='InstantIssueRequest']:checked").val() == "true" ? true : false					
 								, $("input[name='UPSDeliveryToUnit']:checked").val() == "true" ? true : false
@@ -2243,6 +2335,7 @@ ii.Class({
 								, me.amount.getValue()
 								, me.requestorName.getValue()
 								, me.requestorEmail.getValue()
+								, me.requestorPhone.getValue()
 								, me.managerName.getValue()				
 								, me.managerEmail.getValue()
 								);

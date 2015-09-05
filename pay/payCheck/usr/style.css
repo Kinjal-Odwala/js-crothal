@@ -178,7 +178,11 @@
 	margin: 10px;
 }
 
-#EmployeeGrid{
+#hoursBodyColumn, #earningsBodyColumn, #alternateBaseRateBodyColumn {
+	text-align: right;	
+}
+
+#EmployeeGrid {
   height: 250px;
   padding: 0 10px;
 }
@@ -247,6 +251,10 @@
 	float: left;
 	width: 80px;
 	padding: 5px 0px 0px 10px;
+}
+
+#TotalRow {
+	margin-left: 1px;
 }
 
 #DocumentGrid {

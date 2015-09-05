@@ -1,12 +1,12 @@
 ii.Import("fin.cmn.usr.defs");
 
-ii.init.register( function(){
+ii.init.register( function() {
 
-	fin.pay = {payCheck: {}};
+	fin.pay = { payCheck: {} };
 	
 }, 1);
 
-ii.init.register( function(){
+ii.init.register( function() {
 	
 	fin.pay.payCheck.hirNodeArgs = {
 		id: {type: Number}
@@ -55,7 +55,6 @@ ii.init.register( function(){
 		, houseCodeId: {type: Number, required: false, defaultValue: 0}
 		, houseCodeTitle: {type: String, required: false, defaultValue: ""}
 		, checkRequestNumber: {type: String, required: false, defaultValue: ""}
-		, mealBreakCompliance: {type: Boolean, required: false, defaultValue: false}
 		, requestedDate: {type: String, required: false, defaultValue: ""}
 		, deliveryDate: {type: String, required: false, defaultValue: ""}
 		, employeeNumber: {type: String, required: false, defaultValue: ""}
@@ -64,6 +63,7 @@ ii.init.register( function(){
 		, termRequest: {type: Boolean, required: false, defaultValue: true}
 		, stateType: {type: String, required: false, defaultValue: ""}
 		, terminationDate: {type: String, required: false, defaultValue: ""}
+		, mealBreakCompliance: {type: Boolean, required: false, defaultValue: false}
 		, currentPayCardUser: {type: Boolean, required: false, defaultValue: true}
 		, instantIssueRequest: {type: Boolean, required: false, defaultValue: true}		
 		, upsDeliveryToUnit: {type: Boolean, required: false, defaultValue: true}
@@ -80,6 +80,7 @@ ii.init.register( function(){
 		, amount: {type: String, required: false, defaultValue: ""}
 		, requestorName: {type: String, required: false, defaultValue: ""}
 		, requestorEmail: {type: String, required: false, defaultValue: ""}
+		, requestorPhone: {type: String, required: false, defaultValue: ""}
 		, managerName: {type: String, required: false, defaultValue: ""}
 		, managerEmail: {type: String, required: false, defaultValue: ""}
 		, approvedDate: {type: String, required: false, defaultValue: ""}
@@ -130,6 +131,7 @@ ii.init.register( function(){
 		, state: {type: Number, required: false}
 		, postalCode: {type: String, required: false, defaultValue: ""}
 		, email: {type: String, required: false, defaultValue: ""}
+		, homePhone: {type: String, required: false, defaultValue: ""}
 	};
 	
 	fin.pay.payCheck.siteArgs = {
