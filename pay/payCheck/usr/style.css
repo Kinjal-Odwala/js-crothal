@@ -167,6 +167,32 @@
     background-color: #adaaad;
 }
 
+.view {
+	float: right;
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: bold;
+	color: blue;
+	cursor: pointer;
+	margin: 10px 0px 10px 5px;
+}
+
+.view:hover {	
+	color: red;
+	text-decoration: underline;
+}
+
+.iiGridCellTotal  {
+    cursor: pointer;
+    height: 18px;
+    overflow: hidden;
+    padding: 2px 4px 4px;
+    white-space: nowrap;
+	text-align: right;
+	font-weight: bold;
+	color: red;
+}
+
 #Container {
 	border: solid #AAAAAA thin;
 	border-width: 1px;
@@ -182,9 +208,8 @@
 	text-align: right;	
 }
 
-#EmployeeGrid {
-  height: 250px;
-  padding: 0 10px;
+#EmployeeGrid , #TotalPayCodeGrid{
+ 	padding: 0 10px;
 }
 
 #AnchorSearch {
@@ -241,15 +266,21 @@
 	padding: 5px 0px 0px 10px;
 }
 
-#AnchorEmployeeOk {
+#AnchorEmployeeOK {
 	float: left;
-	width: 80px;
+	width: 72px;
 	padding: 5px 0px 0px 10px;
 }
 
 #AnchorEmployeeCancel {
 	float: left;
 	width: 80px;
+	padding: 5px 0px 0px 10px;
+}
+
+#AnchorClose {
+	float: left;
+	width: 72px;
 	padding: 5px 0px 0px 10px;
 }
 
@@ -267,12 +298,28 @@
 	margin-left: 11px;
 }
 
-#uploadPopup {
-	width: 600px; 
-	height: 150px;
+#UploadPopup {
+	width: 600px;
+	height: 200px;
 	background-color: white;
 	position: absolute;
 	z-index: 5025;	
+	display: none;
+}
+
+#EmployeePopup {
+	background-color: white;
+	position: absolute;
+	z-index: 5030;	
+	display: none;
+}
+
+#PayCodeTotalPopup {
+	width: 1000px;
+	height: 600px;
+	background-color: white;
+	position: absolute;
+	z-index: 5035;	
 	display: none;
 }
 

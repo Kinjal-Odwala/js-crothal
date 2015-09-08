@@ -98,6 +98,13 @@ ii.init.register( function() {
 		, houseCodeTitle: {type: String, required: false, defaultValue: ""}
 	};
 	
+	fin.pay.payCheck.payCodeTotalArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, title: {type: String, required: false, defaultValue: ""}
+		, hours: {type: Number, required: false, defaultValue: 0}
+		, earnings: {type: Number, required: false, defaultValue: 0}
+	};
+	
 	fin.pay.payCheck.payCheckRequestDocumentArgs = {
 		id: {type: Number, required: false, defaultValue: 0}
 		, title: {type: String, required: false, defaultValue: ""}
@@ -226,6 +233,16 @@ ii.Class({
 			if (!this.payCode) {
 				this.payCode = [];
 			}
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.pay.payCheck.PayCodeTotal",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pay.payCheck.payCodeTotalArgs);
+			$.extend(this, args);
 		}
 	}
 });
