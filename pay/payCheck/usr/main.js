@@ -2104,6 +2104,8 @@ ii.Class({
 			var payCodeId = 0;
 			var totalHours = 0;
 			var totalEarnings = 0;
+			var payCodeTotalHours = 0;
+			var payCodeTotalEarnings = 0;
 
 			for (var index = 0; index < me.payCodeDetailGrid.data.length; index++) {
 				var item = new fin.pay.payCheck.PayCodeTotal(me.payCodeDetailGrid.data[index].payCode.id
@@ -2119,39 +2121,34 @@ ii.Class({
 			for (var index = 0; index < payCodeTotalsTemp.length; index++) {
 				if (payCodeId != payCodeTotalsTemp[index].id) {
 					if (payCodeId != 0) {
-						item = new fin.pay.payCheck.PayCodeTotal(payCodeId, "Total [" + payCodeTotalsTemp[index - 1].title + "]:", totalHours, totalEarnings);
+						item = new fin.pay.payCheck.PayCodeTotal(payCodeId, payCodeTotalsTemp[index - 1].title, totalHours, totalEarnings);
 						payCodeTotals.push(item);
 					}
-					
+
 					payCodeId = payCodeTotalsTemp[index].id;
 					totalHours = parseFloat(payCodeTotalsTemp[index].hours);
 					totalEarnings = parseFloat(payCodeTotalsTemp[index].earnings);
-					payCodeTotals.push(payCodeTotalsTemp[index]);
+					payCodeTotalHours += parseFloat(payCodeTotalsTemp[index].hours);
+					payCodeTotalEarnings += parseFloat(payCodeTotalsTemp[index].earnings);
 				}
 				else {
 					totalHours += parseFloat(payCodeTotalsTemp[index].hours);
 					totalEarnings += parseFloat(payCodeTotalsTemp[index].earnings);
-					payCodeTotals.push(payCodeTotalsTemp[index]);
+					payCodeTotalHours += parseFloat(payCodeTotalsTemp[index].hours);
+					payCodeTotalEarnings += parseFloat(payCodeTotalsTemp[index].earnings);
 				}
 			}
-			
+
 			if (payCodeTotalsTemp.length > 0) {
-				item = new fin.pay.payCheck.PayCodeTotal(payCodeId, "Total [" + payCodeTotalsTemp[payCodeTotalsTemp.length - 1].title + "]:", totalHours, totalEarnings);
+				item = new fin.pay.payCheck.PayCodeTotal(payCodeId, payCodeTotalsTemp[payCodeTotalsTemp.length - 1].title, totalHours, totalEarnings);
 				payCodeTotals.push(item);
 			}
 
+			$("#PayCodeTotalHours").html(payCodeTotalHours.toFixed(2));
+			$("#PayCodeTotalEarnings").html(payCodeTotalEarnings.toFixed(2));
 			me.totalPayCodeGrid.setData(payCodeTotals);
-
-			for (var index = 0; index < payCodeTotals.length; index++) {
-				if ($(me.totalPayCodeGrid.rows[index].getElement("title")).html().indexOf("Total") >= 0) {
-					$(me.totalPayCodeGrid.rows[index].getElement("title"))[0].className = "iiGridCellTotal";
-					$(me.totalPayCodeGrid.rows[index].getElement("hours"))[0].className = "iiGridCellTotal";
-					$(me.totalPayCodeGrid.rows[index].getElement("earnings"))[0].className = "iiGridCellTotal";
-				}
-			}
-
 			me.loadPopup("PayCodeTotalPopup");
-			me.totalPayCodeGrid.setHeight(520);
+			me.totalPayCodeGrid.setHeight(500);
 		},
 
 		// This is a comparison function that will result in data being sorted in ascending order.
