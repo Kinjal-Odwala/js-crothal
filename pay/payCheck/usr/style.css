@@ -182,17 +182,6 @@
 	text-decoration: underline;
 }
 
-.iiGridCellTotal  {
-    cursor: pointer;
-    height: 18px;
-    overflow: hidden;
-    padding: 2px 4px 4px;
-    white-space: nowrap;
-	text-align: right;
-	font-weight: bold;
-	color: red;
-}
-
 #Container {
 	border: solid #AAAAAA thin;
 	border-width: 1px;

@@ -445,16 +445,22 @@ ii.Class({
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
-	
-					var enteredText = me.requestorPhone.text.value;
-					
-					if (enteredText == "") return;
 
-					me.requestorPhone.text.value = fin.cmn.text.mask.phone(enteredText);
-					enteredText = me.requestorPhone.text.value;
-					
-					if (!(ui.cmn.text.validate.phone(enteredText)))
-						this.setInvalid("Please enter valid Phone #. Example: (999) 999-9999");					
+					if (me.payCheckRequestGrid.activeRowIndex >= -0) {
+						this.valid = true;
+						return;
+					}
+					else {
+						var enteredText = me.requestorPhone.text.value;
+
+						if (enteredText == "") return;
+
+						me.requestorPhone.text.value = fin.cmn.text.mask.phone(enteredText);
+						enteredText = me.requestorPhone.text.value;
+
+						if (!(ui.cmn.text.validate.phone(enteredText)))
+							this.setInvalid("Please enter valid Phone #. Example: (999) 999-9999");
+					}
 				});
 
 			me.managerName = new ui.ctl.Input.Text({
