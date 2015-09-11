@@ -124,7 +124,6 @@ ii.Class({
 			var me = fin.payCheckUi;
 
 			$("#pageLoading").height(document.body.scrollHeight);
-			//$("#Container").height($(window).height() - 95);
 			$("#Container").height(1280);
 			me.payCheckRequestGrid.setHeight(200);
 			me.payCodeDetailGrid.setHeight(150);
@@ -446,7 +445,7 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
 
-					if (me.payCheckRequestGrid.activeRowIndex >= -0) {
+					if  (me.payCheckRequestGrid.activeRowIndex >= 0 && me.payCheckRequestGrid.data[me.payCheckRequestGrid.activeRowIndex].statusType != 10) {
 						this.valid = true;
 						return;
 					}
@@ -631,12 +630,12 @@ ii.Class({
                 changeFunction: function() { me.modified(); }
             });
             		    
-			me.payCodeDetailGrid.addColumn("payCode", "payCode", "Pay Code", "Pay Code", null, function(payCode) { return payCode.brief + " - " + payCode.name 	} , me.payCodeType);
+			me.payCodeDetailGrid.addColumn("payCode", "payCode", "Pay Code", "Pay Code", 350, function(payCode) { return payCode.brief + " - " + payCode.name 	} , me.payCodeType);
 			me.payCodeDetailGrid.addColumn("hours", "hours", "Hours", "Hours", 100, function(hours) { return ui.cmn.text.money.format(hours); }, me.hours);
 			me.payCodeDetailGrid.addColumn("date", "date", "Date", "Date", 120, null, me.date);
 			me.payCodeDetailGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 100, function(earnings) { return ui.cmn.text.money.format(earnings); }, me.earnings);
 			me.payCodeDetailGrid.addColumn("alternateBaseRate", "alternateBaseRate", "Alternate Base Rate", "Alternate Base Rate", 180, function(alternateBaseRate) { return ui.cmn.text.money.format(alternateBaseRate); }, me.alternateBaseRate);
-			me.payCodeDetailGrid.addColumn("houseCodeTitle", "houseCodeTitle", "CHARGE TO HOUSE CODE", "CHARGE TO HOUSE CODE", 250, null, me.chargeToHouseCode);
+			me.payCodeDetailGrid.addColumn("houseCodeTitle", "houseCodeTitle", "CHARGE TO HOUSE CODE", "CHARGE TO HOUSE CODE", null, null, me.chargeToHouseCode);
 			me.payCodeDetailGrid.capColumns();
 			
 			me.payCodeType.active = false;
@@ -650,12 +649,12 @@ ii.Class({
 				id: "PayCodeDetailReadOnlyGrid"
 			});
 
-			me.payCodeDetailReadOnlyGrid.addColumn("payCode", "payCode", "Pay Code", "Pay Code", null, function(payCode) { return payCode.brief + " - " + payCode.name;	});
+			me.payCodeDetailReadOnlyGrid.addColumn("payCode", "payCode", "Pay Code", "Pay Code", 350, function(payCode) { return payCode.brief + " - " + payCode.name;	});
 			me.payCodeDetailReadOnlyGrid.addColumn("hours", "hours", "Hours", "Hours", 100, function(hours) { return ui.cmn.text.money.format(hours); });
 			me.payCodeDetailReadOnlyGrid.addColumn("date", "date", "Date", "Date", 120);
 			me.payCodeDetailReadOnlyGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 100, function(earnings) { return ui.cmn.text.money.format(earnings); });
 			me.payCodeDetailReadOnlyGrid.addColumn("alternateBaseRate", "alternateBaseRate", "Alternate Base Rate", "Alternate Base Rate", 180, function(alternateBaseRate) { return ui.cmn.text.money.format(alternateBaseRate); });
-			me.payCodeDetailReadOnlyGrid.addColumn("houseCodeTitle", "houseCodeTitle", "CHARGE TO HOUSE CODE", "CHARGE TO HOUSE CODE", 250);
+			me.payCodeDetailReadOnlyGrid.addColumn("houseCodeTitle", "houseCodeTitle", "CHARGE TO HOUSE CODE", "CHARGE TO HOUSE CODE", null);
 			me.payCodeDetailReadOnlyGrid.capColumns();
 
 			me.anchorSearch = new ui.ctl.buttons.Sizeable({
@@ -1515,7 +1514,6 @@ ii.Class({
 			$("#PayCodeDetailGrid").show();
 			$("#SearchContainer").hide();
 			$("#PayCodeDetailReadOnlyGrid").hide();
-
 			me.setReadOnly(false);
 			me.resetControls("CheckRequest");
 			me.anchorSendRequest.display(ui.cmn.behaviorStates.enabled);
@@ -1523,10 +1521,10 @@ ii.Class({
 			me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
 			me.payCheckRequestGrid.body.deselectAll();
 			me.payCodeDetailGrid.setHeight(150);
+			me.requestedDate.setValue(me.currentDate());
 			$("#AnchorResendRequest").hide();
 			$("#AnchorApprove").hide();
 			$("#AnchorSendRequest").show();
-			me.requestedDate.setValue(me.currentDate());
 			$("#LabelState").html("<span id='nonRequiredFieldIndicator'>State:</span>");
 			$("#LabelUnit").html("<span id='nonRequiredFieldIndicator'>Unit (House Code):</span>");
 			$("#LabelUnitAddress").html("<span id='nonRequiredFieldIndicator'>Unit (House Code) Address:</span>");
@@ -1534,6 +1532,7 @@ ii.Class({
 			$("#imgAdd").show();
 			$("#imgEdit").show();
 			$("#imgRemove").show();
+			$("#pageLoading").height(document.body.scrollHeight);
 			me.setStatus("Loaded");
 			me.modified(false);
 		},
@@ -1549,7 +1548,6 @@ ii.Class({
 			$("#CheckRequestNumberInfo").show();
 			$("#EmptyArea").hide();
 			$("#PayCodeDetailReadOnlyGrid").show();			
-			
 			me.setReadOnly(true);
 			me.resetControls("CheckRequestStatus");
 			me.searchInput.setValue("");
@@ -1559,16 +1557,17 @@ ii.Class({
 			me.anchorSendRequest.display(ui.cmn.behaviorStates.disabled);
 			me.anchorUndo.display(ui.cmn.behaviorStates.disabled);
 			me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
+			me.payCheckRequestGrid.setData([]);
+			me.payCheckRequestGrid.setHeight(200);
+			me.payCodeDetailReadOnlyGrid.setData([]);
+			me.payCodeDetailReadOnlyGrid.setHeight(150);
 			$("#imgAdd").hide();
 			$("#imgEdit").hide();
 			$("#imgRemove").hide();
 			$("#AnchorResendRequest").hide();
 			$("#AnchorApprove").hide();
-			$("#AnchorSendRequest").show();			
-			me.payCheckRequestGrid.setData([]);
-			me.payCheckRequestGrid.setHeight(200);
-			me.payCodeDetailReadOnlyGrid.setData([]);
-			me.payCodeDetailReadOnlyGrid.setHeight(150);
+			$("#AnchorSendRequest").show();	
+			$("#pageLoading").height(document.body.scrollHeight);
 			me.setStatus("Loaded");
 			me.modified(false);
 		},
