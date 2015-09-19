@@ -883,16 +883,7 @@ ii.Class({
 				changeFunction: function() { me.modified(); },
 				required: false
 			});
-			
-			me.shippingJob.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )	
-				.addValidation( function( isFinal, dataMap ) {
-					
-					if ((this.focused || this.touched) && me.shippingJob.indexSelected == -1)
-						this.setInvalid("Please select the correct Job.");
-				});
-				
+
 			me.shippingAddress1 = new ui.ctl.Input.Text({
 		        id: "ShippingAddress1",
 				maxLength: 256,
@@ -1706,72 +1697,14 @@ ii.Class({
 			me.status = "";
 
 			if (me.action == "POCapitalRequisition") {
-				me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + item.houseCode, me.houseCodeJobsLoaded, me);
 				$("#AnchorPrint").show();
 				$("#AnchorApprove").hide();
 				$("#RequisitionInfo").show();
 				$("#divSpace").show();
 				$("#RequisitionNumber").html(item.requisitionNumber);
-				me.requestorName.setValue(item.requestorName);
-				me.requestorEmail.setValue(item.requestorEmail);
-				me.requestedDate.setValue(item.requestedDate);
-				me.deliveryDate.setValue(item.deliveryDate);
-				me.projectNumber.setValue(item.projectNumber);
-				me.vendorName.lastBlurValue = item.vendorTitle;
-				$("#VendorNameText").val(item.vendorTitle);
-				me.vendorAddress1.setValue(item.vendorAddressLine1);
-				me.vendorAddress2.setValue(item.vendorAddressLine2);
-				me.vendorCity.setValue(item.vendorCity);
-				
-				var itemIndex = ii.ajax.util.findIndexById(item.vendorStateType.toString(), me.stateTypes);
-				if (itemIndex >= 0 && itemIndex != undefined) 
-					me.vendorState.select(itemIndex, me.vendorState.focused);
-				
-				me.vendorZip.setValue(item.vendorZip);
-				me.vendorContactName.setValue(item.vendorContactName);
-				me.vendorPhone.setValue(item.vendorPhoneNumber);
-				me.vendorEmail.setValue(item.vendorEmail);
-				me.reasonForRequest.setValue(item.reasonForRequest);
+				me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + item.houseCode, me.houseCodeJobsLoaded, me);
+				me.setDetailInfo();	
 
-				if (item.funding == "Capital") 
-					$('#FundingCapital').attr('checked', true);
-				else if (item.funding == "Direct Reimbursement") 
-					$('#FundingDirectReimbursement').attr('checked', true);
-					
-				if (item.businessType == "New Business") 
-					$('#BusinessTypeNewBusiness').attr('checked', true);
-				else if (item.businessType == "New Construction") 
-					$('#BusinessTypeNewConstruction').attr('checked', true);
-				else if (item.businessType == "Existing Business") 
-					$('#BusinessTypeExistingBusiness').attr('checked', true);
-				
-				if (item.budgeting == "Budgeted") 
-					$('#BudgetingBudgeted').attr('checked', true);
-				else if (item.budgeting == "Unbudgeted") 
-					$('#BudgetingUnbudgeted').attr('checked', true);
-
-				me.regionalManagerName.setValue(item.regionalManagerName);
-				me.regionalManagerTitle.setValue(item.regionalManagerTitle);
-				me.regionalManagerEmail.setValue(item.regionalManagerEmail);
-				me.vendor.setValue(item.vendorTitle);
-				me.vendorNumber = item.vendorNumber;
-				me.taxPercent.setValue(item.taxPercent == 0 ? "" : item.taxPercent);
-				me.taxAmount.setValue(item.taxAmount == 0 ? "" : item.taxAmount);
-				me.freight.setValue(item.freight == 0 ? "" : item.freight);
-
-				me.company.setValue(item.houseCodeTitle);
-				me.shippingAddress1.setValue(item.shipToAddress1);
-				me.shippingAddress2.setValue(item.shipToAddress2);
-				me.shippingCity.setValue(item.shipToCity);
-				
-				itemIndex = ii.ajax.util.findIndexById(item.shipToState.toString(), me.stateTypes);
-				if (itemIndex >= 0 && itemIndex != undefined) 
-					me.shippingState.select(itemIndex, me.shippingState.focused);				
-				
-				me.shippingZip.setValue(item.shipToZip);
-				me.shippingPhone.setValue(item.shipToPhone);
-				me.shippingFax.setValue(item.shipToFax);	
-	
 				if (me.capitalRequisitionGrid.data[index].statusType == 10 || me.capitalRequisitionGrid.data[index].statusType == 1) {
 					if (me.capitalRequisitionGrid.data[index].statusType == 10) {
 						$("#AnchorResendRequisition").show();
@@ -1844,7 +1777,76 @@ ii.Class({
 				$("#AnchorJDEEntry").show();
 			}
 		},
-		
+
+		setDetailInfo: function() {
+			var me = this;
+			var item = me.capitalRequisitionGrid.data[me.capitalRequisitionGrid.activeRowIndex];
+			
+			me.requestorName.setValue(item.requestorName);
+			me.requestorEmail.setValue(item.requestorEmail);
+			me.requestedDate.setValue(item.requestedDate);
+			me.deliveryDate.setValue(item.deliveryDate);
+			me.projectNumber.setValue(item.projectNumber);
+			me.vendorName.lastBlurValue = item.vendorTitle;
+			$("#VendorNameText").val(item.vendorTitle);
+			me.vendorAddress1.setValue(item.vendorAddressLine1);
+			me.vendorAddress2.setValue(item.vendorAddressLine2);
+			me.vendorCity.setValue(item.vendorCity);
+			
+			var itemIndex = ii.ajax.util.findIndexById(item.vendorStateType.toString(), me.stateTypes);
+			if (itemIndex >= 0 && itemIndex != undefined) 
+				me.vendorState.select(itemIndex, me.vendorState.focused);
+			
+			me.vendorZip.setValue(item.vendorZip);
+			me.vendorContactName.setValue(item.vendorContactName);
+			me.vendorPhone.setValue(item.vendorPhoneNumber);
+			me.vendorEmail.setValue(item.vendorEmail);
+			me.reasonForRequest.setValue(item.reasonForRequest);
+
+			if (item.funding == "Capital") 
+				$('#FundingCapital').attr('checked', true);
+			else if (item.funding == "Direct Reimbursement") 
+				$('#FundingDirectReimbursement').attr('checked', true);
+				
+			if (item.businessType == "New Business") 
+				$('#BusinessTypeNewBusiness').attr('checked', true);
+			else if (item.businessType == "New Construction") 
+				$('#BusinessTypeNewConstruction').attr('checked', true);
+			else if (item.businessType == "Existing Business") 
+				$('#BusinessTypeExistingBusiness').attr('checked', true);
+			
+			if (item.budgeting == "Budgeted") 
+				$('#BudgetingBudgeted').attr('checked', true);
+			else if (item.budgeting == "Unbudgeted") 
+				$('#BudgetingUnbudgeted').attr('checked', true);
+
+			me.regionalManagerName.setValue(item.regionalManagerName);
+			me.regionalManagerTitle.setValue(item.regionalManagerTitle);
+			me.regionalManagerEmail.setValue(item.regionalManagerEmail);
+			me.vendor.setValue(item.vendorTitle);
+			me.vendorNumber = item.vendorNumber;
+			me.taxPercent.setValue(item.taxPercent == 0 ? "" : item.taxPercent);
+			me.taxAmount.setValue(item.taxAmount == 0 ? "" : item.taxAmount);
+			me.freight.setValue(item.freight == 0 ? "" : item.freight);
+			me.company.setValue(item.houseCodeTitle);
+
+			itemIndex = ii.ajax.util.findIndexById(item.houseCodeJob.toString(), me.houseCodeJobs);
+			if (itemIndex != undefined && itemIndex >= 0) 
+				me.shippingJob.select(itemIndex, me.shippingJob.focused);
+
+			me.shippingAddress1.setValue(item.shipToAddress1);
+			me.shippingAddress2.setValue(item.shipToAddress2);
+			me.shippingCity.setValue(item.shipToCity);
+
+			itemIndex = ii.ajax.util.findIndexById(item.shipToState.toString(), me.stateTypes);
+			if (itemIndex >= 0 && itemIndex != undefined) 
+				me.shippingState.select(itemIndex, me.shippingState.focused);				
+
+			me.shippingZip.setValue(item.shipToZip);
+			me.shippingPhone.setValue(item.shipToPhone);
+			me.shippingFax.setValue(item.shipToFax);
+		},
+
 		poCapitalRequisitonItemsLoaded: function(me, activeId) {
 
 			me.subTotal = 0;
@@ -2210,6 +2212,7 @@ ii.Class({
 			me.taxAmount.setValue("");
 			me.freight.setValue("");
 			me.company.setValue(parent.fin.appUI.houseCodeTitle);
+			me.shippingJob.reset();
 			me.shippingAddress1.setValue(me.houseCodeDetails[0].shippingAddress1);
 			me.shippingAddress2.setValue(me.houseCodeDetails[0].shippingAddress2);
 			me.shippingCity.setValue(me.houseCodeDetails[0].shippingCity);
@@ -2252,14 +2255,16 @@ ii.Class({
 		
 		actionEditItem: function() {
 			var me = this;
-			var tax = me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue();
-			var freight = me.freight.getValue() == "" ? 0 : me.freight.getValue();
-			
+
 			if (me.capitalRequisitionGrid.activeRowIndex == -1)
 				return true;
-			
+
 			me.subTotal = 0;
+			me.setDetailInfo();
 			loadPopup();
+			var tax = me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue();
+			var freight = me.freight.getValue() == "" ? 0 : me.freight.getValue();
+
 			$("#popupMessageToUser").text("Loading");
 			$("#popupLoading").show();
 
@@ -2270,10 +2275,11 @@ ii.Class({
 
 			me.poCapitalRequisitionId = me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].id;
 			me.itemGrid.setData(me.poCapitalRequisitionItems);
+			me.documentGrid.setData(me.poCapitalRequisitionDocuments);
 			
 			for (var iIndex = 0; iIndex < me.poCapitalRequisitionItems.length; iIndex++) {
-					if (me.poCapitalRequisitionItems[iIndex].quantity != "" && !isNaN(me.poCapitalRequisitionItems[iIndex].quantity) && me.poCapitalRequisitionItems[iIndex].price != undefined && me.poCapitalRequisitionItems[iIndex].itemSelect) {
-						me.subTotal = me.subTotal + (me.poCapitalRequisitionItems[iIndex].quantity * me.poCapitalRequisitionItems[iIndex].price)
+				if (me.poCapitalRequisitionItems[iIndex].quantity != "" && !isNaN(me.poCapitalRequisitionItems[iIndex].quantity) && me.poCapitalRequisitionItems[iIndex].price != undefined && me.poCapitalRequisitionItems[iIndex].itemSelect) {
+					me.subTotal = me.subTotal + (me.poCapitalRequisitionItems[iIndex].quantity * me.poCapitalRequisitionItems[iIndex].price)
 				}
 			}
 			
@@ -2392,8 +2398,15 @@ ii.Class({
 					me.poCapitalRequisitionItems.splice(index, 1);
 			}
 
-			if (me.capitalRequisitionGrid.activeRowIndex >= 0)
+			for (var index = me.poCapitalRequisitionDocuments.length - 1; index >= 0; index--) {
+				if (me.poCapitalRequisitionDocuments[index].id == 0)
+					me.poCapitalRequisitionDocuments.splice(index, 1);
+			}
+
+			if (me.capitalRequisitionGrid.activeRowIndex >= 0) {
 				me.poCapitalRequisitionId = me.capitalRequisitionGrid.data[me.capitalRequisitionGrid.activeRowIndex].id;
+				me.setDetailInfo();
+			}
 
 			me.wizardCount = 0;	
 			me.status = "";
@@ -2736,7 +2749,7 @@ ii.Class({
 				xml += ' vendorZip="' + item.vendorZip + '"';
 				xml += ' vendorContactName="' + ui.cmn.text.xml.encode(item.vendorContactName) + '"';
 				xml += ' vendorPhoneNumber="' + fin.cmn.text.mask.phone(item.vendorPhoneNumber, true) + '"';
-				xml += ' vendorEmail="' + item.vendorEmail + '"';
+				xml += ' vendorEmail="' + ui.cmn.text.xml.encode(item.vendorEmail) + '"';
 				xml += ' reasonForRequest="' + ui.cmn.text.xml.encode(item.reasonForRequest) + '"';
 				xml += ' funding="' + item.funding + '"';
 				xml += ' businessType="' + item.businessType + '"';
@@ -2770,12 +2783,12 @@ ii.Class({
 					xml += '<purPOCapitalRequisitionItem';
 					xml += ' id="' + (me.status == "NewPOCapitalRequisition" ? "0" : me.itemGrid.data[index].id) + '"';
 					xml += ' poCapitalRequisitionId="' + me.poCapitalRequisitionId + '"';
-					xml += ' number="' + me.itemGrid.data[index].number + '"';
-					xml += ' description="' + me.itemGrid.data[index].description + '"';
-					xml += ' alternateDescription="' + me.itemGrid.data[index].alternateDescription + '"';
+					xml += ' number="' + ui.cmn.text.xml.encode(me.itemGrid.data[index].number) + '"';
+					xml += ' description="' + ui.cmn.text.xml.encode(me.itemGrid.data[index].description) + '"';
+					xml += ' alternateDescription="' + ui.cmn.text.xml.encode(me.itemGrid.data[index].alternateDescription) + '"';
 					xml += ' account="' + me.itemGrid.data[index].account.id + '"';
-					xml += ' uom="' + me.itemGrid.data[index].unit + '"';
-					xml += ' manufactured="' + me.itemGrid.data[index].manufactured + '"';
+					xml += ' uom="' + ui.cmn.text.xml.encode(me.itemGrid.data[index].unit) + '"';
+					xml += ' manufactured="' + ui.cmn.text.xml.encode(me.itemGrid.data[index].manufactured) + '"';
 					xml += ' quantity="' + me.itemGrid.data[index].quantity + '"';
 					xml += ' price="' + me.itemGrid.data[index].price + '"';
 					xml += '/>';
@@ -2800,11 +2813,11 @@ ii.Class({
 				xml += ' requisitionNumber="' + item.requisitionNumber + '"';
 				xml += ' statusType="2"';
 				xml += ' houseCodeTitle="' + ui.cmn.text.xml.encode(item.houseCodeTitle) + '"';
-				xml += ' houseCodeJobTitle="' + me.shippingJob.lastBlurValue + '"';
+				xml += ' houseCodeJobTitle="' + ui.cmn.text.xml.encode(me.shippingJob.lastBlurValue) + '"';
 				xml += ' shipToAddress1="' + ui.cmn.text.xml.encode(item.shipToAddress1) + '"';
 				xml += ' shipToAddress2="' + ui.cmn.text.xml.encode(item.shipToAddress2) + '"';
 				xml += ' shipToCity="' + ui.cmn.text.xml.encode(item.shipToCity) + '"';
-				xml += ' shipToStateTitle="' + me.shippingState.lastBlurValue + '"';
+				xml += ' shipToStateTitle="' + ui.cmn.text.xml.encode(me.shippingState.lastBlurValue) + '"';
 				xml += ' shipToZip="' + item.shipToZip + '"';
 				xml += ' shipToPhone="' + fin.cmn.text.mask.phone(item.shipToPhone) + '"';
 				xml += ' shipToFax="' + fin.cmn.text.mask.phone(item.shipToFax) + '"';
@@ -2818,11 +2831,11 @@ ii.Class({
 				xml += ' vendorAddressLine1="' + ui.cmn.text.xml.encode(item.vendorAddressLine1) + '"';
 				xml += ' vendorAddressLine2="' + ui.cmn.text.xml.encode(item.vendorAddressLine2) + '"';
 				xml += ' vendorCity="' + ui.cmn.text.xml.encode(item.vendorCity) + '"';
-				xml += ' vendorStateTitle="' + me.vendorState.lastBlurValue + '"';
+				xml += ' vendorStateTitle="' + ui.cmn.text.xml.encode(me.vendorState.lastBlurValue) + '"';
 				xml += ' vendorZip="' + item.shipToZip + '"';
 				xml += ' vendorContactName="' + ui.cmn.text.xml.encode(item.vendorContactName) + '"';
 				xml += ' vendorPhoneNumber="' + fin.cmn.text.mask.phone(item.vendorPhoneNumber) + '"';
-				xml += ' vendorEmail="' + item.vendorEmail + '"';
+				xml += ' vendorEmail="' + ui.cmn.text.xml.encode(item.vendorEmail) + '"';
 				xml += ' reasonForRequest="' + ui.cmn.text.xml.encode(item.reasonForRequest) + '"';				
 				xml += ' funding="' + item.funding + '"';
 				xml += ' businessType="' + item.businessType + '"';
@@ -2833,11 +2846,8 @@ ii.Class({
 				xml += ' regionalManagerEmail="' + ui.cmn.text.xml.encode(item.regionalManagerEmail) + '"';
 				xml += ' action="' + me.status + '"';
 				xml += ' jdeCompleted="0"';
-				xml += ' subTotal="' + me.subTotal.toFixed(2) + '"';
 				xml += ' taxPercent="' + (item.taxPercent != 0 ? item.taxPercent : "") + '"';
-				xml += ' taxAmount="' + (item.taxAmount != 0 ? item.taxAmount : "") + '"';
 				xml += ' freight="' + (item.freight != 0 ? item.freight : "") + '"';
-				xml += ' total="' + me.total.toFixed(2) + '"';
 				xml += '/>';
 			}
 			else if (me.status == "DeleteDocument") {
@@ -2868,7 +2878,7 @@ ii.Class({
 				xml += ' requisitionNumber="' +  item.requisitionNumber + '"';
 				xml += ' houseCode="' +  ui.cmn.text.xml.encode(item.houseCodeTitle) + '"';
 				xml += ' vendorTitle="' +  ui.cmn.text.xml.encode(item.vendorTitle) + '"';
-				xml += ' vendorNumber="' + item.vendorNumber + '"';
+				xml += ' vendorNumber="' + ui.cmn.text.xml.encode(item.vendorNumber) + '"';
 				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
 				xml += '/>';
 			}
