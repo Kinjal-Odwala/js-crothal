@@ -681,10 +681,15 @@ ii.Class({
 				formatFunction: function( type ) { return type.name; },
 	        	required: false
 		    });
-			
+
 			me.personState.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
+				.addValidation( ui.ctl.Input.Validation.required )	
+				.addValidation( function( isFinal, dataMap ) {
+					
+					if ((this.focused || this.touched) && me.personState.indexSelected == -1)
+						this.setInvalid("Please select the correct State.");
+				});
 				
 			me.personPostalCode = new ui.ctl.Input.Text({
 				id: "PostalCode",
@@ -1231,6 +1236,8 @@ ii.Class({
 				
 					if (me.multiRace1.indexSelected == -1)
 						this.setInvalid("Please select Race 1 type.");
+					else if (me.multiRace1.data[me.multiRace1.indexSelected].name == "None")
+						this.setInvalid("[None] is not allowed for Race 1. Please select any other option for Race 1 type.");
 				});
 
 			me.multiRace2 = new ui.ctl.Input.DropDown.Filtered({
@@ -1246,6 +1253,8 @@ ii.Class({
 				
 					if (me.multiRace2.indexSelected == -1)
 						this.setInvalid("Please select Race 2 type.");
+					else if (me.multiRace2.data[me.multiRace2.indexSelected].name == "None")
+						this.setInvalid("[None] is not allowed for Race 2. Please select any other option for Race 2 type.");
 				});
 
 			me.multiRace3 = new ui.ctl.Input.DropDown.Filtered({
@@ -1254,44 +1263,17 @@ ii.Class({
 				required: false
 		    });
 
-			me.multiRace3.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				.addValidation( function( isFinal, dataMap ) {
-				
-					if (me.multiRace3.indexSelected == -1)
-						this.setInvalid("Please select Race 3 type.");
-				});
-
 			me.multiRace4 = new ui.ctl.Input.DropDown.Filtered({
 				id: "MultiRace4", 
 				formatFunction: function( type ) { return type.name; },
 				required: false
 		    });
 
-			me.multiRace4.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				.addValidation( function( isFinal, dataMap ) {
-				
-					if (me.multiRace4.indexSelected == -1)
-						this.setInvalid("Please select Race 4 type.");
-				});
-
 			me.multiRace5 = new ui.ctl.Input.DropDown.Filtered({
 				id: "MultiRace5", 
 				formatFunction: function( type ) { return type.name; },
 				required: false
 		    });
-
-			me.multiRace5.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				.addValidation( function( isFinal, dataMap ) {
-				
-					if (me.multiRace5.indexSelected == -1)
-						this.setInvalid("Please select Race 5 type.");
-				});
 
 			me.employeeMaritalStatus = new ui.ctl.Input.DropDown.Filtered({
 				id: "EmployeeMaritalStatus",
@@ -4421,7 +4403,6 @@ ii.Class({
 		
 		employeeMultiRacesLoaded: function(me, activeId) {
 
-			ii.trace("Info: " + me.employeeMultiRaces.length, ii.traceTypes.Information, "Info");
 			if (me.employeeMultiRaces.length > 0) {
 				var index = ii.ajax.util.findIndexById(me.employeeMultiRaces[0].multiRace1, me.multiRaceTypes);
 				if (index != undefined)
@@ -5345,12 +5326,13 @@ ii.Class({
 			else
 				ssn =  me.employeeSSN.getValue().replace(/-/g, "");
 
-			me.employeeValidationStore.fetch("userId:[user]" 
+			me.employeeValidationStore.fetch("userId:[user]"
 				+ ",hireDate:" + me.employeeHireDate.text.value 
 				+ ",employeeId:" + me.employeeGeneralId
 				+ ",ssn:" + ssn
 				+ ",payFrequencyTypeId:" + me.payFrequencyType
-				+ "," 
+				+ ",validateEmployeeAge:" + me.houseCodeDetails[0].validateEmployeeAge
+				+ ","
 				, me.validationsLoaded, me);
 		},
 
@@ -7484,6 +7466,7 @@ ii.Class({
 				xml += ' payrollStatus="' + itemGeneral.payrollStatus + '"';
 				xml += ' previousPayrollStatus="' + itemGeneral.previousPayrollStatus + '"';
 				xml += ' basicLifeIndicatorType="' + itemGeneral.basicLifeIndicatorType + '"';
+				xml += ' validateEmployeeAge="' + me.houseCodeDetails[0].validateEmployeeAge + '"';
 			}
 			
 			if (me.actionType == "Rehire" || me.actionType == "NewHire") {				

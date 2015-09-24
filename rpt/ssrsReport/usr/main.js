@@ -48,6 +48,19 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 
+			var queryStringArgs = {};
+			var queryString = location.search.substring(1);
+			var pairs = queryString.split("&"); 
+
+			for (var index = 0; index < pairs.length; index++) { 
+				var pos = pairs[index].indexOf("="); 
+				if (pos == -1) continue; 
+				var argName = pairs[index].substring(0, pos); 
+				var value = pairs[index].substring(pos + 1); 
+				queryStringArgs[argName] = unescape(value); 
+			}
+			
+			me.reportTitle = (queryStringArgs["reportId"] == undefined) ? "" : queryStringArgs["reportId"];
 			me.pageLoading = true;
 			me.levelNamesLoaded = false;
 			me.subscriptionSelected = false;
@@ -1333,57 +1346,49 @@ ii.Class({
 		checkDependentTypes: function(fullPath, add) {
 			var me = this;
 
-			for (var index = 0; index < me.dependentTypes.length; index++) {
-				if (me.dependentTypes[index] == "ExcludeHouseCodes") {
-					if (add) {
-						var nodes = $.grep(me.siteNodes, function(item, itemIndex) {
-							if (me.excludeHouseCodes.length > 0 && ii.ajax.util.findIndexById(item.id.toString(), me.excludeHouseCodes) == null)
-						    	return item.fullPath.indexOf(fullPath) >= 0;
-					    	else if (me.excludeHouseCodes.length == 0)
-					    		return item.fullPath.indexOf(fullPath) >= 0;
-						});
+			if (add) {
+				var nodes = $.grep(me.siteNodes, function(item, itemIndex) {
+					if (me.excludeHouseCodes.length > 0 && ii.ajax.util.findIndexById(item.id.toString(), me.excludeHouseCodes) == null)
+				    	return item.fullPath.indexOf(fullPath) >= 0;
+			    	else if (me.excludeHouseCodes.length == 0)
+			    		return item.fullPath.indexOf(fullPath) >= 0;
+				});
 
-						$.merge(me.excludeHouseCodes, nodes);
+				$.merge(me.excludeHouseCodes, nodes);
 
-						me.excludeHouseCodes.sort(function(a, b) {
-							if (a.title < b.title)
-						    	return -1;
-						  	if (a.title > b.title)
-						    	return 1;
-							return 0;
-						});
-					}
-					else {
-						me.excludeHouseCodes = $.grep(me.excludeHouseCodes, function(item, itemIndex) {
-						    return item.fullPath.indexOf(fullPath) < 0;
-						});
-					}
-					me.setExcludeHouseCodes();
-				}
-				if (me.dependentTypes[index] == "HouseCodes") {
-					if (add) {
-						var nodes = $.grep(me.houseCodes, function(item, itemIndex) {
-						    return item.parameter.indexOf(fullPath) >= 0;
-						});
+				me.excludeHouseCodes.sort(function(a, b) {
+					if (a.title < b.title)
+				    	return -1;
+				  	if (a.title > b.title)
+				    	return 1;
+					return 0;
+				});
+				
+				var nodes = $.grep(me.houseCodes, function(item, itemIndex) {
+				    return item.parameter.indexOf(fullPath) >= 0;
+				});
 
-						$.merge(me.filteredHouseCodes, nodes);
+				$.merge(me.filteredHouseCodes, nodes);
 
-						me.filteredHouseCodes.sort(function(a, b) {
-							if (a.title < b.title)
-						    	return -1;
-						  	if (a.title > b.title)
-						    	return 1;
-							return 0;
-						});
-					}
-					else {
-						me.filteredHouseCodes = $.grep(me.filteredHouseCodes, function(item, itemIndex) {
-						    return item.parameter.indexOf(fullPath) < 0;
-						});
-					}
-					me.setHouseCodes();
-				}				
+				me.filteredHouseCodes.sort(function(a, b) {
+					if (a.title < b.title)
+				    	return -1;
+				  	if (a.title > b.title)
+				    	return 1;
+					return 0;
+				});
 			}
+			else {
+				me.excludeHouseCodes = $.grep(me.excludeHouseCodes, function(item, itemIndex) {
+				    return item.fullPath.indexOf(fullPath) < 0;
+				});
+				
+				me.filteredHouseCodes = $.grep(me.filteredHouseCodes, function(item, itemIndex) {
+				    return item.parameter.indexOf(fullPath) < 0;
+				});
+			}
+			me.setExcludeHouseCodes();
+			me.setHouseCodes();
 		},
 
 		setExcludeHouseCodes: function() {
@@ -1415,7 +1420,9 @@ ii.Class({
 			var me = this;
 
 			$("#HouseCode").html("");
-				
+
+			if (me.filteredHouseCodes.length > 0)
+				$("#HouseCode").append("<option title='(Select All)' value='-1'>(Select All)</option>");
 			for (var index = 0; index < me.filteredHouseCodes.length; index++) {
 				$("#HouseCode").append("<option title='" + me.filteredHouseCodes[index].name + "' value='" + me.filteredHouseCodes[index].id + "'>" + me.filteredHouseCodes[index].name + "</option>");
 			}
@@ -1695,7 +1702,9 @@ ii.Class({
 					return found;
 				});
 				me.excludeHouseCodes = nodes;
+				me.filteredHouseCodes = nodes;
 				me.setExcludeHouseCodes();
+				me.setHouseCodes();
 			}
 			else {
 				me.resetDependentTypes();
@@ -1892,6 +1901,17 @@ ii.Class({
 			if (me.subscriptionNodes.length == 1)
 				me.subscriptionNodes = [];
 			me.actionAddNodes(me.reportNodes);
+
+			if (me.reportTitle != "") {
+				for (var index = 0; index < me.reportNodes.length; index++) {
+					if (me.reportNodes[index].title == me.reportTitle) {
+						$("#liNode" + me.reportNodes[index].nodeParentId).find(">.hitarea").click();
+						me.setLoadCount();
+						me.hirNodeSelect(me.reportNodes[index].id);
+						break;
+					}
+				}
+			}
         },
 
 		hirNodeSelect: function(nodeId) {        
@@ -1964,7 +1984,7 @@ ii.Class({
 		            $("#TreeviewContainer").height($(window).height() - 260);
 		            $("#ReportSubscription").height($(window).height() - 150);
 				}
-				
+
 				me.setLoadCount();
 				
 				if (!me.levelNamesLoaded)
@@ -2119,10 +2139,6 @@ ii.Class({
 						$("#CreateUserIDText").val(me.session.propertyGet("userName"));
 						$("#CreateUserIDText").attr("readonly", true);
 					}
-					else if (me.reportParameters[index].name == "By") {
-						$("#ByText").val(me.reportParameters[index].defaultValue);
-						$("#ByText").attr("readonly", true);
-					}
 				}
 				else if (me.reportParameters[index].controlType == "CheckBox") {
 					me.controls[index] = new ui.ctl.Input.Check({
@@ -2159,7 +2175,7 @@ ii.Class({
                         },
                         click: function(event, ui) {                                                                                    
                             if (event.originalEvent.currentTarget.id.indexOf("FscYear") > 0)
-                            	me.fiscalweeksLoad(ui.value);                            
+                            	me.fiscalWeeksLoad(ui.value);                            
                             else if (event.originalEvent.currentTarget.id.indexOf("ExLevel") > 0)                           	
                         		me.excludeNamesLoaded(ui.value);                            
                         },
@@ -2365,14 +2381,16 @@ ii.Class({
                 typeTableData = me.contractTypes;
             }
             else if (args.referenceTableName == "ExcludeHouseCodes") {
-            	if(me.excludeHouseCodes.length > 0) {
+            	if (me.excludeHouseCodes.length > 0) {
             		$("#" + args.name).append("<option title='(Select All)' value='-1'>(Select All)</option>");
             		$("#" + args.name).append("<option title='None' value='0' selected>None</option>");
             	}				
                 typeTableData = me.excludeHouseCodes;
             }
             else if (args.referenceTableName == "HouseCodes") {
-            	me.typeAllOrNoneAdd(me.filteredHouseCodes, "(Select All)");
+            	if (me.filteredHouseCodes.length > 0) {
+            		$("#" + args.name).append("<option title='(Select All)' value='-1'>(Select All)</option>");
+            	}
                 typeTableData = me.filteredHouseCodes;
             }
             else if (args.referenceTableName == "ExcludeNames")
@@ -2446,9 +2464,10 @@ ii.Class({
                 var title = typeTableData[index].name;
                 var brief = typeTableData[index].brief;
 
-                if (args.referenceTableName == "AppStateTypes" || args.referenceTableName == "PayCodes" 
-	                || args.referenceTableName == "HouseCodes" || args.referenceTableName == "FscYears")
+                if (args.referenceTableName == "AppStateTypes" || args.referenceTableName == "HouseCodes" || args.referenceTableName == "FscYears")
                     $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + "</option>");
+				else if (args.referenceTableName == "PayCodes")
+					$("#" + args.name).append("<option title='" + title + "' value='" + brief + "'>" + title + "</option>");
                 else if (args.referenceTableName == "FscPeriods")
                     $("#" + args.name).append("<option title='" + 'Period ' + title + ' - ' + typeTableData[index].fscYeaTitle + "' value='" + value + "'>" + 'Period ' + title + ' - ' + typeTableData[index].fscYeaTitle + "</option>");
                 else if (args.referenceTableName == "PayPayrollCompanies")
@@ -2612,21 +2631,21 @@ ii.Class({
             $("#GroupLevel").multiselect("refresh");
         },
 		
-		fiscalweeksLoad: function(yearSelected) {
+		fiscalWeeksLoad: function(yearSelected) {
 			var me = this;
 			
 			if (me.controls[1].selector != "#WkPeriod")
 				return;
 						
 			me.setLoadCount(); 
-			me.genericTypeStore.fetch("name:" + yearSelected + ",genericType:FiscalWeeks,userId:[user]", me.fiscalweeksLoaded, me);			
+			me.genericTypeStore.fetch("name:" + yearSelected + ",genericType:FiscalWeeks,userId:[user]", me.fiscalWeeksLoaded, me);			
 		},
 		
-		fiscalweeksLoaded: function(me, activeId) {
+		fiscalWeeksLoaded: function(me, activeId) {
 
 			$("#WkPeriod").html("");
 			for (var index = 0; index < me.genericTypes.length; index++) {
-                $("#WkPeriod").append("<option title='" + me.genericTypes[index].parameter + "' value='" + me.genericTypes[index].id + "'>" + me.genericTypes[index].parameter + "</option>");
+                $("#WkPeriod").append("<option title='" + me.genericTypes[index].name + "' value='" + me.genericTypes[index].parameter + "'>" + me.genericTypes[index].name + "</option>");
             }
 			$("#WkPeriod").multiselect("refresh");	
 			me.checkLoadCount();			
@@ -2970,11 +2989,9 @@ ii.Class({
 		                    	if (this.title != "(Select All)")
 		                        	return this.title;
 		                    }).get();
-							var accountNames = "";
 	                        for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
-								accountNames += (accountNames != "") ? ", " + selectedValues[selectedIndex] : selectedValues[selectedIndex];
+								parametersList += "~" + me.reportParameters[index].name + "=" + selectedValues[selectedIndex];
 	                        }
-							parametersList += "~" + me.reportParameters[index].name + "=" + accountNames;
 						}
 						else {
 							var selectedValues = $("#" + dropDown).multiselect("getChecked").map(function() {
@@ -3008,13 +3025,15 @@ ii.Class({
 					var selectedNames = me.name.split("~Name=");
 					if (me.reportParameters[index].name == "NameCount")
 						parametersList += "~" + me.reportParameters[index].name + "=" + (selectedNames.length - 1);
-					else {
+					else if (me.reportParameters[index].name == "NameLabel") {
 						var nameValues = "";
 						for (var selectedIndex = 1; selectedIndex < selectedNames.length; selectedIndex++) {
 							nameValues += (nameValues != "") ? ", " + selectedNames[selectedIndex] : selectedNames[selectedIndex];
 						}
 						parametersList += "~" + me.reportParameters[index].name + "=" + nameValues;
 					}
+					else
+						parametersList += "~" + me.reportParameters[index].name + "=" + me.reportParameters[index].defaultValue;
                 }
             }
 
@@ -3134,8 +3153,8 @@ ii.Class({
 				$(this).removeClass("trover");
 			});
 			
-			me.subscriptions.length > 0
-				me.actionSelectItem(0);
+			//me.subscriptions.length > 0
+				//me.actionSelectItem(0);
 		},
 		
 		setControlData: function() {
