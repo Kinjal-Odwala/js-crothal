@@ -471,3 +471,40 @@ Values (@RptReport, 'End PO Date', 'EndPODate', 'String', 'Hidden', '01/01/2015'
 /*
 CT updated on 27th August 2015 11PM EST
 */
+
+-- ALTER TABLE [dbo].PayPayCheckRequests ADD PayPaycrRequestorPhone VARCHAR(50) NULL
+
+-- Add security nodes for action menu items in Employee PAF UI [Begin]
+Declare @HirNode As Int
+Declare @DisplayOrder Int
+
+Select @DisplayOrder = Max(HirNode) From ESMV2.dbo.HirNodes
+Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Setup\EmployeePAF'
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'WriteInProcess', 'Write - In Process Status', 'Write - In Process Status', @DisplayOrder + 1, 1, '\crothall\chimes\fin\Setup\EmployeePAF\WriteInProcess', 'crothall', 'chimes', 'fin', 'Setup', 'EmployeePAF', 'WriteInProcess', 'Compass-USA\Data Conversion', GetDate())
+
+Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodModBy, HirNodModAt)
+Values(1, 9, @HirNode, 'ApproveInProcess', 'Approve - In Process Status', 'Approve - In Process Status', @DisplayOrder + 2, 1, '\crothall\chimes\fin\Setup\EmployeePAF\ApproveInProcess', 'crothall', 'chimes', 'fin', 'Setup', 'EmployeePAF', 'ApproveInProcess', 'Compass-USA\Data Conversion', GetDate())
+
+Select * From ESMV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\Setup\EmployeePAF%'
+-- Add security nodes for action menu items in Employee PAF UI [End]
+
+/*
+CT updated on 9th September 2015 11PM EST
+*/
+
+-- Update the following js files manually
+1.	pay\payCheck\usr\main.js
+2.	pay\payCheck\usr\markup.htm
+3.	pay\payCheck\usr\style.css
+3.	pur\requisition\usr\main.js
+3.	pur\capitalRequisition\usr\main.js
+
+-- Update the following dll's manually
+1. crothall.chimes.fin.pay.srv.dll to pay\act\bin folder.
+2. crothall.chimes.fin.pur.srv.dll to pur\act\bin folder.
+
+
+/*
+Last production release version 2.04.017 on 23rd September 2015 11PM EST
+*/
