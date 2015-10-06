@@ -313,6 +313,7 @@ ii.init.register( function() {
 	
 	fin.rpt.ssrs.stateTypeArgs = {
 		id: {type: Number}
+		, brief: {type: String}
 		, name: {type: String}
 	};
 	
