@@ -60,7 +60,7 @@ ii.Class({
 				queryStringArgs[argName] = unescape(value); 
 			}
 			
-			me.reportTitle = (queryStringArgs["reportId"] == undefined) ? "" : queryStringArgs["reportId"];
+			me.reportBrief = (queryStringArgs["reportId"] == undefined) ? "" : queryStringArgs["reportId"];
 			me.pageLoading = true;
 			me.levelNamesLoaded = false;
 			me.subscriptionSelected = false;
@@ -95,6 +95,7 @@ ii.Class({
 			me.siteNodes = [];
 			me.dependentTypes = [];
 			me.groupLevels = [];
+			me.deductionCodes = [];
 
 			me.gateway = ii.ajax.addGateway("rpt", ii.config.xmlProvider);			
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -916,6 +917,22 @@ ii.Class({
                 itemConstructorArgs: fin.rpt.ssrs.smartPSIDArgs,
                 injectionArray: me.smartPSIDs    
             });
+
+			me.checkDates = [];
+            me.checkDateStore = me.cache.register({
+                storeId: "checkDates",
+                itemConstructor: fin.rpt.ssrs.CheckDate,
+                itemConstructorArgs: fin.rpt.ssrs.checkDateArgs,
+                injectionArray: me.checkDates    
+            });
+
+			me.payPeriodDates = [];
+			me.payPeriodDateStore = me.cache.register({
+				storeId: "payPeriodDates",
+				itemConstructor: fin.rpt.ssrs.PayPeriodDate,
+				itemConstructorArgs: fin.rpt.ssrs.payPeriodDateArgs,
+				injectionArray: me.payPeriodDates
+			});
 		},
 
 		setStatus: function(status) {
@@ -1201,24 +1218,26 @@ ii.Class({
 			me.measurementStatuses = [];
 			me.benefits = [];
 			me.fullParts = [];
+			me.payrollTypes = [];
+			me.employeeStatusTypes = [];
 			
-			me.excludeOverheadAccounts.push(new fin.rpt.ssrs.ExcludeOverheadAccount(3, "Yes", "3"));//Default
+			me.excludeOverheadAccounts.push(new fin.rpt.ssrs.ExcludeOverheadAccount(3, "Yes", "3")); //Default
 			me.excludeOverheadAccounts.push(new fin.rpt.ssrs.ExcludeOverheadAccount(-1, "No", "-1"));
 			
 			me.payrollReportTypes.push(new fin.rpt.ssrs.PayrollReportType(1, "By House Code", "HC"));
 			me.payrollReportTypes.push(new fin.rpt.ssrs.PayrollReportType(2, "By Employee", "E"));
 			me.payrollReportTypes.push(new fin.rpt.ssrs.PayrollReportType(3, "Hierarchy", "H"));
 			
-			me.reportTypes.push(new fin.rpt.ssrs.ReportType(0, "All House Codes", "0"));//Default
+			me.reportTypes.push(new fin.rpt.ssrs.ReportType(0, "All House Codes", "0")); //Default
 			me.reportTypes.push(new fin.rpt.ssrs.ReportType(1, "Rollup", "1"));
 			
-			me.summeryReportTypes.push(new fin.rpt.ssrs.SummeryReportType(0, "By House Code", "0"));//Default
+			me.summeryReportTypes.push(new fin.rpt.ssrs.SummeryReportType(0, "By House Code", "0")); //Default
 			me.summeryReportTypes.push(new fin.rpt.ssrs.SummeryReportType(1, "All House Codes", "1"));
 			
-			me.budgetTypes.push(new fin.rpt.ssrs.BudgetType(1, "Started", "Started"));//Default
+			me.budgetTypes.push(new fin.rpt.ssrs.BudgetType(1, "Started", "Started")); //Default
             me.budgetTypes.push(new fin.rpt.ssrs.BudgetType(2, "Not Started", "NotStarted"));
 			
-			me.crothallEmployees.push(new fin.rpt.ssrs.CrothallEmployee(1, "ALL", "ALL"));//Default
+			me.crothallEmployees.push(new fin.rpt.ssrs.CrothallEmployee(1, "ALL", "ALL")); //Default
             me.crothallEmployees.push(new fin.rpt.ssrs.CrothallEmployee(2, "YES", "YES"));
             me.crothallEmployees.push(new fin.rpt.ssrs.CrothallEmployee(3, "NO", "NO"));
 			
@@ -1231,24 +1250,24 @@ ii.Class({
 			
 			me.comments.push(new fin.rpt.ssrs.Comment(1, "GL Level", "GL Level"));
             me.comments.push(new fin.rpt.ssrs.Comment(2, "Summary", "Summary"));
-            me.comments.push(new fin.rpt.ssrs.Comment(3, "Both", "Both"));//Default
+            me.comments.push(new fin.rpt.ssrs.Comment(3, "Both", "Both")); //Default
 			
 			me.unions.push(new fin.rpt.ssrs.Union(1, "Both", "B"));
 			me.unions.push(new fin.rpt.ssrs.Union(2, "Union", "U"));
 			me.unions.push(new fin.rpt.ssrs.Union(3, "Non Union", "N"));
-			
+
 			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(0, "(Select All)", "0"));
 			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(1, "Epay Site and Task", "1"));
 			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(2, "Kronos Time and Attendance", "2"));
 			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(3, "Manual", "3"));
 			
-			me.hour40Exceptions.push(new fin.rpt.ssrs.Hour40Exception(0, "Equal To 40", "0"));//Default
+			me.hour40Exceptions.push(new fin.rpt.ssrs.Hour40Exception(0, "Equal To 40", "0")); //Default
 			me.hour40Exceptions.push(new fin.rpt.ssrs.Hour40Exception(1, "Greater Than 40", "1"));
 			
-			me.houseCodeStatus.push(new fin.rpt.ssrs.HouseCodeStatus(1, "Active", "1"));//Default
+			me.houseCodeStatus.push(new fin.rpt.ssrs.HouseCodeStatus(1, "Active", "1")); //Default
             me.houseCodeStatus.push(new fin.rpt.ssrs.HouseCodeStatus(0, "Closed", "0"));
 			
-			me.countHours.push(new fin.rpt.ssrs.CountHour(1, "True", "True"));//Default
+			me.countHours.push(new fin.rpt.ssrs.CountHour(1, "True", "True")); //Default
             me.countHours.push(new fin.rpt.ssrs.CountHour(2, "False", "False"));
 			
 			me.exceptions.push(new fin.rpt.ssrs.Exception(1, "Both", "B"));
@@ -1273,6 +1292,13 @@ ii.Class({
 			me.fullParts.push(new fin.rpt.ssrs.FullPart(1, "Both", "B")); //Default
 			me.fullParts.push(new fin.rpt.ssrs.FullPart(2, "Full", "F"));
 			me.fullParts.push(new fin.rpt.ssrs.FullPart(3, "Part", "P"));
+			
+			me.payrollTypes.push(new fin.rpt.ssrs.PayrollType(1, "Hourly", "H")); //Default
+			me.payrollTypes.push(new fin.rpt.ssrs.PayrollType(2, "Salary", "S"));
+			
+			me.employeeStatusTypes.push(new fin.rpt.ssrs.EmployeeStatusType(1, "All", "0")); //Default
+			me.employeeStatusTypes.push(new fin.rpt.ssrs.EmployeeStatusType(2, "Active", "1"));
+			me.employeeStatusTypes.push(new fin.rpt.ssrs.EmployeeStatusType(3, "Terminated", "2"));
 		},
 		
 		loggedInUsersLoaded: function(me, activeId) {
@@ -1693,7 +1719,7 @@ ii.Class({
 		    });
 
 			if (nodeChecked) {
-				var nodes = $.grep(me.siteNodes, function(item, index) {
+				var excludeHouseCodes = $.grep(me.siteNodes, function(item, index) {
 					var found = false;
 					for (var iIndex = 0; iIndex < fullPaths.length; iIndex++) {
 						found = item.fullPath.indexOf(fullPaths[iIndex]) >= 0;
@@ -1702,17 +1728,30 @@ ii.Class({
 					}
 					return found;
 				});
-				me.excludeHouseCodes = nodes;
-				me.filteredHouseCodes = nodes;
+
+				var filteredHouseCodes = $.grep(me.houseCodes, function(item, index) {
+					var found = false;
+					for (var iIndex = 0; iIndex < fullPaths.length; iIndex++) {
+						found = item.parameter.indexOf(fullPaths[iIndex]) >= 0;
+						if (found)
+							break;
+					}
+					return found;
+				});
+
+				me.excludeHouseCodes = excludeHouseCodes;
+				me.filteredHouseCodes = filteredHouseCodes;
 				me.setExcludeHouseCodes();
 				me.setHouseCodes();
 			}
 			else {
 				me.resetDependentTypes();
 			}
-				
+
         	$("#Customer").html("");
 			$("#Customer").multiselect("refresh");
+			$("#DedCode").html("");
+			$("#DedCode").multiselect("refresh");
 			
 			if (me.controls[3] != undefined && me.controls[3].selector == "#GroupLevel")
             	me.groupLevelsLoaded();
@@ -1798,7 +1837,13 @@ ii.Class({
 			});			
             $("#Customer").html("");
 			$("#Customer").multiselect("refresh");
-			
+
+			$("#DedCode").multiselect({
+				noneSelectedText: "Select a Value",	
+			});			
+            $("#DedCode").html("");
+			$("#DedCode").multiselect("refresh");
+
 			if (me.controls[3] != undefined && me.controls[3].selector == "#GroupLevel")
             	me.groupLevelsLoaded();	
 		},
@@ -1903,12 +1948,22 @@ ii.Class({
 				me.subscriptionNodes = [];
 			me.actionAddNodes(me.reportNodes);
 
-			if (me.reportTitle != "") {
-				for (var index = 0; index < me.reportNodes.length; index++) {
-					if (me.reportNodes[index].title == me.reportTitle) {
-						$("#liNode" + me.reportNodes[index].nodeParentId).find(">.hitarea").click();
+			if (me.reportBrief != "") {
+				for (var index = 0; index < me.reports.length; index++) {
+					if (me.reports[index].brief == me.reportBrief) {
+						var nodeId = 0;
+						var parentNodeId = 0;
+						for (var nodeIndex = 0; nodeIndex < me.reportNodes.length; nodeIndex++) {
+							if (me.reports[index].hirNode == me.reportNodes[nodeIndex].id) {
+								nodeId = me.reportNodes[nodeIndex].id;
+								parentNodeId = me.reportNodes[nodeIndex].nodeParentId;
+								break;
+							}
+						}
+
+						$("#liNode" + parentNodeId).find(">.hitarea").click();
 						me.setLoadCount();
-						me.hirNodeSelect(me.reportNodes[index].id);
+						me.hirNodeSelect(nodeId);
 						break;
 					}
 				}
@@ -1923,6 +1978,8 @@ ii.Class({
 			var rowHtml = "";
             var reportId = 0;
 			var parameterAvailable = false;
+
+			me.reportBrief = "";
 			me.reportName = "";
 			me.subscriptionSelected = false;
 			
@@ -1942,6 +1999,7 @@ ii.Class({
 			for (var index = 0; index < me.reports.length; index++) {
 				if (me.reports[index].hirNode == me.hirNodeSelected) {
 					reportURL = me.reports[index].reportURL;
+					me.reportBrief = me.reports[index].brief;
 					me.reportName = me.reports[index].name;
 					reportId = me.reports[index].id;
 					parameterAvailable = me.reports[index].parameterAvailable;
@@ -1949,7 +2007,7 @@ ii.Class({
 					break;
 				}
 			}
-			
+
 			if (found && reportURL != "")
 				me.reportURL = reportURL;
 
@@ -2022,7 +2080,8 @@ ii.Class({
 				else if (me.reportParameters[index].referenceTableName == "PayPayrollCompanies") {
 					me.ddlists = me.ddlists + 1;
 					me.list = "PayPayrollCompanies";
-					me.payrollCompanyStore.fetch("userId:[user]", me.dropdownsLoaded, me);
+					me.payrollCompanyStore.reset();
+					me.payrollCompanyStore.fetch("name:" + me.reportBrief + ",genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
 				}
 				else if (me.reportParameters[index].referenceTableName == "EmpStatusTypes") {
 					me.ddlists = me.ddlists + 1;
@@ -2089,6 +2148,16 @@ ii.Class({
                     me.list = "SmartPSIDs";
 					me.smartPSIDStore.fetch("userId:[user],genericType:" + me.reportParameters[index].referenceTableName, me.dropdownsLoaded, me);
                 }
+				else if (me.reportParameters[index].referenceTableName == "CheckDates") {
+                    me.ddlists = me.ddlists + 1;
+                    me.list = "CheckDates";
+					me.checkDateStore.fetch("userId:[user],genericType:" + me.reportParameters[index].referenceTableName, me.dropdownsLoaded, me);
+                }
+				else if (me.reportParameters[index].referenceTableName == "PayPeriodDates") {
+					me.ddlists = me.ddlists + 1;
+					me.list = "PayPeriodDates";
+					me.payPeriodDateStore.fetch("genericType:" + me.reportParameters[index].referenceTableName + ",userId:[user]", me.dropdownsLoaded, me);
+				}
 			}
 			
 			if (me.list == "")
@@ -2111,13 +2180,13 @@ ii.Class({
 			for (var index = 0; index < me.reportParameters.length; index++) {
 				if (me.reportParameters[index].controlType != "Label" && me.reportParameters[index].controlType != "Hidden") {
 					if (me.reportParameters[index].controlType == "Date" && me.reportParameters[index].mandatory)
-						html += "\n<div><div id=ParameterLabel" + me.reportParameters[index].name + " class='labelReport'> <span class='nonRequiredFieldIndicator'>&#149;</span>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div><div><input type='checkbox' id='dateCheck' checked='true' class='checkMandatory' onchange='fin.reportUi.dateMandatory(this," + index + ");' /></div><div class='labelSchedule'>NULL</div></div>"
+						html += "\n<div><div id=ParameterLabel" + me.reportParameters[index].name + " class='labelReport'><span class='nonRequiredFieldIndicator'>&#149;</span>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div><div><input type='checkbox' id='dateCheck' checked='true' class='checkMandatory' onchange='fin.reportUi.dateMandatory(this," + index + ");' /></div><div class='labelSchedule'>NULL</div></div>"
 					else if (me.reportParameters[index].controlType == "Date" && !me.reportParameters[index].mandatory)
-						html += "\n<div><div class='labelReport'> <span class='requiredFieldIndicator'>&#149;</span></span>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div></div>"
+						html += "\n<div><div class='labelReport'><span class='requiredFieldIndicator'>&#149;</span>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div></div>"
 					else
-						html += "\n<div><div class='labelReport'> <span class='requiredFieldIndicator'>&#149;</span>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium' style='height:20px;width:" + me.reportParameters[index].width + "px;'></div><div id='customersLoading'></div></div>"										
+						html += "\n<div><div class='labelReport'><span class='requiredFieldIndicator'>&#149;</span>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium' style='height:20px;width:" + me.reportParameters[index].width + "px;'></div><div id='" + me.reportParameters[index].name + "Loading'></div></div>"										
 					html += "\n<div style='clear:both;height:3px'></div>";
-				}				
+				}
 			}
 
 			$("#ParameterContainer").html(html);
@@ -2174,11 +2243,15 @@ ii.Class({
                             else
                             	return parametersList;
                         },
-                        click: function(event, ui) {                                                                                    
+                        click: function(event, ui) {
                             if (event.originalEvent.currentTarget.id.indexOf("FscYear") > 0)
-                            	me.fiscalWeeksLoad(ui.value);                            
-                            else if (event.originalEvent.currentTarget.id.indexOf("ExLevel") > 0)                           	
-                        		me.excludeNamesLoaded(ui.value);                            
+                            	me.fiscalWeeksLoad(ui.value);
+                            else if (event.originalEvent.currentTarget.id.indexOf("ExLevel") > 0)
+                        		me.excludeNamesLoaded(ui.value);
+							else if (event.originalEvent.currentTarget.id.indexOf("PayPeriod") > 0)
+                            	me.loadPayrollCompanies();
+							else if (event.originalEvent.currentTarget.id.indexOf("HourlySalary") > 0)
+                            	me.loadPayrollCompanies();
                         },
                         open: function(e) {
 							$("#" + e.target.id).multiselect('refresh');
@@ -2210,7 +2283,8 @@ ii.Class({
                     }
 				}
 				else if (me.reportParameters[index].controlType == "MultiSelect") {
-					if (me.reportParameters[index].referenceTableName == "Customers" || me.reportParameters[index].referenceTableName == "ExcludeHouseCodes" || me.reportParameters[index].referenceTableName == "HouseCodes")
+					if (me.reportParameters[index].referenceTableName == "Customers" || me.reportParameters[index].referenceTableName == "ExcludeHouseCodes" 
+						|| me.reportParameters[index].referenceTableName == "HouseCodes" || me.reportParameters[index].referenceTableName == "DeductionCodes")
 						me.dependentTypes.push(me.reportParameters[index].referenceTableName);
 
 					$("#" + me.reportParameters[index].name).html("");										
@@ -2278,8 +2352,31 @@ ii.Class({
 								me.levelName = me.level.replace("~Level=", "");
 								me.loadCount = 1;											
 								me.setStatus("Loading");
-								$("#customersLoading").addClass('loading');
+								$("#CustomerLoading").addClass('loading');
 								me.genericTypeStore.fetch("level:" + me.levelName + ",name:" + me.namesList + ",genericType:Customers,userId:[user]", me.customersLoaded, me);
+							}
+							else if (e.target.id == "DedCode") {
+								if (me.subscriptionSelected)
+									return false;
+									
+								if (!me.nodeChanged && me.namesList == me.names.replace("~", "") && me.levelName == me.level.replace("~Level=", ""))
+									return false;
+																	
+								me.nodeChanged = false;																											
+								$("#DedCode").html("");
+								$("#DedCode").multiselect("refresh");
+								if (me.level == "" || me.name == "") 									
+									return false;
+									
+								$("#DedCode").multiselect({
+									noneSelectedText: "Select a Value",
+								});									
+								me.namesList = me.names.replace("~", "");
+								me.levelName = me.level.replace("~Level=", "");
+								me.loadCount = 1;											
+								me.setStatus("Loading");
+								$("#DedCodeLoading").addClass('loading');
+								me.genericTypeStore.fetch("level:" + me.levelName + ",name:" + me.namesList + ",genericType:DeductionCodes,userId:[user]", me.deductionCodesLoaded, me);
 							}
 						},
 						position: {
@@ -2395,45 +2492,45 @@ ii.Class({
                 typeTableData = me.filteredHouseCodes;
             }
             else if (args.referenceTableName == "ExcludeNames")
-                $("#" + args.name).append("<option selected title='None' value='0'>None</option>");            
+                $("#" + args.name).append("<option selected title='None' value='0'>None</option>");
             else if (args.referenceTableName == "FscYears")
-				typeTableData = me.fiscalYears;            
-            else if (args.referenceTableName == "FscPeriods") 
-                typeTableData = me.fiscalPeriods;            
+				typeTableData = me.fiscalYears;
+            else if (args.referenceTableName == "FscPeriods")
+                typeTableData = me.fiscalPeriods;
             else if (args.referenceTableName == "PayPayrollCompanies")
-                typeTableData = me.payrollCompanys;            
+                typeTableData = me.payrollCompanys;
             else if (args.referenceTableName == "RevInvoiceBatches")
-                typeTableData = me.invoiceBatches;            
+                typeTableData = me.invoiceBatches;
             else if (args.referenceTableName == "WeekPeriods")
-                typeTableData = me.weekPeriods;            
-            else if (args.referenceTableName == "ExcludeOverheadAccounts") 
-                typeTableData = me.excludeOverheadAccounts;            
+                typeTableData = me.weekPeriods;
+            else if (args.referenceTableName == "ExcludeOverheadAccounts")
+                typeTableData = me.excludeOverheadAccounts;
             else if (args.referenceTableName == "PayPeriodEndingDates")
-                typeTableData = me.payPeriodEndingDates;            
-            else if (args.referenceTableName == "ExLevels")           	
+                typeTableData = me.payPeriodEndingDates;
+            else if (args.referenceTableName == "ExLevels")
                 typeTableData = me.levels;
             else if (args.referenceTableName == "PayrollReportTypes")
                 typeTableData = me.payrollReportTypes;
             else if (args.referenceTableName == "ReportTypes")
                 typeTableData = me.reportTypes;
             else if (args.referenceTableName == "SummeryReportTypes")
-                typeTableData = me.summeryReportTypes;            
+                typeTableData = me.summeryReportTypes;
             else if (args.referenceTableName == "BudgetTypes")
-                typeTableData = me.budgetTypes;            
+                typeTableData = me.budgetTypes;
             else if (args.referenceTableName == "CrothallEmployees")
-                typeTableData = me.crothallEmployees;            
+                typeTableData = me.crothallEmployees;
             else if (args.referenceTableName == "CurrentWeeks")
-                typeTableData = me.currentWeeks;            
+                typeTableData = me.currentWeeks;
             else if (args.referenceTableName == "Comments")
-                typeTableData = me.comments;            
+                typeTableData = me.comments;
             else if (args.referenceTableName == "Unions")
-                typeTableData = me.unions;            
+                typeTableData = me.unions;
             else if (args.referenceTableName == "EntryMethods")
-                typeTableData = me.entryMethods;            
+                typeTableData = me.entryMethods;
             else if (args.referenceTableName == "Hour40Exceptions")
-                typeTableData = me.hour40Exceptions;            
+                typeTableData = me.hour40Exceptions;
             else if (args.referenceTableName == "HouseCodeStatus")
-                typeTableData = me.houseCodeStatus;            
+                typeTableData = me.houseCodeStatus;
             else if (args.referenceTableName == "CountHours")
                 typeTableData = me.countHours;
             else if (args.referenceTableName == "Exceptions")
@@ -2457,7 +2554,17 @@ ii.Class({
 				typeTableData = me.smartPSIDs;
 			}
             else if (args.referenceTableName == "GroupLevels")
-            	me.groupLevelsLoaded();            
+            	me.groupLevelsLoaded();
+			else if (args.referenceTableName == "CheckDates")
+                typeTableData = me.checkDates;
+			else if (args.referenceTableName == "PayPeriodDates")
+                typeTableData = me.payPeriodDates;
+			else if (args.referenceTableName == "PayrollTypes") {
+                typeTableData = me.payrollTypes;
+			}
+			else if (args.referenceTableName == "EmployeeStatusTypes") {
+                typeTableData = me.employeeStatusTypes;
+			}
 				
 			for (var index = 0; index < typeTableData.length; index++) {
                 var value = typeTableData[index].id;
@@ -2471,8 +2578,6 @@ ii.Class({
 					$("#" + args.name).append("<option title='" + title + "' value='" + brief + "'>" + title + "</option>");
                 else if (args.referenceTableName == "FscPeriods")
                     $("#" + args.name).append("<option title='" + 'Period ' + title + ' - ' + typeTableData[index].fscYeaTitle + "' value='" + value + "'>" + 'Period ' + title + ' - ' + typeTableData[index].fscYeaTitle + "</option>");
-                else if (args.referenceTableName == "PayPayrollCompanies")
-                    $("#" + args.name).append("<option title='" + typeTableData[index].brief + ' - ' + title + "' value='" + typeTableData[index].brief + "'>" + typeTableData[index].brief + ' - ' + title + "</option>");
                 else if (args.referenceTableName == "EmpWorkShifts") {
                     if (typeTableData[index].startTime == undefined)
                         $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + "</option>");
@@ -2546,23 +2651,46 @@ ii.Class({
 		},
 		
 		customersLoaded: function(me, activeId) {
+
 			me.customers = me.genericTypes.slice();
-			$("#Customer").html("");
 			me.typeAllOrNoneAdd(me.customers, "(Select All)");
+			$("#Customer").html("");
 			
 			for (var index = 0; index < me.customers.length; index++) {
 				$("#Customer").append("<option title='" + me.customers[index].name + "' value='" + me.customers[index].id + "'>" + me.customers[index].name + "</option>");
 			}
 			
 			$("#Customer").multiselect("refresh");			
-			me.setStatus("Loaded");
-			$("#customersLoading").removeClass('loading');
+			$("#CustomerLoading").removeClass("loading");
 			
 			if (!me.subscriptionSelected)
 				$("#Customer option").prop("selected", true);
 			else if (me.subscriptionSelected)
 				me.setDependentTypes();
 		
+			me.setStatus("Loaded");
+			me.checkLoadCount();
+		},
+		
+		deductionCodesLoaded: function(me, activeId) {
+
+			me.deductionCodes = me.genericTypes.slice();
+			me.typeAllOrNoneAdd(me.deductionCodes, "(Select All)");
+			$("#DedCode").html("");
+
+			for (var index = 0; index < me.deductionCodes.length; index++) {
+				$("#DedCode").append("<option title='" + me.deductionCodes[index].name + "' value='" + me.deductionCodes[index].id + "'>" + me.deductionCodes[index].name + "</option>");
+			}
+			
+			$("#DedCode").multiselect("refresh");			
+			$("#DedCodeLoading").removeClass("loading");
+			
+			if (!me.subscriptionSelected)
+				$("#DedCode option").prop("selected", true);
+			else if (me.subscriptionSelected)
+				me.setDependentTypes();
+
+			me.setStatus("Loaded");
 			me.checkLoadCount();
 		},
 				
@@ -2682,6 +2810,64 @@ ii.Class({
             	
 			$("#ExName").multiselect("refresh");			
 		},
+		
+		loadPayrollCompanies: function() {
+			var me = this;
+			var parameterValue = "";
+
+			if (me.reportParameters.length > 2 && me.reportParameters[0].name == "PayPeriod" && me.reportParameters[1].name == "HourlySalary") {
+				var selectedValues = $("#" + me.reportParameters[0].name).multiselect("getChecked").map(function() {
+	                return this.value;
+	            }).get();
+						
+	            if (selectedValues.length > 0)
+	                parameterValue = selectedValues[0].substring(0, 1);
+				else
+					return;
+
+				if (me.reportParameters[1].controlType == "Hidden")
+					parameterValue += me.reportParameters[1].defaultValue;
+				else {
+					var selectedValues = $("#" + me.reportParameters[1].name).multiselect("getChecked").map(function() {
+		                return this.value;
+		            }).get();
+
+		            if (selectedValues.length > 0)
+		                parameterValue += selectedValues[0];
+					else
+						return;
+				}
+
+				me.setLoadCount(); 
+				me.genericTypeStore.fetch("userId:[user],name:" + parameterValue + ",genericType:PayPayrollCompanies", me.payrollCompaniesLoaded, me);
+			}
+		},
+		
+		payrollCompaniesLoaded: function(me, activeId) {
+
+			$("#PayrollCompany").multiselect({
+				noneSelectedText: "Select a Value"
+			});			
+			
+			$("#PayrollCompany").html("");
+			for (var index = 0; index < me.genericTypes.length; index++) {
+                $("#PayrollCompany").append("<option title='" + me.genericTypes[index].name + "' value='" + me.genericTypes[index].parameter + "'>" + me.genericTypes[index].name + "</option>");
+            }
+			$("#PayrollCompany").multiselect("refresh");
+
+			var selectedValues = $("#" + me.reportParameters[0].name).multiselect("getChecked").map(function() {
+                return this.value;
+            }).get();
+					
+			me.genericTypeStore.fetch("userId:[user],name:" + selectedValues[0] + ",genericType:PayPeriodTitle", me.payPeriodTitleLoaded, me);
+		},
+
+		payPeriodTitleLoaded: function(me, activeId) {
+
+			me.payPeriodTitle =  me.genericTypes[0].parameter;
+			me.checkLoadCount();
+		},
+
 		
 		actionSearchItem: function() {
 			var args = ii.args(arguments, {
@@ -3033,6 +3219,8 @@ ii.Class({
 						}
 						parametersList += "~" + me.reportParameters[index].name + "=" + nameValues;
 					}
+					else if (me.reportParameters[index].name == "HeaderPPLabel")
+						parametersList += "~" + me.reportParameters[index].name + "=" + me.payPeriodTitle;
 					else
 						parametersList += "~" + me.reportParameters[index].name + "=" + me.reportParameters[index].defaultValue;
                 }
@@ -3081,6 +3269,7 @@ ii.Class({
 			me.names = "";
 			me.excludeHouseCodes = [];
 			me.customers = [];
+			me.deductionCodes = [];
 			me.controlsLoaded();			
 		},
 		
@@ -3402,7 +3591,7 @@ ii.Class({
 				me.namesList = me.names.replace("~", "");
 				me.levelName = me.level.replace("~Level=", "");																				
 				me.setStatus("Loading");
-				$("#customersLoading").addClass('loading');
+				$("#CustomerLoading").addClass("loading");
 				me.genericTypeStore.fetch("level:" + me.levelName + ",name:" + me.namesList + ",genericType:Customers,userId:[user]", me.customersLoaded, me);
 			}
 
