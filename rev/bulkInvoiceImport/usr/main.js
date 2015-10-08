@@ -774,7 +774,7 @@ ii.Class({
 						$("#txtStartDate" + index).attr("title", "");
 						$("#txtStartDate" + index).css("background-color", me.cellColorValid);
 					}
-	
+
 					if (ui.cmn.text.validate.generic($("#txtEndDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
 						rowValid = false;
 						$("#txtEndDate" + index).attr("title", "Invalid End Date.");
@@ -784,7 +784,19 @@ ii.Class({
 						$("#txtEndDate" + index).attr("title", "");
 						$("#txtEndDate" + index).css("background-color", me.cellColorValid);
 					}
-						
+
+					if ($("#txtStartDate" + index).attr("title") == "" && $("#txtEndDate" + index).attr("title") == "") {
+						if (new Date($("#txtEndDate" + index).val()) < new Date($("#txtStartDate" + index).val())) {
+							rowValid = false;
+							$("#txtEndDate" + index).attr("title", "The End Date should not be less than Start Date.");
+							$("#txtEndDate" + index).css("background-color", me.cellColorInvalid);
+						}
+						else {
+							$("#txtEndDate" + index).attr("title", "");
+							$("#txtEndDate" + index).css("background-color", me.cellColorValid);
+						}
+					}
+
 					if (($("#txtStatus" + index).val().toLowerCase() == "open") || ($("#txtStatus" + index).val().toLowerCase() == "printed")) {
 						$("#txtStatus" + index).attr("title", "");
 						$("#txtStatus" + index).css("background-color", me.cellColorValid);

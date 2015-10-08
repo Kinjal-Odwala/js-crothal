@@ -403,103 +403,153 @@
 				</div>				
 			</div>
 			<div id="EmployeeGeneralInformation" class="employeeGeneralInformationDiv">
-				<div id="TableEditArea">
-					<div class="LabelTextAreaEmployee">
-						<span class="requiredFieldIndicator">&#149;</span>Birth Date:				
-					</div>
-					<div class="InputTextArea">
-						<div id="EmployeeBirthDate"></div>
-					</div>
-				</div>
-				<div style="clear:both"></div>
-				<div id="TableEditArea">
-					<div class="LabelTextAreaEmployee">
-						<span class="requiredFieldIndicator">&#149;</span>Ethnicity:				
-					</div>
-					<div class="InputTextArea">
-						<div id="EmployeeEthnicity"></div>
-					</div>
-				</div>
-				<div style="clear:both"></div>
-				<div id="TableEditArea">
-					<div class="LabelTextAreaEmployee">
-						<span class="nonRequiredFieldIndicator">&nbsp;</span>Gender:			
-					</div>
-					<div class="InputTextArea">
-						<div class="radioButtonAuth">
-							<input type="radio" id="GenderYes" name="Gender" tabindex="232" checked="true" value="Male" /><span class="labelRadio">Male</span>					
+				<div id="contianerLeft">
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="requiredFieldIndicator">&#149;</span>Birth Date:				
 						</div>
-						<div class="radioButtonFemale">
-							<input type="radio" id="GenderNo" name="Gender" tabindex="233" value="Female" /><span class="labelRadio">Female</span>					
-						</div>				
-					</div>
-				</div>
-				<div style="clear:both"></div>
-				<div id="TableEditArea">
-					<div class="LabelTextAreaEmployee">
-						<span class="requiredFieldIndicator">&#149;</span>Marital Status:				
-					</div>
-					<div class="InputTextArea">
-						<div id="EmployeeMaritalStatus"></div>
-					</div>
-				</div>
-				<div style="clear:both"></div>
-				<div id="TableEditArea">
-					<div class="LabelTextAreaEmployee">
-						<span class="nonRequiredFieldIndicator">&nbsp;</span>I-9 Status:			
-					</div>
-					<div class="InputTextArea">
-						<div id="EmployeeI9Status"></div>
-					</div>
-				</div>
-				<div style="clear:both"></div>
-				<div id="TableEditArea">
-					<div class="LabelTextAreaEmployee">
-						<span class="nonRequiredFieldIndicator">&nbsp;</span>VETS-100A Status:				
-					</div>
-					<div class="InputTextArea">
-						<div id="EmployeeVETSStatus"></div>
-					</div>
-				</div>
-				<div style="clear:both"></div>
-				<div id="MealPlanContainer">
-					<div class="LabelTextAreaEmployee">
-						<span class="requiredFieldIndicator">&#149;</span>Meal Plan:
-					</div>
-					<div class="InputTextArea">
-						<div class="radioButtonAuth">
-							<input type="radio" id="MealPlanYes" name="MealPlan" tabindex="237" value="1" /><span class="labelRadio">Enroll</span>					
+						<div class="InputTextArea">
+							<div id="EmployeeBirthDate"></div>
 						</div>
-						<div class="radioButtonAuth">
-							<input type="radio" id="MealPlanNo" name="MealPlan" tabindex="238" value="2" /><span class="labelRadio">Opt Out</span>					
-						</div>				
 					</div>
 					<div style="clear:both"></div>
-					<div id="PayrollDeductionContainer" style="display: none;">
+					<div id="TableEditArea">
 						<div class="LabelTextAreaEmployee">
-							<span class="requiredFieldIndicator">&#149;</span>Payroll Deduction:
+							<span class="requiredFieldIndicator">&#149;</span>Ethnicity:				
 						</div>
-						<div>
+						<div class="InputTextArea">
+							<div id="EmployeeEthnicity"></div>
+						</div>
+					</div>
+					<div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>Gender:			
+						</div>
+						<div class="InputTextArea">
 							<div class="radioButtonAuth">
-								<input type="radio" id="PayrollDeductionYes" name="PayrollDeduction" tabindex="239" value="1" /><span class="labelRadio">Yes</span>					
+								<input type="radio" id="GenderYes" name="Gender" tabindex="232" checked="true" value="Male" /><span class="labelRadio">Male</span>					
+							</div>
+							<div class="radioButtonFemale">
+								<input type="radio" id="GenderNo" name="Gender" tabindex="233" value="Female" /><span class="labelRadio">Female</span>					
+							</div>				
+						</div>
+					</div>
+					<div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="requiredFieldIndicator">&#149;</span>Marital Status:
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeeMaritalStatus"></div>
+						</div>
+					</div>
+					<div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>I-9 Status:
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeeI9Status"></div>
+						</div>
+					</div>
+					<div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="nonRequiredFieldIndicator">&nbsp;</span>VETS-100A Status:
+						</div>
+						<div class="InputTextArea">
+							<div id="EmployeeVETSStatus"></div>
+						</div>
+					</div>
+					<div style="clear:both"></div>
+					<div id="MealPlanContainer">
+						<div class="LabelTextAreaEmployee">
+							<span class="requiredFieldIndicator">&#149;</span>Meal Plan:
+						</div>
+						<div class="InputTextArea">
+							<div class="radioButtonAuth">
+								<input type="radio" id="MealPlanYes" name="MealPlan" tabindex="237" value="1" /><span class="labelRadio">Enroll</span>					
 							</div>
 							<div class="radioButtonAuth">
-								<input type="radio" id="PayrollDeductionNo" name="PayrollDeduction" tabindex="240" value="0" /><span class="labelRadio">No</span>					
+								<input type="radio" id="MealPlanNo" name="MealPlan" tabindex="238" value="2" /><span class="labelRadio">Opt Out</span>					
+							</div>				
+						</div>
+						<div style="clear:both"></div>
+						<div id="PayrollDeductionContainer" style="display: none;">
+							<div class="LabelTextAreaEmployee">
+								<span class="requiredFieldIndicator">&#149;</span>Payroll Deduction:
 							</div>
+							<div>
+								<div class="radioButtonAuth">
+									<input type="radio" id="PayrollDeductionYes" name="PayrollDeduction" tabindex="239" value="1" /><span class="labelRadio">Yes</span>					
+								</div>
+								<div class="radioButtonAuth">
+									<input type="radio" id="PayrollDeductionNo" name="PayrollDeduction" tabindex="240" value="0" /><span class="labelRadio">No</span>					
+								</div>
+							</div>
+						</div>
+					</div>
+					<div style="clear:both"></div>
+					<div id="TableEditArea">
+						<div class="LabelTextAreaEmployee">
+							<span class="requiredFieldIndicator">&#149;</span>Disability:	
+						</div>
+						<div class="radioButtonDisability">
+							<input type="radio" id="DisabilityYes" name="Disability" tabindex="241" value="1" /><span class="labelRadio">Yes, I have a disability (or previously had a disability)</span>
+							<div style="clear:both"></div>
+							<input type="radio" id="DisabilityNo" name="Disability" tabindex="242" value="2" /><span class="labelRadio">No, I don't have a disability</span>
+							<div style="clear:both; height: 7px;"></div>
+							<input type="radio" id="DisabilityNA" name="Disability" tabindex="243" value="3" /><span class="labelRadio">I don't wish to answer</span>
 						</div>
 					</div>
 				</div>
-				<div style="clear:both"></div>
-				<div id="TableEditArea">
-					<div class="LabelTextAreaEmployee">
-						<span class="requiredFieldIndicator">&#149;</span>Disability:	
-					</div>
-					<div class="radioButtonDisability">
-						<input type="radio" id="DisabilityYes" name="Disability" tabindex="241" value="1" /><span class="labelRadio">Yes, I have a disability (or previously had a disability)</span>
+				<div id="contianerRight">
+					<div id="MultiRaceContianer" style="display: none;">
+						<div id="TableEditArea">
+							<div class="LabelTextAreaEmployee">
+								<span class="requiredFieldIndicator">&#149;</span>Race 1:
+							</div>
+							<div class="InputTextArea">
+								<div id="MultiRace1"></div>
+							</div>
+						</div>
 						<div style="clear:both"></div>
-						<input type="radio" id="DisabilityNo" name="Disability" tabindex="242" value="2" /><span class="labelRadio">No, I don't have a disability</span>
-						<div style="clear:both; height: 7px;"></div>
-						<input type="radio" id="DisabilityNA" name="Disability" tabindex="243" value="3" /><span class="labelRadio">I don't wish to answer</span>
+						<div id="TableEditArea">
+							<div class="LabelTextAreaEmployee">
+								<span class="requiredFieldIndicator">&#149;</span>Race 2:
+							</div>
+							<div class="InputTextArea">
+								<div id="MultiRace2"></div>
+							</div>
+						</div>
+						<div style="clear:both"></div>
+						<div id="TableEditArea">
+							<div class="LabelTextAreaEmployee">
+								<span class="nonRequiredFieldIndicator">&nbsp;</span>Race 3:
+							</div>
+							<div class="InputTextArea">
+								<div id="MultiRace3"></div>
+							</div>
+						</div>
+						<div style="clear:both"></div>
+						<div id="TableEditArea">
+							<div class="LabelTextAreaEmployee">
+								<span class="nonRequiredFieldIndicator">&nbsp;</span>Race 4:
+							</div>
+							<div class="InputTextArea">
+								<div id="MultiRace4"></div>
+							</div>
+						</div>
+						<div style="clear:both"></div>
+						<div id="TableEditArea">
+							<div class="LabelTextAreaEmployee">
+								<span class="nonRequiredFieldIndicator">&nbsp;</span>Race 5:
+							</div>
+							<div class="InputTextArea">
+								<div id="MultiRace5"></div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

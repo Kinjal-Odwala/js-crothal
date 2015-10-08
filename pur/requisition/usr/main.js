@@ -27,7 +27,7 @@ ii.Class({
         init: function () {
 			var args = ii.args(arguments, {});
 			var me = this;			
-				
+
 			me.poRequisitionId = 0;
 			me.vendorId = 0;
 			me.vendorNumber = "";
@@ -42,8 +42,6 @@ ii.Class({
 			me.fileName = "";
 			me.glAccounts = [];
 			me.action = "PORequisition";
-			
-			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
 
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -62,7 +60,6 @@ ii.Class({
 
 			me.validator = new ui.ctl.Input.Validation.Master();			
 			me.session = new ii.Session(me.cache);
-			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
 
 			me.defineFormControls();
 			me.configureCommunications();
@@ -72,6 +69,13 @@ ii.Class({
 			me.setStatus("Loading");
 			me.modified(false);
 
+			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
+			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
+			if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
+				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
+			else
+				me.houseCodesLoaded(me, 0);
+			
 			$(window).bind("resize", me, me.resize);
 			ui.cmn.behavior.disableBackspaceNavigation();
 
@@ -120,11 +124,6 @@ ii.Class({
 					me.action = "GeneratePurchaseOrder";
 				}
 
-				if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
-					me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
-				else
-					me.houseCodesLoaded(me, 0);
-					
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
 				me.accountStore.fetch("userId:[user]", me.accountsLoaded, me);
 				me.personStore.fetch("userId:[user],id:" + me.session.propertyGet("personId"), me.personsLoaded, me);				
@@ -482,8 +481,13 @@ ii.Class({
 			
 			me.vendorState.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				
+				.addValidation( ui.ctl.Input.Validation.required )	
+				.addValidation( function( isFinal, dataMap ) {
+					
+					if ((this.focused || this.touched) && me.vendorState.indexSelected == -1)
+						this.setInvalid("Please select the correct State.");
+				});
+
 			me.vendorZip = new ui.ctl.Input.Text({
 		        id: "VendorZip",
 				maxLength: 10,
@@ -798,7 +802,7 @@ ii.Class({
 				changeFunction: function() { me.modified(); },
 				required: false
 			});
-			
+
 			me.shippingAddress1 = new ui.ctl.Input.Text({
 		        id: "ShippingAddress1",
 				maxLength: 256,
@@ -945,9 +949,7 @@ ii.Class({
 		configureCommunications: function fin_pur_UserInterface_configureCommunications() {
 			var args = ii.args(arguments, {});
 			var me = this;
-			
-			parent.fin.appUI.houseCodeId = 0;
-			
+
 			me.hirNodes = [];
 			me.hirNodeStore = me.cache.register({
 				storeId: "hirNodes",
@@ -1298,7 +1300,7 @@ ii.Class({
 				if ($("#selectInputCheck" + index)[0] != undefined && $("#selectInputCheck" + index)[0].checked) {
 					if (iIndex == index) {
 						if (quantity != "" && !(isNaN(quantity)) && price != "" && !(isNaN(price)))
-							me.total += (parseFloat(quantity) * parseFloat(price));	
+							me.total += (parseFloat(quantity) * parseFloat(price));
 					}
 					else {
 						if (me.itemGrid.data[index].quantity != "" && !(isNaN(me.itemGrid.data[index].quantity)) && me.itemGrid.data[index].price != "" && !(isNaN(me.itemGrid.data[index].price)))
@@ -1392,16 +1394,30 @@ ii.Class({
 			}
 
 			me.houseCodeGlobalParametersUpdate(false);
+			me.loadData();
+			me.resizeControls();
+		},
+
+		houseCodeChanged: function() {
+			var args = ii.args(arguments,{});
+			var me = this;
+
+			me.lastSelectedRowIndex = -1;
+			me.loadData();
+		},
+
+		loadData: function() {
+			var me = this;
+			
 			me.houseCodeDetailStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId, me.houseCodeDetailsLoaded, me);
 			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.houseCodeJobsLoaded, me);
-			me.resizeControls();
-			me.loadPORequisitions();
 		},
-		
+
 		houseCodeDetailsLoaded: function(me, activeId) {
 
+			me.loadPORequisitions();
 		},
-		
+
 		houseCodeJobsLoaded: function(me, activeId) {
 
 			me.shippingJob.setData(me.houseCodeJobs);
@@ -1424,18 +1440,8 @@ ii.Class({
 			if (event.keyCode == 13) {
 				me.loadPORequisitions();
 			}
-		},
-		
-		houseCodeChanged: function() {
-			var args = ii.args(arguments,{});
-			var me = this;
+		},		
 
-			me.lastSelectedRowIndex = -1;
-			me.houseCodeDetailStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId, me.houseCodeDetailsLoaded, me);
-			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.houseCodeJobsLoaded, me);
-			me.loadPORequisitions();
-		},
-		
 		loadPORequisitions: function() {
 			var me = this;
 			var statusType = "";
@@ -1547,62 +1553,14 @@ ii.Class({
 			me.status = "";
 
 			if (me.action == "PORequisition") {
-				me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + item.houseCode, me.houseCodeJobsLoaded, me);
 				$("#AnchorPrint").show();
 				$("#AnchorApprove").hide();
 				$("#RequisitionInfo").show();
 				$("#divSpace").show();
 				$("#RequisitionNumber").html(item.requisitionNumber);
-				me.requestorName.setValue(item.requestorName);
-				me.requestorEmail.setValue(item.requestorEmail);
-				me.requestedDate.setValue(item.requestedDate);
-				me.deliveryDate.setValue(item.deliveryDate);
-				me.vendorName.lastBlurValue = item.vendorTitle;
-				$("#VendorNameText").val(item.vendorTitle);
-				me.vendorAddress1.setValue(item.vendorAddressLine1);
-				me.vendorAddress2.setValue(item.vendorAddressLine2);
-				me.vendorCity.setValue(item.vendorCity);
-				
-				var itemIndex = ii.ajax.util.findIndexById(item.vendorStateType.toString(), me.stateTypes);
-				if (itemIndex >= 0 && itemIndex != undefined) 
-					me.vendorState.select(itemIndex, me.vendorState.focused);
-				
-				me.vendorZip.setValue(item.vendorZip);
-				me.vendorContactName.setValue(item.vendorContactName);
-				me.vendorPhone.setValue(item.vendorPhoneNumber);
-				me.vendorEmail.setValue(item.vendorEmail);
-				me.reasonForRequest.setValue(item.reasonForRequest);
-				
-				if (item.urgencyDate == "" || item.urgencyDate == "1/1/1900 12:00:00 AM") {
-					me.urgencyDate.setValue("");
-	                $("#LabelUrgencyDate").html("<span id='nonRequiredFieldIndicator'>Urgency Date:</span>");
-	            }                   
-	            else {                
-	                me.urgencyDate.setValue(item.urgencyDate);
-	                $("#LabelUrgencyDate").html("<span class='requiredFieldIndicator'>&#149;</span>Urgency Date:");
-	            }
-				
-				if (item.urgency == "Urgent") 
-					$('#UrgencyUrgent').attr('checked', true);
-				else if (item.urgency == "Not Urgent") 
-					$('#UrgencyNotUrgent').attr('checked', true);
-				
-				me.vendor.setValue(item.vendorTitle);
-				me.vendorNumber = item.vendorNumber;
+				me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + item.houseCode, me.houseCodeJobsLoaded, me);
+				me.setDetailInfo();
 
-				me.company.setValue(item.houseCodeTitle);
-				me.shippingAddress1.setValue(item.shipToAddress1);
-				me.shippingAddress2.setValue(item.shipToAddress2);
-				me.shippingCity.setValue(item.shipToCity);
-				
-				itemIndex = ii.ajax.util.findIndexById(item.shipToState.toString(), me.stateTypes);
-				if (itemIndex >= 0 && itemIndex != undefined) 
-					me.shippingState.select(itemIndex, me.shippingState.focused);				
-				
-				me.shippingZip.setValue(item.shipToZip);
-				me.shippingPhone.setValue(item.shipToPhone);
-				me.shippingFax.setValue(item.shipToFax);	
-	
 				if (me.requisitionGrid.data[index].statusType == 10 || me.requisitionGrid.data[index].statusType == 1) {
 					if (me.requisitionGrid.data[index].statusType == 10) {
 						$("#AnchorResendRequisition").show();
@@ -1675,7 +1633,66 @@ ii.Class({
 				$("#AnchorJDEEntry").show();
 			}
 		},
-		
+
+		setDetailInfo: function() {
+			var me = this;
+			var item = me.requisitionGrid.data[me.requisitionGrid.activeRowIndex];
+			
+			me.requestorName.setValue(item.requestorName);
+			me.requestorEmail.setValue(item.requestorEmail);
+			me.requestedDate.setValue(item.requestedDate);
+			me.deliveryDate.setValue(item.deliveryDate);
+			me.vendorName.lastBlurValue = item.vendorTitle;
+			$("#VendorNameText").val(item.vendorTitle);
+			me.vendorAddress1.setValue(item.vendorAddressLine1);
+			me.vendorAddress2.setValue(item.vendorAddressLine2);
+			me.vendorCity.setValue(item.vendorCity);
+			
+			var itemIndex = ii.ajax.util.findIndexById(item.vendorStateType.toString(), me.stateTypes);
+			if (itemIndex >= 0 && itemIndex != undefined) 
+				me.vendorState.select(itemIndex, me.vendorState.focused);
+			
+			me.vendorZip.setValue(item.vendorZip);
+			me.vendorContactName.setValue(item.vendorContactName);
+			me.vendorPhone.setValue(item.vendorPhoneNumber);
+			me.vendorEmail.setValue(item.vendorEmail);
+			me.reasonForRequest.setValue(item.reasonForRequest);
+			
+			if (item.urgencyDate == "" || item.urgencyDate == "1/1/1900 12:00:00 AM") {
+				me.urgencyDate.setValue("");
+                $("#LabelUrgencyDate").html("<span id='nonRequiredFieldIndicator'>Urgency Date:</span>");
+            }                   
+            else {                
+                me.urgencyDate.setValue(item.urgencyDate);
+                $("#LabelUrgencyDate").html("<span class='requiredFieldIndicator'>&#149;</span>Urgency Date:");
+            }
+			
+			if (item.urgency == "Urgent") 
+				$('#UrgencyUrgent').attr('checked', true);
+			else if (item.urgency == "Not Urgent") 
+				$('#UrgencyNotUrgent').attr('checked', true);
+			
+			me.vendor.setValue(item.vendorTitle);
+			me.vendorNumber = item.vendorNumber;
+			me.company.setValue(item.houseCodeTitle);
+			
+			itemIndex = ii.ajax.util.findIndexById(item.houseCodeJob.toString(), me.houseCodeJobs);
+			if (itemIndex != undefined && itemIndex >= 0) 
+				me.shippingJob.select(itemIndex, me.shippingJob.focused);
+					
+			me.shippingAddress1.setValue(item.shipToAddress1);
+			me.shippingAddress2.setValue(item.shipToAddress2);
+			me.shippingCity.setValue(item.shipToCity);
+			
+			itemIndex = ii.ajax.util.findIndexById(item.shipToState.toString(), me.stateTypes);
+			if (itemIndex >= 0 && itemIndex != undefined) 
+				me.shippingState.select(itemIndex, me.shippingState.focused);				
+			
+			me.shippingZip.setValue(item.shipToZip);
+			me.shippingPhone.setValue(item.shipToPhone);
+			me.shippingFax.setValue(item.shipToFax);
+		},
+
 		poRequisitonDetailsLoaded: function(me, activeId) {
 
 			me.total = 0;
@@ -2006,6 +2023,7 @@ ii.Class({
 			me.catalog.reset();
 			me.catalog.setData([]);
 			me.company.setValue(parent.fin.appUI.houseCodeTitle);
+			me.shippingJob.reset();
 			me.shippingAddress1.setValue(me.houseCodeDetails[0].shippingAddress1);
 			me.shippingAddress2.setValue(me.houseCodeDetails[0].shippingAddress2);
 			me.shippingCity.setValue(me.houseCodeDetails[0].shippingCity);
@@ -2050,7 +2068,7 @@ ii.Class({
 				return true;			
 
 			me.total = 0;
-			
+			me.setDetailInfo();
 			loadPopup();
 			$("#popupMessageToUser").text("Loading");
 			$("#popupLoading").show();
@@ -2062,6 +2080,7 @@ ii.Class({
 
 			me.poRequisitionId = me.requisitionGrid.data[me.lastSelectedRowIndex].id;
 			me.itemGrid.setData(me.poRequisitionDetails);
+			me.documentGrid.setData(me.poRequisitionDocuments);
 
 			for (var index = 0; index < me.poRequisitionDetails.length; index++) {
 				if (me.poRequisitionDetails[index].quantity != "" && !isNaN(me.poRequisitionDetails[index].quantity) && me.poRequisitionDetails[index].price != undefined && me.poRequisitionDetails[index].itemSelect) {
@@ -2178,9 +2197,16 @@ ii.Class({
 					me.poRequisitionDetails.splice(index, 1);
 			}
 
-			if (me.requisitionGrid.activeRowIndex >= 0)
+			for (var index = me.poRequisitionDocuments.length - 1; index >= 0; index--) {
+				if (me.poRequisitionDocuments[index].id == 0)
+					me.poRequisitionDocuments.splice(index, 1);
+			}
+
+			if (me.requisitionGrid.activeRowIndex >= 0) {
 				me.poRequisitionId = me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].id;
-			
+				me.setDetailInfo();
+			}
+
 			me.wizardCount = 0;
 			me.status = "";
 			me.setStatus("Loaded");
@@ -2513,7 +2539,7 @@ ii.Class({
 				xml += ' vendorZip="' + item.vendorZip + '"';
 				xml += ' vendorContactName="' + ui.cmn.text.xml.encode(item.vendorContactName) + '"';
 				xml += ' vendorPhoneNumber="' + fin.cmn.text.mask.phone(item.vendorPhoneNumber, true) + '"';
-				xml += ' vendorEmail="' + item.vendorEmail + '"';
+				xml += ' vendorEmail="' + ui.cmn.text.xml.encode(item.vendorEmail) + '"';
 				xml += ' reasonForRequest="' + ui.cmn.text.xml.encode(item.reasonForRequest) + '"';
 				xml += ' urgency="' + item.urgency + '"';
 				xml += ' urgencyDate="' + item.urgencyDate + '"';
@@ -2540,12 +2566,12 @@ ii.Class({
 					xml += '<purPORequisitionDetail';
 					xml += ' id="' + (me.status == "NewPORequisition" ? "0" : me.itemGrid.data[index].id) + '"';
 					xml += ' poRequisitionId="' + me.poRequisitionId + '"';
-					xml += ' number="' + me.itemGrid.data[index].number + '"';
-					xml += ' description="' + me.itemGrid.data[index].description + '"';
-					xml += ' alternateDescription="' + me.itemGrid.data[index].alternateDescription + '"';
+					xml += ' number="' + ui.cmn.text.xml.encode(me.itemGrid.data[index].number) + '"';
+					xml += ' description="' + ui.cmn.text.xml.encode(me.itemGrid.data[index].description) + '"';
+					xml += ' alternateDescription="' + ui.cmn.text.xml.encode(me.itemGrid.data[index].alternateDescription) + '"';
 					xml += ' account="' + me.itemGrid.data[index].account.id + '"';
-					xml += ' uom="' + me.itemGrid.data[index].unit + '"';
-					xml += ' manufactured="' + me.itemGrid.data[index].manufactured + '"';
+					xml += ' uom="' + ui.cmn.text.xml.encode(me.itemGrid.data[index].unit) + '"';
+					xml += ' manufactured="' + ui.cmn.text.xml.encode(me.itemGrid.data[index].manufactured) + '"';
 					xml += ' quantity="' + me.itemGrid.data[index].quantity + '"';
 					xml += ' price="' + me.itemGrid.data[index].price + '"';
 					xml += '/>';
@@ -2569,11 +2595,11 @@ ii.Class({
 				xml += ' requisitionNumber="' + item.requisitionNumber + '"';
 				xml += ' statusType="2"';
 				xml += ' houseCodeTitle="' + ui.cmn.text.xml.encode(item.houseCodeTitle) + '"';
-				xml += ' houseCodeJobTitle="' + me.shippingJob.lastBlurValue + '"';
+				xml += ' houseCodeJobTitle="' + ui.cmn.text.xml.encode(me.shippingJob.lastBlurValue) + '"';
 				xml += ' shipToAddress1="' + ui.cmn.text.xml.encode(item.shipToAddress1) + '"';
 				xml += ' shipToAddress2="' + ui.cmn.text.xml.encode(item.shipToAddress2) + '"';
 				xml += ' shipToCity="' + ui.cmn.text.xml.encode(item.shipToCity) + '"';
-				xml += ' shipToStateTitle="' + me.shippingState.lastBlurValue + '"';
+				xml += ' shipToStateTitle="' + ui.cmn.text.xml.encode(me.shippingState.lastBlurValue) + '"';
 				xml += ' shipToZip="' + item.shipToZip + '"';
 				xml += ' shipToPhone="' + fin.cmn.text.mask.phone(item.shipToPhone) + '"';
 				xml += ' shipToFax="' + fin.cmn.text.mask.phone(item.shipToFax) + '"';
@@ -2586,18 +2612,17 @@ ii.Class({
 				xml += ' vendorAddressLine1="' + ui.cmn.text.xml.encode(item.vendorAddressLine1) + '"';
 				xml += ' vendorAddressLine2="' + ui.cmn.text.xml.encode(item.vendorAddressLine2) + '"';
 				xml += ' vendorCity="' + ui.cmn.text.xml.encode(item.vendorCity) + '"';
-				xml += ' vendorStateTitle="' + me.vendorState.lastBlurValue + '"';
+				xml += ' vendorStateTitle="' + ui.cmn.text.xml.encode(me.vendorState.lastBlurValue) + '"';
 				xml += ' vendorZip="' + item.shipToZip + '"';
 				xml += ' vendorContactName="' + ui.cmn.text.xml.encode(item.vendorContactName) + '"';
 				xml += ' vendorPhoneNumber="' + fin.cmn.text.mask.phone(item.vendorPhoneNumber) + '"';
-				xml += ' vendorEmail="' + item.vendorEmail + '"';
+				xml += ' vendorEmail="' + ui.cmn.text.xml.encode(item.vendorEmail) + '"';
 				xml += ' reasonForRequest="' + ui.cmn.text.xml.encode(item.reasonForRequest) + '"';
 				xml += ' urgency="' + item.urgency + '"';
 				xml += ' urgencyDate="' + item.urgencyDate + '"';
 				xml += ' chargeToPeriod=""';
 				xml += ' action="' + me.status + '"';
 				xml += ' jdeCompleted="0"';
-				xml += ' total="' + me.total.toFixed(2) + '"';
 				xml += '/>';
 			}
 			else if (me.status == "DeleteDocument") {
@@ -2628,7 +2653,7 @@ ii.Class({
 				xml += ' requisitionNumber="' + item.requisitionNumber + '"';
 				xml += ' houseCodeTitle="' + ui.cmn.text.xml.encode(item.houseCodeTitle) + '"';
 				xml += ' vendorTitle="' + ui.cmn.text.xml.encode(item.vendorTitle) + '"';
-				xml += ' vendorNumber="' + item.vendorNumber + '"';
+				xml += ' vendorNumber="' + ui.cmn.text.xml.encode(item.vendorNumber) + '"';
 				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
 				xml += '/>';
 			}

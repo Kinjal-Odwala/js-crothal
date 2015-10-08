@@ -42,6 +42,14 @@ ii.init.register( function() {
 		, name: {type: String, required: false, defaultValue: ""}
 	};
 	
+	fin.emp.employeePTOSetup.ptoPlanTypeArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, title: {type: String, required: false, defaultValue: ""}
+		, minHours: {type: Number, required: false, defaultValue: 0}
+		, maxHours: {type: Number, required: false, defaultValue: 0}
+		, active: {type: Boolean, required: false, defaultValue: true}
+	};
+	
 	fin.emp.employeePTOSetup.ptoEmployeeArgs = {
 		id: {type: Number, required: false, defaultValue: 0}
 		, firstName: {type: String, required: false, defaultValue: ""}
@@ -57,6 +65,7 @@ ii.init.register( function() {
 		, houseCodeId: {type: Number, required: false, defaultValue: 0}
 		, ptoYear: {type: fin.emp.employeePTOSetup.PTOYear, required: false}
 		, ptoType: {type: fin.emp.employeePTOSetup.PTOType, required: false}
+		, ptoPlanType: {type: fin.emp.employeePTOSetup.PTOPlanType, required: false}
 		, title: {type: String, required: false, defaultValue: ""}
 		, startDate: {type: String, required: false, defaultValue: ""}
 		, endDate: {type: String, required: false, defaultValue: ""}
@@ -80,6 +89,26 @@ ii.init.register( function() {
 		, ptoType: {type: fin.emp.employeePTOSetup.PTOType, required: false}
 		, weeklyPayrollId: {type: Number, required: false, defaultValue: 0}
 		, ptoDate: {type: Date, required: false}
+		, hours: {type: String, required: false, defaultValue: "0"}
+		, modified: {type: Boolean, required: false, defaultValue: false}
+	};
+
+	fin.emp.employeePTOSetup.managementPTOAssignmentArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, ptoPlanId: {type: Number, required: false, defaultValue: 0}
+		, employeeId: {type: Number, required: false, defaultValue: 0}
+		, firstName: {type: String, required: false, defaultValue: ""}
+		, lastName: {type: String, required: false, defaultValue: ""}
+		, jobTitle: {type: String, required: false, defaultValue: ""}
+		, modified: {type: Boolean, required: false, defaultValue: false}
+	};
+
+	fin.emp.employeePTOSetup.managementPTODayArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, employeeId: {type: Number, required: false, defaultValue: 0}
+		, ptoType: {type: fin.emp.employeePTOSetup.PTOType, required: false}
+		, startDate: {type: Date, required: false}
+		, endDate: {type: Date, required: false}
 		, hours: {type: String, required: false, defaultValue: "0"}
 		, modified: {type: Boolean, required: false, defaultValue: false}
 	};
@@ -164,6 +193,16 @@ ii.Class({
 });
 
 ii.Class({
+	Name: "fin.emp.employeePTOSetup.PTOPlanType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.emp.employeePTOSetup.ptoPlanTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
 	Name: "fin.emp.employeePTOSetup.PTOEmployee",
 	Definition: {
 		init: function() {
@@ -198,6 +237,26 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.emp.employeePTOSetup.ptoDayArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.emp.employeePTOSetup.ManagementPTOAssignment",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.emp.employeePTOSetup.managementPTOAssignmentArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.emp.employeePTOSetup.ManagementPTODay",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.emp.employeePTOSetup.managementPTODayArgs);
 			$.extend(this, args);
 		}
 	}

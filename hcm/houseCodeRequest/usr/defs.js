@@ -61,7 +61,7 @@ ii.init.register( function() {
 		, column45: {type: String, required: false, defaultValue: ""} 	// Local #
 		, column46: {type: String, required: false, defaultValue: ""} 	// Customer Number
 		, column47: {type: String, required: false, defaultValue: ""} 	// Client Name
-		, column48: {type: String, required: false, defaultValue: ""} 	// Street
+		, column48: {type: String, required: false, defaultValue: ""} 	// Street 1
 		, column49: {type: String, required: false, defaultValue: ""} 	// City
 		, column50: {type: String, required: false, defaultValue: ""} 	// State
 		, column51: {type: String, required: false, defaultValue: ""} 	// Zip Code
@@ -93,7 +93,7 @@ ii.init.register( function() {
 		, column77: {type: String, required: false, defaultValue: ""} 	// Markup
 		, column78: {type: String, required: false, defaultValue: ""} 	// Service Location Number
 		, column79: {type: String, required: false, defaultValue: ""} 	// Service Location Name
-		, column80: {type: String, required: false, defaultValue: ""} 	// Service Location Street
+		, column80: {type: String, required: false, defaultValue: ""} 	// Service Location Street 1
 		, column81: {type: String, required: false, defaultValue: ""} 	// Service Location City
 		, column82: {type: String, required: false, defaultValue: ""} 	// Service Location State
 		, column83: {type: String, required: false, defaultValue: ""} 	// Service Location Zip Code
@@ -102,6 +102,18 @@ ii.init.register( function() {
 		, column86: {type: String, required: false, defaultValue: ""} 	// Food Court
 		, column87: {type: String, required: false, defaultValue: ""} 	// Common Area
 		, column88: {type: String, required: false, defaultValue: ""} 	// Other Areas
+		, column89: {type: String, required: false, defaultValue: ""} 	// Financial Company
+		, column90: {type: String, required: false, defaultValue: ""} 	// Service Line
+		, column91: {type: String, required: false, defaultValue: ""} 	// Customer Street 2
+		, column92: {type: String, required: false, defaultValue: ""} 	// Customer County
+		, column93: {type: String, required: false, defaultValue: ""} 	// Service Location Street 2
+		, column94: {type: String, required: false, defaultValue: ""} 	// Service Location County
+		, column95: {type: String, required: false, defaultValue: ""} 	// SVP Brief
+		, column96: {type: String, required: false, defaultValue: ""} 	// DVP Brief
+		, column97: {type: String, required: false, defaultValue: ""} 	// RVP Brief
+		, column98: {type: String, required: false, defaultValue: ""} 	// SRM Brief
+		, column99: {type: String, required: false, defaultValue: ""} 	// RM Brief
+		, column100: {type: String, required: false, defaultValue: ""} 	// AM Brief
 	};
 
 	fin.hcm.houseCodeRequest.personArgs = {
@@ -135,17 +147,32 @@ ii.init.register( function() {
 	
 	fin.hcm.houseCodeRequest.divisionArgs = {
 		id: {type: Number}
+		, brief: {type: String}
 		, name: {type: String}
 	};
 	
 	fin.hcm.houseCodeRequest.stateTypeArgs = {
 		id: {type: Number}
+		, brief: {type: String}
 		, name: {type: String}
 	};
 
 	fin.hcm.houseCodeRequest.contractTypeArgs = {
 		id: {type: Number}
+		, brief: {type: String}
 		, name: {type: String}
+	};
+	
+	fin.hcm.houseCodeRequest.jdeCompanyArgs = {		
+		id: {type: Number}
+		, name: {type: String}		
+	};
+	
+	fin.hcm.houseCodeRequest.serviceLineArgs = {
+		id: {type: Number}
+		, name: {type: String}
+		, brief: {type: String}
+		, financialEntity: {type: Boolean, required: false, defaultValue: false}
 	};
 	
 	fin.hcm.houseCodeRequest.termsOfContractTypeArgs = {
@@ -189,6 +216,7 @@ ii.init.register( function() {
 
 	fin.hcm.houseCodeRequest.clientStatusTypeArgs = {
 		id: {type: Number}
+		, brief: {type: String}
 		, name: {type: String}
 	};
 
@@ -308,6 +336,26 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.houseCodeRequest.contractTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.houseCodeRequest.JDECompany",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.houseCodeRequest.jdeCompanyArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.houseCodeRequest.ServiceLine",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.houseCodeRequest.serviceLineArgs);
 			$.extend(this, args);
 		}
 	}

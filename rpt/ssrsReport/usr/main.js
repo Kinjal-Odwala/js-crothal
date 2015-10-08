@@ -48,6 +48,19 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 
+			var queryStringArgs = {};
+			var queryString = location.search.substring(1);
+			var pairs = queryString.split("&"); 
+
+			for (var index = 0; index < pairs.length; index++) { 
+				var pos = pairs[index].indexOf("="); 
+				if (pos == -1) continue; 
+				var argName = pairs[index].substring(0, pos); 
+				var value = pairs[index].substring(pos + 1); 
+				queryStringArgs[argName] = unescape(value); 
+			}
+			
+			me.reportTitle = (queryStringArgs["reportId"] == undefined) ? "" : queryStringArgs["reportId"];
 			me.pageLoading = true;
 			me.levelNamesLoaded = false;
 			me.subscriptionSelected = false;
@@ -895,6 +908,14 @@ ii.Class({
                 itemConstructorArgs: fin.rpt.ssrs.contractTypeArgs,
                 injectionArray: me.contractTypes    
             });
+			
+			me.smartPSIDs = [];
+            me.smartPSIDStore = me.cache.register({
+                storeId: "smartPSIDs",
+                itemConstructor: fin.rpt.ssrs.SmartPSID,
+                itemConstructorArgs: fin.rpt.ssrs.smartPSIDArgs,
+                injectionArray: me.smartPSIDs    
+            });
 		},
 
 		setStatus: function(status) {
@@ -1176,6 +1197,10 @@ ii.Class({
 			me.countHours = [];
 			me.exceptions = [];
 			me.capExpenditureTypes = [];
+			me.benefitStatuses = [];
+			me.measurementStatuses = [];
+			me.benefits = [];
+			me.fullParts = [];
 			
 			me.excludeOverheadAccounts.push(new fin.rpt.ssrs.ExcludeOverheadAccount(3, "Yes", "3"));//Default
 			me.excludeOverheadAccounts.push(new fin.rpt.ssrs.ExcludeOverheadAccount(-1, "No", "-1"));
@@ -1212,7 +1237,8 @@ ii.Class({
 			me.unions.push(new fin.rpt.ssrs.Union(2, "Union", "U"));
 			me.unions.push(new fin.rpt.ssrs.Union(3, "Non Union", "N"));
 			
-			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(1, "Epay Site and Task", "1"));//Default
+			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(0, "(Select All)", "0"));
+			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(1, "Epay Site and Task", "1"));
 			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(2, "Kronos Time and Attendance", "2"));
 			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(3, "Manual", "3"));
 			
@@ -1228,10 +1254,25 @@ ii.Class({
 			me.exceptions.push(new fin.rpt.ssrs.Exception(1, "Both", "B"));
 			me.exceptions.push(new fin.rpt.ssrs.Exception(2, "Open", "O"));
 			me.exceptions.push(new fin.rpt.ssrs.Exception(3, "Closed", "C"));
-			
+
 			me.capExpenditureTypes.push(new fin.rpt.ssrs.CapExpenditureType(1, "New Capital", "1"));
 			me.capExpenditureTypes.push(new fin.rpt.ssrs.CapExpenditureType(2, "Disposed Capital", "2"));
 			me.capExpenditureTypes.push(new fin.rpt.ssrs.CapExpenditureType(3, "Not Yet Purchased Capital", "3"));
+
+			me.benefitStatuses.push(new fin.rpt.ssrs.BenefitStatus(1, "Both", "B")); //Default
+			me.benefitStatuses.push(new fin.rpt.ssrs.BenefitStatus(2, "Eligibile", "E"));
+			me.benefitStatuses.push(new fin.rpt.ssrs.BenefitStatus(3, "Not Eligibile", "N"));
+
+			me.measurementStatuses.push(new fin.rpt.ssrs.MeasurementStatus(1, "Measurable w/o", "Measurable w/o")); //Default
+			me.measurementStatuses.push(new fin.rpt.ssrs.MeasurementStatus(2, "Measurable w/b", "Measurable w/b"));
+
+			me.benefits.push(new fin.rpt.ssrs.Benefit(1, "Both", "B")); //Default
+			me.benefits.push(new fin.rpt.ssrs.Benefit(2, "Yes", "Y"));
+			me.benefits.push(new fin.rpt.ssrs.Benefit(3, "No", "N"));
+
+			me.fullParts.push(new fin.rpt.ssrs.FullPart(1, "Both", "B")); //Default
+			me.fullParts.push(new fin.rpt.ssrs.FullPart(2, "Full", "F"));
+			me.fullParts.push(new fin.rpt.ssrs.FullPart(3, "Part", "P"));
 		},
 		
 		loggedInUsersLoaded: function(me, activeId) {
@@ -1306,57 +1347,49 @@ ii.Class({
 		checkDependentTypes: function(fullPath, add) {
 			var me = this;
 
-			for (var index = 0; index < me.dependentTypes.length; index++) {
-				if (me.dependentTypes[index] == "ExcludeHouseCodes") {
-					if (add) {
-						var nodes = $.grep(me.siteNodes, function(item, itemIndex) {
-							if (me.excludeHouseCodes.length > 0 && ii.ajax.util.findIndexById(item.id.toString(), me.excludeHouseCodes) == null)
-						    	return item.fullPath.indexOf(fullPath) >= 0;
-					    	else if (me.excludeHouseCodes.length == 0)
-					    		return item.fullPath.indexOf(fullPath) >= 0;
-						});
+			if (add) {
+				var nodes = $.grep(me.siteNodes, function(item, itemIndex) {
+					if (me.excludeHouseCodes.length > 0 && ii.ajax.util.findIndexById(item.id.toString(), me.excludeHouseCodes) == null)
+				    	return item.fullPath.indexOf(fullPath) >= 0;
+			    	else if (me.excludeHouseCodes.length == 0)
+			    		return item.fullPath.indexOf(fullPath) >= 0;
+				});
 
-						$.merge(me.excludeHouseCodes, nodes);
+				$.merge(me.excludeHouseCodes, nodes);
 
-						me.excludeHouseCodes.sort(function(a, b) {
-							if (a.title < b.title)
-						    	return -1;
-						  	if (a.title > b.title)
-						    	return 1;
-							return 0;
-						});
-					}
-					else {
-						me.excludeHouseCodes = $.grep(me.excludeHouseCodes, function(item, itemIndex) {
-						    return item.fullPath.indexOf(fullPath) < 0;
-						});
-					}
-					me.setExcludeHouseCodes();
-				}
-				if (me.dependentTypes[index] == "HouseCodes") {
-					if (add) {
-						var nodes = $.grep(me.houseCodes, function(item, itemIndex) {
-						    return item.parameter.indexOf(fullPath) >= 0;
-						});
+				me.excludeHouseCodes.sort(function(a, b) {
+					if (a.title < b.title)
+				    	return -1;
+				  	if (a.title > b.title)
+				    	return 1;
+					return 0;
+				});
+				
+				var nodes = $.grep(me.houseCodes, function(item, itemIndex) {
+				    return item.parameter.indexOf(fullPath) >= 0;
+				});
 
-						$.merge(me.filteredHouseCodes, nodes);
+				$.merge(me.filteredHouseCodes, nodes);
 
-						me.filteredHouseCodes.sort(function(a, b) {
-							if (a.title < b.title)
-						    	return -1;
-						  	if (a.title > b.title)
-						    	return 1;
-							return 0;
-						});
-					}
-					else {
-						me.filteredHouseCodes = $.grep(me.filteredHouseCodes, function(item, itemIndex) {
-						    return item.parameter.indexOf(fullPath) < 0;
-						});
-					}
-					me.setHouseCodes();
-				}				
+				me.filteredHouseCodes.sort(function(a, b) {
+					if (a.title < b.title)
+				    	return -1;
+				  	if (a.title > b.title)
+				    	return 1;
+					return 0;
+				});
 			}
+			else {
+				me.excludeHouseCodes = $.grep(me.excludeHouseCodes, function(item, itemIndex) {
+				    return item.fullPath.indexOf(fullPath) < 0;
+				});
+				
+				me.filteredHouseCodes = $.grep(me.filteredHouseCodes, function(item, itemIndex) {
+				    return item.parameter.indexOf(fullPath) < 0;
+				});
+			}
+			me.setExcludeHouseCodes();
+			me.setHouseCodes();
 		},
 
 		setExcludeHouseCodes: function() {
@@ -1388,7 +1421,9 @@ ii.Class({
 			var me = this;
 
 			$("#HouseCode").html("");
-				
+
+			if (me.filteredHouseCodes.length > 0)
+				$("#HouseCode").append("<option title='(Select All)' value='-1'>(Select All)</option>");
 			for (var index = 0; index < me.filteredHouseCodes.length; index++) {
 				$("#HouseCode").append("<option title='" + me.filteredHouseCodes[index].name + "' value='" + me.filteredHouseCodes[index].id + "'>" + me.filteredHouseCodes[index].name + "</option>");
 			}
@@ -1668,7 +1703,9 @@ ii.Class({
 					return found;
 				});
 				me.excludeHouseCodes = nodes;
+				me.filteredHouseCodes = nodes;
 				me.setExcludeHouseCodes();
+				me.setHouseCodes();
 			}
 			else {
 				me.resetDependentTypes();
@@ -1865,6 +1902,17 @@ ii.Class({
 			if (me.subscriptionNodes.length == 1)
 				me.subscriptionNodes = [];
 			me.actionAddNodes(me.reportNodes);
+
+			if (me.reportTitle != "") {
+				for (var index = 0; index < me.reportNodes.length; index++) {
+					if (me.reportNodes[index].title == me.reportTitle) {
+						$("#liNode" + me.reportNodes[index].nodeParentId).find(">.hitarea").click();
+						me.setLoadCount();
+						me.hirNodeSelect(me.reportNodes[index].id);
+						break;
+					}
+				}
+			}
         },
 
 		hirNodeSelect: function(nodeId) {        
@@ -1937,7 +1985,7 @@ ii.Class({
 		            $("#TreeviewContainer").height($(window).height() - 260);
 		            $("#ReportSubscription").height($(window).height() - 150);
 				}
-				
+
 				me.setLoadCount();
 				
 				if (!me.levelNamesLoaded)
@@ -1961,7 +2009,7 @@ ii.Class({
 					me.fiscalYearStore.reset();
 					me.fiscalYearStore.fetch("userId:[user],fscYear:>=3", me.dropdownsLoaded, me);
 				}
-				else if (me.reportParameters[index].referenceTableName == "FscPeriods"  && me.reportParameters[index].name != "FscPeriodTo") {
+				else if (me.reportParameters[index].referenceTableName == "FscPeriods" && me.reportParameters[index].name != "FscPeriodTo") {
 					me.ddlists = me.ddlists + 1;
 					me.list = "FscPeriods";
 					me.periodStore.fetch("userId:[user],fiscalYearId:-1", me.dropdownsLoaded, me);
@@ -2035,7 +2083,12 @@ ii.Class({
                     me.ddlists = me.ddlists + 1;
                     me.list = "HcmContractTypes";
                     me.contractTypeStore.fetch("userId:[user]", me.dropdownsLoaded, me);
-                }	
+                }
+				else if (me.reportParameters[index].referenceTableName == "SmartPSIDs") {
+                    me.ddlists = me.ddlists + 1;
+                    me.list = "SmartPSIDs";
+					me.smartPSIDStore.fetch("userId:[user],genericType:" + me.reportParameters[index].referenceTableName, me.dropdownsLoaded, me);
+                }
 			}
 			
 			if (me.list == "")
@@ -2056,13 +2109,13 @@ ii.Class({
 			me.dependentTypes = [];
 					
 			for (var index = 0; index < me.reportParameters.length; index++) {
-				if (me.reportParameters[index].controlType != "Label") {
+				if (me.reportParameters[index].controlType != "Label" && me.reportParameters[index].controlType != "Hidden") {
 					if (me.reportParameters[index].controlType == "Date" && me.reportParameters[index].mandatory)
 						html += "\n<div><div id=ParameterLabel" + me.reportParameters[index].name + " class='labelReport'> <span class='nonRequiredFieldIndicator'>&#149;</span>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div><div><input type='checkbox' id='dateCheck' checked='true' class='checkMandatory' onchange='fin.reportUi.dateMandatory(this," + index + ");' /></div><div class='labelSchedule'>NULL</div></div>"
 					else if (me.reportParameters[index].controlType == "Date" && !me.reportParameters[index].mandatory)
 						html += "\n<div><div class='labelReport'> <span class='requiredFieldIndicator'>&#149;</span></span>" + me.reportParameters[index].title + ":</div><div><input class='inputTextSize' type='text' id='" + me.reportParameters[index].name + "'></input></div></div>"
 					else
-						html += "\n<div><div class='labelReport'> <span class='requiredFieldIndicator'>&#149;</span>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium' style='height:20px;width:" + me.reportParameters[index].Width + "px;'></div><div id='customersLoading'></div></div>"										
+						html += "\n<div><div class='labelReport'> <span class='requiredFieldIndicator'>&#149;</span>" + me.reportParameters[index].title + ":</div><div id='" + me.reportParameters[index].name + "' class='inputTextMedium' style='height:20px;width:" + me.reportParameters[index].width + "px;'></div><div id='customersLoading'></div></div>"										
 					html += "\n<div style='clear:both;height:3px'></div>";
 				}				
 			}
@@ -2097,7 +2150,7 @@ ii.Class({
 					$("#" + me.reportParameters[index].name).html("");										
 					me.populateMultiSelectDropDown(me.reportParameters[index].referenceTableName, me.reportParameters[index].name, me.reportParameters[index].defaultValue);                       						
 					$("#" + me.reportParameters[index].name).multiselect({
-						minWidth: me.reportParameters[index].Width,
+						minWidth: me.reportParameters[index].width,
 						header: false,
 						multiple: false,
 						noneSelectedText: "",
@@ -2123,7 +2176,7 @@ ii.Class({
                         },
                         click: function(event, ui) {                                                                                    
                             if (event.originalEvent.currentTarget.id.indexOf("FscYear") > 0)
-                            	me.fiscalweeksLoad(ui.value);                            
+                            	me.fiscalWeeksLoad(ui.value);                            
                             else if (event.originalEvent.currentTarget.id.indexOf("ExLevel") > 0)                           	
                         		me.excludeNamesLoaded(ui.value);                            
                         },
@@ -2151,6 +2204,9 @@ ii.Class({
 					me.controls[index] = $("#" + me.reportParameters[index].name);
 					if (me.reportParameters[index].mandatory) {
                     	me.controls[index][0].disabled = true;
+                    }
+					if (me.reportParameters[index].defaultValue == "Today") {
+                    	me.controls[index][0].value = me.currentDate();
                     }
 				}
 				else if (me.reportParameters[index].controlType == "MultiSelect") {
@@ -2248,7 +2304,16 @@ ii.Class({
 			if (me.reportType == "Report")
 				me.checkLoadCount();
 		},
-		
+
+		currentDate: function() {
+			var currentTime = new Date(parent.fin.appUI.glbCurrentDate);
+			var month = currentTime.getMonth() + 1;
+			var day = currentTime.getDate();
+			var year = currentTime.getFullYear();
+			
+			return month + "/" + day + "/" + year;
+		},
+
 		populateMultiSelectDropDown: function() {
 			var args = ii.args(arguments, {
 				referenceTableName: {type: String}
@@ -2317,14 +2382,16 @@ ii.Class({
                 typeTableData = me.contractTypes;
             }
             else if (args.referenceTableName == "ExcludeHouseCodes") {
-            	if(me.excludeHouseCodes.length > 0) {
+            	if (me.excludeHouseCodes.length > 0) {
             		$("#" + args.name).append("<option title='(Select All)' value='-1'>(Select All)</option>");
             		$("#" + args.name).append("<option title='None' value='0' selected>None</option>");
             	}				
                 typeTableData = me.excludeHouseCodes;
             }
             else if (args.referenceTableName == "HouseCodes") {
-            	me.typeAllOrNoneAdd(me.filteredHouseCodes, "(Select All)");
+            	if (me.filteredHouseCodes.length > 0) {
+            		$("#" + args.name).append("<option title='(Select All)' value='-1'>(Select All)</option>");
+            	}
                 typeTableData = me.filteredHouseCodes;
             }
             else if (args.referenceTableName == "ExcludeNames")
@@ -2371,8 +2438,24 @@ ii.Class({
                 typeTableData = me.countHours;
             else if (args.referenceTableName == "Exceptions")
                 typeTableData = me.exceptions;
-			else if (args.referenceTableName == "CapExpenditureTypes")
-                typeTableData = me.capExpenditureTypes;
+			else if (args.referenceTableName == "CapExpenditureTypes") {
+				me.typeAllOrNoneAdd(me.capExpenditureTypes, "(Select All)");
+				typeTableData = me.capExpenditureTypes;
+			}
+			else if (args.referenceTableName == "BenefitStatuses")
+                typeTableData = me.benefitStatuses;
+			else if (args.referenceTableName == "MeasurementStatuses") {
+				me.typeAllOrNoneAdd(me.measurementStatuses, "(Select All)");
+                typeTableData = me.measurementStatuses;
+			}
+			else if (args.referenceTableName == "Benefits")
+                typeTableData = me.benefits;
+			else if (args.referenceTableName == "FullParts")
+                typeTableData = me.fullParts;
+			else if (args.referenceTableName == "SmartPSIDs") {
+				me.typeAllOrNoneAdd(me.smartPSIDs, "(Select All)");
+				typeTableData = me.smartPSIDs;
+			}
             else if (args.referenceTableName == "GroupLevels")
             	me.groupLevelsLoaded();            
 				
@@ -2382,9 +2465,10 @@ ii.Class({
                 var title = typeTableData[index].name;
                 var brief = typeTableData[index].brief;
 
-                if (args.referenceTableName == "AppStateTypes" || args.referenceTableName == "PayCodes" 
-	                || args.referenceTableName == "HouseCodes" || args.referenceTableName == "FscYears")
+                if (args.referenceTableName == "HouseCodes" || args.referenceTableName == "FscYears")
                     $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + "</option>");
+				else if (args.referenceTableName == "AppStateTypes" || args.referenceTableName == "PayCodes")
+					$("#" + args.name).append("<option title='" + title + "' value='" + brief + "'>" + title + "</option>");
                 else if (args.referenceTableName == "FscPeriods")
                     $("#" + args.name).append("<option title='" + 'Period ' + title + ' - ' + typeTableData[index].fscYeaTitle + "' value='" + value + "'>" + 'Period ' + title + ' - ' + typeTableData[index].fscYeaTitle + "</option>");
                 else if (args.referenceTableName == "PayPayrollCompanies")
@@ -2548,20 +2632,21 @@ ii.Class({
             $("#GroupLevel").multiselect("refresh");
         },
 		
-		fiscalweeksLoad: function(yearSelected) {
+		fiscalWeeksLoad: function(yearSelected) {
 			var me = this;
 			
 			if (me.controls[1].selector != "#WkPeriod")
 				return;
 						
 			me.setLoadCount(); 
-			me.genericTypeStore.fetch("name:" + yearSelected + ",genericType:FiscalWeeks,userId:[user]", me.fiscalweeksLoaded, me);			
+			me.genericTypeStore.fetch("name:" + yearSelected + ",genericType:FiscalWeeks,userId:[user]", me.fiscalWeeksLoaded, me);			
 		},
 		
-		fiscalweeksLoaded: function(me, activeId) {
+		fiscalWeeksLoaded: function(me, activeId) {
+
 			$("#WkPeriod").html("");
 			for (var index = 0; index < me.genericTypes.length; index++) {
-                $("#WkPeriod").append("<option title='" + me.genericTypes[index].parameter + "' value='" + me.genericTypes[index].id + "'>" + me.genericTypes[index].parameter + "</option>");
+                $("#WkPeriod").append("<option title='" + me.genericTypes[index].name + "' value='" + me.genericTypes[index].parameter + "'>" + me.genericTypes[index].name + "</option>");
             }
 			$("#WkPeriod").multiselect("refresh");	
 			me.checkLoadCount();			
@@ -2887,24 +2972,40 @@ ii.Class({
 					if (me.reportParameters[index].name.indexOf("_") >= 0) {
 						var dropDown = me.reportParameters[index].name.replace("Hidden_", "");
 						var childNodes = $("#" + dropDown).multiselect()[0].childNodes;
-						var hiddenValues = "";
-						for (var nodeIndex = 0; nodeIndex < childNodes.length; nodeIndex++) {
-							if (childNodes[nodeIndex].value != "0")
-								hiddenValues += (hiddenValues != "") ? "," + childNodes[nodeIndex].value : childNodes[nodeIndex].value;
-                        }
-                       	parametersList += "~" + me.reportParameters[index].name + "=" + hiddenValues;
+                       	parametersList += "~" + me.reportParameters[index].name + "=" + (childNodes.length - 1);
+					}
+					else if (me.reportParameters[index].name == "FscAccountCount" || me.reportParameters[index].name == "YearPeriodsCount") {
+						var dropDown = me.reportParameters[index].name.replace("Count", "");
+	                	var selectedValues = $("#" + dropDown).multiselect("getChecked").map(function() {
+	                        if (this.title != "(Select All)")
+                    			return this.title;
+	                    }).get();
+
+						parametersList += "~" + me.reportParameters[index].name + "=" + (selectedValues.length);
 					}
 					else {
 						var dropDown = me.reportParameters[index].name.replace("Label", "");
-	                	var selectedValues = $("#" + dropDown).multiselect("getChecked").map(function() {
-	                        return this.attributes[1].nodeValue;
-	                    }).get();
-	                    if (selectedValues.length > 0) {                        
-	                        if (selectedValues[0] != "undefined")
-	                        	parametersList += "~" + me.reportParameters[index].name + "=" + selectedValues[0];
-	                    }
+						if (me.reportParameters[index].name == "FscAccountLabel") {
+							var selectedValues = $("#" + dropDown).multiselect("getChecked").map(function() {
+		                    	if (this.title != "(Select All)")
+		                        	return this.title;
+		                    }).get();
+	                        for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
+								parametersList += "~" + me.reportParameters[index].name + "=" + selectedValues[selectedIndex];
+	                        }
+						}
+						else {
+							var selectedValues = $("#" + dropDown).multiselect("getChecked").map(function() {
+		                        return this.attributes[1].nodeValue;
+		                    }).get();
+							var selectedNames = "";
+	                        for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
+								selectedNames += (selectedNames != "") ? ", " + selectedValues[selectedIndex] : selectedValues[selectedIndex];
+	                        }
+							parametersList += "~" + me.reportParameters[index].name + "=" + selectedNames;
+						}
 					}
-                 }
+                }
                 else if (me.reportParameters[index].controlType == "MultiSelect") {
                     var selectedValues = $("#" + me.controls[index][0].id).multiselect("getChecked").map(function() {
                     	if (this.title != "(Select All)")
@@ -2921,8 +3022,22 @@ ii.Class({
                         return false;
                     }
                 }
+				else if (me.reportParameters[index].controlType == "Hidden") {
+					var selectedNames = me.name.split("~Name=");
+					if (me.reportParameters[index].name == "NameCount")
+						parametersList += "~" + me.reportParameters[index].name + "=" + (selectedNames.length - 1);
+					else if (me.reportParameters[index].name == "NameLabel") {
+						var nameValues = "";
+						for (var selectedIndex = 1; selectedIndex < selectedNames.length; selectedIndex++) {
+							nameValues += (nameValues != "") ? ", " + selectedNames[selectedIndex] : selectedNames[selectedIndex];
+						}
+						parametersList += "~" + me.reportParameters[index].name + "=" + nameValues;
+					}
+					else
+						parametersList += "~" + me.reportParameters[index].name + "=" + me.reportParameters[index].defaultValue;
+                }
             }
-			
+
 			parametersList = "UserID=" + me.session.propertyGet("userName") + me.level + me.name + parametersList;
 			ii.trace("Parameters: " + parametersList, ii.traceTypes.Information, "Info");
 			var form = document.createElement("form");
@@ -3039,8 +3154,8 @@ ii.Class({
 				$(this).removeClass("trover");
 			});
 			
-			me.subscriptions.length > 0
-				me.actionSelectItem(0);
+			//me.subscriptions.length > 0
+				//me.actionSelectItem(0);
 		},
 		
 		setControlData: function() {
