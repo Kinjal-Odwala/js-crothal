@@ -1961,9 +1961,11 @@ ii.Class({
 							}
 						}
 
-						$("#liNode" + parentNodeId).find(">.hitarea").click();
-						me.setLoadCount();
-						me.hirNodeSelect(nodeId);
+						if (parentNodeId > 0 && nodeId > 0) {
+							$("#liNode" + parentNodeId).find(">.hitarea").click();
+							me.setLoadCount();
+							me.hirNodeSelect(nodeId);
+						}
 						break;
 					}
 				}
