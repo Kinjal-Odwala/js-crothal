@@ -1301,7 +1301,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     ReportingManagerNumber: response.mgrClock,
                     DateLastIncrease: $filter("date")(new Date(response.dateBeg), "MM/dd/yyyy"),
                     PercentLastIncrease: ((response.annualPayAmt - response.priorAnnualPayAmt) / response.priorAnnualPayAmt).toFixed(2) * 100 + "%",
-                    CurrentPosition: response.mgrTitle,
+                    CurrentPosition: response.empTitle,
                     EmployeeNumber: response.empNumber,
                     CurrentPositionType: $filter('filter')($scope.JobCodes, { name: response.mgrTitle })
                 }
