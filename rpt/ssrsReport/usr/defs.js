@@ -62,6 +62,7 @@ ii.init.register( function() {
 	fin.rpt.ssrs.reportArgs = {
 		id: {type: Number}
 		, hirNode: {type: Number}
+		, brief: {type: String}
 		, title: {type: String}
 		, name: {type: String, required: false, defaultValue: ""}
 		, parameterAvailable: {type: Boolean, required: false, defaultValue: false}
@@ -171,11 +172,11 @@ ii.init.register( function() {
 	};
 	
 	fin.rpt.ssrs.workShiftArgs = {
-        id: {type: Number},
-        number: {type: Number},
-        name: {type: String},
-        startTime: {type: String, required: false, defaultValue: ""},
-        endTime: {type: String, required: false, defaultValue: ""}
+        id: {type: Number}
+        , number: {type: Number}
+        , name: {type: String}
+        , startTime: {type: String, required: false, defaultValue: ""}
+        , endTime: {type: String, required: false, defaultValue: ""}
     };
 	
 	fin.rpt.ssrs.payCodeTypeArgs = {
@@ -186,21 +187,21 @@ ii.init.register( function() {
 	
 	fin.rpt.ssrs.payrollCompanyArgs = {
 		id: {type: Number, defaultValue: 0}
-		, brief: {type: String}
-		, name: {type: String}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}
 	};
 	
 	fin.rpt.ssrs.statusTypeArgs = {
-        id: {type: Number},
-        number: {type: Number},
-        name: {type: String}
+        id: {type: Number}
+        , number: {type: Number}
+        , name: {type: String}
     };
     
     fin.rpt.ssrs.accountArgs = {
-        id: {type: Number, defaultValue: 0},
-        code: {type: String},
-        description: {type: String},
-        name: {type: String, required: false, defaultValue: ""}
+        id: {type: Number, defaultValue: 0}
+        , code: {type: String}
+        , description: {type: String}
+        , name: {type: String, required: false, defaultValue: ""}
     };
     
     fin.rpt.ssrs.batchArgs = {
@@ -313,6 +314,7 @@ ii.init.register( function() {
 	
 	fin.rpt.ssrs.stateTypeArgs = {
 		id: {type: Number}
+		, brief: {type: String}
 		, name: {type: String}
 	};
 	
@@ -385,6 +387,30 @@ ii.init.register( function() {
         , parameter: {type: String}
     };
 
+	fin.rpt.ssrs.checkDateArgs = {
+        id: {type: Number}
+        , name: {type: String}
+        , parameter: {type: String}
+    };
+
+	fin.rpt.ssrs.payPeriodDateArgs = {
+		id: {type: Number, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, parameter: {type: String, required: false, defaultValue: ""}
+	};
+
+	fin.rpt.ssrs.payrollTypeArgs = {
+        id: {type: Number}
+        , name: {type: String}
+        , parameter: {type: String}
+    };
+	
+	fin.rpt.ssrs.employeeStatusTypeArgs = {
+        id: {type: Number}
+        , name: {type: String}
+		, parameter: {type: String}
+    };
+	
 }, 2);
 
 ii.Class({
@@ -929,4 +955,44 @@ ii.Class({
             $.extend(this, args);
         }
     }
+});
+
+ii.Class({
+    Name: "fin.rpt.ssrs.CheckDate",
+    Definition: {
+        init: function() {
+            var args = ii.args(arguments, fin.rpt.ssrs.checkDateArgs);
+            $.extend(this, args);
+        }
+    }
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.PayPeriodDate",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.payPeriodDateArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.PayrollType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.payrollTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rpt.ssrs.EmployeeStatusType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rpt.ssrs.employeeStatusTypeArgs);
+			$.extend(this, args);
+		}
+	}
 });
