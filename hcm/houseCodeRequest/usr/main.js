@@ -832,17 +832,16 @@ ii.Class({
 
 			me.customerNumber.makeEnterTab()
 				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
 
 					var enteredText = me.customerNumber.text.value;
-					
-					if (enteredText == "") return;
 
-					if (/^\d+$/.test(enteredText) == false)
-						this.setInvalid("Please enter valid number.");
-					else if (enteredText.length < 3)
-						this.setInvalid("Please enter search criteria (minimum 3 numbers).");
+					if (me.workflowId > 0 && me.workflowStep == 3) {
+						if (/^\d+$/.test(enteredText) == false)
+							this.setInvalid("Please enter valid number.");
+						else if (enteredText.length < 3)
+							this.setInvalid("Please enter search criteria (minimum 3 numbers).");
+					}
 				});
 
 			me.clientName = new ui.ctl.Input.Text({
@@ -1205,17 +1204,16 @@ ii.Class({
 
 			me.serviceLocationNumber.makeEnterTab()
 				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
 
 					var enteredText = me.serviceLocationNumber.text.value;
-					
-					if (enteredText == "") return;
 
-					if (/^\d+$/.test(enteredText) == false)
-						this.setInvalid("Please enter valid number.");
-					else if (enteredText.length < 3)
-						this.setInvalid("Please enter search criteria (minimum 3 numbers).");
+					if (me.workflowId > 0 && me.workflowStep == 3) {
+						if (/^\d+$/.test(enteredText) == false)
+							this.setInvalid("Please enter valid number.");
+						else if (enteredText.length < 3)
+							this.setInvalid("Please enter search criteria (minimum 3 numbers).");
+					}
 				});
 
 			me.serviceLocationName = new ui.ctl.Input.Text({
@@ -1538,6 +1536,11 @@ ii.Class({
 			$("#AnchorCancelRequest").hide();
 			$("#AnchorView").hide();
 			$("#DivHouseCode").hide();
+
+			if (me.workflowId > 0 && me.workflowStep == 3) {
+				$("#DivCustomerNumber").html("<span class='requiredFieldIndicator'>&#149;</span>Number:");
+				$("#DivServiceLocationNumber").html("<span class='requiredFieldIndicator'>&#149;</span>Number:");
+			}
 
 			$("input[name='CompassPurchaseAnySupplies']").click(function() {
 				if (this.id == "CompassPurchaseAnySuppliesYes") {
@@ -2794,6 +2797,7 @@ ii.Class({
 				case "SiteInfo":
 					$("#hierarchyContainer").hide();
 					$("#servicesContainer").hide();
+					$("#customerInfoContainer").hide();
 					$("#siteInfoContainer").show();
 					break;
 
@@ -2816,8 +2820,10 @@ ii.Class({
 					break;
 					
 				case "CustomerInfo":
+					$("#siteInfoContainer").hide();
 					$("#benefitsContainer").hide();
 					$("#clientInfoContainer").hide();
+					$("#serviceLocationInfoContainer").hide();
 					$("#customerInfoContainer").show();
 					break;
 					
@@ -2840,6 +2846,7 @@ ii.Class({
 					break;
 				
 				case "ServiceLocationInfo":
+					$("#customerInfoContainer").hide();
 					$("#suppliesInfoContainer").hide();
 					$("#serviceLocationInfoContainer").show();
 					break;
@@ -2865,8 +2872,12 @@ ii.Class({
 					break;
 					
 				case "SiteInfo":
-					me.nextWizard = "ServicesProvided";
-					me.prevWizard = "HierarchyInfo";					
+					if (me.workflowId > 0 && me.workflowStep == 3)
+						me.nextWizard = "CustomerInfo";
+					else
+						me.nextWizard = "ServicesProvided";
+					me.prevWizard = "HierarchyInfo";	
+										
 					break;					
 					
 				case "ServicesProvided":
@@ -2885,8 +2896,14 @@ ii.Class({
 					break;
 
 				case "CustomerInfo":
-					me.nextWizard = "ClientInfo";
-					me.prevWizard = "BenefitsInfo";
+					if (me.workflowId > 0 && me.workflowStep == 3) {
+						me.nextWizard = "ServiceLocationInfo";
+						me.prevWizard = "SiteInfo";
+					}
+					else {
+						me.nextWizard = "ClientInfo";
+						me.prevWizard = "BenefitsInfo";
+					}
 					break;
 
 				case "ClientInfo":
@@ -2904,8 +2921,11 @@ ii.Class({
 					me.prevWizard = "ContractInfo";
 					break;
 					
-				case "ServiceLocationInfo":					
-					me.prevWizard = "SuppliesInfo";
+				case "ServiceLocationInfo":
+					if (me.workflowId > 0 && me.workflowStep == 3)
+						me.prevWizard = "CustomerInfo";
+					else
+						me.prevWizard = "SuppliesInfo";
 					break;
 			}
 			
@@ -3163,10 +3183,8 @@ ii.Class({
 				|| item.column25 == "" || item.column26 == "" || item.column28 == "" || parseInt(item.column29, 10) <= 0
 				|| !(ui.cmn.text.validate.postalCode(item.column30)) || parseInt(item.column33, 10) <= 0
 				|| (parseInt(item.column36, 10) > 0 && (parseInt(item.column36, 10) == parseInt(item.column38, 10)))
-				|| !(/^\d+$/.test(item.column46))
 				|| item.column47 == "" || item.column48 == "" || item.column49 == "" || parseInt(item.column50, 10) <= 0
 				|| !(ui.cmn.text.validate.postalCode(item.column51)) || !(/^\d{10}$/.test(item.column52)) || parseInt(item.column54, 10) <= 0
-				|| !(/^\d+$/.test(item.column78))
 				|| item.column79 == "" || item.column80 == "" || item.column81 == "" || parseInt(item.column82, 10) <= 0
 				|| !(ui.cmn.text.validate.postalCode(item.column83))
 			    ) {
@@ -3260,6 +3278,11 @@ ii.Class({
 					|| !me.srm.validate(true) || !me.rm.validate(true) || !me.am.validate(true) || !me.houseCode.validate(true)
 					|| !me.startDate.validate(true) || !me.siteName.validate(true) || !me.street1.validate(true)
 					|| !me.city.validate(true) || !me.state.validate(true) || !me.zipCode.validate(true) || !me.county.validate(true)
+					|| !me.customerNumber.validate(true) || !me.clientName.validate(true) || !me.customerStreet1.validate(true) || !me.customerCity.validate(true) 
+					|| !me.customerState.validate(true) || !me.customerZipCode.validate(true) || !me.customerPhone.validate(true)
+					|| !me.billingFrequency.validate(true)
+					|| !me.serviceLocationNumber.validate(true) || !me.serviceLocationName.validate(true) || !me.serviceLocationStreet1.validate(true)
+					|| !me.serviceLocationCity.validate(true) || !me.serviceLocationState.validate(true) || !me.serviceLocationZipCode.validate(true)
 					) {
 					alert("There are few mandatory fields which are not entered. Please enter values for all mandatory fields and try again.");
 					return false;
