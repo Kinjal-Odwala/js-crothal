@@ -2663,7 +2663,6 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
 //}])
 ;
 
-
 $(function () {
     var focusedElement;
     $(document).on('focus', 'input', function () {
@@ -2677,8 +2676,6 @@ $(function () {
     });
 
 });
-
-
 
 
 paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $filter, $rootScope) {
