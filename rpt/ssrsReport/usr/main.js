@@ -1348,10 +1348,7 @@ ii.Class({
 
 			if (add) {
 				var nodes = $.grep(me.siteNodes, function(item, itemIndex) {
-					if (me.excludeHouseCodes.length > 0 && ii.ajax.util.findIndexById(item.id.toString(), me.excludeHouseCodes) == null)
-				    	return item.fullPath.indexOf(fullPath) >= 0;
-			    	else if (me.excludeHouseCodes.length == 0)
-			    		return item.fullPath.indexOf(fullPath) >= 0;
+		    		return item.fullPath.indexOf(fullPath) >= 0;
 				});
 
 				$.merge(me.excludeHouseCodes, nodes);
@@ -1393,39 +1390,53 @@ ii.Class({
 
 		setExcludeHouseCodes: function() {
 			var me = this;
-			
-			$("#ExcludeHouseCode").html("");
-			$("#Exclude").html("");
-			$("#ExcludeHouseCode").append("<option title='(Select All)' value='-1'>(Select All)</option>");
-			$("#Exclude").append("<option title='(Select All)' value='-1'>(Select All)</option>");
+			var html = "";
+
+			if ($("#ExcludeHouseCode").length == 0 && $("#Exclude").length == 0)
+				return;
+
+			html = "<option title='(Select All)' value='-1'>(Select All)</option>";
 			
 			if (me.subscriptionSelected) {
-				$("#ExcludeHouseCode").append("<option title='None' value='0'>None</option>");
-				$("#Exclude").append("<option title='None' value='0'>None</option>");
+				html += "<option title='None' value='0'>None</option>";
 			}
 			else if (!me.subscriptionSelected) {
-				$("#ExcludeHouseCode").append("<option title='None' value='0' selected>None</option>");
-				$("#Exclude").append("<option title='None' value='0' selected>None</option>");
+				html += "<option title='None' value='0' selected>None</option>";
 			}
 			
 			for (var index = 0; index < me.excludeHouseCodes.length; index++) {
-				$("#ExcludeHouseCode").append("<option title='" + me.excludeHouseCodes[index].title + "' value='" + me.excludeHouseCodes[index].brief + "'>" + me.excludeHouseCodes[index].title + "</option>");
-				$("#Exclude").append("<option title='" + me.excludeHouseCodes[index].title + "' value='" + me.excludeHouseCodes[index].brief + "'>" + me.excludeHouseCodes[index].title + "</option>");
+				html += "<option title='" + me.excludeHouseCodes[index].title + "' value='" + me.excludeHouseCodes[index].brief + "'>" + me.excludeHouseCodes[index].title + "</option>";
 			}
-			$("#ExcludeHouseCode").multiselect("refresh");
-			$("#Exclude").multiselect("refresh");
+
+			if ($("#ExcludeHouseCode").length > 0) {
+				$("#ExcludeHouseCode").html("");
+				$("#ExcludeHouseCode").append(html);
+				$("#ExcludeHouseCode").multiselect("refresh");
+			}
+			
+			if ($("#Exclude").length > 0) {
+				$("#Exclude").html("");
+				$("#Exclude").append(html);
+				$("#Exclude").multiselect("refresh");
+			}
 		},
 		
 		setHouseCodes: function() {
 			var me = this;
+			var html = "";
 
-			$("#HouseCode").html("");
+			if ($("#HouseCode").length == 0)
+				return;
 
 			if (me.filteredHouseCodes.length > 0)
-				$("#HouseCode").append("<option title='(Select All)' value='-1'>(Select All)</option>");
+				html = "<option title='(Select All)' value='-1'>(Select All)</option>";
+				
 			for (var index = 0; index < me.filteredHouseCodes.length; index++) {
-				$("#HouseCode").append("<option title='" + me.filteredHouseCodes[index].name + "' value='" + me.filteredHouseCodes[index].id + "'>" + me.filteredHouseCodes[index].name + "</option>");
+				html += "<option title='" + me.filteredHouseCodes[index].name + "' value='" + me.filteredHouseCodes[index].id + "'>" + me.filteredHouseCodes[index].name + "</option>";
 			}
+			
+			$("#HouseCode").html("");
+			$("#HouseCode").append(html);
 			$("#HouseCode").multiselect("refresh");
 		},
 		
@@ -1541,6 +1552,7 @@ ii.Class({
             var hirNodeTitle = "";
 			var hirLevel = 0;
 			var fullPath = "";
+			var nodeHtml = "";
 
 			if (nodes.length > 0) {
 				for (var index = 0; index < nodes.length; index++) {
@@ -1548,7 +1560,27 @@ ii.Class({
 					hirNodeTitle = nodes[index].title;
 					hirLevel = nodes[index].hirLevel;
 					fullPath = nodes[index].fullPath;
-					me.addLevelNode(parentLevel, hirNode, hirNodeTitle, hirLevel, 0, fullPath);
+					
+					nodeHtml += "<li id=\"liNode" + hirNode + "\">";
+					nodeHtml += "<input type=\"checkbox\" id=\"chkNode" + hirNode + "\" name=\"" + hirNodeTitle + "\" fullPath=\"" + fullPath + "\" parent=\"" + hirLevel + "\" />";
+					nodeHtml += "<span id=\"span" + hirNode + "\" class='normal' style='vertical-align: middle;'>" + hirNodeTitle + "</span>";
+					nodeHtml += "</li>";
+				}
+				
+				var treeNode = $(nodeHtml).appendTo("#ulEdit" + hirLevel);
+            	$("#ulEdit1").treeview({ add: treeNode });
+
+				for (var index = 0; index < nodes.length; index++) {
+					hirNode = nodes[index].id;
+					hirNodeTitle = nodes[index].title;
+					hirLevel = nodes[index].hirLevel;
+
+					$("#chkNode" + hirNode).bind("click", function() {
+						if (hirLevel == 1)
+							me.childNodeCheck(this, hirNodeTitle);
+						else
+							me.parentNodeCheck(this, hirNodeTitle, parentLevel); 
+					});
 				}
 			}
 		},
@@ -1629,20 +1661,16 @@ ii.Class({
 		    var me = this;
 		    var hirParentNode = chkNodeParent.id.replace(/chkNode/, "");
 		    var nodeChecked = chkNodeParent.checked;
-			var fullPaths = [];
 			me.name = "";
 			me.names = "";
 			me.subscriptionSelected = false;
 
 			if (me.lastCheckedNode != undefined && me.lastCheckedNode != hirParentNode) {
 				var previousLevelNodeChecked = false;
-
-				$("input[parent=" + me.lastCheckedNode + "]").each(function() {
-		            if (this.checked) {
-						previousLevelNodeChecked = true;
-						return false;
-					}	
-		        });
+				var checkedNodes = $("input[parent='" + me.lastCheckedNode + "']:checked");
+				if (checkedNodes.length > 0) {
+					previousLevelNodeChecked = true;
+				}
 
 				if (previousLevelNodeChecked) {
 					if (confirm("Selected nodes in earlier level will be deselected")) {
@@ -1653,10 +1681,7 @@ ii.Class({
 			            });
 			            
 						$("#chkNode" + me.lastCheckedNode).attr("checked", false);
-						$("input[parent=" + me.lastCheckedNode + "]").each(function() {
-							this.checked = false;
-						});
-						
+						$("input[parent='" + me.lastCheckedNode + "']").attr("checked", false);
 						me.resetDependentTypes();
 					}
 					else {
@@ -1682,7 +1707,6 @@ ii.Class({
 					this.checked = true;
 					me.name = me.name + "~Name=" + this.name;
 					me.names = me.names + "~" + this.name;
-					fullPaths.push($(this).attr("fullPath"));
 				}
 				else {
 					this.checked = false;
@@ -1692,24 +1716,23 @@ ii.Class({
 		    });
 
 			if (nodeChecked) {
-				var nodes = $.grep(me.siteNodes, function(item, index) {
-					var found = false;
-					for (var iIndex = 0; iIndex < fullPaths.length; iIndex++) {
-						found = item.fullPath.indexOf(fullPaths[iIndex]) >= 0;
-						if (found)
-							break;
-					}
-					return found;
+				var excludeHouseCodes = $.grep(me.siteNodes, function(item, index) {
+					return item.fullPath.indexOf("\\crothall") >= 0;
 				});
-				me.excludeHouseCodes = nodes;
-				me.filteredHouseCodes = nodes;
+
+				var filteredHouseCodes = $.grep(me.houseCodes, function(item, index) {
+					return item.parameter.indexOf("\\crothall") >= 0;
+				});
+
+				me.excludeHouseCodes = excludeHouseCodes;
+				me.filteredHouseCodes = filteredHouseCodes;
 				me.setExcludeHouseCodes();
 				me.setHouseCodes();
 			}
 			else {
 				me.resetDependentTypes();
 			}
-				
+
         	$("#Customer").html("");
 			$("#Customer").multiselect("refresh");
 			
@@ -1726,13 +1749,10 @@ ii.Class({
 
 			if (me.lastCheckedNode != undefined && me.lastCheckedNode != hirNode) {
 				var previousLevelNodeChecked = false;
-
-				$("input[parent=" + me.lastCheckedNode + "]").each(function() {
-		            if (this.checked) {
-						previousLevelNodeChecked = true;
-						return false;
-					}
-		        });
+				var checkedNodes = $("input[parent='" + me.lastCheckedNode + "']:checked");
+				if (checkedNodes.length > 0) {
+					previousLevelNodeChecked = true;
+				}
 
 				if (previousLevelNodeChecked) {
 					if (confirm("Selected nodes in earlier level will be deselected")) {
@@ -1743,9 +1763,7 @@ ii.Class({
 			            });
 			            
 						$("#chkNode" + me.lastCheckedNode).attr("checked", false);
-						$("input[parent=" + me.lastCheckedNode + "]").each(function() {
-							this.checked = false;
-						});
+						$("input[parent='" + me.lastCheckedNode + "']").attr("checked", false);
 						me.name = "";
 						me.names = "";
 						me.resetDependentTypes();
@@ -1774,22 +1792,12 @@ ii.Class({
 
 			me.lastCheckedNode = hirNode;
 
-		    //make sure that the child has a parent
-		    $("#chkNode" + hirNode).each(function() {
-		        //go through the list of child nodes of the parent
-		        $("input[parent=" + hirNode + "]").each(function() {
-		            if (this.checked == false) {
-						allChecked = false;
-						return false;
-					}
-		        });
- 
-    		    //if all have been checked... check this one
-		        if (allChecked)
-		            this.checked = true;
-				else
-					$("#" + this.id).attr("checked", false);
-		    });
+			var subNodes = $("input[parent='" + hirNode + "']");
+			var checkedNodes = $("input[parent='" + hirNode + "']:checked");
+	        if (subNodes.length == checkedNodes.length)
+	            $("#chkNode" + hirNode).attr("checked", true);
+			else
+				$("#chkNode" + hirNode).attr("checked", false);
 
 			me.checkDependentTypes(fullPath, chkNodeChild.checked);
 			$("#Customer").multiselect({
@@ -1797,7 +1805,7 @@ ii.Class({
 			});			
             $("#Customer").html("");
 			$("#Customer").multiselect("refresh");
-			
+
 			if (me.controls[3] != undefined && me.controls[3].selector == "#GroupLevel")
             	me.groupLevelsLoaded();	
 		},
