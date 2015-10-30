@@ -141,8 +141,9 @@ ii.Class({
 			me.assignedUserGrid.addColumn("firstName", "firstName", "First Name", "First Name", 150);
 			me.assignedUserGrid.addColumn("lastName", "lastName", "Last Name", "Last Name", 150);
 			me.assignedUserGrid.addColumn("email", "email", "Email", "Email", null);
+			me.assignedUserGrid.addColumn("active", "active", "Active", "Active", 70, function(active) { return (active == "1" ? "Yes" : "No") });
 			me.assignedUserGrid.capColumns();
-			
+
 			me.userGrid = new ui.ctl.Grid({
 				id: "UserGrid",
 				appendToId: "divForm"		
@@ -232,6 +233,7 @@ ii.Class({
 			var me = this;
 			
 			$("#imgAddUsers").bind("click", function() { me.actionAddItem(); });
+			$("#imgEditUser").bind("click", function() { me.actionEditItem(); });
 			$("#imgRemoveUser").bind("click", function() { me.actionRemoveItem(); });
 		},
 
@@ -361,6 +363,19 @@ ii.Class({
 			$("#popupLoading").fadeOut("slow");
 		},
 		
+		actionEditItem: function() {
+			var me = this;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
+			if (me.assignedUserGrid.activeRowIndex == -1)
+				return;
+
+			me.status = "EditUser";
+			me.actionSaveItem();
+		},
+
 		actionRemoveItem: function() {
 			var me = this;
 
@@ -373,7 +388,7 @@ ii.Class({
 			me.status = "DeleteUser";
 			me.actionSaveItem();
 		},
-		
+
 		actionClickItem: function(objCheckBox) {
 			var me = this;
 
@@ -429,23 +444,35 @@ ii.Class({
 			if (me.status == "AddUser") {
 				for (var index = 0; index < me.appUsers.length; index++) {
 					if ($("#assignInputCheck" + index)[0].checked) {
-						me.assignedUsers.push(new fin.app.workflow.User(me.appUsers[index].id
+						me.assignedUsers.push(new fin.app.workflow.User(0
+											 , me.appUsers[index].userId
 											 , me.appUsers[index].userName
 											 , me.appUsers[index].firstName
 											 , me.appUsers[index].lastName
-											 , me.appUsers[index].email)
+											 , me.appUsers[index].email
+											 , true
+											 , true)
 											 );
 						xml += '<appWorkflowUser';
-						xml += ' userId="' + me.appUsers[index].id + '"';
+						xml += ' id="0"';
+						xml += ' userId="' + me.appUsers[index].userId + '"';
 						xml += ' workflowStepId="' + me.workflowSteps[me.workflowStep.indexSelected].id + '"';
+						xml += ' active="true"';
 						xml += '/>';
 					}
 				}
 			}
+			else if (me.status == "EditUser") {
+				xml += '<appWorkflowUser';
+				xml += ' id="' + me.assignedUsers[me.assignedUserGrid.activeRowIndex].id + '"';
+				xml += ' userId="' + me.assignedUsers[me.assignedUserGrid.activeRowIndex].userId + '"';
+				xml += ' workflowStepId="' + me.workflowSteps[me.workflowStep.indexSelected].id + '"';
+				xml += ' active="' + !me.assignedUsers[me.assignedUserGrid.activeRowIndex].active + '"';
+				xml += '/>';
+			}
 			else if (me.status == "DeleteUser") {
 				xml += '<appWorkflowUserDelete';
-				xml += ' userId="' + me.assignedUsers[me.assignedUserGrid.activeRowIndex].id + '"';
-				xml += ' workflowStepId="' + me.workflowSteps[me.workflowStep.indexSelected].id + '"';
+				xml += ' id="' + me.assignedUsers[me.assignedUserGrid.activeRowIndex].id + '"';
 				xml += '/>';
 			}
 
@@ -468,15 +495,34 @@ ii.Class({
 				$(args.xmlNode).find("*").each(function(){
 					switch (this.tagName) {
 						case "appWorkflowUser":
-							if (me.status == "DeleteUser") {
+							if (me.status == "AddUser") {
+								var id = parseInt($(this).attr("id"), 10);
+
+								for (var index = 0; index < me.assignedUsers.length; index++) {
+									if (me.assignedUsers[index].assigned) {
+										if (me.assignedUsers[index].id == 0)
+											me.assignedUsers[index].id = id;
+										me.assignedUsers[index].assigned = false;
+										break;
+									}
+								}
+							}
+							else if (me.status == "EditUser") {
+								me.assignedUsers[me.assignedUserGrid.activeRowIndex].active = !me.assignedUsers[me.assignedUserGrid.activeRowIndex].active;
+								me.assignedUserGrid.body.renderRow(me.assignedUserGrid.activeRowIndex, me.assignedUserGrid.activeRowIndex);
+							}
+							else if (me.status == "DeleteUser") {
 								me.assignedUsers.splice(me.assignedUserGrid.activeRowIndex, 1);
+								me.assignedUserGrid.setData(me.assignedUsers);
 							}
 
-							me.assignedUserGrid.setData(me.assignedUsers);
 							break;
 					}
 				});
 
+				if (me.status == "AddUser") {
+					me.assignedUserGrid.setData(me.assignedUsers);
+				}
 				me.status = "";
 				me.setStatus("Saved");
 			}
