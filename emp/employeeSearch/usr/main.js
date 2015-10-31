@@ -3794,6 +3794,8 @@ ii.Class({
 					me.isPageLoaded = true;
 					$("#Compensation").removeClass("dateModificationDiv");
 					$("#Compensation").addClass("compensationDiv");		
+					$("#CompensationEffectiveDateText").attr('disabled', true);
+					$("#CompensationEffectiveDateAction").removeClass("iiInputAction");
 				}
 				
 				if (me.actionType == "Person") { 
@@ -4146,11 +4148,16 @@ ii.Class({
 				
 				//Compensation Section - Start
 				
-				if (me.employeeGenerals[0].effectiveDateCompensation == "") {
-					me.compensationEffectiveDate.setValue(me.employeeHireDate.text.value + '');
+				if (me.actionType == "Compensation") {
+					me.compensationEffectiveDate.setValue(me.currentDate());
 				}
 				else {
-					me.compensationEffectiveDate.setValue(me.employeeGenerals[0].effectiveDateCompensation);
+					if (me.employeeGenerals[0].effectiveDateCompensation == "") {
+						me.compensationEffectiveDate.setValue(me.employeeHireDate.text.value + '');
+					}
+					else {
+						me.compensationEffectiveDate.setValue(me.employeeGenerals[0].effectiveDateCompensation);
+					}
 				}
 				
 				if (me.employeeGenerals[0].hourly) 
@@ -6925,7 +6932,7 @@ ii.Class({
 				}
 				
 				if (me.actionType == "Compensation") {
-					if(me.compensationEffectiveDate.text.value > ui.cmn.text.date.format(new Date(me.payPeriodEndDate), "mm/dd/yyyy") || me.compensationEffectiveDate.text.value < ui.cmn.text.date.format(new Date(me.payPeriodStartDate), "mm/dd/yyyy"))
+					if (me.compensationEffectiveDate.text.value > ui.cmn.text.date.format(new Date(me.payPeriodEndDate), "mm/dd/yyyy") || me.compensationEffectiveDate.text.value < ui.cmn.text.date.format(new Date(me.payPeriodStartDate), "mm/dd/yyyy"))
 						me.compensationEffectiveDate.text.value = me.currentDate();
 				}
 			}
