@@ -20,10 +20,12 @@ ii.init.register( function() {
 
 	fin.app.workflow.userArgs = {
 		id: {type: Number}
+		, userId: {type: Number}
 		, userName: {type: String, required: false, defaultValue: ""}
 		, firstName: {type: String, required: false, defaultValue: ""}
 		, lastName: {type: String, required: false, defaultValue: ""}
 		, email: {type: String, required: false, defaultValue: ""}
+		, active: {type: Boolean, required: false, defaultValue: true}
 		, assigned: {type: Boolean, required: false, defaultValue: false}
 	};
 
