@@ -1263,7 +1263,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             $scope.empAction.Data[type].ReportingEmail = obj.ReportingEmail;
             $scope.empAction.Data[type].ReportingManagerNumber = obj.ReportingManagerNumber;
             $scope.empAction.Data[type].CacheReportingManagerNumber = obj.ReportingManagerNumber;
-            $scope.empAction.Data[type].DisabledReportFields = obj.ReportingManagerNumber && obj.ReportingManagerNumber.length > 0;
+            $scope.empAction.Data[type].DisabledReportFields = obj.ReportingManagerNumber && obj.ReportingManagerNumber.length > 0 && obj.ReportingTitle && obj.ReportingTitle.length > 0 && obj.ReportingEmail && obj.ReportingEmail.length > 0;
             $scope.empAction.Data[type].DisabledReportingManagerNumberField = obj.ReportingManagerNumber && obj.ReportingManagerNumber.length > 0;
         }
 
