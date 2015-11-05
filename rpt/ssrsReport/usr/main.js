@@ -1237,7 +1237,8 @@ ii.Class({
 			me.unions.push(new fin.rpt.ssrs.Union(2, "Union", "U"));
 			me.unions.push(new fin.rpt.ssrs.Union(3, "Non Union", "N"));
 			
-			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(1, "Epay Site and Task", "1"));//Default
+			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(0, "(Select All)", "0"));
+			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(1, "Epay Site and Task", "1"));
 			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(2, "Kronos Time and Attendance", "2"));
 			me.entryMethods.push(new fin.rpt.ssrs.EntryMethod(3, "Manual", "3"));
 			
@@ -1577,9 +1578,9 @@ ii.Class({
 
 					$("#chkNode" + hirNode).bind("click", function() {
 						if (hirLevel == 1)
-							me.childNodeCheck(this, hirNodeTitle);
+							me.childNodeCheck(this, this.name);
 						else
-							me.parentNodeCheck(this, hirNodeTitle, parentLevel); 
+							me.parentNodeCheck(this, this.name, parentLevel); 
 					});
 				}
 			}
@@ -2472,9 +2473,9 @@ ii.Class({
                 var title = typeTableData[index].name;
                 var brief = typeTableData[index].brief;
 
-                if (args.referenceTableName == "AppStateTypes" || args.referenceTableName == "HouseCodes" || args.referenceTableName == "FscYears")
+                if (args.referenceTableName == "HouseCodes" || args.referenceTableName == "FscYears")
                     $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + "</option>");
-				else if (args.referenceTableName == "PayCodes")
+				else if (args.referenceTableName == "AppStateTypes" || args.referenceTableName == "PayCodes")
 					$("#" + args.name).append("<option title='" + title + "' value='" + brief + "'>" + title + "</option>");
                 else if (args.referenceTableName == "FscPeriods")
                     $("#" + args.name).append("<option title='" + 'Period ' + title + ' - ' + typeTableData[index].fscYeaTitle + "' value='" + value + "'>" + 'Period ' + title + ' - ' + typeTableData[index].fscYeaTitle + "</option>");
