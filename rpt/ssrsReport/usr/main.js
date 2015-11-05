@@ -1618,9 +1618,9 @@ ii.Class({
 
 					$("#chkNode" + hirNode).bind("click", function() {
 						if (hirLevel == 1)
-							me.childNodeCheck(this, hirNodeTitle);
+							me.childNodeCheck(this, this.name);
 						else
-							me.parentNodeCheck(this, hirNodeTitle, parentLevel); 
+							me.parentNodeCheck(this, this.name, parentLevel); 
 					});
 				}
 			}
