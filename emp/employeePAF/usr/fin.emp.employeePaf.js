@@ -1313,25 +1313,26 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
     $scope.getManagerInfo = function (employeeNumber, positionType) {
 
-        if ($scope.empAction.Data && ($scope.empAction.Data[positionType].ReportingManagerNumber.length == 0 || parseInt(employeeNumber) == parseInt($scope.empAction.Data[positionType].CacheReportingManagerNumber))) {
+        if ($scope.empAction.Data && ($scope.empAction.Data[positionType].ReportingManagerNumber.length == 0 || parseInt(employeeNumber) != parseInt($scope.empAction.Data[positionType].CacheReportingManagerNumber))) {
             $scope.empAction.Data[positionType].CacheReportingManagerNumber = employeeNumber;
-            return;
+
+            getEmpCompensation(employeeNumber, function (response) {
+                if (!angular.isDefined(response)) {
+                    alert("The Managers/Clock Number you enter is not exist.");
+                    return;
+                }
+
+                $scope.empAction.Data[positionType].ReportingName = response.empFirstName + " " + response.empLastName;
+                $scope.empAction.Data[positionType].ReportingTitle = response.empTitle;
+                $scope.empAction.Data[positionType].ReportingEmail = response.empEmail;
+                $scope.empAction.Data[positionType].ReportingManagerNumber = response.empClock;
+                $scope.empAction.Data[positionType].CacheReportingManagerNumber = response.empClock;
+                $scope.empAction.Data[positionType].DisabledReportFields = true;
+                $scope.empAction.Data[positionType].DisabledReportingManagerNumberField = false;
+            });
         }
-
-        getEmpCompensation(employeeNumber, function (response) {
-            if (!angular.isDefined(response)) {
-                alert("The Managers/Clock Number you enter is not exist.");
-                return;
-            }
-
-            $scope.empAction.Data[positionType].ReportingName = response.empFirstName + " " + response.empLastName;
-            $scope.empAction.Data[positionType].ReportingTitle = response.empTitle;
-            $scope.empAction.Data[positionType].ReportingEmail = response.empEmail;
-            $scope.empAction.Data[positionType].ReportingManagerNumber = response.empClock;
-            $scope.empAction.Data[positionType].CacheReportingManagerNumber = response.empClock;
-            $scope.empAction.Data[positionType].DisabledReportFields = true;
-            $scope.empAction.Data[positionType].DisabledReportingManagerNumberField = false;
-        });
+        else
+            return;
     };
 
     $scope.isManagerFieldRequired = function (item) {
