@@ -615,6 +615,72 @@ ii.Class({
 						this.setInvalid("Please enter valid Email.");
 			});
 
+			me.divisionPresidentName = new ui.ctl.Input.Text({
+		        id: "DivisionPresidentName",
+				maxLength: 256,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.divisionPresidentName.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+
+			me.divisionPresidentEmail = new ui.ctl.Input.Text({
+		        id: "DivisionPresidentEmail",
+				maxLength: 256,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.divisionPresidentEmail.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.divisionPresidentEmail.getValue();
+
+					if (enteredText == "") return;
+
+					var emailArray = enteredText.split(";");
+
+					for(var index in emailArray) {
+						if (!(ui.cmn.text.validate.emailAddress(emailArray[index])))
+							this.setInvalid("Please enter valid Email Address. Use semicolon to separate two addresses.");
+					}
+			});
+
+			me.financeDirectorName = new ui.ctl.Input.Text({
+		        id: "FinanceDirectorName",
+				maxLength: 256,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.financeDirectorName.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+
+			me.financeDirectorEmail = new ui.ctl.Input.Text({
+		        id: "FinanceDirectorEmail",
+				maxLength: 256,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.financeDirectorEmail.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.financeDirectorEmail.getValue();
+
+					if (enteredText == "") return;
+
+					var emailArray = enteredText.split(";");
+
+					for(var index in emailArray) {
+						if (!(ui.cmn.text.validate.emailAddress(emailArray[index])))
+							this.setInvalid("Please enter valid Email Address. Use semicolon to separate two addresses.");
+					}
+			});
+
 			me.vendor = new ui.ctl.Input.Text({
 				id: "Vendor",
 				maxLength: 256,
@@ -1152,6 +1218,14 @@ ii.Class({
 				itemConstructorArgs: fin.pur.poCapitalRequisition.employeeManagerDetailArgs,
 				injectionArray: me.employeeManagerDetails
 			});
+
+			me.workflowJDECompanys = [];
+			me.workflowJDECompanyStore = me.cache.register({
+			storeId: "appWorkflowJDECompanys",
+				itemConstructor: fin.pur.poCapitalRequisition.WorkflowJDECompany,
+				itemConstructorArgs: fin.pur.poCapitalRequisition.workflowJDECompanyArgs,
+				injectionArray: me.workflowJDECompanys
+			});
 		},
 
 		setStatus: function(status) {
@@ -1246,6 +1320,10 @@ ii.Class({
 			me.regionalManagerName.text.tabIndex = 23;
 			me.regionalManagerTitle.text.tabIndex = 24;
 			me.regionalManagerEmail.text.tabIndex = 25;
+			me.divisionPresidentName.text.tabIndex = 26;
+			me.divisionPresidentEmail.text.tabIndex = 27;
+			me.financeDirectorName.text.tabIndex = 28;
+			me.financeDirectorEmail.text.tabIndex = 29;
 			me.vendor.text.tabIndex = 31;
 			me.searchItem.text.tabIndex = 32;
 			me.category.text.tabIndex = 33;			
@@ -1285,6 +1363,10 @@ ii.Class({
 			me.regionalManagerName.resizeText();
 			me.regionalManagerTitle.resizeText();
 			me.regionalManagerEmail.resizeText();
+			me.divisionPresidentName.resizeText();
+			me.divisionPresidentEmail.resizeText();
+			me.financeDirectorName.resizeText();
+			me.financeDirectorEmail.resizeText();
 			me.vendor.resizeText();
 			me.searchItem.resizeText();
 			me.category.resizeText();			
@@ -1325,6 +1407,10 @@ ii.Class({
 			me.regionalManagerName.text.readOnly = readOnly;
 			me.regionalManagerTitle.text.readOnly = readOnly;
 			me.regionalManagerEmail.text.readOnly = readOnly;
+			me.divisionPresidentName.text.readOnly = readOnly;
+			me.divisionPresidentEmail.text.readOnly = readOnly;
+			me.financeDirectorName.text.readOnly = readOnly;
+			me.financeDirectorEmail.text.readOnly = readOnly;
 			me.taxPercent.text.readOnly = readOnly;
 			me.taxAmount.text.readOnly = readOnly;
 			me.freight.text.readOnly = readOnly;
@@ -1546,6 +1632,7 @@ ii.Class({
 			
 			me.houseCodeDetailStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId, me.houseCodeDetailsLoaded, me);
 			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.houseCodeJobsLoaded, me);
+			me.workflowJDECompanyStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",workflowModuleId:3,stepNumber:2", me.workflowStep2JDECompanysLoaded, me);
 		},
 		
 		houseCodeDetailsLoaded: function(me, activeId) {		
@@ -1565,6 +1652,30 @@ ii.Class({
 			}
 		},
 		
+		workflowStep2JDECompanysLoaded: function(me, activeId) {
+
+			me.divisionPresidentNames = "";
+			me.divisionPresidentEmails = "";
+
+			for (var index = 0; index < me.workflowJDECompanys.length; index++) {
+				me.divisionPresidentNames += (me.divisionPresidentNames == "" ? me.workflowJDECompanys[index].name : ";" + me.workflowJDECompanys[index].name);
+				me.divisionPresidentEmails += (me.divisionPresidentEmails == "" ? me.workflowJDECompanys[index].email : ";" + me.workflowJDECompanys[index].email);
+			}
+
+			me.workflowJDECompanyStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",workflowModuleId:3,stepNumber:3", me.workflowStep3JDECompanysLoaded, me);
+		},
+		
+		workflowStep3JDECompanysLoaded: function(me, activeId) {
+
+			me.financeDirectorNames = "";
+			me.financeDirectorEmails = "";
+
+			for (var index = 0; index < me.workflowJDECompanys.length; index++) {
+				me.financeDirectorNames += (me.financeDirectorNames == "" ? me.workflowJDECompanys[index].name : ";" + me.workflowJDECompanys[index].name);
+				me.financeDirectorEmails += (me.financeDirectorEmails == "" ? me.workflowJDECompanys[index].email : ";" + me.workflowJDECompanys[index].email);
+			}
+		},
+
 		searchInputChanged: function() {
 			var args = ii.args(arguments, {
 				event: {type: Object} // The (key) event object
@@ -1823,6 +1934,10 @@ ii.Class({
 			me.regionalManagerName.setValue(item.regionalManagerName);
 			me.regionalManagerTitle.setValue(item.regionalManagerTitle);
 			me.regionalManagerEmail.setValue(item.regionalManagerEmail);
+			me.divisionPresidentName.setValue(item.divisionPresidentName);
+			me.divisionPresidentEmail.setValue(item.divisionPresidentEmail);
+			me.financeDirectorName.setValue(item.financeDirectorName);
+			me.financeDirectorEmail.setValue(item.financeDirectorEmail);
 			me.vendor.setValue(item.vendorTitle);
 			me.vendorNumber = item.vendorNumber;
 			me.taxPercent.setValue(item.taxPercent == 0 ? "" : item.taxPercent);
@@ -2043,6 +2158,10 @@ ii.Class({
 					|| !me.regionalManagerName.valid
 					|| !me.regionalManagerTitle.valid
 					|| !me.regionalManagerEmail.valid
+					|| !me.divisionPresidentName.valid
+					|| !me.divisionPresidentEmail.valid
+					|| !me.financeDirectorName.valid
+					|| !me.financeDirectorEmail.valid
 					) {
 					alert("In order to continue, the errors on the page must be corrected.");	
 					return false;
@@ -2201,7 +2320,11 @@ ii.Class({
 				me.regionalManagerTitle.setValue("Regional Manager");
 				me.regionalManagerEmail.setValue("");
 			}
-			
+
+			me.divisionPresidentName.setValue(me.divisionPresidentNames);
+			me.divisionPresidentEmail.setValue(me.divisionPresidentEmails);
+			me.financeDirectorName.setValue(me.financeDirectorNames);
+			me.financeDirectorEmail.setValue(me.financeDirectorEmails);
 			me.vendor.setValue("");
 			me.searchItem.setValue("");
 			me.category.reset();
@@ -2667,6 +2790,10 @@ ii.Class({
 					, me.regionalManagerName.getValue()
 					, me.regionalManagerTitle.getValue()
 					, me.regionalManagerEmail.getValue()
+					, me.divisionPresidentName.getValue()
+					, me.divisionPresidentEmail.getValue()
+					, me.financeDirectorName.getValue()
+					, me.financeDirectorEmail.getValue()
 					, false
 					, (me.taxPercent.getValue() != "" && !isNaN(me.taxPercent.getValue())) ? parseFloat(me.taxPercent.getValue()).toFixed(2) : 0
 					, (me.taxAmount.getValue() != "" && !isNaN(me.taxAmount.getValue())) ? parseFloat(me.taxAmount.getValue()).toFixed(2) : 0
@@ -2758,6 +2885,10 @@ ii.Class({
 				xml += ' regionalManagerName="' + ui.cmn.text.xml.encode(item.regionalManagerName) + '"';
 				xml += ' regionalManagerTitle="' + ui.cmn.text.xml.encode(item.regionalManagerTitle) + '"';
 				xml += ' regionalManagerEmail="' + ui.cmn.text.xml.encode(item.regionalManagerEmail) + '"';
+				xml += ' divisionPresidentName="' + ui.cmn.text.xml.encode(item.divisionPresidentName) + '"';
+				xml += ' divisionPresidentEmail="' + ui.cmn.text.xml.encode(item.divisionPresidentEmail) + '"';
+				xml += ' financeDirectorName="' + ui.cmn.text.xml.encode(item.financeDirectorName) + '"';
+				xml += ' financeDirectorEmail="' + ui.cmn.text.xml.encode(item.financeDirectorEmail) + '"';
 				xml += ' shipToAddress1="' + ui.cmn.text.xml.encode(item.shipToAddress1) + '"';
 				xml += ' shipToAddress2="' + ui.cmn.text.xml.encode(item.shipToAddress2) + '"';
 				xml += ' shipToCity="' + ui.cmn.text.xml.encode(item.shipToCity) + '"';
@@ -2844,6 +2975,10 @@ ii.Class({
 				xml += ' regionalManagerName="' + ui.cmn.text.xml.encode(item.regionalManagerName) + '"';
 				xml += ' regionalManagerTitle="' + ui.cmn.text.xml.encode(item.regionalManagerTitle) + '"';
 				xml += ' regionalManagerEmail="' + ui.cmn.text.xml.encode(item.regionalManagerEmail) + '"';
+				xml += ' divisionPresidentName="' + ui.cmn.text.xml.encode(item.divisionPresidentName) + '"';
+				xml += ' divisionPresidentEmail="' + ui.cmn.text.xml.encode(item.divisionPresidentEmail) + '"';
+				xml += ' financeDirectorName="' + ui.cmn.text.xml.encode(item.financeDirectorName) + '"';
+				xml += ' financeDirectorEmail="' + ui.cmn.text.xml.encode(item.financeDirectorEmail) + '"';
 				xml += ' action="' + me.status + '"';
 				xml += ' jdeCompleted="0"';
 				xml += ' taxPercent="' + (item.taxPercent != 0 ? item.taxPercent : "") + '"';
