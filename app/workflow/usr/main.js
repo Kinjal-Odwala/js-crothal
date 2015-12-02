@@ -308,6 +308,10 @@ ii.Class({
 			
 			if (me.workflowStep.indexSelected >= 0) {
 				$("#Description").html(me.workflowSteps[me.workflowStep.indexSelected].description);
+				if (me.workflowSteps[me.workflowStep.indexSelected].addUser)
+					$("#Paging").show();
+				else
+					$("#Paging").hide();
 				me.setLoadCount();
 				me.appUserStore.fetch("userId:[user],module:Workflow,id:" + me.workflowSteps[me.workflowStep.indexSelected].id, me.appAssignedUsersLoaded, me);
 			}
