@@ -1623,6 +1623,11 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             increasePercentage = 0;
         }
         increasePercentage = parseFloat(increasePercentage);
+
+        if (isNaN(increasePercentage)) {
+            increasePercentage = 0;
+            alert("Enter Valid Percentage");
+        }
         data.IncreasePercentage = increasePercentage.toFixed(2);
     }
 
@@ -1641,6 +1646,12 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             increaseAmt = 0;
 
         increaseAmt = parseFloat(increaseAmt);
+
+        if (isNaN(increaseAmt)) {
+            increaseAmt = 0;
+            alert("Enter Valid Amount");
+        }
+
         data.IncreaseAmount = increaseAmt.toFixed(2);
     }
 
@@ -1665,6 +1676,13 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         increaseAmt = parseFloat(increaseAmt);
         increasePercentage = parseFloat(increasePercentage);
 
+        if (isNaN(increaseAmt)) {
+            increaseAmt = 0;
+        }
+        if (isNaN(increasePercentage)) {
+            increasePercentage = 0;
+        }
+
         if (angular.isDefined(currentSalary)) {
             currentSalary = parseFloat(currentSalary);
             if (type == 'amt' && currentSalary != parseFloat(0)) {
@@ -1677,6 +1695,11 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 data.NewSalary = (currentSalary + parseFloat(data.IncreaseAmount)).toFixed(2);
             else
                 data.NewSalary = (currentSalary - parseFloat(data.IncreaseAmount)).toFixed(2);
+
+            if (isNaN(data.NewSalary)) {
+                data.NewSalary = 0;
+            }
+
         }
 
     }
