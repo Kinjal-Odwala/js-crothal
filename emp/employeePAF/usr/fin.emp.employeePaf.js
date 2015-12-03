@@ -1284,6 +1284,12 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         });
     }
 
+    var getManagerDetail = function (employeeNumber, callback) {
+        EmpActions.getManagerDetail(employeeNumber, function (response) {
+            callback(response);
+        });
+    }
+
     var loadCompensations = function (employeeNumber) {
 
         getEmpCompensation(employeeNumber, function (response) {
@@ -1316,7 +1322,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         if ($scope.empAction.Data && ($scope.empAction.Data[positionType].ReportingManagerNumber.length == 0 || parseInt(employeeNumber) != parseInt($scope.empAction.Data[positionType].CacheReportingManagerNumber))) {
             $scope.empAction.Data[positionType].CacheReportingManagerNumber = employeeNumber;
 
-            getEmpCompensation(employeeNumber, function (response) {
+            getManagerDetail(employeeNumber, function (response) {
                 if (!angular.isDefined(response)) {
                     alert("The Managers/Clock Number you enter is not exist.");
                     return;
@@ -2918,6 +2924,16 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
                 });
     }
 
+    var getManagerDetail = function (employeeNumber, callback) {
+
+        apiRequest('emp', '<criteria>storeId:employeeManagerDetails,userId:[user]'
+                             + ',employeeNumber:' + employeeNumber
+                + ',</criteria>', function (xml) {
+                    if (callback)
+                        callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
+                });
+    }
+
     var getCarAllowances = function () {
         return CarAllowances;
     }
@@ -3041,6 +3057,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         getEmployee: getEmployee,
         getPerson: getPerson,
         getEmpCompensation: getEmpCompensation,
+        getManagerDetail: getManagerDetail,
         getPersonActionTypes: getPersonActionTypes,
         getJobCodes: getJobCodes,
         getPayGrades: getPayGrades,
