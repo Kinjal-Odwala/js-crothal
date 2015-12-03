@@ -16,6 +16,7 @@ ii.init.register( function() {
 		id: {type: Number}
 		, title: {type: String, required: false, defaultValue: ""}
 		, description: {type: String, required: false, defaultValue: ""}
+		, addUser: {type: Boolean, required: false, defaultValue: true}
 	};
 
 	fin.app.workflow.userArgs = {
