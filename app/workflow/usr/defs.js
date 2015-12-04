@@ -7,6 +7,11 @@ ii.init.register( function() {
 
 ii.init.register( function() {
 
+	fin.app.workflow.jdeCompanyArgs = {		
+		id: {type: Number}
+		, name: {type: String}		
+	};
+	
 	fin.app.workflow.workflowModuleArgs = {
 		id: {type: Number}
 		, title: {type: String, required: false, defaultValue: ""}
@@ -14,11 +19,24 @@ ii.init.register( function() {
 
 	fin.app.workflow.workflowStepArgs = {
 		id: {type: Number}
+		, brief: {type: String, required: false, defaultValue: ""}
 		, title: {type: String, required: false, defaultValue: ""}
 		, description: {type: String, required: false, defaultValue: ""}
-		, addUser: {type: Boolean, required: false, defaultValue: true}
+		, addWorkflowUser: {type: Boolean, required: false, defaultValue: true}
+		, addJDECompanyUser: {type: Boolean, required: false, defaultValue: true}
 	};
 
+	fin.app.workflow.workflowJDECompanyArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, jdeCompanyId: {type: Number, required: false, defaultValue: 0}
+		, workflowModuleId: {type: Number, required: false, defaultValue: 0}
+		, workflowStepId: {type: Number, required: false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, email: {type: String, required: false, defaultValue: ""}
+		, displayOrder: {type: Number, required: false, defaultValue: 0}
+		, active: {type: Boolean, required: false, defaultValue: false}
+	};
+	
 	fin.app.workflow.userArgs = {
 		id: {type: Number}
 		, userId: {type: Number}
@@ -31,6 +49,16 @@ ii.init.register( function() {
 	};
 
 }, 2);
+
+ii.Class({
+	Name: "fin.app.workflow.JDECompany",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.app.workflow.jdeCompanyArgs);
+			$.extend(this, args);
+		}
+	}
+});
 
 ii.Class({
 	Name: "fin.app.workflow.WorkflowModule",
@@ -51,6 +79,16 @@ ii.Class({
 		}
 	}
 })
+
+ii.Class({
+	Name: "fin.app.workflow.WorkflowJDECompany",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.app.workflow.workflowJDECompanyArgs);
+			$.extend(this, args);
+		}
+	}
+});
 
 ii.Class({
 	Name: "fin.app.workflow.User",

@@ -24,8 +24,10 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 
+			me.action = "";
 			me.status = "";
 			me.loadCount = 0;
+			me.lastSelectedRowIndex = -1;
 
 			me.gateway = ii.ajax.addGateway("app", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -48,6 +50,7 @@ ii.Class({
 			me.defineFormControls();
 			me.configureCommunications();
 			me.initialize();
+			me.actionMenuItem("Workflow Users");
 			me.setStatus("Loading");	
 			me.modified(false);
 
@@ -77,14 +80,16 @@ ii.Class({
 				$("#pageLoading").fadeIn("slow");
 
 				ii.timer.timing("Page displayed");
-				me.loadCount = 1;
+				me.loadCount = 2;
+				me.jdeCompany.fetchingData();
+				me.workflowModule.fetchingData();
 				me.session.registerFetchNotify(me.sessionLoaded, me);
+				me.jdeCompanysStore.fetch("userId:[user],", me.jdeCompanysLoaded, me);
 				me.workflowModuleStore.fetch("userId:[user]", me.workflowModulesLoaded, me);
 			}
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},	
-
 
 		sessionLoaded: function fin_app_workflow_UserInterface_sessionLoaded() {
 			var args = ii.args(arguments, {
@@ -97,23 +102,52 @@ ii.Class({
 		resize: function() {
 			var me = fin.app.workflowUi;
 
-			if ($("#AssignedUserGridContainer").width() < 850) {
-				$("#AssignedUserGrid").width(850);
-				$("#header").width(850);
-				$("#Paging").width(850);
-				me.assignedUserGrid.setHeight($(window).height() - 120);
-			}
-			else {
-				me.assignedUserGrid.setHeight($(window).height() - 105);
-			}
+			if (me == undefined)
+				return;
 
-			$("#WokkflowStepContainer").height($(window).height() - 90);
+			if (me.action == "Workflow Users")
+			{
+				if ($("#AssignedUserGridContainer").width() < 850) {
+					$("#AssignedUserGrid").width(850);
+					$("#gridHeader").width(850);
+					$("#Paging").width(850);
+					me.assignedUserGrid.setHeight($(window).height() - 140);
+				}
+				else {
+					me.assignedUserGrid.setHeight($(window).height() - 125);
+				}
+				
+				$("#WokkflowStepContainer").height($(window).height() - 110);
+			}
+			else if (me.action == "Workflow JDE Companies")
+			{
+				me.jdeCompanyGrid.setHeight($(window).height() - 110);
+				$("#ContainerArea").height($(window).height() - 155);
+			}
 		},
 		
 		defineFormControls: function() {
 			var args = ii.args(arguments, {});
 			var me = this;
 
+			me.actionMenu = new ui.ctl.Toolbar.ActionMenu({
+				id: "actionMenu"
+			});
+				
+			me.actionMenu
+				.addAction({
+					id: "workflowUserAction",
+					brief: "Workflow Users",
+					title: "To view or modify the workflow user details.",
+					actionFunction: function() { me.actionMenuItem("Workflow Users"); }
+				})
+				.addAction({
+					id: "workflowJDECompanyeAction",
+					brief: "Workflow JDE Companies",
+					title: "To view or modify the workflow JDE Company associated user details.",
+					actionFunction: function() { me.actionMenuItem("Workflow JDE Companies"); }
+				});
+				
 			me.workflowModule = new ui.ctl.Input.DropDown.Filtered({
 				id: "WorkflowModule",
 				formatFunction: function( type ) { return type.title; },
@@ -122,6 +156,12 @@ ii.Class({
 
 			me.workflowModule.makeEnterTab()
 				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(function( isFinal, dataMap) {				
+	
+				if (me.workflowModule.indexSelected == -1)
+					this.setInvalid("Please select the correct Workflow Module.");
+			});
 
 			me.workflowStep = new ui.ctl.Input.DropDown.Filtered({
 				id: "WorkflowStep",
@@ -131,6 +171,12 @@ ii.Class({
 
 			me.workflowStep.makeEnterTab()
 				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(function( isFinal, dataMap) {				
+	
+				if (me.workflowStep.indexSelected == -1)
+					this.setInvalid("Please select the correct Workflow Step.");
+			});
 
 			me.assignedUserGrid = new ui.ctl.Grid({
 				id: "AssignedUserGrid",
@@ -171,10 +217,130 @@ ii.Class({
 
 					if (me.searchInput.getValue() == "")
 						this.setInvalid("Please enter search criteria.");
-					else
-						me.actionSearchItem();
 				});
 
+			me.anchorUserSearch = new ui.ctl.buttons.Sizeable({
+				id: "AnchorUserSearch",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Search&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionSearchItem(); },
+				hasHotState: true
+			});
+
+			me.anchorOK = new ui.ctl.buttons.Sizeable({
+				id: "AnchorOK",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionSaveItem(); },
+				hasHotState: true
+			});
+
+			me.anchorCancel = new ui.ctl.buttons.Sizeable({
+				id: "AnchorCancel",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionCancelItem(); },
+				hasHotState: true
+			});
+
+			me.jdeCompany = new ui.ctl.Input.DropDown.Filtered({
+		        id: "JDECompany",
+				formatFunction: function(type) { return type.name; }
+		    });
+			
+			me.jdeCompany.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(function( isFinal, dataMap) {				
+	
+				if (me.jdeCompany.indexSelected == -1)
+					this.setInvalid("Please select the correct JDE Company.");
+			});
+			
+			me.workflowModuleSearch = new ui.ctl.Input.DropDown.Filtered({
+		        id: "WorkflowModuleSearch",
+				formatFunction: function(type) { return type.title; },
+				changeFunction: function() { me.workflowModuleChanged(); }
+		    });
+			
+			me.workflowModuleSearch.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(function( isFinal, dataMap) {				
+	
+				if (me.workflowModuleSearch.indexSelected == -1)
+					this.setInvalid("Please select the correct Workflow Module.");
+			});
+			
+			me.workflowStepSearch = new ui.ctl.Input.DropDown.Filtered({
+		        id: "WorkflowStepSearch",
+				formatFunction: function(type) { return type.brief; },
+				changeFunction: function() { me.workflowStepChanged(); }
+		    });
+			
+			me.workflowStepSearch.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(function( isFinal, dataMap) {				
+	
+				if (me.workflowStepSearch.indexSelected == -1)
+					this.setInvalid("Please select the correct Workflow Step.");
+			});
+			
+			me.jdeCompanyGrid = new ui.ctl.Grid({
+				id: "JDECompanyGrid",
+				appendToId: "divForm",
+				allowAdds: false,
+				selectFunction: function( index ) { me.itemSelect(index); },
+				validationFunction: function() {
+					if (me.status != "New") 
+						return parent.fin.cmn.status.itemValid(); 
+				}
+			});
+
+			me.jdeCompanyGrid.addColumn("name", "name", "Name", "Name", null);
+			me.jdeCompanyGrid.addColumn("email", "email", "Email", "Email Id", 350);
+			me.jdeCompanyGrid.addColumn("active", "active", "Active", "Active", 100, function(active) { return (active == "1" ? "Yes" : "No") });
+			me.jdeCompanyGrid.capColumns();
+			
+			me.name = new ui.ctl.Input.Text({
+		        id: "Name",
+		        maxLength: 100,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.name.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+
+			me.email = new ui.ctl.Input.Text({
+		        id: "Email",
+		        maxLength: 100,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.email.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.email.getValue();
+
+					if (enteredText == "") return;
+
+					var emailArray = enteredText.split(";");
+
+					for (var index in emailArray) {
+						if (!(ui.cmn.text.validate.emailAddress(emailArray[index])))
+							this.setInvalid("Please enter valid Email Address. Use semicolon to separate two addresses.");
+					}
+			});
+
+			me.active = new ui.ctl.Input.Check({
+		        id: "Active",
+				changeFunction: function() { me.modified(); }
+		    });
+			
 			me.anchorSearch = new ui.ctl.buttons.Sizeable({
 				id: "AnchorSearch",
 				className: "iiButton",
@@ -190,12 +356,20 @@ ii.Class({
 				clickFunction: function() { me.actionSaveItem(); },
 				hasHotState: true
 			});
-
-			me.anchorCancel = new ui.ctl.buttons.Sizeable({
-				id: "AnchorCancel",
+			
+			me.anchorNew = new ui.ctl.buttons.Sizeable({
+				id: "AnchorNew",
 				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionCancelItem(); },
+				text: "<span>&nbsp;&nbsp;New&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionNewItem(); },				
+				hasHotState: true
+			});
+			
+			me.anchorUndo = new ui.ctl.buttons.Sizeable({
+				id: "AnchorUndo",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Undo&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionUndoItem(); },
 				hasHotState: true
 			});
 		},
@@ -203,6 +377,14 @@ ii.Class({
 		configureCommunications: function() {
 			var args = ii.args(arguments, {});
 			var me = this;
+
+			me.jdeCompanys = [];
+			me.jdeCompanysStore = me.cache.register({
+				storeId: "fiscalJDECompanys",
+				itemConstructor: fin.app.workflow.JDECompany,
+				itemConstructorArgs: fin.app.workflow.jdeCompanyArgs,
+				injectionArray: me.jdeCompanys
+			});
 
 			me.workflowModules = [];
 			me.workflowModuleStore = me.cache.register({
@@ -220,6 +402,14 @@ ii.Class({
 				injectionArray: me.workflowSteps
 			});
 
+			me.workflowJDECompanys = [];
+			me.workflowJDECompanyStore = me.cache.register({
+			storeId: "appWorkflowJDECompanys",
+				itemConstructor: fin.app.workflow.WorkflowJDECompany,
+				itemConstructorArgs: fin.app.workflow.workflowJDECompanyArgs,
+				injectionArray: me.workflowJDECompanys
+			});
+			
 			me.appUsers = [];
 			me.appUserStore = me.cache.register({
 				storeId: "appUsers",
@@ -235,6 +425,7 @@ ii.Class({
 			$("#imgAddUsers").bind("click", function() { me.actionAddItem(); });
 			$("#imgEditUser").bind("click", function() { me.actionEditItem(); });
 			$("#imgRemoveUser").bind("click", function() { me.actionRemoveItem(); });
+			$("#SearchInputText").bind("keydown", me, me.searchInputChanged);
 		},
 
 		setStatus: function(status) {
@@ -278,42 +469,151 @@ ii.Class({
 			}
 		},
 		
+		resizeControls: function() {
+			var me = this;
+
+			if (me.action == "Workflow Users") {
+				me.workflowModule.resizeText();
+				me.workflowStep.resizeText();
+			}
+			else if (me.action == "Workflow JDE Companies") {
+				me.jdeCompany.resizeText();
+				me.workflowModuleSearch.resizeText();
+				me.workflowStepSearch.resizeText();
+				me.name.resizeText();
+				me.email.resizeText();
+			}
+
+			me.resize();
+		},
+
+		resetControls: function() {
+			var me = this;
+
+			me.validator.reset();
+			
+			if (me.action == "Workflow Users") {
+				me.workflowModule.reset();
+				me.workflowStep.reset();
+				me.workflowStep.setData([]);
+				me.workflowStep.valid = true;
+				me.workflowStep.updateStatus();
+				me.assignedUserGrid.setData([]);
+				$("#Description").html("");
+			}
+			else if (me.action == "Workflow JDE Companies") {
+				me.workflowModuleSearch.reset();
+				me.workflowStepSearch.reset();
+				me.workflowStepSearch.setData([]);
+				me.workflowStepSearch.valid = true;
+				me.workflowStepSearch.updateStatus();
+				me.jdeCompanyGrid.setData([]);
+				me.name.setValue("");
+				me.email.setValue("");
+				me.active.setValue("true");
+			}
+		},
+		
+		actionMenuItem: function(section) {
+			var me = this;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
+			me.lastSelectedRowIndex = -1;
+			me.action = section;
+			me.setStatus("Normal");
+			$("#header").html(section);
+						
+			if (me.action == "Workflow Users") {
+				$("#WorkflowJDECompanies").hide();
+				$("#WorkflowUsers").show();
+			}
+			else if (me.action == "Workflow JDE Companies") {
+				$("#WorkflowUsers").hide();
+				$("#WorkflowJDECompanies").show();
+			}
+
+			me.resetControls();
+			me.resizeControls();
+		},
+		
+		jdeCompanysLoaded: function(me, activeId) {
+
+			me.jdeCompany.setData(me.jdeCompanys);
+			me.jdeCompany.select(0, me.jdeCompany.focused);
+			me.checkLoadCount();
+		},
+		
 		workflowModulesLoaded: function(me, activeId) {
 
 			me.workflowModule.setData(me.workflowModules);
+			me.workflowModuleSearch.setData(me.workflowModules);
+			me.workflowModule.reset();
+			me.workflowModule.updateStatus();
+			me.workflowModuleSearch.reset();
+			me.workflowModuleSearch.updateStatus();
 			me.checkLoadCount();
 			me.resize();
 		},
 
 		workflowModuleChanged: function() {
 			var me = this;
-			
-			if (me.workflowModule.indexSelected >= 0) {
-				me.setLoadCount();
-				me.workflowStepStore.fetch("userId:[user],workflowModuleId:" + me.workflowModules[me.workflowModule.indexSelected].id, me.workflowStepsLoaded, me);
+
+			if (me.action == "Workflow Users") {
+				if (me.workflowModule.indexSelected >= 0) {
+					me.workflowStep.fetchingData();
+					me.workflowStepStore.fetch("userId:[user],workflowModuleId:" + me.workflowModules[me.workflowModule.indexSelected].id, me.workflowStepsLoaded, me);
+				}
 			}
+			else if (me.action == "Workflow JDE Companies") {
+				if (me.workflowModuleSearch.indexSelected >= 0) {
+					me.workflowStepSearch.fetchingData();
+					me.workflowStepStore.fetch("userId:[user],workflowModuleId:" + me.workflowModules[me.workflowModuleSearch.indexSelected].id + ",addJDECompanyUser:1", me.workflowStepsLoaded, me);
+				}
+			}			
 		},
 
 		workflowStepsLoaded: function(me, activeId) {
 
-			me.workflowStep.setData(me.workflowSteps);
-			me.workflowStep.reset();
-			me.assignedUserGrid.setData([]);
-			me.checkLoadCount();
-			$("#Description").html("");
+			if (me.action == "Workflow Users") {
+				me.workflowStep.setData(me.workflowSteps);
+				me.workflowStep.reset();
+				me.workflowStep.updateStatus();
+				me.assignedUserGrid.setData([]);
+				$("#Description").html("");
+			}
+			else if (me.action == "Workflow JDE Companies")
+			{
+				me.workflowStepSearch.setData(me.workflowSteps);
+				me.workflowStepSearch.reset();
+				me.workflowStepSearch.updateStatus();
+				me.jdeCompanyGrid.setData([]);
+			}
 		},
 
 		workflowStepChanged: function() {
 			var me = this;
 			
-			if (me.workflowStep.indexSelected >= 0) {
-				$("#Description").html(me.workflowSteps[me.workflowStep.indexSelected].description);
-				if (me.workflowSteps[me.workflowStep.indexSelected].addUser)
-					$("#Paging").show();
-				else
-					$("#Paging").hide();
-				me.setLoadCount();
-				me.appUserStore.fetch("userId:[user],module:Workflow,id:" + me.workflowSteps[me.workflowStep.indexSelected].id, me.appAssignedUsersLoaded, me);
+			if (me.action == "Workflow Users") {
+				if (me.workflowStep.indexSelected >= 0) {
+					$("#Description").html(me.workflowSteps[me.workflowStep.indexSelected].description);
+					if (me.workflowSteps[me.workflowStep.indexSelected].addWorkflowUser)
+						$("#Paging").show();
+					else
+						$("#Paging").hide();
+					me.setLoadCount();
+					me.appUserStore.fetch("userId:[user],module:Workflow,id:" + me.workflowSteps[me.workflowStep.indexSelected].id, me.appAssignedUsersLoaded, me);
+				}
+			}
+			else if (me.action == "Workflow JDE Companies") {
+				if (me.jdeCompany.indexSelected >= 0 && me.workflowModuleSearch.indexSelected >= 0) {
+					var jdeCompanyId = me.jdeCompanys[me.jdeCompany.indexSelected].id;
+					var workflowModuleId = me.workflowModules[me.workflowModuleSearch.indexSelected].id;
+					var workflowStepId = me.workflowSteps[me.workflowStepSearch.indexSelected].id;
+					me.setLoadCount();
+					me.workflowJDECompanyStore.fetch("userId:[user],jdeCompanyId:" + jdeCompanyId + ",workflowModuleId:" + workflowModuleId + ",workflowStepId:" + workflowStepId, me.workflowJDECompanysLoaded, me);
+				}
 			}
 		},
 		
@@ -324,6 +624,12 @@ ii.Class({
 			me.checkLoadCount();
 		},
 		
+		workflowJDECompanysLoaded: function(me, activeId) {
+
+			me.jdeCompanyGrid.setData(me.workflowJDECompanys);
+			me.checkLoadCount();
+		},
+
 		actionAddItem: function() {
 			var me = this;
 
@@ -343,9 +649,30 @@ ii.Class({
 			$("#popupLoading").fadeOut("slow");
 		},
 		
+		searchInputChanged: function() {
+			var args = ii.args(arguments, {
+				event: {type: Object} // The (key) event object
+			});			
+			var event = args.event;
+			var me = event.data;
+				
+			if (event.keyCode == 13) {
+				me.loadAppUsers();
+			}
+		},
+		
 		actionSearchItem: function() {
 			var me = this;
 
+			if (me.action == "Workflow JDE Companies")
+				me.workflowStepChanged();
+			else
+				me.loadAppUsers();
+		},
+		
+		loadAppUsers: function() {
+			var me = this;
+			
 			if (me.searchInput.getValue() == "") {
 				me.searchInput.setInvalid("Please enter search criteria.");
 				return;
@@ -353,10 +680,7 @@ ii.Class({
 			
 			$("#popupLoading").fadeIn("slow");	
 			me.setStatus("Loading");
-			me.appUserStore.fetch("userId:[user],module:Workflow" +
-				",id:" + me.workflowSteps[me.workflowStep.indexSelected].id + 
-				",searchValue:" + me.searchInput.getValue()
-				, me.appUsersLoaded, me);
+			me.appUserStore.fetch("userId:[user],module:Workflow" +	",id:" + me.workflowSteps[me.workflowStep.indexSelected].id + ",searchValue:" + me.searchInput.getValue(), me.appUsersLoaded, me);
 		},
 		
 		appUsersLoaded: function(me, activeId) {
@@ -411,15 +735,87 @@ ii.Class({
 			me.status = "";
 		},
 		
+		itemSelect: function() { 
+			var args = ii.args(arguments, {
+				index: {type: Number}  // The index of the data subItem to select
+			});
+			var me = this;
+			var index = args.index;
+
+			me.status = "";
+			me.setStatus("Normal");
+
+			if (me.jdeCompanyGrid.data[index] != undefined) {
+				me.lastSelectedRowIndex = me.jdeCompanyGrid.activeRowIndex;
+				me.name.setValue(me.jdeCompanyGrid.data[index].name);
+				me.email.setValue(me.jdeCompanyGrid.data[index].email);
+				me.active.setValue(me.jdeCompanyGrid.data[index].active.toString());
+			}
+		},
+		
+		actionNewItem: function(me, activeId) {
+			var args = ii.args(arguments, {});
+			var me = this;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
+			me.jdeCompanyGrid.body.deselectAll();
+			me.validator.reset();
+			me.name.setValue("");
+			me.email.setValue("");
+			me.active.setValue("true");
+			me.status = "New";
+			me.setStatus("Normal");
+		},
+
+		actionUndoItem: function() {
+			var args = ii.args(arguments, {});
+			var me = this;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
+			if (me.lastSelectedRowIndex >= 0) {
+				me.jdeCompanyGrid.body.select(me.lastSelectedRowIndex);
+				me.itemSelect(me.lastSelectedRowIndex);
+			}
+
+			me.status = "";
+			me.setStatus("Normal");
+		},
+		
 		actionSaveItem: function() {
 			var me = this;
 			var item = [];
 
 			if (me.status == "AddUser")
 				hidePopup("popupUser");
+			else if (me.status == "New" || me.status == "") {
+				if (me.status == "" && me.jdeCompanyGrid.activeRowIndex == -1)
+					return;
+				// Check to see if the data entered is valid
+				me.validator.forceBlur();
+				me.validator.queryValidity(true);
+
+				if (!me.jdeCompany.valid || !me.workflowModuleSearch.valid || !me.workflowStepSearch.valid || !me.name.valid || !me.email.valid){
+					alert("In order to save, the errors on the page must be corrected.");
+					return false;
+				}
+				
+				item = new fin.app.workflow.WorkflowJDECompany(me.status == "New" ? 0 : me.workflowJDECompanys[me.jdeCompanyGrid.activeRowIndex].id
+					, me.jdeCompanys[me.jdeCompany.indexSelected].id
+					, me.workflowModules[me.workflowModuleSearch.indexSelected].id 
+					, me.workflowSteps[me.workflowStepSearch.indexSelected].id
+					, me.name.getValue()
+					, me.email.getValue()
+					, me.status == "New" ? me.workflowJDECompanys.length + 1 : me.workflowJDECompanys[me.jdeCompanyGrid.activeRowIndex].displayOrder
+					, me.active.check.checked
+					)
+			}
 
 			var xml = me.saveXmlBuild(item);
-			
+
 			if (xml == "")
 				return true;
 
@@ -434,15 +830,16 @@ ii.Class({
 				responseFunction: me.saveResponse,
 				referenceData: {me: me, item: item}
 			});
-			
+
 			return true;
 		},
 		
 		saveXmlBuild: function() {
 			var args = ii.args(arguments,{
-				item: {type: fin.app.workflow.WorkflowStep}
+				item: {type: fin.app.workflow.WorkflowJDECompany}
 			});			
 			var me = this;
+			var item = args.item;
 			var xml = "";
 
 			if (me.status == "AddUser") {
@@ -477,6 +874,18 @@ ii.Class({
 			else if (me.status == "DeleteUser") {
 				xml += '<appWorkflowUserDelete';
 				xml += ' id="' + me.assignedUsers[me.assignedUserGrid.activeRowIndex].id + '"';
+				xml += '/>';
+			}
+			else if (me.status == "New" || me.status == "") {
+				xml += '<appWorkflowJDECompany';
+				xml += ' id="' + item.id + '"';
+				xml += ' jdeCompanyId="' +  item.jdeCompanyId + '"';
+				xml += ' workflowModuleId="' +  item.workflowModuleId + '"';
+				xml += ' workflowStepId="' +  item.workflowStepId + '"';
+				xml += ' name="' + ui.cmn.text.xml.encode(item.name) + '"';
+				xml += ' email="' + ui.cmn.text.xml.encode(item.email) + '"';
+				xml += ' displayOrder="' + item.displayOrder + '"';
+				xml += ' active="' + item.active + '"';
 				xml += '/>';
 			}
 
@@ -518,6 +927,21 @@ ii.Class({
 							else if (me.status == "DeleteUser") {
 								me.assignedUsers.splice(me.assignedUserGrid.activeRowIndex, 1);
 								me.assignedUserGrid.setData(me.assignedUsers);
+							}
+
+							break;
+
+						case "appWorkflowJDECompany":
+							if (me.status == "New") {
+								item.id = parseInt($(this).attr("id"), 10);
+								me.workflowJDECompanys.push(item)
+								me.lastSelectedRowIndex = me.workflowJDECompanys.length - 1;
+								me.jdeCompanyGrid.setData(me.workflowJDECompanys);
+								me.jdeCompanyGrid.body.select(me.lastSelectedRowIndex);
+							}
+							else {
+								me.workflowJDECompanys[me.lastSelectedRowIndex] = item;
+								me.jdeCompanyGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
 							}
 
 							break;

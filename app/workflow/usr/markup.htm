@@ -30,6 +30,12 @@
 		        <div id="popupMessageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
 		    </div>
 		</div>
+		 <div class="pageHeader">
+			 <div style="float: left; width: 10%;"><div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div></div>
+			 <div style="float: left; width: 80%;"><div id="header" class="header"></div></div>
+			 <div style="float: left; width: 10%;">&nbsp;</div>
+        </div>
+		<div style="clear:both;"></div>
 		<div id="itemStatusDiv">
 			<div id="itemStatusImage" class="itemStatusImage"></div>
 			<div id="itemModifiedImage" class="itemModifiedImage"></div>
@@ -37,65 +43,141 @@
 		</div>
 		<div style="clear:both;"></div>
 		<div class="pageBody">
-			<div id="contentAreasContainerLeft">
-				<div class="contentArea">
-					<div class="header">Workflow Steps Info</div>
-                    <div id="WokkflowStepContainer">
-                    	<div style="clear:both;height:10px;"></div>
-						<div id="TableEditArea">
-							<div class="labelTextArea">
-								<span class="requiredFieldIndicator">&#149;</span>Workflow Module:
+			<div id="WorkflowUsers">
+				<div class="leftContainer">
+					<div class="contentArea">
+						<div class="header">Workflow Steps Info</div>
+	                    <div id="WokkflowStepContainer">
+	                    	<div style="clear:both;height:10px;"></div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Workflow Module:
+								</div>
+								<div class="inputTextAreaSmall">
+									<div id="WorkflowModule"></div>
+								</div>
+								<div style="clear:both;"></div>
 							</div>
-							<div class="inputTextArea">
-								<div id="WorkflowModule"></div>
+	                    	<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Workflow Step:
+								</div>
+								<div class="inputTextAreaSmall">
+									<div id="WorkflowStep"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="labelTextArea">
+								<span class="nonRequiredFieldIndicator">Description:</span>
+							</div>
+	 						<div class="description"><span id="Description"></span></div>
+	                    </div>
+	                </div>
+				</div>
+				<div class="rightContainer">
+					<div class="contentArea">
+						<div id="AssignedUserGridContainer">
+							<div class="header" id="gridHeader">Users Info</div>
+							<div id="AssignedUserGrid"></div>
+							<div id="Paging">							
+					            <table cellpadding="0" cellspacing="0" style="width: 100%">
+			                        <tr class="gridFooter">
+			                            <td class="borderVertical"></td>					                            
+			                            <td>
+			                                <table cellpadding="0" cellspacing="0" style="width: 100%">
+			                                    <tr class="gridFooter">
+			                                    	<td style="width: 75px">
+			                                            &nbsp;<img id="imgAddUsers" src="/fin/cmn/usr/media/Common/add.png" style="cursor: pointer" alt="Add Users" title="Click here to add the users" />
+														<img id="imgEditUser" src="/fin/cmn/usr/media/Common/modify.png" style="cursor: pointer" alt="Edit User" title="Click here to activate or deactivate the user" />
+														<img id="imgRemoveUser" src="/fin/cmn/usr/media/Common/delete.png" style="cursor: pointer" alt="Remove User" title="Click here to remove the user" />
+											         </td>
+			                                        <td align="center">&nbsp;</td>
+													<td style="width: 20px;">&nbsp;</td>
+			                                    </tr>
+			                                </table>
+			                            </td>
+			                            <td class="borderVertical"></td>
+			                        </tr>
+			                        <tr><td class="borderHorizontal" colspan="5"></td></tr>
+			                    </table>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
-                    	<div id="TableEditArea">
-							<div class="labelTextArea">
-								<span class="requiredFieldIndicator">&#149;</span>Workflow Step:
-							</div>
-							<div class="inputTextArea">
-								<div id="WorkflowStep"></div>
-							</div>
-							<div style="clear:both;"></div>
-						</div>
-						<div class="labelTextArea">
-							<span class="nonRequiredFieldIndicator">Description:</span>
-						</div>
- 						<div class="description"><span id="Description"></span></div>
-                    </div>
-                </div>
-			</div>
-			<div id="contentAreasContainerRight">
-				<div class="contentArea">
-					<div id="AssignedUserGridContainer">
-						<div class="header" id="header">Users Info</div>
-						<div id="AssignedUserGrid"></div>
-						<div id="Paging">							
-				            <table cellpadding="0" cellspacing="0" style="width: 100%">
-		                        <tr class="gridFooter">
-		                            <td class="borderVertical"></td>					                            
-		                            <td>
-		                                <table cellpadding="0" cellspacing="0" style="width: 100%">
-		                                    <tr class="gridFooter">
-		                                    	<td style="width: 75px">
-		                                            &nbsp;<img id="imgAddUsers" src="/fin/cmn/usr/media/Common/add.png" style="cursor: pointer" alt="Add Users" title="Click here to add the users" />
-													<img id="imgEditUser" src="/fin/cmn/usr/media/Common/modify.png" style="cursor: pointer" alt="Edit User" title="Click here to activate or deactivate the user" />
-													<img id="imgRemoveUser" src="/fin/cmn/usr/media/Common/delete.png" style="cursor: pointer" alt="Remove User" title="Click here to remove the user" />
-										         </td>
-		                                        <td align="center">&nbsp;</td>
-												<td style="width: 20px;">&nbsp;</td>
-		                                    </tr>
-		                                </table>
-		                            </td>
-		                            <td class="borderVertical"></td>
-		                        </tr>
-		                        <tr><td class="borderHorizontal" colspan="5"></td></tr>
-		                    </table>
-						</div>
-						<div style="clear:both;"></div>
 					</div>
+				</div>
+			</div>
+			<div id="WorkflowJDECompanies" style="display:none;">
+				<div id="SearchTemplate" class="body">
+					<div class="labelTextArea">
+						<span class="requiredFieldIndicator">&#149;</span>JDE Company:
+					</div>
+	                <div class="inputTextAreaSmall">
+	                	<div id="JDECompany"></div>
+					</div>
+					<div class="labelTextArea">
+						<span class="requiredFieldIndicator">&#149;</span>Workflow Module:
+					</div>
+	                <div class="inputTextAreaSmall">
+	                	<div id="WorkflowModuleSearch"></div>
+					</div>
+					<div class="labelTextArea">
+						<span class="requiredFieldIndicator">&#149;</span>Workflow Step:
+					</div>
+	                <div class="inputTextAreaSmall">
+	                	<div id="WorkflowStepSearch"></div>
+					</div>
+					<div id="AnchorSearch"></div>
+				</div>
+				<div style="clear:both; height:10px;"></div>
+				<div class="leftContainer">
+				 	<div class="contentArea">
+	                    <div class="body">
+	                        <div id="JDECompanyGrid"></div>
+							<div style="clear:both;"></div>
+	                    </div>
+	                </div>
+				</div>
+				<div class="rightContainer">
+					<div id="ContainerArea">
+						<div class="contentArea">
+		                    <div class="body">
+		                    	<div style="clear:both; height:10px;"></div>
+		 						<div id="TableEditArea">
+		                            <div class="labelTextArea">
+		                            	<span class="requiredFieldIndicator">&#149;</span>Name:
+									</div>
+		                            <div class="inputTextArea">
+		                            	<div id="Name"></div>
+									</div>
+		                        	<div style="clear:both;"></div>
+								</div>
+								<div id="TableEditArea">
+		                            <div class="labelTextArea">
+		                            	<span class="requiredFieldIndicator">&#149;</span>Email:
+									</div>
+		                            <div class="inputTextArea">
+		                            	<div id="Email"></div>
+									</div>
+		                        	<div style="clear:both;"></div>
+								</div>
+								<div id="TableEditArea">
+		                            <div class="labelTextArea">
+		                            	<span class="requiredFieldIndicator">&#149;</span>Active:
+									</div>
+		                            <div class="inputTextArea">
+		                            	<div id="Active"></div>
+									</div>
+		                        	<div style="clear:both;"></div>
+								</div>
+		                    </div>
+						</div>
+					</div>
+					<div class="footer">
+		                <div id="AnchorSave"></div>
+		                <div id="AnchorNew"></div>
+		                <div id="AnchorUndo"></div>
+		                <div style="clear:both;"></div>
+		            </div>
 				</div>
 			</div>
 			<div id="popupUser">
@@ -107,12 +189,12 @@
 						<div class="inputTextArea">
 							<div id="SearchInput"></div>
 						</div>
-						<div id="AnchorSearch"></div>
+						<div id="AnchorUserSearch"></div>
 						<div style="clear:both;"></div>
 						<div id="UserGrid"></div>
 						<div style="clear:both;"></div>
 						<div>
-	                    	<div id="AnchorSave"></div>
+	                    	<div id="AnchorOK"></div>
 							<div id="AnchorCancel"></div>
 						</div>
 					</div>
