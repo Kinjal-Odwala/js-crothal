@@ -2131,9 +2131,9 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
     $scope.getStep = function (stepNum, statusId) {
         var desc = "";
         
-        if (stepNum != null || stepNum != "") {
+        if (stepNum != null && stepNum != "") {
             if (statusId == 2) {
-                if (EmpActions.getWorkflowBrief(stepNum) != 'N/A') {
+                if (EmpActions.getWorkflowBrief(stepNum) != 'N/A' && EmpActions.getWorkflowBrief(stepNum) != "") {
                     desc = '-' + " " + EmpActions.getWorkflowBrief(stepNum) + " " + 'Approved';
                 }
             }
