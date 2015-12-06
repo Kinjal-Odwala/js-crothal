@@ -1976,16 +1976,16 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         employeeNumber: null,
         createUser: null,
         pafDate: null,
-        status: null,
+        status: 1,
         formType: null
     };
 
     $scope.selectedItem = null;
 
-    if ($scope.pafFilter.hcmHouseCode == null)
-        $scope.pafFilter.status = null;
-    else
-        $scope.pafFilter.status = 1;
+    //if ($scope.pafFilter.hcmHouseCode == null)
+    //    $scope.pafFilter.status = null;
+    //else
+    //    $scope.pafFilter.status = 1;
 
     $scope.dateOptions = {
         formatYear: 'yy',
@@ -2002,6 +2002,12 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         });
     }
 
+    var setCurrentHcmHouseCode = function (callback) {
+        EmpActions.setCurrentHcmHouseCode(function (response) {
+            callback(response);
+        });
+    }
+
     var load = function () {
         EmpActions.getHcmHouseCodes(function (result) {
 
@@ -2015,6 +2021,15 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
 
         EmpActions.getWorkflowSteps(2, function (result) {
         });
+
+        if ($scope.pafFilter.hcmHouseCode == null) {
+            setCurrentHcmHouseCode(function (response) {
+                if (!angular.isDefined(response)) {
+                    return;
+                }
+                $scope.pafFilter.hcmHouseCode = response.id;
+            });
+        }
     }
 
     load();
@@ -2880,6 +2895,14 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         });
     }
 
+    var setCurrentHcmHouseCode = function (callback) {
+
+        apiRequest('hcm', '<criteria>storeId:hcmHouseCodes,userId:[user],defaultOnly:true,</criteria>', function (xml) {
+            if (callback)
+                callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
+        });
+    }
+
     var getHouseCodeName = function (id) {
         if (cache.houseCodes == null)
             return '';
@@ -3128,6 +3151,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         findEmployeePersonnelAction: findEmployeePersonnelAction,
         getCarAllowances: getCarAllowances,
         getHcmHouseCodes: getHcmHouseCodes,
+        setCurrentHcmHouseCode: setCurrentHcmHouseCode,
         getHouseCodeName: getHouseCodeName,
         getStateName: getStateName,
         getHcmHouseCodeByBrief: getHcmHouseCodeByBrief,
