@@ -3015,7 +3015,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
                              + ',workflowModuleId:' + stepnumber
                 + ',</criteria>', function (xml) {
                     cache.workflowSteps = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
-                    getWorkflowSteps(callback);
+                    //getWorkflowSteps(callback);
                 });
 
     }
