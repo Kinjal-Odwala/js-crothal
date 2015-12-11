@@ -120,10 +120,17 @@ ii.init.register( function() {
 		, regionalManagerName: {type: String, required: false, defaultValue: ""}
 		, regionalManagerTitle: {type: String, required: false, defaultValue: ""}
 		, regionalManagerEmail: {type: String, required: false, defaultValue: ""}
+		, divisionPresidentName: {type: String, required: false, defaultValue: ""}
+		, divisionPresidentEmail: {type: String, required: false, defaultValue: ""}
+		, financeDirectorName: {type: String, required: false, defaultValue: ""}
+		, financeDirectorEmail: {type: String, required: false, defaultValue: ""}
+		, chiefFinancialOfficerName: {type: String, required: false, defaultValue: ""}
+		, chiefExecutiveOfficerName: {type: String, required: false, defaultValue: ""}
 		, valid: {type: Boolean, required: false, defaultValue: true}
 		, taxPercent: {type: String, required: false, defaultValue: ""}
 		, taxAmount: {type: String, required: false, defaultValue: ""}
-		, freight: {type: String, required: false, defaultValue: ""}		
+		, freight: {type: String, required: false, defaultValue: ""}
+		, stepBrief: {type: String, required: false, defaultValue: ""}
 	};
 	
 	fin.pur.poCapitalRequisition.poCapitalRequisitionItemArgs = {
@@ -189,6 +196,13 @@ ii.init.register( function() {
 		, fileName: {type: String, required: false, defaultValue: ""}
 	};
 
+	fin.pur.poCapitalRequisition.userArgs = {
+		id: {type: Number}
+		, firstName: {type: String, required: false, defaultValue: ""}
+		, lastName: {type: String, required: false, defaultValue: ""}
+		, email: {type: String, required: false, defaultValue: ""}
+	};
+
 	fin.pur.poCapitalRequisition.employeeManagerDetailArgs = {
 		id: {type: Number}
 		, employeeId: {type: String, required: false, defaultValue: ""}
@@ -196,6 +210,22 @@ ii.init.register( function() {
 		, managerName: {type: String, required: false, defaultValue: ""}
 		, managerEmail: {type: String, required: false, defaultValue: ""}
 		, jobTitle: {type: String, required: false, defaultValue: ""}
+	};
+	
+	fin.pur.poCapitalRequisition.workflowJDECompanyArgs = {
+		id: {type: Number}
+		, workflowModuleId: {type: Number, required: false, defaultValue: 0}
+		, jdeCompanyId: {type: Number, required: false, defaultValue: 0}
+		, stepNumber: {type: Number, required: false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, title: {type: String, required: false, defaultValue: ""}
+		, email: {type: String, required: false, defaultValue: ""}
+	};
+	
+	fin.pur.poCapitalRequisition.systemVariableArgs = {
+		id: {type: Number, defaultValue: 0}
+		, variableName: {type: String, required: false, defaultValue: ""}
+		, variableValue: {type: String, required: false, defaultValue: ""}	
 	};
 	
 }, 2);
@@ -379,11 +409,41 @@ ii.Class({
 });
 
 ii.Class({
+	Name: "fin.pur.poCapitalRequisition.User",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.userArgs);
+			$.extend(this, args);
+		}
+	}
+})
+
+ii.Class({
 	Name: "fin.pur.poCapitalRequisition.EmployeeManagerDetail",
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.pur.poCapitalRequisition.employeeManagerDetailArgs);
 			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.pur.poCapitalRequisition.WorkflowJDECompany",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.workflowJDECompanyArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.pur.poCapitalRequisition.SystemVariable",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.systemVariableArgs);
+			$.extend(this, args);			
 		}
 	}
 });

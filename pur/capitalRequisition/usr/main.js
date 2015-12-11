@@ -24,7 +24,7 @@ ii.Class({
 	Extends: "ui.lay.HouseCodeSearch",
     Definition: {
 	
-        init: function () {
+        init: function() {
 			var args = ii.args(arguments, {});
 			var me = this;			
 				
@@ -43,6 +43,7 @@ ii.Class({
 			me.fileName = "";
 			me.glAccounts = [];
 			me.action = "POCapitalRequisition";
+			me.approvalAmountLimit1 = 0;
 
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -106,7 +107,7 @@ ii.Class({
 				$("#pageLoading").fadeIn("slow");
 
 				ii.timer.timing("Page displayed");
-				me.loadCount = 4;
+				me.loadCount = 6;
 				me.session.registerFetchNotify(me.sessionLoaded, me);
 
 				if (!me.poCapitalRequisitionShow && !me.writeInProcess) {
@@ -128,6 +129,8 @@ ii.Class({
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
 				me.accountStore.fetch("userId:[user]", me.accountsLoaded, me);
 				me.personStore.fetch("userId:[user],id:" + me.session.propertyGet("personId"), me.personsLoaded, me);
+				me.systemVariableStore.fetch("userId:[user],name:POCapitalRequisitionApprovalAmountLimit1", me.approvalAmountLimit1Loaded, me);
+				me.appUserStore.fetch("userId:[user],module:Workflow,id:0,workflowModuleId:3,stepNumber:4", me.chiefFinancialOfficersLoaded, me);
 				me.employeeManagerDetailStore.fetch("userId:[user]", me.employeeManagerDetailsLoaded, me);
 			}				
 			else
@@ -355,11 +358,20 @@ ii.Class({
 			me.capitalRequisitionGrid.addColumn("requestedDate ", "requestedDate", "Requested Date", "Requested Date", 150);
 			me.capitalRequisitionGrid.addColumn("deliveryDate", "deliveryDate", "Delivery Date", "Delivery Date", 120);
 			me.capitalRequisitionGrid.addColumn("vendorTitle", "vendorTitle", "Vendor Title", "Vendor Title", null);
-			me.capitalRequisitionGrid.addColumn("statusType", "statusType", "Status", "Status", 120, function(statusType) {
+			me.capitalRequisitionGrid.addColumn("statusType", "statusType", "Status", "Status", 200, function(statusType) {
+				var index = 0;
+				if (me.capitalRequisitionGrid.activeRowIndex >= 0)
+					index = me.capitalRequisitionGrid.activeRowIndex;
+				else
+					index = me.capitalRequisitionGrid.rows.length - 1
+				var stepBrief = "";
+				if (index >= 0) {
+					stepBrief = me.capitalRequisitionGrid.data[index].stepBrief;;
+				}	
 				if (statusType == 1)
 					return "Open";
 				else if (statusType == 2)
-					return "In Process";
+					return "In Process" + (stepBrief == "" ? "" : " - " + stepBrief + " Approved");
 				else if (statusType == 6)
                 	return "Cancelled";
 				else if (statusType == 8)
@@ -367,7 +379,7 @@ ii.Class({
 				else if (statusType == 9)
                 	return "Completed";				
 				else if (statusType == 10)
-                	return "Unapproved";
+                	return "Unapproved" + (stepBrief == "" ? "" : " - " + stepBrief);
 				else if (statusType == 11)
                 	return "Completed - PO";
 				else if (statusType == 12)
@@ -575,45 +587,6 @@ ii.Class({
 			me.reasonForRequest.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
-
-			me.regionalManagerName = new ui.ctl.Input.Text({
-		        id: "RegionalManagerName",
-				maxLength: 100,
-				changeFunction: function() { me.modified(); }
-		    });
-
-			me.regionalManagerName.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-
-			me.regionalManagerTitle = new ui.ctl.Input.Text({
-		        id: "RegionalManagerTitle",
-				maxLength: 100,
-				changeFunction: function() { me.modified(); }
-		    });
-
-			me.regionalManagerTitle.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-
-			me.regionalManagerEmail = new ui.ctl.Input.Text({
-		        id: "RegionalManagerEmail",
-				maxLength: 100,
-				changeFunction: function() { me.modified(); }
-		    });
-
-			me.regionalManagerEmail.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation( function( isFinal, dataMap ) {
-					
-					var enteredText = me.regionalManagerEmail.getValue();
-					
-					if (enteredText == "") return;
-					
-					if (!(ui.cmn.text.validate.emailAddress(enteredText)))
-						this.setInvalid("Please enter valid Email.");
-			});
 
 			me.vendor = new ui.ctl.Input.Text({
 				id: "Vendor",
@@ -1024,6 +997,121 @@ ii.Class({
 
 			me.vendor.text.readOnly = true;
 			me.documentTitle.active = false;
+			
+			me.regionalManagerName = new ui.ctl.Input.Text({
+		        id: "RegionalManagerName",
+				maxLength: 100,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.regionalManagerName.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+
+			me.regionalManagerEmail = new ui.ctl.Input.Text({
+		        id: "RegionalManagerEmail",
+				maxLength: 100,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.regionalManagerEmail.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+					
+					var enteredText = me.regionalManagerEmail.getValue();
+					
+					if (enteredText == "") return;
+					
+					if (!(ui.cmn.text.validate.emailAddress(enteredText)))
+						this.setInvalid("Please enter valid Email.");
+			});
+
+			me.regionalManagerTitle = new ui.ctl.Input.Text({
+		        id: "RegionalManagerTitle",
+				maxLength: 100,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.regionalManagerTitle.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+
+			me.divisionPresidentName = new ui.ctl.Input.Text({
+		        id: "DivisionPresidentName",
+				maxLength: 256,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.divisionPresidentName.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.divisionPresidentName.getValue();
+
+					if (enteredText == "" && me.total <= me.approvalAmountLimit1)
+						this.valid = true;
+			});
+
+			me.divisionPresidentEmail = new ui.ctl.Input.Text({
+		        id: "DivisionPresidentEmail",
+				maxLength: 256,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.divisionPresidentEmail.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.divisionPresidentEmail.getValue();
+
+					if (enteredText == "" && me.total <= me.approvalAmountLimit1)
+						this.valid = true;
+					else {
+						var emailArray = enteredText.split(";");
+
+						for (var index in emailArray) {
+							if (!(ui.cmn.text.validate.emailAddress(emailArray[index])))
+								this.setInvalid("Please enter valid Email Address. Use semicolon to separate two addresses.");
+						}
+					}
+			});
+
+			me.financeDirectorName = new ui.ctl.Input.Text({
+		        id: "FinanceDirectorName",
+				maxLength: 256,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.financeDirectorName.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+
+			me.financeDirectorEmail = new ui.ctl.Input.Text({
+		        id: "FinanceDirectorEmail",
+				maxLength: 256,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.financeDirectorEmail.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.financeDirectorEmail.getValue();
+
+					if (enteredText == "") return;
+
+					var emailArray = enteredText.split(";");
+
+					for (var index in emailArray) {
+						if (!(ui.cmn.text.validate.emailAddress(emailArray[index])))
+							this.setInvalid("Please enter valid Email Address. Use semicolon to separate two addresses.");
+					}
+			});
+
 			me.setTabIndexes();
 		},		
 
@@ -1145,12 +1233,36 @@ ii.Class({
 				injectionArray: me.fileNames
 			});
 
+			me.appUsers = [];
+			me.appUserStore = me.cache.register({
+				storeId: "appUsers",
+				itemConstructor: fin.pur.poCapitalRequisition.User,
+				itemConstructorArgs: fin.pur.poCapitalRequisition.userArgs,
+				injectionArray: me.appUsers
+			});
+
 			me.employeeManagerDetails = [];
 			me.employeeManagerDetailStore = me.cache.register({
 			storeId: "employeeManagerDetails",
 				itemConstructor: fin.pur.poCapitalRequisition.EmployeeManagerDetail,
 				itemConstructorArgs: fin.pur.poCapitalRequisition.employeeManagerDetailArgs,
 				injectionArray: me.employeeManagerDetails
+			});
+
+			me.workflowJDECompanys = [];
+			me.workflowJDECompanyStore = me.cache.register({
+			storeId: "appWorkflowJDECompanys",
+				itemConstructor: fin.pur.poCapitalRequisition.WorkflowJDECompany,
+				itemConstructorArgs: fin.pur.poCapitalRequisition.workflowJDECompanyArgs,
+				injectionArray: me.workflowJDECompanys
+			});
+
+			me.systemVariables = [];
+			me.systemVariableStore = me.cache.register({
+				storeId: "systemVariables",
+				itemConstructor: fin.pur.poCapitalRequisition.SystemVariable,
+				itemConstructorArgs: fin.pur.poCapitalRequisition.systemVariableArgs,
+				injectionArray: me.systemVariables
 			});
 		},
 
@@ -1243,9 +1355,6 @@ ii.Class({
 			//Existing Business - 20
 			//Budgeted - 21
 			//Unbudgeted - 22
-			me.regionalManagerName.text.tabIndex = 23;
-			me.regionalManagerTitle.text.tabIndex = 24;
-			me.regionalManagerEmail.text.tabIndex = 25;
 			me.vendor.text.tabIndex = 31;
 			me.searchItem.text.tabIndex = 32;
 			me.category.text.tabIndex = 33;			
@@ -1262,6 +1371,13 @@ ii.Class({
 			me.shippingZip.text.tabIndex = 47;
 			me.shippingFax.text.tabIndex = 48;
 			me.shippingPhone.text.tabIndex = 49;
+			me.regionalManagerName.text.tabIndex = 50;
+			me.regionalManagerEmail.text.tabIndex = 51;
+			me.regionalManagerTitle.text.tabIndex = 52;
+			me.divisionPresidentName.text.tabIndex = 53;
+			me.divisionPresidentEmail.text.tabIndex = 54;
+			me.financeDirectorName.text.tabIndex = 55;
+			me.financeDirectorEmail.text.tabIndex = 56;
 		},
 		
 		resizeControls: function() {
@@ -1282,9 +1398,6 @@ ii.Class({
 			me.vendorPhone.resizeText();
 			me.vendorEmail.resizeText();
 			me.reasonForRequest.resizeText();
-			me.regionalManagerName.resizeText();
-			me.regionalManagerTitle.resizeText();
-			me.regionalManagerEmail.resizeText();
 			me.vendor.resizeText();
 			me.searchItem.resizeText();
 			me.category.resizeText();			
@@ -1300,7 +1413,14 @@ ii.Class({
 			me.shippingState.resizeText();
 			me.shippingZip.resizeText();
 			me.shippingPhone.resizeText();
-			me.shippingFax.resizeText();			
+			me.shippingFax.resizeText();
+			me.regionalManagerName.resizeText();
+			me.regionalManagerEmail.resizeText();
+			me.regionalManagerTitle.resizeText();
+			me.divisionPresidentName.resizeText();
+			me.divisionPresidentEmail.resizeText();
+			me.financeDirectorName.resizeText();
+			me.financeDirectorEmail.resizeText();
 			me.resize();
 		},
 		
@@ -1322,9 +1442,6 @@ ii.Class({
 			me.vendorPhone.text.readOnly = readOnly;
 			me.vendorEmail.text.readOnly = readOnly;
 			me.reasonForRequest.text.readOnly = readOnly;
-			me.regionalManagerName.text.readOnly = readOnly;
-			me.regionalManagerTitle.text.readOnly = readOnly;
-			me.regionalManagerEmail.text.readOnly = readOnly;
 			me.taxPercent.text.readOnly = readOnly;
 			me.taxAmount.text.readOnly = readOnly;
 			me.freight.text.readOnly = readOnly;
@@ -1335,10 +1452,18 @@ ii.Class({
 			me.shippingState.text.readOnly = readOnly;
 			me.shippingZip.text.readOnly = readOnly;
 			me.shippingPhone.text.readOnly = readOnly;
-			me.shippingFax.text.readOnly = readOnly;			
+			me.shippingFax.text.readOnly = readOnly;
+			me.regionalManagerName.text.readOnly = readOnly;
+			me.regionalManagerEmail.text.readOnly = readOnly;
+			me.regionalManagerTitle.text.readOnly = readOnly;
+			me.divisionPresidentName.text.readOnly = readOnly;
+			me.divisionPresidentEmail.text.readOnly = readOnly;
+			me.financeDirectorName.text.readOnly = readOnly;
+			me.financeDirectorEmail.text.readOnly = readOnly;			
 			
 			$("#FundingCapital")[0].disabled = readOnly;
 			$("#FundingDirectReimbursement")[0].disabled = readOnly;
+			$("#FundingClientInvestment")[0].disabled = readOnly;
 			$("#BusinessTypeNewBusiness")[0].disabled = readOnly;
 			$("#BusinessTypeNewConstruction")[0].disabled = readOnly;
 			$("#BusinessTypeExistingBusiness")[0].disabled = readOnly;			
@@ -1546,6 +1671,7 @@ ii.Class({
 			
 			me.houseCodeDetailStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId, me.houseCodeDetailsLoaded, me);
 			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.houseCodeJobsLoaded, me);
+			me.workflowJDECompanyStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",workflowModuleId:3,stepNumber:2", me.workflowStep2JDECompanysLoaded, me);
 		},
 		
 		houseCodeDetailsLoaded: function(me, activeId) {		
@@ -1565,6 +1691,30 @@ ii.Class({
 			}
 		},
 		
+		workflowStep2JDECompanysLoaded: function(me, activeId) {
+
+			me.divisionPresidentNames = "";
+			me.divisionPresidentEmails = "";
+
+			for (var index = 0; index < me.workflowJDECompanys.length; index++) {
+				me.divisionPresidentNames += (me.divisionPresidentNames == "" ? me.workflowJDECompanys[index].name : ";" + me.workflowJDECompanys[index].name);
+				me.divisionPresidentEmails += (me.divisionPresidentEmails == "" ? me.workflowJDECompanys[index].email : ";" + me.workflowJDECompanys[index].email);
+			}
+
+			me.workflowJDECompanyStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",workflowModuleId:3,stepNumber:3", me.workflowStep3JDECompanysLoaded, me);
+		},
+		
+		workflowStep3JDECompanysLoaded: function(me, activeId) {
+
+			me.financeDirectorNames = "";
+			me.financeDirectorEmails = "";
+
+			for (var index = 0; index < me.workflowJDECompanys.length; index++) {
+				me.financeDirectorNames += (me.financeDirectorNames == "" ? me.workflowJDECompanys[index].name : ";" + me.workflowJDECompanys[index].name);
+				me.financeDirectorEmails += (me.financeDirectorEmails == "" ? me.workflowJDECompanys[index].email : ";" + me.workflowJDECompanys[index].email);
+			}
+		},
+
 		searchInputChanged: function() {
 			var args = ii.args(arguments, {
 				event: {type: Object} // The (key) event object
@@ -1676,6 +1826,46 @@ ii.Class({
 			me.checkLoadCount();
 		},
 
+		approvalAmountLimit1Loaded: function(me, activeId) {
+
+			if (me.systemVariables.length > 0) {
+				me.approvalAmountLimit1 = parseFloat(me.systemVariables[0].variableValue);
+			}
+			me.checkLoadCount();
+			//me.systemVariableStore.fetch("userId:[user],name:POCapitalRequisitionApprovalAmountLimit2", me.approvalAmountLimit2Loaded, me);
+		},
+
+//		approvalAmountLimit2Loaded: function(me, activeId) {
+//
+//			if (me.systemVariables.length > 0) {
+//				me.approvalAmountLimit2 = parseFloat(me.systemVariables[0].variableValue);
+//			}
+//			me.checkLoadCount();
+//		},
+
+		chiefFinancialOfficersLoaded: function(me, activeId) {
+
+			if (me.appUsers.length > 0) {
+				me.chiefFinancialOfficer = me.appUsers[0].firstName + " " + me.appUsers[0].lastName;
+				$("#ChiefFinancialOfficer").html(me.chiefFinancialOfficer);
+			}
+			else
+				me.chiefFinancialOfficer = "";
+			
+			me.appUserStore.fetch("userId:[user],module:Workflow,id:0,workflowModuleId:3,stepNumber:5", me.chiefExecutiveOfficersLoaded, me);
+		},
+
+		chiefExecutiveOfficersLoaded: function(me, activeId) {
+
+			if (me.appUsers.length > 0) {
+				me.chiefExecutiveOfficer = me.appUsers[0].firstName + " " + me.appUsers[0].lastName;
+				$("#ChiefExecutiveOfficer").html(me.chiefExecutiveOfficer);
+			}
+			else
+				me.chiefExecutiveOfficer = "";
+			me.checkLoadCount();
+		},
+
 		employeeManagerDetailsLoaded: function(me, activeId) {
 
 			me.checkLoadCount();
@@ -1728,7 +1918,10 @@ ii.Class({
 				}
 				else {
 					if (me.capitalRequisitionGrid.data[index].statusType == 2) {
-						$("#AnchorResendRequisition").show();
+						if (me.capitalRequisitionGrid.data[index].stepBrief == "")
+							$("#AnchorResendRequisition").show();
+						else
+							$("#AnchorResendRequisition").hide();
 						$("#AnchorSendRequisition").hide();
 						$("#AnchorCancelRequisition").show();
 						if (me.approveInProcess)
@@ -1807,6 +2000,8 @@ ii.Class({
 				$('#FundingCapital').attr('checked', true);
 			else if (item.funding == "Direct Reimbursement") 
 				$('#FundingDirectReimbursement').attr('checked', true);
+			else if (item.funding == "Client Investment") 
+				$('#FundingClientInvestment').attr('checked', true);
 				
 			if (item.businessType == "New Business") 
 				$('#BusinessTypeNewBusiness').attr('checked', true);
@@ -1820,9 +2015,6 @@ ii.Class({
 			else if (item.budgeting == "Unbudgeted") 
 				$('#BudgetingUnbudgeted').attr('checked', true);
 
-			me.regionalManagerName.setValue(item.regionalManagerName);
-			me.regionalManagerTitle.setValue(item.regionalManagerTitle);
-			me.regionalManagerEmail.setValue(item.regionalManagerEmail);
 			me.vendor.setValue(item.vendorTitle);
 			me.vendorNumber = item.vendorNumber;
 			me.taxPercent.setValue(item.taxPercent == 0 ? "" : item.taxPercent);
@@ -1845,6 +2037,15 @@ ii.Class({
 			me.shippingZip.setValue(item.shipToZip);
 			me.shippingPhone.setValue(item.shipToPhone);
 			me.shippingFax.setValue(item.shipToFax);
+			me.regionalManagerName.setValue(item.regionalManagerName);
+			me.regionalManagerEmail.setValue(item.regionalManagerEmail);
+			me.regionalManagerTitle.setValue(item.regionalManagerTitle);
+			me.divisionPresidentName.setValue(item.divisionPresidentName);
+			me.divisionPresidentEmail.setValue(item.divisionPresidentEmail);
+			me.financeDirectorName.setValue(item.financeDirectorName);
+			me.financeDirectorEmail.setValue(item.financeDirectorEmail);
+			$("#ChiefFinancialOfficer").html(item.chiefFinancialOfficerName);
+			$("#ChiefExecutiveOfficer").html(item.chiefExecutiveOfficerName);
 		},
 
 		poCapitalRequisitonItemsLoaded: function(me, activeId) {
@@ -2023,8 +2224,6 @@ ii.Class({
 			me.validator.forceBlur();
 			
 			if (me.wizardCount == 1) {
-				
-				//if (me.status == "NewPOCapitalRequisition" || me.vendorId == 0)
 				valid = me.validator.queryValidity(true);
 					
 				if (!me.requestorEmail.valid
@@ -2040,9 +2239,6 @@ ii.Class({
 					|| !me.vendorPhone.valid
 					|| !me.vendorEmail.valid
 					|| !me.reasonForRequest.valid
-					|| !me.regionalManagerName.valid
-					|| !me.regionalManagerTitle.valid
-					|| !me.regionalManagerEmail.valid
 					) {
 					alert("In order to continue, the errors on the page must be corrected.");	
 					return false;
@@ -2062,7 +2258,7 @@ ii.Class({
 				else
 					return true;
 			}
-			else if (me.wizardCount == 2) {				 	
+			else if (me.wizardCount == 2) {
 				valid = me.validator.queryValidity(true);
 				
 				if (me.itemGrid.activeRowIndex != undefined && me.itemGrid.activeRowIndex != -1 && $("#selectInputCheck" + me.itemGrid.activeRowIndex)[0].checked && (!me.itemNumber.valid
@@ -2122,7 +2318,14 @@ ii.Class({
 					|| !me.shippingAddress1.valid
 					|| !me.shippingCity.valid
 					|| !me.shippingState.valid					
-					|| !me.shippingZip.valid					
+					|| !me.shippingZip.valid
+					|| !me.regionalManagerName.valid
+					|| !me.regionalManagerEmail.valid
+					|| !me.regionalManagerTitle.valid
+					|| !me.divisionPresidentName.valid
+					|| !me.divisionPresidentEmail.valid
+					|| !me.financeDirectorName.valid
+					|| !me.financeDirectorEmail.valid					
 					) {
 					return false;
 				}
@@ -2190,18 +2393,6 @@ ii.Class({
 			$('input[name="Funding"]').attr('checked', false);
 			$('input[name="BusinessType"]').attr('checked', false);
 			$('input[name="Budgeting"]').attr('checked', false);
-
-			if (me.employeeManagerDetails.length > 0) {
-				me.regionalManagerName.setValue(me.employeeManagerDetails[0].managerName);
-				me.regionalManagerTitle.setValue(me.employeeManagerDetails[0].jobTitle);
-				me.regionalManagerEmail.setValue(me.employeeManagerDetails[0].managerEmail);
-			}
-			else {
-				me.regionalManagerName.setValue("");
-				me.regionalManagerTitle.setValue("Regional Manager");
-				me.regionalManagerEmail.setValue("");
-			}
-			
 			me.vendor.setValue("");
 			me.searchItem.setValue("");
 			me.category.reset();
@@ -2224,6 +2415,24 @@ ii.Class({
 			me.shippingZip.setValue(me.houseCodeDetails[0].shippingZip);
 			me.shippingPhone.setValue("");
 			me.shippingFax.setValue("");
+			
+			if (me.employeeManagerDetails.length > 0) {
+				me.regionalManagerName.setValue(me.employeeManagerDetails[0].managerName);
+				me.regionalManagerEmail.setValue(me.employeeManagerDetails[0].managerEmail);
+				me.regionalManagerTitle.setValue(me.employeeManagerDetails[0].jobTitle);
+			}
+			else {
+				me.regionalManagerName.setValue("");
+				me.regionalManagerEmail.setValue("");
+				me.regionalManagerTitle.setValue("Regional Manager");
+			}
+
+			me.divisionPresidentName.setValue(me.divisionPresidentNames);
+			me.divisionPresidentEmail.setValue(me.divisionPresidentEmails);
+			me.financeDirectorName.setValue(me.financeDirectorNames);
+			me.financeDirectorEmail.setValue(me.financeDirectorEmails);
+			$("#ChiefFinancialOfficer").html(me.chiefFinancialOfficer);
+			$("#ChiefExecutiveOfficer").html(me.chiefExecutiveOfficer);
 
 			$("#AnchorView").hide();
 			$("#AnchorEdit").hide();
@@ -2374,7 +2583,17 @@ ii.Class({
 					else
 						me.anchorSave.display(ui.cmn.behaviorStates.disabled);
 						
-					$("#Header").text("Shipping Information");
+					$("#Header").text("Additional Information");
+					
+					if (me.total > me.approvalAmountLimit1) {
+						$("#DivisionPresidentNameLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Division President Name:");
+						$("#DivisionPresidentEmailLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Division President Email:");
+					}
+					else {
+						$("#DivisionPresidentNameLabel").html("<span id='nonRequiredFieldIndicator'>Division President Name:</span>");
+						$("#DivisionPresidentEmailLabel").html("<span id='nonRequiredFieldIndicator'>Division President Email:</span>");
+					}
+					
 					break;
 			}
 			
@@ -2667,6 +2886,12 @@ ii.Class({
 					, me.regionalManagerName.getValue()
 					, me.regionalManagerTitle.getValue()
 					, me.regionalManagerEmail.getValue()
+					, me.divisionPresidentName.getValue()
+					, me.divisionPresidentEmail.getValue()
+					, me.financeDirectorName.getValue()
+					, me.financeDirectorEmail.getValue()
+					, me.chiefFinancialOfficer
+					, me.chiefExecutiveOfficer
 					, false
 					, (me.taxPercent.getValue() != "" && !isNaN(me.taxPercent.getValue())) ? parseFloat(me.taxPercent.getValue()).toFixed(2) : 0
 					, (me.taxAmount.getValue() != "" && !isNaN(me.taxAmount.getValue())) ? parseFloat(me.taxAmount.getValue()).toFixed(2) : 0
@@ -2758,6 +2983,12 @@ ii.Class({
 				xml += ' regionalManagerName="' + ui.cmn.text.xml.encode(item.regionalManagerName) + '"';
 				xml += ' regionalManagerTitle="' + ui.cmn.text.xml.encode(item.regionalManagerTitle) + '"';
 				xml += ' regionalManagerEmail="' + ui.cmn.text.xml.encode(item.regionalManagerEmail) + '"';
+				xml += ' divisionPresidentName="' + ui.cmn.text.xml.encode(item.divisionPresidentName) + '"';
+				xml += ' divisionPresidentEmail="' + ui.cmn.text.xml.encode(item.divisionPresidentEmail) + '"';
+				xml += ' financeDirectorName="' + ui.cmn.text.xml.encode(item.financeDirectorName) + '"';
+				xml += ' financeDirectorEmail="' + ui.cmn.text.xml.encode(item.financeDirectorEmail) + '"';
+				xml += ' chiefFinancialOfficerName="' + ui.cmn.text.xml.encode(item.chiefFinancialOfficerName) + '"';
+				xml += ' chiefExecutiveOfficerName="' + ui.cmn.text.xml.encode(item.chiefExecutiveOfficerName) + '"';
 				xml += ' shipToAddress1="' + ui.cmn.text.xml.encode(item.shipToAddress1) + '"';
 				xml += ' shipToAddress2="' + ui.cmn.text.xml.encode(item.shipToAddress2) + '"';
 				xml += ' shipToCity="' + ui.cmn.text.xml.encode(item.shipToCity) + '"';
@@ -2844,6 +3075,12 @@ ii.Class({
 				xml += ' regionalManagerName="' + ui.cmn.text.xml.encode(item.regionalManagerName) + '"';
 				xml += ' regionalManagerTitle="' + ui.cmn.text.xml.encode(item.regionalManagerTitle) + '"';
 				xml += ' regionalManagerEmail="' + ui.cmn.text.xml.encode(item.regionalManagerEmail) + '"';
+				xml += ' divisionPresidentName="' + ui.cmn.text.xml.encode(item.divisionPresidentName) + '"';
+				xml += ' divisionPresidentEmail="' + ui.cmn.text.xml.encode(item.divisionPresidentEmail) + '"';
+				xml += ' financeDirectorName="' + ui.cmn.text.xml.encode(item.financeDirectorName) + '"';
+				xml += ' financeDirectorEmail="' + ui.cmn.text.xml.encode(item.financeDirectorEmail) + '"';
+				xml += ' chiefFinancialOfficerName="' + ui.cmn.text.xml.encode(item.chiefFinancialOfficerName) + '"';
+				xml += ' chiefExecutiveOfficerName="' + ui.cmn.text.xml.encode(item.chiefExecutiveOfficerName) + '"';
 				xml += ' action="' + me.status + '"';
 				xml += ' jdeCompleted="0"';
 				xml += ' taxPercent="' + (item.taxPercent != 0 ? item.taxPercent : "") + '"';
@@ -2922,6 +3159,7 @@ ii.Class({
                                 }								
 								else if (me.status == "SendRequisition" || me.status == "ResendRequisition" 
 									|| me.status == "CancelRequisition" || me.status == "ApproveRequisition") {
+									item.stepBrief = "";
 									me.poCapitalRequisitions[me.lastSelectedRowIndex] = item;
 									me.capitalRequisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);									
 									me.itemReadOnlyGrid.setData(me.poCapitalRequisitionItems);

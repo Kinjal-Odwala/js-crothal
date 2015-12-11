@@ -103,7 +103,7 @@
 
 
 .table-scroll tbody {
-    max-height: 500px;
+    max-height: 400px;
     overflow-y: auto;
     width: 100%;
     display: block;

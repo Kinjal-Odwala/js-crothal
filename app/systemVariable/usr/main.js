@@ -182,7 +182,7 @@ ii.Class({
 				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});
 			
-			me.systemVariableGrid.addColumn("variableName", "variableName", "Name", "Name", 250);
+			me.systemVariableGrid.addColumn("variableName", "variableName", "Name", "Name", 300);
 			me.systemVariableGrid.addColumn("variableValue", "variableValue", "Value", "Value", null);
 			me.systemVariableGrid.capColumns();
 

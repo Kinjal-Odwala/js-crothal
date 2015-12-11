@@ -70,6 +70,15 @@
 	padding-left: 10px;
 }
 
+.labelTextAreaMedium {
+	float: left;
+	width: 190px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	text-align: left;
+}
+
 .labelTextAreaBlank {
 	float: left;
 	height: 27px;
@@ -97,15 +106,6 @@
 
 .spanTextAreaTotal {
 	padding-right: 5px;
-}
-
-.labelRequisitionNumber {
-	float: left;
-	width: 160px;
-	font-family: Verdana;
-	font-size: 12px;
-	color: black;
-	text-align: left;
 }
 
 .inputTextAreaSmall {
