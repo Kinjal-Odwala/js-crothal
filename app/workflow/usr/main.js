@@ -627,6 +627,10 @@ ii.Class({
 		workflowJDECompanysLoaded: function(me, activeId) {
 
 			me.jdeCompanyGrid.setData(me.workflowJDECompanys);
+			me.validator.reset();
+			me.name.setValue("");
+			me.email.setValue("");
+			me.active.setValue("true");
 			me.checkLoadCount();
 		},
 
