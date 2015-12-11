@@ -359,7 +359,11 @@ ii.Class({
 			me.capitalRequisitionGrid.addColumn("deliveryDate", "deliveryDate", "Delivery Date", "Delivery Date", 120);
 			me.capitalRequisitionGrid.addColumn("vendorTitle", "vendorTitle", "Vendor Title", "Vendor Title", null);
 			me.capitalRequisitionGrid.addColumn("statusType", "statusType", "Status", "Status", 200, function(statusType) {
-				var index = me.capitalRequisitionGrid.rows.length - 1;
+				var index = 0;
+				if (me.capitalRequisitionGrid.activeRowIndex >= 0)
+					index = me.capitalRequisitionGrid.activeRowIndex;
+				else
+					index = me.capitalRequisitionGrid.rows.length - 1
 				var stepBrief = "";
 				if (index >= 0) {
 					stepBrief = me.capitalRequisitionGrid.data[index].stepBrief;;
@@ -1459,6 +1463,7 @@ ii.Class({
 			
 			$("#FundingCapital")[0].disabled = readOnly;
 			$("#FundingDirectReimbursement")[0].disabled = readOnly;
+			$("#FundingClientInvestment")[0].disabled = readOnly;
 			$("#BusinessTypeNewBusiness")[0].disabled = readOnly;
 			$("#BusinessTypeNewConstruction")[0].disabled = readOnly;
 			$("#BusinessTypeExistingBusiness")[0].disabled = readOnly;			
@@ -1995,6 +2000,8 @@ ii.Class({
 				$('#FundingCapital').attr('checked', true);
 			else if (item.funding == "Direct Reimbursement") 
 				$('#FundingDirectReimbursement').attr('checked', true);
+			else if (item.funding == "Client Investment") 
+				$('#FundingClientInvestment').attr('checked', true);
 				
 			if (item.businessType == "New Business") 
 				$('#BusinessTypeNewBusiness').attr('checked', true);
