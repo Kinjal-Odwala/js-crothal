@@ -1807,30 +1807,40 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             if ($scope.empAction.NewHire) {
                 $scope.empAction.HireDate = $scope.empAction.Data.NewHire.HireDate;
                 $scope.empAction.PositionType = $scope.empAction.Data.NewHire.PositionType;
-                $scope.empAction.Status = $scope.empAction.Data.NewHire.Status;
+                //$scope.empAction.Status = $scope.empAction.Data.NewHire.Status;
                 if ($scope.empAction.Data.NewHire.Status == "FullTimeHours") {
                     $scope.empAction.Hours = $scope.empAction.Data.NewHire.FullTimeHours;
+                    $scope.empAction.Status = "Full Time";
                 }
                 else if ($scope.empAction.Data.NewHire.Status == "TemporaryHours") {
                     $scope.empAction.Hours = $scope.empAction.Data.NewHire.TemporaryHours;
+                    $scope.empAction.Status = "Temporary";
                 }
                 else if ($scope.empAction.Data.NewHire.Status == "PartTimeHours") {
                     $scope.empAction.Hours = $scope.empAction.Data.NewHire.PartTimeHours;
+                    $scope.empAction.Status = "Part Time";
                 }
-                $scope.empAction.PayStatus = $scope.empAction.Data.NewHire.PayStatus;
+                //$scope.empAction.PayStatus = $scope.empAction.Data.NewHire.PayStatus;
+                var salary = 0;
                 if ($scope.empAction.Data.NewHire.PayStatus == "AnnualSalaryAmount") {
                     $scope.empAction.Amount = $scope.empAction.Data.NewHire.AnnualSalaryAmount;
+                    $scope.empAction.PayStatus = "Salary";
                 }
                 else if ($scope.empAction.Data.NewHire.PayStatus == "AdminHourlyAmount") {
                     $scope.empAction.Amount = $scope.empAction.Data.NewHire.AdminHourlyAmount;
+                    salary = $scope.empAction.Data.NewHire.AdminHourlyAmount * 52 * 40;
+                    $scope.empAction.PayStatus = "Admin Hourly";
                 }
                 else if ($scope.empAction.Data.NewHire.PayStatus == "HourlyRateAmount") {
                     $scope.empAction.Amount = $scope.empAction.Data.NewHire.HourlyRateAmount;
+                    salary = $scope.empAction.Data.NewHire.HourlyRateAmount * 52 * 40;
+                    $scope.empAction.PayStatus = "Hourly";
                 }
                 else if ($scope.empAction.Data.NewHire.PayStatus == "PerDiemValue") {
                     $scope.empAction.Amount = $scope.empAction.Data.NewHire.PerDiemValue;
+                    $scope.empAction.PayStatus = "Per Diem";
                 }
-                $scope.empAction.ReportingName = $scope.empAction.Data.NewHire.ReportingName;
+                $scope.empAction.ManagerName = $scope.empAction.Data.NewHire.ReportingName;
                 $scope.empAction.TrainingLocation = $scope.empAction.Data.NewHire.HcmHouseCodeTrainingLocation;
                 $scope.empAction.Duration = $scope.empAction.Data.NewHire.Duration;
                 $scope.empAction.CarAllowance = $scope.empAction.Data.NewHire.CarAllowance;
@@ -1839,34 +1849,48 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.PayGrade = $scope.empAction.Data.NewHire.PayGrade;
                 $scope.empAction.ManagerEmail = $scope.empAction.Data.NewHire.ReportingEmail;
                 $scope.empAction.TrainingContact = $scope.empAction.Data.NewHire.TrainingContact;
+                $scope.empAction.PayRange = $scope.getPayRange($scope.empAction.Data.NewHire.PayGrade, salary);
+                $scope.empAction.ManagerNumber = $scope.empAction.Data["NewHire"].ReportingManagerNumber;
+                $scope.empAction.ManagerTitle = $scope.empAction.Data.NewHire.ReportingTitle;
             }
             else if ($scope.empAction.ReHire) {
                 $scope.empAction.HireDate = $scope.empAction.Data.ReHire.HireDate;
                 $scope.empAction.PositionType = $scope.empAction.Data.ReHire.PositionType;
-                $scope.empAction.Status = $scope.empAction.Data.ReHire.Status;
+                //$scope.empAction.Status = $scope.empAction.Data.ReHire.Status;
                 if ($scope.empAction.Data.ReHire.Status == "FullTimeHours") {
                     $scope.empAction.Hours = $scope.empAction.Data.ReHire.FullTimeHours;
+                    $scope.empAction.Status = "Full Time";
                 }
                 else if ($scope.empAction.Data.ReHire.Status == "TemporaryHours") {
                     $scope.empAction.Hours = $scope.empAction.Data.ReHire.TemporaryHours;
+                    $scope.empAction.Status = "Temporary";
                 }
                 else if ($scope.empAction.Data.ReHire.Status == "PartTimeHours") {
                     $scope.empAction.Hours = $scope.empAction.Data.ReHire.PartTimeHours;
+                    $scope.empAction.Status = "Part Time";
                 }
-                $scope.empAction.PayStatus = $scope.empAction.Data.ReHire.PayStatus;
+                //$scope.empAction.PayStatus = $scope.empAction.Data.ReHire.PayStatus;
+                var salary = 0;
                 if ($scope.empAction.Data.ReHire.PayStatus == "AnnualSalaryAmount") {
                     $scope.empAction.Amount = $scope.empAction.Data.ReHire.AnnualSalaryAmount;
+                    salary = $scope.empAction.Data.ReHire.AnnualSalaryAmount;
+                    $scope.empAction.PayStatus = "Salary";
                 }
                 else if ($scope.empAction.Data.ReHire.PayStatus == "AdminHourlyAmount") {
                     $scope.empAction.Amount = $scope.empAction.Data.ReHire.AdminHourlyAmount;
+                    salary = $scope.empAction.Data.ReHire.AdminHourlyAmount * 52 * 40;
+                    $scope.empAction.PayStatus = "Admin Hourly";
                 }
                 else if ($scope.empAction.Data.ReHire.PayStatus == "HourlyRateAmount") {
                     $scope.empAction.Amount = $scope.empAction.Data.ReHire.HourlyRateAmount;
+                    slary = $scope.empAction.Data.ReHire.HourlyRateAmount * 52 * 40;
+                    $scope.empAction.PayStatus = "Hourly";
                 }
                 else if ($scope.empAction.Data.ReHire.PayStatus == "PerDiemValue") {
                     $scope.empAction.Amount = $scope.empAction.Data.ReHire.PerDiemValue;
+                    $scope.empAction.PayStatus = "Per Diem";
                 }
-                $scope.empAction.ReportingName = $scope.empAction.Data.ReHire.ReportingName;
+                $scope.empAction.ManagerName = $scope.empAction.Data.ReHire.ReportingName;
                 $scope.empAction.TrainingLocation = $scope.empAction.Data.ReHire.HcmHouseCodeTrainingLocation;
                 $scope.empAction.Duration = $scope.empAction.Data.ReHire.Duration;
                 $scope.empAction.CarAllowance = $scope.empAction.Data.ReHire.CarAllowance;
@@ -1874,16 +1898,28 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.PayGrade = $scope.empAction.Data.ReHire.PayGrade;
                 $scope.empAction.ReportingManagerEmail = $scope.empAction.Data.ReHire.ReportingEmail;
                 $scope.empAction.TrainingContact = $scope.empAction.Data.ReHire.TrainingContact;
+                $scope.empAction.PayRange = $scope.getPayRange($scope.empAction.Data.ReHire.PayGrade, salary);
+                $scope.empAction.ManagerNumber = $scope.empAction.Data["ReHire"].ReportingManagerNumber;
+                $scope.empAction.ManagerTitle = $scope.empAction.Data.ReHire.ReportingTitle;
             }
             else if ($scope.empAction.Separation) {
                 $scope.empAction.SeparationDate = $scope.empAction.Data.Separation.SeparationDate;
                 $scope.empAction.VacationDaysDue = $scope.empAction.Data.Separation.VacationDaysDue;
-                $scope.empAction.PayNumberOfWeeks = $scope.empAction.Data.Separation.PayNumberOfWeeks;
+                $scope.empAction.SeverancePayNumberOfWeeks = $scope.empAction.Data.Separation.PayNumberOfWeeks;
                 $scope.empAction.ResignationType = $scope.empAction.Data.Separation.ResignationType;
                 $scope.empAction.TerminationType = $scope.empAction.Data.Separation.TerminationType;
                 $scope.empAction.LayoffType = $scope.empAction.Data.Separation.LayoffType;
                 $scope.empAction.SeparationReHire = $scope.empAction.Data.Separation.SeparationReHire;
-                $scope.empAction.SeparationReason = $scope.empAction.Data.Separation.SeparationReason;
+                var revWithHR = $scope.empAction.Data.Separation.ReviewedWithHR;
+                if (revWithHR == 0) {
+                    $scope.empAction.HRReview = "CHRA";
+                }
+                else if (revWithHR == 1) {
+                    $scope.empAction.HRReview = "CHRC";
+                }
+                else if (revWithHR == 2) {
+                    $scope.empAction.HRReview = "CSHRC";
+                }
             }
             else if ($scope.empAction.Loa) {
                 $scope.empAction.LoaDate = $scope.empAction.Data.Loa.LoaDate;
@@ -1902,7 +1938,10 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.NewCarAllowance = $scope.empAction.Data.Promotion.NewCarAllowance;
                 $scope.empAction.NewBonusEligibleType = $scope.empAction.Data.Promotion.NewBonusEligibleType;
                 $scope.empAction.Instructions = $scope.empAction.Data.Promotion.Instructions;
-                $scope.empAction.newManagerEmail = $scope.empAction.Data.Promotion.ReportingEmail;
+                $scope.empAction.NewManagerEmail = $scope.empAction.Data.Promotion.ReportingEmail;
+                $scope.empAction.NewPayRange = $scope.getPayRange($scope.empAction.Data.Promotion.NewPayGrade, $scope.empAction.Data.Promotion.NewSalary);
+                $scope.empAction.NewManagerNumber = $scope.empAction.Data["Promotion"].ReportingManagerNumber;
+                $scope.empAction.NewManagerTitle = $scope.empAction.Data.Promotion.ReportingTitle;
             }
             else if ($scope.empAction.Demotion) {
                 $scope.empAction.CurrentPositionType = $scope.empAction.Data.Demotion.CurrentPositionType;
@@ -1917,7 +1956,12 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.NewCarAllowance = $scope.empAction.Data.Demotion.NewCarAllowance;
                 $scope.empAction.NewBonusEligibleType = $scope.empAction.Data.Demotion.NewBonusEligibleType;
                 $scope.empAction.Instructions = $scope.empAction.Data.Demotion.Instructions;
-                $scope.empAction.newManagerEmail = $scope.empAction.Data.Demotion.ReportingEmail;
+                $scope.empAction.NewManagerEmail = $scope.empAction.Data.Demotion.ReportingEmail;
+                $scope.empAction.NewPayRange = $scope.getPayRange($scope.empAction.Data.Demotion.NewPayGrade, $scope.empAction.Data.Demotion.NewSalary);
+                $scope.empAction.NewManagerNumber = $scope.empAction.Data["Demotion"].ReportingManagerNumber;
+                $scope.empAction.NewManagerEmail = $scope.empAction.Data.Demotion.ReportingEmail;
+                $scope.empAction.NewManagerNumber = $scope.empAction.Data["Demotion"].ReportingManagerNumber;
+                $scope.empAction.NewManagerTitle = $scope.empAction.Data.Demotion.ReportingTitle;
             }
             else if ($scope.empAction.SalaryChange) {
                 $scope.empAction.CurrentPositionType = $scope.empAction.Data.SalaryChange.CurrentPositionType;
@@ -1932,13 +1976,28 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.NewCarAllowance = $scope.empAction.Data.SalaryChange.NewCarAllowance;
                 $scope.empAction.NewBonusEligibleType = $scope.empAction.Data.SalaryChange.NewBonusEligibleType;
                 $scope.empAction.Instructions = $scope.empAction.Data.SalaryChange.Instructions;
-                $scope.empAction.newManagerEmail = $scope.empAction.Data.SalaryChange.ReportingEmail;
+                $scope.empAction.NewManagerEmail = $scope.empAction.Data.SalaryChange.ReportingEmail;
+                $scope.empAction.NewPayRange = $scope.getPayRange($scope.empAction.Data.SalaryChange.NewPayGrade, $scope.empAction.Data.SalaryChange.NewSalary);
+                $scope.empAction.NewManagerNumber = $scope.empAction.Data["SalaryChange"].ReportingManagerNumber;
+                $scope.empAction.NewManagerTitle = $scope.empAction.Data.SalaryChange.ReportingTitle;
+                var revWithHR = $scope.empAction.Data.SalaryChange.ReviewedWithHR;
+                if (revWithHR == 0) {
+                    $scope.empAction.HRReview = "CHRA";
+                }
+                else if (revWithHR == 1) {
+                    $scope.empAction.HRReview = "CHRC";
+                }
+                else if (revWithHR == 2) {
+                    $scope.empAction.HRReview = "CSHRC";
+                }
             }
             if ($scope.empAction.Transfer) {
                 $scope.empAction.TransferEffectiveDate = $scope.empAction.Data.Transfer.TransferEffectiveDate;
                 $scope.empAction.HouseCodeTransfer = $scope.empAction.Data.Transfer.HouseCodeTransfer;
-                $scope.empAction.TransferReportingName = $scope.empAction.Data.Transfer.ReportingName;
-                $scope.empAction.TransferReportingEmail = $scope.empAction.Data.Transfer.ReportingEmail;
+                $scope.empAction.TransferManagerName = $scope.empAction.Data.Transfer.ReportingName;
+                $scope.empAction.TransferManagerEmail = $scope.empAction.Data.Transfer.ReportingEmail;
+                $scope.empAction.TransferManagerNumber = $scope.empAction.Data["Transfer"].ReportingManagerNumber;
+                $scope.empAction.TransferManagerTitle = $scope.empAction.Data.Transfer.ReportingTitle;
             }
             if ($scope.empAction.PersonalInfoChange)
             {
@@ -1958,11 +2017,12 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             $scope.empAction.RelocationApprovedBy = $scope.empAction.Data.Relocation.RelocationApprovedBy;
             $scope.empAction.RelocationPlan = $scope.empAction.Data.Relocation.RelocationPlan;
             $scope.empAction.CurrentSalary = $scope.empAction.Data.Compensation.CurrentSalary;
-            $scope.empAction.CurrentPayRange = $scope.empAction.Data.Compensation.CurrentPayGrade;
+            var curPayGrade = $scope.empAction.Data.Compensation.CurrentPayGrade;
+            $scope.empAction.CurrentPayGrade = curPayGrade.substring(0, curPayGrade.indexOf("("));
             $scope.empAction.LastIncreaseDecreaseDate = $scope.empAction.Data.Compensation.DateLastIncrease;
-            $scope.empAction.LastIncreaseDecreasePercentage = $scope.empAction.Data.Compensation.PercentLastIncrease;
-            $scope.empAction.PayRange = $scope.empAction.Data.Compensation.CurrentPayRange;
-            $scope.empAction.NewPayRange = $scope.empAction.Data.Compensation.PercentLastIncrease;
+            var lastIncPer = $scope.empAction.Data.Compensation.PercentLastIncrease;
+            $scope.empAction.LastIncreaseDecreasePercentage = lastIncPer.replace("%","");
+            $scope.empAction.CurrentPayRange = $scope.empAction.Data.Compensation.CurrentPayRange;
 
             EmpActions.saveEmployeePersonnelAction($scope.empAction, function (status) {
                 document.location.hash = 'list';
