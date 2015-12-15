@@ -3234,8 +3234,10 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         apiRequest('app', '<criteria>storeId:appWorkflowSteps,userId:[user]'
                              + ',workflowModuleId:' + stepnumber
                 + ',</criteria>', function (xml) {
-                    cache.workflowSteps = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
-                    //getWorkflowSteps(callback);
+                    if (callback) {
+                        cache.workflowSteps = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
+                        callback(cache.workflowSteps);
+                    }
                 });
 
     }
