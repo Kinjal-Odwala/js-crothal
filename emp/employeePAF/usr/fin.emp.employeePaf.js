@@ -1090,13 +1090,9 @@ var deserializeXml = function (xml, nodeName, options) {
     return items;
 }
 
-
-
 var paf = angular.module('paf', ['ui.bootstrap', 'ngRoute']);
 
-
 if (!window.top.fin) {
-    //window.top.fin = { appUI: { houseCodeId: 227, glbFscYear: 2, glbFscPeriod: 18} };
     window.top.fin = { appUI: { houseCodeId: 415, glbFscYear: 4, glbFscPeriod: 45, glbWeek: 2 } };
 }
 
@@ -1125,10 +1121,12 @@ paf.config(['$routeProvider', function ($routeProvider) {
     });
 }]);
 
-// 
-
 paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$timeout', '$routeParams', '$modal', '$location', function ($scope, $document, EmpActions, $filter, $timeout, $routeParams, $modal, $location) {
-    $scope.HcmHouseCodes = [];
+	$scope.HcmHouseCodes = [];
+    $scope.States = [];
+	$scope.JobCodes = [];
+	$scope.PersonActionTypes = [];
+	$scope.PayGrades = [];
     $scope.viewLoading = false;
 
     $scope.dateOptions = {
@@ -1165,9 +1163,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         };
     }
 
-    $scope.HcmHouseCodes = [];
-    $scope.States = [];
-
     $scope.empAction = {
         Number: 0,
         HcmHouseCode: null,
@@ -1200,7 +1195,25 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         }
     }
 
-    var loadPersonActionTypes = function () {
+    var loadHouseCodes = function () {
+        EmpActions.getHcmHouseCodes(function (result) {
+            $scope.HcmHouseCodes = result;
+        });
+    }
+	
+	var loadStateTypes = function () {
+        EmpActions.getStateTypes(function (result) {
+            $scope.States = result;
+        });
+    }
+	
+    var loadJobCodes = function () {
+        EmpActions.getJobCodes(function (result) {
+            $scope.JobCodes = result;
+        });
+    }
+	
+	var loadPersonActionTypes = function () {
         EmpActions.getPersonActionTypes(function (result) {
             var filters = function (item) {
                 return $filter('filter')(result, { typeName: item });
@@ -1214,27 +1227,13 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             $scope.lkup.Resignations = filters("Resignation");
         });
     }
-    var loadStateTypes = function () {
-        EmpActions.getStateTypes(function (result) {
-            $scope.States = result;
-        });
-    }
-    var loadHouseCodes = function () {
-        EmpActions.getHcmHouseCodes(function (result) {
-            $scope.HcmHouseCodes = result;
-        });
-    }
-    var loadJobCodes = function () {
-        EmpActions.getJobCodes(function (result) {
-            $scope.JobCodes = result;
-        });
-    }
+	
     var loadPayGrades = function () {
         EmpActions.getPayGrades(function (result) {
             $scope.PayGrades = result;
         });
     }
-
+	
     var initReporting = function (positionType) {
         if (!$scope.empAction.Data.Compensation)
             return;
@@ -1390,16 +1389,16 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
     var init = function () {
 
-        loadPersonActionTypes();
-        loadStateTypes();
         loadHouseCodes();
+		loadStateTypes();
         loadJobCodes();
+		loadPersonActionTypes();
         loadPayGrades();
-
     }
 
     $scope.getPayRange = function (payGrade, salary) {
-        if (!payGrade || isNaN(salary))
+        
+		if (!payGrade || isNaN(salary))
             return '';
 
         var payGradeItem = $filter('filter')($scope.PayGrades, function (item) {
@@ -1408,6 +1407,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
         if (!angular.isDefined(payGradeItem) || !payGradeItem || payGradeItem.length == 0)
             return '';
+			
         payGradeItem = payGradeItem[0];
 
         var range = '';
@@ -1434,14 +1434,12 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     init();
 
     if ($routeParams.id) {
-
         EmpActions.findEmployeePersonnelAction($routeParams.id, function (result) {
             if (!result) {
                 $location.path('/list');
                 return;
             }
             $scope.empAction = result;
-
             loadCompensations($scope.empAction.EmployeeNumber);
         });
     }
@@ -1465,7 +1463,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
     $scope.onEmployeeNumberChanged = function (employeeNumber) {
         if ($scope.empAction.Data.Employee && parseInt($scope.empAction.Data.Employee.employeeNumber) == parseInt(employeeNumber)) {
-
             return;
         }
 
@@ -1483,7 +1480,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 validateHcmHouseCode();
             });
         }
-
     };
 
     $scope.isPersonEditable = function () {
@@ -1492,7 +1488,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
     $scope.onHouseCodeChange = function () {
         if (lastEmployeeNumber != null) {
-
             if (_hcmHouseCode != $scope.empAction.HcmHouseCode) {
                 alert("House Code is not same as Employee Number House Code.");
                 $scope.pafForm.HcmHouseCode.$setValidity("required", false);
@@ -1559,7 +1554,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     }
 
     initialEmpAction();
-
 
     var uncheckPositionType = function (positionType) {
         if (!$scope.empAction[positionType])
@@ -1699,9 +1693,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             if (isNaN(data.NewSalary)) {
                 data.NewSalary = 0;
             }
-
         }
-
     }
 
     var validateActionType = function () {
@@ -1746,7 +1738,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         }
 
         return isValid;
-
     }
 
     $scope.validateLoa = function () {
@@ -1798,7 +1789,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         if ($scope.pafForm.$valid) {
 
             if ($scope.empAction.SalaryChange) {
-                //console.log($scope.empAction.Data.SalaryChange.NewPositionType);
                 if (!$scope.empAction.Data.SalaryChange.NewPositionType) {
                     //$scope.empAction.Data.SalaryChange.NewPositionType=
                 }
@@ -2012,16 +2002,17 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.InfoChangeEffectiveDate = $scope.empAction.Data.PersonalInfoChange.InfoChangeEffectiveDate;
                 $scope.empAction.InfoChangeMiddleName = $scope.empAction.Data.PersonalInfoChange.InfoChangeMiddleName;
             }
+
             $scope.empAction.RequisitionNumber = $scope.empAction.Data.Requisition.RequisitionNumber;
             $scope.empAction.RequisitionEmail = $scope.empAction.Data.Requisition.EmailAddress;
             $scope.empAction.RelocationApprovedBy = $scope.empAction.Data.Relocation.RelocationApprovedBy;
             $scope.empAction.RelocationPlan = $scope.empAction.Data.Relocation.RelocationPlan;
             $scope.empAction.CurrentSalary = $scope.empAction.Data.Compensation.CurrentSalary;
             var curPayGrade = $scope.empAction.Data.Compensation.CurrentPayGrade;
-            $scope.empAction.CurrentPayGrade = curPayGrade.substring(0, curPayGrade.indexOf("("));
+	        $scope.empAction.CurrentPayGrade = (curPayGrade == 0 ? curPayGrade : curPayGrade.substring(0, curPayGrade.indexOf("(")));
             $scope.empAction.LastIncreaseDecreaseDate = $scope.empAction.Data.Compensation.DateLastIncrease;
             var lastIncPer = $scope.empAction.Data.Compensation.PercentLastIncrease;
-            $scope.empAction.LastIncreaseDecreasePercentage = lastIncPer.replace("%","");
+            $scope.empAction.LastIncreaseDecreasePercentage = (lastIncPer == "NaN%" ? "0" : lastIncPer.replace("%",""));
             $scope.empAction.CurrentPayRange = $scope.empAction.Data.Compensation.CurrentPayRange;
 
             EmpActions.saveEmployeePersonnelAction($scope.empAction, function (status) {
@@ -2039,7 +2030,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     }
 
     var showToaster = function () {
-
         var modalInstance = $modal.open({
             template: '<div class="toaster"><div class="header">WARNING</div><div class="content">Please fill the highlighted fields to complete the form.</div></div>',
             // controller: 'modalInstanceCtrl',
@@ -2051,6 +2041,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             modalInstance.dismiss('cancel');
         }, 1800);
     }
+	
     var showPIToaster = function () {
         if ($scope.empAction.Data.PersonalInfoChange.InfoChangeEffectiveDate) {
             var modalInstance = $modal.open({
@@ -2098,7 +2089,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.data.Status = 'TemporaryHours';
         });
 
-
         var calSalary = function () {
             var salary = 0;
             var payStatus = $scope.data.PayStatus;
@@ -2113,14 +2103,11 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         }
 
         $scope.getPayRange = function () {
-
             var salary = calSalary();
-
             return $scope.$parent.$parent.getPayRange($scope.data.PayGrade, salary);
         }
 
         $scope.$parent.getManagerInfo = $scope.$parent.$parent.getManagerInfo;
-
         $scope.$parent.isManagerFieldRequired = $scope.$parent.$parent.isManagerFieldRequired;
     }])
     .controller('separationCtrl', ['$scope', '$rootScope', function ($scope, $rootScope) {
@@ -2135,11 +2122,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     $scope.data[item] = null;
                 }
             });
-
         });
     }])
     .controller('loaCtrl', ['$scope', function ($scope) {
-
         var dateChange = function (type) {
             $scope.$parent.$parent.validateLoa();
             if ($scope.data.DateOfReturn && !$scope.data.LoaDate || !$scope.data.DateOfReturn && $scope.data.LoaDate || !$scope.data.DateOfReturn && !$scope.data.LoaDate)
@@ -2165,28 +2150,24 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             if (newValue != oldValue)
                 dateChange("DateOfReturn");
         });
-
-
     }])
-.filter('reason4ChangeFilter', ['$filter', function ($filter) {
-    return function (item, type) {
-
-        if (type.Demotion) {
-            return $filter("filter")(item, { title: 'Demotion' });
-        }
-
-        if (type.Promotion) {
-            return $filter("filter")(item, { title: 'Promotion' });
-        }
-
-        if (type.SalaryChange) {
-            return $filter("filter")(item, function (value) { return value.title.indexOf("Promotion") == -1 && value.title.indexOf("Demotion") == -1; });
-        }
-    }
-}]);
+	.filter('reason4ChangeFilter', ['$filter', function ($filter) {
+	    return function (item, type) {
+	
+	        if (type.Demotion) {
+	            return $filter("filter")(item, { title: 'Demotion' });
+	        }
+	
+	        if (type.Promotion) {
+	            return $filter("filter")(item, { title: 'Promotion' });
+	        }
+	
+	        if (type.SalaryChange) {
+	            return $filter("filter")(item, function (value) { return value.title.indexOf("Promotion") == -1 && value.title.indexOf("Demotion") == -1; });
+	        }
+	    }
+	}]);
 ;
-
-// 
 
 paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$modal', function ($scope, EmpActions, $filter, $sce, $modal) {
 
@@ -2201,12 +2182,6 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
     };
 
     $scope.selectedItem = null;
-
-    //if ($scope.pafFilter.hcmHouseCode == null)
-    //    $scope.pafFilter.status = null;
-    //else
-    //    $scope.pafFilter.status = 1;
-
     $scope.dateOptions = {
         formatYear: 'yy',
         startingDay: 1,
@@ -2239,6 +2214,19 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         EmpActions.getStateTypes(function (result) {
         });
 
+		EmpActions.getJobCodes(function (result) {
+            $scope.JobCodes = result;
+        });
+		
+		EmpActions.getPersonActionTypes(function (result) {
+            var filters = function (item) {
+                return $filter('filter')(result, { typeName: item });
+            }
+        });
+		
+		EmpActions.getPayGrades(function (result) {
+        });
+		
         EmpActions.getWorkflowSteps(2, function (result) {
         });
 
@@ -2253,7 +2241,6 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
     }
 
     load();
-
 
     $scope.getHouseCodeDesc = function (item) {
         return EmpActions.getHouseCodeName(item.HcmHouseCode);
@@ -2321,7 +2308,6 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
                 $scope.getPafList();
             });
         });
-
     }
 
     var houseCodeDesc = function (id) {
@@ -2341,18 +2327,19 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
 
     $scope.itemSelected = function (item) {
         $scope.selectedItem = item;
+
         if ($scope.selectedItem.WorkflowStep == null || $scope.selectedItem.WorkflowStep == "") {
             $scope.selectedItem.WorkflowStep = 0;
         }
     }
 
     $scope.Statuses = [
-    { id: 1, description: 'Open' },
-    { id: 2, description: 'In Process' },
-    { id: 8, description: 'Approved' },
-    { id: 4, description: 'Completed' },
-    { id: 6, description: 'Cancelled' },
-    { id: 10, description: 'Unappproved' }
+	    { id: 1, description: 'Open' },
+	    { id: 2, description: 'In Process' },
+	    { id: 8, description: 'Approved' },
+	    { id: 4, description: 'Completed' },
+	    { id: 6, description: 'Cancelled' },
+	    { id: 10, description: 'Unappproved' }
     ];
 
 
@@ -2381,7 +2368,6 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         }
         return desc;
     }
-
 }])
 .controller('modalInstanceCtrl', function ($scope, $modalInstance) {
 
@@ -2393,7 +2379,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         $modalInstance.dismiss('cancel');
     };
 });
-//
+
 paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filter) {
     return {
         scope: {
@@ -2409,8 +2395,6 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
             scope.opened = false;
             scope.dtPopup = "dd-MMMM-yyyy";
             scope.showButtonBar = false;
-
-
             scope.open = function ($event) {
                 $event.preventDefault();
                 $event.stopPropagation();
@@ -2439,10 +2423,8 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
 
             var dateFormat = attrs.datepickerPopup || "MM/dd/yyyy";
             ngModel.$formatters.push(function (value) {
-
                 if (value && value != null)
                     return $filter('date')(new Date(value), dateFormat);
-
                 return null;
             });
         }
@@ -2930,7 +2912,6 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
                 if (typeof (value) == "string" && value.length == 0) {
                     scope.model = null;
                 }
-
             });
         }
     }
@@ -2978,7 +2959,6 @@ $(function () {
         focusedElement = $(this);
         setTimeout(function () { focusedElement.select(); }, 50);       // select all text in any field on focus for easy re-entry;
     });
-
 });
 
 
@@ -3000,8 +2980,9 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 
     var houseCodes = null;
     var stateTypes = null;
+	var jobCodes = null;
     var personActionTypes = null;
-    var jobCodes = null;
+    var payGrades = null;
     var workflowSteps = null;
 
     var apiRequest = function (moduleId, requestXml, callback) {
@@ -3106,7 +3087,6 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         }
 
         var criteriaXml = '<criteria>appUnitBrief:,storeId:hcmHouseCodes,userId:[user],</criteria>';
-
         var data = 'moduleId=hcm&requestId=1&requestXml=' + encodeURIComponent(criteriaXml) + '&targetId=iiCache';
 
         apiRequest('hcm', criteriaXml, function (xml) {
@@ -3117,11 +3097,11 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 
     var setCurrentHcmHouseCode = function (callback) {
 
-        apiRequest('hcm', '<criteria>storeId:hcmHouseCodes,userId:[user],defaultOnly:true,</criteria>', function (xml) {
+		 apiRequest('hcm', '<criteria>storeId:hcmHouseCodes,userId:[user],defaultOnly:true,</criteria>', function (xml) {
             if (callback)
                 callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
         });
-    }
+     }
 
     var getHouseCodeName = function (id) {
         if (cache.houseCodes == null)
@@ -3183,67 +3163,65 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
     var getEmployee = function (employeeNumber, hcmHouseCode, callback) {
 
         apiRequest('emp', '<criteria>storeId:employeeSearchs,userId:[user]'
-                             + ',searchValue:' + employeeNumber
-                             + ',hcmHouseCodeId:' + hcmHouseCode
-                             + ',employeeType:SearchFull,filterType:Employee Number'
-                + ',</criteria>', function (xml) {
-                    if (callback) {
-                        var matched = deserializeXml(xml, 'item', { upperFirstLetter: false });
-                        callback(matched && matched.length > 0 ? matched[0] : null);
-                    }
-                });
+	        + ',searchValue:' + employeeNumber
+	        + ',hcmHouseCodeId:' + hcmHouseCode
+	        + ',employeeType:SearchFull,filterType:Employee Number'
+			+ ',</criteria>', function (xml) {
+            if (callback) {
+                var matched = deserializeXml(xml, 'item', { upperFirstLetter: false });
+                callback(matched && matched.length > 0 ? matched[0] : null);
+            }
+        });
     }
 
     var getPerson = function (employeeId, callback) {
 
         apiRequest('emp', '<criteria>storeId:persons,userId:[user]'
-                    + ',id:' + employeeId
-                    + ',</criteria>', function (xml) {
-                        if (callback)
-                            callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
-                    });
+            + ',id:' + employeeId
+            + ',</criteria>', function (xml) {
+            if (callback)
+                callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
+        });
     }
 
     var getEmpCompensation = function (employeeNumber, callback) {
 
         apiRequest('emp', '<criteria>storeId:employeeCompensation,userId:[user]'
-                             + ',employeeNumber:' + employeeNumber
-                + ',</criteria>', function (xml) {
-                    if (callback)
-                        callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
-                });
+			+ ',employeeNumber:' + employeeNumber
+        	+ ',</criteria>', function (xml) {
+            if (callback)
+                callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
+        });
     }
 
     var getManagerDetail = function (employeeNumber, callback) {
 
         apiRequest('emp', '<criteria>storeId:employeeManagerDetails,userId:[user]'
-                             + ',employeeNumber:' + employeeNumber
-                + ',</criteria>', function (xml) {
-                    if (callback)
-                        callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
-                });
+			+ ',employeeNumber:' + employeeNumber
+            + ',</criteria>', function (xml) {
+            if (callback)
+                callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
+        });
     }
 
-    var getWorkflowSteps = function (stepnumber, callback) {
+    var getWorkflowSteps = function (moduleId, callback) {
 
         if (cache.workflowSteps) {
             callback(cache.workflowSteps);
             return;
         }
 
-        apiRequest('app', '<criteria>storeId:appWorkflowSteps,userId:[user]'
-                             + ',workflowModuleId:' + stepnumber
-                + ',</criteria>', function (xml) {
-                    if (callback) {
-                        cache.workflowSteps = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
-                        callback(cache.workflowSteps);
-                    }
-                });
-
+        apiRequest('app', '<criteria>storeId:appWorkflowSteps,userId:[user],workflowModuleId:' + moduleId + ',</criteria>', function (xml) {
+            if (callback) {
+                cache.workflowSteps = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
+                callback(cache.workflowSteps);
+            }
+        });
     }
 
     var getWorkflowBrief = function (id) {
-        if (cache.workflowSteps == null)
+        
+		if (cache.workflowSteps == null)
             return '';
 
         var brief = 'N/A';
@@ -3290,8 +3268,9 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
     }
 
     var saveEmployeePersonnelAction = function (employeePersonnelAction, callback) {
-        //console.log(employeePersonnelAction);
         var xml = [];
+		var xmlNode = [];
+		
         if (employeePersonnelAction.Id) {
             xml.push('<transaction actionId="' + employeePersonnelAction.Id + '">');
         }
@@ -3300,7 +3279,6 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         }
         xml.push('\r\n<employeePersonnelAction ');
 
-        var xmlNode = [];
         angular.forEach(employeePersonnelAction, function (value, key) {
             key = lowercaseFirstLetter(key);
 
@@ -3313,12 +3291,10 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
                 value = angular.toJson(value).replace(/"/gi, '###');
             }
 
-
             xmlNode.push(key + '=' + '"' + (value || '') + '"');
         });
-        //console.log(xmlNode);
+        // console.log(xmlNode);
         xml.push(xmlNode.join(' '));
-
         xml.push('/>\r\n</transaction>');
 
         var data = 'moduleId=emp&requestId=1&requestXml=' + encodeURIComponent(xml.join(' ').replace(/\&/gi, '&amp;')) + '&targetId=iiTransaction';
@@ -3335,7 +3311,6 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 
     var cancelEmployeePersonnelAction = function (id, callback) {
         var xml = '<transaction actionId="' + id + '"><cancelEmployeePersonnelAction id="' + id + '" />\r\n</transaction>';
-
         var data = 'moduleId=emp&requestId=1&requestXml=' + encodeURIComponent(xml) + '&&targetId=iiTransaction';
 
         jQuery.post('/net/crothall/chimes/fin/emp/act/Provider.aspx', data, function (data, status) {
@@ -3345,21 +3320,13 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
     }
 
     var submitEmployeePersonnelAction = function (id, hcmHouseCodeDesc, stateTitle, callback) {
-
         var xml = [];
         xml.push('<transaction actionId="' + id + '">');
         xml.push('\r\n<submitEmployeePersonnelAction ');
 
         var xmlNode = ['id' + '=' + '"' + id + '"', 'houseCodeTitle' + '=' + '"' + hcmHouseCodeDesc + '"', 'stateTitle' + '=' + '"' + stateTitle + '"'];
-
-        //console.log(xmlNode);
         xml.push(xmlNode.join(' '));
-
         xml.push('/>\r\n</transaction>');
-
-        
-       // var xml = '<transaction actionId="' + id + '"><submitEmployeePersonnelAction {id="' + id + '" , houseCodeDesc= "' + hcmHouseCodeDesc + '"} />\r\n</transaction>';
-
         var data = 'moduleId=emp&requestId=1&requestXml=' + encodeURIComponent(xml.join(' ')) + '&&targetId=iiTransaction';
 
         jQuery.post('/net/crothall/chimes/fin/emp/act/Provider.aspx', data, function (data, status) {
@@ -3393,6 +3360,3 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         submitEmployeePersonnelAction: submitEmployeePersonnelAction
     }
 }]);
-
-
-
