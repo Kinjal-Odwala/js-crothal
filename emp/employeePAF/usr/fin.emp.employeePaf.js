@@ -2306,16 +2306,8 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         });
     }
 
-    var houseCodeDesc = function (id) {
-        return EmpActions.getHouseCodeName(id);
-    }
-
-    var stateTitle = function (id) {
-        return EmpActions.getStateName(id);
-    }
-
-    $scope.submit = function (id, hcmHousCode, stateType) {
-        EmpActions.submitEmployeePersonnelAction(id, houseCodeDesc(hcmHousCode), stateTitle(stateType), function (data, status) {
+    $scope.submit = function (selectedItem) {
+        EmpActions.submitEmployeePersonnelAction(selectedItem, function (data, status) {
             $scope.getPafList();
             alert("Employee PAF has been submitted.");
         });
@@ -3097,13 +3089,28 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             if (callback)
                 callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
         });
-     }
+    }
+
+    var getJobCodeTitle = function (id) {
+        if (cache.jobCodes == null)
+            return '';
+
+        var jobCodeTitle = '';
+
+        angular.forEach(cache.jobCodes, function (item, index) {
+            if (item.id == id) {
+                jobCodeTitle = item.name;
+            }
+        });
+
+        return jobCodeTitle;
+    }
 
     var getHouseCodeName = function (id) {
         if (cache.houseCodes == null)
             return '';
 
-        var houseCodeName = 'N/A';
+        var houseCodeName = '';
 
         angular.forEach(cache.houseCodes, function (item, index) {
             if (item.id == id) {
@@ -3118,7 +3125,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         if (cache.stateTypes == null)
             return '';
 
-        var stateName = 'N/A';
+        var stateName = '';
 
         angular.forEach(cache.stateTypes, function (item, index) {
             if (item.id == id) {
@@ -3231,6 +3238,38 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         return brief;
     }
 
+    var getPayGradeDesc = function (id) {
+
+        if (cache.payGrades == null)
+            return '';
+
+        var desc = '';
+
+        angular.forEach(cache.payGrades, function (item, index) {
+            if (item.id == id) {
+                desc = item.id + "(" + item.min + "-" + item.mid + "-" + item.max + ")";
+            }
+        });
+
+        return desc;
+    }
+
+    var getPersonalActionName = function (id) {
+
+        if (cache.personActionTypes == null)
+            return '';
+
+        var desc = '';
+
+        angular.forEach(cache.personActionTypes, function (item, index) {
+            if (item.id == id) {
+                desc = item.title;
+            }
+        });
+
+        return desc;
+    }    
+
     var getCarAllowances = function () {
         return CarAllowances;
     }
@@ -3315,12 +3354,23 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         });
     }
 
-    var submitEmployeePersonnelAction = function (id, hcmHouseCodeDesc, stateTitle, callback) {
+    var submitEmployeePersonnelAction = function (selectedItem, callback) {
+
+        var reasonId = 0;
+        if (selectedItem.ResignationType > 0) {
+            reasonId = selectedItem.ResignationType;
+        }
+        else if (selectedItem.TerminationType > 0) {
+            reasonId = selectedItem.TerminationType;
+        }
+        else if (selectedItem.LayoffType > 0) {
+            reasonId = selectedItem.LayoffType;
+        }
         var xml = [];
-        xml.push('<transaction actionId="' + id + '">');
+        xml.push('<transaction actionId="' + selectedItem.Id + '">');
         xml.push('\r\n<submitEmployeePersonnelAction ');
 
-        var xmlNode = ['id' + '=' + '"' + id + '"', 'houseCodeTitle' + '=' + '"' + hcmHouseCodeDesc + '"', 'stateTitle' + '=' + '"' + stateTitle + '"'];
+        var xmlNode = ['id' + '=' + '"' + selectedItem.Id + '"', 'houseCodeTitle' + '=' + '"' + getHouseCodeName(selectedItem.HcmHouseCode) + '"', 'stateTitle' + '=' + '"' + getStateName(selectedItem.StateType) + '"', 'jobCodeTitle' + '=' + '"' + getJobCodeTitle(selectedItem.PositionType) + '"', 'payGradeDesc' + '=' + '"' + getPayGradeDesc(selectedItem.PayGrade) + '"', 'bonusEligible' + '=' + '"' + getPersonalActionName(selectedItem.BonusEligibleType) + '"', 'reasonForChange' + '=' + '"' + getPersonalActionName(reasonId) + '"', 'infoStateTitle' + '=' + '"' + getStateName(selectedItem.InfoChangeStateType) + '"', 'relocationPlan' + '=' + '"' + getPersonalActionName(selectedItem.RelocationPlan) + '"', 'newUnit' + '=' + '"' + getHouseCodeName(selectedItem.HouseCodeTransfer) + '"', 'newBonusEligible' + '=' + '"' + getPersonalActionName(selectedItem.NewBonusEligibleType) + '"', 'curPositionType' + '=' + '"' + getJobCodeTitle(selectedItem.CurrentPositionType) + '"', 'newPositionType' + '=' + '"' + getJobCodeTitle(selectedItem.NewPositionType) + '"', 'changeReason' + '=' + '"' + getPersonalActionName(selectedItem.ChangeReasonType) + '"', 'curPayGrade' + '=' + '"' + getPayGradeDesc(selectedItem.CurrentPayGrade) + '"', 'newPayGrade' + '=' + '"' + getPayGradeDesc(selectedItem.NewPayGrade) + '"', 'trainingLocation' + '=' + '"' + getHouseCodeName(selectedItem.TrainingLocation) + '"'];
         xml.push(xmlNode.join(' '));
         xml.push('/>\r\n</transaction>');
         var data = 'moduleId=emp&requestId=1&requestXml=' + encodeURIComponent(xml.join(' ')) + '&&targetId=iiTransaction';
@@ -3353,6 +3403,9 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         getReviewedWithHR: getReviewedWithHR,
         saveEmployeePersonnelAction: saveEmployeePersonnelAction,
         cancelEmployeePersonnelAction: cancelEmployeePersonnelAction,
-        submitEmployeePersonnelAction: submitEmployeePersonnelAction
+        submitEmployeePersonnelAction: submitEmployeePersonnelAction,
+        getJobCodeTitle: getJobCodeTitle,
+        getPayGradeDesc: getPayGradeDesc,
+        getPersonalActionName: getPersonalActionName
     }
 }]);

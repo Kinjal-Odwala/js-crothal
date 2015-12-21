@@ -150,7 +150,7 @@
 			<a class="btn btn-primary" ng-if="selectedItem.Status==1 || selectedItem.Status==10" href="#/edit/{{selectedItem.Id}}"><span ng-if="selectedItem.Status==1 || selectedItem.Status==10">Edit</span></a>
 			<a class="btn btn-primary" ng-if="selectedItem.Status==20" href="#/edit/{{selectedItem.Id}}"><span ng-if="selectedItem.Status==20">View/Edit</span></a>
 			<a class="btn btn-primary" ng-if="selectedItem.Status==8 || selectedItem.Status==4 || selectedItem.Status==6 || selectedItem.Status==2" href="#/edit/{{selectedItem.Id}}"><span ng-if="selectedItem.Status==8 || selectedItem.Status==4 || selectedItem.Status==6 || selectedItem.Status==2">View</span></a>
-			<a class="btn btn-info" ng-click="submit(selectedItem.Id, selectedItem.HcmHouseCode, selectedItem.StateType)" ng-if="selectedItem.Status==1 || (selectedItem.Status==2  && selectedItem.WorkflowStep==0) || selectedItem.Status==10"><span ng-if="selectedItem.Status==1">Submit</span><span ng-if="(selectedItem.Status==2 && selectedItem.WorkflowStep==0) || selectedItem.Status==10">ReSubmit</span></a>
+			<a class="btn btn-info" ng-click="submit(selectedItem)" ng-if="selectedItem.Status==1 || (selectedItem.Status==2  && selectedItem.WorkflowStep==0) || selectedItem.Status==10"><span ng-if="selectedItem.Status==1">Submit</span><span ng-if="(selectedItem.Status==2 && selectedItem.WorkflowStep==0) || selectedItem.Status==10">ReSubmit</span></a>
 			<a class="btn btn-default" ng-if="selectedItem.Status==1||selectedItem.Status==2||selectedItem.Status==10" ng-click="cancelForm(selectedItem.Id)" ng-disabled="!selectedItem">Cancel</a>
         </div>
     </div>
