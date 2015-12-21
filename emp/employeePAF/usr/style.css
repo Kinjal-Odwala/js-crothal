@@ -101,7 +101,6 @@
     }
 }
 
-
 .table-scroll tbody {
     max-height: 400px;
     overflow-y: auto;
@@ -124,14 +123,14 @@
     border-radius: 8px;
 }
 
-    .toaster .header {
-        padding: 5px;
-        border-bottom: 1px solid rgba(0,0,0,.175);
-    }
+.toaster .header {
+    padding: 5px;
+    border-bottom: 1px solid rgba(0,0,0,.175);
+}
 
-    .toaster .content {
-        padding: 5px;
-    }
+.toaster .content {
+    padding: 5px;
+}
 
 .table tbody td .word-wrap {
     word-wrap: break-word;
