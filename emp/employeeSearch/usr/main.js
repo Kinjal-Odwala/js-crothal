@@ -594,14 +594,13 @@ ii.Class({
 
 			me.wotcCode.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
 					var enteredText = me.wotcCode.getValue();
 
 					if (enteredText == "") return;
 
-					if (me.employeeSSN.valid) {
+					if (me.employeeSSN.valid && enteredText != "") {
 						if (!(/^\d{11}$/.test(enteredText)))
 							this.setInvalid("Please enter valid WOTC Code.");
 						else {
@@ -615,6 +614,8 @@ ii.Class({
 							}
 						}
 					}
+					else
+						this.valid = true;
 			});
 
 			me.editWizardAction = new ui.ctl.Input.DropDown.Filtered({
@@ -3776,12 +3777,12 @@ ii.Class({
 						$("#EmployeeSeniorityDateText").attr('disabled', true);
 						$("#EmployeeSeniorityDateAction").removeClass("iiInputAction");						
 					}
-					/* Hide the WOTC code wizard
+
 					if (me.actionType == "Rehire") {
 						$("#PersonalDetails").hide();
 						$("#WOTCContianer").show();
 						me.wizardCount = 0;
-					}*/
+					}
 				}
 				
 				if (me.actionType == "Compensation") {
@@ -5375,9 +5376,7 @@ ii.Class({
 				
 				if (me.employeeSSNAlreadyExists == false && me.employeeValidationCalledFrom == "newHire") {
 					me.employeeValidationCalledFrom = "";
-					/* Hide the WOTC code wizard
 					me.wizardCount = 12;
-					*/
 					me.actionNext(); //continue with Employee record edit..
 				}
 	
@@ -5941,10 +5940,7 @@ ii.Class({
 					me.wizardCount = 0;
 			}
 
-			/* Hide the WOTC code wizard
-			 if (me.actionType != "NewHire" || me.wizardCount > 0 || $("#WOTCCodeText").is(':visible') == true) { //actionNext click on Wizard other than first (SSN search)
-			 */
-			if (me.actionType != "NewHire" || me.wizardCount > 0) { //actionNext click on Wizard other than first (SSN search)
+		 	if (me.actionType != "NewHire" || me.wizardCount > 0 || $("#WOTCCodeText").is(':visible') == true) { //actionNext click on Wizard other than first (SSN search)
 				me.employeeValidationCalledFrom = "";
 				me.actionNext();
 				return;
@@ -6036,14 +6032,13 @@ ii.Class({
 			else if (me.actionType == "SSNModification") {    
                 me.wizardCount = 1; 
             }
-			/* Hide the WOTC code wizard
 			else if (me.actionType == "NewHire" || me.actionType == "Rehire") {
 				if (me.wizardCount == 1) 
 					me.wizardCount = 14;
 				else if (me.wizardCount == 0) 
 					me.wizardCount = 1;
 			}
-			*/
+
 			if ($("#AnchorBack").is(':visible') == false) {
 				me.initializeWizard();
 				return;
@@ -6173,37 +6168,7 @@ ii.Class({
 					break;
 
                 case 1:
-					if ((!me.employeeSSN.validate(true))) {
-						me.wizardCount--;
-						return false;
-					}
 
-					if (me.actionType == "NewHire") {
-						$("#SSNContianer").hide();
-						$("#PersonalDetails").show();
-						$("#AddressDetails").hide();
-						$("#AnchorBack").show();
-						$("#FirstNameText").attr('disabled', false);
-                        $("#FirstNameAction").addClass("iiInputAction");
-                        $("#MiddleInitialText").attr('disabled', false);
-                        $("#MiddleInitialAction").addClass("iiInputAction");
-                        $("#LastNameText").attr('disabled', false);
-                        $("#LastNameAction").addClass("iiInputAction");
-                        $("#PersonalDetails").removeClass("ssnPersonDiv");
-                        $("#PersonalDetails").addClass("personalDetailsDiv");
-						me.personFirstName.text.focus();
-					}
-					else {
-						$("#messageToUser2").html("Loading");
-						$("#popupLoading").show();
-						me.employeeGeneralSSNSearch();
-					}
-                    
-					me.resizeControls();
- 
-                    break;
-
-					/* Hide the WOTC code wizard
 					if ((me.actionType == "NewHire" || (me.actionType == "Rehire" && $("#WOTCCodeText").is(':visible'))) && !me.wotcCode.validate(true)) {
 						me.wizardCount--;
 						return false;
@@ -6242,7 +6207,7 @@ ii.Class({
 					me.resizeControls();
  
                     break;
-                    */
+
                 case 2:					
 
                     if ((!me.personFirstName.validate(true)) || (!me.personLastName.validate(true))) {
@@ -6786,7 +6751,7 @@ ii.Class({
                     me.newSSN.text.focus();
     
                     break;
-				/* Hide the WOTC code wizard	
+
 				case 13: // WOTC Code
 
 					if ((!me.employeeSSN.validate(true))) {
@@ -6803,7 +6768,7 @@ ii.Class({
 					me.resizeControls();
 
 					break;
-				*/	
+
 				default:
 					break;
 			}
