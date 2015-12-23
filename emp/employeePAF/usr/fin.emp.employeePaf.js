@@ -1322,20 +1322,20 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         if ($scope.empAction.Data && ($scope.empAction.Data[positionType].ReportingManagerNumber.length == 0 || parseInt(employeeNumber) != parseInt($scope.empAction.Data[positionType].CacheReportingManagerNumber))) {
             $scope.empAction.Data[positionType].CacheReportingManagerNumber = employeeNumber;
 
-            getManagerDetail(employeeNumber, function (response) {
-                if (!angular.isDefined(response)) {
-                    alert("The Managers/Clock Number you enter is not exist.");
-                    return;
-                }
+                getManagerDetail(employeeNumber, function (response) {
+                    if (!angular.isDefined(response)) {
+                        alert("The Managers/Clock Number you enter is not exist.");
+                        return;
+                    }
 
-                $scope.empAction.Data[positionType].ReportingName = response.empFirstName + " " + response.empLastName;
-                $scope.empAction.Data[positionType].ReportingTitle = response.empTitle;
-                $scope.empAction.Data[positionType].ReportingEmail = response.empEmail;
-                $scope.empAction.Data[positionType].ReportingManagerNumber = response.empClock;
-                $scope.empAction.Data[positionType].CacheReportingManagerNumber = response.empClock;
-                $scope.empAction.Data[positionType].DisabledReportFields = true;
-                $scope.empAction.Data[positionType].DisabledReportingManagerNumberField = false;
-            });
+                    $scope.empAction.Data[positionType].ReportingName = response.empFirstName + " " + response.empLastName;
+                    $scope.empAction.Data[positionType].ReportingTitle = response.empTitle;
+                    $scope.empAction.Data[positionType].ReportingEmail = response.empEmail;
+                    $scope.empAction.Data[positionType].ReportingManagerNumber = response.empClock;
+                    $scope.empAction.Data[positionType].CacheReportingManagerNumber = response.empClock;
+                    $scope.empAction.Data[positionType].DisabledReportFields = true;
+                    $scope.empAction.Data[positionType].DisabledReportingManagerNumberField = false;
+                });
         }
         else
             return;
@@ -1460,7 +1460,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     });
 
     $scope.onEmployeeNumberChanged = function (employeeNumber) {
-        if ($scope.empAction.Data.Employee && parseInt($scope.empAction.Data.Employee.employeeNumber) == parseInt(employeeNumber)) {
+        if ($scope.empAction.Data.Employee && ($scope.empAction.EmployeeNumber.length != 0 || parseInt($scope.empAction.Data.Employee.employeeNumber) == parseInt(employeeNumber))){
             return;
         }
 
@@ -1782,16 +1782,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         $scope.validatePersonalInfo();
 		
         if ($scope.pafForm.$valid) {
-            if ($scope.empAction.SalaryChange) {
-                if (!$scope.empAction.Data.SalaryChange.NewPositionType) {
-                    //$scope.empAction.Data.SalaryChange.NewPositionType=
-                }
-            }
-
             if ($scope.empAction.NewHire) {
                 $scope.empAction.HireDate = $scope.empAction.Data.NewHire.HireDate;
                 $scope.empAction.PositionType = $scope.empAction.Data.NewHire.PositionType;
-                //$scope.empAction.Status = $scope.empAction.Data.NewHire.Status;
                 if ($scope.empAction.Data.NewHire.Status == "FullTimeHours") {
                     $scope.empAction.Hours = $scope.empAction.Data.NewHire.FullTimeHours;
                     $scope.empAction.Status = "Full Time";
@@ -1804,7 +1797,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     $scope.empAction.Hours = $scope.empAction.Data.NewHire.PartTimeHours;
                     $scope.empAction.Status = "Part Time";
                 }
-                //$scope.empAction.PayStatus = $scope.empAction.Data.NewHire.PayStatus;
                 var salary = 0;
                 if ($scope.empAction.Data.NewHire.PayStatus == "AnnualSalaryAmount") {
                     $scope.empAction.Amount = $scope.empAction.Data.NewHire.AnnualSalaryAmount;
@@ -1840,7 +1832,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             else if ($scope.empAction.ReHire) {
                 $scope.empAction.HireDate = $scope.empAction.Data.ReHire.HireDate;
                 $scope.empAction.PositionType = $scope.empAction.Data.ReHire.PositionType;
-                //$scope.empAction.Status = $scope.empAction.Data.ReHire.Status;
                 if ($scope.empAction.Data.ReHire.Status == "FullTimeHours") {
                     $scope.empAction.Hours = $scope.empAction.Data.ReHire.FullTimeHours;
                     $scope.empAction.Status = "Full Time";
@@ -1853,7 +1844,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     $scope.empAction.Hours = $scope.empAction.Data.ReHire.PartTimeHours;
                     $scope.empAction.Status = "Part Time";
                 }
-                //$scope.empAction.PayStatus = $scope.empAction.Data.ReHire.PayStatus;
                 var salary = 0;
                 if ($scope.empAction.Data.ReHire.PayStatus == "AnnualSalaryAmount") {
                     $scope.empAction.Amount = $scope.empAction.Data.ReHire.AnnualSalaryAmount;
@@ -2143,7 +2133,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         });
 
         //date of return change
-        $scope.$watch('empAction.DateOfReturn', function (newValue, oldValue) {
+        $scope.$watch('data.DateOfReturn', function (newValue, oldValue) {
             if (newValue != oldValue)
                 dateChange("DateOfReturn");
         });
