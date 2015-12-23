@@ -335,7 +335,7 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
 
-					if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.svp.getValue())))
+					if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.svp.lastBlurValue)))
 						this.setInvalid("Please enter the correct title for SVP. The title can't contain any of the following characters: \\/:*?\"<>|.,");
 				});
 
@@ -350,7 +350,7 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
 
-					if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.dvp.getValue())))
+					if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.dvp.lastBlurValue)))
 						this.setInvalid("Please enter the correct title for DVP. The title can't contain any of the following characters: \\/:*?\"<>|.,");
 				});
 
@@ -365,7 +365,7 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
 
-					if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.rvp.getValue())))
+					if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.rvp.lastBlurValue)))
 						this.setInvalid("Please enter the correct title for RVP. The title can't contain any of the following characters: \\/:*?\"<>|.,");
 				});
 
@@ -380,7 +380,7 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
 
-					if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.srm.getValue())))
+					if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.srm.lastBlurValue)))
 						this.setInvalid("Please enter the correct title for SRM. The title can't contain any of the following characters: \\/:*?\"<>|.,");
 				});
 
@@ -395,7 +395,7 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
 
-					if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.rm.getValue())))
+					if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.rm.lastBlurValue)))
 						this.setInvalid("Please enter the correct title for RM. The title can't contain any of the following characters: \\/:*?\"<>|.,");
 				});
 
@@ -410,7 +410,7 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
 
-					if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.am.getValue())))
+					if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.am.lastBlurValue)))
 						this.setInvalid("Please enter the correct title for AM. The title can't contain any of the following characters: \\/:*?\"<>|.,");
 				});
 
@@ -587,6 +587,8 @@ ii.Class({
 
 					if ((this.focused || this.touched) && me.city.data.length > 0 && me.city.indexSelected == -1)
 						this.setInvalid("Please select the correct City.");
+					else if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.city.lastBlurValue)))
+						this.setInvalid("Please enter the correct City name. The name can't contain any of the following characters: \\/:*?\"<>|.,");
 				});
 
 			me.state = new ui.ctl.Input.DropDown.Filtered({
@@ -619,6 +621,8 @@ ii.Class({
 
 					if ((this.focused || this.touched) && me.county.data.length > 0 && me.county.indexSelected == -1)
 						this.setInvalid("Please select the correct County.");
+					else if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.county.lastBlurValue)))
+						this.setInvalid("Please enter the correct County name. The name can't contain any of the following characters: \\/:*?\"<>|.,");
 				});
 
 			me.phone = new ui.ctl.Input.Text({
@@ -825,7 +829,7 @@ ii.Class({
 			me.customerNumber = new ui.ctl.Input.DropDown.Filtered({
 				id : "CustomerNumber",
 				maxLength: 8,
-				title: "To search a specific Customer, type-in Customer Number and press Enter key.",
+				title: "To search a specific Customer, type-in Customer Number (minimum 3 numbers) and press Enter key.",
 				formatFunction: function( type ) { return type.name; },
 				changeFunction: function() { me.modified(); me.customerNumberChanged(); } 
 		    });
@@ -837,10 +841,14 @@ ii.Class({
 					var enteredText = me.customerNumber.text.value;
 
 					if (me.workflowId > 0 && me.workflowStep == 3) {
-						if (/^\d+$/.test(enteredText) == false)
+						if (!(/^\d{3,8}$/.test(enteredText)))
 							this.setInvalid("Please enter valid number.");
-						else if (enteredText.length < 3)
-							this.setInvalid("Please enter search criteria (minimum 3 numbers).");
+					}
+					else {
+						if (enteredText == "") 
+							return;
+						else if (!(/^\d{3,8}$/.test(enteredText)))
+							this.setInvalid("Please enter valid number.");
 					}
 				});
 
@@ -908,6 +916,8 @@ ii.Class({
 
 					if ((this.focused || this.touched) && me.customerCity.data.length > 0 && me.customerCity.indexSelected == -1)
 						this.setInvalid("Please select the correct City.");
+					else if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.customerCity.lastBlurValue)))
+						this.setInvalid("Please enter the correct City name. The name can't contain any of the following characters: \\/:*?\"<>|.,");
 				});
 
 			me.customerState = new ui.ctl.Input.DropDown.Filtered({
@@ -940,6 +950,8 @@ ii.Class({
 
 					if ((this.focused || this.touched) && me.customerCounty.data.length > 0 && me.customerCounty.indexSelected == -1)
 						this.setInvalid("Please select the correct County.");
+					else if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.customerCounty.lastBlurValue)))
+						this.setInvalid("Please enter the correct County name. The name can't contain any of the following characters: \\/:*?\"<>|.,");
 				});
 
 			me.customerPhone = new ui.ctl.Input.Text({
@@ -1197,7 +1209,7 @@ ii.Class({
 			me.serviceLocationNumber = new ui.ctl.Input.DropDown.Filtered({
 				id : "ServiceLocationNumber",
 				maxLength: 8,
-				title: "To search a specific Service Location, type-in Service Location Number and press Enter key.",
+				title: "To search a specific Service Location, type-in Service Location Number (minimum 3 numbers) and press Enter key.",
 				formatFunction: function( type ) { return type.name; },
 				changeFunction: function() { me.modified(); me.serviceLocationNumberChanged(); } 
 		    });
@@ -1209,10 +1221,14 @@ ii.Class({
 					var enteredText = me.serviceLocationNumber.text.value;
 
 					if (me.workflowId > 0 && me.workflowStep == 3) {
-						if (/^\d+$/.test(enteredText) == false)
+						if (!(/^\d{3,8}$/.test(enteredText)))
 							this.setInvalid("Please enter valid number.");
-						else if (enteredText.length < 3)
-							this.setInvalid("Please enter search criteria (minimum 3 numbers).");
+					}
+					else {
+						if (enteredText == "") 
+							return;
+						else if (!(/^\d{3,8}$/.test(enteredText)))
+							this.setInvalid("Please enter valid number.");
 					}
 				});
 
@@ -1256,6 +1272,8 @@ ii.Class({
 
 					if ((this.focused || this.touched) && me.serviceLocationCity.data.length > 0 && me.serviceLocationCity.indexSelected == -1)
 						this.setInvalid("Please select the correct City.");
+					else if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.serviceLocationCity.lastBlurValue)))
+						this.setInvalid("Please enter the correct City name. The name can't contain any of the following characters: \\/:*?\"<>|.,");
 				});
 
 			me.serviceLocationState = new ui.ctl.Input.DropDown.Filtered({
@@ -1312,6 +1330,8 @@ ii.Class({
 
 					if ((this.focused || this.touched) && me.serviceLocationCounty.data.length > 0 && me.serviceLocationCounty.indexSelected == -1)
 						this.setInvalid("Please select the correct County.");
+					else if (!(/^[^\\\/\:\*\?\"\<\>\|\.\,]+$/.test(me.serviceLocationCounty.lastBlurValue)))
+						this.setInvalid("Please enter the correct County name. The name can't contain any of the following characters: \\/:*?\"<>|.,");
 				});
 
 			me.miscNumber = new ui.ctl.Input.Text({
@@ -2740,7 +2760,7 @@ ii.Class({
 			}
 			else if (me.currentWizard == "SiteInfo") {
 				if (!me.startDate.validate(true) || !me.siteName.validate(true) || !me.street1.validate(true)
-					|| !me.city.validate(true) || !me.state.validate(true) || !me.zipCode.validate(true) || !me.county.validate(true))
+					|| !me.city.validate(true) || !me.state.validate(true) || !me.zipCode.validate(true) || !me.county.validate(true) || !me.phone.validate(true))
 					return false;
 			}
 			else if (me.currentWizard == "ServicesProvided") {
@@ -2748,7 +2768,7 @@ ii.Class({
 					return false;
 			}
 			else if (me.currentWizard == "PayrollInfo") {
-				if (!me.hourlyCompany.validate(true) || !me.salaryCompany.validate(true))
+				if (!me.hourlyCompany.validate(true) || !me.salaryCompany.validate(true) || !me.hourlyEmployees.validate(true) || !me.salaryEmployees.validate(true))
 					return false;
 				else if (me.hourlyCompany.lastBlurValue != "" && (me.hourlyCompany.indexSelected == me.salaryCompany.indexSelected)) {
 					alert("[Hourly Company] & [Salary Company] cannot be same.");
@@ -3251,9 +3271,9 @@ ii.Class({
 					|| !me.svp.validate(true) || !me.dvp.validate(true) || !me.rvp.validate(true)
 					|| !me.srm.validate(true) || !me.rm.validate(true) || !me.am.validate(true)
 					|| !me.startDate.validate(true) || !me.siteName.validate(true) || !me.street1.validate(true)
-					|| !me.city.validate(true) || !me.state.validate(true) || !me.zipCode.validate(true) || !me.county.validate(true)
+					|| !me.city.validate(true) || !me.state.validate(true) || !me.zipCode.validate(true) || !me.county.validate(true) || !me.phone.validate(true)
 					|| !me.primaryServiceProvided.validate(true)
-					|| !me.hourlyCompany.validate(true) || !me.salaryCompany.validate(true)
+					|| !me.hourlyCompany.validate(true) || !me.salaryCompany.validate(true) || !me.hourlyEmployees.validate(true) || !me.salaryEmployees.validate(true)
 					|| (me.hourlyCompany.lastBlurValue != "" && (me.hourlyCompany.indexSelected == me.salaryCompany.indexSelected))
 					|| !me.unionAccount.validate(true)
 					|| !me.customerNumber.validate(true) || !me.clientName.validate(true) || !me.customerStreet1.validate(true) || !me.customerCity.validate(true) 
@@ -3277,7 +3297,7 @@ ii.Class({
 					|| !me.svp.validate(true) || !me.dvp.validate(true) || !me.rvp.validate(true)
 					|| !me.srm.validate(true) || !me.rm.validate(true) || !me.am.validate(true) || !me.houseCode.validate(true)
 					|| !me.startDate.validate(true) || !me.siteName.validate(true) || !me.street1.validate(true)
-					|| !me.city.validate(true) || !me.state.validate(true) || !me.zipCode.validate(true) || !me.county.validate(true)
+					|| !me.city.validate(true) || !me.state.validate(true) || !me.zipCode.validate(true) || !me.county.validate(true) || !me.phone.validate(true)
 					|| !me.customerNumber.validate(true) || !me.clientName.validate(true) || !me.customerStreet1.validate(true) || !me.customerCity.validate(true) 
 					|| !me.customerState.validate(true) || !me.customerZipCode.validate(true) || !me.customerPhone.validate(true)
 					|| !me.billingFrequency.validate(true)
@@ -3359,7 +3379,7 @@ ii.Class({
 				}
 				else if (me.currentWizard == "SiteInfo") {
 					if (!me.startDate.validate(true) || !me.siteName.validate(true) || !me.street1.validate(true)
-						|| !me.city.validate(true) || !me.state.validate(true) || !me.zipCode.validate(true) || !me.county.validate(true))
+						|| !me.city.validate(true) || !me.state.validate(true) || !me.zipCode.validate(true) || !me.county.validate(true) || !me.phone.validate(true))
 						return false;
 				}
 				else if (me.currentWizard == "ServicesProvided") {
@@ -3367,7 +3387,7 @@ ii.Class({
 						return false;
 				}
 				else if (me.currentWizard == "PayrollInfo") {
-					if (!me.hourlyCompany.validate(true) || !me.salaryCompany.validate(true))
+					if (!me.hourlyCompany.validate(true) || !me.salaryCompany.validate(true) || !me.hourlyEmployees.validate(true) || !me.salaryEmployees.validate(true))
 						return false;
 					else if (me.hourlyCompany.lastBlurValue != "" && (me.hourlyCompany.indexSelected == me.salaryCompany.indexSelected)) {
 						alert("[Hourly Company] & [Salary Company] cannot be same.");
@@ -3696,15 +3716,15 @@ ii.Class({
 			xml += ' amBrief="' + item.column100 + '"';
 			xml += ' action="' + me.status + '"';
 			xml += ' moduleBrief="hcr"';
-			xml += ' contractTypeBrief="' + (me.primaryContractType.indexSelected >= 0 ? me.primaryContractType.data[me.primaryContractType.indexSelected].brief : "") + '"';
-			xml += ' serviceLineBrief="' + (me.serviceLine.indexSelected >= 0 ? me.serviceLine.data[me.serviceLine.indexSelected].brief : "") + '"';
-			xml += ' clientStatusBrief="' + (me.clientStatus.indexSelected >= 0 ? me.clientStatus.data[me.clientStatus.indexSelected].brief : "") + '"';
 			xml += ' recordType="F"';
+		    xml += ' fiscalYear="' + parent.fin.appUI.glbfiscalYear + '"';
 
 			if (me.status == "SendRequest" || me.status == "ViewRequest" || me.status == "SaveAndApproveRequestStep3") {
 				var index = 0;
+				var contractTypeBrief = "";
 				var primaryContractTypeTitle = "";
 				var financialCompanyTitle = "";
+				var serviceLineBrief = "";
 				var serviceLineTitle = "";
 				var stateBrief = "";
 				var stateTitle = "";
@@ -3717,19 +3737,23 @@ ii.Class({
 				var billingFrequencyTitle = "";
 				var contractTypeTitle = "";
 				var serviceLocationStateTitle = "";
-				
+				var clientStatusBrief = "";
+
 				index = ii.ajax.util.findIndexById(item.column16, me.contractTypes);
-				if (index != undefined && index >= 0)
+				if (index != undefined && index >= 0) {
+					contractTypeBrief = me.contractTypes[index].brief;
 					primaryContractTypeTitle = me.contractTypes[index].name;
+				}
 
 				index = ii.ajax.util.findIndexById(item.column89, me.jdeCompanys);
 				if (index != undefined && index >= 0)
 					financialCompanyTitle = me.jdeCompanys[index].name;
 
 				index = ii.ajax.util.findIndexById(item.column90, me.serviceLines);
-				if (index != undefined && index >= 0)
+				if (index != undefined && index >= 0) {
+					serviceLineBrief = me.serviceLines[index].brief;
 					serviceLineTitle = me.serviceLines[index].name;
-
+				}
 				index = ii.ajax.util.findIndexById(item.column29, me.stateTypes);
 				if (index != undefined && index >= 0) {
 					stateBrief = me.stateTypes[index].brief;
@@ -3775,8 +3799,14 @@ ii.Class({
 				if (index != undefined && index >= 0)
 					serviceLocationStateTitle = me.stateTypes[index].name;
 
+				index = me.findIndexByTitle(item.column58, me.clientStatusTypes);
+				if (index != undefined && index >= 0)
+					clientStatusBrief = me.clientStatusTypes[index].brief;
+			
+				xml += ' contractTypeBrief="' + contractTypeBrief + '"';
 				xml += ' primaryContractTypeTitle="' + ui.cmn.text.xml.encode(primaryContractTypeTitle) + '"';
 				xml += ' financialCompanyTitle="' + ui.cmn.text.xml.encode(financialCompanyTitle) + '"';
+				xml += ' serviceLineBrief="' + serviceLineBrief + '"';
 				xml += ' serviceLineTitle="' + ui.cmn.text.xml.encode(serviceLineTitle) + '"';
 				xml += ' stateBrief="' + ui.cmn.text.xml.encode(stateBrief) + '"';
 				xml += ' stateTitle="' + ui.cmn.text.xml.encode(stateTitle) + '"';
@@ -3789,13 +3819,14 @@ ii.Class({
 				xml += ' billingFrequencyTitle="' + ui.cmn.text.xml.encode(billingFrequencyTitle) + '"';
 				xml += ' contractTypeTitle="' + ui.cmn.text.xml.encode(contractTypeTitle) + '"';
 				xml += ' serviceLocationStateTitle="' + ui.cmn.text.xml.encode(serviceLocationStateTitle) + '"';
+				xml += ' clientStatusBrief="' + clientStatusBrief + '"';
 			}
 			
 			if (me.status == "UnApproveRequestStep1" || me.status == "UnApproveRequestStep2" || me.status == "UnApproveRequestStep3")
 				xml += ' notes="' + ui.cmn.text.xml.encode(me.notes.value) + '"';
 			else 
 				xml += ' notes=""';
-		
+
 			xml += '/>';
 
 			return xml;
