@@ -657,6 +657,23 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         data.IncreaseAmount = increaseAmt.toFixed(2);
     }
 
+    $scope.onAnnualSalaryChange = function () {
+        var data = null;
+        if ($scope.empAction.NewHire)
+            data = $scope.empAction.Data.NewHire;
+        else if ($scope.empAction.ReHire)
+            data = $scope.empAction.Data.ReHire;
+
+        var salary = data.AnnualSalaryAmount;
+
+        if (salary == null || salary == "")
+            salary = 0;
+
+        salary = parseFloat(salary);
+
+        data.AnnualSalaryAmount = salary.toFixed(2);
+    }
+
     $scope.onSalaryChange = function (type) {
         var data = null;
         if ($scope.empAction.Promotion)
@@ -1521,6 +1538,45 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
             });
         }
     }
+})
+.directive('pafMaxlength', function () {
+    return {
+        require: '?ngModel',
+        link: function (scope, element, attrs, modelCtrl) {
+            modelCtrl.$parsers.push(function (inputValue) {
+                if (inputValue == undefined) return ''
+                var maxlength = parseInt(attrs.pafMaxlength);
+                var transformedInput = inputValue.substring(0, maxlength);
+                if (transformedInput != inputValue) {
+                    modelCtrl.$setViewValue(transformedInput);
+                    modelCtrl.$render();
+                }
+
+                return transformedInput;
+            });
+        }
+    };
+})
+.directive('pafMax', function () {
+    return {
+        require: '?ngModel',
+        link: function (scope, element, attrs, modelCtrl) {
+            modelCtrl.$parsers.push(function (inputValue) {
+                if (inputValue == undefined) return ''
+                var max = parseInt(attrs.pafMax);
+                if (inputValue <= max) {
+                    modelCtrl.$setValidity(attrs.name, true);
+                    attrs.$set('tooltip', '');
+                    return inputValue;
+                }
+                else {
+                    modelCtrl.$setValidity(attrs.name, false);
+                    attrs.$set('tooltip', 'Hours must be less than 168');
+                    return null;
+                }
+            });
+        }
+    };
 })
 .directive('pafValidation', function () {
     return {
