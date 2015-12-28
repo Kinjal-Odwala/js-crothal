@@ -1112,22 +1112,24 @@ ii.Class({
 			
 			me.accountId = 0;
 			me.catalogId = 0;
-				
-			if (me.vendorId == 0) {
-				me.account.reset();
-				me.account.setData([]);
-				me.catalog.reset();
-				me.catalog.setData([]);
-				return;
-			}			
+			me.account.reset();
+			me.account.setData([]);
+			me.catalog.reset();
+			me.catalog.setData([]);
+			if (me.orderItemGrid.activeRowIndex != -1)
+				me.orderItemGrid.body.deselect(me.orderItemGrid.activeRowIndex, true);
+			me.purchaseOrderItemStore.reset();
+			me.orderItemGrid.setData([]);
 			
-			me.setLoadCount();		
-			me.account.fetchingData();
-			me.catalog.fetchingData();
-			me.accountStore.reset();
-			me.catalogStore.reset();
-			me.accountStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.accountsLoaded, me);
-			me.catalogStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.catalogsLoaded, me);
+			if (me.vendorId > 0) {
+				me.setLoadCount();
+				me.account.fetchingData();
+				me.catalog.fetchingData();
+				me.accountStore.reset();
+				me.catalogStore.reset();
+				me.accountStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.accountsLoaded, me);
+				me.catalogStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.catalogsLoaded, me);
+			}
 		},
 		
 		accountsLoaded: function(me, activeId) {
@@ -1143,6 +1145,11 @@ ii.Class({
 				me.accountId = me.accounts[me.account.indexSelected].id;
 			else
 				me.accountId = 0;
+				
+			if (me.orderItemGrid.activeRowIndex != -1)
+				me.orderItemGrid.body.deselect(me.orderItemGrid.activeRowIndex, true);
+			me.purchaseOrderItemStore.reset();
+			me.orderItemGrid.setData([]);
 		},
 		
 		catalogsLoaded: function(me, activeId) {
@@ -1159,6 +1166,11 @@ ii.Class({
 				me.catalogId = me.catalogs[me.catalog.indexSelected].id;
 			else
 				me.catalogId = 0;
+				
+			if (me.orderItemGrid.activeRowIndex != -1)
+				me.orderItemGrid.body.deselect(me.orderItemGrid.activeRowIndex, true);
+			me.purchaseOrderItemStore.reset();
+			me.orderItemGrid.setData([]);
 		},
 		
 		houseCodeJobsLoaded: function(me, activeId) {
@@ -1169,6 +1181,8 @@ ii.Class({
 		loadPurchaseOrderItems: function() {
 			var me = this;
 			
+			if (me.orderItemGrid.activeRowIndex != -1)
+				me.orderItemGrid.body.deselect(me.orderItemGrid.activeRowIndex, true);
 			me.setLoadCount();	
 			me.purchaseOrderItemStore.reset();		
 			me.purchaseOrderItemStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId + ",catalogId:" + me.catalogId + ",orderId:" + me.purchaseOrderId + ",accountId:" + me.accountId + ",searchValue:" + me.searchItem.getValue(), me.purchaseOrderItemsLoaded, me);
@@ -1176,11 +1190,8 @@ ii.Class({
 		},
 		
 		purchaseOrderItemsLoaded: function(me, activeId) {
-			var index = 0;
-			var rowHtml = "";
 			
 			me.orderItemGrid.setData(me.purchaseOrderItems);			
-			
 			me.checkLoadCount();
 		},
 		
