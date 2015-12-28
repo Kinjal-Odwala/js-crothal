@@ -898,7 +898,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.CarAllowance = $scope.empAction.Data.ReHire.CarAllowance;
                 $scope.empAction.BonusEligibleType = $scope.empAction.Data.ReHire.BonusEligibleType;
                 $scope.empAction.PayGrade = $scope.empAction.Data.ReHire.PayGrade;
-                $scope.empAction.ReportingManagerEmail = $scope.empAction.Data.ReHire.ReportingEmail;
+                $scope.empAction.ManagerEmail = $scope.empAction.Data.ReHire.ReportingEmail;
                 $scope.empAction.TrainingContact = $scope.empAction.Data.ReHire.TrainingContact;
                 var grade = ($scope.empAction.PayGrade == 0 ? $scope.empAction.PayGrade : EmpActions.getPayGradeTitle($scope.empAction.PayGrade));
                 $scope.empAction.PayRange = $scope.getPayRange($scope.empAction.Data.ReHire.PayGrade, salary) + grade.slice(grade.indexOf("("));
@@ -943,7 +943,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.Instructions = $scope.empAction.Data.Promotion.Instructions;
                 $scope.empAction.NewManagerEmail = $scope.empAction.Data.Promotion.ReportingEmail;
                 var newGrade = ($scope.empAction.NewPayGrade == 0 ? $scope.empAction.NewPayGrade : EmpActions.getPayGradeTitle($scope.empAction.NewPayGrade));
-                $scope.empAction.NewPayRange = $scope.getPayRange($scope.empAction.Data.Promotion.NewPayGrade, $scope.empAction.Data.Promotion.NewSalary) + newGrade.slice(grade.indexOf("("));
+                $scope.empAction.NewPayRange = $scope.getPayRange($scope.empAction.Data.Promotion.NewPayGrade, $scope.empAction.Data.Promotion.NewSalary) + newGrade.slice(newGrade.indexOf("("));
                 $scope.empAction.NewManagerNumber = $scope.empAction.Data["Promotion"].ReportingManagerNumber;
                 $scope.empAction.NewManagerTitle = $scope.empAction.Data.Promotion.ReportingTitle;
             }
@@ -1005,8 +1005,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.TransferManagerNumber = $scope.empAction.Data["Transfer"].ReportingManagerNumber;
                 $scope.empAction.TransferManagerTitle = $scope.empAction.Data.Transfer.ReportingTitle;
             }
-            if ($scope.empAction.PersonalInfoChange)
-            {
+            if ($scope.empAction.PersonalInfoChange) {
                 $scope.empAction.InfoChangeFirstName = $scope.empAction.Data.PersonalInfoChange.InfoChangeFirstName;
                 $scope.empAction.InfoChangeLastName = $scope.empAction.Data.PersonalInfoChange.InfoChangeLastName;
                 $scope.empAction.InfoChangeAddressLine1 = $scope.empAction.Data.PersonalInfoChange.InfoChangeAddressLine1;
@@ -1018,20 +1017,29 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.InfoChangeEffectiveDate = $scope.empAction.Data.PersonalInfoChange.InfoChangeEffectiveDate;
                 $scope.empAction.InfoChangeMiddleName = $scope.empAction.Data.PersonalInfoChange.InfoChangeMiddleName;
             }
-
+            if ($scope.empAction.Relocation) {
+                $scope.empAction.RelocationApprovedBy = $scope.empAction.Data.Relocation.RelocationApprovedBy;
+                $scope.empAction.RelocationPlan = $scope.empAction.Data.Relocation.RelocationPlan;
+            }
+            if ($scope.empAction.Promotion || $scope.empAction.Demotion || $scope.empAction.SalaryChange) {
+                $scope.empAction.CurrentSalary = $scope.empAction.Data.Compensation.CurrentSalary;
+                var curPayGrade = $scope.empAction.Data.Compensation.CurrentPayGrade;
+                var curGrade = "";
+                if (curPayGrade == 0) {
+                    $scope.empAction.CurrentPayGrade = 0;
+                }
+                else if (curPayGrade.indexOf("none") == -1) {
+                    $scope.empAction.CurrentPayGrade = curPayGrade.substring(0, curPayGrade.indexOf("("));
+                    curGrade = curPayGrade.slice(curPayGrade.indexOf("("));
+                }
+                $scope.empAction.LastIncreaseDecreaseDate = $scope.empAction.Data.Compensation.DateLastIncrease;
+                var lastIncPer = $scope.empAction.Data.Compensation.PercentLastIncrease;
+                $scope.empAction.LastIncreaseDecreasePercentage = (lastIncPer == "NaN%" ? "0" : lastIncPer.replace("%", ""));
+                $scope.empAction.CurrentPayRange = $scope.empAction.Data.Compensation.CurrentPayRange + curGrade;
+            }
             $scope.empAction.RequisitionNumber = $scope.empAction.Data.Requisition.RequisitionNumber;
             $scope.empAction.RequisitionEmail = $scope.empAction.Data.Requisition.EmailAddress;
-            $scope.empAction.RelocationApprovedBy = $scope.empAction.Data.Relocation.RelocationApprovedBy;
-            $scope.empAction.RelocationPlan = $scope.empAction.Data.Relocation.RelocationPlan;
-            $scope.empAction.CurrentSalary = $scope.empAction.Data.Compensation.CurrentSalary;
-            var curPayGrade = $scope.empAction.Data.Compensation.CurrentPayGrade;
-	        $scope.empAction.CurrentPayGrade = (curPayGrade == 0 ? curPayGrade : curPayGrade.substring(0, curPayGrade.indexOf("(")));
-            $scope.empAction.LastIncreaseDecreaseDate = $scope.empAction.Data.Compensation.DateLastIncrease;
-            var lastIncPer = $scope.empAction.Data.Compensation.PercentLastIncrease;
-            $scope.empAction.LastIncreaseDecreasePercentage = (lastIncPer == "NaN%" ? "0" : lastIncPer.replace("%", ""));
-            var curGrade = (curPayGrade == 0 ? curPayGrade : curPayGrade.slice(curPayGrade.indexOf("(")));
-            $scope.empAction.CurrentPayRange = $scope.empAction.Data.Compensation.CurrentPayRange + curGrade;
-
+            
 			$scope.pageLoading = true;
 			$scope.loadingTitle = " Saving...";
             EmpActions.saveEmployeePersonnelAction($scope.empAction, function (status) {
