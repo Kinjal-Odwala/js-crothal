@@ -172,7 +172,7 @@
                                         <div class="form-group" paf-invalid="hireForm.FullTimeHours">
                                             <label>
                                                 <input name="Status" ng-model="data.Status" ng-disabled="data.PayStatus=='PerDiemValue'" required="required" type="radio" value="FullTimeHours" />&nbsp;Full Time
-                                            </label><input class="form-control input-sm" name="FullTimeHours" maxlength="10" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='FullTimeHours'" ng-model="data.FullTimeHours" ng-required="data.Status=='FullTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+                                            </label><input class="form-control input-sm" name="FullTimeHours" maxlength="11" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='FullTimeHours'" ng-model="data.FullTimeHours" ng-required="data.Status=='FullTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                 </div>
@@ -181,7 +181,7 @@
                                         <div class="form-group" paf-invalid="hireForm.PartTimeHours">
                                             <label>
                                                 <input name="Status" ng-model="data.Status" ng-disabled="data.PayStatus=='PerDiemValue'" required="required" type="radio" value="PartTimeHours" />&nbsp;Part Time
-                                            </label><input class="form-control input-sm" name="PartTimeHours" maxlength="10" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='PartTimeHours'" ng-model="data.PartTimeHours" ng-required="data.Status=='PartTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+                                            </label><input class="form-control input-sm" name="PartTimeHours" maxlength="11" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='PartTimeHours'" ng-model="data.PartTimeHours" ng-required="data.Status=='PartTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                     <div class="clearfix">
@@ -192,7 +192,7 @@
                                         <div class="form-group" paf-invalid="hireForm.TemporaryHours">
                                             <label>
                                                 <input name="Status" ng-model="data.Status" required="required" type="radio" value="TemporaryHours" />&nbsp;Temporary
-                                            </label><input class="form-control input-sm" name="TemporaryHours" maxlength="10" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='TemporaryHours'" ng-model="data.TemporaryHours" ng-required="data.Status=='TemporaryHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+                                            </label><input class="form-control input-sm" name="TemporaryHours" maxlength="11" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='TemporaryHours'" ng-model="data.TemporaryHours" ng-required="data.Status=='TemporaryHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                 </div>
@@ -202,21 +202,21 @@
                                     <div class="form-group" paf-invalid="hireForm.AnnualSalaryAmount">
                                         <label>
                                             <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="AnnualSalaryAmount" />&nbsp;Salary
-                                        </label><input class="form-control input-sm" name="AnnualSalaryAmount" maxlength="10" ng-show="data.PayStatus=='AnnualSalaryAmount'" ng-model="data.AnnualSalaryAmount" ng-required="data.PayStatus=='AnnualSalaryAmount'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/year" paf-numeric="" placeholder="$0/year" style="width: 40%" type="text" />
+                                        </label><input class="form-control input-sm" name="AnnualSalaryAmount" maxlength="11" ng-show="data.PayStatus=='AnnualSalaryAmount'" ng-model="data.AnnualSalaryAmount" ng-required="data.PayStatus=='AnnualSalaryAmount'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/year" paf-numeric="" placeholder="$0/year" style="width: 40%" type="text" />
                                     </div>
                                 </div>
                                 <div class="col-md-3 form-inline">
                                     <div class="form-group" paf-invalid="hireForm.AdminHourlyAmount">
                                         <label>
                                             <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="AdminHourlyAmount" />&nbsp;Admin Hourly
-                                        </label><input class="form-control input-sm" name="AdminHourlyAmount" maxlength="10" ng-show="data.PayStatus=='AdminHourlyAmount'" ng-model="data.AdminHourlyAmount" ng-required="data.PayStatus=='AdminHourlyAmount'" ng-blur="$parent.$parent.onAdminHourlyChange()" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" style="width: 40%" type="text" />
+                                        </label><input class="form-control input-sm" name="AdminHourlyAmount" maxlength="11" ng-show="data.PayStatus=='AdminHourlyAmount'" ng-model="data.AdminHourlyAmount" ng-required="data.PayStatus=='AdminHourlyAmount'" ng-blur="$parent.$parent.onAdminHourlyChange()" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" style="width: 40%" type="text" />
                                     </div>
                                 </div>
                                 <div class="col-md-3 form-inline">
                                     <div class="form-group" paf-invalid="hireForm.HourlyRateAmount">
                                         <label>
                                             <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="HourlyRateAmount" />&nbsp;Hourly
-                                        </label><input class="form-control input-sm" name="HourlyRateAmount" maxlength="10" ng-show="data.PayStatus=='HourlyRateAmount'" ng-model="data.HourlyRateAmount" ng-required="data.PayStatus=='HourlyRateAmount'" ng-blur="$parent.$parent.onHourlyChange()" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" style="width: 40%" type="text" />
+                                        </label><input class="form-control input-sm" name="HourlyRateAmount" maxlength="11" ng-show="data.PayStatus=='HourlyRateAmount'" ng-model="data.HourlyRateAmount" ng-required="data.PayStatus=='HourlyRateAmount'" ng-blur="$parent.$parent.onHourlyChange()" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" style="width: 40%" type="text" />
                                     </div>
                                 </div>
                                 <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12 ">
@@ -224,7 +224,7 @@
                                         <div class="form-group" paf-invalid="hireForm.PerDiemValue">
                                             <label>
                                                 <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="PerDiemValue" />&nbsp;Per Diem
-                                            </label><input class="form-control input-sm" name="PerDiemValue" maxlength="10" ng-show="data.PayStatus=='PerDiemValue'" ng-model="data.PerDiemValue" ng-required="data.PayStatus=='PerDiemValue'" ng-blur="$parent.$parent.onPerDiemChange()" paf-format="${0}/day" paf-numeric="" placeholder="$0/day" type="text" />
+                                            </label><input class="form-control input-sm" name="PerDiemValue" maxlength="11" ng-show="data.PayStatus=='PerDiemValue'" ng-model="data.PerDiemValue" ng-required="data.PayStatus=='PerDiemValue'" ng-blur="$parent.$parent.onPerDiemChange()" paf-format="${0}/day" paf-numeric="" placeholder="$0/day" type="text" />
                                         </div>
                                     </div>
                                 </div>
@@ -385,7 +385,7 @@
                                         <div class="form-group" paf-invalid="hireForm.FullTimeHours">
                                             <label>
                                                 <input name="Status" ng-model="data.Status" ng-disabled="data.PayStatus=='PerDiemValue'" required="required" type="radio" value="FullTimeHours" />&nbsp;Full Time
-                                            </label><input class="form-control input-sm" name="FullTimeHours"  maxlength="10" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='FullTimeHours'" ng-model="data.FullTimeHours" ng-required="data.Status=='FullTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+                                            </label><input class="form-control input-sm" name="FullTimeHours"  maxlength="11" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='FullTimeHours'" ng-model="data.FullTimeHours" ng-required="data.Status=='FullTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                 </div>
@@ -394,7 +394,7 @@
                                         <div class="form-group" paf-invalid="hireForm.PartTimeHours">
                                             <label>
                                                 <input name="Status" ng-model="data.Status" ng-disabled="data.PayStatus=='PerDiemValue'" required="required" type="radio" value="PartTimeHours" />&nbsp;Part Time
-                                            </label><input class="form-control input-sm" name="PartTimeHours" maxlength="10" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='PartTimeHours'" ng-model="data.PartTimeHours" ng-required="data.Status=='PartTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+                                            </label><input class="form-control input-sm" name="PartTimeHours" maxlength="11" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='PartTimeHours'" ng-model="data.PartTimeHours" ng-required="data.Status=='PartTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                     <div class="clearfix">
@@ -405,7 +405,7 @@
                                         <div class="form-group" paf-invalid="hireForm.TemporaryHours">
                                             <label>
                                                 <input name="Status" ng-model="data.Status" required="required" type="radio" value="TemporaryHours" />&nbsp;Temporary
-                                            </label><input class="form-control input-sm" name="TemporaryHours" maxlength="10" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='TemporaryHours'" ng-model="data.TemporaryHours" ng-required="data.Status=='TemporaryHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+                                            </label><input class="form-control input-sm" name="TemporaryHours" maxlength="11" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='TemporaryHours'" ng-model="data.TemporaryHours" ng-required="data.Status=='TemporaryHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                 </div>
@@ -415,21 +415,21 @@
                                     <div class="form-group" paf-invalid="hireForm.AnnualSalaryAmount">
                                         <label>
                                             <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="AnnualSalaryAmount" />&nbsp;Salary
-                                        </label><input class="form-control input-sm" name="AnnualSalaryAmount" maxlength="10" ng-show="data.PayStatus=='AnnualSalaryAmount'" ng-model="data.AnnualSalaryAmount" ng-required="data.PayStatus=='AnnualSalaryAmount'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/year" paf-numeric="" placeholder="$0/year" style="width: 40%" type="text" />
+                                        </label><input class="form-control input-sm" name="AnnualSalaryAmount" maxlength="11" ng-show="data.PayStatus=='AnnualSalaryAmount'" ng-model="data.AnnualSalaryAmount" ng-required="data.PayStatus=='AnnualSalaryAmount'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/year" paf-numeric="" placeholder="$0/year" style="width: 40%" type="text" />
                                     </div>
                                 </div>
                                 <div class="col-md-3 form-inline">
                                     <div class="form-group" paf-invalid="hireForm.AdminHourlyAmount">
                                         <label>
                                             <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="AdminHourlyAmount" />&nbsp;Admin Hourly
-                                        </label><input class="form-control input-sm" name="AdminHourlyAmount" maxlength="10" ng-show="data.PayStatus=='AdminHourlyAmount'" ng-model="data.AdminHourlyAmount" ng-required="data.PayStatus=='AdminHourlyAmount'" ng-blur="$parent.$parent.onAdminHourlyChange()" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" style="width: 40%" type="text" />
+                                        </label><input class="form-control input-sm" name="AdminHourlyAmount" maxlength="11" ng-show="data.PayStatus=='AdminHourlyAmount'" ng-model="data.AdminHourlyAmount" ng-required="data.PayStatus=='AdminHourlyAmount'" ng-blur="$parent.$parent.onAdminHourlyChange()" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" style="width: 40%" type="text" />
                                     </div>
                                 </div>
                                 <div class="col-md-3 form-inline">
                                     <div class="form-group" paf-invalid="hireForm.HourlyRateAmount">
                                         <label>
                                             <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="HourlyRateAmount" />&nbsp;Hourly
-                                        </label><input class="form-control input-sm" name="HourlyRateAmount" maxlength="10" ng-show="data.PayStatus=='HourlyRateAmount'" ng-model="data.HourlyRateAmount" ng-required="data.PayStatus=='HourlyRateAmount'" ng-blur="$parent.$parent.onHourlyChange()" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" style="width: 40%" type="text" />
+                                        </label><input class="form-control input-sm" name="HourlyRateAmount" maxlength="11" ng-show="data.PayStatus=='HourlyRateAmount'" ng-model="data.HourlyRateAmount" ng-required="data.PayStatus=='HourlyRateAmount'" ng-blur="$parent.$parent.onHourlyChange()" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" style="width: 40%" type="text" />
                                     </div>
                                 </div>
                                 <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12 ">
@@ -437,7 +437,7 @@
                                         <div class="form-group" paf-invalid="hireForm.PerDiemValue">
                                             <label>
                                                 <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="PerDiemValue" />&nbsp;Per Diem
-                                            </label><input class="form-control input-sm" name="PerDiemValue" maxlength="10" ng-show="data.PayStatus=='PerDiemValue'" ng-model="data.PerDiemValue" ng-required="data.PayStatus=='PerDiemValue'" ng-blur="$parent.$parent.onPerDiemChange()" paf-format="${0}/day" paf-numeric="" placeholder="$0/day" type="text" />
+                                            </label><input class="form-control input-sm" name="PerDiemValue" maxlength="11" ng-show="data.PayStatus=='PerDiemValue'" ng-model="data.PerDiemValue" ng-required="data.PayStatus=='PerDiemValue'" ng-blur="$parent.$parent.onPerDiemChange()" paf-format="${0}/day" paf-numeric="" placeholder="$0/day" type="text" />
                                         </div>
                                     </div>
                                 </div>
@@ -810,7 +810,7 @@
                                 <label ng-if="$parent.empAction.Demotion || data.ChangeReasonType==18">
                                     Decrease Amount 
                                 </label>
-                                <input class="form-control input-sm" name="IncreaseAmount" maxlength="10" ng-blur="$parent.onAmountChange()" ng-change="$parent.onSalaryChange('amt')" ng-model="data.IncreaseAmount" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreasePercentage" paf-numeric="" />
+                                <input class="form-control input-sm" name="IncreaseAmount" maxlength="11" ng-blur="$parent.onAmountChange()" ng-change="$parent.onSalaryChange('amt')" ng-model="data.IncreaseAmount" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreasePercentage" paf-numeric="" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -818,7 +818,7 @@
                                 <label>
                                     Percentage
                                 </label>
-                                <input class="form-control input-sm" name="IncreasePercentage" maxlength="10" ng-blur="$parent.onPercentageChange()" ng-change="$parent.onSalaryChange('percentage')" ng-model="data.IncreasePercentage" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreaseAmount" paf-numeric="" paf-format="{0}%" />
+                                <input class="form-control input-sm" name="IncreasePercentage" maxlength="11" ng-blur="$parent.onPercentageChange()" ng-change="$parent.onSalaryChange('percentage')" ng-model="data.IncreasePercentage" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreaseAmount" paf-numeric="" paf-format="{0}%" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -1049,7 +1049,7 @@
                                 <label ng-if="$parent.empAction.Demotion || data.ChangeReasonType==18">
                                     Decrease Amount 
                                 </label>
-                                <input class="form-control input-sm" name="IncreaseAmount" maxlength="10" ng-blur="$parent.onAmountChange()" ng-change="$parent.onSalaryChange('amt')" ng-model="data.IncreaseAmount" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreasePercentage" paf-numeric="" />
+                                <input class="form-control input-sm" name="IncreaseAmount" maxlength="11" ng-blur="$parent.onAmountChange()" ng-change="$parent.onSalaryChange('amt')" ng-model="data.IncreaseAmount" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreasePercentage" paf-numeric="" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -1057,7 +1057,7 @@
                                 <label>
                                     Percentage
                                 </label>
-                                <input class="form-control input-sm" name="IncreasePercentage" maxlength="10" ng-blur="$parent.onPercentageChange()" ng-change="$parent.onSalaryChange('percentage')" ng-model="data.IncreasePercentage" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreaseAmount" paf-numeric="" paf-format="{0}%" />
+                                <input class="form-control input-sm" name="IncreasePercentage" maxlength="11" ng-blur="$parent.onPercentageChange()" ng-change="$parent.onSalaryChange('percentage')" ng-model="data.IncreasePercentage" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreaseAmount" paf-numeric="" paf-format="{0}%" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -1288,7 +1288,7 @@
                                 <label ng-if="$parent.empAction.Demotion || data.ChangeReasonType==18">
                                     Decrease Amount 
                                 </label>
-                                <input class="form-control input-sm" name="IncreaseAmount" maxlength="10" ng-blur="$parent.onAmountChange()" ng-change="$parent.onSalaryChange('amt')" ng-model="data.IncreaseAmount" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreasePercentage" paf-numeric="" />
+                                <input class="form-control input-sm" name="IncreaseAmount" maxlength="11" ng-blur="$parent.onAmountChange()" ng-change="$parent.onSalaryChange('amt')" ng-model="data.IncreaseAmount" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreasePercentage" paf-numeric="" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -1296,7 +1296,7 @@
                                 <label>
                                     Percentage
                                 </label>
-                                <input class="form-control input-sm" name="IncreasePercentage" maxlength="10" ng-blur="$parent.onPercentageChange()" ng-change="$parent.onSalaryChange('percentage')" ng-model="data.IncreasePercentage" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreaseAmount" paf-numeric="" paf-format="{0}%" />
+                                <input class="form-control input-sm" name="IncreasePercentage" maxlength="11" ng-blur="$parent.onPercentageChange()" ng-change="$parent.onSalaryChange('percentage')" ng-model="data.IncreasePercentage" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreaseAmount" paf-numeric="" paf-format="{0}%" />
                             </div>
                         </div>
                         <div class="col-md-3">
