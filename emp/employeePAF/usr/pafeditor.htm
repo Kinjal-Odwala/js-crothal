@@ -34,7 +34,7 @@
                             <label class="control-label">
                                 Employee/Clock Number
                             </label>
-                            <input class="form-control input-sm" name="EmployeeNumber" paf-maxlength="6" ng-blur="onEmployeeNumberChanged(empAction.EmployeeNumber)" paf-enter="onEmployeeNumberChanged(empAction.EmployeeNumber)" ng-model="empAction.EmployeeNumber" ng-required="!empAction.NewHire" paf-numeric/>
+                            <input class="form-control input-sm" name="EmployeeNumber" maxlength="6" ng-blur="onEmployeeNumberChanged(empAction.EmployeeNumber)" paf-enter="onEmployeeNumberChanged(empAction.EmployeeNumber)" ng-model="empAction.EmployeeNumber" ng-required="!empAction.NewHire" paf-integer/>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -42,7 +42,7 @@
                             <label class="control-label">
                                 First Name
                             </label>
-                            <input class="form-control input-sm" name="FirstName" ng-model="empAction.FirstName" ng-disabled="empAction.Data.Person" required/>
+                            <input class="form-control input-sm" name="FirstName" maxlength="50" ng-model="empAction.FirstName" ng-disabled="empAction.Data.Person" required/>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -50,7 +50,7 @@
                             <label class="control-label">
                                 Middle Name
                             </label>
-                            <input class="form-control input-sm" name="MiddleName" ng-model="empAction.MiddleName" ng-disabled="empAction.Data.Person" />
+                            <input class="form-control input-sm" name="MiddleName" maxlength="50" ng-model="empAction.MiddleName" ng-disabled="empAction.Data.Person" />
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -58,7 +58,7 @@
                             <label class="control-label">
                                 Last Name
                             </label>
-                            <input class="form-control input-sm" name="LastName" ng-model="empAction.LastName" ng-disabled="empAction.Data.Person" required/>
+                            <input class="form-control input-sm" name="LastName" maxlength="50" ng-model="empAction.LastName" ng-disabled="empAction.Data.Person" required/>
                         </div>
                     </div>
                 </div>
@@ -68,7 +68,7 @@
                             <label class="control-label">
                                 Address1
                             </label>
-                            <input class="form-control input-sm" name="AddressLine1" ng-model="empAction.AddressLine1" ng-disabled="empAction.Data.Person" required/>
+                            <input class="form-control input-sm" name="AddressLine1" maxlength="100" ng-model="empAction.AddressLine1" ng-disabled="empAction.Data.Person" required/>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -76,7 +76,7 @@
                             <label class="control-label">
                                 Address2
                             </label>
-                            <input class="form-control input-sm" name="AddressLine2" ng-model="empAction.AddressLine2" ng-disabled="empAction.Data.Person" />
+                            <input class="form-control input-sm" name="AddressLine2" maxlength="100" ng-model="empAction.AddressLine2" ng-disabled="empAction.Data.Person" />
                         </div>
                     </div>
                 </div>
@@ -85,7 +85,7 @@
                         <label class="control-label">
                             City
                         </label>
-                        <input class="form-control input-sm" name="City" ng-model="empAction.City" ng-disabled="empAction.Data.Person" required/>
+                        <input class="form-control input-sm" name="City" maxlength="50" ng-model="empAction.City" ng-disabled="empAction.Data.Person" required/>
                     </div>
                     <div class="col-md-3" ng-class="{'has-error':pafForm.StateType.$invalid}">
                         <label class="control-label">
@@ -99,14 +99,14 @@
                         <label>
                             Zip
                         </label>
-                        <input class="form-control input-sm" name="PostalCode" ng-model="empAction.PostalCode" paf-mask="zipcode" ng-disabled="empAction.Data.Person" required/>
+                        <input class="form-control input-sm" name="PostalCode" maxlength="20" ng-model="empAction.PostalCode" paf-mask="zipcode" ng-disabled="empAction.Data.Person" required/>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group" ng-class="{'has-error':pafForm.Phone.$invalid}">
                             <label class="control-label">
                                 Phone #
                             </label>
-                            <input class="form-control input-sm" name="Phone" ng-model="empAction.Phone" paf-mask="phone" ng-disabled="empAction.Data.Person" required/>
+                            <input class="form-control input-sm" name="Phone" maxlength="50" ng-model="empAction.Phone" paf-mask="phone" ng-disabled="empAction.Data.Person" required/>
                         </div>
                     </div>
                 </div>
@@ -172,7 +172,7 @@
                                         <div class="form-group" paf-invalid="hireForm.FullTimeHours">
                                             <label>
                                                 <input name="Status" ng-model="data.Status" ng-disabled="data.PayStatus=='PerDiemValue'" required="required" type="radio" value="FullTimeHours" />&nbsp;Full Time
-                                            </label><input class="form-control input-sm" name="FullTimeHours" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='FullTimeHours'" ng-model="data.FullTimeHours" ng-required="data.Status=='FullTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+                                            </label><input class="form-control input-sm" name="FullTimeHours" maxlength="10" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='FullTimeHours'" ng-model="data.FullTimeHours" ng-required="data.Status=='FullTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                 </div>
@@ -181,7 +181,7 @@
                                         <div class="form-group" paf-invalid="hireForm.PartTimeHours">
                                             <label>
                                                 <input name="Status" ng-model="data.Status" ng-disabled="data.PayStatus=='PerDiemValue'" required="required" type="radio" value="PartTimeHours" />&nbsp;Part Time
-                                            </label><input class="form-control input-sm" name="PartTimeHours" ng-show="data.Status=='PartTimeHours'" ng-model="data.PartTimeHours" ng-required="data.Status=='PartTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+                                            </label><input class="form-control input-sm" name="PartTimeHours" maxlength="10" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='PartTimeHours'" ng-model="data.PartTimeHours" ng-required="data.Status=='PartTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                     <div class="clearfix">
@@ -192,7 +192,7 @@
                                         <div class="form-group" paf-invalid="hireForm.TemporaryHours">
                                             <label>
                                                 <input name="Status" ng-model="data.Status" required="required" type="radio" value="TemporaryHours" />&nbsp;Temporary
-                                            </label><input class="form-control input-sm" name="TemporaryHours" ng-show="data.Status=='TemporaryHours'" ng-model="data.TemporaryHours" ng-required="data.Status=='TemporaryHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+                                            </label><input class="form-control input-sm" name="TemporaryHours" maxlength="10" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='TemporaryHours'" ng-model="data.TemporaryHours" ng-required="data.Status=='TemporaryHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                 </div>
@@ -202,21 +202,21 @@
                                     <div class="form-group" paf-invalid="hireForm.AnnualSalaryAmount">
                                         <label>
                                             <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="AnnualSalaryAmount" />&nbsp;Salary
-                                        </label><input class="form-control input-sm" name="AnnualSalaryAmount" ng-show="data.PayStatus=='AnnualSalaryAmount'" ng-model="data.AnnualSalaryAmount" ng-required="data.PayStatus=='AnnualSalaryAmount'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/year" paf-numeric="" placeholder="$0/year" style="width: 40%" type="text" />
+                                        </label><input class="form-control input-sm" name="AnnualSalaryAmount" maxlength="10" ng-show="data.PayStatus=='AnnualSalaryAmount'" ng-model="data.AnnualSalaryAmount" ng-required="data.PayStatus=='AnnualSalaryAmount'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/year" paf-numeric="" placeholder="$0/year" style="width: 40%" type="text" />
                                     </div>
                                 </div>
                                 <div class="col-md-3 form-inline">
                                     <div class="form-group" paf-invalid="hireForm.AdminHourlyAmount">
                                         <label>
-                                            <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="AdminHourlyAmount" />&nbsp;Admin.Hourly
-                                        </label><input class="form-control input-sm" name="AdminHourlyAmount" ng-show="data.PayStatus=='AdminHourlyAmount'" ng-model="data.AdminHourlyAmount" ng-required="data.PayStatus=='AdminHourlyAmount'" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" style="width: 40%" type="text" />
+                                            <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="AdminHourlyAmount" />&nbsp;Admin Hourly
+                                        </label><input class="form-control input-sm" name="AdminHourlyAmount" maxlength="10" ng-show="data.PayStatus=='AdminHourlyAmount'" ng-model="data.AdminHourlyAmount" ng-required="data.PayStatus=='AdminHourlyAmount'" ng-blur="$parent.$parent.onAdminHourlyChange()" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" style="width: 40%" type="text" />
                                     </div>
                                 </div>
                                 <div class="col-md-3 form-inline">
                                     <div class="form-group" paf-invalid="hireForm.HourlyRateAmount">
                                         <label>
                                             <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="HourlyRateAmount" />&nbsp;Hourly
-                                        </label><input class="form-control input-sm" name="HourlyRateAmount" ng-show="data.PayStatus=='HourlyRateAmount'" ng-model="data.HourlyRateAmount" ng-required="data.PayStatus=='HourlyRateAmount'" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" style="width: 40%" type="text" />
+                                        </label><input class="form-control input-sm" name="HourlyRateAmount" maxlength="10" ng-show="data.PayStatus=='HourlyRateAmount'" ng-model="data.HourlyRateAmount" ng-required="data.PayStatus=='HourlyRateAmount'" ng-blur="$parent.$parent.onHourlyChange()" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" style="width: 40%" type="text" />
                                     </div>
                                 </div>
                                 <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12 ">
@@ -224,7 +224,7 @@
                                         <div class="form-group" paf-invalid="hireForm.PerDiemValue">
                                             <label>
                                                 <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="PerDiemValue" />&nbsp;Per Diem
-                                            </label><input class="form-control input-sm" name="PerDiemValue" ng-show="data.PayStatus=='PerDiemValue'" ng-model="data.PerDiemValue" ng-required="data.PayStatus=='PerDiemValue'" paf-format="${0}/day" paf-numeric="" placeholder="$0/day" type="text" />
+                                            </label><input class="form-control input-sm" name="PerDiemValue" maxlength="10" ng-show="data.PayStatus=='PerDiemValue'" ng-model="data.PerDiemValue" ng-required="data.PayStatus=='PerDiemValue'" ng-blur="$parent.$parent.onPerDiemChange()" paf-format="${0}/day" paf-numeric="" placeholder="$0/day" type="text" />
                                         </div>
                                     </div>
                                 </div>
@@ -258,33 +258,33 @@
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingManagerNumber">
                                         <label>
-                                            Managers/Clock Number
+                                            Manager/Clock Number
                                         </label>
-                                        <input class="form-control input-sm" paf-maxlength="6" ng-disabled="data.DisabledReportingManagerNumberField" name="ReportingManagerNumber" ng-model="data.ReportingManagerNumber" ng-blur="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)" paf-numeric/>
+                                        <input class="form-control input-sm" maxlength="6" ng-disabled="data.DisabledReportingManagerNumberField" name="ReportingManagerNumber" ng-model="data.ReportingManagerNumber" ng-blur="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)" paf-integer/>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingName">
                                         <label>
-                                            Reporting Manager Name
+                                            Manager Name
                                         </label>
-                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingName" ng-model="data.ReportingName" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingName" maxlength="100" ng-model="data.ReportingName" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle">
                                         <label>
-                                            Title
+                                            Manager Title
                                         </label>
-                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingTitle" ng-model="data.ReportingTitle" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingTitle" maxlength="100" ng-model="data.ReportingTitle" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>
-                                            Email
+                                            Manager Email
                                         </label>
-                                        <input type="email" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input type="email" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -305,7 +305,7 @@
                                 <label>
                                     Training Contact
                                 </label>
-                                <input class="form-control input-sm" ng-model="data.TrainingContact" />
+                                <input class="form-control input-sm" maxlength="50" ng-model="data.TrainingContact" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -385,7 +385,7 @@
                                         <div class="form-group" paf-invalid="hireForm.FullTimeHours">
                                             <label>
                                                 <input name="Status" ng-model="data.Status" ng-disabled="data.PayStatus=='PerDiemValue'" required="required" type="radio" value="FullTimeHours" />&nbsp;Full Time
-                                            </label><input class="form-control input-sm" name="FullTimeHours"  paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='FullTimeHours'" ng-model="data.FullTimeHours" ng-required="data.Status=='FullTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+                                            </label><input class="form-control input-sm" name="FullTimeHours"  maxlength="10" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='FullTimeHours'" ng-model="data.FullTimeHours" ng-required="data.Status=='FullTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                 </div>
@@ -394,7 +394,7 @@
                                         <div class="form-group" paf-invalid="hireForm.PartTimeHours">
                                             <label>
                                                 <input name="Status" ng-model="data.Status" ng-disabled="data.PayStatus=='PerDiemValue'" required="required" type="radio" value="PartTimeHours" />&nbsp;Part Time
-                                            </label><input class="form-control input-sm" name="PartTimeHours" ng-show="data.Status=='PartTimeHours'" ng-model="data.PartTimeHours" ng-required="data.Status=='PartTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+                                            </label><input class="form-control input-sm" name="PartTimeHours" maxlength="10" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='PartTimeHours'" ng-model="data.PartTimeHours" ng-required="data.Status=='PartTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                     <div class="clearfix">
@@ -405,7 +405,7 @@
                                         <div class="form-group" paf-invalid="hireForm.TemporaryHours">
                                             <label>
                                                 <input name="Status" ng-model="data.Status" required="required" type="radio" value="TemporaryHours" />&nbsp;Temporary
-                                            </label><input class="form-control input-sm" name="TemporaryHours" ng-show="data.Status=='TemporaryHours'" ng-model="data.TemporaryHours" ng-required="data.Status=='TemporaryHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+                                            </label><input class="form-control input-sm" name="TemporaryHours" maxlength="10" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='TemporaryHours'" ng-model="data.TemporaryHours" ng-required="data.Status=='TemporaryHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                 </div>
@@ -415,21 +415,21 @@
                                     <div class="form-group" paf-invalid="hireForm.AnnualSalaryAmount">
                                         <label>
                                             <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="AnnualSalaryAmount" />&nbsp;Salary
-                                        </label><input class="form-control input-sm" name="AnnualSalaryAmount" ng-show="data.PayStatus=='AnnualSalaryAmount'" ng-model="data.AnnualSalaryAmount" ng-required="data.PayStatus=='AnnualSalaryAmount'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/year" paf-numeric="" placeholder="$0/year" style="width: 40%" type="text" />
+                                        </label><input class="form-control input-sm" name="AnnualSalaryAmount" maxlength="10" ng-show="data.PayStatus=='AnnualSalaryAmount'" ng-model="data.AnnualSalaryAmount" ng-required="data.PayStatus=='AnnualSalaryAmount'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/year" paf-numeric="" placeholder="$0/year" style="width: 40%" type="text" />
                                     </div>
                                 </div>
                                 <div class="col-md-3 form-inline">
                                     <div class="form-group" paf-invalid="hireForm.AdminHourlyAmount">
                                         <label>
-                                            <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="AdminHourlyAmount" />&nbsp;Admin.Hourly
-                                        </label><input class="form-control input-sm" name="AdminHourlyAmount" ng-show="data.PayStatus=='AdminHourlyAmount'" ng-model="data.AdminHourlyAmount" ng-required="data.PayStatus=='AdminHourlyAmount'" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" style="width: 40%" type="text" />
+                                            <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="AdminHourlyAmount" />&nbsp;Admin Hourly
+                                        </label><input class="form-control input-sm" name="AdminHourlyAmount" maxlength="10" ng-show="data.PayStatus=='AdminHourlyAmount'" ng-model="data.AdminHourlyAmount" ng-required="data.PayStatus=='AdminHourlyAmount'" ng-blur="$parent.$parent.onAdminHourlyChange()" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" style="width: 40%" type="text" />
                                     </div>
                                 </div>
                                 <div class="col-md-3 form-inline">
                                     <div class="form-group" paf-invalid="hireForm.HourlyRateAmount">
                                         <label>
                                             <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="HourlyRateAmount" />&nbsp;Hourly
-                                        </label><input class="form-control input-sm" name="HourlyRateAmount" ng-show="data.PayStatus=='HourlyRateAmount'" ng-model="data.HourlyRateAmount" ng-required="data.PayStatus=='HourlyRateAmount'" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" style="width: 40%" type="text" />
+                                        </label><input class="form-control input-sm" name="HourlyRateAmount" maxlength="10" ng-show="data.PayStatus=='HourlyRateAmount'" ng-model="data.HourlyRateAmount" ng-required="data.PayStatus=='HourlyRateAmount'" ng-blur="$parent.$parent.onHourlyChange()" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" style="width: 40%" type="text" />
                                     </div>
                                 </div>
                                 <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12 ">
@@ -437,7 +437,7 @@
                                         <div class="form-group" paf-invalid="hireForm.PerDiemValue">
                                             <label>
                                                 <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="PerDiemValue" />&nbsp;Per Diem
-                                            </label><input class="form-control input-sm" name="PerDiemValue" ng-show="data.PayStatus=='PerDiemValue'" ng-model="data.PerDiemValue" ng-required="data.PayStatus=='PerDiemValue'" paf-format="${0}/day" paf-numeric="" placeholder="$0/day" type="text" />
+                                            </label><input class="form-control input-sm" name="PerDiemValue" maxlength="10" ng-show="data.PayStatus=='PerDiemValue'" ng-model="data.PerDiemValue" ng-required="data.PayStatus=='PerDiemValue'" ng-blur="$parent.$parent.onPerDiemChange()" paf-format="${0}/day" paf-numeric="" placeholder="$0/day" type="text" />
                                         </div>
                                     </div>
                                 </div>
@@ -471,33 +471,33 @@
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingManagerNumber">
                                         <label>
-                                            Managers/Clock Number
+                                            Manager/Clock Number
                                         </label>
-                                        <input class="form-control input-sm" paf-maxlength="6" ng-disabled="data.DisabledReportingManagerNumberField" name="ReportingManagerNumber" ng-model="data.ReportingManagerNumber" ng-blur="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)" paf-numeric/>
+                                        <input class="form-control input-sm" maxlength="6" ng-disabled="data.DisabledReportingManagerNumberField" name="ReportingManagerNumber" ng-model="data.ReportingManagerNumber" ng-blur="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)" paf-integer/>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingName">
                                         <label>
-                                            Reporting Manager Name
+                                            Manager Name
                                         </label>
-                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingName" ng-model="data.ReportingName" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingName" maxlength="100" ng-model="data.ReportingName" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle">
                                         <label>
-                                            Title
+                                            Manager Title
                                         </label>
-                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingTitle" ng-model="data.ReportingTitle" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingTitle" maxlength="100" ng-model="data.ReportingTitle" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>
-                                            Email
+                                            Manager Email
                                         </label>
-                                        <input type="email" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input type="email" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -518,7 +518,7 @@
                                 <label>
                                     Training Contact
                                 </label>
-                                <input class="form-control input-sm" ng-model="data.TrainingContact" />
+                                <input class="form-control input-sm" maxlength="50" ng-model="data.TrainingContact" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -810,7 +810,7 @@
                                 <label ng-if="$parent.empAction.Demotion || data.ChangeReasonType==18">
                                     Decrease Amount 
                                 </label>
-                                <input class="form-control input-sm" name="IncreaseAmount" ng-blur="$parent.onAmountChange()" ng-change="$parent.onSalaryChange('amt')" ng-model="data.IncreaseAmount" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreasePercentage" paf-numeric="" />
+                                <input class="form-control input-sm" name="IncreaseAmount" maxlength="10" ng-blur="$parent.onAmountChange()" ng-change="$parent.onSalaryChange('amt')" ng-model="data.IncreaseAmount" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreasePercentage" paf-numeric="" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -818,7 +818,7 @@
                                 <label>
                                     Percentage
                                 </label>
-                                <input class="form-control input-sm" name="IncreasePercentage" ng-blur="$parent.onPercentageChange()" ng-change="$parent.onSalaryChange('percentage')" ng-model="data.IncreasePercentage" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreaseAmount" paf-numeric="" paf-format="{0}%" />
+                                <input class="form-control input-sm" name="IncreasePercentage" maxlength="10" ng-blur="$parent.onPercentageChange()" ng-change="$parent.onSalaryChange('percentage')" ng-model="data.IncreasePercentage" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreaseAmount" paf-numeric="" paf-format="{0}%" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -874,33 +874,33 @@
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingManagerNumber">
                                         <label>
-                                            Managers/Clock Number
+                                            Manager/Clock Number
                                         </label>
-                                        <input class="form-control input-sm" paf-maxlength="6" ng-disabled="data.DisabledReportingManagerNumberField" name="ReportingManagerNumber" ng-model="data.ReportingManagerNumber" ng-blur="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)" paf-numeric/>
+                                        <input class="form-control input-sm" maxlength="6" ng-disabled="data.DisabledReportingManagerNumberField" name="ReportingManagerNumber" ng-model="data.ReportingManagerNumber" ng-blur="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)" paf-integer/>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingName">
                                         <label>
-                                            Reporting Manager Name
+                                            Manager Name
                                         </label>
-                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingName" ng-model="data.ReportingName" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingName" maxlength="100" ng-model="data.ReportingName" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle">
                                         <label>
-                                            Title
+                                            Manager Title
                                         </label>
-                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingTitle" ng-model="data.ReportingTitle" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingTitle" maxlength="100" ng-model="data.ReportingTitle" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>
-                                            Email
+                                            Manager Email
                                         </label>
-                                        <input type="email" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input type="email" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -937,7 +937,7 @@
                                 <label>
                                     Other Instructions
                                 </label>
-                                <input class="form-control input-sm" ng-model="data.Instructions" />
+                                <input class="form-control input-sm" ng-model="data.Instructions" maxlength="512" />
                             </div>
                         </div>
                     </div>
@@ -1049,7 +1049,7 @@
                                 <label ng-if="$parent.empAction.Demotion || data.ChangeReasonType==18">
                                     Decrease Amount 
                                 </label>
-                                <input class="form-control input-sm" name="IncreaseAmount" ng-blur="$parent.onAmountChange()" ng-change="$parent.onSalaryChange('amt')" ng-model="data.IncreaseAmount" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreasePercentage" paf-numeric="" />
+                                <input class="form-control input-sm" name="IncreaseAmount" maxlength="10" ng-blur="$parent.onAmountChange()" ng-change="$parent.onSalaryChange('amt')" ng-model="data.IncreaseAmount" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreasePercentage" paf-numeric="" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -1057,7 +1057,7 @@
                                 <label>
                                     Percentage
                                 </label>
-                                <input class="form-control input-sm" name="IncreasePercentage" ng-blur="$parent.onPercentageChange()" ng-change="$parent.onSalaryChange('percentage')" ng-model="data.IncreasePercentage" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreaseAmount" paf-numeric="" paf-format="{0}%" />
+                                <input class="form-control input-sm" name="IncreasePercentage" maxlength="10" ng-blur="$parent.onPercentageChange()" ng-change="$parent.onSalaryChange('percentage')" ng-model="data.IncreasePercentage" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreaseAmount" paf-numeric="" paf-format="{0}%" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -1113,33 +1113,33 @@
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingManagerNumber">
                                         <label>
-                                            Managers/Clock Number
+                                            Manager/Clock Number
                                         </label>
-                                        <input class="form-control input-sm" paf-maxlength="6" ng-disabled="data.DisabledReportingManagerNumberField" name="ReportingManagerNumber" ng-model="data.ReportingManagerNumber" ng-blur="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)" paf-numeric/>
+                                        <input class="form-control input-sm" maxlength="6" ng-disabled="data.DisabledReportingManagerNumberField" name="ReportingManagerNumber" ng-model="data.ReportingManagerNumber" ng-blur="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)" paf-integer/>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingName">
                                         <label>
-                                            Reporting Manager Name
+                                            Manager Name
                                         </label>
-                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingName" ng-model="data.ReportingName" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingName" maxlength="100" ng-model="data.ReportingName" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle">
                                         <label>
-                                            Title
+                                            Manager Title
                                         </label>
-                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingTitle" ng-model="data.ReportingTitle" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingTitle" maxlength="100" ng-model="data.ReportingTitle" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>
-                                            Email
+                                            Manager Email
                                         </label>
-                                        <input type="email" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input type="email" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -1176,7 +1176,7 @@
                                 <label>
                                     Other Instructions
                                 </label>
-                                <input class="form-control input-sm" ng-model="data.Instructions" />
+                                <input class="form-control input-sm" ng-model="data.Instructions" maxlength="512" />
                             </div>
                         </div>
                     </div>
@@ -1288,7 +1288,7 @@
                                 <label ng-if="$parent.empAction.Demotion || data.ChangeReasonType==18">
                                     Decrease Amount 
                                 </label>
-                                <input class="form-control input-sm" name="IncreaseAmount" ng-blur="$parent.onAmountChange()" ng-change="$parent.onSalaryChange('amt')" ng-model="data.IncreaseAmount" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreasePercentage" paf-numeric="" />
+                                <input class="form-control input-sm" name="IncreaseAmount" maxlength="10" ng-blur="$parent.onAmountChange()" ng-change="$parent.onSalaryChange('amt')" ng-model="data.IncreaseAmount" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreasePercentage" paf-numeric="" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -1296,7 +1296,7 @@
                                 <label>
                                     Percentage
                                 </label>
-                                <input class="form-control input-sm" name="IncreasePercentage" ng-blur="$parent.onPercentageChange()" ng-change="$parent.onSalaryChange('percentage')" ng-model="data.IncreasePercentage" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreaseAmount" paf-numeric="" paf-format="{0}%" />
+                                <input class="form-control input-sm" name="IncreasePercentage" maxlength="10" ng-blur="$parent.onPercentageChange()" ng-change="$parent.onSalaryChange('percentage')" ng-model="data.IncreasePercentage" ng-required="($parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion) && !data.IncreaseAmount" paf-numeric="" paf-format="{0}%" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -1352,33 +1352,33 @@
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingManagerNumber">
                                         <label>
-                                            Managers/Clock Number
+                                            Manager/Clock Number
                                         </label>
-                                        <input class="form-control input-sm" paf-maxlength="6" ng-disabled="data.DisabledReportingManagerNumberField" name="ReportingManagerNumber" ng-model="data.ReportingManagerNumber" ng-blur="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)" paf-numeric/>
+                                        <input class="form-control input-sm" maxlength="6" ng-disabled="data.DisabledReportingManagerNumberField" name="ReportingManagerNumber" ng-model="data.ReportingManagerNumber" ng-blur="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)" paf-integer/>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingName">
                                         <label>
-                                            Reporting Manager Name
+                                            Manager Name
                                         </label>
-                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingName" ng-model="data.ReportingName" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingName" maxlength="100" ng-model="data.ReportingName" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle">
                                         <label>
-                                            Title
+                                            Manager Title
                                         </label>
-                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingTitle" ng-model="data.ReportingTitle" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingTitle" maxlength="100" ng-model="data.ReportingTitle" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>
-                                            Email
+                                            Manager Email
                                         </label>
-                                        <input type="email" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input type="email" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -1415,7 +1415,7 @@
                                 <label>
                                     Other Instructions
                                 </label>
-                                <input class="form-control input-sm" ng-model="data.Instructions" />
+                                <input class="form-control input-sm" ng-model="data.Instructions" maxlength="512" />
                             </div>
                         </div>
                     </div>
@@ -1462,33 +1462,33 @@
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingManagerNumber">
                                         <label>
-                                            Managers/Clock Number
+                                            Manager/Clock Number
                                         </label>
-                                        <input class="form-control input-sm" paf-maxlength="6" ng-disabled="data.DisabledReportingManagerNumberField" name="ReportingManagerNumber" ng-model="data.ReportingManagerNumber" ng-blur="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)" paf-numeric/>
+                                        <input class="form-control input-sm" maxlength="6" ng-disabled="data.DisabledReportingManagerNumberField" name="ReportingManagerNumber" ng-model="data.ReportingManagerNumber" ng-blur="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)" paf-integer/>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingName">
                                         <label>
-                                            Reporting Manager Name
+                                            Manager Name
                                         </label>
-                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingName" ng-model="data.ReportingName" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingName" maxlength="100" ng-model="data.ReportingName" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle">
                                         <label>
-                                            Title
+                                            Manager Title
                                         </label>
-                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingTitle" ng-model="data.ReportingTitle" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingTitle" maxlength="100" ng-model="data.ReportingTitle" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>
-                                            Email
+                                            Manager Email
                                         </label>
-                                        <input type="email" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input type="email" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -1514,19 +1514,19 @@
                             <label>
                                 First Name
                             </label>
-                            <input class="form-control input-sm" ng-model="data.InfoChangeFirstName" />
+                            <input class="form-control input-sm" ng-model="data.InfoChangeFirstName" maxlength="50" />
                         </div>
                         <div class="col-md-3">
                             <label>
                                 Middle Name
                             </label>
-                            <input class="form-control input-sm" ng-model="data.InfoChangeMiddleName" />
+                            <input class="form-control input-sm" ng-model="data.InfoChangeMiddleName" maxlength="50" />
                         </div>
                         <div class="col-md-3">
                             <label>
                                 Last Name
                             </label>
-                            <input class="form-control input-sm" ng-model="data.InfoChangeLastName" />
+                            <input class="form-control input-sm" ng-model="data.InfoChangeLastName" maxlength="50" />
                         </div>
                     </div>
                     <div class="row">
@@ -1535,7 +1535,7 @@
                                 <label>
                                     Address1
                                 </label>
-                                <input class="form-control input-sm" ng-model="data.InfoChangeAddressLine1" />
+                                <input class="form-control input-sm" ng-model="data.InfoChangeAddressLine1" maxlength="100" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -1543,7 +1543,7 @@
                                 <label>
                                     Address2
                                 </label>
-                                <input class="form-control input-sm" ng-model="data.InfoChangeAddressLine2" />
+                                <input class="form-control input-sm" ng-model="data.InfoChangeAddressLine2" maxlength="100" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -1551,7 +1551,7 @@
                                 <label>
                                     Phone #
                                 </label>
-                                <input class="form-control input-sm" ng-model="data.InfoChangePhone" paf-mask="phone" />
+                                <input class="form-control input-sm" ng-model="data.InfoChangePhone" paf-mask="phone" maxlength="50"/>
                             </div>
                         </div>
                     </div>
@@ -1560,7 +1560,7 @@
                             <label class="control-label">
                                 City
                             </label>
-                            <input class="form-control input-sm" ng-model="data.InfoChangeCity" />
+                            <input class="form-control input-sm" ng-model="data.InfoChangeCity" maxlength="50" />
                         </div>
                         <div class="col-md-4">
                             <label class="control-label">
@@ -1574,7 +1574,7 @@
                             <label class="control-label">
                                 Zip
                             </label>
-                            <input class="form-control input-sm" ng-model="data.InfoChangePostalCode" paf-mask="zipcode" />
+                            <input class="form-control input-sm" ng-model="data.InfoChangePostalCode" paf-mask="zipcode" maxlength="20" />
                         </div>
                     </div>
                 </div>
@@ -1591,7 +1591,7 @@
                                 <label>
                                     Requisition #
                                 </label>
-                                <input class="form-control input-sm" ng-model="data.RequisitionNumber" paf-numeric/>
+                                <input class="form-control input-sm" ng-model="data.RequisitionNumber" maxlength="50" paf-numeric/>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -1599,7 +1599,7 @@
                                 <label>
                                     Email Address
                                 </label>
-                                <input type="email" class="form-control input-sm" ng-model="data.EmailAddress" name="EmailAddress" />
+                                <input type="email" class="form-control input-sm" ng-model="data.EmailAddress" name="EmailAddress" maxlength="50" />
                             </div>
                         </div>
                     </div>
@@ -1614,7 +1614,7 @@
                                 <label>
                                     Relocation approved by
                                 </label>
-                                <input class="form-control input-sm" name="RelocationApprovedBy" ng-model="data.RelocationApprovedBy" required="true" />
+                                <input class="form-control input-sm" name="RelocationApprovedBy" maxlength="50" ng-model="data.RelocationApprovedBy" required="true" />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -1638,20 +1638,20 @@
                         <label class="control-label">
                             Manager Name
                         </label>
-                        <input class="form-control input-sm" name="RegionalManagerName" ng-model="empAction.RegionalManagerName" />
+                        <input class="form-control input-sm" name="RegionalManagerName" maxlength="100" ng-model="empAction.RegionalManagerName" />
                     </div>
                     <div class="col-md-4">
                         <label>
                             Manager Title
                         </label>
-                        <input class="form-control input-sm" name="RegionalManagerTitle" ng-model="empAction.RegionalManagerTitle"/>
+                        <input class="form-control input-sm" name="RegionalManagerTitle" maxlength="100" ng-model="empAction.RegionalManagerTitle"/>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="control-label">
                                 Manager Email
                             </label>
-                            <input class="form-control input-sm" name="RegionalManagerEmail" ng-model="empAction.RegionalManagerEmail"/>
+                            <input class="form-control input-sm" name="RegionalManagerEmail" maxlength="50" ng-model="empAction.RegionalManagerEmail"/>
                         </div>
                     </div>
                 </div>
@@ -1659,7 +1659,7 @@
             <section>
                 <div class="form-group">
                     <h4>COMMENTS</h4>
-                    <textarea class="form-control input-sm" ng-model="empAction.Comments">
+                    <textarea class="form-control input-sm" ng-model="empAction.Comments" maxlength ="1024">
                     </textarea>
                 </div>
             </section>

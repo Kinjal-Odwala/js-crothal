@@ -674,6 +674,57 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         data.AnnualSalaryAmount = salary.toFixed(2);
     }
 
+    $scope.onAdminHourlyChange = function () {
+        var data = null;
+        if ($scope.empAction.NewHire)
+            data = $scope.empAction.Data.NewHire;
+        else if ($scope.empAction.ReHire)
+            data = $scope.empAction.Data.ReHire;
+
+        var salary = data.AdminHourlyAmount;
+
+        if (salary == null || salary == "")
+            salary = 0;
+
+        salary = parseFloat(salary);
+
+        data.AdminHourlyAmount = salary.toFixed(2);
+    }
+
+    $scope.onHourlyChange = function () {
+        var data = null;
+        if ($scope.empAction.NewHire)
+            data = $scope.empAction.Data.NewHire;
+        else if ($scope.empAction.ReHire)
+            data = $scope.empAction.Data.ReHire;
+
+        var salary = data.HourlyRateAmount;
+
+        if (salary == null || salary == "")
+            salary = 0;
+
+        salary = parseFloat(salary);
+
+        data.HourlyRateAmount = salary.toFixed(2);
+    }
+
+    $scope.onPerDiemChange = function () {
+        var data = null;
+        if ($scope.empAction.NewHire)
+            data = $scope.empAction.Data.NewHire;
+        else if ($scope.empAction.ReHire)
+            data = $scope.empAction.Data.ReHire;
+
+        var salary = data.PerDiemValue;
+
+        if (salary == null || salary == "")
+            salary = 0;
+
+        salary = parseFloat(salary);
+
+        data.PerDiemValue = salary.toFixed(2);
+    }
+
     $scope.onSalaryChange = function (type) {
         var data = null;
         if ($scope.empAction.Promotion)
@@ -1528,6 +1579,23 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
             modelCtrl.$parsers.push(function (inputValue) {
                 if (inputValue == undefined) return ''
                 var transformedInput = inputValue.replace(/[^0-9+.]/g, '');
+                if (transformedInput != inputValue) {
+                    modelCtrl.$setViewValue(transformedInput);
+                    modelCtrl.$render();
+                }
+
+                return transformedInput;
+            });
+        }
+    };
+})
+.directive('pafInteger', function () {
+    return {
+        require: '?ngModel',
+        link: function (scope, element, attrs, modelCtrl) {
+            modelCtrl.$parsers.push(function (inputValue) {
+                if (inputValue == undefined) return ''
+                var transformedInput = inputValue.replace(/[^0-9]/g, '');
                 if (transformedInput != inputValue) {
                     modelCtrl.$setViewValue(transformedInput);
                     modelCtrl.$render();
