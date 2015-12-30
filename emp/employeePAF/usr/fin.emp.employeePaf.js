@@ -449,6 +449,12 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             }
             $scope.empAction = result;
             loadCompensations($scope.empAction.EmployeeNumber);
+            var comments = $scope.empAction.Comments;
+            comments = comments.replace(/&apos;/g, "'");
+            comments = comments.replace(/&quot;/g, '"');
+            comments = comments.replace(/&lt;/g, "<");
+            comments = comments.replace(/&gt;/g, ">");
+            $scope.empAction.Comments = comments;
         });
     }
 
@@ -1090,8 +1096,14 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             }
             $scope.empAction.RequisitionNumber = $scope.empAction.Data.Requisition.RequisitionNumber;
             $scope.empAction.RequisitionEmail = $scope.empAction.Data.Requisition.EmailAddress;
-            
-			$scope.pageLoading = true;
+            var comments = $scope.empAction.Comments;
+            comments = comments.replace(/'/g, "&apos;");
+            comments = comments.replace(/"/g, "&quot;");
+            comments = comments.replace(/</g, "&lt;");
+            comments = comments.replace(/>/g, "&gt;");
+            $scope.empAction.Comments = comments;
+
+            $scope.pageLoading = true;
 			$scope.loadingTitle = " Saving...";
             EmpActions.saveEmployeePersonnelAction($scope.empAction, function (status) {
 				$scope.pageLoading = false;
