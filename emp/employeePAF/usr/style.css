@@ -135,3 +135,7 @@
 .table tbody td .word-wrap {
     word-wrap: break-word;
 }
+
+.labelText {
+	width: 110px;
+}

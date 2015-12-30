@@ -1578,7 +1578,7 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
         link: function (scope, element, attrs, modelCtrl) {
             modelCtrl.$parsers.push(function (inputValue) {
                 if (inputValue == undefined) return ''
-                var transformedInput = inputValue.replace(/[^0-9+.]/g, '');
+                var transformedInput = inputValue.replace(/[^0-9.]/g, '');
                 if (transformedInput != inputValue) {
                     modelCtrl.$setViewValue(transformedInput);
                     modelCtrl.$render();
@@ -1620,24 +1620,6 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
             });
         }
     }
-})
-.directive('pafMaxlength', function () {
-    return {
-        require: '?ngModel',
-        link: function (scope, element, attrs, modelCtrl) {
-            modelCtrl.$parsers.push(function (inputValue) {
-                if (inputValue == undefined) return ''
-                var maxlength = parseInt(attrs.pafMaxlength);
-                var transformedInput = inputValue.substring(0, maxlength);
-                if (transformedInput != inputValue) {
-                    modelCtrl.$setViewValue(transformedInput);
-                    modelCtrl.$render();
-                }
-
-                return transformedInput;
-            });
-        }
-    };
 })
 .directive('pafMax', function () {
     return {
