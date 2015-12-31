@@ -1,4 +1,4 @@
-﻿var uppercaseFirstLetter = function (input) {
+var uppercaseFirstLetter = function (input) {
     return (!!input) ? input.replace(/^(.)|(\s|\-)(.)/g, function ($1) {
         return $1.toUpperCase();
     }) : '';
@@ -96,6 +96,16 @@ var deserializeXml = function (xml, nodeName, options) {
             items.push(obj);
     });
     return items;
+}
+
+var encode = function(value) {
+	var returnValue = value.replace(/&/g, "&amp;");
+	returnValue = returnValue.replace(/'/g, "&apos;");
+	returnValue = returnValue.replace(/"/g, "&quot;");
+	returnValue = returnValue.replace(/</g, "&lt;");
+	returnValue = returnValue.replace(/>/g, "&gt;");
+
+	return returnValue;
 }
 
 var paf = angular.module('paf', ['ui.bootstrap', 'ngRoute']);
@@ -449,12 +459,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             }
             $scope.empAction = result;
             loadCompensations($scope.empAction.EmployeeNumber);
-            var comments = $scope.empAction.Comments;
-            comments = comments.replace(/&apos;/g, "'");
-            comments = comments.replace(/&quot;/g, '"');
-            comments = comments.replace(/&lt;/g, "<");
-            comments = comments.replace(/&gt;/g, ">");
-            $scope.empAction.Comments = comments;
         });
     }
 
@@ -1096,14 +1100,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             }
             $scope.empAction.RequisitionNumber = $scope.empAction.Data.Requisition.RequisitionNumber;
             $scope.empAction.RequisitionEmail = $scope.empAction.Data.Requisition.EmailAddress;
-            var comments = $scope.empAction.Comments;
-            comments = comments.replace(/'/g, "&apos;");
-            comments = comments.replace(/"/g, "&quot;");
-            comments = comments.replace(/</g, "&lt;");
-            comments = comments.replace(/>/g, "&gt;");
-            $scope.empAction.Comments = comments;
-
-            $scope.pageLoading = true;
+            
+			$scope.pageLoading = true;
 			$scope.loadingTitle = " Saving...";
             EmpActions.saveEmployeePersonnelAction($scope.empAction, function (status) {
 				$scope.pageLoading = false;
@@ -1632,6 +1630,24 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
             });
         }
     }
+})
+.directive('pafMaxlength', function () {
+    return {
+        require: '?ngModel',
+        link: function (scope, element, attrs, modelCtrl) {
+            modelCtrl.$parsers.push(function (inputValue) {
+                if (inputValue == undefined) return ''
+                var maxlength = parseInt(attrs.pafMaxlength);
+                var transformedInput = inputValue.substring(0, maxlength);
+                if (transformedInput != inputValue) {
+                    modelCtrl.$setViewValue(transformedInput);
+                    modelCtrl.$render();
+                }
+
+                return transformedInput;
+            });
+        }
+    };
 })
 .directive('pafMax', function () {
     return {
@@ -2412,36 +2428,32 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
     }
 
     var saveEmployeePersonnelAction = function (employeePersonnelAction, callback) {
-        var xml = [];
-		var xmlNode = [];
+        var xml = "";
 		
-        if (employeePersonnelAction.Id) {
-            xml.push('<transaction actionId="' + employeePersonnelAction.Id + '">');
-        }
-        else {
-            xml.push('<transaction actionId="0">');
-        }
-        xml.push('\r\n<employeePersonnelAction ');
+		xml = '<transaction id="1">';
+		xml += '<employeePersonnelAction';
 
         angular.forEach(employeePersonnelAction, function (value, key) {
             key = lowercaseFirstLetter(key);
 
             if (value == null || !angular.isDefined(value))
-                value = ""
+                value = "";
             else if (angular.isDate(value)) {
                 value = $filter('date')(value, "MM/dd/yyyy");
             }
             else if (angular.isObject(value)) {
-                value = angular.toJson(value).replace(/"/gi, '###');
+                value = angular.toJson(value).replace(/"/gi, "###");
             }
 
-            xmlNode.push(key + '=' + '"' + (value || '') + '"');
+			xml += ' ' + key + '="' + encode(value.toString()) + '"';
         });
-        //console.log(xmlNode);
-        xml.push(xmlNode.join(' '));
-        xml.push('/>\r\n</transaction>');
 
-        var data = 'moduleId=emp&requestId=1&requestXml=' + encodeURIComponent(xml.join(' ').replace(/\&/gi, '&amp;')) + '&targetId=iiTransaction';
+		xml += '/>';
+		xml += '</transaction>';
+		//console.log(xml);
+
+        //var data = 'moduleId=emp&requestId=1&requestXml=' + encodeURIComponent(xml.join(' ').replace(/\&/gi, '&amp;')) + '&targetId=iiTransaction';
+		var data = 'moduleId=emp&requestId=1&requestXml=' + encodeURIComponent(xml) + '&targetId=iiTransaction';
         jQuery.post('/net/crothall/chimes/fin/emp/act/Provider.aspx', data, function (data, status) {
             if (callback)
                 callback(data, status);
