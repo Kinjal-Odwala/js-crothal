@@ -846,7 +846,7 @@ ii.Class({
 				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 					
-					if (me.employeePayrollCompany.indexSelected == -1)
+					if ((this.focused || this.touched) && me.employeePayrollCompany.indexSelected == -1)
 						this.setInvalid("Please select Ceridian Company.");
 			});	
 
@@ -1053,9 +1053,18 @@ ii.Class({
 				id: "TermEmployeeEffectiveDate",
 				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
 			});
-			
+				
 			me.termEmployeeEffectiveDate.makeEnterTab()
-				.setValidationMaster( me.validator );
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.termEmployeeEffectiveDate.text.value;
+					
+					if (enteredText == "") return;
+											
+					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
+						this.setInvalid("Please enter valid datezzzzzzzzzzzzz.");					
+				});
 			
 			me.employeeTerminationDate = new ui.ctl.Input.Date({ 
 				id: "EmployeeTerminationDate",
@@ -1144,6 +1153,18 @@ ii.Class({
 				formatFunction: function( type ) { return type.name; },
 				required: false					
 			});
+			
+			me.eligibleForRehire.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.eligibleForRehire.text.value;
+
+					if (enteredText == "") return;
+
+					if (me.eligibleForRehire.indexSelected == -1)
+						this.setInvalid("Please select correct Eligible For Rehire.");
+				});
 				
 			me.separationCode = new ui.ctl.Input.DropDown.Filtered({
 				id: "SeparationCode",
@@ -1220,7 +1241,7 @@ ii.Class({
 				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 				
-					if (me.employeeEthnicity.indexSelected == -1)
+					if ((this.focused || this.touched) && me.employeeEthnicity.indexSelected == -1)
 						this.setInvalid("Please select Ethnicity type.");
 				});
 
@@ -1264,17 +1285,53 @@ ii.Class({
 				required: false
 		    });
 
+			me.multiRace3.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.multiRace3.text.value;
+
+					if (enteredText == "") return;
+
+					if (me.multiRace3.indexSelected == -1)
+						this.setInvalid("Please select correct Race 3.");
+				});
+
 			me.multiRace4 = new ui.ctl.Input.DropDown.Filtered({
 				id: "MultiRace4", 
 				formatFunction: function( type ) { return type.name; },
 				required: false
 		    });
 
+			me.multiRace4.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.multiRace4.text.value;
+
+					if (enteredText == "") return;
+
+					if (me.multiRace4.indexSelected == -1)
+						this.setInvalid("Please select correct Race 4.");
+				});
+
 			me.multiRace5 = new ui.ctl.Input.DropDown.Filtered({
 				id: "MultiRace5", 
 				formatFunction: function( type ) { return type.name; },
 				required: false
 		    });
+
+			me.multiRace5.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.multiRace5.text.value;
+
+					if (enteredText == "") return;
+
+					if (me.multiRace5.indexSelected == -1)
+						this.setInvalid("Please select correct Race 5.");
+				});
 
 			me.employeeMaritalStatus = new ui.ctl.Input.DropDown.Filtered({
 				id: "EmployeeMaritalStatus",
@@ -1291,22 +1348,46 @@ ii.Class({
 
 					if (enteredText == "") return;
 				
-					if (me.employeeMaritalStatus.indexSelected == -1)
+					if ((this.focused || this.touched) && me.employeeMaritalStatus.indexSelected == -1)
 						this.setInvalid("Please select Marital Status.");
 				});
-			
+
 			me.employeeI9Status = new ui.ctl.Input.DropDown.Filtered({
 				id: "EmployeeI9Status", 
 				formatFunction: function( type ) { return type.name; },				
 				required: false
 		    });	
 			
+			me.employeeI9Status.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+					
+					var enteredText = me.employeeI9Status.text.value;
+
+					if (enteredText == "") return;
+
+					if (me.employeeI9Status.indexSelected == -1)
+						this.setInvalid("Please select correct I-9 Status.");
+				});
+				
 			me.employeeVETSStatus = new ui.ctl.Input.DropDown.Filtered({
 				id: "EmployeeVETSStatus", 
 				formatFunction: function( type ) { return type.name; },
 				required: false
 		    });				
 			
+			me.employeeVETSStatus.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+					
+					var enteredText = me.employeeVETSStatus.text.value;
+
+					if (enteredText == "") return;
+				
+					if (me.employeeVETSStatus.indexSelected == -1)
+						this.setInvalid("Please select correct VETS-100A Status.");
+				});
+				
 			me.jobEffectiveDate = new ui.ctl.Input.Date({ 
 				id: "JobEffectiveDate",
 				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
@@ -1351,6 +1432,15 @@ ii.Class({
 			
 			me.jobChangeReason.makeEnterTab()
 				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+					
+					var enteredText = me.jobChangeReason.text.value;
+
+					if (enteredText == "") return;
+				
+					if (me.jobChangeReason.indexSelected == -1)
+						this.setInvalid("Please select correct  Job Change Reason.");
+				});
 			
 			me.employeeJobCode = new ui.ctl.Input.DropDown.Filtered({
 				id: "EmployeeJobCode",
@@ -1377,6 +1467,15 @@ ii.Class({
 			
 			me.job.makeEnterTab()
 				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+					
+					var enteredText = me.job.text.value;
+
+					if (enteredText == "") return;
+				
+					if (me.job.indexSelected == -1)
+						this.setInvalid("Please select correct Default House Code Job.");
+				});
 			
 			me.employeeBackgroundCheckDate = new ui.ctl.Input.Date({ 
 				id: "EmployeeBackgroundCheckDate",
@@ -1463,6 +1562,18 @@ ii.Class({
 				formatFunction: function( type ) { return type.name; },
 				required: false
 		    });	
+
+			me.employeeRateChangeReason.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.employeeRateChangeReason.text.value;
+
+					if (enteredText == "") return;
+
+					if (me.employeeRateChangeReason.indexSelected == -1)
+						this.setInvalid("Please select correct Rate Change Reason.");
+				});
 
 			me.employeePayRate = new ui.ctl.Input.Text({
 		        id: "EmployeePayRate",
@@ -1604,8 +1715,17 @@ ii.Class({
 		    });
 			
 			me.employeeWorkShift.makeEnterTab()
-				.setValidationMaster( me.validator );
-			
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+					
+					var enteredText = me.employeeWorkShift.text.value;
+
+					if (enteredText == "") return;
+				
+					if (me.employeeWorkShift.indexSelected == -1)
+						this.setInvalid("Please select correct Work Shift.");
+				});
+
 			me.employeeAlternatePayRateA = new ui.ctl.Input.Text({
 		        id: "EmployeeAlternatePayRateA",
 				changeFunction: function() { me.alternatePayRateChanged(); },
@@ -1731,9 +1851,18 @@ ii.Class({
 				formatFunction: function( type ) { return type.name; }, 
 				required: false
 		    });
-			
+				
 			me.employeeDeviceGroup.makeEnterTab()
 				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+					
+					var enteredText = me.employeeDeviceGroup.text.value;
+
+					if (enteredText == "") return;
+				
+					if (me.employeeDeviceGroup.indexSelected == -1)
+						this.setInvalid("Please select correct Device Group.");
+				});
 			
 			me.requestorName = new ui.ctl.Input.Text({
 				id: "RequestorName",
@@ -1790,7 +1919,7 @@ ii.Class({
 				
 			me.federalExemptions = new ui.ctl.Input.Text({
 		        id: "EmployeeFedExemptions",
-		        maxLength: 16
+		        maxLength: 10
 		    });
 			
 			me.federalExemptions.makeEnterTab()
@@ -1813,8 +1942,17 @@ ii.Class({
 			
 			me.maritalStatusFederalTaxType.makeEnterTab()
 				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required );
-				
+				.addValidation( ui.ctl.Input.Validation.required )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.maritalStatusFederalTaxType.text.value;
+
+					if (enteredText == "") return;
+
+					if (me.maritalStatusFederalTaxType.indexSelected == -1)
+						this.setInvalid("Please select correct Tax Status.");
+				});
+					
 			me.federalAdjustmentType = new ui.ctl.Input.DropDown.Filtered({
 				id: "EmployeeFederalAdjustment", 
 				formatFunction: function( type ) { return type.name; },
@@ -1822,7 +1960,16 @@ ii.Class({
 		    });
 			
 			me.federalAdjustmentType.makeEnterTab()
-				.setValidationMaster( me.validator );
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.federalAdjustmentType.text.value;
+
+					if (enteredText == "") return;
+
+					if (me.federalAdjustmentType.indexSelected == -1)
+						this.setInvalid("Please select correct Adjustment Type.");
+				});
 			
 			me.federalAdjustmentAmount = new ui.ctl.Input.Text({
 		        id: "EmployeeFedAdjustmentAmount",
@@ -1836,14 +1983,18 @@ ii.Class({
 
 					var enteredText = me.federalAdjustmentAmount.getValue();
 					
-					if (enteredText == "" || me.federalAdjustmentType.indexSelected <= 0) return;
+					if (enteredText == "") return;
 
-					if (me.federalAdjustmentType.text.value == "Fixed Amt" || me.federalAdjustmentType.text.value == "Increased Amt") {
-						if (/^\d{1,4}$/.test(enteredText) == false)
-							this.setInvalid("Please enter valid amount. Example 9999");
+					if (me.federalAdjustmentType.indexSelected > 0) {
+						if (me.federalAdjustmentType.text.value == "Fixed Amt" || me.federalAdjustmentType.text.value == "Increased Amt") {
+							if (/^\d{1,4}$/.test(enteredText) == false)
+								this.setInvalid("Please enter valid amount. Example 9999");
+						}
+						else if ((/^\d{1,2}(\.\d\d)?$/.test(enteredText) == false) && (/^\d{1,2}(\.\d)?$/.test(enteredText) == false))
+							this.setInvalid("Please enter valid amount. Example 99.9");
 					}
-					else if ((/^\d{1,2}(\.\d\d)?$/.test(enteredText) == false) && (/^\d{1,2}(\.\d)?$/.test(enteredText) == false))
-						this.setInvalid("Please enter valid amount. Example 99.9");
+					else if (!(ui.cmn.text.validate.generic(enteredText, "^\\d+(\\.\\d{1,2})?$")))
+						this.setInvalid("Please enter valid amount.");
 				});			
 			
 			me.primaryTaxState = new ui.ctl.Input.DropDown.Filtered({
@@ -1857,9 +2008,9 @@ ii.Class({
 				.setValidationMaster( me.validator )
 				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
-				
-					if (me.primaryTaxState.indexSelected == -1)
-						this.setInvalid("Please select Primary Tax State.");
+
+					if ((this.focused || this.touched) && me.primaryTaxState.indexSelected == -1)
+						this.setInvalid("Please select Primary State.");
 				});
 			
 			me.maritalStatusStateTaxTypePrimary = new ui.ctl.Input.DropDown.Filtered({
@@ -1873,7 +2024,7 @@ ii.Class({
 				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 				
-				if (me.maritalStatusStateTaxTypePrimary.indexSelected == -1)
+				if ((this.focused || this.touched) && me.maritalStatusStateTaxTypePrimary.indexSelected == -1)
 					this.setInvalid("Please select Marital Status.");
 			});
 			
@@ -1891,10 +2042,14 @@ ii.Class({
 
 					if (me.localTaxCode2.indexSelected > 0) {
 				        if (me.secTaxState.indexSelected == -1)
-						this.setInvalid("Please select Secondary Tax State.");
+							this.setInvalid("Please select Secondary Tax State.");
 				    }
-				    else
-				        this.valid = true;
+				    else {
+						if (me.secTaxState.text.value == "")
+							this.valid = true;
+						else if (me.secTaxState.indexSelected == -1)
+							this.setInvalid("Please select correct Secondary State.");
+					}
 				});
 				
 			me.maritalStatusStateTaxTypeSecondary = new ui.ctl.Input.DropDown.Filtered({
@@ -1904,11 +2059,20 @@ ii.Class({
 		    });
 			
 			me.maritalStatusStateTaxTypeSecondary.makeEnterTab()
-				.setValidationMaster( me.validator );			
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+					
+					var enteredText = me.maritalStatusStateTaxTypeSecondary.text.value;
+
+					if (enteredText == "" || me.secTaxState.indexSelected == -1) return;
+				
+					if (me.maritalStatusStateTaxTypeSecondary.indexSelected == -1)
+						this.setInvalid("Please select correct Secondary Marital Status.");
+				});
 			
 			me.stateExemptions = new ui.ctl.Input.Text({
 		        id: "EmployeeStateExemptions" ,
-		        maxLength: 16,
+		        maxLength: 10,
 				required: false
 		    });
 			
@@ -1931,7 +2095,16 @@ ii.Class({
 		    });
 			
 			me.employeeStateAdjustmentType.makeEnterTab()
-				.setValidationMaster( me.validator );
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+					
+					var enteredText = me.employeeStateAdjustmentType.text.value;
+
+					if (enteredText == "") return;
+				
+					if (me.employeeStateAdjustmentType.indexSelected == -1)
+						this.setInvalid("Please select correct State Adjust Type.");
+				});
 			
 			me.stateAdjustmentAmount = new ui.ctl.Input.Text({
 		        id: "EmployeeStateAdjustmentAmount",
@@ -1945,20 +2118,22 @@ ii.Class({
 
 					var enteredText = me.stateAdjustmentAmount.getValue();
 
-					if (enteredText == "" || me.employeeStateAdjustmentType.indexSelected <= 0) return;
+					if (enteredText == "") return;
 
-					if (me.employeeStateAdjustmentType.text.value == "Fixed Amt" 
-						|| me.employeeStateAdjustmentType.text.value == "Increased Amt"
-						|| me.employeeStateAdjustmentType.text.value == "Decreased Fixed Amt"
-						|| me.employeeStateAdjustmentType.text.value == "NonRes") {
-						if (/^\d{1,4}$/.test(enteredText) == false) {
-							this.setInvalid("Please enter valid amount. Example 9999");
+					if (me.employeeStateAdjustmentType.indexSelected > 0) {
+						if (me.employeeStateAdjustmentType.text.value == "Fixed Amt" || me.employeeStateAdjustmentType.text.value == "Increased Amt" 
+							|| me.employeeStateAdjustmentType.text.value == "Decreased Fixed Amt" || me.employeeStateAdjustmentType.text.value == "NonRes") {
+							if (/^\d{1,4}$/.test(enteredText) == false) {
+								this.setInvalid("Please enter valid amount. Example 9999");
+							}
 						}
+						else if ((/^\d{1,2}(\.\d\d)?$/.test(enteredText) == false) && (/^\d{1,2}(\.\d)?$/.test(enteredText) == false)) 
+							this.setInvalid("Please enter valid amount. Example 99.9");
 					}
-					else if ((/^\d{1,2}(\.\d\d)?$/.test(enteredText) == false) && (/^\d{1,2}(\.\d)?$/.test(enteredText) == false))
-						this.setInvalid("Please enter valid amount. Example 99.9");
+					else if (!(ui.cmn.text.validate.generic(enteredText, "^\\d+(\\.\\d{1,2})?$")))
+						this.setInvalid("Please enter valid amount.");
 				});	
-			
+
 			me.stateSDIAdjustType = new ui.ctl.Input.DropDown.Filtered({
 				id: "EmployeeStateSDIAdjust",
 				formatFunction: function( type ) { return type.name; }, 
@@ -1966,7 +2141,16 @@ ii.Class({
 		    });
 			
 			me.stateSDIAdjustType.makeEnterTab()
-				.setValidationMaster( me.validator );
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+					
+					var enteredText = me.stateSDIAdjustType.text.value;
+
+					if (enteredText == "") return;
+				
+					if (me.stateSDIAdjustType.indexSelected == -1)
+						this.setInvalid("Please select correct State SDI Adjust.");
+				});
 
 			me.stateSDIAdjustRate = new ui.ctl.Input.Text({
 		        id: "EmployeeStateSDIAdjustRate",
@@ -1993,17 +2177,35 @@ ii.Class({
 		    });
 			
 			me.localTaxAdjustmentType.makeEnterTab()
-				.setValidationMaster( me.validator );
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+					
+					var enteredText = me.localTaxAdjustmentType.text.value;
+
+					if (enteredText == "") return;
+				
+					if (me.localTaxAdjustmentType.indexSelected == -1)
+						this.setInvalid("Please select correct Local Tax Adj Type.");
+				});
 			
 			me.localTaxAdjustmentAmount = new ui.ctl.Input.Text({
 		        id: "EmployeeLocalTaxAdjustmentAmount",
-		        maxLength: 9,
+		        maxLength: 12,
 				required: false
 		    });
 			
 			me.localTaxAdjustmentAmount.makeEnterTab()
-				.setValidationMaster( me.validator );
-			
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+					
+					var enteredText = me.localTaxAdjustmentAmount.text.value;
+
+					if (enteredText == "") return;
+				
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d+(\\.\\d{1,2})?$")))
+						this.setInvalid("Please enter numeric data. Expected number format is 99.99");
+				});
+
 			me.localTaxCode1 = new ui.ctl.Input.DropDown.Filtered({
 		        id: "LocalTaxCode1",
 				formatFunction: function( type ) { return type.name; },
@@ -2011,7 +2213,16 @@ ii.Class({
 		    });
 			
 			me.localTaxCode1.makeEnterTab()
-				.setValidationMaster( me.validator );
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.localTaxCode1.text.value;
+
+					if (enteredText == "") return;
+
+					if (me.localTaxCode1.indexSelected == -1)
+						this.setInvalid("Please select correct Local Tax Code 1.");
+				});
 			
 			me.localTaxCode2 = new ui.ctl.Input.DropDown.Filtered({
 		        id: "LocalTaxCode2",
@@ -2035,6 +2246,13 @@ ii.Class({
 							$("#AnchorSave").show();
 						}
 					}
+					
+					var enteredText = me.localTaxCode2.text.value;
+
+					if (enteredText == "") return;
+
+					if (me.localTaxCode2.indexSelected == -1)
+						this.setInvalid("Please select correct Local Tax Code 2.");
 				});
 			
 			me.localTaxCode3 = new ui.ctl.Input.DropDown.Filtered({
@@ -2044,7 +2262,16 @@ ii.Class({
 		    });
 
 			me.localTaxCode3.makeEnterTab()
-				.setValidationMaster( me.validator );
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.localTaxCode3.text.value;
+
+					if (enteredText == "") return;
+
+					if (me.localTaxCode3.indexSelected == -1)
+						this.setInvalid("Please select correct Local Tax Code 3.");
+				});
 				
 			me.basicLifeIndicatorType = new ui.ctl.Input.DropDown.Filtered({
 		        id: "BasicLifeIndicatorType",
@@ -2052,6 +2279,18 @@ ii.Class({
 				required: false 
 		    });
 			
+			me.basicLifeIndicatorType.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.basicLifeIndicatorType.text.value;
+
+					if (enteredText == "") return;
+
+					if (me.basicLifeIndicatorType.indexSelected == -1)
+						this.setInvalid("Please select correct Basic Life Indicator.");
+				});
+				
 			me.newSSN = new ui.ctl.Input.Text({    
                 id: "NewSSN",    
                 maxLength: 11,
@@ -5534,7 +5773,7 @@ ii.Class({
 			me.personBrief = "";
 			me.houseCodeChanged = false;
 			me.firstTimeShow = false;
-			
+	
 			me.personFirstName.setValue("");
 			me.personLastName.setValue("");
 			me.personMiddleName.setValue("");
@@ -5556,7 +5795,7 @@ ii.Class({
 			
 			me.employeeSSN.setValue("");
 			me.wotcCode.setValue("");
-			me.employeePayrollCompany.reset();	
+			me.employeePayrollCompany.reset();
 			if (me.employeeStatusType.length > 0)
 				me.employeeStatusType.select(0);
 			else
@@ -5600,6 +5839,9 @@ ii.Class({
 			$("#ExemptNo").attr("checked", true);
 			$("#HourlyRateYes").attr("checked", true);
 			$("#UnionNo").attr("checked", true);
+			$("#LabelUnion").html("<span id='nonRequiredFieldIndicator'>Union:</span>");
+			$("#LabelUnionStatus").html("<span id='nonRequiredFieldIndicator'>Union Status:</span>");
+
 			$("#GenderYes").attr("checked", true);
 			$("#MealPlanYes").attr("checked", false);
 			$("#MealPlanNo").attr("checked", false);
@@ -6277,6 +6519,13 @@ ii.Class({
                       
                 case 4:     
 
+					if (me.actionType == "NewHire" || me.actionType == "Rehire" || me.actionType == "Termination") {
+						if (!me.personEmail.validate(true) || !me.personHomePhone.validate(true) || !me.personFax.validate(true) || !me.personPager.validate(true) || !me.personCellPhone.validate(true)) {
+							me.wizardCount--;
+							return false;
+						}
+					}
+
 					if (me.actionType != "HouseCodeTransfer" && me.actionType != "DateModification") {
 						$("#ContactDetails").hide();
 						$("#EmployeeInformation").show();
@@ -6373,12 +6622,8 @@ ii.Class({
                       
                 case 5:
 				
-					if ((!me.employeeNumber.validate(true)) ||
-						(!me.employeePayrollCompany.validate(true)) ||
-						(!me.employeeStatusCategoryType.validate(true)) ||
-						(!me.employeeStatusType.validate(true)) ||
-						(!me.employeeHireDate.validate(true)) ||
-						(!me.employeeEffectiveDate.validate(true))) {
+					if (!me.employeeNumber.validate(true) || !me.employeePayrollCompany.validate(true) || !me.employeeStatusType.validate(true) || !me.employeeStatusCategoryType.validate(true) ||
+						!me.employeeHireDate.validate(true) || !me.employeeOriginalHireDate.validate(true) || !me.employeeSeniorityDate.validate(true) || !me.employeeEffectiveDate.validate(true)) {
 						me.wizardCount--;
 						return false;
 					}           
@@ -6408,9 +6653,8 @@ ii.Class({
                       
                 case 6:
 
-					if ((!me.employeeBirthDate.validate(true)) ||
-						(!me.employeeEthnicity.validate(true)) ||
-						(!me.employeeMaritalStatus.validate(true))) {
+					if (!me.employeeBirthDate.validate(true) || !me.employeeEthnicity.validate(true) || !me.employeeMaritalStatus.validate(true) 
+						|| !me.employeeI9Status.validate(true) || !me.employeeVETSStatus.validate(true)) {
 						if (me.firstTimeShow == false) {
 							me.wizardCount--;
 							return false;
@@ -6451,12 +6695,8 @@ ii.Class({
 					}
 
 					if (me.actionType == "HouseCodeTransfer" || me.actionType == "DateModification") {
-						if ((!me.employeeNumber.validate(true)) ||
-							(!me.employeePayrollCompany.validate(true)) ||
-							(!me.employeeStatusCategoryType.validate(true)) ||
-							(!me.employeeStatusType.validate(true)) ||
-							(!me.employeeHireDate.validate(true)) ||
-							(!me.employeeEffectiveDate.validate(true))) {
+						if (!me.employeeNumber.validate(true) || !me.employeePayrollCompany.validate(true) || !me.employeeStatusType.validate(true) || !me.employeeStatusCategoryType.validate(true) ||
+							!me.employeeHireDate.validate(true) || !me.employeeOriginalHireDate.validate(true) || !me.employeeSeniorityDate.validate(true) || !me.employeeEffectiveDate.validate(true)) {
 							me.wizardCount--;
 							return false;
 						}
@@ -6538,11 +6778,8 @@ ii.Class({
                       
                 case 7:
 
-					if ((!me.jobEffectiveDate.validate(true)) ||
-						(!me.employeeJobCode.validate(true)) ||
-						(!me.employeeBackgroundCheckDate.validate(true)) ||
-						(!me.employeeUnion.validate(true)) ||
-						(!me.employeeUnionStatus.validate(true))) {
+					if (!me.jobEffectiveDate.validate(true) || !me.jobChangeReason.validate(true) || !me.employeeJobCode.validate(true) || !me.job.validate(true)
+						|| !me.employeeBackgroundCheckDate.validate(true) || !me.employeeUnion.validate(true) || !me.employeeUnionStatus.validate(true)) {
 						me.wizardCount--;
 						return false;
 					}
@@ -6599,17 +6836,17 @@ ii.Class({
 
 					break;
  
-                case 8: // Local Tax
+                case 8: // Federal Tax
 
-					if ((!me.compensationEffectiveDate.validate(true)) ||
-						(!me.employeePayRate.validate(true)) ||
-						(!me.employeeScheduledHours.validate(true)) ||
-						(!me.employeeRateChangeReason.validate(true))) {
+					if (!me.compensationEffectiveDate.validate(true) || !me.employeeRateChangeReason.validate(true) || !me.employeePayRate.validate(true) || !me.employeeScheduledHours.validate(true)
+						|| !me.employeeReviewDate.validate(true) || !me.employeeWorkShift.validate(true)
+						|| !me.employeeAlternatePayRateA.validate(true) || !me.employeeAlternatePayRateB.validate(true) || !me.employeeAlternatePayRateC.validate(true) || !me.employeeAlternatePayRateD.validate(true)
+						|| !me.employeeDeviceGroup.validate(true)) {
 						if (me.firstTimeShow == false) {
 							me.wizardCount--;
 							return false;
 						}
-					}     
+					}
 					
 					$("#Compensation").hide();
 					$("#Federal").show();
@@ -6636,13 +6873,13 @@ ii.Class({
                       
                 case 9: // State Tax
 
-					if ((!me.maritalStatusFederalTaxType.validate(true))) {
+					if (!me.federalExemptions.validate(true) || !me.maritalStatusFederalTaxType.validate(true) || !me.federalAdjustmentType.validate(true) || !me.federalAdjustmentAmount.validate(true)) {
 						if (me.firstTimeShow == false) {
 							me.wizardCount--;
 							return false;
 						}
-					}   
-					
+					}
+
 					$("#Federal").hide();
 					$("#StateTax").show();
 					$("#LocalTax").hide();
@@ -6671,10 +6908,12 @@ ii.Class({
                       
                 case 10: // Local Tax
 
-					if ((!me.primaryTaxState.validate(true)) || (!me.maritalStatusStateTaxTypePrimary.validate(true)) 
-						|| !me.validateStateControls()
+					if (!me.primaryTaxState.validate(true) || !me.maritalStatusStateTaxTypePrimary.validate(true) 
+						|| !me.secTaxState.validate(true) || !me.maritalStatusStateTaxTypeSecondary.validate(true)
+						|| !me.stateExemptions.validate(true) || !me.stateAdjustmentAmount.validate(true)
+						|| !me.employeeStateAdjustmentType.validate(true) || !me.stateSDIAdjustType.validate(true) || !me.stateSDIAdjustRate.validate(true)
 						|| (me.localTaxCode2.indexSelected > 0 && !me.secTaxState.validate(true))
-						) {
+						|| !me.validateStateControls()) {
 						if (me.firstTimeShow == false) {
 							me.wizardCount--;
 							return false;
@@ -6889,11 +7128,11 @@ ii.Class({
 			}
 			
 			if (me.actionType == "HouseCodeTransfer" || me.actionType == "DateModification" || me.actionType == "Compensation") {						  
-			  	if ((!me.compensationEffectiveDate.validate(true))
-					|| (!me.employeePayRate.validate(true))
-					|| (!me.employeeScheduledHours.validate(true))
-					|| (!me.employeeRateChangeReason.validate(true))) { 
-					return false;
+				if (!me.compensationEffectiveDate.validate(true) || !me.employeeRateChangeReason.validate(true) || !me.employeePayRate.validate(true) || !me.employeeScheduledHours.validate(true)
+					|| !me.employeeReviewDate.validate(true) || !me.employeeWorkShift.validate(true)
+					|| !me.employeeAlternatePayRateA.validate(true) || !me.employeeAlternatePayRateB.validate(true) || !me.employeeAlternatePayRateC.validate(true) || !me.employeeAlternatePayRateD.validate(true)
+					|| !me.employeeDeviceGroup.validate(true)) {
+						return false;
 				}
 				
 				if (me.actionType == "Compensation") {
@@ -6903,16 +7142,11 @@ ii.Class({
 			}
 			
 			if (me.actionType == "Termination") {
-				if ((!me.employeeNumber.validate(true)) ||
-					(!me.employeePayrollCompany.validate(true)) ||
-					(!me.employeeStatusCategoryType.validate(true)) ||
-					(!me.employeeStatusType.validate(true)) ||
-					(!me.employeeTerminationDate.validate(true)) ||
-					(!me.employeeTerminationReason.validate(true)) ||
-					(!me.employeeEffectiveDate.validate(true)) ||
-					(!me.separationCode.validate(true))) {
-						return false;
-					}
+				if (!me.employeeNumber.validate(true) || !me.employeePayrollCompany.validate(true) || !me.employeeStatusType.validate(true)
+					|| !me.employeeStatusCategoryType.validate(true) || !me.employeeTerminationDate.validate(true) || !me.employeeTerminationReason.validate(true)
+					|| !me.separationCode.validate(true) || !me.termEmployeeEffectiveDate.validate(true) || !me.eligibleForRehire.validate(true)) {
+					return false;
+				}
 			
 				if (me.isDateValid(me.employeeHireDate.text.value, 'Termination') == false) {
 					alert('You cannot terminate an employee in the same pay period the employee was hired. \n' +
@@ -6921,7 +7155,7 @@ ii.Class({
 				}
 			}
 			
-			if (me.actionType == "Rehire") {			
+			if (me.actionType == "Rehire") {
 				if (me.isDateValid(me.employeeGenerals[0].terminationDate, 'Rehire') == false) {
 					alert('You cannot Rehire an employee in the same pay period the employee was Terminated. \n' +
 						'Contact the Corporate Payroll department for further instructions.');
@@ -6929,22 +7163,26 @@ ii.Class({
 				}
 			}
 			
+			if (me.actionType == "Person") {
+				if (!me.personEmail.validate(true) || !me.personHomePhone.validate(true) || !me.personFax.validate(true) || !me.personPager.validate(true) || !me.personCellPhone.validate(true))
+					return false;
+			}
+					
 			if (me.actionType == "Employee") {
 				var validateMultiRace = false;
 				if (me.employeeEthnicity.indexSelected != -1) {
 					if (me.ethnicityTypes[me.employeeEthnicity.indexSelected].name == "Two or more races")
 						validateMultiRace = true;
 				}
-				
-				if ((!me.employeeBirthDate.validate(true))
-                  || (!me.employeeEthnicity.validate(true))
-				  || (validateMultiRace && !me.multiRace1.validate(true))
-				  || (validateMultiRace && !me.multiRace2.validate(true))
-				  || (validateMultiRace && !me.multiRace3.validate(true))
-				  || (validateMultiRace && !me.multiRace4.validate(true))
-				  || (validateMultiRace && !me.multiRace5.validate(true))
-                  || (!me.employeeMaritalStatus.validate(true)))
-				  return false;
+
+				if (!me.employeeBirthDate.validate(true) || !me.employeeEthnicity.validate(true) || !me.employeeMaritalStatus.validate(true) 
+					|| !me.employeeI9Status.validate(true) || !me.employeeVETSStatus.validate(true)
+				  	|| (validateMultiRace && !me.multiRace1.validate(true))
+					|| (validateMultiRace && !me.multiRace2.validate(true))
+					|| (validateMultiRace && !me.multiRace3.validate(true))
+					|| (validateMultiRace && !me.multiRace4.validate(true))
+					|| (validateMultiRace && !me.multiRace5.validate(true)))
+					return false;
 
 				if (me.houseCodeDetails[0].mealPlan == 1) {
 					if ($("input[name='MealPlan']:checked").val() == undefined) {
@@ -6966,21 +7204,22 @@ ii.Class({
 			}
 
 			if (me.actionType == "Federal") {	
-				if (!me.maritalStatusFederalTaxType.validate(true))
-				  return false;
+				if (!me.federalExemptions.validate(true) || !me.maritalStatusFederalTaxType.validate(true) || !me.federalAdjustmentType.validate(true) || !me.federalAdjustmentAmount.validate(true))
+					return false;
 			}
 			
 			if (me.actionType == "Job Information") {
-				if ((!me.jobEffectiveDate.validate(true)) ||
-					(!me.employeeJobCode.validate(true)) ||
-					(!me.employeeBackgroundCheckDate.validate(true)) ||
-					(!me.employeeUnion.validate(true)) ||
-					(!me.employeeUnionStatus.validate(true))) {
+				if (!me.jobEffectiveDate.validate(true) || !me.jobChangeReason.validate(true) || !me.employeeJobCode.validate(true) || !me.job.validate(true)
+					|| !me.employeeBackgroundCheckDate.validate(true) || !me.employeeUnion.validate(true) || !me.employeeUnionStatus.validate(true))
 					return false;
-				}
 			}
 			
 			if (me.actionType == "NewHire" || me.actionType == "Rehire" || me.actionType == "Local Tax") {
+				if (!me.localTaxAdjustmentType.validate(true) || !me.localTaxAdjustmentAmount.validate(true) 
+					|| !me.localTaxCode1.validate(true) || !me.localTaxCode2.validate(true) || !me.localTaxCode3.validate(true)) {
+					return false;
+				}
+
 				if (me.localTaxCode2.indexSelected > 0 && !me.secTaxState.validate(true)) {
 					if (me.actionType != "Local Tax")
 						alert("Please select Secondary State in State Tax wizard.");
@@ -6989,9 +7228,14 @@ ii.Class({
 			}
 
 			if (me.actionType == "NewHire" || me.actionType == "Rehire" || me.actionType == "State Tax") {
-				if (!me.validateStateControls() || !me.primaryTaxState.validate(true) || !me.maritalStatusStateTaxTypePrimary.validate(true) ||
-					(me.localTaxCode2.indexSelected > 0 && !me.secTaxState.validate(true))) 
-					return false;
+				if (!me.primaryTaxState.validate(true) || !me.maritalStatusStateTaxTypePrimary.validate(true) 
+					|| !me.secTaxState.validate(true) || !me.maritalStatusStateTaxTypeSecondary.validate(true)
+					|| !me.stateExemptions.validate(true) || !me.stateAdjustmentAmount.validate(true)
+					|| !me.employeeStateAdjustmentType.validate(true) || !me.stateSDIAdjustType.validate(true) || !me.stateSDIAdjustRate.validate(true)
+					|| (me.localTaxCode2.indexSelected > 0 && !me.secTaxState.validate(true))
+					|| !me.validateStateControls()) {
+						return false;
+				}
 			}
 		
 			if (me.employeeStatusType.text.value == "Terminated") {
@@ -7004,6 +7248,11 @@ ii.Class({
 					alert("This Employee has Payroll hours entered in the current pay period. \nWe can not Terminate this Employee.");
 					return false;
 				}
+			}
+			
+			if (me.actionType == "BasicLifeIndicator") {
+				if (!me.basicLifeIndicatorType.validate(true))
+					return false;
 			}
 			
 			if (me.actionType == "ReverseTermination") {			
