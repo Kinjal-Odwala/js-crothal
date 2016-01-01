@@ -149,7 +149,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         startingDay: 1,
         showWeeks: false
     };
-	
+
 	$scope.pageLoading = false;
 	$scope.loadingTitle = " Loading...";
 	$scope.isPageLoading = function () {
@@ -215,7 +215,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             Compensation: initCompensation()
         }
     }
-
+	
     var loadHouseCodes = function () {
         EmpActions.getHcmHouseCodes(function (result) {
             $scope.HcmHouseCodes = result;
@@ -1291,7 +1291,28 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
             $scope.empActions = items;
         });
     }
+	
+	var isAuthorized = function(path) {
+		var authorized = false;
+		
+		for (var index = 0; index < $scope.authorizations.length; index++ ){
+			if ($scope.authorizations[index].path.indexOf(path) >= 0) {
+				authorized = true;
+				break;
+			}
+		}
+		
+		return authorized;
+	}
 
+	var authorizationsLoaded = function() {
+		var authorizePath = "\\crothall\\chimes\\fin\\Setup\\EmployeePAF";
+		$scope.readOnly = isAuthorized(authorizePath + "\\Read");
+		$scope.write = isAuthorized(authorizePath + "\\Write");
+		$scope.writeInProcess = isAuthorized(authorizePath + "\\WriteInProcess");
+		$scope.approveInProcess = isAuthorized(authorizePath + "\\ApproveInProcess");
+	}
+	
     var setCurrentHcmHouseCode = function (callback) {
         EmpActions.setCurrentHcmHouseCode(function (response) {
             callback(response);
@@ -1299,6 +1320,11 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
     }
 
     var load = function () {
+		EmpActions.getAuthorizations(function (result) {
+            $scope.authorizations = result;
+			authorizationsLoaded();
+        });
+		
         EmpActions.getHcmHouseCodes(function (result) {
             $scope.HcmHouseCodes = result;
             if ($scope.pafFilter.hcmHouseCode != null)
@@ -1524,7 +1550,6 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
         }
     }
 }])
-
 .directive('pafInvalid', ['$rootScope', function ($rootScope) {
     return {
         restrict: 'A',
@@ -2135,6 +2160,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 
     var cache = {};
 
+	var authorizations = null;
     var houseCodes = null;
     var stateTypes = null;
 	var jobCodes = null;
@@ -2142,7 +2168,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
     var payGrades = null;
     var workflowSteps = null;
 
-    var apiRequest = function (moduleId, requestXml, callback) {
+    var apiRequest = function (moduleId, targetId, requestXml, callback) {
         //$.ajax({
         //    type: "POST",
         //    dataType: "xml",
@@ -2160,7 +2186,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         $http({
             method: 'POST',
             url: '/net/crothall/chimes/fin/' + moduleId + '/act/Provider.aspx',
-            data: "moduleId=" + moduleId + "&requestId=1&targetId=iiCache"
+            data: "moduleId=" + moduleId + "&requestId=1&targetId=" + targetId
                 + "&requestXml=" + encodeURIComponent(requestXml),
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
@@ -2188,7 +2214,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             }
         });
 
-        apiRequest('emp', '<criteria>storeId:employeePersonnelActions,userId:[user] ' + filterStr + '</criteria>', function (xml) {
+        apiRequest('emp', 'iiCache', '<criteria>storeId:employeePersonnelActions,userId:[user] ' + filterStr + '</criteria>', function (xml) {
 
             if (callback)
                 callback(deserializeXml(xml, 'item', { upperFirstLetter: true }));
@@ -2200,7 +2226,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         var intItems = ["HcmHouseCode", "EmployeeNumber", "StateType", "PositionType", "TrainingLocation", "Duration", "CarAllowance", "BonusEligibleType", "LayoffType", "OldPositionType", "NewPositionType", "ChangeReasonType", "NewCarAllowance", "NewBonusEligibleType", "HouseCodeTransfer", "InfoChangeStateType", "RelocationPlan"];
         var dateItems = ["Date", "HireDate", "SeparationDate", "LoaDate", "DateOfReturn", "EffectiveDate", "LastIncreaseDate", "EffectiveDate", "TransferEffectiveDate", "InfoChangeEffectiveDate"];
 
-        apiRequest('emp', '<criteria>storeId:employeePersonnelActions,userId:[user]' + ",actionId:" + id + ',</criteria>', function (xml) {
+        apiRequest('emp', 'iiCache', '<criteria>storeId:employeePersonnelActions,userId:[user]' + ",actionId:" + id + ',</criteria>', function (xml) {
             if (callback) {
                 var action = deserializeXml(xml, 'item', { upperFirstLetter: true, boolItems: boolItems, intItems: intItems, dateItems: dateItems, jsonItems: ['Data'] })[0];
 
@@ -2229,13 +2255,24 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         if (cache.payGrades)
             callback(cache.payGrades);
         else {
-            apiRequest('emp', '<criteria>storeId:payGrades,userId:[user] ,</criteria>', function (xml) {
+            apiRequest('emp', 'iiCache', '<criteria>storeId:payGrades,userId:[user] ,</criteria>', function (xml) {
                 cache.payGrades = $filter('orderBy')(deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['min', 'max', 'mid', 'id'] }), 'id', false);
                 getPayGrades(callback);
             });
         }
     }
-
+	
+	var getAuthorizations = function (callback) {
+        if (cache.authorizations) {
+            callback(cache.authorizations);
+            return;
+        }
+        apiRequest('emp', 'iiAuthorization', '<authorization id="1"><authorize path="\\crothall\\chimes\\fin\\Setup\\EmployeePAF" />', function (xml) {
+            cache.authorizations = deserializeXml(xml, 'authorize', { upperFirstLetter: false, intItems: ['id'] });
+            getAuthorizations(callback);
+        });
+    }
+	
     var getHcmHouseCodes = function (callback) {
 
         if (cache.houseCodes) {
@@ -2246,7 +2283,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         var criteriaXml = '<criteria>appUnitBrief:,storeId:hcmHouseCodes,userId:[user],</criteria>';
         var data = 'moduleId=hcm&requestId=1&requestXml=' + encodeURIComponent(criteriaXml) + '&targetId=iiCache';
 
-        apiRequest('hcm', criteriaXml, function (xml) {
+        apiRequest('hcm', 'iiCache', criteriaXml, function (xml) {
             cache.houseCodes = deserializeXml(xml, 'item', { upperFirstLetter: false });
             getHcmHouseCodes(callback);
         });
@@ -2254,7 +2291,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 
     var setCurrentHcmHouseCode = function (callback) {
 
-		 apiRequest('hcm', '<criteria>storeId:hcmHouseCodes,userId:[user],defaultOnly:true,</criteria>', function (xml) {
+		 apiRequest('hcm', 'iiCache', '<criteria>storeId:hcmHouseCodes,userId:[user],defaultOnly:true,</criteria>', function (xml) {
             if (callback)
                 callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
         });
@@ -2297,7 +2334,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             callback(cache.stateTypes);
             return;
         }
-        apiRequest('emp', '<criteria>storeId:stateTypes,userId:[user],</criteria>', function (xml) {
+        apiRequest('emp', 'iiCache', '<criteria>storeId:stateTypes,userId:[user],</criteria>', function (xml) {
             cache.stateTypes = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
             getStateTypes(callback);
         });
@@ -2305,7 +2342,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 
     var getEmployee = function (employeeNumber, hcmHouseCode, callback) {
 
-        apiRequest('emp', '<criteria>storeId:employeeSearchs,userId:[user]'
+        apiRequest('emp', 'iiCache', '<criteria>storeId:employeeSearchs,userId:[user]'
 	        + ',searchValue:' + employeeNumber
 	        + ',hcmHouseCodeId:' + hcmHouseCode
 	        + ',employeeType:SearchFull,filterType:Employee Number'
@@ -2319,7 +2356,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 
     var getPerson = function (employeeId, callback) {
 
-        apiRequest('emp', '<criteria>storeId:persons,userId:[user]'
+        apiRequest('emp', 'iiCache', '<criteria>storeId:persons,userId:[user]'
             + ',id:' + employeeId
             + ',</criteria>', function (xml) {
             if (callback)
@@ -2329,7 +2366,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 
     var getEmpCompensation = function (employeeNumber, callback) {
 
-        apiRequest('emp', '<criteria>storeId:employeeCompensation,userId:[user]'
+        apiRequest('emp', 'iiCache', '<criteria>storeId:employeeCompensation,userId:[user]'
 			+ ',employeeNumber:' + employeeNumber
         	+ ',</criteria>', function (xml) {
             if (callback)
@@ -2339,7 +2376,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 
     var getManagerDetail = function (employeeNumber, callback) {
 
-        apiRequest('emp', '<criteria>storeId:employeeManagerDetails,userId:[user]'
+        apiRequest('emp', 'iiCache', '<criteria>storeId:employeeManagerDetails,userId:[user]'
 			+ ',employeeNumber:' + employeeNumber
             + ',</criteria>', function (xml) {
             if (callback)
@@ -2354,7 +2391,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             return;
         }
 
-        apiRequest('app', '<criteria>storeId:appWorkflowSteps,userId:[user],workflowModuleId:' + moduleId + ',</criteria>', function (xml) {
+        apiRequest('app', 'iiCache', '<criteria>storeId:appWorkflowSteps,userId:[user],workflowModuleId:' + moduleId + ',</criteria>', function (xml) {
             if (callback) {
                 cache.workflowSteps = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
                 callback(cache.workflowSteps);
@@ -2404,7 +2441,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             callback(cache.jobCodes);
             return;
         }
-        apiRequest('emp', '<criteria>storeId:jobCodes,userId:[user],</criteria>', function (xml) {
+        apiRequest('emp', 'iiCache', '<criteria>storeId:jobCodes,userId:[user],</criteria>', function (xml) {
             cache.jobCodes = deserializeXml(xml, 'item', { upperFirstLetter: false });
             getJobCodes(callback);
         });
@@ -2421,7 +2458,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             return;
         }
 
-        apiRequest('emp', '<criteria>storeId:personnelActionTypes,userId:[user],</criteria>', function (xml) {
+        apiRequest('emp', 'iiCache', '<criteria>storeId:personnelActionTypes,userId:[user],</criteria>', function (xml) {
             cache.personActionTypes = deserializeXml(xml, 'item', { upperFirstLetter: false });
             getPersonActionTypes(callback);
         });
@@ -2519,6 +2556,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         getEmployeePersonnelActions: getEmployeePersonnelActions,
         findEmployeePersonnelAction: findEmployeePersonnelAction,
         getCarAllowances: getCarAllowances,
+		getAuthorizations: getAuthorizations,
         getHcmHouseCodes: getHcmHouseCodes,
         setCurrentHcmHouseCode: setCurrentHcmHouseCode,
         getHcmHouseCodeByBrief: getHcmHouseCodeByBrief,
