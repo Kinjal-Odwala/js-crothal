@@ -1342,6 +1342,8 @@ ii.Class({
 			me.searchTypes = [];
 			me.searchTypes.push(new fin.pur.poRequisition.SearchType(1, "Requisition #"));
 			me.searchTypes.push(new fin.pur.poRequisition.SearchType(2, "Requested Date"));
+			me.searchTypes.push(new fin.pur.poRequisition.SearchType(3, "Vendor #"));
+			me.searchTypes.push(new fin.pur.poRequisition.SearchType(4, "Vendor Title"));
 			me.searchType.setData(me.searchTypes);
 		},
 		
