@@ -914,7 +914,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.ManagerEmail = $scope.empAction.Data.NewHire.ReportingEmail;
                 $scope.empAction.TrainingContact = $scope.empAction.Data.NewHire.TrainingContact;
                 var grade = ($scope.empAction.PayGrade == 0 ? $scope.empAction.PayGrade : EmpActions.getPayGradeTitle($scope.empAction.PayGrade));
-                $scope.empAction.PayRange = $scope.getPayRange($scope.empAction.Data.NewHire.PayGrade, salary) + grade.slice(grade.indexOf("("));
+                $scope.empAction.PayRange = $scope.getPayRange($scope.empAction.Data.NewHire.PayGrade, salary) + " " + grade.slice(grade.indexOf("("));
                 $scope.empAction.ManagerNumber = $scope.empAction.Data["NewHire"].ReportingManagerNumber;
                 $scope.empAction.ManagerTitle = $scope.empAction.Data.NewHire.ReportingTitle;
             }
@@ -962,7 +962,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.ManagerEmail = $scope.empAction.Data.ReHire.ReportingEmail;
                 $scope.empAction.TrainingContact = $scope.empAction.Data.ReHire.TrainingContact;
                 var grade = ($scope.empAction.PayGrade == 0 ? $scope.empAction.PayGrade : EmpActions.getPayGradeTitle($scope.empAction.PayGrade));
-                $scope.empAction.PayRange = $scope.getPayRange($scope.empAction.Data.ReHire.PayGrade, salary) + grade.slice(grade.indexOf("("));
+                $scope.empAction.PayRange = $scope.getPayRange($scope.empAction.Data.ReHire.PayGrade, salary) + " " + grade.slice(grade.indexOf("("));
                 $scope.empAction.ManagerNumber = $scope.empAction.Data["ReHire"].ReportingManagerNumber;
                 $scope.empAction.ManagerTitle = $scope.empAction.Data.ReHire.ReportingTitle;
             }
@@ -1004,7 +1004,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.Instructions = $scope.empAction.Data.Promotion.Instructions;
                 $scope.empAction.NewManagerEmail = $scope.empAction.Data.Promotion.ReportingEmail;
                 var newGrade = ($scope.empAction.NewPayGrade == 0 ? $scope.empAction.NewPayGrade : EmpActions.getPayGradeTitle($scope.empAction.NewPayGrade));
-                $scope.empAction.NewPayRange = $scope.getPayRange($scope.empAction.Data.Promotion.NewPayGrade, $scope.empAction.Data.Promotion.NewSalary) + newGrade.slice(newGrade.indexOf("("));
+                $scope.empAction.NewPayRange = $scope.getPayRange($scope.empAction.Data.Promotion.NewPayGrade, $scope.empAction.Data.Promotion.NewSalary) + " " + newGrade.slice(newGrade.indexOf("("));
                 $scope.empAction.NewManagerNumber = $scope.empAction.Data["Promotion"].ReportingManagerNumber;
                 $scope.empAction.NewManagerTitle = $scope.empAction.Data.Promotion.ReportingTitle;
             }
@@ -1023,7 +1023,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.Instructions = $scope.empAction.Data.Demotion.Instructions;
                 $scope.empAction.NewManagerEmail = $scope.empAction.Data.Demotion.ReportingEmail;
                 var newGrade = ($scope.empAction.NewPayGrade == 0 ? $scope.empAction.NewPayGrade : EmpActions.getPayGradeTitle($scope.empAction.NewPayGrade));
-                $scope.empAction.NewPayRange = $scope.getPayRange($scope.empAction.Data.Demotion.NewPayGrade, $scope.empAction.Data.Demotion.NewSalary) + newGrade.slice(newGrade.indexOf("("));
+                $scope.empAction.NewPayRange = $scope.getPayRange($scope.empAction.Data.Demotion.NewPayGrade, $scope.empAction.Data.Demotion.NewSalary) + " " + newGrade.slice(newGrade.indexOf("("));
                 $scope.empAction.NewManagerNumber = $scope.empAction.Data["Demotion"].ReportingManagerNumber;
                 $scope.empAction.NewManagerEmail = $scope.empAction.Data.Demotion.ReportingEmail;
                 $scope.empAction.NewManagerNumber = $scope.empAction.Data["Demotion"].ReportingManagerNumber;
@@ -1044,7 +1044,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.Instructions = $scope.empAction.Data.SalaryChange.Instructions;
                 $scope.empAction.NewManagerEmail = $scope.empAction.Data.SalaryChange.ReportingEmail;
                 var newGrade = ($scope.empAction.NewPayGrade == 0 ? $scope.empAction.NewPayGrade : EmpActions.getPayGradeTitle($scope.empAction.NewPayGrade));
-                $scope.empAction.NewPayRange = $scope.getPayRange($scope.empAction.Data.SalaryChange.NewPayGrade, $scope.empAction.Data.SalaryChange.NewSalary) + newGrade.slice(newGrade.indexOf("("));
+                $scope.empAction.NewPayRange = $scope.getPayRange($scope.empAction.Data.SalaryChange.NewPayGrade, $scope.empAction.Data.SalaryChange.NewSalary) + " " + newGrade.slice(newGrade.indexOf("("));
                 $scope.empAction.NewManagerNumber = $scope.empAction.Data["SalaryChange"].ReportingManagerNumber;
                 $scope.empAction.NewManagerTitle = $scope.empAction.Data.SalaryChange.ReportingTitle;
                 var revWithHR = $scope.empAction.Data.SalaryChange.ReviewedWithHR;
@@ -1703,15 +1703,15 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
 
             switch (type) {
                 case 'EMAIL':
-                    var INTEGER_REGEXP = new RegExp('^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', 'i');
+                    var EMAIL_REGEXP = new RegExp('^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', 'i');
                     ngModel.$parsers.unshift(function (viewValue) {
-                        if (INTEGER_REGEXP.test(viewValue)) {
+                        if (EMAIL_REGEXP.test(viewValue) || (!attrs.required && viewValue == "")) {
                             ngModel.$setValidity(attrs.name, true);
                             return viewValue;
                         }
                         else {
-                            ngModel.$setValidity(attrs.name, false);
-                            return null;
+							ngModel.$setValidity(attrs.name, false);
+	                    	return null;
                         }
                     });
                     break;
@@ -1735,15 +1735,19 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
 .factory('Validators', [function () {
     return {
         phoneNumber: function (ctrl, value, attr) {
-            var valid = typeof (value) == "string" && value.length >= 10 && value.length <= 14;
-            if (attr.required)
+            var valid = typeof (value) == "string" && /^(\([2-9]|[2-9])(\d{2}|\d{2}\))(-|.|\s)?\d{3}(-|.|\s)?\d{4}$/.test(value);
+            if (attr.required || value != "")
                 ctrl.$setValidity(attr.name, valid);
+			else if (value == "")
+				ctrl.$setValidity(attr.name, true);
             return value;
         },
         zipCode: function (ctrl, value, attr) {
-            var valid = typeof (value) == "string" && value.length >= 5 && value.length <= 10;
-            if (attr.required)
-                ctrl.$setValidity(attr.name, valid);
+			var valid = typeof (value) == "string" && (/(^\d{5}$)|(^\d{9}$)|(^\d{5}-\d{4}$)/.test(value));
+            if (attr.required || value != "")
+				ctrl.$setValidity(attr.name, valid);
+			else if (value == "")
+				ctrl.$setValidity(attr.name, true);
             return value;
         },
     };

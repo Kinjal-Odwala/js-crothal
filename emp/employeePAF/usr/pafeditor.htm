@@ -49,13 +49,13 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group" ng-class="{'has-error':pafForm.AddressLine1.$invalid}">
-                            <label class="control-label">Address1</label>
+                            <label class="control-label">Address 1</label>
                             <input class="form-control input-sm" name="AddressLine1" maxlength="100" ng-model="empAction.AddressLine1" ng-disabled="empAction.Data.Person" required/>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="control-label">Address2</label>
+                            <label class="control-label">Address 2</label>
                             <input class="form-control input-sm" name="AddressLine2" maxlength="100" ng-model="empAction.AddressLine2" ng-disabled="empAction.Data.Person" />
                         </div>
                     </div>
@@ -73,12 +73,12 @@
                     </div>
                     <div class="col-md-3" ng-class="{'has-error':pafForm.PostalCode.$invalid}">
                         <label>Zip</label>
-                        <input class="form-control input-sm" name="PostalCode" maxlength="20" ng-model="empAction.PostalCode" paf-mask="zipcode" ng-disabled="empAction.Data.Person" required/>
+                        <input class="form-control input-sm" name="PostalCode" maxlength="10" ng-model="empAction.PostalCode" paf-mask="zipcode" ng-disabled="empAction.Data.Person" required/>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group" ng-class="{'has-error':pafForm.Phone.$invalid}">
                             <label class="control-label">Phone #</label>
-                            <input class="form-control input-sm" name="Phone" maxlength="50" ng-model="empAction.Phone" paf-mask="phone" ng-disabled="empAction.Data.Person" required/>
+                            <input class="form-control input-sm" name="Phone" maxlength="14" ng-model="empAction.Phone" paf-mask="phone" ng-disabled="empAction.Data.Person" required/>
                         </div>
                     </div>
                 </div>
@@ -132,7 +132,7 @@
                                             <label class="labelText">
                                                 <input name="Status" ng-model="data.Status" ng-disabled="data.PayStatus=='PerDiemValue'" required="required" type="radio" value="FullTimeHours" />&nbsp;Full Time
                                             </label>
-											<input class="form-control input-sm" name="FullTimeHours" paf-maxlength="11" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='FullTimeHours'" ng-model="data.FullTimeHours" ng-required="data.Status=='FullTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+											<input class="form-control input-sm" name="FullTimeHours" paf-maxlength="6" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='FullTimeHours'" ng-model="data.FullTimeHours" ng-required="data.Status=='FullTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                 </div>
@@ -142,7 +142,7 @@
                                             <label class="labelText">
                                                 <input name="Status" ng-model="data.Status" ng-disabled="data.PayStatus=='PerDiemValue'" required="required" type="radio" value="PartTimeHours" />&nbsp;Part Time
                                             </label>
-											<input class="form-control input-sm" name="PartTimeHours" paf-maxlength="11" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='PartTimeHours'" ng-model="data.PartTimeHours" ng-required="data.Status=='PartTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+											<input class="form-control input-sm" name="PartTimeHours" paf-maxlength="6" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='PartTimeHours'" ng-model="data.PartTimeHours" ng-required="data.Status=='PartTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                     <div class="clearfix"></div>
@@ -153,7 +153,7 @@
                                             <label class="labelText">
                                                 <input name="Status" ng-model="data.Status" required="required" type="radio" value="TemporaryHours" />&nbsp;Temporary
                                             </label>
-											<input class="form-control input-sm" name="TemporaryHours" paf-maxlength="11" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='TemporaryHours'" ng-model="data.TemporaryHours" ng-required="data.Status=='TemporaryHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+											<input class="form-control input-sm" name="TemporaryHours" paf-maxlength="6" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='TemporaryHours'" ng-model="data.TemporaryHours" ng-required="data.Status=='TemporaryHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                 </div>
@@ -234,7 +234,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>Manager Email</label>
-                                        <input type="email" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -316,7 +316,7 @@
                                             <label class="labelText">
                                                 <input name="Status" ng-model="data.Status" ng-disabled="data.PayStatus=='PerDiemValue'" required="required" type="radio" value="FullTimeHours" />&nbsp;Full Time
                                             </label>
-											<input class="form-control input-sm" name="FullTimeHours"  paf-maxlength="11" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='FullTimeHours'" ng-model="data.FullTimeHours" ng-required="data.Status=='FullTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+											<input class="form-control input-sm" name="FullTimeHours"  paf-maxlength="6" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='FullTimeHours'" ng-model="data.FullTimeHours" ng-required="data.Status=='FullTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                 </div>
@@ -326,7 +326,7 @@
                                             <label class="labelText">
                                                 <input name="Status" ng-model="data.Status" ng-disabled="data.PayStatus=='PerDiemValue'" required="required" type="radio" value="PartTimeHours" />&nbsp;Part Time
                                             </label>
-											<input class="form-control input-sm" name="PartTimeHours" paf-maxlength="11" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='PartTimeHours'" ng-model="data.PartTimeHours" ng-required="data.Status=='PartTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+											<input class="form-control input-sm" name="PartTimeHours" paf-maxlength="6" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='PartTimeHours'" ng-model="data.PartTimeHours" ng-required="data.Status=='PartTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                     <div class="clearfix">
@@ -338,7 +338,7 @@
                                             <label class="labelText">
                                                 <input name="Status" ng-model="data.Status" required="required" type="radio" value="TemporaryHours" />&nbsp;Temporary
                                             </label>
-											<input class="form-control input-sm" name="TemporaryHours" paf-maxlength="11" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='TemporaryHours'" ng-model="data.TemporaryHours" ng-required="data.Status=='TemporaryHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+											<input class="form-control input-sm" name="TemporaryHours" paf-maxlength="6" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="data.Status=='TemporaryHours'" ng-model="data.TemporaryHours" ng-required="data.Status=='TemporaryHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                 </div>
@@ -419,7 +419,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>Manager Email</label>
-                                        <input type="email" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -726,7 +726,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>Manager Email</label>
-                                        <input type="email" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -905,7 +905,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>Manager Email</label>
-                                        <input type="email" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -1084,7 +1084,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>Manager Email</label>
-                                        <input type="email" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -1170,7 +1170,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>Manager Email</label>
-                                        <input type="email" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
+                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="data.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="data.ReportingEmail" ng-required="data.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(data)"/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -1204,20 +1204,20 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Address1</label>
+                                <label>Address 1</label>
                                 <input class="form-control input-sm" ng-model="data.InfoChangeAddressLine1" maxlength="100" />
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label>Address2</label>
+                                <label>Address 2</label>
                                 <input class="form-control input-sm" ng-model="data.InfoChangeAddressLine2" maxlength="100" />
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="form-group">
-                                <label>Phone #</label>
-                                <input class="form-control input-sm" ng-model="data.InfoChangePhone" paf-mask="phone" maxlength="50"/>
+                            <div class="form-group" ng-class="{'has-error':personalInfoForm.InfoChangePhone.$invalid}">
+                                <label class="control-label">Phone #</label>
+                                <input class="form-control input-sm" name="InfoChangePhone" ng-model="data.InfoChangePhone" paf-mask="phone" maxlength="14"/>
                             </div>
                         </div>
                     </div>
@@ -1233,8 +1233,10 @@
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <label class="control-label">Zip</label>
-                            <input class="form-control input-sm" ng-model="data.InfoChangePostalCode" paf-mask="zipcode" maxlength="20" />
+                        	<div class="form-group" ng-class="{'has-error':personalInfoForm.InfoChangePostalCode.$invalid}">
+	                            <label class="control-label">Zip</label>
+	                            <input class="form-control input-sm" ng-model="data.InfoChangePostalCode" name="InfoChangePostalCode" paf-mask="zipcode" maxlength="10" />
+							</div>
                         </div>
                     </div>
                 </div>
@@ -1254,7 +1256,7 @@
                         <div class="col-md-6">
                             <div class="form-group" ng-class="{'has-error':requisitionForm.EmailAddress.$invalid}">
                                 <label>Email Address</label>
-                                <input type="email" class="form-control input-sm" ng-model="data.EmailAddress" name="EmailAddress" maxlength="50" />
+                                <input paf-validation="EMAIL" class="form-control input-sm" ng-model="data.EmailAddress" name="EmailAddress" maxlength="50" />
                             </div>
                         </div>
                     </div>
@@ -1282,25 +1284,27 @@
                     </div>
                 </div>
             </section>
-            <!--REGMANAGERINFO-->
+            <!--REGIONAL MANAGER INFO-->
             <section ng-if="empAction.SalaryChange || empAction.Demotion || empAction.Promotion">
-                <h4>REGIONAL MANAGER INFO</h4>
-                <div class="row">
-                    <div class="col-md-4">
-                        <label class="control-label">Manager Name</label>
-                        <input class="form-control input-sm" name="RegionalManagerName" maxlength="100" ng-model="empAction.RegionalManagerName" />
-                    </div>
-                    <div class="col-md-4">
-                        <label>Manager Title</label>
-                        <input class="form-control input-sm" name="RegionalManagerTitle" maxlength="100" ng-model="empAction.RegionalManagerTitle"/>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Manager Email</label>
-                            <input class="form-control input-sm" name="RegionalManagerEmail" maxlength="50" ng-model="empAction.RegionalManagerEmail"/>
-                        </div>
-                    </div>
-                </div>
+            	<div ng-form="regionalManagerInfoForm">
+	                <h4>REGIONAL MANAGER INFO</h4>
+	                <div class="row">
+	                    <div class="col-md-4">
+	                        <label class="control-label">Manager Name</label>
+	                        <input class="form-control input-sm" name="RegionalManagerName" maxlength="100" ng-model="empAction.RegionalManagerName" />
+	                    </div>
+	                    <div class="col-md-4">
+	                        <label>Manager Title</label>
+	                        <input class="form-control input-sm" name="RegionalManagerTitle" maxlength="100" ng-model="empAction.RegionalManagerTitle"/>
+	                    </div>
+	                    <div class="col-md-4">
+	                        <div class="form-group" ng-class="{'has-error':regionalManagerInfoForm.RegionalManagerEmail.$invalid}">
+	                            <label class="control-label">Manager Email</label>
+	                            <input paf-validation="EMAIL" class="form-control input-sm" name="RegionalManagerEmail" maxlength="50" ng-model="empAction.RegionalManagerEmail"/>
+	                        </div>
+	                    </div>
+	                </div>
+				</div>
             </section>
 			<!--COMMENTS-->
             <section>
