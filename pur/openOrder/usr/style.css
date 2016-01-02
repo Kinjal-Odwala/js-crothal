@@ -1,78 +1,15 @@
-﻿
-#divPurchaseOrderDetails
-{	
-	/*right: 0;
-	position: absolute;
-	bottom: 30px; */
-	padding: 0px 0px 0px 0px;
-}
-
-#ButtonOpenOrder
-{	
-	/*right: 0;
-	position: absolute;
-	bottom: 0;*/
-	padding: 0px 0px 0px 0px;
-}
-
-#anchorAlign
-{
-	padding-bottom: 5px;
-	clear: both;
-}
-
-#AnchorAdd
-{
-	float: left;
-	width: 65px;
-	padding-left: 5px;
-	padding-top: 5px;
-}
-
-#AnchorEdit
-{
-	float: left;
-	width: 68px;
-	padding-left: 5px;
-	padding-top: 5px;
-}
-
-#AnchorView
-{
-	float: left;
-	width: 68px;
-	padding-left: 5px;
-	padding-top: 5px;
-}
-
-#AnchorViewEditPO
-{
-	float: left;
-	width: 130px;
-	padding-left: 10px;
-	padding-top: 5px;
-}
-
-.tbodyBorder
-{
+﻿.tbodyBorder {
 	overflow: auto;
 }
-#divPurchaseOrderGrid
-	{
-		
-	
-	}
-.gridBorder
-{
+
+.gridBorder {
 	border-bottom: solid #AAAAAA thin;
 	border-bottom-width: 1px;
 	border-right: solid #AAAAAA thin;
 	border-right-width: 1px;
-	width:1150px;
 }
 
-.gridHeaderColumn
-{
+.gridHeaderColumn {
 	background-color: #669966;
 	border: solid #AAAAAA thin;
 	border-width: 1px;
@@ -81,17 +18,15 @@
 	font-size: 8pt;
 	font-weight: bold;
 	color: white;
-     text-transform: uppercase; 
+    text-transform: uppercase; 
 	padding: 3px 4px 3px 4px;
 	text-align: center;
-	
 	height: 20px;
 	border-spacing: 0px 0px;
 	border-collapse: collapse;
 }
 	
-.gridColumn
-{
+.gridColumn {
 	vertical-align: top; 
 	border-left: solid #AAAAAA thin;
 	border-width: 1px;
@@ -104,28 +39,23 @@
 	padding: 2px 4px 4px 4px;
 }
 
-.gridColumnHidden
-{
+.gridColumnHidden {
 	display: none;
 }
 
-.gridRow
-{ 
+.gridRow { 
 	background-color: #F0EFDD;
 }
 
-.alternateGridRow
-{ 
+.alternateGridRow { 
 	background-color: #FFFFFF;
 }
 
-.trover
-{
+.trover {
 	background-color: #C2E4C1;
 }
 
-.tableBorder
-{
+.tableBorder {
 	border: 1px black solid;
 	border-bottom: none;
 	border-width: 1px;
@@ -133,8 +63,7 @@
 	background-color: #F0EFDD;		
 }
 
-.tdBorder
-{
+.tdBorder {
 	border-bottom: solid black thin;
 	border-width: 1px;
 	font-family: Verdana;
@@ -143,13 +72,54 @@
 	padding-left: 5px;
 	width: 110px;
 }
-.iiInputText
-	{
-		width:182px;
-		white-space:nowrap;
-	}
-.iiInputTable
-	{
-		width:188px;
-		white-space:nowrap;
-	}
+
+.iiInputText {
+    width: 182px;
+    white-space: nowrap;
+}
+	
+.iiInputTable {
+    width: 188px;
+    white-space: nowrap;
+}
+
+#divPurchaseOrderDetails {
+    padding: 0px 0px 0px 0px;
+}
+
+#ButtonOpenOrder {
+    padding: 0px 0px 0px 0px;
+}
+
+#anchorAlign {
+    padding-bottom: 5px;
+    clear: both;
+}
+
+#AnchorAdd {
+    float: left;
+    width: 65px;
+    padding-left: 5px;
+    padding-top: 5px;
+}
+
+#AnchorEdit {
+    float: left;
+    width: 68px;
+    padding-left: 5px;
+    padding-top: 5px;
+}
+
+#AnchorView {
+    float: left;
+    width: 68px;
+    padding-left: 5px;
+    padding-top: 5px;
+}
+
+#AnchorViewEditPO {
+    float: left;
+    width: 130px;
+    padding-left: 10px;
+    padding-top: 5px;
+}
