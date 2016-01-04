@@ -1444,6 +1444,16 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         });
     }
 
+    $scope.approve = function (id) {
+        $scope.loadingTitle = " Approving...";
+        $scope.pageLoading = true;
+        EmpActions.approveEmployeePersonnelAction(id, function (data, status) {
+            $scope.pageLoading = false;
+            $scope.getPafList();
+            alert("Employee PAF has been approved successfully.");
+        });
+    }
+
     $scope.itemSelected = function (item) {
         $scope.selectedItem = item;
 
@@ -2515,6 +2525,16 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         });
     }
 
+    var approveEmployeePersonnelAction = function (id, callback) {
+        var xml = '<transaction id="' + id + '"><approveEmployeePersonnelAction id="' + id + '" /></transaction>';
+        var data = "moduleId=emp&requestId=1&requestXml=" + encodeURIComponent(xml) + "&targetId=iiTransaction";
+
+        jQuery.post("/net/crothall/chimes/fin/emp/act/Provider.aspx", data, function (data, status) {
+            if (callback)
+                callback(data, status);
+        });
+    }
+
     var submitEmployeePersonnelAction = function (item, callback) {
         var reasonId = 0;
 		var xml = "";
@@ -2578,6 +2598,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         saveEmployeePersonnelAction: saveEmployeePersonnelAction,
         cancelEmployeePersonnelAction: cancelEmployeePersonnelAction,
         submitEmployeePersonnelAction: submitEmployeePersonnelAction,
+        approveEmployeePersonnelAction: approveEmployeePersonnelAction,
         getPayGradeTitle: getPayGradeTitle,
 		getTitleById: getTitleById
     }
