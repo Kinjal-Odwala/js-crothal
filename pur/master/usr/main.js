@@ -314,6 +314,18 @@ ii.Class({
 				changeFunction: function() { me.searchTypeChanged(); }
 			});
 
+			me.searchType.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.searchType.text.value;
+
+					if (enteredText == "") return;
+
+					if (me.searchType.indexSelected == -1)
+						this.setInvalid("Please select correct Search By.");
+				});
+
 			me.searchInput = new ui.ctl.Input.Text({
 				id: "SearchInput",
 				maxLength: 50
@@ -970,7 +982,14 @@ ii.Class({
 			else if (me.activeFrameId == 2)
 				statusType = 3;
 				
-			if (me.searchType.lastBlurValue == "Purchase Order #") {
+			if (!me.searchType.validate(true)) {
+				return;
+			}
+			else if ($("#houseCodeText").val() == "" && (me.searchType.lastBlurValue == "" || me.searchInput.getValue() == "")) {
+				alert("Please enter Search Criteria.");
+				return;
+			}
+			else if (me.searchType.lastBlurValue == "Purchase Order #") {
 				if ((me.searchInput.getValue() == "") || (!(/^[0-9]+$/.test(me.searchInput.getValue())))) {
 					alert("Please enter valid Purchase Order #.");
 					return;
@@ -982,6 +1001,10 @@ ii.Class({
 					alert("Please enter valid Vendor #.");
 					return;
 				}
+			}
+			else if (me.searchType.lastBlurValue == "Vendor Title" && me.searchInput.getValue().trim() == "") {
+				alert("Please enter Search Criteria.");
+				return;
 			}
 
 			me.checkStatus = true;
