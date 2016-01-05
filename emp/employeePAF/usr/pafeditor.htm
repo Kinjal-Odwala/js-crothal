@@ -1315,7 +1315,7 @@
             </section>
             <div style="margin-bottom:20px;"/>
             <div class="pull-right margin-bottom20">
-                <button class="btn btn-primary" type="submit" ng-if="empAction.Status != 2 && empAction.Status != 8 && empAction.Status != 4 && empAction.Status != 5" ng-click="save()">Save</button>
+                <button class="btn btn-primary" type="submit" ng-if="empAction.Status != 2 && empAction.Status != 8 && empAction.Status != 4 && empAction.Status != 5 && !readOnly" ng-click="save()">Save</button>
                 <a class="btn btn-default" href="#/list">Cancel</a>
             </div>
         </form>

@@ -408,12 +408,37 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
     var lastEmployeeNumber = null;
 
+    var isAuthorized = function (path) {
+        var authorized = false;
+
+        for (var index = 0; index < $scope.authorizations.length; index++) {
+            if ($scope.authorizations[index].path.indexOf(path) >= 0) {
+                authorized = true;
+                break;
+            }
+        }
+
+        return authorized;
+    }
+
+    var authorizationsLoaded = function () {
+        var authorizePath = "\\crothall\\chimes\\fin\\Setup\\EmployeePAF";
+        $scope.readOnly = isAuthorized(authorizePath + "\\Read");
+        $scope.write = isAuthorized(authorizePath + "\\Write");
+        $scope.writeInProcess = isAuthorized(authorizePath + "\\InProcessWrite");
+        $scope.approveInProcess = isAuthorized(authorizePath + "\\ApproveInProcess");
+    }
+
     var init = function () {
         loadHouseCodes();
 		loadStateTypes();
         loadJobCodes();
 		loadPersonActionTypes();
-        loadPayGrades();
+		loadPayGrades();
+		EmpActions.getAuthorizations(function (result) {
+		    $scope.authorizations = result;
+		    authorizationsLoaded();
+		});
     }
 
     $scope.getPayRange = function (payGrade, salary) {
@@ -1309,7 +1334,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
 		var authorizePath = "\\crothall\\chimes\\fin\\Setup\\EmployeePAF";
 		$scope.readOnly = isAuthorized(authorizePath + "\\Read");
 		$scope.write = isAuthorized(authorizePath + "\\Write");
-		$scope.writeInProcess = isAuthorized(authorizePath + "\\WriteInProcess");
+		$scope.writeInProcess = isAuthorized(authorizePath + "\\InProcessWrite");
 		$scope.approveInProcess = isAuthorized(authorizePath + "\\ApproveInProcess");
 	}
 	
