@@ -30,7 +30,7 @@ ii.Class({
         init: function () {
 			var args = ii.args(arguments, {});
 			var me = this;			
-				
+
 			me.purchaseOrderId = 0;
 			me.vendorId = 0;
 			me.accountId = 0;
@@ -971,8 +971,24 @@ ii.Class({
 			var me = this;
 			var statusType = 0;
 			var houseCodeId = $("#houseCodeText").val() != "" ? parent.fin.appUI.houseCodeId : 0;
+			var searchValue = me.searchInput.getValue();
 			
 			if (!parent.fin.cmn.status.itemValid())
+				return;
+
+			if ($("#houseCodeText").val() == "" && me.searchType.lastBlurValue == "") {
+				me.searchType.setInvalid("Please select Search By.");
+				return;
+			}
+
+			if (me.searchType.lastBlurValue == "Purchase Order #" && (searchValue == "" || !(/^[0-9]+$/.test(searchValue))))
+				me.searchInput.setInvalid("Please enter valid Purchase Order #.");
+			else if (me.searchType.lastBlurValue == "Vendor #" && (searchValue == "" || !(/^[0-9]+$/.test(searchValue))))
+				me.searchInput.setInvalid("Please enter valid Vendor #.");
+			else if (me.searchType.lastBlurValue == "Vendor Title" && searchValue.trim() == "")
+				me.searchInput.setInvalid("Please enter Search Criteria.");
+
+			if (!me.searchType.validate(true) || !me.searchInput.valid)
 				return;
 
 			if (me.activeFrameId == 0)
@@ -982,30 +998,8 @@ ii.Class({
 			else if (me.activeFrameId == 2)
 				statusType = 3;
 				
-			if (!me.searchType.validate(true)) {
-				return;
-			}
-			else if ($("#houseCodeText").val() == "" && (me.searchType.lastBlurValue == "" || me.searchInput.getValue() == "")) {
-				alert("Please enter Search Criteria.");
-				return;
-			}
-			else if (me.searchType.lastBlurValue == "Purchase Order #") {
-				if ((me.searchInput.getValue() == "") || (!(/^[0-9]+$/.test(me.searchInput.getValue())))) {
-					alert("Please enter valid Purchase Order #.");
-					return;
-				}
+			if (me.searchType.lastBlurValue == "Purchase Order #")
 				statusType = 0;
-			}
-			else if (me.searchType.lastBlurValue == "Vendor #") {
-				if ((me.searchInput.getValue() == "") || (!(/^[0-9]+$/.test(me.searchInput.getValue())))) {
-					alert("Please enter valid Vendor #.");
-					return;
-				}
-			}
-			else if (me.searchType.lastBlurValue == "Vendor Title" && me.searchInput.getValue().trim() == "") {
-				alert("Please enter Search Criteria.");
-				return;
-			}
 
 			me.checkStatus = true;
 			me.setLoadCount();
@@ -1013,7 +1007,7 @@ ii.Class({
 				+ ",houseCodeId:" + houseCodeId
 				+ ",statusType:" + statusType
 				+ ",searchType:" + me.searchType.lastBlurValue
-				+ ",searchValue:" + me.searchInput.getValue()
+				+ ",searchValue:" + searchValue
 				, me.purchaseOrdersLoaded
 				, me);
 		},
