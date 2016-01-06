@@ -381,7 +381,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             else {
                 $scope.empAction.EmployeeId = result.id;
                 $scope.empAction.Data.Employee = result;
-                console.log($scope.empAction.Data.Employee);
                 $scope.empAction.Data.Employee.HcmHouseCode = EmpActions.getHcmHouseCodeByBrief(result.houseCode);
                 $scope.empAction.HcmHouseCode = EmpActions.getHcmHouseCodeByBrief(result.houseCode);
 
@@ -1738,9 +1737,9 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
 
             switch (type) {
                 case 'EMAIL':
-                    var EMAIL_REGEXP = new RegExp('^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', 'i');
+                    //var EMAIL_REGEXP = new RegExp('^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', 'i');
                     ngModel.$parsers.unshift(function (viewValue) {
-                        if (EMAIL_REGEXP.test(viewValue) || (!attrs.required && viewValue == "")) {
+                        if (/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(viewValue) || (!attrs.required && viewValue == "")) {
                             ngModel.$setValidity(attrs.name, true);
                             return viewValue;
                         }
