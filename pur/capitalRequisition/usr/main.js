@@ -323,6 +323,18 @@ ii.Class({
 				changeFunction: function() { me.searchTypeChanged(); }
 			});
 
+			me.searchType.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.searchType.text.value;
+
+					if (enteredText == "") return;
+
+					if (me.searchType.indexSelected == -1)
+						this.setInvalid("Please select correct Search By.");
+				});
+
 			me.searchInput = new ui.ctl.Input.Text({
 				id: "SearchInput",
 				maxLength: 50
@@ -1602,6 +1614,8 @@ ii.Class({
 			me.searchTypes = [];
 			me.searchTypes.push(new fin.pur.poCapitalRequisition.SearchType(1, "Requisition #"));
 			me.searchTypes.push(new fin.pur.poCapitalRequisition.SearchType(2, "Requested Date"));
+			me.searchTypes.push(new fin.pur.poCapitalRequisition.SearchType(3, "Vendor #"));
+			me.searchTypes.push(new fin.pur.poCapitalRequisition.SearchType(4, "Vendor Title"));
 			me.searchType.setData(me.searchTypes);
 		},
 		
@@ -1609,6 +1623,7 @@ ii.Class({
 			var me = this;
 			
 			me.searchInput.setValue("");
+			me.searchRequestedDate.setValue("");
 
 			if (me.searchType.indexSelected == 1) {
 				$("#SearchInput").hide();
@@ -1731,7 +1746,25 @@ ii.Class({
 			var me = this;
 			var statusType = "";
 			var houseCodeId = $("#houseCodeText").val() != "" ? parent.fin.appUI.houseCodeId : 0;
+			var searchValue = me.searchInput.getValue();
 			
+			if ($("#houseCodeText").val() == "" && me.searchType.lastBlurValue == "") {
+				me.searchType.setInvalid("Please select Search By.");
+				return;
+			}
+
+			if (me.searchType.lastBlurValue == "Requisition #" && (searchValue == "" || !(/^[0-9]+$/.test(searchValue))))
+				me.searchInput.setInvalid("Please enter valid Requisition #.");
+			else if (me.searchType.lastBlurValue == "Requested Date" && me.searchRequestedDate.text.value == "")
+				me.searchRequestedDate.setInvalid("Please enter valid Requested Date.");
+			else if (me.searchType.lastBlurValue == "Vendor #" && (searchValue == "" || !(/^[0-9]+$/.test(searchValue))))
+				me.searchInput.setInvalid("Please enter valid Vendor #.");
+			else if (me.searchType.lastBlurValue == "Vendor Title" && searchValue.trim() == "")
+				me.searchInput.setInvalid("Please enter Search Criteria.");
+
+			if (!me.statusType.validate(true) || !me.searchType.validate(true) || !me.searchRequestedDate.valid || !me.searchInput.valid)
+				return;
+
 			if (me.action == "POCapitalRequisition")
 				statusType = me.statusType.indexSelected == -1 ? 0 : me.statuses[me.statusType.indexSelected].id;
 			else if (me.action == "GeneratePurchaseOrder")
@@ -1746,7 +1779,7 @@ ii.Class({
 				+ ",houseCodeId:" + houseCodeId
 				+ ",statusType:" + statusType
 				+ ",searchType:" + me.searchType.text.value
-				+ ",searchValue:" + (me.searchType.indexSelected == 1 ? me.searchRequestedDate.text.value : me.searchInput.getValue())
+				+ ",searchValue:" + (me.searchType.indexSelected == 1 ? me.searchRequestedDate.text.value : searchValue)
 				, me.poCapitalRequisitionsLoaded
 				, me);
 				

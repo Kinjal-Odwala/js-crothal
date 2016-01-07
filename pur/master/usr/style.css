@@ -1,191 +1,44 @@
-﻿	
-.pageHeaderHouseCode 
-{
+﻿.pageHeaderHouseCode {
 	background-color: #9BCD9A;
 	padding-left: 6px;
 	height: 25px;
 }
 
-#shippingInfoContainerLeft
-{
-	float: left;
-	margin-right: 20px;
-}
-	
-#shippingInfoContainerRight
-{
-	float: left;
-}
-
-#container-1
-{
-	float: left;
-	border: 0;
-	width: 100%;
-	padding-top: 5px;
-}
-
-.fragment
-{
+.fragment {
 	border: 0;
 	border: solid #AAAAAA thin;
 	border-width: 1px;
 }
 
-.tabContainer
-{
+.tabContainer {
   border: 0; 
   width: 100%;
 }
 
-iframe 
-{ 
-	display: block; 
-	width: 100%; 
-	border: none;  
-	height: 100%;
-} 
-
-#LabelOrderNumber
-{	
-	float: left;
-	font-family: Verdana;
-	font-size: 12px;
-	font-weight: bold;
-	color: #032D23;
-	padding-top: 5px;
-	padding-right: 5px;	
+.iiGridHeaderColumn {
+	font-size: 8pt;
 }
 
-#InputTextOrderNumber
-{
-	float: left; 
-	width: 120px; 
-	padding-top: 2px;
-	padding-bottom: 1px;
-	padding-right: 5px;	
+.iiGridBodyColumn {
+	font-size: 8pt;
 }
 
-#SearchButtonOrderNumber
-{
-	float: left;
-	width: 85px;	
-	padding-top: 1px;
-	padding-bottom: 1px;
-}
-
-#LabelOpenOrderAreaLeft
-{
-	float: left;
-	width: 150px;	
-	font-family: Verdana;
-	font-size: 12px;
-	color: #032D23;
-	text-align: left;
-	padding: 10px 10px 10px 10px;
-}
-
-#orderAmountBodyColumn, #priceBodyColumn, #quantityBodyColumn
-{
-	text-align: right;	
-}
-
-#Buttons
-{
-	float: right;
-	padding-right: 0px;
-}
-
-#AnchorNewOrderFromTemplate
-{
-	float: left;
-	width: 143px;
-	padding-left: 0px;
-/*
-	margin-right: 3px;
-*/
-	padding-top: 5px;
-}
-
-#AnchorNewOrder
-{
-	float: left;
-	width: 93px;
-	padding-left: 2px;
-/*
-	margin-right: 3px;
-*/
-	padding-top: 5px;
-}
-
-#AnchorPlaceOrder
-{
-	float: left;
-	width: 98px;
-	padding-left: 2px;
-/*
-	margin-right: 3px;
-*/
-	padding-top: 5px;
-}
-
-#AnchorCancelOrder
-{
-	float: left;
-	width: 108px;
-	padding-left: 2px;
-	padding-top: 5px;
-}
-
-#Print
-{
-	float: left;
-	width: 70px;
-	padding-left: 5px;
-	padding-top: 5px;
-}
-
-#LabelPurchaseOrderLeft
-{
-	width: 80px;
-	float: left;
-	font-family: Verdana;
-	font-size: 12px;
-	color: #032D23;
-	text-align: left;
-	padding-top: 5px;
-	padding-left: 5px;
-}
-
-#LabelPurchaseOrderRight
-{
-	width: 140px;
-	float: left;
-	font-family: Verdana;
-	font-size: 12px;
-	color: #032D23;
-	text-align: left;
-	padding-top: 5px;
-	padding-left: 5px;
-}
-
-.DropdownRight
-{
+.DropdownRight {
 	width: 200px;
 	float: left;
 	padding-top: 5px;
 }
 
-#LoadButtonItems
-{
+.labelTextAreaSearch {
 	float: left;
-	width: 80px;
-	padding-top: 5px;
-	padding-left: 10px;
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: bold;
+	color: #032D23;
+	padding: 5px 0px 0px 10px;
 }
 
-.LabelOpenOrderText
-{
+.LabelOpenOrderText {
 	width: 130px;
 	float: left;
 	font-family: Verdana;
@@ -197,15 +50,133 @@ iframe
 	padding-left: 10px;
 }
 
-.textBoxOpenOrder
-{
+.textBoxOpenOrder {
 	width: 190px;
 	float: left; 
 	height: 30px;	
 }
+
+.inputTextAreaSmall {
+	float: left;
+	width: 140px;
+	padding: 2px 0px 1px 5px;
+}
+
+#shippingInfoContainerLeft {
+	float: left;
+	margin-right: 20px;
+}
 	
-#backgroundPopup
-{
+#shippingInfoContainerRight {
+	float: left;
+}
+
+#container-1 {
+	float: left;
+	border: 0;
+	width: 100%;
+	padding-top: 5px;
+}
+
+iframe { 
+	display: block; 
+	width: 100%; 
+	border: none;  
+	height: 100%;
+} 
+
+#SearchButtonContainer {
+	float: left;
+	width: 85px;	
+	padding-top: 1px;
+	padding-bottom: 1px;
+	padding-left: 10px;
+}
+
+#LabelOpenOrderAreaLeft {
+	float: left;
+	width: 150px;	
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	text-align: left;
+	padding: 10px 10px 10px 10px;
+}
+
+#orderAmountBodyColumn, #priceBodyColumn, #quantityBodyColumn {
+	text-align: right;	
+}
+
+#Buttons {
+	float: right;
+	padding-right: 0px;
+}
+
+#AnchorNewOrderFromTemplate {
+	float: left;
+	width: 144px;
+	padding-left: 0px;
+	padding-top: 5px;
+}
+
+#AnchorNewOrder {
+	float: left;
+	width: 92px;
+	padding-left: 5px;
+	padding-top: 5px;
+}
+
+#AnchorPlaceOrder {
+	float: left;
+	width: 98px;
+	padding-left: 5px;
+	padding-top: 5px;
+}
+
+#AnchorCancelOrder {
+	float: left;
+	width: 106px;
+	padding-left: 5px;
+	padding-top: 5px;
+}
+
+#Print {
+	float: left;
+	width: 70px;
+	padding-left: 5px;
+	padding-top: 5px;
+}
+
+#LabelPurchaseOrderLeft {
+	width: 80px;
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	text-align: left;
+	padding-top: 5px;
+	padding-left: 5px;
+}
+
+#LabelPurchaseOrderRight {
+	width: 140px;
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	text-align: left;
+	padding-top: 5px;
+	padding-left: 5px;
+}
+
+#LoadButtonItems {
+	float: left;
+	width: 80px;
+	padding-top: 5px;
+	padding-left: 10px;
+}
+	
+#backgroundPopup {
 	position: fixed; 
 	top: 0; 
 	left: 0; 
@@ -217,8 +188,7 @@ iframe
 	display: none;
 }
 
-#popupContact	
-{
+#popupContact {
 	width: 800px; 
 	height: 400px;
 	position: absolute;
@@ -227,32 +197,27 @@ iframe
 	display: none;
 }
 
-#OrderItem
-{	
+#OrderItem {	
 	padding: 0px 10px 0px 10px;
 }
 
-#ShippingInfo
-{
+#ShippingInfo {
 	height: 325px;
 }
 
-#Company
-{
+#Company {
 	font-family: Verdana;
 	font-size: 12px;
 	color: #032D23;
 }
 
-#anchorAlign
-{
+#anchorAlign {
 	clear: both;
 	bottom: 15px;
 	position: absolute;
 }
 
-#AnchorItemContinue
-{
+#AnchorItemContinue {
 	float: left;
 	width: 96px;
 	padding-left: 10px;
@@ -260,8 +225,7 @@ iframe
 	padding-top: 5px;
 }
 
-#AnchorItemSave
-{
+#AnchorItemSave {
 	float: left;
 	width: 67px;
 	padding-left: 10px;
@@ -269,8 +233,7 @@ iframe
 	padding-top: 5px;
 }
 
-#AnchorCancel
-{
+#AnchorCancel {
 	float: left;
 	width: 80px;
 	padding-left: 10px;
@@ -278,8 +241,7 @@ iframe
 	padding-top: 5px;
 }
 
-#AnchorDelete 
-{
+#AnchorDelete {
 	float: left;
 	width: 78px;	
 	padding-left: 10px;
@@ -287,8 +249,7 @@ iframe
 	padding-top: 5px;
 }
 
-#ReportFooterTextArea 
-{
+#ReportFooterTextArea {
 	border: solid #AAAAAA thin;
 	border-width: 1px;
 	color: black;
@@ -298,8 +259,7 @@ iframe
 	width: 545px;
 }
 
-#LabelHouseCode
-{
+#LabelHouseCode {
 	width: 90px;
 	float: left;
 	height: 27px;
@@ -309,18 +269,7 @@ iframe
 	padding: 5px 0px 0px 0px;
 }
 
-.iiGridHeaderColumn 
-{
-	font-size: 8pt;
-}
-
-.iiGridBodyColumn 
-{
-	font-size: 8pt;
-}
-
-#GridContianer 
-{
+#GridContianer {
 	float: left;
 	position: relative;
 	width: 100%;
@@ -329,8 +278,7 @@ iframe
 	overflow-y: hidden;
 }
 	
-#PurchaseOrders	
-{
+#PurchaseOrders	{
 	float: left;
 	position: relative;
 	width: 1000px;

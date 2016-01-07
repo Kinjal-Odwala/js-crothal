@@ -96,6 +96,11 @@ ii.init.register( function() {
 		, name: {type: String}
 	};
 	
+	fin.pur.master.searchTypeArgs = {
+		id: {type: Number}
+		, title: {type: String}
+	};
+	
 	fin.pur.master.purchaseOrderItemArgs = {
 		id: {type: Number, defaultValue: 0}
 		, itemSelect: {type: Boolean, required: false, defaultValue: false}
@@ -194,6 +199,16 @@ ii.Class({
 	Definition: {
 		init: function (){
 			var args = ii.args(arguments, fin.pur.master.stateTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.pur.master.SearchType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pur.master.searchTypeArgs);
 			$.extend(this, args);
 		}
 	}

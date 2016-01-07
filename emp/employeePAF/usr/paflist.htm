@@ -1,0 +1,133 @@
+﻿<section>
+    <h3 class="text-center header">PERSONNEL ACTION FORM</h3>
+</section>
+<div class="container bs-docs-container ">
+    <div class="row  margin-bottom10 form-horizontal">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="form-group">
+                <label class="col-md-2 col-sm-3 col-xs-3 control-label">House Code</label>
+                <div class="col-md-10 col-sm-9 col-xs-9">
+                    <paf-typeahead ng-model="pafFilter.hcmHouseCode" source="HcmHouseCodes" typeahead-option="{displayField:'name',valueField:'id',name:'HcmHouseCode'}"></paf-typeahead>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6  col-xs-12">
+            <div class="form-group">
+                <label class="col-md-4 col-sm-6 col-xs-3 control-label">Employee Number</label>
+                <div class="col-md-8 col-sm-6 col-xs-9">
+                    <input class="form-control input-sm" maxlength="6" ng-model="pafFilter.employeeNumber" paf-integer="" />
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+            <div class="form-group">
+                <label class="col-lg-5 col-md-4 col-sm-3 col-xs-3 control-label">Status</label>
+                <div class="col-lg-7 col-md-8 col-sm-9 col-xs-9">
+                    <select ng-model="pafFilter.status" class="form-control input-sm" ng-options="item.id as item.title for item in Statuses">
+                        <option value="">[All]</option>
+                        <option value="1">Open</option>
+                        <option value="2">In Process</option>
+                        <option value="8">Approved</option>
+                        <option value="9">Completed</option>
+                        <option value="6">Cancelled</option>
+                        <option value="10">Unappproved</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+            <div class="form-group">
+                <label class="col-md-4 col-sm-3 col-xs-3 control-label">Date</label>
+                <div class="col-md-8 col-sm-9 col-xs-9">
+                    <paf-datepicker dt-option="dateOptions" dt-name="Date" dt-popup="MM/dd/yyyy" dt-model="pafFilter.pafDate"></paf-datepicker>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <div class="form-group">
+                <label class="col-lg-4 col-md-4 col-sm-6 col-xs-3 control-label">User Name</label>
+                <div class="col-lg-8 col-md-8 col-sm-6 col-xs-9">
+                    <input class="form-control input-sm" ng-model="pafFilter.createUser" />
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+            <div class="form-group">
+                <label class="col-lg-5 col-md-4 col-sm-6 col-xs-3 control-label">Form Type</label>
+                <div class="col-lg-7 col-md-8 col-sm-6 col-xs-9">
+                    <select class="form-control input-sm" ng-model="pafFilter.formType" ng-options="item.id as item.display for item in FormTypes">
+                        <option value="">[All]</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+            <div class="form-group">
+                <label class="col-md-4 col-sm-3 col-xs-3 control-label">PAF #</label>
+                <div class="col-md-8 col-sm-9 col-xs-9">
+                    <input class="form-control input-sm" maxlength="6" style="width: 100%" ng-model="pafFilter.pafNumber" paf-integer="" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row margin-bottom10">
+        <div class="col-md-4 col-sm-6 col-xs-12">
+			<a class="btn btn-primary " ng-click="getPafList()">Search</a>&nbsp;<a class="btn btn-primary " ng-click="clearFilter()">Clear Filters</a>
+        </div>
+    </div>
+    <table class="table-scroll table table-striped table-hover margin-bottom10">
+        <thead>
+            <tr class="heading" role="row">
+                <th width="10%">PAF #</th>
+                <th width="7%">Date</th>
+                <th width="10%">Employee #</th>
+                <th width="20%">Employee Name</th>
+                <th width="25%">House Code</th>
+                <th width="">Form Type</th>
+                <th width="10%">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="item in empActions" ng-click="itemSelected(item)" ng-class="{'warning':selectedItem==item}">
+                <td width="8%">{{item.Number}}</td>
+                <td width="10%">{{getDate(item.Date)}}</td>
+                <td width="10%">{{item.EmployeeNumber}}</td>
+                <td width="20%">{{item.FirstName}}&nbsp;{{item.LastName}}</td>
+                <td width="25%">{{getHouseCodeName(item)}}</td>
+                <td width="" ng-bind-html="getFormType(item)"></td>
+                <td width="10%">{{getStatusTitle(item.Status)}}&nbsp;{{getStepTitle(item.WorkflowStep, item.Status)}}</td>
+             </tr>
+        </tbody>
+    </table>
+    <div class="row">
+        <div class="col-md-5 col-sm-6 col-xs-12">
+            <a class="btn btn-primary" ng-if="write" href="#/new">New</a>
+			<a class="btn btn-primary" ng-if="(write || (selectedItem.Status==2 && writeInProcess)) && (selectedItem.Status==1 || selectedItem.Status==10 || (selectedItem.Status==2 && writeInProcess))" href="#/edit/{{selectedItem.Id}}"><span ng-if="(write || (selectedItem.Status==2 && writeInProcess)) && (selectedItem.Status==1 || selectedItem.Status==10 || (selectedItem.Status==2 && writeInProcess))">Edit</span></a>
+			<a class="btn btn-primary" ng-if="selectedItem.Status==20" href="#/edit/{{selectedItem.Id}}"><span ng-if="selectedItem.Status==20">View/Edit</span></a>
+			<a class="btn btn-primary" ng-if="(readOnly || write) && (((selectedItem.Status==1 || selectedItem.Status==10) && !write) || selectedItem.Status==8 || selectedItem.Status==4 || selectedItem.Status==6 || (selectedItem.Status==2 && !writeInProcess))" href="#/edit/{{selectedItem.Id}}"><span ng-if="(readOnly || write) && (((selectedItem.Status==1 || selectedItem.Status==10) && !write) || selectedItem.Status==8 || selectedItem.Status==4 || selectedItem.Status==6 || (selectedItem.Status==2 && !writeInProcess))">View</span></a>
+			<a class="btn btn-info" ng-click="submit(selectedItem)" ng-if="write && (selectedItem.Status==1 || (selectedItem.Status==2  && selectedItem.WorkflowStep==0) || selectedItem.Status==10)"><span ng-if="write && selectedItem.Status==1">Submit</span><span ng-if="write && ((selectedItem.Status==2 && selectedItem.WorkflowStep==0) || selectedItem.Status==10)">ReSubmit</span></a>
+            <a class="btn btn-info" ng-click="approve(selectedItem.Id)" ng-if="(write || approveInProcess) && (selectedItem.Status==2 && approveInProcess)"><span ng-if="(write || approveInProcess) && (selectedItem.Status==2 && approveInProcess)">Approve</span></a>
+			<a class="btn btn-default" ng-if="write && (selectedItem.Status==1 || selectedItem.Status==2 || selectedItem.Status==10)" ng-click="cancelForm(selectedItem.Id)" ng-disabled="!selectedItem">Cancel</a>
+        </div>
+    </div>
+</div>
+<div ng-show="isPageLoading()">
+    <div class="overlay"></div>
+    <div class="spinner">
+        <span class="glyphicon glyphicon-refresh glyphicon-spin"></span>{{loadingTitle}}
+    </div>
+</div>
+<script type="text/ng-template" id="content.html">
+    <div class="modal-body">Not Implemented</div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+<script type="text/ng-template" id="cancel.html">
+    <div class="modal-body">Are you sure to Cancel this item?</div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">Yes</button>
+        <button class="btn btn-warning" ng-click="cancel()">No</button>
+    </div>
+</script>
