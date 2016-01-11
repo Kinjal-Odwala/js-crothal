@@ -353,8 +353,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     $scope.empAction.Data[positionType].ReportingEmail = response.empEmail;
                     $scope.empAction.Data[positionType].ReportingManagerNumber = response.empClock;
                     $scope.empAction.Data[positionType].CacheReportingManagerNumber = response.empClock;
-                    $scope.empAction.Data[positionType].DisabledReportFields = true;
-                    $scope.empAction.Data[positionType].DisabledReportingManagerNumberField = false;
+                    $scope.empAction.Data[positionType].DisabledReportFields = response.empClock && response.empClock.length > 0 && response.empTitle && response.empTitle.length > 0 && response.empEmail && response.empEmail.length > 0;
+                    $scope.empAction.Data[positionType].DisabledReportingManagerNumberField = response.empClock && response.empClock.length > 0;
                 });
         }
         else
