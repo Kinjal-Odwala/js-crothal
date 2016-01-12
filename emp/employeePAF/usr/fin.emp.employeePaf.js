@@ -284,7 +284,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             $scope.empAction.Data[type].ReportingManagerNumber = obj.ReportingManagerNumber;
             $scope.empAction.Data[type].CacheReportingManagerNumber = obj.ReportingManagerNumber;
             $scope.empAction.Data[type].DisabledReportFields = obj.ReportingManagerNumber && obj.ReportingManagerNumber.length > 0 && obj.ReportingTitle && obj.ReportingTitle.length > 0 && obj.ReportingEmail && obj.ReportingEmail.length > 0;
-            $scope.empAction.Data[type].DisabledReportingManagerNumberField = obj.ReportingManagerNumber && obj.ReportingManagerNumber.length > 0;
+            $scope.empAction.Data[type].DisabledReportingManagerNumberField = false;
         }
 
         var items = ["NewHire", "ReHire", "Promotion", "Demotion", "SalaryChange", "Transfer"];
@@ -354,7 +354,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     $scope.empAction.Data[positionType].ReportingManagerNumber = response.empClock;
                     $scope.empAction.Data[positionType].CacheReportingManagerNumber = response.empClock;
                     $scope.empAction.Data[positionType].DisabledReportFields = response.empClock && response.empClock.length > 0 && response.empTitle && response.empTitle.length > 0 && response.empEmail && response.empEmail.length > 0;
-                    $scope.empAction.Data[positionType].DisabledReportingManagerNumberField = response.empClock && response.empClock.length > 0;
+                    $scope.empAction.Data[positionType].DisabledReportingManagerNumberField = false;
                 });
         }
         else
@@ -1770,16 +1770,16 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
     return {
         phoneNumber: function (ctrl, value, attr) {
             var valid = typeof (value) == "string" && /^(\([2-9]|[2-9])(\d{2}|\d{2}\))(-|.|\s)?\d{3}(-|.|\s)?\d{4}$/.test(value);
-            if (attr.required || value != "")
+            if ((attr.required || value != "") && value != null)
                 ctrl.$setValidity(attr.name, valid);
-			else if (value == "")
+            else if (value == "")
 				ctrl.$setValidity(attr.name, true);
             return value;
         },
         zipCode: function (ctrl, value, attr) {
 			var valid = typeof (value) == "string" && (/(^\d{5}$)|(^\d{9}$)|(^\d{5}-\d{4}$)/.test(value));
-            if (attr.required || value != "")
-				ctrl.$setValidity(attr.name, valid);
+			if ((attr.required || value != "") && value != null)
+			    ctrl.$setValidity(attr.name, valid);
 			else if (value == "")
 				ctrl.$setValidity(attr.name, true);
             return value;
