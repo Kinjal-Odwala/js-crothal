@@ -222,6 +222,19 @@ ii.init.register( function() {
 		, email: {type: String, required: false, defaultValue: ""}
 	};
 	
+	fin.pur.poCapitalRequisition.workflowHistoryArgs = {
+		id: {type: Number}
+		, modAt: {type: String, required: false, defaultValue: ""}
+	};
+	
+	fin.pur.poCapitalRequisition.approvalArgs = {
+		id: {type: Number}
+		, approval: {type: String, required: false, defaultValue: ""}
+		, name: {type: String, required: false, defaultValue: ""}
+		, signature: {type: String, required: false, defaultValue: ""}
+		, approvedDate: {type: String, required: false, defaultValue: ""}
+	};
+	
 	fin.pur.poCapitalRequisition.systemVariableArgs = {
 		id: {type: Number, defaultValue: 0}
 		, variableName: {type: String, required: false, defaultValue: ""}
@@ -437,6 +450,26 @@ ii.Class({
 		}
 	}
 });
+
+ii.Class({
+	Name: "fin.pur.poCapitalRequisition.WorkflowHistory",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.workflowHistoryArgs);
+			$.extend(this, args);
+		}
+	}
+})
+
+ii.Class({
+	Name: "fin.pur.poCapitalRequisition.Approval",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.approvalArgs);
+			$.extend(this, args);
+		}
+	}
+})
 
 ii.Class({
 	Name: "fin.pur.poCapitalRequisition.SystemVariable",

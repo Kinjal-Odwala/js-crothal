@@ -44,6 +44,7 @@ ii.Class({
 			me.glAccounts = [];
 			me.action = "POCapitalRequisition";
 			me.approvalAmountLimit1 = 0;
+			me.approvalAmountLimit2 = 0;
 
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -156,6 +157,7 @@ ii.Class({
 			me.itemGrid.setHeight($(window).height() - 395);
 			me.itemReadOnlyGrid.setHeight($(window).height() - 335);
 			me.documentGrid.setHeight(100);
+			me.approvalGrid.setHeight(150);
 			$("#popupContact").height($(window).height() - 110);
 			$("#GeneralInfo").height($(window).height() - 210);
 			$("#ShippingInfo").height($(window).height() - 210);
@@ -1124,6 +1126,18 @@ ii.Class({
 					}
 			});
 
+			me.approvalGrid = new ui.ctl.Grid({
+				id: "ApprovalGrid",
+				appendToId: "divForm",
+				allowAdds: false
+			});
+
+			me.approvalGrid.addColumn("approval", "approval", "Approvals", "Approvals", 180);
+			me.approvalGrid.addColumn("name", "name", "Print Name", "Print Name", null);
+			me.approvalGrid.addColumn("signature", "signature", "Signature", "Signature", 120);
+			me.approvalGrid.addColumn("approvedDate", "approvedDate", "Date", "Date", 120);
+			me.approvalGrid.capColumns();
+
 			me.setTabIndexes();
 		},		
 
@@ -1269,6 +1283,14 @@ ii.Class({
 				injectionArray: me.workflowJDECompanys
 			});
 
+			me.workflowHistorys = [];
+			me.workflowHistoryStore = me.cache.register({
+			storeId: "appWorkflowHistorys",
+				itemConstructor: fin.pur.poCapitalRequisition.WorkflowHistory,
+				itemConstructorArgs: fin.pur.poCapitalRequisition.workflowHistoryArgs,
+				injectionArray: me.workflowHistorys
+			});
+
 			me.systemVariables = [];
 			me.systemVariableStore = me.cache.register({
 				storeId: "systemVariables",
@@ -1313,6 +1335,7 @@ ii.Class({
 			var me = this;
 
 			me.loadCount--;
+			//ii.trace("Load Count: " + me.loadCount, ii.traceTypes.Information, "Info");
 			if (me.loadCount <= 0) {
 				me.setStatus("Loaded");
 				$("#pageLoading").fadeOut("slow");
@@ -1833,6 +1856,8 @@ ii.Class({
 				}
 			}
 		
+			if (me.itemGrid.activeRowIndex >= 0)
+				me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
 			me.itemGrid.setData(me.poCapitalRequisitionItems);
 			me.itemReadOnlyGrid.setData(me.poCapitalRequisitionItems);
 			
@@ -1864,17 +1889,17 @@ ii.Class({
 			if (me.systemVariables.length > 0) {
 				me.approvalAmountLimit1 = parseFloat(me.systemVariables[0].variableValue);
 			}
-			me.checkLoadCount();
-			//me.systemVariableStore.fetch("userId:[user],name:POCapitalRequisitionApprovalAmountLimit2", me.approvalAmountLimit2Loaded, me);
+
+			me.systemVariableStore.fetch("userId:[user],name:POCapitalRequisitionApprovalAmountLimit2", me.approvalAmountLimit2Loaded, me);
 		},
 
-//		approvalAmountLimit2Loaded: function(me, activeId) {
-//
-//			if (me.systemVariables.length > 0) {
-//				me.approvalAmountLimit2 = parseFloat(me.systemVariables[0].variableValue);
-//			}
-//			me.checkLoadCount();
-//		},
+		approvalAmountLimit2Loaded: function(me, activeId) {
+
+			if (me.systemVariables.length > 0) {
+				me.approvalAmountLimit2 = parseFloat(me.systemVariables[0].variableValue);
+			}
+			me.checkLoadCount();
+		},
 
 		chiefFinancialOfficersLoaded: function(me, activeId) {
 
@@ -1924,6 +1949,7 @@ ii.Class({
 				$("#AnchorApprove").hide();
 				$("#RequisitionInfo").show();
 				$("#divSpace").show();
+				$("#ApprovalDetails").show();
 				$("#RequisitionNumber").html(item.requisitionNumber);
 				me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + item.houseCode, me.houseCodeJobsLoaded, me);
 				me.setDetailInfo();	
@@ -1936,6 +1962,7 @@ ii.Class({
 					if (me.capitalRequisitionGrid.data[index].statusType == 1) {
 						$("#AnchorResendRequisition").hide();
 						$("#AnchorSendRequisition").show();
+						$("#ApprovalDetails").hide();
 					}
 	
 					$("#AnchorEdit").show();
@@ -1995,6 +2022,7 @@ ii.Class({
 				me.setLoadCount();
 				me.poCapitalRequisitionItemStore.reset();
 				me.poCapitalRequisitionDocumentStore.reset();
+				me.workflowHistoryStore.reset();
 				me.poCapitalRequisitionItemStore.fetch("userId:[user],poCapitalRequisitionId:" + me.poCapitalRequisitionId, me.poCapitalRequisitonItemsLoaded, me);
 				me.poCapitalRequisitionDocumentStore.fetch("userId:[user],poCapitalRequisitionId:" + me.poCapitalRequisitionId, me.poCapitalRequisitionDocumentsLoaded, me);
 			}
@@ -2094,11 +2122,16 @@ ii.Class({
 			}
 
 			me.total = me.subTotal + parseFloat(tax) + parseFloat(freight);
+			if (me.itemGrid.activeRowIndex >= 0)
+				me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
 			me.itemGrid.setData(me.poCapitalRequisitionItems);
 			me.itemReadOnlyGrid.setData(me.poCapitalRequisitionItems);
-			me.checkLoadCount();
 			$("#spnSubTotal").html(me.subTotal.toFixed(2));
 			$("#spnTotal").html(me.total.toFixed(2));
+			if (me.capitalRequisitionGrid.activeRowIndex >= 0 && me.status == "")
+				me.workflowHistoryStore.fetch("userId:[user],referenceId:" + me.poCapitalRequisitionId + ",statusType:8,workflowModuleId:3", me.workflowHistorysLoaded, me);
+			//else
+				//me.checkLoadCount();
 		},
 
 		poCapitalRequisitionDocumentsLoaded: function(me, activeId) {
@@ -2107,7 +2140,32 @@ ii.Class({
 			me.documentGrid.setHeight(100);
 			me.checkLoadCount();
 		},
-		
+
+		workflowHistorysLoaded: function(me, activeId) {
+
+
+			var approvals = [];
+			var item = me.capitalRequisitionGrid.data[me.capitalRequisitionGrid.activeRowIndex];
+
+			me.step1ApprovedDate = me.workflowHistorys.length > 0 ? me.workflowHistorys[0].modAt : "";
+			me.step2ApprovedDate = me.workflowHistorys.length > 1 ? me.workflowHistorys[1].modAt : "";
+			if (me.total <= me.approvalAmountLimit1)
+				me.step3ApprovedDate = me.workflowHistorys.length > 1 ? me.workflowHistorys[1].modAt : "";
+			else
+				me.step3ApprovedDate = me.workflowHistorys.length > 2 ? me.workflowHistorys[2].modAt : "";
+            me.step4ApprovedDate = me.workflowHistorys.length > 3 ? me.workflowHistorys[3].modAt : "";
+            me.step5ApprovedDate = me.workflowHistorys.length > 4 ? me.workflowHistorys[4].modAt : "";
+
+			approvals.push(new fin.pur.poCapitalRequisition.Approval(1, "Regional Manager", item.regionalManagerName, "", me.step1ApprovedDate));
+			approvals.push(new fin.pur.poCapitalRequisition.Approval(2, "Division President", item.divisionPresidentName,  (me.total > me.approvalAmountLimit1 ? "" : "N/A"), (me.total > me.approvalAmountLimit1 ? me.step2ApprovedDate : "N/A")));
+			approvals.push(new fin.pur.poCapitalRequisition.Approval(3, "Finance Director", item.financeDirectorName, "", me.step3ApprovedDate));
+			approvals.push(new fin.pur.poCapitalRequisition.Approval(4, "Chief Financial Officer", item.chiefFinancialOfficerName, (me.total > me.approvalAmountLimit1 ? "" : "N/A"), (me.total > me.approvalAmountLimit1 ? me.step4ApprovedDate : "N/A")));
+			approvals.push(new fin.pur.poCapitalRequisition.Approval(5, "Chief Executive Officer", item.chiefExecutiveOfficerName, (me.total > me.approvalAmountLimit2 ? "" : "N/A"), (me.total > me.approvalAmountLimit2 ? me.step5ApprovedDate : "N/A")));
+			me.approvalGrid.setData(approvals);
+			me.approvalGrid.setHeight(150);
+			me.checkLoadCount();
+		},
+
 		actionVendorSearch: function() {
 			var args = ii.args(arguments, {
 				event: {type: Object} // The (key) event object
@@ -2145,13 +2203,13 @@ ii.Class({
 				me.vendorName.select(0, me.vendorName.focused);
 			}
 	
-			me.vendorChanged();	
+			//me.vendorChanged();	
 		},
 		
 		vendorChanged: function() {
 			var me = this;
-			var index = me.vendorName.indexSelected;		
-
+			var index = me.vendorName.indexSelected;
+		
 			if (index >= 0) {
 				me.vendorId = me.vendors[index].number;
 				me.vendorNumber = me.vendors[index].vendorNumber;
@@ -2195,7 +2253,7 @@ ii.Class({
 		},
 		
 		vendorsLoad: function(me, activeId) {			
-			
+
 			if (me.vendors.length > 0) {
 				me.vendorId = me.vendors[0].number;
 				me.category.fetchingData();
@@ -2207,12 +2265,13 @@ ii.Class({
 			}
 			else
 				$("#popupLoading").hide();
-						
 		},
 		
 		categoriesLoaded: function(me, activeId) {
 
+			me.accountId = 0;
 			me.category.reset();
+
 			if (me.vendorId == 0)
 				me.category.setData([]);
 			else
@@ -2229,8 +2288,10 @@ ii.Class({
 		},
 		
 		catalogsLoaded: function(me, activeId) {
-			
+
+			me.catalogId = 0;
 			me.catalog.reset();
+			
 			if (me.vendorId == 0)
 				me.catalog.setData([]);
 			else
@@ -2486,6 +2547,7 @@ ii.Class({
 			loadPopup();
 			me.poCapitalRequisitionItemStore.reset();
 			me.poCapitalRequisitionDocumentStore.reset();
+			me.workflowHistoryStore.reset();
 			me.poCapitalRequisitionId = 0;
 			me.subTotal = 0;			
 			me.status = "NewPOCapitalRequisition";
@@ -2515,6 +2577,8 @@ ii.Class({
 				me.vendorStore.fetch("searchValue:" + me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].vendorTitle + ",vendorStatus:-1,userId:[user]", me.vendorsLoad, me);
 			}
 
+			if (me.itemGrid.activeRowIndex >= 0)
+				me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
 			me.poCapitalRequisitionId = me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].id;
 			me.itemGrid.setData(me.poCapitalRequisitionItems);
 			me.documentGrid.setData(me.poCapitalRequisitionDocuments);
@@ -2532,7 +2596,7 @@ ii.Class({
 
 			$("#spnSubTotal").html(me.subTotal.toFixed(2));
 			$("#spnTotal").html(me.total.toFixed(2));
-			me.status = "EditPOCapitalRequisition";			
+			me.status = "EditPOCapitalRequisition";
 			me.wizardCount = 1;
 			me.actionShowWizard();
 			me.modified(false);
@@ -2621,10 +2685,14 @@ ii.Class({
 					if (me.total > me.approvalAmountLimit1) {
 						$("#DivisionPresidentNameLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Division President Name:");
 						$("#DivisionPresidentEmailLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Division President Email:");
+						me.divisionPresidentName.text.readOnly = false;
+						me.divisionPresidentEmail.text.readOnly = false;
 					}
 					else {
 						$("#DivisionPresidentNameLabel").html("<span id='nonRequiredFieldIndicator'>Division President Name:</span>");
 						$("#DivisionPresidentEmailLabel").html("<span id='nonRequiredFieldIndicator'>Division President Email:</span>");
+						me.divisionPresidentName.text.readOnly = true;
+						me.divisionPresidentEmail.text.readOnly = true;
 					}
 					
 					break;
@@ -3118,6 +3186,11 @@ ii.Class({
 				xml += ' jdeCompleted="0"';
 				xml += ' taxPercent="' + (item.taxPercent != 0 ? item.taxPercent : "") + '"';
 				xml += ' freight="' + (item.freight != 0 ? item.freight : "") + '"';
+				xml += ' step1ApprovedDate="' + me.step1ApprovedDate + '"';
+				xml += ' step2ApprovedDate="' + me.step2ApprovedDate + '"';
+				xml += ' step3ApprovedDate="' + me.step3ApprovedDate + '"';
+				xml += ' step4ApprovedDate="' + me.step4ApprovedDate + '"';
+				xml += ' step5ApprovedDate="' + me.step5ApprovedDate + '"';
 				xml += '/>';
 			}
 			else if (me.status == "DeleteDocument") {
