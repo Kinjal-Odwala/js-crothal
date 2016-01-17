@@ -139,3 +139,25 @@
 .labelText {
 	width: 110px;
 }
+
+.footer {
+    height: 10px;
+    font-family: Verdana;
+    font-size: 8pt;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #669b67;
+    text-align: left;
+}
+
+.borderHorizontal {
+    height: 1px;
+    background-color: #adaaad;
+}
+
+.borderVertical {
+    width: 1px;
+    background-color: #adaaad;
+}
+
+

@@ -1306,6 +1306,48 @@
 	                </div>
 				</div>
             </section>
+                        <!--ADDITIONAL DOCUMENTS-->
+            <section>
+            <div ng-form="AdditionalDocumentsInfoForm" id="AdditionalDocuments">
+                <h4>ADDITIONAL DOCUMENTS</h4>
+                     <table class="table-scroll table table-striped table-hover margin-bottom10" style="width: 400px;" border="1">     
+                            <thead>
+                            <tr class="heading" role="row">
+                                <th width="8%">#</th>
+                                <th width="25%">Title</th>
+                                <th width="25%">File Name</th>
+                            </tr>
+                            </thead>
+                            <tbody style="height:100px;">
+                                <tr ng-repeat="item in pafDocs" ng-click="onRowClick(item, $index)">
+                                    <td width="8%">{{$index + 1}}</td>
+                                    <td width="25%">{{item.title}}</td>
+                                    <td width="25%">{{item.fileName}}</td>
+                                </tr>
+                            </tbody>     
+                            <tfoot>                    
+                                      <tr class="footer">
+                                          <td class="borderVertical"></td>                                                         
+                                          <td>
+                                              <table cellpadding="0" cellspacing="0" style="width: 100%">
+                                                  <tr class="footer">
+                                                       <td>
+                                                            <img id="imgAdd" src="/fin/cmn/usr/media/Common/add.png" ng-if="empAction.Status != 8 && empAction.Status != 9 && empAction.Status != 6 && ((empAction.Status != 2 && write) || (empAction.Status == 2 && writeInProcess))" ng-click="addDoc()" style="cursor: pointer" alt="Add Document" title="Click here to attach the supporting document" />
+                                                            <img id="imgEdit" src="/fin/cmn/usr/media/Common/modify.png" ng-click="editDoc()" ng-if="empAction.Status != 8 && empAction.Status != 9 && empAction.Status != 6 && ((empAction.Status != 2 && write) || (empAction.Status == 2 && writeInProcess))" style="cursor: pointer" alt="Edit Document" title="Click here to modify the supporting document" />
+                                                            <img id="imgRemove" src="/fin/cmn/usr/media/Common/delete.png" ng-click="removeDoc()" ng-if="empAction.Status != 8 && empAction.Status != 9 && empAction.Status != 6 && ((empAction.Status != 2 && write) || (empAction.Status == 2 && writeInProcess))" style="cursor: pointer" alt="Remove Document" title="Click here to remove the supporting document" />
+                                                            <img id="imgView" src="/fin/cmn/usr/media/Common/download.png" ng-click="viewDoc()" style="cursor: pointer" alt="View Document" title="Click here to view the supporting document" />
+                                                       </td>
+                                                  </tr>
+                                              </table>
+                                          </td>
+                                          <td class="borderVertical"></td>
+                                      </tr>
+                                      <tr><td class="borderHorizontal" colspan="3"></td></tr>
+                                </tfoot>
+                        </table>                                                       
+                  </div>
+              </section>
+
 			<!--COMMENTS-->
             <section>
                 <div class="form-group">
@@ -1327,3 +1369,28 @@
         </div>
     </div>
 </div>
+
+<script type="text/ng-template" id="upload.html">
+    <div class="modal-content" style="width:550px;height:250px">
+    <div class="modal-body">
+    <div ng-form="uploadInfoForm">
+    <h4>Upload Document</h4> 
+        <div class="row">
+        <div class="col-md-4">
+        <label>Document Title:</label>
+        </div>
+        <div class="col-md-8">
+        <div class="form-group" ng-class="{'has-error':uploadInfoForm.Title.$invalid}">
+        <input class="form-control input-sm" name="Title" ng-model="docTitle" ng-required="true"></input>
+        </div>
+        </div>
+    </div>
+    </div>
+    </div>
+        <iframe id="iFrameUpload" src="/net/crothall/chimes/fin/app/act/FileUpload.aspx" frameborder="0" width="100%" height="30"></iframe>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-disabled="disable" ng-click="upload()">Upload</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+    </div>
+</script>
