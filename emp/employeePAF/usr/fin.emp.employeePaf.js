@@ -160,6 +160,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 	$scope.PayGrades = [];
 	$scope.pafDocs = [];
 	var selectedFileName = "";
+	$scope.add = "";
 
     $scope.dateOptions = {
         formatYear: 'yy',
@@ -834,6 +835,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             size: 'sm',
             scope: $scope
         });
+        $scope.add = true;
     }
 
     $scope.onRowClick = function (selectedItem, index) {
@@ -852,6 +854,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 scope: $scope
             });
         }
+        $scope.add = false;
     }
 
     $scope.removeDoc = function () {
@@ -863,13 +866,15 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         else if (activeRowIndex != -1) {
             $scope.pafDocs.splice(activeRowIndex, 1);
         }
+        activeRowIndex = -1;
     }
 
     $scope.viewDoc = function () {
-        if (selectedDocId > 0) {
+        if (selectedDocId > 0 && activeRowIndex != -1) {
             EmpActions.viewEmployeePAFDocument(selectedDocId, selectedFileName, function (data, status) {
             });
         }
+        activeRowIndex = -1;
     }
 
     var validateActionType = function () {
@@ -1615,18 +1620,13 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         $modalInstance.dismiss('cancel');
     };
 
-    if (disable == true) {
-        $scope.disable = true;
-    }
-    else {
-        $scope.disable = false;
-    }
+    $scope.disable = disable;
 
     $scope.upload = function () {
         var tempFileName = "";
         var fileName = $("iframe")[0].contentWindow.document.getElementById("UploadFile").value;
         fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
-
+       
         $("iframe")[0].contentWindow.document.getElementById("FileName").value = "";
         $("iframe")[0].contentWindow.document.getElementById("UploadButton").click();
 
@@ -1645,7 +1645,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
                         alert("Unable to upload the file. Please try again.");
                     }
                     else {
-                        if (activeRowIndex == -1 || activeRowIndex == undefined) {
+                        if (activeRowIndex == -1 || activeRowIndex == undefined || $scope.add == true) {
                             var item = {};
                             item["title"] = $scope.docTitle;
                             item["fileName"] = fileName;
@@ -1654,12 +1654,12 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
                             pafDocuments.push(item);
                             $scope.pafDocs.push(item);
                         }
-                        else  {
+                        else {
                             var index = activeRowIndex;
                             $scope.pafDocs[index].title = $scope.docTitle;
                             $scope.pafDocs[index].fileName = fileName;
                             $scope.pafDocs[index].tempFileName = tempFileName;
-                            $scop.pafDocs.$render();
+                            $scope.pafDocs.$render();
                         }
                     }
                 }
