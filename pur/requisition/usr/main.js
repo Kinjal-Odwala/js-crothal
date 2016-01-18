@@ -42,6 +42,8 @@ ii.Class({
 			me.fileName = "";
 			me.glAccounts = [];
 			me.action = "PORequisition";
+			me.currentVendorTitle = "";
+			me.poRequisitionDetailsTemp = [];
 
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -637,7 +639,7 @@ ii.Class({
 			me.itemGrid = new ui.ctl.Grid({
 				id: "ItemGrid",
 				allowAdds: true,
-				createNewFunction: fin.pur.poRequisition.Item,
+				createNewFunction: fin.pur.poRequisition.PORequisitionDetail,
 				selectFunction: function(index) {
 					if (me.itemGrid.rows[index].getElement("rowNumber").innerHTML == "Add") 
 						me.itemGrid.rows[index].getElement("itemSelect").innerHTML = "<input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poRequisitionUi.calculateTotal(this);\"  checked=\"true\" />";
@@ -760,7 +762,7 @@ ii.Class({
 			me.itemGrid.addColumn("itemSelect", "itemSelect", "", "", 30, function(data) {
 				var index = me.itemGrid.rows.length - 1;
 				if (me.itemGrid.data[index].itemSelect)
-                	return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poRequisitionUi.calculateTotal(this);\" checked=\"true\" /></center>";
+                	return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poRequisitionUi.calculateTotal(this);\" checked=\"true\" disabled /></center>";
 				else
 				    return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poRequisitionUi.calculateTotal(this);\" /></center>";
             });
@@ -1519,46 +1521,49 @@ ii.Class({
 			var me = this;
 			
 			$("#popupMessageToUser").text("Loading");
-			$("#popupLoading").show();	
-			me.itemStore.reset();		
+			$("#popupLoading").show();
+			if (me.itemGrid.activeRowIndex >= 0)
+				me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
+			me.itemStore.reset();
 			me.itemStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId + ",catalogId:" + me.catalogId + ",orderId:0,accountId:" + me.accountId + ",searchValue:" + me.searchItem.getValue(), me.poItemsLoaded, me);
 			me.searchItem.setValue("");
 		},
 		
 		poItemsLoaded: function(me, activeId) {
-			me.total = 0;
-			
+
 			for (var index = 0; index < me.items.length; index++) {
 				var found = false;
 				for (var iIndex = 0; iIndex < me.poRequisitionDetails.length; iIndex++) {
-					if (me.items[index].number != me.poRequisitionDetails[iIndex].number) {
-						me.items[index].id = 0;
-					}
-					else if (me.items[index].number == me.poRequisitionDetails[iIndex].number) {
-						me.items[index].id = me.poRequisitionDetails[iIndex].id;
+					if (me.items[index].number == me.poRequisitionDetails[iIndex].number) {
 						found = true; 
 						break;
 					}	
 				}
 				if (!found) {
-					me.poRequisitionDetails.push(me.items[index]);
+					me.poRequisitionDetails.push(new fin.pur.poRequisition.PORequisitionDetail(
+						0
+						, me.items[index].poRequisitionId
+						, me.items[index].account
+						, me.items[index].itemSelect
+						, me.items[index].number
+						, me.items[index].description
+						, me.items[index].alternateDescription
+						, me.items[index].unit
+						, me.items[index].manufactured
+						, me.items[index].price
+						, me.items[index].quantity
+						, me.items[index].modified
+						, me.items[index].extendedPrice
+						));
 				}
 			}
-						
+
 			me.itemGrid.setData(me.poRequisitionDetails);
 			me.itemReadOnlyGrid.setData(me.poRequisitionDetails);
-			
-			for (var index = 0; index < me.itemGrid.data.length; index++) {
-				if ($("#selectInputCheck" + index)[0].checked) {
-					if (me.itemGrid.data[index].quantity != "" && !isNaN(me.itemGrid.data[index].quantity) && me.itemGrid.data[index].price != undefined)
-						me.total += (parseFloat(me.itemGrid.data[index].quantity) * parseFloat(me.itemGrid.data[index].price));
-				}
-			}
-			
-			$("#spnTotal").html(me.total.toFixed(2));
+			me.setTotal();
 			$("#popupLoading").hide();
 		},
-		
+
 		personsLoaded: function(me, activeId) {
 			var index = 0;
 
@@ -1728,18 +1733,86 @@ ii.Class({
 
 		poRequisitonDetailsLoaded: function(me, activeId) {
 
-			me.total = 0;
-
-			for (var index = 0; index < me.poRequisitionDetails.length; index++) {
-				if (me.poRequisitionDetails[index].quantity != "" && !isNaN(me.poRequisitionDetails[index].quantity) && me.poRequisitionDetails[index].price != undefined) {
-					me.total += (parseFloat(me.poRequisitionDetails[index].quantity) * parseFloat(me.poRequisitionDetails[index].price));
-				}
+			if (me.currentVendorTitle == "") {
+				me.resetPORequisitionDetails(true);
+				me.checkLoadCount();
 			}
-	
-			$("#spnTotal").html(me.total.toFixed(2));
+			else
+				$("#popupLoading").hide();
+			me.resetGridData();
+			
+		},
+		
+		resetGridData: function() {
+			var me = this;
+
+			if (me.itemGrid.activeRowIndex >= 0)
+				me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
+
 			me.itemGrid.setData(me.poRequisitionDetails);
 			me.itemReadOnlyGrid.setData(me.poRequisitionDetails);
-			me.checkLoadCount();
+			me.setTotal();
+		},
+
+		resetPORequisitionDetails: function(resetTemp) {
+			var me = this;
+
+			if (resetTemp) {
+				me.poRequisitionDetailsTemp = [];
+				for (var index = 0; index < me.poRequisitionDetails.length; index++) {
+					me.poRequisitionDetailsTemp.push(new fin.pur.poRequisition.PORequisitionDetail(
+						me.poRequisitionDetails[index].id
+						, me.poRequisitionDetails[index].poRequisitionId
+						, me.poRequisitionDetails[index].account
+						, me.poRequisitionDetails[index].itemSelect
+						, me.poRequisitionDetails[index].number
+						, me.poRequisitionDetails[index].description
+						, me.poRequisitionDetails[index].alternateDescription
+						, me.poRequisitionDetails[index].unit
+						, me.poRequisitionDetails[index].manufactured
+						, me.poRequisitionDetails[index].price
+						, me.poRequisitionDetails[index].quantity
+						, me.poRequisitionDetails[index].modified
+						, me.poRequisitionDetails[index].extendedPrice
+					));
+				}
+			}
+			else {
+				me.poRequisitionDetailStore.reset();
+				for (var index = 0; index < me.poRequisitionDetailsTemp.length; index++) {
+					var item = new fin.pur.poRequisition.PORequisitionDetail(
+						me.poRequisitionDetailsTemp[index].id
+						, me.poRequisitionDetailsTemp[index].poRequisitionId
+						, me.poRequisitionDetailsTemp[index].account
+						, me.poRequisitionDetailsTemp[index].itemSelect
+						, me.poRequisitionDetailsTemp[index].number
+						, me.poRequisitionDetailsTemp[index].description
+						, me.poRequisitionDetailsTemp[index].alternateDescription
+						, me.poRequisitionDetailsTemp[index].unit
+						, me.poRequisitionDetailsTemp[index].manufactured
+						, me.poRequisitionDetailsTemp[index].price
+						, me.poRequisitionDetailsTemp[index].quantity
+						, me.poRequisitionDetailsTemp[index].modified
+						, me.poRequisitionDetailsTemp[index].extendedPrice
+					);
+					me.poRequisitionDetails.push(item);
+				}
+				me.resetGridData();
+			}
+		},
+
+		setTotal: function() {
+			var me = this;
+			me.total = 0;
+
+			for (var index = 0; index < me.itemGrid.data.length; index++) {
+				if ($("#selectInputCheck" + index)[0].checked) {
+					if (me.itemGrid.data[index].quantity != "" && !isNaN(me.itemGrid.data[index].quantity) && me.itemGrid.data[index].price != undefined)
+						me.total += (parseFloat(me.itemGrid.data[index].quantity) * parseFloat(me.itemGrid.data[index].price));
+				}
+			}
+
+			$("#spnTotal").html(me.total.toFixed(2));
 		},
 
 		poRequisitionDocumentsLoaded: function(me, activeId) {
@@ -1786,14 +1859,45 @@ ii.Class({
 				me.vendorName.reset();
 				me.vendorName.select(0, me.vendorName.focused);
 			}				
-	
-			me.vendorChanged();	
 		},
 		
 		vendorChanged: function() {
 			var me = this;
 			var index = me.vendorName.indexSelected;		
 
+			if (me.status == "EditPORequisition") {
+				var item = me.requisitionGrid.data[me.requisitionGrid.activeRowIndex];
+				if (index >= 0) {
+					if (item.vendorTitle != me.vendors[index].title) {
+						if (confirm("WARNING: The items which are associated with the Vendor [" + item.vendorTitle + "] will be removed permanently when saving the requisition. Press OK to continue, or Cancel to remain on the same Vendor.")) {
+							me.currentVendorTitle = item.vendorTitle;
+							if (me.itemGrid.activeRowIndex >= 0)
+								me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
+							$("#popupMessageToUser").text("Loading");
+							$("#popupLoading").show();
+							me.poRequisitionDetailStore.reset();
+							me.poRequisitionDetailStore.fetch("userId:[user],poRequisitionId:" + me.poRequisitionId + ",houseCodeId:" + parent.fin.appUI.houseCodeId + ",vendorTitle:" + item.vendorTitle, me.poRequisitonDetailsLoaded, me);
+						}
+						else {
+							for (var iIndex = 0; iIndex < me.vendors.length; iIndex++) {
+								if (me.vendors[iIndex].title == item.vendorTitle) {
+									me.currentVendorTitle = "";
+									me.vendorName.select(iIndex, me.vendorName.focused);
+									me.resetPORequisitionDetails(false);
+									break;
+								}
+							}
+						}
+					}
+					else {
+						me.currentVendorTitle = "";
+						me.resetPORequisitionDetails(false);
+					}
+				}
+			}
+			
+			index = me.vendorName.indexSelected;
+			
 			if (index >= 0) {
 				me.vendorId = me.vendors[index].number;
 				me.vendorNumber = me.vendors[index].vendorNumber;
@@ -1813,10 +1917,10 @@ ii.Class({
 				me.account.setData(me.glAccounts);				
 				me.category.fetchingData();
 				me.catalog.fetchingData();
-				me.poRequisitionDetailStore.reset();
+				//me.poRequisitionDetailStore.reset();
 				me.accountStore.reset();
 				me.catalogStore.reset();
-				me.poRequisitionDetailStore.fetch("userId:[user],poRequisitionId:" + me.poRequisitionId, me.poRequisitonDetailsLoaded, me);				
+				//me.poRequisitionDetailStore.fetch("userId:[user],poRequisitionId:" + me.poRequisitionId, me.poRequisitonDetailsLoaded, me);				
 				me.accountStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.categoriesLoaded, me);				
 				me.catalogStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.catalogsLoaded, me);
 			}
@@ -1853,7 +1957,9 @@ ii.Class({
 		
 		categoriesLoaded: function(me, activeId) {
 
+			me.accountId = 0;
 			me.category.reset();
+
 			if (me.vendorId == 0)
 				me.category.setData([]);
 			else
@@ -1870,8 +1976,10 @@ ii.Class({
 		},
 		
 		catalogsLoaded: function(me, activeId) {
-			
+
+			me.catalogId = 0;
 			me.catalog.reset();
+
 			if (me.vendorId == 0)
 				me.catalog.setData([]);
 			else
@@ -2087,6 +2195,7 @@ ii.Class({
 			me.poRequisitionDocumentStore.reset();
 			me.poRequisitionId = 0;
 			me.total = 0;
+			me.currentVendorTitle = "";
 			me.status = "NewPORequisition";
 			me.wizardCount = 1;
 			me.modified(false);
@@ -2100,28 +2209,21 @@ ii.Class({
 			if (me.requisitionGrid.activeRowIndex == -1)
 				return true;			
 
-			me.total = 0;
+			me.currentVendorTitle = "";
 			me.setDetailInfo();
+			me.resetPORequisitionDetails(false);
 			loadPopup();
 			$("#popupMessageToUser").text("Loading");
 			$("#popupLoading").show();
+			me.vendorStore.reset();
+			me.vendorStore.fetch("searchValue:" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle + ",vendorStatus:-1,userId:[user]", me.vendorsLoad, me);
 
-			if (me.requisitionGrid.data[me.lastSelectedRowIndex] != undefined) {
-				me.vendorStore.reset();
-				me.vendorStore.fetch("searchValue:" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle + ",vendorStatus:-1,userId:[user]", me.vendorsLoad, me);
-			}			
-
+			if (me.itemGrid.activeRowIndex >= 0)
+				me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
 			me.poRequisitionId = me.requisitionGrid.data[me.lastSelectedRowIndex].id;
 			me.itemGrid.setData(me.poRequisitionDetails);
 			me.documentGrid.setData(me.poRequisitionDocuments);
-
-			for (var index = 0; index < me.poRequisitionDetails.length; index++) {
-				if (me.poRequisitionDetails[index].quantity != "" && !isNaN(me.poRequisitionDetails[index].quantity) && me.poRequisitionDetails[index].price != undefined && me.poRequisitionDetails[index].itemSelect) {
-					me.total += (parseFloat(me.poRequisitionDetails[index].quantity) * parseFloat(me.poRequisitionDetails[index].price));
-				}
-			}
-
-			$("#spnTotal").html(me.total.toFixed(2));
+			me.setTotal();
 			me.status = "EditPORequisition";			
 			me.wizardCount = 1;
 			me.actionShowWizard();
@@ -2554,6 +2656,14 @@ ii.Class({
 			var xml = "";
 
 			if (me.status == "NewPORequisition" || me.status == "EditPORequisition") {
+				if (me.currentVendorTitle != "") {
+					xml += '<purPORequisitionDetailDelete';
+					xml += ' id="0"';
+					xml += ' poRequisitionId="' + me.poRequisitionId + '"';
+					xml += ' houseCodeId="' + item.houseCode + '"';
+					xml += ' vendorTitle="' + ui.cmn.text.xml.encode(me.currentVendorTitle) + '"';
+					xml += '/>';
+				}
 				xml += '<purPORequisition';
 				xml += ' id="' + item.id + '"';
 				xml += ' requisitionNumber="' + item.requisitionNumber + '"';
@@ -2765,12 +2875,15 @@ ii.Class({
 								break;
 
 							case "purPORequisitionDetail":
-								for (var index = 0; index < me.poRequisitionDetails.length; index++) {
-									if (me.poRequisitionDetails[index].modified) {
-										if (me.poRequisitionDetails[index].id == 0)
-											me.poRequisitionDetails[index].id = parseInt($(this).attr("id"), 10);
-										me.poRequisitionDetails[index].modified = false;
-										break;
+								var id = parseInt($(this).attr("id"), 10);
+								if (id > 0) {
+									for (var index = 0; index < me.poRequisitionDetails.length; index++) {
+										if (me.poRequisitionDetails[index].modified) {
+											if (me.poRequisitionDetails[index].id == 0)
+												me.poRequisitionDetails[index].id = parseInt($(this).attr("id"), 10);
+											me.poRequisitionDetails[index].modified = false;
+											break;
+										}
 									}
 								}
 								break;
@@ -2787,6 +2900,9 @@ ii.Class({
 								break;
 						}
 					});
+
+					if (me.status == "EditPORequisition")
+						me.resetPORequisitionDetails(true);
 
 					if (me.status == "PrintRequisition")
 						me.setStatus("Normal");
