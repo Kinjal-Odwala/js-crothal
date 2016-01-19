@@ -30,16 +30,12 @@ var pafDocuments = [];
 var selectedDocId = "";
 
 var onFileChange = function () {
-    var FileName = $("iframe")[0].contentWindow.document.getElementById("UploadFile").value;
-    FileName = FileName.substring(FileName.lastIndexOf("\\") + 1);
-    var scope = angular.element(document.getElementById("modal")).scope();
-    scope.$apply(function () {
-        if (FileName == "") {
-            scope.disable = true;
-        }
-        else {
-            scope.disable = false;
-        }
+	var scope = angular.element(document.getElementById("modal")).scope();
+    var fileName = $("iframe")[0].contentWindow.document.getElementById("UploadFile").value;
+    fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
+    
+    scope.$apply(function() {
+		scope.disable = (fileName == "") ? true : false;
     });
 }
 
@@ -841,10 +837,11 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         $scope.add = true;
     }
 
-    $scope.onRowClick = function (selectedItem, index) {
+    $scope.onRowClick = function (item, index) {
+		$scope.selectedDocItem = item;
         activeRowIndex = index;
-        selectedDocId = selectedItem.id;
-        selectedFileName = selectedItem.fileName;
+        selectedDocId = item.id;
+        selectedFileName = item.fileName;
     }
 
     $scope.editDoc = function () {
@@ -875,6 +872,10 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     $scope.viewDoc = function () {
         if (selectedDocId > 0 && activeRowIndex != -1) {
             EmpActions.viewEmployeePAFDocument(selectedDocId, selectedFileName, function (data, status) {
+				if (data.length == 1) {
+					//$("#iFrameUpload")[0].contentWindow.document.getElementById("FileName").value = data[0].fileName;
+					//$("#iFrameUpload")[0].contentWindow.document.getElementById("DownloadButton").click();
+				}
             });
         }
         activeRowIndex = -1;
@@ -1202,20 +1203,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 			$scope.pageLoading = true;
 			$scope.loadingTitle = " Saving...";
 			
-			EmpActions.saveEmployeePersonnelAction($scope.empAction, function (status) {
-			    for (var index = 0; index < $scope.pafDocs.length; index++) {
-			        if ($scope.pafDocs[index].tempFileName != "") {
-			            var title = $scope.pafDocs[index].title;
-			            var fileName = $scope.pafDocs[index].fileName;
-			            var tempFileName = $scope.pafDocs[index].tempFileName;
-			            var docId = $scope.pafDocs[index].id;
-			            if (docId == undefined) {
-			                docId = 0;
-			            }
-			            EmpActions.saveEmployeePAFDocument(docId, title, fileName, tempFileName, function (status) {
-			            });
-			        }
-			    }
+			EmpActions.saveEmployeePersonnelAction($scope.empAction, $scope.pafDocs, function (status) {
 				$scope.pageLoading = false;
                 document.location.hash = 'list';
             });
@@ -1612,9 +1600,8 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
     }
 }])
 .controller('modalInstanceCtrl', function ($scope, $modalInstance) {
-
-    var fileName = "";
-
+	$scope.disable = true;
+	
     $scope.ok = function () {
         $modalInstance.close();
     };
@@ -1623,9 +1610,11 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         $modalInstance.dismiss('cancel');
     };
 
-    $scope.disable = true;
-
     $scope.upload = function () {
+		if ($scope.docTitle == undefined) {
+            return false;
+        }
+
         var tempFileName = "";
         var fileName = $("iframe")[0].contentWindow.document.getElementById("UploadFile").value;
         fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
@@ -1633,41 +1622,35 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         $("iframe")[0].contentWindow.document.getElementById("FileName").value = "";
         $("iframe")[0].contentWindow.document.getElementById("UploadButton").click();
 
-        if ($scope.docTitle == undefined) {
-            return false;
-        }
+        $scope.intervalId = setInterval(function () {
+            if ($("iframe")[0].contentWindow.document.getElementById("FileName").value != "") {
+                tempFileName = $("iframe")[0].contentWindow.document.getElementById("FileName").value;
+                clearInterval($scope.intervalId);
+                $modalInstance.close();
 
-            $scope.intervalId = setInterval(function () {
-                if ($("iframe")[0].contentWindow.document.getElementById("FileName").value != "") {
-                    tempFileName = $("iframe")[0].contentWindow.document.getElementById("FileName").value;
-                    clearInterval($scope.intervalId);
-                    $modalInstance.close();
-
-                    if (tempFileName == "Error") {
-                        alert("Unable to upload the file. Please try again.");
+                if (tempFileName == "Error") {
+                    alert("Unable to upload the file. Please try again.");
+                }
+                else {
+                    if (activeRowIndex == -1 || activeRowIndex == undefined || $scope.add == true) {
+                        var item = {};
+                        item["title"] = $scope.docTitle;
+                        item["fileName"] = fileName;
+                        item["tempFileName"] = tempFileName;
+                        pafDocuments.push(item);
+                        $scope.pafDocs.push(item);
                     }
                     else {
-                        if (activeRowIndex == -1 || activeRowIndex == undefined || $scope.add == true) {
-                            var item = {};
-                            item["title"] = $scope.docTitle;
-                            item["fileName"] = fileName;
-                            item["tempFileName"] = tempFileName;
-
-                            pafDocuments.push(item);
-                            $scope.pafDocs.push(item);
-                        }
-                        else {
-                            var index = activeRowIndex;
-                            $scope.pafDocs[index].title = $scope.docTitle;
-                            $scope.pafDocs[index].fileName = fileName;
-                            $scope.pafDocs[index].tempFileName = tempFileName;
-                            $scope.pafDocs.$render();
-                        }
+                        var index = activeRowIndex;
+                        $scope.pafDocs[index].title = $scope.docTitle;
+                        $scope.pafDocs[index].fileName = fileName;
+                        $scope.pafDocs[index].tempFileName = tempFileName;
+                        $scope.pafDocs.$render();
                     }
                 }
-            }, 1000);
-        };
-        
+            }
+        }, 1000);
+    };
 });
 
 paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filter) {
@@ -2435,7 +2418,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 
     var viewEmployeePAFDocument = function (id, fileName, callback) {
 
-        apiRequest('emp', 'iiCache', '<criteria>storeId:employeeFileNames,userId:[user]' + ",id:" + id + ",fileName:" + fileName + ',</criteria>', function (xml) {
+        apiRequest('emp', 'iiCache', '<criteria>storeId:empFileNames,userId:[user]' + ",id:" + id + ",fileName:" + fileName + ',</criteria>', function (xml) {
             pafDocuments = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
             callback(pafDocuments);
         });
@@ -2654,7 +2637,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         });
     }
 
-    var saveEmployeePersonnelAction = function (employeePersonnelAction, callback) {
+    var saveEmployeePersonnelAction = function (employeePersonnelAction, employeePAFDocuments, callback) {
         var xml = "";
 		
 		xml = '<transaction id="1">';
@@ -2676,6 +2659,19 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         });
 
 		xml += '/>';
+		
+		for (var index = 0; index < employeePAFDocuments.length; index++) {
+	        if (employeePAFDocuments[index].tempFileName != undefined) {
+				xml += '<employeePAFDocument';
+		        xml += ' id="' + (employeePAFDocuments[index].id == undefined ? "0" : employeePAFDocuments[index].id) + '"';
+		        xml += ' title="' + encode(employeePAFDocuments[index].title) + '"';
+		        xml += ' description=""';
+		        xml += ' fileName="' + employeePAFDocuments[index].fileName + '"';
+		        xml += ' tempFileName="' + employeePAFDocuments[index].tempFileName + '"';
+		        xml += '/>';
+	        }
+	    }
+		
 		xml += '</transaction>';
 		//console.log(xml);
 
@@ -2712,7 +2708,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
     }
 
     var deleteEmployeePAFDocument = function (id, callback) {
-        var xml = '<transaction id="' + id + '"><deleteEmployeePAFDocument id="' + id + '" /></transaction>';
+        var xml = '<transaction id="' + id + '"><employeePAFDocumentDelete id="' + id + '" /></transaction>';
         var data = 'moduleId=emp&requestId=1&requestXml=' + encodeURIComponent(xml) + '&targetId=iiTransaction';
         jQuery.post('/net/crothall/chimes/fin/emp/act/Provider.aspx', data, function (data, status) {
             if (callback)
