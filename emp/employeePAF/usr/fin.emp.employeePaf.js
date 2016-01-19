@@ -160,6 +160,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 	$scope.pafDocs = [];
 	var selectedFileName = "";
 	$scope.add = "";
+	$scope.selectedPafId = $routeParams.id;
 
     $scope.dateOptions = {
         formatYear: 'yy',
@@ -1633,19 +1634,25 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
                 }
                 else {
                     if (activeRowIndex == -1 || activeRowIndex == undefined || $scope.add == true) {
+                        var numOfDocs = $scope.pafDocs.length;
                         var item = {};
                         item["title"] = $scope.docTitle;
                         item["fileName"] = fileName;
                         item["tempFileName"] = tempFileName;
                         pafDocuments.push(item);
                         $scope.pafDocs.push(item);
+                        if ($scope.selectedPafId > 0 && $scope.pafDocs.length == numOfDocs + 2) {
+                            $scope.pafDocs.splice(-1, 1);
+                        }
                     }
                     else {
                         var index = activeRowIndex;
-                        $scope.pafDocs[index].title = $scope.docTitle;
-                        $scope.pafDocs[index].fileName = fileName;
-                        $scope.pafDocs[index].tempFileName = tempFileName;
-                        $scope.pafDocs.$render();
+                        var newDocs = [];
+                        newDocs = $scope.pafDocs;
+                        newDocs[index].title = $scope.docTitle;
+                        newDocs[index].fileName = fileName;
+                        newDocs[index].tempFileName = tempFileName;
+                        $scope.pafDocs = newDocs;
                     }
                 }
             }
