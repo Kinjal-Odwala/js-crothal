@@ -43,6 +43,7 @@ ii.Class({
 			me.glAccounts = [];
 			me.action = "PORequisition";
 			me.currentVendorTitle = "";
+			me.vendorsLoading = false;
 			me.poRequisitionDetailsTemp = [];
 
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
@@ -1831,6 +1832,7 @@ ii.Class({
 				
 			if (event.keyCode == 13) {
 				if (me.vendorName.text.value != "") {
+					me.vendorsLoading = true;
 					me.vendorName.fetchingData();
 					me.vendorStore.reset();
 					me.vendorStore.fetch("searchValue:" + me.vendorName.text.value + ",vendorStatus:-1,userId:[user]", me.vendorsLoaded, me);
@@ -1854,50 +1856,38 @@ ii.Class({
 		vendorsLoaded: function(me, activeId) {
 			
 			me.vendorName.setData(me.vendors);
-						
+			me.vendorsLoading = false;
+
 			if (me.vendors.length > 0) {
 				me.vendorName.reset();
 				me.vendorName.select(0, me.vendorName.focused);
-			}				
+			}
+
+			me.vendorChanged();
 		},
 		
 		vendorChanged: function() {
 			var me = this;
 			var index = me.vendorName.indexSelected;		
 
-			if (me.status == "EditPORequisition") {
+			if (me.status == "EditPORequisition" && !me.vendorsLoading) {
 				var item = me.requisitionGrid.data[me.requisitionGrid.activeRowIndex];
-				if (index >= 0) {
-					if (item.vendorTitle != me.vendors[index].title) {
-						if (confirm("WARNING: The items which are associated with the Vendor [" + item.vendorTitle + "] will be removed permanently when saving the requisition. Press OK to continue, or Cancel to remain on the same Vendor.")) {
-							me.currentVendorTitle = item.vendorTitle;
-							if (me.itemGrid.activeRowIndex >= 0)
-								me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
-							$("#popupMessageToUser").text("Loading");
-							$("#popupLoading").show();
-							me.poRequisitionDetailStore.reset();
-							me.poRequisitionDetailStore.fetch("userId:[user],poRequisitionId:" + me.poRequisitionId + ",houseCodeId:" + parent.fin.appUI.houseCodeId + ",vendorTitle:" + item.vendorTitle, me.poRequisitonDetailsLoaded, me);
-						}
-						else {
-							for (var iIndex = 0; iIndex < me.vendors.length; iIndex++) {
-								if (me.vendors[iIndex].title == item.vendorTitle) {
-									me.currentVendorTitle = "";
-									me.vendorName.select(iIndex, me.vendorName.focused);
-									me.resetPORequisitionDetails(false);
-									break;
-								}
-							}
-						}
-					}
-					else {
-						me.currentVendorTitle = "";
-						me.resetPORequisitionDetails(false);
-					}
+				if (me.vendorName.lastBlurValue != "" && item.vendorTitle != me.vendorName.lastBlurValue && item.vendorNumber != "") {
+					alert("WARNING: The items which are associated with the previous Vendor [" + item.vendorTitle + "] will be removed permanently when saving the requisition.")
+					me.currentVendorTitle = item.vendorTitle;
+					if (me.itemGrid.activeRowIndex >= 0)
+						me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
+					$("#popupMessageToUser").text("Loading");
+					$("#popupLoading").show();
+					me.poRequisitionDetailStore.reset();
+					me.poRequisitionDetailStore.fetch("userId:[user],poRequisitionId:" + me.poRequisitionId + ",houseCodeId:" + parent.fin.appUI.houseCodeId + ",vendorTitle:" + item.vendorTitle, me.poRequisitonDetailsLoaded, me);
+				}
+				else {
+					me.currentVendorTitle = "";
+					me.resetPORequisitionDetails(false);
 				}
 			}
-			
-			index = me.vendorName.indexSelected;
-			
+
 			if (index >= 0) {
 				me.vendorId = me.vendors[index].number;
 				me.vendorNumber = me.vendors[index].vendorNumber;
@@ -1917,10 +1907,8 @@ ii.Class({
 				me.account.setData(me.glAccounts);				
 				me.category.fetchingData();
 				me.catalog.fetchingData();
-				//me.poRequisitionDetailStore.reset();
 				me.accountStore.reset();
 				me.catalogStore.reset();
-				//me.poRequisitionDetailStore.fetch("userId:[user],poRequisitionId:" + me.poRequisitionId, me.poRequisitonDetailsLoaded, me);				
 				me.accountStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.categoriesLoaded, me);				
 				me.catalogStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.catalogsLoaded, me);
 			}

@@ -46,6 +46,7 @@ ii.Class({
 			me.approvalAmountLimit1 = 0;
 			me.approvalAmountLimit2 = 0;
 			me.currentVendorTitle = "";
+			me.vendorsLoading = false;
 			me.poCapitalRequisitionItemsTemp = [];
 
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
@@ -2233,6 +2234,7 @@ ii.Class({
 				
 			if (event.keyCode == 13) {
 				if (me.vendorName.text.value != "") {
+					me.vendorsLoading = true;
 					me.vendorName.fetchingData();
 					me.vendorStore.reset();
 					me.vendorStore.fetch("searchValue:" + me.vendorName.text.value + ",vendorStatus:-1,userId:[user]", me.vendorsLoaded, me);
@@ -2254,50 +2256,40 @@ ii.Class({
 		},
 		
 		vendorsLoaded: function(me, activeId) {
-			me.vendorName.setData(me.vendors);
 			
-			if (me.vendors.length > 0) {				
+			me.vendorName.setData(me.vendors);
+			me.vendorsLoading = false;
+			
+			if (me.vendors.length > 0) {
 				me.vendorName.reset();
 				me.vendorName.select(0, me.vendorName.focused);
 			}
+
+			me.vendorChanged();
 		},
 		
 		vendorChanged: function() {
 			var me = this;
 			var index = me.vendorName.indexSelected;
-		
-			if (me.status == "EditPOCapitalRequisition") {
+
+			if (me.status == "EditPOCapitalRequisition" && !me.vendorsLoading) {
 				var item = me.capitalRequisitionGrid.data[me.capitalRequisitionGrid.activeRowIndex];
-				if (index >= 0) {
-					if (item.vendorTitle != me.vendors[index].title) {
-						if (confirm("WARNING: The items which are associated with the Vendor [" + item.vendorTitle + "] will be removed permanently when saving the requisition. Press OK to continue, or Cancel to remain on the same Vendor.")) {
-							me.currentVendorTitle = item.vendorTitle;
-							if (me.itemGrid.activeRowIndex >= 0)
-								me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
-							$("#popupMessageToUser").text("Loading");
-							$("#popupLoading").show();
-							me.poCapitalRequisitionItemStore.reset();
-							me.poCapitalRequisitionItemStore.fetch("userId:[user],poCapitalRequisitionId:" + me.poCapitalRequisitionId + ",houseCodeId:" + parent.fin.appUI.houseCodeId + ",vendorTitle:" + item.vendorTitle, me.poCapitalRequisitonItemsLoaded, me);
-						}
-						else {
-							for (var iIndex = 0; iIndex < me.vendors.length; iIndex++) {
-								if (me.vendors[iIndex].title == item.vendorTitle) {
-									me.currentVendorTitle = "";
-									me.vendorName.select(iIndex, me.vendorName.focused);
-									me.resetPOCapitalRequisitionItems(false);
-									break;
-								}
-							}
-						}
-					}
-					else {
-						me.currentVendorTitle = "";
-						me.resetPOCapitalRequisitionItems(false);
-					}
+				if (me.vendorName.lastBlurValue != "" && item.vendorTitle != me.vendorName.lastBlurValue && item.vendorNumber != "") {
+					alert("WARNING: The items which are associated with the previous Vendor [" + item.vendorTitle + "] will be removed permanently when saving the requisition.")
+					me.currentVendorTitle = item.vendorTitle;
+					me.taxAmount.setValue("");
+					if (me.itemGrid.activeRowIndex >= 0)
+						me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
+					$("#popupMessageToUser").text("Loading");
+					$("#popupLoading").show();
+					me.poCapitalRequisitionItemStore.reset();
+					me.poCapitalRequisitionItemStore.fetch("userId:[user],poCapitalRequisitionId:" + me.poCapitalRequisitionId + ",houseCodeId:" + parent.fin.appUI.houseCodeId + ",vendorTitle:" + item.vendorTitle, me.poCapitalRequisitonItemsLoaded, me);
+				}
+				else {
+					me.currentVendorTitle = "";
+					me.resetPOCapitalRequisitionItems(false);
 				}
 			}
-			
-			index = me.vendorName.indexSelected;
 			
 			if (index >= 0) {
 				me.vendorId = me.vendors[index].number;
@@ -2318,10 +2310,8 @@ ii.Class({
 				me.account.setData(me.glAccounts);				
 				me.category.fetchingData();
 				me.catalog.fetchingData();
-				//me.poCapitalRequisitionItemStore.reset();
 				me.accountStore.reset();
 				me.catalogStore.reset();
-				//me.poCapitalRequisitionItemStore.fetch("userId:[user],poCapitalRequisitionId:" + me.poCapitalRequisitionId, me.poCapitalRequisitonItemsLoaded, me);
 				me.accountStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.categoriesLoaded, me);				
 				me.catalogStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.catalogsLoaded, me);
 			}
