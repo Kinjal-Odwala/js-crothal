@@ -1368,10 +1368,11 @@
 </div>
 
 <script type="text/ng-template" id="upload.html">
-    <div class="modal-content" style="width:550px;height:250px">
+    <form name="uploadInfoForm">
+    <div id="modal" class="modal-content" style="width:550px;height:250px">
     <div style="font-weight:bold;font-size: 18px;text-align: center;font-family: Verdana;">Upload Document</div>
     <div class="modal-body">
-    <div ng-form="uploadInfoForm">
+    <div>
         <div class="row">
         <div class="col-md-4">
         <label>Document Title:</label>

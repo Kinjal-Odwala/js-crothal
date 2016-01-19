@@ -27,17 +27,20 @@ Object.byString = function (o, s) {
 
 var activeRowIndex = -1;
 var pafDocuments = [];
-var disable = false;
 var selectedDocId = "";
 
 var onFileChange = function () {
     var FileName = $("iframe")[0].contentWindow.document.getElementById("UploadFile").value;
     FileName = FileName.substring(FileName.lastIndexOf("\\") + 1);
-
-    if (FileName == "")
-        disable = true;
-    else
-        disable = false;
+    var scope = angular.element(document.getElementById("modal")).scope();
+    scope.$apply(function () {
+        if (FileName == "") {
+            scope.disable = true;
+        }
+        else {
+            scope.disable = false;
+        }
+    });
 }
 
 var deserializeXml = function (xml, nodeName, options) {
@@ -1620,7 +1623,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         $modalInstance.dismiss('cancel');
     };
 
-    $scope.disable = disable;
+    $scope.disable = true;
 
     $scope.upload = function () {
         var tempFileName = "";
@@ -1631,7 +1634,6 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         $("iframe")[0].contentWindow.document.getElementById("UploadButton").click();
 
         if ($scope.docTitle == undefined) {
-            alert("Please Enter Document Title");
             return false;
         }
 
