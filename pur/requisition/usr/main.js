@@ -1590,6 +1590,7 @@ ii.Class({
 			me.lastSelectedRowIndex = index;
 			me.poRequisitionId = me.requisitionGrid.data[index].id;
 			me.status = "";
+			me.currentVendorTitle = "";
 
 			if (me.action == "PORequisition") {
 				$("#AnchorPrint").show();
@@ -2332,6 +2333,8 @@ ii.Class({
 
 			me.wizardCount = 0;
 			me.status = "";
+			me.currentVendorTitle = "";
+			me.modified(false);
 			me.setStatus("Loaded");
 		},
 				
@@ -2651,6 +2654,7 @@ ii.Class({
 					xml += ' houseCodeId="' + item.houseCode + '"';
 					xml += ' vendorTitle="' + ui.cmn.text.xml.encode(me.currentVendorTitle) + '"';
 					xml += '/>';
+					me.currentVendorTitle = "";
 				}
 				xml += '<purPORequisition';
 				xml += ' id="' + item.id + '"';
