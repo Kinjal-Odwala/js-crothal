@@ -1714,11 +1714,25 @@ ii.Class({
 		
 		qualityPartnershipsLoaded: function(me, activeId) {
 
+			for (var index = 0; index < me.metricTypes.length; index++) {
+				if (me.metricTypes[index].subType == "Quality Partnership") {
+					var result = $.grep(me.qualityPartnerships, function(item) { return item.ptMetricType.id == me.metricTypes[index].id; });
+					if (result.length == 0)
+						me.qualityPartnerships.push(new fin.hcm.ptMetric.QualityPartnership(0, me.ptMetricId, me.metricTypes[index], me.metricTypes[index].title));
+				}
+			}
 			me.qualityPartnershipGrid.setData(me.qualityPartnerships);
 		},
 
 		auditScoresLoaded: function(me, activeId) {
 
+			for (var index = 0; index < me.metricTypes.length; index++) {
+				if (me.metricTypes[index].subType == "Audit Scores") {
+					var result = $.grep(me.auditScores, function(item) { return item.ptMetricType.id == me.metricTypes[index].id; });
+					if (result.length == 0)
+						me.auditScores.push(new fin.hcm.ptMetric.AuditScore(0, me.ptMetricId, me.metricTypes[index], me.metricTypes[index].title));
+				}
+			}
 			me.auditScoreGrid.setData(me.auditScores);
 		},
 		
@@ -1956,6 +1970,38 @@ ii.Class({
 							)
 							
 						me.evsHCAHPS.push(item);
+					}
+				}
+				
+				for (var index = 0; index < me.metricTypes.length; index++) {
+					if (me.metricTypes[index].subType == "Labor Control") {
+						var result = $.grep(me.laborControls, function(item) { return item.ptMetricType.id == me.metricTypes[index].id; });
+						if (result.length == 0)
+                        	me.laborControls.push(new fin.hcm.ptMetric.LaborControl(0, me.ptMetricId, me.metricTypes[index], me.metricTypes[index].title));
+					}
+				}
+				
+				for (var index = 0; index < me.metricTypes.length; index++) {
+					if (me.metricTypes[index].subType == "Quality Control") {
+						var result = $.grep(me.qualityControls, function(item) { return item.ptMetricType.id == me.metricTypes[index].id; });
+						if (result.length == 0)
+                        	me.qualityControls.push(new fin.hcm.ptMetric.QualityControl(0, me.ptMetricId, me.metricTypes[index], me.metricTypes[index].title));
+					}
+				}
+				
+				for (var index = 0; index < me.metricTypes.length; index++) {
+					if (me.metricTypes[index].subType == "Quality Assurance - PT Press Ganey") {
+						var result = $.grep(me.ptPressGaneys, function(item) { return item.ptMetricType.id == me.metricTypes[index].id; });
+						if (result.length == 0)
+                        	me.ptPressGaneys.push(new fin.hcm.ptMetric.PTPressGaney(0, me.ptMetricId, me.metricTypes[index], me.metricTypes[index].title));
+					}
+				}
+				
+				for (var index = 0; index < me.metricTypes.length; index++) {
+					if (me.metricTypes[index].subType == "Quality Assurance - EVS HCAHPS") {
+						var result = $.grep(me.evsHCAHPS, function(item) { return item.ptMetricType.id == me.metricTypes[index].id; });
+						if (result.length == 0)
+                       		me.evsHCAHPS.push(new fin.hcm.ptMetric.EVSHCAHPS(0, me.ptMetricId, me.metricTypes[index], me.metricTypes[index].title));
 					}
 				}
 			}
@@ -2232,6 +2278,8 @@ ii.Class({
 			for (var index = 0; index < me.laborControls.length; index++) {
 				if (me.laborControls[index].modified || me.laborControls[index].id == 0) {
 					me.laborControls[index].modified = false;
+					if (me.laborControls[index].id == 0)
+						me.reloadData = true;
 					if (me.laborControls[index].ptMetricType.dataType == "Decimal")
 						xml += '<ptMetricNumericDetail';
 					else
@@ -2258,6 +2306,8 @@ ii.Class({
 			for (var index = 0; index < me.qualityControls.length; index++) {
 				if (me.qualityControls[index].modified || me.qualityControls[index].id == 0) {
 					me.qualityControls[index].modified = false;
+					if (me.qualityControls[index].id == 0)
+						me.reloadData = true;
 					if (me.qualityControls[index].ptMetricType.dataType == "Decimal" || me.qualityControls[index].ptMetricType.dataType == "Integer")
 						xml += '<ptMetricNumericDetail';
 					else
@@ -2284,6 +2334,8 @@ ii.Class({
 			for (var index = 0; index < me.ptPressGaneys.length; index++) {
 				if (me.ptPressGaneys[index].modified || me.ptPressGaneys[index].id == 0) {
 					me.ptPressGaneys[index].modified = false;
+					if (me.ptPressGaneys[index].id == 0)
+						me.reloadData = true;
 					if (me.ptPressGaneys[index].ptMetricType.dataType == "Decimal")
 						xml += '<ptMetricNumericDetail';
 					else
@@ -2310,6 +2362,8 @@ ii.Class({
 			for (var index = 0; index < me.evsHCAHPS.length; index++) {
 				if (me.evsHCAHPS[index].modified || me.evsHCAHPS[index].id == 0) {
 					me.evsHCAHPS[index].modified = false;
+					if (me.evsHCAHPS[index].id == 0)
+						me.reloadData = true;
 					if (me.evsHCAHPS[index].ptMetricType.dataType == "Decimal")
 						xml += '<ptMetricNumericDetail';
 					else

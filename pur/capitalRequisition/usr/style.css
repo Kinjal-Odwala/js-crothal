@@ -337,7 +337,7 @@
 	padding: 5px 0px 0px 10px;
 }
 
-#DocumentGrid {
+#DocumentGrid, #ApprovalGrid {
 	width: 700px;
 	margin-left: 10px;
 }
@@ -353,6 +353,10 @@
 
 #extendedPriceBodyColumn, #priceBodyColumn, #quantityBodyColumn {
 	text-align: right;	
+}
+
+#signatureBodyColumn, #approvedDateBodyColumn {
+	text-align: center;	
 }
 
 #LabelItemLeft {

@@ -25,6 +25,20 @@ Object.byString = function (o, s) {
     return o;
 }
 
+var activeRowIndex = -1;
+var pafDocuments = [];
+var selectedDocId = "";
+
+var onFileChange = function () {
+	var scope = angular.element(document.getElementById("modal")).scope();
+    var fileName = $("#iFrameUpload")[0].contentWindow.document.getElementById("UploadFile").value;
+    fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
+    
+    scope.$apply(function() {
+		scope.disable = (fileName == "") ? true : false;
+    });
+}
+
 var deserializeXml = function (xml, nodeName, options) {
     // options = {upperFirstLetter: true, boolItems: [], dateItems: []}
 
@@ -143,6 +157,10 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 	$scope.JobCodes = [];
 	$scope.PersonActionTypes = [];
 	$scope.PayGrades = [];
+	$scope.pafDocs = [];
+	var selectedFileName = "";
+	$scope.add = "";
+	$scope.selectedPafId = $routeParams.id;
 
     $scope.dateOptions = {
         formatYear: 'yy',
@@ -284,7 +302,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             $scope.empAction.Data[type].ReportingManagerNumber = obj.ReportingManagerNumber;
             $scope.empAction.Data[type].CacheReportingManagerNumber = obj.ReportingManagerNumber;
             $scope.empAction.Data[type].DisabledReportFields = obj.ReportingManagerNumber && obj.ReportingManagerNumber.length > 0 && obj.ReportingTitle && obj.ReportingTitle.length > 0 && obj.ReportingEmail && obj.ReportingEmail.length > 0;
-            $scope.empAction.Data[type].DisabledReportingManagerNumberField = obj.ReportingManagerNumber && obj.ReportingManagerNumber.length > 0;
+            $scope.empAction.Data[type].DisabledReportingManagerNumberField = false;
         }
 
         var items = ["NewHire", "ReHire", "Promotion", "Demotion", "SalaryChange", "Transfer"];
@@ -339,7 +357,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
     $scope.getManagerInfo = function (employeeNumber, positionType) {
 
-        if ($scope.empAction.Data && ($scope.empAction.Data[positionType].ReportingManagerNumber.length == 0 || parseInt(employeeNumber) != parseInt($scope.empAction.Data[positionType].CacheReportingManagerNumber))) {
+        if (employeeNumber != "" && $scope.empAction.Data && ($scope.empAction.Data[positionType].ReportingManagerNumber.length == 0 || parseInt(employeeNumber) != parseInt($scope.empAction.Data[positionType].CacheReportingManagerNumber))) {
             $scope.empAction.Data[positionType].CacheReportingManagerNumber = employeeNumber;
 
                 getManagerDetail(employeeNumber, function (response) {
@@ -353,7 +371,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     $scope.empAction.Data[positionType].ReportingEmail = response.empEmail;
                     $scope.empAction.Data[positionType].ReportingManagerNumber = response.empClock;
                     $scope.empAction.Data[positionType].CacheReportingManagerNumber = response.empClock;
-                    $scope.empAction.Data[positionType].DisabledReportFields = true;
+                    $scope.empAction.Data[positionType].DisabledReportFields = response.empClock && response.empClock.length > 0 && response.empTitle && response.empTitle.length > 0 && response.empEmail && response.empEmail.length > 0;
                     $scope.empAction.Data[positionType].DisabledReportingManagerNumberField = false;
                 });
         }
@@ -483,6 +501,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             }
             $scope.empAction = result;
             loadCompensations($scope.empAction.EmployeeNumber);
+        });
+        EmpActions.findEmployeePAFDocument($routeParams.id, function (result) {
+            $scope.pafDocs = result;
         });
     }
 
@@ -806,6 +827,70 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         }
     }
 
+	 $scope.onRowClick = function (item, index) {
+		$scope.selectedDocItem = item;
+        activeRowIndex = index;
+        selectedDocId = item.id;
+        selectedFileName = item.fileName;
+    }
+	
+    $scope.addDoc = function () {
+        var modalInstance = $modal.open({
+            templateUrl: 'upload.html',
+            controller: 'modalInstanceCtrl',
+            title: "Upload Document",
+            size: 'sm',
+            scope: $scope
+        });
+        $scope.add = true;
+    }
+
+    $scope.editDoc = function () {
+        if (activeRowIndex != -1) {
+            var modalInstance = $modal.open({
+                templateUrl: 'upload.html',
+                controller: 'modalInstanceCtrl',
+                title: "Upload Document",
+                size: 'sm',
+                scope: $scope
+            });
+			$scope.docTitle = $scope.pafDocs[activeRowIndex].title;
+        }
+        $scope.add = false;
+    }
+
+    $scope.removeDoc = function () {
+        if (selectedDocId > 0 && activeRowIndex != -1) {
+			$scope.pageLoading = true;
+			$scope.loadingTitle = " Removing...";
+			$scope.pafDocs.splice(activeRowIndex, 1);
+            EmpActions.deleteEmployeePAFDocument(selectedDocId, function (data, status) {
+				$scope.$apply(function() {
+					$scope.pageLoading = false;
+			    });
+            });
+        }
+        else if (activeRowIndex != -1) {
+            $scope.pafDocs.splice(activeRowIndex, 1);
+        }
+        activeRowIndex = -1;
+    }
+
+    $scope.viewDoc = function () {
+        if (selectedDocId > 0 && activeRowIndex != -1) {
+			$scope.pageLoading = true;
+			$scope.loadingTitle = " Downloading...";
+            EmpActions.viewEmployeePAFDocument(selectedDocId, selectedFileName, function (data, status) {
+				if (data.length == 1) {
+					$("#iFrameDownload")[0].contentWindow.document.getElementById("FileName").value = data[0].fileName;
+					$("#iFrameDownload")[0].contentWindow.document.getElementById("DownloadButton").click();
+				}
+				$scope.pageLoading = false;
+            });
+        }
+        activeRowIndex = -1;
+    }
+
     var validateActionType = function () {
         var isValid = false;
 
@@ -1127,7 +1212,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             
 			$scope.pageLoading = true;
 			$scope.loadingTitle = " Saving...";
-            EmpActions.saveEmployeePersonnelAction($scope.empAction, function (status) {
+			
+			EmpActions.saveEmployeePersonnelAction($scope.empAction, $scope.pafDocs, function (status) {
 				$scope.pageLoading = false;
                 document.location.hash = 'list';
             });
@@ -1524,13 +1610,52 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
     }
 }])
 .controller('modalInstanceCtrl', function ($scope, $modalInstance) {
-
+	$scope.disable = true;
+	
     $scope.ok = function () {
         $modalInstance.close();
     };
 
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
+    };
+
+    $scope.upload = function () {
+		if ($scope.docTitle == undefined) {
+            return false;
+        }
+
+        var fileName = $("#iFrameUpload")[0].contentWindow.document.getElementById("UploadFile").value;
+        fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
+       
+        $("#iFrameUpload")[0].contentWindow.document.getElementById("FileName").value = "";
+        $("#iFrameUpload")[0].contentWindow.document.getElementById("UploadButton").click();
+
+        $scope.intervalId = setInterval(function () {
+            if ($("#iFrameUpload")[0].contentWindow.document.getElementById("FileName").value != "") {
+                var tempFileName = $("#iFrameUpload")[0].contentWindow.document.getElementById("FileName").value;
+                clearInterval($scope.intervalId);
+                $modalInstance.close();
+
+                if (tempFileName == "Error") {
+                    alert("Unable to upload the file. Please try again.");
+                }
+                else {
+                    if (activeRowIndex == -1 || activeRowIndex == undefined || $scope.add == true) {
+                        var item = {};
+                        item["title"] = $scope.docTitle;
+                        item["fileName"] = fileName;
+                        item["tempFileName"] = tempFileName;
+                        $scope.pafDocs.push(item);
+                    }
+                    else {
+						$scope.pafDocs[activeRowIndex].title = $scope.docTitle;
+						$scope.pafDocs[activeRowIndex].fileName = fileName;
+						$scope.pafDocs[activeRowIndex].tempFileName = tempFileName;
+                    }
+                }
+            }
+        }, 1000);
     };
 });
 
@@ -1770,16 +1895,16 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
     return {
         phoneNumber: function (ctrl, value, attr) {
             var valid = typeof (value) == "string" && /^(\([2-9]|[2-9])(\d{2}|\d{2}\))(-|.|\s)?\d{3}(-|.|\s)?\d{4}$/.test(value);
-            if (attr.required || value != "")
+            if ((attr.required || value != "") && value != null)
                 ctrl.$setValidity(attr.name, valid);
-			else if (value == "")
+            else if (value == "")
 				ctrl.$setValidity(attr.name, true);
             return value;
         },
         zipCode: function (ctrl, value, attr) {
 			var valid = typeof (value) == "string" && (/(^\d{5}$)|(^\d{9}$)|(^\d{5}-\d{4}$)/.test(value));
-            if (attr.required || value != "")
-				ctrl.$setValidity(attr.name, valid);
+			if ((attr.required || value != "") && value != null)
+			    ctrl.$setValidity(attr.name, valid);
 			else if (value == "")
 				ctrl.$setValidity(attr.name, true);
             return value;
@@ -2289,6 +2414,22 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         });
     }
 
+    var findEmployeePAFDocument = function (id, callback) {
+
+        apiRequest('emp', 'iiCache', '<criteria>storeId:employeePAFDocuments,userId:[user]' + ",pafId:" + id + ',</criteria>', function (xml) {
+            pafDocuments = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
+            callback(pafDocuments);
+        });
+    }
+
+    var viewEmployeePAFDocument = function (id, fileName, callback) {
+
+        apiRequest('emp', 'iiCache', '<criteria>storeId:empFileNames,userId:[user]' + ",id:" + id + ",fileName:" + fileName + ',</criteria>', function (xml) {
+            pafDocuments = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
+            callback(pafDocuments);
+        });
+    }
+
     var getPayGrades = function (callback) {
         if (cache.payGrades)
             callback(cache.payGrades);
@@ -2502,7 +2643,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         });
     }
 
-    var saveEmployeePersonnelAction = function (employeePersonnelAction, callback) {
+    var saveEmployeePersonnelAction = function (employeePersonnelAction, employeePAFDocuments, callback) {
         var xml = "";
 		
 		xml = '<transaction id="1">';
@@ -2524,6 +2665,19 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         });
 
 		xml += '/>';
+		
+		for (var index = 0; index < employeePAFDocuments.length; index++) {
+	        if (employeePAFDocuments[index].tempFileName != undefined) {
+				xml += '<employeePAFDocument';
+		        xml += ' id="' + (employeePAFDocuments[index].id == undefined ? "0" : employeePAFDocuments[index].id) + '"';
+		        xml += ' title="' + encode(employeePAFDocuments[index].title) + '"';
+		        xml += ' description=""';
+		        xml += ' fileName="' + employeePAFDocuments[index].fileName + '"';
+		        xml += ' tempFileName="' + employeePAFDocuments[index].tempFileName + '"';
+		        xml += '/>';
+	        }
+	    }
+		
 		xml += '</transaction>';
 		//console.log(xml);
 
@@ -2537,6 +2691,16 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         //    if (callback)
         //        callback(result);
         //});
+    }
+
+    var deleteEmployeePAFDocument = function (id, callback) {
+        var xml = '<transaction id="' + id + '"><employeePAFDocumentDelete id="' + id + '" /></transaction>';
+        var data = 'moduleId=emp&requestId=1&requestXml=' + encodeURIComponent(xml) + '&targetId=iiTransaction';
+		
+        jQuery.post('/net/crothall/chimes/fin/emp/act/Provider.aspx', data, function (data, status) {
+            if (callback)
+                callback(data, status);
+        });
     }
 
     var cancelEmployeePersonnelAction = function (id, callback) {
@@ -2624,6 +2788,9 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         submitEmployeePersonnelAction: submitEmployeePersonnelAction,
         approveEmployeePersonnelAction: approveEmployeePersonnelAction,
         getPayGradeTitle: getPayGradeTitle,
-		getTitleById: getTitleById
+        getTitleById: getTitleById,
+        findEmployeePAFDocument: findEmployeePAFDocument,
+        deleteEmployeePAFDocument: deleteEmployeePAFDocument,
+        viewEmployeePAFDocument: viewEmployeePAFDocument
     }
 }]);

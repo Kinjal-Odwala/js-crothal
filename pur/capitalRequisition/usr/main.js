@@ -44,6 +44,10 @@ ii.Class({
 			me.glAccounts = [];
 			me.action = "POCapitalRequisition";
 			me.approvalAmountLimit1 = 0;
+			me.approvalAmountLimit2 = 0;
+			me.currentVendorTitle = "";
+			me.vendorsLoading = false;
+			me.poCapitalRequisitionItemsTemp = [];
 
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -156,6 +160,7 @@ ii.Class({
 			me.itemGrid.setHeight($(window).height() - 395);
 			me.itemReadOnlyGrid.setHeight($(window).height() - 335);
 			me.documentGrid.setHeight(100);
+			me.approvalGrid.setHeight(150);
 			$("#popupContact").height($(window).height() - 110);
 			$("#GeneralInfo").height($(window).height() - 210);
 			$("#ShippingInfo").height($(window).height() - 210);
@@ -637,7 +642,7 @@ ii.Class({
 			me.itemGrid = new ui.ctl.Grid({
 				id: "ItemGrid",
 				allowAdds: true,
-				createNewFunction: fin.pur.poCapitalRequisition.Item,
+				createNewFunction: fin.pur.poCapitalRequisition.POCapitalRequisitionItem,
 				selectFunction: function(index){
 					if (me.itemGrid.rows[index].getElement("rowNumber").innerHTML == "Add") 
 						me.itemGrid.rows[index].getElement("itemSelect").innerHTML = "<input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poCapitalRequisitionUi.calculateSubTotal(this);\"  checked=\"true\" />";
@@ -814,7 +819,7 @@ ii.Class({
 			me.itemGrid.addColumn("itemSelect", "itemSelect", "", "", 30, function(data) {
 				var index = me.itemGrid.rows.length - 1;
 				if (me.itemGrid.data[index].itemSelect)
-                	return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poCapitalRequisitionUi.calculateSubTotal(this);\" checked=\"true\" /></center>";
+                	return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poCapitalRequisitionUi.calculateSubTotal(this);\" checked=\"true\" disabled /></center>";
 				else
 				    return "<center><input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poCapitalRequisitionUi.calculateSubTotal(this);\" /></center>";
             });
@@ -1124,6 +1129,18 @@ ii.Class({
 					}
 			});
 
+			me.approvalGrid = new ui.ctl.Grid({
+				id: "ApprovalGrid",
+				appendToId: "divForm",
+				allowAdds: false
+			});
+
+			me.approvalGrid.addColumn("approval", "approval", "Approvals", "Approvals", 180);
+			me.approvalGrid.addColumn("name", "name", "Print Name", "Print Name", null);
+			me.approvalGrid.addColumn("signature", "signature", "Signature", "Signature", 120);
+			me.approvalGrid.addColumn("approvedDate", "approvedDate", "Date", "Date", 120);
+			me.approvalGrid.capColumns();
+
 			me.setTabIndexes();
 		},		
 
@@ -1267,6 +1284,14 @@ ii.Class({
 				itemConstructor: fin.pur.poCapitalRequisition.WorkflowJDECompany,
 				itemConstructorArgs: fin.pur.poCapitalRequisition.workflowJDECompanyArgs,
 				injectionArray: me.workflowJDECompanys
+			});
+
+			me.workflowHistorys = [];
+			me.workflowHistoryStore = me.cache.register({
+			storeId: "appWorkflowHistorys",
+				itemConstructor: fin.pur.poCapitalRequisition.WorkflowHistory,
+				itemConstructorArgs: fin.pur.poCapitalRequisition.workflowHistoryArgs,
+				injectionArray: me.workflowHistorys
 			});
 
 			me.systemVariables = [];
@@ -1804,51 +1829,47 @@ ii.Class({
 			var me = this;
 			
 			$("#popupMessageToUser").text("Loading");
-			$("#popupLoading").show();	
-			me.itemStore.reset();		
+			$("#popupLoading").show();
+			if (me.itemGrid.activeRowIndex >= 0)
+				me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
+			me.itemStore.reset();
 			me.itemStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId + ",catalogId:" + me.catalogId + ",orderId:0,accountId:" + me.accountId + ",searchValue:" + me.searchItem.getValue(), me.poItemsLoaded, me);
 			me.searchItem.setValue("");
 		},
 		
 		poItemsLoaded: function(me, activeId) {
 
-			me.subTotal = 0;
-			var tax = me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue();
-			var freight = me.freight.getValue() == "" ? 0 : me.freight.getValue();
-
 			for (var index = 0; index < me.items.length; index++) {
 				var found = false;
 				for (var iIndex = 0; iIndex < me.poCapitalRequisitionItems.length; iIndex++) {
-					if (me.items[index].number != me.poCapitalRequisitionItems[iIndex].number) {
-						me.items[index].id = 0;
-					}
-					else if (me.items[index].number == me.poCapitalRequisitionItems[iIndex].number) {
-						me.items[index].id = me.poCapitalRequisitionItems[iIndex].id;
+					if (me.items[index].number == me.poCapitalRequisitionItems[iIndex].number) {
 						found = true; 
 						break;
 					}	
 				}
 				if (!found) {
-					me.poCapitalRequisitionItems.push(me.items[index]);
+					me.poCapitalRequisitionItems.push(new fin.pur.poCapitalRequisition.POCapitalRequisitionItem(
+						0
+						, me.items[index].poCapitalRequisitionId
+						, me.items[index].account
+						, me.items[index].itemSelect
+						, me.items[index].number
+						, me.items[index].description
+						, me.items[index].alternateDescription
+						, me.items[index].unit
+						, me.items[index].manufactured
+						, me.items[index].price
+						, me.items[index].quantity
+						, me.items[index].modified));
 				}
 			}
-		
+
 			me.itemGrid.setData(me.poCapitalRequisitionItems);
 			me.itemReadOnlyGrid.setData(me.poCapitalRequisitionItems);
-			
-			for (var index = 0; index < me.itemGrid.data.length; index++) {
-				if ($("#selectInputCheck" + index)[0].checked) {
-					if (me.itemGrid.data[index].quantity != "" && !isNaN(me.itemGrid.data[index].quantity) && me.itemGrid.data[index].price != undefined)
-						me.subTotal += (parseFloat(me.itemGrid.data[index].quantity) * parseFloat(me.itemGrid.data[index].price));
-				}
-			}
-			
-			me.total = me.subTotal + parseFloat(tax) + parseFloat(freight);
-			$("#spnSubTotal").html(me.subTotal.toFixed(2));
-			$("#spnTotal").html(me.total.toFixed(2));
+			me.setTotal();
 			$("#popupLoading").hide();
 		},
-		
+
 		personsLoaded: function(me, activeId) {
 
 			if (me.persons.length > 0) {
@@ -1864,17 +1885,17 @@ ii.Class({
 			if (me.systemVariables.length > 0) {
 				me.approvalAmountLimit1 = parseFloat(me.systemVariables[0].variableValue);
 			}
-			me.checkLoadCount();
-			//me.systemVariableStore.fetch("userId:[user],name:POCapitalRequisitionApprovalAmountLimit2", me.approvalAmountLimit2Loaded, me);
+
+			me.systemVariableStore.fetch("userId:[user],name:POCapitalRequisitionApprovalAmountLimit2", me.approvalAmountLimit2Loaded, me);
 		},
 
-//		approvalAmountLimit2Loaded: function(me, activeId) {
-//
-//			if (me.systemVariables.length > 0) {
-//				me.approvalAmountLimit2 = parseFloat(me.systemVariables[0].variableValue);
-//			}
-//			me.checkLoadCount();
-//		},
+		approvalAmountLimit2Loaded: function(me, activeId) {
+
+			if (me.systemVariables.length > 0) {
+				me.approvalAmountLimit2 = parseFloat(me.systemVariables[0].variableValue);
+			}
+			me.checkLoadCount();
+		},
 
 		chiefFinancialOfficersLoaded: function(me, activeId) {
 
@@ -1914,16 +1935,18 @@ ii.Class({
 
 			if (item == undefined) 
 				return;
-			
+
 			me.lastSelectedRowIndex = index;
 			me.poCapitalRequisitionId = me.capitalRequisitionGrid.data[index].id;
 			me.status = "";
+			me.currentVendorTitle = "";
 
 			if (me.action == "POCapitalRequisition") {
 				$("#AnchorPrint").show();
 				$("#AnchorApprove").hide();
 				$("#RequisitionInfo").show();
 				$("#divSpace").show();
+				$("#ApprovalDetails").show();
 				$("#RequisitionNumber").html(item.requisitionNumber);
 				me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + item.houseCode, me.houseCodeJobsLoaded, me);
 				me.setDetailInfo();	
@@ -1936,6 +1959,7 @@ ii.Class({
 					if (me.capitalRequisitionGrid.data[index].statusType == 1) {
 						$("#AnchorResendRequisition").hide();
 						$("#AnchorSendRequisition").show();
+						$("#ApprovalDetails").hide();
 					}
 	
 					$("#AnchorEdit").show();
@@ -1995,6 +2019,7 @@ ii.Class({
 				me.setLoadCount();
 				me.poCapitalRequisitionItemStore.reset();
 				me.poCapitalRequisitionDocumentStore.reset();
+				me.workflowHistoryStore.reset();
 				me.poCapitalRequisitionItemStore.fetch("userId:[user],poCapitalRequisitionId:" + me.poCapitalRequisitionId, me.poCapitalRequisitonItemsLoaded, me);
 				me.poCapitalRequisitionDocumentStore.fetch("userId:[user],poCapitalRequisitionId:" + me.poCapitalRequisitionId, me.poCapitalRequisitionDocumentsLoaded, me);
 			}
@@ -2083,20 +2108,89 @@ ii.Class({
 
 		poCapitalRequisitonItemsLoaded: function(me, activeId) {
 
-			me.subTotal = 0;
+			if (me.currentVendorTitle == "")
+				me.resetPOCapitalRequisitionItems(true);
+			else
+				$("#popupLoading").hide();
+			me.resetGridData();
+			if (me.capitalRequisitionGrid.activeRowIndex >= 0 && me.status == "")
+				me.workflowHistoryStore.fetch("userId:[user],referenceId:" + me.poCapitalRequisitionId + ",statusType:8,workflowModuleId:3", me.workflowHistorysLoaded, me);
+		},
+		
+		resetGridData: function() {
+			var me = this;
+
+			if (me.itemGrid.activeRowIndex >= 0)
+				me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
+
+			me.itemGrid.setData(me.poCapitalRequisitionItems);
+			me.itemReadOnlyGrid.setData(me.poCapitalRequisitionItems);
+			me.calculateSubTotal();
+		},
+
+		resetPOCapitalRequisitionItems: function(resetTemp) {
+			var me = this;
+
+			if (resetTemp) {
+				me.poCapitalRequisitionItemsTemp = [];
+				for (var index = 0; index < me.poCapitalRequisitionItems.length; index++) {
+					me.poCapitalRequisitionItemsTemp.push(new fin.pur.poCapitalRequisition.POCapitalRequisitionItem(
+						me.poCapitalRequisitionItems[index].id
+						, me.poCapitalRequisitionItems[index].poCapitalRequisitionId
+						, me.poCapitalRequisitionItems[index].account
+						, me.poCapitalRequisitionItems[index].itemSelect
+						, me.poCapitalRequisitionItems[index].number
+						, me.poCapitalRequisitionItems[index].description
+						, me.poCapitalRequisitionItems[index].alternateDescription
+						, me.poCapitalRequisitionItems[index].unit
+						, me.poCapitalRequisitionItems[index].manufactured
+						, me.poCapitalRequisitionItems[index].price
+						, me.poCapitalRequisitionItems[index].quantity
+						, me.poCapitalRequisitionItems[index].modified
+					));
+				}
+			}
+			else {
+				me.poCapitalRequisitionItemStore.reset();
+				for (var index = 0; index < me.poCapitalRequisitionItemsTemp.length; index++) {
+					var item = new fin.pur.poCapitalRequisition.POCapitalRequisitionItem(
+						me.poCapitalRequisitionItemsTemp[index].id
+						, me.poCapitalRequisitionItemsTemp[index].poCapitalRequisitionId
+						, me.poCapitalRequisitionItemsTemp[index].account
+						, me.poCapitalRequisitionItemsTemp[index].itemSelect
+						, me.poCapitalRequisitionItemsTemp[index].number
+						, me.poCapitalRequisitionItemsTemp[index].description
+						, me.poCapitalRequisitionItemsTemp[index].alternateDescription
+						, me.poCapitalRequisitionItemsTemp[index].unit
+						, me.poCapitalRequisitionItemsTemp[index].manufactured
+						, me.poCapitalRequisitionItemsTemp[index].price
+						, me.poCapitalRequisitionItemsTemp[index].quantity
+						, me.poCapitalRequisitionItemsTemp[index].modified
+					);
+					me.poCapitalRequisitionItems.push(item);
+				}
+				me.resetGridData();
+			}
+		},
+
+		setTotal: function() {
+			var me = this;
 			var tax = me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue();
 			var freight = me.freight.getValue() == "" ? 0 : me.freight.getValue();
+			me.subTotal = 0;
 
-			for (var iIndex = 0; iIndex < me.poCapitalRequisitionItems.length; iIndex++) {
-				if (me.poCapitalRequisitionItems[iIndex].quantity != "" && !isNaN(me.poCapitalRequisitionItems[iIndex].quantity) && me.poCapitalRequisitionItems[iIndex].price != undefined) {
-					me.subTotal += (parseFloat(me.poCapitalRequisitionItems[iIndex].quantity) * parseFloat(me.poCapitalRequisitionItems[iIndex].price));
+			for (var index = 0; index < me.itemGrid.data.length; index++) {
+				if ($("#selectInputCheck" + index)[0].checked) {
+					if (me.itemGrid.data[index].quantity != "" && !isNaN(me.itemGrid.data[index].quantity) && me.itemGrid.data[index].price != undefined)
+						me.subTotal += (parseFloat(me.itemGrid.data[index].quantity) * parseFloat(me.itemGrid.data[index].price));
 				}
 			}
 
-			me.total = me.subTotal + parseFloat(tax) + parseFloat(freight);
-			me.itemGrid.setData(me.poCapitalRequisitionItems);
-			me.itemReadOnlyGrid.setData(me.poCapitalRequisitionItems);
-			me.checkLoadCount();
+			if (me.subTotal == 0)
+				me.total = 0;
+			else
+				me.total = me.subTotal + parseFloat(tax) + parseFloat(freight);
+
 			$("#spnSubTotal").html(me.subTotal.toFixed(2));
 			$("#spnTotal").html(me.total.toFixed(2));
 		},
@@ -2107,7 +2201,31 @@ ii.Class({
 			me.documentGrid.setHeight(100);
 			me.checkLoadCount();
 		},
-		
+
+		workflowHistorysLoaded: function(me, activeId) {
+
+			var approvals = [];
+			var item = me.capitalRequisitionGrid.data[me.capitalRequisitionGrid.activeRowIndex];
+
+			me.step1ApprovedDate = me.workflowHistorys.length > 0 ? me.workflowHistorys[0].modAt : "";
+			me.step2ApprovedDate = me.workflowHistorys.length > 1 ? me.workflowHistorys[1].modAt : "";
+			if (me.total <= me.approvalAmountLimit1)
+				me.step3ApprovedDate = me.workflowHistorys.length > 1 ? me.workflowHistorys[1].modAt : "";
+			else
+				me.step3ApprovedDate = me.workflowHistorys.length > 2 ? me.workflowHistorys[2].modAt : "";
+            me.step4ApprovedDate = me.workflowHistorys.length > 3 ? me.workflowHistorys[3].modAt : "";
+            me.step5ApprovedDate = me.workflowHistorys.length > 4 ? me.workflowHistorys[4].modAt : "";
+
+			approvals.push(new fin.pur.poCapitalRequisition.Approval(1, "Regional Manager", item.regionalManagerName, "", me.step1ApprovedDate));
+			approvals.push(new fin.pur.poCapitalRequisition.Approval(2, "Division President", item.divisionPresidentName,  (me.total > me.approvalAmountLimit1 ? "" : "N/A"), (me.total > me.approvalAmountLimit1 ? me.step2ApprovedDate : "N/A")));
+			approvals.push(new fin.pur.poCapitalRequisition.Approval(3, "Finance Director", item.financeDirectorName, "", me.step3ApprovedDate));
+			approvals.push(new fin.pur.poCapitalRequisition.Approval(4, "Chief Financial Officer", item.chiefFinancialOfficerName, (me.total > me.approvalAmountLimit1 ? "" : "N/A"), (me.total > me.approvalAmountLimit1 ? me.step4ApprovedDate : "N/A")));
+			approvals.push(new fin.pur.poCapitalRequisition.Approval(5, "Chief Executive Officer", item.chiefExecutiveOfficerName, (me.total > me.approvalAmountLimit2 ? "" : "N/A"), (me.total > me.approvalAmountLimit2 ? me.step5ApprovedDate : "N/A")));
+			me.approvalGrid.setData(approvals);
+			me.approvalGrid.setHeight(150);
+			me.checkLoadCount();
+		},
+
 		actionVendorSearch: function() {
 			var args = ii.args(arguments, {
 				event: {type: Object} // The (key) event object
@@ -2117,6 +2235,7 @@ ii.Class({
 				
 			if (event.keyCode == 13) {
 				if (me.vendorName.text.value != "") {
+					me.vendorsLoading = true;
 					me.vendorName.fetchingData();
 					me.vendorStore.reset();
 					me.vendorStore.fetch("searchValue:" + me.vendorName.text.value + ",vendorStatus:-1,userId:[user]", me.vendorsLoaded, me);
@@ -2138,20 +2257,41 @@ ii.Class({
 		},
 		
 		vendorsLoaded: function(me, activeId) {
-			me.vendorName.setData(me.vendors);
 			
-			if (me.vendors.length > 0) {				
+			me.vendorName.setData(me.vendors);
+			me.vendorsLoading = false;
+			
+			if (me.vendors.length > 0) {
 				me.vendorName.reset();
 				me.vendorName.select(0, me.vendorName.focused);
 			}
-	
-			me.vendorChanged();	
+
+			me.vendorChanged();
 		},
 		
 		vendorChanged: function() {
 			var me = this;
-			var index = me.vendorName.indexSelected;		
+			var index = me.vendorName.indexSelected;
 
+			if (me.status == "EditPOCapitalRequisition" && !me.vendorsLoading) {
+				var item = me.capitalRequisitionGrid.data[me.capitalRequisitionGrid.activeRowIndex];
+				if (me.vendorName.lastBlurValue != "" && item.vendorTitle != me.vendorName.lastBlurValue && item.vendorNumber != "") {
+					alert("WARNING: The items which are associated with the previous Vendor [" + item.vendorTitle + "] will be removed permanently when saving the requisition.")
+					me.currentVendorTitle = item.vendorTitle;
+					me.taxAmount.setValue("");
+					if (me.itemGrid.activeRowIndex >= 0)
+						me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
+					$("#popupMessageToUser").text("Loading");
+					$("#popupLoading").show();
+					me.poCapitalRequisitionItemStore.reset();
+					me.poCapitalRequisitionItemStore.fetch("userId:[user],poCapitalRequisitionId:" + me.poCapitalRequisitionId + ",houseCodeId:" + parent.fin.appUI.houseCodeId + ",vendorTitle:" + item.vendorTitle, me.poCapitalRequisitonItemsLoaded, me);
+				}
+				else {
+					me.currentVendorTitle = "";
+					me.resetPOCapitalRequisitionItems(false);
+				}
+			}
+			
 			if (index >= 0) {
 				me.vendorId = me.vendors[index].number;
 				me.vendorNumber = me.vendors[index].vendorNumber;
@@ -2171,10 +2311,8 @@ ii.Class({
 				me.account.setData(me.glAccounts);				
 				me.category.fetchingData();
 				me.catalog.fetchingData();
-				me.poCapitalRequisitionItemStore.reset();
 				me.accountStore.reset();
 				me.catalogStore.reset();
-				me.poCapitalRequisitionItemStore.fetch("userId:[user],poCapitalRequisitionId:" + me.poCapitalRequisitionId, me.poCapitalRequisitonItemsLoaded, me);				
 				me.accountStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.categoriesLoaded, me);				
 				me.catalogStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.catalogsLoaded, me);
 			}
@@ -2195,7 +2333,7 @@ ii.Class({
 		},
 		
 		vendorsLoad: function(me, activeId) {			
-			
+
 			if (me.vendors.length > 0) {
 				me.vendorId = me.vendors[0].number;
 				me.category.fetchingData();
@@ -2207,12 +2345,13 @@ ii.Class({
 			}
 			else
 				$("#popupLoading").hide();
-						
 		},
 		
 		categoriesLoaded: function(me, activeId) {
 
+			me.accountId = 0;
 			me.category.reset();
+
 			if (me.vendorId == 0)
 				me.category.setData([]);
 			else
@@ -2229,8 +2368,10 @@ ii.Class({
 		},
 		
 		catalogsLoaded: function(me, activeId) {
-			
+
+			me.catalogId = 0;
 			me.catalog.reset();
+			
 			if (me.vendorId == 0)
 				me.catalog.setData([]);
 			else
@@ -2338,7 +2479,7 @@ ii.Class({
 					alertMessage = true;
 				}		
 				
-				if(alertMessage)
+				if (alertMessage)
 					return false;
 				else
 					return true;
@@ -2483,11 +2624,14 @@ ii.Class({
 			$("#imgRemove").show();
 			$("#spnSubTotal").html("");
 			$("#spnTotal").html("");
+			$("#ApprovalDetails").hide();
 			loadPopup();
 			me.poCapitalRequisitionItemStore.reset();
 			me.poCapitalRequisitionDocumentStore.reset();
+			me.workflowHistoryStore.reset();
 			me.poCapitalRequisitionId = 0;
-			me.subTotal = 0;			
+			me.subTotal = 0;
+			me.currentVendorTitle = "";
 			me.status = "NewPOCapitalRequisition";
 			me.wizardCount = 1;			
 			me.modified(false);
@@ -2501,38 +2645,22 @@ ii.Class({
 			if (me.capitalRequisitionGrid.activeRowIndex == -1)
 				return true;
 
-			me.subTotal = 0;
+			me.currentVendorTitle = "";
 			me.setDetailInfo();
+			me.resetPOCapitalRequisitionItems(false);
 			loadPopup();
-			var tax = me.taxAmount.getValue() == "" ? 0 : me.taxAmount.getValue();
-			var freight = me.freight.getValue() == "" ? 0 : me.freight.getValue();
-
 			$("#popupMessageToUser").text("Loading");
 			$("#popupLoading").show();
+			me.vendorStore.reset();
+			me.vendorStore.fetch("searchValue:" + me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].vendorTitle + ",vendorStatus:-1,userId:[user]", me.vendorsLoad, me);
 
-			if (me.capitalRequisitionGrid.data[me.lastSelectedRowIndex] != undefined) {
-				me.vendorStore.reset();
-				me.vendorStore.fetch("searchValue:" + me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].vendorTitle + ",vendorStatus:-1,userId:[user]", me.vendorsLoad, me);
-			}
-
+			if (me.itemGrid.activeRowIndex >= 0)
+				me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
 			me.poCapitalRequisitionId = me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].id;
 			me.itemGrid.setData(me.poCapitalRequisitionItems);
 			me.documentGrid.setData(me.poCapitalRequisitionDocuments);
-			
-			for (var iIndex = 0; iIndex < me.poCapitalRequisitionItems.length; iIndex++) {
-				if (me.poCapitalRequisitionItems[iIndex].quantity != "" && !isNaN(me.poCapitalRequisitionItems[iIndex].quantity) && me.poCapitalRequisitionItems[iIndex].price != undefined && me.poCapitalRequisitionItems[iIndex].itemSelect) {
-					me.subTotal = me.subTotal + (me.poCapitalRequisitionItems[iIndex].quantity * me.poCapitalRequisitionItems[iIndex].price)
-				}
-			}
-			
-			if (me.subTotal == 0)
-				me.total = 0;
-			else
-				me.total = me.subTotal + parseFloat(tax) + parseFloat(freight);
-
-			$("#spnSubTotal").html(me.subTotal.toFixed(2));
-			$("#spnTotal").html(me.total.toFixed(2));
-			me.status = "EditPOCapitalRequisition";			
+			me.setTotal();
+			me.status = "EditPOCapitalRequisition";
 			me.wizardCount = 1;
 			me.actionShowWizard();
 			me.modified(false);
@@ -2621,10 +2749,14 @@ ii.Class({
 					if (me.total > me.approvalAmountLimit1) {
 						$("#DivisionPresidentNameLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Division President Name:");
 						$("#DivisionPresidentEmailLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Division President Email:");
+						me.divisionPresidentName.text.readOnly = false;
+						me.divisionPresidentEmail.text.readOnly = false;
 					}
 					else {
 						$("#DivisionPresidentNameLabel").html("<span id='nonRequiredFieldIndicator'>Division President Name:</span>");
 						$("#DivisionPresidentEmailLabel").html("<span id='nonRequiredFieldIndicator'>Division President Email:</span>");
+						me.divisionPresidentName.text.readOnly = true;
+						me.divisionPresidentEmail.text.readOnly = true;
 					}
 					
 					break;
@@ -2662,6 +2794,8 @@ ii.Class({
 
 			me.wizardCount = 0;	
 			me.status = "";
+			me.currentVendorTitle = "";
+			me.modified(false);
 			me.setStatus("Loaded");
 		},
 		
@@ -2988,6 +3122,15 @@ ii.Class({
 			var xml = "";
 
 			if (me.status == "NewPOCapitalRequisition" || me.status == "EditPOCapitalRequisition") {
+				if (me.currentVendorTitle != "") {
+					xml += '<purPOCapitalRequisitionItemDelete';
+					xml += ' id="0"';
+					xml += ' poCapitalRequisitionId="' + me.poCapitalRequisitionId + '"';
+					xml += ' houseCodeId="' + item.houseCode + '"';
+					xml += ' vendorTitle="' + ui.cmn.text.xml.encode(me.currentVendorTitle) + '"';
+					xml += '/>';
+					me.currentVendorTitle = "";
+				}
 				xml += '<purPOCapitalRequisition';
 				xml += ' id="' + item.id + '"';
 				xml += ' requisitionNumber="' + item.requisitionNumber + '"';
@@ -3118,6 +3261,11 @@ ii.Class({
 				xml += ' jdeCompleted="0"';
 				xml += ' taxPercent="' + (item.taxPercent != 0 ? item.taxPercent : "") + '"';
 				xml += ' freight="' + (item.freight != 0 ? item.freight : "") + '"';
+				xml += ' step1ApprovedDate="' + me.step1ApprovedDate + '"';
+				xml += ' step2ApprovedDate="' + me.step2ApprovedDate + '"';
+				xml += ' step3ApprovedDate="' + me.step3ApprovedDate + '"';
+				xml += ' step4ApprovedDate="' + me.step4ApprovedDate + '"';
+				xml += ' step5ApprovedDate="' + me.step5ApprovedDate + '"';
 				xml += '/>';
 			}
 			else if (me.status == "DeleteDocument") {
@@ -3228,12 +3376,15 @@ ii.Class({
 								break;
 
 							case "purPOCapitalRequisitionItem":
-								for (var index = 0; index < me.poCapitalRequisitionItems.length; index++) {
-									if (me.poCapitalRequisitionItems[index].modified) {
-										if (me.poCapitalRequisitionItems[index].id == 0)
-											me.poCapitalRequisitionItems[index].id = parseInt($(this).attr("id"), 10);
-										me.poCapitalRequisitionItems[index].modified = false;
-										break;
+								var id = parseInt($(this).attr("id"), 10);
+								if (id > 0) {
+									for (var index = 0; index < me.poCapitalRequisitionItems.length; index++) {
+										if (me.poCapitalRequisitionItems[index].modified) {
+											if (me.poCapitalRequisitionItems[index].id == 0)
+												me.poCapitalRequisitionItems[index].id = parseInt($(this).attr("id"), 10);
+											me.poCapitalRequisitionItems[index].modified = false;
+											break;
+										}
 									}
 								}
 								break;
@@ -3250,6 +3401,9 @@ ii.Class({
 								break;
 						}
 					});
+
+					if (me.status == "EditPOCapitalRequisition")
+						me.resetPOCapitalRequisitionItems(true);
 
 					if (me.status == "PrintRequisition")
 						me.setStatus("Normal");
