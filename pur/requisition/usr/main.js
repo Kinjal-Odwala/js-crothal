@@ -1663,6 +1663,7 @@ ii.Class({
 				me.loadCount++;
 				me.modified(false);	
 				me.setLoadCount();
+				me.poRequisitionDetailsTemp = [];
 				me.poRequisitionDetailStore.reset();
 				me.poRequisitionDocumentStore.reset();
 				me.poRequisitionDetailStore.fetch("userId:[user],poRequisitionId:" + me.poRequisitionId, me.poRequisitonDetailsLoaded, me);
@@ -1735,6 +1736,9 @@ ii.Class({
 
 		poRequisitonDetailsLoaded: function(me, activeId) {
 
+			if (me.itemGrid.activeRowIndex >= 0)
+				me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
+
 			if (me.currentVendorTitle == "") {
 				me.resetPORequisitionDetails(true);
 				me.checkLoadCount();
@@ -1742,14 +1746,10 @@ ii.Class({
 			else
 				$("#popupLoading").hide();
 			me.resetGridData();
-			
 		},
 		
 		resetGridData: function() {
 			var me = this;
-
-			if (me.itemGrid.activeRowIndex >= 0)
-				me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
 
 			me.itemGrid.setData(me.poRequisitionDetails);
 			me.itemReadOnlyGrid.setData(me.poRequisitionDetails);
@@ -1780,6 +1780,9 @@ ii.Class({
 				}
 			}
 			else {
+				if (me.itemGrid.activeRowIndex >= 0)
+					me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
+
 				me.poRequisitionDetailStore.reset();
 				for (var index = 0; index < me.poRequisitionDetailsTemp.length; index++) {
 					var item = new fin.pur.poRequisition.PORequisitionDetail(
@@ -1887,6 +1890,10 @@ ii.Class({
 					me.currentVendorTitle = "";
 					me.resetPORequisitionDetails(false);
 				}
+			}
+			else if (me.status == "NewPORequisition" && !me.vendorsLoading) {
+				me.poRequisitionDetailsTemp = [];
+				me.resetPORequisitionDetails(false);
 			}
 
 			if (index >= 0) {
@@ -2182,6 +2189,7 @@ ii.Class({
 			loadPopup();
 			me.poRequisitionDetailStore.reset();
 			me.poRequisitionDocumentStore.reset();
+			me.poRequisitionDetailsTemp = [];
 			me.poRequisitionId = 0;
 			me.total = 0;
 			me.currentVendorTitle = "";
@@ -2198,6 +2206,9 @@ ii.Class({
 			if (me.requisitionGrid.activeRowIndex == -1)
 				return true;			
 
+			if (me.itemGrid.activeRowIndex >= 0)
+				me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
+
 			me.currentVendorTitle = "";
 			me.setDetailInfo();
 			me.resetPORequisitionDetails(false);
@@ -2206,9 +2217,6 @@ ii.Class({
 			$("#popupLoading").show();
 			me.vendorStore.reset();
 			me.vendorStore.fetch("searchValue:" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle + ",vendorStatus:-1,userId:[user]", me.vendorsLoad, me);
-
-			if (me.itemGrid.activeRowIndex >= 0)
-				me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
 			me.poRequisitionId = me.requisitionGrid.data[me.lastSelectedRowIndex].id;
 			me.itemGrid.setData(me.poRequisitionDetails);
 			me.documentGrid.setData(me.poRequisitionDocuments);

@@ -2017,6 +2017,7 @@ ii.Class({
 				me.loadCount++;
 				me.modified(false);	
 				me.setLoadCount();
+				me.poCapitalRequisitionItemsTemp = [];
 				me.poCapitalRequisitionItemStore.reset();
 				me.poCapitalRequisitionDocumentStore.reset();
 				me.workflowHistoryStore.reset();
@@ -2108,6 +2109,9 @@ ii.Class({
 
 		poCapitalRequisitonItemsLoaded: function(me, activeId) {
 
+			if (me.itemGrid.activeRowIndex >= 0)
+				me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
+
 			if (me.currentVendorTitle == "")
 				me.resetPOCapitalRequisitionItems(true);
 			else
@@ -2119,9 +2123,6 @@ ii.Class({
 		
 		resetGridData: function() {
 			var me = this;
-
-			if (me.itemGrid.activeRowIndex >= 0)
-				me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
 
 			me.itemGrid.setData(me.poCapitalRequisitionItems);
 			me.itemReadOnlyGrid.setData(me.poCapitalRequisitionItems);
@@ -2151,6 +2152,9 @@ ii.Class({
 				}
 			}
 			else {
+				if (me.itemGrid.activeRowIndex >= 0)
+					me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
+				
 				me.poCapitalRequisitionItemStore.reset();
 				for (var index = 0; index < me.poCapitalRequisitionItemsTemp.length; index++) {
 					var item = new fin.pur.poCapitalRequisition.POCapitalRequisitionItem(
@@ -2279,7 +2283,7 @@ ii.Class({
 					alert("WARNING: The items which are associated with the previous Vendor [" + item.vendorTitle + "] will be removed permanently when saving the requisition.")
 					me.currentVendorTitle = item.vendorTitle;
 					me.taxAmount.setValue("");
-					if (me.itemGrid.activeRowIndex >= 0)
+					if (me.itemGrid.activeRowIndex >= 0) 
 						me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
 					$("#popupMessageToUser").text("Loading");
 					$("#popupLoading").show();
@@ -2290,6 +2294,11 @@ ii.Class({
 					me.currentVendorTitle = "";
 					me.resetPOCapitalRequisitionItems(false);
 				}
+			}
+			else if (me.status == "NewPOCapitalRequisition" && !me.vendorsLoading) {
+				me.poCapitalRequisitionItemsTemp = [];
+				me.taxAmount.setValue("");
+				me.resetPOCapitalRequisitionItems(false);
 			}
 			
 			if (index >= 0) {
@@ -2629,6 +2638,7 @@ ii.Class({
 			me.poCapitalRequisitionItemStore.reset();
 			me.poCapitalRequisitionDocumentStore.reset();
 			me.workflowHistoryStore.reset();
+			me.poCapitalRequisitionItemsTemp = [];
 			me.poCapitalRequisitionId = 0;
 			me.subTotal = 0;
 			me.currentVendorTitle = "";
@@ -2645,6 +2655,8 @@ ii.Class({
 			if (me.capitalRequisitionGrid.activeRowIndex == -1)
 				return true;
 
+			if (me.itemGrid.activeRowIndex >= 0)
+				me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
 			me.currentVendorTitle = "";
 			me.setDetailInfo();
 			me.resetPOCapitalRequisitionItems(false);
@@ -2653,9 +2665,6 @@ ii.Class({
 			$("#popupLoading").show();
 			me.vendorStore.reset();
 			me.vendorStore.fetch("searchValue:" + me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].vendorTitle + ",vendorStatus:-1,userId:[user]", me.vendorsLoad, me);
-
-			if (me.itemGrid.activeRowIndex >= 0)
-				me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
 			me.poCapitalRequisitionId = me.capitalRequisitionGrid.data[me.lastSelectedRowIndex].id;
 			me.itemGrid.setData(me.poCapitalRequisitionItems);
 			me.documentGrid.setData(me.poCapitalRequisitionDocuments);
