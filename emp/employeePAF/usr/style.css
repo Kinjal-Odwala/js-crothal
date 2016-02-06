@@ -1,4 +1,9 @@
-﻿.customizer .form-control, .customizer .input-group-btn .btn-default {
+﻿.container {
+    width: 100% !important;
+    padding: 20px;
+}
+
+.customizer .form-control, .customizer .input-group-btn .btn-default {
     background-color: #fafafa;
     font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
 }
@@ -96,9 +101,8 @@
     }
 }
 
-
 .table-scroll tbody {
-    max-height: 300px;
+    max-height: 400px;
     overflow-y: auto;
     width: 100%;
     display: block;
@@ -119,15 +123,35 @@
     border-radius: 8px;
 }
 
-    .toaster .header {
-        padding: 5px;
-        border-bottom: 1px solid rgba(0,0,0,.175);
-    }
+.toaster .header {
+    padding: 5px;
+    border-bottom: 1px solid rgba(0,0,0,.175);
+}
 
-    .toaster .content {
-        padding: 5px;
-    }
+.toaster .content {
+    padding: 5px;
+}
 
-.table tbody td .word-wrap{
+.table tbody td .word-wrap {
     word-wrap: break-word;
 }
+
+.labelText {
+	width: 110px;
+}
+
+.footer {
+    height: 10px;
+    font-family: Verdana;
+    font-size: 8pt;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #669b67;
+    text-align: left;
+}
+
+
+
+
+
+

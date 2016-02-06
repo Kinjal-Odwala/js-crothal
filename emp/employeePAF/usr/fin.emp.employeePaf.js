@@ -1,995 +1,3 @@
-﻿window['_Jyi'] = ['<section>    <h3 class="text-center header">PERSONNEL ACTION FORM<span ng-if="empAction.Number>0"> ( #{{empAction.Number}} )</span></h3></section><div class="customizer">    <div class="container bs-docs-container ">        <form name="pafForm">            <section>                <p class="bs-header text-center">(First Section to be filled out at all times by Hiring Manager, Manager and/or Associate)</p>                <div class="row">                    <div class="col-md-3">                        <div class="form-group" paf-invalid="pafForm.Date">                            <label>Date</label>                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="empAction.Date" dt-name="Date" dt-required="true"></paf-datepicker>                        </div>                    </div>                    <div class="col-md-9">                        <div class="form-group typeahead" paf-invalid="pafForm.HcmHouseCode">                            <label class="control-label">House Code or Unit Name</label>                            <paf-typeahead ng-model="empAction.HcmHouseCode" source="HcmHouseCodes"                                typeahead-option="{displayField:\'name\',valueField:\'id\',name:\'HcmHouseCode\'}" ng-required="true"></paf-typeahead>                        </div>                    </div>                </div>                <div class="row">                    <div class="col-md-3">                        <div class="form-group" ng-class="{\'has-error\':pafForm.EmployeeNumber.$invalid}">                            <label class="control-label">Employee/Clock Number</label>                            <input class="form-control input-sm" name="EmployeeNumber" ng-blur="onEmployeeNumberChanged(empAction.EmployeeNumber)"                                paf-enter="onEmployeeNumberChanged(empAction.EmployeeNumber)" ng-model="empAction.EmployeeNumber" ng-required="!empAction.NewHire" paf-numeric />                        </div>                    </div>                    <div class="col-md-3">                        <div class="form-group" ng-class="{\'has-error\':pafForm.FirstName.$invalid}">                            <label class="control-label">First Name</label>                            <input class="form-control input-sm" name="FirstName" ng-model="empAction.FirstName" ng-disabled="empAction.Data.Person" required />                        </div>                    </div>                    <div class="col-md-3">                        <div class="form-group">                            <label class="control-label">Middle Name</label>                            <input class="form-control input-sm" name="MiddleName" ng-model="empAction.MiddleName" ng-disabled="empAction.Data.Person" />                        </div>                    </div>                    <div class="col-md-3">                        <div class="form-group" ng-class="{\'has-error\':pafForm.LastName.$invalid}">                            <label class="control-label">Last Name</label>                            <input class="form-control input-sm" name="LastName" ng-model="empAction.LastName" ng-disabled="empAction.Data.Person" required />                        </div>                    </div>                </div>                <div class="row">                    <div class="col-md-6">                        <div class="form-group" ng-class="{\'has-error\':pafForm.AddressLine1.$invalid}">                            <label class="control-label">Address1</label>                            <input class="form-control input-sm" name="AddressLine1" ng-model="empAction.AddressLine1" ng-disabled="empAction.Data.Person" required />                        </div>                    </div>                    <div class="col-md-6">                        <div class="form-group">                            <label class="control-label">Address2</label>                            <input class="form-control input-sm" name="AddressLine2" ng-model="empAction.AddressLine2" ng-disabled="empAction.Data.Person" />                        </div>                    </div>                </div>                <div class="row">                    <div class="col-md-3" ng-class="{\'has-error\':pafForm.City.$invalid}">                        <label class="control-label">City</label>                        <input class="form-control input-sm" name="City" ng-model="empAction.City" ng-disabled="empAction.Data.Person" required />                    </div>                    <div class="col-md-3" ng-class="{\'has-error\':pafForm.StateType.$invalid}">                        <label class="control-label">State</label>                        <select class="form-control input-sm" name="StateType" ng-model="empAction.StateType" ng-disabled="empAction.Data.Person" ng-options="item.id as item.name for item in States" required>                            <option></option>                        </select>                    </div>                    <div class="col-md-3" ng-class="{\'has-error\':pafForm.PostalCode.$invalid}">                        <label>Zip</label>                        <input class="form-control input-sm" name="PostalCode" ng-model="empAction.PostalCode" paf-mask="zipcode" ng-disabled="empAction.Data.Person" required />                    </div>                    <div class="col-md-3">                        <div class="form-group" ng-class="{\'has-error\':pafForm.Phone.$invalid}">                            <label class="control-label">Phone #</label>                            <input class="form-control input-sm" name="Phone" ng-model="empAction.Phone" paf-mask="phone" ng-disabled="empAction.Data.Person" required />                        </div>                    </div>                </div>            </section>            <section>                <h4 style="display: inline-block">CHECK ALL THAT APPLY</h4>                <span class="has-error" ng-show="pafForm.$error.ActionType[0].$invalid" style="display: inline-block">&nbsp;<label class="glyphicon glyphicon-info-sign"></label><label> &nbsp;At least one action type should be checked.</label></span>                <p>(Position must be posted with Recruiter for any new hire, transfer, re-hire, or promotion)</p>                <div class="row" ng-class="{\'has-error\':pafForm.$error.ActionType[0].$invalid}">                    <div ng-repeat="type in PositionTypes" ng-class="{\'col-md-6 col-sm-6\':type.id==\'SalaryChange\',\'col-md-3 col-sm-6\':type.id!=\'SalaryChange\'}">                        <div class="form-group">                            <div class="checkbox">                                <label>                                    <input type="checkbox" name="CheckType" ng-checked="positionTypeChecked(type.id)" ng-value="type.id" ng-click="onPositionTypeChanged(type.id)" />{{type.display}}</label>                            </div>                        </div>                    </div>            </section>            <!--NEW HIRE-->            <section ng-if="empAction.NewHire" paf-scope="empAction.Data.NewHire">                <h4>NEW HIRE</h4>                <div ng-form="hireForm" ng-controller="hireCtrl">    <p>(Section to be completed by Hiring Manager)</p>    <div class="row">        <div class="col-md-4">            <div class="form-group" paf-invalid="hireForm.HireDate">                <label>Hire Date</label>                <paf-datepicker dt-model="data.HireDate" dt-name="HireDate" dt-option="dateOptions"                    dt-popup="MM/dd/yyyy" dt-required="true"></paf-datepicker>            </div>        </div>        <div class="col-md-8">            <div class="form-group" paf-invalid="hireForm.PositionType">                <label>Position</label>                <select class="form-control input-sm" name="PositionType" ng-model="data.PositionType"                    ng-options="item.id as item.name for item in $parent.$parent.$parent.JobCodes" required>                    <option value=""></option>                </select>            </div>        </div>    </div>    <div class="row">        <div class="col-md-12">            <label>Status</label>            <div class="row" paf-invalid="hireForm.Status">                <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12">                    <div class="form-inline">                        <div class="form-group" paf-invalid="hireForm.FullTimeHours">                            <label>                                <input name="Status" ng-model="data.Status" required="required" type="radio" value="FullTimeHours" />&nbsp;Full Time</label>                            <input class="form-control input-sm" name="FullTimeHours" ng-show="data.Status==\'FullTimeHours\'"                                ng-model="data.FullTimeHours" ng-required="data.Status==\'FullTimeHours\'"                                paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week"                                type="text" />                        </div>                    </div>                </div>                <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12">                    <div class="form-inline">                        <div class="form-group" paf-invalid="hireForm.PartTimeHours">                            <label>                                <input name="Status" ng-model="data.Status" required="required" type="radio" value="PartTimeHours" />&nbsp;Part Time</label>                            <input class="form-control input-sm" name="PartTimeHours" ng-show="data.Status==\'PartTimeHours\'"                                ng-model="data.PartTimeHours" ng-required="data.Status==\'PartTimeHours\'" paf-format="{0} hours/week"                                paf-numeric="" placeholder="0 hours/week"                                type="text" />                        </div>                    </div>                    <div class="clearfix"></div>                </div>                <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12">                    <div class="form-inline">                        <div class="form-group" paf-invalid="hireForm.TemporaryHours">                            <label>                                <input name="Status" ng-model="data.Status" required="required" type="radio" value="TemporaryHours" />&nbsp;Temporary</label>                            <input class="form-control input-sm" name="TemporaryHours" ng-show="data.Status==\'TemporaryHours\'"                                ng-model="data.TemporaryHours" ng-required="data.Status==\'TemporaryHours\'"                                paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week"                                type="text" />                        </div>                    </div>                </div>            </div>            <div class="row" paf-invalid="hireForm.PayStatus">                <div class="col-md-3 form-inline">                    <div class="form-group" paf-invalid="hireForm.AnnualSalaryAmount">                        <label>                            <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="AnnualSalaryAmount" />&nbsp;Salary</label>                        <input class="form-control input-sm" name="AnnualSalaryAmount"                            ng-show="data.PayStatus==\'AnnualSalaryAmount\'"                            ng-model="data.AnnualSalaryAmount" ng-required="data.PayStatus==\'AnnualSalaryAmount\'"                            paf-format="${0}/year" paf-numeric="" placeholder="$0/year" style="width: 40%" type="text" />                    </div>                </div>                <div class="col-md-3 form-inline">                    <div class="form-group" paf-invalid="hireForm.AdminHourlyAmount">                        <label>                            <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="AdminHourlyAmount" />&nbsp;Admin.Hourly</label>                        <input class="form-control input-sm" name="AdminHourlyAmount"                            ng-show="data.PayStatus==\'AdminHourlyAmount\'" ng-model="data.AdminHourlyAmount"                            ng-required="data.PayStatus==\'AdminHourlyAmount\'" paf-format="${0}/hour" paf-numeric=""                            placeholder="$0/hour" style="width: 40%" type="text" />                    </div>                </div>                <div class="col-md-3 form-inline">                    <div class="form-group" paf-invalid="hireForm.HourlyRateAmount">                        <label>                            <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="HourlyRateAmount" />&nbsp;Hourly</label>                        <input class="form-control input-sm" name="HourlyRateAmount" ng-show="data.PayStatus==\'HourlyRateAmount\'"                            ng-model="data.HourlyRateAmount" ng-required="data.PayStatus==\'HourlyRateAmount\'"                            paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" style="width: 40%" type="text" />                    </div>                </div>                <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12 ">                    <div class="form-inline">                        <div class="form-group" paf-invalid="hireForm.PerDiemValue">                            <label>                                <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="PerDiemValue" />&nbsp;Per Diem</label>                            <input class="form-control input-sm" name="PerDiemValue" ng-show="data.PayStatus==\'PerDiemValue\'"                                ng-model="data.PerDiemValue" ng-required="data.PayStatus==\'PerDiemValue\'" paf-format="${0}/day"                                paf-numeric="" placeholder="$0/day" type="text" />                        </div>                    </div>                </div>            </div>        </div>    </div>    <div class="row" ng-if="data.PayStatus != \'PerDiemValue\'">        <div class="col-md-4">            <div class="gorm-group" paf-invalid="hireForm.PayGrade">                <label>Pay Grade (min - mid - max)</label>                <select class="form-control input-sm" name="PayGrade" ng-model="data.PayGrade"                    ng-options="item.id as item.id+\' (\'+item.min+\' - \'+item.mid+\' - \'+item.max+\')\' for item in $parent.$parent.$parent.PayGrades" required="required">                    <option></option>                </select>            </div>        </div>        <div class="col-md-4">            <label>Pay Range</label>            <p class="form-control input-sm">{{ getPayRange()}}</p>        </div>    </div>    <div paf-scope="data">        <!--<div class="col-md-2">            <div class="form-group" paf-invalid="hireForm.ReportingManagerNumber">                <label>Managers/Clock Number</label>                <input class="form-control input-sm" name="ReportingManagerNumber" ng-model="data.ReportingManagerNumber" ng-blur="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)"  ng-required="$parent.$parent.isManagerFieldRequired(data)" paf-numeric />            </div>        </div>        <div class="col-md-2">            <div class="form-group" paf-invalid="hireForm.ReportingName">                <label>Reporting Manager Name</label>                <input class="form-control input-sm" name="ReportingName" ng-model="data.ReportingName"  ng-required="$parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div>        <div class="col-md-4">            <div class="form-group" paf-invalid="hireForm.ReportingTitle">                <label>Title</label>                <input class="form-control input-sm" name="ReportingTitle" ng-model="data.ReportingTitle"  ng-required="$parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div>        <div class="col-md-4">            <div class="form-group" paf-invalid="hireForm.ReportingEmail">                <label>Email</label>                <input class="form-control input-sm" name="ReportingEmail" ng-model="data.ReportingEmail" type="email"  ng-required="$parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div>-->        <div class="row">    <ng-form name="managerinfoForm">    <div class="col-md-2">            <div class="form-group"  paf-invalid="managerinfoForm.ReportingManagerNumber">                <label>Managers/Clock Number</label>                <input class="form-control input-sm" ng-disabled="data.DisabledReportingManagerNumberField"  name="ReportingManagerNumber" ng-model="data.ReportingManagerNumber" ng-blur="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)" paf-numeric />            </div>        </div>        <div class="col-md-2">            <div class="form-group"  paf-invalid="managerinfoForm.ReportingName">                <label>Reporting Manager Name</label>                <input class="form-control input-sm"  ng-disabled="data.DisabledReportFields" name="ReportingName" ng-model="data.ReportingName"  ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div>        <div class="col-md-4">            <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle" >                <label>Title</label>                <input class="form-control input-sm"  ng-disabled="data.DisabledReportFields" name="ReportingTitle" ng-model="data.ReportingTitle"  ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div>        <div class="col-md-4">            <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">                <label>Email</label>                <input type="email" class="form-control input-sm"  ng-disabled="data.DisabledReportFields" name="ReportingEmail" ng-model="data.ReportingEmail"  ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div></ng-form></div>      </div>    <div class="row" ng-if="data.PayStatus != \'PerDiemValue\'">        <div class="col-md-4">            <div class="form-group">                <label>Training Location</label>                <paf-typeahead ng-model="data.HcmHouseCodeTrainingLocation" source="$parent.$parent.HcmHouseCodes"                    typeahead-option="{displayField:\'name\',valueField:\'id\',name:\'HcmHouseCodeTrainingLocation\'}"></paf-typeahead>            </div>        </div>        <div class="col-md-5">            <div class="form-group">                <label>Training Contact</label>                <input class="form-control input-sm" ng-model="data.TrainingContact" />            </div>        </div>        <div class="col-md-3">            <div class="form-group">                <label>Duration</label>                <input class="form-control input-sm" ng-model="data.Duration" paf-format="{0} weeks"                    paf-numeric="" placeholder="0 weeks" type="text" />            </div>        </div>    </div>    <div class="row" ng-if="data.PayStatus != \'PerDiemValue\'">        <div class="col-md-4">            <div class="form-group">                <label>                    Car Allowance</label>                <div class="input-group-btn" dropdown="">                    <input class="form-control input-sm" dropdown-toggle="" ng-model="data.CarAllowance"                        paf-format="${0}/month" paf-numeric="" placeholder="$0/month" />                    <ul id="dropdown-menu" class="dropdown-menu" role="menu">                        <li ng-click="data.CarAllowance = item.Id;" ng-repeat="item in $parent.$parent.lkup.CarAllowances"><a>{{item.Description}}</a></li>                    </ul>                </div>            </div>        </div>        <div class="col-md-5">            <div class="form-group">                <label>Bonus Eligible</label>                <select class="form-control input-sm" ng-model="data.BonusEligibleType" ng-options="item.id as item.title for item in $parent.$parent.$parent.lkup.BounsEligibles">                    <option value=""></option>                </select>            </div>        </div>    </div></div>                                      </section>            <!--REHIRE-->            <section ng-if="empAction.ReHire" paf-scope="empAction.Data.ReHire">                <h4>REHIRE</h4>                <div ng-form="hireForm" ng-controller="hireCtrl">    <p>(Section to be completed by Hiring Manager)</p>    <div class="row">        <div class="col-md-4">            <div class="form-group" paf-invalid="hireForm.HireDate">                <label>Hire Date</label>                <paf-datepicker dt-model="data.HireDate" dt-name="HireDate" dt-option="dateOptions"                    dt-popup="MM/dd/yyyy" dt-required="true"></paf-datepicker>            </div>        </div>        <div class="col-md-8">            <div class="form-group" paf-invalid="hireForm.PositionType">                <label>Position</label>                <select class="form-control input-sm" name="PositionType" ng-model="data.PositionType"                    ng-options="item.id as item.name for item in $parent.$parent.$parent.JobCodes" required>                    <option value=""></option>                </select>            </div>        </div>    </div>    <div class="row">        <div class="col-md-12">            <label>Status</label>            <div class="row" paf-invalid="hireForm.Status">                <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12">                    <div class="form-inline">                        <div class="form-group" paf-invalid="hireForm.FullTimeHours">                            <label>                                <input name="Status" ng-model="data.Status" required="required" type="radio" value="FullTimeHours" />&nbsp;Full Time</label>                            <input class="form-control input-sm" name="FullTimeHours" ng-show="data.Status==\'FullTimeHours\'"                                ng-model="data.FullTimeHours" ng-required="data.Status==\'FullTimeHours\'"                                paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week"                                type="text" />                        </div>                    </div>                </div>                <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12">                    <div class="form-inline">                        <div class="form-group" paf-invalid="hireForm.PartTimeHours">                            <label>                                <input name="Status" ng-model="data.Status" required="required" type="radio" value="PartTimeHours" />&nbsp;Part Time</label>                            <input class="form-control input-sm" name="PartTimeHours" ng-show="data.Status==\'PartTimeHours\'"                                ng-model="data.PartTimeHours" ng-required="data.Status==\'PartTimeHours\'" paf-format="{0} hours/week"                                paf-numeric="" placeholder="0 hours/week"                                type="text" />                        </div>                    </div>                    <div class="clearfix"></div>                </div>                <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12">                    <div class="form-inline">                        <div class="form-group" paf-invalid="hireForm.TemporaryHours">                            <label>                                <input name="Status" ng-model="data.Status" required="required" type="radio" value="TemporaryHours" />&nbsp;Temporary</label>                            <input class="form-control input-sm" name="TemporaryHours" ng-show="data.Status==\'TemporaryHours\'"                                ng-model="data.TemporaryHours" ng-required="data.Status==\'TemporaryHours\'"                                paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week"                                type="text" />                        </div>                    </div>                </div>            </div>            <div class="row" paf-invalid="hireForm.PayStatus">                <div class="col-md-3 form-inline">                    <div class="form-group" paf-invalid="hireForm.AnnualSalaryAmount">                        <label>                            <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="AnnualSalaryAmount" />&nbsp;Salary</label>                        <input class="form-control input-sm" name="AnnualSalaryAmount"                            ng-show="data.PayStatus==\'AnnualSalaryAmount\'"                            ng-model="data.AnnualSalaryAmount" ng-required="data.PayStatus==\'AnnualSalaryAmount\'"                            paf-format="${0}/year" paf-numeric="" placeholder="$0/year" style="width: 40%" type="text" />                    </div>                </div>                <div class="col-md-3 form-inline">                    <div class="form-group" paf-invalid="hireForm.AdminHourlyAmount">                        <label>                            <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="AdminHourlyAmount" />&nbsp;Admin.Hourly</label>                        <input class="form-control input-sm" name="AdminHourlyAmount"                            ng-show="data.PayStatus==\'AdminHourlyAmount\'" ng-model="data.AdminHourlyAmount"                            ng-required="data.PayStatus==\'AdminHourlyAmount\'" paf-format="${0}/hour" paf-numeric=""                            placeholder="$0/hour" style="width: 40%" type="text" />                    </div>                </div>                <div class="col-md-3 form-inline">                    <div class="form-group" paf-invalid="hireForm.HourlyRateAmount">                        <label>                            <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="HourlyRateAmount" />&nbsp;Hourly</label>                        <input class="form-control input-sm" name="HourlyRateAmount" ng-show="data.PayStatus==\'HourlyRateAmount\'"                            ng-model="data.HourlyRateAmount" ng-required="data.PayStatus==\'HourlyRateAmount\'"                            paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" style="width: 40%" type="text" />                    </div>                </div>                <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12 ">                    <div class="form-inline">                        <div class="form-group" paf-invalid="hireForm.PerDiemValue">                            <label>                                <input name="PayStatus" ng-model="data.PayStatus" required="required" type="radio" value="PerDiemValue" />&nbsp;Per Diem</label>                            <input class="form-control input-sm" name="PerDiemValue" ng-show="data.PayStatus==\'PerDiemValue\'"                                ng-model="data.PerDiemValue" ng-required="data.PayStatus==\'PerDiemValue\'" paf-format="${0}/day"                                paf-numeric="" placeholder="$0/day" type="text" />                        </div>                    </div>                </div>            </div>        </div>    </div>    <div class="row" ng-if="data.PayStatus != \'PerDiemValue\'">        <div class="col-md-4">            <div class="gorm-group" paf-invalid="hireForm.PayGrade">                <label>Pay Grade (min - mid - max)</label>                <select class="form-control input-sm" name="PayGrade" ng-model="data.PayGrade"                    ng-options="item.id as item.id+\' (\'+item.min+\' - \'+item.mid+\' - \'+item.max+\')\' for item in $parent.$parent.$parent.PayGrades" required="required">                    <option></option>                </select>            </div>        </div>        <div class="col-md-4">            <label>Pay Range</label>            <p class="form-control input-sm">{{ getPayRange()}}</p>        </div>    </div>    <div paf-scope="data">        <!--<div class="col-md-2">            <div class="form-group" paf-invalid="hireForm.ReportingManagerNumber">                <label>Managers/Clock Number</label>                <input class="form-control input-sm" name="ReportingManagerNumber" ng-model="data.ReportingManagerNumber" ng-blur="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)"  ng-required="$parent.$parent.isManagerFieldRequired(data)" paf-numeric />            </div>        </div>        <div class="col-md-2">            <div class="form-group" paf-invalid="hireForm.ReportingName">                <label>Reporting Manager Name</label>                <input class="form-control input-sm" name="ReportingName" ng-model="data.ReportingName"  ng-required="$parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div>        <div class="col-md-4">            <div class="form-group" paf-invalid="hireForm.ReportingTitle">                <label>Title</label>                <input class="form-control input-sm" name="ReportingTitle" ng-model="data.ReportingTitle"  ng-required="$parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div>        <div class="col-md-4">            <div class="form-group" paf-invalid="hireForm.ReportingEmail">                <label>Email</label>                <input class="form-control input-sm" name="ReportingEmail" ng-model="data.ReportingEmail" type="email"  ng-required="$parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div>-->        <div class="row">    <ng-form name="managerinfoForm">    <div class="col-md-2">            <div class="form-group"  paf-invalid="managerinfoForm.ReportingManagerNumber">                <label>Managers/Clock Number</label>                <input class="form-control input-sm" ng-disabled="data.DisabledReportingManagerNumberField"  name="ReportingManagerNumber" ng-model="data.ReportingManagerNumber" ng-blur="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)" paf-numeric />            </div>        </div>        <div class="col-md-2">            <div class="form-group"  paf-invalid="managerinfoForm.ReportingName">                <label>Reporting Manager Name</label>                <input class="form-control input-sm"  ng-disabled="data.DisabledReportFields" name="ReportingName" ng-model="data.ReportingName"  ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div>        <div class="col-md-4">            <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle" >                <label>Title</label>                <input class="form-control input-sm"  ng-disabled="data.DisabledReportFields" name="ReportingTitle" ng-model="data.ReportingTitle"  ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div>        <div class="col-md-4">            <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">                <label>Email</label>                <input type="email" class="form-control input-sm"  ng-disabled="data.DisabledReportFields" name="ReportingEmail" ng-model="data.ReportingEmail"  ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div></ng-form></div>      </div>    <div class="row" ng-if="data.PayStatus != \'PerDiemValue\'">        <div class="col-md-4">            <div class="form-group">                <label>Training Location</label>                <paf-typeahead ng-model="data.HcmHouseCodeTrainingLocation" source="$parent.$parent.HcmHouseCodes"                    typeahead-option="{displayField:\'name\',valueField:\'id\',name:\'HcmHouseCodeTrainingLocation\'}"></paf-typeahead>            </div>        </div>        <div class="col-md-5">            <div class="form-group">                <label>Training Contact</label>                <input class="form-control input-sm" ng-model="data.TrainingContact" />            </div>        </div>        <div class="col-md-3">            <div class="form-group">                <label>Duration</label>                <input class="form-control input-sm" ng-model="data.Duration" paf-format="{0} weeks"                    paf-numeric="" placeholder="0 weeks" type="text" />            </div>        </div>    </div>    <div class="row" ng-if="data.PayStatus != \'PerDiemValue\'">        <div class="col-md-4">            <div class="form-group">                <label>                    Car Allowance</label>                <div class="input-group-btn" dropdown="">                    <input class="form-control input-sm" dropdown-toggle="" ng-model="data.CarAllowance"                        paf-format="${0}/month" paf-numeric="" placeholder="$0/month" />                    <ul id="dropdown-menu" class="dropdown-menu" role="menu">                        <li ng-click="data.CarAllowance = item.Id;" ng-repeat="item in $parent.$parent.lkup.CarAllowances"><a>{{item.Description}}</a></li>                    </ul>                </div>            </div>        </div>        <div class="col-md-5">            <div class="form-group">                <label>Bonus Eligible</label>                <select class="form-control input-sm" ng-model="data.BonusEligibleType" ng-options="item.id as item.title for item in $parent.$parent.$parent.lkup.BounsEligibles">                    <option value=""></option>                </select>            </div>        </div>    </div></div>                                      </section>            <!--SEPARATION-->            <section ng-if="empAction.Separation" paf-scope="empAction.Data.Separation">                <div ng-form="separationForm" ng-controller="separationCtrl">    <h4 style="display: inline-block;">SEPARATION </h4>    <span class="has-error" ng-show="separationForm.$$parentForm.$error.separationReason[0].$invalid" style="display: inline-block">&nbsp;<label class="glyphicon glyphicon-info-sign"></label><label> &nbsp;Must select a Separation Reason.</label></span>    <p>(SECTION to be completed by Manager)</p>    <div class="row">        <div class="col-md-4">            <div class="form-group" ng-class="{\'has-error\':separationForm.SeparationDate.$invalid}">                <label>                    Separation Date</label>                <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-name="SeparationDate" dt-model="data.SeparationDate" dt-required="true"></paf-datepicker>            </div>        </div>        <div class="col-md-4">            <div class="form-group">                <label>                    Number Vacation Days Due</label>                <input class="form-control input-sm" ng-model="data.VacationDaysDue" paf-numeric />            </div>        </div>        <div class="col-md-4">            <div class="form-group">                <label>                    Severance Pay - Number of Weeks</label>                <input class="form-control input-sm" ng-model="data.PayNumberOfWeeks" paf-numeric />            </div>        </div>    </div>    <div class="row" ng-class="{\'has-error\':separationForm.$$parentForm.$error.separationReason[0].$invalid}">        <div class="col-md-4">            <div class="form-group" ng-class="{\'has-error\':separationForm.SeparationReason.$invalid||separationForm.ResignationType.$invalid}">                <label>                    <input type="radio" name="SeparationReason" ng-model="data.SeparationReason" value="ResignationType" />&nbsp;Resignation <span ng-if="data.SeparationReason==\'ResignationType\'">- <i>Enter Reason Code Below</i></span></label>                <select class="form-control input-sm" name="ResignationType" ng-model="data.ResignationType" ng-disabled="data.SeparationReason!=\'ResignationType\'" ng-options="item.id as item.brief+\' \'+item.title for item in $parent.$parent.lkup.Resignations" ng-required="data.SeparationReason==\'ResignationType\'">                    <option value=""></option>                </select>            </div>        </div>        <div class="col-md-4">            <div class="form-group" ng-class="{\'has-error\':separationForm.SeparationReason.$invalid||separationForm.TerminationType.$invalid}">                <label>                    <input type="radio" name="SeparationReason" ng-model="data.SeparationReason" value="TerminationType" />&nbsp;Termination <span ng-if="data.SeparationReason==\'TerminationType\'">- <i>Enter Reason Code Below</i></span></label>                <select class="form-control input-sm" name="TerminationType" ng-model="data.TerminationType" ng-disabled="data.SeparationReason!=\'TerminationType\'" ng-options="item.id as item.brief+\' \'+item.title for item in $parent.$parent.lkup.Terminations" ng-required="data.SeparationReason==\'TerminationType\'">                    <option value=""></option>                </select>            </div>        </div>        <div class="col-md-4">            <div class="form-group" ng-class="{\'has-error\':separationForm.SeparationReason.$invalid||separationForm.LayoffType.$invalid}">                <label>                    <input type="radio" name="SeparationReason" ng-model="data.SeparationReason" value="LayoffType" />&nbsp;Layoff <span ng-if="data.SeparationReason==\'LayoffType\'">- <i>Enter Reason Code Below</i></span></label>                <select class="form-control input-sm" name="LayoffType" ng-model="data.LayoffType" ng-disabled="data.SeparationReason!=\'LayoffType\'" ng-options="item.id as item.brief+\' \'+item.title for item in $parent.$parent.lkup.Layoffs" ng-required="data.SeparationReason==\'LayoffType\'">                    <option value=""></option>                </select>            </div>        </div>    </div>    <div class="row">        <!--<div class="col-md-8">            <label>Note: </label>            &nbsp;Send all Separation Information (Resignation Letter,Progressive Counseling,etc.) to HRD        </div>-->        <div class="col-md-8" ng-show="data.SeparationReason==\'ResignationType\'||data.SeparationReason==\'LayoffType\'||data.SeparationReason==\'TerminationType\'">            <div ng-show="data.SeparationReason==\'ResignationType\'">                <label>Note: </label>                &nbsp; Attach Resignation Letter            </div>            <div class="form-group" ng-show="data.SeparationReason==\'LayoffType\'||data.SeparationReason==\'TerminationType\'">                <label>Reviewed with HR:</label>                <div>                    <select class="form-control input-sm" ng-model="data.ReviewedWithHR" ng-options="item.Id as item.Description for item in $parent.$parent.lkup.ReviewedWithHR">                        <option value=""></option>                    </select>                </div>            </div>        </div>        <div class="col-md-4 ">            <label>Rehire:</label>            <div class="form-group">                <label class="radio-inline">                    <input type="radio" ng-model="data.SeparationReHire" ng-value="true" />                    Yes</label>                <label class="radio-inline">                    <input type="radio" ng-model="data.SeparationReHire" ng-value="false" />                    No                </label>            </div>        </div>    </div></div>                                      </section>            <!--LEAVE OF ABSENCE-->            <section ng-if="empAction.Loa" paf-scope="empAction.Data.Loa">                <div ng-form="loaForm" ng-controller="loaCtrl">    <h4 style="display: inline-block;">LEAVE OF ABSENCE</h4>    <span class="has-error" ng-show="loaForm.$$parentForm.$error.loa[0].$invalid" style="display: inline-block">&nbsp;<label class="glyphicon glyphicon-info-sign"></label><label> &nbsp;Require one of Loa Date or Date Return be entered.</label></span>    <p>(SECTION to be completed by Manager)</p>    <div class="row" ng-class="{\'has-error\':loaForm.$$parentForm.$error.loa[0].$invalid}">        <div class="col-md-4">            <div class="form-group">                <label>                    LOA Date</label>                <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-name="LoaDate" dt-model="data.LoaDate"></paf-datepicker>            </div>        </div>        <div class="col-md-4">            <div class="form-group">                <label>                    Date Return</label>                <paf-datepicker dt-option="dateOptions" dt-name="DateOfReturn" min-date="data.LoaDate" dt-popup="MM/dd/yyyy" dt-model="data.DateOfReturn"></paf-datepicker>            </div>        </div>    </div></div>                                             </section>            <!--PROMOTION-->            <section ng-if="empAction.Promotion" paf-scope="empAction.Data.Promotion">                <h4>PROMOTION</h4>                <div ng-form="pdsForm">    <p>(Section to be completed by Manager)</p>    <div class="row">        <div class="col-md-6">            <div class="form-group">                <label>                    Current Position</label>                <div class="form-control input-sm">{{$parent.empAction.Data.Compensation.CurrentPosition}}</div>                <!-- <input class="form-control input-sm" ng-disabled="true" ng-model="empAction.CurrentPositionType" />-->            </div>        </div>        <div class="col-md-6">            <div class="form-group" ng-class="{\'has-error\':pdsForm.NewPositionType.$invalid}">                <label>                    New Position</label>                <select class="form-control input-sm" name="NewPositionType" ng-model="data.NewPositionType" ng-options="item.id as item.name for item in $parent.JobCodes" ng-required="$parent.empAction.Promotion||$parent.empAction.Demotion">                    <option value=""></option>                </select>            </div>        </div>    </div>    <div class="row">        <div class="col-md-4">            <div class="form-group" ng-class="{\'has-error\':pdsForm.EffectiveDate.$invalid}">                <label>                    Effective Date</label>                <paf-datepicker dt-model="data.EffectiveDate" dt-name="EffectiveDate" dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-required="$parent.empAction.SalaryChange||$parent.empAction.Promotion||$parent.empAction.Demotion"></paf-datepicker>            </div>        </div>        <div class="col-md-4">            <div class="form-group" ng-class="{\'has-error\':pdsForm.ChangeReasonType.$invalid}">                <label>                    Reason for Change*:</label>                <select class="form-control input-sm" name="ChangeReasonType" ng-model="data.ChangeReasonType" ng-options="item.id as item.title for item in $parent.lkup.Reason4Changes|reason4ChangeFilter:$parent.empAction" ng-required="$parent.empAction.SalaryChange||$parent.empAction.Promotion||$parent.empAction.Demotion">                    <option></option>                </select>            </div>        </div>        <!--<div class="col-md-4">            <div class="form-group">                <label>&nbsp;</label><br />                <b>*Reason Code <span style="text-decoration: underline">MUST</span> be Entered</b>            </div>        </div>-->        <div class="col-md-4" ng-if="data.ChangeReasonType==12||data.ChangeReasonType==17||data.ChangeReasonType==18">            <div class="form-group">                <label>Reviewed with HR:</label>                <div>                    <select class="form-control"></select>                </div>            </div>        </div>    </div>    <div class="row">        <div class="col-md-6">            <div class="form-group">                <label ng-if="!$parent.empAction.Demotion">                    Date Last Increase</label>                <label ng-if="$parent.empAction.Demotion">                    Date Last  Increase/Decrease                 </label>                <label class="form-control input-sm">{{$parent.empAction.Data.Compensation.DateLastIncrease}}</label>            </div>        </div>        <div class="col-md-6">            <div class="form-group">                <label ng-if="!$parent.empAction.Demotion">                    Percentage Last Increase</label>                <label ng-if="$parent.empAction.Demotion">                    Percentage Last Increase/Decrease                 </label>                <input class="form-control input-sm" ng-model="$parent.empAction.Data.Compensation.PercentLastIncrease" paf-numeric="" ng-disabled="true" />            </div>        </div>    </div>    <div class="row">        <div class="col-md-3">            <div class="form-group">                <label>                    Current Salary</label>                <input class="form-control input-sm" ng-model="$parent.empAction.Data.Compensation.CurrentSalary" paf-numeric="" ng-disabled="true" />            </div>        </div>        <div class="col-md-3">            <div class="form-group" ng-class="{\'has-error\':!data.IncreasePercentage&&pdsForm.IncreaseAmount.$invalid}">                <label ng-if="!$parent.empAction.Demotion&&data.ChangeReasonType!=18">                    Increase Amount</label>                <label ng-if="$parent.empAction.Demotion||data.ChangeReasonType==18">                    Decrease Amount                </label>                <input class="form-control input-sm" name="IncreaseAmount" ng-change="$parent.onSalaryChange(\'amt\')" ng-model="data.IncreaseAmount" ng-required="($parent.empAction.SalaryChange||$parent.empAction.Promotion||$parent.empAction.Demotion)&&!data.IncreasePercentage" paf-numeric="" />            </div>        </div>        <div class="col-md-3">            <div class="form-group" ng-class="{\'has-error\':!data.IncreaseAmount&&pdsForm.IncreasePercentage.$invalid}">                <label>                    Percentage</label>                <input class="form-control input-sm" name="IncreasePercentage" ng-change="$parent.onSalaryChange(\'percentage\')" ng-model="data.IncreasePercentage" ng-required="($parent.empAction.SalaryChange||$parent.empAction.Promotion||$parent.empAction.Demotion)&&!data.IncreaseAmount" paf-numeric="" paf-format="{0}%" />            </div>        </div>        <div class="col-md-3">            <div class="form-group">                <label>                    New Salary</label>                <input class="form-control input-sm" ng-model="data.NewSalary" paf-numeric="" ng-disabled="true" />            </div>        </div>    </div>    <div class="row">        <div class="col-md-4">            <div class="form-group">                <label>                    Current Pay Grade (min - mid - max)</label>                <input class="form-control input-sm" ng-disabled="true" ng-model="$parent.empAction.Data.Compensation.CurrentPayGrade" ng-disabled="true" />            </div>        </div>        <div class="col-md-2">            <div class="form-group">                <label>Current Pay Range</label>                <input class="form-control input-sm" ng-disabled="true" ng-model="$parent.empAction.Data.Compensation.CurrentPayRange" ng-disabled="true" />            </div>        </div>        <div class="col-md-4">            <div class="form-group" ng-class="{\'has-error\':pdsForm.NewPayGrade.$invalid}">                <label>                    New Pay Grade (min - mid - max)</label>                <select class="form-control input-sm" name="NewPayGrade" ng-model="data.NewPayGrade" ng-options="item.id as item.id+\' (\'+item.min+\' - \'+item.mid+\' - \'+item.max+\')\' for item in $parent.PayGrades" ng-required="$parent.empAction.SalaryChange||$parent.empAction.Promotion||$parent.empAction.Demotion">                    <option></option>                </select>            </div>        </div>        <div class="col-md-2">            <div class="form-group">                <label>New Pay Range</label>                <p class="form-control input-sm">{{ $parent.getPayRange(data.NewPayGrade,data.NewSalary)}}</p>            </div>        </div>    </div>    <div paf-scope="data">        <div class="row">    <ng-form name="managerinfoForm">    <div class="col-md-2">            <div class="form-group"  paf-invalid="managerinfoForm.ReportingManagerNumber">                <label>Managers/Clock Number</label>                <input class="form-control input-sm" ng-disabled="data.DisabledReportingManagerNumberField"  name="ReportingManagerNumber" ng-model="data.ReportingManagerNumber" ng-blur="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)" paf-numeric />            </div>        </div>        <div class="col-md-2">            <div class="form-group"  paf-invalid="managerinfoForm.ReportingName">                <label>Reporting Manager Name</label>                <input class="form-control input-sm"  ng-disabled="data.DisabledReportFields" name="ReportingName" ng-model="data.ReportingName"  ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div>        <div class="col-md-4">            <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle" >                <label>Title</label>                <input class="form-control input-sm"  ng-disabled="data.DisabledReportFields" name="ReportingTitle" ng-model="data.ReportingTitle"  ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div>        <div class="col-md-4">            <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">                <label>Email</label>                <input type="email" class="form-control input-sm"  ng-disabled="data.DisabledReportFields" name="ReportingEmail" ng-model="data.ReportingEmail"  ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div></ng-form></div>    </div>    <div class="row">        <div class="col-md-4">            <div class="form-group">                <label>Car Allowance</label>                <div class="input-group-btn" dropdown="">                    <input class="form-control input-sm" dropdown-toggle="" ng-model="data.NewCarAllowance" paf-format="${0}/month" paf-numeric="" placeholder="$0/month" type="text" />                    <ul class="dropdown-menu" role="menu">                        <li ng-click="data.NewCarAllowance = item.Id" ng-repeat="item in $parent.lkup.CarAllowances"><a>{{item.Description}}</a></li>                    </ul>                </div>            </div>        </div>        <div class="col-md-4">            <div class="form-group">                <label>Bonus Eligible</label>                <select class="form-control input-sm" ng-model="data.NewBonusEligibleType" ng-options="item.id as item.title for item in $parent.lkup.BounsEligibles">                    <option value=""></option>                </select>            </div>        </div>        <div class="col-md-4">            <div class="form-group">                <label>Other Instructions</label>                <input class="form-control input-sm" ng-model="data.Instructions" />            </div>        </div>    </div></div>                                           </section>            <!--Demotion-->            <section ng-if="empAction.Demotion" paf-scope="empAction.Data.Demotion">                <h4>DEMOTION</h4>                <div ng-form="pdsForm">    <p>(Section to be completed by Manager)</p>    <div class="row">        <div class="col-md-6">            <div class="form-group">                <label>                    Current Position</label>                <div class="form-control input-sm">{{$parent.empAction.Data.Compensation.CurrentPosition}}</div>                <!-- <input class="form-control input-sm" ng-disabled="true" ng-model="empAction.CurrentPositionType" />-->            </div>        </div>        <div class="col-md-6">            <div class="form-group" ng-class="{\'has-error\':pdsForm.NewPositionType.$invalid}">                <label>                    New Position</label>                <select class="form-control input-sm" name="NewPositionType" ng-model="data.NewPositionType" ng-options="item.id as item.name for item in $parent.JobCodes" ng-required="$parent.empAction.Promotion||$parent.empAction.Demotion">                    <option value=""></option>                </select>            </div>        </div>    </div>    <div class="row">        <div class="col-md-4">            <div class="form-group" ng-class="{\'has-error\':pdsForm.EffectiveDate.$invalid}">                <label>                    Effective Date</label>                <paf-datepicker dt-model="data.EffectiveDate" dt-name="EffectiveDate" dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-required="$parent.empAction.SalaryChange||$parent.empAction.Promotion||$parent.empAction.Demotion"></paf-datepicker>            </div>        </div>        <div class="col-md-4">            <div class="form-group" ng-class="{\'has-error\':pdsForm.ChangeReasonType.$invalid}">                <label>                    Reason for Change*:</label>                <select class="form-control input-sm" name="ChangeReasonType" ng-model="data.ChangeReasonType" ng-options="item.id as item.title for item in $parent.lkup.Reason4Changes|reason4ChangeFilter:$parent.empAction" ng-required="$parent.empAction.SalaryChange||$parent.empAction.Promotion||$parent.empAction.Demotion">                    <option></option>                </select>            </div>        </div>        <!--<div class="col-md-4">            <div class="form-group">                <label>&nbsp;</label><br />                <b>*Reason Code <span style="text-decoration: underline">MUST</span> be Entered</b>            </div>        </div>-->        <div class="col-md-4" ng-if="data.ChangeReasonType==12||data.ChangeReasonType==17||data.ChangeReasonType==18">            <div class="form-group">                <label>Reviewed with HR:</label>                <div>                    <select class="form-control"></select>                </div>            </div>        </div>    </div>    <div class="row">        <div class="col-md-6">            <div class="form-group">                <label ng-if="!$parent.empAction.Demotion">                    Date Last Increase</label>                <label ng-if="$parent.empAction.Demotion">                    Date Last  Increase/Decrease                 </label>                <label class="form-control input-sm">{{$parent.empAction.Data.Compensation.DateLastIncrease}}</label>            </div>        </div>        <div class="col-md-6">            <div class="form-group">                <label ng-if="!$parent.empAction.Demotion">                    Percentage Last Increase</label>                <label ng-if="$parent.empAction.Demotion">                    Percentage Last Increase/Decrease                 </label>                <input class="form-control input-sm" ng-model="$parent.empAction.Data.Compensation.PercentLastIncrease" paf-numeric="" ng-disabled="true" />            </div>        </div>    </div>    <div class="row">        <div class="col-md-3">            <div class="form-group">                <label>                    Current Salary</label>                <input class="form-control input-sm" ng-model="$parent.empAction.Data.Compensation.CurrentSalary" paf-numeric="" ng-disabled="true" />            </div>        </div>        <div class="col-md-3">            <div class="form-group" ng-class="{\'has-error\':!data.IncreasePercentage&&pdsForm.IncreaseAmount.$invalid}">                <label ng-if="!$parent.empAction.Demotion&&data.ChangeReasonType!=18">                    Increase Amount</label>                <label ng-if="$parent.empAction.Demotion||data.ChangeReasonType==18">                    Decrease Amount                </label>                <input class="form-control input-sm" name="IncreaseAmount" ng-change="$parent.onSalaryChange(\'amt\')" ng-model="data.IncreaseAmount" ng-required="($parent.empAction.SalaryChange||$parent.empAction.Promotion||$parent.empAction.Demotion)&&!data.IncreasePercentage" paf-numeric="" />            </div>        </div>        <div class="col-md-3">            <div class="form-group" ng-class="{\'has-error\':!data.IncreaseAmount&&pdsForm.IncreasePercentage.$invalid}">                <label>                    Percentage</label>                <input class="form-control input-sm" name="IncreasePercentage" ng-change="$parent.onSalaryChange(\'percentage\')" ng-model="data.IncreasePercentage" ng-required="($parent.empAction.SalaryChange||$parent.empAction.Promotion||$parent.empAction.Demotion)&&!data.IncreaseAmount" paf-numeric="" paf-format="{0}%" />            </div>        </div>        <div class="col-md-3">            <div class="form-group">                <label>                    New Salary</label>                <input class="form-control input-sm" ng-model="data.NewSalary" paf-numeric="" ng-disabled="true" />            </div>        </div>    </div>    <div class="row">        <div class="col-md-4">            <div class="form-group">                <label>                    Current Pay Grade (min - mid - max)</label>                <input class="form-control input-sm" ng-disabled="true" ng-model="$parent.empAction.Data.Compensation.CurrentPayGrade" ng-disabled="true" />            </div>        </div>        <div class="col-md-2">            <div class="form-group">                <label>Current Pay Range</label>                <input class="form-control input-sm" ng-disabled="true" ng-model="$parent.empAction.Data.Compensation.CurrentPayRange" ng-disabled="true" />            </div>        </div>        <div class="col-md-4">            <div class="form-group" ng-class="{\'has-error\':pdsForm.NewPayGrade.$invalid}">                <label>                    New Pay Grade (min - mid - max)</label>                <select class="form-control input-sm" name="NewPayGrade" ng-model="data.NewPayGrade" ng-options="item.id as item.id+\' (\'+item.min+\' - \'+item.mid+\' - \'+item.max+\')\' for item in $parent.PayGrades" ng-required="$parent.empAction.SalaryChange||$parent.empAction.Promotion||$parent.empAction.Demotion">                    <option></option>                </select>            </div>        </div>        <div class="col-md-2">            <div class="form-group">                <label>New Pay Range</label>                <p class="form-control input-sm">{{ $parent.getPayRange(data.NewPayGrade,data.NewSalary)}}</p>            </div>        </div>    </div>    <div paf-scope="data">        <div class="row">    <ng-form name="managerinfoForm">    <div class="col-md-2">            <div class="form-group"  paf-invalid="managerinfoForm.ReportingManagerNumber">                <label>Managers/Clock Number</label>                <input class="form-control input-sm" ng-disabled="data.DisabledReportingManagerNumberField"  name="ReportingManagerNumber" ng-model="data.ReportingManagerNumber" ng-blur="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)" paf-numeric />            </div>        </div>        <div class="col-md-2">            <div class="form-group"  paf-invalid="managerinfoForm.ReportingName">                <label>Reporting Manager Name</label>                <input class="form-control input-sm"  ng-disabled="data.DisabledReportFields" name="ReportingName" ng-model="data.ReportingName"  ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div>        <div class="col-md-4">            <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle" >                <label>Title</label>                <input class="form-control input-sm"  ng-disabled="data.DisabledReportFields" name="ReportingTitle" ng-model="data.ReportingTitle"  ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div>        <div class="col-md-4">            <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">                <label>Email</label>                <input type="email" class="form-control input-sm"  ng-disabled="data.DisabledReportFields" name="ReportingEmail" ng-model="data.ReportingEmail"  ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div></ng-form></div>    </div>    <div class="row">        <div class="col-md-4">            <div class="form-group">                <label>Car Allowance</label>                <div class="input-group-btn" dropdown="">                    <input class="form-control input-sm" dropdown-toggle="" ng-model="data.NewCarAllowance" paf-format="${0}/month" paf-numeric="" placeholder="$0/month" type="text" />                    <ul class="dropdown-menu" role="menu">                        <li ng-click="data.NewCarAllowance = item.Id" ng-repeat="item in $parent.lkup.CarAllowances"><a>{{item.Description}}</a></li>                    </ul>                </div>            </div>        </div>        <div class="col-md-4">            <div class="form-group">                <label>Bonus Eligible</label>                <select class="form-control input-sm" ng-model="data.NewBonusEligibleType" ng-options="item.id as item.title for item in $parent.lkup.BounsEligibles">                    <option value=""></option>                </select>            </div>        </div>        <div class="col-md-4">            <div class="form-group">                <label>Other Instructions</label>                <input class="form-control input-sm" ng-model="data.Instructions" />            </div>        </div>    </div></div>                                           </section>            <!--SALARY CHANGE-->            <section ng-if="empAction.SalaryChange" paf-scope="empAction.Data.SalaryChange">                <h4>SALARY CHANGE</h4>                <div ng-form="pdsForm">    <p>(Section to be completed by Manager)</p>    <div class="row">        <div class="col-md-6">            <div class="form-group">                <label>                    Current Position</label>                <div class="form-control input-sm">{{$parent.empAction.Data.Compensation.CurrentPosition}}</div>                <!-- <input class="form-control input-sm" ng-disabled="true" ng-model="empAction.CurrentPositionType" />-->            </div>        </div>        <div class="col-md-6">            <div class="form-group" ng-class="{\'has-error\':pdsForm.NewPositionType.$invalid}">                <label>                    New Position</label>                <select class="form-control input-sm" name="NewPositionType" ng-model="data.NewPositionType" ng-options="item.id as item.name for item in $parent.JobCodes" ng-required="$parent.empAction.Promotion||$parent.empAction.Demotion">                    <option value=""></option>                </select>            </div>        </div>    </div>    <div class="row">        <div class="col-md-4">            <div class="form-group" ng-class="{\'has-error\':pdsForm.EffectiveDate.$invalid}">                <label>                    Effective Date</label>                <paf-datepicker dt-model="data.EffectiveDate" dt-name="EffectiveDate" dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-required="$parent.empAction.SalaryChange||$parent.empAction.Promotion||$parent.empAction.Demotion"></paf-datepicker>            </div>        </div>        <div class="col-md-4">            <div class="form-group" ng-class="{\'has-error\':pdsForm.ChangeReasonType.$invalid}">                <label>                    Reason for Change*:</label>                <select class="form-control input-sm" name="ChangeReasonType" ng-model="data.ChangeReasonType" ng-options="item.id as item.title for item in $parent.lkup.Reason4Changes|reason4ChangeFilter:$parent.empAction" ng-required="$parent.empAction.SalaryChange||$parent.empAction.Promotion||$parent.empAction.Demotion">                    <option></option>                </select>            </div>        </div>        <!--<div class="col-md-4">            <div class="form-group">                <label>&nbsp;</label><br />                <b>*Reason Code <span style="text-decoration: underline">MUST</span> be Entered</b>            </div>        </div>-->        <div class="col-md-4" ng-if="data.ChangeReasonType==12||data.ChangeReasonType==17||data.ChangeReasonType==18">            <div class="form-group">                <label>Reviewed with HR:</label>                <div>                    <select class="form-control"></select>                </div>            </div>        </div>    </div>    <div class="row">        <div class="col-md-6">            <div class="form-group">                <label ng-if="!$parent.empAction.Demotion">                    Date Last Increase</label>                <label ng-if="$parent.empAction.Demotion">                    Date Last  Increase/Decrease                 </label>                <label class="form-control input-sm">{{$parent.empAction.Data.Compensation.DateLastIncrease}}</label>            </div>        </div>        <div class="col-md-6">            <div class="form-group">                <label ng-if="!$parent.empAction.Demotion">                    Percentage Last Increase</label>                <label ng-if="$parent.empAction.Demotion">                    Percentage Last Increase/Decrease                 </label>                <input class="form-control input-sm" ng-model="$parent.empAction.Data.Compensation.PercentLastIncrease" paf-numeric="" ng-disabled="true" />            </div>        </div>    </div>    <div class="row">        <div class="col-md-3">            <div class="form-group">                <label>                    Current Salary</label>                <input class="form-control input-sm" ng-model="$parent.empAction.Data.Compensation.CurrentSalary" paf-numeric="" ng-disabled="true" />            </div>        </div>        <div class="col-md-3">            <div class="form-group" ng-class="{\'has-error\':!data.IncreasePercentage&&pdsForm.IncreaseAmount.$invalid}">                <label ng-if="!$parent.empAction.Demotion&&data.ChangeReasonType!=18">                    Increase Amount</label>                <label ng-if="$parent.empAction.Demotion||data.ChangeReasonType==18">                    Decrease Amount                </label>                <input class="form-control input-sm" name="IncreaseAmount" ng-change="$parent.onSalaryChange(\'amt\')" ng-model="data.IncreaseAmount" ng-required="($parent.empAction.SalaryChange||$parent.empAction.Promotion||$parent.empAction.Demotion)&&!data.IncreasePercentage" paf-numeric="" />            </div>        </div>        <div class="col-md-3">            <div class="form-group" ng-class="{\'has-error\':!data.IncreaseAmount&&pdsForm.IncreasePercentage.$invalid}">                <label>                    Percentage</label>                <input class="form-control input-sm" name="IncreasePercentage" ng-change="$parent.onSalaryChange(\'percentage\')" ng-model="data.IncreasePercentage" ng-required="($parent.empAction.SalaryChange||$parent.empAction.Promotion||$parent.empAction.Demotion)&&!data.IncreaseAmount" paf-numeric="" paf-format="{0}%" />            </div>        </div>        <div class="col-md-3">            <div class="form-group">                <label>                    New Salary</label>                <input class="form-control input-sm" ng-model="data.NewSalary" paf-numeric="" ng-disabled="true" />            </div>        </div>    </div>    <div class="row">        <div class="col-md-4">            <div class="form-group">                <label>                    Current Pay Grade (min - mid - max)</label>                <input class="form-control input-sm" ng-disabled="true" ng-model="$parent.empAction.Data.Compensation.CurrentPayGrade" ng-disabled="true" />            </div>        </div>        <div class="col-md-2">            <div class="form-group">                <label>Current Pay Range</label>                <input class="form-control input-sm" ng-disabled="true" ng-model="$parent.empAction.Data.Compensation.CurrentPayRange" ng-disabled="true" />            </div>        </div>        <div class="col-md-4">            <div class="form-group" ng-class="{\'has-error\':pdsForm.NewPayGrade.$invalid}">                <label>                    New Pay Grade (min - mid - max)</label>                <select class="form-control input-sm" name="NewPayGrade" ng-model="data.NewPayGrade" ng-options="item.id as item.id+\' (\'+item.min+\' - \'+item.mid+\' - \'+item.max+\')\' for item in $parent.PayGrades" ng-required="$parent.empAction.SalaryChange||$parent.empAction.Promotion||$parent.empAction.Demotion">                    <option></option>                </select>            </div>        </div>        <div class="col-md-2">            <div class="form-group">                <label>New Pay Range</label>                <p class="form-control input-sm">{{ $parent.getPayRange(data.NewPayGrade,data.NewSalary)}}</p>            </div>        </div>    </div>    <div paf-scope="data">        <div class="row">    <ng-form name="managerinfoForm">    <div class="col-md-2">            <div class="form-group"  paf-invalid="managerinfoForm.ReportingManagerNumber">                <label>Managers/Clock Number</label>                <input class="form-control input-sm" ng-disabled="data.DisabledReportingManagerNumberField"  name="ReportingManagerNumber" ng-model="data.ReportingManagerNumber" ng-blur="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)" paf-numeric />            </div>        </div>        <div class="col-md-2">            <div class="form-group"  paf-invalid="managerinfoForm.ReportingName">                <label>Reporting Manager Name</label>                <input class="form-control input-sm"  ng-disabled="data.DisabledReportFields" name="ReportingName" ng-model="data.ReportingName"  ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div>        <div class="col-md-4">            <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle" >                <label>Title</label>                <input class="form-control input-sm"  ng-disabled="data.DisabledReportFields" name="ReportingTitle" ng-model="data.ReportingTitle"  ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div>        <div class="col-md-4">            <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">                <label>Email</label>                <input type="email" class="form-control input-sm"  ng-disabled="data.DisabledReportFields" name="ReportingEmail" ng-model="data.ReportingEmail"  ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div></ng-form></div>    </div>    <div class="row">        <div class="col-md-4">            <div class="form-group">                <label>Car Allowance</label>                <div class="input-group-btn" dropdown="">                    <input class="form-control input-sm" dropdown-toggle="" ng-model="data.NewCarAllowance" paf-format="${0}/month" paf-numeric="" placeholder="$0/month" type="text" />                    <ul class="dropdown-menu" role="menu">                        <li ng-click="data.NewCarAllowance = item.Id" ng-repeat="item in $parent.lkup.CarAllowances"><a>{{item.Description}}</a></li>                    </ul>                </div>            </div>        </div>        <div class="col-md-4">            <div class="form-group">                <label>Bonus Eligible</label>                <select class="form-control input-sm" ng-model="data.NewBonusEligibleType" ng-options="item.id as item.title for item in $parent.lkup.BounsEligibles">                    <option value=""></option>                </select>            </div>        </div>        <div class="col-md-4">            <div class="form-group">                <label>Other Instructions</label>                <input class="form-control input-sm" ng-model="data.Instructions" />            </div>        </div>    </div></div>                                           </section>            <!--TRANSFER-->            <section ng-if="empAction.Transfer" paf-scope="empAction.Data.Transfer">                <div ng-form="transferForm">    <h4>TRANSFER</h4>    <p>(Section to be completed by Manager)</p>    <div class="row">        <div class="col-md-4 ">            <div class="form-group" ng-class="{\'has-error\':transferForm.TransferEffectiveDate.$invalid}">                <label>Effective Date</label>                <paf-datepicker dt-option="dateOptions" dt-name="TransferEffectiveDate" dt-popup="MM/dd/yyyy" dt-model="data.TransferEffectiveDate" dt-required="true"></paf-datepicker>            </div>        </div>        <div class="col-md-4 ">            <div class="form-group">                <label>Current Unit</label>                <paf-typeahead ng-model="$parent.empAction.HcmHouseCode" source="$parent.HcmHouseCodes"                    typeahead-option="{displayField:\'name\',valueField:\'id\',name:\'HcmHouseCode\'}" ng-disabled="true"></paf-typeahead>            </div>        </div>        <div class="col-md-4 ">            <div class="form-group" ng-class="{\'has-error\':transferForm.HouseCodeTransfer.$invalid}">                <label>New Unit</label>                <paf-typeahead ng-model="data.HouseCodeTransfer" source="$parent.HcmHouseCodes" typeahead-option="{displayField:\'name\',valueField:\'id\',name:\'HouseCodeTransfer\'}" ng-required="true"></paf-typeahead>            </div>        </div>    </div>    <div  paf-scope="data">        <div class="row">    <ng-form name="managerinfoForm">    <div class="col-md-2">            <div class="form-group"  paf-invalid="managerinfoForm.ReportingManagerNumber">                <label>Managers/Clock Number</label>                <input class="form-control input-sm" ng-disabled="data.DisabledReportingManagerNumberField"  name="ReportingManagerNumber" ng-model="data.ReportingManagerNumber" ng-blur="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(data.ReportingManagerNumber,data.ReportingType)" ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)" paf-numeric />            </div>        </div>        <div class="col-md-2">            <div class="form-group"  paf-invalid="managerinfoForm.ReportingName">                <label>Reporting Manager Name</label>                <input class="form-control input-sm"  ng-disabled="data.DisabledReportFields" name="ReportingName" ng-model="data.ReportingName"  ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div>        <div class="col-md-4">            <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle" >                <label>Title</label>                <input class="form-control input-sm"  ng-disabled="data.DisabledReportFields" name="ReportingTitle" ng-model="data.ReportingTitle"  ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div>        <div class="col-md-4">            <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">                <label>Email</label>                <input type="email" class="form-control input-sm"  ng-disabled="data.DisabledReportFields" name="ReportingEmail" ng-model="data.ReportingEmail"  ng-required="data.ReportingType!=\'Demotion\'&& $parent.$parent.isManagerFieldRequired(data)"/>            </div>        </div></ng-form></div>    </div></div>                                                          </section>            <!--PERSONAL INFORMATION CHANGE-->            <section ng-if="empAction.PersonalInfoChange" paf-scope="empAction.Data.PersonalInfoChange">                <div ng-form="personalInfoForm">    <h4>PERSONAL INFORMATION CHANGE</h4>    <p>(Section to be completed by Associate)</p>    <div class="row">        <div class="col-md-3">            <label>Effective Date</label>            <paf-datepicker dt-model="data.InfoChangeEffectiveDate" dt-option="dateOptions" dt-popup="MM/dd/yyyy"></paf-datepicker>        </div>        <div class="col-md-3">            <label>First Name</label>            <input class="form-control input-sm" ng-model="data.InfoChangeFirstName" />        </div>        <div class="col-md-3">            <label>Middle Name</label>            <input class="form-control input-sm" ng-model="data.InfoChangeMiddleName" />        </div>        <div class="col-md-3">            <label>Last Name</label>            <input class="form-control input-sm" ng-model="data.InfoChangeLastName" />        </div>    </div>    <div class="row">        <div class="col-md-6">            <div class="form-group">                <label>Address1</label>                <input class="form-control input-sm" ng-model="data.InfoChangeAddressLine1" />            </div>        </div>        <div class="col-md-3">            <div class="form-group">                <label>Address2</label>                <input class="form-control input-sm" ng-model="data.InfoChangeAddressLine2" />            </div>        </div>        <div class="col-md-3">            <div class="form-group">                <label>Phone #</label>                <input class="form-control input-sm" ng-model="data.InfoChangePhone" paf-mask="phone" />            </div>        </div>    </div>    <div class="row">        <div class="col-md-4">            <label class="control-label">City</label>            <input class="form-control input-sm" ng-model="data.InfoChangeCity" />        </div>        <div class="col-md-4">            <label class="control-label">State</label>            <select class="form-control input-sm" ng-model="data.AppStateTypeInfoChange" ng-options="item.id as item.name for item in $parent.States">                <option></option>            </select>        </div>        <div class="col-md-4">            <label class="control-label">Zip</label>            <input class="form-control input-sm" ng-model="data.InfoChangePostalCode" paf-mask="zipcode" />        </div>    </div></div>                                         </section>            <!--REQUISITION-->            <section ng-if="(empAction.NewHire&&empAction.Data.NewHire.PayStatus != \'PerDiemValue\')||(empAction.ReHire&&empAction.Data.ReHire.PayStatus != \'PerDiemValue\')||empAction.Promotion||empAction.Demotion||empAction.Transfer" paf-scope="empAction.Data.Requisition">                <div ng-form="requisitionForm">    <h4>REQUISITION</h4>    <p>(To be completed by Recruiter)</p>    <div class="row">        <div class="col-md-6">            <div class="form-group">                <label>Requisition #</label>                <input class="form-control input-sm" ng-model="data.RequisitionNumber" paf-numeric />            </div>        </div>        <div class="col-md-6">            <div class="form-group" ng-class="{\'has-error\':requisitionForm.EmailAddress.$invalid}">                <label>Email Address</label>                <input type="email" class="form-control input-sm" ng-model="data.EmailAddress" name="EmailAddress" />            </div>        </div>    </div></div>                                  </section>            <!--RELOCATION-->            <section ng-if="empAction.Relocation" paf-scope="empAction.Data.Relocation">                <div ng-form="relocationForm">    <h4>RELOCATION</h4>    <div class="row">        <div class="col-md-6">            <div class="form-group" ng-class="{\'has-error\':relocationForm.RelocationApprovedBy.$invalid}">                <label>Relocation approved by</label><input class="form-control input-sm" name="RelocationApprovedBy" ng-model="data.RelocationApprovedBy" required="true" />            </div>        </div>        <div class="col-md-6">            <div class="form-group" ng-class="{\'has-error\':relocationForm.RelocationPlan.$invalid}">                <label>Plan/Details</label>                <select class="form-control input-sm" name="RelocationPlan" ng-model="data.RelocationPlan" ng-options="item.id as item.title for item in $parent.lkup.PlanDetails" required="true">                    <option value=""></option>                </select>            </div>        </div>    </div></div>                                           </section>            <!--COMMENTS-->            <section>                <div class="form-group">                    <h4>COMMENTS</h4>                    <textarea class="form-control input-sm" ng-model="empAction.Comments"></textarea>                </div>            </section>            <!--APPROVALS-->            <section class="margin-bottom20">                <h4>APPROVALS</h4><div class="row">    <div class="col-md-3 col-sm-6">        <div class="form-group">            <label>UD/Dept Mgr</label>            <input class="form-control input-sm" ng-model="empAction.UDDeptMgr" />        </div>    </div>    <div class="col-md-3 col-sm-6">        <div class="form-group">            <label>Date</label>            <paf-datepicker dt-model="empAction.UDDate" dt-option="dateOptions" dt-popup="MM/dd/yyyy"></paf-datepicker>        </div>    </div>    <div class="col-md-3 col-sm-6">        <div class="form-group">            <label>RVP/VP</label>            <input class="form-control input-sm" ng-model="empAction.RVP" />        </div>    </div>    <div class="col-md-3 col-sm-6">        <div class="form-group">            <label>Date</label>            <paf-datepicker dt-model="empAction.RVPDate" dt-option="dateOptions" dt-popup="MM/dd/yyyy"></paf-datepicker>        </div>    </div></div><div class="row">    <div class="col-md-3 col-sm-6">        <div class="form-group">            <label>Reg. Mgr</label>            <input class="form-control input-sm" ng-model="empAction.RegMgr" />        </div>    </div>    <div class="col-md-3 col-sm-6">        <div class="form-group">            <label>Date</label>            <paf-datepicker dt-model="empAction.RegDate" dt-option="dateOptions" dt-popup="MM/dd/yyyy"></paf-datepicker>        </div>    </div>    <div class="col-md-3 col-sm-6">        <div class="form-group">            <label>DVP/SVP</label>            <input class="form-control input-sm" ng-model="empAction.DVP" />        </div>    </div>    <div class="col-md-3 col-sm-6">        <div class="form-group">            <label>Date</label>            <paf-datepicker dt-model="empAction.DVPDate" dt-option="dateOptions" dt-popup="MM/dd/yyyy"></paf-datepicker>        </div>    </div></div><div class="row">    <div class="col-md-3 col-sm-6">        <div class="form-group">            <label>SHRC</label>            <input class="form-control input-sm" ng-model="empAction.SHRC" />        </div>    </div>    <div class="col-md-3 col-sm-6">        <div class="form-group">            <label>Date</label>            <paf-datepicker dt-model="empAction.ShrcDate" dt-option="dateOptions" dt-popup="MM/dd/yyyy"></paf-datepicker>        </div>    </div>    <div class="col-md-3 col-sm-6">        <div class="form-group">            <label>CEO/CFO</label>            <input class="form-control input-sm" ng-model="empAction.CEO" />        </div>    </div>    <div class="col-md-3 col-sm-6">        <div class="form-group">            <label>Date</label>            <paf-datepicker dt-model="empAction.CEODate" dt-option="dateOptions" dt-popup="MM/dd/yyyy"></paf-datepicker>        </div>    </div></div>                            </section>            <div class="pull-right margin-bottom20">                <button class="btn btn-primary" type="submit" ng-click="save()">Save</button>                <a class="btn btn-default" href="#/list">Cancel</a>            </div>        </form>        <div ng-show="isLoading()">            <div class="overlay"></div>            <div class="spinner">                <span class="glyphicon glyphicon-refresh glyphicon-spin"></span>&nbsp;LOADING....            </div>        </div>    </div></div>','<section>    <h3 class="text-center header">PERSONNEL ACTION FORM</h3></section><div class="container bs-docs-container ">    <div class="row  margin-bottom10 form-horizontal">        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">            <div class="form-group">                <label class="col-md-2 col-sm-3 col-xs-3 control-label">House Code</label>                <div class="col-md-10 col-sm-9 col-xs-9">                    <paf-typeahead ng-model="pafFilter.hcmHouseCode" source="HcmHouseCodes" typeahead-option="{displayField:\'name\',valueField:\'id\',name:\'HcmHouseCode\'}"></paf-typeahead>                </div>            </div>        </div>        <div class="col-lg-6 col-md-6 col-sm-6  col-xs-12">            <div class="form-group">                <label class="col-md-4 col-sm-6 col-xs-3 control-label">Employee Number</label>                <div class="col-md-8 col-sm-6 col-xs-9">                    <input class="form-control input-sm" ng-model="pafFilter.employeeNumber" paf-numeric="" />                </div>            </div>        </div>        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">            <div class="form-group">                <label class="col-lg-5 col-md-4 col-sm-3 col-xs-3 control-label">Status</label>                <div class="col-lg-7 col-md-8 col-sm-9 col-xs-9">                    <select ng-model="pafFilter.status" class="form-control input-sm" ng-options="item.id as item.description for item in Statuses">                        <option value="">[All]</option>                        <option value="1">Open</option>                        <option value="2">In Process</option>                        <option value="3">Approved</option>                        <option value="4">Completed</option>                        <option value="5">Cancelled</option>                        <option value="6">Unappproved</option>                    </select>                </div>            </div>        </div>        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">            <div class="form-group">                <label class="col-md-4 col-sm-3 col-xs-3 control-label">Date</label>                <div class="col-md-8 col-sm-9 col-xs-9">                    <paf-datepicker dt-option="dateOptions" dt-name="Date" dt-popup="MM/dd/yyyy" dt-model="pafFilter.pafDate"></paf-datepicker>                </div>            </div>        </div>        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">            <div class="form-group">                <label class="col-lg-4 col-md-4 col-sm-6 col-xs-3 control-label">User Name</label>                <div class="col-lg-8 col-md-8 col-sm-6 col-xs-9">                    <input class="form-control input-sm" ng-model="pafFilter.createUser" />                </div>            </div>        </div>        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">            <div class="form-group">                <label class="col-lg-5 col-md-4 col-sm-6 col-xs-3 control-label">Form Type</label>                <div class="col-lg-7 col-md-8 col-sm-6 col-xs-9">                    <select class="form-control input-sm" ng-model="pafFilter.formType" ng-options="item.id as item.display for item in FormTypes">                        <option value="">[All]</option>                    </select>                </div>            </div>        </div>        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">            <div class="form-group">                <label class="col-lg-5 col-md-4 col-sm-6 col-xs-3 control-label">PAF Number</label>                <div class="col-lg-7 col-md-8 col-sm-6 col-xs-9">                    <input class="form-control input-sm" ng-model="pafFilter.pafNumber" paf-numeric="" />                </div>            </div>        </div>    </div>    <div class="row margin-bottom10">        <div class="col-md-4 col-sm-6 col-xs-12">            <!--<a class="btn btn-primary " href="#/new">Add New</a>&nbsp;-->            <a class="btn btn-primary " ng-click="getPafList()">Search</a>&nbsp;            <a class="btn btn-primary " ng-click="clearFilter()">Clear Filters</a>        </div>    </div>    <table class="table-scroll table table-striped table-hover margin-bottom10">        <thead>            <tr class="heading" role="row">                <th class="8%">PAF #</th>                <th width="10%">Date</th>                <th width="10%">Employee #</th>                <th width="20%">Employee Name</th>                <th width="25%">House Code</th>                <th width="">Form Type</th>                <th width="10%">Status</th>            </tr>        </thead>        <tbody>            <tr ng-repeat="item in empActions" ng-click="itemSelected(item)" ng-class="{\'warning\':selectedItem==item}">                <td width="8%">{{item.Number}}</td>                <td width="10%">{{getDate(item.Date)}}</td>                <td width="10%">{{item.EmployeeNumber}}</td>                <td width="20%">{{item.FirstName}}&nbsp;{{item.LastName}}</td>                <td width="25%">{{getHouseCodeDesc(item)}}</td>                <td width="" ng-bind-html="getFormType(item)"></td>                <td width="10%">{{getStatusDescription(item.Status)}}</td>                <!-- <td><a class="btn btn-sm btn-primary" href="#/edit/{{item.Id}}">Edit</a>&nbsp;<a class="btn btn-sm btn-default" href="javascript:void(0)" ng-click="cancelForm()">Cancel</a></td>-->            </tr>        </tbody>    </table>    <div class="row">        <div class="col-md-4 col-sm-6 col-xs-12">            <a class="btn btn-primary " href="#/new">New</a>&nbsp;            <a class="btn btn-primary" href="#/edit/{{selectedItem.Id}}">                <span ng-if="pafFilter.status==1||pafFilter.status==6">Edit</span>                <span ng-if="pafFilter.status==2">View/Edit</span>                <span ng-if="pafFilter.status!=1&&pafFilter.status!=2&&pafFilter.status!=6">View</span>            </a>            <a class="btn btn-info" ng-click="submit()" ng-if="pafFilter.status==1||pafFilter.status==2||pafFilter.status==6">                <span ng-if="pafFilter.status==1">Submit</span>                <span ng-if="pafFilter.status==2||pafFilter.status==6">ReSubmit</span>            </a>            <a class="btn btn-default" ng-if="pafFilter.status==1||pafFilter.status==2||pafFilter.status==6" ng-click="cancelForm(selectedItem.Id)" ng-disabled="!selectedItem">Cancel</a>        </div>    </div></div><div ng-show="viewLoading">    <div class="overlay"></div>    <div class="spinner">        <span class="glyphicon glyphicon-refresh glyphicon-spin"></span>LOADING....    </div></div><script type="text/ng-template" id="content.html">       <!-- <div class="modal-header">            <h3 class="modal-title"></h3>        </div>-->        <div class="modal-body">            Not Implemented        </div>        <div class="modal-footer">            <button class="btn btn-primary" ng-click="ok()">OK</button>            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>        </div></script><script type="text/ng-template" id="cancel.html">        <!-- <div class="modal-header">            <h3 class="modal-title"></h3>        </div>-->        <div class="modal-body">          Are you sure to Cancel this item?        </div>        <div class="modal-footer">            <button class="btn btn-primary" ng-click="ok()">Yes</button>            <button class="btn btn-warning" ng-click="cancel()">No</button>        </div></script>',''];
-
-/**
- * @license AngularJS v1.3.13
- * (c) 2010-2014 Google, Inc. http://angularjs.org
- * License: MIT
- */
-(function(window, angular, undefined) {'use strict';
-
-/**
- * @ngdoc module
- * @name ngRoute
- * @description
- *
- * # ngRoute
- *
- * The `ngRoute` module provides routing and deeplinking services and directives for angular apps.
- *
- * ## Example
- * See {@link ngRoute.$route#example $route} for an example of configuring and using `ngRoute`.
- *
- *
- * <div doc-module-components="ngRoute"></div>
- */
- /* global -ngRouteModule */
-var ngRouteModule = angular.module('ngRoute', ['ng']).
-                        provider('$route', $RouteProvider),
-    $routeMinErr = angular.$$minErr('ngRoute');
-
-/**
- * @ngdoc provider
- * @name $routeProvider
- *
- * @description
- *
- * Used for configuring routes.
- *
- * ## Example
- * See {@link ngRoute.$route#example $route} for an example of configuring and using `ngRoute`.
- *
- * ## Dependencies
- * Requires the {@link ngRoute `ngRoute`} module to be installed.
- */
-function $RouteProvider() {
-  function inherit(parent, extra) {
-    return angular.extend(Object.create(parent), extra);
-  }
-
-  var routes = {};
-
-  /**
-   * @ngdoc method
-   * @name $routeProvider#when
-   *
-   * @param {string} path Route path (matched against `$location.path`). If `$location.path`
-   *    contains redundant trailing slash or is missing one, the route will still match and the
-   *    `$location.path` will be updated to add or drop the trailing slash to exactly match the
-   *    route definition.
-   *
-   *    * `path` can contain named groups starting with a colon: e.g. `:name`. All characters up
-   *        to the next slash are matched and stored in `$routeParams` under the given `name`
-   *        when the route matches.
-   *    * `path` can contain named groups starting with a colon and ending with a star:
-   *        e.g.`:name*`. All characters are eagerly stored in `$routeParams` under the given `name`
-   *        when the route matches.
-   *    * `path` can contain optional named groups with a question mark: e.g.`:name?`.
-   *
-   *    For example, routes like `/color/:color/largecode/:largecode*\/edit` will match
-   *    `/color/brown/largecode/code/with/slashes/edit` and extract:
-   *
-   *    * `color: brown`
-   *    * `largecode: code/with/slashes`.
-   *
-   *
-   * @param {Object} route Mapping information to be assigned to `$route.current` on route
-   *    match.
-   *
-   *    Object properties:
-   *
-   *    - `controller` – `{(string|function()=}` – Controller fn that should be associated with
-   *      newly created scope or the name of a {@link angular.Module#controller registered
-   *      controller} if passed as a string.
-   *    - `controllerAs` – `{string=}` – A controller alias name. If present the controller will be
-   *      published to scope under the `controllerAs` name.
-   *    - `template` – `{string=|function()=}` – html template as a string or a function that
-   *      returns an html template as a string which should be used by {@link
-   *      ngRoute.directive:ngView ngView} or {@link ng.directive:ngInclude ngInclude} directives.
-   *      This property takes precedence over `templateUrl`.
-   *
-   *      If `template` is a function, it will be called with the following parameters:
-   *
-   *      - `{Array.<Object>}` - route parameters extracted from the current
-   *        `$location.path()` by applying the current route
-   *
-   *    - `templateUrl` – `{string=|function()=}` – path or function that returns a path to an html
-   *      template that should be used by {@link ngRoute.directive:ngView ngView}.
-   *
-   *      If `templateUrl` is a function, it will be called with the following parameters:
-   *
-   *      - `{Array.<Object>}` - route parameters extracted from the current
-   *        `$location.path()` by applying the current route
-   *
-   *    - `resolve` - `{Object.<string, function>=}` - An optional map of dependencies which should
-   *      be injected into the controller. If any of these dependencies are promises, the router
-   *      will wait for them all to be resolved or one to be rejected before the controller is
-   *      instantiated.
-   *      If all the promises are resolved successfully, the values of the resolved promises are
-   *      injected and {@link ngRoute.$route#$routeChangeSuccess $routeChangeSuccess} event is
-   *      fired. If any of the promises are rejected the
-   *      {@link ngRoute.$route#$routeChangeError $routeChangeError} event is fired. The map object
-   *      is:
-   *
-   *      - `key` – `{string}`: a name of a dependency to be injected into the controller.
-   *      - `factory` - `{string|function}`: If `string` then it is an alias for a service.
-   *        Otherwise if function, then it is {@link auto.$injector#invoke injected}
-   *        and the return value is treated as the dependency. If the result is a promise, it is
-   *        resolved before its value is injected into the controller. Be aware that
-   *        `ngRoute.$routeParams` will still refer to the previous route within these resolve
-   *        functions.  Use `$route.current.params` to access the new route parameters, instead.
-   *
-   *    - `redirectTo` – {(string|function())=} – value to update
-   *      {@link ng.$location $location} path with and trigger route redirection.
-   *
-   *      If `redirectTo` is a function, it will be called with the following parameters:
-   *
-   *      - `{Object.<string>}` - route parameters extracted from the current
-   *        `$location.path()` by applying the current route templateUrl.
-   *      - `{string}` - current `$location.path()`
-   *      - `{Object}` - current `$location.search()`
-   *
-   *      The custom `redirectTo` function is expected to return a string which will be used
-   *      to update `$location.path()` and `$location.search()`.
-   *
-   *    - `[reloadOnSearch=true]` - {boolean=} - reload route when only `$location.search()`
-   *      or `$location.hash()` changes.
-   *
-   *      If the option is set to `false` and url in the browser changes, then
-   *      `$routeUpdate` event is broadcasted on the root scope.
-   *
-   *    - `[caseInsensitiveMatch=false]` - {boolean=} - match routes without being case sensitive
-   *
-   *      If the option is set to `true`, then the particular route can be matched without being
-   *      case sensitive
-   *
-   * @returns {Object} self
-   *
-   * @description
-   * Adds a new route definition to the `$route` service.
-   */
-  this.when = function(path, route) {
-    //copy original route object to preserve params inherited from proto chain
-    var routeCopy = angular.copy(route);
-    if (angular.isUndefined(routeCopy.reloadOnSearch)) {
-      routeCopy.reloadOnSearch = true;
-    }
-    if (angular.isUndefined(routeCopy.caseInsensitiveMatch)) {
-      routeCopy.caseInsensitiveMatch = this.caseInsensitiveMatch;
-    }
-    routes[path] = angular.extend(
-      routeCopy,
-      path && pathRegExp(path, routeCopy)
-    );
-
-    // create redirection for trailing slashes
-    if (path) {
-      var redirectPath = (path[path.length - 1] == '/')
-            ? path.substr(0, path.length - 1)
-            : path + '/';
-
-      routes[redirectPath] = angular.extend(
-        {redirectTo: path},
-        pathRegExp(redirectPath, routeCopy)
-      );
-    }
-
-    return this;
-  };
-
-  /**
-   * @ngdoc property
-   * @name $routeProvider#caseInsensitiveMatch
-   * @description
-   *
-   * A boolean property indicating if routes defined
-   * using this provider should be matched using a case insensitive
-   * algorithm. Defaults to `false`.
-   */
-  this.caseInsensitiveMatch = false;
-
-   /**
-    * @param path {string} path
-    * @param opts {Object} options
-    * @return {?Object}
-    *
-    * @description
-    * Normalizes the given path, returning a regular expression
-    * and the original path.
-    *
-    * Inspired by pathRexp in visionmedia/express/lib/utils.js.
-    */
-  function pathRegExp(path, opts) {
-    var insensitive = opts.caseInsensitiveMatch,
-        ret = {
-          originalPath: path,
-          regexp: path
-        },
-        keys = ret.keys = [];
-
-    path = path
-      .replace(/([().])/g, '\\$1')
-      .replace(/(\/)?:(\w+)([\?\*])?/g, function(_, slash, key, option) {
-        var optional = option === '?' ? option : null;
-        var star = option === '*' ? option : null;
-        keys.push({ name: key, optional: !!optional });
-        slash = slash || '';
-        return ''
-          + (optional ? '' : slash)
-          + '(?:'
-          + (optional ? slash : '')
-          + (star && '(.+?)' || '([^/]+)')
-          + (optional || '')
-          + ')'
-          + (optional || '');
-      })
-      .replace(/([\/$\*])/g, '\\$1');
-
-    ret.regexp = new RegExp('^' + path + '$', insensitive ? 'i' : '');
-    return ret;
-  }
-
-  /**
-   * @ngdoc method
-   * @name $routeProvider#otherwise
-   *
-   * @description
-   * Sets route definition that will be used on route change when no other route definition
-   * is matched.
-   *
-   * @param {Object|string} params Mapping information to be assigned to `$route.current`.
-   * If called with a string, the value maps to `redirectTo`.
-   * @returns {Object} self
-   */
-  this.otherwise = function(params) {
-    if (typeof params === 'string') {
-      params = {redirectTo: params};
-    }
-    this.when(null, params);
-    return this;
-  };
-
-
-  this.$get = ['$rootScope',
-               '$location',
-               '$routeParams',
-               '$q',
-               '$injector',
-               '$templateRequest',
-               '$sce',
-      function($rootScope, $location, $routeParams, $q, $injector, $templateRequest, $sce) {
-
-    /**
-     * @ngdoc service
-     * @name $route
-     * @requires $location
-     * @requires $routeParams
-     *
-     * @property {Object} current Reference to the current route definition.
-     * The route definition contains:
-     *
-     *   - `controller`: The controller constructor as define in route definition.
-     *   - `locals`: A map of locals which is used by {@link ng.$controller $controller} service for
-     *     controller instantiation. The `locals` contain
-     *     the resolved values of the `resolve` map. Additionally the `locals` also contain:
-     *
-     *     - `$scope` - The current route scope.
-     *     - `$template` - The current route template HTML.
-     *
-     * @property {Object} routes Object with all route configuration Objects as its properties.
-     *
-     * @description
-     * `$route` is used for deep-linking URLs to controllers and views (HTML partials).
-     * It watches `$location.url()` and tries to map the path to an existing route definition.
-     *
-     * Requires the {@link ngRoute `ngRoute`} module to be installed.
-     *
-     * You can define routes through {@link ngRoute.$routeProvider $routeProvider}'s API.
-     *
-     * The `$route` service is typically used in conjunction with the
-     * {@link ngRoute.directive:ngView `ngView`} directive and the
-     * {@link ngRoute.$routeParams `$routeParams`} service.
-     *
-     * @example
-     * This example shows how changing the URL hash causes the `$route` to match a route against the
-     * URL, and the `ngView` pulls in the partial.
-     *
-     * <example name="$route-service" module="ngRouteExample"
-     *          deps="angular-route.js" fixBase="true">
-     *   <file name="index.html">
-     *     <div ng-controller="MainController">
-     *       Choose:
-     *       <a href="Book/Moby">Moby</a> |
-     *       <a href="Book/Moby/ch/1">Moby: Ch1</a> |
-     *       <a href="Book/Gatsby">Gatsby</a> |
-     *       <a href="Book/Gatsby/ch/4?key=value">Gatsby: Ch4</a> |
-     *       <a href="Book/Scarlet">Scarlet Letter</a><br/>
-     *
-     *       <div ng-view></div>
-     *
-     *       <hr />
-     *
-     *       <pre>$location.path() = {{$location.path()}}</pre>
-     *       <pre>$route.current.templateUrl = {{$route.current.templateUrl}}</pre>
-     *       <pre>$route.current.params = {{$route.current.params}}</pre>
-     *       <pre>$route.current.scope.name = {{$route.current.scope.name}}</pre>
-     *       <pre>$routeParams = {{$routeParams}}</pre>
-     *     </div>
-     *   </file>
-     *
-     *   <file name="book.html">
-     *     controller: {{name}}<br />
-     *     Book Id: {{params.bookId}}<br />
-     *   </file>
-     *
-     *   <file name="chapter.html">
-     *     controller: {{name}}<br />
-     *     Book Id: {{params.bookId}}<br />
-     *     Chapter Id: {{params.chapterId}}
-     *   </file>
-     *
-     *   <file name="script.js">
-     *     angular.module('ngRouteExample', ['ngRoute'])
-     *
-     *      .controller('MainController', function($scope, $route, $routeParams, $location) {
-     *          $scope.$route = $route;
-     *          $scope.$location = $location;
-     *          $scope.$routeParams = $routeParams;
-     *      })
-     *
-     *      .controller('BookController', function($scope, $routeParams) {
-     *          $scope.name = "BookController";
-     *          $scope.params = $routeParams;
-     *      })
-     *
-     *      .controller('ChapterController', function($scope, $routeParams) {
-     *          $scope.name = "ChapterController";
-     *          $scope.params = $routeParams;
-     *      })
-     *
-     *     .config(function($routeProvider, $locationProvider) {
-     *       $routeProvider
-     *        .when('/Book/:bookId', {
-     *         templateUrl: 'book.html',
-     *         controller: 'BookController',
-     *         resolve: {
-     *           // I will cause a 1 second delay
-     *           delay: function($q, $timeout) {
-     *             var delay = $q.defer();
-     *             $timeout(delay.resolve, 1000);
-     *             return delay.promise;
-     *           }
-     *         }
-     *       })
-     *       .when('/Book/:bookId/ch/:chapterId', {
-     *         templateUrl: 'chapter.html',
-     *         controller: 'ChapterController'
-     *       });
-     *
-     *       // configure html5 to get links working on jsfiddle
-     *       $locationProvider.html5Mode(true);
-     *     });
-     *
-     *   </file>
-     *
-     *   <file name="protractor.js" type="protractor">
-     *     it('should load and compile correct template', function() {
-     *       element(by.linkText('Moby: Ch1')).click();
-     *       var content = element(by.css('[ng-view]')).getText();
-     *       expect(content).toMatch(/controller\: ChapterController/);
-     *       expect(content).toMatch(/Book Id\: Moby/);
-     *       expect(content).toMatch(/Chapter Id\: 1/);
-     *
-     *       element(by.partialLinkText('Scarlet')).click();
-     *
-     *       content = element(by.css('[ng-view]')).getText();
-     *       expect(content).toMatch(/controller\: BookController/);
-     *       expect(content).toMatch(/Book Id\: Scarlet/);
-     *     });
-     *   </file>
-     * </example>
-     */
-
-    /**
-     * @ngdoc event
-     * @name $route#$routeChangeStart
-     * @eventType broadcast on root scope
-     * @description
-     * Broadcasted before a route change. At this  point the route services starts
-     * resolving all of the dependencies needed for the route change to occur.
-     * Typically this involves fetching the view template as well as any dependencies
-     * defined in `resolve` route property. Once  all of the dependencies are resolved
-     * `$routeChangeSuccess` is fired.
-     *
-     * The route change (and the `$location` change that triggered it) can be prevented
-     * by calling `preventDefault` method of the event. See {@link ng.$rootScope.Scope#$on}
-     * for more details about event object.
-     *
-     * @param {Object} angularEvent Synthetic event object.
-     * @param {Route} next Future route information.
-     * @param {Route} current Current route information.
-     */
-
-    /**
-     * @ngdoc event
-     * @name $route#$routeChangeSuccess
-     * @eventType broadcast on root scope
-     * @description
-     * Broadcasted after a route dependencies are resolved.
-     * {@link ngRoute.directive:ngView ngView} listens for the directive
-     * to instantiate the controller and render the view.
-     *
-     * @param {Object} angularEvent Synthetic event object.
-     * @param {Route} current Current route information.
-     * @param {Route|Undefined} previous Previous route information, or undefined if current is
-     * first route entered.
-     */
-
-    /**
-     * @ngdoc event
-     * @name $route#$routeChangeError
-     * @eventType broadcast on root scope
-     * @description
-     * Broadcasted if any of the resolve promises are rejected.
-     *
-     * @param {Object} angularEvent Synthetic event object
-     * @param {Route} current Current route information.
-     * @param {Route} previous Previous route information.
-     * @param {Route} rejection Rejection of the promise. Usually the error of the failed promise.
-     */
-
-    /**
-     * @ngdoc event
-     * @name $route#$routeUpdate
-     * @eventType broadcast on root scope
-     * @description
-     *
-     * The `reloadOnSearch` property has been set to false, and we are reusing the same
-     * instance of the Controller.
-     */
-
-    var forceReload = false,
-        preparedRoute,
-        preparedRouteIsUpdateOnly,
-        $route = {
-          routes: routes,
-
-          /**
-           * @ngdoc method
-           * @name $route#reload
-           *
-           * @description
-           * Causes `$route` service to reload the current route even if
-           * {@link ng.$location $location} hasn't changed.
-           *
-           * As a result of that, {@link ngRoute.directive:ngView ngView}
-           * creates new scope and reinstantiates the controller.
-           */
-          reload: function() {
-            forceReload = true;
-            $rootScope.$evalAsync(function() {
-              // Don't support cancellation of a reload for now...
-              prepareRoute();
-              commitRoute();
-            });
-          },
-
-          /**
-           * @ngdoc method
-           * @name $route#updateParams
-           *
-           * @description
-           * Causes `$route` service to update the current URL, replacing
-           * current route parameters with those specified in `newParams`.
-           * Provided property names that match the route's path segment
-           * definitions will be interpolated into the location's path, while
-           * remaining properties will be treated as query params.
-           *
-           * @param {!Object<string, string>} newParams mapping of URL parameter names to values
-           */
-          updateParams: function(newParams) {
-            if (this.current && this.current.$$route) {
-              newParams = angular.extend({}, this.current.params, newParams);
-              $location.path(interpolate(this.current.$$route.originalPath, newParams));
-              // interpolate modifies newParams, only query params are left
-              $location.search(newParams);
-            } else {
-              throw $routeMinErr('norout', 'Tried updating route when with no current route');
-            }
-          }
-        };
-
-    $rootScope.$on('$locationChangeStart', prepareRoute);
-    $rootScope.$on('$locationChangeSuccess', commitRoute);
-
-    return $route;
-
-    /////////////////////////////////////////////////////
-
-    /**
-     * @param on {string} current url
-     * @param route {Object} route regexp to match the url against
-     * @return {?Object}
-     *
-     * @description
-     * Check if the route matches the current url.
-     *
-     * Inspired by match in
-     * visionmedia/express/lib/router/router.js.
-     */
-    function switchRouteMatcher(on, route) {
-      var keys = route.keys,
-          params = {};
-
-      if (!route.regexp) return null;
-
-      var m = route.regexp.exec(on);
-      if (!m) return null;
-
-      for (var i = 1, len = m.length; i < len; ++i) {
-        var key = keys[i - 1];
-
-        var val = m[i];
-
-        if (key && val) {
-          params[key.name] = val;
-        }
-      }
-      return params;
-    }
-
-    function prepareRoute($locationEvent) {
-      var lastRoute = $route.current;
-
-      preparedRoute = parseRoute();
-      preparedRouteIsUpdateOnly = preparedRoute && lastRoute && preparedRoute.$$route === lastRoute.$$route
-          && angular.equals(preparedRoute.pathParams, lastRoute.pathParams)
-          && !preparedRoute.reloadOnSearch && !forceReload;
-
-      if (!preparedRouteIsUpdateOnly && (lastRoute || preparedRoute)) {
-        if ($rootScope.$broadcast('$routeChangeStart', preparedRoute, lastRoute).defaultPrevented) {
-          if ($locationEvent) {
-            $locationEvent.preventDefault();
-          }
-        }
-      }
-    }
-
-    function commitRoute() {
-      var lastRoute = $route.current;
-      var nextRoute = preparedRoute;
-
-      if (preparedRouteIsUpdateOnly) {
-        lastRoute.params = nextRoute.params;
-        angular.copy(lastRoute.params, $routeParams);
-        $rootScope.$broadcast('$routeUpdate', lastRoute);
-      } else if (nextRoute || lastRoute) {
-        forceReload = false;
-        $route.current = nextRoute;
-        if (nextRoute) {
-          if (nextRoute.redirectTo) {
-            if (angular.isString(nextRoute.redirectTo)) {
-              $location.path(interpolate(nextRoute.redirectTo, nextRoute.params)).search(nextRoute.params)
-                       .replace();
-            } else {
-              $location.url(nextRoute.redirectTo(nextRoute.pathParams, $location.path(), $location.search()))
-                       .replace();
-            }
-          }
-        }
-
-        $q.when(nextRoute).
-          then(function() {
-            if (nextRoute) {
-              var locals = angular.extend({}, nextRoute.resolve),
-                  template, templateUrl;
-
-              angular.forEach(locals, function(value, key) {
-                locals[key] = angular.isString(value) ?
-                    $injector.get(value) : $injector.invoke(value, null, null, key);
-              });
-
-              if (angular.isDefined(template = nextRoute.template)) {
-                if (angular.isFunction(template)) {
-                  template = template(nextRoute.params);
-                }
-              } else if (angular.isDefined(templateUrl = nextRoute.templateUrl)) {
-                if (angular.isFunction(templateUrl)) {
-                  templateUrl = templateUrl(nextRoute.params);
-                }
-                templateUrl = $sce.getTrustedResourceUrl(templateUrl);
-                if (angular.isDefined(templateUrl)) {
-                  nextRoute.loadedTemplateUrl = templateUrl;
-                  template = $templateRequest(templateUrl);
-                }
-              }
-              if (angular.isDefined(template)) {
-                locals['$template'] = template;
-              }
-              return $q.all(locals);
-            }
-          }).
-          // after route change
-          then(function(locals) {
-            if (nextRoute == $route.current) {
-              if (nextRoute) {
-                nextRoute.locals = locals;
-                angular.copy(nextRoute.params, $routeParams);
-              }
-              $rootScope.$broadcast('$routeChangeSuccess', nextRoute, lastRoute);
-            }
-          }, function(error) {
-            if (nextRoute == $route.current) {
-              $rootScope.$broadcast('$routeChangeError', nextRoute, lastRoute, error);
-            }
-          });
-      }
-    }
-
-
-    /**
-     * @returns {Object} the current active route, by matching it against the URL
-     */
-    function parseRoute() {
-      // Match a route
-      var params, match;
-      angular.forEach(routes, function(route, path) {
-        if (!match && (params = switchRouteMatcher($location.path(), route))) {
-          match = inherit(route, {
-            params: angular.extend({}, $location.search(), params),
-            pathParams: params});
-          match.$$route = route;
-        }
-      });
-      // No route matched; fallback to "otherwise" route
-      return match || routes[null] && inherit(routes[null], {params: {}, pathParams:{}});
-    }
-
-    /**
-     * @returns {string} interpolation of the redirect path with the parameters
-     */
-    function interpolate(string, params) {
-      var result = [];
-      angular.forEach((string || '').split(':'), function(segment, i) {
-        if (i === 0) {
-          result.push(segment);
-        } else {
-          var segmentMatch = segment.match(/(\w+)(?:[?*])?(.*)/);
-          var key = segmentMatch[1];
-          result.push(params[key]);
-          result.push(segmentMatch[2] || '');
-          delete params[key];
-        }
-      });
-      return result.join('');
-    }
-  }];
-}
-
-ngRouteModule.provider('$routeParams', $RouteParamsProvider);
-
-
-/**
- * @ngdoc service
- * @name $routeParams
- * @requires $route
- *
- * @description
- * The `$routeParams` service allows you to retrieve the current set of route parameters.
- *
- * Requires the {@link ngRoute `ngRoute`} module to be installed.
- *
- * The route parameters are a combination of {@link ng.$location `$location`}'s
- * {@link ng.$location#search `search()`} and {@link ng.$location#path `path()`}.
- * The `path` parameters are extracted when the {@link ngRoute.$route `$route`} path is matched.
- *
- * In case of parameter name collision, `path` params take precedence over `search` params.
- *
- * The service guarantees that the identity of the `$routeParams` object will remain unchanged
- * (but its properties will likely change) even when a route change occurs.
- *
- * Note that the `$routeParams` are only updated *after* a route change completes successfully.
- * This means that you cannot rely on `$routeParams` being correct in route resolve functions.
- * Instead you can use `$route.current.params` to access the new route's parameters.
- *
- * @example
- * ```js
- *  // Given:
- *  // URL: http://server.com/index.html#/Chapter/1/Section/2?search=moby
- *  // Route: /Chapter/:chapterId/Section/:sectionId
- *  //
- *  // Then
- *  $routeParams ==> {chapterId:'1', sectionId:'2', search:'moby'}
- * ```
- */
-function $RouteParamsProvider() {
-  this.$get = function() { return {}; };
-}
-
-ngRouteModule.directive('ngView', ngViewFactory);
-ngRouteModule.directive('ngView', ngViewFillContentFactory);
-
-
-/**
- * @ngdoc directive
- * @name ngView
- * @restrict ECA
- *
- * @description
- * # Overview
- * `ngView` is a directive that complements the {@link ngRoute.$route $route} service by
- * including the rendered template of the current route into the main layout (`index.html`) file.
- * Every time the current route changes, the included view changes with it according to the
- * configuration of the `$route` service.
- *
- * Requires the {@link ngRoute `ngRoute`} module to be installed.
- *
- * @animations
- * enter - animation is used to bring new content into the browser.
- * leave - animation is used to animate existing content away.
- *
- * The enter and leave animation occur concurrently.
- *
- * @scope
- * @priority 400
- * @param {string=} onload Expression to evaluate whenever the view updates.
- *
- * @param {string=} autoscroll Whether `ngView` should call {@link ng.$anchorScroll
- *                  $anchorScroll} to scroll the viewport after the view is updated.
- *
- *                  - If the attribute is not set, disable scrolling.
- *                  - If the attribute is set without value, enable scrolling.
- *                  - Otherwise enable scrolling only if the `autoscroll` attribute value evaluated
- *                    as an expression yields a truthy value.
- * @example
-    <example name="ngView-directive" module="ngViewExample"
-             deps="angular-route.js;angular-animate.js"
-             animations="true" fixBase="true">
-      <file name="index.html">
-        <div ng-controller="MainCtrl as main">
-          Choose:
-          <a href="Book/Moby">Moby</a> |
-          <a href="Book/Moby/ch/1">Moby: Ch1</a> |
-          <a href="Book/Gatsby">Gatsby</a> |
-          <a href="Book/Gatsby/ch/4?key=value">Gatsby: Ch4</a> |
-          <a href="Book/Scarlet">Scarlet Letter</a><br/>
-
-          <div class="view-animate-container">
-            <div ng-view class="view-animate"></div>
-          </div>
-          <hr />
-
-          <pre>$location.path() = {{main.$location.path()}}</pre>
-          <pre>$route.current.templateUrl = {{main.$route.current.templateUrl}}</pre>
-          <pre>$route.current.params = {{main.$route.current.params}}</pre>
-          <pre>$routeParams = {{main.$routeParams}}</pre>
-        </div>
-      </file>
-
-      <file name="book.html">
-        <div>
-          controller: {{book.name}}<br />
-          Book Id: {{book.params.bookId}}<br />
-        </div>
-      </file>
-
-      <file name="chapter.html">
-        <div>
-          controller: {{chapter.name}}<br />
-          Book Id: {{chapter.params.bookId}}<br />
-          Chapter Id: {{chapter.params.chapterId}}
-        </div>
-      </file>
-
-      <file name="animations.css">
-        .view-animate-container {
-          position:relative;
-          height:100px!important;
-          background:white;
-          border:1px solid black;
-          height:40px;
-          overflow:hidden;
-        }
-
-        .view-animate {
-          padding:10px;
-        }
-
-        .view-animate.ng-enter, .view-animate.ng-leave {
-          -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1.5s;
-          transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1.5s;
-
-          display:block;
-          width:100%;
-          border-left:1px solid black;
-
-          position:absolute;
-          top:0;
-          left:0;
-          right:0;
-          bottom:0;
-          padding:10px;
-        }
-
-        .view-animate.ng-enter {
-          left:100%;
-        }
-        .view-animate.ng-enter.ng-enter-active {
-          left:0;
-        }
-        .view-animate.ng-leave.ng-leave-active {
-          left:-100%;
-        }
-      </file>
-
-      <file name="script.js">
-        angular.module('ngViewExample', ['ngRoute', 'ngAnimate'])
-          .config(['$routeProvider', '$locationProvider',
-            function($routeProvider, $locationProvider) {
-              $routeProvider
-                .when('/Book/:bookId', {
-                  templateUrl: 'book.html',
-                  controller: 'BookCtrl',
-                  controllerAs: 'book'
-                })
-                .when('/Book/:bookId/ch/:chapterId', {
-                  templateUrl: 'chapter.html',
-                  controller: 'ChapterCtrl',
-                  controllerAs: 'chapter'
-                });
-
-              $locationProvider.html5Mode(true);
-          }])
-          .controller('MainCtrl', ['$route', '$routeParams', '$location',
-            function($route, $routeParams, $location) {
-              this.$route = $route;
-              this.$location = $location;
-              this.$routeParams = $routeParams;
-          }])
-          .controller('BookCtrl', ['$routeParams', function($routeParams) {
-            this.name = "BookCtrl";
-            this.params = $routeParams;
-          }])
-          .controller('ChapterCtrl', ['$routeParams', function($routeParams) {
-            this.name = "ChapterCtrl";
-            this.params = $routeParams;
-          }]);
-
-      </file>
-
-      <file name="protractor.js" type="protractor">
-        it('should load and compile correct template', function() {
-          element(by.linkText('Moby: Ch1')).click();
-          var content = element(by.css('[ng-view]')).getText();
-          expect(content).toMatch(/controller\: ChapterCtrl/);
-          expect(content).toMatch(/Book Id\: Moby/);
-          expect(content).toMatch(/Chapter Id\: 1/);
-
-          element(by.partialLinkText('Scarlet')).click();
-
-          content = element(by.css('[ng-view]')).getText();
-          expect(content).toMatch(/controller\: BookCtrl/);
-          expect(content).toMatch(/Book Id\: Scarlet/);
-        });
-      </file>
-    </example>
- */
-
-
-/**
- * @ngdoc event
- * @name ngView#$viewContentLoaded
- * @eventType emit on the current ngView scope
- * @description
- * Emitted every time the ngView content is reloaded.
- */
-ngViewFactory.$inject = ['$route', '$anchorScroll', '$animate'];
-function ngViewFactory($route, $anchorScroll, $animate) {
-  return {
-    restrict: 'ECA',
-    terminal: true,
-    priority: 400,
-    transclude: 'element',
-    link: function(scope, $element, attr, ctrl, $transclude) {
-        var currentScope,
-            currentElement,
-            previousLeaveAnimation,
-            autoScrollExp = attr.autoscroll,
-            onloadExp = attr.onload || '';
-
-        scope.$on('$routeChangeSuccess', update);
-        update();
-
-        function cleanupLastView() {
-          if (previousLeaveAnimation) {
-            $animate.cancel(previousLeaveAnimation);
-            previousLeaveAnimation = null;
-          }
-
-          if (currentScope) {
-            currentScope.$destroy();
-            currentScope = null;
-          }
-          if (currentElement) {
-            previousLeaveAnimation = $animate.leave(currentElement);
-            previousLeaveAnimation.then(function() {
-              previousLeaveAnimation = null;
-            });
-            currentElement = null;
-          }
-        }
-
-        function update() {
-          var locals = $route.current && $route.current.locals,
-              template = locals && locals.$template;
-
-          if (angular.isDefined(template)) {
-            var newScope = scope.$new();
-            var current = $route.current;
-
-            // Note: This will also link all children of ng-view that were contained in the original
-            // html. If that content contains controllers, ... they could pollute/change the scope.
-            // However, using ng-view on an element with additional content does not make sense...
-            // Note: We can't remove them in the cloneAttchFn of $transclude as that
-            // function is called before linking the content, which would apply child
-            // directives to non existing elements.
-            var clone = $transclude(newScope, function(clone) {
-              $animate.enter(clone, null, currentElement || $element).then(function onNgViewEnter() {
-                if (angular.isDefined(autoScrollExp)
-                  && (!autoScrollExp || scope.$eval(autoScrollExp))) {
-                  $anchorScroll();
-                }
-              });
-              cleanupLastView();
-            });
-
-            currentElement = clone;
-            currentScope = current.scope = newScope;
-            currentScope.$emit('$viewContentLoaded');
-            currentScope.$eval(onloadExp);
-          } else {
-            cleanupLastView();
-          }
-        }
-    }
-  };
-}
-
-// This directive is called during the $transclude call of the first `ngView` directive.
-// It will replace and compile the content of the element with the loaded template.
-// We need this directive so that the element content is already filled when
-// the link function of another directive on the same element as ngView
-// is called.
-ngViewFillContentFactory.$inject = ['$compile', '$controller', '$route'];
-function ngViewFillContentFactory($compile, $controller, $route) {
-  return {
-    restrict: 'ECA',
-    priority: -400,
-    link: function(scope, $element) {
-      var current = $route.current,
-          locals = current.locals;
-
-      $element.html(locals.$template);
-
-      var link = $compile($element.contents());
-
-      if (current.controller) {
-        locals.$scope = scope;
-        var controller = $controller(current.controller, locals);
-        if (current.controllerAs) {
-          scope[current.controllerAs] = controller;
-        }
-        $element.data('$ngControllerController', controller);
-        $element.children().data('$ngControllerController', controller);
-      }
-
-      link(scope);
-    }
-  };
-}
-
-
-})(window, window.angular);
-
 var uppercaseFirstLetter = function (input) {
     return (!!input) ? input.replace(/^(.)|(\s|\-)(.)/g, function ($1) {
         return $1.toUpperCase();
@@ -1015,6 +23,20 @@ Object.byString = function (o, s) {
         }
     }
     return o;
+}
+
+var activeRowIndex = -1;
+var pafDocuments = [];
+var selectedDocId = "";
+
+var onFileChange = function () {
+	var scope = angular.element(document.getElementById("modal")).scope();
+    var fileName = $("#iFrameUpload")[0].contentWindow.document.getElementById("UploadFile").value;
+    fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
+    
+    scope.$apply(function() {
+		scope.disable = (fileName == "") ? true : false;
+    });
 }
 
 var deserializeXml = function (xml, nodeName, options) {
@@ -1090,13 +112,19 @@ var deserializeXml = function (xml, nodeName, options) {
     return items;
 }
 
+var encode = function(value) {
+	var returnValue = value.replace(/&/g, "&amp;");
+	returnValue = returnValue.replace(/'/g, "&apos;");
+	returnValue = returnValue.replace(/"/g, "&quot;");
+	returnValue = returnValue.replace(/</g, "&lt;");
+	returnValue = returnValue.replace(/>/g, "&gt;");
 
+	return returnValue;
+}
 
 var paf = angular.module('paf', ['ui.bootstrap', 'ngRoute']);
 
-
 if (!window.top.fin) {
-    //window.top.fin = { appUI: { houseCodeId: 227, glbFscYear: 2, glbFscPeriod: 18} };
     window.top.fin = { appUI: { houseCodeId: 415, glbFscYear: 4, glbFscPeriod: 45, glbWeek: 2 } };
 }
 
@@ -1108,34 +136,43 @@ paf.config(['$routeProvider', function ($routeProvider) {
     $routeProvider
     .when('/edit/:id', {
         controller: 'pafCtrl',
-        template: window['_Jyi'][0]
+        templateUrl: 'pafeditor.htm'
     })
     .when('/new', {
         controller: 'pafCtrl',
-        template: window['_Jyi'][0]
-
+        templateUrl: 'pafeditor.htm'
     })
     .when('/list', {
         controller: 'pafListCtrl',
-        template: window['_Jyi'][1]
-
+        templateUrl: 'paflist.htm'
     })
     .otherwise({
         redirectTo: '/list'
     });
 }]);
 
-// 
-
 paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$timeout', '$routeParams', '$modal', '$location', function ($scope, $document, EmpActions, $filter, $timeout, $routeParams, $modal, $location) {
-    $scope.HcmHouseCodes = [];
-    $scope.viewLoading = false;
+	$scope.HcmHouseCodes = [];
+    $scope.States = [];
+	$scope.JobCodes = [];
+	$scope.PersonActionTypes = [];
+	$scope.PayGrades = [];
+	$scope.pafDocs = [];
+	var selectedFileName = "";
+	$scope.add = "";
+	$scope.selectedPafId = $routeParams.id;
 
     $scope.dateOptions = {
         formatYear: 'yy',
         startingDay: 1,
         showWeeks: false
     };
+
+	$scope.pageLoading = false;
+	$scope.loadingTitle = " Loading...";
+	$scope.isPageLoading = function () {
+        return ($scope.loadingCount > 0 || $scope.pageLoading);
+    }
 
     $scope.lkup = {
         CarAllowances: EmpActions.getCarAllowances(),
@@ -1164,9 +201,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             CurrentPositionType: ''
         };
     }
-
-    $scope.HcmHouseCodes = [];
-    $scope.States = [];
 
     $scope.empAction = {
         Number: 0,
@@ -1199,8 +233,26 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             Compensation: initCompensation()
         }
     }
-
-    var loadPersonActionTypes = function () {
+	
+    var loadHouseCodes = function () {
+        EmpActions.getHcmHouseCodes(function (result) {
+            $scope.HcmHouseCodes = result;
+        });
+    }
+	
+	var loadStateTypes = function () {
+        EmpActions.getStateTypes(function (result) {
+            $scope.States = result;
+        });
+    }
+	
+    var loadJobCodes = function () {
+        EmpActions.getJobCodes(function (result) {
+            $scope.JobCodes = result;
+        });
+    }
+	
+	var loadPersonActionTypes = function () {
         EmpActions.getPersonActionTypes(function (result) {
             var filters = function (item) {
                 return $filter('filter')(result, { typeName: item });
@@ -1214,27 +266,13 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             $scope.lkup.Resignations = filters("Resignation");
         });
     }
-    var loadStateTypes = function () {
-        EmpActions.getStateTypes(function (result) {
-            $scope.States = result;
-        });
-    }
-    var loadHouseCodes = function () {
-        EmpActions.getHcmHouseCodes(function (result) {
-            $scope.HcmHouseCodes = result;
-        });
-    }
-    var loadJobCodes = function () {
-        EmpActions.getJobCodes(function (result) {
-            $scope.JobCodes = result;
-        });
-    }
+	
     var loadPayGrades = function () {
         EmpActions.getPayGrades(function (result) {
             $scope.PayGrades = result;
         });
     }
-
+	
     var initReporting = function (positionType) {
         if (!$scope.empAction.Data.Compensation)
             return;
@@ -1263,8 +301,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             $scope.empAction.Data[type].ReportingEmail = obj.ReportingEmail;
             $scope.empAction.Data[type].ReportingManagerNumber = obj.ReportingManagerNumber;
             $scope.empAction.Data[type].CacheReportingManagerNumber = obj.ReportingManagerNumber;
-            $scope.empAction.Data[type].DisabledReportFields = obj.ReportingManagerNumber && obj.ReportingManagerNumber.length > 0;
-            $scope.empAction.Data[type].DisabledReportingManagerNumberField = obj.ReportingManagerNumber && obj.ReportingManagerNumber.length > 0;
+            $scope.empAction.Data[type].DisabledReportFields = obj.ReportingManagerNumber && obj.ReportingManagerNumber.length > 0 && obj.ReportingTitle && obj.ReportingTitle.length > 0 && obj.ReportingEmail && obj.ReportingEmail.length > 0;
+            $scope.empAction.Data[type].DisabledReportingManagerNumberField = false;
         }
 
         var items = ["NewHire", "ReHire", "Promotion", "Demotion", "SalaryChange", "Transfer"];
@@ -1280,6 +318,12 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
     var getEmpCompensation = function (employeeNumber, callback) {
         EmpActions.getEmpCompensation(employeeNumber, function (response) {
+            callback(response);
+        });
+    }
+
+    var getManagerDetail = function (employeeNumber, callback) {
+        EmpActions.getManagerDetail(employeeNumber, function (response) {
             callback(response);
         });
     }
@@ -1301,7 +345,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     ReportingManagerNumber: response.mgrClock,
                     DateLastIncrease: $filter("date")(new Date(response.dateBeg), "MM/dd/yyyy"),
                     PercentLastIncrease: ((response.annualPayAmt - response.priorAnnualPayAmt) / response.priorAnnualPayAmt).toFixed(2) * 100 + "%",
-                    CurrentPosition: response.mgrTitle,
+                    CurrentPosition: response.empTitle,
                     EmployeeNumber: response.empNumber,
                     CurrentPositionType: $filter('filter')($scope.JobCodes, { name: response.mgrTitle })
                 }
@@ -1313,25 +357,26 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
     $scope.getManagerInfo = function (employeeNumber, positionType) {
 
-        if ($scope.empAction.Data && ($scope.empAction.Data[positionType].ReportingManagerNumber.length == 0 || parseInt(employeeNumber) == parseInt($scope.empAction.Data[positionType].CacheReportingManagerNumber))) {
+        if (employeeNumber != "" && $scope.empAction.Data && ($scope.empAction.Data[positionType].ReportingManagerNumber.length == 0 || parseInt(employeeNumber) != parseInt($scope.empAction.Data[positionType].CacheReportingManagerNumber))) {
             $scope.empAction.Data[positionType].CacheReportingManagerNumber = employeeNumber;
-            return;
+
+                getManagerDetail(employeeNumber, function (response) {
+                    if (!angular.isDefined(response)) {
+                        alert("The Managers/Clock Number you enter is not exist.");
+                        return;
+                    }
+
+                    $scope.empAction.Data[positionType].ReportingName = response.empFirstName + " " + response.empLastName;
+                    $scope.empAction.Data[positionType].ReportingTitle = response.empTitle;
+                    $scope.empAction.Data[positionType].ReportingEmail = response.empEmail;
+                    $scope.empAction.Data[positionType].ReportingManagerNumber = response.empClock;
+                    $scope.empAction.Data[positionType].CacheReportingManagerNumber = response.empClock;
+                    $scope.empAction.Data[positionType].DisabledReportFields = response.empClock && response.empClock.length > 0 && response.empTitle && response.empTitle.length > 0 && response.empEmail && response.empEmail.length > 0;
+                    $scope.empAction.Data[positionType].DisabledReportingManagerNumberField = false;
+                });
         }
-
-        getEmpCompensation(employeeNumber, function (response) {
-            if (!angular.isDefined(response)) {
-                alert("The Managers/Clock Number you enter is not exist.");
-                return;
-            }
-
-            $scope.empAction.Data[positionType].ReportingName = response.empFirstName + " " + response.empLastName;
-            $scope.empAction.Data[positionType].ReportingTitle = response.empTitle;
-            $scope.empAction.Data[positionType].ReportingEmail = response.empEmail;
-            $scope.empAction.Data[positionType].ReportingManagerNumber = response.empClock;
-            $scope.empAction.Data[positionType].CacheReportingManagerNumber = response.empClock;
-            $scope.empAction.Data[positionType].DisabledReportFields = true;
-            $scope.empAction.Data[positionType].DisabledReportingManagerNumberField = false;
-        });
+        else
+            return;
     };
 
     $scope.isManagerFieldRequired = function (item) {
@@ -1354,7 +399,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             else {
                 $scope.empAction.EmployeeId = result.id;
                 $scope.empAction.Data.Employee = result;
-                console.log($scope.empAction.Data.Employee);
                 $scope.empAction.Data.Employee.HcmHouseCode = EmpActions.getHcmHouseCodeByBrief(result.houseCode);
                 $scope.empAction.HcmHouseCode = EmpActions.getHcmHouseCodeByBrief(result.houseCode);
 
@@ -1381,29 +425,54 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
     var lastEmployeeNumber = null;
 
+    var isAuthorized = function (path) {
+        var authorized = false;
+
+        for (var index = 0; index < $scope.authorizations.length; index++) {
+            if ($scope.authorizations[index].path.indexOf(path) >= 0) {
+                authorized = true;
+                break;
+            }
+        }
+
+        return authorized;
+    }
+
+    var authorizationsLoaded = function () {
+        var authorizePath = "\\crothall\\chimes\\fin\\Setup\\EmployeePAF";
+        $scope.readOnly = isAuthorized(authorizePath + "\\Read");
+        $scope.write = isAuthorized(authorizePath + "\\Write");
+        $scope.writeInProcess = isAuthorized(authorizePath + "\\InProcessWrite");
+        $scope.approveInProcess = isAuthorized(authorizePath + "\\ApproveInProcess");
+    }
+
     var init = function () {
-
-        loadPersonActionTypes();
-        loadStateTypes();
         loadHouseCodes();
+		loadStateTypes();
         loadJobCodes();
-        loadPayGrades();
-
+		loadPersonActionTypes();
+		loadPayGrades();
+		EmpActions.getAuthorizations(function (result) {
+		    $scope.authorizations = result;
+		    authorizationsLoaded();
+		});
     }
 
     $scope.getPayRange = function (payGrade, salary) {
-        if (!payGrade || isNaN(salary))
-            return '';
+        
+		if (!payGrade || isNaN(salary))
+            return "";
 
         var payGradeItem = $filter('filter')($scope.PayGrades, function (item) {
             return item.id == payGrade;
         });
 
         if (!angular.isDefined(payGradeItem) || !payGradeItem || payGradeItem.length == 0)
-            return '';
+            return "";
+			
         payGradeItem = payGradeItem[0];
 
-        var range = '';
+        var range = "";
         if (salary < payGradeItem.min)
             range = "Below Min";
         else if (salary == payGradeItem.min)
@@ -1418,8 +487,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             range = "Max";
         else if (salary > payGradeItem.max)
             range = "Over Max";
-        else
-            range = "";
 
         return range;
     }
@@ -1427,15 +494,16 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     init();
 
     if ($routeParams.id) {
-
         EmpActions.findEmployeePersonnelAction($routeParams.id, function (result) {
             if (!result) {
                 $location.path('/list');
                 return;
             }
             $scope.empAction = result;
-
             loadCompensations($scope.empAction.EmployeeNumber);
+        });
+        EmpActions.findEmployeePAFDocument($routeParams.id, function (result) {
+            $scope.pafDocs = result;
         });
     }
 
@@ -1457,8 +525,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     });
 
     $scope.onEmployeeNumberChanged = function (employeeNumber) {
-        if ($scope.empAction.Data.Employee && parseInt($scope.empAction.Data.Employee.employeeNumber) == parseInt(employeeNumber)) {
-
+        if ($scope.empAction.Data.Employee && ($scope.empAction.EmployeeNumber.length != 0 || parseInt($scope.empAction.Data.Employee.employeeNumber) == parseInt(employeeNumber))){
             return;
         }
 
@@ -1476,7 +543,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 validateHcmHouseCode();
             });
         }
-
     };
 
     $scope.isPersonEditable = function () {
@@ -1485,7 +551,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
     $scope.onHouseCodeChange = function () {
         if (lastEmployeeNumber != null) {
-
             if (_hcmHouseCode != $scope.empAction.HcmHouseCode) {
                 alert("House Code is not same as Employee Number House Code.");
                 $scope.pafForm.HcmHouseCode.$setValidity("required", false);
@@ -1521,8 +586,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     var separationGroupItems = ['Transfer', 'Relocation', 'Promotion', 'Demotion', 'SalaryChange', 'NewHire', 'ReHire', 'Loa']
 
     var positionFields = {
-        NewHire: ["HireDate", "PositionType", "Status", "PayStatus", "FullTimeHours", "TemporaryHours", "PartTimeHours", "PerDiemValue", "AnnualSalaryAmount", "AdminHourlyAmount", "HourlyRateAmount", "PayGrade", "PayRange", "ReportingName", "ReportingTitle", "ReportingEmail", "HcmHouseCodeTrainingLocation", "TrainingContact", "Duration", "CarAllowance", "BonusEligibleType"],
-        ReHire: ["HireDate", "PositionType", "Status", "PayStatus", "FullTimeHours", "TemporaryHours", "PartTimeHours", "PerDiemValue", "AnnualSalaryAmount", "AdminHourlyAmount", "HourlyRateAmount", "PayGrade", "PayRange", "ReportingName", "ReportingTitle", "ReportingEmail", "HcmHouseCodeTrainingLocation", "TrainingContact", "Duration", "CarAllowance", "BonusEligibleType"],
+        NewHire: ["HireDate", "PositionType", "Status", "PayStatus", "FullTimeHours", "TemporaryHours", "PartTimeHours", "AnnualSalaryAmount", "AdminHourlyAmount", "HourlyRateAmount", "PerDiemValue", "PayGrade", "PayRange", "ReportingName", "ReportingTitle", "ReportingEmail", "HcmHouseCodeTrainingLocation", "TrainingContact", "Duration", "CarAllowance", "BonusEligibleType"],
+        ReHire: ["HireDate", "PositionType", "Status", "PayStatus", "FullTimeHours", "TemporaryHours", "PartTimeHours", "AnnualSalaryAmount", "AdminHourlyAmount", "HourlyRateAmount", "PerDiemValue", "PayGrade", "PayRange", "ReportingName", "ReportingTitle", "ReportingEmail", "HcmHouseCodeTrainingLocation", "TrainingContact", "Duration", "CarAllowance", "BonusEligibleType"],
         Separation: ["SeparationDate", "VacationDaysDue", "PayNumberOfWeeks", "SeparationReason", "ResignationType", "TerminationType", "LayoffType", "SeparationReHire"],
         Loa: ["LoaDate", "DateOfReturn"],
         Requisition: ["RequisitionNumber", "EmailAddress"],
@@ -1552,7 +617,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     }
 
     initialEmpAction();
-
 
     var uncheckPositionType = function (positionType) {
         if (!$scope.empAction[positionType])
@@ -1601,6 +665,121 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         return $scope.empAction[positionType];
     }
 
+    $scope.onPercentageChange = function () {
+        var data = null;
+        if ($scope.empAction.Promotion)
+            data = $scope.empAction.Data.Promotion;
+        else if ($scope.empAction.Demotion)
+            data = $scope.empAction.Data.Demotion;
+        else
+            data = $scope.empAction.Data.SalaryChange;
+
+        var increasePercentage = data.IncreasePercentage;
+
+        if (increasePercentage == null || increasePercentage == "") {
+            increasePercentage = 0;
+        }
+        increasePercentage = parseFloat(increasePercentage);
+
+        if (isNaN(increasePercentage)) {
+            increasePercentage = 0;
+            alert("Enter Valid Percentage");
+        }
+        data.IncreasePercentage = increasePercentage.toFixed(2);
+    }
+
+    $scope.onAmountChange = function () {
+        var data = null;
+        if ($scope.empAction.Promotion)
+            data = $scope.empAction.Data.Promotion;
+        else if ($scope.empAction.Demotion)
+            data = $scope.empAction.Data.Demotion;
+        else
+            data = $scope.empAction.Data.SalaryChange;
+
+        var increaseAmt = data.IncreaseAmount;
+      
+        if (increaseAmt == null || increaseAmt == "")
+            increaseAmt = 0;
+
+        increaseAmt = parseFloat(increaseAmt);
+
+        if (isNaN(increaseAmt)) {
+            increaseAmt = 0;
+            alert("Enter Valid Amount");
+        }
+
+        data.IncreaseAmount = increaseAmt.toFixed(2);
+    }
+
+    $scope.onAnnualSalaryChange = function () {
+        var data = null;
+        if ($scope.empAction.NewHire)
+            data = $scope.empAction.Data.NewHire;
+        else if ($scope.empAction.ReHire)
+            data = $scope.empAction.Data.ReHire;
+
+        var salary = data.AnnualSalaryAmount;
+
+        if (salary == null || salary == "")
+            salary = 0;
+
+        salary = parseFloat(salary);
+
+        data.AnnualSalaryAmount = salary.toFixed(2);
+    }
+
+    $scope.onAdminHourlyChange = function () {
+        var data = null;
+        if ($scope.empAction.NewHire)
+            data = $scope.empAction.Data.NewHire;
+        else if ($scope.empAction.ReHire)
+            data = $scope.empAction.Data.ReHire;
+
+        var salary = data.AdminHourlyAmount;
+
+        if (salary == null || salary == "")
+            salary = 0;
+
+        salary = parseFloat(salary);
+
+        data.AdminHourlyAmount = salary.toFixed(2);
+    }
+
+    $scope.onHourlyChange = function () {
+        var data = null;
+        if ($scope.empAction.NewHire)
+            data = $scope.empAction.Data.NewHire;
+        else if ($scope.empAction.ReHire)
+            data = $scope.empAction.Data.ReHire;
+
+        var salary = data.HourlyRateAmount;
+
+        if (salary == null || salary == "")
+            salary = 0;
+
+        salary = parseFloat(salary);
+
+        data.HourlyRateAmount = salary.toFixed(2);
+    }
+
+    $scope.onPerDiemChange = function () {
+        var data = null;
+        if ($scope.empAction.NewHire)
+            data = $scope.empAction.Data.NewHire;
+        else if ($scope.empAction.ReHire)
+            data = $scope.empAction.Data.ReHire;
+
+        var salary = data.PerDiemValue;
+
+        if (salary == null || salary == "")
+            salary = 0;
+
+        salary = parseFloat(salary);
+
+        data.PerDiemValue = salary.toFixed(2);
+    }
+
     $scope.onSalaryChange = function (type) {
         var data = null;
         if ($scope.empAction.Promotion)
@@ -1622,6 +801,13 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         increaseAmt = parseFloat(increaseAmt);
         increasePercentage = parseFloat(increasePercentage);
 
+        if (isNaN(increaseAmt)) {
+            increaseAmt = 0;
+        }
+        if (isNaN(increasePercentage)) {
+            increasePercentage = 0;
+        }
+
         if (angular.isDefined(currentSalary)) {
             currentSalary = parseFloat(currentSalary);
             if (type == 'amt' && currentSalary != parseFloat(0)) {
@@ -1634,7 +820,75 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 data.NewSalary = (currentSalary + parseFloat(data.IncreaseAmount)).toFixed(2);
             else
                 data.NewSalary = (currentSalary - parseFloat(data.IncreaseAmount)).toFixed(2);
+
+            if (isNaN(data.NewSalary)) {
+                data.NewSalary = 0;
+            }
         }
+    }
+
+	 $scope.onRowClick = function (item, index) {
+		$scope.selectedDocItem = item;
+        activeRowIndex = index;
+        selectedDocId = item.id;
+        selectedFileName = item.fileName;
+    }
+	
+    $scope.addDoc = function () {
+        var modalInstance = $modal.open({
+            templateUrl: 'upload.html',
+            controller: 'modalInstanceCtrl',
+            title: "Upload Document",
+            size: 'sm',
+            scope: $scope
+        });
+        $scope.add = true;
+    }
+
+    $scope.editDoc = function () {
+        if (activeRowIndex != -1) {
+            var modalInstance = $modal.open({
+                templateUrl: 'upload.html',
+                controller: 'modalInstanceCtrl',
+                title: "Upload Document",
+                size: 'sm',
+                scope: $scope
+            });
+			$scope.docTitle = $scope.pafDocs[activeRowIndex].title;
+        }
+        $scope.add = false;
+    }
+
+    $scope.removeDoc = function () {
+        if (selectedDocId > 0 && activeRowIndex != -1) {
+			$scope.pageLoading = true;
+			$scope.loadingTitle = " Removing...";
+			$scope.pafDocs.splice(activeRowIndex, 1);
+            EmpActions.deleteEmployeePAFDocument(selectedDocId, function (data, status) {
+				$scope.$apply(function() {
+					$scope.pageLoading = false;
+			    });
+            });
+        }
+        else if (activeRowIndex != -1) {
+            $scope.pafDocs.splice(activeRowIndex, 1);
+        }
+        activeRowIndex = -1;
+    }
+
+    $scope.viewDoc = function () {
+        if (selectedDocId > 0 && activeRowIndex != -1) {
+			$scope.pageLoading = true;
+			$scope.loadingTitle = " Downloading...";
+            EmpActions.viewEmployeePAFDocument(selectedDocId, selectedFileName, function (data, status) {
+				if (data.length == 1) {
+					$("#iFrameDownload")[0].contentWindow.document.getElementById("FileName").value = data[0].fileName;
+					$("#iFrameDownload")[0].contentWindow.document.getElementById("DownloadButton").click();
+				}
+				$scope.pageLoading = false;
+            });
+        }
+        activeRowIndex = -1;
     }
 
     var validateActionType = function () {
@@ -1654,8 +908,27 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         return isValid;
     }
 
-    $scope.isLoading = function () {
-        return $scope.loadingCount > 0;
+    $scope.validatePersonalInfo = function () {
+        var isValid = false;
+
+        if ($scope.empAction.PersonalInfoChange && angular.isObject($scope.empAction.Data.PersonalInfoChange)) {
+
+            if ($scope.empAction.Data.PersonalInfoChange.InfoChangeEffectiveDate && ($scope.empAction.Data.PersonalInfoChange.InfoChangeFirstName || $scope.empAction.Data.PersonalInfoChange.InfoChangeMiddleName || $scope.empAction.Data.PersonalInfoChange.InfoChangeLastName || $scope.empAction.Data.PersonalInfoChange.InfoChangeAddressLine1 || $scope.empAction.Data.PersonalInfoChange.InfoChangeAddressLine2 || $scope.empAction.Data.PersonalInfoChange.InfoChangePhone || $scope.empAction.Data.PersonalInfoChange.InfoChangeCity || $scope.empAction.Data.PersonalInfoChange.AppStateTypeInfoChange || $scope.empAction.Data.PersonalInfoChange.InfoChangePostalCode )) {
+                isValid = true;
+            }
+
+            if (!isValid)
+                $scope.pafForm.$setValidity('personalInfoChange', false, $scope.pafForm);
+            else
+                $scope.pafForm.$setValidity('personalInfoChange', true, $scope.pafForm);
+
+        }
+        else {
+            isValid = true;
+            $scope.pafForm.$setValidity('personalInfoChange', true, $scope.pafForm);
+        }
+
+        return isValid;
     }
 
     $scope.validateLoa = function () {
@@ -1703,26 +976,259 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         validateActionType();
         $scope.validateSeparationReason();
         $scope.validateLoa();
+        $scope.validatePersonalInfo();
+		
         if ($scope.pafForm.$valid) {
-
-            if ($scope.empAction.SalaryChange) {
-                //console.log($scope.empAction.Data.SalaryChange.NewPositionType);
-                if (!$scope.empAction.Data.SalaryChange.NewPositionType) {
-                    //$scope.empAction.Data.SalaryChange.NewPositionType=
+            if ($scope.empAction.NewHire) {
+                $scope.empAction.HireDate = $scope.empAction.Data.NewHire.HireDate;
+                $scope.empAction.PositionType = $scope.empAction.Data.NewHire.PositionType;
+                if ($scope.empAction.Data.NewHire.Status == "FullTimeHours") {
+                    $scope.empAction.Hours = $scope.empAction.Data.NewHire.FullTimeHours;
+                    $scope.empAction.Status = "Full Time";
+                }
+                else if ($scope.empAction.Data.NewHire.Status == "TemporaryHours") {
+                    $scope.empAction.Hours = $scope.empAction.Data.NewHire.TemporaryHours;
+                    $scope.empAction.Status = "Temporary";
+                }
+                else if ($scope.empAction.Data.NewHire.Status == "PartTimeHours") {
+                    $scope.empAction.Hours = $scope.empAction.Data.NewHire.PartTimeHours;
+                    $scope.empAction.Status = "Part Time";
+                }
+                var salary = 0;
+                if ($scope.empAction.Data.NewHire.PayStatus == "AnnualSalaryAmount") {
+                    $scope.empAction.Amount = $scope.empAction.Data.NewHire.AnnualSalaryAmount;
+                    $scope.empAction.PayStatus = "Salary";
+                }
+                else if ($scope.empAction.Data.NewHire.PayStatus == "AdminHourlyAmount") {
+                    $scope.empAction.Amount = $scope.empAction.Data.NewHire.AdminHourlyAmount;
+                    salary = $scope.empAction.Data.NewHire.AdminHourlyAmount * 52 * 40;
+                    $scope.empAction.PayStatus = "Admin Hourly";
+                }
+                else if ($scope.empAction.Data.NewHire.PayStatus == "HourlyRateAmount") {
+                    $scope.empAction.Amount = $scope.empAction.Data.NewHire.HourlyRateAmount;
+                    salary = $scope.empAction.Data.NewHire.HourlyRateAmount * 52 * 40;
+                    $scope.empAction.PayStatus = "Hourly";
+                }
+                else if ($scope.empAction.Data.NewHire.PayStatus == "PerDiemValue") {
+                    $scope.empAction.Amount = $scope.empAction.Data.NewHire.PerDiemValue;
+                    $scope.empAction.PayStatus = "Per Diem";
+                }
+                $scope.empAction.ManagerName = $scope.empAction.Data.NewHire.ReportingName;
+                $scope.empAction.TrainingLocation = $scope.empAction.Data.NewHire.HcmHouseCodeTrainingLocation;
+                $scope.empAction.Duration = $scope.empAction.Data.NewHire.Duration;
+                $scope.empAction.CarAllowance = $scope.empAction.Data.NewHire.CarAllowance;
+                $scope.empAction.BonusEligibleType = $scope.empAction.Data.NewHire.BonusEligibleType;
+                $scope.empAction.BonusEligibleType = $scope.empAction.Data.NewHire.BonusEligibleType;
+                $scope.empAction.PayGrade = $scope.empAction.Data.NewHire.PayGrade;
+                $scope.empAction.ManagerEmail = $scope.empAction.Data.NewHire.ReportingEmail;
+                $scope.empAction.TrainingContact = $scope.empAction.Data.NewHire.TrainingContact;
+                var grade = ($scope.empAction.PayGrade == 0 ? $scope.empAction.PayGrade : EmpActions.getPayGradeTitle($scope.empAction.PayGrade));
+                $scope.empAction.PayRange = $scope.getPayRange($scope.empAction.Data.NewHire.PayGrade, salary) + " " + grade.slice(grade.indexOf("("));
+                $scope.empAction.ManagerNumber = $scope.empAction.Data["NewHire"].ReportingManagerNumber;
+                $scope.empAction.ManagerTitle = $scope.empAction.Data.NewHire.ReportingTitle;
+            }
+            else if ($scope.empAction.ReHire) {
+                $scope.empAction.HireDate = $scope.empAction.Data.ReHire.HireDate;
+                $scope.empAction.PositionType = $scope.empAction.Data.ReHire.PositionType;
+                if ($scope.empAction.Data.ReHire.Status == "FullTimeHours") {
+                    $scope.empAction.Hours = $scope.empAction.Data.ReHire.FullTimeHours;
+                    $scope.empAction.Status = "Full Time";
+                }
+                else if ($scope.empAction.Data.ReHire.Status == "TemporaryHours") {
+                    $scope.empAction.Hours = $scope.empAction.Data.ReHire.TemporaryHours;
+                    $scope.empAction.Status = "Temporary";
+                }
+                else if ($scope.empAction.Data.ReHire.Status == "PartTimeHours") {
+                    $scope.empAction.Hours = $scope.empAction.Data.ReHire.PartTimeHours;
+                    $scope.empAction.Status = "Part Time";
+                }
+                var salary = 0;
+                if ($scope.empAction.Data.ReHire.PayStatus == "AnnualSalaryAmount") {
+                    $scope.empAction.Amount = $scope.empAction.Data.ReHire.AnnualSalaryAmount;
+                    salary = $scope.empAction.Data.ReHire.AnnualSalaryAmount;
+                    $scope.empAction.PayStatus = "Salary";
+                }
+                else if ($scope.empAction.Data.ReHire.PayStatus == "AdminHourlyAmount") {
+                    $scope.empAction.Amount = $scope.empAction.Data.ReHire.AdminHourlyAmount;
+                    salary = $scope.empAction.Data.ReHire.AdminHourlyAmount * 52 * 40;
+                    $scope.empAction.PayStatus = "Admin Hourly";
+                }
+                else if ($scope.empAction.Data.ReHire.PayStatus == "HourlyRateAmount") {
+                    $scope.empAction.Amount = $scope.empAction.Data.ReHire.HourlyRateAmount;
+                    slary = $scope.empAction.Data.ReHire.HourlyRateAmount * 52 * 40;
+                    $scope.empAction.PayStatus = "Hourly";
+                }
+                else if ($scope.empAction.Data.ReHire.PayStatus == "PerDiemValue") {
+                    $scope.empAction.Amount = $scope.empAction.Data.ReHire.PerDiemValue;
+                    $scope.empAction.PayStatus = "Per Diem";
+                }
+                $scope.empAction.ManagerName = $scope.empAction.Data.ReHire.ReportingName;
+                $scope.empAction.TrainingLocation = $scope.empAction.Data.ReHire.HcmHouseCodeTrainingLocation;
+                $scope.empAction.Duration = $scope.empAction.Data.ReHire.Duration;
+                $scope.empAction.CarAllowance = $scope.empAction.Data.ReHire.CarAllowance;
+                $scope.empAction.BonusEligibleType = $scope.empAction.Data.ReHire.BonusEligibleType;
+                $scope.empAction.PayGrade = $scope.empAction.Data.ReHire.PayGrade;
+                $scope.empAction.ManagerEmail = $scope.empAction.Data.ReHire.ReportingEmail;
+                $scope.empAction.TrainingContact = $scope.empAction.Data.ReHire.TrainingContact;
+                var grade = ($scope.empAction.PayGrade == 0 ? $scope.empAction.PayGrade : EmpActions.getPayGradeTitle($scope.empAction.PayGrade));
+                $scope.empAction.PayRange = $scope.getPayRange($scope.empAction.Data.ReHire.PayGrade, salary) + " " + grade.slice(grade.indexOf("("));
+                $scope.empAction.ManagerNumber = $scope.empAction.Data["ReHire"].ReportingManagerNumber;
+                $scope.empAction.ManagerTitle = $scope.empAction.Data.ReHire.ReportingTitle;
+            }
+            else if ($scope.empAction.Separation) {
+                $scope.empAction.SeparationDate = $scope.empAction.Data.Separation.SeparationDate;
+                $scope.empAction.VacationDaysDue = $scope.empAction.Data.Separation.VacationDaysDue;
+                $scope.empAction.SeverancePayNumberOfWeeks = $scope.empAction.Data.Separation.PayNumberOfWeeks;
+                $scope.empAction.ResignationType = $scope.empAction.Data.Separation.ResignationType;
+                $scope.empAction.TerminationType = $scope.empAction.Data.Separation.TerminationType;
+                $scope.empAction.LayoffType = $scope.empAction.Data.Separation.LayoffType;
+                $scope.empAction.SeparationReHire = $scope.empAction.Data.Separation.SeparationReHire;
+                var revWithHR = $scope.empAction.Data.Separation.ReviewedWithHR;
+                if (revWithHR == 0) {
+                    $scope.empAction.HRReview = "CHRA";
+                }
+                else if (revWithHR == 1) {
+                    $scope.empAction.HRReview = "CHRC";
+                }
+                else if (revWithHR == 2) {
+                    $scope.empAction.HRReview = "CSHRC";
                 }
             }
-
-            EmpActions.saveEmployeePersonnelAction($scope.empAction, function (status) {
+            else if ($scope.empAction.Loa) {
+                $scope.empAction.LoaDate = $scope.empAction.Data.Loa.LoaDate;
+                $scope.empAction.DateReturn = $scope.empAction.Data.Loa.DateOfReturn;
+            }
+            if ($scope.empAction.Promotion) {
+                $scope.empAction.CurrentPositionType = $scope.empAction.Data.Promotion.CurrentPositionType;
+                $scope.empAction.NewPositionType = $scope.empAction.Data.Promotion.NewPositionType;
+                $scope.empAction.EffectiveDate = $scope.empAction.Data.Promotion.EffectiveDate;
+                $scope.empAction.ChangeReasonType = $scope.empAction.Data.Promotion.ChangeReasonType;
+                $scope.empAction.IncreaseDecreaseAmount = $scope.empAction.Data.Promotion.IncreaseAmount;
+                $scope.empAction.IncreaseDecreasePercentage = $scope.empAction.Data.Promotion.IncreasePercentage;
+                $scope.empAction.NewSalary = $scope.empAction.Data.Promotion.NewSalary;
+                $scope.empAction.NewPayGrade = $scope.empAction.Data.Promotion.NewPayGrade;
+                $scope.empAction.NewManagerName = $scope.empAction.Data.Promotion.ReportingName;
+                $scope.empAction.NewCarAllowance = $scope.empAction.Data.Promotion.NewCarAllowance;
+                $scope.empAction.NewBonusEligibleType = $scope.empAction.Data.Promotion.NewBonusEligibleType;
+                $scope.empAction.Instructions = $scope.empAction.Data.Promotion.Instructions;
+                $scope.empAction.NewManagerEmail = $scope.empAction.Data.Promotion.ReportingEmail;
+                var newGrade = ($scope.empAction.NewPayGrade == 0 ? $scope.empAction.NewPayGrade : EmpActions.getPayGradeTitle($scope.empAction.NewPayGrade));
+                $scope.empAction.NewPayRange = $scope.getPayRange($scope.empAction.Data.Promotion.NewPayGrade, $scope.empAction.Data.Promotion.NewSalary) + " " + newGrade.slice(newGrade.indexOf("("));
+                $scope.empAction.NewManagerNumber = $scope.empAction.Data["Promotion"].ReportingManagerNumber;
+                $scope.empAction.NewManagerTitle = $scope.empAction.Data.Promotion.ReportingTitle;
+            }
+            else if ($scope.empAction.Demotion) {
+                $scope.empAction.CurrentPositionType = $scope.empAction.Data.Demotion.CurrentPositionType;
+                $scope.empAction.NewPositionType = $scope.empAction.Data.Demotion.NewPositionType;
+                $scope.empAction.EffectiveDate = $scope.empAction.Data.Demotion.EffectiveDate;
+                $scope.empAction.ChangeReasonType = $scope.empAction.Data.Demotion.ChangeReasonType;
+                $scope.empAction.IncreaseDecreaseAmount = $scope.empAction.Data.Demotion.IncreaseAmount;
+                $scope.empAction.IncreaseDecreasePercentage = $scope.empAction.Data.Demotion.IncreasePercentage;
+                $scope.empAction.NewSalary = $scope.empAction.Data.Demotion.NewSalary;
+                $scope.empAction.NewPayGrade = $scope.empAction.Data.Demotion.NewPayGrade;
+                $scope.empAction.NewManagerName = $scope.empAction.Data.Demotion.ReportingName;
+                $scope.empAction.NewCarAllowance = $scope.empAction.Data.Demotion.NewCarAllowance;
+                $scope.empAction.NewBonusEligibleType = $scope.empAction.Data.Demotion.NewBonusEligibleType;
+                $scope.empAction.Instructions = $scope.empAction.Data.Demotion.Instructions;
+                $scope.empAction.NewManagerEmail = $scope.empAction.Data.Demotion.ReportingEmail;
+                var newGrade = ($scope.empAction.NewPayGrade == 0 ? $scope.empAction.NewPayGrade : EmpActions.getPayGradeTitle($scope.empAction.NewPayGrade));
+                $scope.empAction.NewPayRange = $scope.getPayRange($scope.empAction.Data.Demotion.NewPayGrade, $scope.empAction.Data.Demotion.NewSalary) + " " + newGrade.slice(newGrade.indexOf("("));
+                $scope.empAction.NewManagerNumber = $scope.empAction.Data["Demotion"].ReportingManagerNumber;
+                $scope.empAction.NewManagerEmail = $scope.empAction.Data.Demotion.ReportingEmail;
+                $scope.empAction.NewManagerNumber = $scope.empAction.Data["Demotion"].ReportingManagerNumber;
+                $scope.empAction.NewManagerTitle = $scope.empAction.Data.Demotion.ReportingTitle;
+            }
+            else if ($scope.empAction.SalaryChange) {
+                $scope.empAction.CurrentPositionType = $scope.empAction.Data.SalaryChange.CurrentPositionType;
+                $scope.empAction.NewPositionType = $scope.empAction.Data.SalaryChange.NewPositionType;
+                $scope.empAction.EffectiveDate = $scope.empAction.Data.SalaryChange.EffectiveDate;
+                $scope.empAction.ChangeReasonType = $scope.empAction.Data.SalaryChange.ChangeReasonType;
+                $scope.empAction.IncreaseDecreaseAmount = $scope.empAction.Data.SalaryChange.IncreaseAmount;
+                $scope.empAction.IncreaseDecreasePercentage = $scope.empAction.Data.SalaryChange.IncreasePercentage;
+                $scope.empAction.NewSalary = $scope.empAction.Data.SalaryChange.NewSalary;
+                $scope.empAction.NewPayGrade = $scope.empAction.Data.SalaryChange.NewPayGrade;
+                $scope.empAction.NewManagerName = $scope.empAction.Data.SalaryChange.ReportingName;
+                $scope.empAction.NewCarAllowance = $scope.empAction.Data.SalaryChange.NewCarAllowance;
+                $scope.empAction.NewBonusEligibleType = $scope.empAction.Data.SalaryChange.NewBonusEligibleType;
+                $scope.empAction.Instructions = $scope.empAction.Data.SalaryChange.Instructions;
+                $scope.empAction.NewManagerEmail = $scope.empAction.Data.SalaryChange.ReportingEmail;
+                var newGrade = ($scope.empAction.NewPayGrade == 0 ? $scope.empAction.NewPayGrade : EmpActions.getPayGradeTitle($scope.empAction.NewPayGrade));
+                $scope.empAction.NewPayRange = $scope.getPayRange($scope.empAction.Data.SalaryChange.NewPayGrade, $scope.empAction.Data.SalaryChange.NewSalary) + " " + newGrade.slice(newGrade.indexOf("("));
+                $scope.empAction.NewManagerNumber = $scope.empAction.Data["SalaryChange"].ReportingManagerNumber;
+                $scope.empAction.NewManagerTitle = $scope.empAction.Data.SalaryChange.ReportingTitle;
+                var revWithHR = $scope.empAction.Data.SalaryChange.ReviewedWithHR;
+                if (revWithHR == 0) {
+                    $scope.empAction.HRReview = "CHRA";
+                }
+                else if (revWithHR == 1) {
+                    $scope.empAction.HRReview = "CHRC";
+                }
+                else if (revWithHR == 2) {
+                    $scope.empAction.HRReview = "CSHRC";
+                }
+            }
+            if ($scope.empAction.Transfer) {
+                $scope.empAction.TransferEffectiveDate = $scope.empAction.Data.Transfer.TransferEffectiveDate;
+                $scope.empAction.HouseCodeTransfer = $scope.empAction.Data.Transfer.HouseCodeTransfer;
+                $scope.empAction.TransferManagerName = $scope.empAction.Data.Transfer.ReportingName;
+                $scope.empAction.TransferManagerEmail = $scope.empAction.Data.Transfer.ReportingEmail;
+                $scope.empAction.TransferManagerNumber = $scope.empAction.Data["Transfer"].ReportingManagerNumber;
+                $scope.empAction.TransferManagerTitle = $scope.empAction.Data.Transfer.ReportingTitle;
+            }
+            if ($scope.empAction.PersonalInfoChange) {
+                $scope.empAction.InfoChangeFirstName = $scope.empAction.Data.PersonalInfoChange.InfoChangeFirstName;
+                $scope.empAction.InfoChangeLastName = $scope.empAction.Data.PersonalInfoChange.InfoChangeLastName;
+                $scope.empAction.InfoChangeAddressLine1 = $scope.empAction.Data.PersonalInfoChange.InfoChangeAddressLine1;
+                $scope.empAction.InfoChangeAddressLine2 = $scope.empAction.Data.PersonalInfoChange.InfoChangeAddressLine2;
+                $scope.empAction.InfoChangeCity = $scope.empAction.Data.PersonalInfoChange.InfoChangeCity;
+                $scope.empAction.InfoChangeStateType = $scope.empAction.Data.PersonalInfoChange.AppStateTypeInfoChange;
+                $scope.empAction.InfoChangePostalCode = $scope.empAction.Data.PersonalInfoChange.InfoChangePostalCode;
+                $scope.empAction.InfoChangePhone = $scope.empAction.Data.PersonalInfoChange.InfoChangePhone;
+                $scope.empAction.InfoChangeEffectiveDate = $scope.empAction.Data.PersonalInfoChange.InfoChangeEffectiveDate;
+                $scope.empAction.InfoChangeMiddleName = $scope.empAction.Data.PersonalInfoChange.InfoChangeMiddleName;
+            }
+            if ($scope.empAction.Relocation) {
+                $scope.empAction.RelocationApprovedBy = $scope.empAction.Data.Relocation.RelocationApprovedBy;
+                $scope.empAction.RelocationPlan = $scope.empAction.Data.Relocation.RelocationPlan;
+            }
+            if ($scope.empAction.Promotion || $scope.empAction.Demotion || $scope.empAction.SalaryChange) {
+                $scope.empAction.CurrentSalary = $scope.empAction.Data.Compensation.CurrentSalary;
+                var curPayGrade = $scope.empAction.Data.Compensation.CurrentPayGrade;
+                var curGrade = "";
+                if (curPayGrade == 0) {
+                    $scope.empAction.CurrentPayGrade = 0;
+                }
+                else if (curPayGrade.indexOf("none") == -1) {
+                    $scope.empAction.CurrentPayGrade = curPayGrade.substring(0, curPayGrade.indexOf("("));
+                    curGrade = curPayGrade.slice(curPayGrade.indexOf("("));
+                }
+                $scope.empAction.LastIncreaseDecreaseDate = $scope.empAction.Data.Compensation.DateLastIncrease;
+                var lastIncPer = $scope.empAction.Data.Compensation.PercentLastIncrease;
+                $scope.empAction.LastIncreaseDecreasePercentage = (lastIncPer == "NaN%" ? "0" : lastIncPer.replace("%", ""));
+                $scope.empAction.CurrentPayRange = $scope.empAction.Data.Compensation.CurrentPayRange + curGrade;
+            }
+            $scope.empAction.RequisitionNumber = $scope.empAction.Data.Requisition.RequisitionNumber;
+            $scope.empAction.RequisitionEmail = $scope.empAction.Data.Requisition.EmailAddress;
+            
+			$scope.pageLoading = true;
+			$scope.loadingTitle = " Saving...";
+			
+			EmpActions.saveEmployeePersonnelAction($scope.empAction, $scope.pafDocs, function (status) {
+				$scope.pageLoading = false;
                 document.location.hash = 'list';
             });
         }
         else {
-            showToaster();
+            if ($scope.empAction.PersonalInfoChange) {
+                showPIToaster();
+            }
+            else {
+                showToaster();
+            }
         }
     }
 
     var showToaster = function () {
-
         var modalInstance = $modal.open({
             template: '<div class="toaster"><div class="header">WARNING</div><div class="content">Please fill the highlighted fields to complete the form.</div></div>',
             // controller: 'modalInstanceCtrl',
@@ -1734,10 +1240,33 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             modalInstance.dismiss('cancel');
         }, 1800);
     }
+	
+    var showPIToaster = function () {
+        if ($scope.empAction.Data.PersonalInfoChange.InfoChangeEffectiveDate) {
+            var modalInstance = $modal.open({
+                template: '<div class="toaster"><div class="header">WARNING</div><div class="content">Please change any personal information.</div></div>',
+                // controller: 'modalInstanceCtrl',
+                size: 'sm',
+                backdrop: false
+            });
+        }
+        else {
+            var modalInstance = $modal.open({
+                template: '<div class="toaster"><div class="header">WARNING</div><div class="content">Please set the Effective Date and change any personal information.</div></div>',
+                // controller: 'modalInstanceCtrl',
+                size: 'sm',
+                backdrop: false
+            });
+        }
+
+        setTimeout(function () {
+            modalInstance.dismiss('cancel');
+        }, 2800);
+    }
 }])
     .controller('hireCtrl', ['$scope', function ($scope) {
         //status changes
-        var Status = ["FullTimeHours", "TemporaryHours", "PartTimeHours", "PerDiemValue"];
+        var Status = ["FullTimeHours", "TemporaryHours", "PartTimeHours"];
         $scope.$watch('data.Status', function (newValue, oldValue) {
             angular.forEach(Status, function (item) {
                 if (item != newValue) {
@@ -1747,7 +1276,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         });
 
         //pay status changes
-        var PayStatus = ["AnnualSalaryAmount", "AdminHourlyAmount", "HourlyRateAmount"];
+        var PayStatus = ["AnnualSalaryAmount", "AdminHourlyAmount", "HourlyRateAmount", "PerDiemValue"];
         $scope.$watch('data.PayStatus', function (newValue, oldValue) {
             angular.forEach(PayStatus, function (item) {
                 if (item != newValue) {
@@ -1758,7 +1287,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             if ($scope.data.PayStatus == 'PerDiemValue')
                 $scope.data.Status = 'TemporaryHours';
         });
-
 
         var calSalary = function () {
             var salary = 0;
@@ -1774,14 +1302,11 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         }
 
         $scope.getPayRange = function () {
-
             var salary = calSalary();
-
             return $scope.$parent.$parent.getPayRange($scope.data.PayGrade, salary);
         }
 
         $scope.$parent.getManagerInfo = $scope.$parent.$parent.getManagerInfo;
-
         $scope.$parent.isManagerFieldRequired = $scope.$parent.$parent.isManagerFieldRequired;
     }])
     .controller('separationCtrl', ['$scope', '$rootScope', function ($scope, $rootScope) {
@@ -1796,11 +1321,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     $scope.data[item] = null;
                 }
             });
-
         });
     }])
     .controller('loaCtrl', ['$scope', function ($scope) {
-
         var dateChange = function (type) {
             $scope.$parent.$parent.validateLoa();
             if ($scope.data.DateOfReturn && !$scope.data.LoaDate || !$scope.data.DateOfReturn && $scope.data.LoaDate || !$scope.data.DateOfReturn && !$scope.data.LoaDate)
@@ -1822,32 +1345,28 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         });
 
         //date of return change
-        $scope.$watch('empAction.DateOfReturn', function (newValue, oldValue) {
+        $scope.$watch('data.DateOfReturn', function (newValue, oldValue) {
             if (newValue != oldValue)
                 dateChange("DateOfReturn");
         });
-
-
     }])
-.filter('reason4ChangeFilter', ['$filter', function ($filter) {
-    return function (item, type) {
-
-        if (type.Demotion) {
-            return $filter("filter")(item, { title: 'Demotion' });
-        }
-
-        if (type.Promotion) {
-            return $filter("filter")(item, { title: 'Promotion' });
-        }
-
-        if (type.SalaryChange) {
-            return $filter("filter")(item, function (value) { return value.title.indexOf("Promotion") == -1 && value.title.indexOf("Demotion") == -1; });
-        }
-    }
-}]);
+	.filter('reason4ChangeFilter', ['$filter', function ($filter) {
+	    return function (item, type) {
+	
+	        if (type.Demotion) {
+	            return $filter("filter")(item, { title: 'Demotion' });
+	        }
+	
+	        if (type.Promotion) {
+	            return $filter("filter")(item, { title: 'Promotion' });
+	        }
+	
+	        if (type.SalaryChange) {
+	            return $filter("filter")(item, function (value) { return value.title.indexOf("Promotion") == -1 && value.title.indexOf("Demotion") == -1; });
+	        }
+	    }
+	}]);
 ;
-
-// 
 
 paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$modal', function ($scope, EmpActions, $filter, $sce, $modal) {
 
@@ -1857,46 +1376,104 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         employeeNumber: null,
         createUser: null,
         pafDate: null,
-        status: null,
+        status: 1,
         formType: null
     };
 
     $scope.selectedItem = null;
-
-    if ($scope.pafFilter.hcmHouseCode == null)
-        $scope.pafFilter.status = null;
-    else
-        $scope.pafFilter.status = 1;
-
     $scope.dateOptions = {
         formatYear: 'yy',
         startingDay: 1,
         showWeeks: false
     };
 
+	$scope.pageLoading = false;
+	$scope.loadingTitle = " Loading...";
+	$scope.isPageLoading = function () {
+		return ($scope.loadingCount > 0 || $scope.pageLoading);
+    }
+	
     $scope.getPafList = function () {
         //if ($scope.pafFilter.pafDate)
         //    $scope.pafFilter.pafDate = $filter('date')($scope.pafFilter.pafDate, 'yyyy-MM-dd')
-
+		$scope.loadingTitle = " Loading...";
         EmpActions.getEmployeePersonnelActions($scope.pafFilter, function (items) {
             $scope.empActions = items;
         });
     }
+	
+	var isAuthorized = function(path) {
+		var authorized = false;
+		
+		for (var index = 0; index < $scope.authorizations.length; index++ ){
+			if ($scope.authorizations[index].path.indexOf(path) >= 0) {
+				authorized = true;
+				break;
+			}
+		}
+		
+		return authorized;
+	}
+
+	var authorizationsLoaded = function() {
+		var authorizePath = "\\crothall\\chimes\\fin\\Setup\\EmployeePAF";
+		$scope.readOnly = isAuthorized(authorizePath + "\\Read");
+		$scope.write = isAuthorized(authorizePath + "\\Write");
+		$scope.writeInProcess = isAuthorized(authorizePath + "\\InProcessWrite");
+		$scope.approveInProcess = isAuthorized(authorizePath + "\\ApproveInProcess");
+	}
+	
+    var setCurrentHcmHouseCode = function (callback) {
+        EmpActions.setCurrentHcmHouseCode(function (response) {
+            callback(response);
+        });
+    }
 
     var load = function () {
+		EmpActions.getAuthorizations(function (result) {
+            $scope.authorizations = result;
+			authorizationsLoaded();
+        });
+		
         EmpActions.getHcmHouseCodes(function (result) {
-
             $scope.HcmHouseCodes = result;
             if ($scope.pafFilter.hcmHouseCode != null)
                 $scope.getPafList();
         });
+
+        EmpActions.getStateTypes(function (result) {
+        });
+
+		EmpActions.getJobCodes(function (result) {
+            $scope.JobCodes = result;
+        });
+		
+		EmpActions.getPersonActionTypes(function (result) {
+            var filters = function (item) {
+                return $filter('filter')(result, { typeName: item });
+            }
+        });
+		
+		EmpActions.getPayGrades(function (result) {
+        });
+		
+        EmpActions.getWorkflowSteps(2, function (result) {
+        });
+
+        if ($scope.pafFilter.hcmHouseCode == null) {
+            setCurrentHcmHouseCode(function (response) {
+                if (!angular.isDefined(response)) {
+                    return;
+                }
+                $scope.pafFilter.hcmHouseCode = response.id;
+            });
+        }
     }
 
     load();
 
-
-    $scope.getHouseCodeDesc = function (item) {
-        return EmpActions.getHouseCodeName(item.HcmHouseCode);
+    $scope.getHouseCodeName = function (item) {
+        return EmpActions.getTitleById(item.HcmHouseCode, $scope.HcmHouseCodes);
     }
 
     $scope.getDate = function (date) {
@@ -1957,52 +1534,84 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         });
 
         modalInstance.result.then(function (result) {
+			$scope.loadingTitle = " Cancelling...";
+			$scope.pageLoading = true;
             EmpActions.cancelEmployeePersonnelAction(id, function (data, status) {
+				$scope.pageLoading = false;
                 $scope.getPafList();
+				alert("Employee PAF has been cancelled successfully.");
             });
         });
-
     }
 
-    $scope.submit = function () {
-        var modalInstance = $modal.open({
-            templateUrl: "content.html",
-            controller: 'modalInstanceCtrl',
-            title: "",
-            size: 'sm'
+    $scope.submit = function (selectedItem) {
+		$scope.loadingTitle = " Submitting...";
+		$scope.pageLoading = true;
+        EmpActions.submitEmployeePersonnelAction(selectedItem, function (data, status) {
+			$scope.pageLoading = false;
+            $scope.getPafList();
+            alert("Employee PAF has been submitted successfully.");
         });
+    }
 
-        modalInstance.result.then(function (result) {
-
+    $scope.approve = function (id) {
+        $scope.loadingTitle = " Approving...";
+        $scope.pageLoading = true;
+        EmpActions.approveEmployeePersonnelAction(id, function (data, status) {
+            $scope.pageLoading = false;
+            $scope.getPafList();
+            alert("Employee PAF has been approved successfully.");
         });
-    };
+    }
 
     $scope.itemSelected = function (item) {
         $scope.selectedItem = item;
+
+        if ($scope.selectedItem.WorkflowStep == null || $scope.selectedItem.WorkflowStep == "") {
+            $scope.selectedItem.WorkflowStep = 0;
+        }
     }
 
     $scope.Statuses = [
-    { id: 1, description: 'Open' },
-    { id: 2, description: 'In Process' },
-    { id: 3, description: 'Approved' },
-    { id: 4, description: 'Completed' },
-    { id: 5, description: 'Cancelled' },
-    { id: 6, description: 'Unappproved' }
+	    { id: 1, title: 'Open' },
+	    { id: 2, title: 'In Process' },
+	    { id: 8, title: 'Approved' },
+	    { id: 9, title: 'Completed' },
+	    { id: 6, title: 'Cancelled' },
+	    { id: 10, title: 'Unappproved' }
     ];
 
-
-    $scope.getStatusDescription = function (id) {
-        var desc = "";
+    $scope.getStatusTitle = function (id) {
+        var title = "";
+		
         angular.forEach($scope.Statuses, function (item) {
             if (item.id == id)
-                desc = item.description;
+                title = item.title;
         });
 
-        return desc;
+        return title;
+    }
+
+    $scope.getStepTitle = function(stepNumber, statusId) {
+        var title = "";
+
+        if (stepNumber != null && stepNumber != "") {
+			var brief = EmpActions.getWorkflowBrief(stepNumber);
+			
+            if (brief != "") {
+                if (statusId == 2)
+                    title = "- " + brief + " Approved";
+                else if (statusId == 10)
+                    title = "- " + brief;
+            }
+        }
+		
+        return title;
     }
 }])
 .controller('modalInstanceCtrl', function ($scope, $modalInstance) {
-
+	$scope.disable = true;
+	
     $scope.ok = function () {
         $modalInstance.close();
     };
@@ -2010,8 +1619,46 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
+
+    $scope.upload = function () {
+		if ($scope.docTitle == undefined) {
+            return false;
+        }
+
+        var fileName = $("#iFrameUpload")[0].contentWindow.document.getElementById("UploadFile").value;
+        fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
+       
+        $("#iFrameUpload")[0].contentWindow.document.getElementById("FileName").value = "";
+        $("#iFrameUpload")[0].contentWindow.document.getElementById("UploadButton").click();
+
+        $scope.intervalId = setInterval(function () {
+            if ($("#iFrameUpload")[0].contentWindow.document.getElementById("FileName").value != "") {
+                var tempFileName = $("#iFrameUpload")[0].contentWindow.document.getElementById("FileName").value;
+                clearInterval($scope.intervalId);
+                $modalInstance.close();
+
+                if (tempFileName == "Error") {
+                    alert("Unable to upload the file. Please try again.");
+                }
+                else {
+                    if (activeRowIndex == -1 || activeRowIndex == undefined || $scope.add == true) {
+                        var item = {};
+                        item["title"] = $scope.docTitle;
+                        item["fileName"] = fileName;
+                        item["tempFileName"] = tempFileName;
+                        $scope.pafDocs.push(item);
+                    }
+                    else {
+						$scope.pafDocs[activeRowIndex].title = $scope.docTitle;
+						$scope.pafDocs[activeRowIndex].fileName = fileName;
+						$scope.pafDocs[activeRowIndex].tempFileName = tempFileName;
+                    }
+                }
+            }
+        }, 1000);
+    };
 });
-//
+
 paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filter) {
     return {
         scope: {
@@ -2027,8 +1674,6 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
             scope.opened = false;
             scope.dtPopup = "dd-MMMM-yyyy";
             scope.showButtonBar = false;
-
-
             scope.open = function ($event) {
                 $event.preventDefault();
                 $event.stopPropagation();
@@ -2057,16 +1702,13 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
 
             var dateFormat = attrs.datepickerPopup || "MM/dd/yyyy";
             ngModel.$formatters.push(function (value) {
-
                 if (value && value != null)
                     return $filter('date')(new Date(value), dateFormat);
-
                 return null;
             });
         }
     }
 }])
-
 .directive('pafInvalid', ['$rootScope', function ($rootScope) {
     return {
         restrict: 'A',
@@ -2130,7 +1772,24 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
         link: function (scope, element, attrs, modelCtrl) {
             modelCtrl.$parsers.push(function (inputValue) {
                 if (inputValue == undefined) return ''
-                var transformedInput = inputValue.replace(/[^0-9+.]/g, '');
+                var transformedInput = inputValue.replace(/[^0-9.]/g, '');
+                if (transformedInput != inputValue) {
+                    modelCtrl.$setViewValue(transformedInput);
+                    modelCtrl.$render();
+                }
+
+                return transformedInput;
+            });
+        }
+    };
+})
+.directive('pafInteger', function () {
+    return {
+        require: '?ngModel',
+        link: function (scope, element, attrs, modelCtrl) {
+            modelCtrl.$parsers.push(function (inputValue) {
+                if (inputValue == undefined) return ''
+                var transformedInput = inputValue.replace(/[^0-9]/g, '');
                 if (transformedInput != inputValue) {
                     modelCtrl.$setViewValue(transformedInput);
                     modelCtrl.$render();
@@ -2156,6 +1815,45 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
         }
     }
 })
+.directive('pafMaxlength', function () {
+    return {
+        require: '?ngModel',
+        link: function (scope, element, attrs, modelCtrl) {
+            modelCtrl.$parsers.push(function (inputValue) {
+                if (inputValue == undefined) return ''
+                var maxlength = parseInt(attrs.pafMaxlength);
+                var transformedInput = inputValue.substring(0, maxlength);
+                if (transformedInput != inputValue) {
+                    modelCtrl.$setViewValue(transformedInput);
+                    modelCtrl.$render();
+                }
+
+                return transformedInput;
+            });
+        }
+    };
+})
+.directive('pafMax', function () {
+    return {
+        require: '?ngModel',
+        link: function (scope, element, attrs, modelCtrl) {
+            modelCtrl.$parsers.push(function (inputValue) {
+                if (inputValue == undefined) return ''
+                var max = parseInt(attrs.pafMax);
+                if (inputValue <= max) {
+                    modelCtrl.$setValidity(attrs.name, true);
+                    attrs.$set('tooltip', '');
+                    return inputValue;
+                }
+                else {
+                    modelCtrl.$setValidity(attrs.name, false);
+                    attrs.$set('tooltip', 'Hours must be less than 168');
+                    return null;
+                }
+            });
+        }
+    };
+})
 .directive('pafValidation', function () {
     return {
         require: '?ngModel',
@@ -2164,15 +1862,15 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
 
             switch (type) {
                 case 'EMAIL':
-                    var INTEGER_REGEXP = new RegExp('^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', 'i');
+                    //var EMAIL_REGEXP = new RegExp('^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', 'i');
                     ngModel.$parsers.unshift(function (viewValue) {
-                        if (INTEGER_REGEXP.test(viewValue)) {
+                        if (/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(viewValue) || (!attrs.required && viewValue == "")) {
                             ngModel.$setValidity(attrs.name, true);
                             return viewValue;
                         }
                         else {
-                            ngModel.$setValidity(attrs.name, false);
-                            return null;
+							ngModel.$setValidity(attrs.name, false);
+	                    	return null;
                         }
                     });
                     break;
@@ -2196,15 +1894,19 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
 .factory('Validators', [function () {
     return {
         phoneNumber: function (ctrl, value, attr) {
-            var valid = typeof (value) == "string" && value.length >= 10 && value.length <= 14;
-            if (attr.required)
+            var valid = typeof (value) == "string" && /^(\([2-9]|[2-9])(\d{2}|\d{2}\))(-|.|\s)?\d{3}(-|.|\s)?\d{4}$/.test(value);
+            if ((attr.required || value != "") && value != null)
                 ctrl.$setValidity(attr.name, valid);
+            else if (value == "")
+				ctrl.$setValidity(attr.name, true);
             return value;
         },
         zipCode: function (ctrl, value, attr) {
-            var valid = typeof (value) == "string" && value.length >= 5 && value.length <= 10;
-            if (attr.required)
-                ctrl.$setValidity(attr.name, valid);
+			var valid = typeof (value) == "string" && (/(^\d{5}$)|(^\d{9}$)|(^\d{5}-\d{4}$)/.test(value));
+			if ((attr.required || value != "") && value != null)
+			    ctrl.$setValidity(attr.name, valid);
+			else if (value == "")
+				ctrl.$setValidity(attr.name, true);
             return value;
         },
     };
@@ -2529,6 +2231,14 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
                     });
 
                     scope.TypeaheadModel = typeof modelValue == "undefined" ? null : modelValue[0];
+					
+					if (scope.inputName == "HcmHouseCode" && scope.TypeaheadModel != null) {
+						parent.fin.appUI.hirNode = parseInt(modelValue[0].hirNode, 10);
+						parent.fin.appUI.unitId = parseInt(modelValue[0].appUnit, 10);
+						parent.fin.appUI.houseCodeId = parseInt(modelValue[0].id, 10);
+						parent.fin.appUI.houseCodeBrief = modelValue[0].brief;
+						parent.fin.appUI.houseCodeTitle = modelValue[0].name;
+					}
                 }
             }
 
@@ -2548,7 +2258,6 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
                 if (typeof (value) == "string" && value.length == 0) {
                     scope.model = null;
                 }
-
             });
         }
     }
@@ -2585,7 +2294,6 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
 //}])
 ;
 
-
 $(function () {
     var focusedElement;
     $(document).on('focus', 'input', function () {
@@ -2597,11 +2305,7 @@ $(function () {
         focusedElement = $(this);
         setTimeout(function () { focusedElement.select(); }, 50);       // select all text in any field on focus for easy re-entry;
     });
-
 });
-
-
-
 
 paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $filter, $rootScope) {
     var CarAllowances = [
@@ -2619,12 +2323,15 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 
     var cache = {};
 
+	var authorizations = null;
     var houseCodes = null;
     var stateTypes = null;
+	var jobCodes = null;
     var personActionTypes = null;
-    var jobCodes = null;
+    var payGrades = null;
+    var workflowSteps = null;
 
-    var apiRequest = function (moduleId, requestXml, callback) {
+    var apiRequest = function (moduleId, targetId, requestXml, callback) {
         //$.ajax({
         //    type: "POST",
         //    dataType: "xml",
@@ -2642,7 +2349,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         $http({
             method: 'POST',
             url: '/net/crothall/chimes/fin/' + moduleId + '/act/Provider.aspx',
-            data: "moduleId=" + moduleId + "&requestId=1&targetId=iiCache"
+            data: "moduleId=" + moduleId + "&requestId=1&targetId=" + targetId
                 + "&requestXml=" + encodeURIComponent(requestXml),
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
@@ -2670,7 +2377,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             }
         });
 
-        apiRequest('emp', '<criteria>storeId:employeePersonnelActions,userId:[user] ' + filterStr + '</criteria>', function (xml) {
+        apiRequest('emp', 'iiCache', '<criteria>storeId:employeePersonnelActions,userId:[user] ' + filterStr + '</criteria>', function (xml) {
 
             if (callback)
                 callback(deserializeXml(xml, 'item', { upperFirstLetter: true }));
@@ -2682,7 +2389,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         var intItems = ["HcmHouseCode", "EmployeeNumber", "StateType", "PositionType", "TrainingLocation", "Duration", "CarAllowance", "BonusEligibleType", "LayoffType", "OldPositionType", "NewPositionType", "ChangeReasonType", "NewCarAllowance", "NewBonusEligibleType", "HouseCodeTransfer", "InfoChangeStateType", "RelocationPlan"];
         var dateItems = ["Date", "HireDate", "SeparationDate", "LoaDate", "DateOfReturn", "EffectiveDate", "LastIncreaseDate", "EffectiveDate", "TransferEffectiveDate", "InfoChangeEffectiveDate"];
 
-        apiRequest('emp', '<criteria>storeId:employeePersonnelActions,userId:[user]' + ",actionId:" + id + ',</criteria>', function (xml) {
+        apiRequest('emp', 'iiCache', '<criteria>storeId:employeePersonnelActions,userId:[user]' + ",actionId:" + id + ',</criteria>', function (xml) {
             if (callback) {
                 var action = deserializeXml(xml, 'item', { upperFirstLetter: true, boolItems: boolItems, intItems: intItems, dateItems: dateItems, jsonItems: ['Data'] })[0];
 
@@ -2707,17 +2414,44 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         });
     }
 
+    var findEmployeePAFDocument = function (id, callback) {
+
+        apiRequest('emp', 'iiCache', '<criteria>storeId:employeePAFDocuments,userId:[user]' + ",pafId:" + id + ',</criteria>', function (xml) {
+            pafDocuments = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
+            callback(pafDocuments);
+        });
+    }
+
+    var viewEmployeePAFDocument = function (id, fileName, callback) {
+
+        apiRequest('emp', 'iiCache', '<criteria>storeId:empFileNames,userId:[user]' + ",id:" + id + ",fileName:" + fileName + ',</criteria>', function (xml) {
+            pafDocuments = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
+            callback(pafDocuments);
+        });
+    }
+
     var getPayGrades = function (callback) {
         if (cache.payGrades)
             callback(cache.payGrades);
         else {
-            apiRequest('emp', '<criteria>storeId:payGrades,userId:[user] ,</criteria>', function (xml) {
+            apiRequest('emp', 'iiCache', '<criteria>storeId:payGrades,userId:[user] ,</criteria>', function (xml) {
                 cache.payGrades = $filter('orderBy')(deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['min', 'max', 'mid', 'id'] }), 'id', false);
                 getPayGrades(callback);
             });
         }
     }
-
+	
+	var getAuthorizations = function (callback) {
+        if (cache.authorizations) {
+            callback(cache.authorizations);
+            return;
+        }
+        apiRequest('emp', 'iiAuthorization', '<authorization id="1"><authorize path="\\crothall\\chimes\\fin\\Setup\\EmployeePAF" />', function (xml) {
+            cache.authorizations = deserializeXml(xml, 'authorize', { upperFirstLetter: false, intItems: ['id'] });
+            getAuthorizations(callback);
+        });
+    }
+	
     var getHcmHouseCodes = function (callback) {
 
         if (cache.houseCodes) {
@@ -2726,33 +2460,41 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         }
 
         var criteriaXml = '<criteria>appUnitBrief:,storeId:hcmHouseCodes,userId:[user],</criteria>';
-
         var data = 'moduleId=hcm&requestId=1&requestXml=' + encodeURIComponent(criteriaXml) + '&targetId=iiCache';
 
-        apiRequest('hcm', criteriaXml, function (xml) {
+        apiRequest('hcm', 'iiCache', criteriaXml, function (xml) {
             cache.houseCodes = deserializeXml(xml, 'item', { upperFirstLetter: false });
             getHcmHouseCodes(callback);
         });
     }
 
-    var getHouseCodeName = function (id) {
-        if (cache.houseCodes == null)
-            return '';
+    var setCurrentHcmHouseCode = function (callback) {
 
-        var houseCodeName = 'N/A';
-
-        angular.forEach(cache.houseCodes, function (item, index) {
-            if (item.id == id) {
-                houseCodeName = item.name;
-            }
+		 apiRequest('hcm', 'iiCache', '<criteria>storeId:hcmHouseCodes,userId:[user],defaultOnly:true,</criteria>', function (xml) {
+            if (callback)
+                callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
         });
-
-        return houseCodeName;
     }
 
+	var getTitleById = function(id, data) {
+		var title = "";
+
+		for(var index = 0; index < data.length; index++ ){
+			if (data[index].id + "" === id + "") {
+				if (data[index].name != undefined)
+					title = data[index].name;
+				else
+				    title = data[index].title;
+				break;
+			}
+		}
+
+		return title;
+	}
+	
     var getHcmHouseCodeByBrief = function (brief) {
         if (cache.houseCodes == null)
-            return '';
+            return "";
 
         var hcmHouseCode = 0;
 
@@ -2771,7 +2513,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             callback(cache.stateTypes);
             return;
         }
-        apiRequest('emp', '<criteria>storeId:stateTypes,userId:[user],</criteria>', function (xml) {
+        apiRequest('emp', 'iiCache', '<criteria>storeId:stateTypes,userId:[user],</criteria>', function (xml) {
             cache.stateTypes = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
             getStateTypes(callback);
         });
@@ -2779,36 +2521,94 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 
     var getEmployee = function (employeeNumber, hcmHouseCode, callback) {
 
-        apiRequest('emp', '<criteria>storeId:employeeSearchs,userId:[user]'
-                             + ',searchValue:' + employeeNumber
-                             + ',hcmHouseCodeId:' + hcmHouseCode
-                             + ',employeeType:SearchFull,filterType:Employee Number'
-                + ',</criteria>', function (xml) {
-                    if (callback) {
-                        var matched = deserializeXml(xml, 'item', { upperFirstLetter: false });
-                        callback(matched && matched.length > 0 ? matched[0] : null);
-                    }
-                });
+        apiRequest('emp', 'iiCache', '<criteria>storeId:employeeSearchs,userId:[user]'
+	        + ',searchValue:' + employeeNumber
+	        + ',hcmHouseCodeId:' + hcmHouseCode
+	        + ',employeeType:SearchFull,filterType:Employee Number'
+			+ ',</criteria>', function (xml) {
+            if (callback) {
+                var matched = deserializeXml(xml, 'item', { upperFirstLetter: false });
+                callback(matched && matched.length > 0 ? matched[0] : null);
+            }
+        });
     }
 
     var getPerson = function (employeeId, callback) {
 
-        apiRequest('emp', '<criteria>storeId:persons,userId:[user]'
-                    + ',id:' + employeeId
-                    + ',</criteria>', function (xml) {
-                        if (callback)
-                            callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
-                    });
+        apiRequest('emp', 'iiCache', '<criteria>storeId:persons,userId:[user]'
+            + ',id:' + employeeId
+            + ',</criteria>', function (xml) {
+            if (callback)
+                callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
+        });
     }
 
     var getEmpCompensation = function (employeeNumber, callback) {
 
-        apiRequest('emp', '<criteria>storeId:employeeCompensation,userId:[user]'
-                             + ',employeeNumber:' + employeeNumber
-                + ',</criteria>', function (xml) {
-                    if (callback)
-                        callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
-                });
+        apiRequest('emp', 'iiCache', '<criteria>storeId:employeeCompensation,userId:[user]'
+			+ ',employeeNumber:' + employeeNumber
+        	+ ',</criteria>', function (xml) {
+            if (callback)
+                callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
+        });
+    }
+
+    var getManagerDetail = function (employeeNumber, callback) {
+
+        apiRequest('emp', 'iiCache', '<criteria>storeId:employeeManagerDetails,userId:[user]'
+			+ ',employeeNumber:' + employeeNumber
+            + ',</criteria>', function (xml) {
+            if (callback)
+                callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
+        });
+    }
+
+    var getWorkflowSteps = function (moduleId, callback) {
+
+        if (cache.workflowSteps) {
+            callback(cache.workflowSteps);
+            return;
+        }
+
+        apiRequest('app', 'iiCache', '<criteria>storeId:appWorkflowSteps,userId:[user],workflowModuleId:' + moduleId + ',</criteria>', function (xml) {
+            if (callback) {
+                cache.workflowSteps = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
+                callback(cache.workflowSteps);
+            }
+        });
+    }
+
+    var getWorkflowBrief = function (id) {
+ 		if (cache.workflowSteps == null)
+            return "";
+
+        var brief = "";
+
+        angular.forEach(cache.workflowSteps, function (item, index) {
+            if (item.id == id) {
+                brief = item.brief;
+            }
+        });
+
+        return brief;
+    }
+
+    var getPayGradeTitle = function(id) {
+
+        if (cache.payGrades == null)
+            return "";
+
+        var title = "";
+
+		for (var index = 0; index < cache.payGrades.length; index++ ){
+			var item = cache.payGrades[index];
+			if (item.id + "" === id + "") {
+				title = item.id + " (" + item.min + "-" + item.mid + "-" + item.max + ")";
+				break;
+			}
+		}
+
+        return title;
     }
 
     var getCarAllowances = function () {
@@ -2820,7 +2620,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             callback(cache.jobCodes);
             return;
         }
-        apiRequest('emp', '<criteria>storeId:jobCodes,userId:[user],</criteria>', function (xml) {
+        apiRequest('emp', 'iiCache', '<criteria>storeId:jobCodes,userId:[user],</criteria>', function (xml) {
             cache.jobCodes = deserializeXml(xml, 'item', { upperFirstLetter: false });
             getJobCodes(callback);
         });
@@ -2837,46 +2637,52 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             return;
         }
 
-        apiRequest('emp', '<criteria>storeId:personnelActionTypes,userId:[user],</criteria>', function (xml) {
+        apiRequest('emp', 'iiCache', '<criteria>storeId:personnelActionTypes,userId:[user],</criteria>', function (xml) {
             cache.personActionTypes = deserializeXml(xml, 'item', { upperFirstLetter: false });
             getPersonActionTypes(callback);
         });
     }
 
-    var saveEmployeePersonnelAction = function (employeePersonnelAction, callback) {
-        //console.log(employeePersonnelAction);
-        var xml = [];
-        if (employeePersonnelAction.Id) {
-            xml.push('<transaction actionId="' + employeePersonnelAction.Id + '">');
-        }
-        else {
-            xml.push('<transaction actionId="0">');
-        }
-        xml.push('\r\n<employeePersonnelAction ');
+    var saveEmployeePersonnelAction = function (employeePersonnelAction, employeePAFDocuments, callback) {
+        var xml = "";
+		
+		xml = '<transaction id="1">';
+		xml += '<employeePersonnelAction';
 
-        var xmlNode = [];
         angular.forEach(employeePersonnelAction, function (value, key) {
             key = lowercaseFirstLetter(key);
 
             if (value == null || !angular.isDefined(value))
-                value = ""
+                value = "";
             else if (angular.isDate(value)) {
                 value = $filter('date')(value, "MM/dd/yyyy");
             }
             else if (angular.isObject(value)) {
-                value = angular.toJson(value).replace(/"/gi, '###');
+                value = angular.toJson(value).replace(/"/gi, "###");
             }
 
-
-            xmlNode.push(key + '=' + '"' + (value || '') + '"');
+			xml += ' ' + key + '="' + encode(value.toString()) + '"';
         });
-        //console.log(xmlNode);
-        xml.push(xmlNode.join(' '));
 
-        xml.push('/>\r\n</transaction>');
+		xml += '/>';
+		
+		for (var index = 0; index < employeePAFDocuments.length; index++) {
+	        if (employeePAFDocuments[index].tempFileName != undefined) {
+				xml += '<employeePAFDocument';
+		        xml += ' id="' + (employeePAFDocuments[index].id == undefined ? "0" : employeePAFDocuments[index].id) + '"';
+		        xml += ' title="' + encode(employeePAFDocuments[index].title) + '"';
+		        xml += ' description=""';
+		        xml += ' fileName="' + employeePAFDocuments[index].fileName + '"';
+		        xml += ' tempFileName="' + employeePAFDocuments[index].tempFileName + '"';
+		        xml += '/>';
+	        }
+	    }
+		
+		xml += '</transaction>';
+		//console.log(xml);
 
-        var data = 'moduleId=emp&requestId=1&requestXml=' + encodeURIComponent(xml.join(' ').replace(/\&/gi, '&amp;')) + '&targetId=iiTransaction';
-
+        //var data = 'moduleId=emp&requestId=1&requestXml=' + encodeURIComponent(xml.join(' ').replace(/\&/gi, '&amp;')) + '&targetId=iiTransaction';
+		var data = 'moduleId=emp&requestId=1&requestXml=' + encodeURIComponent(xml) + '&targetId=iiTransaction';
         jQuery.post('/net/crothall/chimes/fin/emp/act/Provider.aspx', data, function (data, status) {
             if (callback)
                 callback(data, status);
@@ -2887,11 +2693,71 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         //});
     }
 
+    var deleteEmployeePAFDocument = function (id, callback) {
+        var xml = '<transaction id="' + id + '"><employeePAFDocumentDelete id="' + id + '" /></transaction>';
+        var data = 'moduleId=emp&requestId=1&requestXml=' + encodeURIComponent(xml) + '&targetId=iiTransaction';
+		
+        jQuery.post('/net/crothall/chimes/fin/emp/act/Provider.aspx', data, function (data, status) {
+            if (callback)
+                callback(data, status);
+        });
+    }
+
     var cancelEmployeePersonnelAction = function (id, callback) {
-        var xml = '<transaction actionId="' + id + '"><cancelEmployeePersonnelAction id="' + id + '" />\r\n</transaction>';
+        var xml = '<transaction id="' + id + '"><cancelEmployeePersonnelAction id="' + id + '" /></transaction>';
+        var data = "moduleId=emp&requestId=1&requestXml=" + encodeURIComponent(xml) + "&targetId=iiTransaction";
+		
+		jQuery.post("/net/crothall/chimes/fin/emp/act/Provider.aspx", data, function (data, status) {
+            if (callback)
+                callback(data, status);
+        });
+    }
 
-        var data = 'moduleId=emp&requestId=1&requestXml=' + encodeURIComponent(xml) + '&&targetId=iiTransaction';
+    var approveEmployeePersonnelAction = function (id, callback) {
+        var xml = '<transaction id="' + id + '"><approveEmployeePersonnelAction id="' + id + '" /></transaction>';
+        var data = "moduleId=emp&requestId=1&requestXml=" + encodeURIComponent(xml) + "&targetId=iiTransaction";
 
+        jQuery.post("/net/crothall/chimes/fin/emp/act/Provider.aspx", data, function (data, status) {
+            if (callback)
+                callback(data, status);
+        });
+    }
+
+    var submitEmployeePersonnelAction = function (item, callback) {
+        var reasonId = 0;
+		var xml = "";
+		
+        if (item.ResignationType > 0)
+            reasonId = item.ResignationType;
+        else if (item.TerminationType > 0)
+            reasonId = item.TerminationType;
+        else if (item.LayoffType > 0)
+            reasonId = item.LayoffType;
+		
+		xml = '<transaction id="' + item.Id + '">';
+		xml += '<submitEmployeePersonnelAction';
+		xml += ' id="' + item.Id + '"';
+		xml += ' houseCodeTitle="' + getTitleById(item.HcmHouseCode, cache.houseCodes) + '"';
+		xml += ' stateTitle="' + getTitleById(item.StateType, cache.stateTypes) + '"';
+		xml += ' jobCodeTitle="' + getTitleById(item.PositionType, cache.jobCodes) + '"';
+		xml += ' payGradeTitle="' + getPayGradeTitle(item.PayGrade) + '"';
+		xml += ' bonusEligible="' + getTitleById(item.BonusEligibleType, cache.personActionTypes) + '"';
+		xml += ' reasonForChange="' + getTitleById(reasonId, cache.personActionTypes) + '"';
+		xml += ' infoStateTitle="' + getTitleById(item.InfoChangeStateType, cache.stateTypes) + '"';
+		xml += ' relocationPlan="' + getTitleById(item.RelocationPlan, cache.personActionTypes) + '"';
+		xml += ' newUnitTitle="' + getTitleById(item.HouseCodeTransfer, cache.houseCodes) + '"';
+		xml += ' newBonusEligible="' + getTitleById(item.NewBonusEligibleType, cache.personActionTypes) + '"';
+		xml += ' currentPositionType="' + getTitleById(item.CurrentPositionType, cache.jobCodes) + '"';
+		xml += ' newPositionType="' + getTitleById(item.NewPositionType, cache.jobCodes) + '"';
+		xml += ' changeReason="' + getTitleById(item.ChangeReasonType, cache.personActionTypes) + '"';
+		xml += ' currentPayGradeTitle="' + getPayGradeTitle(item.CurrentPayGrade) + '"';
+		xml += ' newPayGradeTitle="' + getPayGradeTitle(item.NewPayGrade) + '"';
+		xml += ' trainingLocation="' + getTitleById(item.TrainingLocation, cache.houseCodes) + '"';
+		xml += '/>';
+		xml += '</transaction>';
+
+		//console.log(xml);
+        var data = 'moduleId=emp&requestId=1&requestXml=' + encodeURIComponent(xml) + '&targetId=iiTransaction';
         jQuery.post('/net/crothall/chimes/fin/emp/act/Provider.aspx', data, function (data, status) {
             if (callback)
                 callback(data, status);
@@ -2902,21 +2768,29 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         getEmployeePersonnelActions: getEmployeePersonnelActions,
         findEmployeePersonnelAction: findEmployeePersonnelAction,
         getCarAllowances: getCarAllowances,
+		getAuthorizations: getAuthorizations,
         getHcmHouseCodes: getHcmHouseCodes,
-        getHouseCodeName: getHouseCodeName,
+        setCurrentHcmHouseCode: setCurrentHcmHouseCode,
         getHcmHouseCodeByBrief: getHcmHouseCodeByBrief,
         getStateTypes: getStateTypes,
         getEmployee: getEmployee,
         getPerson: getPerson,
         getEmpCompensation: getEmpCompensation,
+        getManagerDetail: getManagerDetail,
         getPersonActionTypes: getPersonActionTypes,
         getJobCodes: getJobCodes,
         getPayGrades: getPayGrades,
+        getWorkflowSteps: getWorkflowSteps,
+        getWorkflowBrief: getWorkflowBrief,
         getReviewedWithHR: getReviewedWithHR,
         saveEmployeePersonnelAction: saveEmployeePersonnelAction,
-        cancelEmployeePersonnelAction: cancelEmployeePersonnelAction
+        cancelEmployeePersonnelAction: cancelEmployeePersonnelAction,
+        submitEmployeePersonnelAction: submitEmployeePersonnelAction,
+        approveEmployeePersonnelAction: approveEmployeePersonnelAction,
+        getPayGradeTitle: getPayGradeTitle,
+        getTitleById: getTitleById,
+        findEmployeePAFDocument: findEmployeePAFDocument,
+        deleteEmployeePAFDocument: deleteEmployeePAFDocument,
+        viewEmployeePAFDocument: viewEmployeePAFDocument
     }
 }]);
-
-
-

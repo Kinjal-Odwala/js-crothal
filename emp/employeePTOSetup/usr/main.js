@@ -1464,7 +1464,11 @@ ii.Class({
 
 			if (showLoading)
 				me.setLoadCount();
-				
+			else {
+				me.ptoPlanYearFrom.reset();
+				me.ptoPlanYearTo.reset();
+			}
+
 			if (me.action == "PTO Assignments" || me.action == "Management PTO Assignments")
 				active = 1;
 			me.ptoPlanStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",ptoYearId:" + me.ptoYears[me.ptoYearSearch.indexSelected].id + ",active:" + active, me.ptoPlansLoaded, me);
@@ -1963,6 +1967,26 @@ ii.Class({
 			me.ptoPlanYearFrom.resizeText();
 			me.ptoPlanYearTo.resizeText();
 			me.status = "Clone";
+			
+			$("#PTOPlanYearFromText").attr("readonly", true);
+			$("#PTOPlanYearFromAction").removeClass("iiInputAction");
+			$("#PTOPlanYearToText").attr("readonly", true);
+			$("#PTOPlanYearToAction").removeClass("iiInputAction");
+
+			var currentYear = new Date(parent.fin.appUI.glbCurrentDate).getFullYear();
+			for (var index = 0; index < me.ptoYears.length; index++) {
+				if (me.ptoYears[index].name == currentYear.toString()) {
+					me.ptoPlanYearFrom.select(index, me.ptoPlanYearFrom.focused);
+					break;
+				}
+			}
+			
+			for (var index = 0; index < me.ptoYears.length; index++) {
+				if (me.ptoYears[index].name == (currentYear + 1).toString()) {
+					me.ptoPlanYearTo.select(index, me.ptoPlanYearTo.focused);
+					break;
+				}
+			}
 		},
 
 		actionSaveItem: function() {

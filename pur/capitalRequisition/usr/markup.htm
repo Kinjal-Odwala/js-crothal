@@ -97,7 +97,7 @@
 										<div class="labelTextArea">
 											<span id="nonRequiredFieldIndicator">Requisition Number:</span>
 										</div>
-										<div class="labelRequisitionNumber">
+										<div class="labelTextAreaMedium">
 											<div id="RequisitionNumber"></div>
 										</div>
 										<div style="clear:both;"></div>
@@ -162,8 +162,7 @@
 						<div class="contentAreaLeft">
 							<div id="TableEditArea">
 								<div class="body">
-									<div class="labelTextArea"></div>
-									<div class="inputTextArea"></div>
+									<div class="subHeader"></div>
 									<div id="divSpace" class="labelTextArea"></div>
 									<div style="clear:both;"></div>
 									<div class="labelTextArea">
@@ -187,8 +186,7 @@
 										<div id="ProjectNumber"></div>
 									</div>
 									<div style="clear:both;"></div>
-									<div class="labelTextArea"></div>
-									<div class="inputTextArea"></div>
+									<div class="subHeader"></div>
 									<div style="clear:both;"></div>
 									<div class="labelTextArea"></div>
 									<div class="inputTextArea"></div>
@@ -240,13 +238,17 @@
 							</div>
 							<div id="FundingRadio">
 								<div class="radioButtonRight">
-									<input id="FundingCapital" name="Funding"  tabindex="16" type="radio" value="Capital"/>								
+									<input id="FundingCapital" name="Funding" tabindex="16" type="radio" value="Capital"/>								
 								</div>
 								<div class="radioTextRight">Capital</div>
 								<div class="radioButtonRight">
-									<input id="FundingDirectReimbursement" name="Funding"  tabindex="17" type="radio" value="Direct Reimbursement"/>								
+									<input id="FundingDirectReimbursement" name="Funding" tabindex="17" type="radio" value="Direct Reimbursement"/>								
 								</div>
 								<div class="radioLargeTextRight">Direct Reimbursement</div>
+								<div class="radioButtonRight">
+									<input id="FundingClientInvestment" name="Funding" tabindex="18" type="radio" value="Client Investment"/>								
+								</div>
+								<div class="radioLargeTextRight">Client Investment</div>
 							</div>
 							<div style="clear:both;"></div>
 							<div class="labelTextArea">
@@ -254,15 +256,15 @@
 							</div>
 							<div id="BusinessTypeRadio">
 								<div class="radioButtonRight">
-									<input id="BusinessTypeNewBusiness" name="BusinessType"  tabindex="18" type="radio" value="New Business"/>								
+									<input id="BusinessTypeNewBusiness" name="BusinessType" tabindex="19" type="radio" value="New Business"/>								
 								</div>
 								<div class="radioTextRight">New Business</div>
 								<div class="radioButtonRight">
-									<input id="BusinessTypeNewConstruction" name="BusinessType"  tabindex="19" type="radio" value="New Construction"/>								
+									<input id="BusinessTypeNewConstruction" name="BusinessType" tabindex="20" type="radio" value="New Construction"/>								
 								</div>
 								<div class="radioLargeTextRight">New Construction</div>
 								<div class="radioButtonRight">
-									<input id="BusinessTypeExistingBusiness" name="BusinessType"  tabindex="20" type="radio" value="Existing Business"/>								
+									<input id="BusinessTypeExistingBusiness" name="BusinessType" tabindex="21" type="radio" value="Existing Business"/>								
 								</div>
 								<div class="radioLargeTextRight">Existing Business</div>
 							</div>
@@ -272,51 +274,16 @@
 							</div>
 							<div id="FundingRadio">
 								<div class="radioButtonRight">
-									<input id="BudgetingBudgeted" name="Budgeting"  tabindex="21" type="radio" value="Budgeted"/>								
+									<input id="BudgetingBudgeted" name="Budgeting" tabindex="22" type="radio" value="Budgeted"/>								
 								</div>
 								<div class="radioTextRight">Budgeted</div>
 								<div class="radioButtonRight">
-									<input id="BudgetingUnbudgeted" name="Budgeting"  tabindex="22" type="radio" value="Unbudgeted"/>								
+									<input id="BudgetingUnbudgeted" name="Budgeting" tabindex="23" type="radio" value="Unbudgeted"/>								
 								</div>
 								<div class="radioTextRight">Unbudgeted</div>
 							</div>
 							<div style="clear:both;"></div>
                         </div>
-						<div class="contentAreaLeft">
-							<div id="TableEditArea">
-								<div class="body">
-									<div class="subHeader">Regional Manager Details:</div>
-									<div class="labelTextArea">
-										<span class="requiredFieldIndicator">&#149;</span>Name:
-									</div>
-									<div class="inputTextArea">
-										<div id="RegionalManagerName"></div>
-									</div>
-									<div style="clear:both;"></div>
-									<div class="labelTextArea">
-										<span class="requiredFieldIndicator">&#149;</span>Email:
-									</div>
-									<div class="inputTextArea">
-										<div id="RegionalManagerEmail"></div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="contentAreaLeft">
-							<div id="TableEditArea">
-								<div class="body">
-									<div class="labelTextArea"></div>
-									<div class="inputTextArea"></div>
-									<div style="clear:both;"></div>	
-									<div class="labelTextArea">
-										<span class="requiredFieldIndicator">&#149;</span>Title:
-									</div>
-									<div class="inputTextArea">
-										<div id="RegionalManagerTitle"></div>
-									</div>
-								</div>
-							</div>
-						</div>	
                     </div>
 					<div id="ItemInfo">					
 						<div id="VendorInfo">
@@ -418,8 +385,8 @@
 					<div id="ShippingInfo">						
 						<div class="contentAreaLeft">
 							<div id="TableEditArea">
-								<div class="body">																											
-									<div style="clear:both;"></div>
+								<div class="body">
+									<div class="subHeader">Shipping Details:</div>
 									<div class="labelTextArea">
 										<span id="nonRequiredFieldIndicator">Company:</span>
 									</div>
@@ -461,6 +428,7 @@
 						<div class="contentAreaLeft">
 							<div id="TableEditArea">
 								<div class="body">
+									<div class="subHeader"></div>
 									<div class="labelTextArea">
 										<span id="nonRequiredFieldIndicator">Job:</span>
 									</div>
@@ -518,6 +486,99 @@
 			                        <tr><td class="borderHorizontal" colspan="3"></td></tr>
 			                    </table>							        
 							</div>
+						</div>
+						<div style="clear:both;height:20px;"></div>
+						<div class="contentAreaLeft">
+							<div id="TableEditArea">
+								<div class="body">
+									<div class="subHeader">Work Flow Details:</div>
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Regional Manager Name:
+									</div>
+									<div class="inputTextArea">
+										<div id="RegionalManagerName"></div>
+									</div>
+									<div style="clear:both;"></div>
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Regional Manager Title:
+									</div>
+									<div class="inputTextArea">
+										<div id="RegionalManagerTitle"></div>
+									</div>
+									<div style="clear:both;"></div>
+									<div class="labelTextArea" id="DivisionPresidentNameLabel">
+										<span class="requiredFieldIndicator">&#149;</span>Division President Name:
+									</div>
+									<div class="inputTextArea">
+										<div id="DivisionPresidentName"></div>
+									</div>
+									<div style="clear:both;"></div>
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Finance Director Name:
+									</div>
+									<div class="inputTextArea">
+										<div id="FinanceDirectorName"></div>
+									</div>
+									<div style="clear:both;"></div>
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">Chief Financial Officer:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="ChiefFinancialOfficer" class="labelTextAreaMedium"></div>
+									</div>
+									<div style="clear:both;"></div>
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">Chief Executive Officer:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="ChiefExecutiveOfficer" class="labelTextAreaMedium"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="contentAreaLeft">
+							<div id="TableEditArea">
+								<div class="body">
+									<div class="subHeader"></div>
+									<div style="clear:both;"></div>	
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Regional Manager Email:
+									</div>
+									<div class="inputTextArea">
+										<div id="RegionalManagerEmail"></div>
+									</div>
+									<div style="clear:both;"></div>
+									<div class="labelTextArea"></div>
+									<div class="inputTextArea"></div>
+									<div style="clear:both;"></div>
+									<div class="labelTextArea" id="DivisionPresidentEmailLabel">
+										<span class="requiredFieldIndicator">&#149;</span>Division President Email:
+									</div>
+									<div class="inputTextArea">
+										<div id="DivisionPresidentEmail"></div>
+									</div>
+									<div style="clear:both;"></div>
+									<div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Finance Director Email:
+									</div>
+									<div class="inputTextArea">
+										<div id="FinanceDirectorEmail"></div>
+									</div>
+									<div style="clear:both;"></div>
+									<div class="labelTextArea"></div>
+									<div class="inputTextArea"></div>
+									<div style="clear:both;"></div>
+									<div class="labelTextArea"></div>
+									<div class="inputTextArea"></div>
+								</div>
+							</div>
+						</div>
+						<div id="ApprovalDetails">
+							<div style="clear:both;height:20px;"></div>
+							<div class="subHeader">Approval Details:</div>
+							<div style="clear:both;height:5px;"></div>
+							<div id="ApprovalGrid"></div>
+							<div style="clear:both;height:20px;"></div>
 						</div>
 					</div>
 					<div style="clear:both;"></div>	
