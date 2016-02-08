@@ -922,10 +922,13 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     $scope.empAction.ManagerNumber = $scope.empAction.Data["ReHire"].ReportingManagerNumber;
                     $scope.empAction.ManagerTitle = $scope.empAction.Data.ReHire.ReportingTitle;
                 }
+                $scope.empAction.PositionType = $scope.empAction.Data.PositionType;
+                $scope.empAction.PayGrade = $scope.empAction.Data.PayGrade;
                 var grade = ($scope.empAction.PayGrade == 0 ? $scope.empAction.PayGrade : EmpActions.getPayGradeTitle($scope.empAction.PayGrade));
                 $scope.empAction.PayRange = $scope.getPayRange($scope.empAction.PayGrade, salary) + " " + grade.slice(grade.indexOf("("));
             }
             if ($scope.empAction.SalaryChange || $scope.empAction.Demotion || $scope.empAction.Promotion) {
+                $scope.empAction.NewPayGrade = $scope.empAction.Data.NewPayGrade;
                 var newGrade = ($scope.empAction.NewPayGrade == 0 ? $scope.empAction.NewPayGrade : EmpActions.getPayGradeTitle($scope.empAction.NewPayGrade));
                 $scope.empAction.NewPayRange = $scope.getPayRange($scope.empAction.NewPayGrade, $scope.empAction.NewSalary) + " " + newGrade.slice(newGrade.indexOf("("));
                 if ($scope.empAction.SalaryChange) {
@@ -1068,7 +1071,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
         $scope.getPayRange = function () {
             var salary = calSalary();
-            return $scope.$parent.$parent.getPayRange($scope.empAction.PayGrade, salary);
+            return $scope.$parent.$parent.getPayRange($scope.empAction.Data.PayGrade, salary);
         }
 
         $scope.$parent.getManagerInfo = $scope.$parent.$parent.getManagerInfo;
