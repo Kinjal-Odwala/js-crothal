@@ -732,7 +732,7 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
             var valid = typeof (value) == "string" && value.length >= 5 && value.length <= 10;
             ctrl.$setValidity(attr.name, valid);
             return value;
-        },
+        }
     };
 }])
 .directive('pafMask', ['Validators', function (Validators) {

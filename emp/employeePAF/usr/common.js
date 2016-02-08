@@ -2,18 +2,16 @@
     return (!!input) ? input.replace(/^(.)|(\s|\-)(.)/g, function ($1) {
         return $1.toUpperCase();
     }) : '';
-}
+};
 
 var lowercaseFirstLetter = function (input) {
     return (!!input) ? input.replace(/^(.)|(\s|\-)(.)/g, function ($1) {
         return $1.toLowerCase();
     }) : '';
-}
+};
 
 
 var deserializeXml = function (xml, nodeName, options) {
-    // options = {upperFirstLetter: true, boolItems: [], dateItems: []}
-
     options = options || {};
 
     var upperCaseItems = function (input) {
@@ -52,28 +50,26 @@ var deserializeXml = function (xml, nodeName, options) {
 
     $el.each(function (index, element) {
         var obj = {};
-        $.each(element.attributes, function (index,key) {
+        $.each(element.attributes, function (index, key) {
             var value = key.value;
 
             if (boolItems.indexOf(key.name.toUpperCase()) >= 0)
-                value = key.value == '1' || key.value == 'true';
+                value = key.value === '1' || key.value === 'true';
 
             if (intItems.indexOf(key.name.toUpperCase()) >= 0)
-                value = key.value == 0 ? null : key.value;
+                value = key.value === 0 ? null : key.value;
 
-            if (dateItems.indexOf(key.name.toUpperCase()) >= 0)
-            {
-                value = !key.value || key.value.substr(0, 8) == '1/1/1900' ? null : key.value;
+            if (dateItems.indexOf(key.name.toUpperCase()) >= 0) {
+                value = !key.value || key.value.substr(0, 8) === '1/1/1900' ? null : key.value;
             }
-          
-            obj[convertAttrName(key.name)] = value;
 
+            obj[convertAttrName(key.name)] = value;
         });
 
         if (Object.keys(obj).length > 0)
             items.push(obj);
     });
     return items;
-}
+};
 
 
