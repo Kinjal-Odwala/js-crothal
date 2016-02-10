@@ -117,10 +117,9 @@
                         <div class="col-md-8">
                             <div class="form-group" paf-invalid="hireForm.PositionType">
                                 <label>Position</label>
-                                <!--<select class="form-control input-sm" name="PositionType" ng-model="empAction.PositionType" ng-options="item.id as item.name for item in $parent.$parent.JobCodes" required>
+                                <select class="form-control input-sm" name="PositionType" ng-model="$parent.empAction.Data.PositionType" ng-options="item.id as item.name for item in $parent.$parent.JobCodes" required>
                                 <option></option>
-                                </select>-->
-                                <paf-typeahead ng-model="empAction.PositionType" name="PositionType" source="$parent.$parent.JobCodes" typeahead-option="{displayField:'name',valueField:'id',name:'PositionType'}" ng-required="true"></paf-typeahead>
+                                </select>
                             </div>
                         </div>  
                     </div>
@@ -202,10 +201,9 @@
                         <div class="col-md-4">
                             <div class="form-group" paf-invalid="hireForm.PayGrade">
                                 <label>Pay Grade (min - mid - max)</label>
-                                <select class="form-control input-sm" name="PayGrade" ng-model="empAction.PayGrade" ng-options="item as item.id + ' (' + item.min + ' - ' + item.mid + ' - ' + item.max + ')' for item in $parent.$parent.PayGrades" required="required">
+                                <select class="form-control input-sm" name="PayGrade" ng-model="$parent.empAction.Data.PayGrade" ng-options="item.id as item.id + ' (' + item.min + ' - ' + item.mid + ' - ' + item.max + ')' for item in $parent.$parent.PayGrades" required="required">
                                     <option></option>
                                 </select>
-<!--                                <paf-typeahead ng-model="empAction.PayGrade" name="PayGrade" source="$parent.$parent.PayGrades" typeahead-option="{displayField:'id',valueField:'id',name:'PayGrade'}" ng-required="true"></paf-typeahead>-->
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -313,7 +311,7 @@
                                <!-- <select class="form-control input-sm" ng-model="empAction.BonusEligibleType" ng-options="item.id as item.title for item in $parent.$parent.lkup.BounsEligibles">
                                     <option value=""></option>
                                 </select>-->
-                                <paf-typeahead ng-model="empAction.BonusEligibleType" name="BonusEligibleType" source="$parent.$parent.lkup.BounsEligibles" typeahead-option="{displayField:'title',valueField:'id',name:'BounsEligibles'}" ng-required="true"></paf-typeahead>
+                                <paf-typeahead ng-model="empAction.BonusEligibleType" name="BonusEligibleType" source="$parent.$parent.lkup.BounsEligibles" typeahead-option="{displayField:'title',valueField:'id',name:'BounsEligibles'}"></paf-typeahead>
                             </div>
                         </div>
                     </div>
@@ -427,7 +425,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Date Return</label>
-                                <paf-datepicker dt-option="dateOptions" dt-name="DateOfReturn" min-date="empAction.LoaDate" dt-popup="MM/dd/yyyy" dt-model="empAction.DateReturn"></paf-datepicker>
+                                <paf-datepicker dt-option="dateOptions" dt-name="DateOfReturn" dt-popup="MM/dd/yyyy" dt-model="empAction.DateReturn"></paf-datepicker>
                             </div>
                         </div>
                     </div>
@@ -450,10 +448,10 @@
                         <div class="col-md-6">
                             <div class="form-group" ng-class="{'has-error':pdsForm.NewPositionType.$invalid}">
                                 <label>New Position</label>
-                               <!-- <select class="form-control input-sm" name="NewPositionType" ng-model="empAction.NewPositionType" ng-options="item.name for item in $parent.JobCodes" ng-required="$parent.empAction.Promotion || $parent.empAction.Demotion">
+                                <!--<select class="form-control input-sm" name="NewPositionType" ng-model="$parent.empAction.Data.NewPositionType" ng-options="item.id as item.name for item in $parent.JobCodes" ng-required="$parent.empAction.Promotion || $parent.empAction.Demotion">
                                     <option value=""></option>
                                 </select>-->
-                                <paf-typeahead name="NewPositionType" ng-model="empAction.NewPositionType" source="$parent.JobCodes" typeahead-option="{displayField:'name',valueField:'id',name:'HcmHouseCode'}" ng-required="true"></paf-typeahead>
+                                 <paf-typeahead name="NewPositionType" ng-model="empAction.NewPositionType" source="$parent.JobCodes" typeahead-option="{displayField:'name',valueField:'id',name:'NewPositionType'}" ng-required="$parent.empAction.Promotion || $parent.empAction.Demotion"></paf-typeahead>
                             </div>
                         </div>
                     </div>
@@ -543,7 +541,7 @@
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':pdsForm.NewPayGrade.$invalid}">
                                 <label>New Pay Grade (min - mid - max)</label>
-                                <select class="form-control input-sm" name="NewPayGrade" ng-model="empAction.NewPayGrade" ng-options="item.id as item.id + ' (' + item.min + ' - ' + item.mid + ' - ' + item.max + ')' for item in $parent.PayGrades" ng-required="$parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion">
+                                <select class="form-control input-sm" name="NewPayGrade" ng-model="$parent.empAction.Data.NewPayGrade" ng-options="item.id as item.id + ' (' + item.min + ' - ' + item.mid + ' - ' + item.max + ')' for item in $parent.PayGrades" ng-required="$parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion">
                                     <option></option>
                                 </select>
                             </div>
@@ -551,7 +549,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>New Pay Range</label>
-                                <p class="form-control input-sm">{{ $parent.getPayRange(empAction.NewPayGrade,empAction.NewSalary)}}</p>
+                                <p class="form-control input-sm">{{ $parent.getPayRange($parent.empAction.Data.NewPayGrade,empAction.NewSalary)}}</p>
                             </div>
                         </div>
                     </div>
@@ -666,7 +664,7 @@
                                 <!--<select class="form-control input-sm" ng-model="empAction.NewBonusEligibleType" ng-options="item.id as item.title for item in $parent.lkup.BounsEligibles">
                                     <option value=""></option>
                                 </select>-->
-                            <paf-typeahead name="NewPositionType" ng-model="empAction.NewBonusEligibleType" source="$parent.lkup.BounsEligibles" typeahead-option="{displayField:'title',valueField:'id',name:'NewBonusEligibleType'}" ng-required="true"></paf-typeahead>
+                            <paf-typeahead name="NewPositionType" ng-model="empAction.NewBonusEligibleType" source="$parent.lkup.BounsEligibles" typeahead-option="{displayField:'title',valueField:'id',name:'NewBonusEligibleType'}"></paf-typeahead>
                             </div>
                         </div>
                         <div class="col-md-4">
