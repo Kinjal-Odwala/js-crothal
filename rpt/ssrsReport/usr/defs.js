@@ -193,7 +193,7 @@ ii.init.register( function() {
 	
 	fin.rpt.ssrs.statusTypeArgs = {
         id: {type: Number}
-        , number: {type: Number}
+        , brief: {type: String}
         , name: {type: String}
     };
     
