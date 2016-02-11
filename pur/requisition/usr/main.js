@@ -400,6 +400,22 @@ ii.Class({
 			    changeFunction: function () { me.modified(); }
 			});
 
+			me.requestorPhone.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(function (isFinal, dataMap) {
+
+				    var enteredText = me.requestorPhone.getValue();
+
+				    if (enteredText == "") return;
+
+				    me.requestorPhone.text.value = fin.cmn.text.mask.phone(enteredText);
+				    enteredText = me.requestorPhone.text.value;
+
+				    if (enteredText.length < 14)
+				        this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
+		    });
+
 			me.requestorEmail = new ui.ctl.Input.Text({
 		        id: "RequestorEmail",
 				maxLength: 100,
