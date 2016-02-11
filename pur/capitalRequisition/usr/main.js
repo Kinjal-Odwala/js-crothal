@@ -408,7 +408,13 @@ ii.Class({
 		        id: "RequestorName",
 				maxLength: 100,
 				changeFunction: function() { me.modified(); }
-		    });
+			});
+
+			me.requestorPhone = new ui.ctl.Input.Text({
+			    id: "RequestorPhone",
+			    maxLength: 100,
+			    changeFunction: function() { me.modified(); }
+			});
 			
 			me.requestorEmail = new ui.ctl.Input.Text({
 		        id: "RequestorEmail",
@@ -1423,6 +1429,7 @@ ii.Class({
 			me.requestorName.resizeText();
 			me.requestorEmail.resizeText();
 			me.requestedDate.resizeText();
+			me.requestorPhone.resizeText();
 			me.deliveryDate.resizeText();
 			me.projectNumber.resizeText();
 			me.vendorName.resizeText();
@@ -1467,6 +1474,7 @@ ii.Class({
 			me.requestorName.text.readOnly = readOnly;
 			me.requestorEmail.text.readOnly = readOnly;
 			me.requestedDate.text.readOnly = readOnly;
+			me.requestorPhone.text.readOnly = readOnly;
 			me.deliveryDate.text.readOnly = readOnly;
 			me.projectNumber.text.readOnly = readOnly;			
 			me.vendorName.text.readOnly = readOnly;
@@ -2037,6 +2045,7 @@ ii.Class({
 			me.requestorName.setValue(item.requestorName);
 			me.requestorEmail.setValue(item.requestorEmail);
 			me.requestedDate.setValue(item.requestedDate);
+			me.requestorPhone.setValue(item.requestorPhone);
 			me.deliveryDate.setValue(item.deliveryDate);
 			me.projectNumber.setValue(item.projectNumber);
 			me.vendorName.lastBlurValue = item.vendorTitle;
@@ -2558,6 +2567,7 @@ ii.Class({
 			me.requestorName.setValue(me.users[0].firstName + " " + me.users[0].lastName + "");
 			me.requestorEmail.setValue(me.users[0].email);
 			me.requestedDate.setValue(me.currentDate());
+			me.requestorPhone.setValue("");
 			me.deliveryDate.setValue("");
 			me.projectNumber.setValue("");
 			me.vendorStore.reset();
@@ -3040,6 +3050,7 @@ ii.Class({
 					, me.shippingPhone.getValue()
 					, me.shippingFax.getValue()
 					, me.requestorName.getValue()
+                    , me.requestorPhone.getValue()
 					, me.requestorEmail.getValue()
 					, me.requestedDate.lastBlurValue
 					, me.deliveryDate.lastBlurValue
@@ -3146,6 +3157,7 @@ ii.Class({
 				xml += ' houseCodeId="' + item.houseCode + '"';
 				xml += ' houseCodeJobId="' + item.houseCodeJob + '"';
 				xml += ' requestorName="' + ui.cmn.text.xml.encode(item.requestorName) + '"';
+				xml += ' requestorPhone="' + fin.cmn.text.mask.phone(item.requestorPhone, true) + '"';
 				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
 				xml += ' requestedDate="' + item.requestedDate + '"';
 				xml += ' projectNumber="' + ui.cmn.text.xml.encode(item.projectNumber) + '"';
@@ -3239,6 +3251,7 @@ ii.Class({
 				xml += ' shipToFax="' + fin.cmn.text.mask.phone(item.shipToFax) + '"';
 				xml += ' requestorName="' + ui.cmn.text.xml.encode(item.requestorName) + '"';
 				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
+				xml += ' requestorPhone="' + fin.cmn.text.mask.phone(item.requestorPhone) + '"';
 				xml += ' requestedDate="' + item.requestedDate + '"';
 				xml += ' deliveryDate="' + item.deliveryDate + '"';
 				xml += ' projectNumber="' + ui.cmn.text.xml.encode(item.projectNumber) + '"';
