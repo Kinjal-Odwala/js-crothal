@@ -2658,9 +2658,10 @@ ii.Class({
                         $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + "</option>");
                     else
                         $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + typeTableData[index].code + ' - ' + typeTableData[index].description + "</option>");                       
-                }                   
-                else if (args.referenceTableName == "EmpStatusTypes" || args.referenceTableName == "HcmServiceTypes"
-                	|| args.referenceTableName == "HcmServiceLines" || args.referenceTableName == "HcmContractTypes")
+                }
+				else if (args.referenceTableName == "EmpStatusTypes")
+					$("#" + args.name).append("<option title='" + (brief == undefined ? title : brief) + "' value='" + brief + "'>" + (brief == undefined ? title : brief) + "</option>");
+                else if (args.referenceTableName == "HcmServiceTypes" || args.referenceTableName == "HcmServiceLines" || args.referenceTableName == "HcmContractTypes")
                     $("#" + args.name).append("<option title='" + title + "' value='" + title + "'>" + title + "</option>");
 				else if (args.referenceTableName == "ExcludeHouseCodes")                    
                     $("#" + args.name).append("<option title='" + typeTableData[index].title + "' value='" + brief + "'>" + typeTableData[index].title + "</option>");

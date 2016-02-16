@@ -64,6 +64,12 @@ ii.init.register( function() {
 		, column52: {type: String, required: false, defaultValue: ""} // vetType
 		, column53: {type: String, required: false, defaultValue: ""} // maritalStatusType
 		, column54: {type: String, required: false, defaultValue: ""} // basicLifeIndicatorType
+		, column55: {type: String, required: false, defaultValue: ""} // multiRace1
+		, column56: {type: String, required: false, defaultValue: ""} // multiRace2
+		, column57: {type: String, required: false, defaultValue: ""} // multiRace3
+		, column58: {type: String, required: false, defaultValue: ""} // multiRace4
+		, column59: {type: String, required: false, defaultValue: ""} // multiRace5
+		, column60: {type: String, required: false, defaultValue: ""} // disabilityType
 	};
 	
 	fin.emp.employeeImport.employeeGeneralArgs = {
@@ -239,6 +245,11 @@ ii.init.register( function() {
 		id: {type: Number, defaultValue: 0}
 		, variableName: {type: String, required: false, defaultValue: ""}
 		, variableValue: {type: String, required: false, defaultValue: ""}	
+	};
+
+	fin.emp.employeeImport.disabilityTypeArgs = {
+		id: {type: Number}
+		, name: {type: String}
 	};
 
 }, 2);
@@ -580,6 +591,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.emp.employeeImport.systemVariableArgs);
+			$.extend(this, args);			
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.emp.employeeImport.DisabilityType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.emp.employeeImport.disabilityTypeArgs);
 			$.extend(this, args);			
 		}
 	}

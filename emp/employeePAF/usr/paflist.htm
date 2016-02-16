@@ -95,19 +95,19 @@
                 <td width="20%">{{item.FirstName}}&nbsp;{{item.LastName}}</td>
                 <td width="25%">{{getHouseCodeName(item)}}</td>
                 <td width="" ng-bind-html="getFormType(item)"></td>
-                <td width="10%">{{getStatusTitle(item.Status)}}&nbsp;{{getStepTitle(item.WorkflowStep, item.Status)}}</td>
+                <td width="10%">{{getStatusTitle(item.StatusType)}}&nbsp;{{getStepTitle(item.WorkflowStep, item.StatusType)}}</td>
              </tr>
         </tbody>
     </table>
     <div class="row">
         <div class="col-md-5 col-sm-6 col-xs-12">
             <a class="btn btn-primary" ng-if="write" href="#/new">New</a>
-			<a class="btn btn-primary" ng-if="(write || (selectedItem.Status==2 && writeInProcess)) && (selectedItem.Status==1 || selectedItem.Status==10 || (selectedItem.Status==2 && writeInProcess))" href="#/edit/{{selectedItem.Id}}"><span ng-if="(write || (selectedItem.Status==2 && writeInProcess)) && (selectedItem.Status==1 || selectedItem.Status==10 || (selectedItem.Status==2 && writeInProcess))">Edit</span></a>
-			<a class="btn btn-primary" ng-if="selectedItem.Status==20" href="#/edit/{{selectedItem.Id}}"><span ng-if="selectedItem.Status==20">View/Edit</span></a>
-			<a class="btn btn-primary" ng-if="(readOnly || write) && (((selectedItem.Status==1 || selectedItem.Status==10) && !write) || selectedItem.Status==8 || selectedItem.Status==4 || selectedItem.Status==6 || (selectedItem.Status==2 && !writeInProcess))" href="#/edit/{{selectedItem.Id}}"><span ng-if="(readOnly || write) && (((selectedItem.Status==1 || selectedItem.Status==10) && !write) || selectedItem.Status==8 || selectedItem.Status==4 || selectedItem.Status==6 || (selectedItem.Status==2 && !writeInProcess))">View</span></a>
-			<a class="btn btn-info" ng-click="submit(selectedItem)" ng-if="write && (selectedItem.Status==1 || (selectedItem.Status==2  && selectedItem.WorkflowStep==0) || selectedItem.Status==10)"><span ng-if="write && selectedItem.Status==1">Submit</span><span ng-if="write && ((selectedItem.Status==2 && selectedItem.WorkflowStep==0) || selectedItem.Status==10)">ReSubmit</span></a>
-            <a class="btn btn-info" ng-click="approve(selectedItem.Id)" ng-if="(write || approveInProcess) && (selectedItem.Status==2 && approveInProcess)"><span ng-if="(write || approveInProcess) && (selectedItem.Status==2 && approveInProcess)">Approve</span></a>
-			<a class="btn btn-default" ng-if="write && (selectedItem.Status==1 || selectedItem.Status==2 || selectedItem.Status==10)" ng-click="cancelForm(selectedItem.Id)" ng-disabled="!selectedItem">Cancel</a>
+			<a class="btn btn-primary" ng-if="(write || (selectedItem.StatusType==2 && writeInProcess)) && (selectedItem.StatusType==1 || selectedItem.StatusType==10 || (selectedItem.StatusType==2 && writeInProcess))" href="#/edit/{{selectedItem.Id}}"><span ng-if="(write || (selectedItem.StatusType==2 && writeInProcess)) && (selectedItem.StatusType==1 || selectedItem.StatusType==10 || (selectedItem.StatusType==2 && writeInProcess))">Edit</span></a>
+			<a class="btn btn-primary" ng-if="selectedItem.StatusType==20" href="#/edit/{{selectedItem.Id}}"><span ng-if="selectedItem.StatusType==20">View/Edit</span></a>
+			<a class="btn btn-primary" ng-if="(readOnly || write) && (((selectedItem.StatusType==1 || selectedItem.StatusType==10) && !write) || selectedItem.StatusType==8 || selectedItem.StatusType==4 || selectedItem.StatusType==6 || (selectedItem.StatusType==2 && !writeInProcess))" href="#/edit/{{selectedItem.Id}}"><span ng-if="(readOnly || write) && (((selectedItem.StatusType==1 || selectedItem.StatusType==10) && !write) || selectedItem.StatusType==8 || selectedItem.StatusType==4 || selectedItem.StatusType==6 || (selectedItem.StatusType==2 && !writeInProcess))">View</span></a>
+			<a class="btn btn-info" ng-click="submit(selectedItem)" ng-if="write && (selectedItem.StatusType==1 || (selectedItem.StatusType==2  && selectedItem.WorkflowStep==0) || selectedItem.StatusType==10)"><span ng-if="write && selectedItem.StatusType==1">Submit</span><span ng-if="write && ((selectedItem.StatusType==2 && selectedItem.WorkflowStep==0) || selectedItem.StatusType==10)">ReSubmit</span></a>
+            <a class="btn btn-info" ng-click="approve(selectedItem.Id)" ng-if="(write || approveInProcess) && (selectedItem.StatusType==2 && approveInProcess)"><span ng-if="(write || approveInProcess) && (selectedItem.StatusType==2 && approveInProcess)">Approve</span></a>
+			<a class="btn btn-default" ng-if="write && (selectedItem.StatusType==1 || selectedItem.StatusType==2 || selectedItem.StatusType==10)" ng-click="cancelForm(selectedItem.Id)" ng-disabled="!selectedItem">Cancel</a>
         </div>
     </div>
 </div>

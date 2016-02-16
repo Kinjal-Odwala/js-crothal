@@ -91,61 +91,62 @@ VALUES('paf', 'Employee PAF', 'Employee PAF', 2, 1, 'Compass-USA\Data Conversion
 INSERT INTO dbo.AppWorkflowModules(AppWfmBrief, AppWfmTitle, AppWfmDescription, AppWfmDisplayOrder, AppWfmActive, AppWfmModBy, AppWfmModAt)
 VALUES('pocr', 'PO Capital Requisition', 'PO Capital Requisition', 3, 1, 'Compass-USA\Data Conversion', GetDate())
 
-INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsModBy, AppWfsModAt)
-VALUES(1, Null, 'Step 1', 'Selected users will receive an email with a link when sending the house code request. When the link is clicked it will redirect to the House Code workflow screen with edit option.<br>
-The user will have the ability to change any data on the form and at the end will have buttons to Approve/ Save and Approve, Cancel and Exit the screen.', 1, 1, 1, 'Compass-USA\Data Conversion', GetDate())
-INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsModBy, AppWfsModAt)
-VALUES(1, Null, 'Step 2', 'Selected users will receive an email with a link when sending the house code request. When the link is clicked it will redirect to the House Code workflow screen with edit option.<br>
-The user will have the ability to change any data on the form and at the end will have buttons to Approve/ Save and Approve, Cancel and Exit the screen.', 2, 2, 1, 'Compass-USA\Data Conversion', GetDate())
-INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsModBy, AppWfsModAt)
-VALUES(1, Null, 'Step 3', 'Selected users will receive an email with a link when sending the house code request. When the link is clicked it will redirect to the House Code workflow screen with edit option.<br>
-The user will have the ability to change any data on the form and at the end will have buttons to Approve/ Save and Approve, Cancel and Exit the screen.', 3, 3, 1, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsAddWorkflowUser, AppWfsAddJDECompanyUser, AppWfsModBy, AppWfsModAt)
+VALUES(1, 'Step 1', 'Step 1', 'Selected users will receive an email with a link when sending the house code request. When the link is clicked it will redirect to the House Code workflow screen with edit option.<br>
+The user will have the ability to change any data on the form and at the end will have buttons to Approve/ Save and Approve, Cancel and Exit the screen.', 1, 1, 1, 1, 0, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsAddWorkflowUser, AppWfsAddJDECompanyUser, AppWfsModBy, AppWfsModAt)
+VALUES(1, 'Step 2', 'Step 2', 'Selected users will receive an email with a link when sending the house code request. When the link is clicked it will redirect to the House Code workflow screen with edit option.<br>
+The user will have the ability to change any data on the form and at the end will have buttons to Approve/ Save and Approve, Cancel and Exit the screen.', 2, 2, 1, 1, 0, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsAddWorkflowUser, AppWfsAddJDECompanyUser, AppWfsModBy, AppWfsModAt)
+VALUES(1, 'Step 3', 'Step 3', 'Selected users will receive an email with a link when sending the house code request. When the link is clicked it will redirect to the House Code workflow screen with edit option.<br>
+The user will have the ability to change any data on the form and at the end will have buttons to Approve/ Save and Approve, Cancel and Exit the screen.', 3, 3, 1, 1, 0, 'Compass-USA\Data Conversion', GetDate())
 
-INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsModBy, AppWfsModAt)
-VALUES(2, Null, 'Step 1 (LOA)', 'Send an email notification to SUS-LeaveofAbsence@compass-usa.com for apprrove or unapprove the employee personnel action form.', 1, 1, 1, 'Compass-USA\Data Conversion', GetDate())
-INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsModBy, AppWfsModAt)
-VALUES(2, Null, 'Step 2 (HR Manager)', 'Send an email notification to Human Resource Manager for apprrove or unapprove the employee personnel action form.', 2, 2, 1, 'Compass-USA\Data Conversion', GetDate())
-INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsModBy, AppWfsModAt)
-VALUES(2, Null, 'Step 3 (Regional Manager)', 'Send an email notification to Regional Manager for apprrove or unapprove the employee personnel action form.', 3, 3, 1, 'Compass-USA\Data Conversion', GetDate())
-INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsModBy, AppWfsModAt)
-VALUES(2, Null, 'Step 4 (HR Director)', 'Send an email notification to HR Director for apprrove or unapprove the employee personnel action form.', 4, 4, 1, 'Compass-USA\Data Conversion', GetDate())
-INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsModBy, AppWfsModAt)
-VALUES(2, Null, 'Step 5 (Process HR)', 'Send an email notification to SUS-ProcessHR@compass-usa.com for apprrove or unapprove the employee personnel action form.', 5, 5, 1, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsAddWorkflowUser, AppWfsAddJDECompanyUser, AppWfsModBy, AppWfsModAt)
+VALUES(2, 'Step 1', 'Step 1 (LOA)', 'Send an email notification to SUS-LeaveofAbsence@compass-usa.com for approve or unapprove the employee personnel action form.', 1, 1, 1, 1, 0, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsAddWorkflowUser, AppWfsAddJDECompanyUser, AppWfsModBy, AppWfsModAt)
+VALUES(2, 'Step 2', 'Step 2 (HR Manager)', 'Send an email notification to Human Resource Manager for approve or unapprove the employee personnel action form.', 2, 2, 1, 1, 0, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsAddWorkflowUser, AppWfsAddJDECompanyUser, AppWfsModBy, AppWfsModAt)
+VALUES(2, 'Step 3', 'Step 3 (Regional Manager)', 'Send an email notification to Regional Manager for approve or unapprove the employee personnel action form.', 3, 3, 1, 0, 0, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsAddWorkflowUser, AppWfsAddJDECompanyUser, AppWfsModBy, AppWfsModAt)
+VALUES(2, 'Step 4', 'Step 4 (HR Director)', 'Send an email notification to HR Director for approve or unapprove the employee personnel action form.', 4, 4, 1, 0, 1, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsAddWorkflowUser, AppWfsAddJDECompanyUser, AppWfsModBy, AppWfsModAt)
+VALUES(2, 'Step 5', 'Step 5 (Process HR)', 'Send an email notification to SUS-ProcessHR@compass-usa.com for approve or unapprove the employee personnel action form.', 5, 5, 1, 1, 0, 'Compass-USA\Data Conversion', GetDate())
 
-INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsModBy, AppWfsModAt)
-VALUES(3, Null, 'Step 1 (Regional Manager)', 'Send an email notification ro Regional Manager for apprrove or unapprove the PO capital requisition.', 1, 1, 1, 'Compass-USA\Data Conversion', GetDate())
-INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsModBy, AppWfsModAt)
-VALUES(3, Null, 'Step 2 (Division President)', 'Send an email notification to Division President for apprrove or unapprove the PO capital requisition.', 2, 2, 1, 'Compass-USA\Data Conversion', GetDate())
-INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsModBy, AppWfsModAt)
-VALUES(3, Null, 'Step 3 (Finance Director)', 'Send an email notification to Finance Director for apprrove or unapprove the PO capital requisition.', 3, 3, 1, 'Compass-USA\Data Conversion', GetDate())
-INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsModBy, AppWfsModAt)
-VALUES(3, Null, 'Step 4 (CFO)', 'Send an email notification to Chief Financial Officer for apprrove or unapprove the PO capital requisition.', 4, 4, 1, 'Compass-USA\Data Conversion', GetDate())
-INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsModBy, AppWfsModAt)
-VALUES(3, Null, 'Step 5 (CEO)', 'Send an email notification to Chief Executive Officer for apprrove or unapprove the PO capital requisition.', 5, 5, 1, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsAddWorkflowUser, AppWfsAddJDECompanyUser, AppWfsModBy, AppWfsModAt)
+VALUES(3, 'Step 1', 'Step 1 (Regional Manager)', 'Send an email notification ro Regional Manager for approve or unapprove the PO capital requisition.', 1, 1, 1, 0, 0, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsAddWorkflowUser, AppWfsAddJDECompanyUser, AppWfsModBy, AppWfsModAt)
+VALUES(3, 'Step 2', 'Step 2 (Division President)', 'Send an email notification to Division President for approve or unapprove the PO capital requisition.', 2, 2, 1, 0, 1, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsAddWorkflowUser, AppWfsAddJDECompanyUser, AppWfsModBy, AppWfsModAt)
+VALUES(3, 'Step 3', 'Step 3 (Finance Director)', 'Send an email notification to Finance Director for approve or unapprove the PO capital requisition.', 3, 3, 1, 0, 1, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsAddWorkflowUser, AppWfsAddJDECompanyUser, AppWfsModBy, AppWfsModAt)
+VALUES(3, 'Step 4', 'Step 4 (CFO)', 'Send an email notification to Chief Financial Officer for approve or unapprove the PO capital requisition.', 4, 4, 1, 1, 0, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowSteps(AppWorkflowModule, AppWfsBrief, AppWfsTitle, AppWfsDescription, AppWfsStepNumber, AppWfsDisplayOrder, AppWfsActive, AppWfsAddWorkflowUser, AppWfsAddJDECompanyUser, AppWfsModBy, AppWfsModAt)
+VALUES(3, 'Step 5', 'Step 5 (CEO)', 'Send an email notification to Chief Executive Officer for approve or unapprove the PO capital requisition.', 5, 5, 1, 1, 0, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowJDECompanies(FscJDECompany, AppWorkflowModule, AppWorkflowStep, AppWfJDEcName, AppWfJDEcTitle, AppWfJDEcEmail, AppWfJDEcDisplayOrder, AppWfJDEcActive, AppWfJDEcModBy, AppWfJDEcModAt)
+VALUES(1, 2, 4, 'Chandru Balekkala', Null, 'chandru.balekkala@iicorporate.com', 1, 1, 'Compass-USA\Data Conversion', GetDate())
 
-INSERT INTO dbo.AppWorkflowJDECompanies(AppWorkflowModule, FscJDECompany, AppWfJDEcStepNumber, AppWfJDEcName, AppWfJDEcTitle, AppWfJDEcEmail, AppWfJDEcActive, AppWfJDEcModBy, AppWfJDEcModAt)
-VALUES(2, 1, 4, 'Chandru Balekkala', Null, 'chandru.balekkala@iicorporate.com', 1, 'Compass-USA\Data Conversion', GetDate())
-INSERT INTO dbo.AppWorkflowJDECompanies(AppWorkflowModule, FscJDECompany, AppWfJDEcStepNumber, AppWfJDEcName, AppWfJDEcTitle, AppWfJDEcEmail, AppWfJDEcActive, AppWfJDEcModBy, AppWfJDEcModAt)
-VALUES(2, 2, 4, 'Chandru Balekkala', Null, 'chandru.balekkala@iicorporate.com', 1, 'Compass-USA\Data Conversion', GetDate())
-INSERT INTO dbo.AppWorkflowJDECompanies(AppWorkflowModule, FscJDECompany, AppWfJDEcStepNumber, AppWfJDEcName, AppWfJDEcTitle, AppWfJDEcEmail, AppWfJDEcActive, AppWfJDEcModBy, AppWfJDEcModAt)
-VALUES(2, 3, 4, 'Chandru Balekkala', Null, 'chandru.balekkala@iicorporate.com', 1, 'Compass-USA\Data Conversion', GetDate())
-INSERT INTO dbo.AppWorkflowJDECompanies(AppWorkflowModule, FscJDECompany, AppWfJDEcStepNumber, AppWfJDEcName, AppWfJDEcTitle, AppWfJDEcEmail, AppWfJDEcActive, AppWfJDEcModBy, AppWfJDEcModAt)
-VALUES(2, 4, 4, 'Chandru Balekkala', Null, 'chandru.balekkala@iicorporate.com', 1, 'Compass-USA\Data Conversion', GetDate())
-INSERT INTO dbo.AppWorkflowJDECompanies(AppWorkflowModule, FscJDECompany, AppWfJDEcStepNumber, AppWfJDEcName, AppWfJDEcTitle, AppWfJDEcEmail, AppWfJDEcActive, AppWfJDEcModBy, AppWfJDEcModAt)
-VALUES(2, 5, 4, 'Chandru Balekkala', Null, 'chandru.balekkala@iicorporate.com', 1, 'Compass-USA\Data Conversion', GetDate())
-INSERT INTO dbo.AppWorkflowJDECompanies(AppWorkflowModule, FscJDECompany, AppWfJDEcStepNumber, AppWfJDEcName, AppWfJDEcTitle, AppWfJDEcEmail, AppWfJDEcActive, AppWfJDEcModBy, AppWfJDEcModAt)
-VALUES(2, 6, 4, 'Chandru Balekkala', Null, 'chandru.balekkala@iicorporate.com', 1, 'Compass-USA\Data Conversion', GetDate())
-INSERT INTO dbo.AppWorkflowJDECompanies(AppWorkflowModule, FscJDECompany, AppWfJDEcStepNumber, AppWfJDEcName, AppWfJDEcTitle, AppWfJDEcEmail, AppWfJDEcActive, AppWfJDEcModBy, AppWfJDEcModAt)
-VALUES(2, 7, 4, 'Chandru Balekkala', Null, 'chandru.balekkala@iicorporate.com', 1, 'Compass-USA\Data Conversion', GetDate())
-INSERT INTO dbo.AppWorkflowJDECompanies(AppWorkflowModule, FscJDECompany, AppWfJDEcStepNumber, AppWfJDEcName, AppWfJDEcTitle, AppWfJDEcEmail, AppWfJDEcActive, AppWfJDEcModBy, AppWfJDEcModAt)
-VALUES(2, 8, 4, 'Chandru Balekkala', Null, 'chandru.balekkala@iicorporate.com', 1, 'Compass-USA\Data Conversion', GetDate())
-INSERT INTO dbo.AppWorkflowJDECompanies(AppWorkflowModule, FscJDECompany, AppWfJDEcStepNumber, AppWfJDEcName, AppWfJDEcTitle, AppWfJDEcEmail, AppWfJDEcActive, AppWfJDEcModBy, AppWfJDEcModAt)
-VALUES(2, 9, 4, 'Chandru Balekkala', Null, 'chandru.balekkala@iicorporate.com', 1, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowJDECompanies(AppWorkflowModule, FscJDECompany, AppWfJDEcStepNumber, AppWfJDEcName, AppWfJDEcTitle, AppWfJDEcEmail, AppWfJDEcDisplayOrder, AppWfJDEcActive, AppWfJDEcModBy, AppWfJDEcModAt)
+VALUES(2, 2, 4, 'Chandru Balekkala', Null, 'chandru.balekkala@iicorporate.com', 1, 1, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowJDECompanies(AppWorkflowModule, FscJDECompany, AppWfJDEcStepNumber, AppWfJDEcName, AppWfJDEcTitle, AppWfJDEcEmail, AppWfJDEcDisplayOrder, AppWfJDEcActive, AppWfJDEcModBy, AppWfJDEcModAt)
+VALUES(2, 3, 4, 'Chandru Balekkala', Null, 'chandru.balekkala@iicorporate.com', 1, 1, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowJDECompanies(AppWorkflowModule, FscJDECompany, AppWfJDEcStepNumber, AppWfJDEcName, AppWfJDEcTitle, AppWfJDEcEmail, AppWfJDEcDisplayOrder, AppWfJDEcActive, AppWfJDEcModBy, AppWfJDEcModAt)
+VALUES(2, 4, 4, 'Chandru Balekkala', Null, 'chandru.balekkala@iicorporate.com', 1, 1, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowJDECompanies(AppWorkflowModule, FscJDECompany, AppWfJDEcStepNumber, AppWfJDEcName, AppWfJDEcTitle, AppWfJDEcEmail, AppWfJDEcDisplayOrder, AppWfJDEcActive, AppWfJDEcModBy, AppWfJDEcModAt)
+VALUES(2, 5, 4, 'Chandru Balekkala', Null, 'chandru.balekkala@iicorporate.com', 1, 1, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowJDECompanies(AppWorkflowModule, FscJDECompany, AppWfJDEcStepNumber, AppWfJDEcName, AppWfJDEcTitle, AppWfJDEcEmail, AppWfJDEcDisplayOrder, AppWfJDEcActive, AppWfJDEcModBy, AppWfJDEcModAt)
+VALUES(2, 6, 4, 'Chandru Balekkala', Null, 'chandru.balekkala@iicorporate.com', 1, 1, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowJDECompanies(AppWorkflowModule, FscJDECompany, AppWfJDEcStepNumber, AppWfJDEcName, AppWfJDEcTitle, AppWfJDEcEmail, AppWfJDEcDisplayOrder, AppWfJDEcActive, AppWfJDEcModBy, AppWfJDEcModAt)
+VALUES(2, 7, 4, 'Chandru Balekkala', Null, 'chandru.balekkala@iicorporate.com', 1, 1, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowJDECompanies(AppWorkflowModule, FscJDECompany, AppWfJDEcStepNumber, AppWfJDEcName, AppWfJDEcTitle, AppWfJDEcEmail, AppWfJDEcDisplayOrder, AppWfJDEcActive, AppWfJDEcModBy, AppWfJDEcModAt)
+VALUES(2, 8, 4, 'Chandru Balekkala', Null, 'chandru.balekkala@iicorporate.com', 1, 1, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowJDECompanies(AppWorkflowModule, FscJDECompany, AppWfJDEcStepNumber, AppWfJDEcName, AppWfJDEcTitle, AppWfJDEcEmail, AppWfJDEcDisplayOrder, AppWfJDEcActive, AppWfJDEcModBy, AppWfJDEcModAt)
+VALUES(2, 9, 4, 'Chandru Balekkala', Null, 'chandru.balekkala@iicorporate.com', 1, 1, 'Compass-USA\Data Conversion', GetDate())
 
-INSERT INTO dbo.AppWorkflowJDECompanies(AppWorkflowModule, FscJDECompany, AppWfJDEcStepNumber, AppWfJDEcName, AppWfJDEcTitle, AppWfJDEcEmail, AppWfJDEcActive, AppWfJDEcModBy, AppWfJDEcModAt)
-VALUES(3, 1, 2, 'Chandru Balekkala', Null, 'chandru.balekkala@iicorporate.com', 1, 'Compass-USA\Data Conversion', GetDate())
-INSERT INTO dbo.AppWorkflowJDECompanies(AppWorkflowModule, FscJDECompany, AppWfJDEcStepNumber, AppWfJDEcName, AppWfJDEcTitle, AppWfJDEcEmail, AppWfJDEcActive, AppWfJDEcModBy, AppWfJDEcModAt)
-VALUES(3, 1, 3, 'Chandru Balekkala', Null, 'chandru.balekkala@iicorporate.com', 1, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowJDECompanies(FscJDECompany, AppWorkflowModule, AppWorkflowStep, AppWfJDEcName, AppWfJDEcTitle, AppWfJDEcEmail, AppWfJDEcDisplayOrder, AppWfJDEcActive, AppWfJDEcModBy, AppWfJDEcModAt)
+VALUES(1, 3, 10, 'Chandru Balekkala', Null, 'chandru.balekkala@iicorporate.com', 1, 1, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.AppWorkflowJDECompanies(FscJDECompany, AppWorkflowModule, AppWorkflowStep, AppWfJDEcName, AppWfJDEcTitle, AppWfJDEcEmail, AppWfJDEcDisplayOrder, AppWfJDEcActive, AppWfJDEcModBy, AppWfJDEcModAt)
+VALUES(1, 3, 11, 'Chandru Balekkala', Null, 'chandru.balekkala@iicorporate.com', 1, 1, 'Compass-USA\Data Conversion', GetDate())
+
 -- Sample Data Insert [End]
 
 -- Setup --> Employee PAF Menu Insert [Begin]
@@ -182,7 +183,7 @@ Values(1, 9, @HirNode, 'Read', 'Read', 'Read', @DisplayOrder + 1, 1, '\crothall\
 Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodModBy, HirNodModAt)
 Values(1, 9, @HirNode, 'Write', 'Write', 'Write', @DisplayOrder + 2, 1, '\crothall\chimes\fin\Setup\EmployeePAF\Write', 'crothall', 'chimes', 'fin', 'Setup', 'EmployeePAF', 'Write', 'Compass-USA\Data Conversion', GetDate())
 Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodModBy, HirNodModAt)
-Values(1, 9, @HirNode, 'WriteInProcess', 'Write - In Process Status', 'Write - In Process Status', @DisplayOrder + 3, 1, '\crothall\chimes\fin\Setup\EmployeePAF\WriteInProcess', 'crothall', 'chimes', 'fin', 'Setup', 'EmployeePAF', 'WriteInProcess', 'Compass-USA\Data Conversion', GetDate())
+Values(1, 9, @HirNode, 'WriteInProcess', 'Write - In Process Status', 'Write - In Process Status', @DisplayOrder + 3, 1, '\crothall\chimes\fin\Setup\EmployeePAF\InProcessWrite', 'crothall', 'chimes', 'fin', 'Setup', 'EmployeePAF', 'InProcessWrite', 'Compass-USA\Data Conversion', GetDate())
 Insert Into ESMV2.dbo.HirNodes(HirHierarchy, HirLevel, HirNodeparent, HirNodBrief, HirNodTitle, HirNodDescription, HirNodDisplayOrder, HirNodActive, HirNodFullPath, HirNodLevel1, HirNodLevel2, HirNodLevel3, HirNodLevel4, HirNodLevel5, HirNodLevel6, HirNodModBy, HirNodModAt)
 Values(1, 9, @HirNode, 'ApproveInProcess', 'Approve - In Process Status', 'Approve - In Process Status', @DisplayOrder + 4, 1, '\crothall\chimes\fin\Setup\EmployeePAF\ApproveInProcess', 'crothall', 'chimes', 'fin', 'Setup', 'EmployeePAF', 'ApproveInProcess', 'Compass-USA\Data Conversion', GetDate())
 
@@ -200,18 +201,25 @@ INCREMENT BY 1 -- This is how you want
 Select * from EmpEmployeePersonnelActions
 
 ;With cte As
-(Select EmpEmployeePersonnelAction, EmpEpaNumber, 
+(Select EmpEmployeePersonnelAction, EmpEpaPAFNumber, 
   Row_Number() Over (Order By EmpEmployeePersonnelAction) As rn
 From EmpEmployeePersonnelActions)
-Update cte Set EmpEpaNumber = 100000 + rn
+Update cte Set EmpEpaPAFNumber = 100000 + rn
 -- Employee PAF --> Employee PAF Number Insert [End]
 
+Select * From dbo.HcmContractTypes
+Update dbo.HcmContractTypes Set HcmContBrief = 'MF' Where HcmContractType = 1
+Update dbo.HcmContractTypes Set HcmContBrief = 'FS' Where HcmContractType = 2
+Update dbo.HcmContractTypes Set HcmContBrief = 'OH' Where HcmContractType = 3
 
 -- Add the following key in emp-->act web.config file and app-->act web.config file
-<add key="PAFApprovalPath" value="https://findev.crothall.com/net/crothall/chimes/fin/app/act/Approve.aspx" />
+<add key="PAFApprovalPath" value="https://finct.crothall.com/net/crothall/chimes/fin/app/act/Approve.aspx" />
 
 -- Add the following key in app-->act web.config file
-<add key="ConnectionString" value="Data Source=SSI-X64-WS05;Initial Catalog=TeamFinv2;User ID=Esm;Password=Esm" />
+<add key="FinSMTPServer" value="relay.compass-usa.com" />
+<add key="FinSenderEmail" value="teamfinpostoffice@crothall.com" />
+<add key="LogFilePath" value="E:\Sites\CT\TeamFin\js\crothall\chimes\fin\logs\" />
+<add key="ConnectionString" value="Data Source=CHIUSCHP397;Initial Catalog=TeamFinv2;User ID=Esm;Password=Esm" />
 
 -- Add the following key in pur-->act web.config file
 <add key="FinAppPath" value="/net/crothall/chimes/fin/app/act/provider.aspx?moduleId=app" />
@@ -225,9 +233,12 @@ Update cte Set EmpEpaNumber = 100000 + rn
 -- ALTER TABLE dbo.PurPOCapitalRequisitions ADD PurPocrFinanceDirectorName VARCHAR(256) NULL
 -- ALTER TABLE dbo.PurPOCapitalRequisitions ADD PurPocrFinanceDirectorEmail VARCHAR(256) NULL
 -- ALTER TABLE dbo.AppWorkflowJDECompanies ADD AppWfJDEcTitle VARCHAR(50) NULL
+-- ALTER TABLE dbo.EmpEmployeePersonnelActions ADD EmpEpaRegionalManagerName VARCHAR(100) NULL
+-- ALTER TABLE dbo.EmpEmployeePersonnelActions ADD EmpEpaRegionalManagerTitle VARCHAR(100) NULL
+-- ALTER TABLE dbo.EmpEmployeePersonnelActions ADD EmpEpaRegionalManagerEmail VARCHAR(100) NULL
 
 
--- SSRS Report Parameters Updates [Begin]
+-- Ceridian Reports: SSRS Report Parameters Updates [Begin]
 
 /fin/rpt/ceridianReport/usr/markup.htm?reportId=Audit&reportURL=https://reports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fPayroll_Audit_Report&rs:Command=Render
 /fin/rpt/ceridianReport/usr/markup.htm?reportId=Epay Timesheet Budget&reportURL=https://reports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fEpayBudgetTimesheetCustomer&rs:Command=Render
@@ -268,6 +279,15 @@ Update [Esmv2].[dbo].[AppMenuItems] Set AppMeniActionData = '/fin/rpt/ssrsReport
 Update [Esmv2].[dbo].[AppMenuItems] Set AppMeniActionData = '/fin/rpt/ssrsReport/usr/markup.htm?reportId=Payroll Reg Sal' Where AppMeniBrief = 'Payroll Reg Sal'
 
 -------------------------------------------------------------
+Declare @HirNode Int
+	, @DisplayOrder Int
+
+If Not Exists(Select HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Reports\SSRS Reports\Ceridian Reports')
+Begin
+      Select @DisplayOrder = Max(HirNode) + 1 From ESMV2.dbo.HirNodes
+      Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Reports\SSRS Reports'
+      EXEC ESMV2.dbo.HirNodeUpdate 0, 1, @HirNode, 9, 'Ceridian Reports', 'Ceridian Reports', 'Ceridian Reports', @DisplayOrder, 1, 'Compass-USA\Data Conversion'
+End
 
 Declare @HirNode Int
       , @DisplayOrder Int
@@ -283,7 +303,7 @@ If Not Exists(Select RptReport From RptReports Where RptRepTitle = 'Audit Report
 Begin
     Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Reports\SSRS Reports\Ceridian Reports\Audit Report'
 	INSERT INTO TeamFinV2.dbo.RptReports(RptRepBrief, RptRepTitle, RptRepDescription, RptRepName, RptRepActive, RptRepDisplayOrder, RptRepModBy, RptRepModAt, RptRepSubscriptionAvailable, RptRepReportURL, HirNode, RptRepParameterAvailable)
-	VALUES('Audit Report', 'Audit Report', 'Audit Report', '', 1, 0, 'Compass-USA\Data Conversion', GetDate(), 0, 'https://ctreports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fPayroll_Audit_Report&rs:Command=Render', @HirNode, 1)
+	VALUES('Audit Report', 'Audit Report', 'Audit Report', '', 1, 0, 'Compass-USA\Data Conversion', GetDate(), 0, 'https://reports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fPayroll_Audit_Report&rs:Command=Render', @HirNode, 1)
 End
 
 Declare @HirNode Int
@@ -300,7 +320,7 @@ If Not Exists(Select RptReport From RptReports Where RptRepTitle = 'EPay Act vs 
 Begin
     Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Reports\SSRS Reports\Ceridian Reports\EPay Act vs Bud'
 	INSERT INTO TeamFinV2.dbo.RptReports(RptRepBrief, RptRepTitle, RptRepDescription, RptRepName, RptRepActive, RptRepDisplayOrder, RptRepModBy, RptRepModAt, RptRepSubscriptionAvailable, RptRepReportURL, HirNode, RptRepParameterAvailable)
-	VALUES('EPay Act vs Bud', 'EPay Act vs Bud', 'EPay Act vs Bud', '', 1, 0, 'Compass-USA\Data Conversion', GetDate(), 0, 'https://ctreports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fEpayBudgetTimesheetCustomer&rs:Command=Render', @HirNode, 1)
+	VALUES('EPay Act vs Bud', 'EPay Act vs Bud', 'EPay Act vs Bud', '', 1, 0, 'Compass-USA\Data Conversion', GetDate(), 0, 'https://reports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fEpayBudgetTimesheetCustomer&rs:Command=Render', @HirNode, 1)
 End
 
 Declare @HirNode Int
@@ -317,7 +337,7 @@ If Not Exists(Select RptReport From RptReports Where RptRepTitle = 'Labor Dashbo
 Begin
     Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Reports\SSRS Reports\Ceridian Reports\Labor Dashboard'
 	INSERT INTO TeamFinV2.dbo.RptReports(RptRepBrief, RptRepTitle, RptRepDescription, RptRepName, RptRepActive, RptRepDisplayOrder, RptRepModBy, RptRepModAt, RptRepSubscriptionAvailable, RptRepReportURL, HirNode, RptRepParameterAvailable)
-	VALUES('Labor Dashboard', 'Labor Dashboard', 'Labor Dashboard', '', 1, 0, 'Compass-USA\Data Conversion', GetDate(), 0, 'https://ctreports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fTeamFin_Labor_Dashboard&rs:Command=Render', @HirNode, 1)
+	VALUES('Labor Dashboard', 'Labor Dashboard', 'Labor Dashboard', '', 1, 0, 'Compass-USA\Data Conversion', GetDate(), 0, 'https://reports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fTeamFin_Labor_Dashboard&rs:Command=Render', @HirNode, 1)
 End
 
 Declare @HirNode Int
@@ -334,7 +354,7 @@ If Not Exists(Select RptReport From RptReports Where RptRepTitle = 'ChargeTo')
 Begin
     Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Reports\SSRS Reports\Ceridian Reports\ChargeTo'
 	INSERT INTO TeamFinV2.dbo.RptReports(RptRepBrief, RptRepTitle, RptRepDescription, RptRepName, RptRepActive, RptRepDisplayOrder, RptRepModBy, RptRepModAt, RptRepSubscriptionAvailable, RptRepReportURL, HirNode, RptRepParameterAvailable)
-	VALUES('ChargeTo', 'ChargeTo', 'ChargeTo', '', 1, 0, 'Compass-USA\Data Conversion', GetDate(), 0, 'https://ctreports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fCeridian_ChargeTo&rs:Command=Render', @HirNode, 1)
+	VALUES('ChargeTo', 'ChargeTo', 'ChargeTo', '', 1, 0, 'Compass-USA\Data Conversion', GetDate(), 0, 'https://reports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fCeridian_ChargeTo&rs:Command=Render', @HirNode, 1)
 End
 
 Declare @HirNode Int
@@ -351,7 +371,7 @@ If Not Exists(Select RptReport From RptReports Where RptRepTitle = 'PTD Register
 Begin
     Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Reports\SSRS Reports\Ceridian Reports\PTD Register Emp'
 	INSERT INTO TeamFinV2.dbo.RptReports(RptRepBrief, RptRepTitle, RptRepDescription, RptRepName, RptRepActive, RptRepDisplayOrder, RptRepModBy, RptRepModAt, RptRepSubscriptionAvailable, RptRepReportURL, HirNode, RptRepParameterAvailable)
-	VALUES('PTD Register Emp', 'PTD Register Emp', 'PTD Register Emp', '', 1, 0, 'Compass-USA\Data Conversion', GetDate(), 0, 'https://ctreports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fCeridianPTDRegisterEmployeeDetail&rs:Command=Render', @HirNode, 1)
+	VALUES('PTD Register Emp', 'PTD Register Emp', 'PTD Register Emp', '', 1, 0, 'Compass-USA\Data Conversion', GetDate(), 0, 'https://reports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fCeridianPTDRegisterEmployeeDetail&rs:Command=Render', @HirNode, 1)
 End
 
 Declare @HirNode Int
@@ -368,7 +388,7 @@ If Not Exists(Select RptReport From RptReports Where RptRepTitle = 'YTD Register
 Begin
     Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Reports\SSRS Reports\Ceridian Reports\YTD Register Emp'
 	INSERT INTO TeamFinV2.dbo.RptReports(RptRepBrief, RptRepTitle, RptRepDescription, RptRepName, RptRepActive, RptRepDisplayOrder, RptRepModBy, RptRepModAt, RptRepSubscriptionAvailable, RptRepReportURL, HirNode, RptRepParameterAvailable)
-	VALUES('YTD Register Emp', 'YTD Register Emp', 'YTD Register Emp', '', 1, 0, 'Compass-USA\Data Conversion', GetDate(), 0, 'https://ctreports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fCeridianYTDRegisterEmployeeDetail&rs:Command=Render', @HirNode, 1)
+	VALUES('YTD Register Emp', 'YTD Register Emp', 'YTD Register Emp', '', 1, 0, 'Compass-USA\Data Conversion', GetDate(), 0, 'https://reports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fCeridianYTDRegisterEmployeeDetail&rs:Command=Render', @HirNode, 1)
 End
 
 Declare @HirNode Int
@@ -385,7 +405,7 @@ If Not Exists(Select RptReport From RptReports Where RptRepTitle = 'Employee Act
 Begin
     Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Reports\SSRS Reports\Ceridian Reports\Employee Active'
 	INSERT INTO TeamFinV2.dbo.RptReports(RptRepBrief, RptRepTitle, RptRepDescription, RptRepName, RptRepActive, RptRepDisplayOrder, RptRepModBy, RptRepModAt, RptRepSubscriptionAvailable, RptRepReportURL, HirNode, RptRepParameterAvailable)
-	VALUES('Employee Active', 'Employee Active', 'Employee Active', '', 1, 0, 'Compass-USA\Data Conversion', GetDate(), 0, 'https://ctreports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fEmployeeActiveNotPaid&rs:Command=Render', @HirNode, 1)
+	VALUES('Employee Active', 'Employee Active', 'Employee Active', '', 1, 0, 'Compass-USA\Data Conversion', GetDate(), 0, 'https://reports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fEmployeeActiveNotPaid&rs:Command=Render', @HirNode, 1)
 End
 
 Declare @HirNode Int
@@ -402,7 +422,7 @@ If Not Exists(Select RptReport From RptReports Where RptRepTitle = 'Employee Mas
 Begin
     Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Reports\SSRS Reports\Ceridian Reports\Employee Master'
 	INSERT INTO TeamFinV2.dbo.RptReports(RptRepBrief, RptRepTitle, RptRepDescription, RptRepName, RptRepActive, RptRepDisplayOrder, RptRepModBy, RptRepModAt, RptRepSubscriptionAvailable, RptRepReportURL, HirNode, RptRepParameterAvailable)
-	VALUES('Employee Master', 'Employee Master', 'Employee Master', '', 1, 0, 'Compass-USA\Data Conversion', GetDate(), 0, 'https://ctreports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fEmployeeMasterListing&rs:Command=Render', @HirNode, 1)
+	VALUES('Employee Master', 'Employee Master', 'Employee Master', '', 1, 0, 'Compass-USA\Data Conversion', GetDate(), 0, 'https://reports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fEmployeeMasterListing&rs:Command=Render', @HirNode, 1)
 End
 
 Declare @HirNode Int
@@ -419,7 +439,7 @@ If Not Exists(Select RptReport From RptReports Where RptRepTitle = 'Payroll IDR'
 Begin
     Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Reports\SSRS Reports\Ceridian Reports\Payroll IDR'
 	INSERT INTO TeamFinV2.dbo.RptReports(RptRepBrief, RptRepTitle, RptRepDescription, RptRepName, RptRepActive, RptRepDisplayOrder, RptRepModBy, RptRepModAt, RptRepSubscriptionAvailable, RptRepReportURL, HirNode, RptRepParameterAvailable)
-	VALUES('Payroll IDR', 'Payroll IDR', 'Payroll IDR', '', 1, 0, 'Compass-USA\Data Conversion', GetDate(), 0, 'https://ctreports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fPayroll_IDR_Report&rs:Command=Render', @HirNode, 1)
+	VALUES('Payroll IDR', 'Payroll IDR', 'Payroll IDR', '', 1, 0, 'Compass-USA\Data Conversion', GetDate(), 0, 'https://reports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fPayroll_IDR_Report&rs:Command=Render', @HirNode, 1)
 End
 
 Declare @HirNode Int
@@ -436,7 +456,7 @@ If Not Exists(Select RptReport From RptReports Where RptRepTitle = 'Payroll Regi
 Begin
     Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Reports\SSRS Reports\Ceridian Reports\Payroll Register'
 	INSERT INTO TeamFinV2.dbo.RptReports(RptRepBrief, RptRepTitle, RptRepDescription, RptRepName, RptRepActive, RptRepDisplayOrder, RptRepModBy, RptRepModAt, RptRepSubscriptionAvailable, RptRepReportURL, HirNode, RptRepParameterAvailable)
-	VALUES('Payroll Register', 'Payroll Register', 'Payroll Register', '', 1, 0, 'Compass-USA\Data Conversion', GetDate(), 0, 'https://ctreports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fCeridian_Payroll_Register&rs:Command=Render', @HirNode, 1)
+	VALUES('Payroll Register', 'Payroll Register', 'Payroll Register', '', 1, 0, 'Compass-USA\Data Conversion', GetDate(), 0, 'https://reports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fCeridian_Payroll_Register&rs:Command=Render', @HirNode, 1)
 End
 
 Declare @HirNode Int
@@ -453,18 +473,33 @@ If Not Exists(Select RptReport From RptReports Where RptRepTitle = 'Payroll Reg 
 Begin
     Select @HirNode = HirNode From ESMV2.dbo.HirNodes Where HirNodFullPath = '\crothall\chimes\fin\Reports\SSRS Reports\Ceridian Reports\Payroll Reg Sal'
 	INSERT INTO TeamFinV2.dbo.RptReports(RptRepBrief, RptRepTitle, RptRepDescription, RptRepName, RptRepActive, RptRepDisplayOrder, RptRepModBy, RptRepModAt, RptRepSubscriptionAvailable, RptRepReportURL, HirNode, RptRepParameterAvailable)
-	VALUES('Payroll Reg Sal', 'Payroll Reg Sal', 'Payroll Reg Sal', '', 1, 0, 'Compass-USA\Data Conversion', GetDate(), 0, 'https://ctreports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fCeridian_Payroll_Register_Salary&rs:Command=Render', @HirNode, 1)
+	VALUES('Payroll Reg Sal', 'Payroll Reg Sal', 'Payroll Reg Sal', '', 1, 0, 'Compass-USA\Data Conversion', GetDate(), 0, 'https://reports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fSkunkWorks%2fTeamFin_Payroll%2fCeridian_Payroll_Register_Salary&rs:Command=Render', @HirNode, 1)
 End
 
-
 Select * From RptReports Where RptRepTitle = 'Audit Report'
-Select * From RptReportParameters Where RptReport = 53
+Select * From RptReportParameters Where RptReport = 78
+Declare @RptReport Int
+Select @RptReport = RptReport from RptReports where RptRepTitle = 'Audit Report'
+Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+Values (@RptReport, 'Pay Period Ending Date', 'PayPeriod', 'Integer', 'DropDown', '', 1, 'Compass-USA\Data Conversion', GetDate(), 'PayPeriodEndingDates', 1, 150)
 
 Select * From RptReports Where RptRepTitle = 'Epay Act vs Bud'
-Select * From RptReportParameters Where RptReport = 54
+Select * From RptReportParameters Where RptReport = 79
+Declare @RptReport Int
+Select @RptReport = RptReport from RptReports where RptRepTitle = 'Epay Act vs Bud'
+Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+Values (@RptReport, 'Week', 'DateRange', 'Integer', 'DropDown', '', 1, 'Compass-USA\Data Conversion', GetDate(), 'WeekPeriods', 1, 200)
+Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+Values (@RptReport, 'Customers', 'Customer', 'Integer', 'MultiSelect', '', 1, 'Compass-USA\Data Conversion', GetDate(), 'Customers', 2, 400)
 
 Select * From RptReports Where RptRepTitle = 'Labor Dashboard'
-Select * From RptReportParameters Where RptReport = 55
+Select * From RptReportParameters Where RptReport = 80
+Declare @RptReport Int
+Select @RptReport = RptReport from RptReports where RptRepTitle = 'Labor Dashboard'
+Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+Values (@RptReport, 'Fiscal Year', 'FscYear', 'Integer', 'DropDown', '', 1, 'Compass-USA\Data Conversion', GetDate(), 'FscYears', 1, 100)
+Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
+Values (@RptReport, 'Fiscal Week', 'WkPeriod', 'Integer', 'DropDown', '', 1, 'Compass-USA\Data Conversion', GetDate(), 'WeekPeriods', 2, 200)
 
 Select * From RptReports Where RptRepTitle = 'ChargeTo'
 Select * From RptReportParameters Where RptReport = 2075
@@ -472,7 +507,6 @@ Declare @RptReport Int
 Select @RptReport = RptReport from RptReports where RptRepTitle = 'ChargeTo'
 Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
 Values (@RptReport, 'Check Date', 'CheckDate', 'String', 'DropDown', Null, 1, 'Compass-USA\Data Conversion', GetDate(), 'CheckDates', 1, 200)
-
 
 Select * From RptReports Where RptRepTitle = 'PTD Register Emp'
 Select * From RptReportParameters Where RptReport = 2076
@@ -483,7 +517,6 @@ Values (@RptReport, 'Site', 'HouseCode', 'Integer', 'MultiSelect', Null, 1, 'Com
 Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
 Values (@RptReport, 'Pay Period', 'PayPeriod', 'Integer', 'DropDown', Null, 1, 'Compass-USA\Data Conversion', GetDate(), 'PayPeriodDates', 2, 250)
 
-
 Select * From RptReports Where RptRepTitle = 'YTD Register Emp'
 Select * From RptReportParameters Where RptReport = 2077
 Declare @RptReport Int
@@ -493,7 +526,6 @@ Values (@RptReport, 'Site', 'HouseCode', 'Integer', 'MultiSelect', Null, 1, 'Com
 Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
 Values (@RptReport, 'Pay Period', 'PayPeriod', 'Integer', 'DropDown', Null, 1, 'Compass-USA\Data Conversion', GetDate(), 'PayPeriodDates', 2, 250)
 
-
 Select * From RptReports Where RptRepTitle = 'Employee Active'
 Select * From RptReportParameters Where RptReport = 2081
 Declare @RptReport Int
@@ -502,7 +534,6 @@ Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptRep
 Values (@RptReport, 'Site', 'HouseCode', 'Integer', 'MultiSelect', Null, 1, 'Compass-USA\Data Conversion', GetDate(), 'HouseCodes', 1, 400)
 Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
 Values (@RptReport, 'Pay Period', 'PayPeriod', 'Integer', 'DropDown', Null, 1, 'Compass-USA\Data Conversion', GetDate(), 'PayPeriodDates', 2, 250)
-
 
 Select * From RptReports Where RptRepTitle = 'Employee Master'
 Select * From RptReportParameters Where RptReport = 2078
@@ -514,7 +545,6 @@ Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptRep
 Values (@RptReport, 'Pay Period', 'PayPeriod', 'Integer', 'DropDown', Null, 1, 'Compass-USA\Data Conversion', GetDate(), 'PayPeriodDates', 2, 250)
 Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
 Values (@RptReport, 'Employee Status', 'EmployeeStatus', 'Integer', 'MultiSelect', '(Select All)', 1, 'Compass-USA\Data Conversion', GetDate(), 'EmpStatusTypes', 3, 200)
-
 
 Select * From RptReports Where RptRepTitle = 'Payroll IDR'
 Select * From RptReportParameters Where RptReport = 2079
@@ -544,7 +574,6 @@ Values (@RptReport, 'Employee Status', 'EmployeeStatus', 'Integer', 'DropDown', 
 Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
 Values (@RptReport, 'HeaderPPLabel', 'HeaderPPLabel', 'String', 'Hidden', Null, 1, 'Compass-USA\Data Conversion', GetDate(), Null, 5, Null)
 
-
 Select * From RptReports Where RptRepTitle = 'Payroll Reg Sal'
 Select * From RptReportParameters Where RptReport = 2080
 
@@ -560,7 +589,6 @@ Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptRep
 Values (@RptReport, 'Employee Status', 'EmployeeStatus', 'Integer', 'DropDown', 'All', 1, 'Compass-USA\Data Conversion', GetDate(), 'EmployeeStatusTypes', 4, 200)
 Insert Into dbo.RptReportParameters(RptReport, RptReppTitle, RptReppName, RptReppDataType, RptReppControlType, RptReppDefaultValue, RptReppActive ,RptReppModBy, RptReppModAt, RptReppReferenceTableName, RptReppDisplayOrder, RptReppWidth)
 Values (@RptReport, 'HeaderPPLabel', 'HeaderPPLabel', 'String', 'Hidden', Null, 1, 'Compass-USA\Data Conversion', GetDate(), Null, 5, Null)
-
 
 select * from RptReports
 select * from esmV2.dbo.HirNodes Where HirNodFullPath Like '\crothall\chimes\fin\Reports\SSRS Reports\Payroll%'
@@ -586,4 +614,51 @@ select RptRepBrief from RptReports group By RptRepBrief Having Count(RptRepBrief
 
 /*
 CT updated on 18th November 2015 11PM EST
+*/
+
+-- ALTER TABLE dbo.EmpEmployeePersonnelActions ADD AppWorkflowStep Int NULL
+-- ALTER TABLE dbo.EmpEmployeePersonnelActions ADD EmpEpaIdentifier Varchar(50) NULL
+-- ALTER TABLE dbo.PurPOCapitalRequisitions ADD PurPocrChiefFinancialOfficerName Varchar(50) NULL
+-- ALTER TABLE dbo.PurPOCapitalRequisitions ADD PurPocrChiefExecutiveOfficerName Varchar(50) NULL
+-- ALTER TABLE dbo.PurPOCapitalRequisitions ADD AppWorkflowStep Int NULL
+-- ALTER TABLE dbo.PurPOCapitalRequisitions ADD PurPocrIdentifier Varchar(50) NULL
+
+-- EXEC sp_rename 'EmpEmployeePersonnelActions.EmpEpaPositionType', 'EmpJobCodeType', 'COLUMN'
+-- EXEC sp_rename 'EmpEmployeePersonnelActions.EmpEpaCurrentPositionType', 'EmpJobCodeTypeCurrent', 'COLUMN'
+-- EXEC sp_rename 'EmpEmployeePersonnelActions.EmpEpaNewPositionType', 'EmpJobCodeTypeNew', 'COLUMN'
+
+-- Add the following key in pur-->act web.config file
+<add key="FinAppPath" value="/net/crothall/chimes/fin/app/act/provider.aspx?moduleId=app" />
+
+-- Add the following system variables
+1. POCapitalRequisitionApprovalAmountLimit1		50000
+2. POCapitalRequisitionApprovalAmountLimit2		100000
+3. POCapitalRequisitionEmail					sus-purchasing@compass-usa.com
+
+Select * From EsmV2.dbo.Hirnodes Where HirNodFullPath Like '\crothall\chimes\fin\Setup\EmployeePAF%'
+Update EsmV2.dbo.Hirnodes Set HirNodFullPath = '\crothall\chimes\fin\Setup\EmployeePAF\InProcessWrite', HirNodLevel6 = 'InProcessWrite' Where Hirnode = 25504
+
+/*
+CT updated on 6th January 2016 11PM EST
+*/
+
+INSERT INTO [dbo].[HcmPTMetricTypes] (HcmPtmtSubType, HcmPtmtBrief, HcmPtmtTitle, HcmPtmtDescription, HcmPtmtDataType, HcmPtmtDisplayOrder, HcmPtmtActive, HcmPtmtModBy, HcmPtmtModAt)
+VALUES ('Audit Scores', '', 'Overall Score', 'Audit Scores - Overall Score', 'Decimal', 20, 1, 'Compass-Usa\Data Conversion', GetDate())
+
+INSERT INTO dbo.HcmBudgetTemplates(HcmBudtBrief, HcmBudtTitle, HcmBudtDescription, HcmBudtDisplayOrder, HcmBudtActive, HcmBudtModBy, HcmBudtModAt)
+VALUES('Mgmt Fee Prd Lbr', 'Management Fee with Prod Labor', 'Management Fee with Prod Labor', 6, 1, 'Compass-USA\Data Conversion', GetDate())
+INSERT INTO dbo.HcmBudgetTemplates(HcmBudtBrief, HcmBudtTitle, HcmBudtDescription, HcmBudtDisplayOrder, HcmBudtActive, HcmBudtModBy, HcmBudtModAt)
+VALUES('Transportation', 'Transportation', 'PT Division Transportation', 7, 1, 'Compass-USA\Data Conversion', GetDate())
+
+/*
+CT updated on 20th January 2016 11PM EST
+*/
+
+js folder
+../pur/capitalRequisition/usr/main.js
+../pur/requisition/usr/main.js
+../bud/res/scripts/all.js
+
+/*
+Last production release version 2.04.018 on 27th January 2016 11PM EST
 */
