@@ -1817,6 +1817,10 @@ ii.Class({
 						me.setCellColor($("#selMultiRace2" + index), me.cellColorValid, "");
 					}
 				}
+				else {
+					me.setCellColor($("#selMultiRace1" + index), me.cellColorValid, "");
+					me.setCellColor($("#selMultiRace2" + index), me.cellColorValid, "");
+				}
 
 				if ($("#selDisabilityType" + index).val() == "0") {
 					rowValid = false;
