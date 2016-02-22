@@ -41,7 +41,8 @@ ii.init.register( function() {
         , directCost: {type: Boolean}
         , supplies: {type: Boolean}
         , accountReceivables: {type: Boolean}
-        , wor: {type: Boolean}
+        , wor: { type: Boolean }
+        , poCapitalRequisition: { type: Boolean }
         , otherRevenue: {type: Boolean}
         , active: {type: Boolean}
 	};

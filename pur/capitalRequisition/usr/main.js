@@ -131,7 +131,7 @@ ii.Class({
 				}
 
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
-				me.accountStore.fetch("userId:[user]", me.accountsLoaded, me);
+				me.accountStore.fetch("userId:[user],moduleId:poCapitalRequisition", me.accountsLoaded, me);
 				me.personStore.fetch("userId:[user],id:" + me.session.propertyGet("personId"), me.personsLoaded, me);
 				me.systemVariableStore.fetch("userId:[user],name:POCapitalRequisitionApprovalAmountLimit1", me.approvalAmountLimit1Loaded, me);
 				me.appUserStore.fetch("userId:[user],module:Workflow,id:0,workflowModuleId:3,stepNumber:4", me.chiefFinancialOfficersLoaded, me);
