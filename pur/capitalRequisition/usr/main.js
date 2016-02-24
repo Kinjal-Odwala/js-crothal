@@ -1394,19 +1394,20 @@ ii.Class({
 
 			me.requestorName.text.tabIndex = 1;
 			me.requestorEmail.text.tabIndex = 2;
-			me.requestedDate.text.tabIndex = 3;
-			me.deliveryDate.text.tabIndex = 4;
-			me.projectNumber.text.tabIndex = 5;
-			me.vendorName.text.tabIndex = 6;
-			me.vendorAddress1.text.tabIndex = 7;
-			me.vendorAddress2.text.tabIndex = 8;
-			me.vendorCity.text.tabIndex = 9;
-			me.vendorState.text.tabIndex = 10;
-			me.vendorZip.text.tabIndex = 11;
-			me.vendorContactName.text.tabIndex = 12;
-			me.vendorPhone.text.tabIndex = 13;
-			me.vendorEmail.text.tabIndex = 14;
-			me.reasonForRequest.text.tabIndex = 15;
+			me.requestorPhone.text.tabIndex = 3;
+			me.requestedDate.text.tabIndex = 4;
+			me.deliveryDate.text.tabIndex = 5;
+			me.projectNumber.text.tabIndex = 6;
+			me.vendorName.text.tabIndex = 7;
+			me.vendorAddress1.text.tabIndex = 8;
+			me.vendorAddress2.text.tabIndex = 9;
+			me.vendorCity.text.tabIndex = 10;
+			me.vendorState.text.tabIndex = 11;
+			me.vendorZip.text.tabIndex = 12;
+			me.vendorContactName.text.tabIndex = 13;
+			me.vendorPhone.text.tabIndex = 14;
+			me.vendorEmail.text.tabIndex = 15;
+			me.reasonForRequest.text.tabIndex = 16;
 			//Capital - 16
 			//Direct Reimbursement - 17
 			//New Business - 18
@@ -1527,7 +1528,8 @@ ii.Class({
 			$("#FundingClientInvestment")[0].disabled = readOnly;
 			$("#BusinessTypeNewBusiness")[0].disabled = readOnly;
 			$("#BusinessTypeNewConstruction")[0].disabled = readOnly;
-			$("#BusinessTypeExistingBusiness")[0].disabled = readOnly;			
+			$("#BusinessTypeExistingBusiness")[0].disabled = readOnly;
+			$("#BusinessTypeContractRenewal")[0].disabled = readOnly;
 			$("#BudgetingBudgeted")[0].disabled = readOnly;
 			$("#BudgetingUnbudgeted")[0].disabled = readOnly;
 
@@ -2092,7 +2094,9 @@ ii.Class({
 			else if (item.businessType == "New Construction") 
 				$('#BusinessTypeNewConstruction').attr('checked', true);
 			else if (item.businessType == "Existing Business") 
-				$('#BusinessTypeExistingBusiness').attr('checked', true);
+			    $('#BusinessTypeExistingBusiness').attr('checked', true);
+			else if (item.businessType == "Contract Renewal")
+			    $('#BusinessTypeContractRenewal').attr('checked', true);
 			
 			if (item.budgeting == "Budgeted") 
 				$('#BudgetingBudgeted').attr('checked', true);
@@ -2447,6 +2451,7 @@ ii.Class({
 					|| !me.vendorPhone.valid
 					|| !me.vendorEmail.valid
 					|| !me.reasonForRequest.valid
+                    || !me.requestorPhone.valid
 					) {
 					alert("In order to continue, the errors on the page must be corrected.");	
 					return false;
@@ -3066,8 +3071,8 @@ ii.Class({
 					, me.shippingPhone.getValue()
 					, me.shippingFax.getValue()
 					, me.requestorName.getValue()
-                    , me.requestorPhone.getValue()
 					, me.requestorEmail.getValue()
+                    , me.requestorPhone.getValue()
 					, me.requestedDate.lastBlurValue
 					, me.deliveryDate.lastBlurValue
 					, me.projectNumber.getValue()
