@@ -288,10 +288,24 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 	            return;
 
 	        $scope.empAction.Data[type].ReportingType = type;
-	        $scope.empAction.Data[type].ReportingName = obj.ReportingName;
-	        $scope.empAction.Data[type].ReportingTitle = obj.ReportingTitle;
-	        $scope.empAction.Data[type].ReportingEmail = obj.ReportingEmail;
-	        $scope.empAction.Data[type].ReportingManagerNumber = obj.ReportingManagerNumber;
+	        if (type == "NewHire" || type == "ReHire") {
+	            $scope.empAction.ManagerName = obj.ReportingName;
+	            $scope.empAction.ManagerTitle = obj.ReportingTitle;
+	            $scope.empAction.ManagerEmail = obj.ReportingEmail;
+	            $scope.empAction.ManagerNumber = obj.ReportingManagerNumber;
+	        }
+	        if (type == "Promotion" || type == "Demotion" || type == "SalaryChange") {
+	            $scope.empAction.NewManagerName = obj.ReportingName;
+	            $scope.empAction.NewManagerTitle = obj.ReportingTitle;
+	            $scope.empAction.NewManagerEmail = obj.ReportingEmail;
+	            $scope.empAction.NewManagerNumber = obj.ReportingManagerNumber;
+	        }
+	        if (type == "Transfer") {
+	            $scope.empAction.TransferManagerName = obj.ReportingName;
+	            $scope.empAction.TransferManagerTitle = obj.ReportingTitle;
+	            $scope.empAction.TransferManagerEmail = obj.ReportingEmail;
+	            $scope.empAction.TransferManagerNumber = obj.ReportingManagerNumber;
+	        }
 	        $scope.empAction.Data[type].CacheReportingManagerNumber = obj.ReportingManagerNumber;
 	        $scope.empAction.Data[type].DisabledReportFields = obj.ReportingManagerNumber && obj.ReportingManagerNumber.length > 0 && obj.ReportingTitle && obj.ReportingTitle.length > 0 && obj.ReportingEmail && obj.ReportingEmail.length > 0;
 	        $scope.empAction.Data[type].DisabledReportingManagerNumberField = false;
@@ -347,9 +361,19 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 	    });
 	};
 
-    $scope.getManagerInfo = function (employeeNumber, positionType) {
+	$scope.getManagerInfo = function (employeeNumber, positionType) {
 
-        if (employeeNumber !== "" && $scope.empAction.Data && ($scope.empAction.Data[positionType].ReportingManagerNumber.length === 0 || parseInt(employeeNumber) !== parseInt($scope.empAction.Data[positionType].CacheReportingManagerNumber))) {
+	    if (positionType == "NewHire" || positionType == "ReHire") {
+	        var ReportingManagerNumber = $scope.empAction.ManagerNumber;
+	    }
+	    if (positionType == "Promotion" || positionType == "Demotion" || positionType == "SalaryChange") {
+	        var ReportingManagerNumber = $scope.empAction.NewManagerNumber;
+	    }
+	    if (positionType == "Transfer") {
+	        var ReportingManagerNumber = $scope.empAction.TransferManagerNumber;
+	    }
+
+	    if (employeeNumber !== "" && $scope.empAction.Data && (ReportingManagerNumber.length === 0 || parseInt(employeeNumber) !== parseInt($scope.empAction.Data[positionType].CacheReportingManagerNumber))) {
             $scope.empAction.Data[positionType].CacheReportingManagerNumber = employeeNumber;
 
                 getManagerDetail(employeeNumber, function (response) {
@@ -357,11 +381,24 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                         alert("The Managers/Clock Number you enter is not exist.");
                         return;
                     }
-
-                    $scope.empAction.Data[positionType].ReportingName = response.empFirstName + " " + response.empLastName;
-                    $scope.empAction.Data[positionType].ReportingTitle = response.empTitle;
-                    $scope.empAction.Data[positionType].ReportingEmail = response.empEmail;
-                    $scope.empAction.Data[positionType].ReportingManagerNumber = response.empClock;
+                    if (positionType == "NewHire" || positionType == "ReHire") {
+                        $scope.empAction.ManagerName = response.empFirstName + " " + response.empLastName;
+                        $scope.empAction.ManagerTitle = response.empTitle;
+                        $scope.empAction.ManagerEmail = response.empEmail;
+                        $scope.empAction.ManagerNumber = response.empClock;
+                    }
+                    if (positionType == "Promotion" || positionType == "Demotion" || positionType == "SalaryChange") {
+                        $scope.empAction.NewManagerName = response.ReportingName;
+                        $scope.empAction.NewManagerTitle = response.ReportingTitle;
+                        $scope.empAction.NewManagerEmail = response.ReportingEmail;
+                        $scope.empAction.NewManagerNumber = response.ReportingManagerNumber;
+                    }
+                    if (positionType == "Transfer") {
+                        $scope.empAction.TransferManagerName = response.ReportingName;
+                        $scope.empAction.TransferManagerTitle = response.ReportingTitle;
+                        $scope.empAction.TransferManagerEmail = response.ReportingEmail;
+                        $scope.empAction.TransferManagerNumber = response.ReportingManagerNumber;
+                    }
                     $scope.empAction.Data[positionType].CacheReportingManagerNumber = response.empClock;
                     $scope.empAction.Data[positionType].DisabledReportFields = response.empClock && response.empClock.length > 0 && response.empTitle && response.empTitle.length > 0 && response.empEmail && response.empEmail.length > 0;
                     $scope.empAction.Data[positionType].DisabledReportingManagerNumberField = false;
@@ -910,54 +947,12 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 else if ($scope.empAction.PayStatus == "HourlyRateAmount") {
                     salary = $scope.empAction.Amount * 52 * 40;
                 }
-                if ($scope.empAction.NewHire) {
-                    $scope.empAction.ManagerName = $scope.empAction.Data.NewHire.ReportingName;
-                    $scope.empAction.ManagerEmail = $scope.empAction.Data.NewHire.ReportingEmail;
-                    $scope.empAction.ManagerNumber = $scope.empAction.Data["NewHire"].ReportingManagerNumber;
-                    $scope.empAction.ManagerTitle = $scope.empAction.Data.NewHire.ReportingTitle;
-                }
-                else if ($scope.empAction.ReHire) {
-                    $scope.empAction.ManagerName = $scope.empAction.Data.ReHire.ReportingName;
-                    $scope.empAction.ManagerEmail = $scope.empAction.Data.ReHire.ReportingEmail;
-                    $scope.empAction.ManagerNumber = $scope.empAction.Data["ReHire"].ReportingManagerNumber;
-                    $scope.empAction.ManagerTitle = $scope.empAction.Data.ReHire.ReportingTitle;
-                }
-                $scope.empAction.PositionType = $scope.empAction.Data.PositionType;
-                $scope.empAction.PayGrade = $scope.empAction.Data.PayGrade;
                 var grade = ($scope.empAction.PayGrade == 0 ? $scope.empAction.PayGrade : EmpActions.getPayGradeTitle($scope.empAction.PayGrade));
                 $scope.empAction.PayRange = $scope.getPayRange($scope.empAction.PayGrade, salary) + " " + grade.slice(grade.indexOf("("));
             }
             if ($scope.empAction.SalaryChange || $scope.empAction.Demotion || $scope.empAction.Promotion) {
-                $scope.empAction.NewPayGrade = $scope.empAction.Data.NewPayGrade;
                 var newGrade = ($scope.empAction.NewPayGrade == 0 ? $scope.empAction.NewPayGrade : EmpActions.getPayGradeTitle($scope.empAction.NewPayGrade));
                 $scope.empAction.NewPayRange = $scope.getPayRange($scope.empAction.NewPayGrade, $scope.empAction.NewSalary) + " " + newGrade.slice(newGrade.indexOf("("));
-                if ($scope.empAction.SalaryChange) {
-                    $scope.empAction.CurrentPositionType = $scope.empAction.Data.SalaryChange.CurrentPositionType;
-                    $scope.empAction.NewManagerNumber = $scope.empAction.Data["SalaryChange"].ReportingManagerNumber;
-                    $scope.empAction.NewManagerTitle = $scope.empAction.Data.SalaryChange.ReportingTitle;
-                    $scope.empAction.NewManagerName = $scope.empAction.Data.SalaryChange.ReportingName;
-                    $scope.empAction.NewManagerEmail = $scope.empAction.Data.SalaryChange.ReportingEmail;
-                }
-                else if ($scope.empAction.Demotion) {
-                    $scope.empAction.CurrentPositionType = $scope.empAction.Data.Demotion.CurrentPositionType;
-                    $scope.empAction.NewManagerNumber = $scope.empAction.Data["Demotion"].ReportingManagerNumber;
-                    $scope.empAction.NewManagerTitle = $scope.empAction.Data.Demotion.ReportingTitle;
-                    $scope.empAction.NewManagerName = $scope.empAction.Data.Demotion.ReportingName;
-                    $scope.empAction.NewManagerEmail = $scope.empAction.Data.Demotion.ReportingEmail;
-                }
-                else if ($scope.empAction.Promotion) {
-                    $scope.empAction.CurrentPositionType = $scope.empAction.Data.Promotion.CurrentPositionType;
-                    $scope.empAction.NewManagerNumber = $scope.empAction.Data["Promotion"].ReportingManagerNumber;
-                    $scope.empAction.NewManagerTitle = $scope.empAction.Data.Promotion.ReportingTitle;
-                    $scope.empAction.NewManagerName = $scope.empAction.Data.Promotion.ReportingName;
-                    $scope.empAction.NewManagerEmail = $scope.empAction.Data.Promotion.ReportingEmail;
-                }
-            }
-            if ($scope.empAction.Transfer) {
-                $scope.empAction.TransferManagerName = $scope.empAction.Data.Transfer.ReportingName;
-                $scope.empAction.TransferManagerEmail = $scope.empAction.Data.Transfer.ReportingEmail;
-                $scope.empAction.TransferManagerNumber = $scope.empAction.Data["Transfer"].ReportingManagerNumber;
-                $scope.empAction.TransferManagerTitle = $scope.empAction.Data.Transfer.ReportingTitle;
             }
             if ($scope.empAction.Promotion || $scope.empAction.Demotion || $scope.empAction.SalaryChange) {
                 $scope.empAction.CurrentSalary = $scope.empAction.Data.Compensation.CurrentSalary;
@@ -975,9 +970,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.LastIncreaseDecreasePercentage = (lastIncPer == "NaN%" ? "0" : lastIncPer.replace("%", ""));
                 $scope.empAction.CurrentPayRange = $scope.empAction.Data.Compensation.CurrentPayRange + curGrade;
             }
-            $scope.empAction.RequisitionNumber = $scope.empAction.Data.Requisition.RequisitionNumber;
-            $scope.empAction.RequisitionEmail = $scope.empAction.Data.Requisition.EmailAddress;
-
             $scope.pageLoading = true;
             $scope.loadingTitle = " Saving...";
 
@@ -1071,7 +1063,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
         $scope.getPayRange = function () {
             var salary = calSalary();
-            return $scope.$parent.$parent.getPayRange($scope.empAction.Data.PayGrade, salary);
+            return $scope.$parent.$parent.getPayRange($scope.empAction.PayGrade, salary);
         }
 
         $scope.$parent.getManagerInfo = $scope.$parent.$parent.getManagerInfo;
@@ -2135,7 +2127,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 
         var filterStr = "";
         var boolItems = ["NewHire", "ReHire", "Separation", "LOA", "SalaryChange", "Promotion", "Demotion", "Transfer", "PersonalInfoChange", "Relocation"];
-        var intItems = ["HcmHouseCode", "EmployeeNumber", "StateType", "PositionType", "TrainingLocation", "Duration", "CarAllowance", "BonusEligibleType", "LayoffType", "OldPositionType", "NewPositionType", "ChangeReasonType", "NewCarAllowance", "NewBonusEligibleType", "HouseCodeTransfer", "InfoChangeStateType", "RelocationPlan"];
+        var intItems = ["HcmHouseCode", "EmployeeNumber", "StateType", "PositionType", "TrainingLocation", "Duration", "CarAllowance", "BonusEligibleType", "LayoffType", "OldPositionType", "NewPositionType", "ChangeReasonType", "NewCarAllowance", "NewBonusEligibleType", "HouseCodeTransfer", "InfoChangeStateType", "RelocationPlan", "PayGrade", "NewPayGrade"];
         var dateItems = ["Date", "HireDate", "SeparationDate", "LoaDate", "DateOfReturn", "EffectiveDate", "LastIncreaseDate", "EffectiveDate", "TransferEffectiveDate", "InfoChangeEffectiveDate"];
 
         angular.forEach(filter, function (value, key) {
@@ -2157,7 +2149,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
     };
     var findEmployeePersonnelAction = function (id, callback) {
         var boolItems = ["NewHire", "ReHire", "Separation", "LOA", "SalaryChange", "Promotion", "Demotion", "Transfer", "PersonalInfoChange", "Relocation"];
-        var intItems = ["HcmHouseCode", "EmployeeNumber", "StateType", "PositionType", "TrainingLocation", "Duration", "CarAllowance", "BonusEligibleType", "LayoffType", "OldPositionType", "NewPositionType", "ChangeReasonType", "NewCarAllowance", "NewBonusEligibleType", "HouseCodeTransfer", "InfoChangeStateType", "RelocationPlan"];
+        var intItems = ["HcmHouseCode", "EmployeeNumber", "StateType", "PositionType", "TrainingLocation", "Duration", "CarAllowance", "BonusEligibleType", "LayoffType", "OldPositionType", "NewPositionType", "ChangeReasonType", "NewCarAllowance", "NewBonusEligibleType", "HouseCodeTransfer", "InfoChangeStateType", "RelocationPlan", "PayGrade", "NewPayGrade"];
         var dateItems = ["Date", "HireDate", "SeparationDate", "LoaDate", "DateOfReturn", "EffectiveDate", "LastIncreaseDate", "EffectiveDate", "TransferEffectiveDate", "InfoChangeEffectiveDate"];
 
         apiRequest('emp', 'iiCache', '<criteria>storeId:employeePersonnelActions,userId:[user]' + ",actionId:" + id + ',</criteria>', function (xml) {
@@ -2392,7 +2384,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             return;
         }
         apiRequest('emp', 'iiCache', '<criteria>storeId:jobCodes,userId:[user],</criteria>', function (xml) {
-            cache.jobCodes = deserializeXml(xml, 'item', { upperFirstLetter: false });
+            cache.jobCodes = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
             getJobCodes(callback);
         });
     };
@@ -2409,7 +2401,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         }
 
         apiRequest('emp', 'iiCache', '<criteria>storeId:personnelActionTypes,userId:[user],</criteria>', function (xml) {
-            cache.personActionTypes = deserializeXml(xml, 'item', { upperFirstLetter: false });
+            cache.personActionTypes = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
             getPersonActionTypes(callback);
         });
     };
