@@ -39,10 +39,10 @@ ii.init.register( function() {
 	fin.hcm.unionSetup.unionDeductionArgs = {
 		id: {type: Number}
 		, houseCodeId: {type: Number}
+		, deductionFrequencyId: {type: Number, required: false, defaultValue: ""}
 		, deductionType: {type: Number, required: false, defaultValue: 0}
-		, payRate: {type: String, required: false, defaultValue: ""}
 		, payType: {type: Number, required: false, defaultValue: 0}
-		, deductionFrequency: {type: Number, required: false, defaultValue: ""}
+		, payRate: {type: String, required: false, defaultValue: ""}
 		, probationaryPeriod: {type: Number, required: false, defaultValue: ""}
 		, minimumDeductionAmount: {type: String, required: false, defaultValue: ""}
 		, maximumDeductionAmount: {type: String, required: false, defaultValue: ""}

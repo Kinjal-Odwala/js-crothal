@@ -437,6 +437,7 @@ ii.Class({
 			if (me.houseCodes.length > 0) {
 				parent.fin.appUI.hirNode = me.houseCodes[0].hirNode;
 			}
+
 			if (me.houseCodeDetails[0].houseCodeTypeId == "1")
 				$("#TabUnionSetup").hide();
 			else {
@@ -1050,10 +1051,10 @@ ii.Class({
 					xml += '<houseCodeUnionDeduction';
 					xml += ' id="' + (unionSetupUIControls.status == "New" ? 0 : unionSetupUIControls.unionDeductionGrid.data[unionSetupUIControls.unionDeductionGrid.activeRowIndex].id) + '"';
 					xml += ' houseCodeId="' + item.id + '"';
+					xml += ' deductionFrequencyId="' + unionSetupUIControls.deductionFrequencyTypes[unionSetupUIControls.deductionFrequency.indexSelected].id + '"';
 					xml += ' deductionType="' + unionSetupUIControls.deductionType + '"';
-					xml += ' payRate="' + unionSetupUIControls.payRate.getValue() + '"';
 					xml += ' payType="' + unionSetupUIControls.payTypes[unionSetupUIControls.payType.indexSelected].id + '"';
-					xml += ' deductionFrequency="' + unionSetupUIControls.deductionFrequencyTypes[unionSetupUIControls.deductionFrequency.indexSelected].id + '"';
+					xml += ' payRate="' + unionSetupUIControls.payRate.getValue() + '"';
 					xml += ' probationaryPeriod="' + unionSetupUIControls.probationaryPeriod.getValue() + '"';
 					xml += ' minimumDeductionAmount="' + unionSetupUIControls.minimumDeductionAmount.getValue() + '"';
 					xml += ' maximumDeductionAmount="' + unionSetupUIControls.maximumDeductionAmount.getValue() + '"';

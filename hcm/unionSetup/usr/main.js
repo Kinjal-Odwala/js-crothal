@@ -262,9 +262,41 @@ ii.Class({
 				minWidth: 350
 				, header: false
 				, noneSelectedText: ""
-				, selectedList: 4
-				, click: function() { parent.fin.hcmMasterUi.modified(true); }
+				, selectedList: 3
+				//, click: function() { parent.fin.hcmMasterUi.modified(true); }
 			});
+
+			me.deductionFrequency = new ui.ctl.Input.DropDown.Filtered({
+		        id: "DeductionFrequency",
+				formatFunction: function( type ) { return type.name; },
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); },
+		        required: false
+		    });
+
+			me.deductionFrequency.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required )
+				.addValidation( function( isFinal, dataMap ) {
+
+					if ((this.focused || this.touched) && me.deductionFrequency.indexSelected === -1)
+						this.setInvalid("Please select Deduction Frequency.");
+				});
+
+			me.payType = new ui.ctl.Input.DropDown.Filtered({
+		        id: "PayType",
+				formatFunction: function( type ) { return type.name; },
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); },
+		        required: false
+		    });
+
+			me.payType.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required )
+				.addValidation( function( isFinal, dataMap ) {
+
+					if ((this.focused || this.touched) && me.payType.indexSelected === -1)
+						this.setInvalid("Please select Pay Type.");
+				});
 
 			me.payRate = new ui.ctl.Input.Text({
 		        id: "PayRate",
@@ -284,38 +316,6 @@ ii.Class({
 
 					if (!(/^\d{1,8}(\.\d{1,2})?$/.test(enteredText)))
 						this.setInvalid("Please enter valid Pay Rate. Example: 9.99");
-				});
-
-			me.payType = new ui.ctl.Input.DropDown.Filtered({
-		        id: "PayType",
-				formatFunction: function( type ) { return type.name; },
-				changeFunction: function() { parent.fin.hcmMasterUi.modified(); },
-		        required: false
-		    });
-
-			me.payType.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				.addValidation( function( isFinal, dataMap ) {
-
-					if ((this.focused || this.touched) && me.payType.indexSelected === -1)
-						this.setInvalid("Please select Pay Type.");
-				});
-
-			me.deductionFrequency = new ui.ctl.Input.DropDown.Filtered({
-		        id: "DeductionFrequency",
-				formatFunction: function( type ) { return type.name; },
-				changeFunction: function() { parent.fin.hcmMasterUi.modified(); },
-		        required: false
-		    });
-
-			me.deductionFrequency.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				.addValidation( function( isFinal, dataMap ) {
-
-					if ((this.focused || this.touched) && me.deductionFrequency.indexSelected === -1)
-						this.setInvalid("Please select Deduction Frequency.");
 				});
 
 			me.probationaryPeriod = new ui.ctl.Input.Text({
@@ -524,9 +524,9 @@ ii.Class({
 			});
 
 			$("#PayCodeType")[0].tabIndex = 4;
-			me.payRate.text.tabIndex = 5;
+			me.deductionFrequency.text.tabIndex = 5;
 			me.payType.text.tabIndex = 6;
-			me.deductionFrequency.text.tabIndex = 7;
+			me.payRate.text.tabIndex = 7;
 			me.probationaryPeriod.text.tabIndex = 8;
 			me.minimumDeductionAmount.text.tabIndex = 9;
 			me.maximumDeductionAmount.text.tabIndex = 10;
@@ -615,9 +615,9 @@ ii.Class({
 		resizeControls: function() {
 			var me = this;
 
-			me.payRate.resizeText();
-			me.payType.resizeText();
 			me.deductionFrequency.resizeText();
+			me.payType.resizeText();
+			me.payRate.resizeText();
 			me.probationaryPeriod.resizeText();
 			me.minimumDeductionAmount.resizeText();
 			me.maximumDeductionAmount.resizeText();
@@ -635,11 +635,11 @@ ii.Class({
 			$("input[name='DeductionType'][value='1']").attr('checked', true);
 			$("#PayCodeType").multiselect("uncheckAll");
 			me.validator.reset();
-			me.payRate.setValue("");
-			me.payType.reset();
-			me.payType.updateStatus();
 			me.deductionFrequency.reset();
 			me.deductionFrequency.updateStatus();
+			me.payType.reset();
+			me.payType.updateStatus();
+			me.payRate.setValue("");
 			me.probationaryPeriod.setValue("");
 			me.minimumDeductionAmount.setValue("");
 			me.maximumDeductionAmount.setValue("");
@@ -699,16 +699,16 @@ ii.Class({
 			me.lastSelectedRowIndex = index;
 			me.status = "";
 			$("input[name='DeductionType'][value='" + item.deductionType + "']").attr('checked', true);
-			me.payRate.setValue(item.payRate);
 
-			var itemIndex = ii.ajax.util.findIndexById(item.payType.toString(), me.payTypes);
-			if (itemIndex >= 0 && itemIndex !== undefined)
-				me.payType.select(itemIndex, me.payType.focused);
-
-			itemIndex = ii.ajax.util.findIndexById(item.deductionFrequency.toString(), me.deductionFrequencyTypes);
+			var itemIndex = ii.ajax.util.findIndexById(item.deductionFrequencyId.toString(), me.deductionFrequencyTypes);
 			if (itemIndex >= 0 && itemIndex !== undefined)
 				me.deductionFrequency.select(itemIndex, me.deductionFrequency.focused);
 
+			itemIndex = ii.ajax.util.findIndexById(item.payType.toString(), me.payTypes);
+			if (itemIndex >= 0 && itemIndex !== undefined)
+				me.payType.select(itemIndex, me.payType.focused);
+
+			me.payRate.setValue(item.payRate);
 			me.probationaryPeriod.setValue(item.probationaryPeriod);
 			me.minimumDeductionAmount.setValue(item.minimumDeductionAmount);
 			me.maximumDeductionAmount.setValue(item.maximumDeductionAmount);
@@ -735,6 +735,8 @@ ii.Class({
 		 		}
 			});
 			parent.fin.hcmMasterUi.checkLoadCount();
+			if (parent.parent.fin.appUI.modified)
+				parent.fin.hcmMasterUi.setStatus("Edit");
 		},
 
 		assignValue: function() {
@@ -866,10 +868,10 @@ ii.Class({
 			var item = new fin.hcm.unionSetup.UnionDeduction(
 				(me.status === "New" ? id : me.unionDeductionGrid.data[me.unionDeductionGrid.activeRowIndex].id)
 				, parent.fin.hcmMasterUi.getHouseCodeId()
-				, me.deductionType
-				, me.payRate.getValue()
-				, me.payTypes[me.payType.indexSelected].id
 				, me.deductionFrequencyTypes[me.deductionFrequency.indexSelected].id
+				, me.deductionType
+				, me.payTypes[me.payType.indexSelected].id
+				, me.payRate.getValue()
 				, me.probationaryPeriod.getValue()
 				, me.minimumDeductionAmount.getValue()
 				, me.maximumDeductionAmount.getValue()
