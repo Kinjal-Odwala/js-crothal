@@ -3519,13 +3519,14 @@ fin.bud.modified = function () {
                 me.fireEvent('cancel');
             });
 
-
             var payrollRegisterButton = new bine.Button({ text: 'Payroll Register Rpt' });
             me.append(payrollRegisterButton, 'payrollRegisterButton');
             payrollRegisterButton.on('click', function () {
                 var rptUrl = bine.query(RptReportUrls).where(function (i) { return i.Title == 'Payroll Register'; }).select('Url').first();
-                if (rptUrl)
-                    window.open(rptUrl);
+                if (rptUrl) {
+					rptUrl = rptUrl.replace("&rs:Command=Render", "_old&rs:Command=Render");
+					window.open(rptUrl);
+				}
             });
 
             var transactionDetailButton = new bine.Button({ text: 'Transaction Details Rpt' });
@@ -3533,23 +3534,32 @@ fin.bud.modified = function () {
 
             transactionDetailButton.on('click', function () {
                 var rptUrl = bine.query(RptReportUrls).where(function (i) { return i.Title == 'Transaction Details'; }).select('Url').first();
-                if (rptUrl)
-                    window.open(rptUrl);
+                if (rptUrl) {
+					rptUrl = rptUrl.replace("&rs:Command=Render", "_old&rs:Command=Render");
+					window.open(rptUrl);
+				}
             });
 
             var profitReportButton = new bine.Button({ text: 'Profit & Loss Rpt' });
             me.append(profitReportButton, 'profitReportButton');
-            profitReportButton.on('click', function () {
-                window.open('https://reports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fTeamFin_GL%2fDetail_Profit_Loss&rs:Command=Render');
-            });
+			
+			profitReportButton.on('click', function () {
+                var rptUrl = bine.query(RptReportUrls).where(function (i) { return i.Title == 'Detailed Profit and Loss'; }).select('Url').first();
+                if (rptUrl) {
+					rptUrl = rptUrl.replace("&rs:Command=Render", "_old&rs:Command=Render");
+					window.open(rptUrl);
+				}
+             });
 
             var printMopButton = new bine.Button({ text: 'Print MOP' });
             me.append(printMopButton, 'printMopButton');
 
             printMopButton.on('click', function () {
                 var rptUrl = bine.query(RptReportUrls).where(function (i) { return i.Title == 'MOP'; }).select('Url').first();
-                if (rptUrl)
-                    window.open(rptUrl);
+                if (rptUrl) {
+					rptUrl = rptUrl.replace("&rs:Command=Render", "_old&rs:Command=Render");
+					window.open(rptUrl);
+				}
             });
         }
     });
