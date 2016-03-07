@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>House Code - Union Setup</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/hcm/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody" onload="iiForceBodyReady = true;">
+		<div id="pageBody" class="pageBody" style="display:none;">
+		    <div class="contentArea">
+	        	<div class="header">Union Setup</div>
+        	</div>
+			<div style="height:5px;"></div>
+			<div class="leftContainer">
+			 	<div class="contentArea">
+                    <div class="body">
+                        <div id="UnionDeductionGrid"></div>
+                    </div>
+                </div>
+			</div>
+			<div class="rightContainer">
+				<div id="ContainerArea">
+					<div class="contentArea">
+	                    <div class="body">
+	 						<div class="TableEditArea">
+								<div class="labelTextArea"><span class="requiredFieldIndicator">&#149;</span>Deduction Type:</div>
+								<div id="DeductionTypeRadio">
+									<div class="inputTextRadio">
+										<input id="DeductionTypeFlatDollar" name="DeductionType" onclick="javascript: fin.hcmUnionSetupUi.assignValue();" type="radio" value="1" tabindex="1" />								
+									</div>
+									<div class="labelTextRadio">Flat Dollar</div>
+									<div class="inputTextRadio">
+										<input id="DeductionTypePercentage" name="DeductionType" onclick="javascript: fin.hcmUnionSetupUi.assignValue();" type="radio" value="2" tabindex="2" />								
+									</div>
+									<div class="labelTextRadio">Percentage</div>
+									<div class="inputTextRadio">
+										<input id="DeductionTypeFormula" name="DeductionType" onclick="javascript: fin.hcmUnionSetupUi.assignValue();" type="radio" value="3" tabindex="3" />								
+									</div>
+									<div class="labelTextRadio">Formula</div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="TableEditArea">
+								<div class="labelTextArea"><span class="requiredFieldIndicator">&#149;</span>Pay Code:</div>
+								<div class="inputTextArea">
+									<select id="PayCodeType" name="PayCodeType" multiple="multiple" tabindex="2"></select>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="TableEditArea">
+								<div class="labelTextArea"><span class="requiredFieldIndicator">&#149;</span>Deduction Frequency</div>
+								<div class="inputTextArea">
+									<div id="DeductionFrequency"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="TableEditArea">
+								<div class="labelTextArea"><span class="requiredFieldIndicator">&#149;</span>Pay Type</div>
+								<div class="inputTextArea">
+									<div id="PayType"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="TableEditArea">
+								<div class="labelTextArea"><span class="requiredFieldIndicator">&#149;</span>Pay Rate:</div>
+								<div class="inputTextArea">
+									<div id="PayRate"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="TableEditArea">
+								<div class="labelTextArea"><span class="requiredFieldIndicator">&#149;</span>Probationary Period:</div>
+								<div class="inputTextArea">
+									<div id="ProbationaryPeriod"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="TableEditArea">
+								<div class="labelTextArea"><span class="requiredFieldIndicator">&#149;</span>Minimum Deduction Amount:</div>
+								<div class="inputTextArea">
+									<div id="MinimumDeductionAmount"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="TableEditArea">
+								<div class="labelTextArea"><span class="requiredFieldIndicator">&#149;</span>Maximum Deduction Amount:</div>
+								<div class="inputTextArea">
+									<div id="MaximumDeductionAmount"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="TableEditArea">
+								<div class="labelTextArea"><span class="requiredFieldIndicator">&#149;</span>Start Date:</div>
+								<div class="inputTextArea">
+									<div id="StartDate"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="TableEditArea">
+								<div class="labelTextArea"><span class="requiredFieldIndicator">&#149;</span>End Date:</div>
+								<div class="inputTextArea">
+									<div id="EndDate"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="FormulaContainer" style="display:none;">
+								<div class="TableEditArea">
+									<div class="labelTextArea"><span id="nonRequiredFieldIndicator">Parameter:</span></div>
+									<div class="inputTextArea">
+										<div id="Parameter"></div>
+									</div>
+									<div style="float: left;"><a id="AddParameter" class="add" title="Click here to apply parameter to the formula">Add Parameter</a></div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+									<div class="labelTextArea"><span id="nonRequiredFieldIndicator">Operator:</span></div>
+									<div class="inputTextArea">
+										<div id="Operator"></div>
+									</div>
+									<div style="float: left;"><a id="AddOperator" class="add" title="Click here to apply operator to the formula">Add Operator</a></div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+									<div class="labelTextArea"><span id="nonRequiredFieldIndicator">Amount:</span></div>
+									<div class="inputTextArea">
+										<div id="Amount"></div>
+									</div>
+		                            <div class="inputCheckbox">
+		                            	<div id="Percentage"></div>
+									</div>
+									<div style="float: left;" class="labelCheckbox">%</div>
+									<div style="float: left;"><a id="AddAmount" class="add" title="Click here to apply amount to the formula">Add Amount</a></div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+									<div class="labelTextArea"><span class="requiredFieldIndicator">&#149;</span>Formula:</div>
+									<div class="inputTextAreaLarge">
+										<div id="Formula"></div>
+									</div>
+									<div style="float: left;"><a id="ResetFormula" class="add" title="Click here to reset the formula">Reset Formula</a></div>
+									<div style="clear:both;"></div>
+								</div>
+							</div>
+							<div id="TableEditArea">
+	                            <div class="labelTextArea"><span class="requiredFieldIndicator">&#149;</span>Active:</div>
+	                            <div class="inputTextArea">
+	                            	<div id="Active"></div>
+								</div>
+	                        	<div style="clear:both;"></div>
+							</div>
+	                    </div>
+					</div>
+				</div>
+				<div style="height:5px;"></div>
+				<div class="footer">
+	                <div id="AnchorNew"></div>
+					<div id="AnchorSave"></div>
+	                <div style="clear:both;"></div>
+	            </div>
+			</div>
+		</div>
+	  	<div id="iiInputValidationMaster"></div>
+	</body>
+</html>

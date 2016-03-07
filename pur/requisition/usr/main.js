@@ -1180,18 +1180,19 @@ ii.Class({
 
 			me.requestorName.text.tabIndex = 1;
 			me.requestorEmail.text.tabIndex = 2;
-			me.requestedDate.text.tabIndex = 3;
-			me.deliveryDate.text.tabIndex = 4;
-			me.vendorName.text.tabIndex = 5;
-			me.vendorAddress1.text.tabIndex = 6;
-			me.vendorAddress2.text.tabIndex = 7;
-			me.vendorCity.text.tabIndex = 8;
-			me.vendorState.text.tabIndex = 9;
-			me.vendorZip.text.tabIndex = 10;
-			me.vendorContactName.text.tabIndex = 11;
-			me.vendorPhone.text.tabIndex = 12;
-			me.vendorEmail.text.tabIndex = 13;
-			me.reasonForRequest.text.tabIndex = 14;
+			me.requestorPhone.text.tabIndex = 3;
+			me.requestedDate.text.tabIndex = 4;
+			me.deliveryDate.text.tabIndex = 5;
+			me.vendorName.text.tabIndex = 6;
+			me.vendorAddress1.text.tabIndex = 7;
+			me.vendorAddress2.text.tabIndex = 8;
+			me.vendorCity.text.tabIndex = 9;
+			me.vendorState.text.tabIndex = 10;
+			me.vendorZip.text.tabIndex = 11;
+			me.vendorContactName.text.tabIndex = 12;
+			me.vendorPhone.text.tabIndex = 13;
+			me.vendorEmail.text.tabIndex = 14;
+			me.reasonForRequest.text.tabIndex = 15;
 			//Urgent - 15
 			//Not Urgent - 16
 			me.urgencyDate.text.tabIndex = 17;
@@ -2044,6 +2045,7 @@ ii.Class({
 					|| !me.vendorPhone.valid
 					|| !me.vendorEmail.valid
 					|| !me.reasonForRequest.valid
+                    || !me.requestorPhone.valid
 					|| ($("input:radio[name='Urgency']:checked").val() == "Urgent") && (!me.urgencyDate.valid)		
 					) {
 					alert("In order to continue, the errors on the page must be corrected.");	

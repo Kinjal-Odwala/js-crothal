@@ -296,7 +296,12 @@ ii.Class({
 			me.otherRevenue = new ui.ctl.Input.Check({
 		        id: "OtherRevenue",
 				changeFunction: function() { me.modified(); }  
-		    });
+			});
+
+			me.poCapitalRequisition = new ui.ctl.Input.Check({
+			    id: "POCapitalRequisition",
+			    changeFunction: function () { me.modified(); }
+			});
 			
 			me.fiscalAccountGrid = new ui.ctl.Grid({
 				id: "FiscalAccount",
@@ -421,6 +426,7 @@ ii.Class({
 				$("#ManagementFeeCheck").attr('disabled', true);
 				$("#SuppliesCheck").attr('disabled', true);
 				$("#WORCheck").attr('disabled', true);
+				$("#POCapitalRequisitionCheck").attr('disabled', true);
 				$("#actionMenu").hide();
 				$(".footer").hide();
 			}
@@ -481,6 +487,7 @@ ii.Class({
 	        me.accountReceivable.setValue(item.accountReceivables.toString());
 	        me.wor.setValue(item.wor.toString());
 	        me.otherRevenue.setValue(item.otherRevenue.toString());
+	        me.poCapitalRequisition.setValue(item.poCapitalRequisition.toString());
 			me.setStatus("Loaded");
 		},
 
@@ -571,6 +578,7 @@ ii.Class({
 	        me.accountReceivable.setValue("false");
 	        me.wor.setValue("false");
 	        me.otherRevenue.setValue("false");
+	        me.poCapitalRequisition.setValue("false");
 			me.fiscalAccountGrid.body.deselectAll();
 			me.accountCode.text.focus();
 			me.validator.reset();
@@ -624,6 +632,7 @@ ii.Class({
 		        , me.accountReceivable.check.checked
 		        , me.wor.check.checked
 		        , me.otherRevenue.check.checked
+                , me.poCapitalRequisition.check.checked
 				, true
 			);
 				
@@ -670,6 +679,7 @@ ii.Class({
 	        xml += ' accountReceivable="' + args.item.accountReceivables + '"';
 	        xml += ' wor="' + args.item.wor + '"';
 	        xml += ' otherRevenue="' + args.item.otherRevenue + '"';
+	        xml += ' poCapitalRequisition="' + args.item.poCapitalRequisition + '"';
 	        xml += ' active="' + args.item.active + '"';
 	        xml += ' clientId="' + ++clientId + '"';
 			xml += '/>';
@@ -722,6 +732,7 @@ ii.Class({
 						        , me.accountReceivable.check.checked
 						        , me.wor.check.checked
 						        , me.otherRevenue.check.checked
+                                , me.poCapitalRequisition.check.checked
 								, true
 							);
 									

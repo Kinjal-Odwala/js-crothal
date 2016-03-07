@@ -62,7 +62,8 @@ ii.Class({
 			me.statisticsNeedUpdate = true;
 			me.financialNeedUpdate = true;
 			me.payrollNeedUpdate = true;
-			me.safetyNeedUpdate = true;			
+			me.safetyNeedUpdate = true;
+			me.unionSetupNeedUpdate = true;
 			
 			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
 
@@ -149,6 +150,21 @@ ii.Class({
 						fin.hcmMasterUi.activeFrameId = 4;
 						fin.hcmMasterUi.safetyNeedUpdate = false;
 						break;
+						
+					case "TabUnionSetup":
+
+						if ($("iframe")[5].contentWindow.fin == undefined || fin.hcmMasterUi.unionSetupNeedUpdate) {
+							me.showPageLoading("Loading");
+							$("iframe")[5].src = "/fin/hcm/unionSetup/usr/markup.htm?unitId=" + parent.fin.appUI.unitId;
+						}
+						else if (parent.fin.appUI.modified)
+							me.setStatus("Edit");
+						else 
+							me.setStatus("Loaded");
+	
+						fin.hcmMasterUi.activeFrameId = 5;
+						fin.hcmMasterUi.unionSetupNeedUpdate = false;
+						break;
 				}
 			});
 
@@ -192,6 +208,7 @@ ii.Class({
 			me.tabFinancialShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\TabFinancial");
 			me.tabPayrollShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\TabPayroll");
 			me.tabSafetyShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\TabSafety");
+			me.tabUnionSetupShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\TabUnionSetup");
 			
 			me.tabHouseCodeWrite = me.authorizer.isAuthorized(me.authorizePath + "\\TabHouseCode\\Write");
 			me.tabHouseCodeReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\TabHouseCode\\Read");
@@ -220,6 +237,11 @@ ii.Class({
 				$("#TabSafety").hide();
 			else
 				me.tabSafetyShow = true;		
+			
+			if (!me.tabUnionSetupShow && !me.houseCodeWrite && !me.houseCodeReadOnly)
+				$("#TabUnionSetup").hide();
+			else
+				me.tabUnionSetupShow = true;
 				
 			if (me.tabHouseCodeReadOnly || me.houseCodeReadOnly) {
 				$("#actionMenu").hide();
@@ -245,6 +267,7 @@ ii.Class({
 		    $("#iFrameFinancial").height($(window).height() - offset);
 		    $("#iFramePayroll").height($(window).height() - offset);
 			$("#iFrameSafety").height($(window).height() - offset);
+			$("#iFrameUnionSetup").height($(window).height() - offset);
 		},
 
 		defineFormControls: function() {			
@@ -377,9 +400,10 @@ ii.Class({
 			me.financialNeedUpdate = true;
 			me.payrollNeedUpdate = true;
 			me.safetyNeedUpdate = true;
+			me.unionSetupNeedUpdate = true;
 			me.status = true;
 			fin.hcmMasterUi.activeFrameId = 0;
-		
+
 			me.houseCodeDetailStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.houseCodeDetailsLoaded, me);
 		},
 		
@@ -412,7 +436,16 @@ ii.Class({
 			parent.fin.appUI.houseCodeId = me.houseCodeDetails[0].id;	
 			if (me.houseCodes.length > 0) {
 				parent.fin.appUI.hirNode = me.houseCodes[0].hirNode;
-			}			
+			}
+
+			if (me.houseCodeDetails[0].houseCodeTypeId == "1")
+				$("#TabUnionSetup").hide();
+			else {
+				if (!me.tabUnionSetupShow && !me.houseCodeWrite && !me.houseCodeReadOnly)
+					$("#TabUnionSetup").hide();
+				else
+					$("#TabUnionSetup").show();
+			}
 			
 			switch (fin.hcmMasterUi.activeFrameId) {
 				
@@ -445,6 +478,12 @@ ii.Class({
 
 					$("iframe")[4].src = "/fin/hcm/safety/usr/markup.htm?unitId=" + parent.fin.appUI.unitId;
 					me.safetyNeedUpdate = false;
+					break;
+					
+				case 5:
+
+					$("iframe")[5].src = "/fin/hcm/unionSetup/usr/markup.htm?unitId=" + parent.fin.appUI.unitId;
+					me.unionSetupNeedUpdate = false;
 					break;
 			}
 		},
@@ -495,6 +534,7 @@ ii.Class({
 			var financialUIControls;
 			var payrollUIControls;
 			var safetyUIControls;
+			var unionUIControls;
 
 			if (me.houseCodeReadOnly || me.tabHouseCodeReadOnly) return;
 			
@@ -600,7 +640,7 @@ ii.Class({
 				me.houseCodeDetails[0].budgetLaborCalcMethod = (financialUIControls.budgetLaborCalcMethod.indexSelected < 0 ? 0 : financialUIControls.budgetLaborCalcMethods[financialUIControls.budgetLaborCalcMethod.indexSelected].id);
 				me.houseCodeDetails[0].budgetComputerRelatedCharge = (financialUIControls.budgetComputerRelatedCharge.check.checked ? 1 : 0);
 			}
-			
+
 			//Payroll			
 			if ($("iframe")[3].contentWindow.fin != undefined && me.payrollNeedUpdate == false) {
 				payrollUIControls = $("iframe")[3].contentWindow.fin.hcmPayrollCodeUi;
@@ -638,7 +678,7 @@ ii.Class({
 				me.houseCodeDetails[0].nearMisses = safetyUIControls.nearMisses.getValue();
 				me.houseCodeDetails[0].oshaRecordable = safetyUIControls.oshaRecordable.getValue();
 			}
-			
+
 			if (me.houseCodeDetails[0].jdeCompanyId == 0) {
 				alert("[JDE Company] is a required field. Please select it on HouseCode Tab.");	
 				return;
@@ -693,6 +733,26 @@ ii.Class({
 			if (payrollUIControls != undefined && payrollUIControls.ceridianCompanyHourly.indexSelected == payrollUIControls.ceridianCompanySalaried.indexSelected) {
 				alert("[Ceridian Company Hourly] & [Ceridian Company Salaried] cannot be same. Please select other option on Payroll Tab.");
 				return false;
+			}
+			
+			if ($("iframe")[5].contentWindow.fin != undefined && me.unionSetupNeedUpdate == false) {
+				var unionSetupUIControls = $("iframe")[5].contentWindow.fin.hcmUnionSetupUi;
+
+				if (unionSetupUIControls.status == "New" || unionSetupUIControls.lastSelectedRowIndex >= 0) {
+					unionSetupUIControls.validateControls();
+
+					if (unionSetupUIControls.selectedPayCodes.length == 0) {
+						alert("[Pay Code] is a required field. Select atleast one Pay Code on Union Setup Tab.");
+						return false;
+					}
+
+					if (!unionSetupUIControls.payRate.valid || !unionSetupUIControls.payType.valid || !unionSetupUIControls.deductionFrequency.valid || !unionSetupUIControls.probationaryPeriod.valid 
+						|| !unionSetupUIControls.minimumDeductionAmount.valid || !unionSetupUIControls.maximumDeductionAmount.valid || !unionSetupUIControls.startDate.valid || !unionSetupUIControls.endDate.valid 
+						|| ((unionSetupUIControls.deductionType == 3) && (unionSetupUIControls.formula.getValue() === "" || !unionSetupUIControls.validateFormula()))) {
+						alert("In order to save, the errors on the Union Setup Tab must be corrected.");
+						return false;
+					}
+				}
 			}
 			
 			var item = new fin.hcm.master.HouseCodeDetail(
@@ -982,6 +1042,58 @@ ii.Class({
 				xml += ' hourly="1"';
 				xml += '/>';					
 			}
+			
+			//Union Setup
+			if ($("iframe")[5].contentWindow.fin != undefined && me.unionSetupNeedUpdate == false) {
+				var unionSetupUIControls = $("iframe")[5].contentWindow.fin.hcmUnionSetupUi;
+
+				if (unionSetupUIControls.status == "New" || unionSetupUIControls.lastSelectedRowIndex >= 0) {
+					xml += '<houseCodeUnionDeduction';
+					xml += ' id="' + (unionSetupUIControls.status == "New" ? 0 : unionSetupUIControls.unionDeductionGrid.data[unionSetupUIControls.unionDeductionGrid.activeRowIndex].id) + '"';
+					xml += ' houseCodeId="' + item.id + '"';
+					xml += ' deductionFrequencyId="' + unionSetupUIControls.deductionFrequencyTypes[unionSetupUIControls.deductionFrequency.indexSelected].id + '"';
+					xml += ' deductionType="' + unionSetupUIControls.deductionType + '"';
+					xml += ' payType="' + unionSetupUIControls.payTypes[unionSetupUIControls.payType.indexSelected].id + '"';
+					xml += ' payRate="' + unionSetupUIControls.payRate.getValue() + '"';
+					xml += ' probationaryPeriod="' + unionSetupUIControls.probationaryPeriod.getValue() + '"';
+					xml += ' minimumDeductionAmount="' + unionSetupUIControls.minimumDeductionAmount.getValue() + '"';
+					xml += ' maximumDeductionAmount="' + unionSetupUIControls.maximumDeductionAmount.getValue() + '"';
+					xml += ' startDate="' + unionSetupUIControls.startDate.lastBlurValue + '"';
+					xml += ' endDate="' + unionSetupUIControls.endDate.lastBlurValue + '"';
+					xml += ' formula="' + unionSetupUIControls.formula.getValue() + '"';
+					xml += ' active="' + unionSetupUIControls.active.check.checked + '"';
+					xml += '/>';
+					
+					for (var index = 0; index < unionSetupUIControls.unionDeductionPayCodes.length; index++) {
+						if ($.inArray(unionSetupUIControls.unionDeductionPayCodes[index].payCodeId.toString(), unionSetupUIControls.selectedPayCodes) == -1) {
+							unionSetupUIControls.unionDeductionPayCodes[index].status = "remove";
+							xml += '<houseCodeUnionDeductionPayCode';
+							xml += ' id="' + unionSetupUIControls.unionDeductionPayCodes[index].id + '"';
+							xml += ' status="remove"';
+							xml += '/>';
+						}
+					}
+					
+					for (var index = 0; index < unionSetupUIControls.selectedPayCodes.length; index++) {
+						var found = false;
+						for (var iIndex = 0; iIndex < unionSetupUIControls.unionDeductionPayCodes.length; iIndex++) {
+							if (unionSetupUIControls.unionDeductionPayCodes[iIndex].payCodeId.toString() === unionSetupUIControls.selectedPayCodes[index]) {
+								found = true;
+								break;
+							}
+						}
+						
+						if (!found) {
+							xml += '<houseCodeUnionDeductionPayCode';
+							xml += ' id="0"';
+							xml += ' unionDeductionId="' + (unionSetupUIControls.status == "New" ? 0 : unionSetupUIControls.unionDeductionGrid.data[unionSetupUIControls.unionDeductionGrid.activeRowIndex].id) + '"';
+							xml += ' payCodeId="' + unionSetupUIControls.selectedPayCodes[index] + '"';
+							xml += ' status="add"';
+							xml += '/>';
+						}
+					}
+				}
+			}
 				
 			xml += '</houseCode>';
 			
@@ -1006,6 +1118,18 @@ ii.Class({
 				if ($("iframe")[0].contentWindow.fin != undefined) {
 					$("iframe")[0].contentWindow.fin.hcmHouseCodeUi.reloadHouseCodeServices();
 				}
+				
+				$(args.xmlNode).find("*").each(function() {
+					switch (this.tagName) {
+						case "hcmHouseCodeUnionDeduction":
+							if ($("iframe")[5].contentWindow.fin != undefined) {
+								$("iframe")[5].contentWindow.fin.hcmUnionSetupUi.updateUnionDeduction(parseInt($(this).attr("id"), 10));
+							}
+
+							break;
+					}
+				});
+
 				me.setStatus("Saved");
 			}
 			else {
