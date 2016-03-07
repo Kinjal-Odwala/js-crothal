@@ -24,6 +24,7 @@ ii.Class({
 			me.approveBudgetNeedUpdate = true;
 			me.deleteBudgetNeedUpdate = true;
 			me.exportBudgetNeedUpdate = true;
+			me.benefitsCostNeedUpdate = true;
 			me.loadCount = 0;
 
 			me.gateway = ii.ajax.addGateway("bud", ii.config.xmlProvider); 
@@ -64,13 +65,15 @@ ii.Class({
 				else {
 					var tabIndex = 0;
 					if (this.id == "TabAnnualInfo")
-						tabIndex = 1;
+					    tabIndex = 1;
 					else if (this.id == "TabApproveBudget")
-						tabIndex = 2;
+					    tabIndex = 2;
 					else if (this.id == "TabDeleteBudget")
-						tabIndex = 3;
+					    tabIndex = 3;
 					else if (this.id == "TabExportBudget")
-						tabIndex = 4;
+					    tabIndex = 4;
+					else if (this.id == 'TabBenefitsCost')
+					    tabIndex = 5;
 
 					$("#container-1").tabs(tabIndex);
 					$("#container-1").triggerTab(tabIndex);
@@ -124,6 +127,17 @@ ii.Class({
 						me.activeFrameId = 3;
 						me.exportBudgetNeedUpdate = false;
 						break;
+
+				    case "TabBenefitsCost":
+
+				        if (($("iframe")[4].contentWindow.fin == undefined || me.benefitsCostNeedUpdate))
+				            $("iframe")[4].src = "/fin/bud/benefitCostSetup/usr/markup.htm";
+				        //else
+				        //    $("iframe")[4].contentWindow.fin.exportBudgetUi.setStatus("Loaded")
+
+				        me.activeFrameId = 4;
+				        me.benefitsCostNeedUpdate = false;
+				        break;
 				}		
 			});
 			
@@ -167,7 +181,8 @@ ii.Class({
 			$("#iFrameAnnualInfo").height($(window).height() - offset);
 			$("#iFrameApproveBudget").height($(window).height() - offset);
 		    $("#iFrameDeleteBudget").height($(window).height() - offset);
-			$("#iFrameExportBudget").height($(window).height() - offset);	
+		    $("#iFrameExportBudget").height($(window).height() - offset);
+		    $("#iFrameBenefitsCost").height($(window).height() - offset);
 		},
 		
 		defineFormControls: function() {
