@@ -363,8 +363,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
 	getAdministratorDetail(function (response) {
 	    if (angular.isDefined(response)) {
-	        $scope.empAction.AdministratorEmail = resonse.administratorEmail;
-	        $scope.disableAdminEmail = resonse.administratorEmail && resonse.administratorEmail.length > 0;
+	        $scope.empAction.AdministratorEmail = resonse.empEmail;
+	        $scope.disableAdminEmail = resonse.empEmail && resonse.empEmail.length > 0;
 	    }
     });
 
