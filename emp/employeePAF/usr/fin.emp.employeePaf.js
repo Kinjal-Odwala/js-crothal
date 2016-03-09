@@ -1407,7 +1407,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         modalInstance.result.then(function (result) {
             $scope.loadingTitle = " Cancelling...";
             $scope.pageLoading = true;
-            EmpActions.cancelEmployeePersonnelAction(id, function (data, status) {
+            EmpActions.cancelEmployeePersonnelAction(id, houseCodeId, function (data, status) {
                 $scope.pageLoading = false;
                 $scope.getPafList();
                 alert("Employee PAF has been cancelled successfully.");
@@ -1428,7 +1428,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
     $scope.approve = function (id, HouseCodeId) {
         $scope.loadingTitle = " Approving...";
         $scope.pageLoading = true;
-        EmpActions.approveEmployeePersonnelAction(id, function (data, status) {
+        EmpActions.approveEmployeePersonnelAction(id, HouseCodeId, function (data, status) {
             $scope.pageLoading = false;
             $scope.getPafList();
             alert("Employee PAF has been approved successfully.");
@@ -2581,8 +2581,16 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         });
     };
 
-    var cancelEmployeePersonnelAction = function (id, callback) {
-        var xml = '<transaction id="' + id + '"><cancelEmployeePersonnelAction id="' + id + '" /></transaction>';
+    var cancelEmployeePersonnelAction = function (id, houseCodeId, callback) {
+        var xml = "";
+
+        xml = '<transaction id="' + id + '">';
+        xml += '<cancelEmployeePersonnelAction';
+        xml += ' id="' + id + '"';
+        xml += ' houseCodeTitle="' + getTitleById(houseCodeId, cache.houseCodes) + '"';
+        xml += '/>';
+        xml += '</transaction>';
+
         var data = "moduleId=emp&requestId=1&requestXml=" + encodeURIComponent(xml) + "&targetId=iiTransaction";
 
         jQuery.post("/net/crothall/chimes/fin/emp/act/Provider.aspx", data, function (data, status) {
@@ -2591,8 +2599,16 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         });
     };
 
-    var approveEmployeePersonnelAction = function (id, callback) {
-        var xml = '<transaction id="' + id + '"><approveEmployeePersonnelAction id="' + id + '" /></transaction>';
+    var approveEmployeePersonnelAction = function (id, houseCodeId, callback) {
+        var xml = "";
+
+        xml = '<transaction id="' + id + '">';
+        xml += '<approveEmployeePersonnelAction';
+        xml += ' id="' + id + '"';
+        xml += ' houseCodeTitle="' + getTitleById(houseCodeId, cache.houseCodes) + '"';
+        xml += '/>';
+        xml += '</transaction>';
+
         var data = "moduleId=emp&requestId=1&requestXml=" + encodeURIComponent(xml) + "&targetId=iiTransaction";
 
         jQuery.post("/net/crothall/chimes/fin/emp/act/Provider.aspx", data, function (data, status) {

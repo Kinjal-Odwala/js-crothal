@@ -114,8 +114,8 @@
 			<a class="btn btn-primary" ng-if="selectedItem.StatusType==20" href="#/edit/{{selectedItem.Id}}"><span ng-if="selectedItem.StatusType==20">View/Edit</span></a>
 			<a class="btn btn-primary" ng-if="(readOnly || write) && (((selectedItem.StatusType==1 || selectedItem.StatusType==10) && !write) || selectedItem.StatusType==8 || selectedItem.StatusType==4 || selectedItem.StatusType==6 || (selectedItem.StatusType==2 && !writeInProcess))" href="#/edit/{{selectedItem.Id}}"><span ng-if="(readOnly || write) && (((selectedItem.StatusType==1 || selectedItem.StatusType==10) && !write) || selectedItem.StatusType==8 || selectedItem.StatusType==4 || selectedItem.StatusType==6 || (selectedItem.StatusType==2 && !writeInProcess))">View</span></a>
 			<a class="btn btn-info" ng-click="submit(selectedItem)" ng-if="write && (selectedItem.StatusType==1 || selectedItem.StatusType==2 || selectedItem.StatusType==10)"><span ng-if="write && selectedItem.StatusType==1">Submit</span><span ng-if="write && (selectedItem.StatusType==2 || selectedItem.StatusType==10)">ReSubmit</span></a>
-            <a class="btn btn-info" ng-click="approve(selectedItem.Id)" ng-if="(write || approveInProcess) && (selectedItem.StatusType==2 && approveInProcess)"><span ng-if="(write || approveInProcess) && (selectedItem.StatusType==2 && approveInProcess)">Approve</span></a>
-			<a class="btn btn-default" ng-if="write && (selectedItem.StatusType==1 || selectedItem.StatusType==2 || selectedItem.StatusType==10)" ng-click="cancelForm(selectedItem.Id)" ng-disabled="!selectedItem">Cancel</a>
+            <a class="btn btn-info" ng-click="approve(selectedItem.Id, selectedItem.HcmHouseCode)" ng-if="(write || approveInProcess) && (selectedItem.StatusType==2 && approveInProcess)"><span ng-if="(write || approveInProcess) && (selectedItem.StatusType==2 && approveInProcess)">Approve</span></a>
+			<a class="btn btn-default" ng-if="write && (selectedItem.StatusType==1 || selectedItem.StatusType==2 || selectedItem.StatusType==10)" ng-click="cancelForm(selectedItem.Id, selectedItem.HcmHouseCode)" ng-disabled="!selectedItem">Cancel</a>
         </div>
     </div>
 </div>
