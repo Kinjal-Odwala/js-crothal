@@ -363,8 +363,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
 	getAdministratorDetail(function (response) {
 	    if (angular.isDefined(response)) {
-	        $scope.empAction.AdministratorEmail = resonse.empEmail;
-	        $scope.disableAdminEmail = resonse.empEmail && resonse.empEmail.length > 0;
+	        $scope.empAction.AdministratorEmail = response.empEmail;
+	        $scope.disableAdminEmail = response.empEmail && response.empEmail.length > 0;
 	    }
     });
 
@@ -1071,7 +1071,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.CurrentPayRange = $scope.empAction.Data.Compensation.CurrentPayRange + curGrade;
             }
             $scope.pageLoading = true;
-            $scope.loadingTitle = " Saving and Sumbitting...";
+            $scope.loadingTitle = " Saving and Submitting...";
 
             EmpActions.saveEmployeePersonnelAction($scope.empAction, $scope.pafDocs, function (status) {
             });
@@ -1447,7 +1447,6 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
 	    { id: 1, title: 'Open' },
 	    { id: 2, title: 'In Process' },
 	    { id: 8, title: 'Approved' },
-	    { id: 9, title: 'Completed' },
 	    { id: 6, title: 'Cancelled' },
 	    { id: 10, title: 'Unapproved' }
     ];
