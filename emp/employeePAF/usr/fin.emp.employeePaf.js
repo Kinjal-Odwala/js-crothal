@@ -573,7 +573,28 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.SeparationReason = "LayoffType";
             }
 
-            loadCompensations($scope.empAction.EmployeeNumber);
+            //loadCompensations($scope.empAction.EmployeeNumber);
+            getEmpCompensation($scope.empAction.EmployeeNumber, function (response) {
+                if (!angular.isDefined(response)) {
+                    $scope.empAction.Data.Compensation = initCompensation();
+                }
+                else {
+                    $scope.empAction.Data.Compensation = {
+                        CurrentPayGrade: response.payGrade + " (" + response.minPayRange + " - " + response.midPayRange + " - " + response.maxPayRange + ")",
+                        CurrentSalary: parseFloat(response.annualPayAmt).toFixed(2),
+                        CurrentPayRange: $scope.getPayRange(response.payGrade, response.annualPayAmt),
+                        ReportingName: response.mgrFirstName + " " + response.mgrLastName,
+                        ReportingTitle: response.mgrTitle,
+                        ReportingEmail: response.mgrEmail,
+                        ReportingManagerNumber: response.mgrClock,
+                        DateLastIncrease: $filter("date")(new Date(response.dateBeg), "MM/dd/yyyy"),
+                        PercentLastIncrease: ((response.annualPayAmt - response.priorAnnualPayAmt) / response.priorAnnualPayAmt).toFixed(2) * 100 + "%",
+                        CurrentPosition: response.empTitle,
+                        EmployeeNumber: response.empNumber,
+                        CurrentPositionType: $filter('filter')($scope.JobCodes, { name: response.mgrTitle })
+                    }
+                }
+            });
         });
         EmpActions.findEmployeePAFDocument($routeParams.id, function (result) {
             $scope.pafDocs = result;
@@ -662,17 +683,17 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     var separationGroupItems = ['Transfer', 'Relocation', 'Promotion', 'Demotion', 'SalaryChange', 'NewHire', 'ReHire', 'Loa'];
 
     var positionFields = {
-        NewHire: ["HireDate", "PositionType", "Status", "PayStatus", "FullTimeHours", "TemporaryHours", "PartTimeHours", "AnnualSalaryAmount", "AdminHourlyAmount", "HourlyRateAmount", "PerDiemValue", "PayGrade", "PayRange", "ReportingName", "ReportingTitle", "ReportingEmail", "HcmHouseCodeTrainingLocation", "TrainingContact", "Duration", "CarAllowance", "BonusEligibleType"],
-        ReHire: ["HireDate", "PositionType", "Status", "PayStatus", "FullTimeHours", "TemporaryHours", "PartTimeHours", "AnnualSalaryAmount", "AdminHourlyAmount", "HourlyRateAmount", "PerDiemValue", "PayGrade", "PayRange", "ReportingName", "ReportingTitle", "ReportingEmail", "HcmHouseCodeTrainingLocation", "TrainingContact", "Duration", "CarAllowance", "BonusEligibleType"],
-        Separation: ["SeparationDate", "VacationDaysDue", "PayNumberOfWeeks", "SeparationReason", "ResignationType", "TerminationType", "LayoffType", "SeparationReHire"],
-        Loa: ["LoaDate", "DateOfReturn"],
-        Requisition: ["RequisitionNumber", "EmailAddress"],
-        Promotion: ["OldPositionType", "NewPositionType", "EffectiveDate", "ChangeReasonType", "LastIncreaseDate", "LastIncreasePercentage", "CurrentSalary", "IncreaseAmount", "IncreasePercentage", "NewSalary", "CurrentPayGrade", "NewPayGrade", "NewPayRange", "ReportingName", "ReportingTitle", "ReportingEmail", "NewCarAllowance", "NewBonusEligibleType", "Instructions"],
-        Demotion: ["OldPositionType", "NewPositionType", "EffectiveDate", "ChangeReasonType", "LastIncreaseDate", "LastIncreasePercentage", "CurrentSalary", "IncreaseAmount", "IncreasePercentage", "NewSalary", "CurrentPayGrade", "NewPayGrade", "NewPayRange", "ReportingName", "ReportingTitle", "ReportingEmail", "NewCarAllowance", "NewBonusEligibleType", "Instructions"],
-        SalaryChange: ["OldPositionType", "NewPositionType", "EffectiveDate", "ChangeReasonType", "LastIncreaseDate", "LastIncreasePercentage", "CurrentSalary", "IncreaseAmount", "IncreasePercentage", "NewSalary", "CurrentPayGrade", "NewPayGrade", "NewPayRange", "ReportingName", "ReportingTitle", "ReportingEmail", "NewCarAllowance", "NewBonusEligibleType", "Instructions"],
-        Transfer: ["TransferEffectiveDate", "HouseCodeTransfer", "ReportingName", "ReportingTitle", "ReportingEmail"],
-        PersonalInfoChange: ["InfoChangeEffectiveDate", "InfoChangeFirstName", "InfoChangeMiddleName", "InfoChangeLastName", "InfoChangeAddressLine1", "InfoChangeAddressLine2", "InfoChangePhone", "InfoChangeCity", "AppStateTypeInfoChange", "InfoChangePostalCode"],
-        Relocation: ["RelocationApprovedBy", "RelocationPlan"]
+        NewHire: [],
+        ReHire: [],
+        Separation: [],
+        Loa: [],
+        Requisition: [],
+        Promotion: [],
+        Demotion: [],
+        SalaryChange: [],
+        Transfer: [],
+        PersonalInfoChange: [],
+        Relocation: []
     };
 
     var resetPositionTypeFields = function (positionType) {
