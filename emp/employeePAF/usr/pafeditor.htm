@@ -24,7 +24,7 @@
                     <div class="col-md-3">
                         <div class="form-group" ng-class="{'has-error':pafForm.EmployeeNumber.$invalid}">
                             <label class="control-label">Employee/Clock Number</label>
-                            <input class="form-control input-sm" name="EmployeeNumber" maxlength="6" ng-blur="onEmployeeNumberChanged(empAction.EmployeeNumber)" paf-enter="onEmployeeNumberChanged(empAction.EmployeeNumber)" ng-model="empAction.EmployeeNumber" ng-required="!empAction.NewHire" paf-integer/>
+                            <input class="form-control input-sm" name="EmployeeNumber" maxlength="6" ng-blur="onEmployeeNumberChanged(empAction.EmployeeNumber)" paf-enter="onEmployeeNumberChanged(empAction.EmployeeNumber)" ng-model="empAction.EmployeeNumber" ng-disabled="newHireChecked" ng-required="!empAction.NewHire" paf-integer/>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -95,7 +95,7 @@
                     <div class="form-group">
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" name="CheckType" ng-checked="positionTypeChecked(type.id)" ng-value="type.id" ng-click="onPositionTypeChanged(type.id)" />{{type.display}}
+                                <input type="checkbox" name="CheckType" ng-checked="positionTypeChecked(type.id)" ng-value="type.id" ng-click="onPositionTypeChanged(type.id)" ng-disabled="empAction.EmployeeNumber && type.display == 'New Hire'"/>{{type.display}}
                             </label>
                         </div>
                     </div>
@@ -417,7 +417,7 @@
                     <div class="row" ng-class="{'has-error':loaForm.$$parentForm.$error.loa[0].$invalid}">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>LOA Date</label>
+                                <label>Start Date</label>
                                 <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-name="LoaDate" dt-model="empAction.LoaDate"></paf-datepicker>
                             </div>
                         </div>
@@ -838,9 +838,13 @@
             <!--REGIONAL MANAGER INFO-->
             <section ng-if="empAction.SalaryChange || empAction.Demotion || empAction.Promotion">
             	<div ng-form="regionalManagerInfoForm">
-	                <h4>REGIONAL MANAGER INFO</h4>
+	                <h4>SECOND LEVEL MANAGER INFO</h4>
 	                <div class="row">
-	                    <div class="col-md-4">
+                        <div class="col-md-2">
+	                        <label class="control-label">Manager Number</label>
+	                        <input class="form-control input-sm" name="RegionalManagerNumber" maxlength="100" ng-model="empAction.RegionalManagerNumber" />
+	                    </div>
+	                    <div class="col-md-2">
 	                        <label class="control-label">Manager Name</label>
 	                        <input class="form-control input-sm" name="RegionalManagerName" maxlength="100" ng-model="empAction.RegionalManagerName" />
 	                    </div>
@@ -905,9 +909,22 @@
                     <textarea class="form-control input-sm" ng-model="empAction.Comments" maxlength ="1024"></textarea>
                 </div>
             </section>
+            <section>
+                <div ng-form="administratorInfoForm">
+	                <h4>ADMINISTRATOR EMAIL</h4>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="form-group" ng-class="{'has-error':administratorInfoForm.AdministratorEmail.$invalid}">
+	                            <input paf-validation="EMAIL" class="form-control input-sm" name="AdministratorEmail" maxlength="100" ng-model="empAction.AdministratorEmail" ng-disabled="disableAdminEmail" ng-required="true"/>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </section>
             <div style="margin-bottom:20px;"/>
             <div class="pull-right margin-bottom20">
                 <button class="btn btn-primary" type="submit" ng-if="empAction.StatusType != 8 && empAction.StatusType != 9 && empAction.StatusType != 6 && ((empAction.StatusType != 2 && write) || (empAction.StatusType == 2 && writeInProcess))" ng-click="save()">Save</button>
+                <button class="btn btn-primary" type="button" ng-if="empAction.StatusType != 8 && empAction.StatusType != 9 && empAction.StatusType != 6 && ((empAction.StatusType != 2 && write) || (empAction.StatusType == 2 && writeInProcess))" ng-click="saveandsubmit()">Save/Submit</button>
                 <a class="btn btn-default" href="#/list">Cancel</a>
             </div>
         </form>

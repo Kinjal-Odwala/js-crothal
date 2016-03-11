@@ -396,7 +396,7 @@ ii.Class({
 
 			me.requestorPhone = new ui.ctl.Input.Text({
 			    id: "RequestorPhone",
-			    maxLength: 100,
+			    maxLength: 14,
 			    changeFunction: function () { me.modified(); }
 			});
 
@@ -407,12 +407,12 @@ ii.Class({
 
 				    var enteredText = me.requestorPhone.getValue();
 
-				    if (enteredText == "") return;
-
 				    me.requestorPhone.text.value = fin.cmn.text.mask.phone(enteredText);
 				    enteredText = me.requestorPhone.text.value;
 
-				    if (enteredText.length < 14)
+				    if (enteredText == "" && me.requestorPhone.text.readOnly)
+						this.valid = true;
+					else if (!(ui.cmn.text.validate.phone(enteredText)))
 				        this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
 		    });
 
@@ -572,7 +572,7 @@ ii.Class({
 					me.vendorPhone.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.vendorPhone.text.value;
 										
-					if (enteredText.length < 14)
+					if (!(ui.cmn.text.validate.phone(enteredText)))
 						this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
 				});
 				

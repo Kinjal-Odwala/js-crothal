@@ -299,6 +299,27 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 	            $scope.empAction.NewManagerTitle = obj.ReportingTitle;
 	            $scope.empAction.NewManagerEmail = obj.ReportingEmail;
 	            $scope.empAction.NewManagerNumber = obj.ReportingManagerNumber;
+	            if ($scope.empAction.NewManagerNumber != null) {
+	                getManagerDetail($scope.empAction.NewManagerNumber, function (response) {
+	                    if (!angular.isDefined(response)) {
+	                        $scope.empAction.RegionalManagerNumber = null;
+	                        $scope.empAction.RegionalManagerName = null;
+	                        $scope.empAction.RegionalManagerTitle = null;
+	                        $scope.empAction.RegionalManagerEmail = null;
+	                    }
+	                    else {
+	                        if (response.managerClock == 0) {
+	                            $scope.empAction.RegionalManagerNumber = null;
+	                        }
+	                        else {
+	                            $scope.empAction.RegionalManagerNumber = response.managerClock;
+	                        }
+	                        $scope.empAction.RegionalManagerName = response.managerName;
+	                        $scope.empAction.RegionalManagerTitle = response.jobTitle;
+	                        $scope.empAction.RegionalManagerEmail = response.managerEmail;
+	                    }
+	                });
+	            }
 	        }
 	        if (type == "Transfer") {
 	            $scope.empAction.TransferManagerName = obj.ReportingName;
@@ -333,6 +354,19 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 	        callback(response);
 	    });
 	};
+
+	var getAdministratorDetail = function (callback) {
+	    EmpActions.getAdministratorDetail(function (response) {
+	        callback(response);
+	    });
+	};
+
+	getAdministratorDetail(function (response) {
+	    if (angular.isDefined(response)) {
+	        $scope.empAction.AdministratorEmail = response.empEmail;
+	        $scope.disableAdminEmail = response.empEmail && response.empEmail.length > 0;
+	    }
+    });
 
 	var loadCompensations = function (employeeNumber) {
 
@@ -539,7 +573,28 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.SeparationReason = "LayoffType";
             }
 
-            loadCompensations($scope.empAction.EmployeeNumber);
+            //loadCompensations($scope.empAction.EmployeeNumber);
+            getEmpCompensation($scope.empAction.EmployeeNumber, function (response) {
+                if (!angular.isDefined(response)) {
+                    $scope.empAction.Data.Compensation = initCompensation();
+                }
+                else {
+                    $scope.empAction.Data.Compensation = {
+                        CurrentPayGrade: response.payGrade + " (" + response.minPayRange + " - " + response.midPayRange + " - " + response.maxPayRange + ")",
+                        CurrentSalary: parseFloat(response.annualPayAmt).toFixed(2),
+                        CurrentPayRange: $scope.getPayRange(response.payGrade, response.annualPayAmt),
+                        ReportingName: response.mgrFirstName + " " + response.mgrLastName,
+                        ReportingTitle: response.mgrTitle,
+                        ReportingEmail: response.mgrEmail,
+                        ReportingManagerNumber: response.mgrClock,
+                        DateLastIncrease: $filter("date")(new Date(response.dateBeg), "MM/dd/yyyy"),
+                        PercentLastIncrease: ((response.annualPayAmt - response.priorAnnualPayAmt) / response.priorAnnualPayAmt).toFixed(2) * 100 + "%",
+                        CurrentPosition: response.empTitle,
+                        EmployeeNumber: response.empNumber,
+                        CurrentPositionType: $filter('filter')($scope.JobCodes, { name: response.mgrTitle })
+                    }
+                }
+            });
         });
         EmpActions.findEmployeePAFDocument($routeParams.id, function (result) {
             $scope.pafDocs = result;
@@ -583,6 +638,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 }
                 validateHcmHouseCode();
             });
+
         }
     };
 
@@ -627,17 +683,17 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     var separationGroupItems = ['Transfer', 'Relocation', 'Promotion', 'Demotion', 'SalaryChange', 'NewHire', 'ReHire', 'Loa'];
 
     var positionFields = {
-        NewHire: ["HireDate", "PositionType", "Status", "PayStatus", "FullTimeHours", "TemporaryHours", "PartTimeHours", "AnnualSalaryAmount", "AdminHourlyAmount", "HourlyRateAmount", "PerDiemValue", "PayGrade", "PayRange", "ReportingName", "ReportingTitle", "ReportingEmail", "HcmHouseCodeTrainingLocation", "TrainingContact", "Duration", "CarAllowance", "BonusEligibleType"],
-        ReHire: ["HireDate", "PositionType", "Status", "PayStatus", "FullTimeHours", "TemporaryHours", "PartTimeHours", "AnnualSalaryAmount", "AdminHourlyAmount", "HourlyRateAmount", "PerDiemValue", "PayGrade", "PayRange", "ReportingName", "ReportingTitle", "ReportingEmail", "HcmHouseCodeTrainingLocation", "TrainingContact", "Duration", "CarAllowance", "BonusEligibleType"],
-        Separation: ["SeparationDate", "VacationDaysDue", "PayNumberOfWeeks", "SeparationReason", "ResignationType", "TerminationType", "LayoffType", "SeparationReHire"],
-        Loa: ["LoaDate", "DateOfReturn"],
-        Requisition: ["RequisitionNumber", "EmailAddress"],
-        Promotion: ["OldPositionType", "NewPositionType", "EffectiveDate", "ChangeReasonType", "LastIncreaseDate", "LastIncreasePercentage", "CurrentSalary", "IncreaseAmount", "IncreasePercentage", "NewSalary", "CurrentPayGrade", "NewPayGrade", "NewPayRange", "ReportingName", "ReportingTitle", "ReportingEmail", "NewCarAllowance", "NewBonusEligibleType", "Instructions"],
-        Demotion: ["OldPositionType", "NewPositionType", "EffectiveDate", "ChangeReasonType", "LastIncreaseDate", "LastIncreasePercentage", "CurrentSalary", "IncreaseAmount", "IncreasePercentage", "NewSalary", "CurrentPayGrade", "NewPayGrade", "NewPayRange", "ReportingName", "ReportingTitle", "ReportingEmail", "NewCarAllowance", "NewBonusEligibleType", "Instructions"],
-        SalaryChange: ["OldPositionType", "NewPositionType", "EffectiveDate", "ChangeReasonType", "LastIncreaseDate", "LastIncreasePercentage", "CurrentSalary", "IncreaseAmount", "IncreasePercentage", "NewSalary", "CurrentPayGrade", "NewPayGrade", "NewPayRange", "ReportingName", "ReportingTitle", "ReportingEmail", "NewCarAllowance", "NewBonusEligibleType", "Instructions"],
-        Transfer: ["TransferEffectiveDate", "HouseCodeTransfer", "ReportingName", "ReportingTitle", "ReportingEmail"],
-        PersonalInfoChange: ["InfoChangeEffectiveDate", "InfoChangeFirstName", "InfoChangeMiddleName", "InfoChangeLastName", "InfoChangeAddressLine1", "InfoChangeAddressLine2", "InfoChangePhone", "InfoChangeCity", "AppStateTypeInfoChange", "InfoChangePostalCode"],
-        Relocation: ["RelocationApprovedBy", "RelocationPlan"]
+        NewHire: [],
+        ReHire: [],
+        Separation: [],
+        Loa: [],
+        Requisition: [],
+        Promotion: [],
+        Demotion: [],
+        SalaryChange: [],
+        Transfer: [],
+        PersonalInfoChange: [],
+        Relocation: []
     };
 
     var resetPositionTypeFields = function (positionType) {
@@ -689,6 +745,13 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     }
                 });
             }
+            if (positionType == 'NewHire') {
+                $scope.empAction.EmployeeNumber = null;
+                $scope.newHireChecked = true;
+            }
+            else {
+                $scope.newHireChecked = false;
+            }
         }
         else {
             resetPositionTypeFields(positionType);
@@ -702,7 +765,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     };
 
     $scope.positionTypeChecked = function (positionType) {
-
+        if (!$scope.empAction['NewHire']) {
+            $scope.newHireChecked = false;
+        }
         return $scope.empAction[positionType];
     };
 
@@ -988,18 +1053,83 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         }
     };
 
-    var showToaster = function () {
-        var modalInstance = $modal.open({
-            template: '<div class="toaster"><div class="header">WARNING</div><div class="content">Please fill the highlighted fields to complete the form.</div></div>',
-            // controller: 'modalInstanceCtrl',
-            size: 'sm',
-            backdrop: false
-        });
+    $scope.saveandsubmit = function () {
+        validateActionType();
+        $scope.validateSeparationReason();
+        $scope.validateLoa();
+        $scope.validatePersonalInfo();
 
-        setTimeout(function () {
-            modalInstance.dismiss('cancel');
-        }, 1800);
-    }
+        if ($scope.pafForm.$valid) {
+            if ($scope.empAction.NewHire || $scope.empAction.ReHire) {
+                var salary = 0;
+                if ($scope.empAction.PayStatus == "AdminHourlyAmount") {
+                    salary = $scope.empAction.Amount * 52 * 40;
+                }
+                else if ($scope.empAction.PayStatus == "HourlyRateAmount") {
+                    salary = $scope.empAction.Amount * 52 * 40;
+                }
+                var grade = ($scope.empAction.PayGrade == 0 ? $scope.empAction.PayGrade : EmpActions.getPayGradeTitle($scope.empAction.PayGrade));
+                $scope.empAction.PayRange = $scope.getPayRange($scope.empAction.PayGrade, salary) + " " + grade.slice(grade.indexOf("("));
+            }
+            if ($scope.empAction.SalaryChange || $scope.empAction.Demotion || $scope.empAction.Promotion) {
+                var newGrade = ($scope.empAction.NewPayGrade == 0 ? $scope.empAction.NewPayGrade : EmpActions.getPayGradeTitle($scope.empAction.NewPayGrade));
+                $scope.empAction.NewPayRange = $scope.getPayRange($scope.empAction.NewPayGrade, $scope.empAction.NewSalary) + " " + newGrade.slice(newGrade.indexOf("("));
+            }
+            if ($scope.empAction.Promotion || $scope.empAction.Demotion || $scope.empAction.SalaryChange) {
+                $scope.empAction.CurrentSalary = $scope.empAction.Data.Compensation.CurrentSalary;
+                var curPayGrade = $scope.empAction.Data.Compensation.CurrentPayGrade;
+                var curGrade = "";
+                if (curPayGrade == 0) {
+                    $scope.empAction.CurrentPayGrade = 0;
+                }
+                else if (curPayGrade.indexOf("none") == -1) {
+                    $scope.empAction.CurrentPayGrade = curPayGrade.substring(0, curPayGrade.indexOf("("));
+                    curGrade = curPayGrade.slice(curPayGrade.indexOf("("));
+                }
+                $scope.empAction.LastIncreaseDecreaseDate = $scope.empAction.Data.Compensation.DateLastIncrease;
+                var lastIncPer = $scope.empAction.Data.Compensation.PercentLastIncrease;
+                $scope.empAction.LastIncreaseDecreasePercentage = (lastIncPer == "NaN%" ? "0" : lastIncPer.replace("%", ""));
+                $scope.empAction.CurrentPayRange = $scope.empAction.Data.Compensation.CurrentPayRange + curGrade;
+            }
+            $scope.pageLoading = true;
+            $scope.loadingTitle = " Saving and Submitting...";
+
+            EmpActions.saveEmployeePersonnelAction($scope.empAction, $scope.pafDocs, function (status) {
+            });
+        }
+        else {
+            if ($scope.empAction.PersonalInfoChange) {
+                showPIToaster();
+            }
+            else {
+                showToaster();
+            }
+        }
+        EmpActions.getEmployeePersonnelActions($scope.pafFilter, function (items) {
+            var i = 0;
+            for (var index = 0; index < items.length; index++) {
+                i++
+            }
+            if (i > 0) {
+                EmpActions.submitEmployeePersonnelAction(items[i-1], function (data, status) {
+                    $scope.pageLoading = false;
+                    document.location.hash = 'list';
+                    alert("Employee PAF has been submitted successfully.");
+                });
+            }
+        });
+    };
+
+    $scope.pafFilter = {
+        pafNumber: null,
+        hcmHouseCode: null,
+        employeeNumber: null,
+        createUser: null,
+        pafDate: null,
+        endDate: null,
+        status: 1,
+        formType: null
+    };
 	
     var showPIToaster = function () {
         if ($scope.empAction.Data.PersonalInfoChange.InfoChangeEffectiveDate) {
@@ -1136,6 +1266,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         employeeNumber: null,
         createUser: null,
         pafDate: null,
+        endDate: null,
         status: 1,
         formType: null
     };
@@ -1251,6 +1382,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
             employeeNumber: null,
             createUser: null,
             pafDate: null,
+            endDate: null,
             status: 1,
             formType: null
         };
@@ -1282,7 +1414,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         return $sce.trustAsHtml("<div class='word-wrap'>" + formTypes.join(", ") + "</div>");
     }
 
-    $scope.cancelForm = function (id) {
+    $scope.cancelForm = function (id, houseCodeId) {
         if (!$scope.selectedItem)
             return;
 
@@ -1296,7 +1428,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         modalInstance.result.then(function (result) {
             $scope.loadingTitle = " Cancelling...";
             $scope.pageLoading = true;
-            EmpActions.cancelEmployeePersonnelAction(id, function (data, status) {
+            EmpActions.cancelEmployeePersonnelAction(id, houseCodeId, function (data, status) {
                 $scope.pageLoading = false;
                 $scope.getPafList();
                 alert("Employee PAF has been cancelled successfully.");
@@ -1314,10 +1446,10 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         });
     };
 
-    $scope.approve = function (id) {
+    $scope.approve = function (id, HouseCodeId) {
         $scope.loadingTitle = " Approving...";
         $scope.pageLoading = true;
-        EmpActions.approveEmployeePersonnelAction(id, function (data, status) {
+        EmpActions.approveEmployeePersonnelAction(id, HouseCodeId, function (data, status) {
             $scope.pageLoading = false;
             $scope.getPafList();
             alert("Employee PAF has been approved successfully.");
@@ -1336,7 +1468,6 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
 	    { id: 1, title: 'Open' },
 	    { id: 2, title: 'In Process' },
 	    { id: 8, title: 'Approved' },
-	    { id: 9, title: 'Completed' },
 	    { id: 6, title: 'Cancelled' },
 	    { id: 10, title: 'Unapproved' }
     ];
@@ -2326,6 +2457,16 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             });
     };
 
+    var getAdministratorDetail = function (callback) {
+
+        apiRequest('emp', 'iiCache', '<criteria>storeId:employeeManagerDetails,userId:[user]'
+           + ',searchValue:' + 'adminEmail'
+           + ',</criteria>', function (xml) {
+               if (callback)
+                   callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
+           });
+    };
+
     var getWorkflowSteps = function (moduleId, callback) {
 
         if (cache.workflowSteps) {
@@ -2460,8 +2601,16 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         });
     };
 
-    var cancelEmployeePersonnelAction = function (id, callback) {
-        var xml = '<transaction id="' + id + '"><cancelEmployeePersonnelAction id="' + id + '" /></transaction>';
+    var cancelEmployeePersonnelAction = function (id, houseCodeId, callback) {
+        var xml = "";
+
+        xml = '<transaction id="' + id + '">';
+        xml += '<cancelEmployeePersonnelAction';
+        xml += ' id="' + id + '"';
+        xml += ' houseCodeTitle="' + getTitleById(houseCodeId, cache.houseCodes) + '"';
+        xml += '/>';
+        xml += '</transaction>';
+
         var data = "moduleId=emp&requestId=1&requestXml=" + encodeURIComponent(xml) + "&targetId=iiTransaction";
 
         jQuery.post("/net/crothall/chimes/fin/emp/act/Provider.aspx", data, function (data, status) {
@@ -2470,8 +2619,16 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         });
     };
 
-    var approveEmployeePersonnelAction = function (id, callback) {
-        var xml = '<transaction id="' + id + '"><approveEmployeePersonnelAction id="' + id + '" /></transaction>';
+    var approveEmployeePersonnelAction = function (id, houseCodeId, callback) {
+        var xml = "";
+
+        xml = '<transaction id="' + id + '">';
+        xml += '<approveEmployeePersonnelAction';
+        xml += ' id="' + id + '"';
+        xml += ' houseCodeTitle="' + getTitleById(houseCodeId, cache.houseCodes) + '"';
+        xml += '/>';
+        xml += '</transaction>';
+
         var data = "moduleId=emp&requestId=1&requestXml=" + encodeURIComponent(xml) + "&targetId=iiTransaction";
 
         jQuery.post("/net/crothall/chimes/fin/emp/act/Provider.aspx", data, function (data, status) {
@@ -2547,6 +2704,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         getTitleById: getTitleById,
         findEmployeePAFDocument: findEmployeePAFDocument,
         deleteEmployeePAFDocument: deleteEmployeePAFDocument,
-        viewEmployeePAFDocument: viewEmployeePAFDocument
+        viewEmployeePAFDocument: viewEmployeePAFDocument,
+        getAdministratorDetail: getAdministratorDetail
     }
 }]);

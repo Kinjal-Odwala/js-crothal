@@ -412,7 +412,7 @@ ii.Class({
 
 			me.requestorPhone = new ui.ctl.Input.Text({
 			    id: "RequestorPhone",
-			    maxLength: 100,
+			    maxLength: 14,
 			    changeFunction: function() { me.modified(); }
 			});
 
@@ -423,12 +423,12 @@ ii.Class({
 
 				    var enteredText = me.requestorPhone.getValue();
 
-				    if (enteredText == "") return;
-
 				    me.requestorPhone.text.value = fin.cmn.text.mask.phone(enteredText);
 				    enteredText = me.requestorPhone.text.value;
 
-				    if (enteredText.length < 14)
+					if (enteredText == "" && me.requestorPhone.text.readOnly)
+						this.valid = true;
+					else if (!(ui.cmn.text.validate.phone(enteredText)))
 				        this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
 			});
 			
@@ -588,13 +588,13 @@ ii.Class({
 				.addValidation( function( isFinal, dataMap ) {
 
 					var enteredText = me.vendorPhone.getValue();
-					
+
 					if (enteredText == "") return;
 
 					me.vendorPhone.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.vendorPhone.text.value;
-										
-					if (enteredText.length < 14)
+
+					if (!(ui.cmn.text.validate.phone(enteredText)))
 						this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
 				});
 				
@@ -1089,7 +1089,7 @@ ii.Class({
 
 					var enteredText = me.divisionPresidentName.getValue();
 
-					if (enteredText == "" && me.total <= me.approvalAmountLimit1)
+					if (enteredText == "" && ((me.total <= me.approvalAmountLimit1) || ($("input[name='Funding']:checked").val() == "Direct Reimbursement")))
 						this.valid = true;
 			});
 
@@ -1106,7 +1106,7 @@ ii.Class({
 
 					var enteredText = me.divisionPresidentEmail.getValue();
 
-					if (enteredText == "" && me.total <= me.approvalAmountLimit1)
+					if (enteredText == "" && ((me.total <= me.approvalAmountLimit1) || ($("input[name='Funding']:checked").val() == "Direct Reimbursement")))
 						this.valid = true;
 					else {
 						var emailArray = enteredText.split(";");
@@ -1127,6 +1127,13 @@ ii.Class({
 			me.financeDirectorName.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.financeDirectorName.getValue();
+
+					if (enteredText == "" && $("input[name='Funding']:checked").val() == "Direct Reimbursement")
+						this.valid = true;
+			});
 
 			me.financeDirectorEmail = new ui.ctl.Input.Text({
 		        id: "FinanceDirectorEmail",
@@ -1141,13 +1148,15 @@ ii.Class({
 
 					var enteredText = me.financeDirectorEmail.getValue();
 
-					if (enteredText == "") return;
+					if (enteredText == "" && $("input[name='Funding']:checked").val() == "Direct Reimbursement")
+						this.valid = true;
+					else {
+						var emailArray = enteredText.split(";");
 
-					var emailArray = enteredText.split(";");
-
-					for (var index in emailArray) {
-						if (!(ui.cmn.text.validate.emailAddress(emailArray[index])))
-							this.setInvalid("Please enter valid Email Address. Use semicolon to separate two addresses.");
+						for (var index in emailArray) {
+							if (!(ui.cmn.text.validate.emailAddress(emailArray[index])))
+								this.setInvalid("Please enter valid Email Address. Use semicolon to separate two addresses.");
+						}
 					}
 			});
 
@@ -1859,7 +1868,7 @@ ii.Class({
 			if (me.itemGrid.activeRowIndex >= 0)
 				me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
 			me.itemStore.reset();
-			me.itemStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId + ",catalogId:" + me.catalogId + ",orderId:0,accountId:" + me.accountId + ",searchValue:" + me.searchItem.getValue(), me.poItemsLoaded, me);
+			me.itemStore.fetch("userId:[user],poCapitalRequisition:1,houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId + ",catalogId:" + me.catalogId + ",orderId:0,accountId:" + me.accountId + ",searchValue:" + me.searchItem.getValue(), me.poItemsLoaded, me);
 			me.searchItem.setValue("");
 		},
 		
@@ -2250,10 +2259,20 @@ ii.Class({
             me.step5ApprovedDate = me.workflowHistorys.length > 4 ? me.workflowHistorys[4].modAt : "";
 
 			approvals.push(new fin.pur.poCapitalRequisition.Approval(1, "Regional Manager", item.regionalManagerName, "", me.step1ApprovedDate));
-			approvals.push(new fin.pur.poCapitalRequisition.Approval(2, "Division President", item.divisionPresidentName,  (me.total > me.approvalAmountLimit1 ? "" : "N/A"), (me.total > me.approvalAmountLimit1 ? me.step2ApprovedDate : "N/A")));
-			approvals.push(new fin.pur.poCapitalRequisition.Approval(3, "Finance Director", item.financeDirectorName, "", me.step3ApprovedDate));
-			approvals.push(new fin.pur.poCapitalRequisition.Approval(4, "Chief Financial Officer", item.chiefFinancialOfficerName, (me.total > me.approvalAmountLimit1 ? "" : "N/A"), (me.total > me.approvalAmountLimit1 ? me.step4ApprovedDate : "N/A")));
-			approvals.push(new fin.pur.poCapitalRequisition.Approval(5, "Chief Executive Officer", item.chiefExecutiveOfficerName, (me.total > me.approvalAmountLimit2 ? "" : "N/A"), (me.total > me.approvalAmountLimit2 ? me.step5ApprovedDate : "N/A")));
+			if (item.funding == "Direct Reimbursement") {
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(2, "Division President", item.divisionPresidentName, "N/A", "N/A"));
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(3, "Finance Director", item.financeDirectorName, "N/A", "N/A"));
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(4, "Chief Financial Officer", item.chiefFinancialOfficerName, "N/A", "N/A"));
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(5, "Chief Executive Officer", item.chiefExecutiveOfficerName, "N/A", "N/A"));
+		
+			}
+			else {
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(2, "Division President", item.divisionPresidentName,  (me.total > me.approvalAmountLimit1 ? "" : "N/A"), (me.total > me.approvalAmountLimit1 ? me.step2ApprovedDate : "N/A")));
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(3, "Finance Director", item.financeDirectorName, "", me.step3ApprovedDate));
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(4, "Chief Financial Officer", item.chiefFinancialOfficerName, (me.total > me.approvalAmountLimit1 ? "" : "N/A"), (me.total > me.approvalAmountLimit1 ? me.step4ApprovedDate : "N/A")));
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(5, "Chief Executive Officer", item.chiefExecutiveOfficerName, (me.total > me.approvalAmountLimit2 ? "" : "N/A"), (me.total > me.approvalAmountLimit2 ? me.step5ApprovedDate : "N/A")));
+			}
+
 			me.approvalGrid.setData(approvals);
 			me.approvalGrid.setHeight(150);
 			me.checkLoadCount();
@@ -2786,19 +2805,36 @@ ii.Class({
 						
 					$("#Header").text("Additional Information");
 					
-					if (me.total > me.approvalAmountLimit1) {
-						$("#DivisionPresidentNameLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Division President Name:");
-						$("#DivisionPresidentEmailLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Division President Email:");
-						me.divisionPresidentName.text.readOnly = false;
-						me.divisionPresidentEmail.text.readOnly = false;
-					}
-					else {
+					if ($("input[name='Funding']:checked").val() == "Direct Reimbursement") {
 						$("#DivisionPresidentNameLabel").html("<span id='nonRequiredFieldIndicator'>Division President Name:</span>");
 						$("#DivisionPresidentEmailLabel").html("<span id='nonRequiredFieldIndicator'>Division President Email:</span>");
+						$("#FinanceDirectorNameLabel").html("<span id='nonRequiredFieldIndicator'></span>Finance Director Name:");
+						$("#FinanceDirectorEmailLabel").html("<span id='nonRequiredFieldIndicator'></span>Finance Director Email:");
 						me.divisionPresidentName.text.readOnly = true;
 						me.divisionPresidentEmail.text.readOnly = true;
+						me.financeDirectorName.text.readOnly = true;
+						me.financeDirectorEmail.text.readOnly = true;
 					}
-					
+					else {
+						$("#FinanceDirectorNameLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Finance Director Name:");
+						$("#FinanceDirectorEmailLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Finance Director Email:");
+						me.financeDirectorName.text.readOnly = false;
+						me.financeDirectorEmail.text.readOnly = false;
+							
+						if (me.total > me.approvalAmountLimit1) {
+							$("#DivisionPresidentNameLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Division President Name:");
+							$("#DivisionPresidentEmailLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Division President Email:");
+							me.divisionPresidentName.text.readOnly = false;
+							me.divisionPresidentEmail.text.readOnly = false;
+						}
+						else {
+							$("#DivisionPresidentNameLabel").html("<span id='nonRequiredFieldIndicator'>Division President Name:</span>");
+							$("#DivisionPresidentEmailLabel").html("<span id='nonRequiredFieldIndicator'>Division President Email:</span>");
+							me.divisionPresidentName.text.readOnly = true;
+							me.divisionPresidentEmail.text.readOnly = true;
+						}
+					}
+
 					break;
 			}
 			

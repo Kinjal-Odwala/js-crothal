@@ -611,10 +611,42 @@ ii.Class({
 					return;
 
 				if (!(/^\d{1,2}$/.test(me.planDays.getValue()))) {
-					this.setInvalid("Please enter valid plan days.");
+					this.setInvalid("Please enter valid Plan Days.");
 				}
 			});
 
+			me.accrual = new ui.ctl.Input.Check({
+		        id: "Accrual",
+				changeFunction: function() {
+					me.modified();
+					if (me.accrual.check.checked)
+						me.accrualInterval.text.readOnly = false;
+					else {
+						me.accrualInterval.text.readOnly = true;
+						me.accrualInterval.setValue("0");
+					}
+				}
+		    });
+
+			me.accrualInterval = new ui.ctl.Input.Text({
+		        id: "AccrualInterval",
+		        maxLength: 3,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.accrualInterval.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+				if (me.accrualInterval.getValue() == "") 
+					return;
+
+				if (!(/^\d{1,3}$/.test(me.accrualInterval.getValue()))) {
+					this.setInvalid("Please enter valid Accrual Interval.");
+				}
+			});
+			
 			me.active = new ui.ctl.Input.Check({
 		        id: "Active",
 				changeFunction: function() { me.modified(); }
@@ -1172,6 +1204,7 @@ ii.Class({
 			me.startDate.resizeText();
 			me.endDate.resizeText();
 			me.planDays.resizeText();
+			me.accrualInterval.resizeText();
 			me.ptoPlanYearFrom.resizeText();
 			me.ptoPlanYearTo.resizeText();
 			me.ptoStartDate.resizeText();
@@ -1213,6 +1246,8 @@ ii.Class({
 				me.startDate.setValue("");
 				me.endDate.setValue("");
 				me.planDays.setValue("");
+				me.accrual.setValue("true");
+				me.accrualInterval.setValue("");
 				me.active.setValue("true");
 				me.ptoPlanGrid.body.deselectAll();
 			}
@@ -1653,7 +1688,10 @@ ii.Class({
 					me.startDate.setValue(me.ptoPlanGrid.data[index].startDate);
 					me.endDate.setValue(me.ptoPlanGrid.data[index].endDate);
 					me.planDays.setValue(me.ptoPlanGrid.data[index].days);
+					me.accrual.setValue(me.ptoPlanGrid.data[index].accrual.toString());
+					me.accrualInterval.setValue(me.ptoPlanGrid.data[index].accrualInterval);
 					me.active.setValue(me.ptoPlanGrid.data[index].active.toString());
+					me.accrualInterval.text.readOnly = !me.accrual.check.checked;
 				}
 				else if (me.action == "PTO Assignments" || me.action == "Management PTO Assignments") {
 					me.setLoadCount();
@@ -2057,7 +2095,8 @@ ii.Class({
 					}
 				}
 				else {
-					if (!me.ptoPlanYear.valid || !me.ptoPlanType.valid || !me.ptoType.valid || !me.planName.valid || !me.startDate.valid || !me.endDate.valid || !me.planDays.valid) {
+					if (!me.ptoPlanYear.valid || !me.ptoPlanType.valid || !me.ptoType.valid || !me.planName.valid 
+						|| !me.startDate.valid || !me.endDate.valid || !me.planDays.valid || !me.accrualInterval.valid) {
 						alert("In order to save, the errors on the page must be corrected.");
 						return false;
 					}
@@ -2084,6 +2123,8 @@ ii.Class({
 						, me.startDate.lastBlurValue
 						, me.endDate.lastBlurValue
 						, me.planDays.getValue()
+						, me.accrual.check.checked
+						, me.accrualInterval.getValue()
 						, me.active.check.checked
 					);
 				}
@@ -2215,6 +2256,8 @@ ii.Class({
 					xml += ' startDate="' + item.startDate + '"';
 					xml += ' endDate="' + item.endDate + '"';
 					xml += ' days="' + item.days + '"';
+					xml += ' accrual="' + item.accrual + '"';
+					xml += ' accrualInterval="' + item.accrualInterval + '"';
 					xml += ' active="' + item.active + '"';
 					xml += '/>';
 				}
