@@ -316,3 +316,10 @@ a.account-link:hover
 {
     text-decoration: underline;
 }
+
+a.bine-invalid {
+    background-color:#fe7774 !important;
+    color:#fff;
+    display:inline-block;
+    padding:5px;
+}

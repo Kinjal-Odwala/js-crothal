@@ -1,4 +1,4 @@
-﻿window.__bt__939838dc = ['<div style="margin: 15px;">    <div id="itemStatusDiv" style="padding: 10px;">        <div class="itemStatusImage Normal" id="itemStatusImage">        </div>        <div class="itemModifiedImage" id="itemModifiedImage">        </div>        <div id="itemStatusText" class="itemStatusText">            Normal        </div>    </div>    <div style="padding: 10px;margin-top: 20px;" id="fsc-year-form">        <span>Fiscal Year: </span>        <span id="fsc-year-form-fscYear" name="fscYear" style="display:inline-block;"></span></div>    <table class="bud-grid-1" style="">        <thead>            <tr>                <th style="width: 100px">Type                </th>                <th style="width: 110px">Single Coverage                </th>                <th style="width: 110px">Single + Spouse                </th>                <th style="width: 130px">Signle + Dependant                </th>                <th style="width: 110px">Family Coverage                </th>                <th style="width: 80px">Life                </th>                <th style="width: 200px">House Codes                </th>                <th></th>            </tr>        </thead>        <tbody id="data-list">        </tbody>    </table>    <div style="padding: 10px">        <input type="button" id="addButton" value="Add New Row" />        <input type="button" id="submitButton" value="Submit" />    </div></div><div id="popup" class="popup">    <div class="housecodes-list-wrapper" style="width: 400px; padding: 20px; margin: 50px auto; background-color: white">        <h3>Edit House Codes</h3>        <table class="bud-grid-1" style="margin-top: 20px; width: 350px;">            <thead>                <tr>                    <th style="width: 100px">House Code                    </th>                    <th><a href="#" id="addHouseCodeBtutton">Add</a></th>                </tr>            </thead>            <tbody id="house-code-list">            </tbody>        </table>        <div style="padding: 10px">            <input type="button" id="applyHouseCodeButton" value="Apply" />            <input type="button" id="cancelHouseCodeButton" value="Cancel" />        </div>    </div></div>','<tr>     <td>        <input type="text" name="costName" />    </td>     <td>        <input type="text" name="singleCoverageCost" />    </td>    <td>        <input type="text" name="singleSpouseCost" />    </td>    <td>        <input type="text" name="singleDependantCost" />    </td>    <td>        <input type="text" name="familyCoverageCost" />    </td>    <td>        <input type="text" name="lifeCost" />    </td>    <td >        <a href="#" id="houseCodes" name="houseCodes"></a>    </td></tr>','<tr>    <td id="houseCode">    </td></tr>',''];
+﻿window.__bt__9c830290 = ['<div style="margin: 15px;">    <div id="itemStatusDiv" style="padding: 10px;">        <div class="itemStatusImage Normal" id="itemStatusImage">        </div>        <div class="itemModifiedImage" id="itemModifiedImage">        </div>        <div id="itemStatusText" class="itemStatusText">            Normal        </div>    </div>    <div style="padding: 10px;margin-top: 20px;" id="fsc-year-form">        <span>Fiscal Year: </span>        <span id="fsc-year-form-fscYear" name="fscYear" style="display:inline-block;"></span></div>    <table class="bud-grid-1" style="">        <thead>            <tr>                <th style="width: 100px">Type                </th>                <th style="width: 110px">Single Coverage                </th>                <th style="width: 110px">Single + Spouse                </th>                <th style="width: 130px">Single + Dependant                </th>                <th style="width: 110px">Family Coverage                </th>                <th style="width: 80px">Life                </th>                <th style="width: 200px">House Codes                </th>                <th></th>            </tr>        </thead>        <tbody id="data-list">        </tbody>    </table>    <div style="padding: 10px">        <input type="button" id="addButton" value="Add New Row" />        <input type="button" id="submitButton" value="Submit" />    </div></div><div id="popup" class="popup">    <div class="housecodes-list-wrapper" style="width: 400px; padding: 20px; margin: 50px auto; background-color: white">        <h3>Edit House Codes</h3>        <div class="housecodes-list-container" style="overflow:auto;">            <table class="bud-grid-1" style="margin-top: 20px; width: 350px;">                <thead>                    <tr>                        <th style="width: 100px">House Code                        </th>                        <th><a href="#" id="addHouseCodeBtutton">Add</a></th>                    </tr>                </thead>                <tbody id="house-code-list">                </tbody>            </table>        </div>        <div style="padding: 10px">            <input type="button" id="applyHouseCodeButton" value="Apply" />            <input type="button" id="cancelHouseCodeButton" value="Cancel" />        </div>    </div></div>','<tr>     <td>        <input type="text" name="costName" />    </td>     <td>        <input type="text" name="singleCoverageCost" />    </td>    <td>        <input type="text" name="singleSpouseCost" />    </td>    <td>        <input type="text" name="singleDependantCost" />    </td>    <td>        <input type="text" name="familyCoverageCost" />    </td>    <td>        <input type="text" name="lifeCost" />    </td>    <td >        <a href="#" id="houseCodes" name="houseCodes"></a>    </td></tr>','<tr>    <td id="houseCode">    </td></tr>',''];
 
 if ((typeof Range !== "undefined") && !Range.prototype.createContextualFragment) {
     Range.prototype.createContextualFragment = function (html) {
@@ -381,7 +381,7 @@ var getViewPort = function () {
     });
 
     bud.page.BenefitCostSetup = bine.extend(bine.Control, {
-        tpl: window.__bt__939838dc[0],
+        tpl: window.__bt__9c830290[0],
 
         dataList: null,
         $hcmHouseCodes: null,
@@ -421,6 +421,7 @@ var getViewPort = function () {
           
 
             me.$('.housecodes-list-wrapper').css('height', (getViewPort().height - 150) + 'px');
+            me.$('.housecodes-list-container').css('height', (getViewPort().height - 200) + 'px');
 
         },
 
@@ -463,7 +464,8 @@ var getViewPort = function () {
 
                 for (var i = 0; i < houseCodes.length; i++)
                 {
-                    data.push(houseCodes[i].houseCode);
+                    if (data.indexOf(houseCodes[i].houseCode) == -1)
+                        data.push(houseCodes[i].houseCode);
                 }
 
                 me.currentDv.val('houseCodes', data.join(','));
@@ -498,7 +500,11 @@ var getViewPort = function () {
                     var costNameConfig = {
                         type: 'string', align: 'left',
                         isValid: function (value) {
-                            return value;
+                            if (!value)
+                                return false;
+
+                            return bine.query(me.dataList.val()).where(function (i) { return i.costName == value; }).count() == 1;
+                            
                         }
                     };
 
@@ -533,7 +539,7 @@ var getViewPort = function () {
 
 
                     return new bine.DataView({
-                        tpl: window.__bt__939838dc[1], removable: true,
+                        tpl: window.__bt__9c830290[1], removable: true,
                         onDomReady: function () {
                             var dv = this;
                             dv.on('change', function (name,newValue) {
@@ -624,7 +630,7 @@ var getViewPort = function () {
                     }
 
                     return new bine.DataView({
-                        tpl: window.__bt__939838dc[2], removable: true,
+                        tpl: window.__bt__9c830290[2], removable: true,
                         onDomReady: function () {
                             var dv = this;
                            
@@ -659,7 +665,10 @@ var getViewPort = function () {
                 xml.push('<budBenefitsCostInitial ');
                 xml.push(String.format(' {0}="{1}"', 'fscYear', me.fscYearForm.val('fscYear')));
                 for (var key in item) {
-                    xml.push(String.format(' {0}="{1}"', key, item[key]));
+                    if (key == 'costName')
+                        xml.push(String.format(' costName="{0}"', item[key].replace(/&/gi, '&amp;').replace(/"/gi, '&quot;').replace(/</gi, '&lt;').replace(/>/gi, '&gt;')));
+                    else
+                        xml.push(String.format(' {0}="{1}"', key, item[key]));
                 }
 
                 xml.push(' />\r\n');
