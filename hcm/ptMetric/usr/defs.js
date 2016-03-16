@@ -209,6 +209,59 @@ ii.init.register( function() {
 		, modified: {type: Boolean, required: false, defaultValue: false}
 	};
 
+	fin.hcm.ptMetric.standardMetricArgs = {
+		id: {type: Number}
+		, yearId: {type: Number, defaultValue: 0}
+		, ptMetricType: {type: fin.hcm.ptMetric.MetricType, required: false}
+		, ptMetricTypeTitle: {type: String, required: false, defaultValue: ""}
+		, onTimeScheduled: {type: String, required: false, defaultValue: ""}
+		, rta10: {type: String, required: false, defaultValue: ""}
+		, dtc20: {type: String, required: false, defaultValue: ""}
+		, rtc30: {type: String, required: false, defaultValue: ""}
+		, tpph: {type: String, required: false, defaultValue: ""}
+		, tppd: {type: String, required: false, defaultValue: ""}
+		, itppd: {type: String, required: false, defaultValue: ""}
+		, cancellation: {type: String, required: false, defaultValue: ""}
+		, delay: {type: String, required: false, defaultValue: ""}
+		, discharges: {type: String, required: false, defaultValue: ""}
+	};
+	
+	fin.hcm.ptMetric.inHouseStandardMetricArgs = {
+		id: {type: Number}
+		, yearId: {type: Number, defaultValue: 0}
+		, ptMetricType: {type: fin.hcm.ptMetric.MetricType, required: false}
+		, ptMetricTypeTitle: {type: String, required: false, defaultValue: ""}
+		, onTimeScheduled: {type: String, required: false, defaultValue: ""}
+		, rta10: {type: String, required: false, defaultValue: ""}
+		, dtc20: {type: String, required: false, defaultValue: ""}
+		, rtc30: {type: String, required: false, defaultValue: ""}
+		, tpph: {type: String, required: false, defaultValue: ""}
+		, tppd: {type: String, required: false, defaultValue: ""}
+		, itppd: {type: String, required: false, defaultValue: ""}
+		, cancellation: {type: String, required: false, defaultValue: ""}
+		, delay: {type: String, required: false, defaultValue: ""}
+		, discharges: {type: String, required: false, defaultValue: ""}
+		, modified: {type: Boolean, required: false, defaultValue: false}
+	};
+
+	fin.hcm.ptMetric.thirdPartyStandardMetricArgs = {
+		id: {type: Number}
+		, yearId: {type: Number, defaultValue: 0}
+		, ptMetricType: {type: fin.hcm.ptMetric.MetricType, required: false}
+		, ptMetricTypeTitle: {type: String, required: false, defaultValue: ""}
+		, onTimeScheduled: {type: String, required: false, defaultValue: ""}
+		, rta10: {type: String, required: false, defaultValue: ""}
+		, dtc20: {type: String, required: false, defaultValue: ""}
+		, rtc30: {type: String, required: false, defaultValue: ""}
+		, tpph: {type: String, required: false, defaultValue: ""}
+		, tppd: {type: String, required: false, defaultValue: ""}
+		, itppd: {type: String, required: false, defaultValue: ""}
+		, cancellation: {type: String, required: false, defaultValue: ""}
+		, delay: {type: String, required: false, defaultValue: ""}
+		, discharges: {type: String, required: false, defaultValue: ""}
+		, modified: {type: Boolean, required: false, defaultValue: false}
+	};
+	
 }, 2);
 
 ii.Class({
@@ -346,6 +399,36 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.ptMetric.auditScoreArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.ptMetric.StandardMetric",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.ptMetric.standardMetricArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.ptMetric.InHouseStandardMetric",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.ptMetric.inHouseStandardMetricArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.ptMetric.ThirdPartyStandardMetric",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.ptMetric.thirdPartyStandardMetricArgs);
 			$.extend(this, args);
 		}
 	}

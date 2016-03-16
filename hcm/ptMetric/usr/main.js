@@ -27,6 +27,7 @@ ii.Class({
 			var args = ii.args(arguments, {});
 			var me = this;
 			
+			me.activeFrameId = 0;
 			me.loadCount = 0;
 			me.ptMetricId = 0;
 			me.reloadData = false;
@@ -63,12 +64,6 @@ ii.Class({
 			else
 				me.houseCodesLoaded(me, 0);
 
-			$("#container-1").tabs(1);
-			$("#container-1").triggerTab(1);
-			$("#QualityAssuranceContainer").bind("scroll", me.qualityAssuranceGridScroll);
-			setTimeout(function() {
-				me.resizeControls(1);
-			}, 100);
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 
@@ -101,6 +96,45 @@ ii.Class({
 			}
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
+				
+			me.hospitalContractShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\HospitalContract");
+			me.laborControlShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\LaborControl");
+			me.strategicInitiativesShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\StrategicInit");
+			me.qualityControlShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\QualityControl");
+			me.qualityAssuranceShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\QualityAssurance");
+			me.administrativeShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\Administrative");
+			
+			if (me.hospitalContractShow)
+				$("#TabHospitalContract").show();
+			if (me.laborControlShow)
+				$("#TabLaborControl").show();
+			if (me.strategicInitiativesShow)
+				$("#TabStrategicInitiative").show();
+			if (me.qualityControlShow)
+				$("#TabQualityControl").show();
+			if (me.qualityAssuranceShow)
+				$("#TabQualityAssurance").show();
+			if (me.administrativeShow)
+				$("#TabAdministrative").show();
+
+			if (me.hospitalContractShow)
+				me.activeFrameId = 1;
+			else if (me.laborControlShow)
+				me.activeFrameId = 2;
+			else if (me.strategicInitiativesShow)
+				me.activeFrameId = 3;
+			else if (me.qualityControlShow)
+				me.activeFrameId = 4;
+			else if (me.qualityAssuranceShow)
+				me.activeFrameId = 5;
+			else if (me.administrativeShow)
+				me.activeFrameId = 6;
+
+			setTimeout(function() {
+				$("#container-1").tabs(me.activeFrameId);
+				$("#container-1").triggerTab(me.activeFrameId);
+				me.resizeControls(me.activeFrameId);
+			}, 100)
 		},	
 		
 		sessionLoaded: function fin_hcm_ptMetric_UserInterface_sessionLoaded() {
@@ -122,6 +156,7 @@ ii.Class({
 		    $("#StrategicInitiativeContainer").height($(window).height() - offset);
 		    $("#QualityControlContainer").height($(window).height() - offset);
 			$("#QualityAssuranceContainer").height($(window).height() - offset);
+			$("#AdministrativeContainer").height($(window).height() - offset);
 
 			if ($("#LaborControlGridContainer").width() < 2600) {
 				$("#LaborControlGrid").width(2600);
@@ -143,12 +178,20 @@ ii.Class({
 			if ($("#EVSHCAHPSGridContainer").width() < 2600) {
 				$("#EVSHCAHPSGrid").width(2600);
 			}
-			
+			if ($("#InHouseStandardMetricGridContainer").width() < 1800) {
+				$("#InHouseStandardMetricGrid").width(1800);
+			}
+			if ($("#ThirdPartyStandardMetricGridContainer").width() < 1800) {
+				$("#ThirdPartyStandardMetricGrid").width(1800);
+			}
+
 			me.strategicInitiativeGrid.setHeight($(window).height() - 145);
 			me.ptPressGaneyGrid.setHeight(150);
 			me.evsHCAHPSGrid.setHeight(150);
 			me.qualityPartnershipGrid.setHeight(150);
 			me.auditScoreGrid.setHeight(150);
+			me.inHouseStandardMetricGrid.setHeight(200);
+			me.thirdPartyStandardMetricGrid.setHeight(200);
 		},
 
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
@@ -1285,6 +1328,536 @@ ii.Class({
 			me.auditScoreGrid.addColumn("annual1", "annual1", "January / February", "January / February", 200, null, me.annual1);
 			me.auditScoreGrid.addColumn("annual2", "annual2", "July / August", "July / August", 200, null, me.annual2);
 			me.auditScoreGrid.capColumns();
+			
+			me.inHouseStandardMetricGrid = new ui.ctl.Grid({
+				id: "InHouseStandardMetricGrid",
+				appendToId: "divForm",
+				selectFunction: function( index ) { me.inHouseStandardMetricItemSelect(index); },
+				deleteFunction: function() { return true; }
+			});
+
+			me.ihMetricTypeTitle = new ui.ctl.Input.Text({
+		        id: "IHMetricTypeTitle",
+				appendToId: "InHouseStandardMetricGridControlHolder"
+		    });
+
+			me.ihOnTimeScheduled = new ui.ctl.Input.Text({
+				id: "IHOnTimeScheduled",
+				maxLength: 19,
+				appendToId: "InHouseStandardMetricGridControlHolder",
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.ihOnTimeScheduled.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ){
+
+					var enteredText = me.ihOnTimeScheduled.getValue();
+
+					if (enteredText == "")
+						return;
+
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
+						this.setInvalid("Please enter numeric value.");
+					else if (newValue != enteredText)
+						me.ihOnTimeScheduled.setValue(newValue);
+				});
+
+			me.ihRTA10 = new ui.ctl.Input.Text({
+				id: "IHRTA10",
+				maxLength: 19,
+				appendToId: "InHouseStandardMetricGridControlHolder",
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.ihRTA10.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ){
+
+					var enteredText = me.ihRTA10.getValue();
+
+					if (enteredText == "")
+						return;
+
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
+						this.setInvalid("Please enter numeric value.");
+					else if (newValue != enteredText)
+						me.ihRTA10.setValue(newValue);
+				});
+
+			me.ihDTC20 = new ui.ctl.Input.Text({
+				id: "IHDTC20",
+				maxLength: 19,
+				appendToId: "InHouseStandardMetricGridControlHolder",
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.ihDTC20.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ){
+
+					var enteredText = me.ihDTC20.getValue();
+
+					if (enteredText == "")
+						return;
+
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
+						this.setInvalid("Please enter numeric value.");
+					else if (newValue != enteredText)
+						me.ihDTC20.setValue(newValue);
+				});
+
+			me.ihRTC30 = new ui.ctl.Input.Text({
+				id: "IHRTC30",
+				maxLength: 19,
+				appendToId: "InHouseStandardMetricGridControlHolder",
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.ihRTC30.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ){
+
+					var enteredText = me.ihRTC30.getValue();
+
+					if (enteredText == "")
+						return;
+
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
+						this.setInvalid("Please enter numeric value.");
+					else if (newValue != enteredText)
+						me.ihRTC30.setValue(newValue);
+				});
+
+			me.ihTPPH = new ui.ctl.Input.Text({
+				id: "IHTPPH",
+				maxLength: 19,
+				appendToId: "InHouseStandardMetricGridControlHolder",
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.ihTPPH.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ){
+
+					var enteredText = me.ihTPPH.getValue();
+
+					if (enteredText == "")
+						return;
+
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
+						this.setInvalid("Please enter numeric value.");
+					else if (newValue != enteredText)
+						me.ihTPPH.setValue(newValue);
+				});
+
+			me.ihTPPD = new ui.ctl.Input.Text({
+				id: "IHTPPD",
+				maxLength: 19,
+				appendToId: "InHouseStandardMetricGridControlHolder",
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.ihTPPD.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ){
+
+					var enteredText = me.ihTPPD.getValue();
+
+					if (enteredText == "")
+						return;
+
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
+						this.setInvalid("Please enter numeric value.");
+					else if (newValue != enteredText)
+						me.ihTPPD.setValue(newValue);
+				});
+
+			me.ihITPPD = new ui.ctl.Input.Text({
+				id: "IHITPPD",
+				maxLength: 19,
+				appendToId: "InHouseStandardMetricGridControlHolder",
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.ihITPPD.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ){
+
+					var enteredText = me.ihITPPD.getValue();
+
+					if (enteredText == "")
+						return;
+
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
+						this.setInvalid("Please enter numeric value.");
+					else if (newValue != enteredText)
+						me.ihITPPD.setValue(newValue);
+				});
+
+			me.ihCancellation = new ui.ctl.Input.Text({
+				id: "IHCancellation",
+				maxLength: 19,
+				appendToId: "InHouseStandardMetricGridControlHolder",
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.ihCancellation.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ){
+
+					var enteredText = me.ihCancellation.getValue();
+
+					if (enteredText == "")
+						return;
+
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
+						this.setInvalid("Please enter numeric value.");
+					else if (newValue != enteredText)
+						me.ihCancellation.setValue(newValue);
+				});
+
+			me.ihDelay = new ui.ctl.Input.Text({
+				id: "IHDelay",
+				maxLength: 19,
+				appendToId: "InHouseStandardMetricGridControlHolder",
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.ihDelay.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ){
+
+					var enteredText = me.ihDelay.getValue();
+
+					if (enteredText == "")
+						return;
+
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
+						this.setInvalid("Please enter numeric value.");
+					else if (newValue != enteredText)
+						me.ihDelay.setValue(newValue);
+				});
+
+			me.ihDischarges = new ui.ctl.Input.Text({
+				id: "IHDischarges",
+				maxLength: 19,
+				appendToId: "InHouseStandardMetricGridControlHolder",
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.ihDischarges.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ){
+
+					var enteredText = me.ihDischarges.getValue();
+
+					if (enteredText == "")
+						return;
+
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
+						this.setInvalid("Please enter numeric value.");
+					else if (newValue != enteredText)
+						me.ihDischarges.setValue(newValue);
+				});
+
+			me.inHouseStandardMetricGrid.addColumn("ptMetricTypeTitle", "ptMetricTypeTitle", "", "", null, null, me.ihMetricTypeTitle);
+			me.inHouseStandardMetricGrid.addColumn("ihOnTimeScheduled", "onTimeScheduled", "On Time Scheduled (%)", "On Time Scheduled (%)", 170, null, me.ihOnTimeScheduled);
+			me.inHouseStandardMetricGrid.addColumn("ihRTA10", "rta10", "RTA 10 (%)", "RTA 10 (%)", 150, null, me.ihRTA10);
+			me.inHouseStandardMetricGrid.addColumn("ihDTC20", "dtc20", "DTC 20 (%)", "DTC 20 (%)", 150, null, me.ihDTC20);
+			me.inHouseStandardMetricGrid.addColumn("ihRTC30", "rtc30", "RTC 30 (%)", "RTC 30 (%)", 150, null, me.ihRTC30);
+			me.inHouseStandardMetricGrid.addColumn("ihTPPH", "tpph", "TPPH", "TPPH", 150, null, me.ihTPPH);
+			me.inHouseStandardMetricGrid.addColumn("ihTPPD", "tppd", "TPPD", "TPPD", 150, null, me.ihTPPD);
+			me.inHouseStandardMetricGrid.addColumn("ihITPPD", "itppd", "ITPPD", "ITPPD", 150, null, me.ihITPPD);
+			me.inHouseStandardMetricGrid.addColumn("ihCancellation", "cancellation", "Cancellation (%)", "Cancellation (%)", 150, null, me.ihCancellation);
+			me.inHouseStandardMetricGrid.addColumn("ihDelay", "delay", "Delay (%)", "Delay (%)", 150, null, me.ihDelay);
+			me.inHouseStandardMetricGrid.addColumn("ihDischarges", "discharges", "Discharges (%)", "Discharges (%)", 150, null, me.ihDischarges);
+			me.inHouseStandardMetricGrid.capColumns();
+
+			me.thirdPartyStandardMetricGrid = new ui.ctl.Grid({
+				id: "ThirdPartyStandardMetricGrid",
+				appendToId: "divForm",
+				selectFunction: function( index ) { me.thirdPartyStandardMetricItemSelect(index); },
+				deleteFunction: function() { return true; }
+			});
+
+			me.tpMetricTypeTitle = new ui.ctl.Input.Text({
+		        id: "TPMetricTypeTitle",
+				appendToId: "ThirdPartyStandardMetricGridControlHolder"
+		    });
+
+			me.tpOnTimeScheduled = new ui.ctl.Input.Text({
+				id: "TPOnTimeScheduled",
+				maxLength: 19,
+				appendToId: "ThirdPartyStandardMetricGridControlHolder",
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.tpOnTimeScheduled.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ){
+
+					var enteredText = me.tpOnTimeScheduled.getValue();
+
+					if (enteredText == "")
+						return;
+
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
+						this.setInvalid("Please enter numeric value.");
+					else if (newValue != enteredText)
+						me.tpOnTimeScheduled.setValue(newValue);
+				});
+
+			me.tpRTA10 = new ui.ctl.Input.Text({
+				id: "TPRTA10",
+				maxLength: 19,
+				appendToId: "ThirdPartyStandardMetricGridControlHolder",
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.tpRTA10.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ){
+
+					var enteredText = me.tpRTA10.getValue();
+
+					if (enteredText == "")
+						return;
+
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
+						this.setInvalid("Please enter numeric value.");
+					else if (newValue != enteredText)
+						me.tpRTA10.setValue(newValue);
+				});
+
+			me.tpDTC20 = new ui.ctl.Input.Text({
+				id: "TPDTC20",
+				maxLength: 19,
+				appendToId: "ThirdPartyStandardMetricGridControlHolder",
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.tpDTC20.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ){
+
+					var enteredText = me.tpDTC20.getValue();
+
+					if (enteredText == "")
+						return;
+
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
+						this.setInvalid("Please enter numeric value.");
+					else if (newValue != enteredText)
+						me.tpDTC20.setValue(newValue);
+				});
+
+			me.tpRTC30 = new ui.ctl.Input.Text({
+				id: "TPRTC30",
+				maxLength: 19,
+				appendToId: "ThirdPartyStandardMetricGridControlHolder",
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.tpRTC30.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ){
+
+					var enteredText = me.tpRTC30.getValue();
+
+					if (enteredText == "")
+						return;
+
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
+						this.setInvalid("Please enter numeric value.");
+					else if (newValue != enteredText)
+						me.tpRTC30.setValue(newValue);
+				});
+
+			me.tpTPPH = new ui.ctl.Input.Text({
+				id: "TPTPPH",
+				maxLength: 19,
+				appendToId: "ThirdPartyStandardMetricGridControlHolder",
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.tpTPPH.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ){
+
+					var enteredText = me.tpTPPH.getValue();
+
+					if (enteredText == "")
+						return;
+
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
+						this.setInvalid("Please enter numeric value.");
+					else if (newValue != enteredText)
+						me.tpTPPH.setValue(newValue);
+				});
+
+			me.tpTPPD = new ui.ctl.Input.Text({
+				id: "TPTPPD",
+				maxLength: 19,
+				appendToId: "ThirdPartyStandardMetricGridControlHolder",
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.tpTPPD.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ){
+
+					var enteredText = me.tpTPPD.getValue();
+
+					if (enteredText == "")
+						return;
+
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
+						this.setInvalid("Please enter numeric value.");
+					else if (newValue != enteredText)
+						me.tpTPPD.setValue(newValue);
+				});
+
+			me.tpITPPD = new ui.ctl.Input.Text({
+				id: "TPITPPD",
+				maxLength: 19,
+				appendToId: "ThirdPartyStandardMetricGridControlHolder",
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.tpITPPD.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ){
+
+					var enteredText = me.tpITPPD.getValue();
+
+					if (enteredText == "")
+						return;
+
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
+						this.setInvalid("Please enter numeric value.");
+					else if (newValue != enteredText)
+						me.tpITPPD.setValue(newValue);
+				});
+
+			me.tpCancellation = new ui.ctl.Input.Text({
+				id: "TPCancellation",
+				maxLength: 19,
+				appendToId: "ThirdPartyStandardMetricGridControlHolder",
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.tpCancellation.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ){
+
+					var enteredText = me.tpCancellation.getValue();
+
+					if (enteredText == "")
+						return;
+
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
+						this.setInvalid("Please enter numeric value.");
+					else if (newValue != enteredText)
+						me.tpCancellation.setValue(newValue);
+				});
+
+			me.tpDelay = new ui.ctl.Input.Text({
+				id: "TPDelay",
+				maxLength: 19,
+				appendToId: "ThirdPartyStandardMetricGridControlHolder",
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.tpDelay.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ){
+
+					var enteredText = me.tpDelay.getValue();
+
+					if (enteredText == "")
+						return;
+
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
+						this.setInvalid("Please enter numeric value.");
+					else if (newValue != enteredText)
+						me.tpDelay.setValue(newValue);
+				});
+
+			me.tpDischarges = new ui.ctl.Input.Text({
+				id: "TPDischarges",
+				maxLength: 19,
+				appendToId: "ThirdPartyStandardMetricGridControlHolder",
+				changeFunction: function() { me.modified(); }
+			});
+
+			me.tpDischarges.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ){
+
+					var enteredText = me.tpDischarges.getValue();
+
+					if (enteredText == "")
+						return;
+
+					var newValue = parseFloat(enteredText).toFixed(3);
+
+					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
+						this.setInvalid("Please enter numeric value.");
+					else if (newValue != enteredText)
+						me.tpDischarges.setValue(newValue);
+				});
+
+			me.thirdPartyStandardMetricGrid.addColumn("tpMetricTypeTitle", "ptMetricTypeTitle", "", "", null, null, me.tpMetricTypeTitle);
+			me.thirdPartyStandardMetricGrid.addColumn("tpOnTimeScheduled", "onTimeScheduled", "On Time Scheduled (%)", "On Time Scheduled (%)", 170, null, me.tpOnTimeScheduled);
+			me.thirdPartyStandardMetricGrid.addColumn("tpRTA10", "rta10", "RTA 10 (%)", "RTA 10 (%)", 150, null, me.tpRTA10);
+			me.thirdPartyStandardMetricGrid.addColumn("tpDTC20", "dtc20", "DTC 20 (%)", "DTC 20 (%)", 150, null, me.tpDTC20);
+			me.thirdPartyStandardMetricGrid.addColumn("tpRTC30", "rtc30", "RTC 30 (%)", "RTC 30 (%)", 150, null, me.tpRTC30);
+			me.thirdPartyStandardMetricGrid.addColumn("tpTPPH", "tpph", "TPPH", "TPPH", 150, null, me.tpTPPH);
+			me.thirdPartyStandardMetricGrid.addColumn("tpTPPD", "tppd", "TPPD", "TPPD", 150, null, me.tpTPPD);
+			me.thirdPartyStandardMetricGrid.addColumn("tpITPPD", "itppd", "ITPPD", "ITPPD", 150, null, me.tpITPPD);
+			me.thirdPartyStandardMetricGrid.addColumn("tpCancellation", "cancellation", "Cancellation (%)", "Cancellation (%)", 150, null, me.tpCancellation);
+			me.thirdPartyStandardMetricGrid.addColumn("tpDelay", "delay", "Delay (%)", "Delay (%)", 150, null, me.tpDelay);
+			me.thirdPartyStandardMetricGrid.addColumn("tpDischarges", "discharges", "Discharges (%)", "Discharges (%)", 150, null, me.tpDischarges);
+			me.thirdPartyStandardMetricGrid.capColumns();
 		},
 		
 		configureCommunications: function() {
@@ -1410,30 +1983,48 @@ ii.Class({
 				injectionArray: me.evsHCAHPS,
 				lookupSpec: { ptMetricType: me.metricTypes }
 			});
+
+			me.standardMetrics = [];
+			me.standardMetricStore = me.cache.register({
+				storeId: "ptStandardMetrics",
+				itemConstructor: fin.hcm.ptMetric.StandardMetric,
+				itemConstructorArgs: fin.hcm.ptMetric.standardMetricArgs,
+				injectionArray: me.standardMetrics,
+				lookupSpec: { ptMetricType: me.metricTypes }
+			});
 		},
 		
 		initialize: function() {
 			var me = this;
 			
 			$("#TabCollection a").mousedown(function() {
-				var tabIndex = 0;
+				me.activeFrameId = 0;
 				if (this.id == "TabHospitalContract")
-					tabIndex = 1;
+					me.activeFrameId = 1;
 				else if (this.id == "TabLaborControl")
-					tabIndex = 2;
+					me.activeFrameId = 2;
 				else if (this.id == "TabStrategicInitiative")
-					tabIndex = 3;
+					me.activeFrameId = 3;
 				else if (this.id == "TabQualityControl")
-					tabIndex = 4;
+					me.activeFrameId = 4;
 				else if (this.id == "TabQualityAssurance")
-					tabIndex = 5;
+					me.activeFrameId = 5;
+				else if (this.id == "TabAdministrative")
+					me.activeFrameId = 6;
 					
-				$("#container-1").tabs(tabIndex);
-				$("#container-1").triggerTab(tabIndex);
+				$("#container-1").tabs(me.activeFrameId);
+				$("#container-1").triggerTab(me.activeFrameId);
 				setTimeout(function() {
-					me.resizeControls(tabIndex);
-				}, 100)		
+					me.resizeControls(me.activeFrameId);
+				}, 100)
+				
+				if (me.activeFrameId == 6)
+					$("#HouseCode").hide();
+				else
+					$("#HouseCode").show();
 			});
+
+			$("#QualityAssuranceContainer").bind("scroll", me.qualityAssuranceGridScroll);
 		},
 
 		setStatus: function(status) {
@@ -1560,6 +2151,16 @@ ii.Class({
 				me.qualityPartnershipGrid.setHeight(150);
 				me.auditScoreGrid.setHeight(150);
 			}
+			else if (selectedTab == 6) {
+				if ($("#InHouseStandardMetricGridContainer").width() < 1800) {
+					$("#InHouseStandardMetricGrid").width(1800);
+				}
+				if ($("#ThirdPartyStandardMetricGridContainer").width() < 1800) {
+					$("#ThirdPartyStandardMetricGrid").width(1800);
+				}
+				me.inHouseStandardMetricGrid.setHeight(200);
+				me.thirdPartyStandardMetricGrid.setHeight(200);
+			}
 		},
 		
 		resetControls: function() {
@@ -1648,13 +2249,15 @@ ii.Class({
 		
 		yearChanged: function() {
 			var me = this;
-			
+
 			if (me.year.indexSelected == -1)
 				return;
 
 			me.setLoadCount();
 			me.metricStore.reset();
+			me.standardMetricStore.reset();
 			me.metricStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",yearId:" + me.fiscalYears[me.year.indexSelected].id, me.metricsLoaded, me);
+			me.standardMetricStore.fetch("userId:[user],yearId:" + me.fiscalYears[me.year.indexSelected].id, me.standardMetricsLoaded, me);
 		},
 
 		metricsLoaded: function(me, activeId) {
@@ -1691,12 +2294,110 @@ ii.Class({
 				me.checkLoadCount();
 			}
 
-			$("#container-1").triggerTab(1);
+			$("#container-1").triggerTab(me.activeFrameId);
 			setTimeout(function() {
-				me.resizeControls(1);
+				me.resizeControls(me.activeFrameId);
 			}, 100);
 		},
 		
+		standardMetricsLoaded: function(me, activeId) {
+		
+			me.inHouseStandardMetrics = [];
+			me.thirdPartyStandardMetrics = [];
+			
+			if (me.inHouseStandardMetricGrid.activeRowIndex != - 1)
+				me.inHouseStandardMetricGrid.body.deselect(me.inHouseStandardMetricGrid.activeRowIndex, true);
+			if (me.thirdPartyStandardMetricGrid.activeRowIndex != - 1)
+				me.thirdPartyStandardMetricGrid.body.deselect(me.thirdPartyStandardMetricGrid.activeRowIndex, true);
+			
+			if (me.standardMetrics.length == 0) {
+				for (var index = 0; index < me.metricTypes.length; index++) {
+					if (me.metricTypes[index].subType == "Thresholds - In House") {
+						var item = new fin.hcm.ptMetric.InHouseStandardMetric(0
+							, me.fiscalYears[me.year.indexSelected].id
+							, me.metricTypes[index]
+							, me.metricTypes[index].title
+							)
+						me.inHouseStandardMetrics.push(item);
+					}
+					else if (me.metricTypes[index].subType == "Thresholds - Third Party") {
+						var item = new fin.hcm.ptMetric.ThirdPartyStandardMetric(0
+							, me.fiscalYears[me.year.indexSelected].id
+							, me.metricTypes[index]
+							, me.metricTypes[index].title
+							)
+						me.thirdPartyStandardMetrics.push(item);
+					}
+				}
+			}
+			else {
+				for (var index = 0; index < me.standardMetrics.length; index++) {
+					if (me.standardMetrics[index].ptMetricType.subType == "Thresholds - In House") {
+						var item = new fin.hcm.ptMetric.InHouseStandardMetric(me.standardMetrics[index].id
+							, me.standardMetrics[index].yearId
+							, me.standardMetrics[index].ptMetricType
+							, me.standardMetrics[index].ptMetricType.title
+							, me.standardMetrics[index].onTimeScheduled
+							, me.standardMetrics[index].rta10
+							, me.standardMetrics[index].dtc20
+							, me.standardMetrics[index].rtc30
+							, me.standardMetrics[index].tpph
+							, me.standardMetrics[index].tppd
+							, me.standardMetrics[index].itppd
+							, me.standardMetrics[index].cancellation
+							, me.standardMetrics[index].delay
+							, me.standardMetrics[index].discharges
+							)
+						
+						me.inHouseStandardMetrics.push(item);
+					}
+					else if (me.standardMetrics[index].ptMetricType.subType == "Thresholds - Third Party") {
+						var item = new fin.hcm.ptMetric.ThirdPartyStandardMetric(me.standardMetrics[index].id
+							, me.standardMetrics[index].yearId
+							, me.standardMetrics[index].ptMetricType
+							, me.standardMetrics[index].ptMetricType.title
+							, me.standardMetrics[index].onTimeScheduled
+							, me.standardMetrics[index].rta10
+							, me.standardMetrics[index].dtc20
+							, me.standardMetrics[index].rtc30
+							, me.standardMetrics[index].tpph
+							, me.standardMetrics[index].tppd
+							, me.standardMetrics[index].itppd
+							, me.standardMetrics[index].cancellation
+							, me.standardMetrics[index].delay
+							, me.standardMetrics[index].discharges
+							)
+						
+						me.thirdPartyStandardMetrics.push(item);
+					}
+				}
+				
+				for (var index = 0; index < me.metricTypes.length; index++) {
+					if (me.metricTypes[index].subType == "Thresholds - In House") {
+						var result = $.grep(me.standardMetrics, function(item) { return item.ptMetricType.id == me.metricTypes[index].id; });
+						if (result.length == 0)
+                        	me.inHouseStandardMetrics.push(new fin.hcm.ptMetric.InHouseStandardMetric(0
+								, me.fiscalYears[me.year.indexSelected].id
+								, me.metricTypes[index]
+								, me.metricTypes[index].title
+								));
+					}
+					else if (me.metricTypes[index].subType == "Thresholds - Third Party") {
+						var result = $.grep(me.standardMetrics, function(item) { return item.ptMetricType.id == me.metricTypes[index].id; });
+						if (result.length == 0)
+                        	me.thirdPartyStandardMetrics.push(new fin.hcm.ptMetric.ThirdPartyStandardMetric(0
+								, me.fiscalYears[me.year.indexSelected].id
+								, me.metricTypes[index]
+								, me.metricTypes[index].title
+								));
+					}
+				}
+			}
+			
+			me.inHouseStandardMetricGrid.setData(me.inHouseStandardMetrics);
+			me.thirdPartyStandardMetricGrid.setData(me.thirdPartyStandardMetrics);
+		},
+
 		numericDetailsLoaded: function(me, activeId) {
 			
 			me.textDetailStore.fetch("userId:[user],ptMetricId:" + me.ptMetricId, me.textDetailsLoaded, me);
@@ -2149,6 +2850,36 @@ ii.Class({
 			}
 		},
 		
+		inHouseStandardMetricItemSelect: function() { 
+			var args = ii.args(arguments, {
+				index: {type: Number}  // The index of the data subItem to select
+			});
+			var me = this;
+			var index = args.index;
+						
+			if (me.inHouseStandardMetricGrid.data[index] != undefined) {
+				me.inHouseStandardMetricGrid.data[index].modified = true;
+				me.ihOnTimeScheduled.text.select();
+				me.ihOnTimeScheduled.text.focus();
+				me.ihMetricTypeTitle.text.readOnly = true;
+			}
+		},
+
+		thirdPartyStandardMetricItemSelect: function() { 
+			var args = ii.args(arguments, {
+				index: {type: Number}  // The index of the data subItem to select
+			});
+			var me = this;
+			var index = args.index;
+						
+			if (me.thirdPartyStandardMetricGrid.data[index] != undefined) {
+				me.thirdPartyStandardMetricGrid.data[index].modified = true;
+				me.tpOnTimeScheduled.text.select();
+				me.tpOnTimeScheduled.text.focus();
+				me.tpMetricTypeTitle.text.readOnly = true;
+			}
+		},
+		
 		actionUndoItem: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
@@ -2172,37 +2903,46 @@ ii.Class({
 			me.evsHCAHPSGrid.body.deselectAll();
 			me.qualityPartnershipGrid.body.deselectAll();
 			me.auditScoreGrid.body.deselectAll();
+			me.inHouseStandardMetricGrid.body.deselectAll();
+			me.thirdPartyStandardMetricGrid.body.deselectAll();
 
 			me.validator.forceBlur();
 			me.validator.queryValidity(true);
 
-			if (!me.chiefExecutiveOfficer.valid || !me.chiefFinancialOfficer.valid || !me.chiefOperatingOfficer.valid
-				|| !me.chiefNursingOfficer.valid || !me.contractStartDate.valid || !me.contractRenewalDate.valid
-				|| !me.cpiDueDate.valid || !me.cpiCap.valid || !me.hourlyFTEVacancies.valid || !me.fullTimePartTimeRatio.valid
-				|| !me.operatingCapacity.valid || !me.serviceLineEVS.valid || !me.serviceLineLaundry.valid
-				|| !me.serviceLinePOM.valid || !me.serviceLineCES.valid || !me.year.valid) {
-				alert("In order to save, the errors on the page must be corrected. Please verify the data on Hospital & Contract Tab.");
-				return false;
+			if (me.hospitalContractShow) {
+				if (!me.chiefExecutiveOfficer.valid || !me.chiefFinancialOfficer.valid || !me.chiefOperatingOfficer.valid
+					|| !me.chiefNursingOfficer.valid || !me.contractStartDate.valid || !me.contractRenewalDate.valid
+					|| !me.cpiDueDate.valid || !me.cpiCap.valid || !me.hourlyFTEVacancies.valid || !me.fullTimePartTimeRatio.valid
+					|| !me.operatingCapacity.valid || !me.serviceLineEVS.valid || !me.serviceLineLaundry.valid
+					|| !me.serviceLinePOM.valid || !me.serviceLineCES.valid || !me.year.valid) {
+					alert("In order to save, the errors on the page must be corrected. Please verify the data on Hospital & Contract Tab.");
+					return false;
+				}
 			}
-
-			if (me.laborControlGrid.activeRowIndex >= 0) {
+			
+			if (me.laborControlShow && me.laborControlGrid.activeRowIndex >= 0) {
 				alert("In order to save, the errors on the page must be corrected. Please verify the data on Labor Control Tab.");
 				return false;
 			}
 
-			if (me.strategicInitiativeGrid.activeRowIndex >= 0) {
+			if (me.strategicInitiativesShow && me.strategicInitiativeGrid.activeRowIndex >= 0) {
 				alert("In order to save, the errors on the page must be corrected. Please verify the data on Strategic Initiatives Tab.");
 				return false;
 			}
 
-			if (me.qualityControlGrid.activeRowIndex >= 0) {
+			if (me.qualityControlShow && me.qualityControlGrid.activeRowIndex >= 0) {
 				alert("In order to save, the errors on the page must be corrected. Please verify the data on Quality Control Tab.");
 				return false;
 			}
 
-			if (me.ptPressGaneyGrid.activeRowIndex >= 0	|| me.evsHCAHPSGrid.activeRowIndex >= 0 
-				|| me.qualityPartnershipGrid.activeRowIndex >= 0 || me.auditScoreGrid.activeRowIndex >= 0) {
+			if (me.qualityAssuranceShow && (me.ptPressGaneyGrid.activeRowIndex >= 0	|| me.evsHCAHPSGrid.activeRowIndex >= 0 
+				|| me.qualityPartnershipGrid.activeRowIndex >= 0 || me.auditScoreGrid.activeRowIndex >= 0)) {
 				alert("In order to save, the errors on the page must be corrected. Please verify the data on Quality Assurance Tab.");
+				return false;
+			}
+			
+			if (me.administrativeShow && (me.inHouseStandardMetricGrid.activeRowIndex >= 0 || me.thirdPartyStandardMetricGrid.activeRowIndex >= 0)) {
+				alert("In order to save, the errors on the page must be corrected. Please verify the data on Administrative Tab.");
 				return false;
 			}
 
@@ -2253,178 +2993,236 @@ ii.Class({
 			var me = this;
 			var xml = "";
 
-			xml += '<ptMetric';
-			xml += ' id="' + me.ptMetricId + '"';
-			xml += ' houseCodeId="' + parent.fin.appUI.houseCodeId + '"';
-			xml += ' yearId="' + me.fiscalYears[me.year.indexSelected].id + '"';
-			xml += ' chiefExecutiveOfficer="' + ui.cmn.text.xml.encode(me.chiefExecutiveOfficer.getValue()) + '"';
-			xml += ' chiefFinancialOfficer="' + ui.cmn.text.xml.encode(me.chiefFinancialOfficer.getValue()) + '"';
-			xml += ' chiefOperatingOfficer="' + ui.cmn.text.xml.encode(me.chiefOperatingOfficer.getValue()) + '"';
-			xml += ' chiefNursingOfficer="' + ui.cmn.text.xml.encode(me.chiefNursingOfficer.getValue()) + '"';
-			xml += ' contractStartDate="' + me.contractStartDate.lastBlurValue + '"';
-			xml += ' contractRenewalDate="' + me.contractRenewalDate.lastBlurValue + '"';
-			xml += ' cpiDueDate="' + me.cpiDueDate.lastBlurValue + '"';
-			xml += ' cpiCap="' + me.cpiCap.getValue() + '"';
-			xml += ' hourlyFTEVacancies="' + me.hourlyFTEVacancies.getValue() + '"';
-			xml += ' fullTimePartTimeRatio="' + ui.cmn.text.xml.encode(me.fullTimePartTimeRatio.getValue()) + '"';
-			xml += ' percentageOperatingCapacity="' + me.operatingCapacity.getValue() + '"';
-			xml += ' serviceLineEVS="' + ui.cmn.text.xml.encode(me.serviceLineEVS.getValue()) + '"';
-			xml += ' serviceLineLaundry="' + ui.cmn.text.xml.encode(me.serviceLineLaundry.getValue()) + '"';
-			xml += ' serviceLinePOM="' + ui.cmn.text.xml.encode(me.serviceLinePOM.getValue()) + '"';
-			xml += ' serviceLineCES="' + ui.cmn.text.xml.encode(me.serviceLineCES.getValue()) + '"';
-			xml += ' notes="' + ui.cmn.text.xml.encode(me.notes.value) + '"';
-			xml += '/>';
+			if (me.hospitalContractShow || me.laborControlShow || me.strategicInitiativesShow || me.qualityControlShow || me.qualityAssuranceShow) {
+				xml += '<ptMetric';
+				xml += ' id="' + me.ptMetricId + '"';
+				xml += ' houseCodeId="' + parent.fin.appUI.houseCodeId + '"';
+				xml += ' yearId="' + me.fiscalYears[me.year.indexSelected].id + '"';
+				xml += ' chiefExecutiveOfficer="' + ui.cmn.text.xml.encode(me.chiefExecutiveOfficer.getValue()) + '"';
+				xml += ' chiefFinancialOfficer="' + ui.cmn.text.xml.encode(me.chiefFinancialOfficer.getValue()) + '"';
+				xml += ' chiefOperatingOfficer="' + ui.cmn.text.xml.encode(me.chiefOperatingOfficer.getValue()) + '"';
+				xml += ' chiefNursingOfficer="' + ui.cmn.text.xml.encode(me.chiefNursingOfficer.getValue()) + '"';
+				xml += ' contractStartDate="' + me.contractStartDate.lastBlurValue + '"';
+				xml += ' contractRenewalDate="' + me.contractRenewalDate.lastBlurValue + '"';
+				xml += ' cpiDueDate="' + me.cpiDueDate.lastBlurValue + '"';
+				xml += ' cpiCap="' + me.cpiCap.getValue() + '"';
+				xml += ' hourlyFTEVacancies="' + me.hourlyFTEVacancies.getValue() + '"';
+				xml += ' fullTimePartTimeRatio="' + ui.cmn.text.xml.encode(me.fullTimePartTimeRatio.getValue()) + '"';
+				xml += ' percentageOperatingCapacity="' + me.operatingCapacity.getValue() + '"';
+				xml += ' serviceLineEVS="' + ui.cmn.text.xml.encode(me.serviceLineEVS.getValue()) + '"';
+				xml += ' serviceLineLaundry="' + ui.cmn.text.xml.encode(me.serviceLineLaundry.getValue()) + '"';
+				xml += ' serviceLinePOM="' + ui.cmn.text.xml.encode(me.serviceLinePOM.getValue()) + '"';
+				xml += ' serviceLineCES="' + ui.cmn.text.xml.encode(me.serviceLineCES.getValue()) + '"';
+				xml += ' notes="' + ui.cmn.text.xml.encode(me.notes.value) + '"';
+				xml += '/>';
+			}
 
-			for (var index = 0; index < me.laborControls.length; index++) {
-				if (me.laborControls[index].modified || me.laborControls[index].id == 0) {
-					me.laborControls[index].modified = false;
-					if (me.laborControls[index].id == 0)
-						me.reloadData = true;
-					if (me.laborControls[index].ptMetricType.dataType == "Decimal")
-						xml += '<ptMetricNumericDetail';
-					else
-						xml += '<ptMetricTextDetail';
-					xml += ' id="' + me.laborControls[index].id + '"';
-					xml += ' ptMetricId="' + me.ptMetricId + '"';
-					xml += ' ptMetricTypeId="' + me.laborControls[index].ptMetricType.id + '"';
-					xml += ' period1="' + ui.cmn.text.xml.encode(me.laborControls[index].period1) + '"';
-					xml += ' period2="' + ui.cmn.text.xml.encode(me.laborControls[index].period2) + '"';
-					xml += ' period3="' + ui.cmn.text.xml.encode(me.laborControls[index].period3) + '"';
-					xml += ' period4="' + ui.cmn.text.xml.encode(me.laborControls[index].period4) + '"';
-					xml += ' period5="' + ui.cmn.text.xml.encode(me.laborControls[index].period5) + '"';
-					xml += ' period6="' + ui.cmn.text.xml.encode(me.laborControls[index].period6) + '"';
-					xml += ' period7="' + ui.cmn.text.xml.encode(me.laborControls[index].period7) + '"';
-					xml += ' period8="' + ui.cmn.text.xml.encode(me.laborControls[index].period8) + '"';
-					xml += ' period9="' + ui.cmn.text.xml.encode(me.laborControls[index].period9) + '"';
-					xml += ' period10="' + ui.cmn.text.xml.encode(me.laborControls[index].period10) + '"';
-					xml += ' period11="' + ui.cmn.text.xml.encode(me.laborControls[index].period11) + '"';
-					xml += ' period12="' + ui.cmn.text.xml.encode(me.laborControls[index].period12) + '"';
-					xml += '/>';
+			if (me.laborControlShow) {
+				for (var index = 0; index < me.laborControls.length; index++) {
+					if (me.laborControls[index].modified || me.laborControls[index].id == 0) {
+						me.laborControls[index].modified = false;
+						if (me.laborControls[index].id == 0)
+							me.reloadData = true;
+						if (me.laborControls[index].ptMetricType.dataType == "Decimal")
+							xml += '<ptMetricNumericDetail';
+						else
+							xml += '<ptMetricTextDetail';
+						xml += ' id="' + me.laborControls[index].id + '"';
+						xml += ' ptMetricId="' + me.ptMetricId + '"';
+						xml += ' ptMetricTypeId="' + me.laborControls[index].ptMetricType.id + '"';
+						xml += ' period1="' + ui.cmn.text.xml.encode(me.laborControls[index].period1) + '"';
+						xml += ' period2="' + ui.cmn.text.xml.encode(me.laborControls[index].period2) + '"';
+						xml += ' period3="' + ui.cmn.text.xml.encode(me.laborControls[index].period3) + '"';
+						xml += ' period4="' + ui.cmn.text.xml.encode(me.laborControls[index].period4) + '"';
+						xml += ' period5="' + ui.cmn.text.xml.encode(me.laborControls[index].period5) + '"';
+						xml += ' period6="' + ui.cmn.text.xml.encode(me.laborControls[index].period6) + '"';
+						xml += ' period7="' + ui.cmn.text.xml.encode(me.laborControls[index].period7) + '"';
+						xml += ' period8="' + ui.cmn.text.xml.encode(me.laborControls[index].period8) + '"';
+						xml += ' period9="' + ui.cmn.text.xml.encode(me.laborControls[index].period9) + '"';
+						xml += ' period10="' + ui.cmn.text.xml.encode(me.laborControls[index].period10) + '"';
+						xml += ' period11="' + ui.cmn.text.xml.encode(me.laborControls[index].period11) + '"';
+						xml += ' period12="' + ui.cmn.text.xml.encode(me.laborControls[index].period12) + '"';
+						xml += '/>';
+					}
 				}
 			}
 
-			for (var index = 0; index < me.qualityControls.length; index++) {
-				if (me.qualityControls[index].modified || me.qualityControls[index].id == 0) {
-					me.qualityControls[index].modified = false;
-					if (me.qualityControls[index].id == 0)
-						me.reloadData = true;
-					if (me.qualityControls[index].ptMetricType.dataType == "Decimal" || me.qualityControls[index].ptMetricType.dataType == "Integer")
-						xml += '<ptMetricNumericDetail';
-					else
-						xml += '<ptMetricTextDetail';
-					xml += ' id="' + me.qualityControls[index].id + '"';
-					xml += ' ptMetricId="' + me.ptMetricId + '"';
-					xml += ' ptMetricTypeId="' + me.qualityControls[index].ptMetricType.id + '"';
-					xml += ' period1="' + ui.cmn.text.xml.encode(me.qualityControls[index].period1) + '"';
-					xml += ' period2="' + ui.cmn.text.xml.encode(me.qualityControls[index].period2) + '"';
-					xml += ' period3="' + ui.cmn.text.xml.encode(me.qualityControls[index].period3) + '"';
-					xml += ' period4="' + ui.cmn.text.xml.encode(me.qualityControls[index].period4) + '"';
-					xml += ' period5="' + ui.cmn.text.xml.encode(me.qualityControls[index].period5) + '"';
-					xml += ' period6="' + ui.cmn.text.xml.encode(me.qualityControls[index].period6) + '"';
-					xml += ' period7="' + ui.cmn.text.xml.encode(me.qualityControls[index].period7) + '"';
-					xml += ' period8="' + ui.cmn.text.xml.encode(me.qualityControls[index].period8) + '"';
-					xml += ' period9="' + ui.cmn.text.xml.encode(me.qualityControls[index].period9) + '"';
-					xml += ' period10="' + ui.cmn.text.xml.encode(me.qualityControls[index].period10) + '"';
-					xml += ' period11="' + ui.cmn.text.xml.encode(me.qualityControls[index].period11) + '"';
-					xml += ' period12="' + ui.cmn.text.xml.encode(me.qualityControls[index].period12) + '"';
-					xml += '/>';
+			if (me.strategicInitiativesShow) {
+				for (var index = 0; index < me.strategicInitiatives.length; index++) {
+					if (me.strategicInitiatives[index].modified || me.strategicInitiatives[index].id == 0) {
+						me.strategicInitiatives[index].modified = true;
+						xml += '<ptMetricStrategicInitiative';
+						xml += ' id="' + me.strategicInitiatives[index].id + '"';
+						xml += ' ptMetricId="' + me.ptMetricId + '"';
+						xml += ' hospitalIntiative="' + ui.cmn.text.xml.encode(me.strategicInitiatives[index].hospitalIntiative) + '"';
+						xml += ' expectedOutcome="' + ui.cmn.text.xml.encode(me.strategicInitiatives[index].expectedOutcome) + '"';
+						xml += ' departmentIntiative="' + ui.cmn.text.xml.encode(me.strategicInitiatives[index].departmentIntiative) + '"';
+						xml += '/>';
+					}
 				}
 			}
 
-			for (var index = 0; index < me.ptPressGaneys.length; index++) {
-				if (me.ptPressGaneys[index].modified || me.ptPressGaneys[index].id == 0) {
-					me.ptPressGaneys[index].modified = false;
-					if (me.ptPressGaneys[index].id == 0)
-						me.reloadData = true;
-					if (me.ptPressGaneys[index].ptMetricType.dataType == "Decimal")
-						xml += '<ptMetricNumericDetail';
-					else
-						xml += '<ptMetricTextDetail';
-					xml += ' id="' + me.ptPressGaneys[index].id + '"';
-					xml += ' ptMetricId="' + me.ptMetricId + '"';
-					xml += ' ptMetricTypeId="' + me.ptPressGaneys[index].ptMetricType.id + '"';
-					xml += ' period1="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period1) + '"';
-					xml += ' period2="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period2) + '"';
-					xml += ' period3="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period3) + '"';
-					xml += ' period4="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period4) + '"';
-					xml += ' period5="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period5) + '"';
-					xml += ' period6="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period6) + '"';
-					xml += ' period7="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period7) + '"';
-					xml += ' period8="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period8) + '"';
-					xml += ' period9="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period9) + '"';
-					xml += ' period10="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period10) + '"';
-					xml += ' period11="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period11) + '"';
-					xml += ' period12="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period12) + '"';
-					xml += '/>';
+			if (me.qualityControlShow) {
+				for (var index = 0; index < me.qualityControls.length; index++) {
+					if (me.qualityControls[index].modified || me.qualityControls[index].id == 0) {
+						me.qualityControls[index].modified = false;
+						if (me.qualityControls[index].id == 0)
+							me.reloadData = true;
+						if (me.qualityControls[index].ptMetricType.dataType == "Decimal" || me.qualityControls[index].ptMetricType.dataType == "Integer")
+							xml += '<ptMetricNumericDetail';
+						else
+							xml += '<ptMetricTextDetail';
+						xml += ' id="' + me.qualityControls[index].id + '"';
+						xml += ' ptMetricId="' + me.ptMetricId + '"';
+						xml += ' ptMetricTypeId="' + me.qualityControls[index].ptMetricType.id + '"';
+						xml += ' period1="' + ui.cmn.text.xml.encode(me.qualityControls[index].period1) + '"';
+						xml += ' period2="' + ui.cmn.text.xml.encode(me.qualityControls[index].period2) + '"';
+						xml += ' period3="' + ui.cmn.text.xml.encode(me.qualityControls[index].period3) + '"';
+						xml += ' period4="' + ui.cmn.text.xml.encode(me.qualityControls[index].period4) + '"';
+						xml += ' period5="' + ui.cmn.text.xml.encode(me.qualityControls[index].period5) + '"';
+						xml += ' period6="' + ui.cmn.text.xml.encode(me.qualityControls[index].period6) + '"';
+						xml += ' period7="' + ui.cmn.text.xml.encode(me.qualityControls[index].period7) + '"';
+						xml += ' period8="' + ui.cmn.text.xml.encode(me.qualityControls[index].period8) + '"';
+						xml += ' period9="' + ui.cmn.text.xml.encode(me.qualityControls[index].period9) + '"';
+						xml += ' period10="' + ui.cmn.text.xml.encode(me.qualityControls[index].period10) + '"';
+						xml += ' period11="' + ui.cmn.text.xml.encode(me.qualityControls[index].period11) + '"';
+						xml += ' period12="' + ui.cmn.text.xml.encode(me.qualityControls[index].period12) + '"';
+						xml += '/>';
+					}
+				}
+			}
+			
+			if (me.qualityAssuranceShow) {
+				for (var index = 0; index < me.ptPressGaneys.length; index++) {
+					if (me.ptPressGaneys[index].modified || me.ptPressGaneys[index].id == 0) {
+						me.ptPressGaneys[index].modified = false;
+						if (me.ptPressGaneys[index].id == 0)
+							me.reloadData = true;
+						if (me.ptPressGaneys[index].ptMetricType.dataType == "Decimal")
+							xml += '<ptMetricNumericDetail';
+						else
+							xml += '<ptMetricTextDetail';
+						xml += ' id="' + me.ptPressGaneys[index].id + '"';
+						xml += ' ptMetricId="' + me.ptMetricId + '"';
+						xml += ' ptMetricTypeId="' + me.ptPressGaneys[index].ptMetricType.id + '"';
+						xml += ' period1="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period1) + '"';
+						xml += ' period2="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period2) + '"';
+						xml += ' period3="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period3) + '"';
+						xml += ' period4="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period4) + '"';
+						xml += ' period5="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period5) + '"';
+						xml += ' period6="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period6) + '"';
+						xml += ' period7="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period7) + '"';
+						xml += ' period8="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period8) + '"';
+						xml += ' period9="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period9) + '"';
+						xml += ' period10="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period10) + '"';
+						xml += ' period11="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period11) + '"';
+						xml += ' period12="' + ui.cmn.text.xml.encode(me.ptPressGaneys[index].period12) + '"';
+						xml += '/>';
+					}
+				}
+	
+				for (var index = 0; index < me.evsHCAHPS.length; index++) {
+					if (me.evsHCAHPS[index].modified || me.evsHCAHPS[index].id == 0) {
+						me.evsHCAHPS[index].modified = false;
+						if (me.evsHCAHPS[index].id == 0)
+							me.reloadData = true;
+						if (me.evsHCAHPS[index].ptMetricType.dataType == "Decimal")
+							xml += '<ptMetricNumericDetail';
+						else
+							xml += '<ptMetricTextDetail';
+						xml += ' id="' + me.evsHCAHPS[index].id + '"';
+						xml += ' ptMetricId="' + me.ptMetricId + '"';
+						xml += ' ptMetricTypeId="' + me.evsHCAHPS[index].ptMetricType.id + '"';
+						xml += ' period1="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period1) + '"';
+						xml += ' period2="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period2) + '"';
+						xml += ' period3="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period3) + '"';
+						xml += ' period4="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period4) + '"';
+						xml += ' period5="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period5) + '"';
+						xml += ' period6="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period6) + '"';
+						xml += ' period7="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period7) + '"';
+						xml += ' period8="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period8) + '"';
+						xml += ' period9="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period9) + '"';
+						xml += ' period10="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period10) + '"';
+						xml += ' period11="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period11) + '"';
+						xml += ' period12="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period12) + '"';
+						xml += '/>';
+					}
+				}
+
+				for (var index = 0; index < me.qualityPartnerships.length; index++) {
+					if (me.qualityPartnerships[index].modified || me.qualityPartnerships[index].id == 0) {
+						me.qualityPartnerships[index].modified = true;
+						xml += '<ptMetricQualityPartnership';
+						xml += ' id="' + me.qualityPartnerships[index].id + '"';
+						xml += ' ptMetricId="' + me.ptMetricId + '"';
+						xml += ' ptMetricTypeId="' + me.qualityPartnerships[index].ptMetricType.id + '"';
+						xml += ' quarter1="' + me.qualityPartnerships[index].quarter1 + '"';
+						xml += ' quarter2="' + me.qualityPartnerships[index].quarter2 + '"';
+						xml += ' quarter3="' + me.qualityPartnerships[index].quarter3 + '"';
+						xml += ' quarter4="' + me.qualityPartnerships[index].quarter4 + '"';
+						xml += '/>';
+					}
+				}
+	
+				for (var index = 0; index < me.auditScores.length; index++) {
+					if (me.auditScores[index].modified || me.auditScores[index].id == 0) {
+						me.auditScores[index].modified = true;
+						xml += '<ptMetricAuditScore';
+						xml += ' id="' + me.auditScores[index].id + '"';
+						xml += ' ptMetricId="' + me.ptMetricId + '"';
+						xml += ' ptMetricTypeId="' + me.auditScores[index].ptMetricType.id + '"';
+						xml += ' annual1="' + me.auditScores[index].annual1 + '"';
+						xml += ' annual2="' + me.auditScores[index].annual2 + '"';
+						xml += '/>';
+					}
 				}
 			}
 
-			for (var index = 0; index < me.evsHCAHPS.length; index++) {
-				if (me.evsHCAHPS[index].modified || me.evsHCAHPS[index].id == 0) {
-					me.evsHCAHPS[index].modified = false;
-					if (me.evsHCAHPS[index].id == 0)
-						me.reloadData = true;
-					if (me.evsHCAHPS[index].ptMetricType.dataType == "Decimal")
-						xml += '<ptMetricNumericDetail';
-					else
-						xml += '<ptMetricTextDetail';
-					xml += ' id="' + me.evsHCAHPS[index].id + '"';
-					xml += ' ptMetricId="' + me.ptMetricId + '"';
-					xml += ' ptMetricTypeId="' + me.evsHCAHPS[index].ptMetricType.id + '"';
-					xml += ' period1="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period1) + '"';
-					xml += ' period2="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period2) + '"';
-					xml += ' period3="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period3) + '"';
-					xml += ' period4="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period4) + '"';
-					xml += ' period5="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period5) + '"';
-					xml += ' period6="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period6) + '"';
-					xml += ' period7="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period7) + '"';
-					xml += ' period8="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period8) + '"';
-					xml += ' period9="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period9) + '"';
-					xml += ' period10="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period10) + '"';
-					xml += ' period11="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period11) + '"';
-					xml += ' period12="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period12) + '"';
-					xml += '/>';
+			if (me.administrativeShow) {
+				for (var index = 0; index < me.inHouseStandardMetrics.length; index++) {
+					if (me.inHouseStandardMetrics[index].modified || me.inHouseStandardMetrics[index].id == 0) {
+						me.inHouseStandardMetrics[index].modified = false;
+						if (me.inHouseStandardMetrics[index].id == 0)
+							me.reloadData = true;
+						xml += '<ptStandardMetric';
+						xml += ' id="' + me.inHouseStandardMetrics[index].id + '"';
+						xml += ' yearId="' + me.inHouseStandardMetrics[index].yearId + '"';
+						xml += ' ptMetricTypeId="' + me.inHouseStandardMetrics[index].ptMetricType.id + '"';
+						xml += ' onTimeScheduled="' + me.inHouseStandardMetrics[index].onTimeScheduled + '"';
+						xml += ' rta10="' + me.inHouseStandardMetrics[index].rta10 + '"';
+						xml += ' dtc20="' + me.inHouseStandardMetrics[index].dtc20 + '"';
+						xml += ' rtc30="' + me.inHouseStandardMetrics[index].rtc30 + '"';
+						xml += ' tpph="' + me.inHouseStandardMetrics[index].tpph + '"';
+						xml += ' tppd="' + me.inHouseStandardMetrics[index].tppd + '"';
+						xml += ' itppd="' + me.inHouseStandardMetrics[index].itppd + '"';
+						xml += ' cancellation="' + me.inHouseStandardMetrics[index].cancellation + '"';
+						xml += ' delay="' + me.inHouseStandardMetrics[index].delay + '"';
+						xml += ' discharges="' + me.inHouseStandardMetrics[index].discharges + '"';
+						xml += '/>';
+					}
 				}
-			}
-
-			for (var index = 0; index < me.strategicInitiatives.length; index++) {
-				if (me.strategicInitiatives[index].modified || me.strategicInitiatives[index].id == 0) {
-					me.strategicInitiatives[index].modified = true;
-					xml += '<ptMetricStrategicInitiative';
-					xml += ' id="' + me.strategicInitiatives[index].id + '"';
-					xml += ' ptMetricId="' + me.ptMetricId + '"';
-					xml += ' hospitalIntiative="' + ui.cmn.text.xml.encode(me.strategicInitiatives[index].hospitalIntiative) + '"';
-					xml += ' expectedOutcome="' + ui.cmn.text.xml.encode(me.strategicInitiatives[index].expectedOutcome) + '"';
-					xml += ' departmentIntiative="' + ui.cmn.text.xml.encode(me.strategicInitiatives[index].departmentIntiative) + '"';
-					xml += '/>';
-				}
-			}
-
-			for (var index = 0; index < me.qualityPartnerships.length; index++) {
-				if (me.qualityPartnerships[index].modified || me.qualityPartnerships[index].id == 0) {
-					me.qualityPartnerships[index].modified = true;
-					xml += '<ptMetricQualityPartnership';
-					xml += ' id="' + me.qualityPartnerships[index].id + '"';
-					xml += ' ptMetricId="' + me.ptMetricId + '"';
-					xml += ' ptMetricTypeId="' + me.qualityPartnerships[index].ptMetricType.id + '"';
-					xml += ' quarter1="' + me.qualityPartnerships[index].quarter1 + '"';
-					xml += ' quarter2="' + me.qualityPartnerships[index].quarter2 + '"';
-					xml += ' quarter3="' + me.qualityPartnerships[index].quarter3 + '"';
-					xml += ' quarter4="' + me.qualityPartnerships[index].quarter4 + '"';
-					xml += '/>';
-				}
-			}
-
-			for (var index = 0; index < me.auditScores.length; index++) {
-				if (me.auditScores[index].modified || me.auditScores[index].id == 0) {
-					me.auditScores[index].modified = true;
-					xml += '<ptMetricAuditScore';
-					xml += ' id="' + me.auditScores[index].id + '"';
-					xml += ' ptMetricId="' + me.ptMetricId + '"';
-					xml += ' ptMetricTypeId="' + me.auditScores[index].ptMetricType.id + '"';
-					xml += ' annual1="' + me.auditScores[index].annual1 + '"';
-					xml += ' annual2="' + me.auditScores[index].annual2 + '"';
-					xml += '/>';
+				
+				for (var index = 0; index < me.thirdPartyStandardMetrics.length; index++) {
+					if (me.thirdPartyStandardMetrics[index].modified || me.thirdPartyStandardMetrics[index].id == 0) {
+						me.thirdPartyStandardMetrics[index].modified = false;
+						if (me.thirdPartyStandardMetrics[index].id == 0)
+							me.reloadData = true;
+						xml += '<ptStandardMetric';
+						xml += ' id="' + me.thirdPartyStandardMetrics[index].id + '"';
+						xml += ' yearId="' + me.thirdPartyStandardMetrics[index].yearId + '"';
+						xml += ' ptMetricTypeId="' + me.thirdPartyStandardMetrics[index].ptMetricType.id + '"';
+						xml += ' onTimeScheduled="' + me.thirdPartyStandardMetrics[index].onTimeScheduled + '"';
+						xml += ' rta10="' + me.thirdPartyStandardMetrics[index].rta10 + '"';
+						xml += ' dtc20="' + me.thirdPartyStandardMetrics[index].dtc20 + '"';
+						xml += ' rtc30="' + me.thirdPartyStandardMetrics[index].rtc30 + '"';
+						xml += ' tpph="' + me.thirdPartyStandardMetrics[index].tpph + '"';
+						xml += ' tppd="' + me.thirdPartyStandardMetrics[index].tppd + '"';
+						xml += ' itppd="' + me.thirdPartyStandardMetrics[index].itppd + '"';
+						xml += ' cancellation="' + me.thirdPartyStandardMetrics[index].cancellation + '"';
+						xml += ' delay="' + me.thirdPartyStandardMetrics[index].delay + '"';
+						xml += ' discharges="' + me.thirdPartyStandardMetrics[index].discharges + '"';
+						xml += '/>';
+					}
 				}
 			}
 
@@ -2511,7 +3309,9 @@ ii.Class({
 			else {
 				me.numericDetailStore.reset();
 				me.textDetailStore.reset();
+				me.standardMetricStore.reset();
 				me.numericDetailStore.fetch("userId:[user],ptMetricId:" + me.ptMetricId, me.numericDetailsLoaded, me);
+				me.standardMetricStore.fetch("userId:[user],yearId:" + me.fiscalYears[me.year.indexSelected].id, me.standardMetricsLoaded, me);
 			}
 		}
 	}

@@ -24,11 +24,13 @@
         
 		<div class="pageHeader">
 	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
-			<div id="LabelTextAreaLeftHeader">House Code:</div>
-			<div id="DropDownRightHouseCode">
-				<div id="houseCodeContainer" class="HouseCodeContainer"></div>
+			<div id="HouseCode">
+				<div id="LabelTextAreaLeftHeader">House Code:</div>
+				<div id="DropDownRightHouseCode">
+					<div id="houseCodeContainer" class="HouseCodeContainer"></div>
+				</div>
 			</div>
-			<div class="labelText">Year:</div>
+			<div class="labelTextYear">Year:</div>
 			<div class="inputTextSmall">
 				<div id="Year"></div>
 			</div>
@@ -273,12 +275,30 @@
 					</div>
 					<div style="clear:both;"></div>
 	    		</div>
+				<div id="fragment-6" class="fragment">
+	    			<div id="AdministrativeContainer" class="contentArea">
+			        	<div class="header">Administrative</div>
+						<div id="GridAdministrative">
+							<div class="subHeader">In House:</div>
+							<div id="InHouseStandardMetricGridContainer">
+								<div id="InHouseStandardMetricGrid"></div>
+							</div>
+							<div style="clear:both;height:10px;"></div>
+							<div class="subHeader">Third Party:</div>
+							<div id="ThirdPartyStandardMetricGridContainer">
+								<div id="ThirdPartyStandardMetricGrid"></div>
+							</div>
+						</div>
+					</div>
+					<div style="clear:both;"></div>
+	    		</div>
 	    		<ul id="TabCollection">
-					<li><a id="TabHospitalContract" href="#fragment-1"><span>Hospital & Contract</span></a></li>
-	                <li><a id="TabLaborControl" href="#fragment-2"><span>Labor Control</span></a></li>
-	                <li><a id="TabStrategicInitiative" href="#fragment-3"><span>Strategic Initiatives</span></a></li>
-	                <li><a id="TabQualityControl" href="#fragment-4"><span>Quality Control</span></a></li>
-					<li><a id="TabQualityAssurance" href="#fragment-5"><span>Quality Assurance</span></a></li>
+					<li><a id="TabHospitalContract" href="#fragment-1" style="display:none;"><span>Hospital & Contract</span></a></li>
+	                <li><a id="TabLaborControl" href="#fragment-2" style="display:none;"><span>Labor Control</span></a></li>
+	                <li><a id="TabStrategicInitiative" href="#fragment-3" style="display:none;"><span>Strategic Initiatives</span></a></li>
+	                <li><a id="TabQualityControl" href="#fragment-4" style="display:none;"><span>Quality Control</span></a></li>
+					<li><a id="TabQualityAssurance" href="#fragment-5" style="display:none;"><span>Quality Assurance</span></a></li>
+					<li><a id="TabAdministrative" href="#fragment-6" style="display:none;"><span>Administrative</span></a></li>
 	            </ul>
 			</div>
 			<div style="clear:both;"></div>
