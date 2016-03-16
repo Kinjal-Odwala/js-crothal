@@ -299,7 +299,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 	            $scope.empAction.NewManagerTitle = obj.ReportingTitle;
 	            $scope.empAction.NewManagerEmail = obj.ReportingEmail;
 	            $scope.empAction.NewManagerNumber = obj.ReportingManagerNumber;
-	            if ($scope.empAction.NewManagerNumber != null) {
+	            if ($scope.empAction.NewManagerNumber != null && $scope.empAction.NewManagerNumber != "") {
 	                getManagerDetail($scope.empAction.NewManagerNumber, function (response) {
 	                    if (!angular.isDefined(response)) {
 	                        $scope.empAction.RegionalManagerNumber = null;
@@ -361,13 +361,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 	    });
 	};
 
-	getAdministratorDetail(function (response) {
-	    if (angular.isDefined(response)) {
-	        $scope.empAction.AdministratorEmail = response.empEmail;
-	        $scope.disableAdminEmail = response.empEmail && response.empEmail.length > 0;
-	    }
-    });
-
 	var loadCompensations = function (employeeNumber) {
 
 	    getEmpCompensation(employeeNumber, function (response) {
@@ -422,16 +415,16 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                         $scope.empAction.ManagerNumber = response.empClock;
                     }
                     if (positionType == "Promotion" || positionType == "Demotion" || positionType == "SalaryChange") {
-                        $scope.empAction.NewManagerName = response.ReportingName;
-                        $scope.empAction.NewManagerTitle = response.ReportingTitle;
-                        $scope.empAction.NewManagerEmail = response.ReportingEmail;
-                        $scope.empAction.NewManagerNumber = response.ReportingManagerNumber;
+                        $scope.empAction.NewManagerName = response.empFirstName + " " + response.empLastName;
+                        $scope.empAction.NewManagerTitle = response.empTitle;
+                        $scope.empAction.NewManagerEmail = response.empEmail;
+                        $scope.empAction.NewManagerNumber = response.empClock;
                     }
                     if (positionType == "Transfer") {
-                        $scope.empAction.TransferManagerName = response.ReportingName;
-                        $scope.empAction.TransferManagerTitle = response.ReportingTitle;
-                        $scope.empAction.TransferManagerEmail = response.ReportingEmail;
-                        $scope.empAction.TransferManagerNumber = response.ReportingManagerNumber;
+                        $scope.empAction.TransferManagerName = response.empFirstName + " " + response.empLastName;
+                        $scope.empAction.TransferManagerTitle = response.empTitle;
+                        $scope.empAction.TransferManagerEmail = response.empEmail;
+                        $scope.empAction.TransferManagerNumber = response.empClock;
                     }
                     $scope.empAction.Data[positionType].CacheReportingManagerNumber = response.empClock;
                     $scope.empAction.Data[positionType].DisabledReportFields = response.empClock && response.empClock.length > 0 && response.empTitle && response.empTitle.length > 0 && response.empEmail && response.empEmail.length > 0;
@@ -440,7 +433,28 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         }
         else
             return;
-    };
+	};
+
+	$scope.getRegionalManagerInfo = function (employeeNumber, positionType) {
+
+	    if (employeeNumber !== "" && $scope.empAction.Data && ($scope.empAction.RegionalManagerNumber.length === 0 || parseInt(employeeNumber) !== parseInt($scope.empAction.Data[positionType].CacheReportingManagerNumber))) {
+	        $scope.empAction.Data[positionType].CacheReportingManagerNumber = employeeNumber;
+
+	            getManagerDetail(employeeNumber, function (response) {
+	            if (!angular.isDefined(response)) {
+	                alert("The Managers/Clock Number you enter is not exist.");
+	                return;
+	            }
+	            
+	            $scope.empAction.RegionalManagerName = response.empFirstName + " " + response.empLastName;
+	            $scope.empAction.RegionalManagerTitle = response.empTitle;
+	            $scope.empAction.RegionalManagerEmail = response.empEmail;
+	            $scope.empAction.RegionalManagerNumber = response.empClock;
+	        });
+	    }
+	    else
+	        return;
+	};
 
     $scope.isManagerFieldRequired = function (item) {
 
@@ -519,6 +533,12 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             $scope.authorizations = result;
             authorizationsLoaded();
         });
+        getAdministratorDetail(function (response) {
+            if (angular.isDefined(response)) {
+                $scope.empAction.AdministratorEmail = response.empEmail;
+                $scope.disableAdminEmail = response.empEmail && response.empEmail.length > 0;
+            }
+        });
     };
 
     $scope.getPayRange = function (payGrade, salary) {
@@ -563,6 +583,12 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 return;
             }
             $scope.empAction = result;
+
+            if ($scope.empAction.NewHire) {
+                $scope.empAction.EmployeeNumber = null;
+                $scope.newHireChecked = true;
+            }
+            
             if ($scope.empAction.ResignationType > 0) {
                 $scope.empAction.SeparationReason = "ResignationType";
             }
@@ -1367,6 +1393,15 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         return EmpActions.getTitleById(item.HcmHouseCode, $scope.HcmHouseCodes);
     };
 
+    $scope.onDateChange = function () {
+        var startDate = new Date($scope.pafFilter.pafDate);
+        var endDate = new Date($scope.pafFilter.endDate);
+
+        if (endDate.getTime() < startDate.getTime()) {
+            $scope.pafFilter.endDate = null;
+        }
+    }
+
     $scope.getDate = function (date) {
         if (!angular.isDefined(date))
             return;
@@ -1556,11 +1591,12 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
             dtOption: '=',
             dtModel: '=dtModel',
             minDate: '=',
-            dtChange: '&dtChange'
+            dtChange: '&dtChange',
+            dtBlur: '&dtBlur'
         },
         restrict: 'E',
         require: '?ngModel',
-        template: '<p class="input-group" style="margin-bottom:0px;"><input class="form-control input-sm" name="{{dtName}}" min-date="minDate" ng-change="dtChange()" ng-required="dtRequired" datepicker-popup="MM/dd/yyyy" pdf-datepicker-popup-config ng-model="dtModel" is-open="opened"  show-button-bar="{{showButtonBar}}" datepicker-append-to-body="false" datepicker-options="dateOptions" date-disabled="disabled(date, mode)"  close-text="Close" /><span class="input-group-btn"><button type="button" class="btn btn-default btn-sm" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button></span></p>',
+        template: '<p class="input-group" style="margin-bottom:0px;"><input class="form-control input-sm" name="{{dtName}}" min-date="minDate" ng-change="dtChange()" ng-blur="dtBlur()" ng-required="dtRequired" datepicker-popup="MM/dd/yyyy" pdf-datepicker-popup-config ng-model="dtModel" is-open="opened"  show-button-bar="{{showButtonBar}}" datepicker-append-to-body="false" datepicker-options="dateOptions" date-disabled="disabled(date, mode)"  close-text="Close" /><span class="input-group-btn"><button type="button" class="btn btn-default btn-sm" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button></span></p>',
         link: function (scope, elem, attrs, ngModel) {
             scope.opened = false;
             scope.dtPopup = "dd-MMMM-yyyy";
