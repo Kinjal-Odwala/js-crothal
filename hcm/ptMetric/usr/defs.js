@@ -39,6 +39,16 @@ ii.init.register( function() {
 		, dataType: {type: String, required: false, defaultValue: ""}
 		, displayOrder: {type: Number, required: false, defaultValue: 0}
 	};
+	
+	fin.hcm.ptMetric.taskManagementSystemArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+	};
+	
+	fin.hcm.ptMetric.administratorObjectiveArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+	};
 
 	fin.hcm.ptMetric.metricArgs = {
 		id: {type: Number}
@@ -59,6 +69,13 @@ ii.init.register( function() {
 		, serviceLineLaundry: {type: String, required: false, defaultValue: ""}
 		, serviceLinePOM: {type: String, required: false, defaultValue: ""}
 		, serviceLineCES: {type: String, required: false, defaultValue: ""}
+		, costedTripCycleTime: {type: String, required: false, defaultValue: ""}
+		, contractedAnnualTrips: {type: String, required: false, defaultValue: ""}
+		, taskManagementSystem: {type: Number, required: false, defaultValue: 0}
+		, taskManagementSystemOther: {type: String, required: false, defaultValue: ""}
+		, administratorObjective1: {type: Number, required: false, defaultValue: 0}
+		, administratorObjective2: {type: Number, required: false, defaultValue: 0}
+		, administratorObjective3: {type: Number, required: false, defaultValue: 0}
 		, notes: {type: String, required: false, defaultValue: ""}
 	};
 	
@@ -209,6 +226,59 @@ ii.init.register( function() {
 		, modified: {type: Boolean, required: false, defaultValue: false}
 	};
 
+	fin.hcm.ptMetric.standardMetricArgs = {
+		id: {type: Number}
+		, yearId: {type: Number, defaultValue: 0}
+		, ptMetricType: {type: fin.hcm.ptMetric.MetricType, required: false}
+		, ptMetricTypeTitle: {type: String, required: false, defaultValue: ""}
+		, onTimeScheduled: {type: String, required: false, defaultValue: ""}
+		, rta10: {type: String, required: false, defaultValue: ""}
+		, dtc20: {type: String, required: false, defaultValue: ""}
+		, rtc30: {type: String, required: false, defaultValue: ""}
+		, tpph: {type: String, required: false, defaultValue: ""}
+		, tppd: {type: String, required: false, defaultValue: ""}
+		, itppd: {type: String, required: false, defaultValue: ""}
+		, cancellation: {type: String, required: false, defaultValue: ""}
+		, delay: {type: String, required: false, defaultValue: ""}
+		, discharges: {type: String, required: false, defaultValue: ""}
+	};
+	
+	fin.hcm.ptMetric.inHouseStandardMetricArgs = {
+		id: {type: Number}
+		, yearId: {type: Number, defaultValue: 0}
+		, ptMetricType: {type: fin.hcm.ptMetric.MetricType, required: false}
+		, ptMetricTypeTitle: {type: String, required: false, defaultValue: ""}
+		, onTimeScheduled: {type: String, required: false, defaultValue: ""}
+		, rta10: {type: String, required: false, defaultValue: ""}
+		, dtc20: {type: String, required: false, defaultValue: ""}
+		, rtc30: {type: String, required: false, defaultValue: ""}
+		, tpph: {type: String, required: false, defaultValue: ""}
+		, tppd: {type: String, required: false, defaultValue: ""}
+		, itppd: {type: String, required: false, defaultValue: ""}
+		, cancellation: {type: String, required: false, defaultValue: ""}
+		, delay: {type: String, required: false, defaultValue: ""}
+		, discharges: {type: String, required: false, defaultValue: ""}
+		, modified: {type: Boolean, required: false, defaultValue: false}
+	};
+
+	fin.hcm.ptMetric.thirdPartyStandardMetricArgs = {
+		id: {type: Number}
+		, yearId: {type: Number, defaultValue: 0}
+		, ptMetricType: {type: fin.hcm.ptMetric.MetricType, required: false}
+		, ptMetricTypeTitle: {type: String, required: false, defaultValue: ""}
+		, onTimeScheduled: {type: String, required: false, defaultValue: ""}
+		, rta10: {type: String, required: false, defaultValue: ""}
+		, dtc20: {type: String, required: false, defaultValue: ""}
+		, rtc30: {type: String, required: false, defaultValue: ""}
+		, tpph: {type: String, required: false, defaultValue: ""}
+		, tppd: {type: String, required: false, defaultValue: ""}
+		, itppd: {type: String, required: false, defaultValue: ""}
+		, cancellation: {type: String, required: false, defaultValue: ""}
+		, delay: {type: String, required: false, defaultValue: ""}
+		, discharges: {type: String, required: false, defaultValue: ""}
+		, modified: {type: Boolean, required: false, defaultValue: false}
+	};
+	
 }, 2);
 
 ii.Class({
@@ -236,6 +306,26 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.ptMetric.fiscalYearArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.ptMetric.TaskManagementSystem",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.ptMetric.taskManagementSystemArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.ptMetric.AdministratorObjective",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.ptMetric.administratorObjectiveArgs);
 			$.extend(this, args);
 		}
 	}
@@ -346,6 +436,36 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.ptMetric.auditScoreArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.ptMetric.StandardMetric",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.ptMetric.standardMetricArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.ptMetric.InHouseStandardMetric",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.ptMetric.inHouseStandardMetricArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.ptMetric.ThirdPartyStandardMetric",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.ptMetric.thirdPartyStandardMetricArgs);
 			$.extend(this, args);
 		}
 	}

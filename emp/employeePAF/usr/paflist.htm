@@ -39,7 +39,7 @@
             <div class="form-group">
                 <label class="col-md-4 col-sm-3 col-xs-3 control-label">Start Date</label>
                 <div class="col-md-8 col-sm-9 col-xs-9">
-                    <paf-datepicker dt-option="dateOptions" dt-name="Date" dt-popup="MM/dd/yyyy" dt-model="pafFilter.pafDate"></paf-datepicker>
+                    <paf-datepicker dt-option="dateOptions" dt-name="Date" dt-popup="MM/dd/yyyy" dt-model="pafFilter.pafDate" dt-blur="onDateChange()"></paf-datepicker>
                 </div>
             </div>
         </div>
@@ -47,7 +47,7 @@
             <div class="form-group">
                 <label class="col-md-4 col-sm-3 col-xs-3 control-label">End Date</label>
                 <div class="col-md-8 col-sm-9 col-xs-9">
-                    <paf-datepicker dt-option="dateOptions" dt-name="endDate" dt-popup="MM/dd/yyyy" dt-model="pafFilter.endDate"></paf-datepicker>
+                    <paf-datepicker dt-option="dateOptions" dt-name="endDate" min-date="pafFilter.pafDate" dt-popup="MM/dd/yyyy" dt-model="pafFilter.endDate"></paf-datepicker>
                 </div>
             </div>
         </div>
