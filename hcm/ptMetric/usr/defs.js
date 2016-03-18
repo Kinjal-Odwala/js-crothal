@@ -39,6 +39,16 @@ ii.init.register( function() {
 		, dataType: {type: String, required: false, defaultValue: ""}
 		, displayOrder: {type: Number, required: false, defaultValue: 0}
 	};
+	
+	fin.hcm.ptMetric.taskManagementSystemArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+	};
+	
+	fin.hcm.ptMetric.administratorObjectiveArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+	};
 
 	fin.hcm.ptMetric.metricArgs = {
 		id: {type: Number}
@@ -59,6 +69,13 @@ ii.init.register( function() {
 		, serviceLineLaundry: {type: String, required: false, defaultValue: ""}
 		, serviceLinePOM: {type: String, required: false, defaultValue: ""}
 		, serviceLineCES: {type: String, required: false, defaultValue: ""}
+		, costedTripCycleTime: {type: String, required: false, defaultValue: ""}
+		, contractedAnnualTrips: {type: String, required: false, defaultValue: ""}
+		, taskManagementSystem: {type: Number, required: false, defaultValue: 0}
+		, taskManagementSystemOther: {type: String, required: false, defaultValue: ""}
+		, administratorObjective1: {type: Number, required: false, defaultValue: 0}
+		, administratorObjective2: {type: Number, required: false, defaultValue: 0}
+		, administratorObjective3: {type: Number, required: false, defaultValue: 0}
 		, notes: {type: String, required: false, defaultValue: ""}
 	};
 	
@@ -289,6 +306,26 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.ptMetric.fiscalYearArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.ptMetric.TaskManagementSystem",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.ptMetric.taskManagementSystemArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.ptMetric.AdministratorObjective",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.ptMetric.administratorObjectiveArgs);
 			$.extend(this, args);
 		}
 	}

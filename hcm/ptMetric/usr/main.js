@@ -92,6 +92,8 @@ ii.Class({
 				ii.timer.timing("Page displayed");
 				me.session.registerFetchNotify(me.sessionLoaded, me);
 				me.fiscalYearStore.fetch("userId:[user]", me.fiscalYearsLoaded, me);
+				me.taskManagementSystemStore.fetch("userId:[user]", me.taskManagementSystemsLoaded, me);
+				me.administratorObjectiveStore.fetch("userId:[user]", me.administratorObjectivesLoaded, me);
 				me.metricTypeStore.fetch("userId:[user]", me.metricTypesLoaded, me);
 			}
 			else
@@ -420,6 +422,133 @@ ii.Class({
 				changeFunction: function() { me.modified(); }
 		    });
 
+			me.costedTripCycleTime = new ui.ctl.Input.Text({
+		        id: "CostedTripCycleTime",
+		        maxLength: 9,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.costedTripCycleTime
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+					var enteredText = me.costedTripCycleTime.getValue();
+
+					if (enteredText == "")
+						return;
+
+					if (!(/^\d{1,9}$/.test(enteredText)))
+						this.setInvalid("Please enter valid number.");
+				});
+				
+			me.contractedAnnualTrips = new ui.ctl.Input.Text({
+		        id: "ContractedAnnualTrips",
+		        maxLength: 9,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.contractedAnnualTrips
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+					var enteredText = me.contractedAnnualTrips.getValue();
+
+					if (enteredText == "")
+						return;
+
+					if (!(/^\d{1,9}$/.test(enteredText)))
+						this.setInvalid("Please enter valid number.");
+				});
+				
+			me.taskManagementSystem = new ui.ctl.Input.DropDown.Filtered({
+		        id: "TaskManagementSystem",
+				formatFunction: function(type) { return type.name; },
+				changeFunction: function() { 
+					me.modified();
+					if (me.taskManagementSystem.lastBlurValue == "Other") {
+						$("#TMSOtherContainer").show();
+					}
+					else {
+						$("#TMSOtherContainer").hide();
+						me.taskManagementSystemOther.setValue("");
+					}
+				}
+		    });
+			
+			me.taskManagementSystem.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(function( isFinal, dataMap) {				
+	
+					var enteredText = me.taskManagementSystem.lastBlurValue;
+
+					if (enteredText == "")
+						return;
+	
+					if (me.taskManagementSystem.indexSelected == -1)
+						this.setInvalid("Please select the correct Task Management System.");
+			});
+			
+			me.taskManagementSystemOther = new ui.ctl.Input.Text({
+		        id: "TaskManagementSystemOther",
+		        maxLength: 64,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.administratorObjective1 = new ui.ctl.Input.DropDown.Filtered({
+		        id: "AdministratorObjective1",
+				formatFunction: function(type) { return type.name; },
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.administratorObjective1.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(function( isFinal, dataMap) {				
+	
+					var enteredText = me.administratorObjective1.lastBlurValue;
+
+					if (enteredText == "")
+						return;
+	
+					if (me.administratorObjective1.indexSelected == -1)
+						this.setInvalid("Please select the correct Objective 1.");
+			});
+			
+			me.administratorObjective2 = new ui.ctl.Input.DropDown.Filtered({
+		        id: "AdministratorObjective2",
+				formatFunction: function(type) { return type.name; },
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.administratorObjective2.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(function( isFinal, dataMap) {				
+	
+					var enteredText = me.administratorObjective2.lastBlurValue;
+
+					if (enteredText == "")
+						return;
+	
+					if (me.administratorObjective2.indexSelected == -1)
+						this.setInvalid("Please select the correct Objective 2.");
+			});
+			
+			me.administratorObjective3 = new ui.ctl.Input.DropDown.Filtered({
+		        id: "AdministratorObjective3",
+				formatFunction: function(type) { return type.name; },
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.administratorObjective3.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(function( isFinal, dataMap) {				
+	
+					var enteredText = me.administratorObjective3.lastBlurValue;
+
+					if (enteredText == "")
+						return;
+	
+					if (me.administratorObjective3.indexSelected == -1)
+						this.setInvalid("Please select the correct Objective 3.");
+			});
+			
 			me.notes = $("#Notes")[0];
 
 			$("#Notes").height(100);
@@ -1888,6 +2017,22 @@ ii.Class({
 				injectionArray: me.fiscalYears
 			});		
 			
+			me.taskManagementSystems = [];
+			me.taskManagementSystemStore = me.cache.register({
+				storeId: "ptTaskManagementSystems",
+				itemConstructor: fin.hcm.ptMetric.TaskManagementSystem,
+				itemConstructorArgs: fin.hcm.ptMetric.taskManagementSystemArgs,
+				injectionArray: me.taskManagementSystems
+			});
+			
+			me.administratorObjectives = [];
+			me.administratorObjectiveStore = me.cache.register({
+				storeId: "ptAdministratorObjectives",
+				itemConstructor: fin.hcm.ptMetric.AdministratorObjective,
+				itemConstructorArgs: fin.hcm.ptMetric.administratorObjectiveArgs,
+				injectionArray: me.administratorObjectives
+			});
+			
 			me.metricTypes = [];
 			me.metricTypeStore = me.cache.register({
 				storeId: "ptMetricTypes",
@@ -2079,14 +2224,21 @@ ii.Class({
 			me.contractRenewalDate.text.tabIndex = 6;
 			me.cpiDueDate.text.tabIndex = 7;
 			me.cpiCap.text.tabIndex = 8;
-			me.hourlyFTEVacancies.text.tabIndex = 9;
-			me.fullTimePartTimeRatio.text.tabIndex = 10;
-			me.operatingCapacity.text.tabIndex = 11;
-			me.serviceLineEVS.text.tabIndex = 12;
-			me.serviceLineLaundry.text.tabIndex = 13;
-			me.serviceLinePOM.text.tabIndex = 14;
-			me.serviceLineCES.text.tabIndex = 15;
-			me.notes.tabIndex = 16;
+			me.costedTripCycleTime.text.tabIndex = 9;
+			me.contractedAnnualTrips.text.tabIndex = 10;
+			me.taskManagementSystem.text.tabIndex = 11;
+			me.taskManagementSystemOther.text.tabIndex = 12;
+			me.hourlyFTEVacancies.text.tabIndex = 13;
+			me.fullTimePartTimeRatio.text.tabIndex = 14;
+			me.operatingCapacity.text.tabIndex = 15;
+			me.serviceLineEVS.text.tabIndex = 16;
+			me.serviceLineLaundry.text.tabIndex = 17;
+			me.serviceLinePOM.text.tabIndex = 18;
+			me.serviceLineCES.text.tabIndex = 19;
+			me.administratorObjective1.text.tabIndex = 20;
+			me.administratorObjective2.text.tabIndex = 21;
+			me.administratorObjective3.text.tabIndex = 22;
+			me.notes.tabIndex = 23;
 		},
 
 		qualityAssuranceGridScroll: function() {
@@ -2117,6 +2269,13 @@ ii.Class({
 				me.serviceLineLaundry.resizeText();
 				me.serviceLinePOM.resizeText();
 				me.serviceLineCES.resizeText();
+				me.costedTripCycleTime.resizeText();
+				me.contractedAnnualTrips.resizeText();
+				me.taskManagementSystem.resizeText();
+				me.taskManagementSystemOther.resizeText();
+				me.administratorObjective1.resizeText();
+				me.administratorObjective2.resizeText();
+				me.administratorObjective3.resizeText();
 			}
 			else  if (selectedTab == 2) {
 				if ($("#LaborControlGridContainer").width() < 2600) {
@@ -2182,7 +2341,15 @@ ii.Class({
 			me.serviceLineLaundry.setValue("");
 			me.serviceLinePOM.setValue("");
 			me.serviceLineCES.setValue("");
+			me.costedTripCycleTime.setValue("");
+			me.contractedAnnualTrips.setValue("");
+			me.taskManagementSystem.reset();
+			me.taskManagementSystemOther.setValue("");
+			me.administratorObjective1.reset();
+			me.administratorObjective2.reset();
+			me.administratorObjective3.reset();
 			me.notes.value = "";
+			$("#TMSOtherContainer").hide();
 
 			if (me.laborControlGrid.activeRowIndex != - 1)
 				me.laborControlGrid.body.deselect(me.laborControlGrid.activeRowIndex, true);
@@ -2235,11 +2402,23 @@ ii.Class({
 
 			me.yearChanged();
 		},
-		
+
 		metricTypesLoaded: function(me, activeId) {
 
 		},
 		
+		taskManagementSystemsLoaded: function(me, activeId) {
+
+			me.taskManagementSystem.setData(me.taskManagementSystems);
+		},
+		
+		administratorObjectivesLoaded: function(me, activeId) {
+
+			me.administratorObjective1.setData(me.administratorObjectives);
+			me.administratorObjective2.setData(me.administratorObjectives);
+			me.administratorObjective3.setData(me.administratorObjectives);
+		},
+
 		fiscalYearsLoaded: function(me, activeId) {
 
 			me.year.setData(me.fiscalYears);
@@ -2281,8 +2460,27 @@ ii.Class({
 				me.serviceLineLaundry.setValue(me.metrics[0].serviceLineLaundry);
 				me.serviceLinePOM.setValue(me.metrics[0].serviceLinePOM);
 				me.serviceLineCES.setValue(me.metrics[0].serviceLineCES);
+				me.costedTripCycleTime.setValue(me.metrics[0].costedTripCycleTime);
+				me.contractedAnnualTrips.setValue(me.metrics[0].contractedAnnualTrips);
+				var itemIndex = ii.ajax.util.findIndexById(me.metrics[0].taskManagementSystem.toString(), me.taskManagementSystems);
+				if (itemIndex != undefined && itemIndex >= 0) 
+					me.taskManagementSystem.select(itemIndex, me.taskManagementSystem.focused);
+				me.taskManagementSystemOther.setValue(me.metrics[0].taskManagementSystemOther);
+				itemIndex = ii.ajax.util.findIndexById(me.metrics[0].administratorObjective1.toString(), me.administratorObjectives);
+				if (itemIndex != undefined && itemIndex >= 0) 
+					me.administratorObjective1.select(itemIndex, me.administratorObjective1.focused);
+				itemIndex = ii.ajax.util.findIndexById(me.metrics[0].administratorObjective2.toString(), me.administratorObjectives);
+				if (itemIndex != undefined && itemIndex >= 0) 
+					me.administratorObjective2.select(itemIndex, me.administratorObjective2.focused);
+				itemIndex = ii.ajax.util.findIndexById(me.metrics[0].administratorObjective3.toString(), me.administratorObjectives);
+				if (itemIndex != undefined && itemIndex >= 0) 
+					me.administratorObjective3.select(itemIndex, me.administratorObjective3.focused);
 				me.notes.value = me.metrics[0].notes;
-				
+				if (me.taskManagementSystem.lastBlurValue == "Other")
+					$("#TMSOtherContainer").show();
+				else
+					$("#TMSOtherContainer").hide();
+
 				me.numericDetailStore.fetch("userId:[user],ptMetricId:" + me.ptMetricId, me.numericDetailsLoaded, me);
 				me.strategicInitiativeStore.fetch("userId:[user],ptMetricId:" + me.ptMetricId, me.strategicInitiativesLoaded, me);
 				me.qualityPartnershipStore.fetch("userId:[user],ptMetricId:" + me.ptMetricId, me.qualityPartnershipsLoaded, me);
@@ -2909,17 +3107,24 @@ ii.Class({
 			me.validator.forceBlur();
 			me.validator.queryValidity(true);
 
+			if (!me.year.valid) {
+				alert("In order to save, the errors on the page must be corrected.");
+				return false;
+			}
+
 			if (me.hospitalContractShow) {
 				if (!me.chiefExecutiveOfficer.valid || !me.chiefFinancialOfficer.valid || !me.chiefOperatingOfficer.valid
 					|| !me.chiefNursingOfficer.valid || !me.contractStartDate.valid || !me.contractRenewalDate.valid
 					|| !me.cpiDueDate.valid || !me.cpiCap.valid || !me.hourlyFTEVacancies.valid || !me.fullTimePartTimeRatio.valid
 					|| !me.operatingCapacity.valid || !me.serviceLineEVS.valid || !me.serviceLineLaundry.valid
-					|| !me.serviceLinePOM.valid || !me.serviceLineCES.valid || !me.year.valid) {
+					|| !me.serviceLinePOM.valid || !me.serviceLineCES.valid 
+					|| !me.costedTripCycleTime.valid || !me.contractedAnnualTrips.valid || !me.taskManagementSystem.valid || !me.taskManagementSystemOther.valid 
+					|| !me.administratorObjective1.valid || !me.administratorObjective2.valid || !me.administratorObjective3.valid) {
 					alert("In order to save, the errors on the page must be corrected. Please verify the data on Hospital & Contract Tab.");
 					return false;
 				}
 			}
-			
+
 			if (me.laborControlShow && me.laborControlGrid.activeRowIndex >= 0) {
 				alert("In order to save, the errors on the page must be corrected. Please verify the data on Labor Control Tab.");
 				return false;
@@ -2946,7 +3151,7 @@ ii.Class({
 				return false;
 			}
 
-			item = new fin.hcm.ptMetric.MetricType(
+			item = new fin.hcm.ptMetric.Metric(
 				me.ptMetricId
 				, parent.fin.appUI.houseCodeId
 				, me.fiscalYears[me.year.indexSelected].id
@@ -2965,6 +3170,13 @@ ii.Class({
 				, me.serviceLineLaundry.getValue()
 				, me.serviceLinePOM.getValue()
 				, me.serviceLineCES.getValue()
+				, me.costedTripCycleTime.getValue()
+				, me.contractedAnnualTrips.getValue()
+				, (me.taskManagementSystem.indexSelected >= 0 ? me.taskManagementSystems[me.taskManagementSystem.indexSelected].id : 0)
+				, me.taskManagementSystemOther.getValue()
+				, (me.administratorObjective1.indexSelected >= 0 ? me.administratorObjectives[me.administratorObjective1.indexSelected].id : 0)
+				, (me.administratorObjective2.indexSelected >= 0 ? me.administratorObjectives[me.administratorObjective2.indexSelected].id : 0)
+				, (me.administratorObjective3.indexSelected >= 0 ? me.administratorObjectives[me.administratorObjective3.indexSelected].id : 0)
 				, me.notes.value
 				);
 			
@@ -2991,29 +3203,37 @@ ii.Class({
 				item: {type: fin.hcm.ptMetric.Metric}
 			});
 			var me = this;
+			var item = args.item;
 			var xml = "";
 
 			if (me.hospitalContractShow || me.laborControlShow || me.strategicInitiativesShow || me.qualityControlShow || me.qualityAssuranceShow) {
 				xml += '<ptMetric';
-				xml += ' id="' + me.ptMetricId + '"';
-				xml += ' houseCodeId="' + parent.fin.appUI.houseCodeId + '"';
-				xml += ' yearId="' + me.fiscalYears[me.year.indexSelected].id + '"';
-				xml += ' chiefExecutiveOfficer="' + ui.cmn.text.xml.encode(me.chiefExecutiveOfficer.getValue()) + '"';
-				xml += ' chiefFinancialOfficer="' + ui.cmn.text.xml.encode(me.chiefFinancialOfficer.getValue()) + '"';
-				xml += ' chiefOperatingOfficer="' + ui.cmn.text.xml.encode(me.chiefOperatingOfficer.getValue()) + '"';
-				xml += ' chiefNursingOfficer="' + ui.cmn.text.xml.encode(me.chiefNursingOfficer.getValue()) + '"';
-				xml += ' contractStartDate="' + me.contractStartDate.lastBlurValue + '"';
-				xml += ' contractRenewalDate="' + me.contractRenewalDate.lastBlurValue + '"';
-				xml += ' cpiDueDate="' + me.cpiDueDate.lastBlurValue + '"';
-				xml += ' cpiCap="' + me.cpiCap.getValue() + '"';
-				xml += ' hourlyFTEVacancies="' + me.hourlyFTEVacancies.getValue() + '"';
-				xml += ' fullTimePartTimeRatio="' + ui.cmn.text.xml.encode(me.fullTimePartTimeRatio.getValue()) + '"';
-				xml += ' percentageOperatingCapacity="' + me.operatingCapacity.getValue() + '"';
-				xml += ' serviceLineEVS="' + ui.cmn.text.xml.encode(me.serviceLineEVS.getValue()) + '"';
-				xml += ' serviceLineLaundry="' + ui.cmn.text.xml.encode(me.serviceLineLaundry.getValue()) + '"';
-				xml += ' serviceLinePOM="' + ui.cmn.text.xml.encode(me.serviceLinePOM.getValue()) + '"';
-				xml += ' serviceLineCES="' + ui.cmn.text.xml.encode(me.serviceLineCES.getValue()) + '"';
-				xml += ' notes="' + ui.cmn.text.xml.encode(me.notes.value) + '"';
+				xml += ' id="' + item.id + '"';
+				xml += ' houseCodeId="' + item.houseCodeId + '"';
+				xml += ' yearId="' + item.yearId + '"';
+				xml += ' chiefExecutiveOfficer="' + ui.cmn.text.xml.encode(item.chiefExecutiveOfficer) + '"';
+				xml += ' chiefFinancialOfficer="' + ui.cmn.text.xml.encode(item.chiefFinancialOfficer) + '"';
+				xml += ' chiefOperatingOfficer="' + ui.cmn.text.xml.encode(item.chiefOperatingOfficer) + '"';
+				xml += ' chiefNursingOfficer="' + ui.cmn.text.xml.encode(item.chiefNursingOfficer) + '"';
+				xml += ' contractStartDate="' + item.contractStartDate + '"';
+				xml += ' contractRenewalDate="' + item.contractRenewalDate + '"';
+				xml += ' cpiDueDate="' + item.cpiDueDate + '"';
+				xml += ' cpiCap="' + item.cpiCap + '"';
+				xml += ' hourlyFTEVacancies="' + item.hourlyFTEVacancies + '"';
+				xml += ' fullTimePartTimeRatio="' + ui.cmn.text.xml.encode(item.fullTimePartTimeRatio) + '"';
+				xml += ' percentageOperatingCapacity="' + item.percentageOperatingCapacity + '"';
+				xml += ' serviceLineEVS="' + ui.cmn.text.xml.encode(item.serviceLineEVS) + '"';
+				xml += ' serviceLineLaundry="' + ui.cmn.text.xml.encode(item.serviceLineLaundry) + '"';
+				xml += ' serviceLinePOM="' + ui.cmn.text.xml.encode(item.serviceLinePOM) + '"';
+				xml += ' serviceLineCES="' + ui.cmn.text.xml.encode(item.serviceLineCES) + '"';
+				xml += ' costedTripCycleTime="' + item.costedTripCycleTime + '"';
+				xml += ' contractedAnnualTrips="' + item.contractedAnnualTrips + '"';
+				xml += ' taskManagementSystem="' + item.taskManagementSystem + '"';
+				xml += ' taskManagementSystemOther="' + ui.cmn.text.xml.encode(item.taskManagementSystemOther) + '"';
+				xml += ' administratorObjective1="' + item.administratorObjective1 + '"';
+				xml += ' administratorObjective2="' + item.administratorObjective2 + '"';
+				xml += ' administratorObjective3="' + item.administratorObjective3 + '"';
+				xml += ' notes="' + ui.cmn.text.xml.encode(item.notes) + '"';
 				xml += '/>';
 			}
 
