@@ -646,7 +646,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
     $scope.onEmployeeNumberChanged = function (employeeNumber) {
         if (angular.isDefined($scope.empAction.Data.Employee)) {
-            if ($scope.empAction.Data.Employee === null || parseInt($scope.empAction.Data.Employee.employeeNumber) === parseInt(employeeNumber)) {
+            if ($scope.empAction.Data.Employee != null && parseInt($scope.empAction.Data.Employee.employeeNumber) === parseInt(employeeNumber)) {
                 return;
             }
         }
@@ -1775,6 +1775,26 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
                 else {
                     modelCtrl.$setValidity(attrs.name, false);
                     attrs.$set('tooltip', 'Hours must be less than 168');
+                    return null;
+                }
+            });
+        }
+    };
+})
+.directive('pafMin', function () {
+    return {
+        require: '?ngModel',
+        link: function (scope, element, attrs, modelCtrl) {
+            modelCtrl.$parsers.push(function (inputValue) {
+                if (inputValue == undefined) return ''
+                var min = parseInt(attrs.pafMin);
+                var firstNumber = inputValue.substring(0, 1);
+                if (inputValue.length == min && firstNumber != 0) {
+                    modelCtrl.$setValidity(attrs.name, true);
+                    return inputValue;
+                }
+                else {
+                    modelCtrl.$setValidity(attrs.name, false);
                     return null;
                 }
             });

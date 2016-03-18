@@ -24,7 +24,7 @@
                     <div class="col-md-3">
                         <div class="form-group" ng-class="{'has-error':pafForm.EmployeeNumber.$invalid}">
                             <label class="control-label">Employee/Clock Number</label>
-                            <input class="form-control input-sm" name="EmployeeNumber" maxlength="6" ng-blur="onEmployeeNumberChanged(empAction.EmployeeNumber)" paf-enter="onEmployeeNumberChanged(empAction.EmployeeNumber)" ng-model="empAction.EmployeeNumber" ng-disabled="newHireChecked" ng-required="!empAction.NewHire" paf-integer/>
+                            <input class="form-control input-sm" name="EmployeeNumber" paf-Min="6" maxlength="6" ng-blur="onEmployeeNumberChanged(empAction.EmployeeNumber)" paf-enter="onEmployeeNumberChanged(empAction.EmployeeNumber)" ng-model="empAction.EmployeeNumber" ng-disabled="newHireChecked" ng-required="!empAction.NewHire" paf-integer/>
                         </div>
                     </div>
                     <div class="col-md-3">
