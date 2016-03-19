@@ -101,7 +101,7 @@
                     </div>
                 </div>
             </section>
-			<!--NEW HIRE OR REHIRE-->
+                     <!--NEW HIRE OR REHIRE-->
             <section ng-if="empAction.NewHire || empAction.ReHire">
                 <h4 ng-if="empAction.NewHire">NEW HIRE</h4>
                 <h4 ng-if="empAction.ReHire">REHIRE</h4>
@@ -133,7 +133,7 @@
                                             <label class="labelText">
                                                 <input name="Status" ng-model="empAction.Status" ng-disabled="empAction.PayStatus=='PerDiemValue'" required="required" type="radio" value="FullTimeHours" />&nbsp;Full Time
                                             </label>
-											<input class="form-control input-sm" name="FullTimeHours" paf-maxlength="6" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="empAction.Status=='FullTimeHours'" ng-model="empAction.Hours" ng-required="empAction.Status=='FullTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+                                                                           <input class="form-control input-sm" name="FullTimeHours" paf-maxlength="6" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="empAction.Status=='FullTimeHours'" ng-model="empAction.Hours" ng-required="empAction.Status=='FullTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                 </div>
@@ -143,7 +143,7 @@
                                             <label class="labelText">
                                                 <input name="Status" ng-model="empAction.Status" ng-disabled="empAction.PayStatus=='PerDiemValue'" required="required" type="radio" value="PartTimeHours" />&nbsp;Part Time
                                             </label>
-											<input class="form-control input-sm" name="PartTimeHours" paf-maxlength="6" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="empAction.Status=='PartTimeHours'" ng-model="empAction.Hours" ng-required="empAction.Status=='PartTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+                                                                           <input class="form-control input-sm" name="PartTimeHours" paf-maxlength="6" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="empAction.Status=='PartTimeHours'" ng-model="empAction.Hours" ng-required="empAction.Status=='PartTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                     <div class="clearfix"></div>
@@ -154,7 +154,7 @@
                                             <label class="labelText">
                                                 <input name="Status" ng-model="empAction.Status" required="required" type="radio" value="TemporaryHours" />&nbsp;Temporary
                                             </label>
-											<input class="form-control input-sm" name="TemporaryHours" paf-maxlength="6" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="empAction.Status=='TemporaryHours'" ng-model="empAction.Hours" ng-required="empAction.Status=='TemporaryHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+                                                                           <input class="form-control input-sm" name="TemporaryHours" paf-maxlength="6" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="empAction.Status=='TemporaryHours'" ng-model="empAction.Hours" ng-required="empAction.Status=='TemporaryHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                 </div>
@@ -165,7 +165,7 @@
                                         <label class="labelText">
                                             <input name="PayStatus" ng-model="empAction.PayStatus" required="required" type="radio" value="AnnualSalaryAmount" />&nbsp;Salary
                                         </label>
-										<input class="form-control input-sm" name="AnnualSalaryAmount" paf-maxlength="11" ng-show="empAction.PayStatus=='AnnualSalaryAmount'" ng-model="empAction.Amount" ng-required="empAction.PayStatus=='AnnualSalaryAmount'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/year" paf-numeric="" placeholder="$0/year" type="text" />
+                                                                     <input class="form-control input-sm" name="AnnualSalaryAmount" paf-maxlength="11" ng-show="empAction.PayStatus=='AnnualSalaryAmount'" ng-model="empAction.Amount" ng-required="empAction.PayStatus=='AnnualSalaryAmount'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/year" paf-numeric="" placeholder="$0/year" type="text" />
                                     </div>
                                 </div>
                                 <div class="col-md-3 form-inline">
@@ -173,7 +173,7 @@
                                         <label class="labelText">
                                             <input name="PayStatus" ng-model="empAction.PayStatus" required="required" type="radio" value="AdminHourlyAmount" />&nbsp;Admin Hourly
                                         </label>
-										<input class="form-control input-sm" name="AdminHourlyAmount" paf-maxlength="11" ng-show="empAction.PayStatus=='AdminHourlyAmount'" ng-model="empAction.Amount" ng-required="empAction.PayStatus=='AdminHourlyAmount'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" type="text" />
+                                                                     <input class="form-control input-sm" name="AdminHourlyAmount" paf-maxlength="11" ng-show="empAction.PayStatus=='AdminHourlyAmount'" ng-model="empAction.Amount" ng-required="empAction.PayStatus=='AdminHourlyAmount'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" type="text" />
                                     </div>
                                 </div>
                                 <div class="col-md-3 form-inline">
@@ -181,7 +181,7 @@
                                         <label class="labelText">
                                             <input name="PayStatus" ng-model="empAction.PayStatus" required="required" type="radio" value="HourlyRateAmount" />&nbsp;Hourly
                                         </label>
-										<input class="form-control input-sm" name="HourlyRateAmount" paf-maxlength="11" ng-show="empAction.PayStatus=='HourlyRateAmount'" ng-model="empAction.Amount" ng-required="empAction.PayStatus=='HourlyRateAmount'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" type="text" />
+                                                                     <input class="form-control input-sm" name="HourlyRateAmount" paf-maxlength="11" ng-show="empAction.PayStatus=='HourlyRateAmount'" ng-model="empAction.Amount" ng-required="empAction.PayStatus=='HourlyRateAmount'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" type="text" />
                                     </div>
                                 </div>
                                 <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12 ">
@@ -190,7 +190,7 @@
                                             <label class="labelText">
                                                 <input name="PayStatus" ng-model="empAction.PayStatus" required="required" type="radio" value="PerDiemValue" />&nbsp;Per Diem
                                             </label>
-											<input class="form-control input-sm" name="PerDiemValue" paf-maxlength="11" ng-show="empAction.PayStatus=='PerDiemValue'" ng-model="empAction.Amount" ng-required="empAction.PayStatus=='PerDiemValue'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/day" paf-numeric="" placeholder="$0/day" type="text" />
+                                                                           <input class="form-control input-sm" name="PerDiemValue" paf-maxlength="11" ng-show="empAction.PayStatus=='PerDiemValue'" ng-model="empAction.Amount" ng-required="empAction.PayStatus=='PerDiemValue'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/day" paf-numeric="" placeholder="$0/day" type="text" />
                                         </div>
                                     </div>
                                 </div>
@@ -405,7 +405,7 @@
                     </div>
                 </div>
             </section>
-			<!--LEAVE OF ABSENCE-->
+                     <!--LEAVE OF ABSENCE-->
             <section ng-if="empAction.Loa">
                 <div ng-form="loaForm" ng-controller="loaCtrl">
                     <h4 style="display: inline-block;">LEAVE OF ABSENCE</h4>
@@ -672,7 +672,7 @@
                     </div>
                 </div>
             </section>
-			<!--TRANSFER-->
+                     <!--TRANSFER-->
             <section ng-if="empAction.Transfer">
                 <div ng-form="transferForm">
                     <h4>TRANSFER</h4>
@@ -729,7 +729,7 @@
                     </div>
                 </div>
             </section>
-			<!--PERSONAL INFORMATION CHANGE-->
+                     <!--PERSONAL INFORMATION CHANGE-->
             <section ng-if="empAction.PersonalInfoChange">
                 <div ng-form="personalInfoForm">
                     <h4>PERSONAL INFORMATION CHANGE</h4>
@@ -757,7 +757,7 @@
                             <div class="form-group">
                                 <label>Address 1</label>
                                 <input class="form-control input-sm" ng-model="empAction.InfoChangeAddressLine1" maxlength="100" />
-                            </div>
+                           </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
@@ -784,15 +784,15 @@
                             </select>
                         </div>
                         <div class="col-md-4">
-                        	<div class="form-group" ng-class="{'has-error':personalInfoForm.InfoChangePostalCode.$invalid}">
-	                            <label class="control-label">Zip</label>
-	                            <input class="form-control input-sm" ng-model="empAction.InfoChangePostalCode" name="InfoChangePostalCode" paf-mask="zipcode" maxlength="10" />
-							</div>
+                           <div class="form-group" ng-class="{'has-error':personalInfoForm.InfoChangePostalCode.$invalid}">
+                                   <label class="control-label">Zip</label>
+                                   <input class="form-control input-sm" ng-model="empAction.InfoChangePostalCode" name="InfoChangePostalCode" paf-mask="zipcode" maxlength="10" />
+                                                </div>
                         </div>
                     </div>
                 </div>
             </section>
-			<!--REQUISITION-->
+                     <!--REQUISITION-->
             <section ng-if="(empAction.NewHire && empAction.PayStatus != 'PerDiemValue') || (empAction.ReHire && empAction.PayStatus != 'PerDiemValue') || empAction.Promotion || empAction.Demotion || empAction.Transfer">
                 <div ng-form="requisitionForm">
                     <h4>REQUISITION</h4>
@@ -813,7 +813,7 @@
                     </div>
                 </div>
             </section>
-			<!--RELOCATION-->
+                     <!--RELOCATION-->
             <section ng-if="empAction.Relocation">
                 <div ng-form="relocationForm">
                     <h4>RELOCATION</h4>
@@ -837,36 +837,36 @@
             </section>
             <!--REGIONAL MANAGER INFO-->
             <section ng-if="empAction.SalaryChange || empAction.Demotion || empAction.Promotion">
-            	<div ng-form="regionalManagerInfoForm">
-	                <h4>SECOND LEVEL MANAGER INFO</h4>
-	                <div class="row">
+              <div ng-form="regionalManagerInfoForm">
+                       <h4>SECOND LEVEL MANAGER INFO</h4>
+                       <div class="row">
                         <div class="col-md-2">
-	                        <label class="control-label">Manager Number</label>
-	                        <input class="form-control input-sm" name="RegionalManagerNumber" maxlength="100" ng-model="empAction.RegionalManagerNumber" ng-blur="getRegionalManagerInfo(empAction.RegionalManagerNumber,empAction.Data.NewHire.ReportingType)" paf-enter="getRegionalManagerInfo(empAction.RegionalManagerNumber,empAction.Data.NewHire.ReportingType)" paf-integer/>
-	                    </div>
-	                    <div class="col-md-2">
-	                        <label class="control-label">Manager Name</label>
-	                        <input class="form-control input-sm" name="RegionalManagerName" maxlength="100" ng-model="empAction.RegionalManagerName" />
-	                    </div>
-	                    <div class="col-md-4">
-	                        <label>Manager Title</label>
-	                        <input class="form-control input-sm" name="RegionalManagerTitle" maxlength="100" ng-model="empAction.RegionalManagerTitle"/>
-	                    </div>
-	                    <div class="col-md-4">
-	                        <div class="form-group" ng-class="{'has-error':regionalManagerInfoForm.RegionalManagerEmail.$invalid}">
-	                            <label class="control-label">Manager Email</label>
-	                            <input paf-validation="EMAIL" class="form-control input-sm" name="RegionalManagerEmail" maxlength="50" ng-model="empAction.RegionalManagerEmail"/>
-	                        </div>
-	                    </div>
-	                </div>
-				</div>
+                               <label class="control-label">Manager Number</label>
+                               <input class="form-control input-sm" name="RegionalManagerNumber" maxlength="100" ng-model="empAction.RegionalManagerNumber" ng-blur="getRegionalManagerInfo(empAction.RegionalManagerNumber,empAction.Data.NewHire.ReportingType)" paf-enter="getRegionalManagerInfo(empAction.RegionalManagerNumber,empAction.Data.NewHire.ReportingType)" paf-integer/>
+                           </div>
+                           <div class="col-md-2">
+                               <label class="control-label">Manager Name</label>
+                               <input class="form-control input-sm" name="RegionalManagerName" maxlength="100" ng-model="empAction.RegionalManagerName" />
+                           </div>
+                           <div class="col-md-4">
+                               <label>Manager Title</label>
+                               <input class="form-control input-sm" name="RegionalManagerTitle" maxlength="100" ng-model="empAction.RegionalManagerTitle"/>
+                           </div>
+                           <div class="col-md-4">
+                               <div class="form-group" ng-class="{'has-error':regionalManagerInfoForm.RegionalManagerEmail.$invalid}">
+                                   <label class="control-label">Manager Email</label>
+                                   <input paf-validation="EMAIL" class="form-control input-sm" name="RegionalManagerEmail" maxlength="50" ng-model="empAction.RegionalManagerEmail"/>
+                               </div>
+                           </div>
+                       </div>
+                           </div>
             </section>
             <!--ADDITIONAL DOCUMENTS-->
             <section>
-            	<div ng-form="AdditionalDocumentsInfoForm" id="AdditionalDocuments">
-                	<h4>ADDITIONAL DOCUMENTS</h4>
+              <div ng-form="AdditionalDocumentsInfoForm" id="AdditionalDocuments">
+                     <h4>ADDITIONAL DOCUMENTS</h4>
                     <table class="table-scroll table table-striped table-hover margin-bottom10" style="width: 900px;" border="1">     
-                    	<thead>
+                     <thead>
                             <tr class="heading" role="row">
                                 <th width="40px">#</th>
                                 <th width="400px">Title</th>
@@ -881,28 +881,28 @@
                             </tr>
                         </tbody>     
                         <tfoot>                    
-	                      	<tr class="footer">
-	                        	<td>
-	                              <table cellpadding="0" cellspacing="0" style="width: 100%">
-	                                  <tr>
-	                                       <td>
-	                                            <img id="imgAdd" src="/fin/cmn/usr/media/Common/add.png" ng-if="empAction.StatusType != 8 && empAction.StatusType != 9 && empAction.StatusType != 6 && ((empAction.StatusType != 2 && write) || (empAction.StatusType == 2 && writeInProcess))" ng-click="addDoc()" style="cursor: pointer" alt="Add Document" title="Click here to attach the supporting document" />
-	                                            <img id="imgEdit" src="/fin/cmn/usr/media/Common/modify.png" ng-click="editDoc()" ng-if="empAction.StatusType != 8 && empAction.StatusType != 9 && empAction.StatusType != 6 && ((empAction.StatusType != 2 && write) || (empAction.StatusType == 2 && writeInProcess))" style="cursor: pointer" alt="Edit Document" title="Click here to modify the supporting document" />
-	                                            <img id="imgRemove" src="/fin/cmn/usr/media/Common/delete.png" ng-click="removeDoc()" ng-if="empAction.StatusType != 8 && empAction.StatusType != 9 && empAction.StatusType != 6 && ((empAction.StatusType != 2 && write) || (empAction.StatusType == 2 && writeInProcess))" style="cursor: pointer" alt="Remove Document" title="Click here to remove the supporting document" />
-	                                            <img id="imgView" src="/fin/cmn/usr/media/Common/download.png" ng-click="viewDoc()" style="cursor: pointer" alt="View Document" title="Click here to view the supporting document" />
-	                                       </td>
-	                                  </tr>
-	                              </table>
-	                            </td>
-	                        </tr>
+                                  <tr class="footer">
+                                  <td>
+                                     <table cellpadding="0" cellspacing="0" style="width: 100%">
+                                         <tr>
+                                              <td>
+                                                   <img id="imgAdd" src="/fin/cmn/usr/media/Common/add.png" ng-if="empAction.StatusType != 8 && empAction.StatusType != 9 && empAction.StatusType != 6 && ((empAction.StatusType != 2 && write) || (empAction.StatusType == 2 && writeInProcess))" ng-click="addDoc()" style="cursor: pointer" alt="Add Document" title="Click here to attach the supporting document" />
+                                                   <img id="imgEdit" src="/fin/cmn/usr/media/Common/modify.png" ng-click="editDoc()" ng-if="empAction.StatusType != 8 && empAction.StatusType != 9 && empAction.StatusType != 6 && ((empAction.StatusType != 2 && write) || (empAction.StatusType == 2 && writeInProcess))" style="cursor: pointer" alt="Edit Document" title="Click here to modify the supporting document" />
+                                                   <img id="imgRemove" src="/fin/cmn/usr/media/Common/delete.png" ng-click="removeDoc()" ng-if="empAction.StatusType != 8 && empAction.StatusType != 9 && empAction.StatusType != 6 && ((empAction.StatusType != 2 && write) || (empAction.StatusType == 2 && writeInProcess))" style="cursor: pointer" alt="Remove Document" title="Click here to remove the supporting document" />
+                                                   <img id="imgView" src="/fin/cmn/usr/media/Common/download.png" ng-click="viewDoc()" style="cursor: pointer" alt="View Document" title="Click here to view the supporting document" />
+                                              </td>
+                                         </tr>
+                                     </table>
+                                   </td>
+                               </tr>
                         </tfoot>
                     </table>
-					<div style="display: none;">
-			            <iframe id="iFrameDownload" src="/net/crothall/chimes/fin/app/act/FileUpload.aspx" frameborder="0" width="100%" height="30"></iframe>
-			        </div>
+                                  <div style="display: none;">
+                                 <iframe id="iFrameDownload" src="/net/crothall/chimes/fin/app/act/FileUpload.aspx" frameborder="0" width="100%" height="30"></iframe>
+                             </div>
                 </div>
             </section>
-			<!--COMMENTS-->
+                     <!--COMMENTS-->
             <section>
                 <div class="form-group">
                     <h4>COMMENTS</h4>
@@ -911,14 +911,138 @@
             </section>
             <section>
                 <div ng-form="administratorInfoForm">
-	                <h4>ADMINISTRATOR EMAIL</h4>
+                       <h4>ADMINISTRATOR EMAIL</h4>
                         <div class="row">
                             <div class="col-md-5">
                                 <div class="form-group" ng-class="{'has-error':administratorInfoForm.AdministratorEmail.$invalid}">
-	                            <input paf-validation="EMAIL" class="form-control input-sm" name="AdministratorEmail" maxlength="100" ng-model="empAction.AdministratorEmail" ng-disabled="disableAdminEmail" ng-required="true"/>
+                                   <input paf-validation="EMAIL" class="form-control input-sm" name="AdministratorEmail" maxlength="100" ng-model="empAction.AdministratorEmail" ng-disabled="disableAdminEmail" ng-required="true"/>
                                 </div>
                             </div>
                         </div>
+                </div>
+            </section>
+            <section>
+                <div ng-form="WorkflowDetailsForm">
+                       <h4>WORKFLOW DETAILS</h4>
+                        <div ng-if="empAction.Loa" class="row">
+                            <div class="col-md-2">
+                            <label>LOA Manager Name:</label>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group"">
+                                   <input class="form-control input-sm" name="LOAManagerName" maxlength="100" ng-model="empAction.LoaManagerName"/>
+                                </div>
+                            </div>
+                            <div class="col-md-2"></div>
+                            <div class="col-md-2">
+                            <label>LOA Manager Email:</label>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group"">
+                                   <input class="form-control input-sm" name="LOAManagerEmail" maxlength="100" ng-model="empAction.LoaManagerEmail"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" ng-if="overHeadAccount">
+                            <div class="col-md-2">
+                            <label>HR Manager Name:</label>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group"">
+                                   <input class="form-control input-sm" name="HRManagerName" maxlength="100" ng-model="empAction.HRManagerName"/>
+                                </div>
+                            </div>
+                            <div class="col-md-2"></div>
+                            <div class="col-md-2">
+                            <label>HR Manager Email:</label>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group"">
+                                   <input class="form-control input-sm" name="HRManagerEmail" maxlength="100" ng-model="empAction.HRManagerEmail"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" ng-if="(empAction.SalaryChange && empAction.IncreaseDecreasePercentage > 4) || ((empAction.Promotion || empAction.Demotion) && empAction.IncreaseDecreasePercentage > 10)">
+                            <div class="col-md-2">
+                            <label>Regional Manager Name:</label>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group"">
+                                   <input class="form-control input-sm" name="RegionalManagerName" maxlength="100" ng-model="empAction.RegionalManagerName" ng-disabled="true"/>
+                                </div>
+                            </div>
+                            <div class="col-md-2"></div>
+                            <div class="col-md-2">
+                            <label>Regional Manager Email:</label>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group"">
+                                   <input class="form-control input-sm" name="RegionalManagerEmail" maxlength="100" ng-model="empAction.RegionalManagerEmail" ng-disabled="true"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" ng-if="(empAction.SalaryChange && empAction.IncreaseDecreasePercentage > 4) || ((empAction.Promotion || empAction.Demotion) && empAction.IncreaseDecreasePercentage > 10)">
+                            <div class="col-md-2">
+                            <label>HR Director Name:</label>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group"">
+                                   <input class="form-control input-sm" name="HRDirectorName" maxlength="100" ng-model="empAction.HRDirectorName"/>
+                                </div>
+                            </div>
+                            <div class="col-md-2"></div>
+                            <div class="col-md-2">
+                            <label>HR Director Email:</label>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group"">
+                                   <input class="form-control input-sm" name="HRDirectorEmail" maxlength="100" ng-model="empAction.HRDirectorEmail"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" ng-if="(empAction.SalaryChange && empAction.IncreaseDecreasePercentage > 4) || ((empAction.Promotion || empAction.Demotion) && empAction.IncreaseDecreasePercentage > 10)">
+                            <div class="col-md-2">
+                            <label>Process HR Name</label>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group"">
+                                   <input class="form-control input-sm" name="ProcessHRName" maxlength="100" ng-model="empAction.ProcessHRName"/>
+                                </div>
+                            </div>
+                            <div class="col-md-2"></div>
+                            <div class="col-md-2">
+                            <label>Process HR Email:</label>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group"">
+                                   <input class="form-control input-sm" name="ProcessHREmail" maxlength="100" ng-model="empAction.ProcessHREmail"/>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </section>
+            <!--APPROVALS-->
+            <section>
+              <div ng-if="empAction.StatusType == 2 || empAction.StatusType == 8" ng-form="ApprovalsInfoForm">
+                     <h4>APPROVAL DETAILS</h4>
+                    <table class="table-scroll table table-striped table-hover margin-bottom10" style="width: 900px;" border="1">     
+                     <thead>
+                            <tr class="heading" role="row">
+                                <th width="40px">#</th>
+                                <th width="300px">APPROVALS</th>
+                                <th width="460px">PRINT NAME</th>
+                                <th width="100px">DATE</th>
+                            </tr>
+                        </thead>
+                        <tbody style="height:180px;">
+                            <tr ng-repeat="item in Approvals">
+                                <td width="40px">{{item.id}}</td>
+                                <td width="300px">{{item.approval}}</td>
+                                <td width="460px">{{item.name}}</td>
+                                <th width="100px">{{item.date}}</th>
+                            </tr>
+                        </tbody>     
+                    </table>
                 </div>
             </section>
             <div style="margin-bottom:20px;"/>
@@ -964,3 +1088,4 @@
         </div>
     </div>
 </script>
+
