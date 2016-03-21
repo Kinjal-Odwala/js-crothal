@@ -1,6 +1,10 @@
-﻿.tabContainer
-{
+﻿.tabContainer {
 	border: none;
 	width: 100%;
 }
- 
+
+.fragment {
+	border: 0;
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+}
