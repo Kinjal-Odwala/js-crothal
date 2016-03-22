@@ -519,7 +519,9 @@ var getViewPort = function () {
                             var duplicate = false;
                             var houseCodes = (dv.val('houseCodes') || '').split(',');
                             $.each(houseCodes, function (index, houseCode) {
-                                duplicate = bine.query(me.dataList.val()).where(function (i) { return i.costName == value && i.houseCodes.indexOf(houseCode) >= 0; }).count() > 1;
+                                duplicate = bine.query(me.dataList.val()).where(function (i) {
+                                    return i.costName == value && (i.houseCodes || '').split(',').indexOf(houseCode) >= 0;
+                                }).count() > 1;
                                 
                                 if (duplicate)
                                     return false;
@@ -544,7 +546,9 @@ var getViewPort = function () {
                             var overflow5 = false;
                             var houseCodes = value.split(',');
                             $.each(houseCodes, function (index, houseCode) {
-                                overflow5 = bine.query(me.dataList.val()).where(function (i) { return i.houseCodes.indexOf(houseCode) >= 0; }).count() > 5;
+                                overflow5 = bine.query(me.dataList.val()).where(function (i) {
+                                    return (i.houseCodes || '').split(',').indexOf(houseCode) >= 0;
+                                }).count() > 5;
                                 if (overflow5)
                                     return false;
                             });
