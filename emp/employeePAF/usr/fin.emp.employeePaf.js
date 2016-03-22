@@ -665,9 +665,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 }
             });
 
-            EmpActions.getWorkflowHistory($scope.empAction.Id, $scope.empAction.StatusType, function (result) {
-            });
-
             getHouseCodes($scope.empAction.HcmHouseCode, function (response) {
                 if (angular.isDefined(response)) {
                     if (response.contractTypeId == "3") {
@@ -1230,17 +1227,12 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             }
         }
         EmpActions.getEmployeePersonnelActions($scope.pafFilter, function (items) {
-            var i = 0;
-            for (var index = 0; index < items.length; index++) {
-                i++
-            }
-            if (i > 0) {
-                EmpActions.submitEmployeePersonnelAction(items[i], function (data, status) {
-                    $scope.pageLoading = false;
-                    document.location.hash = 'list';
-                    alert("Employee PAF has been submitted successfully.");
-                });
-            }
+            var i = items.length - 1;
+            EmpActions.submitEmployeePersonnelAction(items[i], function (data, status) {
+                $scope.pageLoading = false;
+                document.location.hash = 'list';
+                alert("Employee PAF has been submitted successfully.");
+            });
         });
     };
 
@@ -1595,6 +1587,8 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         if ($scope.selectedItem.WorkflowStep == null || $scope.selectedItem.WorkflowStep == "") {
             $scope.selectedItem.WorkflowStep = 0;
         }
+        EmpActions.getWorkflowHistory($scope.selectedItem.Id, $scope.selectedItem.StatusType, function (result) {
+        });
     };
 
     $scope.Statuses = [
@@ -2688,20 +2682,19 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         if (cache.workflowHistorys == null)
             return "";
 
-        var date = "";
+        var workflowDate = "";
 
         angular.forEach(cache.workflowHistorys, function (item, index) {
             if (item.workflowStepId == stepId) {
-                date = item.modAt;
+                workflowDate = item.modAt;
             }
         });
 
-        if (date != "") {
-            date = new Date(date);
-            return $filter('date')(date, 'MM/dd/yyyy');
+        if (workflowDate != "") {
+            return $filter('date')(workflowDate, 'MM/dd/yyyy');
         }
         else {
-            return date;
+            return workflowDate;
         }
     };
 

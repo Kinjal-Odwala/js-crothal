@@ -968,7 +968,7 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group"">
-                                   <input class="form-control input-sm" name="RegionalManagerName" maxlength="100" ng-model="empAction.RegionalManagerName" ng-disabled="true"/>
+                                   <input class="form-control input-sm" name="RegionalManagerName" maxlength="100" ng-model="empAction.RegionalManagerName" ng-disabled="empAction.RegionalManagerName"/>
                                 </div>
                             </div>
                             <div class="col-md-2"></div>
@@ -977,7 +977,7 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group"">
-                                   <input class="form-control input-sm" name="RegionalManagerEmail" maxlength="100" ng-model="empAction.RegionalManagerEmail" ng-disabled="true"/>
+                                   <input class="form-control input-sm" name="RegionalManagerEmail" maxlength="100" ng-model="empAction.RegionalManagerEmail" ng-disabled="empAction.RegionalManagerEmail"/>
                                 </div>
                             </div>
                         </div>
@@ -1000,7 +1000,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row" ng-if="(empAction.SalaryChange && empAction.IncreaseDecreasePercentage > 4) || ((empAction.Promotion || empAction.Demotion) && empAction.IncreaseDecreasePercentage > 10)">
+                        <div class="row" ng-if="(!overHeadAccount && empAction.HcmHouseCode) || empAction.NewHire || empAction.ReHire || empAction.Separation || empAction.Transfer || empAction.PersonalInfoChange || empAction.Relocation || empAction.Promotion || empAction.Demotion || empAction.SalaryChange">
                             <div class="col-md-2">
                             <label>Process HR Name</label>
                             </div>
