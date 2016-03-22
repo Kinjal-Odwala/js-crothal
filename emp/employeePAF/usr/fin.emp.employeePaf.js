@@ -144,15 +144,15 @@ paf.config(['$routeProvider', function ($routeProvider) {
 }]);
 
 paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$timeout', '$routeParams', '$modal', '$location', function ($scope, $document, EmpActions, $filter, $timeout, $routeParams, $modal, $location) {
-	$scope.HcmHouseCodes = [];
+    $scope.HcmHouseCodes = [];
     $scope.States = [];
-	$scope.JobCodes = [];
-	$scope.PersonActionTypes = [];
-	$scope.PayGrades = [];
-	$scope.pafDocs = [];
-	var selectedFileName = "";
-	$scope.add = "";
-	$scope.selectedPafId = $routeParams.id;
+    $scope.JobCodes = [];
+    $scope.PersonActionTypes = [];
+    $scope.PayGrades = [];
+    $scope.pafDocs = [];
+    var selectedFileName = "";
+    $scope.add = "";
+    $scope.selectedPafId = $routeParams.id;
 
     $scope.dateOptions = {
         formatYear: 'yy',
@@ -160,301 +160,307 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         showWeeks: false
     };
 
-	$scope.pageLoading = false;
-	$scope.loadingTitle = " Loading...";
-	$scope.isPageLoading = function () {
-	    return ($scope.loadingCount > 0 || $scope.pageLoading);
-	};
+    $scope.pageLoading = false;
+    $scope.loadingTitle = " Loading...";
+    $scope.isPageLoading = function () {
+        return ($scope.loadingCount > 0 || $scope.pageLoading);
+    };
 
-	$scope.lkup = {
-	    CarAllowances: EmpActions.getCarAllowances(),
-	    ReviewedWithHR: EmpActions.getReviewedWithHR(),
-	    BounsEligibles: null,
-	    PlanDetails: null,
-	    Reason4Changes: null,
-	    Layoffs: null,
-	    Terminations: null,
-	    Resignations: null
-	};
+    $scope.lkup = {
+        CarAllowances: EmpActions.getCarAllowances(),
+        ReviewedWithHR: EmpActions.getReviewedWithHR(),
+        BounsEligibles: null,
+        PlanDetails: null,
+        Reason4Changes: null,
+        Layoffs: null,
+        Terminations: null,
+        Resignations: null
+    };
 
-	var initCompensation = function () {
-	    return {
-	        CurrentPayGrade: 0,
-	        CurrentSalary: 0,
-	        CurrentPayRange: 0,
-	        ReportingName: '',
-	        ReportingTitle: '',
-	        ReportingEmail: '',
-	        ReportingManagerNumber: '',
-	        DateLastIncrease: null,
-	        PercentLastIncrease: "0%",
-	        CurrentPosition: '',
-	        EmployeeNumber: '',
-	        CurrentPositionType: ''
-	    };
-	};
+    var initCompensation = function () {
+        return {
+            CurrentPayGrade: 0,
+            CurrentSalary: 0,
+            CurrentPayRange: 0,
+            ReportingName: '',
+            ReportingTitle: '',
+            ReportingEmail: '',
+            ReportingManagerNumber: '',
+            DateLastIncrease: null,
+            PercentLastIncrease: "0%",
+            CurrentPosition: '',
+            EmployeeNumber: '',
+            CurrentPositionType: ''
+        };
+    };
 
-	$scope.empAction = {
-	    Number: 0,
-	    HcmHouseCode: null,
-	    EmployeeNumber: null,
-	    FirstName: null,
-	    LastName: null,
-	    NewHire: false,
-	    ReHire: false,
-	    Separation: false,
-	    Loa: false,
-	    SalaryChange: false,
-	    Promotion: false,
-	    Demotion: false,
-	    Transfer: false,
-	    PersonalInfoChange: false,
-	    Relocation: false,
-	    Data: {
-	        NewHire: {},
-	        ReHire: {},
-	        Separation: {},
-	        Loa: {},
-	        Promotion: {},
-	        Demotion: {},
-	        SalaryChange: {},
-	        Transfer: {},
-	        PersonalInfoChange: {},
-	        Relocation: {},
-	        Requisition: {},
-	        Compensation: initCompensation()
-	    }
-	};
-	
-	var loadHouseCodes = function () {
-	    EmpActions.getHcmHouseCodes(function (result) {
-	        $scope.HcmHouseCodes = result;
-	    });
-	};
-	
-	var loadStateTypes = function () {
-	    EmpActions.getStateTypes(function (result) {
-	        $scope.States = result;
-	    });
-	};
-	
-	var loadJobCodes = function () {
-	    EmpActions.getJobCodes(function (result) {
-	        $scope.JobCodes = result;
-	    });
-	};
-	
-	var loadPersonActionTypes = function () {
-	    EmpActions.getPersonActionTypes(function (result) {
-	        var filters = function (item) {
-	            return $filter('filter')(result, { typeName: item });
-	        }
+    $scope.empAction = {
+        Number: 0,
+        HcmHouseCode: null,
+        EmployeeNumber: null,
+        FirstName: null,
+        LastName: null,
+        NewHire: false,
+        ReHire: false,
+        Separation: false,
+        Loa: false,
+        SalaryChange: false,
+        Promotion: false,
+        Demotion: false,
+        Transfer: false,
+        PersonalInfoChange: false,
+        Relocation: false,
+        Data: {
+            NewHire: {},
+            ReHire: {},
+            Separation: {},
+            Loa: {},
+            Promotion: {},
+            Demotion: {},
+            SalaryChange: {},
+            Transfer: {},
+            PersonalInfoChange: {},
+            Relocation: {},
+            Requisition: {},
+            Compensation: initCompensation()
+        }
+    };
 
-	        $scope.lkup.BounsEligibles = filters("BonusEligible");
-	        $scope.lkup.PlanDetails = filters("Plan");
-	        $scope.lkup.Reason4Changes = filters("Reason4Change");
-	        $scope.lkup.Layoffs = filters("Layoff");
-	        $scope.lkup.Terminations = filters("Termination");
-	        $scope.lkup.Resignations = filters("Resignation");
-	    });
-	};
-	
-	var loadPayGrades = function () {
-	    EmpActions.getPayGrades(function (result) {
-	        $scope.PayGrades = result;
-	    });
-	};
-	
-	var initReporting = function (positionType) {
-	    if (!$scope.empAction.Data.Compensation)
-	        return;
+    var loadHouseCodes = function () {
+        EmpActions.getHcmHouseCodes(function (result) {
+            $scope.HcmHouseCodes = result;
+        });
+    };
 
-	    var isManagerInfoChanged = function (obj, existManagerNumber) {
+    var getHouseCodes = function (houseCode, callback) {
+        EmpActions.getHouseCodes(houseCode, function (response) {
+            callback(response);
+        });
+    }
 
-	        if (existManagerNumber && existManagerNumber.length > 0)
-	            return true;
+    var loadStateTypes = function () {
+        EmpActions.getStateTypes(function (result) {
+            $scope.States = result;
+        });
+    };
 
-	        if (obj.ReportingManagerNumber && angular.equals(parseInt(obj.ReportingManagerNumber), parseInt(existManagerNumber)))
-	            return false;
+    var loadJobCodes = function () {
+        EmpActions.getJobCodes(function (result) {
+            $scope.JobCodes = result;
+        });
+    };
 
-	        if (obj.ReportingName && obj.ReportingEmail && obj.ReportingTitle && obj.ReportingName.length > 0 && obj.ReportingEmail.length > 0 && obj.ReportingTitle.length > 0)
-	            return false;
+    var loadPersonActionTypes = function () {
+        EmpActions.getPersonActionTypes(function (result) {
+            var filters = function (item) {
+                return $filter('filter')(result, { typeName: item });
+            }
 
-	        return true;
-	    }
+            $scope.lkup.BounsEligibles = filters("BonusEligible");
+            $scope.lkup.PlanDetails = filters("Plan");
+            $scope.lkup.Reason4Changes = filters("Reason4Change");
+            $scope.lkup.Layoffs = filters("Layoff");
+            $scope.lkup.Terminations = filters("Termination");
+            $scope.lkup.Resignations = filters("Resignation");
+        });
+    };
 
-	    var initReportingValue = function (type, obj) {
-	        if ($scope.empAction.Data && !isManagerInfoChanged($scope.empAction.Data[type], obj.ReportingManagerNumber))
-	            return;
+    var loadPayGrades = function () {
+        EmpActions.getPayGrades(function (result) {
+            $scope.PayGrades = result;
+        });
+    };
 
-	        $scope.empAction.Data[type].ReportingType = type;
-	        if (type == "NewHire" || type == "ReHire") {
-	            $scope.empAction.ManagerName = obj.ReportingName;
-	            $scope.empAction.ManagerTitle = obj.ReportingTitle;
-	            $scope.empAction.ManagerEmail = obj.ReportingEmail;
-	            $scope.empAction.ManagerNumber = obj.ReportingManagerNumber;
-	        }
-	        if (type == "Promotion" || type == "Demotion" || type == "SalaryChange") {
-	            $scope.empAction.NewManagerName = obj.ReportingName;
-	            $scope.empAction.NewManagerTitle = obj.ReportingTitle;
-	            $scope.empAction.NewManagerEmail = obj.ReportingEmail;
-	            $scope.empAction.NewManagerNumber = obj.ReportingManagerNumber;
-	            if ($scope.empAction.NewManagerNumber != null && $scope.empAction.NewManagerNumber != "") {
-	                getManagerDetail($scope.empAction.NewManagerNumber, function (response) {
-	                    if (!angular.isDefined(response)) {
-	                        $scope.empAction.RegionalManagerNumber = null;
-	                        $scope.empAction.RegionalManagerName = null;
-	                        $scope.empAction.RegionalManagerTitle = null;
-	                        $scope.empAction.RegionalManagerEmail = null;
-	                    }
-	                    else {
-	                        if (response.managerClock == 0) {
-	                            $scope.empAction.RegionalManagerNumber = null;
-	                        }
-	                        else {
-	                            $scope.empAction.RegionalManagerNumber = response.managerClock;
-	                        }
-	                        $scope.empAction.RegionalManagerName = response.managerName;
-	                        $scope.empAction.RegionalManagerTitle = response.jobTitle;
-	                        $scope.empAction.RegionalManagerEmail = response.managerEmail;
-	                    }
-	                });
-	            }
-	        }
-	        if (type == "Transfer") {
-	            $scope.empAction.TransferManagerName = obj.ReportingName;
-	            $scope.empAction.TransferManagerTitle = obj.ReportingTitle;
-	            $scope.empAction.TransferManagerEmail = obj.ReportingEmail;
-	            $scope.empAction.TransferManagerNumber = obj.ReportingManagerNumber;
-	        }
-	        $scope.empAction.Data[type].CacheReportingManagerNumber = obj.ReportingManagerNumber;
-	        $scope.empAction.Data[type].DisabledReportFields = obj.ReportingManagerNumber && obj.ReportingManagerNumber.length > 0 && obj.ReportingTitle && obj.ReportingTitle.length > 0 && obj.ReportingEmail && obj.ReportingEmail.length > 0;
-	        $scope.empAction.Data[type].DisabledReportingManagerNumberField = false;
-	    }
+    var initReporting = function (positionType) {
+        if (!$scope.empAction.Data.Compensation)
+            return;
 
-	    var items = ["NewHire", "ReHire", "Promotion", "Demotion", "SalaryChange", "Transfer"];
-	    if (angular.isDefined(positionType) && items.indexOf(positionType) >= 0 && $scope.empAction.Data.Compensation) {
-	        initReportingValue(positionType, $scope.empAction.Data.Compensation);
-	    }
-	    else {
-	        angular.forEach(items, function (item, index) {
-	            initReportingValue(item, $scope.empAction.Data.Compensation);
-	        });
-	    }
-	};
+        var isManagerInfoChanged = function (obj, existManagerNumber) {
 
-	var getEmpCompensation = function (employeeNumber, callback) {
-	    EmpActions.getEmpCompensation(employeeNumber, function (response) {
-	        callback(response);
-	    });
-	};
+            if (existManagerNumber && existManagerNumber.length > 0)
+                return true;
 
-	var getManagerDetail = function (employeeNumber, callback) {
-	    EmpActions.getManagerDetail(employeeNumber, function (response) {
-	        callback(response);
-	    });
-	};
+            if (obj.ReportingManagerNumber && angular.equals(parseInt(obj.ReportingManagerNumber), parseInt(existManagerNumber)))
+                return false;
 
-	var getAdministratorDetail = function (callback) {
-	    EmpActions.getAdministratorDetail(function (response) {
-	        callback(response);
-	    });
-	};
+            if (obj.ReportingName && obj.ReportingEmail && obj.ReportingTitle && obj.ReportingName.length > 0 && obj.ReportingEmail.length > 0 && obj.ReportingTitle.length > 0)
+                return false;
 
-	var loadCompensations = function (employeeNumber) {
+            return true;
+        }
 
-	    getEmpCompensation(employeeNumber, function (response) {
-	        if (!angular.isDefined(response)) {
-	            $scope.empAction.Data.Compensation = initCompensation();
-	        }
-	        else {
-	            $scope.empAction.Data.Compensation = {
-	                CurrentPayGrade: response.payGrade + " (" + response.minPayRange + " - " + response.midPayRange + " - " + response.maxPayRange + ")",
-	                CurrentSalary: parseFloat(response.annualPayAmt).toFixed(2),
-	                CurrentPayRange: $scope.getPayRange(response.payGrade, response.annualPayAmt),
-	                ReportingName: response.mgrFirstName + " " + response.mgrLastName,
-	                ReportingTitle: response.mgrTitle,
-	                ReportingEmail: response.mgrEmail,
-	                ReportingManagerNumber: response.mgrClock,
-	                DateLastIncrease: $filter("date")(new Date(response.dateBeg), "MM/dd/yyyy"),
-	                PercentLastIncrease: ((response.annualPayAmt - response.priorAnnualPayAmt) / response.priorAnnualPayAmt).toFixed(2) * 100 + "%",
-	                CurrentPosition: response.empTitle,
-	                EmployeeNumber: response.empNumber,
-	                CurrentPositionType: $filter('filter')($scope.JobCodes, { name: response.mgrTitle })
-	            }
-	        }
+        var initReportingValue = function (type, obj) {
+            if ($scope.empAction.Data && !isManagerInfoChanged($scope.empAction.Data[type], obj.ReportingManagerNumber))
+                return;
 
-	        initReporting();
-	    });
-	};
+            $scope.empAction.Data[type].ReportingType = type;
+            if (type == "NewHire" || type == "ReHire") {
+                $scope.empAction.ManagerName = obj.ReportingName;
+                $scope.empAction.ManagerTitle = obj.ReportingTitle;
+                $scope.empAction.ManagerEmail = obj.ReportingEmail;
+                $scope.empAction.ManagerNumber = obj.ReportingManagerNumber;
+            }
+            if (type == "Promotion" || type == "Demotion" || type == "SalaryChange") {
+                $scope.empAction.NewManagerName = obj.ReportingName;
+                $scope.empAction.NewManagerTitle = obj.ReportingTitle;
+                $scope.empAction.NewManagerEmail = obj.ReportingEmail;
+                $scope.empAction.NewManagerNumber = obj.ReportingManagerNumber;
+                if ($scope.empAction.NewManagerNumber != null && $scope.empAction.NewManagerNumber != "") {
+                    getManagerDetail($scope.empAction.NewManagerNumber, function (response) {
+                        if (!angular.isDefined(response)) {
+                            $scope.empAction.RegionalManagerNumber = null;
+                            $scope.empAction.RegionalManagerName = null;
+                            $scope.empAction.RegionalManagerTitle = null;
+                            $scope.empAction.RegionalManagerEmail = null;
+                        }
+                        else {
+                            if (response.managerClock == 0) {
+                                $scope.empAction.RegionalManagerNumber = null;
+                            }
+                            else {
+                                $scope.empAction.RegionalManagerNumber = response.managerClock;
+                            }
+                            $scope.empAction.RegionalManagerName = response.managerName;
+                            $scope.empAction.RegionalManagerTitle = response.jobTitle;
+                            $scope.empAction.RegionalManagerEmail = response.managerEmail;
+                        }
+                    });
+                }
+            }
+            if (type == "Transfer") {
+                $scope.empAction.TransferManagerName = obj.ReportingName;
+                $scope.empAction.TransferManagerTitle = obj.ReportingTitle;
+                $scope.empAction.TransferManagerEmail = obj.ReportingEmail;
+                $scope.empAction.TransferManagerNumber = obj.ReportingManagerNumber;
+            }
+            $scope.empAction.Data[type].CacheReportingManagerNumber = obj.ReportingManagerNumber;
+            $scope.empAction.Data[type].DisabledReportFields = obj.ReportingManagerNumber && obj.ReportingManagerNumber.length > 0 && obj.ReportingTitle && obj.ReportingTitle.length > 0 && obj.ReportingEmail && obj.ReportingEmail.length > 0;
+            $scope.empAction.Data[type].DisabledReportingManagerNumberField = false;
+        }
 
-	$scope.getManagerInfo = function (employeeNumber, positionType) {
+        var items = ["NewHire", "ReHire", "Promotion", "Demotion", "SalaryChange", "Transfer"];
+        if (angular.isDefined(positionType) && items.indexOf(positionType) >= 0 && $scope.empAction.Data.Compensation) {
+            initReportingValue(positionType, $scope.empAction.Data.Compensation);
+        }
+        else {
+            angular.forEach(items, function (item, index) {
+                initReportingValue(item, $scope.empAction.Data.Compensation);
+            });
+        }
+    };
 
-	    if (positionType == "NewHire" || positionType == "ReHire") {
-	        var ReportingManagerNumber = $scope.empAction.ManagerNumber;
-	    }
-	    if (positionType == "Promotion" || positionType == "Demotion" || positionType == "SalaryChange") {
-	        var ReportingManagerNumber = $scope.empAction.NewManagerNumber;
-	    }
-	    if (positionType == "Transfer") {
-	        var ReportingManagerNumber = $scope.empAction.TransferManagerNumber;
-	    }
+    var getEmpCompensation = function (employeeNumber, callback) {
+        EmpActions.getEmpCompensation(employeeNumber, function (response) {
+            callback(response);
+        });
+    };
 
-	    if (employeeNumber !== "" && $scope.empAction.Data && (ReportingManagerNumber.length === 0 || parseInt(employeeNumber) !== parseInt($scope.empAction.Data[positionType].CacheReportingManagerNumber))) {
+    var getManagerDetail = function (employeeNumber, callback) {
+        EmpActions.getManagerDetail(employeeNumber, function (response) {
+            callback(response);
+        });
+    };
+
+    var getAdministratorDetail = function (callback) {
+        EmpActions.getAdministratorDetail(function (response) {
+            callback(response);
+        });
+    };
+
+    var loadCompensations = function (employeeNumber) {
+
+        getEmpCompensation(employeeNumber, function (response) {
+            if (!angular.isDefined(response)) {
+                $scope.empAction.Data.Compensation = initCompensation();
+            }
+            else {
+                $scope.empAction.Data.Compensation = {
+                    CurrentPayGrade: response.payGrade + " (" + response.minPayRange + " - " + response.midPayRange + " - " + response.maxPayRange + ")",
+                    CurrentSalary: parseFloat(response.annualPayAmt).toFixed(2),
+                    CurrentPayRange: $scope.getPayRange(response.payGrade, response.annualPayAmt),
+                    ReportingName: response.mgrFirstName + " " + response.mgrLastName,
+                    ReportingTitle: response.mgrTitle,
+                    ReportingEmail: response.mgrEmail,
+                    ReportingManagerNumber: response.mgrClock,
+                    DateLastIncrease: $filter("date")(new Date(response.dateBeg), "MM/dd/yyyy"),
+                    PercentLastIncrease: ((response.annualPayAmt - response.priorAnnualPayAmt) / response.priorAnnualPayAmt).toFixed(2) * 100 + "%",
+                    CurrentPosition: response.empTitle,
+                    EmployeeNumber: response.empNumber,
+                    CurrentPositionType: $filter('filter')($scope.JobCodes, { name: response.mgrTitle })
+                }
+            }
+
+            initReporting();
+        });
+    };
+
+    $scope.getManagerInfo = function (employeeNumber, positionType) {
+
+        if (positionType == "NewHire" || positionType == "ReHire") {
+            var ReportingManagerNumber = $scope.empAction.ManagerNumber;
+        }
+        if (positionType == "Promotion" || positionType == "Demotion" || positionType == "SalaryChange") {
+            var ReportingManagerNumber = $scope.empAction.NewManagerNumber;
+        }
+        if (positionType == "Transfer") {
+            var ReportingManagerNumber = $scope.empAction.TransferManagerNumber;
+        }
+
+        if (employeeNumber !== "" && $scope.empAction.Data && (ReportingManagerNumber.length === 0 || parseInt(employeeNumber) !== parseInt($scope.empAction.Data[positionType].CacheReportingManagerNumber))) {
             $scope.empAction.Data[positionType].CacheReportingManagerNumber = employeeNumber;
 
-                getManagerDetail(employeeNumber, function (response) {
-                    if (!angular.isDefined(response)) {
-                        alert("The Managers/Clock Number you enter is not exist.");
-                        return;
-                    }
-                    if (positionType == "NewHire" || positionType == "ReHire") {
-                        $scope.empAction.ManagerName = response.empFirstName + " " + response.empLastName;
-                        $scope.empAction.ManagerTitle = response.empTitle;
-                        $scope.empAction.ManagerEmail = response.empEmail;
-                        $scope.empAction.ManagerNumber = response.empClock;
-                    }
-                    if (positionType == "Promotion" || positionType == "Demotion" || positionType == "SalaryChange") {
-                        $scope.empAction.NewManagerName = response.empFirstName + " " + response.empLastName;
-                        $scope.empAction.NewManagerTitle = response.empTitle;
-                        $scope.empAction.NewManagerEmail = response.empEmail;
-                        $scope.empAction.NewManagerNumber = response.empClock;
-                    }
-                    if (positionType == "Transfer") {
-                        $scope.empAction.TransferManagerName = response.empFirstName + " " + response.empLastName;
-                        $scope.empAction.TransferManagerTitle = response.empTitle;
-                        $scope.empAction.TransferManagerEmail = response.empEmail;
-                        $scope.empAction.TransferManagerNumber = response.empClock;
-                    }
-                    $scope.empAction.Data[positionType].CacheReportingManagerNumber = response.empClock;
-                    $scope.empAction.Data[positionType].DisabledReportFields = response.empClock && response.empClock.length > 0 && response.empTitle && response.empTitle.length > 0 && response.empEmail && response.empEmail.length > 0;
-                    $scope.empAction.Data[positionType].DisabledReportingManagerNumberField = false;
-                });
+            getManagerDetail(employeeNumber, function (response) {
+                if (!angular.isDefined(response)) {
+                    alert("The Managers/Clock Number you enter is not exist.");
+                    return;
+                }
+                if (positionType == "NewHire" || positionType == "ReHire") {
+                    $scope.empAction.ManagerName = response.empFirstName + " " + response.empLastName;
+                    $scope.empAction.ManagerTitle = response.empTitle;
+                    $scope.empAction.ManagerEmail = response.empEmail;
+                    $scope.empAction.ManagerNumber = response.empClock;
+                }
+                if (positionType == "Promotion" || positionType == "Demotion" || positionType == "SalaryChange") {
+                    $scope.empAction.NewManagerName = response.empFirstName + " " + response.empLastName;
+                    $scope.empAction.NewManagerTitle = response.empTitle;
+                    $scope.empAction.NewManagerEmail = response.empEmail;
+                    $scope.empAction.NewManagerNumber = response.empClock;
+                }
+                if (positionType == "Transfer") {
+                    $scope.empAction.TransferManagerName = response.empFirstName + " " + response.empLastName;
+                    $scope.empAction.TransferManagerTitle = response.empTitle;
+                    $scope.empAction.TransferManagerEmail = response.empEmail;
+                    $scope.empAction.TransferManagerNumber = response.empClock;
+                }
+                $scope.empAction.Data[positionType].CacheReportingManagerNumber = response.empClock;
+                $scope.empAction.Data[positionType].DisabledReportFields = response.empClock && response.empClock.length > 0 && response.empTitle && response.empTitle.length > 0 && response.empEmail && response.empEmail.length > 0;
+                $scope.empAction.Data[positionType].DisabledReportingManagerNumberField = false;
+            });
         }
         else
             return;
-	};
+    };
 
-	$scope.getRegionalManagerInfo = function (employeeNumber, positionType) {
+    $scope.getRegionalManagerInfo = function (employeeNumber, positionType) {
 
-	    if (employeeNumber !== "" && $scope.empAction.Data && ($scope.empAction.RegionalManagerNumber.length === 0 || parseInt(employeeNumber) !== parseInt($scope.empAction.Data[positionType].CacheReportingManagerNumber))) {
-	        $scope.empAction.Data[positionType].CacheReportingManagerNumber = employeeNumber;
+        if (employeeNumber !== "" && $scope.empAction.Data && ($scope.empAction.RegionalManagerNumber.length === 0 || parseInt(employeeNumber) !== parseInt($scope.empAction.Data[positionType].CacheReportingManagerNumber))) {
+            $scope.empAction.Data[positionType].CacheReportingManagerNumber = employeeNumber;
 
-	            getManagerDetail(employeeNumber, function (response) {
-	            if (!angular.isDefined(response)) {
-	                alert("The Managers/Clock Number you enter is not exist.");
-	                return;
-	            }
-	            
-	            $scope.empAction.RegionalManagerName = response.empFirstName + " " + response.empLastName;
-	            $scope.empAction.RegionalManagerTitle = response.empTitle;
-	            $scope.empAction.RegionalManagerEmail = response.empEmail;
-	            $scope.empAction.RegionalManagerNumber = response.empClock;
-	        });
-	    }
-	    else
-	        return;
-	};
+            getManagerDetail(employeeNumber, function (response) {
+                if (!angular.isDefined(response)) {
+                    alert("The Managers/Clock Number you enter is not exist.");
+                    return;
+                }
+
+                $scope.empAction.RegionalManagerName = response.empFirstName + " " + response.empLastName;
+                $scope.empAction.RegionalManagerTitle = response.empTitle;
+                $scope.empAction.RegionalManagerEmail = response.empEmail;
+                $scope.empAction.RegionalManagerNumber = response.empClock;
+            });
+        }
+        else
+            return;
+    };
 
     $scope.isManagerFieldRequired = function (item) {
 
@@ -539,6 +545,35 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.disableAdminEmail = response.empEmail && response.empEmail.length > 0;
             }
         });
+        angular.forEach($scope.Approvals, function (item) {
+            var workflowStepId = EmpActions.getWorkflowStepId(item.id);
+            if (item.id != 3 && item.id != 4) {
+                EmpActions.getAppUsers(workflowStepId, function (result) {
+                    if (angular.isDefined(result)) {
+                        if (item.id == 1) {
+                            $scope.empAction.LoaManagerName = result.firstName + " " + result.lastName;
+                            $scope.empAction.LoaManagerEmail = result.email;
+                        }
+                        else if (item.id == 2) {
+                            $scope.empAction.HRManagerName = result.firstName + " " + result.lastName;
+                            $scope.empAction.HRManagerEmail = result.email;
+                        }
+                        else if (item.id == 5) {
+                            $scope.empAction.ProcessHRName = result.firstName + " " + result.lastName;
+                            $scope.empAction.ProcessHREmail = result.email;
+                        }
+                    }
+                });
+            }
+            else if (item.id == 4) {
+                EmpActions.getJDECompanies($scope.empAction.HcmHouseCode, item.id, function (result) {
+                    if (angular.isDefined(result)) {
+                        $scope.empAction.HRDirectorName = result.name;
+                        $scope.empAction.HRDirectorEmail = result.email;
+                    }
+                });
+            }
+        });
     };
 
     $scope.getPayRange = function (payGrade, salary) {
@@ -574,6 +609,14 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         return range;
     };
 
+    $scope.Approvals = [
+    { id: 1, approval: 'LOA', name: null, date: null },
+    { id: 2, approval: 'HR Manager', name: null, date: null },
+    { id: 3, approval: 'Regional Manager', name: null, date: null },
+    { id: 4, approval: 'HR Director', name: null, date: null },
+    { id: 5, approval: 'Process HR', name: null, date: null }
+    ];
+
     init();
 
     if ($routeParams.id) {
@@ -588,7 +631,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.EmployeeNumber = null;
                 $scope.newHireChecked = true;
             }
-            
+
             if ($scope.empAction.ResignationType > 0) {
                 $scope.empAction.SeparationReason = "ResignationType";
             }
@@ -621,7 +664,44 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     }
                 }
             });
+
+            EmpActions.getWorkflowHistory($scope.empAction.Id, $scope.empAction.StatusType, function (result) {
+            });
+
+            getHouseCodes($scope.empAction.HcmHouseCode, function (response) {
+                if (angular.isDefined(response)) {
+                    if (response.contractTypeId == "3") {
+                        $scope.overHeadAccount = true;
+                    }
+                    else {
+                        $scope.overHeadAccount = false;
+                    }
+                }
+            });
+
+            angular.forEach($scope.Approvals, function (item) {
+                var workflowStepId = EmpActions.getWorkflowStepId(item.id);
+                if (item.id != 4 && item.id != 3) {
+                    EmpActions.getAppUsers(workflowStepId, function (result) {
+                        if (angular.isDefined(result)) {
+                            item.name = result.firstName + " " + result.lastName;
+                        }
+                    });
+                }
+                else if (item.id == 3) {
+                    item.name = $scope.empAction.RegionalManagerName;
+                }
+                else if (item.id == 4) {
+                    EmpActions.getJDECompanies($scope.empAction.HcmHouseCode, 4, function (result) {
+                        if (angular.isDefined(result)) {
+                            item.name = result.name;
+                        }
+                    });
+                }
+                item.date = EmpActions.getWorkflowDate(workflowStepId);
+            });
         });
+
         EmpActions.findEmployeePAFDocument($routeParams.id, function (result) {
             $scope.pafDocs = result;
         });
@@ -640,6 +720,24 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             return;
         if ($scope.empAction.Data.Employee && $scope.empAction.Data.Employee.HcmHouseCode != newValue) {
             alert("House Code is not same as Employee Number House Code.");
+        }
+        if (newValue != oldValue) {
+            getHouseCodes(newValue, function (response) {
+                if (angular.isDefined(response)) {
+                    if (response.contractTypeId == "3") {
+                        $scope.overHeadAccount = true;
+                    }
+                    else {
+                        $scope.overHeadAccount = false;
+                    }
+                }
+            });
+            EmpActions.getJDECompanies(newValue, 4, function (result) {
+                if (angular.isDefined(result)) {
+                    $scope.empAction.HRDirectorName = result.name;
+                    $scope.empAction.HRDirectorEmail = result.email;
+                }
+            });
         }
         validateHcmHouseCode();
     });
@@ -884,7 +982,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         selectedDocId = item.id;
         selectedFileName = item.fileName;
     };
-	
+
     $scope.addDoc = function () {
         var modalInstance = $modal.open({
             templateUrl: 'upload.html',
@@ -1137,7 +1235,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 i++
             }
             if (i > 0) {
-                EmpActions.submitEmployeePersonnelAction(items[i-1], function (data, status) {
+                EmpActions.submitEmployeePersonnelAction(items[i], function (data, status) {
                     $scope.pageLoading = false;
                     document.location.hash = 'list';
                     alert("Employee PAF has been submitted successfully.");
@@ -1156,7 +1254,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         status: 1,
         formType: null
     };
-	
+
     var showPIToaster = function () {
         if ($scope.empAction.Data.PersonalInfoChange.InfoChangeEffectiveDate) {
             var modalInstance = $modal.open({
@@ -1266,22 +1364,22 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 dateChange("DateReturn");
         });
     }])
-	.filter('reason4ChangeFilter', ['$filter', function ($filter) {
-	    return function (item, type) {
-	
-	        if (type.Demotion) {
-	            return $filter("filter")(item, { title: 'Demotion' });
-	        }
-	
-	        if (type.Promotion) {
-	            return $filter("filter")(item, { title: 'Promotion' });
-	        }
-	
-	        if (type.SalaryChange) {
-	            return $filter("filter")(item, function (value) { return value.title.indexOf("Promotion") == -1 && value.title.indexOf("Demotion") == -1; });
-	        }
-	    }
-	}]);
+       .filter('reason4ChangeFilter', ['$filter', function ($filter) {
+           return function (item, type) {
+
+               if (type.Demotion) {
+                   return $filter("filter")(item, { title: 'Demotion' });
+               }
+
+               if (type.Promotion) {
+                   return $filter("filter")(item, { title: 'Promotion' });
+               }
+
+               if (type.SalaryChange) {
+                   return $filter("filter")(item, function (value) { return value.title.indexOf("Promotion") == -1 && value.title.indexOf("Demotion") == -1; });
+               }
+           }
+       }]);
 ;
 
 paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$modal', function ($scope, EmpActions, $filter, $sce, $modal) {
@@ -1304,88 +1402,88 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         showWeeks: false
     };
 
-	$scope.pageLoading = false;
-	$scope.loadingTitle = " Loading...";
-	$scope.isPageLoading = function () {
-	    return ($scope.loadingCount > 0 || $scope.pageLoading);
-	};
-	
-	$scope.getPafList = function () {
-	    //if ($scope.pafFilter.pafDate)
-	    //    $scope.pafFilter.pafDate = $filter('date')($scope.pafFilter.pafDate, 'yyyy-MM-dd')
-	    $scope.loadingTitle = " Loading...";
-	    EmpActions.getEmployeePersonnelActions($scope.pafFilter, function (items) {
-	        $scope.empActions = items;
-	    });
-	};
-	
-	var isAuthorized = function (path) {
-	    var authorized = false;
+    $scope.pageLoading = false;
+    $scope.loadingTitle = " Loading...";
+    $scope.isPageLoading = function () {
+        return ($scope.loadingCount > 0 || $scope.pageLoading);
+    };
 
-	    for (var index = 0; index < $scope.authorizations.length; index++) {
-	        if ($scope.authorizations[index].path.indexOf(path) >= 0) {
-	            authorized = true;
-	            break;
-	        }
-	    }
+    $scope.getPafList = function () {
+        //if ($scope.pafFilter.pafDate)
+        //    $scope.pafFilter.pafDate = $filter('date')($scope.pafFilter.pafDate, 'yyyy-MM-dd')
+        $scope.loadingTitle = " Loading...";
+        EmpActions.getEmployeePersonnelActions($scope.pafFilter, function (items) {
+            $scope.empActions = items;
+        });
+    };
 
-	    return authorized;
-	};
+    var isAuthorized = function (path) {
+        var authorized = false;
 
-	var authorizationsLoaded = function () {
-	    var authorizePath = "\\crothall\\chimes\\fin\\Setup\\EmployeePAF";
-	    $scope.readOnly = isAuthorized(authorizePath + "\\Read");
-	    $scope.write = isAuthorized(authorizePath + "\\Write");
-	    $scope.writeInProcess = isAuthorized(authorizePath + "\\InProcessWrite");
-	    $scope.approveInProcess = isAuthorized(authorizePath + "\\ApproveInProcess");
-	};
-	
-	var setCurrentHcmHouseCode = function (callback) {
-	    EmpActions.setCurrentHcmHouseCode(function (response) {
-	        callback(response);
-	    });
-	};
+        for (var index = 0; index < $scope.authorizations.length; index++) {
+            if ($scope.authorizations[index].path.indexOf(path) >= 0) {
+                authorized = true;
+                break;
+            }
+        }
 
-	var load = function () {
-	    EmpActions.getAuthorizations(function (result) {
-	        $scope.authorizations = result;
-	        authorizationsLoaded();
-	    });
+        return authorized;
+    };
 
-	    EmpActions.getHcmHouseCodes(function (result) {
-	        $scope.HcmHouseCodes = result;
-	        if ($scope.pafFilter.hcmHouseCode != null)
-	            $scope.getPafList();
-	    });
+    var authorizationsLoaded = function () {
+        var authorizePath = "\\crothall\\chimes\\fin\\Setup\\EmployeePAF";
+        $scope.readOnly = isAuthorized(authorizePath + "\\Read");
+        $scope.write = isAuthorized(authorizePath + "\\Write");
+        $scope.writeInProcess = isAuthorized(authorizePath + "\\InProcessWrite");
+        $scope.approveInProcess = isAuthorized(authorizePath + "\\ApproveInProcess");
+    };
 
-	    EmpActions.getStateTypes(function (result) {
-	    });
+    var setCurrentHcmHouseCode = function (callback) {
+        EmpActions.setCurrentHcmHouseCode(function (response) {
+            callback(response);
+        });
+    };
 
-	    EmpActions.getJobCodes(function (result) {
-	        $scope.JobCodes = result;
-	    });
+    var load = function () {
+        EmpActions.getAuthorizations(function (result) {
+            $scope.authorizations = result;
+            authorizationsLoaded();
+        });
 
-	    EmpActions.getPersonActionTypes(function (result) {
-	        var filters = function (item) {
-	            return $filter('filter')(result, { typeName: item });
-	        }
-	    });
+        EmpActions.getHcmHouseCodes(function (result) {
+            $scope.HcmHouseCodes = result;
+            if ($scope.pafFilter.hcmHouseCode != null)
+                $scope.getPafList();
+        });
 
-	    EmpActions.getPayGrades(function (result) {
-	    });
+        EmpActions.getStateTypes(function (result) {
+        });
 
-	    EmpActions.getWorkflowSteps(2, function (result) {
-	    });
+        EmpActions.getJobCodes(function (result) {
+            $scope.JobCodes = result;
+        });
 
-	    if ($scope.pafFilter.hcmHouseCode == null) {
-	        setCurrentHcmHouseCode(function (response) {
-	            if (!angular.isDefined(response)) {
-	                return;
-	            }
-	            $scope.pafFilter.hcmHouseCode = response.id;
-	        });
-	    }
-	};
+        EmpActions.getPersonActionTypes(function (result) {
+            var filters = function (item) {
+                return $filter('filter')(result, { typeName: item });
+            }
+        });
+
+        EmpActions.getPayGrades(function (result) {
+        });
+
+        EmpActions.getWorkflowSteps(2, function (result) {
+        });
+
+        if ($scope.pafFilter.hcmHouseCode == null) {
+            setCurrentHcmHouseCode(function (response) {
+                if (!angular.isDefined(response)) {
+                    return;
+                }
+                $scope.pafFilter.hcmHouseCode = response.id;
+            });
+        }
+    };
 
     load();
 
@@ -1500,11 +1598,11 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
     };
 
     $scope.Statuses = [
-	    { id: 1, title: 'Open' },
-	    { id: 2, title: 'In Process' },
-	    { id: 8, title: 'Approved' },
-	    { id: 6, title: 'Cancelled' },
-	    { id: 10, title: 'Unapproved' }
+           { id: 1, title: 'Open' },
+           { id: 2, title: 'In Process' },
+           { id: 8, title: 'Approved' },
+           { id: 6, title: 'Cancelled' },
+           { id: 10, title: 'Unapproved' }
     ];
 
     $scope.getStatusTitle = function (id) {
@@ -1518,12 +1616,12 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         return title;
     };
 
-    $scope.getStepTitle = function(stepNumber, statusId) {
+    $scope.getStepTitle = function (stepNumber, statusId) {
         var title = "";
 
         if (stepNumber != null && stepNumber != "") {
-			var brief = EmpActions.getWorkflowBrief(stepNumber);
-			
+            var brief = EmpActions.getWorkflowBrief(stepNumber);
+
             if (brief != "") {
                 if (statusId == 2)
                     title = "- " + brief + " Approved";
@@ -1531,13 +1629,13 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
                     title = "- " + brief;
             }
         }
-		
+
         return title;
     }
 }])
 .controller('modalInstanceCtrl', function ($scope, $modalInstance) {
-	$scope.disable = true;
-	
+    $scope.disable = true;
+
     $scope.ok = function () {
         $modalInstance.close();
     };
@@ -1547,13 +1645,13 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
     };
 
     $scope.upload = function () {
-		if ($scope.docTitle == undefined) {
+        if ($scope.docTitle == undefined) {
             return false;
         }
 
         var fileName = $("#iFrameUpload")[0].contentWindow.document.getElementById("UploadFile").value;
         fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
-       
+
         $("#iFrameUpload")[0].contentWindow.document.getElementById("FileName").value = "";
         $("#iFrameUpload")[0].contentWindow.document.getElementById("UploadButton").click();
 
@@ -1575,9 +1673,9 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
                         $scope.pafDocs.push(item);
                     }
                     else {
-						$scope.pafDocs[activeRowIndex].title = $scope.docTitle;
-						$scope.pafDocs[activeRowIndex].fileName = fileName;
-						$scope.pafDocs[activeRowIndex].tempFileName = tempFileName;
+                        $scope.pafDocs[activeRowIndex].title = $scope.docTitle;
+                        $scope.pafDocs[activeRowIndex].fileName = fileName;
+                        $scope.pafDocs[activeRowIndex].tempFileName = tempFileName;
                     }
                 }
             }
@@ -1795,7 +1893,7 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
                 }
                 else {
                     modelCtrl.$setValidity(attrs.name, false);
-                    return null;
+                    return inputValue;
                 }
             });
         }
@@ -1816,8 +1914,8 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
                             return viewValue;
                         }
                         else {
-							ngModel.$setValidity(attrs.name, false);
-	                    	return null;
+                            ngModel.$setValidity(attrs.name, false);
+                            return null;
                         }
                     });
                     break;
@@ -1845,15 +1943,15 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
             if ((attr.required || value != "") && value != null)
                 ctrl.$setValidity(attr.name, valid);
             else if (value == "")
-				ctrl.$setValidity(attr.name, true);
+                ctrl.$setValidity(attr.name, true);
             return value;
         },
         zipCode: function (ctrl, value, attr) {
-			var valid = typeof (value) == "string" && (/(^\d{5}$)|(^\d{9}$)|(^\d{5}-\d{4}$)/.test(value));
-			if ((attr.required || value != "") && value != null)
-			    ctrl.$setValidity(attr.name, valid);
-			else if (value == "")
-				ctrl.$setValidity(attr.name, true);
+            var valid = typeof (value) == "string" && (/(^\d{5}$)|(^\d{9}$)|(^\d{5}-\d{4}$)/.test(value));
+            if ((attr.required || value != "") && value != null)
+                ctrl.$setValidity(attr.name, valid);
+            else if (value == "")
+                ctrl.$setValidity(attr.name, true);
             return value;
         }
     };
@@ -2178,14 +2276,14 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
                     });
 
                     scope.TypeaheadModel = typeof modelValue == "undefined" ? null : modelValue[0];
-					
-					if (scope.inputName == "HcmHouseCode" && scope.TypeaheadModel != null) {
-						parent.fin.appUI.hirNode = parseInt(modelValue[0].hirNode, 10);
-						parent.fin.appUI.unitId = parseInt(modelValue[0].appUnit, 10);
-						parent.fin.appUI.houseCodeId = parseInt(modelValue[0].id, 10);
-						parent.fin.appUI.houseCodeBrief = modelValue[0].brief;
-						parent.fin.appUI.houseCodeTitle = modelValue[0].name;
-					}
+
+                    if (scope.inputName == "HcmHouseCode" && scope.TypeaheadModel != null) {
+                        parent.fin.appUI.hirNode = parseInt(modelValue[0].hirNode, 10);
+                        parent.fin.appUI.unitId = parseInt(modelValue[0].appUnit, 10);
+                        parent.fin.appUI.houseCodeId = parseInt(modelValue[0].id, 10);
+                        parent.fin.appUI.houseCodeBrief = modelValue[0].brief;
+                        parent.fin.appUI.houseCodeTitle = modelValue[0].name;
+                    }
                 }
             }
 
@@ -2270,13 +2368,14 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 
     var cache = {};
 
-	var authorizations = null;
+    var authorizations = null;
     var houseCodes = null;
     var stateTypes = null;
-	var jobCodes = null;
+    var jobCodes = null;
     var personActionTypes = null;
     var payGrades = null;
     var workflowSteps = null;
+    var workflowHistorys = null;
 
     var apiRequest = function (moduleId, targetId, requestXml, callback) {
         //$.ajax({
@@ -2390,7 +2489,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             });
         }
     };
-	
+
     var getAuthorizations = function (callback) {
         if (cache.authorizations) {
             callback(cache.authorizations);
@@ -2401,7 +2500,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             getAuthorizations(callback);
         });
     };
-	
+
     var getHcmHouseCodes = function (callback) {
 
         if (cache.houseCodes) {
@@ -2426,6 +2525,14 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         });
     };
 
+    var getHouseCodes = function (houseCode, callback) {
+
+        apiRequest('hcm', 'iiCache', '<criteria>storeId:houseCodes,userId:[user]' + ",houseCode:" + houseCode + ',</criteria>', function (xml) {
+            if (callback)
+                callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
+        });
+    };
+
     var getTitleById = function (id, data) {
         var title = "";
 
@@ -2441,7 +2548,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 
         return title;
     };
-	
+
     var getHcmHouseCodeByBrief = function (brief) {
         if (cache.houseCodes == null)
             return "";
@@ -2472,15 +2579,15 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
     var getEmployee = function (employeeNumber, hcmHouseCode, callback) {
 
         apiRequest('emp', 'iiCache', '<criteria>storeId:employeeSearchs,userId:[user]'
-	        + ',searchValue:' + employeeNumber
-	        + ',hcmHouseCodeId:' + hcmHouseCode
-	        + ',employeeType:SearchFull,filterType:Employee Number'
-			+ ',</criteria>', function (xml) {
-			    if (callback) {
-			        var matched = deserializeXml(xml, 'item', { upperFirstLetter: false });
-			        callback(matched && matched.length > 0 ? matched[0] : null);
-			    }
-			});
+               + ',searchValue:' + employeeNumber
+               + ',hcmHouseCodeId:' + hcmHouseCode
+               + ',employeeType:SearchFull,filterType:Employee Number'
+                     + ',</criteria>', function (xml) {
+                         if (callback) {
+                             var matched = deserializeXml(xml, 'item', { upperFirstLetter: false });
+                             callback(matched && matched.length > 0 ? matched[0] : null);
+                         }
+                     });
     };
 
     var getPerson = function (employeeId, callback) {
@@ -2496,17 +2603,17 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
     var getEmpCompensation = function (employeeNumber, callback) {
 
         apiRequest('emp', 'iiCache', '<criteria>storeId:employeeCompensation,userId:[user]'
-			+ ',employeeNumber:' + employeeNumber
-        	+ ',</criteria>', function (xml) {
-        	    if (callback)
-        	        callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
-        	});
+                     + ',employeeNumber:' + employeeNumber
+              + ',</criteria>', function (xml) {
+                  if (callback)
+                      callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
+              });
     };
 
     var getManagerDetail = function (employeeNumber, callback) {
 
         apiRequest('emp', 'iiCache', '<criteria>storeId:employeeManagerDetails,userId:[user]'
-			+ ',employeeNumber:' + employeeNumber
+                     + ',employeeNumber:' + employeeNumber
             + ',</criteria>', function (xml) {
                 if (callback)
                     callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
@@ -2536,6 +2643,81 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
                 callback(cache.workflowSteps);
             }
         });
+    };
+
+    var getAppUsers = function (workflowStepId, callback) {
+
+        apiRequest('app', 'iiCache', '<criteria>storeId:appUsers,userId:[user]'
+           + ',workflowStepId:' + workflowStepId
+           + ',workflowModule:' + 'paf'
+           + ',</criteria>', function (xml) {
+               if (callback) {
+                   callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
+               }
+           });
+    };
+
+    var getWorkflowHistory = function (id, statusType, callback) {
+
+        apiRequest('app', 'iiCache', '<criteria>storeId:appWorkflowHistorys,userId:[user]'
+           + ',referenceId:' + id
+           + ',workflowModuleId:' + '2'
+           + ',statusType:' + statusType
+           + ',</criteria>', function (xml) {
+               if (callback) {
+                   cache.workflowHistorys = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
+                   callback(cache.workflowHistorys);
+               }
+           });
+    };
+
+    var getJDECompanies = function (houseCodeId, stepNumber, callback) {
+
+        apiRequest('app', 'iiCache', '<criteria>storeId:appWorkflowJDECompanys,userId:[user]'
+           + ',houseCodeId:' + houseCodeId
+           + ',workflowModuleId:' + '2'
+           + ',stepNumber:' + stepNumber
+           + ',</criteria>', function (xml) {
+               if (callback) {
+                   callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
+               }
+           });
+    };
+
+    var getWorkflowDate = function (stepId) {
+        if (cache.workflowHistorys == null)
+            return "";
+
+        var date = "";
+
+        angular.forEach(cache.workflowHistorys, function (item, index) {
+            if (item.workflowStepId == stepId) {
+                date = item.modAt;
+            }
+        });
+
+        if (date != "") {
+            date = new Date(date);
+            return $filter('date')(date, 'MM/dd/yyyy');
+        }
+        else {
+            return date;
+        }
+    };
+
+    var getWorkflowStepId = function (stepNumber) {
+        if (cache.workflowSteps == null)
+            return "";
+
+        var stepId = "";
+
+        angular.forEach(cache.workflowSteps, function (item, index) {
+            if (item.stepNumber == stepNumber) {
+                stepId = item.id;
+            }
+        });
+
+        return stepId;
     };
 
     var getWorkflowBrief = function (id) {
@@ -2704,6 +2886,19 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         else if (item.LayoffType > 0)
             reasonId = item.LayoffType;
 
+        getWorkflowHistory(item.Id, item.StatusType, callback);
+        var workflowStep1Id = getWorkflowStepId("1");
+        var workflowStep2Id = getWorkflowStepId("2");
+        var workflowStep3Id = getWorkflowStepId("3");
+        var workflowStep4Id = getWorkflowStepId("4");
+        var workflowStep5Id = getWorkflowStepId("5");
+
+        var step1Date = getWorkflowDate(workflowStep1Id);
+        var step2Date = getWorkflowDate(workflowStep2Id);
+        var step3Date = getWorkflowDate(workflowStep3Id);
+        var step4Date = getWorkflowDate(workflowStep4Id);
+        var step5Date = getWorkflowDate(workflowStep5Id);
+
         xml = '<transaction id="' + item.Id + '">';
         xml += '<submitEmployeePersonnelAction';
         xml += ' id="' + item.Id + '"';
@@ -2723,6 +2918,12 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         xml += ' currentPayGradeTitle="' + getPayGradeTitle(item.CurrentPayGrade) + '"';
         xml += ' newPayGradeTitle="' + getPayGradeTitle(item.NewPayGrade) + '"';
         xml += ' trainingLocation="' + getTitleById(item.TrainingLocation, cache.houseCodes) + '"';
+        xml += ' step1Date="' + step1Date + '"';
+        xml += ' step2Date="' + step2Date + '"';
+        xml += ' step3Date="' + step3Date + '"';
+        xml += ' step4Date="' + step4Date + '"';
+        xml += ' step5Date="' + step5Date + '"';
+
         xml += '/>';
         xml += '</transaction>';
 
@@ -2737,7 +2938,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         getEmployeePersonnelActions: getEmployeePersonnelActions,
         findEmployeePersonnelAction: findEmployeePersonnelAction,
         getCarAllowances: getCarAllowances,
-		getAuthorizations: getAuthorizations,
+        getAuthorizations: getAuthorizations,
         getHcmHouseCodes: getHcmHouseCodes,
         setCurrentHcmHouseCode: setCurrentHcmHouseCode,
         getHcmHouseCodeByBrief: getHcmHouseCodeByBrief,
@@ -2761,6 +2962,14 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         findEmployeePAFDocument: findEmployeePAFDocument,
         deleteEmployeePAFDocument: deleteEmployeePAFDocument,
         viewEmployeePAFDocument: viewEmployeePAFDocument,
-        getAdministratorDetail: getAdministratorDetail
+        getAdministratorDetail: getAdministratorDetail,
+        getAppUsers: getAppUsers,
+        getWorkflowStepId: getWorkflowStepId,
+        getJDECompanies: getJDECompanies,
+        getWorkflowHistory: getWorkflowHistory,
+        getWorkflowDate: getWorkflowDate,
+        getHouseCodes: getHouseCodes
     }
 }]);
+
+
