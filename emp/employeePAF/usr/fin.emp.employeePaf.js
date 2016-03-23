@@ -412,6 +412,21 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             getManagerDetail(employeeNumber, function (response) {
                 if (!angular.isDefined(response)) {
                     alert("The Managers/Clock Number you enter is not exist.");
+                    if (positionType == "NewHire" || positionType == "ReHire") {
+                        $scope.empAction.ManagerName = null;
+                        $scope.empAction.ManagerTitle = null;
+                        $scope.empAction.ManagerEmail = null;
+                    }
+                    if (positionType == "Promotion" || positionType == "Demotion" || positionType == "SalaryChange") {
+                        $scope.empAction.NewManagerName = null;
+                        $scope.empAction.NewManagerTitle = null;
+                        $scope.empAction.NewManagerEmail = null;
+                    }
+                    if (positionType == "Transfer") {
+                        $scope.empAction.TransferManagerName = null;
+                        $scope.empAction.TransferManagerTitle = null;
+                        $scope.empAction.TransferManagerEmail = null;
+                    }
                     return;
                 }
                 if (positionType == "NewHire" || positionType == "ReHire") {
@@ -449,6 +464,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             getManagerDetail(employeeNumber, function (response) {
                 if (!angular.isDefined(response)) {
                     alert("The Managers/Clock Number you enter is not exist.");
+                    $scope.empAction.RegionalManagerName = null;
+                    $scope.empAction.RegionalManagerTitle = null;
+                    $scope.empAction.RegionalManagerEmail = null;
                     return;
                 }
 
@@ -477,6 +495,15 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             $scope.empAction.Data.Compensation = null;
 
             if (result == null) {
+                $scope.empAction.FirstName = null;
+                $scope.empAction.MiddleName = null;
+                $scope.empAction.LastName = null;
+                $scope.empAction.AddressLine1 = null;
+                $scope.empAction.AddressLine2 = null;
+                $scope.empAction.City = null;
+                $scope.empAction.Phone = null;
+                $scope.empAction.PostalCode = null;
+                $scope.empAction.StateType = null;
                 callback(false);
             }
             else {
@@ -868,6 +895,15 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             }
             if (positionType == 'NewHire') {
                 $scope.empAction.EmployeeNumber = null;
+                $scope.empAction.FirstName = null;
+                $scope.empAction.MiddleName = null;
+                $scope.empAction.LastName = null;
+                $scope.empAction.AddressLine1 = null;
+                $scope.empAction.AddressLine2 = null;
+                $scope.empAction.City = null;
+                $scope.empAction.Phone = null;
+                $scope.empAction.PostalCode = null;
+                $scope.empAction.StateType = null;
                 $scope.newHireChecked = true;
             }
             else {
@@ -1139,8 +1175,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             if ($scope.empAction.SalaryChange || $scope.empAction.Demotion || $scope.empAction.Promotion) {
                 var newGrade = ($scope.empAction.NewPayGrade == 0 ? $scope.empAction.NewPayGrade : EmpActions.getPayGradeTitle($scope.empAction.NewPayGrade));
                 $scope.empAction.NewPayRange = $scope.getPayRange($scope.empAction.NewPayGrade, $scope.empAction.NewSalary) + " " + newGrade.slice(newGrade.indexOf("("));
-            }
-            if ($scope.empAction.Promotion || $scope.empAction.Demotion || $scope.empAction.SalaryChange) {
                 $scope.empAction.CurrentSalary = $scope.empAction.Data.Compensation.CurrentSalary;
                 var curPayGrade = $scope.empAction.Data.Compensation.CurrentPayGrade;
                 var curGrade = "";
@@ -1155,6 +1189,12 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 var lastIncPer = $scope.empAction.Data.Compensation.PercentLastIncrease;
                 $scope.empAction.LastIncreaseDecreasePercentage = (lastIncPer == "NaN%" ? "0" : lastIncPer.replace("%", ""));
                 $scope.empAction.CurrentPayRange = $scope.empAction.Data.Compensation.CurrentPayRange + curGrade;
+            }
+            else {
+                $scope.empAction.LastIncreaseDecreaseDate = null;
+            }
+            if (!$scope.empAction.Loa) {
+                $scope.empAction.DateReturn = null;
             }
             $scope.pageLoading = true;
             $scope.loadingTitle = " Saving...";
@@ -1217,6 +1257,15 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
             EmpActions.saveEmployeePersonnelAction($scope.empAction, $scope.pafDocs, function (status) {
             });
+
+            EmpActions.getEmployeePersonnelActions($scope.pafFilter, function (items) {
+                var i = items.length - 1;
+                EmpActions.submitEmployeePersonnelAction(items[i], function (data, status) {
+                    $scope.pageLoading = false;
+                    document.location.hash = 'list';
+                    alert("Employee PAF has been submitted successfully.");
+                });
+            });
         }
         else {
             if ($scope.empAction.PersonalInfoChange) {
@@ -1226,14 +1275,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 showToaster();
             }
         }
-        EmpActions.getEmployeePersonnelActions($scope.pafFilter, function (items) {
-            var i = items.length - 1;
-            EmpActions.submitEmployeePersonnelAction(items[i], function (data, status) {
-                $scope.pageLoading = false;
-                document.location.hash = 'list';
-                alert("Employee PAF has been submitted successfully.");
-            });
-        });
     };
 
     $scope.pafFilter = {
@@ -1246,6 +1287,19 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         status: 1,
         formType: null
     };
+
+    var showToaster = function () {
+        var modalInstance = $modal.open({
+            template: '<div class="toaster"><div class="header">WARNING</div><div class="content">Please fill the highlighted fields to complete the form.</div></div>',
+            // controller: 'modalInstanceCtrl',
+            size: 'sm',
+            backdrop: false
+        });
+
+        setTimeout(function () {
+            modalInstance.dismiss('cancel');
+        }, 1800);
+    }
 
     var showPIToaster = function () {
         if ($scope.empAction.Data.PersonalInfoChange.InfoChangeEffectiveDate) {
