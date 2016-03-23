@@ -504,6 +504,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.Phone = null;
                 $scope.empAction.PostalCode = null;
                 $scope.empAction.StateType = null;
+                $scope.empAction.Data.cacheEmployeeNumber = employeeNumber;
                 callback(false);
             }
             else {
@@ -566,13 +567,15 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             $scope.authorizations = result;
             authorizationsLoaded();
         });
+
         getAdministratorDetail(function (response) {
             if (angular.isDefined(response)) {
                 $scope.empAction.AdministratorEmail = response.empEmail;
                 $scope.disableAdminEmail = response.empEmail && response.empEmail.length > 0;
             }
         });
-        angular.forEach($scope.Approvals, function (item) {
+       
+        angular.forEach($scope.stepApprovals, function (item) {
             var workflowStepId = EmpActions.getWorkflowStepId(item.id);
             if (item.id != 3 && item.id != 4) {
                 EmpActions.getAppUsers(workflowStepId, function (result) {
@@ -636,13 +639,15 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         return range;
     };
 
-    $scope.Approvals = [
+    $scope.stepApprovals = [
     { id: 1, approval: 'LOA', name: null, date: null },
     { id: 2, approval: 'HR Manager', name: null, date: null },
     { id: 3, approval: 'Regional Manager', name: null, date: null },
     { id: 4, approval: 'HR Director', name: null, date: null },
     { id: 5, approval: 'Process HR', name: null, date: null }
     ];
+
+    $scope.Approvals = [];
 
     init();
 
@@ -703,7 +708,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 }
             });
 
-            angular.forEach($scope.Approvals, function (item) {
+            angular.forEach($scope.stepApprovals, function (item) {
                 var workflowStepId = EmpActions.getWorkflowStepId(item.id);
                 if (item.id != 4 && item.id != 3) {
                     EmpActions.getAppUsers(workflowStepId, function (result) {
@@ -723,6 +728,27 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     });
                 }
                 item.date = EmpActions.getWorkflowDate(workflowStepId);
+
+                if ($scope.empAction.Loa) {
+                    if (item.id == 1) {
+                        $scope.Approvals.push(item);
+                    }
+                }
+                else if ($scope.overheadaccount) {
+                    if (item.id == 2) {
+                        $scope.Approvals.push(item);
+                    }
+                }
+                else if (($scope.empAction.SalaryChange && $scope.empAction.IncreaseDecreasePercentage > 4) || (($scope.empAction.Promotion || $scope.empAction.Demotion) && $scope.empAction.IncreaseDecreasePercentage > 10)) {
+                    if (item.id == 3 || item.id == 4 || item.id == 5) {
+                        $scope.Approvals.push(item);
+                    }
+                }
+                else {
+                    if (item.id == 5) {
+                        $scope.Approvals.push(item);
+                    }
+                }
             });
         });
 
@@ -768,7 +794,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
     $scope.onEmployeeNumberChanged = function (employeeNumber) {
         if (angular.isDefined($scope.empAction.Data.Employee)) {
-            if ($scope.empAction.Data.Employee != null && parseInt($scope.empAction.Data.Employee.employeeNumber) === parseInt(employeeNumber)) {
+            if (($scope.empAction.Data.Employee != null && parseInt($scope.empAction.Data.Employee.employeeNumber) === parseInt(employeeNumber)) || ($scope.empAction.Data.Employee == null && parseInt($scope.empAction.Data.cacheEmployeeNumber) === parseInt(employeeNumber))) {
                 return;
             }
         }
@@ -1263,7 +1289,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 EmpActions.submitEmployeePersonnelAction(items[i], function (data, status) {
                     $scope.pageLoading = false;
                     document.location.hash = 'list';
-                    alert("Employee PAF has been submitted successfully.");
+                    alert("Employee PAF has been saved and submitted successfully.");
                 });
             });
         }

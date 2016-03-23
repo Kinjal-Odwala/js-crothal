@@ -1000,7 +1000,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row" ng-if="(!overHeadAccount && empAction.HcmHouseCode) || empAction.NewHire || empAction.ReHire || empAction.Separation || empAction.Transfer || empAction.PersonalInfoChange || empAction.Relocation || empAction.Promotion || empAction.Demotion || empAction.SalaryChange">
+                        <div class="row" ng-if="!empAction.Loa && ((!overHeadAccount && empAction.HcmHouseCode) || empAction.NewHire || empAction.ReHire || empAction.Separation || empAction.Transfer || empAction.PersonalInfoChange || empAction.Relocation || empAction.Promotion || empAction.Demotion || empAction.SalaryChange)">
                             <div class="col-md-2">
                             <label>Process HR Name</label>
                             </div>
