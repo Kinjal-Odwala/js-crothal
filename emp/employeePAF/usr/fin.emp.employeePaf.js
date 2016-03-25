@@ -28,6 +28,7 @@ Object.byString = function (o, s) {
 var activeRowIndex = -1;
 var pafDocuments = [];
 var selectedDocId = "";
+var isOverHeadAccount = false;
 
 var onFileChange = function () {
     var scope = angular.element(document.getElementById("modal")).scope();
@@ -736,7 +737,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                         $scope.Approvals.push(item);
                     }
                 }
-                else if ($scope.overheadaccount) {
+                else if (isOverHeadAccount) {
                     if (item.id == 2) {
                         $scope.Approvals.push(item);
                     }
@@ -1613,6 +1614,16 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
             $scope.selectedItem.WorkflowStep = 0;
         }
         EmpActions.getWorkflowHistory($scope.selectedItem.Id, 8, function (result) {
+        });
+        EmpActions.getHouseCodes($scope.selectedItem.HcmHouseCode, function (response) {
+            if (angular.isDefined(response)) {
+                if (response.contractTypeId == "3") {
+                    isOverHeadAccount = true;
+                }
+                else {
+                    isOverHeadAccount = false;
+                }
+            }
         });
     };
 

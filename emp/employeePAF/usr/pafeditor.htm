@@ -922,15 +922,15 @@
                 </div>
             </section>
             <section>
-                <div ng-form="WorkflowDetailsForm">
+                <div ng-form="workflowDetailsForm">
                 	<h4>WORKFLOW DETAILS</h4>
                     <div ng-if="empAction.Loa" class="row">
                         <div class="col-md-2">
                         	<label>LOA Manager Name:</label>
                         </div>
                         <div class="col-md-3">
-                            <div class="form-group"">
-                               <input class="form-control input-sm" name="LOAManagerName" maxlength="100" ng-model="empAction.LoaManagerName"/>
+                            <div class="form-group" ng-class="{'has-error':workflowDetailsForm.LOAManagerName.$invalid}">
+                               <input class="form-control input-sm" name="LOAManagerName" maxlength="100" ng-model="empAction.LoaManagerName" ng-required="true"/>
                             </div>
                         </div>
                         <div class="col-md-2"></div>
@@ -938,8 +938,8 @@
                         	<label>LOA Manager Email:</label>
                         </div>
                         <div class="col-md-3">
-                            <div class="form-group"">
-                               <input class="form-control input-sm" name="LOAManagerEmail" maxlength="100" ng-model="empAction.LoaManagerEmail"/>
+                            <div class="form-group" ng-class="{'has-error':workflowDetailsForm.LOAManagerEmail.$invalid}">
+                               <input class="form-control input-sm" name="LOAManagerEmail" maxlength="100" ng-model="empAction.LoaManagerEmail" ng-required="true"/>
                             </div>
                         </div>
                     </div>
@@ -948,8 +948,8 @@
                         	<label>HR Manager Name:</label>
                         </div>
                         <div class="col-md-3">
-                            <div class="form-group"">
-                               <input class="form-control input-sm" name="HRManagerName" maxlength="100" ng-model="empAction.HRManagerName"/>
+                            <div class="form-group" ng-class="{'has-error':workflowDetailsForm.HRManagerName.$invalid}">
+                               <input class="form-control input-sm" name="HRManagerName" maxlength="100" ng-model="empAction.HRManagerName" ng-required="true"/>
                             </div>
                         </div>
                         <div class="col-md-2"></div>
@@ -957,18 +957,18 @@
                         	<label>HR Manager Email:</label>
                         </div>
                         <div class="col-md-3">
-                            <div class="form-group"">
-                               <input class="form-control input-sm" name="HRManagerEmail" maxlength="100" ng-model="empAction.HRManagerEmail"/>
+                            <div class="form-group" ng-class="{'has-error':workflowDetailsForm.HRManagerEmail.$invalid}">
+                               <input class="form-control input-sm" name="HRManagerEmail" maxlength="100" ng-model="empAction.HRManagerEmail" ng-required="true"/>
                             </div>
                         </div>
                     </div>
-                    <div class="row" ng-if="(empAction.SalaryChange && empAction.IncreaseDecreasePercentage > 4) || ((empAction.Promotion || empAction.Demotion) && empAction.IncreaseDecreasePercentage > 10)">
+                    <div class="row" ng-if="!empAction.Loa && (!overHeadAccount && empAction.HcmHouseCode) && ((empAction.SalaryChange && empAction.IncreaseDecreasePercentage > 4) || ((empAction.Promotion || empAction.Demotion) && empAction.IncreaseDecreasePercentage > 10))">
                         <div class="col-md-2">
                         	<label>Regional Manager Name:</label>
                         </div>
                         <div class="col-md-3">
-                            <div class="form-group"">
-                               <input class="form-control input-sm" name="RegionalManagerName" maxlength="100" ng-model="empAction.RegionalManagerName" ng-disabled="empAction.RegionalManagerName"/>
+                            <div class="form-group" ng-class="{'has-error':workflowDetailsForm.RegionalManagerName.$invalid}">
+                               <input class="form-control input-sm" name="RegionalManagerName" maxlength="100" ng-model="empAction.RegionalManagerName" ng-disabled="empAction.RegionalManagerName" ng-required="true"/>
                             </div>
                         </div>
                         <div class="col-md-2"></div>
@@ -976,18 +976,18 @@
                         	<label>Regional Manager Email:</label>
                         </div>
                         <div class="col-md-3">
-                            <div class="form-group"">
-                               <input class="form-control input-sm" name="RegionalManagerEmail" maxlength="100" ng-model="empAction.RegionalManagerEmail" ng-disabled="empAction.RegionalManagerEmail"/>
+                            <div class="form-group" ng-class="{'has-error':workflowDetailsForm.RegionalManagerEmail.$invalid}">
+                               <input class="form-control input-sm" name="RegionalManagerEmail" maxlength="100" ng-model="empAction.RegionalManagerEmail" ng-disabled="empAction.RegionalManagerEmail" ng-required="true"/>
                             </div>
                         </div>
                     </div>
-                    <div class="row" ng-if="(empAction.SalaryChange && empAction.IncreaseDecreasePercentage > 4) || ((empAction.Promotion || empAction.Demotion) && empAction.IncreaseDecreasePercentage > 10)">
+                    <div class="row" ng-if="!empAction.Loa && (!overHeadAccount && empAction.HcmHouseCode) && ((empAction.SalaryChange && empAction.IncreaseDecreasePercentage > 4) || ((empAction.Promotion || empAction.Demotion) && empAction.IncreaseDecreasePercentage > 10))">
                         <div class="col-md-2">
                         	<label>HR Director Name:</label>
                         </div>
                         <div class="col-md-3">
-                            <div class="form-group"">
-                               <input class="form-control input-sm" name="HRDirectorName" maxlength="100" ng-model="empAction.HRDirectorName"/>
+                            <div class="form-group" ng-class="{'has-error':workflowDetailsForm.HRDirectorName.$invalid}">
+                               <input class="form-control input-sm" name="HRDirectorName" maxlength="100" ng-model="empAction.HRDirectorName" ng-required="true"/>
                             </div>
                         </div>
                         <div class="col-md-2"></div>
@@ -995,18 +995,18 @@
                         	<label>HR Director Email:</label>
                         </div>
                         <div class="col-md-3">
-                            <div class="form-group"">
-                               <input class="form-control input-sm" name="HRDirectorEmail" maxlength="100" ng-model="empAction.HRDirectorEmail"/>
+                            <div class="form-group" ng-class="{'has-error':workflowDetailsForm.HRDirectorEmail.$invalid}">
+                               <input class="form-control input-sm" name="HRDirectorEmail" maxlength="100" ng-model="empAction.HRDirectorEmail" ng-required="true"/>
                             </div>
                         </div>
                     </div>
-                    <div class="row" ng-if="!empAction.Loa && ((!overHeadAccount && empAction.HcmHouseCode) || empAction.NewHire || empAction.ReHire || empAction.Separation || empAction.Transfer || empAction.PersonalInfoChange || empAction.Relocation || empAction.Promotion || empAction.Demotion || empAction.SalaryChange)">
+                    <div class="row" ng-if="!empAction.Loa && (!overHeadAccount && empAction.HcmHouseCode) && (empAction.NewHire || empAction.ReHire || empAction.Separation || empAction.Transfer || empAction.PersonalInfoChange || empAction.Relocation || empAction.Promotion || empAction.Demotion || empAction.SalaryChange)">
                         <div class="col-md-2">
                         	<label>Process HR Name:</label>
                         </div>
                         <div class="col-md-3">
-                            <div class="form-group"">
-                               <input class="form-control input-sm" name="ProcessHRName" maxlength="100" ng-model="empAction.ProcessHRName"/>
+                            <div class="form-group" ng-class="{'has-error':workflowDetailsForm.ProcessHRName.$invalid}">
+                               <input class="form-control input-sm" name="ProcessHRName" maxlength="100" ng-model="empAction.ProcessHRName" ng-required="true"/>
                             </div>
                         </div>
                         <div class="col-md-2"></div>
@@ -1014,8 +1014,8 @@
                         	<label>Process HR Email:</label>
                         </div>
                         <div class="col-md-3">
-                            <div class="form-group"">
-                               <input class="form-control input-sm" name="ProcessHREmail" maxlength="100" ng-model="empAction.ProcessHREmail"/>
+                            <div class="form-group" ng-class="{'has-error':workflowDetailsForm.ProcessHREmail.$invalid}">
+                               <input class="form-control input-sm" name="ProcessHREmail" maxlength="100" ng-model="empAction.ProcessHREmail" ng-required="true"/>
                             </div>
                         </div>
 					</div>
