@@ -498,42 +498,37 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             $scope.empAction.Data.Compensation = null;
 
             if (result == null) {
+				$scope.empAction.EmployeeId = 0;
                 $scope.empAction.FirstName = null;
                 $scope.empAction.MiddleName = null;
                 $scope.empAction.LastName = null;
                 $scope.empAction.AddressLine1 = null;
                 $scope.empAction.AddressLine2 = null;
                 $scope.empAction.City = null;
+				$scope.empAction.StateType = null;
+				$scope.empAction.PostalCode = null;
                 $scope.empAction.Phone = null;
-                $scope.empAction.PostalCode = null;
-                $scope.empAction.StateType = null;
                 $scope.empAction.Data.cacheEmployeeNumber = employeeNumber;
                 callback(false);
             }
             else {
-                $scope.empAction.EmployeeId = result.id;
+				loadCompensations(employeeNumber);
                 $scope.empAction.Data.Employee = result;
+				$scope.empAction.Data.Person = result;
                 $scope.empAction.Data.Employee.HcmHouseCode = EmpActions.getHcmHouseCodeByBrief(result.houseCode);
                 $scope.empAction.HcmHouseCode = EmpActions.getHcmHouseCodeByBrief(result.houseCode);
-
-                loadCompensations(employeeNumber);
-
-                EmpActions.getPerson(result.id, function (response) {
-                    $scope.empAction.PersonId = response.id;
-                    $scope.empAction.FirstName = result.firstName;
-                    $scope.empAction.MiddleName = response.middleName;
-                    $scope.empAction.LastName = result.lastName;
-                    $scope.empAction.AddressLine1 = response.addressLine1;
-                    $scope.empAction.AddressLine2 = response.addressLine2;
-                    $scope.empAction.City = response.city;
-                    $scope.empAction.Phone = response.homePhone;
-                    $scope.empAction.PostalCode = response.postalCode;
-                    $scope.empAction.StateType = parseInt(response.state);
-                    $scope.empAction.Data.Person = response;
-
-                    callback(true);
-                });
-            }
+				$scope.empAction.EmployeeId = result.id;
+				$scope.empAction.FirstName = result.firstName;
+                $scope.empAction.MiddleName = result.middleName;
+                $scope.empAction.LastName = result.lastName;
+                $scope.empAction.AddressLine1 = result.addressLine1;
+                $scope.empAction.AddressLine2 = result.addressLine2;
+                $scope.empAction.City = result.city;
+				$scope.empAction.StateType = parseInt(result.state);
+				 $scope.empAction.PostalCode = result.postalCode;
+                $scope.empAction.Phone = result.phone;
+                callback(true);
+             }
         });
     };
 
@@ -1147,7 +1142,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
         if ($scope.empAction.Loa && angular.isObject($scope.empAction.Data.Loa)) {
 
-            if ($scope.empAction.LoaDate || $scope.empAction.DateReturn) {
+            if ($scope.empAction.LoaStartDate || $scope.empAction.LoaReturnDate) {
                 isValid = true;
             }
 
@@ -1222,7 +1217,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.LastIncreaseDecreaseDate = null;
             }
             if (!$scope.empAction.Loa) {
-                $scope.empAction.DateReturn = null;
+                $scope.empAction.LoaReturnDate = null;
             }
             $scope.pageLoading = true;
 			
@@ -1357,28 +1352,28 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     .controller('loaCtrl', ['$scope', function ($scope) {
         var dateChange = function (type) {
             $scope.$parent.$parent.validateLoa();
-            if ($scope.empAction.DateReturn && !$scope.empAction.LoaDate || !$scope.empAction.DateReturn && $scope.empAction.LoaDate || !$scope.empAction.DateReturn && !$scope.empAction.LoaDate)
+            if ($scope.empAction.LoaReturnDate && !$scope.empAction.LoaStartDate || !$scope.empAction.LoaReturnDate && $scope.empAction.LoaStartDate || !$scope.empAction.LoaReturnDate && !$scope.empAction.LoaStartDate)
                 return;
-            var dateOfReturn = new Date($scope.empAction.DateReturn);
-            var loaDate = new Date($scope.empAction.LoaDate);
+            var dateOfReturn = new Date($scope.empAction.LoaReturnDate);
+            var loaDate = new Date($scope.empAction.LoaStartDate);
 
             if (dateOfReturn.getTime() < loaDate.getTime()) {
-                if (type == "LoaDate")
-                    $scope.empAction.DateReturn = null;
+                if (type == "LoaStartDate")
+                    $scope.empAction.LoaReturnDate = null;
                 else
-                    $scope.empAction.LoaDate = null;
+                    $scope.empAction.LoaStartDate = null;
             }
         }
         //date of return after loa date
-        $scope.$watch('empAction.LoaDate', function (newValue, oldValue) {
+        $scope.$watch('empAction.LoaStartDate', function (newValue, oldValue) {
             if (newValue != oldValue)
-                dateChange("LoaDate");
+                dateChange("LoaStartDate");
         });
 
         //date of return change
-        $scope.$watch('empAction.DateReturn', function (newValue, oldValue) {
+        $scope.$watch('empAction.LoaReturnDate', function (newValue, oldValue) {
             if (newValue != oldValue)
-                dateChange("DateReturn");
+                dateChange("LoaReturnDate");
         });
     }])
        .filter('reason4ChangeFilter', ['$filter', function ($filter) {
@@ -2444,7 +2439,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         var filterStr = "";
         var boolItems = ["NewHire", "ReHire", "Separation", "LOA", "SalaryChange", "Promotion", "Demotion", "Transfer", "PersonalInfoChange", "Relocation"];
         var intItems = ["HcmHouseCode", "EmployeeNumber", "StateType", "PositionType", "TrainingLocation", "Duration", "CarAllowance", "BonusEligibleType", "LayoffType", "OldPositionType", "NewPositionType", "ChangeReasonType", "NewCarAllowance", "NewBonusEligibleType", "HouseCodeTransfer", "InfoChangeStateType", "RelocationPlan", "PayGrade", "NewPayGrade"];
-        var dateItems = ["Date", "HireDate", "SeparationDate", "LoaDate", "DateOfReturn", "EffectiveDate", "LastIncreaseDate", "EffectiveDate", "TransferEffectiveDate", "InfoChangeEffectiveDate"];
+        var dateItems = ["Date", "HireDate", "SeparationDate", "LoaStartDate", "LoaReturnDate", "EffectiveDate", "LastIncreaseDate", "EffectiveDate", "TransferEffectiveDate", "InfoChangeEffectiveDate"];
 
         angular.forEach(filter, function (value, key) {
 
@@ -2466,7 +2461,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
     var findEmployeePersonnelAction = function (id, callback) {
         var boolItems = ["NewHire", "ReHire", "Separation", "LOA", "SalaryChange", "Promotion", "Demotion", "Transfer", "PersonalInfoChange", "Relocation"];
         var intItems = ["HcmHouseCode", "EmployeeNumber", "StateType", "PositionType", "TrainingLocation", "Duration", "CarAllowance", "BonusEligibleType", "LayoffType", "OldPositionType", "NewPositionType", "ChangeReasonType", "NewCarAllowance", "NewBonusEligibleType", "HouseCodeTransfer", "InfoChangeStateType", "RelocationPlan", "PayGrade", "NewPayGrade"];
-        var dateItems = ["Date", "HireDate", "SeparationDate", "LoaDate", "DateOfReturn", "EffectiveDate", "LastIncreaseDate", "EffectiveDate", "TransferEffectiveDate", "InfoChangeEffectiveDate"];
+        var dateItems = ["Date", "HireDate", "SeparationDate", "LoaStartDate", "LoaReturnDate", "EffectiveDate", "LastIncreaseDate", "EffectiveDate", "TransferEffectiveDate", "InfoChangeEffectiveDate"];
 
         apiRequest('emp', 'iiCache', '<criteria>storeId:employeePersonnelActions,userId:[user]' + ",actionId:" + id + ',</criteria>', function (xml) {
             if (callback) {
@@ -2605,29 +2600,17 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             getStateTypes(callback);
         });
     };
+	
+	var getEmployee = function (employeeNumber, hcmHouseCode, callback) {
 
-    var getEmployee = function (employeeNumber, hcmHouseCode, callback) {
-
-        apiRequest('emp', 'iiCache', '<criteria>storeId:employeeSearchs,userId:[user]'
-               + ',searchValue:' + employeeNumber
-               + ',hcmHouseCodeId:' + hcmHouseCode
-               + ',employeeType:SearchFull,filterType:Employee Number'
-                     + ',</criteria>', function (xml) {
-                         if (callback) {
-                             var matched = deserializeXml(xml, 'item', { upperFirstLetter: false });
-                             callback(matched && matched.length > 0 ? matched[0] : null);
-                         }
-                     });
-    };
-
-    var getPerson = function (employeeId, callback) {
-
-        apiRequest('emp', 'iiCache', '<criteria>storeId:persons,userId:[user]'
-            + ',id:' + employeeId
+		apiRequest('emp', 'iiCache', '<criteria>storeId:employees,userId:[user]'
+			+ ',employeeNumber:' + employeeNumber
             + ',</criteria>', function (xml) {
-                if (callback)
-                    callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
-            });
+            if (callback) {
+            	var matched = deserializeXml(xml, 'item', { upperFirstLetter: false });
+            	callback(matched && matched.length > 0 ? matched[0] : null);
+            }
+    	});
     };
 
     var getEmpCompensation = function (employeeNumber, callback) {
@@ -3015,7 +2998,6 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         getHcmHouseCodeByBrief: getHcmHouseCodeByBrief,
         getStateTypes: getStateTypes,
         getEmployee: getEmployee,
-        getPerson: getPerson,
         getEmpCompensation: getEmpCompensation,
         getManagerDetail: getManagerDetail,
         getPersonActionTypes: getPersonActionTypes,
