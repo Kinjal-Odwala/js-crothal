@@ -952,6 +952,21 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         return $scope.empAction[positionType];
     };
 
+    $scope.separationReasonChecked = function (separationReason) {
+        if (separationReason == 'ResignationType') {
+            $scope.empAction.TerminationType = 0;
+            $scope.empAction.LayoffType = 0;
+        }
+        if (separationReason == 'TerminationType') {
+            $scope.empAction.ResignationType = 0;
+            $scope.empAction.LayoffType = 0;
+        }
+        if (separationReason == 'LayoffType') {
+            $scope.empAction.TerminationType = 0;
+            $scope.empAction.ResignationType = 0;
+        }
+    }
+
     $scope.onPercentageChange = function () {
         var increasePercentage = $scope.empAction.IncreaseDecreasePercentage;
 
@@ -2459,8 +2474,8 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 
     };
     var findEmployeePersonnelAction = function (id, callback) {
-        var boolItems = ["NewHire", "ReHire", "Separation", "LOA", "SalaryChange", "Promotion", "Demotion", "Transfer", "PersonalInfoChange", "Relocation"];
-        var intItems = ["HcmHouseCode", "EmployeeNumber", "StateType", "PositionType", "TrainingLocation", "Duration", "CarAllowance", "BonusEligibleType", "LayoffType", "OldPositionType", "NewPositionType", "ChangeReasonType", "NewCarAllowance", "NewBonusEligibleType", "HouseCodeTransfer", "InfoChangeStateType", "RelocationPlan", "PayGrade", "NewPayGrade"];
+        var boolItems = ["NewHire", "ReHire", "Separation", "LOA", "SalaryChange", "Promotion", "Demotion", "Transfer", "PersonalInfoChange", "Relocation", "SeparationReHire"];
+        var intItems = ["HcmHouseCode", "EmployeeNumber", "StateType", "PositionType", "TrainingLocation", "Duration", "CarAllowance", "BonusEligibleType", "LayoffType", "OldPositionType", "NewPositionType", "ChangeReasonType", "NewCarAllowance", "NewBonusEligibleType", "HouseCodeTransfer", "InfoChangeStateType", "RelocationPlan", "PayGrade", "NewPayGrade", "ResignationType", "TerminationType", "LayoffType"];
         var dateItems = ["Date", "HireDate", "SeparationDate", "LoaStartDate", "LoaReturnDate", "EffectiveDate", "LastIncreaseDate", "EffectiveDate", "TransferEffectiveDate", "InfoChangeEffectiveDate"];
 
         apiRequest('emp', 'iiCache', '<criteria>storeId:employeePersonnelActions,userId:[user]' + ",actionId:" + id + ',</criteria>', function (xml) {

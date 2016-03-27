@@ -349,7 +349,7 @@
                         <div class="col-md-4">
                             <div class="form-group" ng-class="{'has-error':separationForm.SeparationReason.$invalid || separationForm.ResignationType.$invalid}">
                                 <label>
-                                    <input type="radio" name="SeparationReason" ng-model="empAction.SeparationReason" value="ResignationType" />&nbsp;Resignation <span ng-if="empAction.SeparationReason=='ResignationType'">- <i>Enter Reason Code Below</i></span>
+                                    <input type="radio" name="SeparationReason" ng-model="empAction.SeparationReason" ng-checked="separationReasonChecked(empAction.SeparationReason)" value="ResignationType" />&nbsp;Resignation <span ng-if="empAction.SeparationReason=='ResignationType'">- <i>Enter Reason Code Below</i></span>
                                 </label>
                                 <select class="form-control input-sm" name="ResignationType" ng-model="empAction.ResignationType" ng-disabled="empAction.SeparationReason!='ResignationType'" ng-options="item.id as item.brief + ' ' + item.title for item in $parent.$parent.lkup.Resignations" ng-required="empAction.SeparationReason=='ResignationType'">
                                     <option value=""></option>
@@ -359,7 +359,7 @@
                         <div class="col-md-4">
                             <div class="form-group" ng-class="{'has-error':separationForm.SeparationReason.$invalid || separationForm.TerminationType.$invalid}">
                                 <label>
-                                    <input type="radio" name="SeparationReason" ng-model="empAction.SeparationReason" value="TerminationType" />&nbsp;Termination <span ng-if="empAction.SeparationReason=='TerminationType'">- <i>Enter Reason Code Below</i></span>
+                                    <input type="radio" name="SeparationReason" ng-model="empAction.SeparationReason" ng-checked="separationReasonChecked(empAction.SeparationReason)" value="TerminationType" />&nbsp;Termination <span ng-if="empAction.SeparationReason=='TerminationType'">- <i>Enter Reason Code Below</i></span>
                                 </label>
                                 <select class="form-control input-sm" name="TerminationType" ng-model="empAction.TerminationType" ng-disabled="empAction.SeparationReason!='TerminationType'" ng-options="item.id as item.brief + ' ' + item.title for item in $parent.$parent.lkup.Terminations" ng-required="empAction.SeparationReason=='TerminationType'">
                                     <option value=""></option>
@@ -369,7 +369,7 @@
                         <div class="col-md-4">
                             <div class="form-group" ng-class="{'has-error':separationForm.SeparationReason.$invalid || separationForm.LayoffType.$invalid}">
                                 <label>
-                                    <input type="radio" name="SeparationReason" ng-model="empAction.SeparationReason" value="LayoffType" />&nbsp;Layoff <span ng-if="empAction.SeparationReason=='LayoffType'">- <i>Enter Reason Code Below</i></span>
+                                    <input type="radio" name="SeparationReason" ng-model="empAction.SeparationReason" ng-checked="separationReasonChecked(empAction.SeparationReason)" value="LayoffType" />&nbsp;Layoff <span ng-if="empAction.SeparationReason=='LayoffType'">- <i>Enter Reason Code Below</i></span>
                                 </label>
                                 <select class="form-control input-sm" name="LayoffType" ng-model="empAction.LayoffType" ng-disabled="empAction.SeparationReason!='LayoffType'" ng-options="item.id as item.brief + ' ' + item.title for item in $parent.$parent.lkup.Layoffs" ng-required="empAction.SeparationReason=='LayoffType'">
                                     <option value=""></option>
