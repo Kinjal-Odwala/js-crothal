@@ -387,8 +387,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             if (!angular.isDefined(response)) {
 				$scope.empAction.CurrentPosition = "";
 				$scope.empAction.CurrentPositionType = 0;
-				$scope.empAction.DateLastIncrease = null;
-	            $scope.empAction.PercentLastIncrease = "0%";
+				$scope.empAction.LastIncreaseDecreaseDate = null;
+	            $scope.empAction.LastIncreaseDecreasePercentage = "0%";
 				$scope.empAction.CurrentSalary = 0;
 				$scope.empAction.CurrentPayGrade = 0;
 				$scope.empAction.CurrentPayGradeTitle = "";
@@ -399,11 +399,11 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 				$scope.empAction.CurrentPosition = response.empTitle;
 				var currentPositionTypes = $filter('filter')($scope.JobCodes, { name: response.empTitle });
 				$scope.empAction.CurrentPositionType = (currentPositionTypes.length == 1 ? currentPositionTypes[0].id : 0);
-				$scope.empAction.DateLastIncrease = $filter("date")(new Date(response.dateBeg), "MM/dd/yyyy");
+				$scope.empAction.LastIncreaseDecreaseDate = $filter("date")(new Date(response.dateBeg), "MM/dd/yyyy");
 				if (response.priorAnnualPayAmt === "" || response.priorAnnualPayAmt === "0")
-					$scope.empAction.PercentLastIncrease = "0%";
+					$scope.empAction.LastIncreaseDecreasePercentage = "0%";
 				else
-					$scope.empAction.PercentLastIncrease = ((response.annualPayAmt - response.priorAnnualPayAmt) / response.priorAnnualPayAmt).toFixed(2) * 100 + "%";
+					$scope.empAction.LastIncreaseDecreasePercentage = ((response.annualPayAmt - response.priorAnnualPayAmt) / response.priorAnnualPayAmt).toFixed(2) * 100 + "%";
 				$scope.empAction.CurrentSalary = parseFloat(response.annualPayAmt).toFixed(2);
 				$scope.empAction.CurrentPayGrade = response.payGrade;
 				$scope.empAction.CurrentPayGradeTitle = response.payGrade + " (" + response.minPayRange + " - " + response.midPayRange + " - " + response.maxPayRange + ")";
@@ -488,7 +488,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 			cacheManagerNumber = $scope.empAction.CacheTransferManagerNumber;
         }
 
-		if (employeeNumber !== "" && (cacheManagerNumber === undefined || cacheManagerNumber.length === 0 || parseInt(employeeNumber) !== parseInt(cacheManagerNumber))) {
+		if (employeeNumber !== "" && (cacheManagerNumber === null || cacheManagerNumber === undefined || cacheManagerNumber.length === 0 || parseInt(employeeNumber) !== parseInt(cacheManagerNumber))) {
             getManagerDetail(employeeNumber, function (response) {
                 if (!angular.isDefined(response)) {
                     alert("The Manager/Clock Number that you entered doesn't exists.");
@@ -786,7 +786,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 	    { id: 3, approval: 'Regional Manager', name: null, date: null },
 	    { id: 4, approval: 'HR Director', name: null, date: null },
 	    { id: 5, approval: 'Process HR', name: null, date: null }
-	    ];
+	];
 
     $scope.Approvals = [];
 
@@ -800,21 +800,33 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             }
             $scope.empAction = result;
 			$scope.empAction.CacheHcmHouseCode = $scope.empAction.HcmHouseCode;
+			$scope.empAction.CacheEmployeeNumber = $scope.empAction.EmployeeNumber;
+			$scope.empAction.CacheManagerNumber = $scope.empAction.ManagerNumber;
+			$scope.empAction.CacheNewManagerNumber = $scope.empAction.NewManagerNumber;
+			$scope.empAction.CacheTransferManagerNumber = $scope.empAction.TransferManagerNumber;
+			$scope.empAction.CacheRegionalManagerNumber = $scope.empAction.RegionalManagerNumber;
+			$scope.empAction.CurrentPosition = EmpActions.getTitleById($scope.empAction.CurrentPositionType, $scope.JobCodes);
+			$scope.empAction.CurrentPayGradeTitle = EmpActions.getPayGradeTitle($scope.empAction.CurrentPayGrade);
+			
+			if ($scope.empAction.LastIncreaseDecreaseDate == "1/1/1901 12:00:00 AM")
+				$scope.empAction.LastIncreaseDecreaseDate = null;
+			else
+				$scope.empAction.LastIncreaseDecreaseDate = $filter("date")(new Date($scope.empAction.LastIncreaseDecreaseDate), "MM/dd/yyyy");
+			
+			if ($scope.empAction.CurrentPayRange.indexOf("(") != -1)
+				$scope.empAction.CurrentPayRange = $scope.empAction.CurrentPayRange.substring(0, $scope.empAction.CurrentPayRange.indexOf("("));
 
             if ($scope.empAction.NewHire) {
                 $scope.empAction.EmployeeNumber = null;
                 $scope.newHireChecked = true;
             }
 
-            if ($scope.empAction.ResignationType > 0) {
+            if ($scope.empAction.ResignationType > 0)
                 $scope.empAction.SeparationReason = "ResignationType";
-            }
-            else if ($scope.empAction.TerminationType > 0) {
+            else if ($scope.empAction.TerminationType > 0)
                 $scope.empAction.SeparationReason = "TerminationType";
-            }
-            else if ($scope.empAction.LayoffType > 0) {
+            else if ($scope.empAction.LayoffType > 0)
                 $scope.empAction.SeparationReason = "LayoffType";
-            }
 
             getHouseCodes($scope.empAction.HcmHouseCode, function (response) {
                 if (angular.isDefined(response)) {
@@ -1330,10 +1342,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     $scope.empAction.CurrentPayGrade = 0;
                 else if (curPayGrade.indexOf("none") == -1)
                     curGrade = curPayGrade.slice(curPayGrade.indexOf("("));
-				$scope.empAction.LastIncreaseDecreaseDate = $scope.empAction.DateLastIncrease;
-                var lastIncPer = $scope.empAction.PercentLastIncrease;
+                var lastIncPer = $scope.empAction.LastIncreaseDecreasePercentage;
                 $scope.empAction.LastIncreaseDecreasePercentage = (lastIncPer == "NaN%" ? "0" : lastIncPer.replace("%", ""));
-                $scope.empAction.CurrentPayRange = $scope.empAction.CurrentPayRange + curGrade;
+                $scope.empAction.CurrentPayRange = $scope.empAction.CurrentPayRange + " " + curGrade;
             }
             else {
                 $scope.empAction.LastIncreaseDecreaseDate = null;
@@ -1464,11 +1475,11 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             $scope.$parent.$parent.validateSeparationReason();
             if (!angular.isDefined(newValue) || newValue == null)
                 return;
-            angular.forEach(SeparationReason, function (item) {
-                if (item != newValue) {
-                    $scope.data[item] = null;
-                }
-            });
+//            angular.forEach(SeparationReason, function (item) {
+//                if (item != newValue) {
+//                    $scope.data[item] = null;
+//                }
+//            });
         });
     }])
     .controller('loaCtrl', ['$scope', function ($scope) {
@@ -2869,7 +2880,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         for (var index = 0; index < cache.payGrades.length; index++) {
             var item = cache.payGrades[index];
             if (item.id + "" === id + "") {
-                title = item.id + " (" + item.min + "-" + item.mid + "-" + item.max + ")";
+                title = item.id + " (" + item.min + " - " + item.mid + " - " + item.max + ")";
                 break;
             }
         }

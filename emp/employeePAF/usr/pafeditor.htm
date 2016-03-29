@@ -484,14 +484,14 @@
                             <div class="form-group">
                                 <label ng-if="!$parent.empAction.Demotion">Date Last Increase</label>
                                 <label ng-if="$parent.empAction.Demotion">Date Last  Increase/Decrease</label>
-                                <label class="form-control input-sm">{{$parent.empAction.DateLastIncrease}}</label>
+                                <label class="form-control input-sm">{{$parent.empAction.LastIncreaseDecreaseDate}}</label>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label ng-if="!$parent.empAction.Demotion">Percentage Last Increase</label>
                                 <label ng-if="$parent.empAction.Demotion">Percentage Last Increase/Decrease</label>
-                                <input class="form-control input-sm" ng-model="$parent.empAction.PercentLastIncrease" paf-numeric="" ng-disabled="true" />
+                                <input class="form-control input-sm" ng-model="$parent.empAction.LastIncreaseDecreasePercentage" paf-numeric="" ng-disabled="true" />
                             </div>
                         </div>
                     </div>
@@ -546,7 +546,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>New Pay Range</label>
-                                <p class="form-control input-sm">{{ $parent.getPayRange(empAction.NewPayGrade,empAction.NewSalary)}}</p>
+                                <p class="form-control input-sm">{{$parent.getPayRange(empAction.NewPayGrade,empAction.NewSalary)}}</p>
                             </div>
                         </div>
                     </div>
