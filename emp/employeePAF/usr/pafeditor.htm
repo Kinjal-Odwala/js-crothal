@@ -30,19 +30,19 @@
                     <div class="col-md-3">
                         <div class="form-group" ng-class="{'has-error':pafForm.FirstName.$invalid}">
                             <label class="control-label">First Name</label>
-                            <input class="form-control input-sm" name="FirstName" maxlength="50" ng-model="empAction.FirstName" ng-disabled="empAction.Data.Person" required/>
+                            <input class="form-control input-sm" name="FirstName" maxlength="50" ng-model="empAction.FirstName" ng-disabled="empAction.Data.EmployeeExists" required/>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label class="control-label">Middle Name</label>
-                            <input class="form-control input-sm" name="MiddleName" maxlength="50" ng-model="empAction.MiddleName" ng-disabled="empAction.Data.Person" />
+                            <input class="form-control input-sm" name="MiddleName" maxlength="50" ng-model="empAction.MiddleName" ng-disabled="empAction.Data.EmployeeExists" />
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group" ng-class="{'has-error':pafForm.LastName.$invalid}">
                             <label class="control-label">Last Name</label>
-                            <input class="form-control input-sm" name="LastName" maxlength="50" ng-model="empAction.LastName" ng-disabled="empAction.Data.Person" required/>
+                            <input class="form-control input-sm" name="LastName" maxlength="50" ng-model="empAction.LastName" ng-disabled="empAction.Data.EmployeeExists" required/>
                         </div>
                     </div>
                 </div>
@@ -50,35 +50,35 @@
                     <div class="col-md-6">
                         <div class="form-group" ng-class="{'has-error':pafForm.AddressLine1.$invalid}">
                             <label class="control-label">Address 1</label>
-                            <input class="form-control input-sm" name="AddressLine1" maxlength="100" ng-model="empAction.AddressLine1" ng-disabled="empAction.Data.Person" required/>
+                            <input class="form-control input-sm" name="AddressLine1" maxlength="100" ng-model="empAction.AddressLine1" ng-disabled="empAction.Data.EmployeeExists" required/>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="control-label">Address 2</label>
-                            <input class="form-control input-sm" name="AddressLine2" maxlength="100" ng-model="empAction.AddressLine2" ng-disabled="empAction.Data.Person" />
+                            <input class="form-control input-sm" name="AddressLine2" maxlength="100" ng-model="empAction.AddressLine2" ng-disabled="empAction.Data.EmployeeExists" />
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-3" ng-class="{'has-error':pafForm.City.$invalid}">
                         <label class="control-label">City</label>
-                        <input class="form-control input-sm" name="City" maxlength="50" ng-model="empAction.City" ng-disabled="empAction.Data.Person" required/>
+                        <input class="form-control input-sm" name="City" maxlength="50" ng-model="empAction.City" ng-disabled="empAction.Data.EmployeeExists" required/>
                     </div>
                     <div class="col-md-3" ng-class="{'has-error':pafForm.StateType.$invalid}">
                         <label class="control-label">State</label>
-                        <select class="form-control input-sm" name="StateType" ng-model="empAction.StateType" ng-disabled="empAction.Data.Person" ng-options="item.id as item.name for item in States" required>
+                        <select class="form-control input-sm" name="StateType" ng-model="empAction.StateType" ng-disabled="empAction.Data.EmployeeExists" ng-options="item.id as item.name for item in States" required>
                             <option></option>
                         </select>
                     </div>
                     <div class="col-md-3" ng-class="{'has-error':pafForm.PostalCode.$invalid}">
                         <label>Zip</label>
-                        <input class="form-control input-sm" name="PostalCode" maxlength="10" ng-model="empAction.PostalCode" paf-mask="zipcode" ng-disabled="empAction.Data.Person" required/>
+                        <input class="form-control input-sm" name="PostalCode" maxlength="10" ng-model="empAction.PostalCode" paf-mask="zipcode" ng-disabled="empAction.Data.EmployeeExists" required/>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group" ng-class="{'has-error':pafForm.Phone.$invalid}">
                             <label class="control-label">Phone #</label>
-                            <input class="form-control input-sm" name="Phone" maxlength="14" ng-model="empAction.Phone" paf-mask="phone" ng-disabled="empAction.Data.Person" required/>
+                            <input class="form-control input-sm" name="Phone" maxlength="14" ng-model="empAction.Phone" paf-mask="phone" ng-disabled="empAction.Data.EmployeeExists" required/>
                         </div>
                     </div>
                 </div>
@@ -95,7 +95,7 @@
                     <div class="form-group">
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" name="CheckType" ng-checked="positionTypeChecked(type.id)" ng-value="type.id" ng-click="onPositionTypeChanged(type.id)" ng-disabled="empAction.EmployeeNumber && empAction.Data.Person && type.display == 'New Hire'"/>{{type.display}}
+                                <input type="checkbox" name="CheckType" ng-checked="positionTypeChecked(type.id)" ng-value="type.id" ng-click="onPositionTypeChanged(type.id)" ng-disabled="empAction.EmployeeNumber && empAction.Data.EmployeeExists && type.display == 'New Hire'"/>{{type.display}}
                             </label>
                         </div>
                     </div>
@@ -217,25 +217,25 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Manager/Clock Number</label>
-                                        <input class="form-control input-sm" maxlength="6" ng-disabled="empAction.Data.NewHire.DisabledReportingManagerNumberField" name="ReportingManagerNumber" ng-model="empAction.ManagerNumber" ng-blur="$parent.$parent.getManagerInfo(empAction.ManagerNumber,empAction.Data.NewHire.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(empAction.ManagerNumber,empAction.Data.NewHire.ReportingType)" paf-integer/>
+                                        <input class="form-control input-sm" maxlength="6" name="ReportingManagerNumber" ng-model="empAction.ManagerNumber" ng-blur="$parent.$parent.getManagerInfo(empAction.ManagerNumber,'NewHire')" paf-enter="$parent.$parent.getManagerInfo(empAction.ManagerNumber,'NewHire')" paf-integer/>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingName">
                                         <label>Manager Name</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.NewHire.DisabledReportFields" name="ReportingName" maxlength="100" ng-model="empAction.ManagerName" ng-required="empAction.Data.NewHire.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(empAction.Data.NewHire)"/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.ManagerNameExists" name="ReportingName" maxlength="100" ng-model="empAction.ManagerName" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle">
                                         <label>Manager Title</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.NewHire.DisabledReportFields" name="ReportingTitle" maxlength="100" ng-model="empAction.ManagerTitle" ng-required="empAction.Data.NewHire.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(empAction.Data.NewHire)"/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.ManagerTitleExists" name="ReportingTitle" maxlength="100" ng-model="empAction.ManagerTitle" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>Manager Email</label>
-                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.NewHire.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="empAction.ManagerEmail" ng-required="empAction.Data.NewHire.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(empAction.Data.NewHire)"/>
+                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.ManagerEmailExists" name="ReportingEmail" maxlength="50" ng-model="empAction.ManagerEmail" required/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -247,25 +247,25 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Manager/Clock Number</label>
-                                        <input class="form-control input-sm" maxlength="6" ng-disabled="empAction.Data.ReHire.DisabledReportingManagerNumberField" name="ReportingManagerNumber" ng-model="empAction.ManagerNumber" ng-blur="$parent.$parent.getManagerInfo(empAction.ManagerNumber,empAction.Data.ReHire.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(empAction.ManagerNumber,empAction.Data.ReHire.ReportingType)" paf-integer/>
+                                        <input class="form-control input-sm" maxlength="6" name="ReportingManagerNumber" ng-model="empAction.ManagerNumber" ng-blur="$parent.$parent.getManagerInfo(empAction.ManagerNumber,'ReHire')" paf-enter="$parent.$parent.getManagerInfo(empAction.ManagerNumber,'ReHire')" paf-integer/>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingName">
                                         <label>Manager Name</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.ReHire.DisabledReportFields" name="ReportingName" maxlength="100" ng-model="empAction.ManagerName" ng-required="empAction.Data.ReHire.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(empAction.Data.ReHire)"/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.ManagerNameExists" name="ReportingName" maxlength="100" ng-model="empAction.ManagerName" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle">
                                         <label>Manager Title</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.ReHire.DisabledReportFields" name="ReportingTitle" maxlength="100" ng-model="empAction.ManagerTitle" ng-required="empAction.Data.ReHire.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(empAction.Data.ReHire)"/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.ManagerTitleExists" name="ReportingTitle" maxlength="100" ng-model="empAction.ManagerTitle" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>Manager Email</label>
-                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.ReHire.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="empAction.ManagerEmail" ng-required="empAction.Data.ReHire.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(empAction.Data.ReHire)"/>
+                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.ManagerEmailExists" name="ReportingEmail" maxlength="50" ng-model="empAction.ManagerEmail" required/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -441,7 +441,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Current Position</label>
-                                <div class="form-control input-sm">{{$parent.empAction.Data.Compensation.CurrentPosition}}</div>
+                                <div class="form-control input-sm">{{$parent.empAction.CurrentPosition}}</div>
                              </div>
                         </div>
                         <div class="col-md-6">
@@ -484,14 +484,14 @@
                             <div class="form-group">
                                 <label ng-if="!$parent.empAction.Demotion">Date Last Increase</label>
                                 <label ng-if="$parent.empAction.Demotion">Date Last  Increase/Decrease</label>
-                                <label class="form-control input-sm">{{$parent.empAction.Data.Compensation.DateLastIncrease}}</label>
+                                <label class="form-control input-sm">{{$parent.empAction.DateLastIncrease}}</label>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label ng-if="!$parent.empAction.Demotion">Percentage Last Increase</label>
                                 <label ng-if="$parent.empAction.Demotion">Percentage Last Increase/Decrease</label>
-                                <input class="form-control input-sm" ng-model="$parent.empAction.Data.Compensation.PercentLastIncrease" paf-numeric="" ng-disabled="true" />
+                                <input class="form-control input-sm" ng-model="$parent.empAction.PercentLastIncrease" paf-numeric="" ng-disabled="true" />
                             </div>
                         </div>
                     </div>
@@ -499,7 +499,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Current Salary</label>
-                                <input class="form-control input-sm" ng-model="$parent.empAction.Data.Compensation.CurrentSalary" paf-numeric="" ng-disabled="true" />
+                                <input class="form-control input-sm" ng-model="$parent.empAction.CurrentSalary" paf-numeric="" ng-disabled="true" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -526,13 +526,13 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Current Pay Grade (min - mid - max)</label>
-                                <input class="form-control input-sm" ng-disabled="true" ng-model="$parent.empAction.Data.Compensation.CurrentPayGrade" ng-disabled="true" />
+                                <input class="form-control input-sm" ng-disabled="true" ng-model="$parent.empAction.CurrentPayGradeTitle" ng-disabled="true" />
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Current Pay Range</label>
-                                <input class="form-control input-sm" ng-disabled="true" ng-model="$parent.empAction.Data.Compensation.CurrentPayRange" ng-disabled="true" />
+                                <input class="form-control input-sm" ng-disabled="true" ng-model="$parent.empAction.CurrentPayRange" ng-disabled="true" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -556,25 +556,25 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Manager/Clock Number</label>
-                                        <input class="form-control input-sm" maxlength="6" ng-disabled="empAction.Data.Promotion.DisabledReportingManagerNumberField" name="ReportingManagerNumber" ng-model="empAction.NewManagerNumber" ng-blur="$parent.$parent.getManagerInfo(empAction.NewManagerNumber,empAction.Data.Promotion.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(empAction.NewManagerNumber,empAction.Data.Promotion.ReportingType)" paf-integer/>
+                                        <input class="form-control input-sm" maxlength="6" name="ReportingManagerNumber" ng-model="empAction.NewManagerNumber" ng-blur="$parent.$parent.getManagerInfo(empAction.NewManagerNumber,'Promotion')" paf-enter="$parent.$parent.getManagerInfo(empAction.NewManagerNumber,'Promotion')" paf-integer/>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingName">
                                         <label>Manager Name</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.Promotion.DisabledReportFields" name="ReportingName" maxlength="100" ng-model="empAction.NewManagerName" ng-required="empAction.Data.Promotion.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(empAction.Data.Promotion)"/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.NewManagerNameExists" name="ReportingName" maxlength="100" ng-model="empAction.NewManagerName" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle">
                                         <label>Manager Title</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.Promotion.DisabledReportFields" name="ReportingTitle" maxlength="100" ng-model="empAction.NewManagerTitle" ng-required="empAction.Data.Promotion.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(empAction.Data.Promotion)"/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.NewManagerTitleExists" name="ReportingTitle" maxlength="100" ng-model="empAction.NewManagerTitle" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>Manager Email</label>
-                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.Promotion.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="empAction.NewManagerEmail" ng-required="empAction.Data.Promotion.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(empAction.Data.Promotion)"/>
+                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.NewManagerEmailExists" name="ReportingEmail" maxlength="50" ng-model="empAction.NewManagerEmail" required/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -586,25 +586,25 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Manager/Clock Number</label>
-                                        <input class="form-control input-sm" maxlength="6" ng-disabled="empAction.Data.Demotion.DisabledReportingManagerNumberField" name="ReportingManagerNumber" ng-model="empAction.NewManagerNumber" ng-blur="$parent.$parent.getManagerInfo(empAction.NewManagerNumber,empAction.Data.Demotion.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(empAction.ManagerNumber,empAction.Data.Demotion.ReportingType)" paf-integer/>
+                                        <input class="form-control input-sm" maxlength="6" name="ReportingManagerNumber" ng-model="empAction.NewManagerNumber" ng-blur="$parent.$parent.getManagerInfo(empAction.NewManagerNumber,'Demotion')" paf-enter="$parent.$parent.getManagerInfo(empAction.ManagerNumber,'Demotion')" paf-integer/>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingName">
                                         <label>Manager Name</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.Demotion.DisabledReportFields" name="ReportingName" maxlength="100" ng-model="empAction.NewManagerName" ng-required="empAction.Data.Demotion.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(empAction.Data.Demotion)"/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.NewManagerNameExists" name="ReportingName" maxlength="100" ng-model="empAction.NewManagerName" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle">
                                         <label>Manager Title</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.Demotion.DisabledReportFields" name="ReportingTitle" maxlength="100" ng-model="empAction.NewManagerTitle" ng-required="empAction.Data.Demotion.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(empAction.Data.Demotion)"/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.NewManagerTitleExists" name="ReportingTitle" maxlength="100" ng-model="empAction.NewManagerTitle" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>Manager Email</label>
-                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.Demotion.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="empAction.NewManagerEmail" ng-required="empAction.Data.Demotion.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(empAction.Data.Demotion)"/>
+                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.NewManagerEmailExists" name="ReportingEmail" maxlength="50" ng-model="empAction.NewManagerEmail" required/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -616,25 +616,25 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Manager/Clock Number</label>
-                                        <input class="form-control input-sm" maxlength="6" ng-disabled="empAction.Data.SalaryChange.DisabledReportingManagerNumberField" name="ReportingManagerNumber" ng-model="empAction.NewManagerNumber" ng-blur="$parent.$parent.getManagerInfo(empAction.NewManagerNumber,empAction.Data.SalaryChange.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(empAction.NewManagerNumber,empAction.Data.SalaryChange.ReportingType)" paf-integer/>
+                                        <input class="form-control input-sm" maxlength="6" name="ReportingManagerNumber" ng-model="empAction.NewManagerNumber" ng-blur="$parent.$parent.getManagerInfo(empAction.NewManagerNumber,'SalaryChange')" paf-enter="$parent.$parent.getManagerInfo(empAction.NewManagerNumber,'SalaryChange')" paf-integer/>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingName">
                                         <label>Manager Name</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.SalaryChange.DisabledReportFields" name="ReportingName" maxlength="100" ng-model="empAction.NewManagerName" ng-required="empAction.Data.SalaryChange.ReportingType!='SalaryChange' && $parent.$parent.isManagerFieldRequired(empAction.Data.SalaryChange)"/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.NewManagerNameExists" name="ReportingName" maxlength="100" ng-model="empAction.NewManagerName" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle">
                                         <label>Manager Title</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.SalaryChange.DisabledReportFields" name="ReportingTitle" maxlength="100" ng-model="empAction.NewManagerTitle" ng-required="empAction.Data.SalaryChange.ReportingType!='SalaryChange' && $parent.$parent.isManagerFieldRequired(empAction.Data.SalaryChange)"/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.NewManagerTitleExists" name="ReportingTitle" maxlength="100" ng-model="empAction.NewManagerTitle" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>Manager Email</label>
-                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.SalaryChange.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="empAction.NewManagerEmail" ng-required="empAction.Data.SalaryChange.ReportingType!='SalaryChange' && $parent.$parent.isManagerFieldRequired(empAction.Data.SalaryChange)"/>
+                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.NewManagerEmailExists" name="ReportingEmail" maxlength="50" ng-model="empAction.NewManagerEmail" required/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -702,25 +702,25 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Manager/Clock Number</label>
-                                        <input class="form-control input-sm" maxlength="6" ng-disabled="empAction.Data.Transfer.DisabledReportingManagerNumberField" name="ReportingManagerNumber" ng-model="empAction.TransferManagerNumber" ng-blur="$parent.$parent.getManagerInfo(empAction.TransferManagerNumber,empAction.Data.Transfer.ReportingType)" paf-enter="$parent.$parent.getManagerInfo(empAction.TransferManagerNumber,empAction.Data.Transfer.ReportingType)" paf-integer/>
+                                        <input class="form-control input-sm" maxlength="6" name="ReportingManagerNumber" ng-model="empAction.TransferManagerNumber" ng-blur="$parent.$parent.getManagerInfo(empAction.TransferManagerNumber,'Transfer')" paf-enter="$parent.$parent.getManagerInfo(empAction.TransferManagerNumber,'Transfer')" paf-integer/>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingName">
                                         <label>Manager Name</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.Transfer.DisabledReportFields" name="ReportingName" maxlength="100" ng-model="empAction.TransferManagerName" ng-required="empAction.Data.Transfer.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(empAction.Data.Transfer)"/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.TransferManagerNameExists" name="ReportingName" maxlength="100" ng-model="empAction.TransferManagerName" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle">
                                         <label>Manager Title</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.Transfer.DisabledReportFields" name="ReportingTitle" maxlength="100" ng-model="empAction.TransferManagerTitle" ng-required="empAction.Data.Transfer.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(empAction.Data.Transfer)"/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.TransferManagerTitleExists" name="ReportingTitle" maxlength="100" ng-model="empAction.TransferManagerTitle" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>Manager Email</label>
-                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.Transfer.DisabledReportFields" name="ReportingEmail" maxlength="50" ng-model="empAction.TransferManagerEmail" ng-required="empAction.Data.Transfer.ReportingType!='Demotion' && $parent.$parent.isManagerFieldRequired(empAction.Data.Transfer)"/>
+                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.TransferManagerEmailExists" name="ReportingEmail" maxlength="50" ng-model="empAction.TransferManagerEmail" required/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -841,20 +841,20 @@
 					<div class="row">
 						<div class="col-md-2">
 					       <label class="control-label">Manager Number</label>
-					       <input class="form-control input-sm" name="RegionalManagerNumber" maxlength="6" ng-model="empAction.RegionalManagerNumber" ng-blur="getRegionalManagerInfo(empAction.RegionalManagerNumber,empAction.Data.NewHire.ReportingType)" paf-enter="getRegionalManagerInfo(empAction.RegionalManagerNumber,empAction.Data.NewHire.ReportingType)" paf-integer/>
+					       <input class="form-control input-sm" name="RegionalManagerNumber" maxlength="6" ng-model="empAction.RegionalManagerNumber" ng-blur="getRegionalManagerInfo(empAction.RegionalManagerNumber)" paf-enter="getRegionalManagerInfo(empAction.RegionalManagerNumber)" paf-integer/>
 					   </div>
 					   <div class="col-md-2">
 					       <label class="control-label">Manager Name</label>
-					       <input class="form-control input-sm" name="RegionalManagerName" maxlength="100" ng-model="empAction.RegionalManagerName" />
+					       <input class="form-control input-sm" ng-disabled="empAction.Data.RegionalManagerNameExists" name="RegionalManagerName" maxlength="100" ng-model="empAction.RegionalManagerName" />
 					   </div>
 					   <div class="col-md-4">
 					       <label>Manager Title</label>
-					       <input class="form-control input-sm" name="RegionalManagerTitle" maxlength="100" ng-model="empAction.RegionalManagerTitle"/>
+					       <input class="form-control input-sm" ng-disabled="empAction.Data.RegionalManagerTitleExists" name="RegionalManagerTitle" maxlength="100" ng-model="empAction.RegionalManagerTitle"/>
 					   </div>
 					   <div class="col-md-4">
 					       <div class="form-group" ng-class="{'has-error':regionalManagerInfoForm.RegionalManagerEmail.$invalid}">
 					           <label class="control-label">Manager Email</label>
-					           <input paf-validation="EMAIL" class="form-control input-sm" name="RegionalManagerEmail" maxlength="50" ng-model="empAction.RegionalManagerEmail"/>
+					           <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.RegionalManagerEmailExists" name="RegionalManagerEmail" maxlength="50" ng-model="empAction.RegionalManagerEmail"/>
 					       </div>
 					   </div>
 					</div>
