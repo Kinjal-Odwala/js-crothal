@@ -1352,6 +1352,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             if (!$scope.empAction.Loa) {
                 $scope.empAction.LoaReturnDate = null;
             }
+            if ($scope.empAction.Separation) {
+                $scope.empAction.HRReview = $scope.empAction.HrReview;
+            }
             $scope.pageLoading = true;
 			
 			if (saveAndSubmit)
