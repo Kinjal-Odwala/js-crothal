@@ -385,7 +385,7 @@
                             <div class="form-group" ng-show="empAction.SeparationReason=='LayoffType' || empAction.SeparationReason=='TerminationType'">
                                 <label>Reviewed with HR:</label>
                                 <div>
-                                    <select class="form-control input-sm" ng-model="empAction.HRReview" ng-options="item.Id as item.Description for item in $parent.$parent.lkup.ReviewedWithHR">
+                                    <select class="form-control input-sm" ng-model="empAction.HrReview" ng-options="item.Id as item.Description for item in $parent.$parent.lkup.ReviewedWithHR">
                                         <option value=""></option>
                                     </select>
                                 </div>
@@ -472,7 +472,7 @@
                             <div class="form-group">
                                 <label>Reviewed with HR:</label>
                                 <div>
-                                    <select class="form-control input-sm" ng-model="empAction.HRReview" ng-options="item.Id as item.Description for item in $parent.$parent.lkup.ReviewedWithHR">
+                                    <select class="form-control input-sm" ng-model="empAction.HrReview" ng-options="item.Id as item.Description for item in $parent.$parent.lkup.ReviewedWithHR">
                                         <option value=""></option>
                                     </select>
                                 </div>
@@ -949,7 +949,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.HRManagerName.$invalid}">
-                               <input class="form-control input-sm" name="HRManagerName" maxlength="100" ng-model="empAction.HRManagerName" ng-required="true"/>
+                               <input class="form-control input-sm" name="HRManagerName" maxlength="100" ng-model="empAction.HrManagerName" ng-required="true"/>
                             </div>
                         </div>
                         <div class="col-md-2"></div>
@@ -958,7 +958,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.HRManagerEmail.$invalid}">
-                               <input class="form-control input-sm" name="HRManagerEmail" maxlength="100" ng-model="empAction.HRManagerEmail" ng-required="true"/>
+                               <input class="form-control input-sm" name="HRManagerEmail" maxlength="100" ng-model="empAction.HrManagerEmail" ng-required="true"/>
                             </div>
                         </div>
                     </div>
@@ -987,7 +987,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.HRDirectorName.$invalid}">
-                               <input class="form-control input-sm" name="HRDirectorName" maxlength="100" ng-model="empAction.HRDirectorName" ng-required="true"/>
+                               <input class="form-control input-sm" name="HRDirectorName" maxlength="100" ng-model="empAction.HrDirectorName" ng-required="true"/>
                             </div>
                         </div>
                         <div class="col-md-2"></div>
@@ -996,7 +996,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.HRDirectorEmail.$invalid}">
-                               <input class="form-control input-sm" name="HRDirectorEmail" maxlength="100" ng-model="empAction.HRDirectorEmail" ng-required="true"/>
+                               <input class="form-control input-sm" name="HRDirectorEmail" maxlength="100" ng-model="empAction.HrDirectorEmail" ng-required="true"/>
                             </div>
                         </div>
                     </div>

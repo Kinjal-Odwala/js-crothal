@@ -726,8 +726,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                             $scope.empAction.LoaManagerEmail = result.email;
                         }
                         else if (item.id == 2) {
-                            $scope.empAction.HRManagerName = result.firstName + " " + result.lastName;
-                            $scope.empAction.HRManagerEmail = result.email;
+                            $scope.empAction.HrManagerName = result.firstName + " " + result.lastName;
+                            $scope.empAction.HrManagerEmail = result.email;
                         }
                         else if (item.id == 5) {
                             $scope.empAction.ProcessHRName = result.firstName + " " + result.lastName;
@@ -739,8 +739,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             else if (item.id == 4) {
                 EmpActions.getJDECompanies($scope.empAction.HcmHouseCode, item.id, function (result) {
                     if (angular.isDefined(result)) {
-                        $scope.empAction.HRDirectorName = result.name;
-                        $scope.empAction.HRDirectorEmail = result.email;
+                        $scope.empAction.HrDirectorName = result.name;
+                        $scope.empAction.HrDirectorEmail = result.email;
                     }
                 });
             }
@@ -829,23 +829,23 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
             angular.forEach($scope.stepApprovals, function (item) {
                 var workflowStepId = EmpActions.getWorkflowStepId(item.id);
-                if (item.id != 4 && item.id != 3) {
-                    EmpActions.getAppUsers(workflowStepId, function (result) {
-                        if (angular.isDefined(result)) {
-                            item.name = result.firstName + " " + result.lastName;
-                        }
-                    });
+
+                if (item.id == 1) {
+                    item.name = $scope.empAction.LoaManagerName;
+                }
+                else if (item.id == 2) {
+                    item.name = $scope.empAction.HrManagerName;
                 }
                 else if (item.id == 3) {
                     item.name = $scope.empAction.RegionalManagerName;
                 }
                 else if (item.id == 4) {
-                    EmpActions.getJDECompanies($scope.empAction.HcmHouseCode, 4, function (result) {
-                        if (angular.isDefined(result)) {
-                            item.name = result.name;
-                        }
-                    });
+                    item.name = $scope.empAction.HrDirectorName;
                 }
+                else if (item.id == 5) {
+                    item.name = $scope.empAction.ProcessHRName;
+                }
+
                 item.date = EmpActions.getWorkflowDate(workflowStepId);
 
                 if ($scope.empAction.Loa) {
@@ -1064,16 +1064,16 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
     $scope.separationReasonChecked = function (separationReason) {
         if (separationReason == 'ResignationType') {
-            $scope.empAction.TerminationType = 0;
-            $scope.empAction.LayoffType = 0;
+            $scope.empAction.TerminationType = null;
+            $scope.empAction.LayoffType = null;
         }
         if (separationReason == 'TerminationType') {
-            $scope.empAction.ResignationType = 0;
-            $scope.empAction.LayoffType = 0;
+            $scope.empAction.ResignationType = null;
+            $scope.empAction.LayoffType = null;
         }
         if (separationReason == 'LayoffType') {
-            $scope.empAction.TerminationType = 0;
-            $scope.empAction.ResignationType = 0;
+            $scope.empAction.TerminationType = null;
+            $scope.empAction.ResignationType = null;
         }
     }
 
