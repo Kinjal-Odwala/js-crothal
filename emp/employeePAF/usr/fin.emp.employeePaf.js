@@ -169,13 +169,13 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
     $scope.lkup = {
         CarAllowances: EmpActions.getCarAllowances(),
-        ReviewedWithHR: EmpActions.getReviewedWithHR(),
         BounsEligibles: null,
         PlanDetails: null,
         Reason4Changes: null,
         Layoffs: null,
         Terminations: null,
-        Resignations: null
+        Resignations: null,
+		HRReviews: null
     };
 
     $scope.empAction = {
@@ -235,6 +235,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             $scope.lkup.Layoffs = filters("Layoff");
             $scope.lkup.Terminations = filters("Termination");
             $scope.lkup.Resignations = filters("Resignation");
+			$scope.lkup.HRReviews = filters("HRReview");
         });
     };
 
@@ -388,7 +389,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 				$scope.empAction.CurrentPosition = "";
 				$scope.empAction.CurrentPositionType = 0;
 				$scope.empAction.LastIncreaseDecreaseDate = null;
-	            $scope.empAction.LastIncreaseDecreasePercentage = "0%";
+	            $scope.empAction.LastIncreaseDecreasePercentage = "0";
 				$scope.empAction.CurrentSalary = 0;
 				$scope.empAction.CurrentPayGrade = 0;
 				$scope.empAction.CurrentPayGradeTitle = "";
@@ -401,11 +402,14 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 				$scope.empAction.CurrentPositionType = (currentPositionTypes.length == 1 ? currentPositionTypes[0].id : 0);
 				$scope.empAction.LastIncreaseDecreaseDate = $filter("date")(new Date(response.dateBeg), "MM/dd/yyyy");
 				if (response.priorAnnualPayAmt === "" || response.priorAnnualPayAmt === "0")
-					$scope.empAction.LastIncreaseDecreasePercentage = "0%";
+					$scope.empAction.LastIncreaseDecreasePercentage = "0";
 				else
-					$scope.empAction.LastIncreaseDecreasePercentage = ((response.annualPayAmt - response.priorAnnualPayAmt) / response.priorAnnualPayAmt).toFixed(2) * 100 + "%";
+					$scope.empAction.LastIncreaseDecreasePercentage = ((response.annualPayAmt - response.priorAnnualPayAmt) / response.priorAnnualPayAmt).toFixed(2) * 100;
 				$scope.empAction.CurrentSalary = parseFloat(response.annualPayAmt).toFixed(2);
-				$scope.empAction.CurrentPayGrade = response.payGrade;
+				if (response.payGrade == "" || response.payGrade == "none")
+					$scope.empAction.CurrentPayGrade = 0;
+				else
+					$scope.empAction.CurrentPayGrade = response.payGrade;
 				$scope.empAction.CurrentPayGradeTitle = response.payGrade + " (" + response.minPayRange + " - " + response.midPayRange + " - " + response.maxPayRange + ")";
                 $scope.empAction.CurrentPayRange = $scope.getPayRange(response.payGrade, response.annualPayAmt);
 				
@@ -799,6 +803,10 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 return;
             }
             $scope.empAction = result;
+			$scope.empAction.ManagerNumber = ($scope.empAction.ManagerNumber == 0 ? null : $scope.empAction.ManagerNumber);
+			$scope.empAction.NewManagerNumber = ($scope.empAction.TransferManagerNumber == 0 ? null : $scope.empAction.NewManagerNumber);
+			$scope.empAction.TransferManagerNumber = ($scope.empAction.TransferManagerNumber == 0 ? null : $scope.empAction.TransferManagerNumber);
+			$scope.empAction.RegionalManagerNumber = ($scope.empAction.RegionalManagerNumber == 0 ? null : $scope.empAction.RegionalManagerNumber);
 			$scope.empAction.CacheHcmHouseCode = $scope.empAction.HcmHouseCode;
 			$scope.empAction.CacheEmployeeNumber = $scope.empAction.EmployeeNumber;
 			$scope.empAction.CacheManagerNumber = $scope.empAction.ManagerNumber;
@@ -807,8 +815,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 			$scope.empAction.CacheRegionalManagerNumber = $scope.empAction.RegionalManagerNumber;
 			$scope.empAction.CurrentPosition = EmpActions.getTitleById($scope.empAction.CurrentPositionType, $scope.JobCodes);
 			$scope.empAction.CurrentPayGradeTitle = EmpActions.getPayGradeTitle($scope.empAction.CurrentPayGrade);
-			
-			if ($scope.empAction.LastIncreaseDecreaseDate == "1/1/1901 12:00:00 AM")
+
+			if ($scope.empAction.LastIncreaseDecreaseDate == "1/1/1901 12:00:00 AM" || $scope.empAction.LastIncreaseDecreaseDate == "1/1/1900 12:00:00 AM")
 				$scope.empAction.LastIncreaseDecreaseDate = null;
 			else
 				$scope.empAction.LastIncreaseDecreaseDate = $filter("date")(new Date($scope.empAction.LastIncreaseDecreaseDate), "MM/dd/yyyy");
@@ -1324,10 +1332,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         if ($scope.pafForm.$valid) {
             if ($scope.empAction.NewHire || $scope.empAction.ReHire) {
                 var salary = 0;
-                if ($scope.empAction.PayStatus == "AdminHourlyAmount") {
-                    salary = $scope.empAction.Amount * 52 * 40;
-                }
-                else if ($scope.empAction.PayStatus == "HourlyRateAmount") {
+                if ($scope.empAction.PayStatus == "Admin Hourly" || $scope.empAction.PayStatus == "Hourly") {
                     salary = $scope.empAction.Amount * 52 * 40;
                 }
                 var grade = ($scope.empAction.PayGrade == 0 ? $scope.empAction.PayGrade : EmpActions.getPayGradeTitle($scope.empAction.PayGrade));
@@ -1352,9 +1357,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             if (!$scope.empAction.Loa) {
                 $scope.empAction.LoaReturnDate = null;
             }
-            if ($scope.empAction.Separation) {
-                $scope.empAction.HRReview = $scope.empAction.HrReview;
-            }
+
             $scope.pageLoading = true;
 			
 			if (saveAndSubmit)
@@ -1446,18 +1449,16 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 }
             });
 
-            if ($scope.empAction.PayStatus == 'PerDiemValue')
-                $scope.empAction.Status = 'TemporaryHours';
+            if ($scope.empAction.PayStatus == 'Per Diem')
+                $scope.empAction.Status = 'Temporary';
         });
 
         var calSalary = function () {
             var salary = 0;
             var payStatus = $scope.empAction.PayStatus;
-            if (payStatus == 'AnnualSalaryAmount')
+            if (payStatus == 'Salary')
                 salary = $scope.empAction.Amount;
-            else if (payStatus == 'AdminHourlyAmount')
-                salary = $scope.empAction.Amount * 52 * 40;
-            else if (payStatus == 'HourlyRateAmount')
+            else if (payStatus == 'Admin Hourly' || payStatus == 'Hourly')
                 salary = $scope.empAction.Amount * 52 * 40;
 
             return salary;
@@ -1759,11 +1760,11 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
     };
 
     $scope.Statuses = [
-           { id: 1, title: 'Open' },
-           { id: 2, title: 'In Process' },
-           { id: 8, title: 'Approved' },
-           { id: 6, title: 'Cancelled' },
-           { id: 10, title: 'Unapproved' }
+		{ id: 1, title: 'Open' },
+		{ id: 2, title: 'In Process' },
+		{ id: 8, title: 'Approved' },
+		{ id: 6, title: 'Cancelled' },
+		{ id: 10, title: 'Unapproved' }
     ];
 
     $scope.getStatusTitle = function (id) {
@@ -2519,16 +2520,10 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         { Id: '425', Description: '$425/month' },
         { Id: '500', Description: '$500/month' },
         { Id: '600', Description: '$600/month' },
-        { Id: '900', Description: '$900/month' }];
-
-    var ReviewedWithHR = [
-        { Id: '0', Description: 'CHRA' },
-        { Id: '1', Description: 'CHRC' },
-        { Id: '2', Description: 'CSHRC' }
-    ]
+        { Id: '900', Description: '$900/month' }
+	];
 
     var cache = {};
-
     var authorizations = null;
     var houseCodes = null;
     var stateTypes = null;
@@ -2574,7 +2569,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 
         var filterStr = "";
         var boolItems = ["NewHire", "ReHire", "Separation", "LOA", "SalaryChange", "Promotion", "Demotion", "Transfer", "PersonalInfoChange", "Relocation"];
-        var intItems = ["HcmHouseCode", "EmployeeNumber", "StateType", "PositionType", "TrainingLocation", "Duration", "CarAllowance", "BonusEligibleType", "LayoffType", "OldPositionType", "NewPositionType", "ChangeReasonType", "NewCarAllowance", "NewBonusEligibleType", "HouseCodeTransfer", "InfoChangeStateType", "RelocationPlan", "PayGrade", "NewPayGrade"];
+        var intItems = ["HcmHouseCode", "EmployeeNumber", "StateType", "PositionType", "TrainingLocation", "Duration", "CarAllowance", "BonusEligibleType", "LayoffType", "HRReviewType", "OldPositionType", "NewPositionType", "ChangeReasonType", "NewCarAllowance", "NewBonusEligibleType", "HouseCodeTransfer", "InfoChangeStateType", "RelocationPlan", "PayGrade", "NewPayGrade"];
         var dateItems = ["Date", "HireDate", "SeparationDate", "LoaStartDate", "LoaReturnDate", "EffectiveDate", "LastIncreaseDate", "EffectiveDate", "TransferEffectiveDate", "InfoChangeEffectiveDate"];
 
         angular.forEach(filter, function (value, key) {
@@ -2594,9 +2589,10 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         });
 
     };
+
     var findEmployeePersonnelAction = function (id, callback) {
         var boolItems = ["NewHire", "ReHire", "Separation", "LOA", "SalaryChange", "Promotion", "Demotion", "Transfer", "PersonalInfoChange", "Relocation", "SeparationReHire"];
-        var intItems = ["HcmHouseCode", "EmployeeNumber", "StateType", "PositionType", "TrainingLocation", "Duration", "CarAllowance", "BonusEligibleType", "LayoffType", "OldPositionType", "NewPositionType", "ChangeReasonType", "NewCarAllowance", "NewBonusEligibleType", "HouseCodeTransfer", "InfoChangeStateType", "RelocationPlan", "PayGrade", "NewPayGrade", "ResignationType", "TerminationType", "LayoffType"];
+        var intItems = ["HcmHouseCode", "EmployeeNumber", "StateType", "PositionType", "TrainingLocation", "Duration", "CarAllowance", "BonusEligibleType", "OldPositionType", "NewPositionType", "ChangeReasonType", "NewCarAllowance", "NewBonusEligibleType", "HouseCodeTransfer", "InfoChangeStateType", "RelocationPlan", "PayGrade", "NewPayGrade", "ResignationType", "TerminationType", "LayoffType", "HRReviewType"];
         var dateItems = ["Date", "HireDate", "SeparationDate", "LoaStartDate", "LoaReturnDate", "EffectiveDate", "LastIncreaseDate", "EffectiveDate", "TransferEffectiveDate", "InfoChangeEffectiveDate"];
 
         apiRequest('emp', 'iiCache', '<criteria>storeId:employeePersonnelActions,userId:[user]' + ",actionId:" + id + ',</criteria>', function (xml) {
@@ -2906,10 +2902,6 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         });
     };
 
-    var getReviewedWithHR = function (callback) {
-        return ReviewedWithHR;
-    };
-
     var getPersonActionTypes = function (callback) {
 
         if (cache.personActionTypes) {
@@ -2976,6 +2968,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 	        xml += ' payGradeTitle="' + getPayGradeTitle(item.PayGrade) + '"';
 	        xml += ' bonusEligible="' + getTitleById(item.BonusEligibleType, cache.personActionTypes) + '"';
 	        xml += ' reasonForChange="' + getTitleById(reasonId, cache.personActionTypes) + '"';
+			xml += ' hrReview="' + getTitleById(item.HrReviewType, cache.personActionTypes) + '"';
 	        xml += ' infoStateTitle="' + getTitleById(item.InfoChangeStateType, cache.stateTypes) + '"';
 	        xml += ' relocationPlan="' + getTitleById(item.RelocationPlan, cache.personActionTypes) + '"';
 	        xml += ' newUnitTitle="' + getTitleById(item.HouseCodeTransfer, cache.houseCodes) + '"';
@@ -3089,6 +3082,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         xml += ' payGradeTitle="' + getPayGradeTitle(item.PayGrade) + '"';
         xml += ' bonusEligible="' + getTitleById(item.BonusEligibleType, cache.personActionTypes) + '"';
         xml += ' reasonForChange="' + getTitleById(reasonId, cache.personActionTypes) + '"';
+		xml += ' hrReview="' + getTitleById(item.HrReviewType, cache.personActionTypes) + '"';
         xml += ' infoStateTitle="' + getTitleById(item.InfoChangeStateType, cache.stateTypes) + '"';
         xml += ' relocationPlan="' + getTitleById(item.RelocationPlan, cache.personActionTypes) + '"';
         xml += ' newUnitTitle="' + getTitleById(item.HouseCodeTransfer, cache.houseCodes) + '"';
@@ -3131,7 +3125,6 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         getPayGrades: getPayGrades,
         getWorkflowSteps: getWorkflowSteps,
         getWorkflowBrief: getWorkflowBrief,
-        getReviewedWithHR: getReviewedWithHR,
         saveEmployeePersonnelAction: saveEmployeePersonnelAction,
         cancelEmployeePersonnelAction: cancelEmployeePersonnelAction,
         submitEmployeePersonnelAction: submitEmployeePersonnelAction,
@@ -3150,5 +3143,3 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         getHouseCodes: getHouseCodes
     }
 }]);
-
-

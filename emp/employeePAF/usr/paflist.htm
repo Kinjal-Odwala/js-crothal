@@ -28,7 +28,6 @@
                         <option value="1">Open</option>
                         <option value="2">In Process</option>
                         <option value="8">Approved</option>
-<!--                        <option value="9">Completed</option>-->
                         <option value="6">Cancelled</option>
                         <option value="10">Unapproved</option>
                     </select>
@@ -99,7 +98,7 @@
             <tr ng-repeat="item in empActions" ng-click="itemSelected(item)" ng-class="{'warning':selectedItem==item}">
                 <td width="8%">{{item.Number}}</td>
                 <td width="10%">{{getDate(item.Date)}}</td>
-                <td width="10%">{{item.EmployeeNumber}}</td>
+                <td width="10%">{{item.EmployeeNumber == 0 ? "" : item.EmployeeNumber}}</td>
                 <td width="20%">{{item.FirstName}}&nbsp;{{item.LastName}}</td>
                 <td width="25%">{{getHouseCodeName(item)}}</td>
                 <td width="" ng-bind-html="getFormType(item)"></td>

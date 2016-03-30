@@ -131,9 +131,9 @@
                                     <div class="form-inline">
                                         <div class="form-group" paf-invalid="hireForm.FullTimeHours">
                                             <label class="labelText">
-                                                <input name="Status" ng-model="empAction.Status" ng-disabled="empAction.PayStatus=='PerDiemValue'" required="required" type="radio" value="FullTimeHours" />&nbsp;Full Time
+                                                <input name="Status" ng-model="empAction.Status" ng-disabled="empAction.PayStatus=='Per Diem'" required="required" type="radio" value="Full Time" />&nbsp;Full Time
                                             </label>
-                                            <input class="form-control input-sm" name="FullTimeHours" paf-maxlength="6" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="empAction.Status=='FullTimeHours'" ng-model="empAction.Hours" ng-required="empAction.Status=='FullTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+                                            <input class="form-control input-sm" name="FullTimeHours" paf-maxlength="6" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="empAction.Status=='Full Time'" ng-model="empAction.Hours" ng-required="empAction.Status=='Full Time'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                 </div>
@@ -141,9 +141,9 @@
                                     <div class="form-inline">
                                         <div class="form-group" paf-invalid="hireForm.PartTimeHours">
                                             <label class="labelText">
-                                                <input name="Status" ng-model="empAction.Status" ng-disabled="empAction.PayStatus=='PerDiemValue'" required="required" type="radio" value="PartTimeHours" />&nbsp;Part Time
+                                                <input name="Status" ng-model="empAction.Status" ng-disabled="empAction.PayStatus=='Per Diem'" required="required" type="radio" value="Part Time" />&nbsp;Part Time
                                             </label>
-                                            <input class="form-control input-sm" name="PartTimeHours" paf-maxlength="6" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="empAction.Status=='PartTimeHours'" ng-model="empAction.Hours" ng-required="empAction.Status=='PartTimeHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+                                            <input class="form-control input-sm" name="PartTimeHours" paf-maxlength="6" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="empAction.Status=='Part Time'" ng-model="empAction.Hours" ng-required="empAction.Status=='Part Time'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                     <div class="clearfix"></div>
@@ -152,9 +152,9 @@
                                     <div class="form-inline">
                                         <div class="form-group" paf-invalid="hireForm.TemporaryHours">
                                             <label class="labelText">
-                                                <input name="Status" ng-model="empAction.Status" required="required" type="radio" value="TemporaryHours" />&nbsp;Temporary
+                                                <input name="Status" ng-model="empAction.Status" required="required" type="radio" value="Temporary" />&nbsp;Temporary
                                             </label>
-                                            <input class="form-control input-sm" name="TemporaryHours" paf-maxlength="6" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="empAction.Status=='TemporaryHours'" ng-model="empAction.Hours" ng-required="empAction.Status=='TemporaryHours'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+                                            <input class="form-control input-sm" name="TemporaryHours" paf-maxlength="6" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="empAction.Status=='Temporary'" ng-model="empAction.Hours" ng-required="empAction.Status=='Temporary'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                 </div>
@@ -163,41 +163,41 @@
                                 <div class="col-md-3 form-inline">
                                     <div class="form-group" paf-invalid="hireForm.AnnualSalaryAmount">
                                         <label class="labelText">
-                                            <input name="PayStatus" ng-model="empAction.PayStatus" required="required" type="radio" value="AnnualSalaryAmount" />&nbsp;Salary
+                                            <input name="PayStatus" ng-model="empAction.PayStatus" required="required" type="radio" value="Salary" />&nbsp;Salary
                                         </label>
-                                        <input class="form-control input-sm" name="AnnualSalaryAmount" paf-maxlength="11" ng-show="empAction.PayStatus=='AnnualSalaryAmount'" ng-model="empAction.Amount" ng-required="empAction.PayStatus=='AnnualSalaryAmount'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/year" paf-numeric="" placeholder="$0/year" type="text" />
+                                        <input class="form-control input-sm" name="AnnualSalaryAmount" paf-maxlength="11" ng-show="empAction.PayStatus=='Salary'" ng-model="empAction.Amount" ng-required="empAction.PayStatus=='Salary'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/year" paf-numeric="" placeholder="$0/year" type="text" />
                                     </div>
                                 </div>
                                 <div class="col-md-3 form-inline">
                                     <div class="form-group" paf-invalid="hireForm.AdminHourlyAmount">
                                         <label class="labelText">
-                                            <input name="PayStatus" ng-model="empAction.PayStatus" required="required" type="radio" value="AdminHourlyAmount" />&nbsp;Admin Hourly
+                                            <input name="PayStatus" ng-model="empAction.PayStatus" required="required" type="radio" value="Admin Hourly" />&nbsp;Admin Hourly
                                         </label>
-                                        <input class="form-control input-sm" name="AdminHourlyAmount" paf-maxlength="11" ng-show="empAction.PayStatus=='AdminHourlyAmount'" ng-model="empAction.Amount" ng-required="empAction.PayStatus=='AdminHourlyAmount'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" type="text" />
+                                        <input class="form-control input-sm" name="AdminHourlyAmount" paf-maxlength="11" ng-show="empAction.PayStatus=='Admin Hourly'" ng-model="empAction.Amount" ng-required="empAction.PayStatus=='Admin Hourly'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" type="text" />
                                     </div>
                                 </div>
                                 <div class="col-md-3 form-inline">
                                     <div class="form-group" paf-invalid="hireForm.HourlyRateAmount">
                                         <label class="labelText">
-                                            <input name="PayStatus" ng-model="empAction.PayStatus" required="required" type="radio" value="HourlyRateAmount" />&nbsp;Hourly
+                                            <input name="PayStatus" ng-model="empAction.PayStatus" required="required" type="radio" value="Hourly" />&nbsp;Hourly
                                         </label>
-                                                                     <input class="form-control input-sm" name="HourlyRateAmount" paf-maxlength="11" ng-show="empAction.PayStatus=='HourlyRateAmount'" ng-model="empAction.Amount" ng-required="empAction.PayStatus=='HourlyRateAmount'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" type="text" />
+                                        <input class="form-control input-sm" name="HourlyRateAmount" paf-maxlength="11" ng-show="empAction.PayStatus=='Hourly'" ng-model="empAction.Amount" ng-required="empAction.PayStatus=='Hourly'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/hour" paf-numeric="" placeholder="$0/hour" type="text" />
                                     </div>
                                 </div>
                                 <div class="col-lg-3 col-md-6 col-sm-9 col-xs-12 ">
                                     <div class="form-inline">
                                         <div class="form-group" paf-invalid="hireForm.PerDiemValue">
                                             <label class="labelText">
-                                                <input name="PayStatus" ng-model="empAction.PayStatus" required="required" type="radio" value="PerDiemValue" />&nbsp;Per Diem
+                                                <input name="PayStatus" ng-model="empAction.PayStatus" required="required" type="radio" value="Per Diem" />&nbsp;Per Diem
                                             </label>
-                                            <input class="form-control input-sm" name="PerDiemValue" paf-maxlength="11" ng-show="empAction.PayStatus=='PerDiemValue'" ng-model="empAction.Amount" ng-required="empAction.PayStatus=='PerDiemValue'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/day" paf-numeric="" placeholder="$0/day" type="text" />
+                                            <input class="form-control input-sm" name="PerDiemValue" paf-maxlength="11" ng-show="empAction.PayStatus=='Per Diem'" ng-model="empAction.Amount" ng-required="empAction.PayStatus=='Per Diem'" ng-blur="$parent.$parent.onAnnualSalaryChange()" paf-format="${0}/day" paf-numeric="" placeholder="$0/day" type="text" />
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row" ng-if="empAction.PayStatus != 'PerDiemValue'">
+                    <div class="row" ng-if="empAction.PayStatus != 'Per Diem'">
                         <div class="col-md-4">
                             <div class="form-group" paf-invalid="hireForm.PayGrade">
                                 <label>Pay Grade (min - mid - max)</label>
@@ -271,7 +271,7 @@
                             </ng-form>
                         </div>
                     </div>
-                    <div class="row" ng-if="empAction.PayStatus != 'PerDiemValue'">
+                    <div class="row" ng-if="empAction.PayStatus != 'Per Diem'">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Training Location</label>
@@ -291,7 +291,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row" ng-if="empAction.PayStatus != 'PerDiemValue'">
+                    <div class="row" ng-if="empAction.PayStatus != 'Per Diem'">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Car Allowance</label>
@@ -385,7 +385,7 @@
                             <div class="form-group" ng-show="empAction.SeparationReason=='LayoffType' || empAction.SeparationReason=='TerminationType'">
                                 <label>Reviewed with HR:</label>
                                 <div>
-                                    <select class="form-control input-sm" ng-model="empAction.HrReview" ng-options="item.Id as item.Description for item in $parent.$parent.lkup.ReviewedWithHR">
+                                    <select class="form-control input-sm" ng-model="empAction.HrReviewType" ng-options="item.id as item.title for item in $parent.$parent.lkup.HRReviews">
                                         <option value=""></option>
                                     </select>
                                 </div>
@@ -472,7 +472,7 @@
                             <div class="form-group">
                                 <label>Reviewed with HR:</label>
                                 <div>
-                                    <select class="form-control input-sm" ng-model="empAction.HrReview" ng-options="item.Id as item.Description for item in $parent.$parent.lkup.ReviewedWithHR">
+                                    <select class="form-control input-sm" ng-model="empAction.HrReviewType" ng-options="item.id as item.title for item in $parent.$parent.lkup.HRReviews">
                                         <option value=""></option>
                                     </select>
                                 </div>
@@ -491,7 +491,7 @@
                             <div class="form-group">
                                 <label ng-if="!$parent.empAction.Demotion">Percentage Last Increase</label>
                                 <label ng-if="$parent.empAction.Demotion">Percentage Last Increase/Decrease</label>
-                                <input class="form-control input-sm" ng-model="$parent.empAction.LastIncreaseDecreasePercentage" paf-numeric="" ng-disabled="true" />
+                                <input class="form-control input-sm" ng-model="$parent.empAction.LastIncreaseDecreasePercentage" paf-numeric="" ng-disabled="true" paf-format="{0}%" />
                             </div>
                         </div>
                     </div>
@@ -792,7 +792,7 @@
                 </div>
             </section>
             <!--REQUISITION-->
-            <section ng-if="(empAction.NewHire && empAction.PayStatus != 'PerDiemValue') || (empAction.ReHire && empAction.PayStatus != 'PerDiemValue') || empAction.Promotion || empAction.Demotion || empAction.Transfer">
+            <section ng-if="(empAction.NewHire && empAction.PayStatus != 'Per Diem') || (empAction.ReHire && empAction.PayStatus != 'Per Diem') || empAction.Promotion || empAction.Demotion || empAction.Transfer">
                 <div ng-form="requisitionForm">
                     <h4>REQUISITION</h4>
                     <p>(To be completed by Recruiter)</p>
