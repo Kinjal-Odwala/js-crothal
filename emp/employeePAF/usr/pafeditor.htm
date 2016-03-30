@@ -943,7 +943,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row" ng-if="overHeadAccount">
+                    <div class="row" ng-if="!empAction.Loa && overHeadAccount">
                         <div class="col-md-2">
                         	<label>HR Manager Name:</label>
                         </div>
@@ -968,7 +968,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.RegionalManagerName.$invalid}">
-                               <input class="form-control input-sm" name="RegionalManagerName" maxlength="100" ng-model="empAction.RegionalManagerName" ng-disabled="empAction.RegionalManagerName" ng-required="true"/>
+                               <input class="form-control input-sm" name="RegionalManagerName" maxlength="100" ng-model="empAction.RegionalManagerName" ng-required="true"/>
                             </div>
                         </div>
                         <div class="col-md-2"></div>
@@ -977,7 +977,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.RegionalManagerEmail.$invalid}">
-                               <input class="form-control input-sm" name="RegionalManagerEmail" maxlength="100" ng-model="empAction.RegionalManagerEmail" ng-disabled="empAction.RegionalManagerEmail" ng-required="true"/>
+                               <input class="form-control input-sm" name="RegionalManagerEmail" maxlength="100" ng-model="empAction.RegionalManagerEmail" ng-required="true"/>
                             </div>
                         </div>
                     </div>

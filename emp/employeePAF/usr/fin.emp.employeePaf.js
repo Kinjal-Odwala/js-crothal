@@ -720,35 +720,37 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             }
         });
        
-        angular.forEach($scope.stepApprovals, function (item) {
-            var workflowStepId = EmpActions.getWorkflowStepId(item.id);
-            if (item.id != 3 && item.id != 4) {
-                EmpActions.getAppUsers(workflowStepId, function (result) {
-                    if (angular.isDefined(result)) {
-                        if (item.id == 1) {
-                            $scope.empAction.LoaManagerName = result.firstName + " " + result.lastName;
-                            $scope.empAction.LoaManagerEmail = result.email;
+        if (!$routeParams.id) {
+            angular.forEach($scope.stepApprovals, function (item) {
+                var workflowStepId = EmpActions.getWorkflowStepId(item.id);
+                if (item.id != 3 && item.id != 4) {
+                    EmpActions.getAppUsers(workflowStepId, function (result) {
+                        if (angular.isDefined(result)) {
+                            if (item.id == 1) {
+                                $scope.empAction.LoaManagerName = result.firstName + " " + result.lastName;
+                                $scope.empAction.LoaManagerEmail = result.email;
+                            }
+                            else if (item.id == 2) {
+                                $scope.empAction.HrManagerName = result.firstName + " " + result.lastName;
+                                $scope.empAction.HrManagerEmail = result.email;
+                            }
+                            else if (item.id == 5) {
+                                $scope.empAction.ProcessHRName = result.firstName + " " + result.lastName;
+                                $scope.empAction.ProcessHREmail = result.email;
+                            }
                         }
-                        else if (item.id == 2) {
-                            $scope.empAction.HrManagerName = result.firstName + " " + result.lastName;
-                            $scope.empAction.HrManagerEmail = result.email;
+                    });
+                }
+                else if (item.id == 4) {
+                    EmpActions.getJDECompanies($scope.empAction.HcmHouseCode, item.id, function (result) {
+                        if (angular.isDefined(result)) {
+                            $scope.empAction.HrDirectorName = result.name;
+                            $scope.empAction.HrDirectorEmail = result.email;
                         }
-                        else if (item.id == 5) {
-                            $scope.empAction.ProcessHRName = result.firstName + " " + result.lastName;
-                            $scope.empAction.ProcessHREmail = result.email;
-                        }
-                    }
-                });
-            }
-            else if (item.id == 4) {
-                EmpActions.getJDECompanies($scope.empAction.HcmHouseCode, item.id, function (result) {
-                    if (angular.isDefined(result)) {
-                        $scope.empAction.HrDirectorName = result.name;
-                        $scope.empAction.HrDirectorEmail = result.email;
-                    }
-                });
-            }
-        });
+                    });
+                }
+            });
+        }
     };
 
     $scope.getPayRange = function (payGrade, salary) {
@@ -923,8 +925,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             });
             EmpActions.getJDECompanies(newValue, 4, function (result) {
                 if (angular.isDefined(result)) {
-                    $scope.empAction.HRDirectorName = result.name;
-                    $scope.empAction.HRDirectorEmail = result.email;
+                    $scope.empAction.HrDirectorName = result.name;
+                    $scope.empAction.HrDirectorEmail = result.email;
                 }
             });
         }
