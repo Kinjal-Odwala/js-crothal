@@ -1536,7 +1536,7 @@ fin.bud.modified = function () {
             var rptReportUrls = [];
             $('item', $(data)).each(function (index, item) {
                 var $item = $(item);
-                rptReportUrls.push({ Title: $item.attr('title'), Url: $item.attr('reportURL') });
+                rptReportUrls.push({ Brief: $item.attr('brief'), Title: $item.attr('title'), Url: $item.attr('reportURL') });
             });
             RptReportUrls = rptReportUrls;
 
@@ -3522,7 +3522,7 @@ fin.bud.modified = function () {
             var payrollRegisterButton = new bine.Button({ text: 'Payroll Register Rpt' });
             me.append(payrollRegisterButton, 'payrollRegisterButton');
             payrollRegisterButton.on('click', function () {
-                var rptUrl = bine.query(RptReportUrls).where(function (i) { return i.Title == 'Payroll Register'; }).select('Url').first();
+                var rptUrl = bine.query(RptReportUrls).where(function (i) { return i.Brief == 'Payroll Register'; }).select('Url').first();
                 if (rptUrl) {
 					rptUrl = rptUrl.replace("&rs:Command=Render", "_old&rs:Command=Render");
 					window.open(rptUrl);
@@ -3533,7 +3533,7 @@ fin.bud.modified = function () {
             me.append(transactionDetailButton, 'transactionDetailButton');
 
             transactionDetailButton.on('click', function () {
-                var rptUrl = bine.query(RptReportUrls).where(function (i) { return i.Title == 'Transaction Details'; }).select('Url').first();
+                var rptUrl = bine.query(RptReportUrls).where(function (i) { return i.Brief == 'Transaction Det'; }).select('Url').first();
                 if (rptUrl) {
 					rptUrl = rptUrl.replace("&rs:Command=Render", "_old&rs:Command=Render");
 					window.open(rptUrl);
@@ -3544,7 +3544,7 @@ fin.bud.modified = function () {
             me.append(profitReportButton, 'profitReportButton');
 			
 			profitReportButton.on('click', function () {
-                var rptUrl = bine.query(RptReportUrls).where(function (i) { return i.Title == 'Detailed Profit and Loss'; }).select('Url').first();
+                var rptUrl = bine.query(RptReportUrls).where(function (i) { return i.Brief == 'Profit and Loss'; }).select('Url').first();
                 if (rptUrl) {
 					rptUrl = rptUrl.replace("&rs:Command=Render", "_old&rs:Command=Render");
 					window.open(rptUrl);
@@ -3555,7 +3555,7 @@ fin.bud.modified = function () {
             me.append(printMopButton, 'printMopButton');
 
             printMopButton.on('click', function () {
-                var rptUrl = bine.query(RptReportUrls).where(function (i) { return i.Title == 'MOP'; }).select('Url').first();
+                var rptUrl = bine.query(RptReportUrls).where(function (i) { return i.Brief == 'MOP'; }).select('Url').first();
                 if (rptUrl) {
 					rptUrl = rptUrl.replace("&rs:Command=Render", "_old&rs:Command=Render");
 					window.open(rptUrl);
