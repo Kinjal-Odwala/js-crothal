@@ -6282,10 +6282,10 @@ Bud.PrimaryNavbar = Ext.extend(Ext.Toolbar, {
         menuItems.push(new Bud.NavbarItem({ text: 'Contract Billing', pattern: 'budget/contractbilling', url: '/budget/contractbilling' }));
         menuItems.push(new Bud.NavbarItem({ text: 'Staffing', pattern: 'budget/staffing', url: '/budget/staffing' }));
         menuItems.push(new Bud.NavbarItem({ text: 'Employee', pattern: 'budget/employee1', url: '/budget/employee1' }));
-        menuItems.push(new Bud.NavbarItem({ text: 'Employee PFC Only', pattern: 'budget/employee2', url: '/budget/employee2' }));
+        //menuItems.push(new Bud.NavbarItem({ text: 'Employee PFC Only', pattern: 'budget/employee2', url: '/budget/employee2' }));
         menuItems.push(new Bud.NavbarItem({ text: 'Mgt Hist', pattern: 'budget/mgthist', url: '/budget/mgthist' }));
         menuItems.push(new Bud.NavbarItem({ text: 'Labor Calc', pattern: 'budget/laborcalculate1', url: '/budget/laborcalculate1' }));
-        menuItems.push(new Bud.NavbarItem({ text: 'Labor Calc PFC Only', pattern: 'budget/laborcalculate2', url: '/budget/laborcalculate2' }));
+       // menuItems.push(new Bud.NavbarItem({ text: 'Labor Calc PFC Only', pattern: 'budget/laborcalculate2', url: '/budget/laborcalculate2' }));
         menuItems.push(new Bud.NavbarItem({ text: 'Fnl Labor Calc', pattern: 'budget/fnllaborcalc', url: '/budget/fnllaborcalc' }));
         menuItems.push(new Bud.NavbarItem({ text: 'Supply Exp', pattern: 'budget/supplyexp', url: '/budget/supplyexp' }));
         menuItems.push(new Bud.NavbarItem({ text: 'Capital Exp', pattern: 'budget/capitalexp', url: '/budget/capitalexp' }));
@@ -6345,12 +6345,11 @@ Bud.PrimaryNavbar = Ext.extend(Ext.Toolbar, {
 
         for (var i = 1; i < this.menuItems.length; i++) {
             if (!budgetStarted
-             || budgetTemplateId == 3 && (i == 1 || i == 2 || i == 3 || i==4 || i == 5 || i == 6 || i == 7 || i==8)            //&& (i == 1 || i == 2 || i == 3 || i == 5 || i == 6 || i == 7)
-                || budgetTemplateId == 4 && ( i==8  || i==7 || i==4)        //&& i == 7
-                || budgetTemplateId == 5   && (i ==9|| i == 3 || i==4 || i == 8 || i==7)             //&& (i == 7 || i == 3 || i == 6)
-                || budgetTemplateId == 1   && (i == 2 || i == 3 || i==4 || i == 6 || i ==7 || i==8)         //&& (i == 2 || i == 3 || i == 5 || i == 6)
-                 || budgetTemplateId == 6  && (i == 3 || i==4 || i==8 || i==7)        // && (i == 3 || i == 6))
-                 || budgetTemplateId !=7 && (i==4 || i==7)
+             || budgetTemplateId == 3 && (i == 1 || i == 2 || i == 3 || i == 5 || i == 6 || i == 7)
+                || budgetTemplateId == 4 && i == 7
+                || budgetTemplateId == 5   && (i == 7 || i == 3 || i == 6)
+                || budgetTemplateId == 1     && (i == 2 || i == 3 || i == 5 || i == 6)
+                 || budgetTemplateId == 6  && (i == 3 || i == 6)
                 )  
                 this.menuItems[i].hide()   ;
             else
