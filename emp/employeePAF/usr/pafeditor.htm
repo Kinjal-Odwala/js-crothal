@@ -702,7 +702,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Manager/Clock Number</label>
-                                        <input class="form-control input-sm" maxlength="6" name="ReportingManagerNumber" ng-model="empAction.TransferManagerNumber" ng-blur="$parent.$parent.getManagerInfo(empAction.TransferManagerNumber,'Transfer')" paf-enter="$parent.$parent.getManagerInfo(empAction.TransferManagerNumber,'Transfer')" paf-integer/>
+                                        <input class="form-control input-sm" maxlength="6" name="ReportingManagerNumber" ng-model="empAction.TransferManagerNumber" ng-blur="getManagerInfo(empAction.TransferManagerNumber,'Transfer')" paf-enter="getManagerInfo(empAction.TransferManagerNumber,'Transfer')" paf-integer/>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
@@ -968,7 +968,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.RegionalManagerName.$invalid}">
-                               <input class="form-control input-sm" name="RegionalManagerName" maxlength="100" ng-model="empAction.RegionalManagerName" ng-required="true"/>
+                               <input class="form-control input-sm" name="RegionalManagerName" maxlength="100" ng-model="empAction.RegionalManagerName" ng-disabled="empAction.Data.RegionalManagerNameExists" ng-required="true"/>
                             </div>
                         </div>
                         <div class="col-md-2"></div>
@@ -977,7 +977,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.RegionalManagerEmail.$invalid}">
-                               <input class="form-control input-sm" name="RegionalManagerEmail" maxlength="100" ng-model="empAction.RegionalManagerEmail" ng-required="true"/>
+                               <input class="form-control input-sm" name="RegionalManagerEmail" maxlength="100" ng-model="empAction.RegionalManagerEmail" ng-disabled="empAction.Data.RegionalManagerEmailExists" ng-required="true"/>
                             </div>
                         </div>
                     </div>

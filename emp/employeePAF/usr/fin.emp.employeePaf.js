@@ -150,10 +150,11 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     $scope.JobCodes = [];
     $scope.PersonActionTypes = [];
     $scope.PayGrades = [];
+	$scope.AdministratorDetails = [];
     $scope.pafDocs = [];
-    var selectedFileName = "";
     $scope.add = "";
     $scope.selectedPafId = $routeParams.id;
+	var selectedFileName = "";
 
     $scope.dateOptions = {
         formatYear: 'yy',
@@ -245,83 +246,12 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         });
     };
 
-    var initReporting = function (positionType) {
-        if (!$scope.empAction.Data.Compensation)
-            return;
-
-        var isManagerInfoChanged = function (obj, existManagerNumber) {
-
-            if (existManagerNumber && existManagerNumber.length > 0)
-                return true;
-
-            if (obj.ReportingManagerNumber && angular.equals(parseInt(obj.ReportingManagerNumber), parseInt(existManagerNumber)))
-                return false;
-
-            if (obj.ReportingName && obj.ReportingEmail && obj.ReportingTitle && obj.ReportingName.length > 0 && obj.ReportingEmail.length > 0 && obj.ReportingTitle.length > 0)
-                return false;
-
-            return true;
-        }
-
-        var initReportingValue = function (type, obj) {
-            if ($scope.empAction.Data && !isManagerInfoChanged($scope.empAction.Data[type], obj.ReportingManagerNumber))
-                return;
-
-            $scope.empAction.Data[type].ReportingType = type;
-            if (type == "NewHire" || type == "ReHire") {
-                $scope.empAction.ManagerName = obj.ReportingName;
-                $scope.empAction.ManagerTitle = obj.ReportingTitle;
-                $scope.empAction.ManagerEmail = obj.ReportingEmail;
-                $scope.empAction.ManagerNumber = obj.ReportingManagerNumber;
-            }
-            if (type == "Promotion" || type == "Demotion" || type == "SalaryChange") {
-                $scope.empAction.NewManagerName = obj.ReportingName;
-                $scope.empAction.NewManagerTitle = obj.ReportingTitle;
-                $scope.empAction.NewManagerEmail = obj.ReportingEmail;
-                $scope.empAction.NewManagerNumber = obj.ReportingManagerNumber;
-                if ($scope.empAction.NewManagerNumber != null && $scope.empAction.NewManagerNumber != "") {
-                    getManagerDetail($scope.empAction.NewManagerNumber, function (response) {
-                        if (!angular.isDefined(response)) {
-                            $scope.empAction.RegionalManagerNumber = null;
-                            $scope.empAction.RegionalManagerName = null;
-                            $scope.empAction.RegionalManagerTitle = null;
-                            $scope.empAction.RegionalManagerEmail = null;
-                        }
-                        else {
-                            if (response.managerClock == 0) {
-                                $scope.empAction.RegionalManagerNumber = null;
-                            }
-                            else {
-                                $scope.empAction.RegionalManagerNumber = response.managerClock;
-                            }
-                            $scope.empAction.RegionalManagerName = response.managerName;
-                            $scope.empAction.RegionalManagerTitle = response.jobTitle;
-                            $scope.empAction.RegionalManagerEmail = response.managerEmail;
-                        }
-                    });
-                }
-            }
-            if (type == "Transfer") {
-                $scope.empAction.TransferManagerName = obj.ReportingName;
-                $scope.empAction.TransferManagerTitle = obj.ReportingTitle;
-                $scope.empAction.TransferManagerEmail = obj.ReportingEmail;
-                $scope.empAction.TransferManagerNumber = obj.ReportingManagerNumber;
-            }
-            $scope.empAction.Data[type].CacheReportingManagerNumber = obj.ReportingManagerNumber;
-            $scope.empAction.Data[type].DisabledReportFields = obj.ReportingManagerNumber && obj.ReportingManagerNumber.length > 0 && obj.ReportingTitle && obj.ReportingTitle.length > 0 && obj.ReportingEmail && obj.ReportingEmail.length > 0;
-        }
-
-        var items = ["NewHire", "ReHire", "Promotion", "Demotion", "SalaryChange", "Transfer"];
-        if (angular.isDefined(positionType) && items.indexOf(positionType) >= 0 && $scope.empAction.Data.Compensation) {
-            initReportingValue(positionType, $scope.empAction.Data.Compensation);
-        }
-        else {
-            angular.forEach(items, function (item, index) {
-                initReportingValue(item, $scope.empAction.Data.Compensation);
-            });
-        }
+	var loadAdministratorEmails = function () {
+        EmpActions.getAdministratorDetails(function (result) {
+            $scope.AdministratorDetails = result;
+        });
     };
-
+	
     var getEmpCompensation = function (employeeNumber, callback) {
         EmpActions.getEmpCompensation(employeeNumber, function (response) {
             callback(response);
@@ -334,67 +264,127 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         });
     };
 
-    var getAdministratorDetail = function (callback) {
-        EmpActions.getAdministratorDetail(function (response) {
-            callback(response);
+	var resetFields = function(resetAll, type) {
+
+		if (resetAll || type == "Employee") {
+			$scope.empAction.CacheHcmHouseCode = null;
+			$scope.empAction.CacheEmployeeNumber = null;
+			$scope.empAction.HcmHouseCode = null;
+			$scope.empAction.EmployeeNumber = null;
+			$scope.empAction.EmployeeId = 0;
+			$scope.empAction.FirstName = null;
+			$scope.empAction.MiddleName = null;
+			$scope.empAction.LastName = null;
+			$scope.empAction.AddressLine1 = null;
+			$scope.empAction.AddressLine2 = null;
+			$scope.empAction.City = null;
+			$scope.empAction.StateType = null;
+			$scope.empAction.PostalCode = null;
+			$scope.empAction.Phone = null;
+			$scope.empAction.Data.EmployeeExists = false;
+		}
+				
+		if (resetAll || type == "Compensation") {
+			$scope.empAction.CurrentPosition = "";
+			$scope.empAction.CurrentPositionType = 0;
+			$scope.empAction.LastIncreaseDecreaseDate = null;
+            $scope.empAction.LastIncreaseDecreasePercentage = "0";
+			$scope.empAction.CurrentSalary = 0;
+			$scope.empAction.CurrentPayGrade = 0;
+			$scope.empAction.CurrentPayGradeTitle = "";
+            $scope.empAction.CurrentPayRange = "";
+		}
+		
+		if (resetAll || type == "Manager") {
+			$scope.empAction.CacheManagerNumber = null;
+			$scope.empAction.ManagerNumber = null;
+	        $scope.empAction.ManagerName = null;
+	        $scope.empAction.ManagerTitle = null;
+	        $scope.empAction.ManagerEmail = null;
+			$scope.empAction.Data.ManagerExists = false;
+			$scope.empAction.Data.ManagerNameExists = false;
+			$scope.empAction.Data.ManagerTitleExists = false;
+			$scope.empAction.Data.ManagerEmailExists = false;
+		}
+		
+		if (resetAll || type == "NewManager") {
+			$scope.empAction.CacheNewManagerNumber = null;
+			$scope.empAction.NewManagerNumber = null;
+			$scope.empAction.NewManagerName = null;
+			$scope.empAction.NewManagerTitle = null;
+			$scope.empAction.NewManagerEmail = null;
+			$scope.empAction.Data.NewManagerExists = false;
+			$scope.empAction.Data.NewManagerNameExists = false;
+			$scope.empAction.Data.NewManagerTitleExists = false;
+			$scope.empAction.Data.NewManagerEmailExists = false;
+		}
+		
+		if (resetAll || type == "TransferManager") {
+			$scope.empAction.CacheTransferManagerNumber = null;
+			$scope.empAction.TransferManagerNumber = null;
+			$scope.empAction.TransferManagerName = null;
+			$scope.empAction.TransferManagerTitle = null;
+			$scope.empAction.TransferManagerEmail = null;
+			$scope.empAction.Data.TransferManagerExists = false;
+			$scope.empAction.Data.TransferManagerNameExists = false;
+			$scope.empAction.Data.TransferManagerTitleExists = false;
+			$scope.empAction.Data.TransferManagerEmailExists = false;
+		}
+		
+		if (resetAll || type == "RegionalManager") {
+			$scope.empAction.CacheRegionalManagerNumber = null;
+			$scope.empAction.RegionalManagerNumber = null;
+			$scope.empAction.RegionalManagerName = null;
+			$scope.empAction.RegionalManagerTitle = null;
+			$scope.empAction.RegionalManagerEmail = null;
+			$scope.empAction.Data.RegionalManagerExists = false;
+			$scope.empAction.Data.RegionalManagerNameExists = false;
+			$scope.empAction.Data.RegionalManagerTitleExists = false;
+			$scope.empAction.Data.RegionalManagerEmailExists = false;
+		}
+	};
+
+	var loadEmployee = function (employeeNumber, callback) {
+
+        EmpActions.getEmployee(employeeNumber, 0, function (result) {
+            if (result == null) {
+				alert("The Employee/Clock Number that you entered doesn't exists.");
+				resetFields(true, "");
+				$scope.empAction.CacheEmployeeNumber = employeeNumber;
+				$scope.empAction.EmployeeNumber = employeeNumber;
+                callback(false);
+            }
+            else {
+				loadCompensations(employeeNumber);
+				$scope.empAction.CacheHcmHouseCode = EmpActions.getHcmHouseCodeByBrief(result.houseCode);
+                $scope.empAction.HcmHouseCode = EmpActions.getHcmHouseCodeByBrief(result.houseCode);
+				$scope.empAction.CacheEmployeeNumber = employeeNumber;
+				$scope.empAction.EmployeeNumber = employeeNumber;
+				$scope.empAction.EmployeeId = result.id;
+				$scope.empAction.FirstName = result.firstName;
+                $scope.empAction.MiddleName = result.middleName;
+                $scope.empAction.LastName = result.lastName;
+                $scope.empAction.AddressLine1 = result.addressLine1;
+                $scope.empAction.AddressLine2 = result.addressLine2;
+                $scope.empAction.City = result.city;
+				$scope.empAction.StateType = parseInt(result.state);
+				$scope.empAction.PostalCode = result.postalCode;
+                $scope.empAction.Phone = result.phone;
+				$scope.empAction.Data.EmployeeExists = true;
+                callback(true);
+             }
         });
     };
 	
-	var resetFields = function(type) {
-		$scope.empAction.CacheManagerNumber = null;
-		$scope.empAction.ManagerNumber = null;
-        $scope.empAction.ManagerName = null;
-        $scope.empAction.ManagerTitle = null;
-        $scope.empAction.ManagerEmail = null;
-		$scope.empAction.Data.ManagerExists = false;
-		$scope.empAction.Data.ManagerNameExists = false;
-		$scope.empAction.Data.ManagerTitleExists = false;
-		$scope.empAction.Data.ManagerEmailExists = false;
-
-		$scope.empAction.CacheNewManagerNumber = null;
-		$scope.empAction.NewManagerNumber = null;
-        $scope.empAction.NewManagerName = null;
-        $scope.empAction.NewManagerTitle = null;
-        $scope.empAction.NewManagerEmail = null;
-		$scope.empAction.Data.NewManagerExists = false;
-		$scope.empAction.Data.NewManagerNameExists = false;
-		$scope.empAction.Data.NewManagerTitleExists = false;
-		$scope.empAction.Data.NewManagerEmailExists = false;
-
-		$scope.empAction.CacheTransferManagerNumber = null;
-		$scope.empAction.TransferManagerNumber = null;
-        $scope.empAction.TransferManagerName = null;
-        $scope.empAction.TransferManagerTitle = null;
-        $scope.empAction.TransferManagerEmail = null;
-		$scope.empAction.Data.TransferManagerExists = false;
-		$scope.empAction.Data.TransferManagerNameExists = false;
-		$scope.empAction.Data.TransferManagerTitleExists = false;
-		$scope.empAction.Data.TransferManagerEmailExists = false;
-
-		$scope.empAction.CacheRegionalManagerNumber = null;
-		$scope.empAction.RegionalManagerNumber = null;
-		$scope.empAction.RegionalManagerName = null;
-        $scope.empAction.RegionalManagerTitle = null;
-        $scope.empAction.RegionalManagerEmail = null;
-		$scope.empAction.Data.RegionalManagerExists = false;
-		$scope.empAction.Data.RegionalManagerNameExists = false;
-		$scope.empAction.Data.RegionalManagerTitleExists = false;
-		$scope.empAction.Data.RegionalManagerEmailExists = false;
-	};
-
     var loadCompensations = function (employeeNumber) {
 
         getEmpCompensation(employeeNumber, function (response) {
             if (!angular.isDefined(response)) {
-				$scope.empAction.CurrentPosition = "";
-				$scope.empAction.CurrentPositionType = 0;
-				$scope.empAction.LastIncreaseDecreaseDate = null;
-	            $scope.empAction.LastIncreaseDecreasePercentage = "0";
-				$scope.empAction.CurrentSalary = 0;
-				$scope.empAction.CurrentPayGrade = 0;
-				$scope.empAction.CurrentPayGradeTitle = "";
-	            $scope.empAction.CurrentPayRange = "";
-				resetFields();
+				resetFields(0, "Compensation");
+				resetFields(0, "Manager");
+				resetFields(0, "NewManager");
+				resetFields(0, "TransferManager");
+				resetFields(0, "RegionalManager");
             }
             else {
 				$scope.empAction.CurrentPosition = response.empTitle;
@@ -413,221 +403,199 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 				$scope.empAction.CurrentPayGradeTitle = response.payGrade + " (" + response.minPayRange + " - " + response.midPayRange + " - " + response.maxPayRange + ")";
                 $scope.empAction.CurrentPayRange = $scope.getPayRange(response.payGrade, response.annualPayAmt);
 				
+				var managerName = (response.mgrFirstName + " " + response.mgrLastName).trim();
 				$scope.empAction.CacheManagerNumber = response.mgrClock;
 				$scope.empAction.ManagerNumber = response.mgrClock;
-                $scope.empAction.ManagerName = response.mgrFirstName + " " + response.mgrLastName;
+                $scope.empAction.ManagerName = managerName;
                 $scope.empAction.ManagerTitle = response.mgrTitle;
                 $scope.empAction.ManagerEmail = response.mgrEmail;
 				$scope.empAction.Data.ManagerExists = true;
-				$scope.empAction.Data.ManagerNameExists = ((response.mgrFirstName + response.mgrLastName) == "" ? false : true);
+				$scope.empAction.Data.ManagerNameExists = (managerName == "" ? false : true);
 				$scope.empAction.Data.ManagerTitleExists = (response.mgrTitle == "" ? false : true);
 				$scope.empAction.Data.ManagerEmailExists = (response.mgrEmail == "" ? false : true);
 
 				$scope.empAction.CacheNewManagerNumber = response.mgrClock;
 				$scope.empAction.NewManagerNumber = response.mgrClock;
-                $scope.empAction.NewManagerName = response.mgrFirstName + " " + response.mgrLastName;
+                $scope.empAction.NewManagerName = managerName;
                 $scope.empAction.NewManagerTitle = response.mgrTitle;
                 $scope.empAction.NewManagerEmail = response.mgrEmail;
 				$scope.empAction.Data.NewManagerExists = true;
-				$scope.empAction.Data.NewManagerNameExists = ((response.mgrFirstName + response.mgrLastName) == "" ? false : true);
+				$scope.empAction.Data.NewManagerNameExists = (managerName == "" ? false : true);
 				$scope.empAction.Data.NewManagerTitleExists = (response.mgrTitle == "" ? false : true);
 				$scope.empAction.Data.NewManagerEmailExists = (response.mgrEmail == "" ? false : true);
 
 				$scope.empAction.CacheTransferManagerNumber = response.mgrClock;
 				$scope.empAction.TransferManagerNumber = response.mgrClock;
-                $scope.empAction.TransferManagerName = response.mgrFirstName + " " + response.mgrLastName;
+                $scope.empAction.TransferManagerName = managerName;
                 $scope.empAction.TransferManagerTitle = response.mgrTitle;
                 $scope.empAction.TransferManagerEmail = response.mgrEmail;
 				$scope.empAction.Data.TransferManagerExists = true;
-				$scope.empAction.Data.TransferManagerNameExists = ((response.mgrFirstName + response.mgrLastName) == "" ? false : true);
+				$scope.empAction.Data.TransferManagerNameExists = (managerName == "" ? false : true);
 				$scope.empAction.Data.TransferManagerTitleExists = (response.mgrTitle == "" ? false : true);
 				$scope.empAction.Data.TransferManagerEmailExists = (response.mgrEmail == "" ? false : true);
-				
-				getManagerDetail($scope.empAction.NewManagerNumber, function (response) {
-                    if (!angular.isDefined(response)) {
-						$scope.empAction.CacheRegionalManagerNumber = null;
-                        $scope.empAction.RegionalManagerNumber = null;
-                        $scope.empAction.RegionalManagerName = null;
-                        $scope.empAction.RegionalManagerTitle = null;
-                        $scope.empAction.RegionalManagerEmail = null;
-						$scope.empAction.Data.RegionalManagerExists = false;
-						$scope.empAction.Data.RegionalManagerNameExists = false;
-						$scope.empAction.Data.RegionalManagerTitleExists = false;
-						$scope.empAction.Data.RegionalManagerEmailExists = false;
-                    }
-                    else {
-                        if (response.managerClock == 0) {
-							$scope.empAction.CacheRegionalManagerNumber = null;
-							$scope.empAction.RegionalManagerNumber = null;
-						} 
-                        else {
-							$scope.empAction.CacheRegionalManagerNumber = response.managerClock;
-							$scope.empAction.RegionalManagerNumber = response.managerClock;
-						}
-                        $scope.empAction.RegionalManagerName = response.managerName;
-                        $scope.empAction.RegionalManagerTitle = response.jobTitle;
-                        $scope.empAction.RegionalManagerEmail = response.managerEmail;
-						$scope.empAction.Data.RegionalManagerExists = true;
-						$scope.empAction.Data.RegionalManagerNameExists = (response.managerName == "" ? false : true);
-						$scope.empAction.Data.RegionalManagerTitleExists = (response.jobTitle == "" ? false : true);
-						$scope.empAction.Data.RegionalManagerEmailExists = (response.managerEmail == "" ? false : true);
-                    }
-                });
-            }
 
-            //initReporting();
-        });
-    };
-
-    $scope.getManagerInfo = function (employeeNumber, positionType) {
-		var cacheManagerNumber = "";
-
-        if (positionType == "NewHire" || positionType == "ReHire") {
-            cacheManagerNumber = $scope.empAction.CacheManagerNumber;
-        }
-        else if (positionType == "Promotion" || positionType == "Demotion" || positionType == "SalaryChange") {
-			cacheManagerNumber = $scope.empAction.CacheNewManagerNumber;
-        }
-        else if (positionType == "Transfer") {
-			cacheManagerNumber = $scope.empAction.CacheTransferManagerNumber;
-        }
-
-		if (employeeNumber !== "" && (cacheManagerNumber === null || cacheManagerNumber === undefined || cacheManagerNumber.length === 0 || parseInt(employeeNumber) !== parseInt(cacheManagerNumber))) {
-            getManagerDetail(employeeNumber, function (response) {
-                if (!angular.isDefined(response)) {
-                    alert("The Manager/Clock Number that you entered doesn't exists.");
-                    if (positionType == "NewHire" || positionType == "ReHire") {
-						$scope.empAction.CacheManagerNumber = employeeNumber;
-                        $scope.empAction.ManagerName = null;
-                        $scope.empAction.ManagerTitle = null;
-                        $scope.empAction.ManagerEmail = null;
-						$scope.empAction.Data.ManagerExists = false;
-						$scope.empAction.Data.ManagerNameExists = false;
-						$scope.empAction.Data.ManagerTitleExists = false;
-						$scope.empAction.Data.ManagerEmailExists = false;
-                    }
-                    else if (positionType == "Promotion" || positionType == "Demotion" || positionType == "SalaryChange") {
-						$scope.empAction.CacheNewManagerNumber = employeeNumber;
-                        $scope.empAction.NewManagerName = null;
-                        $scope.empAction.NewManagerTitle = null;
-                        $scope.empAction.NewManagerEmail = null;
-						$scope.empAction.Data.NewManagerExists = false;
-						$scope.empAction.Data.NewManagerNameExists = false;
-						$scope.empAction.Data.NewManagerTitleExists = false;
-						$scope.empAction.Data.NewManagerEmailExists = false;
-                    }
-                    else if (positionType == "Transfer") {
-						$scope.empAction.CacheTransferManagerNumber = employeeNumber;
-                        $scope.empAction.TransferManagerName = null;
-                        $scope.empAction.TransferManagerTitle = null;
-                        $scope.empAction.TransferManagerEmail = null;
-						$scope.empAction.Data.TransferManagerExists = false;
-						$scope.empAction.Data.TransferManagerNameExists = false;
-						$scope.empAction.Data.TransferManagerTitleExists = false;
-						$scope.empAction.Data.TransferManagerEmailExists = false;
-                    }
-                    return;
-                }
-                if (positionType == "NewHire" || positionType == "ReHire") {
-					$scope.empAction.CacheManagerNumber = response.empClock;
-					$scope.empAction.ManagerNumber = response.empClock;
-                    $scope.empAction.ManagerName = response.empFirstName + " " + response.empLastName;
-                    $scope.empAction.ManagerTitle = response.empTitle;
-                    $scope.empAction.ManagerEmail = response.empEmail;
-					$scope.empAction.Data.ManagerExists = true;
-					$scope.empAction.Data.ManagerNameExists = ((response.empFirstName + response.empLastName) == "" ? false : true);
-					$scope.empAction.Data.ManagerTitleExists = (response.empTitle == "" ? false : true);
-					$scope.empAction.Data.ManagerEmailExists = (response.empEmail == "" ? false : true);
-                }
-                else if (positionType == "Promotion" || positionType == "Demotion" || positionType == "SalaryChange") {
-					$scope.empAction.CacheNewManagerNumber = response.empClock;
-					$scope.empAction.NewManagerNumber = response.empClock;
-                    $scope.empAction.NewManagerName = response.empFirstName + " " + response.empLastName;
-                    $scope.empAction.NewManagerTitle = response.empTitle;
-                    $scope.empAction.NewManagerEmail = response.empEmail;
-					$scope.empAction.Data.NewManagerExists = true;
-					$scope.empAction.Data.NewManagerNameExists = ((response.empFirstName + response.empLastName) == "" ? false : true);
-					$scope.empAction.Data.NewManagerTitleExists = (response.empTitle == "" ? false : true);
-					$scope.empAction.Data.NewManagerEmailExists = (response.empEmail == "" ? false : true);
-
-                    getManagerDetail($scope.empAction.NewManagerNumber, function (response) {
-                        if (!angular.isDefined(response)) {
-							$scope.empAction.CacheRegionalManagerNumber = null;
-                            $scope.empAction.RegionalManagerNumber = null;
-                            $scope.empAction.RegionalManagerName = null;
-                            $scope.empAction.RegionalManagerTitle = null;
-                            $scope.empAction.RegionalManagerEmail = null;
-							$scope.empAction.Data.RegionalManagerExists = false;
-							$scope.empAction.Data.RegionalManagerNameExists = false;
-							$scope.empAction.Data.RegionalManagerTitleExists = false;
-							$scope.empAction.Data.RegionalManagerEmailExists = false;
-                        }
-                        else {
-                            if (response.managerClock == 0) {
+				resetFields(0, "RegionalManager");
+			
+				if ($scope.empAction.NewManagerNumber != null && $scope.empAction.NewManagerNumber != "") {
+					getManagerDetail($scope.empAction.NewManagerNumber, function(response){
+						if (angular.isDefined(response)) {
+							if (response.managerClock == 0) {
 								$scope.empAction.CacheRegionalManagerNumber = null;
 								$scope.empAction.RegionalManagerNumber = null;
 							}
-                            else {
+							else {
 								$scope.empAction.CacheRegionalManagerNumber = response.managerClock;
 								$scope.empAction.RegionalManagerNumber = response.managerClock;
 							}
-                            $scope.empAction.RegionalManagerName = response.managerName;
-                            $scope.empAction.RegionalManagerTitle = response.jobTitle;
-                            $scope.empAction.RegionalManagerEmail = response.managerEmail;
+							$scope.empAction.RegionalManagerName = response.managerName;
+							$scope.empAction.RegionalManagerTitle = response.jobTitle;
+							$scope.empAction.RegionalManagerEmail = response.managerEmail;
 							$scope.empAction.Data.RegionalManagerExists = true;
 							$scope.empAction.Data.RegionalManagerNameExists = (response.managerName == "" ? false : true);
 							$scope.empAction.Data.RegionalManagerTitleExists = (response.jobTitle == "" ? false : true);
 							$scope.empAction.Data.RegionalManagerEmailExists = (response.managerEmail == "" ? false : true);
-                        }
-                    });
+						}
+					});
+				}
+            }
+        });
+    };
+
+    $scope.getManagerInfo = function (managerNumber, positionType) {
+		var cacheManagerNumber = "";
+
+        if (positionType == "NewHire" || positionType == "ReHire")
+            cacheManagerNumber = $scope.empAction.CacheManagerNumber;
+        else if (positionType == "Promotion" || positionType == "Demotion" || positionType == "SalaryChange")
+			cacheManagerNumber = $scope.empAction.CacheNewManagerNumber;
+        else if (positionType == "Transfer")
+			cacheManagerNumber = $scope.empAction.CacheTransferManagerNumber;
+
+		if (managerNumber !== "" && managerNumber !== null && (cacheManagerNumber === null || cacheManagerNumber === undefined || cacheManagerNumber.length === 0 || parseInt(managerNumber) !== parseInt(cacheManagerNumber))) {
+            getManagerDetail(managerNumber, function (response) {
+                if (!angular.isDefined(response)) {
+                    alert("The Manager/Clock Number that you entered doesn't exists.");
+                    if (positionType == "NewHire" || positionType == "ReHire") {
+						resetFields(0, "Manager");
+						$scope.empAction.CacheManagerNumber = managerNumber;
+						$scope.empAction.ManagerNumber = managerNumber;
+                    }
+                    else if (positionType == "Promotion" || positionType == "Demotion" || positionType == "SalaryChange") {
+						resetFields(0, "NewManager");
+						$scope.empAction.CacheNewManagerNumber = managerNumber;
+						$scope.empAction.NewManagerNumber = managerNumber;
+                    }
+                    else if (positionType == "Transfer") {
+						resetFields(0, "TransferManager");
+						$scope.empAction.CacheTransferManagerNumber = managerNumber;
+                        $scope.empAction.TransferManagerNumber = managerNumber;
+                    }
+                    return;
+                }
+				
+                if (positionType == "NewHire" || positionType == "ReHire") {
+					var managerName = (response.empFirstName + " " + response.empLastName).trim();
+					$scope.empAction.CacheManagerNumber = response.empClock;
+					$scope.empAction.ManagerNumber = response.empClock;
+                    $scope.empAction.ManagerName = managerName;
+                    $scope.empAction.ManagerTitle = response.empTitle;
+                    $scope.empAction.ManagerEmail = response.empEmail;
+					$scope.empAction.Data.ManagerExists = true;
+					$scope.empAction.Data.ManagerNameExists = (managerName == "" ? false : true);
+					$scope.empAction.Data.ManagerTitleExists = (response.empTitle == "" ? false : true);
+					$scope.empAction.Data.ManagerEmailExists = (response.empEmail == "" ? false : true);
+                }
+                else if (positionType == "Promotion" || positionType == "Demotion" || positionType == "SalaryChange") {
+					var managerName = (response.empFirstName + " " + response.empLastName).trim();
+					$scope.empAction.CacheNewManagerNumber = response.empClock;
+					$scope.empAction.NewManagerNumber = response.empClock;
+                    $scope.empAction.NewManagerName = managerName;
+                    $scope.empAction.NewManagerTitle = response.empTitle;
+                    $scope.empAction.NewManagerEmail = response.empEmail;
+					$scope.empAction.Data.NewManagerExists = true;
+					$scope.empAction.Data.NewManagerNameExists = (managerName == "" ? false : true);
+					$scope.empAction.Data.NewManagerTitleExists = (response.empTitle == "" ? false : true);
+					$scope.empAction.Data.NewManagerEmailExists = (response.empEmail == "" ? false : true);
+
+					resetFields(0, "RegionalManager");
+
+					if ($scope.empAction.NewManagerNumber != null && $scope.empAction.NewManagerNumber != "") {
+						getManagerDetail($scope.empAction.NewManagerNumber, function(response){
+							if (angular.isDefined(response)) {
+								if (response.managerClock == 0) {
+									$scope.empAction.CacheRegionalManagerNumber = null;
+									$scope.empAction.RegionalManagerNumber = null;
+								}
+								else {
+									$scope.empAction.CacheRegionalManagerNumber = response.managerClock;
+									$scope.empAction.RegionalManagerNumber = response.managerClock;
+								}
+								$scope.empAction.RegionalManagerName = response.managerName;
+								$scope.empAction.RegionalManagerTitle = response.jobTitle;
+								$scope.empAction.RegionalManagerEmail = response.managerEmail;
+								$scope.empAction.Data.RegionalManagerExists = true;
+								$scope.empAction.Data.RegionalManagerNameExists = (response.managerName == "" ? false : true);
+								$scope.empAction.Data.RegionalManagerTitleExists = (response.jobTitle == "" ? false : true);
+								$scope.empAction.Data.RegionalManagerEmailExists = (response.managerEmail == "" ? false : true);
+							}
+						});
+					}
                 }
                 else if (positionType == "Transfer") {
+					var managerName = (response.empFirstName + " " + response.empLastName).trim();
 					$scope.empAction.CacheTransferManagerNumber = response.empClock;
 					$scope.empAction.TransferManagerNumber = response.empClock;
-                    $scope.empAction.TransferManagerName = response.empFirstName + " " + response.empLastName;
+                    $scope.empAction.TransferManagerName = managerName;
                     $scope.empAction.TransferManagerTitle = response.empTitle;
                     $scope.empAction.TransferManagerEmail = response.empEmail;
 					$scope.empAction.Data.TransferManagerExists = true;
-					$scope.empAction.Data.TransferManagerNameExists = ((response.empFirstName + response.empLastName) == "" ? false : true);
+					$scope.empAction.Data.TransferManagerNameExists = (managerName == "" ? false : true);
 					$scope.empAction.Data.TransferManagerTitleExists = (response.empTitle == "" ? false : true);
 					$scope.empAction.Data.TransferManagerEmailExists = (response.empEmail == "" ? false : true);
                 }
             });
         }
-        else
-            return;
-    };
+        else {
+			if (managerNumber != cacheManagerNumber) {
+				if (positionType == "NewHire" || positionType == "ReHire")
+					resetFields(0, "Manager");
+                else if (positionType == "Promotion" || positionType == "Demotion" || positionType == "SalaryChange")
+					resetFields(0, "NewManager");
+                else if (positionType == "Transfer")
+					resetFields(0, "TransferManager");
+			}
+		}
+	};
 
-    $scope.getRegionalManagerInfo = function (employeeNumber) {
-
+    $scope.getRegionalManagerInfo = function (managerNumber) {
 		var cacheRegionalManagerNumber = $scope.empAction.CacheRegionalManagerNumber;
-		if (employeeNumber !== "" && (cacheRegionalManagerNumber === undefined || cacheRegionalManagerNumber.length === 0 || parseInt(employeeNumber) !== parseInt(cacheRegionalManagerNumber))) {
-			$scope.empAction.CacheRegionalManagerNumber = employeeNumber;
-			
-            getManagerDetail(employeeNumber, function (response) {
+
+		if (managerNumber !== "" && managerNumber !== null && (cacheRegionalManagerNumber === null || cacheRegionalManagerNumber === undefined || cacheRegionalManagerNumber.length === 0 || parseInt(managerNumber) !== parseInt(cacheRegionalManagerNumber))) {
+            getManagerDetail(managerNumber, function (response) {
                 if (!angular.isDefined(response)) {
                     alert("The Manager/Clock Number that you entered doesn't exists.");
-                    $scope.empAction.RegionalManagerName = null;
-                    $scope.empAction.RegionalManagerTitle = null;
-                    $scope.empAction.RegionalManagerEmail = null;
-					$scope.empAction.Data.RegionalManagerExists = false;
-					$scope.empAction.Data.RegionalManagerNameExists = false;
-					$scope.empAction.Data.RegionalManagerTitleExists = false;
-					$scope.empAction.Data.RegionalManagerEmailExists = false;
+					resetFields(0, "RegionalManager");
+					$scope.empAction.CacheRegionalManagerNumber = managerNumber;
+					$scope.empAction.RegionalManagerNumber = managerNumber;
                     return;
                 }
+				var managerName = (response.empFirstName + " " + response.empLastName).trim();
+				$scope.empAction.CacheRegionalManagerNumber = response.empClock;
 				$scope.empAction.RegionalManagerNumber = response.empClock;
-                $scope.empAction.RegionalManagerName = response.empFirstName + " " + response.empLastName;
+                $scope.empAction.RegionalManagerName = managerName;
                 $scope.empAction.RegionalManagerTitle = response.empTitle;
                 $scope.empAction.RegionalManagerEmail = response.empEmail;
 				$scope.empAction.Data.RegionalManagerExists = true;
-				$scope.empAction.Data.RegionalManagerNameExists = ((response.empFirstName + response.empLastName) == "" ? false : true);
+				$scope.empAction.Data.RegionalManagerNameExists = (managerName == "" ? false : true);
 				$scope.empAction.Data.RegionalManagerTitleExists = (response.empTitle == "" ? false : true);
 				$scope.empAction.Data.RegionalManagerEmailExists = (response.empEmail == "" ? false : true);
             });
         }
-        else
-            return;
+        else {
+			if (managerNumber != cacheRegionalManagerNumber) {
+				resetFields(0, "RegionalManager");
+			}
+		}
     };
 
     $scope.isManagerFieldRequired = function (item) {
@@ -636,47 +604,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             return false;
 
         return true;
-    };
-
-    var loadEmployee = function (employeeNumber, callback) {
-        EmpActions.getEmployee(employeeNumber, 0, function (result) {
-			$scope.empAction.CacheEmployeeNumber = employeeNumber;
-
-            if (result == null) {
-				$scope.empAction.CacheHcmHouseCode = null;
-				$scope.empAction.HcmHouseCode = null;
-				$scope.empAction.EmployeeId = 0;
-                $scope.empAction.FirstName = null;
-                $scope.empAction.MiddleName = null;
-                $scope.empAction.LastName = null;
-                $scope.empAction.AddressLine1 = null;
-                $scope.empAction.AddressLine2 = null;
-                $scope.empAction.City = null;
-				$scope.empAction.StateType = null;
-				$scope.empAction.PostalCode = null;
-                $scope.empAction.Phone = null;
-				$scope.empAction.Data.EmployeeExists = false;
-				resetFields();
-                callback(false);
-            }
-            else {
-				loadCompensations(employeeNumber);
-				$scope.empAction.CacheHcmHouseCode = EmpActions.getHcmHouseCodeByBrief(result.houseCode);
-                $scope.empAction.HcmHouseCode = EmpActions.getHcmHouseCodeByBrief(result.houseCode);
-				$scope.empAction.EmployeeId = result.id;
-				$scope.empAction.FirstName = result.firstName;
-                $scope.empAction.MiddleName = result.middleName;
-                $scope.empAction.LastName = result.lastName;
-                $scope.empAction.AddressLine1 = result.addressLine1;
-                $scope.empAction.AddressLine2 = result.addressLine2;
-                $scope.empAction.City = result.city;
-				$scope.empAction.StateType = parseInt(result.state);
-				$scope.empAction.PostalCode = result.postalCode;
-                $scope.empAction.Phone = result.phone;
-				$scope.empAction.Data.EmployeeExists = true;
-                callback(true);
-             }
-        });
     };
 
     var lastEmployeeNumber = null;
@@ -708,19 +635,19 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         loadJobCodes();
         loadPersonActionTypes();
         loadPayGrades();
+		loadAdministratorEmails();
+
         EmpActions.getAuthorizations(function (result) {
             $scope.authorizations = result;
             authorizationsLoaded();
         });
-
-        getAdministratorDetail(function (response) {
-            if (angular.isDefined(response)) {
-                $scope.empAction.AdministratorEmail = response.empEmail;
-                $scope.disableAdminEmail = response.empEmail && response.empEmail.length > 0;
-            }
-        });
-       
+ 
         if (!$routeParams.id) {
+			if ($scope.AdministratorDetails.length > 0) {
+				$scope.empAction.AdministratorEmail = $scope.AdministratorDetails[0].empEmail;
+                $scope.disableAdminEmail = $scope.AdministratorDetails[0].empEmail && $scope.AdministratorDetails[0].empEmail.length > 0;
+			}
+			
             angular.forEach($scope.stepApprovals, function (item) {
                 var workflowStepId = EmpActions.getWorkflowStepId(item.id);
                 if (item.id != 3 && item.id != 4) {
@@ -741,7 +668,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                         }
                     });
                 }
-                else if (item.id == 4) {
+                else if (item.id == 4 && $scope.empAction.HcmHouseCode != null) {
                     EmpActions.getJDECompanies($scope.empAction.HcmHouseCode, item.id, function (result) {
                         if (angular.isDefined(result)) {
                             $scope.empAction.HrDirectorName = result.name;
@@ -923,12 +850,15 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     }
                 }
             });
-            EmpActions.getJDECompanies(newValue, 4, function (result) {
-                if (angular.isDefined(result)) {
-                    $scope.empAction.HrDirectorName = result.name;
-                    $scope.empAction.HrDirectorEmail = result.email;
-                }
-            });
+			
+			if (!$routeParams.id || $scope.empAction.HcmHouseCode != newValue) {
+				EmpActions.getJDECompanies(newValue, 4, function(result){
+					if (angular.isDefined(result)) {
+						$scope.empAction.HrDirectorName = result.name;
+						$scope.empAction.HrDirectorEmail = result.email;
+					}
+				});
+			}
         }
         validateHcmHouseCode();
     });
@@ -937,7 +867,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         if (angular.isDefined($scope.empAction)) {
 			var cacheEmployeeNumber = $scope.empAction.CacheEmployeeNumber;
 
-            if (employeeNumber !== "" && (cacheEmployeeNumber === undefined || cacheEmployeeNumber.length === 0 || parseInt(employeeNumber) !== parseInt(cacheEmployeeNumber))) {
+            if (employeeNumber !== "" && employeeNumber !== null && employeeNumber !== undefined && (cacheEmployeeNumber === null || cacheEmployeeNumber === undefined || cacheEmployeeNumber.length === 0 || parseInt(employeeNumber) !== parseInt(cacheEmployeeNumber))) {
                  loadEmployee(employeeNumber, function (matched) {
 	                if (matched) {
 	                    if ($scope.empAction.HcmHouseCode && $scope.empAction.CacheHcmHouseCode !== $scope.empAction.HcmHouseCode) {
@@ -947,6 +877,11 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 	                validateHcmHouseCode();
 	            });
             }
+			else {
+				if (employeeNumber != cacheEmployeeNumber) {
+					resetFields(1, "");
+				}
+			}
         }
     };
 
@@ -1006,8 +941,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             angular.forEach(positionFields[positionType], function (item, index) {
                 obj[item] = null;
             });
-
-            //initReporting(positionType);
         }
     };
 
@@ -1039,9 +972,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             }
             else {
                 $.each(postionTypeGroups, function (gi, group) {
-
                     if (group.indexOf(positionType) >= 0) {
-
                         $.each(group, function (ii, item) {
                             if (item != positionType)
                                 uncheckPositionType(item);
@@ -1049,17 +980,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     }
                 });
             }
+
             if (positionType == 'NewHire') {
-                $scope.empAction.EmployeeNumber = null;
-                $scope.empAction.FirstName = null;
-                $scope.empAction.MiddleName = null;
-                $scope.empAction.LastName = null;
-                $scope.empAction.AddressLine1 = null;
-                $scope.empAction.AddressLine2 = null;
-                $scope.empAction.City = null;
-                $scope.empAction.Phone = null;
-                $scope.empAction.PostalCode = null;
-                $scope.empAction.StateType = null;
+                resetFields(0, 'Employee');
                 $scope.newHireChecked = true;
             }
             else {
@@ -1350,7 +1273,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 else if (curPayGrade.indexOf("none") == -1)
                     curGrade = curPayGrade.slice(curPayGrade.indexOf("("));
                 var lastIncPer = $scope.empAction.LastIncreaseDecreasePercentage;
-                $scope.empAction.LastIncreaseDecreasePercentage = (lastIncPer == "NaN%" ? "0" : lastIncPer.replace("%", ""));
+                $scope.empAction.LastIncreaseDecreasePercentage = (lastIncPer == "NaN" ? "0" : lastIncPer);
                 $scope.empAction.CurrentPayRange = $scope.empAction.CurrentPayRange + " " + curGrade;
             }
             else {
@@ -1435,21 +1358,27 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         //status changes
         var Status = ["FullTimeHours", "TemporaryHours", "PartTimeHours"];
         $scope.$watch('empAction.Status', function (newValue, oldValue) {
-            angular.forEach(Status, function (item) {
-                if (item != newValue) {
-                    //$scope.data[item] = null;
-                }
-            });
+			if (newValue != undefined && oldValue != undefined && newValue != oldValue) {
+				$scope.empAction.Hours = 0;
+			}
+//            angular.forEach(Status, function (item) {
+//                if (item != newValue) {
+//                    //$scope.data[item] = null;
+//                }
+//            });
         });
 
         //pay status changes
         var PayStatus = ["AnnualSalaryAmount", "AdminHourlyAmount", "HourlyRateAmount", "PerDiemValue"];
         $scope.$watch('empAction.PayStatus', function (newValue, oldValue) {
-            angular.forEach(PayStatus, function (item) {
-                if (item != newValue) {
-                    //$scope.data[item] = null;
-                }
-            });
+			if (newValue != undefined && oldValue != undefined && newValue != oldValue) {
+				$scope.empAction.Amount = 0;
+			}
+//            angular.forEach(PayStatus, function (item) {
+//                if (item != newValue) {
+//                    //$scope.data[item] = null;
+//                }
+//            });
 
             if ($scope.empAction.PayStatus == 'Per Diem')
                 $scope.empAction.Status = 'Temporary';
@@ -1621,6 +1550,9 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         });
 
         EmpActions.getPayGrades(function (result) {
+        });
+		
+		EmpActions.getAdministratorDetails(function (result) {
         });
 
         EmpActions.getWorkflowSteps(2, function (result) {
@@ -2638,6 +2570,17 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             });
         }
     };
+	
+	var getAdministratorDetails = function (callback) {
+        if (cache.administratorDetails)
+            callback(cache.administratorDetails);
+        else {
+            apiRequest('emp', 'iiCache', '<criteria>storeId:employeeManagerDetails,userId:[user],searchValue:adminEmail</criteria>', function (xml) {
+                cache.administratorDetails = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
+                getAdministratorDetails(callback);
+            });
+        }
+    };
 
     var getAuthorizations = function (callback) {
         if (cache.authorizations) {
@@ -2755,16 +2698,6 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
                 if (callback)
                     callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
             });
-    };
-
-    var getAdministratorDetail = function (callback) {
-
-        apiRequest('emp', 'iiCache', '<criteria>storeId:employeeManagerDetails,userId:[user]'
-           + ',searchValue:' + 'adminEmail'
-           + ',</criteria>', function (xml) {
-               if (callback)
-                   callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
-           });
     };
 
     var getWorkflowSteps = function (moduleId, callback) {
@@ -3125,6 +3058,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         getPersonActionTypes: getPersonActionTypes,
         getJobCodes: getJobCodes,
         getPayGrades: getPayGrades,
+		getAdministratorDetails: getAdministratorDetails,
         getWorkflowSteps: getWorkflowSteps,
         getWorkflowBrief: getWorkflowBrief,
         saveEmployeePersonnelAction: saveEmployeePersonnelAction,
@@ -3136,7 +3070,6 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         findEmployeePAFDocument: findEmployeePAFDocument,
         deleteEmployeePAFDocument: deleteEmployeePAFDocument,
         viewEmployeePAFDocument: viewEmployeePAFDocument,
-        getAdministratorDetail: getAdministratorDetail,
         getAppUsers: getAppUsers,
         getWorkflowStepId: getWorkflowStepId,
         getJDECompanies: getJDECompanies,
