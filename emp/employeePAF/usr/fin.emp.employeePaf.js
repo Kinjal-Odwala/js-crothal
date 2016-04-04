@@ -753,10 +753,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 			if ($scope.empAction.CurrentPayRange.indexOf("(") != -1)
 				$scope.empAction.CurrentPayRange = $scope.empAction.CurrentPayRange.substring(0, $scope.empAction.CurrentPayRange.indexOf("("));
 
-            if ($scope.empAction.NewHire) {
+            if ($scope.empAction.NewHire)
                 $scope.empAction.EmployeeNumber = null;
-                $scope.newHireChecked = true;
-            }
 
             if ($scope.empAction.ResignationType > 0)
                 $scope.empAction.SeparationReason = "ResignationType";
@@ -767,55 +765,44 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
             getHouseCodes($scope.empAction.HcmHouseCode, function (response) {
                 if (angular.isDefined(response)) {
-                    if (response.contractTypeId == "3") {
+                    if (response.contractTypeId == "3")
                         $scope.overHeadAccount = true;
-                    }
-                    else {
+                    else
                         $scope.overHeadAccount = false;
-                    }
                 }
             });
 
             angular.forEach($scope.stepApprovals, function (item) {
                 var workflowStepId = EmpActions.getWorkflowStepId(item.id);
 
-                if (item.id == 1) {
+                if (item.id == 1)
                     item.name = $scope.empAction.LoaManagerName;
-                }
-                else if (item.id == 2) {
+                else if (item.id == 2)
                     item.name = $scope.empAction.HrManagerName;
-                }
-                else if (item.id == 3) {
+                else if (item.id == 3)
                     item.name = $scope.empAction.RegionalManagerName;
-                }
-                else if (item.id == 4) {
+                else if (item.id == 4)
                     item.name = $scope.empAction.HrDirectorName;
-                }
-                else if (item.id == 5) {
+                else if (item.id == 5)
                     item.name = $scope.empAction.ProcessHRName;
-                }
-
+ 
                 item.date = EmpActions.getWorkflowDate(workflowStepId);
 
                 if ($scope.empAction.Loa) {
-                    if (item.id == 1) {
+                    if (item.id == 1)
                         $scope.Approvals.push(item);
-                    }
                 }
                 else if (isOverHeadAccount) {
-                    if (item.id == 2) {
+                    if (item.id == 2)
                         $scope.Approvals.push(item);
-                    }
                 }
                 else if (($scope.empAction.SalaryChange && $scope.empAction.IncreaseDecreasePercentage > 4) || (($scope.empAction.Promotion || $scope.empAction.Demotion) && $scope.empAction.IncreaseDecreasePercentage > 10)) {
-                    if (item.id == 3 || item.id == 4 || item.id == 5) {
+                    if (item.id == 3 || item.id == 4 || item.id == 5)
                         $scope.Approvals.push(item);
-                    }
                 }
                 else {
-                    if (item.id == 5) {
+                    if (item.id == 5)
                         $scope.Approvals.push(item);
-                    }
                 }
             });
         });
@@ -842,12 +829,10 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         if (newValue != oldValue) {
             getHouseCodes(newValue, function (response) {
                 if (angular.isDefined(response)) {
-                    if (response.contractTypeId == "3") {
+                    if (response.contractTypeId == "3")
                         $scope.overHeadAccount = true;
-                    }
-                    else {
+                    else
                         $scope.overHeadAccount = false;
-                    }
                 }
             });
 			
@@ -911,7 +896,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         { id: 'SalaryChange', display: 'Salary Change' },
         { id: 'Transfer', display: 'Transfer' },
         { id: 'PersonalInfoChange', display: 'Personal Info Change' },
-        { id: 'Relocation', display: 'Relocation' }];
+        { id: 'Relocation', display: 'Relocation' }
+	];
 
     var postionTypeGroups = [
         ['NewHire', 'ReHire', 'Separation', 'Loa'],
@@ -981,17 +967,11 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 });
             }
 
-            if (positionType == 'NewHire') {
+            if (positionType == 'NewHire')
                 resetFields(0, 'Employee');
-                $scope.newHireChecked = true;
-            }
-            else {
-                $scope.newHireChecked = false;
-            }
         }
-        else {
+        else 
             resetPositionTypeFields(positionType);
-        }
 
         if (!($scope.empAction.NewHire || $scope.empAction.ReHire || $scope.empAction.SalaryChange || $scope.empAction.Promotion || $scope.empAction.Transfer || $scope.empAction.Demotion)) {
             resetPositionTypeFields('Requisition');
@@ -1001,9 +981,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     };
 
     $scope.positionTypeChecked = function (positionType) {
-        if (!$scope.empAction['NewHire']) {
-            $scope.newHireChecked = false;
-        }
+
         return $scope.empAction[positionType];
     };
 
@@ -1298,12 +1276,10 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             });
         }
         else {
-            if ($scope.empAction.PersonalInfoChange) {
+            if ($scope.empAction.PersonalInfoChange)
                 showPIToaster();
-            }
-            else {
+            else
                 showToaster();
-            }
         }
     };
 
@@ -1614,7 +1590,8 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         { id: 'SalaryChange', display: 'Salary Change' },
         { id: 'Transfer', display: 'Transfer' },
         { id: 'PersonalInfoChange', display: 'Personal Info Change' },
-        { id: 'Relocation', display: 'Relocation' }];
+        { id: 'Relocation', display: 'Relocation' }
+	];
 
     $scope.FormTypes = PositionTypes;
 
