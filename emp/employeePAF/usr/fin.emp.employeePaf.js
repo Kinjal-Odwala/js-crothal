@@ -645,7 +645,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         if (!$routeParams.id) {
 			if ($scope.AdministratorDetails.length > 0) {
 				$scope.empAction.AdministratorEmail = $scope.AdministratorDetails[0].empEmail;
-                $scope.disableAdminEmail = $scope.AdministratorDetails[0].empEmail && $scope.AdministratorDetails[0].empEmail.length > 0;
+				$scope.empAction.Data.AdministratorEmailExists = ($scope.AdministratorDetails[0].empEmail == "" ? false : true);
 			}
 			
             angular.forEach($scope.stepApprovals, function (item) {
@@ -1238,11 +1238,11 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 if ($scope.empAction.PayStatus == "Admin Hourly" || $scope.empAction.PayStatus == "Hourly") {
                     salary = $scope.empAction.Amount * 52 * 40;
                 }
-                var grade = ($scope.empAction.PayGrade == 0 ? $scope.empAction.PayGrade : EmpActions.getPayGradeTitle($scope.empAction.PayGrade));
+                var grade = ($scope.empAction.PayGrade == 0 || $scope.empAction.PayGrade == undefined ? "" : EmpActions.getPayGradeTitle($scope.empAction.PayGrade));
                 $scope.empAction.PayRange = $scope.getPayRange($scope.empAction.PayGrade, salary) + " " + grade.slice(grade.indexOf("("));
             }
             if ($scope.empAction.SalaryChange || $scope.empAction.Demotion || $scope.empAction.Promotion) {
-                var newGrade = ($scope.empAction.NewPayGrade == 0 ? $scope.empAction.NewPayGrade : EmpActions.getPayGradeTitle($scope.empAction.NewPayGrade));
+                var newGrade = ($scope.empAction.NewPayGrade == 0 ? "" : EmpActions.getPayGradeTitle($scope.empAction.NewPayGrade));
                 $scope.empAction.NewPayRange = $scope.getPayRange($scope.empAction.NewPayGrade, $scope.empAction.NewSalary) + " " + newGrade.slice(newGrade.indexOf("("));
                 var curPayGrade = $scope.empAction.CurrentPayGradeTitle;
                 var curGrade = "";

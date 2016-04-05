@@ -915,7 +915,7 @@
                         <div class="row">
                             <div class="col-md-5">
                                 <div class="form-group" ng-class="{'has-error':administratorInfoForm.AdministratorEmail.$invalid}">
-                                   <input paf-validation="EMAIL" class="form-control input-sm" name="AdministratorEmail" maxlength="100" ng-model="empAction.AdministratorEmail" ng-disabled="disableAdminEmail" ng-required="true"/>
+                                   <input paf-validation="EMAIL" class="form-control input-sm" name="AdministratorEmail" maxlength="100" ng-model="empAction.AdministratorEmail" ng-disabled="empAction.Data.AdministratorEmailExists" ng-required="true"/>
                                 </div>
                             </div>
                         </div>
