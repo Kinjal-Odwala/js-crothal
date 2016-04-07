@@ -269,7 +269,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 		if (resetAll || type == "Employee") {
 			$scope.empAction.CacheHcmHouseCode = null;
 			$scope.empAction.CacheEmployeeNumber = null;
-			$scope.empAction.HcmHouseCode = null;
+			$scope.empAction.HcmHouseCode = "";
 			$scope.empAction.EmployeeNumber = null;
 			$scope.empAction.EmployeeId = 0;
 			$scope.empAction.FirstName = null;
@@ -967,8 +967,10 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 });
             }
 
-            if (positionType == 'NewHire')
-                resetFields(0, 'Employee');
+            if (positionType == 'NewHire') {
+				resetFields(0, 'Employee');
+				resetFields(0, 'Compensation');
+			}
         }
         else 
             resetPositionTypeFields(positionType);
@@ -1226,11 +1228,11 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         return isValid;
     };
 	
-    $scope.save = function(saveAndSubmit) {
+    $scope.save = function(saveAndSubmit) {debugger;
         validateActionType();
         $scope.validateSeparationReason();
         $scope.validateLoa();
-        $scope.validatePersonalInfo();
+        var validPersonalInfo = $scope.validatePersonalInfo();
 
         if ($scope.pafForm.$valid) {
             if ($scope.empAction.NewHire || $scope.empAction.ReHire) {
@@ -1276,7 +1278,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             });
         }
         else {
-            if ($scope.empAction.PersonalInfoChange)
+            if ($scope.empAction.PersonalInfoChange && !validPersonalInfo)
                 showPIToaster();
             else
                 showToaster();
@@ -1956,8 +1958,11 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
     return {
         require: '?ngModel',
         link: function (scope, element, attrs, modelCtrl) {
-            modelCtrl.$parsers.push(function (inputValue) {
-                if (inputValue == undefined) return ''
+            modelCtrl.$parsers.push(function (inputValue) { 
+				if (inputValue == undefined || inputValue == "") {
+				 	modelCtrl.$setValidity(attrs.name, true);
+					return "";
+				}
                 var min = parseInt(attrs.pafMin);
                 var firstNumber = inputValue.substring(0, 1);
                 if (inputValue.length == min && firstNumber != 0) {
