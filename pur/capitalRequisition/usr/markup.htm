@@ -109,14 +109,21 @@
 									<div class="inputTextArea">
 										<div id="RequestorName"></div>
 									</div>
-									<div style="clear:both;"></div>									
-									<div class="labelTextArea">
+									<div style="clear:both;"></div>	
+                                    <div class="labelTextArea">
+										<span class="requiredFieldIndicator">&#149;</span>Requestor Phone:
+									</div>
+									<div class="inputTextArea">
+										<div id="RequestorPhone"></div>
+									</div>
+									<div style="clear:both;"></div>		
+                                    <div class="labelTextArea">
 										<span class="requiredFieldIndicator">&#149;</span>Date:
 									</div>
 									<div class="inputTextArea">
 										<div id="RequestedDate"></div>
 									</div>
-									<div style="clear:both;"></div>
+                                    <div style="clear:both;"></div>	
 									<div class="labelTextArea"></div>
 									<div class="inputTextArea"></div>
 									<div style="clear:both;"></div>																	
@@ -172,13 +179,16 @@
 										<div id="RequestorEmail"></div>
 									</div>
 									<div style="clear:both;"></div>
-									<div class="labelTextArea">
+                                    <div class="labelTextArea"></div>
+									<div class="inputTextArea"></div>
+									<div style="clear:both;"></div>
+                                    <div class="labelTextArea">
 										<span class="requiredFieldIndicator">&#149;</span>Requested Delivery Date:
 									</div>
 									<div class="inputTextArea">
 										<div id="DeliveryDate"></div>
 									</div>
-									<div style="clear:both;"></div>
+									<div style="clear:both;"></div>	
 									<div class="labelTextArea">
 										<span id="nonRequiredFieldIndicator">Project #:</span>
 									</div>
@@ -267,6 +277,10 @@
 									<input id="BusinessTypeExistingBusiness" name="BusinessType" tabindex="21" type="radio" value="Existing Business"/>								
 								</div>
 								<div class="radioLargeTextRight">Existing Business</div>
+                                <div class="radioButtonRight">
+									<input id="BusinessTypeContractRenewal" name="BusinessType" tabindex="22" type="radio" value="Contract Renewal"/>								
+								</div>
+								<div class="radioLargeTextRight">Contract Renewal</div>
 							</div>
 							<div style="clear:both;"></div>
 							<div class="labelTextArea">
@@ -513,7 +527,7 @@
 										<div id="DivisionPresidentName"></div>
 									</div>
 									<div style="clear:both;"></div>
-									<div class="labelTextArea">
+									<div class="labelTextArea" id="FinanceDirectorNameLabel">
 										<span class="requiredFieldIndicator">&#149;</span>Finance Director Name:
 									</div>
 									<div class="inputTextArea">
@@ -558,7 +572,7 @@
 										<div id="DivisionPresidentEmail"></div>
 									</div>
 									<div style="clear:both;"></div>
-									<div class="labelTextArea">
+									<div class="labelTextArea" id="FinanceDirectorEmailLabel">
 										<span class="requiredFieldIndicator">&#149;</span>Finance Director Email:
 									</div>
 									<div class="inputTextArea">

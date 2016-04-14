@@ -21,13 +21,14 @@
 		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
 		    </div>
 		</div>
-			
+
         <div id="container-1">
         	<ul id="TabCollection">
-        		<li><a id="TabAnnualInfo" href="#fragment-1"><span>Annual Info</span></a></li>
-				<li><a id="TabApproveBudget" href="#fragment-2"><span>Approve Budget</span></a></li>
-                <li><a id="TabDeleteBudget" href="#fragment-3"><span>Delete Budget</span></a></li>
-				<li><a id="TabExportBudget" href="#fragment-4"><span>Export Budget</span></a></li>
+        		<li><a id="TabAnnualInfo" href="#fragment-1" style="display:none;"><span>Annual Info</span></a></li>
+				<li><a id="TabApproveBudget" href="#fragment-2" style="display:none;"><span>Approve Budget</span></a></li>
+                <li><a id="TabDeleteBudget" href="#fragment-3" style="display:none;"><span>Delete Budget</span></a></li>
+				<li><a id="TabExportBudget" href="#fragment-4" style="display:none;"><span>Export Budget</span></a></li>
+				<li><a id="TabBenefitsCost" href="#fragment-5" style="display:none;"><span>Benefits Cost</span></a></li>
             </ul>
 			<div id="fragment-1" class="fragment">
 				<iframe id="iFrameAnnualInfo" class="tabContainer" src="" frameborder="no"></iframe>
@@ -41,7 +42,9 @@
 			<div id="fragment-4" class="fragment">
 				<iframe id="iFrameExportBudget" class="tabContainer" src="" frameborder="no"></iframe>
         	</div>
+			<div id="fragment-5" class="fragment">
+				<iframe id="iFrameBenefitsCost" class="tabContainer" src="" frameborder="no"></iframe>
+        	</div>
 		</div>
-		<div style="clear:both;"></div>
 	</body>
 </html>

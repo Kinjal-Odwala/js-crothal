@@ -131,7 +131,7 @@ ii.Class({
 				}
 
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
-				me.accountStore.fetch("userId:[user]", me.accountsLoaded, me);
+				me.accountStore.fetch("userId:[user],moduleId:poCapitalRequisition", me.accountsLoaded, me);
 				me.personStore.fetch("userId:[user],id:" + me.session.propertyGet("personId"), me.personsLoaded, me);
 				me.systemVariableStore.fetch("userId:[user],name:POCapitalRequisitionApprovalAmountLimit1", me.approvalAmountLimit1Loaded, me);
 				me.appUserStore.fetch("userId:[user],module:Workflow,id:0,workflowModuleId:3,stepNumber:4", me.chiefFinancialOfficersLoaded, me);
@@ -408,7 +408,29 @@ ii.Class({
 		        id: "RequestorName",
 				maxLength: 100,
 				changeFunction: function() { me.modified(); }
-		    });
+			});
+
+			me.requestorPhone = new ui.ctl.Input.Text({
+			    id: "RequestorPhone",
+			    maxLength: 14,
+			    changeFunction: function() { me.modified(); }
+			});
+
+		    me.requestorPhone.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(function (isFinal, dataMap) {
+
+				    var enteredText = me.requestorPhone.getValue();
+
+				    me.requestorPhone.text.value = fin.cmn.text.mask.phone(enteredText);
+				    enteredText = me.requestorPhone.text.value;
+
+					if (enteredText == "" && me.requestorPhone.text.readOnly)
+						this.valid = true;
+					else if (!(ui.cmn.text.validate.phone(enteredText)))
+				        this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
+			});
 			
 			me.requestorEmail = new ui.ctl.Input.Text({
 		        id: "RequestorEmail",
@@ -566,13 +588,13 @@ ii.Class({
 				.addValidation( function( isFinal, dataMap ) {
 
 					var enteredText = me.vendorPhone.getValue();
-					
+
 					if (enteredText == "") return;
 
 					me.vendorPhone.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.vendorPhone.text.value;
-										
-					if (enteredText.length < 14)
+
+					if (!(ui.cmn.text.validate.phone(enteredText)))
 						this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
 				});
 				
@@ -1067,7 +1089,7 @@ ii.Class({
 
 					var enteredText = me.divisionPresidentName.getValue();
 
-					if (enteredText == "" && me.total <= me.approvalAmountLimit1)
+					if (enteredText == "" && ((me.total <= me.approvalAmountLimit1) || ($("input[name='Funding']:checked").val() == "Direct Reimbursement")))
 						this.valid = true;
 			});
 
@@ -1084,7 +1106,7 @@ ii.Class({
 
 					var enteredText = me.divisionPresidentEmail.getValue();
 
-					if (enteredText == "" && me.total <= me.approvalAmountLimit1)
+					if (enteredText == "" && ((me.total <= me.approvalAmountLimit1) || ($("input[name='Funding']:checked").val() == "Direct Reimbursement")))
 						this.valid = true;
 					else {
 						var emailArray = enteredText.split(";");
@@ -1105,6 +1127,13 @@ ii.Class({
 			me.financeDirectorName.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.financeDirectorName.getValue();
+
+					if (enteredText == "" && $("input[name='Funding']:checked").val() == "Direct Reimbursement")
+						this.valid = true;
+			});
 
 			me.financeDirectorEmail = new ui.ctl.Input.Text({
 		        id: "FinanceDirectorEmail",
@@ -1119,13 +1148,15 @@ ii.Class({
 
 					var enteredText = me.financeDirectorEmail.getValue();
 
-					if (enteredText == "") return;
+					if (enteredText == "" && $("input[name='Funding']:checked").val() == "Direct Reimbursement")
+						this.valid = true;
+					else {
+						var emailArray = enteredText.split(";");
 
-					var emailArray = enteredText.split(";");
-
-					for (var index in emailArray) {
-						if (!(ui.cmn.text.validate.emailAddress(emailArray[index])))
-							this.setInvalid("Please enter valid Email Address. Use semicolon to separate two addresses.");
+						for (var index in emailArray) {
+							if (!(ui.cmn.text.validate.emailAddress(emailArray[index])))
+								this.setInvalid("Please enter valid Email Address. Use semicolon to separate two addresses.");
+						}
 					}
 			});
 
@@ -1372,19 +1403,20 @@ ii.Class({
 
 			me.requestorName.text.tabIndex = 1;
 			me.requestorEmail.text.tabIndex = 2;
-			me.requestedDate.text.tabIndex = 3;
-			me.deliveryDate.text.tabIndex = 4;
-			me.projectNumber.text.tabIndex = 5;
-			me.vendorName.text.tabIndex = 6;
-			me.vendorAddress1.text.tabIndex = 7;
-			me.vendorAddress2.text.tabIndex = 8;
-			me.vendorCity.text.tabIndex = 9;
-			me.vendorState.text.tabIndex = 10;
-			me.vendorZip.text.tabIndex = 11;
-			me.vendorContactName.text.tabIndex = 12;
-			me.vendorPhone.text.tabIndex = 13;
-			me.vendorEmail.text.tabIndex = 14;
-			me.reasonForRequest.text.tabIndex = 15;
+			me.requestorPhone.text.tabIndex = 3;
+			me.requestedDate.text.tabIndex = 4;
+			me.deliveryDate.text.tabIndex = 5;
+			me.projectNumber.text.tabIndex = 6;
+			me.vendorName.text.tabIndex = 7;
+			me.vendorAddress1.text.tabIndex = 8;
+			me.vendorAddress2.text.tabIndex = 9;
+			me.vendorCity.text.tabIndex = 10;
+			me.vendorState.text.tabIndex = 11;
+			me.vendorZip.text.tabIndex = 12;
+			me.vendorContactName.text.tabIndex = 13;
+			me.vendorPhone.text.tabIndex = 14;
+			me.vendorEmail.text.tabIndex = 15;
+			me.reasonForRequest.text.tabIndex = 16;
 			//Capital - 16
 			//Direct Reimbursement - 17
 			//New Business - 18
@@ -1423,6 +1455,7 @@ ii.Class({
 			me.requestorName.resizeText();
 			me.requestorEmail.resizeText();
 			me.requestedDate.resizeText();
+			me.requestorPhone.resizeText();
 			me.deliveryDate.resizeText();
 			me.projectNumber.resizeText();
 			me.vendorName.resizeText();
@@ -1467,6 +1500,7 @@ ii.Class({
 			me.requestorName.text.readOnly = readOnly;
 			me.requestorEmail.text.readOnly = readOnly;
 			me.requestedDate.text.readOnly = readOnly;
+			me.requestorPhone.text.readOnly = readOnly;
 			me.deliveryDate.text.readOnly = readOnly;
 			me.projectNumber.text.readOnly = readOnly;			
 			me.vendorName.text.readOnly = readOnly;
@@ -1503,7 +1537,8 @@ ii.Class({
 			$("#FundingClientInvestment")[0].disabled = readOnly;
 			$("#BusinessTypeNewBusiness")[0].disabled = readOnly;
 			$("#BusinessTypeNewConstruction")[0].disabled = readOnly;
-			$("#BusinessTypeExistingBusiness")[0].disabled = readOnly;			
+			$("#BusinessTypeExistingBusiness")[0].disabled = readOnly;
+			$("#BusinessTypeContractRenewal")[0].disabled = readOnly;
 			$("#BudgetingBudgeted")[0].disabled = readOnly;
 			$("#BudgetingUnbudgeted")[0].disabled = readOnly;
 
@@ -1833,7 +1868,7 @@ ii.Class({
 			if (me.itemGrid.activeRowIndex >= 0)
 				me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
 			me.itemStore.reset();
-			me.itemStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId + ",catalogId:" + me.catalogId + ",orderId:0,accountId:" + me.accountId + ",searchValue:" + me.searchItem.getValue(), me.poItemsLoaded, me);
+			me.itemStore.fetch("userId:[user],poCapitalRequisition:1,houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId + ",catalogId:" + me.catalogId + ",orderId:0,accountId:" + me.accountId + ",searchValue:" + me.searchItem.getValue(), me.poItemsLoaded, me);
 			me.searchItem.setValue("");
 		},
 		
@@ -2037,6 +2072,7 @@ ii.Class({
 			me.requestorName.setValue(item.requestorName);
 			me.requestorEmail.setValue(item.requestorEmail);
 			me.requestedDate.setValue(item.requestedDate);
+			me.requestorPhone.setValue(item.requestorPhone);
 			me.deliveryDate.setValue(item.deliveryDate);
 			me.projectNumber.setValue(item.projectNumber);
 			me.vendorName.lastBlurValue = item.vendorTitle;
@@ -2067,7 +2103,9 @@ ii.Class({
 			else if (item.businessType == "New Construction") 
 				$('#BusinessTypeNewConstruction').attr('checked', true);
 			else if (item.businessType == "Existing Business") 
-				$('#BusinessTypeExistingBusiness').attr('checked', true);
+			    $('#BusinessTypeExistingBusiness').attr('checked', true);
+			else if (item.businessType == "Contract Renewal")
+			    $('#BusinessTypeContractRenewal').attr('checked', true);
 			
 			if (item.budgeting == "Budgeted") 
 				$('#BudgetingBudgeted').attr('checked', true);
@@ -2221,10 +2259,20 @@ ii.Class({
             me.step5ApprovedDate = me.workflowHistorys.length > 4 ? me.workflowHistorys[4].modAt : "";
 
 			approvals.push(new fin.pur.poCapitalRequisition.Approval(1, "Regional Manager", item.regionalManagerName, "", me.step1ApprovedDate));
-			approvals.push(new fin.pur.poCapitalRequisition.Approval(2, "Division President", item.divisionPresidentName,  (me.total > me.approvalAmountLimit1 ? "" : "N/A"), (me.total > me.approvalAmountLimit1 ? me.step2ApprovedDate : "N/A")));
-			approvals.push(new fin.pur.poCapitalRequisition.Approval(3, "Finance Director", item.financeDirectorName, "", me.step3ApprovedDate));
-			approvals.push(new fin.pur.poCapitalRequisition.Approval(4, "Chief Financial Officer", item.chiefFinancialOfficerName, (me.total > me.approvalAmountLimit1 ? "" : "N/A"), (me.total > me.approvalAmountLimit1 ? me.step4ApprovedDate : "N/A")));
-			approvals.push(new fin.pur.poCapitalRequisition.Approval(5, "Chief Executive Officer", item.chiefExecutiveOfficerName, (me.total > me.approvalAmountLimit2 ? "" : "N/A"), (me.total > me.approvalAmountLimit2 ? me.step5ApprovedDate : "N/A")));
+			if (item.funding == "Direct Reimbursement") {
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(2, "Division President", item.divisionPresidentName, "N/A", "N/A"));
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(3, "Finance Director", item.financeDirectorName, "N/A", "N/A"));
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(4, "Chief Financial Officer", item.chiefFinancialOfficerName, "N/A", "N/A"));
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(5, "Chief Executive Officer", item.chiefExecutiveOfficerName, "N/A", "N/A"));
+		
+			}
+			else {
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(2, "Division President", item.divisionPresidentName,  (me.total > me.approvalAmountLimit1 ? "" : "N/A"), (me.total > me.approvalAmountLimit1 ? me.step2ApprovedDate : "N/A")));
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(3, "Finance Director", item.financeDirectorName, "", me.step3ApprovedDate));
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(4, "Chief Financial Officer", item.chiefFinancialOfficerName, (me.total > me.approvalAmountLimit1 ? "" : "N/A"), (me.total > me.approvalAmountLimit1 ? me.step4ApprovedDate : "N/A")));
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(5, "Chief Executive Officer", item.chiefExecutiveOfficerName, (me.total > me.approvalAmountLimit2 ? "" : "N/A"), (me.total > me.approvalAmountLimit2 ? me.step5ApprovedDate : "N/A")));
+			}
+
 			me.approvalGrid.setData(approvals);
 			me.approvalGrid.setHeight(150);
 			me.checkLoadCount();
@@ -2422,6 +2470,7 @@ ii.Class({
 					|| !me.vendorPhone.valid
 					|| !me.vendorEmail.valid
 					|| !me.reasonForRequest.valid
+                    || !me.requestorPhone.valid
 					) {
 					alert("In order to continue, the errors on the page must be corrected.");	
 					return false;
@@ -2558,6 +2607,7 @@ ii.Class({
 			me.requestorName.setValue(me.users[0].firstName + " " + me.users[0].lastName + "");
 			me.requestorEmail.setValue(me.users[0].email);
 			me.requestedDate.setValue(me.currentDate());
+			me.requestorPhone.setValue("");
 			me.deliveryDate.setValue("");
 			me.projectNumber.setValue("");
 			me.vendorStore.reset();
@@ -2755,19 +2805,36 @@ ii.Class({
 						
 					$("#Header").text("Additional Information");
 					
-					if (me.total > me.approvalAmountLimit1) {
-						$("#DivisionPresidentNameLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Division President Name:");
-						$("#DivisionPresidentEmailLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Division President Email:");
-						me.divisionPresidentName.text.readOnly = false;
-						me.divisionPresidentEmail.text.readOnly = false;
-					}
-					else {
+					if ($("input[name='Funding']:checked").val() == "Direct Reimbursement") {
 						$("#DivisionPresidentNameLabel").html("<span id='nonRequiredFieldIndicator'>Division President Name:</span>");
 						$("#DivisionPresidentEmailLabel").html("<span id='nonRequiredFieldIndicator'>Division President Email:</span>");
+						$("#FinanceDirectorNameLabel").html("<span id='nonRequiredFieldIndicator'></span>Finance Director Name:");
+						$("#FinanceDirectorEmailLabel").html("<span id='nonRequiredFieldIndicator'></span>Finance Director Email:");
 						me.divisionPresidentName.text.readOnly = true;
 						me.divisionPresidentEmail.text.readOnly = true;
+						me.financeDirectorName.text.readOnly = true;
+						me.financeDirectorEmail.text.readOnly = true;
 					}
-					
+					else {
+						$("#FinanceDirectorNameLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Finance Director Name:");
+						$("#FinanceDirectorEmailLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Finance Director Email:");
+						me.financeDirectorName.text.readOnly = false;
+						me.financeDirectorEmail.text.readOnly = false;
+							
+						if (me.total > me.approvalAmountLimit1) {
+							$("#DivisionPresidentNameLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Division President Name:");
+							$("#DivisionPresidentEmailLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Division President Email:");
+							me.divisionPresidentName.text.readOnly = false;
+							me.divisionPresidentEmail.text.readOnly = false;
+						}
+						else {
+							$("#DivisionPresidentNameLabel").html("<span id='nonRequiredFieldIndicator'>Division President Name:</span>");
+							$("#DivisionPresidentEmailLabel").html("<span id='nonRequiredFieldIndicator'>Division President Email:</span>");
+							me.divisionPresidentName.text.readOnly = true;
+							me.divisionPresidentEmail.text.readOnly = true;
+						}
+					}
+
 					break;
 			}
 			
@@ -3041,6 +3108,7 @@ ii.Class({
 					, me.shippingFax.getValue()
 					, me.requestorName.getValue()
 					, me.requestorEmail.getValue()
+                    , me.requestorPhone.getValue()
 					, me.requestedDate.lastBlurValue
 					, me.deliveryDate.lastBlurValue
 					, me.projectNumber.getValue()
@@ -3146,6 +3214,7 @@ ii.Class({
 				xml += ' houseCodeId="' + item.houseCode + '"';
 				xml += ' houseCodeJobId="' + item.houseCodeJob + '"';
 				xml += ' requestorName="' + ui.cmn.text.xml.encode(item.requestorName) + '"';
+				xml += ' requestorPhone="' + fin.cmn.text.mask.phone(item.requestorPhone, true) + '"';
 				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
 				xml += ' requestedDate="' + item.requestedDate + '"';
 				xml += ' projectNumber="' + ui.cmn.text.xml.encode(item.projectNumber) + '"';
@@ -3239,6 +3308,7 @@ ii.Class({
 				xml += ' shipToFax="' + fin.cmn.text.mask.phone(item.shipToFax) + '"';
 				xml += ' requestorName="' + ui.cmn.text.xml.encode(item.requestorName) + '"';
 				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
+				xml += ' requestorPhone="' + fin.cmn.text.mask.phone(item.requestorPhone) + '"';
 				xml += ' requestedDate="' + item.requestedDate + '"';
 				xml += ' deliveryDate="' + item.deliveryDate + '"';
 				xml += ' projectNumber="' + ui.cmn.text.xml.encode(item.projectNumber) + '"';

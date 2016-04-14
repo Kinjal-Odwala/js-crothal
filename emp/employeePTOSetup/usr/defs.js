@@ -70,6 +70,8 @@ ii.init.register( function() {
 		, startDate: {type: String, required: false, defaultValue: ""}
 		, endDate: {type: String, required: false, defaultValue: ""}
 		, days: {type: Number, required: false, defaultValue: 0}
+		, accrual: {type: Boolean, required: false, defaultValue: true}
+		, accrualInterval: {type: Number, required: false, defaultValue: 0}
 		, active: {type: Boolean, required: false, defaultValue: true}
 	};
 	

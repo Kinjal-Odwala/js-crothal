@@ -516,7 +516,7 @@ ii.Class({
 				$('#LunchBreakTriggerOthers').attr('checked', true);
 				me.breakTrigger.setValue(houseCode.lunchBreakTrigger);					
 			} 
-			
+
 			if (houseCode.houseCodeTypeId != undefined) {
 				if (houseCode.houseCodeTypeId == '3')
 					$('#HouseCodeTypeUACB').attr('checked', true);
@@ -551,7 +551,16 @@ ii.Class({
 			me.payrollLunchBreakTrigger= $("input[name='LunchBreakTrigger']:checked").val();
 			if (me.payrollLunchBreakTrigger != 0) me.breakTrigger.setValue("");	
 			me.payrollHouseCodeType = $("input[name='HouseCodeType']:checked").val();
-			me.payrollRoundingTimePeriod = $("input[name='RoundingTimePeriod']:checked").val();			
+			me.payrollRoundingTimePeriod = $("input[name='RoundingTimePeriod']:checked").val();	
+
+			if (me.payrollHouseCodeType == "1")
+				parent.$("#TabUnionSetup").hide();
+			else {
+				if (!parent.fin.hcmMasterUi.tabUnionSetupShow && !parent.fin.hcmMasterUi.houseCodeWrite && !parent.fin.hcmMasterUi.houseCodeReadOnly)
+					parent.$("#TabUnionSetup").hide();
+				else
+					parent.$("#TabUnionSetup").show();
+			}
 		}
 	}
 });

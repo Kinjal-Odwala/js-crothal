@@ -392,8 +392,30 @@ ii.Class({
 		        id: "RequestorName",
 				maxLength: 100,
 				changeFunction: function() { me.modified(); }
+			});
+
+			me.requestorPhone = new ui.ctl.Input.Text({
+			    id: "RequestorPhone",
+			    maxLength: 14,
+			    changeFunction: function () { me.modified(); }
+			});
+
+			me.requestorPhone.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(function (isFinal, dataMap) {
+
+				    var enteredText = me.requestorPhone.getValue();
+
+				    me.requestorPhone.text.value = fin.cmn.text.mask.phone(enteredText);
+				    enteredText = me.requestorPhone.text.value;
+
+				    if (enteredText == "" && me.requestorPhone.text.readOnly)
+						this.valid = true;
+					else if (!(ui.cmn.text.validate.phone(enteredText)))
+				        this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
 		    });
-			
+
 			me.requestorEmail = new ui.ctl.Input.Text({
 		        id: "RequestorEmail",
 				maxLength: 100,
@@ -550,7 +572,7 @@ ii.Class({
 					me.vendorPhone.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.vendorPhone.text.value;
 										
-					if (enteredText.length < 14)
+					if (!(ui.cmn.text.validate.phone(enteredText)))
 						this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
 				});
 				
@@ -1158,18 +1180,19 @@ ii.Class({
 
 			me.requestorName.text.tabIndex = 1;
 			me.requestorEmail.text.tabIndex = 2;
-			me.requestedDate.text.tabIndex = 3;
-			me.deliveryDate.text.tabIndex = 4;
-			me.vendorName.text.tabIndex = 5;
-			me.vendorAddress1.text.tabIndex = 6;
-			me.vendorAddress2.text.tabIndex = 7;
-			me.vendorCity.text.tabIndex = 8;
-			me.vendorState.text.tabIndex = 9;
-			me.vendorZip.text.tabIndex = 10;
-			me.vendorContactName.text.tabIndex = 11;
-			me.vendorPhone.text.tabIndex = 12;
-			me.vendorEmail.text.tabIndex = 13;
-			me.reasonForRequest.text.tabIndex = 14;
+			me.requestorPhone.text.tabIndex = 3;
+			me.requestedDate.text.tabIndex = 4;
+			me.deliveryDate.text.tabIndex = 5;
+			me.vendorName.text.tabIndex = 6;
+			me.vendorAddress1.text.tabIndex = 7;
+			me.vendorAddress2.text.tabIndex = 8;
+			me.vendorCity.text.tabIndex = 9;
+			me.vendorState.text.tabIndex = 10;
+			me.vendorZip.text.tabIndex = 11;
+			me.vendorContactName.text.tabIndex = 12;
+			me.vendorPhone.text.tabIndex = 13;
+			me.vendorEmail.text.tabIndex = 14;
+			me.reasonForRequest.text.tabIndex = 15;
 			//Urgent - 15
 			//Not Urgent - 16
 			me.urgencyDate.text.tabIndex = 17;
@@ -1194,6 +1217,7 @@ ii.Class({
 			me.requestorName.resizeText();
 			me.requestorEmail.resizeText();
 			me.requestedDate.resizeText();
+			me.requestorPhone.resizeText();
 			me.deliveryDate.resizeText();
 			me.vendorName.resizeText();
 			me.vendorAddress1.resizeText();
@@ -1228,6 +1252,7 @@ ii.Class({
 			me.requestorName.text.readOnly = readOnly;
 			me.requestorEmail.text.readOnly = readOnly;
 			me.requestedDate.text.readOnly = readOnly;
+			me.requestorPhone.text.readOnly = readOnly;
 			me.deliveryDate.text.readOnly = readOnly;			
 			me.vendorName.text.readOnly = readOnly;
 			me.vendorAddress1.text.readOnly = readOnly;
@@ -1681,6 +1706,7 @@ ii.Class({
 			
 			me.requestorName.setValue(item.requestorName);
 			me.requestorEmail.setValue(item.requestorEmail);
+			me.requestorPhone.setValue(item.requestorPhone);
 			me.requestedDate.setValue(item.requestedDate);
 			me.deliveryDate.setValue(item.deliveryDate);
 			me.vendorName.lastBlurValue = item.vendorTitle;
@@ -2019,6 +2045,7 @@ ii.Class({
 					|| !me.vendorPhone.valid
 					|| !me.vendorEmail.valid
 					|| !me.reasonForRequest.valid
+                    || !me.requestorPhone.valid
 					|| ($("input:radio[name='Urgency']:checked").val() == "Urgent") && (!me.urgencyDate.valid)		
 					) {
 					alert("In order to continue, the errors on the page must be corrected.");	
@@ -2135,6 +2162,7 @@ ii.Class({
 			me.requestorName.setValue(me.users[0].firstName + " " + me.users[0].lastName + "");
 			me.requestorEmail.setValue(me.users[0].email);
 			me.requestedDate.setValue(me.currentDate());
+			me.requestorPhone.setValue("");
 			me.deliveryDate.setValue("");
 			me.vendorStore.reset();
 			me.vendorName.reset();
@@ -2578,6 +2606,7 @@ ii.Class({
 					, me.shippingPhone.getValue()
 					, me.shippingFax.getValue()
 					, me.requestorName.getValue()
+                    , me.requestorPhone.getValue()
 					, me.requestorEmail.getValue()
 					, me.requestedDate.lastBlurValue
 					, me.deliveryDate.lastBlurValue
@@ -2671,6 +2700,7 @@ ii.Class({
 				xml += ' houseCodeJobId="' + item.houseCodeJob + '"';
 				xml += ' requestorName="' + ui.cmn.text.xml.encode(item.requestorName) + '"';
 				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
+				xml += ' requestorPhone="' + fin.cmn.text.mask.phone(item.requestorPhone, true) + '"';
 				xml += ' requestedDate="' + item.requestedDate + '"';
 				xml += ' deliveryDate="' + item.deliveryDate + '"';
 				xml += ' vendorTitle="' + ui.cmn.text.xml.encode(item.vendorTitle) + '"';
@@ -2748,6 +2778,7 @@ ii.Class({
 				xml += ' shipToFax="' + fin.cmn.text.mask.phone(item.shipToFax) + '"';
 				xml += ' requestorName="' + ui.cmn.text.xml.encode(item.requestorName) + '"';
 				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
+				xml += ' requestorPhone="' + fin.cmn.text.mask.phone(item.requestorPhone) + '"';
 				xml += ' requestedDate="' + item.requestedDate + '"';
 				xml += ' deliveryDate="' + item.deliveryDate + '"';
 				xml += ' vendorTitle="' + ui.cmn.text.xml.encode(item.vendorTitle) + '"';

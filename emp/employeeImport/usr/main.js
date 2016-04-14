@@ -503,6 +503,9 @@ ii.Class({
 		
 		statusTypesLoaded: function(me, activeId) {
 			
+			me.multiRaceTypes = [];
+			me.disabilityTypes = [];
+			
 			me.genderTypes.unshift(new fin.emp.employeeImport.GenderType({ id: 2, name: "Female" }));
 			me.genderTypes.unshift(new fin.emp.employeeImport.GenderType({ id: 1, name: "Male" }));
 			me.genderTypes.unshift(new fin.emp.employeeImport.GenderType({ id: 0, name: "" }));
@@ -514,6 +517,18 @@ ii.Class({
 			me.vetTypes.unshift(new fin.emp.employeeImport.VetType({ id: 0, name: "" }));			
 			me.maritalStatusTypes.unshift(new fin.emp.employeeImport.MaritalStatusType({ id: 0, name: "" }));
 			me.basicLifeIndicatorTypes.unshift(new fin.emp.employeeImport.BasicLifeIndicatorType({ id: 0, name: "" }));
+			
+			me.disabilityTypes.push(new fin.emp.employeeImport.DisabilityType({ id: 0, name: "" }));
+			me.disabilityTypes.push(new fin.emp.employeeImport.DisabilityType({ id: 1, name: "Yes, I have a disability (or previously had a disability)" }));
+			me.disabilityTypes.push(new fin.emp.employeeImport.DisabilityType({ id: 2, name: "No, I don't have a disability" }));
+			me.disabilityTypes.push(new fin.emp.employeeImport.DisabilityType({ id: 3, name: "I don't wish to answer" }));
+
+			for (var index = 0; index < me.ethnicityTypes.length; index++) {
+				if (me.ethnicityTypes[index].name != "Two or more races" && me.ethnicityTypes[index].name != "Unknown") {
+					me.multiRaceTypes.push(new fin.emp.employeeImport.EthnicityType(me.ethnicityTypes[index].id, me.ethnicityTypes[index].name));
+				}
+			}
+			
 			me.checkLoadCount();
 		},
 		
@@ -729,7 +744,8 @@ ii.Class({
 
 				$("#txtHouseCode" + index).bind("blur", function() { me.houseCodeBlur(this); });
 				$("#selPrimaryState" + index).bind("change", function() { me.primaryStateChange(this); });
-				$("#selSecondaryState" + index).bind("change", function() { me.secondaryStateChange(this); });				
+				$("#selSecondaryState" + index).bind("change", function() { me.secondaryStateChange(this); });
+				$("#selEthnicityType" + index).bind("change", function() { me.ethnicityTypeChange(this); });
 			}
 			
 			me.buildDropDown("State", me.states);
@@ -745,8 +761,14 @@ ii.Class({
 			me.buildDropDown("VetType", me.vetTypes);
 			me.buildDropDown("MaritalStatusType", me.maritalStatusTypes);
 			me.buildDropDown("BasicLifeIndicatorType", me.basicLifeIndicatorTypes);
+			me.buildDropDown("MultiRace1", me.multiRaceTypes);
+			me.buildDropDown("MultiRace2", me.multiRaceTypes);
+			me.buildDropDown("MultiRace3", me.multiRaceTypes);
+			me.buildDropDown("MultiRace4", me.multiRaceTypes);
+			me.buildDropDown("MultiRace5", me.multiRaceTypes);
+			me.buildDropDown("DisabilityType", me.disabilityTypes);
 			
-			employeeRow = '<tr height="100%"><td colspan="56" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>';
+			employeeRow = '<tr height="100%"><td colspan="62" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>';
 			$("#EmployeeGridBody").append(employeeRow);
 			$("#EmployeeGrid tr:odd").addClass("gridRow");
         	$("#EmployeeGrid tr:even").addClass("alternateGridRow");
@@ -829,6 +851,16 @@ ii.Class({
 				me.setDropDownValue(me.vetTypes, me.employees[index].column52, "VetType", index);
 				me.setDropDownValue(me.maritalStatusTypes, me.employees[index].column53, "MaritalStatusType", index);
 				me.setDropDownValue(me.basicLifeIndicatorTypes, me.employees[index].column54, "BasicLifeIndicatorType", index);
+				me.setDropDownValue(me.multiRaceTypes, me.employees[index].column55, "MultiRace1", index);
+				me.setDropDownValue(me.multiRaceTypes, me.employees[index].column56, "MultiRace2", index);
+				me.setDropDownValue(me.multiRaceTypes, me.employees[index].column57, "MultiRace3", index);
+				me.setDropDownValue(me.multiRaceTypes, me.employees[index].column58, "MultiRace4", index);
+				me.setDropDownValue(me.multiRaceTypes, me.employees[index].column59, "MultiRace5", index);
+				me.setDropDownValue(me.disabilityTypes, me.employees[index].column60, "DisabilityType", index);
+				
+				if (me.employees[index].column30 != "Two or more races") {
+					me.ethnicityTypeChange($("#selEthnicityType" + index)[0]);
+				}
 			}
 			
 			me.employeeLoading = false;
@@ -1286,6 +1318,27 @@ ii.Class({
 					}
 				}
 			});
+		},
+		
+		ethnicityTypeChange: function(objSelect) {
+			var me = this;
+		    var rowNumber = Number(objSelect.id.substr(16));
+			var disabled = true;
+
+			if ($("#selEthnicityType" + rowNumber + " option:selected").text() == "Two or more races") {
+				disabled = false;
+			}
+
+			$("#selMultiRace1" + rowNumber).val("0");
+			$("#selMultiRace2" + rowNumber).val("0");
+			$("#selMultiRace3" + rowNumber).val("0");
+			$("#selMultiRace4" + rowNumber).val("0");
+			$("#selMultiRace5" + rowNumber).val("0");
+			$("#selMultiRace1" + rowNumber).attr("disabled", disabled);
+			$("#selMultiRace2" + rowNumber).attr("disabled", disabled);
+			$("#selMultiRace3" + rowNumber).attr("disabled", disabled);
+			$("#selMultiRace4" + rowNumber).attr("disabled", disabled);
+			$("#selMultiRace5" + rowNumber).attr("disabled", disabled);
 		},
 		
 		buildDropDown: function(controlName, types) {
@@ -1755,6 +1808,36 @@ ii.Class({
 					me.setCellColor($("#selMaritalStatusType" + index), me.cellColorValid, "");
 				}
 
+				if ($("#selEthnicityType" + index + " option:selected").text() == "Two or more races") {
+					if ($("#selMultiRace1" + index).val() == "0") {
+						rowValid = false;
+						me.setCellColor($("#selMultiRace1" + index), me.cellColorInvalid, "Please select valid Race 1.");
+					}
+					else {
+						me.setCellColor($("#selMultiRace1" + index), me.cellColorValid, "");
+					}
+
+					if ($("#selMultiRace2" + index).val() == "0") {
+						rowValid = false;
+						me.setCellColor($("#selMultiRace2" + index), me.cellColorInvalid, "Please select valid Race 2.");
+					}
+					else {
+						me.setCellColor($("#selMultiRace2" + index), me.cellColorValid, "");
+					}
+				}
+				else {
+					me.setCellColor($("#selMultiRace1" + index), me.cellColorValid, "");
+					me.setCellColor($("#selMultiRace2" + index), me.cellColorValid, "");
+				}
+
+				if ($("#selDisabilityType" + index).val() == "0") {
+					rowValid = false;
+					me.setCellColor($("#selDisabilityType" + index), me.cellColorInvalid, "Please select valid Disability.");
+				}
+				else {
+					me.setCellColor($("#selDisabilityType" + index), me.cellColorValid, "");
+				}
+
 				if (!rowValid) {
 					if (valid)
 						valid = false;
@@ -1943,6 +2026,12 @@ ii.Class({
 				xml += ' vetType="' + $("#selVetType" + index).val() + '"';
 				xml += ' maritalStatusType="' + $("#selMaritalStatusType" + index).val() + '"';
 				xml += ' basicLifeIndicatorType="' + $("#selBasicLifeIndicatorType" + index).val() + '"';
+				xml += ' multiRace1="' + $("#selMultiRace1" + index).val() + '"';
+				xml += ' multiRace2="' + $("#selMultiRace2" + index).val() + '"';
+				xml += ' multiRace3="' + $("#selMultiRace3" + index).val() + '"';
+				xml += ' multiRace4="' + $("#selMultiRace4" + index).val() + '"';
+				xml += ' multiRace5="' + $("#selMultiRace5" + index).val() + '"';
+				xml += ' disabilityType="' + $("#selDisabilityType" + index).val() + '"';
 				xml += '/>';
 			}
 	
