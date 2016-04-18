@@ -1652,6 +1652,17 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         });
     };
 
+    $scope.audit = function (id) {
+        $scope.loadingTitle = " Auditing...";
+        $scope.pageLoading = true;
+        EmpActions.auditEmployeePersonnelAction(id, function (data, status) {
+            $scope.pageLoading = false;
+            $scope.getPafList();
+            alert("Employee PAF has been audited successfully.");
+        });
+
+    };
+
     $scope.itemSelected = function (item) {
         $scope.selectedItem = item;
 
@@ -1676,6 +1687,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
 		{ id: 1, title: 'Open' },
 		{ id: 2, title: 'In Process' },
 		{ id: 8, title: 'Approved' },
+        { id: 7, title: 'Audited' },
 		{ id: 6, title: 'Cancelled' },
 		{ id: 10, title: 'Unapproved' }
     ];
@@ -2942,6 +2954,23 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         });
     };
 
+    var auditEmployeePersonnelAction = function (id, callback) {
+        var xml = "";
+
+        xml = '<transaction id="' + id + '">';
+        xml += '<auditEmployeePersonnelAction';
+        xml += ' id="' + id + '"';
+        xml += '/>';
+        xml += '</transaction>';
+
+        var data = "moduleId=emp&requestId=1&requestXml=" + encodeURIComponent(xml) + "&targetId=iiTransaction";
+
+        jQuery.post("/net/crothall/chimes/fin/emp/act/Provider.aspx", data, function (data, status) {
+            if (callback)
+                callback(data, status);
+        });
+    };
+
     var approveEmployeePersonnelAction = function (id, houseCodeId, callback) {
         var xml = "";
 
@@ -3057,6 +3086,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         getJDECompanies: getJDECompanies,
         getWorkflowHistory: getWorkflowHistory,
         getWorkflowDate: getWorkflowDate,
-        getHouseCodes: getHouseCodes
+        getHouseCodes: getHouseCodes,
+        auditEmployeePersonnelAction: auditEmployeePersonnelAction
     }
 }]);
