@@ -1687,9 +1687,9 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
 		{ id: 1, title: 'Open' },
 		{ id: 2, title: 'In Process' },
 		{ id: 8, title: 'Approved' },
-        { id: 7, title: 'Audited' },
 		{ id: 6, title: 'Cancelled' },
-		{ id: 10, title: 'Unapproved' }
+		{ id: 10, title: 'Unapproved' },
+        { id: 11, title: 'Audited' }
     ];
 
     $scope.getStatusTitle = function (id) {
