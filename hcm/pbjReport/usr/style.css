@@ -1,0 +1,13 @@
+﻿#ContainerArea {
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	padding: 5px;
+	margin: 1px;
+}
+
+#AnchorGenerate {
+	float: left;
+	width: 130px;
+	margin: 10px 3px 3px 3px;
+	padding-left: 5px;
+}
