@@ -115,8 +115,12 @@
 			<a class="btn btn-info" ng-click="submit(selectedItem)" ng-if="write && (selectedItem.StatusType==1 || selectedItem.StatusType==2 || selectedItem.StatusType==10)"><span ng-if="write && selectedItem.StatusType==1">Submit</span><span ng-if="write && (selectedItem.StatusType==2 || selectedItem.StatusType==10)">ReSubmit</span></a>
             <a class="btn btn-info" ng-click="approve(selectedItem.Id, selectedItem.HcmHouseCode)" ng-if="(write || approveInProcess) && (selectedItem.StatusType==2 && approveInProcess)"><span ng-if="(write || approveInProcess) && (selectedItem.StatusType==2 && approveInProcess)">Approve</span></a>
             <a class="btn btn-info" ng-if="write && selectedItem.StatusType==8" ng-click="audit(selectedItem.Id)">Audit</a>
+            <a class="btn btn-info" ng-if="write && selectedItem" ng-click="printForm(selectedItem)">Print</a>
 			<a class="btn btn-default" ng-if="write && (selectedItem.StatusType==1 || selectedItem.StatusType==2 || selectedItem.StatusType==10)" ng-click="cancelForm(selectedItem.Id, selectedItem.HcmHouseCode)" ng-disabled="!selectedItem">Cancel</a>
         </div>
+    </div>
+    <div style="display: none;">
+    <iframe id="iFrameDownload" src="/net/crothall/chimes/fin/app/act/FileUpload.aspx" frameborder="0" width="100%" height="30"></iframe>
     </div>
 </div>
 <div ng-show="isPageLoading()">
