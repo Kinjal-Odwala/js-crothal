@@ -1640,6 +1640,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
             $("#iFrameDownload")[0].contentWindow.document.getElementById("FileName").value = items[0].fileName;
             $("#iFrameDownload")[0].contentWindow.document.getElementById("DownloadButton").click();
             $scope.pageLoading = false;
+            $scope.getPafList();
         });
     };
 
