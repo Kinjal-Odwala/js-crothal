@@ -50,63 +50,55 @@
 		<div style="clear:both;"></div>
 		<div class="pageBody">
 			<div class="contentArea">
-                <div class="header">Catalog Search</div>
-				<div id="contentAreasContainerLeft">
-					<div class="body">
-						<div id="LabelTextAreaLeftCatalog">
-							Catalog Name:
-						</div>
-						<div id="InputTextAreaCatalog">
-							<div id="SearchInput"></div>
-						</div>
-						<div id="searchButtonCatalog">
-							<div id="SearchButton"></div>
-						</div>
-						<div style="clear:both;"></div>
+                <div id="header" class="header">Catalog Search</div>
+				<div class="body">
+					<div id="SearchLabel" class="labelTextArea">Catalog Name:</div>
+					<div class="inputTextArea">
+						<div id="SearchInput"></div>
 					</div>
+					<div id="AnchorSearch"></div>
 				</div>
-				<div id="contentAreasContainerRight"></div>
 				<div style="clear:both;"></div>
 				<div id="contentAreasContainerLeft">
-					<div  class="contentArea">
-						<div class="header">Catalogs</div>
+					<div class="contentArea">
+						<div id="leftHeader" class="header">Catalogs</div>
 						<div class="body">
 							<div id="CatalogGrid"></div>
-							<div style="clear:both;"></div>
+							<div id="ItemGrid" style="display:none"></div>
 						</div>
 					</div>
 					<div style="clear:both;"></div>
 				</div>
 				<div id="contentAreasContainerRight">
 					<div class="contentArea">
-						<div class="header">Catalog Details</div>
+						<div id="rightHeader" class="header">Catalog Details</div>
 						<div id="container-1">
 			    			<div id="fragment-1" class="fragment">
 								<div id="catalogAssociationsContent">
 									<div class="body">
 										<div id="TableEditArea">
-											<div id="LabelTextAreaCatalogDetails">
+											<div class="labelTextArea">
 												<span class="requiredFieldIndicator">&#149;&nbsp;</span>Catalog Name:
 											</div>
-											<div id="InputTextAreaRight">
+											<div class="inputTextArea">
 												<div id="CatalogTitle"></div>
 											</div>
 											<div style="clear:both;"></div>
 										</div>
 										<div id="TableEditArea">
-											<div id="LabelTextAreaCatalogDetails">
+											<div class="labelTextArea">
 												<span class="requiredFieldIndicator">&#149;&nbsp;</span>Vendor:
 											</div>
-											<div id="InputTextAreaRight">
+											<div class="inputTextArea">
 												<div id="CatalogVendor"></div>
 											</div>
 											<div style="clear:both;"></div>
 										</div>
 										<div id="TableEditArea">
-											<div id="LabelTextAreaCatalogDetails">
+											<div class="labelTextArea">
 												<span id="nonRequiredFieldIndicator">&nbsp;Active:</span>
 											</div>
-											<div id="InputTextAreaRight">
+											<div class="inputTextArea">
 												<div id="CatalogActive"></div>
 											</div>
 											<div style="clear:both;"></div>
@@ -181,9 +173,34 @@
 								</div>
 								<div style="clear:both;"></div>
 							</div>
+							<div id="fragment-3" class="fragment">
+								<div id="itemCatalogContent">
+									<div class="body">
+										<div id="ItemCatalogGrid"></div>
+										<div id="CatalogsPaging">							
+								            <table cellpadding="0" cellspacing="0" style="width: 100%">
+						                        <tr class="Header">
+						                            <td class="BorderVertical"></td>					                            
+						                            <td>
+						                                <table cellpadding="0" cellspacing="0" style="width: 100%">
+						                                    <tr class="Header">
+						                                    	<td>&nbsp;<img id="imgAddCatalogs" src="/fin/cmn/usr/media/Common/add.png" style="cursor: pointer" alt="Add Catalogs" title="Add Catalogs" /></td>
+						                                    </tr>
+						                                </table>
+						                            </td>
+						                            <td class="BorderVertical"></td>
+						                        </tr>
+						                        <tr><td class="BorderHorizontal" colspan="3"></td></tr>
+						                    </table>							        
+										</div>
+									</div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
 							<ul id="TabCollection">
 				                <li><a id="TabHouseCodes" href="#fragment-1"><span>Catalog Associations</span></a></li>
 								<li><a id="TabItems" href="#fragment-2"><span>Catalog Items</span></a></li>
+								<li><a id="TabCatalogs" href="#fragment-3"><span>Catalogs</span></a></li>
 				            </ul>
 						</div>
 						<div style="clear:both;"></div>
@@ -199,30 +216,25 @@
 				<div class="contentArea">
 					<div id="itemsList">
 						<div class="body">
-							<div class="header">Item Search</div>
+							<div id="popupHeader" class="header">Item Search</div>
 							<div style="clear:both;"></div>
-							<div id="LabelAreaCatalogSearch">
-								<span id="nonRequiredFieldIndicator">Item Number, Description:</span>
+							<div class="labelTextArea">
+								<div id="popupHeaderLabel">Item #, Description:</div>
 							</div>
-							<div id="InputTextAreaItemSearch">
-								<div id="PurItemSearchInput"></div>
+							<div class="inputTextAreaLarge">
+								<div id="SearchInputPopup"></div>
 							</div>
-							<div id="searchButtonCatalog">
-								<div id="PurItemSearchButton"></div>
-							</div>
+							<div id="AnchorSearchPopup"></div>
 							<div style="clear:both;"></div>
-							<div id="GridTable">
-								<div id="PurItemGrid"></div>								
-							</div>
+							<div id="PurItemGrid"></div>
+							<div id="PurCatalogGrid" style="display:none"></div>
 						</div>
 					</div>
 					<div id="houseCodesList">
 						<div class="body">
 							<div class="header">House Codes</div>
 							<div style="clear:both;"></div>
-							<div id="LabelHouseCode">
-								<span id="nonRequiredFieldIndicator">House Code:</span>
-							</div>
+							<div class="labelTextAreaSmall">House Code:</div>
 							<div id="DropDownRightHouseCode">
 								<div id="houseCodeTemplateContainer" class="HouseCodeContainer"></div>
 							</div>

@@ -1,30 +1,25 @@
-﻿
-#catalogAssociationsContent {
-	width: 100%;
-}
-
-#catalogItemContent { 
-	width: 100%;
-}
-
-#InputTextAreaCatalog {
-	width: 190px; 
-	height: 27px;
-	float: left; 
-}
-
-#LabelTextAreaLeftCatalog {
-	width: 100px;
+﻿.inputTextArea {
 	float: left;
-	height: 27px;
+	width: 200px;
+}
+
+.inputTextAreaLarge {
+	float: left;
+	width: 400px;
+}
+
+.labelTextAreaSmall {
+	float: left;
+	width: 100px;
 	font-family: Verdana;
 	font-size: 12px;
 	color: #032D23;
+	padding: 5px 0px 0px 10px;
 }
 
-#LabelAreaCatalogSearch {
-	width: 180px;
+.labelTextArea {
 	float: left;
+	width: 130px;	
 	height: 27px;
 	font-family: Verdana;
 	font-size: 12px;
@@ -32,42 +27,31 @@
 	padding: 0px 0px 0px 10px;
 }
 
-#LabelHouseCode {
-	width: 90px;
-	float: left;
-	height: 27px;
-	font-family: Verdana;
-	font-size: 12px;
-	color: #032D23;
-	padding: 5px 0px 0px 10px;
+.Header {
+    height: 20px;
+    font-family: Verdana;
+    font-size: 8pt;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #669b67;
+    text-align: left;
 }
 
-#InputTextAreaItemSearch {
-	width: 400px; 
-	height: 27px;
-	float: left; 
+.Header SELECT {
+    font-family: Verdana;
+    font-size: 8pt;
 }
 
-#LabelTextAreaCatalogDetails {
-	width: 130px;
-	float: left;
-	height: 27px;
-	font-family: Verdana;
-	font-size: 12px;
-	color: #032D23;
+.BorderHorizontal {
+    height: 1px;
+    background-color: #adaaad;
 }
 
-#searchButtonCatalog {
-	width: 85px;
-	float: left;
-	padding-left: 5px;
-	margin-right: 5px;
+.BorderVertical {
+    width: 1px;
+    background-color: #adaaad;
 }
 
-#TabCollection {
-	width: 100%;
-}
-	
 .fragment {
 	border: 0;
 	border: solid #AAAAAA thin;
@@ -75,32 +59,10 @@
 	padding: 5px 5px 5px 5px;
 }
 
-#backgroundPopup {
-	position: fixed; 
-	top: 0; 
-	left: 0; 
-	z-index: 5000; 
-	width: 100%; 
-	height: 100%;
-	border: 1px solid #cecece; 
-	background-color: black;
-	display: none;
-}
-
-#popupContact {
-	width: 700px; 
-	height: 350px;
-	position: absolute;
-	z-index: 5025;
-	top: 10%; 
-	left: 10%;
-	background-color: white;
-	display: none;
-}
-
-#anchorAlign {
-	vertical-align: baseline;
-	clear: both;
+#AnchorSearch, #AnchorSearchPopup {
+	float: left;
+	width: 82px;
+	margin-left: 15px;
 }
 
 #AnchorOk {
@@ -138,34 +100,9 @@
 	text-align: right;	
 }
 
-#PurItemGrid, #HouseCodeGrid {	
+#PurItemGrid, #PurCatalogGrid, #HouseCodeGrid {	
 	height: 250px;
 	padding: 0px 10px 0px 10px;
-}
-
-.Header {
-    height: 20px;
-    font-family: Verdana;
-    font-size: 8pt;
-    font-weight: bold;
-    color: #ffffff;
-    background-color: #669b67;
-    text-align: left;
-}
-
-.Header SELECT {
-    font-family: Verdana;
-    font-size: 8pt;
-}
-
-.BorderHorizontal {
-    height: 1px;
-    background-color: #adaaad;
-}
-
-.BorderVertical {
-    width: 1px;
-    background-color: #adaaad;
 }
 
 #divFrame {
@@ -181,13 +118,26 @@
 #iFrameUpload {
 	padding-left: 10px;
 }
-.iiInputText
-	{
-		width:182px;
-		white-space:nowrap;
-	}
-.iiInputTable
-	{
-		width:188px;
-		white-space:nowrap;
-	}
+
+#backgroundPopup {
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	z-index: 5000; 
+	width: 100%; 
+	height: 100%;
+	border: 1px solid #cecece; 
+	background-color: black;
+	display: none;
+}
+
+#popupContact {
+	width: 700px; 
+	height: 350px;
+	position: absolute;
+	z-index: 5025;
+	top: 10%; 
+	left: 10%;
+	background-color: white;
+	display: none;
+}

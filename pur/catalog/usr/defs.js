@@ -46,7 +46,8 @@ ii.init.register( function() {
 		, displayOrder: {type: Number, required: false}
 		, active: {type: Boolean}
 		, catalogHouseCodes: {type: [fin.pur.catalog.CatalogHouseCode], required: false}
-		, catalogItems: {type: [fin.pur.catalog.CatalogItem], required: false}		
+		, catalogItems: {type: [fin.pur.catalog.CatalogItem], required: false}
+		, assigned: {type: Boolean, required: false, defaultValue: false}
 	};	
 	
 	fin.pur.catalog.catalogItemArgs = {
@@ -55,6 +56,7 @@ ii.init.register( function() {
 		, itemNumber: {type: String, required: false}
 		, itemDescription: {type: String, required: false}
 		, catalogId: {type: Number}
+		, catalogTitle: {type: String}
 		, price: {type: String}
 		, displayOrder: {type: Number, required: false}
 		, active: {type: Boolean}
