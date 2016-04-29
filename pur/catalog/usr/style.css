@@ -141,3 +141,20 @@
 	background-color: white;
 	display: none;
 }
+
+#ActiveLabelCatalog {
+    width: 40px;
+    float: left;
+    height: 27px;
+    font-family: Verdana;
+       font-size: 12px;
+       color: #032D23;
+    padding-left: 15px;
+}
+
+#ActiveSearchCatalog {
+    width: 175px;
+    float: left;
+    height: 27px;
+    padding-left: 10px;
+}

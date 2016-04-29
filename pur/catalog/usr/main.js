@@ -65,6 +65,7 @@ ii.Class({
 			me.configureCommunications();
 			me.setStatus("Loading");
 			me.modified(false);
+			me.activeStatusesLoaded();
 
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\Purchasing\\Catalogs";
@@ -188,6 +189,11 @@ ii.Class({
 				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
 				clickFunction: function() { me.actionUploadCancelItem(); },
 				hasHotState: true
+			});
+
+			me.activeSearch = new ui.ctl.Input.DropDown.Filtered({
+			    id: "ActiveSearch",
+			    formatFunction: function (type) { return type.name; }
 			});
 			
 			me.anchorSearch = new ui.ctl.buttons.Sizeable({
@@ -686,9 +692,11 @@ ii.Class({
 			me.units = [];
 
 			if (me.action == "Catalogs")
-				me.catalogStore.fetch("userId:[user],searchValue:" + me.searchInput.getValue(), me.catalogsLoaded, me);
+			    me.catalogStore.fetch("userId:[user],searchValue:" + me.searchInput.getValue()
+                    + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number), me.catalogsLoaded, me);
 			else if (me.action == "ItemCatalogsAssociation")
-				me.purItemStore.fetch("userId:[user],searchValue:" + me.searchInput.getValue() + ",active:1", me.itemsLoaded, me);			
+			    me.purItemStore.fetch("userId:[user],searchValue:" + me.searchInput.getValue()
+                    + ",active:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number), me.itemsLoaded, me);
 		},		
 		
 		catalogsLoaded: function(me, activeId) {
@@ -767,7 +775,9 @@ ii.Class({
 			me.lastSelectedRowIndex = index;
 			me.status = "";
 			me.setLoadCount();
-			me.catalogItemStore.fetch("userId:[user],itemId:" + item.id, me.itemCatalogsLoaded, me);
+			me.catalogItemStore.fetch("userId:[user],itemId:" + item.id
+                                     + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
+                                     , me.itemCatalogsLoaded, me);
 		},
 		
 		itemCatalogsLoaded: function(me, activeId) {
@@ -799,6 +809,18 @@ ii.Class({
 			if (me.vendors.length > 0)
 				me.catalogVendor.select(0, me.catalogVendor.focused);
 		},
+
+		activeStatusesLoaded: function () {
+		    me = this;
+
+		    me.activeStatuses = [];
+		    me.activeStatuses.push(new fin.pur.catalog.ActiveStatus(1, -1, "All"));
+		    me.activeStatuses.push(new fin.pur.catalog.ActiveStatus(2, 1, "Yes"));
+		    me.activeStatuses.push(new fin.pur.catalog.ActiveStatus(3, 0, "No"));
+
+		    me.activeSearch.setData(me.activeStatuses);
+		    me.activeSearch.select(0, me.activeSearch.focused);
+		},
 		
 		loadCatalogHouseCodesCount: function() {
 			var me = this;
@@ -812,7 +834,9 @@ ii.Class({
 				me.setLoadCount();
 				me.houseCodesTabNeedUpdate = false;
 				me.recordCountStore.reset();
-				me.recordCountStore.fetch("userId:[user]," + "catalogId:" + me.catalogId + ",type:catalogHouseCodes", me.catalogHouseCodesCountLoaded, me);
+				me.recordCountStore.fetch("userId:[user]," + "catalogId:" + me.catalogId
+                                          + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
+                                          + ",type:catalogHouseCodes", me.catalogHouseCodesCountLoaded, me);
 			}
 		},		
 
@@ -849,7 +873,9 @@ ii.Class({
 			me.catalogUnitGrid.setData([]);
 			me.houseCodesStartPoint = ((me.houseCodesPageCurrent - 1) * me.maximumRows) + 1;
 			me.catalogHouseCodeStore.reset();
-			me.catalogHouseCodeStore.fetch("userId:[user],catalogId:" + me.catalogId + ",startPoint:" + me.houseCodesStartPoint + ",maximumRows:" + me.maximumRows, me.catalogHouseCodesLoaded, me);	
+			me.catalogHouseCodeStore.fetch("userId:[user],catalogId:" + me.catalogId
+                + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
+                + ",startPoint:" + me.houseCodesStartPoint + ",maximumRows:" + me.maximumRows, me.catalogHouseCodesLoaded, me);
 		},	
 		
 		controlVisible: function() {
@@ -896,7 +922,9 @@ ii.Class({
 				me.setLoadCount();
 				me.itemsTabNeedUpdate = false;
 				me.recordCountStore.reset();
-				me.recordCountStore.fetch("userId:[user]," + "catalogId:" + me.catalogId + ",type:catalogItems", me.catalogItemsCountLoaded, me);
+				me.recordCountStore.fetch("userId:[user]," + "catalogId:" + me.catalogId
+                                         + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
+                                         + ",type:catalogItems", me.catalogItemsCountLoaded, me);
 			}			
 		},
 		
@@ -933,7 +961,9 @@ ii.Class({
 			me.catalogItemGrid.setData([]);
 			me.itemsStartPoint = ((me.itemsPageCurrent - 1) * me.maximumRows) + 1;
 			me.catalogItemStore.reset();
-			me.catalogItemStore.fetch("userId:[user],catalogId:" + me.catalogId + ",startPoint:" + me.itemsStartPoint + ",maximumRows:" + me.maximumRows, me.catalogItemsLoaded, me);
+			me.catalogItemStore.fetch("userId:[user],catalogId:" + me.catalogId
+                + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
+                + ",startPoint:" + me.itemsStartPoint + ",maximumRows:" + me.maximumRows, me.catalogItemsLoaded, me);
 		},
 
 		catalogItemsLoaded: function(me, activeId) {
@@ -1173,10 +1203,15 @@ ii.Class({
 			$("#popupLoading").show();
 			me.setStatus("Loading");
 
-			if (me.action == "Catalogs")
-				me.purItemStore.fetch("searchValue:" + me.searchInputPopup.getValue() + ",active:1,userId:[user],", me.itemsGridLoaded, me);	
-			else if (me.action == "ItemCatalogsAssociation")
-				me.catalogStore.fetch("userId:[user],searchValue:" + me.searchInputPopup.getValue(), me.catalogsGridLoaded, me);
+			if (me.action == "Catalogs") {
+			    me.purItemStore.fetch("searchValue:" + me.searchInputPopup.getValue()
+                    + ",active:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
+                    + ",userId:[user],", me.itemsGridLoaded, me);
+			}
+			else if (me.action == "ItemCatalogsAssociation") {
+			    me.catalogStore.fetch("userId:[user],searchValue:" + me.searchInputPopup.getValue()
+                    + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number), me.catalogsGridLoaded, me);
+			}
 		},	
 		
 		itemsGridLoaded: function(me, activeId) {
@@ -1462,7 +1497,9 @@ ii.Class({
 			$("#pageLoading").fadeIn("slow");
 			
 			me.fileNameStore.reset();
-			me.fileNameStore.fetch("userId:[user],export:1,catalogId:" + me.catalogId + ",type:" + type, me.fileNamesLoaded, me);
+			me.fileNameStore.fetch("userId:[user],export:1,catalogId:" + me.catalogId
+                                   + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
+                                   + ",type:" + type, me.fileNamesLoaded, me);
 		},
 
 		fileNamesLoaded: function(me, activeId) {
@@ -1790,7 +1827,9 @@ ii.Class({
 				else if (me.status == "addCatalogs") {
 					me.catalogsTabNeedUpdate = true;
 					me.catalogItemStore.reset();
-					me.catalogItemStore.fetch("userId:[user],itemId:" + me.itemGrid.data[me.itemGrid.activeRowIndex].id, me.itemCatalogsLoaded, me);
+					me.catalogItemStore.fetch("userId:[user],itemId:" + me.itemGrid.data[me.itemGrid.activeRowIndex].id
+                                            + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
+                                            , me.itemCatalogsLoaded, me);
 				}
 				else {
 					$(args.xmlNode).find("*").each(function() {

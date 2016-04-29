@@ -90,6 +90,12 @@ ii.init.register( function() {
 		id: {type: Number}
 		, fileName: {type: String, required: false, defaultValue: ""}
 	};
+
+	fin.pur.catalog.activeStatusArgs = {
+	    id: { type: Number },
+	    number: { type: Number },
+	    name: { type: String }
+	};
 	    
 }, 2);
 
@@ -195,4 +201,14 @@ ii.Class({
 			$.extend(this, args);
 		}
 	}
+});
+
+ii.Class({
+    Name: "fin.pur.catalog.ActiveStatus",
+    Definition: {
+        init: function () {
+            var args = ii.args(arguments, fin.pur.catalog.activeStatusArgs);
+            $.extend(this, args);
+        }
+    }
 });
