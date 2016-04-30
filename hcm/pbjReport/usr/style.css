@@ -1,4 +1,34 @@
-﻿#ContainerArea {
+﻿.leftContainer {
+	float: left;
+	width: 48%;
+	vertical-align: top;
+	margin-right: 20px;
+	position: relative;
+}
+
+.rightContainer {
+	float: left;
+	width: 49.3%;
+	vertical-align: top;
+	position: relative;
+}
+
+.labelTextArea {
+	float: left;
+	width: 130px;	
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 0px 0px 0px 10px;
+}
+
+.inputTextArea {
+	float: left;
+	width: 200px;
+}
+
+#PBJReportContainer {
 	border: solid #AAAAAA thin;
 	border-width: 1px;
 	padding: 5px;
@@ -8,6 +38,13 @@
 #AnchorGenerate {
 	float: left;
 	width: 130px;
+	margin: 10px 3px 3px 3px;
+	padding-left: 5px;
+}
+
+#AnchorDownload {
+	float: left;
+	width: 102px;
 	margin: 10px 3px 3px 3px;
 	padding-left: 5px;
 }
