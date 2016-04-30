@@ -25,6 +25,12 @@ ii.init.register( function() {
 		, itemSelect: {type: Boolean, required: false, defaultValue: false}
 		, effectivePrice: {type: String, required: false, defaultValue: ""}
 	};
+
+	fin.pur.itemPriceUpdate.activeStatusArgs = {
+	    id: { type: Number },
+	    number: { type: Number },
+	    name: { type: String }
+	};
     
 }, 2);
 
@@ -46,4 +52,14 @@ ii.Class({
 			$.extend(this, args);
 		}
 	}
+});
+
+ii.Class({
+    Name: "fin.pur.itemPriceUpdate.ActiveStatus",
+    Definition: {
+        init: function () {
+            var args = ii.args(arguments, fin.pur.itemPriceUpdate.activeStatusArgs);
+            $.extend(this, args);
+        }
+    }
 });

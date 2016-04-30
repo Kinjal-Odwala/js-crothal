@@ -53,6 +53,7 @@ ii.Class({
 			me.configureCommunications();
 			me.setStatus("Loading");
 			me.modified(false);
+			me.activeStatusesLoaded();
 
 			$(window).bind("resize", me, me.resize );
 			$(document).bind("keydown", me, me.controlKeyProcessor);
@@ -211,6 +212,11 @@ ii.Class({
 				text: "<span>Search</span>",
 				clickFunction: function() { me.loadSearchResults(); },
 				hasHotState: true
+			});
+
+			me.activeSearch = new ui.ctl.Input.DropDown.Filtered({
+			    id: "ActiveSearch",
+			    formatFunction: function (type) { return type.name; }
 			});
 
 			me.searchInput = new ui.ctl.Input.Text({
@@ -434,7 +440,20 @@ ii.Class({
 				me.searchInput.updateStatus();
 			}
 			me.setLoadCount();
-			me.itemStore.fetch("userId:[user],searchValue:" + me.searchInput.getValue() + ",active:-1", me.itemsLoaded, me);				
+			me.itemStore.fetch("userId:[user],searchValue:" + me.searchInput.getValue()
+                               + ",active:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number), me.itemsLoaded, me);
+		},
+
+		activeStatusesLoaded: function () {
+		    me = this;
+
+		    me.activeStatuses = [];
+		    me.activeStatuses.push(new fin.pur.itemPriceUpdate.ActiveStatus(1, -1, "All"));
+		    me.activeStatuses.push(new fin.pur.itemPriceUpdate.ActiveStatus(2, 1, "Yes"));
+		    me.activeStatuses.push(new fin.pur.itemPriceUpdate.ActiveStatus(3, 0, "No"));
+
+		    me.activeSearch.setData(me.activeStatuses);
+		    me.activeSearch.select(0, me.activeSearch.focused);
 		},
 		
 		itemsLoaded: function(me, activeId) {
@@ -468,7 +487,8 @@ ii.Class({
 			
 			if(me.status == "")
 				me.setLoadCount();
-			me.catalogItemStore.fetch("userId:[user],itemId:" + me.itemId, me.catalogItemsLoaded, me);
+			me.catalogItemStore.fetch("userId:[user],itemId:" + me.itemId
+                     + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number), me.catalogItemsLoaded, me);
 		},
 
 		catalogItemsLoaded: function(me, activeId) {
