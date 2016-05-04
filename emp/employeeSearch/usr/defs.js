@@ -92,6 +92,7 @@ ii.init.register( function(){
 		unionEmployee: {type: Boolean, required: false, defaultValue: false},
 		unionType: {type: Number, required: false, defaultValue: 0},
 		unionStatusType: {type: Number, required: false, defaultValue: 0},
+		pbjReporting: {type: Boolean, required: false, defaultValue: false},
 		crothallEmployee: {type: Boolean, required: false, defaultValue: false},
 		employeeNumber: {type: String, required: false, defaultValue: ""},
 		ptoAccruedHourEntryAutomatic: {type: Boolean, required: false, defaultValue: false},

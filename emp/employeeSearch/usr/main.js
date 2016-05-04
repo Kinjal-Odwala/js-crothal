@@ -4383,6 +4383,11 @@ ii.Class({
 					$('#UnionYes').click();
 				else
 					$('#UnionNo').click();
+					
+				if (me.employeeGenerals[0].pbjReporting)
+					$('#PBJReportingYes').attr('checked', true);
+				else
+					$('#PBJReportingNo').attr('checked', true);
 				
 				//Job Information Section - End
 				
@@ -5841,6 +5846,7 @@ ii.Class({
 			$("#UnionNo").attr("checked", true);
 			$("#LabelUnion").html("<span id='nonRequiredFieldIndicator'>Union:</span>");
 			$("#LabelUnionStatus").html("<span id='nonRequiredFieldIndicator'>Union Status:</span>");
+			$("#PBJReportingNo").attr("checked", true);
 
 			$("#GenderYes").attr("checked", true);
 			$("#MealPlanYes").attr("checked", false);
@@ -6719,6 +6725,7 @@ ii.Class({
 						$("#popupSubHeader").text("Job Information");
 						$("#JobEffectiveDateText").attr('disabled', true);
 						$("#JobEffectiveDateAction").removeClass("iiInputAction");
+						$("#PBJReportingContainer").show();
 						me.jobEffectiveDate.setValue(me.employeeHireDate.text.value);
 						me.compensationEffectiveDate.setValue(me.employeeHireDate.text.value);
 					}
@@ -6739,6 +6746,7 @@ ii.Class({
 						$("#Compensation").hide();
 						$("#ModificationNotes").hide();
 						$("#Requestor").hide();
+						$("#PBJReportingContainer").hide();
 						$("#AnchorNext").show();
 						$("#AnchorBack").show();
 						me.firstTimeShow == false;
@@ -6747,6 +6755,7 @@ ii.Class({
 					else if (me.actionType == "Job Information") {
 						$("#popupSubHeader").text("Job Information");
 						$("#SSNContianer").hide();
+						$("#PBJReportingContainer").show();
 						$("#AnchorNext").hide();
 						$("#AnchorBack").show();
 						$("#AnchorSave").show();
@@ -7451,6 +7460,7 @@ ii.Class({
 				, unionEmployee: ($("input[name='Union']:checked").val() == "true" ? true : false)
 				, unionType: (me.employeeUnion.indexSelected >= 0 ? me.unionTypes[me.employeeUnion.indexSelected].id : 0)
 				, unionStatusType: (me.employeeUnionStatus.indexSelected >= 0 ? me.unionStatusTypes[me.employeeUnionStatus.indexSelected].id : 0)
+				, pbjReporting: ($("input[name='PBJReporting']:checked").val() == "true" ? true : false)
 				, basicLifeIndicatorType: (me.basicLifeIndicatorType.indexSelected >= 0 ? me.basicLifeIndicatorTypes[me.basicLifeIndicatorType.indexSelected].id : 0)
 				, i9Type: (me.employeeI9Status.indexSelected >= 0 ? me.i9Types[me.employeeI9Status.indexSelected].id : 0)
 				, vetType: (me.employeeVETSStatus.indexSelected >= 0 ? me.vetTypes[me.employeeVETSStatus.indexSelected].id : 0)
@@ -7745,6 +7755,7 @@ ii.Class({
 				xml += ' jobStartReason="' + itemGeneral.jobStartReason + '"';
 				xml += ' houseCodeJob="' + itemGeneral.houseCodeJob + '"';
 				xml += ' exempt="' + itemGeneral.exempt + '"';
+				xml += ' pbjReporting="' + itemGeneral.pbjReporting + '"';
 			}
 			
 			if (me.actionType == "Compensation" || me.actionType == "HouseCodeTransfer" || me.actionType == "DateModification" ||
