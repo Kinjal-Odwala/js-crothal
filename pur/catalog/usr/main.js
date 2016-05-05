@@ -36,6 +36,7 @@ ii.Class({
 			me.status = "";
 			me.action = "Catalogs";
 			me.units = [];
+			me.purItemData = [];
 			me.houseCodesTabNeedUpdate = true;
 			me.itemsTabNeedUpdate = true;
 			me.catalogsTabNeedUpdate = true;
@@ -340,20 +341,20 @@ ii.Class({
 				title: "To search a specific Items, type-in Item # or Description and press Enter key/click Search button.",
 				maxLength: 50
 			});
-			
+
 			me.searchInputPopup.setValidationMaster( me.validator )
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation(function( isFinal, dataMap) {
 				
 				if (me.searchInputPopup.getValue().length < 3)
-					this.setInvalid("Please enter search criteria (minimum 3 characters).");					
+				    this.setInvalid("Please enter search criteria (minimum 3 characters).");
 			});
 						
 			me.anchorSearchPopup = new ui.ctl.buttons.Sizeable({
 				id: "AnchorSearchPopup",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Search&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.loadPopupSearchResults(); },
+				clickFunction: function () { me.enter = false; me.purItemData = []; me.loadPopupSearchResults(); },
 				hasHotState: true
 			});
 
@@ -471,7 +472,7 @@ ii.Class({
 			$("#selHouseCodesPageNumber").bind("change", function() { me.pageNumberChange("houseCodes"); });
 			$("#imgPrevHouseCodes").bind("click", function() { me.prevHouseCodes(); });
 			$("#imgNextHouseCodes").bind("click", function() { me.nextHouseCodes(); });
-			$("#imgAddItems").bind("click", function() { me.addItems(); });
+			$("#imgAddItems").bind("click", function () { me.purItemData = []; me.addItems(); });
 			$("#imgDownloadItems").bind("click", function() { me.actionDownloadItem("items"); });
 			$("#selItemsPageNumber").bind("change", function() { me.pageNumberChange("items"); });
 			$("#imgImportItems").bind("click", function() { me.actionImportItem("items"); });
@@ -1181,7 +1182,8 @@ ii.Class({
 			var me = event.data;
 				
 			if (event.keyCode == 13) {
-				me.loadPopupSearchResults();
+			    me.enter = true;
+			    me.loadPopupSearchResults();
 			}
 		},
 
@@ -1217,8 +1219,27 @@ ii.Class({
 		itemsGridLoaded: function(me, activeId) {
 	    		
 			if (me.purItemGrid.activeRowIndex >= 0)		
-				me.purItemGrid.body.deselect(me.purItemGrid.activeRowIndex);
-			me.purItemGrid.setData(me.purItems);
+			    me.purItemGrid.body.deselect(me.purItemGrid.activeRowIndex);
+
+			if (me.enter == true) {
+			    for (var index = 0; index < me.purItems.length; index++) {
+			     me.purItemData.push(new fin.pur.catalog.PurItem(
+				 me.purItems[index].id
+                , me.purItems[index].number
+     			, me.purItems[index].description
+                , me.purItems[index].price
+                , me.purItems[index].active
+				, true
+				));
+			}
+			    me.purItemGrid.setData(me.purItemData);
+			    for (var index = 0; index < me.purItemData.length; index++) {
+			        $("#assignItemInputCheck" + index)[0].checked = true;
+                 }
+			}
+			else {
+			    me.purItemGrid.setData(me.purItems);
+			}
 			me.setStatus("Loaded");
 			$("#popupLoading").hide();
 		},
