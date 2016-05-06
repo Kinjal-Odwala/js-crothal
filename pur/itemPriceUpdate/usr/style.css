@@ -1,12 +1,31 @@
-﻿
-.labelText {
+﻿.labelTextAreaSmall {
 	float: left;
-	width: 160px;
+	width: 60px;
 	height: 27px;	
 	font-family: Verdana;
 	font-size: 12px;
 	color: #032D23;
-	padding: 3px 0px 0px 0px;
+	padding: 3px 0px 0px 15px;
+}
+
+.labelTextArea {
+	float: left;
+    width: 160px;
+    height: 27px;
+    font-family: Verdana;
+    font-size: 12px;
+    color: #032D23;
+    padding: 3px 0px 0px 0px;
+}
+
+.inputTextArea {
+	float: left; 
+	width: 200px;
+}
+
+.inputTextAreaSmall {
+	float: left; 
+	width: 140px;
 }
 
 .iiGridHeaderColumn	{
@@ -47,7 +66,7 @@
 #AnchorSearch {
 	float: left;
 	width: 90px;
-	margin: 0px 5px 5px 10px;
+	margin: 0px 0px 5px 15px;
 }
 
 #AnchorEffectivePrice {
@@ -58,31 +77,4 @@
 
 #priceBodyColumn, #effectivePriceBodyColumn {
 	text-align: right;	
-}
-.iiInputText
-	{
-		width:182px;
-		white-space:nowrap;
-	}
-.iiInputTable
-	{
-		width:188px;
-		white-space:nowrap;
-	}
-
-#ActiveLabelCatalog {
-    width: 40px;
-    float: left;
-    height: 27px;
-    font-family: Verdana;
-       font-size: 12px;
-       color: #032D23;
-    padding-left: 15px;
-}
-
-#ActiveSearchCatalog {
-    width: 175px;
-    float: left;
-    height: 27px;
-    padding-left: 10px;
 }

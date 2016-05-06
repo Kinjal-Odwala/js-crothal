@@ -2,7 +2,7 @@ ii.Import("fin.cmn.usr.defs");
 
 ii.init.register( function() {
     fin.pur = { itemPriceUpdate: {}};
-    
+
 }, 1);
 
 ii.init.register( function() {
@@ -13,7 +13,7 @@ ii.init.register( function() {
 		, description: {type: String}
 		, price: {type: String}
 	};
-	
+
 	fin.pur.itemPriceUpdate.catalogItemArgs = {
 		id: {type: Number}
 		, itemId: {type: Number}
@@ -31,7 +31,7 @@ ii.init.register( function() {
 	    number: { type: Number },
 	    name: { type: String }
 	};
-    
+
 }, 2);
 
 ii.Class({
