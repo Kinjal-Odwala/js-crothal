@@ -67,7 +67,7 @@ ii.Class({
 			me.defineFormControls();
 			me.configureCommunications();
 			me.initialize();
-			me.statusesLoaded();
+			me.statusesLoaded(false);
 			me.searchTypesLoaded();
 			me.setStatus("Loading");
 			me.modified(false);
@@ -78,13 +78,17 @@ ii.Class({
 				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
 			else
 				me.houseCodesLoaded(me, 0);
-			
+
 			$(window).bind("resize", me, me.resize);
 			ui.cmn.behavior.disableBackspaceNavigation();
+			$("#houseCodeText").change(function () {
+				if (me.approveInProcess)
+					me.statusesLoaded($("#houseCodeText").val() === "");
+			});
 
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
-			}			
+			}
         },
 		
 		authorizationProcess: function fin_pur_poRequisition_authorizationProcess() {
@@ -1358,24 +1362,32 @@ ii.Class({
 
 			$("#spnTotal").html(me.total.toFixed(2));
 		},
-		
-		statusesLoaded: function() {
+
+		statusesLoaded: function(showAll) {
 			var me = this;
 
 			me.statuses = [];
-			me.statuses.push(new fin.pur.poRequisition.Status(0, "[All]"));
-			me.statuses.push(new fin.pur.poRequisition.Status(1, "Open"));
-			me.statuses.push(new fin.pur.poRequisition.Status(2, "In Process"));
-			me.statuses.push(new fin.pur.poRequisition.Status(8, "Approved"));
-			me.statuses.push(new fin.pur.poRequisition.Status(11, "Completed - PO"));
-			me.statuses.push(new fin.pur.poRequisition.Status(12, "Completed - JDE"));
-			me.statuses.push(new fin.pur.poRequisition.Status(6, "Cancelled"));
-			me.statuses.push(new fin.pur.poRequisition.Status(10, "Unapproved"));
 
-			me.statusType.setData(me.statuses);
-			me.statusType.select(1, me.statusType.focused);
+			if (showAll) {
+				me.statuses.push(new fin.pur.poRequisition.Status(1, "Open"));
+				me.statuses.push(new fin.pur.poRequisition.Status(2, "In Process"));
+				me.statusType.setData(me.statuses);
+				me.statusType.select(0, me.statusType.focused);
+			}
+			else {
+				me.statuses.push(new fin.pur.poRequisition.Status(0, "[All]"));
+				me.statuses.push(new fin.pur.poRequisition.Status(1, "Open"));
+				me.statuses.push(new fin.pur.poRequisition.Status(2, "In Process"));
+				me.statuses.push(new fin.pur.poRequisition.Status(8, "Approved"));
+				me.statuses.push(new fin.pur.poRequisition.Status(11, "Completed - PO"));
+				me.statuses.push(new fin.pur.poRequisition.Status(12, "Completed - JDE"));
+				me.statuses.push(new fin.pur.poRequisition.Status(6, "Cancelled"));
+				me.statuses.push(new fin.pur.poRequisition.Status(10, "Unapproved"));
+				me.statusType.setData(me.statuses);
+				me.statusType.select(1, me.statusType.focused);
+			}
 		},
-		
+
 		searchTypesLoaded: function() {
 			var me = this;
 			
@@ -1442,9 +1454,10 @@ ii.Class({
 		},
 
 		houseCodeChanged: function() {
-			var args = ii.args(arguments,{});
 			var me = this;
 
+			if (me.approveInProcess)
+				me.statusesLoaded($("#houseCodeText").val() === "");
 			me.lastSelectedRowIndex = -1;
 			me.loadData();
 		},
@@ -1490,8 +1503,8 @@ ii.Class({
 			var statusType = "";
 			var houseCodeId = $("#houseCodeText").val() != "" ? parent.fin.appUI.houseCodeId : 0;
 			var searchValue = me.searchInput.getValue();
-			
-			if ($("#houseCodeText").val() == "" && me.searchType.lastBlurValue == "") {
+
+			if ($("#houseCodeText").val() == "" && me.searchType.lastBlurValue == "" && !me.approveInProcess) {
 				me.searchType.setInvalid("Please select Search By.");
 				return;
 			}
