@@ -251,6 +251,12 @@
 	margin: 5px 0px 10px 10px;
 }
 
+#AnchorTemplate {
+	float: left;
+	width: 106px;
+	margin: 5px 0px 10px 10px;
+}
+
 #anchorAlign {
 	clear: both;
 	bottom: 15px;
@@ -301,6 +307,20 @@
 	padding: 5px 0px 0px 10px;
 }
 
+#AnchorGenerateRequisitionFromTemplate {
+	float: left;
+	width: 98px;
+	padding: 5px 0px 0px 0px;
+	margin: 5px 10px 0px 0px;
+}
+
+#AnchorTemplateCancel {
+	float: left;
+	width: 80px;
+	padding: 5px 0px 0px 0px;
+	margin: 5px 0px 0px 0px;
+}
+
 #DocumentGrid {
 	width: 700px;
 	margin-left: 10px;
@@ -341,7 +361,7 @@
 	padding-left: 5px;
 }
 
-#popupContact {
+#requisitionPopup {
 	width: 800px; 
 	height: 400px;
 	position: absolute;
@@ -358,6 +378,15 @@
 	background-color: white;
 	position: absolute;
 	z-index: 5025;	
+	display: none;
+}
+
+#templatePopup {
+	width: 800px; 
+	height: 400px;
+	position: absolute;
+	z-index: 6025;
+	background-color: white;
 	display: none;
 }
 

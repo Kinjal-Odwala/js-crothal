@@ -82,9 +82,10 @@
 			<div id="AnchorJDEEntry"></div>
 			<div id="AnchorPrint"></div>
 			<div id="AnchorApprove"></div>
+			<div id="AnchorTemplate"></div>
 		</div>
 		<div class="pageBody">
-			<div id="popupContact">
+			<div id="requisitionPopup">
 				<div class="contentArea">
 					<div class="header" id="Header"></div>
 					<div style="clear:both;"></div>					
@@ -328,10 +329,10 @@
 							</div>							
 						</div>
 					</div>
-					<div id="ShippingInfo">						
+					<div id="ShippingInfo">
 						<div class="contentAreaLeft">
 							<div id="TableEditArea">
-								<div class="body">																											
+								<div class="body">
 									<div style="clear:both;"></div>
 									<div class="labelTextArea">
 										<span id="nonRequiredFieldIndicator">Company:</span>
@@ -367,7 +368,7 @@
 									<div class="inputTextArea">
 										<div id="ShippingPhone"></div>
 									</div>
-									<div style="clear:both;"></div>
+									<div style="clear:both;"></div>									
 								</div>
 							</div>
 						</div>
@@ -432,6 +433,38 @@
 			                    </table>							        
 							</div>
 						</div>
+						<div style="clear:both;height:20px;"></div>
+						<div id="TemplateInfo">
+							<div class="subHeader">Template Details:</div>
+							<div style="clear:both;height:5px;"></div>
+							<div class="contentAreaLeft">
+								<div id="TableEditArea">
+									<div class="body">
+										<div class="labelTextArea">
+											<span id="nonRequiredFieldIndicator">Save as Template:</span>
+										</div>
+										<div class="inputTextArea">
+											<div id="Template"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="contentAreaLeft">
+								<div id="TableEditArea">
+									<div class="body">
+										<div style="clear:both;"></div>
+										<div id="TemplateContainer" style="display:none">
+											<div class="labelTextArea">
+												<span class="requiredFieldIndicator">&#149;</span>Template Title:
+											</div>
+											<div class="inputTextArea">										
+												<div id="TemplateTitle"></div>									
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 					<div style="clear:both;"></div>	
 					<div id="anchorAlign">
@@ -441,7 +474,19 @@
 						<div id="AnchorSave"></div>										
 					</div>
 				</div>
-			</div>		
+			</div>
+			<div id="templatePopup">
+				<div class="contentArea">
+					<div id="popupHeader" class="header">PO Requisition Templates</div>
+				    <div class="pageBody">
+						<div style="clear:both;"></div>
+						<div id="TemplateGrid"></div>
+						<div style="clear:both;"></div>
+						<div id="AnchorGenerateRequisitionFromTemplate"></div>
+						<div id="AnchorTemplateCancel"></div>
+				    </div>
+				</div>
+			</div>
 		</div>
 		<div id="uploadPopup">
 			<div class="contentArea">
