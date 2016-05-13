@@ -840,16 +840,17 @@ ii.Class({
 			ii.trace("HouseCode - HouseCodeServicesLoaded", ii.traceTypes.information, "Info");
 
 			var serviceLinesTemp = [];
+			var houseCode = parent.fin.hcmMasterUi.houseCodeDetails[0];
 
 			for (var index = 0; index < me.serviceLines.length; index++) {
-				if (!me.serviceLines[index].financialEntity) {
-					var item = new fin.hcm.houseCode.ServiceLine({ id: me.serviceLines[index].id, name: me.serviceLines[index].name });
+				if (!me.serviceLines[index].financialEntity && (houseCode.closedDate != "" || (houseCode.closedDate == "" && me.serviceLines[index].active))) {
+					var item = new fin.hcm.houseCode.ServiceLine({ id: me.serviceLines[index].id, name: me.serviceLines[index].name, active: me.serviceLines[index].active });
 					serviceLinesTemp.push(item);
 				}
 			}
-			
+
 			me.serviceLines = serviceLinesTemp;
-			me.serviceLines.unshift(new fin.hcm.houseCode.ServiceLine({id: 0, name: "None"}));
+			me.serviceLines.unshift(new fin.hcm.houseCode.ServiceLine({id: 0, name: "None", active: true}));
 			me.serviceLine.setData(me.serviceLines);
 			me.serviceLine.select(0, me.serviceLine.focused);
 			

@@ -2847,13 +2847,15 @@ ii.Class({
 					me.financialEntities.push(item);
 				}
 				else {
-					var item = new fin.hcm.houseCodeWizard.ServiceLine({ id: me.serviceLines[index].id, name: me.serviceLines[index].name });
-					me.serviceLineTypes.push(item);
+					if (me.houseCodeDetails[0].closedDate != "" || (me.houseCodeDetails[0].closedDate == "" && me.serviceLines[index].active)) {
+						var item = new fin.hcm.houseCodeWizard.ServiceLine({ id: me.serviceLines[index].id, name: me.serviceLines[index].name, active: me.serviceLines[index].active });
+						me.serviceLineTypes.push(item);
+					}
 				}
 			}
 
 			if (!ii.ajax.util.findItemByField("name", "None", me.serviceLineTypes)) {
-				me.serviceLineTypes.unshift(new fin.hcm.houseCodeWizard.ServiceLine({id: 0, name: "None"}));
+				me.serviceLineTypes.unshift(new fin.hcm.houseCodeWizard.ServiceLine({id: 0, name: "None", active: true}));
 			}
 
 			me.serviceLine.setData(me.serviceLineTypes);

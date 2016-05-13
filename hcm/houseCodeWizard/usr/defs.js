@@ -172,6 +172,7 @@ ii.init.register( function() {
 		id: {type: Number}
 		, name: {type: String}
 		, financialEntity: {type: Boolean, required: false, defaultValue: false}
+		, active: {type: Boolean}
 	};
 	
 	//Statistics
