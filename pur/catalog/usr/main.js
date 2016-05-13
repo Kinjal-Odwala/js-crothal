@@ -275,7 +275,7 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation(function(isFinal, dataMap) {
 
-					if ((this.focused || this.touched) && me.catalogVendor.indexSelected === -1)
+					if ((this.focused || this.touched) && me.catalogVendor.indexSelected == -1)
 						this.setInvalid("Please select the correct Vendor.");
 				});
 						
@@ -298,7 +298,7 @@ ii.Class({
 			});
 			
 			me.catalogGrid.addColumn("title", "title", "Catalog Name", "Catalog Name", null);
-			me.catalogGrid.addColumn("active", "active", "Active", "Active", 70, function(active) { return (active === "1" ? "Yes" : "No") });
+			me.catalogGrid.addColumn("active", "active", "Active", "Active", 70, function(active) { return (active == "1" ? "Yes" : "No") });
 			me.catalogGrid.capColumns();
 			
 			me.catalogUnitGrid = new ui.ctl.Grid({
@@ -450,7 +450,7 @@ ii.Class({
 			me.itemGrid.addColumn("number", "number", "Number", "Number", 120);
 			me.itemGrid.addColumn("description", "description", "Description", "Description", null);
 			me.itemGrid.addColumn("price", "price", "Price", "Price", 90);
-			me.itemGrid.addColumn("active", "active", "Active", "Active", 70, function(active) { return (active === "1" ? "Yes" : "No") });
+			me.itemGrid.addColumn("active", "active", "Active", "Active", 70, function(active) { return (active == "1" ? "Yes" : "No") });
 			me.itemGrid.capColumns();
 			
 			me.itemCatalogGrid = new ui.ctl.Grid({
@@ -486,7 +486,7 @@ ii.Class({
                 return "<input type=\"checkbox\" id=\"addCatalogInputCheck" + rowNumber + "\" class=\"iiInputCheck\" onclick=\"fin.pur.purCatalogUi.modified();\" />";				
             });
 			me.purCatalogGrid.addColumn("title", "title", "Catalog Name", "Catalog Name", null);
-			me.purCatalogGrid.addColumn("active", "active", "Active", "Active", 70, function(active) { return (active === "1" ? "Yes" : "No") });
+			me.purCatalogGrid.addColumn("active", "active", "Active", "Active", 70, function(active) { return (active == "1" ? "Yes" : "No") });
 			me.purCatalogGrid.capColumns();
 			
 			me.catalogUnitTitle.text.readOnly = true;
@@ -649,7 +649,7 @@ ii.Class({
 				if (!parent.parent.fin.appUI.modified) {
 					var focusedControl = document.activeElement;
 
-					if (focusedControl.type !== undefined && (focusedControl.type === "text" || focusedControl.type === "textarea"))
+					if (focusedControl.type !== undefined && (focusedControl.type == "text" || focusedControl.type == "textarea"))
 						$(focusedControl).blur();
 				}
 			});
@@ -659,11 +659,11 @@ ii.Class({
 					return false;
 				else {
 					var tabIndex = 0;
-					if (this.id === "TabHouseCodes")
+					if (this.id == "TabHouseCodes")
 						tabIndex = 1;
-					else if (this.id === "TabItems")
+					else if (this.id == "TabItems")
 						tabIndex = 2;
-					else if (this.id === "TabCatalogs")
+					else if (this.id == "TabCatalogs")
 						tabIndex = 3;
 						
 					$("#container-1").tabs(tabIndex);
@@ -707,7 +707,7 @@ ii.Class({
 			var event = args.event;
 			var me = event.data;
 				
-			if (event.keyCode === 13) {
+			if (event.keyCode == 13) {
 				me.loadSearchResults();
 			}
 		},
@@ -732,12 +732,12 @@ ii.Class({
 			me.catalogItemGrid.setData([]);
 			me.units = [];
 
-			if (me.action === "Catalogs")
+			if (me.action == "Catalogs")
 			    me.catalogStore.fetch("userId:[user],searchValue:" + me.searchInput.getValue()
-                    + ",catalogStatus:" + (me.activeSearch.indexSelected === -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number), me.catalogsLoaded, me);
-			else if (me.action === "ItemCatalogsAssociation")
+                    + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number), me.catalogsLoaded, me);
+			else if (me.action == "ItemCatalogsAssociation")
 			    me.purItemStore.fetch("userId:[user],searchValue:" + me.searchInput.getValue()
-                    + ",active:" + (me.activeSearch.indexSelected === -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number), me.itemsLoaded, me);
+                    + ",active:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number), me.itemsLoaded, me);
 		},		
 		
 		catalogsLoaded: function(me, activeId) {
@@ -791,9 +791,9 @@ ii.Class({
 			me.houseCodesTabNeedUpdate = true;
 			me.itemsTabNeedUpdate = true;
 
-			if (me.activeFrameId === 0)
+			if (me.activeFrameId == 0)
 				me.loadCatalogHouseCodesCount();
-			else if (me.activeFrameId === 1)
+			else if (me.activeFrameId == 1)
 				me.loadCatalogItemsCount();
 		},
 		
@@ -817,7 +817,7 @@ ii.Class({
 			me.status = "";
 			me.setLoadCount();
 			me.catalogItemStore.fetch("userId:[user],itemId:" + item.id
-                                     + ",catalogStatus:" + (me.activeSearch.indexSelected === -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
+                                     + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
                                      , me.itemCatalogsLoaded, me);
 		},
 		
@@ -835,7 +835,7 @@ ii.Class({
 			var event = args.event;
 			var me = event.data;
 			
-			if (event.keyCode === 13) {
+			if (event.keyCode == 13) {
 				me.catalogVendor.fetchingData();
 				me.vendorStore.reset();
 				me.vendorStore.fetch("userId:[user],vendorStatus:-1,searchValue:" + me.catalogVendor.text.value, me.vendorsLoaded, me);
@@ -876,7 +876,7 @@ ii.Class({
 				me.houseCodesTabNeedUpdate = false;
 				me.recordCountStore.reset();
 				me.recordCountStore.fetch("userId:[user]," + "catalogId:" + me.catalogId
-                                          + ",catalogStatus:" + (me.activeSearch.indexSelected === -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
+                                          + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
                                           + ",type:catalogHouseCodes", me.catalogHouseCodesCountLoaded, me);
 			}
 		},		
@@ -890,7 +890,7 @@ ii.Class({
 		    me.houseCodesPageCurrent = Math.ceil(me.houseCodesStartPoint / me.maximumRows);
 		    		    
 		    //if we don't have records...
-		    if (me.houseCodesPageCount === 0) me.houseCodesPageCount = 1;
+		    if (me.houseCodesPageCount == 0) me.houseCodesPageCount = 1;
 		    
 		    //fill the select box
 		    selPageNumber.empty();
@@ -915,7 +915,7 @@ ii.Class({
 			me.houseCodesStartPoint = ((me.houseCodesPageCurrent - 1) * me.maximumRows) + 1;
 			me.catalogHouseCodeStore.reset();
 			me.catalogHouseCodeStore.fetch("userId:[user],catalogId:" + me.catalogId
-                + ",catalogStatus:" + (me.activeSearch.indexSelected === -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
+                + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
                 + ",startPoint:" + me.houseCodesStartPoint + ",maximumRows:" + me.maximumRows, me.catalogHouseCodesLoaded, me);
 		},	
 		
@@ -964,7 +964,7 @@ ii.Class({
 				me.itemsTabNeedUpdate = false;
 				me.recordCountStore.reset();
 				me.recordCountStore.fetch("userId:[user]," + "catalogId:" + me.catalogId
-                                         + ",catalogStatus:" + (me.activeSearch.indexSelected === -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
+                                         + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
                                          + ",type:catalogItems", me.catalogItemsCountLoaded, me);
 			}			
 		},
@@ -978,7 +978,7 @@ ii.Class({
 		    me.itemsPageCurrent = Math.ceil(me.itemsStartPoint / me.maximumRows);
 
 		    //if we don't have records...
-		    if (me.itemsPageCount === 0) me.itemsPageCount = 1;
+		    if (me.itemsPageCount == 0) me.itemsPageCount = 1;
 		    
 		    //fill the select box
 		    selPageNumber.empty();
@@ -1003,7 +1003,7 @@ ii.Class({
 			me.itemsStartPoint = ((me.itemsPageCurrent - 1) * me.maximumRows) + 1;
 			me.catalogItemStore.reset();
 			me.catalogItemStore.fetch("userId:[user],catalogId:" + me.catalogId
-                + ",catalogStatus:" + (me.activeSearch.indexSelected === -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
+                + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
                 + ",startPoint:" + me.itemsStartPoint + ",maximumRows:" + me.maximumRows, me.catalogItemsLoaded, me);
 		},
 
@@ -1058,13 +1058,13 @@ ii.Class({
 		pageNumberChange: function(type) {
 		    var me = this;
 
-			if (type === "houseCodes") {
+			if (type == "houseCodes") {
 				var selPageNumber = $("#selHouseCodesPageNumber");
 
 		    	me.houseCodesPageCurrent = Number(selPageNumber.val());
 		    	me.loadHouseCodes();
 			}
-			else if (type === "items") {
+			else if (type == "items") {
 				var selPageNumber = $("#selItemsPageNumber");
 
 		    	me.itemsPageCurrent = Number(selPageNumber.val());
@@ -1160,7 +1160,7 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 
-			if (me.catalogGrid.activeRowIndex === -1)
+			if (me.catalogGrid.activeRowIndex == -1)
 				return;
 				
 			loadPopup();
@@ -1199,7 +1199,7 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 				
-			if (me.catalogGrid.activeRowIndex === -1)
+			if (me.catalogGrid.activeRowIndex == -1)
 				return;
 					
 			loadPopup();
@@ -1229,7 +1229,7 @@ ii.Class({
 			var event = args.event;
 			var me = event.data;
 				
-			if (event.keyCode === 13) {
+			if (event.keyCode == 13) {
 			    me.enter = true;
 			    me.loadPopupSearchResults();
 			}
@@ -1253,14 +1253,14 @@ ii.Class({
 			$("#popupLoading").show();
 			me.setStatus("Loading");
 
-			if (me.action === "Catalogs") {
+			if (me.action == "Catalogs") {
 			    me.purItemStore.fetch("searchValue:" + me.searchInputPopup.getValue()
-                    + ",active:" + (me.activeSearch.indexSelected === -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
+                    + ",active:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
                     + ",userId:[user],", me.itemsGridLoaded, me);
 			}
-			else if (me.action === "ItemCatalogsAssociation") {
+			else if (me.action == "ItemCatalogsAssociation") {
 			    me.catalogStore.fetch("userId:[user],searchValue:" + me.searchInputPopup.getValue()
-                    + ",catalogStatus:" + (me.activeSearch.indexSelected === -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number), me.catalogsGridLoaded, me);
+                    + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number), me.catalogsGridLoaded, me);
 			}
 		},	
 		
@@ -1307,7 +1307,7 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 				
-			if (me.itemGrid.activeRowIndex === -1)
+			if (me.itemGrid.activeRowIndex == -1)
 				return;
 					
 			loadPopup();
@@ -1337,7 +1337,7 @@ ii.Class({
 			var me = this;		
 
 			for (var index = 0; index < me.catalogHouseCodes.length; index++) {
-				if (me.catalogHouseCodes[index].houseCode === args.houseCodeId)
+				if (me.catalogHouseCodes[index].houseCode == args.houseCodeId)
 					return true;
 			}
 			
@@ -1418,7 +1418,7 @@ ii.Class({
 			var xml = "";
 			var item = new fin.pur.catalog.Catalog(me.catalogId, "", 0, 1, true, [], []);
 
-			if (me.activeFrameId === 0) {
+			if (me.activeFrameId == 0) {
 				for (var index = 0; index < me.units.length; index++) {
 					if ($("#assignInputCheck" + index)[0].checked) {
 						xml += '<purCatalogHouseCode'
@@ -1437,7 +1437,7 @@ ii.Class({
 					return;
 				}					
 			}
-			else if (me.activeFrameId === 1) {
+			else if (me.activeFrameId == 1) {
 				if (me.purItemGrid.activeRowIndex >= 0)		
 					me.purItemGrid.body.deselect(me.purItemGrid.activeRowIndex);
 				
@@ -1461,7 +1461,7 @@ ii.Class({
 					return;
 				}					
 			}
-			else if (me.activeFrameId === 2) {
+			else if (me.activeFrameId == 2) {
 				if (me.purCatalogGrid.activeRowIndex >= 0)		
 					me.purCatalogGrid.body.deselect(me.purCatalogGrid.activeRowIndex);
 				
@@ -1497,17 +1497,17 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 					
-			if (me.activeFrameId === 0) {
+			if (me.activeFrameId == 0) {
 				index = me.catalogUnitGrid.activeRowIndex;
 				if (index >= 0)				
 		   			me.catalogUnitGrid.body.deselect(index);
 			} 
-			else if (me.activeFrameId === 1) {
+			else if (me.activeFrameId == 1) {
 				index = me.catalogItemGrid.activeRowIndex;
 				if (index >= 0)				
 		   			me.catalogItemGrid.body.deselect(index); 
 			}
-			else if (me.activeFrameId === 2) {
+			else if (me.activeFrameId == 2) {
 				index = me.itemCatalogGrid.activeRowIndex;
 				if (index >= 0)				
 		   			me.itemCatalogGrid.body.deselect(index); 
@@ -1528,9 +1528,9 @@ ii.Class({
 			me.resetGrids();
 			
 			if (me.lastSelectedRowIndex >= 0) {
-				if (me.action === "Catalogs")
+				if (me.action == "Catalogs")
 					me.catalogGrid.body.select(me.lastSelectedRowIndex);
-				else if (me.action === "ItemCatalogsAssociation")
+				else if (me.action == "ItemCatalogsAssociation")
 					me.itemGrid.body.select(me.lastSelectedRowIndex);
 			}
 			else
@@ -1558,7 +1558,7 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 				
-			if (me.catalogGrid.activeRowIndex === -1)
+			if (me.catalogGrid.activeRowIndex == -1)
 				return;
 			
 			me.setStatus("Exporting");
@@ -1567,7 +1567,7 @@ ii.Class({
 			
 			me.fileNameStore.reset();
 			me.fileNameStore.fetch("userId:[user],export:1,catalogId:" + me.catalogId
-                                   + ",catalogStatus:" + (me.activeSearch.indexSelected === -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
+                                   + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
                                    + ",type:" + type, me.fileNamesLoaded, me);
 		},
 
@@ -1589,12 +1589,12 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 				
-			if (me.catalogGrid.activeRowIndex === -1)
+			if (me.catalogGrid.activeRowIndex == -1)
 				return;
 			
-			if (type === "houseCodes")
+			if (type == "houseCodes")
 				$("#importHeader").text("Import House Codes");
-			else if (type === "items")
+			else if (type == "items")
 				$("#importHeader").text("Import Items");
 				
 			$("iframe")[0].contentWindow.document.getElementById("FormReset").click();
@@ -1620,7 +1620,7 @@ ii.Class({
 					fileName = $("iframe")[0].contentWindow.document.getElementById("FileName").value;					
 					clearInterval(me.intervalId);
 					
-					if (fileName === "Error") {
+					if (fileName == "Error") {
 						me.setStatus("Info", "Unable to upload the file. Please try again.");
 						alert("Unable to upload the file. Please try again.");
 						$("#pageLoading").fadeOut("slow");

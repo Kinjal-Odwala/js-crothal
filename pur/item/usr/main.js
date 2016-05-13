@@ -251,7 +251,7 @@ ii.Class({
 					
 					if (me.status != "")
 						this.valid = true;
-					else if (me.itemStatus.indexSelected === -1)
+					else if (me.itemStatus.indexSelected == -1)
 						this.setInvalid("Please select the correct Status.");
 				});
 
@@ -350,7 +350,7 @@ ii.Class({
 				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
-					if (me.validateControl && me.itemAccount.indexSelected === -1)
+					if (me.validateControl && me.itemAccount.indexSelected == -1)
 						this.setInvalid("Please select the correct Account.");
 				});
 				
@@ -366,9 +366,9 @@ ii.Class({
 
 				var enteredText = me.itemPrice.getValue();
 
-				if (enteredText === "") return;
+				if (enteredText == "") return;
 
-				if (/^[0-9]+(\.[0-9]+)?$/.test(enteredText) === false)
+				if (/^[0-9]+(\.[0-9]+)?$/.test(enteredText) == false)
 					this.setInvalid("Please enter valid Price.");
 			});
 						
@@ -505,7 +505,7 @@ ii.Class({
 			var event = args.event;
 			var me = event.data;
 				
-			if (event.keyCode === 13) {
+			if (event.keyCode == 13) {
 				me.loadSearchResults();
 			}
 		},
@@ -528,7 +528,7 @@ ii.Class({
 			me.setLoadCount();
 						
 			me.itemStore.fetch("searchValue:" + me.searchInput.getValue() 
-				+ ",active:" + (me.itemStatus.indexSelected === -1 ? -1 : me.itemStatuses[me.itemStatus.indexSelected].number) 
+				+ ",active:" + (me.itemStatus.indexSelected == -1 ? -1 : me.itemStatuses[me.itemStatus.indexSelected].number) 
 				+ ",userId:[user]", me.itemsLoaded, me);				
 		},
 		
@@ -782,7 +782,7 @@ ii.Class({
 					fileName = $("iframe")[0].contentWindow.document.getElementById("FileName").value;					
 					clearInterval(me.intervalId);
 					
-					if (fileName === "Error") {
+					if (fileName == "Error") {
 						alert("Unable to upload the file. Please try again.")
 						me.setStatus("Error");
 						$("#pageLoading").fadeOut("slow");
@@ -830,8 +830,8 @@ ii.Class({
 			
 			if (me.itemsReadOnly) return;
 				
-			if (me.status === "") {
-				if (me.lastSelectedRowIndex === -1)
+			if (me.status == "") {
+				if (me.lastSelectedRowIndex == -1)
 					me.status = "new";
 				else
 					me.status = "update";
@@ -916,10 +916,10 @@ ii.Class({
 			var item = transaction.referenceData.item;			
 			var status = $(args.xmlNode).attr("status");
 
-			if (status === "success") {
+			if (status == "success") {
 				me.modified(false);
 
-				if (me.status === "import") {
+				if (me.status == "import") {
 					me.setStatus("Imported");
 				}
 				else {
@@ -928,7 +928,7 @@ ii.Class({
 
 							case "purItem":
 
-								if (me.status === "new") {
+								if (me.status == "new") {
 									me.itemId = parseInt($(this).attr("id"), 10);
 									item.id = me.itemId;
 									me.items.push(item);
@@ -993,7 +993,7 @@ function onFileChange() {
 	var fileName = $("iframe")[0].contentWindow.document.getElementById("UploadFile").value;	
 	var fileExtension = fileName.substring(fileName.lastIndexOf("."));
 	
-	if (fileExtension === ".xlsx")
+	if (fileExtension == ".xlsx")
 		fin.purItemUi.anchorUpload.display(ui.cmn.behaviorStates.enabled);
 	else
 		alert("Invalid file format. Please select the correct XLSX file.");
