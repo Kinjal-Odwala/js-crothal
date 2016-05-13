@@ -6,7 +6,8 @@ ii.Import( "ui.ctl.usr.grid" );
 ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
-ii.Import( "fin.pur.item.usr.defs" );
+ii.Import("fin.pur.item.usr.defs");
+ii.Import("fin.app.usr.defs");
 
 ii.Style( "style", 1 );
 ii.Style( "fin.cmn.usr.common", 2 );
@@ -30,6 +31,9 @@ ii.Class({
 			me.lastSelectedRowIndex = -1;
 			me.validateControl = false;
 			me.loadCount = 0;
+			me.historyReference = 0;
+			$("#itemHistory").hide();
+			$("#popupHistory").hide();
 						
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -175,6 +179,34 @@ ii.Class({
 				clickFunction: function() { me.actionUploadItem(); },
 				hasHotState: true
 			});
+
+			me.anchorHistory = new ui.ctl.buttons.Sizeable({
+			    id: "AnchorHistory",
+			    className: "iiButton",
+			    text: "<span>&nbsp;&nbsp;View History&nbsp;&nbsp;</span>",
+			    clickFunction: function () { me.viewItemHistory(); },
+			    hasHotState: true
+			});
+
+			me.anchorClose = new ui.ctl.buttons.Sizeable({
+			    id: "AnchorClose",
+			    className: "iiButton",
+			    text: "<span>&nbsp;&nbsp;Close&nbsp;&nbsp;</span>",
+			    clickFunction: function () { me.actionCloseItem(); },
+			    hasHotState: true
+			});
+
+			me.historyGrid = new ui.ctl.Grid({
+			    id: "HistoryGrid",
+			    appendToId: "divForm",
+			    allowAdds: false
+			});
+
+			me.historyGrid.addColumn("lastModifiedBy", "lastModifiedBy", "Last Modified By", "Last Modified By", 300);
+			me.historyGrid.addColumn("lastModifiedAt", "lastModifiedAt", "Last Modified At", "Last Modified At", 300);
+			me.historyGrid.addColumn("previousFieldValue", "previousFieldValue", "Amount From", "Amount From", 200);
+			me.historyGrid.addColumn("fieldName", "fieldName", "Amount To", "Amount To", null);
+			me.historyGrid.capColumns();
 			
 			me.anchorUploadCancel = new ui.ctl.buttons.Sizeable({
 				id: "AnchorUploadCancel",
@@ -201,7 +233,7 @@ ii.Class({
 				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 				
-				if (me.status != "")
+				if (me.status !== "")
 					this.valid = true;
 				else if(me.searchInput.getValue().length < 3)
 					this.setInvalid("Please enter search criteria (minimum 3 characters).");
@@ -219,7 +251,7 @@ ii.Class({
 					
 					if (me.status != "")
 						this.valid = true;
-					else if (me.itemStatus.indexSelected == -1)
+					else if (me.itemStatus.indexSelected === -1)
 						this.setInvalid("Please select the correct Status.");
 				});
 
@@ -318,7 +350,7 @@ ii.Class({
 				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 
-					if (me.validateControl && me.itemAccount.indexSelected == -1)
+					if (me.validateControl && me.itemAccount.indexSelected === -1)
 						this.setInvalid("Please select the correct Account.");
 				});
 				
@@ -334,9 +366,9 @@ ii.Class({
 
 				var enteredText = me.itemPrice.getValue();
 
-				if (enteredText == "") return;
+				if (enteredText === "") return;
 
-				if (/^[0-9]+(\.[0-9]+)?$/.test(enteredText) == false)
+				if (/^[0-9]+(\.[0-9]+)?$/.test(enteredText) === false)
 					this.setInvalid("Please enter valid Price.");
 			});
 						
@@ -353,7 +385,7 @@ ii.Class({
 				allowAdds: false,
 				selectFunction: function(index) { me.itemSelect(index); },
 				validationFunction: function() {
-					if (me.status != "new")
+					if (me.status !== "new")
 						return parent.fin.cmn.status.itemValid();
 				}
 			});
@@ -402,7 +434,15 @@ ii.Class({
 				itemConstructor: fin.pur.item.Account,
 				itemConstructorArgs: fin.pur.item.accountArgs,
 				injectionArray: me.accounts	
-			});	
+			});
+
+			me.appHistories = [];
+			me.appHistoryStore = me.cache.register({
+			    storeId: "appApplicationHistorys",
+			    itemConstructor: fin.app.AppApplicationHistory,
+			    itemConstructorArgs: fin.app.appApplicationHistoryArgs,
+			    injectionArray: me.appHistories
+			});
 		},
 		
 		setStatus: function(status) {
@@ -465,7 +505,7 @@ ii.Class({
 			var event = args.event;
 			var me = event.data;
 				
-			if (event.keyCode == 13) {
+			if (event.keyCode === 13) {
 				me.loadSearchResults();
 			}
 		},
@@ -488,7 +528,7 @@ ii.Class({
 			me.setLoadCount();
 						
 			me.itemStore.fetch("searchValue:" + me.searchInput.getValue() 
-				+ ",active:" + (me.itemStatus.indexSelected == -1 ? -1 : me.itemStatuses[me.itemStatus.indexSelected].number) 
+				+ ",active:" + (me.itemStatus.indexSelected === -1 ? -1 : me.itemStatuses[me.itemStatus.indexSelected].number) 
 				+ ",userId:[user]", me.itemsLoaded, me);				
 		},
 		
@@ -535,6 +575,50 @@ ii.Class({
 
 			me.checkLoadCount();
 		},
+
+		viewItemHistory: function () {
+		    index = me.itemGrid.activeRowIndex;
+		    if (index >= 0) {
+		        me.itemGrid.body.deselect(index);
+		    }
+		    loadPopup();
+		    $("#popupContact").show();
+		    $("#popupHistory").show();
+		    me.appHistoryStore.reset();
+		    me.appHistoryStore.fetch("userId:[user],reference:" + me.historyReference + ",module:PurItem", me.appHistoriesLoaded, me);
+		    me.itemStore.reset();
+		    me.itemStore.fetch("itemId:" + me.historyReference + ",userId:[user]", me.appHistoriesLoaded, me);
+		},
+
+		appHistoriesLoaded: function () {
+		    if (me.appHistories.length > 0 && me.items.length > 0) {
+		        for (var index = 0; index < me.appHistories.length; index++) {
+		            var modAtDate = ui.cmn.text.date.format(new Date(me.appHistories[index].lastModifiedAt), "mm/dd/yyyy");
+		            var modAtTime = me.appHistories[index].lastModifiedAt.substring(10);
+		            me.appHistories[index].lastModifiedAt = modAtDate + " " + modAtTime;
+		            var modBy = me.appHistories[index].lastModifiedBy.substring(me.appHistories[index].lastModifiedBy.lastIndexOf("\\") + 1);
+		            me.appHistories[index].lastModifiedBy = modBy;
+		            if (me.appHistories.length > 1) {
+		                if (index != (me.appHistories.length - 1)) {
+		                    me.appHistories[index].fieldName = me.appHistories[index + 1].previousFieldValue;
+		                }
+		                else {
+		                    me.appHistories[me.appHistories.length - 1].fieldName = me.items[0].price.toString();
+		                }
+		            }
+		            else if (me.appHistories.length == 1) {
+		                me.appHistories[index].fieldName = me.items[index].price.toString();
+		            }
+		        }
+		        me.historyGrid.setData(me.appHistories);
+		    }
+		    me.historyGrid.setHeight($(window).height() - 150);
+		},
+
+		actionCloseItem: function () {
+		    disablePopup();
+		    $("#itemHistory").hide();
+		},
 		
 		itemSelect: function() {
 			var args = ii.args(arguments,{
@@ -552,6 +636,7 @@ ii.Class({
 			
 			me.lastSelectedRowIndex = index;
 			me.status = "";
+			$("#itemHistory").show();
 
 			if (item == undefined) 
 				return;
@@ -574,6 +659,8 @@ ii.Class({
 
 				me.itemPrice.setValue(me.itemGrid.data[index].price);
 				me.itemActive.setValue(me.itemGrid.data[index].active.toString());
+
+				me.historyReference = me.itemGrid.data[index].id;
 			}
 			else
 				me.itemId = 0;	
@@ -691,11 +778,11 @@ ii.Class({
 		
 			me.intervalId = setInterval(function() {
 				
-				if ($("iframe")[0].contentWindow.document.getElementById("FileName").value != "")	{
+				if ($("iframe")[0].contentWindow.document.getElementById("FileName").value !== "")	{
 					fileName = $("iframe")[0].contentWindow.document.getElementById("FileName").value;					
 					clearInterval(me.intervalId);
 					
-					if (fileName == "Error") {
+					if (fileName === "Error") {
 						alert("Unable to upload the file. Please try again.")
 						me.setStatus("Error");
 						$("#pageLoading").fadeOut("slow");
@@ -743,8 +830,8 @@ ii.Class({
 			
 			if (me.itemsReadOnly) return;
 				
-			if (me.status == "") {
-				if (me.lastSelectedRowIndex == -1)
+			if (me.status === "") {
+				if (me.lastSelectedRowIndex === -1)
 					me.status = "new";
 				else
 					me.status = "update";
@@ -829,10 +916,10 @@ ii.Class({
 			var item = transaction.referenceData.item;			
 			var status = $(args.xmlNode).attr("status");
 
-			if (status == "success") {
+			if (status === "success") {
 				me.modified(false);
 
-				if (me.status == "import") {
+				if (me.status === "import") {
 					me.setStatus("Imported");
 				}
 				else {
@@ -841,7 +928,7 @@ ii.Class({
 
 							case "purItem":
 
-								if (me.status == "new") {
+								if (me.status === "new") {
 									me.itemId = parseInt($(this).attr("id"), 10);
 									item.id = me.itemId;
 									me.items.push(item);
@@ -906,7 +993,7 @@ function onFileChange() {
 	var fileName = $("iframe")[0].contentWindow.document.getElementById("UploadFile").value;	
 	var fileExtension = fileName.substring(fileName.lastIndexOf("."));
 	
-	if (fileExtension == ".xlsx")
+	if (fileExtension === ".xlsx")
 		fin.purItemUi.anchorUpload.display(ui.cmn.behaviorStates.enabled);
 	else
 		alert("Invalid file format. Please select the correct XLSX file.");
@@ -915,4 +1002,39 @@ function onFileChange() {
 function main() {
 	fin.purItemUi = new fin.pur.item.UserInterface();
 	fin.purItemUi.resize();
+}
+
+function loadPopup() {
+
+    centerPopup();
+
+    $("#backgroundPopup").css({
+        "opacity": "0.5"
+    });
+    $("#backgroundPopup").fadeIn("slow");
+    $("#popupContact").fadeIn("slow");
+}
+
+function disablePopup() {
+
+    $("#backgroundPopup").fadeOut("slow");
+    $("#popupContact").fadeOut("slow");
+}
+
+function centerPopup() {
+    var windowWidth = document.documentElement.clientWidth;
+    var windowHeight = document.documentElement.clientHeight;
+    var popupWidth = windowWidth - 100;
+    var popupHeight = windowHeight - 70;
+
+    $("#popupContact").css({
+        "width": popupWidth,
+        "height": popupHeight,
+        "top": windowHeight / 2 - popupHeight / 2,
+        "left": windowWidth / 2 - popupWidth / 2
+    });
+
+    $("#backgroundPopup").css({
+        "height": windowHeight
+    });
 }

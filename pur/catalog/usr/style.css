@@ -73,6 +73,13 @@
 	padding-top: 5px;
 }
 
+#AnchorClose {
+	float: right;
+	width: 72px;
+	position: relative;
+	margin: 10px;
+}
+
 #AnchorCancel {
 	float: left;
 	width: 80px;
@@ -100,7 +107,7 @@
 	text-align: right;	
 }
 
-#PurItemGrid, #PurCatalogGrid, #HouseCodeGrid {	
+#PurItemGrid, #PurCatalogGrid, #HouseCodeGrid, #HistoryGrid {	
 	height: 250px;
 	padding: 0px 10px 0px 10px;
 }
