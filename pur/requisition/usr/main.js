@@ -2656,10 +2656,16 @@ ii.Class({
 
 		actionSendRequisitionItem: function() {
 			var me = this;
-			
+
 			if (me.requisitionGrid.activeRowIndex == -1)
 				return true;
-			
+
+			me.validator.forceBlur();
+			if (!me.validator.queryValidity(true) || me.itemGrid.data.length == 0) {
+				alert("There are few mandatory fields which are not entered. Please enter values for all mandatory fields and try again.");
+				return;
+			}
+
 			$("#messageToUser").text("Sending Requisition");
 			me.status = "SendRequisition";
 			me.actionSaveItem();
