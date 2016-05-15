@@ -26,16 +26,6 @@ ii.init.register( function fin_app_startup_init() {
 		, variableValue: {type: String, required: false, defaultValue: ""}	
 	};
 
-	fin.app.appApplicationHistoryArgs = {
-	    id: { type: Number },
-	    module: { type: String, required: false, defaultValue: "" },
-	    refernce: { type: Number, required: false, defaultValue: 0 },
-        fieldName: { type: String, required: false, defaultValue: "" },
-	    previousFieldValue: { type: String, required: false, defaultValue: "" },
-	    lastModifiedBy: { type: String, required: false, defaultValue: "" },
-	    lastModifiedAt: { type: String, required: false, defaultValue: "" }
-	};
-
 }, 1);
 
 ii.Class({
@@ -68,12 +58,3 @@ ii.Class({
 	}
 });
 
-ii.Class({
-    Name: "fin.app.AppApplicationHistory",
-    Definition: {
-        init: function () {
-            var args = ii.args(arguments, fin.app.appApplicationHistoryArgs);
-            $.extend(this, args);
-        }
-    }
-});

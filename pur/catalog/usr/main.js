@@ -71,6 +71,7 @@ ii.Class({
 			$("#catalogHistory").hide();
 			$("#popupHistory").hide();
 			me.historyReference = 0;
+			me.currentPrice = 0;
 
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\Purchasing\\Catalogs";
@@ -329,7 +330,7 @@ ii.Class({
 				id: "CatalogItemGrid",
 				appendToId: "divForm",
 				allowAdds: false,
-			    selectFunction: function(index) { me.catalogItemGridSelect(index); }
+				selectFunction: function (index) { me.catalogItemGridSelect(index); }
 			});
 			
 			me.purCatalogItemPrice = new ui.ctl.Input.Money({
@@ -1040,6 +1041,7 @@ ii.Class({
 			if (me.catalogItems[index]) {
 			    me.catalogItems[index].modified = true;
 			    me.historyReference = me.catalogItems[index].id;
+			    me.currentPrice = me.catalogItems[index].price;
 			}
 		},
 
@@ -1716,12 +1718,10 @@ ii.Class({
 		    $("#popupHistory").show();
 		    me.appHistoryStore.reset();
 		    me.appHistoryStore.fetch("userId:[user],reference:" + me.historyReference + ",module:PurCatalogItem", me.appHistoriesLoaded, me);
-		    me.catalogItemStore.reset();
-		    me.catalogItemStore.fetch("userId:[user],catalogItemId:" + me.historyReference, me.appHistoriesLoaded, me);
 		},
 
 		appHistoriesLoaded: function () {
-		    if (me.appHistories.length > 0 && me.catalogItems.length > 0) {
+		    if (me.appHistories.length > 0) {
 		        for (var index = 0; index < me.appHistories.length; index++) {
 		            var modAtDate = ui.cmn.text.date.format(new Date(me.appHistories[index].lastModifiedAt), "mm/dd/yyyy");
 		            var modAtTime = me.appHistories[index].lastModifiedAt.substring(10);
@@ -1733,16 +1733,16 @@ ii.Class({
 		                    me.appHistories[index].fieldName = me.appHistories[index + 1].previousFieldValue;
 		                }
 		                else {
-		                    me.appHistories[me.appHistories.length - 1].fieldName = me.catalogItems[0].price.toString();
+		                    me.appHistories[me.appHistories.length - 1].fieldName = me.currentPrice;
 		                }
 		            }
 		            else if (me.appHistories.length == 1) {
-		                me.appHistories[index].fieldName = me.catalogItems[index].price.toString();
+		                me.appHistories[index].fieldName = me.currentPrice;
 		            }
 		        }
-		        me.historyGrid.setData(me.appHistories);
 		    }
-		    me.historyGrid.setHeight($(window).height() - 150);
+		    me.historyGrid.setData(me.appHistories);
+		    me.historyGrid.setHeight($(window).height() - 200);
 		},
 
 		actionCloseItem: function () {
@@ -2049,7 +2049,7 @@ function centerPopup() {
 	var windowWidth = document.documentElement.clientWidth;
 	var windowHeight = document.documentElement.clientHeight;
 	var popupWidth = windowWidth - 100;
-	var popupHeight = windowHeight - 70;
+	var popupHeight = windowHeight - 100;
 	
 	$("#popupContact").css({
 		"width": popupWidth,

@@ -32,6 +32,7 @@ ii.Class({
 			me.validateControl = false;
 			me.loadCount = 0;
 			me.historyReference = 0;
+			me.currentPrice = 0;
 			$("#itemHistory").hide();
 			$("#popupHistory").hide();
 						
@@ -383,7 +384,7 @@ ii.Class({
 				id: "ItemGrid",
 				appendToId: "divForm",
 				allowAdds: false,
-				selectFunction: function(index) { me.itemSelect(index); },
+				selectFunction: function (index) { me.itemSelect(index); },
 				validationFunction: function() {
 					if (me.status !== "new")
 						return parent.fin.cmn.status.itemValid();
@@ -586,8 +587,6 @@ ii.Class({
 		    $("#popupHistory").show();
 		    me.appHistoryStore.reset();
 		    me.appHistoryStore.fetch("userId:[user],reference:" + me.historyReference + ",module:PurItem", me.appHistoriesLoaded, me);
-		    me.itemStore.reset();
-		    me.itemStore.fetch("itemId:" + me.historyReference + ",userId:[user]", me.appHistoriesLoaded, me);
 		},
 
 		appHistoriesLoaded: function () {
@@ -603,15 +602,15 @@ ii.Class({
 		                    me.appHistories[index].fieldName = me.appHistories[index + 1].previousFieldValue;
 		                }
 		                else {
-		                    me.appHistories[me.appHistories.length - 1].fieldName = me.items[0].price.toString();
+		                    me.appHistories[me.appHistories.length - 1].fieldName = me.currentPrice;
 		                }
 		            }
 		            else if (me.appHistories.length == 1) {
-		                me.appHistories[index].fieldName = me.items[index].price.toString();
+		                me.appHistories[index].fieldName = me.currentPrice;
 		            }
 		        }
-		        me.historyGrid.setData(me.appHistories);
 		    }
+		    me.historyGrid.setData(me.appHistories);
 		    me.historyGrid.setHeight($(window).height() - 150);
 		},
 
@@ -661,6 +660,7 @@ ii.Class({
 				me.itemActive.setValue(me.itemGrid.data[index].active.toString());
 
 				me.historyReference = me.itemGrid.data[index].id;
+				me.currentPrice = me.itemGrid.data[index].price;
 			}
 			else
 				me.itemId = 0;	
