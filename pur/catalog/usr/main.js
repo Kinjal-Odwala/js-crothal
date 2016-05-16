@@ -38,6 +38,7 @@ ii.Class({
 			me.action = "Catalogs";
 			me.units = [];
 			me.purItemData = [];
+			me.searchValue = "";
 			me.houseCodesTabNeedUpdate = true;
 			me.itemsTabNeedUpdate = true;
 			me.catalogsTabNeedUpdate = true;
@@ -387,7 +388,7 @@ ii.Class({
 				id: "AnchorSearchPopup",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Search&nbsp;&nbsp;</span>",
-				clickFunction: function () { me.enter = false; me.purItemData = []; me.loadPopupSearchResults(); },
+				clickFunction: function () { me.enter = false; me.purItemData = []; me.searchValue = ""; me.loadPopupSearchResults(); },
 				hasHotState: true
 			});
 
@@ -1235,7 +1236,6 @@ ii.Class({
 				
 			if (event.keyCode == 13) {
 			    me.enter = true;
-			    me.purItemData = [];
 			    me.loadPopupSearchResults();
 			}
 		},
@@ -1270,25 +1270,28 @@ ii.Class({
 		},	
 		
 		itemsGridLoaded: function(me, activeId) {
-	    		
-			if (me.purItemGrid.activeRowIndex >= 0)		
+
+		    if (me.purItemGrid.activeRowIndex >= 0)
 			    me.purItemGrid.body.deselect(me.purItemGrid.activeRowIndex);
 
 			if (me.enter == true) {
-			    for (var index = 0; index < me.purItems.length; index++) {
-			     me.purItemData.push(new fin.pur.catalog.PurItem(
-				 me.purItems[index].id
-                , me.purItems[index].number
-     			, me.purItems[index].description
-                , me.purItems[index].price
-                , me.purItems[index].active
-				, true
-				));
-			}
+			    if (me.searchValue == "" || (me.searchValue != me.searchInputPopup.getValue())) {
+			        for (var index = 0; index < me.purItems.length; index++) {
+			            me.purItemData.push(new fin.pur.catalog.PurItem(
+                        me.purItems[index].id
+                       , me.purItems[index].number
+                       , me.purItems[index].description
+                       , me.purItems[index].price
+                       , me.purItems[index].active
+                       , true
+                       ));
+			        }
+			        me.searchValue = me.searchInputPopup.getValue();
+			    }
 			    me.purItemGrid.setData(me.purItemData);
 			    for (var index = 0; index < me.purItemData.length; index++) {
 			        $("#assignItemInputCheck" + index)[0].checked = true;
-                 }
+			    }
 			}
 			else {
 			    me.purItemGrid.setData(me.purItems);
