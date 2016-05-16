@@ -733,9 +733,11 @@ ii.Class({
 			me.catalogItemGrid.setData([]);
 			me.units = [];
 
-			if (me.action == "Catalogs")
+			if (me.action == "Catalogs") {
+			    me.catalogStore.reset();
 			    me.catalogStore.fetch("userId:[user],searchValue:" + me.searchInput.getValue()
                     + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number), me.catalogsLoaded, me);
+			}
 			else if (me.action == "ItemCatalogsAssociation")
 			    me.purItemStore.fetch("userId:[user],searchValue:" + me.searchInput.getValue()
                     + ",active:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number), me.itemsLoaded, me);
@@ -1233,6 +1235,7 @@ ii.Class({
 				
 			if (event.keyCode == 13) {
 			    me.enter = true;
+			    me.purItemData = [];
 			    me.loadPopupSearchResults();
 			}
 		},
