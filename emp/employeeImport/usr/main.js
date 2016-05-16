@@ -768,7 +768,7 @@ ii.Class({
 			me.buildDropDown("MultiRace5", me.multiRaceTypes);
 			me.buildDropDown("DisabilityType", me.disabilityTypes);
 			
-			employeeRow = '<tr height="100%"><td colspan="62" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>';
+			employeeRow = '<tr height="100%"><td colspan="63" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>';
 			$("#EmployeeGridBody").append(employeeRow);
 			$("#EmployeeGrid tr:odd").addClass("gridRow");
         	$("#EmployeeGrid tr:even").addClass("alternateGridRow");
@@ -857,6 +857,7 @@ ii.Class({
 				me.setDropDownValue(me.multiRaceTypes, me.employees[index].column58, "MultiRace4", index);
 				me.setDropDownValue(me.multiRaceTypes, me.employees[index].column59, "MultiRace5", index);
 				me.setDropDownValue(me.disabilityTypes, me.employees[index].column60, "DisabilityType", index);
+				$("#txtWOTCCode" + index).val(me.employees[index].column61);
 				
 				if (me.employees[index].column30 != "Two or more races") {
 					me.ethnicityTypeChange($("#selEthnicityType" + index)[0]);
@@ -1838,6 +1839,31 @@ ii.Class({
 					me.setCellColor($("#selDisabilityType" + index), me.cellColorValid, "");
 				}
 
+				if (/^(?!000)^([0-8]\d{2})([ -]?)((?!00)\d{2})([ -]?)((?!0000)\d{4})$/.test($("#txtSSN" + index).val()) && $("#txtWOTCCode" + index).val() != "") {
+					var wotcCode = $("#txtWOTCCode" + index).val();
+					if (!(/^\d{11}$/.test(wotcCode))) {
+						rowValid = false;
+						me.setCellColor($("#txtWOTCCode" + index), me.cellColorInvalid, "Please enter valid WOTC Code.");
+					}
+					else {
+						var firstDigit = wotcCode.substring(0, 1);
+						var secondDigit = wotcCode.substring(1, 2);
+						var ssn = $("#txtSSN" + index).val().replace(/-/g, '') + '"';
+						var secondDigitValue = Math.round(((parseInt(ssn.substring(3, 4), 10)) + (parseInt(ssn.substring(4, 5), 10))) / 2);
+
+						if ((firstDigit != "0" && firstDigit != "1" && firstDigit != "3") || (secondDigit != secondDigitValue)) {
+							rowValid = false;
+							me.setCellColor($("#txtWOTCCode" + index), me.cellColorInvalid, "Please enter valid WOTC Code.");
+						}
+						else {
+							me.setCellColor($("#txtWOTCCode" + index), me.cellColorValid, "");
+						}
+					}
+				}
+				else {
+					me.setCellColor($("#txtWOTCCode" + index), me.cellColorValid, "");
+				}
+
 				if (!rowValid) {
 					if (valid)
 						valid = false;
@@ -2032,6 +2058,7 @@ ii.Class({
 				xml += ' multiRace4="' + $("#selMultiRace4" + index).val() + '"';
 				xml += ' multiRace5="' + $("#selMultiRace5" + index).val() + '"';
 				xml += ' disabilityType="' + $("#selDisabilityType" + index).val() + '"';
+				xml += ' wotcCode="' + $("#txtWOTCCode" + index).val() + '"';
 				xml += '/>';
 			}
 	
