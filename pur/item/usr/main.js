@@ -221,7 +221,7 @@ ii.Class({
 				id: "SearchButton",
 				className: "iiButton",
 				text: "<span>Search</span>",
-				clickFunction: function() { me.loadSearchResults(); },
+				clickFunction: function () { $("#itemHistory").hide(); me.loadSearchResults(); },
 				hasHotState: true
 			});
 			
@@ -527,7 +527,7 @@ ii.Class({
 			}
 			
 			me.setLoadCount();
-						
+			me.itemStore.reset();
 			me.itemStore.fetch("searchValue:" + me.searchInput.getValue() 
 				+ ",active:" + (me.itemStatus.indexSelected == -1 ? -1 : me.itemStatuses[me.itemStatus.indexSelected].number) 
 				+ ",userId:[user]", me.itemsLoaded, me);				
@@ -578,10 +578,6 @@ ii.Class({
 		},
 
 		viewItemHistory: function () {
-		    index = me.itemGrid.activeRowIndex;
-		    if (index >= 0) {
-		        me.itemGrid.body.deselect(index);
-		    }
 		    loadPopup();
 		    $("#popupContact").show();
 		    $("#popupHistory").show();
@@ -616,7 +612,6 @@ ii.Class({
 
 		actionCloseItem: function () {
 		    disablePopup();
-		    $("#itemHistory").hide();
 		},
 		
 		itemSelect: function() {

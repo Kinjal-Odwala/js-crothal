@@ -162,7 +162,7 @@ ii.Class({
 				id: "AnchorNew",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;New&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionNewItem(); },
+				clickFunction: function () { $("#catalogHistory").hide(); me.actionNewItem(); },
 				hasHotState: true
 			});
 			
@@ -170,7 +170,7 @@ ii.Class({
 				id: "AnchorUndo",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Undo&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionUndoItem(); },
+				clickFunction: function () { $("#catalogHistory").hide(); me.actionUndoItem(); },
 				hasHotState: true
 			});
 			
@@ -178,7 +178,7 @@ ii.Class({
 				id: "AnchorSave",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Save&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionSaveItem(); },
+				clickFunction: function () { $("#catalogHistory").hide(); me.actionSaveItem(); },
 				hasHotState: true
 			});
 
@@ -404,7 +404,7 @@ ii.Class({
 				id: "AnchorCancel",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionCancelItem(); },
+				clickFunction: function () { $("#catalogHistory").hide(); me.actionCancelItem(); },
 				hasHotState: true
 			});			
 			
@@ -679,17 +679,21 @@ ii.Class({
 						me.activeFrameId = 0;
 						me.loadCatalogHouseCodesCount();
 						me.houseCodesTabNeedUpdate = false;
+						$("#catalogHistory").hide();
 						break;
 
 					case "TabItems":
 						me.activeFrameId = 1;
 						me.loadCatalogItemsCount();
 						me.itemsTabNeedUpdate = false;
+						if (me.catalogItemGrid.activeRowIndex >= 0)
+						    $("#catalogHistory").show();
 						break;
 						
 					case "TabCatalogs":
 						me.activeFrameId = 2;
 						me.catalogsTabNeedUpdate = false;
+						$("#catalogHistory").hide();
 						break;
 				}
 			});
@@ -794,6 +798,7 @@ ii.Class({
 				
 			me.houseCodesTabNeedUpdate = true;
 			me.itemsTabNeedUpdate = true;
+			$("#catalogHistory").hide();
 
 			if (me.activeFrameId == 0)
 				me.loadCatalogHouseCodesCount();
@@ -1712,10 +1717,6 @@ ii.Class({
 		},
 
 		viewCatalogHistory: function () {
-		    index = me.catalogItemGrid.activeRowIndex;
-		    if (index >= 0) {
-		        me.catalogItemGrid.body.deselect(index);
-		    }
 		    loadPopup();
 		    $("#houseCodesList").hide();
 		    $("#itemsList").hide();
@@ -1750,11 +1751,10 @@ ii.Class({
 		    me.historyGrid.setData(me.appHistories);
 		    me.historyGrid.setHeight($(window).height() - 200);
 		},
-
+        
 		actionCloseItem: function () {
 		    disablePopup();
 		    me.setStatus("Loaded");
-		    $("#catalogHistory").hide();
 		},
 
 		actionSaveItem: function() {
