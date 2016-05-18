@@ -38,7 +38,6 @@ ii.Class({
 			me.action = "Catalogs";
 			me.units = [];
 			me.purItemData = [];
-			me.searchValue = "";
 			me.houseCodesTabNeedUpdate = true;
 			me.itemsTabNeedUpdate = true;
 			me.catalogsTabNeedUpdate = true;
@@ -388,7 +387,7 @@ ii.Class({
 				id: "AnchorSearchPopup",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Search&nbsp;&nbsp;</span>",
-				clickFunction: function () { me.enter = false; me.purItemData = []; me.searchValue = ""; me.loadPopupSearchResults(); },
+				clickFunction: function () { me.enter = false; me.purItemData = []; me.loadPopupSearchResults(); },
 				hasHotState: true
 			});
 
@@ -1193,11 +1192,19 @@ ii.Class({
 			var me = this;
 			var found = false;			
 			
-			me.units.push(new fin.pur.catalog.Unit( 
-				me.houseCodeSearchTemplate.houseCodeIdTemplate
-				, me.houseCodeSearchTemplate.houseCodeTitleTemplate
-				, true
-				));
+			for (index = 0; index < me.units.length; index++) {
+			    if (me.units[index].id == me.houseCodeSearchTemplate.houseCodeIdTemplate) {
+			        found = true;
+			        break;
+			    }
+			}
+			if (!found) {
+			    me.units.push(new fin.pur.catalog.Unit(
+                    me.houseCodeSearchTemplate.houseCodeIdTemplate
+                    , me.houseCodeSearchTemplate.houseCodeTitleTemplate
+                    , true
+                    ));
+			}
 
 			me.houseCodeGrid.setData(me.units);
 			me.modified();
@@ -1277,26 +1284,32 @@ ii.Class({
 		itemsGridLoaded: function(me, activeId) {
 
 		    if (me.purItemGrid.activeRowIndex >= 0)
-			    me.purItemGrid.body.deselect(me.purItemGrid.activeRowIndex);
+		        me.purItemGrid.body.deselect(me.purItemGrid.activeRowIndex);
 
-			if (me.enter == true) {
-			    if (me.searchValue == "" || (me.searchValue != me.searchInputPopup.getValue())) {
-			        for (var index = 0; index < me.purItems.length; index++) {
-			            me.purItemData.push(new fin.pur.catalog.PurItem(
+		    if (me.enter == true) {
+		        for (var index = 0; index < me.purItems.length; index++) {
+		            var found = false;
+		            for (var iIndex = 0; iIndex < me.purItemData.length; iIndex++) {
+		                if (me.purItems[index].number == me.purItemData[iIndex].number) {
+		                    found = true; 
+		                    break;
+		                }
+		            }
+		            if (!found) {
+		                me.purItemData.push(new fin.pur.catalog.PurItem(
                         me.purItems[index].id
-                       , me.purItems[index].number
-                       , me.purItems[index].description
-                       , me.purItems[index].price
-                       , me.purItems[index].active
-                       , true
-                       ));
-			        }
-			        me.searchValue = me.searchInputPopup.getValue();
-			    }
-			    me.purItemGrid.setData(me.purItemData);
-			    for (var index = 0; index < me.purItemData.length; index++) {
-			        $("#assignItemInputCheck" + index)[0].checked = true;
-			    }
+                        , me.purItems[index].number
+                        , me.purItems[index].description
+                        , me.purItems[index].price
+                        , me.purItems[index].active
+                        , true
+                        ));
+		            }
+		        }
+		        me.purItemGrid.setData(me.purItemData);
+		        for (var index = 0; index < me.purItemData.length; index++) {
+		            $("#assignItemInputCheck" + index)[0].checked = true;
+		        }
 			}
 			else {
 			    me.purItemGrid.setData(me.purItems);
