@@ -2,6 +2,7 @@ ii.Import( "ii.krn.sys.ajax" );
 ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons" );
+ii.Import( "ui.ctl.usr.grid" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.cmn.usr.text" );
@@ -17,6 +18,7 @@ ii.Style( "fin.cmn.usr.checkList", 6 );
 ii.Style( "fin.cmn.usr.button", 7 );
 ii.Style( "fin.cmn.usr.dropDown", 8 );
 ii.Style( "fin.cmn.usr.dateDropDown", 9 );
+ii.Style( "fin.cmn.usr.grid", 10 );
 
 ii.Class({
     Name: "fin.hcm.houseCode.UserInterface",
@@ -39,6 +41,7 @@ ii.Class({
 
 			parent.fin.hcmMasterUi.loadCount = 0;
 			me.unitId = parseInt(queryStringArgs["unitId"]);
+			me.managerId = 0;
 
 			me.gateway = ii.ajax.addGateway("hcm", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -439,9 +442,20 @@ ii.Class({
 			me.managerName = new ui.ctl.Input.Text({
 		        id: "ManagerName",
 		        maxLength: 100,
+				title: "To search a specific Manager Name, type-in Manager Name and press Enter/Tab key.",
 				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
-			
+
+			me.managerName.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(function( isFinal, dataMap) {
+
+				if (me.managerName.getValue() === "")
+					this.valid = true;
+				else if (me.managerName.getValue().length < 3)
+					this.setInvalid("Please enter search criteria (minimum 3 characters).");
+			});
+
 			me.managerEmail = new ui.ctl.Input.Text({
 		        id: "ManagerEmail",
 		        maxLength: 50,
@@ -657,9 +671,35 @@ ii.Class({
 					if (ui.cmn.text.validate.phone(enteredText) == false)
 						this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
 				});
-				
+
+			me.managerGrid = new ui.ctl.Grid({
+				id: "ManagerGrid",
+				allowAdds: false
+			});
+
+			me.managerGrid.addColumn("employeeName", "employeeName", "Manager Name", "Manager Name", 300);
+			me.managerGrid.addColumn("jobTitle", "jobTitle", "Job Title", "Job Title", null);
+			me.managerGrid.capColumns();
+
+			me.anchorManagerOK = new ui.ctl.buttons.Sizeable({
+				id: "AnchorManagerOK",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionManagerOKtem(); },
+				hasHotState: true
+			});
+
+			me.anchorManagerCancel = new ui.ctl.buttons.Sizeable({
+				id: "AnchorManagerCancel",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionManagerCancelItem(); },
+				hasHotState: true
+			});
+
 			$("#SitesText").bind("keydown", me, me.actionSearchItem);
-			
+			$("#ManagerNameText").bind("change", function() { me.searchManagerInfo(); });
+
 			me.jdeCompany.text.tabIndex = 1;
 			me.site.text.tabIndex = 2;
 			me.houseCodeNumber.text.tabIndex = 3;
@@ -769,7 +809,15 @@ ii.Class({
 				itemConstructor: fin.hcm.houseCode.ServiceLine,
 				itemConstructorArgs: fin.hcm.houseCode.serviceLineArgs,
 				injectionArray: me.serviceLines
-			});						
+			});
+
+			me.managers = [];
+			me.managerStore = me.cache.register({
+				storeId: "employeeHierarchies",
+				itemConstructor: fin.hcm.houseCode.Manager,
+				itemConstructorArgs: fin.hcm.houseCode.managerArgs,
+				injectionArray: me.managers	
+			});
 		},
 		
 		controlKeyProcessor: function() {
@@ -971,6 +1019,7 @@ ii.Class({
 				$("#TeamChimesAccountNo").attr('checked', true);
 
 			me.managerName.setValue(houseCode.managerName);
+			me.managerId = houseCode.managerId;
 			me.managerEmail.setValue(houseCode.managerEmail);
 			me.managerPhone.setValue(houseCode.managerPhone);
 			me.managerFax.setValue(houseCode.managerFax);
@@ -1014,6 +1063,82 @@ ii.Class({
 				item = new fin.hcm.houseCode.HouseCodeService(0, houseCodeId, id, id, name);
 				me.houseCodeServices.push(item);
 			}		
+		},
+
+		searchManagerInfo: function() {
+			var me = this;
+
+			me.managerId = 0;
+			if (me.managerName.getValue() !== "" && me.managerName.validate(true)) {
+				$("#ManagerNameText").addClass("Loading");
+				me.managerStore.reset();
+				me.managerStore.fetch("userId:[user],jobTitle:,employeeName:" + me.managerName.getValue() + ",employeeId:0,managerId:-1,searchInHierarchy:false,ancestors:false,searchManager:1", me.managersLoaded, me);
+			}
+		},
+
+		managersLoaded: function(me, activeId) {
+
+			$("#ManagerNameText").removeClass("Loading");
+			if (me.managers.length > 0) {
+				me.managerGrid.setData(me.managers);
+				me.loadPopup("ManagerPopup");
+				me.managerGrid.setHeight($(window).height() - 180);
+			}
+			else {
+				alert("There is no Manager with Manager Name [" + me.managerName.getValue() + "].");
+			}
+		},
+
+		actionManagerOKtem: function() {
+			var me = this;
+
+			if (me.managerGrid.activeRowIndex === -1)
+				return;
+
+			me.managerName.setValue(me.managers[me.managerGrid.activeRowIndex].employeeName);
+			me.managerId = me.managers[me.managerGrid.activeRowIndex].employeeId;
+			me.hidePopup("ManagerPopup");
+			$("#pageLoading").fadeOut("slow");
+		},
+
+		actionManagerCancelItem: function() {
+			var me = this;
+
+			me.hidePopup("ManagerPopup");
+			$("#pageLoading").fadeOut("slow");
+		},
+
+		loadPopup: function(id) {
+			var me = this;
+
+			me.centerPopup(id);
+
+			$("#backgroundPopup").css({
+				"opacity": "0.5"
+			});
+			$("#backgroundPopup").fadeIn("slow");
+			$("#" + id).fadeIn("slow");
+		},
+
+		hidePopup: function(id) {
+
+			$("#backgroundPopup").fadeOut("slow");
+			$("#" + id).fadeOut("slow");
+		},
+
+		centerPopup: function(id) {
+			var me = this;
+			var windowWidth = document.documentElement.clientWidth;
+			var windowHeight = document.documentElement.clientHeight;
+			var popupWidth = windowWidth - 100;
+			var popupHeight = windowHeight - 100;
+
+			$("#" + id).css({
+				"width": popupWidth,
+				"height": popupHeight,
+				"top": windowHeight/2 - popupHeight/2,
+				"left": windowWidth/2 - popupWidth/2
+			});
 		}
 	}
 });
