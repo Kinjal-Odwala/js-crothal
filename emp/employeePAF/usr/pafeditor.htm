@@ -382,23 +382,24 @@
                             <div ng-show="empAction.SeparationReason=='ResignationType'">
                                 <label>Note:</label>&nbsp; Attach Resignation Letter 
                             </div>
-                            <div class="form-group" ng-show="empAction.SeparationReason=='LayoffType' || empAction.SeparationReason=='TerminationType'">
+                            <div class="form-group" ng-show="empAction.SeparationReason=='LayoffType' || empAction.SeparationReason=='TerminationType'" ng-class="{'has-error':separationForm.ReviewedWithHR.$invalid}">
                                 <label>Reviewed with HR:</label>
                                 <div>
-                                    <select class="form-control input-sm" ng-model="empAction.HrReviewType" ng-options="item.id as item.title for item in $parent.$parent.lkup.HRReviews">
+                                    <select class="form-control input-sm" ng-model="empAction.HrReviewType" name="ReviewedWithHR" ng-options="item.id as item.title for item in $parent.$parent.lkup.HRReviews" required>
                                         <option value=""></option>
                                     </select>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4 ">
+                        <div class="col-md-4">
                             <label>Rehire:</label>
-                            <div class="form-group">
+                            <div class="form-group" ng-class="{'has-error':separationForm.SeparationReHire.$invalid}">
                                 <label class="radio-inline">
-                                    <input type="radio" ng-model="empAction.SeparationReHire" ng-value="true" />Yes
+                                    <input type="radio" name="SeparationReHire" ng-model="empAction.SeparationReHire" ng-value="true" required="required"/>Yes
                                 </label>
+                               
                                 <label class="radio-inline">
-                                    <input type="radio" ng-model="empAction.SeparationReHire" ng-value="false" />No 
+                                    <input type="radio" name="SeparationReHire" ng-model="empAction.SeparationReHire" ng-value="false" required="required"/>No 
                                 </label>
                             </div>
                         </div>
@@ -798,15 +799,15 @@
                     <p>(To be completed by Recruiter)</p>
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="form-group">
+                            <div class="form-group" ng-class="{'has-error':requisitionForm.Number.$invalid}">
                                 <label>Requisition #</label>
-                                <input class="form-control input-sm" ng-model="empAction.RequisitionNumber" maxlength="50"/>
+                                <input class="form-control input-sm" ng-model="empAction.RequisitionNumber" name="Number" maxlength="50" required/>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group" ng-class="{'has-error':requisitionForm.EmailAddress.$invalid}">
-                                <label>Email Address</label>
-                                <input paf-validation="EMAIL" class="form-control input-sm" ng-model="empAction.RequisitionEmail" name="EmailAddress" maxlength="50" />
+                                <label>Candidate Email</label>
+                                <input paf-validation="EMAIL" class="form-control input-sm" ng-model="empAction.RequisitionEmail" name="EmailAddress" maxlength="50" required/>
                             </div>
                         </div>
                     </div>
@@ -964,7 +965,7 @@
                     </div>
                     <div class="row" ng-if="!empAction.Loa && (!overHeadAccount && empAction.HcmHouseCode) && ((empAction.SalaryChange && empAction.IncreaseDecreasePercentage > 4) || ((empAction.Promotion || empAction.Demotion) && empAction.IncreaseDecreasePercentage > 10))">
                         <div class="col-md-2">
-                        	<label>Regional Manager Name:</label>
+                        	<label>Second Level Manager Name:</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.RegionalManagerName.$invalid}">
@@ -973,7 +974,7 @@
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2">
-                        	<label>Regional Manager Email:</label>
+                        	<label>Second Level Manager Email:</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.RegionalManagerEmail.$invalid}">

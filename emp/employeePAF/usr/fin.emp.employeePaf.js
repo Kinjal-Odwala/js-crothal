@@ -716,7 +716,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     $scope.stepApprovals = [
            { id: 1, approval: 'LOA', name: null, date: null },
            { id: 2, approval: 'HR Manager', name: null, date: null },
-           { id: 3, approval: 'Regional Manager', name: null, date: null },
+           { id: 3, approval: 'Second Level Manager', name: null, date: null },
            { id: 4, approval: 'HR Director', name: null, date: null },
            { id: 5, approval: 'Process HR', name: null, date: null }
     ];
