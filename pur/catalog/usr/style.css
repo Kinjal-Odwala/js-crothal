@@ -103,7 +103,7 @@
 	width: 80px;
 }
 
-#priceBodyColumn {
+#priceBodyColumn, #previousFieldValueBodyColumn, #fieldNameBodyColumn {
 	text-align: right;	
 }
 

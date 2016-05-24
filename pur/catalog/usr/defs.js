@@ -97,7 +97,7 @@ ii.init.register( function() {
 	    name: { type: String }
 	};
 
-	fin.app.appApplicationHistoryArgs = {
+	fin.pur.catalog.appApplicationHistoryArgs = {
 	    id: { type: Number },
 	    module: { type: String, required: false, defaultValue: "" },
 	    refernce: { type: Number, required: false, defaultValue: 0 },
@@ -224,10 +224,10 @@ ii.Class({
 });
 
 ii.Class({
-    Name: "fin.app.AppApplicationHistory",
+    Name: "fin.pur.catalog.AppApplicationHistory",
     Definition: {
         init: function () {
-            var args = ii.args(arguments, fin.app.appApplicationHistoryArgs);
+            var args = ii.args(arguments, fin.pur.catalog.appApplicationHistoryArgs);
             $.extend(this, args);
         }
     }

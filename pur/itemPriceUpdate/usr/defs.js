@@ -11,7 +11,8 @@ ii.init.register( function() {
 		id: {type: Number}
 		, number: {type: String}
 		, description: {type: String}
-		, price: {type: String}
+		, price: { type: String }
+   		, active: { type: Boolean }
 	};
 
 	fin.pur.itemPriceUpdate.catalogItemArgs = {

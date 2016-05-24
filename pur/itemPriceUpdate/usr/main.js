@@ -301,6 +301,7 @@ ii.Class({
 			me.itemGrid.addColumn("number", "number", "Number", "Number", 120);
 			me.itemGrid.addColumn("description", "description", "Description", "Description", null);
 			me.itemGrid.addColumn("price", "price", "Price", "Price", 90);
+			me.itemGrid.addColumn("active", "active", "Active", "Active", 70, function (active) { return (active == "1" ? "Yes" : "No") });
 			me.itemGrid.capColumns();
 
 			me.catalogItemGrid = new ui.ctl.Grid({
@@ -316,6 +317,7 @@ ii.Class({
 			me.catalogItemGrid.addColumn("catalogTitle", "catalogTitle", "Catalog Title", "Catalog Title", null);
 			me.catalogItemGrid.addColumn("price", "price", "Price", "Price", 90);
 			me.catalogItemGrid.addColumn("effectivePrice", "effectivePrice", "Effective Price", "Effective Price", 120);
+			me.catalogItemGrid.addColumn("active", "active", "Active", "Active", 70, function (active) { return (active == "1" ? "Yes" : "No") });
 			me.catalogItemGrid.capColumns();
 
 			$("#SearchInputText").bind("keydown", me, me.actionSearchItem);

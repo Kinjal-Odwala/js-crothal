@@ -203,10 +203,10 @@ ii.Class({
 			    allowAdds: false
 			});
 
-			me.historyGrid.addColumn("lastModifiedBy", "lastModifiedBy", "Last Modified By", "Last Modified By", 300);
+			me.historyGrid.addColumn("lastModifiedBy", "lastModifiedBy", "Last Modified By", "Last Modified By", null);
 			me.historyGrid.addColumn("lastModifiedAt", "lastModifiedAt", "Last Modified At", "Last Modified At", 300);
 			me.historyGrid.addColumn("previousFieldValue", "previousFieldValue", "Amount From", "Amount From", 200);
-			me.historyGrid.addColumn("fieldName", "fieldName", "Amount To", "Amount To", null);
+			me.historyGrid.addColumn("fieldName", "fieldName", "Amount To", "Amount To", 200);
 			me.historyGrid.capColumns();
 			
 			me.anchorUploadCancel = new ui.ctl.buttons.Sizeable({
@@ -393,6 +393,7 @@ ii.Class({
 			
 			me.itemGrid.addColumn("masterId", "masterId", "Master Id", "Master Id", 150);
 			me.itemGrid.addColumn("number", "number", "Number", "Number", null);
+			me.itemGrid.addColumn("active", "active", "Active", "Active", 70, function (active) { return (active == "1" ? "Yes" : "No") });
 			me.itemGrid.capColumns();
 			
 			$("#SearchInputText").bind("keydown", me, me.actionSearchItem);
@@ -440,8 +441,8 @@ ii.Class({
 			me.appHistories = [];
 			me.appHistoryStore = me.cache.register({
 			    storeId: "appApplicationHistorys",
-			    itemConstructor: fin.app.AppApplicationHistory,
-			    itemConstructorArgs: fin.app.appApplicationHistoryArgs,
+			    itemConstructor: fin.pur.item.AppApplicationHistory,
+			    itemConstructorArgs: fin.pur.item.appApplicationHistoryArgs,
 			    injectionArray: me.appHistories
 			});
 		},

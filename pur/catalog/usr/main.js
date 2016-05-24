@@ -203,10 +203,10 @@ ii.Class({
 			    allowAdds: false
 			});
 
-			me.historyGrid.addColumn("lastModifiedBy", "lastModifiedBy", "Last Modified By", "Last Modified By", 300);
+			me.historyGrid.addColumn("lastModifiedBy", "lastModifiedBy", "Last Modified By", "Last Modified By", null);
 			me.historyGrid.addColumn("lastModifiedAt", "lastModifiedAt", "Last Modified At", "Last Modified At", 300);
 			me.historyGrid.addColumn("previousFieldValue", "previousFieldValue", "Amount From", "Amount From", 200);
-			me.historyGrid.addColumn("fieldName", "fieldName", "Amount To", "Amount To", null);
+			me.historyGrid.addColumn("fieldName", "fieldName", "Amount To", "Amount To", 200);
 			me.historyGrid.capColumns();
 			
 			me.anchorUpload = new ui.ctl.buttons.Sizeable({
@@ -592,8 +592,8 @@ ii.Class({
 			me.appHistories = [];
 			me.appHistoryStore = me.cache.register({
 			    storeId: "appApplicationHistorys",
-			    itemConstructor: fin.app.AppApplicationHistory,
-			    itemConstructorArgs: fin.app.appApplicationHistoryArgs,
+			    itemConstructor: fin.pur.catalog.AppApplicationHistory,
+			    itemConstructorArgs: fin.pur.catalog.appApplicationHistoryArgs,
 			    injectionArray: me.appHistories
 			});
 		},
@@ -717,8 +717,15 @@ ii.Class({
 			}
 		},
 		
-		loadSearchResults: function() {
-			var me = this;
+		loadSearchResults: function () {
+		    var me = this;
+		    index = me.catalogItemGrid.activeRowIndex;
+		    if (index >= 0) {
+		        me.catalogItemGrid.body.deselect(index);
+		    }
+		    iIndex = me.catalogGrid.activeRowIndex;
+		    if (iIndex >= 0)
+		        me.catalogGrid.body.deselect(iIndex);
 			
 			if (!parent.fin.cmn.status.itemValid())
 				return;
