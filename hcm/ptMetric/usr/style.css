@@ -73,7 +73,7 @@
 	font-size: 8pt;
 }
 
-#Notes {	
+#Notes {
 	float: left;
 	width: 620px;
 	font-family: Verdana;
@@ -81,20 +81,20 @@
 	color: black;
 }
 
-#GridLaborControl, #StrategicInitiativeGrid, #GridQualityControl, #GridQualityAssurance, #GridAdministrative {
+#GridLaborControl, #StrategicInitiativeGrid, #GridQualityControl, #GridQualityAssurance, #AdminObjectiveGrid, #GridAdministrative {
 	margin: 10px;
 }
 
 #LaborControlGridContainer, #QualityControlGridContainer, #PTPressGaneyGridContainer, #EVSHCAHPSGridContainer, #InHouseStandardMetricGridContainer, #ThirdPartyStandardMetricGridContainer {
 	float: left;
 	width: 100%;
-	position: relative;	
+	position: relative;
 	overflow-x: auto;
 	overflow-y: hidden;
 }
 
 #QualityAssuranceContainer {
-	position: relative;	
+	position: relative;
 	overflow-x: hidden;
 	overflow-y: auto;
 }
