@@ -46,10 +46,10 @@ ii.Class({
 			//pagination setup
 			me.maximumRows = 250;
 			me.recordCount = 0;
-			me.houseCodesStartPoint = 1;			
+			me.houseCodesStartPoint = 1;
 			me.houseCodesPageCount = 0;
 			me.houseCodesPageCurrent = 1;
-			me.itemsStartPoint = 1;			
+			me.itemsStartPoint = 1;
 			me.itemsPageCount = 0;
 			me.itemsPageCurrent = 1;
 			
@@ -832,8 +832,8 @@ ii.Class({
 			me.status = "";
 			me.setLoadCount();
 			me.catalogItemStore.fetch("userId:[user],itemId:" + item.id
-                                     + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
-                                     , me.itemCatalogsLoaded, me);
+				+ ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
+				, me.itemCatalogsLoaded, me);
 		},
 		
 		itemCatalogsLoaded: function(me, activeId) {
@@ -891,8 +891,8 @@ ii.Class({
 				me.houseCodesTabNeedUpdate = false;
 				me.recordCountStore.reset();
 				me.recordCountStore.fetch("userId:[user]," + "catalogId:" + me.catalogId
-                                          + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
-                                          + ",type:catalogHouseCodes", me.catalogHouseCodesCountLoaded, me);
+					+ ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
+					+ ",type:catalogHouseCodes", me.catalogHouseCodesCountLoaded, me);
 			}
 		},		
 
@@ -979,8 +979,8 @@ ii.Class({
 				me.itemsTabNeedUpdate = false;
 				me.recordCountStore.reset();
 				me.recordCountStore.fetch("userId:[user]," + "catalogId:" + me.catalogId
-                                         + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
-                                         + ",type:catalogItems", me.catalogItemsCountLoaded, me);
+					+ ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
+					+ ",type:catalogItems", me.catalogItemsCountLoaded, me);
 			}			
 		},
 		
@@ -1600,8 +1600,8 @@ ii.Class({
 			
 			me.fileNameStore.reset();
 			me.fileNameStore.fetch("userId:[user],export:1,catalogId:" + me.catalogId
-                                   + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
-                                   + ",type:" + type, me.fileNamesLoaded, me);
+				+ ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
+				+ ",type:" + type, me.fileNamesLoaded, me);
 		},
 
 		fileNamesLoaded: function(me, activeId) {
@@ -1778,15 +1778,16 @@ ii.Class({
 		},
 
 		actionSaveItem: function() {
-			var args = ii.args(arguments,{});
 			var me = this;
 			
-			if (me.catalogsReadOnly) return;
+			if (me.catalogsReadOnly)
+				return;
 			
 			var catalogItemDatas = [];
 			var catalogItemData;
 			var catalogHouseCodeDatas = [];
 			var catalogHouseCodeData;
+			var xml = "";
 
 			if (me.status == "") {
 				if (me.lastSelectedRowIndex == -1)
@@ -1850,7 +1851,7 @@ ii.Class({
 					, catalogItemDatas
 					);				
 
-				var xml = me.saveXmlBuildCatalog(item);
+				xml = me.saveXmlBuildCatalog(item);
 			}
 			else if (me.action == "ItemCatalogsAssociation") {
 				var item = new fin.pur.catalog.Catalog(0, "", 0, 1, true, [], []);
@@ -1870,6 +1871,9 @@ ii.Class({
 					}
 				};
 			}
+
+			if (xml === "")
+				return;
 
 			me.actionSave(item, xml);			
 		},
@@ -1969,10 +1973,11 @@ ii.Class({
 				}
 				else if (me.status == "addCatalogs") {
 					me.catalogsTabNeedUpdate = true;
+					me.loadCount++;
 					me.catalogItemStore.reset();
 					me.catalogItemStore.fetch("userId:[user],itemId:" + me.itemGrid.data[me.itemGrid.activeRowIndex].id
-                                            + ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
-                                            , me.itemCatalogsLoaded, me);
+	                	+ ",catalogStatus:" + (me.activeSearch.indexSelected == -1 ? -1 : me.activeStatuses[me.activeSearch.indexSelected].number)
+	                    , me.itemCatalogsLoaded, me);
 				}
 				else {
 					$(args.xmlNode).find("*").each(function() {
