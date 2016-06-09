@@ -125,6 +125,10 @@ var getCurrentHcmHouseCode = function () {
     return window.top.fin.appUI.houseCodeId;
 }
 
+var getCurrentUserId = function () {
+    return parent.fin.appUI.cache.stores.sessions.injectionArray[0].userId;
+}
+
 paf.config(['$routeProvider', function ($routeProvider) {
     $routeProvider
     .when('/edit/:id', {
@@ -154,7 +158,10 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     $scope.pafDocs = [];
     $scope.add = "";
     $scope.selectedPafId = $routeParams.id;
+    $scope.Recruiters = [];
     var selectedFileName = "";
+    var loggedInUserId = getCurrentUserId();
+    $scope.isRecruiter = false;
 
     $scope.dateOptions = {
         formatYear: 'yy',
@@ -249,6 +256,17 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     var loadAdministratorEmails = function () {
         EmpActions.getAdministratorDetails(function (result) {
             $scope.AdministratorDetails = result;
+        });
+    };
+
+    var loadRecruiters = function () {
+        EmpActions.getAppUsers(5, function (result) {
+            $scope.Recruiters = result;
+        });
+        angular.forEach($scope.Recruiters, function (item) {
+            if (item.id == loggedInUserId) {
+                $scope.isRecruiter = true;
+            }
         });
     };
 
@@ -636,6 +654,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         loadPersonActionTypes();
         loadPayGrades();
         loadAdministratorEmails();
+        loadRecruiters();
 
         EmpActions.getAuthorizations(function (result) {
             $scope.authorizations = result;
@@ -651,7 +670,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             angular.forEach($scope.stepApprovals, function (item) {
                 var workflowStepId = EmpActions.getWorkflowStepId(item.id);
                 if (item.id != 3 && item.id != 4) {
-                    EmpActions.getAppUsers(workflowStepId, function (result) {
+                    EmpActions.getAppUser(workflowStepId, function (result) {
                         if (angular.isDefined(result)) {
                             if (item.id == 1) {
                                 $scope.empAction.LoaManagerName = result.firstName + " " + result.lastName;
@@ -661,7 +680,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                                 $scope.empAction.HrManagerName = result.firstName + " " + result.lastName;
                                 $scope.empAction.HrManagerEmail = result.email;
                             }
-                            else if (item.id == 5) {
+                            else if (item.id == 6) {
                                 $scope.empAction.ProcessHRName = result.firstName + " " + result.lastName;
                                 $scope.empAction.ProcessHREmail = result.email;
                             }
@@ -718,7 +737,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
            { id: 2, approval: 'HR Manager', name: null, date: null },
            { id: 3, approval: 'Second Level Manager', name: null, date: null },
            { id: 4, approval: 'HR Director', name: null, date: null },
-           { id: 5, approval: 'Process HR', name: null, date: null }
+           { id: 5, approval: 'Recruiter', name: null, date: null },
+           { id: 6, approval: 'Process HR', name: null, date: null }
     ];
 
     $scope.Approvals = [];
@@ -784,6 +804,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 else if (item.id == 4)
                     item.name = $scope.empAction.HrDirectorName;
                 else if (item.id == 5)
+                    item.name = $scope.empAction.RecruiterName;
+                else if (item.id == 6)
                     item.name = $scope.empAction.ProcessHRName;
 
                 item.date = EmpActions.getWorkflowDate(workflowStepId);
@@ -797,11 +819,15 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                         $scope.Approvals.push(item);
                 }
                 else if (($scope.empAction.SalaryChange && $scope.empAction.IncreaseDecreasePercentage > 4) || (($scope.empAction.Promotion || $scope.empAction.Demotion) && $scope.empAction.IncreaseDecreasePercentage > 10)) {
-                    if (item.id == 3 || item.id == 4 || item.id == 5)
+                    if (item.id == 3 || item.id == 4 || item.id == 5 || item.id == 6)
+                        $scope.Approvals.push(item);
+                }
+                else if ($scope.empAction.NewHire || $scope.empAction.ReHire || $scope.empAction.Transfer || $scope.empAction.Promotion || $scope.empAction.Demotion || $scope.empAction.SalaryChange) {
+                    if (item.id == 5)
                         $scope.Approvals.push(item);
                 }
                 else {
-                    if (item.id == 5)
+                    if (item.id == 6)
                         $scope.Approvals.push(item);
                 }
             });
@@ -1083,6 +1109,16 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         }
     };
 
+    $scope.getRecruiterEmail = function (recruiter) {
+        var email = "";
+        angular.forEach($scope.Recruiters, function (item) {
+            if (item.name == recruiter) {
+                email = item.email;
+            }
+        });
+        return email;
+    };
+
     $scope.onRowClick = function (item, index) {
         $scope.selectedDocItem = item;
         activeRowIndex = index;
@@ -1263,6 +1299,10 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.LoaReturnDate = null;
             }
 
+            if (angular.isDefined($scope.empAction.RecruiterName)) {
+                $scope.empAction.RecruiterEmail = $scope.getRecruiterEmail($scope.empAction.RecruiterName);
+            }
+
             $scope.pageLoading = true;
 
             if (saveAndSubmit)
@@ -1293,7 +1333,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         pafDate: null,
         endDate: null,
         status: 1,
-        formType: null
+        formType: null,
+        recruiter: null
     };
 
     var showToaster = function () {
@@ -1450,7 +1491,8 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         pafDate: null,
         endDate: null,
         status: 1,
-        formType: null
+        formType: null,
+        recruiter: null
     };
 
     $scope.selectedItem = null;
@@ -1464,6 +1506,13 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
     $scope.loadingTitle = " Loading...";
     $scope.isPageLoading = function () {
         return ($scope.loadingCount > 0 || $scope.pageLoading);
+    };
+
+    $scope.Recruiters = [];
+    var loadRecruiters = function () {
+        EmpActions.getAppUsers(5, function (result) {
+            $scope.Recruiters = result;
+        });
     };
 
     $scope.getPafList = function () {
@@ -1544,6 +1593,8 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
                 $scope.pafFilter.hcmHouseCode = response.id;
             });
         }
+
+        loadRecruiters();
     };
 
     load();
@@ -1578,7 +1629,8 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
             pafDate: null,
             endDate: null,
             status: 1,
-            formType: null
+            formType: null,
+            recruiter: null
         };
     };
 
@@ -2473,6 +2525,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
     var payGrades = null;
     var workflowSteps = null;
     var workflowHistorys = null;
+    var appUsers = null;
 
     var apiRequest = function (moduleId, targetId, requestXml, callback) {
         //$.ajax({
@@ -2729,7 +2782,8 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
            + ',workflowModule:' + 'paf'
            + ',</criteria>', function (xml) {
                if (callback) {
-                   callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
+                   cache.appUsers = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
+                   callback(cache.appUsers);
                }
            });
     };
@@ -2754,6 +2808,18 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
            + ',houseCodeId:' + houseCodeId
            + ',workflowModuleId:' + '2'
            + ',stepNumber:' + stepNumber
+           + ',</criteria>', function (xml) {
+               if (callback) {
+                   callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
+               }
+           });
+    };
+
+    var getAppUser = function (workflowStepId, callback) {
+
+        apiRequest('app', 'iiCache', '<criteria>storeId:appUsers,userId:[user]'
+           + ',workflowStepId:' + workflowStepId
+           + ',workflowModule:' + 'paf'
            + ',</criteria>', function (xml) {
                if (callback) {
                    callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
@@ -2926,6 +2992,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             xml += ' step3Date=""';
             xml += ' step4Date=""';
             xml += ' step5Date=""';
+            xml += ' step6Date=""';
             xml += ' saveAndSubmit="1"';
             xml += '/>';
         }
@@ -3010,6 +3077,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         var step3Date = "";
         var step4Date = "";
         var step5Date = "";
+        var step6Date = "";
 
         if (item.ResignationType > 0)
             reasonId = item.ResignationType;
@@ -3024,12 +3092,14 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             var workflowStep3Id = getWorkflowStepId("3");
             var workflowStep4Id = getWorkflowStepId("4");
             var workflowStep5Id = getWorkflowStepId("5");
+            var workflowStep6Id = getWorkflowStepId("6");
 
             step1Date = getWorkflowDate(workflowStep1Id);
             step2Date = getWorkflowDate(workflowStep2Id);
             step3Date = getWorkflowDate(workflowStep3Id);
             step4Date = getWorkflowDate(workflowStep4Id);
             step5Date = getWorkflowDate(workflowStep5Id);
+            step6Date = getWorkflowDate(workflowStep6Id);
         }
 
         xml = '<transaction id="' + item.Id + '">';
@@ -3057,6 +3127,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         xml += ' step3Date="' + step3Date + '"';
         xml += ' step4Date="' + step4Date + '"';
         xml += ' step5Date="' + step5Date + '"';
+        xml += ' step6Date="' + step6Date + '"';
         xml += ' print="' + print + '"';
         xml += '/>';
         xml += '</transaction>';
@@ -3095,13 +3166,14 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         findEmployeePAFDocument: findEmployeePAFDocument,
         deleteEmployeePAFDocument: deleteEmployeePAFDocument,
         viewEmployeePAFDocument: viewEmployeePAFDocument,
-        getAppUsers: getAppUsers,
+        getAppUser: getAppUser,
         getWorkflowStepId: getWorkflowStepId,
         getJDECompanies: getJDECompanies,
         getWorkflowHistory: getWorkflowHistory,
         getWorkflowDate: getWorkflowDate,
         getHouseCodes: getHouseCodes,
-        auditEmployeePersonnelAction: auditEmployeePersonnelAction
+        auditEmployeePersonnelAction: auditEmployeePersonnelAction,
+        getAppUsers: getAppUsers
     }
 }]);
 

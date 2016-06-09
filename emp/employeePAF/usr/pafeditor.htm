@@ -812,6 +812,24 @@
                         </div>
                     </div>
                 </div>
+                <div ng-form="recruiterForm" ng-if="isRecruiter">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" ng-class="{'has-error':recruiterForm.Recruiter.$invalid}">
+                                <label>Recruiter Name</label>
+                                <select class="form-control input-sm" name="Recruiter" ng-model="empAction.RecruiterName" ng-options="item.name as item.name for item in Recruiters" required>
+                                    <option value=""></option>
+                                </select>          
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Recruiter Email</label>
+                                <p class="form-control input-sm" required="true">{{$parent.getRecruiterEmail(empAction.RecruiterName)}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
             <!--RELOCATION-->
             <section ng-if="empAction.Relocation">
@@ -1001,6 +1019,25 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row" ng-if="!empAction.Loa && (!overHeadAccount && empAction.HcmHouseCode) && (empAction.NewHire || empAction.ReHire || empAction.Separation || empAction.Transfer || empAction.PersonalInfoChange || empAction.Relocation || empAction.Promotion || empAction.Demotion || empAction.SalaryChange)">
+                        <div class="col-md-2">
+                        	<label>Recruiter Name:</label>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group" ng-class="{'has-error':workflowDetailsForm.RecruiterName.$invalid}">
+                               <input class="form-control input-sm" name="RecruiterName" maxlength="100" ng-model="empAction.RecruiterName" ng-required="true" ng-disabled="empAction.RecruiterName != ''"/>
+                            </div>
+                        </div>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2">
+                        	<label>Recruiter Email:</label>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <p class="form-control input-sm" required="true">{{$parent.getRecruiterEmail(empAction.RecruiterName)}}</p>
+                            </div>
+                        </div>
+					</div>
                     <div class="row" ng-if="!empAction.Loa && (!overHeadAccount && empAction.HcmHouseCode) && (empAction.NewHire || empAction.ReHire || empAction.Separation || empAction.Transfer || empAction.PersonalInfoChange || empAction.Relocation || empAction.Promotion || empAction.Demotion || empAction.SalaryChange)">
                         <div class="col-md-2">
                         	<label>Process HR Name:</label>
