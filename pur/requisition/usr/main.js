@@ -1852,7 +1852,7 @@ ii.Class({
 			me.shippingZip.setValue(item.shipToZip);
 			me.shippingPhone.setValue(item.shipToPhone);
 			me.shippingFax.setValue(item.shipToFax);
-			me.template.check.checked = item.template;
+			me.template.setValue(item.template.toString());
 			me.templateTitle.setValue(item.templateTitle);
 			me.checkTemplate();
 		},
@@ -2331,7 +2331,7 @@ ii.Class({
 			me.shippingZip.setValue(me.houseCodeDetails[0].shippingZip);
 			me.shippingPhone.setValue("");
 			me.shippingFax.setValue("");
-			me.template.check.checked = false;
+			me.template.setValue("false");
 			me.templateTitle.setValue("");
 			me.checkTemplate();
 
