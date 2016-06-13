@@ -1526,12 +1526,22 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         });
     };
 
-    $scope.sortBy = function (sortType) {
-        if (sortType === 'FullName') {
-            $scope.sortByFullName = true;
+    $scope.sortBy = function (item) {
+        if ($scope.sortType === 'Number') {
+            return item.Number;
         }
-        if (sortType === 'HouseCode') {
-            $scope.sortByHouseCode = true;
+        else if ($scope.sortType === 'Date') {
+            return item.Date;
+        }
+        else if ($scope.sortType === 'EmployeeNumber') {
+            return item.EmployeeNumber;
+        }
+        else if ($scope.sortType === 'EmployeeName') {
+            var fullName = item.FirstName + " " + item.LastName;
+            return fullName;
+        }
+        else if ($scope.sortType === 'HouseCode') {
+            return $scope.getHouseCodeName(item);
         }
     }
 
