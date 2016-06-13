@@ -1495,6 +1495,8 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         recruiter: null
     };
 
+    $scope.sortType = 'Number';
+    $scope.sortReverse = false;
     $scope.selectedItem = null;
     $scope.dateOptions = {
         formatYear: 'yy',
@@ -1523,6 +1525,15 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
             $scope.empActions = items;
         });
     };
+
+    $scope.sortBy = function (sortType) {
+        if (sortType === 'FullName') {
+            $scope.sortByFullName = true;
+        }
+        if (sortType === 'HouseCode') {
+            $scope.sortByHouseCode = true;
+        }
+    }
 
     var isAuthorized = function (path) {
         var authorized = false;

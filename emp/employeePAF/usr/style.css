@@ -150,6 +150,15 @@
     text-align: left;
 }
 
+.thead {
+    border-bottom: 2px solid black; 
+    cursor: pointer;  
+}
+
+.table {
+    margin-top: 10px;
+}
+
 
 
 
