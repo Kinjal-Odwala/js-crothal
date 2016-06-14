@@ -96,54 +96,66 @@
     <table class="table-scroll table table-bordered table-striped table-hover margin-bottom10">
         <thead>
             <tr class="heading" role="row">
-                <th width="8%">
+                <th width="8%" style="text-align:center">
                     <a href="#" ng-click="sortType = 'Number'; sortReverse = !sortReverse" target="_self">
                         PAF#
                     <span ng-show="sortType == 'Number' && !sortReverse" class="fa fa-caret-down"></span>
                     <span ng-show="sortType == 'Number' && sortReverse" class="fa fa-caret-up"></span>
                     </a>
                 </th>
-                <th width="10%">
+                <th width="10%" style="text-align:center">
                     <a href="#" ng-click="sortType = 'Date'; sortReverse = !sortReverse" target="_self">
                         Date
                     <span ng-show="sortType == 'Date' && !sortReverse" class="fa fa-caret-down"></span>
                     <span ng-show="sortType == 'Date' && sortReverse" class="fa fa-caret-up"></span>
                     </a>
                 </th>
-                <th width="10%">
+                <th width="10%" style="text-align:center">
                     <a href="#" ng-click="sortType = 'EmployeeNumber'; sortReverse = !sortReverse;" target="_self">
                         Employee #
                     <span ng-show="sortType == 'EmployeeNumber' && !sortReverse" class="fa fa-caret-down"></span>
                     <span ng-show="sortType == 'EmployeeNumber' && sortReverse" class="fa fa-caret-up"></span>
                     </a>
                 </th>
-                <th width="20%">
+                <th width="15%" style="text-align:center">
                     <a href="#" ng-click="sortType = 'EmployeeName'; sortReverse = !sortReverse;" target="_self">
                         Employee Name
                     <span ng-show="sortType == 'EmployeeName' && !sortReverse" class="fa fa-caret-down"></span>
                     <span ng-show="sortType == 'EmployeeName' && sortReverse" class="fa fa-caret-up"></span>
                     </a>
                 </th>
-                <th width="25%">
+                <th width="20%" style="text-align:center">
                     <a href="#" ng-click="sortReverse = !sortReverse; sortType = 'HouseCode'" target="_self">
                         House Code
                     <span ng-show="sortType == 'HouseCode' && !sortReverse" class="fa fa-caret-down"></span>
                     <span ng-show="sortType == 'HouseCode' && sortReverse" class="fa fa-caret-up"></span>
                     </a>
                 </th>
-                <th width="">Form Type</th>
-                <th width="10%">Status</th>
+                <th width="20%" style="text-align:center">
+                    <a href="#" ng-click="sortReverse = !sortReverse; sortType = 'FormType'" target="_self">
+                        Form Type
+                    <span ng-show="sortType == 'FormType' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'FormType' && sortReverse" class="fa fa-caret-up"></span>
+                    </a>
+                </th>
+                <th width="" style="text-align:center">
+                    <a href="#" ng-click="sortReverse = !sortReverse; sortType = 'Status'" target="_self">
+                        Status
+                    <span ng-show="sortType == 'Status' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'Status' && sortReverse" class="fa fa-caret-up"></span>
+                    </a>
+                </th>
             </tr>
         </thead>
         <tbody>
             <tr ng-repeat="item in empActions | orderBy:sortBy:sortReverse" ng-click="itemSelected(item)" ng-class="{'warning':selectedItem==item}">
-                <td width="8%">{{item.Number}}</td>
-                <td width="10%">{{getDate(item.Date)}}</td>
-                <td width="10%">{{item.EmployeeNumber == 0 ? "" : item.EmployeeNumber}}</td>
-                <td width="20%">{{item.FirstName}}&nbsp;{{item.LastName}}</td>
-                <td width="25%">{{getHouseCodeName(item)}}</td>
-                <td width="" ng-bind-html="getFormType(item)"></td>
-                <td width="10%">{{getStatusTitle(item.StatusType)}}&nbsp;{{getStepTitle(item.WorkflowStep, item.StatusType)}}</td>
+                <td width="8%" align ="center">{{item.Number}}</td>
+                <td width="10%" align ="center">{{getDate(item.Date)}}</td>
+                <td width="10%" align ="center">{{item.EmployeeNumber == 0 ? "" : item.EmployeeNumber}}</td>
+                <td width="15%">{{item.FirstName}}&nbsp;{{item.LastName}}</td>
+                <td width="20%">{{getHouseCodeName(item)}}</td>
+                <td width="20%" ng-bind-html="getFormType(item)"></td>
+                <td width="">{{getStatusTitle(item.StatusType)}}&nbsp;{{getStepTitle(item.WorkflowStep, item.StatusType)}}</td>
              </tr>
         </tbody>
     </table>

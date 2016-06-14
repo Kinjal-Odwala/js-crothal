@@ -1543,6 +1543,19 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         else if ($scope.sortType === 'HouseCode') {
             return $scope.getHouseCodeName(item);
         }
+        else if ($scope.sortType === 'FormType') {
+            var formTypes = [];
+            angular.forEach(PositionTypes, function (posItem, index) {
+                if (item[posItem.id] === true) {
+                    formTypes.push(posItem.display);
+                }
+            });
+           return formTypes.toString();
+        }
+        else if ($scope.sortType === 'Status') {
+            var status = $scope.getStatusTitle(item.StatusType) + " " + $scope.getStepTitle(item.WorkflowStep, item.StatusType);
+            return status;
+        }
     }
 
     var isAuthorized = function (path) {
