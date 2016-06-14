@@ -2809,10 +2809,10 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         });
     };
 
-    var getAppUsers = function (workflowStepId, callback) {
+    var getAppUsers = function (stepNumber, callback) {
 
         apiRequest('app', 'iiCache', '<criteria>storeId:appUsers,userId:[user]'
-           + ',workflowStepId:' + workflowStepId
+           + ',stepNumber:' + stepNumber
            + ',workflowModule:' + 'paf'
            + ',</criteria>', function (xml) {
                if (callback) {
