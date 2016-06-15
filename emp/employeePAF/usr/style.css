@@ -151,26 +151,20 @@
 }
 
 .table {
-    height: 100%;
+    margin-top: 10px;
     width: 100%;
 }
-.table thead {
-    flex: 0 0 auto;
-    width: calc(100% - 1.2em);
-}
+
 .table tbody {
-    flex: 1 1 auto;
     display: block;
     overflow-y: scroll;
 }
+
 .table tbody tr {
     width: 100%;
 }
-.table thead, table tbody tr {
-    display: table;
-    table-layout: fixed;
-}
- 
+
+
    
 
 

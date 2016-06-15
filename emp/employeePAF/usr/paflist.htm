@@ -99,52 +99,53 @@
                 <th width="8%" style="text-align:center">
                     <a href="#" ng-click="sortType = 'Number'; sortReverse = !sortReverse" target="_self">
                         PAF#
-                    <span ng-show="sortType == 'Number' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-show="sortType == 'Number' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-show="sortType == 'Number' && !sortReverse">&#9660;</span>
+                    <span ng-show="sortType == 'Number' && sortReverse">&#9650;</span>
                     </a>
                 </th>
                 <th width="10%" style="text-align:center">
                     <a href="#" ng-click="sortType = 'Date'; sortReverse = !sortReverse" target="_self">
                         Date
-                    <span ng-show="sortType == 'Date' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-show="sortType == 'Date' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-show="sortType == 'Date' && !sortReverse">&#9660;</span>
+                    <span ng-show="sortType == 'Date' && sortReverse">&#9650;</span>
                     </a>
                 </th>
                 <th width="10%" style="text-align:center">
                     <a href="#" ng-click="sortType = 'EmployeeNumber'; sortReverse = !sortReverse;" target="_self">
                         Employee #
-                    <span ng-show="sortType == 'EmployeeNumber' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-show="sortType == 'EmployeeNumber' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-show="sortType == 'EmployeeNumber' && !sortReverse">&#9660;</span>
+                    <span ng-show="sortType == 'EmployeeNumber' && sortReverse">&#9650;</span>
                     </a>
                 </th>
                 <th width="15%" style="text-align:center">
                     <a href="#" ng-click="sortType = 'EmployeeName'; sortReverse = !sortReverse;" target="_self">
                         Employee Name
-                    <span ng-show="sortType == 'EmployeeName' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-show="sortType == 'EmployeeName' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-show="sortType == 'EmployeeName' && !sortReverse">&#9660;</span>
+                    <span ng-show="sortType == 'EmployeeName' && sortReverse">&#9650;</span>
                     </a>
                 </th>
                 <th width="20%" style="text-align:center">
                     <a href="#" ng-click="sortReverse = !sortReverse; sortType = 'HouseCode'" target="_self">
                         House Code
-                    <span ng-show="sortType == 'HouseCode' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-show="sortType == 'HouseCode' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-show="sortType == 'HouseCode' && !sortReverse">&#9660;</span>
+                    <span ng-show="sortType == 'HouseCode' && sortReverse">&#9650;</span>
                     </a>
                 </th>
                 <th width="20%" style="text-align:center">
                     <a href="#" ng-click="sortReverse = !sortReverse; sortType = 'FormType'" target="_self">
                         Form Type
-                    <span ng-show="sortType == 'FormType' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-show="sortType == 'FormType' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-show="sortType == 'FormType' && !sortReverse">&#9660;</span>
+                    <span ng-show="sortType == 'FormType' && sortReverse">&#9650;</span>
                     </a>
                 </th>
-                <th width="" style="text-align:center">
+                <th width="20%" style="text-align:center">
                     <a href="#" ng-click="sortReverse = !sortReverse; sortType = 'Status'" target="_self">
                         Status
-                    <span ng-show="sortType == 'Status' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-show="sortType == 'Status' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-show="sortType == 'Status' && !sortReverse">&#9660;</span>
+                    <span ng-show="sortType == 'Status' && sortReverse">&#9650;</span>
                     </a>
                 </th>
+                <th width="1%"></th>
             </tr>
         </thead>
         <tbody>
@@ -155,7 +156,7 @@
                 <td width="15%">{{item.FirstName}}&nbsp;{{item.LastName}}</td>
                 <td width="20%">{{getHouseCodeName(item)}}</td>
                 <td width="20%" ng-bind-html="getFormType(item)"></td>
-                <td width="">{{getStatusTitle(item.StatusType)}}&nbsp;{{getStepTitle(item.WorkflowStep, item.StatusType)}}</td>
+                <td width="20%">{{getStatusTitle(item.StatusType)}}&nbsp;{{getStepTitle(item.WorkflowStep, item.StatusType)}}</td>
              </tr>
         </tbody>
     </table>
