@@ -889,6 +889,7 @@
                                 <th width="40px" style="text-align:center">#</th>
                                 <th width="400px" style="text-align:center">Title</th>
                                 <th width="460px" style="text-align:center">File Name</th>
+                                <th width="10px"></th>
                             </tr>
                         </thead>
                         <tbody style="height:100px;">
@@ -939,7 +940,7 @@
                 	<h4>WORKFLOW DETAILS</h4>
                     <div ng-if="empAction.Loa" class="row">
                         <div class="col-md-2">
-                        	<label>LOA Manager Name:</label>
+                        	<label>LOA Manager Name</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.LOAManagerName.$invalid}">
@@ -948,7 +949,7 @@
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2">
-                        	<label>LOA Manager Email:</label>
+                        	<label>LOA Manager Email</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.LOAManagerEmail.$invalid}">
@@ -958,7 +959,7 @@
                     </div>
                     <div class="row" ng-if="!empAction.Loa && overHeadAccount">
                         <div class="col-md-2">
-                        	<label>HR Manager Name:</label>
+                        	<label>HR Manager Name</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.HRManagerName.$invalid}">
@@ -967,7 +968,7 @@
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2">
-                        	<label>HR Manager Email:</label>
+                        	<label>HR Manager Email</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.HRManagerEmail.$invalid}">
@@ -977,7 +978,7 @@
                     </div>
                     <div class="row" ng-if="!empAction.Loa && (!overHeadAccount && empAction.HcmHouseCode) && ((empAction.SalaryChange && empAction.IncreaseDecreasePercentage > 4) || ((empAction.Promotion || empAction.Demotion) && empAction.IncreaseDecreasePercentage > 10))">
                         <div class="col-md-2">
-                        	<label>Second Level Manager Name:</label>
+                        	<label>Second Level Manager Name</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.RegionalManagerName.$invalid}">
@@ -986,7 +987,7 @@
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2">
-                        	<label>Second Level Manager Email:</label>
+                        	<label>Second Level Manager Email</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.RegionalManagerEmail.$invalid}">
@@ -996,7 +997,7 @@
                     </div>
                     <div class="row" ng-if="!empAction.Loa && (!overHeadAccount && empAction.HcmHouseCode) && ((empAction.SalaryChange && empAction.IncreaseDecreasePercentage > 4) || ((empAction.Promotion || empAction.Demotion) && empAction.IncreaseDecreasePercentage > 10))">
                         <div class="col-md-2">
-                        	<label>HR Director Name:</label>
+                        	<label>HR Director Name</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.HRDirectorName.$invalid}">
@@ -1005,7 +1006,7 @@
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2">
-                        	<label>HR Director Email:</label>
+                        	<label>HR Director Email</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.HRDirectorEmail.$invalid}">
@@ -1015,7 +1016,7 @@
                     </div>
                     <div class="row" ng-if="isRecruiter && !empAction.Loa && (!overHeadAccount && empAction.HcmHouseCode) && (empAction.NewHire || empAction.ReHire || empAction.Separation || empAction.Transfer || empAction.PersonalInfoChange || empAction.Relocation || empAction.Promotion || empAction.Demotion || empAction.SalaryChange)">
                         <div class="col-md-2">
-                        	<label>Recruiter Name:</label>
+                        	<label>Recruiter Name</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.RecruiterName.$invalid}">
@@ -1024,7 +1025,7 @@
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2">
-                        	<label>Recruiter Email:</label>
+                        	<label>Recruiter Email</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
@@ -1034,7 +1035,7 @@
 					</div>
                     <div class="row" ng-if="!empAction.Loa && (!overHeadAccount && empAction.HcmHouseCode) && (empAction.NewHire || empAction.ReHire || empAction.Separation || empAction.Transfer || empAction.PersonalInfoChange || empAction.Relocation || empAction.Promotion || empAction.Demotion || empAction.SalaryChange)">
                         <div class="col-md-2">
-                        	<label>Process HR Name:</label>
+                        	<label>Process HR Name</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.ProcessHRName.$invalid}">
@@ -1043,7 +1044,7 @@
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2">
-                        	<label>Process HR Email:</label>
+                        	<label>Process HR Email</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.ProcessHREmail.$invalid}">
@@ -1057,21 +1058,22 @@
             <section>
               	<div ng-if="empAction.StatusType == 2 || empAction.StatusType == 8" ng-form="ApprovalsInfoForm">
                     <h4>APPROVAL DETAILS</h4>
-                    <table class="table-scroll table table-striped table-hover margin-bottom10" style="width: 900px;" border="1">     
+                    <table class="table-scroll table table-striped table-bordered table-hover margin-bottom10" style="width: 900px;">     
                     <thead>
                     	<tr class="heading" role="row">
-                            <th width="40px">#</th>
-                            <th width="300px">APPROVALS</th>
-                            <th width="460px">PRINT NAME</th>
-                            <th width="100px">DATE</th>
+                            <th width="40px" style="text-align:center">#</th>
+                            <th width="300px" style="text-align:center">APPROVALS</th>
+                            <th width="460px" style="text-align:center">PRINT NAME</th>
+                            <th width="100px" style="text-align:center">DATE</th>
+                            <th width="10px"></th>
                         </tr>
                     </thead>
                     <tbody style="height:180px;">
-                        <tr ng-repeat="item in Approvals">
-                            <td width="40px">{{item.id}}</td>
+                        <tr ng-repeat="item in Approvals track by $index">
+                            <td width="40px" align ="center">{{$index + 1}}</td>
                             <td width="300px">{{item.approval}}</td>
                             <td width="460px">{{item.name}}</td>
-                            <th width="100px">{{item.date}}</th>
+                            <td width="100px" align ="center">{{item.date}}</td>
                         </tr>
                     </tbody>     
                     </table>

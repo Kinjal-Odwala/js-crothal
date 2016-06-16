@@ -259,17 +259,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         });
     };
 
-    var loadRecruiters = function () {
-        EmpActions.getAppUsers(5, function (result) {
-            $scope.Recruiters = result;
-        });
-        angular.forEach($scope.Recruiters, function (item) {
-            if (item.id == loggedInUserId) {
-                $scope.isRecruiter = true;
-            }
-        });
-    };
-
     var getEmpCompensation = function (employeeNumber, callback) {
         EmpActions.getEmpCompensation(employeeNumber, function (response) {
             callback(response);
@@ -654,7 +643,16 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         loadPersonActionTypes();
         loadPayGrades();
         loadAdministratorEmails();
-        loadRecruiters();
+        
+        EmpActions.getAppUsers(5, function (result) {
+            $scope.Recruiters = result;
+        });
+
+        angular.forEach($scope.Recruiters, function (item) {
+            if (item.userId == loggedInUserId) {
+                $scope.isRecruiter = true;
+            }
+        });
 
         EmpActions.getAuthorizations(function (result) {
             $scope.authorizations = result;
@@ -819,11 +817,11 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                         $scope.Approvals.push(item);
                 }
                 else if (($scope.empAction.SalaryChange && $scope.empAction.IncreaseDecreasePercentage > 4) || (($scope.empAction.Promotion || $scope.empAction.Demotion) && $scope.empAction.IncreaseDecreasePercentage > 10)) {
-                    if (item.id == 3 || item.id == 4 || item.id == 5 || item.id == 6)
+                    if (item.id == 3 || item.id == 4 || (item.id == 5 && $scope.isRecruiter) || item.id == 6)
                         $scope.Approvals.push(item);
                 }
                 else if ($scope.empAction.NewHire || $scope.empAction.ReHire || $scope.empAction.Transfer || $scope.empAction.Promotion || $scope.empAction.Demotion || $scope.empAction.SalaryChange) {
-                    if (item.id == 5)
+                    if (item.id == 5 && $scope.isRecruiter)
                         $scope.Approvals.push(item);
                 }
                 else {
@@ -2810,6 +2808,11 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
     };
 
     var getAppUsers = function (stepNumber, callback) {
+
+        if (cache.appUsers) {
+            callback(cache.appUsers);
+            return;
+        }
 
         apiRequest('app', 'iiCache', '<criteria>storeId:appUsers,userId:[user]'
            + ',stepNumber:' + stepNumber
