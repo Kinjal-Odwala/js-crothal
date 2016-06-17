@@ -1529,7 +1529,8 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
             return item.Number;
         }
         else if ($scope.sortType === 'Date') {
-            return item.Date;
+            var date = $scope.getDate(item.Date);
+            return date;
         }
         else if ($scope.sortType === 'EmployeeNumber') {
             return item.EmployeeNumber;
