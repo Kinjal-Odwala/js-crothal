@@ -161,7 +161,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     $scope.Recruiters = [];
     var selectedFileName = "";
     var loggedInUserId = getCurrentUserId();
-    $scope.isRecruiter = false;
 
     $scope.dateOptions = {
         formatYear: 'yy',
@@ -648,12 +647,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             $scope.Recruiters = result;
         });
 
-        angular.forEach($scope.Recruiters, function (item) {
-            if (item.userId == loggedInUserId) {
-                $scope.isRecruiter = true;
-            }
-        });
-
         EmpActions.getAuthorizations(function (result) {
             $scope.authorizations = result;
             authorizationsLoaded();
@@ -817,11 +810,11 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                         $scope.Approvals.push(item);
                 }
                 else if (($scope.empAction.SalaryChange && $scope.empAction.IncreaseDecreasePercentage > 4) || (($scope.empAction.Promotion || $scope.empAction.Demotion) && $scope.empAction.IncreaseDecreasePercentage > 10)) {
-                    if (item.id == 3 || item.id == 4 || (item.id == 5 && $scope.isRecruiter) || item.id == 6)
+                    if (item.id == 3 || item.id == 4 || (item.id == 5) || item.id == 6)
                         $scope.Approvals.push(item);
                 }
                 else if ($scope.empAction.NewHire || $scope.empAction.ReHire || $scope.empAction.Transfer || $scope.empAction.Promotion || $scope.empAction.Demotion || $scope.empAction.SalaryChange) {
-                    if (item.id == 5 && $scope.isRecruiter)
+                    if (item.id == 5)
                         $scope.Approvals.push(item);
                 }
                 else {
@@ -2992,6 +2985,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
                 xml += ' description=""';
                 xml += ' fileName="' + employeePAFDocuments[index].fileName + '"';
                 xml += ' tempFileName="' + employeePAFDocuments[index].tempFileName + '"';
+                xml += ' recruiterDoc="' + "false" + '"';
                 xml += '/>';
             }
         }

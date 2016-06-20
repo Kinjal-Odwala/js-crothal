@@ -812,7 +812,7 @@
                         </div>
                     </div>
                 </div>
-                <div ng-form="recruiterForm" ng-if="isRecruiter">
+                <div ng-form="recruiterForm">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group" ng-class="{'has-error':recruiterForm.Recruiter.$invalid}">
@@ -1014,7 +1014,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row" ng-if="isRecruiter && !empAction.Loa && (!overHeadAccount && empAction.HcmHouseCode) && (empAction.NewHire || empAction.ReHire || empAction.Separation || empAction.Transfer || empAction.PersonalInfoChange || empAction.Relocation || empAction.Promotion || empAction.Demotion || empAction.SalaryChange)">
+                    <div class="row" ng-if="(empAction.NewHire && empAction.PayStatus != 'Per Diem') || (empAction.ReHire && empAction.PayStatus != 'Per Diem') || empAction.Promotion || empAction.Demotion || empAction.Transfer">
                         <div class="col-md-2">
                         	<label>Recruiter Name</label>
                         </div>
