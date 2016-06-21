@@ -161,6 +161,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     $scope.Recruiters = [];
     var selectedFileName = "";
     var loggedInUserId = getCurrentUserId();
+    $scope.maxDate = '2099-12-31';
 
     $scope.dateOptions = {
         formatYear: 'yy',
@@ -1489,6 +1490,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
     $scope.sortType = 'Number';
     $scope.sortReverse = false;
     $scope.selectedItem = null;
+    $scope.maxDate = '2099-12-31';
     $scope.dateOptions = {
         formatYear: 'yy',
         startingDay: 1,
@@ -1522,15 +1524,17 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
             return item.Number;
         }
         else if ($scope.sortType === 'Date') {
-            var date = $scope.getDate(item.Date);
-            return date;
+            if (!angular.isDefined(item.Date))
+                return;
+
+            var date = new Date(item.Date);
+            return $filter('date')(date, "yyyy-MM-dd");
         }
         else if ($scope.sortType === 'EmployeeNumber') {
             return item.EmployeeNumber;
         }
         else if ($scope.sortType === 'EmployeeName') {
-            var fullName = item.FirstName + " " + item.LastName;
-            return fullName;
+            return item.FirstName + " " + item.LastName;
         }
         else if ($scope.sortType === 'HouseCode') {
             return $scope.getHouseCodeName(item);
@@ -1545,8 +1549,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
            return formTypes.toString();
         }
         else if ($scope.sortType === 'Status') {
-            var status = $scope.getStatusTitle(item.StatusType) + " " + $scope.getStepTitle(item.WorkflowStep, item.StatusType);
-            return status;
+            return $scope.getStatusTitle(item.StatusType) + " " + $scope.getStepTitle(item.WorkflowStep, item.StatusType);
         }
     }
 
@@ -1868,11 +1871,12 @@ paf.directive('pafDatepicker', ['$timeout', '$filter', function ($timeout, $filt
             dtModel: '=dtModel',
             minDate: '=',
             dtChange: '&dtChange',
-            dtBlur: '&dtBlur'
+            dtBlur: '&dtBlur',
+            maxDate: '='
         },
         restrict: 'E',
         require: '?ngModel',
-        template: '<p class="input-group" style="margin-bottom:0px;"><input class="form-control input-sm" name="{{dtName}}" min-date="minDate" ng-change="dtChange()" ng-blur="dtBlur()" ng-required="dtRequired" datepicker-popup="MM/dd/yyyy" pdf-datepicker-popup-config ng-model="dtModel" is-open="opened"  show-button-bar="{{showButtonBar}}" datepicker-append-to-body="false" datepicker-options="dateOptions" date-disabled="disabled(date, mode)"  close-text="Close" /><span class="input-group-btn"><button type="button" class="btn btn-default btn-sm" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button></span></p>',
+        template: '<p class="input-group" style="margin-bottom:0px;"><input class="form-control input-sm" name="{{dtName}}" min-date="minDate" max-date="maxDate" ng-change="dtChange()" ng-blur="dtBlur()" ng-required="dtRequired" datepicker-popup="MM/dd/yyyy" pdf-datepicker-popup-config ng-model="dtModel" is-open="opened"  show-button-bar="{{showButtonBar}}" datepicker-append-to-body="false" datepicker-options="dateOptions" date-disabled="disabled(date, mode)"  close-text="Close" /><span class="input-group-btn"><button type="button" class="btn btn-default btn-sm" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button></span></p>',
         link: function (scope, elem, attrs, ngModel) {
             scope.opened = false;
             scope.dtPopup = "dd-MMMM-yyyy";
