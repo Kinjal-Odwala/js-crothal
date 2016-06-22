@@ -814,7 +814,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     if (item.id == 3 || item.id == 4 || (item.id == 5) || item.id == 6)
                         $scope.Approvals.push(item);
                 }
-                else if ($scope.empAction.NewHire || $scope.empAction.ReHire || $scope.empAction.Transfer || $scope.empAction.Promotion || $scope.empAction.Demotion || $scope.empAction.SalaryChange) {
+                else if ($scope.empAction.NewHire || $scope.empAction.ReHire || $scope.empAction.Transfer || $scope.empAction.Promotion || $scope.empAction.Demotion) {
                     if (item.id == 5)
                         $scope.Approvals.push(item);
                 }
