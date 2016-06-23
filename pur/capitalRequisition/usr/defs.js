@@ -121,6 +121,10 @@ ii.init.register( function() {
 		, regionalManagerName: {type: String, required: false, defaultValue: ""}
 		, regionalManagerTitle: {type: String, required: false, defaultValue: ""}
 		, regionalManagerEmail: {type: String, required: false, defaultValue: ""}
+		, regionalVicePresidentName: {type: String, required: false, defaultValue: ""}
+		, regionalVicePresidentEmail: {type: String, required: false, defaultValue: ""}
+		, divisionVicePresidentName: {type: String, required: false, defaultValue: ""}
+		, divisionVicePresidentEmail: {type: String, required: false, defaultValue: ""}
 		, divisionPresidentName: {type: String, required: false, defaultValue: ""}
 		, divisionPresidentEmail: {type: String, required: false, defaultValue: ""}
 		, financeDirectorName: {type: String, required: false, defaultValue: ""}
@@ -211,6 +215,16 @@ ii.init.register( function() {
 		, managerName: {type: String, required: false, defaultValue: ""}
 		, managerEmail: {type: String, required: false, defaultValue: ""}
 		, jobTitle: {type: String, required: false, defaultValue: ""}
+	};
+	
+	fin.pur.poCapitalRequisition.workflowHierarchyArgs = {
+		id: {type: Number}
+		, workflowModuleId: {type: Number, required: false, defaultValue: 0}
+		, nodeId: {type: Number, required: false, defaultValue: 0}
+		, stepNumber: {type: Number, required: false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, title: {type: String, required: false, defaultValue: ""}
+		, email: {type: String, required: false, defaultValue: ""}
 	};
 	
 	fin.pur.poCapitalRequisition.workflowJDECompanyArgs = {
@@ -437,6 +451,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.pur.poCapitalRequisition.employeeManagerDetailArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.pur.poCapitalRequisition.WorkflowHierarchy",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.workflowHierarchyArgs);
 			$.extend(this, args);
 		}
 	}
