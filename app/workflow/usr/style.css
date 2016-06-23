@@ -52,17 +52,12 @@
 
 .inputTextAreaSmall {
 	float: left;
-	width: 170px;
+	width: 250px;
 }
 
 .inputTextArea {
 	float: left;
-	width: 250px;
-}
-
-.nonRequiredFieldIndicator1 {
-	color: #032d23;
-	padding-left: 7px;
+	width: 300px;
 }
 
 .gridFooter {

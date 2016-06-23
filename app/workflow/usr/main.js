@@ -21,13 +21,13 @@ ii.Class({
     Definition: {
 
 		init: function() {
-			var args = ii.args(arguments, {});
 			var me = this;
 
 			me.action = "";
 			me.status = "";
 			me.loadCount = 0;
 			me.lastSelectedRowIndex = -1;
+			me.workflowModulesTemp = [];
 
 			me.gateway = ii.ajax.addGateway("app", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -51,7 +51,7 @@ ii.Class({
 			me.configureCommunications();
 			me.initialize();
 			me.actionMenuItem("Workflow Users");
-			me.setStatus("Loading");	
+			me.setStatus("Loading");
 			me.modified(false);
 
 			$(window).bind("resize", me, me.resize);
@@ -62,9 +62,8 @@ ii.Class({
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
 			}
 		},
-		
-		authorizationProcess: function fin_app_workflow_UserInterface_authorizationProcess() {
-			var args = ii.args(arguments,{});
+
+		authorizationProcess: function() {
 			var me = this;
 
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
@@ -89,12 +88,9 @@ ii.Class({
 			}
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
-		},	
+		},
 
-		sessionLoaded: function fin_app_workflow_UserInterface_sessionLoaded() {
-			var args = ii.args(arguments, {
-				me: {type: Object}
-			});
+		sessionLoaded: function() {
 
 			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
@@ -102,11 +98,10 @@ ii.Class({
 		resize: function() {
 			var me = fin.app.workflowUi;
 
-			if (me == undefined)
+			if (me === undefined)
 				return;
 
-			if (me.action == "Workflow Users")
-			{
+			if (me.action === "Workflow Users") {
 				if ($("#AssignedUserGridContainer").width() < 850) {
 					$("#AssignedUserGrid").width(850);
 					$("#gridHeader").width(850);
@@ -116,24 +111,26 @@ ii.Class({
 				else {
 					me.assignedUserGrid.setHeight($(window).height() - 125);
 				}
-				
+
 				$("#WokkflowStepContainer").height($(window).height() - 110);
 			}
-			else if (me.action == "Workflow JDE Companies")
-			{
+			else if (me.action === "Workflow JDE Company Users") {
 				me.jdeCompanyGrid.setHeight($(window).height() - 110);
 				$("#ContainerArea").height($(window).height() - 155);
 			}
+			else if (me.action === "Workflow Hierarchy Users") {
+				me.hierarchyGrid.setHeight($(window).height() - 110);
+				$("#ContainerArea").height($(window).height() - 155);
+			}
 		},
-		
+
 		defineFormControls: function() {
-			var args = ii.args(arguments, {});
 			var me = this;
 
 			me.actionMenu = new ui.ctl.Toolbar.ActionMenu({
 				id: "actionMenu"
 			});
-				
+
 			me.actionMenu
 				.addAction({
 					id: "workflowUserAction",
@@ -142,12 +139,18 @@ ii.Class({
 					actionFunction: function() { me.actionMenuItem("Workflow Users"); }
 				})
 				.addAction({
-					id: "workflowJDECompanyeAction",
-					brief: "Workflow JDE Companies",
-					title: "To view or modify the workflow JDE Company associated user details.",
-					actionFunction: function() { me.actionMenuItem("Workflow JDE Companies"); }
+					id: "workflowJDECompanyUserAction",
+					brief: "Workflow JDE Company Users",
+					title: "To view or modify the workflow JDE company associated user details.",
+					actionFunction: function() { me.actionMenuItem("Workflow JDE Company Users"); }
+				})
+				.addAction({
+					id: "workflowHierarchyUserAction",
+					brief: "Workflow Hierarchy Level Users",
+					title: "To view or modify the workflow hierarchy level associated user details.",
+					actionFunction: function() { me.actionMenuItem("Workflow Hierarchy Users"); }
 				});
-				
+
 			me.workflowModule = new ui.ctl.Input.DropDown.Filtered({
 				id: "WorkflowModule",
 				formatFunction: function( type ) { return type.title; },
@@ -157,9 +160,9 @@ ii.Class({
 			me.workflowModule.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation(function( isFinal, dataMap) {				
-	
-				if (me.workflowModule.indexSelected == -1)
+				.addValidation(function( isFinal, dataMap) {
+
+				if (me.workflowModule.indexSelected === -1)
 					this.setInvalid("Please select the correct Workflow Module.");
 			});
 
@@ -172,9 +175,9 @@ ii.Class({
 			me.workflowStep.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation(function( isFinal, dataMap) {				
-	
-				if (me.workflowStep.indexSelected == -1)
+				.addValidation(function( isFinal, dataMap) {
+
+				if (me.workflowStep.indexSelected === -1)
 					this.setInvalid("Please select the correct Workflow Step.");
 			});
 
@@ -182,40 +185,40 @@ ii.Class({
 				id: "AssignedUserGrid",
 				appendToId: "divForm"
 			});
-			
+
 			me.assignedUserGrid.addColumn("userName", "userName", "User Name", "User Name", 150);
 			me.assignedUserGrid.addColumn("firstName", "firstName", "First Name", "First Name", 150);
 			me.assignedUserGrid.addColumn("lastName", "lastName", "Last Name", "Last Name", 150);
 			me.assignedUserGrid.addColumn("email", "email", "Email", "Email", null);
-			me.assignedUserGrid.addColumn("active", "active", "Active", "Active", 70, function(active) { return (active == "1" ? "Yes" : "No") });
+			me.assignedUserGrid.addColumn("active", "active", "Active", "Active", 70, function(active) { return (active === true ? "Yes" : "No"); });
 			me.assignedUserGrid.capColumns();
 
 			me.userGrid = new ui.ctl.Grid({
 				id: "UserGrid",
-				appendToId: "divForm"		
+				appendToId: "divForm"
 			});
-						
+
 			me.userGrid.addColumn("assigned", "assigned", "", "", 30, function() {
 				var index = me.userGrid.rows.length - 1;
-                return "<input type=\"checkbox\" id=\"assignInputCheck" + index + "\" class=\"iiInputCheck\" onclick=\"fin.app.workflowUi.actionClickItem(this);\"/>";
+                return "<input type=\"checkbox\" id=\"assignInputCheck" + index + "\" class=\"iiInputCheck\" onclick=\"fin.app.workflowUi.actionClickItem();\"/>";
             });
 			me.userGrid.addColumn("userName", "userName", "User Name", "User Name", 150);
 			me.userGrid.addColumn("firstName", "firstName", "First Name", "First Name", 150);
 			me.userGrid.addColumn("lastName", "lastName", "Last Name", "Last Name", 150);
 			me.userGrid.addColumn("email", "email", "Email", "Email", null);
 			me.userGrid.capColumns();
-			
+
 			me.searchInput = new ui.ctl.Input.Text({
 				id: "SearchInput",
 				maxLength: 50
 			});
-			
+
 			me.searchInput.makeEnterTab()
 				.setValidationMaster( me.validator )
 				.addValidation( ui.ctl.Input.Validation.required )
-				.addValidation( function( isFinal, dataMap ){
+				.addValidation( function( isFinal, dataMap ) {
 
-					if (me.searchInput.getValue() == "")
+					if (me.searchInput.getValue() === "")
 						this.setInvalid("Please enter search criteria.");
 				});
 
@@ -247,62 +250,93 @@ ii.Class({
 		        id: "JDECompany",
 				formatFunction: function(type) { return type.name; }
 		    });
-			
+
 			me.jdeCompany.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation(function( isFinal, dataMap) {				
-	
-				if (me.jdeCompany.indexSelected == -1)
+				.addValidation(function( isFinal, dataMap) {
+
+				if (me.jdeCompany.indexSelected === -1)
 					this.setInvalid("Please select the correct JDE Company.");
 			});
-			
+
+			me.hierarchyTitle = new ui.ctl.Input.DropDown.Filtered({
+		        id: "HierarchyTitle",
+				formatFunction: function(type) { return type.title; }
+		    });
+
+			me.hierarchyTitle.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(function( isFinal, dataMap) {
+
+				if (me.hierarchyTitle.indexSelected === -1)
+					this.setInvalid("Please select the correct Hierarchy Title.");
+			});
+
 			me.workflowModuleSearch = new ui.ctl.Input.DropDown.Filtered({
 		        id: "WorkflowModuleSearch",
 				formatFunction: function(type) { return type.title; },
 				changeFunction: function() { me.workflowModuleChanged(); }
 		    });
-			
+
 			me.workflowModuleSearch.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation(function( isFinal, dataMap) {				
-	
-				if (me.workflowModuleSearch.indexSelected == -1)
+				.addValidation(function( isFinal, dataMap) {
+
+				if (me.workflowModuleSearch.indexSelected === -1)
 					this.setInvalid("Please select the correct Workflow Module.");
 			});
-			
+
 			me.workflowStepSearch = new ui.ctl.Input.DropDown.Filtered({
 		        id: "WorkflowStepSearch",
-				formatFunction: function(type) { return type.brief; },
+				formatFunction: function(type) { return type.title; },
 				changeFunction: function() { me.workflowStepChanged(); }
 		    });
-			
+
 			me.workflowStepSearch.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation(function( isFinal, dataMap) {				
-	
-				if (me.workflowStepSearch.indexSelected == -1)
+				.addValidation(function( isFinal, dataMap) {
+
+				if (me.workflowStepSearch.indexSelected === -1)
 					this.setInvalid("Please select the correct Workflow Step.");
 			});
-			
+
 			me.jdeCompanyGrid = new ui.ctl.Grid({
 				id: "JDECompanyGrid",
 				appendToId: "divForm",
 				allowAdds: false,
 				selectFunction: function( index ) { me.itemSelect(index); },
 				validationFunction: function() {
-					if (me.status != "New") 
-						return parent.fin.cmn.status.itemValid(); 
+					if (me.status !== "New")
+						return parent.fin.cmn.status.itemValid();
 				}
 			});
 
 			me.jdeCompanyGrid.addColumn("name", "name", "Name", "Name", null);
 			me.jdeCompanyGrid.addColumn("email", "email", "Email", "Email Id", 350);
-			me.jdeCompanyGrid.addColumn("active", "active", "Active", "Active", 100, function(active) { return (active == "1" ? "Yes" : "No") });
+			me.jdeCompanyGrid.addColumn("active", "active", "Active", "Active", 100, function(active) { return (active === true ? "Yes" : "No"); });
 			me.jdeCompanyGrid.capColumns();
-			
+
+			me.hierarchyGrid = new ui.ctl.Grid({
+				id: "HierarchyGrid",
+				appendToId: "divForm",
+				allowAdds: false,
+				selectFunction: function( index ) { me.itemHierarchySelect(index); },
+				validationFunction: function() {
+					if (me.status !== "New")
+						return parent.fin.cmn.status.itemValid();
+				}
+			});
+
+			me.hierarchyGrid.addColumn("title", "title", "Hierarchy Title", "Hierarchy Title", null);
+			me.hierarchyGrid.addColumn("name", "name", "Name", "Name", 250);
+			me.hierarchyGrid.addColumn("email", "email", "Email", "Email Id", 250);
+			me.hierarchyGrid.addColumn("active", "active", "Active", "Active", 80, function(active) { return (active === true ? "Yes" : "No"); });
+			me.hierarchyGrid.capColumns();
+
 			me.name = new ui.ctl.Input.Text({
 		        id: "Name",
 		        maxLength: 100,
@@ -311,7 +345,7 @@ ii.Class({
 
 			me.name.makeEnterTab()
 				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(ui.ctl.Input.Validation.required);
 
 			me.email = new ui.ctl.Input.Text({
 		        id: "Email",
@@ -326,7 +360,7 @@ ii.Class({
 
 					var enteredText = me.email.getValue();
 
-					if (enteredText == "") return;
+					if (enteredText === "") return;
 
 					var emailArray = enteredText.split(";");
 
@@ -340,7 +374,7 @@ ii.Class({
 		        id: "Active",
 				changeFunction: function() { me.modified(); }
 		    });
-			
+
 			me.anchorSearch = new ui.ctl.buttons.Sizeable({
 				id: "AnchorSearch",
 				className: "iiButton",
@@ -356,15 +390,15 @@ ii.Class({
 				clickFunction: function() { me.actionSaveItem(); },
 				hasHotState: true
 			});
-			
+
 			me.anchorNew = new ui.ctl.buttons.Sizeable({
 				id: "AnchorNew",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;New&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionNewItem(); },				
+				clickFunction: function() { me.actionNewItem(); },
 				hasHotState: true
 			});
-			
+
 			me.anchorUndo = new ui.ctl.buttons.Sizeable({
 				id: "AnchorUndo",
 				className: "iiButton",
@@ -375,8 +409,15 @@ ii.Class({
 		},
 
 		configureCommunications: function() {
-			var args = ii.args(arguments, {});
 			var me = this;
+
+			me.hirNodes = [];
+			me.hirNodeStore = me.cache.register({
+				storeId: "hirNodes",
+				itemConstructor: fin.app.workflow.HirNode,
+				itemConstructorArgs: fin.app.workflow.hirNodeArgs,
+				injectionArray: me.hirNodes
+			});
 
 			me.jdeCompanys = [];
 			me.jdeCompanysStore = me.cache.register({
@@ -402,14 +443,6 @@ ii.Class({
 				injectionArray: me.workflowSteps
 			});
 
-			me.workflowJDECompanys = [];
-			me.workflowJDECompanyStore = me.cache.register({
-			storeId: "appWorkflowJDECompanys",
-				itemConstructor: fin.app.workflow.WorkflowJDECompany,
-				itemConstructorArgs: fin.app.workflow.workflowJDECompanyArgs,
-				injectionArray: me.workflowJDECompanys
-			});
-			
 			me.appUsers = [];
 			me.appUserStore = me.cache.register({
 				storeId: "appUsers",
@@ -417,11 +450,27 @@ ii.Class({
 				itemConstructorArgs: fin.app.workflow.userArgs,
 				injectionArray: me.appUsers
 			});
+
+			me.workflowJDECompanys = [];
+			me.workflowJDECompanyStore = me.cache.register({
+			storeId: "appWorkflowJDECompanys",
+				itemConstructor: fin.app.workflow.WorkflowJDECompany,
+				itemConstructorArgs: fin.app.workflow.workflowJDECompanyArgs,
+				injectionArray: me.workflowJDECompanys
+			});
+
+			me.workflowHierarchys = [];
+			me.workflowHierarchyStore = me.cache.register({
+			storeId: "appWorkflowHierarchys",
+				itemConstructor: fin.app.workflow.WorkflowHierarchy,
+				itemConstructorArgs: fin.app.workflow.workflowHierarchyArgs,
+				injectionArray: me.workflowHierarchys
+			});
 		},
 
 		initialize: function() {
 			var me = this;
-			
+
 			$("#imgAddUsers").bind("click", function() { me.actionAddItem(); });
 			$("#imgEditUser").bind("click", function() { me.actionEditItem(); });
 			$("#imgRemoveUser").bind("click", function() { me.actionRemoveItem(); });
@@ -429,28 +478,27 @@ ii.Class({
 		},
 
 		setStatus: function(status) {
-			var me = this;
 
 			fin.cmn.status.setStatus(status);
 		},
-		
+
 		dirtyCheck: function(me) {
-				
+
 			return !fin.cmn.status.itemValid();
 		},
-		
+
 		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
 			var me = this;
-			
+
 			parent.fin.appUI.modified = args.modified;
 			if (args.modified)
 				me.setStatus("Edit");
 		},
-		
-		setLoadCount: function(me, activeId) {
+
+		setLoadCount: function() {
 			var me = this;
 
 			me.loadCount++;
@@ -458,7 +506,7 @@ ii.Class({
 			$("#messageToUser").text("Loading");
 			$("#pageLoading").fadeIn("slow");
 		},
-		
+
 		checkLoadCount: function() {
 			var me = this;
 
@@ -468,18 +516,25 @@ ii.Class({
 				$("#pageLoading").fadeOut("slow");
 			}
 		},
-		
+
 		resizeControls: function() {
 			var me = this;
 
-			if (me.action == "Workflow Users") {
+			if (me.action === "Workflow Users") {
 				me.workflowModule.resizeText();
 				me.workflowStep.resizeText();
 			}
-			else if (me.action == "Workflow JDE Companies") {
+			else if (me.action === "Workflow JDE Company Users") {
 				me.jdeCompany.resizeText();
 				me.workflowModuleSearch.resizeText();
 				me.workflowStepSearch.resizeText();
+				me.name.resizeText();
+				me.email.resizeText();
+			}
+			else if (me.action === "Workflow Hierarchy Users") {
+				me.workflowModuleSearch.resizeText();
+				me.workflowStepSearch.resizeText();
+				me.hierarchyTitle.resizeText();
 				me.name.resizeText();
 				me.email.resizeText();
 			}
@@ -491,8 +546,8 @@ ii.Class({
 			var me = this;
 
 			me.validator.reset();
-			
-			if (me.action == "Workflow Users") {
+
+			if (me.action === "Workflow Users") {
 				me.workflowModule.reset();
 				me.workflowStep.reset();
 				me.workflowStep.setData([]);
@@ -501,7 +556,7 @@ ii.Class({
 				me.assignedUserGrid.setData([]);
 				$("#Description").html("");
 			}
-			else if (me.action == "Workflow JDE Companies") {
+			else if (me.action === "Workflow JDE Company Users") {
 				me.workflowModuleSearch.reset();
 				me.workflowStepSearch.reset();
 				me.workflowStepSearch.setData([]);
@@ -512,47 +567,89 @@ ii.Class({
 				me.email.setValue("");
 				me.active.setValue("true");
 			}
+			else if (me.action === "Workflow Hierarchy Users") {
+				me.workflowModuleSearch.reset();
+				me.workflowStepSearch.reset();
+				me.workflowStepSearch.setData([]);
+				me.workflowStepSearch.valid = true;
+				me.workflowStepSearch.updateStatus();
+				me.hierarchyGrid.setData([]);
+				me.hierarchyTitle.reset();
+				me.hierarchyTitle.setData([]);
+				me.hierarchyTitle.valid = true;
+				me.hierarchyTitle.updateStatus();
+				me.name.setValue("");
+				me.email.setValue("");
+				me.active.setValue("true");
+			}
 		},
-		
+
 		actionMenuItem: function(section) {
 			var me = this;
+			var index = 0;
 
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 
+			me.workflowModulesTemp = [];
 			me.lastSelectedRowIndex = -1;
 			me.action = section;
+			me.resetControls();
 			me.setStatus("Normal");
 			$("#header").html(section);
-						
-			if (me.action == "Workflow Users") {
+
+			if (me.action === "Workflow Users") {
 				$("#WorkflowJDECompanies").hide();
 				$("#WorkflowUsers").show();
 			}
-			else if (me.action == "Workflow JDE Companies") {
+			else if (me.action === "Workflow JDE Company Users") {
 				$("#WorkflowUsers").hide();
 				$("#WorkflowJDECompanies").show();
+				$("#JDECompanyContainer").show();
+				$("#JDECompanyGrid").show();
+				$("#HierarchyLevelContainer").hide();
+				$("#HierarchyGrid").hide();
+
+				for (index = 0; index < me.workflowModules.length; index++) {
+					if (me.workflowModules[index].id === 2 || me.workflowModules[index].id === 3)
+						me.workflowModulesTemp.push(new fin.app.workflow.WorkflowModule(me.workflowModules[index].id, me.workflowModules[index].title));
+				}
+				me.workflowModuleSearch.setData(me.workflowModulesTemp);
+				me.workflowModuleSearch.reset();
+				me.workflowModuleSearch.updateStatus();
+			}
+			else if (me.action === "Workflow Hierarchy Users") {
+				$("#WorkflowUsers").hide();
+				$("#WorkflowJDECompanies").show();
+				$("#JDECompanyContainer").hide();
+				$("#JDECompanyGrid").hide();
+				$("#HierarchyLevelContainer").show();
+				$("#HierarchyGrid").show();
+
+				for (index = 0; index < me.workflowModules.length; index++) {
+					if (me.workflowModules[index].id === 3)
+						me.workflowModulesTemp.push(new fin.app.workflow.WorkflowModule(me.workflowModules[index].id, me.workflowModules[index].title));
+				}
+				me.workflowModuleSearch.setData(me.workflowModulesTemp);
+				me.workflowModuleSearch.select(0, me.workflowModuleSearch.focused);
+				me.workflowModuleChanged();
 			}
 
-			me.resetControls();
 			me.resizeControls();
 		},
-		
+
 		jdeCompanysLoaded: function(me, activeId) {
 
 			me.jdeCompany.setData(me.jdeCompanys);
 			me.jdeCompany.select(0, me.jdeCompany.focused);
 			me.checkLoadCount();
 		},
-		
+
 		workflowModulesLoaded: function(me, activeId) {
 
 			me.workflowModule.setData(me.workflowModules);
-			me.workflowModuleSearch.setData(me.workflowModules);
 			me.workflowModule.reset();
 			me.workflowModule.updateStatus();
-			me.workflowModuleSearch.reset();
-			me.workflowModuleSearch.updateStatus();
 			me.checkLoadCount();
 			me.resize();
 		},
@@ -560,42 +657,51 @@ ii.Class({
 		workflowModuleChanged: function() {
 			var me = this;
 
-			if (me.action == "Workflow Users") {
+			if (me.action === "Workflow Users") {
 				if (me.workflowModule.indexSelected >= 0) {
 					me.workflowStep.fetchingData();
 					me.workflowStepStore.fetch("userId:[user],workflowModuleId:" + me.workflowModules[me.workflowModule.indexSelected].id, me.workflowStepsLoaded, me);
 				}
 			}
-			else if (me.action == "Workflow JDE Companies") {
+			else if (me.action === "Workflow JDE Company Users") {
 				if (me.workflowModuleSearch.indexSelected >= 0) {
 					me.workflowStepSearch.fetchingData();
-					me.workflowStepStore.fetch("userId:[user],workflowModuleId:" + me.workflowModules[me.workflowModuleSearch.indexSelected].id + ",addJDECompanyUser:1", me.workflowStepsLoaded, me);
+					me.workflowStepStore.fetch("userId:[user],workflowModuleId:" + me.workflowModuleSearch.data[me.workflowModuleSearch.indexSelected].id + ",addJDECompanyUser:1", me.workflowStepsLoaded, me);
 				}
-			}			
+			}
+			else if (me.action === "Workflow Hierarchy Users" && me.workflowModuleSearch.indexSelected >= 0) {
+				me.workflowStepSearch.fetchingData();
+				me.workflowStepStore.fetch("userId:[user],workflowModuleId:" + me.workflowModuleSearch.data[me.workflowModuleSearch.indexSelected].id + ",addHierarchyUser:1", me.workflowStepsLoaded, me);
+			}
 		},
 
 		workflowStepsLoaded: function(me, activeId) {
 
-			if (me.action == "Workflow Users") {
+			if (me.action === "Workflow Users") {
 				me.workflowStep.setData(me.workflowSteps);
 				me.workflowStep.reset();
 				me.workflowStep.updateStatus();
 				me.assignedUserGrid.setData([]);
 				$("#Description").html("");
 			}
-			else if (me.action == "Workflow JDE Companies")
-			{
+			else if (me.action === "Workflow JDE Company Users") {
 				me.workflowStepSearch.setData(me.workflowSteps);
 				me.workflowStepSearch.reset();
 				me.workflowStepSearch.updateStatus();
 				me.jdeCompanyGrid.setData([]);
 			}
+			else if (me.action === "Workflow Hierarchy Users") {
+				me.workflowStepSearch.setData(me.workflowSteps);
+				me.workflowStepSearch.reset();
+				me.workflowStepSearch.updateStatus();
+				me.hierarchyGrid.setData([]);
+			}
 		},
 
 		workflowStepChanged: function() {
 			var me = this;
-			
-			if (me.action == "Workflow Users") {
+
+			if (me.action === "Workflow Users") {
 				if (me.workflowStep.indexSelected >= 0) {
 					$("#Description").html(me.workflowSteps[me.workflowStep.indexSelected].description);
 					if (me.workflowSteps[me.workflowStep.indexSelected].addWorkflowUser)
@@ -606,27 +712,65 @@ ii.Class({
 					me.appUserStore.fetch("userId:[user],module:Workflow,id:" + me.workflowSteps[me.workflowStep.indexSelected].id, me.appAssignedUsersLoaded, me);
 				}
 			}
-			else if (me.action == "Workflow JDE Companies") {
-				if (me.jdeCompany.indexSelected >= 0 && me.workflowModuleSearch.indexSelected >= 0) {
+			else if (me.action === "Workflow JDE Company Users") {
+				if (me.jdeCompany.indexSelected >= 0 && me.workflowModuleSearch.indexSelected >= 0 && me.workflowStepSearch.indexSelected >= 0) {
 					var jdeCompanyId = me.jdeCompanys[me.jdeCompany.indexSelected].id;
-					var workflowModuleId = me.workflowModules[me.workflowModuleSearch.indexSelected].id;
+					var workflowModuleId = me.workflowModuleSearch.data[me.workflowModuleSearch.indexSelected].id;
 					var workflowStepId = me.workflowSteps[me.workflowStepSearch.indexSelected].id;
 					me.setLoadCount();
 					me.workflowJDECompanyStore.fetch("userId:[user],jdeCompanyId:" + jdeCompanyId + ",workflowModuleId:" + workflowModuleId + ",workflowStepId:" + workflowStepId, me.workflowJDECompanysLoaded, me);
 				}
 			}
+			else if (me.action === "Workflow Hierarchy Users") {
+				if (me.workflowModuleSearch.indexSelected >= 0 && me.workflowStepSearch.indexSelected >= 0) {
+					me.setLoadCount();
+					me.hirNodeStore.reset();
+					me.hierarchyTitle.fetchingData();
+					if (me.workflowSteps[me.workflowStepSearch.indexSelected].brief === "Step 2")
+						me.hirNodeStore.fetch("userId:[user],levelBrief:RVP", me.hirNodesLoaded, me);
+					else
+						me.hirNodeStore.fetch("userId:[user],levelBrief:DVP", me.hirNodesLoaded, me);
+				}
+			}
 		},
-		
+
 		appAssignedUsersLoaded: function(me, activeId) {
 
 			me.assignedUsers = me.appUsers.slice();
 			me.assignedUserGrid.setData(me.assignedUsers);
 			me.checkLoadCount();
 		},
-		
+
 		workflowJDECompanysLoaded: function(me, activeId) {
 
 			me.jdeCompanyGrid.setData(me.workflowJDECompanys);
+			me.validator.reset();
+			me.name.setValue("");
+			me.email.setValue("");
+			me.active.setValue("true");
+			me.checkLoadCount();
+		},
+
+		hirNodesLoaded: function(me, activeId) {
+
+			me.hierarchyTitle.setData(me.hirNodes);
+			me.hierarchyTitle.reset();
+			me.hierarchyTitle.updateStatus();
+
+			var workflowModuleId = me.workflowModuleSearch.data[me.workflowModuleSearch.indexSelected].id;
+			var workflowStepId = me.workflowSteps[me.workflowStepSearch.indexSelected].id;
+			me.workflowHierarchyStore.fetch("userId:[user],workflowModuleId:" + workflowModuleId + ",workflowStepId:" + workflowStepId, me.workflowHierarchysLoaded, me);
+		},
+
+		workflowHierarchysLoaded: function(me, activeId) {
+
+			for (var index = 0; index < me.workflowHierarchys.length; index++) {
+				var itemIndex = ii.ajax.util.findIndexById(me.workflowHierarchys[index].nodeId.toString(), me.hirNodes);
+				if (itemIndex !== undefined)
+					me.workflowHierarchys[index].title = me.hirNodes[itemIndex].title;
+			}
+
+			me.hierarchyGrid.setData(me.workflowHierarchys);
 			me.validator.reset();
 			me.name.setValue("");
 			me.email.setValue("");
@@ -640,7 +784,7 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 
-			if (me.workflowModule.indexSelected == -1 || me.workflowStep.indexSelected == -1)
+			if (me.workflowModule.indexSelected === -1 || me.workflowStep.indexSelected === -1)
 				return;
 
 			loadPopup("popupUser");
@@ -652,41 +796,41 @@ ii.Class({
 			me.searchInput.updateStatus();
 			$("#popupLoading").fadeOut("slow");
 		},
-		
+
 		searchInputChanged: function() {
 			var args = ii.args(arguments, {
-				event: {type: Object} // The (key) event object
-			});			
+				event: {type: Object}
+			});
 			var event = args.event;
 			var me = event.data;
-				
-			if (event.keyCode == 13) {
+
+			if (event.keyCode === 13) {
 				me.loadAppUsers();
 			}
 		},
-		
+
 		actionSearchItem: function() {
 			var me = this;
 
-			if (me.action == "Workflow JDE Companies")
-				me.workflowStepChanged();
-			else
+			if (me.action === "Workflow Users")
 				me.loadAppUsers();
+			else if (me.action === "Workflow JDE Company Users" || me.action === "Workflow Hierarchy Users")
+				me.workflowStepChanged();
 		},
-		
+
 		loadAppUsers: function() {
 			var me = this;
-			
-			if (me.searchInput.getValue() == "") {
+
+			if (me.searchInput.getValue() === "") {
 				me.searchInput.setInvalid("Please enter search criteria.");
 				return;
 			}
-			
-			$("#popupLoading").fadeIn("slow");	
+
+			$("#popupLoading").fadeIn("slow");
 			me.setStatus("Loading");
 			me.appUserStore.fetch("userId:[user],module:Workflow" +	",id:" + me.workflowSteps[me.workflowStep.indexSelected].id + ",searchValue:" + me.searchInput.getValue(), me.appUsersLoaded, me);
 		},
-		
+
 		appUsersLoaded: function(me, activeId) {
 
 			me.status = "AddUser";
@@ -694,14 +838,14 @@ ii.Class({
 			me.userGrid.setData(me.appUsers);
 			$("#popupLoading").fadeOut("slow");
 		},
-		
+
 		actionEditItem: function() {
 			var me = this;
 
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 
-			if (me.assignedUserGrid.activeRowIndex == -1)
+			if (me.assignedUserGrid.activeRowIndex === -1)
 				return;
 
 			me.status = "EditUser";
@@ -714,14 +858,14 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 
-			if (me.assignedUserGrid.activeRowIndex == -1)
+			if (me.assignedUserGrid.activeRowIndex === -1)
 				return;
 
 			me.status = "DeleteUser";
 			me.actionSaveItem();
 		},
 
-		actionClickItem: function(objCheckBox) {
+		actionClickItem: function() {
 			var me = this;
 
 			me.modified(true);
@@ -729,7 +873,6 @@ ii.Class({
 
 		actionCancelItem: function() {
 			var me = this;
-			var index = -1;			
 
 			if (!parent.fin.cmn.status.itemValid())
 				return;
@@ -738,10 +881,10 @@ ii.Class({
 			me.setStatus("Normal");
 			me.status = "";
 		},
-		
-		itemSelect: function() { 
+
+		itemSelect: function() {
 			var args = ii.args(arguments, {
-				index: {type: Number}  // The index of the data subItem to select
+				index: {type: Number}
 			});
 			var me = this;
 			var index = args.index;
@@ -749,23 +892,50 @@ ii.Class({
 			me.status = "";
 			me.setStatus("Normal");
 
-			if (me.jdeCompanyGrid.data[index] != undefined) {
+			if (me.jdeCompanyGrid.data[index] !== undefined) {
 				me.lastSelectedRowIndex = me.jdeCompanyGrid.activeRowIndex;
 				me.name.setValue(me.jdeCompanyGrid.data[index].name);
 				me.email.setValue(me.jdeCompanyGrid.data[index].email);
 				me.active.setValue(me.jdeCompanyGrid.data[index].active.toString());
 			}
 		},
-		
-		actionNewItem: function(me, activeId) {
-			var args = ii.args(arguments, {});
+
+		itemHierarchySelect: function() {
+			var args = ii.args(arguments, {
+				index: {type: Number}
+			});
+			var me = this;
+			var index = args.index;
+
+			me.status = "";
+			me.setStatus("Normal");
+
+			if (me.hierarchyGrid.data[index] !== undefined) {
+				me.lastSelectedRowIndex = me.hierarchyGrid.activeRowIndex;
+				var itemIndex = ii.ajax.util.findIndexById(me.hierarchyGrid.data[index].nodeId.toString(), me.hirNodes);
+				if (itemIndex !== undefined)
+					me.hierarchyTitle.select(itemIndex, me.hierarchyTitle.focused);
+				me.name.setValue(me.hierarchyGrid.data[index].name);
+				me.email.setValue(me.hierarchyGrid.data[index].email);
+				me.active.setValue(me.hierarchyGrid.data[index].active.toString());
+			}
+		},
+
+		actionNewItem: function() {
 			var me = this;
 
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 
-			me.jdeCompanyGrid.body.deselectAll();
 			me.validator.reset();
+			if (me.action === "Workflow JDE Company Users") {
+				me.jdeCompanyGrid.body.deselectAll();
+			}
+			else if (me.action === "Workflow Hierarchy Users") {
+				me.hierarchyGrid.body.deselectAll();
+				me.hierarchyTitle.reset();
+			}
+
 			me.name.setValue("");
 			me.email.setValue("");
 			me.active.setValue("true");
@@ -774,59 +944,89 @@ ii.Class({
 		},
 
 		actionUndoItem: function() {
-			var args = ii.args(arguments, {});
 			var me = this;
 
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 
 			if (me.lastSelectedRowIndex >= 0) {
-				me.jdeCompanyGrid.body.select(me.lastSelectedRowIndex);
-				me.itemSelect(me.lastSelectedRowIndex);
+				if (me.action === "Workflow JDE Company Users") {
+					me.jdeCompanyGrid.body.select(me.lastSelectedRowIndex);
+					me.itemSelect(me.lastSelectedRowIndex);
+				}
+				else if (me.action === "Workflow Hierarchy Users") {
+					me.hierarchyGrid.body.select(me.lastSelectedRowIndex);
+					me.itemHierarchySelect(me.lastSelectedRowIndex);
+				}
 			}
 
 			me.status = "";
 			me.setStatus("Normal");
 		},
-		
+
 		actionSaveItem: function() {
 			var me = this;
 			var item = [];
 
-			if (me.status == "AddUser")
+			if (me.status === "AddUser")
 				hidePopup("popupUser");
-			else if (me.status == "New" || me.status == "") {
-				if (me.status == "" && me.jdeCompanyGrid.activeRowIndex == -1)
-					return;
-				// Check to see if the data entered is valid
-				me.validator.forceBlur();
-				me.validator.queryValidity(true);
+			else if (me.status === "New" || me.status === "") {
+				if (me.action === "Workflow JDE Company Users") {
+					if (me.status === "" && me.jdeCompanyGrid.activeRowIndex === -1)
+						return;
+					// Check to see if the data entered is valid
+					me.validator.forceBlur();
+					me.validator.queryValidity(true);
 
-				if (!me.jdeCompany.valid || !me.workflowModuleSearch.valid || !me.workflowStepSearch.valid || !me.name.valid || !me.email.valid){
-					alert("In order to save, the errors on the page must be corrected.");
-					return false;
+					if (!me.jdeCompany.valid || !me.workflowModuleSearch.valid || !me.workflowStepSearch.valid || !me.name.valid || !me.email.valid) {
+						alert("In order to save, the errors on the page must be corrected.");
+						return false;
+					}
+
+					item = new fin.app.workflow.WorkflowJDECompany(me.status === "New" ? 0 : me.workflowJDECompanys[me.jdeCompanyGrid.activeRowIndex].id
+						, me.jdeCompanys[me.jdeCompany.indexSelected].id
+						, me.workflowModuleSearch.data[me.workflowModuleSearch.indexSelected].id
+						, me.workflowSteps[me.workflowStepSearch.indexSelected].id
+						, me.name.getValue()
+						, me.email.getValue()
+						, me.status === "New" ? me.workflowJDECompanys.length + 1 : me.workflowJDECompanys[me.jdeCompanyGrid.activeRowIndex].displayOrder
+						, me.active.check.checked
+						);
 				}
-				
-				item = new fin.app.workflow.WorkflowJDECompany(me.status == "New" ? 0 : me.workflowJDECompanys[me.jdeCompanyGrid.activeRowIndex].id
-					, me.jdeCompanys[me.jdeCompany.indexSelected].id
-					, me.workflowModules[me.workflowModuleSearch.indexSelected].id 
-					, me.workflowSteps[me.workflowStepSearch.indexSelected].id
-					, me.name.getValue()
-					, me.email.getValue()
-					, me.status == "New" ? me.workflowJDECompanys.length + 1 : me.workflowJDECompanys[me.jdeCompanyGrid.activeRowIndex].displayOrder
-					, me.active.check.checked
-					)
+				else if (me.action === "Workflow Hierarchy Users") {
+					if (me.status === "" && me.hierarchyGrid.activeRowIndex === -1)
+						return;
+					// Check to see if the data entered is valid
+					me.validator.forceBlur();
+					me.validator.queryValidity(true);
+
+					if (!me.workflowModuleSearch.valid || !me.workflowStepSearch.valid || !me.hierarchyTitle.valid || !me.name.valid || !me.email.valid){
+						alert("In order to save, the errors on the page must be corrected.");
+						return false;
+					}
+
+					item = new fin.app.workflow.WorkflowHierarchy(me.status === "New" ? 0 : me.workflowHierarchys[me.hierarchyGrid.activeRowIndex].id
+						, me.hirNodes[me.hierarchyTitle.indexSelected].id
+						, me.workflowModuleSearch.data[me.workflowModuleSearch.indexSelected].id
+						, me.workflowSteps[me.workflowStepSearch.indexSelected].id
+						, me.hirNodes[me.hierarchyTitle.indexSelected].title
+						, me.name.getValue()
+						, me.email.getValue()
+						, me.status === "New" ? me.workflowHierarchys.length + 1 : me.workflowHierarchys[me.hierarchyGrid.activeRowIndex].displayOrder
+						, me.active.check.checked
+						);
+				}
 			}
 
-			var xml = me.saveXmlBuild(item);
+			var xml = me.saveXmlBuild();
 
-			if (xml == "")
+			if (xml === "")
 				return true;
 
 			me.setStatus("Saving");
 			$("#messageToUser").text("Saving");
 			$("#pageLoading").fadeIn("slow");
-			
+
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
 				transactionType: "itemUpdate",
@@ -837,16 +1037,12 @@ ii.Class({
 
 			return true;
 		},
-		
+
 		saveXmlBuild: function() {
-			var args = ii.args(arguments,{
-				item: {type: fin.app.workflow.WorkflowJDECompany}
-			});			
 			var me = this;
-			var item = args.item;
 			var xml = "";
 
-			if (me.status == "AddUser") {
+			if (me.status === "AddUser") {
 				for (var index = 0; index < me.appUsers.length; index++) {
 					if ($("#assignInputCheck" + index)[0].checked) {
 						me.assignedUsers.push(new fin.app.workflow.User(0
@@ -867,7 +1063,7 @@ ii.Class({
 					}
 				}
 			}
-			else if (me.status == "EditUser") {
+			else if (me.status === "EditUser") {
 				xml += '<appWorkflowUser';
 				xml += ' id="' + me.assignedUsers[me.assignedUserGrid.activeRowIndex].id + '"';
 				xml += ' userId="' + me.assignedUsers[me.assignedUserGrid.activeRowIndex].userId + '"';
@@ -875,22 +1071,36 @@ ii.Class({
 				xml += ' active="' + !me.assignedUsers[me.assignedUserGrid.activeRowIndex].active + '"';
 				xml += '/>';
 			}
-			else if (me.status == "DeleteUser") {
+			else if (me.status === "DeleteUser") {
 				xml += '<appWorkflowUserDelete';
 				xml += ' id="' + me.assignedUsers[me.assignedUserGrid.activeRowIndex].id + '"';
 				xml += '/>';
 			}
-			else if (me.status == "New" || me.status == "") {
-				xml += '<appWorkflowJDECompany';
-				xml += ' id="' + item.id + '"';
-				xml += ' jdeCompanyId="' +  item.jdeCompanyId + '"';
-				xml += ' workflowModuleId="' +  item.workflowModuleId + '"';
-				xml += ' workflowStepId="' +  item.workflowStepId + '"';
-				xml += ' name="' + ui.cmn.text.xml.encode(item.name) + '"';
-				xml += ' email="' + ui.cmn.text.xml.encode(item.email) + '"';
-				xml += ' displayOrder="' + item.displayOrder + '"';
-				xml += ' active="' + item.active + '"';
-				xml += '/>';
+			else if (me.status === "New" || me.status === "") {
+				if (me.action === "Workflow JDE Company Users") {
+					xml += '<appWorkflowJDECompany';
+					xml += ' id="' + (me.status === "New" ? 0 : me.workflowJDECompanys[me.jdeCompanyGrid.activeRowIndex].id) + '"';
+					xml += ' jdeCompanyId="' + me.jdeCompanys[me.jdeCompany.indexSelected].id + '"';
+					xml += ' workflowModuleId="' + me.workflowModuleSearch.data[me.workflowModuleSearch.indexSelected].id + '"';
+					xml += ' workflowStepId="' + me.workflowSteps[me.workflowStepSearch.indexSelected].id + '"';
+					xml += ' name="' + ui.cmn.text.xml.encode(me.name.getValue()) + '"';
+					xml += ' email="' + ui.cmn.text.xml.encode(me.email.getValue()) + '"';
+					xml += ' displayOrder="' + (me.status === "New" ? me.workflowJDECompanys.length + 1 : me.workflowJDECompanys[me.jdeCompanyGrid.activeRowIndex].displayOrder) + '"';
+					xml += ' active="' + me.active.check.checked + '"';
+					xml += '/>';
+				}
+				else if (me.action === "Workflow Hierarchy Users") {
+					xml += '<appWorkflowHierarchy';
+					xml += ' id="' + (me.status === "New" ? 0 : me.workflowHierarchys[me.hierarchyGrid.activeRowIndex].id) + '"';
+					xml += ' nodeId="' +  me.hirNodes[me.hierarchyTitle.indexSelected].id + '"';
+					xml += ' workflowModuleId="' + me.workflowModuleSearch.data[me.workflowModuleSearch.indexSelected].id + '"';
+					xml += ' workflowStepId="' + me.workflowSteps[me.workflowStepSearch.indexSelected].id + '"';
+					xml += ' name="' + ui.cmn.text.xml.encode(me.name.getValue()) + '"';
+					xml += ' email="' + ui.cmn.text.xml.encode(me.email.getValue()) + '"';
+					xml += ' displayOrder="' + (me.status === "New" ? me.workflowHierarchys.length + 1 : me.workflowHierarchys[me.hierarchyGrid.activeRowIndex].displayOrder) + '"';
+					xml += ' active="' + me.active.check.checked + '"';
+					xml += '/>';
+				}
 			}
 
 			return xml;
@@ -906,29 +1116,29 @@ ii.Class({
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
 
-			if (status == "success") {
+			if (status === "success") {
 				me.modified(false);
 
 				$(args.xmlNode).find("*").each(function(){
 					switch (this.tagName) {
 						case "appWorkflowUser":
-							if (me.status == "AddUser") {
+							if (me.status === "AddUser") {
 								var id = parseInt($(this).attr("id"), 10);
 
 								for (var index = 0; index < me.assignedUsers.length; index++) {
 									if (me.assignedUsers[index].assigned) {
-										if (me.assignedUsers[index].id == 0)
+										if (me.assignedUsers[index].id === 0)
 											me.assignedUsers[index].id = id;
 										me.assignedUsers[index].assigned = false;
 										break;
 									}
 								}
 							}
-							else if (me.status == "EditUser") {
+							else if (me.status === "EditUser") {
 								me.assignedUsers[me.assignedUserGrid.activeRowIndex].active = !me.assignedUsers[me.assignedUserGrid.activeRowIndex].active;
 								me.assignedUserGrid.body.renderRow(me.assignedUserGrid.activeRowIndex, me.assignedUserGrid.activeRowIndex);
 							}
-							else if (me.status == "DeleteUser") {
+							else if (me.status === "DeleteUser") {
 								me.assignedUsers.splice(me.assignedUserGrid.activeRowIndex, 1);
 								me.assignedUserGrid.setData(me.assignedUsers);
 							}
@@ -936,9 +1146,9 @@ ii.Class({
 							break;
 
 						case "appWorkflowJDECompany":
-							if (me.status == "New") {
+							if (me.status === "New") {
 								item.id = parseInt($(this).attr("id"), 10);
-								me.workflowJDECompanys.push(item)
+								me.workflowJDECompanys.push(item);
 								me.lastSelectedRowIndex = me.workflowJDECompanys.length - 1;
 								me.jdeCompanyGrid.setData(me.workflowJDECompanys);
 								me.jdeCompanyGrid.body.select(me.lastSelectedRowIndex);
@@ -949,10 +1159,25 @@ ii.Class({
 							}
 
 							break;
+
+						case "appWorkflowHierarchy":
+							if (me.status === "New") {
+								item.id = parseInt($(this).attr("id"), 10);
+								me.workflowHierarchys.push(item);
+								me.lastSelectedRowIndex = me.workflowHierarchys.length - 1;
+								me.hierarchyGrid.setData(me.workflowHierarchys);
+								me.hierarchyGrid.body.select(me.lastSelectedRowIndex);
+							}
+							else {
+								me.workflowHierarchys[me.lastSelectedRowIndex] = item;
+								me.hierarchyGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
+							}
+
+							break;
 					}
 				});
 
-				if (me.status == "AddUser") {
+				if (me.status === "AddUser") {
 					me.assignedUserGrid.setData(me.assignedUsers);
 				}
 				me.status = "";
@@ -961,7 +1186,7 @@ ii.Class({
 			else {
 				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating Workflow Step details: " + $(args.xmlNode).attr("message"));
-			}	
+			}
 
 			$("#pageLoading").fadeOut("slow");
 		}
@@ -970,7 +1195,7 @@ ii.Class({
 
 function loadPopup(id) {
 	centerPopup(id);
-	
+
 	$("#backgroundPopup").css({
 		"opacity": "0.5"
 	});
@@ -980,7 +1205,7 @@ function loadPopup(id) {
 }
 
 function hidePopup(id) {
-	
+
 	$("#backgroundPopup").fadeOut("slow");
 	$("#" + id).fadeOut("slow");
 }
@@ -995,11 +1220,11 @@ function centerPopup(id) {
 		"width": popupWidth,
 		"height": popupHeight
 	});
-	
+
 	$("#backgroundPopup").css({
 		"height": windowHeight
 	});
-	
+
 	$("#popupLoading, #" + id).css({
 		"top": windowHeight/2 - popupHeight/2,
 		"left": windowWidth/2 - popupWidth/2
