@@ -377,8 +377,12 @@ ii.Class({
 			me.requisitionGrid.addColumn("requisitionNumber", "requisitionNumber", "Requisition #", "Requisition #", 120);
 			me.requisitionGrid.addColumn("houseCodeTitle", "houseCodeTitle", "House Code", "House Code", 175);
 			me.requisitionGrid.addColumn("requestorName", "requestorName", "Requestor Name", "Requestor Name", 150);				
-			me.requisitionGrid.addColumn("requestedDate ", "requestedDate", "Requested Date", "Requested Date", 150);
-			me.requisitionGrid.addColumn("deliveryDate", "deliveryDate", "Delivery Date", "Delivery Date", 120);
+			me.requisitionGrid.addColumn("requestedDate ", "requestedDate", "Requested Date", "Requested Date", 150).setSortFunction(function(me, displayProperty, a, b) {
+				return fin.cmn.sort.dateSort(me, displayProperty, a, b);
+			});
+			me.requisitionGrid.addColumn("deliveryDate", "deliveryDate", "Delivery Date", "Delivery Date", 120).setSortFunction(function(me, displayProperty, a, b) {
+				return fin.cmn.sort.dateSort(me, displayProperty, a, b);
+			});
 			me.requisitionGrid.addColumn("vendorTitle", "vendorTitle", "Vendor Title", "Vendor Title", null);
 			me.requisitionGrid.addColumn("statusType", "statusType", "Status", "Status", 120, function(statusType) {
 				if (statusType == 1)
