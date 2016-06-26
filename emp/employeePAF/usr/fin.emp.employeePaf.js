@@ -810,8 +810,12 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     if (item.id == 2)
                         $scope.Approvals.push(item);
                 }
-                else if (($scope.empAction.SalaryChange && $scope.empAction.IncreaseDecreasePercentage > 4) || (($scope.empAction.Promotion || $scope.empAction.Demotion) && $scope.empAction.IncreaseDecreasePercentage > 10)) {
+                else if (($scope.empAction.Promotion || $scope.empAction.Demotion) && $scope.empAction.IncreaseDecreasePercentage > 10) {
                     if (item.id == 3 || item.id == 4 || (item.id == 5) || item.id == 6)
+                        $scope.Approvals.push(item);
+                }
+                else if ($scope.empAction.SalaryChange && $scope.empAction.IncreaseDecreasePercentage > 4) {
+                    if (item.id == 3 || item.id == 4 || item.id == 6)
                         $scope.Approvals.push(item);
                 }
                 else if ($scope.empAction.NewHire || $scope.empAction.ReHire || $scope.empAction.Transfer || $scope.empAction.Promotion || $scope.empAction.Demotion) {
