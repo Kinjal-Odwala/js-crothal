@@ -385,7 +385,7 @@
                             <div class="form-group" ng-show="empAction.SeparationReason=='LayoffType' || empAction.SeparationReason=='TerminationType'" ng-class="{'has-error':separationForm.ReviewedWithHR.$invalid}">
                                 <label>Reviewed with HR:</label>
                                 <div>
-                                    <select class="form-control input-sm" ng-model="empAction.HrReviewType" name="ReviewedWithHR" ng-options="item.id as item.title for item in $parent.$parent.lkup.HRReviews" required>
+                                    <select class="form-control input-sm" ng-model="empAction.HrReviewType" name="ReviewedWithHR" ng-options="item.id as item.title for item in $parent.$parent.lkup.HRReviews" ng-required="empAction.SeparationReason=='LayoffType' || empAction.SeparationReason=='TerminationType'">
                                         <option value=""></option>
                                     </select>
                                 </div>
