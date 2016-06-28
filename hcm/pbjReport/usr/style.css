@@ -1,4 +1,13 @@
-﻿.leftContainer {
+﻿.header {
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 18px;	
+	color: #2C2F50;
+	text-align: center;
+	margin-bottom: 5px;
+}
+
+.leftContainer {
 	float: left;
 	width: 48%;
 	vertical-align: top;
@@ -28,7 +37,12 @@
 	width: 200px;
 }
 
-#PBJReportContainer {
+.inputTextAreaLarge {
+	float: left;
+	width: 600px;
+}
+
+#PBJReportGridContainer, #FileLocationContainer {
 	border: solid #AAAAAA thin;
 	border-width: 1px;
 	padding: 5px;

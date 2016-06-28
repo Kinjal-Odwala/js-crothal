@@ -24,6 +24,11 @@
 				</tr>
 			</table>
 		</div>
+		<div class="pageHeader">
+			 <div style="float: left; width: 10%;"><div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div></div>
+			 <div style="float: left; width: 80%;"><div id="header" class="header">CMS/PBJ Report</div></div>
+			 <div style="float: left; width: 10%;">&nbsp;</div>
+        </div>
 		<div style="clear:both;"></div>
 		<div id="itemStatusDiv">
 			<div id="itemStatusImage" class="itemStatusImage"></div>
@@ -36,11 +41,10 @@
 				<iframe id="iFrameUpload" src="/net/crothall/chimes/fin/app/act/FileUpload.aspx" frameborder="0" width="100" height="0"></iframe>
 			</div>
 			<div class="contentArea">
-				<div class="header">CMS/PBJ Report</div>
 				<div style="clear:both;height:5px;"></div>
-				<div class="leftContainer">
-					<div class="contentArea">
-	                    <div id="PBJReportContainer">
+				<div id="PBJReportContainer">
+					<div class="leftContainer">
+	                    <div id="PBJReportGridContainer">
 	                    	<div style="clear:both;height:10px;"></div>
 							<div id="TableEditArea">
 								<div class="labelTextArea">
@@ -64,18 +68,41 @@
 						<div class="footer">
 		                    <div id="AnchorGenerate"></div>
 		                </div>
-	                </div>
-				</div>
-			</div>
-			<div class="rightContainer">
-				<div class="contentArea">
-					<div id="FileNameGridContainer">
-						<div id="FileNameGrid"></div>
-						<div style="clear:both;"></div>
 					</div>
-					<div class="footer">
-	                    <div id="AnchorDownload"></div>
-	                </div>
+					<div class="rightContainer">
+						<div id="FileNameGridContainer">
+							<div id="FileNameGrid"></div>
+							<div style="clear:both;"></div>
+						</div>
+						<div class="footer">
+		                    <div id="AnchorDownload"></div>
+		                </div>
+					</div>
+				</div>
+				<div id="PBJFileLocationContainer" class="body" style="display: none;">
+					<div class="leftContainer">
+						<div id="FileLocationGridContainer">
+							<div id="FileLocationGrid"></div>
+							<div style="clear:both;"></div>
+						</div>
+					</div>
+					<div class="rightContainer">
+	                    <div id="FileLocationContainer">
+	                    	<div style="clear:both;height:10px;"></div>
+				  			<div id="TableEditArea">
+	                            <div class="labelTextArea">
+	                            	<span class="requiredFieldIndicator">&#149;</span>File Location:
+	                            </div>
+	                            <div class="inputTextAreaLarge">
+	                                <div id="FileLocation"></div>
+	                            </div>
+	                        </div>
+	                    </div>
+						<div class="footer">
+		                    <div id="AnchorSave"></div>
+							<div id="AnchorUndo"></div>
+		                </div>
+					</div>
 				</div>
 			</div>
 		</div>
