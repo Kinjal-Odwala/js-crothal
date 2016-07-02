@@ -1007,6 +1007,15 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             resetPositionTypeFields('Requisition');
         }
 
+        if ($scope.empAction.NewHire || $scope.empAction.ReHire) {
+            if ($scope.empAction.PositionType == 0) {
+                $scope.empAction.PositionType = null;
+            }
+            if ($scope.empAction.PayGrade == 0) {
+                $scope.empAction.PayGrade = null;
+            }
+        }
+
         validateActionType();
     };
 
