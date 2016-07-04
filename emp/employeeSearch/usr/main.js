@@ -627,7 +627,7 @@ ii.Class({
 			
 			me.personFirstName = new ui.ctl.Input.Text({
 				id: "FirstName",
-				maxLength: 30,
+				maxLength: 50,
 				changeFunction: function() { me.employeeNameChanged = true; }
 			});
 
@@ -637,13 +637,13 @@ ii.Class({
 			
 			me.personMiddleName = new ui.ctl.Input.Text({
 				id: "MiddleInitial",
-				maxLength: 30,
+				maxLength: 50,
 				changeFunction: function() { me.employeeNameChanged = true; }
 			});	
 			
 			me.personLastName = new ui.ctl.Input.Text({
 				id: "LastName",
-				maxLength: 30,
+				maxLength: 50,
 				changeFunction: function() { me.employeeNameChanged = true; }
 			});
 
@@ -653,7 +653,7 @@ ii.Class({
 			
 			me.personAddressLine1 = new ui.ctl.Input.Text({
 				id: "Address1",
-				maxLength: 50
+				maxLength: 255
 			});
 
 			me.personAddressLine1.makeEnterTab()
@@ -662,7 +662,7 @@ ii.Class({
 			
 			me.personAddressLine2 = new ui.ctl.Input.Text({
 				id: "Address2",
-				maxLength: 50
+				maxLength: 255
 			});
 			
 			me.personAddressLine2.makeEnterTab()
@@ -670,7 +670,7 @@ ii.Class({
 			
 			me.personCity = new ui.ctl.Input.Text({
 				id: "City",
-				maxLength: 50
+				maxLength: 255
 			});
 
 			me.personCity.makeEnterTab()
@@ -712,7 +712,7 @@ ii.Class({
 			
 			me.personEmail = new ui.ctl.Input.Text({
 				id: "Email",
-				maxLength: 30
+				maxLength: 150
 			});
 			
 			me.personEmail.makeEnterTab()
