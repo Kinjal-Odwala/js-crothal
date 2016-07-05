@@ -1739,8 +1739,11 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
             var items = deserializeXml(data, 'empFileName', { upperFirstLetter: false, intItems: ['id'] });
             $("#iFrameDownload")[0].contentWindow.document.getElementById("FileName").value = items[0].fileName;
             $("#iFrameDownload")[0].contentWindow.document.getElementById("DownloadButton").click();
-            $scope.pageLoading = false;
-            $scope.getPafList();
+			$scope.$apply(function () {
+                $scope.pageLoading = false;
+            });
+            //$scope.pageLoading = false;
+            //$scope.getPafList();
         });
     };
 
@@ -2589,6 +2592,8 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         //    }
         //});
 
+		top.ii.Session.singleton.ajaxStart();
+		top.ii.Session.singleton.ajaxSend();
         $rootScope.loadingCount = $rootScope.loadingCount || 0;
         $rootScope.loadingCount++;
         $http({
@@ -2602,9 +2607,13 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         }).success(function (result) {
             callback(result);
             $rootScope.loadingCount--;
+			top.ii.Session.singleton.ajaxComplete();
+			top.ii.Session.singleton.ajaxStop();
         })
         .error(function (error) {
             $rootScope.loadingCount--;
+			top.ii.Session.singleton.ajaxComplete();
+			top.ii.Session.singleton.ajaxStop();
         });
     }
 
@@ -2780,19 +2789,19 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
     var getEmployee = function (employeeNumber, hcmHouseCode, callback) {
 
         apiRequest('emp', 'iiCache', '<criteria>storeId:employees,userId:[user]'
-               + ',employeeNumber:' + employeeNumber
-      + ',</criteria>', function (xml) {
-          if (callback) {
-              var matched = deserializeXml(xml, 'item', { upperFirstLetter: false });
-              callback(matched && matched.length > 0 ? matched[0] : null);
-          }
-      });
-    };
+            + ',employeeNumber:' + employeeNumber
+      		+ ',</criteria>', function (xml) {
+				if (callback) {
+	              	var matched = deserializeXml(xml, 'item', { upperFirstLetter: false });
+	              	callback(matched && matched.length > 0 ? matched[0] : null);
+	          	}
+	      	});
+	};
 
     var getEmpCompensation = function (employeeNumber, callback) {
 
         apiRequest('emp', 'iiCache', '<criteria>storeId:employeeCompensation,userId:[user]'
-              + ',employeeNumber:' + employeeNumber
+			+ ',employeeNumber:' + employeeNumber
             + ',</criteria>', function (xml) {
                 if (callback)
                     callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
@@ -3231,5 +3240,3 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         getAppUsers: getAppUsers
     }
 }]);
-
-
