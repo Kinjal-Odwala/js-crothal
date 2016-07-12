@@ -40,6 +40,7 @@ ii.init.register( function() {
 		, serviceLineId: {type: Number, required: false, defaultValue: 0}
 		, enforceLaborControl: {type: Boolean, required: false, defaultValue: false}
 		, managerName: {type: String, required: false, defaultValue: ""}
+		, managerId: {type: Number, required: false, defaultValue: 0}
 		, managerEmail: {type: String, required: false, defaultValue: ""}
 		, managerPhone: {type: String, required: false, defaultValue: ""}
 		, managerCellPhone: {type: String, required: false, defaultValue: ""}
@@ -126,6 +127,7 @@ ii.init.register( function() {
 		, ePayGroupType: {type: Number, required: false, defaultValue: 0}
 		, ePayTask: {type: Number, required: false, defaultValue: 0}
 		, ePayHours: {type: Boolean, required: false, defaultValue: false}
+		, pbjReporting: {type: Boolean, required: false, defaultValue: false}
 		, incidentFrequencyRate: {type: String, required: false, defaultValue: ""}
 		, trir: {type: String, required: false, defaultValue: ""}
 		, lostDays: {type: String, required: false, defaultValue: ""}
@@ -171,6 +173,7 @@ ii.init.register( function() {
 		id: {type: Number}
 		, name: {type: String}
 		, financialEntity: {type: Boolean, required: false, defaultValue: false}
+		, active: {type: Boolean}
 	};
 	
 	//Statistics
@@ -253,7 +256,14 @@ ii.init.register( function() {
 		id: {type: Number}
 		, name: {type: String}
 	};
-		
+
+	fin.hcm.houseCodeWizard.managerArgs = {
+		id: {type: Number}
+		, employeeId: {type: Number, required: false, defaultValue: 0}
+		, employeeName: {type: String, required: false, defaultValue: ""}
+		, jobTitle: {type: String, required: false, defaultValue: ""}
+	};
+
 }, 2);
 
 ii.Class({
@@ -495,6 +505,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.houseCodeWizard.houseCodeTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.houseCodeWizard.Manager",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.houseCodeWizard.managerArgs);
 			$.extend(this, args);
 		}
 	}

@@ -56,10 +56,10 @@ ii.init.register( function() {
 		, vendorName: {type: String, required: false, defaultValue: ""}
 		, vendorEmail: {type: String, required: false, defaultValue: ""}
 		, sendMethod: {type: String, required: false, defaultValue: ""}
-		, faxNumber: {type: String, required: false, defaultValue: ""} 
+		, faxNumber: {type: String, required: false, defaultValue: ""}
 		, orderNumber: {type: Number}
-		, orderDate: {type: String, required: false, defaultValue: ""}		
-		, orderAmount: {type: String, required: false, defaultValue: ""}				
+		, orderDate: {type: Date, required: false, defaultValue: ""}
+		, orderAmount: {type: String, required: false, defaultValue: ""}
 		, contactName: {type: String, required: false, defaultValue: ""}
 		, address1: {type: String, required: false, defaultValue: ""}
 		, address2: {type: String, required: false, defaultValue: ""}

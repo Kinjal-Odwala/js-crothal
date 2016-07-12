@@ -47,6 +47,14 @@ ii.init.register( function() {
 		id: {type: Number}
 		, name: {type: String}
 		, financialEntity: {type: Boolean, required: false, defaultValue: false}
+		, active: {type: Boolean}
+	};
+
+	fin.hcm.houseCode.managerArgs = {
+		id: {type: Number}
+		, employeeId: {type: Number, required: false, defaultValue: 0}
+		, employeeName: {type: String, required: false, defaultValue: ""}
+		, jobTitle: {type: String, required: false, defaultValue: ""}
 	};
 
 }, 2);
@@ -116,6 +124,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.houseCode.serviceLineArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.houseCode.Manager",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.houseCode.managerArgs);
 			$.extend(this, args);
 		}
 	}

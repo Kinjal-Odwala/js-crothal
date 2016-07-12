@@ -24,7 +24,6 @@ ii.Class({
 	Extends: "ui.lay.HouseCodeSearch",
     Definition: {		 
         init: function() {
-			var args = ii.args(arguments, {});
 			var me = this;
 			
 			me.activeFrameId = 0;
@@ -73,8 +72,7 @@ ii.Class({
 			}
         },
 		
-		authorizationProcess: function fin_hcm_ptMetric_UserInterface_authorizationProcess() {
-			var args = ii.args(arguments,{});
+		authorizationProcess: function() {
 			var me = this;
 
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
@@ -104,6 +102,7 @@ ii.Class({
 			me.strategicInitiativesShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\StrategicInit");
 			me.qualityControlShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\QualityControl");
 			me.qualityAssuranceShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\QualityAssurance");
+			me.adminObjectivesShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\AdminObjectives");
 			me.administrativeShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\Administrative");
 			
 			if (me.hospitalContractShow)
@@ -116,6 +115,8 @@ ii.Class({
 				$("#TabQualityControl").show();
 			if (me.qualityAssuranceShow)
 				$("#TabQualityAssurance").show();
+			if (me.adminObjectivesShow)
+				$("#TabAdminObjectives").show();
 			if (me.administrativeShow)
 				$("#TabAdministrative").show();
 
@@ -129,8 +130,10 @@ ii.Class({
 				me.activeFrameId = 4;
 			else if (me.qualityAssuranceShow)
 				me.activeFrameId = 5;
-			else if (me.administrativeShow)
+			else if (me.adminObjectivesShow)
 				me.activeFrameId = 6;
+			else if (me.administrativeShow)
+				me.activeFrameId = 7;
 
 			setTimeout(function() {
 				$("#container-1").tabs(me.activeFrameId);
@@ -139,11 +142,7 @@ ii.Class({
 			}, 100)
 		},	
 		
-		sessionLoaded: function fin_hcm_ptMetric_UserInterface_sessionLoaded() {
-			var args = ii.args(arguments, {
-				me: {type: Object}
-			});
-			var me = args.me;
+		sessionLoaded: function() {
 
 			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
@@ -158,10 +157,11 @@ ii.Class({
 		    $("#StrategicInitiativeContainer").height($(window).height() - offset);
 		    $("#QualityControlContainer").height($(window).height() - offset);
 			$("#QualityAssuranceContainer").height($(window).height() - offset);
+			$("#AdminObjectiveContainer").height($(window).height() - offset);
 			$("#AdministrativeContainer").height($(window).height() - offset);
 
-			if ($("#LaborControlGridContainer").width() < 2600) {
-				$("#LaborControlGrid").width(2600);
+			if ($("#LaborControlGridContainer").width() < 2650) {
+				$("#LaborControlGrid").width(2650);
 				me.laborControlGrid.setHeight($(window).height() - 168);
 			}
 			else {
@@ -192,11 +192,12 @@ ii.Class({
 			me.evsHCAHPSGrid.setHeight(150);
 			me.qualityPartnershipGrid.setHeight(150);
 			me.auditScoreGrid.setHeight(150);
+			me.adminObjectiveGrid.setHeight($(window).height() - 145);
 			me.inHouseStandardMetricGrid.setHeight(200);
 			me.thirdPartyStandardMetricGrid.setHeight(200);
 		},
 
-		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
+		controlKeyProcessor: function() {
 			var args = ii.args(arguments, {
 				event: {type: Object} // The (key) event object
 			});			
@@ -492,63 +493,6 @@ ii.Class({
 				changeFunction: function() { me.modified(); }
 		    });
 
-			me.administratorObjective1 = new ui.ctl.Input.DropDown.Filtered({
-		        id: "AdministratorObjective1",
-				formatFunction: function(type) { return type.name; },
-				changeFunction: function() { me.modified(); }
-		    });
-
-			me.administratorObjective1.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(function( isFinal, dataMap) {				
-	
-					var enteredText = me.administratorObjective1.lastBlurValue;
-
-					if (enteredText == "")
-						return;
-	
-					if (me.administratorObjective1.indexSelected == -1)
-						this.setInvalid("Please select the correct Objective 1.");
-			});
-			
-			me.administratorObjective2 = new ui.ctl.Input.DropDown.Filtered({
-		        id: "AdministratorObjective2",
-				formatFunction: function(type) { return type.name; },
-				changeFunction: function() { me.modified(); }
-		    });
-
-			me.administratorObjective2.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(function( isFinal, dataMap) {				
-	
-					var enteredText = me.administratorObjective2.lastBlurValue;
-
-					if (enteredText == "")
-						return;
-	
-					if (me.administratorObjective2.indexSelected == -1)
-						this.setInvalid("Please select the correct Objective 2.");
-			});
-			
-			me.administratorObjective3 = new ui.ctl.Input.DropDown.Filtered({
-		        id: "AdministratorObjective3",
-				formatFunction: function(type) { return type.name; },
-				changeFunction: function() { me.modified(); }
-		    });
-
-			me.administratorObjective3.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(function( isFinal, dataMap) {				
-	
-					var enteredText = me.administratorObjective3.lastBlurValue;
-
-					if (enteredText == "")
-						return;
-	
-					if (me.administratorObjective3.indexSelected == -1)
-						this.setInvalid("Please select the correct Objective 3.");
-			});
-			
 			me.notes = $("#Notes")[0];
 
 			$("#Notes").height(100);
@@ -1457,7 +1401,98 @@ ii.Class({
 			me.auditScoreGrid.addColumn("annual1", "annual1", "January / February", "January / February", 200, null, me.annual1);
 			me.auditScoreGrid.addColumn("annual2", "annual2", "July / August", "July / August", 200, null, me.annual2);
 			me.auditScoreGrid.capColumns();
-			
+
+			me.adminObjectiveGrid = new ui.ctl.Grid({
+				id: "AdminObjectiveGrid",
+				appendToId: "divForm",
+				selectFunction: function( index ) { me.adminObjectiveItemSelect(index); },
+				deleteFunction: function() { return true; }
+			});
+
+			me.aoMetricTypeTitle = new ui.ctl.Input.Text({
+		        id: "AOMetricTypeTitle",
+				appendToId: "AdminObjectiveGridControlHolder"
+		    });
+
+			me.aoQuarter1 = new ui.ctl.Input.DropDown.Filtered({
+		        id: "AOQuarter1",
+		        formatFunction: function(type) { return type.name; },
+		        appendToId: "AdminObjectiveGridControlHolder",
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.aoQuarter1.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(function(isFinal, dataMap) {
+
+					if (me.aoQuarter1.lastBlurValue == "")
+						return;
+
+					if (me.aoQuarter1.indexSelected == -1)
+						this.setInvalid("Please select the correct Objective.");
+				});
+
+			me.aoQuarter2 = new ui.ctl.Input.DropDown.Filtered({
+		        id: "AOQuarter2",
+		        formatFunction: function(type) { return type.name; },
+		        appendToId: "AdminObjectiveGridControlHolder",
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.aoQuarter2.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(function(isFinal, dataMap) {
+
+					if (me.aoQuarter2.lastBlurValue == "")
+						return;
+
+					if (me.aoQuarter2.indexSelected == -1)
+						this.setInvalid("Please select the correct Objective.");
+				});
+
+				me.aoQuarter3 = new ui.ctl.Input.DropDown.Filtered({
+		        id: "AOQuarter3",
+		        formatFunction: function(type) { return type.name; },
+		        appendToId: "AdminObjectiveGridControlHolder",
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.aoQuarter3.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(function(isFinal, dataMap) {
+
+					if (me.aoQuarter3.lastBlurValue == "")
+						return;
+
+					if (me.aoQuarter3.indexSelected == -1)
+						this.setInvalid("Please select the correct Objective.");
+				});
+
+			me.aoQuarter4 = new ui.ctl.Input.DropDown.Filtered({
+		        id: "AOQuarter4",
+		        formatFunction: function(type) { return type.name; },
+		        appendToId: "AdminObjectiveGridControlHolder",
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.aoQuarter4.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(function(isFinal, dataMap) {
+
+					if (me.aoQuarter4.lastBlurValue == "")
+						return;
+
+					if (me.aoQuarter4.indexSelected == -1)
+						this.setInvalid("Please select the correct Objective.");
+				});
+
+			me.adminObjectiveGrid.addColumn("aoMetricTypeTitle", "ptMetricTypeTitle", "", "", null, null, me.aoMetricTypeTitle);
+			me.adminObjectiveGrid.addColumn("aoQuarter1", "quarter1", "Quarter 1", "Quarter 1", 300, function(objective) { return objective.name; }, me.aoQuarter1);
+			me.adminObjectiveGrid.addColumn("aoQuarter2", "quarter2", "Quarter 2", "Quarter 2", 300, function(objective) { return objective.name; }, me.aoQuarter2);
+			me.adminObjectiveGrid.addColumn("aoQuarter3", "quarter3", "Quarter 3", "Quarter 3", 300, function(objective) { return objective.name; }, me.aoQuarter3);
+			me.adminObjectiveGrid.addColumn("aoQuarter4", "quarter4", "Quarter 4", "Quarter 4", 300, function(objective) { return objective.name; }, me.aoQuarter4);
+			me.adminObjectiveGrid.capColumns();
+
 			me.inHouseStandardMetricGrid = new ui.ctl.Grid({
 				id: "InHouseStandardMetricGrid",
 				appendToId: "divForm",
@@ -2129,6 +2164,15 @@ ii.Class({
 				lookupSpec: { ptMetricType: me.metricTypes }
 			});
 
+			me.adminObjectives = [];
+			me.adminObjectiveStore = me.cache.register({
+				storeId: "ptMetricAdminObjectives",
+				itemConstructor: fin.hcm.ptMetric.AdminObjective,
+				itemConstructorArgs: fin.hcm.ptMetric.adminObjectiveArgs,
+				injectionArray: me.adminObjectives,
+				lookupSpec: { ptMetricType: me.metricTypes, quarter1: me.administratorObjectives, quarter2: me.administratorObjectives, quarter3: me.administratorObjectives, quarter4: me.administratorObjectives }
+			});
+
 			me.standardMetrics = [];
 			me.standardMetricStore = me.cache.register({
 				storeId: "ptStandardMetrics",
@@ -2154,8 +2198,10 @@ ii.Class({
 					me.activeFrameId = 4;
 				else if (this.id == "TabQualityAssurance")
 					me.activeFrameId = 5;
-				else if (this.id == "TabAdministrative")
+				else if (this.id == "TabAdminObjectives")
 					me.activeFrameId = 6;
+				else if (this.id == "TabAdministrative")
+					me.activeFrameId = 7;
 					
 				$("#container-1").tabs(me.activeFrameId);
 				$("#container-1").triggerTab(me.activeFrameId);
@@ -2163,7 +2209,7 @@ ii.Class({
 					me.resizeControls(me.activeFrameId);
 				}, 100)
 				
-				if (me.activeFrameId == 6)
+				if (me.activeFrameId == 7)
 					$("#HouseCode").hide();
 				else
 					$("#HouseCode").show();
@@ -2235,10 +2281,7 @@ ii.Class({
 			me.serviceLineLaundry.text.tabIndex = 17;
 			me.serviceLinePOM.text.tabIndex = 18;
 			me.serviceLineCES.text.tabIndex = 19;
-			me.administratorObjective1.text.tabIndex = 20;
-			me.administratorObjective2.text.tabIndex = 21;
-			me.administratorObjective3.text.tabIndex = 22;
-			me.notes.tabIndex = 23;
+			me.notes.tabIndex = 20;
 		},
 
 		qualityAssuranceGridScroll: function() {
@@ -2273,20 +2316,17 @@ ii.Class({
 				me.contractedAnnualTrips.resizeText();
 				me.taskManagementSystem.resizeText();
 				me.taskManagementSystemOther.resizeText();
-				me.administratorObjective1.resizeText();
-				me.administratorObjective2.resizeText();
-				me.administratorObjective3.resizeText();
 			}
-			else  if (selectedTab == 2) {
-				if ($("#LaborControlGridContainer").width() < 2600) {
-					$("#LaborControlGrid").width(2600);
+			else if (selectedTab == 2) {
+				if ($("#LaborControlGridContainer").width() < 2650) {
+					$("#LaborControlGrid").width(2650);
 					me.laborControlGrid.setHeight($(window).height() - 168);
 				}
 				else {
 					me.laborControlGrid.setHeight($(window).height() - 143);
 				}
 			}
-			else  if (selectedTab == 3) {
+			else if (selectedTab == 3) {
 				me.strategicInitiativeGrid.setHeight($(window).height() - 145);
 			}
 			else if (selectedTab == 4) {
@@ -2311,6 +2351,9 @@ ii.Class({
 				me.auditScoreGrid.setHeight(150);
 			}
 			else if (selectedTab == 6) {
+				me.adminObjectiveGrid.setHeight($(window).height() - 145);
+			}
+			else if (selectedTab == 7) {
 				if ($("#InHouseStandardMetricGridContainer").width() < 1800) {
 					$("#InHouseStandardMetricGrid").width(1800);
 				}
@@ -2345,9 +2388,6 @@ ii.Class({
 			me.contractedAnnualTrips.setValue("");
 			me.taskManagementSystem.reset();
 			me.taskManagementSystemOther.setValue("");
-			me.administratorObjective1.reset();
-			me.administratorObjective2.reset();
-			me.administratorObjective3.reset();
 			me.notes.value = "";
 			$("#TMSOtherContainer").hide();
 
@@ -2365,6 +2405,8 @@ ii.Class({
 				me.qualityPartnershipGrid.body.deselect(me.qualityPartnershipGrid.activeRowIndex, true);
 			if (me.auditScoreGrid.activeRowIndex != - 1)
 				me.auditScoreGrid.body.deselect(me.auditScoreGrid.activeRowIndex, true);
+			if (me.adminObjectiveGrid.activeRowIndex != - 1)
+				me.adminObjectiveGrid.body.deselect(me.adminObjectiveGrid.activeRowIndex, true);	
 
 			me.laborControlGrid.setData([]);
 			me.strategicInitiativeGrid.setData([]);
@@ -2373,12 +2415,14 @@ ii.Class({
 			me.evsHCAHPSGrid.setData([]);
 			me.qualityPartnershipGrid.setData([]);
 			me.auditScoreGrid.setData([]);
+			me.adminObjectiveGrid.setData([]);
 
 			me.numericDetailStore.reset();
 			me.textDetailStore.reset();
 			me.strategicInitiativeStore.reset();
 			me.qualityPartnershipStore.reset();
 			me.auditScoreStore.reset();
+			me.adminObjectiveStore.reset();
 		},
 
 		houseCodesLoaded: function(me, activeId) {
@@ -2414,9 +2458,10 @@ ii.Class({
 		
 		administratorObjectivesLoaded: function(me, activeId) {
 
-			me.administratorObjective1.setData(me.administratorObjectives);
-			me.administratorObjective2.setData(me.administratorObjectives);
-			me.administratorObjective3.setData(me.administratorObjectives);
+			me.aoQuarter1.setData(me.administratorObjectives);
+			me.aoQuarter2.setData(me.administratorObjectives);
+			me.aoQuarter3.setData(me.administratorObjectives);
+			me.aoQuarter4.setData(me.administratorObjectives);	
 		},
 
 		fiscalYearsLoaded: function(me, activeId) {
@@ -2463,18 +2508,9 @@ ii.Class({
 				me.costedTripCycleTime.setValue(me.metrics[0].costedTripCycleTime);
 				me.contractedAnnualTrips.setValue(me.metrics[0].contractedAnnualTrips);
 				var itemIndex = ii.ajax.util.findIndexById(me.metrics[0].taskManagementSystem.toString(), me.taskManagementSystems);
-				if (itemIndex != undefined && itemIndex >= 0) 
+				if (itemIndex != undefined && itemIndex >= 0)
 					me.taskManagementSystem.select(itemIndex, me.taskManagementSystem.focused);
 				me.taskManagementSystemOther.setValue(me.metrics[0].taskManagementSystemOther);
-				itemIndex = ii.ajax.util.findIndexById(me.metrics[0].administratorObjective1.toString(), me.administratorObjectives);
-				if (itemIndex != undefined && itemIndex >= 0) 
-					me.administratorObjective1.select(itemIndex, me.administratorObjective1.focused);
-				itemIndex = ii.ajax.util.findIndexById(me.metrics[0].administratorObjective2.toString(), me.administratorObjectives);
-				if (itemIndex != undefined && itemIndex >= 0) 
-					me.administratorObjective2.select(itemIndex, me.administratorObjective2.focused);
-				itemIndex = ii.ajax.util.findIndexById(me.metrics[0].administratorObjective3.toString(), me.administratorObjectives);
-				if (itemIndex != undefined && itemIndex >= 0) 
-					me.administratorObjective3.select(itemIndex, me.administratorObjective3.focused);
 				me.notes.value = me.metrics[0].notes;
 				if (me.taskManagementSystem.lastBlurValue == "Other")
 					$("#TMSOtherContainer").show();
@@ -2485,6 +2521,7 @@ ii.Class({
 				me.strategicInitiativeStore.fetch("userId:[user],ptMetricId:" + me.ptMetricId, me.strategicInitiativesLoaded, me);
 				me.qualityPartnershipStore.fetch("userId:[user],ptMetricId:" + me.ptMetricId, me.qualityPartnershipsLoaded, me);
 				me.auditScoreStore.fetch("userId:[user],ptMetricId:" + me.ptMetricId, me.auditScoresLoaded, me);
+				me.adminObjectiveStore.fetch("userId:[user],ptMetricId:" + me.ptMetricId, me.adminObjectivesLoaded, me);
 			}
 			else {
 				me.ptMetricId = 0;
@@ -2634,7 +2671,19 @@ ii.Class({
 			}
 			me.auditScoreGrid.setData(me.auditScores);
 		},
-		
+
+		adminObjectivesLoaded: function(me, activeId) {
+
+			for (var index = 0; index < me.metricTypes.length; index++) {
+				if (me.metricTypes[index].subType == "Admin Objective") {
+					var result = $.grep(me.adminObjectives, function(item) { return item.ptMetricType.id == me.metricTypes[index].id; });
+					if (result.length == 0)
+						me.adminObjectives.push(new fin.hcm.ptMetric.AdminObjective(0, me.ptMetricId, me.metricTypes[index], me.metricTypes[index].title));
+				}
+			}
+			me.adminObjectiveGrid.setData(me.adminObjectives);
+		},
+
 		setGridData: function() {
 			var me = this;
 			
@@ -2705,11 +2754,21 @@ ii.Class({
 
 						me.auditScores.push(item);
 					}
+					else if (me.metricTypes[index].subType == "Admin Objective") {
+						var item = new fin.hcm.ptMetric.AdminObjective(
+							0
+							, me.ptMetricId
+							, me.metricTypes[index]
+							, me.metricTypes[index].title
+							)
+						me.adminObjectives.push(item);
+					}
 				}
 
 				me.strategicInitiativeGrid.setData(me.strategicInitiatives);
 				me.qualityPartnershipGrid.setData(me.qualityPartnerships);
 				me.auditScoreGrid.setData(me.auditScores);
+				me.adminObjectiveGrid.setData(me.adminObjectives);
 			}
 			else {
 				for (var index = 0; index < me.numericDetails.length; index++) {
@@ -2824,7 +2883,10 @@ ii.Class({
 							, me.textDetails[index].period12
 							)
 							
-						me.laborControls.push(item);
+						if (me.textDetails[index].ptMetricType.title == "Total Paid Labor Comments")
+							me.laborControls.splice(2, 0, item);
+						else
+							me.laborControls.push(item);
 					}
 					else if (me.textDetails[index].ptMetricType.subType == "Quality Assurance - PT Press Ganey") {
 						var item = new fin.hcm.ptMetric.PTPressGaney(
@@ -3048,6 +3110,19 @@ ii.Class({
 			}
 		},
 		
+		adminObjectiveItemSelect: function() {
+			var args = ii.args(arguments, {
+				index: {type: Number}  // The index of the data subItem to select
+			});
+			var me = this;
+			var index = args.index;
+						
+			if (me.adminObjectiveGrid.data[index] != undefined) {
+				me.adminObjectiveGrid.data[index].modified = true;
+				me.aoMetricTypeTitle.text.readOnly = true;
+			}
+		},
+		
 		inHouseStandardMetricItemSelect: function() { 
 			var args = ii.args(arguments, {
 				index: {type: Number}  // The index of the data subItem to select
@@ -3101,6 +3176,7 @@ ii.Class({
 			me.evsHCAHPSGrid.body.deselectAll();
 			me.qualityPartnershipGrid.body.deselectAll();
 			me.auditScoreGrid.body.deselectAll();
+			me.adminObjectiveGrid.body.deselectAll();
 			me.inHouseStandardMetricGrid.body.deselectAll();
 			me.thirdPartyStandardMetricGrid.body.deselectAll();
 
@@ -3118,36 +3194,40 @@ ii.Class({
 					|| !me.cpiDueDate.valid || !me.cpiCap.valid || !me.hourlyFTEVacancies.valid || !me.fullTimePartTimeRatio.valid
 					|| !me.operatingCapacity.valid || !me.serviceLineEVS.valid || !me.serviceLineLaundry.valid
 					|| !me.serviceLinePOM.valid || !me.serviceLineCES.valid 
-					|| !me.costedTripCycleTime.valid || !me.contractedAnnualTrips.valid || !me.taskManagementSystem.valid || !me.taskManagementSystemOther.valid 
-					|| !me.administratorObjective1.valid || !me.administratorObjective2.valid || !me.administratorObjective3.valid) {
-					alert("In order to save, the errors on the page must be corrected. Please verify the data on Hospital & Contract Tab.");
+					|| !me.costedTripCycleTime.valid || !me.contractedAnnualTrips.valid || !me.taskManagementSystem.valid || !me.taskManagementSystemOther.valid) {
+					alert("In order to save, the errors on the page must be corrected. Please verify the data on Hospital & Contract tab.");
 					return false;
 				}
 			}
 
 			if (me.laborControlShow && me.laborControlGrid.activeRowIndex >= 0) {
-				alert("In order to save, the errors on the page must be corrected. Please verify the data on Labor Control Tab.");
+				alert("In order to save, the errors on the page must be corrected. Please verify the data on Labor Control tab.");
 				return false;
 			}
 
 			if (me.strategicInitiativesShow && me.strategicInitiativeGrid.activeRowIndex >= 0) {
-				alert("In order to save, the errors on the page must be corrected. Please verify the data on Strategic Initiatives Tab.");
+				alert("In order to save, the errors on the page must be corrected. Please verify the data on Strategic Initiatives tab.");
 				return false;
 			}
 
 			if (me.qualityControlShow && me.qualityControlGrid.activeRowIndex >= 0) {
-				alert("In order to save, the errors on the page must be corrected. Please verify the data on Quality Control Tab.");
+				alert("In order to save, the errors on the page must be corrected. Please verify the data on Quality Control tab.");
 				return false;
 			}
 
 			if (me.qualityAssuranceShow && (me.ptPressGaneyGrid.activeRowIndex >= 0	|| me.evsHCAHPSGrid.activeRowIndex >= 0 
 				|| me.qualityPartnershipGrid.activeRowIndex >= 0 || me.auditScoreGrid.activeRowIndex >= 0)) {
-				alert("In order to save, the errors on the page must be corrected. Please verify the data on Quality Assurance Tab.");
+				alert("In order to save, the errors on the page must be corrected. Please verify the data on Quality Assurance tab.");
+				return false;
+			}
+			
+			if (me.adminObjectivesShow && me.adminObjectiveGrid.activeRowIndex >= 0) {
+				alert("In order to save, the errors on the page must be corrected. Please verify the data on Admin Objectives tab.");
 				return false;
 			}
 			
 			if (me.administrativeShow && (me.inHouseStandardMetricGrid.activeRowIndex >= 0 || me.thirdPartyStandardMetricGrid.activeRowIndex >= 0)) {
-				alert("In order to save, the errors on the page must be corrected. Please verify the data on Administrative Tab.");
+				alert("In order to save, the errors on the page must be corrected. Please verify the data on Administrative tab.");
 				return false;
 			}
 
@@ -3174,9 +3254,6 @@ ii.Class({
 				, me.contractedAnnualTrips.getValue()
 				, (me.taskManagementSystem.indexSelected >= 0 ? me.taskManagementSystems[me.taskManagementSystem.indexSelected].id : 0)
 				, me.taskManagementSystemOther.getValue()
-				, (me.administratorObjective1.indexSelected >= 0 ? me.administratorObjectives[me.administratorObjective1.indexSelected].id : 0)
-				, (me.administratorObjective2.indexSelected >= 0 ? me.administratorObjectives[me.administratorObjective2.indexSelected].id : 0)
-				, (me.administratorObjective3.indexSelected >= 0 ? me.administratorObjectives[me.administratorObjective3.indexSelected].id : 0)
 				, me.notes.value
 				);
 			
@@ -3206,7 +3283,7 @@ ii.Class({
 			var item = args.item;
 			var xml = "";
 
-			if (me.hospitalContractShow || me.laborControlShow || me.strategicInitiativesShow || me.qualityControlShow || me.qualityAssuranceShow) {
+			if (me.hospitalContractShow || me.laborControlShow || me.strategicInitiativesShow || me.qualityControlShow || me.qualityAssuranceShow || me.adminObjectivesShow) {
 				xml += '<ptMetric';
 				xml += ' id="' + item.id + '"';
 				xml += ' houseCodeId="' + item.houseCodeId + '"';
@@ -3230,9 +3307,6 @@ ii.Class({
 				xml += ' contractedAnnualTrips="' + item.contractedAnnualTrips + '"';
 				xml += ' taskManagementSystem="' + item.taskManagementSystem + '"';
 				xml += ' taskManagementSystemOther="' + ui.cmn.text.xml.encode(item.taskManagementSystemOther) + '"';
-				xml += ' administratorObjective1="' + item.administratorObjective1 + '"';
-				xml += ' administratorObjective2="' + item.administratorObjective2 + '"';
-				xml += ' administratorObjective3="' + item.administratorObjective3 + '"';
 				xml += ' notes="' + ui.cmn.text.xml.encode(item.notes) + '"';
 				xml += '/>';
 			}
@@ -3398,6 +3472,23 @@ ii.Class({
 				}
 			}
 
+			if (me.adminObjectivesShow) {
+				for (var index = 0; index < me.adminObjectives.length; index++) {
+					if (me.adminObjectives[index].modified || me.adminObjectives[index].id == 0) {
+						me.adminObjectives[index].modified = true;
+						xml += '<ptMetricAdminObjective';
+						xml += ' id="' + me.adminObjectives[index].id + '"';
+						xml += ' ptMetricId="' + me.ptMetricId + '"';
+						xml += ' ptMetricTypeId="' + me.adminObjectives[index].ptMetricType.id + '"';
+						xml += ' quarter1="' + ((me.adminObjectives[index].quarter1 == null || me.adminObjectives[index].quarter1 == undefined) ? "0" : me.adminObjectives[index].quarter1.id) + '"';
+						xml += ' quarter2="' + ((me.adminObjectives[index].quarter2 == null || me.adminObjectives[index].quarter2 == undefined) ? "0" : me.adminObjectives[index].quarter2.id) + '"';
+						xml += ' quarter3="' + ((me.adminObjectives[index].quarter3 == null || me.adminObjectives[index].quarter3 == undefined) ? "0" : me.adminObjectives[index].quarter3.id) + '"';
+						xml += ' quarter4="' + ((me.adminObjectives[index].quarter4 == null || me.adminObjectives[index].quarter4 == undefined) ? "0" : me.adminObjectives[index].quarter4.id) + '"';
+						xml += '/>';
+					}
+				}
+			}
+
 			if (me.administrativeShow) {
 				for (var index = 0; index < me.inHouseStandardMetrics.length; index++) {
 					if (me.inHouseStandardMetrics[index].modified || me.inHouseStandardMetrics[index].id == 0) {
@@ -3510,6 +3601,19 @@ ii.Class({
 									if (me.auditScoreGrid.data[index].id == 0)
 										me.auditScoreGrid.data[index].id = id;
 									me.auditScoreGrid.data[index].modified = false;
+									break;
+								}
+							}
+							break;
+							
+						case "ptMetricAdminObjective":
+							var id = parseInt($(this).attr("id"), 10);
+
+							for (var index = 0; index < me.adminObjectiveGrid.data.length; index++) {
+								if (me.adminObjectiveGrid.data[index].modified) {
+									if (me.adminObjectiveGrid.data[index].id == 0)
+										me.adminObjectiveGrid.data[index].id = id;
+									me.adminObjectiveGrid.data[index].modified = false;
 									break;
 								}
 							}

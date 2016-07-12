@@ -150,6 +150,25 @@
     text-align: left;
 }
 
+.table {
+    margin-top: 10px;
+    width: 100%;
+}
+
+.table tbody {
+    display: block;
+    overflow-y: scroll;
+}
+
+.table tbody tr {
+    width: 100%;
+}
+
+
+   
+
+
+
 
 
 

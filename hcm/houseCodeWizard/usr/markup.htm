@@ -1140,6 +1140,20 @@
 								<div id="CeridianCompanySalaried"></div>
 							</div>
 						</div>
+						<div style="clear:both; height:8px;"></div>
+						<div class="TableEditAreaPayroll">						
+							<div class="LableTextAreaLeftPayroll">PBJ Reporting:</div>
+							<div id="PBJReportingRadio">
+								<div class="payrollRadioButtonLeft">
+									<input id="PBJReportingYes" name="PBJReporting" type="radio" onclick="javascript: fin.hcmhouseCodeWizardUi.assignValue();" value="true" checked="checked"/>
+								</div>
+								<div class="payrollRadioTextLeft">Yes</div>
+								<div class="payrollRadioButtonLeft">
+									<input id="PBJReportingNo" name="PBJReporting" type="radio" onclick="javascript: fin.hcmhouseCodeWizardUi.assignValue();" value="false"/>
+								</div>
+								<div class="payrollRadioTextLeft">No</div>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div id="divSafety" class="tabContainer" style="display:none;">
@@ -1204,6 +1218,22 @@
 					<div id="AnchorNext"></div>
 				</div>
     		</div>
+			<div id="ManagerPopup">
+				<div class="contentArea">
+					<div class="body">
+						<div class="header">Select Manager</div>
+						<div style="clear:both;"></div>
+						<div id="ManagerGrid"></div>
+					</div>
+					<div style="clear:both; height:5px;"></div>
+					<div class="body">
+	                	<div id="AnchorManagerOK"></div>
+						<div id="AnchorManagerCancel"></div>
+						<div style="clear:both;"></div>
+					</div>
+				</div>
+			</div>
+			<div id="backgroundPopup"></div>
 			<div id="iiInputValidationMaster"></div>
 		</div>    
 	</body>

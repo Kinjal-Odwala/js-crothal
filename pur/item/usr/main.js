@@ -6,7 +6,8 @@ ii.Import( "ui.ctl.usr.grid" );
 ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.cmn.usr.text" );
-ii.Import( "fin.pur.item.usr.defs" );
+ii.Import("fin.pur.item.usr.defs");
+ii.Import("fin.app.usr.defs");
 
 ii.Style( "style", 1 );
 ii.Style( "fin.cmn.usr.common", 2 );
@@ -30,6 +31,10 @@ ii.Class({
 			me.lastSelectedRowIndex = -1;
 			me.validateControl = false;
 			me.loadCount = 0;
+			me.historyReference = 0;
+			me.currentPrice = 0;
+			$("#itemHistory").hide();
+			$("#popupHistory").hide();
 						
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -175,6 +180,34 @@ ii.Class({
 				clickFunction: function() { me.actionUploadItem(); },
 				hasHotState: true
 			});
+
+			me.anchorHistory = new ui.ctl.buttons.Sizeable({
+			    id: "AnchorHistory",
+			    className: "iiButton",
+			    text: "<span>&nbsp;&nbsp;View History&nbsp;&nbsp;</span>",
+			    clickFunction: function () { me.viewItemHistory(); },
+			    hasHotState: true
+			});
+
+			me.anchorClose = new ui.ctl.buttons.Sizeable({
+			    id: "AnchorClose",
+			    className: "iiButton",
+			    text: "<span>&nbsp;&nbsp;Close&nbsp;&nbsp;</span>",
+			    clickFunction: function () { me.actionCloseItem(); },
+			    hasHotState: true
+			});
+
+			me.historyGrid = new ui.ctl.Grid({
+			    id: "HistoryGrid",
+			    appendToId: "divForm",
+			    allowAdds: false
+			});
+
+			me.historyGrid.addColumn("lastModifiedBy", "lastModifiedBy", "Last Modified By", "Last Modified By", null);
+			me.historyGrid.addColumn("lastModifiedAt", "lastModifiedAt", "Last Modified At", "Last Modified At", 300);
+			me.historyGrid.addColumn("previousFieldValue", "previousFieldValue", "Amount From", "Amount From", 200);
+			me.historyGrid.addColumn("fieldName", "fieldName", "Amount To", "Amount To", 200);
+			me.historyGrid.capColumns();
 			
 			me.anchorUploadCancel = new ui.ctl.buttons.Sizeable({
 				id: "AnchorUploadCancel",
@@ -188,7 +221,7 @@ ii.Class({
 				id: "SearchButton",
 				className: "iiButton",
 				text: "<span>Search</span>",
-				clickFunction: function() { me.loadSearchResults(); },
+				clickFunction: function () { $("#itemHistory").hide(); me.loadSearchResults(); },
 				hasHotState: true
 			});
 			
@@ -201,7 +234,7 @@ ii.Class({
 				.addValidation( ui.ctl.Input.Validation.required )
 				.addValidation( function( isFinal, dataMap ) {
 				
-				if (me.status != "")
+				if (me.status !== "")
 					this.valid = true;
 				else if(me.searchInput.getValue().length < 3)
 					this.setInvalid("Please enter search criteria (minimum 3 characters).");
@@ -351,15 +384,16 @@ ii.Class({
 				id: "ItemGrid",
 				appendToId: "divForm",
 				allowAdds: false,
-				selectFunction: function(index) { me.itemSelect(index); },
+				selectFunction: function (index) { me.itemSelect(index); },
 				validationFunction: function() {
-					if (me.status != "new")
+					if (me.status !== "new")
 						return parent.fin.cmn.status.itemValid();
 				}
 			});
 			
 			me.itemGrid.addColumn("masterId", "masterId", "Master Id", "Master Id", 150);
 			me.itemGrid.addColumn("number", "number", "Number", "Number", null);
+			me.itemGrid.addColumn("active", "active", "Active", "Active", 70, function (active) { return (active == "1" ? "Yes" : "No") });
 			me.itemGrid.capColumns();
 			
 			$("#SearchInputText").bind("keydown", me, me.actionSearchItem);
@@ -402,7 +436,15 @@ ii.Class({
 				itemConstructor: fin.pur.item.Account,
 				itemConstructorArgs: fin.pur.item.accountArgs,
 				injectionArray: me.accounts	
-			});	
+			});
+
+			me.appHistories = [];
+			me.appHistoryStore = me.cache.register({
+			    storeId: "appApplicationHistorys",
+			    itemConstructor: fin.pur.item.AppApplicationHistory,
+			    itemConstructorArgs: fin.pur.item.appApplicationHistoryArgs,
+			    injectionArray: me.appHistories
+			});
 		},
 		
 		setStatus: function(status) {
@@ -486,7 +528,7 @@ ii.Class({
 			}
 			
 			me.setLoadCount();
-						
+			me.itemStore.reset();
 			me.itemStore.fetch("searchValue:" + me.searchInput.getValue() 
 				+ ",active:" + (me.itemStatus.indexSelected == -1 ? -1 : me.itemStatuses[me.itemStatus.indexSelected].number) 
 				+ ",userId:[user]", me.itemsLoaded, me);				
@@ -535,6 +577,43 @@ ii.Class({
 
 			me.checkLoadCount();
 		},
+
+		viewItemHistory: function () {
+		    loadPopup();
+		    $("#popupContact").show();
+		    $("#popupHistory").show();
+		    me.appHistoryStore.reset();
+		    me.appHistoryStore.fetch("userId:[user],reference:" + me.historyReference + ",module:PurItem", me.appHistoriesLoaded, me);
+		},
+
+		appHistoriesLoaded: function () {
+		    if (me.appHistories.length > 0 && me.items.length > 0) {
+		        for (var index = 0; index < me.appHistories.length; index++) {
+		            var modAtDate = ui.cmn.text.date.format(new Date(me.appHistories[index].lastModifiedAt), "mm/dd/yyyy");
+		            var modAtTime = me.appHistories[index].lastModifiedAt.substring(10);
+		            me.appHistories[index].lastModifiedAt = modAtDate + " " + modAtTime;
+		            var modBy = me.appHistories[index].lastModifiedBy.substring(me.appHistories[index].lastModifiedBy.lastIndexOf("\\") + 1);
+		            me.appHistories[index].lastModifiedBy = modBy;
+		            if (me.appHistories.length > 1) {
+		                if (index != (me.appHistories.length - 1)) {
+		                    me.appHistories[index].fieldName = me.appHistories[index + 1].previousFieldValue;
+		                }
+		                else {
+		                    me.appHistories[me.appHistories.length - 1].fieldName = me.currentPrice;
+		                }
+		            }
+		            else if (me.appHistories.length == 1) {
+		                me.appHistories[index].fieldName = me.currentPrice;
+		            }
+		        }
+		    }
+		    me.historyGrid.setData(me.appHistories);
+		    me.historyGrid.setHeight($(window).height() - 150);
+		},
+
+		actionCloseItem: function () {
+		    disablePopup();
+		},
 		
 		itemSelect: function() {
 			var args = ii.args(arguments,{
@@ -552,6 +631,7 @@ ii.Class({
 			
 			me.lastSelectedRowIndex = index;
 			me.status = "";
+			$("#itemHistory").show();
 
 			if (item == undefined) 
 				return;
@@ -574,6 +654,9 @@ ii.Class({
 
 				me.itemPrice.setValue(me.itemGrid.data[index].price);
 				me.itemActive.setValue(me.itemGrid.data[index].active.toString());
+
+				me.historyReference = me.itemGrid.data[index].id;
+				me.currentPrice = me.itemGrid.data[index].price;
 			}
 			else
 				me.itemId = 0;	
@@ -691,7 +774,7 @@ ii.Class({
 		
 			me.intervalId = setInterval(function() {
 				
-				if ($("iframe")[0].contentWindow.document.getElementById("FileName").value != "")	{
+				if ($("iframe")[0].contentWindow.document.getElementById("FileName").value !== "")	{
 					fileName = $("iframe")[0].contentWindow.document.getElementById("FileName").value;					
 					clearInterval(me.intervalId);
 					
@@ -915,4 +998,39 @@ function onFileChange() {
 function main() {
 	fin.purItemUi = new fin.pur.item.UserInterface();
 	fin.purItemUi.resize();
+}
+
+function loadPopup() {
+
+    centerPopup();
+
+    $("#backgroundPopup").css({
+        "opacity": "0.5"
+    });
+    $("#backgroundPopup").fadeIn("slow");
+    $("#popupContact").fadeIn("slow");
+}
+
+function disablePopup() {
+
+    $("#backgroundPopup").fadeOut("slow");
+    $("#popupContact").fadeOut("slow");
+}
+
+function centerPopup() {
+    var windowWidth = document.documentElement.clientWidth;
+    var windowHeight = document.documentElement.clientHeight;
+    var popupWidth = windowWidth - 100;
+    var popupHeight = windowHeight - 70;
+
+    $("#popupContact").css({
+        "width": popupWidth,
+        "height": popupHeight,
+        "top": windowHeight / 2 - popupHeight / 2,
+        "left": windowWidth / 2 - popupWidth / 2
+    });
+
+    $("#backgroundPopup").css({
+        "height": windowHeight
+    });
 }

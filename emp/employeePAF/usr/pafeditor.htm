@@ -10,7 +10,7 @@
                     <div class="col-md-3">
                         <div class="form-group" paf-invalid="pafForm.Date">
                             <label>Date</label>
-                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="empAction.Date" dt-name="Date" dt-required="true"></paf-datepicker>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="empAction.Date" dt-name="Date" dt-required="true" max-Date="maxDate"></paf-datepicker>
                         </div>
                     </div>
                     <div class="col-md-9">
@@ -95,7 +95,7 @@
                     <div class="form-group">
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" name="CheckType" ng-checked="positionTypeChecked(type.id)" ng-value="type.id" ng-click="onPositionTypeChanged(type.id)" ng-disabled="empAction.EmployeeNumber && empAction.Data.EmployeeExists && type.display == 'New Hire'"/>{{type.display}}
+                                <input type="checkbox" name="CheckType" ng-checked="positionTypeChecked(type.id)" ng-value="type.id" ng-click="onPositionTypeChanged(type.id)" ng-disabled="empAction.EmployeeNumber && type.display == 'New Hire'"/>{{type.display}}
                             </label>
                         </div>
                     </div>
@@ -382,23 +382,24 @@
                             <div ng-show="empAction.SeparationReason=='ResignationType'">
                                 <label>Note:</label>&nbsp; Attach Resignation Letter 
                             </div>
-                            <div class="form-group" ng-show="empAction.SeparationReason=='LayoffType' || empAction.SeparationReason=='TerminationType'">
+                            <div class="form-group" ng-show="empAction.SeparationReason=='LayoffType' || empAction.SeparationReason=='TerminationType'" ng-class="{'has-error':separationForm.ReviewedWithHR.$invalid}">
                                 <label>Reviewed with HR:</label>
                                 <div>
-                                    <select class="form-control input-sm" ng-model="empAction.HrReviewType" ng-options="item.id as item.title for item in $parent.$parent.lkup.HRReviews">
+                                    <select class="form-control input-sm" ng-model="empAction.HrReviewType" name="ReviewedWithHR" ng-options="item.id as item.title for item in $parent.$parent.lkup.HRReviews" ng-required="empAction.SeparationReason=='LayoffType' || empAction.SeparationReason=='TerminationType'">
                                         <option value=""></option>
                                     </select>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4 ">
+                        <div class="col-md-4">
                             <label>Rehire:</label>
-                            <div class="form-group">
+                            <div class="form-group" ng-class="{'has-error':separationForm.SeparationReHire.$invalid}">
                                 <label class="radio-inline">
-                                    <input type="radio" ng-model="empAction.SeparationReHire" ng-value="true" />Yes
+                                    <input type="radio" name="SeparationReHire" ng-model="empAction.SeparationReHire" ng-value="true" required="required"/>Yes
                                 </label>
+                               
                                 <label class="radio-inline">
-                                    <input type="radio" ng-model="empAction.SeparationReHire" ng-value="false" />No 
+                                    <input type="radio" name="SeparationReHire" ng-model="empAction.SeparationReHire" ng-value="false" required="required"/>No 
                                 </label>
                             </div>
                         </div>
@@ -798,15 +799,33 @@
                     <p>(To be completed by Recruiter)</p>
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="form-group">
+                            <div class="form-group" ng-class="{'has-error':requisitionForm.Number.$invalid}">
                                 <label>Requisition #</label>
-                                <input class="form-control input-sm" ng-model="empAction.RequisitionNumber" maxlength="50"/>
+                                <input class="form-control input-sm" ng-model="empAction.RequisitionNumber" name="Number" maxlength="50" required/>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group" ng-class="{'has-error':requisitionForm.EmailAddress.$invalid}">
-                                <label>Email Address</label>
-                                <input paf-validation="EMAIL" class="form-control input-sm" ng-model="empAction.RequisitionEmail" name="EmailAddress" maxlength="50" />
+                                <label>Candidate Email</label>
+                                <input paf-validation="EMAIL" class="form-control input-sm" ng-model="empAction.RequisitionEmail" name="EmailAddress" maxlength="50" required/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-form="recruiterForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" ng-class="{'has-error':recruiterForm.Recruiter.$invalid}">
+                                <label>Recruiter Name</label>
+                                <select class="form-control input-sm" name="Recruiter" ng-model="empAction.RecruiterName" ng-options="item.name as item.name for item in Recruiters" required>
+                                    <option value=""></option>
+                                </select>          
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Recruiter Email</label>
+                                <p class="form-control input-sm" required="true">{{$parent.getRecruiterEmail(empAction.RecruiterName)}}</p>
                             </div>
                         </div>
                     </div>
@@ -864,17 +883,18 @@
             <section>
               	<div ng-form="AdditionalDocumentsInfoForm" id="AdditionalDocuments">
 					<h4>ADDITIONAL DOCUMENTS</h4>
-                    <table class="table-scroll table table-striped table-hover margin-bottom10" style="width: 900px;" border="1">     
+                    <table class="table-scroll table table-bordered table-striped table-hover margin-bottom10" style="width: 900px;">     
                     	<thead>
                             <tr class="heading" role="row">
-                                <th width="40px">#</th>
-                                <th width="400px">Title</th>
-                                <th width="460px">File Name</th>
+                                <th width="40px" style="text-align:center">#</th>
+                                <th width="400px" style="text-align:center">Title</th>
+                                <th width="460px" style="text-align:center">File Name</th>
+                                <th width="10px"></th>
                             </tr>
                         </thead>
                         <tbody style="height:100px;">
                             <tr ng-repeat="item in pafDocs track by $index" ng-click="onRowClick(item, $index)" ng-class="{'warning':selectedDocItem==item}">
-                                <td width="40px">{{$index + 1}}</td>
+                                <td width="40px" align ="center">{{$index + 1}}</td>
                                 <td width="400px">{{item.title}}</td>
                                 <td width="460px">{{item.fileName}}</td>
                             </tr>
@@ -882,16 +902,10 @@
                         <tfoot>                    
                         	<tr class="footer">
                             	<td>
-                                     <table cellpadding="0" cellspacing="0" style="width: 100%">
-                                         <tr>
-                                              <td>
-                                                   <img id="imgAdd" src="/fin/cmn/usr/media/Common/add.png" ng-if="empAction.StatusType != 8 && empAction.StatusType != 9 && empAction.StatusType != 6 && ((empAction.StatusType != 2 && write) || (empAction.StatusType == 2 && writeInProcess))" ng-click="addDoc()" style="cursor: pointer" alt="Add Document" title="Click here to attach the supporting document" />
-                                                   <img id="imgEdit" src="/fin/cmn/usr/media/Common/modify.png" ng-click="editDoc()" ng-if="empAction.StatusType != 8 && empAction.StatusType != 9 && empAction.StatusType != 6 && ((empAction.StatusType != 2 && write) || (empAction.StatusType == 2 && writeInProcess))" style="cursor: pointer" alt="Edit Document" title="Click here to modify the supporting document" />
-                                                   <img id="imgRemove" src="/fin/cmn/usr/media/Common/delete.png" ng-click="removeDoc()" ng-if="empAction.StatusType != 8 && empAction.StatusType != 9 && empAction.StatusType != 6 && ((empAction.StatusType != 2 && write) || (empAction.StatusType == 2 && writeInProcess))" style="cursor: pointer" alt="Remove Document" title="Click here to remove the supporting document" />
-                                                   <img id="imgView" src="/fin/cmn/usr/media/Common/download.png" ng-click="viewDoc()" style="cursor: pointer" alt="View Document" title="Click here to view the supporting document" />
-                                              </td>
-                                         </tr>
-                                     </table>
+                                    <img id="imgAdd" src="/fin/cmn/usr/media/Common/add.png" ng-if="empAction.StatusType != 8 && empAction.StatusType != 9 && empAction.StatusType != 6 && ((empAction.StatusType != 2 && write) || (empAction.StatusType == 2 && writeInProcess))" ng-click="addDoc()" style="cursor: pointer" alt="Add Document" title="Click here to attach the supporting document" />
+                                    <img id="imgEdit" src="/fin/cmn/usr/media/Common/modify.png" ng-click="editDoc()" ng-if="empAction.StatusType != 8 && empAction.StatusType != 9 && empAction.StatusType != 6 && ((empAction.StatusType != 2 && write) || (empAction.StatusType == 2 && writeInProcess))" style="cursor: pointer" alt="Edit Document" title="Click here to modify the supporting document" />
+                                    <img id="imgRemove" src="/fin/cmn/usr/media/Common/delete.png" ng-click="removeDoc()" ng-if="empAction.StatusType != 8 && empAction.StatusType != 9 && empAction.StatusType != 6 && ((empAction.StatusType != 2 && write) || (empAction.StatusType == 2 && writeInProcess))" style="cursor: pointer" alt="Remove Document" title="Click here to remove the supporting document" />
+                                    <img id="imgView" src="/fin/cmn/usr/media/Common/download.png" ng-click="viewDoc()" style="cursor: pointer" alt="View Document" title="Click here to view the supporting document" />
                                 </td>
                             </tr>
                         </tfoot>
@@ -915,7 +929,7 @@
                         <div class="row">
                             <div class="col-md-5">
                                 <div class="form-group" ng-class="{'has-error':administratorInfoForm.AdministratorEmail.$invalid}">
-                                   <input paf-validation="EMAIL" class="form-control input-sm" name="AdministratorEmail" maxlength="100" ng-model="empAction.AdministratorEmail" ng-disabled="disableAdminEmail" ng-required="true"/>
+                                   <input paf-validation="EMAIL" class="form-control input-sm" name="AdministratorEmail" maxlength="100" ng-model="empAction.AdministratorEmail" ng-disabled="empAction.Data.AdministratorEmailExists" ng-required="true"/>
                                 </div>
                             </div>
                         </div>
@@ -926,7 +940,7 @@
                 	<h4>WORKFLOW DETAILS</h4>
                     <div ng-if="empAction.Loa" class="row">
                         <div class="col-md-2">
-                        	<label>LOA Manager Name:</label>
+                        	<label>LOA Manager Name</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.LOAManagerName.$invalid}">
@@ -935,7 +949,7 @@
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2">
-                        	<label>LOA Manager Email:</label>
+                        	<label>LOA Manager Email</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.LOAManagerEmail.$invalid}">
@@ -945,7 +959,7 @@
                     </div>
                     <div class="row" ng-if="!empAction.Loa && overHeadAccount">
                         <div class="col-md-2">
-                        	<label>HR Manager Name:</label>
+                        	<label>HR Manager Name</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.HRManagerName.$invalid}">
@@ -954,7 +968,7 @@
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2">
-                        	<label>HR Manager Email:</label>
+                        	<label>HR Manager Email</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.HRManagerEmail.$invalid}">
@@ -964,7 +978,7 @@
                     </div>
                     <div class="row" ng-if="!empAction.Loa && (!overHeadAccount && empAction.HcmHouseCode) && ((empAction.SalaryChange && empAction.IncreaseDecreasePercentage > 4) || ((empAction.Promotion || empAction.Demotion) && empAction.IncreaseDecreasePercentage > 10))">
                         <div class="col-md-2">
-                        	<label>Regional Manager Name:</label>
+                        	<label>Second Level Manager Name</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.RegionalManagerName.$invalid}">
@@ -973,7 +987,7 @@
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2">
-                        	<label>Regional Manager Email:</label>
+                        	<label>Second Level Manager Email</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.RegionalManagerEmail.$invalid}">
@@ -983,7 +997,7 @@
                     </div>
                     <div class="row" ng-if="!empAction.Loa && (!overHeadAccount && empAction.HcmHouseCode) && ((empAction.SalaryChange && empAction.IncreaseDecreasePercentage > 4) || ((empAction.Promotion || empAction.Demotion) && empAction.IncreaseDecreasePercentage > 10))">
                         <div class="col-md-2">
-                        	<label>HR Director Name:</label>
+                        	<label>HR Director Name</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.HRDirectorName.$invalid}">
@@ -992,7 +1006,7 @@
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2">
-                        	<label>HR Director Email:</label>
+                        	<label>HR Director Email</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.HRDirectorEmail.$invalid}">
@@ -1000,9 +1014,28 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row" ng-if="!empAction.Loa && (!overHeadAccount && empAction.HcmHouseCode) && ((empAction.NewHire && empAction.PayStatus != 'Per Diem') || (empAction.ReHire && empAction.PayStatus != 'Per Diem') || empAction.Promotion || empAction.Demotion || empAction.Transfer)">
+                        <div class="col-md-2">
+                        	<label>Recruiter Name</label>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group" ng-class="{'has-error':workflowDetailsForm.RecruiterName.$invalid}">
+                               <input class="form-control input-sm" name="RecruiterName" maxlength="100" ng-model="empAction.RecruiterName" ng-required="true" ng-disabled="empAction.RecruiterName != ''"/>
+                            </div>
+                        </div>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2">
+                        	<label>Recruiter Email</label>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <p class="form-control input-sm" required="true">{{$parent.getRecruiterEmail(empAction.RecruiterName)}}</p>
+                            </div>
+                        </div>
+					</div>
                     <div class="row" ng-if="!empAction.Loa && (!overHeadAccount && empAction.HcmHouseCode) && (empAction.NewHire || empAction.ReHire || empAction.Separation || empAction.Transfer || empAction.PersonalInfoChange || empAction.Relocation || empAction.Promotion || empAction.Demotion || empAction.SalaryChange)">
                         <div class="col-md-2">
-                        	<label>Process HR Name:</label>
+                        	<label>Process HR Name</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.ProcessHRName.$invalid}">
@@ -1011,7 +1044,7 @@
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2">
-                        	<label>Process HR Email:</label>
+                        	<label>Process HR Email</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.ProcessHREmail.$invalid}">
@@ -1025,21 +1058,22 @@
             <section>
               	<div ng-if="empAction.StatusType == 2 || empAction.StatusType == 8" ng-form="ApprovalsInfoForm">
                     <h4>APPROVAL DETAILS</h4>
-                    <table class="table-scroll table table-striped table-hover margin-bottom10" style="width: 900px;" border="1">     
+                    <table class="table-scroll table table-striped table-bordered table-hover margin-bottom10" style="width: 900px;">     
                     <thead>
                     	<tr class="heading" role="row">
-                            <th width="40px">#</th>
-                            <th width="300px">APPROVALS</th>
-                            <th width="460px">PRINT NAME</th>
-                            <th width="100px">DATE</th>
+                            <th width="40px" style="text-align:center">#</th>
+                            <th width="300px" style="text-align:center">APPROVALS</th>
+                            <th width="460px" style="text-align:center">PRINT NAME</th>
+                            <th width="100px" style="text-align:center">DATE</th>
+                            <th width="10px"></th>
                         </tr>
                     </thead>
                     <tbody style="height:180px;">
-                        <tr ng-repeat="item in Approvals">
-                            <td width="40px">{{item.id}}</td>
+                        <tr ng-repeat="item in Approvals track by $index">
+                            <td width="40px" align ="center">{{$index + 1}}</td>
                             <td width="300px">{{item.approval}}</td>
                             <td width="460px">{{item.name}}</td>
-                            <th width="100px">{{item.date}}</th>
+                            <td width="100px" align ="center">{{item.date}}</td>
                         </tr>
                     </tbody>     
                     </table>

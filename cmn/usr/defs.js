@@ -38,7 +38,7 @@ ii.init.register( function fin_cmn_startup_init(){
 			if (message == "") {
 				if (status == "New")
 					message = "New";
-				else if (status == "Loading" || status == "Saving" || status == "Exporting" || status == "Importing" || status == "Validating" || status == "Uploading" || status == "Downloading")
+				else if (status == "Loading" || status == "Saving" || status == "Exporting" || status == "Importing" || status == "Validating" || status == "Uploading" || status == "Downloading" || status == "Generating")
 					message = status + ", please wait...";
 				else if (status == "Saved")
 					message = "Data saved successfully.";
@@ -142,6 +142,22 @@ ii.init.register( function fin_cmn_startup_init(){
 			}
 		}
 	};
+	
+	fin.cmn.sort = {
+		dateSort: function(me, dataProperty, a, b) {
+			var aValue = a[dataProperty];
+			var bValue = b[dataProperty];
+
+			if (new Date(aValue) < new Date(bValue)) {
+				return -1;
+			}
+			else if (new Date(aValue) > new Date(bValue)) {
+				return 1;
+			}
+			return 0;
+		}
+	};
+	
 }, 1);
 
 ii.init.register( function fin_cmn_startup_init1() {

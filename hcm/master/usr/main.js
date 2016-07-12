@@ -554,6 +554,7 @@ ii.Class({
 			me.houseCodeDetails[0].serviceLineId = (houseCodeUIControls.serviceLine.indexSelected <= 0 ? 0 : houseCodeUIControls.serviceLines[houseCodeUIControls.serviceLine.indexSelected].id);
 			me.houseCodeDetails[0].enforceLaborControl = true; //($(houseCodeUIControls.enforceLaborControl).attr("checked").val() == "true" ? true : false)
 			me.houseCodeDetails[0].managerName = houseCodeUIControls.managerName.getValue();
+			me.houseCodeDetails[0].managerId = houseCodeUIControls.managerId;
 			me.houseCodeDetails[0].managerEmail = houseCodeUIControls.managerEmail.getValue();
 			me.houseCodeDetails[0].managerPhone = houseCodeUIControls.managerPhone.getValue();
 			me.houseCodeDetails[0].managerCellPhone = houseCodeUIControls.managerCellPhone.getValue();
@@ -665,6 +666,7 @@ ii.Class({
 				me.houseCodeDetails[0].ePayGroupType = (payrollUIControls.ePayPayGroup.indexSelected <= 0 ? 0 : payrollUIControls.ePayGroupTypes[payrollUIControls.ePayPayGroup.indexSelected].id);
 				me.houseCodeDetails[0].ePayTask = (payrollUIControls.ePayTask.check.checked ? 1 : 0);
 				me.houseCodeDetails[0].ePayHours = (payrollUIControls.ePayHours.check.checked ? 1 : 0);
+				me.houseCodeDetails[0].pbjReporting = payrollUIControls.payrollPBJReporting;
 			}
 			
 			//Safety
@@ -768,6 +770,7 @@ ii.Class({
 				, me.houseCodeDetails[0].serviceLineId
 				, me.houseCodeDetails[0].enforceLaborControl
 				, me.houseCodeDetails[0].managerName
+				, me.houseCodeDetails[0].managerId
 				, me.houseCodeDetails[0].managerEmail
 				, fin.cmn.text.mask.phone(me.houseCodeDetails[0].managerPhone, true)
 				, fin.cmn.text.mask.phone(me.houseCodeDetails[0].managerCellPhone, true)
@@ -860,6 +863,7 @@ ii.Class({
 				, me.houseCodeDetails[0].ePayGroupType
 				, me.houseCodeDetails[0].ePayTask
 				, me.houseCodeDetails[0].ePayHours
+				, me.houseCodeDetails[0].pbjReporting
 				
 				//Safety
 				, me.houseCodeDetails[0].incidentFrequencyRate
@@ -910,6 +914,7 @@ ii.Class({
 			xml += ' serviceLineId="' + item.serviceLineId + '"';
 			xml += ' enforceLaborControl="' + item.enforceLaborControl + '"';
 			xml += ' managerName="' + ui.cmn.text.xml.encode(item.managerName) + '"';
+			xml += ' managerId="' + item.managerId + '"';
 			xml += ' managerEmail="' + item.managerEmail + '"';
 			xml += ' managerPhone="' + item.managerPhone + '"';
 			xml += ' managerCellPhone="' + item.managerCellPhone + '"';
@@ -1002,6 +1007,7 @@ ii.Class({
 			xml += ' ePayGroupType="' + item.ePayGroupType + '"';
 			xml += ' ePayTask="' + item.ePayTask + '"';
 			xml += ' ePayHours="' + item.ePayHours + '"';
+			xml += ' pbjReporting="' + item.pbjReporting + '"';
 			
 			//Safety
 			xml += ' incidentFrequencyRate="' + ui.cmn.text.xml.encode(item.incidentFrequencyRate) + '"';

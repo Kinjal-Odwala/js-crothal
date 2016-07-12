@@ -108,11 +108,13 @@
 			</div>
 			<div id="WorkflowJDECompanies" style="display:none;">
 				<div id="SearchTemplate" class="body">
-					<div class="labelTextArea">
-						<span class="requiredFieldIndicator">&#149;</span>JDE Company:
-					</div>
-	                <div class="inputTextAreaSmall">
-	                	<div id="JDECompany"></div>
+					<div id="JDECompanyContainer" style="display:none;">
+						<div class="labelTextArea">
+							<span class="requiredFieldIndicator">&#149;</span>JDE Company:
+						</div>
+		                <div class="inputTextAreaSmall">
+		                	<div id="JDECompany"></div>
+						</div>
 					</div>
 					<div class="labelTextArea">
 						<span class="requiredFieldIndicator">&#149;</span>Workflow Module:
@@ -132,7 +134,8 @@
 				<div class="leftContainer">
 				 	<div class="contentArea">
 	                    <div class="body">
-	                        <div id="JDECompanyGrid"></div>
+	                        <div id="JDECompanyGrid" style="display:none;"></div>
+							<div id="HierarchyGrid" style="display:none;"></div>
 							<div style="clear:both;"></div>
 	                    </div>
 	                </div>
@@ -142,6 +145,17 @@
 						<div class="contentArea">
 		                    <div class="body">
 		                    	<div style="clear:both; height:10px;"></div>
+								<div id="HierarchyLevelContainer" style="display:none;">
+									<div id="TableEditArea">
+										<div class="labelTextArea">
+											<span class="requiredFieldIndicator">&#149;</span>Hierarchy Title:
+										</div>
+						                <div class="inputTextArea">
+						                	<div id="HierarchyTitle"></div>
+										</div>
+										<div style="clear:both;"></div>
+									</div>
+								</div>
 		 						<div id="TableEditArea">
 		                            <div class="labelTextArea">
 		                            	<span class="requiredFieldIndicator">&#149;</span>Name:

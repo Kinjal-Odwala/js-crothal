@@ -70,6 +70,7 @@ ii.init.register( function() {
 		, column58: {type: String, required: false, defaultValue: ""} // multiRace4
 		, column59: {type: String, required: false, defaultValue: ""} // multiRace5
 		, column60: {type: String, required: false, defaultValue: ""} // disabilityType
+		, column61: {type: String, required: false, defaultValue: ""} // wotcCode
 	};
 	
 	fin.emp.employeeImport.employeeGeneralArgs = {

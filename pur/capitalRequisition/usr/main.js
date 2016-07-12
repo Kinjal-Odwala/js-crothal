@@ -70,7 +70,7 @@ ii.Class({
 			me.defineFormControls();
 			me.configureCommunications();
 			me.initialize();
-			me.statusesLoaded();
+			me.statusesLoaded(false);
 			me.searchTypesLoaded();
 			me.setStatus("Loading");
 			me.modified(false);
@@ -84,6 +84,10 @@ ii.Class({
 
 			$(window).bind("resize", me, me.resize);
 			ui.cmn.behavior.disableBackspaceNavigation();
+			$("#houseCodeText").change(function () {
+				if (me.approveInProcess)
+					me.statusesLoaded($("#houseCodeText").val() === "");
+			});
 
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
@@ -134,7 +138,7 @@ ii.Class({
 				me.accountStore.fetch("userId:[user],moduleId:poCapitalRequisition", me.accountsLoaded, me);
 				me.personStore.fetch("userId:[user],id:" + me.session.propertyGet("personId"), me.personsLoaded, me);
 				me.systemVariableStore.fetch("userId:[user],name:POCapitalRequisitionApprovalAmountLimit1", me.approvalAmountLimit1Loaded, me);
-				me.appUserStore.fetch("userId:[user],module:Workflow,id:0,workflowModuleId:3,stepNumber:4", me.chiefFinancialOfficersLoaded, me);
+				me.appUserStore.fetch("userId:[user],module:Workflow,id:0,workflowModuleId:3,stepNumber:6", me.chiefFinancialOfficersLoaded, me);
 				me.employeeManagerDetailStore.fetch("userId:[user]", me.employeeManagerDetailsLoaded, me);
 			}				
 			else
@@ -160,7 +164,7 @@ ii.Class({
 			me.itemGrid.setHeight($(window).height() - 395);
 			me.itemReadOnlyGrid.setHeight($(window).height() - 335);
 			me.documentGrid.setHeight(100);
-			me.approvalGrid.setHeight(150);
+			me.approvalGrid.setHeight(200);
 			$("#popupContact").height($(window).height() - 110);
 			$("#GeneralInfo").height($(window).height() - 210);
 			$("#ShippingInfo").height($(window).height() - 210);
@@ -372,8 +376,12 @@ ii.Class({
 			me.capitalRequisitionGrid.addColumn("requisitionNumber", "requisitionNumber", "Requisition #", "Requisition #", 120);
 			me.capitalRequisitionGrid.addColumn("houseCodeTitle", "houseCodeTitle", "House Code", "House Code", 175);			
 			me.capitalRequisitionGrid.addColumn("requestorName", "requestorName", "Requestor Name", "Requestor Name", 150);				
-			me.capitalRequisitionGrid.addColumn("requestedDate ", "requestedDate", "Requested Date", "Requested Date", 150);
-			me.capitalRequisitionGrid.addColumn("deliveryDate", "deliveryDate", "Delivery Date", "Delivery Date", 120);
+			me.capitalRequisitionGrid.addColumn("requestedDate ", "requestedDate", "Requested Date", "Requested Date", 150).setSortFunction(function(me, displayProperty, a, b) {
+				return fin.cmn.sort.dateSort(me, displayProperty, a, b);
+			});
+			me.capitalRequisitionGrid.addColumn("deliveryDate", "deliveryDate", "Delivery Date", "Delivery Date", 120).setSortFunction(function(me, displayProperty, a, b) {
+				return fin.cmn.sort.dateSort(me, displayProperty, a, b);
+			});
 			me.capitalRequisitionGrid.addColumn("vendorTitle", "vendorTitle", "Vendor Title", "Vendor Title", null);
 			me.capitalRequisitionGrid.addColumn("statusType", "statusType", "Status", "Status", 200, function(statusType) {
 				var index = 0;
@@ -1076,6 +1084,90 @@ ii.Class({
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
 
+			me.regionalVicePresidentName = new ui.ctl.Input.Text({
+		        id: "RegionalVicePresidentName",
+				maxLength: 256,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.regionalVicePresidentName.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.regionalVicePresidentName.getValue();
+
+					if (enteredText == "" && (me.regionalVicePresidentNames == "" || $("input[name='Funding']:checked").val() == "Direct Reimbursement"))
+						this.valid = true;
+			});
+
+			me.regionalVicePresidentEmail = new ui.ctl.Input.Text({
+		        id: "RegionalVicePresidentEmail",
+				maxLength: 256,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.regionalVicePresidentEmail.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.regionalVicePresidentEmail.getValue();
+
+					if (enteredText == "" && (me.regionalVicePresidentEmails == "" || $("input[name='Funding']:checked").val() == "Direct Reimbursement"))
+						this.valid = true;
+					else {
+						var emailArray = enteredText.split(";");
+
+						for (var index in emailArray) {
+							if (!(ui.cmn.text.validate.emailAddress(emailArray[index])))
+								this.setInvalid("Please enter valid Email Address. Use semicolon to separate two addresses.");
+						}
+					}
+			});
+			
+			me.divisionVicePresidentName = new ui.ctl.Input.Text({
+		        id: "DivisionVicePresidentName",
+				maxLength: 256,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.divisionVicePresidentName.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.divisionVicePresidentName.getValue();
+
+					if (enteredText == "" && (me.divisionVicePresidentNames == "" || $("input[name='Funding']:checked").val() == "Direct Reimbursement"))
+						this.valid = true;
+			});
+
+			me.divisionVicePresidentEmail = new ui.ctl.Input.Text({
+		        id: "DivisionVicePresidentEmail",
+				maxLength: 256,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.divisionVicePresidentEmail.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.divisionVicePresidentEmail.getValue();
+
+					if (enteredText == "" && (me.divisionVicePresidentEmails == "" || $("input[name='Funding']:checked").val() == "Direct Reimbursement"))
+						this.valid = true;
+					else {
+						var emailArray = enteredText.split(";");
+
+						for (var index in emailArray) {
+							if (!(ui.cmn.text.validate.emailAddress(emailArray[index])))
+								this.setInvalid("Please enter valid Email Address. Use semicolon to separate two addresses.");
+						}
+					}
+			});
+
 			me.divisionPresidentName = new ui.ctl.Input.Text({
 		        id: "DivisionPresidentName",
 				maxLength: 256,
@@ -1309,6 +1401,14 @@ ii.Class({
 				injectionArray: me.employeeManagerDetails
 			});
 
+			me.workflowHierarchys = [];
+			me.workflowHierarchyStore = me.cache.register({
+			storeId: "appWorkflowHierarchys",
+				itemConstructor: fin.pur.poCapitalRequisition.WorkflowHierarchy,
+				itemConstructorArgs: fin.pur.poCapitalRequisition.workflowHierarchyArgs,
+				injectionArray: me.workflowHierarchys
+			});
+
 			me.workflowJDECompanys = [];
 			me.workflowJDECompanyStore = me.cache.register({
 			storeId: "appWorkflowJDECompanys",
@@ -1443,10 +1543,14 @@ ii.Class({
 			me.regionalManagerName.text.tabIndex = 50;
 			me.regionalManagerEmail.text.tabIndex = 51;
 			me.regionalManagerTitle.text.tabIndex = 52;
-			me.divisionPresidentName.text.tabIndex = 53;
-			me.divisionPresidentEmail.text.tabIndex = 54;
-			me.financeDirectorName.text.tabIndex = 55;
-			me.financeDirectorEmail.text.tabIndex = 56;
+			me.regionalVicePresidentName.text.tabIndex = 53;
+			me.regionalVicePresidentEmail.text.tabIndex = 54;
+			me.divisionVicePresidentName.text.tabIndex = 55;
+			me.divisionVicePresidentEmail.text.tabIndex = 56;
+			me.divisionPresidentName.text.tabIndex = 57;
+			me.divisionPresidentEmail.text.tabIndex = 58;
+			me.financeDirectorName.text.tabIndex = 59;
+			me.financeDirectorEmail.text.tabIndex = 60;
 		},
 		
 		resizeControls: function() {
@@ -1487,6 +1591,10 @@ ii.Class({
 			me.regionalManagerName.resizeText();
 			me.regionalManagerEmail.resizeText();
 			me.regionalManagerTitle.resizeText();
+			me.regionalVicePresidentName.resizeText();
+			me.regionalVicePresidentEmail.resizeText();
+			me.divisionVicePresidentName.resizeText();
+			me.divisionVicePresidentEmail.resizeText();
 			me.divisionPresidentName.resizeText();
 			me.divisionPresidentEmail.resizeText();
 			me.financeDirectorName.resizeText();
@@ -1527,6 +1635,10 @@ ii.Class({
 			me.regionalManagerName.text.readOnly = readOnly;
 			me.regionalManagerEmail.text.readOnly = readOnly;
 			me.regionalManagerTitle.text.readOnly = readOnly;
+			me.regionalVicePresidentName.text.readOnly = readOnly;
+			me.regionalVicePresidentEmail.text.readOnly = readOnly;
+			me.divisionVicePresidentName.text.readOnly = readOnly;
+			me.divisionVicePresidentEmail.text.readOnly = readOnly;
 			me.divisionPresidentName.text.readOnly = readOnly;
 			me.divisionPresidentEmail.text.readOnly = readOnly;
 			me.financeDirectorName.text.readOnly = readOnly;
@@ -1650,24 +1762,32 @@ ii.Class({
 			me.taxPercent.setValue("");
 			me.calculateTotal();
 		},
-		
-		statusesLoaded: function() {
+
+		statusesLoaded: function(showAll) {
 			var me = this;
 
 			me.statuses = [];
-			me.statuses.push(new fin.pur.poCapitalRequisition.Status(0, "[All]"));
-			me.statuses.push(new fin.pur.poCapitalRequisition.Status(1, "Open"));
-			me.statuses.push(new fin.pur.poCapitalRequisition.Status(2, "In Process"));
-			me.statuses.push(new fin.pur.poCapitalRequisition.Status(8, "Approved"));
-			me.statuses.push(new fin.pur.poCapitalRequisition.Status(11, "Completed - PO"));
-			me.statuses.push(new fin.pur.poCapitalRequisition.Status(12, "Completed - JDE"));
-			me.statuses.push(new fin.pur.poCapitalRequisition.Status(6, "Cancelled"));
-			me.statuses.push(new fin.pur.poCapitalRequisition.Status(10, "Unapproved"));
 
-			me.statusType.setData(me.statuses);
-			me.statusType.select(1, me.statusType.focused);
+			if (showAll) {
+				me.statuses.push(new fin.pur.poCapitalRequisition.Status(1, "Open"));
+				me.statuses.push(new fin.pur.poCapitalRequisition.Status(2, "In Process"));
+				me.statusType.setData(me.statuses);
+				me.statusType.select(0, me.statusType.focused);
+			}
+			else {
+				me.statuses.push(new fin.pur.poCapitalRequisition.Status(0, "[All]"));
+				me.statuses.push(new fin.pur.poCapitalRequisition.Status(1, "Open"));
+				me.statuses.push(new fin.pur.poCapitalRequisition.Status(2, "In Process"));
+				me.statuses.push(new fin.pur.poCapitalRequisition.Status(8, "Approved"));
+				me.statuses.push(new fin.pur.poCapitalRequisition.Status(11, "Completed - PO"));
+				me.statuses.push(new fin.pur.poCapitalRequisition.Status(12, "Completed - JDE"));
+				me.statuses.push(new fin.pur.poCapitalRequisition.Status(6, "Cancelled"));
+				me.statuses.push(new fin.pur.poCapitalRequisition.Status(10, "Unapproved"));
+				me.statusType.setData(me.statuses);
+				me.statusType.select(1, me.statusType.focused);
+			}
 		},
-		
+
 		searchTypesLoaded: function() {
 			var me = this;
 			
@@ -1734,9 +1854,10 @@ ii.Class({
 		},
 		
 		houseCodeChanged: function() {
-			var args = ii.args(arguments,{});
 			var me = this;
 
+			if (me.approveInProcess)
+				me.statusesLoaded($("#houseCodeText").val() === "");
 			me.lastSelectedRowIndex = -1;
 			me.loadData();
 		},
@@ -1746,7 +1867,8 @@ ii.Class({
 			
 			me.houseCodeDetailStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId, me.houseCodeDetailsLoaded, me);
 			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.houseCodeJobsLoaded, me);
-			me.workflowJDECompanyStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",workflowModuleId:3,stepNumber:2", me.workflowStep2JDECompanysLoaded, me);
+			me.workflowHierarchyStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",levelBrief:RVP", me.workflowStep2HierarchysLoaded, me);
+			me.workflowJDECompanyStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",workflowModuleId:3,stepNumber:4", me.workflowStep2JDECompanysLoaded, me);
 		},
 		
 		houseCodeDetailsLoaded: function(me, activeId) {		
@@ -1766,6 +1888,48 @@ ii.Class({
 			}
 		},
 		
+		workflowStep2HierarchysLoaded: function(me, activeId) {
+
+			me.regionalVicePresidentNames = "";
+			me.regionalVicePresidentEmails = "";
+
+			for (var index = 0; index < me.workflowHierarchys.length; index++) {
+				me.regionalVicePresidentNames += (me.regionalVicePresidentNames == "" ? me.workflowHierarchys[index].name : ";" + me.workflowHierarchys[index].name);
+				me.regionalVicePresidentEmails += (me.regionalVicePresidentEmails == "" ? me.workflowHierarchys[index].email : ";" + me.workflowHierarchys[index].email);
+			}
+
+			if (me.regionalVicePresidentNames == "") {
+				$("#RegionalVicePresidentNameContainer").hide();
+				$("#RegionalVicePresidentEmailContainer").hide();
+			}
+			else {
+				$("#RegionalVicePresidentNameContainer").show();
+				$("#RegionalVicePresidentEmailContainer").show();
+			}
+
+			me.workflowHierarchyStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",levelBrief:DVP", me.workflowStep3HierarchysLoaded, me);
+		},
+		
+		workflowStep3HierarchysLoaded: function(me, activeId) {
+
+			me.divisionVicePresidentNames = "";
+			me.divisionVicePresidentEmails = "";
+
+			for (var index = 0; index < me.workflowHierarchys.length; index++) {
+				me.divisionVicePresidentNames += (me.divisionVicePresidentNames == "" ? me.workflowHierarchys[index].name : ";" + me.workflowHierarchys[index].name);
+				me.divisionVicePresidentEmails += (me.divisionVicePresidentEmails == "" ? me.workflowHierarchys[index].email : ";" + me.workflowHierarchys[index].email);
+			}
+
+			if (me.divisionVicePresidentNames == "") {
+				$("#DivisionVicePresidentNameContainer").hide();
+				$("#DivisionVicePresidentEmailContainer").hide();
+			}
+			else {
+				$("#DivisionVicePresidentNameContainer").show();
+				$("#DivisionVicePresidentEmailContainer").show();
+			}
+		},
+
 		workflowStep2JDECompanysLoaded: function(me, activeId) {
 
 			me.divisionPresidentNames = "";
@@ -1776,7 +1940,7 @@ ii.Class({
 				me.divisionPresidentEmails += (me.divisionPresidentEmails == "" ? me.workflowJDECompanys[index].email : ";" + me.workflowJDECompanys[index].email);
 			}
 
-			me.workflowJDECompanyStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",workflowModuleId:3,stepNumber:3", me.workflowStep3JDECompanysLoaded, me);
+			me.workflowJDECompanyStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",workflowModuleId:3,stepNumber:5", me.workflowStep3JDECompanysLoaded, me);
 		},
 		
 		workflowStep3JDECompanysLoaded: function(me, activeId) {
@@ -1808,7 +1972,7 @@ ii.Class({
 			var houseCodeId = $("#houseCodeText").val() != "" ? parent.fin.appUI.houseCodeId : 0;
 			var searchValue = me.searchInput.getValue();
 			
-			if ($("#houseCodeText").val() == "" && me.searchType.lastBlurValue == "") {
+			if ($("#houseCodeText").val() == "" && me.searchType.lastBlurValue == "" && !me.approveInProcess) {
 				me.searchType.setInvalid("Please select Search By.");
 				return;
 			}
@@ -1941,7 +2105,7 @@ ii.Class({
 			else
 				me.chiefFinancialOfficer = "";
 			
-			me.appUserStore.fetch("userId:[user],module:Workflow,id:0,workflowModuleId:3,stepNumber:5", me.chiefExecutiveOfficersLoaded, me);
+			me.appUserStore.fetch("userId:[user],module:Workflow,id:0,workflowModuleId:3,stepNumber:7", me.chiefExecutiveOfficersLoaded, me);
 		},
 
 		chiefExecutiveOfficersLoaded: function(me, activeId) {
@@ -2137,6 +2301,10 @@ ii.Class({
 			me.regionalManagerName.setValue(item.regionalManagerName);
 			me.regionalManagerEmail.setValue(item.regionalManagerEmail);
 			me.regionalManagerTitle.setValue(item.regionalManagerTitle);
+			me.regionalVicePresidentName.setValue(item.regionalVicePresidentName);
+			me.regionalVicePresidentEmail.setValue(item.regionalVicePresidentEmail);
+			me.divisionVicePresidentName.setValue(item.divisionVicePresidentName);
+			me.divisionVicePresidentEmail.setValue(item.divisionVicePresidentEmail);
 			me.divisionPresidentName.setValue(item.divisionPresidentName);
 			me.divisionPresidentEmail.setValue(item.divisionPresidentEmail);
 			me.financeDirectorName.setValue(item.financeDirectorName);
@@ -2248,33 +2416,52 @@ ii.Class({
 
 			var approvals = [];
 			var item = me.capitalRequisitionGrid.data[me.capitalRequisitionGrid.activeRowIndex];
+			var count = 1;
 
 			me.step1ApprovedDate = me.workflowHistorys.length > 0 ? me.workflowHistorys[0].modAt : "";
-			me.step2ApprovedDate = me.workflowHistorys.length > 1 ? me.workflowHistorys[1].modAt : "";
-			if (me.total <= me.approvalAmountLimit1)
-				me.step3ApprovedDate = me.workflowHistorys.length > 1 ? me.workflowHistorys[1].modAt : "";
+
+			if (item.regionalVicePresidentName != "") {
+				me.step2ApprovedDate = me.workflowHistorys.length > count ? me.workflowHistorys[count].modAt : "";
+				count++;
+			}
 			else
-				me.step3ApprovedDate = me.workflowHistorys.length > 2 ? me.workflowHistorys[2].modAt : "";
-            me.step4ApprovedDate = me.workflowHistorys.length > 3 ? me.workflowHistorys[3].modAt : "";
-            me.step5ApprovedDate = me.workflowHistorys.length > 4 ? me.workflowHistorys[4].modAt : "";
+				me.step2ApprovedDate = "";
+				
+			if (item.divisionVicePresidentName != "") {
+				me.step3ApprovedDate = me.workflowHistorys.length > count ? me.workflowHistorys[count].modAt : "";
+				count++;
+			}
+			else
+				me.step3ApprovedDate = "";
+			
+			me.step4ApprovedDate = me.workflowHistorys.length > count ? me.workflowHistorys[count].modAt : "";
+			if (me.total <= me.approvalAmountLimit1)
+				me.step5ApprovedDate = me.workflowHistorys.length > count ? me.workflowHistorys[count].modAt : "";
+			else
+				me.step5ApprovedDate = me.workflowHistorys.length > (count + 1) ? me.workflowHistorys[count + 1].modAt : "";
+            me.step6ApprovedDate = me.workflowHistorys.length > (count + 2) ? me.workflowHistorys[count + 2].modAt : "";
+            me.step7ApprovedDate = me.workflowHistorys.length > (count + 3) ? me.workflowHistorys[count + 3].modAt : "";
 
 			approvals.push(new fin.pur.poCapitalRequisition.Approval(1, "Regional Manager", item.regionalManagerName, "", me.step1ApprovedDate));
 			if (item.funding == "Direct Reimbursement") {
-				approvals.push(new fin.pur.poCapitalRequisition.Approval(2, "Division President", item.divisionPresidentName, "N/A", "N/A"));
-				approvals.push(new fin.pur.poCapitalRequisition.Approval(3, "Finance Director", item.financeDirectorName, "N/A", "N/A"));
-				approvals.push(new fin.pur.poCapitalRequisition.Approval(4, "Chief Financial Officer", item.chiefFinancialOfficerName, "N/A", "N/A"));
-				approvals.push(new fin.pur.poCapitalRequisition.Approval(5, "Chief Executive Officer", item.chiefExecutiveOfficerName, "N/A", "N/A"));
-		
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(2, "Regional Vice President", item.regionalVicePresidentName, "N/A", "N/A"));
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(3, "Division Vice President", item.divisionVicePresidentName, "N/A", "N/A"));
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(4, "Division President", item.divisionPresidentName, "N/A", "N/A"));
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(5, "Finance Director", item.financeDirectorName, "N/A", "N/A"));
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(6, "Chief Financial Officer", item.chiefFinancialOfficerName, "N/A", "N/A"));
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(7, "Chief Executive Officer", item.chiefExecutiveOfficerName, "N/A", "N/A"));
 			}
 			else {
-				approvals.push(new fin.pur.poCapitalRequisition.Approval(2, "Division President", item.divisionPresidentName,  (me.total > me.approvalAmountLimit1 ? "" : "N/A"), (me.total > me.approvalAmountLimit1 ? me.step2ApprovedDate : "N/A")));
-				approvals.push(new fin.pur.poCapitalRequisition.Approval(3, "Finance Director", item.financeDirectorName, "", me.step3ApprovedDate));
-				approvals.push(new fin.pur.poCapitalRequisition.Approval(4, "Chief Financial Officer", item.chiefFinancialOfficerName, (me.total > me.approvalAmountLimit1 ? "" : "N/A"), (me.total > me.approvalAmountLimit1 ? me.step4ApprovedDate : "N/A")));
-				approvals.push(new fin.pur.poCapitalRequisition.Approval(5, "Chief Executive Officer", item.chiefExecutiveOfficerName, (me.total > me.approvalAmountLimit2 ? "" : "N/A"), (me.total > me.approvalAmountLimit2 ? me.step5ApprovedDate : "N/A")));
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(2, "Regional Vice President", item.regionalVicePresidentName, (item.regionalVicePresidentName != "" ? "" : "N/A"), (item.regionalVicePresidentName != "" ? me.step2ApprovedDate : "N/A")));
+			    approvals.push(new fin.pur.poCapitalRequisition.Approval(3, "Division Vice President", item.divisionVicePresidentName, (item.divisionVicePresidentName != "" ? "" : "N/A"), (item.divisionVicePresidentName != "" ? me.step3ApprovedDate : "N/A")));
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(4, "Division President", item.divisionPresidentName, (me.total > me.approvalAmountLimit1 ? "" : "N/A"), (me.total > me.approvalAmountLimit1 ? me.step4ApprovedDate : "N/A")));
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(5, "Finance Director", item.financeDirectorName, "", me.step5ApprovedDate));
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(6, "Chief Financial Officer", item.chiefFinancialOfficerName, (me.total > me.approvalAmountLimit1 ? "" : "N/A"), (me.total > me.approvalAmountLimit1 ? me.step6ApprovedDate : "N/A")));
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(7, "Chief Executive Officer", item.chiefExecutiveOfficerName, (me.total > me.approvalAmountLimit2 ? "" : "N/A"), (me.total > me.approvalAmountLimit2 ? me.step7ApprovedDate : "N/A")));
 			}
 
 			me.approvalGrid.setData(approvals);
-			me.approvalGrid.setHeight(150);
+			me.approvalGrid.setHeight(200);
 			me.checkLoadCount();
 		},
 
@@ -2554,6 +2741,10 @@ ii.Class({
 					|| !me.regionalManagerName.valid
 					|| !me.regionalManagerEmail.valid
 					|| !me.regionalManagerTitle.valid
+					|| !me.regionalVicePresidentName.valid
+					|| !me.regionalVicePresidentEmail.valid
+					|| !me.divisionVicePresidentName.valid
+					|| !me.divisionVicePresidentEmail.valid
 					|| !me.divisionPresidentName.valid
 					|| !me.divisionPresidentEmail.valid
 					|| !me.financeDirectorName.valid
@@ -2660,6 +2851,10 @@ ii.Class({
 				me.regionalManagerTitle.setValue("Regional Manager");
 			}
 
+			me.regionalVicePresidentName.setValue(me.regionalVicePresidentNames);
+			me.regionalVicePresidentEmail.setValue(me.regionalVicePresidentEmails);
+			me.divisionVicePresidentName.setValue(me.divisionVicePresidentNames);
+			me.divisionVicePresidentEmail.setValue(me.divisionVicePresidentEmails);
 			me.divisionPresidentName.setValue(me.divisionPresidentNames);
 			me.divisionPresidentEmail.setValue(me.divisionPresidentEmails);
 			me.financeDirectorName.setValue(me.financeDirectorNames);
@@ -2806,18 +3001,34 @@ ii.Class({
 					$("#Header").text("Additional Information");
 					
 					if ($("input[name='Funding']:checked").val() == "Direct Reimbursement") {
+						$("#RegionalVicePresidentNameLabel").html("<span id='nonRequiredFieldIndicator'>Regional Vice President Name:</span>");
+						$("#RegionalVicePresidentEmailLabel").html("<span id='nonRequiredFieldIndicator'>Regional Vice President Email:</span>");
+						$("#DivisionVicePresidentNameLabel").html("<span id='nonRequiredFieldIndicator'>Division Vice President Name:</span>");
+						$("#DivisionVicePresidentEmailLabel").html("<span id='nonRequiredFieldIndicator'>Division Vice President Email:</span>");
 						$("#DivisionPresidentNameLabel").html("<span id='nonRequiredFieldIndicator'>Division President Name:</span>");
 						$("#DivisionPresidentEmailLabel").html("<span id='nonRequiredFieldIndicator'>Division President Email:</span>");
 						$("#FinanceDirectorNameLabel").html("<span id='nonRequiredFieldIndicator'></span>Finance Director Name:");
 						$("#FinanceDirectorEmailLabel").html("<span id='nonRequiredFieldIndicator'></span>Finance Director Email:");
+						me.regionalVicePresidentName.text.readOnly = true;
+						me.regionalVicePresidentEmail.text.readOnly = true;
+						me.divisionVicePresidentName.text.readOnly = true;
+						me.divisionVicePresidentEmail.text.readOnly = true;
 						me.divisionPresidentName.text.readOnly = true;
 						me.divisionPresidentEmail.text.readOnly = true;
 						me.financeDirectorName.text.readOnly = true;
 						me.financeDirectorEmail.text.readOnly = true;
 					}
 					else {
+						$("#RegionalVicePresidentNameLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Regional Vice President Name:");
+						$("#RegionalVicePresidentEmailLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Regional Vice President Email:");
+						$("#DivisionVicePresidentNameLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Division Vice President Name:");
+						$("#DivisionVicePresidentEmailLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Division Vice President Email:");
 						$("#FinanceDirectorNameLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Finance Director Name:");
 						$("#FinanceDirectorEmailLabel").html("<span class='requiredFieldIndicator'>&#149;</span>Finance Director Email:");
+						me.regionalVicePresidentName.text.readOnly = false;
+						me.regionalVicePresidentEmail.text.readOnly = false;
+						me.divisionVicePresidentName.text.readOnly = false;
+						me.divisionVicePresidentEmail.text.readOnly = false;
 						me.financeDirectorName.text.readOnly = false;
 						me.financeDirectorEmail.text.readOnly = false;
 							
@@ -3130,6 +3341,10 @@ ii.Class({
 					, me.regionalManagerName.getValue()
 					, me.regionalManagerTitle.getValue()
 					, me.regionalManagerEmail.getValue()
+					, me.regionalVicePresidentName.getValue()
+					, me.regionalVicePresidentEmail.getValue()
+					, me.divisionVicePresidentName.getValue()
+					, me.divisionVicePresidentEmail.getValue()
 					, me.divisionPresidentName.getValue()
 					, me.divisionPresidentEmail.getValue()
 					, me.financeDirectorName.getValue()
@@ -3237,6 +3452,10 @@ ii.Class({
 				xml += ' regionalManagerName="' + ui.cmn.text.xml.encode(item.regionalManagerName) + '"';
 				xml += ' regionalManagerTitle="' + ui.cmn.text.xml.encode(item.regionalManagerTitle) + '"';
 				xml += ' regionalManagerEmail="' + ui.cmn.text.xml.encode(item.regionalManagerEmail) + '"';
+				xml += ' regionalVicePresidentName="' + ui.cmn.text.xml.encode(item.regionalVicePresidentName) + '"';
+				xml += ' regionalVicePresidentEmail="' + ui.cmn.text.xml.encode(item.regionalVicePresidentEmail) + '"';
+				xml += ' divisionVicePresidentName="' + ui.cmn.text.xml.encode(item.divisionVicePresidentName) + '"';
+				xml += ' divisionVicePresidentEmail="' + ui.cmn.text.xml.encode(item.divisionVicePresidentEmail) + '"';
 				xml += ' divisionPresidentName="' + ui.cmn.text.xml.encode(item.divisionPresidentName) + '"';
 				xml += ' divisionPresidentEmail="' + ui.cmn.text.xml.encode(item.divisionPresidentEmail) + '"';
 				xml += ' financeDirectorName="' + ui.cmn.text.xml.encode(item.financeDirectorName) + '"';
@@ -3330,6 +3549,10 @@ ii.Class({
 				xml += ' regionalManagerName="' + ui.cmn.text.xml.encode(item.regionalManagerName) + '"';
 				xml += ' regionalManagerTitle="' + ui.cmn.text.xml.encode(item.regionalManagerTitle) + '"';
 				xml += ' regionalManagerEmail="' + ui.cmn.text.xml.encode(item.regionalManagerEmail) + '"';
+				xml += ' regionalVicePresidentName="' + ui.cmn.text.xml.encode(item.regionalVicePresidentName) + '"';
+				xml += ' regionalVicePresidentEmail="' + ui.cmn.text.xml.encode(item.regionalVicePresidentEmail) + '"';
+				xml += ' divisionVicePresidentName="' + ui.cmn.text.xml.encode(item.divisionVicePresidentName) + '"';
+				xml += ' divisionVicePresidentEmail="' + ui.cmn.text.xml.encode(item.divisionVicePresidentEmail) + '"';
 				xml += ' divisionPresidentName="' + ui.cmn.text.xml.encode(item.divisionPresidentName) + '"';
 				xml += ' divisionPresidentEmail="' + ui.cmn.text.xml.encode(item.divisionPresidentEmail) + '"';
 				xml += ' financeDirectorName="' + ui.cmn.text.xml.encode(item.financeDirectorName) + '"';
@@ -3345,6 +3568,8 @@ ii.Class({
 				xml += ' step3ApprovedDate="' + me.step3ApprovedDate + '"';
 				xml += ' step4ApprovedDate="' + me.step4ApprovedDate + '"';
 				xml += ' step5ApprovedDate="' + me.step5ApprovedDate + '"';
+				xml += ' step6ApprovedDate="' + me.step6ApprovedDate + '"';
+				xml += ' step7ApprovedDate="' + me.step7ApprovedDate + '"';
 				xml += '/>';
 			}
 			else if (me.status == "DeleteDocument") {

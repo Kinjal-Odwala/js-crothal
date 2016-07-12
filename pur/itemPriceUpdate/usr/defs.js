@@ -2,7 +2,7 @@ ii.Import("fin.cmn.usr.defs");
 
 ii.init.register( function() {
     fin.pur = { itemPriceUpdate: {}};
-    
+
 }, 1);
 
 ii.init.register( function() {
@@ -11,9 +11,10 @@ ii.init.register( function() {
 		id: {type: Number}
 		, number: {type: String}
 		, description: {type: String}
-		, price: {type: String}
+		, price: { type: String }
+   		, active: { type: Boolean }
 	};
-	
+
 	fin.pur.itemPriceUpdate.catalogItemArgs = {
 		id: {type: Number}
 		, itemId: {type: Number}
@@ -25,7 +26,13 @@ ii.init.register( function() {
 		, itemSelect: {type: Boolean, required: false, defaultValue: false}
 		, effectivePrice: {type: String, required: false, defaultValue: ""}
 	};
-    
+
+	fin.pur.itemPriceUpdate.activeStatusArgs = {
+	    id: { type: Number },
+	    number: { type: Number },
+	    name: { type: String }
+	};
+
 }, 2);
 
 ii.Class({
@@ -46,4 +53,14 @@ ii.Class({
 			$.extend(this, args);
 		}
 	}
+});
+
+ii.Class({
+    Name: "fin.pur.itemPriceUpdate.ActiveStatus",
+    Definition: {
+        init: function () {
+            var args = ii.args(arguments, fin.pur.itemPriceUpdate.activeStatusArgs);
+            $.extend(this, args);
+        }
+    }
 });

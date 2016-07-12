@@ -626,7 +626,7 @@ ii.Class({
 				else
 					return order.orderNumber;
             });
-			me.purchaseOrderGrid.addColumn("orderDate", "orderDate", "Date", "Order Date", 100);
+			me.purchaseOrderGrid.addColumn("orderDate", "orderDate", "Date", "Order Date", 100, function(orderDate) { return ui.cmn.text.date.format(orderDate, "mm/dd/yyyy"); });
 			me.purchaseOrderGrid.addColumn("vendorName", "vendorName", "Vendor", "Vendor", null);
 			me.purchaseOrderGrid.addColumn("orderAmount", "orderAmount", "Amount", "Order Amount", 120);
 			me.purchaseOrderGrid.addColumn("placedBy", "placedBy", "Placed By", "Placed By", 200);

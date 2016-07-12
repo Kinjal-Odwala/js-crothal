@@ -46,7 +46,8 @@ ii.init.register( function() {
 		, displayOrder: {type: Number, required: false}
 		, active: {type: Boolean}
 		, catalogHouseCodes: {type: [fin.pur.catalog.CatalogHouseCode], required: false}
-		, catalogItems: {type: [fin.pur.catalog.CatalogItem], required: false}		
+		, catalogItems: {type: [fin.pur.catalog.CatalogItem], required: false}
+		, assigned: {type: Boolean, required: false, defaultValue: false}
 	};	
 	
 	fin.pur.catalog.catalogItemArgs = {
@@ -55,6 +56,7 @@ ii.init.register( function() {
 		, itemNumber: {type: String, required: false}
 		, itemDescription: {type: String, required: false}
 		, catalogId: {type: Number}
+		, catalogTitle: {type: String}
 		, price: {type: String}
 		, displayOrder: {type: Number, required: false}
 		, active: {type: Boolean}
@@ -87,6 +89,22 @@ ii.init.register( function() {
 	fin.pur.catalog.fileNameArgs = {
 		id: {type: Number}
 		, fileName: {type: String, required: false, defaultValue: ""}
+	};
+
+	fin.pur.catalog.activeStatusArgs = {
+	    id: { type: Number },
+	    number: { type: Number },
+	    name: { type: String }
+	};
+
+	fin.pur.catalog.appApplicationHistoryArgs = {
+	    id: { type: Number },
+	    module: { type: String, required: false, defaultValue: "" },
+	    refernce: { type: Number, required: false, defaultValue: 0 },
+	    fieldName: { type: String, required: false, defaultValue: "" },
+	    previousFieldValue: { type: String, required: false, defaultValue: "" },
+	    lastModifiedBy: { type: String, required: false, defaultValue: "" },
+	    lastModifiedAt: { type: String, required: false, defaultValue: "" }
 	};
 	    
 }, 2);
@@ -193,4 +211,24 @@ ii.Class({
 			$.extend(this, args);
 		}
 	}
+});
+
+ii.Class({
+    Name: "fin.pur.catalog.ActiveStatus",
+    Definition: {
+        init: function () {
+            var args = ii.args(arguments, fin.pur.catalog.activeStatusArgs);
+            $.extend(this, args);
+        }
+    }
+});
+
+ii.Class({
+    Name: "fin.pur.catalog.AppApplicationHistory",
+    Definition: {
+        init: function () {
+            var args = ii.args(arguments, fin.pur.catalog.appApplicationHistoryArgs);
+            $.extend(this, args);
+        }
+    }
 });

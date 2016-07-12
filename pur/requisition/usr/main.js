@@ -67,7 +67,7 @@ ii.Class({
 			me.defineFormControls();
 			me.configureCommunications();
 			me.initialize();
-			me.statusesLoaded();
+			me.statusesLoaded(false);
 			me.searchTypesLoaded();
 			me.setStatus("Loading");
 			me.modified(false);
@@ -78,13 +78,17 @@ ii.Class({
 				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
 			else
 				me.houseCodesLoaded(me, 0);
-			
+
 			$(window).bind("resize", me, me.resize);
 			ui.cmn.behavior.disableBackspaceNavigation();
+			$("#houseCodeText").change(function () {
+				if (me.approveInProcess)
+					me.statusesLoaded($("#houseCodeText").val() === "");
+			});
 
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
-			}			
+			}
         },
 		
 		authorizationProcess: function fin_pur_poRequisition_authorizationProcess() {
@@ -113,6 +117,7 @@ ii.Class({
 
 				if (!me.poRequisitionShow && !me.writeInProcess) {
 					$("#AnchorNew").hide();
+					$("#AnchorTemplate").hide();
 					$("#StatusContainer").hide();
 					$("#PORequisitionAction").hide();
 				}
@@ -144,7 +149,6 @@ ii.Class({
 		},
 		
 		resize: function() {
-			var args = ii.args(arguments,{});
 			var me = fin.pur.poRequisitionUi;
 
 			if (me == undefined)
@@ -154,7 +158,7 @@ ii.Class({
 			me.itemGrid.setHeight($(window).height() - 285);
 			me.itemReadOnlyGrid.setHeight($(window).height() - 220);
 			me.documentGrid.setHeight(100);
-			$("#popupContact").height($(window).height() - 110);
+			$("#requisitionPopup").height($(window).height() - 110);
 			$("#GeneralInfo").height($(window).height() - 210);
 			$("#ShippingInfo").height($(window).height() - 210);
 			$("#TotalLabel").width($("#ItemGridHeader").width() - 138);
@@ -179,7 +183,7 @@ ii.Class({
 					brief: "Generate Purchase Order From PO Requisition", 
 					title: "To generate Purchase Order from PO Requisition",
 					actionFunction: function() { me.actionGeneratePurchaseOrderFromPORequisition(); }
-				})
+				});
 
 			me.searchButton = new ui.ctl.buttons.Sizeable({
 				id: "SearchButton",
@@ -266,6 +270,14 @@ ii.Class({
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Approve&nbsp;&nbsp;</span>",
 				clickFunction: function() { me.actionApproveItem(); },
+				hasHotState: true
+			});
+
+			me.anchorTemplate = new ui.ctl.buttons.Sizeable({
+				id: "AnchorTemplate",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Templates&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionPORequisitionFromTemplate(); },
 				hasHotState: true
 			});
 
@@ -365,8 +377,12 @@ ii.Class({
 			me.requisitionGrid.addColumn("requisitionNumber", "requisitionNumber", "Requisition #", "Requisition #", 120);
 			me.requisitionGrid.addColumn("houseCodeTitle", "houseCodeTitle", "House Code", "House Code", 175);
 			me.requisitionGrid.addColumn("requestorName", "requestorName", "Requestor Name", "Requestor Name", 150);				
-			me.requisitionGrid.addColumn("requestedDate ", "requestedDate", "Requested Date", "Requested Date", 150);
-			me.requisitionGrid.addColumn("deliveryDate", "deliveryDate", "Delivery Date", "Delivery Date", 120);
+			me.requisitionGrid.addColumn("requestedDate ", "requestedDate", "Requested Date", "Requested Date", 150).setSortFunction(function(me, displayProperty, a, b) {
+				return fin.cmn.sort.dateSort(me, displayProperty, a, b);
+			});
+			me.requisitionGrid.addColumn("deliveryDate", "deliveryDate", "Delivery Date", "Delivery Date", 120).setSortFunction(function(me, displayProperty, a, b) {
+				return fin.cmn.sort.dateSort(me, displayProperty, a, b);
+			});
 			me.requisitionGrid.addColumn("vendorTitle", "vendorTitle", "Vendor Title", "Vendor Title", null);
 			me.requisitionGrid.addColumn("statusType", "statusType", "Status", "Status", 120, function(statusType) {
 				if (statusType == 1)
@@ -464,7 +480,7 @@ ii.Class({
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {					
 					var enteredText = me.deliveryDate.text.value;
-					
+
 					if (enteredText == "") 
 						return;
 
@@ -942,6 +958,26 @@ ii.Class({
 						this.setInvalid("Please enter valid fax number. (999) 999-9999");
 			});
 
+			me.template = new ui.ctl.Input.Check({
+		        id: "Template",
+				changeFunction: function() { me.checkTemplate(); me.modified();}
+		    });
+
+			me.templateTitle = new ui.ctl.Input.Text({
+		        id: "TemplateTitle",
+				maxLength: 50,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.templateTitle.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(function( isFinal, dataMap) {
+					
+				if (!me.template.check.checked)
+					this.valid = true;
+			});
+
 			me.documentGrid = new ui.ctl.Grid({
 				id: "DocumentGrid",
 				appendToId: "divForm",
@@ -975,6 +1011,31 @@ ii.Class({
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
 				clickFunction: function() { me.actionUploadCancel(); },
+				hasHotState: true
+			});
+
+			me.templateGrid = new ui.ctl.Grid({
+				id: "TemplateGrid",
+				appendToId: "divForm",
+				allowAdds: false
+			});
+
+			me.templateGrid.addColumn("templateTitle", "templateTitle", "Template Title", "Template Title", null);
+			me.templateGrid.capColumns();
+
+			me.anchorGenerateRequisitionFromTemplate = new ui.ctl.buttons.Sizeable({
+				id: "AnchorGenerateRequisitionFromTemplate",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Generate&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionGenerateItem(); },
+				hasHotState: true
+			});
+
+			me.anchorTemplateCancel = new ui.ctl.buttons.Sizeable({
+				id: "AnchorTemplateCancel",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionGenerateCancel(); },
 				hasHotState: true
 			});
 
@@ -1050,7 +1111,15 @@ ii.Class({
 				itemConstructorArgs: fin.pur.poRequisition.poRequisitionArgs,
 				injectionArray: me.poRequisitions
 			});
-			
+
+			me.poRequisitionTemplates = [];
+			me.poRequisitionTemplateStore = me.cache.register({
+				storeId: "purPORequisitionTemplates",
+				itemConstructor: fin.pur.poRequisition.PORequisition,
+				itemConstructorArgs: fin.pur.poRequisition.poRequisitionArgs,
+				injectionArray: me.poRequisitionTemplates
+			});
+
 			me.items = [];
 			me.itemStore = me.cache.register({
 				storeId: "purPurchaseOrderItems",
@@ -1124,7 +1193,7 @@ ii.Class({
 				me.setStatus("Edit");
 		},
 		
-		setLoadCount: function(me, activeId) {
+		setLoadCount: function() {
 			var me = this;
 
 			me.loadCount++;
@@ -1209,6 +1278,8 @@ ii.Class({
 			me.shippingZip.text.tabIndex = 37;
 			me.shippingFax.text.tabIndex = 38;
 			me.shippingPhone.text.tabIndex = 39;
+			me.template.check.tabIndex = 40;
+			me.templateTitle.text.tabIndex = 41;
 		},
 		
 		resizeControls: function() {
@@ -1242,7 +1313,8 @@ ii.Class({
 			me.shippingState.resizeText();
 			me.shippingZip.resizeText();
 			me.shippingFax.resizeText();
-			me.shippingPhone.resizeText();			
+			me.shippingPhone.resizeText();
+			me.templateTitle.resizeText();
 			me.resize();
 		},
 		
@@ -1273,6 +1345,8 @@ ii.Class({
 			me.shippingZip.text.readOnly = readOnly;
 			me.shippingPhone.text.readOnly = readOnly;
 			me.shippingFax.text.readOnly = readOnly;
+			me.template.check.disabled = readOnly;
+			me.templateTitle.text.readOnly = readOnly;
 
 			$("#UrgencyUrgent")[0].disabled = readOnly;
 			$("#UrgencyNotUrgent")[0].disabled = readOnly;
@@ -1302,7 +1376,21 @@ ii.Class({
 				$("#ItemReadOnlyGrid").hide();				
 			}
 		},
-		
+
+		checkTemplate: function() {
+			var me = this;
+
+			if (me.template.check.checked) {
+				$("#TemplateContainer").show();
+				me.templateTitle.resizeText();
+			}
+				
+			else {
+				$("#TemplateContainer").hide();
+				me.templateTitle.setValue("");
+			}	
+		},
+
 		currentDate: function() {
 			var currentTime = new Date();
 			var month = currentTime.getMonth() + 1;
@@ -1358,24 +1446,32 @@ ii.Class({
 
 			$("#spnTotal").html(me.total.toFixed(2));
 		},
-		
-		statusesLoaded: function() {
+
+		statusesLoaded: function(showAll) {
 			var me = this;
 
 			me.statuses = [];
-			me.statuses.push(new fin.pur.poRequisition.Status(0, "[All]"));
-			me.statuses.push(new fin.pur.poRequisition.Status(1, "Open"));
-			me.statuses.push(new fin.pur.poRequisition.Status(2, "In Process"));
-			me.statuses.push(new fin.pur.poRequisition.Status(8, "Approved"));
-			me.statuses.push(new fin.pur.poRequisition.Status(11, "Completed - PO"));
-			me.statuses.push(new fin.pur.poRequisition.Status(12, "Completed - JDE"));
-			me.statuses.push(new fin.pur.poRequisition.Status(6, "Cancelled"));
-			me.statuses.push(new fin.pur.poRequisition.Status(10, "Unapproved"));
 
-			me.statusType.setData(me.statuses);
-			me.statusType.select(1, me.statusType.focused);
+			if (showAll) {
+				me.statuses.push(new fin.pur.poRequisition.Status(1, "Open"));
+				me.statuses.push(new fin.pur.poRequisition.Status(2, "In Process"));
+				me.statusType.setData(me.statuses);
+				me.statusType.select(0, me.statusType.focused);
+			}
+			else {
+				me.statuses.push(new fin.pur.poRequisition.Status(0, "[All]"));
+				me.statuses.push(new fin.pur.poRequisition.Status(1, "Open"));
+				me.statuses.push(new fin.pur.poRequisition.Status(2, "In Process"));
+				me.statuses.push(new fin.pur.poRequisition.Status(8, "Approved"));
+				me.statuses.push(new fin.pur.poRequisition.Status(11, "Completed - PO"));
+				me.statuses.push(new fin.pur.poRequisition.Status(12, "Completed - JDE"));
+				me.statuses.push(new fin.pur.poRequisition.Status(6, "Cancelled"));
+				me.statuses.push(new fin.pur.poRequisition.Status(10, "Unapproved"));
+				me.statusType.setData(me.statuses);
+				me.statusType.select(1, me.statusType.focused);
+			}
 		},
-		
+
 		searchTypesLoaded: function() {
 			var me = this;
 			
@@ -1442,9 +1538,10 @@ ii.Class({
 		},
 
 		houseCodeChanged: function() {
-			var args = ii.args(arguments,{});
 			var me = this;
 
+			if (me.approveInProcess)
+				me.statusesLoaded($("#houseCodeText").val() === "");
 			me.lastSelectedRowIndex = -1;
 			me.loadData();
 		},
@@ -1490,8 +1587,8 @@ ii.Class({
 			var statusType = "";
 			var houseCodeId = $("#houseCodeText").val() != "" ? parent.fin.appUI.houseCodeId : 0;
 			var searchValue = me.searchInput.getValue();
-			
-			if ($("#houseCodeText").val() == "" && me.searchType.lastBlurValue == "") {
+
+			if ($("#houseCodeText").val() == "" && me.searchType.lastBlurValue == "" && !me.approveInProcess) {
 				me.searchType.setInvalid("Please select Search By.");
 				return;
 			}
@@ -1523,6 +1620,7 @@ ii.Class({
 				+ ",statusType:" + statusType
 				+ ",searchType:" + me.searchType.text.value
 				+ ",searchValue:" + (me.searchType.indexSelected == 1 ? me.searchRequestedDate.text.value : searchValue)
+				+ ",template:-1"
 				, me.poRequisitionsLoaded
 				, me);
 				
@@ -1758,6 +1856,9 @@ ii.Class({
 			me.shippingZip.setValue(item.shipToZip);
 			me.shippingPhone.setValue(item.shipToPhone);
 			me.shippingFax.setValue(item.shipToFax);
+			me.template.setValue(item.template.toString());
+			me.templateTitle.setValue(item.templateTitle);
+			me.checkTemplate();
 		},
 
 		poRequisitonDetailsLoaded: function(me, activeId) {
@@ -2028,10 +2129,10 @@ ii.Class({
 			me.validator.forceBlur();
 			
 			if (me.wizardCount == 1) {
-				
-				if (me.status == "NewPORequisition" || me.vendorId == 0 || ($("input:radio[name='Urgency']:checked").val() == "Urgent" && (me.urgencyDate.lastBlurValue == "" || !(ui.cmn.text.validate.generic(me.urgencyDate.lastBlurValue, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))))
+				if (me.status == "NewPORequisition" || me.vendorId == 0 || me.deliveryDate.lastBlurValue == ""
+					|| ($("input:radio[name='Urgency']:checked").val() == "Urgent" && (me.urgencyDate.lastBlurValue == "" || !(ui.cmn.text.validate.generic(me.urgencyDate.lastBlurValue, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))))
 					valid = me.validator.queryValidity(true);
-										
+
 				if (!me.requestorEmail.valid
 					|| !me.requestedDate.valid
 					|| !me.deliveryDate.valid
@@ -2109,8 +2210,9 @@ ii.Class({
 				if (!me.requestorEmail.valid
 					|| !me.shippingAddress1.valid
 					|| !me.shippingCity.valid
-					|| !me.shippingState.valid					
-					|| !me.shippingZip.valid					
+					|| !me.shippingState.valid
+					|| !me.shippingZip.valid
+					|| !me.templateTitle.valid
 					) {
 					return false;
 				}
@@ -2123,16 +2225,49 @@ ii.Class({
 			var me = this;
 
 			$("#AnchorNew").show();
+			$("#AnchorTemplate").show();
 			$("#StatusContainer").show();
 			me.action = "PORequisition";
 			me.loadPORequisitions();
 			me.modified(false);
 		},
-		
+
+		actionPORequisitionFromTemplate: function() {
+			var me = this;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
+			var index = me.requisitionGrid.activeRowIndex;
+			if (index >= 0)
+				me.requisitionGrid.body.deselect(index, true);	
+			me.poRequisitionId = 0;
+			$("#AnchorView").hide();
+			$("#AnchorEdit").hide();
+			$("#AnchorSendRequisition").hide();
+			$("#AnchorResendRequisition").hide();
+			$("#AnchorCancelRequisition").hide();
+			$("#AnchorPrint").hide();
+			$("#AnchorApprove").hide();
+			$("#popupLoading").show();
+			loadPopup("templatePopup");
+			me.templateGrid.setHeight(320);
+			me.poRequisitionTemplateStore.reset();
+			me.poRequisitionTemplateStore.fetch("userId:[user],template:1,houseCodeId:" + parent.fin.appUI.houseCodeId, me.poRequisitionTemplatesLoaded, me);
+		},
+
+		poRequisitionTemplatesLoaded: function(me, activeId) {
+
+			me.templateGrid.setData(me.poRequisitionTemplates);
+			me.templateGrid.resize();
+			$("#popupLoading").hide();
+		},
+
 		actionGeneratePurchaseOrderFromPORequisition: function() {
 			var me = this;
 
 			$("#AnchorNew").hide();
+			$("#AnchorTemplate").hide();
 			$("#StatusContainer").hide();
 			me.action = "GeneratePurchaseOrder";
 			me.loadPORequisitions();
@@ -2200,6 +2335,9 @@ ii.Class({
 			me.shippingZip.setValue(me.houseCodeDetails[0].shippingZip);
 			me.shippingPhone.setValue("");
 			me.shippingFax.setValue("");
+			me.template.setValue("false");
+			me.templateTitle.setValue("");
+			me.checkTemplate();
 
 			$("#AnchorView").hide();
 			$("#AnchorEdit").hide();
@@ -2214,7 +2352,7 @@ ii.Class({
 			$("#imgEdit").show();
 			$("#imgRemove").show();
 			$("#spnTotal").html("");
-			loadPopup();
+			loadPopup("requisitionPopup");
 			me.poRequisitionDetailStore.reset();
 			me.poRequisitionDocumentStore.reset();
 			me.poRequisitionDetailsTemp = [];
@@ -2240,7 +2378,7 @@ ii.Class({
 			me.currentVendorTitle = "";
 			me.setDetailInfo();
 			me.resetPORequisitionDetails(false);
-			loadPopup();
+			loadPopup("requisitionPopup");
 			$("#popupMessageToUser").text("Loading");
 			$("#popupLoading").show();
 			me.vendorStore.reset();
@@ -2346,7 +2484,7 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 				
-			disablePopup();
+			disablePopup("requisitionPopup");
 			
 			var index = me.itemGrid.activeRowIndex;
 			if (index >= 0)
@@ -2372,6 +2510,15 @@ ii.Class({
 			me.currentVendorTitle = "";
 			me.modified(false);
 			me.setStatus("Loaded");
+		},
+
+		actionGenerateCancel: function() {
+			var me = this;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
+			disablePopup("templatePopup");
 		},
 				
 		actionAttachItem: function() {
@@ -2498,13 +2645,31 @@ ii.Class({
 				$("#iFrameUpload")[0].contentWindow.document.getElementById("DownloadButton").click();
 			}
 		},
-		
+
+		actionGenerateItem: function() {
+			var me = this;
+
+			if (me.templateGrid.activeRowIndex == -1)
+				return true;
+
+			disablePopup("templatePopup");
+			$("#messageToUser").text("Generating PO Requisition");
+			me.status = "GenerateRequisition";
+			me.actionSaveItem();
+		},
+
 		actionSendRequisitionItem: function() {
 			var me = this;
-			
+
 			if (me.requisitionGrid.activeRowIndex == -1)
 				return true;
-			
+
+			me.validator.forceBlur();
+			if (!me.validator.queryValidity(true) || me.itemGrid.data.length == 0) {
+				alert("There are few mandatory fields which are not entered. Please enter values for all mandatory fields and try again.");
+				return;
+			}
+
 			$("#messageToUser").text("Sending Requisition");
 			me.status = "SendRequisition";
 			me.actionSaveItem();
@@ -2588,7 +2753,7 @@ ii.Class({
 					return false;
 				}
 
-				disablePopup();
+				disablePopup("requisitionPopup");
 				me.itemGrid.body.deselectAll();
 
 				item = new fin.pur.poRequisition.PORequisition(
@@ -2624,6 +2789,8 @@ ii.Class({
 					, $("input[name='Urgency']:checked").val()
 					, me.urgencyDate.lastBlurValue
 					, ""
+					, me.template.check.checked
+					, me.templateTitle.getValue()
 					, false
 					);
 
@@ -2648,6 +2815,15 @@ ii.Class({
                 item = me.requisitionGrid.data[index];
                 item.statusType = 9;                
             }
+			else if (me.status == "GenerateRequisition") {
+                item = me.templateGrid.data[me.templateGrid.activeRowIndex];
+				item.requestedDate = me.currentDate();
+				item.deliveryDate = "";
+				item.reasonForRequest = "";
+				item.urgencyDate = "";
+				item.template = false;
+				item.templateTitle = "";
+			}
 
 			var xml = me.saveXmlBuildPORequisition(item);
 			
@@ -2663,7 +2839,7 @@ ii.Class({
 				$("#popupLoading").fadeIn("slow");
 			else
 				$("#pageLoading").fadeIn("slow");
-	
+
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
 				transactionType: "itemUpdate",
@@ -2724,6 +2900,8 @@ ii.Class({
 				xml += ' shipToZip="' + item.shipToZip + '"';
 				xml += ' shipToPhone="' + fin.cmn.text.mask.phone(item.shipToPhone, true) + '"';
 				xml += ' shipToFax="' + fin.cmn.text.mask.phone(item.shipToFax, true) + '"';
+				xml += ' template="' + item.template + '"';
+				xml += ' templateTitle="' + ui.cmn.text.xml.encode(item.templateTitle) + '"';	
 				xml += '/>';
 
 				for (var index = me.poRequisitionDetails.length - 1; index >= 0; index--) {
@@ -2831,6 +3009,11 @@ ii.Class({
 				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
 				xml += '/>';
 			}
+			else if (me.status == "GenerateRequisition") {
+				xml += '<purPORequisitionFromTemplate';
+				xml += ' id="' + item.id + '"';
+				xml += '/>';
+			}
 
 			return xml;
 		},
@@ -2858,7 +3041,7 @@ ii.Class({
 					$(args.xmlNode).find("*").each(function () {
 						switch (this.tagName) {
 							case "purPORequisition":
-								if (me.status == "NewPORequisition") {
+								if (me.status == "NewPORequisition" || me.status == "GenerateRequisition") {
 									item.id = parseInt($(this).attr("id"), 10);
 									item.requisitionNumber = $(this).attr("requisitionNumber");
 									me.poRequisitions.push(item);
@@ -2959,46 +3142,51 @@ ii.Class({
 	} 
 });
 
-function loadPopup() {
-	centerPopup();
-	
+function loadPopup(id) {
+	centerPopup(id);
+
 	$("#backgroundPopup").css({
 		"opacity": "0.5"
 	});
 	$("#backgroundPopup").fadeIn("slow");
-	$("#popupContact").fadeIn("slow");
+	$("#" + id).fadeIn("slow");
 }
 
-function disablePopup() {
+function disablePopup(id) {
 	
 	$("#backgroundPopup").fadeOut("slow");
-	$("#popupContact").fadeOut("slow");
+	$("#" + id).fadeOut("slow");
 }
 
-function centerPopup() {
+function centerPopup(id) {
 	var windowWidth = document.documentElement.clientWidth;
 	var windowHeight = document.documentElement.clientHeight;	
 	var popupWidth = windowWidth - 70;
 	var popupHeight = windowHeight - 120;	
 
-	$("#popupContact").css({
-		"width": popupWidth,
-		"height": popupHeight,
-		"top": windowHeight/2 - popupHeight/2,
-		"left": windowWidth/2 - popupWidth/2
-	});
-	
-	$("#popupLoading").css({
-		"width": popupWidth,
-		"height": popupHeight,
-		"top": windowHeight/2 - popupHeight/2,
-		"left": windowWidth/2 - popupWidth/2
-	});
-
-	$("#uploadPopup").css({
-		"top": windowHeight/2 - $("#uploadPopup").height()/2,
-		"left": windowWidth/2 - $("#uploadPopup").width()/2
-	});
+	if (id === "requisitionPopup") {
+		$("#requisitionPopup, #popupLoading").css({
+			"width": popupWidth,
+			"height": popupHeight,
+			"top": windowHeight/2 - popupHeight/2,
+			"left": windowWidth/2 - popupWidth/2
+		});
+		
+		$("#uploadPopup").css({
+			"top": windowHeight/2 - $("#uploadPopup").height()/2,
+			"left": windowWidth/2 - $("#uploadPopup").width()/2
+		});
+	}
+	else if (id === "templatePopup") {
+		popupWidth = 800;
+		popupHeight = 400;
+		$("#templatePopup, #popupLoading").css({
+			"width": popupWidth,
+			"height": popupHeight,
+			"top": windowHeight/2 - popupHeight/2,
+			"left": windowWidth/2 - popupWidth/2
+		});
+	}
 
 	$("#backgroundPopup").css({
 		"height": windowHeight + 100

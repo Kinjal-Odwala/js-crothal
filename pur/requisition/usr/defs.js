@@ -116,6 +116,8 @@ ii.init.register( function() {
 		, urgency: {type: String, required: false, defaultValue: ""}
 		, urgencyDate: {type: String, required: false, defaultValue: ""}
 		, chargeToPeriod: {type: String, required: false, defaultValue: ""}
+		, template: {type: Boolean, required: false, defaultValue: false}
+		, templateTitle: {type: String, required: false, defaultValue: ""}	
 		, valid: {type: Boolean, required: false, defaultValue: true}		
 	};
 	

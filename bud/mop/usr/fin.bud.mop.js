@@ -1550,7 +1550,7 @@ var loadReportUrls = function (callback) {
         var rptReportUrls = [];
         $('item', $(data)).each(function (index, item) {
             var $item = $(item);
-            rptReportUrls.push({ Title: $item.attr('title'), Url: $item.attr('reportURL') });
+            rptReportUrls.push({ Brief: $item.attr('brief'), Title: $item.attr('title'), Url: $item.attr('reportURL') });
         });
         RptReportUrls = rptReportUrls;
 
@@ -3533,37 +3533,44 @@ MopDataGrid = function () {
                 me.fireEvent('cancel');
             });
 
-
             var payrollRegisterButton = new bine.Button({ text: 'Payroll Register Rpt' });
             me.append(payrollRegisterButton, 'payrollRegisterButton');
             payrollRegisterButton.on('click', function () {
-                var rptUrl = bine.query(RptReportUrls).where(function (i) { return i.Title == 'Payroll Register'; }).select('Url').first();
-                if (rptUrl)
-                    window.open(rptUrl);
+                var rptUrl = bine.query(RptReportUrls).where(function (i) { return i.Brief == 'Payroll Register'; }).select('Url').first();
+                if (rptUrl) {
+					rptUrl = rptUrl.replace("&rs:Command=Render", "_old&rs:Command=Render");
+					window.open(rptUrl);
+				}
             });
 
             var transactionDetailButton = new bine.Button({ text: 'Transaction Details Rpt' });
             me.append(transactionDetailButton, 'transactionDetailButton');
-
             transactionDetailButton.on('click', function () {
-                var rptUrl = bine.query(RptReportUrls).where(function (i) { return i.Title == 'Transaction Details'; }).select('Url').first();
-                if (rptUrl)
-                    window.open(rptUrl);
+                var rptUrl = bine.query(RptReportUrls).where(function (i) { return i.Brief == 'Transaction Det'; }).select('Url').first();
+                if (rptUrl) {
+					rptUrl = rptUrl.replace("&rs:Command=Render", "_old&rs:Command=Render");
+					window.open(rptUrl);
+				}
             });
 
             var profitReportButton = new bine.Button({ text: 'Profit & Loss Rpt' });
             me.append(profitReportButton, 'profitReportButton');
             profitReportButton.on('click', function () {
-                window.open('https://reports.crothall.com/ReportServer/Pages/ReportViewer.aspx?%2fApplications%2fTeamFin%2fTeamFin_GL%2fDetail_Profit_Loss&rs:Command=Render');
-            });
+                var rptUrl = bine.query(RptReportUrls).where(function (i) { return i.Brief == 'Profit and Loss'; }).select('Url').first();
+                if (rptUrl) {
+					rptUrl = rptUrl.replace("&rs:Command=Render", "_old&rs:Command=Render");
+					window.open(rptUrl);
+				}
+             });
 
             var printMopButton = new bine.Button({ text: 'Print MOP' });
             me.append(printMopButton, 'printMopButton');
-
             printMopButton.on('click', function () {
-                var rptUrl = bine.query(RptReportUrls).where(function (i) { return i.Title == 'MOP'; }).select('Url').first();
-                if (rptUrl)
-                    window.open(rptUrl);
+                var rptUrl = bine.query(RptReportUrls).where(function (i) { return i.Brief == 'MOP'; }).select('Url').first();
+                if (rptUrl) {
+					rptUrl = rptUrl.replace("&rs:Command=Render", "_old&rs:Command=Render");
+					window.open(rptUrl);
+				}
             });
         }
     });

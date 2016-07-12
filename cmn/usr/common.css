@@ -534,7 +534,7 @@ dl.editArea dd
 }
 
 .itemStatusImage.Loading, .itemStatusImage.Saving, .itemStatusImage.Exporting, .itemStatusImage.Importing
-, .itemStatusImage.Validating, .itemStatusImage.Uploading, .itemStatusImage.Downloading {
+, .itemStatusImage.Validating, .itemStatusImage.Uploading, .itemStatusImage.Downloading, .itemStatusImage.Generating {
 	background-image: url(media/Common/indicator.gif);
 }
 
