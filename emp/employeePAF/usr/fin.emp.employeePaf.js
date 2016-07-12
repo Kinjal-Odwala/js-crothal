@@ -802,7 +802,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
                 item.date = EmpActions.getWorkflowDate(workflowStepId);
                 var adminName = EmpActions.getAdminName(workflowStepId);
-                if (adminName !== "") {
+                if (adminName != "") {
                     item.name = item.name + " " + "[" + adminName + "]";
                 }
 
@@ -2928,7 +2928,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         var modBy = "";
 
         angular.forEach(cache.workflowHistorys, function (item, index) {
-            if (item.workflowStepId === stepId && item.administrator === 'true') {
+            if (item.workflowStepId == stepId && item.administrator == 'true') {
                 modBy = item.modBy;
             }
         });
