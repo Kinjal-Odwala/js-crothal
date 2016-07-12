@@ -801,6 +801,10 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     item.name = $scope.empAction.ProcessHRName;
 
                 item.date = EmpActions.getWorkflowDate(workflowStepId);
+                var adminName = EmpActions.getAdminName(workflowStepId);
+                if (adminName !== "") {
+                    item.name = item.name + " " + "[" + adminName + "]";
+                }
 
                 if ($scope.empAction.Loa) {
                     if (item.id == 1)
@@ -1735,7 +1739,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         $scope.pageLoading = true;
         $scope.loadingTitle = " Downloading...";
 
-        EmpActions.submitEmployeePersonnelAction(selectedItem, true, function (data, status) {
+        EmpActions.submitEmployeePersonnelAction(selectedItem, true, false, function (data, status) {
             var items = deserializeXml(data, 'empFileName', { upperFirstLetter: false, intItems: ['id'] });
             $("#iFrameDownload")[0].contentWindow.document.getElementById("FileName").value = items[0].fileName;
             $("#iFrameDownload")[0].contentWindow.document.getElementById("DownloadButton").click();
@@ -1751,17 +1755,22 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         $scope.loadingTitle = " Submitting...";
         $scope.pageLoading = true;
 
-        EmpActions.submitEmployeePersonnelAction(selectedItem, false, function (data, status) {
+        EmpActions.submitEmployeePersonnelAction(selectedItem, false, false, function (data, status) {
             $scope.pageLoading = false;
             $scope.getPafList();
             alert("Employee PAF has been submitted successfully.");
         });
     };
 
-    $scope.approve = function (id, HouseCodeId) {
+    $scope.approve = function (selectedItem) {
         $scope.loadingTitle = " Approving...";
         $scope.pageLoading = true;
-        EmpActions.approveEmployeePersonnelAction(id, HouseCodeId, function (data, status) {
+        //EmpActions.approveEmployeePersonnelAction(id, HouseCodeId, function (data, status) {
+        //    $scope.pageLoading = false;
+        //    $scope.getPafList();
+        //    alert("Employee PAF has been approved successfully.");
+        //});
+        EmpActions.submitEmployeePersonnelAction(selectedItem, false, true, function (data, status) {
             $scope.pageLoading = false;
             $scope.getPafList();
             alert("Employee PAF has been approved successfully.");
@@ -1778,9 +1787,11 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         });
 
     };
+    $scope.idSelected = null;
 
     $scope.itemSelected = function (item) {
         $scope.selectedItem = item;
+        $scope.idSelected = $scope.selectedItem.Id;
 
         if ($scope.selectedItem.WorkflowStep == null || $scope.selectedItem.WorkflowStep == "") {
             $scope.selectedItem.WorkflowStep = 0;
@@ -2910,6 +2921,21 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         }
     };
 
+    var getAdminName = function (stepId) {
+        if (cache.workflowHistorys == null)
+            return "";
+
+        var modBy = "";
+
+        angular.forEach(cache.workflowHistorys, function (item, index) {
+            if (item.workflowStepId === stepId && item.administrator === 'true') {
+                modBy = item.modBy;
+            }
+        });
+
+        return modBy;
+    };
+
     var getWorkflowStepId = function (stepNumber) {
         if (cache.workflowSteps == null)
             return "";
@@ -3133,7 +3159,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         });
     };
 
-    var submitEmployeePersonnelAction = function (item, print, callback) {
+    var submitEmployeePersonnelAction = function (item, print, approve, callback) {
         var reasonId = 0;
         var xml = "";
         var step1Date = "";
@@ -3193,6 +3219,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         xml += ' step5Date="' + step5Date + '"';
         xml += ' step6Date="' + step6Date + '"';
         xml += ' print="' + print + '"';
+        xml += ' approve="' + approve + '"';
         xml += '/>';
         xml += '</transaction>';
 
@@ -3237,6 +3264,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         getWorkflowDate: getWorkflowDate,
         getHouseCodes: getHouseCodes,
         auditEmployeePersonnelAction: auditEmployeePersonnelAction,
-        getAppUsers: getAppUsers
+        getAppUsers: getAppUsers,
+        getAdminName: getAdminName
     }
 }]);

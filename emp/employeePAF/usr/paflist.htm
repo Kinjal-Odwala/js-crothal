@@ -93,7 +93,7 @@
         </div>
     </div>
     <div class="row margin-bottom10"></div>
-    <table class="table-scroll table table-bordered table-striped table-hover margin-bottom10">
+    <table class="table-scroll table table-bordered table-hover margin-bottom10">
         <thead>
             <tr class="heading" role="row">
                 <th width="8%" style="text-align:center">
@@ -149,7 +149,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="item in empActions | orderBy:sortBy:sortReverse" ng-click="itemSelected(item)" ng-class="{'warning':selectedItem==item}">
+            <tr ng-repeat="item in empActions | orderBy:sortBy:sortReverse" ng-click="itemSelected(item)" ng-class="{'warning':selectedItem==item};{selected: item.Id === idSelected}">
                 <td width="8%" align ="center">{{item.Number}}</td>
                 <td width="10%" align ="center">{{getDate(item.Date)}}</td>
                 <td width="10%" align ="center">{{item.EmployeeNumber == 0 ? "" : item.EmployeeNumber}}</td>
@@ -167,7 +167,7 @@
 			<a class="btn btn-primary" ng-if="selectedItem.StatusType==20" href="#/edit/{{selectedItem.Id}}"><span ng-if="selectedItem.StatusType==20">View/Edit</span></a>
 			<a class="btn btn-primary" ng-if="(readOnly || write) && (((selectedItem.StatusType==1 || selectedItem.StatusType==10) && !write) || selectedItem.StatusType==8 || selectedItem.StatusType==4 || selectedItem.StatusType==6 || (selectedItem.StatusType==2 && !writeInProcess))" href="#/edit/{{selectedItem.Id}}"><span ng-if="(readOnly || write) && (((selectedItem.StatusType==1 || selectedItem.StatusType==10) && !write) || selectedItem.StatusType==8 || selectedItem.StatusType==4 || selectedItem.StatusType==6 || (selectedItem.StatusType==2 && !writeInProcess))">View</span></a>
 			<a class="btn btn-info" ng-click="submit(selectedItem)" ng-if="write && (selectedItem.StatusType==1 || selectedItem.StatusType==2 || selectedItem.StatusType==10)"><span ng-if="write && selectedItem.StatusType==1">Submit</span><span ng-if="write && (selectedItem.StatusType==2 || selectedItem.StatusType==10)">ReSubmit</span></a>
-            <a class="btn btn-info" ng-click="approve(selectedItem.Id, selectedItem.HcmHouseCode)" ng-if="(write || approveInProcess) && (selectedItem.StatusType==2 && approveInProcess)"><span ng-if="(write || approveInProcess) && (selectedItem.StatusType==2 && approveInProcess)">Approve</span></a>
+            <a class="btn btn-info" ng-click="approve(selectedItem)" ng-if="(write || approveInProcess) && (selectedItem.StatusType==2 && approveInProcess)"><span ng-if="(write || approveInProcess) && (selectedItem.StatusType==2 && approveInProcess)">Approve</span></a>
             <a class="btn btn-info" ng-if="write && selectedItem.StatusType==8" ng-click="audit(selectedItem.Id)">Audit</a>
             <a class="btn btn-info" ng-if="write && selectedItem" ng-click="printForm(selectedItem)">Print</a>
 			<a class="btn btn-default" ng-if="write && (selectedItem.StatusType==1 || selectedItem.StatusType==2 || selectedItem.StatusType==10)" ng-click="cancelForm(selectedItem.Id, selectedItem.HcmHouseCode)" ng-disabled="!selectedItem">Cancel</a>
