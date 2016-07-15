@@ -1325,11 +1325,17 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             else
                 $scope.loadingTitle = " Saving...";
 
-            EmpActions.saveEmployeePersonnelAction($scope.empAction, $scope.pafDocs, saveAndSubmit, function (status) {
+            EmpActions.saveEmployeePersonnelAction($scope.empAction, $scope.pafDocs, saveAndSubmit, function (data, status) {
                 $scope.pageLoading = false;
                 document.location.hash = 'list';
-                if (saveAndSubmit)
-                    alert("Employee PAF has been saved and submitted successfully.");
+                if (saveAndSubmit) {
+                    if (status == 'success') {
+                        alert("Employee PAF has been saved and submitted successfully.");
+                    }
+                    else {
+                        alert("Employee PAF save and submit not completed successfully.");
+                    }
+                }
             });
         }
         else {
@@ -1730,7 +1736,13 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
             EmpActions.cancelEmployeePersonnelAction(id, houseCodeId, function (data, status) {
                 $scope.pageLoading = false;
                 $scope.getPafList();
-                alert("Employee PAF has been cancelled successfully.");
+
+                if (status == 'success') {
+                    alert("Employee PAF has been cancelled successfully.");
+                }
+                else {
+                    alert("Employee PAF has not been cancelled.");
+                }
             });
         });
     };
@@ -1740,14 +1752,23 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         $scope.loadingTitle = " Downloading...";
 
         EmpActions.submitEmployeePersonnelAction(selectedItem, true, false, function (data, status) {
-            var items = deserializeXml(data, 'empFileName', { upperFirstLetter: false, intItems: ['id'] });
-            $("#iFrameDownload")[0].contentWindow.document.getElementById("FileName").value = items[0].fileName;
-            $("#iFrameDownload")[0].contentWindow.document.getElementById("DownloadButton").click();
-			$scope.$apply(function () {
-                $scope.pageLoading = false;
-            });
-            //$scope.pageLoading = false;
-            //$scope.getPafList();
+            if (status == 'success') {
+                var items = deserializeXml(data, 'empFileName', { upperFirstLetter: false, intItems: ['id'] });
+                $("#iFrameDownload")[0].contentWindow.document.getElementById("FileName").value = items[0].fileName;
+                $("#iFrameDownload")[0].contentWindow.document.getElementById("DownloadButton").click();
+                $scope.$apply(function () {
+                    $scope.pageLoading = false;
+                });
+                //$scope.pageLoading = false;
+                //$scope.getPafList();
+			    alert("Employee PAF has been printed successfully.");
+			}
+            else {
+                $scope.$apply(function () {
+                    $scope.pageLoading = false;
+                });
+			    alert("Employee PAF has not been printed.");
+			}
         });
     };
 
@@ -1758,7 +1779,13 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         EmpActions.submitEmployeePersonnelAction(selectedItem, false, false, function (data, status) {
             $scope.pageLoading = false;
             $scope.getPafList();
-            alert("Employee PAF has been submitted successfully.");
+
+            if (status == 'success') {
+                alert("Employee PAF has been submitted successfully.");
+            }
+            else {
+                alert("Employee PAF has not been submitted.");
+            }
         });
     };
 
@@ -1773,7 +1800,13 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         EmpActions.submitEmployeePersonnelAction(selectedItem, false, true, function (data, status) {
             $scope.pageLoading = false;
             $scope.getPafList();
-            alert("Employee PAF has been approved successfully.");
+
+            if (status == 'success') {
+                alert("Employee PAF has been approved successfully.");
+            }
+            else {
+                alert("Employee PAF has not been approved.");
+            }
         });
     };
 
@@ -1783,7 +1816,13 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         EmpActions.auditEmployeePersonnelAction(id, function (data, status) {
             $scope.pageLoading = false;
             $scope.getPafList();
-            alert("Employee PAF has been audited successfully.");
+
+            if (status == 'success') {
+                alert("Employee PAF has been audited successfully.");
+            }
+            else {
+                alert("Employee PAF has not been audited.");
+            }
         });
 
     };
@@ -3090,10 +3129,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         xml += '</transaction>';
         console.log(xml);
         var data = 'moduleId=emp&requestId=1&requestXml=' + encodeURIComponent(xml) + '&targetId=iiTransaction';
-        jQuery.post('/net/crothall/chimes/fin/emp/act/Provider.aspx', data, function (data, status) {
-            if (callback)
-                callback(data, status);
-        });
+        transactionMonitor(data, callback);
     };
 
     var deleteEmployeePAFDocument = function (id, callback) {
@@ -3118,10 +3154,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 
         var data = "moduleId=emp&requestId=1&requestXml=" + encodeURIComponent(xml) + "&targetId=iiTransaction";
 
-        jQuery.post("/net/crothall/chimes/fin/emp/act/Provider.aspx", data, function (data, status) {
-            if (callback)
-                callback(data, status);
-        });
+        transactionMonitor(data, callback);
     };
 
     var auditEmployeePersonnelAction = function (id, callback) {
@@ -3135,10 +3168,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 
         var data = "moduleId=emp&requestId=1&requestXml=" + encodeURIComponent(xml) + "&targetId=iiTransaction";
 
-        jQuery.post("/net/crothall/chimes/fin/emp/act/Provider.aspx", data, function (data, status) {
-            if (callback)
-                callback(data, status);
-        });
+        transactionMonitor(data, callback);
     };
 
     var approveEmployeePersonnelAction = function (id, houseCodeId, callback) {
@@ -3153,11 +3183,35 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 
         var data = "moduleId=emp&requestId=1&requestXml=" + encodeURIComponent(xml) + "&targetId=iiTransaction";
 
-        jQuery.post("/net/crothall/chimes/fin/emp/act/Provider.aspx", data, function (data, status) {
-            if (callback)
-                callback(data, status);
-        });
+        transactionMonitor(data, callback);
     };
+
+    var transactionMonitor = function (data, callback) {
+        jQuery.post('/net/crothall/chimes/fin/emp/act/Provider.aspx', data, function (data, status, xhr) {
+            var transactionNode = $(xhr.responseXML).find("transaction")[0];
+            if (transactionNode !== undefined) {
+                if ($(transactionNode).attr("status") === "success") {
+                    if (callback)
+                        callback(data, status);
+                }
+                else {
+                    //alert($(transactionNode).attr("error"));
+                    status = "error";
+                    if (callback)
+                        callback(data, status, $(transactionNode).attr("error"));
+                }
+            }
+            else {
+                var transmissionNode = $(xhr.responseXML).find("transmission")[0];
+                if (transmissionNode !== undefined && $(transmissionNode).attr("Error") !== "") {
+                    //alert($(transmissionNode).attr("Error"));
+                    status = "error";
+                    if (callback)
+                        callback(data, status, $(transmissionNode).attr("Error"));
+                }
+            }
+        });
+    }
 
     var submitEmployeePersonnelAction = function (item, print, approve, callback) {
         var reasonId = 0;
@@ -3224,10 +3278,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         xml += '</transaction>';
 
         var data = 'moduleId=emp&requestId=1&requestXml=' + encodeURIComponent(xml) + '&targetId=iiTransaction';
-        jQuery.post('/net/crothall/chimes/fin/emp/act/Provider.aspx', data, function (data, status) {
-            if (callback)
-                callback(data, status);
-        });
+        transactionMonitor(data, callback);
     };
 
     return {
@@ -3265,6 +3316,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         getHouseCodes: getHouseCodes,
         auditEmployeePersonnelAction: auditEmployeePersonnelAction,
         getAppUsers: getAppUsers,
-        getAdminName: getAdminName
+        getAdminName: getAdminName,
+        transactionMonitor: transactionMonitor
     }
 }]);
