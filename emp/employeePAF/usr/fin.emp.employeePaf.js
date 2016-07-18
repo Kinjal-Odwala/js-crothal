@@ -802,11 +802,14 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
                 item.date = EmpActions.getWorkflowDate(workflowStepId);
                 var adminName = EmpActions.getAdminName(workflowStepId);
-                EmpActions.getAppUserName(adminName, function (result) {
-                    if (angular.isDefined(result)) {
-                        item.name = item.name + " " + "[" + result.firstName + " " + result.lastName + "]";
-                    }
-                });
+
+                if (adminName !== "") {
+                    EmpActions.getAppUserName(adminName, function (result) {
+                        if (angular.isDefined(result)) {
+                            item.name = item.name + " " + "[" + result.firstName + " " + result.lastName + "]";
+                        }
+                    });
+                }
 
                 if ($scope.empAction.Loa) {
                     if (item.id == 1)
@@ -1801,6 +1804,8 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         //});
         EmpActions.submitEmployeePersonnelAction(selectedItem, false, true, function (data, status) {
             $scope.pageLoading = false;
+            EmpActions.getWorkflowHistory(selectedItem.Id, 8, function (result) {
+            });
             $scope.getPafList();
 
             if (status == 'success') {
@@ -1810,6 +1815,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
                 alert("Employee PAF has not been approved.");
             }
         });
+
     };
 
     $scope.audit = function (id) {
