@@ -381,6 +381,10 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 callback(true);
             }
         });
+
+        if ($scope.empAction.HcmHouseCode === 0) {
+            $scope.empAction.HcmHouseCode = null;
+        }
     };
 
     var loadCompensations = function (employeeNumber) {
@@ -774,6 +778,10 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.SeparationReason = "TerminationType";
             else if ($scope.empAction.LayoffType > 0)
                 $scope.empAction.SeparationReason = "LayoffType";
+
+            if ($scope.empAction.HcmHouseCode === 0) {
+                $scope.empAction.HcmHouseCode = null;
+            }
 
             getHouseCodes($scope.empAction.HcmHouseCode, function (response) {
                 if (angular.isDefined(response)) {
