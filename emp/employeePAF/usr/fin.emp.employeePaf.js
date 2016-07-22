@@ -1561,6 +1561,11 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         });
     };
 
+    $scope.search = function () {
+        $scope.idSelected = null;
+        $scope.getPafList();
+    }
+
     $scope.sortBy = function (item) {
         if ($scope.sortType === 'Number') {
             return item.Number;
@@ -3155,6 +3160,8 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             xml += '/>';
         }
 
+        xml = xml.replace(/&/g, "&amp;");
+
         xml += '</transaction>';
         console.log(xml);
         var data = 'moduleId=emp&requestId=1&requestXml=' + encodeURIComponent(xml) + '&targetId=iiTransaction';
@@ -3218,6 +3225,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
     var transactionMonitor = function (data, callback) {
         jQuery.post('/net/crothall/chimes/fin/emp/act/Provider.aspx', data, function (data, status, xhr) {
             var transactionNode = $(xhr.responseXML).find("transaction")[0];
+            
             if (transactionNode !== undefined) {
                 if ($(transactionNode).attr("status") === "success") {
                     if (callback)
@@ -3305,6 +3313,8 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         xml += ' approve="' + approve + '"';
         xml += '/>';
         xml += '</transaction>';
+
+        xml = xml.replace(/&/g, "&amp;");
 
         var data = 'moduleId=emp&requestId=1&requestXml=' + encodeURIComponent(xml) + '&targetId=iiTransaction';
         transactionMonitor(data, callback);
