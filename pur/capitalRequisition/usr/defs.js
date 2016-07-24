@@ -135,7 +135,9 @@ ii.init.register( function() {
 		, taxPercent: {type: String, required: false, defaultValue: ""}
 		, taxAmount: {type: String, required: false, defaultValue: ""}
 		, freight: {type: String, required: false, defaultValue: ""}
+		, identifier: {type: String, required: false, defaultValue: ""}
 		, stepBrief: {type: String, required: false, defaultValue: ""}
+		, stepNumber: {type: Number, required: false, defaultValue: 0}
 	};
 	
 	fin.pur.poCapitalRequisition.poCapitalRequisitionItemArgs = {
@@ -240,6 +242,8 @@ ii.init.register( function() {
 	fin.pur.poCapitalRequisition.workflowHistoryArgs = {
 		id: {type: Number}
 		, modAt: {type: String, required: false, defaultValue: ""}
+		, administrator: {type: Boolean, required: false, defaultValue: false}
+		, administratorName: {type: String, required: false, defaultValue: ""}
 	};
 	
 	fin.pur.poCapitalRequisition.approvalArgs = {

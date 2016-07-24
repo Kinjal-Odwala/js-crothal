@@ -1013,7 +1013,7 @@ ii.Class({
 			});
 
 			me.documentGrid.addColumn("title", "title", "Title", "Title", null);
-			me.documentGrid.addColumn("fileName", "fileName", "File Name", "File Name", 350);
+			me.documentGrid.addColumn("fileName", "fileName", "File Name", "File Name", 400);
 			me.documentGrid.capColumns();
 
 			me.documentTitle = new ui.ctl.Input.Text({
@@ -1258,7 +1258,7 @@ ii.Class({
 				allowAdds: false
 			});
 
-			me.approvalGrid.addColumn("approval", "approval", "Approvals", "Approvals", 180);
+			me.approvalGrid.addColumn("approval", "approval", "Approvals", "Approvals", 200);
 			me.approvalGrid.addColumn("name", "name", "Print Name", "Print Name", null);
 			me.approvalGrid.addColumn("signature", "signature", "Signature", "Signature", 120);
 			me.approvalGrid.addColumn("approvedDate", "approvedDate", "Date", "Date", 120);
@@ -2419,30 +2419,55 @@ ii.Class({
 			var count = 1;
 
 			me.step1ApprovedDate = me.workflowHistorys.length > 0 ? me.workflowHistorys[0].modAt : "";
+			me.step1AdminName = me.workflowHistorys.length > 0 ? me.workflowHistorys[0].administratorName : "";
 
 			if (item.regionalVicePresidentName != "") {
 				me.step2ApprovedDate = me.workflowHistorys.length > count ? me.workflowHistorys[count].modAt : "";
+				me.step2AdminName = me.workflowHistorys.length > count ? me.workflowHistorys[count].administratorName : "";
 				count++;
 			}
-			else
+			else {
 				me.step2ApprovedDate = "";
+				me.step2AdminName = "";
+			}
 				
 			if (item.divisionVicePresidentName != "") {
 				me.step3ApprovedDate = me.workflowHistorys.length > count ? me.workflowHistorys[count].modAt : "";
+				me.step3AdminName = me.workflowHistorys.length > count ? me.workflowHistorys[count].administratorName : "";
 				count++;
 			}
-			else
+			else {
 				me.step3ApprovedDate = "";
-			
-			me.step4ApprovedDate = me.workflowHistorys.length > count ? me.workflowHistorys[count].modAt : "";
-			if (me.total <= me.approvalAmountLimit1)
-				me.step5ApprovedDate = me.workflowHistorys.length > count ? me.workflowHistorys[count].modAt : "";
-			else
-				me.step5ApprovedDate = me.workflowHistorys.length > (count + 1) ? me.workflowHistorys[count + 1].modAt : "";
-            me.step6ApprovedDate = me.workflowHistorys.length > (count + 2) ? me.workflowHistorys[count + 2].modAt : "";
-            me.step7ApprovedDate = me.workflowHistorys.length > (count + 3) ? me.workflowHistorys[count + 3].modAt : "";
+				me.step3AdminName = "";
+			}
 
-			approvals.push(new fin.pur.poCapitalRequisition.Approval(1, "Regional Manager", item.regionalManagerName, "", me.step1ApprovedDate));
+			if (me.total > me.approvalAmountLimit1) {
+				me.step4ApprovedDate = me.workflowHistorys.length > count ? me.workflowHistorys[count].modAt : "";
+				me.step4AdminName = me.workflowHistorys.length > count ? me.workflowHistorys[count].administratorName : "";
+			}
+			else {
+				me.step4ApprovedDate = "";
+				me.step4AdminName = "";
+			}
+
+			if (me.total <= me.approvalAmountLimit1) {
+				me.step5ApprovedDate = me.workflowHistorys.length > count ? me.workflowHistorys[count].modAt : "";
+				me.step5AdminName = me.workflowHistorys.length > count ? me.workflowHistorys[count].administratorName : "";
+			}
+			else {
+				me.step5ApprovedDate = me.workflowHistorys.length > (count + 1) ? me.workflowHistorys[count + 1].modAt : "";
+				me.step5AdminName = me.workflowHistorys.length > (count + 1) ? me.workflowHistorys[count + 1].administratorName : "";
+			}
+
+            me.step6ApprovedDate = me.workflowHistorys.length > (count + 2) ? me.workflowHistorys[count + 2].modAt : "";
+			me.step6AdminName = me.workflowHistorys.length > (count + 2) ? me.workflowHistorys[count + 2].administratorName : "";
+            me.step7ApprovedDate = me.workflowHistorys.length > (count + 3) ? me.workflowHistorys[count + 3].modAt : "";
+			me.step7AdminName = me.workflowHistorys.length > (count + 3) ? me.workflowHistorys[count + 3].administratorName : "";
+
+			if (me.step1AdminName !== "")
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(1, "Regional Manager", item.regionalManagerName + " [" + me.step1AdminName + "]", "", me.step1ApprovedDate));
+			else
+				approvals.push(new fin.pur.poCapitalRequisition.Approval(1, "Regional Manager", item.regionalManagerName, "", me.step1ApprovedDate));
 			if (item.funding == "Direct Reimbursement") {
 				approvals.push(new fin.pur.poCapitalRequisition.Approval(2, "Regional Vice President", item.regionalVicePresidentName, "N/A", "N/A"));
 				approvals.push(new fin.pur.poCapitalRequisition.Approval(3, "Division Vice President", item.divisionVicePresidentName, "N/A", "N/A"));
@@ -2452,12 +2477,30 @@ ii.Class({
 				approvals.push(new fin.pur.poCapitalRequisition.Approval(7, "Chief Executive Officer", item.chiefExecutiveOfficerName, "N/A", "N/A"));
 			}
 			else {
-				approvals.push(new fin.pur.poCapitalRequisition.Approval(2, "Regional Vice President", item.regionalVicePresidentName, (item.regionalVicePresidentName != "" ? "" : "N/A"), (item.regionalVicePresidentName != "" ? me.step2ApprovedDate : "N/A")));
-			    approvals.push(new fin.pur.poCapitalRequisition.Approval(3, "Division Vice President", item.divisionVicePresidentName, (item.divisionVicePresidentName != "" ? "" : "N/A"), (item.divisionVicePresidentName != "" ? me.step3ApprovedDate : "N/A")));
-				approvals.push(new fin.pur.poCapitalRequisition.Approval(4, "Division President", item.divisionPresidentName, (me.total > me.approvalAmountLimit1 ? "" : "N/A"), (me.total > me.approvalAmountLimit1 ? me.step4ApprovedDate : "N/A")));
-				approvals.push(new fin.pur.poCapitalRequisition.Approval(5, "Finance Director", item.financeDirectorName, "", me.step5ApprovedDate));
-				approvals.push(new fin.pur.poCapitalRequisition.Approval(6, "Chief Financial Officer", item.chiefFinancialOfficerName, (me.total > me.approvalAmountLimit1 ? "" : "N/A"), (me.total > me.approvalAmountLimit1 ? me.step6ApprovedDate : "N/A")));
-				approvals.push(new fin.pur.poCapitalRequisition.Approval(7, "Chief Executive Officer", item.chiefExecutiveOfficerName, (me.total > me.approvalAmountLimit2 ? "" : "N/A"), (me.total > me.approvalAmountLimit2 ? me.step7ApprovedDate : "N/A")));
+				if (me.step2AdminName !== "")
+					approvals.push(new fin.pur.poCapitalRequisition.Approval(2, "Regional Vice President", item.regionalVicePresidentName + " [" + me.step2AdminName + "]", (item.regionalVicePresidentName != "" ? "" : "N/A"), (item.regionalVicePresidentName != "" ? me.step2ApprovedDate : "N/A")));
+				else
+					approvals.push(new fin.pur.poCapitalRequisition.Approval(2, "Regional Vice President", item.regionalVicePresidentName, (item.regionalVicePresidentName != "" ? "" : "N/A"), (item.regionalVicePresidentName != "" ? me.step2ApprovedDate : "N/A")));
+				if (me.step3AdminName !== "")
+					approvals.push(new fin.pur.poCapitalRequisition.Approval(3, "Division Vice President", item.divisionVicePresidentName + " [" + me.step3AdminName + "]", (item.divisionVicePresidentName != "" ? "" : "N/A"), (item.divisionVicePresidentName != "" ? me.step3ApprovedDate : "N/A")));
+				else
+					approvals.push(new fin.pur.poCapitalRequisition.Approval(3, "Division Vice President", item.divisionVicePresidentName, (item.divisionVicePresidentName != "" ? "" : "N/A"), (item.divisionVicePresidentName != "" ? me.step3ApprovedDate : "N/A")));
+				if (me.step4AdminName !== "")
+					approvals.push(new fin.pur.poCapitalRequisition.Approval(4, "Division President", item.divisionPresidentName + " [" + me.step4AdminName + "]", (me.total > me.approvalAmountLimit1 ? "" : "N/A"), (me.total > me.approvalAmountLimit1 ? me.step4ApprovedDate : "N/A")));
+				else
+					approvals.push(new fin.pur.poCapitalRequisition.Approval(4, "Division President", item.divisionPresidentName, (me.total > me.approvalAmountLimit1 ? "" : "N/A"), (me.total > me.approvalAmountLimit1 ? me.step4ApprovedDate : "N/A")));
+				if (me.step5AdminName !== "")
+					approvals.push(new fin.pur.poCapitalRequisition.Approval(5, "Finance Director", item.financeDirectorName + " [" + me.step5AdminName + "]", "", me.step5ApprovedDate));
+				else
+					approvals.push(new fin.pur.poCapitalRequisition.Approval(5, "Finance Director", item.financeDirectorName, "", me.step5ApprovedDate));
+				if (me.step6AdminName !== "")
+					approvals.push(new fin.pur.poCapitalRequisition.Approval(6, "Chief Financial Officer", item.chiefFinancialOfficerName + " [" + me.step6AdminName + "]", (me.total > me.approvalAmountLimit1 ? "" : "N/A"), (me.total > me.approvalAmountLimit1 ? me.step6ApprovedDate : "N/A")));
+				else
+					approvals.push(new fin.pur.poCapitalRequisition.Approval(6, "Chief Financial Officer", item.chiefFinancialOfficerName, (me.total > me.approvalAmountLimit1 ? "" : "N/A"), (me.total > me.approvalAmountLimit1 ? me.step6ApprovedDate : "N/A")));
+				if (me.step7AdminName !== "")
+					approvals.push(new fin.pur.poCapitalRequisition.Approval(7, "Chief Executive Officer", item.chiefExecutiveOfficerName + " [" + me.step7AdminName + "]", (me.total > me.approvalAmountLimit2 ? "" : "N/A"), (me.total > me.approvalAmountLimit2 ? me.step7ApprovedDate : "N/A")));
+				else
+					approvals.push(new fin.pur.poCapitalRequisition.Approval(7, "Chief Executive Officer", item.chiefExecutiveOfficerName, (me.total > me.approvalAmountLimit2 ? "" : "N/A"), (me.total > me.approvalAmountLimit2 ? me.step7ApprovedDate : "N/A")));
 			}
 
 			me.approvalGrid.setData(approvals);
@@ -3355,13 +3398,15 @@ ii.Class({
 					, (me.taxPercent.getValue() != "" && !isNaN(me.taxPercent.getValue())) ? parseFloat(me.taxPercent.getValue()).toFixed(2) : 0
 					, (me.taxAmount.getValue() != "" && !isNaN(me.taxAmount.getValue())) ? parseFloat(me.taxAmount.getValue()).toFixed(2) : 0
 					, (me.freight.getValue() != "" && !isNaN(me.freight.getValue())) ? parseFloat(me.freight.getValue()).toFixed(2) : 0
+					, (me.status == "NewPOCapitalRequisition" ? "" : me.capitalRequisitionGrid.data[index].identifier)
+					, (me.status == "NewPOCapitalRequisition" ? "" : me.capitalRequisitionGrid.data[index].stepBrief)
+					, (me.status == "NewPOCapitalRequisition" ? 0 : me.capitalRequisitionGrid.data[index].stepNumber)
 					);
 
 				$("#messageToUser").text("Saving");
 			}			
 			else if (me.status == "SendRequisition" || me.status == "ResendRequisition") {
 				item = me.capitalRequisitionGrid.data[index];
-				item.statusType = 2;
 			}
 			else if (me.status == "CancelRequisition") {
                 item = me.capitalRequisitionGrid.data[index];
@@ -3369,7 +3414,6 @@ ii.Class({
             }
 			else if (me.status == "ApproveRequisition") {
                 item = me.capitalRequisitionGrid.data[index];
-                item.statusType = 8;                
             }
 			else if (me.status == "GeneratePurchaseOrder"  || me.status == "PrintRequisition") {
 				item = me.capitalRequisitionGrid.data[index];
@@ -3511,11 +3555,29 @@ ii.Class({
 				}
 			}
 
-			if (me.status == "SendRequisition" || me.status == "ResendRequisition" || me.status == "PrintRequisition") {
+			if (me.status == "SendRequisition" || me.status == "ResendRequisition" || me.status == "PrintRequisition" || me.status == "ApproveRequisition") {
+				if (me.status === "ResendRequisition" && item.statusType === 10) {
+					item.stepNumber = 0;
+					me.step1ApprovedDate = "";
+					me.step2ApprovedDate = "";
+					me.step3ApprovedDate = "";
+					me.step4ApprovedDate = "";
+					me.step5ApprovedDate = "";
+					me.step6ApprovedDate = "";
+					me.step7ApprovedDate = "";
+				    me.step1AdminName = "";
+					me.step2AdminName = "";
+					me.step3AdminName = "";
+					me.step4AdminName = "";
+					me.step5AdminName = "";
+					me.step6AdminName = "";
+					me.step7AdminName = "";
+				}
+
 				xml += '<purPOCapitalRequisitionEmailNotification';
 				xml += ' id="' + me.poCapitalRequisitionId + '"';
 				xml += ' requisitionNumber="' + item.requisitionNumber + '"';
-				xml += ' statusType="2"';
+				xml += ' statusType="' + item.statusType + '"';
 				xml += ' houseCodeTitle="' + ui.cmn.text.xml.encode(item.houseCodeTitle) + '"';
 				xml += ' houseCodeJobTitle="' + ui.cmn.text.xml.encode(me.shippingJob.lastBlurValue) + '"';
 				xml += ' shipToAddress1="' + ui.cmn.text.xml.encode(item.shipToAddress1) + '"';
@@ -3561,8 +3623,11 @@ ii.Class({
 				xml += ' chiefExecutiveOfficerName="' + ui.cmn.text.xml.encode(item.chiefExecutiveOfficerName) + '"';
 				xml += ' action="' + me.status + '"';
 				xml += ' jdeCompleted="0"';
-				xml += ' taxPercent="' + (item.taxPercent != 0 ? item.taxPercent : "") + '"';
-				xml += ' freight="' + (item.freight != 0 ? item.freight : "") + '"';
+				xml += ' taxPercent="' + (parseFloat(item.taxPercent) > 0 ? item.taxPercent : "") + '"';
+				xml += ' taxAmount="' + item.taxAmount + '"';
+				xml += ' freight="' + item.freight + '"';
+				xml += ' identifier="' + ui.cmn.text.xml.encode(item.identifier) + '"';
+				xml += ' stepNumber="' + item.stepNumber + '"';
 				xml += ' step1ApprovedDate="' + me.step1ApprovedDate + '"';
 				xml += ' step2ApprovedDate="' + me.step2ApprovedDate + '"';
 				xml += ' step3ApprovedDate="' + me.step3ApprovedDate + '"';
@@ -3570,6 +3635,13 @@ ii.Class({
 				xml += ' step5ApprovedDate="' + me.step5ApprovedDate + '"';
 				xml += ' step6ApprovedDate="' + me.step6ApprovedDate + '"';
 				xml += ' step7ApprovedDate="' + me.step7ApprovedDate + '"';
+				xml += ' step1AdminName="' + ui.cmn.text.xml.encode(me.step1AdminName) + '"';
+				xml += ' step2AdminName="' + ui.cmn.text.xml.encode(me.step2AdminName) + '"';
+				xml += ' step3AdminName="' + ui.cmn.text.xml.encode(me.step3AdminName) + '"';
+				xml += ' step4AdminName="' + ui.cmn.text.xml.encode(me.step4AdminName) + '"';
+				xml += ' step5AdminName="' + ui.cmn.text.xml.encode(me.step5AdminName) + '"';
+				xml += ' step6AdminName="' + ui.cmn.text.xml.encode(me.step6AdminName) + '"';
+				xml += ' step7AdminName="' + ui.cmn.text.xml.encode(me.step7AdminName) + '"';
 				xml += '/>';
 			}
 			else if (me.status == "DeleteDocument") {
@@ -3577,7 +3649,7 @@ ii.Class({
 				xml += ' id="' + me.poCapitalRequisitionDocuments[me.documentGrid.activeRowIndex].id + '"';			
 				xml += '/>';
 			}			
-			else if (me.status == "CancelRequisition" || me.status == "ApproveRequisition" || me.status == "JDEEntry") {
+			else if (me.status == "CancelRequisition" || me.status == "JDEEntry") {
                 xml += '<purPOCapitalRequisitionStatusUpdate';
                 xml += ' id="' + item.id + '"';
 				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
@@ -3620,6 +3692,8 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
+			var reSelectRow = false;
+			var removeRow = false;
 
 			if (status == "success") {
 				if (me.status == "DeleteDocument") {
@@ -3644,19 +3718,48 @@ ii.Class({
                                 }								
 								else if (me.status == "SendRequisition" || me.status == "ResendRequisition" 
 									|| me.status == "CancelRequisition" || me.status == "ApproveRequisition") {
-									item.stepBrief = "";
-									me.poCapitalRequisitions[me.lastSelectedRowIndex] = item;
-									me.capitalRequisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);									
-									me.itemReadOnlyGrid.setData(me.poCapitalRequisitionItems);
-									
-									if (me.status == "SendRequisition" || me.status == "ResendRequisition")
-										$("#AnchorResendRequisition").show();										
-									else if (me.status == "CancelRequisition" || me.status == "ApproveRequisition") {
+									if (me.status == "SendRequisition" || me.status == "ResendRequisition") {
+										if (item.statusType === 1) {
+											removeRow = true;
+										}
+										else if (item.statusType === 10) {
+											reSelectRow = true;
+											removeRow = true;
+										}
+											
+										item.statusType = 2;
+										item.stepBrief = "";
+										item.identifier = $(this).attr("identifier");
+										$("#AnchorResendRequisition").show();
+										if (me.approveInProcess)
+											$("#AnchorApprove").show();
+									}
+									else if (me.status == "CancelRequisition") {
+										removeRow = true;
 										$("#AnchorResendRequisition").hide();
 										$("#AnchorCancelRequisition").hide();
 										$("#AnchorApprove").hide();
-									}									 
-																		
+									}
+									else if (me.status == "ApproveRequisition") {
+										$("#AnchorResendRequisition").hide();
+										item.statusType = parseInt($(this).attr("statusType"), 10);
+										item.stepNumber = parseInt($(this).attr("stepNumber"), 10);
+										item.stepBrief = $(this).attr("stepBrief");
+
+										if (item.statusType === 8) {
+											removeRow = true;
+											$("#AnchorApprove").hide();
+											$("#AnchorCancelRequisition").hide();
+										}
+										else {
+											reSelectRow = true;
+										}
+									}
+
+									me.poCapitalRequisitions[me.lastSelectedRowIndex] = item;
+									me.capitalRequisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);									
+									me.itemReadOnlyGrid.setData(me.poCapitalRequisitionItems);
+
 									$("#AnchorSendRequisition").hide();
 									$("#AnchorEdit").hide();
 									$("#AnchorView").show();
@@ -3668,6 +3771,19 @@ ii.Class({
 									
 									me.anchorSave.display(ui.cmn.behaviorStates.disabled);
 									me.setReadOnly(true);
+									
+									if (me.statusType.indexSelected !== -1 && me.statuses[me.statusType.indexSelected].id !== 0 && removeRow) {
+										me.poCapitalRequisitions.splice(me.capitalRequisitionGrid.activeRowIndex, 1);
+										me.capitalRequisitionGrid.setData(me.poCapitalRequisitions);
+										reSelectRow = false;
+										$("#AnchorView").hide();
+										$("#AnchorResendRequisition").hide();
+										$("#AnchorCancelRequisition").hide();
+										$("#AnchorPrint").hide();
+										$("#AnchorApprove").hide();
+									}
+									else if (reSelectRow)
+										me.itemSelect(me.lastSelectedRowIndex);
 								}
 								else if (me.status == "GeneratePurchaseOrder" || me.status == "JDEEntry") {
 									me.poCapitalRequisitions.splice(me.capitalRequisitionGrid.activeRowIndex, 1);
@@ -3727,7 +3843,7 @@ ii.Class({
 				alert("[SAVE FAILURE] Error while updating PO Capital Requisition details: " + $(args.xmlNode).attr("message"));				
 			}
 			
-			if (me.status != "DeleteDocument")
+			if (me.status != "DeleteDocument" && !reSelectRow)
 				$("#pageLoading").fadeOut("slow");
 		},	
 	} 
