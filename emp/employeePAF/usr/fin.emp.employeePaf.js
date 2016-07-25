@@ -378,13 +378,12 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.PostalCode = result.postalCode;
                 $scope.empAction.Phone = result.phone;
                 $scope.empAction.Data.EmployeeExists = true;
+                if ($scope.empAction.HcmHouseCode === 0) {
+                    $scope.empAction.HcmHouseCode = null;
+                }
                 callback(true);
             }
         });
-
-        if ($scope.empAction.HcmHouseCode === 0) {
-            $scope.empAction.HcmHouseCode = null;
-        }
     };
 
     var loadCompensations = function (employeeNumber) {
@@ -865,6 +864,11 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     };
 
     $scope.$watch('empAction.HcmHouseCode', function (newValue, oldValue) {
+
+        if (newValue === 0) {
+            $scope.empAction.HcmHouseCode = null;
+        }
+
         if (!newValue && !oldValue)
             return;
 
