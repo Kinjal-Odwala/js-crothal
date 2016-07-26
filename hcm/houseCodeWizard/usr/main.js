@@ -427,6 +427,7 @@ ii.Class({
 			me.tpCeridianCompanyHourlyShow = me.isCtrlVisibleTabPayroll(me.authorizePath + "\\TabPayroll\\CeridianCompanyHourly", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));
 			me.tpCeridianCompanySalariedShow = me.isCtrlVisibleTabPayroll(me.authorizePath + "\\TabPayroll\\CeridianCompanySalaried", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));			
 			me.tpPBJReportingShow = me.isCtrlVisibleTabPayroll(me.authorizePath + "\\TabPayroll\\PBJReporting", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));
+			me.tpFacilityIdShow = me.isCtrlVisibleTabPayroll(me.authorizePath + "\\TabPayroll\\FacilityId", me.tabPayrollShow, (me.tabPayrollWrite || me.tabPayrollReadOnly));
 			
 			me.tpPayrollProcessingLocationReadOnly = me.isCtrlReadOnlyTabPayroll(me.authorizePath + "\\TabPayroll\\PayrollProcessingLocation\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
 			me.tpTimeAndAttendanceReadOnly = me.isCtrlReadOnlyTabPayroll(me.authorizePath + "\\TabPayroll\\TimeAndAttendance\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
@@ -440,6 +441,7 @@ ii.Class({
 			me.tpCeridianCompanyHourlyReadOnly = me.isCtrlReadOnlyTabPayroll(me.authorizePath + "\\TabPayroll\\CeridianCompanyHourly\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
 			me.tpCeridianCompanySalariedReadOnly = me.isCtrlReadOnlyTabPayroll(me.authorizePath + "\\TabPayroll\\CeridianCompanySalaried\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
 			me.tpPBJReportingReadOnly = me.isCtrlReadOnlyTabPayroll(me.authorizePath + "\\TabPayroll\\PBJReporting\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
+			me.tpFacilityIdReadOnly = me.isCtrlReadOnlyTabPayroll(me.authorizePath + "\\TabPayroll\\FacilityId\\Read", me.tabPayrollWrite, me.tabPayrollReadOnly);
 			
 			//Safety
 			me.safetyWrite = me.authorizer.isAuthorized(me.authorizePath + '\\Write');
@@ -859,6 +861,7 @@ ii.Class({
 			me.setControlState("CeridianCompanyHourly", me.tpCeridianCompanyHourlyReadOnly, me.tpCeridianCompanyHourlyShow);			
 			me.setControlState("CeridianCompanySalaried", me.tpCeridianCompanySalariedReadOnly, me.tpCeridianCompanySalariedShow);
 			me.setControlState("PBJReporting", me.tpPBJReportingReadOnly, me.tpPBJReportingShow, "Radio", "PBJReportingRadio");
+			me.setControlState("FacilityId", me.tpFacilityIdReadOnly, me.tpFacilityIdShow);
 			
 			//Safety
 			me.setControlState("IncidentFrequencyRate", me.tsIncidentFrequencyRateReadOnly, me.tsIncidentFrequencyRateShow);
@@ -2359,7 +2362,17 @@ ii.Class({
 				required: false,
 				changeFunction: function() { me.modified(); }
 		    });
-			
+
+			me.facilityId = new ui.ctl.Input.Text({
+		        id: "FacilityId",
+		        maxLength: 16,
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.facilityId.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required );
+
 			//Safety
 			me.incidentFrequencyRate = new ui.ctl.Input.Text({
 		        id: "IncidentFrequencyRate",
@@ -2755,6 +2768,7 @@ ii.Class({
 			me.ceridianCompanySalaried.resizeText();
 			me.ceridianCompanyHourly.resizeText();
 			me.ePayPayGroup.resizeText();
+			me.facilityId.resizeText();
 			
 			//Safety
 			me.incidentFrequencyRate.resizeText();
@@ -3387,7 +3401,8 @@ ii.Class({
 				$('#PBJReportingYes').attr('checked', true);
 			else
 				$('#PBJReportingNo').attr('checked', true);
-
+			me.facilityId.setValue(houseCode.facilityId);
+			
 			if (houseCode.houseCodeTypeId != undefined) {
 				if (houseCode.houseCodeTypeId == '3')
 					$('#HouseCodeTypeUACB').attr('checked', true);
@@ -3425,11 +3440,15 @@ ii.Class({
 			me.payrollDefaultLunchBreak = $("input[name='DefaultLunchBreak']:checked").val();
 			if (me.payrollDefaultLunchBreak != 0) me.breakOthers.setValue("");
 			
-			me.payrollLunchBreakTrigger= $("input[name='LunchBreakTrigger']:checked").val();
+			me.payrollLunchBreakTrigger = $("input[name='LunchBreakTrigger']:checked").val();
 			if (me.payrollLunchBreakTrigger != 0) me.breakTrigger.setValue("");	
 			me.payrollHouseCodeType = $("input[name='HouseCodeType']:checked").val();
 			me.payrollRoundingTimePeriod = $("input[name='RoundingTimePeriod']:checked").val();
 			me.payrollPBJReporting = ($("input[name='PBJReporting']:checked").val() == "true" ? true : false);
+			if (me.payrollPBJReporting) 
+				$("#FacilityIdContainer").show();
+			else
+				$("#FacilityIdContainer").hide();
 		},
 
 		searchManagerInfo: function() {
@@ -3883,6 +3902,7 @@ ii.Class({
 			me.houseCodeDetails[0].ePayTask = (me.ePayTask.check.checked ? 1 : 0);
 			me.houseCodeDetails[0].ePayHours = (me.ePayHours.check.checked ? 1 : 0);
 			me.houseCodeDetails[0].pbjReporting = me.payrollPBJReporting;
+			me.houseCodeDetails[0].facilityId = me.facilityId.getValue();
 			
 			//Safety
 			me.houseCodeDetails[0].incidentFrequencyRate = me.incidentFrequencyRate.getValue();
@@ -3947,7 +3967,12 @@ ii.Class({
 				alert("[Ceridian Company Hourly] & [Ceridian Company Salaried] cannot be same. Please select other option on Payroll Wizard.");
 				return false;
 			}
-			
+
+			if (me.houseCodeDetails[0].pbjReporting == true && me.houseCodeDetails[0].facilityId == "") {
+				alert("[Facility Id] is a required field. Please enter it on Payroll Wizard.");
+				return false;
+			}
+
 			var item = new fin.hcm.houseCodeWizard.HouseCodeDetail(
 				parent.fin.appUI.houseCodeId
 				, parent.fin.appUI.hirNode
@@ -4055,6 +4080,7 @@ ii.Class({
 				, me.houseCodeDetails[0].ePayTask
 				, me.houseCodeDetails[0].ePayHours
 				, me.houseCodeDetails[0].pbjReporting
+				, me.houseCodeDetails[0].facilityId
 
 				//Safety
 				, me.houseCodeDetails[0].incidentFrequencyRate
@@ -4199,6 +4225,7 @@ ii.Class({
 			xml += ' ePayTask="' + item.ePayTask + '"';
 			xml += ' ePayHours="' + item.ePayHours + '"';
 			xml += ' pbjReporting="' + item.pbjReporting + '"';
+			xml += ' facilityId="' + ui.cmn.text.xml.encode(item.facilityId) + '"';
 			
 			//Safety
 			xml += ' incidentFrequencyRate="' + ui.cmn.text.xml.encode(item.incidentFrequencyRate) + '"';

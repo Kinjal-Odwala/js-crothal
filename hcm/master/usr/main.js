@@ -667,6 +667,7 @@ ii.Class({
 				me.houseCodeDetails[0].ePayTask = (payrollUIControls.ePayTask.check.checked ? 1 : 0);
 				me.houseCodeDetails[0].ePayHours = (payrollUIControls.ePayHours.check.checked ? 1 : 0);
 				me.houseCodeDetails[0].pbjReporting = payrollUIControls.payrollPBJReporting;
+				me.houseCodeDetails[0].facilityId = payrollUIControls.facilityId.getValue();
 			}
 			
 			//Safety
@@ -734,6 +735,11 @@ ii.Class({
 			
 			if (payrollUIControls != undefined && payrollUIControls.ceridianCompanyHourly.indexSelected == payrollUIControls.ceridianCompanySalaried.indexSelected) {
 				alert("[Ceridian Company Hourly] & [Ceridian Company Salaried] cannot be same. Please select other option on Payroll Tab.");
+				return false;
+			}
+			
+			if (me.houseCodeDetails[0].pbjReporting == true && me.houseCodeDetails[0].facilityId == "") {
+				alert("[Facility Id] is a required field. Please enter it on Payroll Tab.");
 				return false;
 			}
 			
@@ -864,6 +870,7 @@ ii.Class({
 				, me.houseCodeDetails[0].ePayTask
 				, me.houseCodeDetails[0].ePayHours
 				, me.houseCodeDetails[0].pbjReporting
+				, me.houseCodeDetails[0].facilityId
 				
 				//Safety
 				, me.houseCodeDetails[0].incidentFrequencyRate
@@ -1008,7 +1015,8 @@ ii.Class({
 			xml += ' ePayTask="' + item.ePayTask + '"';
 			xml += ' ePayHours="' + item.ePayHours + '"';
 			xml += ' pbjReporting="' + item.pbjReporting + '"';
-			
+			xml += ' facilityId="' + ui.cmn.text.xml.encode(item.facilityId) + '"';
+
 			//Safety
 			xml += ' incidentFrequencyRate="' + ui.cmn.text.xml.encode(item.incidentFrequencyRate) + '"';
 			xml += ' trir="' + ui.cmn.text.xml.encode(item.trir) + '"';
