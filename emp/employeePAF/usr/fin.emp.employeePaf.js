@@ -3154,7 +3154,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             xml += ' hrReview="' + encode(getTitleById(item.HrReviewType, cache.personActionTypes)) + '"';
             xml += ' infoStateTitle="' + encode(getTitleById(item.InfoChangeStateType, cache.stateTypes)) + '"';
             xml += ' relocationPlan="' + encode(getTitleById(item.RelocationPlan, cache.personActionTypes)) + '"';
-            xml += ' newUnitTitle="' + encdoe(getTitleById(item.HouseCodeTransfer, cache.houseCodes)) + '"';
+            xml += ' newUnitTitle="' + encode(getTitleById(item.HouseCodeTransfer, cache.houseCodes)) + '"';
             xml += ' newBonusEligible="' + encode(getTitleById(item.NewBonusEligibleType, cache.personActionTypes)) + '"';
             xml += ' currentPositionType="' + encode(getTitleById(item.CurrentPositionType, cache.jobCodes)) + '"';
             xml += ' newPositionType="' + encode(getTitleById(item.NewPositionType, cache.jobCodes)) + '"';
@@ -3296,23 +3296,23 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         xml = '<transaction id="' + item.Id + '">';
         xml += '<submitEmployeePersonnelAction';
         xml += ' id="' + item.Id + '"';
-        xml += ' houseCodeTitle="' + getTitleById(item.HcmHouseCode, cache.houseCodes) + '"';
-        xml += ' stateTitle="' + getTitleById(item.StateType, cache.stateTypes) + '"';
-        xml += ' jobCodeTitle="' + getTitleById(item.PositionType, cache.jobCodes) + '"';
-        xml += ' payGradeTitle="' + getPayGradeTitle(item.PayGrade) + '"';
-        xml += ' bonusEligible="' + getTitleById(item.BonusEligibleType, cache.personActionTypes) + '"';
-        xml += ' reasonForChange="' + getTitleById(reasonId, cache.personActionTypes) + '"';
-        xml += ' hrReview="' + getTitleById(item.HrReviewType, cache.personActionTypes) + '"';
-        xml += ' infoStateTitle="' + getTitleById(item.InfoChangeStateType, cache.stateTypes) + '"';
-        xml += ' relocationPlan="' + getTitleById(item.RelocationPlan, cache.personActionTypes) + '"';
-        xml += ' newUnitTitle="' + getTitleById(item.HouseCodeTransfer, cache.houseCodes) + '"';
-        xml += ' newBonusEligible="' + getTitleById(item.NewBonusEligibleType, cache.personActionTypes) + '"';
-        xml += ' currentPositionType="' + getTitleById(item.CurrentPositionType, cache.jobCodes) + '"';
-        xml += ' newPositionType="' + getTitleById(item.NewPositionType, cache.jobCodes) + '"';
-        xml += ' changeReason="' + getTitleById(item.ChangeReasonType, cache.personActionTypes) + '"';
-        xml += ' currentPayGradeTitle="' + getPayGradeTitle(item.CurrentPayGrade) + '"';
-        xml += ' newPayGradeTitle="' + getPayGradeTitle(item.NewPayGrade) + '"';
-        xml += ' trainingLocation="' + getTitleById(item.TrainingLocation, cache.houseCodes) + '"';
+        xml += ' houseCodeTitle="' + encode(getTitleById(item.HcmHouseCode, cache.houseCodes)) + '"';
+        xml += ' stateTitle="' + encode(getTitleById(item.StateType, cache.stateTypes)) + '"';
+        xml += ' jobCodeTitle="' + encode(getTitleById(item.PositionType, cache.jobCodes)) + '"';
+        xml += ' payGradeTitle="' + encode(getPayGradeTitle(item.PayGrade)) + '"';
+        xml += ' bonusEligible="' + encode(getTitleById(item.BonusEligibleType, cache.personActionTypes)) + '"';
+        xml += ' reasonForChange="' + encode(getTitleById(reasonId, cache.personActionTypes)) + '"';
+        xml += ' hrReview="' + encode(getTitleById(item.HrReviewType, cache.personActionTypes)) + '"';
+        xml += ' infoStateTitle="' + encode(getTitleById(item.InfoChangeStateType, cache.stateTypes)) + '"';
+        xml += ' relocationPlan="' + encode(getTitleById(item.RelocationPlan, cache.personActionTypes)) + '"';
+        xml += ' newUnitTitle="' + encode(getTitleById(item.HouseCodeTransfer, cache.houseCodes)) + '"';
+        xml += ' newBonusEligible="' + encode(getTitleById(item.NewBonusEligibleType, cache.personActionTypes)) + '"';
+        xml += ' currentPositionType="' + encode(getTitleById(item.CurrentPositionType, cache.jobCodes)) + '"';
+        xml += ' newPositionType="' + encode(getTitleById(item.NewPositionType, cache.jobCodes)) + '"';
+        xml += ' changeReason="' + encode(getTitleById(item.ChangeReasonType, cache.personActionTypes)) + '"';
+        xml += ' currentPayGradeTitle="' + encode(getPayGradeTitle(item.CurrentPayGrade)) + '"';
+        xml += ' newPayGradeTitle="' + encode(getPayGradeTitle(item.NewPayGrade)) + '"';
+        xml += ' trainingLocation="' + encode(getTitleById(item.TrainingLocation, cache.houseCodes)) + '"';
         xml += ' step1Date="' + step1Date + '"';
         xml += ' step2Date="' + step2Date + '"';
         xml += ' step3Date="' + step3Date + '"';
@@ -3323,8 +3323,6 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         xml += ' approve="' + approve + '"';
         xml += '/>';
         xml += '</transaction>';
-
-        xml = xml.replace(/&/g, "&amp;");
 
         var data = 'moduleId=emp&requestId=1&requestXml=' + encodeURIComponent(xml) + '&targetId=iiTransaction';
         transactionMonitor(data, callback);
