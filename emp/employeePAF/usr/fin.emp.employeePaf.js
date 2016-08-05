@@ -840,7 +840,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                             $scope.Approvals.push(item);
                     }
                 }
-                else if (($scope.empAction.NewHire) || ($scope.empAction.ReHire) || $scope.empAction.Transfer || $scope.empAction.Promotion || $scope.empAction.Demotion) {
+                else if ($scope.empAction.NewHire || $scope.empAction.ReHire || $scope.empAction.Transfer || $scope.empAction.Promotion || $scope.empAction.Demotion) {
                     if (item.id == 5 || item.id == 6)
                         $scope.Approvals.push(item);
                 }
@@ -918,6 +918,79 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             }
         }
     };
+
+    $scope.getHouseCodeTitle = function (brief) {
+        return EmpActions.getHcmHouseCodeTitleByBrief(brief);
+    };
+
+    $scope.onEmployeeNameChanged = function (employeeName) {
+
+        if ($scope.empAction.HcmHouseCode === null || $scope.empAction.HcmHouseCode === "" || ($scope.empAction.EmployeeNumber !== null && $scope.empAction.EmployeeNumber !== undefined && $scope.empAction.EmployeeNumber !== "")) {
+            return;
+        }
+
+        $scope.employeeIdSelected = null;
+        var employeeList = [];
+
+        EmpActions.getEmployees(employeeName, EmpActions.getHcmHouseCodeBrief($scope.empAction.HcmHouseCode), function (result) {
+            employeeList = result;
+
+            if (employeeList.length === 0) {
+                alert("There is no data with employee name [" + employeeName + "].");
+                return;
+            }
+
+            if (employeeList.length === 1) {
+                $scope.empAction.EmployeeNumber = employeeList[0].employeeNumber;
+                $scope.empAction.EmployeeId = employeeList[0].id;
+                $scope.empAction.FirstName = employeeList[0].firstName;
+                $scope.empAction.MiddleName = employeeList[0].middleName;
+                $scope.empAction.LastName = employeeList[0].lastName;
+                $scope.empAction.AddressLine1 = employeeList[0].addressLine1;
+                $scope.empAction.AddressLine2 = employeeList[0].addressLine2;
+                $scope.empAction.City = employeeList[0].city;
+                $scope.empAction.StateType = parseInt(employeeList[0].state);
+                $scope.empAction.PostalCode = employeeList[0].postalCode;
+                $scope.empAction.Phone = employeeList[0].phone;
+                return;
+            }
+
+            $scope.isSelected = true;
+            $scope.employees = employeeList;
+
+            if ($scope.employees.length > 0) {
+                var modalInstance = $modal.open({
+                    templateUrl: 'employeeGrid.html',
+                    controller: 'modalInstanceCtrl',
+                    title: "Select Employee",
+                    size: 'sm',
+                    scope: $scope
+                });
+            }
+        });
+    };
+    $scope.employeeIdSelected = null;
+    $scope.selectedEmployee = null;
+
+    $scope.employeeSelected = function (item) {
+        $scope.selectedEmployee = item;
+        $scope.employeeIdSelected = $scope.selectedEmployee.id;
+        $scope.isSelected = false;
+    };
+
+    $scope.selected = function () {
+        $scope.empAction.EmployeeNumber = $scope.selectedEmployee.employeeNumber;
+        $scope.empAction.EmployeeId = $scope.selectedEmployee.id;
+        $scope.empAction.FirstName = $scope.selectedEmployee.firstName;
+        $scope.empAction.MiddleName = $scope.selectedEmployee.middleName;
+        $scope.empAction.LastName = $scope.selectedEmployee.lastName;
+        $scope.empAction.AddressLine1 = $scope.selectedEmployee.addressLine1;
+        $scope.empAction.AddressLine2 = $scope.selectedEmployee.addressLine2;
+        $scope.empAction.City = $scope.selectedEmployee.city;
+        $scope.empAction.StateType = parseInt($scope.selectedEmployee.state);
+        $scope.empAction.PostalCode = $scope.selectedEmployee.postalCode;
+        $scope.empAction.Phone = $scope.selectedEmployee.phone;
+    }
 
     $scope.onHouseCodeChange = function () {
         if (lastEmployeeNumber != null) {
@@ -1544,6 +1617,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
     $scope.sortType = 'Number';
     $scope.sortReverse = false;
     $scope.selectedItem = null;
+
     $scope.maxDate = '2099-12-31';
     $scope.dateOptions = {
         formatYear: 'yy',
@@ -2745,6 +2819,18 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         });
     };
 
+    var getEmployees = function (employeeName, houseCode, callback) {
+
+        apiRequest('emp', 'iiCache', '<criteria>storeId:employees,userId:[user]'
+            + ',lastName:' + employeeName
+            + ',houseCode:' + houseCode
+              + ',</criteria>', function (xml) {
+                  if (callback) {
+                      callback(deserializeXml(xml, 'item', { upperFirstLetter: false }));
+                  }
+              });
+    }
+
     var findEmployeePAFDocument = function (id, callback) {
 
         apiRequest('emp', 'iiCache', '<criteria>storeId:employeePAFDocuments,userId:[user]' + ",pafId:" + id + ',</criteria>', function (xml) {
@@ -2842,6 +2928,21 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         return title;
     };
 
+    var getHcmHouseCodeTitleByBrief = function (brief) {
+        if (cache.houseCodes === null)
+            return "";
+
+        var title = 0;
+
+        angular.forEach(cache.houseCodes, function (item, index) {
+            if (item.brief === brief) {
+                title = item.name;
+            }
+        });
+
+        return title;
+    };
+
     var getHcmHouseCodeByBrief = function (brief) {
         if (cache.houseCodes == null)
             return "";
@@ -2855,6 +2956,21 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         });
 
         return hcmHouseCode;
+    };
+
+    var getHcmHouseCodeBrief = function (id) {
+        if (cache.houseCodes === null)
+            return "";
+
+        var brief = "";
+
+        angular.forEach(cache.houseCodes, function (item, index) {
+            if (item.id === id) {
+                brief = item.brief;
+            }
+        });
+
+        return brief;
     };
 
     var getStateTypes = function (callback) {
@@ -3235,7 +3351,7 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
     var transactionMonitor = function (data, callback) {
         jQuery.post('/net/crothall/chimes/fin/emp/act/Provider.aspx', data, function (data, status, xhr) {
             var transactionNode = $(xhr.responseXML).find("transaction")[0];
-            
+
             if (transactionNode !== undefined) {
                 if ($(transactionNode).attr("status") === "success") {
                     if (callback)
@@ -3365,6 +3481,9 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         getAppUsers: getAppUsers,
         getAdminName: getAdminName,
         getAppUserName: getAppUserName,
-        transactionMonitor: transactionMonitor
+        transactionMonitor: transactionMonitor,
+        getEmployees: getEmployees,
+        getHcmHouseCodeBrief: getHcmHouseCodeBrief,
+        getHcmHouseCodeTitleByBrief: getHcmHouseCodeTitleByBrief
     }
 }]);

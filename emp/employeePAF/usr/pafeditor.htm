@@ -1,6 +1,7 @@
 ﻿<section>
     <h3 class="text-center header">PERSONNEL ACTION FORM<span ng-if="empAction.Number>0"> (#{{empAction.Number}})</span></h3>
 </section>
+
 <div class="customizer">
     <div class="container bs-docs-container ">
         <form name="pafForm">
@@ -42,7 +43,7 @@
                     <div class="col-md-3">
                         <div class="form-group" ng-class="{'has-error':pafForm.LastName.$invalid}">
                             <label class="control-label">Last Name</label>
-                            <input class="form-control input-sm" name="LastName" maxlength="50" ng-model="empAction.LastName" ng-disabled="empAction.Data.EmployeeExists" required/>
+                            <input class="form-control input-sm" name="LastName" maxlength="50" ng-model="empAction.LastName" ng-blur="onEmployeeNameChanged(empAction.LastName)" paf-enter="onEmployeeNameChanged(empAction.LastName)" ng-disabled="empAction.Data.EmployeeExists" required/>
                         </div>
                     </div>
                 </div>
@@ -56,7 +57,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="control-label">Address 2</label>
-                            <input class="form-control input-sm" name="AddressLine2" maxlength="100" ng-model="empAction.AddressLine2" ng-disabled="empAction.Data.EmployeeExists" />
+                            <input class="form-control input-sm" name="AddressLine2" maxlength="100" ng-model="empAction.AddressLine2" ng-disabled="empAction.Data.EmployeeExists"/>
                         </div>
                     </div>
                 </div>
@@ -793,7 +794,7 @@
                 </div>
             </section>
             <!--REQUISITION-->
-            <section ng-if="(empAction.NewHire) || (empAction.ReHire) || empAction.Promotion || empAction.Demotion || empAction.Transfer">
+            <section ng-if="empAction.NewHire || empAction.ReHire || empAction.Promotion || empAction.Demotion || empAction.Transfer">
                 <div ng-form="requisitionForm">
                     <h4>REQUISITION</h4>
                     <p>(To be completed by Recruiter)</p>
@@ -1118,6 +1119,45 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-primary" ng-disabled="disable" ng-click="upload()">Upload</button>
+            <button type="button" class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+    </div>
+</script>
+<script type="text/ng-template" id="employeeGrid.html">
+    <form name="uploadInfoForm">
+    <div id="employeeModal" class="modal-content" style="width:800px;">
+        <div style="font-weight:bold;font-size: 18px;text-align: center;font-family: Verdana;">Select Employee</div>
+        <div class="modal-body" id="employeeTable">
+        <table class="table-scroll table table-bordered table-hover">
+        <thead style="color:#3276b1;">
+            <tr class="heading" role="row">
+                <th width="2%" style="text-align:center">
+                    #
+                </th>
+                <th width="10%" style="text-align:center">
+                        Employee #
+                </th>
+                <th width="15%" style="text-align:center">
+                        Employee Name
+                </th>
+                <th width="20%" style="text-align:center">
+                        House Code
+                </th>
+                <th width="1%"></th>
+            </tr>
+        </thead>
+        <tbody style="max-height:200px;">
+            <tr ng-repeat="item in employees" ng-click="employeeSelected(item)" ng-class="{selected: item.id === employeeIdSelected}">
+                <td width="2%" align ="center">{{$index + 1}}</td>
+                <td width="10%" align ="center">{{item.employeeNumber == 0 ? "" : item.employeeNumber}}</td>
+                <td width="15%">{{item.firstName}}&nbsp;{{item.lastName}}</td>
+                <td width="20%">{{getHouseCodeTitle(item.houseCode)}}</td>
+             </tr>
+        </tbody>
+    </table>
+    </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" ng-disabled="isSelected" ng-click="selected();ok()">OK</button>
             <button type="button" class="btn btn-warning" ng-click="cancel()">Cancel</button>
         </div>
     </div>

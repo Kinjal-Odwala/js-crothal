@@ -168,6 +168,16 @@
   background-color:lightblue;
 }
 
+#employeeModal {
+    left: 20%;
+    position: fixed;
+    top: 10%;
+    height: auto;
+    max-height: 500px;
+}
+
+
+
    
 
 
