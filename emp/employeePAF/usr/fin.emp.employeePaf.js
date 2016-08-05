@@ -831,7 +831,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                         $scope.Approvals.push(item);
                 }
                 else if ($scope.empAction.SalaryChange && $scope.empAction.IncreaseDecreasePercentage > 4) {
-                    if (($scope.empAction.NewHire && $scope.empAction.PayStatus != 'Per Diem') || ($scope.empAction.ReHire && $scope.empAction.PayStatus != 'Per Diem') || $scope.empAction.Transfer) {
+                    if ($scope.empAction.NewHire || $scope.empAction.ReHire || $scope.empAction.Transfer) {
                         if (item.id == 3 || item.id == 4 || (item.id == 5) || item.id == 6)
                             $scope.Approvals.push(item);
                     }
@@ -840,7 +840,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                             $scope.Approvals.push(item);
                     }
                 }
-                else if (($scope.empAction.NewHire && $scope.empAction.PayStatus != 'Per Diem') || ($scope.empAction.ReHire && $scope.empAction.PayStatus != 'Per Diem') || $scope.empAction.Transfer || $scope.empAction.Promotion || $scope.empAction.Demotion) {
+                else if (($scope.empAction.NewHire) || ($scope.empAction.ReHire) || $scope.empAction.Transfer || $scope.empAction.Promotion || $scope.empAction.Demotion) {
                     if (item.id == 5 || item.id == 6)
                         $scope.Approvals.push(item);
                 }

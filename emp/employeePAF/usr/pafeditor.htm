@@ -793,7 +793,7 @@
                 </div>
             </section>
             <!--REQUISITION-->
-            <section ng-if="(empAction.NewHire && empAction.PayStatus != 'Per Diem') || (empAction.ReHire && empAction.PayStatus != 'Per Diem') || empAction.Promotion || empAction.Demotion || empAction.Transfer">
+            <section ng-if="(empAction.NewHire) || (empAction.ReHire) || empAction.Promotion || empAction.Demotion || empAction.Transfer">
                 <div ng-form="requisitionForm">
                     <h4>REQUISITION</h4>
                     <p>(To be completed by Recruiter)</p>
@@ -1014,7 +1014,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row" ng-if="!empAction.Loa && (!overHeadAccount && empAction.HcmHouseCode) && ((empAction.NewHire && empAction.PayStatus != 'Per Diem') || (empAction.ReHire && empAction.PayStatus != 'Per Diem') || empAction.Promotion || empAction.Demotion || empAction.Transfer)">
+                    <div class="row" ng-if="!empAction.Loa && (!overHeadAccount && empAction.HcmHouseCode) && (empAction.NewHire || empAction.ReHire || empAction.Promotion || empAction.Demotion || empAction.Transfer)">
                         <div class="col-md-2">
                         	<label>Recruiter Name</label>
                         </div>
