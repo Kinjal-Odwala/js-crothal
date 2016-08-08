@@ -1082,7 +1082,7 @@
             </section>
             <div style="margin-bottom:20px;"/>
             <div class="pull-right margin-bottom20">
-                <button class="btn btn-primary" type="submit" ng-if="empAction.StatusType != 8 && empAction.StatusType != 9 && empAction.StatusType != 6 && ((empAction.StatusType != 2 && write) || (empAction.StatusType == 2 && writeInProcess))" ng-click="save(0)">Save</button>
+                <button class="btn btn-primary" type="submit" ng-if="empAction.StatusType != 8 && empAction.StatusType != 11 && empAction.StatusType != 9 && empAction.StatusType != 6 && ((empAction.StatusType != 2 && write) || (empAction.StatusType == 2 && writeInProcess))" ng-click="save(0)">Save</button>
                 <button class="btn btn-primary" type="submit" ng-if="empAction.StatusType == 1 && write" ng-click="save(1)">Save & Submit</button>
                 <a class="btn btn-default" href="#/list">Cancel</a>
             </div>
@@ -1157,7 +1157,7 @@
     </table>
     </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-primary" ng-disabled="isSelected" ng-click="selected();ok()">OK</button>
+            <button type="button" class="btn btn-primary" ng-disabled="isSelected" ng-click="selected();cancel()">OK</button>
             <button type="button" class="btn btn-warning" ng-click="cancel()">Cancel</button>
         </div>
     </div>

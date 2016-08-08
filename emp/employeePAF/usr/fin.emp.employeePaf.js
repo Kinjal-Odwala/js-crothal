@@ -924,51 +924,58 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     };
 
     $scope.onEmployeeNameChanged = function (employeeName) {
+        if (employeeName !== null && employeeName !== "" && employeeName !== undefined) {
+            $scope.empAction.cacheEmployeeName = employeeName;
 
-        if ($scope.empAction.HcmHouseCode === null || $scope.empAction.HcmHouseCode === "" || ($scope.empAction.EmployeeNumber !== null && $scope.empAction.EmployeeNumber !== undefined && $scope.empAction.EmployeeNumber !== "")) {
-            return;
-        }
+            if (!$scope.empAction.NewHire && $scope.empAction.HcmHouseCode !== undefined && $scope.empAction.HcmHouseCode !== null && $scope.empAction.HcmHouseCode !== "" && ($scope.empAction.EmployeeNumber === null || $scope.empAction.EmployeeNumber === undefined || $scope.empAction.EmployeeNumber === "")) {
 
-        $scope.employeeIdSelected = null;
-        var employeeList = [];
+                $scope.employeeIdSelected = null;
+                var employeeList = [];
 
-        EmpActions.getEmployees(employeeName, EmpActions.getHcmHouseCodeBrief($scope.empAction.HcmHouseCode), function (result) {
-            employeeList = result;
+                EmpActions.getEmployees(employeeName, EmpActions.getHcmHouseCodeBrief($scope.empAction.HcmHouseCode), function (result) {
+                    employeeList = result;
 
-            if (employeeList.length === 0) {
-                alert("There is no data with employee name [" + employeeName + "].");
-                return;
-            }
+                    if (employeeList.length === 0) {
+                        alert("There is no data with employee name [" + employeeName + "].");
+                        $scope.empAction.LastName = null;
+                    }
+                    else if (employeeList.length === 1) {
+                        $scope.empAction.EmployeeNumber = employeeList[0].employeeNumber;
+                        $scope.empAction.EmployeeId = employeeList[0].id;
+                        $scope.empAction.FirstName = employeeList[0].firstName;
+                        $scope.empAction.MiddleName = employeeList[0].middleName;
+                        $scope.empAction.LastName = employeeList[0].lastName;
+                        $scope.empAction.AddressLine1 = employeeList[0].addressLine1;
+                        $scope.empAction.AddressLine2 = employeeList[0].addressLine2;
+                        $scope.empAction.City = employeeList[0].city;
+                        $scope.empAction.StateType = parseInt(employeeList[0].state);
+                        $scope.empAction.PostalCode = employeeList[0].postalCode;
+                        $scope.empAction.Phone = employeeList[0].phone;
+                        $scope.empAction.CacheHcmHouseCode = $scope.empAction.HcmHouseCode;
+                        $scope.empAction.CacheEmployeeNumber = $scope.empAction.EmployeeNumber;
+                        $scope.empAction.Data.EmployeeExists = true;
+                    }
+                    else if (employeeList.length > 1) {
+                        $scope.isSelected = true;
+                        $scope.employees = employeeList;
 
-            if (employeeList.length === 1) {
-                $scope.empAction.EmployeeNumber = employeeList[0].employeeNumber;
-                $scope.empAction.EmployeeId = employeeList[0].id;
-                $scope.empAction.FirstName = employeeList[0].firstName;
-                $scope.empAction.MiddleName = employeeList[0].middleName;
-                $scope.empAction.LastName = employeeList[0].lastName;
-                $scope.empAction.AddressLine1 = employeeList[0].addressLine1;
-                $scope.empAction.AddressLine2 = employeeList[0].addressLine2;
-                $scope.empAction.City = employeeList[0].city;
-                $scope.empAction.StateType = parseInt(employeeList[0].state);
-                $scope.empAction.PostalCode = employeeList[0].postalCode;
-                $scope.empAction.Phone = employeeList[0].phone;
-                return;
-            }
-
-            $scope.isSelected = true;
-            $scope.employees = employeeList;
-
-            if ($scope.employees.length > 0) {
-                var modalInstance = $modal.open({
-                    templateUrl: 'employeeGrid.html',
-                    controller: 'modalInstanceCtrl',
-                    title: "Select Employee",
-                    size: 'sm',
-                    scope: $scope
+                      var employeeModalInstance = $modal.open({
+                            templateUrl: 'employeeGrid.html',
+                            controller: 'modalInstanceCtrl',
+                            title: "Select Employee",
+                            size: 'sm',
+                            scope: $scope
+                        });
+                    }
                 });
             }
-        });
+        }
+        else {
+            $scope.empAction.LastName = $scope.empAction.cacheEmployeeName;
+            return;
+        }
     };
+
     $scope.employeeIdSelected = null;
     $scope.selectedEmployee = null;
 
@@ -990,6 +997,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         $scope.empAction.StateType = parseInt($scope.selectedEmployee.state);
         $scope.empAction.PostalCode = $scope.selectedEmployee.postalCode;
         $scope.empAction.Phone = $scope.selectedEmployee.phone;
+        $scope.empAction.CacheHcmHouseCode = $scope.empAction.HcmHouseCode;
+        $scope.empAction.CacheEmployeeNumber = $scope.empAction.EmployeeNumber;
+        $scope.empAction.Data.EmployeeExists = true;
     }
 
     $scope.onHouseCodeChange = function () {
@@ -1856,23 +1866,12 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         $scope.loadingTitle = " Downloading...";
 
         EmpActions.submitEmployeePersonnelAction(selectedItem, true, false, function (data, status) {
-            if (status == 'success') {
-                var items = deserializeXml(data, 'empFileName', { upperFirstLetter: false, intItems: ['id'] });
-                $("#iFrameDownload")[0].contentWindow.document.getElementById("FileName").value = items[0].fileName;
-                $("#iFrameDownload")[0].contentWindow.document.getElementById("DownloadButton").click();
-                $scope.$apply(function () {
-                    $scope.pageLoading = false;
-                });
-                //$scope.pageLoading = false;
-                //$scope.getPafList();
-                alert("Employee PAF has been printed successfully.");
-            }
-            else {
-                $scope.$apply(function () {
-                    $scope.pageLoading = false;
-                });
-                alert("Employee PAF has not been printed.");
-            }
+            var items = deserializeXml(data, 'empFileName', { upperFirstLetter: false, intItems: ['id'] });
+            $("#iFrameDownload")[0].contentWindow.document.getElementById("FileName").value = items[0].fileName;
+            $("#iFrameDownload")[0].contentWindow.document.getElementById("DownloadButton").click();
+            $scope.$apply(function () {
+                $scope.pageLoading = false;
+            });
         });
     };
 
