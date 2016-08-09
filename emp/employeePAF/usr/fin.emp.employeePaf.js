@@ -924,7 +924,10 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     };
 
     $scope.onEmployeeNameChanged = function (employeeName) {
-        if (employeeName !== null && employeeName !== "" && employeeName !== undefined) {
+        var cacheEmployeeName = "";
+        cacheEmployeeName = $scope.empAction.cacheEmployeeName;
+
+        if (employeeName !== null && employeeName !== "" && employeeName !== undefined && (cacheEmployeeName === null || cacheEmployeeName === "" || cacheEmployeeName === undefined || employeeName !== cacheEmployeeName)) {
             $scope.empAction.cacheEmployeeName = employeeName;
 
             if (!$scope.empAction.NewHire && $scope.empAction.HcmHouseCode !== undefined && $scope.empAction.HcmHouseCode !== null && $scope.empAction.HcmHouseCode !== "" && ($scope.empAction.EmployeeNumber === null || $scope.empAction.EmployeeNumber === undefined || $scope.empAction.EmployeeNumber === "")) {
@@ -937,7 +940,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
                     if (employeeList.length === 0) {
                         alert("There is no data with employee name [" + employeeName + "].");
-                        $scope.empAction.LastName = null;
+                        resetFields(true, "");
+                        $scope.empAction.LastName = employeeName;
                     }
                     else if (employeeList.length === 1) {
                         $scope.empAction.EmployeeNumber = employeeList[0].employeeNumber;
@@ -965,14 +969,11 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                             title: "Select Employee",
                             size: 'sm',
                             scope: $scope
-                        });
+                      });
+
                     }
                 });
             }
-        }
-        else {
-            $scope.empAction.LastName = $scope.empAction.cacheEmployeeName;
-            return;
         }
     };
 
