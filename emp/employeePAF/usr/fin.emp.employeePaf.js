@@ -940,8 +940,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
                     if (employeeList.length === 0) {
                         alert("There is no data with employee name [" + employeeName + "].");
-                        resetFields(true, "");
-                        $scope.empAction.LastName = employeeName;
                     }
                     else if (employeeList.length === 1) {
                         $scope.empAction.EmployeeNumber = employeeList[0].employeeNumber;
