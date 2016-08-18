@@ -875,7 +875,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         if ($scope.empAction.Data.EmployeeExists && $scope.empAction.CacheHcmHouseCode != newValue) {
             alert("House Code is not same as Employee Number House Code.");
         }
-        if (newValue != oldValue) {
+        if (newValue !== "" && newValue != oldValue) {
             getHouseCodes(newValue, function (response) {
                 if (angular.isDefined(response)) {
                     if (response.contractTypeId == "3")
@@ -932,7 +932,6 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
             if (!$scope.empAction.NewHire && $scope.empAction.HcmHouseCode !== undefined && $scope.empAction.HcmHouseCode !== null && $scope.empAction.HcmHouseCode !== "" && ($scope.empAction.EmployeeNumber === null || $scope.empAction.EmployeeNumber === undefined || $scope.empAction.EmployeeNumber === "")) {
 
-                $scope.employeeIdSelected = null;
                 var employeeList = [];
 
                 EmpActions.getEmployees(employeeName, EmpActions.getHcmHouseCodeBrief($scope.empAction.HcmHouseCode), function (result) {
@@ -975,12 +974,10 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         }
     };
 
-    $scope.employeeIdSelected = null;
     $scope.selectedEmployee = null;
 
     $scope.employeeSelected = function (item) {
         $scope.selectedEmployee = item;
-        $scope.employeeIdSelected = $scope.selectedEmployee.id;
         $scope.isSelected = false;
     };
 
@@ -1657,7 +1654,6 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
     };
 
     $scope.search = function () {
-        $scope.idSelected = null;
         $scope.getPafList();
     }
 
@@ -1931,11 +1927,9 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         });
 
     };
-    $scope.idSelected = null;
 
     $scope.itemSelected = function (item) {
         $scope.selectedItem = item;
-        $scope.idSelected = $scope.selectedItem.Id;
 
         if ($scope.selectedItem.WorkflowStep == null || $scope.selectedItem.WorkflowStep == "") {
             $scope.selectedItem.WorkflowStep = 0;

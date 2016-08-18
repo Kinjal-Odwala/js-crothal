@@ -93,7 +93,7 @@
         </div>
     </div>
     <div class="row margin-bottom10"></div>
-    <table class="table-scroll table table-bordered table-hover margin-bottom10">
+    <table class="table-scroll table table-striped table-bordered table-hover margin-bottom10">
         <thead>
             <tr class="heading" role="row">
                 <th width="8%" style="text-align:center">
@@ -149,7 +149,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="item in empActions | orderBy:sortBy:sortReverse" ng-click="itemSelected(item)" ng-class="{'warning':selectedItem==item};{selected: item.Id === idSelected}">
+            <tr ng-repeat="item in empActions | orderBy:sortBy:sortReverse" ng-click="itemSelected(item)" ng-class="{'warning':selectedItem == item};">
                 <td width="8%" align ="center">{{item.Number}}</td>
                 <td width="10%" align ="center">{{getDate(item.Date)}}</td>
                 <td width="10%" align ="center">{{item.EmployeeNumber == 0 ? "" : item.EmployeeNumber}}</td>
