@@ -121,6 +121,10 @@ ii.init.register( function() {
 		, regionalManagerName: {type: String, required: false, defaultValue: ""}
 		, regionalManagerTitle: {type: String, required: false, defaultValue: ""}
 		, regionalManagerEmail: {type: String, required: false, defaultValue: ""}
+		, regionalVicePresidentName: {type: String, required: false, defaultValue: ""}
+		, regionalVicePresidentEmail: {type: String, required: false, defaultValue: ""}
+		, divisionVicePresidentName: {type: String, required: false, defaultValue: ""}
+		, divisionVicePresidentEmail: {type: String, required: false, defaultValue: ""}
 		, divisionPresidentName: {type: String, required: false, defaultValue: ""}
 		, divisionPresidentEmail: {type: String, required: false, defaultValue: ""}
 		, financeDirectorName: {type: String, required: false, defaultValue: ""}
@@ -131,7 +135,9 @@ ii.init.register( function() {
 		, taxPercent: {type: String, required: false, defaultValue: ""}
 		, taxAmount: {type: String, required: false, defaultValue: ""}
 		, freight: {type: String, required: false, defaultValue: ""}
+		, identifier: {type: String, required: false, defaultValue: ""}
 		, stepBrief: {type: String, required: false, defaultValue: ""}
+		, stepNumber: {type: Number, required: false, defaultValue: 0}
 	};
 	
 	fin.pur.poCapitalRequisition.poCapitalRequisitionItemArgs = {
@@ -213,6 +219,16 @@ ii.init.register( function() {
 		, jobTitle: {type: String, required: false, defaultValue: ""}
 	};
 	
+	fin.pur.poCapitalRequisition.workflowHierarchyArgs = {
+		id: {type: Number}
+		, workflowModuleId: {type: Number, required: false, defaultValue: 0}
+		, nodeId: {type: Number, required: false, defaultValue: 0}
+		, stepNumber: {type: Number, required: false, defaultValue: 0}
+		, name: {type: String, required: false, defaultValue: ""}
+		, title: {type: String, required: false, defaultValue: ""}
+		, email: {type: String, required: false, defaultValue: ""}
+	};
+	
 	fin.pur.poCapitalRequisition.workflowJDECompanyArgs = {
 		id: {type: Number}
 		, workflowModuleId: {type: Number, required: false, defaultValue: 0}
@@ -226,6 +242,8 @@ ii.init.register( function() {
 	fin.pur.poCapitalRequisition.workflowHistoryArgs = {
 		id: {type: Number}
 		, modAt: {type: String, required: false, defaultValue: ""}
+		, administrator: {type: Boolean, required: false, defaultValue: false}
+		, administratorName: {type: String, required: false, defaultValue: ""}
 	};
 	
 	fin.pur.poCapitalRequisition.approvalArgs = {
@@ -437,6 +455,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.pur.poCapitalRequisition.employeeManagerDetailArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.pur.poCapitalRequisition.WorkflowHierarchy",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pur.poCapitalRequisition.workflowHierarchyArgs);
 			$.extend(this, args);
 		}
 	}

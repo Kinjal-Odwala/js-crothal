@@ -60,7 +60,7 @@
 
 .labelTextArea {
 	float: left;
-	width: 170px;
+	width: 200px;
 	font-family: Verdana;
 	font-size: 12px;
 	color: #032D23;
@@ -338,12 +338,12 @@
 }
 
 #DocumentGrid, #ApprovalGrid {
-	width: 700px;
+	width: 850px;
 	margin-left: 10px;
 }
 
 #Paging {
-	width: 700px;
+	width: 850px;
 	margin-left: 11px;
 }
 

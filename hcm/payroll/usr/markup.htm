@@ -168,6 +168,29 @@
 						<div id="CeridianCompanySalaried"></div>
 					</div>
 				</div>
+				<div style="clear:both; height:8px;"></div>
+				<div class="TableEditAreaPayroll">						
+					<div class="LableTextAreaLeftPayroll">PBJ Reporting:</div>
+					<div id="PBJReportingRadio">
+						<div class="payrollRadioButtonLeft">
+							<input id="PBJReportingYes" name="PBJReporting" type="radio" onclick="javascript: fin.hcmPayrollCodeUi.assignValue();" value="true" checked="checked"/>
+						</div>
+						<div class="payrollRadioTextLeft">Yes</div>
+						<div class="payrollRadioButtonLeft">
+							<input id="PBJReportingNo" name="PBJReporting" type="radio" onclick="javascript: fin.hcmPayrollCodeUi.assignValue();" value="false"/>
+						</div>
+						<div class="payrollRadioTextLeft">No</div>
+					</div>
+				</div>
+				<div style="clear:both; height:8px;"></div>	
+				<div id="FacilityIdContainer" class="TableEditAreaPayroll">
+					<div class="LableTextAreaLeftPayroll">
+						<span class="requiredFieldIndicator">&#149;</span>Facility Id:
+					</div>
+					<div class="InputTextAreaRight">
+						<div id="FacilityId"></div>
+					</div>
+				</div>
 			</div>			
 		</div>
 		<div id="iiInputValidationMaster"></div>

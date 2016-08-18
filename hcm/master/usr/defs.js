@@ -40,6 +40,7 @@ ii.init.register( function() {
 		, serviceLineId: {type: Number, required: false, defaultValue: 0}
 		, enforceLaborControl: {type: Boolean, required: false, defaultValue: false}
 		, managerName: {type: String, required: false, defaultValue: ""}
+		, managerId: {type: Number, required: false, defaultValue: 0}
 		, managerEmail: {type: String, required: false, defaultValue: ""}
 		, managerPhone: {type: String, required: false, defaultValue: ""}
 		, managerCellPhone: {type: String, required: false, defaultValue: ""}
@@ -126,6 +127,8 @@ ii.init.register( function() {
 		, ePayGroupType: {type: Number, required: false, defaultValue: 0}
 		, ePayTask: {type: Number, required: false, defaultValue: 0}
 		, ePayHours: {type: Boolean, required: false, defaultValue: false}
+		, pbjReporting: {type: Boolean, required: false, defaultValue: false}
+		, facilityId: {type: String, required: false, defaultValue: ""}
 		, incidentFrequencyRate: {type: String, required: false, defaultValue: ""}
 		, trir: {type: String, required: false, defaultValue: ""}
 		, lostDays: {type: String, required: false, defaultValue: ""}

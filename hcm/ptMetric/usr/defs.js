@@ -73,9 +73,6 @@ ii.init.register( function() {
 		, contractedAnnualTrips: {type: String, required: false, defaultValue: ""}
 		, taskManagementSystem: {type: Number, required: false, defaultValue: 0}
 		, taskManagementSystemOther: {type: String, required: false, defaultValue: ""}
-		, administratorObjective1: {type: Number, required: false, defaultValue: 0}
-		, administratorObjective2: {type: Number, required: false, defaultValue: 0}
-		, administratorObjective3: {type: Number, required: false, defaultValue: 0}
 		, notes: {type: String, required: false, defaultValue: ""}
 	};
 	
@@ -223,6 +220,18 @@ ii.init.register( function() {
 		, ptMetricTypeTitle: {type: String, required: false, defaultValue: ""}
 		, annual1: {type: String, required: false, defaultValue: ""}
 		, annual2: {type: String, required: false, defaultValue: ""}
+		, modified: {type: Boolean, required: false, defaultValue: false}
+	};
+	
+	fin.hcm.ptMetric.adminObjectiveArgs = {
+		id: {type: Number, required: false, defaultValue: 0}
+		, ptMetricId: {type: Number, required: false, defaultValue: 0}
+		, ptMetricType: {type: fin.hcm.ptMetric.MetricType, required: false}
+		, ptMetricTypeTitle: {type: String, required: false, defaultValue: ""}
+		, quarter1: {type: fin.hcm.ptMetric.AdministratorObjective, required: false}
+		, quarter2: {type: fin.hcm.ptMetric.AdministratorObjective, required: false}
+		, quarter3: {type: fin.hcm.ptMetric.AdministratorObjective, required: false}
+		, quarter4: {type: fin.hcm.ptMetric.AdministratorObjective, required: false}
 		, modified: {type: Boolean, required: false, defaultValue: false}
 	};
 
@@ -436,6 +445,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.ptMetric.auditScoreArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.ptMetric.AdminObjective",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.ptMetric.adminObjectiveArgs);
 			$.extend(this, args);
 		}
 	}

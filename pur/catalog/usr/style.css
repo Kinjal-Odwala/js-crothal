@@ -1,146 +1,30 @@
-﻿
-#catalogAssociationsContent {
-	width: 100%;
+﻿.inputTextArea {
+	float: left;
+	width: 200px;
 }
 
-#catalogItemContent { 
-	width: 100%;
+.inputTextAreaLarge {
+	float: left;
+	width: 400px;
 }
 
-#InputTextAreaCatalog {
-	width: 190px; 
-	height: 27px;
-	float: left; 
-}
-
-#LabelTextAreaLeftCatalog {
+.labelTextAreaSmall {
+	float: left;
 	width: 100px;
-	float: left;
-	height: 27px;
-	font-family: Verdana;
-	font-size: 12px;
-	color: #032D23;
-}
-
-#LabelAreaCatalogSearch {
-	width: 180px;
-	float: left;
-	height: 27px;
-	font-family: Verdana;
-	font-size: 12px;
-	color: #032D23;
-	padding: 0px 0px 0px 10px;
-}
-
-#LabelHouseCode {
-	width: 90px;
-	float: left;
-	height: 27px;
 	font-family: Verdana;
 	font-size: 12px;
 	color: #032D23;
 	padding: 5px 0px 0px 10px;
 }
 
-#InputTextAreaItemSearch {
-	width: 400px; 
-	height: 27px;
-	float: left; 
-}
-
-#LabelTextAreaCatalogDetails {
-	width: 130px;
+.labelTextArea {
 	float: left;
+	width: 130px;	
 	height: 27px;
 	font-family: Verdana;
 	font-size: 12px;
 	color: #032D23;
-}
-
-#searchButtonCatalog {
-	width: 85px;
-	float: left;
-	padding-left: 5px;
-	margin-right: 5px;
-}
-
-#TabCollection {
-	width: 100%;
-}
-	
-.fragment {
-	border: 0;
-	border: solid #AAAAAA thin;
-	border-width: 1px;
-	padding: 5px 5px 5px 5px;
-}
-
-#backgroundPopup {
-	position: fixed; 
-	top: 0; 
-	left: 0; 
-	z-index: 5000; 
-	width: 100%; 
-	height: 100%;
-	border: 1px solid #cecece; 
-	background-color: black;
-	display: none;
-}
-
-#popupContact {
-	width: 700px; 
-	height: 350px;
-	position: absolute;
-	z-index: 5025;
-	top: 10%; 
-	left: 10%;
-	background-color: white;
-	display: none;
-}
-
-#anchorAlign {
-	vertical-align: baseline;
-	clear: both;
-}
-
-#AnchorOk {
-	float: left;
-	width: 68px;
-	padding-left: 10px;
-	margin-right: 5px;
-	padding-top: 5px;
-}
-
-#AnchorCancel {
-	float: left;
-	width: 80px;
-	margin-right: 5px;
-	padding-top: 5px;
-}
-
-#AnchorUpload {
-	float: left;
-	margin-right: 5px;
-	padding-left: 10px;
-	padding-top: 0px;
-	width: 82px;
-}
-
-#AnchorUploadCancel {
-	float: left;
-	margin-right: 5px;
-	padding-left: 5px;
-	padding-top: 0px;
-	width: 80px;
-}
-
-#priceBodyColumn {
-	text-align: right;	
-}
-
-#PurItemGrid, #HouseCodeGrid {	
-	height: 250px;
-	padding: 0px 10px 0px 10px;
+	padding: 0px 0px 0px 10px;
 }
 
 .Header {
@@ -168,6 +52,66 @@
     background-color: #adaaad;
 }
 
+.fragment {
+	border: 0;
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	padding: 5px 5px 5px 5px;
+}
+
+#AnchorSearch, #AnchorSearchPopup {
+	float: left;
+	width: 82px;
+	margin-left: 15px;
+}
+
+#AnchorOk {
+	float: left;
+	width: 68px;
+	padding-left: 10px;
+	margin-right: 5px;
+	padding-top: 5px;
+}
+
+#AnchorClose {
+	float: right;
+	width: 72px;
+	position: relative;
+	margin: 10px;
+}
+
+#AnchorCancel {
+	float: left;
+	width: 80px;
+	margin-right: 5px;
+	padding-top: 5px;
+}
+
+#AnchorUpload {
+	float: left;
+	margin-right: 5px;
+	padding-left: 10px;
+	padding-top: 0px;
+	width: 82px;
+}
+
+#AnchorUploadCancel {
+	float: left;
+	margin-right: 5px;
+	padding-left: 5px;
+	padding-top: 0px;
+	width: 80px;
+}
+
+#priceBodyColumn, #previousFieldValueBodyColumn, #fieldNameBodyColumn {
+	text-align: right;	
+}
+
+#PurItemGrid, #PurCatalogGrid, #HouseCodeGrid, #HistoryGrid {	
+	height: 250px;
+	padding: 0px 10px 0px 10px;
+}
+
 #divFrame {
 	width: 600px; 
 	height: 120px;
@@ -181,13 +125,43 @@
 #iFrameUpload {
 	padding-left: 10px;
 }
-.iiInputText
-	{
-		width:182px;
-		white-space:nowrap;
-	}
-.iiInputTable
-	{
-		width:188px;
-		white-space:nowrap;
-	}
+
+#backgroundPopup {
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	z-index: 5000; 
+	width: 100%; 
+	height: 100%;
+	border: 1px solid #cecece; 
+	background-color: black;
+	display: none;
+}
+
+#popupContact {
+	width: 700px; 
+	height: 350px;
+	position: absolute;
+	z-index: 5025;
+	top: 10%; 
+	left: 10%;
+	background-color: white;
+	display: none;
+}
+
+#ActiveLabelCatalog {
+    width: 40px;
+    float: left;
+    height: 27px;
+    font-family: Verdana;
+       font-size: 12px;
+       color: #032D23;
+    padding-left: 15px;
+}
+
+#ActiveSearchCatalog {
+    width: 175px;
+    float: left;
+    height: 27px;
+    padding-left: 10px;
+}
