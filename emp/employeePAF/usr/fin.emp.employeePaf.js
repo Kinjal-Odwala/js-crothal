@@ -55,6 +55,35 @@ var setStatus = function (status) {
     me.$itemStatusImage.attr("class", "itemStatusImage " + status);
 };
 
+var dirtyCheck = function () {
+    if (parent.fin.appUI != undefined && parent.fin.appUI.modified) {
+        if (confirm("The current item was modified and you will lose unsaved data if you navigate from current item. Press OK to continue, or Cancel to remain on the current item.")) {
+            parent.fin.appUI.modified = false;
+            return true;
+        }
+        else
+            return false;
+    }
+    else
+        return true;
+}
+
+var editStatus = function () {
+    return !dirtyCheck();
+}
+
+var checkStatus = function () {
+    var me = this;
+    if (top.ui.ctl.menu) {
+        top.ui.ctl.menu.Dom.me.registerDirtyCheck(editStatus, me);
+    }
+}
+
+var modified = function (isModified) {
+    var me = this;
+    parent.fin.appUI.modified = isModified;
+};
+
 var deserializeXml = function (xml, nodeName, options) {
     options = options || {};
 
@@ -598,6 +627,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         }
         if ($routeParams.id) {
             setStatus('Edit');
+            modified(true);
         }
     };
 
@@ -635,6 +665,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         }
         if ($routeParams.id) {
             setStatus('Edit');
+            modified(true);
         }
     };
 
@@ -722,6 +753,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 }
             });
         }
+
+        checkStatus();
     };
 
     $scope.getPayRange = function (payGrade, salary) {
@@ -901,6 +934,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         if (oldValue !== null && newValue != oldValue) {
             if ($routeParams.id) {
                 setStatus('Edit');
+                modified(true);
             }
         }
     });
@@ -913,6 +947,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         if (oldValue !== null && newValue != oldValue) {
             if ($routeParams.id) {
                 setStatus('Edit');
+                modified(true);
             }
         }
     });
@@ -925,6 +960,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         if (oldValue !== null && newValue != oldValue) {
             if ($routeParams.id) {
                 setStatus('Edit');
+                modified(true);
             }
         }
     });
@@ -941,6 +977,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         if (oldValue !== null && newValue != oldValue) {
             if (angular.isDefined($routeParams) && $routeParams.id) {
                 setStatus('Edit');
+                modified(true);
             }
         }
 
@@ -985,6 +1022,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     $scope.pageStatus = 'Normal';
                     if ($routeParams.id) {
                         setStatus('Edit');
+                        modified(true);
                     }
                     validateHcmHouseCode();
                 });
@@ -996,6 +1034,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.pageStatus = 'Normal';
                 if ($routeParams.id) {
                     setStatus('Edit');
+                    modified(true);
                 }
             }
         }
@@ -1042,13 +1081,13 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                         $scope.isSelected = true;
                         $scope.employees = employeeList;
 
-                      var employeeModalInstance = $modal.open({
+                        var employeeModalInstance = $modal.open({
                             templateUrl: 'employeeGrid.html',
                             controller: 'modalInstanceCtrl',
                             title: "Select Employee",
                             size: 'sm',
                             scope: $scope
-                      });
+                        });
 
                     }
                 });
@@ -1096,6 +1135,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         }
         if ($routeParams.id) {
             setStatus('Edit');
+            modified(true);
         }
     };
 
@@ -1212,6 +1252,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         validateActionType();
         if ($routeParams.id) {
             setStatus('Edit');
+            modified(true);
         }
     };
 
@@ -1250,6 +1291,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         $scope.empAction.IncreaseDecreasePercentage = increasePercentage.toFixed(2);
         if ($routeParams.id) {
             setStatus('Edit');
+            modified(true);
         }
     };
 
@@ -1269,6 +1311,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         $scope.empAction.IncreaseDecreaseAmount = increaseAmt.toFixed(2);
         if ($routeParams.id) {
             setStatus('Edit');
+            modified(true);
         }
     };
 
@@ -1283,6 +1326,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         $scope.empAction.Amount = salary.toFixed(2);
         if ($routeParams.id) {
             setStatus('Edit');
+            modified(true);
         }
     }
 
@@ -1326,13 +1370,21 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
         if ($routeParams.id) {
             setStatus('Edit');
+            modified(true);
         }
     };
 
     $scope.onPageEdit = function () {
         if ($routeParams.id) {
             setStatus('Edit');
+            modified(true);
         }
+    }
+
+    $scope.cancel = function () {
+        if (editStatus())
+            return;
+        document.location.hash = 'list';
     }
 
     $scope.getRecruiterEmail = function (recruiter) {
@@ -1363,6 +1415,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         $scope.add = true;
         if ($routeParams.id) {
             setStatus('Edit');
+            modified(true);
         }
     };
 
@@ -1380,6 +1433,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         $scope.add = false;
         if ($routeParams.id) {
             setStatus('Edit');
+            modified(true);
         }
     };
 
@@ -1400,6 +1454,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         activeRowIndex = -1;
         if ($routeParams.id) {
             setStatus('Edit');
+            modified(true);
         }
     };
 
@@ -1627,6 +1682,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             if (newValue != undefined && oldValue != undefined && newValue != oldValue) {
                 $scope.empAction.Hours = 0;
                 setStatus('Edit');
+                modified(true);
             }
         });
 
@@ -1671,6 +1727,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
             if (newValue != undefined && oldValue != undefined && newValue != oldValue) {
                 setStatus('Edit');
+                modified(true);
             }
         });
 
@@ -1678,6 +1735,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
             if (newValue != undefined && oldValue != undefined && newValue != oldValue) {
                 setStatus('Edit');
+                modified(true);
             }
         });
     }])
@@ -1889,6 +1947,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         }
 
         loadRecruiters();
+        checkStatus();
     };
 
     load();

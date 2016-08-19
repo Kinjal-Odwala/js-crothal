@@ -1093,7 +1093,7 @@
             <div class="pull-right margin-bottom20">
                 <button class="btn btn-primary" type="submit" ng-if="empAction.StatusType != 8 && empAction.StatusType != 11 && empAction.StatusType != 9 && empAction.StatusType != 6 && ((empAction.StatusType != 2 && write) || (empAction.StatusType == 2 && writeInProcess))" ng-click="save(0)">Save</button>
                 <button class="btn btn-primary" type="submit" ng-if="empAction.StatusType == 1 && write" ng-click="save(1)">Save & Submit</button>
-                <a class="btn btn-default" href="#/list">Cancel</a>
+                <a class="btn btn-default" ng-click="cancel()">Cancel</a>
             </div>
         </form>
         <div ng-show="isPageLoading()">
