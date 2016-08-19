@@ -333,10 +333,30 @@ Rev.data.XmlStore = Ext.extend(Ext.data.GroupingStore, {
     }
 });
 
+Rev.data.systemVariableStore = WebLight.extend(Rev.data.XmlStore, {
+    url: '/net/crothall/chimes/fin/app/act/Provider.aspx',
+    moduleId: 'app',
+	requestId: 2,
+    recordName: 'item',
+    storeId: 'systemVariables',
+	name: '',
+	
+	getCriteria: function() {
+        return {
+            name: 'ScerISWebURL',
+        };
+    },
+	
+    fields: [{ name: 'id', mapping: '@id', type: 'int' },
+             { name: 'variableName', mapping: '@variableName' },
+			 { name: 'variableValue', mapping: '@variableValue' }
+            ]
+});
+
 Rev.data.apHouseCodeStore = WebLight.extend(Rev.data.XmlStore, {
     url: '/net/crothall/chimes/fin/rev/act/Provider.aspx',
     moduleId: 'rev',
-	requestId: 1,
+	requestId: 3,
     recordName: 'item',
     storeId: 'revAPHouseCodes',
     fields: [{ name: 'id', mapping: '@id', type: 'int' },
@@ -347,7 +367,7 @@ Rev.data.apHouseCodeStore = WebLight.extend(Rev.data.XmlStore, {
 Rev.data.apInvoiceStore = WebLight.extend(Rev.data.XmlStore, {
     url: '/net/crothall/chimes/fin/rev/act/Provider.aspx',
     moduleId: 'rev',
-	requestId: 2,
+	requestId: 4,
     storeId: 'revAPInvoices',
 	houseCode: '',
     vendor: '',
@@ -409,7 +429,7 @@ Rev.data.apInvoiceStore = WebLight.extend(Rev.data.XmlStore, {
 Rev.data.apCheckStore = WebLight.extend(Rev.data.XmlStore, {
     url: '/net/crothall/chimes/fin/rev/act/Provider.aspx',
     moduleId: 'rev',
-	requestId: 3,
+	requestId: 5,
     storeId: 'revAPChecks',
 	vendorNumber: '',
 	docType: '',
@@ -451,7 +471,7 @@ Rev.data.apCheckStore = WebLight.extend(Rev.data.XmlStore, {
 Rev.data.apExportStore = WebLight.extend(Rev.data.XmlStore, {
     url: '/net/crothall/chimes/fin/rev/act/Provider.aspx',
     moduleId: 'rev',
-	requestId: 4,
+	requestId: 6,
     storeId: 'revInvoiceExcelFileNames',
 	houseCode: '',
     vendor: '',
@@ -501,6 +521,7 @@ function printPurchaseOrder(id) {
 Rev.page.apSearch = WebLight.extend(WebLight.Page, {
     html: window.weblight_container[0],
     title: 'AP Search',
+	systemVariableStore: null,
 	apHouseCodeStore: null,
     apInvoiceStore: null,
 	apExportStore: null,
@@ -538,7 +559,15 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 					  { dataIndex: 'docNumber', header: 'Doc Number', width: 90 },
 					  { dataIndex: 'payItem', header: 'Pay Item', width: 80 },
 					  { dataIndex: 'voidDocType', header: 'Void Doc Type', width: 110 },
-					  { dataIndex: 'vendorInvoiceNumber', header: 'Vendor Invoice #', width: 120 },
+ 					  { dataIndex: 'vendorInvoiceNumber', header: 'Vendor Invoice #', width: 120,
+						renderer: function (value, meta, record) {
+							if (record._groupId !== undefined) {
+								return "<a target='_blank' href='" + me.systemVariableStore.data.items[0].data.variableValue + "[Invoice%20Number|EQ|" + value + "|AND][Vendor%20Number|EQ|" + record.data.vendorNumber + "|NONE]'>" + value + "</a>";
+							}
+							else
+								return value;
+	              		}
+					  },
 					  { dataIndex: 'invoiceDate', header: 'Invoice Date', width: 100, renderer: Ext.util.Format.dateRenderer('m/d/y')},
 					  { dataIndex: 'glDate', header: 'GL Date',  width: 80, renderer: Ext.util.Format.dateRenderer('m/d/y') },
 					  { dataIndex: 'payStatus', header: 'Pay Status', width: 90 },
@@ -589,12 +618,15 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
     createChildControls: function() {
         var me = this;
 
+		me.systemVariableStore = new Rev.data.systemVariableStore();
 		me.apHouseCodeStore = new Rev.data.apHouseCodeStore();
         me.apInvoiceStore = new Rev.data.apInvoiceStore();
 		me.apExportStore = new Rev.data.apExportStore();
 		me.apCheckStore = new Rev.data.apCheckStore();
         me.createAPInvoiceGrid();
 
+		me.systemVariableStore.on('beforeload', function () { me.mask('Loading...'); setStatus("Loading"); });
+		me.systemVariableStore.on('load', function () { me.unmask(); setStatus("Loaded"); });
 		me.apHouseCodeStore.on('beforeload', function () { me.mask('Loading...'); setStatus("Loading"); });
         me.apHouseCodeStore.on('load', function () { me.unmask(); setStatus("Loaded"); });
         me.apInvoiceStore.on('beforeload', function () { me.mask('Loading...'); setStatus("Loading"); });
@@ -787,6 +819,7 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
     dataBind: function() {
         var me = this;
 
+		me.systemVariableStore.load();
         me.apHouseCodeStore.load();
     },
 
