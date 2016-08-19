@@ -39,6 +39,22 @@ var onFileChange = function () {
     });
 };
 
+var setStatus = function (status) {
+    var me = this;
+    me.$itemStatusImage = $("#itemStatusImage");
+    me.$itemModifiedImage = $("#itemModifiedImage");
+
+    if (status == "Edit") {
+        me.$itemModifiedImage.addClass("Modified");
+        status = "Normal";
+    }
+    else {
+        me.$itemModifiedImage.removeClass("Modified");
+    }
+
+    me.$itemStatusImage.attr("class", "itemStatusImage " + status);
+};
+
 var deserializeXml = function (xml, nodeName, options) {
     options = options || {};
 
@@ -162,6 +178,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     var selectedFileName = "";
     var loggedInUserId = getCurrentUserId();
     $scope.maxDate = '2099-12-31';
+    $scope.pageStatus = 'Normal';
+    setStatus('Normal');
 
     $scope.dateOptions = {
         formatYear: 'yy',
@@ -482,7 +500,10 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             cacheManagerNumber = $scope.empAction.CacheTransferManagerNumber;
 
         if (managerNumber !== "" && managerNumber !== null && (cacheManagerNumber === null || cacheManagerNumber === undefined || cacheManagerNumber.length === 0 || parseInt(managerNumber) !== parseInt(cacheManagerNumber))) {
+            setStatus('Loading');
+            $scope.pageStatus = 'Loading, Please Wait...';
             getManagerDetail(managerNumber, function (response) {
+                $scope.pageStatus = 'Normal';
                 if (!angular.isDefined(response)) {
                     alert("The Manager/Clock Number that you entered doesn't exists.");
                     if (positionType == "NewHire" || positionType == "ReHire") {
@@ -575,13 +596,19 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     resetFields(0, "TransferManager");
             }
         }
+        if ($routeParams.id) {
+            setStatus('Edit');
+        }
     };
 
     $scope.getRegionalManagerInfo = function (managerNumber) {
         var cacheRegionalManagerNumber = $scope.empAction.CacheRegionalManagerNumber;
 
         if (managerNumber !== "" && managerNumber !== null && (cacheRegionalManagerNumber === null || cacheRegionalManagerNumber === undefined || cacheRegionalManagerNumber.length === 0 || parseInt(managerNumber) !== parseInt(cacheRegionalManagerNumber))) {
+            setStatus('Loading');
+            $scope.pageStatus = 'Loading, Please Wait...';
             getManagerDetail(managerNumber, function (response) {
+                $scope.pageStatus = 'Normal';
                 if (!angular.isDefined(response)) {
                     alert("The Manager/Clock Number that you entered doesn't exists.");
                     resetFields(0, "RegionalManager");
@@ -605,6 +632,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             if (managerNumber != cacheRegionalManagerNumber) {
                 resetFields(0, "RegionalManager");
             }
+        }
+        if ($routeParams.id) {
+            setStatus('Edit');
         }
     };
 
@@ -863,6 +893,42 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             $scope.pafForm.HcmHouseCode.$setValidity("matched", true);
     };
 
+    $scope.$watch('empAction.HouseCodeTransfer', function (newValue, oldValue) {
+
+        if (!newValue && !oldValue)
+            return;
+
+        if (oldValue !== null && newValue != oldValue) {
+            if ($routeParams.id) {
+                setStatus('Edit');
+            }
+        }
+    });
+
+    $scope.$watch('empAction.TrainingLocation', function (newValue, oldValue) {
+
+        if (!newValue && !oldValue)
+            return;
+
+        if (oldValue !== null && newValue != oldValue) {
+            if ($routeParams.id) {
+                setStatus('Edit');
+            }
+        }
+    });
+
+    $scope.$watch('empAction.CarAllowance', function (newValue, oldValue) {
+
+        if (!newValue && !oldValue)
+            return;
+
+        if (oldValue !== null && newValue != oldValue) {
+            if ($routeParams.id) {
+                setStatus('Edit');
+            }
+        }
+    });
+
     $scope.$watch('empAction.HcmHouseCode', function (newValue, oldValue) {
 
         if (newValue === 0) {
@@ -871,6 +937,12 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
         if (!newValue && !oldValue)
             return;
+
+        if (oldValue !== null && newValue != oldValue) {
+            if (angular.isDefined($routeParams) && $routeParams.id) {
+                setStatus('Edit');
+            }
+        }
 
         if ($scope.empAction.Data.EmployeeExists && $scope.empAction.CacheHcmHouseCode != newValue) {
             alert("House Code is not same as Employee Number House Code.");
@@ -898,6 +970,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     });
 
     $scope.onEmployeeNumberChanged = function (employeeNumber) {
+        setStatus('Loading');
+        $scope.pageStatus = 'Loading, Please Wait...';
         if (angular.isDefined($scope.empAction)) {
             var cacheEmployeeNumber = $scope.empAction.CacheEmployeeNumber;
 
@@ -908,12 +982,20 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                             alert("Employee Number is out of House Code.");
                         }
                     }
+                    $scope.pageStatus = 'Normal';
+                    if ($routeParams.id) {
+                        setStatus('Edit');
+                    }
                     validateHcmHouseCode();
                 });
             }
             else {
                 if (employeeNumber != cacheEmployeeNumber) {
                     resetFields(1, "");
+                }
+                $scope.pageStatus = 'Normal';
+                if ($routeParams.id) {
+                    setStatus('Edit');
                 }
             }
         }
@@ -1011,6 +1093,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         else {
             if ($scope.empAction.HcmHouseCode)
                 $scope.pafForm.HcmHouseCode.$setValidity("required", true);
+        }
+        if ($routeParams.id) {
+            setStatus('Edit');
         }
     };
 
@@ -1125,6 +1210,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         }
 
         validateActionType();
+        if ($routeParams.id) {
+            setStatus('Edit');
+        }
     };
 
     $scope.positionTypeChecked = function (positionType) {
@@ -1160,6 +1248,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             alert("Enter Valid Percentage");
         }
         $scope.empAction.IncreaseDecreasePercentage = increasePercentage.toFixed(2);
+        if ($routeParams.id) {
+            setStatus('Edit');
+        }
     };
 
     $scope.onAmountChange = function () {
@@ -1176,6 +1267,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         }
 
         $scope.empAction.IncreaseDecreaseAmount = increaseAmt.toFixed(2);
+        if ($routeParams.id) {
+            setStatus('Edit');
+        }
     };
 
     $scope.onAnnualSalaryChange = function () {
@@ -1187,6 +1281,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         salary = parseFloat(salary);
 
         $scope.empAction.Amount = salary.toFixed(2);
+        if ($routeParams.id) {
+            setStatus('Edit');
+        }
     }
 
     $scope.onSalaryChange = function (type) {
@@ -1226,7 +1323,17 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 $scope.empAction.NewSalary = 0;
             }
         }
+
+        if ($routeParams.id) {
+            setStatus('Edit');
+        }
     };
+
+    $scope.onPageEdit = function () {
+        if ($routeParams.id) {
+            setStatus('Edit');
+        }
+    }
 
     $scope.getRecruiterEmail = function (recruiter) {
         var email = "";
@@ -1254,6 +1361,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             scope: $scope
         });
         $scope.add = true;
+        if ($routeParams.id) {
+            setStatus('Edit');
+        }
     };
 
     $scope.editDoc = function () {
@@ -1268,6 +1378,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             $scope.docTitle = $scope.pafDocs[activeRowIndex].title;
         }
         $scope.add = false;
+        if ($routeParams.id) {
+            setStatus('Edit');
+        }
     };
 
     $scope.removeDoc = function () {
@@ -1285,6 +1398,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             $scope.pafDocs.splice(activeRowIndex, 1);
         }
         activeRowIndex = -1;
+        if ($routeParams.id) {
+            setStatus('Edit');
+        }
     };
 
     $scope.viewDoc = function () {
@@ -1423,14 +1539,20 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             }
 
             $scope.pageLoading = true;
+            setStatus('Loading');
 
-            if (saveAndSubmit)
+            if (saveAndSubmit) {
                 $scope.loadingTitle = " Saving and Submitting...";
-            else
+                $scope.pageStatus = "Saving and Submitting, Please Wait....";
+            }
+            else {
                 $scope.loadingTitle = " Saving...";
+                $scope.pageStatus = "Saving, Please Wait....";
+            }
 
             EmpActions.saveEmployeePersonnelAction($scope.empAction, $scope.pafDocs, saveAndSubmit, function (data, status) {
                 $scope.pageLoading = false;
+                setStatus('Normal');
                 document.location.hash = 'list';
                 if (saveAndSubmit) {
                     if (status == 'success') {
@@ -1504,12 +1626,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         $scope.$watch('empAction.Status', function (newValue, oldValue) {
             if (newValue != undefined && oldValue != undefined && newValue != oldValue) {
                 $scope.empAction.Hours = 0;
+                setStatus('Edit');
             }
-            //            angular.forEach(Status, function (item) {
-            //                if (item != newValue) {
-            //                    //$scope.data[item] = null;
-            //                }
-            //            });
         });
 
         //pay status changes
@@ -1517,13 +1635,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         $scope.$watch('empAction.PayStatus', function (newValue, oldValue) {
             if (newValue != undefined && oldValue != undefined && newValue != oldValue) {
                 $scope.empAction.Amount = 0;
+                $scope.empAction.Hours = 0;
+                setStatus('Edit');
             }
-            //            angular.forEach(PayStatus, function (item) {
-            //                if (item != newValue) {
-            //                    //$scope.data[item] = null;
-            //                }
-            //            });
-
             if ($scope.empAction.PayStatus == 'Per Diem')
                 $scope.empAction.Status = 'Temporary';
         });
@@ -1554,11 +1668,17 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             $scope.$parent.$parent.validateSeparationReason();
             if (!angular.isDefined(newValue) || newValue == null)
                 return;
-            //            angular.forEach(SeparationReason, function (item) {
-            //                if (item != newValue) {
-            //                    $scope.data[item] = null;
-            //                }
-            //            });
+
+            if (newValue != undefined && oldValue != undefined && newValue != oldValue) {
+                setStatus('Edit');
+            }
+        });
+
+        $scope.$watch('empAction.SeparationReHire', function (newValue, oldValue) {
+
+            if (newValue != undefined && oldValue != undefined && newValue != oldValue) {
+                setStatus('Edit');
+            }
         });
     }])
     .controller('loaCtrl', ['$scope', function ($scope) {
@@ -1620,6 +1740,9 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         recruiter: null
     };
 
+    $scope.pageStatus = 'Normal';
+    setStatus('Normal');
+
     $scope.sortType = 'Number';
     $scope.sortReverse = false;
     $scope.selectedItem = null;
@@ -1648,8 +1771,12 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         //if ($scope.pafFilter.pafDate)
         //    $scope.pafFilter.pafDate = $filter('date')($scope.pafFilter.pafDate, 'yyyy-MM-dd')
         $scope.loadingTitle = " Loading...";
+        $scope.pageStatus = 'Loading, Please Wait...';
+        setStatus('Loading');
         EmpActions.getEmployeePersonnelActions($scope.pafFilter, function (items) {
             $scope.empActions = items;
+            $scope.pageStatus = 'Normal';
+            setStatus('Normal');
         });
     };
 
@@ -1842,9 +1969,13 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         modalInstance.result.then(function (result) {
             $scope.loadingTitle = " Cancelling...";
             $scope.pageLoading = true;
+            $scope.pageStatus = 'Cancelling, Please Wait....';
+            setStatus('Loading');
             EmpActions.cancelEmployeePersonnelAction(id, houseCodeId, function (data, status) {
                 $scope.pageLoading = false;
                 $scope.getPafList();
+                $scope.pageStatus = 'Normal';
+                setStatus('Normal');
 
                 if (status == 'success') {
                     alert("Employee PAF has been cancelled successfully.");
@@ -1859,6 +1990,8 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
     $scope.printForm = function (selectedItem) {
         $scope.pageLoading = true;
         $scope.loadingTitle = " Downloading...";
+        $scope.pageStatus = 'Downloading, Please Wait';
+        setStatus('Loading');
 
         EmpActions.submitEmployeePersonnelAction(selectedItem, true, false, function (data, status) {
             var items = deserializeXml(data, 'empFileName', { upperFirstLetter: false, intItems: ['id'] });
@@ -1866,6 +1999,8 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
             $("#iFrameDownload")[0].contentWindow.document.getElementById("DownloadButton").click();
             $scope.$apply(function () {
                 $scope.pageLoading = false;
+                $scope.pageStatus = 'Normal';
+                setStatus('Normal');
             });
         });
     };
@@ -1873,9 +2008,13 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
     $scope.submit = function (selectedItem) {
         $scope.loadingTitle = " Submitting...";
         $scope.pageLoading = true;
+        $scope.pageStatus = 'Submitting, Please Wait...';
+        setStatus('Loading');
 
         EmpActions.submitEmployeePersonnelAction(selectedItem, false, false, function (data, status) {
             $scope.pageLoading = false;
+            $scope.pageStatus = 'Normal';
+            setStatus('Normal');
             $scope.getPafList();
 
             if (status == 'success') {
@@ -1890,13 +2029,12 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
     $scope.approve = function (selectedItem) {
         $scope.loadingTitle = " Approving...";
         $scope.pageLoading = true;
-        //EmpActions.approveEmployeePersonnelAction(id, HouseCodeId, function (data, status) {
-        //    $scope.pageLoading = false;
-        //    $scope.getPafList();
-        //    alert("Employee PAF has been approved successfully.");
-        //});
+        $scope.pageStatus = 'Approving, Please Wait....';
+        setStatus('Loading');
         EmpActions.submitEmployeePersonnelAction(selectedItem, false, true, function (data, status) {
             $scope.pageLoading = false;
+            $scope.pageStatus = 'Normal';
+            setStatus('Normal');
             EmpActions.getWorkflowHistory(selectedItem.Id, 8, function (result) {
             });
             $scope.getPafList();
@@ -1908,14 +2046,17 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
                 alert("Employee PAF has not been approved.");
             }
         });
-
     };
 
     $scope.audit = function (id) {
         $scope.loadingTitle = " Auditing...";
         $scope.pageLoading = true;
+        $scope.pageStatus = 'Auditing, Please Wait...';
+        setStatus('Loading');
         EmpActions.auditEmployeePersonnelAction(id, function (data, status) {
             $scope.pageLoading = false;
+            $scope.pageStatus = 'Normal';
+            setStatus('Normal');
             $scope.getPafList();
 
             if (status == 'success') {
@@ -1930,6 +2071,8 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
 
     $scope.itemSelected = function (item) {
         $scope.selectedItem = item;
+        $scope.pageStatus = 'Loading, Please Wait...';
+        setStatus("Loading");
 
         if ($scope.selectedItem.WorkflowStep == null || $scope.selectedItem.WorkflowStep == "") {
             $scope.selectedItem.WorkflowStep = 0;
@@ -1945,6 +2088,8 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
                     isOverHeadAccount = false;
                 }
             }
+            $scope.pageStatus = 'Normal';
+            setStatus("Normal");
         });
     };
 
