@@ -1,3 +1,8 @@
+// Added the following code to fix the error in TDD.
+if(!parent.fin){
+	parent.fin = {};
+}
+
 if(!parent.fin.cmn){
 	parent.fin.cmn = {};
 }
