@@ -74,9 +74,12 @@ var editStatus = function () {
 
 var checkStatus = function () {
     var me = this;
-    if (top.ui.ctl.menu) {
-        top.ui.ctl.menu.Dom.me.registerDirtyCheck(editStatus, me);
-    }
+	
+	if (top.ii !== undefined) {
+		if (top.ui.ctl.menu) {
+			top.ui.ctl.menu.Dom.me.registerDirtyCheck(editStatus, me);
+		}
+	}
 }
 
 var modified = function (isModified) {
@@ -170,10 +173,6 @@ var getCurrentHcmHouseCode = function () {
     return window.top.fin.appUI.houseCodeId;
 }
 
-var getCurrentUserId = function () {
-    return parent.fin.appUI.cache.stores.sessions.injectionArray[0].userId;
-}
-
 paf.config(['$routeProvider', function ($routeProvider) {
     $routeProvider
     .when('/edit/:id', {
@@ -204,10 +203,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     $scope.add = "";
     $scope.selectedPafId = $routeParams.id;
     $scope.Recruiters = [];
-    var selectedFileName = "";
-    var loggedInUserId = getCurrentUserId();
     $scope.maxDate = '2099-12-31';
     $scope.pageStatus = 'Normal';
+	var selectedFileName = "";
     setStatus('Normal');
 
     $scope.dateOptions = {
@@ -2945,8 +2943,10 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         //    }
         //});
 
-        top.ii.Session.singleton.ajaxStart();
-        top.ii.Session.singleton.ajaxSend();
+		if (top.ii !== undefined) {
+			top.ii.Session.singleton.ajaxStart();
+        	top.ii.Session.singleton.ajaxSend();
+		}
         $rootScope.loadingCount = $rootScope.loadingCount || 0;
         $rootScope.loadingCount++;
         $http({
@@ -2960,13 +2960,17 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         }).success(function (result) {
             callback(result);
             $rootScope.loadingCount--;
-            top.ii.Session.singleton.ajaxComplete();
-            top.ii.Session.singleton.ajaxStop();
+			if (top.ii !== undefined) {
+				top.ii.Session.singleton.ajaxComplete();
+            	top.ii.Session.singleton.ajaxStop();
+			}
         })
         .error(function (error) {
             $rootScope.loadingCount--;
-            top.ii.Session.singleton.ajaxComplete();
-            top.ii.Session.singleton.ajaxStop();
+			if (top.ii !== undefined) {
+				top.ii.Session.singleton.ajaxComplete();
+				top.ii.Session.singleton.ajaxStop();
+			}
         });
     }
 
