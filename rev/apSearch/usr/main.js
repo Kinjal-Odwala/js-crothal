@@ -530,6 +530,23 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
     createAPInvoiceGrid: function() {
         var me = this;
 
+		// Define a custom summary function
+		Ext.ux.grid.GroupSummary.Calculations['totalGrossAmount'] = function(value, record, field) {
+			if (record.data.payStatus === 'P')
+	        	return value + (record.data.grossAmount);
+			else
+				return value;
+	    };
+	    Ext.ux.grid.GroupSummary.Calculations['totalOpenAmount'] = function(value, record, field) {
+			if (record.data.payStatus === 'A')
+	        	return value + (record.data.openAmount);
+			else
+				return value;
+	    };
+
+		// Utilize custom extension for Group Summary
+    	var summary = new Ext.ux.grid.GroupSummary();
+	
 		var pagingBar = new Ext.PagingToolbar({
 	        pageSize: 50,
 	        store: me.apInvoiceStore,
@@ -538,7 +555,7 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 	        emptyMsg: "No data available to display"
 	    });
 
-		 var displayRenderer = function (value, metaData, record, rowIndex, colIndex, store) {
+		var displayRenderer = function (value, metaData, record, rowIndex, colIndex, store) {
             if (metaData && record) {
 				if (colIndex == 0 || colIndex == 1)
 				    metaData.attr = 'style="text-align:left;"';
@@ -550,39 +567,56 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 
 			return value;
         };
+		
+		var summaryRenderer = function (value, params, data) {
+            return Ext.util.Format.number(value, '0,000.00');
+        };
 
         var apInvoiceCMModel = new Ext.grid.ColumnModel({
 			defaults: { sortable: true, align: 'center' },
-            columns: [{ dataIndex: 'vendorNumber', header: 'Vendor Number', width: 110, renderer: displayRenderer },
-					  { dataIndex: 'vendorName', header: 'Vendor Name', width: 200, renderer: displayRenderer },
+            columns: [{ dataIndex: 'vendorNumber', header: 'Vendor Number', width: 110, align: 'left', renderer: displayRenderer, summaryType: 'max' },
+//						summaryType: 'count',
+//						summaryRenderer: function(v, params, data){
+//			                    return ((v === 0 || v > 1) ? '(' + v +' Items)' : '(1 Item)');
+//			                },
+//						 },
+					  { dataIndex: 'vendorName', header: 'Vendor Name', width: 200, align: 'left', renderer: displayRenderer, summaryType: 'max' },
 					  { dataIndex: 'docType', header: 'Doc Type', width: 80 },
-					  { dataIndex: 'docNumber', header: 'Doc Number', width: 90 },
+					  { dataIndex: 'docNumber', header: 'Doc Number', width: 90, summaryType: 'max' },
 					  { dataIndex: 'payItem', header: 'Pay Item', width: 80 },
 					  { dataIndex: 'voidDocType', header: 'Void Doc Type', width: 110 },
  					  { dataIndex: 'vendorInvoiceNumber', header: 'Vendor Invoice #', width: 120,
-						renderer: function (value, meta, record) {
-							if (record._groupId !== undefined) {
-								return "<a target='_blank' href='" + me.systemVariableStore.data.items[0].data.variableValue + "[Invoice%20Number|EQ|" + value + "|AND][Vendor%20Number|EQ|" + record.data.vendorNumber + "|NONE]'>" + value + "</a>";
-							}
-							else
-								return value;
-	              		}
+//						renderer: function (value, meta, record) {
+//							if (record._groupId !== undefined && meta.attr !== undefined) {
+//								return "<a target='_blank' href='" + me.systemVariableStore.data.items[0].data.variableValue + "[Invoice%20Number|EQ|" + value + "|AND][Vendor%20Number|EQ|" + record.data.vendorNumber + "|NONE]'>" + value + "</a>";
+//							}
+//							else
+//								return value;
+//	              		},
+						summaryType: 'max',
+						summaryRenderer: function(value, params, record) {
+							return "<a target='_blank' href='" + me.systemVariableStore.data.items[0].data.variableValue + "[Invoice%20Number|EQ|" + value + "|AND][Vendor%20Number|EQ|" + record.data.vendorNumber + "|NONE]'>" + value + "</a>";
+		                },
 					  },
-					  { dataIndex: 'invoiceDate', header: 'Invoice Date', width: 100, renderer: Ext.util.Format.dateRenderer('m/d/y')},
+					  { dataIndex: 'invoiceDate', header: 'Invoice Date', width: 100, renderer: Ext.util.Format.dateRenderer('m/d/y'), summaryType: 'max',},
 					  { dataIndex: 'glDate', header: 'GL Date',  width: 80, renderer: Ext.util.Format.dateRenderer('m/d/y') },
 					  { dataIndex: 'payStatus', header: 'Pay Status', width: 90 },
-					  { dataIndex: 'grossAmount', header: 'Gross Amount', width: 110, renderer: displayRenderer },
-					  { dataIndex: 'openAmount', header: 'Open Amount', width: 110, renderer: displayRenderer },
+//					  { dataIndex: 'grossAmount', header: 'Gross Amount', width: 110, align: 'right', summaryType: 'sum', summaryRenderer: function(v, params, data){
+//			                    return Ext.util.Format.number(v, '0,000.00');
+//			                }, renderer: displayRenderer },
+ 					  { dataIndex: 'grossAmount', header: 'Gross Amount', width: 110, align: 'right', renderer: displayRenderer, summaryType: 'totalGrossAmount', summaryRenderer: summaryRenderer },
+					  { dataIndex: 'openAmount', header: 'Open Amount', width: 110, align: 'right', renderer: displayRenderer, summaryType: 'totalOpenAmount', summaryRenderer: summaryRenderer },
 					  { dataIndex: 'houseCode', header: 'House Code', width: 100, renderer: displayRenderer },
 					  { dataIndex: 'subLedger', header: 'Sub Ledger', width: 100, renderer: displayRenderer },
-					  { dataIndex: 'houseCodeAmount', header: 'House Code Amount', width: 130, renderer: displayRenderer },
+					  { dataIndex: 'houseCodeAmount', header: 'House Code Amount', width: 150, align: 'right', renderer: displayRenderer },
                       { dataIndex: 'poNumber', header: 'PO Number', width: 100,
                        	renderer: function (value, meta, record) {
 							if (record.data.purchaseOrderId > 0)
 								return "<a href='javascript: void(0)' onclick='printPurchaseOrder(" + record.data.purchaseOrderId + ");'>" + value + "</a>";
 							else
 								return value;
-                  		}
+                  		},
+						summaryType: 'max'
                       }
 					 ]
         });
@@ -602,8 +636,14 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 			id: 'InvoiceGrid',
 			title: 'AP Invoices',
 			view: new Ext.grid.GroupingView({
-	            groupTextTpl: '{text} ({[values.rs.length]} {[values.rs.length > 1 ? "Items" : "Item"]})'
+//	            groupTextTpl: '{text} ({[values.rs.length]} {[values.rs.length > 1 ? "Items" : "Item"]})'
+//				forceFit: true,
+//	            showGroupName: true,
+//	            enableNoGroups: false,
+//				enableGroupingMenu: false,
+//	            hideGroupedColumn: true
 	        }),
+			plugins: summary,
 			bbar: pagingBar
         });
 
@@ -630,7 +670,10 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 		me.apHouseCodeStore.on('beforeload', function () { me.mask('Loading...'); setStatus("Loading"); });
         me.apHouseCodeStore.on('load', function () { me.unmask(); setStatus("Loaded"); });
         me.apInvoiceStore.on('beforeload', function () { me.mask('Loading...'); setStatus("Loading"); });
-        me.apInvoiceStore.on('load', function () { me.unmask(); setStatus("Loaded"); this.totalRecords = this.totalLength; });
+        me.apInvoiceStore.on('load', function () { me.unmask(); setStatus("Loaded"); this.totalRecords = this.totalLength; 
+			var view = me.apInvoiceGrid.getView();
+			view.collapseAllGroups();
+		});
 		me.apCheckStore.on('beforeload', function () { setStatus("Loading"); });
 		me.apCheckStore.on('load', function () { setStatus("Loaded"); });
 		me.apExportStore.on('beforeload', function () { me.mask('Exporting...'); setStatus("Exporting"); });
