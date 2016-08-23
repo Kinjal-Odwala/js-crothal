@@ -623,10 +623,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     resetFields(0, "TransferManager");
             }
         }
-        if ($routeParams.id) {
             setStatus('Edit');
             modified(true);
-        }
     };
 
     $scope.getRegionalManagerInfo = function (managerNumber) {
@@ -661,10 +659,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                 resetFields(0, "RegionalManager");
             }
         }
-        if ($routeParams.id) {
             setStatus('Edit');
             modified(true);
-        }
     };
 
     $scope.isManagerFieldRequired = function (item) {
@@ -699,6 +695,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     };
 
     var init = function () {
+        setStatus('Loading');
+        $scope.pageStatus = 'Loading, Please Wait...';
         loadHouseCodes();
         loadStateTypes();
         loadJobCodes();
@@ -713,6 +711,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         EmpActions.getAuthorizations(function (result) {
             $scope.authorizations = result;
             authorizationsLoaded();
+            $scope.pageStatus = 'Normal';
+            setStatus('Normal');
         });
 
         if (!$routeParams.id) {
@@ -802,6 +802,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
     init();
 
     if ($routeParams.id) {
+        setStatus('Loading');
+        $scope.pageStatus = 'Loading, Please Wait...';
         EmpActions.findEmployeePersonnelAction($routeParams.id, function (result) {
             if (!result) {
                 $location.path('/list');
@@ -914,6 +916,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
 
         EmpActions.findEmployeePAFDocument($routeParams.id, function (result) {
             $scope.pafDocs = result;
+            $scope.pageStatus = 'Normal';
+            setStatus('Normal');
         });
     }
 
@@ -929,11 +933,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         if (!newValue && !oldValue)
             return;
 
-        if (oldValue !== null && newValue != oldValue) {
-            if ($routeParams.id) {
-                setStatus('Edit');
-                modified(true);
-            }
+        if (newValue != oldValue) {
+            setStatus('Edit');
+            modified(true);
         }
     });
 
@@ -942,11 +944,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         if (!newValue && !oldValue)
             return;
 
-        if (oldValue !== null && newValue != oldValue) {
-            if ($routeParams.id) {
-                setStatus('Edit');
-                modified(true);
-            }
+        if (newValue != oldValue) {
+            setStatus('Edit');
+            modified(true);
         }
     });
 
@@ -955,11 +955,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         if (!newValue && !oldValue)
             return;
 
-        if (oldValue !== null && newValue != oldValue) {
-            if ($routeParams.id) {
-                setStatus('Edit');
-                modified(true);
-            }
+        if (newValue != oldValue) {
+            setStatus('Edit');
+            modified(true);
         }
     });
 
@@ -972,11 +970,9 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         if (!newValue && !oldValue)
             return;
 
-        if (oldValue !== null && newValue != oldValue) {
-            if (angular.isDefined($routeParams) && $routeParams.id) {
-                setStatus('Edit');
-                modified(true);
-            }
+        if (newValue != oldValue) {
+            setStatus('Edit');
+            modified(true);
         }
 
         if ($scope.empAction.Data.EmployeeExists && $scope.empAction.CacheHcmHouseCode != newValue) {
@@ -1018,10 +1014,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                         }
                     }
                     $scope.pageStatus = 'Normal';
-                    if ($routeParams.id) {
-                        setStatus('Edit');
-                        modified(true);
-                    }
+                    setStatus('Edit');
+                    modified(true);
                     validateHcmHouseCode();
                 });
             }
@@ -1030,10 +1024,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                     resetFields(1, "");
                 }
                 $scope.pageStatus = 'Normal';
-                if ($routeParams.id) {
-                    setStatus('Edit');
-                    modified(true);
-                }
+                setStatus('Edit');
+                modified(true);
             }
         }
     };
@@ -1131,10 +1123,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             if ($scope.empAction.HcmHouseCode)
                 $scope.pafForm.HcmHouseCode.$setValidity("required", true);
         }
-        if ($routeParams.id) {
-            setStatus('Edit');
-            modified(true);
-        }
+        setStatus('Edit');
+        modified(true);
     };
 
     $scope.PositionTypes = [
@@ -1248,10 +1238,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         }
 
         validateActionType();
-        if ($routeParams.id) {
-            setStatus('Edit');
-            modified(true);
-        }
+        setStatus('Edit');
+        modified(true);
     };
 
     $scope.positionTypeChecked = function (positionType) {
@@ -1287,10 +1275,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             alert("Enter Valid Percentage");
         }
         $scope.empAction.IncreaseDecreasePercentage = increasePercentage.toFixed(2);
-        if ($routeParams.id) {
-            setStatus('Edit');
-            modified(true);
-        }
+        setStatus('Edit');
+        modified(true);
     };
 
     $scope.onAmountChange = function () {
@@ -1307,10 +1293,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         }
 
         $scope.empAction.IncreaseDecreaseAmount = increaseAmt.toFixed(2);
-        if ($routeParams.id) {
-            setStatus('Edit');
-            modified(true);
-        }
+        setStatus('Edit');
+        modified(true);
     };
 
     $scope.onAnnualSalaryChange = function () {
@@ -1322,10 +1306,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
         salary = parseFloat(salary);
 
         $scope.empAction.Amount = salary.toFixed(2);
-        if ($routeParams.id) {
-            setStatus('Edit');
-            modified(true);
-        }
+        setStatus('Edit');
+        modified(true);
     }
 
     $scope.onSalaryChange = function (type) {
@@ -1366,17 +1348,13 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             }
         }
 
-        if ($routeParams.id) {
-            setStatus('Edit');
-            modified(true);
-        }
+        setStatus('Edit');
+        modified(true);
     };
 
     $scope.onPageEdit = function () {
-        if ($routeParams.id) {
-            setStatus('Edit');
-            modified(true);
-        }
+        setStatus('Edit');
+        modified(true);
     }
 
     $scope.cancel = function () {
@@ -1411,10 +1389,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             scope: $scope
         });
         $scope.add = true;
-        if ($routeParams.id) {
-            setStatus('Edit');
-            modified(true);
-        }
+        setStatus('Edit');
+        modified(true);
     };
 
     $scope.editDoc = function () {
@@ -1429,10 +1405,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             $scope.docTitle = $scope.pafDocs[activeRowIndex].title;
         }
         $scope.add = false;
-        if ($routeParams.id) {
-            setStatus('Edit');
-            modified(true);
-        }
+        setStatus('Edit');
+        modified(true);
     };
 
     $scope.removeDoc = function () {
@@ -1450,10 +1424,8 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             $scope.pafDocs.splice(activeRowIndex, 1);
         }
         activeRowIndex = -1;
-        if ($routeParams.id) {
-            setStatus('Edit');
-            modified(true);
-        }
+        setStatus('Edit');
+        modified(true);
     };
 
     $scope.viewDoc = function () {
@@ -1612,6 +1584,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
                         alert("Employee PAF has been saved and submitted successfully.");
                     }
                     else {
+                        setStatus('Error');
                         alert("Employee PAF save and submit not completed successfully.");
                     }
                 }
@@ -2038,6 +2011,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
                     alert("Employee PAF has been cancelled successfully.");
                 }
                 else {
+                    setStatus('Error');
                     alert("Employee PAF has not been cancelled.");
                 }
             });
@@ -2078,6 +2052,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
                 alert("Employee PAF has been submitted successfully.");
             }
             else {
+                setStatus('Error');
                 alert("Employee PAF has not been submitted.");
             }
         });
@@ -2100,6 +2075,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
                 alert("Employee PAF has been approved successfully.");
             }
             else {
+                setStatus('Error');
                 alert("Employee PAF has not been approved.");
             }
         });
@@ -2120,6 +2096,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
                 alert("Employee PAF has been audited successfully.");
             }
             else {
+                setStatus('Error');
                 alert("Employee PAF has not been audited.");
             }
         });
@@ -2216,6 +2193,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
                 $modalInstance.close();
 
                 if (tempFileName == "Error") {
+                    setStatus('Error');
                     alert("Unable to upload the file. Please try again.");
                 }
                 else {
