@@ -918,6 +918,7 @@ paf.controller('pafCtrl', ['$scope', '$document', 'EmpActions', '$filter', '$tim
             $scope.pafDocs = result;
             $scope.pageStatus = 'Normal';
             setStatus('Normal');
+            modified(false);
         });
     }
 
@@ -3571,21 +3572,19 @@ paf.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         else if (item.LayoffType > 0)
             reasonId = item.LayoffType;
 
-        if (item.StatusType != 10) {
-            var workflowStep1Id = getWorkflowStepId("1");
-            var workflowStep2Id = getWorkflowStepId("2");
-            var workflowStep3Id = getWorkflowStepId("3");
-            var workflowStep4Id = getWorkflowStepId("4");
-            var workflowStep5Id = getWorkflowStepId("5");
-            var workflowStep6Id = getWorkflowStepId("6");
+        var workflowStep1Id = getWorkflowStepId("1");
+        var workflowStep2Id = getWorkflowStepId("2");
+        var workflowStep3Id = getWorkflowStepId("3");
+        var workflowStep4Id = getWorkflowStepId("4");
+        var workflowStep5Id = getWorkflowStepId("5");
+        var workflowStep6Id = getWorkflowStepId("6");
 
-            step1Date = getWorkflowDate(workflowStep1Id);
-            step2Date = getWorkflowDate(workflowStep2Id);
-            step3Date = getWorkflowDate(workflowStep3Id);
-            step4Date = getWorkflowDate(workflowStep4Id);
-            step5Date = getWorkflowDate(workflowStep5Id);
-            step6Date = getWorkflowDate(workflowStep6Id);
-        }
+        step1Date = getWorkflowDate(workflowStep1Id);
+        step2Date = getWorkflowDate(workflowStep2Id);
+        step3Date = getWorkflowDate(workflowStep3Id);
+        step4Date = getWorkflowDate(workflowStep4Id);
+        step5Date = getWorkflowDate(workflowStep5Id);
+        step6Date = getWorkflowDate(workflowStep6Id);
 
         xml = '<transaction id="' + item.Id + '">';
         xml += '<submitEmployeePersonnelAction';
