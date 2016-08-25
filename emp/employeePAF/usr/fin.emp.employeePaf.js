@@ -1772,6 +1772,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
 
     $scope.pageStatus = 'Normal';
     setStatus('Normal');
+    modified(false);
 
     $scope.sortType = 'Number';
     $scope.sortReverse = false;
