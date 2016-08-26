@@ -1040,6 +1040,14 @@ ii.Class({
 			});
 
 			me.vendor.text.readOnly = true;
+			me.itemNumber.active = false;
+			me.itemDescription.active = false;
+			me.alternateDescription.active = false;
+			me.account.active = false;
+			me.uom.active = false;
+			me.manufactured.active = false;
+			me.price.active = false;
+			me.quantity.active = false;
 			me.documentTitle.active = false;
 			me.setTabIndexes();
 		},		
