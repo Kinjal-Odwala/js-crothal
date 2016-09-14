@@ -59,6 +59,15 @@ ii.init.register( function() {
 		, status: {type: String, required: false, defaultValue: ""}
 	};
 
+	fin.hcm.unionSetup.unionDeductionPayRateRangeArgs = {
+		id: {type: Number}
+		, unionDeductionId: {type: Number, required: false, defaultValue: 0}
+		, startAmount: {type: String, required: false, defaultValue: ""}
+		, endAmount: {type: String, required: false, defaultValue: ""}
+		, payRate: {type: String, required: false, defaultValue: ""}
+		, modified: {type: Boolean, required: false, defaultValue: false}
+	};
+
 }, 2);
 
 ii.Class({
@@ -126,6 +135,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.unionSetup.unionDeductionPayCodeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.unionSetup.UnionDeductionPayRateRange",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.unionSetup.unionDeductionPayRateRangeArgs);
 			$.extend(this, args);
 		}
 	}

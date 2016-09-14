@@ -43,6 +43,8 @@ ii.Class({
 			me.lastSelectedRowIndex = -1;
 			me.deductionType = 0;
 			me.selectedPayCodes = [];
+			me.undoList = [];
+			me.validationMessage = "";
 
             me.gateway = ii.ajax.addGateway("hcm", ii.config.xmlProvider);
             me.cache = new ii.ajax.Cache(me.gateway);
@@ -108,6 +110,7 @@ ii.Class({
 			var me = fin.hcmUnionSetupUi;
 
 			me.unionDeductionGrid.setHeight($(window).height() - 65);
+			me.payRateRangeGrid.setHeight($(window).height() - 360);
 			$("#ContainerArea").height($(window).height() - 110);
 		},
 
@@ -185,6 +188,11 @@ ii.Class({
 			me.setControlState("Active", ctrlReadOnly, ctrlVisible, "Check", "ActiveCheck");
 
 			if (ctrlReadOnly) {
+				me.payRateRangeGrid.columns["startAmount"].inputControl = null;
+				me.payRateRangeGrid.columns["endAmount"].inputControl = null;
+				me.payRateRangeGrid.columns["payRate"].inputControl = null;
+				me.payRateRangeGrid.allowAdds = false;
+
 				me.anchorNew.display(ui.cmn.behaviorStates.disabled);
 				me.anchorSave.display(ui.cmn.behaviorStates.disabled);
 				$("#AddParameter").hide();
@@ -249,6 +257,8 @@ ii.Class({
 					return "Percentage";
 				else if (type === 3)
 					return "Formula";
+				else if (type === 4)
+					return "Range";
 			});
 			me.unionDeductionGrid.addColumn("payType", "payType", "Pay Type", "Pay Type", 150, function( type ) {
 				if (type === 1)
@@ -507,6 +517,85 @@ ii.Class({
 				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
 		    });
 
+			me.payRateRangeGrid = new ui.ctl.Grid({
+				id: "PayRateRangeGrid",
+				appendToId: "divForm",
+				allowAdds: true,
+				createNewFunction: fin.hcm.unionSetup.UnionDeductionPayRateRange,
+				selectFunction: function(index) {
+					if (fin.hcmUnionSetupUi.unionDeductionPayRateRanges[index]) 
+						fin.hcmUnionSetupUi.unionDeductionPayRateRanges[index].modified = true;
+
+				}
+			});
+
+			me.startAmount = new ui.ctl.Input.Text({
+		        id: "StartAmount",
+				maxLength: 11,
+				appendToId: "PayRateRangeGridControlHolder",
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }		
+		    });
+
+			me.startAmount.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required )
+				.addValidation( function( isFinal, dataMap ) {
+
+				var enteredText = me.startAmount.getValue();
+
+				if (enteredText == "") return;
+
+				if (!(/^\d{1,8}(\.\d{1,2})?$/.test(enteredText)))
+					this.setInvalid("Please enter valid Start Amount. Example: 9.99");
+			});
+
+			me.endAmount = new ui.ctl.Input.Text({
+		        id: "EndAmount",
+				maxLength: 11,
+				appendToId: "PayRateRangeGridControlHolder",
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }		
+		    });
+
+			me.endAmount.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required )
+				.addValidation( function( isFinal, dataMap ) {
+
+				var enteredText = me.endAmount.getValue();
+
+				if (enteredText == "") return;
+
+				if (!(/^\d{1,8}(\.\d{1,2})?$/.test(enteredText)))
+					this.setInvalid("Please enter valid End Amount. Example: 9.99");
+				else if (parseFloat(enteredText) <= parseFloat(me.startAmount.getValue()))
+					this.setInvalid("End Amount should be greater than Start Amount (" + me.startAmount.getValue() + ")");
+			});
+
+			me.rangePayRate = new ui.ctl.Input.Text({
+		        id: "RangePayRate",
+				maxLength: 11,
+				appendToId: "PayRateRangeGridControlHolder",
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }		
+		    });
+
+			me.rangePayRate.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required )
+				.addValidation( function( isFinal, dataMap ) {
+
+				var enteredText = me.rangePayRate.getValue();
+
+				if (enteredText == "") return;
+
+				if (!(/^\d{1,8}(\.\d{1,2})?$/.test(enteredText)))
+					this.setInvalid("Please enter valid Pay Rate. Example: 9.99");
+			});
+
+			me.payRateRangeGrid.addColumn("startAmount", "startAmount", "Start Amount", "Start Amount", null, null, me.startAmount);
+			me.payRateRangeGrid.addColumn("endAmount", "endAmount", "End Amount", "End Amount", 150, null, me.endAmount);
+			me.payRateRangeGrid.addColumn("payRate", "payRate", "Pay Rate", "Pay Rate", 150, null, me.rangePayRate);
+			me.payRateRangeGrid.capColumns();
+
 			me.anchorNew = new ui.ctl.buttons.Sizeable({
 				id: "AnchorNew",
 				className: "iiButton",
@@ -538,6 +627,10 @@ ii.Class({
 			me.percentage.check.tabIndex = 16;
 			me.formula.text.tabIndex = 17;
 			me.active.check.tabIndex = 18;
+			
+			me.startAmount.active = false;
+			me.endAmount.active = false;
+			me.rangePayRate.active = false;
 		},
 
 		configureCommunications: function() {
@@ -582,6 +675,14 @@ ii.Class({
 				itemConstructorArgs: fin.hcm.unionSetup.unionDeductionPayCodeArgs,
 				injectionArray: me.unionDeductionPayCodes
 			});
+
+			me.unionDeductionPayRateRanges = [];
+			me.unionDeductionPayRateRangeStore = me.cache.register({
+				storeId: "houseCodeUnionDeductionPayRateRanges",
+				itemConstructor: fin.hcm.unionSetup.UnionDeductionPayRateRange,
+				itemConstructorArgs: fin.hcm.unionSetup.unionDeductionPayRateRangeArgs,
+				injectionArray: me.unionDeductionPayRateRanges
+			});
 		},
 
 		initialize: function() {
@@ -592,6 +693,7 @@ ii.Class({
 			$("#AddOperator").bind("click", function() { me.actionAddOperatorItem(); });
 			$("#AddAmount").bind("click", function() { me.actionAddAmountItem(); });
 			$("#ResetFormula").bind("click", function() { me.actionResetFormulaItem(); });
+			$("#UndoFormula").bind("click", function() { me.actionUndoFormulaItem(); });
 			$("#PayCodeType").multiselect("uncheckAll");
 			$("input[name='DeductionType'][value='1']").attr('checked', true);
 
@@ -605,8 +707,8 @@ ii.Class({
 			me.operatorTypes.push(new fin.hcm.unionSetup.OperatorType({ id: 2, brief: " - ", name: "- (Subtraction)" }));
 			me.operatorTypes.push(new fin.hcm.unionSetup.OperatorType({ id: 3, brief: " * ", name: "* (Multiplication) " }));
 			me.operatorTypes.push(new fin.hcm.unionSetup.OperatorType({ id: 4, brief: " / ", name: "/ (Division)" }));
-			me.operatorTypes.push(new fin.hcm.unionSetup.OperatorType({ id: 5, brief: " (", name: "( (Open Bracket)" }));
-			me.operatorTypes.push(new fin.hcm.unionSetup.OperatorType({ id: 6, brief: ") ", name: ") (Close Bracket)" }));
+			me.operatorTypes.push(new fin.hcm.unionSetup.OperatorType({ id: 5, brief: "( ", name: "( (Open Bracket)" }));
+			me.operatorTypes.push(new fin.hcm.unionSetup.OperatorType({ id: 6, brief: " )", name: ") (Close Bracket)" }));
 
 			me.payType.setData(me.payTypes);
 			me.operator.setData(me.operatorTypes);
@@ -655,6 +757,8 @@ ii.Class({
 			me.active.setValue("true");
 			me.assignValue();
 			me.unionDeductionPayCodeStore.reset();
+			me.unionDeductionPayRateRangeStore.reset();
+			me.undoList = [];
 		},
 
 		payCodeTypesLoaded: function(me, activeId) {
@@ -682,6 +786,7 @@ ii.Class({
 				return;
 
 			me.unionDeductionGrid.setData(me.unionDeductions);
+			me.payRateRangeGrid.setData([]);
 			parent.fin.hcmMasterUi.checkLoadCount();
 			if (parent.parent.fin.appUI.modified)
 				parent.fin.hcmMasterUi.setStatus("Edit");
@@ -695,6 +800,11 @@ ii.Class({
 			var me = this;
 			var index = args.index;
 			var item = me.unionDeductionGrid.data[index];
+			
+//			if (!parent.fin.cmn.status.itemValid()) {
+//				//me.unionDeductionGrid.body.deselect(index, true);
+//				return;
+//			}
 
 			me.lastSelectedRowIndex = index;
 			me.status = "";
@@ -719,6 +829,42 @@ ii.Class({
 			me.assignValue();
 			parent.fin.hcmMasterUi.setLoadCount();
 			me.unionDeductionPayCodeStore.fetch("userId:[user],unionDeductionId:" + item.id, me.unionDeductionPayCodesLoaded, me);
+			me.unionDeductionPayRateRangeStore.fetch("userId:[user],unionDeductionId:" + item.id, me.unionDeductionPayRateRangesLoaded, me);
+
+			me.addParameter = false;
+			me.addOperator = true;
+			me.addAmount = false;
+			me.formulaExpression = "";
+
+			var formulaList = item.formula.split(" ");
+			for (var index = 0; index < formulaList.length; index++) {
+				var token = formulaList[index];
+				if (token !== "") {
+					if (token.substring(0, 1) === "@") {
+						me.formulaExpression += "1";
+						me.undoList.push(token);
+					}
+					else if (token === "+" || token === "-" || token === "*" || token === "/") {
+						me.formulaExpression += " " + token + " ";
+						me.undoList.push(" " + token + " ");
+					}
+					else if (token === "(") {
+						me.formulaExpression += "( ";
+						me.undoList.push("( ");
+					}
+					else if (token === ")") {
+						me.formulaExpression += " )";
+						me.undoList.push(" )");
+					}
+					else {
+						me.formulaExpression += token;
+						me.undoList.push(token);
+					}
+				}
+			}
+
+			me.formulaExpression = me.formulaExpression.trim();
+			me.validateFormula();
 		},
 
 		unionDeductionPayCodesLoaded: function(me, activeId) {
@@ -739,27 +885,52 @@ ii.Class({
 				parent.fin.hcmMasterUi.setStatus("Edit");
 		},
 
+		unionDeductionPayRateRangesLoaded: function(me, activeId) {
+
+			me.payRateRangeGrid.setData(me.unionDeductionPayRateRanges);
+		},
+
 		assignValue: function() {
 			var me = this;
 
 			me.deductionType = parseInt($("input[name='DeductionType']:checked").val(), 10);
 
-			if (me.deductionType === 3) {
+			if (me.deductionType === 1) {
+				$("#PayRateLabel").html('<span class="requiredFieldIndicator">&#149;</span>Pay Rate:');
+				$("#MinMaxContainer").hide();
+				$("#FormulaContainer").hide();
+				$("#RangeContainer").hide();
+				$("#PayRateContainer").show();
+				me.payRate.resizeText();
+			}
+			else if (me.deductionType === 2) {
+				$("#PayRateLabel").html('<span class="requiredFieldIndicator">&#149;</span>Pay Rate (In %):');
+				$("#FormulaContainer").hide();
+				$("#RangeContainer").hide();
+				$("#PayRateContainer").show();
+				$("#MinMaxContainer").show();
+				me.payRate.resizeText();
+				me.minimumDeductionAmount.resizeText();
+				me.maximumDeductionAmount.resizeText();
+			}			
+			else if (me.deductionType === 3) {
+				$("#PayRateContainer").hide();
+				$("#RangeContainer").hide();
+				$("#MinMaxContainer").show();
 				$("#FormulaContainer").show();
+				me.minimumDeductionAmount.resizeText();
+				me.maximumDeductionAmount.resizeText();
 				me.parameter.resizeText();
 				me.operator.resizeText();
 				me.amount.resizeText();
 				me.formula.resizeText();
 			}
-			else {
+			else if (me.deductionType === 4) {
+				$("#PayRateContainer").hide();
+				$("#MinMaxContainer").hide();
 				$("#FormulaContainer").hide();
-				me.parameter.reset();
-				me.parameter.updateStatus();
-				me.operator.reset();
-				me.operator.updateStatus();
-				me.amount.setValue("");
-				me.percentage.setValue("true");
-				me.formula.setValue("");
+				$("#RangeContainer").show();
+				me.payRateRangeGrid.setHeight($(window).height() - 360);
 			}
 		},
 
@@ -769,6 +940,7 @@ ii.Class({
 			if (me.addParameter && me.parameter.indexSelected !== -1) {
 				me.formulaExpression = me.formulaExpression + "1";
 				me.formula.setValue(me.formula.getValue() + me.unionDeductionParameters[me.parameter.indexSelected].brief);
+				me.undoList.push(me.unionDeductionParameters[me.parameter.indexSelected].brief);
 				me.validateFormula();
 				me.addParameter = false;
 				me.addAmount = false;
@@ -782,9 +954,10 @@ ii.Class({
 			if (me.addOperator && me.operator.indexSelected !== -1) {
 				me.formulaExpression = me.formulaExpression + me.operatorTypes[me.operator.indexSelected].brief;
 				me.formula.setValue(me.formula.getValue() + me.operatorTypes[me.operator.indexSelected].brief);
+				me.undoList.push(me.operatorTypes[me.operator.indexSelected].brief);
 				me.validateFormula();
 				me.addParameter = true;
-				me.addOperator = false;
+				me.addOperator = true;
 				me.addAmount = true;
 			}
 		},
@@ -800,6 +973,7 @@ ii.Class({
 					amount = me.amount.getValue();
 				me.formulaExpression = me.formulaExpression + amount;
 				me.formula.setValue(me.formula.getValue() + amount);
+				me.undoList.push(amount);
 				me.validateFormula();
 				me.addParameter = false;
 				me.addOperator = true;
@@ -815,6 +989,116 @@ ii.Class({
 			me.addParameter = true;
 			me.addOperator = true;
 			me.addAmount = true;
+			me.undoList = [];
+		},
+		
+		actionUndoFormulaItem: function() {
+			var me = this;
+			var expression = "";
+
+			if (me.undoList.length === 0)
+				return;
+
+			me.addParameter = true;
+			me.addOperator = true;
+			me.addAmount = true;
+
+			var token = me.undoList[me.undoList.length - 1];
+			if (me.undoList.length > 1 && (token === " + " || token === " - " || token === " * " || token === " / " || token === "( " || token === " )")) {
+				me.addParameter = false;
+				me.addOperator = true;
+				me.addAmount = false;
+			}
+
+			me.undoList.splice(me.undoList.length - 1, 1);
+			for (var index = 0; index < me.undoList.length; index++) {
+				expression += me.undoList[index];
+			}
+
+			me.formula.setValue(expression);
+			me.formulaExpression = "";
+
+			var formulaList = expression.split(" ");
+			for (var index = 0; index < formulaList.length; index++) {
+				var token = formulaList[index];
+				if (token !== "") {
+					if (token.substring(0, 1) === "@") {
+						me.formulaExpression += "1";
+					}
+					else if (token === "+" || token === "-" || token === "*" || token === "/") {
+						me.formulaExpression += " " + token + " ";
+					}
+					else if (token === "(") {
+						me.formulaExpression += "( ";
+					}
+					else if (token === ")") {
+						me.formulaExpression += " )";
+					}
+					else {
+						me.formulaExpression += token;
+					}
+				}
+			}
+
+			me.validateFormula();
+		},
+		
+		evalExpression: function(expression) {
+		  	var tokens = expression.split(" ");
+	        var output = [];
+		    var operators = [];
+		    var reNumber = /^\d+(\.\d+)?$/;
+		    var reOperator = /^[\/\+\*\-]$/;
+		    var precedence = { "+": 1, "-": 1, "*": 2, "/": 2 };
+
+		    for (var index = 0; index < tokens.length; index++) {
+		    	var token = tokens[index];
+		    	if (reNumber.test(token))
+		      		output.push(Number(token));
+		    	else if (reOperator.test(token)) {
+			      	while (operators.length && precedence[token] <= precedence[operators[operators.length - 1]]) {
+			        	output.push(operators.pop());
+			      	}
+		
+		      		operators.push(token);
+		    	}
+		    	else if (token === "(")
+		      		operators.push(token);
+		    	else if (token === ")") {
+		      		while (operators.length && operators[operators.length - 1] !== "(")
+		        		output.push(operators.pop());
+		
+		      		if (!operators.length) return false;
+		
+		      		operators.pop();    
+		    	}
+		    	else 
+		      		return false;
+		  	}
+		
+		  	while (operators.length)
+		    	output.push(operators.pop());
+
+			var result = [];
+
+		    for (var index = 0; index < output.length; index++) {
+		    	token = output[index];
+		    	if (reNumber.test(token))
+		      		result.push(token);
+		    	else if (token === "(" || result.length < 2)
+		      		return false;
+		    	else {
+		      		var lhs = result.pop();
+		      		var rhs = result.pop();
+		
+			        if (token === "+") result.push(lhs + rhs);
+			        if (token === "-") result.push(lhs - rhs);
+			        if (token === "*") result.push(lhs * rhs);
+			        if (token === "/") result.push(lhs / rhs);
+		    	}
+		  	}
+
+		  	return result.pop();
 		},
 
 		validateFormula: function() {
@@ -822,7 +1106,10 @@ ii.Class({
 			var valid = true;
 
 			try {
-				eval(me.formulaExpression);
+				//eval(me.formulaExpression);
+				var result = me.evalExpression(me.formulaExpression.trim());
+				if (result === false)
+					valid = false;
 			}
 			catch(err) {
 				valid = false;
@@ -830,6 +1117,7 @@ ii.Class({
 
 			if (valid) {
 				me.formula.valid = true;
+				me.formula.updateStatus();
 			}
 			else {
 				me.formula.setInvalid("Invalid formula");
@@ -861,6 +1149,39 @@ ii.Class({
 			// Check to see if the data entered is valid
 			me.validator.forceBlur();
 			me.validator.queryValidity(true);
+			me.payRateRangeGrid.body.deselectAll();
+			me.validationMessage = "";
+			
+			if (me.deductionType === 1 || me.deductionType === 2 || me.deductionType === 4) {
+				me.parameter.reset();
+				me.parameter.updateStatus();
+				me.operator.reset();
+				me.operator.updateStatus();
+				me.amount.setValue("");
+				me.percentage.setValue("true");
+				me.formula.setValue("");
+				me.undoList = [];
+			}
+			if (me.deductionType === 1 || me.deductionType === 4) {
+				me.minimumDeductionAmount.setValue("0.00");
+				me.maximumDeductionAmount.setValue("0.00");
+			}
+			if (me.deductionType === 3 || me.deductionType === 4) {
+				me.payRate.setValue("0.00");
+			}
+			
+			for (var index = 0; index < me.unionDeductionGrid.data.length; index++) {
+				if (me.status === "New") {
+					if (me.payType.indexSelected !== -1 && (me.unionDeductionGrid.data[index].payType === me.payTypes[me.payType.indexSelected].id)) {
+						me.validationMessage = "Multiple union deduction entries are not allowed for the same Pay Type [" + me.payTypes[me.payType.indexSelected].name + "].";
+					}
+				}
+				else {
+					if (me.payType.indexSelected !== -1 && (me.unionDeductionGrid.activeRowIndex !== index) && (me.unionDeductionGrid.data[index].payType === me.payTypes[me.payType.indexSelected].id)) {
+						me.validationMessage = "Multiple union deduction entries are not allowed for the same Pay Type [" + me.payTypes[me.payType.indexSelected].name + "].";
+					}
+				}
+			}
 		},
 
 		updateUnionDeduction: function(id) {
@@ -880,6 +1201,7 @@ ii.Class({
 				, me.formula.getValue()
 				, me.active.check.checked
 			);
+			var found = false;
 
 			if (me.status === "New") {
 				me.unionDeductions.push(item);
@@ -888,10 +1210,21 @@ ii.Class({
 				me.unionDeductionGrid.body.select(me.lastSelectedRowIndex);
 			}
 			else {
+				for (var index = 0; index < me.payRateRangeGrid.data.length; index++) {
+					if (me.payRateRangeGrid.data[index].modified || me.payRateRangeGrid.data[index].id == 0) {
+						found = true;
+						break;
+					}
+				}
+
 				me.unionDeductions[me.lastSelectedRowIndex] = item;
 				me.unionDeductionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
 				me.unionDeductionPayCodeStore.reset();
 				me.unionDeductionPayCodeStore.fetch("userId:[user],unionDeductionId:" + item.id, me.unionDeductionPayCodesLoaded, me);
+				if (found) {
+					me.unionDeductionPayRateRangeStore.reset();
+					me.unionDeductionPayRateRangeStore.fetch("userId:[user],unionDeductionId:" + item.id, me.unionDeductionPayRateRangesLoaded, me);
+				}
 			}
 
 			me.status = "";
