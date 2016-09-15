@@ -2882,9 +2882,11 @@ ii.Class({
 							, me.textDetails[index].period11
 							, me.textDetails[index].period12
 							)
-							
+
 						if (me.textDetails[index].ptMetricType.title == "Total Paid Labor Comments")
 							me.laborControls.splice(2, 0, item);
+						else if (me.textDetails[index].ptMetricType.title == "Total Hours Labor Comments")
+							me.laborControls.splice(5, 0, item);
 						else
 							me.laborControls.push(item);
 					}
