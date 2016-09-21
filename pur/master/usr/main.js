@@ -1369,7 +1369,7 @@ ii.Class({
 			me.zip.setValue(me.purchaseOrders[index].zip);
 			me.phone.setValue(me.purchaseOrders[index].phone);
 			me.fax.setValue(me.purchaseOrders[index].fax);
-			me.template.check.checked = me.purchaseOrders[index].template;
+			me.template.setValue(me.purchaseOrders[index].template.toString());
 			me.checkTemplate();
 			me.templateTitle.setValue(me.purchaseOrders[index].templateTitle);			
 			me.$reportFooter.value = me.purchaseOrders[index].reportFooter;
@@ -1529,7 +1529,7 @@ ii.Class({
 			me.zip.setValue(me.houseCodeDetails[0].shippingZip);
 			me.phone.setValue("");
 			me.fax.setValue("");
-			me.template.check.checked = false;
+			me.template.setValue("false");
 			me.templateTitle.setValue("");
 			me.$reportFooter.value = "";			
 			me.checkTemplate();
