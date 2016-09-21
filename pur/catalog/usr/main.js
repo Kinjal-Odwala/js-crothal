@@ -42,6 +42,7 @@ ii.Class({
 			me.itemsTabNeedUpdate = true;
 			me.catalogsTabNeedUpdate = true;
 			me.loadCount = 0;
+			me.enterKeyPressed = false;
 			
 			//pagination setup
 			me.maximumRows = 250;
@@ -68,10 +69,6 @@ ii.Class({
 			me.setStatus("Loading");
 			me.modified(false);
 			me.activeStatusesLoaded();
-			$("#catalogHistory").hide();
-			$("#popupHistory").hide();
-			me.historyReference = 0;
-			me.currentPrice = 0;
 
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\Purchasing\\Catalogs";
@@ -84,6 +81,7 @@ ii.Class({
 			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
 			me.houseCodeSearchTemplate = new ui.lay.HouseCodeSearchTemplate();
 			me.initialize();
+			
 			$(window).bind("resize", me, me.resize );
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
@@ -161,7 +159,7 @@ ii.Class({
 				id: "AnchorNew",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;New&nbsp;&nbsp;</span>",
-				clickFunction: function () { $("#catalogHistory").hide(); me.actionNewItem(); },
+				clickFunction: function () { $("#AnchorHistory").hide(); me.actionNewItem(); },
 				hasHotState: true
 			});
 			
@@ -169,7 +167,7 @@ ii.Class({
 				id: "AnchorUndo",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Undo&nbsp;&nbsp;</span>",
-				clickFunction: function () { $("#catalogHistory").hide(); me.actionUndoItem(); },
+				clickFunction: function () { $("#AnchorHistory").hide(); me.actionUndoItem(); },
 				hasHotState: true
 			});
 			
@@ -177,7 +175,7 @@ ii.Class({
 				id: "AnchorSave",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Save&nbsp;&nbsp;</span>",
-				clickFunction: function () { $("#catalogHistory").hide(); me.actionSaveItem(); },
+				clickFunction: function () { $("#AnchorHistory").hide(); me.actionSaveItem(); },
 				hasHotState: true
 			});
 
@@ -203,8 +201,8 @@ ii.Class({
 			    allowAdds: false
 			});
 
-			me.historyGrid.addColumn("lastModifiedBy", "lastModifiedBy", "Last Modified By", "Last Modified By", null);
-			me.historyGrid.addColumn("lastModifiedAt", "lastModifiedAt", "Last Modified At", "Last Modified At", 300);
+			me.historyGrid.addColumn("lastModifiedBy", "lastModifiedBy", "Modified By", "Modified By", null);
+			me.historyGrid.addColumn("lastModifiedAt", "lastModifiedAt", "Modified At", "Modified At", 300);
 			me.historyGrid.addColumn("previousFieldValue", "previousFieldValue", "Amount From", "Amount From", 200);
 			me.historyGrid.addColumn("fieldName", "fieldName", "Amount To", "Amount To", 200);
 			me.historyGrid.capColumns();
@@ -332,17 +330,27 @@ ii.Class({
 				allowAdds: false,
 				selectFunction: function (index) { me.catalogItemGridSelect(index); }
 			});
-			
-			me.purCatalogItemPrice = new ui.ctl.Input.Money({
+
+			me.purCatalogItemPrice = new ui.ctl.Input.Text({
 		        id: "PurCatalogItemPrice" ,
+				maxLength: 19,
 				appendToId: "CatalogItemGridControlHolder",
 				changeFunction: function() { me.modified(); }		
 		    });
-			
+
 			me.purCatalogItemPrice.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+				var enteredText = me.purCatalogItemPrice.getValue();
+
+				if (enteredText == "") return;
+
+				if (enteredText != ""  && !(/^\d{1,16}(\.\d{1,2})?$/.test(enteredText)))
+					this.setInvalid("Please enter valid Price.");
+			});
+
 			me.purCatalogItemActive = new ui.ctl.Input.Check({
 		        id: "PurCatalogItemActive" ,
 		        className: "iiInputCheck",
@@ -387,7 +395,7 @@ ii.Class({
 				id: "AnchorSearchPopup",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Search&nbsp;&nbsp;</span>",
-				clickFunction: function () { me.enter = false; me.purItemData = []; me.loadPopupSearchResults(); },
+				clickFunction: function () { me.enterKeyPressed = false; me.purItemData = []; me.loadPopupSearchResults(); },
 				hasHotState: true
 			});
 
@@ -403,7 +411,7 @@ ii.Class({
 				id: "AnchorCancel",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
-				clickFunction: function () { $("#catalogHistory").hide(); me.actionCancelItem(); },
+				clickFunction: function () { $("#AnchorHistory").hide(); me.actionCancelItem(); },
 				hasHotState: true
 			});			
 			
@@ -412,17 +420,27 @@ ii.Class({
 				appendToId: "divForm",
 				allowAdds: false				
 			});
-			
-			me.purItemPrice = new ui.ctl.Input.Money({
+
+			me.purItemPrice = new ui.ctl.Input.Text({
 		        id: "PurItemPrice" ,
-				appendToId : "PurItemGridControlHolder",
+				maxLength: 19,
+				appendToId: "PurItemGridControlHolder",
 				changeFunction: function() { me.modified(); }		
 		    });
-			
+
 			me.purItemPrice.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+				var enteredText = me.purItemPrice.getValue();
+
+				if (enteredText == "") return;
+
+				if (enteredText != ""  && !(/^\d{1,16}(\.\d{1,2})?$/.test(enteredText)))
+					this.setInvalid("Please enter valid Price.");
+			});
+			
 			me.purItemActive = new ui.ctl.Input.Check({
 		        id: "PurItemActive" ,
 		        className: "iiInputCheck",
@@ -678,7 +696,7 @@ ii.Class({
 						me.activeFrameId = 0;
 						me.loadCatalogHouseCodesCount();
 						me.houseCodesTabNeedUpdate = false;
-						$("#catalogHistory").hide();
+						$("#AnchorHistory").hide();
 						break;
 
 					case "TabItems":
@@ -686,13 +704,13 @@ ii.Class({
 						me.loadCatalogItemsCount();
 						me.itemsTabNeedUpdate = false;
 						if (me.catalogItemGrid.activeRowIndex >= 0)
-						    $("#catalogHistory").show();
+						    $("#AnchorHistory").show();
 						break;
 						
 					case "TabCatalogs":
 						me.activeFrameId = 2;
 						me.catalogsTabNeedUpdate = false;
-						$("#catalogHistory").hide();
+						$("#AnchorHistory").hide();
 						break;
 				}
 			});
@@ -703,6 +721,10 @@ ii.Class({
 			$("#container-1").tabs(1);
 			$("#container-1").triggerTab(1);
 			$("#TabCatalogs").hide();
+			$("#AnchorHistory").hide();
+			$("#popupHistory").hide();
+			me.historyReference = 0;
+			me.currentPrice = 0;
 		},
 
 		actionSearchItem: function() {
@@ -719,13 +741,15 @@ ii.Class({
 		
 		loadSearchResults: function () {
 		    var me = this;
-		    index = me.catalogItemGrid.activeRowIndex;
+		    var index = me.catalogItemGrid.activeRowIndex;
+			
 		    if (index >= 0) {
 		        me.catalogItemGrid.body.deselect(index);
 		    }
-		    iIndex = me.catalogGrid.activeRowIndex;
-		    if (iIndex >= 0)
-		        me.catalogGrid.body.deselect(iIndex);
+			
+		    index = me.catalogGrid.activeRowIndex;
+		    if (index >= 0)
+		        me.catalogGrid.body.deselect(index);
 			
 			if (!parent.fin.cmn.status.itemValid())
 				return;
@@ -804,7 +828,7 @@ ii.Class({
 				
 			me.houseCodesTabNeedUpdate = true;
 			me.itemsTabNeedUpdate = true;
-			$("#catalogHistory").hide();
+			$("#AnchorHistory").hide();
 
 			if (me.activeFrameId == 0)
 				me.loadCatalogHouseCodesCount();
@@ -1049,7 +1073,7 @@ ii.Class({
 			});
 			var me = this;
 			var index = args.index;
-			$("#catalogHistory").show();
+			$("#AnchorHistory").show();
 
 			me.controlVisible();
 			if (me.catalogItems[index]) {
@@ -1199,7 +1223,7 @@ ii.Class({
 			var me = this;
 			var found = false;			
 			
-			for (index = 0; index < me.units.length; index++) {
+			for (var index = 0; index < me.units.length; index++) {
 			    if (me.units[index].id == me.houseCodeSearchTemplate.houseCodeIdTemplate) {
 			        found = true;
 			        break;
@@ -1231,10 +1255,12 @@ ii.Class({
 
 			$("#popupHistory").hide();
 			$("#houseCodesList").hide();
+			$("#PurCatalogGrid").hide();
 			$("#itemsList").show();		
 			$("#popupContact").show();
+			$("#PurItemGrid").show();
 			$("#popupFooter").show();
-			
+
 			if (me.purItemGrid.activeRowIndex >= 0)		
 				me.purItemGrid.body.deselect(me.purItemGrid.activeRowIndex);
 					
@@ -1252,9 +1278,12 @@ ii.Class({
 			});			
 			var event = args.event;
 			var me = event.data;
-				
+
 			if (event.keyCode == 13) {
-			    me.enter = true;
+				if (me.action == "Catalogs")
+			    	me.enterKeyPressed = true;
+				else
+					me.enterKeyPressed = false;
 			    me.loadPopupSearchResults();
 			}
 		},
@@ -1262,7 +1291,7 @@ ii.Class({
 		loadPopupSearchResults: function() {		
 		    var me = this;
 
-			if (!parent.fin.cmn.status.itemValid())
+			if (!me.enterKeyPressed && !parent.fin.cmn.status.itemValid())
 				return;
 
 			if (me.searchInputPopup.getValue().length < 3) {
@@ -1293,7 +1322,7 @@ ii.Class({
 		    if (me.purItemGrid.activeRowIndex >= 0)
 		        me.purItemGrid.body.deselect(me.purItemGrid.activeRowIndex);
 
-		    if (me.enter == true) {
+		    if (me.enterKeyPressed == true) {
 		        for (var index = 0; index < me.purItems.length; index++) {
 		            var found = false;
 		            for (var iIndex = 0; iIndex < me.purItemData.length; iIndex++) {
@@ -1346,11 +1375,13 @@ ii.Class({
 			loadPopup();
 			me.setStatus("Normal");
 
+			$("#popupHistory").hide();
 			$("#houseCodesList").hide();
 			$("#PurItemGrid").hide();
 			$("#itemsList").show();
 			$("#PurCatalogGrid").show();
 			$("#popupContact").show();
+			$("#popupFooter").show();
 			
 			if (me.purCatalogGrid.activeRowIndex >= 0)		
 				me.purCatalogGrid.body.deselect(me.purCatalogGrid.activeRowIndex);
@@ -1397,7 +1428,9 @@ ii.Class({
 			$("#container-1").triggerTab(1);
 			$("#popupHeader").html("Item Search");
 			$("#popupHeaderLabel").html("Item #, Description:");
+			me.lastSelectedRowIndex = -1;
 			me.action = "Catalogs";
+			me.catalogVendor.setData([]);
 			me.resetControls();
 			me.resetGrids();
 			me.catalogGrid.setData([]);
@@ -1473,16 +1506,21 @@ ii.Class({
 			else if (me.activeFrameId == 1) {
 				if (me.purItemGrid.activeRowIndex >= 0)		
 					me.purItemGrid.body.deselect(me.purItemGrid.activeRowIndex);
-				
-				for (var index = 0; index < me.purItems.length; index++) {
+
+				if (me.purItemGrid.activeRowIndex >= 0 && !me.purItemPrice.valid) {
+					alert("In order to save, the errors on the page must be corrected.");
+					return false;
+				}
+
+				for (var index = 0; index < me.purItemGrid.data.length; index++) {
 					if ($("#assignItemInputCheck" + index)[0].checked) {
 						xml += '<purCatalogItem'
 					    xml += ' id="0"';
 					    xml += ' catalogId="' +  me.catalogId + '"';
-					    xml += ' itemId="' + me.purItems[index].id + '"';
-					    xml += ' price="' + me.purItems[index].price + '"';
+					    xml += ' itemId="' + me.purItemGrid.data[index].id + '"';
+					    xml += ' price="' + me.purItemGrid.data[index].price + '"';
 					    xml += ' displayOrder="1"';
-					    xml += ' active="' + me.purItems[index].active + '"';
+					    xml += ' active="' + me.purItemGrid.data[index].active + '"';
 					    xml += '/>';
 					}
 				}
@@ -1539,6 +1577,8 @@ ii.Class({
 				index = me.catalogItemGrid.activeRowIndex;
 				if (index >= 0)				
 		   			me.catalogItemGrid.body.deselect(index); 
+				if (me.purItemGrid.activeRowIndex >= 0)		
+					me.purItemGrid.body.deselect(me.purItemGrid.activeRowIndex, true);
 			}
 			else if (me.activeFrameId == 2) {
 				index = me.itemCatalogGrid.activeRowIndex;
@@ -1743,6 +1783,7 @@ ii.Class({
 		    $("#popupFooter").hide();
 		    $("#popupContact").show();
 		    $("#popupHistory").show();
+			me.historyGrid.setHeight($(window).height() - 200);
 		    me.appHistoryStore.reset();
 		    me.appHistoryStore.fetch("userId:[user],reference:" + me.historyReference + ",module:PurCatalogItem", me.appHistoriesLoaded, me);
 		},
@@ -1769,7 +1810,6 @@ ii.Class({
 		        }
 		    }
 		    me.historyGrid.setData(me.appHistories);
-		    me.historyGrid.setHeight($(window).height() - 200);
 		},
         
 		actionCloseItem: function () {
@@ -1791,7 +1831,7 @@ ii.Class({
 
 			if (me.status == "") {
 				if (me.lastSelectedRowIndex == -1)
-					me.status = "new";
+					return;
 				else
 					me.status = "update";
 			}				
@@ -1840,7 +1880,7 @@ ii.Class({
 					me.catalogItems[index].modified = true;
 					catalogItemDatas.push(catalogItemData);					
 				};
-				
+
 				var item = new fin.pur.catalog.Catalog(
 					me.catalogId
 					, me.catalogTitle.getValue()				
@@ -1963,6 +2003,8 @@ ii.Class({
 			var id = 0;
 					
 			if (status == "success") {
+				me.modified(false);
+
 				if (me.status == "addHouseCodes") {
 					me.houseCodesTabNeedUpdate = true;
 					me.loadCatalogHouseCodesCount();
@@ -2039,8 +2081,7 @@ ii.Class({
 						}
 					});
 				}
-				
-				me.modified(false);
+
 				me.setStatus("Saved");
 			}
 			else {
