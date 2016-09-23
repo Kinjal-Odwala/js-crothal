@@ -164,10 +164,41 @@
     width: 100%;
 }
 
-#employeeModal {
-    left: 20%;
+#statePlanModal {
+    left: 25%;
     position: fixed;
-    top: 10%;
+    top: 25%;
+    height: auto;
+    max-height: 500px;
+}
+
+#countyPlanModal {
+    left: 25%;
+    position: fixed;
+    top: 25%;
+    height: auto;
+    max-height: 500px;
+}
+
+#cityPlanModal {
+    left: 25%;
+    position: fixed;
+    top: 25%;
+    height: auto;
+    max-height: 500px;
+}
+
+#houseCodePlanModal {
+    left: 25%;
+    position: fixed;
+    top: 25%;
+    height: auto;
+    max-height: 500px;
+}
+#companyPlanModal {
+    left: 25%;
+    position: fixed;
+    top: 25%;
     height: auto;
     max-height: 500px;
 }
