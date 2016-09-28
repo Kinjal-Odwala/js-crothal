@@ -2781,7 +2781,7 @@ ii.Class({
 				var statusType = 0;
 				if (me.template.check.checked)
 					statusType = 13;
-				else if (me.requisitionGrid.data[index].statusType == 13)
+				else if (me.status == "EditPORequisition" && me.requisitionGrid.data[index].statusType == 13)
 					statusType = 1;
 				else
 					statusType = (me.status == "NewPORequisition" ? 1 : me.requisitionGrid.data[index].statusType);
@@ -2832,21 +2832,22 @@ ii.Class({
 			}
 			else if (me.status == "CancelRequisition") {
                 item = me.requisitionGrid.data[index];
-                item.statusType = 6;                
+                item.statusType = 6;
             }
 			else if (me.status == "ApproveRequisition") {
                 item = me.requisitionGrid.data[index];
-                item.statusType = 8;                
+                item.statusType = 8;
             }
 			else if (me.status == "GeneratePurchaseOrder" || me.status == "PrintRequisition") {
 				item = me.requisitionGrid.data[index];
 			}
 			else if (me.status == "JDEEntry") {
                 item = me.requisitionGrid.data[index];
-                item.statusType = 9;                
+                item.statusType = 9;
             }
 			else if (me.status == "GenerateRequisition") {
                 item = me.templateGrid.data[me.templateGrid.activeRowIndex];
+				item.statusType = 1;
 				item.requestedDate = me.currentDate();
 				item.deliveryDate = "";
 				item.reasonForRequest = "";
