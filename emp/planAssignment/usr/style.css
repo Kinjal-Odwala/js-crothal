@@ -146,7 +146,7 @@
     font-size: 8pt;
     font-weight: bold;
     color: #ffffff;
-    background-color: #669b67;
+    /*background-color: #669b67;*/
     text-align: left;
 }
 
@@ -224,14 +224,3 @@
 .table-hover > tbody > tr.warning:hover > th {
   background-color: lightblue;
 }
-
-
-   
-
-
-
-
-
-
-
-
