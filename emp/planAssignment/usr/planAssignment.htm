@@ -3,6 +3,12 @@
 </section>
 <div style="clear:both;"></div>
 
+<div id="itemStatusDiv">
+    <div id="itemStatusImage" class="itemStatusImage"></div>
+    <div id="itemModifiedImage" class="itemModifiedImage"></div>
+    <div id="itemStatusText">{{pageStatus}}</div>
+</div>
+<div class="row margin-bottom10 form-horizontal"></div>
 <div ng-controller="planAssignmentCtrl as ctrl" class="container bs-docs-container">
     <div class="row  margin-bottom10 form-horizontal">
         <div class="col-md-12">
@@ -144,7 +150,7 @@
                                         <button  class="btn btn-primary btn-xs" ng-click="showCounty = !showCounty"  title="Hide/Show Plans">
                                             <span ng-bind="showCounty ? '-' : '+'"></span>
                                         </button>
-                                        <button class="btn btn-default btn-xs btn-filter" ng-click="filterCountyPlans(); filterCounty = !filterCounty"  title="Filter Plans">
+                                        <button class="btn btn-default btn-xs btn-filter" ng-click="filterCountyPlans();"  title="Filter Plans">
                                             <span class="glyphicon glyphicon-filter"></span>
                                         </button>
                                     </div>
@@ -174,7 +180,7 @@
                                 <strong>{{ county.name }}</strong>
                         </td>
                     </tr>
-                    <tr ng-show="showCounty" ng-hide="!expanded" ng-repeat="countyPlan in county.countyPlans" ng-click="countyPlanSelected(countyPlan)" ng-class="{'warning':selectedCountyPlan == countyPlan};">
+                    <tr ng-show="showCounty" ng-hide="!expanded" ng-repeat="countyPlan in county.countyPlans track by $index" ng-click="countyPlanSelected(countyPlan)" ng-class="{'warning':selectedCountyPlan == countyPlan};">
                         <td width="30%" align="center">{{getPlanName(countyPlan.ptoPlan)}}</td>
                         <td width="30%" align="center">{{getPtoTypeName(countyPlan.ptoPlan)}}</td>
                         <td width="30%" align="center">{{getPtoPlanTypeName(countyPlan.ptoPlan)}}</td>
@@ -241,14 +247,14 @@
                             Active
                         </td>
                     </tr>
-                    <tr ng-show="showCity" ng-repeat-start="city in cities | orderBy:sortCityBy:sortCityReverse" ng-click="citySelected(city)" ng-class="{'warning':selectedCity == city};" expandCity="">
+                    <tr ng-show="showCity" ng-repeat-start="city in cities track by $index | orderBy:sortCityBy:sortCityReverse" ng-click="citySelected(city)" ng-class="{'warning':selectedCity == city};" expandCity="">
                         <td colspan="3">
                             <a href="" ng-click="cityExpanded = !cityExpanded">
                             <span class="glyphicon" ng-class="{ 'glyphicon-chevron-right': !cityExpanded, 'glyphicon-chevron-down': cityExpanded }"></span>
                                 <strong>{{ city.name }}</strong>
                         </td>
                     </tr>
-                    <tr ng-show="showCity" ng-hide="!cityExpanded" ng-repeat="cityPlan in city.cityPlans" ng-click="cityPlanSelected(cityPlan)" ng-class="{'warning':selectedCityPlan == cityPlan};">
+                    <tr ng-show="showCity" ng-hide="!cityExpanded" ng-repeat="cityPlan in city.cityPlans track by $index" ng-click="cityPlanSelected(cityPlan)" ng-class="{'warning':selectedCityPlan == cityPlan};">
                         <td width="30%" align="center">{{getPlanName(cityPlan.ptoPlan)}}</td>
                         <td width="30%" align="center">{{getPtoTypeName(cityPlan.ptoPlan)}}</td>
                         <td width="30%" align="center">{{getPtoPlanTypeName(cityPlan.ptoPlan)}}</td>
@@ -322,7 +328,7 @@
                                 <strong>{{ houseCode.name }}</strong>
                         </td>
                     </tr>
-                    <tr ng-show="showHouseCode" ng-hide="!houseCodeExpanded" ng-repeat="houseCodePlan in houseCode.houseCodePlans" ng-click="houseCodePlanSelected(houseCodePlan)" ng-class="{'warning':selectedHouseCodePlan == houseCodePlan};">
+                    <tr ng-show="showHouseCode" ng-hide="!houseCodeExpanded" ng-repeat="houseCodePlan in houseCode.houseCodePlans track by $index" ng-click="houseCodePlanSelected(houseCodePlan)" ng-class="{'warning':selectedHouseCodePlan == houseCodePlan};">
                         <td width="30%" align="center">{{getPlanName(houseCodePlan.ptoPlan)}}</td>
                         <td width="30%" align="center">{{getPtoTypeName(houseCodePlan.ptoPlan)}}</td>
                         <td width="30%" align="center">{{getPtoPlanTypeName(houseCodePlan.ptoPlan)}}</td>
@@ -381,7 +387,7 @@
                         <td width="30%" align="left">{{getPlanName(item.ptoPlan)}}</td>
                         <td width="30%" align="left">{{getPtoTypeName(item.ptoPlan)}}</td>
                         <td width="30%" align="left">{{getPtoPlanTypeName(item.ptoPlan)}}</td>
-                        <td width="10%" align="center"><input type="checkbox" ng-checked="item.active" ng-click="onCompanyPlanChanged($event, item)"/></td>
+                        <td width="10%" align="center"><input type="checkbox" ng-model="item.active" ng-click="onCompanyPlanChanged($event, item)"/></td>
                     </tr>
                 </tbody>
                 <tfoot>
