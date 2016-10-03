@@ -196,6 +196,8 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             });
         }
         else if (level == "company") {
+            if (editStatus())
+                return;
             $scope.loadingTitle = " Loading...";
             $scope.pageLoading = true;
             $scope.showCompanyGrid = true;
@@ -398,7 +400,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         if (!confirm("Are you sure you want to delete the plan name [" + EmpActions.getPlanName($scope.selectedStatePlan.ptoPlanId) + "]?"))
             return;
 
-        $scope.loadingTitle = " Saving...";
+        $scope.loadingTitle = " Removing...";
         $scope.pageLoading = true;
         $scope.pageStatus = "Removing, Please Wait....";
         
@@ -425,7 +427,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 		if (!confirm("Are you sure you want to delete the plan name [" + EmpActions.getPlanName($scope.selectedCompanyPlan.ptoPlanId) + "]?"))
 			return;
 
-        $scope.loadingTitle = " Saving...";
+        $scope.loadingTitle = " Removing...";
         $scope.pageLoading = true;
         $scope.pageStatus = "Removing, Please Wait....";
 
@@ -452,14 +454,13 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         if (!confirm("Are you sure you want to delete the plan name [" + EmpActions.getPlanName($scope.selectedCountyPlan.ptoPlanId) + "]?"))
             return;
 
-        $scope.loadingTitle = " Saving...";
+        $scope.loadingTitle = " Removing...";
         $scope.pageLoading = true;
         $scope.pageStatus = "Removing, Please Wait....";
         EmpActions.deletePlan($scope.selectedCountyPlan.id, function (result) {
             angular.forEach($scope.countys, function (county, index) {
-                if (county.name === $scope.selectedCounty.name) {
                     for (var index = 0; index < county.countyPlans.length; index++) {
-                        if (county.countyPlans[index].id === $scope.selectedCountyPlan.id) {
+                        if ($scope.selectedCountyPlan !== null && county.countyPlans[index].id === $scope.selectedCountyPlan.id) {
                             county.countyPlans.splice(index, 1);
                             $scope.selectedCountyPlan = null;
                             break;
@@ -469,7 +470,6 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                         $scope.pageLoading = false;
                         $scope.pageStatus = "Normal";
                     });
-                }
             });
         });
     };
@@ -481,14 +481,13 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         if (!confirm("Are you sure you want to delete the plan name [" + EmpActions.getPlanName($scope.selectedCityPlan.ptoPlanId) + "]?"))
             return;
 
-        $scope.loadingTitle = " Saving...";
+        $scope.loadingTitle = " Removing...";
         $scope.pageLoading = true;
         $scope.pageStatus = "Removing, Please Wait....";
         EmpActions.deletePlan($scope.selectedCityPlan.id, function (result) {
             angular.forEach($scope.cities, function (city, index) {
-                if (city.name === $scope.selectedCity.name) {
                     for (var index = 0; index < city.cityPlans.length; index++) {
-                        if (city.cityPlans[index].id === $scope.selectedCityPlan.id) {
+                        if ($scope.selectedCityPlan !== null && city.cityPlans[index].id === $scope.selectedCityPlan.id) {
                             city.cityPlans.splice(index, 1);
                             $scope.selectedCityPlan = null;
                             break;
@@ -498,7 +497,6 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                         $scope.pageLoading = false;
                         $scope.pageStatus = "Normal";
                     });
-                }
             });
         });
     };
@@ -511,14 +509,13 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         if (!confirm("Are you sure you want to delete the plan name [" + EmpActions.getPlanName($scope.selectedHouseCodePlan.ptoPlanId) + "]?"))
             return;
 
-        $scope.loadingTitle = " Saving...";
+        $scope.loadingTitle = " Removing...";
         $scope.pageLoading = true;
         $scope.pageStatus = "Removing, Please Wait....";
         EmpActions.deletePlan($scope.selectedHouseCodePlan.id, function (result) {
             angular.forEach($scope.houseCodes, function (houseCode, index) {
-                if (houseCode.name === $scope.selectedHouseCode.name) {
                     for (var index = 0; index < houseCode.houseCodePlans.length; index++) {
-                        if (houseCode.houseCodePlans[index].id === $scope.selectedHouseCodePlan.id) {
+                        if ($scope.selectedHouseCodePlan !== null && houseCode.houseCodePlans[index].id === $scope.selectedHouseCodePlan.id) {
                             houseCode.houseCodePlans.splice(index, 1);
                             $scope.selectedHouseCodePlan = null;
                             break;
@@ -528,7 +525,6 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                         $scope.pageLoading = false;
                         $scope.pageStatus = "Normal";
                     });
-                }
             });
         });
     };
@@ -627,48 +623,8 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         });
         levelSelected = level;
         
-        var ptoCompanyModalInstance = $modal.open({
+        var ptoModalInstance = $modal.open({
             templateUrl: 'planGrid.html',
-            controller: 'modalInstanceCtrl',
-            title: "Select Plan",
-            size: 'sm',
-            scope: $scope
-        });
-    };
-
-    $scope.addStatePlan = function() {
-        var ptoStateModalInstance = $modal.open({
-            templateUrl: 'statePlanGrid.html',
-            controller: 'modalInstanceCtrl',
-            title: "Select Plan",
-            size: 'sm',
-            scope: $scope
-        });
-    };
-
-    $scope.addCountyPlan = function() {
-        var ptoCountyModalInstance = $modal.open({
-            templateUrl: 'countyPlanGrid.html',
-            controller: 'modalInstanceCtrl',
-            title: "Select Plan",
-            size: 'sm',
-            scope: $scope
-        });
-    };
-
-    $scope.addCityPlan = function() {
-        var ptoCityModalInstance = $modal.open({
-            templateUrl: 'cityPlanGrid.html',
-            controller: 'modalInstanceCtrl',
-            title: "Select Plan",
-            size: 'sm',
-            scope: $scope
-        });
-    };
-
-    $scope.addHouseCodePlan = function() {
-        var ptoHouseCodeModalInstance = $modal.open({
-            templateUrl: 'houseCodePlanGrid.html',
             controller: 'modalInstanceCtrl',
             title: "Select Plan",
             size: 'sm',
@@ -760,7 +716,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
     };
 
     $scope.addSelectedPlan = function () {
-        $scope.loadingTitle = " Saving...";
+        $scope.loadingTitle = " Adding...";
         $scope.pageStatus = "Adding, Please Wait....";
         $scope.pageLoading = true;
         if (levelSelected == "company") {
