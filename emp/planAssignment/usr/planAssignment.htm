@@ -1,15 +1,18 @@
-<section>
-    <h3 class="text-center header">Plan Assignments</h3>   
-</section>
- <div id="itemStatusDiv">
-    <div id="itemStatusImage" class="itemStatusImage"></div>
-    <div id="itemModifiedImage" class="itemModifiedImage"></div>
-    <div id="itemStatusText">{{pageStatus}}</div>
-    </div>
-
 <div class="row margin-bottom10 form-horizontal"></div>
 <div ng-controller="planAssignmentCtrl as ctrl" class="container bs-docs-container">
     <div class="row  margin-bottom10 form-horizontal">
+        <div class="col-md-12">
+            <div class="form-group">
+                <div class="col-md-4">
+                    <div id="itemStatusImage" class="itemStatusImage"></div>
+                    <div id="itemModifiedImage" class="itemModifiedImage"></div>
+                    <div id="itemStatusText">{{pageStatus}}</div>
+                </div>
+                <div class="col-md-8" style="padding-left: 220px; font: bold; font-size: larger">
+                   <label class="control-label">PLAN ASSIGNMENTS</label>
+                </div>
+             </div>
+        </div>
         <div class="col-md-12">
             <div class="form-group">
                 <label class="col-md-1 control-label">PTO Year</label>
@@ -73,11 +76,11 @@
                     </tr>
                 </thead>
                 <tbody style="width:100%">
-                    <tr style="color:#3276b1;" class="heading" role="row">
-                        <td width="30%" align="center">Plan Name</td>
-                        <td width="30%" align="center">PTO Type</td>
-                        <td width="30%" align="center">Plan Type</td>
-                        <td width="10%" align="center">Active</td>
+                    <tr style="color:#3276b1; font:bold" class="heading" role="row">
+                        <td width="30%" align="center"><label>Plan Name</label></td>
+                        <td width="30%" align="center"><label>PTO Type</label></td>
+                        <td width="30%" align="center"><label>Plan Type</label></td>
+                        <td width="10%" align="center"><label>Active</label></td>
                     </tr>
                     <tr ng-show="showState">
                         <td colspan="3">
@@ -133,11 +136,11 @@
                     </tr>
                 </thead>
                 <tbody style="max-height:200px;">
-                    <tr style="color:#3276b1;" class="heading" role="row">
-                        <td width="30%" align="center">Plan Name</td>
-                        <td width="30%" align="center">PTO Type</td>
-                        <td width="30%" align="center">Plan Type</td>
-                        <td width="10%" align="center">Active</td>
+                    <tr style="color:#3276b1; font: bold" class="heading" role="row">
+                        <td width="30%" align="center"><label>Plan Name</label></td>
+                        <td width="30%" align="center"><label>PTO Type</label></td>
+                        <td width="30%" align="center"><label>Plan Type</label></td>
+                        <td width="10%" align="center"><label>Active</label></td>
                     </tr>
                     <tr ng-show="showCounty" ng-repeat-start="county in countys | orderBy:sortCountyBy:sortCountyReverse" ng-click="countySelected(county)" ng-class="{'warning':selectedCounty == county};" expand="">
                         <td colspan="3">
@@ -194,11 +197,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr style="color:#3276b1;" class="heading" role="row">
-                        <td width="30%" align="center">Plan Name</td>
-                        <td width="30%" align="center">PTO Type</td>
-                        <td width="30%" align="center">Plan Type</td>
-                        <td width="10%" align="center">Active</td>
+                    <tr style="color:#3276b1; font: bold" class="heading" role="row">
+                        <td width="30%" align="center"><label>Plan Name</label></td>
+                        <td width="30%" align="center"><label>PTO Type</label></td>
+                        <td width="30%" align="center"><label>Plan Type</label></td>
+                        <td width="10%" align="center"><label>Active</label></td>
                     </tr>
                     <tr ng-show="showCity" ng-repeat-start="city in cities track by $index | orderBy:sortCityBy:sortCityReverse" ng-click="citySelected(city)" ng-class="{'warning':selectedCity == city};" expandCity="">
                         <td colspan="3">
@@ -255,11 +258,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr style="color:#3276b1;" class="heading" role="row">
-                        <td width="30%" align="center">Plan Name</td>
-                        <td width="30%" align="center">PTO Type</td>
-                        <td width="30%" align="center">Plan Type</td>
-                        <td width="10%" align="center">Active</td>
+                    <tr style="color:#3276b1; font: bold" class="heading" role="row">
+                        <td width="30%" align="center"><label>Plan Name</label></td>
+                        <td width="30%" align="center"><label>PTO Type</label></td>
+                        <td width="30%" align="center"><label>Plan Type</label></td>
+                        <td width="10%" align="center"><label>Active</label></td>
                     </tr>
                     <tr ng-show="showHouseCode" ng-repeat-start="houseCode in houseCodes | orderBy:sortHouseCodeBy:sortHouseCodeReverse" ng-click="houseCodeSelected(houseCode)" ng-class="{'warning':selectedHouseCode == houseCode};" expandHouseCode="">
                         <td colspan="3">
@@ -299,11 +302,11 @@
                     </tr>
                 </thead>
                 <tbody style="width:100%">
-                    <tr style="color:#3276b1;" class="heading" role="row">
-                        <td width="30%" align="center">Plan Name</td>
-                        <td width="30%" align="center">PTO Type</td>
-                        <td width="30%" align="center">Plan Type</td>
-                        <td width="10%" align="center">Active</td>
+                    <tr style="color:#3276b1; font: bold" class="heading" role="row">
+                        <td width="30%" align="center"><label>Plan Name</label></td>
+                        <td width="30%" align="center"><label>PTO Type</label></td>
+                        <td width="30%" align="center"><label>Plan Type</label></td>
+                        <td width="10%" align="center"><label>Active</label></td>
                     </tr>
                       <tr ng-repeat="item in companyPlans track by $index" ng-click="companyPlanSelected(item)" ng-class="{'warning':selectedCompanyPlan == item};">
                         <td width="30%" align="left">{{getPlanName(item.ptoPlanId)}}</td>
