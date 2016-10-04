@@ -1,12 +1,11 @@
-<div class="row margin-bottom10 form-horizontal"></div>
 <div ng-controller="planAssignmentCtrl as ctrl" class="container bs-docs-container">
-    <div class="row  margin-bottom10 form-horizontal">
+    <div class="row margin-bottom10 form-horizontal">
         <div class="col-md-12">
             <div class="form-group">
                 <div class="col-md-4">
                     <div id="itemStatusImage" class="itemStatusImage"></div>
                     <div id="itemModifiedImage" class="itemModifiedImage"></div>
-                    <div id="itemStatusText">{{pageStatus}}</div>
+                    <div id="itemStatusText"></div>
                 </div>
                 <div class="col-md-8" style="padding-left: 220px; font: bold; font-size: larger">
                    <label class="control-label">PLAN ASSIGNMENTS</label>
@@ -23,10 +22,10 @@
                 <label class="col-md-1 control-label">Level</label>
                 <div class="col-md-3">
                     <label class="radio-inline">
-                        <input name="Level" ng-model="companyLevel" type="radio" ng-value="companyLevel" ng-click="onLevelChange('company')"/>&nbsp;Company
+                        <input name="level" ng-model="companyLevel" type="radio" ng-value="companyLevel" ng-click="onLevelChange('company')"/>&nbsp;Company
                     </label>
                     <label class="radio-inline">
-                        <input name="Level" ng-model="stateLevel" type="radio" value="stateLevel" ng-click="onLevelChange('state')"/>&nbsp;State / County / City / House Code
+                        <input name="level" ng-model="stateLevel" type="radio" value="stateLevel" ng-click="onLevelChange('state')"/>&nbsp;State / County / City / House Code
                     </label>
                 </div>
                 <div class="col-md-2">
@@ -35,6 +34,40 @@
             </div>
         </div>
     </div>
+	<div class="row margin-bottom10" ng-if="showCompanyGrid">
+        <div class="col-md-9">
+            <table ng-table="companyTable" class="table-scroll table table-bordered table-condensed table-striped table-hover margin-bottom10">
+                <thead style="color:#3276b1;">
+                    <tr class="heading" role="row">
+                        <th style="text-align:center">Company Plan Details</th>
+                    </tr>
+                </thead>
+                <tbody style="width:100%">
+                    <tr style="color:#3276b1; font: bold" class="heading" role="row">
+                        <td width="30%" align="center"><label>Plan Name</label></td>
+                        <td width="30%" align="center"><label>PTO Type</label></td>
+                        <td width="30%" align="center"><label>Plan Type</label></td>
+                        <td width="10%" align="center"><label>Active</label></td>
+                    </tr>
+					<tr ng-repeat="item in companyPlans track by $index" ng-click="companyPlanSelected(item)" ng-class="{'warning':selectedCompanyPlan == item};">
+						<td width="30%" align="left">{{getPlanName(item.ptoPlanId)}}</td>
+						<td width="30%" align="left">{{getPTOTypeName(item.ptoPlanId)}}</td>
+						<td width="30%" align="left">{{getPTOPlanTypeName(item.ptoPlanId)}}</td>
+						<td width="10%" align="center"><input type="checkbox" ng-model="item.active" ng-click="onCompanyPlanChanged($event, item)"/></td>
+					</tr>
+                </tbody>
+                <tfoot>
+                    <tr class="footer">
+                        <td>
+	                        <a class="btn btn-primary btn-xs" ng-click="addPlan('company')">Add</a>
+	                        <a class="btn btn-primary btn-xs" ng-click="removeCompanyPlan()">Remove</a>
+	                        <a class="btn btn-primary btn-xs" ng-click="saveCompanyPlans()">Save</a>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+	</div>
     <div class="row margin-bottom10" ng-if="showStateGrid">
         <div class="col-md-4">
             <table class="table-scroll table table-striped table-bordered table-hover">
@@ -55,7 +88,6 @@
                 </tbody>
             </table>
         </div>
-
         <div class="col-md-8">
             <table class="table-scroll table table-bordered table-striped table-hover margin-bottom10 table-condensed">
                 <thead style="color:#3276b1;">
@@ -64,42 +96,42 @@
                             <div>
                                 <label style="padding-left: 430px;">State Plan Details</label>
                                 <div class="pull-right">
-                                    <button class="btn btn-primary btn-xs" ng-click="hideRows = !hideRows; showState = true" title="Expand/Collapse Plans">
-                                       <span class="glyphicon glyphicon-resize-small" ng-class="{ 'glyphicon-resize-small': hideRows, 'glyphicon-resize-full': !hideRows }"></span>
+                                    <button class="btn btn-default btn-xs" ng-click="stateExpanded = !stateExpanded; showState = true" title="Expand/Collapse State Plans">
+                                    	<span class="glyphicon glyphicon-resize-small" ng-class="{ 'glyphicon-resize-small': stateExpanded, 'glyphicon-resize-full': !stateExpanded }"></span>
                                     </button>
-                                    <button class="btn btn-primary btn-xs" ng-click="showState = !showState" title="Hide/Show Plans">
-                                        <span ng-bind="showState ? '-' : '+'"></span>
+                                    <button class="btn btn-default btn-xs" ng-click="showState = !showState" title="Hide/Show State Plans">
+										<span class="glyphicon glyphicon-minus" ng-class="{ 'glyphicon-minus': showState, 'glyphicon-plus': !showState }"></span>
                                     </button>
                                 </div>
                              </div>
                         </td>
                     </tr>
                 </thead>
-                <tbody style="width:100%">
+                <tbody ng-show="showState" style="width:100%">
                     <tr style="color:#3276b1; font:bold" class="heading" role="row">
                         <td width="30%" align="center"><label>Plan Name</label></td>
                         <td width="30%" align="center"><label>PTO Type</label></td>
                         <td width="30%" align="center"><label>Plan Type</label></td>
                         <td width="10%" align="center"><label>Active</label></td>
                     </tr>
-                    <tr ng-show="showState">
+                    <tr>
                         <td colspan="3">
-                            <a href="" ng-click="hideRows = !hideRows">
-                                <span class="glyphicon" ng-class="{ 'glyphicon-chevron-right': !hideRows, 'glyphicon-chevron-down': hideRows }"></span>
+                            <a href="" ng-click="stateExpanded = !stateExpanded">
+                                <span class="glyphicon" ng-class="{ 'glyphicon-chevron-right': !stateExpanded, 'glyphicon-chevron-down': stateExpanded }"></span>
                                 <strong>{{ state }}</strong>
                             </a>
                         </td>
                     </tr>
-                    <tr ng-show="showState" ng-hide="!hideRows" ng-repeat="item in statePlans track by $index" ng-click="statePlanSelected(item)" ng-class="{'warning':selectedStatePlan == item};">
-                        <td width="30%" align="center">{{getPlanName(item.ptoPlanId)}}</td>
-                        <td width="30%" align="center">{{getPTOTypeName(item.ptoPlanId)}}</td>
-                        <td width="30%" align="center">{{getPTOPlanTypeName(item.ptoPlanId)}}</td>
+                    <tr ng-hide="!stateExpanded" ng-repeat="item in statePlans track by $index" ng-click="statePlanSelected(item)" ng-class="{'warning':selectedStatePlan == item};">
+                        <td width="30%">{{getPlanName(item.ptoPlanId)}}</td>
+                        <td width="30%">{{getPTOTypeName(item.ptoPlanId)}}</td>
+                        <td width="30%">{{getPTOPlanTypeName(item.ptoPlanId)}}</td>
                         <td width="10%" align="center"><input type="checkbox" ng-checked="item.active" ng-click="onStatePlanChanged($event, item)" /></td>
                     </tr>
                 </tbody>
-                <tfoot>
+                <tfoot ng-show="showState">
                     <tr class="footer">
-                        <td colspan="6">
+                        <td>
 	                        <a class="btn btn-primary btn-xs" ng-click="addPlan('state')">Add</a>
 	                        <a class="btn btn-primary btn-xs" ng-click="removeStatePlan()">Remove</a>
 	                        <a class="btn btn-primary btn-xs" ng-click="saveStatePlans()">Save</a>
@@ -113,7 +145,7 @@
                     <tr class="heading" role="row">
                         <td>
                             <div>
-                               <div class="pull-left">
+                               <div ng-show="showCounty" class="pull-left">
                                     <a href="#" ng-click="sortType = 'County'; sortCountyReverse = !sortCountyReverse;" target="_self">County
                                         <span ng-show="sortType == 'County' && !sortCountyReverse">&#9660;</span>
                                         <span ng-show="sortType == 'County' && sortCountyReverse">&#9650;</span>
@@ -121,46 +153,46 @@
                                 </div>
                                 <label style="padding-left: 380px;">County Plan Details</label>
                                 <div class="pull-right">
-                                    <button class="btn btn-primary btn-xs" ng-click="ctrl.expandCountyAll(allExpanded = !allExpanded); showCounty = true"  title="Expand/Collapse Plans">
-                                        <span class="glyphicon glyphicon-resize-small" ng-class="{ 'glyphicon-resize-small': allExpanded, 'glyphicon-resize-full': !allExpanded }"></span>
+									<button class="btn btn-default btn-xs" ng-click="expandCountyAll(expandAllCounty = !expandAllCounty); showCounty = true;" title="Expand/Collapse County Plans">
+                                        <span class="glyphicon glyphicon-resize-small" ng-class="{ 'glyphicon-resize-small': expandAllCounty, 'glyphicon-resize-full': !expandAllCounty }"></span>
                                     </button>
-                                    <button  class="btn btn-primary btn-xs" ng-click="showCounty = !showCounty"  title="Hide/Show Plans">
-                                        <span ng-bind="showCounty ? '-' : '+'"></span>
+									<button class="btn btn-default btn-xs" ng-click="filterCountyPlans(filterCounty = !filterCounty); showCounty = true;" title="Filter County Plans">
+										<span class="glyphicon glyphicon-filter" ng-class="{ 'glyphicon-refresh': filterCounty, 'glyphicon-filter': !filterCounty }"></span>
                                     </button>
-                                    <button class="btn btn-default btn-xs btn-filter" ng-click="filterCountyPlans();"  title="Filter Plans">
-                                        <span class="glyphicon glyphicon-filter"></span>
+                                    <button  class="btn btn-default btn-xs" ng-click="showCounty = !showCounty" title="Hide/Show County Plans">
+   										<span class="glyphicon glyphicon-minus" ng-class="{ 'glyphicon-minus': showCounty, 'glyphicon-plus': !showCounty }"></span>
                                     </button>
                                 </div>
                              </div>
                         </td>
                     </tr>
                 </thead>
-                <tbody style="max-height:200px;">
+                <tbody ng-show="showCounty" style="max-height:200px;">
                     <tr style="color:#3276b1; font: bold" class="heading" role="row">
                         <td width="30%" align="center"><label>Plan Name</label></td>
                         <td width="30%" align="center"><label>PTO Type</label></td>
                         <td width="30%" align="center"><label>Plan Type</label></td>
                         <td width="10%" align="center"><label>Active</label></td>
                     </tr>
-                    <tr ng-show="showCounty" ng-repeat-start="county in countys | orderBy:sortCountyBy:sortCountyReverse" ng-click="countySelected(county)" ng-class="{'warning':selectedCounty == county};" expand="">
-                        <td colspan="3">
-                            <a href="" ng-click="expanded = !expanded">
-                                <span class="glyphicon" ng-class="{ 'glyphicon-chevron-right': !expanded, 'glyphicon-chevron-down': expanded }"></span>
+                    <tr ng-repeat-start="county in countys | orderBy:sortCountyBy:sortCountyReverse" ng-click="countySelected(county)" ng-class="{'warning':selectedCounty == county};" expandcounty>
+                        <td colspan="4">
+                            <a href="" ng-click="countyExpanded = !countyExpanded">
+                                <span class="glyphicon" ng-class="{ 'glyphicon-chevron-right': !countyExpanded, 'glyphicon-chevron-down': countyExpanded }"></span>
                                 <strong>{{ county.name }}</strong>
                             </a>
                         </td>
                     </tr>
-                    <tr ng-show="showCounty" ng-hide="!expanded" ng-repeat="countyPlan in county.countyPlans track by $index" ng-click="countyPlanSelected(countyPlan)" ng-class="{'warning':selectedCountyPlan == countyPlan};">
-                        <td width="30%" align="center">{{getPlanName(countyPlan.ptoPlanId)}}</td>
-                        <td width="30%" align="center">{{getPTOTypeName(countyPlan.ptoPlanId)}}</td>
-                        <td width="30%" align="center">{{getPTOPlanTypeName(countyPlan.ptoPlanId)}}</td>
+                    <tr ng-hide="!countyExpanded" ng-repeat="countyPlan in county.countyPlans track by $index" ng-click="countyPlanSelected(countyPlan)" ng-class="{'warning':selectedCountyPlan == countyPlan};">
+                        <td width="30%">{{getPlanName(countyPlan.ptoPlanId)}}</td>
+                        <td width="30%">{{getPTOTypeName(countyPlan.ptoPlanId)}}</td>
+                        <td width="30%">{{getPTOPlanTypeName(countyPlan.ptoPlanId)}}</td>
                         <td width="10%" align="center"><input type="checkbox" ng-checked="countyPlan.active" ng-click="onCountyPlanChanged($event, countyPlan)" /></td>
                     </tr>
-                    <tr ng-repeat-end ng-show="expanded"></tr>
+                    <tr ng-repeat-end ng-show="countyExpanded"></tr>
                 </tbody>
-                <tfoot>
+                <tfoot ng-show="showCounty">
                     <tr class="footer">
-                        <td colspan="6">
+                        <td>
 	                        <a class="btn btn-primary btn-xs" ng-click="addPlan('county')">Add</a>
 	                        <a class="btn btn-primary btn-xs" ng-click="removeCountyPlan()">Remove</a>
 	                        <a class="btn btn-primary btn-xs" ng-click="saveCountyPlans()">Save</a>
@@ -174,7 +206,7 @@
                     <tr class="heading" role="row">
                         <td>
                             <div>
-                               <div class="pull-left">
+								<div ng-show="showCity" class="pull-left">
                                     <a href="#" ng-click="sortType = 'City'; sortCityReverse = !sortCityReverse;" target="_self">City
                                         <span ng-show="sortType == 'City' && !sortCityReverse">&#9660;</span>
                                         <span ng-show="sortType == 'City' && sortCityReverse">&#9650;</span>
@@ -182,49 +214,50 @@
                                 </div>
                                 <label style="padding-left: 420px;">City Plan Details</label>
                                 <div class="pull-right">
-                                    <button class="btn btn-primary btn-xs" ng-click="cityExpanded = !cityExpanded; showCity = true"  title="Expand/Collapse Plans">
-                                        <span class="glyphicon glyphicon-resize-small" ng-class="{ 'glyphicon-resize-small': cityExpanded, 'glyphicon-resize-full': !cityExpanded }"></span>
+									<button class="btn btn-default btn-xs" ng-click="expandCityAll(expandAllCity = !expandAllCity); showCity = true;" title="Expand/Collapse City Plans">
+                                        <span class="glyphicon glyphicon-resize-small" ng-class="{ 'glyphicon-resize-small': expandAllCity, 'glyphicon-resize-full': !expandAllCity }"></span>
                                     </button>
-                                    <button class="btn btn-primary btn-xs" ng-click="showCity = !showCity"  title="Hide/Show Plans">
-                                        <span ng-bind="showCity ? '-' : '+'"></span>
+									<button class="btn btn-default btn-xs" ng-click="filterCityPlans(filterCity = !filterCity); showCity = true;" title="Filter City Plans">
+										<span class="glyphicon glyphicon-filter" ng-class="{ 'glyphicon-refresh': filterCity, 'glyphicon-filter': !filterCity }"></span>
                                     </button>
-                                    <button class="btn btn-default btn-xs btn-filter" ng-click="filterCityPlans()"  title="Filter Plans">
-                                        <span class="glyphicon glyphicon-filter"></span>
+									
+									<button  class="btn btn-default btn-xs" ng-click="showCity = !showCity" title="Hide/Show City Plans">
+   										<span class="glyphicon glyphicon-minus" ng-class="{ 'glyphicon-minus': showCity, 'glyphicon-plus': !showCity }"></span>
                                     </button>
                                 </div>
                              </div>
                         </td>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody ng-show="showCity">
                     <tr style="color:#3276b1; font: bold" class="heading" role="row">
                         <td width="30%" align="center"><label>Plan Name</label></td>
                         <td width="30%" align="center"><label>PTO Type</label></td>
                         <td width="30%" align="center"><label>Plan Type</label></td>
                         <td width="10%" align="center"><label>Active</label></td>
                     </tr>
-                    <tr ng-show="showCity" ng-repeat-start="city in cities track by $index | orderBy:sortCityBy:sortCityReverse" ng-click="citySelected(city)" ng-class="{'warning':selectedCity == city};" expandCity="">
-                        <td colspan="3">
+                    <tr ng-repeat-start="city in cities track by $index | orderBy:sortCityBy:sortCityReverse" ng-click="citySelected(city)" ng-class="{'warning':selectedCity == city};" expandcity>
+                        <td colspan="4">
                             <a href="" ng-click="cityExpanded = !cityExpanded">
                                 <span class="glyphicon" ng-class="{ 'glyphicon-chevron-right': !cityExpanded, 'glyphicon-chevron-down': cityExpanded }"></span>
                                 <strong>{{ city.name }}</strong>
                             </a>
                         </td>
                     </tr>
-                    <tr ng-show="showCity" ng-hide="!cityExpanded" ng-repeat="cityPlan in city.cityPlans track by $index" ng-click="cityPlanSelected(cityPlan)" ng-class="{'warning':selectedCityPlan == cityPlan};">
-                        <td width="30%" align="center">{{getPlanName(cityPlan.ptoPlanId)}}</td>
-                        <td width="30%" align="center">{{getPTOTypeName(cityPlan.ptoPlanId)}}</td>
-                        <td width="30%" align="center">{{getPTOPlanTypeName(cityPlan.ptoPlanId)}}</td>
+                    <tr ng-hide="!cityExpanded" ng-repeat="cityPlan in city.cityPlans track by $index" ng-click="cityPlanSelected(cityPlan)" ng-class="{'warning':selectedCityPlan == cityPlan};">
+                        <td width="30%">{{getPlanName(cityPlan.ptoPlanId)}}</td>
+                        <td width="30%">{{getPTOTypeName(cityPlan.ptoPlanId)}}</td>
+                        <td width="30%">{{getPTOPlanTypeName(cityPlan.ptoPlanId)}}</td>
                         <td width="10%" align="center"><input type="checkbox" ng-checked="cityPlan.active" ng-click="onCityPlanChanged($event, cityPlan)" /></td>
                     </tr>
                     <tr ng-repeat-end ng-show="cityExpanded"></tr>
                 </tbody>
-                <tfoot>
+                <tfoot ng-show="showCity">
                     <tr class="footer">
-                        <td colspan="6">
-                        <a class="btn btn-primary btn-xs" ng-click="addPlan('city')">Add</a>
-                        <a class="btn btn-primary btn-xs" ng-click="removeCityPlan()">Remove</a>
-                        <a class="btn btn-primary btn-xs" ng-click="saveCityPlans()">Save</a>
+                        <td>
+	                        <a class="btn btn-primary btn-xs" ng-click="addPlan('city')">Add</a>
+	                        <a class="btn btn-primary btn-xs" ng-click="removeCityPlan()">Remove</a>
+	                        <a class="btn btn-primary btn-xs" ng-click="saveCityPlans()">Save</a>
                         </td>
                     </tr>
                 </tfoot>
@@ -235,37 +268,38 @@
                     <tr class="heading" role="row">
                         <td>
                             <div>
-                                 <div class="pull-left">
-                                     <a href="#" ng-click="sortType = 'HouseCode'; sortHouseCodeReverse = !sortHouseCodeReverse;" target="_self">HouseCode
+                                 <div ng-show="showHouseCode" class="pull-left">
+                                     <a href="#" ng-click="sortType = 'HouseCode'; sortHouseCodeReverse = !sortHouseCodeReverse;" target="_self">House Code
                                         <span ng-show="sortType == 'HouseCode' && !sortHouseCodeReverse">&#9660;</span>
                                         <span ng-show="sortType == 'HouseCode' && sortHouseCodeReverse">&#9650;</span>
                                     </a>
                                  </div>
-                                <label style="padding-left: 380px;">HouseCode Plan Details</label>
+                                <label style="padding-left: 380px;">House Code Plan Details</label>
                                 <div class="pull-right">
-                                    <button class="btn btn-primary btn-xs" ng-click="houseCodeExpanded = !houseCodeExpanded; showHouseCode = true"  title="Expand/Collapse Plans">
-                                        <span class="glyphicon glyphicon-resize-small" ng-class="{ 'glyphicon-resize-small': houseCodeExpanded, 'glyphicon-resize-full': !houseCodeExpanded }"></span>
+									<button class="btn btn-default btn-xs" ng-click="expandHouseCodeAll(expandAllHouseCode = !expandAllHouseCode); showHouseCode = true;" title="Expand/Collapse House Code Plans">
+                                        <span class="glyphicon glyphicon-resize-small" ng-class="{ 'glyphicon-resize-small': expandAllHouseCode, 'glyphicon-resize-full': !expandAllHouseCode }"></span>
                                     </button>
-                                    <button class="btn btn-primary btn-xs" ng-click="showHouseCode = !showHouseCode"  title="Hide/Show Plans">
-                                        <span ng-bind="showHouseCode ? '-' : '+'"></span>
+									<button class="btn btn-default btn-xs" ng-click="filterHouseCodePlans(filterHouseCode = !filterHouseCode); showHouseCode = true;" title="Filter House Code Plans">
+										<span class="glyphicon glyphicon-filter" ng-class="{ 'glyphicon-refresh': filterHouseCode, 'glyphicon-filter': !filterHouseCode }"></span>
                                     </button>
-                                    <button class="btn btn-default btn-xs btn-filter" ng-click="filterHouseCodePlans()"  title="Filter Plans">
-                                        <span class="glyphicon glyphicon-filter"></span>
+									
+									<button  class="btn btn-default btn-xs" ng-click="showHouseCode = !showHouseCode" title="Hide/Show House Code Plans">
+   										<span class="glyphicon glyphicon-minus" ng-class="{ 'glyphicon-minus': showHouseCode, 'glyphicon-plus': !showHouseCode }"></span>
                                     </button>
                                 </div>
                              </div>
                         </td>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody ng-show="showHouseCode">
                     <tr style="color:#3276b1; font: bold" class="heading" role="row">
                         <td width="30%" align="center"><label>Plan Name</label></td>
                         <td width="30%" align="center"><label>PTO Type</label></td>
                         <td width="30%" align="center"><label>Plan Type</label></td>
                         <td width="10%" align="center"><label>Active</label></td>
                     </tr>
-                    <tr ng-show="showHouseCode" ng-repeat-start="houseCode in houseCodes | orderBy:sortHouseCodeBy:sortHouseCodeReverse" ng-click="houseCodeSelected(houseCode)" ng-class="{'warning':selectedHouseCode == houseCode};" expandHouseCode="">
-                        <td colspan="3">
+                    <tr ng-repeat-start="houseCode in houseCodes | orderBy:sortHouseCodeBy:sortHouseCodeReverse" ng-click="houseCodeSelected(houseCode)" ng-class="{'warning':selectedHouseCode == houseCode};" expandhousecode="">
+                        <td colspan="4">
                             <a href="" ng-click="houseCodeExpanded = !houseCodeExpanded">
                                 <span class="glyphicon" ng-class="{ 'glyphicon-chevron-right': !houseCodeExpanded, 'glyphicon-chevron-down': houseCodeExpanded }"></span>
                                 <strong>{{ houseCode.name }}</strong>
@@ -273,16 +307,16 @@
                         </td>
                     </tr>
                     <tr ng-show="showHouseCode" ng-hide="!houseCodeExpanded" ng-repeat="houseCodePlan in houseCode.houseCodePlans track by $index" ng-click="houseCodePlanSelected(houseCodePlan)" ng-class="{'warning':selectedHouseCodePlan == houseCodePlan};">
-                        <td width="30%" align="center">{{getPlanName(houseCodePlan.ptoPlanId)}}</td>
-                        <td width="30%" align="center">{{getPTOTypeName(houseCodePlan.ptoPlanId)}}</td>
-                        <td width="30%" align="center">{{getPTOPlanTypeName(houseCodePlan.ptoPlanId)}}</td>
+                        <td width="30%">{{getPlanName(houseCodePlan.ptoPlanId)}}</td>
+                        <td width="30%">{{getPTOTypeName(houseCodePlan.ptoPlanId)}}</td>
+                        <td width="30%">{{getPTOPlanTypeName(houseCodePlan.ptoPlanId)}}</td>
                         <td width="10%" align="center"><input type="checkbox" ng-checked="houseCodePlan.active" ng-click="onHouseCodePlanChanged($event, houseCodePlan)" /></td>
                     </tr>
                     <tr ng-repeat-end ng-show="houseCodeExpanded"></tr>
                 </tbody>
-                <tfoot>
+                <tfoot ng-show="showHouseCode">
                     <tr class="footer">
-                        <td colspan="6">
+                        <td>
 	                        <a class="btn btn-primary btn-xs" ng-click="addPlan('houseCode')">Add</a>
 	                        <a class="btn btn-primary btn-xs" ng-click="removeHouseCodePlan()">Remove</a>
 	                        <a class="btn btn-primary btn-xs" ng-click="saveHouseCodePlans()">Save</a>
@@ -292,41 +326,6 @@
             </table>
         </div>
     </div>
-
-	<div class="row margin-bottom10" ng-if="showCompanyGrid">
-        <div class="col-md-9">
-            <table ng-table="companyTable" class="table-scroll table table-bordered table-condensed table-striped table-hover margin-bottom10">
-                <thead style="color:#3276b1;">
-                    <tr class="heading" role="row">
-                        <th style="text-align:center">Company Plan Details</th>
-                    </tr>
-                </thead>
-                <tbody style="width:100%">
-                    <tr style="color:#3276b1; font: bold" class="heading" role="row">
-                        <td width="30%" align="center"><label>Plan Name</label></td>
-                        <td width="30%" align="center"><label>PTO Type</label></td>
-                        <td width="30%" align="center"><label>Plan Type</label></td>
-                        <td width="10%" align="center"><label>Active</label></td>
-                    </tr>
-                      <tr ng-repeat="item in companyPlans track by $index" ng-click="companyPlanSelected(item)" ng-class="{'warning':selectedCompanyPlan == item};">
-                        <td width="30%" align="left">{{getPlanName(item.ptoPlanId)}}</td>
-                        <td width="30%" align="left">{{getPTOTypeName(item.ptoPlanId)}}</td>
-                        <td width="30%" align="left">{{getPTOPlanTypeName(item.ptoPlanId)}}</td>
-                        <td width="10%" align="center"><input type="checkbox" ng-model="item.active" ng-click="onCompanyPlanChanged($event, item)"/></td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <tr class="footer">
-                        <td colspan="6">
-	                        <a class="btn btn-primary btn-xs" ng-click="addPlan('company')">Add</a>
-	                        <a class="btn btn-primary btn-xs" ng-click="removeCompanyPlan()">Remove</a>
-	                        <a class="btn btn-primary btn-xs" ng-click="saveCompanyPlans()">Save</a>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-	</div>
     <div ng-show="isPageLoading()">
         <div class="overlay"></div>
         <div class="spinner">
