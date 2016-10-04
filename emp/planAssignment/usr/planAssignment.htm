@@ -7,7 +7,7 @@
                     <div id="itemModifiedImage" class="itemModifiedImage"></div>
                     <div id="itemStatusText"></div>
                 </div>
-                <div class="col-md-8" style="padding-left: 220px; font: bold; font-size: larger">
+                <div class="col-md-8" style="padding-left: 200px; font: bold; font-size: larger">
                    <label class="control-label">PLAN ASSIGNMENTS</label>
                 </div>
              </div>
@@ -126,7 +126,7 @@
                         <td width="30%">{{getPlanName(item.ptoPlanId)}}</td>
                         <td width="30%">{{getPTOTypeName(item.ptoPlanId)}}</td>
                         <td width="30%">{{getPTOPlanTypeName(item.ptoPlanId)}}</td>
-                        <td width="10%" align="center"><input type="checkbox" ng-checked="item.active" ng-click="onStatePlanChanged($event, item)" /></td>
+                        <td width="10%" align="center"><input type="checkbox" ng-model="item.active" ng-click="onStatePlanChanged($event, item)" /></td>
                     </tr>
                 </tbody>
                 <tfoot ng-show="showState">
@@ -186,7 +186,7 @@
                         <td width="30%">{{getPlanName(countyPlan.ptoPlanId)}}</td>
                         <td width="30%">{{getPTOTypeName(countyPlan.ptoPlanId)}}</td>
                         <td width="30%">{{getPTOPlanTypeName(countyPlan.ptoPlanId)}}</td>
-                        <td width="10%" align="center"><input type="checkbox" ng-checked="countyPlan.active" ng-click="onCountyPlanChanged($event, countyPlan)" /></td>
+                        <td width="10%" align="center"><input type="checkbox" ng-model="countyPlan.active" ng-click="onCountyPlanChanged($event, countyPlan)" /></td>
                     </tr>
                     <tr ng-repeat-end ng-show="countyExpanded"></tr>
                 </tbody>
@@ -248,7 +248,7 @@
                         <td width="30%">{{getPlanName(cityPlan.ptoPlanId)}}</td>
                         <td width="30%">{{getPTOTypeName(cityPlan.ptoPlanId)}}</td>
                         <td width="30%">{{getPTOPlanTypeName(cityPlan.ptoPlanId)}}</td>
-                        <td width="10%" align="center"><input type="checkbox" ng-checked="cityPlan.active" ng-click="onCityPlanChanged($event, cityPlan)" /></td>
+                        <td width="10%" align="center"><input type="checkbox" ng-model="cityPlan.active" ng-click="onCityPlanChanged($event, cityPlan)" /></td>
                     </tr>
                     <tr ng-repeat-end ng-show="cityExpanded"></tr>
                 </tbody>
@@ -310,7 +310,7 @@
                         <td width="30%">{{getPlanName(houseCodePlan.ptoPlanId)}}</td>
                         <td width="30%">{{getPTOTypeName(houseCodePlan.ptoPlanId)}}</td>
                         <td width="30%">{{getPTOPlanTypeName(houseCodePlan.ptoPlanId)}}</td>
-                        <td width="10%" align="center"><input type="checkbox" ng-checked="houseCodePlan.active" ng-click="onHouseCodePlanChanged($event, houseCodePlan)" /></td>
+                        <td width="10%" align="center"><input type="checkbox" ng-model="houseCodePlan.active" ng-click="onHouseCodePlanChanged($event, houseCodePlan)" /></td>
                     </tr>
                     <tr ng-repeat-end ng-show="houseCodeExpanded"></tr>
                 </tbody>
@@ -362,7 +362,7 @@
 	    		</table>
 	    	</div>
 	        <div class="modal-footer">
-	            <button type="button" class="btn btn-primary" ng-disabled="isSelected" ng-click="addSelectedPlan();ok()">OK</button>
+	            <button type="button" class="btn btn-primary" ng-disabled="disableOk" ng-click="addSelectedPlan();ok()">OK</button>
 	            <button type="button" class="btn btn-warning" ng-click="cancel()">Cancel</button>
 	        </div>
 	    </div>

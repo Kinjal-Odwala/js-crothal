@@ -166,6 +166,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
     $scope.showCompanyGrid = true;
     $scope.pageLoading = false;
     $scope.loadingTitle = " Loading...";
+    $scope.disableOk = true;
     $scope.isPageLoading = function() {
         return ($scope.loadingCount > 0 || $scope.pageLoading);
     };
@@ -187,20 +188,17 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         EmpActions.getPTOPlans($scope.ptoYear, function (result) {
             $scope.plans = result;
         });
-        EmpActions.getCompanyPlanAssignments($scope.ptoYear, function (result) {
+        EmpActions.getPlanAssignments($scope.ptoYear, 0, 1, function (result) {
             $scope.companyPlans = result;
             angular.forEach($scope.companyPlans, function (plan) {
-                if (plan.active === "true")
-                    plan.active = true;
-                else
-                    plan.active = false;
             });
             $scope.pageLoading = false;
             setStatus("Normal");
         });
     });
 
-    $scope.onLevelChange = function(level) {
+    $scope.onLevelChange = function (level) {
+        $scope.disableOk = true;
         if (level == "state") {
             if (editStatus())
                 return;
@@ -226,14 +224,8 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             EmpActions.getPTOPlans($scope.ptoYear, function(result) {
                 $scope.plans = result;
             });
-            EmpActions.getCompanyPlanAssignments($scope.ptoYear, function(result) {
+            EmpActions.getPlanAssignments($scope.ptoYear, 0, 1, function(result) {
                 $scope.companyPlans = result;
-                angular.forEach($scope.companyPlans, function(plan) {
-                    if (plan.active === "true")
-                        plan.active = true;
-                    else
-                        plan.active = false;
-                });
                 $scope.pageLoading = false;
                 setStatus("Normal");
             });
@@ -245,10 +237,22 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         levelSelected = "company";
     };
 
-    $scope.search = function() {
+    $scope.search = function () {
+        $scope.pageLoading = true;
+        setStatus("Loading");
         EmpActions.getPTOPlans($scope.ptoYear, function(result) {
             $scope.plans = result;
         });
+        EmpActions.getPlanAssignments($scope.ptoYear, 0, 1, function (result) {
+            $scope.companyPlans = result;
+            $scope.pageLoading = false;
+            setStatus("Normal");
+        });
+        $scope.selectedState = null;
+        $scope.statePlans = [];
+        $scope.countys = [];
+        $scope.cities = [];
+        $scope.houseCodes = [];
     };
 
     $scope.getPlanName = function(planId) {
@@ -298,11 +302,10 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         });
 
         EmpActions.getPlanAssignments($scope.ptoYear, item.id, 2, function(result) {
-            $scope.statePlans = [];
             $scope.statePlans = result;
         });
 
-        EmpActions.getCountyTypes($scope.ptoYear, item.id, function(result) {
+        EmpActions.getPlanAssignments($scope.ptoYear, item.id, 3, function (result) {
             $scope.selectedCountys = result;
             $scope.countys = [];
 
@@ -341,7 +344,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             $scope.assignedCountys = $scope.countys;
         });
 
-        EmpActions.getCityTypes($scope.ptoYear, item.id, function(result) {
+        EmpActions.getPlanAssignments($scope.ptoYear, item.id, 4, function (result) {
             $scope.selectedCities = result;
             $scope.cities = [];
 
@@ -380,7 +383,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             $scope.assignedCities = $scope.cities;
         });
 
-        EmpActions.getHcmHouseCodes($scope.ptoYear, item.id, function(result) {
+        EmpActions.getPlanAssignments($scope.ptoYear, item.id, 5, function (result) {
             $scope.selectedHouseCodes = result;
             $scope.pageLoading = false;
             $scope.houseCodes = [];
@@ -557,6 +560,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
     };
 
     $scope.addPlan = function (level) {
+        $scope.disableOk = true;
         EmpActions.getPTOPlans($scope.ptoYear, function (result) {
             var plans = result;
             if (level == "company") {
@@ -569,10 +573,31 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                         }
                     });
                     if (!foundCompanyPlan) {
-                        $scope.modalPlans.push(plan);
+                        if ($scope.modalPlans.length > 0) {
+                            var similarModalPlan = false;
+                            angular.forEach($scope.modalPlans, function (modalPlan, index) {
+                                if (plan.ptoType == modalPlan.ptoType && plan.ptoPlanType == modalPlan.ptoPlanType) {
+                                    similarModalPlan = true;
+                                }
+                            });
+                            if (!similarModalPlan) {
+                                $scope.modalPlans.push(plan);
+                            }
+                        }
+                        else {
+                            $scope.modalPlans.push(plan);
+                        }
                     }
                 });
                 $scope.plans = $scope.modalPlans;
+
+                var ptoModalInstance = $modal.open({
+                    templateUrl: 'planGrid.html',
+                    controller: 'modalInstanceCtrl',
+                    title: "Select Plan",
+                    size: 'sm',
+                    scope: $scope
+                });
             }
             else if (level == "state") {
                 $scope.modalPlans = [];
@@ -584,12 +609,35 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                         }
                     });
                     if (!foundStatePlan) {
-                        $scope.modalPlans.push(plan);
+                        if ($scope.modalPlans.length > 0) {
+                            var similarModalPlan = false;
+                            angular.forEach($scope.modalPlans, function (modalPlan, index) {
+                                if (plan.ptoType == modalPlan.ptoType && plan.ptoPlanType == modalPlan.ptoPlanType) {
+                                    similarModalPlan = true;
+                                }
+                            });
+                            if (!similarModalPlan) {
+                                $scope.modalPlans.push(plan);
+                            }
+                        }
+                        else {
+                            $scope.modalPlans.push(plan);
+                        }
                     }
                 });
                 $scope.plans = $scope.modalPlans;
+
+                var ptoModalInstance = $modal.open({
+                    templateUrl: 'planGrid.html',
+                    controller: 'modalInstanceCtrl',
+                    title: "Select Plan",
+                    size: 'sm',
+                    scope: $scope
+                });
             }
             else if (level == "city") {
+                if ($scope.selectedCity === undefined || $scope.selectedCity === null)
+                    return;
                 $scope.modalPlans = [];
                 angular.forEach(plans, function (plan, index) {
                     var foundCityPlan = false;
@@ -603,12 +651,36 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                         }
                     });
                     if (!foundCityPlan) {
-                        $scope.modalPlans.push(plan);
+                        if ($scope.modalPlans.length > 0) {
+                            var similarModalPlan = false;
+                            angular.forEach($scope.modalPlans, function (modalPlan, index) {
+                                if (plan.ptoType == modalPlan.ptoType && plan.ptoPlanType == modalPlan.ptoPlanType) {
+                                    similarModalPlan = true;
+                                }
+                            });
+                            if (!similarModalPlan) {
+                                $scope.modalPlans.push(plan);
+                            }
+                        }
+                        else {
+                            $scope.modalPlans.push(plan);
+                        }
                     }
                 });
                 $scope.plans = $scope.modalPlans;
+
+                var ptoModalInstance = $modal.open({
+                    templateUrl: 'planGrid.html',
+                    controller: 'modalInstanceCtrl',
+                    title: "Select Plan",
+                    size: 'sm',
+                    scope: $scope
+                });
             }
             else if (level == "houseCode") {
+                if ($scope.selectedHouseCode === undefined || $scope.selectedHouseCode === null)
+                    return;
+
                 $scope.modalPlans = [];
                 angular.forEach(plans, function (plan, index) {
                     var foundHouseCodePlan = false;
@@ -626,8 +698,19 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                     }
                 });
                 $scope.plans = $scope.modalPlans;
+
+                var ptoModalInstance = $modal.open({
+                    templateUrl: 'planGrid.html',
+                    controller: 'modalInstanceCtrl',
+                    title: "Select Plan",
+                    size: 'sm',
+                    scope: $scope
+                });
             }
             else if (level == "county") {
+                if ($scope.selectedCounty === undefined || $scope.selectedCounty === null)
+                    return;
+
                 $scope.modalPlans = [];
                 angular.forEach($scope.plans, function (plan, index) {
                     var foundCountyPlan = false;
@@ -641,21 +724,34 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                         }
                     });
                     if (!foundCountyPlan) {
-                        $scope.modalPlans.push(plan);
+                        if ($scope.modalPlans.length > 0) {
+                            var similarModalPlan = false;
+                            angular.forEach($scope.modalPlans, function (modalPlan, index) {
+                                if (plan.ptoType == modalPlan.ptoType && plan.ptoPlanType == modalPlan.ptoPlanType) {
+                                    similarModalPlan = true;
+                                }
+                            });
+                            if (!similarModalPlan) {
+                                $scope.modalPlans.push(plan);
+                            }
+                        }
+                        else {
+                            $scope.modalPlans.push(plan);
+                        }
                     }
                 });
                 $scope.plans = $scope.modalPlans;
+
+                var ptoModalInstance = $modal.open({
+                    templateUrl: 'planGrid.html',
+                    controller: 'modalInstanceCtrl',
+                    title: "Select Plan",
+                    size: 'sm',
+                    scope: $scope
+                });
             }
         });
         levelSelected = level;
-        
-        var ptoModalInstance = $modal.open({
-            templateUrl: 'planGrid.html',
-            controller: 'modalInstanceCtrl',
-            title: "Select Plan",
-            size: 'sm',
-            scope: $scope
-        });
     };
 
     $scope.statePlanSelected = function(item) {
@@ -689,14 +785,12 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 		setStatus("Saving");
         angular.forEach($scope.countys, function(county, index) {
             for (var index = 0; index < county.countyPlans.length; index++) {
-                if (!county.countyPlans[index].isChecked && county.countyPlans[index].isChecked != undefined) {
                     EmpActions.actionSaveItem($scope, county.countyPlans, function (data, status) {
                         $scope.$apply(function () {
                             $scope.pageLoading = false;
 							setStatus("Saved");
                         });
                     });
-                }
             }
         });
         modified(false);
@@ -706,14 +800,12 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 	    setStatus("Saving");
         angular.forEach($scope.cities, function(city, index) {
             for (var index = 0; index < city.cityPlans.length; index++) {
-                if (!city.cityPlans[index].isChecked && city.cityPlans[index].isChecked != undefined) {
                     EmpActions.actionSaveItem($scope, city.cityPlans, function (data, status) {
                         $scope.$apply(function () {
                             $scope.pageLoading = false;
 							setStatus("Saved");
                         });
                     });
-                }
             }
         });
         modified(false);
@@ -723,7 +815,6 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 	    setStatus("Saving");
         angular.forEach($scope.houseCodes, function(houseCode, index) {
             for (var index = 0; index < houseCode.houseCodePlans.length; index++) {
-                if (houseCode.houseCodePlans[index].isChecked != undefined) {
                     EmpActions.actionSaveItem($scope, houseCode.houseCodePlans, function (data, status) {
                         $scope.$apply(function () {
                             $scope.pageLoading = false;
@@ -731,7 +822,6 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                         });
                     });
                 }
-            }
         });
         modified(false);
     };
@@ -749,6 +839,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                             && EmpActions.getPlanPTOPlanTypeName($scope.plans[index].ptoPlanType) === EmpActions.getPTOPlanTypeName(companyPlan.ptoPlanId)) {
                             found = true;
                             alert("Plan with PTO Type: [" + EmpActions.getPTOTypeName(companyPlan.ptoPlanId) + "] and Plan Type: [" + EmpActions.getPTOPlanTypeName(companyPlan.ptoPlanId) + "] is already exists.");
+                            $scope.pageLoading = false;
                         }
                     });
                 }
@@ -761,7 +852,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                         item["id"] = 0;
                         item["ptoYearId"] = $scope.ptoYear;
                         item["stateType"] = 0;
-                        item["houseCodeId"] = 0;
+                        item["houseCodeId"] = $scope.plans[index].houseCodeId;
                         item["ptoPlanId"] = $scope.plans[index].id;
                         item["groupType"] = 1;
                         item["name"] = "";
@@ -789,6 +880,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                             && EmpActions.getPlanPTOPlanTypeName($scope.plans[index].ptoPlanType) === EmpActions.getPTOPlanTypeName(statePlan.ptoPlanId)) {
                             found = true;
                             alert("Plan with PTO Type:" + EmpActions.getPTOTypeName(statePlan.ptoPlanId) + " and Plan Type:" + EmpActions.getPTOPlanTypeName(statePlan.ptoPlanId) + " is already exists.");
+                            $scope.pageLoading = false;
                         }
                     });
                 }
@@ -801,7 +893,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                         item["id"] = 0;
                         item["ptoYearId"] = $scope.ptoYear;
                         item["stateType"] = $scope.selectedState.id;
-                        item["houseCodeId"] = 0;
+                        item["houseCodeId"] = $scope.plans[index].houseCodeId;
                         item["ptoPlanId"] = $scope.plans[index].id;
                         item["groupType"] = 2;
                         item["name"] = $scope.selectedState.name;
@@ -831,6 +923,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                                     && EmpActions.getPlanPTOPlanTypeName($scope.plans[index].ptoPlanType) === EmpActions.getPTOPlanTypeName(countyPlan.ptoPlanId)) {
                                     found = true;
                                     alert("Plan with PTO Type:" + EmpActions.getPTOTypeName(countyPlan.ptoPlanId) + " and Plan Type:" + EmpActions.getPTOPlanTypeName(countyPlan.ptoPlanId) + " is already exists.");
+                                    $scope.pageLoading = false;
                                 }
                             });
                         }
@@ -847,7 +940,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                                 item["id"] = 0;
                                 item["ptoYearId"] = $scope.ptoYear;
                                 item["stateType"] = $scope.selectedState.id;
-                                item["houseCodeId"] = 0;
+                                item["houseCodeId"] = $scope.plans[index].houseCodeId;
                                 item["ptoPlanId"] = $scope.plans[index].id;
                                 item["groupType"] = 3;
                                 item["name"] = $scope.selectedCounty.name;
@@ -879,6 +972,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                                     && EmpActions.getPlanPTOPlanTypeName($scope.plans[index].ptoPlanType) === EmpActions.getPTOPlanTypeName(cityPlan.ptoPlanId)) {
                                     similarPlan = true;
                                     alert("Plan with PTO Type: [" + EmpActions.getPTOTypeName(cityPlan.ptoPlanId) + "] and Plan Type: [" + EmpActions.getPTOPlanTypeName(cityPlan.ptoPlanId) + "] is already exists.");
+                                    $scope.pageLoading = false;
                                 }
                             });
                         }
@@ -895,7 +989,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                                 item["id"] = 0;
                                 item["ptoYearId"] = $scope.ptoYear;
                                 item["stateType"] = $scope.selectedState.id;
-                                item["houseCodeId"] = 0;
+                                item["houseCodeId"] = $scope.plans[index].houseCodeId;
                                 item["ptoPlanId"] = $scope.plans[index].id;
                                 item["groupType"] = 4;
                                 item["name"] = $scope.selectedCity.name;
@@ -928,6 +1022,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                                     && EmpActions.getPlanPTOPlanTypeName($scope.plans[index].ptoPlanType) === EmpActions.getPTOPlanTypeName(houseCodePlan.ptoPlanId)) {
                                     similarPlan = true;
                                     alert("Plan with PTO Type:" + EmpActions.getPTOTypeName(houseCodePlan.ptoPlanId) + " and Plan Type:" + EmpActions.getPTOPlanTypeName(houseCodePlan.ptoPlanId) + " is already exists.");
+                                    $scope.pageLoading = false;
                                 }
                             });
                         }
@@ -944,7 +1039,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                                 item["id"] = 0;
                                 item["ptoYearId"] = $scope.ptoYear;
                                 item["stateType"] = $scope.selectedState.id;
-                                item["houseCodeId"] = 0;
+                                item["houseCodeId"] = $scope.plans[index].houseCodeId;
                                 item["ptoPlanId"] = $scope.plans[index].id;
                                 item["groupType"] = 5;
                                 item["name"] = $scope.selectedHouseCode.name;
@@ -968,6 +1063,12 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 
     $scope.planSelected = function (item) {
         $scope.selectedPlan = item;
+        var disable = true;
+        angular.forEach($scope.plans, function (plan, index) {
+            if (plan.isChecked)
+                disable = false;
+        });
+        $scope.disableOk = disable;
     };
 
     $scope.countyPlanSelected = function (item) {
@@ -1022,32 +1123,24 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
     };
 
     $scope.onHouseCodePlanChanged = function($event, plan) {
-        var checkbox = $event.target;
-        plan.isChecked = checkbox.checked;
         plan.modified = true;
         setStatus("Edit");
         modified(true);
     };
 
     $scope.onCityPlanChanged = function($event, plan) {
-        var checkbox = $event.target;
-        plan.isChecked = checkbox.checked;
         plan.modified = true;
         setStatus("Edit");
         modified(true);
     };
 
     $scope.onCountyPlanChanged = function($event, plan) {
-        var checkbox = $event.target;
-        plan.isChecked = checkbox.checked;
         plan.modified = true;
         setStatus("Edit");
         modified(true);
     };
 
     $scope.onStatePlanChanged = function($event, plan) {
-        var checkbox = $event.target;
-        plan.isChecked = checkbox.checked;
         plan.modified = true;
         setStatus("Edit");
         modified(true);
@@ -1272,58 +1365,6 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function($http, $fi
 		});
     };
 
-    var getCountyTypes = function(ptoYearId, stateId, callback) {
-        apiRequest('emp', 'iiCache', '<criteria>storeId:ptoPlanAssignments,userId:[user]'
-			+ ',ptoYearId:' + ptoYearId
-           	+ ',stateType:' + stateId
-           	+ ',groupType:' + 3
-           	+ ',</criteria>', function(xml) {
-           	if (callback) {
-               cache.countyTypes = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
-               callback(cache.countyTypes);
-           	}
-        });
-    };
-
-    var getCityTypes = function(ptoYearId, stateId, callback) {
-        apiRequest('emp', 'iiCache', '<criteria>storeId:ptoPlanAssignments,userId:[user]'
-			+ ',ptoYearId:' + ptoYearId
-            + ',stateType:' + stateId
-            + ',groupType:' + 4
-            + ',</criteria>', function(xml) {
-			if (callback) {
-			   cache.cityTypes = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
-			   callback(cache.cityTypes);
-			}
-		});
-    };
-
-    var getHcmHouseCodes = function(ptoYearId, stateId, callback) {
- 		apiRequest('emp', 'iiCache', '<criteria>storeId:ptoPlanAssignments,userId:[user]'
-			+ ',ptoYearId:' + ptoYearId
-			+ ',stateType:' + stateId
-			+ ',groupType:' + 5
-			+ ',</criteria>', function(xml) {
-			if (callback) {
-			  cache.houseCodes = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
-			  callback(cache.houseCodes);
-			}
-		});
-    };
-
-	var getCompanyPlanAssignments = function(ptoYearId, callback) {
-        apiRequest('emp', 'iiCache', '<criteria>storeId:ptoPlanAssignments,userId:[user]'
-           + ',ptoYearId:' + ptoYearId
-           + ',stateType:' + 0
-           + ',groupType:' + 1
-           + ',</criteria>', function(xml) {
-		   if (callback) {
-		       cache.statePlans = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
-		       callback(cache.statePlans);
-		   }
-		});
-    };
-
 	var getPlanAssignments = function(ptoYearId, stateId, groupType, callback) {
         apiRequest('emp', 'iiCache', '<criteria>storeId:ptoPlanAssignments,userId:[user]'
            + ',ptoYearId:' + ptoYearId
@@ -1331,8 +1372,7 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function($http, $fi
            + ',groupType:' + groupType
            + ',</criteria>', function(xml) {
            if (callback) {
-               cache.statePlans = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
-               callback(cache.statePlans);
+               callback(deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'], boolItems: ['active'] }));
            }
        });
     };
@@ -1572,16 +1612,12 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function($http, $fi
 		getPTOTypes: getPTOTypes,
 		getPTOPlanTypes: getPTOPlanTypes,
 		getPTOPlans: getPTOPlans,
-        getCountyTypes: getCountyTypes,
-        getCityTypes: getCityTypes,
-        getHcmHouseCodes: getHcmHouseCodes,
         getPlanName: getPlanName,
         getPTOTypeName: getPTOTypeName,
         getPTOPlanTypeName: getPTOPlanTypeName,
         getPlanPTOTypeName: getPlanPTOTypeName,
         getPlanPTOPlanTypeName: getPlanPTOPlanTypeName,
         getPlanAssignments: getPlanAssignments,
-        getCompanyPlanAssignments: getCompanyPlanAssignments,
         deletePlan: deletePlan,
 		actionSaveItem: actionSaveItem,
 		transactionMonitor: transactionMonitor,
