@@ -563,6 +563,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         $scope.disableOk = true;
         EmpActions.getPTOPlans($scope.ptoYear, function (result) {
             var plans = result;
+            $scope.plans = [];
             if (level == "company") {
                 $scope.modalPlans = [];
                 angular.forEach(plans, function (plan, index) {
