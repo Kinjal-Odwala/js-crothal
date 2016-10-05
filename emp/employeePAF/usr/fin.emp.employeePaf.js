@@ -1812,8 +1812,9 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
     };
 
     $scope.search = function () {
+        $scope.selectedItem = null;
         $scope.getPafList();
-    }
+    };
 
     $scope.sortBy = function (item) {
         if ($scope.sortType === 'Number') {
