@@ -1804,6 +1804,7 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
         $scope.loadingTitle = " Loading...";
         $scope.pageStatus = 'Loading, Please Wait...';
         setStatus('Loading');
+        $scope.selectedItem = null;
         EmpActions.getEmployeePersonnelActions($scope.pafFilter, function (items) {
             $scope.empActions = items;
             $scope.pageStatus = 'Normal';
@@ -1812,7 +1813,6 @@ paf.controller('pafListCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$moda
     };
 
     $scope.search = function () {
-        $scope.selectedItem = null;
         $scope.getPafList();
     };
 
