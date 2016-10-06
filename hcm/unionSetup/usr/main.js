@@ -952,13 +952,22 @@ ii.Class({
 			var me = this;
 
 			if (me.addOperator && me.operator.indexSelected !== -1) {
+				if (!me.addParameter && !me.addAmount && me.operatorTypes[me.operator.indexSelected].brief === "( ")
+					return;
 				me.formulaExpression = me.formulaExpression + me.operatorTypes[me.operator.indexSelected].brief;
 				me.formula.setValue(me.formula.getValue() + me.operatorTypes[me.operator.indexSelected].brief);
 				me.undoList.push(me.operatorTypes[me.operator.indexSelected].brief);
 				me.validateFormula();
-				me.addParameter = true;
-				me.addOperator = true;
-				me.addAmount = true;
+				if (me.operatorTypes[me.operator.indexSelected].brief === " )") {
+					me.addParameter = false;
+					me.addOperator = true;
+					me.addAmount = false;
+				}
+				else {
+					me.addParameter = true;
+					me.addOperator = true;
+					me.addAmount = true;
+				}
 			}
 		},
 

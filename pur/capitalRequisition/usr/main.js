@@ -673,7 +673,7 @@ ii.Class({
 				id: "ItemGrid",
 				allowAdds: true,
 				createNewFunction: fin.pur.poCapitalRequisition.POCapitalRequisitionItem,
-				selectFunction: function(index){
+				selectFunction: function(index) {
 					if (me.itemGrid.rows[index].getElement("rowNumber").innerHTML == "Add") 
 						me.itemGrid.rows[index].getElement("itemSelect").innerHTML = "<input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poCapitalRequisitionUi.calculateSubTotal(this);\"  checked=\"true\" />";
 				}			
@@ -744,7 +744,7 @@ ii.Class({
 			
 			me.quantity = new ui.ctl.Input.Text({
 		        id: "Quantity",
-		        maxLength: 10,
+		        maxLength: 9,
 				appendToId: "ItemGridControlHolder",
 				changeFunction: function() { me.modified(); me.calculateExtendedPrice(); }
 		    });
@@ -769,7 +769,7 @@ ii.Class({
 								
 			me.price = new ui.ctl.Input.Text({
 		        id: "Price",
-				maxLength: 18,
+				maxLength: 19,
 				appendToId: "ItemGridControlHolder",
 				changeFunction: function() { me.modified(); me.calculateExtendedPrice(); }
 		    });
@@ -788,13 +788,13 @@ ii.Class({
 
 				if (enteredText == "") return;
 
-				if (enteredText != ""  && !(ui.cmn.text.validate.generic(enteredText, "^\\d{0,}\\.?\\d{0,2}$")))
+				if (enteredText != ""  && !(/^\d{1,16}(\.\d{1,2})?$/.test(enteredText)))
 					this.setInvalid("Please enter valid Price.");
 			});
 			
 			me.taxPercent = new ui.ctl.Input.Text({
 		        id: "TaxPercent",
-				maxLength: 18,
+				maxLength: 8,
 				changeFunction: function() { me.modified(); me.calculateTotal();}
 		    });
 		    
@@ -806,7 +806,7 @@ ii.Class({
 				
 				if (enteredText == "") return;
 				
-				if (enteredText != ""  && !(ui.cmn.text.validate.generic(enteredText, "^\\d{0,}\\.?\\d{0,2}$")))
+				if (enteredText != ""  && !(/^\d{1,5}(\.\d{1,2})?$/.test(enteredText)))
 					this.setInvalid("Please enter valid Tax %.");
 			});
 		    
@@ -824,7 +824,7 @@ ii.Class({
 				
 				if (enteredText == "") return;
 				
-				if (enteredText != ""  && !(ui.cmn.text.validate.generic(enteredText, "^\\d{0,}\\.?\\d{0,2}$")))
+				if (enteredText != ""  && !(/^\d{1,16}(\.\d{1,2})?$/.test(enteredText)))
 					this.setInvalid("Please enter valid Tax.");
 			});
 		    
@@ -842,7 +842,7 @@ ii.Class({
 				
 				if (enteredText == "") return;
 				
-				if (enteredText != ""  && !(ui.cmn.text.validate.generic(enteredText, "^\\d{0,}\\.?\\d{0,2}$")))
+				if (enteredText != ""  && !(/^\d{1,16}(\.\d{1,2})?$/.test(enteredText)))
 					this.setInvalid("Please enter valid Freight.");
 			});
 			
@@ -1018,7 +1018,7 @@ ii.Class({
 
 			me.documentTitle = new ui.ctl.Input.Text({
 				id: "DocumentTitle",
-				maxLength: 100,
+				maxLength: 64,
 				changeFunction: function() { me.modified(); }
 			});
 
