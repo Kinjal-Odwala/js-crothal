@@ -38,7 +38,7 @@
         <div class="col-md-9">
             <table ng-table="companyTable" class="table-scroll table table-bordered table-condensed table-striped table-hover margin-bottom10" style="width: 1100px;">
                 <thead style="color:#3276b1;">
-                    <tr class="heading" bgcolor="#E0FFFF" role="row">
+                    <tr class="heading" bgcolor="rgba(141,192,219,.25)" role="row">
                         <th style="text-align:center">Company Plan Details</th>
                     </tr>
                     <tr bgcolor="#ffffe0" style="color:#3276b1; font: bold" class="heading" role="row">
@@ -72,7 +72,7 @@
     <div class="row margin-bottom10" ng-if="showStateGrid">
         <div class="col-md-4">
             <table class="table-scroll table table-striped table-bordered table-hover">
-                <thead bgcolor="#E0FFFF" style="color:#3276b1;">
+                <thead bgcolor="rgba(141,192,219,.25)" style="color:#3276b1;">
                     <tr class="heading" role="row">
                         <th width="2%" style="text-align:center">#</th>
                         <th width="10%" style="text-align:center">Brief</th>
@@ -92,7 +92,7 @@
         <div class="col-md-8">
             <table class="table-scroll table table-bordered table-striped table-hover margin-bottom10 table-condensed" style="width: 1100px;">
                 <thead style="color:#3276b1;">
-                    <tr class="heading" bgcolor="#E0FFFF" role="row">
+                    <tr class="heading" bgcolor="rgba(141,192,219,.25)" role="row">
                         <td>
                             <div>
                                 <label style="padding-left: 430px;">State Plan Details</label>
@@ -144,11 +144,11 @@
             <div class="row margin-bottom10"></div>
             <table class="table-scroll table table-bordered table-striped table-hover margin-bottom10" style="width: 1100px;">
                 <thead style="color:#3276b1;">
-                    <tr class="heading" bgcolor="#E0FFFF" role="row">
+                    <tr class="heading" bgcolor="rgba(141,192,219,.25)" role="row">
                         <td>
                             <div>
                                <div ng-show="showCounty" class="pull-left">
-                                    <a href="#" ng-click="sortType = 'County'; sortCountyReverse = !sortCountyReverse;" target="_self">County
+                                    <a href="#" ng-click="sortType = 'County'; sortCountyReverse = !sortCountyReverse;" target="_self"><label>County</label>
                                         <span ng-show="sortType == 'County' && !sortCountyReverse">&#9660;</span>
                                         <span ng-show="sortType == 'County' && sortCountyReverse">&#9650;</span>
                                     </a>
@@ -206,11 +206,11 @@
             <div class="row margin-bottom10"></div>
             <table class="table-scroll table table-bordered table-striped table-hover margin-bottom10" style="width: 1100px;">
                 <thead style="color:#3276b1;">
-                    <tr class="heading" bgcolor="#E0FFFF" role="row">
+                    <tr class="heading" bgcolor="rgba(141,192,219,.25)" role="row">
                         <td>
                             <div>
 								<div ng-show="showCity" class="pull-left">
-                                    <a href="#" ng-click="sortType = 'City'; sortCityReverse = !sortCityReverse;" target="_self">City
+                                    <a href="#" ng-click="sortType = 'City'; sortCityReverse = !sortCityReverse;" target="_self"><label>City</label>
                                         <span ng-show="sortType == 'City' && !sortCityReverse">&#9660;</span>
                                         <span ng-show="sortType == 'City' && sortCityReverse">&#9650;</span>
                                     </a>
@@ -269,11 +269,11 @@
             <div class="row margin-bottom10"></div>
             <table class="table-scroll table table-bordered table-striped table-hover margin-bottom10" style="width: 1100px;">
                 <thead style="color:#3276b1;">
-                    <tr class="heading" bgcolor="#E0FFFF" role="row">
+                    <tr class="heading" bgcolor="rgba(141,192,219,.25)" role="row">
                         <td>
                             <div>
                                  <div ng-show="showHouseCode" class="pull-left">
-                                     <a href="#" ng-click="sortType = 'HouseCode'; sortHouseCodeReverse = !sortHouseCodeReverse;" target="_self">House Code
+                                     <a href="#" ng-click="sortType = 'HouseCode'; sortHouseCodeReverse = !sortHouseCodeReverse;" target="_self"><label>House Code</label>
                                         <span ng-show="sortType == 'HouseCode' && !sortHouseCodeReverse">&#9660;</span>
                                         <span ng-show="sortType == 'HouseCode' && sortHouseCodeReverse">&#9650;</span>
                                     </a>
