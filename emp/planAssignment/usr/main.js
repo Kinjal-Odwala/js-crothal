@@ -164,6 +164,8 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
     $scope.pageLoading = false;
     $scope.loadingTitle = " Loading...";
     $scope.disableOk = true;
+	$scope.showStateName = false;
+	$scope.stateName = "";
     $scope.levelSelected = "";
     $scope.closeDialog = true;
     $scope.isPageLoading = function() {
@@ -227,6 +229,8 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
     $scope.search = function() {
         $scope.pageLoading = true;
         setStatus("Loading");
+		$scope.showStateName = false;
+		$scope.stateName = "";
         EmpActions.getPTOPlans($scope.ptoYear, function(result) {
             $scope.plans = result;
             $scope.ptoPlans = $scope.plans;
@@ -247,6 +251,8 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 		$scope.selectedState = item;
         $scope.loadingTitle = " Loading...";
         $scope.pageLoading = true;
+		$scope.showStateName = true;
+		$scope.stateName = item.name;
 		$scope.showState = true;
 		$scope.stateExpanded = true;
 		$scope.showCounty = true;
@@ -1192,65 +1198,7 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function($http, $fi
                     $(transactionNode).find("*").each(function() {
 						if (this.tagName === "empPTOPlanAssignment") {
                          	var id = parseInt($(this).attr("id"), 10);
-                            if ($scope.levelSelected === "company") {
-                                for (var index = 0; index < $scope.companyPlans.length; index++) {
-                                    if ($scope.companyPlans[index].modified) {
-                                        if ($scope.companyPlans[index].id === 0)
-                                            $scope.companyPlans[index].id = id;
-                                        $scope.companyPlans[index].modified = false;
-                                        break;
-                                    }
-                                }
-                            }
-                            else if ($scope.levelSelected === "state") {
-                                for (var index = 0; index < $scope.statePlans.length; index++) {
-                                    if ($scope.statePlans[index].modified) {
-                                        if ($scope.statePlans[index].id === 0)
-                                            $scope.statePlans[index].id = id;
-                                        $scope.statePlans[index].modified = false;
-                                        break;
-                                    }
-                                }
-                            }
-                            else if ($scope.levelSelected === "county") {
-								outerLoop:
-								for (var index = 0; index < $scope.countys.length; index++) {
-									for (var iIndex = 0; iIndex < $scope.countys[index].countyPlans.length; iIndex++) {
-					                    if ($scope.countys[index].countyPlans[iIndex].modified) {
-					                        if ($scope.countys[index].countyPlans[iIndex].id === 0)
-                                                $scope.countys[index].countyPlans[iIndex].id = id;
-                                            $scope.countys[index].countyPlans[iIndex].modified = false;
-					                        break outerLoop;
-					                    }
-					                }
-								}
-                            }
-                            else if ($scope.levelSelected === "city") {
-								outerLoop:
-								for (var index = 0; index < $scope.cities.length; index++) {
-									for (var iIndex = 0; iIndex < $scope.cities[index].cityPlans.length; iIndex++) {
-										if ($scope.cities[index].cityPlans[iIndex].modified) {
-					                        if ($scope.cities[index].cityPlans[iIndex].id === 0)
-                                                $scope.cities[index].cityPlans[iIndex].id = id;
-                                            $scope.cities[index].cityPlans[iIndex].modified = false;
-					                        break outerLoop;
-					                    }
-									}
-								}
-                            }
-                            else if ($scope.levelSelected === "houseCode") {
-								outerLoop:
-								for (var index = 0; index < $scope.houseCodes.length; index++) {
-									for (var iIndex = 0; iIndex < $scope.houseCodes[index].houseCodePlans.length; iIndex++) {
-										if ($scope.houseCodes[index].houseCodePlans[iIndex].modified) {
-					                        if ($scope.houseCodes[index].houseCodePlans[iIndex].id === 0)
-                                                $scope.houseCodes[index].houseCodePlans[iIndex].id = id;
-                                            $scope.houseCodes[index].houseCodePlans[iIndex].modified = false;
-					                        break outerLoop;
-					                    }
-									}
-								}
-                            }
+                            actionUpdateItem($scope, id);
                         }
                     });
 
@@ -1273,6 +1221,68 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function($http, $fi
             }
         });
     };
+	
+	var actionUpdateItem = function($scope, id) {
+        if ($scope.levelSelected === "company") {
+            for (var index = 0; index < $scope.companyPlans.length; index++) {
+                if ($scope.companyPlans[index].modified) {
+                    if ($scope.companyPlans[index].id === 0)
+                        $scope.companyPlans[index].id = id;
+                    $scope.companyPlans[index].modified = false;
+                    break;
+                }
+            }
+        }
+        else if ($scope.levelSelected === "state") {
+            for (var index = 0; index < $scope.statePlans.length; index++) {
+                if ($scope.statePlans[index].modified) {
+                    if ($scope.statePlans[index].id === 0)
+                        $scope.statePlans[index].id = id;
+                    $scope.statePlans[index].modified = false;
+                    break;
+                }
+            }
+        }
+        else if ($scope.levelSelected === "county") {
+			outerLoop:
+			for (var index = 0; index < $scope.countys.length; index++) {
+				for (var iIndex = 0; iIndex < $scope.countys[index].countyPlans.length; iIndex++) {
+                    if ($scope.countys[index].countyPlans[iIndex].modified) {
+                        if ($scope.countys[index].countyPlans[iIndex].id === 0)
+                            $scope.countys[index].countyPlans[iIndex].id = id;
+                        $scope.countys[index].countyPlans[iIndex].modified = false;
+                        break outerLoop;
+                    }
+                }
+			}
+        }
+        else if ($scope.levelSelected === "city") {
+			outerLoop:
+			for (var index = 0; index < $scope.cities.length; index++) {
+				for (var iIndex = 0; iIndex < $scope.cities[index].cityPlans.length; iIndex++) {
+					if ($scope.cities[index].cityPlans[iIndex].modified) {
+                        if ($scope.cities[index].cityPlans[iIndex].id === 0)
+                            $scope.cities[index].cityPlans[iIndex].id = id;
+                        $scope.cities[index].cityPlans[iIndex].modified = false;
+                        break outerLoop;
+                    }
+				}
+			}
+        }
+        else if ($scope.levelSelected === "houseCode") {
+			outerLoop:
+			for (var index = 0; index < $scope.houseCodes.length; index++) {
+				for (var iIndex = 0; iIndex < $scope.houseCodes[index].houseCodePlans.length; iIndex++) {
+					if ($scope.houseCodes[index].houseCodePlans[iIndex].modified) {
+                        if ($scope.houseCodes[index].houseCodePlans[iIndex].id === 0)
+                            $scope.houseCodes[index].houseCodePlans[iIndex].id = id;
+                        $scope.houseCodes[index].houseCodePlans[iIndex].modified = false;
+                        break outerLoop;
+                    }
+				}
+			}
+        }
+    };
 
     return {
 		getStateTypes: getStateTypes,
@@ -1283,6 +1293,7 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function($http, $fi
         getPlanAssignments: getPlanAssignments,
         actionDeleteItem: actionDeleteItem,
 		actionSaveItem: actionSaveItem,
+		actionUpdateItem: actionUpdateItem,
 		transactionMonitor: transactionMonitor
     }
 }]);
