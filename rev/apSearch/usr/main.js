@@ -532,13 +532,13 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 
 		// Define a custom summary function
 		Ext.ux.grid.GroupSummary.Calculations['totalGrossAmount'] = function(value, record, field) {
-			if (record.data.payStatus === 'P')
+			if (record.data.payStatus === 'A')
 	        	return value + (record.data.grossAmount);
 			else
 				return value;
 	    };
 	    Ext.ux.grid.GroupSummary.Calculations['totalOpenAmount'] = function(value, record, field) {
-			if (record.data.payStatus === 'A')
+			if (record.data.payStatus === 'P')
 	        	return value + (record.data.openAmount);
 			else
 				return value;
