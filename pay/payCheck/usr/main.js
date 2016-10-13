@@ -2217,7 +2217,7 @@ ii.Class({
 				}
 
 				if (me.payCodeDetailGrid.data.length === 0) {
-            		alert("Please add atleast one Pay Code information.");
+            		alert("Please add at least one Pay Code information.");
             		return false;
             	}	
 
