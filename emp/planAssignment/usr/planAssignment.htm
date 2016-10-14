@@ -80,7 +80,7 @@
                         <th width="1%"></th>
                     </tr>
                 </thead>
-                <tbody style="max-height:1000px;">
+                <tbody id="stateGrid" ng-style="{ 'max-height': stateHgt+'px'}">
                     <tr ng-repeat="item in states" ng-click="stateSelected(item)" ng-class="{'warning':selectedState == item};">
                         <td width="2%" align ="center">{{$index + 1}}</td>
                         <td width="10%" align ="center">{{item.brief}}</td>
@@ -97,10 +97,10 @@
                             <div>
                                 <label style="padding-left: 430px;">State Plan Details</label>
                                 <div class="pull-right">
-                                    <button class="btn btn-default btn-xs" ng-click="stateExpanded = !stateExpanded; showState = true" title="Expand/Collapse State Plans">
+                                    <button class="btn btn-default btn-xs" ng-click="stateExpanded = !stateExpanded; showState = true;" title="Expand/Collapse State Plans">
                                     	<span class="glyphicon glyphicon-resize-small" ng-class="{ 'glyphicon-resize-small': stateExpanded, 'glyphicon-resize-full': !stateExpanded }"></span>
                                     </button>
-                                    <button class="btn btn-default btn-xs" ng-click="showState = !showState" title="Hide/Show State Plans">
+                                    <button class="btn btn-default btn-xs" ng-click="showState = !showState; setHeight('state')" title="Hide/Show State Plans">
 										<span class="glyphicon glyphicon-minus" ng-class="{ 'glyphicon-minus': showState, 'glyphicon-plus': !showState }"></span>
                                     </button>
                                 </div>
@@ -115,7 +115,7 @@
                         <th width="16px"></th>
                     </tr>
                 </thead>
-                <tbody ng-show="showState" style="width:100%; max-height:200px;">
+                <tbody id="statePlanDetails" ng-show="showState" ng-style="{'max-height': statePlanMaxHgt+'px', 'min-height': statePlanMinHgt+'px'}">
                     <tr ng-show="showStateName">
                         <td colspan="3">
                             <a href="" ng-click="stateExpanded = !stateExpanded">
@@ -161,7 +161,7 @@
 									<button class="btn btn-default btn-xs" ng-click="filterCountyPlans(filterCounty = !filterCounty); showCounty = true;" title="Filter County Plans">
 										<span class="glyphicon glyphicon-filter" ng-class="{ 'glyphicon-refresh': filterCounty, 'glyphicon-filter': !filterCounty }"></span>
                                     </button>
-                                    <button  class="btn btn-default btn-xs" ng-click="showCounty = !showCounty" title="Hide/Show County Plans">
+                                    <button  class="btn btn-default btn-xs" ng-click="showCounty = !showCounty; setHeight('county')" title="Hide/Show County Plans">
    										<span class="glyphicon glyphicon-minus" ng-class="{ 'glyphicon-minus': showCounty, 'glyphicon-plus': !showCounty }"></span>
                                     </button>
                                 </div>
@@ -176,7 +176,7 @@
                         <th width="10px"></th>
                     </tr>
                 </thead>
-                <tbody ng-show="showCounty" style="max-height:200px;">
+                <tbody id="countyPlanDetails" ng-show="showCounty" ng-style="{'max-height': countyPlanMaxHgt+'px', 'min-height': countyPlanMinHgt+'px'}">
                     <tr ng-repeat-start="county in countys | orderBy:sortCountyBy:sortCountyReverse" ng-click="countySelected(county)" ng-class="{'warning':selectedCounty == county};" expandcounty>
                         <td colspan="4">
                             <a href="" ng-click="countyExpanded = !countyExpanded">
@@ -224,7 +224,7 @@
 										<span class="glyphicon glyphicon-filter" ng-class="{ 'glyphicon-refresh': filterCity, 'glyphicon-filter': !filterCity }"></span>
                                     </button>
 									
-									<button  class="btn btn-default btn-xs" ng-click="showCity = !showCity" title="Hide/Show City Plans">
+									<button  class="btn btn-default btn-xs" ng-click="showCity = !showCity;  setHeight('city')" title="Hide/Show City Plans">
    										<span class="glyphicon glyphicon-minus" ng-class="{ 'glyphicon-minus': showCity, 'glyphicon-plus': !showCity }"></span>
                                     </button>
                                 </div>
@@ -239,7 +239,7 @@
                         <th width="10px"></th>
                     </tr>
                 </thead>
-                <tbody ng-show="showCity" style="max-height:200px;">
+                <tbody id="cityPlanDetails" ng-show="showCity" ng-style="{'max-height': cityPlanMaxHgt+'px', 'min-height': cityPlanMinHgt+'px'}">
                     <tr ng-repeat-start="city in cities track by $index | orderBy:sortCityBy:sortCityReverse" ng-click="citySelected(city)" ng-class="{'warning':selectedCity == city};" expandcity>
                         <td colspan="4">
                             <a href="" ng-click="cityExpanded = !cityExpanded">
@@ -287,7 +287,7 @@
 										<span class="glyphicon glyphicon-filter" ng-class="{ 'glyphicon-refresh': filterHouseCode, 'glyphicon-filter': !filterHouseCode }"></span>
                                     </button>
 									
-									<button  class="btn btn-default btn-xs" ng-click="showHouseCode = !showHouseCode" title="Hide/Show House Code Plans">
+									<button  class="btn btn-default btn-xs" ng-click="showHouseCode = !showHouseCode;  setHeight('houseCode')" title="Hide/Show House Code Plans">
    										<span class="glyphicon glyphicon-minus" ng-class="{ 'glyphicon-minus': showHouseCode, 'glyphicon-plus': !showHouseCode }"></span>
                                     </button>
                                 </div>
@@ -302,7 +302,7 @@
                         <th width="10px"></th>
                     </tr>
                 </thead>
-                <tbody ng-show="showHouseCode" style="max-height:200px;">
+                <tbody id="houseCodePlanDetails" ng-show="showHouseCode" ng-style="{'max-height': houseCodePlanMaxHgt+'px', 'min-height': houseCodePlanMinHgt+'px'}">
                     <tr ng-repeat-start="houseCode in houseCodes | orderBy:sortHouseCodeBy:sortHouseCodeReverse" ng-click="houseCodeSelected(houseCode)" ng-class="{'warning':selectedHouseCode == houseCode};" expandhousecode="">
                         <td colspan="4">
                             <a href="" ng-click="houseCodeExpanded = !houseCodeExpanded">

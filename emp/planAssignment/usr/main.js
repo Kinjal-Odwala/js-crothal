@@ -174,6 +174,19 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
     setStatus("Loading");
     modified(false);
     checkStatus();
+    $scope.stateHgt = 570;
+    $scope.statePlanMaxHgt = 200;
+    $scope.statePlanMinHgt = 200;
+    $scope.countyPlanMaxHgt = 200;
+    $scope.countyPlanMinHgt = 200;
+    $scope.cityPlanMaxHgt = 200;
+    $scope.cityPlanMinHgt = 200;
+    $scope.houseCodePlanMaxHgt = 200;
+    $scope.houseCodePlanMinHgt = 200;
+    $scope.statePlanGridHgt = angular.element('#statePlanDetails').height();
+    $scope.countyPlanGridHgt = angular.element('#countyPlanDetails').height();
+    $scope.cityPlanGridHgt = angular.element('#cityPlanDetails').height();
+    $scope.houseCodePlanGridHgt = angular.element('#houseCodePlanDetails').height();
 
     EmpActions.getPTOTypes(function(result) {
     });
@@ -231,6 +244,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         setStatus("Loading");
 		$scope.showStateName = false;
 		$scope.stateName = "";
+		$scope.stateHgt = 570;
         EmpActions.getPTOPlans($scope.ptoYear, function(result) {
             $scope.plans = result;
             $scope.ptoPlans = $scope.plans;
@@ -268,6 +282,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 		$scope.expandAllHouseCode = true;
 		$scope.houseCodeExpanded = true;
 		setStatus("Loading");
+		var totalGridsHeight = '';
 
         EmpActions.getPlanAssignments($scope.ptoYear, item.id, 2, function(data) {
             $scope.statePlans = [];
@@ -276,6 +291,13 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                     $scope.statePlans.push(statePlan);
                 }
             });
+
+            totalGridsHeight = angular.element('#statePlanDetails').height() + angular.element('#countyPlanDetails').height()
+                + angular.element('#countyPlanDetails').height() + angular.element('#houseCodePlanDetails').height();
+            
+            if (totalGridsHeight > $scope.stateHgt) {
+                $scope.stateHgt = 1350;
+            }
         });
 
         EmpActions.getPlanAssignments($scope.ptoYear, item.id, 3, function(data) {
@@ -311,6 +333,12 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             });
 
             $scope.assignedCountys = $scope.countys;
+            totalGridsHeight = angular.element('#statePlanDetails').height() + angular.element('#countyPlanDetails').height()
+                + angular.element('#countyPlanDetails').height() + angular.element('#houseCodePlanDetails').height();
+
+            if (totalGridsHeight > $scope.stateHgt) {
+                $scope.stateHgt = 1350;
+            }
         });
 
         EmpActions.getPlanAssignments($scope.ptoYear, item.id, 4, function(data) {
@@ -346,6 +374,12 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             });
 
             $scope.assignedCities = $scope.cities;
+            totalGridsHeight = angular.element('#statePlanDetails').height() + angular.element('#countyPlanDetails').height()
+                 + angular.element('#countyPlanDetails').height() + angular.element('#houseCodePlanDetails').height();
+
+            if (totalGridsHeight > $scope.stateHgt) {
+                $scope.stateHgt = 1350;
+            }
         });
 
         EmpActions.getPlanAssignments($scope.ptoYear, item.id, 5, function(data) {
@@ -382,10 +416,85 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             });
 
             $scope.assignedHouseCodes = $scope.houseCodes;
-        });
+            totalGridsHeight = angular.element('#statePlanDetails').height() + angular.element('#countyPlanDetails').height()
+                + angular.element('#countyPlanDetails').height() + angular.element('#houseCodePlanDetails').height();
 
+            if (totalGridsHeight > $scope.stateHgt) {
+                $scope.stateHgt = 1350;
+            }
+        });
 		$scope.pageLoading = false;
 		setStatus("Normal");
+    };
+
+    $scope.setHeight = function (type) {
+        totalGridsHeight = angular.element('#statePlanDetails').height() + angular.element('#countyPlanDetails').height()
+                + angular.element('#countyPlanDetails').height() + angular.element('#houseCodePlanDetails').height();
+
+        if (type === "state") {
+            if (angular.element('#statePlanDetails').height() >= 200) {
+                if ($scope.stateHgt > 770)
+                    $scope.stateHgt = $scope.stateHgt - angular.element('#statePlanDetails').height() - 70;
+                else
+                    $scope.stateHgt = 570;
+            }
+            else if (totalGridsHeight === 0) {
+                $scope.stateHgt = 570;
+                $scope.statePlanMinHgt = 270;
+            }
+            else if (angular.element('#statePlanDetails').height() === 0)
+                $scope.stateHgt = $scope.stateHgt + 270;
+            else
+                $scope.stateHgt = 1350;
+        }
+        else if (type === "county") {
+            if (angular.element('#countyPlanDetails').height() >= 200) {
+                if ($scope.stateHgt > 770)
+                    $scope.stateHgt = $scope.stateHgt - angular.element('#countyPlanDetails').height() - 85;
+                else
+                    $scope.stateHgt = 570;
+            }
+            else if (totalGridsHeight === 0) {
+                $scope.stateHgt = 570;
+                $scope.countyPlanMinHgt = 260;
+            }
+            else if (angular.element('#countyPlanDetails').height() === 0)
+                $scope.stateHgt = $scope.stateHgt + 285;
+            else
+                $scope.stateHgt = 1350;
+        }
+        else if (type === "city") {
+            if (angular.element('#cityPlanDetails').height() >= 200) {
+                if ($scope.stateHgt > 770)
+                    $scope.stateHgt = $scope.stateHgt - angular.element('#cityPlanDetails').height() - 85;
+                else
+                    $scope.stateHgt = 570;
+            }
+            else if (totalGridsHeight === 0) {
+                $scope.stateHgt = 570;
+                $scope.cityPlanMinHgt = 260;
+            }
+            else if (angular.element('#cityPlanDetails').height() === 0)
+                $scope.stateHgt = $scope.stateHgt + 285;
+            else
+                $scope.stateHgt = 1350;
+        }
+        else if (type === "houseCode") {
+            if (angular.element('#houseCodePlanDetails').height() >= 200) {
+                if ($scope.stateHgt > 770)
+                    $scope.stateHgt = $scope.stateHgt - angular.element('#houseCodePlanDetails').height() - 85;
+                else
+                    $scope.stateHgt = 570;
+            }
+            else if (totalGridsHeight === 0) {
+                $scope.stateHgt = 570;
+                $scope.houseCodePlanMinHgt = 260;
+            }
+            else if (angular.element('#houseCodePlanDetails').height() === 0) 
+                $scope.stateHgt = $scope.stateHgt + 285;
+            else
+                $scope.stateHgt = 1350;
+        }
     };
 
     $scope.addPlan = function(level) {
