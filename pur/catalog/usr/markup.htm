@@ -67,7 +67,29 @@
 					<div class="contentArea">
 						<div id="leftHeader" class="header">Catalogs</div>
 						<div class="body">
-							<div id="CatalogGrid"></div>
+							<div id="CatalogGridContainer">
+								<div id="CatalogGrid"></div>
+								<div id="CatalogsPaging">							
+						            <table cellpadding="0" cellspacing="0" style="width: 100%">
+				                        <tr class="Header">
+				                            <td class="BorderVertical"></td>					                            
+				                            <td>
+				                                <table cellpadding="0" cellspacing="0" style="width: 100%">
+				                                    <tr class="Header">
+				                                    	<td style="width: 75px">&nbsp;
+															<img id="imgExportCatalogItems" src="/fin/cmn/usr/media/Common/download.png" style="cursor: pointer" alt="Export Multiple Catalog Items" title="Export Multiple Catalog Items" />
+															<img id="imgImportCatalogItems" src="/fin/cmn/usr/media/Common/import.png" style="cursor: pointer" alt="Import Multiple Catalog Items" title="Import Multiple Catalog Items" />
+				                                        </td>		                                        
+														<td style="width: 20px;">&nbsp;</td>
+				                                    </tr>
+				                                </table>
+				                            </td>
+				                            <td class="BorderVertical"></td>
+				                        </tr>
+				                        <tr><td class="BorderHorizontal" colspan="3"></td></tr>
+				                    </table>							        
+								</div>
+							</div>
 							<div id="ItemGrid" style="display:none"></div>
 						</div>
 					</div>
