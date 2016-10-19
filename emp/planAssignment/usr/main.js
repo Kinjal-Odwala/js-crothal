@@ -174,19 +174,15 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
     setStatus("Loading");
     modified(false);
     checkStatus();
-    $scope.stateHgt = 570;
-    $scope.statePlanMaxHgt = 200;
-    $scope.statePlanMinHgt = 200;
-    $scope.countyPlanMaxHgt = 200;
-    $scope.countyPlanMinHgt = 200;
-    $scope.cityPlanMaxHgt = 200;
-    $scope.cityPlanMinHgt = 200;
-    $scope.houseCodePlanMaxHgt = 200;
-    $scope.houseCodePlanMinHgt = 200;
-    $scope.statePlanGridHgt = angular.element('#statePlanDetails').height();
-    $scope.countyPlanGridHgt = angular.element('#countyPlanDetails').height();
-    $scope.cityPlanGridHgt = angular.element('#cityPlanDetails').height();
-    $scope.houseCodePlanGridHgt = angular.element('#houseCodePlanDetails').height();
+    $scope.stateGridHeight = 570;
+    $scope.statePlanGridMaxHeight = 200;
+    $scope.statePlanGridMinHeight = 200;
+    $scope.countyPlanGridMaxHeight = 200;
+    $scope.countyPlanGridMinHeight = 200;
+    $scope.cityPlanGridMaxHeight = 200;
+    $scope.cityPlanGridMinHeight = 200;
+    $scope.houseCodePlanGridMaxHeight = 200;
+    $scope.houseCodePlanGridMinHeight = 200;
 
     EmpActions.getPTOTypes(function(result) {
     });
@@ -244,7 +240,6 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         setStatus("Loading");
 		$scope.showStateName = false;
 		$scope.stateName = "";
-		$scope.stateHgt = 570;
         EmpActions.getPTOPlans($scope.ptoYear, function(result) {
             $scope.plans = result;
             $scope.ptoPlans = $scope.plans;
@@ -292,12 +287,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                 }
             });
 
-            totalGridsHeight = angular.element('#statePlanDetails').height() + angular.element('#countyPlanDetails').height()
-                + angular.element('#countyPlanDetails').height() + angular.element('#houseCodePlanDetails').height();
-            
-            if (totalGridsHeight > $scope.stateHgt) {
-                $scope.stateHgt = 1350;
-            }
+            $scope.setStateGridHeight();
         });
 
         EmpActions.getPlanAssignments($scope.ptoYear, item.id, 3, function(data) {
@@ -332,13 +322,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                 }
             });
 
-            $scope.assignedCountys = $scope.countys;
-            totalGridsHeight = angular.element('#statePlanDetails').height() + angular.element('#countyPlanDetails').height()
-                + angular.element('#countyPlanDetails').height() + angular.element('#houseCodePlanDetails').height();
-
-            if (totalGridsHeight > $scope.stateHgt) {
-                $scope.stateHgt = 1350;
-            }
+            $scope.setStateGridHeight();
         });
 
         EmpActions.getPlanAssignments($scope.ptoYear, item.id, 4, function(data) {
@@ -374,12 +358,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             });
 
             $scope.assignedCities = $scope.cities;
-            totalGridsHeight = angular.element('#statePlanDetails').height() + angular.element('#countyPlanDetails').height()
-                 + angular.element('#countyPlanDetails').height() + angular.element('#houseCodePlanDetails').height();
-
-            if (totalGridsHeight > $scope.stateHgt) {
-                $scope.stateHgt = 1350;
-            }
+            $scope.setStateGridHeight();
         });
 
         EmpActions.getPlanAssignments($scope.ptoYear, item.id, 5, function(data) {
@@ -416,85 +395,63 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             });
 
             $scope.assignedHouseCodes = $scope.houseCodes;
-            totalGridsHeight = angular.element('#statePlanDetails').height() + angular.element('#countyPlanDetails').height()
-                + angular.element('#countyPlanDetails').height() + angular.element('#houseCodePlanDetails').height();
-
-            if (totalGridsHeight > $scope.stateHgt) {
-                $scope.stateHgt = 1350;
-            }
+            $scope.setStateGridHeight();
         });
 		$scope.pageLoading = false;
 		setStatus("Normal");
     };
 
-    $scope.setHeight = function (type) {
-        totalGridsHeight = angular.element('#statePlanDetails').height() + angular.element('#countyPlanDetails').height()
-                + angular.element('#countyPlanDetails').height() + angular.element('#houseCodePlanDetails').height();
+    $scope.setStateGridHeight = function () {
+        totalGridsHeight = angular.element('#statePlanDetailsGrid').height() + angular.element('#countyPlanDetailsGrid').height()
+               + angular.element('#countyPlanDetailsGrid').height() + angular.element('#houseCodePlanDetailsGrid').height();
 
-        if (type === "state") {
-            if (angular.element('#statePlanDetails').height() >= 200) {
-                if ($scope.stateHgt > 770)
-                    $scope.stateHgt = $scope.stateHgt - angular.element('#statePlanDetails').height() - 70;
-                else
-                    $scope.stateHgt = 570;
-            }
-            else if (totalGridsHeight === 0) {
-                $scope.stateHgt = 570;
-                $scope.statePlanMinHgt = 270;
-            }
-            else if (angular.element('#statePlanDetails').height() === 0)
-                $scope.stateHgt = $scope.stateHgt + 270;
-            else
-                $scope.stateHgt = 1350;
+        if (totalGridsHeight > $scope.stateGridHeight) {
+            $scope.stateGridHeight = 1350;
         }
-        else if (type === "county") {
-            if (angular.element('#countyPlanDetails').height() >= 200) {
-                if ($scope.stateHgt > 770)
-                    $scope.stateHgt = $scope.stateHgt - angular.element('#countyPlanDetails').height() - 85;
-                else
-                    $scope.stateHgt = 570;
-            }
-            else if (totalGridsHeight === 0) {
-                $scope.stateHgt = 570;
-                $scope.countyPlanMinHgt = 260;
-            }
-            else if (angular.element('#countyPlanDetails').height() === 0)
-                $scope.stateHgt = $scope.stateHgt + 285;
-            else
-                $scope.stateHgt = 1350;
+    };
+
+    $scope.setHeight = function (type) {
+        totalGridsHeight = angular.element('#statePlanDetailsGrid').height() + angular.element('#countyPlanDetailsGrid').height()
+               + angular.element('#countyPlanDetailsGrid').height() + angular.element('#houseCodePlanDetailsGrid').height();
+
+        var height = 70;
+        var marginHeight = 270;
+        if (type !== "state") {
+            height = height + 15;
+            marginHeight = marginHeight + 15;
         }
-        else if (type === "city") {
-            if (angular.element('#cityPlanDetails').height() >= 200) {
-                if ($scope.stateHgt > 770)
-                    $scope.stateHgt = $scope.stateHgt - angular.element('#cityPlanDetails').height() - 85;
-                else
-                    $scope.stateHgt = 570;
-            }
-            else if (totalGridsHeight === 0) {
-                $scope.stateHgt = 570;
-                $scope.cityPlanMinHgt = 260;
-            }
-            else if (angular.element('#cityPlanDetails').height() === 0)
-                $scope.stateHgt = $scope.stateHgt + 285;
+
+        if (angular.element("#"+type+"PlanDetailsGrid").height() >= 200) {
+            if ($scope.stateGridHeight > 770)
+                $scope.stateGridHeight = $scope.stateGridHeight - angular.element("#" + type + "PlanDetailsGrid").height() - height;
             else
-                $scope.stateHgt = 1350;
+                $scope.stateGridHeight = 570;
         }
-        else if (type === "houseCode") {
-            if (angular.element('#houseCodePlanDetails').height() >= 200) {
-                if ($scope.stateHgt > 770)
-                    $scope.stateHgt = $scope.stateHgt - angular.element('#houseCodePlanDetails').height() - 85;
-                else
-                    $scope.stateHgt = 570;
-            }
-            else if (totalGridsHeight === 0) {
-                $scope.stateHgt = 570;
-                $scope.houseCodePlanMinHgt = 260;
-            }
-            else if (angular.element('#houseCodePlanDetails').height() === 0) 
-                $scope.stateHgt = $scope.stateHgt + 285;
-            else
-                $scope.stateHgt = 1350;
+        else if (totalGridsHeight === 0) {
+            $scope.stateGridHeight = 570;
+            if (type === "state")             
+                $scope.statePlanGridMinHeight = 270;
+            else if (type === "county")    
+                $scope.countyPlanGridMinHeight = 260;
+            else if (type === "city") 
+                $scope.cityPlanGridMinHeight = 260;
+            else if (type === "houseCode") 
+                $scope.houseCodePlanGridMinHeight = 260;
         }
+        else if (angular.element("#" + type + "PlanDetailsGrid").height() === 0) {
+            if (type === "state")
+                $scope.statePlanGridMinHeight = 200;
+            else if (type === "county")
+                $scope.countyPlanGridMinHeight = 200;
+            else if (type === "city")
+                $scope.cityPlanGridMinHeight = 200;
+            else if (type === "houseCode")
+                $scope.houseCodePlanGridMinHeight = 200;
+
+           $scope.stateGridHeight = $scope.stateGridHeight + marginHeight;
+        }
+        else
+            $scope.stateGridHeight = 1350;
     };
 
     $scope.addPlan = function(level) {

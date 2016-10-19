@@ -80,7 +80,7 @@
                         <th width="1%"></th>
                     </tr>
                 </thead>
-                <tbody id="stateGrid" ng-style="{ 'max-height': stateHgt+'px'}">
+                <tbody id="stateGrid" ng-style="{ 'max-height': stateGridHeight+'px'}">
                     <tr ng-repeat="item in states" ng-click="stateSelected(item)" ng-class="{'warning':selectedState == item};">
                         <td width="2%" align ="center">{{$index + 1}}</td>
                         <td width="10%" align ="center">{{item.brief}}</td>
@@ -115,7 +115,7 @@
                         <th width="16px"></th>
                     </tr>
                 </thead>
-                <tbody id="statePlanDetails" ng-show="showState" ng-style="{'max-height': statePlanMaxHgt+'px', 'min-height': statePlanMinHgt+'px'}">
+                <tbody id="statePlanDetailsGrid" ng-show="showState" ng-style="{'max-height': statePlanGridMaxHeight+'px', 'min-height': statePlanGridMinHeight+'px'}">
                     <tr ng-show="showStateName">
                         <td colspan="3">
                             <a href="" ng-click="stateExpanded = !stateExpanded">
@@ -176,7 +176,7 @@
                         <th width="10px"></th>
                     </tr>
                 </thead>
-                <tbody id="countyPlanDetails" ng-show="showCounty" ng-style="{'max-height': countyPlanMaxHgt+'px', 'min-height': countyPlanMinHgt+'px'}">
+                <tbody id="countyPlanDetailsGrid" ng-show="showCounty" ng-style="{'max-height': countyPlanGridMaxHeight+'px', 'min-height': countyPlanGridMinHeight+'px'}">
                     <tr ng-repeat-start="county in countys | orderBy:sortCountyBy:sortCountyReverse" ng-click="countySelected(county)" ng-class="{'warning':selectedCounty == county};" expandcounty>
                         <td colspan="4">
                             <a href="" ng-click="countyExpanded = !countyExpanded">
@@ -239,7 +239,7 @@
                         <th width="10px"></th>
                     </tr>
                 </thead>
-                <tbody id="cityPlanDetails" ng-show="showCity" ng-style="{'max-height': cityPlanMaxHgt+'px', 'min-height': cityPlanMinHgt+'px'}">
+                <tbody id="cityPlanDetailsGrid" ng-show="showCity" ng-style="{'max-height': cityPlanGridMaxHeight+'px', 'min-height': cityPlanGridMinHeight+'px'}">
                     <tr ng-repeat-start="city in cities track by $index | orderBy:sortCityBy:sortCityReverse" ng-click="citySelected(city)" ng-class="{'warning':selectedCity == city};" expandcity>
                         <td colspan="4">
                             <a href="" ng-click="cityExpanded = !cityExpanded">
@@ -302,7 +302,7 @@
                         <th width="10px"></th>
                     </tr>
                 </thead>
-                <tbody id="houseCodePlanDetails" ng-show="showHouseCode" ng-style="{'max-height': houseCodePlanMaxHgt+'px', 'min-height': houseCodePlanMinHgt+'px'}">
+                <tbody id="houseCodePlanDetailsGrid" ng-show="showHouseCode" ng-style="{'max-height': houseCodePlanGridMaxHeight+'px', 'min-height': houseCodePlanGridMinHeight+'px'}">
                     <tr ng-repeat-start="houseCode in houseCodes | orderBy:sortHouseCodeBy:sortHouseCodeReverse" ng-click="houseCodeSelected(houseCode)" ng-class="{'warning':selectedHouseCode == houseCode};" expandhousecode="">
                         <td colspan="4">
                             <a href="" ng-click="houseCodeExpanded = !houseCodeExpanded">
