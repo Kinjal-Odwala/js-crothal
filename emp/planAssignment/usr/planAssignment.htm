@@ -63,6 +63,7 @@
 	                        <a class="btn btn-primary btn-xs" ng-click="addPlan('company')">Add</a>
 	                        <a class="btn btn-primary btn-xs" ng-click="removeCompanyPlan()">Remove</a>
 	                        <a class="btn btn-primary btn-xs" ng-click="saveCompanyPlans()">Save</a>
+                            <a class="btn btn-primary btn-xs" ng-click="clonePlan('company')">Clone</a>
                         </td>
                     </tr>
                 </tfoot>
@@ -137,6 +138,7 @@
 	                        <a class="btn btn-primary btn-xs" ng-click="addPlan('state')">Add</a>
 	                        <a class="btn btn-primary btn-xs" ng-click="removeStatePlan()">Remove</a>
 	                        <a class="btn btn-primary btn-xs" ng-click="saveStatePlans()">Save</a>
+                            <a class="btn btn-primary btn-xs" ng-click="clonePlan('state')">Clone</a>
                         </td>
                     </tr>
                 </tfoot>
@@ -199,6 +201,7 @@
 	                        <a class="btn btn-primary btn-xs" ng-click="addPlan('county')">Add</a>
 	                        <a class="btn btn-primary btn-xs" ng-click="removeCountyPlan()">Remove</a>
 	                        <a class="btn btn-primary btn-xs" ng-click="saveCountyPlans()">Save</a>
+                            <a class="btn btn-primary btn-xs" ng-click="clonePlan('county')">Clone</a>
                         </td>
                     </tr>
                 </tfoot>
@@ -262,6 +265,7 @@
 	                        <a class="btn btn-primary btn-xs" ng-click="addPlan('city')">Add</a>
 	                        <a class="btn btn-primary btn-xs" ng-click="removeCityPlan()">Remove</a>
 	                        <a class="btn btn-primary btn-xs" ng-click="saveCityPlans()">Save</a>
+                            <a class="btn btn-primary btn-xs" ng-click="clonePlan('city')">Clone</a>
                         </td>
                     </tr>
                 </tfoot>
@@ -325,6 +329,7 @@
 	                        <a class="btn btn-primary btn-xs" ng-click="addPlan('houseCode')">Add</a>
 	                        <a class="btn btn-primary btn-xs" ng-click="removeHouseCodePlan()">Remove</a>
 	                        <a class="btn btn-primary btn-xs" ng-click="saveHouseCodePlans()">Save</a>
+                            <a class="btn btn-primary btn-xs" ng-click="clonePlan('houseCode')">Clone</a>
                         </td>
                     </tr>
                 </tfoot>
@@ -372,4 +377,76 @@
 	        </div>
 	    </div>
 	</form>
+</script>
+<script type="text/ng-template" id="cloneGrid.html">
+    <form name="cloneInfoForm">
+           <div id="cloneModal" class="modal-content" style="width:1000px;">
+               <div style="font-weight:bold;font-size: 18px;text-align: center;font-family: Verdana;">Clone Plan</div>
+               <div class="modal-body" id="cloneTable">
+                <div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Clone Year (From):</label>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group" ng-class="{'has-error':cloneInfoForm.fromYear.$invalid}">
+                                <input class="form-control input-sm" name="fromYear" ng-disabled="true" ng-model="cloneFromYear" ng-required="true"></input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Clone Year (To):</label>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group" ng-class="{'has-error':cloneInfoForm.toYear.$invalid}">
+                                <input class="form-control input-sm" name="toYear" ng-disabled="true" ng-model="cloneToYear" ng-required="true"></input>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                     <table class="table-scroll table table-striped table-bordered table-hover">
+                             <thead bgcolor="#ffffe0" style="color:#3276b1;">
+                                 <tr class="heading" role="row">
+                                     <th width="2%" style="text-align:center">#</th>
+                                     <th width="5%" style="text-align:center"></th>
+                                     <th width="15%" style="text-align:center">Plan Name</th>
+                                     <th width="15%" style="text-align:center">PTO Type</th>
+                                     <th width="15%" style="text-align:center">Plan Type</th>
+                                     <th width="1%"></th>
+                                 </tr>
+                             </thead>
+                             <tbody style="max-height:500px;">
+                        <tr ng-show="showGroup" ng-repeat-start="group in groups" ng-click="groupSelected(group)" ng-class="{'warning':selectedGroup == group};">
+                            <td colspan="4">
+                                <a href="" ng-click="groupExpanded = !groupExpanded">
+                                    <span class="glyphicon" ng-class="{ 'glyphicon-chevron-right': !groupExpanded, 'glyphicon-chevron-down': groupExpanded }"></span>
+                                    <strong>{{ group.name }}</strong>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr ng-show="showGroup" ng-repeat="item in group.clonePlans track by $index" ng-click="clonePlanSelected(item)" ng-class="{'warning':selectedClonePlan == item};">
+                                     <td width="2%" align ="center">{{$index + 1}}</td>
+                                     <td width="5%" align="center"><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="item.isChecked" /></td>
+                                     <td width="15%">{{item.title}}</td>
+                                     <td width="15%">{{item.ptoTypeTitle}}</td>
+                                     <td width="15%">{{item.ptoPlanTypeTitle}}</td>
+                                 </tr>
+                        <tr ng-repeat-end ng-show="showGroup"></tr>
+                                 <tr ng-show="showClonePlans" ng-repeat="item in clonePlans track by $index" ng-click="clonePlanSelected(item)" ng-class="{'warning':selectedClonePlan == item};">
+                                     <td width="2%" align ="center">{{$index + 1}}</td>
+                                     <td width="5%" align="center"><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="item.isChecked" /></td>
+                                     <td width="15%">{{item.title}}</td>
+                                     <td width="15%">{{item.ptoTypeTitle}}</td>
+                                     <td width="15%">{{item.ptoPlanTypeTitle}}</td>
+                                 </tr>
+                             </tbody>
+                     </table>
+              </div>
+               <div class="modal-footer">
+                   <button type="button" class="btn btn-primary" ng-disabled="disableCloneOk" ng-click="cloneSelectedPlan();ok()">OK</button>
+                   <button type="button" class="btn btn-warning" ng-click="cancel()">Cancel</button>
+               </div>
+           </div>
+       </form>
 </script>

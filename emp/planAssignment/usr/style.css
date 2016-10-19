@@ -172,6 +172,14 @@
     max-height: 500px;
 }
 
+#cloneModal {
+    left: 20%;
+    position: fixed;
+    top: 20%;
+    height: auto;
+    max-height: 500px;
+}
+
 .table > thead > tr > td.warning,
 .table > tbody > tr > td.warning,
 .table > tfoot > tr > td.warning,
