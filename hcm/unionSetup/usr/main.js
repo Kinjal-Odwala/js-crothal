@@ -266,6 +266,8 @@ ii.Class({
 				else if (type === 2)
 					return "Full Time";
 			});
+			me.unionDeductionGrid.addColumn("startDate", "startDate", "Start Date", "Start Date", 120);
+			me.unionDeductionGrid.addColumn("endDate", "endDate", "End Date", "End Date", 120);
 			me.unionDeductionGrid.capColumns();
 
 			$("#PayCodeType").multiselect({
@@ -1179,15 +1181,23 @@ ii.Class({
 				me.payRate.setValue("0.00");
 			}
 			
+			var startDate = new Date(me.startDate.lastBlurValue);	
+			var endDate = new Date(me.endDate.lastBlurValue);
+			
 			for (var index = 0; index < me.unionDeductionGrid.data.length; index++) {
+				var unionStartDate = new Date(me.unionDeductionGrid.data[index].startDate);	
+				var unionEndDate = new Date(me.unionDeductionGrid.data[index].endDate);	
+			
 				if (me.status === "New") {
 					if (me.payType.indexSelected !== -1 && (me.unionDeductionGrid.data[index].payType === me.payTypes[me.payType.indexSelected].id)) {
-						me.validationMessage = "Multiple union deduction entries are not allowed for the same Pay Type [" + me.payTypes[me.payType.indexSelected].name + "].";
+						if (!((startDate < unionStartDate && endDate < unionStartDate) || (startDate > unionEndDate && endDate > unionEndDate)))
+							me.validationMessage = "The date range [Start Date and End Date] should not overlap for the Pay Type [" + me.payTypes[me.payType.indexSelected].name + "].";
 					}
 				}
 				else {
 					if (me.payType.indexSelected !== -1 && (me.unionDeductionGrid.activeRowIndex !== index) && (me.unionDeductionGrid.data[index].payType === me.payTypes[me.payType.indexSelected].id)) {
-						me.validationMessage = "Multiple union deduction entries are not allowed for the same Pay Type [" + me.payTypes[me.payType.indexSelected].name + "].";
+						if (!((startDate < unionStartDate && endDate < unionStartDate) || (startDate > unionEndDate && endDate > unionEndDate)))
+							me.validationMessage = "The date range [Start Date and End Date] should not overlap for the Pay Type [" + me.payTypes[me.payType.indexSelected].name + "].";
 					}
 				}
 			}
