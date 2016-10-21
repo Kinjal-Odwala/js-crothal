@@ -175,9 +175,8 @@
 #cloneModal {
     left: 20%;
     position: fixed;
-    top: 20%;
+    top: 5%;
     height: auto;
-    max-height: 500px;
 }
 
 .table > thead > tr > td.warning,
