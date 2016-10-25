@@ -595,7 +595,10 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 //	              		},
 						summaryType: 'max',
 						summaryRenderer: function(value, params, record) {
-							return "<a target='_blank' href='" + me.systemVariableStore.data.items[0].data.variableValue + "[Invoice%20Number|EQ|" + value + "|AND][Vendor%20Number|EQ|" + record.data.vendorNumber + "|NONE]'>" + value + "</a>";
+							if (me.systemVariableStore.data.items[0].data.variableValue !== "")
+								return "<a target='_blank' href='" + me.systemVariableStore.data.items[0].data.variableValue + "[Invoice%20Number|EQ|" + value + "|AND][Vendor%20Number|EQ|" + record.data.vendorNumber + "|NONE]'>" + value + "</a>";
+							else
+								return value;
 		                },
 					  },
 					  { dataIndex: 'invoiceDate', header: 'Invoice Date', width: 100, renderer: Ext.util.Format.dateRenderer('m/d/y'), summaryType: 'max',},
