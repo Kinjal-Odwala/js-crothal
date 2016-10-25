@@ -32,7 +32,7 @@ var setStatus = function(status, message) {
 			message = "Error while updating the data.";
 		else
 			message = "Normal";
-	}			
+	}
 
 	if (status === "Locked")
 		me.$itemModifiedImage.addClass("Locked");
@@ -180,9 +180,9 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
     $scope.countyPlanGridMinHeight = 200;
     $scope.cityPlanGridMinHeight = 200;
     $scope.houseCodePlanGridMinHeight = 200;
-    $scope.nextYearPlans = [];
-    $scope.cloneToYearId = '';
-    $scope.cloneFromYearId = '';
+	$scope.action = "";
+	$scope.showPlans = true;
+    $scope.cloneGridMaxHeight = $(window).height() - $(window).height() * 0.1;
     var modalOptions = {
         templateUrl: 'cloneGrid.html',
         controller: 'modalInstanceCtrl',
@@ -190,8 +190,6 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         size: 'sm',
         scope: $scope
     };
-    $scope.showPlans = true;
-    $scope.cloneGridMaxHeight = $(window).height() - $(window).height() * 0.1;
 
     EmpActions.getPTOTypes(function(result) {
     });
@@ -203,30 +201,18 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         $scope.ptoYears = result;
         if (angular.isDefined(result)) {
             $scope.ptoYear = result[0].id;
-            $scope.cloneToYear = parseInt(result[0].name);
-            $scope.cloneFromYear = $scope.cloneToYear - 1;
-            $scope.cloneToYearId = result[0].id;
         }
         EmpActions.getPTOPlans($scope.ptoYear, function(result) {
             $scope.plans = result;
             $scope.ptoPlans = result;
         });
-        EmpActions.getPlanAssignments($scope.ptoYear, 0, 1, function(result) {
+        EmpActions.getPlanAssignments($scope.ptoYear, 0, 1, 0, function(result) {
             $scope.companyPlans = result;
+			if ($scope.companyPlans.length > 0)
+                $scope.disableCompanyCloneButton = true;
             $scope.pageLoading = false;
             setStatus("Normal");
         });
-        for (var index = 0; index < $scope.ptoYears.length; index++) {
-            if ($scope.ptoYears[index].name == $scope.cloneFromYear) {
-                $scope.cloneFromYearId = $scope.ptoYears[index].id;
-                break;
-            }
-        }
-        if ($scope.cloneToYearId !== '') {
-            EmpActions.getPTOPlans($scope.cloneToYearId, function (result) {
-                $scope.nextYearPlans = result;
-            });
-        }
     });
 
     $scope.onYearChange = function (level) {
@@ -235,6 +221,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 
     $scope.onLevelChange = function(level) {
         $scope.disableOk = true;
+
         if (level === "state") {
             if (editStatus())
                 return;
@@ -265,54 +252,43 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
     $scope.search = function() {
         $scope.pageLoading = true;
         setStatus("Loading");
+		$scope.action = "";
 		$scope.showStateName = false;
 		$scope.stateName = "";
+        $scope.statePlans = [];
+        $scope.countys = [];
+        $scope.cities = [];
+        $scope.houseCodes = [];
+		$scope.selectedState = null;
 		$scope.selectedCompanyPlan = null;
 		$scope.selectedStatePlan = null;
 		$scope.selectedCountyPlan = null;
 		$scope.selectedCityPlan = null;
 		$scope.selectedHouseCodePlan = null;
 		$scope.showPlans = true;
-		$scope.cloneToYearId = $scope.ptoYear;
 		$scope.disableCompanyCloneButton = false;
 		$scope.disableStateCloneButton = false;
 		$scope.disableCountyCloneButton = false;
 		$scope.disableCityCloneButton = false;
 		$scope.disableHouseCodeCloneButton = false;
 
-		for (var index = 0; index < $scope.ptoYears.length; index++) {
-		    if ($scope.ptoYears[index].id == $scope.cloneToYearId) {
-		        $scope.cloneToYear = $scope.ptoYears[index].name;
-		        $scope.cloneFromYear = $scope.cloneToYear - 1;
-		        break;
-		    }
-		}
-		for (var index = 0; index < $scope.ptoYears.length; index++) {
-		    if ($scope.ptoYears[index].name == $scope.cloneFromYear) {
-		        $scope.cloneFromYearId = $scope.ptoYears[index].id;
-		        break;
-		    }
-		}
         EmpActions.getPTOPlans($scope.ptoYear, function(result) {
             $scope.plans = result;
             $scope.ptoPlans = $scope.plans;
         });
-        EmpActions.getPlanAssignments($scope.ptoYear, 0, 1, function(result) {
+
+        EmpActions.getPlanAssignments($scope.ptoYear, 0, 1, 0, function(result) {
             $scope.companyPlans = result;
             if ($scope.companyPlans.length > 0)
                 $scope.disableCompanyCloneButton = true;
             $scope.pageLoading = false;
             setStatus("Normal");
         });
-        $scope.selectedState = null;
-        $scope.statePlans = [];
-        $scope.countys = [];
-        $scope.cities = [];
-        $scope.houseCodes = [];
     };
 
     $scope.stateSelected = function(item) {
 		$scope.selectedState = item;
+		$scope.action = "";
         $scope.loadingTitle = " Loading...";
         $scope.pageLoading = true;
 		$scope.showStateName = true;
@@ -331,8 +307,6 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 		$scope.filterHouseCode = false;
 		$scope.expandAllHouseCode = true;
 		$scope.houseCodeExpanded = true;
-		setStatus("Loading");
-		var totalGridsHeight = '';
 		$scope.selectedCounty = null;
 		$scope.selectedCity = null;
 		$scope.selectedHouseCode = null;
@@ -340,8 +314,26 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 		$scope.selectedCountyPlan = null;
 		$scope.selectedCityPlan = null;
 		$scope.selectedHouseCodePlan = null;
+		setStatus("Loading");
+		$scope.getStatePlanAssignments();
+        $scope.getCountyPlanAssignments();
+		$scope.getCityPlanAssignments();
+		$scope.getHouseCodePlanAssignments();
+		//$scope.setStateGridHeight();
+		$scope.pageLoading = false;
+		setStatus("Normal");
+    };
 
-        EmpActions.getPlanAssignments($scope.ptoYear, item.id, 2, function(data) {
+	$scope.getCompanyPlanAssignments = function() {
+		EmpActions.getPlanAssignments($scope.ptoYear, 0, 1, 0, function(data) {
+            $scope.companyPlans = data;
+			if ($scope.companyPlans.length > 0)
+                $scope.disableCompanyCloneButton = true;
+        });
+	};
+	
+	$scope.getStatePlanAssignments = function() {
+		EmpActions.getPlanAssignments($scope.ptoYear, $scope.selectedState.id, 2, 0, function(data) {
             $scope.statePlans = [];
             angular.forEach(data, function(statePlan, index) {
                 if (statePlan.ptoPlanId > 0) {
@@ -350,11 +342,11 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             });
             if ($scope.statePlans.length > 0)
                 $scope.disableStateCloneButton = true;
-
-            $scope.setStateGridHeight();
         });
-
-        EmpActions.getPlanAssignments($scope.ptoYear, item.id, 3, function(data) {
+	};
+	
+	$scope.getCountyPlanAssignments = function() {
+		EmpActions.getPlanAssignments($scope.ptoYear, $scope.selectedState.id, 3, 0, function(data) {
             $scope.countys = [];
 
             angular.forEach(data, function(county, index) {
@@ -388,10 +380,13 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                 }
             });
 
+			$scope.assignedCountys = $scope.countys;
             $scope.setStateGridHeight();
         });
-
-        EmpActions.getPlanAssignments($scope.ptoYear, item.id, 4, function(data) {
+	};
+	
+	$scope.getCityPlanAssignments = function() {
+		EmpActions.getPlanAssignments($scope.ptoYear, $scope.selectedState.id, 4, 0, function(data) {
             $scope.cities = [];
 
             angular.forEach(data, function(city, index) {
@@ -428,8 +423,10 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             $scope.assignedCities = $scope.cities;
             $scope.setStateGridHeight();
         });
-
-        EmpActions.getPlanAssignments($scope.ptoYear, item.id, 5, function(data) {
+	};
+	
+	$scope.getHouseCodePlanAssignments = function() {
+		 EmpActions.getPlanAssignments($scope.ptoYear, $scope.selectedState.id, 5, 0, function(data) {
             $scope.houseCodes = [];
 
             angular.forEach(data, function(houseCode, index) {
@@ -461,19 +458,16 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                         }
                     });
                 }
-                
             });
 
             $scope.assignedHouseCodes = $scope.houseCodes;
             $scope.setStateGridHeight();
         });
-		$scope.pageLoading = false;
-		setStatus("Normal");
-    };
+	};
 
     $scope.setStateGridHeight = function () {
-        totalGridsHeight = angular.element('#statePlanDetailsGrid').height() + angular.element('#countyPlanDetailsGrid').height()
-               + angular.element('#cityPlanDetailsGrid').height() + angular.element('#houseCodePlanDetailsGrid').height();
+        var totalGridsHeight = angular.element('#statePlanDetailsGrid').height() + angular.element('#countyPlanDetailsGrid').height()
+        	+ angular.element('#cityPlanDetailsGrid').height() + angular.element('#houseCodePlanDetailsGrid').height();
 
         if (totalGridsHeight > $scope.stateGridHeight) {
             $scope.stateGridHeight = 1350;
@@ -481,11 +475,11 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
     };
 
     $scope.setHeight = function (type) {
-        totalGridsHeight = angular.element('#statePlanDetailsGrid').height() + angular.element('#countyPlanDetailsGrid').height()
-               + angular.element('#cityPlanDetailsGrid').height() + angular.element('#houseCodePlanDetailsGrid').height();
-
+        var totalGridsHeight = angular.element('#statePlanDetailsGrid').height() + angular.element('#countyPlanDetailsGrid').height()
+        	+ angular.element('#cityPlanDetailsGrid').height() + angular.element('#houseCodePlanDetailsGrid').height();
         var height = 70;
         var marginHeight = 270;
+
         if (type !== "state") {
             height = height + 15;
             marginHeight = marginHeight + 15;
@@ -689,9 +683,11 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             valid = $scope.validatePlan($scope.selectedHouseCode.houseCodePlans);
 
 		$scope.closeDialog = valid;
-		
+
 		if (valid) {
 			for (var index = 0; index < $scope.plans.length; index++) {
+				$scope.action = "Add";
+
                 if ($scope.plans[index].isChecked) {
                     var item = {};
                     item["id"] = 0;
@@ -790,6 +786,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         if ($scope.selectedCompanyPlan === undefined || $scope.selectedCompanyPlan === null)
             return;
 
+		$scope.action = "Update";
 		EmpActions.actionSaveItem($scope, $scope.companyPlans, function(data, status) {
 			$scope.$apply(function() {
 				$scope.pageLoading = false;
@@ -803,6 +800,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 		if ($scope.selectedStatePlan === undefined || $scope.selectedStatePlan === null)
             return;
 
+		$scope.action = "Update";
         EmpActions.actionSaveItem($scope, $scope.statePlans, function(data, status) {
             $scope.$apply(function() {
                 $scope.pageLoading = false;
@@ -824,6 +822,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             }
         });
         if (modifiedPlans.length > 0) {
+			$scope.action = "Update";
             EmpActions.actionSaveItem($scope, modifiedPlans, function(data, status) {
                 $scope.$apply(function() {
                     $scope.pageLoading = false;
@@ -846,6 +845,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             }
         });
         if (modifiedPlans.length > 0) {
+			$scope.action = "Update";
             EmpActions.actionSaveItem($scope, modifiedPlans, function(data, status) {
                 $scope.$apply(function() {
                     $scope.pageLoading = false;
@@ -868,6 +868,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             }
         });
         if (modifiedPlans.length > 0) {
+			$scope.action = "Update";
             EmpActions.actionSaveItem($scope, modifiedPlans, function(data, status) {
                 $scope.$apply(function() {
                     $scope.pageLoading = false;
@@ -1031,80 +1032,73 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         });
     };
 
-    $scope.cloneSelectedPlan = function () {
-        if ($scope.levelSelected === "company" || $scope.levelSelected === "state") {
-            $scope.nextYearClonnedPlans = [];
-            for (var index = 0; index < $scope.clonePlans.length; index++) {
-                if ($scope.clonePlans[index].isChecked) {
-                    var item = {};
-                    item["id"] = 0;
-                    item["ptoYearId"] = $scope.cloneToYearId;
-                    item["houseCodeId"] = 0;
-                    item["ptoPlanId"] = $scope.clonePlans[index].id;
-                    item["active"] = true;
-                    item["modified"] = true;
-                    item["ptoPlanTitle"] = $scope.clonePlans[index].title;
-                    item["ptoTypeTitle"] = $scope.clonePlans[index].ptoTypeTitle;
-                    item["ptoPlanTypeTitle"] = $scope.clonePlans[index].ptoPlanTypeTitle;
-                    if ($scope.levelSelected === "company") {
-                        item["stateType"] = 0;
-                        item["groupType"] = 1;
-                        item["name"] = "";
-                    }
-                    else if ($scope.levelSelected === "state") {
-                        item["stateType"] = $scope.selectedState.id;
-                        item["groupType"] = 2;
-                        item["name"] = $scope.selectedState.name;
-                    }
-                    $scope.nextYearClonnedPlans.push(item);
-                }
-            }
-            EmpActions.actionSaveItem($scope, $scope.nextYearClonnedPlans, function (data, status) {
-                $scope.$apply(function () {
-                    $scope.pageLoading = false;
-                    setStatus("Saved");
-                });
+    $scope.clonePlan = function(level, groupType) {
+        if (level !== "company" && ($scope.selectedState === null || $scope.selectedState === undefined))
+            return;
+
+        $scope.groups = [];
+        $scope.clonePlans = [];
+		$scope.showGroup = false;
+        $scope.groupExpanded = true;
+        $scope.loadingTitle = " Loading...";
+
+		for (var index = 0; index < $scope.ptoYears.length; index++) {
+		    if ($scope.ptoYears[index].id == $scope.ptoYear) {
+		        $scope.cloneToYear = $scope.ptoYears[index].name;
+				if (index === $scope.ptoYears.length - 1)
+					return;
+		        $scope.cloneFromYear = $scope.ptoYears[index + 1].name;
+		        break;
+		    }
+		}
+
+		if (level === "company") {
+            EmpActions.getPlanAssignments($scope.ptoYear, 0, 1, 1, function(data) {
+                $scope.clonePlans = data;
             });
         }
-        else if ($scope.levelSelected === "county" || $scope.levelSelected === "city" || $scope.levelSelected === "houseCode") {
-            $scope.nextYearClonePlans = [];
-            for (var groupIndex = 0; groupIndex < $scope.groups.length; groupIndex++) {
-                for (var index = 0; index < $scope.groups[groupIndex].clonePlans.length; index++) {
-                    if ($scope.groups[groupIndex].clonePlans[index].isChecked) {
-                        var item = {};
-                        item["id"] = 0;
-                        item["ptoYearId"] = $scope.cloneToYearId;
-                        item["houseCodeId"] = 0;
-                        item["ptoPlanId"] = $scope.groups[groupIndex].clonePlans[index].id;
-                        item["active"] = true;
-                        item["modified"] = true;
-                        item["ptoPlanTitle"] = $scope.groups[groupIndex].clonePlans[index].title;
-                        item["ptoTypeTitle"] = $scope.groups[groupIndex].clonePlans[index].ptoTypeTitle;
-                        item["ptoPlanTypeTitle"] = $scope.groups[groupIndex].clonePlans[index].ptoPlanTypeTitle;
-                        item["stateType"] = $scope.selectedState.id;
-                        item["name"] = $scope.groups[groupIndex].name;
-                        if ($scope.levelSelected === "county")
-                            item["groupType"] = 3;
-                        else if ($scope.levelSelected === "city")
-                            item["groupType"] = 4;
-                        else if ($scope.levelSelected === "houseCode") {
-                            item["houseCodeId"] = $scope.groups[groupIndex].houseCodeId;
-                            item["groupType"] = 5;
-                        }
-                        $scope.nextYearClonePlans.push(item);
-                    }
-                }
-            }
-            EmpActions.actionSaveItem($scope, $scope.nextYearClonePlans, function (data, status) {
-                $scope.$apply(function () {
-                    $scope.pageLoading = false;
-                    setStatus("Saved");
-                });
+        else {
+			EmpActions.getPlanAssignments($scope.ptoYear, $scope.selectedState.id, groupType, 1, function(data) {
+				if (level === "state") {
+					$scope.clonePlans = data;
+				}
+				else {
+					$scope.showGroup = true;
+					angular.forEach(data, function(group, index) {
+		                var found = false;
+		                if ($scope.groups.length > 0) {
+							for (var index = 0; index < $scope.groups.length; index++) {
+								if ($scope.groups[index].name === group.name) {
+									found = true;
+									break;
+								}  
+							}
+		                    if (!found)
+		                        $scope.groups.push(group);
+		                }
+		                else
+		                    $scope.groups.push(group);
+		            });
+	
+		            angular.forEach($scope.groups, function(group, index) {
+		                group.clonePlans = [];
+		            });
+		
+		            angular.forEach(data, function(plan, index) {
+		                angular.forEach($scope.groups, function(group, index) {
+		                    if (group.name === plan.name)
+		                        group.clonePlans.push(plan);
+		                });
+		            });
+				}
             });
         }
+
+		$modal.open(modalOptions);
+        $scope.levelSelected = level;
     };
 
-    $scope.clonePlanSelected = function (item) {
+	$scope.clonePlanSelected = function(item) {
         $scope.selectedClonePlan = item;
         var disable = true;
 
@@ -1117,12 +1111,12 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             }
         }
         else {
+			outerLoop:
             for (var index = 0; index < $scope.groups.length; index++) {
-                for (var groupIndex = 0; groupIndex < $scope.groups[index].clonePlans.length; groupIndex++) {
-                    if ($scope.groups[index].clonePlans[groupIndex].isChecked) {
+                for (var iIndex = 0; iIndex < $scope.groups[index].clonePlans.length; iIndex++) {
+                    if ($scope.groups[index].clonePlans[iIndex].isChecked) {
                         disable = false;
-                        break;
-                        break;
+                        break outerLoop;
                     }
                 }
             }
@@ -1131,374 +1125,81 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         $scope.disableCloneOk = disable;
     };
 
-    $scope.onClonePlanChecked = function (item, check) {
+    $scope.onClonePlanChecked = function(item, check) {
         item.isChecked = check;
     };
 
-    $scope.clonePlan = function (level) {
-        if (level !== "company" && ($scope.selectedState === null || $scope.selectedState === undefined))
-            return;
-        $scope.groups = [];
-        $scope.clonePlans = [];
-        $scope.groupExpanded = true;
-        $scope.loadingTitle = " Loading...";
-        if (level === "company") {
-            EmpActions.getPlanAssignments($scope.cloneToYearId, 0, 1, function (result) {
-                $scope.nextYearCompanyPlans = result;
-                if ($scope.nextYearCompanyPlans.length > 0)
-                    alert("Plans are already assigned to next year " + $scope.cloneToYear);
-                else {
-                    $scope.showGroup = false;
-                    $scope.showClonePlans = true;
-                    EmpActions.getPlanAssignments($scope.cloneFromYearId, 0, 1, function (result) {
-                        $scope.currentYearCompanyPlans = result;
-                        angular.forEach($scope.currentYearCompanyPlans, function (companyPlan) {
-                            if (companyPlan.active) {
-                                for (var index = 0; index < $scope.nextYearPlans.length; index++) {
-                                    if (companyPlan.ptoTypeTitle === $scope.nextYearPlans[index].ptoTypeTitle
-                                        && companyPlan.ptoPlanTypeTitle === $scope.nextYearPlans[index].ptoPlanTypeTitle) {
-                                        $scope.clonePlans.push($scope.nextYearPlans[index]);
-                                        break;
-                                    }
-                                }
-                            }
-                        });
-                        $modal.open(modalOptions);
-                    });
-                }
-            });
-        }
-        else if (level === "state") {
-            EmpActions.getPlanAssignments($scope.cloneToYearId, $scope.selectedState.id, 2, function (data) {
-                $scope.nextYearStatePlans = [];
-                angular.forEach(data, function (statePlan, index) {
-                    if (statePlan.ptoPlanId > 0) {
-                        $scope.nextYearStatePlans.push(statePlan);
-                    }
-                });
-                if ($scope.nextYearStatePlans.length > 0)
-                    alert("Plans are already assigned to next year " + $scope.cloneToYear);
-                else {
-                    $scope.showGroup = false;
-                    $scope.showClonePlans = true;
-                    EmpActions.getPlanAssignments($scope.cloneFromYearId, $scope.selectedState.id, 2, function (data) {
-                        $scope.currentYearStatePlans = [];
-                        angular.forEach(data, function (statePlan, index) {
-                            if (statePlan.ptoPlanId > 0) {
-                                $scope.currentYearStatePlans.push(statePlan);
-                            }
-                        });
-                        angular.forEach($scope.currentYearStatePlans, function (statePlan, index) {
-                            if (statePlan.active) {
-                                for (var index = 0; index < $scope.nextYearPlans.length; index++) {
-                                    if (statePlan.ptoTypeTitle === $scope.nextYearPlans[index].ptoTypeTitle
-                                        && statePlan.ptoPlanTypeTitle === $scope.nextYearPlans[index].ptoPlanTypeTitle) {
-                                        $scope.clonePlans.push($scope.nextYearPlans[index]);
-                                        break;
-                                    }
-                                }
-                            }
-                        });
-                        $modal.open(modalOptions);
-                    });
-                }
-            });
-        }
-        else if (level === "county") {
-            EmpActions.getPlanAssignments($scope.cloneToYearId, $scope.selectedState.id, 3, function (data) {
-                $scope.nextYearCountys = [];
 
-                angular.forEach(data, function (county, index) {
-                    var found = false;
-                    if (county.ptoPlanId > 0 && $scope.nextYearCountys.length > 0) {
-                        for (var index = 0; index < $scope.nextYearCountys.length; index++) {
-                            if ($scope.nextYearCountys[index].name === county.name) {
-                                found = true;
-                                break;
-                            }
+	
+	$scope.cloneSelectedPlan = function() {
+		$scope.clonedPlans = [];
+
+        if ($scope.levelSelected === "company" || $scope.levelSelected === "state") {
+            for (var index = 0; index < $scope.clonePlans.length; index++) {
+                if ($scope.clonePlans[index].isChecked) {
+                    var item = {};
+                    item["id"] = 0;
+                    item["ptoYearId"] = $scope.ptoYear;
+                    item["houseCodeId"] = 0;
+                    item["ptoPlanId"] = $scope.clonePlans[index].ptoPlanId;
+                    item["active"] = true;
+                    item["modified"] = true;
+                    item["ptoPlanTitle"] = $scope.clonePlans[index].ptoPlanTitle;
+                    item["ptoTypeTitle"] = $scope.clonePlans[index].ptoTypeTitle;
+                    item["ptoPlanTypeTitle"] = $scope.clonePlans[index].ptoPlanTypeTitle;
+                    if ($scope.levelSelected === "company") {
+                        item["stateType"] = 0;
+                        item["groupType"] = 1;
+                        item["name"] = "";
+                    }
+                    else if ($scope.levelSelected === "state") {
+                        item["stateType"] = $scope.selectedState.id;
+                        item["groupType"] = 2;
+                        item["name"] = $scope.selectedState.name;
+                    }
+                    $scope.clonedPlans.push(item);
+                }
+            }
+
+			$scope.companyPlans = $scope.clonedPlans;
+        }
+        else if ($scope.levelSelected === "county" || $scope.levelSelected === "city" || $scope.levelSelected === "houseCode") {
+            for (var index = 0; index < $scope.groups.length; index++) {
+                for (var iIndex = 0; iIndex < $scope.groups[index].clonePlans.length; iIndex++) {
+                    if ($scope.groups[index].clonePlans[iIndex].isChecked) {
+                        var item = {};
+                        item["id"] = 0;
+                        item["ptoYearId"] = $scope.ptoYear;
+                        item["houseCodeId"] = 0;
+                        item["ptoPlanId"] = $scope.groups[index].clonePlans[iIndex].ptoPlanId;
+                        item["active"] = true;
+                        item["modified"] = true;
+                        item["ptoPlanTitle"] = $scope.groups[index].clonePlans[iIndex].ptoPlanTitle;
+                        item["ptoTypeTitle"] = $scope.groups[index].clonePlans[iIndex].ptoTypeTitle;
+                        item["ptoPlanTypeTitle"] = $scope.groups[index].clonePlans[iIndex].ptoPlanTypeTitle;
+                        item["stateType"] = $scope.selectedState.id;
+                        item["name"] = $scope.groups[index].name;
+                        if ($scope.levelSelected === "county")
+                            item["groupType"] = 3;
+                        else if ($scope.levelSelected === "city")
+                            item["groupType"] = 4;
+                        else if ($scope.levelSelected === "houseCode") {
+                            item["houseCodeId"] = $scope.groups[index].houseCodeId;
+                            item["groupType"] = 5;
                         }
-                        if (!found)
-                            $scope.nextYearCountys.push(county);
-                    }
-                    else
-                        $scope.nextYearCountys.push(county);
-                });
-
-                angular.forEach($scope.nextYearCountys, function (county, index) {
-                    county.countyPlans = [];
-                });
-
-                angular.forEach(data, function (county, index) {
-                    if (county.ptoPlanId > 0) {
-                        angular.forEach($scope.nextYearCountys, function (countyPlan, index) {
-                            if (countyPlan.name === county.name)
-                                countyPlan.countyPlans.push(county);
-                        });
-                    }
-                });
-                var plansAssigned = false;
-                for (index = 0; index < $scope.nextYearCountys.length; index++) {
-                    if ($scope.nextYearCountys[index].countyPlans.length > 0) {
-                        plansAssigned = true;
-                        alert("Plans are already assigned to next year " + $scope.cloneToYear);
-                        break;
+                        $scope.clonedPlans.push(item);
                     }
                 }
-                if (!plansAssigned) {
-                    $scope.showGroup = true;
-                    $scope.showClonePlans = false;
-                    EmpActions.getPlanAssignments($scope.cloneFromYearId, $scope.selectedState.id, 3, function (data) {
-                        $scope.currentYearCountys = [];
-                        angular.forEach(data, function (county, index) {
-                            var found = false;
-                            if (county.ptoPlanId > 0 && $scope.currentYearCountys.length > 0) {
-                                for (var index = 0; index < $scope.currentYearCountys.length; index++) {
-                                    if ($scope.currentYearCountys[index].name === county.name) {
-                                        found = true;
-                                        break;
-                                    }
-                                }
-                                if (!found)
-                                    $scope.currentYearCountys.push(county);
-                            }
-                            else
-                                $scope.currentYearCountys.push(county);
-                        });
-
-                        angular.forEach($scope.currentYearCountys, function (county, index) {
-                            county.countyPlans = [];
-                        });
-
-                        angular.forEach(data, function (county, index) {
-                            if (county.ptoPlanId > 0) {
-                                angular.forEach($scope.currentYearCountys, function (countyPlan, index) {
-                                    if (countyPlan.name === county.name)
-                                        countyPlan.countyPlans.push(county);
-                                });
-                            }
-                        });
-
-                        angular.forEach($scope.currentYearCountys, function (county, index) {
-                            if (county.countyPlans.length > 0) {
-                                $scope.groups.push(county);
-                            }
-                        });
-                        angular.forEach($scope.groups, function (group, index) {
-                            group.clonePlans = [];
-                            angular.forEach(group.countyPlans, function (countyPlan, index) {
-                                if (countyPlan.active) {
-                                    for (var index = 0; index < $scope.nextYearPlans.length; index++) {
-                                        if (countyPlan.ptoTypeTitle === $scope.nextYearPlans[index].ptoTypeTitle
-                                            && countyPlan.ptoPlanTypeTitle === $scope.nextYearPlans[index].ptoPlanTypeTitle) {
-                                            group.clonePlans.push($scope.nextYearPlans[index]);
-                                            break;
-                                        }
-                                    }
-                                }
-                            });
-                        });
-                        $modal.open(modalOptions);
-                    });
-                }
-            });
+            }
         }
-        else if (level === "city") {
-            EmpActions.getPlanAssignments($scope.cloneToYearId, $scope.selectedState.id, 4, function (data) {
-                $scope.nextYearCities = [];
 
-                angular.forEach(data, function (city, index) {
-                    var found = false;
-                    if (city.ptoPlanId > 0 && $scope.nextYearCities.length > 0) {
-                        for (var index = 0; index < $scope.nextYearCities.length; index++) {
-                            if ($scope.nextYearCities[index].name === city.name) {
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found)
-                            $scope.nextYearCities.push(city);
-                    }
-                    else
-                        $scope.nextYearCities.push(city);
-                });
-
-                angular.forEach($scope.nextYearCities, function (city, index) {
-                    city.cityPlans = [];
-                });
-
-                angular.forEach(data, function (city, index) {
-                    if (city.ptoPlanId > 0) {
-                        angular.forEach($scope.nextYearCities, function (cityPlan, index) {
-                            if (cityPlan.name === city.name)
-                                cityPlan.cityPlans.push(city);
-                        });
-                    }
-                });
-                var plansAssigned = false;
-                for (index = 0; index < $scope.nextYearCities.length; index++) {
-                    if ($scope.nextYearCities[index].cityPlans.length > 0) {
-                        plansAssigned = true;
-                        alert("Plans are already assigned to next year " + $scope.cloneToYear);
-                        break;
-                    }
-                }
-                if (!plansAssigned) {
-                    $scope.showGroup = true;
-                    $scope.showClonePlans = false;
-                    EmpActions.getPlanAssignments($scope.cloneFromYearId, $scope.selectedState.id, 4, function (data) {
-                        $scope.currentYearCities = [];
-
-                        angular.forEach(data, function (city, index) {
-                            var found = false;
-                            if (city.ptoPlanId > 0 && $scope.currentYearCities.length > 0) {
-                                for (var index = 0; index < $scope.currentYearCities.length; index++) {
-                                    if ($scope.currentYearCities[index].name === city.name) {
-                                        found = true;
-                                        break;
-                                    }
-                                }
-                                if (!found)
-                                    $scope.currentYearCities.push(city);
-                            }
-                            else
-                                $scope.currentYearCities.push(city);
-                        });
-
-                        angular.forEach($scope.currentYearCities, function (city, index) {
-                            city.cityPlans = [];
-                        });
-
-                        angular.forEach(data, function (city, index) {
-                            if (city.ptoPlanId > 0) {
-                                angular.forEach($scope.currentYearCities, function (cityPlan, index) {
-                                    if (cityPlan.name === city.name)
-                                        cityPlan.cityPlans.push(city);
-                                });
-                            }
-                        });
-                        angular.forEach($scope.currentYearCities, function (city, index) {
-                            if (city.cityPlans.length > 0) {
-                                $scope.groups.push(city);
-                            }
-                        });
-                        angular.forEach($scope.groups, function (group, index) {
-                            group.clonePlans = [];
-                            angular.forEach(group.cityPlans, function (cityPlan, index) {
-                                if (cityPlan.active) {
-                                    for (var index = 0; index < $scope.nextYearPlans.length; index++) {
-                                        if (cityPlan.ptoPlanTypeTitle === $scope.nextYearPlans[index].ptoPlanTypeTitle
-                                            && cityPlan.ptoTypeTitle === $scope.nextYearPlans[index].ptoTypeTitle) {
-                                            group.clonePlans.push($scope.nextYearPlans[index]);
-                                            break;
-                                        }
-                                    }
-                                }
-                            });
-                        });
-                        $modal.open(modalOptions);
-                    });
-                }
+		$scope.action = "Clone";
+		EmpActions.actionSaveItem($scope, $scope.clonedPlans, function(data, status) {
+            $scope.$apply(function () {
+                $scope.pageLoading = false;
+                setStatus("Saved");
             });
-        }
-        else if (level === "houseCode") {
-            EmpActions.getPlanAssignments($scope.cloneToYearId, $scope.selectedState.id, 5, function (data) {
-                $scope.nextYearHouseCodes = [];
-                angular.forEach(data, function (houseCode, index) {
-                    var found = false;
-                    if (houseCode.ptoPlanId > 0 && $scope.nextYearHouseCodes.length > 0) {
-                        for (var index = 0; index < $scope.nextYearHouseCodes.length; index++) {
-                            if ($scope.nextYearHouseCodes[index].name === houseCode.name) {
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found)
-                            $scope.nextYearHouseCodes.push(houseCode);
-                    }
-                    else
-                        $scope.nextYearHouseCodes.push(houseCode);
-                });
-
-                angular.forEach($scope.nextYearHouseCodes, function (houseCode, index) {
-                    houseCode.houseCodePlans = [];
-                });
-
-                angular.forEach(data, function (houseCode, index) {
-                    if (houseCode.ptoPlanId > 0) {
-                        angular.forEach($scope.nextYearHouseCodes, function (houseCodePlan, index) {
-                            if (houseCodePlan.name === houseCode.name)
-                                houseCodePlan.houseCodePlans.push(houseCode);
-                        });
-                    }
-
-                });
-                var plansAssigned = false;
-                for (index = 0; index < $scope.nextYearHouseCodes.length; index++) {
-                    if ($scope.selectedHouseCode === $scope.nextYearHouseCodes[index] && $scope.nextYearHouseCodes[index].houseCodePlans.length > 0) {
-                        plansAssigned = true;
-                        alert("Plans are already assigned to next year " + $scope.cloneToYear);
-                    }
-                }
-                if (!plansAssigned) {
-                    $scope.showGroup = true;
-                    $scope.showClonePlans = false;
-                    EmpActions.getPlanAssignments($scope.cloneFromYearId, $scope.selectedState.id, 5, function (data) {
-                        $scope.currentYearHouseCodes = [];
-
-                        angular.forEach(data, function (houseCode, index) {
-                            var found = false;
-                            if (houseCode.ptoPlanId > 0 && $scope.currentYearHouseCodes.length > 0) {
-                                for (var index = 0; index < $scope.currentYearHouseCodes.length; index++) {
-                                    if ($scope.currentYearHouseCodes[index].name === houseCode.name) {
-                                        found = true;
-                                        break;
-                                    }
-                                }
-                                if (!found)
-                                    $scope.currentYearHouseCodes.push(houseCode);
-                            }
-                            else
-                                $scope.currentYearHouseCodes.push(houseCode);
-                        });
-
-                        angular.forEach($scope.currentYearHouseCodes, function (houseCode, index) {
-                            houseCode.houseCodePlans = [];
-                        });
-
-                        angular.forEach(data, function (houseCode, index) {
-                            if (houseCode.ptoPlanId > 0) {
-                                angular.forEach($scope.currentYearHouseCodes, function (houseCodePlan, index) {
-                                    if (houseCodePlan.name === houseCode.name)
-                                        houseCodePlan.houseCodePlans.push(houseCode);
-                                });
-                            }
-
-                        });
-                        angular.forEach($scope.currentYearHouseCodes, function (houseCode, index) {
-                            if (houseCode.houseCodePlans.length > 0) {
-                                $scope.groups.push(houseCode);
-                            }
-                        });
-                        angular.forEach($scope.groups, function (group, index) {
-                            group.clonePlans = [];
-                            angular.forEach(group.houseCodePlans, function (houseCodePlan, index) {
-                                if (houseCodePlan.active) {
-                                    for (var index = 0; index < $scope.nextYearPlans.length; index++) {
-                                        if (houseCodePlan.ptoTypeTitle === $scope.nextYearPlans[index].ptoTypeTitle
-                                            && houseCodePlan.ptoPlanTypeTitle === $scope.nextYearPlans[index].ptoPlanTypeTitle) {
-                                            group.clonePlans.push($scope.nextYearPlans[index]);
-                                            break;
-                                        }
-                                    }
-                                }
-                            });
-                        });
-                        $modal.open(modalOptions);
-                    });
-                }
-            });
-        }
-        $scope.levelSelected = level;
+        });
     };
 
     $scope.planSelected = function(item) {
@@ -1796,11 +1497,12 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function($http, $fi
 		});
     };
 
-	var getPlanAssignments = function(ptoYearId, stateId, groupType, callback) {
+	var getPlanAssignments = function(ptoYearId, stateId, groupType, clonePlan, callback) {
         apiRequest('emp', 'iiCache', '<criteria>storeId:ptoPlanAssignments,userId:[user]'
            + ',ptoYearId:' + ptoYearId
            + ',stateType:' + stateId
            + ',groupType:' + groupType
+		   + ',clonePlan:' + clonePlan
            + ',</criteria>', function(xml) {
            if (callback) {
                callback(deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id', 'ptoYearId', 'houseCodeId', 'ptoPlanId'], boolItems: ['active'] }));
@@ -1856,15 +1558,26 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function($http, $fi
 
             if (transactionNode !== undefined) {
                 if ($(transactionNode).attr("status") === "success") {
-                    $(transactionNode).find("*").each(function() {
-						if (this.tagName === "empPTOPlanAssignment") {
-                         	var id = parseInt($(this).attr("id"), 10);
-                            actionUpdateItem($scope, id);
-                        }
-                    });
-
-                    if (callback)
-                        callback(data, status);
+					if ($scope.action === "Add" || $scope.action === "Update") {
+						$(transactionNode).find("*").each(function() {
+							if (this.tagName === "empPTOPlanAssignment") {
+	                         	var id = parseInt($(this).attr("id"), 10);
+	                            actionUpdateItem($scope, id);
+	                        }
+	                    });
+	
+	                    if (callback) {
+							$scope.action = "";
+							callback(data, status);
+						}
+					}
+					else if ($scope.action === "Clone") {
+						actionUpdateCloneItem($scope);
+						if (callback) {
+							$scope.action = "";
+							callback(data, status);
+						}
+					}
                 }
                 else {
                     status = "error";
@@ -1884,7 +1597,7 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function($http, $fi
     };
 	
 	var actionUpdateItem = function($scope, id) {
-        if ($scope.levelSelected === "company") {
+		if ($scope.levelSelected === "company") {
             for (var index = 0; index < $scope.companyPlans.length; index++) {
                 if ($scope.companyPlans[index].modified) {
                     if ($scope.companyPlans[index].id === 0)
@@ -1942,6 +1655,24 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function($http, $fi
                     }
 				}
 			}
+        }
+    };
+
+	var actionUpdateCloneItem = function($scope) {
+		if ($scope.levelSelected === "company") {
+            $scope.getCompanyPlanAssignments();
+        }
+        else if ($scope.levelSelected === "state") {
+           $scope.getStatePlanAssignments();
+        }
+        else if ($scope.levelSelected === "county") {
+			$scope.getCountyPlanAssignments();
+        }
+        else if ($scope.levelSelected === "city") {
+			$scope.getCityPlanAssignments();
+        }
+        else if ($scope.levelSelected === "houseCode") {
+			$scope.getHouseCodePlanAssignments();
         }
     };
 
