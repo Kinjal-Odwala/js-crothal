@@ -409,7 +409,7 @@
                         <thead bgcolor="#ffffe0" style="color:#3276b1;">
                             <tr class="heading" role="row">
                                 <th width="2%" style="text-align:center">#</th>
-                                <th width="5%" style="text-align:center"></th>
+                                <th width="5%" style="text-align:center"><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="allSelected" ng-click="toggleAll(allSelected)" /></th>
                                 <th width="15%" style="text-align:center">Plan Name</th>
                                 <th width="15%" style="text-align:center">PTO Type</th>
                                 <th width="15%" style="text-align:center">Plan Type</th>
@@ -435,7 +435,7 @@
                             <tr ng-repeat-end ng-show="groupExpanded"></tr>
                             <tr ng-show="!showGroup" ng-repeat="item in clonePlans track by $index" ng-click="clonePlanSelected(item)" ng-class="{'warning':selectedClonePlan == item};">
                                 <td width="2%" align ="center">{{$index + 1}}</td>
-                                <td width="5%" align="center"><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="item.isChecked" /></td>
+                                <td width="5%" align="center"><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="item.isChecked" ng-change="planToggled(item.isChecked)" /></td>
                                 <td width="15%">{{item.ptoPlanTitle}}</td>
                                 <td width="15%">{{item.ptoTypeTitle}}</td>
                                 <td width="15%">{{item.ptoPlanTypeTitle}}</td>
