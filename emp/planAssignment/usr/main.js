@@ -18,7 +18,7 @@ var setStatus = function(status, message) {
 	if (message === "" || message === undefined) {
 		if (status === "New")
 			message = "New";
-		else if (status === "Loading" || status === "Saving" || status === "Exporting" || status === "Importing" || status === "Validating" || status === "Uploading" || status === "Downloading" || status === "Generating")
+		else if (status === "Loading" || status === "Saving" || status === "Exporting" || status === "Importing" || status === "Validating" || status === "Uploading" || status === "Downloading" || status === "Generating" || status === "Removing")
 			message = status + ", please wait...";
 		else if (status === "Saved")
 			message = "Data saved successfully.";
@@ -45,7 +45,10 @@ var setStatus = function(status, message) {
 		me.$itemModifiedImage.removeClass("Modified");
 
 	if (status === "Edit" || status === "Loaded" || status === "Saved" || status === "Imported" || status === "Exported")
-		status = "Normal";
+	    status = "Normal";
+
+	if (status === "Removing")
+	    status = "Loading";
 
 	me.$itemStatusImage.attr("class", "itemStatusImage " + status);
 	me.$itemStatusText.text(message);
@@ -175,14 +178,15 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
     setStatus("Loading");
     modified(false);
     checkStatus();
-    $scope.stateGridMinHeight = $(window).height() - $(window).height() * 1/4;
+    $scope.stateGridMinHeight = $(window).height() - 210;
     $scope.stateGridHeight = $scope.stateGridMinHeight;
     $scope.statePlanGridMinHeight = 200;
     $scope.countyPlanGridMinHeight = 200;
     $scope.cityPlanGridMinHeight = 200;
     $scope.houseCodePlanGridMinHeight = 200;
 	$scope.action = "";
-	$scope.cloneGridMaxHeight = $(window).height() - $(window).height() * 0.1;
+	$scope.cloneGridMaxHeight = $(window).height() - 100;
+	$scope.disableCompanyCloneButton = false;
 	$scope.disableStateCloneButton = false;
 	$scope.disableCountyCloneButton = false;
 	$scope.disableCityCloneButton = false;
@@ -219,12 +223,27 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         });
     });
 
-    $scope.onYearChange = function () {
-        $scope.selectedState = null;
+    $scope.resetSelection = function () {
+        $scope.selectedCounty = null;
+        $scope.selectedCity = null;
+        $scope.selectedHouseCode = null;
+        $scope.selectedCompanyPlan = null;
+        $scope.selectedStatePlan = null;
+        $scope.selectedCountyPlan = null;
+        $scope.selectedCityPlan = null;
+        $scope.selectedHouseCodePlan = null;
         $scope.statePlans = [];
         $scope.countys = [];
         $scope.cities = [];
         $scope.houseCodes = [];
+        $scope.assignedCountys = [];
+        $scope.assignedCities = [];
+        $scope.assignedHouseCodes = [];
+    };
+
+    $scope.onYearChange = function () {
+        $scope.selectedState = null;
+        $scope.resetSelection();
         $scope.loadingTitle = " Loading...";
 
         EmpActions.getPTOPlans($scope.ptoYear, function (result) {
@@ -254,6 +273,10 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             $scope.showStateGrid = true;
             $scope.showCompanyGrid = false;
             setStatus("Loading");
+            $scope.showState = false;
+            $scope.showCounty = false;
+            $scope.showCity = false;
+            $scope.showHouseCode = false;
             $scope.setStateGridHeight();
             EmpActions.getStateTypes(function(result) {
                 $scope.states = result;
@@ -276,6 +299,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 
     $scope.search = function() {
         $scope.pageLoading = true;
+        $scope.loadingTitle = " Loading...";
         setStatus("Loading");
 		$scope.action = "";
 		$scope.showStateName = false;
@@ -328,13 +352,6 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 		$scope.filterHouseCode = false;
 		$scope.expandAllHouseCode = true;
 		$scope.houseCodeExpanded = true;
-		$scope.selectedCounty = null;
-		$scope.selectedCity = null;
-		$scope.selectedHouseCode = null;
-		$scope.selectedStatePlan = null;
-		$scope.selectedCountyPlan = null;
-		$scope.selectedCityPlan = null;
-		$scope.selectedHouseCodePlan = null;
 		$scope.disableStateCloneButton = false;
 		$scope.disableCountyCloneButton = false;
 		$scope.disableCityCloneButton = false;
@@ -344,7 +361,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         $scope.getCountyPlanAssignments();
 		$scope.getCityPlanAssignments();
 		$scope.getHouseCodePlanAssignments();
-		//$scope.setStateGridHeight();
+		$scope.resetSelection();
 		$scope.pageLoading = false;
 		setStatus("Normal");
     };
@@ -764,7 +781,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         	EmpActions.actionSaveItem($scope, $scope.companyPlans, function(data, status) {
                 $scope.$apply(function() {
                     $scope.pageLoading = false;
-					setStatus("Saved");
+					setStatus("Normal");
                 });
             });
         }
@@ -772,7 +789,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         	EmpActions.actionSaveItem($scope, $scope.statePlans, function(data, status) {
                 $scope.$apply(function() {
                     $scope.pageLoading = false;
-					setStatus("Saved");
+                    setStatus("Normal");
                 });
             });
         }
@@ -780,7 +797,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             EmpActions.actionSaveItem($scope, $scope.selectedCounty.countyPlans, function(data, status) {
                 $scope.$apply(function() {
                     $scope.pageLoading = false;
-					setStatus("Saved");
+                    setStatus("Normal");
                 });
             });
         }
@@ -788,7 +805,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             EmpActions.actionSaveItem($scope, $scope.selectedCity.cityPlans, function(data, status) {
                 $scope.$apply(function() {
                     $scope.pageLoading = false;
-					setStatus("Saved");
+                    setStatus("Normal");
                 });
             });
         }
@@ -796,7 +813,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 			EmpActions.actionSaveItem($scope, $scope.selectedHouseCode.houseCodePlans, function(data, status) {
 				$scope.$apply(function() {
 				    $scope.pageLoading = false;
-					setStatus("Saved");
+				    setStatus("Normal");
 				});
 			});
         }
@@ -918,7 +935,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 			    $scope.disableCompanyCloneButton = false;
             $scope.$apply(function() {
                 $scope.pageLoading = false;
-				setStatus("Saved");
+                setStatus("Normal");
             });
         });
     };
@@ -942,7 +959,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                 $scope.disableStateCloneButton = false;
             $scope.$apply(function() {
                 $scope.pageLoading = false;
-				setStatus("Saved");
+                setStatus("Normal");
             });
         });
     };
@@ -977,7 +994,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             $scope.disableCountyCloneButton = found;
             $scope.$apply(function() {
                 $scope.pageLoading = false;
-				setStatus("Saved");
+                setStatus("Normal");
             });
         });
     };
@@ -1012,7 +1029,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 
             $scope.$apply(function() {
             	$scope.pageLoading = false;
-				setStatus("Saved");
+            	setStatus("Normal");
             });
         });
     };
@@ -1047,7 +1064,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 
             $scope.$apply(function() {
                 $scope.pageLoading = false;
-				setStatus("Saved");
+                setStatus("Normal");
             });
         });
     };
@@ -1061,7 +1078,9 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 		$scope.showGroup = false;
 		$scope.groupExpanded = true;
 		$scope.disableCloneOk = true;
-        $scope.loadingTitle = " Loading...";
+		$scope.loadingTitle = " Loading...";
+		$scope.pageLoading = true;
+		setStatus("Loading");
 
 		for (var index = 0; index < $scope.ptoYears.length; index++) {
 		    if ($scope.ptoYears[index].id == $scope.ptoYear) {
@@ -1076,6 +1095,8 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 		if (level === "company") {
             EmpActions.getPlanAssignments($scope.ptoYear, 0, 1, 1, function(data) {
                 $scope.clonePlans = data;
+                $scope.pageLoading = false;
+                setStatus("Normal");
                 $modal.open(modalOptions);
             });
         }
@@ -1113,6 +1134,8 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 		                });
 		            });
 				}
+				$scope.pageLoading = false;
+				setStatus("Normal");
 				$modal.open(modalOptions);
             });
         }
@@ -1186,7 +1209,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 		EmpActions.actionSaveItem($scope, $scope.clonedPlans, function(data, status) {
             $scope.$apply(function () {
                 $scope.pageLoading = false;
-                setStatus("Saved");
+                setStatus("Normal");
             });
         });
     };
@@ -1399,26 +1422,41 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             bool = false;
 
         if ($scope.levelSelected === "company" || $scope.levelSelected === "state") {
-            angular.forEach($scope.clonePlans, function (item) {
-                item.isChecked = !bool;
-            });
+            if ($scope.clonePlans.length === 0)
+                $scope.disableCloneOk = true;
+            else {
+                if (allSelected)
+                    $scope.disableCloneOk = false;
+                else
+                    $scope.disableCloneOk = true;
+                angular.forEach($scope.clonePlans, function (item) {
+                    item.isChecked = !bool;
+                });
+            }
         }
         else {
             $scope.check = !bool;
-            for (var index = 0; index < $scope.groups.length; index++) {
-                for (var iIndex = 0; iIndex < $scope.groups[index].clonePlans.length; iIndex++) {
-                    $scope.groups[index].clonePlans[iIndex].isChecked = !bool;
-                    $scope.groups[index].clonePlans[iIndex].check = !bool;
+            if ($scope.groups.length === 0)
+                $scope.disableCloneOk = true;
+            else {
+                if (allSelected)
+                    $scope.disableCloneOk = false;
+                else
+                    $scope.disableCloneOk = true;
+                for (var index = 0; index < $scope.groups.length; index++) {
+                    for (var iIndex = 0; iIndex < $scope.groups[index].clonePlans.length; iIndex++) {
+                        $scope.groups[index].clonePlans[iIndex].isChecked = !bool;
+                        $scope.groups[index].clonePlans[iIndex].check = !bool;
+                    }
                 }
             }
         }
         $scope.allSelected = !bool;
-        $scope.disableCloneOk = bool;
     };
 
     $scope.onClonePlanChecked = function (item, check) {
         item.isChecked = check;
-        $scope.allSelected = true;
+        var notChecked = true;
         if (!check)
             $scope.allSelected = false;
         else {
@@ -1426,11 +1464,12 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                 for (var index = 0; index < $scope.groups.length; index++) {
                     for (var iIndex = 0; iIndex < $scope.groups[index].clonePlans.length; iIndex++) {
                         if ($scope.groups[index].clonePlans[iIndex].isChecked !== undefined && !$scope.groups[index].clonePlans[iIndex].isChecked) {
-                            $scope.allSelected = false;
+                            notChecked = false;
                             break outerLoop;
                         }
                     }
                 }
+            $scope.allSelected = notChecked;
         }
     };
 });
@@ -1468,7 +1507,7 @@ pto.directive('expandhousecode', function() {
     };
 })
 
-pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function($http, $filter, $rootScope) {
+pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $filter, $rootScope) {
     var cache = {};
     var stateTypes = null;
 	var ptoTypes = null;
@@ -1617,7 +1656,7 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function($http, $fi
 		console.log(xml)
 		$scope.loadingTitle = " Removing...";
         $scope.pageLoading = true;
-		setStatus("Saving");
+		setStatus("Removing");
         jQuery.post('/net/crothall/chimes/fin/emp/act/Provider.aspx', data, function(data, status) {
             if (callback)
                 callback(data, status);

@@ -155,7 +155,7 @@
                                         <span ng-show="sortType == 'County' && sortCountyReverse">&#9650;</span>
                                     </a>
                                 </div>
-                                <label style="padding-left: 380px;">County Plan Details</label>
+                                <label ng-style="showCounty ? { 'padding-left':'380px' } : { 'padding-left':'428px' }">County Plan Details</label>
                                 <div class="pull-right">
 									<button class="btn btn-default btn-xs" ng-click="expandCountyAll(expandAllCounty = !expandAllCounty); showCounty = true;" title="Expand/Collapse County Plans">
                                         <span class="glyphicon glyphicon-resize-small" ng-class="{ 'glyphicon-resize-small': expandAllCounty, 'glyphicon-resize-full': !expandAllCounty }"></span>
@@ -218,7 +218,7 @@
                                         <span ng-show="sortType == 'City' && sortCityReverse">&#9650;</span>
                                     </a>
                                 </div>
-                                <label style="padding-left: 420px;">City Plan Details</label>
+                                <label ng-style="showCity ? { 'padding-left':'402px' } : { 'padding-left':'428px' }">City Plan Details</label>
                                 <div class="pull-right">
 									<button class="btn btn-default btn-xs" ng-click="expandCityAll(expandAllCity = !expandAllCity); showCity = true;" title="Expand/Collapse City Plans">
                                         <span class="glyphicon glyphicon-resize-small" ng-class="{ 'glyphicon-resize-small': expandAllCity, 'glyphicon-resize-full': !expandAllCity }"></span>
@@ -282,7 +282,7 @@
                                         <span ng-show="sortType == 'HouseCode' && sortHouseCodeReverse">&#9650;</span>
                                     </a>
                                  </div>
-                                <label style="padding-left: 380px;">House Code Plan Details</label>
+                                <label ng-style="showHouseCode ? { 'padding-left':'346px' } : { 'padding-left':'429px' }">House Code Plan Details</label>
                                 <div class="pull-right">
 									<button class="btn btn-default btn-xs" ng-click="expandHouseCodeAll(expandAllHouseCode = !expandAllHouseCode); showHouseCode = true;" title="Expand/Collapse House Code Plans">
                                         <span class="glyphicon glyphicon-resize-small" ng-class="{ 'glyphicon-resize-small': expandAllHouseCode, 'glyphicon-resize-full': !expandAllHouseCode }"></span>
