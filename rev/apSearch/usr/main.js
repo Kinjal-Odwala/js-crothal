@@ -514,6 +514,11 @@ Rev.data.apExportStore = WebLight.extend(Rev.data.XmlStore, {
 	fields: [{ name: 'fileName', mapping: '@fileName' }]
 });
 
+function printInvoice(scerISWebURL) {
+	alert("Your invoice will be displayed in a separate window. If no results are returned the window will not appear.");
+	$("#iFrameScerIS").attr("src", scerISWebURL);
+}
+
 function printPurchaseOrder(id) {
 	window.open(location.protocol + '//' + location.hostname + '/reports/po.aspx?purchaseorder=' + id,'PrintPO','type=fullWindow,status=yes,toolbar=no,menubar=no,location=no,resizable=yes');
 }
@@ -595,8 +600,11 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 //	              		},
 						summaryType: 'max',
 						summaryRenderer: function(value, params, record) {
-							if (me.systemVariableStore.data.items[0].data.variableValue !== "")
-								return "<a target='_blank' href='" + me.systemVariableStore.data.items[0].data.variableValue + "[Invoice%20Number|EQ|" + value + "|AND][Vendor%20Number|EQ|" + record.data.vendorNumber + "|NONE]'>" + value + "</a>";
+							if (me.systemVariableStore.data.items[0].data.variableValue !== "") {
+								var scerISWebURL = me.systemVariableStore.data.items[0].data.variableValue + "[Invoice%20Number|EQ|" + value + "|AND][Vendor%20Number|EQ|" + record.data.vendorNumber + "|NONE]";
+								return "<a href=\"javascript: void(0);\" onclick=\"printInvoice('" + scerISWebURL + "');\">" + value + "</a>";
+								//return "<a target='_blank' href='" + me.systemVariableStore.data.items[0].data.variableValue + "[Invoice%20Number|EQ|" + value + "|AND][Vendor%20Number|EQ|" + record.data.vendorNumber + "|NONE]'>" + value + "</a>";
+							}
 							else
 								return value;
 		                },
