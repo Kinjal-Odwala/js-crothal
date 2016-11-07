@@ -819,6 +819,9 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         if ($scope.selectedCompanyPlan === undefined || $scope.selectedCompanyPlan === null)
             return;
 
+        if (!confirm("Assigned plans at employee level will be updated. Are you sure you want to update the plan name [" + $scope.selectedCompanyPlan.ptoPlanTitle + "]?"))
+            return;
+
 		$scope.action = "Update";
 		EmpActions.actionSaveItem($scope, $scope.companyPlans, function(data, status) {
 			$scope.$apply(function() {
@@ -831,7 +834,10 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 
     $scope.saveStatePlans = function() {
 		if ($scope.selectedStatePlan === undefined || $scope.selectedStatePlan === null)
-            return;
+		    return;
+
+		if (!confirm("Assigned plans at employee level will be updated. Are you sure you want to update the plan name [" + $scope.selectedStatePlan.ptoPlanTitle + "]?"))
+		    return;
 
 		$scope.action = "Update";
         EmpActions.actionSaveItem($scope, $scope.statePlans, function(data, status) {
@@ -845,6 +851,9 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 
     $scope.saveCountyPlans = function() {
         if ($scope.selectedCountyPlan === undefined || $scope.selectedCountyPlan === null)
+            return;
+
+        if (!confirm("Assigned plans at employee level will be updated. Are you sure you want to update the plan name [" + $scope.selectedCountyPlan.ptoPlanTitle + "]?"))
             return;
 
         var modifiedPlans = [];
@@ -870,6 +879,9 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         if ($scope.selectedCityPlan === undefined || $scope.selectedCityPlan === null)
             return;
 
+        if (!confirm("Assigned plans at employee level will be updated. Are you sure you want to update the plan name [" + $scope.selectedCityPlan.ptoPlanTitle + "]?"))
+            return;
+
         var modifiedPlans = [];
         angular.forEach($scope.cities, function(city, index) {
             for (var index = 0; index < city.cityPlans.length; index++) {
@@ -891,6 +903,9 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 
     $scope.saveHouseCodePlans = function() {
         if ($scope.selectedHouseCodePlan === undefined || $scope.selectedHouseCodePlan === null)
+            return;
+
+        if (!confirm("Assigned plans at employee level will be updated. Are you sure you want to update the plan name [" + $scope.selectedHouseCodePlan.ptoPlanTitle + "]?"))
             return;
 
         var modifiedPlans = [];
@@ -916,7 +931,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 		if ($scope.selectedCompanyPlan === undefined || $scope.selectedCompanyPlan === null)
 			return;
 
-		if (!confirm("Are you sure you want to delete the plan name [" + $scope.selectedCompanyPlan.ptoPlanTitle + "]?"))
+		if (!confirm("Assigned plans at employee level will be removed. Are you sure you want to remove the plan name [" + $scope.selectedCompanyPlan.ptoPlanTitle + "]?"))
 			return;
 
         EmpActions.actionDeleteItem($scope, $scope.selectedCompanyPlan.id, function(data, status) {
@@ -940,7 +955,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         if ($scope.selectedStatePlan === undefined || $scope.selectedStatePlan === null)
             return;
 
-        if (!confirm("Are you sure you want to delete the plan name [" + $scope.selectedStatePlan.ptoPlanTitle + "]?"))
+        if (!confirm("Assigned plans at employee level will be removed. Are you sure you want to delete the plan name [" + $scope.selectedStatePlan.ptoPlanTitle + "]?"))
             return;
 
         EmpActions.actionDeleteItem($scope, $scope.selectedStatePlan.id, function(data, status) {
@@ -964,7 +979,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         if ($scope.selectedCountyPlan === undefined || $scope.selectedCountyPlan === null)
             return;
 
-        if (!confirm("Are you sure you want to delete the plan name [" + $scope.selectedCountyPlan.ptoPlanTitle + "]?"))
+        if (!confirm("Assigned plans at employee level will be removed. Are you sure you want to delete the plan name [" + $scope.selectedCountyPlan.ptoPlanTitle + "]?"))
             return;
 
         EmpActions.actionDeleteItem($scope, $scope.selectedCountyPlan.id, function(data, status) {
@@ -999,7 +1014,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         if ($scope.selectedCityPlan === undefined || $scope.selectedCityPlan === null)
             return;
 
-        if (!confirm("Are you sure you want to delete the plan name [" + $scope.selectedCityPlan.ptoPlanTitle + "]?"))
+        if (!confirm("Assigned plans at employee level will be removed. Are you sure you want to delete the plan name [" + $scope.selectedCityPlan.ptoPlanTitle + "]?"))
             return;
 
         EmpActions.actionDeleteItem($scope, $scope.selectedCityPlan.id, function(result) {
@@ -1034,7 +1049,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         if ($scope.selectedHouseCodePlan === undefined || $scope.selectedHouseCodePlan === null)
             return;
 
-        if (!confirm("Are you sure you want to delete the plan name [" + $scope.selectedHouseCodePlan.ptoPlanTitle + "]?"))
+        if (!confirm("Assigned plans at employee level will be removed. Are you sure you want to delete the plan name [" + $scope.selectedHouseCodePlan.ptoPlanTitle + "]?"))
             return;
 
         EmpActions.actionDeleteItem($scope, $scope.selectedHouseCodePlan.id, function(result) {
@@ -1442,7 +1457,6 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                 for (var index = 0; index < $scope.groups.length; index++) {
                     for (var iIndex = 0; iIndex < $scope.groups[index].clonePlans.length; iIndex++) {
                         $scope.groups[index].clonePlans[iIndex].isChecked = !bool;
-                        $scope.groups[index].clonePlans[iIndex].check = !bool;
                     }
                 }
             }
