@@ -512,7 +512,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         }
     };
 
-    $scope.setHeight = function (type) {
+    $scope.setHeight = function (type, showGrid) {
         var totalGridsHeight = angular.element('#statePlanDetailsGrid').height() + angular.element('#countyPlanDetailsGrid').height()
         	+ angular.element('#cityPlanDetailsGrid').height() + angular.element('#houseCodePlanDetailsGrid').height();
         var height = 70;
@@ -523,7 +523,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             marginHeight = marginHeight + 15;
         }
 
-        if (angular.element("#" + type + "PlanDetailsGrid").height() >= 200) {
+        if (angular.element("#" + type + "PlanDetailsGrid").height() >= 200 && !showGrid) {
             if ($scope.stateGridHeight > 770 && totalGridsHeight != 400
                 && $scope.stateGridHeight - angular.element("#" + type + "PlanDetailsGrid").height() - height >= $scope.stateGridMinHeight) {
                     $scope.stateGridHeight = $scope.stateGridHeight - angular.element("#" + type + "PlanDetailsGrid").height() - height;
@@ -551,7 +551,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             else if (type === "houseCode") 
                 $scope.houseCodePlanGridMinHeight = $scope.stateGridMinHeight - 305;
         }
-        else if (angular.element("#" + type + "PlanDetailsGrid").height() === 0) {
+        else if (angular.element("#" + type + "PlanDetailsGrid").height() === 0 && showGrid) {
             if (type === "state")
                 $scope.statePlanGridMinHeight = 200;
             else if (type === "county")
@@ -563,7 +563,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 
            $scope.stateGridHeight = $scope.stateGridHeight + marginHeight;
         }
-        else
+        else if (!showGrid)
             $scope.stateGridHeight = 1350;
     };
 
@@ -955,7 +955,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         if ($scope.selectedStatePlan === undefined || $scope.selectedStatePlan === null)
             return;
 
-        if (!confirm("Assigned plans at employee level will be removed. Are you sure you want to delete the plan name [" + $scope.selectedStatePlan.ptoPlanTitle + "]?"))
+        if (!confirm("Assigned plans at employee level will be removed. Are you sure you want to remove the plan name [" + $scope.selectedStatePlan.ptoPlanTitle + "]?"))
             return;
 
         EmpActions.actionDeleteItem($scope, $scope.selectedStatePlan.id, function(data, status) {
@@ -979,7 +979,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         if ($scope.selectedCountyPlan === undefined || $scope.selectedCountyPlan === null)
             return;
 
-        if (!confirm("Assigned plans at employee level will be removed. Are you sure you want to delete the plan name [" + $scope.selectedCountyPlan.ptoPlanTitle + "]?"))
+        if (!confirm("Assigned plans at employee level will be removed. Are you sure you want to remove the plan name [" + $scope.selectedCountyPlan.ptoPlanTitle + "]?"))
             return;
 
         EmpActions.actionDeleteItem($scope, $scope.selectedCountyPlan.id, function(data, status) {
@@ -1014,7 +1014,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         if ($scope.selectedCityPlan === undefined || $scope.selectedCityPlan === null)
             return;
 
-        if (!confirm("Assigned plans at employee level will be removed. Are you sure you want to delete the plan name [" + $scope.selectedCityPlan.ptoPlanTitle + "]?"))
+        if (!confirm("Assigned plans at employee level will be removed. Are you sure you want to remove the plan name [" + $scope.selectedCityPlan.ptoPlanTitle + "]?"))
             return;
 
         EmpActions.actionDeleteItem($scope, $scope.selectedCityPlan.id, function(result) {
@@ -1049,7 +1049,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         if ($scope.selectedHouseCodePlan === undefined || $scope.selectedHouseCodePlan === null)
             return;
 
-        if (!confirm("Assigned plans at employee level will be removed. Are you sure you want to delete the plan name [" + $scope.selectedHouseCodePlan.ptoPlanTitle + "]?"))
+        if (!confirm("Assigned plans at employee level will be removed. Are you sure you want to remove the plan name [" + $scope.selectedHouseCodePlan.ptoPlanTitle + "]?"))
             return;
 
         EmpActions.actionDeleteItem($scope, $scope.selectedHouseCodePlan.id, function(result) {

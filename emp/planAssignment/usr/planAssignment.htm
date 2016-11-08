@@ -96,10 +96,10 @@
                     <tr class="heading" bgcolor="rgba(141,192,219,.25)" role="row">
                         <th style="text-align:center">
                             <label>State Plan Details</label>
-                            <button class="btn btn-default btn-xs pull-right" ng-click="showState = !showState; setHeight('state')" title="Hide/Show State Plans">
+                            <button class="btn btn-default btn-xs pull-right" ng-click="showState = !showState; setHeight('state', showState)" title="Hide/Show State Plans">
 									<span class="glyphicon glyphicon-minus" ng-class="{ 'glyphicon-minus': showState, 'glyphicon-plus': !showState }"></span>
                             </button>
-                            <button class="btn btn-default btn-xs pull-right" ng-click="stateExpanded = !stateExpanded; showState = true;" title="Expand/Collapse State Plans">
+                            <button class="btn btn-default btn-xs pull-right" ng-click="stateExpanded = !stateExpanded; showState = true; setHeight('state', showState)" title="Expand/Collapse State Plans">
                                 <span class="glyphicon glyphicon-resize-small" ng-class="{ 'glyphicon-resize-small': stateExpanded, 'glyphicon-resize-full': !stateExpanded }"></span>
                             </button>
                         </th> 
@@ -153,13 +153,13 @@
                                 </div>
                                 <label ng-style="showCounty ? { 'padding-left':'347px' } : { 'padding-left':'395px' }">County Plan Details</label>
                                 <div class="pull-right">
-									<button class="btn btn-default btn-xs" ng-click="expandCountyAll(expandAllCounty = !expandAllCounty); showCounty = true;" title="Expand/Collapse County Plans">
+									<button class="btn btn-default btn-xs" ng-click="expandCountyAll(expandAllCounty = !expandAllCounty); showCounty = true; setHeight('county', showCounty)" title="Expand/Collapse County Plans">
                                         <span class="glyphicon glyphicon-resize-small" ng-class="{ 'glyphicon-resize-small': expandAllCounty, 'glyphicon-resize-full': !expandAllCounty }"></span>
                                     </button>
-									<button class="btn btn-default btn-xs" ng-click="filterCountyPlans(filterCounty = !filterCounty); showCounty = true;" title="Filter County Plans">
+									<button class="btn btn-default btn-xs" ng-click="filterCountyPlans(filterCounty = !filterCounty); showCounty = true; setHeight('county', showCounty)" title="Filter County Plans">
 										<span class="glyphicon glyphicon-filter" ng-class="{ 'glyphicon-refresh': filterCounty, 'glyphicon-filter': !filterCounty }"></span>
                                     </button>
-                                    <button  class="btn btn-default btn-xs" ng-click="showCounty = !showCounty; setHeight('county')" title="Hide/Show County Plans">
+                                    <button  class="btn btn-default btn-xs" ng-click="showCounty = !showCounty; setHeight('county', showCounty)" title="Hide/Show County Plans">
    										<span class="glyphicon glyphicon-minus" ng-class="{ 'glyphicon-minus': showCounty, 'glyphicon-plus': !showCounty }"></span>
                                     </button>
                                 </div>
@@ -216,14 +216,14 @@
                                 </div>
                                 <label ng-style="showCity ? { 'padding-left':'379px' } : { 'padding-left':'405px' }">City Plan Details</label>
                                 <div class="pull-right">
-									<button class="btn btn-default btn-xs" ng-click="expandCityAll(expandAllCity = !expandAllCity); showCity = true;" title="Expand/Collapse City Plans">
+									<button class="btn btn-default btn-xs" ng-click="expandCityAll(expandAllCity = !expandAllCity); showCity = true; setHeight('city', showCity)" title="Expand/Collapse City Plans">
                                         <span class="glyphicon glyphicon-resize-small" ng-class="{ 'glyphicon-resize-small': expandAllCity, 'glyphicon-resize-full': !expandAllCity }"></span>
                                     </button>
-									<button class="btn btn-default btn-xs" ng-click="filterCityPlans(filterCity = !filterCity); showCity = true;" title="Filter City Plans">
+									<button class="btn btn-default btn-xs" ng-click="filterCityPlans(filterCity = !filterCity); showCity = true; setHeight('city', showCity)" title="Filter City Plans">
 										<span class="glyphicon glyphicon-filter" ng-class="{ 'glyphicon-refresh': filterCity, 'glyphicon-filter': !filterCity }"></span>
                                     </button>
 									
-									<button  class="btn btn-default btn-xs" ng-click="showCity = !showCity;  setHeight('city')" title="Hide/Show City Plans">
+									<button  class="btn btn-default btn-xs" ng-click="showCity = !showCity;  setHeight('city', showCity)" title="Hide/Show City Plans">
    										<span class="glyphicon glyphicon-minus" ng-class="{ 'glyphicon-minus': showCity, 'glyphicon-plus': !showCity }"></span>
                                     </button>
                                 </div>
@@ -280,14 +280,14 @@
                                  </div>
                                 <label ng-style="showHouseCode ? { 'padding-left':'298px' } : { 'padding-left':'380px' }">House Code Plan Details</label>
                                 <div class="pull-right">
-									<button class="btn btn-default btn-xs" ng-click="expandHouseCodeAll(expandAllHouseCode = !expandAllHouseCode); showHouseCode = true;" title="Expand/Collapse House Code Plans">
+									<button class="btn btn-default btn-xs" ng-click="expandHouseCodeAll(expandAllHouseCode = !expandAllHouseCode); showHouseCode = true; setHeight('houseCode', showHouseCode)" title="Expand/Collapse House Code Plans">
                                         <span class="glyphicon glyphicon-resize-small" ng-class="{ 'glyphicon-resize-small': expandAllHouseCode, 'glyphicon-resize-full': !expandAllHouseCode }"></span>
                                     </button>
-									<button class="btn btn-default btn-xs" ng-click="filterHouseCodePlans(filterHouseCode = !filterHouseCode); showHouseCode = true;" title="Filter House Code Plans">
+									<button class="btn btn-default btn-xs" ng-click="filterHouseCodePlans(filterHouseCode = !filterHouseCode); showHouseCode = true; setHeight('houseCode', showHouseCode)" title="Filter House Code Plans">
 										<span class="glyphicon glyphicon-filter" ng-class="{ 'glyphicon-refresh': filterHouseCode, 'glyphicon-filter': !filterHouseCode }"></span>
                                     </button>
 									
-									<button  class="btn btn-default btn-xs" ng-click="showHouseCode = !showHouseCode;  setHeight('houseCode')" title="Hide/Show House Code Plans">
+									<button  class="btn btn-default btn-xs" ng-click="showHouseCode = !showHouseCode;  setHeight('houseCode', showHouseCode)" title="Hide/Show House Code Plans">
    										<span class="glyphicon glyphicon-minus" ng-class="{ 'glyphicon-minus': showHouseCode, 'glyphicon-plus': !showHouseCode }"></span>
                                     </button>
                                 </div>
