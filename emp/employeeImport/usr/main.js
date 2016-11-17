@@ -1565,7 +1565,11 @@ ii.Class({
 						}
 					}
 
-					if (frequencyType == "Weekly") {
+					if (frequencyType == "") {
+						rowValid = false;
+						me.setCellColor($("#txtScheduledHours" + index), me.cellColorInvalid, "Unable to validate Scheduled Hours. Please verify that the correct Payroll Company is associated with House Code.");
+					}
+					else if (frequencyType == "Weekly") {
 						if (scheduledHours > 40) {
 							rowValid = false;
 							me.setCellColor($("#txtScheduledHours" + index), me.cellColorInvalid, "Scheduled Hours should not be greater than 40 hours for the Weekly Pay Frequency.");
