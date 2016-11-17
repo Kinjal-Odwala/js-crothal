@@ -421,9 +421,10 @@ Rev.data.apInvoiceStore = WebLight.extend(Rev.data.XmlStore, {
              { name: 'subLedger', mapping: '@subLedger', type: 'string' },
 			 { name: 'houseCodeAmount', mapping: '@houseCodeAmount', type: 'float' },
 			 { name: 'poNumber', mapping: '@poNumber', type: 'string' },
-			 { name: 'purchaseOrderId', mapping: '@purchaseOrderId', type: 'int' }
+			 { name: 'purchaseOrderId', mapping: '@purchaseOrderId', type: 'int' },
+			 { name: 'groupBy', mapping: '@groupBy', type: 'string' }
             ],
-	groupField: 'vendorInvoiceNumber'
+	groupField: 'groupBy'
 });
 
 Rev.data.apCheckStore = WebLight.extend(Rev.data.XmlStore, {
@@ -628,7 +629,8 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 								return value;
                   		},
 						summaryType: 'max'
-                      }
+                      },
+					  { dataIndex: 'groupBy', header: 'Vendor Invoice #', width: 150, align: 'right', renderer: displayRenderer }
 					 ]
         });
 
@@ -647,12 +649,13 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 			id: 'InvoiceGrid',
 			title: 'AP Invoices',
 			view: new Ext.grid.GroupingView({
+				groupTextTpl: 'Vendor #: ' + '{[values.rs[0].data.vendorNumber]}' + ' - Invoice #: ' + '{[values.rs[0].data.vendorInvoiceNumber]}',
 //	            groupTextTpl: '{text} ({[values.rs.length]} {[values.rs.length > 1 ? "Items" : "Item"]})'
 //				forceFit: true,
 //	            showGroupName: true,
 //	            enableNoGroups: false,
 //				enableGroupingMenu: false,
-//	            hideGroupedColumn: true
+	            hideGroupedColumn: true
 	        }),
 			plugins: summary,
 			bbar: pagingBar
